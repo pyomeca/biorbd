@@ -90,6 +90,7 @@ ENV/
 # Spyder project settings
 .spyderproject
 .spyproject
+Pipfile.lock
 
 # Rope project settings
 .ropeproject
@@ -99,3 +100,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# Specific project files and folders
+build
+includes/numpy
+S2MSource
+pyomeca

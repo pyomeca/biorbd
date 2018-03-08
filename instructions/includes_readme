@@ -1,0 +1,3 @@
+the folder "numpy" in the include folder from "{PYTHON_PATH}/site-packages/numpy/core/include/" must be copied to "./include/numpy"
+the folder "pyomeca" from pyomeca python library should be included in "."
+the S2MSource folder from s2m/rbld C++ library that includes "include" and "src" folder should be included in "."
