@@ -9,6 +9,7 @@ static PyObject *pyoError;
 #include <iostream>
 
 #include "s2mMusculoSkeletalModel.h"
+#include "s2mKalmanReconsMarkers.h"
 
 #include "processInput.hpp"
 
@@ -17,12 +18,18 @@ static PyObject * pyoNew(PyObject *self, PyObject *args);
 static PyObject * pyo_nQ(PyObject *self, PyObject *args);
 static PyObject * pyo_nMarkers(PyObject *self, PyObject *args);
 static PyObject * pyo_getMarkers(PyObject *self, PyObject *args);
+static PyObject * pyo_kalmanFilterKinematicsReconstruction(PyObject * dummy, PyObject *args);
+
+static PyObject * pyo_testDebug(PyObject *self, PyObject *args);
 
 static PyMethodDef s2mMethods[] = {
     {"new",         pyoNew,         METH_VARARGS, "Create a new pyoModel."},
     {"nb_q",        pyo_nQ,         METH_VARARGS, "Get number of generalized coordinates in them model."},
     {"nb_markers",  pyo_nMarkers,   METH_VARARGS, "Get number of the marker in them model."},
     {"get_markers", pyo_getMarkers, METH_VARARGS, "Perform a direct kinematics, return marker positions."},
+    {"kalman_kinematics_reconstruction", pyo_kalmanFilterKinematicsReconstruction,
+                                    METH_VARARGS, "Perform a kinematic reconstruction using a kalman filter algorithm."},
+    {"test_debug",  pyo_testDebug,  METH_VARARGS, "Dummy sand box for the developper to safely debug interface codes."},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 

@@ -91,6 +91,7 @@ ENV/
 .spyderproject
 .spyproject
 Pipfile.lock
+.idea
 
 # Rope project settings
 .ropeproject

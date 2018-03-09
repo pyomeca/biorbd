@@ -11,6 +11,7 @@ numpy = "*"
 pandas = "*"
 vtk = "*"
 "pyqt5" = "*"
+matplotlib = "*"
 
 
 [dev-packages]

@@ -47,8 +47,7 @@ static PyObject * pyo_nQ(PyObject *self, PyObject *args)
 
 static PyObject * pyo_getMarkers(PyObject *dummy, PyObject *args)
 {
-// Get the inputs
-
+    // Get the inputs
     long address_m;
     PyObject * Q_in;
     if ( !PyArg_ParseTuple(args, "lO", &address_m, &Q_in) )
@@ -91,4 +90,99 @@ static PyObject * pyo_getMarkers(PyObject *dummy, PyObject *args)
     PyArray_ENABLEFLAGS(c, NPY_ARRAY_OWNDATA);
 
     return PyArray_Return(c);
+}
+
+static PyObject * pyo_kalmanFilterKinematicsReconstruction(PyObject * dummy, PyObject *args){
+    // Get the inputs
+    long address_m;
+    double freq(100), noiseF(1e-10), errorF(1e-5); // Get kalman filter parameters
+    PyObject * markersOverTimePyObject, * QInitPyObject;
+    if ( !PyArg_ParseTuple(args, "lOO|ddd", &address_m, &markersOverTimePyObject, &QInitPyObject, &freq, &noiseF, &errorF))
+        return NULL;
+
+    // Get the model and some aliases as well
+    s2mMusculoSkeletalModel * m = reinterpret_cast<s2mMusculoSkeletalModel *>(address_m);
+    unsigned int nQ = m->nbQ(); /* Get the number of DoF */
+    unsigned int nQDot = m->nbQdot(); /* Get the number of DoF */
+    unsigned int nQDDot = m->nbQddot(); /* Get the number of DoF */
+
+    // Dispatch markers
+    std::vector<s2mMarkers> markersOverTime;
+    if (!getMarkers(m, markersOverTimePyObject, markersOverTime)){
+        return NULL;
+    }
+
+    // Dispatch Q init
+    std::vector<s2mGenCoord> QInit;
+    if (!getGenCoord(m, QInitPyObject, QInit)){
+        return NULL;
+    }
+
+    if (QInit.size() != 1){
+        PyErr_SetString(pyoError, "QInit must have exactly one frame");
+        return NULL;
+    }
+
+    // From these parameter, create an EKF filter
+    s2mKalmanReconsMarkers kalman(*m, s2mKalmanReconsMarkers::s2mKalmanParam(freq, noiseF, errorF));
+    kalman.setInitState(&(QInit[0]));
+
+    // Reconstruct data at each frame
+    int nbFrames = markersOverTime.size();
+    double * q = new double[nQ * nbFrames];
+    double * qdot = new double[nQ * nbFrames];
+    double * qddot = new double[nQ * nbFrames];
+    for (int f=0; f<nbFrames; ++f){
+        // Perform the EFK algorithm
+        s2mGenCoord Q(nQ);
+        s2mGenCoord QDot(nQDot);
+        s2mGenCoord QDDot(nQDDot);
+        kalman.reconstructFrame(*m, *(markersOverTime.begin()+f), &Q, &QDot, &QDDot);
+
+        // Fill the output data
+        for (unsigned int j=0; j<nQ; ++j){
+            q[nbFrames*j+f] = Q(j);
+            qdot[nbFrames*j+f] = QDot(j);
+            qddot[nbFrames*j+f] = QDDot(j);
+        }
+    }
+
+    int nArraySize = 3; // Markers are always 3D (XYZ1 x 1 x nFrames)
+    npy_intp * arraySizes = new npy_intp[nArraySize];
+    arraySizes[0] = nQ;
+    arraySizes[1] = 1;
+    arraySizes[2] = nbFrames;
+
+    PyArrayObject * qOut = (PyArrayObject *)PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, q);
+    PyArrayObject * qDotOut = (PyArrayObject *)PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, qdot);
+    PyArrayObject * qDDotOut = (PyArrayObject *)PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, qddot);
+    delete[] arraySizes;
+
+    // Give ownership to Python so it will free the memory when needed
+    PyArray_ENABLEFLAGS(qOut, NPY_ARRAY_OWNDATA);
+    PyArray_ENABLEFLAGS(qDotOut, NPY_ARRAY_OWNDATA);
+    PyArray_ENABLEFLAGS(qDDotOut, NPY_ARRAY_OWNDATA);
+
+    // return PyArray_Return(c);
+    return Py_BuildValue("OOO", qOut, qDotOut, qDDotOut);
+}
+
+static PyObject * pyo_testDebug(PyObject * dummy, PyObject *args){
+
+    // Get the inputs
+    long address_m;
+    PyObject * tata;
+    if ( !PyArg_ParseTuple(args, "lO", &address_m, &tata) )
+        return NULL;
+
+    /* TEST HERE */
+    s2mMusculoSkeletalModel * m = reinterpret_cast<s2mMusculoSkeletalModel *>(address_m);
+
+     std::vector<s2mMarkers> marks_out;
+     if (!getMarkers(m, tata, marks_out)){
+        return NULL;
+     }
+
+    /* IF NO RETURN IS TESTED, A DEFAULT VALUE OF 0 IS SENT BACK */
+    return PyLong_FromLong(0);
 }
