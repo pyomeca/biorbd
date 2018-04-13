@@ -1,3 +1,0 @@
-build the library using the command
-python3.6 setup.py build
-then the dynamic library created should be put in "pyomeca/thirdparty/S2MLib" folder
