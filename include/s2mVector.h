@@ -1,0 +1,20 @@
+#ifndef S2MVECTOR_H
+#define S2MVECTOR_H
+    #include <Eigen/Dense>
+
+class s2mVector : public Eigen::VectorXd
+{
+public:
+    s2mVector();
+    s2mVector(const Eigen::VectorXd& v);
+    s2mVector(const s2mVector& v);
+    s2mVector(unsigned int i);
+    ~s2mVector();
+    virtual Eigen::VectorXd vector() const;
+
+protected:
+private:
+
+};
+
+#endif // S2MVECTOR_H

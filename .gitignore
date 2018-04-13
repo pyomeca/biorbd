@@ -102,8 +102,21 @@ Pipfile.lock
 # mypy
 .mypy_cache/
 
+# CMake
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+CMakeLists.txt.user
+
 # Specific project files and folders
 build
 includes/numpy
 S2MSource
 pyomeca
+release
