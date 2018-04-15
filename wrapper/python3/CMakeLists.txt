@@ -17,7 +17,6 @@ else(WIN32)
     SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES PREFIX "")
 endif(WIN32)
 
-
 target_link_libraries(${PROJECT_NAME} S2M_rbdl)
 install(TARGETS ${PROJECT_NAME} DESTINATION ${Python3_SITELIB}/S2MLib)
 

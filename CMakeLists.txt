@@ -15,7 +15,7 @@ INCLUDE_DIRECTORIES(${RBDL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_D
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 
 # Add linker to S2M_rbld
-target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY})
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 # Wrapper for S2M_rbdl - C
