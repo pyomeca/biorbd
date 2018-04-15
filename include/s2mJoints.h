@@ -94,7 +94,9 @@ class s2mJoints : public RigidBodyDynamics::Model
         s2mBoneMesh boneMesh(const unsigned int& idx);
         // Réimplémentation de la fonction CalcAngularMomentum car elle a une erreur (inversion du calcul du com)
         RBDM::Vector3d CalcAngularMomentum (RigidBodyDynamics::Model &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, bool update_kinematics);
+        RBDM::Vector3d CalcAngularMomentum (RigidBodyDynamics::Model &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, bool update_kinematics);
         std::vector<RBDM::Vector3d> CalcSegmentsAngularMomentum (RigidBodyDynamics::Model &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, bool update_kinematics);
+        std::vector<RBDM::Vector3d> CalcSegmentsAngularMomentum (RigidBodyDynamics::Model &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, bool update_kinematics);
         unsigned int getDofIndex(const s2mString& boneName, const s2mString& dofName);
 
         void CalcMatRotJacobian ( RigidBodyDynamics::Model &model, const RigidBodyDynamics::Math::VectorNd &Q, unsigned int body_id, const RigidBodyDynamics::Math::Matrix3d &rotation, RigidBodyDynamics::Math::MatrixNd &G, bool update_kinematics); // Calcule la matrice jacobienne d'une matrice de rotation

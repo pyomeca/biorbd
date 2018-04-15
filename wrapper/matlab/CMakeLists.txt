@@ -27,7 +27,8 @@ else(WIN32)
 endif(WIN32)
 
 target_link_libraries(${PROJECT_NAME} S2M_rbdl)
-
+message("Install destination is still ongoing to be set")
+# install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 
 

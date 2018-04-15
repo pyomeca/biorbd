@@ -563,26 +563,37 @@ s2mBoneMesh s2mJoints::boneMesh(const unsigned int &idx)
     return bone(idx).caract().mesh();
 }
 
-
-
-RBDM::Vector3d s2mJoints::CalcAngularMomentum (RigidBodyDynamics::Model &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, bool update_kinematics) {
+RBDM::Vector3d s2mJoints::CalcAngularMomentum (RigidBodyDynamics::Model &model, const s2mGenCoord &Q, const 
+s2mGenCoord &Qdot, bool update_kinematics) {
+    // Qddot was added later in the RBDL. In order to keep backward compatilibity, 
+    s2mGenCoord Qddot(this->nbQddot());
+    return CalcAngularMomentum(model, Q, Qdot, Qddot, update_kinematics);
+}
+    RBDM::Vector3d s2mJoints::CalcAngularMomentum (RigidBodyDynamics::Model &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, bool update_kinematics) {
     // Définition des variables
     RBDM::Vector3d com,  angular_momentum;
     double mass;
 
     // Calcul du angular momentum par la fonction de la position du centre de masse
-    RigidBodyDynamics::Utils::CalcCenterOfMass(model, Q, Qdot, mass, com, NULL, &angular_momentum, update_kinematics);
+    s2mError::s2mAssert(false, "Call to CalcCenterOfMass must be verified!");
+    RigidBodyDynamics::Utils::CalcCenterOfMass(model, Q, Qdot, &Qddot, mass, com, NULL, NULL, &angular_momentum, NULL, update_kinematics);
 
     return angular_momentum;
 }
 
 std::vector<RBDM::Vector3d> s2mJoints::CalcSegmentsAngularMomentum (RigidBodyDynamics::Model &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, bool update_kinematics) {
+    s2mGenCoord Qddot(this->nbQddot());
+    return CalcSegmentsAngularMomentum(model, Q, Qdot, Qddot, update_kinematics);
+}
+
+std::vector<RBDM::Vector3d> s2mJoints::CalcSegmentsAngularMomentum (RigidBodyDynamics::Model &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, bool update_kinematics) {
     if (update_kinematics)
-        UpdateKinematicsCustom (model, &Q, &Qdot, NULL);
+        UpdateKinematicsCustom (model, &Q, &Qdot, &Qddot);
 
     double mass;
     RBDM::Vector3d com;
-    RigidBodyDynamics::Utils::CalcCenterOfMass (*this, Q, Qdot, mass, com, NULL, NULL, false);
+    s2mError::s2mAssert(false, "Call to CalcCenterOfMass must be verified!");
+    RigidBodyDynamics::Utils::CalcCenterOfMass (*this, Q, Qdot, &Qddot, mass, com, NULL, NULL, NULL, NULL, false);
     RigidBodyDynamics::Math::SpatialTransform X_to_COM (RBDM::Xtrans(com));
 
     std::vector<RBDM::Vector3d> h_segment;
