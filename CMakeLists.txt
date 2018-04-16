@@ -1,5 +1,6 @@
 project(S2M_rbdl)
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
 
 # Set some variables
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)

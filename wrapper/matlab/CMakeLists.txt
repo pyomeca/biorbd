@@ -1,5 +1,5 @@
 project(S2M_rbdl_matlab)
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 
 find_package(MATLAB REQUIRED)
 set(MATLAB_WRAPPER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/wrapper/matlab)
@@ -27,8 +27,7 @@ else(WIN32)
 endif(WIN32)
 
 target_link_libraries(${PROJECT_NAME} S2M_rbdl)
-message("Install destination is still ongoing to be set")
-# install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+install(TARGETS ${PROJECT_NAME} DESTINATION ${Matlab_ROOT_DIR}/toolbox/S2M_rbdl)
 
 
 
