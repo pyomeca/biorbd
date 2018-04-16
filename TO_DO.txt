@@ -1,13 +1,12 @@
-conda install eigen
-conda install boost
-
 [RBDL - dev]
 CMAKE_INSTALL_PREFIX {conda_env_path}
-Eigen {conda_env_path/include/eigen3}
+
+[dlib]
+DLIB_JPEG_SUPPORT OFF
+DLIB_PNG_SUPPORT OFF
 
 [pyorbdl]
 CMAKE_INSTALL_PREFIX {conda_env_path}
-CMAKR_BUILD_TYPE release
 
 
 

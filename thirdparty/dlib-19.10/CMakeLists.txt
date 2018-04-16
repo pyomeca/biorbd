@@ -33,4 +33,4 @@ if(NOT has_parent)
    # DLIB_IN_PROJECT_BUILD to false.
    set(DLIB_IN_PROJECT_BUILD false)
 endif()
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/dlib-19.10/dlib)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dlib)
