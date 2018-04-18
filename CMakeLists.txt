@@ -1,5 +1,5 @@
 project(biorbd)
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 
 # Set some variables
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)
@@ -16,14 +16,15 @@ ENDIF()
 find_package(RBDL REQUIRED)
 find_package(Boost REQUIRED)
 find_package(Eigen3 REQUIRED)
+find_package(Dlib REQUIRED)
 
 # Compile S2M_rbdl
 aux_source_directory(src SRC_LIST)
-INCLUDE_DIRECTORIES(${RBDL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} thirdparty/dlib-19.10 include)
+INCLUDE_DIRECTORIES(${RBDL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} include)
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 
 # Add linker to S2M_rbld
-target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY} ${DLIB_LIBRARY})
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 # Wrapper for S2M_rbdl - C
