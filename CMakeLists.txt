@@ -21,7 +21,7 @@ find_package(Dlib REQUIRED)
 
 # Compile S2M_rbdl
 aux_source_directory(src SRC_LIST)
-INCLUDE_DIRECTORIES(${RBDL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} include) #thirdparty/dlib-19.10 include)
+INCLUDE_DIRECTORIES(${RBDL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} include)
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 
 # Add linker to S2M_rbld
