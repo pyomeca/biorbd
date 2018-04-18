@@ -1,4 +1,4 @@
-project(S2M_rbdl)
+project(biorbd)
 cmake_minimum_required(VERSION 2.8)
 
 # Set some variables
