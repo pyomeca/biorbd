@@ -26,7 +26,7 @@ else(WIN32)
   endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
 endif(WIN32)
 
-target_link_libraries(${PROJECT_NAME} S2M_rbdl)
+target_link_libraries(${PROJECT_NAME} biorbd)
 install(TARGETS ${PROJECT_NAME} DESTINATION ${Matlab_ROOT_DIR}/toolbox/S2M_rbdl)
 
 

@@ -10,7 +10,7 @@ set(C_FILE ${C_WRAPPER_PATH}/c_wrapper.cpp)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_library(${PROJECT_NAME} SHARED ${C_FILE})
 
-target_link_libraries(${PROJECT_NAME} S2M_rbdl)
+target_link_libraries(${PROJECT_NAME} biorbd)
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 
