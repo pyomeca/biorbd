@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8.12)
 
 
 
+
 #############################################################################
 #                                                                           #
 #  READ examples/CMakeLists.txt TO SEE HOW TO USE DLIB FROM C++ WITH CMAKE  #
