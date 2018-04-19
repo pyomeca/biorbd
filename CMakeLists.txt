@@ -1,5 +1,6 @@
 project(biorbd)
 cmake_minimum_required(VERSION 3.1)
+set (CMAKE_CXX_STANDARD 11)
 
 # Set some variables
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)
@@ -20,7 +21,7 @@ find_package(Dlib REQUIRED)
 
 # Compile biorbd
 aux_source_directory(src SRC_LIST)
-INCLUDE_DIRECTORIES(${RBDL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} include)
+INCLUDE_DIRECTORIES(${RBDL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${DLIB_INCLUDE_DIR} include)
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 
 # Add linker to biorbd

@@ -5,18 +5,6 @@
 #  DLIB_LIBRARIES   - List of libraries when using zlib.
 #  DLIB_FOUND       - True if zlib found.
 
-if (NOT DLIB_DIR)
-  find_path (DLIB_DIR DLIBconfig.cmake
-    $ENV{DLIB_DIR}
-    DOC "The build directory, containing Dlibconfig.cmake")
-endif (NOT DLIB_DIR)
-
-if (DLIB_DIR)
-  if (EXISTS (${DLIB_DIR}/Dlibconfig.cmake))
-    include (${DLIB_DIR}/Dlibconfig.cmake)
-  endif ()
-endif (DLIB_DIR)
-
 if (DLIB_INCLUDE_DIR)
   # Already in cache, be silent
   set (Dlib_FIND_QUIETLY TRUE)
@@ -41,4 +29,4 @@ else (DLIB_FOUND)
   set (DLIB_LIBRARIES)
 endif (DLIB_FOUND)
 
-mark_as_advanced (DLIB_LIBRARY)
+mark_as_advanced (DLIB_LIBRARY DLIB_INCLUDE_DIR)
