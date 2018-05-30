@@ -15,6 +15,7 @@ ENDIF()
 
 # Prepare linking with RBDL
 find_package(RBDL REQUIRED)
+set(BOOST_ROOT ${CMAKE_INSTALL_PREFIX})
 find_package(Boost REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Dlib REQUIRED)

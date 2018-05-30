@@ -1210,7 +1210,7 @@ if(NOT Boost_INCLUDE_DIR)
   endif()
 
   if( BOOST_ROOT )
-    list(APPEND _boost_INCLUDE_SEARCH_DIRS ${BOOST_ROOT}/include ${BOOST_ROOT})
+    list(APPEND _boost_INCLUDE_SEARCH_DIRS ${BOOST_ROOT}/Library/include ${BOOST_ROOT}/include ${BOOST_ROOT})
   elseif( _ENV_BOOST_ROOT )
     list(APPEND _boost_INCLUDE_SEARCH_DIRS ${_ENV_BOOST_ROOT}/include ${_ENV_BOOST_ROOT})
   endif()

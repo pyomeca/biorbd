@@ -13,8 +13,16 @@ endif (DLIB_INCLUDE_DIR)
 find_path (DLIB_INCLUDE_DIR "dlib/algs.h"
   PATHS "${DLIB_DIR}")
 
-set (DLIB_NAMES dlib)
-find_library (DLIB_LIBRARY NAMES ${DLIB_NAMES})
+if(WIN32)
+	FILE(GLOB LibNames ${CMAKE_INSTALL_PREFIX}/bin/dlib*)
+	find_library (DLIB_LIBRARY 
+			NAMES ${LibNames}
+			HINTS ${CMAKE_INSTALL_PREFIX}/bin)
+else()
+	set (DLIB_NAMES dlib)
+	find_library (DLIB_LIBRARY NAMES ${DLIB_NAMES})
+endif()
+
 
 # handle the QUIETLY and REQUIRED arguments and set DLIB_FOUND to TRUE if 
 # all listed variables are TRUE
@@ -28,5 +36,4 @@ if (DLIB_FOUND)
 else (DLIB_FOUND)
   set (DLIB_LIBRARIES)
 endif (DLIB_FOUND)
-
 mark_as_advanced (DLIB_LIBRARY DLIB_INCLUDE_DIR)
