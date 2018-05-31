@@ -3,11 +3,6 @@
     #include "biorbdConfig.h"
     #include "s2mWrappingObject.h"
     #include "s2mGenCoord.h"
-    #ifndef NAN
-        static const unsigned long __nan[2] = {0xffffffff, 0x7fffffff};
-        #define NAN (*(const float *) __nan)
-    #endif
-
 
 
 class BIORBD_API s2mWrappingCylinder : public s2mWrappingObject

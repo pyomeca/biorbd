@@ -13,4 +13,10 @@ Some day, if Eigen can be compile in DLL
 #endif
 */
 #define BIORBD_API
+
+#ifndef NAN
+    //static const unsigned long __nan[2] = {0xffffffff, 0x7fffffff};
+    #define NAN (*(const float *) __nan)
+#endif
+    
 #endif // __BIORBD_CONFIG_H__

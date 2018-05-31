@@ -76,6 +76,6 @@ void s2mIntegrator::integrate(RigidBodyDynamics::Model *model, const s2mGenCoord
         x[i] = v(i);
 
     // Choix de l'algorithme et intégration
-    ODE::runge_kutta4< state_type > stepper;
-    m_steps = ODE::integrate_const( stepper, (*this), x, t0, tEnd, time_step, push_back_state_and_time( m_x_vec , m_times ));
+    boost::numeric::odeint::runge_kutta4< state_type > stepper;
+    m_steps = boost::numeric::odeint::integrate_const( stepper, (*this), x, t0, tEnd, time_step, push_back_state_and_time( m_x_vec , m_times ));
 }

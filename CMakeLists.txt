@@ -27,7 +27,22 @@ add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 
 # Add linker to biorbd
 target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY} ${DLIB_LIBRARY})
-install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+
+# Installation
+if(WIN32)
+	set(${PROJECT_NAME}_LIB_FOLDER Lib)
+	set(${PROJECT_NAME}_BIN_FOLDER bin)
+else()
+	set(${PROJECT_NAME}_LIB_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
+	set(${PROJECT_NAME}_BIN_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
+endif()
+install(TARGETS ${PROJECT_NAME}
+        ARCHIVE DESTINATION ${${PROJECT_NAME}_LIB_FOLDER}
+        RUNTIME DESTINATION ${${PROJECT_NAME}_BIN_FOLDER}
+        LIBRARY DESTINATION ${${PROJECT_NAME}_LIB_FOLDER}
+        INCLUDES DESTINATION include}
+        )
+
 
 # Add swig subdirectory
 add_subdirectory(wrapper)

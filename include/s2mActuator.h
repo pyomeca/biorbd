@@ -3,7 +3,7 @@
 
 #include "biorbdConfig.h"
     #include "s2mString.h"
-
+    
 class BIORBD_API s2mActuator
 {
     public:

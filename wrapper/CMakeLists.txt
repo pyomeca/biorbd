@@ -10,5 +10,5 @@ endif()
 
 # Add subdirectories for each language if desired
 if(PYTHON3_WRAPPER)
-    add_subdirectory(Python3)
+    add_subdirectory(python3)
 endif()

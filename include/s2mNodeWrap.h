@@ -5,7 +5,6 @@
 #include "biorbdConfig.h"
 
 
-class s2mNode;
 class BIORBD_API s2mNodeWrap : public s2mNode
 {
     public:

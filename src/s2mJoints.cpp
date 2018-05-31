@@ -100,7 +100,7 @@ void s2mJoints::kinematics(const unsigned int &step, s2mGenCoord &Q, s2mGenCoord
 unsigned int s2mJoints::AddBone(const unsigned int &parent_id, // Numéro du parent
                      const s2mString &seqT, const s2mString &seqR, // Séquence de Cardan pour classer les dof en rotation
                      const s2mBoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
-                     const RBDM::SpatialTransform& cor, // Transformation du parent vers l'enfant
+                     const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
                      const s2mString &name, // Nom du segment
                      const int &PF){ // Numéro de la plateforme de force attaché à cet os
     s2mBone tp(this, parent_id, seqT, seqR, caract, cor, name, PF);
@@ -121,7 +121,7 @@ unsigned int s2mJoints::AddBone(const unsigned int &parent_id, // Numéro du par
 unsigned int s2mJoints::AddBone(const unsigned int &parent_id, // Numéro du parent
                      const s2mString &seqR, // Séquence de Cardan pour classer les dof en rotation
                      const s2mBoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
-                     const RBDM::SpatialTransform& cor, // Transformation du parent vers l'enfant
+                     const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
                      const s2mString &name, // Nom du segment
                      const int &PF){ // Numéro de la plateforme de force attaché à cet os
     s2mBone tp(this, parent_id, seqR, caract, cor, name, PF);
@@ -149,17 +149,17 @@ unsigned int s2mJoints::nbBone() const
      return m_bones.size();
 }
 
-std::vector<RBDM::SpatialVector> s2mJoints::dispatchedForce(std::vector<std::vector<RBDM::SpatialVector> > &sv, const unsigned int &frame){
+std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> > &sv, const unsigned int &frame){
     // Tableau de sortie
-    std::vector<RBDM::SpatialVector> sv_out;
+    std::vector<RigidBodyDynamics::Math::SpatialVector> sv_out;
 
     // Spatial vector nul pour remplir le tableau final
-    RBDM::SpatialVector sv_zero(0,0,0,0,0,0);
+    RigidBodyDynamics::Math::SpatialVector sv_zero(0,0,0,0,0,0);
 
     // Itérateur sur le tableau de force
-    std::vector<RBDM::SpatialVector> sv2; // Mettre dans un même tableau les valeurs d'un même instant de différentes plateformes
-    for (std::vector<std::vector<RBDM::SpatialVector> >::iterator it = sv.begin(); it!=sv.end(); ++it){
-        std::vector<RBDM::SpatialVector>::iterator sv2_tp = (*it).begin();
+    std::vector<RigidBodyDynamics::Math::SpatialVector> sv2; // Mettre dans un même tableau les valeurs d'un même instant de différentes plateformes
+    for (std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> >::iterator it = sv.begin(); it!=sv.end(); ++it){
+        std::vector<RigidBodyDynamics::Math::SpatialVector>::iterator sv2_tp = (*it).begin();
         sv2.push_back(*(sv2_tp+frame));
     }
 
@@ -167,15 +167,15 @@ std::vector<RBDM::SpatialVector> s2mJoints::dispatchedForce(std::vector<std::vec
     return dispatchedForce(sv2);
 }
 
-std::vector<RBDM::SpatialVector> s2mJoints::dispatchedForce(std::vector<RBDM::SpatialVector> &sv){ // un SpatialVector par PF
+std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(std::vector<RigidBodyDynamics::Math::SpatialVector> &sv){ // un SpatialVector par PF
     // Tableau de sortie
-    std::vector<RBDM::SpatialVector> sv_out;
+    std::vector<RigidBodyDynamics::Math::SpatialVector> sv_out;
 
     // Spatial vector nul pour remplir le tableau final
-    RBDM::SpatialVector sv_zero(0,0,0,0,0,0);
+    RigidBodyDynamics::Math::SpatialVector sv_zero(0,0,0,0,0,0);
     sv_out.push_back(sv_zero); // Le premier est associé a l'univers
 
-    std::vector<RBDM::SpatialVector>::iterator sv_it = sv.begin();
+    std::vector<RigidBodyDynamics::Math::SpatialVector>::iterator sv_it = sv.begin();
     // Dispatch des forces
     for (std::vector<s2mBone>::iterator it=m_bones.begin(); it!=m_bones.end(); ++it){
         unsigned int nDof = (*it).nDof();
@@ -222,7 +222,7 @@ s2mAttitude s2mJoints::globalJCS(const s2mGenCoord &Q, const unsigned int i, con
     unsigned int id = m_bones[i].id();
 
     s2mAttitude RT;
-    RBDM::SpatialTransform tp_ST;
+    RigidBodyDynamics::Math::SpatialTransform tp_ST;
 
     tp_ST = CalcBodyWorldTransformation(*this,Q, id,updateKin);
     RT.block(0,0,3,3) = tp_ST.E;
@@ -333,8 +333,8 @@ std::vector<Eigen::MatrixXd> s2mJoints::projectPointJacobian(s2mJoints& model, c
     return G;
 }
 
-RBDM::SpatialTransform s2mJoints::CalcBodyWorldTransformation (
-    RigidBodyDynamics::Model &model,
+RigidBodyDynamics::Math::SpatialTransform s2mJoints::CalcBodyWorldTransformation (
+    s2mJoints &model,
     const s2mGenCoord &Q,
     const unsigned int body_id,
     bool update_kinematics = true)
@@ -350,23 +350,23 @@ RBDM::SpatialTransform s2mJoints::CalcBodyWorldTransformation (
         s2mAttitude parentRT(model.X_base[parent_id].E.transpose(), model.X_base[parent_id].r);
         s2mAttitude bodyRT(model.mFixedBodies[fbody_id].mParentTransform.E.transpose(), model.mFixedBodies[fbody_id].mParentTransform.r);
         s2mAttitude transfo_tp = parentRT * bodyRT;
-        RBDM::SpatialTransform transfo(transfo_tp.rot(), transfo_tp.trans());
+        RigidBodyDynamics::Math::SpatialTransform transfo(transfo_tp.rot(), transfo_tp.trans());
         return transfo;
     }
 
-    RBDM::SpatialTransform transfo(model.X_base[body_id].E.transpose(), model.X_base[body_id].r);
+    RigidBodyDynamics::Math::SpatialTransform transfo(model.X_base[body_id].E.transpose(), model.X_base[body_id].r);
     return transfo;
 }
 
-RBDM::Vector3d s2mJoints::CoM(const s2mGenCoord &Q){
+RigidBodyDynamics::Math::Vector3d s2mJoints::CoM(const s2mGenCoord &Q){
     // Retour la position du centre de masse a partir des coordonnées généralisées
 
     // S'assurer que le modele est dans la bonne configuration
     RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,NULL,NULL);
 
     // Pour chaque segment, trouver le CoM (CoM = somme(masse_segmentaire * pos_com_seg)/masse_totale)
-    std::vector<RBDM::Vector3d> com_segment(CoMbySegment(Q,true));
-    RBDM::Vector3d com = RBDM::Vector3d(0,0,0);
+    std::vector<RigidBodyDynamics::Math::Vector3d> com_segment(CoMbySegment(Q,true));
+    RigidBodyDynamics::Math::Vector3d com = RigidBodyDynamics::Math::Vector3d(0,0,0);
     for (unsigned int i=0; i<com_segment.size(); ++i)
         com += m_bones[i].caract().mMass * (*(com_segment.begin()+i));
 
@@ -377,20 +377,20 @@ RBDM::Vector3d s2mJoints::CoM(const s2mGenCoord &Q){
     return com;
 }
 
-RBDM::Vector3d s2mJoints::angularMomentum(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const bool updateKin){
+RigidBodyDynamics::Math::Vector3d s2mJoints::angularMomentum(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const bool updateKin){
     return CalcAngularMomentum(*this, Q, Qdot, updateKin);
 
 }
 
 
-RBDM::Vector3d s2mJoints::CoMdot(const s2mGenCoord &Q, const s2mGenCoord &Qdot){
+RigidBodyDynamics::Math::Vector3d s2mJoints::CoMdot(const s2mGenCoord &Q, const s2mGenCoord &Qdot){
     // Retour la vitesse du centre de masse a partir des coordonnées généralisées
 
     // S'assurer que le modele est dans la bonne configuration
     RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,&Qdot,NULL);
 
     // Pour chaque segment, trouver le CoM
-    RBDM::Vector3d com_dot = RBDM::Vector3d(0,0,0);
+    RigidBodyDynamics::Math::Vector3d com_dot = RigidBodyDynamics::Math::Vector3d(0,0,0);
 
     // CoMdot = somme(masse_seg * Jacobienne * qdot)/masse totale
     for (std::vector<s2mBone>::iterator b_it=m_bones.begin(); b_it!=m_bones.end(); ++b_it){
@@ -404,7 +404,7 @@ RBDM::Vector3d s2mJoints::CoMdot(const s2mGenCoord &Q, const s2mGenCoord &Qdot){
     // Retourner la vitesse du CoM
     return com_dot;
 }
-RBDM::Vector3d s2mJoints::CoMddot(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot){
+RigidBodyDynamics::Math::Vector3d s2mJoints::CoMddot(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot){
     // Retour l'accélération du centre de masse a partir des coordonnées généralisées
     s2mError::s2mAssert(0, "Com DDot is wrong, to be modified...");
 
@@ -412,7 +412,7 @@ RBDM::Vector3d s2mJoints::CoMddot(const s2mGenCoord &Q, const s2mGenCoord &Qdot,
     RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,&Qdot,&Qddot);
 
     // Pour chaque segment, trouver le CoM
-    RBDM::Vector3d com_ddot = RBDM::Vector3d(0,0,0);
+    RigidBodyDynamics::Math::Vector3d com_ddot = RigidBodyDynamics::Math::Vector3d(0,0,0);
 
     // CoMdot = somme(masse_seg * Jacobienne * qdot)/masse totale
     for (std::vector<s2mBone>::iterator b_it=m_bones.begin(); b_it!=m_bones.end(); ++b_it){
@@ -451,8 +451,8 @@ Eigen::MatrixXd s2mJoints::CoMJacobian(const s2mGenCoord &Q){
 }
 
 
-std::vector<RBDM::Vector3d> s2mJoints::CoMbySegment(const s2mGenCoord &Q, bool updateKin){// Position du centre de masse de chaque segment
-    std::vector<RBDM::Vector3d> tp; // vecteur de vecteurs de sortie
+std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CoMbySegment(const s2mGenCoord &Q, bool updateKin){// Position du centre de masse de chaque segment
+    std::vector<RigidBodyDynamics::Math::Vector3d> tp; // vecteur de vecteurs de sortie
 
     for (unsigned int i=0; i<m_bones.size(); ++i){
         tp.push_back(CoMbySegment(Q,i,updateKin));
@@ -462,7 +462,7 @@ std::vector<RBDM::Vector3d> s2mJoints::CoMbySegment(const s2mGenCoord &Q, bool u
 }
 
 
-RBDM::Vector3d s2mJoints::CoMbySegment(const s2mGenCoord &Q, const unsigned int i, bool updateKin){ // Position du centre de masse du segment i
+RigidBodyDynamics::Math::Vector3d s2mJoints::CoMbySegment(const s2mGenCoord &Q, const unsigned int i, bool updateKin){ // Position du centre de masse du segment i
 
     s2mError::s2mAssert(i < m_bones.size(), "Choosen segment doesn't exist");
     return RigidBodyDynamics::CalcBodyToBaseCoordinates(*this, Q, m_bones[i].id(),m_bones[i].caract().mCenterOfMass,updateKin);
@@ -470,8 +470,8 @@ RBDM::Vector3d s2mJoints::CoMbySegment(const s2mGenCoord &Q, const unsigned int 
 }
 
 
-std::vector<RBDM::Vector3d> s2mJoints::CoMdotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, bool updateKin){// Position du centre de masse de chaque segment
-    std::vector<RBDM::Vector3d> tp; // vecteur de vecteurs de sortie
+std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CoMdotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, bool updateKin){// Position du centre de masse de chaque segment
+    std::vector<RigidBodyDynamics::Math::Vector3d> tp; // vecteur de vecteurs de sortie
 
     for (unsigned int i=0; i<m_bones.size(); ++i){
         tp.push_back(CoMdotBySegment(Q,Qdot,i,updateKin));
@@ -481,7 +481,7 @@ std::vector<RBDM::Vector3d> s2mJoints::CoMdotBySegment(const s2mGenCoord &Q, con
 }
 
 
-RBDM::Vector3d s2mJoints::CoMdotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const unsigned int i, bool updateKin){ // Position du centre de masse du segment i
+RigidBodyDynamics::Math::Vector3d s2mJoints::CoMdotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const unsigned int i, bool updateKin){ // Position du centre de masse du segment i
 
     s2mError::s2mAssert(i < m_bones.size(), "Choosen segment doesn't exist");
     return CalcPointVelocity(*this, Q, Qdot, m_bones[i].id(),m_bones[i].caract().mCenterOfMass,updateKin);
@@ -489,8 +489,8 @@ RBDM::Vector3d s2mJoints::CoMdotBySegment(const s2mGenCoord &Q, const s2mGenCoor
 }
 
 
-std::vector<RBDM::Vector3d> s2mJoints::CoMddotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, bool updateKin){// Position du centre de masse de chaque segment
-    std::vector<RBDM::Vector3d> tp; // vecteur de vecteurs de sortie
+std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CoMddotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, bool updateKin){// Position du centre de masse de chaque segment
+    std::vector<RigidBodyDynamics::Math::Vector3d> tp; // vecteur de vecteurs de sortie
 
     for (unsigned int i=0; i<m_bones.size(); ++i){
         tp.push_back(CoMddotBySegment(Q,Qdot,Qddot,i,updateKin));
@@ -500,7 +500,7 @@ std::vector<RBDM::Vector3d> s2mJoints::CoMddotBySegment(const s2mGenCoord &Q, co
 }
 
 
-RBDM::Vector3d s2mJoints::CoMddotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, const unsigned int i, bool updateKin){ // Position du centre de masse du segment i
+RigidBodyDynamics::Math::Vector3d s2mJoints::CoMddotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, const unsigned int i, bool updateKin){ // Position du centre de masse du segment i
 
     s2mError::s2mAssert(i < m_bones.size(), "Choosen segment doesn't exist");
     return RigidBodyDynamics::CalcPointAcceleration(*this, Q, Qdot, Qddot, m_bones[i].id(),m_bones[i].caract().mCenterOfMass,updateKin);
@@ -564,15 +564,15 @@ s2mBoneMesh s2mJoints::boneMesh(const unsigned int &idx)
     return bone(idx).caract().mesh();
 }
 
-RBDM::Vector3d s2mJoints::CalcAngularMomentum (RigidBodyDynamics::Model &model, const s2mGenCoord &Q, const 
+RigidBodyDynamics::Math::Vector3d s2mJoints::CalcAngularMomentum (s2mJoints &model, const s2mGenCoord &Q, const 
 s2mGenCoord &Qdot, bool update_kinematics) {
     // Qddot was added later in the RBDL. In order to keep backward compatilibity, 
     s2mGenCoord Qddot(this->nbQddot());
     return CalcAngularMomentum(model, Q, Qdot, Qddot, update_kinematics);
 }
-    RBDM::Vector3d s2mJoints::CalcAngularMomentum (RigidBodyDynamics::Model &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, bool update_kinematics) {
+    RigidBodyDynamics::Math::Vector3d s2mJoints::CalcAngularMomentum (s2mJoints &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, bool update_kinematics) {
     // Définition des variables
-    RBDM::Vector3d com,  angular_momentum;
+    RigidBodyDynamics::Math::Vector3d com,  angular_momentum;
     double mass;
 
     // Calcul du angular momentum par la fonction de la position du centre de masse
@@ -582,22 +582,22 @@ s2mGenCoord &Qdot, bool update_kinematics) {
     return angular_momentum;
 }
 
-std::vector<RBDM::Vector3d> s2mJoints::CalcSegmentsAngularMomentum (RigidBodyDynamics::Model &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, bool update_kinematics) {
+std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CalcSegmentsAngularMomentum (s2mJoints &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, bool update_kinematics) {
     s2mGenCoord Qddot(this->nbQddot());
     return CalcSegmentsAngularMomentum(model, Q, Qdot, Qddot, update_kinematics);
 }
 
-std::vector<RBDM::Vector3d> s2mJoints::CalcSegmentsAngularMomentum (RigidBodyDynamics::Model &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, bool update_kinematics) {
+std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CalcSegmentsAngularMomentum (s2mJoints &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, bool update_kinematics) {
     if (update_kinematics)
         UpdateKinematicsCustom (model, &Q, &Qdot, &Qddot);
 
     double mass;
-    RBDM::Vector3d com;
+    RigidBodyDynamics::Math::Vector3d com;
     s2mError::s2mAssert(false, "Call to CalcCenterOfMass must be verified!");
     RigidBodyDynamics::Utils::CalcCenterOfMass (*this, Q, Qdot, &Qddot, mass, com, NULL, NULL, NULL, NULL, false);
-    RigidBodyDynamics::Math::SpatialTransform X_to_COM (RBDM::Xtrans(com));
+    RigidBodyDynamics::Math::SpatialTransform X_to_COM (RigidBodyDynamics::Math::Xtrans(com));
 
-    std::vector<RBDM::Vector3d> h_segment;
+    std::vector<RigidBodyDynamics::Math::Vector3d> h_segment;
     for (size_t i = 1; i < model.mBodies.size(); i++) {
         model.Ic[i] = model.I[i];
         model.hc[i] = model.Ic[i].toMatrix() * model.v[i];
@@ -611,7 +611,7 @@ std::vector<RBDM::Vector3d> s2mJoints::CalcSegmentsAngularMomentum (RigidBodyDyn
             } while (model.lambda[j]!=0);
         }
         h = X_to_COM.applyAdjoint (h);
-        h_segment.push_back(RBDM::Vector3d(h[0],h[1],h[2]));
+        h_segment.push_back(RigidBodyDynamics::Math::Vector3d(h[0],h[1],h[2]));
     }
 
 
@@ -619,7 +619,7 @@ std::vector<RBDM::Vector3d> s2mJoints::CalcSegmentsAngularMomentum (RigidBodyDyn
 }
 
 void s2mJoints::ForwardDynamicsContactsLagrangian (
-     Model &model,
+     s2mJoints &model,
      const RigidBodyDynamics::Math::VectorNd &Q,
      const RigidBodyDynamics::Math::VectorNd &QDot,
      const RigidBodyDynamics::Math::VectorNd &Tau,
@@ -756,7 +756,7 @@ unsigned int s2mJoints::nbQuat() const{
     return m_nRotAQuat;
 }
 
-void s2mJoints::computeQdot(Model &, const s2mGenCoord &Q, const s2mGenCoord &QDot, s2mGenCoord &QDotOut){
+void s2mJoints::computeQdot(s2mJoints &, const s2mGenCoord &Q, const s2mGenCoord &QDot, s2mGenCoord &QDotOut){
     // Vérifier s'il y a des quaternions, sinon la dérivée est directement QDot
     if (!m_nRotAQuat){
         QDotOut = QDot;
@@ -817,7 +817,7 @@ unsigned int s2mJoints::getDofIndex(const s2mString& boneName, const s2mString& 
     return idx;
 }
 
-void s2mJoints::CalcMatRotJacobian(RigidBodyDynamics::Model &model, const RigidBodyDynamics::Math::VectorNd &Q, unsigned int body_id, const RigidBodyDynamics::Math::Matrix3d &rotation, RigidBodyDynamics::Math::MatrixNd &G, bool update_kinematics)
+void s2mJoints::CalcMatRotJacobian(s2mJoints &model, const RigidBodyDynamics::Math::VectorNd &Q, unsigned int body_id, const RigidBodyDynamics::Math::Matrix3d &rotation, RigidBodyDynamics::Math::MatrixNd &G, bool update_kinematics)
 {
     LOG << "-------- " << __func__ << " --------" << std::endl;
 
