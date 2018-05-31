@@ -1,9 +1,10 @@
 #ifndef S2MACTUATOR_H
 #define S2MACTUATOR_H
 
-#include "s2mString.h"
+#include "biorbdConfig.h"
+    #include "s2mString.h"
 
-class s2mActuator
+class BIORBD_API s2mActuator
 {
     public:
         s2mActuator(int direction, unsigned int dofIdx, const s2mString &jointName = "");

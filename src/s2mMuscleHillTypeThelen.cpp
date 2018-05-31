@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mMuscleHillTypeThelen.h"
 
 s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(const s2mMuscleGeometry& g,

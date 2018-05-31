@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mMuscleCompound.h"
 
 s2mMuscleCompound::s2mMuscleCompound(const s2mString &name, const s2mMusclePathChangers& wrap) :

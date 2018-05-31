@@ -1,11 +1,12 @@
 #ifndef S2MGENCOORD_H
 #define S2MGENCOORD_H
+    #include "biorbdConfig.h"
     #include "s2mQuaternion.h"
     #include "s2mVector.h"
     #include "s2mJoints.h"
 
 class s2mJoints;
-class s2mGenCoord : public s2mVector
+class BIORBD_API s2mGenCoord : public s2mVector
 {
 public:
     s2mGenCoord();

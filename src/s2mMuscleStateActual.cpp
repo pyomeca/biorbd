@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mMuscleStateActual.h"
 
 s2mMuscleStateActual::s2mMuscleStateActual(const double &e, const double &a) :

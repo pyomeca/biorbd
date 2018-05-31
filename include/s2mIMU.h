@@ -1,9 +1,10 @@
 #ifndef S2MIMU_H
 #define S2MIMU_H
+    #include "biorbdConfig.h"
     #include <Eigen/Dense>
     #include "s2mNodeAttitude.h"
 
-class s2mIMU : public s2mNodeAttitude
+class BIORBD_API s2mIMU : public s2mNodeAttitude
 { 
     public:
         s2mIMU(const s2mAttitude& = s2mAttitude(), // Position

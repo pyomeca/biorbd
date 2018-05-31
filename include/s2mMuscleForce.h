@@ -1,10 +1,11 @@
 #ifndef S2MMUSCLEFORCE_H
 #define S2MMUSCLEFORCE_H
     #include <Eigen/Dense>
+    #include "biorbdConfig.h"
     #include "s2mMuscleGeometry.h"
 
 
-class s2mMuscleForce : public Eigen::Vector3d
+class BIORBD_API s2mMuscleForce : public Eigen::Vector3d
 {
     public:
         s2mMuscleForce();

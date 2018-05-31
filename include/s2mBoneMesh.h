@@ -1,12 +1,13 @@
  
 #ifndef S2MBONEMESH_H
 #define S2MBONEMESH_H
+    #include "biorbdConfig.h"
     #include "s2mNode.h"
     #include "s2mPatch.h"
     #include "s2mPath.h"
     #include "vector"
 
-class s2mBoneMesh
+class BIORBD_API s2mBoneMesh
 {
     public:
         s2mBoneMesh(const std::vector<s2mNode>& = std::vector<s2mNode>(), const std::vector<s2mPatch>& = std::vector<s2mPatch>());

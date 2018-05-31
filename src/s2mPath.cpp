@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mPath.h"
 
 s2mPath::s2mPath()

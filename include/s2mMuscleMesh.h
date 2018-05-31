@@ -1,13 +1,14 @@
 #ifndef S2MMUSCLEMESH_H
 #define S2MMUSCLEMESH_H
 
+#include "biorbdConfig.h"
 #include "s2mError.h"
 #include "s2mMuscleForce.h"
 #include "s2mMuscleCompound.h"
 #include "s2mMuscleHillType.h"
 
 
-class s2mMuscleMesh : public s2mMuscleCompound
+class BIORBD_API s2mMuscleMesh : public s2mMuscleCompound
 {
     public:
         s2mMuscleMesh();

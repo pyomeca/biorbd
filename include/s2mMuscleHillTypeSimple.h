@@ -1,8 +1,9 @@
 #ifndef S2MMUSCLEHILLTYPESIMPLE_H
 #define S2MMUSCLEHILLTYPESIMPLE_H
+    #include "biorbdConfig.h"
     #include "s2mMuscleHillType.h"
 
-class s2mMuscleHillTypeSimple : public s2mMuscleHillType
+class BIORBD_API s2mMuscleHillTypeSimple : public s2mMuscleHillType
 {
     public:
     s2mMuscleHillTypeSimple(const s2mString& s= "") : s2mMuscleHillType(s){setType();}

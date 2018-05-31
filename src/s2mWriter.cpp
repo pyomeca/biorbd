@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mWriter.h"
 
 void s2mWriter::writeModel(s2mMusculoSkeletalModel & m, const s2mPath& pathToWrite){

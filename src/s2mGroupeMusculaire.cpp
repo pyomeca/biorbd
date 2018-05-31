@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mGroupeMusculaire.h"
 
 s2mGroupeMusculaire::s2mGroupeMusculaire(const s2mString &name, const s2mString &o, const s2mString &i) :

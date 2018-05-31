@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mMarkers.h"
 
 s2mMarkers::s2mMarkers()

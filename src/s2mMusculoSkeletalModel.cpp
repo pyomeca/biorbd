@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mMusculoSkeletalModel.h"
 
 //s2mMusculoSkeletalModel::s2mMusculoSkeletalModel()

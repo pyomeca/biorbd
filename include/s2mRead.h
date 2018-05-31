@@ -1,6 +1,7 @@
 #ifndef S2MREAD_H
 #define S2MREAD_H
 
+    #include "biorbdConfig.h"
     #include "s2mError.h"
     #include "s2mIfStream.h"
     #include <vector>
@@ -21,7 +22,7 @@
 		#define GetCurrentDir getcwd
     #endif
 
-class s2mRead
+class BIORBD_API s2mRead
 {
 public:
     s2mRead();

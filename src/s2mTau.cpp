@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mTau.h"
 
 s2mTau::s2mTau(const s2mJoints &j) :

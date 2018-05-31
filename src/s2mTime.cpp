@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mTime.h"
 
 s2mTime::s2mTime(const double &timeStep, const unsigned int &nbSteps)

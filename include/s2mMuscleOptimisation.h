@@ -3,6 +3,7 @@
 
 
     #include <dlib/optimization.h>
+    #include "biorbdConfig.h"
     #include "s2mMusculoSkeletalModel.h"
     #include "s2mMuscleState.h"
     #include "s2mKalmanReconsMarkers.h"
@@ -11,7 +12,7 @@
 
 class s2mGenCoord;
 class s2mMusculoSkeletalModel;
-class s2mMuscleOptimisation
+class BIORBD_API s2mMuscleOptimisation
 {
 
     public:

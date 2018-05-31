@@ -1,10 +1,11 @@
 #ifndef S2MACTUATORGAUSS6P_H
 #define S2MACTUATORGAUSS6P_H
 
+#include "biorbdConfig.h"
 #include "s2mActuator.h"
 #include "s2mGenCoord.h"
 
-class s2mActuatorGauss6p : public s2mActuator
+class BIORBD_API s2mActuatorGauss6p : public s2mActuator
 {
     public:
         s2mActuatorGauss6p(int direction,

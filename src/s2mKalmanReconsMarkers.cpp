@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mKalmanReconsMarkers.h"
 
 s2mKalmanReconsMarkers::s2mKalmanReconsMarkers(s2mMusculoSkeletalModel &m, s2mKalmanRecons::s2mKalmanParam params) :

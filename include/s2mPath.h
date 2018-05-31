@@ -2,7 +2,8 @@
 #define S2MPATH_H
 
 #include "s2mString.h"
-
+#include "biorbdConfig.h"
+    
 #ifdef _WIN64
     #include <direct.h>
 	#include <Windows.h>
@@ -16,7 +17,7 @@
     #include <unistd.h>
 #endif 
 
-class s2mPath : public s2mString
+class BIORBD_API s2mPath : public s2mString
 {
 public: 
     s2mPath();

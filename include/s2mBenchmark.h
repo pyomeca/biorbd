@@ -1,10 +1,11 @@
 #ifndef S2MBENCHMARK_H
 #define S2MBENCHMARK_H
 #include <ctime>
+#include "biorbdConfig.h"
 #include "s2mTimer.h"
 #include "s2mString.h"
 
-class s2mBenchmark
+class BIORBD_API s2mBenchmark
 {
     public:
         s2mBenchmark();

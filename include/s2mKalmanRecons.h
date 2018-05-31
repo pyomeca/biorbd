@@ -4,11 +4,12 @@
 #include <vector>
 #include <iostream>
 #include <Eigen/Dense>
+#include "biorbdConfig.h"
 #include "s2mString.h"
 #include "s2mGenCoord.h"
 #include "s2mMusculoSkeletalModel.h"
 
-class s2mKalmanRecons
+class BIORBD_API s2mKalmanRecons
 {
 public:
     class s2mKalmanParam{

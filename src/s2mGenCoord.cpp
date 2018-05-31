@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mGenCoord.h"
 
 s2mGenCoord::s2mGenCoord() {}

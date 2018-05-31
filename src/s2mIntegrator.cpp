@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mIntegrator.h"
 
 s2mIntegrator::s2mIntegrator(){

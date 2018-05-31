@@ -1,6 +1,7 @@
 #ifndef S2MCONTACTS_H
 #define S2MCONTACTS_H
 
+#include "biorbdConfig.h"
 #include "s2mString.h"
 #include "rbdl/rbdl.h"
 #include "s2mJoints.h"
@@ -8,7 +9,7 @@
 #include "s2mGenCoord.h"
 
 
-class s2mContacts : private RigidBodyDynamics::ConstraintSet
+class BIORBD_API s2mContacts : private RigidBodyDynamics::ConstraintSet
 {
     public:
         s2mContacts();

@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mBoneMesh.h"
 
 s2mBoneMesh::s2mBoneMesh(const std::vector<s2mNode> &mesh, const std::vector<s2mPatch> & v) :

@@ -1,9 +1,10 @@
 #ifndef S2MMATRIX_H
 #define S2MMATRIX_H
+    #include "biorbdConfig.h"
     #include "s2mString.h"
     #include <Eigen/Dense>
 
-class MatrixRT : public  Eigen::Matrix4d
+class BIORBD_API MatrixRT : public  Eigen::Matrix4d
 {
 public:
     MatrixRT(void):Eigen::Matrix4d() { setRT(*this); }

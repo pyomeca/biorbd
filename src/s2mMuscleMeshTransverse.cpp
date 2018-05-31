@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mMuscleMeshTransverse.h"
 
 s2mMuscleMeshTransverse::s2mMuscleMeshTransverse()

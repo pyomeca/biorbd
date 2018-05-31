@@ -1,10 +1,11 @@
 #ifndef S2MMUSCLECARACTERISTICS_H
 #define S2MMUSCLECARACTERISTICS_H
+#include "biorbdConfig.h"
 #include "s2mMuscleStateMax.h"
 #include "s2mError.h"
 #include <cstddef>
 
-class s2mMuscleCaracteristics
+class BIORBD_API s2mMuscleCaracteristics
 {
     public:
         s2mMuscleCaracteristics(const double &optLength = 0,

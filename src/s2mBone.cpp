@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mBone.h"
 namespace RBD = RigidBodyDynamics;
 namespace RBDM = RigidBodyDynamics::Math;

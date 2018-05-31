@@ -1,6 +1,7 @@
 #ifndef S2MMIFSTREAM_H
 #define S2MMIFSTREAM_H
 
+#include "biorbdConfig.h"
 #include "s2mError.h"
 #include <fstream>
 #include "s2mEquation.h"
@@ -9,7 +10,7 @@
 #include <vector>
 #include <map>
 
-class s2mIfStream
+class BIORBD_API s2mIfStream
 {
     public:
     s2mIfStream(const s2mPath& path, std::ios_base::openmode mode );

@@ -1,11 +1,12 @@
 #ifndef S2MNODEATTITUDE_H
 #define S2MNODEATTITUDE_H
+	#include "biorbdConfig.h"
     #include <Eigen/Dense>
     #include "s2mAttitude.h"
     #include "s2mVector.h"
     #include "s2mString.h"
 
-class s2mNodeAttitude : public s2mAttitude
+class BIORBD_API s2mNodeAttitude : public s2mAttitude
 {
     public:
     s2mNodeAttitude(const s2mAttitude& = s2mAttitude(), // Position du noeud

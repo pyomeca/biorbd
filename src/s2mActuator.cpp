@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mActuator.h"
 
 s2mActuator::s2mActuator(int direction, unsigned int dofIdx, const s2mString &jointName) :

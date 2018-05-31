@@ -1,10 +1,11 @@
 #ifndef S2MMUSCLEHILLTYPEMAXIME_H
 #define S2MMUSCLEHILLTYPEMAXIME_H
+    #include "biorbdConfig.h"
     #include "s2mMuscleHillType.h"
 
 
 
-class s2mMuscleHillTypeMaxime : public s2mMuscleHillType
+class BIORBD_API s2mMuscleHillTypeMaxime : public s2mMuscleHillType
 {
     public:
     s2mMuscleHillTypeMaxime(const s2mString& s= "") : s2mMuscleHillType(s), m_x0(0), m_x1(0){setType();}

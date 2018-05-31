@@ -3,6 +3,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include <vector>
+#include "biorbdConfig.h"
 #include "s2mError.h"
 #include "s2mActuator.h"
 #include "s2mActuatorGauss3p.h"
@@ -11,7 +12,7 @@
 #include "s2mActuatorLinear.h"
 #include "s2mTau.h"
 
-class s2mActuators
+class BIORBD_API s2mActuators
 {
     public:
         s2mActuators();

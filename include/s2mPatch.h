@@ -3,8 +3,9 @@
 #define S2MPATCH_H
     #include "vector"
     #include "Eigen/Dense"
+	#include "biorbdConfig.h"
 
-class s2mPatch
+class BIORBD_API s2mPatch
 {
     public:
         s2mPatch(const Eigen::Vector3i& = Eigen::Vector3i());

@@ -1,8 +1,9 @@
 #ifndef S2MVECTOR_H
 #define S2MVECTOR_H
     #include <Eigen/Dense>
+	#include "biorbdConfig.h"
 
-class s2mVector : public Eigen::VectorXd
+class BIORBD_API s2mVector : public Eigen::VectorXd
 {
 public:
     s2mVector();

@@ -2,6 +2,7 @@
 #define S2MMUSCULOSKELETALMODEL_H
 //#define S2M_MUSCLE_OPTIMIZATION
 
+	#include "biorbdConfig.h"
 	#include "s2mOptions.h"
     #include "s2mJoints.h"
     #include "s2mMarkers.h"
@@ -14,7 +15,7 @@
     #include "s2mActuators.h"
     #include "s2mBenchmark.h"
 
-class s2mMusculoSkeletalModel :
+class BIORBD_API s2mMusculoSkeletalModel :
         public s2mJoints
         ,public s2mMarkers
         ,public s2mIMUs

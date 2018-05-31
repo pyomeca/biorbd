@@ -1,8 +1,9 @@
 #ifndef S2MWRAPPINGSPHERE_H
 #define S2MWRAPPINGSPHERE_H
+    #include "biorbdConfig.h"
     #include "s2mWrappingObject.h"
 
-class s2mWrappingSphere : public s2mWrappingObject
+class BIORBD_API s2mWrappingSphere : public s2mWrappingObject
 {
     public:
         s2mWrappingSphere(const double &dia = 0, // Diametre de la sphere

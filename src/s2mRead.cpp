@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mRead.h"
 
 s2mRead::s2mRead()

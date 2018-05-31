@@ -1,5 +1,6 @@
 #ifndef S2MMUSCLECOMPOUND_H
 #define S2MMUSCLECOMPOUND_H
+    #include "biorbdConfig.h"
     #include "s2mString.h"
     #include "s2mMuscleForce.h"
     #include "s2mMuscleGeometry.h"
@@ -9,7 +10,7 @@
     #include "s2mGenCoord.h"
 
 
-class s2mMuscleCompound
+class BIORBD_API s2mMuscleCompound
 {
     public:
         s2mMuscleCompound(const s2mString &name = "", const s2mMusclePathChangers& = s2mMusclePathChangers());

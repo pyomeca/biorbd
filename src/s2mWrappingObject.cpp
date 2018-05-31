@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mWrappingObject.h"
 
 s2mWrappingObject::s2mWrappingObject(const Eigen::Vector3d &v, // Position du noeud

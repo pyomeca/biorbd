@@ -1,10 +1,11 @@
 #ifndef S2MMUSCLESTATEACTUAL_H
 #define S2MMUSCLESTATEACTUAL_H
+#include "biorbdConfig.h"
 #include "s2mMuscleState.h"
 #include "s2mMuscleStateMax.h"
 #include "s2mMuscleCaracteristics.h"
 
-class s2mMuscleStateActual : public s2mMuscleState
+class BIORBD_API s2mMuscleStateActual : public s2mMuscleState
 {
     public:
         s2mMuscleStateActual(const double &e = 0, const double &a = 0);

@@ -1,10 +1,11 @@
 #ifndef S2MACTUATORLINEAR_H
 #define S2MACTUATORLINEAR_H
 
+#include "biorbdConfig.h"
 #include "s2mActuator.h"
 #include "s2mGenCoord.h"
 
-class s2mActuatorLinear : public s2mActuator
+class BIORBD_API s2mActuatorLinear : public s2mActuator
 {
     public:
         s2mActuatorLinear(int direction,

@@ -1,5 +1,6 @@
 #ifndef S2MGROUPEMUSCULAIRE_H
 #define S2MGROUPEMUSCULAIRE_H
+    #include "biorbdConfig.h"
     #include "s2mError.h"
     #include <boost/shared_ptr.hpp>
     #include <vector>
@@ -13,7 +14,7 @@
     #include "s2mMuscleHillTypeSimple.h"
     #include "s2mString.h"
 
-class s2mGroupeMusculaire
+class BIORBD_API s2mGroupeMusculaire
 {
     public:
         s2mGroupeMusculaire(const s2mString &name, const s2mString &originName, const s2mString &insertionName);

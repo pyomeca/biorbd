@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mNodeBone.h"
 
 s2mNodeBone::s2mNodeBone(const Eigen::Vector3d &v,

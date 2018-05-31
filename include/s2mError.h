@@ -2,9 +2,10 @@
 #define S2MMERROR_H
 
 
+#include "biorbdConfig.h"
 #include "s2mString.h"
 class s2mString;
-class s2mError
+class BIORBD_API s2mError
 {
     public:
     static void s2mAssert(bool cond, const s2mString &message);

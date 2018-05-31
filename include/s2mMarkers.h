@@ -1,5 +1,6 @@
 #ifndef S2MMARKERS_H
 #define S2MMARKERS_H
+    #include "biorbdConfig.h"
     #include "s2mString.h"
     #include <rbdl/rbdl.h>
     #include "s2mBone.h"
@@ -8,7 +9,7 @@
 
 class s2mGenCoord;
 class s2mJoints;
-class s2mMarkers
+class BIORBD_API s2mMarkers
 {
     public:
         s2mMarkers();

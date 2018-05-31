@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mKalmanReconsIMU.h"
 
 s2mKalmanReconsIMU::s2mKalmanReconsIMU(s2mMusculoSkeletalModel &m, s2mKalmanRecons::s2mKalmanParam params) :

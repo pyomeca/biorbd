@@ -1,11 +1,12 @@
 #ifndef S2MMUSCLEMESHHILLTYPE_H
 #define S2MMUSCLEMESHHILLTYPE_H
 
+    #include "biorbdConfig.h"
     #include "s2mMuscleMesh.h"
     #include "s2mMuscleHillType.h"
     #include "s2mGenCoord.h"
 
-class s2mMuscleMeshTransverse : public s2mMuscleMesh
+class BIORBD_API s2mMuscleMeshTransverse : public s2mMuscleMesh
 {
     public:
         s2mMuscleMeshTransverse();

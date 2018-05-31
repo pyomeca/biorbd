@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mViaPoint.h"
 
 s2mViaPoint::s2mViaPoint(const Eigen::Vector3d &v, // Position du noeud

@@ -1,10 +1,11 @@
 #ifndef S2MTAU_H
 #define S2MTAU_H
+    #include "biorbdConfig.h"
     #include "s2mJoints.h"
     #include "s2mVector.h"
 
 class s2mJoints;
-class s2mTau : public s2mVector
+class BIORBD_API s2mTau : public s2mVector
 {
 public:
     s2mTau() {}

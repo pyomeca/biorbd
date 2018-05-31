@@ -2,8 +2,9 @@
 #define S2MTIMER_H
 #include <ctime>
 #include <iostream>
-
-class s2mTimer
+#include "biorbdConfig.h"
+    
+class BIORBD_API s2mTimer
 {
     public:
     s2mTimer(bool startNow = false);

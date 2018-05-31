@@ -1,9 +1,10 @@
 #ifndef S2MIMU_UNITY_OPTIM_H
 #define S2MIMU_UNITY_OPTIM_H
 #include <dlib/optimization.h>  
+#include "biorbdConfig.h"
 #include "s2mAttitude.h" 
 
-class s2mIMU_Unity_Optim
+class BIORBD_API s2mIMU_Unity_Optim
 {
     public:
         typedef dlib::matrix<double,1,1> parameter_vector;

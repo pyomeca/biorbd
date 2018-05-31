@@ -1,8 +1,9 @@
 #ifndef S2MMUSCLEHILLTYPETHELEN_H
 #define S2MMUSCLEHILLTYPETHELEN_H
+    #include "biorbdConfig.h"
     #include "s2mMuscleHillType.h"
 
-class s2mMuscleHillTypeThelen : public s2mMuscleHillType
+class BIORBD_API s2mMuscleHillTypeThelen : public s2mMuscleHillType
 {
     public:
     	s2mMuscleHillTypeThelen(const s2mString& s= "") : s2mMuscleHillType(s){setType();}

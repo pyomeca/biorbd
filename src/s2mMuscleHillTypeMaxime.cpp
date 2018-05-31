@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mMuscleHillTypeMaxime.h"
 
 s2mMuscleHillTypeMaxime::s2mMuscleHillTypeMaxime(const s2mMuscleGeometry& g,

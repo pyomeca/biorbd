@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mBenchmark.h"
 
 s2mBenchmark::s2mBenchmark(){

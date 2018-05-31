@@ -1,8 +1,9 @@
 #ifndef S2MTIME_H
 #define S2MTIME_H
+#include "biorbdConfig.h"
 
 
-class s2mTime
+class BIORBD_API s2mTime
 {
     public:
         s2mTime(const double &timeStep, const unsigned int &nbSteps);

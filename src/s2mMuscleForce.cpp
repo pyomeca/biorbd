@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mMuscleForce.h"
 
 s2mMuscleForce::s2mMuscleForce()

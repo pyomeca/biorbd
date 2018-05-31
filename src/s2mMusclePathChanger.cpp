@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mMusclePathChanger.h"
 
 s2mMusclePathChanger::s2mMusclePathChanger(const Eigen::Vector3d &v, // Position du noeud

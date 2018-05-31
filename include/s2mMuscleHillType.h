@@ -1,5 +1,6 @@
 #ifndef S2MMUSCLEHILLTYPE_H
 #define S2MMUSCLEHILLTYPE_H
+    #include "biorbdConfig.h"
     #include "s2mError.h"
     #include "s2mMuscle.h"
     #include "s2mMuscleForceFromOrigin.h"
@@ -7,7 +8,7 @@
     #include "s2mGenCoord.h"
     #include <math.h>
 
-class s2mMuscleHillType : public s2mMuscle
+class BIORBD_API s2mMuscleHillType : public s2mMuscle
 {
     public:
         s2mMuscleHillType(const s2mString& = "");

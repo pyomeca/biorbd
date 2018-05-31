@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mActuatorLinear.h"
 
 s2mActuatorLinear::s2mActuatorLinear(

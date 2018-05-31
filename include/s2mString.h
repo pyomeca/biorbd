@@ -6,10 +6,11 @@
 #include <vector>
 #include <boost/lexical_cast.hpp>
 
-#include "s2mError.h"
+#include "biorbdConfig.h"
+    #include "s2mError.h"
 #include <map>
 
-class s2mString : public std::string
+class BIORBD_API s2mString : public std::string
 {
 public:
     s2mString();

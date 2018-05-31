@@ -1,10 +1,11 @@
 #ifndef KALMANRECONSIMU_HPP
 #define KALMANRECONSIMU_HPP
 
+#include "biorbdConfig.h"
 #include "s2mKalmanRecons.h"
 
 
-class s2mKalmanReconsIMU : public s2mKalmanRecons
+class BIORBD_API s2mKalmanReconsIMU : public s2mKalmanRecons
 {
 public:
 

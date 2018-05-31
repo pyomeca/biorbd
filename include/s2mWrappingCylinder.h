@@ -1,5 +1,6 @@
 #ifndef S2MWRAPPINGCYLINDER_H
 #define S2MWRAPPINGCYLINDER_H
+    #include "biorbdConfig.h"
     #include "s2mWrappingObject.h"
     #include "s2mGenCoord.h"
     #ifndef NAN
@@ -9,7 +10,7 @@
 
 
 
-class s2mWrappingCylinder : public s2mWrappingObject
+class BIORBD_API s2mWrappingCylinder : public s2mWrappingObject
 {
     public:
         s2mWrappingCylinder(const s2mAttitude & = s2mAttitude(), // Position du centre

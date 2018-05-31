@@ -1,9 +1,10 @@
 #ifndef S2MMUSCLEFORCEFROMINSERTION_H
 #define S2MMUSCLEFORCEFROMINSERTION_H
+    #include "biorbdConfig.h"
     #include "s2mMuscleForce.h"
 
 
-class s2mMuscleForceFromInsertion : public s2mMuscleForce
+class BIORBD_API s2mMuscleForceFromInsertion : public s2mMuscleForce
 {
     public:
         s2mMuscleForceFromInsertion();

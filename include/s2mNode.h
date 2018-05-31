@@ -1,11 +1,12 @@
 #ifndef S2MNODE_H
 #define S2MNODE_H
+	#include "biorbdConfig.h"
     #include <Eigen/Dense>
     #include "s2mAttitude.h"
     #include "s2mString.h"
 
 class s2mAttitude;
-class s2mNode : public Eigen::Vector3d
+class BIORBD_API s2mNode : public Eigen::Vector3d
 {
     public:
     s2mNode(const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud

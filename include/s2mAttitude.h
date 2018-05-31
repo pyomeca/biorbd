@@ -1,6 +1,7 @@
 #ifndef S2MATTITUDE_H
 #define S2MATTITUDE_H
 
+    #include "biorbdConfig.h"
     #include "s2mError.h"
     #include "s2mString.h"
     #include <Eigen/Dense>
@@ -8,7 +9,7 @@
     #include <iostream>
     #include "s2mNode.h"
 class s2mNode;
-class s2mAttitude : public Eigen::Matrix4d
+class BIORBD_API s2mAttitude : public Eigen::Matrix4d
 {
     public:
         s2mAttitude(const Eigen::Matrix4d& = Eigen::Matrix4d::Identity());

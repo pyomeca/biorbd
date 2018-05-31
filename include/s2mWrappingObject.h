@@ -1,5 +1,6 @@
 #ifndef S2MWRAPPINGOBJECT_H
 #define S2MWRAPPINGOBJECT_H
+    #include "biorbdConfig.h"
     #include "s2mJoints.h"
     #include "s2mAttitude.h"
     #include "s2mString.h"
@@ -8,7 +9,7 @@
     #include "s2mGenCoord.h"
 
 class s2mJoints;
-class s2mWrappingObject : public s2mMusclePathChanger
+class BIORBD_API s2mWrappingObject : public s2mMusclePathChanger
 {
     public:
         s2mWrappingObject(const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud

@@ -1,10 +1,11 @@
 #ifndef S2MJOINT_H
 #define S2MJOINT_H
+    #include "biorbdConfig.h"
     #include "s2mString.h"
     #include <rbdl/rbdl.h>
     #include "s2mBone.h"
 
-class s2mJoint : public RigidBodyDynamics::Joint
+class BIORBD_API s2mJoint : public RigidBodyDynamics::Joint
 {
     public:
         s2mJoint() :

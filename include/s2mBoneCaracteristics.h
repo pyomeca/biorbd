@@ -1,10 +1,11 @@
 #ifndef S2MBONECARACTERISTICS_H
 #define S2MBONECARACTERISTICS_H
+    #include "biorbdConfig.h"
     #include <Eigen/Dense>
     #include "s2mBoneMesh.h"
     #include <rbdl/rbdl.h>
 
-class s2mBoneCaracteristics : public RigidBodyDynamics::Body
+class BIORBD_API s2mBoneCaracteristics : public RigidBodyDynamics::Body
 {
     public:
         s2mBoneCaracteristics();

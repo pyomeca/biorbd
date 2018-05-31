@@ -2,13 +2,14 @@
 #define S2MMUSCLEGEOMETRY_H
 
     #include <Eigen/Dense>
+    #include "biorbdConfig.h"
     #include "s2mNodeMuscle.h"
     #include "s2mJoints.h"
     #include "s2mMusclePathChangers.h"
     #include "s2mGenCoord.h"
     #include "s2mMuscleCaracteristics.h"
 
-class s2mMuscleGeometry
+class BIORBD_API s2mMuscleGeometry
 {
     public:
         s2mMuscleGeometry(const s2mNodeMuscle &origin = s2mNodeMuscle(), const s2mNodeMuscle &insertion = s2mNodeMuscle());

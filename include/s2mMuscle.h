@@ -1,5 +1,6 @@
 #ifndef S2MMUSCLE_H
 #define S2MMUSCLE_H
+    #include "biorbdConfig.h"
     #include "s2mError.h"
     #include "s2mMuscleCompound.h"
     #include "s2mJoints.h"
@@ -8,7 +9,7 @@
     #include "s2mMuscleStateActualBuchanan.h"
     #include "s2mGenCoord.h"
 
-class s2mMuscle : public s2mMuscleCompound
+class BIORBD_API s2mMuscle : public s2mMuscleCompound
 {
     public:
         s2mMuscle(const s2mString& = "", // Nom du muscle

@@ -1,6 +1,7 @@
 #ifndef S2MJOINTS_H
 #define S2MJOINTS_H
 
+    #include "biorbdConfig.h"
     #include "s2mError.h"
     #include <rbdl/rbdl.h>
     #include "s2mBone.h"
@@ -21,7 +22,7 @@ class s2mTau;
 class s2mGenCoord;
 class s2mIntegrator;
 class s2mMarkers;
-class s2mJoints : public RigidBodyDynamics::Model
+class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
 {
     public:
         s2mJoints();

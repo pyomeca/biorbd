@@ -1,9 +1,10 @@
 #ifndef KALMANRECONSMARKERS_HPP
 #define KALMANRECONSMARKERS_HPP
 
+#include "biorbdConfig.h"
 #include "s2mKalmanRecons.h"
 
-class s2mKalmanReconsMarkers : public s2mKalmanRecons
+class BIORBD_API s2mKalmanReconsMarkers : public s2mKalmanRecons
 {
 public:
 

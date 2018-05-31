@@ -1,13 +1,14 @@
 #ifndef S2MMUSCLES_H
 #define S2MMUSCLES_H
 
+#include "biorbdConfig.h"
 #include "s2mError.h"
 #include <vector>
 #include "s2mGroupeMusculaire.h"
 #include "s2mGenCoord.h"
 #include "s2mTau.h"
 
-class s2mMuscles
+class BIORBD_API s2mMuscles
 {
 public:
     s2mMuscles();

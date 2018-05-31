@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mNodeMuscle.h"
 
 s2mNodeMuscle::s2mNodeMuscle(const Eigen::Vector3d &v,

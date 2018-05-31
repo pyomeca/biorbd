@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mWrappingCylinder.h"
 
 s2mWrappingCylinder::s2mWrappingCylinder(const s2mAttitude &v, // Position du centre

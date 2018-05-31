@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mActuatorGauss6p.h"
 
 s2mActuatorGauss6p::s2mActuatorGauss6p(

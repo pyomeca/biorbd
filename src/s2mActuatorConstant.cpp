@@ -1,3 +1,4 @@
+#define BIORBD_API_EXPORTS
 #include "../include/s2mActuatorConstant.h"
 
 s2mActuatorConstant::s2mActuatorConstant(

@@ -1,6 +1,7 @@
 #ifndef S2MBONE_H
 #define S2MBONE_H
 
+    #include "biorbdConfig.h"
     #include "s2mError.h"
     #include <rbdl/rbdl.h>
     #include "s2mJoints.h"
@@ -9,7 +10,7 @@
     #include <limits.h>
 
 class s2mJoints;
-class s2mBone
+class BIORBD_API s2mBone
 {
     public:
         // Constructeurs

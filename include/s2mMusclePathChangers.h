@@ -1,7 +1,8 @@
 #ifndef S2MMUSCLEPATHCHANGERS_H
 #define S2MMUSCLEPATHCHANGERS_H
-    #include <boost/shared_ptr.hpp>
+	#include <boost/shared_ptr.hpp>
     #include <vector>
+    #include "biorbdConfig.h"
     #include "s2mString.h"
     #include "s2mMusclePathChanger.h"
     #include "s2mViaPoint.h"
@@ -11,7 +12,7 @@
 
 
 
-class s2mMusclePathChangers
+class BIORBD_API s2mMusclePathChangers
 {
     public:
         s2mMusclePathChangers();
