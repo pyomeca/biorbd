@@ -41,7 +41,7 @@ namespace std {
 %include "s2mTau.h"
 %include "s2mMatrix.h"
 %include "s2mAttitude.h"
-%include "s2mNodeAttitude.h"/*
+%include "s2mNodeAttitude.h"
 %include "s2mQuaternion.h"
 %include "s2mNode.h"
 %include "s2mMarkers.h"
@@ -120,4 +120,4 @@ namespace std {
 %include "s2mIMU_Unity_Optim.h"
 
 %include "s2mMusculoSkeletalModel.h"
-*/
+

@@ -40,10 +40,6 @@ public:
     // Ceci dit, sans argument (particulièrement les données d'entrées), il est douteux que la réimplémentation puisse fonctionner
     virtual void reconstructFrame() = 0;
 
-
-    // get sur le nom des marqueurs
-    std::vector<s2mString> markerNames();
-
 protected:
     // Calculs internes
     virtual void initialize();

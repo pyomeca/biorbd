@@ -23,8 +23,6 @@ class BIORBD_API s2mNodeAttitude : public s2mAttitude
     virtual void setAttitude(const s2mAttitude&);
     virtual s2mAttitude attitude() const;
 
-    const s2mNode operator-(const s2mNode &) const; // overload d'opérateurs
-
     protected:
         s2mString m_parentName;
         s2mString m_RTName;
