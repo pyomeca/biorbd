@@ -2,6 +2,7 @@
 #define S2MACTUATORCONSTANT_H
 
 #include "biorbdConfig.h"
+#include "s2mString.h"
 #include "s2mActuator.h"
 #include "s2mGenCoord.h"
 

@@ -1,5 +1,6 @@
 #ifndef S2MGENCOORD_H
 #define S2MGENCOORD_H
+	#include <Eigen/Dense>
     #include "biorbdConfig.h"
     #include "s2mQuaternion.h"
     #include "s2mVector.h"
