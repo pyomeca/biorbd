@@ -1,6 +1,6 @@
 #ifndef S2MBONECARACTERISTICS_H
 #define S2MBONECARACTERISTICS_H
-    #include <eigen3/Eigen/Dense>
+    #include <Eigen/Dense>
     #include "s2mBoneMesh.h"
     #include <rbdl/rbdl.h>
 

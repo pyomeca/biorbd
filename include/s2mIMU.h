@@ -1,6 +1,6 @@
 #ifndef S2MIMU_H
 #define S2MIMU_H
-    #include <eigen3/Eigen/Dense>
+    #include <Eigen/Dense>
     #include "s2mNodeAttitude.h"
 
 class s2mIMU : public s2mNodeAttitude

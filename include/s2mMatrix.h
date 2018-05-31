@@ -1,7 +1,7 @@
 #ifndef S2MMATRIX_H
 #define S2MMATRIX_H
     #include "s2mString.h"
-    #include <eigen3/Eigen/Dense>
+    #include <Eigen/Dense>
 
 class MatrixRT : public  Eigen::Matrix4d
 {

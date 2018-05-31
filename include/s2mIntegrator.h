@@ -5,7 +5,7 @@
     #include "s2mError.h"
     #include "s2mString.h"
     #include <vector>
-    #include <eigen3/Eigen/Dense>
+    #include <Eigen/Dense>
     #include <boost/numeric/odeint.hpp>
     #include <rbdl/rbdl.h>
     namespace ODE = boost::numeric::odeint;

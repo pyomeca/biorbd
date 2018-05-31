@@ -1,7 +1,7 @@
 #ifndef S2MMUSCLEGEOMETRY_H
 #define S2MMUSCLEGEOMETRY_H
 
-    #include <eigen3/Eigen/Dense>
+    #include <Eigen/Dense>
     #include "s2mNodeMuscle.h"
     #include "s2mJoints.h"
     #include "s2mMusclePathChangers.h"

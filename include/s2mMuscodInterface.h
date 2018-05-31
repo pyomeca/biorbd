@@ -3,7 +3,7 @@
 
     #include <cmath>
     #include <iostream>
-    #include <eigen3/Eigen/Dense>
+    #include <Eigen/Dense>
     #include <rbdl/rbdl.h>
 //    #include "def_usrmod.hpp"
 

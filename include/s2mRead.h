@@ -4,7 +4,7 @@
     #include "s2mError.h"
     #include "s2mIfStream.h"
     #include <vector>
-    #include <eigen3/Eigen/Dense>
+    #include <Eigen/Dense>
     #include "s2mMusculoSkeletalModel.h"
     #include "s2mString.h"
     #include "s2mPatch.h"

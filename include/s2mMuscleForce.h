@@ -1,6 +1,6 @@
 #ifndef S2MMUSCLEFORCE_H
 #define S2MMUSCLEFORCE_H
-    #include <eigen3/Eigen/Dense>
+    #include <Eigen/Dense>
     #include "s2mMuscleGeometry.h"
 
 

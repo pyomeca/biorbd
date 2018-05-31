@@ -1,6 +1,6 @@
 #ifndef S2MNODEMUSCLE_H
 #define S2MNODEMUSCLE_H
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 #include "s2mNode.h"
 
 

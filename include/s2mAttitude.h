@@ -3,7 +3,7 @@
 
     #include "s2mError.h"
     #include "s2mString.h"
-    #include <eigen3/Eigen/Dense>
+    #include <Eigen/Dense>
     #include "rbdl/rbdl.h"
     #include <iostream>
     #include "s2mNode.h"
