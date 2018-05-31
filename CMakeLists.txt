@@ -29,23 +29,9 @@ add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY} ${DLIB_LIBRARY})
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
-# Wrapper for biorbd - C
-set(C_WRAPPER false CACHE BOOL "Compile the C wrapper")
-if (${C_WRAPPER})
-    include(${CMAKE_CURRENT_SOURCE_DIR}/wrapper/c/CMakeLists.txt)
-endif (${C_WRAPPER})
+# Add swig subdirectory
+add_subdirectory(wrapper)
 
-# Wrapper for biorbd - Python
-set(PYTHON3_WRAPPER false CACHE BOOL "Compile the Python3 wrapper")
-if (${PYTHON3_WRAPPER})
-    include(${CMAKE_CURRENT_SOURCE_DIR}/wrapper/python3/CMakeLists.txt)
-endif (${PYTHON3_WRAPPER})
-
-# Wrapper for biorbd - Matlab
-set(MATLAB_WRAPPER false CACHE BOOL "Compile the Matlab wrapper")
-if (${MATLAB_WRAPPER})
-    include(${CMAKE_CURRENT_SOURCE_DIR}/wrapper/matlab/CMakeLists.txt)
-endif (${MATLAB_WRAPPER})
 
 
 

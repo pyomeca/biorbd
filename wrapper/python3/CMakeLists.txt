@@ -1,22 +1,28 @@
-project(pyorbdl)
-cmake_minimum_required(VERSION 2.8)
-
-# Find Python 3
+# Include python
 find_package(PYTHON3 REQUIRED)
-set(PYTHON3_WRAPPER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/wrapper/python3)
-
-# Get the file to compile
-set(CPP_FILE ${PYTHON3_WRAPPER_PATH}/pyorbdl.cpp)
-
-# Compile pyorbdl
-include_directories(${Python3_INCLUDE_DIRS} ${Python3_SITELIB}/numpy/core/include ${CMAKE_CURRENT_SOURCE_DIR}/include)
-add_library(${PROJECT_NAME} SHARED ${CPP_FILE})
-
+include_directories(${Python3_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../include)
 if(WIN32)
-else(WIN32)
-    SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES PREFIX "")
-endif(WIN32)
+	link_directories(${Python3_RUNTIME_LIBRARY_DIRS}/libs)
+endif()
 
-target_link_libraries(${PROJECT_NAME} biorbd)
-install(TARGETS ${PROJECT_NAME} DESTINATION ${Python3_SITELIB}/biorbd)
+# Add swig module
+set(I_SOURCE_FILE ${PROJECT_NAME}_python.i)
+
+set_property(SOURCE ${I_SOURCE_FILE} PROPERTY CPLUSPLUS ON)
+SWIG_ADD_LIBRARY(${PROJECT_NAME} TYPE MODULE LANGUAGE python SOURCES ${I_SOURCE_FILE})
+swig_link_libraries(${PROJECT_NAME} ${PROJECT_NAME} ${PYTHON_LIBRARIES} ${NUMPY_LIBRARIES})
+
+SET_TARGET_PROPERTIES(_${PROJECT_NAME} PROPERTIES INSTALL_RPATH ${${PROJECT_NAME}_BIN_FOLDER})
+SET_TARGET_PROPERTIES(_${PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+# Install to the proper directories
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.py 
+        DESTINATION ${Python3_SITELIB}/${PROJECT_NAME}
+        RENAME __init__.py)
+
+# For some reason, I could not install the library directly into subfolder
+# Some day this should be fixed...
+INSTALL(TARGETS _${PROJECT_NAME}
+		DESTINATION ${Python3_SITELIB})  
 
