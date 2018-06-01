@@ -1,14 +1,21 @@
 # Include python
 find_package(PYTHON3 REQUIRED)
 include_directories(${Python3_INCLUDE_DIRS})
+find_package(Numpy)
+include_directories(${NUMPY_INCLUDES})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../include)
 if(WIN32)
 	link_directories(${Python3_RUNTIME_LIBRARY_DIRS}/libs)
 endif()
 
 # Add swig module
-set(I_SOURCE_FILE ../${PROJECT_NAME}.i)
-
+set(CMAKE_SWIG_FLAGS "")
+if(NUMPY_FOUND)
+	set(I_SOURCE_FILE ${PROJECT_NAME}_python.i)
+else()
+	message(WARNING "Numpy has not been found, I will compile without the easy accessors interface")
+	set(I_SOURCE_FILE ../${PROJECT_NAME}.i)
+endif()
 set_property(SOURCE ${I_SOURCE_FILE} PROPERTY CPLUSPLUS ON)
 SWIG_ADD_LIBRARY(${PROJECT_NAME} TYPE MODULE LANGUAGE python SOURCES ${I_SOURCE_FILE})
 swig_link_libraries(${PROJECT_NAME} ${PROJECT_NAME} ${PYTHON_LIBRARIES} ${NUMPY_LIBRARIES})
