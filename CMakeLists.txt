@@ -23,7 +23,12 @@ find_package(Dlib REQUIRED)
 # Compile biorbd
 aux_source_directory(src SRC_LIST)
 INCLUDE_DIRECTORIES(${RBDL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${DLIB_INCLUDE_DIR} include)
-add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
+
+if (BUILD_SHARED_LIBS)
+	add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
+else()
+	add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
+endif()
 
 # Add linker to biorbd
 target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY} ${DLIB_LIBRARY})
@@ -36,6 +41,7 @@ else()
 	set(${PROJECT_NAME}_LIB_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
 	set(${PROJECT_NAME}_BIN_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
 endif()
+
 install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION ${${PROJECT_NAME}_LIB_FOLDER}
         RUNTIME DESTINATION ${${PROJECT_NAME}_BIN_FOLDER}
