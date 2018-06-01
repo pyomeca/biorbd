@@ -1,16 +1,16 @@
 /* File : biorbd_python.i */
 %{
 #define SWIG_FILE_WITH_INIT
-#include "s2mMusculoSkeletalModel.h"
+//#include "s2mMusculoSkeletalModel.h"
 %}
 
+/*
 %include "numpy.i"
 %init %{
     import_array();
 %}
 
 
-/*
 // typemaps.i is a built-in swig interface that lets us map c++ types to other
 // types in our language of choice. We'll use it to map Eigen matrices to
 // Numpy arrays.
@@ -73,7 +73,7 @@
 
  }
 */
-%include ../ezc3d.i
+%include ../biorbd.i
 
 
 
