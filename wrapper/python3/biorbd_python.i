@@ -71,7 +71,7 @@
         return PyArray_Return(c);
     }
 
- }
+ }
 */
 %include ../ezc3d.i
 
