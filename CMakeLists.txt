@@ -6,6 +6,11 @@ set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)
 
 # Set a default build type to 'Release' if none was specified
+if (WIN32)
+    SET(BUILD_SHARED_LIBS FALSE CACHE BOOL "Choose if the static library should be build" FORCE)
+else()
+    SET(BUILD_SHARED_LIBS TRUE CACHE BOOL "Choose if the static library should be build" FORCE)
+endif()
 IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 	MESSAGE(STATUS "Setting build type to 'Release' as none was specified.")
 	SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
