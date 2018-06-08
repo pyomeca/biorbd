@@ -10,6 +10,21 @@
 //    //dtor
 //}
 
+s2mMusculoSkeletalModel::s2mMusculoSkeletalModel()
+{
+
+}
+
+s2mMusculoSkeletalModel::s2mMusculoSkeletalModel(const s2mPath &path)
+{
+    s2mRead::readModelFile(path, this);
+}
+
+void s2mMusculoSkeletalModel::coucou(s2mJoints &j)
+{
+    std::cout << j.nbQ() << std::endl;
+}
+
 bool s2mMusculoSkeletalModel::InverseKinematics(const std::vector<Eigen::Vector3d> &M, const s2mGenCoord &Qinit, s2mGenCoord &Q, bool removeAxes){
     // Trouver les markers techniques uniquement (body_point)
     std::vector<s2mNodeBone> body_point(this->TechnicalTagsInLocal(removeAxes));

@@ -358,7 +358,7 @@ RigidBodyDynamics::Math::SpatialTransform s2mJoints::CalcBodyWorldTransformation
     return transfo;
 }
 
-RigidBodyDynamics::Math::Vector3d s2mJoints::CoM(const s2mGenCoord &Q){
+s2mNode s2mJoints::CoM(const s2mGenCoord &Q){
     // Retour la position du centre de masse a partir des coordonnées généralisées
 
     // S'assurer que le modele est dans la bonne configuration
@@ -366,7 +366,7 @@ RigidBodyDynamics::Math::Vector3d s2mJoints::CoM(const s2mGenCoord &Q){
 
     // Pour chaque segment, trouver le CoM (CoM = somme(masse_segmentaire * pos_com_seg)/masse_totale)
     std::vector<RigidBodyDynamics::Math::Vector3d> com_segment(CoMbySegment(Q,true));
-    RigidBodyDynamics::Math::Vector3d com = RigidBodyDynamics::Math::Vector3d(0,0,0);
+    s2mNode com;
     for (unsigned int i=0; i<com_segment.size(); ++i)
         com += m_bones[i].caract().mMass * (*(com_segment.begin()+i));
 

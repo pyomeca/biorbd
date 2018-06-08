@@ -54,6 +54,11 @@ class BIORBD_API s2mMarkers
         std::vector<Eigen::MatrixXd> TechnicalTagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis=true, bool updateKin = true); // Retourne la jacobienne des Tags pour les marqueurs techniques
         static Eigen::MatrixXd TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, const s2mString& parentName, const Eigen::Vector3d& p, bool updateKin); // Jacobienne d'un marqueur au choix
 
+        void coucou  (s2mJoints&);
+        void coucou  (const s2mGenCoord&);
+        void coucou  (s2mJoints&, const s2mGenCoord&);
+        void coucou2  (const s2mGenCoord&);
+        void coucou3  (s2mJoints&, const s2mGenCoord&);
     protected:
         std::vector<Eigen::MatrixXd> TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin, bool lookForTechnical); // Retourne la jacobienne des Tags
 

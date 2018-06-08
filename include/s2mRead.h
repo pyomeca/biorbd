@@ -29,6 +29,7 @@ public:
     virtual ~s2mRead() {}
 
     static s2mMusculoSkeletalModel readModelFile(const s2mPath &path); // Open a model file
+    static void readModelFile(const s2mPath &path, s2mMusculoSkeletalModel*); // Open a model file
     static std::vector<std::vector<Eigen::Vector3d> > readMarkerDataFile(const s2mString &path); // Lire un fichier de marqueurs
     static std::vector<s2mGenCoord> readQDataFile(const s2mString &path);
     static std::vector<Eigen::VectorXd> readActivationDataFile(const s2mString &path);

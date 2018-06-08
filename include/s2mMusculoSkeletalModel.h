@@ -28,11 +28,10 @@ class BIORBD_API s2mMusculoSkeletalModel :
         
 {
     public:
-        s2mMusculoSkeletalModel(){}
-        ~s2mMusculoSkeletalModel(){}
+        s2mMusculoSkeletalModel();
+        s2mMusculoSkeletalModel(const s2mPath&);
 
-
-
+        void coucou(s2mJoints&);
         bool InverseKinematics(const std::vector<Eigen::Vector3d>& Mark, const s2mGenCoord& Qinit, s2mGenCoord &Q, bool removeAxes=true);
 
         // Muscles

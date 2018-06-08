@@ -27,6 +27,8 @@ class BIORBD_API s2mNode : public Eigen::Vector3d
     virtual s2mString name() const;
     virtual void applyRT(const s2mAttitude&);
     const s2mNode operator-(const s2mNode &) const; // overload d'opérateurs
+    const s2mNode operator*(double) const; // overload d'opérateurs
+    const s2mNode operator/(double) const; // overload d'opérateurs
 
     protected:
         s2mString m_parentName;
