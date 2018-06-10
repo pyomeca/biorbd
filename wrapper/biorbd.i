@@ -34,7 +34,7 @@ namespace std {
 //%include "s2mOptions.h"
 
 //%include "s2mVector.h"
-//%include "s2mGenCoord.h"
+%include "s2mGenCoord.h"
 //%include "s2mTau.h"
 //%include "s2mMatrix.h"
 //%include "s2mAttitude.h"
