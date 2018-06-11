@@ -16,7 +16,28 @@
 %include <typemaps.i>
 %include <std_vector.i>
 
-///*** s2mGenCoord ***/
+/*** s2mJoints ***/
+%typemap(typecheck) s2mJoints &{
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mJoints,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_s2mJoints already exists
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+}
+%typemap(in) s2mJoints &{
+    void * argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mJoints,  0  | 0)) && argp1) {
+        // Recast the pointer
+        $1 = reinterpret_cast< s2mJoints * >(argp1);
+    } else {
+        PyErr_SetString(PyExc_ValueError, "s2mJoints must be a s2mJoints");
+        SWIG_fail;
+    }
+}
+
+/*** s2mGenCoord ***/
 %typemap(typecheck) s2mGenCoord &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mGenCoord,  0  | 0)) && argp1) {
@@ -47,12 +68,10 @@
 
         // Get the data
         __attribute__((unused)) void*      data    = PyArray_DATA    ((PyArrayObject*)$input);
-
         unsigned int nQ(dims[0]);
         $1 = new s2mGenCoord(nQ);
         int typ=PyArray_TYPE((PyArrayObject*)$input);
         if (typ == NPY_LONG){
-            std::cout << "tata" << std::endl;
             for (unsigned int q = 0; q<nQ; ++q)
                 (*$1)[q] = (double)(((int*)data)[q]);
         }
@@ -83,61 +102,56 @@
     PyArray_ENABLEFLAGS((PyArrayObject *)$result, NPY_ARRAY_OWNDATA);
 };
 
+/*** s2mNodeBone ***/
+%typemap(typecheck) s2mNodeBone &{
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mNodeBone,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_s2mNodeBone already exists
+        $1 = true;
+    } else if( PyArray_Check($input) ) {
+        // test if it is a numpy array
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+}
+%typemap(in) s2mNodeBone &{
+    void * argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mNodeBone,  0  | 0)) && argp1) {
+        // Recast the pointer
+        $1 = reinterpret_cast< s2mNodeBone * >(argp1);
+    } else if( PyArray_Check($input) ) {
+        // Get dimensions of the data
+        __attribute__((unused)) int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
+        __attribute__((unused)) npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
 
-///*** s2mNode ***/
-//%typemap(in) s2mNode &{
-//    // Get dimensions of the data
-//    __attribute__((unused)) int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
-//    __attribute__((unused)) npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
+        // Dimension controls
+        if (ndim != 1 && (dims[0] < 3 || dims[0] > 4)){
+            PyErr_SetString(PyExc_ValueError, "s2mNodeBone must be a numpy 3d vector");
+            SWIG_fail;
+        }
 
-//    // Dimension controls
-//    if (ndim != 1 && (dims[0] < 3 || dims[0] > 4)){
-//        PyErr_SetString(PyExc_ValueError, "s2mNode must be a numpy 3d vector");
-//        return 0;
-//    }
+        // Get the data
+        __attribute__((unused)) void*      data    = PyArray_DATA    ((PyArrayObject*)$input);
+        $1 = new s2mNodeBone();
+        int typ=PyArray_TYPE((PyArrayObject*)$input);
+        if (typ == NPY_LONG){
+            for (unsigned int i = 0; i<3; ++i)
+                (*$1)[i] = (double)(((int*)data)[i]);
+        }
+        else if(typ == NPY_DOUBLE)
+            for (unsigned int i = 0; i<3; ++i)
+                (*$1)[i] = ((double*)data)[i];
+        else{
+            PyErr_SetString(PyExc_ValueError, "Only int or double are allowed");
+            SWIG_fail;
+        }
 
-//    // Get the data
-//    __attribute__((unused)) void*      data    = PyArray_DATA    ((PyArrayObject*)$input);
-
-//    $1 = new s2mNode();
-//    for (unsigned int i = 0; i<3; ++i){
-//        (*$1)[i] = ((double*)data)[i];
-//    }
-//};
-
-//%typemap(out) s2mNode{
-//    int nArraySize(1);
-//    npy_intp * arraySizes = new npy_intp[nArraySize];
-//    arraySizes[0] = 3;
-
-//    double * node = new double[3];
-//    for (unsigned int i=0; i<3; ++i){
-//        node[i] = $1(i);
-//    }
-//    $result = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, node);
-//    PyArray_ENABLEFLAGS((PyArrayObject *)$result, NPY_ARRAY_OWNDATA);
-//};
-
-///*** s2mNode ***/
-//%typemap(in) s2mNodeBone &{
-//    // Get dimensions of the data
-//    __attribute__((unused)) int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
-//    __attribute__((unused)) npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
-
-//    // Dimension controls
-//    if (ndim != 1 && (dims[0] < 3 || dims[0] > 4)){
-//        PyErr_SetString(PyExc_ValueError, "s2mNode must be a numpy 3d vector");
-//        return 0;
-//    }
-
-//    // Get the data
-//    __attribute__((unused)) void*      data    = PyArray_DATA    ((PyArrayObject*)$input);
-
-//    $1 = new s2mNodeBone();
-//    for (unsigned int i = 0; i<3; ++i){
-//        (*$1)[i] = ((double*)data)[i];
-//    }
-//};
+    } else {
+        PyErr_SetString(PyExc_ValueError, "s2mNodeBone must be a s2mNodeBone or numpy vector");
+        SWIG_fail;
+    }
+};
 
 //%typemap(out) s2mNodeBone{
 //    int nArraySize(1);

@@ -41,7 +41,7 @@ namespace std {
 //%include "s2mNodeAttitude.h"
 //%include "s2mQuaternion.h"
 //%include "s2mNode.h"
-//%include "s2mMarkers.h"
+%include "s2mMarkers.h"
 
 //%include "s2mPatch.h"
 //%include "s2mTime.h"
@@ -55,7 +55,7 @@ namespace std {
 %include "s2mRead.h"
 //%include "s2mIntegrator.h"
 
-//%include "s2mJoints.h"
+%include "s2mJoints.h"
 //%include "s2mJoint.h"
 //%include "s2mJointMoving.h"
 //%include "s2mJointIntraBone.h"
@@ -67,7 +67,7 @@ namespace std {
 //%include "s2mActuatorLinear.h"
 //%include "s2mActuators.h"
 
-//%include "s2mNodeBone.h"
+%include "s2mNodeBone.h"
 //%include "s2mBone.h"
 //%include "s2mBoneCaracteristics.h"
 //%include "s2mBoneMesh.h"

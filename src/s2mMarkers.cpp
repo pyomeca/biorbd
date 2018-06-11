@@ -224,28 +224,6 @@ Eigen::MatrixXd s2mMarkers::TagsJacobian(s2mJoints& model, const s2mGenCoord &Q,
     return G;
 }
 
-void s2mMarkers::coucou(s2mJoints &j){
-    std::cout << "tata" << std::endl;
-}
-
-void s2mMarkers::coucou(const s2mGenCoord &Q){
-    std::cout << Q.size() << std::endl;
-}
-
-void s2mMarkers::coucou(s2mJoints &j, const s2mGenCoord &Q){
-    std::cout << j.nbQ() << std::endl;
-    std::cout << Q.size() << std::endl;
-}
-
-void s2mMarkers::coucou2(const s2mGenCoord &Q){
-    std::cout << Q.size() << std::endl;
-}
-
-void s2mMarkers::coucou3(s2mJoints &j, const s2mGenCoord &Q){
-    std::cout << Q.size() << std::endl;
-    std::cout << j.nbQ() << std::endl;
-}
-
 // Se faire renvoyer la jacobienne des marker techniques
 std::vector<Eigen::MatrixXd> s2mMarkers::TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin, bool lookForTechnical){
     std::vector<Eigen::MatrixXd> G;
