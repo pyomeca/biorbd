@@ -35,7 +35,7 @@ void S2M_CoMddot( int nlhs, mxArray *plhs[],
 
     // Trouver l'accélération du CoM
     for (unsigned int i=0; i<Q.size(); ++i){
-        RBDM::Vector3d COMDDot = model->CoMddot(*(Q.begin()+i),*(QDot.begin()+i),*(QDDot.begin()+i));
+        RigidBodyDynamics::Math::Vector3d COMDDot = model->CoMddot(*(Q.begin()+i),*(QDot.begin()+i),*(QDDot.begin()+i));
         for (unsigned int j=0; j<3; ++j)
             com_ddot[3*i+j] = COMDDot(j);
     }

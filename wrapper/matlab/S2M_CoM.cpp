@@ -21,7 +21,7 @@ void S2M_CoM( int nlhs, mxArray *plhs[],
 
     // Trouver la position du CoM
     for (unsigned int i=0; i<Q.size(); ++i){
-        RBDM::Vector3d COM = model->CoM(*(Q.begin()+i));
+        RigidBodyDynamics::Math::Vector3d COM = model->CoM(*(Q.begin()+i));
         for (unsigned int j=0; j<3; ++j)
             com[3*i+j] = COM(j);
     }

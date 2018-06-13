@@ -49,10 +49,10 @@ void S2M_segmentAngularMomentum( int nlhs, mxArray *plhs[],
     /* Préparer la sortie conditionnelle (tous si idx==-1, seulement celui demandé sinon) */
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrame; ++i){
-        std::vector<RBDM::Vector3d> am_all(model->CalcSegmentsAngularMomentum (*model, *(Q.begin()+i), *(QDot.begin()+i), true));
+        std::vector<RigidBodyDynamics::Math::Vector3d> am_all(model->CalcSegmentsAngularMomentum (*model, *(Q.begin()+i), *(QDot.begin()+i), true));
         if (idx==-1){
             // Remplir le output
-            std::vector<RBDM::Vector3d>::iterator it=am_all.begin();
+            std::vector<RigidBodyDynamics::Math::Vector3d>::iterator it=am_all.begin();
             for (unsigned int i=0; (it+i)!=am_all.end(); ++i){
                 angularMomentum[cmp*3  ] = (*(it+i))(0);
                 angularMomentum[cmp*3+1] = (*(it+i))(1);
@@ -62,7 +62,7 @@ void S2M_segmentAngularMomentum( int nlhs, mxArray *plhs[],
         }
         else{
             // Remplir le output
-            std::vector<RBDM::Vector3d>::iterator it=am_all.begin();
+            std::vector<RigidBodyDynamics::Math::Vector3d>::iterator it=am_all.begin();
             angularMomentum[i*3+0] = (*(it+idx))(0);
             angularMomentum[i*3+1] = (*(it+idx))(1);
             angularMomentum[i*3+2] = (*(it+idx))(2);
