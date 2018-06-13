@@ -39,6 +39,7 @@
 
 /*** s2mGenCoord ***/
 %typemap(typecheck) s2mGenCoord &{
+    std::cout << "typemap(typecheck) s2mGenCoord" << std::endl;
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mGenCoord,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_s2mGenCoord already exists
@@ -51,6 +52,7 @@
     }
 }
 %typemap(in) s2mGenCoord &{
+    std::cout << "typemap(in) s2mGenCoord" << std::endl;
     void * argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mGenCoord,  0  | 0)) && argp1) {
         // Recast the pointer
@@ -88,19 +90,46 @@
         SWIG_fail;
     }
 };
-%typemap(out) s2mGenCoord{
-    int nQ($1.size());
-    int nArraySize(1);
-    npy_intp * arraySizes = new npy_intp[nArraySize];
-    arraySizes[0] = nQ;
+%extend s2mGenCoord{
+    PyObject* get_array(){
+        int nQ($self->size());
+        int nArraySize(1);
+        npy_intp * arraySizes = new npy_intp[nArraySize];
+        arraySizes[0] = nQ;
 
-    double * q = new double[nQ];
-    for (unsigned int i=0; i<nQ; ++i){
-        q[i] = $1(i);
+        double * q = new double[nQ];
+        for (unsigned int i=0; i<nQ; ++i){
+            q[i] = (*$self)(i);
+        }
+        PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, q);
+        PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+        return output;
+    };
+}
+
+/*** s2mMarkers ***/
+%typemap(typecheck) s2mMarkers &{
+    std::cout << "typemap(typecheck) s2mMarkers" << std::endl;
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mMarkers,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_s2mMarkers already exists
+        $1 = true;
+    } else {
+        $1 = false;
     }
-    $result = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, q);
-    PyArray_ENABLEFLAGS((PyArrayObject *)$result, NPY_ARRAY_OWNDATA);
-};
+}
+%typemap(in) s2mMarkers &{
+    std::cout << "typemap(in) s2mMarkers" << std::endl;
+    void * argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mMarkers,  0  | 0)) && argp1) {
+        // Recast the pointer
+        $1 = reinterpret_cast< s2mMarkers * >(argp1);
+    } else {
+        PyErr_SetString(PyExc_ValueError, "s2mMarkers must be a s2mMarkers");
+        SWIG_fail;
+    }
+}
+
 
 /*** s2mNodeBone ***/
 %typemap(typecheck) s2mNodeBone &{
@@ -152,19 +181,21 @@
         SWIG_fail;
     }
 };
+%extend s2mNodeBone{
+    PyObject* get_array(){
+        int nArraySize(1);
+        npy_intp * arraySizes = new npy_intp[nArraySize];
+        arraySizes[0] = 3;
 
-//%typemap(out) s2mNodeBone{
-//    int nArraySize(1);
-//    npy_intp * arraySizes = new npy_intp[nArraySize];
-//    arraySizes[0] = 3;
-
-//    double * node = new double[3];
-//    for (unsigned int i=0; i<3; ++i){
-//        node[i] = $1(i);
-//    }
-//    $result = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, node);
-//    PyArray_ENABLEFLAGS((PyArrayObject *)$result, NPY_ARRAY_OWNDATA);
-//};
+        double * node = new double[3];
+        for (unsigned int i=0; i<3; ++i){
+            node[i] = (*$self)(i);
+        }
+        PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, node);
+        PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+        return output;
+    }
+};
 
 
 /*** s2mPath ***/

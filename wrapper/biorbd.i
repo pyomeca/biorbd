@@ -24,7 +24,7 @@
 
 // Instantiate templates
 namespace std {
-
+    %template(VecS2mNodeBone) std::vector<s2mNodeBone>;
 }
    
 
@@ -112,7 +112,7 @@ namespace std {
 
 //%include "s2mKalmanRecons.h"
 //%include "s2mKalmanReconsIMU.h"
-//%include "s2mKalmanReconsMarkers.h"
+%include "s2mKalmanReconsMarkers.h"
 
 //%include "s2mIMU_Unity_Optim.h"
 
