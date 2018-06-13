@@ -13,7 +13,7 @@ void S2M_CoMJacobian( int nlhs, mxArray *plhs[],
     s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
 	
 	// Trouver la jacobienne du COM
-	RBDM::MatrixNd Jaco = model->CoMJacobian(Q).transpose();
+        RigidBodyDynamics::Math::MatrixNd Jaco = model->CoMJacobian(Q).transpose();
 
 	 /* Create a matrix for the return argument */
     plhs[0] = mxCreateDoubleMatrix( 3, nQ, mxREAL);

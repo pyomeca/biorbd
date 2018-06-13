@@ -22,7 +22,7 @@ void S2M_segmentCOMdot( int nlhs, mxArray *plhs[],
 		
 	// Trouver la vitesse du CoM
 	if (i==-1){
-		std::vector<RBDM::Vector3d> COMdot = model->CoMdotBySegment(Q,QDot,true);
+                std::vector<RigidBodyDynamics::Math::Vector3d> COMdot = model->CoMdotBySegment(Q,QDot,true);
 		/* Create a matrix for the return argument */
 		plhs[0] = mxCreateDoubleMatrix( 3, model->nbBone(), mxREAL);
 		// Remplir l'output
@@ -32,7 +32,7 @@ void S2M_segmentCOMdot( int nlhs, mxArray *plhs[],
 				tp[3*j+k] = COMdot[j][k]; // Transférer le tout dans un tableau de sortie
 	}
 	else{
-		RBDM::Vector3d COMdot = model->CoMdotBySegment(Q,QDot,i,true); 
+                RigidBodyDynamics::Math::Vector3d COMdot = model->CoMdotBySegment(Q,QDot,i,true);
 		
 		/* Create a matrix for the return argument */
 		plhs[0] = mxCreateDoubleMatrix( 3, 1, mxREAL);

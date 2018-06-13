@@ -30,7 +30,7 @@ void S2M_CoMdot( int nlhs, mxArray *plhs[],
 
     // Trouver la vitesse du CoM
     for (unsigned int i=0; i<Q.size(); ++i){
-        RBDM::Vector3d COMDot = model->CoMdot(*(Q.begin()+i),*(QDot.begin()+i));
+        RigidBodyDynamics::Math::Vector3d COMDot = model->CoMdot(*(Q.begin()+i),*(QDot.begin()+i));
         for (unsigned int j=0; j<3; ++j)
             com_dot[3*i+j] = COMDot(j);
     }

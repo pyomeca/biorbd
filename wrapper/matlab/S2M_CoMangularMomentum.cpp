@@ -24,7 +24,7 @@ void S2M_CoMangularMomentum( int nlhs, mxArray *plhs[],
 
 		
 	// Récupérer le moment angulaire
-    std::vector<RBDM::Vector3d> AM;
+    std::vector<RigidBodyDynamics::Math::Vector3d> AM;
     for (unsigned int i=0; i<Q.size(); ++i)
         AM.push_back(model->angularMomentum(*(Q.begin()+i), *(QDot.begin()+i)));
 		
@@ -34,7 +34,7 @@ void S2M_CoMangularMomentum( int nlhs, mxArray *plhs[],
 
 	// Remplir l'output
     unsigned int cmp(0);
-    for (std::vector<RBDM::Vector3d>::iterator AM_it=AM.begin(); AM_it!=AM.end(); ++AM_it)
+    for (std::vector<RigidBodyDynamics::Math::Vector3d>::iterator AM_it=AM.begin(); AM_it!=AM.end(); ++AM_it)
         for (unsigned int i=0; i<3; ++i){
             am[cmp] = (*AM_it)[i];
             cmp++;

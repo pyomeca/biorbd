@@ -86,11 +86,6 @@
 #include "S2M_forwardDynamics.cpp"
 #include "S2M_computeQdot.cpp"
 
-namespace RBD = RigidBodyDynamics;
-namespace RBDM = RigidBodyDynamics::Math;
-namespace e = Eigen;
-namespace s = std;
-
 std::string toLower(const std::string &str){
     std::string new_str = str;
     std::transform(new_str.begin(), new_str.end(), new_str.begin(), ::tolower);
