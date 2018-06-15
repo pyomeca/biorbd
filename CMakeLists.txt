@@ -36,7 +36,7 @@ else()
 endif()
 
 # Add linker to biorbd
-target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY} ${DLIB_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY})
 
 # Installation
 if(WIN32)

@@ -98,30 +98,34 @@ std::string toLower(const std::string &str){
 /** \brief Entry point for the muscod application */
 void mexFunction( int nlhs, mxArray *plhs[], 
                   int nrhs, const mxArray*prhs[] )
-{ 
-    
+{
     /* Check for proper number of arguments */
     if (nrhs < 1) {
         mexErrMsgIdAndTxt( "MATLAB:yprime:invalidNumInputs",
                 "First argument should be the command");
     }
-	
+
     // Traitement du 1er argument qui est la commande
     /* Check for proper input type */
     if (!mxIsChar(prhs[0]) || (mxGetM(prhs[0]) != 1 ) )  {
-	    mexErrMsgIdAndTxt( "MATLAB:mxmalloc:invalidInput", 
+        mexErrMsgIdAndTxt( "MATLAB:mxmalloc:invalidInput",
                 "Input argument 1 must be a command string.");
     }
-    std::string cmd = mxArrayToString(prhs[0]);
-	// Si on a demandé de l'aide
+    int len = mxGetN(prhs[0]);
+    char *cmd_char = new char[len+1];
+    mxGetString(prhs[0], cmd_char, len+1);
+    std::string cmd(cmd_char);
+    delete[] cmd_char;
+
+    // Si on a demandé de l'aide
     if (!toLower(cmd).compare("help")){//!strcmp("help", cmd)){
         S2M_help();
         return;
-	}
-    
-	
-	// Redirect vers les bonnes fonctions 
-	
+    }
+
+
+    // Redirect vers les bonnes fonctions
+
     /* À l'appel d'un nouveau modèle */
     if (!toLower(cmd).compare("new")){
         S2M_new(nlhs, plhs, nrhs, prhs);
@@ -130,8 +134,8 @@ void mexFunction( int nlhs, mxArray *plhs[],
 
     /* À l'appel du delete du modèle */
     if (!toLower(cmd).compare("delete")){
-		S2M_delete(nlhs, plhs, nrhs, prhs);
-		return;
+        S2M_delete(nlhs, plhs, nrhs, prhs);
+        return;
     }
 
     // Changer la gravité du modèle
@@ -144,7 +148,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
     if (!toLower(cmd).compare("ncontrol")){
         s2mError::s2mWarning(0, "La fonction \"nControl\" est obsolete. Remplacer par \"nTau\". Elle sera retirée prochainement");
         S2M_nTau(nlhs, plhs, nrhs, prhs);
-		return;
+        return;
     }
 
     // Nombre de Tau
@@ -152,13 +156,13 @@ void mexFunction( int nlhs, mxArray *plhs[],
         S2M_nTau(nlhs, plhs, nrhs, prhs);
         return;
     }
-	
-	// Nombre de dof sur le segment racine
-	if (!toLower(cmd).compare("nroot")){
+
+    // Nombre de dof sur le segment racine
+    if (!toLower(cmd).compare("nroot")){
         S2M_nRoot(nlhs, plhs, nrhs, prhs);
-		return;
+        return;
     }
-	
+
     // Nombre de dof sur le segment racine
     if (!toLower(cmd).compare("parent")){
         S2M_parent(nlhs, plhs, nrhs, prhs);
@@ -166,13 +170,13 @@ void mexFunction( int nlhs, mxArray *plhs[],
     }
 
 
-	// mass totale du systeme
-	if (!toLower(cmd).compare("totalmass")){
+    // mass totale du systeme
+    if (!toLower(cmd).compare("totalmass")){
         S2M_totalMass(nlhs, plhs, nrhs, prhs);
         return;
-    }  
-	
-	// matrice de masse en fonction de la position
+    }
+
+    // matrice de masse en fonction de la position
     if(!toLower(cmd).compare("massmatrix")){
         S2M_massMatrix(nlhs, plhs, nrhs, prhs);
         return;
@@ -199,7 +203,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
         S2M_nameDof(nlhs, plhs, nrhs, prhs);
         return;
     }
-	
+
     // Nombre de Tags
     if (!toLower(cmd).compare("ntags")){
         S2M_nTags(nlhs, plhs, nrhs, prhs);
@@ -221,8 +225,8 @@ void mexFunction( int nlhs, mxArray *plhs[],
         S2M_nameAnatomicalTags(nlhs, plhs, nrhs, prhs);
         return;
     }
-	// Local Tags
-	if (!toLower(cmd).compare("localtags")){
+    // Local Tags
+    if (!toLower(cmd).compare("localtags")){
         S2M_LocalTags(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -384,13 +388,13 @@ void mexFunction( int nlhs, mxArray *plhs[],
         S2M_segmentTags(nlhs, plhs, nrhs, prhs);
         return;
     }
-	
-	// Fonction de la Jacobienne de la cinématique directe
+
+    // Fonction de la Jacobienne de la cinématique directe
     if(!toLower(cmd).compare("tagsjacobian")){
         S2M_TagsJacobian(nlhs, plhs, nrhs, prhs);
         return;
     }
-	
+
     // Fonction de cinématique directe pour les points de contacts
     if(!toLower(cmd).compare("contacts")){
         S2M_ContactsPosition(nlhs, plhs, nrhs, prhs);
@@ -405,18 +409,18 @@ void mexFunction( int nlhs, mxArray *plhs[],
         return;
     }
 
-	// Fonction pour trouver le Centre de masse
+    // Fonction pour trouver le Centre de masse
     if(!toLower(cmd).compare("com")){
         S2M_CoM(nlhs, plhs, nrhs, prhs);
         return;
     }
-	
-	// Fonction pour obtenir la jacobienne du centre de masse
+
+    // Fonction pour obtenir la jacobienne du centre de masse
     if(!toLower(cmd).compare("comjacobian")){
         S2M_CoMJacobian(nlhs, plhs, nrhs, prhs);
         return;
     }
-	
+
     // Fonction pour trouver la vitesse du Centre de masse
     if(!toLower(cmd).compare("comdot")){
         S2M_CoMdot(nlhs, plhs, nrhs, prhs);
@@ -441,7 +445,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
         return;
     }
 
-	// moment angulaire du centre de masse
+    // moment angulaire du centre de masse
     if(!toLower(cmd).compare("comangularmomentum")){
         S2M_CoMangularMomentum(nlhs, plhs, nrhs, prhs);
         return;
@@ -452,34 +456,34 @@ void mexFunction( int nlhs, mxArray *plhs[],
         S2M_segmentAngularMomentum(nlhs, plhs, nrhs, prhs);
         return;
     }
-	
-	// Fonction pour trouver le Centre de masse des segments
+
+    // Fonction pour trouver le Centre de masse des segments
     if(!toLower(cmd).compare("segmentcom")){
         S2M_segmentCOM(nlhs, plhs, nrhs, prhs);
         return;
     }
-	
-	// Fonction pour trouver la vitesse Centre de masse des segments
+
+    // Fonction pour trouver la vitesse Centre de masse des segments
     if(!toLower(cmd).compare("segmentcomdot")){
         S2M_segmentCOMdot(nlhs, plhs, nrhs, prhs);
         return;
     }
-	
-	// Fonction pour trouver l'accélération Centre de masse des segments
+
+    // Fonction pour trouver l'accélération Centre de masse des segments
     if(!toLower(cmd).compare("segmentcomddot")){
         S2M_segmentCOMddot(nlhs, plhs, nrhs, prhs);
         return;
     }
 
 
-	if(!toLower(cmd).compare("segmentsvelocities")){
+    if(!toLower(cmd).compare("segmentsvelocities")){
         S2M_segmentsVelocities(nlhs, plhs, nrhs, prhs);
         return;
     }
-	
-	// Inerties segmentaires
+
+    // Inerties segmentaires
     if(!toLower(cmd).compare("segmentsinertia")){
-		S2M_segmentsInertia(nlhs, plhs, nrhs, prhs);
+        S2M_segmentsInertia(nlhs, plhs, nrhs, prhs);
         return;
     }
     if(!toLower(cmd).compare("segmentsinertialocal")){
@@ -487,8 +491,8 @@ void mexFunction( int nlhs, mxArray *plhs[],
         return;
     }
 
-	
-	// Obtenir les JCS dans le global
+
+    // Obtenir les JCS dans le global
     if(!toLower(cmd).compare("globaljcs")){
         S2M_globalJCS(nlhs, plhs, nrhs, prhs);
         return;
@@ -548,8 +552,8 @@ void mexFunction( int nlhs, mxArray *plhs[],
         S2M_muscleVelocity(nlhs, plhs, nrhs, prhs);
         return;
     }
-	
-	// Fonction de dynamique inverse
+
+    // Fonction de dynamique inverse
     if(!toLower(cmd).compare("inversedynamics")){
         S2M_inverseDynamics(nlhs, plhs, nrhs, prhs);
         return;
@@ -561,7 +565,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
         return;
     }
 
-	
+
     if(!toLower(cmd).compare("forwarddynamics")){
         S2M_forwardDynamics(nlhs, plhs, nrhs, prhs);
         return;
