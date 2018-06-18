@@ -34,6 +34,7 @@ if (BUILD_SHARED_LIBS)
 else()
 	add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
 endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_debug")
 
 # Add linker to biorbd
 target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY})

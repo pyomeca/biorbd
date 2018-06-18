@@ -111,11 +111,9 @@ void mexFunction( int nlhs, mxArray *plhs[],
         mexErrMsgIdAndTxt( "MATLAB:mxmalloc:invalidInput",
                 "Input argument 1 must be a command string.");
     }
-    int len = mxGetN(prhs[0]);
-    char *cmd_char = new char[len+1];
-    mxGetString(prhs[0], cmd_char, len+1);
+    char *cmd_char = mxArrayToString(prhs[0]);
     std::string cmd(cmd_char);
-    delete[] cmd_char;
+    mxFree(cmd_char);
 
     // Si on a demandé de l'aide
     if (!toLower(cmd).compare("help")){//!strcmp("help", cmd)){
