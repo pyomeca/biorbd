@@ -2,6 +2,12 @@
 %{
 #define SWIG_FILE_WITH_INIT
 #include "s2mMusculoSkeletalModel.h"
+#ifdef _WIN32
+// This is a hack because Eigen can't be dynamically compiled on Windows, while dlib needs consistency in compilation. 
+// Please note that this can result in undefined behavior while using s2mMuscleOptimisation...
+const int USER_ERROR__inconsistent_build_configuration__see_dlib_faq_1_ = 0;
+const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
+#endif
 %}
 
 %include "numpy.i"
@@ -59,8 +65,8 @@
         $1 = reinterpret_cast< s2mGenCoord * >(argp1);
     } else if( PyArray_Check($input) ) {
         // Get dimensions of the data
-        __attribute__((unused)) int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
-        __attribute__((unused)) npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
+        int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
+        npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
 
         // Dimension controls
         if (ndim != 1 ){
@@ -69,7 +75,7 @@
         }
 
         // Get the data
-        __attribute__((unused)) void*      data    = PyArray_DATA    ((PyArrayObject*)$input);
+        void*      data    = PyArray_DATA    ((PyArrayObject*)$input);
         unsigned int nQ(dims[0]);
         $1 = new s2mGenCoord(nQ);
         int typ=PyArray_TYPE((PyArrayObject*)$input);
@@ -151,8 +157,8 @@
         $1 = reinterpret_cast< s2mNodeBone * >(argp1);
     } else if( PyArray_Check($input) ) {
         // Get dimensions of the data
-        __attribute__((unused)) int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
-        __attribute__((unused)) npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
+        int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
+        npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
 
         // Dimension controls
         if (ndim != 1 && (dims[0] < 3 || dims[0] > 4)){
@@ -161,7 +167,7 @@
         }
 
         // Get the data
-        __attribute__((unused)) void*      data    = PyArray_DATA    ((PyArrayObject*)$input);
+        void*      data    = PyArray_DATA    ((PyArrayObject*)$input);
         $1 = new s2mNodeBone();
         int typ=PyArray_TYPE((PyArrayObject*)$input);
         if (typ == NPY_LONG){
