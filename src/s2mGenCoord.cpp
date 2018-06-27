@@ -3,6 +3,12 @@
 
 s2mGenCoord::s2mGenCoord() {}
 
+s2mGenCoord::s2mGenCoord(const s2mGenCoord &Q):
+    s2mVector(Q)
+{
+
+}
+
 s2mGenCoord::s2mGenCoord(const s2mVector &v) : s2mVector(v) {}
 
 s2mGenCoord::s2mGenCoord(const Eigen::VectorXd &v) : s2mVector(v) {}
@@ -13,8 +19,6 @@ s2mGenCoord::s2mGenCoord(const s2mJoints &j) :
     s2mVector(j.nbDof()){
 
 }
-
-s2mGenCoord::~s2mGenCoord() {}
 
 s2mGenCoord& s2mGenCoord::operator=(const Eigen::VectorXd& vecX){
     if (this==&vecX) // check for self-assigment

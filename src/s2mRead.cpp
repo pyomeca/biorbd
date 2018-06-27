@@ -13,7 +13,14 @@ void s2mRead::pwd(){
 }
 /* Public methods */
 s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
-	// Ouverture du fichier
+    // Ajouter les éléments entrés
+    s2mMusculoSkeletalModel model;
+    readModelFile(path, &model);
+    return model;
+}
+
+void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
+{	// Ouverture du fichier
     // std::cout << "Loading model file: " << path << std::endl;
     s2mIfStream file(path.c_str(), std::ios::in);
 
@@ -28,11 +35,8 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
     unsigned int version(atoi(tp.c_str()));
     s2mError::s2mAssert((version == 1 || version == 2 || version == 3 || version == 4),  "Version not implemented yet");
 
-    // Ajouter les éléments entrés
-    s2mMusculoSkeletalModel model;
     bool hasActuators = false;
     while(file.read(tp)){  // Attempt read into x, return false if it fails
-
         // Si c'est un segment
         if (!tp.tolower().compare("segment")){
             s2mString name;
@@ -60,9 +64,9 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
                     if (!parent_str.tolower().compare("root"))
                         parent_int = 0;
                     else{
-                        parent_int = model.GetBodyId(parent_str.c_str());
+                        parent_int = model->GetBodyId(parent_str.c_str());
                         // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                        s2mError::s2mAssert(model.IsBodyId(parent_int), "Wrong name in a segment");
+                        s2mError::s2mAssert(model->IsBodyId(parent_int), "Wrong name in a segment");
                     }
                 }
                 else if (!tp.tolower().compare("translations"))
@@ -168,23 +172,23 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
             }
             RigidBodyDynamics::Math::SpatialTransform RT(RT_R, RT_T);
             s2mBoneCaracteristics caract(mass,com,inertia,boneMesh);
-            model.AddBone(parent_int, trans, rot, caract, RT, name, PF);
+            model->AddBone(parent_int, trans, rot, caract, RT, name, PF);
         }
         else if (!tp.tolower().compare("root_actuated")){
             bool rootActuated = true;
             file.read(rootActuated);
-            model.setIsRootActuated(rootActuated);
+            model->setIsRootActuated(rootActuated);
         }
         else if (!tp.tolower().compare("external_forces")){
             bool externalF = false;
             file.read(externalF);
-            model.setHasExternalForces(externalF);
+            model->setHasExternalForces(externalF);
         }
         else if (!tp.tolower().compare("gravity")){
             Eigen::Vector3d gravity(0,0,0);
             for (unsigned int i=0; i<3; ++i)
                 file.read(gravity(i), variable);
-            model.gravity = gravity;
+            model->gravity = gravity;
         }
         else if (!tp.tolower().compare("variables")){
             while(file.read(tp) && tp.tolower().compare("endvariables")){
@@ -209,9 +213,9 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
                 if (!tp.tolower().compare("parent")){
                     // Trouver dynamiquement le numéro du parent
                     file.read(parent_str);
-                    parent_int = model.GetBodyId(parent_str.c_str());
+                    parent_int = model->GetBodyId(parent_str.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model.IsBodyId(parent_int), "Wrong name in a segment");
+                    s2mError::s2mAssert(model->IsBodyId(parent_int), "Wrong name in a segment");
                 }
                 else if (!tp.tolower().compare("position"))
                     for (unsigned int i=0; i<3; ++i)
@@ -224,7 +228,7 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
                     file.read(axesToRemove);
 
             }
-            model.addMarker(pos, name, parent_str, technical, anatomical, axesToRemove, parent_int);
+            model->addMarker(pos, name, parent_str, technical, anatomical, axesToRemove, parent_int);
         }
         else if (!tp.tolower().compare("mimu") && version >= 4){
             s2mError::s2mAssert(false, "MIMU is no more the right tag, change it to IMU!");
@@ -245,9 +249,9 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
                 if (!tp.tolower().compare("parent")){
                     // Trouver dynamiquement le numéro du parent
                     file.read(parent_str);
-                    parent_int = model.GetBodyId(parent_str.c_str());
+                    parent_int = model->GetBodyId(parent_str.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model.IsBodyId(parent_int), "Wrong name in a segment");
+                    s2mError::s2mAssert(model->IsBodyId(parent_int), "Wrong name in a segment");
                 }
                 else if (!tp.tolower().compare("rtinmatrix")){
                     s2mError::s2mAssert(isRTset==false, "RT should not appear before RTinMatrix");
@@ -279,7 +283,7 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
                 else if (!tp.tolower().compare("anatomical"))
                     file.read(anatomical);
             }
-            model.addIMU(RT, name, parent_str, technical, anatomical, parent_int);
+            model->addIMU(RT, name, parent_str, technical, anatomical, parent_int);
         }
         else if (!tp.tolower().compare("contact")){
             s2mString name;
@@ -294,9 +298,9 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
                 if (!tp.tolower().compare("parent")){
                     // Trouver dynamiquement le numéro du parent
                     file.read(parent_str);
-                    parent_int = model.GetBodyId(parent_str.c_str());
+                    parent_int = model->GetBodyId(parent_str.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model.IsBodyId(parent_int), "Wrong name in a segment");
+                    s2mError::s2mAssert(model->IsBodyId(parent_int), "Wrong name in a segment");
                 }
                 else if (!tp.tolower().compare("position"))
                     for (unsigned int i=0; i<3; ++i)
@@ -311,11 +315,11 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
             }
             if (version == 1){
                 s2mError::s2mAssert(norm.norm() == 1, "Normal of the contact must be provided" );
-                model.AddConstraint(parent_int, pos, norm, name, acc);
+                model->AddConstraint(parent_int, pos, norm, name, acc);
             }
             else if (version >= 2){
                 s2mError::s2mAssert(axis.compare(""), "Axis must be provided");
-                model.AddConstraint(parent_int, pos, axis, name, acc);
+                model->AddConstraint(parent_int, pos, axis, name, acc);
             }
         }
         else if (!tp.tolower().compare("actuator")){
@@ -323,9 +327,9 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
             // Le nom de l'actuator doit correspondre au numéro du segment sur lequel il s'attache
             s2mString name;
             file.read(name);
-            unsigned int parent_int = model.GetBodyId(name.c_str());
+            unsigned int parent_int = model->GetBodyId(name.c_str());
             // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-            s2mError::s2mAssert(model.IsBodyId(parent_int), "Wrong name in a segment");
+            s2mError::s2mAssert(model->IsBodyId(parent_int), "Wrong name in a segment");
 
             // Declaration de tous les parametres pour tous les types
             s2mString type;         bool isTypeSet  = false;
@@ -355,7 +359,7 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
                 else if (!tp.tolower().compare("dof")){
                     s2mString dofName;
                     file.read(dofName);
-                    dofIdx = model.getDofIndex(name, dofName);
+                    dofIdx = model->getDofIndex(name, dofName);
                     isDofSet = true;
                 }
                 else if (!tp.tolower().compare("direction")){
@@ -454,9 +458,9 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
             else {
                 s2mError::s2mAssert(0, "Actuator do not correspond to an implemented one");
                 actuator = new s2mActuatorConstant(int_direction, Tmax, dofIdx, name); // Échec de compilation sinon
-			}
+            }
 
-            model.addActuator(model, *actuator);
+            model->addActuator(*model, *actuator);
             delete actuator;
 
         }
@@ -472,19 +476,19 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
                 if (!tp.tolower().compare("originparent")){
                     // Trouver dynamiquement le numéro du parent
                     file.read(origin_parent_str);
-                    unsigned int idx = model.GetBodyId(origin_parent_str.c_str());
+                    unsigned int idx = model->GetBodyId(origin_parent_str.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model.IsBodyId(idx), "Wrong origin parent name for a muscle");
+                    s2mError::s2mAssert(model->IsBodyId(idx), "Wrong origin parent name for a muscle");
                 }
                 else if (!tp.tolower().compare("insertionparent")){
                     // Trouver dynamiquement le numéro du parent
                     file.read(insert_parent_str);
-                    unsigned int idx = model.GetBodyId(insert_parent_str.c_str());
+                    unsigned int idx = model->GetBodyId(insert_parent_str.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model.IsBodyId(idx), "Wrong insertion parent name for a muscle");
+                    s2mError::s2mAssert(model->IsBodyId(idx), "Wrong insertion parent name for a muscle");
                 }
             }
-            model.addMuscleGroup(name, origin_parent_str, insert_parent_str);
+            model->addMuscleGroup(name, origin_parent_str, insert_parent_str);
         }
         else if (!tp.tolower().compare("muscle")){
             s2mString name;
@@ -510,7 +514,7 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
                 if (!tp.tolower().compare("musclegroup")){
                     // Trouver dynamiquement le numéro du parent
                     file.read(muscleGroup);
-                    idxGroup = model.getGroupId(muscleGroup);
+                    idxGroup = model->getGroupId(muscleGroup);
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
                     s2mError::s2mAssert(idxGroup!=-1, "Could not find muscle group");
                 }
@@ -538,11 +542,11 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
                     file.read(PCSA, variable);
             }
             s2mError::s2mAssert(idxGroup!=-1, "No muscle group was provided!");
-            s2mMuscleGeometry geo(s2mNodeMuscle(origin_pos, name + "_origin", model.muscleGroup(idxGroup).origin()),
-                                  s2mNodeMuscle(insert_pos, name + "_insertion", model.muscleGroup(idxGroup).insertion()));
+            s2mMuscleGeometry geo(s2mNodeMuscle(origin_pos, name + "_origin", model->muscleGroup(idxGroup).origin()),
+                                  s2mNodeMuscle(insert_pos, name + "_insertion", model->muscleGroup(idxGroup).insertion()));
             s2mMuscleStateMax state(maxExcitation, maxActivation);
             s2mMuscleCaracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, &state);
-            model.muscleGroup(idxGroup).addHillMuscle(name,type,geo,caract,s2mMusclePathChangers(),stateType);
+            model->muscleGroup(idxGroup).addHillMuscle(name,type,geo,caract,s2mMusclePathChangers(),stateType);
         }
         else if (!tp.tolower().compare("viapoint")){
             s2mString name;
@@ -561,9 +565,9 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
                 if (!tp.tolower().compare("parent")){
                     // Trouver dynamiquement le numéro du parent
                     file.read(parent);
-                    unsigned int idx = model.GetBodyId(parent.c_str());
+                    unsigned int idx = model->GetBodyId(parent.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model.IsBodyId(idx), "Wrong origin parent name for a muscle");
+                    s2mError::s2mAssert(model->IsBodyId(idx), "Wrong origin parent name for a muscle");
                 }
                 else if (!tp.tolower().compare("muscle"))
                     file.read(muscle);
@@ -573,12 +577,12 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
                     for (unsigned int i=0; i<3; ++i)
                         file.read(position(i), variable);
             }
-            iMuscleGroup = model.getGroupId(musclegroup);
+            iMuscleGroup = model->getGroupId(musclegroup);
             s2mError::s2mAssert(iMuscleGroup!=-1, "No muscle group was provided!");
-            iMuscle = model.muscleGroup(iMuscleGroup).muscleID(muscle);
+            iMuscle = model->muscleGroup(iMuscleGroup).muscleID(muscle);
             s2mError::s2mAssert(iMuscle!=-1, "No muscle was provided!");
             s2mViaPoint v(position,name,parent);
-            model.muscleGroup(iMuscleGroup).muscle(iMuscle)->addPathObject(v);
+            model->muscleGroup(iMuscleGroup).muscle(iMuscle)->addPathObject(v);
         }
         else if (!tp.tolower().compare("wrap")){
             s2mString name;
@@ -600,9 +604,9 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
                 if (!tp.tolower().compare("parent")){
                     // Trouver dynamiquement le numéro du parent
                     file.read(parent);
-                    unsigned int idx = model.GetBodyId(parent.c_str());
+                    unsigned int idx = model->GetBodyId(parent.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model.IsBodyId(idx), "Wrong origin parent name for a muscle");
+                    s2mError::s2mAssert(model->IsBodyId(idx), "Wrong origin parent name for a muscle");
                 }
                 else if (!tp.tolower().compare("rt")){
                     for (unsigned int i=0; i<4;++i)
@@ -626,21 +630,20 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
             s2mError::s2mAssert(length!=0, "Length was not defined");
             s2mError::s2mAssert((length!=-1 || length!=-1), "Side was not properly defined");
             s2mError::s2mAssert(parent != "", "Parent was not defined");
-            iMuscleGroup = model.getGroupId(musclegroup);
+            iMuscleGroup = model->getGroupId(musclegroup);
             s2mError::s2mAssert(iMuscleGroup!=-1, "No muscle group was provided!");
-            iMuscle = model.muscleGroup(iMuscleGroup).muscleID(muscle);
+            iMuscle = model->muscleGroup(iMuscleGroup).muscleID(muscle);
             s2mError::s2mAssert(iMuscle!=-1, "No muscle was provided!");
             s2mWrappingCylinder cylinder(RT,dia,length,side,name,parent);
-            model.muscleGroup(iMuscleGroup).muscle(iMuscle)->addPathObject(cylinder);
+            model->muscleGroup(iMuscleGroup).muscle(iMuscle)->addPathObject(cylinder);
         }
     }
 
     if (hasActuators)
-        model.closeActuator(model);
+        model->closeActuator(*model);
     // Fermer le fichier
     // std::cout << "Model file successfully loaded" << std::endl;
     file.close();
-    return model;
 }
 std::vector<std::vector<Eigen::Vector3d> > s2mRead::readMarkerDataFile(const s2mString &path){
     // Ouverture du fichier

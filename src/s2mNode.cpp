@@ -73,3 +73,19 @@ const s2mNode s2mNode::operator-(const s2mNode &other) const{
     s2mNode result (this->block(0,0,3,1)-other.block(0,0,3,1));
     return result;
 }
+
+const s2mNode s2mNode::operator*(double a) const
+{
+    s2mNode result(*this);
+    for (int i=0; i<3; ++i)
+        result[i] *= a;
+    return result;
+}
+
+const s2mNode s2mNode::operator/(double a) const
+{
+    s2mNode result(*this);
+    for (int i=0; i<3; ++i)
+        result[i] /= a;
+    return result;
+}

@@ -73,7 +73,7 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
 
         unsigned int nbBone() const; // Return the actual number of segments
         double mass() const; // retourne la masse de tous les segments
-        RigidBodyDynamics::Math::Vector3d CoM(const s2mGenCoord &Q); // Position du centre de masse
+        s2mNode CoM(const s2mGenCoord &Q); // Position du centre de masse
         std::vector<RigidBodyDynamics::Math::Vector3d> CoMbySegment(const s2mGenCoord &Q, bool updateKin=true); // Position du centre de masse de chaque segment
         RigidBodyDynamics::Math::Vector3d CoMbySegment(const s2mGenCoord &Q, const unsigned int i, bool updateKin=true); // Position du centre de masse du segment i
         RigidBodyDynamics::Math::Vector3d CoMdot(const s2mGenCoord &Q, const s2mGenCoord &Qdot); // Vitesse du CoM

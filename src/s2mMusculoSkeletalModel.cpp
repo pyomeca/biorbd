@@ -1,14 +1,15 @@
 #define BIORBD_API_EXPORTS
 #include "../include/s2mMusculoSkeletalModel.h"
 
-//s2mMusculoSkeletalModel::s2mMusculoSkeletalModel()
-//{
-//}
+s2mMusculoSkeletalModel::s2mMusculoSkeletalModel()
+{
 
-//s2mMusculoSkeletalModel::~s2mMusculoSkeletalModel()
-//{
-//    //dtor
-//}
+}
+
+s2mMusculoSkeletalModel::s2mMusculoSkeletalModel(const s2mPath &path)
+{
+    s2mRead::readModelFile(path, this);
+}
 
 bool s2mMusculoSkeletalModel::InverseKinematics(const std::vector<Eigen::Vector3d> &M, const s2mGenCoord &Qinit, s2mGenCoord &Q, bool removeAxes){
     // Trouver les markers techniques uniquement (body_point)
