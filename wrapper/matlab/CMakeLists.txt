@@ -26,7 +26,8 @@ else(WIN32)
 endif(WIN32)
 
 target_link_libraries(${PROJECT_NAME} biorbd ${Matlab_MX_LIBRARY} ${Matlab_MEX_LIBRARY})
-install(TARGETS ${PROJECT_NAME} DESTINATION ${Matlab_ROOT_DIR}/toolbox/${PROJECT_NAME})
+set(Matlab_TOOLBOX_DIR ${Matlab_ROOT_DIR}/toolbox CACHE FILEPATH "Toolbox path to install, please note that the default directory may require administrator access")
+install(TARGETS ${PROJECT_NAME} DESTINATION ${Matlab_TOOLBOX_DIR}/${PROJECT_NAME})
 
 
 
