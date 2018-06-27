@@ -86,6 +86,13 @@
 #include "S2M_forwardDynamics.cpp"
 #include "S2M_computeQdot.cpp"
 
+#ifdef _WIN32
+// This is a hack because Eigen can't be dynamically compiled on Windows, while dlib needs consistency in compilation. 
+// Please note that this can result in undefined behavior while using s2mMuscleOptimisation...
+const int USER_ERROR__inconsistent_build_configuration__see_dlib_faq_1_ = 0;
+const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
+#endif
+
 std::string toLower(const std::string &str){
     std::string new_str = str;
     std::transform(new_str.begin(), new_str.end(), new_str.begin(), ::tolower);

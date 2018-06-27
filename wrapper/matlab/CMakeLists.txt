@@ -1,7 +1,7 @@
 project(S2M_rbdl)
 cmake_minimum_required(VERSION 3.1)
 
-find_package(MATLAB REQUIRED)
+find_package(Matlab REQUIRED COMPONENTS MX_LIBRARY)
 
 # Get the file to compile
 set(CPP_FILE ${CMAKE_CURRENT_SOURCE_DIR}/MexS2M_rbdl.cpp)
@@ -25,7 +25,7 @@ else(WIN32)
   endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
 endif(WIN32)
 
-target_link_libraries(${PROJECT_NAME} biorbd)
+target_link_libraries(${PROJECT_NAME} biorbd ${Matlab_MX_LIBRARY} ${Matlab_MEX_LIBRARY})
 install(TARGETS ${PROJECT_NAME} DESTINATION ${Matlab_ROOT_DIR}/toolbox/${PROJECT_NAME})
 
 

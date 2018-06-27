@@ -41,9 +41,9 @@ target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY})
 
 # Installation
 if(WIN32)
-	set(${PROJECT_NAME}_LIB_FOLDER Lib)
-	set(${PROJECT_NAME}_BIN_FOLDER bin)
-        #set(${PROJECT_NAME}_INCLUDE_FOLDER include/${PROJECT_NAME})
+        set(${PROJECT_NAME}_LIB_FOLDER Lib)
+        set(${PROJECT_NAME}_BIN_FOLDER bin)
+        set(${PROJECT_NAME}_INCLUDE_FOLDER include/${PROJECT_NAME})
 else()
         set(${PROJECT_NAME}_LIB_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
         set(${PROJECT_NAME}_BIN_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
