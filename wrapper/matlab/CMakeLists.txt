@@ -1,3 +1,5 @@
+set(MASTER_PROJECT_NAME ${PROJECT_NAME})
+
 project(S2M_rbdl)
 cmake_minimum_required(VERSION 3.1)
 
@@ -24,6 +26,9 @@ else(WIN32)
       SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES SUFFIX .mexglx PREFIX "")
   endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
 endif(WIN32)
+
+SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES INSTALL_RPATH ${${MASTER_PROJECT_NAME}_BIN_FOLDER})
+SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 target_link_libraries(${PROJECT_NAME} biorbd ${Matlab_MX_LIBRARY} ${Matlab_MEX_LIBRARY})
 set(Matlab_TOOLBOX_INSTALL_DIR ${Matlab_ROOT_DIR}/toolbox CACHE FILEPATH "Toolbox path to install, please note that the default directory may require administrator access")
