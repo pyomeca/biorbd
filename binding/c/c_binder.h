@@ -1,6 +1,6 @@
 
-#ifndef __C_WRAPPER__
-#define __C_WRAPPER__
+#ifndef __BIORBD_C_BINDER__
+#define __BIORBD_C_BINDER__
 
 #include "s2mMusculoSkeletalModel.h"
 #include "s2mKalmanReconsIMU.h"
@@ -76,4 +76,4 @@ extern "C" {
 }
 
 
-#endif // __C_WRAPPER__
+#endif // __BIORBD_C_BINDER__

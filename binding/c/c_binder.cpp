@@ -1,4 +1,4 @@
-#include "c_wrapper.h"
+#include "c_binder.h"
 
 S2MLIBRARY_API s2mMusculoSkeletalModel* c_s2mMusculoSkeletalModel(const char* pathToModel){
 	return new s2mMusculoSkeletalModel(s2mRead::readModelFile(s2mString(pathToModel)));
