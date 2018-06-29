@@ -62,12 +62,6 @@ INSTALL (
     DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER}
     FILES_MATCHING PATTERN "*.h*")
 
-#FOREACH(HEADER ${${HEADER_LIST}})
-#    STRING(REGEX MATCH "(.\\\*)\\\[/\\\]" DIR ${HEADER})
-#    INSTALL(FILES ${HEADER} DESTINATION include/${DIR})
-#ENDFOREACH(HEADER)
-
-
 # Add swig subdirectory
 add_subdirectory(binding)
 
