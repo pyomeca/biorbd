@@ -30,18 +30,18 @@ namespace std {
 
 /* Includes all neceressary files from the API */
 
-%include "biorbdConfig.h"
+%include "../include/biorbdConfig.h"
 //%include "s2mOptions.h"
 
 //%include "s2mVector.h"
-%include "s2mGenCoord.h"
+%include "../include/s2mGenCoord.h"
 //%include "s2mTau.h"
 //%include "s2mMatrix.h"
 //%include "s2mAttitude.h"
 //%include "s2mNodeAttitude.h"
 //%include "s2mQuaternion.h"
 //%include "s2mNode.h"
-%include "s2mMarkers.h"
+%include "../include/s2mMarkers.h"
 
 //%include "s2mPatch.h"
 //%include "s2mTime.h"
@@ -51,11 +51,11 @@ namespace std {
 //%include "s2mEquation.h"
 //%include "s2mIfStream.h"
 //%include "s2mError.h"
-%include "s2mPath.h"
-%include "s2mRead.h"
+%include "../include/s2mPath.h"
+%include "../include/s2mRead.h"
 //%include "s2mIntegrator.h"
 
-%include "s2mJoints.h"
+%include "../include/s2mJoints.h"
 //%include "s2mJoint.h"
 //%include "s2mJointMoving.h"
 //%include "s2mJointIntraBone.h"
@@ -67,7 +67,7 @@ namespace std {
 //%include "s2mActuatorLinear.h"
 //%include "s2mActuators.h"
 
-%include "s2mNodeBone.h"
+%include "../include/s2mNodeBone.h"
 //%include "s2mBone.h"
 //%include "s2mBoneCaracteristics.h"
 //%include "s2mBoneMesh.h"
@@ -112,9 +112,9 @@ namespace std {
 
 //%include "s2mKalmanRecons.h"
 //%include "s2mKalmanReconsIMU.h"
-%include "s2mKalmanReconsMarkers.h"
+%include "../include/s2mKalmanReconsMarkers.h"
 
 //%include "s2mIMU_Unity_Optim.h"
 
-%include "s2mMusculoSkeletalModel.h"
+%include "../include/s2mMusculoSkeletalModel.h"
 

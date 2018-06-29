@@ -9,10 +9,12 @@ find_package(Matlab REQUIRED COMPONENTS MX_LIBRARY)
 set(CPP_FILE ${CMAKE_CURRENT_SOURCE_DIR}/MexS2M_rbdl.cpp)
 
 # Add project
-INCLUDE_DIRECTORIES(${Matlab_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/../../include)
 add_library(${PROJECT_NAME} SHARED ${CPP_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/Matlabdef.def)
 # Reset the name of the output
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_NAME S2M_rbdl)
+
+# Add headers
+target_include_directories(${PROJECT_NAME} PRIVATE ${Matlab_INCLUDE_DIRS} ${RBDL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../../include)
 
 # Set the name of the library
 if(WIN32)
