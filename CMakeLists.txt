@@ -1,6 +1,8 @@
 project(biorbd)
 cmake_minimum_required(VERSION 3.1)
 set (CMAKE_CXX_STANDARD 11)
+set (${PROJECT_NAME}_VERSION_MAJOR 0)
+set (${PROJECT_NAME}_VERSION_MINOR 1)
 
 # Set some variables
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)
@@ -25,10 +27,8 @@ find_package(Boost REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Dlib REQUIRED)
 
-# Compile biorbd
+# Prepare add library
 aux_source_directory(src SRC_LIST)
-INCLUDE_DIRECTORIES(${RBDL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${DLIB_INCLUDE_DIR} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
 if (BUILD_SHARED_LIBS)
 	add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 else()
@@ -36,20 +36,22 @@ else()
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_debug")
 
-# Add linker to biorbd
+# Add headers
+target_include_directories(${PROJECT_NAME} PRIVATE ${RBDL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${DLIB_INCLUDE_DIR} PUBLIC include)
+
+# Add linker
 target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY})
 
 # Installation
 if(WIN32)
-        set(${PROJECT_NAME}_LIB_FOLDER Lib)
-        set(${PROJECT_NAME}_BIN_FOLDER bin)
-        set(${PROJECT_NAME}_INCLUDE_FOLDER include/${PROJECT_NAME})
+    set(${PROJECT_NAME}_LIB_FOLDER Lib)
+    set(${PROJECT_NAME}_BIN_FOLDER bin)
+    set(${PROJECT_NAME}_INCLUDE_FOLDER include/${PROJECT_NAME})
 else()
-        set(${PROJECT_NAME}_LIB_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
-        set(${PROJECT_NAME}_BIN_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
-        set(${PROJECT_NAME}_INCLUDE_FOLDER ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
+    set(${PROJECT_NAME}_LIB_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
+    set(${PROJECT_NAME}_BIN_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
+    set(${PROJECT_NAME}_INCLUDE_FOLDER ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
 endif()
-
 install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION ${${PROJECT_NAME}_LIB_FOLDER}
         RUNTIME DESTINATION ${${PROJECT_NAME}_BIN_FOLDER}
@@ -57,12 +59,7 @@ install(TARGETS ${PROJECT_NAME}
         PUBLIC_HEADER DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER}}
         )
 
-INSTALL (
-    DIRECTORY ${CMAKE_SOURCE_DIR}/include/
-    DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER}
-    FILES_MATCHING PATTERN "*.h*")
-
-# Add swig subdirectory
+# Add binding subdirectory
 add_subdirectory(binding)
 
 
