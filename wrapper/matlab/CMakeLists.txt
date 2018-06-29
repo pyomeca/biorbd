@@ -1,6 +1,6 @@
 set(MASTER_PROJECT_NAME ${PROJECT_NAME})
 
-project(S2M_rbdl)
+project(${MASTER_PROJECT_NAME}_matlab)
 cmake_minimum_required(VERSION 3.1)
 
 find_package(Matlab REQUIRED COMPONENTS MX_LIBRARY)
@@ -8,9 +8,11 @@ find_package(Matlab REQUIRED COMPONENTS MX_LIBRARY)
 # Get the file to compile
 set(CPP_FILE ${CMAKE_CURRENT_SOURCE_DIR}/MexS2M_rbdl.cpp)
 
-# Compile biomecamat
+# Add project
 INCLUDE_DIRECTORIES(${Matlab_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/../../include)
 add_library(${PROJECT_NAME} SHARED ${CPP_FILE} ${CMAKE_CURRENT_SOURCE_DIR}/Matlabdef.def)
+# Reset the name of the output
+SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_NAME S2M_rbdl)
 
 # Set the name of the library
 if(WIN32)
@@ -27,10 +29,12 @@ else(WIN32)
   endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
 endif(WIN32)
 
+# Set runtime path for linux
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES INSTALL_RPATH ${${MASTER_PROJECT_NAME}_BIN_FOLDER})
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-target_link_libraries(${PROJECT_NAME} biorbd ${Matlab_MX_LIBRARY} ${Matlab_MEX_LIBRARY})
+# Linker and instalation
+target_link_libraries(${PROJECT_NAME} ${MASTER_PROJECT_NAME} ${Matlab_MX_LIBRARY} ${Matlab_MEX_LIBRARY})
 set(Matlab_TOOLBOX_INSTALL_DIR ${Matlab_ROOT_DIR}/toolbox CACHE FILEPATH "Toolbox path to install, please note that the default directory may require administrator access")
 install(TARGETS ${PROJECT_NAME} DESTINATION ${Matlab_TOOLBOX_INSTALL_DIR}/${PROJECT_NAME})
 
