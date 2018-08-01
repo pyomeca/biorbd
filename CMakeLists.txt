@@ -40,7 +40,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_debug")
 target_include_directories(${PROJECT_NAME} PRIVATE ${RBDL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${DLIB_INCLUDE_DIR} PUBLIC include)
 
 # Add linker
-target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY} ${DLIB_LIBRARY})
 
 # Installation
 if(WIN32)
