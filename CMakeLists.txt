@@ -62,7 +62,11 @@ install(DIRECTORY include DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER})
 # Add binding subdirectory
 add_subdirectory(binding)
 
-
+# Add the example if asked
+set(BUILD_EXAMPLE TRUE CACHE BOOL "Build a C++ example")
+if (BUILD_EXAMPLE)
+    add_subdirectory(example)
+endif()
 
 
 
