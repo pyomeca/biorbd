@@ -1,8 +1,9 @@
 #ifndef S2MMUSCLESTATEACTUALBUCHANAN_H
 #define S2MMUSCLESTATEACTUALBUCHANAN_H
+#include "biorbdConfig.h"
 #include "s2mMuscleStateActual.h"
 
-class s2mMuscleStateActualBuchanan : public s2mMuscleStateActual
+class BIORBD_API s2mMuscleStateActualBuchanan : public s2mMuscleStateActual
 {
     public:
         s2mMuscleStateActualBuchanan(const double &neuralCommand = 0, const double &excitation = 0);
