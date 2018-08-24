@@ -77,6 +77,8 @@
 #include "S2M_MusclesForceMax.cpp"
 #include "S2M_muscleForcesNorm.cpp"
 #include "S2M_MusclesActivationDot.cpp"
+#include "S2M_MusclesExcitationDotBuchanan.cpp"
+#include "S2M_ChangeShapeFactors.cpp"
 #include "S2M_MaximeMuscleOptim.cpp"
 #include "S2M_parent.cpp"
 
@@ -605,6 +607,11 @@ void mexFunction( int nlhs, mxArray *plhs[],
         S2M_MusclesActivationDot(nlhs, plhs, nrhs, prhs);
         return;
     }
+    if(!toLower(cmd).compare("muscleexcitationdotbuchanan")){
+        S2M_MusclesExcitationDotBuchanan(nlhs, plhs, nrhs, prhs);
+        return;
+    }
+
 
     if(!toLower(cmd).compare("muscleforce")){
         S2M_MusclesForce(nlhs, plhs, nrhs, prhs);
@@ -634,6 +641,11 @@ void mexFunction( int nlhs, mxArray *plhs[],
 
     if(!toLower(cmd).compare("maximeoptim")){
         S2M_MaximeMuscleOptim(nlhs, plhs, nrhs, prhs);
+        return;
+    }
+
+    if(!toLower(cmd).compare("changeshapefactors")){
+        S2M_ChangeShapeFactors(nlhs, plhs, nrhs, prhs);
         return;
     }
 

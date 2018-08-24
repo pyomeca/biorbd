@@ -316,6 +316,31 @@ double getDouble(const mxArray*prhs[], unsigned int idx, std::string type = "d")
 int getInteger(const mxArray*prhs[], unsigned int idx, std::string type = "i"){
     return getDouble(prhs, idx, type);
 }
+std::vector<double> getDoubleArray(const mxArray*prhs[], unsigned int idx){
+
+    /* Check data type of input argument */
+    if (!(mxIsDouble(prhs[idx]))) {
+        std::ostringstream msg;
+        msg << "Argument " << idx+1 << " must be of type double.";
+        mexErrMsgIdAndTxt( "MATLAB:findnz:invalidInputType",msg.str().c_str());
+    }
+
+    mwSize m=mxGetM(prhs[idx]); // line
+    mwSize n=mxGetN(prhs[idx]); // line
+    /* Get the number of elements in the input argument */
+    if (m!=1 && n!=1){
+        std::ostringstream msg;
+        msg << "Wrong size! (Input double), should be a vector";
+        mexErrMsgTxt(msg.str().c_str());
+    }
+    double *q=mxGetPr(prhs[idx]); //matrice de position
+
+    std::vector<double> out;
+    for (int i =0; i<m*n; ++i)
+        out.push_back(q[i]);
+
+    return out;
+}
 
 s2mString getString(const mxArray*prhs[], unsigned int idx){
     /* Check data type of input argument */
@@ -432,12 +457,81 @@ std::vector<std::vector<s2mMuscleStateActual> > getParameterMuscleState(const mx
     return States;
 }
 
+
+std::vector<std::vector<s2mMuscleStateActualBuchanan> > getParameterMuscleStateBuchanan(const mxArray*prhs[], int idxExcitation, int idxActivation, unsigned int nMus){
+
+
+    /* Get the number of frames in the input argument */
+    // Regarde ce qui se passe pour l'excitation
+    bool isThereExcitation;
+    mwSize nFramesE(0);
+    double *stateExcitation;
+    if (isStateExist(prhs, nMus, idxExcitation, isThereExcitation)){
+        stateExcitation=mxGetPr(prhs[idxExcitation]); //matrice de position
+        nFramesE = mxGetN(prhs[idxExcitation]); // line
+    }
+
+    // Regarde ce qui se passe pour l'activation
+    bool isThereActivation;
+    mwSize nFramesA(0);
+    double *stateActivation; //matrice de position
+    if (isStateExist(prhs, nMus, idxActivation, isThereActivation)){
+        stateActivation=mxGetPr(prhs[idxActivation]); //matrice de position
+        nFramesA = mxGetN(prhs[idxActivation]); // line
+    }
+
+    // S'assurer que l'excitation et l'activation ont la même taille
+    if (isThereActivation && isThereExcitation && nFramesA != nFramesE) { // Si on se soucis de l'excitation
+        std::ostringstream msg;
+        msg << "Wrong size! Input excitation and activation should be the same";
+        mexErrMsgTxt(msg.str().c_str());
+    }
+    mwSize nFramesTotal;
+    if (isThereActivation)
+        nFramesTotal = nFramesA;
+    else if (isThereExcitation)
+        nFramesTotal = nFramesE;
+    else{
+        std::ostringstream msg;
+        msg << "At least excitation or activation should be send";
+        mexErrMsgTxt(msg.str().c_str());
+    }
+
+
+    // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
+    std::vector<std::vector<s2mMuscleStateActualBuchanan> > States;
+    for (unsigned int j=0; j<nFramesTotal; ++j){
+        std::vector<s2mMuscleStateActualBuchanan> States_tp;
+        for (unsigned int i=0; i<nMus; i++)
+            if (isThereExcitation && isThereActivation){
+                States_tp.push_back( s2mMuscleStateActualBuchanan(stateExcitation[j*nMus+i], stateActivation[j*nMus+i]));
+            }
+            else if (!isThereExcitation && isThereActivation){
+                States_tp.push_back( s2mMuscleStateActualBuchanan(0, stateActivation[j*nMus+i]));
+            }
+            else if (isThereExcitation && !isThereActivation){
+                States_tp.push_back( s2mMuscleStateActualBuchanan(stateExcitation[j*nMus+i], 0));
+            }
+
+        States.push_back(States_tp);
+    }
+    return States;
+}
+
 std::vector<std::vector<s2mMuscleStateActual> > getParameterMuscleStateActivation(const mxArray*prhs[], int idxActivation, unsigned int nMus){
     return getParameterMuscleState(prhs, -1, idxActivation, nMus);
 }
 std::vector<std::vector<s2mMuscleStateActual> > getParameterMuscleStateExcitation(const mxArray*prhs[], int idxExcitation, unsigned int nMus){
     return getParameterMuscleState(prhs, idxExcitation, -1, nMus);
 }
+
+std::vector<std::vector<s2mMuscleStateActualBuchanan> > getParameterMuscleStateActivationBuchanan(const mxArray*prhs[], int idxActivation, unsigned int nMus){
+    return getParameterMuscleStateBuchanan(prhs, -1, idxActivation, nMus);
+}
+std::vector<std::vector<s2mMuscleStateActualBuchanan> > getParameterMuscleStateExcitationBuchanan(const mxArray*prhs[], int idxExcitation, unsigned int nMus){
+    return getParameterMuscleStateBuchanan(prhs, idxExcitation, -1, nMus);
+}
+
 std::vector<Eigen::VectorXd> getParameterMuscleForceNorm(const mxArray*prhs[], unsigned int idx, unsigned int nMus, std::string type = "muscle force"){
 
         /* Check data type of input argument */
