@@ -694,6 +694,7 @@ std::vector<std::vector<Eigen::Vector3d> > s2mRead::readMarkerDataFile(const s2m
     file.close();
     return markers;
 }
+
 std::vector<s2mGenCoord> s2mRead::readQDataFile(const s2mString &path){
     // Ouverture du fichier
     // std::cout << "Loading kin file: " << path << std::endl;
@@ -786,7 +787,6 @@ std::vector<Eigen::VectorXd> s2mRead::readActivationDataFile(const s2mString &pa
     return activations;
 }
 
-
 std::vector<Eigen::VectorXd> s2mRead::readTorqueDataFile(const s2mString &path){
     // Ouverture du fichier
     // std::cout << "Loading kin file: " << path << std::endl;
@@ -836,6 +836,54 @@ std::vector<Eigen::VectorXd> s2mRead::readTorqueDataFile(const s2mString &path){
 
 }
 
+std::vector<Eigen::VectorXd> s2mRead::readGrfDataFile(const s2mString &path){
+    // Ouverture du fichier
+    // std::cout << "Loading grf file: " << path << std::endl;
+    s2mIfStream file(path.c_str(), std::ios::in);
+ 
+    // Lecture du fichier 
+    s2mString tp;
+
+    // DÃ©terminer la version du fichier
+    file.readSpecificTag("version", tp);
+    unsigned int version = atoi(tp.c_str());
+    s2mError::s2mAssert(version == 1, "Version not implemented yet");
+
+    // DÃ©terminer le nombre de grf
+    file.readSpecificTag("ngrf", tp); //
+    unsigned int NGRF = atoi(tp.c_str());
+
+    // DÃ©terminer le nombre de noeud
+    file.readSpecificTag("nbintervals", tp);
+    unsigned int nbIntervals = atoi(tp.c_str());
+
+    std::vector<Eigen::VectorXd> grf;
+    // Descendre jusqu'Ã  la dÃ©finition d'un torque
+    for (unsigned int j=0; j<nbIntervals+1; j++){
+        while (tp.compare("T")){
+            bool check = file.read(tp);
+            s2mError::s2mAssert(check, "Grf file error, wrong size of NR or intervals?"); //
+        }
+
+        // Lire la premiÃ¨re ligne qui est le timestamp
+        double time;
+        file.read(time);
+
+        // Lire le vecteur de Tau associÃ© au time stamp
+        Eigen::VectorXd grf_tp(NGRF);
+        for (unsigned int i=0; i<NGRF; i++)
+            file.read(grf_tp(i));
+
+        grf.push_back(grf_tp);
+        // rÃ©initiation pour la prochaine itÃ©ration
+        tp = "";
+    }
+
+    // Fermer le fichier
+    file.close();
+    return grf;
+
+}
 
 void s2mRead::readViconForceFile(const s2mString &path, // Path to the file
                                     std::vector<std::vector<unsigned int> > &frame, // Time vector * number of pf

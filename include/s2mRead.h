@@ -34,6 +34,7 @@ public:
     static std::vector<s2mGenCoord> readQDataFile(const s2mString &path);
     static std::vector<Eigen::VectorXd> readActivationDataFile(const s2mString &path);
     static std::vector<Eigen::VectorXd> readTorqueDataFile(const s2mString &path);
+    static std::vector<Eigen::VectorXd> readGrfDataFile(const s2mString &path);
 
     static void readViconForceFile(const s2mString &path, // Path to the file
                                    std::vector<std::vector<unsigned int> > &time, // Frame vector (time is frame/frequency)
