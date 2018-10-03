@@ -735,7 +735,9 @@ void s2mJoints::ForwardDynamicsContactsLagrangian (
        CS.x = CS.A.colPivHouseholderQr().solve(CS.b);
        break;
      default:
+#ifdef RBDL_ENABLE_LOGGING
        LOG << "Error: Invalid linear solver: " << CS.linear_solver << std::endl;
+#endif
        s2mError::s2mAssert(0, "Error: Invalid linear solver");
      break;
    }
@@ -819,7 +821,9 @@ unsigned int s2mJoints::getDofIndex(const s2mString& boneName, const s2mString& 
 
 void s2mJoints::CalcMatRotJacobian(s2mJoints &model, const RigidBodyDynamics::Math::VectorNd &Q, unsigned int body_id, const RigidBodyDynamics::Math::Matrix3d &rotation, RigidBodyDynamics::Math::MatrixNd &G, bool update_kinematics)
 {
+#ifdef RBDL_ENABLE_LOGGING
     LOG << "-------- " << __func__ << " --------" << std::endl;
+#endif
 
     // update the Kinematics if necessary
     if (update_kinematics) {
