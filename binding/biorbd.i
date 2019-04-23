@@ -18,6 +18,7 @@
 #include "s2mMuscleOptimisation.h"
 #include "s2mIMU_Unity_Optim.h"
 %}
+%include exception.i
 
 /* Instantiate std_vector */
 %include <std_vector.i>
@@ -25,8 +26,29 @@
 // Instantiate templates
 namespace std {
     %template(VecS2mNodeBone) std::vector<s2mNodeBone>;
+    %template(VecS2mMuscleStateActual) std::vector<s2mMuscleStateActual>;
 }
-   
+
+%extend s2mMusculoSkeletalModel{
+    s2mGenCoord ForwardDynamics(const s2mGenCoord &Q, const s2mGenCoord &QDot, const s2mTau &Tau) {
+        /* To be added some day...
+        if (Q.size() != self->nbQ())
+            SWIG_exception(SWIG_RuntimeError, "Wrong dimension for Q");
+        if (QDot.size() != self->nbQdot())
+            SWIG_exception(SWIG_RuntimeError, "Wrong dimension for QDot");
+        if (Tau.size() != self->nbTau())
+            SWIG_exception(SWIG_RuntimeError, "Wrong dimension for Tau");
+        */
+        s2mGenCoord QDDot(*self);
+        RigidBodyDynamics::ForwardDynamics(*self, Q, QDot, Tau, QDDot);
+        return QDDot;
+    }
+
+    s2mTau muscularJointTorque(const std::vector<s2mMuscleStateActual> &state, const s2mGenCoord &Q, const s2mGenCoord &QDot){
+        return self->muscularJointTorque(*self, state, true, &Q, &QDot);
+    }
+}
+
 
 /* Includes all neceressary files from the API */
 
@@ -35,7 +57,7 @@ namespace std {
 
 //%include "s2mVector.h"
 %include "../include/s2mGenCoord.h"
-//%include "s2mTau.h"
+%include "../include/s2mTau.h"
 //%include "s2mMatrix.h"
 //%include "s2mAttitude.h"
 //%include "s2mNodeAttitude.h"
@@ -93,7 +115,7 @@ namespace std {
 //%include "s2mMusclePathChangers.h"
 //%include "s2mMuscles.h"
 //%include "s2mMuscleState.h"
-//%include "s2mMuscleStateActual.h"
+%include "../include/s2mMuscleStateActual.h"
 //%include "s2mMuscleStateActualBuchanan.h"
 //%include "s2mMuscleStateMax.h"
 //%include "s2mMuscleOptimisation.h"
