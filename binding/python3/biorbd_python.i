@@ -45,7 +45,6 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 
 /*** s2mGenCoord ***/
 %typemap(typecheck) s2mGenCoord &{
-    std::cout << "typemap(typecheck) s2mGenCoord" << std::endl;
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mGenCoord,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_s2mGenCoord already exists
@@ -58,7 +57,6 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
     }
 }
 %typemap(in) s2mGenCoord &{
-    std::cout << "typemap(in) s2mGenCoord" << std::endl;
     void * argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mGenCoord,  0  | 0)) && argp1) {
         // Recast the pointer
@@ -112,6 +110,75 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         return output;
     };
 }
+
+/*** s2mTau ***/
+%typemap(typecheck) s2mTau &{
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mTau,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_s2mTau already exists
+        $1 = true;
+    } else if( PyArray_Check($input) ) {
+        // test if it is a numpy array
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+}
+%typemap(in) s2mTau &{
+    void * argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mTau,  0  | 0)) && argp1) {
+        // Recast the pointer
+        $1 = reinterpret_cast< s2mTau * >(argp1);
+    } else if( PyArray_Check($input) ) {
+        // Get dimensions of the data
+        int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
+        npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
+
+        // Dimension controls
+        if (ndim != 1 ){
+            PyErr_SetString(PyExc_ValueError, "s2mTau must be a numpy vector");
+            SWIG_fail;
+        }
+
+        // Get the data
+        void*      data    = PyArray_DATA    ((PyArrayObject*)$input);
+        unsigned int nTau(dims[0]);
+        $1 = new s2mTau(nTau);
+        int typ=PyArray_TYPE((PyArrayObject*)$input);
+        if (typ == NPY_LONG){
+            for (unsigned int tau = 0; tau<nTau; ++tau)
+                (*$1)[tau] = (double)(((int*)data)[tau]);
+        }
+        else if(typ == NPY_DOUBLE)
+            for (unsigned int tau = 0; tau<nTau; ++tau)
+                (*$1)[tau] = ((double*)data)[tau];
+        else{
+            PyErr_SetString(PyExc_ValueError, "Only int or double are allowed");
+            SWIG_fail;
+        }
+
+    } else {
+        PyErr_SetString(PyExc_ValueError, "s2mTau must be a s2mTau or numpy vector");
+        SWIG_fail;
+    }
+};
+%extend s2mTau{
+    PyObject* get_array(){
+        int nTau($self->size());
+        int nArraySize(1);
+        npy_intp * arraySizes = new npy_intp[nArraySize];
+        arraySizes[0] = nTau;
+
+        double * tau = new double[nTau];
+        for (unsigned int i=0; i<nTau; ++i){
+            tau[i] = (*$self)(i);
+        }
+        PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, tau);
+        PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+        return output;
+    };
+}
+
 
 /*** s2mMarkers ***/
 %typemap(typecheck) s2mMarkers &{
