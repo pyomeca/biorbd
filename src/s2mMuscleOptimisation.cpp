@@ -29,7 +29,7 @@ double s2mMuscleOptimisation::residual (const OptimData& data,
     unsigned int cmpMus(0);
     for (unsigned int i=0; i<data.m->nbMuscleGroups(); ++i) // groupe musculaire
         for (unsigned int j=0; j<data.m->muscleGroup(i).nbMuscles(); ++j){
-            boost::shared_ptr<s2mMuscleHillTypeMaxime> tp = boost::static_pointer_cast<s2mMuscleHillTypeMaxime>(data.m->muscleGroup(i).muscle(j));
+            std::shared_ptr<s2mMuscleHillTypeMaxime> tp = std::static_pointer_cast<s2mMuscleHillTypeMaxime>(data.m->muscleGroup(i).muscle(j));
             tp->muscleGain(x(0));
             cmpMus++;
         }

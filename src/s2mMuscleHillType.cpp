@@ -59,6 +59,50 @@ s2mMuscleHillType::s2mMuscleHillType(const s2mString& name,
     //ctor
 }
 
+s2mMuscleHillType::s2mMuscleHillType(const s2mMuscle &m):
+    s2mMuscle(m)
+{
+    const s2mMuscleHillType& mRef(dynamic_cast<const s2mMuscleHillType&>(m));
+
+    // Attributs intermédiaires lors du calcul de la force
+    this->m_damping = mRef.m_damping;
+    this->m_FlCE = mRef.m_FlCE;
+    this->m_FlPE = mRef.m_FlPE;
+    this->m_FvCE = mRef.m_FvCE;
+
+    this->m_cste_FlCE_1 = mRef.m_cste_FlCE_1;
+    this->m_cste_FlCE_2 = mRef.m_cste_FlCE_2;
+    this->m_cste_FvCE_1 = mRef.m_cste_FvCE_1;
+    this->m_cste_FvCE_2 = mRef.m_cste_FvCE_2;
+    this->m_cste_FlPE_1 = mRef.m_cste_FlPE_1;
+    this->m_cste_FlPE_2 = mRef.m_cste_FlPE_2;
+    this->m_cste_forceExcentriqueMultiplier = mRef.m_cste_forceExcentriqueMultiplier;
+    this->m_cste_damping = mRef.m_cste_damping;
+    this->m_cste_vitesseRaccourMax = mRef.m_cste_vitesseRaccourMax;
+}
+
+s2mMuscleHillType::s2mMuscleHillType(const std::shared_ptr<s2mMuscle> m):
+    s2mMuscle(*m)
+{
+    const std::shared_ptr<s2mMuscleHillType> mRef(std::dynamic_pointer_cast<s2mMuscleHillType>(m));
+
+    // Attributs intermédiaires lors du calcul de la force
+    this->m_damping = mRef->m_damping;
+    this->m_FlCE = mRef->m_FlCE;
+    this->m_FlPE = mRef->m_FlPE;
+    this->m_FvCE = mRef->m_FvCE;
+
+    this->m_cste_FlCE_1 = mRef->m_cste_FlCE_1;
+    this->m_cste_FlCE_2 = mRef->m_cste_FlCE_2;
+    this->m_cste_FvCE_1 = mRef->m_cste_FvCE_1;
+    this->m_cste_FvCE_2 = mRef->m_cste_FvCE_2;
+    this->m_cste_FlPE_1 = mRef->m_cste_FlPE_1;
+    this->m_cste_FlPE_2 = mRef->m_cste_FlPE_2;
+    this->m_cste_forceExcentriqueMultiplier = mRef->m_cste_forceExcentriqueMultiplier;
+    this->m_cste_damping = mRef->m_cste_damping;
+    this->m_cste_vitesseRaccourMax = mRef->m_cste_vitesseRaccourMax;
+}
+
 
 
 s2mMuscleHillType::~s2mMuscleHillType()
@@ -74,8 +118,8 @@ void s2mMuscleHillType::setType()
 void s2mMuscleHillType::setForce()
 {
     m_force.clear();
-    boost::shared_ptr<s2mMuscleForceFromOrigin> tp_o(new s2mMuscleForceFromOrigin);
-    boost::shared_ptr<s2mMuscleForceFromInsertion> tp_i(new s2mMuscleForceFromInsertion);
+    std::shared_ptr<s2mMuscleForceFromOrigin> tp_o(new s2mMuscleForceFromOrigin);
+    std::shared_ptr<s2mMuscleForceFromInsertion> tp_i(new s2mMuscleForceFromInsertion);
     m_force.push_back(tp_o);
     m_force.push_back(tp_i);
     //dtor
@@ -83,7 +127,7 @@ void s2mMuscleHillType::setForce()
 
 
 
-std::vector<boost::shared_ptr<s2mMuscleForce> > s2mMuscleHillType::force(s2mJoints& m, const s2mGenCoord& Q, const s2mGenCoord& Qdot, const s2mMuscleStateActual& EMG, const int updateKinLevel){
+std::vector<std::shared_ptr<s2mMuscleForce> > s2mMuscleHillType::force(s2mJoints& m, const s2mGenCoord& Q, const s2mGenCoord& Qdot, const s2mMuscleStateActual& EMG, const int updateKinLevel){
     // Update de la configuration
     if (updateKinLevel == 1)
         updateOrientations(m,Q,Qdot,false);
@@ -96,7 +140,7 @@ std::vector<boost::shared_ptr<s2mMuscleForce> > s2mMuscleHillType::force(s2mJoin
     return force(EMG);
 }
 
-std::vector<boost::shared_ptr<s2mMuscleForce> > s2mMuscleHillType::force(const s2mMuscleStateActual &EMG){
+std::vector<std::shared_ptr<s2mMuscleForce> > s2mMuscleHillType::force(const s2mMuscleStateActual &EMG){
     // Calculer chacune les forces dans chaque éléments
     computeFvCE();
     computeFlCE(EMG);

@@ -7,6 +7,7 @@
     #include "s2mMuscleForceFromInsertion.h"
     #include "s2mGenCoord.h"
     #include <math.h>
+    #include <memory>
 
 class BIORBD_API s2mMuscleHillType : public s2mMuscle
 {
@@ -21,12 +22,14 @@ class BIORBD_API s2mMuscleHillType : public s2mMuscle
                           const s2mMuscleCaracteristics&,
                           const s2mMusclePathChangers & = s2mMusclePathChangers(),
                           const s2mMuscleStateActual & = s2mMuscleStateActual());
+        s2mMuscleHillType(const s2mMuscle& m);
+        s2mMuscleHillType(const std::shared_ptr<s2mMuscle> m);
         ~s2mMuscleHillType();
 
 
-        virtual std::vector<boost::shared_ptr<s2mMuscleForce> > force(s2mJoints& , const s2mGenCoord&, const s2mGenCoord&, const s2mMuscleStateActual&, const int = 2); // Compute muscle force
-        virtual std::vector<boost::shared_ptr<s2mMuscleForce> > force(s2mJoints& , const s2mGenCoord&, const s2mMuscleStateActual&, const int = 2){s2mError::s2mAssert(0, "Hill type needs velocity"); std::vector<boost::shared_ptr<s2mMuscleForce> > dummy; return dummy;} // Compute muscle force
-        virtual std::vector<boost::shared_ptr<s2mMuscleForce> > force(const s2mMuscleStateActual&); // Compute muscle force (assume updateOrientations has been done)
+        virtual std::vector<std::shared_ptr<s2mMuscleForce> > force(s2mJoints& , const s2mGenCoord&, const s2mGenCoord&, const s2mMuscleStateActual&, const int = 2); // Compute muscle force
+        virtual std::vector<std::shared_ptr<s2mMuscleForce> > force(s2mJoints& , const s2mGenCoord&, const s2mMuscleStateActual&, const int = 2){s2mError::s2mAssert(0, "Hill type needs velocity"); std::vector<std::shared_ptr<s2mMuscleForce> > dummy; return dummy;} // Compute muscle force
+        virtual std::vector<std::shared_ptr<s2mMuscleForce> > force(const s2mMuscleStateActual&); // Compute muscle force (assume updateOrientations has been done)
 
 
 

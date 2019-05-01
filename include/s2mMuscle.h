@@ -18,6 +18,7 @@ class BIORBD_API s2mMuscle : public s2mMuscleCompound
                   const s2mMusclePathChangers& = s2mMusclePathChangers(), // Set de wrapping objects
                   const s2mMuscleStateActual& = s2mMuscleStateActual() // Set d'un état actuel au départ
                   );
+        s2mMuscle(const s2mMuscle& m);
         virtual ~s2mMuscle();
 
         // Get and set

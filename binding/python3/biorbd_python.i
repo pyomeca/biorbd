@@ -15,12 +15,12 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
     import_array();
 %}
 
-
 // typemaps.i is a built-in swig interface that lets us map c++ types to other
 // types in our language of choice. We'll use it to map Eigen matrices to
 // Numpy arrays.
 %include <typemaps.i>
 %include <std_vector.i>
+%include <std_string.i>
 
 /*** s2mJoints ***/
 %typemap(typecheck) s2mJoints &{
@@ -41,6 +41,24 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         PyErr_SetString(PyExc_ValueError, "s2mJoints must be a s2mJoints");
         SWIG_fail;
     }
+}
+
+/*** s2mVector ***/
+%extend s2mVector{
+    PyObject* get_array(){
+        int nElements($self->size());
+        int nArraySize(1);
+        npy_intp * arraySizes = new npy_intp[nArraySize];
+        arraySizes[0] = nElements;
+
+        double * vect = new double[nElements];
+        for (unsigned int i=0; i<nElements; ++i){
+            vect[i] = (*$self)(i);
+        }
+        PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, vect);
+        PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+        return output;
+    };
 }
 
 /*** s2mGenCoord ***/
@@ -94,22 +112,6 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         SWIG_fail;
     }
 };
-%extend s2mGenCoord{
-    PyObject* get_array(){
-        int nQ($self->size());
-        int nArraySize(1);
-        npy_intp * arraySizes = new npy_intp[nArraySize];
-        arraySizes[0] = nQ;
-
-        double * q = new double[nQ];
-        for (unsigned int i=0; i<nQ; ++i){
-            q[i] = (*$self)(i);
-        }
-        PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, q);
-        PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
-        return output;
-    };
-}
 
 /*** s2mTau ***/
 %typemap(typecheck) s2mTau &{
@@ -162,27 +164,10 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         SWIG_fail;
     }
 };
-%extend s2mTau{
-    PyObject* get_array(){
-        int nTau($self->size());
-        int nArraySize(1);
-        npy_intp * arraySizes = new npy_intp[nArraySize];
-        arraySizes[0] = nTau;
-
-        double * tau = new double[nTau];
-        for (unsigned int i=0; i<nTau; ++i){
-            tau[i] = (*$self)(i);
-        }
-        PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, tau);
-        PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
-        return output;
-    };
-}
 
 
 /*** s2mMarkers ***/
 %typemap(typecheck) s2mMarkers &{
-    std::cout << "typemap(typecheck) s2mMarkers" << std::endl;
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mMarkers,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_s2mMarkers already exists
@@ -192,7 +177,6 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
     }
 }
 %typemap(in) s2mMarkers &{
-    std::cout << "typemap(in) s2mMarkers" << std::endl;
     void * argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mMarkers,  0  | 0)) && argp1) {
         // Recast the pointer
@@ -204,11 +188,11 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 }
 
 
-/*** s2mNodeBone ***/
-%typemap(typecheck) s2mNodeBone &{
+/*** s2mNode ***/
+%typemap(typecheck) s2mNode &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mNodeBone,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIGTYPE_p_s2mNodeBone already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mNode,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_s2mNode already exists
         $1 = true;
     } else if( PyArray_Check($input) ) {
         // test if it is a numpy array
@@ -217,11 +201,11 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         $1 = false;
     }
 }
-%typemap(in) s2mNodeBone &{
+%typemap(in) s2mNode &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mNodeBone,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mNode,  0  | 0)) && argp1) {
         // Recast the pointer
-        $1 = reinterpret_cast< s2mNodeBone * >(argp1);
+        $1 = reinterpret_cast< s2mNode * >(argp1);
     } else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
@@ -229,13 +213,13 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 
         // Dimension controls
         if (ndim != 1 && (dims[0] < 3 || dims[0] > 4)){
-            PyErr_SetString(PyExc_ValueError, "s2mNodeBone must be a numpy 3d vector");
+            PyErr_SetString(PyExc_ValueError, "s2mNode must be a numpy 3d vector");
             SWIG_fail;
         }
 
         // Get the data
         void*      data    = PyArray_DATA    ((PyArrayObject*)$input);
-        $1 = new s2mNodeBone();
+        $1 = new s2mNode();
         int typ=PyArray_TYPE((PyArrayObject*)$input);
         if (typ == NPY_LONG){
             for (unsigned int i = 0; i<3; ++i)
@@ -250,11 +234,11 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         }
 
     } else {
-        PyErr_SetString(PyExc_ValueError, "s2mNodeBone must be a s2mNodeBone or numpy vector");
+        PyErr_SetString(PyExc_ValueError, "s2mNode must be a s2mNode or numpy vector");
         SWIG_fail;
     }
 };
-%extend s2mNodeBone{
+%extend s2mNode{
     PyObject* get_array(){
         int nArraySize(1);
         npy_intp * arraySizes = new npy_intp[nArraySize];
@@ -295,6 +279,25 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
     } else {
         PyErr_SetString(PyExc_ValueError, "s2mPath must be a s2mPath or string");
         SWIG_fail;
+    }
+};
+
+%extend s2mAttitude{
+    PyObject* get_array(){
+        int nArraySize(2);
+        npy_intp * arraySizes = new npy_intp[nArraySize];
+        arraySizes[0] = 4;
+        arraySizes[1] = 4;
+
+        double * values = new double[4*4];
+        for (unsigned int i=0; i<4; ++i){
+            for (unsigned int j=0; j<4; ++j){
+                values[i*4+j] = (*$self)(j*4+i);
+            }
+        }
+        PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, values);
+        PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+        return output;
     }
 };
 

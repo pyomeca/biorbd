@@ -23,10 +23,10 @@ class BIORBD_API s2mMusclePathChangers
         virtual unsigned int nbWraps() const { return m_nbWraps; } // retourne le nombre total de wrapping objects
         virtual unsigned int nbVia() const { return m_nbVia; } // retourne le nombre total de via points
         virtual unsigned int nbObjects() const {return m_totalObjects; } // Retourne le nombre total d'objects
-        virtual boost::shared_ptr<s2mMusclePathChanger> object(const unsigned int&) const; // Get sur un wrapping
+        virtual std::shared_ptr<s2mMusclePathChanger> object(const unsigned int&) const; // Get sur un wrapping
 
     protected:
-        std::vector<boost::shared_ptr<s2mMusclePathChanger> > m_obj; // Tableau de pointeur sur les objects
+        std::vector<std::shared_ptr<s2mMusclePathChanger> > m_obj; // Tableau de pointeur sur les objects
         unsigned int m_nbWraps;
         unsigned int m_nbVia;
         unsigned int m_totalObjects;

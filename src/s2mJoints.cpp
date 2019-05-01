@@ -507,9 +507,9 @@ RigidBodyDynamics::Math::Vector3d s2mJoints::CoMddotBySegment(const s2mGenCoord 
 
 }
 
-std::vector<std::vector<s2mNode> > s2mJoints::meshPoints(const s2mGenCoord &Q, const bool updateKin){
+std::vector<std::vector<s2mNodeBone> > s2mJoints::meshPoints(const s2mGenCoord &Q, const bool updateKin){
 
-    std::vector<std::vector<s2mNode> > v; // Vecteur de vecteur de sortie (mesh par segment)
+    std::vector<std::vector<s2mNodeBone> > v; // Vecteur de vecteur de sortie (mesh par segment)
 
     // Trouver la position des segments
     std::vector<s2mAttitude> RT(globalJCS(Q, updateKin));
@@ -520,17 +520,17 @@ std::vector<std::vector<s2mNode> > s2mJoints::meshPoints(const s2mGenCoord &Q, c
 
     return v;
 }
-std::vector<s2mNode> s2mJoints::meshPoints(const s2mGenCoord &Q, const unsigned int &i, const bool updateKin){
+std::vector<s2mNodeBone> s2mJoints::meshPoints(const s2mGenCoord &Q, const unsigned int &i, const bool updateKin){
 
     // Trouver la position des segments
     std::vector<s2mAttitude> RT(globalJCS(Q, updateKin));
 
     return meshPoints(RT,i);
 }
-std::vector<s2mNode> s2mJoints::meshPoints(const std::vector<s2mAttitude> &RT, const unsigned int &i){
+std::vector<s2mNodeBone> s2mJoints::meshPoints(const std::vector<s2mAttitude> &RT, const unsigned int &i){
 
     // Recueillir la position des meshings
-    std::vector<s2mNode> v;
+    std::vector<s2mNodeBone> v;
     for (unsigned int j=0; j<boneMesh(i).size(); ++j){
         s2mNode tp (boneMesh(i).point(j));
         tp.applyRT(*(RT.begin()+i));

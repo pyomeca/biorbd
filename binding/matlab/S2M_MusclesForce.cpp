@@ -42,7 +42,7 @@ void S2M_MusclesForce( int nlhs, mxArray *plhs[],
     // Aller chercher les valeurs
     unsigned int cmp(0);
     for (unsigned int iF=0; iF<nFrame; ++iF){
-        std::vector<std::vector<boost::shared_ptr<s2mMuscleForce> > > Force;
+        std::vector<std::vector<std::shared_ptr<s2mMuscleForce> > > Force;
         if (updateKin)
             Force = model->musclesForces(*model, *(state.begin()+iF), updateKin, &(*(Q.begin()+iF)), &(*(Qdot.begin()+iF)));
         else
