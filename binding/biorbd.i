@@ -13,6 +13,7 @@
 #include "s2mMatrix.h"
 #include "s2mNodeWrap.h"
 #include "s2mTime.h"
+
 #include "s2mKalmanReconsIMU.h"
 #include "s2mKalmanReconsMarkers.h"
 #include "s2mMuscleOptimisation.h"
@@ -100,11 +101,11 @@ namespace std {
 %include "../include/biorbdConfig.h"
 //%include "s2mOptions.h"
 
-//%include "s2mVector.h"
+%include "../include/s2mVector.h"
 %include "../include/s2mGenCoord.h"
 %include "../include/s2mTau.h"
-//%include "s2mMatrix.h"
-//%include "s2mAttitude.h"
+%include "../include/s2mMatrix.h"
+%include "../include/s2mAttitude.h"
 //%include "s2mNodeAttitude.h"
 //%include "s2mQuaternion.h"
 //%include "s2mNode.h"
@@ -114,7 +115,8 @@ namespace std {
 //%include "s2mTime.h"
 //%include "s2mTimer.h"
 //%include "s2mBenchmark.h"
-//%include "s2mString.h"
+//%include "../include/s2mString.h"
+%apply std::string { s2mString };
 //%include "s2mEquation.h"
 //%include "s2mIfStream.h"
 //%include "s2mError.h"
