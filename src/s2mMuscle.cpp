@@ -23,7 +23,7 @@ s2mMuscle::~s2mMuscle()
 
 void s2mMuscle::updateOrientations(s2mJoints &m, const s2mGenCoord &Q, int updateKin){
     // Update de la position des insertions et origines
-    m_position.updateKinematics(m,&Q,NULL,m_caract,m_pathChanger,updateKin);
+    m_position.updateKinematics(m,&Q,nullptr,m_caract,m_pathChanger,updateKin);
 }
 void s2mMuscle::updateOrientations(s2mJoints &m, const s2mGenCoord &Q, const s2mGenCoord &Qdot, int updateKin){
     // Update de la position des insertions et origines
@@ -31,7 +31,7 @@ void s2mMuscle::updateOrientations(s2mJoints &m, const s2mGenCoord &Q, const s2m
 }
 void s2mMuscle::updateOrientations(std::vector<s2mNodeMuscle>& musclePointsInGlobal, Eigen::MatrixXd& jacoPointsInGlobal){
     // Update de la position des insertions et origines
-    m_position.updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,NULL,m_caract);
+    m_position.updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,nullptr,m_caract);
 }
 void s2mMuscle::updateOrientations(std::vector<s2mNodeMuscle>& musclePointsInGlobal, Eigen::MatrixXd& jacoPointsInGlobal, const s2mGenCoord &Qdot){
     // Update de la position des insertions et origines
@@ -44,14 +44,14 @@ s2mMuscleGeometry s2mMuscle::position() const {
 
 double s2mMuscle::length(s2mJoints &m, const s2mGenCoord &Q, int updateKin){
     if (updateKin != 0)
-        m_position.updateKinematics(m,&Q,NULL,m_caract,m_pathChanger,updateKin);
+        m_position.updateKinematics(m,&Q,nullptr,m_caract,m_pathChanger,updateKin);
 
     return m_position.length();
 }
 
 double s2mMuscle::musculoTendonLength(s2mJoints &m, const s2mGenCoord &Q, int updateKin){
     if (updateKin != 0)
-        m_position.updateKinematics(m,&Q,NULL,m_caract,m_pathChanger,updateKin);
+        m_position.updateKinematics(m,&Q,nullptr,m_caract,m_pathChanger,updateKin);
 
     return m_position.musculoTendonLength();
 }
@@ -69,7 +69,7 @@ double s2mMuscle::activationDot(const s2mMuscleStateActual &s, const bool alread
 
 std::vector<s2mNodeMuscle> s2mMuscle::musclesPointsInGlobal(s2mJoints &m, const s2mGenCoord &Q,const bool updateKin){
     if (updateKin)
-        m_position.updateKinematics(m,&Q,NULL,m_caract,m_pathChanger);
+        m_position.updateKinematics(m,&Q,nullptr,m_caract,m_pathChanger);
 
     return m_position.musclesPointsInGlobal();
 }

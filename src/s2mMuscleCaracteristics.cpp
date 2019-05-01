@@ -17,7 +17,7 @@ s2mMuscleCaracteristics::s2mMuscleCaracteristics(const double &optLength,
     m_PCSA(PCSA),
     m_tendonSlackLength(tendonSlackLength),
     m_pennationAngle(pennAngle),
-    m_stateMax(NULL),
+    m_stateMax(nullptr),
     m_minActivation(minAct),
     m_tauActivation(tauAct),
     m_tauDeactivation(tauDeact)
@@ -55,7 +55,7 @@ s2mMuscleCaracteristics::s2mMuscleCaracteristics(const s2mMuscleCaracteristics& 
     m_PCSA(c.m_PCSA),
     m_tendonSlackLength(c.tendonSlackLength()),
     m_pennationAngle(c.m_pennationAngle),
-    m_stateMax(NULL),
+    m_stateMax(nullptr),
     m_minActivation(c.m_minActivation),
     m_tauActivation(c.m_tauActivation),
     m_tauDeactivation(c.m_tauDeactivation)
@@ -93,13 +93,15 @@ void s2mMuscleCaracteristics::setStateMax(const s2mMuscleStateMax &s) {
 void s2mMuscleCaracteristics::setStateMax(const s2mMuscleStateMax *s) {
     if (s==NULL)
         m_stateMax = NULL;
+    if (s==nullptr)
+        m_stateMax = nullptr;
     else
         *m_stateMax = *s;
 }
 
 
 s2mMuscleStateMax s2mMuscleCaracteristics::stateMax() const {
-    if (m_stateMax==NULL)
+    if (m_stateMax==nullptr)
         return s2mMuscleStateMax();
     else
         return *m_stateMax;
