@@ -84,8 +84,8 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
         RigidBodyDynamics::Math::Vector3d CoMddotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, const unsigned int i, bool updateKin=true); // accélération du centre de masse du segment i
         Eigen::MatrixXd CoMJacobian(const s2mGenCoord &Q); // Jacobienne
         RigidBodyDynamics::Math::Vector3d angularMomentum(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const bool updateKin = true); // Wrapper pour le moment angulaire
-        std::vector<std::vector<s2mNode> > meshPoints(const s2mGenCoord &Q, const bool updateKin = true);
-        std::vector<s2mNode> meshPoints(const s2mGenCoord &Q, const unsigned int& idx, const bool updateKin = true);
+        std::vector<std::vector<s2mNodeBone> > meshPoints(const s2mGenCoord &Q, const bool updateKin = true);
+        std::vector<s2mNodeBone> meshPoints(const s2mGenCoord &Q, const unsigned int& idx, const bool updateKin = true);
         std::vector<std::vector<s2mPatch> > meshPatch();
         std::vector<s2mPatch> meshPatch(const unsigned int &i);
         std::vector<s2mBoneMesh> boneMesh();
@@ -129,7 +129,7 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
                                                            const s2mGenCoord &Q,
                                                            const unsigned int body_id,
                                                            bool update_kinematics); // Calculate the JCS in global
-        std::vector<s2mNode> meshPoints(const std::vector<s2mAttitude>&, const unsigned int& idx);
+        std::vector<s2mNodeBone> meshPoints(const std::vector<s2mAttitude>&, const unsigned int& idx);
     private:
 
 };

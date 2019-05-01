@@ -182,7 +182,6 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 
 /*** s2mMarkers ***/
 %typemap(typecheck) s2mMarkers &{
-    std::cout << "typemap(typecheck) s2mMarkers" << std::endl;
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mMarkers,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_s2mMarkers already exists
@@ -192,7 +191,6 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
     }
 }
 %typemap(in) s2mMarkers &{
-    std::cout << "typemap(in) s2mMarkers" << std::endl;
     void * argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mMarkers,  0  | 0)) && argp1) {
         // Recast the pointer
@@ -204,11 +202,11 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 }
 
 
-/*** s2mNodeBone ***/
-%typemap(typecheck) s2mNodeBone &{
+/*** s2mNode ***/
+%typemap(typecheck) s2mNode &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mNodeBone,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIGTYPE_p_s2mNodeBone already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mNode,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_s2mNode already exists
         $1 = true;
     } else if( PyArray_Check($input) ) {
         // test if it is a numpy array
@@ -217,11 +215,11 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         $1 = false;
     }
 }
-%typemap(in) s2mNodeBone &{
+%typemap(in) s2mNode &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mNodeBone,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mNode,  0  | 0)) && argp1) {
         // Recast the pointer
-        $1 = reinterpret_cast< s2mNodeBone * >(argp1);
+        $1 = reinterpret_cast< s2mNode * >(argp1);
     } else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
@@ -229,13 +227,13 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 
         // Dimension controls
         if (ndim != 1 && (dims[0] < 3 || dims[0] > 4)){
-            PyErr_SetString(PyExc_ValueError, "s2mNodeBone must be a numpy 3d vector");
+            PyErr_SetString(PyExc_ValueError, "s2mNode must be a numpy 3d vector");
             SWIG_fail;
         }
 
         // Get the data
         void*      data    = PyArray_DATA    ((PyArrayObject*)$input);
-        $1 = new s2mNodeBone();
+        $1 = new s2mNode();
         int typ=PyArray_TYPE((PyArrayObject*)$input);
         if (typ == NPY_LONG){
             for (unsigned int i = 0; i<3; ++i)
@@ -250,11 +248,11 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         }
 
     } else {
-        PyErr_SetString(PyExc_ValueError, "s2mNodeBone must be a s2mNodeBone or numpy vector");
+        PyErr_SetString(PyExc_ValueError, "s2mNode must be a s2mNode or numpy vector");
         SWIG_fail;
     }
 };
-%extend s2mNodeBone{
+%extend s2mNode{
     PyObject* get_array(){
         int nArraySize(1);
         npy_intp * arraySizes = new npy_intp[nArraySize];
