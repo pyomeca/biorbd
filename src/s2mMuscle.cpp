@@ -16,6 +16,14 @@ s2mMuscle::s2mMuscle(const s2mString& name,
     s2mError::s2mAssert(w.nbWraps()!=1, "Multiple wrapping objects is not implemented yet");
 }
 
+s2mMuscle::s2mMuscle(const s2mMuscle &m) :
+    s2mMuscleCompound (m)
+{
+    this->m_position = m.m_position;
+    this->m_caract = m.m_caract;
+    this->m_state = m.m_state;
+}
+
 s2mMuscle::~s2mMuscle()
 {
     //dtor

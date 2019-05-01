@@ -9,6 +9,14 @@ s2mMuscleCompound::s2mMuscleCompound(const s2mString &name, const s2mMusclePathC
     //ctor
 }
 
+s2mMuscleCompound::s2mMuscleCompound(const s2mMuscleCompound &m)
+{
+    this->m_pathChanger = m.m_pathChanger;
+    this->m_force.clear();
+    this->m_type = m.m_type;
+    this->m_name = m.m_name;
+}
+
 s2mMuscleCompound::~s2mMuscleCompound()
 {
     //dtor

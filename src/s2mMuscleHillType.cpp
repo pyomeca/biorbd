@@ -59,6 +59,50 @@ s2mMuscleHillType::s2mMuscleHillType(const s2mString& name,
     //ctor
 }
 
+s2mMuscleHillType::s2mMuscleHillType(const s2mMuscle &m):
+    s2mMuscle(m)
+{
+    const s2mMuscleHillType& mRef(dynamic_cast<const s2mMuscleHillType&>(m));
+
+    // Attributs intermédiaires lors du calcul de la force
+    this->m_damping = mRef.m_damping;
+    this->m_FlCE = mRef.m_FlCE;
+    this->m_FlPE = mRef.m_FlPE;
+    this->m_FvCE = mRef.m_FvCE;
+
+    this->m_cste_FlCE_1 = mRef.m_cste_FlCE_1;
+    this->m_cste_FlCE_2 = mRef.m_cste_FlCE_2;
+    this->m_cste_FvCE_1 = mRef.m_cste_FvCE_1;
+    this->m_cste_FvCE_2 = mRef.m_cste_FvCE_2;
+    this->m_cste_FlPE_1 = mRef.m_cste_FlPE_1;
+    this->m_cste_FlPE_2 = mRef.m_cste_FlPE_2;
+    this->m_cste_forceExcentriqueMultiplier = mRef.m_cste_forceExcentriqueMultiplier;
+    this->m_cste_damping = mRef.m_cste_damping;
+    this->m_cste_vitesseRaccourMax = mRef.m_cste_vitesseRaccourMax;
+}
+
+s2mMuscleHillType::s2mMuscleHillType(const std::shared_ptr<s2mMuscle> m):
+    s2mMuscle(*m)
+{
+    const std::shared_ptr<s2mMuscleHillType> mRef(std::dynamic_pointer_cast<s2mMuscleHillType>(m));
+
+    // Attributs intermédiaires lors du calcul de la force
+    this->m_damping = mRef->m_damping;
+    this->m_FlCE = mRef->m_FlCE;
+    this->m_FlPE = mRef->m_FlPE;
+    this->m_FvCE = mRef->m_FvCE;
+
+    this->m_cste_FlCE_1 = mRef->m_cste_FlCE_1;
+    this->m_cste_FlCE_2 = mRef->m_cste_FlCE_2;
+    this->m_cste_FvCE_1 = mRef->m_cste_FvCE_1;
+    this->m_cste_FvCE_2 = mRef->m_cste_FvCE_2;
+    this->m_cste_FlPE_1 = mRef->m_cste_FlPE_1;
+    this->m_cste_FlPE_2 = mRef->m_cste_FlPE_2;
+    this->m_cste_forceExcentriqueMultiplier = mRef->m_cste_forceExcentriqueMultiplier;
+    this->m_cste_damping = mRef->m_cste_damping;
+    this->m_cste_vitesseRaccourMax = mRef->m_cste_vitesseRaccourMax;
+}
+
 
 
 s2mMuscleHillType::~s2mMuscleHillType()

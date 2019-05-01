@@ -22,7 +22,6 @@ s2mMuscleCaracteristics::s2mMuscleCaracteristics(const double &optLength,
     m_tauActivation(tauAct),
     m_tauDeactivation(tauDeact)
 {
-    m_stateMax = new s2mMuscleStateMax();
     setStateMax(s);
 }
 
@@ -60,7 +59,6 @@ s2mMuscleCaracteristics::s2mMuscleCaracteristics(const s2mMuscleCaracteristics& 
     m_tauActivation(c.m_tauActivation),
     m_tauDeactivation(c.m_tauDeactivation)
 {
-    m_stateMax = new s2mMuscleStateMax();
     setStateMax(c.m_stateMax);
 }
 
@@ -87,16 +85,20 @@ s2mMuscleCaracteristics::~s2mMuscleCaracteristics()
 }
 
 void s2mMuscleCaracteristics::setStateMax(const s2mMuscleStateMax &s) {
+    if (!m_stateMax)
+        m_stateMax = new s2mMuscleStateMax();
+
     *m_stateMax = s;
 }
 
 void s2mMuscleCaracteristics::setStateMax(const s2mMuscleStateMax *s) {
-    if (s==NULL)
-        m_stateMax = NULL;
+    if (!m_stateMax)
+        m_stateMax = new s2mMuscleStateMax();
+
     if (s==nullptr)
         m_stateMax = nullptr;
     else
-        *m_stateMax = *s;
+        setStateMax(*s);
 }
 
 

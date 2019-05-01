@@ -22,6 +22,8 @@ class BIORBD_API s2mMuscleHillType : public s2mMuscle
                           const s2mMuscleCaracteristics&,
                           const s2mMusclePathChangers & = s2mMusclePathChangers(),
                           const s2mMuscleStateActual & = s2mMuscleStateActual());
+        s2mMuscleHillType(const s2mMuscle& m);
+        s2mMuscleHillType(const std::shared_ptr<s2mMuscle> m);
         ~s2mMuscleHillType();
 
 
