@@ -43,7 +43,7 @@ s2mTau s2mMuscles::muscularJointTorque(s2mJoints& m, const std::vector<s2mMuscle
     if (updateKin > 0)
         updateMuscles(m,*Q,*QDot,updateKin);
 
-    std::vector<std::vector<boost::shared_ptr<s2mMuscleForce> > > force_tp = musclesForces(m, state, false);
+    std::vector<std::vector<std::shared_ptr<s2mMuscleForce> > > force_tp = musclesForces(m, state, false);
     F = Eigen::VectorXd::Zero(force_tp.size());
     for (unsigned int i=0; i<force_tp.size(); ++i)
         F(i) = (force_tp[i])[0]->norme();
@@ -72,14 +72,14 @@ s2mTau s2mMuscles::muscularJointTorque(s2mJoints& m, const Eigen::VectorXd& F, b
     return s2mTau(-jaco.transpose() * F);
 }
 
-std::vector<std::vector<boost::shared_ptr<s2mMuscleForce> > > s2mMuscles::musclesForces(s2mJoints& m, const std::vector<s2mMuscleStateActual> &state, bool updateKin, const s2mGenCoord* Q, const s2mGenCoord* QDot){
+std::vector<std::vector<std::shared_ptr<s2mMuscleForce> > > s2mMuscles::musclesForces(s2mJoints& m, const std::vector<s2mMuscleStateActual> &state, bool updateKin, const s2mGenCoord* Q, const s2mGenCoord* QDot){
 
     // Update de la position musculaire
     if (updateKin > 0)
         updateMuscles(m,*Q,*QDot,updateKin);
 
     // Variable de sortie
-    std::vector<std::vector<boost::shared_ptr<s2mMuscleForce> > > forces; // Tous les muscles/Deux pointeurs par muscles (origine/insertion)
+    std::vector<std::vector<std::shared_ptr<s2mMuscleForce> > > forces; // Tous les muscles/Deux pointeurs par muscles (origine/insertion)
 
     unsigned int cmpMus(0);
     std::vector<s2mGroupeMusculaire>::iterator grp=m_mus.begin();

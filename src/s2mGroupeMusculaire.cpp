@@ -12,7 +12,7 @@ s2mGroupeMusculaire::~s2mGroupeMusculaire()
 {
 }
 
-boost::shared_ptr<s2mMuscle> s2mGroupeMusculaire::muscle(const unsigned int &idx){
+std::shared_ptr<s2mMuscle> s2mGroupeMusculaire::muscle(const unsigned int &idx){
     s2mError::s2mAssert(idx<nbMuscles(), "Idx asked is higher than number of muscles");
     return *(m_mus.begin() + idx);
 }
@@ -65,31 +65,31 @@ void s2mGroupeMusculaire::addMuscle(s2mMuscle &val){
 
     // Ajouter un muscle au pool de muscle selon son type
     if (dynamic_cast<s2mMuscleHillTypeMaxime*> (&val)){
-        m_mus.push_back(boost::shared_ptr<s2mMuscle> (new s2mMuscleHillTypeMaxime(dynamic_cast <s2mMuscleHillTypeMaxime&> (val))));
+        m_mus.push_back(std::shared_ptr<s2mMuscle> (new s2mMuscleHillTypeMaxime(dynamic_cast <s2mMuscleHillTypeMaxime&> (val))));
         return;
     }
     else if (dynamic_cast<s2mMuscleHillTypeSimple*> (&val)){
-        m_mus.push_back(boost::shared_ptr<s2mMuscle> (new s2mMuscleHillTypeSimple(dynamic_cast <s2mMuscleHillTypeSimple&> (val))));
+        m_mus.push_back(std::shared_ptr<s2mMuscle> (new s2mMuscleHillTypeSimple(dynamic_cast <s2mMuscleHillTypeSimple&> (val))));
         return;
     }
     else if (dynamic_cast<s2mMuscleHillTypeChadwick*> (&val)){
-        m_mus.push_back(boost::shared_ptr<s2mMuscle> (new s2mMuscleHillTypeChadwick(dynamic_cast <s2mMuscleHillTypeChadwick&> (val))));
+        m_mus.push_back(std::shared_ptr<s2mMuscle> (new s2mMuscleHillTypeChadwick(dynamic_cast <s2mMuscleHillTypeChadwick&> (val))));
         return;
     }
     else if (dynamic_cast<s2mMuscleHillTypeThelen*> (&val)){
-        m_mus.push_back(boost::shared_ptr<s2mMuscle> (new s2mMuscleHillTypeThelen(dynamic_cast <s2mMuscleHillTypeThelen&> (val))));
+        m_mus.push_back(std::shared_ptr<s2mMuscle> (new s2mMuscleHillTypeThelen(dynamic_cast <s2mMuscleHillTypeThelen&> (val))));
         return;
     }
     else if (dynamic_cast<s2mMuscleHillTypeSchutte*> (&val)){
-        m_mus.push_back(boost::shared_ptr<s2mMuscle> (new s2mMuscleHillTypeSchutte(dynamic_cast <s2mMuscleHillTypeSchutte&> (val))));
+        m_mus.push_back(std::shared_ptr<s2mMuscle> (new s2mMuscleHillTypeSchutte(dynamic_cast <s2mMuscleHillTypeSchutte&> (val))));
         return;
     }
     else if (dynamic_cast<s2mMuscleMeshTransverse*> (&val)){
-        //m_mus.push_back(boost::shared_ptr<s2mMuscle> (new s2mMuscleMeshTransverse(dynamic_cast <s2mMuscleMeshTransverse&> (val))));
+        //m_mus.push_back(std::shared_ptr<s2mMuscle> (new s2mMuscleMeshTransverse(dynamic_cast <s2mMuscleMeshTransverse&> (val))));
         return;
     }
     else if (dynamic_cast<s2mMuscleHillType*> (&val)){
-        m_mus.push_back(boost::shared_ptr<s2mMuscle> (new s2mMuscleHillType(dynamic_cast <s2mMuscleHillType&> (val))));
+        m_mus.push_back(std::shared_ptr<s2mMuscle> (new s2mMuscleHillType(dynamic_cast <s2mMuscleHillType&> (val))));
         return;
     }
     else
@@ -101,7 +101,7 @@ unsigned int s2mGroupeMusculaire::nbMuscles() const { return m_mus.size(); }
 
 
 int s2mGroupeMusculaire::muscleID(const s2mString& nameToFind){
-    std::vector<boost::shared_ptr<s2mMuscle> >::iterator musIT=m_mus.begin();
+    std::vector<std::shared_ptr<s2mMuscle> >::iterator musIT=m_mus.begin();
     for (unsigned int i=0; i<m_mus.size(); ++i){
        if (!nameToFind.compare((*(musIT+i))->name()) )
            return i;

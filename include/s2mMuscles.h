@@ -28,7 +28,7 @@ public:
     s2mTau muscularJointTorque(s2mJoints& model, const std::vector<s2mMuscleStateActual> &state, Eigen::VectorXd & F, bool updateKin = true, const s2mGenCoord* Q = NULL, const s2mGenCoord* QDot = NULL);
     s2mTau muscularJointTorque(s2mJoints& model, const std::vector<s2mMuscleStateActual> &state, bool updateKin = true, const s2mGenCoord* Q = NULL, const s2mGenCoord* QDot = NULL);
     Eigen::MatrixXd musclesLengthJacobian(s2mJoints& m, bool updateKinLevel = true, const s2mGenCoord* Q = NULL);
-    std::vector<std::vector<boost::shared_ptr<s2mMuscleForce> > > musclesForces(s2mJoints& m, const std::vector<s2mMuscleStateActual> &state, bool updateKin = true, const s2mGenCoord* Q = NULL, const s2mGenCoord* QDot = NULL);
+    std::vector<std::vector<std::shared_ptr<s2mMuscleForce> > > musclesForces(s2mJoints& m, const std::vector<s2mMuscleStateActual> &state, bool updateKin = true, const s2mGenCoord* Q = NULL, const s2mGenCoord* QDot = NULL);
 
     // Set and get
     virtual unsigned int nbMuscleGroups(); // retourne le nombre total de groupes musculaires

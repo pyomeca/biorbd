@@ -20,7 +20,7 @@ void S2M_Mesh( int nlhs, mxArray *plhs[],
     // Output
     if ( idx==-1){ // Si on a demande tous les segments
         // Trouver ou sont les marqueurs
-        std::vector<std::vector<s2mNode> > allMesh(model->meshPoints(Q));
+        std::vector<std::vector<s2mNodeBone> > allMesh(model->meshPoints(Q));
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateCellMatrix( allMesh.size(), 1);
@@ -29,7 +29,7 @@ void S2M_Mesh( int nlhs, mxArray *plhs[],
             double *Mesh = mxGetPr(mesh_out_tp);
 
             // Remplir le output
-            std::vector<s2mNode>::iterator it=(*(allMesh.begin()+i_bone)).begin();
+            std::vector<s2mNodeBone>::iterator it=(*(allMesh.begin()+i_bone)).begin();
             for (unsigned int i=0; (it+i)!=(*(allMesh.begin()+i_bone)).end(); ++i){
                 Mesh[i*3] = (*(it+i))(0);
                 Mesh[i*3+1] = (*(it+i))(1);
@@ -41,14 +41,14 @@ void S2M_Mesh( int nlhs, mxArray *plhs[],
 
     }
     else{ // Si on a demande un segment precis
-        std::vector<s2mNode> Mesh_tp(model->meshPoints(Q,(unsigned int)idx));
+        std::vector<s2mNodeBone> Mesh_tp(model->meshPoints(Q,(unsigned int)idx));
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix(3, Mesh_tp.size(), mxREAL);
         double *Mesh = mxGetPr(plhs[0]);
 
         // Remplir le output
-        std::vector<s2mNode>::iterator it=Mesh_tp.begin();
+        std::vector<s2mNodeBone>::iterator it=Mesh_tp.begin();
         for (unsigned int i=0; (it+i)!=Mesh_tp.end(); ++i){
             Mesh[i*3] = (*(it+i))(0);
             Mesh[i*3+1] = (*(it+i))(1);

@@ -167,7 +167,7 @@ double s2mMuscleGeometry::length(const s2mMuscleCaracteristics &c, const s2mMusc
         s2mNodeMuscle pi_wrap; // point sur le wrapping coté insertion
         s2mNodeMuscle po_wrap; // point sur le wrapping coté origine
         double lengthWrap(0);
-        boost::static_pointer_cast<s2mWrappingObject>(objects->object(0))->wrapPoints(po_wrap, pi_wrap, &lengthWrap);
+        std::static_pointer_cast<s2mWrappingObject>(objects->object(0))->wrapPoints(po_wrap, pi_wrap, &lengthWrap);
         m_muscleTendonLength = (*m_pointsInGlobal.begin() - pi_wrap).norm()   + // longueur avant le wrap
                     lengthWrap                 + // longueur sur le wrap
                     (*m_pointsInGlobal.end() - po_wrap).norm();   // longueur apres le wrap
@@ -204,7 +204,7 @@ void s2mMuscleGeometry::musclesPointsInGlobal(s2mJoints &model, const s2mGenCoor
         s2mError::s2mAssert(objects.nbWraps() < 2, "Cannot compute more than one wrapping yet");
 
         // Récupérer la matrice de RT du wrap
-        boost::shared_ptr<s2mWrappingObject> w = boost::static_pointer_cast<s2mWrappingObject>(objects.object(0));
+        std::shared_ptr<s2mWrappingObject> w = std::static_pointer_cast<s2mWrappingObject>(objects.object(0));
         s2mAttitude RT = w->RT(model,Q);
 
         // Alias
@@ -214,7 +214,7 @@ void s2mMuscleGeometry::musclesPointsInGlobal(s2mJoints &model, const s2mGenCoor
         s2mNodeMuscle pi_wrap; // point sur le wrapping coté insertion
         s2mNodeMuscle po_wrap; // point sur le wrapping coté origine
 
-        boost::static_pointer_cast<s2mWrappingObject>(objects.object(0))->wrapPoints(RT,po_mus,pi_mus,po_wrap, pi_wrap);
+        std::static_pointer_cast<s2mWrappingObject>(objects.object(0))->wrapPoints(RT,po_mus,pi_mus,po_wrap, pi_wrap);
 
         // Stocker les points dans le local
         s2mError::s2mWarning(0, "Attention le push_back de m_pointsInLocal n'a pas été validé");
@@ -235,7 +235,7 @@ void s2mMuscleGeometry::musclesPointsInGlobal(s2mJoints &model, const s2mGenCoor
         m_pointsInLocal.push_back(originInLocal());
         m_pointsInGlobal.push_back(originInGlobal(model, Q));
         for (unsigned int i=0; i<objects.nbObjects(); ++i){
-            s2mViaPoint node ( *(boost::static_pointer_cast<s2mViaPoint>(objects.object(i))) );
+            s2mViaPoint node ( *(std::static_pointer_cast<s2mViaPoint>(objects.object(i))) );
             m_pointsInLocal.push_back(node);
             node.setPosition(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(node.parent().c_str()), node, false));
             m_pointsInGlobal.push_back(node);

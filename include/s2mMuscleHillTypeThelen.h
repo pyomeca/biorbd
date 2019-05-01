@@ -17,12 +17,15 @@ class BIORBD_API s2mMuscleHillTypeThelen : public s2mMuscleHillType
                                 const s2mMuscleCaracteristics& c,
                                 const s2mMusclePathChangers & w= s2mMusclePathChangers(),
                                 const s2mMuscleStateActual & s= s2mMuscleStateActual());
+        s2mMuscleHillTypeThelen(const s2mMuscle& m);
+        s2mMuscleHillTypeThelen(const std::shared_ptr<s2mMuscle> m);
 
         ~s2mMuscleHillTypeThelen(){}
         virtual void computeFlCE(const s2mMuscleStateActual &EMG);
 
 
     protected:
+        virtual void setType();
 
     private:
 

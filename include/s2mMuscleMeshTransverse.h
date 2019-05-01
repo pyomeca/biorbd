@@ -17,8 +17,8 @@ class BIORBD_API s2mMuscleMeshTransverse : public s2mMuscleMesh
         virtual s2mMuscleStateActual dynamicMuscleContraction() ;
 
         // Get sur la force
-        virtual std::vector<boost::shared_ptr<s2mMuscleForce> > force(s2mJoints& , const s2mGenCoord&, const s2mMuscleStateActual&) {std::vector<boost::shared_ptr<s2mMuscleForce> > dummy; return dummy;}
-        virtual std::vector<boost::shared_ptr<s2mMuscleForce> > force(const s2mMuscleStateActual&) {std::vector<boost::shared_ptr<s2mMuscleForce> > dummy; return dummy;}
+        virtual std::vector<std::shared_ptr<s2mMuscleForce> > force(s2mJoints& , const s2mGenCoord&, const s2mMuscleStateActual&) {std::vector<std::shared_ptr<s2mMuscleForce> > dummy; return dummy;}
+        virtual std::vector<std::shared_ptr<s2mMuscleForce> > force(const s2mMuscleStateActual&) {std::vector<std::shared_ptr<s2mMuscleForce> > dummy; return dummy;}
 
         // New fmethods
         virtual void addTransverseComponent() {}

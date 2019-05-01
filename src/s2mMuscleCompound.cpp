@@ -9,6 +9,14 @@ s2mMuscleCompound::s2mMuscleCompound(const s2mString &name, const s2mMusclePathC
     //ctor
 }
 
+s2mMuscleCompound::s2mMuscleCompound(const s2mMuscleCompound &m)
+{
+    this->m_pathChanger = m.m_pathChanger;
+    this->m_force.clear();
+    this->m_type = m.m_type;
+    this->m_name = m.m_name;
+}
+
 s2mMuscleCompound::~s2mMuscleCompound()
 {
     //dtor
@@ -22,7 +30,7 @@ void s2mMuscleCompound::addPathObject(s2mMusclePathChanger &w)  {
     m_pathChanger.addPathChanger(w);
 }
 
-std::vector<boost::shared_ptr<s2mMuscleForce> > s2mMuscleCompound::force() {
+std::vector<std::shared_ptr<s2mMuscleForce> > s2mMuscleCompound::force() {
     return m_force;
 }
 
