@@ -1,5 +1,6 @@
 #ifndef S2MMUSCLECOMPOUND_H
 #define S2MMUSCLECOMPOUND_H
+    #include <memory>
     #include "biorbdConfig.h"
     #include "s2mString.h"
     #include "s2mMuscleForce.h"
@@ -14,6 +15,7 @@ class BIORBD_API s2mMuscleCompound
 {
     public:
         s2mMuscleCompound(const s2mString &name = "", const s2mMusclePathChangers& = s2mMusclePathChangers());
+        s2mMuscleCompound(const s2mMuscleCompound& m);
         ~s2mMuscleCompound();
 
         // Wrapping object
@@ -22,15 +24,15 @@ class BIORBD_API s2mMuscleCompound
 
 
         virtual s2mString type() const {return m_type;}
-        virtual std::vector<boost::shared_ptr<s2mMuscleForce> > force(s2mJoints& , const s2mGenCoord&, const s2mGenCoord&, const s2mMuscleStateActual&, const int = 2) = 0;
-        virtual std::vector<boost::shared_ptr<s2mMuscleForce> > force(s2mJoints& , const s2mGenCoord&, const s2mMuscleStateActual&, const int = 2) = 0;
-        virtual std::vector<boost::shared_ptr<s2mMuscleForce> > force(const s2mMuscleStateActual&) = 0;
-        virtual std::vector<boost::shared_ptr<s2mMuscleForce> > force(); // Return the last computed muscle force
+        virtual std::vector<std::shared_ptr<s2mMuscleForce> > force(s2mJoints& , const s2mGenCoord&, const s2mGenCoord&, const s2mMuscleStateActual&, const int = 2) = 0;
+        virtual std::vector<std::shared_ptr<s2mMuscleForce> > force(s2mJoints& , const s2mGenCoord&, const s2mMuscleStateActual&, const int = 2) = 0;
+        virtual std::vector<std::shared_ptr<s2mMuscleForce> > force(const s2mMuscleStateActual&) = 0;
+        virtual std::vector<std::shared_ptr<s2mMuscleForce> > force(); // Return the last computed muscle force
         virtual s2mString name() const;
         virtual void setName(const s2mString& name);
     protected:
         s2mMusclePathChangers m_pathChanger;
-        std::vector<boost::shared_ptr<s2mMuscleForce> > m_force;
+        std::vector<std::shared_ptr<s2mMuscleForce> > m_force;
         virtual void setForce() = 0;
         virtual void setType()=0;
         s2mString m_type;

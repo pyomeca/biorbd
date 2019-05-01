@@ -20,6 +20,7 @@ class BIORBD_API s2mMuscleHillTypeSimple : public s2mMuscleHillType
         s2mMuscleHillType(n,g,c,w,s){setType();}
         ~s2mMuscleHillTypeSimple(){}
     std::vector<boost::shared_ptr<s2mMuscleForce> > force(const s2mMuscleStateActual &EMG);
+    std::vector<std::shared_ptr<s2mMuscleForce> > force(const s2mMuscleStateActual &EMG);
     protected:
         double multiplyCaractByActivationAndForce(const s2mMuscleStateActual &EMG); // Voir dans la fonction pour descriptif
 

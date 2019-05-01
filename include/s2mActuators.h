@@ -1,7 +1,7 @@
 #ifndef S2MACTUATORS_H
 #define S2MACTUATORS_H
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <vector>
 #include "biorbdConfig.h"
 #include "s2mError.h"
@@ -29,12 +29,12 @@ class BIORBD_API s2mActuators
         s2mTau torque(const s2mJoints&, const s2mGenCoord& a, const s2mGenCoord& Q, const s2mGenCoord &Qdot);
 
         // Get and set
-        virtual std::pair<boost::shared_ptr<s2mActuator>, boost::shared_ptr<s2mActuator> > actuator(unsigned int dof);
-        virtual boost::shared_ptr<s2mActuator> actuator(unsigned int dof, unsigned int idx);
+        virtual std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator> > actuator(unsigned int dof);
+        virtual std::shared_ptr<s2mActuator> actuator(unsigned int dof, unsigned int idx);
         unsigned int nbActuators() const {return m_all.size();}
 
     protected:
-        std::vector<std::pair<boost::shared_ptr<s2mActuator>, boost::shared_ptr<s2mActuator> > > m_all; // Tous les actuators réunis / pair (+ ou -)
+        std::vector<std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator> > > m_all; // Tous les actuators réunis / pair (+ ou -)
         bool * m_isDofSet;
         bool m_isClose;
 private:

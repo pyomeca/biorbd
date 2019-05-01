@@ -31,19 +31,19 @@ void S2M_MusclesPoints( int nlhs, mxArray *plhs[],
                 // Si le nombre de wrap est > 0, c'est qu'il n'y a pas de viapoints et il n'y a qu'UN wrap
                 if (model->muscleGroup(i).muscle(j)->pathChanger().nbWraps() > 0){
                     // De quel type
-                    s2mString forme(boost::static_pointer_cast<s2mWrappingObject>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->forme());
+                    s2mString forme(std::static_pointer_cast<s2mWrappingObject>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->forme());
                     wrap_forme.push_back(forme);
 
                     // Dans quelle orientation
                     s2mAttitude RT;
                     RT.setIdentity();
-                    RT = boost::static_pointer_cast<s2mWrappingObject>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->RT(*model,*(Q.begin()+iQ),false);
+                    RT = std::static_pointer_cast<s2mWrappingObject>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->RT(*model,*(Q.begin()+iQ),false);
                     wrap_RT.push_back(RT);
 
                     // Quel est sa dimension
                     if (!forme.tolower().compare("cylinder")){
-                        wrap_dim1.push_back(boost::static_pointer_cast<s2mWrappingCylinder>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->rayon());
-                        wrap_dim2.push_back(boost::static_pointer_cast<s2mWrappingCylinder>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->length());
+                        wrap_dim1.push_back(std::static_pointer_cast<s2mWrappingCylinder>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->rayon());
+                        wrap_dim2.push_back(std::static_pointer_cast<s2mWrappingCylinder>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->length());
                     }
                 }
 

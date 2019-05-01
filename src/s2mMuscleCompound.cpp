@@ -22,7 +22,7 @@ void s2mMuscleCompound::addPathObject(s2mMusclePathChanger &w)  {
     m_pathChanger.addPathChanger(w);
 }
 
-std::vector<boost::shared_ptr<s2mMuscleForce> > s2mMuscleCompound::force() {
+std::vector<std::shared_ptr<s2mMuscleForce> > s2mMuscleCompound::force() {
     return m_force;
 }
 

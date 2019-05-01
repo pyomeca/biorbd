@@ -26,7 +26,11 @@
 // Instantiate templates
 namespace std {
     %template(VecS2mNodeBone) std::vector<s2mNodeBone>;
+    %template(SharedS2mMuscle) std::shared_ptr<s2mMuscle>;
     %template(VecS2mMuscleStateActual) std::vector<s2mMuscleStateActual>;
+    %template(MatS2mMuscleStateActual) std::vector<std::vector<s2mMuscleStateActual>>;
+    %template(VecS2mNodeMuscle) std::vector<s2mNodeMuscle>;
+    %template(MatS2mNodeMuscle) std::vector<std::vector<s2mNodeMuscle>>;
 }
 
 %extend s2mMusculoSkeletalModel{
