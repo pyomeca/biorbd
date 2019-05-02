@@ -125,8 +125,6 @@ void s2mMuscleHillType::setForce()
     //dtor
 }
 
-
-
 std::vector<std::shared_ptr<s2mMuscleForce> > s2mMuscleHillType::force(s2mJoints& m, const s2mGenCoord& Q, const s2mGenCoord& Qdot, const s2mMuscleStateActual& EMG, const int updateKinLevel){
     // Update de la configuration
     if (updateKinLevel == 1)
