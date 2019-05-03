@@ -33,6 +33,7 @@ class BIORBD_API s2mMuscleCompound
     protected:
         s2mMusclePathChangers m_pathChanger;
         std::vector<std::shared_ptr<s2mMuscleForce> > m_force;
+        virtual void copyForce(const std::vector<std::shared_ptr<s2mMuscleForce> >& force);
         virtual void setForce() = 0;
         virtual void setType()=0;
         s2mString m_type;
