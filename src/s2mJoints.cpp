@@ -48,6 +48,17 @@ unsigned int s2mJoints::nbTau() const {
 unsigned int s2mJoints::nbDof() const {
     return m_nDof;
 }
+
+std::vector<std::string> s2mJoints::nameDof() const
+{
+    std::vector<std::string> names;
+    for (unsigned int i=0; i<nbBone(); ++i){
+        for (unsigned int j=0; j<bone(i).nDof(); ++j){
+            names.push_back(bone(i).name() + "_" + bone(i).nameDof(j));
+        }
+    }
+    return names;
+}
 unsigned int s2mJoints::nbQ() const {
     return m_nbQ;
 }

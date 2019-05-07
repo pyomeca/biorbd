@@ -48,6 +48,7 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
         unsigned int nbInterationStep() const;
         unsigned int nbTau() const;
         unsigned int nbDof() const;
+        std::vector<std::string> nameDof() const;
         unsigned int nbQ() const;
         unsigned int nbQdot() const;
         unsigned int nbQddot() const;
