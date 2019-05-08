@@ -376,7 +376,7 @@ s2mNode s2mJoints::CoM(const s2mGenCoord &Q){
     RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,NULL,NULL);
 
     // Pour chaque segment, trouver le CoM (CoM = somme(masse_segmentaire * pos_com_seg)/masse_totale)
-    std::vector<RigidBodyDynamics::Math::Vector3d> com_segment(CoMbySegment(Q,true));
+    std::vector<s2mNodeBone> com_segment(CoMbySegment(Q,true));
     s2mNode com;
     for (unsigned int i=0; i<com_segment.size(); ++i)
         com += m_bones[i].caract().mMass * (*(com_segment.begin()+i));
@@ -462,8 +462,8 @@ Eigen::MatrixXd s2mJoints::CoMJacobian(const s2mGenCoord &Q){
 }
 
 
-std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CoMbySegment(const s2mGenCoord &Q, bool updateKin){// Position du centre de masse de chaque segment
-    std::vector<RigidBodyDynamics::Math::Vector3d> tp; // vecteur de vecteurs de sortie
+std::vector<s2mNodeBone> s2mJoints::CoMbySegment(const s2mGenCoord &Q, bool updateKin){// Position du centre de masse de chaque segment
+    std::vector<s2mNodeBone> tp; // vecteur de vecteurs de sortie
 
     for (unsigned int i=0; i<m_bones.size(); ++i){
         tp.push_back(CoMbySegment(Q,i,updateKin));
@@ -473,7 +473,7 @@ std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CoMbySegment(const s2m
 }
 
 
-RigidBodyDynamics::Math::Vector3d s2mJoints::CoMbySegment(const s2mGenCoord &Q, const unsigned int i, bool updateKin){ // Position du centre de masse du segment i
+s2mNodeBone s2mJoints::CoMbySegment(const s2mGenCoord &Q, const unsigned int i, bool updateKin){ // Position du centre de masse du segment i
 
     s2mError::s2mAssert(i < m_bones.size(), "Choosen segment doesn't exist");
     return RigidBodyDynamics::CalcBodyToBaseCoordinates(*this, Q, m_bones[i].id(),m_bones[i].caract().mCenterOfMass,updateKin);
