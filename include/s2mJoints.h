@@ -48,6 +48,7 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
         unsigned int nbInterationStep() const;
         unsigned int nbTau() const;
         unsigned int nbDof() const;
+        std::vector<std::string> nameDof() const;
         unsigned int nbQ() const;
         unsigned int nbQdot() const;
         unsigned int nbQddot() const;
@@ -74,8 +75,8 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
         unsigned int nbBone() const; // Return the actual number of segments
         double mass() const; // retourne la masse de tous les segments
         s2mNode CoM(const s2mGenCoord &Q); // Position du centre de masse
-        std::vector<RigidBodyDynamics::Math::Vector3d> CoMbySegment(const s2mGenCoord &Q, bool updateKin=true); // Position du centre de masse de chaque segment
-        RigidBodyDynamics::Math::Vector3d CoMbySegment(const s2mGenCoord &Q, const unsigned int i, bool updateKin=true); // Position du centre de masse du segment i
+        std::vector<s2mNodeBone> CoMbySegment(const s2mGenCoord &Q, bool updateKin=true); // Position du centre de masse de chaque segment
+        s2mNodeBone CoMbySegment(const s2mGenCoord &Q, const unsigned int i, bool updateKin=true); // Position du centre de masse du segment i
         RigidBodyDynamics::Math::Vector3d CoMdot(const s2mGenCoord &Q, const s2mGenCoord &Qdot); // Vitesse du CoM
         RigidBodyDynamics::Math::Vector3d CoMddot(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot); // Acceleration du CoM
         std::vector<RigidBodyDynamics::Math::Vector3d> CoMdotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, bool updateKin=true); // vitesse du centre de masse de chaque segment
