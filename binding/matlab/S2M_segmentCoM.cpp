@@ -19,7 +19,7 @@ void S2M_segmentCOM( int nlhs, mxArray *plhs[],
 		
 	// Trouver la position du CoM
 	if (i==-1){
-                std::vector<RigidBodyDynamics::Math::Vector3d> COM = model->CoMbySegment(Q,true);
+                std::vector<s2mNodeBone> COM = model->CoMbySegment(Q,true);
 		/* Create a matrix for the return argument */
 		plhs[0] = mxCreateDoubleMatrix( 3, model->nbBone(), mxREAL);
 		// Remplir l'output
@@ -29,7 +29,7 @@ void S2M_segmentCOM( int nlhs, mxArray *plhs[],
 				tp[3*j+k] = COM[j][k]; // Transférer le tout dans un tableau de sortie
 	}
 	else{
-                RigidBodyDynamics::Math::Vector3d COM = model->CoMbySegment(Q,i,true);
+                s2mNodeBone COM = model->CoMbySegment(Q,i,true);
 		
 		/* Create a matrix for the return argument */
 		plhs[0] = mxCreateDoubleMatrix( 3, 1, mxREAL);
