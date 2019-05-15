@@ -115,8 +115,11 @@ CTestTestfile.cmake
 CMakeLists.txt.user
 
 # Specific project files and folders
-build
+build*
+debug*
+install*
+*.user*
 includes/numpy
 S2MSource
 pyomeca
-release
+release*
