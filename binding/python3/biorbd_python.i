@@ -8,6 +8,8 @@
 const int USER_ERROR__inconsistent_build_configuration__see_dlib_faq_1_ = 0;
 const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 #endif
+#include "Python.h"
+#include "numpy/arrayobject.h"
 %}
 
 %include "numpy.i"
@@ -90,22 +92,13 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
             SWIG_fail;
         }
 
-        // Get the data
-        void*      data    = PyArray_DATA    ((PyArrayObject*)$input);
+        // Cast the vector
+        PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
+        // Copy the actual data
         unsigned int nQ(dims[0]);
         $1 = new s2mGenCoord(nQ);
-        int typ=PyArray_TYPE((PyArrayObject*)$input);
-        if (typ == NPY_LONG){
-            for (unsigned int q = 0; q<nQ; ++q)
-                (*$1)[q] = (double)(((int*)data)[q]);
-        }
-        else if(typ == NPY_DOUBLE)
-            for (unsigned int q = 0; q<nQ; ++q)
-                (*$1)[q] = ((double*)data)[q];
-        else{
-            PyErr_SetString(PyExc_ValueError, "Only int or double are allowed");
-            SWIG_fail;
-        }
+        for (unsigned int q=0; q<nQ; ++q)
+            (*$1)[q] = *(double*)PyArray_GETPTR1(data, q);
 
     } else {
         PyErr_SetString(PyExc_ValueError, "s2mGenCoord must be a s2mGenCoord or numpy vector");
@@ -128,36 +121,28 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 }
 %typemap(in) s2mTau &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mTau,  0  | 0)) && argp1) {
-        // Recast the pointer
+        if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mTau,  0  | 0)) && argp1) {
+        // If it is the right type, recast-it the pointer
         $1 = reinterpret_cast< s2mTau * >(argp1);
     } else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
         npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
 
-        // Dimension controls
+        // Dimension controls (has to be a vector)
         if (ndim != 1 ){
             PyErr_SetString(PyExc_ValueError, "s2mTau must be a numpy vector");
             SWIG_fail;
         }
 
-        // Get the data
-        void*      data    = PyArray_DATA    ((PyArrayObject*)$input);
+        // Cast the vector
+        PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
+
+        // Copy the actual data
         unsigned int nTau(dims[0]);
         $1 = new s2mTau(nTau);
-        int typ=PyArray_TYPE((PyArrayObject*)$input);
-        if (typ == NPY_LONG){
-            for (unsigned int tau = 0; tau<nTau; ++tau)
-                (*$1)[tau] = (double)(((int*)data)[tau]);
-        }
-        else if(typ == NPY_DOUBLE)
-            for (unsigned int tau = 0; tau<nTau; ++tau)
-                (*$1)[tau] = ((double*)data)[tau];
-        else{
-            PyErr_SetString(PyExc_ValueError, "Only int or double are allowed");
-            SWIG_fail;
-        }
+        for (unsigned int tau=0; tau<nTau; ++tau)
+            (*$1)[tau] = *(double*)PyArray_GETPTR1(data, tau);
 
     } else {
         PyErr_SetString(PyExc_ValueError, "s2mTau must be a s2mTau or numpy vector");
@@ -216,22 +201,13 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
             PyErr_SetString(PyExc_ValueError, "s2mNode must be a numpy 3d vector");
             SWIG_fail;
         }
+        // Cast the vector
+        PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
 
-        // Get the data
-        void*      data    = PyArray_DATA    ((PyArrayObject*)$input);
+        // Copy the actual data
         $1 = new s2mNode();
-        int typ=PyArray_TYPE((PyArrayObject*)$input);
-        if (typ == NPY_LONG){
-            for (unsigned int i = 0; i<3; ++i)
-                (*$1)[i] = (double)(((int*)data)[i]);
-        }
-        else if(typ == NPY_DOUBLE)
-            for (unsigned int i = 0; i<3; ++i)
-                (*$1)[i] = ((double*)data)[i];
-        else{
-            PyErr_SetString(PyExc_ValueError, "Only int or double are allowed");
-            SWIG_fail;
-        }
+        for (unsigned int i=0; i<3; ++i)
+            (*$1)[i] = *(double*)PyArray_GETPTR1(data, i);
 
     } else {
         PyErr_SetString(PyExc_ValueError, "s2mNode must be a s2mNode or numpy vector");
