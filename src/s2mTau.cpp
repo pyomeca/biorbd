@@ -2,7 +2,7 @@
 #include "../include/s2mTau.h"
 
 s2mTau::s2mTau(const s2mJoints &j) :
-    s2mVector(j.nbDof()){
+    s2mVector(j.nbTau()){
 
 }
 
