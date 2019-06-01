@@ -16,7 +16,7 @@ void func(){
 int main()
 {
 
-    s2mMusculoSkeletalModel m3("pyomecaman.s2mMod");
+    s2mMusculoSkeletalModel m3("pyomecaman.bioMod");
     s2mGenCoord Q(m3);
     s2mGenCoord QDDot(m3);
     s2mTau T(m3);
