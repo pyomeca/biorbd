@@ -45,6 +45,7 @@ install:
     # Install test packages for Python3
     - conda install python pytest numpy swig
     - conda install boost eigen
+    - conda install lapack -c conda-forge
     - conda install dlib rbdl -cpyomeca
       
 script:
