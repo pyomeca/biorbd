@@ -67,7 +67,7 @@ script:
       fi
     # Only do the coverage on Linux, but run the test anyway to get a nice output
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        make ezc3d_coverage;
+        make biorbd_coverage;
       elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
         ./runUnitTests;
       elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
