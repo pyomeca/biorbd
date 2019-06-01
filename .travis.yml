@@ -49,9 +49,6 @@ install:
     - conda install python pytest numpy swig
     - conda install boost eigen
     - conda install dlib rbdl -cpyomeca
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-        conda install -c conda-forge xorg-libx11;
-      fi
       
 script:
     ############################################################################
