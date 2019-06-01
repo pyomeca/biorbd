@@ -90,6 +90,16 @@ script:
         cmake --build ./ --config Release --target install;
       fi
 
+after_success:
+    # Uploading report to CodeCov
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+        cd ${TRAVIS_BUILD_DIR};
+        lcov --directory . --capture --output-file coverage.info;
+        lcov --remove coverage.info '/usr/*' --output-file coverage.info;
+        lcov --list coverage.info;
+        bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports";
+      fi
+
 notifications:
     email:
         on_success: never
