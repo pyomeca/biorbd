@@ -88,7 +88,7 @@ if (BUILD_TESTS)
 
         # we have a submodule setup for gtest, assume it is under external/gtest
         # now we need to clone this submodule
-        execute_process(COMMAND git submodule update --init -- external/gtest
+        execute_process(COMMAND git submodule update --init -- external/googletest
                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
         find_path(GTEST_INCLUDE_DIR gtest.h HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${RELATIVE_PATH_TO_GTEST}/googletest/include/gtest)
