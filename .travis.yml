@@ -34,6 +34,7 @@ before_install:
         choco install miniconda3 --params="'/AddToPath:1'";
         export PATH="/c/tools/miniconda3/scripts:/c/tools/miniconda3/:$PATH";
       fi
+    - conda env list
     - export PATH="$HOME/miniconda/bin:$PATH"
     - hash -r
     - conda config --set always_yes yes --set changeps1 no
@@ -46,9 +47,6 @@ install:
     - conda install python pytest numpy swig
     - conda install boost eigen
     - conda install dlib rbdl -cpyomeca
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-        conda install -c conda-forge xorg-libx11;
-      fi
 
 script:
     ############################################################################
@@ -61,7 +59,7 @@ script:
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then 
         cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF -DBUILD_DOC=OFF -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
       else
-        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=$HOME/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF -DBUILD_DOC=OFF -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
+        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF -DBUILD_DOC=OFF -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
       fi
 
 notifications:
