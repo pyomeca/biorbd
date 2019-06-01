@@ -35,10 +35,6 @@ before_install:
         export PATH="/c/tools/miniconda3/scripts:/c/tools/miniconda3/:$PATH";
       fi
     - echo "coucou"
-    - echo "$HOME/miniconda/bin"
-    - echo "coucou2"
-    - echo "$ToolsDir/miniconda"
-    - dir "$ToolsDir/miniconda"
     - dir "$HOME/miniconda/"
     - echo "coucou3"
     - export PATH="$HOME/miniconda/bin:$PATH"
@@ -68,7 +64,7 @@ script:
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then 
         cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF -DBUILD_DOC=OFF -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
       else
-        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=$ToolsDir/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF -DBUILD_DOC=OFF -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
+        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=$HOME/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF -DBUILD_DOC=OFF -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
       fi
 
 notifications:
