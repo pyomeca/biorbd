@@ -40,8 +40,8 @@ before_install:
     - conda config --set auto_update_conda no
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then conda update -q conda; fi
     - source activate
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-        xcode-select --install
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
+        xcode-select --install;
       fi
 
 install:
