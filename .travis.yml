@@ -57,12 +57,36 @@ script:
     # Download, compile and test core
     - mkdir -p build
     - cd build
-      # Test if biorbd can be compile with the python binder
+    # Perform tests on all platform, but only perform code coverage on Linux
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX= -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF .. ;
+        make;
+      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX= -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF .. ;
+        make;
+      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX= -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF ..;
+        cmake --build ./ --config Release;
+      fi
+    # Only do the coverage on Linux, but run the test anyway to get a nice output
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+        make ezc3d_coverage;
+      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
+        ./runUnitTests;
+      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+        cp bin/Release/*.dll .;
+        cp Release/*.dll .;
+        cp Release/*.exe .;
+        ./runUnitTests.exe;
+      fi
+    - ctest
+    
+      # Test if biorbd can be compile on the python binder
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then 
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
         make install;
       else
-        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
+        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
         cmake --build ./ --config Release --target install;
       fi
 
