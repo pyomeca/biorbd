@@ -37,7 +37,9 @@ before_install:
     - echo "coucou"
     - echo "$HOME/miniconda/bin"
     - echo "coucou2"
-    - echo "$HOME/miniconda
+    - echo "$ToolsDir/miniconda"
+    - dir "$ToolsDir/miniconda"
+    - dir "$HOME/miniconda/"
     - echo "coucou3"
     - export PATH="$HOME/miniconda/bin:$PATH"
     - hash -r
