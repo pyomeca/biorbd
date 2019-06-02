@@ -4,6 +4,8 @@ matrix:
   - os: linux
     dist: trusty
     compiler: gcc
+    env:
+      - COMPILER=g++-7
   - os: osx
     osx_image: xcode7.2
     compiler: gcc
@@ -55,7 +57,7 @@ script:
     - cd build
     # Perform tests on all platform, but only perform code coverage on Linux
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF .. ;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0' -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF .. ;
         make;
       elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
         cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF .. ;
