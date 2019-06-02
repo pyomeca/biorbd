@@ -1,7 +1,8 @@
 language: cpp
 matrix:
   include:
-    - compiler: gcc
+    - os: linux
+      compiler: gcc
       dist: trusty
       addons:
         apt:
