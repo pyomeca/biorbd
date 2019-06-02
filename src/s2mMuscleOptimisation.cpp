@@ -1,3 +1,6 @@
+#define SKIP_FOR_REMOVING_DLIB
+#ifndef SKIP_FOR_REMOVING_DLIB
+
 #define BIORBD_API_EXPORTS
 #include "../include/s2mMuscleOptimisation.h"
 
@@ -112,5 +115,5 @@ void s2mMuscleOptimisation::optimizeJointTorque(std::vector<OptimData>& data_sam
 
 
 
-
+#endif
 

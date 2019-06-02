@@ -46,7 +46,7 @@ install:
     - conda install python pytest numpy swig
     - conda install boost eigen
     - conda install lapack -c conda-forge
-    - conda install dlib rbdl -cpyomeca
+    - conda install rbdl -cpyomeca
       
 script:
     ############################################################################

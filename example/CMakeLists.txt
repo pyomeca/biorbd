@@ -4,8 +4,12 @@ add_executable(${PROJECT_NAME} "main.cpp")
 add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME})
 
 # Headers
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include
-        ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${RBDL_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include
+    ${Boost_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIR}
+    ${RBDL_INCLUDE_DIR}
+)
 
 # Libraries linker
 get_target_property(DEBUG_POSTFIX ${MASTER_PROJECT_NAME} DEBUG_POSTFIX)

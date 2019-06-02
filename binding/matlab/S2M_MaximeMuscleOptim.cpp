@@ -1,4 +1,5 @@
-
+#define SKIP_FOR_REMOVING_DLIB
+#ifndef SKIP_FOR_REMOVING_DLIB
 
 void S2M_MaximeMuscleOptim( int nlhs, mxArray *plhs[],
 				int nrhs, const mxArray*prhs[] ){
@@ -60,3 +61,5 @@ void S2M_MaximeMuscleOptim( int nlhs, mxArray *plhs[],
 
 	return;
 }
+
+#endif

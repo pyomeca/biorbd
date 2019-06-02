@@ -25,19 +25,25 @@ find_package(RBDL REQUIRED)
 set(BOOST_ROOT ${CMAKE_INSTALL_PREFIX})
 find_package(Boost REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(Dlib REQUIRED)
+# find_package(Dlib REQUIRED)
 
 # Prepare add library
 aux_source_directory(src SRC_LIST)
 if (BUILD_SHARED_LIBS)
-	add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
+    add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 else()
-	add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
+    add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_debug")
 
 # Add headers
-target_include_directories(${PROJECT_NAME} PRIVATE ${RBDL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${DLIB_INCLUDE_DIR} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(${PROJECT_NAME} PUBLIC
+    ${RBDL_INCLUDE_DIR}
+    ${Boost_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIR}
+    # ${DLIB_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 
 # Add linker
 target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY} ${DLIB_LIBRARY})
@@ -114,7 +120,13 @@ if (BUILD_TESTS)
     add_executable(runUnitTests ${TEST_SRC_FILES})
 
     # headers for the project
-    target_include_directories(runUnitTests PRIVATE ${RBDL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${DLIB_INCLUDE_DIR} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    target_include_directories(runUnitTests PUBLIC
+        ${RBDL_INCLUDE_DIR}
+        ${Boost_INCLUDE_DIRS}
+        ${EIGEN3_INCLUDE_DIR}
+        # ${DLIB_INCLUDE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+    )
 
     # Standard linking to gtest stuff.
     target_link_libraries(runUnitTests gtest_main)
