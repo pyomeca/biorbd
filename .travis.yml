@@ -1,29 +1,21 @@
 language: cpp
 matrix:
   include:
-    - os: linux
-      compiler: gcc
-      dist: trusty
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-      env: COMPILER=g++-5
-#  - os: osx
-#    osx_image: xcode7.2
-#    compiler: gcc
-#    env:
-#      - COMPILER=g++-7
-#  - os: windows
+  - os: linux
+    dist: trusty
+    compiler: gcc
+    env:
+      - COMPILER=g++-7
+  - os: osx
+    osx_image: xcode7.2
+    compiler: gcc
+    env:
+      - COMPILER=g++-7
+  - os: windows
       
 addons:
   apt:
-    sources:
-      # add PPAs with more up-to-date toolchains
-      - ubuntu-toolchain-r-test
-    packages: [g++-8, valgrind, lcov, cmake]
+    packages: [g++-8, valgrind, python-yaml, lcov, cmake]
 
     
 before_install:
