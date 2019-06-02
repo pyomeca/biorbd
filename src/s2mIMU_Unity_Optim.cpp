@@ -1,6 +1,3 @@
-#define SKIP_FOR_REMOVING_DLIB
-#ifndef SKIP_FOR_REMOVING_DLIB
-
 #define BIORBD_API_EXPORTS
 #include "../include/s2mIMU_Unity_Optim.h"
 
@@ -52,4 +49,3 @@ s2mAttitude s2mIMU_Unity_Optim::alignSpecificAxisWithParentVertical(const s2mAtt
 
     return s2mAttitude (rotation, Eigen::Vector3d::Zero(), "z");
 }
-#endif

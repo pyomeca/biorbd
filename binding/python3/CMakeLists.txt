@@ -21,7 +21,7 @@ target_include_directories(_${PROJECT_NAME} PUBLIC
     ${RBDL_INCLUDE_DIR}
     ${Boost_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
-    #${DLIB_INCLUDE_DIR}
+    ${DLIB_INCLUDE_DIR}
     ${NUMPY_INCLUDES}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../include
     ${PYTHON_INCLUDE_DIRS}

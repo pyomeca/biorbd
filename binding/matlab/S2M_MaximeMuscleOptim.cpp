@@ -1,6 +1,3 @@
-#define SKIP_FOR_REMOVING_DLIB
-#ifndef SKIP_FOR_REMOVING_DLIB
-
 void S2M_MaximeMuscleOptim( int nlhs, mxArray *plhs[],
 				int nrhs, const mxArray*prhs[] ){
 	// Verifier les arguments d'entrée
@@ -61,5 +58,3 @@ void S2M_MaximeMuscleOptim( int nlhs, mxArray *plhs[],
 
 	return;
 }
-
-#endif

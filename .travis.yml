@@ -5,7 +5,7 @@ matrix:
     dist: bionic
     compiler: gcc
     env:
-      - COMPILER=g++-8
+      - COMPILER=g++-5
   - os: osx
     osx_image: xcode7.2
     compiler: gcc
@@ -14,17 +14,14 @@ matrix:
   - os: windows
       
 addons:
-  source:
-    ubuntu-toolchain-r-test
   apt:
-    packages: [g++-8, valgrind, python-yaml, lcov, cmake]
+    packages: [g++, valgrind, python-yaml, lcov, cmake]
 
     
 before_install:
     # Combine global build options with OS/compiler-dependent options
     - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
     - export CXX_FLAGS=${CXX_FLAGS}" "${ENV_CXX_FLAGS}
-    - g++ --version
    
     # Add stuff for Python3 tests as well
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
@@ -50,6 +47,9 @@ install:
     - conda install boost eigen
     - conda install lapack -c conda-forge
     - conda install rbdl -cpyomeca
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+        conda install lcov -c conda-forge;
+      fi
       
 script:
     ############################################################################

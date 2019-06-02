@@ -25,7 +25,7 @@ find_package(RBDL REQUIRED)
 set(BOOST_ROOT ${CMAKE_INSTALL_PREFIX})
 find_package(Boost REQUIRED)
 find_package(Eigen3 REQUIRED)
-# find_package(Dlib REQUIRED)
+find_package(Dlib REQUIRED)
 
 # Prepare add library
 aux_source_directory(src SRC_LIST)
@@ -42,7 +42,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${RBDL_INCLUDE_DIR}/..
     ${Boost_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
-    # ${DLIB_INCLUDE_DIR}
+    ${DLIB_INCLUDE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
@@ -125,7 +125,7 @@ if (BUILD_TESTS)
         ${RBDL_INCLUDE_DIR}
         ${Boost_INCLUDE_DIRS}
         ${EIGEN3_INCLUDE_DIR}
-        # ${DLIB_INCLUDE_DIR}
+        ${DLIB_INCLUDE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/include
     )
 

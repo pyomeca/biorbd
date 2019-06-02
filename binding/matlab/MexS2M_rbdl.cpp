@@ -9,7 +9,7 @@
 #include "class_handle.hpp"
 #include "s2mKalmanReconsMarkers.h"
 #include "s2mKalmanReconsIMU.h"
-// #include "s2mMuscleOptimisation.h"
+#include "s2mMuscleOptimisation.h"
 
 #include "processArguments.cpp" // Must be before anything else
 #include "S2M_help.cpp"
@@ -640,8 +640,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
     }
 
     if(!toLower(cmd).compare("maximeoptim")){
-        mexErrMsgTxt("maximeoptim was removed so dlib is no longer a dependency of biorbd");
-        // S2M_MaximeMuscleOptim(nlhs, plhs, nrhs, prhs);
+        S2M_MaximeMuscleOptim(nlhs, plhs, nrhs, prhs);
         return;
     }
 
