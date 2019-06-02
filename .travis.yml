@@ -17,7 +17,7 @@ addons:
   source:
     ubuntu-toolchain-r-test
   apt:
-    packages: [g++-5, valgrind, python-yaml, lcov, cmake]
+    packages: [g++-4, valgrind, python-yaml, lcov, cmake]
 
     
 before_install:
