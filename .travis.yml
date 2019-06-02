@@ -14,6 +14,8 @@ matrix:
   - os: windows
       
 addons:
+  source:
+    ubuntu-toolchain-r-test
   apt:
     packages: [g++-8, valgrind, python-yaml, lcov, cmake]
 
