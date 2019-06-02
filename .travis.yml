@@ -46,7 +46,7 @@ install:
     - conda install python pytest numpy swig
     - conda install boost eigen
     - conda install lapack -c conda-forge
-    - conda install rbdl -cpyomeca
+    - conda install dlib rbdl -cpyomeca
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
         conda install lcov -c conda-forge;
       fi
