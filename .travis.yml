@@ -12,10 +12,6 @@ matrix:
     env:
       - COMPILER=g++-7
   - os: windows
-      
-addons:
-  apt:
-    packages: [g++, valgrind, python-yaml, lcov, cmake]
 
     
 before_install:
