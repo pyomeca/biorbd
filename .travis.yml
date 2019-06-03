@@ -40,9 +40,8 @@ before_install:
 install:
     # Install test packages for Python3
     - conda install python pytest numpy swig
-    - conda install boost eigen
-    - conda install lapack -c conda-forge
-    - conda install dlib rbdl -cpyomeca
+    - conda install boost eigen dlib lapack -c conda-forge
+    - conda install rbdl -cpyomeca
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
         conda install lcov -c conda-forge;
       fi
