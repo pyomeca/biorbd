@@ -2,20 +2,16 @@ language: cpp
 matrix:
   include:
   - os: linux
-    dist: trusty
+    dist: bionic
     compiler: gcc
     env:
-      - COMPILER=g++-7
+      - COMPILER=g++-5
   - os: osx
     osx_image: xcode7.2
     compiler: gcc
     env:
       - COMPILER=g++-7
   - os: windows
-      
-addons:
-  apt:
-    packages: [g++, valgrind, python-yaml, lcov, cmake]
 
     
 before_install:
@@ -40,15 +36,16 @@ before_install:
     - conda config --set auto_update_conda no
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then conda update -q conda; fi
     - source activate
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
-        xcode-select --install;
-      fi
 
 install:
     # Install test packages for Python3
     - conda install python pytest numpy swig
     - conda install boost eigen
+    - conda install lapack -c conda-forge
     - conda install dlib rbdl -cpyomeca
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+        conda install lcov -c conda-forge;
+      fi
       
 script:
     ############################################################################
@@ -57,13 +54,47 @@ script:
     # Download, compile and test core
     - mkdir -p build
     - cd build
-      # Test if biorbd can be compile with the python binder
+    # Perform tests on all platform, but only perform code coverage on Linux
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF .. ;
+        make;
+      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF .. ;
+        make;
+      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF ..;
+        cmake --build ./ --config Release;
+      fi
+    # Only do the coverage on Linux, but run the test anyway to get a nice output
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+        make biorbd_coverage;
+      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
+        ./runUnitTests;
+      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+        cp bin/Release/*.dll .;
+        cp Release/*.dll .;
+        cp Release/*.exe .;
+        ./runUnitTests.exe;
+      fi
+    - ctest
+    
+      # Test if biorbd can be compile on the python binder
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then 
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
         make install;
       else
-        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
+        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
         cmake --build ./ --config Release --target install;
+      fi
+
+after_success:
+    # Uploading report to CodeCov
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+        cd ${TRAVIS_BUILD_DIR};
+        lcov --directory . --capture --output-file coverage.info;
+        lcov --remove coverage.info '/usr/*' --output-file coverage.info;
+        lcov --list coverage.info;
+        bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports";
       fi
 
 notifications:

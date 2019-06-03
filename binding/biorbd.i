@@ -16,8 +16,8 @@
 
 #include "s2mKalmanReconsIMU.h"
 #include "s2mKalmanReconsMarkers.h"
-#include "s2mMuscleOptimisation.h"
-#include "s2mIMU_Unity_Optim.h"
+// #include "s2mMuscleOptimisation.h"
+// #include "s2mIMU_Unity_Optim.h"
 %}
 %include exception.i
 %include <std_shared_ptr.i>
