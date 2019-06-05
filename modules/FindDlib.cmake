@@ -19,14 +19,7 @@ if(WIN32)
 	get_filename_component(LibNames ${LibPath} NAME)
 	find_library (DLIB_LIBRARY 
 			NAMES ${LibNames}
-			HINTS ${CMAKE_INSTALL_PREFIX}/bin ${CMAKE_INSTALL_PREFIX}/Library)
-	if (NOT DLIB_FOUND)
-	  FILE(GLOB LibPath ${CMAKE_INSTALL_PREFIX}/lib/dlib*)
-	  get_filename_component(LibNames ${LibPath} NAME)
-	  find_library (DLIB_LIBRARY 
-			  NAMES ${LibNames}
-			  HINTS ${CMAKE_INSTALL_PREFIX}/bin ${CMAKE_INSTALL_PREFIX}/Library/lib)
-	endif()
+			HINTS ${CMAKE_INSTALL_PREFIX}/bin)
 else()
 	set (DLIB_NAMES dlib)
 	find_library (DLIB_LIBRARY NAMES ${DLIB_NAMES})
