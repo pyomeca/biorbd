@@ -22,10 +22,14 @@ FIND_PATH (RBDL_INCLUDE_DIR rbdl.h
 	$ENV{RBDL_INCLUDE_PATH}
 	)
 FIND_LIBRARY (RBDL_LIBRARY NAMES rbdl	PATHS
-	/usr/lib
-	/usr/local/lib	
-	${CMAKE_INSTALL_PREFIX}
-	$ENV{HOME}/local/lib
+        /usr/lib
+        /usr/local/lib
+        /usr/local/lib64
+        ${CMAKE_INSTALL_PREFIX}
+        ${CMAKE_INSTALL_PREFIX}/lib
+        ${CMAKE_INSTALL_PREFIX}/lib64
+        $ENV{HOME}/local/lib
+        $ENV{HOME}/local/lib64
 	$ENV{RBDL_PATH}
 	$ENV{RBDL_LIBRARY_PATH}
 	)
