@@ -5,7 +5,7 @@ matrix:
     dist: bionic
     compiler: gcc
     env:
-      - COMPILER=gcc-6
+      - COMPILER=gcc
   - os: osx
     osx_image: xcode7.2
     compiler: gcc
@@ -38,6 +38,9 @@ before_install:
     - conda config --set auto_update_conda no
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then conda update -q conda; fi
     - source activate
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+        apt install gcc;
+      fi
 
 install:
     - conda install boost eigen rbdl dlib-cpp lapack numpy pytest swig -c conda-forge
