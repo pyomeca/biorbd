@@ -41,7 +41,7 @@ before_install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test;
         sudo apt update;
-        sudo apt install gcc
+        sudo apt install gcc;
       fi
 
 install:
