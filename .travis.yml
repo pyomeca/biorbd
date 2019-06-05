@@ -3,9 +3,9 @@ matrix:
   include:
   - os: linux
     dist: bionic
-    compiler: g++-6
+    compiler: gcc
     env:
-      - COMPILER=g++-6
+      - COMPILER=gcc-6
   - os: osx
     osx_image: xcode7.2
     compiler: gcc
@@ -55,7 +55,7 @@ script:
     # Perform tests on all platform, but only perform code coverage on Linux
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
         cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF .. ;
-        make;
+        make -j $CPU_COUNT;
       elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
         cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF .. ;
         make;
@@ -79,7 +79,7 @@ script:
       # Test if biorbd can be compile on the python binder
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then 
         cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
-        make install;
+        make install -j $CPU_COUNT;
       else
         cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
         cmake --build ./ --config Release --target install;
