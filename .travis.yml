@@ -3,7 +3,7 @@ matrix:
   include:
   - os: linux
     dist: bionic
-    compiler: gcc
+    compiler: g++
     env:
       - COMPILER=g++-5
   - os: osx
