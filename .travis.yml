@@ -39,9 +39,9 @@ before_install:
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then conda update -q conda; fi
     - source activate
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        sudo add-apt-repository ppa:ubuntu-toolchain-r/test;
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y;
         sudo apt update;
-        sudo apt install gcc;
+        sudo apt install gcc -y;
       fi
 
 install:
