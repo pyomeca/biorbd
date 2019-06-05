@@ -15,11 +15,18 @@ find_path (DLIB_INCLUDE_DIR "dlib/algs.h"
 
 if(WIN32)
 	# For some reason find_library won't find dlib with only "dlib" name, it must have the full previously unknown name
-	FILE(GLOB LibPath ${CMAKE_INSTALL_PREFIX}/lib/dlib*)
+	FILE(GLOB LibPath ${CMAKE_INSTALL_PREFIX}/Library/lib/dlib*)
 	get_filename_component(LibNames ${LibPath} NAME)
 	find_library (DLIB_LIBRARY 
 			NAMES ${LibNames}
-			HINTS ${CMAKE_INSTALL_PREFIX}/bin)
+			HINTS ${CMAKE_INSTALL_PREFIX}/bin ${CMAKE_INSTALL_PREFIX}/Library)
+	if (NOT DLIB_FOUND)
+	  FILE(GLOB LibPath ${CMAKE_INSTALL_PREFIX}/lib/dlib*)
+	  get_filename_component(LibNames ${LibPath} NAME)
+	  find_library (DLIB_LIBRARY 
+			  NAMES ${LibNames}
+			  HINTS ${CMAKE_INSTALL_PREFIX}/bin ${CMAKE_INSTALL_PREFIX}/Library/lib)
+	endif
 else()
 	set (DLIB_NAMES dlib)
 	find_library (DLIB_LIBRARY NAMES ${DLIB_NAMES})
