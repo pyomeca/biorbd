@@ -5,10 +5,13 @@ add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME})
 
 # Headers
 target_include_directories(${PROJECT_NAME} PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/../include
+    ${Matlab_INCLUDE_DIRS}
+    ${RBDL_INCLUDE_DIR}
+    ${RBDL_INCLUDE_DIR}/..
     ${Boost_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
-    ${RBDL_INCLUDE_DIR}
+    ${DLIB_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include
 )
 
 # Libraries linker

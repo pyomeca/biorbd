@@ -19,7 +19,9 @@ int main()
     s2mMusculoSkeletalModel m3("pyomecaman.bioMod");
     s2mGenCoord Q(m3);
     s2mGenCoord QDDot(m3);
+    Q.setZero();
     s2mTau T(m3);
+    T.setZero();
 
     RigidBodyDynamics::ForwardDynamicsConstraintsDirect(m3, Q, Q, T, m3.getConstraints(m3),QDDot);// Forward dynamics
     int i = 0;
