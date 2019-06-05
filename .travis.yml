@@ -40,9 +40,7 @@ before_install:
     - source activate
 
 install:
-    - conda install boost eigen dlib lapack -c conda-forge
-    - conda install python pytest numpy swig
-    - conda install rbdl -cpyomeca
+    - conda install boost eigen rbdl dlib lapack numpy pytest swig -c conda-forge
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
         conda install lcov -c conda-forge;
       fi
