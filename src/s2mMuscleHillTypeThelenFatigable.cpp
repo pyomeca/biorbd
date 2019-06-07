@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleHillThelenFatigable.h"
+#include "../include/s2mMuscleHillTypeThelenFatigable.h"
 
 s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mString &s) :
     s2mMuscleHillTypeThelen(s)
@@ -43,7 +43,7 @@ s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const std::sh
 void s2mMuscleHillTypeThelenFatigable::computeFlCE(const s2mMuscleStateActual &EMG)
 {
     s2mMuscleHillTypeThelen::computeFlCE(EMG);
-    // Do something with m_FlCE
+    // Do something with m_FlCE and m_caract.fatigueParameters
 }
 
 void s2mMuscleHillTypeThelenFatigable::setType()

@@ -78,6 +78,12 @@ namespace std {
         return *(std::dynamic_pointer_cast<s2mMuscleHillTypeThelen>(m));
     }
 }
+%extend s2mMuscleHillTypeThelenFatigable{
+    static s2mMuscleHillTypeThelenFatigable& getRef(std::shared_ptr<s2mMuscle> m)
+    {
+        return *(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(m));
+    }
+}
 %extend s2mMuscleHillTypeChadwick{
     static s2mMuscleHillTypeChadwick& getRef(std::shared_ptr<s2mMuscle> m)
     {
@@ -147,12 +153,14 @@ namespace std {
 %include "../include/s2mMuscle.h"
 %include "../include/s2mMuscleHillType.h"
 %include "../include/s2mMuscleHillTypeThelen.h"
+%include "../include/s2mMuscleHillTypeThelenFatigable.h"
 %include "../include/s2mMuscleHillTypeChadwick.h"
 %include "../include/s2mMuscleHillTypeSchutte.h"
 %include "../include/s2mMuscleHillTypeSimple.h"
 %include "../include/s2mMuscles.h"
 %include "../include/s2mGroupeMusculaire.h"
 %include "../include/s2mMuscleCaracteristics.h"
+%include "../include/s2mMuscleFatigueParam.h"
 //%include "s2mMuscleForce.h"
 //%include "s2mMuscleForceFromInsertion.h"
 //%include "s2mMuscleForceFromOrigin.h"
