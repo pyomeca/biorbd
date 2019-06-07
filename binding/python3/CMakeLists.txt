@@ -44,5 +44,5 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.py
 # For some reason, I could not install the library directly into subfolder
 # Some day this should be fixed...
 INSTALL(TARGETS _${PROJECT_NAME}
-		DESTINATION ${Python3_SITELIB})  
+                DESTINATION ${Python3_SITELIB}/${PROJECT_NAME})
 
