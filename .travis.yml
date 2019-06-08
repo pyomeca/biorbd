@@ -89,6 +89,7 @@ script:
         cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
         cmake --build ./ --config Release --target install;
       fi
+    - python -c "import biorbd"    
 
 after_success:
     # Uploading report to CodeCov
