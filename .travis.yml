@@ -47,7 +47,7 @@ before_install:
 install:
     - conda install boost eigen rbdl dlib-cpp lapack numpy pytest swig -c conda-forge
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        conda install lcov libpng -c conda-forge;
+        conda install lcov -c conda-forge;
       fi
       
 script:
@@ -59,7 +59,7 @@ script:
     - cd build
     # Perform tests on all platform, but only perform code coverage on Linux
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON .. ;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF .. ;
         make;
       elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
         cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON .. ;
