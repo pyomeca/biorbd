@@ -25,6 +25,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${Boost_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
     ${DLIB_INCLUDE_DIR}
+    ${IPOPT_INCLUDE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../include
 )
 
