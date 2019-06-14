@@ -31,7 +31,9 @@ class BIORBD_API s2mStaticOptimizationIpOpt : public Ipopt::TNLP
                 unsigned int p = 2,
                 const unsigned int epsilon = 1e-10
                 );
+
         virtual ~s2mStaticOptimizationIpOpt();
+
         virtual bool get_bounds_info(
            Ipopt::Index&          n,
            Ipopt::Number*         x_l,
@@ -155,6 +157,11 @@ class BIORBD_API s2mStaticOptimizationIpOpt : public Ipopt::TNLP
         s2mGenCoord m_Qdot;
         s2mMusculoSkeletalModel &m_model;
         unsigned int m_epsilon;
+
+        void fillActivation(
+                Ipopt::Index n,
+                const Ipopt::Number* x
+                );
 
     private:
 
