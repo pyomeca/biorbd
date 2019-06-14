@@ -15,7 +15,7 @@ public:
     ~s2mVector();
     virtual Eigen::VectorXd vector() const;
     double norm(unsigned int p = 2);
-    double normdot(unsigned int p = 2);
+    s2mVector grad_norm(unsigned int p = 2);
 
 protected:
 private:
