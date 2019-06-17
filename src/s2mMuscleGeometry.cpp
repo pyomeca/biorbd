@@ -39,7 +39,7 @@ void s2mMuscleGeometry::updateKinematics(s2mJoints &model, const s2mGenCoord *Q,
     _updateKinematics(Qdot, c, &o);
 }
 
-void s2mMuscleGeometry::updateKinematics(std::vector<s2mNodeMuscle>& musclePointsInGlobal, Eigen::MatrixXd& jacoPointsInGlobal, const s2mGenCoord *Qdot, const s2mMuscleCaracteristics &c){
+void s2mMuscleGeometry::updateKinematics(std::vector<s2mNodeMuscle>& musclePointsInGlobal, s2mMatrix &jacoPointsInGlobal, const s2mGenCoord *Qdot, const s2mMuscleCaracteristics &c){
     m_posAndJacoWereForced = true;
 
     // Position des points dans l'espace
@@ -111,24 +111,24 @@ double s2mMuscleGeometry::velocity() const {
 }
 
 // Retour des jacobiennes
-Eigen::MatrixXd s2mMuscleGeometry::jacobian() const {
+s2mMatrix s2mMuscleGeometry::jacobian() const {
     s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed before calling jacobian()");
     return m_jacobian;
 } // Retourne la derniere jacobienne
-Eigen::MatrixXd s2mMuscleGeometry::jacobianOrigin() const{
+s2mMatrix s2mMuscleGeometry::jacobianOrigin() const{
     s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed before calling jacobianOrigin()");
-    return m_jacobian.block(0,0,3,m_jacobian.cols());
+    return s2mMatrix(m_jacobian.block(0,0,3,m_jacobian.cols()));
 }
-Eigen::MatrixXd s2mMuscleGeometry::jacobianInsertion() const {
+s2mMatrix s2mMuscleGeometry::jacobianInsertion() const {
     s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed before calling jacobianInsertion()");
-    return m_jacobian.block(m_jacobian.rows()-3,0,3,m_jacobian.cols());
+    return s2mMatrix(m_jacobian.block(m_jacobian.rows()-3,0,3,m_jacobian.cols()));
 }
-Eigen::MatrixXd s2mMuscleGeometry::jacobian(const unsigned int i) const {
+s2mMatrix s2mMuscleGeometry::jacobian(const unsigned int i) const {
     s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed before calling jacobian(i)");
-    return m_jacobian.block(3*i,0,3,m_jacobian.cols());
+    return s2mMatrix(m_jacobian.block(3*i,0,3,m_jacobian.cols()));
 }
 
-Eigen::MatrixXd s2mMuscleGeometry::jacobianLength() const{
+s2mMatrix s2mMuscleGeometry::jacobianLength() const{
     s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed before calling jacobianLength()");
     return m_jacobianLength;
 }
@@ -258,22 +258,22 @@ double s2mMuscleGeometry::velocity(const s2mGenCoord &Qdot){
     return m_velocity;
 }
 
-void s2mMuscleGeometry::jacobian(Eigen::MatrixXd& jaco){
+void s2mMuscleGeometry::jacobian(const s2mMatrix &jaco){
     s2mError::s2mAssert(jaco.rows()/3 == (int)m_pointsInGlobal.size(), "Jacobian is the wrong size");
     m_jacobian = jaco;
 }
 
 void s2mMuscleGeometry::jacobian(s2mJoints &model, const s2mGenCoord &Q){
-    m_jacobian = Eigen::MatrixXd::Zero(m_pointsInLocal.size()*3, model.dof_count);
+    m_jacobian = s2mMatrix::Zero(m_pointsInLocal.size()*3, model.dof_count);
     for (unsigned int i=0; i<m_pointsInLocal.size(); ++i){
-        Eigen::MatrixXd tp(Eigen::MatrixXd::Zero(3, model.dof_count));
+        s2mMatrix tp(s2mMatrix::Zero(3, model.dof_count));
         RigidBodyDynamics::CalcPointJacobian(model, Q, model.GetBodyId((m_pointsInLocal[i]).parent().c_str()), (m_pointsInLocal[i]).position(), tp, false); // False for speed
         m_jacobian.block(3*i,0,3,model.dof_count) = tp;
     }
 }
 
 void s2mMuscleGeometry::computeJacobianLength(){
-    m_jacobianLength = Eigen::MatrixXd::Zero(1, m_jacobian.cols());
+    m_jacobianLength = s2mMatrix::Zero(1, m_jacobian.cols());
     std::vector<s2mNodeMuscle>::iterator p = m_pointsInGlobal.begin();
     for (unsigned int i=0; i<m_pointsInGlobal.size()-1 ; ++i){
         m_jacobianLength +=   (( *(p+i+1) - *(p+i) ).transpose() * (jacobian(i+1) - jacobian(i)))

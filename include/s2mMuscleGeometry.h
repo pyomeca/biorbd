@@ -1,7 +1,7 @@
 #ifndef S2MMUSCLEGEOMETRY_H
 #define S2MMUSCLEGEOMETRY_H
 
-    #include <Eigen/Dense>
+    #include "s2mMatrix.h"
     #include "biorbdConfig.h"
     #include "s2mNodeMuscle.h"
     #include "s2mJoints.h"
@@ -13,7 +13,6 @@ class BIORBD_API s2mMuscleGeometry
 {
     public:
         s2mMuscleGeometry(const s2mNodeMuscle &origin = s2mNodeMuscle(), const s2mNodeMuscle &insertion = s2mNodeMuscle());
-        ~s2mMuscleGeometry();
 
         // Fonction a appeler avant d'appeler longueur/velocity ou autres!
         void updateKinematics(s2mJoints &model,
@@ -23,7 +22,7 @@ class BIORBD_API s2mMuscleGeometry
                               const s2mMusclePathChangers& = s2mMusclePathChangers(),
                               int updateKin = 2);
         void updateKinematics(std::vector<s2mNodeMuscle>& musclePointsInGlobal,
-                              Eigen::MatrixXd& jacoPointsInGlobal,
+                              s2mMatrix& jacoPointsInGlobal,
                               const s2mGenCoord* Qdot = nullptr,
                               const s2mMuscleCaracteristics& = s2mMuscleCaracteristics());
 
@@ -44,11 +43,11 @@ class BIORBD_API s2mMuscleGeometry
         double velocity() const; // Return the already computed velocity
 
         // Retour des jacobiennes
-        Eigen::MatrixXd jacobian() const; // Retourne la derniere jacobienne
-        Eigen::MatrixXd jacobianOrigin() const;
-        Eigen::MatrixXd jacobianInsertion() const ;
-        Eigen::MatrixXd jacobian(const unsigned int i) const;
-        Eigen::MatrixXd jacobianLength() const;
+        s2mMatrix jacobian() const; // Retourne la derniere jacobienne
+        s2mMatrix jacobianOrigin() const;
+        s2mMatrix jacobianInsertion() const ;
+        s2mMatrix jacobian(const unsigned int i) const;
+        s2mMatrix jacobianLength() const;
 
 
     protected:
@@ -66,7 +65,7 @@ class BIORBD_API s2mMuscleGeometry
         // Calcul de la vitesse musculaire
         double velocity(const s2mGenCoord &Qdot); // Update the kinematics and compute and return muscle velocity assuming no via points nor wrapping objects
         // Calcul des jacobiennes des points
-        void jacobian(Eigen::MatrixXd& jaco); // Forcer une jacobienne
+        void jacobian(const s2mMatrix &jaco); // Forcer une jacobienne
         void jacobian(s2mJoints &model, const s2mGenCoord &Q);
         void computeJacobianLength();
 
@@ -78,8 +77,8 @@ class BIORBD_API s2mMuscleGeometry
         s2mNodeMuscle m_insertionInGlobal; // Position de l'origine dans le repere global
         std::vector<s2mNodeMuscle> m_pointsInGlobal; // position de tous les points dans le global
         std::vector<s2mNodeMuscle> m_pointsInLocal; // position de tous les points dans le global
-        Eigen::MatrixXd m_jacobian;
-        Eigen::MatrixXd m_jacobianLength; // Incluant la
+        s2mMatrix m_jacobian;
+        s2mMatrix m_jacobianLength; // Incluant la
 
         double m_length; // Longueur du muscle
         double m_muscleTendonLength; // Longueur du muscle et du tendon

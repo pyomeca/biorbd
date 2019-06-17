@@ -1,6 +1,7 @@
 #ifndef S2MJOINTS_H
 #define S2MJOINTS_H
 
+    #include "s2mMatrix.h"
     #include "biorbdConfig.h"
     #include "s2mError.h"
     #include <rbdl/rbdl.h>
@@ -67,9 +68,9 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
         s2mNodeBone projectPoint(const s2mGenCoord &Q, const s2mNodeBone&, bool updateKin=true); // Projeter selon les axes/plan déterminé déjà dans nodeBone
         s2mNodeBone projectPoint(const s2mGenCoord &Q, const Eigen::Vector3d &v, int boneIdx, const s2mString& axesToRemove, bool updateKin=true); // Projeter un point dans le repère global
         std::vector<s2mNodeBone>  projectPoint(const s2mMarkers &marks, const s2mGenCoord &Q, const std::vector<Eigen::Vector3d> &v, bool updateKin=true); //Marqueurs projetés de points correspondant aux marqueurs du modèle (le vector doit être égal au nombre de marqueur et dans l'ordre donné par Tags)
-        Eigen::MatrixXd projectPointJacobian(s2mJoints& model, const s2mGenCoord &Q, s2mNodeBone p, bool updateKin);
-        Eigen::MatrixXd projectPointJacobian(s2mJoints& model, const s2mGenCoord &Q, const Eigen::Vector3d &v, int boneIdx, const s2mString& axesToRemove, bool updateKin);
-        std::vector<Eigen::MatrixXd> projectPointJacobian(s2mJoints& model, const s2mMarkers &marks, const s2mGenCoord &Q, const std::vector<Eigen::Vector3d> &v, bool updateKin); // Matrice jacobienne des marqueurs projetés de points correspondant aux marqueurs du modèle (le vector doit être égal au nombre de marqueur et dans l'ordre donné par Tags et dans le repère global)
+        s2mMatrix projectPointJacobian(s2mJoints& model, const s2mGenCoord &Q, s2mNodeBone p, bool updateKin);
+        s2mMatrix projectPointJacobian(s2mJoints& model, const s2mGenCoord &Q, const Eigen::Vector3d &v, int boneIdx, const s2mString& axesToRemove, bool updateKin);
+        std::vector<s2mMatrix> projectPointJacobian(s2mJoints& model, const s2mMarkers &marks, const s2mGenCoord &Q, const std::vector<Eigen::Vector3d> &v, bool updateKin); // Matrice jacobienne des marqueurs projetés de points correspondant aux marqueurs du modèle (le vector doit être égal au nombre de marqueur et dans l'ordre donné par Tags et dans le repère global)
 
 
         unsigned int nbBone() const; // Return the actual number of segments
@@ -83,7 +84,7 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
         RigidBodyDynamics::Math::Vector3d CoMdotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const unsigned int i, bool updateKin=true); // vitesse du centre de masse du segment i
         std::vector<RigidBodyDynamics::Math::Vector3d> CoMddotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, bool updateKin=true); // accélération du centre de masse de chaque segment
         RigidBodyDynamics::Math::Vector3d CoMddotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, const unsigned int i, bool updateKin=true); // accélération du centre de masse du segment i
-        Eigen::MatrixXd CoMJacobian(const s2mGenCoord &Q); // Jacobienne
+        s2mMatrix CoMJacobian(const s2mGenCoord &Q); // Jacobienne
         RigidBodyDynamics::Math::Vector3d angularMomentum(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const bool updateKin = true); // Wrapper pour le moment angulaire
         std::vector<std::vector<s2mNodeBone> > meshPoints(const s2mGenCoord &Q, const bool updateKin = true);
         std::vector<s2mNodeBone> meshPoints(const s2mGenCoord &Q, const unsigned int& idx, const bool updateKin = true);

@@ -21,9 +21,9 @@ public:
 
 protected:
     virtual void initialize();
-    virtual void manageOcclusionDuringIteration(Eigen::MatrixXd&, Eigen::VectorXd &measure, const std::vector<unsigned int> &occlusion);
+    virtual void manageOcclusionDuringIteration(s2mMatrix&, Eigen::VectorXd &measure, const std::vector<unsigned int> &occlusion);
 
-    Eigen::MatrixXd m_PpInitial; // Se souvenir de Pp inital
+    s2mMatrix m_PpInitial; // Se souvenir de Pp inital
     bool m_firstIteration;
 };
 

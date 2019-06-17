@@ -298,14 +298,14 @@ s2mNodeBone s2mJoints::projectPoint(const s2mGenCoord &Q, const s2mNodeBone &n, 
     return out;
 }
 
-Eigen::MatrixXd s2mJoints::projectPointJacobian(s2mJoints& model, const s2mGenCoord &Q, s2mNodeBone node, bool updateKin)
+s2mMatrix s2mJoints::projectPointJacobian(s2mJoints& model, const s2mGenCoord &Q, s2mNodeBone node, bool updateKin)
 {
     // Si le point n'a pas été projeté, il n'y a donc aucun effet
     if (node.nAxesToRemove() != 0){
         // Jacobienne du marqueur
         node.applyRT(globalJCS(Q, node.parent(),updateKin).transpose());
-        Eigen::MatrixXd G_tp(s2mMarkers::TagsJacobian(model, Q, node.parent(), Eigen::Vector3d(0,0,0), updateKin));
-        Eigen::MatrixXd JCor(Eigen::MatrixXd::Zero(9,nbQ()));
+        s2mMatrix G_tp(s2mMarkers::TagsJacobian(model, Q, node.parent(), Eigen::Vector3d(0,0,0), updateKin));
+        s2mMatrix JCor(s2mMatrix::Zero(9,nbQ()));
         CalcMatRotJacobian(model, Q, GetBodyId(node.parent().c_str()), Eigen::Matrix3d::Identity(3,3), JCor,false);
         for (int n=0; n<3; ++n)
             if (node.isAxisKept(n))
@@ -315,10 +315,10 @@ Eigen::MatrixXd s2mJoints::projectPointJacobian(s2mJoints& model, const s2mGenCo
     }
     else
         // Retourner la valeur
-        return Eigen::MatrixXd::Zero(3,nbQ());
+        return s2mMatrix(s2mMatrix::Zero(3,nbQ()));
 }
 
-Eigen::MatrixXd s2mJoints::projectPointJacobian(s2mJoints& model, const s2mGenCoord &Q, const Eigen::Vector3d &v, int boneIdx, const s2mString& axesToRemove, bool updateKin)
+s2mMatrix s2mJoints::projectPointJacobian(s2mJoints& model, const s2mGenCoord &Q, const Eigen::Vector3d &v, int boneIdx, const s2mString& axesToRemove, bool updateKin)
 {
     // Trouver le point
     s2mNodeBone p(projectPoint(Q, v, boneIdx, axesToRemove, updateKin));
@@ -327,13 +327,13 @@ Eigen::MatrixXd s2mJoints::projectPointJacobian(s2mJoints& model, const s2mGenCo
     return projectPointJacobian(model, Q, p, updateKin);
 }
 
-std::vector<Eigen::MatrixXd> s2mJoints::projectPointJacobian(s2mJoints& model, const s2mMarkers &marks, const s2mGenCoord &Q, const std::vector<Eigen::Vector3d> &v, bool updateKin)
+std::vector<s2mMatrix> s2mJoints::projectPointJacobian(s2mJoints& model, const s2mMarkers &marks, const s2mGenCoord &Q, const std::vector<Eigen::Vector3d> &v, bool updateKin)
 {
     // Receuillir les points
     std::vector<s2mNodeBone> tp(projectPoint(marks, Q, v, updateKin));
 
     // Calculer la jacobienne si le point doit être projeté
-    std::vector<Eigen::MatrixXd> G;
+    std::vector<s2mMatrix> G;
 
     for (unsigned int i=0; i<tp.size(); ++i){
         // Marqueur actuel
@@ -405,7 +405,7 @@ RigidBodyDynamics::Math::Vector3d s2mJoints::CoMdot(const s2mGenCoord &Q, const 
 
     // CoMdot = somme(masse_seg * Jacobienne * qdot)/masse totale
     for (std::vector<s2mBone>::iterator b_it=m_bones.begin(); b_it!=m_bones.end(); ++b_it){
-        Eigen::MatrixXd Jac(Eigen::MatrixXd::Zero(3,this->dof_count));
+        s2mMatrix Jac(s2mMatrix::Zero(3,this->dof_count));
         RigidBodyDynamics::CalcPointJacobian(*this, Q, this->GetBodyId((*b_it).name().c_str()), (*b_it).caract().mCenterOfMass, Jac, false); // False for speed
         com_dot += (*b_it).caract().mMass*(Jac*Qdot);
     }
@@ -427,7 +427,7 @@ RigidBodyDynamics::Math::Vector3d s2mJoints::CoMddot(const s2mGenCoord &Q, const
 
     // CoMdot = somme(masse_seg * Jacobienne * qdot)/masse totale
     for (std::vector<s2mBone>::iterator b_it=m_bones.begin(); b_it!=m_bones.end(); ++b_it){
-        Eigen::MatrixXd Jac(Eigen::MatrixXd::Zero(3,this->dof_count));
+        s2mMatrix Jac(s2mMatrix::Zero(3,this->dof_count));
         RigidBodyDynamics::CalcPointJacobian(*this, Q, this->GetBodyId((*b_it).name().c_str()), (*b_it).caract().mCenterOfMass, Jac, false); // False for speed
         com_ddot += (*b_it).caract().mMass*(Jac*Qddot);
     }
@@ -438,18 +438,18 @@ RigidBodyDynamics::Math::Vector3d s2mJoints::CoMddot(const s2mGenCoord &Q, const
     return com_ddot;
 }
 
-Eigen::MatrixXd s2mJoints::CoMJacobian(const s2mGenCoord &Q){
+s2mMatrix s2mJoints::CoMJacobian(const s2mGenCoord &Q){
     // Retour la position du centre de masse a partir des coordonnées généralisées
 
     // S'assurer que le modele est dans la bonne configuration
     RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,nullptr,nullptr);
 
    // Jacobienne totale
-    Eigen::MatrixXd JacTotal = Eigen::MatrixXd::Zero(3,this->dof_count);
+    s2mMatrix JacTotal(s2mMatrix::Zero(3,this->dof_count));
 
     // CoMdot = somme(masse_seg * Jacobienne * qdot)/masse totale
     for (std::vector<s2mBone>::iterator b_it=m_bones.begin(); b_it!=m_bones.end(); ++b_it){
-        Eigen::MatrixXd Jac(Eigen::MatrixXd::Zero(3,this->dof_count));
+        s2mMatrix Jac(s2mMatrix::Zero(3,this->dof_count));
         RigidBodyDynamics::CalcPointJacobian(*this, Q, this->GetBodyId((*b_it).name().c_str()), (*b_it).caract().mCenterOfMass, Jac, false); // False for speed
         JacTotal += (*b_it).caract().mMass*Jac;
     }

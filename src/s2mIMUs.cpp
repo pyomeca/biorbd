@@ -158,7 +158,7 @@ std::vector<s2mMatrix> s2mIMUs::IMUJacobian(s2mJoints &model, const s2mGenCoord 
             continue;
 
         unsigned int id = model.GetBodyId(node.parent().c_str());
-        s2mMatrix G_tp(Eigen::MatrixXd::Zero(9,model.dof_count));
+        s2mMatrix G_tp(s2mMatrix::Zero(9,model.dof_count));
 
         // Calcul de la jacobienne de ce Tag
         if (first)

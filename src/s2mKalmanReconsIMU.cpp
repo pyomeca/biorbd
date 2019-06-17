@@ -18,7 +18,7 @@ void s2mKalmanReconsIMU::initialize(){
     m_PpInitial = m_Pp;
 }
 
-void s2mKalmanReconsIMU::manageOcclusionDuringIteration(Eigen::MatrixXd &InvTp, Eigen::VectorXd &measure, const std::vector<unsigned int> &occlusion)
+void s2mKalmanReconsIMU::manageOcclusionDuringIteration(s2mMatrix &InvTp, Eigen::VectorXd &measure, const std::vector<unsigned int> &occlusion)
 {
     for (unsigned int i = 0; i < occlusion.size(); ++i)
          for (unsigned int j=occlusion[i] * 9; j< occlusion[i] * 9+9; ++j){
@@ -65,9 +65,9 @@ void s2mKalmanReconsIMU::reconstructFrame(s2mMusculoSkeletalModel &m, const Eige
     // Markers projetés
     std::vector<s2mIMU> zest_tp = m.technicalIMU(m, Q_tp, false);
     // Jacobienne
-    std::vector<Eigen::MatrixXd> J_tp = m.TechnicalIMUJacobian(m, Q_tp, false);
+    std::vector<s2mMatrix> J_tp = m.TechnicalIMUJacobian(m, Q_tp, false);
     // Faire une seule matrice pour zest et Jacobienne
-    Eigen::MatrixXd H = Eigen::MatrixXd::Zero(m_nMeasure, m_nDof*3); // 3*nCentrales => X,Y,Z ; 3*nDof => Q, Qdot, Qddot
+    s2mMatrix H(s2mMatrix::Zero(m_nMeasure, m_nDof*3)); // 3*nCentrales => X,Y,Z ; 3*nDof => Q, Qdot, Qddot
     Eigen::VectorXd zest = Eigen::VectorXd::Zero(m_nMeasure);
     std::vector<unsigned int> occlusionIdx;
     for (unsigned int i=0; i<m_nMeasure/9; ++i){
