@@ -69,7 +69,7 @@ Eigen::MatrixXd s2mKalmanRecons::evolutionMatrix(const unsigned int nQ, unsigned
 
 
         for (int cmp=0; cmp<nQ*n-j; ++cmp)
-            A(int(0+cmp),int(j+cmp)) += c* (double)std::pow(Te,((double)i-1.0));
+            A(int(0+cmp),int(j+cmp)) += c* static_cast<double>(std::pow(Te,(static_cast<double>(i)-1.0)));
     }
 
     return A;

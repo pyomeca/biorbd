@@ -74,7 +74,7 @@ void s2mKalmanReconsIMU::reconstructFrame(s2mMusculoSkeletalModel &m, const Eige
         double sum = 0;
         for (unsigned int j = 0; j < 9; ++j) // Calculer la norme des 9 composantes
             sum += IMUobs(i*9+j)*IMUobs(i*9+j);
-        if (sum != 0 && sum == sum){ // S'il y a un imu (pas de zéro ou nan)
+        if (sum != 0.0 && sum == sum){ // S'il y a un imu (pas de zéro ou nan)
             H.block(i*9,0,9,m_nDof) = *(J_tp.begin()+i);
             Eigen::Matrix3d rot = (*(zest_tp.begin()+i)).rot();
             for (unsigned int j = 0; j < 3; ++j)

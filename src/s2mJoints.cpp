@@ -91,7 +91,7 @@ double s2mJoints::mass() const {
 
 
 void s2mJoints::computeKinematics(const s2mGenCoord& Q, const s2mGenCoord& QDot, const s2mTau& Tau){
-    s2mGenCoord v(Q.rows()+QDot.rows());
+    s2mGenCoord v(static_cast<unsigned int>(Q.rows()+QDot.rows()));
     v << Q,QDot;
     integrator->integrate(this, v, Tau.vector(), 0, 1, 0.1); // vecteur, t0, tend, pas, effecteurs
     m_isKinematicsComputed = true;
@@ -101,7 +101,7 @@ void s2mJoints::kinematics(const unsigned int &step, s2mGenCoord &Q, s2mGenCoord
     s2mError::s2mAssert(m_isKinematicsComputed, "ComputeKinematics must be call before calling updateKinematics");
 
     s2mGenCoord tp(integrator->getX(step));
-    for (unsigned int i=0; i< (unsigned int)(tp.rows()/2); i++){
+    for (unsigned int i=0; i< static_cast<unsigned int>(tp.rows()/2); i++){
         Q(i) = tp(i);
         QDot(i) = tp(i+tp.rows()/2);
     }

@@ -22,7 +22,7 @@ int s2mMuscles::getGroupId(const s2mString &name){
     std::vector<s2mGroupeMusculaire>::iterator it=m_mus.begin();
     for (unsigned int i=0; it+i!=m_mus.end(); ++i)
         if (!name.compare((*(it+i)).name()))
-            return i;
+            return static_cast<int>(i);
     return -1;
 }
 
@@ -33,7 +33,7 @@ s2mGroupeMusculaire& s2mMuscles::muscleGroup(const unsigned int idx){
 s2mGroupeMusculaire& s2mMuscles::muscleGroup(const s2mString& name){
     int idx = getGroupId(name);
     s2mError::s2mAssert(idx!=-1, "Group name could not be found");
-    return muscleGroup(idx);
+    return muscleGroup(static_cast<unsigned int>(idx));
 }
 
 // From muscle activation (return muscle force)
@@ -44,7 +44,7 @@ s2mTau s2mMuscles::muscularJointTorque(s2mJoints& m, const std::vector<s2mMuscle
         updateMuscles(m,*Q,*QDot,updateKin);
 
     std::vector<std::vector<std::shared_ptr<s2mMuscleForce> > > force_tp = musclesForces(m, state, false);
-    F = Eigen::VectorXd::Zero(force_tp.size());
+    F = Eigen::VectorXd::Zero(static_cast<unsigned int>(force_tp.size()));
     for (unsigned int i=0; i<force_tp.size(); ++i)
         F(i) = (force_tp[i])[0]->norme();
 
@@ -94,7 +94,9 @@ std::vector<std::vector<std::shared_ptr<s2mMuscleForce> > > s2mMuscles::musclesF
     return forces;
 }
 
-unsigned int s2mMuscles::nbMuscleGroups() { return m_mus.size(); }
+unsigned int s2mMuscles::nbMuscleGroups() {
+    return static_cast<unsigned int>(m_mus.size());
+}
 
 Eigen::MatrixXd s2mMuscles::musclesLengthJacobian(s2mJoints& m, bool updateKin, const s2mGenCoord* Q){
 
@@ -157,7 +159,7 @@ void s2mMuscles::updateMuscles(s2mJoints& m, const s2mGenCoord& Q, bool updateKi
 }
 void s2mMuscles::updateMuscles(std::vector<std::vector<s2mNodeMuscle> >& musclePointsInGlobal, std::vector<Eigen::MatrixXd>& jacoPointsInGlobal, const s2mGenCoord& QDot){
     std::vector<s2mGroupeMusculaire>::iterator grp=m_mus.begin();
-    int cmpMuscle = 0;
+    unsigned int cmpMuscle = 0;
     for (unsigned int i=0; i<m_mus.size(); ++i) // groupe musculaire
         for (unsigned int j=0; j<(*(grp+i)).nbMuscles(); ++j){
             (*(grp+i)).muscle(j)->updateOrientations(musclePointsInGlobal[cmpMuscle], jacoPointsInGlobal[cmpMuscle], QDot);
@@ -167,7 +169,7 @@ void s2mMuscles::updateMuscles(std::vector<std::vector<s2mNodeMuscle> >& muscleP
 void s2mMuscles::updateMuscles(std::vector<std::vector<s2mNodeMuscle> >& musclePointsInGlobal, std::vector<Eigen::MatrixXd>& jacoPointsInGlobal){
     // Updater tous les muscles
     std::vector<s2mGroupeMusculaire>::iterator grp=m_mus.begin();
-    int cmpMuscle = 0;
+    unsigned int cmpMuscle = 0;
     for (unsigned int i=0; i<m_mus.size(); ++i) // groupe musculaire
         for (unsigned int j=0; j<(*(grp+i)).nbMuscles(); ++j){
             (*(grp+i)).muscle(j)->updateOrientations(musclePointsInGlobal[cmpMuscle], jacoPointsInGlobal[cmpMuscle]);
