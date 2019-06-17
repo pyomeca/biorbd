@@ -145,37 +145,51 @@ bool s2mStaticOptimizationIpOpt::eval_jac_g(
 {
     fillActivation(n, x);
 
-    // controls
-    std::vector<s2mMuscleStateActual> state;
-    for (unsigned int i = 0; i<m_nMus; ++i){
-        std::vector<s2mMuscleStateActual> state;
-        state.push_back(s2mMuscleStateActual(0, m_activation[i]));
-    }
-    s2mTau tau_calcul_actual = m_model.muscularJointTorque(m_model, state, true, &m_Q, &m_Qdot);
-    unsigned int k(0);
-    for( Ipopt::Index j = 0; j < n; j++ )
-       {
-        std::vector<s2mMuscleStateActual> state_epsilon;
-        for (unsigned int i = 0; i<m_nMus; ++i){
-            unsigned int delta;
-            if (i == j){
-                delta = 1;
+    if (values == NULL) {
+        unsigned int k(0);
+    // return the structure of the Jacobian
+    // this particular Jacobian is dense
+        for (unsigned int i = 0; i<m_nTau; ++i){
+            for (unsigned int j = 0; j<m_nMus; ++j){
+                iRow[k] = i;
+                jCol[k] = j;
+                ++k;
             }
-            else {
-                delta = 0;
-            }
-            state_epsilon.push_back(s2mMuscleStateActual(0, m_activation[i]+delta*m_epsilon));
         }
-        s2mTau tau_calcul_epsilon = m_model.muscularJointTorque(m_model, state_epsilon, true, &m_Q, &m_Qdot);
-        for( Ipopt::Index i = 0; i < m; i++ )
-        {
-            values[k] = (tau_calcul_actual[i]-tau_calcul_epsilon[i])/m_epsilon;
-            k++;
-       }
-    }
-    return true;
-    }
 
+    }
+    else {
+        // controls
+        std::vector<s2mMuscleStateActual> state;
+        for (unsigned int i = 0; i<m_nMus; ++i){
+            std::vector<s2mMuscleStateActual> state;
+            state.push_back(s2mMuscleStateActual(0, m_activation[i]));
+        }
+        s2mTau tau_calcul_actual = m_model.muscularJointTorque(m_model, state, true, &m_Q, &m_Qdot);
+        unsigned int k(0);
+        for( Ipopt::Index j = 0; j < n; j++ )
+           {
+            std::vector<s2mMuscleStateActual> state_epsilon;
+            for (unsigned int i = 0; i<m_nMus; ++i){
+                unsigned int delta;
+                if (i == j){
+                    delta = 1;
+                }
+                else {
+                    delta = 0;
+                }
+                state_epsilon.push_back(s2mMuscleStateActual(0, m_activation[i]+delta*m_epsilon));
+            }
+            s2mTau tau_calcul_epsilon = m_model.muscularJointTorque(m_model, state_epsilon, true, &m_Q, &m_Qdot);
+            for( Ipopt::Index i = 0; i < m; i++ )
+            {
+                values[k] = (tau_calcul_actual[i]-tau_calcul_epsilon[i])/m_epsilon;
+                k++;
+           }
+        }
+        return true;
+        }
+}
 
 bool s2mStaticOptimizationIpOpt::eval_h(Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Number obj_factor, Ipopt::Index m, const Ipopt::Number *lambda, bool new_lambda, Ipopt::Index nele_hess, Ipopt::Index *iRow, Ipopt::Index *jCol, Ipopt::Number *values)
 {
