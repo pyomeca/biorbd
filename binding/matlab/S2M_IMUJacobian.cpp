@@ -13,8 +13,8 @@ void S2M_IMUJacobian( int nlhs, mxArray *plhs[],
 	
 	
 	// Trouver la matrice jacobienne de tous les marqueurs
-    std::vector<Eigen::MatrixXd> Jac_tp = model->IMUJacobian(*model, Q);
-	std::vector<Eigen::MatrixXd>::iterator it=Jac_tp.begin();
+    std::vector<s2mMatrix> Jac_tp = model->IMUJacobian(*model, Q);
+        std::vector<s2mMatrix>::iterator it=Jac_tp.begin();
 	
 	/* Create a matrix for the return argument */ 
     unsigned int nIMUs = model->nIMUs();
