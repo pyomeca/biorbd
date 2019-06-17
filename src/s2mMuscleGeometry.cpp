@@ -32,7 +32,7 @@ void s2mMuscleGeometry::updateKinematics(s2mJoints &model, const s2mGenCoord *Q,
 
     // S'assurer que le modele est dans la bonne configuration
     if (updateKin > 1)
-        RigidBodyDynamics::UpdateKinematicsCustom(model, Q, Qdot, NULL);
+        RigidBodyDynamics::UpdateKinematicsCustom(model, Q, Qdot, nullptr);
 
     // Position des points dans l'espace
     musclesPointsInGlobal(model, *Q, o);
@@ -64,7 +64,7 @@ void s2mMuscleGeometry::_updateKinematics(const s2mGenCoord *Qdot, const s2mMusc
 
     // Calcul de la jacobienne des longueurs
     computeJacobianLength();
-    if (Qdot != NULL){
+    if (Qdot != nullptr){
         velocity(*Qdot);
         m_isVelocityComputed = true;
     }
@@ -159,7 +159,7 @@ double s2mMuscleGeometry::length(const s2mMuscleCaracteristics &c, const s2mMusc
     m_muscleTendonLength = 0;
 
     // puisqu'on ne peut pas combiner, tester le premier (0) revient a savoir tous les types si plus d'un
-    if (objects != NULL && objects->nbWraps()!=0){
+    if (objects != nullptr && objects->nbWraps()!=0){
         // CHECK A MODIFIER AVEC L'AVANCEMENT DES PROJETS
         s2mError::s2mAssert(objects->nbVia() == 0, "Cannot mix wrapping and via points yet" ) ;
         s2mError::s2mAssert(objects->nbWraps() < 2, "Cannot compute more than one wrapping yet");

@@ -65,7 +65,7 @@ void s2mKalmanReconsMarkers::reconstructFrame(s2mMusculoSkeletalModel &m, const 
 
             for (unsigned int i=0; i<50; ++i){
                 // La premiere fois, appeler de facon recursive pour avoir une position initiale decente
-                reconstructFrame(m, TobsTP, NULL, NULL, NULL);
+                reconstructFrame(m, TobsTP, nullptr, nullptr, nullptr);
 
                 // Remettre Pp à initial (parce qu'on ne s'intéresse pas à la vitesse pour se rendre à la position initiale
                 m_Pp = m_PpInitial;
@@ -77,7 +77,7 @@ void s2mKalmanReconsMarkers::reconstructFrame(s2mMusculoSkeletalModel &m, const 
     // État projeté
     Eigen::VectorXd xkm = m_A * m_xp;
     Eigen::VectorXd Q_tp = xkm.topRows(m_nDof);
-    RigidBodyDynamics::UpdateKinematicsCustom (m, &Q_tp, NULL, NULL);
+    RigidBodyDynamics::UpdateKinematicsCustom (m, &Q_tp, nullptr, nullptr);
 
     // Markers projetés
     std::vector<s2mNodeBone> zest_tp = m.technicalTags(m, Q_tp, removeAxes, false);

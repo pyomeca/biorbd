@@ -33,8 +33,8 @@ public:
     virtual ~s2mKalmanRecons();
 
     // Recueillir l'état (Q, Qdot, Qddot)
-    void getState(s2mGenCoord *Q = NULL, s2mGenCoord *Qdot = NULL, s2mGenCoord *Qddot = NULL);
-    void setInitState(const s2mGenCoord *Q = NULL, const s2mGenCoord *Qdot = NULL, const s2mGenCoord *Qddot = NULL);
+    void getState(s2mGenCoord *Q = nullptr, s2mGenCoord *Qdot = nullptr, s2mGenCoord *Qddot = nullptr);
+    void setInitState(const s2mGenCoord *Q = nullptr, const s2mGenCoord *Qdot = nullptr, const s2mGenCoord *Qddot = nullptr);
 
     // Cette fonction doit être réimplémentée de la façon nécessaire (avec les arguments souhaités). Je mets celle-ci pour force l'utilisateur à implémenter au moins cette fonction.
     // Ceci dit, sans argument (particulièrement les données d'entrées), il est douteux que la réimplémentation puisse fonctionner

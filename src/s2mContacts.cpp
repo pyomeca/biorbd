@@ -50,7 +50,7 @@ RigidBodyDynamics::ConstraintSet& s2mContacts::getConstraints(){
 
 std::vector<Eigen::Vector3d> s2mContacts::constraintsInGlobal(s2mJoints& m, const s2mGenCoord &Q, const bool updateKin){
     if (updateKin)
-        RigidBodyDynamics::UpdateKinematicsCustom(m, &Q, NULL, NULL);
+        RigidBodyDynamics::UpdateKinematicsCustom(m, &Q, nullptr, nullptr);
 
     // Variable de sortie
     std::vector<Eigen::Vector3d> tp;

@@ -17,14 +17,14 @@ class BIORBD_API s2mMuscleGeometry
 
         // Fonction a appeler avant d'appeler longueur/velocity ou autres!
         void updateKinematics(s2mJoints &model,
-                              const s2mGenCoord* Q = NULL,
-                              const s2mGenCoord* Qdot = NULL,
+                              const s2mGenCoord* Q = nullptr,
+                              const s2mGenCoord* Qdot = nullptr,
                               const s2mMuscleCaracteristics& = s2mMuscleCaracteristics(),
                               const s2mMusclePathChangers& = s2mMusclePathChangers(),
                               int updateKin = 2);
         void updateKinematics(std::vector<s2mNodeMuscle>& musclePointsInGlobal,
                               Eigen::MatrixXd& jacoPointsInGlobal,
-                              const s2mGenCoord* Qdot = NULL,
+                              const s2mGenCoord* Qdot = nullptr,
                               const s2mMuscleCaracteristics& = s2mMuscleCaracteristics());
 
         // Get and set des position d'origine et insertions
@@ -53,7 +53,7 @@ class BIORBD_API s2mMuscleGeometry
 
     protected:
         // Update commun de la cinématique
-        void _updateKinematics(const s2mGenCoord *Qdot, const s2mMuscleCaracteristics &c, const s2mMusclePathChangers* o = NULL);
+        void _updateKinematics(const s2mGenCoord *Qdot, const s2mMuscleCaracteristics &c, const s2mMusclePathChangers* o = nullptr);
 
         // Calcul de la position des points dans le global
         s2mNodeMuscle originInGlobal(s2mJoints &model, const s2mGenCoord &Q); // Update la cinématique puis retourne la position de l'origine dans l'espace
@@ -62,7 +62,7 @@ class BIORBD_API s2mMuscleGeometry
         void musclesPointsInGlobal(s2mJoints &, const s2mGenCoord &, const s2mMusclePathChangers&);
 
         // Calcul de la longueur musculaire
-        double length(const s2mMuscleCaracteristics&, const s2mMusclePathChangers* pathChanger = NULL); // Update the kinematics and compute and return muscle length
+        double length(const s2mMuscleCaracteristics&, const s2mMusclePathChangers* pathChanger = nullptr); // Update the kinematics and compute and return muscle length
         // Calcul de la vitesse musculaire
         double velocity(const s2mGenCoord &Qdot); // Update the kinematics and compute and return muscle velocity assuming no via points nor wrapping objects
         // Calcul des jacobiennes des points

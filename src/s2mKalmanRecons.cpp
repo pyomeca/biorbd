@@ -43,13 +43,13 @@ void s2mKalmanRecons::manageOcclusionDuringIteration(Eigen::MatrixXd &InvTp, Eig
 }
 
 void s2mKalmanRecons::getState(s2mGenCoord *Q, s2mGenCoord *Qdot, s2mGenCoord *Qddot){
-    if (Q != NULL)
+    if (Q != nullptr)
         *Q = m_xp.block(0,0,m_nDof,1);
 
-    if (Qdot != NULL)
+    if (Qdot != nullptr)
         *Qdot = m_xp.block(m_nDof,0,m_nDof,1);
 
-    if (Qddot != NULL)
+    if (Qddot != nullptr)
         *Qddot = m_xp.block(2*m_nDof,0,m_nDof,1);
 }
 
@@ -134,13 +134,13 @@ s2mGenCoord s2mKalmanRecons::initState(const unsigned int nQ){
 }
 
 void s2mKalmanRecons::setInitState(const s2mGenCoord *Q, const s2mGenCoord *Qdot, const s2mGenCoord *Qddot){
-    if (Q != NULL)
+    if (Q != nullptr)
         m_xp.block(0,0,m_nDof,1) = *Q;
 
-    if (Qdot != NULL)
+    if (Qdot != nullptr)
         m_xp.block(m_nDof,0,m_nDof,1) = *Qdot;
 
-    if (Qddot != NULL)
+    if (Qddot != nullptr)
         m_xp.block(2*m_nDof,0,m_nDof,1) = *Qddot;
 }
 

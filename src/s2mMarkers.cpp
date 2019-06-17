@@ -174,7 +174,7 @@ std::vector<s2mNodeBone> s2mMarkers::AnatomicalTagsInLocal(bool removeAxis){
 std::vector<s2mNodeBone> s2mMarkers::segmentTags(s2mJoints& model, const s2mGenCoord &Q, const unsigned int &idx, bool removeAxis, bool updateKin){
     // Update de la cinématique
     if (updateKin)
-        RigidBodyDynamics::UpdateKinematicsCustom(model, &Q,NULL, NULL);
+        RigidBodyDynamics::UpdateKinematicsCustom(model, &Q,nullptr, nullptr);
 
     // Nom du segment a trouver
     s2mString name(model.bone(idx).name());

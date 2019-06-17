@@ -352,7 +352,7 @@ RigidBodyDynamics::Math::SpatialTransform s2mJoints::CalcBodyWorldTransformation
 {
     // update the Kinematics if necessary
     if (update_kinematics) {
-        RigidBodyDynamics::UpdateKinematicsCustom (model, &Q, NULL, NULL);
+        RigidBodyDynamics::UpdateKinematicsCustom (model, &Q, nullptr, nullptr);
     }
 
     if (body_id >= model.fixed_body_discriminator) {
@@ -373,7 +373,7 @@ s2mNode s2mJoints::CoM(const s2mGenCoord &Q){
     // Retour la position du centre de masse a partir des coordonnées généralisées
 
     // S'assurer que le modele est dans la bonne configuration
-    RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,NULL,NULL);
+    RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,nullptr,nullptr);
 
     // Pour chaque segment, trouver le CoM (CoM = somme(masse_segmentaire * pos_com_seg)/masse_totale)
     std::vector<s2mNodeBone> com_segment(CoMbySegment(Q,true));
@@ -398,7 +398,7 @@ RigidBodyDynamics::Math::Vector3d s2mJoints::CoMdot(const s2mGenCoord &Q, const 
     // Retour la vitesse du centre de masse a partir des coordonnées généralisées
 
     // S'assurer que le modele est dans la bonne configuration
-    RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,&Qdot,NULL);
+    RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,&Qdot,nullptr);
 
     // Pour chaque segment, trouver le CoM
     RigidBodyDynamics::Math::Vector3d com_dot = RigidBodyDynamics::Math::Vector3d(0,0,0);
@@ -442,7 +442,7 @@ Eigen::MatrixXd s2mJoints::CoMJacobian(const s2mGenCoord &Q){
     // Retour la position du centre de masse a partir des coordonnées généralisées
 
     // S'assurer que le modele est dans la bonne configuration
-    RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,NULL,NULL);
+    RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,nullptr,nullptr);
 
    // Jacobienne totale
     Eigen::MatrixXd JacTotal = Eigen::MatrixXd::Zero(3,this->dof_count);
@@ -588,7 +588,7 @@ s2mGenCoord &Qdot, bool update_kinematics) {
 
     // Calcul du angular momentum par la fonction de la position du centre de masse
     s2mError::s2mAssert(false, "Call to CalcCenterOfMass must be verified!");
-    RigidBodyDynamics::Utils::CalcCenterOfMass(model, Q, Qdot, &Qddot, mass, com, NULL, NULL, &angular_momentum, NULL, update_kinematics);
+    RigidBodyDynamics::Utils::CalcCenterOfMass(model, Q, Qdot, &Qddot, mass, com, nullptr, nullptr, &angular_momentum, nullptr, update_kinematics);
 
     return angular_momentum;
 }
@@ -605,7 +605,7 @@ std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CalcSegmentsAngularMom
     double mass;
     RigidBodyDynamics::Math::Vector3d com;
     s2mError::s2mAssert(false, "Call to CalcCenterOfMass must be verified!");
-    RigidBodyDynamics::Utils::CalcCenterOfMass (*this, Q, Qdot, &Qddot, mass, com, NULL, NULL, NULL, NULL, false);
+    RigidBodyDynamics::Utils::CalcCenterOfMass (*this, Q, Qdot, &Qddot, mass, com, nullptr, nullptr, nullptr, nullptr, false);
     RigidBodyDynamics::Math::SpatialTransform X_to_COM (RigidBodyDynamics::Math::Xtrans(com));
 
     std::vector<RigidBodyDynamics::Math::Vector3d> h_segment;
@@ -838,7 +838,7 @@ void s2mJoints::CalcMatRotJacobian(s2mJoints &model, const RigidBodyDynamics::Ma
 
     // update the Kinematics if necessary
     if (update_kinematics) {
-        RigidBodyDynamics::UpdateKinematicsCustom (model, &Q, NULL, NULL);
+        RigidBodyDynamics::UpdateKinematicsCustom (model, &Q, nullptr, nullptr);
     }
 
     assert (G.rows() == 9 && G.cols() == model.qdot_size );

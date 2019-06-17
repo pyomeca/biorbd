@@ -26,7 +26,7 @@ s2mWrappingCylinder::~s2mWrappingCylinder()
 void s2mWrappingCylinder::wrapPoints(s2mNodeMuscle& p1, s2mNodeMuscle& p2, double *length){
     p1 = m_p1Wrap;
     p2 = m_p2Wrap;
-    if (length != NULL)
+    if (length != nullptr)
         *length = m_lengthAroundWrap;
 }
 
@@ -63,7 +63,7 @@ void s2mWrappingCylinder::wrapPoints(const s2mAttitude& RT, const s2mNodeMuscle&
 
     // Si demandé, calculé la distance parcourue sur le pourtours du cylindre
     // Le calcul consiste a appliquer pythagore sur l'arc de cercle
-    if (length != NULL) // Si ce n'est pas NULL
+    if (length != nullptr) // Si ce n'est pas nullptr
         *length = computeLength(tanPoints);
 
     // Remettre les points dans le global
@@ -77,7 +77,7 @@ void s2mWrappingCylinder::wrapPoints(const s2mAttitude& RT, const s2mNodeMuscle&
     // Stocker les valeurs pour un rappel futur
     m_p1Wrap = tanPoints.m_p1;
     m_p2Wrap = tanPoints.m_p2;
-    if (length != NULL) // Si ce n'est pas NULL
+    if (length != nullptr) // Si ce n'est pas nullptr
         m_lengthAroundWrap = *length;
 }
 

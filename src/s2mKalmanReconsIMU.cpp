@@ -50,7 +50,7 @@ void s2mKalmanReconsIMU::reconstructFrame(s2mMusculoSkeletalModel &m, const Eige
         m_firstIteration = false;
         for (unsigned int i=0; i<500; ++i){
             // La premiere fois, appeler de facon recursive pour avoir une position initiale decente
-            reconstructFrame(m, IMUobs, NULL, NULL, NULL);
+            reconstructFrame(m, IMUobs, nullptr, nullptr, nullptr);
 
             // Remettre Pp à initial (parce qu'on ne s'intéresse pas à la vitesse pour se rendre à la position initiale
             m_xp.block(m_nDof, 0, m_nDof*2,1) = Eigen::VectorXd::Zero(m_nDof*2); // Mettre vitesse et accélération à 0
@@ -60,7 +60,7 @@ void s2mKalmanReconsIMU::reconstructFrame(s2mMusculoSkeletalModel &m, const Eige
     // État projeté
     Eigen::VectorXd xkm = m_A * m_xp;
     Eigen::VectorXd Q_tp = xkm.topRows(m_nDof);
-    RigidBodyDynamics::UpdateKinematicsCustom (m, &Q_tp, NULL, NULL);
+    RigidBodyDynamics::UpdateKinematicsCustom (m, &Q_tp, nullptr, nullptr);
 
     // Markers projetés
     std::vector<s2mIMU> zest_tp = m.technicalIMU(m, Q_tp, false);

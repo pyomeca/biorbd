@@ -24,11 +24,11 @@ public:
     int getGroupId(const s2mString &name); // Trouve l'index d'un groupe musculaire, -1 s'il n'a pas trouvé
 
     // Calcul des effets musculaires sur les os
-    s2mTau muscularJointTorque(s2mJoints& model, const Eigen::VectorXd & F, bool updateKin = true, const s2mGenCoord* Q = NULL, const s2mGenCoord* QDot = NULL);
-    s2mTau muscularJointTorque(s2mJoints& model, const std::vector<s2mMuscleStateActual> &state, Eigen::VectorXd & F, bool updateKin = true, const s2mGenCoord* Q = NULL, const s2mGenCoord* QDot = NULL);
-    s2mTau muscularJointTorque(s2mJoints& model, const std::vector<s2mMuscleStateActual> &state, bool updateKin = true, const s2mGenCoord* Q = NULL, const s2mGenCoord* QDot = NULL);
+    s2mTau muscularJointTorque(s2mJoints& model, const Eigen::VectorXd & F, bool updateKin = true, const s2mGenCoord* Q = nullptr, const s2mGenCoord* QDot = nullptr);
+    s2mTau muscularJointTorque(s2mJoints& model, const std::vector<s2mMuscleStateActual> &state, Eigen::VectorXd & F, bool updateKin = true, const s2mGenCoord* Q = nullptr, const s2mGenCoord* QDot = nullptr);
+    s2mTau muscularJointTorque(s2mJoints& model, const std::vector<s2mMuscleStateActual> &state, bool updateKin = true, const s2mGenCoord* Q = nullptr, const s2mGenCoord* QDot = nullptr);
     Eigen::MatrixXd musclesLengthJacobian(s2mJoints& m, bool updateKinLevel = true, const s2mGenCoord* Q = NULL);
-    std::vector<std::vector<std::shared_ptr<s2mMuscleForce> > > musclesForces(s2mJoints& m, const std::vector<s2mMuscleStateActual> &state, bool updateKin = true, const s2mGenCoord* Q = NULL, const s2mGenCoord* QDot = NULL);
+    std::vector<std::vector<std::shared_ptr<s2mMuscleForce> > > musclesForces(s2mJoints& m, const std::vector<s2mMuscleStateActual> &state, bool updateKin = true, const s2mGenCoord* Q = nullptr, const s2mGenCoord* QDot = nullptr);
 
     // Set and get
     virtual unsigned int nbMuscleGroups(); // retourne le nombre total de groupes musculaires
