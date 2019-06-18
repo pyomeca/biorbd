@@ -31,7 +31,11 @@ class BIORBD_API s2mMuscleHillType : public s2mMuscle
         virtual std::vector<std::shared_ptr<s2mMuscleForce> > force(s2mJoints& , const s2mGenCoord&, const s2mMuscleStateActual&, const int = 2){s2mError::s2mAssert(0, "Hill type needs velocity"); std::vector<std::shared_ptr<s2mMuscleForce> > dummy; return dummy;} // Compute muscle force
         virtual std::vector<std::shared_ptr<s2mMuscleForce> > force(const s2mMuscleStateActual&); // Compute muscle force (assume updateOrientations has been done)
 
-
+        // Get individual forces
+        double FlCE(const s2mMuscleStateActual& EMG);
+        double FlPE();
+        double FvCE();
+        double damping();
 
     protected:
         virtual void setType();
