@@ -4,7 +4,7 @@
 void s2mError::s2mAssert(bool cond, const s2mString &s){
     if (!cond){
         std::cout << "ERROR: " << s << std::endl;
-        throw s;
+        throw std::runtime_error(s);
     }
 
 }
