@@ -369,11 +369,12 @@ RigidBodyDynamics::Math::SpatialTransform s2mJoints::CalcBodyWorldTransformation
     return transfo;
 }
 
-s2mNode s2mJoints::CoM(const s2mGenCoord &Q){
+s2mNode s2mJoints::CoM(const s2mGenCoord &Q, bool updateKin){
     // Retour la position du centre de masse a partir des coordonnées généralisées
 
     // S'assurer que le modele est dans la bonne configuration
-    RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,nullptr,nullptr);
+    if (updateKin)
+        RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,nullptr,nullptr);
 
     // Pour chaque segment, trouver le CoM (CoM = somme(masse_segmentaire * pos_com_seg)/masse_totale)
     std::vector<s2mNodeBone> com_segment(CoMbySegment(Q,true));
@@ -828,6 +829,11 @@ unsigned int s2mJoints::getDofIndex(const s2mString& boneName, const s2mString& 
 
     s2mError::s2mAssert(found, "Dof not found");
     return idx;
+}
+
+void s2mJoints::UpdateKinematicsCustom(s2mJoints &model, const s2mGenCoord *Q, const s2mGenCoord *Qdot, const s2mGenCoord *Qddot)
+{
+    RigidBodyDynamics::UpdateKinematicsCustom(model, Q, Qdot, Qddot);
 }
 
 void s2mJoints::CalcMatRotJacobian(s2mJoints &model, const RigidBodyDynamics::Math::VectorNd &Q, unsigned int body_id, const RigidBodyDynamics::Math::Matrix3d &rotation, RigidBodyDynamics::Math::MatrixNd &G, bool update_kinematics)

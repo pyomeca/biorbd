@@ -75,7 +75,7 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
 
         unsigned int nbBone() const; // Return the actual number of segments
         double mass() const; // retourne la masse de tous les segments
-        s2mNode CoM(const s2mGenCoord &Q); // Position du centre de masse
+        s2mNode CoM(const s2mGenCoord &Q, bool updateKin=true); // Position du centre de masse
         std::vector<s2mNodeBone> CoMbySegment(const s2mGenCoord &Q, bool updateKin=true); // Position du centre de masse de chaque segment
         s2mNodeBone CoMbySegment(const s2mGenCoord &Q, const unsigned int i, bool updateKin=true); // Position du centre de masse du segment i
         RigidBodyDynamics::Math::Vector3d CoMdot(const s2mGenCoord &Q, const s2mGenCoord &Qdot); // Vitesse du CoM
@@ -99,6 +99,7 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
         std::vector<RigidBodyDynamics::Math::Vector3d> CalcSegmentsAngularMomentum (s2mJoints &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, bool update_kinematics);
         unsigned int getDofIndex(const s2mString& boneName, const s2mString& dofName);
 
+        void UpdateKinematicsCustom(s2mJoints &model, const s2mGenCoord *Q = nullptr, const s2mGenCoord *Qdot = nullptr, const s2mGenCoord *Qddot = nullptr);
         void CalcMatRotJacobian (s2mJoints &model, const RigidBodyDynamics::Math::VectorNd &Q, unsigned int body_id, const RigidBodyDynamics::Math::Matrix3d &rotation, RigidBodyDynamics::Math::MatrixNd &G, bool update_kinematics); // Calcule la matrice jacobienne d'une matrice de rotation
 
         const s2mBone& bone(unsigned int i) const;
