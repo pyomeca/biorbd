@@ -615,7 +615,7 @@ std::vector<std::vector<s2mNodeMuscle> > getMusclePosition(const mxArray*prhs[],
     return out;
 }
 
-std::vector<Eigen::MatrixXd> getMusclePointsJaco(const mxArray*prhs[], unsigned int idx, Eigen::VectorXd nPointsByMuscles, int nQ){
+std::vector<s2mMatrix> getMusclePointsJaco(const mxArray*prhs[], unsigned int idx, Eigen::VectorXd nPointsByMuscles, int nQ){
     /* Check data type of input argument */
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -646,12 +646,12 @@ std::vector<Eigen::MatrixXd> getMusclePointsJaco(const mxArray*prhs[], unsigned 
     double *jaco=mxGetPr(prhs[idx]); //matrice de position
 
     // Préparer la matrice de sortie
-    std::vector<Eigen::MatrixXd> jacoOut;
+    std::vector<s2mMatrix> jacoOut;
     int cmpMus(0);
 
     for (unsigned int i=0; i<nPointsByMuscles.rows(); ++i){
         // Préparer les matrices intermédiaires (chaque muscle)
-        Eigen::MatrixXd mus((int)nPointsByMuscles(i)*3, nQ); // Théoriquement, c'est toujours un int
+        s2mMatrix mus((int)nPointsByMuscles(i)*3, nQ); // Théoriquement, c'est toujours un int
         for (unsigned int j=0; j<nPointsByMuscles(i); ++j){
             // Stocker
             for (int k1 = 0; k1<3; ++k1)

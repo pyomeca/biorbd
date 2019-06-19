@@ -13,14 +13,14 @@ void S2M_muscleLengthJacobian( int nlhs, mxArray *plhs[],
 	
 	
 	// Trouver la matrice jacobienne de tous les marqueurs
-//	std::vector<Eigen::MatrixXd> Jac_tp = model->TagsJacobian(Q);
-//	std::vector<Eigen::MatrixXd>::iterator it=Jac_tp.begin();
+//	std::vector<s2mMatrix> Jac_tp = model->TagsJacobian(Q);
+//	std::vector<s2mMatrix>::iterator it=Jac_tp.begin();
 
     /* Create a matrix for the return argument */
     plhs[0] = mxCreateDoubleMatrix( model->nbMuscleTotal(), nQ, mxREAL);
     double *Jac = mxGetPr(plhs[0]);
 
-    Eigen::MatrixXd jaco(model->musclesLengthJacobian(*model, true, &Q));
+    s2mMatrix jaco(model->musclesLengthJacobian(*model, Q));
     int cmp(0);
     for (unsigned int j=0; j<jaco.cols(); ++j)
         for (unsigned int i=0; i<jaco.rows(); ++i){

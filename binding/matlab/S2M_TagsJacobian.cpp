@@ -21,7 +21,7 @@ void S2M_TagsJacobian( int nlhs, mxArray *plhs[],
 
 	
 	// Trouver la matrice jacobienne de tous les marqueurs
-    std::vector<Eigen::MatrixXd> Jac_tp;
+    std::vector<s2mMatrix> Jac_tp;
     unsigned int nTags;
     if (technicalTagsOnly){
         Jac_tp = model->TechnicalTagsJacobian(*model, Q, removeAxes); // Retourne la jacobienne les Tags techniques
@@ -31,7 +31,7 @@ void S2M_TagsJacobian( int nlhs, mxArray *plhs[],
         Jac_tp = model->TagsJacobian(*model, Q, removeAxes); // Retourne la jacobienne les Tags
          nTags = model->nTags();
     }
-	std::vector<Eigen::MatrixXd>::iterator it=Jac_tp.begin();
+        std::vector<s2mMatrix>::iterator it=Jac_tp.begin();
 	
 	/* Create a matrix for the return argument */ 
     plhs[0] = mxCreateDoubleMatrix( 3*nTags, nQ, mxREAL);

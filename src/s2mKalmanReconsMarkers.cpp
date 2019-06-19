@@ -18,7 +18,7 @@ void s2mKalmanReconsMarkers::initialize(){
     m_PpInitial = m_Pp;
 }
 
-void s2mKalmanReconsMarkers::manageOcclusionDuringIteration(Eigen::MatrixXd &InvTp, Eigen::VectorXd &measure, const std::vector<unsigned int> &occlusion)
+void s2mKalmanReconsMarkers::manageOcclusionDuringIteration(s2mMatrix &InvTp, Eigen::VectorXd &measure, const std::vector<unsigned int> &occlusion)
 {
     for (unsigned int i = 0; i < occlusion.size(); ++i)
          for (unsigned int j=occlusion[i] * 3; j< occlusion[i] * 3+3; ++j){
@@ -65,7 +65,7 @@ void s2mKalmanReconsMarkers::reconstructFrame(s2mMusculoSkeletalModel &m, const 
 
             for (unsigned int i=0; i<50; ++i){
                 // La premiere fois, appeler de facon recursive pour avoir une position initiale decente
-                reconstructFrame(m, TobsTP, NULL, NULL, NULL);
+                reconstructFrame(m, TobsTP, nullptr, nullptr, nullptr);
 
                 // Remettre Pp à initial (parce qu'on ne s'intéresse pas à la vitesse pour se rendre à la position initiale
                 m_Pp = m_PpInitial;
@@ -77,18 +77,18 @@ void s2mKalmanReconsMarkers::reconstructFrame(s2mMusculoSkeletalModel &m, const 
     // État projeté
     Eigen::VectorXd xkm = m_A * m_xp;
     Eigen::VectorXd Q_tp = xkm.topRows(m_nDof);
-    RigidBodyDynamics::UpdateKinematicsCustom (m, &Q_tp, NULL, NULL);
+    RigidBodyDynamics::UpdateKinematicsCustom (m, &Q_tp, nullptr, nullptr);
 
     // Markers projetés
     std::vector<s2mNodeBone> zest_tp = m.technicalTags(m, Q_tp, removeAxes, false);
     // Jacobienne
-    std::vector<Eigen::MatrixXd> J_tp = m.TechnicalTagsJacobian(m, Q_tp, removeAxes, false);
+    std::vector<s2mMatrix> J_tp = m.TechnicalTagsJacobian(m, Q_tp, removeAxes, false);
     // Faire une seule matrice pour zest et Jacobienne
-    Eigen::MatrixXd H = Eigen::MatrixXd::Zero(m_nMeasure, m_nDof*3); // 3*nTags => X,Y,Z ; 3*nDof => Q, Qdot, Qddot
+    s2mMatrix H(s2mMatrix::Zero(m_nMeasure, m_nDof*3)); // 3*nTags => X,Y,Z ; 3*nDof => Q, Qdot, Qddot
     Eigen::VectorXd zest = Eigen::VectorXd::Zero(m_nMeasure);
     std::vector<unsigned int> occlusionIdx;
     for (unsigned int i=0; i<m_nMeasure/3; ++i) // Divisé par 3 parce qu'on intègre d'un coup xyz
-        if (Tobs(i*3)*Tobs(i*3) + Tobs(i*3+1)*Tobs(i*3+1) + Tobs(i*3+2)*Tobs(i*3+2) != 0){ // S'il y a un marqueur
+        if (Tobs(i*3)*Tobs(i*3) + Tobs(i*3+1)*Tobs(i*3+1) + Tobs(i*3+2)*Tobs(i*3+2) != 0.0){ // S'il y a un marqueur
             H.block(i*3,0,3,m_nDof) = *(J_tp.begin()+i);
             zest.block(i*3, 0,3,1) = *(zest_tp.begin()+i);
         }

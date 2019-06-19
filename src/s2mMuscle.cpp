@@ -37,11 +37,11 @@ void s2mMuscle::updateOrientations(s2mJoints &m, const s2mGenCoord &Q, const s2m
     // Update de la position des insertions et origines
     m_position.updateKinematics(m,&Q,&Qdot,m_caract,m_pathChanger,updateKin);
 }
-void s2mMuscle::updateOrientations(std::vector<s2mNodeMuscle>& musclePointsInGlobal, Eigen::MatrixXd& jacoPointsInGlobal){
+void s2mMuscle::updateOrientations(std::vector<s2mNodeMuscle>& musclePointsInGlobal, s2mMatrix &jacoPointsInGlobal){
     // Update de la position des insertions et origines
     m_position.updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,nullptr,m_caract);
 }
-void s2mMuscle::updateOrientations(std::vector<s2mNodeMuscle>& musclePointsInGlobal, Eigen::MatrixXd& jacoPointsInGlobal, const s2mGenCoord &Qdot){
+void s2mMuscle::updateOrientations(std::vector<s2mNodeMuscle>& musclePointsInGlobal, s2mMatrix &jacoPointsInGlobal, const s2mGenCoord &Qdot){
     // Update de la position des insertions et origines
     m_position.updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,&Qdot,m_caract);
 }

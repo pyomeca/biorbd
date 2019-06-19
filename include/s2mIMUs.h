@@ -3,6 +3,7 @@
     #include "biorbdConfig.h"
     #include "s2mIMU.h"
     #include "s2mGenCoord.h"
+    #include "s2mMatrix.h"
 
 class s2mJoints;
 class BIORBD_API s2mIMUs
@@ -43,11 +44,11 @@ class BIORBD_API s2mIMUs
 
 
 
-        std::vector<Eigen::MatrixXd> IMUJacobian(s2mJoints& model, const s2mGenCoord &Q, const bool &updateKin = true); // Retourne la jacobienne des Tags
-        std::vector<Eigen::MatrixXd> TechnicalIMUJacobian(s2mJoints& model, const s2mGenCoord &Q, const bool &updateKin = true); // Retourne la jacobienne des Tags pour les marqueurs techniques
+        std::vector<s2mMatrix> IMUJacobian(s2mJoints& model, const s2mGenCoord &Q, const bool &updateKin = true); // Retourne la jacobienne des Tags
+        std::vector<s2mMatrix> TechnicalIMUJacobian(s2mJoints& model, const s2mGenCoord &Q, const bool &updateKin = true); // Retourne la jacobienne des Tags pour les marqueurs techniques
 
     protected:
-        std::vector<Eigen::MatrixXd> IMUJacobian(s2mJoints& model, const s2mGenCoord &Q, const bool &updateKin, bool lookForTechnical); // Retourne la jacobienne des Tags
+        std::vector<s2mMatrix> IMUJacobian(s2mJoints& model, const s2mGenCoord &Q, const bool &updateKin, bool lookForTechnical); // Retourne la jacobienne des Tags
 
         std::vector <s2mIMU> m_IMUs;
     private:

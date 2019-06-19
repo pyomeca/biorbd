@@ -33,8 +33,8 @@ public:
     virtual ~s2mKalmanRecons();
 
     // Recueillir l'état (Q, Qdot, Qddot)
-    void getState(s2mGenCoord *Q = NULL, s2mGenCoord *Qdot = NULL, s2mGenCoord *Qddot = NULL);
-    void setInitState(const s2mGenCoord *Q = NULL, const s2mGenCoord *Qdot = NULL, const s2mGenCoord *Qddot = NULL);
+    void getState(s2mGenCoord *Q = nullptr, s2mGenCoord *Qdot = nullptr, s2mGenCoord *Qddot = nullptr);
+    void setInitState(const s2mGenCoord *Q = nullptr, const s2mGenCoord *Qdot = nullptr, const s2mGenCoord *Qddot = nullptr);
 
     // Cette fonction doit être réimplémentée de la façon nécessaire (avec les arguments souhaités). Je mets celle-ci pour force l'utilisateur à implémenter au moins cette fonction.
     // Ceci dit, sans argument (particulièrement les données d'entrées), il est douteux que la réimplémentation puisse fonctionner
@@ -43,13 +43,13 @@ public:
 protected:
     // Calculs internes
     virtual void initialize();
-    Eigen::MatrixXd evolutionMatrix(const unsigned int m, unsigned int n, const double Te); // Création de la matrice d'évolution
-    Eigen::MatrixXd processNoiseMatrix(const unsigned int nQ, const double Te);
-    Eigen::MatrixXd measurementNoiseMatrix(const unsigned int nT, const double MN);
-    Eigen::MatrixXd initCovariance(const unsigned int nQ, const double csnt);
+    s2mMatrix evolutionMatrix(const unsigned int m, unsigned int n, const double Te); // Création de la matrice d'évolution
+    s2mMatrix processNoiseMatrix(const unsigned int nQ, const double Te);
+    s2mMatrix measurementNoiseMatrix(const unsigned int nT, const double MN);
+    s2mMatrix initCovariance(const unsigned int nQ, const double csnt);
     s2mGenCoord initState(const unsigned int nQ);
-    void iteration(Eigen::VectorXd measure, const Eigen::VectorXd &projectedMeasure, const Eigen::MatrixXd &Hessian, const std::vector<unsigned int> &occlusion = std::vector<unsigned int>());
-    virtual void manageOcclusionDuringIteration(Eigen::MatrixXd &InvTp, Eigen::VectorXd &measure, const std::vector<unsigned int> &occlusion);
+    void iteration(Eigen::VectorXd measure, const Eigen::VectorXd &projectedMeasure, const s2mMatrix &Hessian, const std::vector<unsigned int> &occlusion = std::vector<unsigned int>());
+    virtual void manageOcclusionDuringIteration(s2mMatrix &InvTp, Eigen::VectorXd &measure, const std::vector<unsigned int> &occlusion);
 
     // Attributs variables
     s2mKalmanParam m_params; // Fréquence d'acquisition
@@ -59,10 +59,10 @@ protected:
 
     // Attributs du filtre de kalman
     Eigen::VectorXd m_xp; // Vecteur d'état
-    Eigen::MatrixXd m_A; // Matrice d'évolution
-    Eigen::MatrixXd m_Q; // Matrice de bruit
-    Eigen::MatrixXd m_R; // Matrice de bruit de la mesure
-    Eigen::MatrixXd m_Pp; // Matrice de covariance
+    s2mMatrix m_A; // Matrice d'évolution
+    s2mMatrix m_Q; // Matrice de bruit
+    s2mMatrix m_R; // Matrice de bruit de la mesure
+    s2mMatrix m_Pp; // Matrice de covariance
 
 };
 

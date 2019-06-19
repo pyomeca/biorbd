@@ -150,6 +150,30 @@ std::vector<std::shared_ptr<s2mMuscleForce> > s2mMuscleHillType::force(const s2m
     return m_force;
 }
 
+double s2mMuscleHillType::FlCE(const s2mMuscleStateActual &EMG)
+{
+    computeFlCE(EMG);
+    return m_FlCE;
+}
+
+double s2mMuscleHillType::FlPE()
+{
+    computeFlPE();
+    return m_FlPE;
+}
+
+double s2mMuscleHillType::FvCE()
+{
+    computeFvCE();
+    return m_FvCE;
+}
+
+double s2mMuscleHillType::damping()
+{
+    computeDamping();
+    return m_damping;
+}
+
 s2mMuscleStateActual s2mMuscleHillType::normalizeEMG(s2mMuscleStateActual EMG){
     EMG.excitationNorm(caract().stateMax());
     return EMG;
