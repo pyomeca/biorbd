@@ -43,7 +43,7 @@ class BIORBD_API s2mMuscleHillTypeMaxime : public s2mMuscleHillType
                                         const double &PCSA = 0,
                                         const double &tendonSlackLength = 0,
                                         const double &pennAngle = 0,
-                                        const s2mMuscleStateMax *stateMax = NULL,
+                                        const s2mMuscleStateMax *stateMax = nullptr,
                                         const double tauAct = 0.01,
                                         const double tauDeact = 0.04,
                                         const double &minAct =.01

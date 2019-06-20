@@ -122,7 +122,7 @@ std::vector<s2mIMU> s2mIMUs::anatomicalIMU(){
 std::vector<s2mIMU> s2mIMUs::segmentIMU(s2mJoints& model, const s2mGenCoord &Q, const unsigned int &idx, const bool &updateKin){
     // Update de la cinématique
     if (updateKin)
-        RigidBodyDynamics::UpdateKinematicsCustom(model, &Q,NULL, NULL);
+        RigidBodyDynamics::UpdateKinematicsCustom(model, &Q,nullptr, nullptr);
 
     // Nom du segment a trouver
     s2mString name(model.bone(idx).name());
@@ -136,19 +136,19 @@ std::vector<s2mIMU> s2mIMUs::segmentIMU(s2mJoints& model, const s2mGenCoord &Q, 
 }
 
 // Se faire renvoyer la jacobienne des markers
-std::vector<Eigen::MatrixXd> s2mIMUs::IMUJacobian(s2mJoints& model, const s2mGenCoord &Q, const bool &updateKin){
+std::vector<s2mMatrix> s2mIMUs::IMUJacobian(s2mJoints& model, const s2mGenCoord &Q, const bool &updateKin){
     return IMUJacobian(model, Q, updateKin, false);
 }
 
 // Se faire renvoyer la jacobienne des marker techniques
-std::vector<Eigen::MatrixXd> s2mIMUs::TechnicalIMUJacobian(s2mJoints& model, const s2mGenCoord &Q, const bool &updateKin){
+std::vector<s2mMatrix> s2mIMUs::TechnicalIMUJacobian(s2mJoints& model, const s2mGenCoord &Q, const bool &updateKin){
     return IMUJacobian(model, Q, updateKin, true);
 }
 
 
 // Protected function
-std::vector<Eigen::MatrixXd> s2mIMUs::IMUJacobian(s2mJoints &model, const s2mGenCoord &Q, const bool &updateKin, bool lookForTechnical){
-    std::vector<Eigen::MatrixXd> G;
+std::vector<s2mMatrix> s2mIMUs::IMUJacobian(s2mJoints &model, const s2mGenCoord &Q, const bool &updateKin, bool lookForTechnical){
+    std::vector<s2mMatrix> G;
 
     bool first(true);
     for (unsigned int idx=0; idx<nIMUs(); ++idx){
@@ -158,7 +158,7 @@ std::vector<Eigen::MatrixXd> s2mIMUs::IMUJacobian(s2mJoints &model, const s2mGen
             continue;
 
         unsigned int id = model.GetBodyId(node.parent().c_str());
-        Eigen::MatrixXd G_tp(Eigen::MatrixXd::Zero(9,model.dof_count));
+        s2mMatrix G_tp(s2mMatrix::Zero(9,model.dof_count));
 
         // Calcul de la jacobienne de ce Tag
         if (first)

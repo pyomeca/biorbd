@@ -15,8 +15,8 @@ void S2M_ProjectPointJacobian( int nlhs, mxArray *plhs[],
     std::vector<Eigen::Vector3d> markersOverTime = *getParameterAllMarkers(prhs,3).begin();
 
 	// Trouver la matrice jacobienne de tous les marqueurs
-    std::vector<Eigen::MatrixXd> Jac_tp = model->projectPointJacobian(*model, *model, Q, markersOverTime, true);
-	std::vector<Eigen::MatrixXd>::iterator it=Jac_tp.begin();
+    std::vector<s2mMatrix> Jac_tp = model->projectPointJacobian(*model, *model, Q, markersOverTime, true);
+        std::vector<s2mMatrix>::iterator it=Jac_tp.begin();
 	
 	/* Create a matrix for the return argument */ 
 	unsigned int nTags = model->nTags();

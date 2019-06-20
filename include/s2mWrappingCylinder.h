@@ -16,9 +16,9 @@ class BIORBD_API s2mWrappingCylinder : public s2mWrappingObject
                             const s2mString& = ""); // Nom du parent sur lequel il s'attache
         ~s2mWrappingCylinder();
 
-        void wrapPoints(const s2mAttitude&, const s2mNodeMuscle&, const s2mNodeMuscle&, s2mNodeMuscle&, s2mNodeMuscle&, double* = NULL); // Premier et dernier points musculaire
-        void wrapPoints(s2mJoints&, const s2mGenCoord&, const s2mNodeMuscle&, const s2mNodeMuscle&, s2mNodeMuscle&, s2mNodeMuscle&, double* = NULL) ; // Premier et dernier points musculaire
-        void wrapPoints(s2mNodeMuscle&, s2mNodeMuscle&, double* = NULL); // Premier et dernier points musculaire (si déja compute)
+        void wrapPoints(const s2mAttitude&, const s2mNodeMuscle&, const s2mNodeMuscle&, s2mNodeMuscle&, s2mNodeMuscle&, double* = nullptr); // Premier et dernier points musculaire
+        void wrapPoints(s2mJoints&, const s2mGenCoord&, const s2mNodeMuscle&, const s2mNodeMuscle&, s2mNodeMuscle&, s2mNodeMuscle&, double* = nullptr) ; // Premier et dernier points musculaire
+        void wrapPoints(s2mNodeMuscle&, s2mNodeMuscle&, double* = nullptr); // Premier et dernier points musculaire (si déja compute)
 
 
         // Set et get
