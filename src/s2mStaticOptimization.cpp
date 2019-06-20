@@ -23,25 +23,20 @@ int s2mStaticOptimization::run(s2mMusculoSkeletalModel m, const s2mGenCoord &Q, 
     app->Options()->SetStringValue("mu_strategy", "adaptive");
     app->Options()->SetStringValue("output_file", "ipopt.out");
     app->Options()->SetStringValue("hessian_approximation", "limited-memory");
-    std::cout << "******" << std::endl;
+    app->Options()->SetStringValue("derivative_test", "first-order");
     Ipopt::ApplicationReturnStatus status;
-    std::cout << "*" << std::endl;
    status = app->Initialize();
-   std::cout << "**" << std::endl;
    if( status != Ipopt::Solve_Succeeded )
    {
-      std::cout << "***" << std::endl;
       std::cout << std::endl << std::endl << "*** Error during initialization!" << std::endl;
       return (int) status;
    }
 
    // Ask Ipopt to solve the problem
    status = app->OptimizeTNLP(mynlp);
-   std::cout << "****" << std::endl;
 
    if( status == Ipopt::Solve_Succeeded )
    {
-      std::cout << "*****" << std::endl;
       std::cout << std::endl << std::endl << "*** The problem solved!" << std::endl;
    }
    else

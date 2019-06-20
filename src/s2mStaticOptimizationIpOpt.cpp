@@ -99,7 +99,6 @@ bool s2mStaticOptimizationIpopt::get_bounds_info(
 bool s2mStaticOptimizationIpopt::get_starting_point(
         Ipopt::Index n, bool init_x, Ipopt::Number *x, bool init_z, Ipopt::Number *z_L, Ipopt::Number *z_U, Ipopt::Index m, bool init_lambda, Ipopt::Number *lambda)
 {
-    std::cout << "get_starting_point" << std::endl;
     assert(init_x == true);
     assert(init_z == false);
     assert(init_lambda == false);
@@ -109,7 +108,6 @@ bool s2mStaticOptimizationIpopt::get_starting_point(
     for( Ipopt::Index i = 0; i < n; i++ )
        {
         x[i] = m_activationInit[i];
-        std::cout << "starting_point...x[" << i << "] = " << x[i] << std::endl;
        }
 
     return true;
@@ -145,15 +143,13 @@ bool s2mStaticOptimizationIpopt::eval_grad_f(
 bool s2mStaticOptimizationIpopt::eval_g(
         Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Index m, Ipopt::Number *g)
 {
-    std::cout << "eval_g" << std::endl;
     if (new_x){
         fillActivation(n, x);
     }
     std::vector<s2mMuscleStateActual> state;// controls
     for (unsigned int i = 0; i<m_nMus; ++i){
-        std::cout << "m_activation[" << i << "]: " << m_activation[i] << std::endl;
+        //std::cout << "m_activation[" << i << "]: " << m_activation[i] << std::endl;
         state.push_back(s2mMuscleStateActual(0, m_activation[i]));
-        std::cout << "state.push" << std::endl;
     }
     // Compute the torques from muscles
     m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
@@ -161,9 +157,7 @@ bool s2mStaticOptimizationIpopt::eval_g(
 
     for( Ipopt::Index i = 0; i < m; i++ )
        {
-        std::cout << "g[" << i << "]: " << g[i] << std::endl;
         g[i] = tau_calcul[i];
-        std::cout << "g[" << i << "]: " << g[i] << std::endl;
        }
     return true;
 }
@@ -178,12 +172,11 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
     }
 
     if (values == nullptr) {
-        std::cout << "***" << std::endl;
         unsigned int k(0);
     // return the structure of the Jacobian
     // this particular Jacobian is dense
-        for (unsigned int i = 0; i<m_nTau; ++i){
-            for (unsigned int j = 0; j<m_nMus; ++j){
+        for (unsigned int j = 0; j<m_nMus; ++j){
+            for (unsigned int i = 0; i<m_nTau; ++i){
                 iRow[k] = static_cast<int>(i);
                 jCol[k] = static_cast<int>(j);
                 ++k;
@@ -217,7 +210,7 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
             s2mTau tau_calcul_epsilon = m_model.muscularJointTorque(m_model, state_epsilon, true, &m_Q, &m_Qdot);
             for( Ipopt::Index i = 0; i < m; i++ )
             {
-                values[k] = (tau_calcul_actual[i]-tau_calcul_epsilon[i])/m_epsilon;
+                values[k] = (tau_calcul_epsilon[i]-tau_calcul_actual[i])/m_epsilon;
                 k++;
            }
         }
@@ -263,14 +256,10 @@ void s2mStaticOptimizationIpopt::finalize_solution(Ipopt::SolverReturn status, I
 
 void s2mStaticOptimizationIpopt::fillActivation(Ipopt::Index n, const Ipopt::Number *x)
 {
-    std::cout << "fillActivation" << std::endl;
     for(int i = 0; i < n; i++ )
     {
-        std::cout << "not filled" << std::endl;
         m_activation[i] = x[i];
-        std::cout << "filled" << std::endl;
     }
-    std::cout << "filled" << std::endl;
 }
 
 
