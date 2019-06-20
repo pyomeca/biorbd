@@ -9,7 +9,7 @@
 #include <Eigen/Dense>
 #include <IpIpoptApplication.hpp>
 #include <IpTNLP.hpp>
-#include "s2mStaticOptimizationIpOpt.h"
+#include "s2mStaticOptimizationIpopt.h"
 
 
     
@@ -21,18 +21,16 @@ class BIORBD_API s2mStaticOptimization
                 const s2mGenCoord& Q_init,
                 const s2mGenCoord& QDot_init,
                 const s2mGenCoord& Tau,
-                const s2mGenCoord& Alpha_init,
+                const s2mVector& Alpha_init,
                 const int p = 2
                 );
         int run(
-                int   argv,
-                char* argc[],
                 s2mMusculoSkeletalModel m,
                 const s2mGenCoord& Q, // states
                 const s2mGenCoord& Qdot, // derived states
                 const s2mGenCoord& Tau,
-                const s2mGenCoord& Activ,
-                const int p
+                const s2mVector& Activ,
+                const int p = 2
                );
 
 

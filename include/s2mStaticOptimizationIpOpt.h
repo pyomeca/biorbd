@@ -13,34 +13,27 @@
 
 
     
-class BIORBD_API s2mStaticOptimizationIpOpt : public Ipopt::TNLP
+class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
 {
     public:
-        s2mStaticOptimizationIpOpt(s2mMusculoSkeletalModel &model,
+        s2mStaticOptimizationIpopt(s2mMusculoSkeletalModel &model,
                 const s2mGenCoord& Q, // states
                 const s2mGenCoord& Qdot, // derived states
                 const s2mTau &tau_init,
                 const s2mVector& activationInit,
                 unsigned int p = 2,
-                const unsigned int epsilon = 1e-10
+                const double epsilon = 1e-10
                 );
-        s2mStaticOptimizationIpOpt(s2mMusculoSkeletalModel &model,
+        s2mStaticOptimizationIpopt(s2mMusculoSkeletalModel &model,
                 const s2mGenCoord& Q, // states
                 const s2mGenCoord& Qdot, // derived states
                 const s2mTau &tau_init,
                 unsigned int p = 2,
-                const unsigned int epsilon = 1e-10
+                const double epsilon = 1e-10
                 );
 
-        virtual ~s2mStaticOptimizationIpOpt();
+        virtual ~s2mStaticOptimizationIpopt();
 
-        virtual bool get_bounds_info(
-           Ipopt::Index&          n,
-           Ipopt::Number*         x_l,
-           Ipopt::Number*         x_u,
-           Ipopt::Index           m,
-           Ipopt::Number*         g_l,
-           Ipopt::Number*         g_u);
         /**@name Overloaded from TNLP */
         //@{
         /** Method to return some info about the NLP */
@@ -156,7 +149,7 @@ class BIORBD_API s2mStaticOptimizationIpOpt : public Ipopt::TNLP
         s2mGenCoord m_Q;
         s2mGenCoord m_Qdot;
         s2mMusculoSkeletalModel &m_model;
-        unsigned int m_epsilon;
+        double m_epsilon;
 
         void fillActivation(
                 Ipopt::Index n,
