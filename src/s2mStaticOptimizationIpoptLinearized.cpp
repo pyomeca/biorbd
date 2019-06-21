@@ -38,7 +38,7 @@ void s2mStaticOptimizationIpoptLinearized::prepareJacobian()
     for (unsigned int i = 0; i<m_nMus; ++i){
         state_zero.push_back(s2mMuscleStateActual(0, 0));
     }
-    s2mTau tau_zero = m_model.muscularJointTorque(m_model, state_zero, true, &m_Q, &m_Qdot);
+    s2mTau tau_zero = m_model.muscularJointTorque(m_model, state_zero, false, &m_Q, &m_Qdot);
     for (unsigned int i = 0; i<m_nMus; ++i){
         std::vector<s2mMuscleStateActual> state;
         for (unsigned int j = 0; j<m_nMus; ++j){
@@ -49,7 +49,7 @@ void s2mStaticOptimizationIpoptLinearized::prepareJacobian()
             else {
                 delta = 0;
             }
-            state_zero.push_back(s2mMuscleStateActual(0, delta*1));
+            state.push_back(s2mMuscleStateActual(0, delta*1));
         }
         s2mTau tau = m_model.muscularJointTorque(m_model, state, true, &m_Q, &m_Qdot);
         for (unsigned int j = 0; j<m_nTau; ++j){
@@ -90,7 +90,14 @@ bool s2mStaticOptimizationIpoptLinearized::eval_g(
 }
 
 bool s2mStaticOptimizationIpoptLinearized::eval_jac_g(
-        Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Index m, Ipopt::Index nele_jac, Ipopt::Index *iRow, Ipopt::Index *jCol, Ipopt::Number *values)
+        Ipopt::Index n,
+        const Ipopt::Number *x,
+        bool new_x,
+        Ipopt::Index m,
+        Ipopt::Index nele_jac,
+        Ipopt::Index *iRow,
+        Ipopt::Index *jCol,
+        Ipopt::Number *values)
 {
     if (new_x){
         fillActivation(n, x);

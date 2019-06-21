@@ -14,12 +14,13 @@ s2mStaticOptimization::s2mStaticOptimization(
     m_Q(Q),
     m_Qdot(Qdot),
     m_Qddot(Qddot),
+    m_Tau(s2mTau(m)),
     m_Activ(Activ),
     m_p(p)
 {
-    s2mTau m_Tau(m_model);
     m_Tau.setZero();
     RigidBodyDynamics::InverseDynamics(m_model, m_Q, m_Qdot, m_Qddot, m_Tau);
+    std::cout << "m_Tau\n:" << m_Tau << std::endl;
 }
 
 s2mStaticOptimization::s2mStaticOptimization(
@@ -52,12 +53,18 @@ s2mStaticOptimization::s2mStaticOptimization(
     m_Q(Q),
     m_Qdot(Qdot),
     m_Qddot(Qddot),
+    m_Tau(s2mTau(m)),
     m_State(State),
+    m_Activ(s2mVector(m.nbMuscleTotal())),
     m_p(p)
 {
-    s2mTau m_Tau(m_model);
     m_Tau.setZero();
     RigidBodyDynamics::InverseDynamics(m_model, m_Q, m_Qdot, m_Qddot, m_Tau);
+    std::cout << "m_Tau\n:" << m_Tau << std::endl;
+    m_Activ.setZero();
+    for (unsigned int i = 0; i<m_model.nbMuscleTotal(); i++){
+        m_Activ[i] = m_State[i].activation();
+    }
 }
 
 s2mStaticOptimization::s2mStaticOptimization(
@@ -72,20 +79,27 @@ s2mStaticOptimization::s2mStaticOptimization(
     m_Qdot(Qdot),
     m_Tau(Tau),
     m_State(State),
+    m_Activ(s2mVector(m.nbMuscleTotal())),
     m_p(p)
 {
-
+    m_Activ.setZero();
+    for (unsigned int i = 0; i<m_model.nbMuscleTotal(); i++){
+        m_Activ[i] = m_State[i].activation();
+    }
 }
 
 int s2mStaticOptimization::optimize(
         bool LinearizedState
         )
 {
+    Ipopt::SmartPtr<Ipopt::TNLP> mynlp;
     if (LinearizedState){
-        Ipopt::SmartPtr<Ipopt::TNLP> mynlp = new s2mStaticOptimizationIpoptLinearized(m_model, m_Q, m_Qdot, m_Tau, m_Activ);
+        std::cout << "Linearized" << std::endl;
+        mynlp = new s2mStaticOptimizationIpoptLinearized(m_model, m_Q, m_Qdot, m_Tau, m_Activ);
     }
     else {
-        Ipopt::SmartPtr<Ipopt::TNLP> mynlp = new s2mStaticOptimizationIpopt(m_model, m_Q, m_Qdot, m_Tau, m_Activ);
+        mynlp = new s2mStaticOptimizationIpopt(m_model, m_Q, m_Qdot, m_Tau, m_Activ);
+        std::cout << "m_Tau\n:" << m_Tau << std::endl;
     }
     Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
 
@@ -99,7 +113,7 @@ int s2mStaticOptimization::optimize(
    if( status != Ipopt::Solve_Succeeded )
    {
       std::cout << std::endl << std::endl << "*** Error during initialization!" << std::endl;
-      return (int) status;
+      return status;
    }
 
    // Ask Ipopt to solve the problem
@@ -113,7 +127,7 @@ int s2mStaticOptimization::optimize(
    {
       std::cout << std::endl << std::endl << "*** The problem FAILED!" << std::endl;
    }
-   return (int) status;
+   return status;
 
 }
 

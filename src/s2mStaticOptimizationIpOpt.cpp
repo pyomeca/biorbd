@@ -22,7 +22,9 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(s2mMusculoSkeletalModel &
     m_Q(Q),
     m_Qdot(Qdot),
     m_model(model),
-    m_epsilon(epsilon)
+    m_epsilon(epsilon),
+    m_State(std::vector<s2mMuscleStateActual>(model.nbMuscleTotal())),
+    m_tau_calcul(s2mTau(model.nbTau()))
 {
     m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
 }
@@ -47,7 +49,8 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
     m_Q(Q),
     m_Qdot(Qdot),
     m_model(model),
-    m_epsilon(epsilon)
+    m_epsilon(epsilon),
+    m_State(std::vector<s2mMuscleStateActual>(model.nbMuscleTotal()))
 {
     model.updateMuscles(model, Q, Qdot, true);
 }
@@ -75,6 +78,8 @@ bool s2mStaticOptimizationIpopt::get_nlp_info(
 bool s2mStaticOptimizationIpopt::get_bounds_info(
         Ipopt::Index n, Ipopt::Number *x_l, Ipopt::Number *x_u, Ipopt::Index m, Ipopt::Number *g_l, Ipopt::Number *g_u)
 {
+    std::cout << "get_bounds_info" << std::endl;
+    std::cout << m_tau << std::endl;
     assert(n == static_cast<int>(m_nMus));
     assert(m == static_cast<int>(m_nTau));
 
@@ -99,6 +104,7 @@ bool s2mStaticOptimizationIpopt::get_bounds_info(
 bool s2mStaticOptimizationIpopt::get_starting_point(
         Ipopt::Index n, bool init_x, Ipopt::Number *x, bool init_z, Ipopt::Number *z_L, Ipopt::Number *z_U, Ipopt::Index m, bool init_lambda, Ipopt::Number *lambda)
 {
+    std::cout << "get_starting_point" << std::endl;
     assert(init_x == true);
     assert(init_z == false);
     assert(init_lambda == false);
@@ -116,6 +122,7 @@ bool s2mStaticOptimizationIpopt::get_starting_point(
 bool s2mStaticOptimizationIpopt::eval_f(
         Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Number &obj_value)
 {
+    std::cout << "eval_f" << std::endl;
     assert(n == static_cast<int>(m_nMus));
     if (new_x){
         fillActivation(n, x);
@@ -127,6 +134,7 @@ bool s2mStaticOptimizationIpopt::eval_f(
 bool s2mStaticOptimizationIpopt::eval_grad_f(
         Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Number *grad_f)
 {
+    std::cout << "eval_grad_f" << std::endl;
     if (new_x){
         fillActivation(n, x);
     }
@@ -144,14 +152,12 @@ bool s2mStaticOptimizationIpopt::eval_g(
     if (new_x){
         fillActivation(n, x);
     }
-    std::vector<s2mMuscleStateActual> state;// controls
+
     for (unsigned int i = 0; i<m_nMus; ++i){
         std::cout << "m_activation[" << i << "]: " << m_activation[i] << std::endl;
-        state.push_back(s2mMuscleStateActual(0, m_activation[i]));
+        m_State[i].setActivation(m_activation[i]);
     }
-    // Compute the torques from muscles
-    m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
-    s2mTau tau_calcul = m_model.muscularJointTorque(m_model, state, true, &m_Q, &m_Qdot);
+    s2mTau tau_calcul = m_model.muscularJointTorque(m_model, m_State, false, &m_Q, &m_Qdot);
 
     for( Ipopt::Index i = 0; i < m; i++ )
        {
@@ -182,13 +188,11 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
     }
     else
     {
-        // controls
-        std::cout << "*" << std::endl;
-        std::vector<s2mMuscleStateActual> state;
-        for (unsigned int i = 0; static_cast<int>(i) < n; ++i){
-            state.push_back(s2mMuscleStateActual(0, m_activation[i]));
+        for (unsigned int i = 0; i<m_nMus; ++i){
+            std::cout << "m_activation[" << i << "]: " << m_activation[i] << std::endl;
+            m_State[i].setActivation(m_activation[i]);
         }
-        s2mTau tau_calcul_actual = m_model.muscularJointTorque(m_model, state, true, &m_Q, &m_Qdot);
+        s2mTau tau_calcul_actual = m_model.muscularJointTorque(m_model, m_State, true, &m_Q, &m_Qdot);
         unsigned int k(0);
         for( Ipopt::Index j = 0; j < n; j++ )
            {
