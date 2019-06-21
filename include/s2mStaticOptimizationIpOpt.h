@@ -32,6 +32,7 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
                 const double epsilon = 1e-10
                 );
 
+
         virtual ~s2mStaticOptimizationIpopt();
 
         /**@name Overloaded from TNLP */
@@ -107,7 +108,7 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
            Ipopt::Index*        jCol,
            Ipopt::Number*       values
            );
-        bool eval_h(
+        virtual bool eval_h(
            Ipopt::Index         n,
            const Ipopt::Number* x,
            bool          new_x,
@@ -120,7 +121,7 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
            Ipopt::Index*        jCol,
            Ipopt::Number*       values
            );
-        void finalize_solution(
+        virtual void finalize_solution(
            Ipopt::SolverReturn               status,
            Ipopt::Index                      n,
            const Ipopt::Number*              x,
