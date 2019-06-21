@@ -1,8 +1,8 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mStaticOptimizationIpopt.h"
+#include "../include/s2mStaticOptimizationIpOptLinearized.h"
 
 
-s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(s2mMusculoSkeletalModel &model,
+s2mStaticOptimizationIpoptLinearized::s2mStaticOptimizationIpoptLinearized(s2mMusculoSkeletalModel &model,
         const s2mGenCoord& Q, // states
         const s2mGenCoord& Qdot, // derived states
         const s2mTau& tau_init,
@@ -10,6 +10,7 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(s2mMusculoSkeletalModel &
         unsigned int p,
         const double epsilon
         ) :
+    s2mStaticOptimizationIpopt(model, Q, Qdot, tau_init, activationInit, p, epsilon),
     m_nQ(model.nbQ()),
     m_nQdot(model.nbQdot()),
     m_nMus(model.nbMuscleTotal()),
@@ -27,7 +28,7 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(s2mMusculoSkeletalModel &
     m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
 }
 
-s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
+s2mStaticOptimizationIpoptLinearized::s2mStaticOptimizationIpoptLinearized(
         s2mMusculoSkeletalModel &model,
         const s2mGenCoord& Q, // states
         const s2mGenCoord& Qdot, // derived states
@@ -35,6 +36,7 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
         unsigned int p,
         const double epsilon
         ) :
+    s2mStaticOptimizationIpopt(model, Q, Qdot, tau_init, p, epsilon),
     m_nQ(model.nbQ()),
     m_nQdot(model.nbQdot()),
     m_nMus(model.nbMuscleTotal()),

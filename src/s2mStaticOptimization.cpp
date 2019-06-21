@@ -3,20 +3,29 @@
 
 
 s2mStaticOptimization::s2mStaticOptimization(
-        s2mMusculoSkeletalModel m,
+        s2mMusculoSkeletalModel &m,
         const s2mGenCoord& Q, // states
         const s2mGenCoord& Qdot, // derived states
-        const s2mGenCoord& Tau,
+        const s2mGenCoord& Qddot,
         const s2mVector& Activ,
         const int p
-        )
+        ):
+    m_model(m),
+    m_Q(Q),
+    m_Qdot(Qdot),
+    m_Qddot(Qddot),
+    m_Activ(Activ),
+    m_p(p)
 {
 
 }
 
-int s2mStaticOptimization::run(s2mMusculoSkeletalModel m, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Tau, const s2mVector &Activ, const int p)
+int s2mStaticOptimization::optimize()
 {
-    Ipopt::SmartPtr<Ipopt::TNLP> mynlp = new s2mStaticOptimizationIpopt(m, Q, Qdot, Tau, Activ);
+    s2mTau Tau(m_model);
+    Tau.setZero();
+    RigidBodyDynamics::InverseDynamics(m_model, m_Q, m_Qdot, m_Qddot, Tau);
+    Ipopt::SmartPtr<Ipopt::TNLP> mynlp = new s2mStaticOptimizationIpopt(m_model, m_Q, m_Qdot, Tau, m_Activ);
     Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
 
     app->Options()->SetNumericValue("tol", 1e-7);
