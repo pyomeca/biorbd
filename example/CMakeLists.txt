@@ -4,8 +4,16 @@ add_executable(${PROJECT_NAME} "main.cpp")
 add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME})
 
 # Headers
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include
-        ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${RBDL_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC
+    ${Matlab_INCLUDE_DIRS}
+    ${RBDL_INCLUDE_DIR}
+    ${RBDL_INCLUDE_DIR}/..
+    ${Boost_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIR}
+    ${DLIB_INCLUDE_DIR}
+    ${IPOPT_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include
+)
 
 # Libraries linker
 get_target_property(DEBUG_POSTFIX ${MASTER_PROJECT_NAME} DEBUG_POSTFIX)
@@ -14,15 +22,17 @@ IF(CMAKE_BUILD_TYPE MATCHES "Debug")
 else()
     SET(${MASTER_PROJECT_NAME}_LIB_NAME ${MASTER_PROJECT_NAME})
 endif()
-if (UNIX)
+if (APPLE)
+    string(CONCAT ${MASTER_PROJECT_NAME}_LIB_NAME "lib" ${${MASTER_PROJECT_NAME}_LIB_NAME} ".dylib")
+elseif (UNIX)
     string(CONCAT ${MASTER_PROJECT_NAME}_LIB_NAME "lib" ${${MASTER_PROJECT_NAME}_LIB_NAME} ".so")
 elseif(_WIN32)
     message("TO BE TESTED")
     string(CONCAT ${MASTER_PROJECT_NAME}_LIB_NAME ${${MASTER_PROJECT_NAME}_LIB_NAME} ".dll")
 endif()
 set(${MASTER_PROJECT_NAME}_LIBRARY ${CMAKE_BINARY_DIR}/${${MASTER_PROJECT_NAME}_LIB_NAME})
-target_link_libraries(${PROJECT_NAME} ${${MASTER_PROJECT_NAME}_LIBRARY} ${RBDL_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${${MASTER_PROJECT_NAME}_LIBRARY} ${RBDL_LIBRARY} ${IPOPT_LIBRARY})
 
 # Copy the c3d of the example
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/pyomecaman.s2mMod
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/pyomecaman.bioMod
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

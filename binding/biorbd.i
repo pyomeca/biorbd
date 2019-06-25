@@ -16,11 +16,21 @@
 
 #include "s2mKalmanReconsIMU.h"
 #include "s2mKalmanReconsMarkers.h"
-#include "s2mMuscleOptimisation.h"
-#include "s2mIMU_Unity_Optim.h"
+// #include "s2mMuscleOptimisation.h"
+// #include "s2mIMU_Unity_Optim.h"
 %}
 %include exception.i
 %include <std_shared_ptr.i>
+
+%exception {
+    try {
+        $action
+    } catch(const std::exception& e) {
+        SWIG_exception(SWIG_RuntimeError, e.what());
+    } catch(...) {
+        SWIG_exception(SWIG_RuntimeError, "Unknown exception");
+    }
+}
 
 /* Instantiate standard library */
 %include <std_vector.i>
@@ -76,6 +86,12 @@ namespace std {
     static s2mMuscleHillTypeThelen& getRef(std::shared_ptr<s2mMuscle> m)
     {
         return *(std::dynamic_pointer_cast<s2mMuscleHillTypeThelen>(m));
+    }
+}
+%extend s2mMuscleHillTypeThelenFatigable{
+    static s2mMuscleHillTypeThelenFatigable& getRef(std::shared_ptr<s2mMuscle> m)
+    {
+        return *(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(m));
     }
 }
 %extend s2mMuscleHillTypeChadwick{
@@ -147,12 +163,14 @@ namespace std {
 %include "../include/s2mMuscle.h"
 %include "../include/s2mMuscleHillType.h"
 %include "../include/s2mMuscleHillTypeThelen.h"
+%include "../include/s2mMuscleHillTypeThelenFatigable.h"
 %include "../include/s2mMuscleHillTypeChadwick.h"
 %include "../include/s2mMuscleHillTypeSchutte.h"
 %include "../include/s2mMuscleHillTypeSimple.h"
 %include "../include/s2mMuscles.h"
 %include "../include/s2mGroupeMusculaire.h"
 %include "../include/s2mMuscleCaracteristics.h"
+%include "../include/s2mMuscleFatigueParam.h"
 //%include "s2mMuscleForce.h"
 //%include "s2mMuscleForceFromInsertion.h"
 //%include "s2mMuscleForceFromOrigin.h"

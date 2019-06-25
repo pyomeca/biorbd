@@ -18,7 +18,16 @@ else(WIN32)
 endif(WIN32)
 
 # Add headers
-target_include_directories(${PROJECT_NAME} PRIVATE ${Matlab_INCLUDE_DIRS} ${RBDL_INCLUDE_DIR} ${RBDL_INCLUDE_DIR}/.. ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../../include)
+target_include_directories(${PROJECT_NAME} PUBLIC
+    ${Matlab_INCLUDE_DIRS}
+    ${RBDL_INCLUDE_DIR}
+    ${RBDL_INCLUDE_DIR}/..
+    ${Boost_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIR}
+    ${DLIB_INCLUDE_DIR}
+    ${IPOPT_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../include
+)
 
 # Set the name of the library
 if(WIN32)
@@ -47,7 +56,7 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRU
 
 # Linker and instalation
 target_link_libraries(${PROJECT_NAME} ${MASTER_PROJECT_NAME} ${Matlab_MX_LIBRARY} ${Matlab_MEX_LIBRARY})
-set(Matlab_${MASTER_PROJECT_NAME}_INSTALL_DIR ${Matlab_ROOT_DIR}/toolbox CACHE FILEPATH "Toolbox path to install, please note that the default directory may require administrator access")
+set(Matlab_${MASTER_PROJECT_NAME}_INSTALL_DIR ${Matlab_ROOT_DIR}/toolbox CACHE PATH "Toolbox path to install, please note that the default directory may require administrator access")
 install(TARGETS ${PROJECT_NAME} DESTINATION ${Matlab_${MASTER_PROJECT_NAME}_INSTALL_DIR}/${PROJECT_NAME})
 
 

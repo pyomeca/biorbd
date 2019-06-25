@@ -10,6 +10,7 @@
     #include "s2mMuscleHillTypeMaxime.h"
     #include "s2mMuscleHillTypeChadwick.h"
     #include "s2mMuscleHillTypeThelen.h"
+    #include "s2mMuscleHillTypeThelenFatigable.h"
     #include "s2mMuscleHillTypeSchutte.h"
     #include "s2mMuscleHillTypeSimple.h"
     #include "s2mString.h"

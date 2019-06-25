@@ -21,13 +21,13 @@ s2mBone::s2mBone(s2mJoints *model, const unsigned int &parent_id,
             m_nDofRot(0),
             m_nDofQuat(0),
             m_isQuaternion(false),
-            m_dof (NULL),
-            m_idxDof (NULL),
-            m_sequenceTrans (NULL),
-            m_sequenceRot (NULL),
-            m_nomDof (NULL),
-            m_dofPosition (NULL),
-            m_dofCaract (NULL)
+            m_dof (nullptr),
+            m_idxDof (nullptr),
+            m_sequenceTrans (nullptr),
+            m_sequenceRot (nullptr),
+            m_nomDof (nullptr),
+            m_dofPosition (nullptr),
+            m_dofCaract (nullptr)
 {
     // Call proper functions
     setParentToChildTransformation(cor);
@@ -54,13 +54,13 @@ s2mBone::s2mBone(s2mJoints *model, const unsigned int &parent_id,
             m_nDofRot(0),
             m_nDofQuat(0),
             m_isQuaternion(false),
-            m_dof (NULL),
-            m_idxDof (NULL),
-            m_sequenceTrans (NULL),
-            m_sequenceRot (NULL),
-            m_nomDof (NULL),
-            m_dofPosition (NULL),
-            m_dofCaract (NULL)
+            m_dof (nullptr),
+            m_idxDof (nullptr),
+            m_sequenceTrans (nullptr),
+            m_sequenceRot (nullptr),
+            m_nomDof (nullptr),
+            m_dofPosition (nullptr),
+            m_dofCaract (nullptr)
 {
     // Call proper functions
     setParentToChildTransformation(cor);
@@ -87,16 +87,16 @@ s2mBone::s2mBone(const s2mBone& bone)
     m_nDofQuat = bone.m_nDofQuat;
     m_isQuaternion = bone.m_isQuaternion;
 
-    m_dof = NULL;
-    m_idxDof = NULL;
-    m_sequenceTrans = NULL;
-    m_sequenceRot = NULL;
-    m_nomDof = NULL;
+    m_dof = nullptr;
+    m_idxDof = nullptr;
+    m_sequenceTrans = nullptr;
+    m_sequenceRot = nullptr;
+    m_nomDof = nullptr;
     m_caract = bone.m_caract;
 
     // Copy des attributs pointeurs
-    m_dofPosition = NULL;
-    m_dofCaract = NULL;
+    m_dofPosition = nullptr;
+    m_dofCaract = nullptr;
 
 
     m_sequenceTrans = new unsigned int[m_nDofTrans];

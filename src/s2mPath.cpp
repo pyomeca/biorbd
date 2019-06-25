@@ -223,11 +223,11 @@ s2mString s2mPath::extension() const
 const char * s2mPath::getCurrentDir()
 {
     #ifdef _WIN64
-        return _getcwd(NULL, 0);
+        return _getcwd(nullptr, 0);
     #elif _WIN32
-        return _getcwd(NULL, 0);
+        return _getcwd(nullptr, 0);
     #else
-        return getcwd(NULL, 0);
+        return getcwd(nullptr, 0);
 #endif
 }
 

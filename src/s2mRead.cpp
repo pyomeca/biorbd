@@ -508,6 +508,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             double maxExcitation(0);
             double maxActivation(0);
             double PCSA(1);
+            s2mMuscleFatigueParam fatigueParameters;
 
             // Lecture du fichier
             while(file.read(tp) && tp.tolower().compare("endmuscle")){
@@ -540,12 +541,20 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     file.read(maxExcitation, variable);
                 else if (!tp.tolower().compare("pcsa"))
                     file.read(PCSA, variable);
+                else if (!tp.tolower().compare("fatigueparameters")){
+                    while(file.read(tp) && tp.tolower().compare("endfatigueparameters")){
+                        double param;
+                        file.read(param);
+                        if (!tp.tolower().compare("param1"))
+                            fatigueParameters.param1(param);
+                    }
+                }
             }
             s2mError::s2mAssert(idxGroup!=-1, "No muscle group was provided!");
             s2mMuscleGeometry geo(s2mNodeMuscle(origin_pos, name + "_origin", model->muscleGroup(idxGroup).origin()),
                                   s2mNodeMuscle(insert_pos, name + "_insertion", model->muscleGroup(idxGroup).insertion()));
             s2mMuscleStateMax state(maxExcitation, maxActivation);
-            s2mMuscleCaracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, &state);
+            s2mMuscleCaracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, &state, fatigueParameters);
             model->muscleGroup(idxGroup).addHillMuscle(name,type,geo,caract,s2mMusclePathChangers(),stateType);
         }
         else if (!tp.tolower().compare("viapoint")){
@@ -858,7 +867,7 @@ std::vector<Eigen::VectorXd> s2mRead::readGrfDataFile(const s2mString &path){
     unsigned int nbIntervals = atoi(tp.c_str());
 
     std::vector<Eigen::VectorXd> grf;
-    // Descendre jusqu'Ã  la dÃ©finition d'un torque
+    // Descendre jusqu'Ã  la dÃ©finition d'un torque
     for (unsigned int j=0; j<nbIntervals+1; j++){
         while (tp.compare("T")){
             bool check = file.read(tp);

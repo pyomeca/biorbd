@@ -112,5 +112,3 @@ void s2mMuscleOptimisation::optimizeJointTorque(std::vector<OptimData>& data_sam
 
 
 
-
-

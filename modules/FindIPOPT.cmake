@@ -1,0 +1,46 @@
+# Searches for IPOPT includes and library files
+#
+# Sets the variables
+#   IPOPT_FOUND
+#   IPOPT_INCLUDE_DIR
+#   IPOPT_LIBRARIES
+
+SET (IPOPT_FOUND FALSE)
+
+FIND_PATH (IPOPT_INCLUDE_DIR IpIpoptApplication.hpp
+    /usr/include/coin
+    /usr/local/include/coin
+    $ENV{HOME}/local/include/coin
+    ${CMAKE_INSTALL_PREFIX}/include/coin
+    $ENV{IPOPT_PATH}/src/coin
+    $ENV{IPOPT_PATH}/include/coin
+    $ENV{IPOPT_INCLUDE_PATH}
+)
+
+FIND_LIBRARY (IPOPT_LIBRARY NAMES ipopt	PATHS
+    /usr/lib
+    /usr/local/lib
+    ${CMAKE_INSTALL_PREFIX}/lib
+    $ENV{HOME}/local/lib
+    $ENV{IPOPT_LIBRARY_PATH}
+)
+
+IF (IPOPT_INCLUDE_DIR AND IPOPT_LIBRARY)
+    SET (IPOPT_FOUND TRUE)
+ENDIF (IPOPT_INCLUDE_DIR AND IPOPT_LIBRARY)
+
+IF (IPOPT_FOUND)
+   IF (NOT IPOPT_FIND_QUIETLY)
+      MESSAGE(STATUS "Found IPOPT: ${IPOPT_LIBRARY}")
+   ENDIF (NOT IPOPT_FIND_QUIETLY)
+ELSE (IPOPT_FOUND)
+   IF (IPOPT_FIND_REQUIRED)
+      MESSAGE(FATAL_ERROR "Could not find IPOPT")
+   ENDIF (IPOPT_FIND_REQUIRED)
+ENDIF (IPOPT_FOUND)
+
+MARK_AS_ADVANCED (
+    IPOPT_FOUND
+    IPOPT_INCLUDE_DIR
+    IPOPT_LIBRARIES
+)

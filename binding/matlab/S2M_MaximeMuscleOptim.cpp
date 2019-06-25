@@ -1,5 +1,3 @@
-
-
 void S2M_MaximeMuscleOptim( int nlhs, mxArray *plhs[],
 				int nrhs, const mxArray*prhs[] ){
 	// Verifier les arguments d'entrée

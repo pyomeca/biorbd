@@ -27,8 +27,8 @@ class BIORBD_API s2mMuscle : public s2mMuscleCompound
         virtual double velocity(s2mJoints&, const s2mGenCoord&, const s2mGenCoord&, const bool = true);
         virtual void updateOrientations(s2mJoints &m, const s2mGenCoord &Q, int updateKin = 2); // Update de la position de ce muscle
         virtual void updateOrientations(s2mJoints &m, const s2mGenCoord &Q, const s2mGenCoord &Qdot, int updateKin = 2); // Update de la position de ce muscle
-        virtual void updateOrientations(std::vector<s2mNodeMuscle>& musclePointsInGlobal, Eigen::MatrixXd& jacoPointsInGlobal); // Update de la position de ce muscle
-        virtual void updateOrientations(std::vector<s2mNodeMuscle>& musclePointsInGlobal, Eigen::MatrixXd& jacoPointsInGlobal, const s2mGenCoord &Qdot); // Update de la position de ce muscle
+        virtual void updateOrientations(std::vector<s2mNodeMuscle>& musclePointsInGlobal, s2mMatrix& jacoPointsInGlobal); // Update de la position de ce muscle
+        virtual void updateOrientations(std::vector<s2mNodeMuscle>& musclePointsInGlobal, s2mMatrix& jacoPointsInGlobal, const s2mGenCoord &Qdot); // Update de la position de ce muscle
 
         virtual s2mMuscleGeometry position() const;
         virtual const s2mMuscleCaracteristics& caract() const;

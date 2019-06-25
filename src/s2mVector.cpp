@@ -10,6 +10,33 @@ s2mVector::s2mVector(const s2mVector &v) : Eigen::VectorXd(v) {}
 
 s2mVector::s2mVector(unsigned int i) : Eigen::VectorXd(i) {}
 
+double s2mVector::norm(unsigned int p){
+    s2mError::s2mAssert(p>=2, "p must be superior or equal to 2");
+
+    double res(0);
+    for(unsigned int i=0; i < size(); ++i){
+        res += std::pow(fabs((*this)(i)), p);
+    }
+
+    return std::pow(res, 1.0/p);
+}
+
+s2mVector s2mVector::grad_norm(unsigned int p){
+    s2mError::s2mAssert(p>=2, "p must be superior or equal to 2");
+    s2mVector resvector(static_cast<unsigned int>(size()));
+    double res(0);
+    for(unsigned int i=0; i < size(); ++i){
+        res += std::pow(fabs((*this)(i)), p);
+    }
+    res = std::pow(res, 1.0/p-1.0);
+    for(unsigned int i=0; i < size(); ++i){
+        resvector[i] = res*std::pow(fabs((*this)(i)), p-1);
+    }
+    return resvector;
+}
+
+
+
 s2mVector::~s2mVector() {}
 
 Eigen::VectorXd s2mVector::vector() const{

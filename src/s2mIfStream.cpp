@@ -28,7 +28,7 @@ bool s2mIfStream::open(const s2mPath& path, std::ios_base::openmode mode = std::
 }
 bool s2mIfStream::open(const char* path, std::ios_base::openmode mode = std::ios_base::in ) {
     m_ifs = new std::ifstream(path, mode);
-    s2mError::s2mAssert(m_ifs!=NULL, path + s2mString(" file could not be opened"));
+    s2mError::s2mAssert(m_ifs!=nullptr, path + s2mString(" file could not be opened"));
     m_isOpen = true;
     return m_isOpen;
 }

@@ -18,9 +18,9 @@ class BIORBD_API s2mWrappingObject : public s2mMusclePathChanger
         ~s2mWrappingObject() ;
 
         virtual s2mAttitude RT(s2mJoints &m, const s2mGenCoord& Q, const bool & = true) = 0;
-        virtual void wrapPoints(const s2mAttitude&, const s2mNodeMuscle&, const s2mNodeMuscle&, s2mNodeMuscle&, s2mNodeMuscle&, double* = NULL) = 0 ; // Premier et dernier points musculaire
-        virtual void wrapPoints(s2mJoints&, const s2mGenCoord&, const s2mNodeMuscle&, const s2mNodeMuscle&, s2mNodeMuscle&, s2mNodeMuscle&, double* = NULL) = 0; // Premier et dernier points musculaire
-        virtual void wrapPoints(s2mNodeMuscle&, s2mNodeMuscle&, double* = NULL) = 0; // Assume un appel déja faits
+        virtual void wrapPoints(const s2mAttitude&, const s2mNodeMuscle&, const s2mNodeMuscle&, s2mNodeMuscle&, s2mNodeMuscle&, double* = nullptr) = 0 ; // Premier et dernier points musculaire
+        virtual void wrapPoints(s2mJoints&, const s2mGenCoord&, const s2mNodeMuscle&, const s2mNodeMuscle&, s2mNodeMuscle&, s2mNodeMuscle&, double* = nullptr) = 0; // Premier et dernier points musculaire
+        virtual void wrapPoints(s2mNodeMuscle&, s2mNodeMuscle&, double* = nullptr) = 0; // Assume un appel déja faits
 
         // Set and get
         virtual s2mString type() {return "wrapping";}

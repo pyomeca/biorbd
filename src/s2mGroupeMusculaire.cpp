@@ -45,6 +45,10 @@ void s2mGroupeMusculaire::addHillMuscle(const s2mString& name, const s2mString& 
         s2mMuscleHillTypeThelen m(name,g,c,w,*st);
         addMuscle(m);
     }
+    else if (!s.tolower().compare("hillthelenfatigable") || !s.tolower().compare("thelenfatigable")){
+        s2mMuscleHillTypeThelenFatigable m(name,g,c,w,*st);
+        addMuscle(m);
+    }
     else if (!s.tolower().compare("hillschutte") || !s.tolower().compare("schutte")){
         s2mMuscleHillTypeSchutte m(name,g,c,w,*st);
         addMuscle(m);
@@ -74,6 +78,10 @@ void s2mGroupeMusculaire::addMuscle(s2mMuscle &val){
     }
     else if (dynamic_cast<s2mMuscleHillTypeChadwick*> (&val)){
         m_mus.push_back(std::shared_ptr<s2mMuscle> (new s2mMuscleHillTypeChadwick(dynamic_cast <s2mMuscleHillTypeChadwick&> (val))));
+        return;
+    }
+    else if (dynamic_cast<s2mMuscleHillTypeThelenFatigable*> (&val)){
+        m_mus.push_back(std::shared_ptr<s2mMuscle> (new s2mMuscleHillTypeThelenFatigable(dynamic_cast <s2mMuscleHillTypeThelenFatigable&> (val))));
         return;
     }
     else if (dynamic_cast<s2mMuscleHillTypeThelen*> (&val)){

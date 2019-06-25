@@ -1,7 +1,7 @@
 
 option(BINDER_PYTHON3 "Build Python SWIG module" OFF)
 option(BINDER_MATLAB "Build Matlab module" OFF)
-
+ 
 # If at least one interface
 if (BINDER_PYTHON3)
 	# Set up swig

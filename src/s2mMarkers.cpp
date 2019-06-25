@@ -174,7 +174,7 @@ std::vector<s2mNodeBone> s2mMarkers::AnatomicalTagsInLocal(bool removeAxis){
 std::vector<s2mNodeBone> s2mMarkers::segmentTags(s2mJoints& model, const s2mGenCoord &Q, const unsigned int &idx, bool removeAxis, bool updateKin){
     // Update de la cinématique
     if (updateKin)
-        RigidBodyDynamics::UpdateKinematicsCustom(model, &Q,NULL, NULL);
+        RigidBodyDynamics::UpdateKinematicsCustom(model, &Q,nullptr, nullptr);
 
     // Nom du segment a trouver
     s2mString name(model.bone(idx).name());
@@ -205,17 +205,17 @@ unsigned int s2mMarkers::nTags(s2mJoints& model, unsigned int idxSegment) const 
 }
 
 // Se faire renvoyer la jacobienne des markers
-std::vector<Eigen::MatrixXd> s2mMarkers::TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin){
+std::vector<s2mMatrix> s2mMarkers::TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin){
     return TagsJacobian(model, Q, removeAxis, updateKin, false);
 }
 
-std::vector<Eigen::MatrixXd> s2mMarkers::TechnicalTagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin){
+std::vector<s2mMatrix> s2mMarkers::TechnicalTagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin){
     return TagsJacobian(model, Q, removeAxis, updateKin, true);
 }
 
 // Se faire renvoyer la jacobienne des marker techniques
-Eigen::MatrixXd s2mMarkers::TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, const s2mString& parentName, const Eigen::Vector3d& p, bool updateKin){
-    Eigen::MatrixXd G(Eigen::MatrixXd::Zero(3,model.nbQ()));;
+s2mMatrix s2mMarkers::TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, const s2mString& parentName, const Eigen::Vector3d& p, bool updateKin){
+    s2mMatrix G(s2mMatrix::Zero(3,model.nbQ()));;
 
     // Calcul de la jacobienne de ce Tag
     unsigned int id = model.GetBodyId(parentName.c_str());
@@ -225,8 +225,8 @@ Eigen::MatrixXd s2mMarkers::TagsJacobian(s2mJoints& model, const s2mGenCoord &Q,
 }
 
 // Se faire renvoyer la jacobienne des marker techniques
-std::vector<Eigen::MatrixXd> s2mMarkers::TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin, bool lookForTechnical){
-    std::vector<Eigen::MatrixXd> G;
+std::vector<s2mMatrix> s2mMarkers::TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin, bool lookForTechnical){
+    std::vector<s2mMatrix> G;
 
     unsigned int idx2(0);
     for (unsigned int idx=0; idx<nTags(); ++idx){
@@ -237,7 +237,7 @@ std::vector<Eigen::MatrixXd> s2mMarkers::TagsJacobian(s2mJoints& model, const s2
 
         unsigned int id = model.GetBodyId(node.parent().c_str());
         Eigen::Vector3d pos = Tags(idx, removeAxis);
-        Eigen::MatrixXd G_tp(Eigen::MatrixXd::Zero(3,model.nbQ()));
+        s2mMatrix G_tp(s2mMatrix::Zero(3,model.nbQ()));
 
         // Calcul de la jacobienne de ce Tag
         if (idx2==0)

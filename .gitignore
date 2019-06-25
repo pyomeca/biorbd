@@ -123,3 +123,4 @@ includes/numpy
 S2MSource
 pyomeca
 release*
+*.DS_Store

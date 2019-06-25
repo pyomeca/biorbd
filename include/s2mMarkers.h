@@ -1,5 +1,6 @@
 #ifndef S2MMARKERS_H
 #define S2MMARKERS_H
+    #include "s2mMatrix.h"
     #include "biorbdConfig.h"
     #include "s2mString.h"
     #include <rbdl/rbdl.h>
@@ -50,12 +51,12 @@ class BIORBD_API s2mMarkers
         unsigned int nTechTags(); // Retourne le nombre de marqueurs techniques
         unsigned int nTechTags(s2mJoints& model, unsigned int idxSegment); // Retourne le nombre de marqueurs techniques pour le segment idxSegment
         unsigned int nAnatTags(); // Retourne le nombre de marqueurs anatomiques
-        std::vector<Eigen::MatrixXd> TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis=true, bool updateKin = true); // Retourne la jacobienne des Tags
-        std::vector<Eigen::MatrixXd> TechnicalTagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis=true, bool updateKin = true); // Retourne la jacobienne des Tags pour les marqueurs techniques
-        static Eigen::MatrixXd TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, const s2mString& parentName, const Eigen::Vector3d& p, bool updateKin); // Jacobienne d'un marqueur au choix
+        std::vector<s2mMatrix> TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis=true, bool updateKin = true); // Retourne la jacobienne des Tags
+        std::vector<s2mMatrix> TechnicalTagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis=true, bool updateKin = true); // Retourne la jacobienne des Tags pour les marqueurs techniques
+        static s2mMatrix TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, const s2mString& parentName, const Eigen::Vector3d& p, bool updateKin); // Jacobienne d'un marqueur au choix
 
 protected:
-        std::vector<Eigen::MatrixXd> TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin, bool lookForTechnical); // Retourne la jacobienne des Tags
+        std::vector<s2mMatrix> TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin, bool lookForTechnical); // Retourne la jacobienne des Tags
 
         std::vector <s2mNodeBone> m_marks;
     private:
