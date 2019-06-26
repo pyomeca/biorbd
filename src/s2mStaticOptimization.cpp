@@ -103,11 +103,12 @@ int s2mStaticOptimization::optimize(
     }
     Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
 
-    app->Options()->SetNumericValue("tol", 1e-7);
+    app->Options()->SetNumericValue("tol", 1e-6);
     app->Options()->SetStringValue("mu_strategy", "adaptive");
     app->Options()->SetStringValue("output_file", "ipopt.out");
     app->Options()->SetStringValue("hessian_approximation", "limited-memory");
     app->Options()->SetStringValue("derivative_test", "first-order");
+    app->Options()->SetIntegerValue("max_iter", 10000);
     Ipopt::ApplicationReturnStatus status;
    status = app->Initialize();
    if( status != Ipopt::Solve_Succeeded )

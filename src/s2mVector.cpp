@@ -15,7 +15,7 @@ double s2mVector::norm(unsigned int p){
 
     double res(0);
     for(unsigned int i=0; i < size(); ++i){
-        res += std::pow(fabs((*this)(i)), p);
+        res += std::pow((*this)(i), p);
     }
 
     return std::pow(res, 1.0/p);
@@ -26,11 +26,11 @@ s2mVector s2mVector::grad_norm(unsigned int p){
     s2mVector resvector(static_cast<unsigned int>(size()));
     double res(0);
     for(unsigned int i=0; i < size(); ++i){
-        res += std::pow(fabs((*this)(i)), p);
+        res += std::pow((*this)(i), p);
     }
     res = std::pow(res, 1.0/p-1.0);
     for(unsigned int i=0; i < size(); ++i){
-        resvector[i] = res*std::pow(fabs((*this)(i)), p-1);
+        resvector[i] = res*std::pow((*this)(i), p-1);
     }
     return resvector;
 }

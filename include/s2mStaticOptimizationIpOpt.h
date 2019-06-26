@@ -147,15 +147,16 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
         s2mTau m_tau;
         s2mVector m_activationInit;
         s2mVector m_activation;
+        s2mVector m_residual;
         unsigned int m_p;
         s2mGenCoord m_Q;
         s2mGenCoord m_Qdot;
         s2mMusculoSkeletalModel &m_model;
         double m_epsilon;
         std::vector<s2mMuscleStateActual> m_State;
-        s2mTau m_tau_calcul;
+        double m_ponderation;
 
-        void fillActivation(
+        void dispatch(
                 Ipopt::Index n,
                 const Ipopt::Number* x
                 );

@@ -67,7 +67,7 @@ bool s2mStaticOptimizationIpoptLinearized::eval_g(
         Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Index m, Ipopt::Number *g)
 {
     if (new_x){
-        fillActivation(n, x);
+        dispatch(n, x);
     }
     std::vector<s2mMuscleStateActual> state;// controls
     for (unsigned int i = 0; i<m_nMus; ++i){
@@ -100,7 +100,7 @@ bool s2mStaticOptimizationIpoptLinearized::eval_jac_g(
         Ipopt::Number *values)
 {
     if (new_x){
-        fillActivation(n, x);
+        dispatch(n, x);
     }
 
     if (values == nullptr) {

@@ -17,14 +17,15 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(s2mMusculoSkeletalModel &
     m_nTau(model.nbTau()),
     m_tau(tau_init),
     m_activationInit(activationInit),
-    m_activation(s2mVector(m_nMus)),
+    m_activation(s2mVector(model.nbMuscleTotal())),
+    m_residual(s2mVector(model.nbTau())),
     m_p(p),
     m_Q(Q),
     m_Qdot(Qdot),
     m_model(model),
     m_epsilon(epsilon),
     m_State(std::vector<s2mMuscleStateActual>(model.nbMuscleTotal())),
-    m_tau_calcul(s2mTau(model.nbTau()))
+    m_ponderation(10)
 {
     m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
 }
@@ -43,16 +44,18 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
     m_nDof(model.nbDof()),
     m_nTau(model.nbTau()),
     m_tau(tau_init),
-    m_activationInit(s2mVector(m_nMus)),
-    m_activation(s2mVector(m_nMus)),
+    m_activationInit(s2mVector(model.nbMuscleTotal())),
+    m_activation(s2mVector(model.nbMuscleTotal())),
+    m_residual(s2mVector(model.nbTau())),
     m_p(p),
     m_Q(Q),
     m_Qdot(Qdot),
     m_model(model),
     m_epsilon(epsilon),
-    m_State(std::vector<s2mMuscleStateActual>(model.nbMuscleTotal()))
+    m_State(std::vector<s2mMuscleStateActual>(model.nbMuscleTotal())),
+    m_ponderation(10)
 {
-    model.updateMuscles(model, Q, Qdot, true);
+    m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
 }
 
 s2mStaticOptimizationIpopt::~s2mStaticOptimizationIpopt()
@@ -63,13 +66,13 @@ s2mStaticOptimizationIpopt::~s2mStaticOptimizationIpopt()
 bool s2mStaticOptimizationIpopt::get_nlp_info(
         Ipopt::Index &n, Ipopt::Index &m, Ipopt::Index &nnz_jac_g, Ipopt::Index &nnz_h_lag, IndexStyleEnum &index_style)
 {
-    n = static_cast<int>(m_nMus);
+    n = static_cast<int>(m_nMus)+static_cast<int>(m_nTau);
     std::cout << "n: " << n << std::endl;
     m = static_cast<int>(m_nTau);
     std::cout << "m: " << m << std::endl;
-    nnz_jac_g = n*m;
+    nnz_jac_g = (static_cast<int>(m_nMus)+static_cast<int>(m_nTau))*static_cast<int>(m_nTau);
     std::cout << "nnz_jac_g: " << nnz_jac_g << std::endl;
-    nnz_h_lag = m*m;
+    nnz_h_lag = static_cast<int>(m_nTau)+static_cast<int>(m_nTau);
     std::cout << "nnz_h_lag: " << nnz_h_lag << std::endl;
     index_style = TNLP::C_STYLE;
     return true;
@@ -80,16 +83,24 @@ bool s2mStaticOptimizationIpopt::get_bounds_info(
 {
     std::cout << "get_bounds_info" << std::endl;
     std::cout << m_tau << std::endl;
-    assert(n == static_cast<int>(m_nMus));
+    assert(n == static_cast<int>(m_nMus)+static_cast<int>(m_nTau));
     assert(m == static_cast<int>(m_nTau));
 
-    for( Ipopt::Index i = 0; i < n; i++ )
+    for( Ipopt::Index i = 0; i < n-m; i++ )
        {
           x_l[i] = 0.01;
        }
-    for( Ipopt::Index i = 0; i < n; i++ )
+    for( Ipopt::Index i = n-m; i < n; i++ )
+       {
+          x_l[i] = -50.0;
+       }
+    for( Ipopt::Index i = 0; i < n-m; i++ )
        {
           x_u[i] = 1.0;
+       }
+    for( Ipopt::Index i = n-m; i < n; i++ )
+       {
+          x_u[i] = 50.0;
        }
     for( Ipopt::Index i = 0; i < m; i++ )
        {
@@ -109,11 +120,15 @@ bool s2mStaticOptimizationIpopt::get_starting_point(
     assert(init_z == false);
     assert(init_lambda == false);
 
-    //fillActivation(n, x);
 
-    for( Ipopt::Index i = 0; i < n; i++ )
+    for( Ipopt::Index i = 0; i < n-m; i++ )
        {
         x[i] = m_activationInit[i];
+        std::cout << "x_init[" << i << "]:" << x[i] << std::endl;
+       }
+    for( Ipopt::Index i = n-m; i < n; i++ )
+       {
+        x[i] = 0;
        }
 
     return true;
@@ -123,11 +138,11 @@ bool s2mStaticOptimizationIpopt::eval_f(
         Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Number &obj_value)
 {
     std::cout << "eval_f" << std::endl;
-    assert(n == static_cast<int>(m_nMus));
+    assert(n == static_cast<int>(m_nMus)+static_cast<int>(m_nTau));
     if (new_x){
-        fillActivation(n, x);
+        dispatch(n, x);
     }
-    obj_value = m_activation.norm(m_p);
+    obj_value = m_activation.norm(m_p) + 10*m_residual.norm(2);
     return true;
 }
 
@@ -136,21 +151,28 @@ bool s2mStaticOptimizationIpopt::eval_grad_f(
 {
     std::cout << "eval_grad_f" << std::endl;
     if (new_x){
-        fillActivation(n, x);
+        dispatch(n, x);
     }
-    s2mVector grad(m_activation.grad_norm(m_p));
-    for( Ipopt::Index i = 0; i < n; i++ )
+    s2mVector grad_activ(m_activation.grad_norm(m_p));
+    s2mVector grad_residual(m_residual.grad_norm(2));
+
+    for( Ipopt::Index i = 0; i < n-static_cast<int>(m_nTau); i++ )
        {
-        grad_f[i] = grad[i];
+        grad_f[i] = grad_activ[i];
        }
+    for( Ipopt::Index i = 0; i < static_cast<int>(m_nTau); i++ ){
+        grad_f[i+n-static_cast<int>(m_nTau)] = m_ponderation*grad_residual[i];
+    }
+
     return true;
 }
 
 bool s2mStaticOptimizationIpopt::eval_g(
         Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Index m, Ipopt::Number *g)
 {
+    std::cout << "eval_g" << std::endl;
     if (new_x){
-        fillActivation(n, x);
+        dispatch(n, x);
     }
 
     for (unsigned int i = 0; i<m_nMus; ++i){
@@ -161,7 +183,7 @@ bool s2mStaticOptimizationIpopt::eval_g(
 
     for( Ipopt::Index i = 0; i < m; i++ )
        {
-        g[i] = tau_calcul[i];
+        g[i] = tau_calcul[i]+x[i+static_cast<int>(m_nMus)];
        }
     return true;
 }
@@ -169,15 +191,17 @@ bool s2mStaticOptimizationIpopt::eval_g(
 bool s2mStaticOptimizationIpopt::eval_jac_g(
         Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Index m, Ipopt::Index nele_jac, Ipopt::Index *iRow, Ipopt::Index *jCol, Ipopt::Number *values)
 {
+    std::cout << "eval_jac_g" << std::endl;
     if (new_x){
-        fillActivation(n, x);
+        dispatch(n, x);
     }
 
     if (values == nullptr) {
+        std::cout << "values == nullptr" << std::endl;
         unsigned int k(0);
     // return the structure of the Jacobian
     // this particular Jacobian is dense
-        for (unsigned int j = 0; j<m_nMus; ++j){
+        for (unsigned int j = 0; static_cast<int>(j)<n; ++j){
             for (unsigned int i = 0; i<m_nTau; ++i){
                 iRow[k] = static_cast<int>(i);
                 jCol[k] = static_cast<int>(j);
@@ -194,7 +218,7 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
         }
         s2mTau tau_calcul_actual = m_model.muscularJointTorque(m_model, m_State, true, &m_Q, &m_Qdot);
         unsigned int k(0);
-        for( Ipopt::Index j = 0; j < n; j++ )
+        for( Ipopt::Index j = 0; j < n-static_cast<int>(m_nTau); j++ )
            {
             std::vector<s2mMuscleStateActual> state_epsilon;
             for (unsigned int i = 0; i<m_nMus; ++i){
@@ -213,6 +237,17 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
                 values[k] = (tau_calcul_epsilon[i]-tau_calcul_actual[i])/m_epsilon;
                 k++;
            }
+        }
+        for( Ipopt::Index j = 0; j < static_cast<int>(m_nTau); j++ ){
+            for( Ipopt::Index i = 0; i < static_cast<int>(m_nTau); i++ ){
+                if (i == j){
+                    values[k] = 1;
+                }
+                else {
+                    values[k] = 0;
+                }
+                k++;
+            }
         }
     }
     return true;
@@ -254,14 +289,17 @@ void s2mStaticOptimizationIpopt::finalize_solution(Ipopt::SolverReturn status, I
 }
 
 
-void s2mStaticOptimizationIpopt::fillActivation(Ipopt::Index n, const Ipopt::Number *x)
+void s2mStaticOptimizationIpopt::dispatch(Ipopt::Index n, const Ipopt::Number *x)
 {
-    for(int i = 0; i < n; i++ )
+    for(int i = 0; i < n-static_cast<int>(m_nTau); i++ )
     {
         m_activation[i] = x[i];
     }
+    for(int i = 0; i < static_cast<int>(m_nTau); i++ )
+    {
+        m_residual[i] = x[i+n-static_cast<int>(m_nTau)];
+    }
 }
-
 
 
 
