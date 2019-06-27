@@ -25,7 +25,7 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(s2mMusculoSkeletalModel &
     m_model(model),
     m_epsilon(epsilon),
     m_State(std::vector<s2mMuscleStateActual>(model.nbMuscleTotal())),
-    m_ponderation(10)
+    m_ponderation(100)
 {
     m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
 }
@@ -53,7 +53,7 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
     m_model(model),
     m_epsilon(epsilon),
     m_State(std::vector<s2mMuscleStateActual>(model.nbMuscleTotal())),
-    m_ponderation(10)
+    m_ponderation(100)
 {
     m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
 }
@@ -72,7 +72,7 @@ bool s2mStaticOptimizationIpopt::get_nlp_info(
     std::cout << "m: " << m << std::endl;
     nnz_jac_g = (static_cast<int>(m_nMus)+static_cast<int>(m_nTau))*static_cast<int>(m_nTau);
     std::cout << "nnz_jac_g: " << nnz_jac_g << std::endl;
-    nnz_h_lag = static_cast<int>(m_nTau)+static_cast<int>(m_nTau);
+    nnz_h_lag = static_cast<int>(m_nTau)*static_cast<int>(m_nTau);
     std::cout << "nnz_h_lag: " << nnz_h_lag << std::endl;
     index_style = TNLP::C_STYLE;
     return true;
@@ -82,29 +82,23 @@ bool s2mStaticOptimizationIpopt::get_bounds_info(
         Ipopt::Index n, Ipopt::Number *x_l, Ipopt::Number *x_u, Ipopt::Index m, Ipopt::Number *g_l, Ipopt::Number *g_u)
 {
     std::cout << "get_bounds_info" << std::endl;
-    std::cout << m_tau << std::endl;
     assert(n == static_cast<int>(m_nMus)+static_cast<int>(m_nTau));
     assert(m == static_cast<int>(m_nTau));
 
     for( Ipopt::Index i = 0; i < n-m; i++ )
        {
-          x_l[i] = 0.01;
+          x_l[i] = 0.1;
+          x_u[i] = 0.9;
        }
     for( Ipopt::Index i = n-m; i < n; i++ )
        {
-          x_l[i] = -50.0;
-       }
-    for( Ipopt::Index i = 0; i < n-m; i++ )
-       {
-          x_u[i] = 1.0;
-       }
-    for( Ipopt::Index i = n-m; i < n; i++ )
-       {
-          x_u[i] = 50.0;
+          x_l[i] = -100.0;
+          x_u[i] = 100.0;
        }
     for( Ipopt::Index i = 0; i < m; i++ )
        {
-        g_l[i] = g_u[i] = m_tau[i];
+        g_l[i] = m_tau[i]-m_epsilon;
+        g_u[i] = m_tau[i]+m_epsilon;
        }
     std::cout << "x_l: " << x_l[n-1] << std::endl;
     std::cout << "x_u: " << x_u[n-1] << std::endl;
@@ -126,9 +120,9 @@ bool s2mStaticOptimizationIpopt::get_starting_point(
         x[i] = m_activationInit[i];
         std::cout << "x_init[" << i << "]:" << x[i] << std::endl;
        }
-    for( Ipopt::Index i = n-m; i < n; i++ )
+    for( Ipopt::Index i = 0; i < m; i++ )
        {
-        x[i] = 0;
+        x[i+n-m] = m_tau[i];
        }
 
     return true;
@@ -142,7 +136,7 @@ bool s2mStaticOptimizationIpopt::eval_f(
     if (new_x){
         dispatch(n, x);
     }
-    obj_value = m_activation.norm(m_p) + 10*m_residual.norm(2);
+    obj_value = m_activation.norm(m_p) + m_ponderation*m_residual.norm(2);
     return true;
 }
 
@@ -152,6 +146,7 @@ bool s2mStaticOptimizationIpopt::eval_grad_f(
     std::cout << "eval_grad_f" << std::endl;
     if (new_x){
         dispatch(n, x);
+        std::cout << "dispatched" << std::endl;
     }
     s2mVector grad_activ(m_activation.grad_norm(m_p));
     s2mVector grad_residual(m_residual.grad_norm(2));
@@ -163,7 +158,7 @@ bool s2mStaticOptimizationIpopt::eval_grad_f(
     for( Ipopt::Index i = 0; i < static_cast<int>(m_nTau); i++ ){
         grad_f[i+n-static_cast<int>(m_nTau)] = m_ponderation*grad_residual[i];
     }
-
+    std::cout << "true" << std::endl;
     return true;
 }
 
@@ -183,7 +178,7 @@ bool s2mStaticOptimizationIpopt::eval_g(
 
     for( Ipopt::Index i = 0; i < m; i++ )
        {
-        g[i] = tau_calcul[i]+x[i+static_cast<int>(m_nMus)];
+        g[i] = tau_calcul[i] + m_residual[i];
        }
     return true;
 }
@@ -218,12 +213,12 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
         }
         s2mTau tau_calcul_actual = m_model.muscularJointTorque(m_model, m_State, true, &m_Q, &m_Qdot);
         unsigned int k(0);
-        for( Ipopt::Index j = 0; j < n-static_cast<int>(m_nTau); j++ )
+        for( unsigned int j = 0; static_cast<int>(j) < n-static_cast<int>(m_nTau); j++ )
            {
             std::vector<s2mMuscleStateActual> state_epsilon;
             for (unsigned int i = 0; i<m_nMus; ++i){
                 unsigned int delta;
-                if (i == static_cast<unsigned int>(j)){
+                if (i == j){
                     delta = 1;
                 }
                 else {
