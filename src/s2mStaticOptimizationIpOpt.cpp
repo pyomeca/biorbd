@@ -25,35 +25,7 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(s2mMusculoSkeletalModel &
     m_model(model),
     m_epsilon(epsilon),
     m_State(std::vector<s2mMuscleStateActual>(model.nbMuscleTotal())),
-    m_ponderation(100)
-{
-    m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
-}
-
-s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
-        s2mMusculoSkeletalModel &model,
-        const s2mGenCoord& Q, // states
-        const s2mGenCoord& Qdot, // derived states
-        const s2mTau& tau_init,
-        unsigned int p,
-        const double epsilon
-        ) :
-    m_nQ(model.nbQ()),
-    m_nQdot(model.nbQdot()),
-    m_nMus(model.nbMuscleTotal()),
-    m_nDof(model.nbDof()),
-    m_nTau(model.nbTau()),
-    m_tau(tau_init),
-    m_activationInit(s2mVector(model.nbMuscleTotal())),
-    m_activation(s2mVector(model.nbMuscleTotal())),
-    m_residual(s2mVector(model.nbTau())),
-    m_p(p),
-    m_Q(Q),
-    m_Qdot(Qdot),
-    m_model(model),
-    m_epsilon(epsilon),
-    m_State(std::vector<s2mMuscleStateActual>(model.nbMuscleTotal())),
-    m_ponderation(100)
+    m_ponderation(1000)
 {
     m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
 }
@@ -70,7 +42,7 @@ bool s2mStaticOptimizationIpopt::get_nlp_info(
     std::cout << "n: " << n << std::endl;
     m = static_cast<int>(m_nTau);
     std::cout << "m: " << m << std::endl;
-    nnz_jac_g = (static_cast<int>(m_nMus)+static_cast<int>(m_nTau))*static_cast<int>(m_nTau);
+    nnz_jac_g = (static_cast<int>(m_nMus)+1)*static_cast<int>(m_nTau);
     std::cout << "nnz_jac_g: " << nnz_jac_g << std::endl;
     nnz_h_lag = static_cast<int>(m_nTau)*static_cast<int>(m_nTau);
     std::cout << "nnz_h_lag: " << nnz_h_lag << std::endl;
@@ -87,18 +59,19 @@ bool s2mStaticOptimizationIpopt::get_bounds_info(
 
     for( Ipopt::Index i = 0; i < n-m; i++ )
        {
-          x_l[i] = 0.1;
-          x_u[i] = 0.9;
+          x_l[i] = 0.01;
+          x_u[i] = 0.99;
        }
     for( Ipopt::Index i = n-m; i < n; i++ )
        {
           x_l[i] = -100.0;
           x_u[i] = 100.0;
        }
+    double alpha(10e-5);
     for( Ipopt::Index i = 0; i < m; i++ )
        {
-        g_l[i] = m_tau[i]-m_epsilon;
-        g_u[i] = m_tau[i]+m_epsilon;
+        g_l[i] = 0;
+        g_u[i] = 0;
        }
     std::cout << "x_l: " << x_l[n-1] << std::endl;
     std::cout << "x_u: " << x_u[n-1] << std::endl;
@@ -122,7 +95,7 @@ bool s2mStaticOptimizationIpopt::get_starting_point(
        }
     for( Ipopt::Index i = 0; i < m; i++ )
        {
-        x[i+n-m] = m_tau[i];
+        x[i+n-m] = 0.1;
        }
 
     return true;
@@ -178,7 +151,7 @@ bool s2mStaticOptimizationIpopt::eval_g(
 
     for( Ipopt::Index i = 0; i < m; i++ )
        {
-        g[i] = tau_calcul[i] + m_residual[i];
+        g[i] = tau_calcul[i] + m_residual[i] - m_tau[i];
        }
     return true;
 }
@@ -196,12 +169,20 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
         unsigned int k(0);
     // return the structure of the Jacobian
     // this particular Jacobian is dense
-        for (unsigned int j = 0; static_cast<int>(j)<n; ++j){
+        for (unsigned int j = 0; static_cast<int>(j) < n-static_cast<int>(m_nTau); ++j){
             for (unsigned int i = 0; i<m_nTau; ++i){
                 iRow[k] = static_cast<int>(i);
                 jCol[k] = static_cast<int>(j);
                 ++k;
             }
+        }
+        for (unsigned  int j = 0; j < m_nTau; j++ ){
+            iRow[k] = static_cast<int>(j);
+            jCol[k] = static_cast<int>(j+static_cast<unsigned int>(n)-m_nTau);
+            std::cout << "k: \n" << k << std::endl;
+            std::cout << "iRow: \n" << iRow[k] << std::endl;
+            std::cout << "jCol: \n" << jCol[k] << std::endl;
+            ++k;
         }
 
     }
@@ -212,6 +193,8 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
             m_State[i].setActivation(m_activation[i]);
         }
         s2mTau tau_calcul_actual = m_model.muscularJointTorque(m_model, m_State, true, &m_Q, &m_Qdot);
+        s2mMatrix jacobian(m_nTau, n);
+        jacobian.setZero();
         unsigned int k(0);
         for( unsigned int j = 0; static_cast<int>(j) < n-static_cast<int>(m_nTau); j++ )
            {
@@ -230,21 +213,21 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
             for( Ipopt::Index i = 0; i < m; i++ )
             {
                 values[k] = (tau_calcul_epsilon[i]-tau_calcul_actual[i])/m_epsilon;
+                std::cout.precision(20);
+                std::cout << "tau_epsilon : " << tau_calcul_epsilon[i] << std::endl;
+                std::cout << "tau_actual : " << tau_calcul_actual[i] << std::endl;
+                jacobian(i,j) = values[k];
                 k++;
            }
         }
         for( Ipopt::Index j = 0; j < static_cast<int>(m_nTau); j++ ){
-            for( Ipopt::Index i = 0; i < static_cast<int>(m_nTau); i++ ){
-                if (i == j){
-                    values[k] = 1;
-                }
-                else {
-                    values[k] = 0;
-                }
-                k++;
-            }
+            values[k] = 1;
+            jacobian(j, j+n-m_nTau) = values[k];
+            k++;
         }
+        std::cout << "jacobian:\n" << jacobian << std::endl;
     }
+
     return true;
 }
 

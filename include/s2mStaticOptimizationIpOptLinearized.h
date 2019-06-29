@@ -25,13 +25,6 @@ class BIORBD_API s2mStaticOptimizationIpoptLinearized : public s2mStaticOptimiza
                 unsigned int p = 2,
                 const double epsilon = 1e-10
                 );
-        s2mStaticOptimizationIpoptLinearized(s2mMusculoSkeletalModel &model,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
-                const s2mTau &tau_init,
-                unsigned int p = 2,
-                const double epsilon = 1e-10
-                );
 
         virtual ~s2mStaticOptimizationIpoptLinearized();
 

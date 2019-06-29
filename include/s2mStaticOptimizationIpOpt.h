@@ -2,6 +2,7 @@
 #define S2MSTATICOPTIMIZATIONIPOPT_H
 
 #include <IpIpoptApplication.hpp>
+#include <iostream>
 #include "IpTNLP.hpp"
 #include "biorbdConfig.h"
 #include "s2mGenCoord.h"
@@ -25,13 +26,7 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
                 unsigned int p = 2,
                 const double epsilon = 1e-10
                 );
-        s2mStaticOptimizationIpopt(s2mMusculoSkeletalModel &model,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
-                const s2mTau &tau_init,
-                unsigned int p = 2,
-                const double epsilon = 1e-10
-                );
+
 
 
         virtual ~s2mStaticOptimizationIpopt();
