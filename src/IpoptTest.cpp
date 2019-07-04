@@ -5,15 +5,43 @@
 #include <iostream>
 
 // constructor
-HS071_NLP::HS071_NLP()
-{ }
+HS071_NLP::HS071_NLP(
+        s2mMusculoSkeletalModel &model,
+        unsigned int nTau,
+        unsigned int nMus
+        ):
+    m_nQ(nTau),
+    m_nQdot(nTau),
+    m_nMus(nMus),
+    m_nDof(nTau),
+    m_nTau(nTau),
+    m_tau(s2mTau(s2mVector(nTau))),
+    m_activationInit(s2mVector(nMus)),
+    m_activation(s2mVector(nMus)),
+    m_residual(s2mVector(nTau)),
+    m_p(2),
+    m_Q(s2mGenCoord(s2mVector(nTau))),
+    m_Qdot(s2mGenCoord(s2mVector(nTau))),
+    m_Qddot(s2mGenCoord(s2mVector(nTau))),
+    m_model(model),
+    m_eps(1e-10),
+    m_State(std::vector<s2mMuscleStateActual>(nMus)),
+    m_ponderation(10000)
+{
+    m_Q.setZero();
+    m_Qdot.setZero();
+    m_Qddot.setZero();
+    m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
+    m_residual.setOnes();
+    m_tau.setZero();
+}
 
 // destructor
 HS071_NLP::~HS071_NLP()
-{ }
+{
 
-// [TNLP_get_nlp_info]
-// returns the size of the problem
+}
+
 bool HS071_NLP::get_nlp_info(
    Ipopt::Index&          n,
    Ipopt::Index&          m,
@@ -22,28 +50,18 @@ bool HS071_NLP::get_nlp_info(
    IndexStyleEnum& index_style
    )
 {
-   // The problem described in HS071_NLP.hpp has 4 variables, x[0] through x[3]
-   n = 4;
+   n = static_cast<int>(m_nMus) + static_cast<int>(m_nTau);
+   std::cout << "n: " << n << std::endl;
+   m = static_cast<int>(m_nTau);
+   std::cout << "m: " << m << std::endl;
+   nnz_jac_g = (static_cast<int>(m_nMus) + 1) * static_cast<int>(m_nTau);
+   nnz_h_lag = static_cast<int>(m_nTau) * static_cast<int>(m_nTau);
 
-   // one equality constraint and one inequality constraint
-   m = 2;
-
-   // in this example the jacobian is dense and contains 8 nonzeros
-   nnz_jac_g = 8;
-
-   // the Hessian is also dense and has 16 total nonzeros, but we
-   // only need the lower left corner (since it is symmetric)
-   nnz_h_lag = 10;
-
-   // use the C style indexing (0-based)
    index_style = TNLP::C_STYLE;
 
    return true;
 }
-// [TNLP_get_nlp_info]
 
-// [TNLP_get_bounds_info]
-// returns the variable bounds
 bool HS071_NLP::get_bounds_info(
    Ipopt::Index   n,
    Ipopt::Number* x_l,
@@ -53,41 +71,28 @@ bool HS071_NLP::get_bounds_info(
    Ipopt::Number* g_u
    )
 {
-   // here, the n and m we gave IPOPT in get_nlp_info are passed back to us.
-   // If desired, we could assert to make sure they are what we think they are.
-   assert(n == 4);
-   assert(m == 2);
+    assert(n == static_cast<int>(m_nMus) + static_cast<int>(m_nTau));
+    assert(m == static_cast<int>(m_nTau));
 
-   // the variables have lower bounds of 1
-   for( Ipopt::Index i = 0; i < 4; i++ )
+   for( Ipopt::Index i = 0; i < static_cast<int>(m_nMus); i++ )
    {
-      x_l[i] = 1.0;
+      x_l[i] = 0.01;
+      x_u[i] = 0.99;
    }
 
-   // the variables have upper bounds of 5
-   for( Ipopt::Index i = 0; i < 4; i++ )
+   for( Ipopt::Index i = static_cast<int>(m_nMus); i < static_cast<int>(m_nMus+m_nTau); i++ )
    {
-      x_u[i] = 5.0;
+      x_l[i] = -1000.0;
+      x_u[i] = 1000.0;
    }
 
-   // the first constraint g1 has a lower bound of 25
-   g_l[0] = 25;
-   // the first constraint g1 has NO upper bound, here we set it to 2e19.
-   // Ipopt interprets any number greater than nlp_upper_bound_inf as
-   // infinity. The default value of nlp_upper_bound_inf and nlp_lower_bound_inf
-   // is 1e19 and can be changed through ipopt options.
-   g_u[0] = 2e19;
-
-   // the second constraint g2 is an equality constraint, so we set the
-   // upper and lower bound to the same value
-   g_l[1] = g_u[1] = 40.0;
-
+   for( Ipopt::Index i = 0; i < m; i++ )
+      {
+       g_l[i] = g_u[i] = 0;
+      }
    return true;
 }
-// [TNLP_get_bounds_info]
 
-// [TNLP_get_starting_point]
-// returns the initial point for the problem
 bool HS071_NLP::get_starting_point(
    Ipopt::Index   n,
    bool    init_x,
@@ -100,25 +105,23 @@ bool HS071_NLP::get_starting_point(
    Ipopt::Number* lambda
    )
 {
-   // Here, we assume we only have starting values for x, if you code
-   // your own NLP, you can provide starting values for the dual variables
-   // if you wish
    assert(init_x == true);
    assert(init_z == false);
    assert(init_lambda == false);
 
-   // initialize to the given starting point
-   x[0] = 1.0;
-   x[1] = 5.0;
-   x[2] = 5.0;
-   x[3] = 1.0;
+   for( Ipopt::Index i = 0; i < m_nMus; i++ )
+      {
+       x[i] = m_activationInit[i];
+       std::cout << "m_activationInit[" << i << "]: " << x[i] << std::endl;
+      }
+   for( Ipopt::Index i = 0; i < m; i++ )
+      {
+       x[i+n-m] = 0.1;
+      }
 
    return true;
 }
-// [TNLP_get_starting_point]
 
-// [TNLP_eval_f]
-// returns the value of the objective function
 bool HS071_NLP::eval_f(
    Ipopt::Index         n,
    const Ipopt::Number* x,
@@ -126,16 +129,16 @@ bool HS071_NLP::eval_f(
    Ipopt::Number&       obj_value
    )
 {
-   assert(n == 4);
+    assert(n == static_cast<int>(m_nMus) + static_cast<int>(m_nTau));
+    if (new_x){
+        dispatch(x);
+    }
 
-   obj_value = x[0] * x[3] * (x[0] + x[1] + x[2]) + x[2];
+   obj_value = m_activation.norm(m_p) + m_ponderation*m_residual.norm(2);
 
    return true;
 }
-// [TNLP_eval_f]
 
-// [TNLP_eval_grad_f]
-// return the gradient of the objective function grad_{x} f(x)
 bool HS071_NLP::eval_grad_f(
    Ipopt::Index         n,
    const Ipopt::Number* x,
@@ -143,19 +146,22 @@ bool HS071_NLP::eval_grad_f(
    Ipopt::Number*       grad_f
    )
 {
-   assert(n == 4);
+   assert(static_cast<unsigned int>(n) == m_nTau+m_nMus);
 
-   grad_f[0] = x[0] * x[3] + x[3] * (x[0] + x[1] + x[2]);
-   grad_f[1] = x[0] * x[3];
-   grad_f[2] = x[0] * x[3] + 1;
-   grad_f[3] = x[0] * (x[0] + x[1] + x[2]);
+   s2mVector grad_activ(m_activation.grad_norm(m_p));
+   s2mVector grad_residual(m_residual.grad_norm(2));
+
+   for( Ipopt::Index i = 0; i < static_cast<int>(m_nMus); i++ )
+      {
+       grad_f[i] = grad_activ[i];
+      }
+   for( Ipopt::Index i = 0; i < static_cast<int>(m_nTau); i++ ){
+       grad_f[i+static_cast<int>(m_nMus)] = m_ponderation*grad_residual[i];
+   }
 
    return true;
 }
-// [TNLP_eval_grad_f]
 
-// [TNLP_eval_g]
-// return the value of the constraints: g(x)
 bool HS071_NLP::eval_g(
    Ipopt::Index         n,
    const Ipopt::Number* x,
@@ -164,18 +170,32 @@ bool HS071_NLP::eval_g(
    Ipopt::Number*       g
    )
 {
-   assert(n == 4);
-   assert(m == 2);
+   assert(static_cast<unsigned int>(n) == m_nTau+m_nMus);
+   assert(static_cast<unsigned int>(m) == m_nTau);
 
-   g[0] = x[0] * x[1] * x[2] * x[3];
-   g[1] = x[0] * x[0] + x[1] * x[1] + x[2] * x[2] + x[3] * x[3];
+   if (new_x){
+       dispatch(x);
+   }
+
+   for (unsigned int i = 0; i<m_nMus; ++i){
+       m_State[i].setActivation(m_activation[i]);
+   }
+   //s2mTau tau_inv = m_model.muscularJointTorque(m_model, m_State, true, &m_Q, &m_Qdot);
+   s2mTau tau_inv(m_model.nbTau());
+   tau_inv.setZero();
+   RigidBodyDynamics::InverseDynamics(m_model, m_Q, m_Qdot, m_Qddot, tau_inv);
+
+
+   for( Ipopt::Index i = 0; i < m; i++ )
+      {
+       g[i] = tau_inv[i] + m_residual[i] - m_tau[i];
+       std::cout << "tau_calcul[" << i << "]: " << tau_inv[i] << std::endl;
+      }
+
 
    return true;
 }
-// [TNLP_eval_g]
 
-// [TNLP_eval_jac_g]
-// return the structure or values of the Jacobian
 bool HS071_NLP::eval_jac_g(
    Ipopt::Index         n,
    const Ipopt::Number* x,
@@ -187,34 +207,59 @@ bool HS071_NLP::eval_jac_g(
    Ipopt::Number*       values
    )
 {
-   if( values == NULL )
-   {
-      // return the structure of the Jacobian
+    if (values == nullptr) {
+        unsigned int k(0);
+        for (unsigned int j = 0; static_cast<int>(j) < n-m; ++j){
+            for (unsigned int i = 0; i<m; ++i){
+                iRow[k] = static_cast<int>(i);
+                jCol[k] = static_cast<int>(j);
+                ++k;
+            }
+        }
+        for (unsigned  int j = 0; j < m; j++ ){
+            iRow[k] = static_cast<int>(j);
+            jCol[k] = static_cast<int>(j+n-m);
+            ++k;
+        }
 
-      // this particular Jacobian is dense
-      iRow[0] = 0;  jCol[0] = 0;
-      iRow[1] = 0;  jCol[1] = 1;
-      iRow[2] = 0;  jCol[2] = 2;
-      iRow[3] = 0;  jCol[3] = 3;
-      iRow[4] = 1;  jCol[4] = 0;
-      iRow[5] = 1;  jCol[5] = 1;
-      iRow[6] = 1;  jCol[6] = 2;
-      iRow[7] = 1;  jCol[7] = 3;
-   }
-   else
-   {
-      // return the values of the Jacobian of the constraints
-
-      values[0] = x[1] * x[2] * x[3]; // 0,0
-      values[1] = x[0] * x[2] * x[3]; // 0,1
-      values[2] = x[0] * x[1] * x[3]; // 0,2
-      values[3] = x[0] * x[1] * x[2]; // 0,3
-
-      values[4] = 2 * x[0]; // 1,0
-      values[5] = 2 * x[1]; // 1,1
-      values[6] = 2 * x[2]; // 1,2
-      values[7] = 2 * x[3]; // 1,3
-   }
+    }
+    else
+    {
+        for (unsigned int i = 0; i<m_nMus; ++i){
+            m_State[i].setActivation(m_activation[i]);
+        }
+        s2mTau tau_calcul_actual = m_model.muscularJointTorque(m_model, m_State, true, &m_Q, &m_Qdot);
+        s2mMatrix jacobian(m_nTau, static_cast<unsigned int>(n));
+        jacobian.setZero();
+        unsigned int k(0);
+        for( unsigned int j = 0; static_cast<unsigned int>(j) < m_nMus; j++ )
+           {
+            std::vector<s2mMuscleStateActual> state_epsilon;
+            for (unsigned int i = 0; i<m_nMus; ++i){
+                unsigned int delta;
+                if (i == j){
+                    delta = 1;
+                }
+                else {
+                    delta = 0;
+                }
+                state_epsilon.push_back(s2mMuscleStateActual(0, m_activation[i]+delta*m_eps));
+            }
+            s2mTau tau_calcul_epsilon = m_model.muscularJointTorque(m_model, state_epsilon, true, &m_Q, &m_Qdot);
+            for( Ipopt::Index i = 0; i < m; i++ )
+            {
+                values[k] = (tau_calcul_epsilon[i]-tau_calcul_actual[i])/m_eps;
+                std::cout.precision(20);
+                jacobian(i,j) = values[k];
+                k++;
+           }
+        }
+        for( Ipopt::Index j = 0; j < static_cast<int>(m_nTau); j++ ){
+            values[k] = 1;
+            jacobian(j, j+static_cast<int>(m_nMus)) = values[k];
+            k++;
+        }
+    }
 
    return true;
 }
@@ -236,66 +281,7 @@ bool HS071_NLP::eval_h(
    Ipopt::Number*       values
    )
 {
-   if( values == NULL )
-   {
-      // return the structure. This is a symmetric matrix, fill the lower left
-      // triangle only.
-
-      // the hessian for this problem is actually dense
-      Ipopt::Index idx = 0;
-      for( Ipopt::Index row = 0; row < 4; row++ )
-      {
-         for( Ipopt::Index col = 0; col <= row; col++ )
-         {
-            iRow[idx] = row;
-            jCol[idx] = col;
-            idx++;
-         }
-      }
-
-      assert(idx == nele_hess);
-   }
-   else
-   {
-      // return the values. This is a symmetric matrix, fill the lower left
-      // triangle only
-
-      // fill the objective portion
-      values[0] = obj_factor * (2 * x[3]); // 0,0
-
-      values[1] = obj_factor * (x[3]);     // 1,0
-      values[2] = 0.;                      // 1,1
-
-      values[3] = obj_factor * (x[3]);     // 2,0
-      values[4] = 0.;                      // 2,1
-      values[5] = 0.;                      // 2,2
-
-      values[6] = obj_factor * (2 * x[0] + x[1] + x[2]); // 3,0
-      values[7] = obj_factor * (x[0]);                   // 3,1
-      values[8] = obj_factor * (x[0]);                   // 3,2
-      values[9] = 0.;                                    // 3,3
-
-      // add the portion for the first constraint
-      values[1] += lambda[0] * (x[2] * x[3]); // 1,0
-
-      values[3] += lambda[0] * (x[1] * x[3]); // 2,0
-      values[4] += lambda[0] * (x[0] * x[3]); // 2,1
-
-      values[6] += lambda[0] * (x[1] * x[2]); // 3,0
-      values[7] += lambda[0] * (x[0] * x[2]); // 3,1
-      values[8] += lambda[0] * (x[0] * x[1]); // 3,2
-
-      // add the portion for the second constraint
-      values[0] += lambda[1] * 2; // 0,0
-
-      values[2] += lambda[1] * 2; // 1,1
-
-      values[5] += lambda[1] * 2; // 2,2
-
-      values[9] += lambda[1] * 2; // 3,3
-   }
-
-   return true;
+   return false;
 }
 // [TNLP_eval_h]
 
@@ -344,3 +330,17 @@ void HS071_NLP::finalize_solution(
    }
 }
 // [TNLP_finalize_solution]
+
+void HS071_NLP::dispatch(const Ipopt::Number *x)
+{
+    for(int i = 0; i < static_cast<int>(m_nMus); i++ )
+    {
+        m_activation[i] = x[i];
+    }
+    for(int i = 0; i < static_cast<int>(m_nTau); i++ )
+    {
+        m_residual[i] = x[i+static_cast<int>(m_nMus)];
+        std::cout << "m_residual[" << i << "]: " << m_residual[i] << std::endl;
+    }
+
+}

@@ -14,11 +14,19 @@
 
 
 
+mainTest::mainTest(
+        s2mMusculoSkeletalModel &m
+        ):
+    m_model(m)
+{}
+
+mainTest::~mainTest(){}
+
 int mainTest::main()
 {
-   // Create a new instance of your nlp
+    // Create a new instance of your nlp
    //  (use a SmartPtr, not raw)
-   Ipopt::SmartPtr<Ipopt::TNLP> mynlp = new HS071_NLP();
+   Ipopt::SmartPtr<Ipopt::TNLP> mynlp = new HS071_NLP(m_model, m_model.nbTau(), m_model.nbMuscleTotal());
 
    // Create a new instance of IpoptApplication
    //  (use a SmartPtr, not raw)
@@ -32,6 +40,10 @@ int mainTest::main()
    app->Options()->SetNumericValue("tol", 1e-7);
    app->Options()->SetStringValue("mu_strategy", "adaptive");
    app->Options()->SetStringValue("output_file", "ipopt.out");
+   app->Options()->SetStringValue("hessian_approximation", "limited-memory");
+   app->Options()->SetStringValue("derivative_test", "first-order");
+   app->Options()->SetStringValue("check_derivatives_for_naninf", "yes");
+   app->Options()->SetIntegerValue("max_iter", 10000);
    // The following overwrites the default name (ipopt.opt) of the options file
    // app->Options()->SetStringValue("option_file_name", "hs071.opt");
 

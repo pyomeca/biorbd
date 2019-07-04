@@ -14,7 +14,11 @@ class HS071_NLP: public Ipopt::TNLP
 {
 public:
    /** Default constructor */
-   HS071_NLP();
+   HS071_NLP(
+           s2mMusculoSkeletalModel &model,
+           unsigned int nTau,
+           unsigned int nMus
+           );
 
    /** Default destructor */
    virtual ~HS071_NLP();
@@ -127,18 +131,31 @@ public:
       );
    //@}
 
+protected:
+   unsigned int m_nQ;
+   unsigned int m_nQdot;
+   unsigned int m_nMus;
+   unsigned int m_nDof;
+   unsigned int m_nTau;
+   s2mTau m_tau;
+   s2mVector m_activationInit;
+   s2mVector m_activation;
+   s2mVector m_residual;
+   unsigned int m_p;
+   s2mGenCoord m_Q;
+   s2mGenCoord m_Qdot;
+   s2mGenCoord m_Qddot;
+   s2mMusculoSkeletalModel &m_model;
+   double m_eps;
+   std::vector<s2mMuscleStateActual> m_State;
+   double m_ponderation;
+
+   void dispatch(
+           const Ipopt::Number* x
+           );
+
 private:
-   /**@name Methods to block default compiler methods.
-    *
-    * The compiler automatically generates the following three methods.
-    *  Since the default compiler implementation is generally not what
-    *  you want (for all but the most simple classes), we usually
-    *  put the declarations of these methods in the private section
-    *  and never implement them. This prevents the compiler from
-    *  implementing an incorrect "default" behavior without us
-    *  knowing. (See Scott Meyers book, "Effective C++")
-    */
-   //@{
+
    HS071_NLP(
       const HS071_NLP&
       );
@@ -146,7 +163,7 @@ private:
    HS071_NLP& operator=(
       const HS071_NLP&
       );
-   //@}
+
 };
 
 #endif // IPOPTTEST_H

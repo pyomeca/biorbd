@@ -94,12 +94,11 @@ int s2mStaticOptimization::optimize(
 {
     Ipopt::SmartPtr<Ipopt::TNLP> mynlp;
     if (LinearizedState){
-        std::cout << "Linearized" << std::endl;
+        std::cout << "*** Linearized optimization !" << std::endl;
         mynlp = new s2mStaticOptimizationIpoptLinearized(m_model, m_Q, m_Qdot, m_Tau, m_Activ);
     }
     else {
         mynlp = new s2mStaticOptimizationIpopt(m_model, m_Q, m_Qdot, m_Tau, m_Activ);
-        std::cout << "m_Tau\n:" << m_Tau << std::endl;
     }
     Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
 
@@ -108,6 +107,7 @@ int s2mStaticOptimization::optimize(
     app->Options()->SetStringValue("output_file", "ipopt.out");
     app->Options()->SetStringValue("hessian_approximation", "limited-memory");
     app->Options()->SetStringValue("derivative_test", "first-order");
+    app->Options()->SetStringValue("check_derivatives_for_naninf", "yes");
     app->Options()->SetIntegerValue("max_iter", 10000);
     Ipopt::ApplicationReturnStatus status;
    status = app->Initialize();

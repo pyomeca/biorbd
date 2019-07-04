@@ -53,7 +53,7 @@ bool s2mStaticOptimizationIpoptLinearized::eval_g(
         Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Index m, Ipopt::Number *g)
 {
     if (new_x){
-        dispatch(n, x);
+        dispatch(x);
     }
     std::vector<s2mMuscleStateActual> state;// controls
     for (unsigned int i = 0; i<m_nMus; ++i){
@@ -61,8 +61,7 @@ bool s2mStaticOptimizationIpoptLinearized::eval_g(
         state.push_back(s2mMuscleStateActual(0, m_activation[i]));
     }
     // Compute the torques from muscles
-    m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
-    s2mTau tau_calcul = m_model.muscularJointTorque(m_model, state, true, &m_Q, &m_Qdot);
+    s2mTau tau_calcul = m_model.muscularJointTorque(m_model, state, false, &m_Q, &m_Qdot);
 
     for( Ipopt::Index i = 0; i < m; i++ )
        {
@@ -86,7 +85,7 @@ bool s2mStaticOptimizationIpoptLinearized::eval_jac_g(
         Ipopt::Number *values)
 {
     if (new_x){
-        dispatch(n, x);
+        dispatch(x);
     }
 
     if (values == nullptr) {
