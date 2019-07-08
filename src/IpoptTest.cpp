@@ -15,7 +15,7 @@ HS071_NLP::HS071_NLP(
     m_nMus(nMus),
     m_nDof(nTau),
     m_nTau(nTau),
-    m_tau(s2mTau(s2mVector(nTau))),
+    m_tau_kin(s2mTau(s2mVector(nTau))),
     m_activationInit(s2mVector(nMus)),
     m_activation(s2mVector(nMus)),
     m_residual(s2mVector(nTau)),
@@ -26,21 +26,17 @@ HS071_NLP::HS071_NLP(
     m_model(model),
     m_eps(1e-10),
     m_State(std::vector<s2mMuscleStateActual>(nMus)),
-    m_ponderation(10000)
+    m_ponderation(1000)
 {
     m_Q.setZero();
     m_Qdot.setZero();
     m_Qddot.setZero();
     m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
     m_residual.setOnes();
-    m_tau.setZero();
+    m_tau_kin.setZero();
+    m_tau_kin[0] = 100;
 }
 
-// destructor
-HS071_NLP::~HS071_NLP()
-{
-
-}
 
 bool HS071_NLP::get_nlp_info(
    Ipopt::Index&          n,
@@ -83,7 +79,7 @@ bool HS071_NLP::get_bounds_info(
    for( Ipopt::Index i = static_cast<int>(m_nMus); i < static_cast<int>(m_nMus+m_nTau); i++ )
    {
       x_l[i] = -1000.0;
-      x_u[i] = 1000.0;
+      x_u[i] = -0.0001;
    }
 
    for( Ipopt::Index i = 0; i < m; i++ )
@@ -109,14 +105,16 @@ bool HS071_NLP::get_starting_point(
    assert(init_z == false);
    assert(init_lambda == false);
 
-   for( Ipopt::Index i = 0; i < m_nMus; i++ )
+   m_activationInit.setOnes();
+   m_activationInit *= 0.01;
+   for( unsigned int i = 0; i < m_nMus; i++ )
       {
        x[i] = m_activationInit[i];
        std::cout << "m_activationInit[" << i << "]: " << x[i] << std::endl;
       }
-   for( Ipopt::Index i = 0; i < m; i++ )
+   for( unsigned int i = m_nMus; i < m_nMus + m_nTau; i++ )
       {
-       x[i+n-m] = 0.1;
+       x[i] = 0.1;
       }
 
    return true;
@@ -147,16 +145,19 @@ bool HS071_NLP::eval_grad_f(
    )
 {
    assert(static_cast<unsigned int>(n) == m_nTau+m_nMus);
+   if (new_x){
+       dispatch(x);
+   }
 
    s2mVector grad_activ(m_activation.grad_norm(m_p));
    s2mVector grad_residual(m_residual.grad_norm(2));
 
-   for( Ipopt::Index i = 0; i < static_cast<int>(m_nMus); i++ )
+   for( unsigned i = 0; i < m_nMus; i++ )
       {
        grad_f[i] = grad_activ[i];
       }
-   for( Ipopt::Index i = 0; i < static_cast<int>(m_nTau); i++ ){
-       grad_f[i+static_cast<int>(m_nMus)] = m_ponderation*grad_residual[i];
+   for( unsigned int i = 0; i < m_nTau; i++ ){
+       grad_f[i+m_nMus] = m_ponderation*grad_residual[i];
    }
 
    return true;
@@ -180,16 +181,13 @@ bool HS071_NLP::eval_g(
    for (unsigned int i = 0; i<m_nMus; ++i){
        m_State[i].setActivation(m_activation[i]);
    }
-   //s2mTau tau_inv = m_model.muscularJointTorque(m_model, m_State, true, &m_Q, &m_Qdot);
-   s2mTau tau_inv(m_model.nbTau());
-   tau_inv.setZero();
-   RigidBodyDynamics::InverseDynamics(m_model, m_Q, m_Qdot, m_Qddot, tau_inv);
-
+   s2mTau tau_musc = m_model.muscularJointTorque(m_model, m_State, true, &m_Q, &m_Qdot);
 
    for( Ipopt::Index i = 0; i < m; i++ )
       {
-       g[i] = tau_inv[i] + m_residual[i] - m_tau[i];
-       std::cout << "tau_calcul[" << i << "]: " << tau_inv[i] << std::endl;
+       g[i] = tau_musc[i] + m_residual[i] - m_tau_kin[i];
+       std::cout << "tau_musc[" << i << "]: " << tau_musc[i] << std::endl;
+       std::cout << "tau_residual[" << i << "]: " << m_residual[i] << std::endl;
       }
 
 
@@ -225,10 +223,13 @@ bool HS071_NLP::eval_jac_g(
     }
     else
     {
+        if (new_x){
+            dispatch(x);
+        }
         for (unsigned int i = 0; i<m_nMus; ++i){
             m_State[i].setActivation(m_activation[i]);
         }
-        s2mTau tau_calcul_actual = m_model.muscularJointTorque(m_model, m_State, true, &m_Q, &m_Qdot);
+        s2mTau tau_musc = m_model.muscularJointTorque(m_model, m_State, true, &m_Q, &m_Qdot);
         s2mMatrix jacobian(m_nTau, static_cast<unsigned int>(n));
         jacobian.setZero();
         unsigned int k(0);
@@ -248,7 +249,7 @@ bool HS071_NLP::eval_jac_g(
             s2mTau tau_calcul_epsilon = m_model.muscularJointTorque(m_model, state_epsilon, true, &m_Q, &m_Qdot);
             for( Ipopt::Index i = 0; i < m; i++ )
             {
-                values[k] = (tau_calcul_epsilon[i]-tau_calcul_actual[i])/m_eps;
+                values[k] = (tau_calcul_epsilon[i]-tau_musc[i])/m_eps;
                 std::cout.precision(20);
                 jacobian(i,j) = values[k];
                 k++;
@@ -340,7 +341,6 @@ void HS071_NLP::dispatch(const Ipopt::Number *x)
     for(int i = 0; i < static_cast<int>(m_nTau); i++ )
     {
         m_residual[i] = x[i+static_cast<int>(m_nMus)];
-        std::cout << "m_residual[" << i << "]: " << m_residual[i] << std::endl;
     }
 
 }

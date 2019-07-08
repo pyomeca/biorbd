@@ -9,7 +9,7 @@
 #include <Eigen/Dense>
 #include <IpIpoptApplication.hpp>
 #include <IpTNLP.hpp>
-#include "s2mStaticOptimizationIpopt.h"
+#include "s2mStaticOptimizationIpOpt.h"
 #include "s2mStaticOptimizationIpOptLinearized.h"
 
 
