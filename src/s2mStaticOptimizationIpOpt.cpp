@@ -1,6 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mStaticOptimizationIpopt.h"
-
+#include "../include/s2mStaticOptimizationIpOpt.h"
 
 s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(s2mMusculoSkeletalModel &model,
         const s2mGenCoord& Q, // states

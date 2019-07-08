@@ -8,7 +8,7 @@
 #include "s2mMusculoSkeletalModel.h"
 #include "s2mMuscles.h"
 #include "s2mVector.h"
-#include "s2mStaticOptimizationIpopt.h"
+#include "s2mStaticOptimizationIpOpt.h"
 
 #include <Eigen/Dense>
 

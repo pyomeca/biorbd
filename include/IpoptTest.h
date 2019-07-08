@@ -20,9 +20,6 @@ public:
            unsigned int nMus
            );
 
-   /** Default destructor */
-   virtual ~HS071_NLP();
-
    /**@name Overloaded from TNLP */
    //@{
    /** Method to return some info about the NLP */
@@ -137,7 +134,7 @@ protected:
    unsigned int m_nMus;
    unsigned int m_nDof;
    unsigned int m_nTau;
-   s2mTau m_tau;
+   s2mTau m_tau_kin;
    s2mVector m_activationInit;
    s2mVector m_activation;
    s2mVector m_residual;
