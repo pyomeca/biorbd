@@ -14,8 +14,8 @@ public:
     s2mVector(unsigned int i);
     ~s2mVector();
     virtual Eigen::VectorXd vector() const;
-    double norm(unsigned int p = 2);
-    s2mVector grad_norm(unsigned int p = 2);
+    double norm(unsigned int p = 2, bool skipRoot = false);
+    s2mVector norm_gradient(unsigned int p = 2, bool skipRoot = false);
 
 protected:
 private:

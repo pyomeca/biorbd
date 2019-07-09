@@ -14,11 +14,12 @@ class HS071_NLP: public Ipopt::TNLP
 {
 public:
    /** Default constructor */
-   HS071_NLP(
-           s2mMusculoSkeletalModel &model,
-           unsigned int nTau,
-           unsigned int nMus
-           );
+   HS071_NLP(s2mMusculoSkeletalModel    &model,
+             const s2mGenCoord          &Q,
+             const s2mGenCoord          &Qdot,
+             const s2mTau               & tauTarget,
+             bool                       useResidual = true,
+             int verbose = 0);
 
    /**@name Overloaded from TNLP */
    //@{
@@ -28,7 +29,7 @@ public:
       Ipopt::Index&          m,
       Ipopt::Index&          nnz_jac_g,
       Ipopt::Index&          nnz_h_lag,
-      IndexStyleEnum& index_style
+      IndexStyleEnum&        index_style
       );
 
    /** Method to return the bounds for my problem */
@@ -44,13 +45,13 @@ public:
    /** Method to return the starting point for the algorithm */
    virtual bool get_starting_point(
       Ipopt::Index   n,
-      bool    init_x,
+      bool           init_x,
       Ipopt::Number* x,
-      bool    init_z,
+      bool           init_z,
       Ipopt::Number* z_L,
       Ipopt::Number* z_U,
       Ipopt::Index   m,
-      bool    init_lambda,
+      bool           init_lambda,
       Ipopt::Number* lambda
       );
 
@@ -58,7 +59,7 @@ public:
    virtual bool eval_f(
       Ipopt::Index         n,
       const Ipopt::Number* x,
-      bool          new_x,
+      bool                 new_x,
       Ipopt::Number&       obj_value
       );
 
@@ -66,7 +67,7 @@ public:
    virtual bool eval_grad_f(
       Ipopt::Index         n,
       const Ipopt::Number* x,
-      bool          new_x,
+      bool                 new_x,
       Ipopt::Number*       grad_f
       );
 
@@ -74,7 +75,7 @@ public:
    virtual bool eval_g(
       Ipopt::Index         n,
       const Ipopt::Number* x,
-      bool          new_x,
+      bool                 new_x,
       Ipopt::Index         m,
       Ipopt::Number*       g
       );
@@ -86,27 +87,9 @@ public:
    virtual bool eval_jac_g(
       Ipopt::Index         n,
       const Ipopt::Number* x,
-      bool          new_x,
+      bool                 new_x,
       Ipopt::Index         m,
       Ipopt::Index         nele_jac,
-      Ipopt::Index*        iRow,
-      Ipopt::Index*        jCol,
-      Ipopt::Number*       values
-      );
-
-   /** Method to return:
-    *   1) The structure of the hessian of the lagrangian (if "values" is NULL)
-    *   2) The values of the hessian of the lagrangian (if "values" is not NULL)
-    */
-   virtual bool eval_h(
-      Ipopt::Index         n,
-      const Ipopt::Number* x,
-      bool          new_x,
-      Ipopt::Number        obj_factor,
-      Ipopt::Index         m,
-      const Ipopt::Number* lambda,
-      bool          new_lambda,
-      Ipopt::Index         nele_hess,
       Ipopt::Index*        iRow,
       Ipopt::Index*        jCol,
       Ipopt::Number*       values
@@ -129,27 +112,23 @@ public:
    //@}
 
 protected:
+   s2mMusculoSkeletalModel &m_model;
    unsigned int m_nQ;
-   unsigned int m_nQdot;
-   unsigned int m_nMus;
-   unsigned int m_nDof;
-   unsigned int m_nTau;
-   s2mTau m_tau_kin;
-   s2mVector m_activationInit;
-   s2mVector m_activation;
-   s2mVector m_residual;
-   unsigned int m_p;
    s2mGenCoord m_Q;
    s2mGenCoord m_Qdot;
-   s2mGenCoord m_Qddot;
-   s2mMusculoSkeletalModel &m_model;
+   unsigned int m_nTau;
+   unsigned int m_nTauResidual;
+   s2mTau m_tauTarget;
+   s2mVector m_tauResidual;
+   double m_tauPonderation;
+   unsigned int m_nMus;
+   s2mVector m_activations;
+   std::vector<s2mMuscleStateActual> m_states;
+   unsigned int m_pNormFactor;
    double m_eps;
-   std::vector<s2mMuscleStateActual> m_State;
-   double m_ponderation;
+   int m_verbose;
 
-   void dispatch(
-           const Ipopt::Number* x
-           );
+   void dispatch(const Ipopt::Number* x);
 
 private:
 
