@@ -9,8 +9,8 @@
 #include <Eigen/Dense>
 #include <IpIpoptApplication.hpp>
 #include <IpTNLP.hpp>
-#include "s2mStaticOptimizationIpOpt.h"
-#include "s2mStaticOptimizationIpOptLinearized.h"
+#include "s2mStaticOptimizationIpopt.h"
+#include "s2mStaticOptimizationIpoptLinearized.h"
 
 
     
@@ -29,7 +29,7 @@ class BIORBD_API s2mStaticOptimization
                 s2mMusculoSkeletalModel &m,
                 const s2mGenCoord& Q, // states
                 const s2mGenCoord& Qdot, // derived states
-                const s2mTau& Tau,
+                const s2mTau& tauTarget,
                 const s2mVector& Activ,
                 const unsigned int p = 2
                 );
@@ -45,7 +45,7 @@ class BIORBD_API s2mStaticOptimization
                 s2mMusculoSkeletalModel &m,
                 const s2mGenCoord& Q, // states
                 const s2mGenCoord& Qdot, // derived states
-                const s2mTau& Tau,
+                const s2mTau& tauTarget,
                 const std::vector<s2mMuscleStateActual>& Activ,
                 const unsigned int p = 2
                 );
@@ -61,8 +61,8 @@ class BIORBD_API s2mStaticOptimization
         s2mGenCoord m_Q;
         s2mGenCoord m_Qdot;
         s2mGenCoord m_Qddot;
-        s2mTau m_Tau;
-        std::vector<s2mMuscleStateActual> m_State;
+        s2mTau m_tauTarget;
+        std::vector<s2mMuscleStateActual> m_state;
         s2mVector m_Activ;
         unsigned int m_p;
 

@@ -79,8 +79,8 @@ bool HS071_NLP::get_bounds_info(
 
     // Variables
     for( unsigned int i = 0; i < m_nMus; ++i ){
-        x_l[i] = 0.0;
-        x_u[i] = 1.0;
+        x_l[i] = 0.0001;
+        x_u[i] = 0.9999;
     }
     for( unsigned int i = m_nMus; i < m_nMus+m_nTauResidual; ++i ){
         x_l[i] = -1000.0;
@@ -265,10 +265,10 @@ void HS071_NLP::finalize_solution(
     if (m_verbose >= 1){
         std::cout << std::endl << "Final results" << std::endl;
         std::cout << "f(x*) = " << obj_value << std::endl;
-        std::cout << "Activations = " << m_activations << std::endl;
-        std::cout << "Muscular torques = " << m_model.muscularJointTorque(m_model, m_states, false, &m_Q, &m_Qdot) << std::endl;
+        std::cout << "Activations = " << m_activations.transpose() << std::endl;
+        std::cout << "Muscular torques = " << m_model.muscularJointTorque(m_model, m_states, false, &m_Q, &m_Qdot).transpose() << std::endl;
         if (m_nTauResidual){
-            std::cout << "Residual torques= " << m_tauResidual << std::endl;
+            std::cout << "Residual torques= " << m_tauResidual.transpose() << std::endl;
         }
 //        // Uncomment to show lagrange multipliers
 //        std::cout << "Solution of the bound multipliers, z_L and z_U" << std::endl;

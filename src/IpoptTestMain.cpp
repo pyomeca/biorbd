@@ -30,7 +30,10 @@ int mainTest::main()
     Q.setZero();
     Qdot.setZero();
     s2mTau target(m_model);
-    target[0] = 100;
+    for (unsigned int i=0; i<m_model.nbTau(); i++){
+        target[i] = 5;
+    }
+
     Ipopt::SmartPtr<Ipopt::TNLP> mynlp = new HS071_NLP(m_model, Q, Qdot, target, true, 1);
 
     // Create a new instance of IpoptApplication

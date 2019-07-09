@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mStaticOptimizationIpOptLinearized.h"
+#include "../include/s2mStaticOptimizationIpoptLinearized.h"
 
 
 s2mStaticOptimizationIpoptLinearized::s2mStaticOptimizationIpoptLinearized(s2mMusculoSkeletalModel &model,
@@ -57,8 +57,8 @@ bool s2mStaticOptimizationIpoptLinearized::eval_g(
     }
     std::vector<s2mMuscleStateActual> state;// controls
     for (unsigned int i = 0; i<m_nMus; ++i){
-        std::cout << "m_activation[" << i << "]: " << m_activation[i] << std::endl;
-        state.push_back(s2mMuscleStateActual(0, m_activation[i]));
+        std::cout << "m_activation[" << i << "]: " << m_activations[i] << std::endl;
+        state.push_back(s2mMuscleStateActual(0, m_activations[i]));
     }
     // Compute the torques from muscles
     s2mTau tau_calcul = m_model.muscularJointTorque(m_model, state, false, &m_Q, &m_Qdot);

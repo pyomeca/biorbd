@@ -14,27 +14,27 @@ s2mStaticOptimization::s2mStaticOptimization(
     m_Q(Q),
     m_Qdot(Qdot),
     m_Qddot(Qddot),
-    m_Tau(s2mTau(m)),
+    m_tauTarget(s2mTau(m)),
     m_Activ(Activ),
     m_p(p)
 {
-    m_Tau.setZero();
-    RigidBodyDynamics::InverseDynamics(m_model, m_Q, m_Qdot, m_Qddot, m_Tau);
-    std::cout << "m_Tau\n:" << m_Tau << std::endl;
+    m_tauTarget.setZero();
+    RigidBodyDynamics::InverseDynamics(m_model, m_Q, m_Qdot, m_Qddot, m_tauTarget);
+    std::cout << "m_Tau\n:" << m_tauTarget << std::endl;
 }
 
 s2mStaticOptimization::s2mStaticOptimization(
         s2mMusculoSkeletalModel &m,
         const s2mGenCoord &Q,
         const s2mGenCoord &Qdot,
-        const s2mTau &Tau,
+        const s2mTau &tauTarget,
         const s2mVector &Activ,
         const unsigned int p
         ):
     m_model(m),
     m_Q(Q),
     m_Qdot(Qdot),
-    m_Tau(Tau),
+    m_tauTarget(tauTarget),
     m_Activ(Activ),
     m_p(p)
 {
@@ -46,24 +46,24 @@ s2mStaticOptimization::s2mStaticOptimization(
         const s2mGenCoord &Q,
         const s2mGenCoord &Qdot,
         const s2mGenCoord &Qddot,
-        const std::vector<s2mMuscleStateActual> &State,
+        const std::vector<s2mMuscleStateActual> &state,
         const unsigned int p
         ):
     m_model(m),
     m_Q(Q),
     m_Qdot(Qdot),
     m_Qddot(Qddot),
-    m_Tau(s2mTau(m)),
-    m_State(State),
+    m_tauTarget(s2mTau(m)),
+    m_state(state),
     m_Activ(s2mVector(m.nbMuscleTotal())),
     m_p(p)
 {
-    m_Tau.setZero();
-    RigidBodyDynamics::InverseDynamics(m_model, m_Q, m_Qdot, m_Qddot, m_Tau);
-    std::cout << "m_Tau\n:" << m_Tau << std::endl;
+    m_tauTarget.setZero();
+    RigidBodyDynamics::InverseDynamics(m_model, m_Q, m_Qdot, m_Qddot, m_tauTarget);
+    std::cout << "m_Tau\n:" << m_tauTarget << std::endl;
     m_Activ.setZero();
     for (unsigned int i = 0; i<m_model.nbMuscleTotal(); i++){
-        m_Activ[i] = m_State[i].activation();
+        m_Activ[i] = m_state[i].activation();
     }
 }
 
@@ -71,20 +71,20 @@ s2mStaticOptimization::s2mStaticOptimization(
         s2mMusculoSkeletalModel &m,
         const s2mGenCoord &Q,
         const s2mGenCoord &Qdot,
-        const s2mTau &Tau,
-        const std::vector<s2mMuscleStateActual> &State,
+        const s2mTau &tauTarget,
+        const std::vector<s2mMuscleStateActual> &state,
         const unsigned int p):
     m_model(m),
     m_Q(Q),
     m_Qdot(Qdot),
-    m_Tau(Tau),
-    m_State(State),
+    m_tauTarget(tauTarget),
+    m_state(state),
     m_Activ(s2mVector(m.nbMuscleTotal())),
     m_p(p)
 {
     m_Activ.setZero();
     for (unsigned int i = 0; i<m_model.nbMuscleTotal(); i++){
-        m_Activ[i] = m_State[i].activation();
+        m_Activ[i] = m_state[i].activation();
     }
 }
 
@@ -95,10 +95,10 @@ int s2mStaticOptimization::optimize(
     Ipopt::SmartPtr<Ipopt::TNLP> mynlp;
     if (LinearizedState){
         std::cout << "*** Linearized optimization !" << std::endl;
-        mynlp = new s2mStaticOptimizationIpoptLinearized(m_model, m_Q, m_Qdot, m_Tau, m_Activ);
+        mynlp = new s2mStaticOptimizationIpoptLinearized(m_model, m_Q, m_Qdot, m_tauTarget, m_Activ);
     }
     else {
-        mynlp = new s2mStaticOptimizationIpopt(m_model, m_Q, m_Qdot, m_Tau, m_Activ);
+        mynlp = new s2mStaticOptimizationIpopt(m_model, m_Q, m_Qdot, m_tauTarget, m_Activ, true, 2);
     }
     Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
 
