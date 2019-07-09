@@ -111,8 +111,8 @@ bool s2mStaticOptimizationIpopt::eval_grad_f(
     if (new_x){
         dispatch(x);
     }
-    s2mVector grad_activ(m_activation.grad_norm(m_p));
-    s2mVector grad_residual(m_residual.grad_norm(2));
+    s2mVector grad_activ(m_activation.norm_gradient(m_p));
+    s2mVector grad_residual(m_residual.norm_gradient(2));
 
     for( Ipopt::Index i = 0; i < static_cast<int>(m_nMus); i++ )
        {
