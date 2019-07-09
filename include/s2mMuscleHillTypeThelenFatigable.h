@@ -22,7 +22,9 @@ class BIORBD_API s2mMuscleHillTypeThelenFatigable : public s2mMuscleHillTypeThel
         s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m);
 
         ~s2mMuscleHillTypeThelenFatigable(){}
+        virtual void fatigueState(const std::shared_ptr<s2mMuscle> m, const s2mMuscleStateActual &EMG);
         virtual void computeFlCE(const s2mMuscleStateActual &EMG);
+
 
 
     protected:
