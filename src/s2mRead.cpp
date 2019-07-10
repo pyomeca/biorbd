@@ -545,8 +545,14 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     while(file.read(tp) && tp.tolower().compare("endfatigueparameters")){
                         double param;
                         file.read(param);
-                        if (!tp.tolower().compare("param1"))
-                            fatigueParameters.param1(param);
+                        if (!tp.tolower().compare("fatigueRate"))
+                            fatigueParameters.fatigueRate(param);
+                        if (!tp.tolower().compare("recoveryRate"))
+                            fatigueParameters.developFactor(param);
+                        if (!tp.tolower().compare("developFactor"))
+                            fatigueParameters.developFactor(param);
+                        if (!tp.tolower().compare("recoverFactor"))
+                            fatigueParameters.recoverFactor(param);
                     }
                 }
             }
