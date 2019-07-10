@@ -3,14 +3,16 @@
 
 
 s2mStaticOptimizationIpoptLinearized::s2mStaticOptimizationIpoptLinearized(s2mMusculoSkeletalModel &model,
-        const s2mGenCoord& Q, // states
-        const s2mGenCoord& Qdot, // derived states
-        const s2mTau& tau_init,
-        const s2mVector &activationInit,
-        unsigned int p,
-        const double epsilon
+           const s2mGenCoord &Q,
+           const s2mGenCoord &Qdot,
+           const s2mTau &tauTarget,
+           const s2mVector &activationInit,
+           //bool useResidual,
+           int verbose,
+           unsigned int p,
+           const double eps
         ) :
-    s2mStaticOptimizationIpopt(model, Q, Qdot, tau_init, activationInit, p, epsilon),
+    s2mStaticOptimizationIpopt(model, Q, Qdot, tauTarget, activationInit, false, verbose, p, eps),
     m_jacobian(s2mMatrix(m_nDof, m_nMus))
 {
     prepareJacobian();

@@ -127,7 +127,6 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
         unsigned int m_nDof;
         unsigned int m_nTau;
         unsigned int m_nTauResidual;
-        unsigned int m_p;
         double m_eps;
         s2mVector m_activations;
         s2mGenCoord m_Q;
@@ -138,6 +137,7 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
         std::vector<s2mMuscleStateActual> m_states;
         unsigned int m_pNormFactor;
         int m_verbose;
+
         void dispatch(
                 const Ipopt::Number* x
                 );

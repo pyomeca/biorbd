@@ -95,7 +95,7 @@ int s2mStaticOptimization::optimize(
     Ipopt::SmartPtr<Ipopt::TNLP> mynlp;
     if (LinearizedState){
         std::cout << "*** Linearized optimization !" << std::endl;
-        mynlp = new s2mStaticOptimizationIpoptLinearized(m_model, m_Q, m_Qdot, m_tauTarget, m_Activ);
+        mynlp = new s2mStaticOptimizationIpoptLinearized(m_model, m_Q, m_Qdot, m_tauTarget, m_Activ, 2);
     }
     else {
         mynlp = new s2mStaticOptimizationIpopt(m_model, m_Q, m_Qdot, m_tauTarget, m_Activ, true, 2);
