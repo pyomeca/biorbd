@@ -44,6 +44,12 @@ void s2mMuscleHillTypeThelenFatigable::computeFlCE(const s2mMuscleStateActual &E
 {
     s2mMuscleHillTypeThelen::computeFlCE(EMG);
     // Do something with m_FlCE and m_caract.fatigueParameters
+    //m_FlCE *= s2mStateFatigue
+}
+
+void s2mMuscleHillTypeThelenFatigable::fatigueState(const std::shared_ptr<s2mMuscle> m, const s2mMuscleStateActual &EMG)
+{
+
 }
 
 void s2mMuscleHillTypeThelenFatigable::setType()

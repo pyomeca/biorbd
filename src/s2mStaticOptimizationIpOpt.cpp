@@ -19,7 +19,6 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
     m_nDof(model.nbDof()),
     m_nTau(model.nbTau()),
     m_nTauResidual(model.nbQ()),
-    m_p(p),
     m_eps(eps),
     m_activations(activationInit),
     m_Q(Q),
@@ -28,7 +27,7 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
     m_tauResidual(Eigen::VectorXd::Zero(m_nTau)),
     m_tauPonderation(1000),
     m_states(std::vector<s2mMuscleStateActual>(m_nMus)),
-    m_pNormFactor(2),
+    m_pNormFactor(p),
     m_verbose(verbose)
 {
     m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
@@ -126,6 +125,7 @@ bool s2mStaticOptimizationIpopt::eval_f(
         Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Number &obj_value)
 {
     assert(static_cast<unsigned int>(n) == m_nMus + m_nTauResidual);
+
     if (new_x)
         dispatch(x);
 
@@ -139,6 +139,7 @@ bool s2mStaticOptimizationIpopt::eval_grad_f(
         Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Number *grad_f)
 {
     assert(static_cast<unsigned int>(n) == m_nMus + m_nTauResidual);
+
     if (new_x)
         dispatch(x);
 
