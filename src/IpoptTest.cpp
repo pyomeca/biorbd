@@ -270,6 +270,7 @@ void HS071_NLP::finalize_solution(
         if (m_nTauResidual){
             std::cout << "Residual torques= " << m_tauResidual.transpose() << std::endl;
         }
+        std::cout << "Target torques = " << m_tauTarget.transpose() << std::endl;
 //        // Uncomment to show lagrange multipliers
 //        std::cout << "Solution of the bound multipliers, z_L and z_U" << std::endl;
 //        for( Ipopt::Index i = 0; i < n; i++ )
