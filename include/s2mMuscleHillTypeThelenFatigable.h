@@ -4,6 +4,7 @@
     #include "s2mMuscleHillTypeThelen.h"
     #include "s2mMuscleCaracteristics.h"
     #include "s2mMuscleFatigueParam.h"
+    #include "s2mMuscleFatigueStateActualXia.h"
 
 class BIORBD_API s2mMuscleHillTypeThelenFatigable : public s2mMuscleHillTypeThelen
 {
@@ -37,6 +38,8 @@ class BIORBD_API s2mMuscleHillTypeThelenFatigable : public s2mMuscleHillTypeThel
         double m_recoveryRate;
         double m_developFactor;
         double m_recoverFactor;
+
+        s2mMuscleFatigueStateActualXia m_fatigueState;
 
 };
 
