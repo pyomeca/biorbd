@@ -28,7 +28,11 @@ int mainTest::main()
    //  (use a SmartPtr, not raw)
     s2mGenCoord Q(m_model), Qdot(m_model);
     Q.setZero();
+    Q[0] = 0.3;
+    Q[1] = 1.57;
     Qdot.setZero();
+    Qdot[0] = 10;
+    Qdot[1] = 15;
     std::vector<s2mMuscleStateActual> s;
     s.push_back(s2mMuscleStateActual(0, 0.2));
     s.push_back(s2mMuscleStateActual(0, 0.5));
