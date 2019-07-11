@@ -1,18 +1,51 @@
 #define BIORBD_API_EXPORTS
 #include "../include/s2mMuscleFatigueParam.h"
 
-s2mMuscleFatigueParam::s2mMuscleFatigueParam(double param1) :
-    m_param1(param1)
+s2mMuscleFatigueParam::s2mMuscleFatigueParam(double fatigueRate, double recoveryRate, double developFactor, double recoverFactor)
 {
 
 }
 
-double s2mMuscleFatigueParam::param1() const
+double s2mMuscleFatigueParam::fatigueRate() const
 {
-    return m_param1;
+    return m_fatigueRate;
 }
 
-void s2mMuscleFatigueParam::param1(double param1)
+double s2mMuscleFatigueParam::recoveryRate() const
 {
-    m_param1 = param1;
+    return m_recoveryRate;
 }
+
+double s2mMuscleFatigueParam::developFactor() const
+{
+    return m_developFactor;
+}
+
+double s2mMuscleFatigueParam::recoverFactor() const
+{
+    return m_recoverFactor;
+}
+
+void s2mMuscleFatigueParam::fatigueRate(double fatigueRate)
+{
+    m_fatigueRate = fatigueRate;
+}
+
+void s2mMuscleFatigueParam::recoveryRate(double recoveryRate)
+{
+    m_recoveryRate = recoveryRate;
+}
+
+void s2mMuscleFatigueParam::developFactor(double developFactor)
+{
+    m_developFactor = developFactor;
+}
+
+void s2mMuscleFatigueParam::recoverFactor(double recoverFactor)
+{
+    m_recoverFactor = recoverFactor;
+}
+
+
+
+
