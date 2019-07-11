@@ -29,10 +29,15 @@ int mainTest::main()
     s2mGenCoord Q(m_model), Qdot(m_model);
     Q.setZero();
     Qdot.setZero();
-    s2mTau target(m_model);
-    for (unsigned int i=0; i<m_model.nbTau(); i++){
-        target[i] = 5;
-    }
+    std::vector<s2mMuscleStateActual> s;
+    s.push_back(s2mMuscleStateActual(0, 0.2));
+    s.push_back(s2mMuscleStateActual(0, 0.5));
+    s.push_back(s2mMuscleStateActual(0, 0.7));
+    s.push_back(s2mMuscleStateActual(0, 0.4));
+    s.push_back(s2mMuscleStateActual(0, 0.3));
+    s.push_back(s2mMuscleStateActual(0, 0.6));
+    m_model.updateMuscles(m_model, Q, Qdot, true);
+    s2mTau target = m_model.muscularJointTorque(m_model, s, false, &Q, &Qdot);
 
     Ipopt::SmartPtr<Ipopt::TNLP> mynlp = new HS071_NLP(m_model, Q, Qdot, target, true, 1);
 
