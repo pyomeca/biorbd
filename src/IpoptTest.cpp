@@ -27,6 +27,9 @@ HS071_NLP::HS071_NLP(s2mMusculoSkeletalModel &model,
     m_eps(1e-10),
     m_verbose(verbose)
 {
+    if (m_eps < 1e-12){
+        s2mError::s2mAssert(false, "epsilon for partial derivates approximation is too small ! \nLimit for epsilon is 1e-12");
+    }
     m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
     if (!useResidual){
         m_tauResidual.setZero();
@@ -156,7 +159,7 @@ bool HS071_NLP::eval_grad_f(
    for( unsigned i = 0; i < m_nMus; i++ )
        grad_f[i] = grad_activ[i];
    for( unsigned int i = 0; i < m_nTauResidual; i++ )
-       grad_f[i+m_nMus] = m_tauPonderation*grad_residual[i];
+       grad_f[i+m_nMus] = m_tauPonderation * grad_residual[i];
    return true;
 }
 
@@ -222,8 +225,15 @@ bool HS071_NLP::eval_jac_g(
                 stateEpsilon.push_back(s2mMuscleStateActual(0, m_activations[i]+delta*m_eps));
             }
             s2mTau tauCalculEpsilon = m_model.muscularJointTorque(m_model, stateEpsilon, false, &m_Q, &m_Qdot);
-            for( Ipopt::Index i = 0; i < m; i++ )
+            for( Ipopt::Index i = 0; i < m; i++ ){
                 values[k++] = (tauCalculEpsilon[i]-tauMusc[i])/m_eps;
+                if (m_verbose >= 3){
+                    std::cout << std::setprecision (20) << std::endl;
+                    std::cout << "values[" << k-1 << "]: " << values[k-1] << std::endl;
+                    std::cout << "tauCalculEpsilon[" << i << "]: " << tauCalculEpsilon[i] << std::endl;
+                    std::cout << "tauMusc[" << i << "]: " << tauMusc[i] << std::endl;
+                }
+            }
         }
         for( unsigned int j = 0; j < m_nTauResidual; j++ )
             values[k++] = 1;

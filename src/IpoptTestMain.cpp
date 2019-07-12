@@ -43,7 +43,7 @@ int mainTest::main()
     m_model.updateMuscles(m_model, Q, Qdot, true);
     s2mTau target = m_model.muscularJointTorque(m_model, s, false, &Q, &Qdot);
 
-    Ipopt::SmartPtr<Ipopt::TNLP> mynlp = new HS071_NLP(m_model, Q, Qdot, target, true, 1);
+    Ipopt::SmartPtr<Ipopt::TNLP> mynlp = new HS071_NLP(m_model, Q, Qdot, target, true, 2);
 
     // Create a new instance of IpoptApplication
     //  (use a SmartPtr, not raw)

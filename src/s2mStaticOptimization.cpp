@@ -8,7 +8,8 @@ s2mStaticOptimization::s2mStaticOptimization(
         const s2mGenCoord& Qdot, // derived states
         const s2mGenCoord& Qddot,
         const s2mVector& Activ,
-        const unsigned int p
+        const unsigned int pNormFactor,
+        const bool verbose
         ):
     m_model(m),
     m_Q(Q),
@@ -16,8 +17,11 @@ s2mStaticOptimization::s2mStaticOptimization(
     m_Qddot(Qddot),
     m_tauTarget(s2mTau(m)),
     m_Activ(Activ),
-    m_p(p)
+    m_pNormFactor(pNormFactor),
+    m_verbose(verbose)
 {
+    std::vector<s2mGenCoord> allQ;
+    allQ.push_back(Q);
     m_tauTarget.setZero();
     RigidBodyDynamics::InverseDynamics(m_model, m_Q, m_Qdot, m_Qddot, m_tauTarget);
     std::cout << "m_Tau\n:" << m_tauTarget << std::endl;
@@ -29,14 +33,16 @@ s2mStaticOptimization::s2mStaticOptimization(
         const s2mGenCoord &Qdot,
         const s2mTau &tauTarget,
         const s2mVector &Activ,
-        const unsigned int p
+        const unsigned int pNormFactor,
+        const bool verbose
         ):
     m_model(m),
     m_Q(Q),
     m_Qdot(Qdot),
     m_tauTarget(tauTarget),
     m_Activ(Activ),
-    m_p(p)
+    m_pNormFactor(pNormFactor),
+    m_verbose(verbose)
 {
 
 }
@@ -47,7 +53,8 @@ s2mStaticOptimization::s2mStaticOptimization(
         const s2mGenCoord &Qdot,
         const s2mGenCoord &Qddot,
         const std::vector<s2mMuscleStateActual> &state,
-        const unsigned int p
+        const unsigned int pNormFactor,
+        const bool verbose
         ):
     m_model(m),
     m_Q(Q),
@@ -56,7 +63,8 @@ s2mStaticOptimization::s2mStaticOptimization(
     m_tauTarget(s2mTau(m)),
     m_state(state),
     m_Activ(s2mVector(m.nbMuscleTotal())),
-    m_p(p)
+    m_pNormFactor(pNormFactor),
+    m_verbose(verbose)
 {
     m_tauTarget.setZero();
     RigidBodyDynamics::InverseDynamics(m_model, m_Q, m_Qdot, m_Qddot, m_tauTarget);
@@ -73,14 +81,17 @@ s2mStaticOptimization::s2mStaticOptimization(
         const s2mGenCoord &Qdot,
         const s2mTau &tauTarget,
         const std::vector<s2mMuscleStateActual> &state,
-        const unsigned int p):
+        const unsigned int pNormFactor,
+        const bool verbose
+        ):
     m_model(m),
     m_Q(Q),
     m_Qdot(Qdot),
     m_tauTarget(tauTarget),
     m_state(state),
     m_Activ(s2mVector(m.nbMuscleTotal())),
-    m_p(p)
+    m_pNormFactor(pNormFactor),
+    m_verbose(verbose)
 {
     m_Activ.setZero();
     for (unsigned int i = 0; i<m_model.nbMuscleTotal(); i++){
@@ -88,21 +99,103 @@ s2mStaticOptimization::s2mStaticOptimization(
     }
 }
 
-int s2mStaticOptimization::optimize(
+
+//constructors for a vector of instants to be optimized by ipopt
+s2mStaticOptimization::s2mStaticOptimization(
+        s2mMusculoSkeletalModel &m,
+        const std::vector<s2mGenCoord> &allQ,
+        const std::vector<s2mGenCoord> &allQdot,
+        const std::vector<s2mGenCoord> &allQddot,
+        const std::vector<s2mVector> &allActiv,
+        const unsigned int pNormFactor,
+        const bool verbose)
+{
+    unsigned int nbInstant = static_cast<unsigned int>(allQ.size());
+    if (nbInstant != allQdot.size())
+        s2mError::s2mAssert(false, "allQdot is not the same size as allQ, numbers of instant to be optimized must be equal");
+    if (nbInstant != allQddot.size())
+        s2mError::s2mAssert(false, "allQddot is not the same size as allQ, numbers of instant to be optimized must be equal");
+    if (nbInstant != allActiv.size())
+        s2mError::s2mAssert(false, "allActiv is not the same size as allQ, numbers of instant to be optimized must be equal");
+    for (unsigned int i=0; i<nbInstant; i++) {
+        s2mStaticOptimization(m, allQ[i], allQdot[i], allQddot[i], allActiv[i], pNormFactor, verbose);
+    }
+
+}
+
+s2mStaticOptimization::s2mStaticOptimization(
+        s2mMusculoSkeletalModel &m,
+        const std::vector<s2mGenCoord> &allQ,
+        const std::vector<s2mGenCoord> &allQdot,
+        const std::vector<s2mTau> &allTauTarget,
+        const std::vector<s2mVector> &allActiv,
+        const unsigned int pNormFactor,
+        const bool verbose)
+{
+    unsigned int nbInstant = static_cast<unsigned int>(allQ.size());
+    if (nbInstant != allQdot.size())
+        s2mError::s2mAssert(false, "allQdot is not the same size as allQ, numbers of instant to be optimized must be equal");
+    if (nbInstant != allTauTarget.size())
+        s2mError::s2mAssert(false, "allQddot is not the same size as allQ, numbers of instant to be optimized must be equal");
+    if (nbInstant != allActiv.size())
+        s2mError::s2mAssert(false, "allActiv is not the same size as allQ, numbers of instant to be optimized must be equal");
+    for (unsigned int i=0; i<nbInstant; i++) {
+        s2mStaticOptimization(m, allQ[i], allQdot[i], allTauTarget[i], allActiv[i], pNormFactor, verbose);
+    }
+
+}
+
+s2mStaticOptimization::s2mStaticOptimization(
+        s2mMusculoSkeletalModel &m,
+        const std::vector<s2mGenCoord> &allQ,
+        const std::vector<s2mGenCoord> &allQdot,
+        const std::vector<s2mGenCoord> &allQddot,
+        const std::vector<std::vector<s2mMuscleStateActual> > &allState,
+        const unsigned int pNormFactor,
+        const bool verbose)
+{
+    unsigned int nbInstant = static_cast<unsigned int>(allQ.size());
+    if (nbInstant != allQdot.size())
+        s2mError::s2mAssert(false, "allQdot is not the same size as allQ, numbers of instant to be optimized must be equal");
+    if (nbInstant != allQddot.size())
+        s2mError::s2mAssert(false, "allQddot is not the same size as allQ, numbers of instant to be optimized must be equal");
+    if (nbInstant != allState.size())
+        s2mError::s2mAssert(false, "allActiv is not the same size as allQ, numbers of instant to be optimized must be equal");
+    for (unsigned int i=0; i<nbInstant; i++) {
+        s2mStaticOptimization(m, allQ[i], allQdot[i], allQddot[i], allState[i], pNormFactor, verbose);
+    }
+
+}
+
+s2mStaticOptimization::s2mStaticOptimization(
+        s2mMusculoSkeletalModel &m,
+        const std::vector<s2mGenCoord> &allQ,
+        const std::vector<s2mGenCoord> &allQdot,
+        const std::vector<s2mTau> &allTauTarget,
+        const std::vector<std::vector<s2mMuscleStateActual> > &allState,
+        const unsigned int pNormFactor,
+        const bool verbose)
+{
+    unsigned int nbInstant = static_cast<unsigned int>(allQ.size());
+    if (nbInstant != allQdot.size())
+        s2mError::s2mAssert(false, "allQdot is not the same size as allQ, numbers of instant to be optimized must be equal");
+    if (nbInstant != allTauTarget.size())
+        s2mError::s2mAssert(false, "allQddot is not the same size as allQ, numbers of instant to be optimized must be equal");
+    if (nbInstant != allState.size())
+        s2mError::s2mAssert(false, "allActiv is not the same size as allQ, numbers of instant to be optimized must be equal");
+    for (unsigned int i=0; i<nbInstant; i++) {
+        s2mStaticOptimization(m, allQ[i], allQdot[i], allTauTarget[i], allState[i], pNormFactor, verbose);
+    }
+
+}
+
+void s2mStaticOptimization::run(
         bool LinearizedState
         )
 {
-    Ipopt::SmartPtr<Ipopt::TNLP> mynlp;
-    if (LinearizedState){
-        std::cout << "*** Linearized optimization !" << std::endl;
-        mynlp = new s2mStaticOptimizationIpoptLinearized(m_model, m_Q, m_Qdot, m_tauTarget, m_Activ, 2);
-    }
-    else {
-        mynlp = new s2mStaticOptimizationIpopt(m_model, m_Q, m_Qdot, m_tauTarget, m_Activ, true, 2);
-    }
-    Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
 
-    app->Options()->SetNumericValue("tol", 1e-6);
+    Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
+    app->Options()->SetNumericValue("tol", 1e-7);
     app->Options()->SetStringValue("mu_strategy", "adaptive");
     app->Options()->SetStringValue("output_file", "ipopt.out");
     app->Options()->SetStringValue("hessian_approximation", "limited-memory");
@@ -112,23 +205,17 @@ int s2mStaticOptimization::optimize(
     Ipopt::ApplicationReturnStatus status;
    status = app->Initialize();
    if( status != Ipopt::Solve_Succeeded )
-   {
-      std::cout << std::endl << std::endl << "*** Error during initialization!" << std::endl;
-      return status;
-   }
+       s2mError::s2mAssert(false, "Ipopt initialization failed");
 
-   // Ask Ipopt to solve the problem
-   status = app->OptimizeTNLP(mynlp);
+   for (unsigned int i=0; i<1; ++i){
+       Ipopt::SmartPtr<Ipopt::TNLP> mynlp;
+       if (LinearizedState)
+           mynlp = new s2mStaticOptimizationIpoptLinearized(m_model, m_Q, m_Qdot, m_tauTarget, m_Activ, m_verbose, m_pNormFactor);
+       else
+           mynlp = new s2mStaticOptimizationIpopt(m_model, m_Q, m_Qdot, m_tauTarget, m_Activ, true, m_verbose, m_pNormFactor);
 
-   if( status == Ipopt::Solve_Succeeded )
-   {
-      std::cout << std::endl << std::endl << "*** The problem solved!" << std::endl;
-   }
-   else
-   {
-      std::cout << std::endl << std::endl << "*** The problem FAILED!" << std::endl;
-   }
-   return status;
-
+       // Ask Ipopt to solve the problem
+       status = app->OptimizeTNLP(mynlp);
+    }
 }
 

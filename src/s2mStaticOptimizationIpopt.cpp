@@ -9,7 +9,7 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
         const s2mVector &activationInit,
         bool useResidual,
         int verbose,
-        unsigned int p,
+        unsigned int pNormFactor,
         const double eps
         ):
     m_model(model),
@@ -18,7 +18,7 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
     m_nMus(model.nbMuscleTotal()),
     m_nDof(model.nbDof()),
     m_nTau(model.nbTau()),
-    m_nTauResidual(model.nbQ()),
+    m_nTauResidual(m_nQ),
     m_eps(eps),
     m_activations(activationInit),
     m_Q(Q),
@@ -27,14 +27,18 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
     m_tauResidual(Eigen::VectorXd::Zero(m_nTau)),
     m_tauPonderation(1000),
     m_states(std::vector<s2mMuscleStateActual>(m_nMus)),
-    m_pNormFactor(p),
+    m_pNormFactor(pNormFactor),
     m_verbose(verbose)
 {
+    if (m_eps < 1e-12){
+        s2mError::s2mAssert(false, "epsilon for partial derivates approximation is too small ! \nLimit for epsilon is 1e-12");
+    }
     m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
     if (!useResidual){
         m_tauResidual.setZero();
         m_nTauResidual = 0;
         m_tauPonderation = 0;
+
     }
 }
 
@@ -204,8 +208,16 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
                 stateEpsilon.push_back(s2mMuscleStateActual(0, m_activations[i]+delta*m_eps));
             }
             s2mTau tauCalculEpsilon = m_model.muscularJointTorque(m_model, stateEpsilon, false, &m_Q, &m_Qdot);
-            for( Ipopt::Index i = 0; i < m; i++ )
+            for( Ipopt::Index i = 0; i < m; i++ ){
                 values[k++] = (tauCalculEpsilon[i]-tauMusc[i])/m_eps;
+                if (m_verbose >= 3){
+                    std::cout << std::setprecision (20) << std::endl;
+                    std::cout << "values[" << k-1 << "]: " << values[k-1] << std::endl;
+                    std::cout << "tauCalculEpsilon[" << i << "]: " << tauCalculEpsilon[i] << std::endl;
+                    std::cout << "tauMusc[" << i << "]: " << tauMusc[i] << std::endl;
+                }
+
+            }
         }
         for( unsigned int j = 0; j < m_nTauResidual; j++ )
             values[k++] = 1;
