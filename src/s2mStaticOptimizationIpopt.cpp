@@ -28,7 +28,9 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
     m_tauPonderation(1000),
     m_states(std::vector<s2mMuscleStateActual>(m_nMus)),
     m_pNormFactor(pNormFactor),
-    m_verbose(verbose)
+    m_verbose(verbose),
+    m_finalSolution(s2mVector(m_nMus)),
+    m_finalResidual(s2mVector(m_nQ))
 {
     if (m_eps < 1e-12){
         s2mError::s2mAssert(false, "epsilon for partial derivates approximation is too small ! \nLimit for epsilon is 1e-12");
@@ -255,6 +257,8 @@ void s2mStaticOptimizationIpopt::finalize_solution(
 {
     // Storing to solution
     dispatch(x);
+    m_finalSolution = m_activations;
+    m_finalResidual = m_tauResidual;
 
     // Plot it, if it makes sense
     if (m_verbose >= 1){

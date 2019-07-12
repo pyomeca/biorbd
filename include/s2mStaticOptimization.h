@@ -24,7 +24,7 @@ class BIORBD_API s2mStaticOptimization
                 const s2mGenCoord& Qddot,
                 const s2mVector& Activ,
                 const unsigned int pNormFactor = 2,
-                const bool verbose = 0
+                const int verbose = 0
                 );
         s2mStaticOptimization(
                 s2mMusculoSkeletalModel &m,
@@ -33,25 +33,25 @@ class BIORBD_API s2mStaticOptimization
                 const s2mTau& tauTarget,
                 const s2mVector& Activ,
                 const unsigned int pNormFactor = 2,
-                const bool verbose = 0
+                const int verbose = 0
                 );
         s2mStaticOptimization(
                 s2mMusculoSkeletalModel &m,
                 const s2mGenCoord& Q, // states
                 const s2mGenCoord& Qdot, // derived states
                 const s2mGenCoord& Qddot,
-                const std::vector<s2mMuscleStateActual>& Activ,
+                const std::vector<s2mMuscleStateActual>& state,
                 const unsigned int pNormFactor = 2,
-                const bool verbose = 0
+                const int verbose = 0
                 );
         s2mStaticOptimization(
                 s2mMusculoSkeletalModel &m,
                 const s2mGenCoord& Q, // states
                 const s2mGenCoord& Qdot, // derived states
                 const s2mTau& tauTarget,
-                const std::vector<s2mMuscleStateActual>& Activ,
+                const std::vector<s2mMuscleStateActual>& state,
                 const unsigned int pNormFactor = 2,
-                const bool verbose = 0
+                const int verbose = 0
                 );
 
         //constructors for  a vector of instants to be optimized by ipopt
@@ -62,7 +62,7 @@ class BIORBD_API s2mStaticOptimization
                 const std::vector<s2mGenCoord>& allQddot,
                 const std::vector<s2mVector>& allActiv,
                 const unsigned int pNormFactor = 2,
-                const bool verbose = 0
+                const int verbose = 0
                 );
         s2mStaticOptimization(
                 s2mMusculoSkeletalModel &m,
@@ -71,7 +71,7 @@ class BIORBD_API s2mStaticOptimization
                 const std::vector<s2mTau>& allTauTarget,
                 const std::vector<s2mVector>& allActiv,
                 const unsigned int pNormFactor = 2,
-                const bool verbose = 0
+                const int verbose = 0
                 );
         s2mStaticOptimization(
                 s2mMusculoSkeletalModel &m,
@@ -80,7 +80,7 @@ class BIORBD_API s2mStaticOptimization
                 const std::vector<s2mGenCoord>& allQddot,
                 const std::vector<std::vector<s2mMuscleStateActual>>& allState,
                 const unsigned int pNormFactor = 2,
-                const bool verbose = 0
+                const int verbose = 0
                 );
         s2mStaticOptimization(
                 s2mMusculoSkeletalModel &m,
@@ -89,12 +89,14 @@ class BIORBD_API s2mStaticOptimization
                 const std::vector<s2mTau>& allTauTarget,
                 const std::vector<std::vector<s2mMuscleStateActual>>& allState,
                 const unsigned int pNormFactor = 2,
-                const bool verbose = 0
+                const int verbose = 0
                 );
 
         void run(
                 bool LinearizedState = false
                 );
+
+
 
 
 
@@ -107,7 +109,10 @@ class BIORBD_API s2mStaticOptimization
         std::vector<s2mMuscleStateActual> m_state;
         s2mVector m_Activ;
         unsigned int m_pNormFactor;
-        bool m_verbose;
+        int m_verbose;
+        s2mVector m_finalSolution;
+        unsigned int m_multipleInstant;
+        //std::vector<s2mStaticOptimization> m_allStaticOptimization;
 
     private:
 
