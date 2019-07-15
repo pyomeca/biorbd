@@ -1,29 +1,28 @@
-#ifndef S2MMUSCLEFATIGUESTATEACTUALXIA_H
-#define S2MMUSCLEFATIGUESTATEACTUALXIA_H
+#ifndef S2MMUSCLEFATIGUEDYNAMICSTATEXIA_H
+#define S2MMUSCLEFATIGUEDYNAMICSTATEXIA_H
 #include "biorbdConfig.h"
 #include "s2mMuscleFatigueState.h"
 #include "s2mMuscleCaracteristics.h"
 #include "s2mMuscleFatigueParam.h"
 #include "s2mMuscleStateActual.h"
+#include "s2mVector.h"
 
+// Actual pour current
 class BIORBD_API s2mMuscleFatigueStateActualXia : public s2mMuscleFatigueState
 {
     public:
         s2mMuscleFatigueStateActualXia(const double &mA = 0, const double &mF = 0, const double &mR = 1);
         ~s2mMuscleFatigueStateActualXia();
 
-        virtual void setActiveFibers(const double &val);
-        virtual void setFatiguedFibers(const double &val);
-        virtual void setRestingFibers(const double &val);
+        // TODO refactor in file
+        double previousActiveFibers() const;
+        double previousFatiguedFibers() const;
+        double previousRestingFibers() const;
 
-        double previousActiveFibers() const { return m_previousActiveFibers; }
-        double previousFatiguedFibers() const { return m_previousFatiguedFibers; }
-        double previousRestingFibers() const { return m_previousRestingFibers; }
-
-        virtual std::vector<double> timeDerivativeState(
+        virtual s2mVector timeDerivativeState(
                 const s2mMuscleStateActual &EMG,
                 const s2mMuscleCaracteristics &c
-                );
+         );
 
 
 
@@ -36,4 +35,4 @@ class BIORBD_API s2mMuscleFatigueStateActualXia : public s2mMuscleFatigueState
         double m_restingFibersDot;
 };
 
-#endif // S2MMUSCLEFATIGUESTATEACTUALXIA_H
+#endif // S2MMUSCLEFATIGUEDYNAMICSTATEXIA_H

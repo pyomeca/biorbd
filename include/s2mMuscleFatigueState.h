@@ -1,6 +1,8 @@
 #ifndef S2MMUSCLEFATIGUESTATE_H
 #define S2MMUSCLEFATIGUESTATE_H
 #include "biorbdConfig.h"
+#include "s2mError.h"
+
 class BIORBD_API s2mMuscleFatigueState
 {
     public:
@@ -8,9 +10,12 @@ class BIORBD_API s2mMuscleFatigueState
         virtual ~s2mMuscleFatigueState();
 
         // Set and Get
-        virtual void setActiveFibers(const double &val);
-        virtual void setFatiguedFibers(const double &val);
-        virtual void setRestingFibers(const double &val);
+        virtual void setState(
+                const double &mA = 0,
+                const double &mF = 0,
+                const double &mR = 1
+                );
+
 
         double activeFibers() const;
         double fatiguedFibers() const;

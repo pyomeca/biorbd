@@ -64,14 +64,10 @@ void s2mMuscleHillTypeThelenFatigable::computeFlCE(const s2mMuscleStateActual &E
 {
     s2mMuscleHillTypeThelen::computeFlCE(EMG);   
     // Do something with m_FlCE and m_caract.fatigueParameters
-    //m_FlCE *= fatigueState
+    m_FlCE *= m_fatigueState.activeFibers();
 }
 
-void s2mMuscleHillTypeThelenFatigable::timeDerivatedFatigueState(const s2mMuscleCaracteristics &c, const s2mMuscleStateActual &EMG)
-{
-    c.fatigueParameters().fatigueRate();
 
-}
 
 void s2mMuscleHillTypeThelenFatigable::setType()
 {

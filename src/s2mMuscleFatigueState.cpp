@@ -14,32 +14,55 @@ s2mMuscleFatigueState::~s2mMuscleFatigueState()
     //dtor
 }
 
-void s2mMuscleFatigueState::setActiveFibers(const double &val) {
-    if (m_activeFibers<=0)
+void s2mMuscleFatigueState::setState(const double &mA, const double &mF, const double &mR)
+{
+    if (mA<0){
+        s2mError::s2mWarning(0, "Active Fibers Quantity can't be lower than 0, 0 is used then");
         m_activeFibers = 0;
-    else if (m_activeFibers>=1)
+    }
+    else if (mA>1){
+        s2mError::s2mWarning(0, "Active Fibers Quantity can't be higher than 1, 1 is used then");
         m_activeFibers = 1;
-    else
-        m_activeFibers = val;
-}
+    }
+    else {
+        m_activeFibers = mA;
+    }
 
-void s2mMuscleFatigueState::setFatiguedFibers(const double &val) {
-    if (m_fatiguedFibers<=0)
-        m_fatiguedFibers = 0;
-    else if (m_fatiguedFibers>=1)
-        m_fatiguedFibers = 1;
-    else
-        m_fatiguedFibers = val;
-}
-
-void s2mMuscleFatigueState::setRestingFibers(const double &val) {
-    if (m_restingFibers<=0)
+    if (mR<0){
+        s2mError::s2mWarning(0, "Resting Fibers Quantity can't be lower than 0, 0 is used then");
         m_restingFibers = 0;
-    else if (m_restingFibers>=1)
+    }
+    else if (mR>1){
+        s2mError::s2mWarning(0, "Resting Fibers Quantity can't be higher than 1, 1 is used then");
         m_restingFibers = 1;
-    else
-        m_restingFibers = val;
+    }
+    else {
+        m_restingFibers = mR;
+    }
+
+    if (mF<0){
+        s2mError::s2mWarning(0, "Fatigued Fibers Quantity can't be lower than 0, 0 is used then");
+        m_fatiguedFibers = 0;
+    }
+    else if (mF>1){
+        s2mError::s2mWarning(0, "Fatigued Fibers Quantity can't be higher than 1, 1 is used then");
+        m_fatiguedFibers = 1;
+    }
+    else {
+        m_fatiguedFibers = mF;
+    }
+
+    if (m_activeFibers + m_restingFibers + m_fatiguedFibers > 1){
+        s2mError::s2mAssert(0, "Sum of different state of muscle fatigue is higher than 1, it must be equal to 1");
+    }
+    else if (m_activeFibers + m_restingFibers + m_fatiguedFibers < 1){
+        s2mError::s2mAssert(0, "Sum of different state of muscle fatigue is lower than 1, it must be equal to 1");
+    }
+
 }
+//TODO one set fit all
+
+
 
 double s2mMuscleFatigueState::activeFibers() const
 {
