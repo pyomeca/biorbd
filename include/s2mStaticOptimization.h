@@ -92,6 +92,43 @@ class BIORBD_API s2mStaticOptimization
                 const int verbose = 0
                 );
 
+        s2mStaticOptimization staticOptimizationForOneInstant(
+                s2mMusculoSkeletalModel &m,
+                const s2mGenCoord& Q, // states
+                const s2mGenCoord& Qdot, // derived states
+                const s2mGenCoord& Qddot,
+                const s2mVector& Activ,
+                const unsigned int pNormFactor = 2,
+                const int verbose = 0
+                );
+        s2mStaticOptimization staticOptimizationForOneInstant(
+                s2mMusculoSkeletalModel &m,
+                const s2mGenCoord& Q, // states
+                const s2mGenCoord& Qdot, // derived states
+                const s2mTau& tauTarget,
+                const s2mVector& Activ,
+                const unsigned int pNormFactor = 2,
+                const int verbose = 0
+                );
+        s2mStaticOptimization staticOptimizationForOneInstant(
+                s2mMusculoSkeletalModel &m,
+                const s2mGenCoord& Q, // states
+                const s2mGenCoord& Qdot, // derived states
+                const s2mGenCoord& Qddot,
+                const std::vector<s2mMuscleStateActual>& state,
+                const unsigned int pNormFactor = 2,
+                const int verbose = 0
+                );
+        s2mStaticOptimization staticOptimizationForOneInstant(
+                s2mMusculoSkeletalModel &m,
+                const s2mGenCoord& Q, // states
+                const s2mGenCoord& Qdot, // derived states
+                const s2mTau& tauTarget,
+                const std::vector<s2mMuscleStateActual>& state,
+                const unsigned int pNormFactor = 2,
+                const int verbose = 0
+                );
+
         void run(
                 bool LinearizedState = false
                 );
@@ -112,7 +149,7 @@ class BIORBD_API s2mStaticOptimization
         int m_verbose;
         s2mVector m_finalSolution;
         unsigned int m_multipleInstant;
-        //std::vector<s2mStaticOptimization> m_allStaticOptimization;
+        std::vector<s2mStaticOptimization> m_allStaticOptimization;
 
     private:
 

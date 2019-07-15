@@ -119,8 +119,8 @@ s2mStaticOptimization::s2mStaticOptimization(
         const int verbose):
     m_pNormFactor(pNormFactor),
     m_finalSolution(s2mVector(m.nbMuscleTotal())),
-    m_multipleInstant(static_cast<unsigned int>(allQ.size()))//,
-    //m_allStaticOptimization(std::vector<s2mStaticOptimization>(allQ.size()))
+    m_multipleInstant(static_cast<unsigned int>(allQ.size())),
+    m_allStaticOptimization(std::vector<s2mStaticOptimization>(allQ.size()))
 
 {
     unsigned int nbInstant = static_cast<unsigned int>(allQ.size());
@@ -131,7 +131,7 @@ s2mStaticOptimization::s2mStaticOptimization(
     if (nbInstant != allActiv.size())
         s2mError::s2mAssert(false, "allActiv is not the same size as allQ, numbers of instant to be optimized must be equal");
     for (unsigned int i=0; i<nbInstant; i++) {
-        //m_allStaticOptimization[i] = s2mStaticOptimization(m, allQ[i], allQdot[i], allQddot[i], allActiv[i], m_pNormFactor, verbose);
+        m_allStaticOptimization[i] = staticOptimizationForOneInstant(m, allQ[i], allQdot[i], allQddot[i], allActiv[i], m_pNormFactor, verbose);
     }
 
 }
@@ -146,8 +146,8 @@ s2mStaticOptimization::s2mStaticOptimization(
         const int verbose):
     m_pNormFactor(pNormFactor),
     m_finalSolution(s2mVector(m.nbMuscleTotal())),
-    m_multipleInstant(static_cast<unsigned int>(allQ.size()))//,
-    //m_allStaticOptimization(std::vector<s2mStaticOptimization>(allQ.size()))
+    m_multipleInstant(static_cast<unsigned int>(allQ.size())),
+    m_allStaticOptimization(std::vector<s2mStaticOptimization>(allQ.size()))
 {
     unsigned int nbInstant = static_cast<unsigned int>(allQ.size());
     if (nbInstant != allQdot.size())
@@ -157,7 +157,7 @@ s2mStaticOptimization::s2mStaticOptimization(
     if (nbInstant != allActiv.size())
         s2mError::s2mAssert(false, "allActiv is not the same size as allQ, numbers of instant to be optimized must be equal");
     for (unsigned int i=0; i<nbInstant; i++) {
-        //m_allStaticOptimization[i] = s2mStaticOptimization(m, allQ[i], allQdot[i], allTauTarget[i], allActiv[i], m_pNormFactor, verbose);
+        m_allStaticOptimization[i] = staticOptimizationForOneInstant(m, allQ[i], allQdot[i], allTauTarget[i], allActiv[i], m_pNormFactor, verbose);
     }
 
 }
@@ -172,8 +172,8 @@ s2mStaticOptimization::s2mStaticOptimization(
         const int verbose):
     m_pNormFactor(pNormFactor),
     m_finalSolution(s2mVector(m.nbMuscleTotal())),
-    m_multipleInstant(static_cast<unsigned int>(allQ.size()))//,
-    //m_allStaticOptimization(std::vector<s2mStaticOptimization>(allQ.size()))
+    m_multipleInstant(static_cast<unsigned int>(allQ.size())),
+    m_allStaticOptimization(std::vector<s2mStaticOptimization>(allQ.size()))
 {
     unsigned int nbInstant = static_cast<unsigned int>(allQ.size());
     if (nbInstant != allQdot.size())
@@ -183,7 +183,7 @@ s2mStaticOptimization::s2mStaticOptimization(
     if (nbInstant != allState.size())
         s2mError::s2mAssert(false, "allActiv is not the same size as allQ, numbers of instant to be optimized must be equal");
     for (unsigned int i=0; i<nbInstant; i++) {
-        //m_allStaticOptimization[i] = s2mStaticOptimization(m, allQ[i], allQdot[i], allQddot[i], allState[i], m_pNormFactor, verbose);
+        m_allStaticOptimization[i] = staticOptimizationForOneInstant(m, allQ[i], allQdot[i], allQddot[i], allState[i], m_pNormFactor, verbose);
     }
 
 }
@@ -198,8 +198,8 @@ s2mStaticOptimization::s2mStaticOptimization(
         const int verbose):
     m_pNormFactor(pNormFactor),
     m_finalSolution(s2mVector(m.nbMuscleTotal())),
-    m_multipleInstant(static_cast<unsigned int>(allQ.size()))//,
-    //m_allStaticOptimization(std::vector<s2mStaticOptimization>(allQ.size()))
+    m_multipleInstant(static_cast<unsigned int>(allQ.size())),
+    m_allStaticOptimization(std::vector<s2mStaticOptimization>(allQ.size()))
 {
     unsigned int nbInstant = static_cast<unsigned int>(allQ.size());
     if (nbInstant != allQdot.size())
@@ -209,10 +209,33 @@ s2mStaticOptimization::s2mStaticOptimization(
     if (nbInstant != allState.size())
         s2mError::s2mAssert(false, "allActiv is not the same size as allQ, numbers of instant to be optimized must be equal");
     for (unsigned int i=0; i<nbInstant; i++) {
-        //m_allStaticOptimization[i] = s2mStaticOptimization(m, allQ[i], allQdot[i], allTauTarget[i], allState[i], m_pNormFactor, verbose);
+        m_allStaticOptimization[i] = staticOptimizationForOneInstant(m, allQ[i], allQdot[i], allTauTarget[i], allState[i], m_pNormFactor, verbose);
     }
 
 }
+
+s2mStaticOptimization s2mStaticOptimization::staticOptimizationForOneInstant(s2mMusculoSkeletalModel &m, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, const s2mVector &Activ, const unsigned int pNormFactor, const int verbose)
+{
+    return s2mStaticOptimization(m, Q, Qdot, Qddot, Activ, pNormFactor, verbose);
+}
+
+s2mStaticOptimization s2mStaticOptimization::staticOptimizationForOneInstant(s2mMusculoSkeletalModel &m, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mTau &tauTarget, const s2mVector &Activ, const unsigned int pNormFactor, const int verbose)
+{
+    return s2mStaticOptimization(m, Q, Qdot, tauTarget, Activ, pNormFactor, verbose);
+}
+
+s2mStaticOptimization s2mStaticOptimization::staticOptimizationForOneInstant(s2mMusculoSkeletalModel &m, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, const std::vector<s2mMuscleStateActual> &state, const unsigned int pNormFactor, const int verbose)
+{
+    return s2mStaticOptimization(m, Q, Qdot, Qddot, state, pNormFactor, verbose);
+}
+
+s2mStaticOptimization s2mStaticOptimization::staticOptimizationForOneInstant(s2mMusculoSkeletalModel &m, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mTau &tauTarget, const std::vector<s2mMuscleStateActual> &state, const unsigned int pNormFactor, const int verbose)
+{
+    return s2mStaticOptimization(m, Q, Qdot, tauTarget, state, pNormFactor, verbose);
+}
+
+
+
 
 void s2mStaticOptimization::run(
         bool LinearizedState
@@ -220,7 +243,7 @@ void s2mStaticOptimization::run(
 {
     if (m_multipleInstant > 1)
         for (unsigned int i=0; i<m_multipleInstant; i++) {
-            //m_allStaticOptimization[i].run();
+            m_allStaticOptimization[i].run();
         }
     Ipopt::SmartPtr<Ipopt::IpoptApplication> app = IpoptApplicationFactory();
     app->Options()->SetNumericValue("tol", 1e-7);
