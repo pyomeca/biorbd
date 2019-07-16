@@ -1,22 +1,16 @@
 #define BIORBD_API_EXPORTS
 #include "../include/s2mMuscleFatigueDynamicStateXia.h"
 
-s2mMuscleFatigueStateActualXia::s2mMuscleFatigueStateActualXia(
+s2mMuscleFatigueDynamicStateXia::s2mMuscleFatigueDynamicStateXia(
         double active,
         double fatigued,
         double resting) :
-    s2mMuscleFatigueState(active,fatigued,resting),
-    m_previousActiveFibers(0),
-    m_previousFatiguedFibers(0),
-    m_previousRestingFibers(1),
-    m_activeFibersDot(0),
-    m_fatiguedFibersDot(0),
-    m_restingFibersDot(0)
+    s2mMuscleFatigueDynamicState(active,fatigued,resting)
 {
     setType();
 }
 
-s2mVector s2mMuscleFatigueStateActualXia::timeDerivativeState(const s2mMuscleStateActual &EMG, const s2mMuscleCaracteristics &caract){
+s2mVector s2mMuscleFatigueDynamicStateXia::timeDerivativeState(const s2mMuscleStateActual &EMG, const s2mMuscleCaracteristics &caract){
     // Getting the command
     double targetCommand(EMG.activation());
     double command(0);
@@ -44,15 +38,7 @@ s2mVector s2mMuscleFatigueStateActualXia::timeDerivativeState(const s2mMuscleSta
     return res;
 }
 
-double s2mMuscleFatigueStateActualXia::previousActiveFibers() const {
-    return m_previousActiveFibers;
+void s2mMuscleFatigueDynamicStateXia::setType()
+{
+    m_type = "Xia";
 }
-
-double s2mMuscleFatigueStateActualXia::previousFatiguedFibers() const {
-    return m_previousFatiguedFibers;
-}
-
-double s2mMuscleFatigueStateActualXia::previousRestingFibers() const {
-    return m_previousRestingFibers;
-}
-
