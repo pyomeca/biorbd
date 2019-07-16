@@ -21,14 +21,14 @@ class BIORBD_API s2mMuscleFatigueState
         double fatiguedFibers() const;
         double restingFibers() const;
 
+        std::string getType() const;
     protected:
         double m_activeFibers;
         double m_fatiguedFibers;
         double m_restingFibers;
 
-        void setActiveFibers(double active);
-        void setFatiguedFibers(double fatigued);
-        void setRestingFibers(double resting);
+        virtual void setType();
+        std::string m_type; // type of the muscle fatigue
 
 };
 
