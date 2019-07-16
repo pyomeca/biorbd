@@ -22,7 +22,7 @@ s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(
     m_developFactor(c.fatigueParameters().developFactor()),
     m_recoverFactor(c.fatigueParameters().recoverFactor())
 {
-
+    setType();
 }
 
 s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(
@@ -37,7 +37,9 @@ s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(
     m_developFactor(c.fatigueParameters().developFactor()),
     m_recoverFactor(c.fatigueParameters().recoverFactor())
 {
+    setType();
 
+    setType();
 }
 
 s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mMuscle &m) :
@@ -47,6 +49,7 @@ s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mMusc
     m_developFactor(10),
     m_recoverFactor(10)
 {
+    setType();
 
 }
 

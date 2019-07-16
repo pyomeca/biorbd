@@ -22,13 +22,13 @@ s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(const s2mString& n,
 s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(const s2mMuscle &m) :
     s2mMuscleHillType (m)
 {
-
+    setType();
 }
 
 s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(const std::shared_ptr<s2mMuscle> m):
     s2mMuscleHillType (m)
 {
-
+    setType();
 }
 
 void s2mMuscleHillTypeThelen::computeFlPE(){

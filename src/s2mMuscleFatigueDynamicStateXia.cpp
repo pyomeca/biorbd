@@ -13,7 +13,7 @@ s2mMuscleFatigueStateActualXia::s2mMuscleFatigueStateActualXia(
     m_fatiguedFibersDot(0),
     m_restingFibersDot(0)
 {
-
+    setType();
 }
 
 s2mVector s2mMuscleFatigueStateActualXia::timeDerivativeState(const s2mMuscleStateActual &EMG, const s2mMuscleCaracteristics &caract){

@@ -8,7 +8,7 @@ s2mMuscleFatigueState::s2mMuscleFatigueState(double active,
     m_fatiguedFibers(fatigued),
     m_restingFibers(resting)
 {
-
+    setType();
 }
 
 void s2mMuscleFatigueState::setState(double active, double fatigued, double resting)
