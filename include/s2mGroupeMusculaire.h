@@ -22,11 +22,12 @@ class BIORBD_API s2mGroupeMusculaire
         ~s2mGroupeMusculaire();
 
         virtual void addHillMuscle(const s2mString&,
-                               const s2mString&,
-                               const s2mMuscleGeometry&,
-                               const s2mMuscleCaracteristics&,
-                               const s2mMusclePathChangers& = s2mMusclePathChangers(),
-                               const s2mString& stateType = "default");
+                const s2mString&,
+                const s2mMuscleGeometry&,
+                const s2mMuscleCaracteristics&,
+                const s2mMusclePathChangers& = s2mMusclePathChangers(),
+                const s2mString& stateType = "default",
+                const s2mString &dynamicFatigueType = "Simple");
         virtual void addMuscle(s2mMuscle &val);
 
         // Set and get

@@ -12,7 +12,26 @@
 
 int main()
 {
-    s2mMusculoSkeletalModel m3("test-os-masse.biomod");
+    s2mMusculoSkeletalModel m3("arm26.biomod");
+
+    s2mMuscleStateActual EMG(0, 1);
+    // METHOD 1
+    {
+        std::shared_ptr<s2mMuscleHillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(m3.muscleGroup(0).muscle(0)));
+        std::shared_ptr<s2mMuscleFatigueDynamicStateXia> fatigueModel(std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(muscle->fatigueState()));
+        fatigueModel->setState(1, 0, 0);
+        fatigueModel->timeDerivativeState(EMG, m3.muscleGroup(0).muscle(0)->caract());
+        std::cout << muscle->FlCE(EMG) << std::endl;;
+    }
+
+    // METHOD 2
+    {
+        std::shared_ptr<s2mMuscleHillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(m3.muscleGroup(0).muscle(0)));
+        muscle->applyTimeDerivativeToFatigueModel(EMG);
+        muscle->FlCE(EMG);
+    }
+
+
     mainTest optim_test(m3);
     optim_test.main();
 ////    s2mMusculoSkeletalModel m3("test-os-masse.biomod");

@@ -30,18 +30,18 @@ s2mMuscleHillTypeChadwick::s2mMuscleHillTypeChadwick(const s2mString &n,
 s2mMuscleHillTypeChadwick::s2mMuscleHillTypeChadwick(const s2mMuscle &m):
     s2mMuscleHillType (m)
 {
-
+    setType();
 }
 
 s2mMuscleHillTypeChadwick::s2mMuscleHillTypeChadwick(const std::shared_ptr<s2mMuscle> m):
     s2mMuscleHillType (m)
 {
-
+    setType();
 }
 
 s2mMuscleHillTypeChadwick::~s2mMuscleHillTypeChadwick()
 {
-
+    setType();
 }
 
 void s2mMuscleHillTypeChadwick::setType()

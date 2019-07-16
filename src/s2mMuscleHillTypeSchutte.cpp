@@ -30,18 +30,18 @@ s2mMuscleHillTypeSchutte::s2mMuscleHillTypeSchutte(const s2mString &n,
 s2mMuscleHillTypeSchutte::s2mMuscleHillTypeSchutte(const s2mMuscle &m) :
     s2mMuscleHillType (m)
 {
-
+    setType();
 }
 
 s2mMuscleHillTypeSchutte::s2mMuscleHillTypeSchutte(const std::shared_ptr<s2mMuscle> m) :
     s2mMuscleHillType (m)
 {
-
+    setType();
 }
 
 s2mMuscleHillTypeSchutte::~s2mMuscleHillTypeSchutte()
 {
-
+    setType();
 }
 
 void s2mMuscleHillTypeSchutte::setType()
