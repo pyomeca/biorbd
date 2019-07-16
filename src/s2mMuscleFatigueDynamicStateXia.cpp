@@ -21,7 +21,7 @@ s2mVector s2mMuscleFatigueDynamicStateXia::timeDerivativeState(const s2mMuscleSt
             command = caract.fatigueParameters().developFactor()*m_restingFibers;
         }
     } else {
-        command = caract.fatigueParameters().recoverFactor()*(targetCommand - m_activeFibers);
+        command = caract.fatigueParameters().recoveryFactor()*(targetCommand - m_activeFibers);
     }
 
     // Applying the command to the fibers
