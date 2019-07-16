@@ -5,7 +5,6 @@ add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME})
 
 # Headers
 target_include_directories(${PROJECT_NAME} PUBLIC
-    ${Matlab_INCLUDE_DIRS}
     ${RBDL_INCLUDE_DIR}
     ${RBDL_INCLUDE_DIR}/..
     ${Boost_INCLUDE_DIRS}
