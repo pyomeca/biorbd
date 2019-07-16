@@ -11,20 +11,19 @@
 class BIORBD_API s2mMuscleFatigueStateActualXia : public s2mMuscleFatigueState
 {
     public:
-        s2mMuscleFatigueStateActualXia(const double &mA = 0, const double &mF = 0, const double &mR = 1);
-        ~s2mMuscleFatigueStateActualXia();
+        s2mMuscleFatigueStateActualXia(
+                double active = 0,
+                double fatigued = 0,
+                double resting = 1);
 
-        // TODO refactor in file
         double previousActiveFibers() const;
         double previousFatiguedFibers() const;
         double previousRestingFibers() const;
 
         virtual s2mVector timeDerivativeState(
                 const s2mMuscleStateActual &EMG,
-                const s2mMuscleCaracteristics &c
+                const s2mMuscleCaracteristics &caract
          );
-
-
 
     protected:
         double m_previousActiveFibers;

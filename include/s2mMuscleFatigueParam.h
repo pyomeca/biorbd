@@ -9,9 +9,7 @@ class BIORBD_API s2mMuscleFatigueParam
                 double fatigueRate = 0,
                 double recoveryRate = 0,
                 double developFactor = 0,
-                double recoverFactor = 0
-                );
-
+                double recoverFactor = 0);
 
         // Get and Set
         double fatigueRate() const;
@@ -29,9 +27,6 @@ class BIORBD_API s2mMuscleFatigueParam
         double m_recoveryRate;
         double m_developFactor;
         double m_recoverFactor;
-
-
-    private:
 
 };
 
