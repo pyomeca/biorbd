@@ -18,7 +18,14 @@ std::shared_ptr<s2mMuscle> s2mGroupeMusculaire::muscle(const unsigned int &idx){
 }
 
 
-void s2mGroupeMusculaire::addHillMuscle(const s2mString& name, const s2mString& s, const s2mMuscleGeometry& g, const s2mMuscleCaracteristics& c, const s2mMusclePathChangers& w, const s2mString& stateType){
+void s2mGroupeMusculaire::addHillMuscle(
+        const s2mString& name,
+        const s2mString& s,
+        const s2mMuscleGeometry& g,
+        const s2mMuscleCaracteristics& c,
+        const s2mMusclePathChangers& w,
+        const s2mString& stateType,
+        const s2mString& dynamicFatigueType){
     s2mMuscleStateActual * st;
     if (!stateType.tolower().compare("default"))
         st = new s2mMuscleStateActual;
@@ -46,7 +53,7 @@ void s2mGroupeMusculaire::addHillMuscle(const s2mString& name, const s2mString& 
         addMuscle(m);
     }
     else if (!s.tolower().compare("hillthelenfatigable") || !s.tolower().compare("thelenfatigable")){
-        s2mMuscleHillTypeThelenFatigable m(name,g,c,w,*st);
+        s2mMuscleHillTypeThelenFatigable m(name,g,c,w,*st,dynamicFatigueType);
         addMuscle(m);
     }
     else if (!s.tolower().compare("hillschutte") || !s.tolower().compare("schutte")){

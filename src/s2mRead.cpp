@@ -497,6 +497,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             // Déclaration des variables
             s2mString type("");
             s2mString stateType("default");
+            s2mString dynamicFatigueType("simple");
             s2mString muscleGroup("");
             int idxGroup(-1);
             Eigen::Vector3d origin_pos(0,0,0);
@@ -543,8 +544,9 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     file.read(PCSA, variable);
                 else if (!tp.tolower().compare("fatigueparameters")){
                     while(file.read(tp) && tp.tolower().compare("endfatigueparameters")){
-                        double param;
-                        file.read(param);
+                        if (!tp.tolower().compare("type")){
+                            file.read(dynamicFatigueType);
+                        } else {
                         if (!tp.tolower().compare("fatigueRate"))
                             fatigueParameters.fatigueRate(param);
                         if (!tp.tolower().compare("recoveryRate"))
@@ -553,7 +555,9 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                             fatigueParameters.developFactor(param);
                         if (!tp.tolower().compare("recoverFactor"))
                             fatigueParameters.recoverFactor(param);
+                        }
                     }
+                }
             }
             s2mError::s2mAssert(idxGroup!=-1, "No muscle group was provided!");
             s2mMuscleGeometry geo(s2mNodeMuscle(origin_pos, name + "_origin", model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
