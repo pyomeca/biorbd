@@ -147,9 +147,8 @@ class BIORBD_API s2mStaticOptimization
         s2mVector m_Activ;
         unsigned int m_pNormFactor;
         int m_verbose;
-        s2mVector m_finalSolution;
+        std::vector<s2mVector> m_finalSolution;
         unsigned int m_multipleInstant;
-        std::vector<s2mStaticOptimization> m_allStaticOptimization;
 
     private:
 
