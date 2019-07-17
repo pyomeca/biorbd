@@ -52,18 +52,35 @@ namespace std {
     %template(MatS2mNodeMuscle) std::vector<std::vector<s2mNodeMuscle>>;
 }
 
+// Exposing some useful functions
 %extend s2mMusculoSkeletalModel{
+    s2mTau InverseDynamics(const s2mGenCoord &Q, const s2mGenCoord &QDot, const s2mGenCoord &QDDot) {
+        s2mTau Tau(*self);
+        RigidBodyDynamics::InverseDynamics(*self, Q, QDot, QDDot, Tau);
+        return QDDot;
+    }
+
     s2mGenCoord ForwardDynamics(const s2mGenCoord &Q, const s2mGenCoord &QDot, const s2mTau &Tau) {
-        /* To be added some day...
-        if (Q.size() != self->nbQ())
-            SWIG_exception(SWIG_RuntimeError, "Wrong dimension for Q");
-        if (QDot.size() != self->nbQdot())
-            SWIG_exception(SWIG_RuntimeError, "Wrong dimension for QDot");
-        if (Tau.size() != self->nbTau())
-            SWIG_exception(SWIG_RuntimeError, "Wrong dimension for Tau");
-        */
         s2mGenCoord QDDot(*self);
         RigidBodyDynamics::ForwardDynamics(*self, Q, QDot, Tau, QDDot);
+        return QDDot;
+    }
+
+    s2mGenCoord ForwardDynamicsLagrangian(const s2mGenCoord &Q, const s2mGenCoord &QDot, const s2mTau &Tau) {
+        s2mGenCoord QDDot(*self);
+        RigidBodyDynamics::ForwardDynamicsLagrangian(*self, Q, QDot, Tau, QDDot);
+        return QDDot;
+    }
+
+    s2mGenCoord ForwardDynamicsConstraintsDirect(const s2mGenCoord &Q, const s2mGenCoord &QDot, const s2mTau &Tau, s2mContacts& CS) {
+        s2mGenCoord QDDot(*self);
+        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
+        return QDDot;
+    }
+    s2mGenCoord ForwardDynamicsConstraintsDirect(const s2mGenCoord &Q, const s2mGenCoord &QDot, const s2mTau &Tau) {
+        s2mGenCoord QDDot(*self);
+        s2mContacts& CS = self->getConstraints();
+        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
         return QDDot;
     }
 
@@ -138,6 +155,7 @@ namespace std {
 //%include "s2mJoint.h"
 //%include "s2mJointMoving.h"
 //%include "s2mJointIntraBone.h"
+%include "../include/s2mContacts.h"
 
 //%include "s2mActuator.h"
 //%include "s2mActuatorConstant.h"
@@ -180,7 +198,6 @@ namespace std {
 //%include "s2mIMU.h"
 //%include "s2mIMUs.h"
 
-//%include "s2mContacts.h"
 
 //%include "s2mNodeWrap.h"
 //%include "s2mViaPoint.h"

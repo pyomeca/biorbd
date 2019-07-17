@@ -9,6 +9,9 @@ class s2mAttitude;
 class BIORBD_API s2mNode : public Eigen::Vector3d
 {
     public:
+    s2mNode(double x, double y, double z, // Position du noeud
+            const s2mString &name = "",  // Nom du noeud
+            const s2mString &parentName = "");
     s2mNode(const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
             const s2mString &name = "",  // Nom du noeud
             const s2mString &parentName = "");
