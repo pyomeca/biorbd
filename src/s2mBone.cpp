@@ -1,11 +1,10 @@
 #define BIORBD_API_EXPORTS
 #include "../include/s2mBone.h"
-namespace RBD = RigidBodyDynamics;
-namespace RBDM = RigidBodyDynamics::Math;
+
 s2mBone::s2mBone(s2mJoints *model, const unsigned int &parent_id,
         const s2mString &seqT, const s2mString &seqR, // Séquence de Cardan pour classer les dof en rotation
         const s2mBoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
-        const RBDM::SpatialTransform& cor, // Transformation du parent vers l'enfant
+        const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
         const s2mString &name, // Nom du segment
         const int &PF) : // Numéro de la plateforme de force
             // Pointers initiation
@@ -38,7 +37,7 @@ s2mBone::s2mBone(s2mJoints *model, const unsigned int &parent_id,
 s2mBone::s2mBone(s2mJoints *model, const unsigned int &parent_id,
         const s2mString &seqR, // Séquence de Cardan pour classer les dof en rotation
         const s2mBoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
-        const RBDM::SpatialTransform& cor, // Transformation du parent vers l'enfant
+        const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
         const s2mString &name, // Nom du segment
         const int &PF): // Numéro de la plateforme de force
             // Pointers initiation
@@ -221,8 +220,8 @@ s2mBoneCaracteristics s2mBone::caract() const {
 void s2mBone::setDofs(s2mJoints *model, const unsigned int &parent_id,
         const s2mString &seqT, const s2mString &seqR, // Séquence de Cardan pour classer les dof en rotation
         const double &mass, // Masse du segment
-        const RBDM::Vector3d &com,   // Centre de masse du segment
-        const RBDM::Matrix3d &inertia){ // Insérer les valeurs des caractéristiques
+        const RigidBodyDynamics::Math::Vector3d &com,   // Centre de masse du segment
+        const RigidBodyDynamics::Math::Matrix3d &inertia){ // Insérer les valeurs des caractéristiques
     setDofs(model, parent_id, seqT, seqR, s2mBoneCaracteristics(mass, com, inertia));
 }
 void s2mBone::setDofs(s2mJoints *model, const unsigned int &parent_id,
@@ -244,7 +243,7 @@ void s2mBone::determineIfRotIsQuaternion(const s2mString &seqR){
 
 
 // Fonctions membres
-void s2mBone::setParentToChildTransformation(const RBDM::SpatialTransform &cor){
+void s2mBone::setParentToChildTransformation(const RigidBodyDynamics::Math::SpatialTransform &cor){
     m_cor = cor;
 }
 void s2mBone::str2numSequence(const s2mString &seqT, const s2mString &seqR){
@@ -344,28 +343,28 @@ void s2mBone::setDofCaracteristicsOnLastSegment(){
 
 void s2mBone::setJointAxis(){
         // Définition des axes de rotation
-    RBDM::Vector3d axis[3];
-    axis[0]  = RBDM::Vector3d(1,0,0); // axe x
-    axis[1]  = RBDM::Vector3d(0,1,0); // axe y
-    axis[2]  = RBDM::Vector3d(0,0,1); // axe z
+    RigidBodyDynamics::Math::Vector3d axis[3];
+    axis[0]  = RigidBodyDynamics::Math::Vector3d(1,0,0); // axe x
+    axis[1]  = RigidBodyDynamics::Math::Vector3d(0,1,0); // axe y
+    axis[2]  = RigidBodyDynamics::Math::Vector3d(0,0,1); // axe z
 
     // Déclaration des dof de translation
     delete[] m_dof;
     if (m_nDof != 0){
         m_dof = new s2mJointIntraBone[m_nDof];
         for (unsigned int i=0; i<m_nDofTrans; i++)
-            m_dof[i] = s2mJointIntraBone(RBD::JointTypePrismatic, axis[m_dofPosition[i]]);
+            m_dof[i] = s2mJointIntraBone(RigidBodyDynamics::JointTypePrismatic, axis[m_dofPosition[i]]);
 
         // Déclaration des dof de rotation
         if (m_isQuaternion)
-            m_dof[m_nDofTrans] = s2mJointIntraBone(RBD::JointTypeSpherical); // Mettre un dof en sphérique
+            m_dof[m_nDofTrans] = s2mJointIntraBone(RigidBodyDynamics::JointTypeSpherical); // Mettre un dof en sphérique
         else
             for (unsigned int i=m_nDofTrans; i<m_nDofRot+m_nDofTrans; i++)
-                m_dof[i] = s2mJointIntraBone(RBD::JointTypeRevolute, axis[m_dofPosition[i]]); // Mettre les axes de rotation dans le bon ordre
+                m_dof[i] = s2mJointIntraBone(RigidBodyDynamics::JointTypeRevolute, axis[m_dofPosition[i]]); // Mettre les axes de rotation dans le bon ordre
     }
     else{
         m_dof = new s2mJointIntraBone[1];
-        m_dof[0] = s2mJointIntraBone(RBD::JointTypeFixed); // Un axe au hasard, p
+        m_dof[0] = s2mJointIntraBone(RigidBodyDynamics::JointTypeFixed); // Un axe au hasard, p
     }
 }
 
@@ -373,7 +372,7 @@ void s2mBone::setJoints(s2mJoints *model){
     setDofCaracteristicsOnLastSegment(); // Mettre les caractéristiques segmentaires uniquement sur le dernier segment
     setJointAxis(); // Choisir l'ordre des axes en fonction de la séquence sélectionnée
 
-    RBDM::SpatialTransform zero (RBDM::Matrix3dIdentity, RBDM::Vector3d(0,0,0));
+    RigidBodyDynamics::Math::SpatialTransform zero (RigidBodyDynamics::Math::Matrix3dIdentity, RigidBodyDynamics::Math::Vector3d(0,0,0));
     // Faire les articulations (intra segment)
     delete[] m_idxDof;
 
