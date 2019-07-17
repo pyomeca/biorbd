@@ -102,6 +102,9 @@ Pipfile.lock
 # mypy
 .mypy_cache/
 
+# Visual code
+.vscode
+
 # CMake
 CMakeCache.txt
 CMakeFiles

@@ -4,6 +4,14 @@
 
 
 
+s2mNode::s2mNode(double x, double y, double z, const s2mString &name, const s2mString &parentName) :
+    Eigen::Vector3d (x, y, z),
+    m_parentName(parentName),
+    m_markName(name)
+{
+
+}
+
 s2mNode::s2mNode(const Eigen::Vector3d &v, const s2mString &name, const s2mString &parentName) : // Nom du parent
     Eigen::Vector3d(v),
     m_parentName(parentName),
