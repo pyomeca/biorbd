@@ -25,8 +25,8 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
                 const s2mVector             &activationInit,
                 bool                        useResidual = true,
                 int                         verbose = 0,
-                unsigned int                p = 2,
-                const double                eps = 1e-15
+                unsigned int                pNormFactor = 2,
+                const double                eps = 1e-10
                 );
 
         virtual ~s2mStaticOptimizationIpopt();
@@ -117,6 +117,8 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
            Ipopt::IpoptCalculatedQuantities* ip_cq
            );
 
+        s2mVector finalSolution(){return m_finalSolution;}
+        s2mVector finalResidual(){return m_finalResidual;}
 
 
     protected:
@@ -137,6 +139,8 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
         std::vector<s2mMuscleStateActual> m_states;
         unsigned int m_pNormFactor;
         int m_verbose;
+        s2mVector m_finalSolution;
+        s2mVector m_finalResidual;
 
         void dispatch(
                 const Ipopt::Number* x

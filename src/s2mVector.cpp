@@ -35,7 +35,7 @@ s2mVector s2mVector::norm_gradient(unsigned int p, bool skipRoot){
 
     if (p == 2){
         if (skipRoot)
-            return s2mVector(*this * 2.0);
+            return s2mVector(*this * 2.);
         else
             return s2mVector(*this * 1.0/norm(2));
     } else {
