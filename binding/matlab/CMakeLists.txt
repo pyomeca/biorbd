@@ -7,7 +7,7 @@ find_package(Matlab REQUIRED COMPONENTS MX_LIBRARY)
 
 
 # Get the file to compile
-set(CPP_FILES ${CMAKE_CURRENT_SOURCE_DIR}/biorbd.cpp)
+set(CPP_FILES ${CMAKE_CURRENT_SOURCE_DIR}/biorbd.cpp ${CMAKE_CURRENT_SOURCE_DIR}/S2M_rbdl.cpp)
 
 foreach(CPP_FILE ${CPP_FILES})
     # Get the name of the current file
@@ -63,8 +63,9 @@ foreach(CPP_FILE ${CPP_FILES})
     # Linker and instalation
     target_link_libraries(${MATLAB_PROJECT_NAME} ${MASTER_PROJECT_NAME} ${Matlab_MX_LIBRARY} ${Matlab_MEX_LIBRARY})
 
+    # install target
+    install(TARGETS ${MATLAB_PROJECT_NAME} DESTINATION ${Matlab_${MASTER_PROJECT_NAME}_INSTALL_DIR}/${PROJECT_NAME})
 endforeach(CPP_FILE)
 
 # Installation path
 set(Matlab_${MASTER_PROJECT_NAME}_INSTALL_DIR ${Matlab_ROOT_DIR}/toolbox CACHE PATH "Toolbox path to install, please note that the default directory may require administrator access")
-install(TARGETS ${MATLAB_PROJECT_NAME} DESTINATION ${Matlab_${MASTER_PROJECT_NAME}_INSTALL_DIR}/${PROJECT_NAME})
