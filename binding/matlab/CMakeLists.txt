@@ -7,7 +7,7 @@ find_package(Matlab REQUIRED COMPONENTS MX_LIBRARY)
 
 
 # Get the file to compile
-set(CPP_FILES ${CMAKE_CURRENT_SOURCE_DIR}/MexS2M_rbdl.cpp)
+set(CPP_FILES ${CMAKE_CURRENT_SOURCE_DIR}/biorbd.cpp)
 
 foreach(CPP_FILE ${CPP_FILES})
     # Get the name of the current file
