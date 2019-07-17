@@ -1,22 +1,24 @@
+#ifndef MATLAB_S2M_MUSCLE_LENGTH_JACOBIAN_H
+#define MATLAB_S2M_MUSCLE_LENGTH_JACOBIAN_H
 
-void S2M_muscleLengthJacobian( int nlhs, mxArray *plhs[],
-				int nrhs, const mxArray*prhs[] ){
-	// Verifier les arguments d'entrée
-	checkNombreInputParametres(nrhs, 3, 3, "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
-	
-	// Recevoir le model
-	s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_muscleLengthJacobian( int, mxArray *plhs[],
+                                int nrhs, const mxArray*prhs[] ){
+    // Verifier les arguments d'entrée
+    checkNombreInputParametres(nrhs, 3, 3, "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
+
+    // Recevoir le model
+    s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
 
-	// Recevoir Q
+    // Recevoir Q
     s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
-	
-	
-	// Trouver la matrice jacobienne de tous les marqueurs
-//	std::vector<s2mMatrix> Jac_tp = model->TagsJacobian(Q);
-//	std::vector<s2mMatrix>::iterator it=Jac_tp.begin();
 
-    /* Create a matrix for the return argument */
+    // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( model->nbMuscleTotal(), nQ, mxREAL);
     double *Jac = mxGetPr(plhs[0]);
 
@@ -28,8 +30,7 @@ void S2M_muscleLengthJacobian( int nlhs, mxArray *plhs[],
             ++cmp;
         }
 
-
-	return;
+    return;
 }
 
-
+#endif // MATLAB_S2M_MUSCLE_LENGTH_JACOBIAN_H

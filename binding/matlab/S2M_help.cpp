@@ -1,4 +1,7 @@
+#ifndef MATLAB_S2M_HELP_H
+#define MATLAB_S2M_HELP_H
 
+#include <iostream>
 
 void S2M_help(){
 
@@ -35,14 +38,14 @@ void S2M_help(){
     std::cout << "I = S2M_rbdl('segmentsInertia', h, Q)" 			<< std::endl << "\t=> Return the 6x6 inertia matrix for all segment for the model 'h' at Q" 			<< std::endl;
     std::cout << "I = S2M_rbdl('segmentsInertiaLocal', h, [idx])" 			<< std::endl << "\t=> Return the 3x3 inertia matrix for all segment for the model 'h'. If idx is provided, only asked segment is returned" 			<< std::endl;
     std::cout << "w = S2M_rbdl('segmentsVelocities', h, Q, Qdot)" 	<< std::endl << "\t=> Return Plücker's velocity vector for each segment of the model 'h' at Q and Qdot" << std::endl << std::endl;
-	
+
     std::cout << "nTags = S2M_rbdl('nTags', h)" 			<< std::endl << "\t=> Return the number of markers for the model 'h'" 				<< std::endl;
     std::cout << "nameTags = S2M_rbdl('nameTags', h)" 			<< std::endl << "\t=> Return the names of the markers for the model 'h'" 				<< std::endl ;
     std::cout << "nameTags = S2M_rbdl('nameTechnicalTags', h)" 			<< std::endl << "\t=> Return the names of the technical markers for the model 'h'" 				<< std::endl;
     std::cout << "nameTags = S2M_rbdl('nameAnatomicalTags', h)" 			<< std::endl << "\t=> Return the names of the anatomical markers for the model 'h'" 				<< std::endl ;
     std::cout << "T = S2M_rbdl('LocalTags', h, ['all' (default), 'technical', 'anatomical'])" 			<< std::endl << "\t=> Return the position (X,Y,Z) in lcoal reference of 'all', 'technical' or 'anatomical' markers of the model 'h' at Q" << std::endl;
-	std::cout << "T = S2M_rbdl('Tags', h, Q)" 			<< std::endl << "\t=> Return the position (X,Y,Z) in global reference of all markers of the model 'h' at Q" << std::endl;
-	std::cout << "T = S2M_rbdl('segmentsTags', h, Q)" 	<< std::endl << "\t=> Return Tags for each segment (in cells) of the model 'h' at Q" << std::endl;
+        std::cout << "T = S2M_rbdl('Tags', h, Q)" 			<< std::endl << "\t=> Return the position (X,Y,Z) in global reference of all markers of the model 'h' at Q" << std::endl;
+        std::cout << "T = S2M_rbdl('segmentsTags', h, Q)" 	<< std::endl << "\t=> Return Tags for each segment (in cells) of the model 'h' at Q" << std::endl;
     std::cout << "TJ = S2M_rbdl('TagsJacobian', h, Q)"	<< std::endl << "\t=> Return the jacobian matrix of all markers of the model 'h' at Q" << std::endl;
     std::cout << "C = S2M_rbdl('contacts', h, Q)" << std::endl << "\t=> Return the position of contact points (p) of the model 'h' at Q" << std::endl;
     std::cout << "m = S2M_rbdl('mesh', h, Q)" << std::endl << "\t=> Return position of all points of the model meshing (m) of the model 'h' at Q" << std::endl << std::endl;
@@ -65,3 +68,4 @@ void S2M_help(){
     return;
 
 }
+#endif // MATLAB_S2M_HELP_H

@@ -1,5 +1,12 @@
+#ifndef MATLAB_S2M_MUSCLE_VELOCITY_H
+#define MATLAB_S2M_MUSCLE_VELOCITY_H
 
-void S2M_muscleVelocity( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_muscleVelocity( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
@@ -21,7 +28,6 @@ void S2M_muscleVelocity( int nlhs, mxArray *plhs[],
                "Time stamps for Q and Qdot don't correspond");
     }
 
-
     // Cellules de sortie
     mwSize dims[2];
     dims[0] = model->nbMuscleTotal();
@@ -39,8 +45,7 @@ void S2M_muscleVelocity( int nlhs, mxArray *plhs[],
                 ++cmp;
             }
 
-
     return;
 }
 
-
+#endif // MATLAB_S2M_MUSCLE_VELOCITY_H

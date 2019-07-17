@@ -1,5 +1,12 @@
+#ifndef MATLAB_S2M_MUSCLES_LENGTH_H
+#define MATLAB_S2M_MUSCLES_LENGTH_H
 
-void S2M_MusclesLength( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_MusclesLength( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
@@ -34,7 +41,7 @@ void S2M_MusclesLength( int nlhs, mxArray *plhs[],
     return;
 }
 
-void S2M_MusclesTendonLength( int nlhs, mxArray *plhs[],
+void S2M_MusclesTendonLength( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
@@ -69,4 +76,4 @@ void S2M_MusclesTendonLength( int nlhs, mxArray *plhs[],
     return;
 }
 
-
+#endif // MATLAB_S2M_MUSCLES_LENGTH_H

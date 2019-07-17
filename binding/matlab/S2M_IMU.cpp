@@ -1,16 +1,23 @@
+#ifndef MATLAB_S2M_IMU_H
+#define MATLAB_S2M_IMU_H
 
-void S2M_IMU( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_IMU( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
-	
-	// Verifier les arguments d'entrée
+
+    // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 3, 4, "3 arguments are required [+1 optional] where the 2nd is the handler on the model, 3rd is the Q and 4th is the wanted IMUType to be return (['all'], 'technical' or anatomical')");
-	// Recevoir le model
-	s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
+    // Recevoir le model
+    s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
 
-	// Recevoir Q
+    // Recevoir Q
     std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
-	
+
     // Récupérer les IMU selon que l'on veut tous ou seulement anatomiques ou techniques
     unsigned int nIMUs(0); // Nombre de IMU
     std::vector<std::vector<s2mIMU> > IMU_tp; // récupérer les IMU
@@ -44,10 +51,7 @@ void S2M_IMU( int nlhs, mxArray *plhs[],
              IMU_tp.push_back(model->IMU(*model, *Q_it));
     }
 
-
-        		  
-
-	/* Create a matrix for the return argument */ 
+    // Create a matrix for the return argument
     mwSize dims[4];
     dims[0] = 4;
     dims[1] = 4;
@@ -67,6 +71,7 @@ void S2M_IMU( int nlhs, mxArray *plhs[],
                     ++cmpIMU;
                 }
 
-	return;
+    return;
 }
-        
+
+#endif // MATLAB_S2M_IMU_H

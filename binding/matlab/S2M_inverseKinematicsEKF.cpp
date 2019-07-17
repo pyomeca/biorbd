@@ -1,3 +1,12 @@
+#ifndef MATLAB_S2M_INVERSE_KINEMATICS_EKF_H
+#define MATLAB_S2M_INVERSE_KINEMATICS_EKF_H
+
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+#include "s2mKalmanRecons.h"
+#include "s2mKalmanReconsMarkers.h"
 
 void S2M_setEKF(int nlhs, mxArray *plhs[],
                 int nrhs, const mxArray*prhs[] ){
@@ -32,7 +41,7 @@ void S2M_setEKF(int nlhs, mxArray *plhs[],
 
     return;
 }
-void S2M_delEKF(int nlhs, mxArray *plhs[],
+void S2M_delEKF(int nlhs, mxArray *[],
                 int nrhs, const mxArray*prhs[] ){
     // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 2, 2, "2 arguments are required where the 2nd is the handler on the kalman filter");
@@ -46,13 +55,13 @@ void S2M_delEKF(int nlhs, mxArray *plhs[],
 }
 
 
-void S2M_inverseKinematicsEKFstep( int nlhs, mxArray *plhs[],
-				int nrhs, const mxArray*prhs[] ){
-	// Verifier les arguments d'entrée
+void S2M_inverseKinematicsEKFstep( int, mxArray *plhs[],
+                                int nrhs, const mxArray*prhs[] ){
+    // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 4, 6, "4 arguments are required (+2 optional) where the 2nd is the handler on the model, 3rd is the handler on kalman filter info, 4th is the 3xN marker positions matrix, the optional 5th is the initial guess for Q (ignored after first iteration) and 6th if you want to remove axes as specified in the model file [default = true]");
 
     // Recevoir le model
-	s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
+    s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
     unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
     unsigned int nQddot = model->nbQddot(); /* Get the number of DoF */
@@ -66,7 +75,7 @@ void S2M_inverseKinematicsEKFstep( int nlhs, mxArray *plhs[],
 
 
     // Recevoir la matrice des markers (Ne traite que le premier frame)
-    std::vector<std::vector<Eigen::Vector3d> > markersOverTime = getParameterAllMarkers(prhs,3,model->nTechTags());
+    std::vector<std::vector<Eigen::Vector3d> > markersOverTime = getParameterAllMarkers(prhs,3,static_cast<int>(model->nTechTags()));
     std::vector<Eigen::Vector3d> markers = markersOverTime[0];
 
     // Si c'est le premier frame recevoir Qinit
@@ -76,9 +85,7 @@ void S2M_inverseKinematicsEKFstep( int nlhs, mxArray *plhs[],
         kalman->setInitState(&Qinit);
     }
 
-
-
-    /* Create a matrix for the return argument */
+    // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix(nQ , 1, mxREAL); // Q
     plhs[1] = mxCreateDoubleMatrix(nQdot , 1, mxREAL); // QDot
     plhs[2] = mxCreateDoubleMatrix(nQddot , 1, mxREAL); // QDDot
@@ -104,12 +111,12 @@ void S2M_inverseKinematicsEKFstep( int nlhs, mxArray *plhs[],
     for (unsigned int j=0; j<nQddot; ++j)
         qddot[j] = QDDot(j);
 
-	return;
+        return;
 }
 
 
 
-void S2M_inverseKinematicsEKFallInOneCall( int nlhs, mxArray *plhs[],
+void S2M_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
                 int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
@@ -139,8 +146,8 @@ void S2M_inverseKinematicsEKFallInOneCall( int nlhs, mxArray *plhs[],
 
 
     // Recevoir la matrice des markers
-    std::vector<std::vector<Eigen::Vector3d> > markersOverTime = getParameterAllMarkers(prhs,2,model->nTechTags());
-    unsigned int nFrames(markersOverTime.size());
+    std::vector<std::vector<Eigen::Vector3d> > markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechTags()));
+    unsigned int nFrames(static_cast<unsigned int>(markersOverTime.size()));
 
     // Recevoir Qinit
     if (kalman.first() && nrhs >= 4){
@@ -148,7 +155,7 @@ void S2M_inverseKinematicsEKFallInOneCall( int nlhs, mxArray *plhs[],
         kalman.setInitState(&Qinit);
     }
 
-    /* Create a matrix for the return argument */
+    // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix(nQ , nFrames, mxREAL); // Q
     plhs[1] = mxCreateDoubleMatrix(nQdot , nFrames, mxREAL); // QDot
     plhs[2] = mxCreateDoubleMatrix(nQddot , nFrames, mxREAL); // QDDot
@@ -176,6 +183,6 @@ void S2M_inverseKinematicsEKFallInOneCall( int nlhs, mxArray *plhs[],
     }
 
     return;
-
-
 }
+
+#endif // MATLAB_S2M_INVERSE_KINEMATICS_EKF_H

@@ -1,5 +1,12 @@
- 
-void S2M_nMuscles( int nlhs, mxArray *plhs[],
+#ifndef MATLAB_S2M_N_MUSCLES_H
+#define MATLAB_S2M_N_MUSCLES_H
+
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_nMuscles( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entree
@@ -16,3 +23,5 @@ void S2M_nMuscles( int nlhs, mxArray *plhs[],
 
     return;
 }
+
+#endif // MATLAB_S2M_N_MUSCLES_H

@@ -1,4 +1,10 @@
+#ifndef MATLAB_S2M_NEW_H
+#define MATLAB_S2M_NEW_H
+
 #include <iostream>
+#include <mex.h>
+#include "s2mRead.h"
+#include "class_handle.h"
 
 void S2M_new( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
@@ -7,7 +13,7 @@ void S2M_new( int nlhs, mxArray *plhs[],
                 "2 arguments are required where the 2nd is the path to the model");
     }
 
-    /* Get the path of the model */
+    // Get the path of the model
     if (!mxIsChar(prhs[1]) || (mxGetM(prhs[1]) != 1 ) )  {
     mexErrMsgIdAndTxt( "MATLAB:mxmalloc:invalidInput",
             "Input argument 2 must be a file path string.");
@@ -19,7 +25,7 @@ void S2M_new( int nlhs, mxArray *plhs[],
     char *buf = mxArrayToString(prhs[1]);
     std::string filepath(buf); /* Copier le cstring dans un std::string */
 
-    /* Loader le modèle musculosquelettique */
+    // Loader le modèle musculosquelettique
     // Definition des variables globales du modele
     if (s2mRead::is_readable( filepath )){
         try{
@@ -37,3 +43,4 @@ void S2M_new( int nlhs, mxArray *plhs[],
         return;
     }
 }
+#endif // MATLAB_S2M_NEW_H

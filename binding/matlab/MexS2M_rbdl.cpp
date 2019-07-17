@@ -6,13 +6,13 @@
 
 #include "s2mMusculoSkeletalModel.h"
 #include "s2mRead.h"
-#include "class_handle.hpp"
+#include "class_handle.h"
 #include "s2mKalmanReconsMarkers.h"
 #include "s2mKalmanReconsIMU.h"
 #include "s2mMuscleOptimisation.h"
 #include "s2mMatrix.h"
 
-#include "processArguments.cpp" // Must be before anything else
+#include "processArguments.h" // Must be before anything else
 #include "S2M_help.cpp"
 #include "S2M_new.cpp"
 #include "S2M_delete.cpp"
@@ -640,10 +640,12 @@ void mexFunction( int nlhs, mxArray *plhs[],
         return;
     }
 
+#ifdef S2M_MUSCLE_OPTIMIZATION
     if(!toLower(cmd).compare("maximeoptim")){
         S2M_MaximeMuscleOptim(nlhs, plhs, nrhs, prhs);
         return;
     }
+#endif
 
     if(!toLower(cmd).compare("changeshapefactors")){
         S2M_ChangeShapeFactors(nlhs, plhs, nrhs, prhs);

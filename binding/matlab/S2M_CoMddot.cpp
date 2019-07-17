@@ -1,4 +1,10 @@
+#ifndef MATLAB_S2M_COM_DDOT_H
+#define MATLAB_S2M_COM_DDOT_H
 
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
 
 void S2M_CoMddot( int nlhs, mxArray *plhs[],
                 int nrhs, const mxArray*prhs[] ){
@@ -25,7 +31,7 @@ void S2M_CoMddot( int nlhs, mxArray *plhs[],
     if (QDDot.size() != nFrame)
         mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "QDDot must have the same number of frames than Q");
 
-    /* Create a matrix for the return argument */
+    // Create a matrix for the return argument
     mwSize dims[3];
     dims[0] = 3;
     dims[1] = 1;
@@ -42,3 +48,5 @@ void S2M_CoMddot( int nlhs, mxArray *plhs[],
 
     return;
 }
+
+#endif // MATLAB_S2M_COM_DDOT_H

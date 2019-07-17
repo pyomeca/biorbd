@@ -1,5 +1,12 @@
+#ifndef MATLAB_S2M_MUSCLES_ACTIVATION_DOT_H
+#define MATLAB_S2M_MUSCLES_ACTIVATION_DOT_H
 
-void S2M_MusclesActivationDot( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_MusclesActivationDot( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
@@ -13,11 +20,7 @@ void S2M_MusclesActivationDot( int nlhs, mxArray *plhs[],
     // Already normalized
     bool areadyNormalized(false);
     if (nrhs > 4)
-        areadyNormalized = *(mxGetPr(prhs[4]));
-
-
-
-
+        areadyNormalized = static_cast<bool>(*(mxGetPr(prhs[4])));
 
     // Cellules de sortie
     mwSize dims[2];
@@ -44,4 +47,4 @@ void S2M_MusclesActivationDot( int nlhs, mxArray *plhs[],
     return;
 }
 
-
+#endif // MATLAB_S2M_MUSCLES_ACTIVATION_DOT_H

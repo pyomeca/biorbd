@@ -1,5 +1,12 @@
+#ifndef MATLAB_S2M_MUSCLES_EXCITATION_DOT_BUCHANAN_H
+#define MATLAB_S2M_MUSCLES_EXCITATION_DOT_BUCHANAN_H
 
-void S2M_MusclesExcitationDotBuchanan( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_MusclesExcitationDotBuchanan( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
@@ -13,11 +20,7 @@ void S2M_MusclesExcitationDotBuchanan( int nlhs, mxArray *plhs[],
     // Already normalized
     bool alreadyNormalized(false);
     if (nrhs > 4)
-        alreadyNormalized = *(mxGetPr(prhs[4]));
-
-
-
-
+        alreadyNormalized = static_cast<bool>(*(mxGetPr(prhs[4])));
 
     // Cellules de sortie
     mwSize dims[2];
@@ -46,4 +49,4 @@ void S2M_MusclesExcitationDotBuchanan( int nlhs, mxArray *plhs[],
     return;
 }
 
-
+#endif // MATLAB_S2M_MUSCLES_EXCITATION_DOT_BUCHANAN_H

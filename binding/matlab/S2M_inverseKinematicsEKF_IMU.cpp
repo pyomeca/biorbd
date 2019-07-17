@@ -1,3 +1,11 @@
+#ifndef MATLAB_S2M_INVERSE_KINEMATICS_EKF_IMU_H
+#define MATLAB_S2M_INVERSE_KINEMATICS_EKF_IMU_H
+
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+#include "s2mKalmanReconsIMU.h"
 
 void S2M_setEKF_IMU(int nlhs, mxArray *plhs[],
                 int nrhs, const mxArray*prhs[] ){
@@ -32,7 +40,7 @@ void S2M_setEKF_IMU(int nlhs, mxArray *plhs[],
 
     return;
 }
-void S2M_delEKF_IMU(int nlhs, mxArray *plhs[],
+void S2M_delEKF_IMU(int nlhs, mxArray *[],
                 int nrhs, const mxArray*prhs[] ){
     // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 2, 2, "2 arguments are required where the 2nd is the handler on the kalman filter");
@@ -46,8 +54,8 @@ void S2M_delEKF_IMU(int nlhs, mxArray *plhs[],
 }
 
 
-void S2M_inverseKinematicsEKF_IMUstep( int nlhs, mxArray *plhs[],
-				int nrhs, const mxArray*prhs[] ){
+void S2M_inverseKinematicsEKF_IMUstep( int , mxArray *plhs[],
+                                int nrhs, const mxArray*prhs[] ){
     // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 4, 5, "4 arguments are required (+1 optional) where the 2nd is the handler on the model, 3rd is the handler on kalman filter info, 4th is the 3x3xNxT or 4x4xNxT IMU hypermatrix, the optional 5th is the initial guess for Q [default 0], 5th is acquisition frequency [default 100Hz]");
 
@@ -61,7 +69,7 @@ void S2M_inverseKinematicsEKF_IMUstep( int nlhs, mxArray *plhs[],
     s2mKalmanReconsIMU * kalman = convertMat2Ptr<s2mKalmanReconsIMU>(prhs[2]);
 
       // Recevoir la matrice des markers (Ne traite que le premier frame)
-    std::vector<std::vector<s2mAttitude> > imusOverTime = getParameterAllIMUs(prhs,3,model->nTechTags());
+    std::vector<std::vector<s2mAttitude> > imusOverTime = getParameterAllIMUs(prhs,3);
     std::vector<s2mAttitude> imus = imusOverTime[0];
 
     // Si c'est le premier frame recevoir Qinit
@@ -71,9 +79,7 @@ void S2M_inverseKinematicsEKF_IMUstep( int nlhs, mxArray *plhs[],
         kalman->setInitState(&Qinit);
     }
 
-
-
-    /* Create a matrix for the return argument */
+    // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix(nQ , 1, mxREAL); // Q
     plhs[1] = mxCreateDoubleMatrix(nQdot , 1, mxREAL); // QDot
     plhs[2] = mxCreateDoubleMatrix(nQddot , 1, mxREAL); // QDDot
@@ -99,12 +105,10 @@ void S2M_inverseKinematicsEKF_IMUstep( int nlhs, mxArray *plhs[],
     for (unsigned int j=0; j<nQddot; ++j)
         qddot[j] = QDDot(j);
 
-	return;
+        return;
 }
 
-
-
-void S2M_inverseKinematicsEKF_IMUallInOneCall( int nlhs, mxArray *plhs[],
+void S2M_inverseKinematicsEKF_IMUallInOneCall( int, mxArray *plhs[],
                 int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
@@ -130,7 +134,7 @@ void S2M_inverseKinematicsEKF_IMUallInOneCall( int nlhs, mxArray *plhs[],
 
     // Recevoir la matrice des imus
     std::vector<std::vector<s2mAttitude> > imusOverTime = getParameterAllIMUs(prhs,2);
-    unsigned int nFrames(imusOverTime.size());
+    unsigned int nFrames(static_cast<unsigned int>(imusOverTime.size()));
 
     // Recevoir Qinit
     if (kalman.first() && nrhs >= 4){
@@ -138,7 +142,7 @@ void S2M_inverseKinematicsEKF_IMUallInOneCall( int nlhs, mxArray *plhs[],
         kalman.setInitState(&Qinit);
     }
 
-    /* Create a matrix for the return argument */
+    // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix(nQ , nFrames, mxREAL); // Q
     plhs[1] = mxCreateDoubleMatrix(nQdot , nFrames, mxREAL); // QDot
     plhs[2] = mxCreateDoubleMatrix(nQddot , nFrames, mxREAL); // QDDot
@@ -166,5 +170,6 @@ void S2M_inverseKinematicsEKF_IMUallInOneCall( int nlhs, mxArray *plhs[],
     }
 
     return;
-
 }
+
+#endif // MATLAB_S2M_INVERSE_KINEMATICS_EKF_IMU_H

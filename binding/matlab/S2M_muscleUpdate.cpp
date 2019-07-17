@@ -1,7 +1,14 @@
+#ifndef MATLAB_S2M_MUSCLE_UPDATE_H
+#define MATLAB_S2M_MUSCLE_UPDATE_H
 
-void S2M_muscleUpdate( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_muscleUpdate( int, mxArray *[],
                   int nrhs, const mxArray*prhs[] ){
-	
+
     // Verifier les arguments d'entrée
     //checkNombreInputParametres(nrhs, 6, 7, "6 arguments are required [+1 optional] where the 2nd is the handler on the model, 3rd is the Q, 4th is QDot, 5th is all muscles points (origin, via points, insertion), 6th is the muscle point Jacobian and optional 7th is a 1xN matrix depicting the number of point for each muscle (default is the one given in the model)");
     checkNombreInputParametres(nrhs, 6, 6, "6 arguments are required where the 2nd is the handler on the model, 3rd is the Q, 4th is QDot, 5th is all muscles points (origin, via points, insertion), 6th is the muscle point Jacobian");
@@ -17,7 +24,7 @@ void S2M_muscleUpdate( int nlhs, mxArray *plhs[],
     std::vector<s2mGenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
 
     // S'assurer qu'il n'y a qu'un seul frame
-    unsigned int nFrame(Q.size());
+    unsigned int nFrame(static_cast<unsigned int>(Q.size()));
     if (nFrame != 1)
         mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "Q must be exactly composed of 1 frame");
     if (QDot.size() != nFrame)
@@ -57,4 +64,5 @@ void S2M_muscleUpdate( int nlhs, mxArray *plhs[],
 
     return;
 }
-        
+
+#endif // MATLAB_S2M_MUSCLE_UPDATE_H

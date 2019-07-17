@@ -1,5 +1,12 @@
- 
-void S2M_MusclesNames( int nlhs, mxArray *plhs[],
+#ifndef MATLAB_S2M_MUSCLES_NAMES_H
+#define MATLAB_S2M_MUSCLES_NAMES_H
+
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_MusclesNames( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entree
@@ -44,5 +51,8 @@ void S2M_MusclesNames( int nlhs, mxArray *plhs[],
         // Mettre les noms de via points pour ce groupe
         mxSetCell(plhs[2],i,viaNamesByMuscles);
     }
+
     return;
 }
+
+#endif // MATLAB_S2M_MUSCLES_NAMES_H

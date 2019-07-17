@@ -1,13 +1,20 @@
+#ifndef MATLAB_S2M_MUSCLE_JOINT_TORQUE_FROM_ACTIVATION_H
+#define MATLAB_S2M_MUSCLE_JOINT_TORQUE_FROM_ACTIVATION_H
+
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
 
 void S2M_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
-	
-	// Verifier les arguments d'entrée
+
+    // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 3, 5, "3 arguments are required (+2 optional) where the 2nd is the handler on the model, "
                                            "3rd is the muscles states and optional 4th and 5th are the Q and QDot, respectively."
                                            "WARNING: if the function is called without Q and Qdot, the user MUST update by himself before calling this function (using updateMuscle).");
-	// Recevoir le model
-	s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
+    // Recevoir le model
+    s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
     unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
     unsigned int nTau = model->nbTau(); /* Get the number of DoF */
@@ -16,7 +23,7 @@ void S2M_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
 
     // Recevoir muscleStates
     std::vector<std::vector<s2mMuscleStateActual> > s = getParameterMuscleStateActivation(prhs,2,nMuscleTotal);
-    unsigned int nFrame(s.size());
+    unsigned int nFrame(static_cast<unsigned int>(s.size()));
 
     bool updateKin(false); // Par défaut c'est false, mais ce comportement est celui le moins attendu
     if (nrhs >= 4){ // Si on doit récupérer la cinématique
@@ -43,7 +50,7 @@ void S2M_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
             mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "QDot must have the same number of frames than muscles states");
     }
 
-	/* Create a matrix for the return argument */ 
+    // Create a matrix for the return argument
     mwSize dims[2];
     dims[0] = nTau;
     dims[1] = nFrame;
@@ -51,7 +58,7 @@ void S2M_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
     double *Tau = mxGetPr(plhs[0]);
 
     // Si la personne a demandé de sortir les forces par muscle également
-    double *Mus;
+    double *Mus = nullptr;
     if (nlhs >= 2){
         mwSize dims2[2];
         dims2[0] = nMuscleTotal;
@@ -88,6 +95,7 @@ void S2M_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
                 Mus[i*nMuscleTotal+j] = force(j);
     }
 
-	return;
+    return;
 }
-        
+
+#endif // MATLAB_S2M_MUSCLE_JOINT_TORQUE_FROM_ACTIVATION_H

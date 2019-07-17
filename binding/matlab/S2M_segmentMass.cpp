@@ -1,5 +1,12 @@
+#ifndef MATLAB_S2M_SEGMENT_MASS_H
+#define MATLAB_S2M_SEGMENT_MASS_H
 
-void S2M_segmentMass( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_segmentMass( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entree
@@ -9,7 +16,7 @@ void S2M_segmentMass( int nlhs, mxArray *plhs[],
 
     unsigned int idx;
     if (nrhs>2){
-        idx = getInteger(prhs, 2, "index");
+        idx = static_cast<unsigned int>(getInteger(prhs, 2, "index"));
         if (idx<1){
             std::ostringstream msg;
             msg << "Segment index must be 1 or higher.";
@@ -26,7 +33,7 @@ void S2M_segmentMass( int nlhs, mxArray *plhs[],
         double *mass = mxGetPr(plhs[0]);
         mass[0] = model->bone(idx-1).caract().mass(); // Mettre les masses dans la variable de sortie
     }
-    else{
+    else {
         // Sortie des noms
         plhs[0] = mxCreateDoubleMatrix(model->nbBone(), 1, mxREAL); // Stockage des noms de groupe
         double *mass = mxGetPr(plhs[0]);
@@ -34,7 +41,9 @@ void S2M_segmentMass( int nlhs, mxArray *plhs[],
         // Stocker chaque valeur
         for (unsigned int i=0; i<model->nbBone(); ++i)
             mass[i] = model->bone(i).caract().mass(); // Mettre les masses dans la variable de sortie
-
     }
+
     return;
 }
+
+#endif // MATLAB_S2M_SEGMENT_MASS_H

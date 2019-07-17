@@ -1,5 +1,12 @@
+#ifndef MATLAB_S2M_MUSCLES_FORCE_MAX_H
+#define MATLAB_S2M_MUSCLES_FORCE_MAX_H
 
-void S2M_MusclesForceMax( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_MusclesForceMax( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
@@ -7,7 +14,7 @@ void S2M_MusclesForceMax( int nlhs, mxArray *plhs[],
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
 
-    double *muscleForceMax; // Pointeur pour la sortie
+    double *muscleForceMax = nullptr; // Pointeur pour la sortie
     Eigen::VectorXd Forces;
     if (nrhs == 2){
         // Cellules de sortie
@@ -34,3 +41,5 @@ void S2M_MusclesForceMax( int nlhs, mxArray *plhs[],
 
     return;
 }
+
+#endif // MATLAB_S2M_MUSCLES_FORCE_MAX_H

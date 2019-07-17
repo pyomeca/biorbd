@@ -1,16 +1,23 @@
+#ifndef MATLAB_S2M_MUSCLES_POINTS_H
+#define MATLAB_S2M_MUSCLES_POINTS_H
+
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
 
 void S2M_MusclesPoints( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
-	
+
     // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 3, 3, "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-					  
+
     // Recevoir Q
     std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
-	
+
     // Cellules de sortie
     plhs[0] = mxCreateCellMatrix(model->nbMuscleTotal(), Q.size());
     // Utilisable que si nlhs >= 2
@@ -61,14 +68,12 @@ void S2M_MusclesPoints( int nlhs, mxArray *plhs[],
                 ++cmp;
             }
 
-        
-
     if (nlhs >= 2){ // Sortir la déclaration des wrapping s'il y a lieu
         mwSize dims[3];
-            unsigned int nWrap(wrap_RT.size()/Q.size());
-            dims[0] = nWrap;
-            dims[1] = 4;
-            dims[2] = Q.size();
+        unsigned int nWrap(static_cast<unsigned int>(wrap_RT.size()/Q.size()));
+        dims[0] = nWrap;
+        dims[1] = 4;
+        dims[2] = Q.size();
         plhs[1] = mxCreateCellArray(3, dims);
         unsigned int cmpWrap(0);
         unsigned int cmpTime(0);
@@ -98,19 +103,14 @@ void S2M_MusclesPoints( int nlhs, mxArray *plhs[],
             mxSetCell(plhs[1],(nWrap*4)*cmpTime+(cmpWrap+2*nWrap),tp_dim1);
             mxSetCell(plhs[1],(nWrap*4)*cmpTime+(cmpWrap+3*nWrap),tp_dim2);
 
-
             cmpWrap++;
             if (cmpWrap>=nWrap){
                 cmpWrap = 0;
                 cmpTime++;
             }
-
         }
-
-
-
     }
-		
-	return;
+    return;
 }
-        
+
+#endif // MATLAB_S2M_MUSCLES_POINTS_H

@@ -1,6 +1,12 @@
+#ifndef MATLAB_S2M_INVERSE_DYNAMICS_H
+#define MATLAB_S2M_INVERSE_DYNAMICS_H
 
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
 
-void S2M_inverseDynamics( int nlhs, mxArray *plhs[],
+void S2M_inverseDynamics( int, mxArray *plhs[],
                 int nrhs, const mxArray*prhs[] ){
     // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 5, 6, "5 or 6 arguments are required where the 2nd is the handler on the model, 3rd is the Q, 4th is QDot and 5th is QDDot and the optional 6th is the forces in global frame");
@@ -22,7 +28,7 @@ void S2M_inverseDynamics( int nlhs, mxArray *plhs[],
     std::vector<s2mGenCoord> QDDot = getParameterQddot(prhs, 4, nQdot);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
-    unsigned int nFrame(Q.size());
+    unsigned int nFrame(static_cast<unsigned int>(Q.size()));
     if (QDot.size() != nFrame)
         mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "QDot must have the same number of frames than Q");
     if (QDDot.size() != nFrame)
@@ -35,7 +41,7 @@ void S2M_inverseDynamics( int nlhs, mxArray *plhs[],
             mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "Forces must have the same number of frames than Q");
     }
 
-    /* Create a matrix for the return argument */
+    // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix(nTau , nFrame, mxREAL);
     double *tau = mxGetPr(plhs[0]);
     unsigned int cmp(0);
@@ -61,3 +67,5 @@ void S2M_inverseDynamics( int nlhs, mxArray *plhs[],
 
     return;
 }
+
+#endif // MATLAB_S2M_INVERSE_DYNAMICS_H

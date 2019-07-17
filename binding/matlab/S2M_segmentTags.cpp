@@ -1,14 +1,21 @@
+#ifndef MATLAB_S2M_SEGMENT_TAGS_H
+#define MATLAB_S2M_SEGMENT_TAGS_H
 
-void S2M_segmentTags( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_segmentTags( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
-	
+
     // Verifier les arguments d'entree
     checkNombreInputParametres(nrhs, 3, 5, "3 arguments are required (+2 optional) where the 2nd is the handler on the model, 3rd is the Q, 4th if you want to remove axes as specified in the model file [default = true] and 5th optional is a specific segment index");
-	// Recevoir le model
-	s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
+    // Recevoir le model
+    s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
 
-	// Recevoir Q
+    // Recevoir Q
     s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
 
     bool removeAxes(true);
@@ -28,7 +35,7 @@ void S2M_segmentTags( int nlhs, mxArray *plhs[],
             std::vector<s2mNodeBone> Tags_tp = model->segmentTags(*model, Q, i, removeAxes);
             allTags.push_back(Tags_tp);
         }
-        /* Create a matrix for the return argument */
+        // Create a matrix for the return argument
         plhs[0] = mxCreateCellMatrix( allTags.size(), 1);
         for (unsigned int i_bone=0; i_bone<allTags.size(); ++i_bone){
             mxArray *tags_out_tp = mxCreateDoubleMatrix( 3, (*(allTags.begin()+i_bone)).size(), mxREAL);
@@ -49,7 +56,7 @@ void S2M_segmentTags( int nlhs, mxArray *plhs[],
     else{ // Si on a demande un segment precis
         std::vector<s2mNodeBone> Tags_tp = model->segmentTags(*model, Q, idx, removeAxes);
 
-        /* Create a matrix for the return argument */
+        // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix(3, Tags_tp.size(), mxREAL);
         double *Tags = mxGetPr(plhs[0]);
 
@@ -63,4 +70,5 @@ void S2M_segmentTags( int nlhs, mxArray *plhs[],
         return;
     }
 }
-        
+
+#endif // MATLAB_S2M_SEGMENT_TAGS_H

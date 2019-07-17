@@ -1,6 +1,12 @@
- 
+#ifndef MATLAB_S2M_PATCH_H
+#define MATLAB_S2M_PATCH_H
 
-void S2M_Patch( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_Patch( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entree
@@ -36,8 +42,8 @@ void S2M_Patch( int nlhs, mxArray *plhs[],
         return;
 
     }
-    else{ // Si on a demande un segment precis
-        std::vector<s2mPatch> Mesh_tp(model->meshPatch((unsigned int)idx));
+    else { // Si on a demande un segment precis
+        std::vector<s2mPatch> Mesh_tp(model->meshPatch(static_cast<unsigned int>(idx)));
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix(3, Mesh_tp.size(), mxREAL);
@@ -52,9 +58,6 @@ void S2M_Patch( int nlhs, mxArray *plhs[],
         }
         return;
     }
-
 }
 
-
-
-
+#endif // MATLAB_S2M_PATCH_H

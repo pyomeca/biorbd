@@ -1,20 +1,26 @@
+#ifndef MATLAB_S2M_TAGS_H
+#define MATLAB_S2M_TAGS_H
 
-void S2M_Tags( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_Tags( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
-	
-	// Verifier les arguments d'entrée
+
+    // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 3, 5, "3 arguments are required [+2 optional] where the 2nd is the handler on the model, 3rd is the Q and 4th is the wanted markerType to be return ('all', 'technical' or anatomical') and 5th if you want to remove axes as specified in the model file [default = true]");
-	// Recevoir le model
-	s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
+    // Recevoir le model
+    s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
 
-	// Recevoir Q
+    // Recevoir Q
     std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
 
     bool removeAxes(true);
     if (nrhs >= 5)
         removeAxes = getBool(prhs, 4);
-
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
     unsigned int nTags(0); // Nombre de marqueurs
@@ -49,19 +55,16 @@ void S2M_Tags( int nlhs, mxArray *plhs[],
              Tags_tp.push_back(model->Tags(*model,*Q_it, removeAxes));
     }
 
-
-        		  
-
-	/* Create a matrix for the return argument */ 
+    // Create a matrix for the return argument
     mwSize dims[3];
     dims[0] = 3;
     dims[1] = nTags;
     dims[2] = Tags_tp.size();
 
     plhs[0] = mxCreateNumericArray(3, dims, mxDOUBLE_CLASS, mxREAL);
-	double *Tags = mxGetPr(plhs[0]);
+    double *Tags = mxGetPr(plhs[0]);
 
-	// Remplir le output
+    // Remplir le output
     unsigned int cmp(0);
     for (std::vector<std::vector<s2mNodeBone> >::iterator Tags_it = Tags_tp.begin(); Tags_it!=Tags_tp.end(); ++Tags_it){
         std::vector<s2mNodeBone>::iterator it=(*Tags_it).begin();
@@ -73,6 +76,7 @@ void S2M_Tags( int nlhs, mxArray *plhs[],
         }
     }
 
-	return;
+    return;
 }
-        
+
+#endif // MATLAB_S2M_TAGS_H

@@ -1,6 +1,12 @@
+#ifndef MATLAB_S2M_TORQUE_ACTIVATION_H
+#define MATLAB_S2M_TORQUE_ACTIVATION_H
 
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
 
-void S2M_torqueActivation( int nlhs, mxArray *plhs[],
+void S2M_torqueActivation( int, mxArray *plhs[],
                 int nrhs, const mxArray*prhs[] ){
     // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 5, 5, "5 or 5 arguments are required where the 2nd is the handler on the model, 3rd is the Q, 4th is QDot and 5th is Tau");
@@ -19,14 +25,13 @@ void S2M_torqueActivation( int nlhs, mxArray *plhs[],
     std::vector<s2mTau> act = getParameterTau(prhs, 4, model->nbTau(), model->nbRoot());
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
-    unsigned int nFrame(Q.size());
+    unsigned int nFrame(static_cast<unsigned int>(Q.size()));
     if (QDot.size() != nFrame)
         mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "QDot must have the same number of frames than Q");
     if (act.size() != nFrame)
         mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "Tau must have the same number of frames than Q");
 
-
-    /* Create a matrix for the return argument */
+    // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix(model->nbTau() , nFrame, mxREAL);
     double *tau = mxGetPr(plhs[0]);
     unsigned int cmp(0);
@@ -45,3 +50,5 @@ void S2M_torqueActivation( int nlhs, mxArray *plhs[],
 
     return;
 }
+
+#endif // MATLAB_S2M_TORQUE_ACTIVATION_H

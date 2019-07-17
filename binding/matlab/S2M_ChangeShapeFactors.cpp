@@ -1,5 +1,12 @@
+#ifndef MATLAB_S2M_CHANGE_SHAPE_FACTOR_H
+#define MATLAB_S2M_CHANGE_SHAPE_FACTOR_H
 
-void S2M_ChangeShapeFactors( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_ChangeShapeFactors( int, mxArray *[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
@@ -27,3 +34,4 @@ void S2M_ChangeShapeFactors( int nlhs, mxArray *plhs[],
     return;
 }
 
+#endif // MATLAB_S2M_CHANGE_SHAPE_FACTOR_H

@@ -1,5 +1,12 @@
+#ifndef MATLAB_S2M_MUSCLE_FORCE_H
+#define MATLAB_S2M_MUSCLE_FORCE_H
 
-void S2M_MusclesForce( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_MusclesForce( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
@@ -16,14 +23,14 @@ void S2M_MusclesForce( int nlhs, mxArray *plhs[],
     std::vector<s2mGenCoord> Qdot = getParameterQ(prhs, 3, nQdot);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
-    unsigned int nFrame(Q.size());
+    unsigned int nFrame(static_cast<unsigned int>(Q.size()));
     if (Qdot.size() != nFrame)
         mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "QDot must have the same number of frames than Q");
 
     // Recevoir les états musculaires
     std::vector<std::vector<s2mMuscleStateActual> > state = getParameterMuscleStateActivation(prhs, 4, model->nbMuscleTotal());
 
-    bool updateKin;
+    bool updateKin(true);
     if (nrhs >= 6){ // Si on doit récupérer si on update ou pas
         updateKin = getBool(prhs, 5);
         if (!updateKin && nFrame > 1) // Si on n'update pas, s'assurer qu'un seul frame est envoyé
@@ -62,3 +69,5 @@ void S2M_MusclesForce( int nlhs, mxArray *plhs[],
 
     return;
 }
+
+#endif // MATLAB_S2M_MUSCLE_FORCE_H

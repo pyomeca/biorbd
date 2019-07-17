@@ -1,5 +1,12 @@
+#ifndef MATLAB_S2M_NAME_BODY_H
+#define MATLAB_S2M_NAME_BODY_H
 
-void S2M_nameBody( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_nameBody( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entree
@@ -9,7 +16,7 @@ void S2M_nameBody( int nlhs, mxArray *plhs[],
 
     unsigned int idx;
     if (nrhs>2){
-        idx = getInteger(prhs, 2, "index");
+        idx = static_cast<unsigned int>(getInteger(prhs, 2, "index"));
         if (idx<1){
             std::ostringstream msg;
             msg << "Segment index must be 1 or higher.";
@@ -24,7 +31,7 @@ void S2M_nameBody( int nlhs, mxArray *plhs[],
         // Sortie du nom
         plhs[0] = mxCreateString (model->bone(idx-1).name().c_str()); // Recueillir le nom
     }
-    else{
+    else {
         // Sortie des noms
         plhs[0] = mxCreateCellMatrix(model->nbBone(), 1); // Stockage des noms de groupe
 
@@ -36,3 +43,5 @@ void S2M_nameBody( int nlhs, mxArray *plhs[],
     }
     return;
 }
+
+#endif // MATLAB_S2M_NAME_BODY_H

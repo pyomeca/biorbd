@@ -1,38 +1,44 @@
+#ifndef MATLAB_S2M_SEGMENTS_INERTIA_H
+#define MATLAB_S2M_SEGMENTS_INERTIA_H
 
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
 
-void S2M_segmentsInertia( int nlhs, mxArray *plhs[],
-				int nrhs, const mxArray*prhs[] ){
-	// Verifier les arguments d'entrée
-	checkNombreInputParametres(nrhs, 3, 3, "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
-	
-	// Recevoir le model
-	s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
+void S2M_segmentsInertia( int, mxArray *plhs[],
+                                int nrhs, const mxArray*prhs[] ){
+    // Verifier les arguments d'entrée
+    checkNombreInputParametres(nrhs, 3, 3, "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
+
+    // Recevoir le model
+    s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */ /**** ATTENTION NDDL A ÉTÉ REMPLACÉ PAR NQ, SEGFAULT? ***/
 
-	// Recevoir Q
+    // Recevoir Q
     s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
-		
-	// Update sur la cinématique (placer les segments)
-	RigidBodyDynamics::UpdateKinematicsCustom(*model, &Q, NULL, NULL);
 
-	/* Create a matrix for the return argument */
-    const mwSize dims[3]={6,6, (mwSize)(nQ+1)};//model->nbBone()};
-	plhs[0] = mxCreateNumericArray(3, dims, mxDOUBLE_CLASS, mxREAL);
-	double *ia = mxGetPr(plhs[0]);
+    // Update sur la cinématique (placer les segments)
+    RigidBodyDynamics::UpdateKinematicsCustom(*model, &Q, nullptr, nullptr);
 
-	// Remplir l'output
-	unsigned int cmp = 0;
-	for (std::vector<RigidBodyDynamics::Math::SpatialMatrix>::iterator ia_it = model->IA.begin(); ia_it != model->IA.end(); ++ia_it){
-		for (unsigned int i = 0; i<36; ++i){
-			ia[i+36*cmp] = (*ia_it)(i);
-		}
-		++cmp;
-	}
+    // Create a matrix for the return argument
+    const mwSize dims[3]={6,6, static_cast<mwSize>(nQ+1)};//model->nbBone()};
+    plhs[0] = mxCreateNumericArray(3, dims, mxDOUBLE_CLASS, mxREAL);
+    double *ia = mxGetPr(plhs[0]);
 
-	return;
+    // Remplir l'output
+    unsigned int cmp = 0;
+    for (std::vector<RigidBodyDynamics::Math::SpatialMatrix>::iterator ia_it = model->IA.begin(); ia_it != model->IA.end(); ++ia_it){
+        for (unsigned int i = 0; i<36; ++i){
+            ia[i+36*cmp] = (*ia_it)(i);
+        }
+        ++cmp;
+    }
+
+    return;
 }
 
-void S2M_segmentsInertiaLocal( int nlhs, mxArray *plhs[],
+void S2M_segmentsInertiaLocal( int, mxArray *plhs[],
                 int nrhs, const mxArray*prhs[] ){
     // Verifier les arguments d'entree
     checkNombreInputParametres(nrhs, 2, 3, "2 arguments are required (+1 optional) where the 2nd is the handler on the model and optional third is the segment index");
@@ -45,7 +51,7 @@ void S2M_segmentsInertiaLocal( int nlhs, mxArray *plhs[],
 
     unsigned int idx;
     if (nrhs>2){
-        idx = getInteger(prhs, 2, "index");
+        idx = static_cast<unsigned int>(getInteger(prhs, 2, "index"));
         if (idx<1){
             std::ostringstream msg;
             msg << "Segment index must be 1 or higher.";
@@ -72,8 +78,8 @@ void S2M_segmentsInertiaLocal( int nlhs, mxArray *plhs[],
             }
     }
     else{
-        /* Create a matrix for the return argument */
-        const mwSize dims[3]={3,3, (mwSize)(nBones)};
+        // Create a matrix for the return argument
+        const mwSize dims[3]={3,3, static_cast<mwSize>(nBones)};
         plhs[0] = mxCreateNumericArray(3, dims, mxDOUBLE_CLASS, mxREAL);
         double *ia = mxGetPr(plhs[0]);
 
@@ -93,10 +99,7 @@ void S2M_segmentsInertiaLocal( int nlhs, mxArray *plhs[],
 
     }
 
-
     return;
 }
 
-
-
-
+#endif // MATLAB_S2M_SEGMENTS_INERTIA_H

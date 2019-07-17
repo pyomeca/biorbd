@@ -1,7 +1,14 @@
+#ifndef MATLAB_S2M_MUSCLES_JACOBIAN_H
+#define MATLAB_S2M_MUSCLES_JACOBIAN_H
 
-void S2M_MusclesJacobian( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_MusclesJacobian( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
-	
+
     // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 3, 3, "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
     // Recevoir le model
@@ -10,7 +17,7 @@ void S2M_MusclesJacobian( int nlhs, mxArray *plhs[],
 
     // Recevoir Q
     std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
-	
+
     // Cellules de sortie
     mwSize dims[4];
     dims[0] = 3*2;
@@ -18,8 +25,6 @@ void S2M_MusclesJacobian( int nlhs, mxArray *plhs[],
     dims[2] = model->nbMuscleTotal();
     dims[3] = Q.size();
     plhs[0] = mxCreateCellMatrix(model->nbMuscleTotal(), Q.size());
-
-    double *jaco = mxGetPr(plhs[0]);
 
     // Aller chercher les valeurs
     unsigned int cmpCell(0);
@@ -33,7 +38,7 @@ void S2M_MusclesJacobian( int nlhs, mxArray *plhs[],
                 Eigen::MatrixXd tp = model->muscleGroup(i).muscle(j)->position().jacobian();
 
                 // Transférer les données dans une matrice matlab
-                mxArray* jacoByMus = mxCreateDoubleMatrix(tp.rows(), tp.cols(), mxREAL);
+                mxArray* jacoByMus = mxCreateDoubleMatrix(static_cast<mwSize>(tp.rows()), static_cast<mwSize>(tp.cols()), mxREAL);
                 double* ptrJacoByMus = mxGetPr(jacoByMus);
                 unsigned int cmpElement(0);
                 for (unsigned int k2=0; k2<nQ; ++k2){
@@ -50,3 +55,5 @@ void S2M_MusclesJacobian( int nlhs, mxArray *plhs[],
 
     return;
 }
+
+#endif // MATLAB_S2M_MUSCLES_JACOBIAN_H

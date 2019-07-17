@@ -1,5 +1,12 @@
+#ifndef MATLAB_S2M_MUSCLES_PARENT_NAMES_H
+#define MATLAB_S2M_MUSCLES_PARENT_NAMES_H
 
-void S2M_MusclesParentNames( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_MusclesParentNames( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entree
@@ -34,5 +41,8 @@ void S2M_MusclesParentNames( int nlhs, mxArray *plhs[],
         // Mettre les noms de via points pour ce groupe
         mxSetCell(plhs[0],i,viaNamesByMuscles);
     }
+
     return;
 }
+
+#endif // MATLAB_S2M_MUSCLES_PARENT_NAMES_H

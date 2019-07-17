@@ -1,19 +1,25 @@
+#ifndef MATLAB_PROCESS_ARGUMENTS_H
+#define MATLAB_PROCESS_ARGUMENTS_H
+#include <mex.h>
+#include "s2mNodeMuscle.h"
+#include "s2mGenCoord.h"
+#include "s2mMuscleStateActual.h"
+#include "s2mMuscleStateActualBuchanan.h"
 
+void checkNombreInputParametres(int nrhs, int min, int max, std::string message = ""){
+        if (nrhs < min){
+                mexErrMsgIdAndTxt("MATLAB:yprime:invalidNumInputs",
+                        message.c_str());
+        }
+        else if (nrhs > max){
+                mexErrMsgIdAndTxt("MATLAB:yprime:invalidNumInputs",
+                        message.c_str());
+        }
 
-void checkNombreInputParametres(int nrhs, unsigned int min, unsigned int max, std::string message = ""){
-	if (nrhs < min){
-		mexErrMsgIdAndTxt("MATLAB:yprime:invalidNumInputs",
-			message.c_str());
-	}
-	else if (nrhs > max){
-		mexErrMsgIdAndTxt("MATLAB:yprime:invalidNumInputs",
-			message.c_str());
-	}
-	
 
 }
 
-std::vector<std::vector<Eigen::Vector3d> > getParameterAllMarkers(const mxArray*prhs[], unsigned int idx, unsigned int nMark=-1){
+std::vector<std::vector<Eigen::Vector3d> > getParameterAllMarkers(const mxArray*prhs[], unsigned int idx, int nMark=-1){
     /* Check data type of input argument */
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -41,12 +47,12 @@ std::vector<std::vector<Eigen::Vector3d> > getParameterAllMarkers(const mxArray*
     /* Get number of timeframes */
     double nFrames(1);
     if (nMark==-1)
-        nMark = (mxGetDimensions(prhs[idx]))[1];
+        nMark = static_cast<int>((mxGetDimensions(prhs[idx]))[1]);
     if (nsubs == 3)
         nFrames = (mxGetDimensions(prhs[idx]))[2];
 
     /* Get the number of elements in the input argument */
-    if (n/nFrames!=nMark){ // puisque les dimensions supplémentaires sont ajoutées a la fin, il faut / par nFrames
+    if (static_cast<int>(n/nFrames) != nMark){ // puisque les dimensions supplémentaires sont ajoutées a la fin, il faut / par nFrames
         std::ostringstream msg;
         msg << "Wrong size! Input markers matrix should should have the same number of technical markers (" << nMark << " markers.";
         mexErrMsgTxt(msg.str().c_str());
@@ -65,7 +71,7 @@ std::vector<std::vector<Eigen::Vector3d> > getParameterAllMarkers(const mxArray*
     for (unsigned int i=0; i<nFrames; ++i){
         std::vector<Eigen::Vector3d> markers_tp; // Markers a un temps i
 
-        for (unsigned int j=0; j<nMark; ++j){
+        for (int j=0; j<nMark; ++j){
             Eigen::Vector3d tp(Eigen::Vector3d(markers[m*cmp+0], // m est 3 ou 4
                                            markers[m*cmp+1],
                                            markers[m*cmp+2]));
@@ -78,7 +84,7 @@ std::vector<std::vector<Eigen::Vector3d> > getParameterAllMarkers(const mxArray*
     /* Retourner la matrice */
     return markersOverTime;
 }
-std::vector<std::vector<s2mAttitude> > getParameterAllIMUs(const mxArray*prhs[], unsigned int idx, unsigned int nMark=-1){
+std::vector<std::vector<s2mAttitude> > getParameterAllIMUs(const mxArray*prhs[], unsigned int idx){
     /* Check data type of input argument */
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -126,7 +132,6 @@ std::vector<std::vector<s2mAttitude> > getParameterAllIMUs(const mxArray*prhs[],
     std::vector<std::vector<s2mAttitude> > imuOverTime;
 
     /* Stocker les valeurs dans le format de sortie */
-    unsigned int cmp(0);
     for (unsigned int i=0; i<nFrames; ++i){
         std::vector<s2mAttitude> imus_tp; // IMUs a un temps i
         for (unsigned int j=0; j<nIMUs; ++j){
@@ -164,7 +169,7 @@ s2mGenCoord getVector(const mxArray*prhs[], unsigned int idx, std::string type =
     mwSize m=mxGetM(prhs[idx]); // line
     mwSize n=mxGetN(prhs[idx]); // line
 
-    int length(0);
+    mwSize length(0);
     if (m!=1 && n==1) // on permet le nombre juste ou juste une valeur qui sera dupliquée
         length = m;
     else if (n!=1 && m == 1)
@@ -178,7 +183,7 @@ s2mGenCoord getVector(const mxArray*prhs[], unsigned int idx, std::string type =
     double *q=mxGetPr(prhs[idx]); //matrice de position
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    s2mGenCoord vect(Eigen::VectorXd::Zero (length));
+    s2mGenCoord vect(Eigen::VectorXd::Zero (static_cast<unsigned int>(length)));
     for (unsigned int i=0; i<length; i++)
         vect(i) = q[i];
 
@@ -202,18 +207,18 @@ Eigen::Vector3d getVector3d(const mxArray*prhs[], unsigned int idx){
 
 std::vector<s2mGenCoord> getParameterQ(const mxArray*prhs[], unsigned int idx, unsigned int nDof, std::string type = "q"){
 
-		/* Check data type of input argument */
+                /* Check data type of input argument */
         if (!(mxIsDouble(prhs[idx]))) {
-			std::ostringstream msg;
-			msg << "Argument " << idx+1 << " must be of type double.";
+                        std::ostringstream msg;
+                        msg << "Argument " << idx+1 << " must be of type double.";
             mexErrMsgIdAndTxt( "MATLAB:findnz:invalidInputType",msg.str().c_str());
         }
-		
+
         mwSize m=mxGetM(prhs[idx]); // line
         /* Get the number of elements in the input argument */
         if (m!=nDof){
-			std::ostringstream msg;
-			msg << "Wrong size! (Input " << type << "), should be " << nDof;
+                        std::ostringstream msg;
+                        msg << "Wrong size! (Input " << type << "), should be " << nDof;
             mexErrMsgTxt(msg.str().c_str());
         }
 
@@ -221,7 +226,7 @@ std::vector<s2mGenCoord> getParameterQ(const mxArray*prhs[], unsigned int idx, u
         mwSize nFrames=mxGetN(prhs[idx]); // line
 
         double *q=mxGetPr(prhs[idx]); //matrice de position
-        
+
         // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
         std::vector<s2mGenCoord> Q;
         for (unsigned int j=0; j<nFrames; ++j){
@@ -231,13 +236,13 @@ std::vector<s2mGenCoord> getParameterQ(const mxArray*prhs[], unsigned int idx, u
 
             Q.push_back(Q_tp);
         }
-		return Q;
+                return Q;
 }
 std::vector<s2mGenCoord> getParameterQddot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
-	return getParameterQ(prhs, idx, nDof, "qddot");
+        return getParameterQ(prhs, idx, nDof, "qddot");
 }
 std::vector<s2mGenCoord> getParameterQdot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
-	return getParameterQ(prhs, idx, nDof, "qdot");
+        return getParameterQ(prhs, idx, nDof, "qdot");
 }
 std::vector<s2mTau> getParameterTau(const mxArray*prhs[], unsigned int idx, unsigned int nControl, unsigned int nRoot){
     std::vector<s2mGenCoord> AllTau_tp = getParameterQ(prhs, idx, nControl, "tau");
@@ -257,10 +262,10 @@ std::vector<s2mTau> getParameterTau(const mxArray*prhs[], unsigned int idx, unsi
 }
 
 std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> > getForcePlate(const mxArray*prhs[], unsigned int idx){
-	if (!(mxIsDouble(prhs[idx]))) {
-		mexErrMsgIdAndTxt( "MATLAB:findnz:invalidInputType",
-			   "Argument 6 must be of type double.");
-	}
+        if (!(mxIsDouble(prhs[idx]))) {
+                mexErrMsgIdAndTxt( "MATLAB:findnz:invalidInputType",
+                           "Argument 6 must be of type double.");
+        }
 
     const mwSize* dims (mxGetDimensions(prhs[idx]));
     mwSize mPF(dims[0]); // Nombre de lignes (devrait etre 6)
@@ -273,13 +278,13 @@ std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> > getForcePlate(
         timeStamp = dims[2]; // Nombre de temps
 
 
-	if (mPF!=6){ // must be 6 lines (mx, my, mz, fx, fy, fz)
+        if (mPF!=6){ // must be 6 lines (mx, my, mz, fx, fy, fz)
         std::string errorMessage = "Wrong size! (Input forceplates), should be 6xNb_Forceplates x time";
-		mexErrMsgTxt(errorMessage.c_str());
-	}
-	double *pf = mxGetPr(prhs[idx]); // Matrice des plateforme de force
+                mexErrMsgTxt(errorMessage.c_str());
+        }
+        double *pf = mxGetPr(prhs[idx]); // Matrice des plateforme de force
 
-	// stockage des plateformes
+        // stockage des plateformes
     std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> > PF;
     unsigned int cmp(0);
     for (unsigned int j=0; j<timeStamp; ++j){
@@ -291,8 +296,8 @@ std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> > getForcePlate(
         }
         PF.push_back(PF_tp);
     }
-	
-	return PF;
+
+        return PF;
 }
 double getDouble(const mxArray*prhs[], unsigned int idx, std::string type = "d"){
 
@@ -314,7 +319,7 @@ double getDouble(const mxArray*prhs[], unsigned int idx, std::string type = "d")
         return q[0];
 }
 int getInteger(const mxArray*prhs[], unsigned int idx, std::string type = "i"){
-    return getDouble(prhs, idx, type);
+    return static_cast<int>(getDouble(prhs, idx, type));
 }
 std::vector<double> getDoubleArray(const mxArray*prhs[], unsigned int idx){
 
@@ -336,7 +341,7 @@ std::vector<double> getDoubleArray(const mxArray*prhs[], unsigned int idx){
     double *q=mxGetPr(prhs[idx]); //matrice de position
 
     std::vector<double> out;
-    for (int i =0; i<m*n; ++i)
+    for (unsigned int i =0; i<m*n; ++i)
         out.push_back(q[i]);
 
     return out;
@@ -355,10 +360,10 @@ s2mString getString(const mxArray*prhs[], unsigned int idx){
 }
 
 bool getBool(const mxArray*prhs[], unsigned int idx){
-    bool out;
+    bool out(false);
 
     if (mxIsDouble(prhs[idx]))
-        out = *(mxGetPr(prhs[idx]));
+        out = static_cast<bool>(*(mxGetPr(prhs[idx])));
     else if (mxIsLogical(prhs[idx]))
         out = *(mxGetLogicals(prhs[idx]));
     else{
@@ -402,18 +407,18 @@ std::vector<std::vector<s2mMuscleStateActual> > getParameterMuscleState(const mx
 
     /* Get the number of frames in the input argument */
     // Regarde ce qui se passe pour l'excitation
-    bool isThereExcitation;
+    bool isThereExcitation(false);
     mwSize nFramesE(0);
-    double *stateExcitation;
+    double *stateExcitation = nullptr;
     if (isStateExist(prhs, nMus, idxExcitation, isThereExcitation)){
         stateExcitation=mxGetPr(prhs[idxExcitation]); //matrice de position
         nFramesE = mxGetN(prhs[idxExcitation]); // line
     }
 
     // Regarde ce qui se passe pour l'activation
-    bool isThereActivation;
+    bool isThereActivation(false);
     mwSize nFramesA(0);
-    double *stateActivation; //matrice de position
+    double *stateActivation = nullptr; //matrice de position
     if (isStateExist(prhs, nMus, idxActivation, isThereActivation)){
         stateActivation=mxGetPr(prhs[idxActivation]); //matrice de position
         nFramesA = mxGetN(prhs[idxActivation]); // line
@@ -425,7 +430,7 @@ std::vector<std::vector<s2mMuscleStateActual> > getParameterMuscleState(const mx
         msg << "Wrong size! Input excitation and activation should be the same";
         mexErrMsgTxt(msg.str().c_str());
     }
-    mwSize nFramesTotal;
+    mwSize nFramesTotal(static_cast<mwSize>(-1));
     if (isThereActivation)
         nFramesTotal = nFramesA;
     else if (isThereExcitation)
@@ -463,18 +468,18 @@ std::vector<std::vector<s2mMuscleStateActualBuchanan> > getParameterMuscleStateB
 
     /* Get the number of frames in the input argument */
     // Regarde ce qui se passe pour l'excitation
-    bool isThereExcitation;
+    bool isThereExcitation(false);
     mwSize nFramesE(0);
-    double *stateExcitation;
+    double *stateExcitation = nullptr;
     if (isStateExist(prhs, nMus, idxExcitation, isThereExcitation)){
         stateExcitation=mxGetPr(prhs[idxExcitation]); //matrice de position
         nFramesE = mxGetN(prhs[idxExcitation]); // line
     }
 
     // Regarde ce qui se passe pour l'activation
-    bool isThereActivation;
+    bool isThereActivation(false);
     mwSize nFramesA(0);
-    double *stateActivation; //matrice de position
+    double *stateActivation = nullptr; //matrice de position
     if (isStateExist(prhs, nMus, idxActivation, isThereActivation)){
         stateActivation=mxGetPr(prhs[idxActivation]); //matrice de position
         nFramesA = mxGetN(prhs[idxActivation]); // line
@@ -486,7 +491,7 @@ std::vector<std::vector<s2mMuscleStateActualBuchanan> > getParameterMuscleStateB
         msg << "Wrong size! Input excitation and activation should be the same";
         mexErrMsgTxt(msg.str().c_str());
     }
-    mwSize nFramesTotal;
+    mwSize nFramesTotal(static_cast<mwSize>(-1));
     if (isThereActivation)
         nFramesTotal = nFramesA;
     else if (isThereExcitation)
@@ -583,7 +588,7 @@ std::vector<std::vector<s2mNodeMuscle> > getMusclePosition(const mxArray*prhs[],
     }
 
     /* Get the number of muscles in the input argument */
-    int nVia(0);
+    unsigned int nVia(0);
     for (int i = 0; i<nPointsByMuscles.size(); ++i){
         nVia += nPointsByMuscles(i);
     }
@@ -600,7 +605,7 @@ std::vector<std::vector<s2mNodeMuscle> > getMusclePosition(const mxArray*prhs[],
 
     // Préparer la matrice de sortie
     std::vector<std::vector<s2mNodeMuscle> > out;
-    int cmpMus(0);
+    unsigned int cmpMus(0);
     for (unsigned int i=0; i<nPointsByMuscles.rows(); ++i){
         // Préparer les matrices intermédiaires (chaque muscle)
         std::vector<s2mNodeMuscle> mus;
@@ -615,7 +620,7 @@ std::vector<std::vector<s2mNodeMuscle> > getMusclePosition(const mxArray*prhs[],
     return out;
 }
 
-std::vector<s2mMatrix> getMusclePointsJaco(const mxArray*prhs[], unsigned int idx, Eigen::VectorXd nPointsByMuscles, int nQ){
+std::vector<s2mMatrix> getMusclePointsJaco(const mxArray*prhs[], unsigned int idx, Eigen::VectorXd nPointsByMuscles, unsigned int nQ){
     /* Check data type of input argument */
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -625,9 +630,9 @@ std::vector<s2mMatrix> getMusclePointsJaco(const mxArray*prhs[], unsigned int id
 
     mwSize nRows=mxGetM(prhs[idx]); // line
 
-    int nVia(0);
+    unsigned int nVia(0);
     for (int i = 0; i<nPointsByMuscles.size(); ++i){
-        nVia += nPointsByMuscles(i);
+        nVia += static_cast<unsigned int>(nPointsByMuscles(i));
     }
     if (nRows!=nVia*3){
         std::ostringstream msg;
@@ -647,15 +652,15 @@ std::vector<s2mMatrix> getMusclePointsJaco(const mxArray*prhs[], unsigned int id
 
     // Préparer la matrice de sortie
     std::vector<s2mMatrix> jacoOut;
-    int cmpMus(0);
+    unsigned int cmpMus(0);
 
     for (unsigned int i=0; i<nPointsByMuscles.rows(); ++i){
         // Préparer les matrices intermédiaires (chaque muscle)
-        s2mMatrix mus((int)nPointsByMuscles(i)*3, nQ); // Théoriquement, c'est toujours un int
-        for (unsigned int j=0; j<nPointsByMuscles(i); ++j){
+        s2mMatrix mus(static_cast<unsigned int>(nPointsByMuscles(i))*3, nQ);
+        for (unsigned int j=0; j<static_cast<unsigned int>(nPointsByMuscles(i)); ++j){
             // Stocker
-            for (int k1 = 0; k1<3; ++k1)
-                for (int k2 = 0; k2 <nQ; ++k2)
+            for (unsigned int k1 = 0; k1<3; ++k1)
+                for (unsigned int k2 = 0; k2<nQ; ++k2)
                     mus(3*j+k1, k2) = jaco[3*cmpMus+k1+nVia*3*k2];
             // Incrémenter l'index de muscle
             ++cmpMus;
@@ -668,3 +673,4 @@ std::vector<s2mMatrix> getMusclePointsJaco(const mxArray*prhs[], unsigned int id
     return jacoOut;
 
 }
+#endif

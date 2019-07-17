@@ -1,18 +1,24 @@
+#ifndef MATLAB_S2M_MASS_MATRIX_H
+#define MATLAB_S2M_MASS_MATRIX_H
 
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
 
-void S2M_massMatrix( int nlhs, mxArray *plhs[],
-				int nrhs, const mxArray*prhs[] ){
+void S2M_massMatrix( int, mxArray *plhs[],
+                                int nrhs, const mxArray*prhs[] ){
     // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 3, 3, "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-	
+
     // Recevoir Q
     std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
 
-    /* Create a matrix for the return argument */
+    // Create a matrix for the return argument
     mwSize ndim(3);
     mwSize dim[3] = {nQ, nQ, Q.size()};
     plhs[0] = mxCreateNumericArray(ndim, dim, mxDOUBLE_CLASS, mxREAL);
@@ -23,7 +29,7 @@ void S2M_massMatrix( int nlhs, mxArray *plhs[],
     RigidBodyDynamics::Math::MatrixNd Mass(nQ, nQ);
     for (std::vector<s2mGenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it){
         Mass.setZero();
-        RigidBodyDynamics::UpdateKinematicsCustom(*model, &(*Q_it), NULL, NULL);
+        RigidBodyDynamics::UpdateKinematicsCustom(*model, &(*Q_it), nullptr, nullptr);
         RigidBodyDynamics::CompositeRigidBodyAlgorithm(*model, *Q_it, Mass, false);
 
         // Remplir l'output
@@ -34,3 +40,5 @@ void S2M_massMatrix( int nlhs, mxArray *plhs[],
 
     return;
 }
+
+#endif // MATLAB_S2M_MASS_MATRIX_H

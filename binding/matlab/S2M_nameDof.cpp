@@ -1,5 +1,12 @@
+#ifndef MATLAB_S2M_NAME_DOF_H
+#define MATLAB_S2M_NAME_DOF_H
 
-void S2M_nameDof( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_nameDof( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entree
@@ -8,7 +15,6 @@ void S2M_nameDof( int nlhs, mxArray *plhs[],
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
 
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-
 
     // Sortie des noms
     plhs[0] = mxCreateCellMatrix(nQ, 1); // Stockage des noms de groupe
@@ -22,5 +28,8 @@ void S2M_nameDof( int nlhs, mxArray *plhs[],
             ++cmp;
         }
     }
+
     return;
 }
+
+#endif // MATLAB_S2M_NAME_DOF_H

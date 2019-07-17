@@ -1,6 +1,12 @@
- 
+#ifndef MATLAB_S2M_MESH_H
+#define MATLAB_S2M_MESH_H
 
-void S2M_Mesh( int nlhs, mxArray *plhs[],
+#include <mex.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "class_handle.h"
+#include "processArguments.h"
+
+void S2M_Mesh( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entree
@@ -41,7 +47,7 @@ void S2M_Mesh( int nlhs, mxArray *plhs[],
 
     }
     else{ // Si on a demande un segment precis
-        std::vector<s2mNodeBone> Mesh_tp(model->meshPoints(Q,(unsigned int)idx));
+        std::vector<s2mNodeBone> Mesh_tp(model->meshPoints(Q,static_cast<unsigned int>(idx)));
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix(3, Mesh_tp.size(), mxREAL);
@@ -56,9 +62,6 @@ void S2M_Mesh( int nlhs, mxArray *plhs[],
         }
         return;
     }
-
 }
 
-
-
-
+#endif // MATLAB_S2M_MESH_H
