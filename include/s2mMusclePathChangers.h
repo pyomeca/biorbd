@@ -1,6 +1,6 @@
 #ifndef S2MMUSCLEPATHCHANGERS_H
 #define S2MMUSCLEPATHCHANGERS_H
-	#include <boost/shared_ptr.hpp>
+    #include <memory>
     #include <vector>
     #include "biorbdConfig.h"
     #include "s2mString.h"
