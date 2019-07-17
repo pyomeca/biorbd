@@ -1,31 +1,36 @@
 #define BIORBD_API_EXPORTS
-#include "../include/IpoptTest.h"
+#include "../include/s2mStaticOptimizationIpopt.h"
 
-#include <cassert>
-#include <iostream>
-
-// constructor
-HS071_NLP::HS071_NLP(s2mMusculoSkeletalModel &model,
-                     const s2mGenCoord &Q,
-                     const s2mGenCoord &Qdot,
-                     const s2mTau &tauTarget,
-                     bool useResidual,
-                     int verbose):
+s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
+        s2mMusculoSkeletalModel &model,
+        const s2mGenCoord &Q,
+        const s2mGenCoord &Qdot,
+        const s2mTau &tauTarget,
+        const s2mVector &activationInit,
+        bool useResidual,
+        int verbose,
+        unsigned int pNormFactor,
+        const double eps
+        ):
     m_model(model),
-    m_nQ(m_model.nbQ()),
+    m_nQ(model.nbQ()),
+    m_nQdot(model.nbQdot()),
+    m_nMus(model.nbMuscleTotal()),
+    m_nDof(model.nbDof()),
+    m_nTau(model.nbTau()),
+    m_nTauResidual(m_nQ),
+    m_eps(eps),
+    m_activations(activationInit),
     m_Q(Q),
     m_Qdot(Qdot),
-    m_nTau(m_model.nbTau()),
-    m_nTauResidual(m_nQ),
     m_tauTarget(tauTarget),
     m_tauResidual(Eigen::VectorXd::Zero(m_nTau)),
     m_tauPonderation(1000),
-    m_nMus(m_model.nbMuscleTotal()),
-    m_activations(Eigen::VectorXd::Ones(m_nMus) * 0.01),
     m_states(std::vector<s2mMuscleStateActual>(m_nMus)),
-    m_pNormFactor(2),
-    m_eps(1e-10),
-    m_verbose(verbose)
+    m_pNormFactor(pNormFactor),
+    m_verbose(verbose),
+    m_finalSolution(s2mVector(m_nMus)),
+    m_finalResidual(s2mVector(m_nQ))
 {
     if (m_eps < 1e-12){
         s2mError::s2mAssert(false, "epsilon for partial derivates approximation is too small ! \nLimit for epsilon is 1e-12");
@@ -35,17 +40,17 @@ HS071_NLP::HS071_NLP(s2mMusculoSkeletalModel &model,
         m_tauResidual.setZero();
         m_nTauResidual = 0;
         m_tauPonderation = 0;
+
     }
 }
 
+s2mStaticOptimizationIpopt::~s2mStaticOptimizationIpopt()
+{
 
-bool HS071_NLP::get_nlp_info(
-   Ipopt::Index& n,
-   Ipopt::Index& m,
-   Ipopt::Index& nnz_jac_g,
-   Ipopt::Index& nnz_h_lag,
-   IndexStyleEnum& index_style
-   )
+}
+
+bool s2mStaticOptimizationIpopt::get_nlp_info(
+        Ipopt::Index &n, Ipopt::Index &m, Ipopt::Index &nnz_jac_g, Ipopt::Index &nnz_h_lag, IndexStyleEnum &index_style)
 {
     index_style = TNLP::C_STYLE;
 
@@ -67,14 +72,8 @@ bool HS071_NLP::get_nlp_info(
     return true;
 }
 
-bool HS071_NLP::get_bounds_info(
-   Ipopt::Index   n,
-   Ipopt::Number* x_l,
-   Ipopt::Number* x_u,
-   Ipopt::Index   m,
-   Ipopt::Number* g_l,
-   Ipopt::Number* g_u
-   )
+bool s2mStaticOptimizationIpopt::get_bounds_info(
+        Ipopt::Index n, Ipopt::Number *x_l, Ipopt::Number *x_u, Ipopt::Index m, Ipopt::Number *g_l, Ipopt::Number *g_u)
 {
     // Should not be necessary?
     assert(static_cast<unsigned int>(n) == m_nMus + m_nTauResidual);
@@ -97,7 +96,7 @@ bool HS071_NLP::get_bounds_info(
     return true;
 }
 
-bool HS071_NLP::get_starting_point(
+bool s2mStaticOptimizationIpopt::get_starting_point(
         Ipopt::Index,
         bool init_x,
         Ipopt::Number* x,
@@ -128,13 +127,11 @@ bool HS071_NLP::get_starting_point(
     return true;
 }
 
-bool HS071_NLP::eval_f(
-        Ipopt::Index n,
-        const Ipopt::Number* x,
-        bool new_x,
-        Ipopt::Number& obj_value)
+bool s2mStaticOptimizationIpopt::eval_f(
+        Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Number &obj_value)
 {
     assert(static_cast<unsigned int>(n) == m_nMus + m_nTauResidual);
+
     if (new_x)
         dispatch(x);
 
@@ -144,59 +141,47 @@ bool HS071_NLP::eval_f(
     return true;
 }
 
-bool HS071_NLP::eval_grad_f(
-        Ipopt::Index n,
-        const Ipopt::Number* x,
-        bool new_x,
-        Ipopt::Number* grad_f){
-   assert(static_cast<unsigned int>(n) == m_nMus + m_nTauResidual);
-   if (new_x)
-       dispatch(x);
-
-   s2mVector grad_activ(m_activations.norm_gradient(m_pNormFactor, true));
-   s2mVector grad_residual(m_tauResidual.norm_gradient(2, true));
-
-   for( unsigned i = 0; i < m_nMus; i++ )
-       grad_f[i] = grad_activ[i];
-   for( unsigned int i = 0; i < m_nTauResidual; i++ )
-       grad_f[i+m_nMus] = m_tauPonderation * grad_residual[i];
-   return true;
-}
-
-bool HS071_NLP::eval_g(
-        Ipopt::Index n,
-        const Ipopt::Number* x,
-        bool new_x,
-        Ipopt::Index m,
-        Ipopt::Number* g)
+bool s2mStaticOptimizationIpopt::eval_grad_f(
+        Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Number *grad_f)
 {
-   assert(static_cast<unsigned int>(n) == m_nMus + m_nTauResidual);
-   assert(static_cast<unsigned int>(m) == m_nTau);
-   if (new_x)
-       dispatch(x);
+    assert(static_cast<unsigned int>(n) == m_nMus + m_nTauResidual);
 
-   s2mTau tauMusc = m_model.muscularJointTorque(m_model, m_states, false, &m_Q, &m_Qdot);
+    if (new_x)
+        dispatch(x);
 
-   // TODO : adjust dimensions for when "root_actuated" is set to false in bioMod file
-   for( Ipopt::Index i = 0; i < m; i++ )
-        g[i] = tauMusc[i] + m_tauResidual[i] - m_tauTarget[i];
+    s2mVector grad_activ(m_activations.norm_gradient(m_pNormFactor, true));
+    s2mVector grad_residual(m_tauResidual.norm_gradient(2, true));
 
-   if (m_verbose >= 2){
-       std::cout << "tau_musc = " << tauMusc.transpose() << std::endl;
-       std::cout << "tau_residual = " << m_tauResidual.transpose() << std::endl;
-   }
-   return true;
+    for( unsigned i = 0; i < m_nMus; i++ )
+        grad_f[i] = grad_activ[i];
+    for( unsigned int i = 0; i < m_nTauResidual; i++ )
+        grad_f[i+m_nMus] = m_tauPonderation*grad_residual[i];
+    return true;
 }
 
-bool HS071_NLP::eval_jac_g(
-        Ipopt::Index n,
-        const Ipopt::Number* x,
-        bool new_x,
-        Ipopt::Index m,
-        Ipopt::Index,
-        Ipopt::Index* iRow,
-        Ipopt::Index* jCol,
-        Ipopt::Number* values)
+bool s2mStaticOptimizationIpopt::eval_g(
+        Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Index m, Ipopt::Number *g)
+{
+    assert(static_cast<unsigned int>(n) == m_nMus + m_nTauResidual);
+    assert(static_cast<unsigned int>(m) == m_nTau);
+    if (new_x)
+        dispatch(x);
+
+    s2mTau tauMusc = m_model.muscularJointTorque(m_model, m_states, false, &m_Q, &m_Qdot);
+
+    // TODO : adjust dimensions for when "root_actuated" is set to false in bioMod file
+    for( Ipopt::Index i = 0; i < m; i++ )
+         g[i] = tauMusc[i] + m_tauResidual[i] - m_tauTarget[i];
+
+    if (m_verbose >= 2){
+        std::cout << "tau_musc = " << tauMusc.transpose() << std::endl;
+        std::cout << "tau_residual = " << m_tauResidual.transpose() << std::endl;
+    }
+    return true;
+}
+
+bool s2mStaticOptimizationIpopt::eval_jac_g(
+        Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Index m, Ipopt::Index, Ipopt::Index *iRow, Ipopt::Index *jCol, Ipopt::Number *values)
 {
     if (values == nullptr) {
         // Setup non-zeros values
@@ -233,6 +218,7 @@ bool HS071_NLP::eval_jac_g(
                     std::cout << "tauCalculEpsilon[" << i << "]: " << tauCalculEpsilon[i] << std::endl;
                     std::cout << "tauMusc[" << i << "]: " << tauMusc[i] << std::endl;
                 }
+
             }
         }
         for( unsigned int j = 0; j < m_nTauResidual; j++ )
@@ -255,21 +241,24 @@ bool HS071_NLP::eval_jac_g(
    return true;
 }
 
-void HS071_NLP::finalize_solution(
+
+void s2mStaticOptimizationIpopt::finalize_solution(
         Ipopt::SolverReturn,
         Ipopt::Index,
-        const Ipopt::Number* x,
-        const Ipopt::Number*, // z_L,
-        const Ipopt::Number*, // z_U,
+        const Ipopt::Number *x,
+        const Ipopt::Number*, //z_L,
+        const Ipopt::Number*, //z_U,
         Ipopt::Index,
-        const Ipopt::Number*,
-        const Ipopt::Number*,
+        const Ipopt::Number *,
+        const Ipopt::Number *,
         Ipopt::Number obj_value,
         const Ipopt::IpoptData*,
         Ipopt::IpoptCalculatedQuantities*)
 {
     // Storing to solution
     dispatch(x);
+    m_finalSolution = m_activations;
+    m_finalResidual = m_tauResidual;
 
     // Plot it, if it makes sense
     if (m_verbose >= 1){
@@ -277,10 +266,10 @@ void HS071_NLP::finalize_solution(
         std::cout << "f(x*) = " << obj_value << std::endl;
         std::cout << "Activations = " << m_activations.transpose() << std::endl;
         std::cout << "Muscular torques = " << m_model.muscularJointTorque(m_model, m_states, false, &m_Q, &m_Qdot).transpose() << std::endl;
+        std::cout << "Tau target = " << m_tauTarget.transpose() << std::endl;
         if (m_nTauResidual){
             std::cout << "Residual torques= " << m_tauResidual.transpose() << std::endl;
         }
-        std::cout << "Target torques = " << m_tauTarget.transpose() << std::endl;
 //        // Uncomment to show lagrange multipliers
 //        std::cout << "Solution of the bound multipliers, z_L and z_U" << std::endl;
 //        for( Ipopt::Index i = 0; i < n; i++ )
@@ -288,7 +277,7 @@ void HS071_NLP::finalize_solution(
     }
 }
 
-void HS071_NLP::dispatch(const Ipopt::Number *x)
+void s2mStaticOptimizationIpopt::dispatch(const Ipopt::Number *x)
 {
     for(unsigned int i = 0; i < m_nMus; i++ ){
         m_activations[i] = x[i];
@@ -298,3 +287,6 @@ void HS071_NLP::dispatch(const Ipopt::Number *x)
     for(unsigned int i = 0; i < m_nTauResidual; i++ )
         m_tauResidual[i] = x[i+m_nMus];
 }
+
+
+

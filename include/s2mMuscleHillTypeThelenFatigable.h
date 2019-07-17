@@ -2,6 +2,8 @@
 #define S2MMUSCLEHILLTYPETHELENFATIGABLE_H
     #include "biorbdConfig.h"
     #include "s2mMuscleHillTypeThelen.h"
+    #include "s2mMuscleCaracteristics.h"
+    #include "s2mMuscleFatigueParam.h"
 
 class BIORBD_API s2mMuscleHillTypeThelenFatigable : public s2mMuscleHillTypeThelen
 {
@@ -22,13 +24,19 @@ class BIORBD_API s2mMuscleHillTypeThelenFatigable : public s2mMuscleHillTypeThel
         s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m);
 
         ~s2mMuscleHillTypeThelenFatigable(){}
+        virtual void timeDerivatedFatigueState(const s2mMuscleCaracteristics &c, const s2mMuscleStateActual &EMG);
         virtual void computeFlCE(const s2mMuscleStateActual &EMG);
+
 
 
     protected:
         virtual void setType();
 
     private:
+        double m_fatigueRate;
+        double m_recoveryRate;
+        double m_developFactor;
+        double m_recoverFactor;
 
 };
 

@@ -21,6 +21,7 @@ class BIORBD_API s2mMuscleHillTypeThelen : public s2mMuscleHillType
         s2mMuscleHillTypeThelen(const std::shared_ptr<s2mMuscle> m);
 
         ~s2mMuscleHillTypeThelen(){}
+        virtual void computeFlPE();
         virtual void computeFlCE(const s2mMuscleStateActual &EMG);
 
 

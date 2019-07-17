@@ -2,6 +2,7 @@
 #define S2MSTATICOPTIMIZATIONIPOPT_H
 
 #include <IpIpoptApplication.hpp>
+#include <iostream>
 #include "IpTNLP.hpp"
 #include "biorbdConfig.h"
 #include "s2mGenCoord.h"
@@ -18,26 +19,18 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
 {
     public:
         s2mStaticOptimizationIpopt(s2mMusculoSkeletalModel &model,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
-                const s2mTau &tau_init,
-                const s2mVector& activationInit,
-                unsigned int p = 2,
-                const double epsilon = 1e-10
+                const s2mGenCoord           &Q,
+                const s2mGenCoord           &Qdot,
+                const s2mTau                &tauTarget,
+                const s2mVector             &activationInit,
+                bool                        useResidual = true,
+                int                         verbose = 0,
+                unsigned int                pNormFactor = 2,
+                const double                eps = 1e-10
                 );
-        s2mStaticOptimizationIpopt(s2mMusculoSkeletalModel &model,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
-                const s2mTau &tau_init,
-                unsigned int p = 2,
-                const double epsilon = 1e-10
-                );
-
 
         virtual ~s2mStaticOptimizationIpopt();
 
-        /**@name Overloaded from TNLP */
-        //@{
         /** Method to return some info about the NLP */
         virtual bool get_nlp_info(
            Ipopt::Index&          n,
@@ -109,19 +102,7 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
            Ipopt::Index*        jCol,
            Ipopt::Number*       values
            );
-        virtual bool eval_h(
-           Ipopt::Index         n,
-           const Ipopt::Number* x,
-           bool          new_x,
-           Ipopt::Number        obj_factor,
-           Ipopt::Index         m,
-           const Ipopt::Number* lambda,
-           bool          new_lambda,
-           Ipopt::Index         nele_hess,
-           Ipopt::Index*        iRow,
-           Ipopt::Index*        jCol,
-           Ipopt::Number*       values
-           );
+
         virtual void finalize_solution(
            Ipopt::SolverReturn               status,
            Ipopt::Index                      n,
@@ -136,27 +117,32 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
            Ipopt::IpoptCalculatedQuantities* ip_cq
            );
 
+        s2mVector finalSolution(){return m_finalSolution;}
+        s2mVector finalResidual(){return m_finalResidual;}
 
 
     protected:
+        s2mMusculoSkeletalModel &m_model;
         unsigned int m_nQ;
         unsigned int m_nQdot;
         unsigned int m_nMus;
         unsigned int m_nDof;
         unsigned int m_nTau;
-        s2mTau m_tau;
-        s2mVector m_activationInit;
-        s2mVector m_activation;
-        unsigned int m_p;
+        unsigned int m_nTauResidual;
+        double m_eps;
+        s2mVector m_activations;
         s2mGenCoord m_Q;
-        s2mGenCoord m_Qdot;
-        s2mMusculoSkeletalModel &m_model;
-        double m_epsilon;
-        std::vector<s2mMuscleStateActual> m_State;
-        s2mTau m_tau_calcul;
+        s2mGenCoord m_Qdot;        
+        s2mTau m_tauTarget;
+        s2mVector m_tauResidual;
+        double m_tauPonderation;
+        std::vector<s2mMuscleStateActual> m_states;
+        unsigned int m_pNormFactor;
+        int m_verbose;
+        s2mVector m_finalSolution;
+        s2mVector m_finalResidual;
 
-        void fillActivation(
-                Ipopt::Index n,
+        void dispatch(
                 const Ipopt::Number* x
                 );
 

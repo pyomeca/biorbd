@@ -1,5 +1,5 @@
 #ifndef IPOPTTESTMAIN_H
-#define S2MSTATICOPTIMIZATIONIPOPT_H
+#define IPOPTTESTMAIN_H
 
 #include <IpIpoptApplication.hpp>
 #include "IpTNLP.hpp"
@@ -17,12 +17,18 @@
 class BIORBD_API mainTest
 {
     public:
-        int main();
+    mainTest(
+            s2mMusculoSkeletalModel &m
+            );
+    ~mainTest();
+
+    int main();
 
 
     protected:
+    s2mMusculoSkeletalModel &m_model;
 
     private:
 
 };
-#endif // S2MSTATICOPTIMIZATIONIPOPT_H
+#endif // IPOPTTESTMAIN_H

@@ -1,35 +1,23 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mStaticOptimizationIpOptLinearized.h"
+#include "../include/s2mStaticOptimizationIpoptLinearized.h"
 
 
 s2mStaticOptimizationIpoptLinearized::s2mStaticOptimizationIpoptLinearized(s2mMusculoSkeletalModel &model,
-        const s2mGenCoord& Q, // states
-        const s2mGenCoord& Qdot, // derived states
-        const s2mTau& tau_init,
-        const s2mVector &activationInit,
-        unsigned int p,
-        const double epsilon
+           const s2mGenCoord &Q,
+           const s2mGenCoord &Qdot,
+           const s2mTau &tauTarget,
+           const s2mVector &activationInit,
+           //bool useResidual,
+           int verbose,
+           unsigned int p,
+           const double eps
         ) :
-    s2mStaticOptimizationIpopt(model, Q, Qdot, tau_init, activationInit, p, epsilon),
+    s2mStaticOptimizationIpopt(model, Q, Qdot, tauTarget, activationInit, false, verbose, p, eps),
     m_jacobian(s2mMatrix(m_nDof, m_nMus))
 {
     prepareJacobian();
 }
 
-
-s2mStaticOptimizationIpoptLinearized::s2mStaticOptimizationIpoptLinearized(
-        s2mMusculoSkeletalModel &model,
-        const s2mGenCoord& Q, // states
-        const s2mGenCoord& Qdot, // derived states
-        const s2mTau& tau_init,
-        unsigned int p,
-        const double epsilon
-        ) :
-    s2mStaticOptimizationIpopt(model, Q, Qdot, tau_init, p, epsilon),
-    m_jacobian(s2mMatrix(m_nDof, m_nMus))
-{
-    prepareJacobian();
-}
 
 void s2mStaticOptimizationIpoptLinearized::prepareJacobian()
 {
@@ -67,16 +55,15 @@ bool s2mStaticOptimizationIpoptLinearized::eval_g(
         Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Index m, Ipopt::Number *g)
 {
     if (new_x){
-        fillActivation(n, x);
+        dispatch(x);
     }
     std::vector<s2mMuscleStateActual> state;// controls
     for (unsigned int i = 0; i<m_nMus; ++i){
-        std::cout << "m_activation[" << i << "]: " << m_activation[i] << std::endl;
-        state.push_back(s2mMuscleStateActual(0, m_activation[i]));
+        std::cout << "m_activation[" << i << "]: " << m_activations[i] << std::endl;
+        state.push_back(s2mMuscleStateActual(0, m_activations[i]));
     }
     // Compute the torques from muscles
-    m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
-    s2mTau tau_calcul = m_model.muscularJointTorque(m_model, state, true, &m_Q, &m_Qdot);
+    s2mTau tau_calcul = m_model.muscularJointTorque(m_model, state, false, &m_Q, &m_Qdot);
 
     for( Ipopt::Index i = 0; i < m; i++ )
        {
@@ -100,7 +87,7 @@ bool s2mStaticOptimizationIpoptLinearized::eval_jac_g(
         Ipopt::Number *values)
 {
     if (new_x){
-        fillActivation(n, x);
+        dispatch(x);
     }
 
     if (values == nullptr) {

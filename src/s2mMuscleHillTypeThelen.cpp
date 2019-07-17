@@ -31,6 +31,13 @@ s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(const std::shared_ptr<s2mMuscle
 
 }
 
+void s2mMuscleHillTypeThelen::computeFlPE(){
+    if (m_position.length() > caract().tendonSlackLength())
+        m_FlPE = (exp(m_cste_FlPE_1*(m_position.length()/caract().optimalLength()-1)) -1)/(exp(m_cste_FlPE_2)-1);
+    else
+        m_FlPE = 0;
+    }
+
 void s2mMuscleHillTypeThelen::computeFlCE(const s2mMuscleStateActual&){
     m_FlCE = exp( -pow(((m_position.length() / caract().optimalLength())-1), 2 ) /  m_cste_FlCE_2 ); //Thelen2003, le 26 fevrier 2018
 }
