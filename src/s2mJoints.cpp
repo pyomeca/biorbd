@@ -576,19 +576,28 @@ s2mBoneMesh s2mJoints::boneMesh(const unsigned int &idx)
     return bone(idx).caract().mesh();
 }
 
-RigidBodyDynamics::Math::Vector3d s2mJoints::CalcAngularMomentum (s2mJoints &model, const s2mGenCoord &Q, const 
-s2mGenCoord &Qdot, bool update_kinematics) {
+RigidBodyDynamics::Math::Vector3d s2mJoints::CalcAngularMomentum (
+        s2mJoints &model,
+        const s2mGenCoord &Q,
+        const s2mGenCoord &Qdot,
+        bool update_kinematics)
+{
     // Qddot was added later in the RBDL. In order to keep backward compatilibity, 
     s2mGenCoord Qddot(this->nbQddot());
     return CalcAngularMomentum(model, Q, Qdot, Qddot, update_kinematics);
 }
-    RigidBodyDynamics::Math::Vector3d s2mJoints::CalcAngularMomentum (s2mJoints &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, bool update_kinematics) {
+RigidBodyDynamics::Math::Vector3d s2mJoints::CalcAngularMomentum (
+        s2mJoints &model,
+        const s2mGenCoord &Q,
+        const s2mGenCoord &Qdot,
+        const s2mGenCoord &Qddot,
+        bool update_kinematics)
+{
     // Définition des variables
     RigidBodyDynamics::Math::Vector3d com,  angular_momentum;
     double mass;
 
     // Calcul du angular momentum par la fonction de la position du centre de masse
-    s2mError::s2mAssert(false, "Call to CalcCenterOfMass must be verified!");
     RigidBodyDynamics::Utils::CalcCenterOfMass(model, Q, Qdot, &Qddot, mass, com, nullptr, nullptr, &angular_momentum, nullptr, update_kinematics);
 
     return angular_momentum;
@@ -605,12 +614,12 @@ std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CalcSegmentsAngularMom
 
     double mass;
     RigidBodyDynamics::Math::Vector3d com;
-    s2mError::s2mAssert(false, "Call to CalcCenterOfMass must be verified!");
+    s2mError::s2mWarning(false, "Call to CalcCenterOfMass must be verified!");
     RigidBodyDynamics::Utils::CalcCenterOfMass (*this, Q, Qdot, &Qddot, mass, com, nullptr, nullptr, nullptr, nullptr, false);
     RigidBodyDynamics::Math::SpatialTransform X_to_COM (RigidBodyDynamics::Math::Xtrans(com));
 
     std::vector<RigidBodyDynamics::Math::Vector3d> h_segment;
-    for (size_t i = 1; i < model.mBodies.size(); i++) {
+    for (unsigned int i = 1; i < model.mBodies.size(); i++) {
         model.Ic[i] = model.I[i];
         model.hc[i] = model.Ic[i].toMatrix() * model.v[i];
 
