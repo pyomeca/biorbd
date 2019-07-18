@@ -614,7 +614,6 @@ std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CalcSegmentsAngularMom
 
     double mass;
     RigidBodyDynamics::Math::Vector3d com;
-    s2mError::s2mWarning(false, "Call to CalcCenterOfMass must be verified!");
     RigidBodyDynamics::Utils::CalcCenterOfMass (*this, Q, Qdot, &Qddot, mass, com, nullptr, nullptr, nullptr, nullptr, false);
     RigidBodyDynamics::Math::SpatialTransform X_to_COM (RigidBodyDynamics::Math::Xtrans(com));
 
