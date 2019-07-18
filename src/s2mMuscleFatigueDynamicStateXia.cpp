@@ -28,7 +28,7 @@ s2mVector s2mMuscleFatigueDynamicStateXia::timeDerivativeState(const s2mMuscleSt
     m_activeFibersDot = command - caract.fatigueParameters().fatigueRate()*m_activeFibers;
     m_restingFibersDot = -command + caract.fatigueParameters().recoveryRate()*m_fatiguedFibers;
     m_fatiguedFibersDot = caract.fatigueParameters().fatigueRate()*m_activeFibers - caract.fatigueParameters().recoveryRate()*m_fatiguedFibers;
-    s2mError::s2mAssert(m_activeFibersDot + m_restingFibersDot + m_fatiguedFibersDot != 0.0, "Sum of time derivates of fatigue states must be equal to 0");
+    s2mError::s2mAssert(m_activeFibersDot + m_restingFibersDot + m_fatiguedFibersDot == 0.0, "Sum of time derivates of fatigue states must be equal to 0");
 
     // output results
     s2mVector res(3);

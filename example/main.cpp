@@ -12,7 +12,16 @@
 
 int main()
 {
-    s2mMusculoSkeletalModel m3("arm26.biomod");
+    s2mMusculoSkeletalModel m3("conv-arm26.bioMod");
+    s2mGenCoord Q(m3);
+    s2mGenCoord QDot(m3);
+    s2mGenCoord QDDot(m3);
+    for (unsigned i = 0; i<m3.nbQ(); i++){
+        Q[i] = 0 ;
+        QDot[i] = 0;
+        QDDot[i] = 0;
+    }
+    m3.updateMuscles(m3, Q, QDot, true);
 
     s2mMuscleStateActual EMG(0, 1);
     // METHOD 1
@@ -31,9 +40,6 @@ int main()
         muscle->FlCE(EMG);
     }
 
-
-    mainTest optim_test(m3);
-    optim_test.main();
 ////    s2mMusculoSkeletalModel m3("test-os-masse.biomod");
 //    s2mGenCoord Q(m3);
 //    s2mGenCoord QDot(m3);
