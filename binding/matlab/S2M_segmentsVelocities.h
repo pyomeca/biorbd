@@ -31,9 +31,9 @@ void S2M_segmentsVelocities( int, mxArray *plhs[],
     // Remplir l'output
     unsigned int cmp = 0;
     for (std::vector<RigidBodyDynamics::Math::SpatialVector>::iterator v_it = model->v.begin(); v_it != model->v.end(); ++v_it){
-            for (unsigned int i = 0; i<6; ++i)
-                    vel[i+6*cmp] = (*v_it)(i);
-            ++cmp;
+        for (unsigned int i = 0; i<6; ++i)
+             vel[i+6*cmp] = (*v_it)(i);
+        ++cmp;
     }
 
     return;
