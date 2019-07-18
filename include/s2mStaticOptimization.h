@@ -92,50 +92,9 @@ class BIORBD_API s2mStaticOptimization
                 const int verbose = 0
                 );
 
-        s2mStaticOptimization staticOptimizationForOneInstant(
-                s2mMusculoSkeletalModel &m,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
-                const s2mGenCoord& Qddot,
-                const s2mVector& Activ,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
-                );
-        s2mStaticOptimization staticOptimizationForOneInstant(
-                s2mMusculoSkeletalModel &m,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
-                const s2mTau& tauTarget,
-                const s2mVector& Activ,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
-                );
-        s2mStaticOptimization staticOptimizationForOneInstant(
-                s2mMusculoSkeletalModel &m,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
-                const s2mGenCoord& Qddot,
-                const std::vector<s2mMuscleStateActual>& state,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
-                );
-        s2mStaticOptimization staticOptimizationForOneInstant(
-                s2mMusculoSkeletalModel &m,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
-                const s2mTau& tauTarget,
-                const std::vector<s2mMuscleStateActual>& state,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
-                );
-
         void run(
                 bool LinearizedState = false
                 );
-
-
-
-
 
     protected:
         s2mMusculoSkeletalModel m_model;
@@ -145,10 +104,18 @@ class BIORBD_API s2mStaticOptimization
         s2mTau m_tauTarget;
         std::vector<s2mMuscleStateActual> m_state;
         s2mVector m_Activ;
+        std::vector<s2mGenCoord> m_allQ;
+        std::vector<s2mGenCoord> m_allQdot;
+        std::vector<s2mGenCoord> m_allQddot;
+        std::vector<s2mTau> m_allTauTarget;
+        std::vector<std::vector<s2mMuscleStateActual>> m_allState;
+        std::vector<s2mVector> m_allActiv;
         unsigned int m_pNormFactor;
         int m_verbose;
+        bool m_useResidual;
         std::vector<s2mVector> m_finalSolution;
         unsigned int m_multipleInstant;
+        unsigned int m_configConstructor;
 
     private:
 
