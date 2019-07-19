@@ -24,8 +24,8 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
                 const s2mTau                &tauTarget,
                 const s2mVector             &activationInit,
                 bool                        useResidual = true,
-                int                         verbose = 0,
                 unsigned int                pNormFactor = 2,
+                int                         verbose = 0,
                 const double                eps = 1e-10
                 );
 

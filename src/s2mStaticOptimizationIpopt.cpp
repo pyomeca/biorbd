@@ -8,8 +8,8 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
         const s2mTau &tauTarget,
         const s2mVector &activationInit,
         bool useResidual,
-        int verbose,
         unsigned int pNormFactor,
+        int verbose,
         const double eps
         ):
     m_model(model),
