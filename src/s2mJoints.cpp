@@ -152,12 +152,12 @@ const s2mBone& s2mJoints::bone(unsigned int i) const {
 
 const s2mBone &s2mJoints::bone(const s2mString & name) const
 {
-    return bone(GetBodyS2MId(name.c_str()));
+    return bone(static_cast<unsigned int>(GetBodyS2MId(name.c_str())));
 }
 
 unsigned int s2mJoints::nbBone() const
 {
-     return m_bones.size();
+     return static_cast<unsigned int>(m_bones.size());
 }
 
 std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> > &sv, const unsigned int &frame){
@@ -219,14 +219,14 @@ std::vector<s2mAttitude> s2mJoints::globalJCS(const s2mGenCoord &Q, const bool u
 }
 
 int s2mJoints::GetBodyS2MId(const s2mString &s) const{
-    for (unsigned int i=0; i<m_bones.size(); ++i)
-        if (!m_bones[i].name().compare(s))
+    for (int i=0; i<static_cast<int>(m_bones.size()); ++i)
+        if (!m_bones[static_cast<unsigned int>(i)].name().compare(s))
             return i;
     return -1;
 }
 
 s2mAttitude s2mJoints::globalJCS(const s2mGenCoord &Q, const s2mString &name, const bool updateKin){
-    return globalJCS(Q,GetBodyS2MId(name.c_str()),updateKin);
+    return globalJCS(Q,static_cast<unsigned int>(GetBodyS2MId(name.c_str())),updateKin);
 }
 
 s2mAttitude s2mJoints::globalJCS(const s2mGenCoord &Q, const unsigned int i, const bool updateKin){
@@ -253,7 +253,7 @@ std::vector<s2mAttitude> s2mJoints::localJCS() const{
     return out;
 }
 s2mAttitude s2mJoints::localJCS(const s2mString &name) const{
-    return localJCS(GetBodyS2MId(name.c_str()));
+    return localJCS(static_cast<unsigned int>(GetBodyS2MId(name.c_str())));
 }
 s2mAttitude s2mJoints::localJCS(const unsigned int i) const{
     return m_bones[i].localJCS();
@@ -269,7 +269,7 @@ std::vector<s2mNodeBone> s2mJoints::projectPoint(const s2mMarkers &marks, const 
     for (unsigned int i=0;i<marks.nTags();++i){
         s2mNodeBone tp(marks.marker(i));
         if (tp.nAxesToRemove()!=0){
-            tp.setPosition(globalJCS(Q,GetBodyS2MId(tp.parent()),true).transpose()* (*(v.begin()+i)) );
+            tp.setPosition(globalJCS(Q,static_cast<unsigned int>(GetBodyS2MId(tp.parent())),true).transpose()* (*(v.begin()+i)) );
             // Prendre la position du nouveau marker avec les infos de celui du modèle
             out.push_back(projectPoint(Q,tp,updateKin));
             updateKin = false;
@@ -284,8 +284,9 @@ std::vector<s2mNodeBone> s2mJoints::projectPoint(const s2mMarkers &marks, const 
 s2mNodeBone s2mJoints::projectPoint(const s2mGenCoord &Q, const Eigen::Vector3d &v, int boneIdx, const s2mString& axesToRemove, bool updateKin)
 {
     // Créer un marqueur
-    s2mString boneName(bone(boneIdx).name());
-    s2mNodeBone node(globalJCS(Q,boneIdx,true).transpose()*v, "tp", boneName, true, true, axesToRemove, GetBodyId(boneName.c_str()));
+    s2mString boneName(bone(static_cast<unsigned int>(boneIdx)).name());
+    s2mNodeBone node(globalJCS(Q,static_cast<unsigned int>(boneIdx),true).transpose()*v, "tp", boneName,
+                     true, true, axesToRemove, static_cast<int>(GetBodyId(boneName.c_str())));
 
     // projeté puis remettre dans le global
     return projectPoint(Q, node, updateKin);
@@ -880,7 +881,7 @@ void s2mJoints::CalcMatRotJacobian(s2mJoints &model, const RigidBodyDynamics::Ma
         while (j != 0) {
             unsigned int q_index = model.mJoints[j].q_index;
             // Si ce n'est pas un dof en translation (3 4 5 dans model.S)
-            if (model.S[j](3)!=1 && model.S[j](4)!=1 && model.S[j](5)!=1)
+            if (model.S[j](3)!=1.0 && model.S[j](4)!=1.0 && model.S[j](5)!=1.0)
             {
                 RigidBodyDynamics::Math::SpatialTransform X_base = model.X_base[j];
                 X_base.r << 0,0,0; // Retirer tout concept de translation (ne garder que la matrice rotation)
