@@ -277,6 +277,14 @@ void s2mStaticOptimizationIpopt::finalize_solution(
     }
 }
 
+s2mVector s2mStaticOptimizationIpopt::finalSolution() const{
+    return m_finalSolution;
+}
+
+s2mVector s2mStaticOptimizationIpopt::finalResidual() const{
+    return m_finalResidual;
+}
+
 void s2mStaticOptimizationIpopt::dispatch(const Ipopt::Number *x)
 {
     for(unsigned int i = 0; i < m_nMus; i++ ){

@@ -117,8 +117,8 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
            Ipopt::IpoptCalculatedQuantities* ip_cq
            );
 
-        s2mVector finalSolution(){return m_finalSolution;}
-        s2mVector finalResidual(){return m_finalResidual;}
+        s2mVector finalSolution() const;
+        s2mVector finalResidual() const;
 
 
     protected:
