@@ -130,9 +130,11 @@ void s2mStaticOptimization::run(bool LinearizedState)
                             m_useResidualTorque, m_pNormFactor, m_verbose
                             )
                         );
+        // Optimize!
+        status = app->OptimizeTNLP(*m_staticOptimProblem.end());
 
         // Take the solution of the previous optimization as the solution for the next optimization
-        m_initialActivationGuess = static_cast<Ipopt::SmartPtr<s2mStaticOptimizationIpopt>>(*m_staticOptimProblem.end())->finalSolution();
+        m_initialActivationGuess = static_cast<s2mStaticOptimizationIpopt*>(Ipopt::GetRawPtr(*m_staticOptimProblem.end()))->finalSolution();
     }
 }
 
