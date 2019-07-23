@@ -69,7 +69,7 @@ class BIORBD_API s2mStaticOptimization
         s2mVector m_initialActivationGuess;
         unsigned int m_pNormFactor;
         int m_verbose;
-        std::vector<Ipopt::SmartPtr<Ipopt::TNLP>> m_staticOptimProblem;
+        std::vector<Ipopt::SmartPtr<s2mStaticOptimizationIpopt>> m_staticOptimProblem;
 
     private:
 
