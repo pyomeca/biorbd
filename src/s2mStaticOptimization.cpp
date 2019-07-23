@@ -131,7 +131,6 @@ void s2mStaticOptimization::run(bool LinearizedState)
                             )
                         );
         // Optimize!
-
         status = app->OptimizeTNLP((*(m_staticOptimProblem.end()-1)));
 
         // Take the solution of the previous optimization as the solution for the next optimization
