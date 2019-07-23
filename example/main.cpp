@@ -65,6 +65,7 @@ int main()
 //    s2mTau tau(a);
     s2mStaticOptimization optim(m3, Q, QDot, tau_calcul, state);
     optim.run();
+    return 0;
 
 //    std::cout << "Q:\n" << Q << std::endl;
 //    std::cout << "QDot:\n" << QDot << std::endl;
