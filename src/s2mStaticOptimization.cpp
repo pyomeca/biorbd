@@ -131,10 +131,10 @@ void s2mStaticOptimization::run(bool LinearizedState)
                             )
                         );
         // Optimize!
-        status = app->OptimizeTNLP((*(m_staticOptimProblem.end()-1)));
+        status = app->OptimizeTNLP(m_staticOptimProblem[i]);
 
         // Take the solution of the previous optimization as the solution for the next optimization
-        m_initialActivationGuess = static_cast<s2mStaticOptimizationIpopt*>(Ipopt::GetRawPtr(*(m_staticOptimProblem.end()-1)))->finalSolution();
+        m_initialActivationGuess = static_cast<s2mStaticOptimizationIpopt*>(Ipopt::GetRawPtr(m_staticOptimProblem[i]))->finalSolution();
     }
 }
 
