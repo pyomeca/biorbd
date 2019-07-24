@@ -59,6 +59,7 @@ class BIORBD_API s2mStaticOptimization
                 );
 
         void run(bool useLinearizedState = false);
+        std::vector<s2mVector> finalSolution();
 
     protected:
         s2mMusculoSkeletalModel& m_model;
@@ -70,6 +71,7 @@ class BIORBD_API s2mStaticOptimization
         unsigned int m_pNormFactor;
         int m_verbose;
         std::vector<Ipopt::SmartPtr<Ipopt::TNLP>> m_staticOptimProblem;
+        bool m_alreadyRun;
 
     private:
 

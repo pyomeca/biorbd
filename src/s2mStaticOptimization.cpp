@@ -14,7 +14,8 @@ s2mStaticOptimization::s2mStaticOptimization(s2mMusculoSkeletalModel& model,
     m_model(model),
     m_useResidualTorque(useResidualTorque),
     m_pNormFactor(pNormFactor),
-    m_verbose(verbose)
+    m_verbose(verbose),
+    m_alreadyRun(false)
 {
     m_allQ.push_back(Q);
     m_allQdot.push_back(Qdot);
@@ -42,7 +43,8 @@ s2mStaticOptimization::s2mStaticOptimization(
     m_model(model),
     m_useResidualTorque(useResidualTorque),
     m_pNormFactor(pNormFactor),
-    m_verbose(verbose)
+    m_verbose(verbose),
+    m_alreadyRun(false)
 {
     m_allQ.push_back(Q);
     m_allQdot.push_back(Qdot);
@@ -68,7 +70,8 @@ s2mStaticOptimization::s2mStaticOptimization(
     m_allQdot(allQdot),
     m_allTauTarget(allTauTarget),
     m_pNormFactor(pNormFactor),
-    m_verbose(verbose)
+    m_verbose(verbose),
+    m_alreadyRun(false)
 {
     if (initialActivationGuess.size() == 0){
         m_initialActivationGuess = s2mVector(m_model.nbMuscleTotal());
@@ -93,7 +96,8 @@ s2mStaticOptimization::s2mStaticOptimization(s2mMusculoSkeletalModel& model,
     m_allQdot(allQdot),
     m_allTauTarget(allTauTarget),
     m_pNormFactor(pNormFactor),
-    m_verbose(verbose)
+    m_verbose(verbose),
+    m_alreadyRun(false)
 {
     m_initialActivationGuess = s2mVector(m_model.nbMuscleTotal());
     for (unsigned int i = 0; i<m_model.nbMuscleTotal(); i++)
@@ -131,10 +135,27 @@ void s2mStaticOptimization::run(bool LinearizedState)
                             )
                         );
         // Optimize!
-        status = app->OptimizeTNLP((*(m_staticOptimProblem.end()-1)));
+        status = app->OptimizeTNLP(m_staticOptimProblem[i]);
 
         // Take the solution of the previous optimization as the solution for the next optimization
-        m_initialActivationGuess = static_cast<s2mStaticOptimizationIpopt*>(Ipopt::GetRawPtr(*(m_staticOptimProblem.end()-1)))->finalSolution();
+        m_initialActivationGuess = static_cast<s2mStaticOptimizationIpopt*>(Ipopt::GetRawPtr(m_staticOptimProblem[i]))->finalSolution();
     }
+    m_alreadyRun = true;
+}
+
+std::vector<s2mVector> s2mStaticOptimization::finalSolution()
+{
+    std::vector<s2mVector> res;
+    if (!m_alreadyRun){
+        s2mError::s2mAssert(0, "Problem has not been ran through the optimization process yet, you should optimize it first to get the optimized solution");
+    }
+    else {
+        for (unsigned int i=0; i<m_allQ.size(); ++i){
+            res.push_back(static_cast<s2mStaticOptimizationIpopt*>(Ipopt::GetRawPtr(m_staticOptimProblem[i]))->finalSolution());
+            std::cout << res[i] << std::endl;
+        }
+    }
+
+    return res;
 }
 

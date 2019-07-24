@@ -13,35 +13,50 @@
 int main()
 {
     s2mMusculoSkeletalModel m3("conv-arm26.bioMod");
+    unsigned int nbrInstant(10);
+    std::vector<s2mGenCoord> allQ;
+    std::vector<s2mGenCoord> allQdot;
+    std::vector<s2mGenCoord> allQddot;
+    std::vector<s2mTau> allTau;
+    std::vector<std::vector<s2mMuscleStateActual>> allState;
     s2mGenCoord Q(m3);
-    s2mGenCoord QDot(m3);
-    s2mGenCoord QDDot(m3);
-
-////    std::default_random_engine re(time(0));
-////    std::uniform_int_distribution<int> distrib{0, 100};
-
-    for (unsigned i = 0; i<m3.nbQ(); i++){
-        Q[i] = 0 ;//static_cast<double>(distrib(re)-50)/100*3.14/2;
-        QDot[i] = 0;//static_cast<double>(distrib(re)-50)/100*10;
-        QDDot[i] = 0;//static_cast<double>(distrib(re)-50)/100*50;
-    }
-    //QDDot[0] = -11.4546;
-    //QDDot[1] = 9.74539;
-
+    s2mGenCoord Qdot(m3);
+    s2mGenCoord Qddot(m3);
 
     std::vector<s2mMuscleStateActual> state;
     for (unsigned int i = 0; i<m3.nbMuscleTotal(); ++i){
         state.push_back(s2mMuscleStateActual(0, 0.1));
     }
 
-    s2mTau tau_calcul = m3.muscularJointTorque(m3, state, true, &Q, &QDot);
+////    std::default_random_engine re(time(0));
+////    std::uniform_int_distribution<int> distrib{0, 100};
+
+    for (unsigned int j = 0; j<nbrInstant ; j++) {
+        double epsilon(0.1);
+        for (unsigned int i = 0; i<m3.nbQ(); i++){
+            Q[i] = 0 ;//static_cast<double>(distrib(re)-50)/100*3.14/2;
+            Qdot[i] = 0;//static_cast<double>(distrib(re)-50)/100*10;
+            Qddot[i] = 0;//static_cast<double>(distrib(re)-50)/100*50;
+        }
+        allQ.push_back(Q);
+        allQdot.push_back(Qdot);
+        allQddot.push_back(Qddot);
+        allState.push_back(state);
+        s2mTau tau_calcul = m3.muscularJointTorque(m3, state, true, &Q, &Qdot);
+        std::cout << "tau :\n" << tau_calcul << std::endl;
+        allTau.push_back(tau_calcul);
+        epsilon += 0.1;
+    }
+
+
+    s2mTau tau_calcul = m3.muscularJointTorque(m3, state, true, &Q, &Qdot);
     std::cout << "tau :\n" << tau_calcul << std::endl;
-    RigidBodyDynamics::ForwardDynamics(m3, Q, QDot, tau_calcul, QDDot);
-    std::cout << "forward dynamics done" << std::endl;
-    s2mTau tau_inv(m3.nbTau());
-    tau_inv.setZero();
-    RigidBodyDynamics::InverseDynamics(m3, Q, QDot, QDDot, tau_inv);
-    std::cout << "tau_inv :\n" << tau_inv << std::endl;
+//    RigidBodyDynamics::ForwardDynamics(m3, Q, Qdot, tau_calcul, Qddot);
+//    std::cout << "forward dynamics done" << std::endl;
+//    s2mTau tau_inv(m3.nbTau());
+//    tau_inv.setZero();
+//    RigidBodyDynamics::InverseDynamics(m3, Q, Qdot, Qddot, tau_inv);
+//    std::cout << "tau_inv :\n" << tau_inv << std::endl;
 
 //    std::vector<s2mMuscleStateActual> State(m3.nbMuscleTotal());
 //    for (unsigned int i = 0; i<m3.nbMuscleTotal(); ++i){
@@ -63,8 +78,15 @@ int main()
 //        a[i] = -9.81;
 //    }
 //    s2mTau tau(a);
-    s2mStaticOptimization optim(m3, Q, QDot, tau_calcul, state);
+    s2mStaticOptimization optim(m3, allQ, allQdot, allTau, state);
     optim.run();
+    std::vector<s2mVector> finSol(optim.finalSolution());
+    for (unsigned int i=0; i<finSol.size(); i++) {
+        std::cout << finSol[i] << std::endl;
+        std::cout << "***" << std::endl;
+    }
+    std::cout << "***" << std::endl;
+
     return 0;
 
 //    std::cout << "Q:\n" << Q << std::endl;
@@ -94,7 +116,7 @@ int main()
 ////        std::cout << T << std::endl;
 
 ////    }
-    return 0;
+
 
 //    s2mMusculoSkeletalModel m;
 //    m = s2mRead::readModelFile("pyomecaman.s2mMod");
