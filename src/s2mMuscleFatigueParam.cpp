@@ -10,6 +10,11 @@ s2mMuscleFatigueParam::s2mMuscleFatigueParam(double _fatigueRate, double _recove
 
 }
 
+s2mMuscleFatigueParam::~s2mMuscleFatigueParam()
+{
+
+}
+
 double s2mMuscleFatigueParam::fatigueRate() const
 {
     return m_fatigueRate;

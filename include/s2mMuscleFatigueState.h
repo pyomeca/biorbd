@@ -11,6 +11,8 @@ class BIORBD_API s2mMuscleFatigueState
                 double fatigued = 0,
                 double resting = 1);
 
+        virtual ~s2mMuscleFatigueState();
+
         // Set and Get
         virtual void setState(
                 double active,

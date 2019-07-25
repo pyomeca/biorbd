@@ -48,17 +48,27 @@ s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const std::sh
     initiateMuscleFatigue(dynamicFatigueType);
 }
 
-void s2mMuscleHillTypeThelenFatigable::applyTimeDerivativeToFatigueModel(const s2mMuscleStateActual &EMG)
+s2mVector s2mMuscleHillTypeThelenFatigable::applyTimeDerivativeToFatigueModel(const s2mMuscleStateActual &EMG)
 {
-    if (std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(m_fatigueState))
-        std::static_pointer_cast<s2mMuscleFatigueDynamicStateXia>(m_fatigueState)->timeDerivativeState(EMG, m_caract);
-    else
+    if (!std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(m_fatigueState))
         s2mError::s2mAssert(false, "Type cannot be fatigued!");
+    return std::static_pointer_cast<s2mMuscleFatigueDynamicStateXia>(m_fatigueState)->timeDerivativeState(EMG, m_caract);
 }
 
-std::shared_ptr<s2mMuscleFatigueState> s2mMuscleHillTypeThelenFatigable::fatigueState()
+std::shared_ptr<s2mMuscleFatigueState> s2mMuscleHillTypeThelenFatigable::getFatigueState()
 {
     return m_fatigueState;
+}
+
+s2mMuscleFatigueState s2mMuscleHillTypeThelenFatigable::fatigueState(double active, double fatigued, double resting)
+{
+    m_fatigueState->setState(active, fatigued, resting);
+    return *m_fatigueState;
+}
+
+s2mMuscleFatigueState s2mMuscleHillTypeThelenFatigable::fatigueState()
+{
+    return *m_fatigueState;
 }
 
 void s2mMuscleHillTypeThelenFatigable::computeFlCE(const s2mMuscleStateActual &EMG)

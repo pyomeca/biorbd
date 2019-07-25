@@ -11,6 +11,11 @@ s2mMuscleFatigueState::s2mMuscleFatigueState(double active,
     setType();
 }
 
+s2mMuscleFatigueState::~s2mMuscleFatigueState()
+{
+
+}
+
 void s2mMuscleFatigueState::setState(double active, double fatigued, double resting)
 {
     // Sanity check for active fibers
