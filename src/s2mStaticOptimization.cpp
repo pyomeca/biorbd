@@ -152,10 +152,21 @@ std::vector<s2mVector> s2mStaticOptimization::finalSolution()
     else {
         for (unsigned int i=0; i<m_allQ.size(); ++i){
             res.push_back(static_cast<s2mStaticOptimizationIpopt*>(Ipopt::GetRawPtr(m_staticOptimProblem[i]))->finalSolution());
-            std::cout << res[i] << std::endl;
         }
     }
 
+    return res;
+}
+
+s2mVector s2mStaticOptimization::finalSolution(unsigned int index)
+{
+    s2mVector res;
+    if (!m_alreadyRun){
+        s2mError::s2mAssert(0, "Problem has not been ran through the optimization process yet, you should optimize it first to get the optimized solution");
+    }
+    else {
+        res = static_cast<s2mStaticOptimizationIpopt*>(Ipopt::GetRawPtr(m_staticOptimProblem[index]))->finalSolution();
+        }
     return res;
 }
 

@@ -60,6 +60,7 @@ class BIORBD_API s2mStaticOptimization
 
         void run(bool useLinearizedState = false);
         std::vector<s2mVector> finalSolution();
+        s2mVector finalSolution(unsigned int index);
 
     protected:
         s2mMusculoSkeletalModel& m_model;

@@ -24,9 +24,9 @@ class BIORBD_API s2mStaticOptimizationIpoptLinearized : public s2mStaticOptimiza
                 const s2mTau                &tauTarget,
                 const s2mVector             &activationInit,
                 bool                        useResidual = true,
-                unsigned int                p = 2,
+                unsigned int                pNormFactor = 2,
                 int                         verbose = 0,
-                double                eps = 1e-15
+                double                eps = 1e-10
         );
 
         virtual ~s2mStaticOptimizationIpoptLinearized();
