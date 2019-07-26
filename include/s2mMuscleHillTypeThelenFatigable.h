@@ -18,7 +18,7 @@
 /// developFactor = 10
 /// recoverFactor = 10
 ///
-class BIORBD_API s2mMuscleHillTypeThelenFatigable : public s2mMuscleHillTypeThelen
+class BIORBD_API s2mMuscleHillTypeThelenFatigable : public s2mMuscleHillTypeThelen, public s2mMuscleFatigable
 {
 public:
     s2mMuscleHillTypeThelenFatigable(
@@ -40,15 +40,10 @@ public:
     s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m, const s2mString& dynamicFatigueType = "Simple");
 
     virtual void applyTimeDerivativeToFatigueModel(const s2mMuscleStateActual& EMG);
-    std::shared_ptr<s2mMuscleFatigueState> getFatigueState();
-    s2mMuscleFatigueState fatigueState(double active, double fatigued, double resting);
-    s2mMuscleFatigueState fatigueState();
     virtual void computeFlCE(const s2mMuscleStateActual &EMG);
 
 protected:
     virtual void setType();
-    void initiateMuscleFatigue(const s2mString &dynamicFatigueType);
-    std::shared_ptr<s2mMuscleFatigueState> m_fatigueState;
 
 };
 

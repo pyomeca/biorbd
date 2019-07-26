@@ -3,10 +3,10 @@
 
 s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mString &s,
         const s2mString &dynamicFatigueType) :
-    s2mMuscleHillTypeThelen(s)
+    s2mMuscleHillTypeThelen(s),
+    s2mMuscleFatigable (dynamicFatigueType)
 {
     setType();
-    initiateMuscleFatigue(dynamicFatigueType);
 }
 
 s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mMuscleGeometry &g,
@@ -14,10 +14,10 @@ s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mMusc
         const s2mMusclePathChangers &w,
         const s2mMuscleStateActual &s,
         const s2mString &dynamicFatigueType) :
-    s2mMuscleHillTypeThelen(g, c, w, s)
+    s2mMuscleHillTypeThelen(g, c, w, s),
+    s2mMuscleFatigable (dynamicFatigueType)
 {
     setType();
-    initiateMuscleFatigue(dynamicFatigueType);
 }
 
 s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mString &n,
@@ -26,26 +26,26 @@ s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mStri
         const s2mMusclePathChangers &w,
         const s2mMuscleStateActual &s,
         const s2mString &dynamicFatigueType) :
-    s2mMuscleHillTypeThelen(n, g, c, w, s)
+    s2mMuscleHillTypeThelen(n, g, c, w, s),
+    s2mMuscleFatigable (dynamicFatigueType)
 {
     setType();
-    initiateMuscleFatigue(dynamicFatigueType);
 }
 
 s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mMuscle &m,
         const s2mString &dynamicFatigueType) :
-    s2mMuscleHillTypeThelen(m)
+    s2mMuscleHillTypeThelen(m),
+    s2mMuscleFatigable (dynamicFatigueType)
 {
     setType();
-    initiateMuscleFatigue(dynamicFatigueType);
 }
 
 s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m,
         const s2mString &dynamicFatigueType) :
-    s2mMuscleHillTypeThelen(m)
+    s2mMuscleHillTypeThelen(m),
+    s2mMuscleFatigable (dynamicFatigueType)
 {
     setType();
-    initiateMuscleFatigue(dynamicFatigueType);
 }
 
 void s2mMuscleHillTypeThelenFatigable::applyTimeDerivativeToFatigueModel(const s2mMuscleStateActual &EMG)
@@ -66,14 +66,4 @@ void s2mMuscleHillTypeThelenFatigable::computeFlCE(const s2mMuscleStateActual &E
 void s2mMuscleHillTypeThelenFatigable::setType()
 {
     m_type = "HillThelenFatigable";
-}
-
-void s2mMuscleHillTypeThelenFatigable::initiateMuscleFatigue(const s2mString &dynamicFatigueType)
-{
-    if (!dynamicFatigueType.tolower().compare("simple"))
-        m_fatigueState = std::make_shared<s2mMuscleFatigueState>();
-    else if (!dynamicFatigueType.tolower().compare("xia"))
-        m_fatigueState = std::make_shared<s2mMuscleFatigueDynamicStateXia>();
-    else
-        s2mError::s2mAssert(false, "Wrong muscle fatigue type");
 }
