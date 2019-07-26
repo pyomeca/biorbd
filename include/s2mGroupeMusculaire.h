@@ -1,5 +1,5 @@
-#ifndef S2MGROUPEMUSCULAIRE_H
-#define S2MGROUPEMUSCULAIRE_H
+#ifndef S2M_GROUPE_MUSCULAIRE_H
+#define S2M_GROUPE_MUSCULAIRE_H
     #include "biorbdConfig.h"
     #include "s2mError.h"
     #include <memory>
@@ -49,4 +49,4 @@ class BIORBD_API s2mGroupeMusculaire
     private:
 };
 
-#endif // S2MGROUPEMUSCULAIRE_H
+#endif // S2M_GROUPE_MUSCULAIRE_H

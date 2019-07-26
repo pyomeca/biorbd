@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEHILLTYPETHELEN_H
-#define S2MMUSCLEHILLTYPETHELEN_H
+#ifndef S2M_MUSCLE_HILL_TYPE_THELEN_H
+#define S2M_MUSCLE_HILL_TYPE_THELEN_H
     #include "biorbdConfig.h"
     #include "s2mMuscleHillType.h"
 
@@ -32,4 +32,4 @@ class BIORBD_API s2mMuscleHillTypeThelen : public s2mMuscleHillType
 
 };
 
-#endif // S2MMUSCLEHILLTYPETHELEN_H
+#endif // S2M_MUSCLE_HILL_TYPE_THELEN_H

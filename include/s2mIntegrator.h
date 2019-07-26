@@ -1,5 +1,5 @@
-#ifndef S2MINTEGRATOR_H
-#define S2MINTEGRATOR_H
+#ifndef S2M_INTEGRATOR_H
+#define S2M_INTEGRATOR_H
     #include "biorbdConfig.h"
     #include "s2mJoints.h"
     #include "s2mGenCoord.h"
@@ -57,4 +57,4 @@ class BIORBD_API s2mIntegrator
     private:
 };
 
-#endif // S2MINTEGRATOR_H
+#endif // S2M_INTEGRATOR_H

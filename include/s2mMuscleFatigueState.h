@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEFATIGUESTATE_H
-#define S2MMUSCLEFATIGUESTATE_H
+#ifndef S2M_MUSCLE_FATIGUE_STATE_H
+#define S2M_MUSCLE_FATIGUE_STATE_H
 #include "biorbdConfig.h"
 #include "s2mError.h"
 
@@ -10,8 +10,6 @@ class BIORBD_API s2mMuscleFatigueState
                 double active = 0,
                 double fatigued = 0,
                 double resting = 1);
-
-        virtual ~s2mMuscleFatigueState();
 
         // Set and Get
         virtual void setState(
@@ -34,4 +32,4 @@ class BIORBD_API s2mMuscleFatigueState
 
 };
 
-#endif // S2MMUSCLEFATIGUESTATE_H
+#endif // S2M_MUSCLE_FATIGUE_STATE_H

@@ -1,5 +1,5 @@
-#ifndef KALMANRECONS_HPP
-#define KALMANRECONS_HPP
+#ifndef S2M_KALMAN_RECONS_H
+#define S2M_KALMAN_RECONS_H
 
 #include <vector>
 #include <iostream>
@@ -66,4 +66,4 @@ protected:
 
 };
 
-#endif // KALMANRECONS_HPP
+#endif // S2M_KALMAN_RECONS_H

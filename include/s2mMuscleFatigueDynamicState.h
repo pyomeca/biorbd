@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEFATIGUEDYNAMICSTATE_H
-#define S2MMUSCLEFATIGUEDYNAMICSTATE_H
+#ifndef S2M_MUSCLE_FATIGUE_DYNAMIC_STATE_H
+#define S2M_MUSCLE_FATIGUE_DYNAMIC_STATE_H
 #include "biorbdConfig.h"
 #include "s2mMuscleFatigueState.h"
 #include "s2mMuscleCaracteristics.h"
@@ -19,7 +19,7 @@ class BIORBD_API s2mMuscleFatigueDynamicState : public s2mMuscleFatigueState
         double previousFatiguedFibers() const;
         double previousRestingFibers() const;
 
-        virtual s2mVector timeDerivativeState(
+        virtual void timeDerivativeState(
                 const s2mMuscleStateActual &EMG,
                 const s2mMuscleCaracteristics &caract
          ) = 0;
@@ -35,4 +35,4 @@ class BIORBD_API s2mMuscleFatigueDynamicState : public s2mMuscleFatigueState
         virtual void setType();
 };
 
-#endif // S2MMUSCLEFATIGUEDYNAMICSTATE_H
+#endif // S2M_MUSCLE_FATIGUE_DYNAMIC_STATE_H

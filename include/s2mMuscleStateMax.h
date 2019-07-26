@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLESTATEMAX_H
-#define S2MMUSCLESTATEMAX_H
+#ifndef S2M_MUSCLE_STATE_MAX_H
+#define S2M_MUSCLE_STATE_MAX_H
 #include "biorbdConfig.h"
 #include "s2mMuscleState.h"
 
@@ -12,4 +12,4 @@ class BIORBD_API s2mMuscleStateMax : public s2mMuscleState
     protected:
 };
 
-#endif // S2MMUSCLESTATEMAX_H
+#endif // S2M_MUSCLE_STATE_MAX_H

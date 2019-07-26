@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLESTATEACTUALBUCHANAN_H
-#define S2MMUSCLESTATEACTUALBUCHANAN_H
+#ifndef S2M_MUSCLE_STATE_ACTUAL_BUCHANAN_H
+#define S2M_MUSCLE_STATE_ACTUAL_BUCHANAN_H
 #include "biorbdConfig.h"
 #include "s2mMuscleStateActual.h"
 
@@ -22,4 +22,4 @@ class BIORBD_API s2mMuscleStateActualBuchanan : public s2mMuscleStateActual
         double m_excitationDot;
 };
 
-#endif // S2MMUSCLESTATEACTUALBUCHANAN_H
+#endif // S2M_MUSCLE_STATE_ACTUAL_BUCHANAN_H

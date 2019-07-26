@@ -1,5 +1,5 @@
-#ifndef KALMANRECONSIMU_HPP
-#define KALMANRECONSIMU_HPP
+#ifndef S2M_KALMAN_RECONS_IMU_H
+#define S2M_KALMAN_RECONS_IMU_H
 
 #include "biorbdConfig.h"
 #include "s2mKalmanRecons.h"
@@ -27,4 +27,4 @@ protected:
     bool m_firstIteration;
 };
 
-#endif // KALMANRECONSIMU_HPP
+#endif // S2M_KALMAN_RECONS_IMU_H

@@ -1,5 +1,5 @@
-#ifndef S2MTAU_H
-#define S2MTAU_H
+#ifndef S2M_TAU_H
+#define S2M_TAU_H
     #include "biorbdConfig.h"
     #include "s2mJoints.h"
     #include "s2mVector.h"
@@ -21,4 +21,4 @@ private:
 
 };
 
-#endif // S2MTAU_H
+#endif // S2M_TAU_H

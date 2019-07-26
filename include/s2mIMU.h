@@ -1,5 +1,5 @@
-#ifndef S2MIMU_H
-#define S2MIMU_H
+#ifndef S2M_IMU_H
+#define S2M_IMU_H
     #include "biorbdConfig.h"
     #include <Eigen/Dense>
     #include "s2mNodeAttitude.h"
@@ -27,4 +27,4 @@ class BIORBD_API s2mIMU : public s2mNodeAttitude
 
 };
 
-#endif // S2MMIMU_H
+#endif // S2M_IMU_H

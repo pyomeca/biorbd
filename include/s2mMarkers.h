@@ -1,5 +1,5 @@
-#ifndef S2MMARKERS_H
-#define S2MMARKERS_H
+#ifndef S2M_MARKERS_H
+#define S2M_MARKERS_H
     #include "s2mMatrix.h"
     #include "biorbdConfig.h"
     #include "s2mString.h"
@@ -62,4 +62,4 @@ protected:
     private:
 };
 
-#endif // S2MMARKERS_H
+#endif // S2M_MARKERS_H

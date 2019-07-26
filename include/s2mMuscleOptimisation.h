@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEOPTIMISATION_H
-#define S2MMUSCLEOPTIMISATION_H
+#ifndef S2M_MUSCLE_OPTIMISATION_H
+#define S2M_MUSCLE_OPTIMISATION_H
 
 
     #include <dlib/optimization.h>
@@ -71,4 +71,4 @@ class BIORBD_API s2mMuscleOptimisation
 
 };
 
-#endif // S2MMUSCLEOPTIMISATION_H
+#endif // S2M_MUSCLE_OPTIMISATION_H

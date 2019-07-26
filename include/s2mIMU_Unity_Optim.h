@@ -1,5 +1,5 @@
-#ifndef S2MIMU_UNITY_OPTIM_H
-#define S2MIMU_UNITY_OPTIM_H
+#ifndef S2M_IMU_UNITY_OPTIM_H
+#define S2M_IMU_UNITY_OPTIM_H
 #include <dlib/optimization.h>  
 #include "biorbdConfig.h"
 #include "s2mAttitude.h" 
@@ -23,4 +23,4 @@ class BIORBD_API s2mIMU_Unity_Optim
     private:
 };
 
-#endif // S2MIMU_UNITY_OPTIM_H
+#endif // S2M_IMU_UNITY_OPTIM_H

@@ -1,5 +1,5 @@
-#ifndef S2MTIMER_H
-#define S2MTIMER_H
+#ifndef S2M_TIMER_H
+#define S2M_TIMER_H
 #include <ctime>
 #include <iostream>
 #include "biorbdConfig.h"
@@ -30,4 +30,4 @@ class BIORBD_API s2mTimer
     private:
 };
 
-#endif // S2MTIMER_H
+#endif // S2M_TIMER_H

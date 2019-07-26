@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEGEOMETRY_H
-#define S2MMUSCLEGEOMETRY_H
+#ifndef S2M_MUSCLE_GEOMETRY_H
+#define S2M_MUSCLE_GEOMETRY_H
 
     #include "s2mMatrix.h"
     #include "biorbdConfig.h"
@@ -90,4 +90,4 @@ class BIORBD_API s2mMuscleGeometry
     private:
 };
 
-#endif // S2MMUSCLEGEOMETRY_H
+#endif // S2M_MUSCLE_GEOMETRY_H

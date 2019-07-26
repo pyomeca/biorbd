@@ -1,5 +1,5 @@
-#ifndef S2MBONE_H
-#define S2MBONE_H
+#ifndef S2M_BONE_H
+#define S2M_BONE_H
 
     #include "biorbdConfig.h"
     #include "s2mError.h"
@@ -111,4 +111,4 @@ class BIORBD_API s2mBone
     private:
 };
 
-#endif // S2MBONE_H
+#endif // S2M_BONE_H

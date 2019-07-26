@@ -27,17 +27,26 @@ int main()
     // METHOD 1
     {
         std::shared_ptr<s2mMuscleHillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(m3.muscleGroup(0).muscle(0)));
-        std::shared_ptr<s2mMuscleFatigueDynamicStateXia> fatigueModel(std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(muscle->fatigueState()));
-        fatigueModel->setState(1, 0, 0);
-        fatigueModel->timeDerivativeState(EMG, m3.muscleGroup(0).muscle(0)->caract());
-        std::cout << muscle->FlCE(EMG) << std::endl;;
+        if (muscle){
+            std::shared_ptr<s2mMuscleFatigueDynamicStateXia> fatigueModel(std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(muscle->fatigueState()));
+            if (fatigueModel){
+                fatigueModel->setState(1, 0, 0);
+                fatigueModel->timeDerivativeState(EMG, m3.muscleGroup(0).muscle(0)->caract());
+                std::cout << muscle->FlCE(EMG) << std::endl;
+            } else
+                throw std::runtime_error("Fatigue model is not a s2mMuscleFatigueDynamicStateXia");
+        } else
+            throw std::runtime_error("Muscle is not a s2mMuscleHillTypeThelenFatigable");
     }
 
     // METHOD 2
     {
         std::shared_ptr<s2mMuscleHillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(m3.muscleGroup(0).muscle(0)));
-        muscle->applyTimeDerivativeToFatigueModel(EMG);
-        muscle->FlCE(EMG);
+        if (muscle){
+            muscle->applyTimeDerivativeToFatigueModel(EMG);
+            std::cout << muscle->FlCE(EMG) << std::endl;
+        } else
+            throw std::runtime_error("Muscle is not a s2mMuscleHillTypeThelenFatigable");
     }
 
 ////    s2mMusculoSkeletalModel m3("test-os-masse.biomod");

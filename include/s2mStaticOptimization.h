@@ -1,5 +1,5 @@
-#ifndef S2MSTATICOPTIMIZATION_H
-#define S2MSTATICOPTIMIZATION_H
+#ifndef S2M_STATIC_OPTIMIZATION_H
+#define S2M_STATIC_OPTIMIZATION_H
 
 #include "biorbdConfig.h"
 #include "s2mGenCoord.h"
@@ -153,4 +153,4 @@ class BIORBD_API s2mStaticOptimization
     private:
 
 };
-#endif // S2MSTATICOPTIMIZATION_H
+#endif // S2M_STATIC_OPTIMIZATION_H
