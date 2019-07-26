@@ -1,5 +1,5 @@
-#ifndef S2MJOINTINTRABONE_H
-#define S2MJOINTINTRABONE_H
+#ifndef S2M_JOINT_INTRABONE_H
+#define S2M_JOINT_INTRABONE_H
     #include "biorbdConfig.h"
     #include "s2mString.h"
     #include <rbdl/rbdl.h>
@@ -20,4 +20,4 @@ class BIORBD_API s2mJointIntraBone : public RigidBodyDynamics::Joint
 };
 
 
-#endif // S2MJOINTINTRABONE_H
+#endif // S2M_JOINT_INTRABONE_H

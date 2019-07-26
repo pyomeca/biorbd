@@ -12,11 +12,9 @@
 
 #include <Eigen/Dense>
 
-
-    
 class BIORBD_API mainTest
 {
-    public:
+public:
     mainTest(
             s2mMusculoSkeletalModel &m
             );
@@ -25,10 +23,8 @@ class BIORBD_API mainTest
     int main();
 
 
-    protected:
+protected:
     s2mMusculoSkeletalModel &m_model;
-
-    private:
 
 };
 #endif // IPOPTTESTMAIN_H

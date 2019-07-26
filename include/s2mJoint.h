@@ -1,5 +1,5 @@
-#ifndef S2MJOINT_H
-#define S2MJOINT_H
+#ifndef S2M_JOINT_H
+#define S2M_JOINT_H
     #include "biorbdConfig.h"
     #include "s2mString.h"
     #include <rbdl/rbdl.h>
@@ -23,4 +23,4 @@ class BIORBD_API s2mJoint : public RigidBodyDynamics::Joint
     private:
 };
 
-#endif // S2MJOINT_H
+#endif // S2M_JOINT_H

@@ -1,5 +1,5 @@
-#ifndef S2MQUATERNION_H
-#define S2MQUATERNION_H
+#ifndef S2M_QUATERNION_H
+#define S2M_QUATERNION_H
 #include <rbdl.h>
 #include "biorbdConfig.h"
     
@@ -22,4 +22,4 @@ class BIORBD_API s2mQuaternion : public RigidBodyDynamics::Math::Quaternion
 
 private:
 };
-#endif // S2MQUATERNION_H
+#endif // S2M_QUATERNION_H

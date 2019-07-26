@@ -1,11 +1,13 @@
-#ifndef S2MMUSCLEHILLTYPETHELENFATIGABLE_H
-#define S2MMUSCLEHILLTYPETHELENFATIGABLE_H
-    #include "biorbdConfig.h"
-    #include "s2mMuscleHillTypeThelen.h"
-    #include "s2mMuscleCaracteristics.h"
-    #include "s2mMuscleFatigueParam.h"
-    #include "s2mMuscleFatigueState.h"
-    #include "s2mMuscleFatigueDynamicStateXia.h"
+#ifndef S2M_MUSCLE_HILL_TYPE_THELEN_FATIGABLE_H
+#define S2M_MUSCLE_HILL_TYPE_THELEN_FATIGABLE_H
+
+#include "biorbdConfig.h"
+#include "s2mMuscleHillTypeThelen.h"
+#include "s2mMuscleCaracteristics.h"
+#include "s2mMuscleFatigueParam.h"
+#include "s2mMuscleFatigueState.h"
+#include "s2mMuscleFatigueDynamicStateXia.h"
+#include "s2mMuscleFatigable.h"
 
 ///
 /// \brief The s2mMuscleHillTypeThelenFatigable class
@@ -50,4 +52,4 @@ protected:
 
 };
 
-#endif // S2MMUSCLEHILLTYPETHELENFATIGABLE_H
+#endif // S2M_MUSCLE_HILL_TYPE_THELEN_FATIGABLE_H

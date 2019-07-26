@@ -1,5 +1,5 @@
-#ifndef S2MSTATICOPTIMIZATIONIPOPT_H
-#define S2MSTATICOPTIMIZATIONIPOPT_H
+#ifndef S2M_STATIC_OPTIMIZATION_IPOPT_H
+#define S2M_STATIC_OPTIMIZATION_IPOPT_H
 
 #include <IpIpoptApplication.hpp>
 #include <iostream>
@@ -149,4 +149,4 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
     private:
 
 };
-#endif // S2MSTATICOPTIMIZATIONIPOPT_H
+#endif // S2M_STATIC_OPTIMIZATION_IPOPT_H

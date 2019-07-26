@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLESTATEACTUAL_H
-#define S2MMUSCLESTATEACTUAL_H
+#ifndef S2M_MUSCLE_STATE_ACTUAL_H
+#define S2M_MUSCLE_STATE_ACTUAL_H
 #include "biorbdConfig.h"
 #include "s2mMuscleState.h"
 #include "s2mMuscleStateMax.h"
@@ -33,4 +33,4 @@ class BIORBD_API s2mMuscleStateActual : public s2mMuscleState
         double m_activationDot;
 };
 
-#endif // S2MMUSCLESTATEACTUAL_H
+#endif // S2M_MUSCLE_STATE_ACTUAL_H

@@ -1,5 +1,5 @@
-#ifndef S2MWRAPPINGSPHERE_H
-#define S2MWRAPPINGSPHERE_H
+#ifndef S2M_WRAPPING_SPHERE_H
+#define S2M_WRAPPING_SPHERE_H
     #include "biorbdConfig.h"
     #include "s2mWrappingObject.h"
 
@@ -26,4 +26,4 @@ class BIORBD_API s2mWrappingSphere : public s2mWrappingObject
     private:
 };
 
-#endif // S2MWRAPPINGSPHERE_H
+#endif // S2M_WRAPPING_SPHERE_H

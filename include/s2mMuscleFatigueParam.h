@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEFATIGUEPARAM_H
-#define S2MMUSCLEFATIGUEPARAM_H
+#ifndef S2M_MUSCLE_FATIGUE_PARAM_H
+#define S2M_MUSCLE_FATIGUE_PARAM_H
     #include "biorbdConfig.h"
 
 class BIORBD_API s2mMuscleFatigueParam
@@ -32,4 +32,4 @@ class BIORBD_API s2mMuscleFatigueParam
 
 };
 
-#endif // S2MMUSCLEFATIGUEPARAM_H
+#endif // S2M_MUSCLE_FATIGUE_PARAM_H

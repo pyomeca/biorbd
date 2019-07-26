@@ -1,5 +1,5 @@
-#ifndef S2MACTUATORGAUSS3P_H
-#define S2MACTUATORGAUSS3P_H
+#ifndef S2M_ACTUATOR_GAUSS_3P_H
+#define S2M_ACTUATOR_GAUSS_3P_H
 
 #include "biorbdConfig.h"
 #include "s2mActuator.h"
@@ -48,4 +48,4 @@ class BIORBD_API s2mActuatorGauss3p : public s2mActuator
 
 private:
 };
-#endif // S2MACTUATORGAUSS3P_H
+#endif // S2M_ACTUATOR_GAUSS_3P_H

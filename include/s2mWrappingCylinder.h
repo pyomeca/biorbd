@@ -1,5 +1,5 @@
-#ifndef S2MWRAPPINGCYLINDER_H
-#define S2MWRAPPINGCYLINDER_H
+#ifndef S2M_WRAPPING_CYLINDER_H
+#define S2M_WRAPPING_CYLINDER_H
     #include "biorbdConfig.h"
     #include "s2mWrappingObject.h"
     #include "s2mGenCoord.h"
@@ -61,5 +61,5 @@ class BIORBD_API s2mWrappingCylinder : public s2mWrappingObject
 
 };
 
-#endif // S2MWRAPPINGCYLINDER_H
+#endif // S2M_WRAPPING_CYLINDER_H
 

@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEFATIGUEDYNAMICSTATEXIA_H
-#define S2MMUSCLEFATIGUEDYNAMICSTATEXIA_H
+#ifndef S2M_MUSCLE_FATIGUE_DYNAMIC_STATE_XIA_H
+#define S2M_MUSCLE_FATIGUE_DYNAMIC_STATE_XIA_H
 #include "biorbdConfig.h"
 #include "s2mMuscleFatigueDynamicState.h"
 #include "s2mMuscleFatigueState.h"
@@ -25,4 +25,4 @@ class BIORBD_API s2mMuscleFatigueDynamicStateXia : public s2mMuscleFatigueDynami
 
 };
 
-#endif // S2MMUSCLEFATIGUEDYNAMICSTATEXIA_H
+#endif // S2M_MUSCLE_FATIGUE_DYNAMIC_STATE_XIA_H

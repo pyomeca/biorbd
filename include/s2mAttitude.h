@@ -1,5 +1,5 @@
-#ifndef S2MATTITUDE_H
-#define S2MATTITUDE_H
+#ifndef S2M_ATTITUDE_H
+#define S2M_ATTITUDE_H
 
     #include "biorbdConfig.h"
     #include "s2mError.h"
@@ -43,4 +43,4 @@ class BIORBD_API s2mAttitude : public Eigen::Matrix4d
 std::ostream& operator<<(std::ostream& os, const s2mAttitude &a);
 
 
-#endif // S2MATTITUDE_H
+#endif // S2M_ATTITUDE_H

@@ -1,5 +1,5 @@
-#ifndef S2MNODEATTITUDE_H
-#define S2MNODEATTITUDE_H
+#ifndef S2M_NODE_ATTITUDE_H
+#define S2M_NODE_ATTITUDE_H
 	#include "biorbdConfig.h"
     #include <Eigen/Dense>
     #include "s2mAttitude.h"
@@ -30,4 +30,4 @@ class BIORBD_API s2mNodeAttitude : public s2mAttitude
 
 };
 
-#endif // S2MNODEATTITUDE_H
+#endif // S2M_NODE_ATTITUDE_H

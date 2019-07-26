@@ -1,5 +1,5 @@
-#ifndef S2MCONTACTS_H
-#define S2MCONTACTS_H
+#ifndef S2M_CONTACTS_H
+#define S2M_CONTACTS_H
 
 #include "biorbdConfig.h"
 #include "s2mString.h"
@@ -43,4 +43,4 @@ class BIORBD_API s2mContacts : public RigidBodyDynamics::ConstraintSet
     private:
 };
 
-#endif // S2MCONTACTS_H
+#endif // S2M_CONTACTS_H

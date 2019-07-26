@@ -1,5 +1,5 @@
-#ifndef S2MBENCHMARK_H
-#define S2MBENCHMARK_H
+#ifndef S2M_BENCHMARK_H
+#define S2M_BENCHMARK_H
 #include <ctime>
 #include "biorbdConfig.h"
 #include "s2mTimer.h"
@@ -33,4 +33,4 @@ class BIORBD_API s2mBenchmark
     private:
 };
 
-#endif // S2MBENCHMARK_H
+#endif // S2M_BENCHMARK_H

@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEFORCEFROMORIGIN_H
-#define S2MMUSCLEFORCEFROMORIGIN_H
+#ifndef S2M_MUSCLE_FORCE_FROM_ORIGIN_H
+#define S2M_MUSCLE_FORCE_FROM_ORIGIN_H
     #include "biorbdConfig.h"
     #include "s2mMuscleForce.h"
 
@@ -19,4 +19,4 @@ class BIORBD_API s2mMuscleForceFromOrigin : public s2mMuscleForce
     private:
 };
 
-#endif // S2MMUSCLEFORCEFROMORIGIN_H
+#endif // S2M_MUSCLE_FORCE_FROM_ORIGIN_H

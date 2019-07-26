@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLECARACTERISTICS_H
-#define S2MMUSCLECARACTERISTICS_H
+#ifndef S2M_MUSCLE_CARACTERISTICS_H
+#define S2M_MUSCLE_CARACTERISTICS_H
 #include "biorbdConfig.h"
 #include "s2mMuscleStateMax.h"
 #include "s2mError.h"
@@ -67,4 +67,4 @@ class BIORBD_API s2mMuscleCaracteristics
         s2mMuscleFatigueParam m_fatigueParameters; // Fatigue parameters
 };
 
-#endif // S2MMUSCLECARACTERISTICS_H
+#endif // S2M_MUSCLE_CARACTERISTICS_H

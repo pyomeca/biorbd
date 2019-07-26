@@ -1,5 +1,5 @@
-#ifndef __S2M_OPTIONS_H__
-#define __S2M_OPTIONS_H__
+#ifndef S2M_OPTIONS_H
+#define S2M_OPTIONS_H
 #include "biorbdConfig.h"
 
 
@@ -9,4 +9,4 @@
 // Uncomment next line to compile optimization of muscle (S2M_NO_MUSCLE must be undefined)
 // #define S2M_MUSCLE_OPTIMIZATION
 
-#endif // __S2M_OPTIONS_H__
+#endif // S2M_OPTIONS_H

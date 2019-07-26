@@ -1,5 +1,5 @@
-#ifndef S2MVIAPOINT_H
-#define S2MVIAPOINT_H
+#ifndef S2M_VIAPOINT_H
+#define S2M_VIAPOINT_H
 #include "biorbdConfig.h"
 #include "s2mMusclePathChanger.h"
 #include "Eigen/Dense"
@@ -19,18 +19,4 @@ protected:
 
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#endif // S2MVIAPOINT_H
+#endif // S2M_VIAPOINT_H
