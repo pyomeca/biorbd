@@ -10,7 +10,7 @@ s2mMuscleFatigueDynamicStateXia::s2mMuscleFatigueDynamicStateXia(
     setType();
 }
 
-s2mVector s2mMuscleFatigueDynamicStateXia::timeDerivativeState(const s2mMuscleStateActual &EMG, const s2mMuscleCaracteristics &caract){
+void s2mMuscleFatigueDynamicStateXia::timeDerivativeState(const s2mMuscleStateActual &EMG, const s2mMuscleCaracteristics &caract){
     // Getting the command
     double targetCommand(EMG.activation());
     double command(0);
@@ -29,13 +29,6 @@ s2mVector s2mMuscleFatigueDynamicStateXia::timeDerivativeState(const s2mMuscleSt
     m_restingFibersDot = -command + caract.fatigueParameters().recoveryRate()*m_fatiguedFibers;
     m_fatiguedFibersDot = caract.fatigueParameters().fatigueRate()*m_activeFibers - caract.fatigueParameters().recoveryRate()*m_fatiguedFibers;
     s2mError::s2mAssert(m_activeFibersDot + m_restingFibersDot + m_fatiguedFibersDot == 0.0, "Sum of time derivates of fatigue states must be equal to 0");
-
-    // output results
-    s2mVector res(3);
-    res[0] = m_activeFibers;
-    res[1] = m_fatiguedFibers;
-    res[2] = m_restingFibers;
-    return res;
 }
 
 void s2mMuscleFatigueDynamicStateXia::setType()

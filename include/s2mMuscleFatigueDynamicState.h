@@ -19,7 +19,7 @@ class BIORBD_API s2mMuscleFatigueDynamicState : public s2mMuscleFatigueState
         double previousFatiguedFibers() const;
         double previousRestingFibers() const;
 
-        virtual s2mVector timeDerivativeState(
+        virtual void timeDerivativeState(
                 const s2mMuscleStateActual &EMG,
                 const s2mMuscleCaracteristics &caract
          ) = 0;
