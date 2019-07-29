@@ -24,8 +24,8 @@ int main()
     T.setZero();
 
     RigidBodyDynamics::ForwardDynamicsConstraintsDirect(m3, Q, Q, T, m3.getConstraints(m3),QDDot);// Forward dynamics
-    int i = 0;
-    std::cout << m3.getConstraints(m3).force(i) << std::endl;
+    for (int i=0; i<m3.getConstraints(m3).force.size(); ++i)
+        std::cout << m3.getConstraints(m3).force(i) << std::endl;
 //    for (int i=0; i<100000000; ++i){
 //        std::cout << i << std::endl;
 //        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(m3, Q, Q, Q, T);// Inverse Dynamics

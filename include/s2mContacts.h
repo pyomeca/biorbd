@@ -23,6 +23,15 @@ class BIORBD_API s2mContacts : public RigidBodyDynamics::ConstraintSet
                                            const s2mString& axis,
                                            const s2mString& name,
                                            double acc = 0);
+        virtual unsigned int AddLoopConstraint(
+                unsigned int body_id_predecessor,
+                unsigned int body_id_successor,
+                const s2mAttitude& X_predecessor,
+                const s2mAttitude& X_successor,
+                const s2mVector& axis,
+                bool enableStabilization = false,
+                const double stabilizationParam = 0.1,
+                const s2mString& name = s2mString() );
 
         s2mContacts &getConstraints(const RigidBodyDynamics::Model& jointsModel); // La premiere fois il faut appeler cette fonction avec cet arguement, ensuite, il n'est plus utile
         s2mContacts &getConstraints();

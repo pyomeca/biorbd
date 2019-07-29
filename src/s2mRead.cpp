@@ -322,6 +322,69 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                 model->AddConstraint(parent_int, pos, axis, name, acc);
             }
         }
+        else if (!tp.tolower().compare("loopcontact")){
+            s2mString name;
+            unsigned int id_predecessor = 0;
+            unsigned int id_successor = 0;
+            s2mString predecessor_str("root");
+            s2mString successor_str("root");
+            s2mAttitude X_predecessor;
+            s2mAttitude X_successor;
+            s2mVector axis(6);
+            bool enableStabilization(false);
+            double stabilizationParam(-1);
+            while(file.read(tp) && tp.tolower().compare("endloopcontact")){
+                if (!tp.tolower().compare("predecessor")){
+                    // Trouver dynamiquement le numéro du parent
+                    file.read(predecessor_str);
+                    id_predecessor = model->GetBodyId(predecessor_str.c_str());
+                    // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
+                    s2mError::s2mAssert(model->IsBodyId(id_predecessor), "Wrong name in a segment");
+                }
+                if (!tp.tolower().compare("successor")){
+                    // Trouver dynamiquement le numéro du parent
+                    file.read(successor_str);
+                    id_successor = model->GetBodyId(successor_str.c_str());
+                    // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
+                    s2mError::s2mAssert(model->IsBodyId(id_successor), "Wrong name in a segment");
+                } else if (!tp.tolower().compare("rtpredecessor")){
+                    s2mString seq("xyz");
+                    s2mNode rot;
+                    s2mNode trans;
+                    // Transcrire les rotations
+                    for (unsigned int i=0; i<3; ++i)
+                        file.read(rot(i));
+                    // Transcrire la séquence d'angle pour les rotations
+                    file.read(seq);
+                    // Transcrire les translations
+                    for (unsigned int i=0; i<3; ++i)
+                        file.read(trans(i));
+                    X_predecessor = s2mAttitude(rot, trans, seq);
+                } else if (!tp.tolower().compare("rtsuccessor")){
+                    s2mString seq("xyz");
+                    s2mNode rot;
+                    s2mNode trans;
+                    // Transcrire les rotations
+                    for (unsigned int i=0; i<3; ++i)
+                        file.read(rot(i));
+                    // Transcrire la séquence d'angle pour les rotations
+                    file.read(seq);
+                    // Transcrire les translations
+                    for (unsigned int i=0; i<3; ++i)
+                        file.read(trans(i));
+                    X_successor = s2mAttitude(rot, trans, seq);
+                } else if (!tp.tolower().compare("axis"))
+                    for (unsigned int i=0; i<axis.size(); ++i)
+                        file.read(axis(i), variable);
+                else if (!tp.tolower().compare("stabilizationparameter"))
+                    file.read(stabilizationParam, variable);
+            }
+
+            if (stabilizationParam > 0)
+                enableStabilization = true;
+            name = "Loop_" + predecessor_str + "_" + successor_str;
+            model->AddLoopConstraint(id_predecessor, id_successor, X_predecessor, X_successor, axis, enableStabilization, stabilizationParam, name);
+        }
         else if (!tp.tolower().compare("actuator")){
             hasActuators = true;
             // Le nom de l'actuator doit correspondre au numéro du segment sur lequel il s'attache
@@ -858,7 +921,7 @@ std::vector<Eigen::VectorXd> s2mRead::readGrfDataFile(const s2mString &path){
     unsigned int nbIntervals = atoi(tp.c_str());
 
     std::vector<Eigen::VectorXd> grf;
-    // Descendre jusqu'Ã  la dÃ©finition d'un torque
+    // Descendre jusqu'Ã  la dÃ©finition d'un torque
     for (unsigned int j=0; j<nbIntervals+1; j++){
         while (tp.compare("T")){
             bool check = file.read(tp);

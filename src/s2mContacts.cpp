@@ -29,6 +29,24 @@ unsigned int s2mContacts::AddConstraint(unsigned int body_id, const s2mNode& bod
     return ret;
 }
 
+unsigned int s2mContacts::AddLoopConstraint(unsigned int body_id_predecessor,
+        unsigned int body_id_successor,
+        const s2mAttitude &X_predecessor,
+        const s2mAttitude &X_successor,
+        const s2mVector &axis,
+        bool enableStabilization,
+        const double stabilizationParam,
+        const s2mString &name)
+{
+    ++m_nbreConstraint;
+    return RigidBodyDynamics::ConstraintSet::AddLoopConstraint(
+                body_id_predecessor, body_id_successor,
+                RigidBodyDynamics::Math::SpatialTransform(X_predecessor.rot(), X_predecessor.trans()),
+                RigidBodyDynamics::Math::SpatialTransform(X_successor.rot(), X_successor.trans()),
+                RigidBodyDynamics::Math::SpatialVector(axis),
+                enableStabilization, stabilizationParam, name.c_str());
+}
+
 
 s2mContacts& s2mContacts::getConstraints(const RigidBodyDynamics::Model& m){
     if (!m_binded){
