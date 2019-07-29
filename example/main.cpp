@@ -30,7 +30,7 @@ int main()
         if (muscle){
             std::shared_ptr<s2mMuscleFatigueDynamicStateXia> fatigueModel(std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(muscle->fatigueState()));
             if (fatigueModel){
-                fatigueModel->setState(1, 0, 0);
+                fatigueModel->setState(0.9, 0, 0.1);
                 fatigueModel->timeDerivativeState(EMG, m3.muscleGroup(0).muscle(0)->caract());
                 std::cout << muscle->FlCE(EMG) << std::endl;
             } else

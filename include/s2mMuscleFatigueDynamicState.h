@@ -6,6 +6,7 @@
 #include "s2mMuscleFatigueParam.h"
 #include "s2mMuscleStateActual.h"
 #include "s2mVector.h"
+#include "s2mMuscle.h"
 
 class BIORBD_API s2mMuscleFatigueDynamicState : public s2mMuscleFatigueState
 {
@@ -14,6 +15,10 @@ class BIORBD_API s2mMuscleFatigueDynamicState : public s2mMuscleFatigueState
                 double active = 0,
                 double fatigued = 0,
                 double resting = 1);
+
+        s2mMuscleFatigueDynamicState(
+                const std::shared_ptr<s2mMuscle> m
+                );
 
         double previousActiveFibers() const;
         double previousFatiguedFibers() const;

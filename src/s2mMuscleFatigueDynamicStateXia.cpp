@@ -10,6 +10,12 @@ s2mMuscleFatigueDynamicStateXia::s2mMuscleFatigueDynamicStateXia(
     setType();
 }
 
+s2mMuscleFatigueDynamicStateXia::s2mMuscleFatigueDynamicStateXia(const std::shared_ptr<s2mMuscle> m):
+    s2mMuscleFatigueDynamicState()
+{
+    setType();
+}
+
 void s2mMuscleFatigueDynamicStateXia::timeDerivativeState(const s2mMuscleStateActual &EMG, const s2mMuscleCaracteristics &caract){
     // Getting the command
     double targetCommand(EMG.activation());

@@ -43,7 +43,7 @@ s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mMusc
 s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m,
         const s2mString &dynamicFatigueType) :
     s2mMuscleHillTypeThelen(m),
-    s2mMuscleFatigable (dynamicFatigueType)
+    s2mMuscleFatigable(dynamicFatigueType)
 {
     setType();
 }
