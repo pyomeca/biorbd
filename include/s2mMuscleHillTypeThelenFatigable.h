@@ -41,6 +41,12 @@ public:
 
     virtual void applyTimeDerivativeToFatigueModel(const s2mMuscleStateActual& EMG);
     virtual void computeFlCE(const s2mMuscleStateActual &EMG);
+    virtual std::shared_ptr<s2mMuscleFatigueState> fatigueState();
+    virtual s2mVector getDerivativeState();
+
+
+
+    //s2mVector get
 
 protected:
     virtual void setType();

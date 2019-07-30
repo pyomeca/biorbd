@@ -63,6 +63,19 @@ void s2mMuscleHillTypeThelenFatigable::computeFlCE(const s2mMuscleStateActual &E
     m_FlCE *= m_fatigueState->activeFibers();
 }
 
+std::shared_ptr<s2mMuscleFatigueState> s2mMuscleHillTypeThelenFatigable::fatigueState()
+{
+    return m_fatigueState;
+}
+
+s2mVector s2mMuscleHillTypeThelenFatigable::getDerivativeState()
+{
+    if (std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(m_fatigueState))
+       return std::static_pointer_cast<s2mMuscleFatigueDynamicStateXia>(m_fatigueState)->getTimeDerivativeState();
+   else
+       s2mError::s2mAssert(false, "Type cannot be fatigued!");
+}
+
 void s2mMuscleHillTypeThelenFatigable::setType()
 {
     m_type = "HillThelenFatigable";

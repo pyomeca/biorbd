@@ -179,6 +179,7 @@ namespace std {
 %include "../include/s2mNodeMuscle.h"
 %include "../include/s2mMuscleCompound.h"
 %include "../include/s2mMuscle.h"
+%include "../include/s2mMuscleFatigable.h"
 %include "../include/s2mMuscleHillType.h"
 %include "../include/s2mMuscleHillTypeThelen.h"
 %include "../include/s2mMuscleHillTypeThelenFatigable.h"
@@ -188,6 +189,7 @@ namespace std {
 %include "../include/s2mMuscles.h"
 %include "../include/s2mGroupeMusculaire.h"
 %include "../include/s2mMuscleCaracteristics.h"
+
 %include "../include/s2mMuscleFatigueParam.h"
 %include "../include/s2mMuscleFatigueState.h"
 %include "../include/s2mMuscleFatigueDynamicState.h"
