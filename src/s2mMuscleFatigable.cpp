@@ -11,6 +11,24 @@ s2mMuscleFatigable::s2mMuscleFatigable(const s2mString &dynamicFatigueType)
         s2mError::s2mAssert(false, "Wrong muscle fatigue type");
 }
 
+s2mMuscleFatigable::s2mMuscleFatigable(const s2mMuscle &m)
+{
+    try {
+        const s2mMuscleFatigable& m_tp(dynamic_cast<const s2mMuscleFatigable&>(m));
+        this->m_fatigueState = m_tp.m_fatigueState;
+    } catch (const std::bad_cast&) {
+        s2mError::s2mAssert(false, "This muscle is not fatigable");
+    }
+}
+
+s2mMuscleFatigable::s2mMuscleFatigable(const std::shared_ptr<s2mMuscle> m)
+{
+    const std::shared_ptr<s2mMuscleFatigable> m_tp(std::dynamic_pointer_cast<s2mMuscleFatigable>(m));
+    if (!m_tp)
+        s2mError::s2mAssert(false, "This muscle is not fatigable");
+    this->m_fatigueState = m_tp->m_fatigueState;
+}
+
 s2mMuscleFatigable::~s2mMuscleFatigable()
 {
 

@@ -32,18 +32,16 @@ s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mStri
     setType();
 }
 
-s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mMuscle &m,
-        const s2mString &dynamicFatigueType) :
+s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mMuscle &m) :
     s2mMuscleHillTypeThelen(m),
-    s2mMuscleFatigable (dynamicFatigueType)
+    s2mMuscleFatigable (m)
 {
     setType();
 }
 
-s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m,
-        const s2mString &dynamicFatigueType) :
+s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m) :
     s2mMuscleHillTypeThelen(m),
-    s2mMuscleFatigable(dynamicFatigueType)
+    s2mMuscleFatigable(m)
 {
     setType();
 }

@@ -11,7 +11,9 @@ class BIORBD_API s2mMuscleFatigable
 {
 public:
     s2mMuscleFatigable(const s2mString& dynamicFatigueType);
-    virtual ~s2mMuscleFatigable();
+    s2mMuscleFatigable(const s2mMuscle& m);
+    s2mMuscleFatigable(const std::shared_ptr<s2mMuscle> m);
+    virtual ~s2mMuscleFatigable() = 0;
 
     virtual void applyTimeDerivativeToFatigueModel(const s2mMuscleStateActual& EMG) = 0;
 

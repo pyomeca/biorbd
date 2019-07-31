@@ -12,13 +12,12 @@ s2mMuscleFatigueState::s2mMuscleFatigueState(
     setType();
 }
 
-s2mMuscleFatigueState::s2mMuscleFatigueState(
-        const std::shared_ptr<s2mMuscle> m):
-    m_activeFibers(0),
-    m_fatiguedFibers(0),
-    m_restingFibers(1)
+s2mMuscleFatigueState::s2mMuscleFatigueState(const std::shared_ptr<s2mMuscleFatigueState> m)
 {
-    setType();
+    m_activeFibers = m->m_activeFibers;
+    m_fatiguedFibers = m->m_fatiguedFibers;
+    m_restingFibers = m->m_restingFibers;
+    m_type = m->m_type;
 }
 
 void s2mMuscleFatigueState::setState(double active, double fatigued, double resting)
