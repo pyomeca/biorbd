@@ -16,7 +16,7 @@
 
 #include "s2mKalmanReconsIMU.h"
 #include "s2mKalmanReconsMarkers.h"
-// #include "s2mMuscleOptimisation.h"
+#include "s2mStaticOptimization.h"
 // #include "s2mIMU_Unity_Optim.h"
 %}
 %include exception.i
@@ -44,6 +44,13 @@ namespace std {
     %template(MatS2mNodeBone) std::vector<std::vector<s2mNodeBone>>;
     %template(VecS2mAttitude) std::vector<s2mAttitude>;
     %template(MatS2mAttitude) std::vector<std::vector<s2mAttitude>>;
+
+    %template(VecS2mVector) std::vector<s2mVector>;
+    %template(MatS2mVector) std::vector<std::vector<s2mVector>>;
+    %template(VecS2mTau) std::vector<s2mTau>;
+    %template(MatS2mTau) std::vector<std::vector<s2mTau>>;
+    %template(VecS2mGenCoord) std::vector<s2mGenCoord>;
+    %template(MatS2mGenCoord) std::vector<std::vector<s2mGenCoord>>;
 
     %template(SharedS2mMuscle) std::shared_ptr<s2mMuscle>;
     %template(VecS2mMuscleStateActual) std::vector<s2mMuscleStateActual>;
@@ -243,4 +250,6 @@ namespace std {
 //%include "s2mIMU_Unity_Optim.h"
 
 %include "../include/s2mMusculoSkeletalModel.h"
+
+%include "../include/s2mStaticOptimization.h"
 

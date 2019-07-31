@@ -10,11 +10,10 @@
 #include "s2mMuscles.h"
 #include "s2mVector.h"
 #include "s2mMuscleStateActual.h"
+#include <IpSmartPtr.hpp>
 
 #include <Eigen/Dense>
 
-
-    
 class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
 {
     public:
@@ -24,8 +23,8 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
                 const s2mTau                &tauTarget,
                 const s2mVector             &activationInit,
                 bool                        useResidual = true,
-                int                         verbose = 0,
                 unsigned int                pNormFactor = 2,
+                int                         verbose = 0,
                 const double                eps = 1e-10
                 );
 
@@ -117,8 +116,10 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
            Ipopt::IpoptCalculatedQuantities* ip_cq
            );
 
-        s2mVector finalSolution(){return m_finalSolution;}
-        s2mVector finalResidual(){return m_finalResidual;}
+        s2mVector finalSolution() const;
+        s2mVector finalResidual() const;
+
+
 
 
     protected:
@@ -149,4 +150,5 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
     private:
 
 };
+
 #endif // S2M_STATIC_OPTIMIZATION_IPOPT_H
