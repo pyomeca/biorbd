@@ -50,6 +50,8 @@ namespace std {
     %template(MatS2mMuscleStateActual) std::vector<std::vector<s2mMuscleStateActual>>;
     %template(VecS2mNodeMuscle) std::vector<s2mNodeMuscle>;
     %template(MatS2mNodeMuscle) std::vector<std::vector<s2mNodeMuscle>>;
+
+    %template(SharedS2mMuscleFatigueState) std::shared_ptr<s2mMuscleFatigueState>;
 }
 
 // Exposing some useful functions
@@ -93,6 +95,7 @@ namespace std {
     }
 }
 
+// extension of muscle casting
 %extend s2mMuscleHillType{
     static s2mMuscleHillType& getRef(std::shared_ptr<s2mMuscle> m)
     {
@@ -129,6 +132,21 @@ namespace std {
         return *(std::dynamic_pointer_cast<s2mMuscleHillTypeSimple>(m));
     }
 }
+
+// extension of muscle fatigueState casting
+%extend s2mMuscleFatigueState{
+    static s2mMuscleFatigueState& getRef(std::shared_ptr<s2mMuscleFatigueState> s)
+    {
+        return *s;
+    }
+}
+%extend s2mMuscleFatigueDynamicStateXia{
+    static s2mMuscleFatigueDynamicStateXia& getRef(std::shared_ptr<s2mMuscleFatigueState> s)
+    {
+        return *(std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(s));
+    }
+}
+
 
 /* Includes all neceressary files from the API */
 %include "../include/biorbdConfig.h"
@@ -179,6 +197,7 @@ namespace std {
 %include "../include/s2mNodeMuscle.h"
 %include "../include/s2mMuscleCompound.h"
 %include "../include/s2mMuscle.h"
+%include "../include/s2mMuscleFatigable.h"
 %include "../include/s2mMuscleHillType.h"
 %include "../include/s2mMuscleHillTypeThelen.h"
 %include "../include/s2mMuscleHillTypeThelenFatigable.h"
