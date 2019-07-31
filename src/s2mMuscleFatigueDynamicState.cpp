@@ -6,9 +6,6 @@ s2mMuscleFatigueDynamicState::s2mMuscleFatigueDynamicState(
         double fatigued,
         double resting) :
     s2mMuscleFatigueState(active,fatigued,resting),
-    m_previousActiveFibers(active),
-    m_previousFatiguedFibers(fatigued),
-    m_previousRestingFibers(resting),
     m_activeFibersDot(0),
     m_fatiguedFibersDot(0),
     m_restingFibersDot(0)
@@ -16,29 +13,30 @@ s2mMuscleFatigueDynamicState::s2mMuscleFatigueDynamicState(
     setType();
 }
 
-s2mMuscleFatigueDynamicState::s2mMuscleFatigueDynamicState(
-        const std::shared_ptr<s2mMuscle> m):
-    s2mMuscleFatigueState(),
-    m_previousActiveFibers(0),
-    m_previousFatiguedFibers(0),
-    m_previousRestingFibers(1),
-    m_activeFibersDot(0),
-    m_fatiguedFibersDot(0),
-    m_restingFibersDot(0)
+s2mMuscleFatigueDynamicState::s2mMuscleFatigueDynamicState(const std::shared_ptr<s2mMuscleFatigueState> m) :
+    s2mMuscleFatigueState(m)
 {
-    setType();
+    std::shared_ptr<s2mMuscleFatigueDynamicState> m_tp(std::dynamic_pointer_cast<s2mMuscleFatigueDynamicState>(m));
+    if (!m_tp)
+        s2mError::s2mAssert(false, "This is not a dynamically fatigable muscle");
+    m_activeFibersDot = m_tp->m_activeFibersDot;
+    m_fatiguedFibersDot = m_tp->m_fatiguedFibersDot;
+    m_restingFibersDot = m_tp->m_restingFibersDot;
 }
 
-double s2mMuscleFatigueDynamicState::previousActiveFibers() const {
-    return m_previousActiveFibers;
+double s2mMuscleFatigueDynamicState::activeFibersDot() const
+{
+    return m_activeFibersDot;
 }
 
-double s2mMuscleFatigueDynamicState::previousFatiguedFibers() const {
-    return m_previousFatiguedFibers;
+double s2mMuscleFatigueDynamicState::fatiguedFibersDot() const
+{
+    return m_fatiguedFibersDot;
 }
 
-double s2mMuscleFatigueDynamicState::previousRestingFibers() const {
-    return m_previousRestingFibers;
+double s2mMuscleFatigueDynamicState::restingFibersDot() const
+{
+    return m_restingFibersDot;
 }
 
 s2mVector s2mMuscleFatigueDynamicState::getTimeDerivativeState() const

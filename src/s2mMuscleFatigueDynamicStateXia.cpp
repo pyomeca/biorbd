@@ -10,10 +10,10 @@ s2mMuscleFatigueDynamicStateXia::s2mMuscleFatigueDynamicStateXia(
     setType();
 }
 
-s2mMuscleFatigueDynamicStateXia::s2mMuscleFatigueDynamicStateXia(const std::shared_ptr<s2mMuscle> m):
-    s2mMuscleFatigueDynamicState()
+s2mMuscleFatigueDynamicStateXia::s2mMuscleFatigueDynamicStateXia(const std::shared_ptr<s2mMuscleFatigueState> m):
+    s2mMuscleFatigueDynamicState(m)
 {
-    setType();
+
 }
 
 void s2mMuscleFatigueDynamicStateXia::timeDerivativeState(const s2mMuscleStateActual &EMG, const s2mMuscleCaracteristics &caract){

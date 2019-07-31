@@ -12,9 +12,7 @@ class BIORBD_API s2mMuscleFatigueState
                 double fatigued = 0,
                 double resting = 1);
 
-        s2mMuscleFatigueState(
-                const std::shared_ptr<s2mMuscle> m
-                );
+        s2mMuscleFatigueState(const std::shared_ptr<s2mMuscleFatigueState> fatigue);
 
         // Set and Get
         virtual void setState(
