@@ -1,6 +1,5 @@
- 
-#ifndef S2MBONEMESH_H
-#define S2MBONEMESH_H
+#ifndef S2M_BONE_MESH_H
+#define S2M_BONE_MESH_H
     #include "biorbdConfig.h"
     #include "s2mNode.h"
     #include "s2mPatch.h"
@@ -35,4 +34,4 @@ class BIORBD_API s2mBoneMesh
     private:
 };
 
-#endif // S2MBONEMESH_H
+#endif // S2M_BONE_MESH_H

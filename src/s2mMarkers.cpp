@@ -18,7 +18,7 @@ void s2mMarkers::addMarker(const Eigen::Vector3d &pos,
                            bool technical,
                            bool anatomical,
                            const s2mString& axesToRemove,
-                           const int &id)
+                           int id)
 {
     s2mNodeBone tp(pos, name, parentName, technical, anatomical, axesToRemove, id);
     m_marks.push_back(tp);

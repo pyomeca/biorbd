@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEFATIGUEPARAM_H
-#define S2MMUSCLEFATIGUEPARAM_H
+#ifndef S2M_MUSCLE_FATIGUE_PARAM_H
+#define S2M_MUSCLE_FATIGUE_PARAM_H
     #include "biorbdConfig.h"
 
 class BIORBD_API s2mMuscleFatigueParam
@@ -9,30 +9,25 @@ class BIORBD_API s2mMuscleFatigueParam
                 double fatigueRate = 0,
                 double recoveryRate = 0,
                 double developFactor = 0,
-                double recoverFactor = 0
-                );
-
+                double recoveryFactor = 0);
 
         // Get and Set
         double fatigueRate() const;
         double recoveryRate() const;
         double developFactor() const;
-        double recoverFactor() const;
+        double recoveryFactor() const;
 
         void fatigueRate(double fatigueRate);
         void recoveryRate(double recoveryRate);
         void developFactor(double developFactor);
-        void recoverFactor(double recoverFactor);
+        void recoveryFactor(double recoveryFactor);
 
     protected:
         double m_fatigueRate;
         double m_recoveryRate;
         double m_developFactor;
-        double m_recoverFactor;
-
-
-    private:
+        double m_recoveryFactor;
 
 };
 
-#endif // S2MMUSCLEFATIGUEPARAM_H
+#endif // S2M_MUSCLE_FATIGUE_PARAM_H

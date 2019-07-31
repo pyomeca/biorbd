@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEHILLTYPESCHUTTE_H
-#define S2MMUSCLEHILLTYPESCHUTTE_H
+#ifndef S2M_MUSCLE_HILL_TYPE_SCHUTTE_H
+#define S2M_MUSCLE_HILL_TYPE_SCHUTTE_H
     #include "biorbdConfig.h"
     #include "s2mMuscleHillType.h"
 
@@ -27,4 +27,4 @@ private:
 
 };
 
-#endif // S2MMUSCLEHILLTYPESCHUTTE_H
+#endif // S2M_MUSCLE_HILL_TYPE_SCHUTTE_H

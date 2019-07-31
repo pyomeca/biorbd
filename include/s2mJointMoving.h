@@ -1,5 +1,5 @@
-#ifndef S2MJOINTMOVING_H
-#define S2MJOINTMOVING_H
+#ifndef S2M_JOINT_MOVING_H
+#define S2M_JOINT_MOVING_H
 //    #include "s2mJoint.h"
 #include "biorbdConfig.h"
 class s2mJoints;
@@ -16,4 +16,4 @@ class BIORBD_API s2mJointMoving //: public s2mJoint
     private:
 };
 
-#endif // S2MJOINTMOVING_H
+#endif // S2M_JOINT_MOVING_H

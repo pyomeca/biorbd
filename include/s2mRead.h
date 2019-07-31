@@ -1,5 +1,5 @@
-#ifndef S2MREAD_H
-#define S2MREAD_H
+#ifndef S2M_READ_H
+#define S2M_READ_H
 
     #include "biorbdConfig.h"
     #include "s2mError.h"
@@ -59,4 +59,4 @@ private:
 
 };
 
-#endif // S2MREAD_H
+#endif // S2M_READ_H

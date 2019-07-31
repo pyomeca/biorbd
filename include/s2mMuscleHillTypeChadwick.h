@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEHILLTYPECHADWICK_H
-#define S2MMUSCLEHILLTYPECHADWICK_H
+#ifndef S2M_MUSCLE_HILL_TYPE_CHADWICK_H
+#define S2M_MUSCLE_HILL_TYPE_CHADWICK_H
     #include "biorbdConfig.h"
     #include "s2mMuscleHillType.h"
 
@@ -27,4 +27,4 @@ private:
 
 };
 
-#endif // S2MMUSCLEHILLTYPECHADWICK_H
+#endif // S2M_MUSCLE_HILL_TYPE_CHADWICK_H

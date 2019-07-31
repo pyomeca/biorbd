@@ -1,5 +1,5 @@
-#ifndef S2MGENCOORD_H
-#define S2MGENCOORD_H
+#ifndef S2M_GEN_COORD_H
+#define S2M_GEN_COORD_H
 	#include <Eigen/Dense>
     #include "biorbdConfig.h"
     #include "s2mQuaternion.h"
@@ -24,4 +24,4 @@ private:
 
 };
 
-#endif // S2MGENCOORD_H
+#endif // S2M_GEN_COORD_H

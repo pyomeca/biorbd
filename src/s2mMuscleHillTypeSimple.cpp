@@ -30,18 +30,18 @@ s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(const s2mString &n,
 s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(const s2mMuscle &m) :
     s2mMuscleHillType (m)
 {
-
+    setType();
 }
 
 s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(const std::shared_ptr<s2mMuscle> m) :
     s2mMuscleHillType (m)
 {
-
+    setType();
 }
 
 s2mMuscleHillTypeSimple::~s2mMuscleHillTypeSimple()
 {
-
+    setType();
 }
 
 std::vector<std::shared_ptr<s2mMuscleForce> > s2mMuscleHillTypeSimple::force(const s2mMuscleStateActual &EMG){

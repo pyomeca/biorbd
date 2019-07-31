@@ -1,5 +1,5 @@
-#ifndef S2MPATH_H
-#define S2MPATH_H
+#ifndef S2M_PATH_H
+#define S2M_PATH_H
 
 #include "s2mString.h"
 #include "biorbdConfig.h"
@@ -61,4 +61,4 @@ protected:
 };
 
 
-#endif // S2MPATH_H
+#endif // S2M_PATH_H

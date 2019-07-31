@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEHILLTYPE_H
-#define S2MMUSCLEHILLTYPE_H
+#ifndef S2M_MUSCLE_HILL_TYPE_H
+#define S2M_MUSCLE_HILL_TYPE_H
     #include "biorbdConfig.h"
     #include "s2mError.h"
     #include "s2mMuscle.h"
@@ -24,7 +24,7 @@ class BIORBD_API s2mMuscleHillType : public s2mMuscle
                           const s2mMuscleStateActual & = s2mMuscleStateActual());
         s2mMuscleHillType(const s2mMuscle& m);
         s2mMuscleHillType(const std::shared_ptr<s2mMuscle> m);
-        ~s2mMuscleHillType();
+        virtual ~s2mMuscleHillType();
 
 
         virtual std::vector<std::shared_ptr<s2mMuscleForce> > force(s2mJoints& , const s2mGenCoord&, const s2mGenCoord&, const s2mMuscleStateActual&, const int = 2); // Compute muscle force
@@ -71,4 +71,4 @@ class BIORBD_API s2mMuscleHillType : public s2mMuscle
 
 };
 
-#endif // S2MMUSCLEHILLTYPE_H
+#endif // S2M_MUSCLE_HILL_TYPE_H

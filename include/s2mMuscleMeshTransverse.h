@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEMESHHILLTYPE_H
-#define S2MMUSCLEMESHHILLTYPE_H
+#ifndef S2M_MUSCLE_MESH_HILL_TYPE_H
+#define S2M_MUSCLE_MESH_HILL_TYPE_H
 
     #include "biorbdConfig.h"
     #include "s2mMuscleMesh.h"
@@ -40,4 +40,4 @@ class BIORBD_API s2mMuscleMeshTransverse : public s2mMuscleMesh
     private:
 };
 
-#endif // S2MMUSCLEMESHHILLTYPE_H
+#endif // S2M_MUSCLE_MESH_HILL_TYPE_H

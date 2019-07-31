@@ -1,5 +1,5 @@
-#ifndef S2MACTUATORLINEAR_H
-#define S2MACTUATORLINEAR_H
+#ifndef S2M_ACTUATOR_LINEAR_H
+#define S2M_ACTUATOR_LINEAR_H
 
 #include "biorbdConfig.h"
 #include "s2mActuator.h"
@@ -28,4 +28,4 @@ class BIORBD_API s2mActuatorLinear : public s2mActuator
 
 private:
 };
-#endif // S2MACTUATORLINEAR_H
+#endif // S2M_ACTUATOR_LINEAR_H

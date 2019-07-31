@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEPATHCHANGERS_H
-#define S2MMUSCLEPATHCHANGERS_H
+#ifndef S2M_MUSCLE_PATH_CHANGERS_H
+#define S2M_MUSCLE_PATH_CHANGERS_H
     #include <memory>
     #include <vector>
     #include "biorbdConfig.h"
@@ -34,4 +34,4 @@ class BIORBD_API s2mMusclePathChangers
     private:
 };
 
-#endif // S2MMUSCLEPATHCHANGERS_H
+#endif // S2M_MUSCLE_PATH_CHANGERS_H

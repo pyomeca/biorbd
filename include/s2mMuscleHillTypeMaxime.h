@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEHILLTYPEMAXIME_H
-#define S2MMUSCLEHILLTYPEMAXIME_H
+#ifndef S2M_MUSCLE_HILL_TYPE_MAXIME_H
+#define S2M_MUSCLE_HILL_TYPE_MAXIME_H
     #include "biorbdConfig.h"
     #include "s2mMuscleHillType.h"
 
@@ -74,4 +74,4 @@ class BIORBD_API s2mMuscleHillTypeMaxime : public s2mMuscleHillType
 
 };
 
-#endif // S2MMUSCLEHILLTYPEMAXIME_H
+#endif // S2M_MUSCLE_HILL_TYPE_MAXIME_H

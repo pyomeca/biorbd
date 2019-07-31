@@ -1,5 +1,5 @@
-#ifndef S2MGROUPEMUSCULAIRE_H
-#define S2MGROUPEMUSCULAIRE_H
+#ifndef S2M_GROUPE_MUSCULAIRE_H
+#define S2M_GROUPE_MUSCULAIRE_H
     #include "biorbdConfig.h"
     #include "s2mError.h"
     #include <memory>
@@ -22,11 +22,12 @@ class BIORBD_API s2mGroupeMusculaire
         ~s2mGroupeMusculaire();
 
         virtual void addHillMuscle(const s2mString&,
-                               const s2mString&,
-                               const s2mMuscleGeometry&,
-                               const s2mMuscleCaracteristics&,
-                               const s2mMusclePathChangers& = s2mMusclePathChangers(),
-                               const s2mString& stateType = "default");
+                const s2mString&,
+                const s2mMuscleGeometry&,
+                const s2mMuscleCaracteristics&,
+                const s2mMusclePathChangers& = s2mMusclePathChangers(),
+                const s2mString& stateType = "default",
+                const s2mString &dynamicFatigueType = "Simple");
         virtual void addMuscle(s2mMuscle &val);
 
         // Set and get
@@ -48,4 +49,4 @@ class BIORBD_API s2mGroupeMusculaire
     private:
 };
 
-#endif // S2MGROUPEMUSCULAIRE_H
+#endif // S2M_GROUPE_MUSCULAIRE_H

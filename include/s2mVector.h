@@ -1,5 +1,5 @@
-#ifndef S2MVECTOR_H
-#define S2MVECTOR_H
+#ifndef S2M_VECTOR_H
+#define S2M_VECTOR_H
     #include <Eigen/Dense>
 	#include "biorbdConfig.h"
     #include <math.h>
@@ -22,4 +22,4 @@ private:
 
 };
 
-#endif // S2MVECTOR_H
+#endif // S2M_VECTOR_H

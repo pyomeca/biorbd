@@ -1,27 +1,38 @@
-#ifndef S2MMUSCLEFATIGUESTATE_H
-#define S2MMUSCLEFATIGUESTATE_H
+#ifndef S2M_MUSCLE_FATIGUE_STATE_H
+#define S2M_MUSCLE_FATIGUE_STATE_H
 #include "biorbdConfig.h"
+#include "s2mError.h"
+#include "s2mMuscle.h"
+
 class BIORBD_API s2mMuscleFatigueState
 {
     public:
-        s2mMuscleFatigueState(const double &mA = 0, const double &mF = 0, const double &mR = 1);
-        virtual ~s2mMuscleFatigueState();
+        s2mMuscleFatigueState(
+                double active = 0,
+                double fatigued = 0,
+                double resting = 1);
+
+        s2mMuscleFatigueState(const std::shared_ptr<s2mMuscleFatigueState> fatigue);
 
         // Set and Get
-        virtual void setActiveFibers(const double &val);
-        virtual void setFatiguedFibers(const double &val);
-        virtual void setRestingFibers(const double &val);
+        virtual void setState(
+                double active,
+                double fatigued,
+                double resting);
 
         double activeFibers() const;
         double fatiguedFibers() const;
         double restingFibers() const;
 
-
+        std::string getType() const;
     protected:
         double m_activeFibers;
         double m_fatiguedFibers;
         double m_restingFibers;
 
+        virtual void setType();
+        std::string m_type; // type of the muscle fatigue
+
 };
 
-#endif // S2MMUSCLEFATIGUESTATE_H
+#endif // S2M_MUSCLE_FATIGUE_STATE_H

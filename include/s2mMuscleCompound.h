@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLECOMPOUND_H
-#define S2MMUSCLECOMPOUND_H
+#ifndef S2M_MUSCLE_COMPOUND_H
+#define S2M_MUSCLE_COMPOUND_H
     #include <memory>
     #include "biorbdConfig.h"
     #include "s2mString.h"
@@ -16,7 +16,7 @@ class BIORBD_API s2mMuscleCompound
     public:
         s2mMuscleCompound(const s2mString &name = "", const s2mMusclePathChangers& = s2mMusclePathChangers());
         s2mMuscleCompound(const s2mMuscleCompound& m);
-        ~s2mMuscleCompound();
+        virtual ~s2mMuscleCompound();
 
         // Wrapping object
         virtual s2mMusclePathChangers& pathChanger();
@@ -41,4 +41,4 @@ class BIORBD_API s2mMuscleCompound
     private:
 };
 
-#endif // S2MMUSCLECOMPOUND_H
+#endif // S2M_MUSCLE_COMPOUND_H

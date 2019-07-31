@@ -1,5 +1,5 @@
-#ifndef S2MNODEMUSCLE_H
-#define S2MNODEMUSCLE_H
+#ifndef S2M_NODE_MUSCLE_H
+#define S2M_NODE_MUSCLE_H
 #include <Eigen/Dense>
 #include "s2mNode.h"
 #include "biorbdConfig.h"
@@ -21,4 +21,4 @@ class BIORBD_API s2mNodeMuscle : public s2mNode
 
 };
 
-#endif // S2MNODEMUSCLE_H
+#endif // S2M_NODE_MUSCLE_H

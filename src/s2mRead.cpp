@@ -32,7 +32,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
 
     // Déterminer la version du fichier
     file.readSpecificTag("version", tp);
-    unsigned int version(atoi(tp.c_str()));
+    unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
     s2mError::s2mAssert((version == 1 || version == 2 || version == 3 || version == 4),  "Version not implemented yet");
 
     bool hasActuators = false;
@@ -142,7 +142,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     else if (boneByFile == 1)
                         s2mError::s2mAssert(0, "You must not mix file and mesh in segment");
                     s2mPatch tp;
-                    for (unsigned int i=0; i<3; ++i)
+                    for (int i=0; i<3; ++i)
                         file.read(tp(i));
                     boneMesh.addPatch(tp);
                 }
@@ -228,7 +228,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     file.read(axesToRemove);
 
             }
-            model->addMarker(pos, name, parent_str, technical, anatomical, axesToRemove, parent_int);
+            model->addMarker(pos, name, parent_str, technical, anatomical, axesToRemove, static_cast<int>(parent_int));
         }
         else if (!tp.tolower().compare("mimu") && version >= 4){
             s2mError::s2mAssert(false, "MIMU is no more the right tag, change it to IMU!");
@@ -283,7 +283,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                 else if (!tp.tolower().compare("anatomical"))
                     file.read(anatomical);
             }
-            model->addIMU(RT, name, parent_str, technical, anatomical, parent_int);
+            model->addIMU(RT, name, parent_str, technical, anatomical, static_cast<int>(parent_int));
         }
         else if (!tp.tolower().compare("contact")){
             s2mString name;
@@ -314,7 +314,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                         file.read(acc, variable);
             }
             if (version == 1){
-                s2mError::s2mAssert(norm.norm() == 1, "Normal of the contact must be provided" );
+                s2mError::s2mAssert(norm.norm() == 1.0, "Normal of the contact must be provided" );
                 model->AddConstraint(parent_int, pos, norm, name, acc);
             }
             else if (version >= 2){
@@ -335,20 +335,20 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             s2mString type;         bool isTypeSet  = false;
             unsigned int dofIdx(INT_MAX);             bool isDofSet   = false;
             s2mString str_direction;bool isDirectionSet = false;
-            unsigned int int_direction = 0;
-            double Tmax;            bool isTmaxSet  = false;
-            double T0;              bool isT0Set    = false;
-            double pente;           bool isPenteSet = false;
-            double wmax;            bool iswmaxSet  = false;
-            double wc;              bool iswcSet    = false;
-            double amin;            bool isaminSet  = false;
-            double wr;              bool iswrSet    = false;
-            double w1;              bool isw1Set    = false;
-            double r;               bool isrSet     = false;
-            double qopt;            bool isqoptSet  = false;
-            double facteur6p;       bool isFacteur6pSet = false;
-            double r2;              bool isr2Set     = false;
-            double qopt2;           bool isqopt2Set  = false;
+            int int_direction = 0;
+            double Tmax(0);            bool isTmaxSet  = false;
+            double T0(0);              bool isT0Set    = false;
+            double pente(0);           bool isPenteSet = false;
+            double wmax(0);            bool iswmaxSet  = false;
+            double wc(0);              bool iswcSet    = false;
+            double amin(0);            bool isaminSet  = false;
+            double wr(0);              bool iswrSet    = false;
+            double w1(0);              bool isw1Set    = false;
+            double r(0);               bool isrSet     = false;
+            double qopt(0);            bool isqoptSet  = false;
+            double facteur6p(0);       bool isFacteur6pSet = false;
+            double r2(0);              bool isr2Set     = false;
+            double qopt2(0);           bool isqopt2Set  = false;
 
 
             while(file.read(tp) && tp.tolower().compare("endactuator")){
@@ -497,6 +497,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             // Déclaration des variables
             s2mString type("");
             s2mString stateType("default");
+            s2mString dynamicFatigueType("simple");
             s2mString muscleGroup("");
             int idxGroup(-1);
             Eigen::Vector3d origin_pos(0,0,0);
@@ -543,25 +544,29 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     file.read(PCSA, variable);
                 else if (!tp.tolower().compare("fatigueparameters")){
                     while(file.read(tp) && tp.tolower().compare("endfatigueparameters")){
-                        double param;
-                        file.read(param);
-                        if (!tp.tolower().compare("fatigueRate"))
-                            fatigueParameters.fatigueRate(param);
-                        if (!tp.tolower().compare("recoveryRate"))
-                            fatigueParameters.developFactor(param);
-                        if (!tp.tolower().compare("developFactor"))
-                            fatigueParameters.developFactor(param);
-                        if (!tp.tolower().compare("recoverFactor"))
-                            fatigueParameters.recoverFactor(param);
+                        if (!tp.tolower().compare("type")){
+                            file.read(dynamicFatigueType);
+                        } else {
+                            double param(0);
+                            file.read(param);
+                            if (!tp.tolower().compare("fatiguerate"))
+                                fatigueParameters.fatigueRate(param);
+                            else if (!tp.tolower().compare("recoveryrate"))
+                                fatigueParameters.recoveryRate(param);
+                            else if (!tp.tolower().compare("developfactor"))
+                                fatigueParameters.developFactor(param);
+                            else if (!tp.tolower().compare("recoveryfactor"))
+                                fatigueParameters.recoveryFactor(param);
+                        }
                     }
                 }
             }
             s2mError::s2mAssert(idxGroup!=-1, "No muscle group was provided!");
-            s2mMuscleGeometry geo(s2mNodeMuscle(origin_pos, name + "_origin", model->muscleGroup(idxGroup).origin()),
-                                  s2mNodeMuscle(insert_pos, name + "_insertion", model->muscleGroup(idxGroup).insertion()));
+            s2mMuscleGeometry geo(s2mNodeMuscle(origin_pos, name + "_origin", model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
+                                  s2mNodeMuscle(insert_pos, name + "_insertion", model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
             s2mMuscleStateMax state(maxExcitation, maxActivation);
             s2mMuscleCaracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, &state, fatigueParameters);
-            model->muscleGroup(idxGroup).addHillMuscle(name,type,geo,caract,s2mMusclePathChangers(),stateType);
+            model->muscleGroup(static_cast<unsigned int>(idxGroup)).addHillMuscle(name,type,geo,caract,s2mMusclePathChangers(),stateType,dynamicFatigueType);
         }
         else if (!tp.tolower().compare("viapoint")){
             s2mString name;
@@ -594,10 +599,10 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             }
             iMuscleGroup = model->getGroupId(musclegroup);
             s2mError::s2mAssert(iMuscleGroup!=-1, "No muscle group was provided!");
-            iMuscle = model->muscleGroup(iMuscleGroup).muscleID(muscle);
+            iMuscle = model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscleID(muscle);
             s2mError::s2mAssert(iMuscle!=-1, "No muscle was provided!");
             s2mViaPoint v(position,name,parent);
-            model->muscleGroup(iMuscleGroup).muscle(iMuscle)->addPathObject(v);
+            model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle))->addPathObject(v);
         }
         else if (!tp.tolower().compare("wrap")){
             s2mString name;
@@ -641,16 +646,16 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
 
 
             }
-            s2mError::s2mAssert(dia!=0, "Diameter was not defined");
-            s2mError::s2mAssert(length!=0, "Length was not defined");
-            s2mError::s2mAssert((length!=-1 || length!=-1), "Side was not properly defined");
+            s2mError::s2mAssert(dia != 0.0, "Diameter was not defined");
+            s2mError::s2mAssert(length != 0.0, "Length was not defined");
+            s2mError::s2mAssert(length < 1.0, "Side was not properly defined");
             s2mError::s2mAssert(parent != "", "Parent was not defined");
             iMuscleGroup = model->getGroupId(musclegroup);
             s2mError::s2mAssert(iMuscleGroup!=-1, "No muscle group was provided!");
-            iMuscle = model->muscleGroup(iMuscleGroup).muscleID(muscle);
+            iMuscle = model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscleID(muscle);
             s2mError::s2mAssert(iMuscle!=-1, "No muscle was provided!");
             s2mWrappingCylinder cylinder(RT,dia,length,side,name,parent);
-            model->muscleGroup(iMuscleGroup).muscle(iMuscle)->addPathObject(cylinder);
+            model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle))->addPathObject(cylinder);
         }
     }
 
@@ -670,16 +675,16 @@ std::vector<std::vector<Eigen::Vector3d> > s2mRead::readMarkerDataFile(const s2m
 
     // Déterminer la version du fichier
     file.readSpecificTag("version", tp);
-    unsigned int version = atoi(tp.c_str());
+    unsigned int version = static_cast<unsigned int>(atoi(tp.c_str()));
     s2mError::s2mAssert(version == 1, "Version not implemented yet");
 
     // Déterminer le nombre de markers
     file.readSpecificTag("nbmark", tp);
-    unsigned int nbMark = atoi(tp.c_str());
+    unsigned int nbMark = static_cast<unsigned int>(atoi(tp.c_str()));
 
     // Déterminer le nombre de noeud
     file.readSpecificTag("nbintervals", tp);
-    unsigned int nbIntervals = atoi(tp.c_str());
+    unsigned int nbIntervals = static_cast<unsigned int>(atoi(tp.c_str()));
 
     std::vector<std::vector<Eigen::Vector3d> > markers;
     std::vector<Eigen::Vector3d> position;
@@ -720,16 +725,16 @@ std::vector<s2mGenCoord> s2mRead::readQDataFile(const s2mString &path){
 
     // Déterminer la version du fichier
     file.readSpecificTag("version", tp);
-    unsigned int version = atoi(tp.c_str());
+    unsigned int version = static_cast<unsigned int>(atoi(tp.c_str()));
     s2mError::s2mAssert(version == 1, "Version not implemented yet");
 
     // Déterminer le nombre de markers
     file.readSpecificTag("nddl", tp);
-    unsigned int NDDL = atoi(tp.c_str());
+    unsigned int NDDL = static_cast<unsigned int>(atoi(tp.c_str()));
 
     // Déterminer le nombre de noeud
     file.readSpecificTag("nbintervals", tp);
-    unsigned int nbIntervals = atoi(tp.c_str());
+    unsigned int nbIntervals = static_cast<unsigned int>(atoi(tp.c_str()));
 
     std::vector<s2mGenCoord> kinematics;
     // Descendre jusqu'à la définition d'un markeur
@@ -766,16 +771,16 @@ std::vector<Eigen::VectorXd> s2mRead::readActivationDataFile(const s2mString &pa
 
     // Déterminer la version du fichier
     file.readSpecificTag("version", tp);
-    unsigned int version = atoi(tp.c_str());
+    unsigned int version = static_cast<unsigned int>(atoi(tp.c_str()));
     s2mError::s2mAssert(version == 1, "Version not implemented yet");
 
     // Déterminer le nombre de markers
     file.readSpecificTag("nbmuscles", tp);
-    unsigned int nMus = atoi(tp.c_str());
+    unsigned int nMus = static_cast<unsigned int>(atoi(tp.c_str()));
 
     // Déterminer le nombre de noeud
     file.readSpecificTag("nbintervals", tp);
-    unsigned int nbIntervals = atoi(tp.c_str());
+    unsigned int nbIntervals = static_cast<unsigned int>(atoi(tp.c_str()));
 
     std::vector<Eigen::VectorXd> activations;
     // Descendre jusqu'à la définition d'un markeur
@@ -812,16 +817,16 @@ std::vector<Eigen::VectorXd> s2mRead::readTorqueDataFile(const s2mString &path){
 
     // Déterminer la version du fichier
     file.readSpecificTag("version", tp);
-    unsigned int version = atoi(tp.c_str());
+    unsigned int version = static_cast<unsigned int>(atoi(tp.c_str()));
     s2mError::s2mAssert(version == 1, "Version not implemented yet");
 
     // Déterminer le nombre de tau
     file.readSpecificTag("ntau", tp); //
-    unsigned int nTau = atoi(tp.c_str());
+    unsigned int nTau = static_cast<unsigned int>(atoi(tp.c_str()));
 
     // Déterminer le nombre de noeud
     file.readSpecificTag("nbintervals", tp);
-    unsigned int nbIntervals = atoi(tp.c_str());
+    unsigned int nbIntervals = static_cast<unsigned int>(atoi(tp.c_str()));
 
     std::vector<Eigen::VectorXd> torque;
     // Descendre jusqu'à la définition d'un torque
@@ -861,16 +866,16 @@ std::vector<Eigen::VectorXd> s2mRead::readGrfDataFile(const s2mString &path){
 
     // DÃ©terminer la version du fichier
     file.readSpecificTag("version", tp);
-    unsigned int version = atoi(tp.c_str());
+    unsigned int version = static_cast<unsigned int>(atoi(tp.c_str()));
     s2mError::s2mAssert(version == 1, "Version not implemented yet");
 
     // DÃ©terminer le nombre de grf
     file.readSpecificTag("ngrf", tp); //
-    unsigned int NGRF = atoi(tp.c_str());
+    unsigned int NGRF = static_cast<unsigned int>(atoi(tp.c_str()));
 
     // DÃ©terminer le nombre de noeud
     file.readSpecificTag("nbintervals", tp);
-    unsigned int nbIntervals = atoi(tp.c_str());
+    unsigned int nbIntervals = static_cast<unsigned int>(atoi(tp.c_str()));
 
     std::vector<Eigen::VectorXd> grf;
     // Descendre jusqu'Ã  la dÃ©finition d'un torque
@@ -929,7 +934,7 @@ void s2mRead::readViconForceFile(const s2mString &path, // Path to the file
 
         // Connaitre la fréquence d'acquisition
         file.readSpecificTag("devices", tp);
-        frequency1pf = atoi(tp.c_str());
+        frequency1pf = static_cast<unsigned int>(atoi(tp.c_str()));
 
         // Passer l'en-tête
         for (unsigned int i=0; i<4; ++i)
@@ -1031,9 +1036,9 @@ std::vector<std::vector<s2mNode> >  s2mRead::readViconMarkerFile(const s2mString
     std::vector<unsigned int> idx_end;
     // Trouver les séparateurs (: et ,)
     while (idx_tp < t.length()) {
-        idx_tp = t.find(":", idx_tp+1);
+        idx_tp = static_cast<unsigned int>(t.find(":", idx_tp+1));
         idx_init.push_back(idx_tp);
-        idx_end.push_back(t.find(",", idx_tp+1));
+        idx_end.push_back(static_cast<unsigned int>(t.find(",", idx_tp+1)));
     }
     // Garder les noms entre les séparateurs
     std::vector<s2mString> MarkersInFile;
@@ -1048,9 +1053,9 @@ std::vector<std::vector<s2mNode> >  s2mRead::readViconMarkerFile(const s2mString
     // Comparer avec l'ordre donné
     int *ordre;
     ordre = new int[3*MarkersInFile.size()];
-    for (unsigned int i=0; i<3*MarkersInFile.size(); ++i)
+    for (int i=0; i<static_cast<int>(3*MarkersInFile.size()); ++i)
         ordre[i] = -1;
-    for (unsigned int i=0; i<markOrder.size(); ++i){
+    for (int i=0; i<static_cast<int>(markOrder.size()); ++i){
         unsigned int cmp=0;
         s2mString m1 = (*(markOrder.begin()+i));
         while (1){
@@ -1086,8 +1091,8 @@ std::vector<std::vector<s2mNode> >  s2mRead::readViconMarkerFile(const s2mString
         // passer l'entete
         for (unsigned int i=0; i<7; ++i)
             file.read(t);
-        s2mError::s2mAssert(nNodes!=0 && nNodes!=1 && (unsigned int)nNodes<=nbFrames, "nNode should not be 0, 1 or greater than number of frame");
-        jumps = nbFrames/nNodes+1;
+        s2mError::s2mAssert(nNodes!=0 && nNodes!=1 && static_cast<unsigned int>(nNodes)<=nbFrames, "nNode should not be 0, 1 or greater than number of frame");
+        jumps = nbFrames/static_cast<unsigned int>(nNodes)+1;
     }
 
 
@@ -1095,7 +1100,7 @@ std::vector<std::vector<s2mNode> >  s2mRead::readViconMarkerFile(const s2mString
     // now we'll use a stringstream to separate the fields out of the line (comma separated)
     unsigned int cmpFrames(1);
     while(!file.eof()){
-        Eigen::VectorXd data_tp = Eigen::VectorXd::Zero(3*markOrder.size());
+        Eigen::VectorXd data_tp = Eigen::VectorXd::Zero(static_cast<int>(3*markOrder.size()));
         std::stringstream ss( t );
         s2mString field;
         unsigned int cmp = 0;
@@ -1114,7 +1119,7 @@ std::vector<std::vector<s2mNode> >  s2mRead::readViconMarkerFile(const s2mString
         }
         // Une fois les markers en ordre, les séparer
         std::vector<s2mNode> data_tp2;
-        for (unsigned int i=0; i<(unsigned int)data_tp.size()/3; ++i){
+        for (unsigned int i=0; i<static_cast<unsigned int>(data_tp.size()/3); ++i){
             s2mNode node(data_tp.block(3*i,0,3,1)/1000);
             data_tp2.push_back(node);
         }
@@ -1151,14 +1156,14 @@ s2mBoneMesh s2mRead::readBoneMeshFileS2mBones(const s2mPath &path)
 
     // Déterminer la version du fichier
     file.readSpecificTag("version", tp);
-    unsigned int version = atoi(tp.c_str());
+    unsigned int version = static_cast<unsigned int>(atoi(tp.c_str()));
     s2mError::s2mAssert(version == 1 || version == 2, "Version not implemented yet");
 
     // Savoir le nombre de points
     file.readSpecificTag("npoints", tp);
-    unsigned int nPoints(atoi(tp.c_str()));
+    unsigned int nPoints(static_cast<unsigned int>(atoi(tp.c_str())));
     file.readSpecificTag("nfaces", tp);
-    unsigned int nFaces(atoi(tp.c_str()));
+    unsigned int nFaces(static_cast<unsigned int>(atoi(tp.c_str())));
 
     s2mBoneMesh mesh;
     mesh.setPath(path);
@@ -1203,13 +1208,13 @@ s2mBoneMesh s2mRead::readBoneMeshFilePly(const s2mPath &path)
     // Savoir le nombre de points
     file.reachSpecificTag("element");
     file.readSpecificTag("vertex", tp);
-    unsigned int nVertex(atoi(tp.c_str()));
+    unsigned int nVertex(static_cast<unsigned int>(atoi(tp.c_str())));
     int nVertexProperties(file.countTagsInAConsecutiveLines("property"));
 
     // Trouver le nombre de colonne pour les vertex
     file.reachSpecificTag("element");
     file.readSpecificTag("face", tp);
-    unsigned int nFaces(atoi(tp.c_str()));
+    unsigned int nFaces(static_cast<unsigned int>(atoi(tp.c_str())));
     int nFacesProperties(file.countTagsInAConsecutiveLines("property"));
 
 
@@ -1266,9 +1271,9 @@ std::vector<std::vector<s2mNode> >  s2mRead::readViconMarkerFile(const s2mString
     std::vector<unsigned int> idx_end;
     // Trouver les séparateurs (: et ,)
     while (idx_tp < t.length()) {
-        idx_tp = t.find(":", idx_tp+1);
+        idx_tp = static_cast<unsigned int>(t.find(":", idx_tp+1));
         idx_init.push_back(idx_tp);
-        idx_end.push_back(t.find(",", idx_tp+1));
+        idx_end.push_back(static_cast<unsigned int>(t.find(",", idx_tp+1)));
     }
     // Garder les noms entre les séparateurs
     std::vector<s2mString> MarkersInFile;

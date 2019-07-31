@@ -1,5 +1,5 @@
-#ifndef S2MNODEBONE_H
-#define S2MNODEBONE_H
+#ifndef S2M_NODE_BONE_H
+#define S2M_NODE_BONE_H
 	#include "biorbdConfig.h"
     #include <Eigen/Dense>
     #include "s2mNode.h"
@@ -41,4 +41,4 @@ class BIORBD_API s2mNodeBone : public s2mNode
 
 };
 
-#endif // S2MNODEBONE_H
+#endif // S2M_NODE_BONE_H
