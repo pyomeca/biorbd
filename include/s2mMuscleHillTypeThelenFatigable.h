@@ -38,6 +38,7 @@ public:
             const s2mString& dynamicFatigueType = "Simple");
     s2mMuscleHillTypeThelenFatigable(const s2mMuscle& m, const s2mString& dynamicFatigueType = "Simple");
     s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m, const s2mString& dynamicFatigueType = "Simple");
+    virtual ~s2mMuscleHillTypeThelenFatigable(){}
 
     virtual void applyTimeDerivativeToFatigueModel(const s2mMuscleStateActual& EMG);
     virtual void computeFlCE(const s2mMuscleStateActual &EMG);
