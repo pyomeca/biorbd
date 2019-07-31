@@ -43,3 +43,17 @@ void s2mMuscleFatigable::fatigueState(double active, double fatigued, double res
 {
     m_fatigueState->setState(active, fatigued, resting);
 }
+
+
+void s2mMuscleFatigable::computeTimeDerivativeState(const s2mMuscleStateActual &EMG)
+{
+    if (std::dynamic_pointer_cast<s2mMuscleFatigueDynamicState>(m_fatigueState)) {
+        s2mMuscle* muscle = dynamic_cast<s2mMuscle*>(this);
+        if (muscle)
+            std::static_pointer_cast<s2mMuscleFatigueDynamicState>(m_fatigueState)->timeDerivativeState(EMG, muscle->caract());
+        else
+            s2mError::s2mAssert(false, "s2mMuscleFatigable should be a s2mMuscle");
+   } else {
+       s2mError::s2mAssert(false, "Type cannot be fatigued");
+    }
+}

@@ -40,7 +40,6 @@ public:
     s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m);
     virtual ~s2mMuscleHillTypeThelenFatigable(){}
 
-    virtual void applyTimeDerivativeToFatigueModel(const s2mMuscleStateActual& EMG);
     virtual void computeFlCE(const s2mMuscleStateActual &EMG);
 
 protected:

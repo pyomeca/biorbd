@@ -46,14 +46,6 @@ s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const std::sh
     setType();
 }
 
-void s2mMuscleHillTypeThelenFatigable::applyTimeDerivativeToFatigueModel(const s2mMuscleStateActual &EMG)
-{
-    if (std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(m_fatigueState))
-       std::static_pointer_cast<s2mMuscleFatigueDynamicStateXia>(m_fatigueState)->timeDerivativeState(EMG, m_caract);
-   else
-       s2mError::s2mAssert(false, "Type cannot be fatigued!");
-}
-
 void s2mMuscleHillTypeThelenFatigable::computeFlCE(const s2mMuscleStateActual &EMG)
 {
     s2mMuscleHillTypeThelen::computeFlCE(EMG);   

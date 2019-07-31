@@ -15,9 +15,9 @@ public:
     s2mMuscleFatigable(const std::shared_ptr<s2mMuscle> m);
     virtual ~s2mMuscleFatigable() = 0;
 
-    virtual void applyTimeDerivativeToFatigueModel(const s2mMuscleStateActual& EMG) = 0;
+    virtual void computeTimeDerivativeState(const s2mMuscleStateActual& EMG);
 
-    virtual std::shared_ptr<s2mMuscleFatigueState> fatigueState();
+    std::shared_ptr<s2mMuscleFatigueState> fatigueState();
     virtual void fatigueState(double active, double fatigued, double resting);
 
 protected:
