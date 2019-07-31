@@ -20,9 +20,9 @@ class BIORBD_API s2mMuscleFatigueDynamicState : public s2mMuscleFatigueState
                 const std::shared_ptr<s2mMuscle> m
                 );
 
-        double previousActiveFibers() const;
-        double previousFatiguedFibers() const;
-        double previousRestingFibers() const;
+        double activeFibersDot() const;
+        double fatiguedFibersDot() const;
+        double restingFibersDot() const;
 
         virtual void timeDerivativeState(
                 const s2mMuscleStateActual &EMG,
@@ -30,9 +30,6 @@ class BIORBD_API s2mMuscleFatigueDynamicState : public s2mMuscleFatigueState
          ) = 0;
 
     protected:
-        double m_previousActiveFibers;
-        double m_previousFatiguedFibers;
-        double m_previousRestingFibers;
         double m_activeFibersDot;
         double m_fatiguedFibersDot;
         double m_restingFibersDot;

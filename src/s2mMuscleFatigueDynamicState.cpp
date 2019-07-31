@@ -6,9 +6,6 @@ s2mMuscleFatigueDynamicState::s2mMuscleFatigueDynamicState(
         double fatigued,
         double resting) :
     s2mMuscleFatigueState(active,fatigued,resting),
-    m_previousActiveFibers(active),
-    m_previousFatiguedFibers(fatigued),
-    m_previousRestingFibers(resting),
     m_activeFibersDot(0),
     m_fatiguedFibersDot(0),
     m_restingFibersDot(0)
@@ -19,9 +16,6 @@ s2mMuscleFatigueDynamicState::s2mMuscleFatigueDynamicState(
 s2mMuscleFatigueDynamicState::s2mMuscleFatigueDynamicState(
         const std::shared_ptr<s2mMuscle> m):
     s2mMuscleFatigueState(),
-    m_previousActiveFibers(0),
-    m_previousFatiguedFibers(0),
-    m_previousRestingFibers(1),
     m_activeFibersDot(0),
     m_fatiguedFibersDot(0),
     m_restingFibersDot(0)
@@ -29,16 +23,19 @@ s2mMuscleFatigueDynamicState::s2mMuscleFatigueDynamicState(
     setType();
 }
 
-double s2mMuscleFatigueDynamicState::previousActiveFibers() const {
-    return m_previousActiveFibers;
+double s2mMuscleFatigueDynamicState::activeFibersDot() const
+{
+    return m_activeFibersDot;
 }
 
-double s2mMuscleFatigueDynamicState::previousFatiguedFibers() const {
-    return m_previousFatiguedFibers;
+double s2mMuscleFatigueDynamicState::fatiguedFibersDot() const
+{
+    return m_fatiguedFibersDot;
 }
 
-double s2mMuscleFatigueDynamicState::previousRestingFibers() const {
-    return m_previousRestingFibers;
+double s2mMuscleFatigueDynamicState::restingFibersDot() const
+{
+    return m_restingFibersDot;
 }
 
 void s2mMuscleFatigueDynamicState::setType()
