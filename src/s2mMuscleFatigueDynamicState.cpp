@@ -48,15 +48,6 @@ s2mVector s2mMuscleFatigueDynamicState::getTimeDerivativeState() const
    return res;
 }
 
-s2mVector s2mMuscleFatigueDynamicState::getPreviousState() const
-{
-    s2mVector res(3);
-    res(0) = m_previousActiveFibers;
-    res(1) = m_previousFatiguedFibers;
-    res(2) = m_previousRestingFibers;
-    return res;
-}
-
 void s2mMuscleFatigueDynamicState::setType()
 {
     m_type = "DynamicAbstract";
