@@ -32,28 +32,18 @@ s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mStri
     setType();
 }
 
-s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mMuscle &m,
-        const s2mString &dynamicFatigueType) :
+s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mMuscle &m) :
     s2mMuscleHillTypeThelen(m),
-    s2mMuscleFatigable (dynamicFatigueType)
+    s2mMuscleFatigable (m)
 {
     setType();
 }
 
-s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m,
-        const s2mString &dynamicFatigueType) :
+s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m) :
     s2mMuscleHillTypeThelen(m),
-    s2mMuscleFatigable(dynamicFatigueType)
+    s2mMuscleFatigable(m)
 {
     setType();
-}
-
-void s2mMuscleHillTypeThelenFatigable::applyTimeDerivativeToFatigueModel(const s2mMuscleStateActual &EMG)
-{
-    if (std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(m_fatigueState))
-       std::static_pointer_cast<s2mMuscleFatigueDynamicStateXia>(m_fatigueState)->timeDerivativeState(EMG, m_caract);
-   else
-       s2mError::s2mAssert(false, "Type cannot be fatigued!");
 }
 
 void s2mMuscleHillTypeThelenFatigable::computeFlCE(const s2mMuscleStateActual &EMG)

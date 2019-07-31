@@ -36,10 +36,10 @@ public:
             const s2mMusclePathChangers & w= s2mMusclePathChangers(),
             const s2mMuscleStateActual & s= s2mMuscleStateActual(),
             const s2mString& dynamicFatigueType = "Simple");
-    s2mMuscleHillTypeThelenFatigable(const s2mMuscle& m, const s2mString& dynamicFatigueType = "Simple");
-    s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m, const s2mString& dynamicFatigueType = "Simple");
+    s2mMuscleHillTypeThelenFatigable(const s2mMuscle& m);
+    s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m);
+    virtual ~s2mMuscleHillTypeThelenFatigable(){}
 
-    virtual void applyTimeDerivativeToFatigueModel(const s2mMuscleStateActual& EMG);
     virtual void computeFlCE(const s2mMuscleStateActual &EMG);
 
 protected:
