@@ -71,4 +71,5 @@ class BIORBD_API s2mMuscleOptimisation
 
 };
 
+
 #endif // S2M_MUSCLE_OPTIMISATION_H

@@ -17,16 +17,17 @@
 class BIORBD_API s2mStaticOptimizationIpoptLinearized : public s2mStaticOptimizationIpopt
 {
     public:
-        s2mStaticOptimizationIpoptLinearized(s2mMusculoSkeletalModel &model,
-             const s2mGenCoord           &Q,
-             const s2mGenCoord           &Qdot,
-             const s2mTau                &tauTarget,
-             const s2mVector             &activationInit,
-             //bool                        useResidual = true,
-             int                         verbose = 0,
-             unsigned int                p = 2,
-             const double                eps = 1e-15
-                );
+        s2mStaticOptimizationIpoptLinearized(
+                s2mMusculoSkeletalModel &model,
+                const s2mGenCoord           &Q,
+                const s2mGenCoord           &Qdot,
+                const s2mTau                &tauTarget,
+                const s2mVector             &activationInit,
+                bool                        useResidual = true,
+                unsigned int                pNormFactor = 2,
+                int                         verbose = 0,
+                double                eps = 1e-10
+        );
 
         virtual ~s2mStaticOptimizationIpoptLinearized();
 

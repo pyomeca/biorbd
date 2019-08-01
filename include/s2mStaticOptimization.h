@@ -13,142 +13,66 @@
 #include "s2mStaticOptimizationIpoptLinearized.h"
 
 
-    
 class BIORBD_API s2mStaticOptimization
 {
     public:
         s2mStaticOptimization(
-                s2mMusculoSkeletalModel &m,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
-                const s2mGenCoord& Qddot,
-                const s2mVector& Activ,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
-                );
-        s2mStaticOptimization(
-                s2mMusculoSkeletalModel &m,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
+                s2mMusculoSkeletalModel& model,
+                const s2mGenCoord& Q,
+                const s2mGenCoord& Qdot,
                 const s2mTau& tauTarget,
-                const s2mVector& Activ,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
+                const s2mVector& initialActivationGuess = s2mVector(),
+                unsigned int pNormFactor = 2,
+                bool useResidualTorque = true,
+                int verbose = 0
                 );
         s2mStaticOptimization(
-                s2mMusculoSkeletalModel &m,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
-                const s2mGenCoord& Qddot,
-                const std::vector<s2mMuscleStateActual>& state,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
-                );
-        s2mStaticOptimization(
-                s2mMusculoSkeletalModel &m,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
+                s2mMusculoSkeletalModel& model,
+                const s2mGenCoord& Q,
+                const s2mGenCoord& Qdot,
                 const s2mTau& tauTarget,
-                const std::vector<s2mMuscleStateActual>& state,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
+                const std::vector<s2mMuscleStateActual>& initialActivationGuess,
+                unsigned int pNormFactor = 2,
+                bool useResidualTorque = true,
+                int verbose = 0
                 );
 
-        //constructors for  a vector of instants to be optimized by ipopt
         s2mStaticOptimization(
-                s2mMusculoSkeletalModel &m,
-                const std::vector<s2mGenCoord>& allQ, // states
-                const std::vector<s2mGenCoord>& allQdot, // derived states
-                const std::vector<s2mGenCoord>& allQddot,
-                const std::vector<s2mVector>& allActiv,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
-                );
-        s2mStaticOptimization(
-                s2mMusculoSkeletalModel &m,
+                s2mMusculoSkeletalModel& model,
                 const std::vector<s2mGenCoord>& allQ,
                 const std::vector<s2mGenCoord>& allQdot,
                 const std::vector<s2mTau>& allTauTarget,
-                const std::vector<s2mVector>& allActiv,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
+                const s2mVector& initialActivationGuess = s2mVector(),
+                unsigned int pNormFactor = 2,
+                bool useResidualTorque = true,
+                int verbose = 0
                 );
         s2mStaticOptimization(
-                s2mMusculoSkeletalModel &m,
-                const std::vector<s2mGenCoord>& allQ,
-                const std::vector<s2mGenCoord>& allQdot,
-                const std::vector<s2mGenCoord>& allQddot,
-                const std::vector<std::vector<s2mMuscleStateActual>>& allState,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
-                );
-        s2mStaticOptimization(
-                s2mMusculoSkeletalModel &m,
+                s2mMusculoSkeletalModel& model,
                 const std::vector<s2mGenCoord>& allQ,
                 const std::vector<s2mGenCoord>& allQdot,
                 const std::vector<s2mTau>& allTauTarget,
-                const std::vector<std::vector<s2mMuscleStateActual>>& allState,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
+                const std::vector<s2mMuscleStateActual>& initialActivationGuess,
+                unsigned int pNormFactor = 2,
+                bool useResidualTorque = true,
+                int verbose = 0
                 );
 
-        s2mStaticOptimization staticOptimizationForOneInstant(
-                s2mMusculoSkeletalModel &m,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
-                const s2mGenCoord& Qddot,
-                const s2mVector& Activ,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
-                );
-        s2mStaticOptimization staticOptimizationForOneInstant(
-                s2mMusculoSkeletalModel &m,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
-                const s2mTau& tauTarget,
-                const s2mVector& Activ,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
-                );
-        s2mStaticOptimization staticOptimizationForOneInstant(
-                s2mMusculoSkeletalModel &m,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
-                const s2mGenCoord& Qddot,
-                const std::vector<s2mMuscleStateActual>& state,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
-                );
-        s2mStaticOptimization staticOptimizationForOneInstant(
-                s2mMusculoSkeletalModel &m,
-                const s2mGenCoord& Q, // states
-                const s2mGenCoord& Qdot, // derived states
-                const s2mTau& tauTarget,
-                const std::vector<s2mMuscleStateActual>& state,
-                const unsigned int pNormFactor = 2,
-                const int verbose = 0
-                );
-
-        void run(
-                bool LinearizedState = false
-                );
-
-
-
-
+        void run(bool useLinearizedState = false);
+        std::vector<s2mVector> finalSolution();
+        s2mVector finalSolution(unsigned int index);
 
     protected:
-        s2mMusculoSkeletalModel m_model;
-        s2mGenCoord m_Q;
-        s2mGenCoord m_Qdot;
-        s2mGenCoord m_Qddot;
-        s2mTau m_tauTarget;
-        std::vector<s2mMuscleStateActual> m_state;
-        s2mVector m_Activ;
+        s2mMusculoSkeletalModel& m_model;
+        bool m_useResidualTorque;
+        std::vector<s2mGenCoord> m_allQ;
+        std::vector<s2mGenCoord> m_allQdot;
+        std::vector<s2mTau> m_allTauTarget;
+        s2mVector m_initialActivationGuess;
         unsigned int m_pNormFactor;
         int m_verbose;
-        std::vector<s2mVector> m_finalSolution;
-        unsigned int m_multipleInstant;
+        std::vector<Ipopt::SmartPtr<Ipopt::TNLP>> m_staticOptimProblem;
+        bool m_alreadyRun;
 
     private:
 

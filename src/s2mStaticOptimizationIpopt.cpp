@@ -8,8 +8,8 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
         const s2mTau &tauTarget,
         const s2mVector &activationInit,
         bool useResidual,
-        int verbose,
         unsigned int pNormFactor,
+        int verbose,
         const double eps
         ):
     m_model(model),
@@ -186,15 +186,15 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
     if (values == nullptr) {
         // Setup non-zeros values
         Ipopt::Index k(0);
-        for (Ipopt::Index j = 0; j < n-m; ++j){
+        for (Ipopt::Index j = 0; static_cast<unsigned int>(j) < m_nMus; ++j){
             for (Ipopt::Index i = 0; i<m; ++i){
                 iRow[k] = i;
                 jCol[k++] = j;
             }
         }
-        for (Ipopt::Index j = 0; j < m; ++j ){
+        for (Ipopt::Index j = 0; static_cast<unsigned int>(j) < m_nTauResidual; ++j ){
             iRow[k] = j;
-            jCol[k++] = j+n-m;
+            jCol[k++] = j+ static_cast<Ipopt::Index>(m_nMus);
         }
     } else {
         if (new_x)
@@ -275,6 +275,14 @@ void s2mStaticOptimizationIpopt::finalize_solution(
 //        for( Ipopt::Index i = 0; i < n; i++ )
 //            std::cout << "z_L[" << i << "] = " << z_L[i] << ", z_U[" << i << "] = " << z_U[i] << std::endl << std::endl;
     }
+}
+
+s2mVector s2mStaticOptimizationIpopt::finalSolution() const{
+    return m_finalSolution;
+}
+
+s2mVector s2mStaticOptimizationIpopt::finalResidual() const{
+    return m_finalResidual;
 }
 
 void s2mStaticOptimizationIpopt::dispatch(const Ipopt::Number *x)
