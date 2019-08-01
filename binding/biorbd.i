@@ -227,7 +227,7 @@ namespace std {
 //%include "s2mMuscleMeshTransverse.h"
 //%include "s2mMusclePathChanger.h"
 //%include "s2mMusclePathChangers.h"
-//%include "s2mMuscleState.h"
+%include "../include/s2mMuscleState.h"
 %include "../include/s2mMuscleStateActual.h"
 //%include "s2mMuscleStateActualBuchanan.h"
 //%include "s2mMuscleStateMax.h"
