@@ -90,7 +90,7 @@ int main()
         // Get and modify the values from the model itself
         std::shared_ptr<s2mMuscleHillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(model.muscleGroup(0).muscle(0)));
         if (muscle){
-            muscle->fatigueState()->setState(0.9, 0, 0.1);
+            muscle->fatigueState(0.9, 0, 0.1);
             muscle->computeTimeDerivativeState(emg);
         } else
             throw std::runtime_error("Muscle is not a s2mMuscleHillTypeThelenFatigable");

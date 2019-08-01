@@ -84,7 +84,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
 
         // Apply the derivative
         s2mMuscleStateActual emg(0, activationEmgForXiaDerivativeTest); // Set target
-        muscle->fatigueState()->setState(currentActiveFibersForXiaDerivativeTest,
+        muscle->fatigueState(currentActiveFibersForXiaDerivativeTest,
                              currentFatiguedFibersForXiaDerivativeTest,
                              currentRestingFibersForXiaDerivativeTest);
         muscle->computeTimeDerivativeState(emg);
