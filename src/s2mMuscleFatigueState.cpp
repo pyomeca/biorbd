@@ -23,43 +23,50 @@ s2mMuscleFatigueState::s2mMuscleFatigueState(const std::shared_ptr<s2mMuscleFati
 void s2mMuscleFatigueState::setState(double active, double fatigued, double resting)
 {
     // Sanity check for active fibers
+    ///
+    /// In order to get the quantity of active fibers to 0 or 1, it has to come from the input command.
+    /// The input command manage fiber recruitment from resting to active.
+    /// Hence any exceeding because of integration can be corrected by putting back exceeding active fibers quantity
+    /// into resting fibers quantity.
+    ///
     if (active < 0){
         resting += active;
-        s2mError::s2mWarning(0, "Active Fibers Quantity can't be lower than 0, 0 is used then");
-        std::cout <<  "Previous Active Fibers Quantity before set to 0: " << active << std::endl;
+        s2mError::s2mWarning(0, "Active Fibers Quantity can't be lower than 0, 0 is used then\n"
+                                "Previous Active Fibers Quantity before set to 0:"+std::to_string(active));
         active = 0;
     }
     else if (active > 1){
         resting += active - 1;
-        s2mError::s2mWarning(0, "Active Fibers Quantity can't be higher than 1, 1 is used then");
-        std::cout <<  "Previous Active Fibers Quantity before set to 1: " << active << std::endl;
+        s2mError::s2mWarning(0, "Active Fibers Quantity can't be higher than 1, 1 is used then\n"
+                                "Previous Active Fibers Quantity before set to 1: "+std::to_string(active));
         active = 1;
     }
 
     // Sanity check for fatigued fibers
     if (fatigued < 0){
-        s2mError::s2mWarning(0, "Fatigued Fibers Quantity can't be lower than 0, 0 is used then");
-        std::cout <<  "Previous Fatigued Fibers Quantity before set to 0: " << fatigued << std::endl;
-        fatigued = 0;
+        s2mError::s2mAssert(0, "Fatigued Fibers Quantity can't be lower than 0");
     }
     else if (fatigued > 1){
-        s2mError::s2mWarning(0, "Fatigued Fibers Quantity can't be higher than 1, 1 is used then");
-        std::cout <<  "Previous Fatigued Fibers Quantity before set to 1: " << fatigued << std::endl;
-        fatigued = 1;
+        s2mError::s2mAssert(0, "Fatigued Fibers Quantity can't be higher than 1");
     }
 
     // Sanity check for resting fibers
+    ///
+    /// In order to get the quantity of resting fibers to 0, it has to come from the input command.
+    /// The input command manage fiber recruitment from resting to active.
+    /// Hence any exceeding because of integration can be corrected by putting back exceeding resting fibers quantity
+    /// into active fibers quantity.
+    ///
+
     if (resting < 0){
         active += resting;
-        s2mError::s2mWarning(0, "Resting Fibers Quantity can't be lower than 0, 0 is used then");
-        std::cout <<  "Previous Resting Fibers Quantity before set to 0: " << resting << std::endl;
+        s2mError::s2mWarning(0, "Resting Fibers Quantity can't be lower than 0, 0 is used then\n"
+                                "Previous Resting Fibers Quantity before set to 0: "+std::to_string(resting));
         resting = 0;
     }
     else if (resting > 1){
-        fatigued += 1 - resting;
-        s2mError::s2mWarning(0, "Resting Fibers Quantity can't be higher than 1, 1 is used then");
-        std::cout <<  "Previous Resting Fibers Quantity before set to 1: " << resting << std::endl;
-        resting = 1;
+        s2mError::s2mAssert(0, "Resting Fibers Quantity can't be higher than 1, 1 is used then");
+
     }
 
     if (fabs(active + fatigued + resting - 1.0) > 0.1){
