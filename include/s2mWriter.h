@@ -1,11 +1,12 @@
 #ifndef S2MWRITER_H
 #define S2MWRITER_H
-#include "biorbdConfig.h"
-#include "s2mMusculoSkeletalModel.h"
+
 #include <iostream>
 #include <fstream>
-//#include <boost/filesystem.hpp>
+#include "biorbdConfig.h"
+#include "s2mPath.h"
 
+class s2mMusculoSkeletalModel;
 class BIORBD_API s2mWriter 
 {
     public:
@@ -13,5 +14,7 @@ class BIORBD_API s2mWriter
 
     protected:
 };
+
+#include "s2mMusculoSkeletalModel.h"
 
 #endif // S2MWRITER_H

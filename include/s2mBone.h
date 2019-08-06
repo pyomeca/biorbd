@@ -4,7 +4,6 @@
     #include "biorbdConfig.h"
     #include "s2mError.h"
     #include <rbdl/rbdl.h>
-    #include "s2mJoints.h"
     #include "s2mBoneCaracteristics.h"
     #include "s2mJointIntraBone.h"
     #include <limits.h>
@@ -109,5 +108,6 @@ class BIORBD_API s2mBone
 
     private:
 };
+#include "s2mJoints.h"
 
 #endif // S2MBONE_H

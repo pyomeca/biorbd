@@ -1,16 +1,6 @@
 #ifndef S2MREAD_H
 #define S2MREAD_H
 
-    #include "biorbdConfig.h"
-    #include "s2mError.h"
-    #include "s2mIfStream.h"
-    #include <vector>
-    #include <Eigen/Dense>
-    #include "s2mMusculoSkeletalModel.h"
-    #include "s2mString.h"
-    #include "s2mPatch.h"
-    #include <limits.h>
-
     #ifdef _WIN64
 		#include <direct.h>
 		#define GetCurrentDir _getcwd
@@ -22,6 +12,9 @@
 		#define GetCurrentDir getcwd
     #endif
 
+#include <vector>
+
+#include "s2mMusculoSkeletalModel.h"
 class BIORBD_API s2mRead
 {
 public:
@@ -55,5 +48,13 @@ public:
 private:
 
 };
+
+#include "biorbdConfig.h"
+#include "s2mError.h"
+#include "s2mIfStream.h"
+#include <Eigen/Dense>
+#include "s2mString.h"
+#include "s2mPatch.h"
+#include <limits.h>
 
 #endif // S2MREAD_H

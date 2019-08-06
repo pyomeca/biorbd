@@ -1,7 +1,6 @@
 #ifndef S2MTAU_H
 #define S2MTAU_H
     #include "biorbdConfig.h"
-    #include "s2mJoints.h"
     #include "s2mVector.h"
 
 class s2mJoints;
@@ -21,5 +20,7 @@ protected:
 private:
 
 };
+
+#include "s2mJoints.h"
 
 #endif // S2MTAU_H

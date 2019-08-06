@@ -1,12 +1,9 @@
 #ifndef S2MMARKERS_H
 #define S2MMARKERS_H
-    #include "s2mMatrix.h"
-    #include "biorbdConfig.h"
-    #include "s2mString.h"
-    #include <rbdl/rbdl.h>
-    #include "s2mBone.h"
-    #include "s2mNodeBone.h"
-    #include "s2mGenCoord.h"
+
+#include <rbdl/rbdl.h>
+#include "s2mNodeBone.h"
+#include "s2mMatrix.h"
 
 class s2mGenCoord;
 class s2mJoints;
@@ -61,5 +58,10 @@ protected:
         std::vector <s2mNodeBone> m_marks;
     private:
 };
+
+#include "biorbdConfig.h"
+#include "s2mString.h"
+#include "s2mBone.h"
+#include "s2mGenCoord.h"
 
 #endif // S2MMARKERS_H

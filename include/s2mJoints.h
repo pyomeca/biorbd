@@ -1,16 +1,13 @@
 #ifndef S2MJOINTS_H
 #define S2MJOINTS_H
 
-    #include "s2mMatrix.h"
-    #include "biorbdConfig.h"
-    #include "s2mError.h"
-    #include <rbdl/rbdl.h>
-    #include "s2mBone.h"
-    #include "s2mBoneCaracteristics.h"
-    #include "s2mIntegrator.h"
-    #include "s2mTau.h"
-    #include "s2mNodeBone.h"
-    #include "s2mMarkers.h"
+#include "biorbdConfig.h"
+#include "s2mError.h"
+#include <rbdl/rbdl.h>
+#include "s2mNodeBone.h"
+#include "s2mBoneMesh.h"
+#include "s2mMatrix.h"
+#include "s2mPatch.h"
 
 
 class s2mAttitude;
@@ -171,6 +168,12 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
     private:
 
 };
+
+#include "s2mBone.h"
+#include "s2mBoneCaracteristics.h"
+#include "s2mIntegrator.h"
+#include "s2mTau.h"
+#include "s2mMarkers.h"
 
 #endif // S2MJOINTS_H
 

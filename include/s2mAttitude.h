@@ -7,7 +7,6 @@
     #include <Eigen/Dense>
     #include "rbdl/rbdl.h"
     #include <iostream>
-    #include "s2mNode.h"
 class s2mNode;
 class BIORBD_API s2mAttitude : public Eigen::Matrix4d
 {
@@ -43,5 +42,6 @@ class BIORBD_API s2mAttitude : public Eigen::Matrix4d
 };
 std::ostream& operator<<(std::ostream& os, const s2mAttitude &a);
 
+#include "s2mNode.h"
 
 #endif // S2MATTITUDE_H

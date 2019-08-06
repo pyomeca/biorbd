@@ -4,7 +4,6 @@
     #include "biorbdConfig.h"
     #include "s2mQuaternion.h"
     #include "s2mVector.h"
-    #include "s2mJoints.h"
 
 class s2mJoints;
 class BIORBD_API s2mGenCoord : public s2mVector
@@ -23,5 +22,6 @@ protected:
 private:
 
 };
+#include "s2mJoints.h"
 
 #endif // S2MGENCOORD_H
