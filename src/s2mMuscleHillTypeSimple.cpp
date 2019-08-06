@@ -44,7 +44,7 @@ s2mMuscleHillTypeSimple::~s2mMuscleHillTypeSimple()
 
 }
 
-std::vector<std::shared_ptr<s2mMuscleForce> > s2mMuscleHillTypeSimple::force(const s2mMuscleStateActual &EMG){
+const std::vector<std::shared_ptr<s2mMuscleForce>> &s2mMuscleHillTypeSimple::force(const s2mMuscleStateDynamics &emg){
     // Combiner les forces
     computeForce(EMG);
     return m_force;

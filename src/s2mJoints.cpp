@@ -160,7 +160,7 @@ unsigned int s2mJoints::nbBone() const
      return static_cast<unsigned int>(m_bones.size());
 }
 
-std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> > &sv, const unsigned int &frame){
+std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> &sv, const unsigned int &frame) const{
     // Tableau de sortie
     std::vector<RigidBodyDynamics::Math::SpatialVector> sv_out;
 
@@ -169,7 +169,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(s
 
     // Itérateur sur le tableau de force
     std::vector<RigidBodyDynamics::Math::SpatialVector> sv2; // Mettre dans un même tableau les valeurs d'un même instant de différentes plateformes
-    for (std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> >::iterator it = sv.begin(); it!=sv.end(); ++it){
+    for (std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>>::iterator it = sv.begin(); it!=sv.end(); ++it){
         std::vector<RigidBodyDynamics::Math::SpatialVector>::iterator sv2_tp = (*it).begin();
         sv2.push_back(*(sv2_tp+frame));
     }
@@ -520,9 +520,9 @@ RigidBodyDynamics::Math::Vector3d s2mJoints::CoMddotBySegment(const s2mGenCoord 
 
 }
 
-std::vector<std::vector<s2mNodeBone> > s2mJoints::meshPoints(const s2mGenCoord &Q, const bool updateKin){
+std::vector<std::vector<s2mNodeBone>> s2mJoints::meshPoints(const s2mGenCoord &Q, const bool updateKin){
 
-    std::vector<std::vector<s2mNodeBone> > v; // Vecteur de vecteur de sortie (mesh par segment)
+    std::vector<std::vector<s2mNodeBone>> v; // Vecteur de vecteur de sortie (mesh par segment)
 
     // Trouver la position des segments
     std::vector<s2mAttitude> RT(globalJCS(Q, updateKin));
@@ -552,9 +552,9 @@ std::vector<s2mNodeBone> s2mJoints::meshPoints(const std::vector<s2mAttitude> &R
 
     return v;
 }
-std::vector<std::vector<s2mPatch> > s2mJoints::meshPatch(){
+std::vector<std::vector<s2mPatch>> s2mJoints::meshPatch() const{
     // Recueillir la position des meshings pour tous les segments
-    std::vector<std::vector<s2mPatch> > v_all;
+    std::vector<std::vector<s2mPatch>> v_all;
     for (unsigned int j=0; j<nbBone(); ++j)
         v_all.push_back(meshPatch(j));
     return v_all;

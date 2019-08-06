@@ -125,7 +125,7 @@ void s2mMuscleHillType::setForce()
     //dtor
 }
 
-std::vector<std::shared_ptr<s2mMuscleForce> > s2mMuscleHillType::force(s2mJoints& m, const s2mGenCoord& Q, const s2mGenCoord& Qdot, const s2mMuscleStateActual& EMG, const int updateKinLevel){
+const std::vector<std::shared_ptr<s2mMuscleForce>>& s2mMuscleHillType::force(s2mJoints& m, const s2mGenCoord& Q, const s2mGenCoord& Qdot, const s2mMuscleStateDynamics& EMG, const int updateKinLevel){
     // Update de la configuration
     if (updateKinLevel == 1)
         updateOrientations(m,Q,Qdot,false);
@@ -138,7 +138,7 @@ std::vector<std::shared_ptr<s2mMuscleForce> > s2mMuscleHillType::force(s2mJoints
     return force(EMG);
 }
 
-std::vector<std::shared_ptr<s2mMuscleForce> > s2mMuscleHillType::force(const s2mMuscleStateActual &EMG){
+const std::vector<std::shared_ptr<s2mMuscleForce>> &s2mMuscleHillType::force(s2mJoints &, const s2mGenCoord &, const s2mMuscleStateDynamics &, const int)
     // Calculer chacune les forces dans chaque éléments
     computeFvCE();
     computeFlCE(EMG);

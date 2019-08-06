@@ -37,12 +37,12 @@ public:
     static std::vector<Eigen::VectorXd> readGrfDataFile(const s2mString &path);
 
     static void readViconForceFile(const s2mString &path, // Path to the file
-                                   std::vector<std::vector<unsigned int> > &time, // Frame vector (time is frame/frequency)
+                                   std::vector<std::vector<unsigned int>> &time, // Frame vector (time is frame/frequency)
                                    std::vector<unsigned int> &frequency ,// Acquisition frequency
-                                   std::vector<std::vector<Eigen::Vector3d> > &force, // Linear forces (x,y,z)
-                                   std::vector<std::vector<Eigen::Vector3d> > &moment, // Moments (x,y,z)
-                                   std::vector<std::vector<Eigen::Vector3d> > &cop); // Center of pressure (x,y,z)
-    static std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> >  readViconForceFile(const s2mString &path);
+                                   std::vector<std::vector<Eigen::Vector3d>> &force, // Linear forces (x,y,z)
+                                   std::vector<std::vector<Eigen::Vector3d>> &moment, // Moments (x,y,z)
+                                   std::vector<std::vector<Eigen::Vector3d>> &cop); // Center of pressure (x,y,z)
+    static std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>>  readViconForceFile(const s2mString &path);
     /** Read a marker file CSV formated */
     static std::vector<std::vector<s2mNode> >  readViconMarkerFile(const s2mString &path, const int& =-1); // Path to the file, nombre de noeuds (-1 => tous) [gardes tous les markers]
     static std::vector<std::vector<s2mNode> >  readViconMarkerFile(const s2mString &path, std::vector<s2mString> &markOrder, const int& =-1); // Path to the file, markers a conserver, nombres de noeuds (-1 => tous)

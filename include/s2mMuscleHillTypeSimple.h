@@ -20,7 +20,7 @@ public:
     s2mMuscleHillTypeSimple(const std::shared_ptr<s2mMuscle> m);
     virtual ~s2mMuscleHillTypeSimple();
 
-    std::vector<std::shared_ptr<s2mMuscleForce> > force(const s2mMuscleStateActual &EMG);
+    virtual const std::vector<std::shared_ptr<s2mMuscleForce>>& force(const s2mMuscleStateDynamics &emg);
 protected:
     double multiplyCaractByActivationAndForce(const s2mMuscleStateActual &EMG); // Voir dans la fonction pour descriptif
     virtual void setType();

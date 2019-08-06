@@ -886,11 +886,11 @@ std::vector<Eigen::VectorXd> s2mRead::readGrfDataFile(const s2mString &path){
 }
 
 void s2mRead::readViconForceFile(const s2mString &path, // Path to the file
-                                    std::vector<std::vector<unsigned int> > &frame, // Time vector * number of pf
+                                    std::vector<std::vector<unsigned int>> &frame, // Time vector * number of pf
                                     std::vector<unsigned int> &frequency,// Acquisition frequency * number of pf
-                                    std::vector<std::vector<Eigen::Vector3d> > &force, // Linear forces (x,y,z) * number of pf
-                                    std::vector<std::vector<Eigen::Vector3d> > &moment, // Moments (x,y,z) * number of pf
-                                    std::vector<std::vector<Eigen::Vector3d> > &cop){// Center of pressure (x,y,z) * number of pf
+                                    std::vector<std::vector<Eigen::Vector3d>> &force, // Linear forces (x,y,z) * number of pf
+                                    std::vector<std::vector<Eigen::Vector3d>> &moment, // Moments (x,y,z) * number of pf
+                                    std::vector<std::vector<Eigen::Vector3d>> &cop){// Center of pressure (x,y,z) * number of pf
     // Ouverture du fichier
     // std::cout << "Loading force file: " << path << std::endl;
     s2mIfStream file(path.c_str(), std::ios::in);
@@ -971,13 +971,13 @@ void s2mRead::readViconForceFile(const s2mString &path, // Path to the file
     }
 }
 
-std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> > s2mRead::readViconForceFile(const s2mString &path){
+std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> s2mRead::readViconForceFile(const s2mString &path){
     // Lire le fichier
-    std::vector<std::vector<unsigned int> > frame;
+    std::vector<std::vector<unsigned int>> frame;
     std::vector<unsigned int> frequency;// Acquisition frequency
-    std::vector<std::vector<Eigen::Vector3d> > force; // Linear forces (x,y,z)
-    std::vector<std::vector<Eigen::Vector3d> > moment; // Moments (x,y,z)
-    std::vector<std::vector<Eigen::Vector3d> > cop; // Center of pressure (x,y,z)
+    std::vector<std::vector<Eigen::Vector3d>> force; // Linear forces (x,y,z)
+    std::vector<std::vector<Eigen::Vector3d>> moment; // Moments (x,y,z)
+    std::vector<std::vector<Eigen::Vector3d>> cop; // Center of pressure (x,y,z)
     readViconForceFile(path, frame, frequency, force, moment, cop);
 
     // Redispatch des valeurs dans un vecteur de SpatialTransform
@@ -1234,7 +1234,7 @@ s2mBoneMesh s2mRead::readBoneMeshFilePly(const s2mPath &path)
 }
 
 
-std::vector<std::vector<s2mNode> >  s2mRead::readViconMarkerFile(const s2mString &path, const int& nNodes){
+std::vector<std::vector<s2mNode>>  s2mRead::readViconMarkerFile(const s2mString &path, int nNodes){
     // Lire le fichier
     s2mIfStream file(path.c_str(), std::ios::in);
     s2mString t;

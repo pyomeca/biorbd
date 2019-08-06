@@ -72,14 +72,14 @@ s2mTau s2mMuscles::muscularJointTorque(s2mJoints& m, const Eigen::VectorXd& F, b
     return s2mTau(-jaco.transpose() * F);
 }
 
-std::vector<std::vector<std::shared_ptr<s2mMuscleForce> > > s2mMuscles::musclesForces(s2mJoints& m, const std::vector<s2mMuscleStateActual> &state, bool updateKin, const s2mGenCoord* Q, const s2mGenCoord* QDot){
+std::vector<std::vector<std::shared_ptr<s2mMuscleForce>>> s2mMuscles::musclesForces(s2mJoints& m, const std::vector<s2mMuscleStateDynamics> &state, bool updateKin, const s2mGenCoord* Q, const s2mGenCoord* QDot){
 
     // Update de la position musculaire
     if (updateKin > 0)
         updateMuscles(m,*Q,*QDot,updateKin);
 
     // Variable de sortie
-    std::vector<std::vector<std::shared_ptr<s2mMuscleForce> > > forces; // Tous les muscles/Deux pointeurs par muscles (origine/insertion)
+    std::vector<std::vector<std::shared_ptr<s2mMuscleForce>>> forces; // Tous les muscles/Deux pointeurs par muscles (origine/insertion)
 
     unsigned int cmpMus(0);
     std::vector<s2mGroupeMusculaire>::iterator grp=m_mus.begin();
@@ -157,7 +157,7 @@ void s2mMuscles::updateMuscles(s2mJoints& m, const s2mGenCoord& Q, bool updateKi
             updateKinTP=1;
         }
 }
-void s2mMuscles::updateMuscles(std::vector<std::vector<s2mNodeMuscle> >& musclePointsInGlobal, std::vector<s2mMatrix> &jacoPointsInGlobal, const s2mGenCoord& QDot){
+void s2mMuscles::updateMuscles(std::vector<std::vector<s2mNodeMuscle>>& musclePointsInGlobal, std::vector<s2mMatrix> &jacoPointsInGlobal, const s2mGenCoord& QDot){
     std::vector<s2mGroupeMusculaire>::iterator grp=m_mus.begin();
     unsigned int cmpMuscle = 0;
     for (unsigned int i=0; i<m_mus.size(); ++i) // groupe musculaire
@@ -166,7 +166,7 @@ void s2mMuscles::updateMuscles(std::vector<std::vector<s2mNodeMuscle> >& muscleP
             ++cmpMuscle;
         }
 }
-void s2mMuscles::updateMuscles(std::vector<std::vector<s2mNodeMuscle> >& musclePointsInGlobal, std::vector<s2mMatrix> &jacoPointsInGlobal){
+void s2mMuscles::updateMuscles(std::vector<std::vector<s2mNodeMuscle>>& musclePointsInGlobal, std::vector<s2mMatrix> &jacoPointsInGlobal){
     // Updater tous les muscles
     std::vector<s2mGroupeMusculaire>::iterator grp=m_mus.begin();
     unsigned int cmpMuscle = 0;

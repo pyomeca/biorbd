@@ -19,9 +19,11 @@ public:
     virtual s2mGroupeMusculaire& muscleGroup(const s2mString&); //Retourne un groupe musculaire du nom demandé
     virtual void updateMuscles(s2mJoints&, const s2mGenCoord& Q, bool); // Update les positions/jacobiennes/vitesse, etc
     virtual void updateMuscles(s2mJoints&, const s2mGenCoord& Q, const s2mGenCoord& QDot, bool); // Update les positions/jacobiennes/vitesse, etc
-    virtual void updateMuscles(std::vector<std::vector<s2mNodeMuscle> >& musclePointsInGlobal, std::vector<s2mMatrix>& jacoPointsInGlobal); // Update les positions/jacobiennes/vitesse, etc
-    virtual void updateMuscles(std::vector<std::vector<s2mNodeMuscle> >& musclePointsInGlobal, std::vector<s2mMatrix>& jacoPointsInGlobal, const s2mGenCoord& QDot); // Update les positions/jacobiennes/vitesse, etc
+
+    void updateMuscles(s2mJoints&, const s2mGenCoord& Q, bool); // Update les positions/jacobiennes/vitesse, etc
     int getGroupId(const s2mString &name); // Trouve l'index d'un groupe musculaire, -1 s'il n'a pas trouvé
+    void updateMuscles(std::vector<std::vector<s2mNodeMuscle>>& musclePointsInGlobal, std::vector<s2mMatrix>& jacoPointsInGlobal); // Update les positions/jacobiennes/vitesse, etc
+    void updateMuscles(std::vector<std::vector<s2mNodeMuscle>>& musclePointsInGlobal, std::vector<s2mMatrix>& jacoPointsInGlobal, const s2mGenCoord& QDot); // Update les positions/jacobiennes/vitesse, etc
 
     // Calcul des effets musculaires sur les os
     s2mTau muscularJointTorque(s2mJoints& model, const Eigen::VectorXd & F, bool updateKin = true, const s2mGenCoord* Q = nullptr, const s2mGenCoord* QDot = nullptr);

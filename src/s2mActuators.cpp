@@ -111,12 +111,12 @@ void s2mActuators::closeActuator(s2mJoints& m){
     m_isClose = true;
 }
 
-std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator> > s2mActuators::actuator(unsigned int dof){
+std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator>> s2mActuators::actuator(unsigned int dof){
     s2mError::s2mAssert(dof<nbActuators(), "Idx asked is higher than number of actuator");
     return *(m_all.begin() + dof);
 }
 std::shared_ptr<s2mActuator> s2mActuators::actuator(unsigned int dof, unsigned int idx){
-    std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator> > tp(actuator(dof));
+    std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator>> tp(actuator(dof));
 
     s2mError::s2mAssert(idx == 0 || idx == 1, "Index of actuator should be 0 or 1");
     if (idx == 0)
@@ -150,7 +150,7 @@ std::pair<s2mTau, s2mTau> s2mActuators::torqueMax(const s2mJoints &m, const s2mG
     std::pair<s2mTau, s2mTau> maxTau_all = std::make_pair(s2mTau(m), s2mTau(m));
 
     for (unsigned int i=0; i<m.nbDof(); ++i){
-        std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator> > Tau_tp(actuator(i));
+        std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator>> Tau_tp(actuator(i));
         for (unsigned p=0; p<2; ++p){
             if (p==0) // First
                 if (std::dynamic_pointer_cast<s2mActuatorGauss3p> (Tau_tp.first))

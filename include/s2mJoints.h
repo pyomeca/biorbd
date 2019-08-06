@@ -40,8 +40,6 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
                              const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
                              const s2mString &name="", // Nom du segment
                              const int &PF=-1); // Numéro de la plateforme de force attaché à cet os
-        std::vector<RigidBodyDynamics::Math::SpatialVector> dispatchedForce(std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> > &, const unsigned int &frame);
-        std::vector<RigidBodyDynamics::Math::SpatialVector> dispatchedForce(std::vector<RigidBodyDynamics::Math::SpatialVector> &); // un SpatialVector par PF
 
         int GetBodyS2MId(const s2mString &) const;
         void computeKinematics(const s2mGenCoord&, const s2mGenCoord&,const s2mTau&); // Process integration (Q, Qdot, effecteurs)
@@ -59,6 +57,8 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
         bool isRootActuated() const;
         void setHasExternalForces(const bool &f); // If the model includes external force
         bool hasExternalForces() const;
+        std::vector<RigidBodyDynamics::Math::SpatialVector> dispatchedForce(std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> &, const unsigned int &frame) const;
+        std::vector<RigidBodyDynamics::Math::SpatialVector> dispatchedForce(std::vector<RigidBodyDynamics::Math::SpatialVector> &) const; // un SpatialVector par PF
         std::vector<s2mAttitude> globalJCS(const s2mGenCoord &, const bool updateKin = true); // Return the JCSs in global coordinate system for the given q
         s2mAttitude globalJCS(const s2mGenCoord &Q, const s2mString &parentName, const bool updateKin = true);  // Return the JCS for segment i in global coordinate system for the given q
         s2mAttitude globalJCS(const s2mGenCoord &Q, const unsigned int i, const bool updateKin = true);  // Return the JCS for segment i in global coordinate system for the given q
