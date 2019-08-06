@@ -65,7 +65,7 @@ void s2mMuscleFatigueState::setState(double active, double fatigued, double rest
         resting = 0;
     }
     else if (resting > 1){
-        s2mError::s2mAssert(0, "Resting Fibers Quantity can't be higher than 1, 1 is used then");
+        s2mError::s2mAssert(0, "Resting Fibers Quantity can't be higher than 1");
 
     }
 
