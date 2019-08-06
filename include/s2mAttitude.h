@@ -16,6 +16,7 @@ class BIORBD_API s2mAttitude : public Eigen::Matrix4d
         s2mAttitude(const Eigen::VectorXd&, const Eigen::Vector3d&, const s2mString&);
         s2mAttitude(const Eigen::Matrix3d& rot, const Eigen::Vector3d& trans = Eigen::Vector3d::Zero());
         s2mAttitude(const RigidBodyDynamics::Math::SpatialTransform&);
+        virtual ~s2mAttitude();
 
         Eigen::Vector3d axe(int); // Aller récupérer un axe en particulier
 

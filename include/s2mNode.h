@@ -15,7 +15,7 @@ class BIORBD_API s2mNode : public Eigen::Vector3d
     s2mNode(const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
             const s2mString &name = "",  // Nom du noeud
             const s2mString &parentName = "");
-    ~s2mNode();
+    virtual ~s2mNode();
 
     virtual s2mString parent() const;
     virtual void setParent(const s2mString &parentName);

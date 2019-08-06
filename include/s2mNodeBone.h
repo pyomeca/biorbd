@@ -15,8 +15,8 @@ class BIORBD_API s2mNodeBone : public s2mNode
                     bool = true, // Si le marker est un marker anatomique
                     const s2mString& axesToRemove = s2mString(), // Axes à retirer
                     int = -1); // Numéro ID du parent
+        virtual ~s2mNodeBone();
 
-        ~s2mNodeBone();
         // Get and Set
         virtual bool isTechnical() const;
         virtual bool isAnatomical() const;

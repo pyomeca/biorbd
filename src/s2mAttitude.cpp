@@ -22,6 +22,11 @@ s2mAttitude::s2mAttitude(const RigidBodyDynamics::Math::SpatialTransform& st) :
 
 }
 
+s2mAttitude::~s2mAttitude()
+{
+
+}
+
 Eigen::Vector3d s2mAttitude::axe(int i)
 {
     s2mError::s2mAssert(i>=0 && i<=2, "Axis must be between 0 and 2 included");

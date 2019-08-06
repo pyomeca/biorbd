@@ -16,7 +16,7 @@ class BIORBD_API s2mMuscleCompound
     public:
         s2mMuscleCompound(const s2mString &name = "", const s2mMusclePathChangers& = s2mMusclePathChangers());
         s2mMuscleCompound(const s2mMuscleCompound& m);
-        ~s2mMuscleCompound();
+        virtual ~s2mMuscleCompound();
 
         // Wrapping object
         virtual s2mMusclePathChangers& pathChanger();

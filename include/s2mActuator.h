@@ -2,7 +2,8 @@
 #define S2MACTUATOR_H
 
 #include "biorbdConfig.h"
-    #include "s2mString.h"
+#include "s2mString.h"
+#include "s2mError.h"
     
 class BIORBD_API s2mActuator
 {

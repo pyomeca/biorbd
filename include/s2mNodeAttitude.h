@@ -12,7 +12,7 @@ class BIORBD_API s2mNodeAttitude : public s2mAttitude
     s2mNodeAttitude(const s2mAttitude& = s2mAttitude(), // Position du noeud
             const s2mString &name = "",  // Nom du noeud
             const s2mString &parentName = "");
-    ~s2mNodeAttitude();
+    virtual ~s2mNodeAttitude();
 
     virtual s2mString parent() const;
     virtual void setParent(const s2mString &parentName);

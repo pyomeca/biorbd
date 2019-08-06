@@ -18,7 +18,8 @@ public:
                             const s2mMuscleStateActual & s= s2mMuscleStateActual());
     s2mMuscleHillTypeSimple(const s2mMuscle& m);
     s2mMuscleHillTypeSimple(const std::shared_ptr<s2mMuscle> m);
-    ~s2mMuscleHillTypeSimple();
+    virtual ~s2mMuscleHillTypeSimple();
+
     std::vector<std::shared_ptr<s2mMuscleForce> > force(const s2mMuscleStateActual &EMG);
 protected:
     double multiplyCaractByActivationAndForce(const s2mMuscleStateActual &EMG); // Voir dans la fonction pour descriptif

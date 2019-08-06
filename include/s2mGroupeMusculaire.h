@@ -18,7 +18,7 @@ class BIORBD_API s2mGroupeMusculaire
 {
     public:
         s2mGroupeMusculaire(const s2mString &name, const s2mString &originName, const s2mString &insertionName);
-        ~s2mGroupeMusculaire();
+        virtual ~s2mGroupeMusculaire();
 
         virtual void addHillMuscle(const s2mString&,
                                const s2mString&,
