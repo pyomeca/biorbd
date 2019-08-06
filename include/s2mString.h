@@ -7,7 +7,6 @@
 #include <boost/lexical_cast.hpp>
 
 #include "biorbdConfig.h"
-    #include "s2mError.h"
 #include <map>
 
 class BIORBD_API s2mString : public std::string
@@ -31,5 +30,6 @@ public:
     s2mString toupper() const;
 };
 
+#include "s2mError.h"
 
 #endif // S2MSTRING_H

@@ -3,7 +3,6 @@
 
 
 #include "biorbdConfig.h"
-#include "s2mString.h"
 class s2mString;
 class BIORBD_API s2mError
 {
@@ -11,6 +10,7 @@ class BIORBD_API s2mError
     static void s2mAssert(bool cond, const s2mString &message);
     static void s2mWarning(bool cond, const s2mString &message);
 };
+#include "s2mString.h"
 
 #endif // S2MMERROR_H
 
