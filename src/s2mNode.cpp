@@ -25,7 +25,7 @@ s2mNode::~s2mNode()
     //dtor
 }
 
-s2mString s2mNode::parent() const
+const s2mString& s2mNode::parent() const
 {
     return m_parentName;
 }
@@ -51,6 +51,7 @@ void s2mNode::setPosition(Eigen::Vector4d &n)
 }
 
 s2mNode s2mNode::position() const
+const s2mNode &s2mNode::position() const
 {
     return *this;
 }

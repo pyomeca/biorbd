@@ -45,6 +45,11 @@ int s2mNodeBone::parentId() const
     return m_id;
 }
 
+const s2mNodeBone &s2mNodeBone::position() const
+{
+    return *this;
+}
+
 s2mNodeBone s2mNodeBone::position(bool removeAxes) const
 {
     s2mNodeBone pos(*this);
@@ -58,12 +63,12 @@ s2mNodeBone s2mNodeBone::position(bool removeAxes) const
     return pos;
 }
 
-bool s2mNodeBone::isAxisRemoved(int i) const
+bool s2mNodeBone::isAxisRemoved(unsigned int i) const
 {
     return m_axesRemoved[i];
 }
 
-bool s2mNodeBone::isAxisKept(int i) const
+bool s2mNodeBone::isAxisKept(unsigned int i) const
 {
     return !isAxisRemoved(i);
 }
@@ -73,9 +78,9 @@ int s2mNodeBone::nAxesToRemove() const
     return m_nbAxesToRemove;
 }
 
-void s2mNodeBone::addAxesToRemove(int a)
+void s2mNodeBone::addAxesToRemove(unsigned int a)
 {
-    if (a<0 || a>2)
+    if (a>2)
         s2mError::s2mAssert(false, "Axis must be 0 (\"x\"), 1 (\"y\") or 2 (\"z\")");
     m_axesRemoved[a] = true;
     ++m_nbAxesToRemove;
@@ -94,9 +99,9 @@ void s2mNodeBone::addAxesToRemove(s2mString s)
             s2mError::s2mAssert(false, "Axis must be 0 (\"x\"), 1 (\"y\") or 2 (\"z\")");
 }
 
-void s2mNodeBone::addAxesToRemove(std::vector<int> a)
+void s2mNodeBone::addAxesToRemove(std::vector<unsigned int> a)
 {
-    for (std::vector<int>::iterator it=a.begin(); it!=a.end(); ++it)
+    for (std::vector<unsigned int>::iterator it=a.begin(); it!=a.end(); ++it)
         addAxesToRemove(*it);
 }
 

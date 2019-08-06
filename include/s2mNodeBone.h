@@ -21,13 +21,14 @@ class BIORBD_API s2mNodeBone : public s2mNode
         virtual bool isTechnical() const;
         virtual bool isAnatomical() const;
         int parentId() const;
-        virtual s2mNodeBone position(bool removeAxes=true) const;
+        virtual const s2mNodeBone &position() const;
+        virtual s2mNodeBone position(bool removeAxes) const;
 
-        bool isAxisRemoved(int) const;
-        bool isAxisKept(int) const;
-        void addAxesToRemove(int); // Ajouter un axes à retirer
+        bool isAxisRemoved(unsigned int) const;
+        bool isAxisKept(unsigned int) const;
+        void addAxesToRemove(unsigned int); // Ajouter un axes à retirer
         void addAxesToRemove(s2mString); // Ajouter un axes à retirer
-        void addAxesToRemove(std::vector<int>); // Ajouter un axes à retirer
+        void addAxesToRemove(std::vector<unsigned int>); // Ajouter un axes à retirer
         void addAxesToRemove(std::vector<s2mString>); // Ajouter un axes à retirer
         s2mString axesToRemove();
         int nAxesToRemove() const; // Nombre d'axes à retirer

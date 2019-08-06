@@ -17,18 +17,18 @@ class BIORBD_API s2mNode : public Eigen::Vector3d
             const s2mString &parentName = "");
     virtual ~s2mNode();
 
-    virtual s2mString parent() const;
-    virtual void setParent(const s2mString &parentName);
+    const s2mString &parent() const;
+    void setParent(const s2mString &parentName);
 
     // Get and Set
-    virtual void setPosition(const s2mNode& n);
-    virtual void setPosition(Eigen::Vector3d& n);
-    virtual void setPosition(Eigen::Vector4d& n);
-    virtual s2mNode position() const;
-    virtual Eigen::Vector3d vector() const;
-    virtual void setName(const s2mString &name);
-    virtual s2mString name() const;
-    virtual void applyRT(const s2mAttitude&);
+    void setPosition(const s2mNode& n);
+    void setPosition(Eigen::Vector3d& n);
+    void setPosition(Eigen::Vector4d& n);
+    virtual const s2mNode& position() const;
+    Eigen::Vector3d vector() const;
+    void setName(const s2mString &name);
+    s2mString name() const;
+    void applyRT(const s2mAttitude&);
     const s2mNode operator-(const s2mNode &) const; // overload d'opérateurs
     const s2mNode operator*(double) const; // overload d'opérateurs
     const s2mNode operator/(double) const; // overload d'opérateurs
