@@ -18,11 +18,11 @@ class BIORBD_API s2mNodeBone : public s2mNode
         virtual ~s2mNodeBone();
 
         // Get and Set
-        virtual bool isTechnical() const;
-        virtual bool isAnatomical() const;
+        bool isTechnical() const;
+        bool isAnatomical() const;
         int parentId() const;
-        virtual const s2mNodeBone &position() const;
-        virtual s2mNodeBone position(bool removeAxes) const;
+        const s2mNodeBone& position() const;
+        s2mNodeBone position(bool removeAxes) const;
 
         bool isAxisRemoved(unsigned int) const;
         bool isAxisKept(unsigned int) const;

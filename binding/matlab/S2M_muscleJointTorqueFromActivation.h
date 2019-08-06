@@ -22,7 +22,7 @@ void S2M_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
     unsigned int nMuscleTotal = model->nbMuscleTotal();
 
     // Recevoir muscleStates
-    std::vector<std::vector<s2mMuscleStateActual> > s = getParameterMuscleStateActivation(prhs,2,nMuscleTotal);
+    std::vector<std::vector<s2mMuscleStateDynamics>> s = getParameterMuscleStateActivation(prhs,2,nMuscleTotal);
     unsigned int nFrame(static_cast<unsigned int>(s.size()));
 
     bool updateKin(false); // Par défaut c'est false, mais ce comportement est celui le moins attendu

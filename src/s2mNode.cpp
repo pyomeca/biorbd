@@ -50,7 +50,6 @@ void s2mNode::setPosition(Eigen::Vector4d &n)
     this->block(0,0,3,1) = n.block(0,0,3,1);
 }
 
-s2mNode s2mNode::position() const
 const s2mNode &s2mNode::position() const
 {
     return *this;
@@ -73,7 +72,7 @@ void s2mNode::setName(const s2mString &name)
     m_markName = name;
 }
 
-s2mString s2mNode::name() const
+const s2mString &s2mNode::name() const
 {
     return m_markName;
 }

@@ -34,7 +34,7 @@ void S2M_inverseDynamics( int, mxArray *plhs[],
     if (QDDot.size() != nFrame)
         mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "QDDot must have the same number of frames than Q");
 
-    std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> > f_tp;
+    std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> f_tp;
     if (externalForces){
         f_tp = getForcePlate(prhs, 5);
         if (f_tp.size() != nFrame)

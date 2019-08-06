@@ -13,19 +13,19 @@ class BIORBD_API s2mContacts : public RigidBodyDynamics::ConstraintSet
 {
     public:
         s2mContacts();
-        virtual unsigned int AddConstraint(unsigned int body_id,
+        unsigned int AddConstraint(unsigned int body_id,
                                            const s2mNode &body_point,
                                            const s2mNode &world_normal,
                                            const s2mString& name,
                                            double acc = 0);
-        virtual unsigned int AddConstraint(unsigned int body_id,
+        unsigned int AddConstraint(unsigned int body_id,
                                            const s2mNode &body_point,
                                            const s2mString& axis,
                                            const s2mString& name,
                                            double acc = 0);
 
-        s2mContacts &getConstraints(const RigidBodyDynamics::Model& jointsModel); // La premiere fois il faut appeler cette fonction avec cet arguement, ensuite, il n'est plus utile
-        s2mContacts &getConstraints();
+        const s2mContacts &getConstraints(const RigidBodyDynamics::Model& jointsModel); // La premiere fois il faut appeler cette fonction avec cet arguement, ensuite, il n'est plus utile
+        const s2mContacts &getConstraints();
 
         bool hasContacts() const;
         unsigned int nContacts() const;

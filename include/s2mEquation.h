@@ -13,7 +13,6 @@ public:
     s2mEquation(const char *c);
     s2mEquation(const s2mString &s);
     s2mEquation(const std::basic_string<char> &c);
-    ~s2mEquation();
 
     static std::vector<s2mEquation> splitIntoEquation(s2mEquation, const std::map<s2mEquation, double>&);
     static double resolveEquation(std::vector<s2mEquation>);

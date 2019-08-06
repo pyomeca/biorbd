@@ -6,7 +6,7 @@ s2mMuscle::s2mMuscle(const s2mString& name,
                      const s2mMuscleGeometry& g,
                      const s2mMuscleCaracteristics& c,
                      const s2mMusclePathChangers& w,
-                     const s2mMuscleStateActual& s) :
+                     const s2mMuscleStateDynamics& s) :
     s2mMuscleCompound(name,w),
     m_position(g),
     m_caract(c)
@@ -46,7 +46,7 @@ void s2mMuscle::updateOrientations(std::vector<s2mNodeMuscle>& musclePointsInGlo
     m_position.updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,&Qdot,m_caract);
 }
 
-s2mMuscleGeometry s2mMuscle::position() const {
+const s2mMuscleGeometry &s2mMuscle::position() const {
     return m_position;
 }
 
@@ -71,11 +71,11 @@ double s2mMuscle::velocity(s2mJoints &m, const s2mGenCoord &Q, const s2mGenCoord
     return m_position.velocity();
 }
 
-double s2mMuscle::activationDot(const s2mMuscleStateActual &s, const bool already){
+double s2mMuscle::activationDot(const s2mMuscleStateDynamics &s, const bool already){
     return m_state->timeDerivativeActivation(s, caract(), already);
 }
 
-std::vector<s2mNodeMuscle> s2mMuscle::musclesPointsInGlobal(s2mJoints &m, const s2mGenCoord &Q,const bool updateKin){
+const std::vector<s2mNodeMuscle> &s2mMuscle::musclesPointsInGlobal(s2mJoints &m, const s2mGenCoord &Q,const bool updateKin){
     if (updateKin)
         m_position.updateKinematics(m,&Q,nullptr,m_caract,m_pathChanger);
 
@@ -99,18 +99,18 @@ void s2mMuscle::setCaract(const s2mMuscleCaracteristics &val) {
 }
 
 // Get and set
-void s2mMuscle::setState(const s2mMuscleStateActual &s){
-    if (dynamic_cast<const s2mMuscleStateActualBuchanan*> (&s)){
-        m_state = new s2mMuscleStateActualBuchanan();
+void s2mMuscle::setState(const s2mMuscleStateDynamics &s){
+    if (dynamic_cast<const s2mMuscleStateDynamicsBuchanan*> (&s)){
+        m_state = new s2mMuscleStateDynamicsBuchanan();
     }
-    else if (dynamic_cast<const s2mMuscleStateActual*> (&s)){
-        m_state = new s2mMuscleStateActual();
+    else if (dynamic_cast<const s2mMuscleStateDynamics*> (&s)){
+        m_state = new s2mMuscleStateDynamics();
     }
     *m_state = s;
 }
-const s2mMuscleStateActual& s2mMuscle::state() const {
+const s2mMuscleStateDynamics& s2mMuscle::state() const {
     return *m_state;
 }
-s2mMuscleStateActual& s2mMuscle::state_nonConst() const {
+s2mMuscleStateDynamics& s2mMuscle::state_nonConst() const {
     return *m_state;
 }

@@ -39,10 +39,24 @@ void s2mMusclePathChangers::addPathChanger(s2mMusclePathChanger &val){
     ++m_totalObjects;
 }
 
+unsigned int s2mMusclePathChangers::nbWraps() const {
+    return m_nbWraps;
+}
 
-std::shared_ptr<s2mMusclePathChanger> s2mMusclePathChangers:: object(const unsigned int &idx) const{
+unsigned int s2mMusclePathChangers::nbVia() const
+{
+    return m_nbVia;
+}
+
+unsigned int s2mMusclePathChangers::nbObjects() const
+{
+    return m_totalObjects;
+}
+
+
+const std::shared_ptr<s2mMusclePathChanger> s2mMusclePathChangers::object(const unsigned int &idx) const{
     s2mError::s2mAssert(idx<nbObjects(), "Idx asked is higher than number of wrapping objects");
-    return *(m_obj.begin() + idx);
+    return m_obj[idx];
 }
 
 

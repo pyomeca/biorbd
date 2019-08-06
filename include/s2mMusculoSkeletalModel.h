@@ -1,6 +1,5 @@
 #ifndef S2MMUSCULOSKELETALMODEL_H
 #define S2MMUSCULOSKELETALMODEL_H
-//#define S2M_MUSCLE_OPTIMIZATION
 
 	#include "biorbdConfig.h"
 	#include "s2mOptions.h"
@@ -9,9 +8,6 @@
     #include "s2mIMUs.h"
     #include "s2mContacts.h"
     #include "s2mMuscles.h"
-    #ifdef S2M_MUSCLE_OPTIMIZATION
-        #include "s2mMuscleOptimisation.h"
-    #endif
     #include "s2mActuators.h"
     #include "s2mBenchmark.h"
 
@@ -22,9 +18,6 @@ class BIORBD_API s2mMusculoSkeletalModel :
         ,public s2mMuscles
         ,public s2mContacts
         ,public s2mActuators
-        #ifdef S2M_MUSCLE_OPTIMIZATION
-            ,public s2mMuscleOptimisation
-        #endif
         
 {
     public:

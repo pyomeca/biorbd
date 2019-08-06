@@ -9,11 +9,21 @@ s2mWrappingSphere::s2mWrappingSphere(const double &dia,
     s2mWrappingObject(v,name,parentName),
     m_dia(dia)
 {
-    //ctor
+    m_forme = "Sphere";
 }
 
 
 s2mWrappingSphere::~s2mWrappingSphere()
 {
     //dtor
+}
+
+double s2mWrappingSphere::size() const
+{
+    return m_dia;
+}
+
+void s2mWrappingSphere::setSize(const double &val)
+{
+    m_dia = val;
 }

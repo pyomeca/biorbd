@@ -24,15 +24,15 @@ void s2mMarkers::addMarker(const Eigen::Vector3d &pos,
     m_marks.push_back(tp);
 }
 
-s2mNodeBone s2mMarkers::marker(const unsigned int &i) const
+const s2mNodeBone &s2mMarkers::marker(const unsigned int &i) const
 {
-    return *(m_marks.begin()+i);
+    return m_marks[i];
 }
 
 std::vector<s2mNodeBone> s2mMarkers::marker(const s2mJoints& model, const unsigned int &idxBone) const
 {
     // Nom du segment a trouver
-    s2mString name(model.bone(idxBone).name());
+    const s2mString& name(model.bone(idxBone).name());
 
     std::vector<s2mNodeBone> pos;
     for (unsigned int i=0; i<nTags(); ++i) // passer tous les markers et sélectionner les bons
@@ -94,7 +94,7 @@ std::vector<s2mNodeBone> s2mMarkers::Tags(bool removeAxis){
 }
 
 // Se faire renvoyer un marker
-Eigen::Vector3d s2mMarkers::TagsVelocity(s2mJoints& model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const unsigned int &idx, bool removeAxis, bool updateKin){
+s2mNodeBone s2mMarkers::TagsVelocity(s2mJoints& model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const unsigned int &idx, bool removeAxis, bool updateKin){
     s2mNodeBone node = marker(idx);
     unsigned int id = model.GetBodyId(node.parent().c_str());
 
@@ -102,12 +102,13 @@ Eigen::Vector3d s2mMarkers::TagsVelocity(s2mJoints& model, const s2mGenCoord &Q,
     s2mNodeBone pos(Tags(idx, removeAxis));
 
     // Calcul de la vitesse du point
-    return RigidBodyDynamics::CalcPointVelocity(model, Q, Qdot, id, pos, updateKin);
+    pos.setPosition(RigidBodyDynamics::CalcPointVelocity(model, Q, Qdot, id, pos, updateKin));
+    return pos;
 }
 
 // Se faire renvoyer les markers
-std::vector<Eigen::Vector3d> s2mMarkers::TagsVelocity(s2mJoints& model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, bool removeAxis, bool updateKin){
-    std::vector<Eigen::Vector3d> pos;
+std::vector<s2mNodeBone> s2mMarkers::TagsVelocity(s2mJoints& model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, bool removeAxis, bool updateKin){
+    std::vector<s2mNodeBone> pos;
     for (unsigned int i=0; i<nTags(); ++i)
         if (i==0)
             pos.push_back(TagsVelocity(model, Q, Qdot, i, removeAxis, updateKin));// Forward kinematics
@@ -287,7 +288,7 @@ unsigned int s2mMarkers::nAnatTags(){
     return nAnatTags;
 }
 
-std::vector<s2mString> s2mMarkers::markerNames(){
+std::vector<s2mString> s2mMarkers::markerNames() const{
     // Extrait le nom de tous les markers d'un modele
     std::vector<s2mString> names;
     for (unsigned int i=0; i<nTags(); ++i)
@@ -296,7 +297,7 @@ std::vector<s2mString> s2mMarkers::markerNames(){
     return names;
 }
 
-std::vector<s2mString> s2mMarkers::technicalMarkerNames(){
+std::vector<s2mString> s2mMarkers::technicalMarkerNames() const{
     // Extrait le nom de tous les markers d'un modele
     std::vector<s2mString> names;
     for (unsigned int i=0; i<nTags(); ++i)
@@ -306,7 +307,7 @@ std::vector<s2mString> s2mMarkers::technicalMarkerNames(){
     return names;
 }
 
-std::vector<s2mString> s2mMarkers::anatomicalMarkerNames(){
+std::vector<s2mString> s2mMarkers::anatomicalMarkerNames() const{
     // Extrait le nom de tous les markers d'un modele
     std::vector<s2mString> names;
     for (unsigned int i=0; i<nTags(); ++i)

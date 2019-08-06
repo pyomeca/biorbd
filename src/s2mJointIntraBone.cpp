@@ -19,3 +19,8 @@ s2mJointIntraBone::~s2mJointIntraBone()
 {
     //dtor
 }
+
+const s2mString &s2mJointIntraBone::type() const
+{
+    return m_type;
+}

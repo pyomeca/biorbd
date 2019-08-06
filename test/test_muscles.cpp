@@ -12,7 +12,7 @@ TEST(MuscleJacobian, jacobian){
     Q.setZero();
 
     // Force computation of geometry
-    std::shared_ptr<s2mMuscle> muscle(model.muscleGroup(muscleForMuscleJacobian).muscle(muscleGroupForMuscleJacobian));
+    std::shared_ptr<s2mMuscle> muscle(model.muscleGroup_nonConst(muscleForMuscleJacobian).muscle_nonConst(muscleGroupForMuscleJacobian));
     EXPECT_THROW(muscle->position().jacobian(), std::runtime_error);
     model.updateMuscles(model, Q, true);
 

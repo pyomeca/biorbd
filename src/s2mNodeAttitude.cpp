@@ -17,7 +17,7 @@ s2mNodeAttitude::~s2mNodeAttitude()
     //dtor
 }
 
-s2mString s2mNodeAttitude::parent() const
+const s2mString &s2mNodeAttitude::parent() const
 {
     return m_parentName;
 }
@@ -33,7 +33,7 @@ void s2mNodeAttitude::setAttitude(const s2mAttitude &n)
 }
 
 
-s2mAttitude s2mNodeAttitude::attitude() const
+const s2mAttitude &s2mNodeAttitude::attitude() const
 {
     return *this;
 }
@@ -44,7 +44,7 @@ void s2mNodeAttitude::setName(const s2mString &name)
     m_RTName = name;
 }
 
-s2mString s2mNodeAttitude::name() const
+const s2mString &s2mNodeAttitude::name() const
 {
     return m_RTName;
 }

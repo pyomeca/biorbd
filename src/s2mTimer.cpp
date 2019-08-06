@@ -53,8 +53,8 @@ double s2mTimer::getLap()
 double s2mTimer::stop()
 {
     if (m_isStarted){
-        return getLap();
         m_isStarted = false;
+        return getLap();
     }
     else
         return 0;
@@ -68,5 +68,5 @@ void s2mTimer::addPauseTime(){
 }
 
 double s2mTimer::getTime(const std::clock_t& timer){
-    return ((double)(std::clock() - timer)) / CLOCKS_PER_SEC;
+    return static_cast<double>(std::clock() - timer) / CLOCKS_PER_SEC;
 }

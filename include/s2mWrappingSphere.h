@@ -17,10 +17,8 @@ class BIORBD_API s2mWrappingSphere : public s2mWrappingObject
         virtual void wrapPoints(s2mNodeMuscle&, s2mNodeMuscle&, double* = nullptr) {} // Premier et dernier points musculaire
 
         // Get and set
-        double size() const { return m_dia; }
-        void setSize(const double &val) { m_dia = val; }
-//        void setSize() {m_dia = 1;}
-        s2mString forme() const {return "Sphere";}
+        double size() const;
+        void setSize(const double &val);
     protected:
         double m_dia;
     private:

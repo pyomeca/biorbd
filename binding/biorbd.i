@@ -9,7 +9,6 @@
 
 #include "s2mJoints.h"
 #include "s2mJoint.h"
-#include "s2mJointMoving.h"
 #include "s2mMatrix.h"
 #include "s2mNodeWrap.h"
 #include "s2mTime.h"
@@ -46,8 +45,8 @@ namespace std {
     %template(MatS2mAttitude) std::vector<std::vector<s2mAttitude>>;
 
     %template(SharedS2mMuscle) std::shared_ptr<s2mMuscle>;
-    %template(VecS2mMuscleStateActual) std::vector<s2mMuscleStateActual>;
-    %template(MatS2mMuscleStateActual) std::vector<std::vector<s2mMuscleStateActual>>;
+    %template(VecS2mMuscleStateDynamics) std::vector<s2mMuscleStateDynamics>;
+    %template(MatS2mMuscleStateDynamics) std::vector<std::vector<s2mMuscleStateDynamics>>;
     %template(VecS2mNodeMuscle) std::vector<s2mNodeMuscle>;
     %template(MatS2mNodeMuscle) std::vector<std::vector<s2mNodeMuscle>>;
 }
@@ -84,7 +83,7 @@ namespace std {
         return QDDot;
     }
 
-    s2mTau muscularJointTorque(const std::vector<s2mMuscleStateActual> &state, const s2mGenCoord &Q, const s2mGenCoord &QDot){
+    s2mTau muscularJointTorque(const std::vector<s2mMuscleStateDynamics> &state, const s2mGenCoord &Q, const s2mGenCoord &QDot){
         return self->muscularJointTorque(*self, state, true, &Q, &QDot);
     }
 
@@ -103,18 +102,6 @@ namespace std {
     static s2mMuscleHillTypeThelen& getRef(std::shared_ptr<s2mMuscle> m)
     {
         return *(std::dynamic_pointer_cast<s2mMuscleHillTypeThelen>(m));
-    }
-}
-%extend s2mMuscleHillTypeChadwick{
-    static s2mMuscleHillTypeChadwick& getRef(std::shared_ptr<s2mMuscle> m)
-    {
-        return *(std::dynamic_pointer_cast<s2mMuscleHillTypeChadwick>(m));
-    }
-}
-%extend s2mMuscleHillTypeSchutte{
-    static s2mMuscleHillTypeSchutte& getRef(std::shared_ptr<s2mMuscle> m)
-    {
-        return *(std::dynamic_pointer_cast<s2mMuscleHillTypeSchutte>(m));
     }
 }
 %extend s2mMuscleHillTypeSimple{
@@ -153,7 +140,6 @@ namespace std {
 
 %include "../include/s2mJoints.h"
 //%include "s2mJoint.h"
-//%include "s2mJointMoving.h"
 //%include "s2mJointIntraBone.h"
 %include "../include/s2mContacts.h"
 
@@ -175,8 +161,6 @@ namespace std {
 %include "../include/s2mMuscle.h"
 %include "../include/s2mMuscleHillType.h"
 %include "../include/s2mMuscleHillTypeThelen.h"
-%include "../include/s2mMuscleHillTypeChadwick.h"
-%include "../include/s2mMuscleHillTypeSchutte.h"
 %include "../include/s2mMuscleHillTypeSimple.h"
 %include "../include/s2mMuscles.h"
 %include "../include/s2mGroupeMusculaire.h"
@@ -186,13 +170,11 @@ namespace std {
 //%include "s2mMuscleForceFromOrigin.h"
 %include "../include/s2mMuscleGeometry.h"
 //%include "s2mMuscleMesh.h"
-//%include "s2mMuscleMeshTransverse.h"
 //%include "s2mMusclePathChanger.h"
 //%include "s2mMusclePathChangers.h"
 //%include "s2mMuscleState.h"
-%include "../include/s2mMuscleStateActual.h"
-//%include "s2mMuscleStateActualBuchanan.h"
-//%include "s2mMuscleStateMax.h"
+%include "../include/s2mMuscleStateDynamics.h"
+//%include "s2mMuscleStateDynamicsBuchanan.h"
 //%include "s2mMuscleOptimisation.h"
 
 //%include "s2mIMU.h"

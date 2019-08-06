@@ -19,7 +19,7 @@ class BIORBD_API s2mMuscleMesh : public s2mMuscleCompound
 
 
         // Set and get
-        virtual s2mMuscle& getMuscleLine(const unsigned int &idx); // Get sur une ligne d'action
+        const s2mMuscle& getMuscleLine(const unsigned int &idx) const; // Get sur une ligne d'action
         virtual void addLineOfAction(s2mMuscle&); // Ajouter une ligne d'action
     protected:
         // Fonction virtuelle pure

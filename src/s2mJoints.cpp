@@ -90,13 +90,13 @@ double s2mJoints::mass() const {
 
 
 
-void s2mJoints::computeKinematics(const s2mGenCoord& Q, const s2mGenCoord& QDot, const s2mTau& Tau){
+void s2mJoints::integrateKinematics(const s2mGenCoord& Q, const s2mGenCoord& QDot, const s2mTau& Tau){
     s2mGenCoord v(static_cast<unsigned int>(Q.rows()+QDot.rows()));
     v << Q,QDot;
     integrator->integrate(this, v, Tau.vector(), 0, 1, 0.1); // vecteur, t0, tend, pas, effecteurs
     m_isKinematicsComputed = true;
 }
-void s2mJoints::kinematics(const unsigned int &step, s2mGenCoord &Q, s2mGenCoord &QDot){
+void s2mJoints::getIntegratedKinematics(const unsigned int &step, s2mGenCoord &Q, s2mGenCoord &QDot){
     // Si la cinématique n'a pas été mise à jour
     s2mError::s2mAssert(m_isKinematicsComputed, "ComputeKinematics must be call before calling updateKinematics");
 
@@ -105,8 +105,12 @@ void s2mJoints::kinematics(const unsigned int &step, s2mGenCoord &Q, s2mGenCoord
         Q(i) = tp(i);
         QDot(i) = tp(i+tp.rows()/2);
     }
-
 }
+unsigned int s2mJoints::nbInterationStep() const
+{
+    return integrator->steps();
+}
+
 
 unsigned int s2mJoints::AddBone(const unsigned int &parent_id, // Numéro du parent
                      const s2mString &seqT, const s2mString &seqR, // Séquence de Cardan pour classer les dof en rotation
@@ -147,7 +151,7 @@ unsigned int s2mJoints::AddBone(const unsigned int &parent_id, // Numéro du par
 
 const s2mBone& s2mJoints::bone(unsigned int i) const {
     s2mError::s2mAssert(i < m_bones.size(), "Asked for a wrong segment (out of range)");
-    return *(m_bones.begin()+i);
+    return m_bones[i];
 }
 
 const s2mBone &s2mJoints::bone(const s2mString & name) const
@@ -178,7 +182,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(s
     return dispatchedForce(sv2);
 }
 
-std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(std::vector<RigidBodyDynamics::Math::SpatialVector> &sv){ // un SpatialVector par PF
+std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(std::vector<RigidBodyDynamics::Math::SpatialVector> &sv) const{ // un SpatialVector par PF
     // Tableau de sortie
     std::vector<RigidBodyDynamics::Math::SpatialVector> sv_out;
 
@@ -188,14 +192,14 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(s
 
     std::vector<RigidBodyDynamics::Math::SpatialVector>::iterator sv_it = sv.begin();
     // Dispatch des forces
-    for (std::vector<s2mBone>::iterator it=m_bones.begin(); it!=m_bones.end(); ++it){
-        unsigned int nDof = (*it).nDof();
+    for (unsigned int i=0; i<m_bones.size(); ++i){
+        unsigned int nDof = m_bones[i].nDof();
         if (nDof != 0){ // Ne rien ajouter si le nDof est à 0
             // Pour chaque segment,
             for (unsigned int i=0; i<nDof-1; ++i) // mettre un sv_zero sur tous les dof sauf le dernier
                 sv_out.push_back(sv_zero);
-            if ((*it).plateformeIdx() >= 0){ // Si le solide fait contact avec la plateforme (!= -1)
-				sv_out.push_back(*(sv_it + (*it).plateformeIdx())); // Mettre la force de la plateforme correspondante
+            if (m_bones[i].plateformeIdx() >= 0){ // Si le solide fait contact avec la plateforme (!= -1)
+                sv_out.push_back(*(sv_it + m_bones[i].plateformeIdx())); // Mettre la force de la plateforme correspondante
             }
             else
                 sv_out.push_back(sv_zero); // Sinon, mettre 0
@@ -308,7 +312,7 @@ s2mMatrix s2mJoints::projectPointJacobian(s2mJoints& model, const s2mGenCoord &Q
         s2mMatrix G_tp(s2mMarkers::TagsJacobian(model, Q, node.parent(), Eigen::Vector3d(0,0,0), updateKin));
         s2mMatrix JCor(s2mMatrix::Zero(9,nbQ()));
         CalcMatRotJacobian(model, Q, GetBodyId(node.parent().c_str()), Eigen::Matrix3d::Identity(3,3), JCor,false);
-        for (int n=0; n<3; ++n)
+        for (unsigned int n=0; n<3; ++n)
             if (node.isAxisKept(n))
                 G_tp += JCor.block(n*3,0,3,nbQ())* node(n);
 
@@ -540,7 +544,7 @@ std::vector<s2mNodeBone> s2mJoints::meshPoints(const s2mGenCoord &Q, const unsig
 
     return meshPoints(RT,i);
 }
-std::vector<s2mNodeBone> s2mJoints::meshPoints(const std::vector<s2mAttitude> &RT, const unsigned int &i){
+std::vector<s2mNodeBone> s2mJoints::meshPoints(const std::vector<s2mAttitude> &RT, const unsigned int &i) const{
 
     // Recueillir la position des meshings
     std::vector<s2mNodeBone> v;
@@ -559,12 +563,12 @@ std::vector<std::vector<s2mPatch>> s2mJoints::meshPatch() const{
         v_all.push_back(meshPatch(j));
     return v_all;
 }
-std::vector<s2mPatch> s2mJoints::meshPatch(const unsigned int &i){
+const std::vector<s2mPatch> &s2mJoints::meshPatch(const unsigned int &i) const{
     // Recueillir la position des meshings pour un segment i
     return boneMesh(i).patch();
 }
 
-std::vector<s2mBoneMesh> s2mJoints::boneMesh()
+std::vector<s2mBoneMesh> s2mJoints::boneMesh() const
 {
     std::vector<s2mBoneMesh> boneOut;
     for (unsigned int i=0; i<nbBone(); ++i)
@@ -572,7 +576,7 @@ std::vector<s2mBoneMesh> s2mJoints::boneMesh()
     return boneOut;
 }
 
-s2mBoneMesh s2mJoints::boneMesh(const unsigned int &idx)
+const s2mBoneMesh &s2mJoints::boneMesh(const unsigned int &idx) const
 {
     return bone(idx).caract().mesh();
 }
@@ -900,11 +904,6 @@ void s2mJoints::CalcMatRotJacobian(s2mJoints &model, const RigidBodyDynamics::Ma
 
 
 
-
-unsigned int s2mJoints::nbInterationStep() const
-{
-    return integrator->steps();
-}
 
 
 

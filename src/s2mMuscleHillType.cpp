@@ -22,7 +22,7 @@ s2mMuscleHillType::s2mMuscleHillType(const s2mString& name) :
 s2mMuscleHillType::s2mMuscleHillType(const s2mMuscleGeometry& g,
                                      const s2mMuscleCaracteristics& c,
                                      const s2mMusclePathChangers & w,
-                                     const s2mMuscleStateActual & s) :
+                                     const s2mMuscleStateDynamics & s) :
     s2mMuscle("",g,c,w,s),
     m_cste_FlCE_1(0.15),
     m_cste_FlCE_2(0.45),
@@ -42,7 +42,7 @@ s2mMuscleHillType::s2mMuscleHillType(const s2mString& name,
                                      const s2mMuscleGeometry& g,
                                      const s2mMuscleCaracteristics& c,
                                      const s2mMusclePathChangers & w,
-                                     const s2mMuscleStateActual & s) :
+                                     const s2mMuscleStateDynamics & s) :
     s2mMuscle(name,g,c,w,s),
     m_cste_FlCE_1(0.15),
     m_cste_FlCE_2(0.45),
@@ -139,6 +139,12 @@ const std::vector<std::shared_ptr<s2mMuscleForce>>& s2mMuscleHillType::force(s2m
 }
 
 const std::vector<std::shared_ptr<s2mMuscleForce>> &s2mMuscleHillType::force(s2mJoints &, const s2mGenCoord &, const s2mMuscleStateDynamics &, const int)
+{
+    s2mError::s2mAssert(0, "Hill type needs velocity");
+    return m_force; // Will never reach here
+}
+
+const std::vector<std::shared_ptr<s2mMuscleForce>> &s2mMuscleHillType::force(const s2mMuscleStateDynamics &EMG){
     // Calculer chacune les forces dans chaque éléments
     computeFvCE();
     computeFlCE(EMG);
@@ -150,7 +156,7 @@ const std::vector<std::shared_ptr<s2mMuscleForce>> &s2mMuscleHillType::force(s2m
     return m_force;
 }
 
-double s2mMuscleHillType::FlCE(const s2mMuscleStateActual &EMG)
+double s2mMuscleHillType::FlCE(const s2mMuscleStateDynamics &EMG)
 {
     computeFlCE(EMG);
     return m_FlCE;
@@ -174,17 +180,18 @@ double s2mMuscleHillType::damping()
     return m_damping;
 }
 
-s2mMuscleStateActual s2mMuscleHillType::normalizeEMG(s2mMuscleStateActual EMG){
-    EMG.excitationNorm(caract().stateMax());
-    return EMG;
+s2mMuscleStateDynamics s2mMuscleHillType::normalizeEMG(const s2mMuscleStateDynamics &emg){
+    s2mMuscleStateDynamics emg_out(emg);
+    emg_out.excitationNorm(caract().stateMax());
+    return emg_out;
 }
 
-double s2mMuscleHillType::multiplyCaractByActivationAndForce(const s2mMuscleStateActual &EMG){
+double s2mMuscleHillType::multiplyCaractByActivationAndForce(const s2mMuscleStateDynamics &emg){
     // Fonction qui permet de modifier la facon dont la multiplication est faite dans computeForce(EMG)
-    return caract().forceIsoMax() * (EMG.activation()*m_FlCE*m_FvCE + m_FlPE + m_damping);
+    return caract().forceIsoMax() * (emg.activation()*m_FlCE*m_FvCE + m_FlPE + m_damping);
 }
 
-void s2mMuscleHillType::computeForce(const s2mMuscleStateActual &EMG){
+void s2mMuscleHillType::computeForce(const s2mMuscleStateDynamics &EMG){
     double force = multiplyCaractByActivationAndForce(EMG);
     m_force[0]->setForce(m_position, force); // origine vers le deuxieme point
     m_force[1]->setForce(m_position, force); // insertion vers l'avant-dernier point
@@ -201,7 +208,7 @@ void s2mMuscleHillType::computeDamping(){
     m_damping = m_position.velocity() / (m_cste_vitesseRaccourMax * caract().optimalLength()) * m_cste_damping;
 }
 
-void s2mMuscleHillType::computeFlCE(const s2mMuscleStateActual &EMG){
+void s2mMuscleHillType::computeFlCE(const s2mMuscleStateDynamics &EMG){
     m_FlCE = exp( -pow(( m_position.length() / caract().optimalLength() / (m_cste_FlCE_1*(1-EMG.activation())+1) -1 ), 2)/m_cste_FlCE_2   );
 }
 

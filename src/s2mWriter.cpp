@@ -27,14 +27,14 @@ void s2mWriter::writeModel(s2mMusculoSkeletalModel & m, const s2mPath& pathToWri
 
     // Informations sur les segments
     std::vector<s2mAttitude> localJCS = m.localJCS();
-    for (size_t i = 0; i<m.nbBone(); ++i){
+    for (unsigned int i = 0; i<m.nbBone(); ++i){
         s2mModelFile << com << " Informations about " << m.bone(i).name() << " segment" << std::endl;
         s2mModelFile << sep << com << " Segment" << std::endl;
         s2mModelFile << sep << "segment" << sep << m.bone(i).name() << std::endl;
         s2mModelFile << sep << sep << "parent" << sep << m.bone(i).parentName(m) << std::endl;
         s2mModelFile << sep << sep << "RTinMatrix" << sep << true << std::endl;
         s2mModelFile << sep << sep << "RT" << std::endl;
-        for (size_t j=0; j<4; ++j)
+        for (unsigned int j=0; j<4; ++j)
             s2mModelFile << sep << sep << sep << localJCS[i].block(j,0,1,4) << std::endl;
         if (m.bone(i).nDofTrans() > 0)
             s2mModelFile << sep << sep << "translations" << sep << m.bone(i).seqT() << std::endl;
@@ -71,7 +71,7 @@ void s2mWriter::writeModel(s2mMusculoSkeletalModel & m, const s2mPath& pathToWri
                 s2mModelFile << sep << sep << "parent" << sep << imus[j].parent() << std::endl;
                 s2mModelFile << sep << sep << "RTinMatrix" << sep << true << std::endl;
                 s2mModelFile << sep << sep << "RT" << std::endl;
-                for (size_t k=0; k<4; ++k)
+                for (unsigned int k=0; k<4; ++k)
                     s2mModelFile << sep << sep << sep << imus[j].attitude().block(k,0,1,4) << std::endl;
                 s2mModelFile << sep << sep << "technical" << sep << imus[j].isTechnical() << std::endl;
                 s2mModelFile << sep << sep << "anatomical" << sep << imus[j].isAnatomical() << std::endl;

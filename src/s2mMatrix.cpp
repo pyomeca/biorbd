@@ -15,6 +15,11 @@ s2mMatrix::s2mMatrix(unsigned int i, unsigned int j) :
 
 }
 
+s2mMatrix::~s2mMatrix()
+{
+
+}
+
 s2mMatrix &s2mMatrix::operator=(Eigen::MatrixXd other)
 {
     swap(other);

@@ -8,15 +8,12 @@
 class BIORBD_API s2mJoint : public RigidBodyDynamics::Joint
 {
     public:
-        s2mJoint() :
-            Joint(){}
-        s2mJoint(RigidBodyDynamics::JointType joint_type, RigidBodyDynamics::Math::Vector3d axis) :
-            Joint(joint_type, axis){}
-
+        s2mJoint();
+        s2mJoint(RigidBodyDynamics::JointType joint_type, RigidBodyDynamics::Math::Vector3d axis);
         virtual ~s2mJoint();
 
         // Set and Get
-        virtual s2mString type() const {return m_type;}
+        const s2mString& type() const;
     protected:
         virtual void setType (){m_type = "Static";}
         s2mString m_type;

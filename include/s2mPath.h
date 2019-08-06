@@ -46,9 +46,9 @@ public:
     s2mString getAbsolutePath() const;
 
     // Accessor
-    s2mString folder() const;
-    s2mString filename() const;
-    s2mString extension() const;
+    const s2mString& folder() const;
+    const s2mString& filename() const;
+    const s2mString &extension() const;
     static const char* getCurrentDir();
 
 protected:

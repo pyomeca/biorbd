@@ -6,12 +6,15 @@ s2mWrappingObject::s2mWrappingObject(const Eigen::Vector3d &v, // Position du no
                                      const s2mString &parentName) :
     s2mMusclePathChanger(v,name,parentName)
 {
-    //ctor
+    m_type = "Wrapping";
 }
-
-
 
 s2mWrappingObject::~s2mWrappingObject()
 {
     //dtor
+}
+
+const s2mString &s2mWrappingObject::forme() const
+{
+    return m_forme;
 }

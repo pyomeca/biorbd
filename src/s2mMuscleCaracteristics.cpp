@@ -7,7 +7,7 @@ s2mMuscleCaracteristics::s2mMuscleCaracteristics(const double &optLength,
                                                  const double &PCSA,
                                                  const double &tendonSlackLength,
                                                  const double &pennAngle,
-                                                 const s2mMuscleStateMax *s,
+                                                 const s2mMuscleState &stateMax,
                                                  const double tauAct,
                                                  const double tauDeact,
                                                  const double &minAct
@@ -17,12 +17,12 @@ s2mMuscleCaracteristics::s2mMuscleCaracteristics(const double &optLength,
     m_PCSA(PCSA),
     m_tendonSlackLength(tendonSlackLength),
     m_pennationAngle(pennAngle),
-    m_stateMax(nullptr),
+    m_stateMax(stateMax),
     m_minActivation(minAct),
     m_tauActivation(tauAct),
     m_tauDeactivation(tauDeact)
 {
-    setStateMax(s);
+
 }
 
 // Get et Set
@@ -54,12 +54,12 @@ s2mMuscleCaracteristics::s2mMuscleCaracteristics(const s2mMuscleCaracteristics& 
     m_PCSA(c.m_PCSA),
     m_tendonSlackLength(c.tendonSlackLength()),
     m_pennationAngle(c.m_pennationAngle),
-    m_stateMax(nullptr),
+    m_stateMax(c.m_stateMax),
     m_minActivation(c.m_minActivation),
     m_tauActivation(c.m_tauActivation),
     m_tauDeactivation(c.m_tauDeactivation)
 {
-    setStateMax(c.m_stateMax);
+
 }
 
 s2mMuscleCaracteristics& s2mMuscleCaracteristics::operator=(const s2mMuscleCaracteristics& c){
@@ -81,30 +81,13 @@ s2mMuscleCaracteristics& s2mMuscleCaracteristics::operator=(const s2mMuscleCarac
 
 s2mMuscleCaracteristics::~s2mMuscleCaracteristics()
 {
-    delete m_stateMax;
+
 }
 
-void s2mMuscleCaracteristics::setStateMax(const s2mMuscleStateMax &s) {
-    if (!m_stateMax)
-        m_stateMax = new s2mMuscleStateMax();
-
-    *m_stateMax = s;
+void s2mMuscleCaracteristics::setStateMax(const s2mMuscleState &stateMax) {
+    m_stateMax = stateMax;
 }
 
-void s2mMuscleCaracteristics::setStateMax(const s2mMuscleStateMax *s) {
-    if (!m_stateMax)
-        m_stateMax = new s2mMuscleStateMax();
-
-    if (s==nullptr)
-        m_stateMax = nullptr;
-    else
-        setStateMax(*s);
-}
-
-
-s2mMuscleStateMax s2mMuscleCaracteristics::stateMax() const {
-    if (m_stateMax==nullptr)
-        return s2mMuscleStateMax();
-    else
-        return *m_stateMax;
+const s2mMuscleState &s2mMuscleCaracteristics::stateMax() const {
+    return m_stateMax;
 }

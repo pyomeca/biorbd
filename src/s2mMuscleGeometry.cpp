@@ -69,10 +69,10 @@ void s2mMuscleGeometry::_updateKinematics(const s2mGenCoord *Qdot, const s2mMusc
 
 
 // Get and set des position d'origine et insertions
-s2mNodeMuscle s2mMuscleGeometry::originInLocal() const {
+const s2mNodeMuscle& s2mMuscleGeometry::originInLocal() const {
     return m_origin;
 }
-s2mNodeMuscle s2mMuscleGeometry::insertionInLocal() const {
+const s2mNodeMuscle &s2mMuscleGeometry::insertionInLocal() const {
     return m_insertion;
 }
 void s2mMuscleGeometry::originInLocal(const s2mNodeMuscle &val) {
@@ -83,15 +83,15 @@ void s2mMuscleGeometry::insertionInLocal(const s2mNodeMuscle &val) {
 }
 
 // Position des muscles dans l'espace
-s2mNodeMuscle s2mMuscleGeometry::originInGlobal() const {
+const s2mNodeMuscle &s2mMuscleGeometry::originInGlobal() const {
     s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed at least once before calling originInLocal()");
     return m_originInGlobal;
 }
-s2mNodeMuscle s2mMuscleGeometry::insertionInGlobal() const {
+const s2mNodeMuscle &s2mMuscleGeometry::insertionInGlobal() const {
     s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed at least once before calling insertionInGlobal()");
     return m_insertionInGlobal;
 }
-std::vector<s2mNodeMuscle> s2mMuscleGeometry::musclesPointsInGlobal() const{
+const std::vector<s2mNodeMuscle> &s2mMuscleGeometry::musclesPointsInGlobal() const{
     s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed at least once before calling musclesPointsInGlobal()");
     return m_pointsInGlobal;
 }
@@ -111,7 +111,7 @@ double s2mMuscleGeometry::velocity() const {
 }
 
 // Retour des jacobiennes
-s2mMatrix s2mMuscleGeometry::jacobian() const {
+const s2mMatrix &s2mMuscleGeometry::jacobian() const {
     s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed before calling jacobian()");
     return m_jacobian;
 } // Retourne la derniere jacobienne
@@ -128,7 +128,7 @@ s2mMatrix s2mMuscleGeometry::jacobian(const unsigned int i) const {
     return s2mMatrix(m_jacobian.block(3*i,0,3,m_jacobian.cols()));
 }
 
-s2mMatrix s2mMuscleGeometry::jacobianLength() const{
+const s2mMatrix &s2mMuscleGeometry::jacobianLength() const{
     s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed before calling jacobianLength()");
     return m_jacobianLength;
 }
@@ -138,13 +138,13 @@ s2mMatrix s2mMuscleGeometry::jacobianLength() const{
 
 
 
-s2mNodeMuscle s2mMuscleGeometry::originInGlobal(s2mJoints &model, const s2mGenCoord &Q){
+const s2mNodeMuscle &s2mMuscleGeometry::originInGlobal(s2mJoints &model, const s2mGenCoord &Q){
     // Sortir la position du marqueur en fonction de la position donnée
     m_originInGlobal.block(0,0,3,1) = RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(m_origin.parent().c_str()), m_origin.position(),false);
     return m_originInGlobal;
 }
 
-s2mNodeMuscle s2mMuscleGeometry::insertionInGlobal(s2mJoints &model, const s2mGenCoord &Q){
+const s2mNodeMuscle &s2mMuscleGeometry::insertionInGlobal(s2mJoints &model, const s2mGenCoord &Q){
     // Sortir la position du marqueur en fonction de la position donnée
     m_insertionInGlobal.block(0,0,3,1) = RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(m_insertion.parent().c_str()), m_insertion.position(),false);
     return m_insertionInGlobal;

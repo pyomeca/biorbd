@@ -15,3 +15,11 @@ s2mTime::~s2mTime()
     //dtor
     delete[] m_time;
 }
+
+double s2mTime::time(const unsigned int &t)
+{
+    if (t>=m_nbSteps)
+        return 0;
+    else
+        return m_time[t];
+}

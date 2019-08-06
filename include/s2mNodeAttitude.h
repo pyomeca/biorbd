@@ -14,14 +14,14 @@ class BIORBD_API s2mNodeAttitude : public s2mAttitude
             const s2mString &parentName = "");
     virtual ~s2mNodeAttitude();
 
-    virtual s2mString parent() const;
-    virtual void setParent(const s2mString &parentName);
-    virtual void setName(const s2mString &name);
-    virtual s2mString name() const;
+    const s2mString& parent() const;
+    void setParent(const s2mString &parentName);
+    void setName(const s2mString &name);
+    const s2mString& name() const;
 
     // Get and Set
-    virtual void setAttitude(const s2mAttitude&);
-    virtual s2mAttitude attitude() const;
+    void setAttitude(const s2mAttitude&);
+    const s2mAttitude& attitude() const;
 
     protected:
         s2mString m_parentName;

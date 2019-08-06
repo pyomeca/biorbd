@@ -14,13 +14,13 @@ s2mBoneMesh::~s2mBoneMesh(){
 void s2mBoneMesh::addPoint(const s2mNode &node){
     m_mesh.push_back(node);
 }
-s2mNode s2mBoneMesh::point(unsigned int i)
+const s2mNode &s2mBoneMesh::point(unsigned int i) const
 {
     return *(m_mesh.begin()+i);
 }
-unsigned int s2mBoneMesh::size()
+unsigned int s2mBoneMesh::size() const
 {
-    return m_mesh.size();
+    return static_cast<unsigned int>(m_mesh.size());
 }
 
 void s2mBoneMesh::setPath(const s2mPath& path)
@@ -28,14 +28,14 @@ void s2mBoneMesh::setPath(const s2mPath& path)
     m_pathFile = path;
 }
 
-s2mPath s2mBoneMesh::path() const
+const s2mPath &s2mBoneMesh::path() const
 {
     return m_pathFile;
 }
 
 unsigned int s2mBoneMesh::sizePatch()
 {
-    return m_patch.size();
+    return static_cast<unsigned int>(m_patch.size());
 }
 void s2mBoneMesh::addPatch(const s2mPatch & v)
 {
@@ -45,11 +45,11 @@ void s2mBoneMesh::addPatch(const Eigen::Vector3i & v)
 {
     addPatch(s2mPatch(v));
 }
-const std::vector<s2mPatch>& s2mBoneMesh::patch()
+const std::vector<s2mPatch>& s2mBoneMesh::patch() const
 {
     return m_patch;
 }
-s2mPatch s2mBoneMesh::patch(unsigned int i)
+const s2mPatch &s2mBoneMesh::patch(unsigned int i) const
 {
     return m_patch[i];
 }

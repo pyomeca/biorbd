@@ -27,15 +27,15 @@ class BIORBD_API s2mMuscleGeometry
                               const s2mMuscleCaracteristics& = s2mMuscleCaracteristics());
 
         // Get and set des position d'origine et insertions
-        s2mNodeMuscle originInLocal() const;
-        s2mNodeMuscle insertionInLocal() const;
+        const s2mNodeMuscle& originInLocal() const;
+        const s2mNodeMuscle& insertionInLocal() const;
         void originInLocal(const s2mNodeMuscle &val);
         void insertionInLocal(const s2mNodeMuscle &val);
 
         // Position des muscles dans l'espace
-        s2mNodeMuscle originInGlobal() const; // Attention il est impératif d'avoir update une premiere fois pour que ceci fonctionne!
-        s2mNodeMuscle insertionInGlobal() const; // Attention il est impératif d'avoir update une premiere fois pour que ceci fonctionne!
-        std::vector<s2mNodeMuscle> musclesPointsInGlobal() const; // Return already computed via points
+        const s2mNodeMuscle& originInGlobal() const; // Attention il est impératif d'avoir update une premiere fois pour que ceci fonctionne!
+        const s2mNodeMuscle& insertionInGlobal() const; // Attention il est impératif d'avoir update une premiere fois pour que ceci fonctionne!
+        const std::vector<s2mNodeMuscle>& musclesPointsInGlobal() const; // Return already computed via points
 
         // Retour des longueur et vitesse musculaires
         double length() const; // Return the already computed muscle length
@@ -43,11 +43,11 @@ class BIORBD_API s2mMuscleGeometry
         double velocity() const; // Return the already computed velocity
 
         // Retour des jacobiennes
-        s2mMatrix jacobian() const; // Retourne la derniere jacobienne
+        const s2mMatrix& jacobian() const; // Retourne la derniere jacobienne
         s2mMatrix jacobianOrigin() const;
         s2mMatrix jacobianInsertion() const ;
         s2mMatrix jacobian(const unsigned int i) const;
-        s2mMatrix jacobianLength() const;
+        const s2mMatrix& jacobianLength() const;
 
 
     protected:
@@ -55,8 +55,8 @@ class BIORBD_API s2mMuscleGeometry
         void _updateKinematics(const s2mGenCoord *Qdot, const s2mMuscleCaracteristics &c, const s2mMusclePathChangers* o = nullptr);
 
         // Calcul de la position des points dans le global
-        s2mNodeMuscle originInGlobal(s2mJoints &model, const s2mGenCoord &Q); // Update la cinématique puis retourne la position de l'origine dans l'espace
-        s2mNodeMuscle insertionInGlobal(s2mJoints &model, const s2mGenCoord &Q); // Update la cinématique puis retourne la position de l'insertion dans l'espace
+        const s2mNodeMuscle& originInGlobal(s2mJoints &model, const s2mGenCoord &Q); // Update la cinématique puis retourne la position de l'origine dans l'espace
+        const s2mNodeMuscle& insertionInGlobal(s2mJoints &model, const s2mGenCoord &Q); // Update la cinématique puis retourne la position de l'insertion dans l'espace
         void musclesPointsInGlobal(std::vector<s2mNodeMuscle>& ptsInGlobal); // Forcer les points dans le global
         void musclesPointsInGlobal(s2mJoints &, const s2mGenCoord &, const s2mMusclePathChangers&);
 

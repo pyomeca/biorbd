@@ -10,9 +10,9 @@ class BIORBD_API s2mJointIntraBone : public RigidBodyDynamics::Joint
         s2mJointIntraBone();
         s2mJointIntraBone(RigidBodyDynamics::JointType joint_type);
         s2mJointIntraBone(RigidBodyDynamics::JointType joint_type, RigidBodyDynamics::Math::Vector3d axis);
-        ~s2mJointIntraBone();
+        virtual ~s2mJointIntraBone();
 
-        virtual s2mString type() const {return m_type;}
+        const s2mString& type() const;
     protected:
         virtual void setType (){m_type = "IntraBone";}
         s2mString m_type;

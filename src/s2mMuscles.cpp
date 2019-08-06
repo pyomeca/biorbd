@@ -18,32 +18,37 @@ void s2mMuscles::addMuscleGroup(const s2mString &name, const s2mString &originNa
     m_mus.push_back(s2mGroupeMusculaire(name, originName, insertionName));
 }
 
-int s2mMuscles::getGroupId(const s2mString &name){
-    std::vector<s2mGroupeMusculaire>::iterator it=m_mus.begin();
-    for (unsigned int i=0; it+i!=m_mus.end(); ++i)
-        if (!name.compare((*(it+i)).name()))
+int s2mMuscles::getGroupId(const s2mString &name) const{
+    for (unsigned int i=0; i<m_mus.size(); ++i)
+        if (!name.compare(m_mus[i].name()))
             return static_cast<int>(i);
     return -1;
 }
 
-s2mGroupeMusculaire& s2mMuscles::muscleGroup(const unsigned int idx){
+s2mGroupeMusculaire &s2mMuscles::muscleGroup_nonConst(unsigned int idx)
+{
     s2mError::s2mAssert(idx<nbMuscleGroups(), "Idx asked is higher than number of muscle groups");
-    return *(m_mus.begin() + idx);
+    return m_mus[idx];
 }
-s2mGroupeMusculaire& s2mMuscles::muscleGroup(const s2mString& name){
+
+const s2mGroupeMusculaire &s2mMuscles::muscleGroup(unsigned int idx) const{
+    s2mError::s2mAssert(idx<nbMuscleGroups(), "Idx asked is higher than number of muscle groups");
+    return m_mus[idx];
+}
+const s2mGroupeMusculaire &s2mMuscles::muscleGroup(const s2mString& name) const{
     int idx = getGroupId(name);
     s2mError::s2mAssert(idx!=-1, "Group name could not be found");
     return muscleGroup(static_cast<unsigned int>(idx));
 }
 
 // From muscle activation (return muscle force)
-s2mTau s2mMuscles::muscularJointTorque(s2mJoints& m, const std::vector<s2mMuscleStateActual> &state, Eigen::VectorXd & F, bool updateKin, const s2mGenCoord* Q, const s2mGenCoord* QDot){
+s2mTau s2mMuscles::muscularJointTorque(s2mJoints& m, const std::vector<s2mMuscleStateDynamics> &state, Eigen::VectorXd & F, bool updateKin, const s2mGenCoord* Q, const s2mGenCoord* QDot){
 
     // Update de la position musculaire
     if (updateKin > 0)
         updateMuscles(m,*Q,*QDot,updateKin);
 
-    std::vector<std::vector<std::shared_ptr<s2mMuscleForce> > > force_tp = musclesForces(m, state, false);
+    std::vector<std::vector<std::shared_ptr<s2mMuscleForce>>> force_tp = musclesForces(m, state, false);
     F = Eigen::VectorXd::Zero(static_cast<unsigned int>(force_tp.size()));
     for (unsigned int i=0; i<force_tp.size(); ++i)
         F(i) = (force_tp[i])[0]->norme();
@@ -52,7 +57,7 @@ s2mTau s2mMuscles::muscularJointTorque(s2mJoints& m, const std::vector<s2mMuscle
 }
 
 // From muscle activation (do not return muscle force)
-s2mTau s2mMuscles::muscularJointTorque(s2mJoints& m, const std::vector<s2mMuscleStateActual>& state, bool updateKin, const s2mGenCoord* Q, const s2mGenCoord* QDot){
+s2mTau s2mMuscles::muscularJointTorque(s2mJoints& m, const std::vector<s2mMuscleStateDynamics>& state, bool updateKin, const s2mGenCoord* Q, const s2mGenCoord* QDot){
     s2mGenCoord dummy;
     return muscularJointTorque(m, state, dummy, updateKin, Q, QDot);
 }
@@ -94,7 +99,7 @@ std::vector<std::vector<std::shared_ptr<s2mMuscleForce>>> s2mMuscles::musclesFor
     return forces;
 }
 
-unsigned int s2mMuscles::nbMuscleGroups() {
+unsigned int s2mMuscles::nbMuscleGroups() const {
     return static_cast<unsigned int>(m_mus.size());
 }
 
@@ -117,10 +122,10 @@ s2mMatrix s2mMuscles::musclesLengthJacobian(s2mJoints& m, const s2mGenCoord &Q){
 }
 
 
-unsigned int s2mMuscles::nbMuscleTotal(){
+unsigned int s2mMuscles::nbMuscleTotal() const{
     unsigned int total(0);
-    for (std::vector<s2mGroupeMusculaire>::iterator grp=m_mus.begin(); grp!=m_mus.end(); ++grp) // groupe musculaire
-        total += (*grp).nbMuscles();
+    for (unsigned int grp=0; grp<m_mus.size(); ++grp) // groupe musculaire
+        total += m_mus[grp].nbMuscles();
     return total;
 }
 

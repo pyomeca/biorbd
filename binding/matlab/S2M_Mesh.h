@@ -26,7 +26,7 @@ void S2M_Mesh( int, mxArray *plhs[],
     // Output
     if ( idx==-1){ // Si on a demande tous les segments
         // Trouver ou sont les marqueurs
-        std::vector<std::vector<s2mNodeBone> > allMesh(model->meshPoints(Q));
+        std::vector<std::vector<s2mNodeBone>> allMesh(model->meshPoints(Q));
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateCellMatrix( allMesh.size(), 1);

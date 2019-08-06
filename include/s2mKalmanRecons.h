@@ -14,13 +14,10 @@ class BIORBD_API s2mKalmanRecons
 public:
     class s2mKalmanParam{
         public:
-        s2mKalmanParam(double frequency = 100, double noiseFactor = 1e-10, double errorFactor = 1e-5):
-            m_acquisitionFrequency(frequency),
-            m_noiseFactor(noiseFactor),
-            m_errorFactor(errorFactor){}
-            double acquisitionFrequency(){return m_acquisitionFrequency;}
-            double noiseFactor(){return m_noiseFactor;}
-            double errorFactor(){return m_errorFactor;}
+        s2mKalmanParam(double frequency = 100, double noiseFactor = 1e-10, double errorFactor = 1e-5);
+            double acquisitionFrequency() const;
+            double noiseFactor() const;
+            double errorFactor() const;
 
         private:
             double m_acquisitionFrequency;

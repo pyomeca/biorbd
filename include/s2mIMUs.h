@@ -27,7 +27,7 @@ class BIORBD_API s2mIMUs
 
         std::vector<s2mIMU> IMU(); // Retour d'un STL vector de tous les IMU
         std::vector<s2mIMU> IMU(s2mJoints& m, unsigned int idx); // Retour d'un STL vector de tous les IMU d'un segment idx
-        s2mIMU IMU(const unsigned int&); // Retour d'un IMU ind idx
+        const s2mIMU& IMU(const unsigned int&); // Retour d'un IMU ind idx
 
         std::vector<s2mIMU> IMU(s2mJoints& model, const s2mGenCoord &Q, const bool &updateKin = true); // Retour d'un STL vector de tous les IMUs
         s2mIMU IMU(s2mJoints& model, const s2mGenCoord&, const unsigned int&, const bool &updateKin = true); // Retour d'un IMU ind idx

@@ -10,8 +10,8 @@ public:
     s2mVector(const Eigen::VectorXd& v);
     s2mVector(const s2mVector& v);
     s2mVector(unsigned int i);
-    ~s2mVector();
-    virtual Eigen::VectorXd vector() const;
+    virtual ~s2mVector();
+    Eigen::VectorXd vector() const;
 
 protected:
 private:

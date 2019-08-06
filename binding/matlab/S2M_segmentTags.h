@@ -30,7 +30,7 @@ void S2M_segmentTags( int, mxArray *plhs[],
 
     if ( idx==-1){ // Si on a demande tous les segments
         // Trouver ou sont les marqueurs
-        std::vector<std::vector<s2mNodeBone> > allTags;
+        std::vector<std::vector<s2mNodeBone>> allTags;
         for (unsigned int i=0; i<model->nbBone(); ++i)    {
             std::vector<s2mNodeBone> Tags_tp = model->segmentTags(*model, Q, i, removeAxes);
             allTags.push_back(Tags_tp);

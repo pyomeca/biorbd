@@ -188,23 +188,23 @@ void s2mBone::setPF(const int &PF){
     m_idxPF = PF;
 }
 
-s2mString s2mBone::nameDof(const unsigned int i) const {
+const s2mString &s2mBone::nameDof(const unsigned int i) const {
     // Retourne le nombre de Dof de ce segment
     s2mError::s2mAssert(i<m_nDofTrue, "Dof ouside N dof for this segment");
     return m_nomDof[i];
 }
 
 // Retourne le nom du segment
-s2mString s2mBone::name() const {
+const s2mString &s2mBone::name() const {
     return m_name;
 }
 
-s2mString s2mBone::seqT() const
+const s2mString& s2mBone::seqT() const
 {
     return m_seqT;
 }
 
-s2mString s2mBone::seqR() const
+const s2mString& s2mBone::seqR() const
 {
     return m_seqR;
 }
@@ -212,7 +212,7 @@ s2mString s2mBone::seqR() const
 s2mAttitude s2mBone::localJCS() const {
     return m_cor;
 }
-s2mBoneCaracteristics s2mBone::caract() const {
+const s2mBoneCaracteristics &s2mBone::caract() const {
     return m_caract;
 }
 
@@ -308,7 +308,7 @@ void s2mBone::setNumberOfDof(const unsigned int &nTrans, const unsigned int &nRo
 }
 
 void s2mBone::setSequence(const s2mString &seqT, const s2mString &seqR) { // Trouver les positions de x,y et z dans cette séquence
-    setNumberOfDof(seqT.length(), seqR.length());
+    setNumberOfDof(static_cast<unsigned int>(seqT.length()), static_cast<unsigned int>(seqR.length()));
     str2numSequence(seqT, seqR);
     fillSequence();
 }

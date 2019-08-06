@@ -10,6 +10,7 @@ public:
     s2mMatrix();
     s2mMatrix(const Eigen::MatrixXd& m);
     s2mMatrix(unsigned int i, unsigned int j);
+    virtual ~s2mMatrix();
 
     s2mMatrix & operator= (Eigen::MatrixXd other);
 

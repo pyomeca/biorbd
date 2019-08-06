@@ -30,14 +30,14 @@ unsigned int s2mContacts::AddConstraint(unsigned int body_id, const s2mNode& bod
 }
 
 
-s2mContacts& s2mContacts::getConstraints(const RigidBodyDynamics::Model& m){
+const s2mContacts &s2mContacts::getConstraints(const RigidBodyDynamics::Model& m){
     if (!m_binded){
         Bind(m);
         m_binded = true;
     }
     return *this;
 }
-s2mContacts& s2mContacts::getConstraints(){
+const s2mContacts &s2mContacts::getConstraints(){
     if (!m_binded)
         s2mError::s2mAssert(0, "Please call getConstraints with s2mJoints model before!" );
     return *this;

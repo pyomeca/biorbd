@@ -25,7 +25,7 @@ void s2mIMUs::addIMU(const s2mAttitude &pos,
 
 unsigned int s2mIMUs::nIMUs() const
 {
-    return m_IMUs.size();
+    return static_cast<unsigned int>(m_IMUs.size());
 }
 
 
@@ -50,7 +50,7 @@ std::vector<s2mIMU> s2mIMUs::IMU(s2mJoints &m, unsigned int idxBone){
     return pos;
 }
 
-s2mIMU s2mIMUs::IMU(const unsigned int &i)
+const s2mIMU &s2mIMUs::IMU(const unsigned int &i)
 {
     std::vector <s2mIMU>::iterator it;
     it = m_IMUs.begin()+i;
@@ -72,7 +72,7 @@ std::vector<s2mIMU> s2mIMUs::IMU(s2mJoints& model, const s2mGenCoord &Q, const b
 // Se faire renvoyer un IMU à la position donnée par Q
 s2mIMU s2mIMUs::IMU(s2mJoints& model, const s2mGenCoord &Q, const unsigned int &idx, const bool &updateKin){
     s2mIMU node = IMU(idx);
-    unsigned int id = model.GetBodyS2MId(node.parent());
+    unsigned int id = static_cast<unsigned int>(model.GetBodyS2MId(node.parent()));
 
     s2mAttitude parent(model.globalJCS(Q, id, updateKin));
 

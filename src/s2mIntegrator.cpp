@@ -17,13 +17,6 @@ s2mIntegrator::s2mIntegrator(){
 
 //}
 
-s2mIntegrator::~s2mIntegrator()
-{
-//    delete[] m_dxdt;
-    //dtor
-}
-
-
 
 void s2mIntegrator::operator() ( const state_type &x , state_type &dxdt , const double ){
     // Équation différentielle : x/xdot => xdot/xddot
@@ -66,7 +59,7 @@ s2mGenCoord s2mIntegrator::getX(const unsigned int &idx){
 
 void s2mIntegrator::integrate(RigidBodyDynamics::Model *model, const s2mGenCoord &v, const Eigen::VectorXd& u, const double &t0, const double &tEnd, const double &time_step){
     // Stocker le nombre d'élément à traiter
-    m_nbre = v.rows()/2; // Q et Qdot
+    m_nbre = static_cast<unsigned int>(v.rows())/2; // Q et Qdot
     m_u = u; // Copier les effecteurs
     m_model = model;
 
@@ -77,5 +70,5 @@ void s2mIntegrator::integrate(RigidBodyDynamics::Model *model, const s2mGenCoord
 
     // Choix de l'algorithme et intégration
     boost::numeric::odeint::runge_kutta4< state_type > stepper;
-    m_steps = boost::numeric::odeint::integrate_const( stepper, (*this), x, t0, tEnd, time_step, push_back_state_and_time( m_x_vec , m_times ));
+    m_steps = static_cast<unsigned int>(boost::numeric::odeint::integrate_const( stepper, (*this), x, t0, tEnd, time_step, push_back_state_and_time( m_x_vec , m_times )));
 }
