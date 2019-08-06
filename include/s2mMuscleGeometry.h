@@ -65,6 +65,7 @@ class BIORBD_API s2mMuscleGeometry
         // Calcul de la vitesse musculaire
         double velocity(const s2mGenCoord &Qdot); // Update the kinematics and compute and return muscle velocity assuming no via points nor wrapping objects
         // Calcul des jacobiennes des points
+        void setJacobianDimension(s2mJoints &model);
         void jacobian(const s2mMatrix &jaco); // Forcer une jacobienne
         void jacobian(s2mJoints &model, const s2mGenCoord &Q);
         void computeJacobianLength();
@@ -78,6 +79,7 @@ class BIORBD_API s2mMuscleGeometry
         std::vector<s2mNodeMuscle> m_pointsInGlobal; // position de tous les points dans le global
         std::vector<s2mNodeMuscle> m_pointsInLocal; // position de tous les points dans le global
         s2mMatrix m_jacobian;
+        s2mMatrix m_G;
         s2mMatrix m_jacobianLength; // Incluant la
 
         double m_length; // Longueur du muscle

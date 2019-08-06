@@ -247,6 +247,9 @@ void s2mMuscleGeometry::musclesPointsInGlobal(s2mJoints &model, const s2mGenCoor
     }
     else
         s2mError::s2mAssert(0, "Length for this type of object was not implemented");
+
+    // Set the dimension of jacobian
+    setJacobianDimension(model);
 }
 
 double s2mMuscleGeometry::velocity(const s2mGenCoord &Qdot){
@@ -258,17 +261,22 @@ double s2mMuscleGeometry::velocity(const s2mGenCoord &Qdot){
     return m_velocity;
 }
 
+void s2mMuscleGeometry::setJacobianDimension(s2mJoints &model)
+{
+    m_jacobian = s2mMatrix::Zero(static_cast<unsigned int>(m_pointsInLocal.size()*3), model.dof_count);
+    m_G = s2mMatrix::Zero(3, model.dof_count);
+}
+
 void s2mMuscleGeometry::jacobian(const s2mMatrix &jaco){
-    s2mError::s2mAssert(jaco.rows()/3 == (int)m_pointsInGlobal.size(), "Jacobian is the wrong size");
+    s2mError::s2mAssert(jaco.rows()/3 == static_cast<int>(m_pointsInGlobal.size()), "Jacobian is the wrong size");
     m_jacobian = jaco;
 }
 
 void s2mMuscleGeometry::jacobian(s2mJoints &model, const s2mGenCoord &Q){
-    m_jacobian = s2mMatrix::Zero(m_pointsInLocal.size()*3, model.dof_count);
     for (unsigned int i=0; i<m_pointsInLocal.size(); ++i){
-        s2mMatrix tp(s2mMatrix::Zero(3, model.dof_count));
-        RigidBodyDynamics::CalcPointJacobian(model, Q, model.GetBodyId((m_pointsInLocal[i]).parent().c_str()), (m_pointsInLocal[i]).position(), tp, false); // False for speed
-        m_jacobian.block(3*i,0,3,model.dof_count) = tp;
+        m_G.setZero();
+        RigidBodyDynamics::CalcPointJacobian(model, Q, model.GetBodyId((m_pointsInLocal[i]).parent().c_str()), (m_pointsInLocal[i]).position(), m_G, false); // False for speed
+        m_jacobian.block(3*i,0,3,model.dof_count) = m_G;
     }
 }
 
@@ -281,6 +289,3 @@ void s2mMuscleGeometry::computeJacobianLength(){
                              ( *(p+i+1) - *(p+i) ).norm();
     }
 }
-
-
-
