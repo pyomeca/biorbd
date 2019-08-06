@@ -69,7 +69,7 @@ bool s2mPath::isFolderExist(const s2mString & path)
 			return false;
 		else
 			return true;
-#elif _WIN32
+#elseif _WIN32
 	if (GetFileAttributesA(path.c_str()) == INVALID_FILE_ATTRIBUTES)
 		return false; // Le path est invalide
 	else
@@ -196,7 +196,7 @@ s2mString s2mPath::getAbsolutePath() const
 {
 #ifdef _WIN64
     s2mString base("C:\\");
-#elif _WIN32
+#elseif _WIN32
     s2mString base("C:\\");
 #else
     s2mString base("/");
@@ -224,7 +224,7 @@ const char * s2mPath::getCurrentDir()
 {
     #ifdef _WIN64
         return _getcwd(nullptr, 0);
-    #elif _WIN32
+    #elseif _WIN32
         return _getcwd(nullptr, 0);
     #else
         return getcwd(nullptr, 0);

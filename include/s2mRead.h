@@ -4,7 +4,7 @@
     #ifdef _WIN64
 		#include <direct.h>
 		#define GetCurrentDir _getcwd
-    #elif _WIN32
+    #elseif _WIN32
         #include <direct.h>
         #define GetCurrentDir _getcwd
     #else
