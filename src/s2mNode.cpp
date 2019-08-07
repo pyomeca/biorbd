@@ -19,11 +19,6 @@ s2mNode::s2mNode(const Eigen::Vector3d &v, const s2mString &name, const s2mStrin
 
 }
 
-s2mNode::~s2mNode()
-{
-    //dtor
-}
-
 const s2mString& s2mNode::parent() const
 {
     return m_parentName;

@@ -12,7 +12,6 @@ class BIORBD_API s2mMuscleForce : public Eigen::Vector3d
         s2mMuscleForce(double x, double y, double z);
         s2mMuscleForce(const Eigen::Vector3d& force);
         s2mMuscleForce(const s2mMuscleGeometry& geo, double force);
-        virtual ~s2mMuscleForce();
 
         // Get et set
         double norme() const;

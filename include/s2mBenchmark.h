@@ -10,7 +10,7 @@ class BIORBD_API s2mBenchmark
 {
     public:
         s2mBenchmark();
-        ~s2mBenchmark(){}
+        ~s2mBenchmark();
 
 
         // Timers

@@ -11,7 +11,7 @@ public:
     s2mPath(const char *c);
     s2mPath(const s2mString &s);
     s2mPath(const std::basic_string<char> &c);
-    ~s2mPath();
+    virtual ~s2mPath();
 
     // parser un path en folder, filename,e extension
     static void parseFileName(const s2mString& path, s2mString& folder, s2mString& filename, s2mString& ext);

@@ -18,6 +18,11 @@ s2mKalmanReconsMarkers::s2mKalmanReconsMarkers(s2mMusculoSkeletalModel &m, s2mKa
 
 }
 
+s2mKalmanReconsMarkers::~s2mKalmanReconsMarkers()
+{
+
+}
+
 void s2mKalmanReconsMarkers::initialize(){
     s2mKalmanRecons::initialize();
 

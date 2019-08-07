@@ -11,7 +11,7 @@ class BIORBD_API s2mActuatorConstant : public s2mActuator
                            double Tmax,
                            unsigned int dofIdx,
                            const s2mString &jointName = "");
-        ~s2mActuatorConstant(){}
+        virtual ~s2mActuatorConstant();
         virtual double torqueMax();
 
     protected:

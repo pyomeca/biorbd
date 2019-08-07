@@ -23,7 +23,7 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
     public:
         s2mJoints();
         s2mJoints(const s2mJoints&);
-        ~s2mJoints();
+        virtual ~s2mJoints();
 
         // Set and Get
         unsigned int AddBone(const unsigned int &parent_id, // Numéro du parent

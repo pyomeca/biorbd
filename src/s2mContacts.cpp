@@ -16,6 +16,11 @@ s2mContacts::s2mContacts() :
 
 }
 
+s2mContacts::~s2mContacts()
+{
+
+}
+
 unsigned int s2mContacts::AddConstraint(unsigned int body_id, const s2mNode& body_point, const s2mNode& world_normal, const s2mString& name, double acc){
     ++m_nbreConstraint;
     return RigidBodyDynamics::ConstraintSet::AddContactConstraint(body_id, body_point, world_normal, name.c_str(), acc);

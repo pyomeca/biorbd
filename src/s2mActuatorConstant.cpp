@@ -14,6 +14,11 @@ s2mActuatorConstant::s2mActuatorConstant(
 
 }
 
+s2mActuatorConstant::~s2mActuatorConstant()
+{
+
+}
+
 
 double s2mActuatorConstant::torqueMax(){
     return m_Tmax;

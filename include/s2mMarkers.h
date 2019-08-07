@@ -14,7 +14,7 @@ class BIORBD_API s2mMarkers
 {
     public:
         s2mMarkers();
-        ~s2mMarkers();
+        virtual ~s2mMarkers();
 
         // Set and get
         void addMarker(const Eigen::Vector3d &pos = Eigen::Vector3d(0,0,0),

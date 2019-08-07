@@ -18,6 +18,11 @@ s2mKalmanReconsIMU::s2mKalmanReconsIMU(s2mMusculoSkeletalModel &m, s2mKalmanReco
 
 }
 
+s2mKalmanReconsIMU::~s2mKalmanReconsIMU()
+{
+
+}
+
 void s2mKalmanReconsIMU::initialize(){
     s2mKalmanRecons::initialize();
 

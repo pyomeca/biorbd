@@ -37,6 +37,11 @@ s2mActuatorGauss6p::s2mActuatorGauss6p(
 
 }
 
+s2mActuatorGauss6p::~s2mActuatorGauss6p()
+{
+
+}
+
 
 double s2mActuatorGauss6p::torqueMax(const s2mGenCoord &Q, const s2mGenCoord &Qdot){
     double pos(Q[m_dofIdx] * 180/M_PI);

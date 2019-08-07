@@ -13,7 +13,6 @@ public:
     s2mTau(unsigned int i) : s2mVector(i) {}
     s2mTau(const Eigen::VectorXd& v) : s2mVector(v) {}
     s2mTau(const s2mJoints& j);
-    virtual ~s2mTau();
 
     s2mTau timeDerivativeActivation(const s2mTau &act);
 

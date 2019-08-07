@@ -13,7 +13,7 @@ class BIORBD_API s2mActuatorLinear : public s2mActuator
                           double pente,
                           unsigned int dofIdx,
                           const s2mString &jointName = "");
-        ~s2mActuatorLinear(){}
+        virtual ~s2mActuatorLinear();
         virtual double torqueMax(const s2mGenCoord &Q) const;
 
     protected:

@@ -17,7 +17,7 @@ public:
     s2mString operator+(const char *c);
     s2mString operator()(const unsigned int) const;
     s2mString operator()(const unsigned int, const unsigned int) const;
-    ~s2mString();
+    virtual ~s2mString();
 
     static s2mString tolower(const s2mString &str); // convert a string to a lower case string
     s2mString tolower() const;

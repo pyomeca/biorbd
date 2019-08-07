@@ -2,15 +2,30 @@
 #include "s2mMuscleForceFromOrigin.h"
 
 s2mMuscleForceFromOrigin::s2mMuscleForceFromOrigin() :
-    s2mMuscleForce(){}
-s2mMuscleForceFromOrigin::s2mMuscleForceFromOrigin(double x, double y, double z) :
-    s2mMuscleForce(x,y,z){}
-s2mMuscleForceFromOrigin::s2mMuscleForceFromOrigin(const s2mMuscleGeometry& geo, double force) :
-    s2mMuscleForce(geo, force){}
-s2mMuscleForceFromOrigin::s2mMuscleForceFromOrigin(const Eigen::Vector3d &force) :
-    s2mMuscleForce(force){}
+    s2mMuscleForce()
+{
 
-s2mMuscleForceFromOrigin::~s2mMuscleForceFromOrigin(){}
+}
+s2mMuscleForceFromOrigin::s2mMuscleForceFromOrigin(double x, double y, double z) :
+    s2mMuscleForce(x,y,z)
+{
+
+}
+s2mMuscleForceFromOrigin::s2mMuscleForceFromOrigin(const s2mMuscleGeometry& geo, double force) :
+    s2mMuscleForce(geo, force)
+{
+
+}
+s2mMuscleForceFromOrigin::s2mMuscleForceFromOrigin(const Eigen::Vector3d &force) :
+    s2mMuscleForce(force)
+{
+
+}
+
+s2mMuscleForceFromOrigin::~s2mMuscleForceFromOrigin()
+{
+
+}
 
 
 

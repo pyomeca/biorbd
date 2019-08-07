@@ -11,6 +11,7 @@ public:
 
     // Constructeur
     s2mKalmanReconsMarkers(s2mMusculoSkeletalModel&, s2mKalmanRecons::s2mKalmanParam = s2mKalmanRecons::s2mKalmanParam());
+    virtual ~s2mKalmanReconsMarkers();
 
     // Reconstruction d'un frame
     virtual void reconstructFrame(s2mMusculoSkeletalModel &m, const s2mMarkers &Tobs, s2mGenCoord *Q, s2mGenCoord *Qdot, s2mGenCoord *Qddot, bool removeAxes=true);

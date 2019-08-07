@@ -8,7 +8,7 @@ class BIORBD_API s2mMuscleStateDynamicsBuchanan : public s2mMuscleStateDynamics
 {
     public:
         s2mMuscleStateDynamicsBuchanan(const double &neuralCommand = 0, const double &excitation = 0);
-        ~s2mMuscleStateDynamicsBuchanan();
+        virtual ~s2mMuscleStateDynamicsBuchanan();
 
         virtual double timeDerivativeExcitation(const s2mMuscleCaracteristics &caract, const bool alreadyNormalized);
         virtual void setExcitation(const double &val);

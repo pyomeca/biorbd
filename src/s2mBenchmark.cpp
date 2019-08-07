@@ -5,6 +5,11 @@ s2mBenchmark::s2mBenchmark(){
 
 }
 
+s2mBenchmark::~s2mBenchmark()
+{
+
+}
+
 void s2mBenchmark::startTimer(const s2mString& s, bool force){
     if (force)
         m_timers[s].start();

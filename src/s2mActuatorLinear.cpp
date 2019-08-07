@@ -15,6 +15,11 @@ s2mActuatorLinear::s2mActuatorLinear(
 
 }
 
+s2mActuatorLinear::~s2mActuatorLinear()
+{
+
+}
+
 
 double s2mActuatorLinear::torqueMax(const s2mGenCoord &Q) const {
 //    std::cout << "Q[" << m_dofIdx << "] = " << Q[m_dofIdx] << std::endl;

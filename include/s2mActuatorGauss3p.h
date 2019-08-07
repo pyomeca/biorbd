@@ -20,7 +20,7 @@ class BIORBD_API s2mActuatorGauss3p : public s2mActuator
                            double qopt,
                            unsigned int dofIdx,
                            const s2mString &jointName = "");
-        ~s2mActuatorGauss3p(){}
+        virtual ~s2mActuatorGauss3p();
         virtual double torqueMax(const s2mGenCoord &Q, const s2mGenCoord &Qdot);
 
     protected:

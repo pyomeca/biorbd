@@ -11,7 +11,8 @@ class BIORBD_API s2mWrappingSphere : public s2mWrappingObject
                           const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
                           const s2mString &name = "",  // Nom du noeud
                           const s2mString &parentName = "");
-        ~s2mWrappingSphere();
+        virtual ~s2mWrappingSphere();
+
         s2mAttitude RT(s2mJoints &, const s2mGenCoord& , const bool & = true);
         virtual void wrapPoints(const s2mAttitude&, const s2mNodeMuscle&, const s2mNodeMuscle&, s2mNodeMuscle&, s2mNodeMuscle&, double* = nullptr) {} // Premier et dernier points musculaire
         virtual void wrapPoints(s2mJoints&, const s2mGenCoord&, const s2mNodeMuscle&, const s2mNodeMuscle&, s2mNodeMuscle&, s2mNodeMuscle&, double* = nullptr) {} // Premier et dernier points musculaire

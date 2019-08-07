@@ -14,6 +14,7 @@ public:
     s2mGenCoord(const Eigen::VectorXd& v);
     s2mGenCoord(unsigned int i);
     s2mGenCoord(const s2mJoints& j);
+    virtual ~s2mGenCoord();
 
     s2mGenCoord& operator=(const Eigen::VectorXd& vecX);
 

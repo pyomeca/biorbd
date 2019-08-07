@@ -21,11 +21,6 @@ s2mMuscleForce::s2mMuscleForce(const Eigen::Vector3d &force) :
     //setForce(V); // Appel récurrent
 }
 
-s2mMuscleForce::~s2mMuscleForce()
-{
-    //dtor
-}
-
 double s2mMuscleForce::norme() const
 {
     return m_force;

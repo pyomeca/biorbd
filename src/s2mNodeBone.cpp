@@ -21,13 +21,6 @@ s2mNodeBone::s2mNodeBone(const Eigen::Vector3d &v,
     //ctor
 }
 
-s2mNodeBone::~s2mNodeBone()
-{
-    //dtor
-}
-
-
-
 
 bool s2mNodeBone::isAnatomical() const
 {

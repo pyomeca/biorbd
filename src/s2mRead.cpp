@@ -35,11 +35,6 @@
     #define GetCurrentDir getcwd
 #endif
 
-s2mRead::s2mRead()
-{
-
-}
-
 void s2mRead::pwd(){
 	char c[FILENAME_MAX];
     if (GetCurrentDir(c, sizeof(c)))

@@ -14,7 +14,7 @@ class BIORBD_API s2mIMU : public s2mNodeAttitude
                     const bool& = true, // Si le marker est un marker anatomique
                     const int& = -1); // Numéro ID du parent
 
-        ~s2mIMU();
+        virtual ~s2mIMU();
         // Get and Set
         virtual bool isTechnical() const;
         virtual bool isAnatomical() const;

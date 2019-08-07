@@ -22,6 +22,11 @@ s2mGenCoord::s2mGenCoord(const s2mJoints &j) :
 
 }
 
+s2mGenCoord::~s2mGenCoord()
+{
+
+}
+
 s2mGenCoord& s2mGenCoord::operator=(const Eigen::VectorXd& vecX){
     if (this==&vecX) // check for self-assigment
         return *this;

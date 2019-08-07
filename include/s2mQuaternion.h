@@ -13,6 +13,7 @@ class BIORBD_API s2mQuaternion : public RigidBodyDynamics::Math::Quaternion
         s2mQuaternion (const Eigen::Vector4d &vec4);
         s2mQuaternion (const Eigen::Vector3d &vec4, double w);
         s2mQuaternion (double x, double y, double z, double w);
+
         s2mQuaternion& operator=(const Eigen::Vector4d& vec4);
         double w() const;
         double x() const;

@@ -8,11 +8,6 @@ s2mTau::s2mTau(const s2mJoints &j) :
 
 }
 
-s2mTau::~s2mTau()
-{
-
-}
-
 s2mTau s2mTau::timeDerivativeActivation(const s2mTau &act){
     // Implémentation de la fonction da/dt = (u-a)/tau(u,a)
     // ou tau(u,a) = t_act(0.5+1.5*a) is u>a et tau(u,a)=t_deact(0.5+1.5*a) sinon

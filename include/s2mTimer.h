@@ -7,8 +7,8 @@
 class BIORBD_API s2mTimer
 {
     public:
-    s2mTimer(bool startNow = false);
-        ~s2mTimer();
+        s2mTimer(bool startNow = false);
+        virtual ~s2mTimer();
 
         void start(); // Start a timer
         bool isStarted();

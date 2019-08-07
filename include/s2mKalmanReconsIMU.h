@@ -11,6 +11,7 @@ public:
 
     // Constructeur
     s2mKalmanReconsIMU(s2mMusculoSkeletalModel&, s2mKalmanRecons::s2mKalmanParam = s2mKalmanRecons::s2mKalmanParam(100, 0.005, 1e-10));
+    virtual ~s2mKalmanReconsIMU();
 
     // Reconstruction d'un frame
     virtual void reconstructFrame(s2mMusculoSkeletalModel &m, const std::vector<s2mAttitude> &IMUobs, s2mGenCoord *Q, s2mGenCoord *Qdot, s2mGenCoord *Qddot);

@@ -7,7 +7,7 @@ class BIORBD_API s2mTime
 {
     public:
         s2mTime(const double &timeStep, const unsigned int &nbSteps);
-        ~s2mTime();
+        virtual ~s2mTime();
 
         double time(const unsigned int &t); // Return time at index t
     protected:

@@ -21,6 +21,11 @@ s2mMuscleGeometry::s2mMuscleGeometry(const s2mNodeMuscle &o, const s2mNodeMuscle
     m_insertionInGlobal.block(0,0,3,1) = Eigen::Vector3d::Zero();
 }
 
+s2mMuscleGeometry::~s2mMuscleGeometry()
+{
+
+}
+
 
 
 /********* FONCTIONS PUBLIQUES *********/

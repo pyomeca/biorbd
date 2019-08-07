@@ -13,6 +13,7 @@ class BIORBD_API s2mMuscleGeometry
 {
     public:
         s2mMuscleGeometry(const s2mNodeMuscle &origin = s2mNodeMuscle(), const s2mNodeMuscle &insertion = s2mNodeMuscle());
+        virtual ~s2mMuscleGeometry();
 
         // Fonction a appeler avant d'appeler longueur/velocity ou autres!
         void updateKinematics(s2mJoints &model,

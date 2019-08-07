@@ -12,6 +12,11 @@ s2mMusculoSkeletalModel::s2mMusculoSkeletalModel()
 
 }
 
+s2mMusculoSkeletalModel::~s2mMusculoSkeletalModel()
+{
+
+}
+
 s2mMusculoSkeletalModel::s2mMusculoSkeletalModel(const s2mPath &path)
 {
     s2mRead::readModelFile(path, this);

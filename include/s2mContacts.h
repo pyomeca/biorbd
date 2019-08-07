@@ -14,6 +14,7 @@ class BIORBD_API s2mContacts : public RigidBodyDynamics::ConstraintSet
 {
     public:
         s2mContacts();
+        virtual ~s2mContacts();
         unsigned int AddConstraint(unsigned int body_id,
                                            const s2mNode &body_point,
                                            const s2mNode &world_normal,

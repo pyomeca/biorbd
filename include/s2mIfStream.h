@@ -12,7 +12,7 @@ class BIORBD_API s2mIfStream
     s2mIfStream(const s2mPath& path, std::ios_base::openmode mode );
     s2mIfStream(const char* path, std::ios_base::openmode mode );
     s2mIfStream( );
-    ~s2mIfStream();
+    virtual ~s2mIfStream();
 
     bool open(const s2mPath& path, std::ios_base::openmode mode );
     bool open(const char* path, std::ios_base::openmode mode  );

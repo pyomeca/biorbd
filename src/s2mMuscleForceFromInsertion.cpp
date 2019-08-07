@@ -2,15 +2,30 @@
 #include "s2mMuscleForceFromInsertion.h"
 
 s2mMuscleForceFromInsertion::s2mMuscleForceFromInsertion() :
-    s2mMuscleForce(){}
-s2mMuscleForceFromInsertion::s2mMuscleForceFromInsertion(double x, double y, double z) :
-    s2mMuscleForce(x,y,z){}
-s2mMuscleForceFromInsertion::s2mMuscleForceFromInsertion(const s2mMuscleGeometry& geo, double force) :
-    s2mMuscleForce(geo, force){}
-s2mMuscleForceFromInsertion::s2mMuscleForceFromInsertion(const Eigen::Vector3d &force) :
-    s2mMuscleForce(force){}
+    s2mMuscleForce()
+{
 
-s2mMuscleForceFromInsertion::~s2mMuscleForceFromInsertion(){}
+}
+s2mMuscleForceFromInsertion::s2mMuscleForceFromInsertion(double x, double y, double z) :
+    s2mMuscleForce(x,y,z)
+{
+
+}
+s2mMuscleForceFromInsertion::s2mMuscleForceFromInsertion(const s2mMuscleGeometry& geo, double force) :
+    s2mMuscleForce(geo, force)
+{
+
+}
+s2mMuscleForceFromInsertion::s2mMuscleForceFromInsertion(const Eigen::Vector3d &force) :
+    s2mMuscleForce(force)
+{
+
+}
+
+s2mMuscleForceFromInsertion::~s2mMuscleForceFromInsertion()
+{
+
+}
 
 
 

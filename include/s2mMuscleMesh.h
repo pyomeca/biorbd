@@ -9,7 +9,7 @@ class BIORBD_API s2mMuscleMesh : public s2mMuscleCompound
 {
     public:
         s2mMuscleMesh();
-        ~s2mMuscleMesh();
+        virtual ~s2mMuscleMesh();
 
         // Surcharge d'opérateur
         virtual s2mMuscleMesh& operator= (const s2mMuscleMesh &o);
