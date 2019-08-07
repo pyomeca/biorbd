@@ -1,5 +1,15 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mBone.h"
+#include "s2mBone.h"
+
+#include <limits.h>
+#include <rbdl/rbdl_math.h>
+#include "s2mError.h"
+#include "s2mJoints.h"
+#include "s2mAttitude.h"
+#include "s2mBoneCaracteristics.h"
+#include "s2mNode.h"
+#include "s2mBoneMesh.h"
+#include "s2mPatch.h"
 
 s2mBone::s2mBone(s2mJoints *model, const unsigned int &parent_id,
         const s2mString &seqT, const s2mString &seqR, // Séquence de Cardan pour classer les dof en rotation
@@ -188,23 +198,23 @@ void s2mBone::setPF(const int &PF){
     m_idxPF = PF;
 }
 
-s2mString s2mBone::nameDof(const unsigned int i) const {
+const s2mString &s2mBone::nameDof(const unsigned int i) const {
     // Retourne le nombre de Dof de ce segment
     s2mError::s2mAssert(i<m_nDofTrue, "Dof ouside N dof for this segment");
     return m_nomDof[i];
 }
 
 // Retourne le nom du segment
-s2mString s2mBone::name() const {
+const s2mString &s2mBone::name() const {
     return m_name;
 }
 
-s2mString s2mBone::seqT() const
+const s2mString& s2mBone::seqT() const
 {
     return m_seqT;
 }
 
-s2mString s2mBone::seqR() const
+const s2mString& s2mBone::seqR() const
 {
     return m_seqR;
 }
@@ -212,7 +222,7 @@ s2mString s2mBone::seqR() const
 s2mAttitude s2mBone::localJCS() const {
     return m_cor;
 }
-s2mBoneCaracteristics s2mBone::caract() const {
+const s2mBoneCaracteristics &s2mBone::caract() const {
     return m_caract;
 }
 
@@ -308,7 +318,7 @@ void s2mBone::setNumberOfDof(const unsigned int &nTrans, const unsigned int &nRo
 }
 
 void s2mBone::setSequence(const s2mString &seqT, const s2mString &seqR) { // Trouver les positions de x,y et z dans cette séquence
-    setNumberOfDof(seqT.length(), seqR.length());
+    setNumberOfDof(static_cast<unsigned int>(seqT.length()), static_cast<unsigned int>(seqR.length()));
     str2numSequence(seqT, seqR);
     fillSequence();
 }
@@ -351,20 +361,20 @@ void s2mBone::setJointAxis(){
     // Déclaration des dof de translation
     delete[] m_dof;
     if (m_nDof != 0){
-        m_dof = new s2mJointIntraBone[m_nDof];
+        m_dof = new s2mJoint[m_nDof];
         for (unsigned int i=0; i<m_nDofTrans; i++)
-            m_dof[i] = s2mJointIntraBone(RigidBodyDynamics::JointTypePrismatic, axis[m_dofPosition[i]]);
+            m_dof[i] = s2mJoint(RigidBodyDynamics::JointTypePrismatic, axis[m_dofPosition[i]]);
 
         // Déclaration des dof de rotation
         if (m_isQuaternion)
-            m_dof[m_nDofTrans] = s2mJointIntraBone(RigidBodyDynamics::JointTypeSpherical); // Mettre un dof en sphérique
+            m_dof[m_nDofTrans] = s2mJoint(RigidBodyDynamics::JointTypeSpherical); // Mettre un dof en sphérique
         else
             for (unsigned int i=m_nDofTrans; i<m_nDofRot+m_nDofTrans; i++)
-                m_dof[i] = s2mJointIntraBone(RigidBodyDynamics::JointTypeRevolute, axis[m_dofPosition[i]]); // Mettre les axes de rotation dans le bon ordre
+                m_dof[i] = s2mJoint(RigidBodyDynamics::JointTypeRevolute, axis[m_dofPosition[i]]); // Mettre les axes de rotation dans le bon ordre
     }
     else{
-        m_dof = new s2mJointIntraBone[1];
-        m_dof[0] = s2mJointIntraBone(RigidBodyDynamics::JointTypeFixed); // Un axe au hasard, p
+        m_dof = new s2mJoint[1];
+        m_dof[0] = s2mJoint(RigidBodyDynamics::JointTypeFixed); // Un axe au hasard, p
     }
 }
 

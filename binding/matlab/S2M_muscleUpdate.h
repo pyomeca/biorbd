@@ -5,6 +5,8 @@
 #include "s2mMusculoSkeletalModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "s2mGroupeMusculaire.h"
+#include "s2mMuscle.h"
 
 void S2M_muscleUpdate( int, mxArray *[],
                   int nrhs, const mxArray*prhs[] ){
@@ -54,7 +56,7 @@ void S2M_muscleUpdate( int, mxArray *[],
 //    }
 
     // Recueillir la matrice de points
-    std::vector<std::vector<s2mNodeMuscle> > musclePosition(getMusclePosition(prhs, 4, nPoints));
+    std::vector<std::vector<s2mNodeMuscle>> musclePosition(getMusclePosition(prhs, 4, nPoints));
 
     // Recueillir la matrice jacobienne
     std::vector<s2mMatrix> musclePointsJaco(getMusclePointsJaco(prhs, 5, nPoints, nQ));

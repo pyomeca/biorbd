@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mPatch.h"
+#include "s2mPatch.h"
 
 s2mPatch::s2mPatch(const Eigen::Vector3i& points) :
     m_patch(points)

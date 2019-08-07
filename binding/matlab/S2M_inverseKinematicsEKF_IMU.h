@@ -69,7 +69,7 @@ void S2M_inverseKinematicsEKF_IMUstep( int , mxArray *plhs[],
     s2mKalmanReconsIMU * kalman = convertMat2Ptr<s2mKalmanReconsIMU>(prhs[2]);
 
       // Recevoir la matrice des markers (Ne traite que le premier frame)
-    std::vector<std::vector<s2mAttitude> > imusOverTime = getParameterAllIMUs(prhs,3);
+    std::vector<std::vector<s2mAttitude>> imusOverTime = getParameterAllIMUs(prhs,3);
     std::vector<s2mAttitude> imus = imusOverTime[0];
 
     // Si c'est le premier frame recevoir Qinit
@@ -133,7 +133,7 @@ void S2M_inverseKinematicsEKF_IMUallInOneCall( int, mxArray *plhs[],
     s2mKalmanReconsIMU kalman(*model, s2mKalmanRecons::s2mKalmanParam(freq, noiseF, errorF));
 
     // Recevoir la matrice des imus
-    std::vector<std::vector<s2mAttitude> > imusOverTime = getParameterAllIMUs(prhs,2);
+    std::vector<std::vector<s2mAttitude>> imusOverTime = getParameterAllIMUs(prhs,2);
     unsigned int nFrames(static_cast<unsigned int>(imusOverTime.size()));
 
     // Recevoir Qinit

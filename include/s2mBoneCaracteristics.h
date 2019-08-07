@@ -1,9 +1,9 @@
 #ifndef S2M_BONE_CARACTERISTICS_H
 #define S2M_BONE_CARACTERISTICS_H
-    #include "biorbdConfig.h"
-    #include <Eigen/Dense>
-    #include "s2mBoneMesh.h"
-    #include <rbdl/rbdl.h>
+
+#include <rbdl/Body.h>
+#include "biorbdConfig.h"
+#include "s2mBoneMesh.h"
 
 class BIORBD_API s2mBoneCaracteristics : public RigidBodyDynamics::Body
 {
@@ -13,22 +13,18 @@ class BIORBD_API s2mBoneCaracteristics : public RigidBodyDynamics::Body
                               const s2mNode &com, // Center of Mass
                               const RigidBodyDynamics::Math::Matrix3d &inertia, // Inertia matrix
                               const s2mBoneMesh &mesh = s2mBoneMesh()) ; // position des meshings de l'os
-        ~s2mBoneCaracteristics();
+        virtual ~s2mBoneCaracteristics();
 
         // Set and Get
-        virtual double length() const { return m_length; }
-        double mass() const {return mMass;}
-        void setLength(const double &val) { m_length = val; }
-        s2mBoneMesh mesh() const;
-        Eigen::Matrix3d inertia() const {return mInertia;}
+        double length() const;
+        double mass() const;
+        void setLength(const double &val);
+        const s2mBoneMesh& mesh() const;
+        const Eigen::Matrix3d& inertia() const;
 
     protected:
-    private:
-//        double m_mass;
         double m_length;
         s2mBoneMesh m_mesh;
-//        Eigen::Vector3d m_centerOfMass;
-//        Eigen::Matrix3d m_matrixOfInertia;
 };
 
 #endif // S2M_BONE_CARACTERISTICS_H

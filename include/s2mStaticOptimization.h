@@ -1,18 +1,15 @@
 #ifndef S2M_STATIC_OPTIMIZATION_H
 #define S2M_STATIC_OPTIMIZATION_H
 
-#include "biorbdConfig.h"
-#include "s2mGenCoord.h"
-#include "s2mMusculoSkeletalModel.h"
-#include "s2mMuscles.h"
-#include "s2mVector.h"
-#include <Eigen/Dense>
-#include <IpIpoptApplication.hpp>
+#include <vector>
 #include <IpTNLP.hpp>
-#include "s2mStaticOptimizationIpopt.h"
-#include "s2mStaticOptimizationIpoptLinearized.h"
+#include "biorbdConfig.h"
+#include "s2mVector.h"
 
-
+class s2mMusculoSkeletalModel;
+class s2mGenCoord;
+class s2mTau;
+class s2mMuscleStateDynamics;
 class BIORBD_API s2mStaticOptimization
 {
     public:
@@ -31,7 +28,7 @@ class BIORBD_API s2mStaticOptimization
                 const s2mGenCoord& Q,
                 const s2mGenCoord& Qdot,
                 const s2mTau& tauTarget,
-                const std::vector<s2mMuscleStateActual>& initialActivationGuess,
+                const std::vector<s2mMuscleStateDynamics>& initialActivationGuess,
                 unsigned int pNormFactor = 2,
                 bool useResidualTorque = true,
                 int verbose = 0
@@ -52,7 +49,7 @@ class BIORBD_API s2mStaticOptimization
                 const std::vector<s2mGenCoord>& allQ,
                 const std::vector<s2mGenCoord>& allQdot,
                 const std::vector<s2mTau>& allTauTarget,
-                const std::vector<s2mMuscleStateActual>& initialActivationGuess,
+                const std::vector<s2mMuscleStateDynamics>& initialActivationGuess,
                 unsigned int pNormFactor = 2,
                 bool useResidualTorque = true,
                 int verbose = 0

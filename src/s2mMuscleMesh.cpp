@@ -1,5 +1,8 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleMesh.h"
+#include "s2mMuscleMesh.h"
+
+#include "s2mError.h"
+#include "s2mMuscleHillType.h"
 
 s2mMuscleMesh::s2mMuscleMesh()
 {
@@ -30,7 +33,7 @@ void s2mMuscleMesh::assignValue(s2mMuscle *&new_m, s2mMuscle *&old_m){
 }
 
 // Get sur une muscle line
-s2mMuscle& s2mMuscleMesh::getMuscleLine(const unsigned int &idx){
+const s2mMuscle &s2mMuscleMesh::getMuscleLine(const unsigned int &idx) const{
     s2mError::s2mAssert(idx<m_nbMuscles, "Index out of bounds for number of muscles");
     return *m_muscles[idx];
 

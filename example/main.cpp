@@ -1,8 +1,11 @@
 #include <iostream>
 #include "s2mMusculoSkeletalModel.h"
 #include "s2mStaticOptimization.h"
+#include "s2mGenCoord.h"
+#include "s2mGroupeMusculaire.h"
+#include "s2mMuscleHillTypeThelenFatigable.h"
+#include "s2mMuscleFatigueDynamicStateXia.h"
 #include <memory>
-#include "IpoptTestMain.h"
 #include <cstdlib>
 #include <random>
 #define BUILD_SANDBOX
@@ -25,7 +28,7 @@ int main()
     }
     model.updateMuscles(model, Q, QDot, true);
 
-    s2mMuscleStateActual emg(0, 1);
+    s2mMuscleStateDynamics emg(0, 1);
     // METHOD 1
     {
         std::cout << "Method 1" << std::endl;
@@ -172,9 +175,9 @@ int main()
     //QDDot[1] = 9.74539;
 
 
-//    std::vector<s2mMuscleStateActual> state;
+//    std::vector<s2mMuscleStateDynamics> state;
 //    for (unsigned int i = 0; i<m3.nbMuscleTotal(); ++i){
-//        state.push_back(s2mMuscleStateActual(0, 0.1));
+//        state.push_back(s2mMuscleStateDynamics(0, 0.1));
 //    }
 
 //    s2mTau tau_calcul = m3.muscularJointTorque(m3, state, true, &Q, &QDot);
@@ -186,7 +189,7 @@ int main()
 //    RigidBodyDynamics::InverseDynamics(m3, Q, QDot, QDDot, tau_inv);
 //    std::cout << "tau_inv :\n" << tau_inv << std::endl;
 
-//    std::vector<s2mMuscleStateActual> State(m3.nbMuscleTotal());
+//    std::vector<s2mMuscleStateDynamics> State(m3.nbMuscleTotal());
 //    for (unsigned int i = 0; i<m3.nbMuscleTotal(); ++i){
 //        State[i].setActivation(0.3925);
 //    }

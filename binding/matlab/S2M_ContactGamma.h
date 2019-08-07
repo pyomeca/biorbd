@@ -2,6 +2,7 @@
 #define MATLAB_S2M_CONTACT_GAMMA_H
 
 #include <mex.h>
+#include <rbdl/Constraints.h>
 #include "s2mMusculoSkeletalModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
@@ -22,9 +23,9 @@ void S2M_ContactGamma( int, mxArray *plhs[],
     unsigned int nContacts = model->nContacts();
 
     Eigen::MatrixXd G_tp(Eigen::MatrixXd::Zero(nContacts,model->nbQ()));
-    RigidBodyDynamics::CalcConstraintsJacobian(*model, Q, model->getConstraints(*model), G_tp, true);
+    RigidBodyDynamics::CalcConstraintsJacobian(*model, Q, model->getConstraints_nonConst(*model), G_tp, true);
 
-    RigidBodyDynamics::Math::VectorNd Gamma = model->getConstraints(*model).gamma;
+    RigidBodyDynamics::Math::VectorNd Gamma = model->getConstraints_nonConst(*model).gamma;
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( nContacts, 1, mxREAL);

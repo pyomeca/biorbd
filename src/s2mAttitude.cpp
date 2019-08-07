@@ -1,5 +1,10 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mAttitude.h"
+#include "s2mAttitude.h"
+
+#include <iostream>
+#include "s2mError.h"
+#include "s2mString.h"
+#include "s2mNode.h"
 
 s2mAttitude::s2mAttitude(const Eigen::Matrix4d& m) :
     Eigen::Matrix4d(m)

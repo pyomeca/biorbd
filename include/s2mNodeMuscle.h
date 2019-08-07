@@ -1,11 +1,10 @@
 #ifndef S2M_NODE_MUSCLE_H
 #define S2M_NODE_MUSCLE_H
+
 #include <Eigen/Dense>
-#include "s2mNode.h"
 #include "biorbdConfig.h"
+#include "s2mNode.h"
 
-
-class s2mNode;
 class BIORBD_API s2mNodeMuscle : public s2mNode
 {
     public:
@@ -14,10 +13,6 @@ class BIORBD_API s2mNodeMuscle : public s2mNode
                       const s2mString& = ""); //  Nom du parent
 
         virtual ~s2mNodeMuscle();
-        // Get and Set
-
-    protected:
-    private:
 
 };
 

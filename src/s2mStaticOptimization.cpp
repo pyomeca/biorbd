@@ -1,6 +1,11 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mStaticOptimization.h"
+#include "s2mStaticOptimization.h"
 
+#include <IpIpoptApplication.hpp>
+#include "s2mMusculoSkeletalModel.h"
+#include "s2mError.h"
+#include "s2mMuscleStateDynamics.h"
+#include "s2mStaticOptimizationIpoptLinearized.h"
 
 s2mStaticOptimization::s2mStaticOptimization(s2mMusculoSkeletalModel& model,
         const s2mGenCoord &Q,
@@ -35,7 +40,7 @@ s2mStaticOptimization::s2mStaticOptimization(
         const s2mGenCoord &Q,
         const s2mGenCoord &Qdot,
         const s2mTau &tauTarget,
-        const std::vector<s2mMuscleStateActual> &initialActivationGuess,
+        const std::vector<s2mMuscleStateDynamics> &initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
         int verbose
@@ -86,7 +91,7 @@ s2mStaticOptimization::s2mStaticOptimization(s2mMusculoSkeletalModel& model,
         const std::vector<s2mGenCoord> &allQ,
         const std::vector<s2mGenCoord> &allQdot,
         const std::vector<s2mTau> &allTauTarget,
-        const std::vector<s2mMuscleStateActual> &initialActivationGuess,
+        const std::vector<s2mMuscleStateDynamics> &initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
         int verbose):

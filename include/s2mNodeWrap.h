@@ -1,9 +1,9 @@
 #ifndef S2M_NODE_WRAP_H
 #define S2M_NODE_WRAP_H
-#include <Eigen/Dense>
-#include "s2mNode.h"
-#include "biorbdConfig.h"
 
+#include <Eigen/Dense>
+#include "biorbdConfig.h"
+#include "s2mNode.h"
 
 class BIORBD_API s2mNodeWrap : public s2mNode
 {
@@ -13,10 +13,6 @@ class BIORBD_API s2mNodeWrap : public s2mNode
                       const s2mString& = ""); //  Nom du parent
 
         virtual ~s2mNodeWrap();
-        // Get and Set
-
-    protected:
-    private:
 
 };
 

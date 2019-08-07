@@ -1,15 +1,28 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mVector.h"
+#include "s2mVector.h"
 
+#include "s2mError.h"
+#include "s2mString.h"
 
-s2mVector::s2mVector() {}
+s2mVector::s2mVector()
+{
 
-s2mVector::s2mVector(const Eigen::VectorXd &v) : Eigen::VectorXd(v) {}
+}
+s2mVector::s2mVector(const Eigen::VectorXd &v) :
+    Eigen::VectorXd(v)
+{
 
-s2mVector::s2mVector(const s2mVector &v) : Eigen::VectorXd(v) {}
+}
+s2mVector::s2mVector(const s2mVector &v) :
+    Eigen::VectorXd(v)
+{
 
-s2mVector::s2mVector(unsigned int i) : Eigen::VectorXd(i) {}
+}
+s2mVector::s2mVector(unsigned int i) :
+    Eigen::VectorXd(i)
+{
 
+}
 double s2mVector::norm(unsigned int p, bool skipRoot){
     s2mError::s2mAssert(p >= 2, "p must be superior or equal to 2");
 
@@ -50,10 +63,12 @@ s2mVector s2mVector::norm_gradient(unsigned int p, bool skipRoot){
     }
 }
 
+s2mVector::~s2mVector()
+{
 
+}
 
-s2mVector::~s2mVector() {}
-
-Eigen::VectorXd s2mVector::vector() const{
+Eigen::VectorXd s2mVector::vector() const
+{
     return  this->block(0,0,this->rows(),1);
 }

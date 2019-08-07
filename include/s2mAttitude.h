@@ -1,14 +1,13 @@
 #ifndef S2M_ATTITUDE_H
 #define S2M_ATTITUDE_H
 
-    #include "biorbdConfig.h"
-    #include "s2mError.h"
-    #include "s2mString.h"
-    #include <Eigen/Dense>
-    #include "rbdl/rbdl.h"
-    #include <iostream>
-    #include "s2mNode.h"
+#include <vector>
+#include <Eigen/Dense>
+#include <rbdl/rbdl_math.h>
+#include "biorbdConfig.h"
+
 class s2mNode;
+class s2mString;
 class BIORBD_API s2mAttitude : public Eigen::Matrix4d
 {
     public:
@@ -38,7 +37,7 @@ class BIORBD_API s2mAttitude : public Eigen::Matrix4d
         static s2mAttitude mean(const std::vector<s2mAttitude>&); // Moyenne des matrices 4x4
     protected:
         Eigen::Vector4d expand3dTo4d(const Eigen::Vector3d&);
-    private:
+
 };
 std::ostream& operator<<(std::ostream& os, const s2mAttitude &a);
 

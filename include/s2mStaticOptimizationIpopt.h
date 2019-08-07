@@ -1,19 +1,15 @@
 #ifndef S2M_STATIC_OPTIMIZATION_IPOPT_H
 #define S2M_STATIC_OPTIMIZATION_IPOPT_H
 
+#include <Eigen/Dense>
 #include <IpIpoptApplication.hpp>
-#include <iostream>
-#include "IpTNLP.hpp"
+#include <IpTNLP.hpp>
 #include "biorbdConfig.h"
 #include "s2mGenCoord.h"
-#include "s2mMusculoSkeletalModel.h"
-#include "s2mMuscles.h"
-#include "s2mVector.h"
-#include "s2mMuscleStateActual.h"
-#include <IpSmartPtr.hpp>
+#include "s2mTau.h"
 
-#include <Eigen/Dense>
-
+class s2mMuscleStateDynamics;
+class s2mMusculoSkeletalModel;
 class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
 {
     public:
@@ -137,7 +133,7 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
         s2mTau m_tauTarget;
         s2mVector m_tauResidual;
         double m_tauPonderation;
-        std::vector<s2mMuscleStateActual> m_states;
+        std::vector<s2mMuscleStateDynamics> m_states;
         unsigned int m_pNormFactor;
         int m_verbose;
         s2mVector m_finalSolution;

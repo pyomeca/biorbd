@@ -1,8 +1,8 @@
 #ifndef S2M_IMU_H
 #define S2M_IMU_H
-    #include "biorbdConfig.h"
-    #include <Eigen/Dense>
-    #include "s2mNodeAttitude.h"
+
+#include "biorbdConfig.h"
+#include "s2mNodeAttitude.h"
 
 class BIORBD_API s2mIMU : public s2mNodeAttitude
 { 
@@ -14,7 +14,7 @@ class BIORBD_API s2mIMU : public s2mNodeAttitude
                     const bool& = true, // Si le marker est un marker anatomique
                     const int& = -1); // Numéro ID du parent
 
-        ~s2mIMU();
+        virtual ~s2mIMU();
         // Get and Set
         virtual bool isTechnical() const;
         virtual bool isAnatomical() const;
@@ -23,7 +23,6 @@ class BIORBD_API s2mIMU : public s2mNodeAttitude
         bool m_technical; // If a marker is a technical marker
         bool m_anatomical; // It marker is a anatomical marker
         int m_id;
-    private:
 
 };
 

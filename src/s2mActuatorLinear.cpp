@@ -1,5 +1,7 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mActuatorLinear.h"
+#include "s2mActuatorLinear.h"
+
+#include "s2mGenCoord.h"
 
 s2mActuatorLinear::s2mActuatorLinear(
     int direction,
@@ -9,6 +11,11 @@ s2mActuatorLinear::s2mActuatorLinear(
     s2mActuator(direction, dofIdx, jointName),
     m_m(pente),
     m_b(T0)
+{
+
+}
+
+s2mActuatorLinear::~s2mActuatorLinear()
 {
 
 }

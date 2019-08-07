@@ -1,29 +1,17 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mIntegrator.h"
+#include "s2mIntegrator.h"
+
+#include <Eigen/Dense>
+#include <boost/numeric/odeint.hpp>
+#include <rbdl/Dynamics.h>
+#include "s2mJoints.h"
+#include "s2mError.h"
+#include "s2mString.h"
+#include "s2mGenCoord.h"
 
 s2mIntegrator::s2mIntegrator(){
 
 }
-
-//s2mIntegrator::s2mIntegrator(const s2mIntegrator& i){
-//    m_nbre = i.m_nbre; // Nombre d'élément dans l'intégration
-//    m_steps = i.m_steps; // Nombre de step pour l'intégration
-//    m_model = i.m_model; // Model dans lequel il faut appeler forwardDynamics
-
-//    // Déclarer un observeur
-//    m_x_vec = i.m_x_vec;
-//    m_times = i.m_times;
-//    m_u = i.m_u; // Effecteurs
-
-//}
-
-s2mIntegrator::~s2mIntegrator()
-{
-//    delete[] m_dxdt;
-    //dtor
-}
-
-
 
 void s2mIntegrator::operator() ( const state_type &x , state_type &dxdt , const double ){
     // Équation différentielle : x/xdot => xdot/xddot
@@ -66,7 +54,7 @@ s2mGenCoord s2mIntegrator::getX(const unsigned int &idx){
 
 void s2mIntegrator::integrate(RigidBodyDynamics::Model *model, const s2mGenCoord &v, const Eigen::VectorXd& u, const double &t0, const double &tEnd, const double &time_step){
     // Stocker le nombre d'élément à traiter
-    m_nbre = v.rows()/2; // Q et Qdot
+    m_nbre = static_cast<unsigned int>(v.rows())/2; // Q et Qdot
     m_u = u; // Copier les effecteurs
     m_model = model;
 
@@ -77,5 +65,5 @@ void s2mIntegrator::integrate(RigidBodyDynamics::Model *model, const s2mGenCoord
 
     // Choix de l'algorithme et intégration
     boost::numeric::odeint::runge_kutta4< state_type > stepper;
-    m_steps = boost::numeric::odeint::integrate_const( stepper, (*this), x, t0, tEnd, time_step, push_back_state_and_time( m_x_vec , m_times ));
+    m_steps = static_cast<unsigned int>(boost::numeric::odeint::integrate_const( stepper, (*this), x, t0, tEnd, time_step, push_back_state_and_time( m_x_vec , m_times )));
 }

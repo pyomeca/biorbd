@@ -1,23 +1,20 @@
 #ifndef S2M_ACTUATORS_H
 #define S2M_ACTUATORS_H
 
-#include <memory>
 #include <vector>
+#include <memory>
 #include "biorbdConfig.h"
-#include "s2mError.h"
 #include "s2mActuator.h"
-#include "s2mActuatorGauss3p.h"
-#include "s2mActuatorGauss6p.h"
-#include "s2mActuatorConstant.h"
-#include "s2mActuatorLinear.h"
-#include "s2mTau.h"
 
+class s2mJoints;
+class s2mGenCoord;
+class s2mTau;
 class BIORBD_API s2mActuators
 {
     public:
         s2mActuators();
         s2mActuators(const s2mActuators&);
-        ~s2mActuators();
+        virtual ~s2mActuators();
 
         void addActuator(const s2mJoints&, s2mActuator &a);
         void closeActuator(s2mJoints& m);
@@ -29,14 +26,14 @@ class BIORBD_API s2mActuators
         s2mTau torque(const s2mJoints&, const s2mGenCoord& a, const s2mGenCoord& Q, const s2mGenCoord &Qdot);
 
         // Get and set
-        virtual std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator> > actuator(unsigned int dof);
+        virtual std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator>> actuator(unsigned int dof);
         virtual std::shared_ptr<s2mActuator> actuator(unsigned int dof, unsigned int idx);
-        unsigned int nbActuators() const {return m_all.size();}
+        unsigned int nbActuators() const;
 
     protected:
-        std::vector<std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator> > > m_all; // Tous les actuators réunis / pair (+ ou -)
+        std::vector<std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator>>> m_all; // Tous les actuators réunis / pair (+ ou -)
         bool * m_isDofSet;
         bool m_isClose;
-private:
+
 };
 #endif // S2M_ACTUATORS_H

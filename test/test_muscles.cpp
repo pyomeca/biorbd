@@ -1,6 +1,66 @@
 #include <iostream>
 #include <gtest/gtest.h>
+
 #include "s2mMusculoSkeletalModel.h"
+#include "s2mMuscle.h"
+#include "s2mGroupeMusculaire.h"
+#include "s2mMuscleHillTypeThelenFatigable.h"
+#include "s2mMuscleFatigueDynamicStateXia.h"
+
+static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
+static unsigned int muscleGroupForMuscleJacobian(1);
+static unsigned int muscleForMuscleJacobian(1);
+TEST(MuscleJacobian, jacobian){
+    s2mMusculoSkeletalModel model(modelPathForMuscleJacobian);
+    s2mGenCoord Q(model);
+    Q.setZero();
+
+    // Force computation of geometry
+    std::shared_ptr<s2mMuscle> muscle(model.muscleGroup_nonConst(muscleForMuscleJacobian).muscle_nonConst(muscleGroupForMuscleJacobian));
+    EXPECT_THROW(muscle->position().jacobian(), std::runtime_error);
+    model.updateMuscles(model, Q, true);
+
+    unsigned int nRows(3 * (muscle->pathChanger().nbObjects() + 2));
+    s2mMatrix jacoRef(nRows, model.nbQ());
+    // Here we provide emperical values that we have confidence in (TODO finite differencing could be better)
+    jacoRef(0, 0) = 0.136691;    jacoRef(0, 1) = 0;
+    jacoRef(1, 0) = -0.00889905; jacoRef(1, 1) = 0;
+    jacoRef(2, 0) = 0.00808536;  jacoRef(2, 1) = 0;
+    jacoRef(3, 0) = 0.151102;    jacoRef(3, 1) = 0;
+    jacoRef(4, 0) = -0.0266009;  jacoRef(4, 1) = 0;
+    jacoRef(5, 0) = 0.00897639;  jacoRef(5, 1) = 0;
+    jacoRef(6, 0) = 0.225948;    jacoRef(6, 1) = 0;
+    jacoRef(7, 0) = -0.0325014;  jacoRef(7, 1) = 0;
+    jacoRef(8, 0) = 0.013406;    jacoRef(8, 1) = 0;
+    jacoRef(9, 0) = 0.267077;    jacoRef(9, 1) = 0;
+    jacoRef(10, 0) = -0.0181112; jacoRef(10, 1) = 0;
+    jacoRef(11, 0) = 0.0157994;  jacoRef(11, 1) = 0;
+    jacoRef(12, 0) = 0.279423;   jacoRef(12, 1) = -0.0104688;
+    jacoRef(13, 0) = -0.0165429; jacoRef(13, 1) = -0.02182;
+    jacoRef(14, 0) = 0.0165243;  jacoRef(14, 1) = 0.00131826;
+
+    // Compare with computed values
+    EXPECT_LT( (muscle->position().jacobian() - jacoRef).squaredNorm(), 1e-6);
+}
+TEST(MuscleJacobian, jacobianLength){
+    s2mMusculoSkeletalModel model(modelPathForMuscleJacobian);
+    s2mGenCoord Q(model);
+    Q.setZero();
+    model.updateMuscles(model, Q, true);
+
+    unsigned int nRows(model.nbMuscleTotal());
+    s2mMatrix jacoRef(nRows, model.nbQ());
+    // Here we provide emperical values that we have confidence in (TODO finite differencing could be better)
+    jacoRef(0, 0) = 0.0374639;      jacoRef(0, 1) = 0.0200953;
+    jacoRef(1, 0) = -0.0166515;     jacoRef(1, 1) = -0.00937993;
+    jacoRef(2, 0) = -0.00743218;    jacoRef(2, 1) = -0.00937993;
+    jacoRef(3, 0) = -1.11881e-17;   jacoRef(3, 1) = 0.0200953;
+    jacoRef(4, 0) = -2.95716e-17;   jacoRef(4, 1) = 0.0200953;
+    jacoRef(5, 0) = -1.05977e-18;   jacoRef(5, 1) = 0.00262888;
+
+    // Compare with computed values
+    EXPECT_LT( (model.musclesLengthJacobian(model, Q) - jacoRef).squaredNorm(), 1e-6);
+}
 
 static std::string modelPathForXiaDerivativeTest("models/arm26.bioMod");
 static unsigned int muscleGroupForXiaDerivativeTest(0);
@@ -15,8 +75,6 @@ static double expectedRestingDotForXiaDerivativeTest(-1.0);
 static double positiveFibersQuantityForFatigueXiaSetStateLimitsTest(1.0);
 static double negativeFibersQuantityForFatigueXiaSetStateLimitsTest(-1.0);
 static double excessiveFibersQuantityForFatigueXiaSetStateLimitsTest(1.5);
-
-
 TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
     // Prepare the model
     s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
@@ -44,7 +102,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
         EXPECT_DOUBLE_EQ(fatigueModel->restingFibersDot(), 0);
 
         // Apply the derivative
-        s2mMuscleStateActual emg(0, activationEmgForXiaDerivativeTest); // Set target
+        s2mMuscleStateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
         fatigueModel->setState(currentActiveFibersForXiaDerivativeTest,
                                currentFatiguedFibersForXiaDerivativeTest,
                                currentRestingFibersForXiaDerivativeTest);
@@ -88,7 +146,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
         EXPECT_NE(muscle, nullptr); // Expected that the cast works
 
         // Apply the derivative
-        s2mMuscleStateActual emg(0, activationEmgForXiaDerivativeTest); // Set target
+        s2mMuscleStateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
         muscle->fatigueState(currentActiveFibersForXiaDerivativeTest,
                              currentFatiguedFibersForXiaDerivativeTest,
                              currentRestingFibersForXiaDerivativeTest);
@@ -134,7 +192,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
         EXPECT_DOUBLE_EQ(fatigueModel.restingFibersDot(), 0);
 
         // Apply the derivative
-        s2mMuscleStateActual emg(0, activationEmgForXiaDerivativeTest); // Set target
+        s2mMuscleStateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
         fatigueModel.setState(currentActiveFibersForXiaDerivativeTest,
                               currentFatiguedFibersForXiaDerivativeTest,
                               currentRestingFibersForXiaDerivativeTest);

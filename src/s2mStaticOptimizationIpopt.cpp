@@ -1,5 +1,12 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mStaticOptimizationIpopt.h"
+#include "s2mStaticOptimizationIpopt.h"
+
+#include <iostream>
+#include <iomanip>
+#include "s2mMusculoSkeletalModel.h"
+#include "s2mError.h"
+#include "s2mMuscleStateDynamics.h"
+#include "s2mMatrix.h"
 
 s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
         s2mMusculoSkeletalModel &model,
@@ -26,7 +33,7 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
     m_tauTarget(tauTarget),
     m_tauResidual(Eigen::VectorXd::Zero(m_nTau)),
     m_tauPonderation(1000),
-    m_states(std::vector<s2mMuscleStateActual>(m_nMus)),
+    m_states(std::vector<s2mMuscleStateDynamics>(m_nMus)),
     m_pNormFactor(pNormFactor),
     m_verbose(verbose),
     m_finalSolution(s2mVector(m_nMus)),
@@ -202,12 +209,12 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
         s2mTau tauMusc = m_model.muscularJointTorque(m_model, m_states, false, &m_Q, &m_Qdot);
         unsigned int k(0);
         for( unsigned int j = 0; j < m_nMus; ++j ){
-            std::vector<s2mMuscleStateActual> stateEpsilon;
+            std::vector<s2mMuscleStateDynamics> stateEpsilon;
             for (unsigned int i = 0; i < m_nMus; ++i){
                 unsigned int delta(0);
                 if (i == j)
                     delta = 1;
-                stateEpsilon.push_back(s2mMuscleStateActual(0, m_activations[i]+delta*m_eps));
+                stateEpsilon.push_back(s2mMuscleStateDynamics(0, m_activations[i]+delta*m_eps));
             }
             s2mTau tauCalculEpsilon = m_model.muscularJointTorque(m_model, stateEpsilon, false, &m_Q, &m_Qdot);
             for( Ipopt::Index i = 0; i < m; i++ ){

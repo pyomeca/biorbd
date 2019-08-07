@@ -1,5 +1,8 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mBoneCaracteristics.h"
+#include "s2mBoneCaracteristics.h"
+
+#include "s2mNode.h"
+#include "s2mPatch.h"
 
 s2mBoneCaracteristics::s2mBoneCaracteristics() :
     Body(),
@@ -17,11 +20,27 @@ s2mBoneCaracteristics::s2mBoneCaracteristics(const double &mass,
 {
 }
 
-s2mBoneMesh s2mBoneCaracteristics::mesh() const {
+const s2mBoneMesh &s2mBoneCaracteristics::mesh() const {
     return m_mesh;
+}
+
+const Eigen::Matrix3d &s2mBoneCaracteristics::inertia() const {
+    return mInertia;
 }
 
 s2mBoneCaracteristics::~s2mBoneCaracteristics()
 {
     //dtor
+}
+
+double s2mBoneCaracteristics::length() const {
+    return m_length;
+}
+
+double s2mBoneCaracteristics::mass() const {
+    return mMass;
+}
+
+void s2mBoneCaracteristics::setLength(const double &val) {
+    m_length = val;
 }

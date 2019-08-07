@@ -1,5 +1,9 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleFatigueDynamicStateXia.h"
+#include "s2mMuscleFatigueDynamicStateXia.h"
+
+#include <cmath>
+#include "s2mMuscleCaracteristics.h"
+#include "s2mMuscleStateDynamics.h"
 
 s2mMuscleFatigueDynamicStateXia::s2mMuscleFatigueDynamicStateXia(
         double active,
@@ -16,9 +20,9 @@ s2mMuscleFatigueDynamicStateXia::s2mMuscleFatigueDynamicStateXia(const std::shar
 
 }
 
-void s2mMuscleFatigueDynamicStateXia::timeDerivativeState(const s2mMuscleStateActual &EMG, const s2mMuscleCaracteristics &caract){
+void s2mMuscleFatigueDynamicStateXia::timeDerivativeState(const s2mMuscleStateDynamics &emg, const s2mMuscleCaracteristics &caract){
     // Getting the command
-    double targetCommand(EMG.activation());
+    double targetCommand(emg.activation());
     double command(0);
     if (m_activeFibers < targetCommand){
         if (m_restingFibers > targetCommand - m_activeFibers){
@@ -34,7 +38,7 @@ void s2mMuscleFatigueDynamicStateXia::timeDerivativeState(const s2mMuscleStateAc
     m_activeFibersDot = command - caract.fatigueParameters().fatigueRate()*m_activeFibers;
     m_restingFibersDot = -command + caract.fatigueParameters().recoveryRate()*m_fatiguedFibers;
     m_fatiguedFibersDot = caract.fatigueParameters().fatigueRate()*m_activeFibers - caract.fatigueParameters().recoveryRate()*m_fatiguedFibers;
-    s2mError::s2mAssert(abs(m_activeFibersDot + m_restingFibersDot + m_fatiguedFibersDot) <= 1e-7, "Sum of time derivates of fatigue states must be equal to 0");
+    s2mError::s2mAssert(fabs(m_activeFibersDot + m_restingFibersDot + m_fatiguedFibersDot) <= 1e-7, "Sum of time derivates of fatigue states must be equal to 0");
 }
 
 void s2mMuscleFatigueDynamicStateXia::setType()

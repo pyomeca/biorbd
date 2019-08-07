@@ -19,7 +19,7 @@ void S2M_ProjectPoint( int, mxArray *plhs[],
     std::vector<s2mGenCoord> Qall = getParameterQ(prhs, 2, nQ);
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
-    std::vector<std::vector<Eigen::Vector3d> > markersOverTime = getParameterAllMarkers(prhs,3);
+    std::vector<std::vector<Eigen::Vector3d>> markersOverTime = getParameterAllMarkers(prhs,3);
 
     unsigned int nFrames(static_cast<unsigned int>(markersOverTime.size()));
     if (Qall.size()!=nFrames)

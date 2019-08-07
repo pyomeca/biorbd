@@ -1,10 +1,14 @@
 #ifndef MATLAB_PROCESS_ARGUMENTS_H
 #define MATLAB_PROCESS_ARGUMENTS_H
 #include <mex.h>
-#include "s2mNodeMuscle.h"
 #include "s2mGenCoord.h"
-#include "s2mMuscleStateActual.h"
-#include "s2mMuscleStateActualBuchanan.h"
+#include "s2mTau.h"
+#include "s2mBone.h"
+#include "s2mIMU.h"
+#include "s2mNodeBone.h"
+#include "s2mNodeMuscle.h"
+#include "s2mMuscleStateDynamics.h"
+#include "s2mMuscleStateDynamicsBuchanan.h"
 
 void checkNombreInputParametres(int nrhs, int min, int max, std::string message = ""){
     if (nrhs < min){
@@ -17,7 +21,7 @@ void checkNombreInputParametres(int nrhs, int min, int max, std::string message 
     }
 }
 
-std::vector<std::vector<Eigen::Vector3d> > getParameterAllMarkers(const mxArray*prhs[], unsigned int idx, int nMark=-1){
+std::vector<std::vector<Eigen::Vector3d>> getParameterAllMarkers(const mxArray*prhs[], unsigned int idx, int nMark=-1){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -62,7 +66,7 @@ std::vector<std::vector<Eigen::Vector3d> > getParameterAllMarkers(const mxArray*
 
 
     // Créer la sortie
-    std::vector<std::vector<Eigen::Vector3d> > markersOverTime;
+    std::vector<std::vector<Eigen::Vector3d>> markersOverTime;
 
     // Stocker les valeurs dans le format de sortie
     unsigned int cmp(0);
@@ -82,7 +86,7 @@ std::vector<std::vector<Eigen::Vector3d> > getParameterAllMarkers(const mxArray*
     // Retourner la matrice
     return markersOverTime;
 }
-std::vector<std::vector<s2mAttitude> > getParameterAllIMUs(const mxArray*prhs[], unsigned int idx){
+std::vector<std::vector<s2mAttitude>> getParameterAllIMUs(const mxArray*prhs[], unsigned int idx){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -127,7 +131,7 @@ std::vector<std::vector<s2mAttitude> > getParameterAllIMUs(const mxArray*prhs[],
     double *imus = mxGetPr(prhs[idx]);
 
     // Créer la sortie
-    std::vector<std::vector<s2mAttitude> > imuOverTime;
+    std::vector<std::vector<s2mAttitude>> imuOverTime;
 
     // Stocker les valeurs dans le format de sortie
     for (unsigned int i=0; i<nFrames; ++i){
@@ -260,7 +264,7 @@ std::vector<s2mTau> getParameterTau(const mxArray*prhs[], unsigned int idx, unsi
     return AllTau;
 }
 
-std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> > getForcePlate(const mxArray*prhs[], unsigned int idx){
+std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> getForcePlate(const mxArray*prhs[], unsigned int idx){
     if (!(mxIsDouble(prhs[idx]))) {
         mexErrMsgIdAndTxt( "MATLAB:findnz:invalidInputType",
                            "Argument 6 must be of type double.");
@@ -284,7 +288,7 @@ std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> > getForcePlate(
     double *pf = mxGetPr(prhs[idx]); // Matrice des plateforme de force
 
     // stockage des plateformes
-    std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector> > PF;
+    std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> PF;
     unsigned int cmp(0);
     for (unsigned int j=0; j<timeStamp; ++j){
         std::vector<RigidBodyDynamics::Math::SpatialVector> PF_tp;
@@ -399,7 +403,7 @@ bool isStateExist(const mxArray*prhs[], unsigned int nMus, int idx, bool &isTher
     return isThere;
 }
 
-std::vector<std::vector<s2mMuscleStateActual> > getParameterMuscleState(const mxArray*prhs[], int idxExcitation, int idxActivation, unsigned int nMus){
+std::vector<std::vector<s2mMuscleStateDynamics>> getParameterMuscleState(const mxArray*prhs[], int idxExcitation, int idxActivation, unsigned int nMus){
     // Get the number of frames in the input argument
     // Regarde ce qui se passe pour l'excitation
     bool isThereExcitation(false);
@@ -438,18 +442,18 @@ std::vector<std::vector<s2mMuscleStateActual> > getParameterMuscleState(const mx
 
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    std::vector<std::vector<s2mMuscleStateActual> > States;
+    std::vector<std::vector<s2mMuscleStateDynamics>> States;
     for (unsigned int j=0; j<nFramesTotal; ++j){
-        std::vector<s2mMuscleStateActual> States_tp;
+        std::vector<s2mMuscleStateDynamics> States_tp;
         for (unsigned int i=0; i<nMus; i++)
             if (isThereExcitation && isThereActivation){
-                States_tp.push_back( s2mMuscleStateActual(stateExcitation[j*nMus+i], stateActivation[j*nMus+i]));
+                States_tp.push_back( s2mMuscleStateDynamics(stateExcitation[j*nMus+i], stateActivation[j*nMus+i]));
             }
             else if (!isThereExcitation && isThereActivation){
-                States_tp.push_back( s2mMuscleStateActual(0, stateActivation[j*nMus+i]));
+                States_tp.push_back( s2mMuscleStateDynamics(0, stateActivation[j*nMus+i]));
             }
             else if (isThereExcitation && !isThereActivation){
-                States_tp.push_back( s2mMuscleStateActual(stateExcitation[j*nMus+i], 0));
+                States_tp.push_back( s2mMuscleStateDynamics(stateExcitation[j*nMus+i], 0));
             }
 
         States.push_back(States_tp);
@@ -458,7 +462,7 @@ std::vector<std::vector<s2mMuscleStateActual> > getParameterMuscleState(const mx
 }
 
 
-std::vector<std::vector<s2mMuscleStateActualBuchanan> > getParameterMuscleStateBuchanan(const mxArray*prhs[], int idxExcitation, int idxActivation, unsigned int nMus){
+std::vector<std::vector<s2mMuscleStateDynamicsBuchanan>> getParameterMuscleStateBuchanan(const mxArray*prhs[], int idxExcitation, int idxActivation, unsigned int nMus){
     // Get the number of frames in the input argument
     // Regarde ce qui se passe pour l'excitation
     bool isThereExcitation(false);
@@ -497,18 +501,18 @@ std::vector<std::vector<s2mMuscleStateActualBuchanan> > getParameterMuscleStateB
 
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    std::vector<std::vector<s2mMuscleStateActualBuchanan> > States;
+    std::vector<std::vector<s2mMuscleStateDynamicsBuchanan>> States;
     for (unsigned int j=0; j<nFramesTotal; ++j){
-        std::vector<s2mMuscleStateActualBuchanan> States_tp;
+        std::vector<s2mMuscleStateDynamicsBuchanan> States_tp;
         for (unsigned int i=0; i<nMus; i++)
             if (isThereExcitation && isThereActivation){
-                States_tp.push_back( s2mMuscleStateActualBuchanan(stateExcitation[j*nMus+i], stateActivation[j*nMus+i]));
+                States_tp.push_back( s2mMuscleStateDynamicsBuchanan(stateExcitation[j*nMus+i], stateActivation[j*nMus+i]));
             }
             else if (!isThereExcitation && isThereActivation){
-                States_tp.push_back( s2mMuscleStateActualBuchanan(0, stateActivation[j*nMus+i]));
+                States_tp.push_back( s2mMuscleStateDynamicsBuchanan(0, stateActivation[j*nMus+i]));
             }
             else if (isThereExcitation && !isThereActivation){
-                States_tp.push_back( s2mMuscleStateActualBuchanan(stateExcitation[j*nMus+i], 0));
+                States_tp.push_back( s2mMuscleStateDynamicsBuchanan(stateExcitation[j*nMus+i], 0));
             }
 
         States.push_back(States_tp);
@@ -516,17 +520,17 @@ std::vector<std::vector<s2mMuscleStateActualBuchanan> > getParameterMuscleStateB
     return States;
 }
 
-std::vector<std::vector<s2mMuscleStateActual> > getParameterMuscleStateActivation(const mxArray*prhs[], int idxActivation, unsigned int nMus){
+std::vector<std::vector<s2mMuscleStateDynamics>> getParameterMuscleStateActivation(const mxArray*prhs[], int idxActivation, unsigned int nMus){
     return getParameterMuscleState(prhs, -1, idxActivation, nMus);
 }
-std::vector<std::vector<s2mMuscleStateActual> > getParameterMuscleStateExcitation(const mxArray*prhs[], int idxExcitation, unsigned int nMus){
+std::vector<std::vector<s2mMuscleStateDynamics>> getParameterMuscleStateExcitation(const mxArray*prhs[], int idxExcitation, unsigned int nMus){
     return getParameterMuscleState(prhs, idxExcitation, -1, nMus);
 }
 
-std::vector<std::vector<s2mMuscleStateActualBuchanan> > getParameterMuscleStateActivationBuchanan(const mxArray*prhs[], int idxActivation, unsigned int nMus){
+std::vector<std::vector<s2mMuscleStateDynamicsBuchanan>> getParameterMuscleStateActivationBuchanan(const mxArray*prhs[], int idxActivation, unsigned int nMus){
     return getParameterMuscleStateBuchanan(prhs, -1, idxActivation, nMus);
 }
-std::vector<std::vector<s2mMuscleStateActualBuchanan> > getParameterMuscleStateExcitationBuchanan(const mxArray*prhs[], int idxExcitation, unsigned int nMus){
+std::vector<std::vector<s2mMuscleStateDynamicsBuchanan>> getParameterMuscleStateExcitationBuchanan(const mxArray*prhs[], int idxExcitation, unsigned int nMus){
     return getParameterMuscleStateBuchanan(prhs, idxExcitation, -1, nMus);
 }
 
@@ -564,7 +568,7 @@ std::vector<Eigen::VectorXd> getParameterMuscleForceNorm(const mxArray*prhs[], u
 }
 
 
-std::vector<std::vector<s2mNodeMuscle> > getMusclePosition(const mxArray*prhs[], unsigned int idx, Eigen::VectorXd nPointsByMuscles){
+std::vector<std::vector<s2mNodeMuscle>> getMusclePosition(const mxArray*prhs[], unsigned int idx, Eigen::VectorXd nPointsByMuscles){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -596,7 +600,7 @@ std::vector<std::vector<s2mNodeMuscle> > getMusclePosition(const mxArray*prhs[],
     double *via=mxGetPr(prhs[idx]); //matrice de position
 
     // Préparer la matrice de sortie
-    std::vector<std::vector<s2mNodeMuscle> > out;
+    std::vector<std::vector<s2mNodeMuscle>> out;
     unsigned int cmpMus(0);
     for (unsigned int i=0; i<nPointsByMuscles.rows(); ++i){
         // Préparer les matrices intermédiaires (chaque muscle)

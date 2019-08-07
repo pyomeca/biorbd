@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mIMU.h"
+#include "s2mIMU.h"
 
 s2mIMU::s2mIMU(const s2mAttitude &v,
                  const s2mString &name,

@@ -75,7 +75,7 @@ void S2M_inverseKinematicsEKFstep( int, mxArray *plhs[],
 
 
     // Recevoir la matrice des markers (Ne traite que le premier frame)
-    std::vector<std::vector<Eigen::Vector3d> > markersOverTime = getParameterAllMarkers(prhs,3,static_cast<int>(model->nTechTags()));
+    std::vector<std::vector<Eigen::Vector3d>> markersOverTime = getParameterAllMarkers(prhs,3,static_cast<int>(model->nTechTags()));
     std::vector<Eigen::Vector3d> markers = markersOverTime[0];
 
     // Si c'est le premier frame recevoir Qinit
@@ -146,7 +146,7 @@ void S2M_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
 
 
     // Recevoir la matrice des markers
-    std::vector<std::vector<Eigen::Vector3d> > markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechTags()));
+    std::vector<std::vector<Eigen::Vector3d>> markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechTags()));
     unsigned int nFrames(static_cast<unsigned int>(markersOverTime.size()));
 
     // Recevoir Qinit

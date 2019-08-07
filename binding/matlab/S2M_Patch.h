@@ -22,7 +22,7 @@ void S2M_Patch( int, mxArray *plhs[],
     // Output
     if ( idx==-1){ // Si on a demande tous les segments
         // Trouver ou sont les marqueurs
-        std::vector<std::vector<s2mPatch> > allMesh(model->meshPatch());
+        std::vector<std::vector<s2mPatch>> allMesh(model->meshPatch());
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateCellMatrix( allMesh.size(), 1);

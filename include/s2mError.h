@@ -1,9 +1,8 @@
 #ifndef S2M_ERROR_H
 #define S2M_ERROR_H
 
-
 #include "biorbdConfig.h"
-#include "s2mString.h"
+
 class s2mString;
 class BIORBD_API s2mError
 {

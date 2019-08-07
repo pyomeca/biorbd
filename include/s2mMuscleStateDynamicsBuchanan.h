@@ -1,13 +1,14 @@
 #ifndef S2M_MUSCLE_STATE_ACTUAL_BUCHANAN_H
 #define S2M_MUSCLE_STATE_ACTUAL_BUCHANAN_H
-#include "biorbdConfig.h"
-#include "s2mMuscleStateActual.h"
 
-class BIORBD_API s2mMuscleStateActualBuchanan : public s2mMuscleStateActual
+#include "biorbdConfig.h"
+#include "s2mMuscleStateDynamics.h"
+
+class BIORBD_API s2mMuscleStateDynamicsBuchanan : public s2mMuscleStateDynamics
 {
     public:
-        s2mMuscleStateActualBuchanan(const double &neuralCommand = 0, const double &excitation = 0);
-        ~s2mMuscleStateActualBuchanan();
+        s2mMuscleStateDynamicsBuchanan(const double &neuralCommand = 0, const double &excitation = 0);
+        ~s2mMuscleStateDynamicsBuchanan();
 
         virtual double timeDerivativeExcitation(const s2mMuscleCaracteristics &c, const bool alreadyNormalized);
         virtual void setExcitation(const double &val);

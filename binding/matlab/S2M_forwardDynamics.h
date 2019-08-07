@@ -2,6 +2,9 @@
 #define MATLAB_S2M_FORWARD_DYNAMICS_H
 
 #include <mex.h>
+#include <rbdl/Model.h>
+#include <rbdl/Kinematics.h>
+#include <rbdl/Dynamics.h>
 #include "s2mMusculoSkeletalModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
@@ -64,15 +67,15 @@ void S2M_forwardDynamics( int, mxArray *plhs[],
         // Trouver la dynamique directe a cette configuration
         s2mGenCoord QDDot(Eigen::VectorXd::Zero(nQddot));
         if (contact == 1){ // Si on a un contact
-            model->getConstraints(*model).linear_solver = RigidBodyDynamics::Math::LinearSolverColPivHouseholderQR;
-            RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*model, *(Q.begin()+j), *(QDot.begin()+j), *(Tau.begin()+j), model->getConstraints(*model),QDDot);// Forward dynamics
+            model->getConstraints_nonConst(*model).linear_solver = RigidBodyDynamics::Math::LinearSolverColPivHouseholderQR;
+            RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*model, *(Q.begin()+j), *(QDot.begin()+j), *(Tau.begin()+j), model->getConstraints_nonConst(*model),QDDot);// Forward dynamics
         }
         else if (contact == -1){ // Si on a une impulsion
             s2mGenCoord QdotPost(static_cast<unsigned int>((*(Q.begin()+j)).size()));
-            RigidBodyDynamics::ComputeConstraintImpulsesDirect(*model, *(Q.begin()+j), *(QDot.begin()+j), model->getConstraints(*model), QdotPost);
+            RigidBodyDynamics::ComputeConstraintImpulsesDirect(*model, *(Q.begin()+j), *(QDot.begin()+j), model->getConstraints_nonConst(*model), QdotPost);
 
             // Calcul de la dynamique
-            RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*model, *(Q.begin()+j), QdotPost, *(Tau.begin()+j), model->getConstraints(*model),QDDot);// Forward dynamics
+            RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*model, *(Q.begin()+j), QdotPost, *(Tau.begin()+j), model->getConstraints_nonConst(*model),QDDot);// Forward dynamics
         }
         else {
             RigidBodyDynamics::ForwardDynamicsLagrangian(*model, *(Q.begin()+j), *(QDot.begin()+j), *(Tau.begin()+j), QDDot);// Forward dynamics

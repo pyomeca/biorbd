@@ -1,19 +1,10 @@
 #ifndef S2M_STATIC_OPTIMIZATION_IPOPT_LINEARIZED_H
 #define S2M_STATIC_OPTIMIZATION_IPOPT_LINEARIZED_H
 
-#include <IpIpoptApplication.hpp>
-#include "IpTNLP.hpp"
 #include "biorbdConfig.h"
-#include "s2mGenCoord.h"
-#include "s2mMusculoSkeletalModel.h"
-#include "s2mMuscles.h"
-#include "s2mVector.h"
 #include "s2mStaticOptimizationIpopt.h"
+#include "s2mMatrix.h"
 
-#include <Eigen/Dense>
-
-
-    
 class BIORBD_API s2mStaticOptimizationIpoptLinearized : public s2mStaticOptimizationIpopt
 {
     public:

@@ -1,5 +1,7 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleHillTypeThelenFatigable.h"
+#include "s2mMuscleHillTypeThelenFatigable.h"
+
+#include "s2mMuscleFatigueState.h"
 
 s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mString &s,
         const s2mString &dynamicFatigueType) :
@@ -12,7 +14,7 @@ s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mStri
 s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mMuscleGeometry &g,
         const s2mMuscleCaracteristics &c,
         const s2mMusclePathChangers &w,
-        const s2mMuscleStateActual &s,
+        const s2mMuscleStateDynamics &s,
         const s2mString &dynamicFatigueType) :
     s2mMuscleHillTypeThelen(g, c, w, s),
     s2mMuscleFatigable (dynamicFatigueType)
@@ -24,7 +26,7 @@ s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mStri
         const s2mMuscleGeometry &g,
         const s2mMuscleCaracteristics &c,
         const s2mMusclePathChangers &w,
-        const s2mMuscleStateActual &s,
+        const s2mMuscleStateDynamics &s,
         const s2mString &dynamicFatigueType) :
     s2mMuscleHillTypeThelen(n, g, c, w, s),
     s2mMuscleFatigable (dynamicFatigueType)
@@ -46,7 +48,7 @@ s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const std::sh
     setType();
 }
 
-void s2mMuscleHillTypeThelenFatigable::computeFlCE(const s2mMuscleStateActual &EMG)
+void s2mMuscleHillTypeThelenFatigable::computeFlCE(const s2mMuscleStateDynamics &EMG)
 {
     s2mMuscleHillTypeThelen::computeFlCE(EMG);   
     // Do something with m_FlCE and m_caract.fatigueParameters

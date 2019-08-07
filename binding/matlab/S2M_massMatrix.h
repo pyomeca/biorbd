@@ -2,6 +2,9 @@
 #define MATLAB_S2M_MASS_MATRIX_H
 
 #include <mex.h>
+#include <rbdl/Model.h>
+#include <rbdl/Kinematics.h>
+#include <rbdl/Dynamics.h>
 #include "s2mMusculoSkeletalModel.h"
 #include "class_handle.h"
 #include "processArguments.h"

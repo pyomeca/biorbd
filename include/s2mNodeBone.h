@@ -1,8 +1,10 @@
 #ifndef S2M_NODE_BONE_H
 #define S2M_NODE_BONE_H
-	#include "biorbdConfig.h"
-    #include <Eigen/Dense>
-    #include "s2mNode.h"
+
+#include <vector>
+#include <Eigen/Dense>
+#include "biorbdConfig.h"
+#include "s2mNode.h"
 
 class s2mNode;
 class BIORBD_API s2mNodeBone : public s2mNode
@@ -16,18 +18,18 @@ class BIORBD_API s2mNodeBone : public s2mNode
                     const s2mString& axesToRemove = s2mString(), // Axes à retirer
                     int = -1); // Numéro ID du parent
 
-        ~s2mNodeBone();
         // Get and Set
-        virtual bool isTechnical() const;
-        virtual bool isAnatomical() const;
+        bool isTechnical() const;
+        bool isAnatomical() const;
         int parentId() const;
-        virtual s2mNodeBone position(bool removeAxes=true) const;
+        const s2mNodeBone& position() const;
+        s2mNodeBone position(bool removeAxes) const;
 
-        bool isAxisRemoved(int) const;
-        bool isAxisKept(int) const;
-        void addAxesToRemove(int); // Ajouter un axes à retirer
+        bool isAxisRemoved(unsigned int) const;
+        bool isAxisKept(unsigned int) const;
+        void addAxesToRemove(unsigned int); // Ajouter un axes à retirer
         void addAxesToRemove(s2mString); // Ajouter un axes à retirer
-        void addAxesToRemove(std::vector<int>); // Ajouter un axes à retirer
+        void addAxesToRemove(std::vector<unsigned int>); // Ajouter un axes à retirer
         void addAxesToRemove(std::vector<s2mString>); // Ajouter un axes à retirer
         s2mString axesToRemove();
         int nAxesToRemove() const; // Nombre d'axes à retirer
@@ -37,7 +39,6 @@ class BIORBD_API s2mNodeBone : public s2mNode
         bool m_technical; // If a marker is a technical marker
         bool m_anatomical; // It marker is a anatomical marker
         int m_id;
-    private:
 
 };
 
