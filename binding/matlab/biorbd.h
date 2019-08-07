@@ -12,7 +12,6 @@
 #include "class_handle.h"
 #include "s2mKalmanReconsMarkers.h"
 #include "s2mKalmanReconsIMU.h"
-#include "s2mMuscleOptimisation.h"
 #include "s2mMatrix.h"
 
 #include "S2M_help.h"

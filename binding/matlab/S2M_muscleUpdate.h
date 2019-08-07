@@ -5,6 +5,8 @@
 #include "s2mMusculoSkeletalModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "s2mGroupeMusculaire.h"
+#include "s2mMuscle.h"
 
 void S2M_muscleUpdate( int, mxArray *[],
                   int nrhs, const mxArray*prhs[] ){

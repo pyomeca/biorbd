@@ -1,8 +1,12 @@
 #ifndef MATLAB_PROCESS_ARGUMENTS_H
 #define MATLAB_PROCESS_ARGUMENTS_H
 #include <mex.h>
-#include "s2mNodeMuscle.h"
 #include "s2mGenCoord.h"
+#include "s2mTau.h"
+#include "s2mBone.h"
+#include "s2mIMU.h"
+#include "s2mNodeBone.h"
+#include "s2mNodeMuscle.h"
 #include "s2mMuscleStateDynamics.h"
 #include "s2mMuscleStateDynamicsBuchanan.h"
 

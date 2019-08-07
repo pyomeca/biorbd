@@ -42,7 +42,7 @@ unsigned int s2mContacts::AddConstraint(unsigned int body_id, const s2mNode& bod
 }
 
 
-const s2mContacts &s2mContacts::getConstraints(const s2mJoints &m){
+s2mContacts &s2mContacts::getConstraints_nonConst(const s2mJoints &m){
     if (!m_binded){
         Bind(m);
         m_binded = true;

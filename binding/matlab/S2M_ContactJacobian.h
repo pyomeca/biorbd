@@ -2,6 +2,7 @@
 #define MATLAB_S2M_CONTACT_JACOBIAN_H
 
 #include <mex.h>
+#include <rbdl/Constraints.h>
 #include "s2mMusculoSkeletalModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
@@ -21,7 +22,7 @@ void S2M_ContactJacobian( int, mxArray *plhs[],
     // Trouver la matrice jacobienne de tous les contacts
     unsigned int nContacts = model->nContacts();
     Eigen::MatrixXd G_tp(Eigen::MatrixXd::Zero(nContacts,model->nbQ()));
-    RigidBodyDynamics::CalcConstraintsJacobian(*model, Q, model->getConstraints(*model), G_tp, true);
+    RigidBodyDynamics::CalcConstraintsJacobian(*model, Q, model->getConstraints_nonConst(*model), G_tp, true);
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( nContacts, nQ, mxREAL);

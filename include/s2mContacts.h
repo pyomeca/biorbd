@@ -26,7 +26,7 @@ class BIORBD_API s2mContacts : public RigidBodyDynamics::ConstraintSet
                                            const s2mString& name,
                                            double acc = 0);
 
-        const s2mContacts &getConstraints(const s2mJoints& jointsModel); // La premiere fois il faut appeler cette fonction avec cet arguement, ensuite, il n'est plus utile
+        s2mContacts &getConstraints_nonConst(const s2mJoints& jointsModel); // La premiere fois il faut appeler cette fonction avec cet arguement, ensuite, il n'est plus utile
         s2mContacts &getConstraints_nonConst();
         const s2mContacts &getConstraints() const;
 
