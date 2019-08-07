@@ -48,7 +48,9 @@ void s2mRead::pwd(){
 
 bool s2mRead::is_readable(const s2mString &file) {
     std::ifstream fichier( file.c_str() );
-    return !fichier.fail();
+    bool isOpen(fichier.is_open());
+    fichier.close();
+    return isOpen;
 }
 
 /* Public methods */
@@ -61,7 +63,9 @@ s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
 
 void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
 {	// Ouverture du fichier
-    // std::cout << "Loading model file: " << path << std::endl;
+    if (!is_readable(path))
+        s2mError::s2mAssert(false, "File " + path + " could not be open");
+
     s2mIfStream file(path.c_str(), std::ios::in);
 
     // Lecture du fichier
