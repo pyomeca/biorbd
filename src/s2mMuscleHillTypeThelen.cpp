@@ -38,7 +38,7 @@ s2mMuscleHillTypeThelen::~s2mMuscleHillTypeThelen()
 
 void s2mMuscleHillTypeThelen::computeFlPE(){
     if (m_position.length() > caract().tendonSlackLength())
-        m_FlPE = (exp(m_cste_FlPE_1*(m_position.length()/caract().optimalLength()-1)) -1)/(exp(m_cste_FlPE_2)-1);
+        m_FlPE = (exp(m_cste_FlPE_1*(m_position.length()/caract().optimalLength()-1)) -1)/(exp(m_cste_FlPE_2)-1); //Thelen2003, le 07 août 2019
     else
         m_FlPE = 0;
 }
