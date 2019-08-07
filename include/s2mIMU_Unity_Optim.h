@@ -1,8 +1,9 @@
 #ifndef S2M_IMU_UNITY_OPTIM_H
 #define S2M_IMU_UNITY_OPTIM_H
-#include <dlib/optimization.h>  
+
+#include <dlib/optimization.h>
 #include "biorbdConfig.h"
-#include "s2mAttitude.h" 
+#include "s2mAttitude.h"
 
 class BIORBD_API s2mIMU_Unity_Optim
 {
@@ -20,7 +21,6 @@ class BIORBD_API s2mIMU_Unity_Optim
     protected:
 		static double residual (const OptimData& data, const parameter_vector& x); // Optimization
 
-    private:
 };
 
 #endif // S2M_IMU_UNITY_OPTIM_H

@@ -2,9 +2,7 @@
 #define S2M_ACTUATOR_CONSTANT_H
 
 #include "biorbdConfig.h"
-#include "s2mString.h"
 #include "s2mActuator.h"
-#include "s2mGenCoord.h"
 
 class BIORBD_API s2mActuatorConstant : public s2mActuator
 {
@@ -13,7 +11,7 @@ class BIORBD_API s2mActuatorConstant : public s2mActuator
                            double Tmax,
                            unsigned int dofIdx,
                            const s2mString &jointName = "");
-        ~s2mActuatorConstant(){}
+        virtual ~s2mActuatorConstant();
         virtual double torqueMax();
 
     protected:
@@ -23,6 +21,5 @@ class BIORBD_API s2mActuatorConstant : public s2mActuator
 
         double m_Tmax;      // Maximum torque that can be done
 
-private:
 };
 #endif // S2M_ACTUATOR_CONSTANT_H

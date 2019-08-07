@@ -4,18 +4,20 @@
 #include "biorbdConfig.h"
 #include "s2mKalmanRecons.h"
 
+class s2mMarkers;
 class BIORBD_API s2mKalmanReconsMarkers : public s2mKalmanRecons
 {
 public:
 
     // Constructeur
     s2mKalmanReconsMarkers(s2mMusculoSkeletalModel&, s2mKalmanRecons::s2mKalmanParam = s2mKalmanRecons::s2mKalmanParam());
+    virtual ~s2mKalmanReconsMarkers();
 
     // Reconstruction d'un frame
     virtual void reconstructFrame(s2mMusculoSkeletalModel &m, const s2mMarkers &Tobs, s2mGenCoord *Q, s2mGenCoord *Qdot, s2mGenCoord *Qddot, bool removeAxes=true);
     virtual void reconstructFrame(s2mMusculoSkeletalModel &m, const std::vector<Eigen::Vector3d> &Tobs, s2mGenCoord *Q, s2mGenCoord *Qdot, s2mGenCoord *Qddot, bool removeAxes=true);
     virtual void reconstructFrame(s2mMusculoSkeletalModel &m, const Eigen::VectorXd &Tobs, s2mGenCoord *Q = nullptr, s2mGenCoord *Qdot = nullptr, s2mGenCoord *Qddot = nullptr, bool removeAxes=true); // Faire la reconstruction cinematique
-    virtual void reconstructFrame(){s2mError::s2mAssert(false, "Implémentation impossible");}
+    virtual void reconstructFrame();
 
     bool first();
 

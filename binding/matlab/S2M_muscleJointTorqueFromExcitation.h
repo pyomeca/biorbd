@@ -24,7 +24,7 @@ void S2M_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
     // Recevoir Qdot
     std::vector<s2mGenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
     // Recevoir muscleStates
-    std::vector<std::vector<s2mMuscleStateActual> > s = getParameterMuscleStateExcitation(prhs,4,model->nbMuscleTotal());
+    std::vector<std::vector<s2mMuscleStateDynamics>> s = getParameterMuscleStateExcitation(prhs,4,model->nbMuscleTotal());
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));

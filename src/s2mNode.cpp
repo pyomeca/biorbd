@@ -1,8 +1,7 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mNode.h"
+#include "s2mNode.h"
 
-
-
+#include "s2mAttitude.h"
 
 s2mNode::s2mNode(double x, double y, double z, const s2mString &name, const s2mString &parentName) :
     Eigen::Vector3d (x, y, z),
@@ -20,12 +19,7 @@ s2mNode::s2mNode(const Eigen::Vector3d &v, const s2mString &name, const s2mStrin
 
 }
 
-s2mNode::~s2mNode()
-{
-    //dtor
-}
-
-s2mString s2mNode::parent() const
+const s2mString& s2mNode::parent() const
 {
     return m_parentName;
 }
@@ -50,7 +44,7 @@ void s2mNode::setPosition(Eigen::Vector4d &n)
     this->block(0,0,3,1) = n.block(0,0,3,1);
 }
 
-s2mNode s2mNode::position() const
+const s2mNode &s2mNode::position() const
 {
     return *this;
 }
@@ -72,7 +66,7 @@ void s2mNode::setName(const s2mString &name)
     m_markName = name;
 }
 
-s2mString s2mNode::name() const
+const s2mString &s2mNode::name() const
 {
     return m_markName;
 }

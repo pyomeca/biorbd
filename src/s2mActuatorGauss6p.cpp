@@ -1,5 +1,7 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mActuatorGauss6p.h"
+#include "s2mActuatorGauss6p.h"
+
+#include "s2mGenCoord.h"
 
 s2mActuatorGauss6p::s2mActuatorGauss6p(
     int direction,
@@ -31,6 +33,11 @@ s2mActuatorGauss6p::s2mActuatorGauss6p(
     m_facteur(facteur),
     m_r2(r2),
     m_qopt2(qopt2)
+{
+
+}
+
+s2mActuatorGauss6p::~s2mActuatorGauss6p()
 {
 
 }

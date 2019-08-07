@@ -1,6 +1,7 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mQuaternion.h"
+#include "s2mQuaternion.h"
 
+#include <rbdl/Quaternion.h>
 
 s2mQuaternion::s2mQuaternion () : RigidBodyDynamics::Math::Quaternion(),
     m_Kstab(100)

@@ -1,5 +1,11 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mString.h"
+#include "s2mString.h"
+
+#include <map>
+#include <algorithm>
+#include <vector>
+#include <boost/lexical_cast.hpp>
+#include "s2mError.h"
 
 s2mString::s2mString()
     : std::string("")
@@ -51,7 +57,7 @@ s2mString s2mString::operator()(const unsigned int i) const{
 s2mString s2mString::operator()(const unsigned int i, const unsigned int j) const{
     s2mError::s2mAssert((i<this->length() || j<this->length()), "Index for string out of range");
     s2mError::s2mAssert(j>i, "Second argument should be higher than first!");
-    char *out = (char*)malloc(j-i+2*sizeof(char));
+    char *out = static_cast<char*>(malloc(j-i+2*sizeof(char)));
     for (unsigned int k=0; k<j-i+1; ++k)
         out[k] = (*this)[i+k];
     out[j-i+1] = '\0';

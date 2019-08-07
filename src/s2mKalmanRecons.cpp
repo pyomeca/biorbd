@@ -1,5 +1,8 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mKalmanRecons.h"
+#include "s2mKalmanRecons.h"
+
+#include "s2mMusculoSkeletalModel.h"
+#include "s2mGenCoord.h"
 
 s2mKalmanRecons::s2mKalmanRecons(s2mMusculoSkeletalModel &m, unsigned int nMeasure, s2mKalmanParam params) :
     m_params(params),
@@ -155,3 +158,22 @@ s2mMatrix s2mKalmanRecons::initCovariance(const unsigned int nQ, const double cs
 
 
 
+
+s2mKalmanRecons::s2mKalmanParam::s2mKalmanParam(double frequency, double noiseFactor, double errorFactor):
+    m_acquisitionFrequency(frequency),
+    m_noiseFactor(noiseFactor),
+    m_errorFactor(errorFactor){}
+
+double s2mKalmanRecons::s2mKalmanParam::acquisitionFrequency() const{
+    return m_acquisitionFrequency;
+}
+
+double s2mKalmanRecons::s2mKalmanParam::noiseFactor() const
+{
+    return m_noiseFactor;
+}
+
+double s2mKalmanRecons::s2mKalmanParam::errorFactor() const
+{
+    return m_errorFactor;
+}

@@ -3,8 +3,8 @@
 
 #include "biorbdConfig.h"
 #include "s2mActuator.h"
-#include "s2mGenCoord.h"
 
+class s2mGenCoord;
 class BIORBD_API s2mActuatorGauss3p : public s2mActuator
 {
     public:
@@ -20,7 +20,7 @@ class BIORBD_API s2mActuatorGauss3p : public s2mActuator
                            double qopt,
                            unsigned int dofIdx,
                            const s2mString &jointName = "");
-        ~s2mActuatorGauss3p(){}
+        virtual ~s2mActuatorGauss3p();
         virtual double torqueMax(const s2mGenCoord &Q, const s2mGenCoord &Qdot);
 
     protected:
@@ -46,6 +46,5 @@ class BIORBD_API s2mActuatorGauss3p : public s2mActuator
         double m_r;         // width of the gaussian curve
         double m_qopt;      // Optimal position
 
-private:
 };
 #endif // S2M_ACTUATOR_GAUSS_3P_H

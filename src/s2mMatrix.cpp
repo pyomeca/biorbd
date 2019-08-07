@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMatrix.h"
+#include "s2mMatrix.h"
 
 s2mMatrix::s2mMatrix() {}
 
@@ -11,6 +11,11 @@ s2mMatrix::s2mMatrix(const Eigen::MatrixXd &m) :
 
 s2mMatrix::s2mMatrix(unsigned int i, unsigned int j) :
     Eigen::MatrixXd(i, j)
+{
+
+}
+
+s2mMatrix::~s2mMatrix()
 {
 
 }

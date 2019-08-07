@@ -1,5 +1,7 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mWrappingCylinder.h"
+#include "s2mWrappingCylinder.h"
+
+#include "s2mJoints.h"
 
 s2mWrappingCylinder::s2mWrappingCylinder(const s2mAttitude &v, // Position du centre
                                          const double &dia, // Diametre vue du dessus
@@ -16,6 +18,7 @@ s2mWrappingCylinder::s2mWrappingCylinder(const s2mAttitude &v, // Position du ce
     m_p2Wrap(s2mNodeMuscle()),
     m_lengthAroundWrap(0)
 {
+    m_forme = "Cylinder";
 }
 
 s2mWrappingCylinder::~s2mWrappingCylinder()
@@ -36,6 +39,31 @@ s2mAttitude s2mWrappingCylinder::RT(s2mJoints &m, const s2mGenCoord& Q, const bo
     s2mAttitude parent(m.globalJCS(Q, m_parentName, updateKin));
     s2mAttitude RT(parent * m_RTtoParent);
     return RT;
+}
+
+double s2mWrappingCylinder::diameter() const
+{
+    return m_dia;
+}
+
+double s2mWrappingCylinder::rayon() const
+{
+    return m_dia/2;
+}
+
+void s2mWrappingCylinder::setDiameter(double val)
+{
+    m_dia = val;
+}
+
+double s2mWrappingCylinder::length() const
+{
+    return m_length;
+}
+
+void s2mWrappingCylinder::setLength(double val)
+{
+    m_length = val;
 }
 
 void s2mWrappingCylinder::wrapPoints(s2mJoints& m, const s2mGenCoord& Q, const s2mNodeMuscle& p1_bone, const s2mNodeMuscle& p2_bone, s2mNodeMuscle& p1, s2mNodeMuscle& p2, double *length) {
@@ -117,8 +145,8 @@ bool s2mWrappingCylinder::findVerticalNode(const NodeMusclePair &glob, NodeMuscl
     // Avant toute chose, s'assurer que les points wrapent
     if (!checkIfWraps(glob, wrapper)){ // S'ils ne doivent pas passer par le wrap, mettre des nan et arreter
         for (unsigned int i=0; i<3; ++i){
-            wrapper.m_p1(i) = NAN;
-            wrapper.m_p2(i) = NAN;
+            wrapper.m_p1(i) = static_cast<double>(NAN);
+            wrapper.m_p2(i) = static_cast<double>(NAN);
         }
         return false;
     }

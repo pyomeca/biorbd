@@ -1,5 +1,7 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mGenCoord.h"
+#include "s2mGenCoord.h"
+
+#include "s2mJoints.h"
 
 s2mGenCoord::s2mGenCoord() {}
 
@@ -17,6 +19,11 @@ s2mGenCoord::s2mGenCoord(unsigned int i) : s2mVector(i) {}
 
 s2mGenCoord::s2mGenCoord(const s2mJoints &j) :
     s2mVector(j.nbDof()){
+
+}
+
+s2mGenCoord::~s2mGenCoord()
+{
 
 }
 

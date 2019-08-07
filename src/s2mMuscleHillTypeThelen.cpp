@@ -1,10 +1,10 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleHillTypeThelen.h"
+#include "s2mMuscleHillTypeThelen.h"
 
 s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(const s2mMuscleGeometry& g,
                                                 const s2mMuscleCaracteristics& c,
                                                 const s2mMusclePathChangers & w,
-                                                const s2mMuscleStateActual & s) :
+                                                const s2mMuscleStateDynamics & s) :
     s2mMuscleHillType(g,c,w,s)
 {
     setType();
@@ -13,7 +13,7 @@ s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(const s2mString& n,
                                                 const s2mMuscleGeometry& g,
                                                 const s2mMuscleCaracteristics& c,
                                                 const s2mMusclePathChangers & w,
-                                                const s2mMuscleStateActual & s) :
+                                                const s2mMuscleStateDynamics & s) :
     s2mMuscleHillType(n,g,c,w,s)
 {
     setType();
@@ -31,6 +31,7 @@ s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(const std::shared_ptr<s2mMuscle
     setType();
 }
 
+<<<<<<< HEAD
 void s2mMuscleHillTypeThelen::computeFlPE(){
     if (m_position.length() > caract().tendonSlackLength())
         m_FlPE = (exp(m_cste_FlPE_1*(m_position.length()/caract().optimalLength()-1)) -1)/(exp(m_cste_FlPE_2)-1);
@@ -39,6 +40,14 @@ void s2mMuscleHillTypeThelen::computeFlPE(){
     }
 
 void s2mMuscleHillTypeThelen::computeFlCE(const s2mMuscleStateActual&){
+=======
+s2mMuscleHillTypeThelen::~s2mMuscleHillTypeThelen()
+{
+
+}
+
+void s2mMuscleHillTypeThelen::computeFlCE(const s2mMuscleStateDynamics&){
+>>>>>>> stringCopyReducer
     m_FlCE = exp( -pow(((m_position.length() / caract().optimalLength())-1), 2 ) /  m_cste_FlCE_2 ); //Thelen2003, le 26 fevrier 2018
 }
 

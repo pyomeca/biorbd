@@ -82,7 +82,6 @@
 #include "S2M_MusclesActivationDot.h"
 #include "S2M_MusclesExcitationDotBuchanan.h"
 #include "S2M_ChangeShapeFactors.h"
-#include "S2M_MaximeMuscleOptim.h"
 #include "S2M_parent.h"
 
 #include "S2M_inverseDynamics.h"
@@ -640,13 +639,6 @@ void functionHub( int nlhs, mxArray *plhs[],
         S2M_muscleLengthJacobian(nlhs, plhs, nrhs, prhs);
         return;
     }
-
-#ifdef S2M_MUSCLE_OPTIMIZATION
-    if(!toLower(cmd).compare("maximeoptim")){
-        S2M_MaximeMuscleOptim(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-#endif
 
     if(!toLower(cmd).compare("changeshapefactors")){
         S2M_ChangeShapeFactors(nlhs, plhs, nrhs, prhs);

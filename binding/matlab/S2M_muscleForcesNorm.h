@@ -23,7 +23,7 @@ void S2M_muscleForcesNorm( int, mxArray *plhs[],
     std::vector<s2mGenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
 
     // Recevoir les états musculaires
-    std::vector<std::vector<s2mMuscleStateActual> > state = getParameterMuscleStateActivation(prhs, 4, model->nbMuscleTotal());
+    std::vector<std::vector<s2mMuscleStateDynamics>> state = getParameterMuscleStateActivation(prhs, 4, model->nbMuscleTotal());
 
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
@@ -46,7 +46,7 @@ void S2M_muscleForcesNorm( int, mxArray *plhs[],
 
     unsigned int cmp=0;
     for (unsigned int iF=0; iF<nFrame; ++iF){
-        std::vector<std::vector<std::shared_ptr<s2mMuscleForce> > > Force;
+        std::vector<std::vector<std::shared_ptr<s2mMuscleForce>>> Force;
         if (updateKin)
             Force = model->musclesForces(*model, *(state.begin()+iF), updateKin, &(*(Q.begin()+iF)), &(*(QDot.begin()+iF)));
         else

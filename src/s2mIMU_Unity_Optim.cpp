@@ -1,5 +1,7 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mIMU_Unity_Optim.h"
+#include "s2mIMU_Unity_Optim.h"
+
+#include "s2mString.h"
 
 s2mIMU_Unity_Optim::OptimData::OptimData(const s2mAttitude &R1, const s2mAttitude &R2, int axe)
        : m_R1(R1), m_R2(R2), m_axe(axe)
@@ -11,7 +13,7 @@ s2mIMU_Unity_Optim::OptimData::OptimData(const s2mAttitude &R1, const s2mAttitud
 double s2mIMU_Unity_Optim::residual(const OptimData &data, const parameter_vector &x){
 	Eigen::VectorXd rotation(1);
 	rotation(0) = x;
-	s2mAttitude toRot(rotation, Eigen::Vector3d::Zero(), "z");
+    s2mAttitude toRot(rotation, Eigen::Vector3d::Zero(), "z");
 	s2mAttitude R2prime = toRot * data.m_R2;
 	
 	//  Extraire les colonnes à trouver le produit scalaire
@@ -19,7 +21,7 @@ double s2mIMU_Unity_Optim::residual(const OptimData &data, const parameter_vecto
 	Eigen::Vector3d zAxisR1 = data.m_R1.block(0,2,3,1);
 
 	// Faire le produit scalaire
-	double dotProd(axisR2.dot(zAxisR1));
+    double dotProd(axisR2.dot(zAxisR1));
 
 	// Retourner l'absolu
     return fabs(dotProd)-1;

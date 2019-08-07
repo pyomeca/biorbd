@@ -19,7 +19,7 @@ void S2M_globalJCS( int, mxArray *plhs[],
     std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
 
     // Trouver les RT
-    std::vector<std::vector<s2mAttitude> > JSC_vec;
+    std::vector<std::vector<s2mAttitude>> JSC_vec;
     for (std::vector<s2mGenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
         JSC_vec.push_back(model->globalJCS(*Q_it));
 
@@ -30,7 +30,7 @@ void S2M_globalJCS( int, mxArray *plhs[],
 
     // Remplir l'output
     unsigned int cmpJCS = 0;
-    for (std::vector<std::vector<s2mAttitude> >::iterator AllJCS_it = JSC_vec.begin(); AllJCS_it != JSC_vec.end(); ++AllJCS_it)
+    for (std::vector<std::vector<s2mAttitude>>::iterator AllJCS_it = JSC_vec.begin(); AllJCS_it != JSC_vec.end(); ++AllJCS_it)
         for (std::vector<s2mAttitude>::iterator JSC_it=(*AllJCS_it).begin(); JSC_it!=(*AllJCS_it).end(); ++JSC_it)
             for (unsigned int i=0; i<4; ++i)
                 for (unsigned int j=0; j<4; ++j){
