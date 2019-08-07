@@ -140,7 +140,6 @@ namespace std {
 
 %include "../include/s2mJoints.h"
 //%include "s2mJoint.h"
-//%include "s2mJointIntraBone.h"
 %include "../include/s2mContacts.h"
 
 //%include "s2mActuator.h"
