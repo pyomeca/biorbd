@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleFatigueParam.h"
+#include "s2mMuscleFatigueParam.h"
 
 s2mMuscleFatigueParam::s2mMuscleFatigueParam(double _fatigueRate, double _recoveryRate, double _developFactor, double recoveryFactor):
     m_fatigueRate(_fatigueRate),

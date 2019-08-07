@@ -1,5 +1,5 @@
-#define S2M_TIME_H
 #ifndef S2M_TIME_H
+#define S2M_TIME_H
 
 #include "biorbdConfig.h"
 

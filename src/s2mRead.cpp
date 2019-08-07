@@ -603,9 +603,9 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             s2mError::s2mAssert(idxGroup!=-1, "No muscle group was provided!");
             s2mMuscleGeometry geo(s2mNodeMuscle(origin_pos, name + "_origin", model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
                                   s2mNodeMuscle(insert_pos, name + "_insertion", model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
-            s2mMuscleStateMax state(maxExcitation, maxActivation);
-            s2mMuscleCaracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, &state, fatigueParameters);
-            model->muscleGroup(static_cast<unsigned int>(idxGroup)).addHillMuscle(name,type,geo,caract,s2mMusclePathChangers(),stateType,dynamicFatigueType);
+            s2mMuscleState stateMax(maxExcitation, maxActivation);
+            s2mMuscleCaracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax, fatigueParameters);
+            model->muscleGroup_nonConst(static_cast<unsigned int>(idxGroup)).addHillMuscle(name,type,geo,caract,s2mMusclePathChangers(),stateType,dynamicFatigueType);
         }
         else if (!tp.tolower().compare("viapoint")){
             s2mString name;

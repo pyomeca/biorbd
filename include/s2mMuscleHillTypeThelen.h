@@ -1,5 +1,5 @@
-#define S2M_MUSCLE_HILL_TYPE_THELEN_H
 #ifndef S2M_MUSCLE_HILL_TYPE_THELEN_H
+#define S2M_MUSCLE_HILL_TYPE_THELEN_H
 
 #include "biorbdConfig.h"
 #include "s2mMuscleHillType.h"

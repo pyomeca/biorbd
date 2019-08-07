@@ -1,5 +1,9 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleFatigable.h"
+#include "s2mMuscleFatigable.h"
+
+#include "s2mError.h"
+#include "s2mMuscle.h"
+#include "s2mMuscleFatigueDynamicStateXia.h"
 
 s2mMuscleFatigable::s2mMuscleFatigable(const s2mString &dynamicFatigueType)
 {
@@ -45,12 +49,12 @@ void s2mMuscleFatigable::fatigueState(double active, double fatigued, double res
 }
 
 
-void s2mMuscleFatigable::computeTimeDerivativeState(const s2mMuscleStateActual &EMG)
+void s2mMuscleFatigable::computeTimeDerivativeState(const s2mMuscleStateDynamics &emg)
 {
     if (std::dynamic_pointer_cast<s2mMuscleFatigueDynamicState>(m_fatigueState)) {
         s2mMuscle* muscle = dynamic_cast<s2mMuscle*>(this);
         if (muscle)
-            std::static_pointer_cast<s2mMuscleFatigueDynamicState>(m_fatigueState)->timeDerivativeState(EMG, muscle->caract());
+            std::static_pointer_cast<s2mMuscleFatigueDynamicState>(m_fatigueState)->timeDerivativeState(emg, muscle->caract());
         else
             s2mError::s2mAssert(false, "s2mMuscleFatigable should be a s2mMuscle");
    } else {

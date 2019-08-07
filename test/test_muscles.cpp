@@ -1,12 +1,11 @@
 #include <iostream>
 #include <gtest/gtest.h>
-<<<<<<< HEAD
-#include "s2mMusculoSkeletalModel.h"
-=======
 
 #include "s2mMusculoSkeletalModel.h"
 #include "s2mMuscle.h"
 #include "s2mGroupeMusculaire.h"
+#include "s2mMuscleHillTypeThelenFatigable.h"
+#include "s2mMuscleFatigueDynamicStateXia.h"
 
 static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
 static unsigned int muscleGroupForMuscleJacobian(1);
@@ -63,10 +62,6 @@ TEST(MuscleJacobian, jacobianLength){
     EXPECT_LT( (model.musclesLengthJacobian(model, Q) - jacoRef).squaredNorm(), 1e-6);
 }
 
-
-
->>>>>>> stringCopyReducer
-
 static std::string modelPathForXiaDerivativeTest("models/arm26.bioMod");
 static unsigned int muscleGroupForXiaDerivativeTest(0);
 static unsigned int muscleForXiaDerivativeTest(0);
@@ -77,14 +72,9 @@ static double currentRestingFibersForXiaDerivativeTest(0.1);
 static double expectedActivationDotForXiaDerivativeTest(0.991);
 static double expectedFatiguedDotForXiaDerivativeTest(0.009);
 static double expectedRestingDotForXiaDerivativeTest(-1.0);
-<<<<<<< HEAD
 static double positiveFibersQuantityForFatigueXiaSetStateLimitsTest(1.0);
 static double negativeFibersQuantityForFatigueXiaSetStateLimitsTest(-1.0);
 static double excessiveFibersQuantityForFatigueXiaSetStateLimitsTest(1.5);
-
-
-=======
->>>>>>> stringCopyReducer
 TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
     // Prepare the model
     s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
@@ -112,7 +102,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
         EXPECT_DOUBLE_EQ(fatigueModel->restingFibersDot(), 0);
 
         // Apply the derivative
-        s2mMuscleStateActual emg(0, activationEmgForXiaDerivativeTest); // Set target
+        s2mMuscleStateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
         fatigueModel->setState(currentActiveFibersForXiaDerivativeTest,
                                currentFatiguedFibersForXiaDerivativeTest,
                                currentRestingFibersForXiaDerivativeTest);
@@ -156,7 +146,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
         EXPECT_NE(muscle, nullptr); // Expected that the cast works
 
         // Apply the derivative
-        s2mMuscleStateActual emg(0, activationEmgForXiaDerivativeTest); // Set target
+        s2mMuscleStateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
         muscle->fatigueState(currentActiveFibersForXiaDerivativeTest,
                              currentFatiguedFibersForXiaDerivativeTest,
                              currentRestingFibersForXiaDerivativeTest);
@@ -202,7 +192,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
         EXPECT_DOUBLE_EQ(fatigueModel.restingFibersDot(), 0);
 
         // Apply the derivative
-        s2mMuscleStateActual emg(0, activationEmgForXiaDerivativeTest); // Set target
+        s2mMuscleStateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
         fatigueModel.setState(currentActiveFibersForXiaDerivativeTest,
                               currentFatiguedFibersForXiaDerivativeTest,
                               currentRestingFibersForXiaDerivativeTest);
@@ -227,7 +217,6 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
         EXPECT_DOUBLE_EQ(fatigueModel->restingFibersDot(), 0);
     }
 }
-<<<<<<< HEAD
 
 TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
     // Prepare the model
@@ -294,5 +283,3 @@ TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
 
     }
 }
-=======
->>>>>>> stringCopyReducer

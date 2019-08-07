@@ -1,8 +1,8 @@
 #ifndef S2M_QUATERNION_H
 #define S2M_QUATERNION_H
 
-#include <rbdl/Quaternion.h>
 #include <rbdl/rbdl_math.h>
+#include <rbdl/Quaternion.h>
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
     

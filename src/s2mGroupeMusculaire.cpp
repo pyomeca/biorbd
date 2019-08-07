@@ -2,10 +2,11 @@
 #include "s2mGroupeMusculaire.h"
 
 #include "s2mError.h"
-#include "s2mMuscleStateDynamicsBuchanan.h"
 #include "s2mMuscleHillType.h"
-#include "s2mMuscleHillTypeThelen.h"
 #include "s2mMuscleHillTypeSimple.h"
+#include "s2mMuscleHillTypeThelen.h"
+#include "s2mMuscleHillTypeThelenFatigable.h"
+#include "s2mMuscleStateDynamicsBuchanan.h"
 
 s2mGroupeMusculaire::s2mGroupeMusculaire(const s2mString &name, const s2mString &o, const s2mString &i) :
     m_name(name),
@@ -38,7 +39,7 @@ void s2mGroupeMusculaire::addHillMuscle(
         const s2mMusclePathChangers& w,
         const s2mString& stateType,
         const s2mString& dynamicFatigueType){
-    s2mMuscleStateActual * st;
+    s2mMuscleStateDynamics * st;
     if (!stateType.tolower().compare("default"))
         st = new s2mMuscleStateDynamics;
     else if (!stateType.tolower().compare("buchanan"))
@@ -52,12 +53,16 @@ void s2mGroupeMusculaire::addHillMuscle(
         s2mMuscleHillType m(name,g,c,w,*st);
         addMuscle(m);
     }
+    else if (!s.tolower().compare("hillsimple") || !s.tolower().compare("simple")){
+        s2mMuscleHillTypeSimple m(name,g,c,w,*st);
+        addMuscle(m);
+    }
     else if (!s.tolower().compare("hillthelen") || !s.tolower().compare("thelen")){
         s2mMuscleHillTypeThelen m(name,g,c,w,*st);
         addMuscle(m);
     }
-    else if (!s.tolower().compare("hillsimple") || !s.tolower().compare("simple")){
-        s2mMuscleHillTypeSimple m(name,g,c,w,*st);
+    else if (!s.tolower().compare("hillthelenfatigable") || !s.tolower().compare("thelenfatigable")){
+        s2mMuscleHillTypeThelenFatigable m(name,g,c,w,*st,dynamicFatigueType);
         addMuscle(m);
     }
     else
@@ -73,6 +78,10 @@ void s2mGroupeMusculaire::addMuscle(s2mMuscle &val){
     // Ajouter un muscle au pool de muscle selon son type
     if (dynamic_cast<s2mMuscleHillTypeSimple*> (&val)){
         m_mus.push_back(std::shared_ptr<s2mMuscle> (new s2mMuscleHillTypeSimple(dynamic_cast <s2mMuscleHillTypeSimple&> (val))));
+        return;
+    }
+    else if (dynamic_cast<s2mMuscleHillTypeThelenFatigable*> (&val)){
+        m_mus.push_back(std::shared_ptr<s2mMuscle> (new s2mMuscleHillTypeThelenFatigable(dynamic_cast <s2mMuscleHillTypeThelenFatigable&> (val))));
         return;
     }
     else if (dynamic_cast<s2mMuscleHillTypeThelen*> (&val)){

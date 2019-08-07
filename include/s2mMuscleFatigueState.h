@@ -1,8 +1,9 @@
 #ifndef S2M_MUSCLE_FATIGUE_STATE_H
 #define S2M_MUSCLE_FATIGUE_STATE_H
+
+#include <memory>
 #include "biorbdConfig.h"
-#include "s2mError.h"
-#include "s2mMuscle.h"
+#include "s2mString.h"
 
 class BIORBD_API s2mMuscleFatigueState
 {
@@ -13,6 +14,7 @@ class BIORBD_API s2mMuscleFatigueState
                 double resting = 1);
 
         s2mMuscleFatigueState(const std::shared_ptr<s2mMuscleFatigueState> fatigue);
+        virtual ~s2mMuscleFatigueState();
 
         // Set and Get
         virtual void setState(

@@ -3,10 +3,11 @@
 
 #include <memory>
 #include "biorbdConfig.h"
-#include "s2mMuscleFatigueDynamicStateXia.h"
-#include "s2mMuscleFatigueState.h"
-#include "s2mMuscleStateActual.h"
 
+class s2mString;
+class s2mMuscle;
+class s2mMuscleStateDynamics;
+class s2mMuscleFatigueState;
 class BIORBD_API s2mMuscleFatigable
 {
 public:
@@ -15,7 +16,7 @@ public:
     s2mMuscleFatigable(const std::shared_ptr<s2mMuscle> m);
     virtual ~s2mMuscleFatigable() = 0;
 
-    virtual void computeTimeDerivativeState(const s2mMuscleStateActual& EMG);
+    virtual void computeTimeDerivativeState(const s2mMuscleStateDynamics& emg);
 
     std::shared_ptr<s2mMuscleFatigueState> fatigueState();
     virtual void fatigueState(double active, double fatigued, double resting);

@@ -1,5 +1,5 @@
-#define S2M_VECTOR_H
 #ifndef S2M_VECTOR_H
+#define S2M_VECTOR_H
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"

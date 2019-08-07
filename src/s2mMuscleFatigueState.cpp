@@ -1,5 +1,8 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleFatigueState.h"
+#include "s2mMuscleFatigueState.h"
+
+#include <cmath>
+#include "s2mError.h"
 
 s2mMuscleFatigueState::s2mMuscleFatigueState(
         double active,
@@ -18,6 +21,11 @@ s2mMuscleFatigueState::s2mMuscleFatigueState(const std::shared_ptr<s2mMuscleFati
     m_fatiguedFibers = m->m_fatiguedFibers;
     m_restingFibers = m->m_restingFibers;
     m_type = m->m_type;
+}
+
+s2mMuscleFatigueState::~s2mMuscleFatigueState()
+{
+
 }
 
 void s2mMuscleFatigueState::setState(double active, double fatigued, double resting)

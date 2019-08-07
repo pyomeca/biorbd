@@ -1,5 +1,5 @@
-#define S2M_WRAPPING_SPHERE_H
 #ifndef S2M_WRAPPING_SPHERE_H
+#define S2M_WRAPPING_SPHERE_H
 
 #include "biorbdConfig.h"
 #include "s2mWrappingObject.h"

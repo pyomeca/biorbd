@@ -1,6 +1,8 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mStaticOptimizationIpoptLinearized.h"
+#include "s2mStaticOptimizationIpoptLinearized.h"
 
+#include "s2mMusculoSkeletalModel.h"
+#include "s2mMuscleStateDynamics.h"
 
 s2mStaticOptimizationIpoptLinearized::s2mStaticOptimizationIpoptLinearized(
         s2mMusculoSkeletalModel &model,
@@ -23,13 +25,13 @@ s2mStaticOptimizationIpoptLinearized::s2mStaticOptimizationIpoptLinearized(
 void s2mStaticOptimizationIpoptLinearized::prepareJacobian()
 {
     m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
-    std::vector<s2mMuscleStateActual> state_zero;
+    std::vector<s2mMuscleStateDynamics> state_zero;
     for (unsigned int i = 0; i<m_nMus; ++i){
-        state_zero.push_back(s2mMuscleStateActual(0, 0));
+        state_zero.push_back(s2mMuscleStateDynamics(0, 0));
     }
     s2mTau tau_zero = m_model.muscularJointTorque(m_model, state_zero, false, &m_Q, &m_Qdot);
     for (unsigned int i = 0; i<m_nMus; ++i){
-        std::vector<s2mMuscleStateActual> state;
+        std::vector<s2mMuscleStateDynamics> state;
         for (unsigned int j = 0; j<m_nMus; ++j){
             unsigned int delta;
             if (j == i){
@@ -38,7 +40,7 @@ void s2mStaticOptimizationIpoptLinearized::prepareJacobian()
             else {
                 delta = 0;
             }
-            state.push_back(s2mMuscleStateActual(0, delta*1));
+            state.push_back(s2mMuscleStateDynamics(0, delta*1));
         }
         s2mTau tau = m_model.muscularJointTorque(m_model, state, true, &m_Q, &m_Qdot);
         for (unsigned int j = 0; j<m_nTau; ++j){
@@ -60,9 +62,9 @@ bool s2mStaticOptimizationIpoptLinearized::eval_g(
     if (new_x){
         dispatch(x);
     }
-    std::vector<s2mMuscleStateActual> state;// controls
+    std::vector<s2mMuscleStateDynamics> state;// controls
     for (unsigned int i = 0; i<m_nMus; ++i){
-        state.push_back(s2mMuscleStateActual(0, m_activations[i]));
+        state.push_back(s2mMuscleStateDynamics(0, m_activations[i]));
     }
     // Compute the torques from muscles
     s2mTau tau_calcul = m_model.muscularJointTorque(m_model, state, false, &m_Q, &m_Qdot);
