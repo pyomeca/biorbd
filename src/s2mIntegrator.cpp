@@ -1,22 +1,17 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mIntegrator.h"
+#include "s2mIntegrator.h"
+
+#include <Eigen/Dense>
+#include <boost/numeric/odeint.hpp>
+#include <rbdl/Dynamics.h>
+#include "s2mJoints.h"
+#include "s2mError.h"
+#include "s2mString.h"
+#include "s2mGenCoord.h"
 
 s2mIntegrator::s2mIntegrator(){
 
 }
-
-//s2mIntegrator::s2mIntegrator(const s2mIntegrator& i){
-//    m_nbre = i.m_nbre; // Nombre d'élément dans l'intégration
-//    m_steps = i.m_steps; // Nombre de step pour l'intégration
-//    m_model = i.m_model; // Model dans lequel il faut appeler forwardDynamics
-
-//    // Déclarer un observeur
-//    m_x_vec = i.m_x_vec;
-//    m_times = i.m_times;
-//    m_u = i.m_u; // Effecteurs
-
-//}
-
 
 void s2mIntegrator::operator() ( const state_type &x , state_type &dxdt , const double ){
     // Équation différentielle : x/xdot => xdot/xddot

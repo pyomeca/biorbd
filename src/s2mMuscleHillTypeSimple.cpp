@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleHillTypeSimple.h"
+#include "s2mMuscleHillTypeSimple.h"
 
 
 s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(const s2mString &s) :

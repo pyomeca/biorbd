@@ -1,9 +1,9 @@
 #ifndef S2MBONECARACTERISTICS_H
 #define S2MBONECARACTERISTICS_H
-    #include "biorbdConfig.h"
-    #include <Eigen/Dense>
-    #include "s2mBoneMesh.h"
-    #include <rbdl/rbdl.h>
+
+#include <rbdl/Body.h>
+#include "biorbdConfig.h"
+#include "s2mBoneMesh.h"
 
 class BIORBD_API s2mBoneCaracteristics : public RigidBodyDynamics::Body
 {
@@ -23,12 +23,8 @@ class BIORBD_API s2mBoneCaracteristics : public RigidBodyDynamics::Body
         const Eigen::Matrix3d& inertia() const;
 
     protected:
-    private:
-//        double m_mass;
         double m_length;
         s2mBoneMesh m_mesh;
-//        Eigen::Vector3d m_centerOfMass;
-//        Eigen::Matrix3d m_matrixOfInertia;
 };
 
 #endif // S2MBONECARACTERISTICS_H

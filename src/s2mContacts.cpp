@@ -1,5 +1,12 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mContacts.h"
+#include "s2mContacts.h"
+
+#include <rbdl/Kinematics.h>
+#include "s2mJoints.h"
+#include "s2mString.h"
+#include "s2mError.h"
+#include "s2mGenCoord.h"
+#include "s2mNode.h"
 
 s2mContacts::s2mContacts() :
     RigidBodyDynamics::ConstraintSet (),
@@ -30,7 +37,7 @@ unsigned int s2mContacts::AddConstraint(unsigned int body_id, const s2mNode& bod
 }
 
 
-const s2mContacts &s2mContacts::getConstraints(const RigidBodyDynamics::Model& m){
+const s2mContacts &s2mContacts::getConstraints(const s2mJoints &m){
     if (!m_binded){
         Bind(m);
         m_binded = true;

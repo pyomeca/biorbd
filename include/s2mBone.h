@@ -1,14 +1,13 @@
 #ifndef S2MBONE_H
 #define S2MBONE_H
 
-    #include "biorbdConfig.h"
-    #include "s2mError.h"
-    #include <rbdl/rbdl.h>
-    #include "s2mBoneCaracteristics.h"
-    #include "s2mJointIntraBone.h"
-    #include <limits.h>
+#include "biorbdConfig.h"
+#include "s2mBoneCaracteristics.h"
+#include "s2mJoint.h"
 
 class s2mJoints;
+class s2mString;
+class s2mAttitude;
 class BIORBD_API s2mBone
 {
     public:
@@ -83,7 +82,7 @@ class BIORBD_API s2mBone
         unsigned int m_nDofQuat; // Nombre de degrés de liberté en rotation
         bool m_isQuaternion; // conserver si les dof en rotation est un quaternion
         void determineIfRotIsQuaternion(const s2mString &seqR);
-        s2mJointIntraBone * m_dof; // Articulation des dof : t1, t2, t3, r1, r2, r3; selon l'ordre réel des coordonnées généralisées
+        s2mJoint * m_dof; // Articulation des dof : t1, t2, t3, r1, r2, r3; selon l'ordre réel des coordonnées généralisées
         unsigned int * m_idxDof;  // Index de l'articulation parent à mettre dans la variable model,
                                     // lorsque l'utilisateur demande le parent_id de ce segment, le dernier indice est envoyé
 
@@ -106,8 +105,6 @@ class BIORBD_API s2mBone
         s2mBoneCaracteristics m_caract;// Segment virtuel non utilisé, il permet de "sauvegarder" les données et donc d'éviter l'usage de multiples variables intermédiaires
         s2mBoneCaracteristics * m_dofCaract; // Variable contenant les données Inertielles et autre de chaque sous segment (0 à 4 devraient être vide et 5 rempli)
 
-    private:
 };
-#include "s2mJoints.h"
 
 #endif // S2MBONE_H

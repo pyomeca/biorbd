@@ -1,13 +1,13 @@
 #ifndef S2MATTITUDE_H
 #define S2MATTITUDE_H
 
-    #include "biorbdConfig.h"
-    #include "s2mError.h"
-    #include "s2mString.h"
-    #include <Eigen/Dense>
-    #include "rbdl/rbdl.h"
-    #include <iostream>
+#include <vector>
+#include <Eigen/Dense>
+#include <rbdl/rbdl_math.h>
+#include "biorbdConfig.h"
+
 class s2mNode;
+class s2mString;
 class BIORBD_API s2mAttitude : public Eigen::Matrix4d
 {
     public:
@@ -15,7 +15,6 @@ class BIORBD_API s2mAttitude : public Eigen::Matrix4d
         s2mAttitude(const Eigen::VectorXd&, const Eigen::Vector3d&, const s2mString&);
         s2mAttitude(const Eigen::Matrix3d& rot, const Eigen::Vector3d& trans = Eigen::Vector3d::Zero());
         s2mAttitude(const RigidBodyDynamics::Math::SpatialTransform&);
-        virtual ~s2mAttitude();
 
         Eigen::Vector3d axe(int); // Aller récupérer un axe en particulier
 
@@ -38,10 +37,9 @@ class BIORBD_API s2mAttitude : public Eigen::Matrix4d
         static s2mAttitude mean(const std::vector<s2mAttitude>&); // Moyenne des matrices 4x4
     protected:
         Eigen::Vector4d expand3dTo4d(const Eigen::Vector3d&);
-    private:
+
 };
 std::ostream& operator<<(std::ostream& os, const s2mAttitude &a);
 
-#include "s2mNode.h"
 
 #endif // S2MATTITUDE_H

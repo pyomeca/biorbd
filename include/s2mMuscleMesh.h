@@ -2,12 +2,9 @@
 #define S2MMUSCLEMESH_H
 
 #include "biorbdConfig.h"
-#include "s2mError.h"
-#include "s2mMuscleForce.h"
 #include "s2mMuscleCompound.h"
-#include "s2mMuscleHillType.h"
 
-
+class s2mMuscle;
 class BIORBD_API s2mMuscleMesh : public s2mMuscleCompound
 {
     public:
@@ -28,8 +25,6 @@ class BIORBD_API s2mMuscleMesh : public s2mMuscleCompound
         s2mMuscle ** m_muscles;
         unsigned int m_nbMuscles;
         virtual void assignValue(s2mMuscle*&, s2mMuscle*&);
-    private:
-
 };
 
 #endif // S2MMUSCLEMESH_H

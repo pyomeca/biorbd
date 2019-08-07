@@ -1,22 +1,23 @@
 #ifndef S2MJOINTS_H
 #define S2MJOINTS_H
 
+#include <rbdl/Model.h>
+#include <rbdl/Constraints.h>
 #include "biorbdConfig.h"
-#include "s2mError.h"
-#include <rbdl/rbdl.h>
-#include "s2mNodeBone.h"
-#include "s2mBoneMesh.h"
-#include "s2mMatrix.h"
-#include "s2mPatch.h"
-
+#include "s2mString.h"
 
 class s2mAttitude;
 class s2mBone;
 class s2mBoneCaracteristics;
+class s2mBoneMesh;
 class s2mTau;
 class s2mGenCoord;
 class s2mIntegrator;
 class s2mMarkers;
+class s2mNode;
+class s2mNodeBone;
+class s2mMatrix;
+class s2mPatch;
 class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
 {
     public:
@@ -165,15 +166,8 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
                                                            const unsigned int body_id,
                                                            bool update_kinematics); // Calculate the JCS in global
         std::vector<s2mNodeBone> meshPoints(const std::vector<s2mAttitude>&, const unsigned int& idx) const;
-    private:
 
 };
-
-#include "s2mBone.h"
-#include "s2mBoneCaracteristics.h"
-#include "s2mIntegrator.h"
-#include "s2mTau.h"
-#include "s2mMarkers.h"
 
 #endif // S2MJOINTS_H
 

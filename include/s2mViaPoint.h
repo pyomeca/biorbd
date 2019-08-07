@@ -1,8 +1,9 @@
 #ifndef S2MVIAPOINT_H
 #define S2MVIAPOINT_H
+
+#include <Eigen/Dense>
 #include "biorbdConfig.h"
 #include "s2mMusclePathChanger.h"
-#include "Eigen/Dense"
 
 class BIORBD_API s2mViaPoint : public s2mMusclePathChanger{
 public:
@@ -11,22 +12,6 @@ public:
                 const s2mString &parentName = "");
     virtual ~s2mViaPoint();
 
-protected:
-
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif // S2MVIAPOINT_H

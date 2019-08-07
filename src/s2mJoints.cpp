@@ -1,6 +1,20 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mJoints.h"
+#include "s2mJoints.h"
 
+#include <rbdl/rbdl_utils.h>
+#include <rbdl/Kinematics.h>
+#include <rbdl/Dynamics.h>
+#include "s2mError.h"
+#include "s2mGenCoord.h"
+#include "s2mQuaternion.h"
+#include "s2mMatrix.h"
+#include "s2mTau.h"
+#include "s2mAttitude.h"
+#include "s2mIntegrator.h"
+#include "s2mBone.h"
+#include "s2mMarkers.h"
+#include "s2mNodeBone.h"
+#include "s2mPatch.h"
 
 s2mJoints::s2mJoints() :
     m_nbRoot(0),
@@ -14,7 +28,6 @@ s2mJoints::s2mJoints() :
     m_isKinematicsComputed(false),
     m_totalMass(0)
 {
-	rbdl_check_api_version (RBDL_API_VERSION);
     this->gravity = RigidBodyDynamics::Math::Vector3d (0, 0, -9.81);  // Redéfinition de la gravité pour qu'elle soit en z
     integrator = new s2mIntegrator();
     //ctor
@@ -654,11 +667,11 @@ void s2mJoints::ForwardDynamicsContactsLagrangian (
 
    // Compute C
    CS.QDDot_0.setZero();
-   InverseDynamics (model, Q, QDot, CS.QDDot_0, CS.C);
+   RigidBodyDynamics::InverseDynamics (model, Q, QDot, CS.QDDot_0, CS.C);
 
    // Compute H
    CS.H = RigidBodyDynamics::Math::MatrixNd::Zero(model.dof_count, model.dof_count);
-   CompositeRigidBodyAlgorithm (model, Q, CS.H, false);
+   RigidBodyDynamics::CompositeRigidBodyAlgorithm (model, Q, CS.H, false);
 
    // Compute G
    unsigned int i,j;

@@ -1,13 +1,20 @@
 #ifndef S2MMUSCLES_H
 #define S2MMUSCLES_H
 
-#include "biorbdConfig.h"
-#include "s2mError.h"
 #include <vector>
-#include "s2mGroupeMusculaire.h"
-#include "s2mGenCoord.h"
-#include "s2mTau.h"
+#include <memory>
+#include <Eigen/Dense>
+#include "biorbdConfig.h"
 
+class s2mJoints;
+class s2mString;
+class s2mGroupeMusculaire;
+class s2mNodeMuscle;
+class s2mMatrix;
+class s2mGenCoord;
+class s2mTau;
+class s2mMuscleStateDynamics;
+class s2mMuscleForce;
 class BIORBD_API s2mMuscles
 {
 public:
@@ -29,7 +36,8 @@ public:
     s2mTau muscularJointTorque(s2mJoints& model, const Eigen::VectorXd & F, bool updateKin = true, const s2mGenCoord* Q = nullptr, const s2mGenCoord* QDot = nullptr);
     s2mTau muscularJointTorque(s2mJoints& model, const std::vector<s2mMuscleStateDynamics> &state, Eigen::VectorXd & F, bool updateKin = true, const s2mGenCoord* Q = nullptr, const s2mGenCoord* QDot = nullptr);
     s2mTau muscularJointTorque(s2mJoints& model, const std::vector<s2mMuscleStateDynamics> &state, bool updateKin = true, const s2mGenCoord* Q = nullptr, const s2mGenCoord* QDot = nullptr);
-    s2mMatrix musclesLengthJacobian(s2mJoints& m, const s2mGenCoord& Q = s2mGenCoord());
+    s2mMatrix musclesLengthJacobian(s2mJoints& m);
+    s2mMatrix musclesLengthJacobian(s2mJoints& m, const s2mGenCoord& Q);
     std::vector<std::vector<std::shared_ptr<s2mMuscleForce>>> musclesForces(s2mJoints& m, const std::vector<s2mMuscleStateDynamics> &state, bool updateKin = true, const s2mGenCoord* Q = nullptr, const s2mGenCoord* QDot = nullptr);
 
     // Set and get
@@ -37,7 +45,7 @@ public:
     unsigned int nbMuscleTotal() const; // retourne le nombre total de muscles
 protected:
     std::vector<s2mGroupeMusculaire> m_mus;
-private:
+
 };
 
 #endif // S2MMUSCLES_H

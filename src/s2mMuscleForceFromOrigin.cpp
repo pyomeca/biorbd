@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleForceFromOrigin.h"
+#include "s2mMuscleForceFromOrigin.h"
 
 s2mMuscleForceFromOrigin::s2mMuscleForceFromOrigin() :
     s2mMuscleForce(){}

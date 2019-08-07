@@ -1,13 +1,12 @@
 #ifndef S2MMUSCLE_H
 #define S2MMUSCLE_H
-    #include "biorbdConfig.h"
-    #include "s2mError.h"
-    #include "s2mMuscleCompound.h"
-    #include "s2mJoints.h"
-    #include "s2mMusclePathChangers.h"
-    #include "s2mMuscleStateDynamics.h"
-    #include "s2mMuscleStateDynamicsBuchanan.h"
-    #include "s2mGenCoord.h"
+
+#include "biorbdConfig.h"
+#include "s2mString.h"
+#include "s2mMuscleCompound.h"
+#include "s2mMuscleGeometry.h"
+#include "s2mMuscleCaracteristics.h"
+#include "s2mMuscleStateDynamics.h"
 
 class BIORBD_API s2mMuscle : public s2mMuscleCompound
 {
@@ -47,7 +46,6 @@ class BIORBD_API s2mMuscle : public s2mMuscleCompound
         s2mMuscleCaracteristics m_caract;
         s2mMuscleStateDynamics * m_state;
 
-    private:
 };
 
 #endif // S2MMUSCLE_H

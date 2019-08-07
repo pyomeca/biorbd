@@ -3,8 +3,8 @@
 
 #include "biorbdConfig.h"
 #include "s2mActuator.h"
-#include "s2mGenCoord.h"
 
+class s2mGenCoord;
 class BIORBD_API s2mActuatorGauss3p : public s2mActuator
 {
     public:
@@ -46,6 +46,5 @@ class BIORBD_API s2mActuatorGauss3p : public s2mActuator
         double m_r;         // width of the gaussian curve
         double m_qopt;      // Optimal position
 
-private:
 };
 #endif // S2MACTUATORGAUSS3P_H

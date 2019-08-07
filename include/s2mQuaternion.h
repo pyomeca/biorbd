@@ -1,6 +1,9 @@
 #ifndef S2MQUATERNION_H
 #define S2MQUATERNION_H
-#include <rbdl.h>
+
+#include <Eigen/Dense>
+#include <rbdl/rbdl_math.h>
+#include <rbdl/Quaternion.h>
 #include "biorbdConfig.h"
     
 class BIORBD_API s2mQuaternion : public RigidBodyDynamics::Math::Quaternion
@@ -20,6 +23,5 @@ class BIORBD_API s2mQuaternion : public RigidBodyDynamics::Math::Quaternion
     protected:
         double m_Kstab; // Facteur de stabilisation lors de la derivation
 
-private:
 };
 #endif // S2MQUATERNION_H

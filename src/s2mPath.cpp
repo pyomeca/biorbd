@@ -1,5 +1,18 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mPath.h"
+#include "s2mPath.h"
+
+#ifdef _WIN64
+    #include <direct.h>
+    #include <Windows.h>
+    #undef max
+#elseif _WIN32
+    #include <direct.h>
+    #include <Windows.h>
+    #undef max
+#else
+    #include <sys/stat.h>
+    #include <unistd.h>
+#endif
 
 s2mPath::s2mPath()
     : s2mString("")

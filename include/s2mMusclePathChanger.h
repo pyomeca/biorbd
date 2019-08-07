@@ -1,5 +1,6 @@
 #ifndef S2MMUSCLEPATHCHANGER_H
 #define S2MMUSCLEPATHCHANGER_H
+
 #include "biorbdConfig.h"
 #include "s2mNodeMuscle.h"
 #include "s2mString.h"

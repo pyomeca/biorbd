@@ -2,12 +2,7 @@
 #define S2MSTRING_H
 
 #include <iostream>
-#include <algorithm>
-#include <vector>
-#include <boost/lexical_cast.hpp>
-
 #include "biorbdConfig.h"
-#include <map>
 
 class BIORBD_API s2mString : public std::string
 {
@@ -28,8 +23,7 @@ public:
     s2mString tolower() const;
     static s2mString toupper(const s2mString &str); // convert a string to a lower case string
     s2mString toupper() const;
-};
 
-#include "s2mError.h"
+};
 
 #endif // S2MSTRING_H

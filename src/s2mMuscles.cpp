@@ -1,6 +1,13 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscles.h"
+#include "s2mMuscles.h"
 
+#include "s2mMuscle.h"
+#include "s2mError.h"
+#include "s2mGroupeMusculaire.h"
+#include "s2mGenCoord.h"
+#include "s2mTau.h"
+#include "s2mMuscleStateDynamics.h"
+#include "s2mMuscleForce.h"
 
 s2mMuscles::s2mMuscles(){
 
@@ -103,12 +110,8 @@ unsigned int s2mMuscles::nbMuscleGroups() const {
     return static_cast<unsigned int>(m_mus.size());
 }
 
-s2mMatrix s2mMuscles::musclesLengthJacobian(s2mJoints& m, const s2mGenCoord &Q){
-
-    // Update de la position musculaire
-    if (Q.size() > 0)
-        updateMuscles(m, Q, true);
-
+s2mMatrix s2mMuscles::musclesLengthJacobian(s2mJoints &m)
+{
     s2mMatrix tp(s2mMatrix::Zero(nbMuscleTotal(), m.nbDof()));
     unsigned int cmpMus(0);
     for (unsigned int i=0; i<nbMuscleGroups(); ++i){ // groupe musculaire
@@ -119,6 +122,14 @@ s2mMatrix s2mMuscles::musclesLengthJacobian(s2mJoints& m, const s2mGenCoord &Q){
         }
     }
     return tp;
+
+}
+
+s2mMatrix s2mMuscles::musclesLengthJacobian(s2mJoints& m, const s2mGenCoord &Q){
+
+    // Update de la position musculaire
+    updateMuscles(m, Q, true);
+    return musclesLengthJacobian(m);
 }
 
 

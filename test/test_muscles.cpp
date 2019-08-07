@@ -2,6 +2,8 @@
 #include <gtest/gtest.h>
 
 #include "s2mMusculoSkeletalModel.h"
+#include "s2mMuscle.h"
+#include "s2mGroupeMusculaire.h"
 
 static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
 static unsigned int muscleGroupForMuscleJacobian(1);

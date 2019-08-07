@@ -1,5 +1,12 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mKalmanReconsIMU.h"
+#include "s2mKalmanReconsIMU.h"
+
+#include <rbdl/Model.h>
+#include <rbdl/Kinematics.h>
+#include "s2mMusculoSkeletalModel.h"
+#include "s2mError.h"
+#include "s2mIMU.h"
+#include "s2mGenCoord.h"
 
 s2mKalmanReconsIMU::s2mKalmanReconsIMU(s2mMusculoSkeletalModel &m, s2mKalmanRecons::s2mKalmanParam params) :
     s2mKalmanRecons(m, m.nTechIMUs()*9, params),
@@ -88,4 +95,9 @@ void s2mKalmanReconsIMU::reconstructFrame(s2mMusculoSkeletalModel &m, const Eige
     iteration(IMUobs, zest, H, occlusionIdx);
 
     getState(Q, Qdot, Qddot);
+}
+
+void s2mKalmanReconsIMU::reconstructFrame()
+{
+    s2mError::s2mAssert(false, "Implémentation impossible");
 }

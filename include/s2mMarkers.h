@@ -1,12 +1,15 @@
 #ifndef S2MMARKERS_H
 #define S2MMARKERS_H
 
-#include <rbdl/rbdl.h>
-#include "s2mNodeBone.h"
-#include "s2mMatrix.h"
+#include <vector>
+#include <Eigen/Dense>
+#include "biorbdConfig.h"
+#include "s2mString.h"
 
 class s2mGenCoord;
 class s2mJoints;
+class s2mNodeBone;
+class s2mMatrix;
 class BIORBD_API s2mMarkers
 {
     public:
@@ -56,12 +59,7 @@ protected:
         std::vector<s2mMatrix> TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin, bool lookForTechnical); // Retourne la jacobienne des Tags
 
         std::vector <s2mNodeBone> m_marks;
-    private:
-};
 
-#include "biorbdConfig.h"
-#include "s2mString.h"
-#include "s2mBone.h"
-#include "s2mGenCoord.h"
+};
 
 #endif // S2MMARKERS_H

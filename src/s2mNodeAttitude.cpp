@@ -1,8 +1,7 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mNodeAttitude.h"
+#include "s2mNodeAttitude.h"
 
-
-
+#include <Eigen/Dense>
 
 s2mNodeAttitude::s2mNodeAttitude(const s2mAttitude &v, const s2mString &name, const s2mString &parentName) : // Nom du parent
     s2mAttitude(v),

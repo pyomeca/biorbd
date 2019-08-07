@@ -15,8 +15,7 @@ class BIORBD_API s2mMuscleForceFromOrigin : public s2mMuscleForce
 
         // Get et set
         void setForce(const s2mMuscleGeometry& geo, double force);
-    protected:
-    private:
+
 };
 
 #endif // S2MMUSCLEFORCEFROMORIGIN_H

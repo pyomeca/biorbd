@@ -1,5 +1,8 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mActuatorConstant.h"
+#include "s2mActuatorConstant.h"
+
+#include "s2mString.h"
+#include "s2mGenCoord.h"
 
 s2mActuatorConstant::s2mActuatorConstant(
     int direction,

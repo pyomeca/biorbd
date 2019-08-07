@@ -1,5 +1,9 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleStateDynamics.h"
+#include "s2mMuscleStateDynamics.h"
+
+#include "s2mError.h"
+#include "s2mString.h"
+#include "s2mMuscleCaracteristics.h"
 
 s2mMuscleStateDynamics::s2mMuscleStateDynamics(const double &e, const double &a) :
     s2mMuscleState(e,a),

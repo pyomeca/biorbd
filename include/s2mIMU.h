@@ -1,8 +1,8 @@
 #ifndef S2MIMU_H
 #define S2MIMU_H
-    #include "biorbdConfig.h"
-    #include <Eigen/Dense>
-    #include "s2mNodeAttitude.h"
+
+#include "biorbdConfig.h"
+#include "s2mNodeAttitude.h"
 
 class BIORBD_API s2mIMU : public s2mNodeAttitude
 { 
@@ -23,7 +23,6 @@ class BIORBD_API s2mIMU : public s2mNodeAttitude
         bool m_technical; // If a marker is a technical marker
         bool m_anatomical; // It marker is a anatomical marker
         int m_id;
-    private:
 
 };
 

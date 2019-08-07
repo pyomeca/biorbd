@@ -2,13 +2,12 @@
 #define KALMANRECONS_HPP
 
 #include <vector>
-#include <iostream>
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
-#include "s2mString.h"
-#include "s2mGenCoord.h"
-#include "s2mMusculoSkeletalModel.h"
+#include "s2mMatrix.h"
 
+class s2mMusculoSkeletalModel;
+class s2mGenCoord;
 class BIORBD_API s2mKalmanRecons
 {
 public:

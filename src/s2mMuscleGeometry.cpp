@@ -1,5 +1,10 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleGeometry.h"
+#include "s2mMuscleGeometry.h"
+
+#include <rbdl/Kinematics.h>
+#include "s2mWrappingObject.h"
+#include "s2mViaPoint.h"
+#include "s2mAttitude.h"
 
 s2mMuscleGeometry::s2mMuscleGeometry(const s2mNodeMuscle &o, const s2mNodeMuscle &i) :
     m_origin(o),
@@ -255,6 +260,7 @@ void s2mMuscleGeometry::musclesPointsInGlobal(s2mJoints &model, const s2mGenCoor
 double s2mMuscleGeometry::velocity(const s2mGenCoord &Qdot){
 
     // Calculer la vitesse d'élongation musculaire
+    // TODO remove the construction of s2mGenCoord and see for the calculation itself
     s2mGenCoord velocity(jacobianLength()*Qdot); // Vector 1 element, mais le compilateur ne le sais pas
     m_velocity = velocity[0];
 

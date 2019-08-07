@@ -1,13 +1,8 @@
 #ifndef S2MMUSCLEHILLTYPE_H
 #define S2MMUSCLEHILLTYPE_H
-    #include "biorbdConfig.h"
-    #include "s2mError.h"
-    #include "s2mMuscle.h"
-    #include "s2mMuscleForceFromOrigin.h"
-    #include "s2mMuscleForceFromInsertion.h"
-    #include "s2mGenCoord.h"
-    #include <math.h>
-    #include <memory>
+
+#include "biorbdConfig.h"
+#include "s2mMuscle.h"
 
 class BIORBD_API s2mMuscleHillType : public s2mMuscle
 {
@@ -66,8 +61,6 @@ class BIORBD_API s2mMuscleHillType : public s2mMuscle
         double m_cste_forceExcentriqueMultiplier; // Constante utilisée pour ForceVitesse
         double m_cste_damping; // Parametre utilisé dans le Damping
         double m_cste_vitesseRaccourMax; // Vitesse de raccourcissement maximale
-    private:
-        void initiateForcePtr(){}
 
 };
 

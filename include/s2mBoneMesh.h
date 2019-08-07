@@ -1,12 +1,13 @@
- 
 #ifndef S2MBONEMESH_H
 #define S2MBONEMESH_H
-    #include "biorbdConfig.h"
-    #include "s2mNode.h"
-    #include "s2mPatch.h"
-    #include "s2mPath.h"
-    #include "vector"
 
+#include <vector>
+#include "Eigen/Dense"
+#include "biorbdConfig.h"
+#include "s2mPath.h"
+
+class s2mNode;
+class s2mPatch;
 class BIORBD_API s2mBoneMesh
 {
     public:
@@ -34,7 +35,7 @@ class BIORBD_API s2mBoneMesh
         s2mPath m_pathFile;
         std::vector<s2mNode> m_mesh;
         std::vector<s2mPatch> m_patch;
-    private:
+
 };
 
 #endif // S2MBONEMESH_H

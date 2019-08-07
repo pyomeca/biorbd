@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mTimer.h"
+#include "s2mTimer.h"
 
 
 s2mTimer::s2mTimer(bool startNow) :
@@ -9,6 +9,11 @@ s2mTimer::s2mTimer(bool startNow) :
 {
     if (startNow)
         start();
+}
+
+s2mTimer::~s2mTimer()
+{
+
 }
 
 void s2mTimer::start()

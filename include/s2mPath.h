@@ -1,21 +1,8 @@
 #ifndef S2MPATH_H
 #define S2MPATH_H
 
-#include "s2mString.h"
 #include "biorbdConfig.h"
-    
-#ifdef _WIN64
-    #include <direct.h>
-	#include <Windows.h>
-	#undef max
-#elif _WIN32
-    #include <direct.h>
-	#include <Windows.h>
-	#undef max
-#else
-    #include <sys/stat.h>
-    #include <unistd.h>
-#endif 
+#include "s2mString.h"
 
 class BIORBD_API s2mPath : public s2mString
 {

@@ -1,8 +1,7 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mNode.h"
+#include "s2mNode.h"
 
-
-
+#include "s2mAttitude.h"
 
 s2mNode::s2mNode(double x, double y, double z, const s2mString &name, const s2mString &parentName) :
     Eigen::Vector3d (x, y, z),

@@ -1,5 +1,16 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMarkers.h"
+#include "s2mMarkers.h"
+
+#include <rbdl/Model.h>
+#include <rbdl/Kinematics.h>
+#include "s2mJoints.h"
+#include "s2mPatch.h"
+#include "s2mNodeBone.h"
+#include "s2mMatrix.h"
+#include "s2mString.h"
+#include "s2mBone.h"
+#include "s2mGenCoord.h"
+
 
 s2mMarkers::s2mMarkers()
 {
@@ -190,7 +201,7 @@ std::vector<s2mNodeBone> s2mMarkers::segmentTags(s2mJoints& model, const s2mGenC
 
 
 unsigned int s2mMarkers::nTags() const {
-    return m_marks.size();
+    return static_cast<unsigned int>(m_marks.size());
 }
 
 unsigned int s2mMarkers::nTags(s2mJoints& model, unsigned int idxSegment) const {

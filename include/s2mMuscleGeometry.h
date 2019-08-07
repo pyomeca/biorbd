@@ -89,7 +89,7 @@ class BIORBD_API s2mMuscleGeometry
         bool m_isGeometryComputed; // Savoir si la geometry a été faite au moins une fois
         bool m_isVelocityComputed; // Savoir si dans le dernier update, la vitesse a été calculée
         bool m_posAndJacoWereForced; // On a utilisé la procédure d'override de la position du muscle et de la jacobienne
-    private:
+
 };
 
 #endif // S2MMUSCLEGEOMETRY_H

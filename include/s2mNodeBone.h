@@ -1,8 +1,10 @@
 #ifndef S2MNODEBONE_H
 #define S2MNODEBONE_H
-	#include "biorbdConfig.h"
-    #include <Eigen/Dense>
-    #include "s2mNode.h"
+
+#include <vector>
+#include <Eigen/Dense>
+#include "biorbdConfig.h"
+#include "s2mNode.h"
 
 class s2mNode;
 class BIORBD_API s2mNodeBone : public s2mNode
@@ -38,7 +40,6 @@ class BIORBD_API s2mNodeBone : public s2mNode
         bool m_technical; // If a marker is a technical marker
         bool m_anatomical; // It marker is a anatomical marker
         int m_id;
-    private:
 
 };
 

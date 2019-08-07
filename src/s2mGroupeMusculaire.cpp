@@ -1,5 +1,11 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mGroupeMusculaire.h"
+#include "s2mGroupeMusculaire.h"
+
+#include "s2mError.h"
+#include "s2mMuscleStateDynamicsBuchanan.h"
+#include "s2mMuscleHillType.h"
+#include "s2mMuscleHillTypeThelen.h"
+#include "s2mMuscleHillTypeSimple.h"
 
 s2mGroupeMusculaire::s2mGroupeMusculaire(const s2mString &name, const s2mString &o, const s2mString &i) :
     m_name(name),

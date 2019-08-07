@@ -1,6 +1,10 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mIfStream.h"
+#include "s2mIfStream.h"
 
+#include <boost/lexical_cast.hpp>
+#include <fstream>
+#include "s2mError.h"
+#include "s2mEquation.h"
 
 // Constructeur
 s2mIfStream::s2mIfStream(const s2mPath& path, std::ios_base::openmode mode = std::ios_base::in ) :
@@ -54,7 +58,7 @@ bool s2mIfStream::reachSpecificTag(const s2mString& tag){
 int s2mIfStream::countTagsInAConsecutiveLines(const s2mString &tag)
 {
     // Se souvenir où on était dans le fichier
-    int positionInFile(m_ifs->tellg());
+    long positionInFile(m_ifs->tellg());
     s2mString text;
     int nTags(0);
 
@@ -85,7 +89,7 @@ bool s2mIfStream::read(s2mString& text){
     }
     else if (!text(0,1).compare("/*")){ // si c'est une commentaire par / *
         while (readIgnoreCommentedLine(text)){
-            if (!text(0,1).compare("*/") || (text.length()>=2 && !text(text.length()-2,text.length()-1).compare("*/")))
+            if (!text(0,1).compare("*/") || (text.length()>=2 && !text(static_cast<unsigned int>(text.length()-2),static_cast<unsigned int>(text.length()-1)).compare("*/")))
                 break;
         }
         read(text);
@@ -135,6 +139,11 @@ void s2mIfStream::getline(s2mString& text){
 bool s2mIfStream::close(){
     m_ifs->close();
     return 1;
+}
+
+bool s2mIfStream::eof()
+{
+    return m_ifs->eof();
 }
 
 

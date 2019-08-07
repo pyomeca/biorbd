@@ -1,8 +1,15 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mTau.h"
+#include "s2mTau.h"
+
+#include "s2mJoints.h"
 
 s2mTau::s2mTau(const s2mJoints &j) :
     s2mVector(j.nbTau()){
+
+}
+
+s2mTau::~s2mTau()
+{
 
 }
 

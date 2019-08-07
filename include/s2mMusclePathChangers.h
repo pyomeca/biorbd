@@ -1,17 +1,11 @@
 #ifndef S2MMUSCLEPATHCHANGERS_H
 #define S2MMUSCLEPATHCHANGERS_H
-    #include <memory>
-    #include <vector>
-    #include "biorbdConfig.h"
-    #include "s2mString.h"
-    #include "s2mMusclePathChanger.h"
-    #include "s2mViaPoint.h"
-    #include "s2mWrappingSphere.h"
-    #include "s2mWrappingCylinder.h"
 
+#include <memory>
+#include <vector>
+#include "biorbdConfig.h"
 
-
-
+class s2mMusclePathChanger;
 class BIORBD_API s2mMusclePathChangers
 {
     public:
@@ -31,7 +25,6 @@ class BIORBD_API s2mMusclePathChangers
         unsigned int m_nbVia;
         unsigned int m_totalObjects;
 
-    private:
 };
 
 #endif // S2MMUSCLEPATHCHANGERS_H

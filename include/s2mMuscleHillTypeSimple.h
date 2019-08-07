@@ -1,7 +1,8 @@
 #ifndef S2MMUSCLEHILLTYPESIMPLE_H
 #define S2MMUSCLEHILLTYPESIMPLE_H
-    #include "biorbdConfig.h"
-    #include "s2mMuscleHillType.h"
+
+#include "biorbdConfig.h"
+#include "s2mMuscleHillType.h"
 
 class BIORBD_API s2mMuscleHillTypeSimple : public s2mMuscleHillType
 {
@@ -24,8 +25,6 @@ public:
 protected:
     double multiplyCaractByActivationAndForce(const s2mMuscleStateDynamics &emg); // Voir dans la fonction pour descriptif
     virtual void setType();
-
-private:
 
 };
 

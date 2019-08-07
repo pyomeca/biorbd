@@ -1,16 +1,22 @@
 #ifndef S2MIMUS_H
 #define S2MIMUS_H
-    #include "biorbdConfig.h"
-    #include "s2mIMU.h"
-    #include "s2mGenCoord.h"
-    #include "s2mMatrix.h"
+
+#include <vector>
+#include "biorbdConfig.h"
+#include "s2mAttitude.h"
+#include "s2mString.h"
+#include "s2mNode.h"
+#include "s2mPatch.h"
 
 class s2mJoints;
+class s2mIMU;
+class s2mGenCoord;
+class s2mMatrix;
 class BIORBD_API s2mIMUs
 {
     public:
         s2mIMUs();
-        ~s2mIMUs();
+        virtual ~s2mIMUs();
 
         // Set and get
         void addIMU(const s2mAttitude &pos = s2mAttitude(),
@@ -51,7 +57,7 @@ class BIORBD_API s2mIMUs
         std::vector<s2mMatrix> IMUJacobian(s2mJoints& model, const s2mGenCoord &Q, const bool &updateKin, bool lookForTechnical); // Retourne la jacobienne des Tags
 
         std::vector <s2mIMU> m_IMUs;
-    private:
+
 };
 
 #endif // S2MIMU_H

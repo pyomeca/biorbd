@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleState.h"
+#include "s2mMuscleState.h"
 
 s2mMuscleState::s2mMuscleState(const double &e, const double &a) :
     m_excitation(e),

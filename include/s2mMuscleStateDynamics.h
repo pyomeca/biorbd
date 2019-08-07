@@ -1,9 +1,10 @@
 #ifndef S2M_MUSCLE_STATE_DYNAMICS_H
 #define S2M_MUSCLE_STATE_DYNAMICS_H
+
 #include "biorbdConfig.h"
 #include "s2mMuscleState.h"
-#include "s2mMuscleCaracteristics.h"
 
+class s2mMuscleCaracteristics;
 class BIORBD_API s2mMuscleStateDynamics : public s2mMuscleState
 {
     public:
@@ -24,12 +25,12 @@ class BIORBD_API s2mMuscleStateDynamics : public s2mMuscleState
         virtual double timeDerivativeActivation(const s2mMuscleCaracteristics& caract, const bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
         virtual double timeDerivativeActivation(); // Retourne la derniere valeur
 
-
     protected:
         double m_excitationNorm;
         double m_previousExcitation;
         double m_previousActivation;
         double m_activationDot;
+
 };
 
 #endif // S2M_MUSCLE_STATE_DYNAMICS_H

@@ -1,9 +1,9 @@
 #ifndef S2MWRAPPINGCYLINDER_H
 #define S2MWRAPPINGCYLINDER_H
-    #include "biorbdConfig.h"
-    #include "s2mWrappingObject.h"
-    #include "s2mGenCoord.h"
 
+#include "biorbdConfig.h"
+#include "s2mWrappingObject.h"
+#include "s2mAttitude.h"
 
 class BIORBD_API s2mWrappingCylinder : public s2mWrappingObject
 {
@@ -57,7 +57,6 @@ class BIORBD_API s2mWrappingCylinder : public s2mWrappingObject
         s2mNodeMuscle m_p1Wrap; // Premier point de contact avec le wrap
         s2mNodeMuscle m_p2Wrap; // Deuxieme point de contact avec le wrap
         double m_lengthAroundWrap ; // Longeur entre p1 et p2
-    private:
 
 };
 

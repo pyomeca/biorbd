@@ -1,7 +1,8 @@
 #ifndef S2MVECTOR_H
 #define S2MVECTOR_H
-    #include <Eigen/Dense>
-	#include "biorbdConfig.h"
+
+#include <Eigen/Dense>
+#include "biorbdConfig.h"
 
 class BIORBD_API s2mVector : public Eigen::VectorXd
 {
@@ -12,9 +13,6 @@ public:
     s2mVector(unsigned int i);
     virtual ~s2mVector();
     Eigen::VectorXd vector() const;
-
-protected:
-private:
 
 };
 

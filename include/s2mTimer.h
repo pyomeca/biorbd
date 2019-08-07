@@ -1,14 +1,14 @@
 #ifndef S2MTIMER_H
 #define S2MTIMER_H
+
 #include <ctime>
-#include <iostream>
 #include "biorbdConfig.h"
     
 class BIORBD_API s2mTimer
 {
     public:
     s2mTimer(bool startNow = false);
-        ~s2mTimer(){}
+        ~s2mTimer();
 
         void start(); // Start a timer
         bool isStarted();
@@ -27,7 +27,6 @@ class BIORBD_API s2mTimer
         std::clock_t m_pauseTime;
         double m_totalPauseTime;
 
-    private:
 };
 
 #endif // S2MTIMER_H

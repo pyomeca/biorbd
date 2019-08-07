@@ -1,5 +1,6 @@
 #ifndef S2M_MUSCLE_STATE_DYNAMICS_BUCHANAN_H
 #define S2M_MUSCLE_STATE_DYNAMICS_BUCHANAN_H
+
 #include "biorbdConfig.h"
 #include "s2mMuscleStateDynamics.h"
 
@@ -20,6 +21,7 @@ class BIORBD_API s2mMuscleStateDynamicsBuchanan : public s2mMuscleStateDynamics
         double m_neuralCommand;
         double m_shapeFactor; //Buchanan2004, le 22 mars 2018
         double m_excitationDot;
+
 };
 
 #endif // S2M_MUSCLE_STATE_DYNAMICS_BUCHANAN_H

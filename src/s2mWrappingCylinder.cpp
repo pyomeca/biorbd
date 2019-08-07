@@ -1,5 +1,7 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mWrappingCylinder.h"
+#include "s2mWrappingCylinder.h"
+
+#include "s2mJoints.h"
 
 s2mWrappingCylinder::s2mWrappingCylinder(const s2mAttitude &v, // Position du centre
                                          const double &dia, // Diametre vue du dessus

@@ -1,5 +1,13 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mIMUs.h"
+#include "s2mIMUs.h"
+
+#include <rbdl/Model.h>
+#include <rbdl/Kinematics.h>
+#include "s2mJoints.h"
+#include "s2mIMU.h"
+#include "s2mGenCoord.h"
+#include "s2mMatrix.h"
+#include "s2mBone.h"
 
 s2mIMUs::s2mIMUs()
 {

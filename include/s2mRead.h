@@ -1,20 +1,17 @@
 #ifndef S2MREAD_H
 #define S2MREAD_H
 
-    #ifdef _WIN64
-		#include <direct.h>
-		#define GetCurrentDir _getcwd
-    #elseif _WIN32
-        #include <direct.h>
-        #define GetCurrentDir _getcwd
-    #else
-		#include <unistd.h>
-		#define GetCurrentDir getcwd
-    #endif
-
 #include <vector>
+#include <Eigen/Dense>
+#include <rbdl/rbdl_math.h>
+#include "biorbdConfig.h"
 
-#include "s2mMusculoSkeletalModel.h"
+class s2mMusculoSkeletalModel;
+class s2mPath;
+class s2mString;
+class s2mNode;
+class s2mGenCoord;
+class s2mBoneMesh;
 class BIORBD_API s2mRead
 {
 public:
@@ -45,16 +42,8 @@ public:
 
     static void pwd(); // Print the working directory
     static bool is_readable( const s2mString & file );
-private:
 
 };
 
-#include "biorbdConfig.h"
-#include "s2mError.h"
-#include "s2mIfStream.h"
-#include <Eigen/Dense>
-#include "s2mString.h"
-#include "s2mPatch.h"
-#include <limits.h>
 
 #endif // S2MREAD_H

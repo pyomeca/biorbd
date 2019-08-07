@@ -3,8 +3,8 @@
 
 #include "biorbdConfig.h"
 #include "s2mActuator.h"
-#include "s2mGenCoord.h"
 
+class s2mGenCoord;
 class BIORBD_API s2mActuatorLinear : public s2mActuator
 {
     public:

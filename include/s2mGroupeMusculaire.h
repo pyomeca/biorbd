@@ -1,15 +1,15 @@
 #ifndef S2MGROUPEMUSCULAIRE_H
 #define S2MGROUPEMUSCULAIRE_H
-    #include "biorbdConfig.h"
-    #include "s2mError.h"
-    #include <memory>
-    #include <vector>
-    #include "s2mMuscleStateDynamicsBuchanan.h"
-    #include "s2mMuscleHillType.h"
-    #include "s2mMuscleHillTypeThelen.h"
-    #include "s2mMuscleHillTypeSimple.h"
-    #include "s2mString.h"
 
+#include <memory>
+#include <vector>
+#include "biorbdConfig.h"
+#include "s2mString.h"
+#include "s2mMusclePathChangers.h"
+
+class s2mMuscle;
+class s2mMuscleGeometry;
+class s2mMuscleCaracteristics;
 class BIORBD_API s2mGroupeMusculaire
 {
     public:
@@ -41,7 +41,7 @@ class BIORBD_API s2mGroupeMusculaire
         s2mString m_name;
         s2mString m_originName;
         s2mString m_insertName;
-    private:
+
 };
 
 #endif // S2MGROUPEMUSCULAIRE_H

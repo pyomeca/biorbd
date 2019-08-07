@@ -1,9 +1,11 @@
 #ifndef S2MEQUATION_H
 #define S2MEQUATION_H
 
+#include <vector>
+#include <map>
 #include "biorbdConfig.h"
 #include "s2mString.h"
-#include "s2mError.h"
+
 #define PI 3.141592653589793
 
 class BIORBD_API s2mEquation : public s2mString

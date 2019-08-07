@@ -1,5 +1,6 @@
 #ifndef S2M_OPTIONS_H
 #define S2M_OPTIONS_H
+
 #include "biorbdConfig.h"
 
 

@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mBenchmark.h"
+#include "s2mBenchmark.h"
 
 s2mBenchmark::s2mBenchmark(){
 
@@ -42,7 +42,7 @@ void s2mBenchmark::wasteTime(double seconds){
 
     std::clock_t start = std::clock();
 
-    while ((((double)(std::clock() - start)) / CLOCKS_PER_SEC)<seconds)
+    while (((static_cast<double>(std::clock() - start)) / CLOCKS_PER_SEC)<seconds)
     {
     }
 

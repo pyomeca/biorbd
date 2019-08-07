@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleCaracteristics.h"
+#include "s2mMuscleCaracteristics.h"
 
 
 s2mMuscleCaracteristics::s2mMuscleCaracteristics(const double &optLength,

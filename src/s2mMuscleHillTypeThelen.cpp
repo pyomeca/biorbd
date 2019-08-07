@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleHillTypeThelen.h"
+#include "s2mMuscleHillTypeThelen.h"
 
 s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(const s2mMuscleGeometry& g,
                                                 const s2mMuscleCaracteristics& c,
@@ -36,7 +36,7 @@ s2mMuscleHillTypeThelen::~s2mMuscleHillTypeThelen()
 
 }
 
-void s2mMuscleHillTypeThelen::computeFlCE(const s2mMuscleStateDynamics&emg){
+void s2mMuscleHillTypeThelen::computeFlCE(const s2mMuscleStateDynamics&){
     m_FlCE = exp( -pow(((m_position.length() / caract().optimalLength())-1), 2 ) /  m_cste_FlCE_2 ); //Thelen2003, le 26 fevrier 2018
 }
 

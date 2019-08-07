@@ -1,6 +1,10 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleHillType.h"
+#include "s2mMuscleHillType.h"
 
+#include "s2mError.h"
+#include "s2mMuscleForceFromOrigin.h"
+#include "s2mMuscleForceFromInsertion.h"
+#include "s2mGenCoord.h"
 
 s2mMuscleHillType::s2mMuscleHillType(const s2mString& name) :
     s2mMuscle(name),

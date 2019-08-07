@@ -1,10 +1,10 @@
 #ifndef S2MNODEATTITUDE_H
 #define S2MNODEATTITUDE_H
-	#include "biorbdConfig.h"
-    #include <Eigen/Dense>
-    #include "s2mAttitude.h"
-    #include "s2mVector.h"
-    #include "s2mString.h"
+
+#include <Eigen/Dense>
+#include "biorbdConfig.h"
+#include "s2mAttitude.h"
+#include "s2mString.h"
 
 class BIORBD_API s2mNodeAttitude : public s2mAttitude
 {
@@ -26,7 +26,6 @@ class BIORBD_API s2mNodeAttitude : public s2mAttitude
     protected:
         s2mString m_parentName;
         s2mString m_RTName;
-    private:
 
 };
 

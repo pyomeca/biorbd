@@ -39,7 +39,7 @@ class BIORBD_API s2mMuscleCompound
         virtual void setType()=0;
         s2mString m_type;
         s2mString m_name;
-    private:
+
 };
 
 #endif // S2MMUSCLECOMPOUND_H

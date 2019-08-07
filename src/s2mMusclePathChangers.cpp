@@ -1,7 +1,11 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMusclePathChangers.h"
+#include "s2mMusclePathChangers.h"
 
-
+#include "s2mError.h"
+#include "s2mMusclePathChanger.h"
+#include "s2mViaPoint.h"
+#include "s2mWrappingSphere.h"
+#include "s2mWrappingCylinder.h"
 
 s2mMusclePathChangers::s2mMusclePathChangers() :
     m_nbWraps(0),

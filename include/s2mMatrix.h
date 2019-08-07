@@ -1,8 +1,8 @@
 #ifndef S2MMATRIX_H
 #define S2MMATRIX_H
-    #include "biorbdConfig.h"
-    #include "s2mString.h"
-    #include <Eigen/Dense>
+
+#include <Eigen/Dense>
+#include "biorbdConfig.h"
 
 class BIORBD_API s2mMatrix : public Eigen::MatrixXd
 {
@@ -15,10 +15,6 @@ public:
     s2mMatrix & operator= (Eigen::MatrixXd other);
 
     virtual Eigen::MatrixXd matrix() const;
-
-
-protected:
-private:
 
 };
 

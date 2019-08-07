@@ -1,5 +1,10 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mAttitude.h"
+#include "s2mAttitude.h"
+
+#include <iostream>
+#include "s2mError.h"
+#include "s2mString.h"
+#include "s2mNode.h"
 
 s2mAttitude::s2mAttitude(const Eigen::Matrix4d& m) :
     Eigen::Matrix4d(m)
@@ -18,11 +23,6 @@ s2mAttitude::s2mAttitude(const Eigen::VectorXd& rot, const Eigen::Vector3d& tran
 }
 s2mAttitude::s2mAttitude(const RigidBodyDynamics::Math::SpatialTransform& st) :
     Eigen::Matrix4d(SpatialTransform2Attitude(st))
-{
-
-}
-
-s2mAttitude::~s2mAttitude()
 {
 
 }

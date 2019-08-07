@@ -1,8 +1,9 @@
 #ifndef S2MNODE_H
 #define S2MNODE_H
-	#include "biorbdConfig.h"
-    #include <Eigen/Dense>
-    #include "s2mString.h"
+
+#include <Eigen/Dense>
+#include "biorbdConfig.h"
+#include "s2mString.h"
 
 class s2mAttitude;
 class BIORBD_API s2mNode : public Eigen::Vector3d
@@ -35,9 +36,7 @@ class BIORBD_API s2mNode : public Eigen::Vector3d
     protected:
         s2mString m_parentName;
         s2mString m_markName;
-    private:
 
 };
-#include "s2mAttitude.h"
 
 #endif // S2MNODE_H

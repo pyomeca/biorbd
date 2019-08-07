@@ -1,9 +1,8 @@
 #ifndef S2MGENCOORD_H
 #define S2MGENCOORD_H
-	#include <Eigen/Dense>
-    #include "biorbdConfig.h"
-    #include "s2mQuaternion.h"
-    #include "s2mVector.h"
+
+#include "biorbdConfig.h"
+#include "s2mVector.h"
 
 class s2mJoints;
 class BIORBD_API s2mGenCoord : public s2mVector
@@ -18,10 +17,6 @@ public:
 
     s2mGenCoord& operator=(const Eigen::VectorXd& vecX);
 
-protected:
-private:
-
 };
-#include "s2mJoints.h"
 
 #endif // S2MGENCOORD_H

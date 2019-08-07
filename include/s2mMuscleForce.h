@@ -24,7 +24,7 @@ class BIORBD_API s2mMuscleForce : public Eigen::Vector3d
     private:
         void computeNorm();
         double m_force;
-//        Eigen::Vector3d m_direction;
+
 };
 
 #endif // S2MMUSCLEFORCE_H

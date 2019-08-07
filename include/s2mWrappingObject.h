@@ -1,14 +1,13 @@
 #ifndef S2MWRAPPINGOBJECT_H
 #define S2MWRAPPINGOBJECT_H
-    #include "biorbdConfig.h"
-    #include "s2mJoints.h"
-    #include "s2mAttitude.h"
-    #include "s2mString.h"
-    #include "s2mNodeMuscle.h"
-    #include "s2mMusclePathChanger.h"
-    #include "s2mGenCoord.h"
+
+#include <Eigen/Dense>
+#include "biorbdConfig.h"
+#include "s2mMusclePathChanger.h"
+#include "s2mString.h"
 
 class s2mJoints;
+class s2mGenCoord;
 class BIORBD_API s2mWrappingObject : public s2mMusclePathChanger
 {
     public:
@@ -27,6 +26,7 @@ class BIORBD_API s2mWrappingObject : public s2mMusclePathChanger
 
     protected:
         s2mString m_forme;
+
 };
 
 #endif // S2MWRAPPINGOBJECT_H

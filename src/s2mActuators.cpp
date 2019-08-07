@@ -1,6 +1,15 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mActuators.h"
+#include "s2mActuators.h"
 
+#include <vector>
+#include "s2mJoints.h"
+#include "s2mError.h"
+#include "s2mActuatorGauss3p.h"
+#include "s2mActuatorGauss6p.h"
+#include "s2mActuatorConstant.h"
+#include "s2mActuatorLinear.h"
+#include "s2mTau.h"
+#include "s2mGenCoord.h"
 
 s2mActuators::s2mActuators() :
     m_isClose(false)
@@ -36,7 +45,7 @@ void s2mActuators::addActuator(const s2mJoints& m, s2mActuator &act){
 
     // S'il y a moins d'actuateurs déjà déclaré qu'il n'y a de dof, il faut agrandir le vecteur
     if (idx >= m_all.size()){
-        unsigned int oldSize = m_all.size();
+        unsigned int oldSize = static_cast<unsigned int>(m_all.size());
         bool * isDofSet = new bool[oldSize*2+1];
         for (unsigned int i=0; i<oldSize*2; ++i)
             isDofSet[i] = m_isDofSet[i];
@@ -123,6 +132,11 @@ std::shared_ptr<s2mActuator> s2mActuators::actuator(unsigned int dof, unsigned i
         return tp.first;
     else
         return tp.second;
+}
+
+unsigned int s2mActuators::nbActuators() const
+{
+    return static_cast<unsigned int>(m_all.size());
 }
 
 s2mTau s2mActuators::torque(const s2mJoints& m, const s2mGenCoord& a, const s2mGenCoord& Q, const s2mGenCoord &Qdot){

@@ -1,5 +1,7 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMuscleStateDynamicsBuchanan.h"
+#include "s2mMuscleStateDynamicsBuchanan.h"
+
+#include <math.h>
 
 s2mMuscleStateDynamicsBuchanan::s2mMuscleStateDynamicsBuchanan(const double &neuralCommand, const double &e) :
     s2mMuscleStateDynamics(e,0),

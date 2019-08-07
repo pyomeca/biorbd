@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mVector.h"
+#include "s2mVector.h"
 
 
 s2mVector::s2mVector() {}

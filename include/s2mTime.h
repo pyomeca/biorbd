@@ -1,7 +1,7 @@
 #ifndef S2MTIME_H
 #define S2MTIME_H
-#include "biorbdConfig.h"
 
+#include "biorbdConfig.h"
 
 class BIORBD_API s2mTime
 {
@@ -14,7 +14,6 @@ class BIORBD_API s2mTime
         double * m_time;
         unsigned int m_nbSteps;
 
-    private:
 };
 
 #endif // S2MTIME_H

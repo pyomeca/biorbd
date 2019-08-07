@@ -1,5 +1,39 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mRead.h"
+#include "s2mRead.h"
+
+#include <limits.h>
+#include <fstream>
+#include "s2mMusculoSkeletalModel.h"
+#include "biorbdConfig.h"
+#include "s2mError.h"
+#include "s2mIfStream.h"
+#include "s2mString.h"
+#include "s2mPatch.h"
+#include "s2mEquation.h"
+#include "s2mActuatorConstant.h"
+#include "s2mActuatorLinear.h"
+#include "s2mActuatorGauss3p.h"
+#include "s2mActuatorGauss6p.h"
+#include "s2mMuscle.h"
+#include "s2mIMU.h"
+#include "s2mNodeBone.h"
+#include "s2mMuscleGeometry.h"
+#include "s2mGroupeMusculaire.h"
+#include "s2mViaPoint.h"
+#include "s2mWrappingCylinder.h"
+#include "s2mBoneMesh.h"
+#include "s2mBoneCaracteristics.h"
+
+#ifdef _WIN64
+    #include <direct.h>
+    #define GetCurrentDir _getcwd
+#elseif _WIN32
+    #include <direct.h>
+    #define GetCurrentDir _getcwd
+#else
+    #include <unistd.h>
+    #define GetCurrentDir getcwd
+#endif
 
 s2mRead::s2mRead()
 {

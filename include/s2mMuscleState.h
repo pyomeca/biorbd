@@ -1,6 +1,8 @@
 #ifndef S2MMUSCLESTATE_H
 #define S2MMUSCLESTATE_H
+
 #include "biorbdConfig.h"
+
 class BIORBD_API s2mMuscleState
 {
     public:

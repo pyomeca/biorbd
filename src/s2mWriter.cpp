@@ -1,5 +1,13 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mWriter.h"
+#include "s2mWriter.h"
+
+#include <iostream>
+#include <fstream>
+#include "s2mMusculoSkeletalModel.h"
+#include "s2mPath.h"
+#include "s2mIMU.h"
+#include "s2mNodeBone.h"
+#include "s2mBone.h"
 
 void s2mWriter::writeModel(s2mMusculoSkeletalModel & m, const s2mPath& pathToWrite){
     s2mString sep("\t"); // separator in the file
