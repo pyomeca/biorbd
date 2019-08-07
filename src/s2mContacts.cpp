@@ -49,7 +49,14 @@ const s2mContacts &s2mContacts::getConstraints(const s2mJoints &m){
     }
     return *this;
 }
-const s2mContacts &s2mContacts::getConstraints(){
+
+s2mContacts &s2mContacts::getConstraints_nonConst()
+{
+    if (!m_binded)
+        s2mError::s2mAssert(0, "Please call getConstraints with s2mJoints model before!" );
+    return *this;
+}
+const s2mContacts &s2mContacts::getConstraints() const {
     if (!m_binded)
         s2mError::s2mAssert(0, "Please call getConstraints with s2mJoints model before!" );
     return *this;

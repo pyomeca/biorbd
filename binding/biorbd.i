@@ -7,16 +7,36 @@
 #include <Eigen/Dense>
 #include <rbdl/rbdl.h>
 
+#include "s2mRead.h"
 #include "s2mJoints.h"
 #include "s2mJoint.h"
+
+#include "s2mGenCoord.h"
+#include "s2mTau.h"
+
+#include "s2mBone.h"
+#include "s2mBoneMesh.h"
+#include "s2mIMU.h"
+
 #include "s2mMatrix.h"
 #include "s2mNodeWrap.h"
+#include "s2mNodeBone.h"
+#include "s2mNodeMuscle.h"
 #include "s2mTime.h"
 
 #include "s2mKalmanReconsIMU.h"
 #include "s2mKalmanReconsMarkers.h"
+
+#include "s2mMuscleStateDynamics.h"
+#include "s2mMuscleHillType.h"
+#include "s2mMuscleHillTypeThelen.h"
+#include "s2mMuscleHillTypeSimple.h"
+#include "s2mMuscleHillTypeThelenFatigable.h"
+#include "s2mMuscleFatigueState.h"
+#include "s2mMuscleFatigueDynamicState.h"
+#include "s2mMuscleFatigueDynamicStateXia.h"
+#include "s2mGroupeMusculaire.h"
 #include "s2mStaticOptimization.h"
-// #include "s2mIMU_Unity_Optim.h"
 %}
 %include exception.i
 %include <std_shared_ptr.i>
@@ -87,7 +107,7 @@ namespace std {
     }
     s2mGenCoord ForwardDynamicsConstraintsDirect(const s2mGenCoord &Q, const s2mGenCoord &QDot, const s2mTau &Tau) {
         s2mGenCoord QDDot(*self);
-        s2mContacts& CS = self->getConstraints();
+        s2mContacts& CS = self->getConstraints_nonConst();
         RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
         return QDDot;
     }
