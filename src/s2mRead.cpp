@@ -361,7 +361,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                 model->AddConstraint(parent_int, pos, axis, name, acc);
             }
         }
-        else if (!tp.tolower().compare("loopcontact")){
+        else if (!tp.tolower().compare("loopconstraint")){
             s2mString name;
             unsigned int id_predecessor = 0;
             unsigned int id_successor = 0;
@@ -372,7 +372,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             s2mVector axis(6);
             bool enableStabilization(false);
             double stabilizationParam(-1);
-            while(file.read(tp) && tp.tolower().compare("endloopcontact")){
+            while(file.read(tp) && tp.tolower().compare("endloopconstraint")){
                 if (!tp.tolower().compare("predecessor")){
                     // Trouver dynamiquement le numéro du parent
                     file.read(predecessor_str);
