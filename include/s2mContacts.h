@@ -4,12 +4,14 @@
 #include <vector>
 #include <rbdl/Constraints.h>
 #include "biorbdConfig.h"
+#include "s2mString.h"
 
 class s2mNode;
 class s2mVector;
 class s2mJoints;
 class s2mString;
 class s2mGenCoord;
+class s2mAttitude;
 class BIORBD_API s2mContacts : public RigidBodyDynamics::ConstraintSet
 {
     public:

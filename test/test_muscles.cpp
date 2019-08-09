@@ -80,10 +80,8 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
     s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
     s2mGenCoord Q(model);
     s2mGenCoord QDot(model);
-    for (unsigned i = 0; i<model.nbQ(); i++){
-        Q[i] = 0 ;
-        QDot[i] = 0;
-    }
+    Q.setZero();
+    QDot.setZero();
     model.updateMuscles(model, Q, QDot, true);
 
     {
@@ -133,10 +131,8 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
     s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
     s2mGenCoord Q(model);
     s2mGenCoord QDot(model);
-    for (unsigned i = 0; i<model.nbQ(); i++){
-        Q[i] = 0 ;
-        QDot[i] = 0;
-    }
+    Q.setZero();
+    QDot.setZero();
     model.updateMuscles(model, Q, QDot, true);
 
     {
@@ -173,10 +169,8 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
     s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
     s2mGenCoord Q(model);
     s2mGenCoord QDot(model);
-    for (unsigned i = 0; i<model.nbQ(); i++){
-        Q[i] = 0 ;
-        QDot[i] = 0;
-    }
+    Q.setZero();
+    QDot.setZero();
     model.updateMuscles(model, Q, QDot, true);
 
     {

@@ -1,88 +1,215 @@
 version 3
 
-// 4 MARQUEURS PAR SEGMENT
-
-
-// Informations générales
-root_actuated	1
-external_forces	0
-
-// DEFINITION DES SEGMENTS
-
-//Thorax	
- segment Thorax
-		RT 0 0 0 xyz 0 0 0
-		//translations	xyz
-		//rotations	    xyz
-		mass	46.24
-		inertia
-			5.156339	0.000000	0.000000
-			0.000000	0.989495	0.000000
-			0.000000	0.000000	5.642031
-		com	0.000000	-0.44045	0.000000
-        //mesh 0 0 0
-		//mesh 0.0066386 -0.3160549 -0.0133869
-
-	endsegment
+segment Segment1
+  RT 0 0 0 xyz 0 0 0
+  mass 1
+  com 0 0 0
+  inertia 
+    0.1 0   0
+    0   0.1 0
+    0   0   0.1
+  
+	mesh -0.5 -0.5 -0.5
+	mesh  0.5 -0.5 -0.5
+	mesh  0.5  0.5 -0.5
+	mesh -0.5  0.5 -0.5
+	mesh -0.5 -0.5 -0.5
 	
+	mesh -0.5 -0.5  0.5
+	mesh -0.5 -0.5 -0.5
+	mesh -0.5 -0.5  0.5
+	mesh  0.5 -0.5  0.5
+	mesh  0.5 -0.5 -0.5
+	mesh  0.5 -0.5  0.5
+	mesh  0.5  0.5  0.5
+	mesh  0.5  0.5 -0.5
+	mesh  0.5  0.5  0.5
+	mesh -0.5  0.5  0.5
+	mesh -0.5  0.5 -0.5
+	mesh -0.5  0.5  0.5
+	mesh -0.5 -0.5  0.5
+	mesh -0.5 -0.5 -0.5
 	
-// Arm
-	 segment Arm
-		parent	Thorax
-		RTinMatrix	0
-		RT 0 0 0 zyx 0 0 -0.15
-		rotations xzy
-		mass 2.537
-		inertia
-			0.040215	0.000000	0.000000
-			0.000000	0.006150	0.000000
-			0.000000	0.000000	0.040215
-		com	0.000000	-0.144423	0.000000
-		mesh 0 0 0
-		mesh 0 -0.30 0
-	endsegment
-	
-	
-// Arm2
-	 segment Arm2
-		parent	Thorax
-		RTinMatrix	0
-		RT 0 0 0 zyx 0 0 0.15
-		//rotations xzy
-		mass 2.537
-		inertia
-			0.040215	0.000000	0.000000
-			0.000000	0.006150	0.000000
-			0.000000	0.000000	0.040215
-		com	0.000000	-0.144423	0.000000
-		mesh 0 0 0
-		mesh 0 -0.3 0
-	endsegment
+	mesh -0.5  0.5 -0.5
+	mesh  0    1    0
+	mesh  0.5  0.5 -0.5
+	mesh  0    1    0
+	mesh -0.5  0.5  0.5
+	mesh  0    1    0
+	mesh  0.5  0.5  0.5
+endsegment
 
-// LowerArm2
-	 segment LowerArm2
-		parent	Arm2
-		RTinMatrix	0
-		RT 0.5 0 0 zyx 0 -0.3 0 
-		rotations	    zyx
-		mass 0.98205
-		inertia
-			0.008360	0.000000	0.000000
-			0.000000	0.000943	0.000000
-			0.000000	0.000000	0.008495
-		com	0.000000	-0.114073	0.000000
-		mesh 0 0 0
-		mesh 0.000403 -0.3 0.020117
-	endsegment
+segment Segment2
+  parent Segment1
+  RT 1.57 -0.79 0 xyz 0.75 0 0
+  rotations xyz
+  mass 1
+  com 0 0 -0.5
+  inertia 
+    0.1 0   0
+    0   0.1 0
+    0   0   0.1  
+  
+  mesh  0.25 -0.25  0.25
+  mesh -0.25 -0.25  0.25
+  mesh -0.25  0.25  0.25
+  mesh  0.25  0.25  0.25
+  mesh  0.25 -0.25  0.25
 
-    loopcontact
-        predecessor LowerArm2
-        successor Arm
-        RTpredecessor 0 0 0 xyz 0 0 0
-        RTsuccessor 0 0 0 xyz 0 0 0
-        axis 1 1 1 1 1 1
-        stabilizationParameter 0.1
-    endloopcontact
+  mesh  0.125 -0.125 -1.25
+  mesh -0.125 -0.125 -1.25
+  mesh -0.25  -0.25  0.25
+  mesh -0.125 -0.125 -1.25
+  mesh -0.125  0.125 -1.25
+  mesh -0.25   0.25   0.25
+  mesh -0.125  0.125 -1.25
+  mesh  0.125  0.125 -1.25
+  mesh  0.25   0.25   0.25
+  mesh  0.125  0.125 -1.25
+  mesh  0.125 -0.125 -1.25
+  mesh  0.25  -0.25   0.25
+  mesh  0.125 -0.125 -1.25
+  
+  mesh  0.125  0.125 -1.25
+  mesh  0      0.3   -0.5
+  mesh -0.125  0.125 -1.25
+  mesh  0      0.3   -0.5
+  mesh  0.25   0.25   0.25
+  mesh  0      0.3   -0.5
+  mesh -0.25   0.25   0.25
+  mesh  0      0.3   -0.5
+endsegment
 
 
+segment Segment3
+  parent Segment2
+  RT 0 0 0 xyz 0 0 -1.50
+  rotations xyz
+  mass 1
+  com 0 0 -0.5
+  inertia 
+    0.1 0   0
+    0   0.1 0
+    0   0   0.1  
+  
+  mesh  0.125 -0.125  0.25
+  mesh -0.125 -0.125  0.25
+  mesh -0.125  0.125  0.25
+  mesh  0.125  0.125  0.25
+  mesh  0.125 -0.125  0.25
 
+  mesh  0.125 -0.125 -1.25
+  mesh -0.125 -0.125 -1.25
+  mesh -0.125 -0.125  0.25
+  mesh -0.125 -0.125 -1.25
+  mesh -0.125  0.125 -1.25
+  mesh -0.125  0.125  0.25
+  mesh -0.125  0.125 -1.25
+  mesh  0.125  0.125 -1.25
+  mesh  0.125  0.125  0.25
+  mesh  0.125  0.125 -1.25
+  mesh  0.125 -0.125 -1.25
+  mesh  0.125 -0.125  0.25
+  mesh  0.125 -0.125 -1.25
+  
+  mesh  0.125   0.125 -1.25
+  mesh  0       0.3   -0.5
+  mesh -0.125   0.125 -1.25
+  mesh  0       0.3   -0.5
+  mesh  0.125   0.125  0.25
+  mesh  0       0.3   -0.5
+  mesh -0.125   0.125  0.25
+  mesh  0       0.3   -0.5
+endsegment
+
+segment Segment4
+  parent Segment1
+  RT 0 0 0 xyz -0.75 0 0
+  rotations xyz
+  mass 1
+  com 0 0 -0.5
+  inertia 
+    0.1 0   0
+    0   0.1 0
+    0   0   0.1  
+  
+  mesh  0.25 -0.25  0.25
+  mesh -0.25 -0.25  0.25
+  mesh -0.25  0.25  0.25
+  mesh  0.25  0.25  0.25
+  mesh  0.25 -0.25  0.25
+
+  mesh  0.125 -0.125 -1.25
+  mesh -0.125 -0.125 -1.25
+  mesh -0.25  -0.25  0.25
+  mesh -0.125 -0.125 -1.25
+  mesh -0.125  0.125 -1.25
+  mesh -0.25   0.25   0.25
+  mesh -0.125  0.125 -1.25
+  mesh  0.125  0.125 -1.25
+  mesh  0.25   0.25   0.25
+  mesh  0.125  0.125 -1.25
+  mesh  0.125 -0.125 -1.25
+  mesh  0.25  -0.25   0.25
+  mesh  0.125 -0.125 -1.25
+  
+  mesh  0.125  0.125 -1.25
+  mesh  0      0.3   -0.5
+  mesh -0.125  0.125 -1.25
+  mesh  0      0.3   -0.5
+  mesh  0.25   0.25   0.25
+  mesh  0      0.3   -0.5
+  mesh -0.25   0.25   0.25
+  mesh  0      0.3   -0.5
+endsegment
+
+
+segment Segment5
+  parent Segment4
+  RT 0 0 0 xyz 0 0 -1.50
+  rotations xyz
+  mass 1
+  com 0 0 -0.5
+  inertia 
+    0.1 0   0
+    0   0.1 0
+    0   0   0.1  
+  
+  mesh  0.125 -0.125  0.25
+  mesh -0.125 -0.125  0.25
+  mesh -0.125  0.125  0.25
+  mesh  0.125  0.125  0.25
+  mesh  0.125 -0.125  0.25
+
+  mesh  0.125 -0.125 -1.25
+  mesh -0.125 -0.125 -1.25
+  mesh -0.125 -0.125  0.25
+  mesh -0.125 -0.125 -1.25
+  mesh -0.125  0.125 -1.25
+  mesh -0.125  0.125  0.25
+  mesh -0.125  0.125 -1.25
+  mesh  0.125  0.125 -1.25
+  mesh  0.125  0.125  0.25
+  mesh  0.125  0.125 -1.25
+  mesh  0.125 -0.125 -1.25
+  mesh  0.125 -0.125  0.25
+  mesh  0.125 -0.125 -1.25
+  
+  mesh  0.125   0.125 -1.25
+  mesh  0       0.3   -0.5
+  mesh -0.125   0.125 -1.25
+  mesh  0       0.3   -0.5
+  mesh  0.125   0.125  0.25
+  mesh  0       0.3   -0.5
+  mesh -0.125   0.125  0.25
+  mesh  0       0.3   -0.5
+endsegment
+
+loopconstraint
+  predecessor Segment5
+  successor Segment3
+  RTpredecessor 0 0 0 xyz 0 0 0
+  RTsuccessor 0 0 0 xyz 0 0 0
+  axis 1 0 0 0 0 0
+  stabilizationParameter 0.1
+loopconstraint

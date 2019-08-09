@@ -7,6 +7,7 @@
 #include "s2mError.h"
 #include "s2mGenCoord.h"
 #include "s2mNode.h"
+#include "s2mAttitude.h"
 
 s2mContacts::s2mContacts() :
     RigidBodyDynamics::ConstraintSet (),
