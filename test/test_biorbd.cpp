@@ -4,8 +4,8 @@
 #include "s2mMusculoSkeletalModel.h"
 
 static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
-    EXPECT_NO_THROW(s2mMusculoSkeletalModel model(modelPathForGeneralTesting));
 TEST(c3dFileIO, OpenModel){
+    EXPECT_NO_THROW(s2mMusculoSkeletalModel model(modelPathForGeneralTesting));
 }
 
 static std::string modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
