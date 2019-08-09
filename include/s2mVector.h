@@ -1,5 +1,5 @@
-#ifndef S2MVECTOR_H
-#define S2MVECTOR_H
+#ifndef S2M_VECTOR_H
+#define S2M_VECTOR_H
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
@@ -13,7 +13,9 @@ public:
     s2mVector(unsigned int i);
     virtual ~s2mVector();
     Eigen::VectorXd vector() const;
+    double norm(unsigned int p = 2, bool skipRoot = false);
+    s2mVector norm_gradient(unsigned int p = 2, bool skipRoot = false);
 
 };
 
-#endif // S2MVECTOR_H
+#endif // S2M_VECTOR_H

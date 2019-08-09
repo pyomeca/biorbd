@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEPATHCHANGER_H
-#define S2MMUSCLEPATHCHANGER_H
+#ifndef S2M_MUSCLE_PATH_CHANGER_H
+#define S2M_MUSCLE_PATH_CHANGER_H
 
 #include "biorbdConfig.h"
 #include "s2mNodeMuscle.h"
@@ -18,4 +18,4 @@ class BIORBD_API s2mMusclePathChanger : public s2mNodeMuscle
         s2mString m_type;
 };
 
-#endif // S2MMUSCLEPATHCHANGER_H
+#endif // S2M_MUSCLE_PATH_CHANGER_H

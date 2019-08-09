@@ -20,5 +20,4 @@ class BIORBD_API s2mJoint : public RigidBodyDynamics::Joint
 
 };
 
-
 #endif // S2M_JOINT_H

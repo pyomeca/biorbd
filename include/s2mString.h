@@ -1,5 +1,5 @@
-#ifndef S2MSTRING_H
-#define S2MSTRING_H
+#ifndef S2M_STRING_H
+#define S2M_STRING_H
 
 #include <iostream>
 #include "biorbdConfig.h"
@@ -26,4 +26,4 @@ public:
 
 };
 
-#endif // S2MSTRING_H
+#endif // S2M_STRING_H

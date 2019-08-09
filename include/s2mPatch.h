@@ -1,5 +1,5 @@
-#ifndef S2MPATCH_H
-#define S2MPATCH_H
+#ifndef S2M_PATCH_H
+#define S2M_PATCH_H
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
@@ -19,4 +19,4 @@ class BIORBD_API s2mPatch
 
 };
 
-#endif // S2MPATCH_H
+#endif // S2M_PATCH_H

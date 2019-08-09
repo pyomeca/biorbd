@@ -1,5 +1,5 @@
-#ifndef S2MNODE_H
-#define S2MNODE_H
+#ifndef S2M_NODE_H
+#define S2M_NODE_H
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
@@ -38,4 +38,4 @@ class BIORBD_API s2mNode : public Eigen::Vector3d
 
 };
 
-#endif // S2MNODE_H
+#endif // S2M_NODE_H

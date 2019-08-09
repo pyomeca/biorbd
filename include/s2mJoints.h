@@ -1,5 +1,5 @@
-#ifndef S2MJOINTS_H
-#define S2MJOINTS_H
+#ifndef S2M_JOINTS_H
+#define S2M_JOINTS_H
 
 #include <rbdl/Model.h>
 #include <rbdl/Constraints.h>
@@ -169,6 +169,6 @@ class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
 
 };
 
-#endif // S2MJOINTS_H
+#endif // S2M_JOINTS_H
 
 

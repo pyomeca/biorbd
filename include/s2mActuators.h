@@ -1,5 +1,5 @@
-#ifndef S2MACTUATORS_H
-#define S2MACTUATORS_H
+#ifndef S2M_ACTUATORS_H
+#define S2M_ACTUATORS_H
 
 #include <vector>
 #include <memory>
@@ -36,4 +36,4 @@ class BIORBD_API s2mActuators
         bool m_isClose;
 
 };
-#endif // S2MACTUATORS_H
+#endif // S2M_ACTUATORS_H

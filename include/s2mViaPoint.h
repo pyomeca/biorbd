@@ -1,5 +1,5 @@
-#ifndef S2MVIAPOINT_H
-#define S2MVIAPOINT_H
+#ifndef S2M_VIAPOINT_H
+#define S2M_VIAPOINT_H
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
@@ -14,4 +14,4 @@ public:
 
 };
 
-#endif // S2MVIAPOINT_H
+#endif // S2M_VIAPOINT_H

@@ -7,16 +7,36 @@
 #include <Eigen/Dense>
 #include <rbdl/rbdl.h>
 
+#include "s2mRead.h"
 #include "s2mJoints.h"
 #include "s2mJoint.h"
+
+#include "s2mGenCoord.h"
+#include "s2mTau.h"
+
+#include "s2mBone.h"
+#include "s2mBoneMesh.h"
+#include "s2mIMU.h"
+
 #include "s2mMatrix.h"
 #include "s2mNodeWrap.h"
+#include "s2mNodeBone.h"
+#include "s2mNodeMuscle.h"
 #include "s2mTime.h"
 
 #include "s2mKalmanReconsIMU.h"
 #include "s2mKalmanReconsMarkers.h"
-// #include "s2mMuscleOptimisation.h"
-// #include "s2mIMU_Unity_Optim.h"
+
+#include "s2mMuscleStateDynamics.h"
+#include "s2mMuscleHillType.h"
+#include "s2mMuscleHillTypeThelen.h"
+#include "s2mMuscleHillTypeSimple.h"
+#include "s2mMuscleHillTypeThelenFatigable.h"
+#include "s2mMuscleFatigueState.h"
+#include "s2mMuscleFatigueDynamicState.h"
+#include "s2mMuscleFatigueDynamicStateXia.h"
+#include "s2mGroupeMusculaire.h"
+#include "s2mStaticOptimization.h"
 %}
 %include exception.i
 %include <std_shared_ptr.i>
@@ -44,11 +64,20 @@ namespace std {
     %template(VecS2mAttitude) std::vector<s2mAttitude>;
     %template(MatS2mAttitude) std::vector<std::vector<s2mAttitude>>;
 
+    %template(VecS2mVector) std::vector<s2mVector>;
+    %template(MatS2mVector) std::vector<std::vector<s2mVector>>;
+    %template(VecS2mTau) std::vector<s2mTau>;
+    %template(MatS2mTau) std::vector<std::vector<s2mTau>>;
+    %template(VecS2mGenCoord) std::vector<s2mGenCoord>;
+    %template(MatS2mGenCoord) std::vector<std::vector<s2mGenCoord>>;
+
     %template(SharedS2mMuscle) std::shared_ptr<s2mMuscle>;
     %template(VecS2mMuscleStateDynamics) std::vector<s2mMuscleStateDynamics>;
     %template(MatS2mMuscleStateDynamics) std::vector<std::vector<s2mMuscleStateDynamics>>;
     %template(VecS2mNodeMuscle) std::vector<s2mNodeMuscle>;
     %template(MatS2mNodeMuscle) std::vector<std::vector<s2mNodeMuscle>>;
+
+    %template(SharedS2mMuscleFatigueState) std::shared_ptr<s2mMuscleFatigueState>;
 }
 
 // Exposing some useful functions
@@ -78,7 +107,7 @@ namespace std {
     }
     s2mGenCoord ForwardDynamicsConstraintsDirect(const s2mGenCoord &Q, const s2mGenCoord &QDot, const s2mTau &Tau) {
         s2mGenCoord QDDot(*self);
-        s2mContacts& CS = self->getConstraints();
+        s2mContacts& CS = self->getConstraints_nonConst();
         RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
         return QDDot;
     }
@@ -92,6 +121,7 @@ namespace std {
     }
 }
 
+// extension of muscle casting
 %extend s2mMuscleHillType{
     static s2mMuscleHillType& getRef(std::shared_ptr<s2mMuscle> m)
     {
@@ -104,12 +134,33 @@ namespace std {
         return *(std::dynamic_pointer_cast<s2mMuscleHillTypeThelen>(m));
     }
 }
+%extend s2mMuscleHillTypeThelenFatigable{
+    static s2mMuscleHillTypeThelenFatigable& getRef(std::shared_ptr<s2mMuscle> m)
+    {
+        return *(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(m));
+    }
+}
 %extend s2mMuscleHillTypeSimple{
     static s2mMuscleHillTypeSimple& getRef(std::shared_ptr<s2mMuscle> m)
     {
         return *(std::dynamic_pointer_cast<s2mMuscleHillTypeSimple>(m));
     }
 }
+
+// extension of muscle fatigueState casting
+%extend s2mMuscleFatigueState{
+    static s2mMuscleFatigueState& getRef(std::shared_ptr<s2mMuscleFatigueState> s)
+    {
+        return *s;
+    }
+}
+%extend s2mMuscleFatigueDynamicStateXia{
+    static s2mMuscleFatigueDynamicStateXia& getRef(std::shared_ptr<s2mMuscleFatigueState> s)
+    {
+        return *(std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(s));
+    }
+}
+
 
 /* Includes all neceressary files from the API */
 %include "../include/biorbdConfig.h"
@@ -158,12 +209,19 @@ namespace std {
 %include "../include/s2mNodeMuscle.h"
 %include "../include/s2mMuscleCompound.h"
 %include "../include/s2mMuscle.h"
+%include "../include/s2mMuscleFatigable.h"
 %include "../include/s2mMuscleHillType.h"
 %include "../include/s2mMuscleHillTypeThelen.h"
+%include "../include/s2mMuscleHillTypeThelenFatigable.h"
 %include "../include/s2mMuscleHillTypeSimple.h"
 %include "../include/s2mMuscles.h"
 %include "../include/s2mGroupeMusculaire.h"
 %include "../include/s2mMuscleCaracteristics.h"
+
+%include "../include/s2mMuscleFatigueParam.h"
+%include "../include/s2mMuscleFatigueState.h"
+%include "../include/s2mMuscleFatigueDynamicState.h"
+%include "../include/s2mMuscleFatigueDynamicStateXia.h"
 //%include "s2mMuscleForce.h"
 //%include "s2mMuscleForceFromInsertion.h"
 //%include "s2mMuscleForceFromOrigin.h"
@@ -171,7 +229,7 @@ namespace std {
 //%include "s2mMuscleMesh.h"
 //%include "s2mMusclePathChanger.h"
 //%include "s2mMusclePathChangers.h"
-//%include "s2mMuscleState.h"
+%include "../include/s2mMuscleState.h"
 %include "../include/s2mMuscleStateDynamics.h"
 //%include "s2mMuscleStateDynamicsBuchanan.h"
 //%include "s2mMuscleOptimisation.h"
@@ -194,4 +252,6 @@ namespace std {
 //%include "s2mIMU_Unity_Optim.h"
 
 %include "../include/s2mMusculoSkeletalModel.h"
+
+%include "../include/s2mStaticOptimization.h"
 

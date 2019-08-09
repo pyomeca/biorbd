@@ -1,5 +1,5 @@
-#ifndef S2MMATRIX_H
-#define S2MMATRIX_H
+#ifndef S2M_MATRIX_H
+#define S2M_MATRIX_H
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
@@ -18,4 +18,4 @@ public:
 
 };
 
-#endif // S2MMATRIX_H
+#endif // S2M_MATRIX_H

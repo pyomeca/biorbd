@@ -1,5 +1,5 @@
-#ifndef S2MACTUATOR_H
-#define S2MACTUATOR_H
+#ifndef S2M_ACTUATOR_H
+#define S2M_ACTUATOR_H
 
 #include "biorbdConfig.h"
 #include "s2mString.h"
@@ -22,5 +22,4 @@ class BIORBD_API s2mActuator
         unsigned int m_dofIdx;                        // Index du dof associé
 
 };
-
-#endif // S2MACTUATOR_H
+#endif // S2M_ACTUATOR_H

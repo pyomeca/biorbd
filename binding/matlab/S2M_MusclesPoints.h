@@ -1,10 +1,12 @@
 #ifndef MATLAB_S2M_MUSCLES_POINTS_H
 #define MATLAB_S2M_MUSCLES_POINTS_H
 
+#include <memory>
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "s2mWrappingCylinder.h"
 
 void S2M_MusclesPoints( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){

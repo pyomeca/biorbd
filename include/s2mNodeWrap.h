@@ -1,5 +1,5 @@
-#ifndef S2MNODEWRAP_H
-#define S2MNODEWRAP_H
+#ifndef S2M_NODE_WRAP_H
+#define S2M_NODE_WRAP_H
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
@@ -16,4 +16,4 @@ class BIORBD_API s2mNodeWrap : public s2mNode
 
 };
 
-#endif // S2MNODEWRAP_H
+#endif // S2M_NODE_WRAP_H

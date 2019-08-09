@@ -206,7 +206,7 @@ void s2mMuscleHillType::computeFlPE(){
 		m_FlPE = exp(m_cste_FlPE_1*(m_position.length()/caract().optimalLength()-1) - m_cste_FlPE_2);
 	else 
 		m_FlPE = 0;
-    }
+}
 
 void s2mMuscleHillType::computeDamping(){
     m_damping = m_position.velocity() / (m_cste_vitesseRaccourMax * caract().optimalLength()) * m_cste_damping;

@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEMESH_H
-#define S2MMUSCLEMESH_H
+#ifndef S2M_MUSCLE_MESH_H
+#define S2M_MUSCLE_MESH_H
 
 #include "biorbdConfig.h"
 #include "s2mMuscleCompound.h"
@@ -27,4 +27,4 @@ class BIORBD_API s2mMuscleMesh : public s2mMuscleCompound
         virtual void assignValue(s2mMuscle*&, s2mMuscle*&);
 };
 
-#endif // S2MMUSCLEMESH_H
+#endif // S2M_MUSCLE_MESH_H

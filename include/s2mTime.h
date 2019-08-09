@@ -1,5 +1,5 @@
-#ifndef S2MTIME_H
-#define S2MTIME_H
+#ifndef S2M_TIME_H
+#define S2M_TIME_H
 
 #include "biorbdConfig.h"
 
@@ -16,4 +16,4 @@ class BIORBD_API s2mTime
 
 };
 
-#endif // S2MTIME_H
+#endif // S2M_TIME_H

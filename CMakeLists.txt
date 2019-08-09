@@ -18,12 +18,13 @@ IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   SET_PROPERTY(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 ENDIF()
 
-# Prepare linking with RBDL
+# Prepare linkings
 find_package(RBDL REQUIRED)
 set(BOOST_ROOT ${CMAKE_INSTALL_PREFIX})
 find_package(Boost REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Dlib REQUIRED)
+find_package(IPOPT REQUIRED)
 
 # Prepare add library
 aux_source_directory(src SRC_LIST)
@@ -41,11 +42,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${Boost_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
     ${DLIB_INCLUDE_DIR}
+    ${IPOPT_INCLUDE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 # Add linker
-target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY} ${DLIB_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY} ${DLIB_LIBRARY} ${IPOPT_LIBRARY})
 
 # Installation
 if(WIN32)
@@ -56,7 +58,7 @@ else()
     set(${PROJECT_NAME}_LIB_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
     set(${PROJECT_NAME}_BIN_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
     set(${PROJECT_NAME}_INCLUDE_FOLDER ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
-    SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif()
 install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION ${${PROJECT_NAME}_LIB_FOLDER}
@@ -125,6 +127,7 @@ if (BUILD_TESTS)
         ${Boost_INCLUDE_DIRS}
         ${EIGEN3_INCLUDE_DIR}
         ${DLIB_INCLUDE_DIR}
+        ${IPOPT_INCLUDE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/include
     )
 

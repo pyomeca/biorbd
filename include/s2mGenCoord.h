@@ -1,5 +1,5 @@
-#ifndef S2MGENCOORD_H
-#define S2MGENCOORD_H
+#ifndef S2M_GEN_COORD_H
+#define S2M_GEN_COORD_H
 
 #include "biorbdConfig.h"
 #include "s2mVector.h"
@@ -20,4 +20,4 @@ public:
 
 };
 
-#endif // S2MGENCOORD_H
+#endif // S2M_GEN_COORD_H

@@ -1,5 +1,5 @@
-#ifndef S2MINTEGRATOR_H
-#define S2MINTEGRATOR_H
+#ifndef S2M_INTEGRATOR_H
+#define S2M_INTEGRATOR_H
 
 #include <vector>
 #include <rbdl/Model.h>
@@ -46,4 +46,4 @@ class BIORBD_API s2mIntegrator
 
 };
 
-#endif // S2MINTEGRATOR_H
+#endif // S2M_INTEGRATOR_H

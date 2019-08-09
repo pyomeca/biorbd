@@ -1,5 +1,5 @@
-#ifndef S2MCONTACTS_H
-#define S2MCONTACTS_H
+#ifndef S2M_CONTACTS_H
+#define S2M_CONTACTS_H
 
 #include <vector>
 #include <rbdl/Constraints.h>
@@ -35,8 +35,9 @@ class BIORBD_API s2mContacts : public RigidBodyDynamics::ConstraintSet
                 const double stabilizationParam = 0.1,
                 const s2mString& name = s2mString() );
 
-        const s2mContacts &getConstraints(const s2mJoints& jointsModel); // La premiere fois il faut appeler cette fonction avec cet arguement, ensuite, il n'est plus utile
-        const s2mContacts &getConstraints();
+        s2mContacts &getConstraints_nonConst(const s2mJoints& jointsModel); // La premiere fois il faut appeler cette fonction avec cet arguement, ensuite, il n'est plus utile
+        s2mContacts &getConstraints_nonConst();
+        const s2mContacts &getConstraints() const;
 
         bool hasContacts() const;
         unsigned int nContacts() const;
@@ -54,4 +55,4 @@ class BIORBD_API s2mContacts : public RigidBodyDynamics::ConstraintSet
 
 };
 
-#endif // S2MCONTACTS_H
+#endif // S2M_CONTACTS_H

@@ -1,5 +1,5 @@
-#ifndef S2MBENCHMARK_H
-#define S2MBENCHMARK_H
+#ifndef S2M_BENCHMARK_H
+#define S2M_BENCHMARK_H
 
 #include <map>
 #include "biorbdConfig.h"
@@ -31,4 +31,4 @@ class BIORBD_API s2mBenchmark
 
 };
 
-#endif // S2MBENCHMARK_H
+#endif // S2M_BENCHMARK_H

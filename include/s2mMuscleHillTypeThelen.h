@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLEHILLTYPETHELEN_H
-#define S2MMUSCLEHILLTYPETHELEN_H
+#ifndef S2M_MUSCLE_HILL_TYPE_THELEN_H
+#define S2M_MUSCLE_HILL_TYPE_THELEN_H
 
 #include "biorbdConfig.h"
 #include "s2mMuscleHillType.h"
@@ -22,10 +22,11 @@ class BIORBD_API s2mMuscleHillTypeThelen : public s2mMuscleHillType
         s2mMuscleHillTypeThelen(const std::shared_ptr<s2mMuscle> m);
         virtual ~s2mMuscleHillTypeThelen();
 
+        virtual void computeFlPE();
         virtual void computeFlCE(const s2mMuscleStateDynamics &emg);
 
     protected:
         virtual void setType();
 };
 
-#endif // S2MMUSCLEHILLTYPETHELEN_H
+#endif // S2M_MUSCLE_HILL_TYPE_THELEN_H

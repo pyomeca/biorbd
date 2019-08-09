@@ -1,5 +1,5 @@
-#ifndef __BIORBD_CONFIG_H__
-#define __BIORBD_CONFIG_H__
+#ifndef BIORBD_CONFIG_H
+#define BIORBD_CONFIG_H
 /*
 Some day, if Eigen can be compile in DLL
 #ifdef _WIN32
@@ -21,4 +21,4 @@ Some day, if Eigen can be compile in DLL
 #endif // NAN
     
 #endif // _WIN32
-#endif // __BIORBD_CONFIG_H__
+#endif // BIORBD_CONFIG_H

@@ -1,5 +1,5 @@
-#ifndef S2MWRITER_H
-#define S2MWRITER_H
+#ifndef S2M_WRITER_H
+#define S2M_WRITER_H
 
 #include "biorbdConfig.h"
 
@@ -12,4 +12,4 @@ class BIORBD_API s2mWriter
 
 };
 
-#endif // S2MWRITER_H
+#endif // S2M_WRITER_H

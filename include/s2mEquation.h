@@ -1,5 +1,5 @@
-#ifndef S2MEQUATION_H
-#define S2MEQUATION_H
+#ifndef S2M_EQUATION_H
+#define S2M_EQUATION_H
 
 #include <vector>
 #include <map>
@@ -29,4 +29,4 @@ protected:
 };
 
 
-#endif // S2MEQUATION_H
+#endif // S2M_EQUATION_H

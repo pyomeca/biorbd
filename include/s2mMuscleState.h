@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLESTATE_H
-#define S2MMUSCLESTATE_H
+#ifndef S2M_MUSCLE_STATE_H
+#define S2M_MUSCLE_STATE_H
 
 #include "biorbdConfig.h"
 
@@ -23,4 +23,4 @@ class BIORBD_API s2mMuscleState
 
 };
 
-#endif // S2MMUSCLESTATE_H
+#endif // S2M_MUSCLE_STATE_H

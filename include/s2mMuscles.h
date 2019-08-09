@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLES_H
-#define S2MMUSCLES_H
+#ifndef S2M_MUSCLES_H
+#define S2M_MUSCLES_H
 
 #include <vector>
 #include <memory>
@@ -48,5 +48,5 @@ protected:
 
 };
 
-#endif // S2MMUSCLES_H
+#endif // S2M_MUSCLES_H
 

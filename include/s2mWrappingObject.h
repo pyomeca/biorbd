@@ -1,5 +1,5 @@
-#ifndef S2MWRAPPINGOBJECT_H
-#define S2MWRAPPINGOBJECT_H
+#ifndef S2M_WRAPPING_OBJECT_H
+#define S2M_WRAPPING_OBJECT_H
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
@@ -29,4 +29,4 @@ class BIORBD_API s2mWrappingObject : public s2mMusclePathChanger
 
 };
 
-#endif // S2MWRAPPINGOBJECT_H
+#endif // S2M_WRAPPING_OBJECT_H

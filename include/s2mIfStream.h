@@ -1,5 +1,5 @@
-#ifndef S2MMIFSTREAM_H
-#define S2MMIFSTREAM_H
+#ifndef S2M_IFSTREAM_H
+#define S2M_IFSTREAM_H
 
 #include <map>
 #include "biorbdConfig.h"
@@ -41,5 +41,5 @@ class BIORBD_API s2mIfStream
         s2mPath m_path;
 };
 
-#endif // S2MMIFSTREAM_H
+#endif // S2M_IFSTREAM_H
 

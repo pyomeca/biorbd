@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLE_H
-#define S2MMUSCLE_H
+#ifndef S2M_MUSCLE_H
+#define S2M_MUSCLE_H
 
 #include "biorbdConfig.h"
 #include "s2mString.h"
@@ -48,4 +48,4 @@ class BIORBD_API s2mMuscle : public s2mMuscleCompound
 
 };
 
-#endif // S2MMUSCLE_H
+#endif // S2M_MUSCLE_H

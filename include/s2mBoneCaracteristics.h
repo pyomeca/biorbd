@@ -1,5 +1,5 @@
-#ifndef S2MBONECARACTERISTICS_H
-#define S2MBONECARACTERISTICS_H
+#ifndef S2M_BONE_CARACTERISTICS_H
+#define S2M_BONE_CARACTERISTICS_H
 
 #include <rbdl/Body.h>
 #include "biorbdConfig.h"
@@ -27,4 +27,4 @@ class BIORBD_API s2mBoneCaracteristics : public RigidBodyDynamics::Body
         s2mBoneMesh m_mesh;
 };
 
-#endif // S2MBONECARACTERISTICS_H
+#endif // S2M_BONE_CARACTERISTICS_H

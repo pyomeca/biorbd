@@ -1,5 +1,5 @@
-#ifndef S2MMARKERS_H
-#define S2MMARKERS_H
+#ifndef S2M_MARKERS_H
+#define S2M_MARKERS_H
 
 #include <vector>
 #include <Eigen/Dense>
@@ -23,7 +23,7 @@ class BIORBD_API s2mMarkers
                        bool technical = true,
                        bool anatomical = false,
                        const s2mString& axesToRemove = s2mString(),
-                       const int &id = -1); // Ajouter un nouveau marker
+                       int id = -1); // Ajouter un nouveau marker
         const s2mNodeBone& marker(const unsigned int &i) const;
         std::vector<s2mNodeBone> marker(const s2mJoints& model, const unsigned int &idxBone) const;
         std::vector<s2mString> markerNames() const;
@@ -62,4 +62,4 @@ protected:
 
 };
 
-#endif // S2MMARKERS_H
+#endif // S2M_MARKERS_H

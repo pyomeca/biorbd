@@ -1,5 +1,5 @@
-#ifndef S2MACTUATORCONSTANT_H
-#define S2MACTUATORCONSTANT_H
+#ifndef S2M_ACTUATOR_CONSTANT_H
+#define S2M_ACTUATOR_CONSTANT_H
 
 #include "biorbdConfig.h"
 #include "s2mActuator.h"
@@ -22,4 +22,4 @@ class BIORBD_API s2mActuatorConstant : public s2mActuator
         double m_Tmax;      // Maximum torque that can be done
 
 };
-#endif // S2MACTUATORCONSTANT_H
+#endif // S2M_ACTUATOR_CONSTANT_H

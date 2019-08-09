@@ -60,14 +60,21 @@ unsigned int s2mContacts::AddLoopConstraint(unsigned int body_id_predecessor,
 }
 
 
-const s2mContacts &s2mContacts::getConstraints(const s2mJoints &m){
+s2mContacts &s2mContacts::getConstraints_nonConst(const s2mJoints &m){
     if (!m_binded){
         Bind(m);
         m_binded = true;
     }
     return *this;
 }
-const s2mContacts &s2mContacts::getConstraints(){
+
+s2mContacts &s2mContacts::getConstraints_nonConst()
+{
+    if (!m_binded)
+        s2mError::s2mAssert(0, "Please call getConstraints with s2mJoints model before!" );
+    return *this;
+}
+const s2mContacts &s2mContacts::getConstraints() const {
     if (!m_binded)
         s2mError::s2mAssert(0, "Please call getConstraints with s2mJoints model before!" );
     return *this;

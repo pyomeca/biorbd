@@ -1,5 +1,5 @@
-#ifndef S2MMUSCLECOMPOUND_H
-#define S2MMUSCLECOMPOUND_H
+#ifndef S2M_MUSCLE_COMPOUND_H
+#define S2M_MUSCLE_COMPOUND_H
     #include <memory>
     #include "biorbdConfig.h"
     #include "s2mString.h"
@@ -42,4 +42,4 @@ class BIORBD_API s2mMuscleCompound
 
 };
 
-#endif // S2MMUSCLECOMPOUND_H
+#endif // S2M_MUSCLE_COMPOUND_H

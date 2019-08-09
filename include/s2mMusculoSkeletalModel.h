@@ -1,5 +1,5 @@
-#ifndef S2MMUSCULOSKELETALMODEL_H
-#define S2MMUSCULOSKELETALMODEL_H
+#ifndef S2M_MUSCULO_SKELETAL_MODEL_H
+#define S2M_MUSCULO_SKELETAL_MODEL_H
 
 #include "biorbdConfig.h"
 #include "s2mOptions.h"
@@ -29,4 +29,4 @@ class BIORBD_API s2mMusculoSkeletalModel :
 
 };
 
-#endif // S2MMUSCULOSKELETALMODEL_H
+#endif // S2M_MUSCULO_SKELETAL_MODEL_H

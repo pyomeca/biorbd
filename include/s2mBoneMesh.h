@@ -1,5 +1,5 @@
-#ifndef S2MBONEMESH_H
-#define S2MBONEMESH_H
+#ifndef S2M_BONE_MESH_H
+#define S2M_BONE_MESH_H
 
 #include <vector>
 #include "Eigen/Dense"
@@ -38,4 +38,4 @@ class BIORBD_API s2mBoneMesh
 
 };
 
-#endif // S2MBONEMESH_H
+#endif // S2M_BONE_MESH_H

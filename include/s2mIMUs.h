@@ -1,5 +1,5 @@
-#ifndef S2MIMUS_H
-#define S2MIMUS_H
+#ifndef S2M_IMUS_H
+#define S2M_IMUS_H
 
 #include <vector>
 #include "biorbdConfig.h"
@@ -60,4 +60,4 @@ class BIORBD_API s2mIMUs
 
 };
 
-#endif // S2MIMU_H
+#endif // S2M_IMUS_H

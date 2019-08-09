@@ -599,6 +599,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             // Déclaration des variables
             s2mString type("");
             s2mString stateType("default");
+            s2mString dynamicFatigueType("simple");
             s2mString muscleGroup("");
             int idxGroup(-1);
             Eigen::Vector3d origin_pos(0,0,0);
@@ -610,6 +611,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             double maxExcitation(0);
             double maxActivation(0);
             double PCSA(1);
+            s2mMuscleFatigueParam fatigueParameters;
 
             // Lecture du fichier
             while(file.read(tp) && tp.tolower().compare("endmuscle")){
@@ -642,13 +644,31 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     file.read(maxExcitation, variable);
                 else if (!tp.tolower().compare("pcsa"))
                     file.read(PCSA, variable);
+                else if (!tp.tolower().compare("fatigueparameters")){
+                    while(file.read(tp) && tp.tolower().compare("endfatigueparameters")){
+                        if (!tp.tolower().compare("type")){
+                            file.read(dynamicFatigueType);
+                        } else {
+                            double param(0);
+                            file.read(param);
+                            if (!tp.tolower().compare("fatiguerate"))
+                                fatigueParameters.fatigueRate(param);
+                            else if (!tp.tolower().compare("recoveryrate"))
+                                fatigueParameters.recoveryRate(param);
+                            else if (!tp.tolower().compare("developfactor"))
+                                fatigueParameters.developFactor(param);
+                            else if (!tp.tolower().compare("recoveryfactor"))
+                                fatigueParameters.recoveryFactor(param);
+                        }
+                    }
+                }
             }
             s2mError::s2mAssert(idxGroup!=-1, "No muscle group was provided!");
             s2mMuscleGeometry geo(s2mNodeMuscle(origin_pos, name + "_origin", model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
                                   s2mNodeMuscle(insert_pos, name + "_insertion", model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
             s2mMuscleState stateMax(maxExcitation, maxActivation);
-            s2mMuscleCaracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax);
-            model->muscleGroup_nonConst(static_cast<unsigned int>(idxGroup)).addHillMuscle(name,type,geo,caract,s2mMusclePathChangers(),stateType);
+            s2mMuscleCaracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax, fatigueParameters);
+            model->muscleGroup_nonConst(static_cast<unsigned int>(idxGroup)).addHillMuscle(name,type,geo,caract,s2mMusclePathChangers(),stateType,dynamicFatigueType);
         }
         else if (!tp.tolower().compare("viapoint")){
             s2mString name;
@@ -1134,7 +1154,7 @@ std::vector<std::vector<s2mNode>>  s2mRead::readViconMarkerFile(const s2mString 
     // Comparer avec l'ordre donné
     int *ordre;
     ordre = new int[3*MarkersInFile.size()];
-    for (unsigned int i=0; i<3*MarkersInFile.size(); ++i)
+    for (int i=0; i<static_cast<int>(3*MarkersInFile.size()); ++i)
         ordre[i] = -1;
     for (int i=0; i<static_cast<int>(markOrder.size()); ++i){
         unsigned int cmp=0;

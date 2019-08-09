@@ -8,6 +8,7 @@ s2mMuscleCaracteristics::s2mMuscleCaracteristics(const double &optLength,
                                                  const double &tendonSlackLength,
                                                  const double &pennAngle,
                                                  const s2mMuscleState &stateMax,
+                                                 const s2mMuscleFatigueParam &fatigueParameters,
                                                  const double tauAct,
                                                  const double tauDeact,
                                                  const double &minAct
@@ -20,7 +21,8 @@ s2mMuscleCaracteristics::s2mMuscleCaracteristics(const double &optLength,
     m_stateMax(stateMax),
     m_minActivation(minAct),
     m_tauActivation(tauAct),
-    m_tauDeactivation(tauDeact)
+    m_tauDeactivation(tauDeact),
+    m_fatigueParameters(fatigueParameters)
 {
 
 }
@@ -57,7 +59,8 @@ s2mMuscleCaracteristics::s2mMuscleCaracteristics(const s2mMuscleCaracteristics& 
     m_stateMax(c.m_stateMax),
     m_minActivation(c.m_minActivation),
     m_tauActivation(c.m_tauActivation),
-    m_tauDeactivation(c.m_tauDeactivation)
+    m_tauDeactivation(c.m_tauDeactivation),
+    m_fatigueParameters(c.m_fatigueParameters)
 {
 
 }
@@ -75,6 +78,7 @@ s2mMuscleCaracteristics& s2mMuscleCaracteristics::operator=(const s2mMuscleCarac
     m_minActivation = c.m_minActivation;
     m_tauActivation = c.m_tauActivation;
     m_tauDeactivation = c.m_tauDeactivation;
+    m_fatigueParameters = c.m_fatigueParameters;
 
     return *this;
 }
@@ -90,4 +94,14 @@ void s2mMuscleCaracteristics::setStateMax(const s2mMuscleState &stateMax) {
 
 const s2mMuscleState &s2mMuscleCaracteristics::stateMax() const {
     return m_stateMax;
+}
+
+const s2mMuscleFatigueParam &s2mMuscleCaracteristics::fatigueParameters() const
+{
+    return m_fatigueParameters;
+}
+
+void s2mMuscleCaracteristics::fatigueParameters(const s2mMuscleFatigueParam &fatigueParameters)
+{
+    m_fatigueParameters = fatigueParameters;
 }

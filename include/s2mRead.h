@@ -1,5 +1,5 @@
-#ifndef S2MREAD_H
-#define S2MREAD_H
+#ifndef S2M_READ_H
+#define S2M_READ_H
 
 #include <vector>
 #include <Eigen/Dense>
@@ -42,5 +42,4 @@ public:
 
 };
 
-
-#endif // S2MREAD_H
+#endif // S2M_READ_H
