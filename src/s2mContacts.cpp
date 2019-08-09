@@ -1,10 +1,22 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mContacts.h"
+#include "s2mContacts.h"
+
+#include <rbdl/Kinematics.h>
+#include "s2mJoints.h"
+#include "s2mString.h"
+#include "s2mError.h"
+#include "s2mGenCoord.h"
+#include "s2mNode.h"
 
 s2mContacts::s2mContacts() :
     RigidBodyDynamics::ConstraintSet (),
     m_nbreConstraint(0),
     m_binded(false)
+{
+
+}
+
+s2mContacts::~s2mContacts()
 {
 
 }
@@ -48,14 +60,14 @@ unsigned int s2mContacts::AddLoopConstraint(unsigned int body_id_predecessor,
 }
 
 
-s2mContacts& s2mContacts::getConstraints(const RigidBodyDynamics::Model& m){
+const s2mContacts &s2mContacts::getConstraints(const s2mJoints &m){
     if (!m_binded){
         Bind(m);
         m_binded = true;
     }
     return *this;
 }
-s2mContacts& s2mContacts::getConstraints(){
+const s2mContacts &s2mContacts::getConstraints(){
     if (!m_binded)
         s2mError::s2mAssert(0, "Please call getConstraints with s2mJoints model before!" );
     return *this;

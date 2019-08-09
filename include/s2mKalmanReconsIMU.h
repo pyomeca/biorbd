@@ -4,18 +4,19 @@
 #include "biorbdConfig.h"
 #include "s2mKalmanRecons.h"
 
-
+class s2mAttitude;
 class BIORBD_API s2mKalmanReconsIMU : public s2mKalmanRecons
 {
 public:
 
     // Constructeur
     s2mKalmanReconsIMU(s2mMusculoSkeletalModel&, s2mKalmanRecons::s2mKalmanParam = s2mKalmanRecons::s2mKalmanParam(100, 0.005, 1e-10));
+    virtual ~s2mKalmanReconsIMU();
 
     // Reconstruction d'un frame
     virtual void reconstructFrame(s2mMusculoSkeletalModel &m, const std::vector<s2mAttitude> &IMUobs, s2mGenCoord *Q, s2mGenCoord *Qdot, s2mGenCoord *Qddot);
     virtual void reconstructFrame(s2mMusculoSkeletalModel &m, const Eigen::VectorXd &IMUobs, s2mGenCoord *Q, s2mGenCoord *Qdot, s2mGenCoord *Qddot);
-    virtual void reconstructFrame(){s2mError::s2mAssert(false, "Implémentation impossible");}
+    virtual void reconstructFrame();
 
     bool first();
 

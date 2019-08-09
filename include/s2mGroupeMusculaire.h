@@ -1,24 +1,20 @@
 #ifndef S2MGROUPEMUSCULAIRE_H
 #define S2MGROUPEMUSCULAIRE_H
-    #include "biorbdConfig.h"
-    #include "s2mError.h"
-    #include <memory>
-    #include <vector>
-    #include "s2mMuscleStateActualBuchanan.h"
-    #include "s2mMuscleMeshTransverse.h"
-    #include "s2mMuscleHillType.h"
-    #include "s2mMuscleHillTypeMaxime.h"
-    #include "s2mMuscleHillTypeChadwick.h"
-    #include "s2mMuscleHillTypeThelen.h"
-    #include "s2mMuscleHillTypeSchutte.h"
-    #include "s2mMuscleHillTypeSimple.h"
-    #include "s2mString.h"
 
+#include <memory>
+#include <vector>
+#include "biorbdConfig.h"
+#include "s2mString.h"
+#include "s2mMusclePathChangers.h"
+
+class s2mMuscle;
+class s2mMuscleGeometry;
+class s2mMuscleCaracteristics;
 class BIORBD_API s2mGroupeMusculaire
 {
     public:
         s2mGroupeMusculaire(const s2mString &name, const s2mString &originName, const s2mString &insertionName);
-        ~s2mGroupeMusculaire();
+        virtual ~s2mGroupeMusculaire();
 
         virtual void addHillMuscle(const s2mString&,
                                const s2mString&,
@@ -29,22 +25,23 @@ class BIORBD_API s2mGroupeMusculaire
         virtual void addMuscle(s2mMuscle &val);
 
         // Set and get
-        virtual unsigned int nbMuscles() const;
-        virtual std::shared_ptr<s2mMuscle> muscle(const unsigned int &idx);
-        virtual int muscleID(const s2mString&); // Retourne l'index du muscle
-        virtual void setName(s2mString name);
-        virtual void setOrigin(s2mString name);
-        virtual void setInsertion(s2mString name);
-        virtual s2mString name() const;
-        virtual s2mString origin() const;
-        virtual s2mString insertion() const;
+        unsigned int nbMuscles() const;
+        std::shared_ptr<s2mMuscle> muscle_nonConst(const unsigned int &idx);
+        const std::shared_ptr<s2mMuscle> muscle(const unsigned int &idx) const;
+        int muscleID(const s2mString&); // Retourne l'index du muscle
+        void setName(s2mString name);
+        void setOrigin(s2mString name);
+        void setInsertion(s2mString name);
+        const s2mString& name() const;
+        const s2mString& origin() const;
+        const s2mString& insertion() const;
 
     protected:
-        std::vector<std::shared_ptr<s2mMuscle> > m_mus;
+        std::vector<std::shared_ptr<s2mMuscle>> m_mus;
         s2mString m_name;
         s2mString m_originName;
         s2mString m_insertName;
-    private:
+
 };
 
 #endif // S2MGROUPEMUSCULAIRE_H

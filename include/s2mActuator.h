@@ -2,8 +2,8 @@
 #define S2MACTUATOR_H
 
 #include "biorbdConfig.h"
-    #include "s2mString.h"
-    
+#include "s2mString.h"
+
 class BIORBD_API s2mActuator
 {
     public:
@@ -21,8 +21,6 @@ class BIORBD_API s2mActuator
         s2mString m_jointName;                     // Nom du parent
         unsigned int m_dofIdx;                        // Index du dof associé
 
-
-
-private:
 };
+
 #endif // S2MACTUATOR_H

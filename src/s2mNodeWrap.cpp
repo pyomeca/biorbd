@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mNodeWrap.h"
+#include "s2mNodeWrap.h"
 
 s2mNodeWrap::s2mNodeWrap(const Eigen::Vector3d &v,
                          const s2mString &name,

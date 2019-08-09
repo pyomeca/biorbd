@@ -28,7 +28,7 @@ void S2M_MusclesForce( int, mxArray *plhs[],
         mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "QDot must have the same number of frames than Q");
 
     // Recevoir les états musculaires
-    std::vector<std::vector<s2mMuscleStateActual> > state = getParameterMuscleStateActivation(prhs, 4, model->nbMuscleTotal());
+    std::vector<std::vector<s2mMuscleStateDynamics>> state = getParameterMuscleStateActivation(prhs, 4, model->nbMuscleTotal());
 
     bool updateKin(true);
     if (nrhs >= 6){ // Si on doit récupérer si on update ou pas
@@ -49,7 +49,7 @@ void S2M_MusclesForce( int, mxArray *plhs[],
     // Aller chercher les valeurs
     unsigned int cmp(0);
     for (unsigned int iF=0; iF<nFrame; ++iF){
-        std::vector<std::vector<std::shared_ptr<s2mMuscleForce> > > Force;
+        std::vector<std::vector<std::shared_ptr<s2mMuscleForce>>> Force;
         if (updateKin)
             Force = model->musclesForces(*model, *(state.begin()+iF), updateKin, &(*(Q.begin()+iF)), &(*(Qdot.begin()+iF)));
         else

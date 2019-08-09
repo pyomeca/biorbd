@@ -1,9 +1,9 @@
 #ifndef S2MWRAPPINGCYLINDER_H
 #define S2MWRAPPINGCYLINDER_H
-    #include "biorbdConfig.h"
-    #include "s2mWrappingObject.h"
-    #include "s2mGenCoord.h"
 
+#include "biorbdConfig.h"
+#include "s2mWrappingObject.h"
+#include "s2mAttitude.h"
 
 class BIORBD_API s2mWrappingCylinder : public s2mWrappingObject
 {
@@ -14,7 +14,7 @@ class BIORBD_API s2mWrappingCylinder : public s2mWrappingObject
                             const int & =1, // sens du wrapping (+1 ou -1)
                             const s2mString& = "",  // Nom du cylindre
                             const s2mString& = ""); // Nom du parent sur lequel il s'attache
-        ~s2mWrappingCylinder();
+        virtual ~s2mWrappingCylinder();
 
         void wrapPoints(const s2mAttitude&, const s2mNodeMuscle&, const s2mNodeMuscle&, s2mNodeMuscle&, s2mNodeMuscle&, double* = nullptr); // Premier et dernier points musculaire
         void wrapPoints(s2mJoints&, const s2mGenCoord&, const s2mNodeMuscle&, const s2mNodeMuscle&, s2mNodeMuscle&, s2mNodeMuscle&, double* = nullptr) ; // Premier et dernier points musculaire
@@ -22,13 +22,13 @@ class BIORBD_API s2mWrappingCylinder : public s2mWrappingObject
 
 
         // Set et get
-        s2mAttitude RT(s2mJoints &m, const s2mGenCoord& Q, const bool &updateKin = true);
-        double diameter() const  { return m_dia; }
-        double rayon() const {return m_dia/2;}
-        void setDiameter(double val) { m_dia = val; }
-        double length() const { return m_length; }
-        void setLength(double val) { m_length = val; }
-        s2mString forme() const { return "Cylinder"; }
+        virtual s2mAttitude RT(s2mJoints &m, const s2mGenCoord& Q, const bool &updateKin = true);
+        double diameter() const;
+        double rayon() const;
+        void setDiameter(double val);
+        double length() const;
+        void setLength(double val);
+
     protected:
         class NodeMusclePair{
         public:
@@ -57,7 +57,6 @@ class BIORBD_API s2mWrappingCylinder : public s2mWrappingObject
         s2mNodeMuscle m_p1Wrap; // Premier point de contact avec le wrap
         s2mNodeMuscle m_p2Wrap; // Deuxieme point de contact avec le wrap
         double m_lengthAroundWrap ; // Longeur entre p1 et p2
-    private:
 
 };
 

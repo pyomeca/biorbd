@@ -1,6 +1,7 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mWrappingSphere.h"
+#include "s2mWrappingSphere.h"
 
+#include "s2mAttitude.h"
 
 s2mWrappingSphere::s2mWrappingSphere(const double &dia,
                                      const Eigen::Vector3d &v, // Position du noeud
@@ -9,11 +10,26 @@ s2mWrappingSphere::s2mWrappingSphere(const double &dia,
     s2mWrappingObject(v,name,parentName),
     m_dia(dia)
 {
-    //ctor
+    m_forme = "Sphere";
 }
 
 
 s2mWrappingSphere::~s2mWrappingSphere()
 {
     //dtor
+}
+
+s2mAttitude s2mWrappingSphere::RT(s2mJoints &, const s2mGenCoord &, const bool &)
+{
+    return s2mAttitude();
+}
+
+double s2mWrappingSphere::size() const
+{
+    return m_dia;
+}
+
+void s2mWrappingSphere::setSize(const double &val)
+{
+    m_dia = val;
 }

@@ -1,7 +1,18 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mMusculoSkeletalModel.h"
+#include "s2mMusculoSkeletalModel.h"
+
+#include <rbdl/Model.h>
+#include <rbdl/Kinematics.h>
+#include "s2mNodeBone.h"
+#include "s2mRead.h"
+#include "s2mGenCoord.h"
 
 s2mMusculoSkeletalModel::s2mMusculoSkeletalModel()
+{
+
+}
+
+s2mMusculoSkeletalModel::~s2mMusculoSkeletalModel()
 {
 
 }
@@ -25,7 +36,7 @@ bool s2mMusculoSkeletalModel::InverseKinematics(const std::vector<Eigen::Vector3
     // Associer le numéro de body a chaque marker technique (body_id)
     std::vector<unsigned int> body_id;
     for (unsigned int i=0; i<body_point.size(); ++i)
-        body_id.push_back( (*(body_point.begin()+i)).parentId() );
+        body_id.push_back( static_cast<unsigned int>((*(body_point.begin()+i)).parentId()) );
 
     // Appeler la fonction de base
     return RigidBodyDynamics::InverseKinematics(*this, Qinit, body_id, body_pointEigen, MRBDL, Q);

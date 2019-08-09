@@ -1,9 +1,8 @@
- 
 #ifndef S2MPATCH_H
 #define S2MPATCH_H
-    #include "vector"
-    #include "Eigen/Dense"
-	#include "biorbdConfig.h"
+
+#include <Eigen/Dense>
+#include "biorbdConfig.h"
 
 class BIORBD_API s2mPatch
 {
@@ -17,7 +16,7 @@ class BIORBD_API s2mPatch
         s2mPatch patch(); // retourne les patchs
     protected:
         Eigen::Vector3i m_patch;
-    private:
+
 };
 
 #endif // S2MPATCH_H

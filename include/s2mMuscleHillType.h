@@ -1,13 +1,8 @@
 #ifndef S2MMUSCLEHILLTYPE_H
 #define S2MMUSCLEHILLTYPE_H
-    #include "biorbdConfig.h"
-    #include "s2mError.h"
-    #include "s2mMuscle.h"
-    #include "s2mMuscleForceFromOrigin.h"
-    #include "s2mMuscleForceFromInsertion.h"
-    #include "s2mGenCoord.h"
-    #include <math.h>
-    #include <memory>
+
+#include "biorbdConfig.h"
+#include "s2mMuscle.h"
 
 class BIORBD_API s2mMuscleHillType : public s2mMuscle
 {
@@ -16,23 +11,23 @@ class BIORBD_API s2mMuscleHillType : public s2mMuscle
         s2mMuscleHillType(const s2mMuscleGeometry&,
                           const s2mMuscleCaracteristics&,
                           const s2mMusclePathChangers & = s2mMusclePathChangers(),
-                          const s2mMuscleStateActual & = s2mMuscleStateActual());
+                          const s2mMuscleStateDynamics & = s2mMuscleStateDynamics());
         s2mMuscleHillType(const s2mString&,
                           const s2mMuscleGeometry&,
                           const s2mMuscleCaracteristics&,
                           const s2mMusclePathChangers & = s2mMusclePathChangers(),
-                          const s2mMuscleStateActual & = s2mMuscleStateActual());
+                          const s2mMuscleStateDynamics & = s2mMuscleStateDynamics());
         s2mMuscleHillType(const s2mMuscle& m);
         s2mMuscleHillType(const std::shared_ptr<s2mMuscle> m);
-        ~s2mMuscleHillType();
+        virtual ~s2mMuscleHillType();
 
 
-        virtual std::vector<std::shared_ptr<s2mMuscleForce> > force(s2mJoints& , const s2mGenCoord&, const s2mGenCoord&, const s2mMuscleStateActual&, const int = 2); // Compute muscle force
-        virtual std::vector<std::shared_ptr<s2mMuscleForce> > force(s2mJoints& , const s2mGenCoord&, const s2mMuscleStateActual&, const int = 2){s2mError::s2mAssert(0, "Hill type needs velocity"); std::vector<std::shared_ptr<s2mMuscleForce> > dummy; return dummy;} // Compute muscle force
-        virtual std::vector<std::shared_ptr<s2mMuscleForce> > force(const s2mMuscleStateActual&); // Compute muscle force (assume updateOrientations has been done)
+        virtual const std::vector<std::shared_ptr<s2mMuscleForce>>& force(s2mJoints& model, const s2mGenCoord& Q, const s2mGenCoord& Qdot, const s2mMuscleStateDynamics& emg, const int updateKin = 2); // Compute muscle force
+        virtual const std::vector<std::shared_ptr<s2mMuscleForce>>& force(s2mJoints& model, const s2mGenCoord& Q, const s2mMuscleStateDynamics& emg, const int updateKin = 2); // Compute muscle force
+        virtual const std::vector<std::shared_ptr<s2mMuscleForce>>& force(const s2mMuscleStateDynamics& emg); // Compute muscle force (assume updateOrientations has been done)
 
         // Get individual forces
-        double FlCE(const s2mMuscleStateActual& EMG);
+        double FlCE(const s2mMuscleStateDynamics& EMG);
         double FlPE();
         double FvCE();
         double damping();
@@ -43,12 +38,12 @@ class BIORBD_API s2mMuscleHillType : public s2mMuscle
 
         // Étapes intermédiaires du calcul de la force
         virtual void computeDamping(); // Force du ressort
-        virtual void computeFlCE(const s2mMuscleStateActual &EMG); // ForceLongueur element contractile
+        virtual void computeFlCE(const s2mMuscleStateDynamics &EMG); // ForceLongueur element contractile
         virtual void computeFvCE(); // ForceVitesse element contractile
         virtual void computeFlPE(); // ForceLongueur element passif
-        virtual void computeForce(const s2mMuscleStateActual &EMG); // Calcul des forces
-        virtual double multiplyCaractByActivationAndForce(const s2mMuscleStateActual &EMG); // Voir dans la fonction pour descriptif
-        virtual s2mMuscleStateActual normalizeEMG(s2mMuscleStateActual EMG);
+        virtual void computeForce(const s2mMuscleStateDynamics &EMG); // Calcul des forces
+        virtual double multiplyCaractByActivationAndForce(const s2mMuscleStateDynamics &emg); // Voir dans la fonction pour descriptif
+        virtual s2mMuscleStateDynamics normalizeEMG(const s2mMuscleStateDynamics& emg);
 
         // Attributs intermédiaires lors du calcul de la force
         double m_damping; // Force du ressort
@@ -66,8 +61,6 @@ class BIORBD_API s2mMuscleHillType : public s2mMuscle
         double m_cste_forceExcentriqueMultiplier; // Constante utilisée pour ForceVitesse
         double m_cste_damping; // Parametre utilisé dans le Damping
         double m_cste_vitesseRaccourMax; // Vitesse de raccourcissement maximale
-    private:
-        void initiateForcePtr(){}
 
 };
 

@@ -1,19 +1,12 @@
 #ifndef S2MINTEGRATOR_H
 #define S2MINTEGRATOR_H
-    #include "biorbdConfig.h"
-    #include "s2mJoints.h"
-    #include "s2mGenCoord.h"
-    #include "s2mError.h"
-    #include "s2mString.h"
-    #include <vector>
-    #include <Eigen/Dense>
-    #include <boost/numeric/odeint.hpp>
-    #include <rbdl/rbdl.h>
 
-    /* The type of container used to hold the state vector */
-    typedef std::vector< double > state_type;
+#include <vector>
+#include <rbdl/Model.h>
+#include "biorbdConfig.h"
 
-
+// The type of container used to hold the state vector
+typedef std::vector< double > state_type;
 
 class s2mGenCoord;
 class s2mJoints;
@@ -21,9 +14,6 @@ class BIORBD_API s2mIntegrator
 {
     public:
         s2mIntegrator();
-//        s2mIntegrator(const s2mIntegrator&);
-        ~s2mIntegrator();
-
 
         void integrate(RigidBodyDynamics::Model*, const s2mGenCoord&, const Eigen::VectorXd&, const double&, const double&, const double&);
         void operator() ( const state_type &x , state_type &dxdt , const double /* t */ );
@@ -54,7 +44,6 @@ class BIORBD_API s2mIntegrator
             }
         };
 
-    private:
 };
 
 #endif // S2MINTEGRATOR_H

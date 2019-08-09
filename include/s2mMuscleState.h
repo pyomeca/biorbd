@@ -1,11 +1,13 @@
 #ifndef S2MMUSCLESTATE_H
 #define S2MMUSCLESTATE_H
+
 #include "biorbdConfig.h"
+
 class BIORBD_API s2mMuscleState
 {
     public:
         s2mMuscleState(const double &e = 0, const double &a = 0);
-        ~s2mMuscleState();
+        virtual ~s2mMuscleState();
 
         // Set and Get
         virtual void setExcitation(const double &val);

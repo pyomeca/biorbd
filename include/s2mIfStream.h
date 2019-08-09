@@ -1,22 +1,18 @@
 #ifndef S2MMIFSTREAM_H
 #define S2MMIFSTREAM_H
 
-#include "biorbdConfig.h"
-#include "s2mError.h"
-#include <fstream>
-#include "s2mEquation.h"
-#include "s2mPath.h"
-#include <boost/lexical_cast.hpp>
-#include <vector>
 #include <map>
+#include "biorbdConfig.h"
+#include "s2mPath.h"
 
+class s2mEquation;
 class BIORBD_API s2mIfStream
 {
     public:
     s2mIfStream(const s2mPath& path, std::ios_base::openmode mode );
     s2mIfStream(const char* path, std::ios_base::openmode mode );
     s2mIfStream( );
-    ~s2mIfStream();
+    virtual ~s2mIfStream();
 
     bool open(const s2mPath& path, std::ios_base::openmode mode );
     bool open(const char* path, std::ios_base::openmode mode  );
@@ -34,7 +30,7 @@ class BIORBD_API s2mIfStream
     void getline(s2mString&);
     bool close();
 
-    bool eof(){return m_ifs->eof();}
+    bool eof();
 
     protected:
         bool m_isOpen;

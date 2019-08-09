@@ -1,7 +1,8 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mEquation.h"
+#include "s2mEquation.h"
 
-
+#include <boost/lexical_cast.hpp>
+#include "s2mError.h"
 
 std::vector<s2mEquation> s2mEquation::prepareMathSymbols(){
     // Classés en ordre de priorité des opérations
@@ -13,7 +14,6 @@ std::vector<s2mEquation> s2mEquation::prepareMathSymbols(){
     symbols.push_back("*");
     symbols.push_back("+");
     symbols.push_back("-");
-
 
     return symbols;
 }
@@ -42,11 +42,6 @@ s2mEquation::s2mEquation(const std::basic_string<char> &c)
 
 }
 
-s2mEquation::~s2mEquation()
-{
-
-}
-
 std::vector<s2mEquation> s2mEquation::splitIntoEquation(s2mEquation wholeEq, const std::map<s2mEquation, double>& variables){
     // variable de sortie
     std::vector<s2mEquation> eq;
@@ -56,11 +51,11 @@ std::vector<s2mEquation> s2mEquation::splitIntoEquation(s2mEquation wholeEq, con
 
     // Sur tout le long du string
     while (1){
-        int firstIdx(wholeEq.size()+1);// Mettre un index trop grand
+        int firstIdx(static_cast<int>(wholeEq.size())+1);// Mettre un index trop grand
         unsigned int toStop(0); // Mettre stop a 0
         // Balayer chaque symbols pour voir s'ils se trouvent dans l'equation
         for (unsigned int i=0; i<symbols.size(); ++i){
-            int idx = wholeEq.find(symbols[i]);
+            int idx = static_cast<int>(wholeEq.find(symbols[i]));
             if (idx < 0){ // Si non, le noter
                 ++toStop;
                 continue;
@@ -76,9 +71,9 @@ std::vector<s2mEquation> s2mEquation::splitIntoEquation(s2mEquation wholeEq, con
             eq.push_back(wholeEq(0));
             break;
         }
-        if (firstIdx+1 == (int)wholeEq.size()){
-            eq.push_back(wholeEq.substr(0,firstIdx));
-            eq.push_back(wholeEq(firstIdx));
+        if (firstIdx+1 == static_cast<int>(wholeEq.size())){
+            eq.push_back(wholeEq.substr(0,static_cast<unsigned int>(firstIdx)));
+            eq.push_back(wholeEq(static_cast<unsigned int>(firstIdx)));
             break;
         }
         else if (firstIdx == 0){
@@ -110,9 +105,9 @@ std::vector<s2mEquation> s2mEquation::splitIntoEquation(s2mEquation wholeEq, con
             }
         }
         else{
-            eq.push_back(wholeEq.substr(0,firstIdx)); // Prendre tout ce qui vient avant le symbole
-            eq.push_back(wholeEq(firstIdx)); // Récupérer le symbole
-            wholeEq = wholeEq.substr(firstIdx+1); // Garder tout ce qu'il y a apres le symbole et recommencer
+            eq.push_back(wholeEq.substr(0,static_cast<unsigned int>(firstIdx))); // Prendre tout ce qui vient avant le symbole
+            eq.push_back(wholeEq(static_cast<unsigned int>(firstIdx))); // Récupérer le symbole
+            wholeEq = wholeEq.substr(static_cast<unsigned int>(firstIdx)+1); // Garder tout ce qu'il y a apres le symbole et recommencer
         }
 
     }
@@ -190,7 +185,7 @@ double s2mEquation::resolveEquation(std::vector<s2mEquation> eq, unsigned int ma
                     s2mError::s2mAssert(foundIdx, "You must close brackets!");
 
                     eq2.push_back(boost::lexical_cast<std::string>(boost::lexical_cast<std::string>(resolveEquation(eq_tp))));
-                    j+=cmpValues;
+                    j+=static_cast<unsigned int>(cmpValues);
                 }
                 else if (!symbols[math].compare("/"))
                     eq2[j-1] = boost::lexical_cast<std::string>(boost::lexical_cast<double>(eq[j-1]) / boost::lexical_cast<double>(eq[j+1]));

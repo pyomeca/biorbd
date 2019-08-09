@@ -8,15 +8,14 @@ class BIORBD_API s2mMuscleForceFromInsertion : public s2mMuscleForce
 {
     public:
         s2mMuscleForceFromInsertion();
-        s2mMuscleForceFromInsertion(const double&, const double&, const double&);
-        s2mMuscleForceFromInsertion(const Eigen::Vector3d&);
-        s2mMuscleForceFromInsertion(const s2mMuscleGeometry&, const double&);
-        ~s2mMuscleForceFromInsertion();
+        s2mMuscleForceFromInsertion(double x, double y, double z);
+        s2mMuscleForceFromInsertion(const Eigen::Vector3d& force);
+        s2mMuscleForceFromInsertion(const s2mMuscleGeometry& geo, double force);
+        virtual ~s2mMuscleForceFromInsertion();
 
         // Get et set
-        void setForce(const s2mMuscleGeometry&, const double&);
-    protected:
-    private:
+        virtual void setForce(const s2mMuscleGeometry& geo, double force);
+
 };
 
 #endif // S2MMUSCLEFORCEFROMINSERTION_H

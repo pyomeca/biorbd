@@ -1,5 +1,18 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mPath.h"
+#include "s2mPath.h"
+
+#ifdef _WIN64
+    #include <direct.h>
+    #include <Windows.h>
+    #undef max
+#elseif _WIN32
+    #include <direct.h>
+    #include <Windows.h>
+    #undef max
+#else
+    #include <sys/stat.h>
+    #include <unistd.h>
+#endif
 
 s2mPath::s2mPath()
     : s2mString("")
@@ -32,11 +45,11 @@ s2mPath::~s2mPath()
 
 bool s2mPath::isFileExist() const
 {
-    return isFileExist((s2mString)*this);
+    return isFileExist(static_cast<s2mString>(*this));
 }
 bool s2mPath::isFileExist(const s2mPath& path)
 {
-    return isFileExist((s2mString)path);
+    return isFileExist(static_cast<s2mString>(path));
 }
 bool s2mPath::isFileExist(const s2mString& path)
 {
@@ -69,7 +82,7 @@ bool s2mPath::isFolderExist(const s2mString & path)
 			return false;
 		else
 			return true;
-#elif _WIN32
+#elseif _WIN32
 	if (GetFileAttributesA(path.c_str()) == INVALID_FILE_ATTRIBUTES)
 		return false; // Le path est invalide
 	else
@@ -91,18 +104,18 @@ bool s2mPath::isFolderExist(const s2mString & path)
 
 void s2mPath::parseFileName(const s2mString &path, s2mString &folder, s2mString &filename, s2mString &extension)
 {
-    int sep(path.find_last_of("\\")); //si on utilise le formalisme de windows
-    if (sep == -1)
+    size_t sep(path.find_last_of("\\")); //si on utilise le formalisme de windows
+    if (sep == std::string::npos)
         sep = path.find_last_of("/"); // Si on a rien trouvé, on est en formalisme linux
 
     // Stocker le folder
-    if (sep == -1) // Si on a toujours rien, c'est que qu'on est déjà dans le bon dossier
+    if (sep == std::string::npos) // Si on a toujours rien, c'est que qu'on est déjà dans le bon dossier
         folder = "./";
     else
         folder = path.substr(0,sep) + "/";
 
     // Stocker l'extension
-    int ext(path.find_last_of("."));
+    size_t ext(path.find_last_of("."));
     extension = path.substr(ext+1);
 
     // Stocker le nom de fichier
@@ -145,8 +158,8 @@ s2mString s2mPath::getRelativePath(const s2mString& path) const
     s2mString meFirstPart("");
     s2mString currentDirFirstPart("");
 
-    int sepMe = -1;
-    int sepCurrentDir = -1;
+    size_t sepMe = std::string::npos;
+    size_t sepCurrentDir = std::string::npos;
     do {
         // Découper en fonction de la position précédente du séparateur
         me = me.substr(sepMe+1);
@@ -154,10 +167,10 @@ s2mString s2mPath::getRelativePath(const s2mString& path) const
 
         // Trouver le prochain séparateur
         sepMe = me.find_first_of("\\"); //si on utilise le formalisme de windows
-        if (sepMe == -1)
+        if (sepMe == std::string::npos)
             sepMe = me.find_first_of("/"); // Si on a rien trouvé, on est en formalisme linux
         sepCurrentDir = currentDir.find_first_of("\\"); //si on utilise le formalisme de windows
-        if (sepCurrentDir == -1)
+        if (sepCurrentDir == std::string::npos)
             sepCurrentDir = currentDir.find_first_of("/"); // Si on a rien trouvé, on est en formalisme linux
 
         // Séparer la première et la dernière partie
@@ -172,11 +185,11 @@ s2mString s2mPath::getRelativePath(const s2mString& path) const
     while(currentDir.compare("")) { // Tant que currentDir n'est pas vide, reculer
         // Trouver le prochain séparateur
         sepCurrentDir = currentDir.find_first_of("\\"); //si on utilise le formalisme de windows
-        if (sepCurrentDir == -1)
+        if (sepCurrentDir == std::string::npos)
             sepCurrentDir = currentDir.find_first_of("/"); // Si on a rien trouvé, on est en formalisme linux
 
         // Séparer la première et la dernière partie
-        if (sepCurrentDir != -1){ // -1 Si on est au dernier dossier et que celui-ci ne se termine pas par /
+        if (sepCurrentDir != std::string::npos){ // -1 Si on est au dernier dossier et que celui-ci ne se termine pas par /
             currentDirFirstPart = currentDir.substr(0, sepCurrentDir);
             currentDir = currentDir.substr(sepCurrentDir+1);
         }
@@ -196,7 +209,7 @@ s2mString s2mPath::getAbsolutePath() const
 {
 #ifdef _WIN64
     s2mString base("C:\\");
-#elif _WIN32
+#elseif _WIN32
     s2mString base("C:\\");
 #else
     s2mString base("/");
@@ -205,17 +218,17 @@ s2mString s2mPath::getAbsolutePath() const
     return base + getRelativePath(base) + m_filename + m_extension;
 }
 
-s2mString s2mPath::folder() const
+const s2mString &s2mPath::folder() const
 {
     return m_path;
 }
 
-s2mString s2mPath::filename() const
+const s2mString& s2mPath::filename() const
 {
     return m_filename;
 }
 
-s2mString s2mPath::extension() const
+const s2mString& s2mPath::extension() const
 {
     return m_extension;
 }
@@ -224,7 +237,7 @@ const char * s2mPath::getCurrentDir()
 {
     #ifdef _WIN64
         return _getcwd(nullptr, 0);
-    #elif _WIN32
+    #elseif _WIN32
         return _getcwd(nullptr, 0);
     #else
         return getcwd(nullptr, 0);
@@ -236,30 +249,30 @@ void s2mPath::createFolder() const
     s2mString tp(folder());
     s2mString tp2(tp);
 
-    int sep = -1;
-    int sepTrack = 0;
+    size_t sep = std::string::npos;
+    size_t sepTrack = 0;
     do {
         // Découper en fonction de la position précédente du séparateur
         tp2 = tp2.substr(sep+1);
 
         // Trouver le prochain séparateur
         sep = tp2.find_first_of("\\"); //si on utilise le formalisme de windows
-        if (sep == -1)
+        if (sep == std::string::npos)
              sep = tp2.find_first_of("/"); // Si on a rien trouvé, on est en formalisme linux
 
-        if (sep != -1){
+        if (sep != std::string::npos){
             sepTrack += sep + 1 ;
 
             // Séparer la première et la dernière partie
-            if (!isFolderExist((s2mString)tp.substr(0, sepTrack))){
+            if (!isFolderExist(static_cast<s2mString>(tp.substr(0, sepTrack)))){
 #ifdef _WIN64
 				_mkdir(tp.substr(0, sepTrack).c_str());
-#elif _WIN32
+#elseif _WIN32
 				_mkdir(tp.substr(0, sepTrack).c_str());
 #else
                 mkdir(tp.substr(0, sepTrack).c_str(), 0777);
 #endif
             }
         }
-    } while (sep != -1);
+    } while (sep != std::string::npos);
 }

@@ -16,7 +16,7 @@ void S2M_inverseKinematics( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
 
     // Recevoir la matrice des markers
-    std::vector<std::vector<Eigen::Vector3d> > markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechTags()));
+    std::vector<std::vector<Eigen::Vector3d>> markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechTags()));
 
     // Recevoir Qinit
     s2mGenCoord Qinit = *getParameterQ(prhs, 3, nQ).begin();

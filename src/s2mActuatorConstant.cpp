@@ -1,5 +1,8 @@
 #define BIORBD_API_EXPORTS
-#include "../include/s2mActuatorConstant.h"
+#include "s2mActuatorConstant.h"
+
+#include "s2mString.h"
+#include "s2mGenCoord.h"
 
 s2mActuatorConstant::s2mActuatorConstant(
     int direction,
@@ -7,6 +10,11 @@ s2mActuatorConstant::s2mActuatorConstant(
     unsigned int dofIdx, const s2mString &jointName) :
     s2mActuator(direction, dofIdx, jointName),
     m_Tmax(Tmax)
+{
+
+}
+
+s2mActuatorConstant::~s2mActuatorConstant()
 {
 
 }
