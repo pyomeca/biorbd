@@ -184,12 +184,12 @@ namespace std {
 //%include "s2mJoint.h"
 %include "@CMAKE_SOURCE_DIR@/include/s2mContacts.h"
 
-//%include "s2mActuator.h"
-//%include "s2mActuatorConstant.h"
-//%include "s2mActuatorGauss3p.h"
-//%include "s2mActuatorGauss6p.h"
-//%include "s2mActuatorLinear.h"
-//%include "s2mActuators.h"
+//%include "Actuator.h"
+//%include "ActuatorConstant.h"
+//%include "ActuatorGauss3p.h"
+//%include "ActuatorGauss6p.h"
+//%include "ActuatorLinear.h"
+//%include "Actuators.h"
 
 %include "@CMAKE_SOURCE_DIR@/include/s2mNode.h"
 %include "@CMAKE_SOURCE_DIR@/include/s2mNodeBone.h"

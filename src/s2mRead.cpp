@@ -75,7 +75,9 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
     unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
     s2mError::s2mAssert((version == 1 || version == 2 || version == 3 || version == 4),  "Version not implemented yet");
 
+#ifdef MODULE_ACTUATORS
     bool hasActuators = false;
+#endif // MODULE_ACTUATORS
     while(file.read(tp)){  // Attempt read into x, return false if it fails
         // Si c'est un segment
         if (!tp.tolower().compare("segment")){
@@ -535,40 +537,40 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
 
             // Vérifier que tout y est
             s2mError::s2mAssert(isTypeSet!=0, "Actuator type must be defined");
-            biorbd::actuator::s2mActuator* actuator;
+            biorbd::actuator::Actuator* actuator;
 
             if (!type.tolower().compare("gauss3p")){
                 s2mError::s2mAssert(isDofSet && isDirectionSet && isTmaxSet && isT0Set && iswmaxSet && iswcSet && isaminSet &&
                                     iswrSet && isw1Set && isrSet && isqoptSet,
                                     "Make sure all parameters are defined");
-                actuator = new biorbd::actuator::s2mActuatorGauss3p(int_direction,Tmax,T0,wmax,wc,amin,wr,w1,r,qopt,dofIdx,name);
+                actuator = new biorbd::actuator::ActuatorGauss3p(int_direction,Tmax,T0,wmax,wc,amin,wr,w1,r,qopt,dofIdx,name);
             }
             else if (!type.tolower().compare("constant")){
                 s2mError::s2mAssert(isDofSet && isDirectionSet && isTmaxSet,
                                     "Make sure all parameters are defined");
-                actuator = new biorbd::actuator::s2mActuatorConstant(int_direction,Tmax,dofIdx,name);
+                actuator = new biorbd::actuator::ActuatorConstant(int_direction,Tmax,dofIdx,name);
             }
             else if (!type.tolower().compare("linear")){
                 s2mError::s2mAssert(isDofSet && isDirectionSet && isPenteSet && isT0Set,
                                     "Make sure all parameters are defined");
-                actuator = new biorbd::actuator::s2mActuatorLinear(int_direction,T0,pente,dofIdx,name);
+                actuator = new biorbd::actuator::ActuatorLinear(int_direction,T0,pente,dofIdx,name);
             }
             else if (!type.tolower().compare("gauss6p")){
                 s2mError::s2mAssert(isDofSet && isDirectionSet && isTmaxSet && isT0Set && iswmaxSet && iswcSet && isaminSet &&
                                     iswrSet && isw1Set && isrSet && isqoptSet && isFacteur6pSet && isr2Set && isqopt2Set,
                                     "Make sure all parameters are defined");
-                actuator = new biorbd::actuator::s2mActuatorGauss6p(int_direction,Tmax,T0,wmax,wc,amin,wr,w1,r,qopt,facteur6p, r2, qopt2, dofIdx,name);
+                actuator = new biorbd::actuator::ActuatorGauss6p(int_direction,Tmax,T0,wmax,wc,amin,wr,w1,r,qopt,facteur6p, r2, qopt2, dofIdx,name);
             }
             else {
                 s2mError::s2mAssert(0, "Actuator do not correspond to an implemented one");
-                actuator = new biorbd::actuator::s2mActuatorConstant(int_direction, Tmax, dofIdx, name); // Échec de compilation sinon
+                actuator = new biorbd::actuator::ActuatorConstant(int_direction, Tmax, dofIdx, name); // Échec de compilation sinon
             }
 
             model->addActuator(*model, *actuator);
             delete actuator;
 
 #else // MODULE_ACTUATORS
-        s2mError::s2mAssert(false, "Biorbd was build without the module Actuator but the model defines ones");
+        s2mError::s2mAssert(false, "Biorbd was build without the module Actuators but the model defines ones");
 #endif // MODULE_ACTUATORS
         } else if (!tp.tolower().compare("musclegroup")){
             s2mString name;

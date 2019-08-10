@@ -5,14 +5,14 @@
 #include "Actuators/Actuator.h"
 
 namespace biorbd { namespace actuator {
-class BIORBD_API s2mActuatorConstant : public s2mActuator
+class BIORBD_API ActuatorConstant : public Actuator
 {
     public:
-        s2mActuatorConstant(int direction,
+        ActuatorConstant(int direction,
                            double Tmax,
                            unsigned int dofIdx,
                            const s2mString &jointName = "");
-        virtual ~s2mActuatorConstant();
+        virtual ~ActuatorConstant();
         virtual double torqueMax();
 
     protected:

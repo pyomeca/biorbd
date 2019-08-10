@@ -17,7 +17,7 @@ class BIORBD_API Actuators
         Actuators(const Actuators&);
         virtual ~Actuators();
 
-        void addActuator(const s2mJoints&, s2mActuator &a);
+        void addActuator(const s2mJoints&, Actuator &a);
         void closeActuator(s2mJoints& m);
 
         // Retourne deux vecteur de torque max (il manque l'entrée de puissance afin de savoir si c'est positif ou négatif
@@ -27,12 +27,12 @@ class BIORBD_API Actuators
         s2mTau torque(const s2mJoints&, const s2mGenCoord& a, const s2mGenCoord& Q, const s2mGenCoord &Qdot);
 
         // Get and set
-        virtual std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator>> actuator(unsigned int dof);
-        virtual std::shared_ptr<s2mActuator> actuator(unsigned int dof, unsigned int idx);
+        virtual std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>> actuator(unsigned int dof);
+        virtual std::shared_ptr<Actuator> actuator(unsigned int dof, unsigned int idx);
         unsigned int nbActuators() const;
 
     protected:
-        std::vector<std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator>>> m_all; // Tous les actuators réunis / pair (+ ou -)
+        std::vector<std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>>> m_all; // Tous les actuators réunis / pair (+ ou -)
         bool * m_isDofSet;
         bool m_isClose;
 

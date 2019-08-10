@@ -6,15 +6,15 @@
 
 class s2mGenCoord;
 namespace biorbd { namespace actuator {
-class BIORBD_API s2mActuatorLinear : public s2mActuator
+class BIORBD_API ActuatorLinear : public Actuator
 {
     public:
-        s2mActuatorLinear(int direction,
+        ActuatorLinear(int direction,
                           double T0,
                           double pente,
                           unsigned int dofIdx,
                           const s2mString &jointName = "");
-        virtual ~s2mActuatorLinear();
+        virtual ~ActuatorLinear();
         virtual double torqueMax(const s2mGenCoord &Q) const;
 
     protected:

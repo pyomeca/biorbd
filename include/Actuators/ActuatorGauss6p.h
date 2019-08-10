@@ -6,10 +6,10 @@
 
 class s2mGenCoord;
 namespace biorbd { namespace actuator {
-class BIORBD_API s2mActuatorGauss6p : public s2mActuator
+class BIORBD_API ActuatorGauss6p : public Actuator
 {
     public:
-        s2mActuatorGauss6p(int direction,
+        ActuatorGauss6p(int direction,
                            double Tmax,
                            double T0,
                            double wmax,
@@ -24,7 +24,7 @@ class BIORBD_API s2mActuatorGauss6p : public s2mActuator
                            double qopt2,
                            unsigned int dofIdx,
                            const s2mString &jointName = "");
-        virtual ~s2mActuatorGauss6p();
+        virtual ~ActuatorGauss6p();
         virtual double torqueMax(const s2mGenCoord &Q, const s2mGenCoord &Qdot);
 
     protected:

@@ -5,11 +5,11 @@
 #include "s2mString.h"
 
 namespace biorbd { namespace actuator {
-class BIORBD_API s2mActuator
+class BIORBD_API Actuator
 {
     public:
-        s2mActuator(int direction, unsigned int dofIdx, const s2mString &jointName = "");
-        virtual ~s2mActuator();
+        Actuator(int direction, unsigned int dofIdx, const s2mString &jointName = "");
+        virtual ~Actuator();
         unsigned int index() const;
         int direction() const;
 
