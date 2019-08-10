@@ -3,6 +3,8 @@
 
 #include "s2mGenCoord.h"
 
+namespace biorbd { namespace actuator {
+
 s2mActuatorLinear::s2mActuatorLinear(
     int direction,
     double T0,
@@ -29,3 +31,5 @@ double s2mActuatorLinear::torqueMax(const s2mGenCoord &Q) const {
 
     return (Q[m_dofIdx]*180/M_PI)*m_m+m_b;
 }
+
+}}

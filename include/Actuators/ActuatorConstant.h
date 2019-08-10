@@ -4,6 +4,7 @@
 #include "biorbdConfig.h"
 #include "Actuators/Actuator.h"
 
+namespace biorbd { namespace actuator {
 class BIORBD_API s2mActuatorConstant : public s2mActuator
 {
     public:
@@ -22,4 +23,7 @@ class BIORBD_API s2mActuatorConstant : public s2mActuator
         double m_Tmax;      // Maximum torque that can be done
 
 };
+
+}}
+
 #endif // S2M_ACTUATOR_CONSTANT_H

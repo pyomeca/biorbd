@@ -6,8 +6,8 @@
 #include <iostream>
 #include <fstream>
 #include <iostream>
-
 #include "s2mMusculoSkeletalModel.h"
+#include "biorbdConfig.h"
 #include "s2mRead.h"
 #include "class_handle.h"
 #include "s2mKalmanReconsMarkers.h"
@@ -84,7 +84,9 @@
 #include "S2M_parent.h"
 
 #include "S2M_inverseDynamics.h"
+#ifdef MODULE_ACTUATORS
 #include "S2M_torqueActivation.h"
+#endif
 #include "S2M_NLeffects.h"
 #include "S2M_forwardDynamics.h"
 #include "S2M_computeQdot.h"
@@ -566,11 +568,13 @@ void functionHub( int nlhs, mxArray *plhs[],
         return;
     }
 
+#ifdef MODULE_ACTUATORS
     // Si on veut convertir des activations de torque en torque
     if(!toLower(cmd).compare("torqueactivation")){
         S2M_torqueActivation(nlhs, plhs, nrhs, prhs);
         return;
     }
+#endif // MODULE_ACTUATORS
 
 
     if(!toLower(cmd).compare("forwarddynamics")){

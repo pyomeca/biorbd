@@ -19,7 +19,7 @@ class BIORBD_API s2mMusculoSkeletalModel :
         ,public s2mMuscles
         ,public s2mContacts
         #ifdef MODULE_ACTUATORS
-        ,public biorbd::actuators::Actuators
+        ,public biorbd::actuator::Actuators
         #endif
 {
     public:

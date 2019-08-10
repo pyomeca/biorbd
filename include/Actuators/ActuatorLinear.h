@@ -5,6 +5,7 @@
 #include "Actuators/Actuator.h"
 
 class s2mGenCoord;
+namespace biorbd { namespace actuator {
 class BIORBD_API s2mActuatorLinear : public s2mActuator
 {
     public:
@@ -25,7 +26,8 @@ class BIORBD_API s2mActuatorLinear : public s2mActuator
         double m_m;      // Pente
         double m_b; // Torque à zéro
 
-
-private:
 };
+
+}}
+
 #endif // S2M_ACTUATOR_LINEAR_H

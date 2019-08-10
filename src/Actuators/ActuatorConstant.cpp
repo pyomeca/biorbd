@@ -4,6 +4,8 @@
 #include "s2mString.h"
 #include "s2mGenCoord.h"
 
+namespace biorbd { namespace actuator {
+
 s2mActuatorConstant::s2mActuatorConstant(
     int direction,
     double Tmax,
@@ -23,3 +25,5 @@ s2mActuatorConstant::~s2mActuatorConstant()
 double s2mActuatorConstant::torqueMax(){
     return m_Tmax;
 }
+
+}}

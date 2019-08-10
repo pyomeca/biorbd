@@ -3,12 +3,17 @@
 #include <rbdl/Dynamics.h>
 
 #include "s2mMusculoSkeletalModel.h"
+#include "biorbdConfig.h"
 #include "s2mGenCoord.h"
 #include "s2mTau.h"
 
 static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
 TEST(c3dFileIO, OpenModel){
+#ifdef MODULE_ACTUATORS
     EXPECT_NO_THROW(s2mMusculoSkeletalModel model(modelPathForGeneralTesting));
+#else // MODULE_ACTUATORS
+    EXPECT_THROW(s2mMusculoSkeletalModel model(modelPathForGeneralTesting), std::runtime_error);
+#endif // MODULE_ACTUATORS
 }
 
 static std::string modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");

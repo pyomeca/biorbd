@@ -11,7 +11,7 @@
 #include "s2mTau.h"
 #include "s2mGenCoord.h"
 
-namespace biorbd { namespace actuators {
+namespace biorbd { namespace actuator {
 
 Actuators::Actuators() :
     m_isClose(false)

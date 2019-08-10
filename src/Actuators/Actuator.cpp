@@ -3,6 +3,8 @@
 
 #include "s2mError.h"
 
+namespace biorbd { namespace actuator {
+
 s2mActuator::s2mActuator(int direction, unsigned int dofIdx, const s2mString &jointName) :
     m_direction(direction),
     m_jointName(jointName),
@@ -25,3 +27,5 @@ int s2mActuator::direction() const
 {
     return m_direction;
 }
+
+}}

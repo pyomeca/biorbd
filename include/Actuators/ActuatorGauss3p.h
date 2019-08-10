@@ -5,6 +5,7 @@
 #include "Actuators/Actuator.h"
 
 class s2mGenCoord;
+namespace biorbd { namespace actuator {
 class BIORBD_API s2mActuatorGauss3p : public s2mActuator
 {
     public:
@@ -47,4 +48,7 @@ class BIORBD_API s2mActuatorGauss3p : public s2mActuator
         double m_qopt;      // Optimal position
 
 };
+
+}}
+
 #endif // S2M_ACTUATOR_GAUSS_3P_H

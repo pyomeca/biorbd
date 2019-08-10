@@ -9,7 +9,7 @@
 class s2mJoints;
 class s2mGenCoord;
 class s2mTau;
-namespace biorbd { namespace actuators {
+namespace biorbd { namespace actuator {
 class BIORBD_API Actuators
 {
     public:

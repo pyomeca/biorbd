@@ -4,6 +4,7 @@
 #include "biorbdConfig.h"
 #include "s2mString.h"
 
+namespace biorbd { namespace actuator {
 class BIORBD_API s2mActuator
 {
     public:
@@ -22,4 +23,7 @@ class BIORBD_API s2mActuator
         unsigned int m_dofIdx;                        // Index du dof associé
 
 };
+
+}}
+
 #endif // S2M_ACTUATOR_H

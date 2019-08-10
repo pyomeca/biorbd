@@ -3,6 +3,8 @@
 
 #include "s2mGenCoord.h"
 
+namespace biorbd { namespace actuator {
+
 s2mActuatorGauss3p::s2mActuatorGauss3p(
     int direction,
     double Tmax,
@@ -63,5 +65,6 @@ double s2mActuatorGauss3p::torqueMax(const s2mGenCoord &Q, const s2mGenCoord &Qd
     // Calcul du couple max
     return Tw * A * Ta;
 
-
 }
+
+}}

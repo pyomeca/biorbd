@@ -426,6 +426,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             model->AddLoopConstraint(id_predecessor, id_successor, X_predecessor, X_successor, axis, enableStabilization, stabilizationParam, name);
         }
         else if (!tp.tolower().compare("actuator")){
+#ifdef MODULE_ACTUATORS
             hasActuators = true;
             // Le nom de l'actuator doit correspondre au numéro du segment sur lequel il s'attache
             s2mString name;
@@ -534,40 +535,42 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
 
             // Vérifier que tout y est
             s2mError::s2mAssert(isTypeSet!=0, "Actuator type must be defined");
-            s2mActuator* actuator;
+            biorbd::actuator::s2mActuator* actuator;
 
             if (!type.tolower().compare("gauss3p")){
                 s2mError::s2mAssert(isDofSet && isDirectionSet && isTmaxSet && isT0Set && iswmaxSet && iswcSet && isaminSet &&
                                     iswrSet && isw1Set && isrSet && isqoptSet,
                                     "Make sure all parameters are defined");
-                actuator = new s2mActuatorGauss3p(int_direction,Tmax,T0,wmax,wc,amin,wr,w1,r,qopt,dofIdx,name);
+                actuator = new biorbd::actuator::s2mActuatorGauss3p(int_direction,Tmax,T0,wmax,wc,amin,wr,w1,r,qopt,dofIdx,name);
             }
             else if (!type.tolower().compare("constant")){
                 s2mError::s2mAssert(isDofSet && isDirectionSet && isTmaxSet,
                                     "Make sure all parameters are defined");
-                actuator = new s2mActuatorConstant(int_direction,Tmax,dofIdx,name);
+                actuator = new biorbd::actuator::s2mActuatorConstant(int_direction,Tmax,dofIdx,name);
             }
             else if (!type.tolower().compare("linear")){
                 s2mError::s2mAssert(isDofSet && isDirectionSet && isPenteSet && isT0Set,
                                     "Make sure all parameters are defined");
-                actuator = new s2mActuatorLinear(int_direction,T0,pente,dofIdx,name);
+                actuator = new biorbd::actuator::s2mActuatorLinear(int_direction,T0,pente,dofIdx,name);
             }
             else if (!type.tolower().compare("gauss6p")){
                 s2mError::s2mAssert(isDofSet && isDirectionSet && isTmaxSet && isT0Set && iswmaxSet && iswcSet && isaminSet &&
                                     iswrSet && isw1Set && isrSet && isqoptSet && isFacteur6pSet && isr2Set && isqopt2Set,
                                     "Make sure all parameters are defined");
-                actuator = new s2mActuatorGauss6p(int_direction,Tmax,T0,wmax,wc,amin,wr,w1,r,qopt,facteur6p, r2, qopt2, dofIdx,name);
+                actuator = new biorbd::actuator::s2mActuatorGauss6p(int_direction,Tmax,T0,wmax,wc,amin,wr,w1,r,qopt,facteur6p, r2, qopt2, dofIdx,name);
             }
             else {
                 s2mError::s2mAssert(0, "Actuator do not correspond to an implemented one");
-                actuator = new s2mActuatorConstant(int_direction, Tmax, dofIdx, name); // Échec de compilation sinon
+                actuator = new biorbd::actuator::s2mActuatorConstant(int_direction, Tmax, dofIdx, name); // Échec de compilation sinon
             }
 
             model->addActuator(*model, *actuator);
             delete actuator;
 
-        }
-        else if (!tp.tolower().compare("musclegroup")){
+#else // MODULE_ACTUATORS
+        s2mError::s2mAssert(false, "Biorbd was build without the module Actuator but the model defines ones");
+#endif // MODULE_ACTUATORS
+        } else if (!tp.tolower().compare("musclegroup")){
             s2mString name;
             file.read(name); // Nom du groupe musculaire
 
@@ -761,9 +764,10 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle))->addPathObject(cylinder);
         }
     }
-
+#ifdef MODULE_ACTUATORS
     if (hasActuators)
         model->closeActuator(*model);
+#endif // MODULE_ACTUATORS
     // Fermer le fichier
     // std::cout << "Model file successfully loaded" << std::endl;
     file.close();
