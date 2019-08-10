@@ -2,7 +2,7 @@
 #define S2M_ACTUATOR_CONSTANT_H
 
 #include "biorbdConfig.h"
-#include "s2mActuator.h"
+#include "Actuators/Actuator.h"
 
 class BIORBD_API s2mActuatorConstant : public s2mActuator
 {

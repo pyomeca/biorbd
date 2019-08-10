@@ -1,24 +1,26 @@
 #define BIORBD_API_EXPORTS
-#include "s2mActuators.h"
+#include "Actuators/Actuators.h"
 
 #include <vector>
 #include "s2mJoints.h"
 #include "s2mError.h"
-#include "s2mActuatorGauss3p.h"
-#include "s2mActuatorGauss6p.h"
-#include "s2mActuatorConstant.h"
-#include "s2mActuatorLinear.h"
+#include "Actuators/ActuatorGauss3p.h"
+#include "Actuators/ActuatorGauss6p.h"
+#include "Actuators/ActuatorConstant.h"
+#include "Actuators/ActuatorLinear.h"
 #include "s2mTau.h"
 #include "s2mGenCoord.h"
 
-s2mActuators::s2mActuators() :
+namespace biorbd { namespace actuators {
+
+Actuators::Actuators() :
     m_isClose(false)
 {
     m_isDofSet = new bool[1];
     m_isDofSet[0] = false;
 }
 
-s2mActuators::s2mActuators(const s2mActuators& a) :
+Actuators::Actuators(const Actuators& a) :
     m_isClose(false)
 {
     m_isClose = a.m_isClose;
@@ -28,13 +30,13 @@ s2mActuators::s2mActuators(const s2mActuators& a) :
 }
 
 
-s2mActuators::~s2mActuators(){
+Actuators::~Actuators(){
     delete[] m_isDofSet;
 }
 
 
 
-void s2mActuators::addActuator(const s2mJoints& m, s2mActuator &act){
+void Actuators::addActuator(const s2mJoints& m, s2mActuator &act){
     s2mError::s2mAssert(!m_isClose, "You can't add actuator after closing the model");
 
     // Vérifier que le dof target est associé à un dof qui existe déjà dans le modèle
@@ -111,7 +113,7 @@ void s2mActuators::addActuator(const s2mJoints& m, s2mActuator &act){
 
 }
 
-void s2mActuators::closeActuator(s2mJoints& m){
+void Actuators::closeActuator(s2mJoints& m){
     s2mError::s2mAssert(m.nbDof()==m_all.size(), "All dof must have their actuators set");
 
     for (unsigned int i=0; i<m_all.size()*2; ++i)
@@ -120,11 +122,11 @@ void s2mActuators::closeActuator(s2mJoints& m){
     m_isClose = true;
 }
 
-std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator>> s2mActuators::actuator(unsigned int dof){
+std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator>> Actuators::actuator(unsigned int dof){
     s2mError::s2mAssert(dof<nbActuators(), "Idx asked is higher than number of actuator");
     return *(m_all.begin() + dof);
 }
-std::shared_ptr<s2mActuator> s2mActuators::actuator(unsigned int dof, unsigned int idx){
+std::shared_ptr<s2mActuator> Actuators::actuator(unsigned int dof, unsigned int idx){
     std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator>> tp(actuator(dof));
 
     s2mError::s2mAssert(idx == 0 || idx == 1, "Index of actuator should be 0 or 1");
@@ -134,12 +136,12 @@ std::shared_ptr<s2mActuator> s2mActuators::actuator(unsigned int dof, unsigned i
         return tp.second;
 }
 
-unsigned int s2mActuators::nbActuators() const
+unsigned int Actuators::nbActuators() const
 {
     return static_cast<unsigned int>(m_all.size());
 }
 
-s2mTau s2mActuators::torque(const s2mJoints& m, const s2mGenCoord& a, const s2mGenCoord& Q, const s2mGenCoord &Qdot){
+s2mTau Actuators::torque(const s2mJoints& m, const s2mGenCoord& a, const s2mGenCoord& Q, const s2mGenCoord &Qdot){
 
     // Mettre pour que qdot soit positif en concentrique et negatif en excentrique
     s2mGenCoord QdotResigned(Qdot);
@@ -158,7 +160,7 @@ s2mTau s2mActuators::torque(const s2mJoints& m, const s2mGenCoord& a, const s2mG
 }
 
 
-std::pair<s2mTau, s2mTau> s2mActuators::torqueMax(const s2mJoints &m, const s2mGenCoord& Q, const s2mGenCoord &Qdot){
+std::pair<s2mTau, s2mTau> Actuators::torqueMax(const s2mJoints &m, const s2mGenCoord& Q, const s2mGenCoord &Qdot){
     s2mError::s2mAssert(m_isClose, "Close the actuator model before calling torqueMax");
 
     std::pair<s2mTau, s2mTau> maxTau_all = std::make_pair(s2mTau(m), s2mTau(m));
@@ -195,7 +197,7 @@ std::pair<s2mTau, s2mTau> s2mActuators::torqueMax(const s2mJoints &m, const s2mG
 }
 
 
-s2mTau s2mActuators::torqueMax(const s2mJoints &m, const s2mGenCoord& a, const s2mGenCoord& Q, const s2mGenCoord &Qdot){
+s2mTau Actuators::torqueMax(const s2mJoints &m, const s2mGenCoord& a, const s2mGenCoord& Q, const s2mGenCoord &Qdot){
     s2mError::s2mAssert(m_isClose, "Close the actuator model before calling torqueMax");
 
     s2mTau maxTau_all;
@@ -223,3 +225,5 @@ s2mTau s2mActuators::torqueMax(const s2mJoints &m, const s2mGenCoord& a, const s
 
     return maxTau_all;
 }
+
+}}

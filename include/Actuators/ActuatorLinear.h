@@ -2,7 +2,7 @@
 #define S2M_ACTUATOR_LINEAR_H
 
 #include "biorbdConfig.h"
-#include "s2mActuator.h"
+#include "Actuators/Actuator.h"
 
 class s2mGenCoord;
 class BIORBD_API s2mActuatorLinear : public s2mActuator

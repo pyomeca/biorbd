@@ -1,14 +1,14 @@
-#ifndef S2M_ACTUATOR_GAUSS_6P_H
-#define S2M_ACTUATOR_GAUSS_6P_H
+#ifndef S2M_ACTUATOR_GAUSS_3P_H
+#define S2M_ACTUATOR_GAUSS_3P_H
 
 #include "biorbdConfig.h"
-#include "s2mActuator.h"
+#include "Actuators/Actuator.h"
 
 class s2mGenCoord;
-class BIORBD_API s2mActuatorGauss6p : public s2mActuator
+class BIORBD_API s2mActuatorGauss3p : public s2mActuator
 {
     public:
-        s2mActuatorGauss6p(int direction,
+        s2mActuatorGauss3p(int direction,
                            double Tmax,
                            double T0,
                            double wmax,
@@ -18,12 +18,9 @@ class BIORBD_API s2mActuatorGauss6p : public s2mActuator
                            double w1,
                            double r,
                            double qopt,
-                           double facteur,
-                           double r2,
-                           double qopt2,
                            unsigned int dofIdx,
                            const s2mString &jointName = "");
-        virtual ~s2mActuatorGauss6p();
+        virtual ~s2mActuatorGauss3p();
         virtual double torqueMax(const s2mGenCoord &Q, const s2mGenCoord &Qdot);
 
     protected:
@@ -48,9 +45,6 @@ class BIORBD_API s2mActuatorGauss6p : public s2mActuator
         // Torque/angle relationship
         double m_r;         // width of the gaussian curve
         double m_qopt;      // Optimal position
-        double m_facteur;   // Facteur de la 6p
-        double m_r2;        // width of the gaussian curve2
-        double m_qopt2;     // Optimal position 2
 
 };
-#endif // S2M_ACTUATOR_GAUSS_6P_H
+#endif // S2M_ACTUATOR_GAUSS_3P_H

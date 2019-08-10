@@ -35,6 +35,9 @@ else()
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_debug")
 
+# Create the configuration header file associated with the asked options
+configure_file(${CMAKE_SOURCE_DIR}/include/biorbdConfig.h.in ${CMAKE_BINARY_DIR}/include/biorbdConfig.h)
+
 # Add headers
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${RBDL_INCLUDE_DIR}
@@ -43,13 +46,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${EIGEN3_INCLUDE_DIR}
     ${DLIB_INCLUDE_DIR}
     ${IPOPT_INCLUDE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_BINARY_DIR}/include
 )
 
-# Add linker
-target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY} ${DLIB_LIBRARY} ${IPOPT_LIBRARY})
-
-# Installation
+# Installation directories
 if(WIN32)
     set(${PROJECT_NAME}_LIB_FOLDER Lib)
     set(${PROJECT_NAME}_BIN_FOLDER bin)
@@ -58,8 +59,24 @@ else()
     set(${PROJECT_NAME}_LIB_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
     set(${PROJECT_NAME}_BIN_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
     set(${PROJECT_NAME}_INCLUDE_FOLDER ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
-    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+    # set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH ${${PROJECT_NAME}_BIN_FOLDER})
+set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+
+# Add the different modules of biorbd
+set(BIORBD_LIBRARIES)
+option(MODULE_ACTUATORS "Choose if the module actuators is to be added to biorbd" OFF)
+if (MODULE_ACTUATORS)
+    add_subdirectory(src/Actuators)
+    list(APPEND BIORBD_LIBRARIES ${ACTUATOR_MODULE_NAME})
+endif()
+
+# Add linker
+target_link_libraries(${PROJECT_NAME} ${BIORBD_LIBRARIES} ${RBDL_LIBRARY} ${DLIB_LIBRARY} ${IPOPT_LIBRARY})
+
+# installation
 install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION ${${PROJECT_NAME}_LIB_FOLDER}
         RUNTIME DESTINATION ${${PROJECT_NAME}_BIN_FOLDER}
@@ -118,7 +135,7 @@ if (BUILD_TESTS)
     # Unit Tests
     ##############
     enable_testing()
-    file(GLOB TEST_SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp)
+    file(GLOB TEST_SRC_FILES ${CMAKE_SOURCE_DIR}/test/*.cpp)
     add_executable(runUnitTests ${TEST_SRC_FILES})
 
     # headers for the project
@@ -128,7 +145,7 @@ if (BUILD_TESTS)
         ${EIGEN3_INCLUDE_DIR}
         ${DLIB_INCLUDE_DIR}
         ${IPOPT_INCLUDE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_SOURCE_DIR}/include
     )
 
     # Standard linking to gtest stuff.

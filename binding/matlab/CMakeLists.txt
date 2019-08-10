@@ -1,7 +1,7 @@
 set(MASTER_PROJECT_NAME ${PROJECT_NAME})
 
 project(${MASTER_PROJECT_NAME}_matlab)
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.8)
 
 find_package(Matlab REQUIRED COMPONENTS MX_LIBRARY)
 
@@ -24,7 +24,6 @@ foreach(CPP_FILE ${CPP_FILES})
     endif(WIN32)
 
     # Add headers
-    message(${Matlab_INCLUDE_DIRS})
     target_include_directories(${MATLAB_PROJECT_NAME} PUBLIC
         ${Matlab_INCLUDE_DIRS}
         ${RBDL_INCLUDE_DIR}
@@ -32,7 +31,8 @@ foreach(CPP_FILE ${CPP_FILES})
         ${Boost_INCLUDE_DIRS}
         ${EIGEN3_INCLUDE_DIR}
         ${DLIB_INCLUDE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../include
+        ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_BINARY_DIR}/include
     )
 
     # Set the name of the library
@@ -61,7 +61,10 @@ foreach(CPP_FILE ${CPP_FILES})
     SET_TARGET_PROPERTIES(${MATLAB_PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
 
     # Linker and instalation
-    target_link_libraries(${MATLAB_PROJECT_NAME} ${MASTER_PROJECT_NAME} ${Matlab_MX_LIBRARY} ${Matlab_MEX_LIBRARY})
+    target_link_libraries(${MATLAB_PROJECT_NAME}
+        ${MASTER_PROJECT_NAME}
+        ${Matlab_MX_LIBRARY}
+        ${Matlab_MEX_LIBRARY})
 
     # install target
     install(TARGETS ${MATLAB_PROJECT_NAME} DESTINATION ${Matlab_${MASTER_PROJECT_NAME}_INSTALL_DIR}/${PROJECT_NAME})

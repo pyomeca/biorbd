@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "s2mActuatorConstant.h"
+#include "Actuators/ActuatorConstant.h"
 
 #include "s2mString.h"
 #include "s2mGenCoord.h"

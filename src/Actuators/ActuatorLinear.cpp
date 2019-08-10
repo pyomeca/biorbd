@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "s2mActuatorLinear.h"
+#include "Actuators/ActuatorLinear.h"
 
 #include "s2mGenCoord.h"
 

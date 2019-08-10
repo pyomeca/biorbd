@@ -4,17 +4,18 @@
 #include <vector>
 #include <memory>
 #include "biorbdConfig.h"
-#include "s2mActuator.h"
+#include "Actuators/Actuator.h"
 
 class s2mJoints;
 class s2mGenCoord;
 class s2mTau;
-class BIORBD_API s2mActuators
+namespace biorbd { namespace actuators {
+class BIORBD_API Actuators
 {
     public:
-        s2mActuators();
-        s2mActuators(const s2mActuators&);
-        virtual ~s2mActuators();
+        Actuators();
+        Actuators(const Actuators&);
+        virtual ~Actuators();
 
         void addActuator(const s2mJoints&, s2mActuator &a);
         void closeActuator(s2mJoints& m);
@@ -36,4 +37,7 @@ class BIORBD_API s2mActuators
         bool m_isClose;
 
 };
+
+}}
+
 #endif // S2M_ACTUATORS_H

@@ -2,13 +2,14 @@
 #define S2M_MUSCULO_SKELETAL_MODEL_H
 
 #include "biorbdConfig.h"
-#include "s2mOptions.h"
 #include "s2mJoints.h"
 #include "s2mMarkers.h"
 #include "s2mIMUs.h"
 #include "s2mMuscles.h"
 #include "s2mContacts.h"
-#include "s2mActuators.h"
+#ifdef MODULE_ACTUATORS
+#include "Actuators/Actuators.h"
+#endif
 #include "s2mPath.h"
 
 class BIORBD_API s2mMusculoSkeletalModel :
@@ -17,8 +18,9 @@ class BIORBD_API s2mMusculoSkeletalModel :
         ,public s2mIMUs
         ,public s2mMuscles
         ,public s2mContacts
-        ,public s2mActuators
-        
+        #ifdef MODULE_ACTUATORS
+        ,public biorbd::actuators::Actuators
+        #endif
 {
     public:
         s2mMusculoSkeletalModel();

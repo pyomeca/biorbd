@@ -4,16 +4,17 @@
 #include <limits.h>
 #include <fstream>
 #include "s2mMusculoSkeletalModel.h"
-#include "biorbdConfig.h"
 #include "s2mError.h"
 #include "s2mIfStream.h"
 #include "s2mString.h"
 #include "s2mPatch.h"
 #include "s2mEquation.h"
-#include "s2mActuatorConstant.h"
-#include "s2mActuatorLinear.h"
-#include "s2mActuatorGauss3p.h"
-#include "s2mActuatorGauss6p.h"
+#ifdef MODULE_ACTUATORS
+    #include "Actuators/ActuatorConstant.h"
+    #include "Actuators/ActuatorLinear.h"
+    #include "Actuators/ActuatorGauss3p.h"
+    #include "Actuators/ActuatorGauss6p.h"
+#endif // MODULE_ACTUATORS
 #include "s2mMuscle.h"
 #include "s2mIMU.h"
 #include "s2mNodeBone.h"

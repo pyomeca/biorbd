@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "s2mActuator.h"
+#include "Actuators/Actuator.h"
 
 #include "s2mError.h"
 
