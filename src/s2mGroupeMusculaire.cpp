@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "s2mGroupeMusculaire.h"
 
-#include "s2mError.h"
+#include "Utils/Error.h"
 #include "s2mMuscleHillType.h"
 #include "s2mMuscleHillTypeSimple.h"
 #include "s2mMuscleHillTypeThelen.h"

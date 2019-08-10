@@ -2,7 +2,7 @@
 #include "s2mMuscleFatigueState.h"
 
 #include <cmath>
-#include "s2mError.h"
+#include "Utils/Error.h"
 
 s2mMuscleFatigueState::s2mMuscleFatigueState(
         double active,

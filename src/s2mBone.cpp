@@ -3,9 +3,9 @@
 
 #include <limits.h>
 #include <rbdl/rbdl_math.h>
-#include "s2mError.h"
+#include "Utils/Error.h"
 #include "s2mJoints.h"
-#include "s2mAttitude.h"
+#include "Utils/Attitude.h"
 #include "s2mBoneCaracteristics.h"
 #include "s2mNode.h"
 #include "s2mBoneMesh.h"

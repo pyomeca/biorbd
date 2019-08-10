@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "s2mIMU_Unity_Optim.h"
 
-#include "s2mString.h"
+#include "Utils/String.h"
 
 s2mIMU_Unity_Optim::OptimData::OptimData(const s2mAttitude &R1, const s2mAttitude &R2, int axe)
        : m_R1(R1), m_R2(R2), m_axe(axe)

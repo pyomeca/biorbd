@@ -3,7 +3,7 @@
 
 #include <rbdl/Joint.h>
 #include "biorbdConfig.h"
-#include "s2mString.h"
+#include "Utils/String.h"
 
 class BIORBD_API s2mJoint : public RigidBodyDynamics::Joint
 {

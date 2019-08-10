@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "s2mTime.h"
+#include "Utils/Time.h"
 
 s2mTime::s2mTime(const double &timeStep, const unsigned int &nbSteps)
 {

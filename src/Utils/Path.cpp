@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "s2mPath.h"
+#include "Utils/Path.h"
 
 #ifdef _WIN64
     #include <direct.h>

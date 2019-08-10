@@ -2,7 +2,7 @@
 #define S2M_MUSCLE_H
 
 #include "biorbdConfig.h"
-#include "s2mString.h"
+#include "Utils/String.h"
 #include "s2mMuscleCompound.h"
 #include "s2mMuscleGeometry.h"
 #include "s2mMuscleCaracteristics.h"

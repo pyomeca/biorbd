@@ -3,8 +3,8 @@
 
 #include <map>
 #include "biorbdConfig.h"
-#include "s2mTimer.h"
-#include "s2mString.h"
+#include "Utils/Timer.h"
+#include "Utils/String.h"
 
 class BIORBD_API s2mBenchmark
 {

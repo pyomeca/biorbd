@@ -4,9 +4,9 @@
 #include <iostream>
 #include <iomanip>
 #include "s2mMusculoSkeletalModel.h"
-#include "s2mError.h"
+#include "Utils/Error.h"
 #include "s2mMuscleStateDynamics.h"
-#include "s2mMatrix.h"
+#include "Utils/Matrix.h"
 
 s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
         s2mMusculoSkeletalModel &model,

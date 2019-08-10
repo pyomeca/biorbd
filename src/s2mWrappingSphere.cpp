@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "s2mWrappingSphere.h"
 
-#include "s2mAttitude.h"
+#include "Utils/Attitude.h"
 
 s2mWrappingSphere::s2mWrappingSphere(const double &dia,
                                      const Eigen::Vector3d &v, // Position du noeud

@@ -4,7 +4,7 @@
 #include <vector>
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
-#include "s2mString.h"
+#include "Utils/String.h"
 
 class s2mGenCoord;
 class s2mJoints;

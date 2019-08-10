@@ -4,8 +4,8 @@
 #include <rbdl/Model.h>
 #include <rbdl/Kinematics.h>
 #include "s2mNodeBone.h"
-#include "s2mRead.h"
-#include "s2mGenCoord.h"
+#include "Utils/Read.h"
+#include "Utils/GenCoord.h"
 
 s2mMusculoSkeletalModel::s2mMusculoSkeletalModel()
 {

@@ -3,11 +3,11 @@
 
 #include <rbdl/Kinematics.h>
 #include "s2mJoints.h"
-#include "s2mString.h"
-#include "s2mError.h"
-#include "s2mGenCoord.h"
+#include "Utils/String.h"
+#include "Utils/Error.h"
+#include "Utils/GenCoord.h"
 #include "s2mNode.h"
-#include "s2mAttitude.h"
+#include "Utils/Attitude.h"
 
 s2mContacts::s2mContacts() :
     RigidBodyDynamics::ConstraintSet (),

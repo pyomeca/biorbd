@@ -31,7 +31,7 @@ elseif(_WIN32)
     string(CONCAT ${MASTER_PROJECT_NAME}_LIB_NAME ${${MASTER_PROJECT_NAME}_LIB_NAME} ".dll")
 endif()
 set(${MASTER_PROJECT_NAME}_LIBRARY ${CMAKE_BINARY_DIR}/${${MASTER_PROJECT_NAME}_LIB_NAME})
-target_link_libraries(${PROJECT_NAME} ${${MASTER_PROJECT_NAME}_LIBRARY} ${RBDL_LIBRARY} ${IPOPT_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${MASTER_PROJECT_NAME})
 
 # Copy the c3d of the example
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/pyomecaman.bioMod

@@ -2,7 +2,7 @@
 #include "s2mKalmanRecons.h"
 
 #include "s2mMusculoSkeletalModel.h"
-#include "s2mGenCoord.h"
+#include "Utils/GenCoord.h"
 
 s2mKalmanRecons::s2mKalmanRecons(s2mMusculoSkeletalModel &m, unsigned int nMeasure, s2mKalmanParam params) :
     m_params(params),

@@ -3,7 +3,7 @@
 
 #include <map>
 #include "biorbdConfig.h"
-#include "s2mPath.h"
+#include "Utils/Path.h"
 
 class s2mEquation;
 class BIORBD_API s2mIfStream

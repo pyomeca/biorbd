@@ -1,11 +1,11 @@
 #define BIORBD_API_EXPORTS
 #include "s2mMuscle.h"
 
-#include "s2mError.h"
+#include "Utils/Error.h"
 #include "s2mMusclePathChangers.h"
 #include "s2mMuscleStateDynamics.h"
 #include "s2mMuscleStateDynamicsBuchanan.h"
-#include "s2mGenCoord.h"
+#include "Utils/GenCoord.h"
 
 s2mMuscle::s2mMuscle(const s2mString& name,
                      const s2mMuscleGeometry& g,

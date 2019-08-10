@@ -3,7 +3,7 @@
 
 #include <dlib/optimization.h>
 #include "biorbdConfig.h"
-#include "s2mAttitude.h"
+#include "Utils/Attitude.h"
 
 class BIORBD_API s2mIMU_Unity_Optim
 {

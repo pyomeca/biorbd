@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 #include "biorbdConfig.h"
-#include "s2mString.h"
+#include "Utils/String.h"
 #include "s2mMusclePathChangers.h"
 
 class s2mMuscle;

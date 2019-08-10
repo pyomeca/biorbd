@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "s2mQuaternion.h"
+#include "Utils/Quaternion.h"
 
 #include <rbdl/Quaternion.h>
 

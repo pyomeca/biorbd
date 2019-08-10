@@ -4,7 +4,7 @@
 #include <vector>
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
-#include "s2mMatrix.h"
+#include "Utils/Matrix.h"
 
 class s2mMusculoSkeletalModel;
 class s2mGenCoord;

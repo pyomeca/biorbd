@@ -3,7 +3,7 @@
 
 #include "biorbdConfig.h"
 #include "s2mWrappingObject.h"
-#include "s2mAttitude.h"
+#include "Utils/Attitude.h"
 
 class BIORBD_API s2mWrappingCylinder : public s2mWrappingObject
 {

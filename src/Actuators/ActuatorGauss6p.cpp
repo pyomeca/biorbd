@@ -1,10 +1,10 @@
 #define BIORBD_API_EXPORTS
 #include "Actuators/ActuatorGauss6p.h"
 
-#include "s2mGenCoord.h"
+#include "Utils/GenCoord.h"
 
 namespace biorbd { namespace actuator {
-s2mActuatorGauss6p::s2mActuatorGauss6p(
+ActuatorGauss6p::ActuatorGauss6p(
     int direction,
     double Tmax,
     double T0,
@@ -19,7 +19,7 @@ s2mActuatorGauss6p::s2mActuatorGauss6p(
     double r2,
     double qopt2,
     unsigned int dofIdx, const s2mString &jointName) :
-    s2mActuator(direction, dofIdx, jointName),
+    Actuator(direction, dofIdx, jointName),
     m_k(4.3), // Valeur par défaut
     m_Tmax(Tmax),
     m_T0(T0),
@@ -38,13 +38,13 @@ s2mActuatorGauss6p::s2mActuatorGauss6p(
 
 }
 
-s2mActuatorGauss6p::~s2mActuatorGauss6p()
+ActuatorGauss6p::~ActuatorGauss6p()
 {
 
 }
 
 
-double s2mActuatorGauss6p::torqueMax(const s2mGenCoord &Q, const s2mGenCoord &Qdot){
+double ActuatorGauss6p::torqueMax(const s2mGenCoord &Q, const s2mGenCoord &Qdot){
     double pos(Q[m_dofIdx] * 180/M_PI);
     double speed(Qdot[m_dofIdx] * 180/M_PI);
 

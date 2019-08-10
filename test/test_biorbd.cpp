@@ -4,8 +4,8 @@
 
 #include "s2mMusculoSkeletalModel.h"
 #include "biorbdConfig.h"
-#include "s2mGenCoord.h"
-#include "s2mTau.h"
+#include "Utils/GenCoord.h"
+#include "Utils/Tau.h"
 
 static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
 TEST(c3dFileIO, OpenModel){

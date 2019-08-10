@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "s2mMusclePathChangers.h"
 
-#include "s2mError.h"
+#include "Utils/Error.h"
 #include "s2mMusclePathChanger.h"
 #include "s2mViaPoint.h"
 #include "s2mWrappingSphere.h"

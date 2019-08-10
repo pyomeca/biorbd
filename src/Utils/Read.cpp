@@ -1,14 +1,14 @@
 #define BIORBD_API_EXPORTS
-#include "s2mRead.h"
+#include "Utils/Read.h"
 
 #include <limits.h>
 #include <fstream>
 #include "s2mMusculoSkeletalModel.h"
-#include "s2mError.h"
-#include "s2mIfStream.h"
-#include "s2mString.h"
+#include "Utils/Error.h"
+#include "Utils/IfStream.h"
+#include "Utils/String.h"
 #include "s2mPatch.h"
-#include "s2mEquation.h"
+#include "Utils/Equation.h"
 #ifdef MODULE_ACTUATORS
     #include "Actuators/ActuatorConstant.h"
     #include "Actuators/ActuatorLinear.h"

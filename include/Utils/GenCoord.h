@@ -2,7 +2,7 @@
 #define S2M_GEN_COORD_H
 
 #include "biorbdConfig.h"
-#include "s2mVector.h"
+#include "Utils/Vector.h"
 
 class s2mJoints;
 class BIORBD_API s2mGenCoord : public s2mVector

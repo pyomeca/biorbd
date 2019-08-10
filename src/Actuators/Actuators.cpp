@@ -3,13 +3,13 @@
 
 #include <vector>
 #include "s2mJoints.h"
-#include "s2mError.h"
+#include "Utils/Error.h"
 #include "Actuators/ActuatorGauss3p.h"
 #include "Actuators/ActuatorGauss6p.h"
 #include "Actuators/ActuatorConstant.h"
 #include "Actuators/ActuatorLinear.h"
-#include "s2mTau.h"
-#include "s2mGenCoord.h"
+#include "Utils/Tau.h"
+#include "Utils/GenCoord.h"
 
 namespace biorbd { namespace actuator {
 
@@ -36,7 +36,7 @@ Actuators::~Actuators(){
 
 
 
-void Actuators::addActuator(const s2mJoints& m, s2mActuator &act){
+void Actuators::addActuator(const s2mJoints& m, Actuator &act){
     s2mError::s2mAssert(!m_isClose, "You can't add actuator after closing the model");
 
     // Vérifier que le dof target est associé à un dof qui existe déjà dans le modèle
@@ -64,46 +64,46 @@ void Actuators::addActuator(const s2mJoints& m, s2mActuator &act){
     }
 
     // Ajouter un actuator au pool d'actuator selon son type
-    if (dynamic_cast<s2mActuatorGauss3p*> (&act)){
+    if (dynamic_cast<ActuatorGauss3p*> (&act)){
         if (act.direction() == 1){
-            m_all[idx].first = std::shared_ptr<s2mActuator> (new s2mActuatorGauss3p(dynamic_cast <s2mActuatorGauss3p&> (act)));
+            m_all[idx].first = std::shared_ptr<Actuator> (new ActuatorGauss3p(dynamic_cast <ActuatorGauss3p&> (act)));
             m_isDofSet[idx*2] = true;
         }
         else{
-            m_all[idx].second = std::shared_ptr<s2mActuator> (new s2mActuatorGauss3p(dynamic_cast <s2mActuatorGauss3p&> (act)));
+            m_all[idx].second = std::shared_ptr<Actuator> (new ActuatorGauss3p(dynamic_cast <ActuatorGauss3p&> (act)));
             m_isDofSet[idx*2+1] = true;
         }
         return;
     }
-    else if (dynamic_cast<s2mActuatorConstant*> (&act)){
+    else if (dynamic_cast<ActuatorConstant*> (&act)){
         if (act.direction() == 1){
-            m_all[idx].first = std::shared_ptr<s2mActuator> (new s2mActuatorConstant(dynamic_cast <s2mActuatorConstant&> (act)));
+            m_all[idx].first = std::shared_ptr<Actuator> (new ActuatorConstant(dynamic_cast <ActuatorConstant&> (act)));
             m_isDofSet[idx*2] = true;
         }
         else{
-            m_all[idx].second = std::shared_ptr<s2mActuator> (new s2mActuatorConstant(dynamic_cast <s2mActuatorConstant&> (act)));
+            m_all[idx].second = std::shared_ptr<Actuator> (new ActuatorConstant(dynamic_cast <ActuatorConstant&> (act)));
             m_isDofSet[idx*2+1] = true;
         }
         return;
     }
-    else if (dynamic_cast<s2mActuatorLinear*> (&act)){
+    else if (dynamic_cast<ActuatorLinear*> (&act)){
         if (act.direction() == 1){
-            m_all[idx].first = std::shared_ptr<s2mActuator> (new s2mActuatorLinear(dynamic_cast <s2mActuatorLinear&> (act)));
+            m_all[idx].first = std::shared_ptr<Actuator> (new ActuatorLinear(dynamic_cast <ActuatorLinear&> (act)));
             m_isDofSet[idx*2] = true;
         }
         else{
-            m_all[idx].second = std::shared_ptr<s2mActuator> (new s2mActuatorLinear(dynamic_cast <s2mActuatorLinear&> (act)));
+            m_all[idx].second = std::shared_ptr<Actuator> (new ActuatorLinear(dynamic_cast <ActuatorLinear&> (act)));
             m_isDofSet[idx*2+1] = true;
         }
         return;
     }
-    else if (dynamic_cast<s2mActuatorGauss6p*> (&act)){
+    else if (dynamic_cast<ActuatorGauss6p*> (&act)){
         if (act.direction() == 1){
-            m_all[idx].first = std::shared_ptr<s2mActuator> (new s2mActuatorGauss6p(dynamic_cast <s2mActuatorGauss6p&> (act)));
+            m_all[idx].first = std::shared_ptr<Actuator> (new ActuatorGauss6p(dynamic_cast <ActuatorGauss6p&> (act)));
             m_isDofSet[idx*2] = true;
         }
         else{
-            m_all[idx].second = std::shared_ptr<s2mActuator> (new s2mActuatorGauss6p(dynamic_cast <s2mActuatorGauss6p&> (act)));
+            m_all[idx].second = std::shared_ptr<Actuator> (new ActuatorGauss6p(dynamic_cast <ActuatorGauss6p&> (act)));
             m_isDofSet[idx*2+1] = true;
         }
         return;
@@ -122,12 +122,12 @@ void Actuators::closeActuator(s2mJoints& m){
     m_isClose = true;
 }
 
-std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator>> Actuators::actuator(unsigned int dof){
+std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>> Actuators::actuator(unsigned int dof){
     s2mError::s2mAssert(dof<nbActuators(), "Idx asked is higher than number of actuator");
     return *(m_all.begin() + dof);
 }
-std::shared_ptr<s2mActuator> Actuators::actuator(unsigned int dof, unsigned int idx){
-    std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator>> tp(actuator(dof));
+std::shared_ptr<Actuator> Actuators::actuator(unsigned int dof, unsigned int idx){
+    std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>> tp(actuator(dof));
 
     s2mError::s2mAssert(idx == 0 || idx == 1, "Index of actuator should be 0 or 1");
     if (idx == 0)
@@ -166,28 +166,28 @@ std::pair<s2mTau, s2mTau> Actuators::torqueMax(const s2mJoints &m, const s2mGenC
     std::pair<s2mTau, s2mTau> maxTau_all = std::make_pair(s2mTau(m), s2mTau(m));
 
     for (unsigned int i=0; i<m.nbDof(); ++i){
-        std::pair<std::shared_ptr<s2mActuator>, std::shared_ptr<s2mActuator>> Tau_tp(actuator(i));
+        std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>> Tau_tp(actuator(i));
         for (unsigned p=0; p<2; ++p){
             if (p==0) // First
-                if (std::dynamic_pointer_cast<s2mActuatorGauss3p> (Tau_tp.first))
-                   maxTau_all.first[i] = std::static_pointer_cast<s2mActuatorGauss3p> (Tau_tp.first)->torqueMax(Q, Qdot);
-                else if (std::dynamic_pointer_cast<s2mActuatorConstant> (Tau_tp.first))
-                    maxTau_all.first[i] = std::static_pointer_cast<s2mActuatorConstant> (Tau_tp.first)->torqueMax();
-                else if (std::dynamic_pointer_cast<s2mActuatorLinear> (Tau_tp.first))
-                    maxTau_all.first[i] = std::static_pointer_cast<s2mActuatorLinear> (Tau_tp.first)->torqueMax(Q);
-                else if (std::dynamic_pointer_cast<s2mActuatorGauss6p> (Tau_tp.first))
-                    maxTau_all.first[i] = std::static_pointer_cast<s2mActuatorGauss6p> (Tau_tp.first)->torqueMax(Q, Qdot);
+                if (std::dynamic_pointer_cast<ActuatorGauss3p> (Tau_tp.first))
+                   maxTau_all.first[i] = std::static_pointer_cast<ActuatorGauss3p> (Tau_tp.first)->torqueMax(Q, Qdot);
+                else if (std::dynamic_pointer_cast<ActuatorConstant> (Tau_tp.first))
+                    maxTau_all.first[i] = std::static_pointer_cast<ActuatorConstant> (Tau_tp.first)->torqueMax();
+                else if (std::dynamic_pointer_cast<ActuatorLinear> (Tau_tp.first))
+                    maxTau_all.first[i] = std::static_pointer_cast<ActuatorLinear> (Tau_tp.first)->torqueMax(Q);
+                else if (std::dynamic_pointer_cast<ActuatorGauss6p> (Tau_tp.first))
+                    maxTau_all.first[i] = std::static_pointer_cast<ActuatorGauss6p> (Tau_tp.first)->torqueMax(Q, Qdot);
                 else
                     s2mError::s2mAssert(false, "Wrong type (should never get here because of previous safety)");
             else // Second
-                if (std::dynamic_pointer_cast<s2mActuatorGauss3p> (Tau_tp.second))
-                    maxTau_all.second[i] = std::static_pointer_cast<s2mActuatorGauss3p> (Tau_tp.second)->torqueMax(Q, Qdot);
-                else if (std::dynamic_pointer_cast<s2mActuatorConstant> (Tau_tp.second))
-                    maxTau_all.second[i] = std::static_pointer_cast<s2mActuatorConstant> (Tau_tp.second)->torqueMax();
-                else if (std::dynamic_pointer_cast<s2mActuatorLinear> (Tau_tp.second))
-                    maxTau_all.second[i] = std::static_pointer_cast<s2mActuatorLinear> (Tau_tp.second)->torqueMax(Q);
-                else if (std::dynamic_pointer_cast<s2mActuatorGauss6p> (Tau_tp.second))
-                    maxTau_all.second[i] = std::static_pointer_cast<s2mActuatorGauss6p> (Tau_tp.second)->torqueMax(Q, Qdot);
+                if (std::dynamic_pointer_cast<ActuatorGauss3p> (Tau_tp.second))
+                    maxTau_all.second[i] = std::static_pointer_cast<ActuatorGauss3p> (Tau_tp.second)->torqueMax(Q, Qdot);
+                else if (std::dynamic_pointer_cast<ActuatorConstant> (Tau_tp.second))
+                    maxTau_all.second[i] = std::static_pointer_cast<ActuatorConstant> (Tau_tp.second)->torqueMax();
+                else if (std::dynamic_pointer_cast<ActuatorLinear> (Tau_tp.second))
+                    maxTau_all.second[i] = std::static_pointer_cast<ActuatorLinear> (Tau_tp.second)->torqueMax(Q);
+                else if (std::dynamic_pointer_cast<ActuatorGauss6p> (Tau_tp.second))
+                    maxTau_all.second[i] = std::static_pointer_cast<ActuatorGauss6p> (Tau_tp.second)->torqueMax(Q, Qdot);
                 else
                     s2mError::s2mAssert(false, "Wrong type (should never get here because of previous safety)");
         }
@@ -204,20 +204,20 @@ s2mTau Actuators::torqueMax(const s2mJoints &m, const s2mGenCoord& a, const s2mG
     maxTau_all.resize(m.nbDof());
 
     for (unsigned int i=0; i<m.nbDof(); ++i){
-        std::shared_ptr<s2mActuator> Tau_tp;
+        std::shared_ptr<Actuator> Tau_tp;
         if (a[i]>=0) // First
             Tau_tp = actuator(i).first;
         else
             Tau_tp = actuator(i).second;
 
-        if (std::dynamic_pointer_cast<s2mActuatorGauss3p> (Tau_tp))
-            maxTau_all[i] = std::static_pointer_cast<s2mActuatorGauss3p> (Tau_tp)->torqueMax(Q, Qdot);
-        else if (std::dynamic_pointer_cast<s2mActuatorConstant> (Tau_tp))
-            maxTau_all[i] = std::static_pointer_cast<s2mActuatorConstant> (Tau_tp)->torqueMax();
-        else if (std::dynamic_pointer_cast<s2mActuatorLinear> (Tau_tp))
-            maxTau_all[i] = std::static_pointer_cast<s2mActuatorLinear> (Tau_tp)->torqueMax(Q);
-        else if (std::dynamic_pointer_cast<s2mActuatorGauss6p> (Tau_tp))
-            maxTau_all[i] = std::static_pointer_cast<s2mActuatorGauss6p> (Tau_tp)->torqueMax(Q, Qdot);
+        if (std::dynamic_pointer_cast<ActuatorGauss3p> (Tau_tp))
+            maxTau_all[i] = std::static_pointer_cast<ActuatorGauss3p> (Tau_tp)->torqueMax(Q, Qdot);
+        else if (std::dynamic_pointer_cast<ActuatorConstant> (Tau_tp))
+            maxTau_all[i] = std::static_pointer_cast<ActuatorConstant> (Tau_tp)->torqueMax();
+        else if (std::dynamic_pointer_cast<ActuatorLinear> (Tau_tp))
+            maxTau_all[i] = std::static_pointer_cast<ActuatorLinear> (Tau_tp)->torqueMax(Q);
+        else if (std::dynamic_pointer_cast<ActuatorGauss6p> (Tau_tp))
+            maxTau_all[i] = std::static_pointer_cast<ActuatorGauss6p> (Tau_tp)->torqueMax(Q, Qdot);
         else
             s2mError::s2mAssert(false, "Wrong type (should never get here because of previous safety)");
 

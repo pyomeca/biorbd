@@ -4,9 +4,9 @@
 #include <rbdl/Model.h>
 #include <rbdl/Kinematics.h>
 #include "s2mMusculoSkeletalModel.h"
-#include "s2mError.h"
+#include "Utils/Error.h"
 #include "s2mNodeBone.h"
-#include "s2mGenCoord.h"
+#include "Utils/GenCoord.h"
 
 s2mKalmanReconsMarkers::s2mKalmanReconsMarkers(s2mMusculoSkeletalModel &m, s2mKalmanRecons::s2mKalmanParam params) :
     s2mKalmanRecons(m, m.nTechTags()*3, params),

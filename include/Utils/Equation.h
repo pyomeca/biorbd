@@ -4,7 +4,7 @@
 #include <vector>
 #include <map>
 #include "biorbdConfig.h"
-#include "s2mString.h"
+#include "Utils/String.h"
 
 #define PI 3.141592653589793
 

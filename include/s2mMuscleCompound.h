@@ -2,13 +2,13 @@
 #define S2M_MUSCLE_COMPOUND_H
     #include <memory>
     #include "biorbdConfig.h"
-    #include "s2mString.h"
+    #include "Utils/String.h"
     #include "s2mMuscleForce.h"
     #include "s2mMuscleGeometry.h"
     #include "s2mMuscleCaracteristics.h"
     #include "s2mMuscleStateDynamics.h"
     #include "s2mMusclePathChangers.h"
-    #include "s2mGenCoord.h"
+    #include "Utils/GenCoord.h"
 
 
 class BIORBD_API s2mMuscleCompound

@@ -4,7 +4,7 @@
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
 #include "s2mMusclePathChanger.h"
-#include "s2mString.h"
+#include "Utils/String.h"
 
 class s2mJoints;
 class s2mGenCoord;

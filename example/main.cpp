@@ -1,7 +1,7 @@
 #include <iostream>
 #include "s2mMusculoSkeletalModel.h"
 #include "s2mStaticOptimization.h"
-#include "s2mGenCoord.h"
+#include "Utils/GenCoord.h"
 #include "s2mGroupeMusculaire.h"
 #include "s2mMuscleHillTypeThelenFatigable.h"
 #include "s2mMuscleFatigueDynamicStateXia.h"

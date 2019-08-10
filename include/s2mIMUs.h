@@ -3,8 +3,8 @@
 
 #include <vector>
 #include "biorbdConfig.h"
-#include "s2mAttitude.h"
-#include "s2mString.h"
+#include "Utils/Attitude.h"
+#include "Utils/String.h"
 #include "s2mNode.h"
 #include "s2mPatch.h"
 

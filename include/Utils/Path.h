@@ -2,7 +2,7 @@
 #define S2M_PATH_H
 
 #include "biorbdConfig.h"
-#include "s2mString.h"
+#include "Utils/String.h"
 
 class BIORBD_API s2mPath : public s2mString
 {

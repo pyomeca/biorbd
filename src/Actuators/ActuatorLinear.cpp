@@ -1,29 +1,29 @@
 #define BIORBD_API_EXPORTS
 #include "Actuators/ActuatorLinear.h"
 
-#include "s2mGenCoord.h"
+#include "Utils/GenCoord.h"
 
 namespace biorbd { namespace actuator {
 
-s2mActuatorLinear::s2mActuatorLinear(
+ActuatorLinear::ActuatorLinear(
     int direction,
     double T0,
     double pente,
     unsigned int dofIdx, const s2mString &jointName) :
-    s2mActuator(direction, dofIdx, jointName),
+    Actuator(direction, dofIdx, jointName),
     m_m(pente),
     m_b(T0)
 {
 
 }
 
-s2mActuatorLinear::~s2mActuatorLinear()
+ActuatorLinear::~ActuatorLinear()
 {
 
 }
 
 
-double s2mActuatorLinear::torqueMax(const s2mGenCoord &Q) const {
+double ActuatorLinear::torqueMax(const s2mGenCoord &Q) const {
 //    std::cout << "Q[" << m_dofIdx << "] = " << Q[m_dofIdx] << std::endl;
 //    std::cout << "M = " << m_m << std::endl;
 //    std::cout << "B = " << m_b << std::endl;

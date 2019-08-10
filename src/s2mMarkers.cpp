@@ -6,10 +6,10 @@
 #include "s2mJoints.h"
 #include "s2mPatch.h"
 #include "s2mNodeBone.h"
-#include "s2mMatrix.h"
-#include "s2mString.h"
+#include "Utils/Matrix.h"
+#include "Utils/String.h"
 #include "s2mBone.h"
-#include "s2mGenCoord.h"
+#include "Utils/GenCoord.h"
 
 
 s2mMarkers::s2mMarkers()

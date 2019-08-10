@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
-#include "s2mError.h"
+#include "Utils/Error.h"
 
-#include "s2mString.h"
+#include "Utils/String.h"
 
 void s2mError::s2mAssert(bool cond, const s2mString &s){
     if (!cond){

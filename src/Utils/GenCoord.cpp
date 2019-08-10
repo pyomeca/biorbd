@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "s2mGenCoord.h"
+#include "Utils/GenCoord.h"
 
 #include "s2mJoints.h"
 

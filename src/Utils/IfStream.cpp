@@ -1,10 +1,10 @@
 #define BIORBD_API_EXPORTS
-#include "s2mIfStream.h"
+#include "Utils/IfStream.h"
 
 #include <boost/lexical_cast.hpp>
 #include <fstream>
-#include "s2mError.h"
-#include "s2mEquation.h"
+#include "Utils/Error.h"
+#include "Utils/Equation.h"
 
 // Constructeur
 s2mIfStream::s2mIfStream(const s2mPath& path, std::ios_base::openmode mode = std::ios_base::in ) :

@@ -3,7 +3,7 @@
 
 #include "biorbdConfig.h"
 #include "s2mStaticOptimizationIpopt.h"
-#include "s2mMatrix.h"
+#include "Utils/Matrix.h"
 
 class BIORBD_API s2mStaticOptimizationIpoptLinearized : public s2mStaticOptimizationIpopt
 {

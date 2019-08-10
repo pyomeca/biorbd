@@ -2,10 +2,10 @@
 #include "s2mMuscles.h"
 
 #include "s2mMuscle.h"
-#include "s2mError.h"
+#include "Utils/Error.h"
 #include "s2mGroupeMusculaire.h"
-#include "s2mGenCoord.h"
-#include "s2mTau.h"
+#include "Utils/GenCoord.h"
+#include "Utils/Tau.h"
 #include "s2mMuscleStateDynamics.h"
 #include "s2mMuscleForce.h"
 

@@ -3,7 +3,7 @@
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
-#include "s2mString.h"
+#include "Utils/String.h"
 
 class s2mAttitude;
 class BIORBD_API s2mNode : public Eigen::Vector3d

@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "s2mMatrix.h"
+#include "Utils/Matrix.h"
 
 s2mMatrix::s2mMatrix() {}
 

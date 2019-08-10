@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "s2mMuscleFatigable.h"
 
-#include "s2mError.h"
+#include "Utils/Error.h"
 #include "s2mMuscle.h"
 #include "s2mMuscleFatigueDynamicStateXia.h"
 

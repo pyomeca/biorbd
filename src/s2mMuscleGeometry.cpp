@@ -4,7 +4,7 @@
 #include <rbdl/Kinematics.h>
 #include "s2mWrappingObject.h"
 #include "s2mViaPoint.h"
-#include "s2mAttitude.h"
+#include "Utils/Attitude.h"
 
 s2mMuscleGeometry::s2mMuscleGeometry(const s2mNodeMuscle &o, const s2mNodeMuscle &i) :
     m_origin(o),

@@ -1,10 +1,10 @@
 #define BIORBD_API_EXPORTS
-#include "s2mWriter.h"
+#include "Utils/Writer.h"
 
 #include <iostream>
 #include <fstream>
 #include "s2mMusculoSkeletalModel.h"
-#include "s2mPath.h"
+#include "Utils/Path.h"
 #include "s2mIMU.h"
 #include "s2mNodeBone.h"
 #include "s2mBone.h"

@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "s2mTau.h"
+#include "Utils/Tau.h"
 
 #include "s2mJoints.h"
 

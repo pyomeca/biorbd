@@ -10,7 +10,7 @@
 #ifdef MODULE_ACTUATORS
 #include "Actuators/Actuators.h"
 #endif
-#include "s2mPath.h"
+#include "Utils/Path.h"
 
 class BIORBD_API s2mMusculoSkeletalModel :
         public s2mJoints

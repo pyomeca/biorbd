@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "s2mMuscleFatigueDynamicState.h"
 
-#include "s2mError.h"
+#include "Utils/Error.h"
 
 s2mMuscleFatigueDynamicState::s2mMuscleFatigueDynamicState(
         double active,

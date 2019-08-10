@@ -5,8 +5,8 @@
 #include <IpIpoptApplication.hpp>
 #include <IpTNLP.hpp>
 #include "biorbdConfig.h"
-#include "s2mGenCoord.h"
-#include "s2mTau.h"
+#include "Utils/GenCoord.h"
+#include "Utils/Tau.h"
 
 class s2mMuscleStateDynamics;
 class s2mMusculoSkeletalModel;

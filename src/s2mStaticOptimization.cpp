@@ -3,7 +3,7 @@
 
 #include <IpIpoptApplication.hpp>
 #include "s2mMusculoSkeletalModel.h"
-#include "s2mError.h"
+#include "Utils/Error.h"
 #include "s2mMuscleStateDynamics.h"
 #include "s2mStaticOptimizationIpoptLinearized.h"
 

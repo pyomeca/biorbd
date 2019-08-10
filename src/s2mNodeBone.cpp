@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "s2mNodeBone.h"
 
-#include "s2mError.h"
+#include "Utils/Error.h"
 
 s2mNodeBone::s2mNodeBone(const Eigen::Vector3d &v,
                          const s2mString &name,

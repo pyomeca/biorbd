@@ -8,11 +8,11 @@
 #include <iostream>
 #include "s2mMusculoSkeletalModel.h"
 #include "biorbdConfig.h"
-#include "s2mRead.h"
+#include "Utils/Read.h"
 #include "class_handle.h"
 #include "s2mKalmanReconsMarkers.h"
 #include "s2mKalmanReconsIMU.h"
-#include "s2mMatrix.h"
+#include "Utils/Matrix.h"
 
 #include "S2M_help.h"
 #include "S2M_new.h"

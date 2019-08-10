@@ -4,7 +4,7 @@
 #include <rbdl/Model.h>
 #include <rbdl/Constraints.h>
 #include "biorbdConfig.h"
-#include "s2mString.h"
+#include "Utils/String.h"
 
 class s2mAttitude;
 class s2mBone;

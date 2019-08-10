@@ -3,8 +3,8 @@
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
-#include "s2mAttitude.h"
-#include "s2mString.h"
+#include "Utils/Attitude.h"
+#include "Utils/String.h"
 
 class BIORBD_API s2mNodeAttitude : public s2mAttitude
 {

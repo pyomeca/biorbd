@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "s2mMuscleMesh.h"
 
-#include "s2mError.h"
+#include "Utils/Error.h"
 #include "s2mMuscleHillType.h"
 
 s2mMuscleMesh::s2mMuscleMesh()

@@ -4,7 +4,7 @@
 #include <vector>
 #include "Eigen/Dense"
 #include "biorbdConfig.h"
-#include "s2mPath.h"
+#include "Utils/Path.h"
 
 class s2mNode;
 class s2mPatch;

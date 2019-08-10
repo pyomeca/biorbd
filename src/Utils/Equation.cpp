@@ -1,8 +1,8 @@
 #define BIORBD_API_EXPORTS
-#include "s2mEquation.h"
+#include "Utils/Equation.h"
 
 #include <boost/lexical_cast.hpp>
-#include "s2mError.h"
+#include "Utils/Error.h"
 
 std::vector<s2mEquation> s2mEquation::prepareMathSymbols(){
     // Classés en ordre de priorité des opérations

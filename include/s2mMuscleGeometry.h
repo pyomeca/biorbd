@@ -1,12 +1,12 @@
 #ifndef S2M_MUSCLE_GEOMETRY_H
 #define S2M_MUSCLE_GEOMETRY_H
 
-    #include "s2mMatrix.h"
+    #include "Utils/Matrix.h"
     #include "biorbdConfig.h"
     #include "s2mNodeMuscle.h"
     #include "s2mJoints.h"
     #include "s2mMusclePathChangers.h"
-    #include "s2mGenCoord.h"
+    #include "Utils/GenCoord.h"
     #include "s2mMuscleCaracteristics.h"
 
 class BIORBD_API s2mMuscleGeometry

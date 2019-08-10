@@ -2,7 +2,7 @@
 #define S2M_MUSCLE_CARACTERISTICS_H
 #include "biorbdConfig.h"
 #include "s2mMuscleState.h"
-#include "s2mError.h"
+#include "Utils/Error.h"
 #include <cstddef>
 #include "s2mMuscleFatigueParam.h"
 

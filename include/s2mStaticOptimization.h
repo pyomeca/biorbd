@@ -4,7 +4,7 @@
 #include <vector>
 #include <IpTNLP.hpp>
 #include "biorbdConfig.h"
-#include "s2mVector.h"
+#include "Utils/Vector.h"
 
 class s2mMusculoSkeletalModel;
 class s2mGenCoord;

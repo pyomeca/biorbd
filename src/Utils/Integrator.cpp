@@ -1,13 +1,13 @@
 #define BIORBD_API_EXPORTS
-#include "s2mIntegrator.h"
+#include "Utils/Integrator.h"
 
 #include <Eigen/Dense>
 #include <boost/numeric/odeint.hpp>
 #include <rbdl/Dynamics.h>
 #include "s2mJoints.h"
-#include "s2mError.h"
-#include "s2mString.h"
-#include "s2mGenCoord.h"
+#include "Utils/Error.h"
+#include "Utils/String.h"
+#include "Utils/GenCoord.h"
 
 s2mIntegrator::s2mIntegrator(){
 

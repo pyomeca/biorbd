@@ -4,7 +4,7 @@
 #include <vector>
 #include <rbdl/Constraints.h>
 #include "biorbdConfig.h"
-#include "s2mString.h"
+#include "Utils/String.h"
 
 class s2mNode;
 class s2mVector;

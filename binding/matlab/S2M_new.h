@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <mex.h>
-#include "s2mRead.h"
+#include "Utils/Read.h"
 #include "class_handle.h"
 
 void S2M_new( int nlhs, mxArray *plhs[],

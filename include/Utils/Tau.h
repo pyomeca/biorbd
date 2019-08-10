@@ -2,7 +2,7 @@
 #define S2M_TAU_H
 
 #include "biorbdConfig.h"
-#include "s2mVector.h"
+#include "Utils/Vector.h"
 
 class s2mJoints;
 class BIORBD_API s2mTau : public s2mVector

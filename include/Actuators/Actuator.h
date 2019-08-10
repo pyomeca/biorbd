@@ -2,7 +2,7 @@
 #define S2M_ACTUATOR_H
 
 #include "biorbdConfig.h"
-#include "s2mString.h"
+#include "Utils/String.h"
 
 namespace biorbd { namespace actuator {
 class BIORBD_API Actuator

@@ -3,7 +3,7 @@
 
 #include <memory>
 #include "biorbdConfig.h"
-#include "s2mString.h"
+#include "Utils/String.h"
 
 class BIORBD_API s2mMuscleFatigueState
 {

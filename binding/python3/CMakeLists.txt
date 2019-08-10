@@ -5,7 +5,7 @@ include_directories(${Python3_INCLUDE_DIRS})
 find_package(Numpy REQUIRED)
 include_directories(${NUMPY_INCLUDES})
 if(WIN32)
-	link_directories(${Python3_RUNTIME_LIBRARY_DIRS}/libs)
+    link_directories(${Python3_RUNTIME_LIBRARY_DIRS}/libs)
 endif()
 
 # Create the .i file

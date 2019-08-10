@@ -1,11 +1,11 @@
 #define BIORBD_API_EXPORTS
-#include "s2mString.h"
+#include "Utils/String.h"
 
 #include <map>
 #include <algorithm>
 #include <vector>
 #include <boost/lexical_cast.hpp>
-#include "s2mError.h"
+#include "Utils/Error.h"
 
 s2mString::s2mString()
     : std::string("")

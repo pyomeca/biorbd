@@ -5,8 +5,8 @@
 #include <rbdl/Kinematics.h>
 #include "s2mJoints.h"
 #include "s2mIMU.h"
-#include "s2mGenCoord.h"
-#include "s2mMatrix.h"
+#include "Utils/GenCoord.h"
+#include "Utils/Matrix.h"
 #include "s2mBone.h"
 
 s2mIMUs::s2mIMUs()

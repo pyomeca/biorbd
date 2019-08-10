@@ -1,28 +1,28 @@
 #define BIORBD_API_EXPORTS
 #include "Actuators/ActuatorConstant.h"
 
-#include "s2mString.h"
-#include "s2mGenCoord.h"
+#include "Utils/String.h"
+#include "Utils/GenCoord.h"
 
 namespace biorbd { namespace actuator {
 
-s2mActuatorConstant::s2mActuatorConstant(
+ActuatorConstant::ActuatorConstant(
     int direction,
     double Tmax,
     unsigned int dofIdx, const s2mString &jointName) :
-    s2mActuator(direction, dofIdx, jointName),
+    Actuator(direction, dofIdx, jointName),
     m_Tmax(Tmax)
 {
 
 }
 
-s2mActuatorConstant::~s2mActuatorConstant()
+ActuatorConstant::~ActuatorConstant()
 {
 
 }
 
 
-double s2mActuatorConstant::torqueMax(){
+double ActuatorConstant::torqueMax(){
     return m_Tmax;
 }
 

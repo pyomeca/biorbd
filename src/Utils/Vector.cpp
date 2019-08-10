@@ -1,8 +1,8 @@
 #define BIORBD_API_EXPORTS
-#include "s2mVector.h"
+#include "Utils/Vector.h"
 
-#include "s2mError.h"
-#include "s2mString.h"
+#include "Utils/Error.h"
+#include "Utils/String.h"
 
 s2mVector::s2mVector()
 {
