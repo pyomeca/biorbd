@@ -9,16 +9,16 @@
 class s2mBone;
 class s2mBoneCaracteristics;
 class s2mBoneMesh;
-class s2mTau;
 namespace biorbd { namespace utils {
 class Attitude;
+class Integrator;
+class Matrix;
+class Node;
 class GenCoord;
+class Tau;
 }}
-class s2mIntegrator;
 class s2mMarkers;
-class s2mNode;
 class s2mNodeBone;
-class s2mMatrix;
 class s2mPatch;
 class BIORBD_API s2mJoints : public RigidBodyDynamics::Model
 {
@@ -30,26 +30,29 @@ public:
     // Set and Get
     unsigned int AddBone(
             const unsigned int &parent_id, // Numéro du parent
-            const s2mString &seqT, const s2mString &seqR, // Séquence de Cardan pour classer les dof en rotation
+            const biorbd::utils::String &seqT,
+            const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
             const s2mBoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
             const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
-            const s2mString &name="", // Nom du segment
+            const biorbd::utils::String &name="", // Nom du segment
             const int &PF=-1); // Numéro de la plateforme de force attaché à cet os
     unsigned int AddBone(
             const unsigned int &parent_id, // Numéro du parent
-            const s2mString &seqR, // Séquence de Cardan pour classer les dof en rotation
+            const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
             const s2mBoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
             const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
-            const s2mString &name="", // Nom du segment
+            const biorbd::utils::String &name="", // Nom du segment
             const int &PF=-1); // Numéro de la plateforme de force attaché à cet os
 
 
     // -- INFORMATION ON THE MODEL -- //
-    int GetBodyS2MId(const s2mString &) const;
+    int GetBodyS2MId(const biorbd::utils::String &) const;
     unsigned int nbTau() const;
     unsigned int nbBone() const; // Return the actual number of segments
     unsigned int nbDof() const;
-    unsigned int getDofIndex(const s2mString& boneName, const s2mString& dofName);
+    unsigned int getDofIndex(
+            const biorbd::utils::String& boneName,
+            const biorbd::utils::String& dofName);
     std::vector<std::string> nameDof() const;
     unsigned int nbQ() const;
     unsigned int nbQdot() const;
@@ -61,7 +64,7 @@ public:
     void setHasExternalForces(const bool &f); // If the model includes external force
     bool hasExternalForces() const;
     const s2mBone& bone(unsigned int i) const;
-    const s2mBone& bone(const s2mString&) const;
+    const s2mBone& bone(const biorbd::utils::String&) const;
     // ------------------------------ //
 
 
@@ -83,7 +86,7 @@ public:
     void integrateKinematics(
             const biorbd::utils::GenCoord& Q,
             const biorbd::utils::GenCoord& QDot,
-            const s2mTau& Tau); // Process integration (Q, Qdot, effecteurs)
+            const biorbd::utils::Tau& Tau); // Process integration (Q, Qdot, effecteurs)
     void getIntegratedKinematics(
             const unsigned int& step,
             biorbd::utils::GenCoord& Q,
@@ -98,14 +101,14 @@ public:
             const bool updateKin = true); // Return the JCSs in global coordinate system for the given q
     biorbd::utils::Attitude globalJCS(
             const biorbd::utils::GenCoord &Q,
-            const s2mString &parentName,
+            const biorbd::utils::String &parentName,
             const bool updateKin = true);  // Return the JCS for segment i in global coordinate system for the given q
     biorbd::utils::Attitude globalJCS(
             const biorbd::utils::GenCoord &Q,
             const unsigned int i,
             const bool updateKin = true);  // Return the JCS for segment i in global coordinate system for the given q
     std::vector<biorbd::utils::Attitude> localJCS() const; // Return the JCSs in global coordinate system for the given q
-    biorbd::utils::Attitude localJCS(const s2mString &) const;  // Return the JCS for segment named s2mString in parent coordinate system
+    biorbd::utils::Attitude localJCS(const biorbd::utils::String &) const;  // Return the JCS for segment named s2mString in parent coordinate system
     biorbd::utils::Attitude localJCS(const unsigned int i) const;  // Return the JCS for segment i in parent coordinate system
     s2mNodeBone projectPoint(
             const biorbd::utils::GenCoord &Q,
@@ -114,26 +117,26 @@ public:
             const biorbd::utils::GenCoord &Q,
             const Eigen::Vector3d &v,
             int boneIdx,
-            const s2mString& axesToRemove,
+            const biorbd::utils::String& axesToRemove,
             bool updateKin=true); // Projeter un point dans le repère global
     std::vector<s2mNodeBone>  projectPoint(
             const s2mMarkers &marks,
             const biorbd::utils::GenCoord &Q,
             const std::vector<s2mNodeBone> &v,
             bool updateKin=true); //Marqueurs projetés de points correspondant aux marqueurs du modèle (le vector doit être égal au nombre de marqueur et dans l'ordre donné par Tags)
-    s2mMatrix projectPointJacobian(
+    biorbd::utils::Matrix projectPointJacobian(
             s2mJoints& model,
             const biorbd::utils::GenCoord &Q,
             s2mNodeBone p,
             bool updateKin);
-    s2mMatrix projectPointJacobian(
+    biorbd::utils::Matrix projectPointJacobian(
             s2mJoints& model,
             const biorbd::utils::GenCoord &Q,
             const Eigen::Vector3d &v,
             int boneIdx,
-            const s2mString& axesToRemove,
+            const biorbd::utils::String& axesToRemove,
             bool updateKin);
-    std::vector<s2mMatrix> projectPointJacobian(
+    std::vector<biorbd::utils::Matrix> projectPointJacobian(
             s2mJoints& model,
             const s2mMarkers &marks,
             const biorbd::utils::GenCoord &Q,
@@ -144,7 +147,7 @@ public:
 
     // -- MASS RELATED STUFF -- //
     double mass() const; // retourne la masse de tous les segments
-    s2mNode CoM(
+    biorbd::utils::Node CoM(
             const biorbd::utils::GenCoord &Q,
             bool updateKin=true); // Position du centre de masse
     std::vector<s2mNodeBone> CoMbySegment(
@@ -181,7 +184,7 @@ public:
             const biorbd::utils::GenCoord &Qddot,
             const unsigned int i,
             bool updateKin=true); // accélération du centre de masse du segment i
-    s2mMatrix CoMJacobian(
+    biorbd::utils::Matrix CoMJacobian(
             const biorbd::utils::GenCoord &Q); // Jacobienne
     // ------------------------ //
 
@@ -256,7 +259,7 @@ public:
 protected:
     std::vector<s2mBone> m_bones; // Toutes les articulations
 
-    s2mIntegrator * integrator;
+    biorbd::utils::Integrator * integrator;
     unsigned int m_nbRoot; // Nombre de dof sur le segment racine
     unsigned int m_nDof; // Nombre de degré de liberté total
     unsigned int m_nbQ; // Nombre de q au total

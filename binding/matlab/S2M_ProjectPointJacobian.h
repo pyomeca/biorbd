@@ -22,8 +22,8 @@ void S2M_ProjectPointJacobian( int, mxArray *plhs[],
     std::vector<s2mNodeBone> markersOverTime = *getParameterAllMarkers(prhs,3).begin();
 
     // Trouver la matrice jacobienne de tous les marqueurs
-    std::vector<s2mMatrix> Jac_tp = model->projectPointJacobian(*model, *model, Q, markersOverTime, true);
-        std::vector<s2mMatrix>::iterator it=Jac_tp.begin();
+    std::vector<biorbd::utils::Matrix> Jac_tp = model->projectPointJacobian(*model, *model, Q, markersOverTime, true);
+    std::vector<biorbd::utils::Matrix>::iterator it=Jac_tp.begin();
 
     // Create a matrix for the return argument
     unsigned int nTags = model->nTags();

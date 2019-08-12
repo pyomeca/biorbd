@@ -3,12 +3,12 @@
 
 s2mIMU::s2mIMU(
         const biorbd::utils::Attitude &v,
-        const s2mString &name,
-        const s2mString &parentName,
+        const biorbd::utils::String &name,
+        const biorbd::utils::String &parentName,
         const bool &tech,
         const bool &ana,
         const int &id) :
-    s2mNodeAttitude(v, name, parentName),
+    biorbd::utils::NodeAttitude(v, name, parentName),
     m_technical(tech),
     m_anatomical(ana),
     m_id(id)

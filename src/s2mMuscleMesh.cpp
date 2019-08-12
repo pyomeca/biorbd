@@ -29,12 +29,12 @@ void s2mMuscleMesh::assignValue(s2mMuscle *&new_m, s2mMuscle *&old_m){
         return;
     }
     else
-        s2mError::s2mAssert(0, "Please update assignValue method in s2mMuscleMesh class!");
+        biorbd::utils::Error::error(0, "Please update assignValue method in s2mMuscleMesh class!");
 }
 
 // Get sur une muscle line
 const s2mMuscle &s2mMuscleMesh::getMuscleLine(const unsigned int &idx) const{
-    s2mError::s2mAssert(idx<m_nbMuscles, "Index out of bounds for number of muscles");
+    biorbd::utils::Error::error(idx<m_nbMuscles, "Index out of bounds for number of muscles");
     return *m_muscles[idx];
 
 }

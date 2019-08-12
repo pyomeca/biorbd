@@ -4,12 +4,12 @@
 #include <rbdl/Dynamics.h>
 
 #include "s2mMusculoSkeletalModel.h"
+#include "Utils/Read.h"
 
 #include "Utils/Vector.h"
 #include "Utils/GenCoord.h"
 #include "Utils/Tau.h"
 
-#include "Utils/Read.h"
 #include "s2mBone.h"
 #include "s2mBoneMesh.h"
 #include "s2mNodeBone.h"
@@ -50,36 +50,36 @@
 
 // Instantiate templates
 namespace std {
-    %template(VecS2mNode) std::vector<s2mNode>;
-    %template(MatS2mNode) std::vector<std::vector<s2mNode>>;
-    %template(VecS2mNodeBone) std::vector<s2mNodeBone>;
-    %template(MatS2mNodeBone) std::vector<std::vector<s2mNodeBone>>;
-    %template(VecAttitude) std::vector<biorbd::utils::Attitude>;
-    %template(MatAttitude) std::vector<std::vector<biorbd::utils::Attitude>>;
+    %template(VecBiorbdNode) std::vector<biorbd::utils::Node>;
+    %template(MatBiorbdNode) std::vector<std::vector<biorbd::utils::Node>>;
+    %template(VecBiorbdNodeBone) std::vector<s2mNodeBone>;
+    %template(MatBiorbdNodeBone) std::vector<std::vector<s2mNodeBone>>;
+    %template(VecBiorbdAttitude) std::vector<biorbd::utils::Attitude>;
+    %template(MatBiorbdAttitude) std::vector<std::vector<biorbd::utils::Attitude>>;
 
-    %template(VecS2mVector) std::vector<s2mVector>;
-    %template(MatS2mVector) std::vector<std::vector<s2mVector>>;
-    %template(VecS2mTau) std::vector<s2mTau>;
-    %template(MatS2mTau) std::vector<std::vector<s2mTau>>;
-    %template(VecGenCoord) std::vector<biorbd::utils::GenCoord>;
-    %template(MatGenCoord) std::vector<std::vector<biorbd::utils::GenCoord>>;
+    %template(VecBiorbdVector) std::vector<biorbd::utils::Vector>;
+    %template(MatBiorbdVector) std::vector<std::vector<biorbd::utils::Vector>>;
+    %template(VecBiorbdTau) std::vector<biorbd::utils::Tau>;
+    %template(MatBiorbdTau) std::vector<std::vector<biorbd::utils::Tau>>;
+    %template(VecBiorbdGenCoord) std::vector<biorbd::utils::GenCoord>;
+    %template(MatBiorbdGenCoord) std::vector<std::vector<biorbd::utils::GenCoord>>;
 
-    %template(SharedS2mMuscle) std::shared_ptr<s2mMuscle>;
-    %template(VecS2mMuscleStateDynamics) std::vector<s2mMuscleStateDynamics>;
-    %template(MatS2mMuscleStateDynamics) std::vector<std::vector<s2mMuscleStateDynamics>>;
-    %template(VecS2mNodeMuscle) std::vector<s2mNodeMuscle>;
-    %template(MatS2mNodeMuscle) std::vector<std::vector<s2mNodeMuscle>>;
+    %template(SharedBiorbdMuscle) std::shared_ptr<s2mMuscle>;
+    %template(VecBiorbdMuscleStateDynamics) std::vector<s2mMuscleStateDynamics>;
+    %template(MatBiorbdMuscleStateDynamics) std::vector<std::vector<s2mMuscleStateDynamics>>;
+    %template(VecBiorbdNodeMuscle) std::vector<s2mNodeMuscle>;
+    %template(MatBiorbdNodeMuscle) std::vector<std::vector<s2mNodeMuscle>>;
 
-    %template(SharedS2mMuscleFatigueState) std::shared_ptr<s2mMuscleFatigueState>;
+    %template(SharedBiorbdMuscleFatigueState) std::shared_ptr<s2mMuscleFatigueState>;
 }
 
 // Exposing some useful functions
 %extend s2mMusculoSkeletalModel{
-    s2mTau InverseDynamics(
+    biorbd::utils::Tau InverseDynamics(
                 const biorbd::utils::GenCoord &Q,
                 const biorbd::utils::GenCoord &QDot,
                 const biorbd::utils::GenCoord &QDDot) {
-        s2mTau Tau(*self);
+        biorbd::utils::Tau Tau(*self);
         RigidBodyDynamics::InverseDynamics(*self, Q, QDot, QDDot, Tau);
         return QDDot;
     }
@@ -87,7 +87,7 @@ namespace std {
     biorbd::utils::GenCoord ForwardDynamics(
                 const biorbd::utils::GenCoord &Q,
                 const biorbd::utils::GenCoord &QDot,
-                const s2mTau &Tau) {
+                const biorbd::utils::Tau &Tau) {
         biorbd::utils::GenCoord QDDot(*self);
         RigidBodyDynamics::ForwardDynamics(*self, Q, QDot, Tau, QDDot);
         return QDDot;
@@ -96,7 +96,7 @@ namespace std {
     biorbd::utils::GenCoord ForwardDynamicsLagrangian(
                 const biorbd::utils::GenCoord &Q,
                 const biorbd::utils::GenCoord &QDot,
-                const s2mTau &Tau) {
+                const biorbd::utils::Tau &Tau) {
         biorbd::utils::GenCoord QDDot(*self);
         RigidBodyDynamics::ForwardDynamicsLagrangian(*self, Q, QDot, Tau, QDDot);
         return QDDot;
@@ -105,7 +105,7 @@ namespace std {
     biorbd::utils::GenCoord ForwardDynamicsConstraintsDirect(
                 const biorbd::utils::GenCoord &Q,
                 const biorbd::utils::GenCoord &QDot,
-                const s2mTau &Tau,
+                const biorbd::utils::Tau &Tau,
                 s2mContacts& CS) {
         biorbd::utils::GenCoord QDDot(*self);
         RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
@@ -114,21 +114,21 @@ namespace std {
     biorbd::utils::GenCoord ForwardDynamicsConstraintsDirect(
                 const biorbd::utils::GenCoord &Q,
                 const biorbd::utils::GenCoord &QDot,
-                const s2mTau &Tau) {
+                const biorbd::utils::Tau &Tau) {
         biorbd::utils::GenCoord QDDot(*self);
         s2mContacts& CS = self->getConstraints_nonConst();
         RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
         return QDDot;
     }
 
-    s2mTau muscularJointTorque(
+    biorbd::utils::Tau muscularJointTorque(
                 const std::vector<s2mMuscleStateDynamics> &state,
                 const biorbd::utils::GenCoord &Q,
                 const biorbd::utils::GenCoord &QDot){
         return self->muscularJointTorque(*self, state, true, &Q, &QDot);
     }
 
-    static s2mString getMuscleType(const std::shared_ptr<s2mMuscle> m){
+    static biorbd::utils::String getMuscleType(const std::shared_ptr<s2mMuscle> m){
         return m->type();
     }
 }
@@ -181,23 +181,22 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Tau.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Matrix.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Attitude.h"
-//%include "s2mNodeAttitude.h"
-//%include "s2mQuaternion.h"
-//%include "s2mNode.h"
+//%include "Utils/NodeAttitude.h"
+//%include "Utils/Quaternion.h"
+//%include "Utils/Node.h"
 %include "@CMAKE_SOURCE_DIR@/include/s2mMarkers.h"
 
 //%include "s2mPatch.h"
-//%include "s2mTime.h"
-//%include "s2mTimer.h"
-//%include "s2mBenchmark.h"
-//%include "@CMAKE_SOURCE_DIR@/include/s2mString.h"
-%apply std::string { s2mString };
-//%include "s2mEquation.h"
-//%include "s2mIfStream.h"
-//%include "s2mError.h"
+//%include "Utils/Time.h"
+//%include "Utils/Timer.h"
+//%include "Utils/Benchmark.h"
+%apply std::string { biorbd::utils::String };
+//%include "Utils/Equation.h"
+//%include "Utils/IfStream.h"
+//%include "Utils/Error.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Path.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Read.h"
-//%include "s2mIntegrator.h"
+//%include "Utils/Integrator.h"
 
 %include "@CMAKE_SOURCE_DIR@/include/s2mJoints.h"
 //%include "s2mJoint.h"
@@ -210,7 +209,7 @@ namespace std {
 //%include "ActuatorLinear.h"
 //%include "Actuators.h"
 
-%include "@CMAKE_SOURCE_DIR@/include/s2mNode.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Node.h"
 %include "@CMAKE_SOURCE_DIR@/include/s2mNodeBone.h"
 //%include "s2mBone.h"
 //%include "s2mBoneCaracteristics.h"
@@ -253,7 +252,7 @@ namespace std {
 //%include "s2mWrappingObject.h"
 //%include "s2mWrappingSphere.h"
 //%include "s2mWrappingCylinder.h"
-//%include "s2mWriter.h"
+//%include "Utils/Writer.h"
 
 //%include "s2mKalmanRecons.h"
 //%include "s2mKalmanReconsIMU.h"

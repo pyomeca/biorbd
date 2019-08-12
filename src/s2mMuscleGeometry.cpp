@@ -39,7 +39,7 @@ void s2mMuscleGeometry::updateKinematics(
         const s2mMusclePathChangers& o,
         int updateKin){
     if (m_posAndJacoWereForced){
-        s2mError::s2mWarning(false, "Warning, using updateKinematics overrides the previously sent position and jacobian");
+        biorbd::utils::Error::warning(false, "Warning, using updateKinematics overrides the previously sent position and jacobian");
         m_posAndJacoWereForced = false;
     }
 
@@ -59,7 +59,7 @@ void s2mMuscleGeometry::updateKinematics(
 
 void s2mMuscleGeometry::updateKinematics(
         std::vector<s2mNodeMuscle>& musclePointsInGlobal,
-        s2mMatrix &jacoPointsInGlobal,
+        biorbd::utils::Matrix &jacoPointsInGlobal,
         const biorbd::utils::GenCoord *Qdot,
         const s2mMuscleCaracteristics &c){
     m_posAndJacoWereForced = true;
@@ -109,52 +109,52 @@ void s2mMuscleGeometry::insertionInLocal(const s2mNodeMuscle &val) {
 
 // Position des muscles dans l'espace
 const s2mNodeMuscle &s2mMuscleGeometry::originInGlobal() const {
-    s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed at least once before calling originInLocal()");
+    biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed at least once before calling originInLocal()");
     return m_originInGlobal;
 }
 const s2mNodeMuscle &s2mMuscleGeometry::insertionInGlobal() const {
-    s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed at least once before calling insertionInGlobal()");
+    biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed at least once before calling insertionInGlobal()");
     return m_insertionInGlobal;
 }
 const std::vector<s2mNodeMuscle> &s2mMuscleGeometry::musclesPointsInGlobal() const{
-    s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed at least once before calling musclesPointsInGlobal()");
+    biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed at least once before calling musclesPointsInGlobal()");
     return m_pointsInGlobal;
 }
 
 // Retour des longueur et vitesse musculaires
 double s2mMuscleGeometry::length() const {
-    s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed at least before calling length()");
+    biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed at least before calling length()");
     return m_length;
 }
 double s2mMuscleGeometry::musculoTendonLength() const {
-    s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed at least before calling length()");
+    biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed at least before calling length()");
     return m_muscleTendonLength;
 }
 double s2mMuscleGeometry::velocity() const {
-    s2mError::s2mAssert(m_isVelocityComputed, "Geometry must be computed before calling velocity()");
+    biorbd::utils::Error::error(m_isVelocityComputed, "Geometry must be computed before calling velocity()");
     return m_velocity;
 }
 
 // Retour des jacobiennes
-const s2mMatrix &s2mMuscleGeometry::jacobian() const {
-    s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed before calling jacobian()");
+const biorbd::utils::Matrix &s2mMuscleGeometry::jacobian() const {
+    biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed before calling jacobian()");
     return m_jacobian;
 } // Retourne la derniere jacobienne
-s2mMatrix s2mMuscleGeometry::jacobianOrigin() const{
-    s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed before calling jacobianOrigin()");
-    return s2mMatrix(m_jacobian.block(0,0,3,m_jacobian.cols()));
+biorbd::utils::Matrix s2mMuscleGeometry::jacobianOrigin() const{
+    biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed before calling jacobianOrigin()");
+    return biorbd::utils::Matrix(m_jacobian.block(0,0,3,m_jacobian.cols()));
 }
-s2mMatrix s2mMuscleGeometry::jacobianInsertion() const {
-    s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed before calling jacobianInsertion()");
-    return s2mMatrix(m_jacobian.block(m_jacobian.rows()-3,0,3,m_jacobian.cols()));
+biorbd::utils::Matrix s2mMuscleGeometry::jacobianInsertion() const {
+    biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed before calling jacobianInsertion()");
+    return biorbd::utils::Matrix(m_jacobian.block(m_jacobian.rows()-3,0,3,m_jacobian.cols()));
 }
-s2mMatrix s2mMuscleGeometry::jacobian(const unsigned int i) const {
-    s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed before calling jacobian(i)");
-    return s2mMatrix(m_jacobian.block(3*i,0,3,m_jacobian.cols()));
+biorbd::utils::Matrix s2mMuscleGeometry::jacobian(const unsigned int i) const {
+    biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed before calling jacobian(i)");
+    return biorbd::utils::Matrix(m_jacobian.block(3*i,0,3,m_jacobian.cols()));
 }
 
-const s2mMatrix &s2mMuscleGeometry::jacobianLength() const{
-    s2mError::s2mAssert(m_isGeometryComputed, "Geometry must be computed before calling jacobianLength()");
+const biorbd::utils::Matrix &s2mMuscleGeometry::jacobianLength() const{
+    biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed before calling jacobianLength()");
     return m_jacobianLength;
 }
 
@@ -187,8 +187,8 @@ double s2mMuscleGeometry::length(
     // puisqu'on ne peut pas combiner, tester le premier (0) revient a savoir tous les types si plus d'un
     if (objects != nullptr && objects->nbWraps()!=0){
         // CHECK A MODIFIER AVEC L'AVANCEMENT DES PROJETS
-        s2mError::s2mAssert(objects->nbVia() == 0, "Cannot mix wrapping and via points yet" ) ;
-        s2mError::s2mAssert(objects->nbWraps() < 2, "Cannot compute more than one wrapping yet");
+        biorbd::utils::Error::error(objects->nbVia() == 0, "Cannot mix wrapping and via points yet" ) ;
+        biorbd::utils::Error::error(objects->nbWraps() < 2, "Cannot compute more than one wrapping yet");
 
         s2mNodeMuscle pi_wrap; // point sur le wrapping coté insertion
         s2mNodeMuscle po_wrap; // point sur le wrapping coté origine
@@ -214,7 +214,7 @@ double s2mMuscleGeometry::length(
 
 void s2mMuscleGeometry::musclesPointsInGlobal(std::vector<s2mNodeMuscle>& ptsInGlobal){
     m_pointsInLocal.clear(); // Dans ce mode, nous n'avons pas besoin de de local, puisque la jacobienne des points DOIT également être donnée
-    s2mError::s2mAssert(ptsInGlobal.size() >= 2, "ptsInGlobal must at least have an origin and an insertion");
+    biorbd::utils::Error::error(ptsInGlobal.size() >= 2, "ptsInGlobal must at least have an origin and an insertion");
     m_pointsInGlobal = ptsInGlobal;
 }
 
@@ -229,8 +229,8 @@ void s2mMuscleGeometry::musclesPointsInGlobal(
     // Ne pas le faire sur les wrappings objects
     if (objects.nbWraps()!=0){
         // CHECK A MODIFIER AVEC L'AVANCEMENT DES PROJETS
-        s2mError::s2mAssert(objects.nbVia() == 0, "Cannot mix wrapping and via points yet") ;
-        s2mError::s2mAssert(objects.nbWraps() < 2, "Cannot compute more than one wrapping yet");
+        biorbd::utils::Error::error(objects.nbVia() == 0, "Cannot mix wrapping and via points yet") ;
+        biorbd::utils::Error::error(objects.nbWraps() < 2, "Cannot compute more than one wrapping yet");
 
         // Récupérer la matrice de RT du wrap
         std::shared_ptr<s2mWrappingObject> w = std::static_pointer_cast<s2mWrappingObject>(objects.object(0));
@@ -246,7 +246,7 @@ void s2mMuscleGeometry::musclesPointsInGlobal(
         std::static_pointer_cast<s2mWrappingObject>(objects.object(0))->wrapPoints(RT,po_mus,pi_mus,po_wrap, pi_wrap);
 
         // Stocker les points dans le local
-        s2mError::s2mWarning(0, "Attention le push_back de m_pointsInLocal n'a pas été validé");
+        biorbd::utils::Error::warning(0, "Attention le push_back de m_pointsInLocal n'a pas été validé");
         m_pointsInLocal.push_back(originInLocal());
         m_pointsInLocal.push_back(s2mNodeMuscle(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(w->parent().c_str()),po_wrap.position(), false), "wrap_o", w->parent()));
         m_pointsInLocal.push_back(s2mNodeMuscle(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(w->parent().c_str()),pi_wrap.position(), false), "wrap_i", w->parent()));
@@ -280,7 +280,7 @@ void s2mMuscleGeometry::musclesPointsInGlobal(
         m_pointsInGlobal.push_back(insertionInGlobal(model,Q));
     }
     else
-        s2mError::s2mAssert(0, "Length for this type of object was not implemented");
+        biorbd::utils::Error::error(0, "Length for this type of object was not implemented");
 
     // Set the dimension of jacobian
     setJacobianDimension(model);
@@ -298,12 +298,12 @@ double s2mMuscleGeometry::velocity(const biorbd::utils::GenCoord &Qdot){
 
 void s2mMuscleGeometry::setJacobianDimension(s2mJoints &model)
 {
-    m_jacobian = s2mMatrix::Zero(static_cast<unsigned int>(m_pointsInLocal.size()*3), model.dof_count);
-    m_G = s2mMatrix::Zero(3, model.dof_count);
+    m_jacobian = biorbd::utils::Matrix::Zero(static_cast<unsigned int>(m_pointsInLocal.size()*3), model.dof_count);
+    m_G = biorbd::utils::Matrix::Zero(3, model.dof_count);
 }
 
-void s2mMuscleGeometry::jacobian(const s2mMatrix &jaco){
-    s2mError::s2mAssert(jaco.rows()/3 == static_cast<int>(m_pointsInGlobal.size()), "Jacobian is the wrong size");
+void s2mMuscleGeometry::jacobian(const biorbd::utils::Matrix &jaco){
+    biorbd::utils::Error::error(jaco.rows()/3 == static_cast<int>(m_pointsInGlobal.size()), "Jacobian is the wrong size");
     m_jacobian = jaco;
 }
 
@@ -318,7 +318,7 @@ void s2mMuscleGeometry::jacobian(
 }
 
 void s2mMuscleGeometry::computeJacobianLength(){
-    m_jacobianLength = s2mMatrix::Zero(1, m_jacobian.cols());
+    m_jacobianLength = biorbd::utils::Matrix::Zero(1, m_jacobian.cols());
     std::vector<s2mNodeMuscle>::iterator p = m_pointsInGlobal.begin();
     for (unsigned int i=0; i<m_pointsInGlobal.size()-1 ; ++i){
         m_jacobianLength +=   (( *(p+i+1) - *(p+i) ).transpose() * (jacobian(i+1) - jacobian(i)))

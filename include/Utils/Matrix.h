@@ -1,21 +1,25 @@
-#ifndef S2M_MATRIX_H
-#define S2M_MATRIX_H
+#ifndef BIORBD_UTILS_MATRIX_H
+#define BIORBD_UTILS_MATRIX_H
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
 
-class BIORBD_API s2mMatrix : public Eigen::MatrixXd
+namespace biorbd { namespace utils {
+
+class BIORBD_API Matrix : public Eigen::MatrixXd
 {
 public:
-    s2mMatrix();
-    s2mMatrix(const Eigen::MatrixXd& m);
-    s2mMatrix(unsigned int i, unsigned int j);
-    virtual ~s2mMatrix();
+    Matrix();
+    Matrix(const Eigen::MatrixXd& m);
+    Matrix(unsigned int i, unsigned int j);
+    virtual ~Matrix();
 
-    s2mMatrix & operator= (Eigen::MatrixXd other);
+    biorbd::utils::Matrix & operator= (Eigen::MatrixXd other);
 
     virtual Eigen::MatrixXd matrix() const;
 
 };
 
-#endif // S2M_MATRIX_H
+}}
+
+#endif // BIORBD_UTILS_MATRIX_H

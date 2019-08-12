@@ -6,59 +6,59 @@
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 
-class s2mNode;
-class s2mVector;
 class s2mJoints;
-class s2mString;
 namespace biorbd { namespace utils {
 class Attitude;
+class Node;
+class Vector;
 class GenCoord;
+class String;
 }}
 class BIORBD_API s2mContacts : public RigidBodyDynamics::ConstraintSet
 {
-    public:
-        s2mContacts();
-        virtual ~s2mContacts();
-        unsigned int AddConstraint(
-                unsigned int body_id,
-                const s2mNode &body_point,
-                const s2mNode &world_normal,
-                const s2mString& name,
-                double acc = 0);
-        unsigned int AddConstraint(
-                unsigned int body_id,
-                const s2mNode &body_point,
-                const s2mString& axis,
-                const s2mString& name,
-                double acc = 0);
-        virtual unsigned int AddLoopConstraint(
-                unsigned int body_id_predecessor,
-                unsigned int body_id_successor,
-                const biorbd::utils::Attitude& X_predecessor,
-                const biorbd::utils::Attitude& X_successor,
-                const s2mVector& axis,
-                bool enableStabilization = false,
-                const double stabilizationParam = 0.1,
-                const s2mString& name = s2mString() );
+public:
+    s2mContacts();
+    virtual ~s2mContacts();
+    unsigned int AddConstraint(
+            unsigned int body_id,
+            const biorbd::utils::Node &body_point,
+            const biorbd::utils::Node &world_normal,
+            const biorbd::utils::String& name,
+            double acc = 0);
+    unsigned int AddConstraint(
+            unsigned int body_id,
+            const biorbd::utils::Node &body_point,
+            const biorbd::utils::String& axis,
+            const biorbd::utils::String& name,
+            double acc = 0);
+    virtual unsigned int AddLoopConstraint(
+            unsigned int body_id_predecessor,
+            unsigned int body_id_successor,
+            const biorbd::utils::Attitude& X_predecessor,
+            const biorbd::utils::Attitude& X_successor,
+            const biorbd::utils::Vector& axis,
+            bool enableStabilization = false,
+            const double stabilizationParam = 0.1,
+            const biorbd::utils::String& name = biorbd::utils::String() );
 
-        s2mContacts &getConstraints_nonConst(const s2mJoints& jointsModel); // La premiere fois il faut appeler cette fonction avec cet arguement, ensuite, il n'est plus utile
-        s2mContacts &getConstraints_nonConst();
-        const s2mContacts &getConstraints() const;
+    s2mContacts &getConstraints_nonConst(const s2mJoints& jointsModel); // La premiere fois il faut appeler cette fonction avec cet arguement, ensuite, il n'est plus utile
+    s2mContacts &getConstraints_nonConst();
+    const s2mContacts &getConstraints() const;
 
-        bool hasContacts() const;
-        unsigned int nContacts() const;
+    bool hasContacts() const;
+    unsigned int nContacts() const;
 
-        s2mString name(unsigned int i);
-        std::vector<s2mNode> constraintsInGlobal(
-                s2mJoints& m,
-                const biorbd::utils::GenCoord &Q,
-                const bool updateKin); // Retourne la position des contraintes dans le rep`ere global
+    biorbd::utils::String name(unsigned int i);
+    std::vector<biorbd::utils::Node> constraintsInGlobal(
+            s2mJoints& m,
+            const biorbd::utils::GenCoord &Q,
+            const bool updateKin); // Retourne la position des contraintes dans le rep`ere global
 
-        // Set and get
-        s2mVector getForce() const;
-    protected:
-        unsigned int m_nbreConstraint;
-        bool m_binded;
+    // Set and get
+    biorbd::utils::Vector getForce() const;
+protected:
+    unsigned int m_nbreConstraint;
+    bool m_binded;
 
 };
 

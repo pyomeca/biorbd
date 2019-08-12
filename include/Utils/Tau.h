@@ -1,21 +1,26 @@
-#ifndef S2M_TAU_H
-#define S2M_TAU_H
+#ifndef BIORBD_UTILS_TAU_H
+#define BIORBD_UTILS_TAU_H
 
 #include "biorbdConfig.h"
 #include "Utils/Vector.h"
 
 class s2mJoints;
-class BIORBD_API s2mTau : public s2mVector
+
+namespace biorbd { namespace utils {
+
+class BIORBD_API Tau : public biorbd::utils::Vector
 {
 public:
-    s2mTau() {}
-    s2mTau(const s2mVector& v) : s2mVector(v) {}
-    s2mTau(unsigned int i) : s2mVector(i) {}
-    s2mTau(const Eigen::VectorXd& v) : s2mVector(v) {}
-    s2mTau(const s2mJoints& j);
+    Tau();
+    Tau(const biorbd::utils::Vector& v);
+    Tau(unsigned int i);
+    Tau(const Eigen::VectorXd& v);
+    Tau(const s2mJoints& j);
 
-    s2mTau timeDerivativeActivation(const s2mTau &act);
+    biorbd::utils::Tau timeDerivativeActivation(const biorbd::utils::Tau &act);
 
 };
 
-#endif // S2M_TAU_H
+}}
+
+#endif // BIORBD_UTILS_TAU_H

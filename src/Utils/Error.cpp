@@ -3,14 +3,14 @@
 
 #include "Utils/String.h"
 
-void s2mError::s2mAssert(bool cond, const s2mString &s){
+void biorbd::utils::Error::error(bool cond, const biorbd::utils::String &s){
     if (!cond){
         throw std::runtime_error(s);
     }
 
 }
 
-void s2mError::s2mWarning(bool cond, const s2mString &s){
+void biorbd::utils::Error::warning(bool cond, const biorbd::utils::String &s){
     if (!cond){
         std::cout << "Warning: " << s << std::endl;
     }

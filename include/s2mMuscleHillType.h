@@ -7,14 +7,14 @@
 class BIORBD_API s2mMuscleHillType : public s2mMuscle
 {
 public:
-    s2mMuscleHillType(const s2mString& = "");
+    s2mMuscleHillType(const biorbd::utils::String& = "");
     s2mMuscleHillType(
             const s2mMuscleGeometry&,
             const s2mMuscleCaracteristics&,
             const s2mMusclePathChangers & = s2mMusclePathChangers(),
             const s2mMuscleStateDynamics & = s2mMuscleStateDynamics());
     s2mMuscleHillType(
-            const s2mString&,
+            const biorbd::utils::String&,
             const s2mMuscleGeometry&,
             const s2mMuscleCaracteristics&,
             const s2mMusclePathChangers & = s2mMusclePathChangers(),

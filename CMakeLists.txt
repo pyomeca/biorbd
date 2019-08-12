@@ -59,7 +59,6 @@ else()
     set(${PROJECT_NAME}_LIB_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
     set(${PROJECT_NAME}_BIN_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
     set(${PROJECT_NAME}_INCLUDE_FOLDER ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
-    # set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH ${${PROJECT_NAME}_BIN_FOLDER})
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -99,12 +98,7 @@ if (BUILD_EXAMPLE)
     add_subdirectory(example)
 endif()
 
-
-
-################################
 # Testing
-################################
-# Options. Turn on with 'cmake -DBUILD_TESTS=ON'.
 option(BUILD_TESTS "Build all tests." OFF) # Makes boolean 'test' available.
 if (BUILD_TESTS)
     add_subdirectory(test)

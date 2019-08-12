@@ -21,7 +21,7 @@ TEST(MuscleJacobian, jacobian){
     model.updateMuscles(model, Q, true);
 
     unsigned int nRows(3 * (muscle->pathChanger().nbObjects() + 2));
-    s2mMatrix jacoRef(nRows, model.nbQ());
+    biorbd::utils::Matrix jacoRef(nRows, model.nbQ());
     // Here we provide emperical values that we have confidence in (TODO finite differencing could be better)
     jacoRef(0, 0) = 0.136691;    jacoRef(0, 1) = 0;
     jacoRef(1, 0) = -0.00889905; jacoRef(1, 1) = 0;
@@ -49,7 +49,7 @@ TEST(MuscleJacobian, jacobianLength){
     model.updateMuscles(model, Q, true);
 
     unsigned int nRows(model.nbMuscleTotal());
-    s2mMatrix jacoRef(nRows, model.nbQ());
+    biorbd::utils::Matrix jacoRef(nRows, model.nbQ());
     // Here we provide emperical values that we have confidence in (TODO finite differencing could be better)
     jacoRef(0, 0) = 0.0374639;      jacoRef(0, 1) = 0.0200953;
     jacoRef(1, 0) = -0.0166515;     jacoRef(1, 1) = -0.00937993;

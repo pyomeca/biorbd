@@ -9,9 +9,11 @@
 #include "s2mNodeBone.h"
 #include "s2mBone.h"
 
-void s2mWriter::writeModel(s2mMusculoSkeletalModel & m, const s2mPath& pathToWrite){
-    s2mString sep("\t"); // separator in the file
-    s2mString com("//"); // commentaire
+void biorbd::utils::Writer::writeModel(
+        s2mMusculoSkeletalModel & m,
+        const biorbd::utils::Path& pathToWrite){
+    biorbd::utils::String sep("\t"); // separator in the file
+    biorbd::utils::String com("//"); // commentaire
 
     // Gérer le cas où le dossier de destination n'existe pas
     if(!pathToWrite.isFolderExist()) {
@@ -34,7 +36,7 @@ void s2mWriter::writeModel(s2mMusculoSkeletalModel & m, const s2mPath& pathToWri
     s2mModelFile << std::endl;
 
     // Informations sur les segments
-    std::vector<biorbd::utils::Attitude> localJCS = m.localJCS();
+    std::vector<Attitude> localJCS = m.localJCS();
     for (unsigned int i = 0; i<m.nbBone(); ++i){
         s2mModelFile << com << " Informations about " << m.bone(i).name() << " segment" << std::endl;
         s2mModelFile << sep << com << " Segment" << std::endl;

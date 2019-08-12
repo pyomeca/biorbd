@@ -12,13 +12,12 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
         s2mMusculoSkeletalModel &model,
         const biorbd::utils::GenCoord &Q,
         const biorbd::utils::GenCoord &Qdot,
-        const s2mTau &tauTarget,
-        const s2mVector &activationInit,
+        const biorbd::utils::Tau &tauTarget,
+        const biorbd::utils::Vector &activationInit,
         bool useResidual,
         unsigned int pNormFactor,
         int verbose,
-        const double eps
-        ):
+        const double eps) :
     m_model(model),
     m_nQ(model.nbQ()),
     m_nQdot(model.nbQdot()),
@@ -36,11 +35,11 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
     m_states(std::vector<s2mMuscleStateDynamics>(m_nMus)),
     m_pNormFactor(pNormFactor),
     m_verbose(verbose),
-    m_finalSolution(s2mVector(m_nMus)),
-    m_finalResidual(s2mVector(m_nQ))
+    m_finalSolution(biorbd::utils::Vector(m_nMus)),
+    m_finalResidual(biorbd::utils::Vector(m_nQ))
 {
     if (m_eps < 1e-12){
-        s2mError::s2mAssert(false, "epsilon for partial derivates approximation is too small ! \nLimit for epsilon is 1e-12");
+        biorbd::utils::Error::error(false, "epsilon for partial derivates approximation is too small ! \nLimit for epsilon is 1e-12");
     }
     m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
     if (!useResidual){
@@ -57,7 +56,11 @@ s2mStaticOptimizationIpopt::~s2mStaticOptimizationIpopt()
 }
 
 bool s2mStaticOptimizationIpopt::get_nlp_info(
-        Ipopt::Index &n, Ipopt::Index &m, Ipopt::Index &nnz_jac_g, Ipopt::Index &nnz_h_lag, IndexStyleEnum &index_style)
+        Ipopt::Index &n,
+        Ipopt::Index &m,
+        Ipopt::Index &nnz_jac_g,
+        Ipopt::Index &nnz_h_lag,
+        IndexStyleEnum &index_style)
 {
     index_style = TNLP::C_STYLE;
 
@@ -80,7 +83,12 @@ bool s2mStaticOptimizationIpopt::get_nlp_info(
 }
 
 bool s2mStaticOptimizationIpopt::get_bounds_info(
-        Ipopt::Index n, Ipopt::Number *x_l, Ipopt::Number *x_u, Ipopt::Index m, Ipopt::Number *g_l, Ipopt::Number *g_u)
+        Ipopt::Index n,
+        Ipopt::Number *x_l,
+        Ipopt::Number *x_u,
+        Ipopt::Index m,
+        Ipopt::Number *g_l,
+        Ipopt::Number *g_u)
 {
     // Should not be necessary?
     assert(static_cast<unsigned int>(n) == m_nMus + m_nTauResidual);
@@ -135,7 +143,10 @@ bool s2mStaticOptimizationIpopt::get_starting_point(
 }
 
 bool s2mStaticOptimizationIpopt::eval_f(
-        Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Number &obj_value)
+        Ipopt::Index n,
+        const Ipopt::Number *x,
+        bool new_x,
+        Ipopt::Number &obj_value)
 {
     assert(static_cast<unsigned int>(n) == m_nMus + m_nTauResidual);
 
@@ -149,15 +160,18 @@ bool s2mStaticOptimizationIpopt::eval_f(
 }
 
 bool s2mStaticOptimizationIpopt::eval_grad_f(
-        Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Number *grad_f)
+        Ipopt::Index n,
+        const Ipopt::Number *x,
+        bool new_x,
+        Ipopt::Number *grad_f)
 {
     assert(static_cast<unsigned int>(n) == m_nMus + m_nTauResidual);
 
     if (new_x)
         dispatch(x);
 
-    s2mVector grad_activ(m_activations.norm_gradient(m_pNormFactor, true));
-    s2mVector grad_residual(m_tauResidual.norm_gradient(2, true));
+    biorbd::utils::Vector grad_activ(m_activations.normGradient(m_pNormFactor, true));
+    biorbd::utils::Vector grad_residual(m_tauResidual.normGradient(2, true));
 
     for( unsigned i = 0; i < m_nMus; i++ )
         grad_f[i] = grad_activ[i];
@@ -167,14 +181,18 @@ bool s2mStaticOptimizationIpopt::eval_grad_f(
 }
 
 bool s2mStaticOptimizationIpopt::eval_g(
-        Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Index m, Ipopt::Number *g)
+        Ipopt::Index n,
+        const Ipopt::Number *x,
+        bool new_x,
+        Ipopt::Index m,
+        Ipopt::Number *g)
 {
     assert(static_cast<unsigned int>(n) == m_nMus + m_nTauResidual);
     assert(static_cast<unsigned int>(m) == m_nTau);
     if (new_x)
         dispatch(x);
 
-    s2mTau tauMusc = m_model.muscularJointTorque(m_model, m_states, false, &m_Q, &m_Qdot);
+    biorbd::utils::Tau tauMusc = m_model.muscularJointTorque(m_model, m_states, false, &m_Q, &m_Qdot);
 
     // TODO : adjust dimensions for when "root_actuated" is set to false in bioMod file
     for( Ipopt::Index i = 0; i < m; i++ )
@@ -188,7 +206,14 @@ bool s2mStaticOptimizationIpopt::eval_g(
 }
 
 bool s2mStaticOptimizationIpopt::eval_jac_g(
-        Ipopt::Index n, const Ipopt::Number *x, bool new_x, Ipopt::Index m, Ipopt::Index, Ipopt::Index *iRow, Ipopt::Index *jCol, Ipopt::Number *values)
+        Ipopt::Index n,
+        const Ipopt::Number *x,
+        bool new_x,
+        Ipopt::Index m,
+        Ipopt::Index,
+        Ipopt::Index *iRow,
+        Ipopt::Index *jCol,
+        Ipopt::Number *values)
 {
     if (values == nullptr) {
         // Setup non-zeros values
@@ -206,7 +231,7 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
     } else {
         if (new_x)
             dispatch(x);
-        s2mTau tauMusc = m_model.muscularJointTorque(m_model, m_states, false, &m_Q, &m_Qdot);
+        biorbd::utils::Tau tauMusc(m_model.muscularJointTorque(m_model, m_states, false, &m_Q, &m_Qdot));
         unsigned int k(0);
         for( unsigned int j = 0; j < m_nMus; ++j ){
             std::vector<s2mMuscleStateDynamics> stateEpsilon;
@@ -216,7 +241,7 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
                     delta = 1;
                 stateEpsilon.push_back(s2mMuscleStateDynamics(0, m_activations[i]+delta*m_eps));
             }
-            s2mTau tauCalculEpsilon = m_model.muscularJointTorque(m_model, stateEpsilon, false, &m_Q, &m_Qdot);
+            biorbd::utils::Tau tauCalculEpsilon(m_model.muscularJointTorque(m_model, stateEpsilon, false, &m_Q, &m_Qdot));
             for( Ipopt::Index i = 0; i < m; i++ ){
                 values[k++] = (tauCalculEpsilon[i]-tauMusc[i])/m_eps;
                 if (m_verbose >= 3){
@@ -233,7 +258,7 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
 
         if (m_verbose >= 2){
             k = 0;
-            s2mMatrix jacobian(m_nTau, static_cast<unsigned int>(n));
+            biorbd::utils::Matrix jacobian(m_nTau, static_cast<unsigned int>(n));
             jacobian.setZero();
             for( unsigned int j = 0; j < m_nMus; j++ )
                 for( Ipopt::Index i = 0; i < m; i++ )
@@ -284,11 +309,11 @@ void s2mStaticOptimizationIpopt::finalize_solution(
     }
 }
 
-s2mVector s2mStaticOptimizationIpopt::finalSolution() const{
+biorbd::utils::Vector s2mStaticOptimizationIpopt::finalSolution() const{
     return m_finalSolution;
 }
 
-s2mVector s2mStaticOptimizationIpopt::finalResidual() const{
+biorbd::utils::Vector s2mStaticOptimizationIpopt::finalResidual() const{
     return m_finalResidual;
 }
 

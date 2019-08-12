@@ -10,8 +10,8 @@ public:
     s2mWrappingSphere(
             const double &dia = 0, // Diametre de la sphere
             const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
-            const s2mString &name = "",  // Nom du noeud
-            const s2mString &parentName = "");
+            const biorbd::utils::String &name = "",  // Nom du noeud
+            const biorbd::utils::String &parentName = "");
     virtual ~s2mWrappingSphere();
 
     biorbd::utils::Attitude RT(

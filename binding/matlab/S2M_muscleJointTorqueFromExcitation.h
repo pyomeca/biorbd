@@ -66,7 +66,7 @@ void S2M_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
                 ++iMus;
             }
 
-        s2mTau muscleTorque;
+        biorbd::utils::Tau muscleTorque;
         Eigen::VectorXd force;
         if (nlhs >= 2) // Si on doit récupérer les forces
             if (updateKin)

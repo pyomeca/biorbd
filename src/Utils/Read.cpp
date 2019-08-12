@@ -36,13 +36,13 @@
     #define GetCurrentDir getcwd
 #endif
 
-void s2mRead::pwd(){
+void biorbd::utils::Read::pwd(){
 	char c[FILENAME_MAX];
     if (GetCurrentDir(c, sizeof(c)))
         std::cout << c << std::endl;
 }
 
-bool s2mRead::is_readable(const s2mString &file) {
+bool biorbd::utils::Read::is_readable(const biorbd::utils::String &file) {
     std::ifstream fichier( file.c_str() );
     bool isOpen(fichier.is_open());
     fichier.close();
@@ -50,30 +50,30 @@ bool s2mRead::is_readable(const s2mString &file) {
 }
 
 /* Public methods */
-s2mMusculoSkeletalModel s2mRead::readModelFile(const s2mPath &path){
+s2mMusculoSkeletalModel biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path){
     // Ajouter les éléments entrés
     s2mMusculoSkeletalModel model;
     readModelFile(path, &model);
     return model;
 }
 
-void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
+void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusculoSkeletalModel *model)
 {	// Ouverture du fichier
     if (!is_readable(path))
-        s2mError::s2mAssert(false, "File " + path + " could not be open");
+        biorbd::utils::Error::error(false, "File " + path + " could not be open");
 
-    s2mIfStream file(path.c_str(), std::ios::in);
+    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
 
     // Lecture du fichier
-    s2mString tp;
+    biorbd::utils::String tp;
 
     // Variable utilisée pour remplacer les doubles
-    std::map<s2mEquation, double> variable;
+    std::map<biorbd::utils::Equation, double> variable;
 
     // Déterminer la version du fichier
     file.readSpecificTag("version", tp);
     unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
-    s2mError::s2mAssert((version == 1 || version == 2 || version == 3 || version == 4),  "Version not implemented yet");
+    biorbd::utils::Error::error((version == 1 || version == 2 || version == 3 || version == 4),  "Version not implemented yet");
 
 #ifdef MODULE_ACTUATORS
     bool hasActuators = false;
@@ -81,12 +81,12 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
     while(file.read(tp)){  // Attempt read into x, return false if it fails
         // Si c'est un segment
         if (!tp.tolower().compare("segment")){
-            s2mString name;
+            biorbd::utils::String name;
             file.read(name);
             unsigned int parent_int = 0;
-            s2mString parent_str("root");
-            s2mString trans = "";
-            s2mString rot = "";
+            biorbd::utils::String parent_str("root");
+            biorbd::utils::String trans = "";
+            biorbd::utils::String rot = "";
             bool RTinMatrix(true);
             if (version == 3) // Par défaut pour la version 3 (pas en matrice)
                 RTinMatrix = false;
@@ -108,7 +108,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     else{
                         parent_int = model->GetBodyId(parent_str.c_str());
                         // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                        s2mError::s2mAssert(model->IsBodyId(parent_int), "Wrong name in a segment");
+                        biorbd::utils::Error::error(model->IsBodyId(parent_int), "Wrong name in a segment");
                     }
                 }
                 else if (!tp.tolower().compare("translations"))
@@ -124,7 +124,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     inertia = inertia_tp.transpose();
                 }
                 else if (!tp.tolower().compare("rtinmatrix")){
-                    s2mError::s2mAssert(isRTset==false, "RT should not appear before RTinMatrix");
+                    biorbd::utils::Error::error(isRTset==false, "RT should not appear before RTinMatrix");
                     file.read(RTinMatrix);
                 }
                 else if (!tp.tolower().compare("rt")){
@@ -144,9 +144,9 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                          }
                     }
                     else{
-                        s2mString seq("xyz");
-                        s2mNode rot;
-                        s2mNode trans;
+                        biorbd::utils::String seq("xyz");
+                        biorbd::utils::Node rot;
+                        biorbd::utils::Node trans;
                         // Transcrire les rotations
                         for (unsigned int i=0; i<3; ++i)
                             file.read(rot(i));
@@ -155,7 +155,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                         // Transcrire les translations
                         for (unsigned int i=0; i<3; ++i)
                             file.read(trans(i));
-                        biorbd::utils::Attitude RT(rot, trans, seq);
+                        Attitude RT(rot, trans, seq);
                         RT_R = RT.rot().transpose();
                         RT_T = RT.trans();
 
@@ -172,8 +172,8 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     if (boneByFile==-1)
                         boneByFile = 0;
                     else if (boneByFile == 1)
-                        s2mError::s2mAssert(0, "You must not mix file and mesh in segment");
-                    s2mNode tp;
+                        biorbd::utils::Error::error(0, "You must not mix file and mesh in segment");
+                    biorbd::utils::Node tp;
                     for (unsigned int i=0; i<3; ++i)
                         file.read(tp(i), variable);
                     boneMesh.addPoint(tp);
@@ -182,7 +182,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     if (boneByFile==-1)
                         boneByFile = 0;
                     else if (boneByFile == 1)
-                        s2mError::s2mAssert(0, "You must not mix file and mesh in segment");
+                        biorbd::utils::Error::error(0, "You must not mix file and mesh in segment");
                     s2mPatch tp;
                     for (int i=0; i<3; ++i)
                         file.read(tp(i));
@@ -192,12 +192,12 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     if (boneByFile==-1)
                         boneByFile = 1;
                     else if (boneByFile == 0)
-                        s2mError::s2mAssert(0, "You must not mix file and mesh in segment");
-                    s2mPath filePath;
+                        biorbd::utils::Error::error(0, "You must not mix file and mesh in segment");
+                    biorbd::utils::Path filePath;
                     file.read(filePath);
                     bool wasRelative = false;
-                    s2mPath tpIfWasRelative = "";
-                    if (!s2mPath::isFileExist(filePath)){ // regarder si on est en chemin relatif
+                    biorbd::utils::Path tpIfWasRelative = "";
+                    if (!biorbd::utils::Path::isFileExist(filePath)){ // regarder si on est en chemin relatif
                         wasRelative = true;
                         tpIfWasRelative = filePath;
                         filePath = path.folder() + filePath; // Si oui, le mettre en absolue (ou du moins relatif à "path", ce qui est suffisant)
@@ -237,27 +237,27 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                 if (!tp(0).compare("$")){
                     double value;
                     file.read(value);
-                    s2mError::s2mAssert(variable.find(tp) == variable.end(), "Variable already defined");
+                    biorbd::utils::Error::error(variable.find(tp) == variable.end(), "Variable already defined");
                     variable[tp] = value;
                 }
             }
         }
         else if (!tp.tolower().compare("marker")){
-            s2mString name;
+            biorbd::utils::String name;
             file.read(name);
             unsigned int parent_int = 0;
-            s2mString parent_str("root");
+            biorbd::utils::String parent_str("root");
             Eigen::Vector3d pos(0,0,0);
             bool technical = true;
             bool anatomical = false;
-            s2mString axesToRemove;
+            biorbd::utils::String axesToRemove;
             while(file.read(tp) && tp.tolower().compare("endmarker")){
                 if (!tp.tolower().compare("parent")){
                     // Trouver dynamiquement le numéro du parent
                     file.read(parent_str);
                     parent_int = model->GetBodyId(parent_str.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model->IsBodyId(parent_int), "Wrong name in a segment");
+                    biorbd::utils::Error::error(model->IsBodyId(parent_int), "Wrong name in a segment");
                 }
                 else if (!tp.tolower().compare("position"))
                     for (unsigned int i=0; i<3; ++i)
@@ -273,14 +273,14 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             model->addMarker(pos, name, parent_str, technical, anatomical, axesToRemove, static_cast<int>(parent_int));
         }
         else if (!tp.tolower().compare("mimu") && version >= 4){
-            s2mError::s2mAssert(false, "MIMU is no more the right tag, change it to IMU!");
+            biorbd::utils::Error::error(false, "MIMU is no more the right tag, change it to IMU!");
         }
         else if (!tp.tolower().compare("imu") || !tp.tolower().compare("mimu")){
-            s2mString name;
+            biorbd::utils::String name;
             file.read(name);
             unsigned int parent_int = 0;
-            s2mString parent_str("root");
-            biorbd::utils::Attitude RT;
+            biorbd::utils::String parent_str("root");
+            Attitude RT;
             bool RTinMatrix(true);
             if (version == 3) // Par défaut pour la version 3 (pas en matrice)
                 RTinMatrix = false;
@@ -293,10 +293,10 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     file.read(parent_str);
                     parent_int = model->GetBodyId(parent_str.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model->IsBodyId(parent_int), "Wrong name in a segment");
+                    biorbd::utils::Error::error(model->IsBodyId(parent_int), "Wrong name in a segment");
                 }
                 else if (!tp.tolower().compare("rtinmatrix")){
-                    s2mError::s2mAssert(isRTset==false, "RT should not appear before RTinMatrix");
+                    biorbd::utils::Error::error(isRTset==false, "RT should not appear before RTinMatrix");
                     file.read(RTinMatrix);
                 }
                 else if (!tp.tolower().compare("rt")){
@@ -305,9 +305,9 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                             for (unsigned int j=0; j<4;++j)
                                 file.read(RT(i,j), variable);
                     else{
-                        s2mString seq("xyz");
-                        s2mNode rot;
-                        s2mNode trans;
+                        biorbd::utils::String seq("xyz");
+                        biorbd::utils::Node rot;
+                        biorbd::utils::Node trans;
                         // Transcrire les rotations
                         for (unsigned int i=0; i<3; ++i)
                             file.read(rot(i));
@@ -316,7 +316,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                         // Transcrire les translations
                         for (unsigned int i=0; i<3; ++i)
                             file.read(trans(i));
-                        RT = biorbd::utils::Attitude(rot, trans, seq);
+                        RT = Attitude(rot, trans, seq);
                     }
                     isRTset = true;
                 }
@@ -328,13 +328,13 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             model->addIMU(RT, name, parent_str, technical, anatomical, static_cast<int>(parent_int));
         }
         else if (!tp.tolower().compare("contact")){
-            s2mString name;
+            biorbd::utils::String name;
             file.read(name);
             unsigned int parent_int = 0;
-            s2mString parent_str("root");
+            biorbd::utils::String parent_str("root");
             Eigen::Vector3d pos(0,0,0);
             Eigen::Vector3d norm(0,0,0);
-            s2mString axis("");
+            biorbd::utils::String axis("");
             double acc = 0;
             while(file.read(tp) && tp.tolower().compare("endcontact")){
                 if (!tp.tolower().compare("parent")){
@@ -342,7 +342,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     file.read(parent_str);
                     parent_int = model->GetBodyId(parent_str.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model->IsBodyId(parent_int), "Wrong name in a segment");
+                    biorbd::utils::Error::error(model->IsBodyId(parent_int), "Wrong name in a segment");
                 }
                 else if (!tp.tolower().compare("position"))
                     for (unsigned int i=0; i<3; ++i)
@@ -356,23 +356,23 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                         file.read(acc, variable);
             }
             if (version == 1){
-                s2mError::s2mAssert(norm.norm() == 1.0, "Normal of the contact must be provided" );
+                biorbd::utils::Error::error(norm.norm() == 1.0, "Normal of the contact must be provided" );
                 model->AddConstraint(parent_int, pos, norm, name, acc);
             }
             else if (version >= 2){
-                s2mError::s2mAssert(axis.compare(""), "Axis must be provided");
+                biorbd::utils::Error::error(axis.compare(""), "Axis must be provided");
                 model->AddConstraint(parent_int, pos, axis, name, acc);
             }
         }
         else if (!tp.tolower().compare("loopconstraint")){
-            s2mString name;
+            biorbd::utils::String name;
             unsigned int id_predecessor = 0;
             unsigned int id_successor = 0;
-            s2mString predecessor_str("root");
-            s2mString successor_str("root");
-            biorbd::utils::Attitude X_predecessor;
-            biorbd::utils::Attitude X_successor;
-            s2mVector axis(6);
+            biorbd::utils::String predecessor_str("root");
+            biorbd::utils::String successor_str("root");
+            Attitude X_predecessor;
+            Attitude X_successor;
+            biorbd::utils::Vector axis(6);
             bool enableStabilization(false);
             double stabilizationParam(-1);
             while(file.read(tp) && tp.tolower().compare("endloopconstraint")){
@@ -381,18 +381,18 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     file.read(predecessor_str);
                     id_predecessor = model->GetBodyId(predecessor_str.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model->IsBodyId(id_predecessor), "Wrong name in a segment");
+                    biorbd::utils::Error::error(model->IsBodyId(id_predecessor), "Wrong name in a segment");
                 }
                 if (!tp.tolower().compare("successor")){
                     // Trouver dynamiquement le numéro du parent
                     file.read(successor_str);
                     id_successor = model->GetBodyId(successor_str.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model->IsBodyId(id_successor), "Wrong name in a segment");
+                    biorbd::utils::Error::error(model->IsBodyId(id_successor), "Wrong name in a segment");
                 } else if (!tp.tolower().compare("rtpredecessor")){
-                    s2mString seq("xyz");
-                    s2mNode rot;
-                    s2mNode trans;
+                    biorbd::utils::String seq("xyz");
+                    biorbd::utils::Node rot;
+                    biorbd::utils::Node trans;
                     // Transcrire les rotations
                     for (unsigned int i=0; i<3; ++i)
                         file.read(rot(i));
@@ -401,11 +401,11 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     // Transcrire les translations
                     for (unsigned int i=0; i<3; ++i)
                         file.read(trans(i));
-                    X_predecessor = biorbd::utils::Attitude(rot, trans, seq);
+                    X_predecessor = Attitude(rot, trans, seq);
                 } else if (!tp.tolower().compare("rtsuccessor")){
-                    s2mString seq("xyz");
-                    s2mNode rot;
-                    s2mNode trans;
+                    biorbd::utils::String seq("xyz");
+                    biorbd::utils::Node rot;
+                    biorbd::utils::Node trans;
                     // Transcrire les rotations
                     for (unsigned int i=0; i<3; ++i)
                         file.read(rot(i));
@@ -414,7 +414,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     // Transcrire les translations
                     for (unsigned int i=0; i<3; ++i)
                         file.read(trans(i));
-                    X_successor = biorbd::utils::Attitude(rot, trans, seq);
+                    X_successor = Attitude(rot, trans, seq);
                 } else if (!tp.tolower().compare("axis"))
                     for (unsigned int i=0; i<axis.size(); ++i)
                         file.read(axis(i), variable);
@@ -431,16 +431,16 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
 #ifdef MODULE_ACTUATORS
             hasActuators = true;
             // Le nom de l'actuator doit correspondre au numéro du segment sur lequel il s'attache
-            s2mString name;
+            biorbd::utils::String name;
             file.read(name);
             unsigned int parent_int = model->GetBodyId(name.c_str());
             // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-            s2mError::s2mAssert(model->IsBodyId(parent_int), "Wrong name in a segment");
+            biorbd::utils::Error::error(model->IsBodyId(parent_int), "Wrong name in a segment");
 
             // Declaration de tous les parametres pour tous les types
-            s2mString type;         bool isTypeSet  = false;
+            biorbd::utils::String type;         bool isTypeSet  = false;
             unsigned int dofIdx(INT_MAX);             bool isDofSet   = false;
-            s2mString str_direction;bool isDirectionSet = false;
+            biorbd::utils::String str_direction;bool isDirectionSet = false;
             int int_direction = 0;
             double Tmax(-1);            bool isTmaxSet  = false;
             double T0(-1);              bool isT0Set    = false;
@@ -463,14 +463,14 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     isTypeSet = true;
                 }
                 else if (!tp.tolower().compare("dof")){
-                    s2mString dofName;
+                    biorbd::utils::String dofName;
                     file.read(dofName);
                     dofIdx = model->getDofIndex(name, dofName);
                     isDofSet = true;
                 }
                 else if (!tp.tolower().compare("direction")){
                     file.read(str_direction);
-                    s2mError::s2mAssert(!str_direction.tolower().compare("positive") ||
+                    biorbd::utils::Error::error(!str_direction.tolower().compare("positive") ||
                                         !str_direction.tolower().compare("negative"),
                                         "Direction should be \"positive\" or \"negative\"");
                     if (!str_direction.tolower().compare("positive"))
@@ -536,33 +536,33 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             }
 
             // Vérifier que tout y est
-            s2mError::s2mAssert(isTypeSet!=0, "Actuator type must be defined");
+            biorbd::utils::Error::error(isTypeSet!=0, "Actuator type must be defined");
             biorbd::actuator::Actuator* actuator;
 
             if (!type.tolower().compare("gauss3p")){
-                s2mError::s2mAssert(isDofSet && isDirectionSet && isTmaxSet && isT0Set && iswmaxSet && iswcSet && isaminSet &&
+                biorbd::utils::Error::error(isDofSet && isDirectionSet && isTmaxSet && isT0Set && iswmaxSet && iswcSet && isaminSet &&
                                     iswrSet && isw1Set && isrSet && isqoptSet,
                                     "Make sure all parameters are defined");
                 actuator = new biorbd::actuator::ActuatorGauss3p(int_direction,Tmax,T0,wmax,wc,amin,wr,w1,r,qopt,dofIdx,name);
             }
             else if (!type.tolower().compare("constant")){
-                s2mError::s2mAssert(isDofSet && isDirectionSet && isTmaxSet,
+                biorbd::utils::Error::error(isDofSet && isDirectionSet && isTmaxSet,
                                     "Make sure all parameters are defined");
                 actuator = new biorbd::actuator::ActuatorConstant(int_direction,Tmax,dofIdx,name);
             }
             else if (!type.tolower().compare("linear")){
-                s2mError::s2mAssert(isDofSet && isDirectionSet && isPenteSet && isT0Set,
+                biorbd::utils::Error::error(isDofSet && isDirectionSet && isPenteSet && isT0Set,
                                     "Make sure all parameters are defined");
                 actuator = new biorbd::actuator::ActuatorLinear(int_direction,T0,pente,dofIdx,name);
             }
             else if (!type.tolower().compare("gauss6p")){
-                s2mError::s2mAssert(isDofSet && isDirectionSet && isTmaxSet && isT0Set && iswmaxSet && iswcSet && isaminSet &&
+                biorbd::utils::Error::error(isDofSet && isDirectionSet && isTmaxSet && isT0Set && iswmaxSet && iswcSet && isaminSet &&
                                     iswrSet && isw1Set && isrSet && isqoptSet && isFacteur6pSet && isr2Set && isqopt2Set,
                                     "Make sure all parameters are defined");
                 actuator = new biorbd::actuator::ActuatorGauss6p(int_direction,Tmax,T0,wmax,wc,amin,wr,w1,r,qopt,facteur6p, r2, qopt2, dofIdx,name);
             }
             else {
-                s2mError::s2mAssert(0, "Actuator do not correspond to an implemented one");
+                biorbd::utils::Error::error(0, "Actuator do not correspond to an implemented one");
                 actuator = new biorbd::actuator::ActuatorConstant(int_direction, Tmax, dofIdx, name); // Échec de compilation sinon
             }
 
@@ -570,15 +570,15 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             delete actuator;
 
 #else // MODULE_ACTUATORS
-        s2mError::s2mAssert(false, "Biorbd was build without the module Actuators but the model defines ones");
+        biorbd::utils::Error::error(false, "Biorbd was build without the module Actuators but the model defines ones");
 #endif // MODULE_ACTUATORS
         } else if (!tp.tolower().compare("musclegroup")){
-            s2mString name;
+            biorbd::utils::String name;
             file.read(name); // Nom du groupe musculaire
 
             // Déclaration des variables
-            s2mString origin_parent_str("root");
-            s2mString insert_parent_str("root");
+            biorbd::utils::String origin_parent_str("root");
+            biorbd::utils::String insert_parent_str("root");
             // Lecture du fichier
             while(file.read(tp) && tp.tolower().compare("endmusclegroup")){
                 if (!tp.tolower().compare("originparent")){
@@ -586,27 +586,27 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     file.read(origin_parent_str);
                     unsigned int idx = model->GetBodyId(origin_parent_str.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model->IsBodyId(idx), "Wrong origin parent name for a muscle");
+                    biorbd::utils::Error::error(model->IsBodyId(idx), "Wrong origin parent name for a muscle");
                 }
                 else if (!tp.tolower().compare("insertionparent")){
                     // Trouver dynamiquement le numéro du parent
                     file.read(insert_parent_str);
                     unsigned int idx = model->GetBodyId(insert_parent_str.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model->IsBodyId(idx), "Wrong insertion parent name for a muscle");
+                    biorbd::utils::Error::error(model->IsBodyId(idx), "Wrong insertion parent name for a muscle");
                 }
             }
             model->addMuscleGroup(name, origin_parent_str, insert_parent_str);
         }
         else if (!tp.tolower().compare("muscle")){
-            s2mString name;
+            biorbd::utils::String name;
             file.read(name); // Nom du muscle
 
             // Déclaration des variables
-            s2mString type("");
-            s2mString stateType("default");
-            s2mString dynamicFatigueType("simple");
-            s2mString muscleGroup("");
+            biorbd::utils::String type("");
+            biorbd::utils::String stateType("default");
+            biorbd::utils::String dynamicFatigueType("simple");
+            biorbd::utils::String muscleGroup("");
             int idxGroup(-1);
             Eigen::Vector3d origin_pos(0,0,0);
             Eigen::Vector3d insert_pos(0,0,0);
@@ -626,7 +626,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     file.read(muscleGroup);
                     idxGroup = model->getGroupId(muscleGroup);
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(idxGroup!=-1, "Could not find muscle group");
+                    biorbd::utils::Error::error(idxGroup!=-1, "Could not find muscle group");
                 }
                 else if (!tp.tolower().compare("type"))
                     file.read(type);
@@ -669,7 +669,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     }
                 }
             }
-            s2mError::s2mAssert(idxGroup!=-1, "No muscle group was provided!");
+            biorbd::utils::Error::error(idxGroup!=-1, "No muscle group was provided!");
             s2mMuscleGeometry geo(s2mNodeMuscle(origin_pos, name + "_origin", model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
                                   s2mNodeMuscle(insert_pos, name + "_insertion", model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
             s2mMuscleState stateMax(maxExcitation, maxActivation);
@@ -677,13 +677,13 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             model->muscleGroup_nonConst(static_cast<unsigned int>(idxGroup)).addHillMuscle(name,type,geo,caract,s2mMusclePathChangers(),stateType,dynamicFatigueType);
         }
         else if (!tp.tolower().compare("viapoint")){
-            s2mString name;
+            biorbd::utils::String name;
             file.read(name); // Nom du muscle... Éventuellement ajouter groupe musculaire
 
             // Déclaration des variables
-            s2mString parent("");
-            s2mString muscle("");
-            s2mString musclegroup("");
+            biorbd::utils::String parent("");
+            biorbd::utils::String muscle("");
+            biorbd::utils::String musclegroup("");
             int iMuscleGroup(-1);
             int iMuscle(-1);
             Eigen::Vector3d position(0,0,0);
@@ -695,7 +695,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     file.read(parent);
                     unsigned int idx = model->GetBodyId(parent.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model->IsBodyId(idx), "Wrong origin parent name for a muscle");
+                    biorbd::utils::Error::error(model->IsBodyId(idx), "Wrong origin parent name for a muscle");
                 }
                 else if (!tp.tolower().compare("muscle"))
                     file.read(muscle);
@@ -706,22 +706,22 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                         file.read(position(i), variable);
             }
             iMuscleGroup = model->getGroupId(musclegroup);
-            s2mError::s2mAssert(iMuscleGroup!=-1, "No muscle group was provided!");
+            biorbd::utils::Error::error(iMuscleGroup!=-1, "No muscle group was provided!");
             iMuscle = model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscleID(muscle);
-            s2mError::s2mAssert(iMuscle!=-1, "No muscle was provided!");
+            biorbd::utils::Error::error(iMuscle!=-1, "No muscle was provided!");
             s2mViaPoint v(position,name,parent);
             model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle))->addPathObject(v);
         }
         else if (!tp.tolower().compare("wrap")){
-            s2mString name;
+            biorbd::utils::String name;
             file.read(name); // Nom du wrapping
 
             // Déclaration des variables
-            s2mString muscle("");
-            s2mString musclegroup("");
+            biorbd::utils::String muscle("");
+            biorbd::utils::String musclegroup("");
             int iMuscleGroup(-1);
             int iMuscle(-1);
-            s2mString parent("");
+            biorbd::utils::String parent("");
             Eigen::Matrix4d RT;
             double dia(0);
             double length(0);
@@ -734,7 +734,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     file.read(parent);
                     unsigned int idx = model->GetBodyId(parent.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    s2mError::s2mAssert(model->IsBodyId(idx), "Wrong origin parent name for a muscle");
+                    biorbd::utils::Error::error(model->IsBodyId(idx), "Wrong origin parent name for a muscle");
                 }
                 else if (!tp.tolower().compare("rt")){
                     for (unsigned int i=0; i<4;++i)
@@ -754,14 +754,14 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
 
 
             }
-            s2mError::s2mAssert(dia != 0.0, "Diameter was not defined");
-            s2mError::s2mAssert(length != 0.0, "Length was not defined");
-            s2mError::s2mAssert(length < 0.0, "Side was not properly defined");
-            s2mError::s2mAssert(parent != "", "Parent was not defined");
+            biorbd::utils::Error::error(dia != 0.0, "Diameter was not defined");
+            biorbd::utils::Error::error(length != 0.0, "Length was not defined");
+            biorbd::utils::Error::error(length < 0.0, "Side was not properly defined");
+            biorbd::utils::Error::error(parent != "", "Parent was not defined");
             iMuscleGroup = model->getGroupId(musclegroup);
-            s2mError::s2mAssert(iMuscleGroup!=-1, "No muscle group was provided!");
+            biorbd::utils::Error::error(iMuscleGroup!=-1, "No muscle group was provided!");
             iMuscle = model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscleID(muscle);
-            s2mError::s2mAssert(iMuscle!=-1, "No muscle was provided!");
+            biorbd::utils::Error::error(iMuscle!=-1, "No muscle was provided!");
             s2mWrappingCylinder cylinder(RT,dia,length,side,name,parent);
             model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle))->addPathObject(cylinder);
         }
@@ -774,18 +774,18 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
     // std::cout << "Model file successfully loaded" << std::endl;
     file.close();
 }
-std::vector<std::vector<Eigen::Vector3d>> s2mRead::readMarkerDataFile(const s2mString &path){
+std::vector<std::vector<Eigen::Vector3d>> biorbd::utils::Read::readMarkerDataFile(const biorbd::utils::String &path){
     // Ouverture du fichier
     // std::cout << "Loading marker file: " << path << std::endl;
-    s2mIfStream file(path.c_str(), std::ios::in);
+    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
 
     // Lecture du fichier
-    s2mString tp;
+    biorbd::utils::String tp;
 
     // Déterminer la version du fichier
     file.readSpecificTag("version", tp);
     unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
-    s2mError::s2mAssert(version == 1, "Version not implemented yet");
+    biorbd::utils::Error::error(version == 1, "Version not implemented yet");
 
     // Déterminer le nombre de markers
     file.readSpecificTag("nbmark", tp);
@@ -801,7 +801,7 @@ std::vector<std::vector<Eigen::Vector3d>> s2mRead::readMarkerDataFile(const s2mS
     for (unsigned int j=0; j<nbMark; j++){
         while (tp.compare("Marker")){
             bool check = file.read(tp);
-            s2mError::s2mAssert(check, "Marker file error, wrong size of marker or intervals?");
+            biorbd::utils::Error::error(check, "Marker file error, wrong size of marker or intervals?");
         }
 
         unsigned int noMarker;
@@ -824,18 +824,18 @@ std::vector<std::vector<Eigen::Vector3d>> s2mRead::readMarkerDataFile(const s2mS
     return markers;
 }
 
-std::vector<biorbd::utils::GenCoord> s2mRead::readQDataFile(const s2mString &path){
+std::vector<biorbd::utils::GenCoord> biorbd::utils::Read::readQDataFile(const biorbd::utils::String &path){
     // Ouverture du fichier
     // std::cout << "Loading kin file: " << path << std::endl;
-    s2mIfStream file(path.c_str(), std::ios::in);
+    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
 
     // Lecture du fichier
-    s2mString tp;
+    biorbd::utils::String tp;
 
     // Déterminer la version du fichier
     file.readSpecificTag("version", tp);
     unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
-    s2mError::s2mAssert(version == 1, "Version not implemented yet");
+    biorbd::utils::Error::error(version == 1, "Version not implemented yet");
 
     // Déterminer le nombre de markers
     file.readSpecificTag("nddl", tp);
@@ -845,17 +845,17 @@ std::vector<biorbd::utils::GenCoord> s2mRead::readQDataFile(const s2mString &pat
     file.readSpecificTag("nbintervals", tp);
     unsigned int nbIntervals(static_cast<unsigned int>(atoi(tp.c_str())));
 
-    std::vector<biorbd::utils::GenCoord> kinematics;
+    std::vector<GenCoord> kinematics;
     // Descendre jusqu'à la définition d'un markeur
     for (unsigned int j=0; j<nbIntervals+1; j++){
         while (tp.compare("T")){
             bool check = file.read(tp);
-            s2mError::s2mAssert(check, "Kin file error, wrong size of NDDL or intervals?");
+            biorbd::utils::Error::error(check, "Kin file error, wrong size of NDDL or intervals?");
         }
 
         double time;
         file.read(time);
-        biorbd::utils::GenCoord position(NDDL);
+        GenCoord position(NDDL);
         for (unsigned int i=0; i<NDDL; i++)
             file.read(position(i));
 
@@ -870,18 +870,18 @@ std::vector<biorbd::utils::GenCoord> s2mRead::readQDataFile(const s2mString &pat
     return kinematics;
 }
 
-std::vector<Eigen::VectorXd> s2mRead::readActivationDataFile(const s2mString &path){
+std::vector<Eigen::VectorXd> biorbd::utils::Read::readActivationDataFile(const biorbd::utils::String &path){
     // Ouverture du fichier
     // std::cout << "Loading kin file: " << path << std::endl;
-    s2mIfStream file(path.c_str(), std::ios::in);
+    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
 
     // Lecture du fichier
-    s2mString tp;
+    biorbd::utils::String tp;
 
     // Déterminer la version du fichier
     file.readSpecificTag("version", tp);
     unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
-    s2mError::s2mAssert(version == 1, "Version not implemented yet");
+    biorbd::utils::Error::error(version == 1, "Version not implemented yet");
 
     // Déterminer le nombre de markers
     file.readSpecificTag("nbmuscles", tp);
@@ -896,7 +896,7 @@ std::vector<Eigen::VectorXd> s2mRead::readActivationDataFile(const s2mString &pa
     for (unsigned int j=0; j<nbIntervals+1; j++){
         while (tp.compare("T")){
             bool check = file.read(tp);
-            s2mError::s2mAssert(check, "Kin file error, wrong size of number of muscles or intervals?");
+            biorbd::utils::Error::error(check, "Kin file error, wrong size of number of muscles or intervals?");
         }
 
         double time;
@@ -916,18 +916,18 @@ std::vector<Eigen::VectorXd> s2mRead::readActivationDataFile(const s2mString &pa
     return activations;
 }
 
-std::vector<Eigen::VectorXd> s2mRead::readTorqueDataFile(const s2mString &path){
+std::vector<Eigen::VectorXd> biorbd::utils::Read::readTorqueDataFile(const biorbd::utils::String &path){
     // Ouverture du fichier
     // std::cout << "Loading kin file: " << path << std::endl;
-    s2mIfStream file(path.c_str(), std::ios::in);
+    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
 
     // Lecture du fichier
-    s2mString tp;
+    biorbd::utils::String tp;
 
     // Déterminer la version du fichier
     file.readSpecificTag("version", tp);
     unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
-    s2mError::s2mAssert(version == 1, "Version not implemented yet");
+    biorbd::utils::Error::error(version == 1, "Version not implemented yet");
 
     // Déterminer le nombre de tau
     file.readSpecificTag("ntau", tp); //
@@ -942,7 +942,7 @@ std::vector<Eigen::VectorXd> s2mRead::readTorqueDataFile(const s2mString &path){
     for (unsigned int j=0; j<nbIntervals+1; j++){
         while (tp.compare("T")){
             bool check = file.read(tp);
-            s2mError::s2mAssert(check, "Kin file error, wrong size of NTAU or intervals?"); //
+            biorbd::utils::Error::error(check, "Kin file error, wrong size of NTAU or intervals?"); //
         }
 
         // Lire la première ligne qui est le timestamp
@@ -965,18 +965,18 @@ std::vector<Eigen::VectorXd> s2mRead::readTorqueDataFile(const s2mString &path){
 
 }
 
-std::vector<Eigen::VectorXd> s2mRead::readGrfDataFile(const s2mString &path){
+std::vector<Eigen::VectorXd> biorbd::utils::Read::readGrfDataFile(const biorbd::utils::String &path){
     // Ouverture du fichier
     // std::cout << "Loading grf file: " << path << std::endl;
-    s2mIfStream file(path.c_str(), std::ios::in);
+    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
  
     // Lecture du fichier 
-    s2mString tp;
+    biorbd::utils::String tp;
 
     // DÃ©terminer la version du fichier
     file.readSpecificTag("version", tp);
     unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
-    s2mError::s2mAssert(version == 1, "Version not implemented yet");
+    biorbd::utils::Error::error(version == 1, "Version not implemented yet");
 
     // DÃ©terminer le nombre de grf
     file.readSpecificTag("ngrf", tp); //
@@ -991,7 +991,7 @@ std::vector<Eigen::VectorXd> s2mRead::readGrfDataFile(const s2mString &path){
     for (unsigned int j=0; j<nbIntervals+1; j++){
         while (tp.compare("T")){
             bool check = file.read(tp);
-            s2mError::s2mAssert(check, "Grf file error, wrong size of NR or intervals?"); //
+            biorbd::utils::Error::error(check, "Grf file error, wrong size of NR or intervals?"); //
         }
 
         // Lire la premiÃ¨re ligne qui est le timestamp
@@ -1014,7 +1014,7 @@ std::vector<Eigen::VectorXd> s2mRead::readGrfDataFile(const s2mString &path){
 
 }
 
-void s2mRead::readViconForceFile(const s2mString &path, // Path to the file
+void biorbd::utils::Read::readViconForceFile(const biorbd::utils::String &path, // Path to the file
                                     std::vector<std::vector<unsigned int>> &frame, // Time vector * number of pf
                                     std::vector<unsigned int> &frequency,// Acquisition frequency * number of pf
                                     std::vector<std::vector<Eigen::Vector3d>> &force, // Linear forces (x,y,z) * number of pf
@@ -1022,7 +1022,7 @@ void s2mRead::readViconForceFile(const s2mString &path, // Path to the file
                                     std::vector<std::vector<Eigen::Vector3d>> &cop){// Center of pressure (x,y,z) * number of pf
     // Ouverture du fichier
     // std::cout << "Loading force file: " << path << std::endl;
-    s2mIfStream file(path.c_str(), std::ios::in);
+    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
 
     frame.clear();
     force.clear();
@@ -1030,7 +1030,7 @@ void s2mRead::readViconForceFile(const s2mString &path, // Path to the file
     cop.clear();
 
     // Lecture du fichier
-    s2mString tp;
+    biorbd::utils::String tp;
 
 
     while(!file.eof()){
@@ -1059,7 +1059,7 @@ void s2mRead::readViconForceFile(const s2mString &path, // Path to the file
             // Sinon, on enregistre la ligne
             // now we'll use a stringstream to separate the fields out of the line (comma separated)
             std::stringstream ss( tp );
-            s2mString field;
+            biorbd::utils::String field;
             std::vector<double> data;
             data.clear();
             while (getline( ss, field, ',' )){
@@ -1073,7 +1073,7 @@ void s2mRead::readViconForceFile(const s2mString &path, // Path to the file
                 data.push_back( f );
             }
             // S'assurer que la ligne faisait le bon nombre d'éléments (2 temps, 3 cop, 3 forces, 3 moments)
-            s2mError::s2mAssert(data.size()==11, "Wrong number of element in a line in the force file");
+            biorbd::utils::Error::error(data.size()==11, "Wrong number of element in a line in the force file");
 
             // Remplir les champs
             frame1pf.push_back(static_cast<unsigned int>(data[0]));  // Frame stamp
@@ -1099,7 +1099,7 @@ void s2mRead::readViconForceFile(const s2mString &path, // Path to the file
     }
 }
 
-std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> s2mRead::readViconForceFile(const s2mString &path){
+std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::utils::Read::readViconForceFile(const biorbd::utils::String &path){
     // Lire le fichier
     std::vector<std::vector<unsigned int>> frame;
     std::vector<unsigned int> frequency;// Acquisition frequency
@@ -1127,10 +1127,10 @@ std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> s2mRead::readVi
     return st;
 }
 
-std::vector<std::vector<s2mNode>>  s2mRead::readViconMarkerFile(const s2mString &path, std::vector<s2mString> &markOrder, int nNodes){
+std::vector<std::vector<biorbd::utils::Node>>  biorbd::utils::Read::readViconMarkerFile(const biorbd::utils::String &path, std::vector<biorbd::utils::String> &markOrder, int nNodes){
     // Lire le fichier
-    s2mIfStream file(path.c_str(), std::ios::in);
-    s2mString t;
+    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
+    biorbd::utils::String t;
 
 
     // Connaitre la fréquence d'acquisition
@@ -1149,9 +1149,9 @@ std::vector<std::vector<s2mNode>>  s2mRead::readViconMarkerFile(const s2mString 
         idx_end.push_back(static_cast<unsigned int>(t.find(",", idx_tp+1)));
     }
     // Garder les noms entre les séparateurs
-    std::vector<s2mString> MarkersInFile;
+    std::vector<biorbd::utils::String> MarkersInFile;
     for (unsigned int i=0; i<idx_init.size()-1; ++i){
-        s2mString tp;
+        biorbd::utils::String tp;
         for (unsigned int j=*(idx_init.begin()+i)+1; j<*(idx_end.begin()+i); ++j)
             tp.push_back(t.at(j));
         MarkersInFile.push_back(tp);
@@ -1165,9 +1165,9 @@ std::vector<std::vector<s2mNode>>  s2mRead::readViconMarkerFile(const s2mString 
         ordre[i] = -1;
     for (int i=0; i<static_cast<int>(markOrder.size()); ++i){
         unsigned int cmp=0;
-        s2mString m1 = (*(markOrder.begin()+i));
+        biorbd::utils::String m1 = (*(markOrder.begin()+i));
         while (1){
-            s2mString m2 = (*(MarkersInFile.begin()+cmp));
+            biorbd::utils::String m2 = (*(MarkersInFile.begin()+cmp));
             if (!m1.compare(m2)){
                 ordre[3*cmp] = 3*i;
                 ordre[3*cmp+1] = 3*i+1;
@@ -1176,7 +1176,7 @@ std::vector<std::vector<s2mNode>>  s2mRead::readViconMarkerFile(const s2mString 
             }
             else
                 ++cmp;
-//            s2mError::s2mAssert(cmp<MarkersInFile.size(), "Le marqueur demandé n'a pas été trouvé dans le fichier!");
+//            biorbd::utils::Error::error(cmp<MarkersInFile.size(), "Le marqueur demandé n'a pas été trouvé dans le fichier!");
             if (cmp>=MarkersInFile.size())
                 break;
         }
@@ -1199,18 +1199,18 @@ std::vector<std::vector<s2mNode>>  s2mRead::readViconMarkerFile(const s2mString 
         // passer l'entete
         for (unsigned int i=0; i<7; ++i)
             file.read(t);
-        s2mError::s2mAssert(nNodes!=0 && nNodes!=1 && static_cast<unsigned int>(nNodes)<=nbFrames, "nNode should not be 0, 1 or greater than number of frame");
+        biorbd::utils::Error::error(nNodes!=0 && nNodes!=1 && static_cast<unsigned int>(nNodes)<=nbFrames, "nNode should not be 0, 1 or greater than number of frame");
         jumps = nbFrames/static_cast<unsigned int>(nNodes)+1;
     }
 
 
-    std::vector<std::vector<s2mNode>> data;
+    std::vector<std::vector<biorbd::utils::Node>> data;
     // now we'll use a stringstream to separate the fields out of the line (comma separated)
     unsigned int cmpFrames(1);
     while(!file.eof()){
         Eigen::VectorXd data_tp = Eigen::VectorXd::Zero(static_cast<unsigned int>(3*markOrder.size()));
         std::stringstream ss( t );
-        s2mString field;
+        biorbd::utils::String field;
         unsigned int cmp = 0;
         while (getline( ss, field, ',' )){
             // for each field we wish to convert it to a double
@@ -1226,9 +1226,9 @@ std::vector<std::vector<s2mNode>>  s2mRead::readViconMarkerFile(const s2mString 
             ++cmp;
         }
         // Une fois les markers en ordre, les séparer
-        std::vector<s2mNode> data_tp2;
+        std::vector<biorbd::utils::Node> data_tp2;
         for (unsigned int i=0; i<static_cast<unsigned int>(data_tp.size())/3; ++i){
-            s2mNode node(data_tp.block(3*i,0,3,1)/1000);
+            biorbd::utils::Node node(data_tp.block(3*i,0,3,1)/1000);
             data_tp2.push_back(node);
         }
         // Stocker le vecteur de marker a ce temps t
@@ -1251,21 +1251,21 @@ std::vector<std::vector<s2mNode>>  s2mRead::readViconMarkerFile(const s2mString 
     return data;
 }
 
-s2mBoneMesh s2mRead::readBoneMeshFileS2mBones(const s2mPath &path)
+s2mBoneMesh biorbd::utils::Read::readBoneMeshFileS2mBones(const biorbd::utils::Path &path)
 {
     // Lire un fichier d'os
 
     // Ouverture du fichier
     // std::cout << "Loading marker file: " << path << std::endl;
-    s2mIfStream file(path, std::ios::in);
+    biorbd::utils::IfStream file(path, std::ios::in);
 
     // Lecture du fichier
-    s2mString tp;
+    biorbd::utils::String tp;
 
     // Déterminer la version du fichier
     file.readSpecificTag("version", tp);
     unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
-    s2mError::s2mAssert(version == 1 || version == 2, "Version not implemented yet");
+    biorbd::utils::Error::error(version == 1 || version == 2, "Version not implemented yet");
 
     // Savoir le nombre de points
     file.readSpecificTag("npoints", tp);
@@ -1277,7 +1277,7 @@ s2mBoneMesh s2mRead::readBoneMeshFileS2mBones(const s2mPath &path)
     mesh.setPath(path);
     // Récupérer tous les points
     for (unsigned int iPoints=0; iPoints < nPoints; ++iPoints){
-        s2mNode nodeTp;
+        biorbd::utils::Node nodeTp;
         for (unsigned int i=0; i<3; ++i)
             file.read(nodeTp(i));
         mesh.addPoint(nodeTp);
@@ -1293,7 +1293,7 @@ s2mBoneMesh s2mRead::readBoneMeshFileS2mBones(const s2mPath &path)
         int nVertices;
         file.read(nVertices);
         if (nVertices != 3)
-            s2mError::s2mAssert(0, "Patches must be 3 vertices!");
+            biorbd::utils::Error::error(0, "Patches must be 3 vertices!");
         for (int i=0; i<nVertices; ++i)
             file.read(patchTp(i));
         mesh.addPatch(patchTp);
@@ -1302,16 +1302,16 @@ s2mBoneMesh s2mRead::readBoneMeshFileS2mBones(const s2mPath &path)
 }
 
 
-s2mBoneMesh s2mRead::readBoneMeshFilePly(const s2mPath &path)
+s2mBoneMesh biorbd::utils::Read::readBoneMeshFilePly(const biorbd::utils::Path &path)
 {
     // Lire un fichier d'os
 
     // Ouverture du fichier
     // std::cout << "Loading marker file: " << path << std::endl;
-    s2mIfStream file(path, std::ios::in);
+    biorbd::utils::IfStream file(path, std::ios::in);
 
     // Lecture du fichier
-    s2mString tp;
+    biorbd::utils::String tp;
 
     // Savoir le nombre de points
     file.reachSpecificTag("element");
@@ -1333,7 +1333,7 @@ s2mBoneMesh s2mRead::readBoneMeshFilePly(const s2mPath &path)
     mesh.setPath(path);
     // Récupérer tous les points
     for (unsigned int iPoints=0; iPoints < nVertex; ++iPoints){
-        s2mNode nodeTp;
+        biorbd::utils::Node nodeTp;
         for (unsigned int i=0; i<3; ++i)
             file.read(nodeTp(i));
         mesh.addPoint(nodeTp);
@@ -1349,7 +1349,7 @@ s2mBoneMesh s2mRead::readBoneMeshFilePly(const s2mPath &path)
         int nVertices;
         file.read(nVertices);
         if (nVertices != 3)
-            s2mError::s2mAssert(0, "Patches must be 3 vertices!");
+            biorbd::utils::Error::error(0, "Patches must be 3 vertices!");
         for (int i=0; i<nVertices; ++i)
             file.read(patchTp(i));
         int dump;
@@ -1362,10 +1362,10 @@ s2mBoneMesh s2mRead::readBoneMeshFilePly(const s2mPath &path)
 }
 
 
-std::vector<std::vector<s2mNode>>  s2mRead::readViconMarkerFile(const s2mString &path, int nNodes){
+std::vector<std::vector<biorbd::utils::Node>>  biorbd::utils::Read::readViconMarkerFile(const biorbd::utils::String &path, int nNodes){
     // Lire le fichier
-    s2mIfStream file(path.c_str(), std::ios::in);
-    s2mString t;
+    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
+    biorbd::utils::String t;
 
 
     // Connaitre la fréquence d'acquisition
@@ -1384,9 +1384,9 @@ std::vector<std::vector<s2mNode>>  s2mRead::readViconMarkerFile(const s2mString 
         idx_end.push_back(static_cast<unsigned int>(t.find(",", idx_tp+1)));
     }
     // Garder les noms entre les séparateurs
-    std::vector<s2mString> MarkersInFile;
+    std::vector<biorbd::utils::String> MarkersInFile;
     for (unsigned int i=0; i<idx_init.size()-1; ++i){
-        s2mString tp;
+        biorbd::utils::String tp;
         for (unsigned int j=*(idx_init.begin()+i)+1; j<*(idx_end.begin()+i); ++j)
             tp.push_back(t.at(j));
         MarkersInFile.push_back(tp);

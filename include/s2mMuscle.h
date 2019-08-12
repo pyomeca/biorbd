@@ -12,7 +12,7 @@ class BIORBD_API s2mMuscle : public s2mMuscleCompound
 {
 public:
     s2mMuscle(
-            const s2mString& = "", // Nom du muscle
+            const biorbd::utils::String& = "", // Nom du muscle
             const s2mMuscleGeometry& = s2mMuscleGeometry(), // Position origine/insertion
             const s2mMuscleCaracteristics& = s2mMuscleCaracteristics(), // Caractéristiques du muscle
             const s2mMusclePathChangers& = s2mMusclePathChangers(), // Set de wrapping objects
@@ -43,10 +43,10 @@ public:
             int updateKin = 2); // Update de la position de ce muscle
     void updateOrientations(
             std::vector<s2mNodeMuscle>& musclePointsInGlobal,
-            s2mMatrix& jacoPointsInGlobal); // Update de la position de ce muscle
+            biorbd::utils::Matrix& jacoPointsInGlobal); // Update de la position de ce muscle
     void updateOrientations(
             std::vector<s2mNodeMuscle>& musclePointsInGlobal,
-            s2mMatrix& jacoPointsInGlobal,
+            biorbd::utils::Matrix& jacoPointsInGlobal,
             const biorbd::utils::GenCoord &Qdot); // Update de la position de ce muscle
 
     const s2mMuscleGeometry& position() const;

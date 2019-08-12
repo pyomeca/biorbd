@@ -1,34 +1,38 @@
-#ifndef S2M_BENCHMARK_H
-#define S2M_BENCHMARK_H
+#ifndef BIORBD_UTILS_BENCHMARK_H
+#define BIORBD_UTILS_BENCHMARK_H
 
 #include <map>
 #include "biorbdConfig.h"
 #include "Utils/Timer.h"
 #include "Utils/String.h"
 
-class BIORBD_API s2mBenchmark
+namespace biorbd { namespace utils {
+
+class BIORBD_API Benchmark
 {
     public:
-        s2mBenchmark();
-        ~s2mBenchmark();
+        Benchmark();
+        ~Benchmark();
 
 
         // Timers
-        void startTimer(const s2mString&, bool force=false); // Start a timer related to name
-        void pauseTimer(const s2mString&); // Pause a timer
-        void resumeTimer(const s2mString&); // Pause a timer
-        double getLap(const s2mString&);
-        double stopTimer(const s2mString&);
+        void startTimer(const biorbd::utils::String&, bool force=false); // Start a timer related to name
+        void pauseTimer(const biorbd::utils::String&); // Pause a timer
+        void resumeTimer(const biorbd::utils::String&); // Pause a timer
+        double getLap(const biorbd::utils::String&);
+        double stopTimer(const biorbd::utils::String&);
         static void wasteTime(double timeInSec);
 
         // Counters
-        void addToCounter(const s2mString&); // Start a counter to count
-        int getCount(const s2mString&); // Get number of counts
+        void addToCounter(const biorbd::utils::String&); // Start a counter to count
+        int getCount(const biorbd::utils::String&); // Get number of counts
 
     protected:
-        std::map<s2mString, s2mTimer> m_timers;
-        std::map<s2mString, int> m_counts;
+        std::map<biorbd::utils::String, biorbd::utils::Timer> m_timers;
+        std::map<biorbd::utils::String, int> m_counts;
 
 };
 
-#endif // S2M_BENCHMARK_H
+}}
+
+#endif // BIORBD_UTILS_BENCHMARK_H

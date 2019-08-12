@@ -1,29 +1,33 @@
-#ifndef S2M_STRING_H
-#define S2M_STRING_H
+#ifndef BIORBD_UTILS_STRING_H
+#define BIORBD_UTILS_STRING_H
 
 #include <iostream>
 #include "biorbdConfig.h"
 
-class BIORBD_API s2mString : public std::string
+namespace biorbd { namespace utils {
+
+class BIORBD_API String : public std::string
 {
 public:
-    s2mString();
-    s2mString(const char *c);
-    s2mString(const s2mString &s);
-    s2mString(const std::basic_string<char> &c);
-    s2mString operator+(const unsigned int);
-    s2mString operator+(const int);
-    s2mString operator+(const double);
-    s2mString operator+(const char *c);
-    s2mString operator()(const unsigned int) const;
-    s2mString operator()(const unsigned int, const unsigned int) const;
-    virtual ~s2mString();
+    String();
+    String(const char *c);
+    String(const biorbd::utils::String &s);
+    String(const std::basic_string<char> &c);
+    String operator+(const unsigned int);
+    String operator+(const int);
+    String operator+(const double);
+    String operator+(const char *c);
+    String operator()(const unsigned int) const;
+    String operator()(const unsigned int, const unsigned int) const;
+    virtual ~String();
 
-    static s2mString tolower(const s2mString &str); // convert a string to a lower case string
-    s2mString tolower() const;
-    static s2mString toupper(const s2mString &str); // convert a string to a lower case string
-    s2mString toupper() const;
+    static biorbd::utils::String tolower(const biorbd::utils::String &str); // convert a string to a lower case string
+    biorbd::utils::String tolower() const;
+    static biorbd::utils::String toupper(const biorbd::utils::String &str); // convert a string to a lower case string
+    biorbd::utils::String toupper() const;
 
 };
 
-#endif // S2M_STRING_H
+}}
+
+#endif // BIORBD_UTILS_STRING_H

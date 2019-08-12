@@ -6,8 +6,8 @@
 s2mWrappingSphere::s2mWrappingSphere(
         const double &dia,
         const Eigen::Vector3d &v, // Position du noeud
-        const s2mString &name,  // Nom du noeud
-        const s2mString &parentName) :
+        const biorbd::utils::String &name,  // Nom du noeud
+        const biorbd::utils::String &parentName) :
     s2mWrappingObject(v,name,parentName),
     m_dia(dia)
 {

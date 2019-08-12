@@ -48,7 +48,7 @@ void S2M_inverseDynamics( int, mxArray *plhs[],
 
     // Trouver la dynamique inverse a cette configuration
     for (unsigned int j=0; j<Q.size(); ++j){
-        s2mTau Tau(Eigen::VectorXd::Zero (nTau));
+        biorbd::utils::Tau Tau(Eigen::VectorXd::Zero (nTau));
         if (externalForces){
             // Recevoir les plates-formes
             std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext = model->dispatchedForce(f_tp[j]);

@@ -81,7 +81,7 @@ double s2mMuscleStateDynamics::timeDerivativeActivation() {return m_activationDo
 void s2mMuscleStateDynamics::setExcitation(const double &val) {
     m_previousExcitation = m_excitation;
     if (val<0){
-        s2mError::s2mWarning(0, "Excitation can't be lower than 0, 0 is used then");
+        biorbd::utils::Error::warning(0, "Excitation can't be lower than 0, 0 is used then");
         m_excitation = 0;
     }
     else
@@ -91,7 +91,7 @@ void s2mMuscleStateDynamics::setActivation(const double &val) {
     m_previousActivation = m_activation;
 
     if (val<0){
-        s2mError::s2mWarning(0, "Activation can't be lower than 0, 0 is used then");
+        biorbd::utils::Error::warning(0, "Activation can't be lower than 0, 0 is used then");
         m_activation = 0;
     }
     else
@@ -99,7 +99,7 @@ void s2mMuscleStateDynamics::setActivation(const double &val) {
 }
 
 double s2mMuscleStateDynamics::excitationNorm(const s2mMuscleState &max) {
-    s2mError::s2mWarning(m_excitation<max.excitation(), "Excitation is higher than maximal excitation.");
+    biorbd::utils::Error::warning(m_excitation<max.excitation(), "Excitation is higher than maximal excitation.");
     m_excitationNorm = m_excitation / max.excitation();
     
     return m_excitationNorm;

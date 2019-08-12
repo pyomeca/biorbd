@@ -1,31 +1,31 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Matrix.h"
 
-s2mMatrix::s2mMatrix() {}
+biorbd::utils::Matrix::Matrix() {}
 
-s2mMatrix::s2mMatrix(const Eigen::MatrixXd &m) :
+biorbd::utils::Matrix::Matrix(const Eigen::MatrixXd &m) :
     Eigen::MatrixXd(m)
 {
 
 }
 
-s2mMatrix::s2mMatrix(unsigned int i, unsigned int j) :
+biorbd::utils::Matrix::Matrix(unsigned int i, unsigned int j) :
     Eigen::MatrixXd(i, j)
 {
 
 }
 
-s2mMatrix::~s2mMatrix()
+biorbd::utils::Matrix::~Matrix()
 {
 
 }
 
-s2mMatrix &s2mMatrix::operator=(Eigen::MatrixXd other)
+biorbd::utils::Matrix &biorbd::utils::Matrix::operator=(Eigen::MatrixXd other)
 {
     swap(other);
     return *this;
 }
 
-Eigen::MatrixXd s2mMatrix::matrix() const{
+Eigen::MatrixXd biorbd::utils::Matrix::matrix() const{
     return  this->block(0,0,this->rows(),this->cols());
 }

@@ -3,18 +3,40 @@
 
 #include "s2mJoints.h"
 
-s2mTau::s2mTau(const s2mJoints &j) :
-    s2mVector(j.nbTau()){
+biorbd::utils::Tau::Tau() {}
+
+biorbd::utils::Tau::Tau(const biorbd::utils::Vector &v) :
+    biorbd::utils::Vector(v)
+{
 
 }
 
-s2mTau s2mTau::timeDerivativeActivation(const s2mTau &act){
+biorbd::utils::Tau::Tau(unsigned int i) :
+    biorbd::utils::Vector(i)
+{
+
+}
+
+biorbd::utils::Tau::Tau(const Eigen::VectorXd &v) :
+    biorbd::utils::Vector(v)
+{
+
+}
+
+biorbd::utils::Tau::Tau(const s2mJoints &j) :
+    biorbd::utils::Vector(j.nbTau())
+{
+
+}
+
+biorbd::utils::Tau biorbd::utils::Tau::timeDerivativeActivation(const biorbd::utils::Tau &act)
+{
     // Implémentation de la fonction da/dt = (u-a)/tau(u,a)
     // ou tau(u,a) = t_act(0.5+1.5*a) is u>a et tau(u,a)=t_deact(0.5+1.5*a) sinon
     //double tauAct = .05;
     double tauDeact = 0.01;
 
-    s2mTau actDot(static_cast<unsigned int>(this->rows()));
+    biorbd::utils::Tau actDot(static_cast<unsigned int>(this->rows()));
 //std::cout << "This = " << (*this).transpose() << std::endl;
 //std::cout << "act = " << act.transpose() << std::endl;
     for (unsigned int i=0; i<this->rows(); ++i){

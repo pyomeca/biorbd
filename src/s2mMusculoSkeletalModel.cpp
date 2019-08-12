@@ -17,9 +17,9 @@ s2mMusculoSkeletalModel::~s2mMusculoSkeletalModel()
 
 }
 
-s2mMusculoSkeletalModel::s2mMusculoSkeletalModel(const s2mPath &path)
+s2mMusculoSkeletalModel::s2mMusculoSkeletalModel(const biorbd::utils::Path &path)
 {
-    s2mRead::readModelFile(path, this);
+    biorbd::utils::Read::readModelFile(path, this);
 }
 
 bool s2mMusculoSkeletalModel::InverseKinematics(

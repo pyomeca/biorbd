@@ -22,7 +22,7 @@ void S2M_muscleLengthJacobian( int, mxArray *plhs[],
     plhs[0] = mxCreateDoubleMatrix( model->nbMuscleTotal(), nQ, mxREAL);
     double *Jac = mxGetPr(plhs[0]);
 
-    s2mMatrix jaco(model->musclesLengthJacobian(*model, Q));
+    biorbd::utils::Matrix jaco(model->musclesLengthJacobian(*model, Q));
     int cmp(0);
     for (unsigned int j=0; j<jaco.cols(); ++j)
         for (unsigned int i=0; i<jaco.rows(); ++i){

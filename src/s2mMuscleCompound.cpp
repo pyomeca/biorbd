@@ -1,7 +1,9 @@
 #define BIORBD_API_EXPORTS
 #include "s2mMuscleCompound.h"
 
-s2mMuscleCompound::s2mMuscleCompound(const s2mString &name, const s2mMusclePathChangers& wrap) :
+s2mMuscleCompound::s2mMuscleCompound(
+        const biorbd::utils::String &name,
+        const s2mMusclePathChangers& wrap) :
     m_pathChanger(wrap),
     m_name(name)
 {
@@ -30,17 +32,20 @@ void s2mMuscleCompound::addPathObject(s2mMusclePathChanger &w)  {
     m_pathChanger.addPathChanger(w);
 }
 
-const s2mString &s2mMuscleCompound::type() const {return m_type;}
+const biorbd::utils::String &s2mMuscleCompound::type() const
+{
+    return m_type;
+}
 
 const std::vector<std::shared_ptr<s2mMuscleForce>>& s2mMuscleCompound::force() {
     return m_force;
 }
 
-const s2mString &s2mMuscleCompound::name() const {
+const biorbd::utils::String &s2mMuscleCompound::name() const {
     return m_name;
 }
 
-void s2mMuscleCompound::setName(const s2mString &name) {
+void s2mMuscleCompound::setName(const biorbd::utils::String &name) {
     m_name = name;
 }
 

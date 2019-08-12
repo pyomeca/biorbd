@@ -25,7 +25,7 @@ void S2M_ProjectCustomPoint( int, mxArray *plhs[],
     int bodyIdx(getInteger(prhs,4)-1);
 
     // Nom des axes à retirer
-    s2mString axesToRemove(getString(prhs,5));
+    biorbd::utils::String axesToRemove(getString(prhs,5));
 
     unsigned int nFrames(static_cast<unsigned int>(markersOverTime.size()));
     if (Qall.size()!=nFrames)

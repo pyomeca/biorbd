@@ -3,22 +3,22 @@
 
 #include "Utils/GenCoord.h"
 
-namespace biorbd { namespace actuator {
-ActuatorGauss6p::ActuatorGauss6p(
-    int direction,
-    double Tmax,
-    double T0,
-    double wmax,
-    double wc,
-    double amin,
-    double wr,
-    double w1,
-    double r,
-    double qopt,
-    double facteur,
-    double r2,
-    double qopt2,
-    unsigned int dofIdx, const s2mString &jointName) :
+biorbd::actuator::ActuatorGauss6p::ActuatorGauss6p(
+        int direction,
+        double Tmax,
+        double T0,
+        double wmax,
+        double wc,
+        double amin,
+        double wr,
+        double w1,
+        double r,
+        double qopt,
+        double facteur,
+        double r2,
+        double qopt2,
+        unsigned int dofIdx,
+        const biorbd::utils::String &jointName) :
     Actuator(direction, dofIdx, jointName),
     m_k(4.3), // Valeur par défaut
     m_Tmax(Tmax),
@@ -38,13 +38,15 @@ ActuatorGauss6p::ActuatorGauss6p(
 
 }
 
-ActuatorGauss6p::~ActuatorGauss6p()
+biorbd::actuator::ActuatorGauss6p::~ActuatorGauss6p()
 {
 
 }
 
 
-double ActuatorGauss6p::torqueMax(const biorbd::utils::GenCoord &Q, const biorbd::utils::GenCoord &Qdot){
+double biorbd::actuator::ActuatorGauss6p::torqueMax(
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot){
     double pos(Q[m_dofIdx] * 180/M_PI);
     double speed(Qdot[m_dofIdx] * 180/M_PI);
 
@@ -74,5 +76,3 @@ double ActuatorGauss6p::torqueMax(const biorbd::utils::GenCoord &Q, const biorbd
 
 
 }
-
-}}

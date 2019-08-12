@@ -1,8 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Timer.h"
 
-
-s2mTimer::s2mTimer(bool startNow) :
+biorbd::utils::Timer::Timer(bool startNow) :
     m_isStarted(false),
     m_isPaused(false),
     m_totalPauseTime(0.0)
@@ -11,12 +10,12 @@ s2mTimer::s2mTimer(bool startNow) :
         start();
 }
 
-s2mTimer::~s2mTimer()
+biorbd::utils::Timer::~Timer()
 {
 
 }
 
-void s2mTimer::start()
+void biorbd::utils::Timer::start()
 {
     m_start = std::clock();
     m_totalPauseTime = 0;
@@ -24,18 +23,18 @@ void s2mTimer::start()
     m_isStarted = true;
 } // Start a timer
 
-bool s2mTimer::isStarted(){
+bool biorbd::utils::Timer::isStarted(){
     return m_isStarted;
 }
 
-void s2mTimer::pause(){
+void biorbd::utils::Timer::pause(){
     if (!m_isPaused){
         m_isPaused = true;
         m_pauseTime = std::clock();
     }
 }
 
-void s2mTimer::resume(){
+void biorbd::utils::Timer::resume(){
     if (!m_isStarted)
         start();
 
@@ -45,7 +44,7 @@ void s2mTimer::resume(){
     }
 }
 
-double s2mTimer::getLap()
+double biorbd::utils::Timer::getLap()
 {
     addPauseTime();
 
@@ -55,7 +54,7 @@ double s2mTimer::getLap()
         return 0;
 }
 
-double s2mTimer::stop()
+double biorbd::utils::Timer::stop()
 {
     if (m_isStarted){
         m_isStarted = false;
@@ -65,13 +64,13 @@ double s2mTimer::stop()
         return 0;
 }
 
-void s2mTimer::addPauseTime(){
+void biorbd::utils::Timer::addPauseTime(){
     if (m_isPaused){
         m_totalPauseTime += getTime(m_pauseTime);
         m_pauseTime = std::clock();
     }
 }
 
-double s2mTimer::getTime(const std::clock_t& timer){
+double biorbd::utils::Timer::getTime(const std::clock_t& timer){
     return static_cast<double>(std::clock() - timer) / CLOCKS_PER_SEC;
 }

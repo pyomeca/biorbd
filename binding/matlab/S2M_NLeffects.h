@@ -34,7 +34,7 @@ void S2M_NLeffects( int, mxArray *plhs[],
 
     // Trouver les effets non-linéaires pour chaque configuration
     for (unsigned int j=0; j<Q.size(); ++j){
-        s2mTau Tau(Eigen::VectorXd::Zero (nTau));
+        biorbd::utils::Tau Tau(Eigen::VectorXd::Zero (nTau));
         RigidBodyDynamics::NonlinearEffects(*model, *(Q.begin()+j), *(QDot.begin()+j), Tau);// Inverse Dynamics
 
         // Remplir l'output

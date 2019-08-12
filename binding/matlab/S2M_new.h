@@ -27,9 +27,10 @@ void S2M_new( int nlhs, mxArray *plhs[],
 
     // Loader le modèle musculosquelettique
     // Definition des variables globales du modele
-    if (s2mRead::is_readable( filepath )){
+    if (biorbd::utils::Read::is_readable( filepath )){
         try{
-            plhs[0] = convertPtr2Mat<s2mMusculoSkeletalModel>(new s2mMusculoSkeletalModel(s2mRead::readModelFile(filepath)));
+            plhs[0] = convertPtr2Mat<s2mMusculoSkeletalModel>(
+                        new s2mMusculoSkeletalModel(biorbd::utils::Read::readModelFile(filepath)));
         }
         catch (std::string m){
             mexErrMsgTxt(m.c_str());

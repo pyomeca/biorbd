@@ -3,29 +3,28 @@
 
 #include "Utils/Error.h"
 
-namespace biorbd { namespace actuator {
-
-Actuator::Actuator(int direction, unsigned int dofIdx, const s2mString &jointName) :
+biorbd::actuator::Actuator::Actuator(
+        int direction,
+        unsigned int dofIdx,
+        const biorbd::utils::String &jointName) :
     m_direction(direction),
     m_jointName(jointName),
     m_dofIdx(dofIdx)
 {
-    s2mError::s2mAssert(m_direction==-1 || m_direction==1, "Direction should be -1 or 1");
+    biorbd::utils::Error::error(m_direction==-1 || m_direction==1, "Direction should be -1 or 1");
 }
 
-Actuator::~Actuator()
+biorbd::actuator::Actuator::~Actuator()
 {
 
 }
 
-unsigned int Actuator::index() const
+unsigned int biorbd::actuator::Actuator::index() const
 {
     return m_dofIdx;
 }
 
-int Actuator::direction() const
+int biorbd::actuator::Actuator::direction() const
 {
     return m_direction;
 }
-
-}}

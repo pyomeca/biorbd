@@ -15,7 +15,7 @@ void S2M_LocalTags( int, mxArray *plhs[],
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
 
     // Gestion du type
-    s2mString type("all");
+    biorbd::utils::String type("all");
     if (nrhs >= 3)
         type = getString(prhs,2);
     bool removeAxes(true);

@@ -26,7 +26,7 @@ void S2M_Tags( int, mxArray *plhs[],
     unsigned int nTags(0); // Nombre de marqueurs
     std::vector<std::vector<s2mNodeBone>> Tags_tp; // récupérer les marqueurs
     if (nrhs >= 4){
-        s2mString type(getString(prhs,3));
+        biorbd::utils::String type(getString(prhs,3));
         if (!type.tolower().compare("all")){
             nTags = model->nTags();
             for (std::vector<biorbd::utils::GenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)

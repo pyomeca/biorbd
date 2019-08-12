@@ -1,13 +1,13 @@
 #ifndef S2M_MUSCLE_GEOMETRY_H
 #define S2M_MUSCLE_GEOMETRY_H
 
-    #include "Utils/Matrix.h"
-    #include "biorbdConfig.h"
-    #include "s2mNodeMuscle.h"
-    #include "s2mJoints.h"
-    #include "s2mMusclePathChangers.h"
-    #include "Utils/GenCoord.h"
-    #include "s2mMuscleCaracteristics.h"
+#include "Utils/Matrix.h"
+#include "biorbdConfig.h"
+#include "s2mNodeMuscle.h"
+#include "s2mJoints.h"
+#include "s2mMusclePathChangers.h"
+#include "Utils/GenCoord.h"
+#include "s2mMuscleCaracteristics.h"
 
 class BIORBD_API s2mMuscleGeometry
 {
@@ -27,7 +27,7 @@ public:
             int updateKin = 2);
     void updateKinematics(
             std::vector<s2mNodeMuscle>& musclePointsInGlobal,
-            s2mMatrix& jacoPointsInGlobal,
+            biorbd::utils::Matrix& jacoPointsInGlobal,
             const biorbd::utils::GenCoord* Qdot = nullptr,
             const s2mMuscleCaracteristics& = s2mMuscleCaracteristics());
 
@@ -48,11 +48,11 @@ public:
     double velocity() const; // Return the already computed velocity
 
     // Retour des jacobiennes
-    const s2mMatrix& jacobian() const; // Retourne la derniere jacobienne
-    s2mMatrix jacobianOrigin() const;
-    s2mMatrix jacobianInsertion() const ;
-    s2mMatrix jacobian(const unsigned int i) const;
-    const s2mMatrix& jacobianLength() const;
+    const biorbd::utils::Matrix& jacobian() const; // Retourne la derniere jacobienne
+    biorbd::utils::Matrix jacobianOrigin() const;
+    biorbd::utils::Matrix jacobianInsertion() const ;
+    biorbd::utils::Matrix jacobian(const unsigned int i) const;
+    const biorbd::utils::Matrix& jacobianLength() const;
 
 
 protected:
@@ -84,7 +84,7 @@ protected:
             const biorbd::utils::GenCoord &Qdot); // Update the kinematics and compute and return muscle velocity assuming no via points nor wrapping objects
     // Calcul des jacobiennes des points
     void setJacobianDimension(s2mJoints &model);
-    void jacobian(const s2mMatrix &jaco); // Forcer une jacobienne
+    void jacobian(const biorbd::utils::Matrix &jaco); // Forcer une jacobienne
     void jacobian(
             s2mJoints &model,
             const biorbd::utils::GenCoord &Q);
@@ -98,9 +98,9 @@ protected:
     s2mNodeMuscle m_insertionInGlobal; // Position de l'origine dans le repere global
     std::vector<s2mNodeMuscle> m_pointsInGlobal; // position de tous les points dans le global
     std::vector<s2mNodeMuscle> m_pointsInLocal; // position de tous les points dans le global
-    s2mMatrix m_jacobian;
-    s2mMatrix m_G;
-    s2mMatrix m_jacobianLength; // Incluant la
+    biorbd::utils::Matrix m_jacobian;
+    biorbd::utils::Matrix m_G;
+    biorbd::utils::Matrix m_jacobianLength; // Incluant la
 
     double m_length; // Longueur du muscle
     double m_muscleTendonLength; // Longueur du muscle et du tendon

@@ -22,7 +22,7 @@ void S2M_IMU( int, mxArray *plhs[],
     unsigned int nIMUs(0); // Nombre de IMU
     std::vector<std::vector<s2mIMU>> IMU_tp; // récupérer les IMU
     if (nrhs == 4){
-        s2mString type(getString(prhs,3));
+        biorbd::utils::String type(getString(prhs,3));
         if (!type.tolower().compare("all")){
             nIMUs = model->nIMUs();
             for (std::vector<biorbd::utils::GenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)

@@ -7,11 +7,11 @@
 #include "Utils/String.h"
 
 namespace biorbd { namespace utils {
+class Matrix;
 class GenCoord;
 }}
 class s2mJoints;
 class s2mNodeBone;
-class s2mMatrix;
 class BIORBD_API s2mMarkers
 {
 public:
@@ -21,20 +21,20 @@ public:
     // Set and get
     void addMarker(
             const Eigen::Vector3d &pos = Eigen::Vector3d(0,0,0),
-            const s2mString &name = "",
-            const s2mString &parentName = "",
+            const biorbd::utils::String &name = "",
+            const biorbd::utils::String &parentName = "",
             bool technical = true,
             bool anatomical = false,
-            const s2mString& axesToRemove = s2mString(),
+            const biorbd::utils::String& axesToRemove = biorbd::utils::String(),
             int id = -1); // Ajouter un nouveau marker
     const s2mNodeBone& marker(
             const unsigned int &i) const;
     std::vector<s2mNodeBone> marker(
             const s2mJoints& model,
             const unsigned int &idxBone) const;
-    std::vector<s2mString> markerNames() const;
-    std::vector<s2mString> technicalMarkerNames() const;
-    std::vector<s2mString> anatomicalMarkerNames() const;
+    std::vector<biorbd::utils::String> markerNames() const;
+    std::vector<biorbd::utils::String> technicalMarkerNames() const;
+    std::vector<biorbd::utils::String> anatomicalMarkerNames() const;
 
     static s2mNodeBone Tags(
             s2mJoints& model,
@@ -106,25 +106,25 @@ public:
             s2mJoints& model,
             unsigned int idxSegment); // Retourne le nombre de marqueurs techniques pour le segment idxSegment
     unsigned int nAnatTags(); // Retourne le nombre de marqueurs anatomiques
-    std::vector<s2mMatrix> TagsJacobian(
+    std::vector<biorbd::utils::Matrix> TagsJacobian(
             s2mJoints& model,
             const biorbd::utils::GenCoord &Q,
             bool removeAxis=true,
             bool updateKin = true); // Retourne la jacobienne des Tags
-    std::vector<s2mMatrix> TechnicalTagsJacobian(
+    std::vector<biorbd::utils::Matrix> TechnicalTagsJacobian(
             s2mJoints& model,
             const biorbd::utils::GenCoord &Q,
             bool removeAxis=true,
             bool updateKin = true); // Retourne la jacobienne des Tags pour les marqueurs techniques
-    static s2mMatrix TagsJacobian(
+    static biorbd::utils::Matrix TagsJacobian(
             s2mJoints& model,
             const biorbd::utils::GenCoord &Q,
-            const s2mString& parentName,
+            const biorbd::utils::String& parentName,
             const Eigen::Vector3d& p,
             bool updateKin); // Jacobienne d'un marqueur au choix
 
 protected:
-    std::vector<s2mMatrix> TagsJacobian(
+    std::vector<biorbd::utils::Matrix> TagsJacobian(
             s2mJoints& model,
             const biorbd::utils::GenCoord &Q,
             bool removeAxis,

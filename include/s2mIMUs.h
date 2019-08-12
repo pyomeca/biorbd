@@ -5,15 +5,15 @@
 #include "biorbdConfig.h"
 #include "Utils/Attitude.h"
 #include "Utils/String.h"
-#include "s2mNode.h"
+#include "Utils/Node.h"
 #include "s2mPatch.h"
 
 class s2mJoints;
 class s2mIMU;
 namespace biorbd { namespace utils {
+class Matrix;
 class GenCoord;
 }}
-class s2mMatrix;
 class BIORBD_API s2mIMUs
 {
 public:
@@ -23,16 +23,16 @@ public:
     // Set and get
     void addIMU(
             const biorbd::utils::Attitude &pos = biorbd::utils::Attitude(),
-            const s2mString &name = "",
-            const s2mString &parentName = "",
+            const biorbd::utils::String &name = "",
+            const biorbd::utils::String &parentName = "",
             const bool &technical = true,
             const bool &anatomical = false,
             const int &id = -1); // Ajouter un nouveau marker
     unsigned int nIMUs() const; // Retourne le nombre de marqueurs
 
-    std::vector<s2mString> IMUsNames();
-    std::vector<s2mString> technicalIMUsNames();
-    std::vector<s2mString> anatomicalIMUsNames();
+    std::vector<biorbd::utils::String> IMUsNames();
+    std::vector<biorbd::utils::String> technicalIMUsNames();
+    std::vector<biorbd::utils::String> anatomicalIMUsNames();
 
     std::vector<s2mIMU> IMU(); // Retour d'un STL vector de tous les IMU
     std::vector<s2mIMU> IMU(s2mJoints& m, unsigned int idx); // Retour d'un STL vector de tous les IMU d'un segment idx
@@ -70,17 +70,17 @@ public:
 
 
 
-    std::vector<s2mMatrix> IMUJacobian(
+    std::vector<biorbd::utils::Matrix> IMUJacobian(
             s2mJoints& model,
             const biorbd::utils::GenCoord &Q,
             const bool &updateKin = true); // Retourne la jacobienne des Tags
-    std::vector<s2mMatrix> TechnicalIMUJacobian(
+    std::vector<biorbd::utils::Matrix> TechnicalIMUJacobian(
             s2mJoints& model,
             const biorbd::utils::GenCoord &Q,
             const bool &updateKin = true); // Retourne la jacobienne des Tags pour les marqueurs techniques
 
 protected:
-    std::vector<s2mMatrix> IMUJacobian(
+    std::vector<biorbd::utils::Matrix> IMUJacobian(
             s2mJoints& model,
             const biorbd::utils::GenCoord &Q,
             const bool &updateKin,

@@ -1,15 +1,22 @@
-#ifndef S2M_WRITER_H
-#define S2M_WRITER_H
+#ifndef BIORBD_UTILS_WRITER_H
+#define BIORBD_UTILS_WRITER_H
 
 #include "biorbdConfig.h"
 
 class s2mMusculoSkeletalModel;
-class s2mPath;
-class BIORBD_API s2mWriter 
+
+namespace biorbd { namespace utils {
+class Path;
+
+class BIORBD_API Writer
 {
-    public:
-        static void writeModel(s2mMusculoSkeletalModel &, const s2mPath& pathToWrite);
+public:
+    static void writeModel(
+            s2mMusculoSkeletalModel &,
+            const biorbd::utils::Path& pathToWrite);
 
 };
 
-#endif // S2M_WRITER_H
+}}
+
+#endif // BIORBD_UTILS_WRITER_H

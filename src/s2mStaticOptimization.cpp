@@ -7,15 +7,15 @@
 #include "s2mMuscleStateDynamics.h"
 #include "s2mStaticOptimizationIpoptLinearized.h"
 
-s2mStaticOptimization::s2mStaticOptimization(s2mMusculoSkeletalModel& model,
+s2mStaticOptimization::s2mStaticOptimization(
+        s2mMusculoSkeletalModel& model,
         const biorbd::utils::GenCoord &Q,
         const biorbd::utils::GenCoord &Qdot,
-        const s2mTau &tauTarget,
-        const s2mVector &initialActivationGuess,
+        const biorbd::utils::Tau &tauTarget,
+        const biorbd::utils::Vector &initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
-        int verbose
-        ):
+        int verbose) :
     m_model(model),
     m_useResidualTorque(useResidualTorque),
     m_pNormFactor(pNormFactor),
@@ -27,7 +27,7 @@ s2mStaticOptimization::s2mStaticOptimization(s2mMusculoSkeletalModel& model,
     m_allTauTarget.push_back(tauTarget);
 
     if (initialActivationGuess.size() == 0){
-        m_initialActivationGuess = s2mVector(m_model.nbMuscleTotal());
+        m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscleTotal());
         for (unsigned int i=0; i<m_model.nbMuscleTotal(); ++i)
             m_initialActivationGuess[i] = 0.01;
     }
@@ -39,12 +39,12 @@ s2mStaticOptimization::s2mStaticOptimization(
         s2mMusculoSkeletalModel& model,
         const biorbd::utils::GenCoord &Q,
         const biorbd::utils::GenCoord &Qdot,
-        const s2mTau &tauTarget,
+        const biorbd::utils::Tau &tauTarget,
         const std::vector<s2mMuscleStateDynamics> &initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
         int verbose
-        ):
+        ) :
     m_model(model),
     m_useResidualTorque(useResidualTorque),
     m_pNormFactor(pNormFactor),
@@ -55,7 +55,7 @@ s2mStaticOptimization::s2mStaticOptimization(
     m_allQdot.push_back(Qdot);
     m_allTauTarget.push_back(tauTarget);
 
-    m_initialActivationGuess = s2mVector(m_model.nbMuscleTotal());
+    m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscleTotal());
     for (unsigned int i = 0; i<m_model.nbMuscleTotal(); i++)
         m_initialActivationGuess[i] = initialActivationGuess[i].activation();
 }
@@ -64,8 +64,8 @@ s2mStaticOptimization::s2mStaticOptimization(
         s2mMusculoSkeletalModel &model,
         const std::vector<biorbd::utils::GenCoord> &allQ,
         const std::vector<biorbd::utils::GenCoord> &allQdot,
-        const std::vector<s2mTau> &allTauTarget,
-        const s2mVector &initialActivationGuess,
+        const std::vector<biorbd::utils::Tau> &allTauTarget,
+        const biorbd::utils::Vector &initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
         int verbose) :
@@ -79,7 +79,7 @@ s2mStaticOptimization::s2mStaticOptimization(
     m_alreadyRun(false)
 {
     if (initialActivationGuess.size() == 0){
-        m_initialActivationGuess = s2mVector(m_model.nbMuscleTotal());
+        m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscleTotal());
         for (unsigned int i=0; i<m_model.nbMuscleTotal(); ++i)
             m_initialActivationGuess[i] = 0.01;
     }
@@ -87,10 +87,11 @@ s2mStaticOptimization::s2mStaticOptimization(
         m_initialActivationGuess = initialActivationGuess;
 }
 
-s2mStaticOptimization::s2mStaticOptimization(s2mMusculoSkeletalModel& model,
+s2mStaticOptimization::s2mStaticOptimization(
+        s2mMusculoSkeletalModel& model,
         const std::vector<biorbd::utils::GenCoord> &allQ,
         const std::vector<biorbd::utils::GenCoord> &allQdot,
-        const std::vector<s2mTau> &allTauTarget,
+        const std::vector<biorbd::utils::Tau> &allTauTarget,
         const std::vector<s2mMuscleStateDynamics> &initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
@@ -104,7 +105,7 @@ s2mStaticOptimization::s2mStaticOptimization(s2mMusculoSkeletalModel& model,
     m_verbose(verbose),
     m_alreadyRun(false)
 {
-    m_initialActivationGuess = s2mVector(m_model.nbMuscleTotal());
+    m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscleTotal());
     for (unsigned int i = 0; i<m_model.nbMuscleTotal(); i++)
         m_initialActivationGuess[i] = initialActivationGuess[i].activation();
 }
@@ -122,7 +123,7 @@ void s2mStaticOptimization::run(bool LinearizedState)
 
     Ipopt::ApplicationReturnStatus status;
     status = app->Initialize();
-    s2mError::s2mAssert(status == Ipopt::Solve_Succeeded, "Ipopt initialization failed");
+    biorbd::utils::Error::error(status == Ipopt::Solve_Succeeded, "Ipopt initialization failed");
 
     for (unsigned int i=0; i<m_allQ.size(); ++i){
         if (LinearizedState)
@@ -148,11 +149,11 @@ void s2mStaticOptimization::run(bool LinearizedState)
     m_alreadyRun = true;
 }
 
-std::vector<s2mVector> s2mStaticOptimization::finalSolution()
+std::vector<biorbd::utils::Vector> s2mStaticOptimization::finalSolution()
 {
-    std::vector<s2mVector> res;
+    std::vector<biorbd::utils::Vector> res;
     if (!m_alreadyRun){
-        s2mError::s2mAssert(0, "Problem has not been ran through the optimization process yet, you should optimize it first to get the optimized solution");
+        biorbd::utils::Error::error(0, "Problem has not been ran through the optimization process yet, you should optimize it first to get the optimized solution");
     }
     else {
         for (unsigned int i=0; i<m_allQ.size(); ++i){
@@ -163,11 +164,11 @@ std::vector<s2mVector> s2mStaticOptimization::finalSolution()
     return res;
 }
 
-s2mVector s2mStaticOptimization::finalSolution(unsigned int index)
+biorbd::utils::Vector s2mStaticOptimization::finalSolution(unsigned int index)
 {
-    s2mVector res;
+    biorbd::utils::Vector res;
     if (!m_alreadyRun){
-        s2mError::s2mAssert(0, "Problem has not been ran through the optimization process yet, you should optimize it first to get the optimized solution");
+        biorbd::utils::Error::error(0, "Problem has not been ran through the optimization process yet, you should optimize it first to get the optimized solution");
     }
     else {
         res = static_cast<s2mStaticOptimizationIpopt*>(Ipopt::GetRawPtr(m_staticOptimProblem[index]))->finalSolution();

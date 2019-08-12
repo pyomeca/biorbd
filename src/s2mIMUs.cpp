@@ -22,8 +22,8 @@ s2mIMUs::~s2mIMUs()
 // Ajouter un nouveau marker au pool de markers
 void s2mIMUs::addIMU(
         const biorbd::utils::Attitude &pos,
-        const s2mString &name,
-        const s2mString &parentName,
+        const biorbd::utils::String &name,
+        const biorbd::utils::String &parentName,
         const bool &technical,
         const bool &anatomical,
         const int &id)
@@ -49,7 +49,7 @@ std::vector<s2mIMU> s2mIMUs::IMU(){
 
 std::vector<s2mIMU> s2mIMUs::IMU(s2mJoints &m, unsigned int idxBone){
     // Nom du segment a trouver
-    s2mString name(m.bone(idxBone).name());
+    biorbd::utils::String name(m.bone(idxBone).name());
 
     std::vector<s2mIMU> pos;
     for (unsigned int i=0; i<nIMUs(); ++i) // passer tous les markers et sélectionner les bons
@@ -151,7 +151,7 @@ std::vector<s2mIMU> s2mIMUs::segmentIMU(
         RigidBodyDynamics::UpdateKinematicsCustom(model, &Q,nullptr, nullptr);
 
     // Nom du segment a trouver
-    s2mString name(model.bone(idx).name());
+    biorbd::utils::String name(model.bone(idx).name());
 
     std::vector<s2mIMU> pos;
     for (unsigned int i=0; i<nIMUs(); ++i) // passer tous les markers et sélectionner les bons
@@ -162,7 +162,7 @@ std::vector<s2mIMU> s2mIMUs::segmentIMU(
 }
 
 // Se faire renvoyer la jacobienne des markers
-std::vector<s2mMatrix> s2mIMUs::IMUJacobian(
+std::vector<biorbd::utils::Matrix> s2mIMUs::IMUJacobian(
         s2mJoints& model,
         const biorbd::utils::GenCoord &Q,
         const bool &updateKin){
@@ -170,7 +170,7 @@ std::vector<s2mMatrix> s2mIMUs::IMUJacobian(
 }
 
 // Se faire renvoyer la jacobienne des marker techniques
-std::vector<s2mMatrix> s2mIMUs::TechnicalIMUJacobian(
+std::vector<biorbd::utils::Matrix> s2mIMUs::TechnicalIMUJacobian(
         s2mJoints& model,
         const biorbd::utils::GenCoord &Q,
         const bool &updateKin){
@@ -179,12 +179,12 @@ std::vector<s2mMatrix> s2mIMUs::TechnicalIMUJacobian(
 
 
 // Protected function
-std::vector<s2mMatrix> s2mIMUs::IMUJacobian(
+std::vector<biorbd::utils::Matrix> s2mIMUs::IMUJacobian(
         s2mJoints &model,
         const biorbd::utils::GenCoord &Q,
         const bool &updateKin,
         bool lookForTechnical){
-    std::vector<s2mMatrix> G;
+    std::vector<biorbd::utils::Matrix> G;
 
     bool first(true);
     for (unsigned int idx=0; idx<nIMUs(); ++idx){
@@ -194,7 +194,7 @@ std::vector<s2mMatrix> s2mIMUs::IMUJacobian(
             continue;
 
         unsigned int id = model.GetBodyId(node.parent().c_str());
-        s2mMatrix G_tp(s2mMatrix::Zero(9,model.dof_count));
+        biorbd::utils::Matrix G_tp(biorbd::utils::Matrix::Zero(9,model.dof_count));
 
         // Calcul de la jacobienne de ce Tag
         if (first)
@@ -229,18 +229,18 @@ unsigned int s2mIMUs::nAnatIMUs(){
     return nAnat;
 }
 
-std::vector<s2mString> s2mIMUs::IMUsNames(){
+std::vector<biorbd::utils::String> s2mIMUs::IMUsNames(){
     // Extrait le nom de tous les markers d'un modele
-    std::vector<s2mString> names;
+    std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nIMUs(); ++i)
         names.push_back(IMU(i).name());
 
     return names;
 }
 
-std::vector<s2mString> s2mIMUs::technicalIMUsNames(){
+std::vector<biorbd::utils::String> s2mIMUs::technicalIMUsNames(){
     // Extrait le nom de tous les markers d'un modele
-    std::vector<s2mString> names;
+    std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nIMUs(); ++i)
         if (IMU(i).isTechnical())
             names.push_back(IMU(i).name());
@@ -248,9 +248,9 @@ std::vector<s2mString> s2mIMUs::technicalIMUsNames(){
     return names;
 }
 
-std::vector<s2mString> s2mIMUs::anatomicalIMUsNames(){
+std::vector<biorbd::utils::String> s2mIMUs::anatomicalIMUsNames(){
     // Extrait le nom de tous les markers d'un modele
-    std::vector<s2mString> names;
+    std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nIMUs(); ++i)
         if (IMU(i).isAnatomical())
             names.push_back(IMU(i).name());

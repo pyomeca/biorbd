@@ -25,27 +25,27 @@ s2mKalmanRecons::~s2mKalmanRecons()
 void s2mKalmanRecons::iteration(
         Eigen::VectorXd measure,
         const Eigen::VectorXd &projectedMeasure,
-        const s2mMatrix &Hessian,
+        const biorbd::utils::Matrix &Hessian,
         const std::vector<unsigned int> &occlusion){
     // Prédiction
     Eigen::VectorXd xkm = m_A * m_xp;
-    s2mMatrix Pkm(m_A * m_Pp * m_A.transpose() + m_Q);
+    biorbd::utils::Matrix Pkm(m_A * m_Pp * m_A.transpose() + m_Q);
 
     // Correction
-    s2mMatrix InvTp((Hessian*Pkm*Hessian.transpose() + m_R).inverse());
+    biorbd::utils::Matrix InvTp((Hessian*Pkm*Hessian.transpose() + m_R).inverse());
     manageOcclusionDuringIteration(InvTp, measure, occlusion);
-    s2mMatrix K(Pkm*Hessian.transpose() * InvTp); // Gain
+    biorbd::utils::Matrix K(Pkm*Hessian.transpose() * InvTp); // Gain
 
     m_xp = xkm+K*(measure-projectedMeasure); // New estimated state
-    m_Pp =  (s2mMatrix::Identity(3*m_nDof, 3*m_nDof) - K*Hessian) *
+    m_Pp =  (biorbd::utils::Matrix::Identity(3*m_nDof, 3*m_nDof) - K*Hessian) *
              Pkm *
-            (s2mMatrix::Identity(3*m_nDof, 3*m_nDof) - K*Hessian).transpose() +
+            (biorbd::utils::Matrix::Identity(3*m_nDof, 3*m_nDof) - K*Hessian).transpose() +
             K*m_R*K.transpose();
 
 }
 
 void s2mKalmanRecons::manageOcclusionDuringIteration(
-        s2mMatrix &InvTp,
+        biorbd::utils::Matrix &InvTp,
         Eigen::VectorXd &measure,
         const std::vector<unsigned int> &occlusion){
     for (unsigned int i = 0; i < occlusion.size(); ++i)
@@ -70,7 +70,7 @@ void s2mKalmanRecons::getState(
 }
 
 
-s2mMatrix s2mKalmanRecons::evolutionMatrix(
+biorbd::utils::Matrix s2mKalmanRecons::evolutionMatrix(
         const unsigned int nQ,
         unsigned int n,
         const double Te){
@@ -79,7 +79,7 @@ s2mMatrix s2mKalmanRecons::evolutionMatrix(
     // Te : 1 / (frequence d'acquisition)
 
     n += 1;
-    s2mMatrix A(s2mMatrix::Identity(nQ*n,nQ*n));
+    biorbd::utils::Matrix A(biorbd::utils::Matrix::Identity(nQ*n,nQ*n));
     double c = 1;
     for (unsigned int i=2; i<n+1; ++i){
 
@@ -94,7 +94,7 @@ s2mMatrix s2mKalmanRecons::evolutionMatrix(
     return A;
 }
 
-s2mMatrix s2mKalmanRecons::processNoiseMatrix(
+biorbd::utils::Matrix s2mKalmanRecons::processNoiseMatrix(
         const unsigned int nQ,
         const double Te){
 
@@ -107,7 +107,7 @@ s2mMatrix s2mKalmanRecons::processNoiseMatrix(
     double c6 = Te;
 
     // Matrice de sortie
-    s2mMatrix Q(s2mMatrix::Zero(3*nQ,3*nQ));
+    biorbd::utils::Matrix Q(biorbd::utils::Matrix::Zero(3*nQ,3*nQ));
     for (unsigned int j=0; j<nQ; ++j){
         Q(     j,      j) = c1;
         Q(     j,   nQ+j) = c2;
@@ -143,10 +143,10 @@ void s2mKalmanRecons::initialize(){
 }
 
 
-s2mMatrix s2mKalmanRecons::measurementNoiseMatrix(
+biorbd::utils::Matrix s2mKalmanRecons::measurementNoiseMatrix(
         const unsigned int nMeasure,
         const double MN){
-    s2mMatrix R(s2mMatrix::Zero(nMeasure, nMeasure));
+    biorbd::utils::Matrix R(biorbd::utils::Matrix::Zero(nMeasure, nMeasure));
     for (unsigned int i=0; i<nMeasure; ++i)
         R(i,i) = MN;
     return R;
@@ -171,10 +171,10 @@ void s2mKalmanRecons::setInitState(
 }
 
 
-s2mMatrix s2mKalmanRecons::initCovariance(
+biorbd::utils::Matrix s2mKalmanRecons::initCovariance(
         const unsigned int nQ,
         const double csnt){
-    s2mMatrix Pp(s2mMatrix::Zero(3*nQ, 3*nQ));
+    biorbd::utils::Matrix Pp(biorbd::utils::Matrix::Zero(3*nQ, 3*nQ));
     for (unsigned int i=0; i<3*nQ; ++i)
         Pp(i,i) = csnt;
     return Pp;

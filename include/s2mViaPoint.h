@@ -7,9 +7,10 @@
 
 class BIORBD_API s2mViaPoint : public s2mMusclePathChanger{
 public:
-    s2mViaPoint(const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
-                const s2mString &name = "",  // Nom du noeud
-                const s2mString &parentName = "");
+    s2mViaPoint(
+            const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
+            const biorbd::utils::String &name = "",  // Nom du noeud
+            const biorbd::utils::String &parentName = "");
     virtual ~s2mViaPoint();
 
 };

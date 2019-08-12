@@ -15,8 +15,8 @@ class BIORBD_API s2mWrappingObject : public s2mMusclePathChanger
 public:
     s2mWrappingObject(
             const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
-            const s2mString &name = "",  // Nom du noeud
-            const s2mString &parentName = "");
+            const biorbd::utils::String &name = "",  // Nom du noeud
+            const biorbd::utils::String &parentName = "");
     virtual ~s2mWrappingObject() ;
 
     virtual biorbd::utils::Attitude RT(
@@ -43,10 +43,10 @@ public:
             double* = nullptr) = 0; // Assume un appel déja faits
 
     // Set and get
-    const s2mString& forme() const;
+    const biorbd::utils::String& forme() const;
 
 protected:
-    s2mString m_forme;
+    biorbd::utils::String m_forme;
 
 };
 

@@ -5,13 +5,13 @@
 
 s2mNodeBone::s2mNodeBone(
         const Eigen::Vector3d &v,
-        const s2mString &name,
-        const s2mString &parentName,
+        const biorbd::utils::String &name,
+        const biorbd::utils::String &parentName,
         bool tech,
         bool ana,
-        const s2mString& axesToRemove, // Axes à retirer
+        const biorbd::utils::String& axesToRemove, // Axes à retirer
         int id) :
-    s2mNode(v, name, parentName),
+    biorbd::utils::Node(v, name, parentName),
     m_nbAxesToRemove(0),
     m_technical(tech),
     m_anatomical(ana),
@@ -77,12 +77,12 @@ int s2mNodeBone::nAxesToRemove() const
 void s2mNodeBone::addAxesToRemove(unsigned int a)
 {
     if (a>2)
-        s2mError::s2mAssert(false, "Axis must be 0 (\"x\"), 1 (\"y\") or 2 (\"z\")");
+        biorbd::utils::Error::error(false, "Axis must be 0 (\"x\"), 1 (\"y\") or 2 (\"z\")");
     m_axesRemoved[a] = true;
     ++m_nbAxesToRemove;
 }
 
-void s2mNodeBone::addAxesToRemove(s2mString s)
+void s2mNodeBone::addAxesToRemove(const biorbd::utils::String& s)
 {
     for (unsigned int i=0; i<s.length(); ++i)
         if (!s(i).compare("x"))
@@ -92,24 +92,24 @@ void s2mNodeBone::addAxesToRemove(s2mString s)
         else if (!s(i).compare("z"))
             addAxesToRemove(2);
         else
-            s2mError::s2mAssert(false, "Axis must be 0 (\"x\"), 1 (\"y\") or 2 (\"z\")");
+            biorbd::utils::Error::error(false, "Axis must be 0 (\"x\"), 1 (\"y\") or 2 (\"z\")");
 }
 
-void s2mNodeBone::addAxesToRemove(std::vector<unsigned int> a)
+void s2mNodeBone::addAxesToRemove(const std::vector<unsigned int>& axis)
 {
-    for (std::vector<unsigned int>::iterator it=a.begin(); it!=a.end(); ++it)
-        addAxesToRemove(*it);
+    for (unsigned int i=0; i<axis.size(); ++i)
+        addAxesToRemove(axis[i]);
 }
 
-void s2mNodeBone::addAxesToRemove(std::vector<s2mString> a)
+void s2mNodeBone::addAxesToRemove(const std::vector<biorbd::utils::String>& axis)
 {
-    for (std::vector<s2mString>::iterator it=a.begin(); it!=a.end(); ++it)
-        addAxesToRemove(*it);
+    for (unsigned int i=0; i<axis.size(); ++i)
+        addAxesToRemove(axis[i]);
 }
 
-s2mString s2mNodeBone::axesToRemove()
+biorbd::utils::String s2mNodeBone::axesToRemove()
 {
-    s2mString axes;
+    biorbd::utils::String axes;
     if (isAxisRemoved(0))
         axes += "x";
     if (isAxisRemoved(1))

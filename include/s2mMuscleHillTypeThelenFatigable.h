@@ -21,20 +21,20 @@ class BIORBD_API s2mMuscleHillTypeThelenFatigable : public s2mMuscleHillTypeThel
 {
 public:
     s2mMuscleHillTypeThelenFatigable(
-            const s2mString& s= "",
-            const s2mString& dynamicFatigueType = "Simple");
+            const biorbd::utils::String& s= "",
+            const biorbd::utils::String& dynamicFatigueType = "Simple");
     s2mMuscleHillTypeThelenFatigable(const s2mMuscleGeometry& g,
             const s2mMuscleCaracteristics& c,
             const s2mMusclePathChangers & w= s2mMusclePathChangers(),
             const s2mMuscleStateDynamics & s= s2mMuscleStateDynamics(),
-            const s2mString& dynamicFatigueType = "Simple");
+            const biorbd::utils::String& dynamicFatigueType = "Simple");
     s2mMuscleHillTypeThelenFatigable(
-            const s2mString& n,
+            const biorbd::utils::String& n,
             const s2mMuscleGeometry& g,
             const s2mMuscleCaracteristics& c,
             const s2mMusclePathChangers & w= s2mMusclePathChangers(),
             const s2mMuscleStateDynamics & s= s2mMuscleStateDynamics(),
-            const s2mString& dynamicFatigueType = "Simple");
+            const biorbd::utils::String& dynamicFatigueType = "Simple");
     s2mMuscleHillTypeThelenFatigable(const s2mMuscle& m);
     s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m);
     virtual ~s2mMuscleHillTypeThelenFatigable(){}

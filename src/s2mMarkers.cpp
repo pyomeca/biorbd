@@ -25,11 +25,11 @@ s2mMarkers::~s2mMarkers()
 // Ajouter un nouveau marker au pool de markers
 void s2mMarkers::addMarker(
         const Eigen::Vector3d &pos,
-        const s2mString &name,
-        const s2mString &parentName,
+        const biorbd::utils::String &name,
+        const biorbd::utils::String &parentName,
         bool technical,
         bool anatomical,
-        const s2mString& axesToRemove,
+        const biorbd::utils::String& axesToRemove,
         int id)
 {
     s2mNodeBone tp(pos, name, parentName, technical, anatomical, axesToRemove, id);
@@ -46,7 +46,7 @@ std::vector<s2mNodeBone> s2mMarkers::marker(
         const unsigned int &idxBone) const
 {
     // Nom du segment a trouver
-    const s2mString& name(model.bone(idxBone).name());
+    const biorbd::utils::String& name(model.bone(idxBone).name());
 
     std::vector<s2mNodeBone> pos;
     for (unsigned int i=0; i<nTags(); ++i) // passer tous les markers et sélectionner les bons
@@ -232,7 +232,7 @@ std::vector<s2mNodeBone> s2mMarkers::segmentTags(
         RigidBodyDynamics::UpdateKinematicsCustom(model, &Q,nullptr, nullptr);
 
     // Nom du segment a trouver
-    s2mString name(model.bone(idx).name());
+    biorbd::utils::String name(model.bone(idx).name());
 
     std::vector<s2mNodeBone> pos;
     for (unsigned int i=0; i<nTags(); ++i) // passer tous les markers et sélectionner les bons
@@ -249,7 +249,7 @@ unsigned int s2mMarkers::nTags() const {
 
 unsigned int s2mMarkers::nTags(s2mJoints& model, unsigned int idxSegment) const {
     // Nom du segment a trouver
-    s2mString name(model.bone(idxSegment).name());
+    biorbd::utils::String name(model.bone(idxSegment).name());
 
     unsigned int n = 0;
     for (unsigned int i=0; i<nTags(); ++i) // passer tous les markers et sélectionner les bons
@@ -260,7 +260,7 @@ unsigned int s2mMarkers::nTags(s2mJoints& model, unsigned int idxSegment) const 
 }
 
 // Se faire renvoyer la jacobienne des markers
-std::vector<s2mMatrix> s2mMarkers::TagsJacobian(
+std::vector<biorbd::utils::Matrix> s2mMarkers::TagsJacobian(
         s2mJoints& model,
         const biorbd::utils::GenCoord &Q,
         bool removeAxis,
@@ -268,7 +268,7 @@ std::vector<s2mMatrix> s2mMarkers::TagsJacobian(
     return TagsJacobian(model, Q, removeAxis, updateKin, false);
 }
 
-std::vector<s2mMatrix> s2mMarkers::TechnicalTagsJacobian(
+std::vector<biorbd::utils::Matrix> s2mMarkers::TechnicalTagsJacobian(
         s2mJoints& model,
         const biorbd::utils::GenCoord &Q,
         bool removeAxis,
@@ -277,13 +277,13 @@ std::vector<s2mMatrix> s2mMarkers::TechnicalTagsJacobian(
 }
 
 // Se faire renvoyer la jacobienne des marker techniques
-s2mMatrix s2mMarkers::TagsJacobian(
+biorbd::utils::Matrix s2mMarkers::TagsJacobian(
         s2mJoints& model,
         const biorbd::utils::GenCoord &Q,
-        const s2mString& parentName,
+        const biorbd::utils::String& parentName,
         const Eigen::Vector3d& p,
         bool updateKin){
-    s2mMatrix G(s2mMatrix::Zero(3,model.nbQ()));;
+    biorbd::utils::Matrix G(biorbd::utils::Matrix::Zero(3,model.nbQ()));;
 
     // Calcul de la jacobienne de ce Tag
     unsigned int id = model.GetBodyId(parentName.c_str());
@@ -293,13 +293,13 @@ s2mMatrix s2mMarkers::TagsJacobian(
 }
 
 // Se faire renvoyer la jacobienne des marker techniques
-std::vector<s2mMatrix> s2mMarkers::TagsJacobian(
+std::vector<biorbd::utils::Matrix> s2mMarkers::TagsJacobian(
         s2mJoints& model,
         const biorbd::utils::GenCoord &Q,
         bool removeAxis,
         bool updateKin,
         bool lookForTechnical){
-    std::vector<s2mMatrix> G;
+    std::vector<biorbd::utils::Matrix> G;
 
     unsigned int idx2(0);
     for (unsigned int idx=0; idx<nTags(); ++idx){
@@ -310,7 +310,7 @@ std::vector<s2mMatrix> s2mMarkers::TagsJacobian(
 
         unsigned int id = model.GetBodyId(node.parent().c_str());
         Eigen::Vector3d pos = Tags(idx, removeAxis);
-        s2mMatrix G_tp(s2mMatrix::Zero(3,model.nbQ()));
+        biorbd::utils::Matrix G_tp(biorbd::utils::Matrix::Zero(3,model.nbQ()));
 
         // Calcul de la jacobienne de ce Tag
         if (idx2==0)
@@ -339,7 +339,7 @@ unsigned int s2mMarkers::nTechTags(s2mJoints& model, unsigned int idxSegment){
     unsigned int nTechTags = 0;
 
     // Nom du segment a trouver
-    s2mString name(model.bone(idxSegment).name());
+    biorbd::utils::String name(model.bone(idxSegment).name());
 
     if (nTechTags == 0) // Si la fonction n'a jamais été appelée encore
         for (std::vector <s2mNodeBone>::iterator it = m_marks.begin(); it!=m_marks.end(); ++it)
@@ -360,18 +360,18 @@ unsigned int s2mMarkers::nAnatTags(){
     return nAnatTags;
 }
 
-std::vector<s2mString> s2mMarkers::markerNames() const{
+std::vector<biorbd::utils::String> s2mMarkers::markerNames() const{
     // Extrait le nom de tous les markers d'un modele
-    std::vector<s2mString> names;
+    std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nTags(); ++i)
         names.push_back(marker(i).name());
 
     return names;
 }
 
-std::vector<s2mString> s2mMarkers::technicalMarkerNames() const{
+std::vector<biorbd::utils::String> s2mMarkers::technicalMarkerNames() const{
     // Extrait le nom de tous les markers d'un modele
-    std::vector<s2mString> names;
+    std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nTags(); ++i)
         if (marker(i).isTechnical())
             names.push_back(marker(i).name());
@@ -379,9 +379,9 @@ std::vector<s2mString> s2mMarkers::technicalMarkerNames() const{
     return names;
 }
 
-std::vector<s2mString> s2mMarkers::anatomicalMarkerNames() const{
+std::vector<biorbd::utils::String> s2mMarkers::anatomicalMarkerNames() const{
     // Extrait le nom de tous les markers d'un modele
-    std::vector<s2mString> names;
+    std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nTags(); ++i)
         if (marker(i).isAnatomical())
             names.push_back(marker(i).name());

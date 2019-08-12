@@ -23,7 +23,7 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 %include <std_vector.i>
 %include <std_string.i>
 
-/*** s2mJoints ***/
+// --- s2mJoints --- //
 %typemap(typecheck) s2mJoints &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mJoints,  0  | 0)) && argp1) {
@@ -44,8 +44,8 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
     }
 }
 
-/*** s2mMatrix ***/
-%extend s2mMatrix{
+// --- Matrix --- //
+%extend biorbd::utils::Matrix{
     PyObject* get_array(){
         int nRows($self->rows());
         int nCols($self->cols());
@@ -68,8 +68,8 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
     };
 }
 
-/*** s2mVector ***/
-%extend s2mVector{
+// --- Vector --- //
+%extend biorbd::utils::Vector{
     PyObject* get_array(){
         int nElements($self->size());
         int nArraySize(1);
@@ -85,10 +85,10 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         return output;
     };
 }
-%typemap(typecheck) s2mVector &{
+%typemap(typecheck) biorbd::utils::Vector &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mVector,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIGTYPE_p_s2mVector already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Vector,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__Vector already exists
         $1 = true;
     } else if( PyArray_Check($input) ) {
         // test if it is a numpy array
@@ -97,19 +97,19 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         $1 = false;
     }
 }
-%typemap(in) s2mVector &{
+%typemap(in) biorbd::utils::Vector &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mVector,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Vector,  0  | 0)) && argp1) {
         // Recast the pointer
-        $1 = reinterpret_cast< s2mVector * >(argp1);
+        $1 = reinterpret_cast< biorbd::utils::Vector * >(argp1);
     } else if( PyArray_Check($input) ) {
-        // Get dimensions of the data
+        // Get dimensions of the data::::
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
         npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
 
         // Dimension controls
         if (ndim != 1 ){
-            PyErr_SetString(PyExc_ValueError, "s2mVector must be a numpy vector");
+            PyErr_SetString(PyExc_ValueError, "Vector must be a numpy vector");
             SWIG_fail;
         }
 
@@ -117,17 +117,17 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
         // Copy the actual data
         unsigned int n(dims[0]);
-        $1 = new s2mVector(n);
+        $1 = new biorbd::utils::Vector(n);
         for (unsigned int i=0; i<n; ++i)
             (*$1)[i] = *(double*)PyArray_GETPTR1(data, i);
 
     } else {
-        PyErr_SetString(PyExc_ValueError, "s2mVector must be a s2mVector or numpy vector");
+        PyErr_SetString(PyExc_ValueError, "Vector must be a Vector or numpy vector");
         SWIG_fail;
     }
 };
 
-/*** GenCoord ***/
+// --- GenCoord --- //
 %typemap(typecheck) biorbd::utils::GenCoord &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__GenCoord,  0  | 0)) && argp1) {
@@ -170,11 +170,11 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
     }
 };
 
-/*** s2mTau ***/
-%typemap(typecheck) s2mTau &{
+// --- Tau --- //
+%typemap(typecheck) biorbd::utils::Tau &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mTau,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIGTYPE_p_s2mTau already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Tau,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__Tau already exists
         $1 = true;
     } else if( PyArray_Check($input) ) {
         // test if it is a numpy array
@@ -183,11 +183,11 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         $1 = false;
     }
 }
-%typemap(in) s2mTau &{
+%typemap(in) biorbd::utils::Tau &{
     void * argp1 = 0;
-        if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mTau,  0  | 0)) && argp1) {
+        if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Tau,  0  | 0)) && argp1) {
         // If it is the right type, recast-it the pointer
-        $1 = reinterpret_cast< s2mTau * >(argp1);
+        $1 = reinterpret_cast< biorbd::utils::Tau * >(argp1);
     } else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
@@ -195,7 +195,7 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 
         // Dimension controls (has to be a vector)
         if (ndim != 1 ){
-            PyErr_SetString(PyExc_ValueError, "s2mTau must be a numpy vector");
+            PyErr_SetString(PyExc_ValueError, "Tau must be a numpy vector");
             SWIG_fail;
         }
 
@@ -204,18 +204,18 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 
         // Copy the actual data
         unsigned int nTau(dims[0]);
-        $1 = new s2mTau(nTau);
+        $1 = new biorbd::utils::Tau(nTau);
         for (unsigned int tau=0; tau<nTau; ++tau)
             (*$1)[tau] = *(double*)PyArray_GETPTR1(data, tau);
 
     } else {
-        PyErr_SetString(PyExc_ValueError, "s2mTau must be a s2mTau or numpy vector");
+        PyErr_SetString(PyExc_ValueError, "Tau must be a Tau or numpy vector");
         SWIG_fail;
     }
 };
 
 
-/*** s2mMarkers ***/
+// --- s2mMarkers --- //
 %typemap(typecheck) s2mMarkers &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mMarkers,  0  | 0)) && argp1) {
@@ -237,11 +237,11 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 }
 
 
-/*** s2mNode ***/
-%typemap(typecheck) s2mNode &{
+// --- Node --- //
+%typemap(typecheck) biorbd::utils::Node &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mNode,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIGTYPE_p_s2mNode already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Node,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__Node already exists
         $1 = true;
     } else if( PyArray_Check($input) ) {
         // test if it is a numpy array
@@ -250,11 +250,11 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         $1 = false;
     }
 }
-%typemap(in) s2mNode &{
+%typemap(in) biorbd::utils::Node &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mNode,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Node,  0  | 0)) && argp1) {
         // Recast the pointer
-        $1 = reinterpret_cast< s2mNode * >(argp1);
+        $1 = reinterpret_cast< biorbd::utils::Node * >(argp1);
     } else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
@@ -262,23 +262,23 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 
         // Dimension controls
         if (ndim != 1 && (dims[0] < 3 || dims[0] > 4)){
-            PyErr_SetString(PyExc_ValueError, "s2mNode must be a numpy 3d vector");
+            PyErr_SetString(PyExc_ValueError, "Node must be a numpy 3d vector");
             SWIG_fail;
         }
         // Cast the vector
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
 
         // Copy the actual data
-        $1 = new s2mNode();
+        $1 = new biorbd::utils::Node();
         for (unsigned int i=0; i<3; ++i)
             (*$1)[i] = *(double*)PyArray_GETPTR1(data, i);
 
     } else {
-        PyErr_SetString(PyExc_ValueError, "s2mNode must be a s2mNode or numpy vector");
+        PyErr_SetString(PyExc_ValueError, "Node must be a Node or numpy vector");
         SWIG_fail;
     }
 };
-%extend s2mNode{
+%extend biorbd::utils::Node{
     PyObject* get_array(){
         int nArraySize(1);
         npy_intp * arraySizes = new npy_intp[nArraySize];
@@ -295,11 +295,11 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 };
 
 
-/*** s2mPath ***/
-%typemap(typecheck) s2mPath &{
+// --- Path --- //
+%typemap(typecheck) biorbd::utils::Path &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mPath,  0  | 0)) && argp1) {
-        // Test if it is a pointer to s2mPath already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Path,  0  | 0)) && argp1) {
+        // Test if it is a pointer to Path already exists
         $1 = true;
     } else if( PyUnicode_Check($input) ) {
         // test if it is a string (python3 has unicode)
@@ -308,16 +308,16 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         $1 = false;
     }
 };
-%typemap(in) s2mPath &{
+%typemap(in) biorbd::utils::Path &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mPath,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Path,  0  | 0)) && argp1) {
         // Recast the pointer
-        $1 = reinterpret_cast< s2mPath * >(argp1);
+        $1 = reinterpret_cast< biorbd::utils::Path * >(argp1);
     } else if( PyUnicode_Check($input) ) {
         // Interpret the string
-        $1 = new s2mPath(PyUnicode_AsUTF8($input));
+        $1 = new biorbd::utils::Path(PyUnicode_AsUTF8($input));
     } else {
-        PyErr_SetString(PyExc_ValueError, "s2mPath must be a s2mPath or string");
+        PyErr_SetString(PyExc_ValueError, "Path must be a Path or string");
         SWIG_fail;
     }
 };

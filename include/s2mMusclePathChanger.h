@@ -8,14 +8,15 @@
 class BIORBD_API s2mMusclePathChanger : public s2mNodeMuscle
 {
 public:
-    s2mMusclePathChanger(const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
-                         const s2mString &name = "",  // Nom du noeud
-                         const s2mString &parentName = "");
+    s2mMusclePathChanger(
+            const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
+            const biorbd::utils::String &name = "",  // Nom du noeud
+            const biorbd::utils::String &parentName = "");
     virtual ~s2mMusclePathChanger() = 0;
-    const s2mString& type() const;
+    const biorbd::utils::String& type() const;
 
 protected:
-    s2mString m_type;
+    biorbd::utils::String m_type;
 };
 
 #endif // S2M_MUSCLE_PATH_CHANGER_H

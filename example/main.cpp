@@ -16,7 +16,7 @@
 int main()
 {
 
-    s2mString path("conv-arm26.bioMod"); // Model path
+    biorbd::utils::String path("conv-arm26.bioMod"); // Model path
     s2mMusculoSkeletalModel model(path);
     biorbd::utils::GenCoord Q(model);
     biorbd::utils::GenCoord QDot(model);

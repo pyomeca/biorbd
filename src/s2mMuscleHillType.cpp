@@ -6,7 +6,7 @@
 #include "s2mMuscleForceFromInsertion.h"
 #include "Utils/GenCoord.h"
 
-s2mMuscleHillType::s2mMuscleHillType(const s2mString& name) :
+s2mMuscleHillType::s2mMuscleHillType(const biorbd::utils::String& name) :
     s2mMuscle(name),
     m_cste_FlCE_1(0.15),
     m_cste_FlCE_2(0.45),
@@ -44,7 +44,7 @@ s2mMuscleHillType::s2mMuscleHillType(
     //ctor
 }
 s2mMuscleHillType::s2mMuscleHillType(
-        const s2mString& name,
+        const biorbd::utils::String& name,
         const s2mMuscleGeometry& g,
         const s2mMuscleCaracteristics& c,
         const s2mMusclePathChangers & w,
@@ -143,7 +143,7 @@ const std::vector<std::shared_ptr<s2mMuscleForce>>& s2mMuscleHillType::force(
     else if (updateKinLevel == 2)
         updateOrientations(m,Q,Qdot,true);
     else
-        s2mError::s2mAssert(updateKinLevel == 0, "Wrong level of update in force function");
+        biorbd::utils::Error::error(updateKinLevel == 0, "Wrong level of update in force function");
 
     // Calculs
     return force(EMG);
@@ -155,7 +155,7 @@ const std::vector<std::shared_ptr<s2mMuscleForce>> &s2mMuscleHillType::force(
         const s2mMuscleStateDynamics &,
         const int)
 {
-    s2mError::s2mAssert(0, "Hill type needs velocity");
+    biorbd::utils::Error::error(0, "Hill type needs velocity");
     return m_force; // Will never reach here
 }
 

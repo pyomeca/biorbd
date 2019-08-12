@@ -59,7 +59,7 @@ void S2M_muscleUpdate( int, mxArray *[],
     std::vector<std::vector<s2mNodeMuscle>> musclePosition(getMusclePosition(prhs, 4, nPoints));
 
     // Recueillir la matrice jacobienne
-    std::vector<s2mMatrix> musclePointsJaco(getMusclePointsJaco(prhs, 5, nPoints, nQ));
+    std::vector<biorbd::utils::Matrix> musclePointsJaco(getMusclePointsJaco(prhs, 5, nPoints, nQ));
 
     // Appeler la fonction d'update
     model->updateMuscles(musclePosition, musclePointsJaco, *(QDot.begin()) ); // Update les positions/jacobiennes/vitesse, etc

@@ -69,7 +69,7 @@ void S2M_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
 
     // Remplir le output
     for (unsigned int i=0; i<nFrame; ++i){
-        s2mTau muscleTorque;
+        biorbd::utils::Tau muscleTorque;
         Eigen::VectorXd force;
         if (nlhs >= 2) // Si on doit récupérer les forces
             if (updateKin)

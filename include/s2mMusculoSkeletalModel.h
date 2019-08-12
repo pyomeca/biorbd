@@ -25,7 +25,7 @@ class BIORBD_API s2mMusculoSkeletalModel :
 public:
     s2mMusculoSkeletalModel();
     virtual ~s2mMusculoSkeletalModel();
-    s2mMusculoSkeletalModel(const s2mPath&);
+    s2mMusculoSkeletalModel(const biorbd::utils::Path&);
 
     bool InverseKinematics(
             const std::vector<s2mNodeBone>& Mark,

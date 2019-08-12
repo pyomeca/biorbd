@@ -45,10 +45,10 @@ public:
 protected:
     virtual void initialize();
     virtual void manageOcclusionDuringIteration(
-            s2mMatrix&,
+            biorbd::utils::Matrix&,
             Eigen::VectorXd &measure,
             const std::vector<unsigned int> &occlusion);
-    s2mMatrix m_PpInitial; // Se souvenir de Pp inital
+    biorbd::utils::Matrix m_PpInitial; // Se souvenir de Pp inital
     bool m_firstIteration;
 };
 

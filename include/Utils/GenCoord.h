@@ -1,26 +1,28 @@
-#ifndef S2M_GEN_COORD_H
-#define S2M_GEN_COORD_H
+#ifndef BIORBD_UTILS_GEN_COORD_H
+#define BIORBD_UTILS_GEN_COORD_H
 
 #include "biorbdConfig.h"
 #include "Utils/Vector.h"
 
 class s2mJoints;
+
 namespace biorbd { namespace utils {
-class BIORBD_API GenCoord : public s2mVector
+
+class BIORBD_API GenCoord : public Vector
 {
 public:
     GenCoord();
-    GenCoord(const GenCoord &Q);
-    GenCoord(const s2mVector& v);
+    GenCoord(const biorbd::utils::GenCoord &Q);
+    GenCoord(const biorbd::utils::Vector& v);
     GenCoord(const Eigen::VectorXd& v);
     GenCoord(unsigned int i);
     GenCoord(const s2mJoints& j);
     virtual ~GenCoord();
 
-    GenCoord& operator=(const Eigen::VectorXd& vecX);
+    biorbd::utils::GenCoord& operator=(const Eigen::VectorXd& vecX);
 
 };
 
 }}
 
-#endif // S2M_GEN_COORD_H
+#endif // BIORBD_UTILS_GEN_COORD_H

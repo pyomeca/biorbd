@@ -1,32 +1,36 @@
-#ifndef S2M_TIMER_H
-#define S2M_TIMER_H
+#ifndef BIORBD_UTILS_TIMER_H
+#define BIORBD_UTILS_TIMER_H
 
 #include <ctime>
 #include "biorbdConfig.h"
-    
-class BIORBD_API s2mTimer
+
+namespace biorbd { namespace utils {
+
+class BIORBD_API Timer
 {
-    public:
-        s2mTimer(bool startNow = false);
-        virtual ~s2mTimer();
+public:
+    Timer(bool startNow = false);
+    virtual ~Timer();
 
-        void start(); // Start a timer
-        bool isStarted();
-        void pause(); // Pause timer, use resume to restart
-        void resume(); // Restart a timer
-        double getLap();
-        double stop();
+    void start(); // Start a timer
+    bool isStarted();
+    void pause(); // Pause timer, use resume to restart
+    void resume(); // Restart a timer
+    double getLap();
+    double stop();
 
-    protected:
-        void addPauseTime();
-        double getTime(const std::clock_t&);
+protected:
+    void addPauseTime();
+    double getTime(const std::clock_t&);
 
-        bool m_isStarted;
-        bool m_isPaused;
-        std::clock_t m_start;
-        std::clock_t m_pauseTime;
-        double m_totalPauseTime;
+    bool m_isStarted;
+    bool m_isPaused;
+    std::clock_t m_start;
+    std::clock_t m_pauseTime;
+    double m_totalPauseTime;
 
 };
 
-#endif // S2M_TIMER_H
+}}
+
+#endif // BIORBD_UTILS_TIMER_H

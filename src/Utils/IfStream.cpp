@@ -7,59 +7,73 @@
 #include "Utils/Equation.h"
 
 // Constructeur
-s2mIfStream::s2mIfStream(const s2mPath& path, std::ios_base::openmode mode = std::ios_base::in ) :
+biorbd::utils::IfStream::IfStream(
+        const biorbd::utils::Path& path,
+        std::ios_base::openmode mode = std::ios_base::in ) :
     m_path(path)
 {
     open(path.c_str(), mode);
 }
-s2mIfStream::s2mIfStream(const char* path, std::ios_base::openmode mode = std::ios_base::in ) :
+biorbd::utils::IfStream::IfStream(
+        const char* path,
+        std::ios_base::openmode mode = std::ios_base::in ) :
     m_path(path)
 {
     open(path, mode);
 }
-s2mIfStream::s2mIfStream( ){
+biorbd::utils::IfStream::IfStream( )
+{
     m_isOpen = false;
 }
 
-s2mIfStream::~s2mIfStream(){
+biorbd::utils::IfStream::~IfStream()
+{
     delete m_ifs;
 }
 
 
 // Ouvrir le fichier
-bool s2mIfStream::open(const s2mPath& path, std::ios_base::openmode mode = std::ios_base::in ) {
+bool biorbd::utils::IfStream::open(
+        const biorbd::utils::Path& path,
+        std::ios_base::openmode mode = std::ios_base::in )
+{
     return open(path.c_str(), mode);
 }
-bool s2mIfStream::open(const char* path, std::ios_base::openmode mode = std::ios_base::in ) {
+bool biorbd::utils::IfStream::open(
+        const char* path,
+        std::ios_base::openmode mode = std::ios_base::in )
+{
     m_ifs = new std::ifstream(path, mode);
-    s2mError::s2mAssert(m_ifs!=nullptr, path + s2mString(" file could not be opened"));
+    biorbd::utils::Error::error(m_ifs!=nullptr, path + biorbd::utils::String(" file could not be opened"));
     m_isOpen = true;
     return m_isOpen;
 }
 
 
 // Lire le fichier
-bool s2mIfStream::readSpecificTag(const s2mString& tag, s2mString& text){
+bool biorbd::utils::IfStream::readSpecificTag(
+        const biorbd::utils::String& tag,
+        biorbd::utils::String& text){
     reachSpecificTag(tag);
     read(text);
     return true;
 }
-bool s2mIfStream::reachSpecificTag(const s2mString& tag){
-    s2mString text;
+bool biorbd::utils::IfStream::reachSpecificTag(const biorbd::utils::String& tag){
+    biorbd::utils::String text;
     while (read(text))
         if (!text.tolower().compare(tag))
             return true;
 
-    s2mString outMessage = tag + " parameter could not be found in Data file..";
-    s2mError::s2mAssert(0, outMessage);
+    biorbd::utils::String outMessage = tag + " parameter could not be found in Data file..";
+    biorbd::utils::Error::error(0, outMessage);
     return false; // Il est impossible qu'on se rende ici, mais c'est mieux d'avoir un return pour le compilateur
 }
 
-int s2mIfStream::countTagsInAConsecutiveLines(const s2mString &tag)
+int biorbd::utils::IfStream::countTagsInAConsecutiveLines(const biorbd::utils::String &tag)
 {
     // Se souvenir où on était dans le fichier
     long positionInFile(m_ifs->tellg());
-    s2mString text;
+    biorbd::utils::String text;
     int nTags(0);
 
     // Lire le premier mot de la ligne
@@ -77,7 +91,7 @@ int s2mIfStream::countTagsInAConsecutiveLines(const s2mString &tag)
     return nTags;
 }
 
-bool s2mIfStream::read(s2mString& text){
+bool biorbd::utils::IfStream::read(biorbd::utils::String& text){
     bool out(*m_ifs >> text);
 
     if (out == 0)
@@ -96,61 +110,52 @@ bool s2mIfStream::read(s2mString& text){
     }
     return out;
 }
-bool s2mIfStream::readIgnoreCommentedLine(s2mString& text){
+bool biorbd::utils::IfStream::readIgnoreCommentedLine(biorbd::utils::String& text){
     bool out(*m_ifs >> text);
     return out;
 }
-bool s2mIfStream::read(double& d){
-    std::map<s2mEquation, double> dumb;
+bool biorbd::utils::IfStream::read(double& d){
+    std::map<biorbd::utils::Equation, double> dumb;
     return read(d, dumb);
 }
-bool s2mIfStream::read(double& d, const std::map<s2mEquation, double> &variables){
-    s2mEquation tp;
+bool biorbd::utils::IfStream::read(double& d, const std::map<biorbd::utils::Equation, double> &variables){
+    biorbd::utils::Equation tp;
     bool out(read(tp));
     // gérer le cas d'une équation
-    d = s2mEquation::resolveEquation(tp, variables);
+    d = biorbd::utils::Equation::resolveEquation(tp, variables);
     return out;
 }
-bool s2mIfStream::read(int& i){
-    s2mString tp;
+bool biorbd::utils::IfStream::read(int& i){
+    biorbd::utils::String tp;
     bool out(read(tp));
     i = boost::lexical_cast<int>(tp);
     return out;
 }
-bool s2mIfStream::read(unsigned int& i){
-    s2mString tp;
+bool biorbd::utils::IfStream::read(unsigned int& i){
+    biorbd::utils::String tp;
     bool out(read(tp));
     i = boost::lexical_cast<unsigned int>(tp);
     return out;
 }
-bool s2mIfStream::read(bool& i){
-    s2mString tp;
+bool biorbd::utils::IfStream::read(bool& i){
+    biorbd::utils::String tp;
     bool out(read(tp));
     i = boost::lexical_cast<bool>(tp);
     return out;
 }
 // Lire toute une ligne
-void s2mIfStream::getline(s2mString& text){
+void biorbd::utils::IfStream::getline(biorbd::utils::String& text){
     std::getline(*m_ifs, text);
 }
 
 
 // Fermer le fichier
-bool s2mIfStream::close(){
+bool biorbd::utils::IfStream::close(){
     m_ifs->close();
     return 1;
 }
 
-bool s2mIfStream::eof()
+bool biorbd::utils::IfStream::eof()
 {
     return m_ifs->eof();
 }
-
-
-
-
-
-
-
-
-

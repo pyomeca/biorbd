@@ -3,9 +3,9 @@
 
 s2mNodeMuscle::s2mNodeMuscle(
         const Eigen::Vector3d &v,
-        const s2mString &name,
-        const s2mString &parentName) :
-    s2mNode(v, name,parentName)
+        const biorbd::utils::String &name,
+        const biorbd::utils::String &parentName) :
+    biorbd::utils::Node(v, name,parentName)
 {
 }
 

@@ -4,9 +4,9 @@
 #include <boost/lexical_cast.hpp>
 #include "Utils/Error.h"
 
-std::vector<s2mEquation> s2mEquation::prepareMathSymbols(){
+std::vector<biorbd::utils::Equation> biorbd::utils::Equation::prepareMathSymbols(){
     // Classés en ordre de priorité des opérations
-    std::vector<s2mEquation> symbols;
+    std::vector<biorbd::utils::Equation> symbols;
     symbols.push_back("(");
     symbols.push_back(")");
     symbols.push_back("e");
@@ -18,36 +18,36 @@ std::vector<s2mEquation> s2mEquation::prepareMathSymbols(){
     return symbols;
 }
 
-s2mEquation::s2mEquation()
-    : s2mString("")
+biorbd::utils::Equation::Equation() :
+    biorbd::utils::String("")
 {
 
 }
 
-s2mEquation::s2mEquation(const char *c)
-    : s2mString(c)
+biorbd::utils::Equation::Equation(const char *c) :
+    biorbd::utils::String(c)
 {
 
 }
 
-s2mEquation::s2mEquation(const s2mString &s)
-    : s2mString(s)
+biorbd::utils::Equation::Equation(const biorbd::utils::String &s) :
+    biorbd::utils::String(s)
 {
 
 }
 
-s2mEquation::s2mEquation(const std::basic_string<char> &c)
-    : s2mString(c)
+biorbd::utils::Equation::Equation(const std::basic_string<char> &c) :
+    biorbd::utils::String(c)
 {
 
 }
 
-std::vector<s2mEquation> s2mEquation::splitIntoEquation(s2mEquation wholeEq, const std::map<s2mEquation, double>& variables){
+std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(biorbd::utils::Equation wholeEq, const std::map<biorbd::utils::Equation, double>& variables){
     // variable de sortie
-    std::vector<s2mEquation> eq;
+    std::vector<biorbd::utils::Equation> eq;
 
     // Déclaration des marqueurs arithmétiques
-    std::vector<s2mEquation> symbols(prepareMathSymbols());
+    std::vector<biorbd::utils::Equation> symbols(prepareMathSymbols());
 
     // Sur tout le long du string
     while (1){
@@ -79,7 +79,7 @@ std::vector<s2mEquation> s2mEquation::splitIntoEquation(s2mEquation wholeEq, con
         else if (firstIdx == 0){
             if (!wholeEq(0).compare("-")){
                 // Si l'équation commencer par un -
-                std::vector<s2mEquation> tp = splitIntoEquation(wholeEq.substr(1), variables);
+                std::vector<biorbd::utils::Equation> tp = splitIntoEquation(wholeEq.substr(1), variables);
                 tp[0] = "-" + tp[0];
                 if (eq.size()==0) // S'il n'y a rien avant, est faux dans les cas 1e-x
                     return tp;
@@ -90,7 +90,7 @@ std::vector<s2mEquation> s2mEquation::splitIntoEquation(s2mEquation wholeEq, con
             }
             else if (!wholeEq(0).compare("+")){
                 // Si l'équation commencer par un +
-                std::vector<s2mEquation> tp = splitIntoEquation(wholeEq.substr(1), variables);
+                std::vector<biorbd::utils::Equation> tp = splitIntoEquation(wholeEq.substr(1), variables);
                 tp[0] = "+" + tp[0];
                 if (eq.size()==0) // S'il n'y a rien avant, est faux dans les cas 1e-x
                     return tp;
@@ -122,13 +122,15 @@ std::vector<s2mEquation> s2mEquation::splitIntoEquation(s2mEquation wholeEq, con
     return eq;
 }
 
-void s2mEquation::replaceCste(std::vector<s2mEquation> &eq){
+void biorbd::utils::Equation::replaceCste(std::vector<biorbd::utils::Equation> &eq){
     for (unsigned int i=0; i<eq.size(); ++i)
         if (!eq[i].tolower().compare("pi"))
             eq[i] = boost::lexical_cast< std::string>(PI);
 }
 
-void s2mEquation::replaceVar(std::vector<s2mEquation> &eq, const std::map<s2mEquation, double>&var){
+void biorbd::utils::Equation::replaceVar(
+        std::vector<biorbd::utils::Equation> &eq,
+        const std::map<biorbd::utils::Equation, double>&var){
     for (unsigned int i=0; i<eq.size(); ++i)
         if (var.find(eq[i]) == var.end())
             continue;
@@ -137,18 +139,20 @@ void s2mEquation::replaceVar(std::vector<s2mEquation> &eq, const std::map<s2mEqu
 }
 
 
-double s2mEquation::resolveEquation(std::vector<s2mEquation> eq){
+double biorbd::utils::Equation::resolveEquation(std::vector<biorbd::utils::Equation> eq){
     return resolveEquation(eq,0);
 }
 
-double s2mEquation::resolveEquation(std::vector<s2mEquation> eq, unsigned int math){
+double biorbd::utils::Equation::resolveEquation(
+        std::vector<biorbd::utils::Equation> eq,
+        unsigned int math){
     // Si on a traité tout
     if (eq.size() == 1)
         return boost::lexical_cast<double>(eq[0]);
 
     // Déclaration des marqueurs arithmétiques
-    std::vector<s2mEquation> symbols(prepareMathSymbols());
-    std::vector<s2mEquation> eq2;
+    std::vector<biorbd::utils::Equation> symbols(prepareMathSymbols());
+    std::vector<biorbd::utils::Equation> eq2;
     bool continuer(true);
 
     for (unsigned int j=0; j<eq.size(); ++j){
@@ -163,7 +167,7 @@ double s2mEquation::resolveEquation(std::vector<s2mEquation> eq, unsigned int ma
             else{
                 // Écraser la valeur précédente
                 if (!symbols[math].compare("(")){
-                    std::vector<s2mEquation> eq_tp;
+                    std::vector<biorbd::utils::Equation> eq_tp;
                     bool foundIdx(false);
                     int cmpValues(0);
                     unsigned int cmpOpen(0);
@@ -182,7 +186,7 @@ double s2mEquation::resolveEquation(std::vector<s2mEquation> eq, unsigned int ma
                         eq_tp.push_back(eq[k]);
                         ++cmpValues;
                     }
-                    s2mError::s2mAssert(foundIdx, "You must close brackets!");
+                    biorbd::utils::Error::error(foundIdx, "You must close brackets!");
 
                     eq2.push_back(boost::lexical_cast<std::string>(boost::lexical_cast<std::string>(resolveEquation(eq_tp))));
                     j+=static_cast<unsigned int>(cmpValues);
@@ -223,10 +227,10 @@ double s2mEquation::resolveEquation(std::vector<s2mEquation> eq, unsigned int ma
         return resolveEquation(eq2, math);
 }
 
-double s2mEquation::resolveEquation(s2mEquation wholeEq, const std::map<s2mEquation, double>& variables){
+double biorbd::utils::Equation::resolveEquation(biorbd::utils::Equation wholeEq, const std::map<biorbd::utils::Equation, double>& variables){
     return resolveEquation(splitIntoEquation(wholeEq, variables));
 }
-double s2mEquation::resolveEquation(s2mEquation wholeEq){
-    std::map<s2mEquation, double> dumb;
+double biorbd::utils::Equation::resolveEquation(biorbd::utils::Equation wholeEq){
+    std::map<biorbd::utils::Equation, double> dumb;
     return resolveEquation(splitIntoEquation(wholeEq, dumb));
 }

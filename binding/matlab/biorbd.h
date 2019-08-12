@@ -155,7 +155,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Nombre de controls (tau)
     if (!toLower(cmd).compare("ncontrol")){
-        s2mError::s2mWarning(0, "La fonction \"nControl\" est obsolete. Remplacer par \"nTau\". Elle sera retirée prochainement");
+        biorbd::utils::Error::warning(0, "La fonction \"nControl\" est obsolete. Remplacer par \"nTau\". Elle sera retirée prochainement");
         S2M_nTau(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -281,7 +281,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Nombre de Tags
     if (!toLower(cmd).compare("nmimu")){
-        s2mError::s2mWarning(0, "La fonction \"nmimu\" est obsolete. Remplacer par \"nimu\". Elle sera retirée prochainement");
+        biorbd::utils::Error::warning(0, "La fonction \"nmimu\" est obsolete. Remplacer par \"nimu\". Elle sera retirée prochainement");
         S2M_nIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -292,7 +292,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Noms des Tags
     if (!toLower(cmd).compare("namemimu")){
-        s2mError::s2mWarning(0, "La fonction \"namemimu\" est obsolete. Remplacer par \"nameimu\". Elle sera retirée prochainement");
+        biorbd::utils::Error::warning(0, "La fonction \"namemimu\" est obsolete. Remplacer par \"nameimu\". Elle sera retirée prochainement");
         S2M_nameIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -303,7 +303,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Noms des Tags techniques
     if (!toLower(cmd).compare("nametechnicalmimu")){
-        s2mError::s2mWarning(0, "La fonction \"nametechnicalmimu\" est obsolete. Remplacer par \"nametechnicalimu\". Elle sera retirée prochainement");
+        biorbd::utils::Error::warning(0, "La fonction \"nametechnicalmimu\" est obsolete. Remplacer par \"nametechnicalimu\". Elle sera retirée prochainement");
         S2M_nameTechnicalIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -314,7 +314,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Noms des Tags anatomiques
     if (!toLower(cmd).compare("nameanatomicalmimu")){
-        s2mError::s2mWarning(0, "La fonction \"nameanatomicalmimu\" est obsolete. Remplacer par \"nameanatomicalimu\". Elle sera retirée prochainement");
+        biorbd::utils::Error::warning(0, "La fonction \"nameanatomicalmimu\" est obsolete. Remplacer par \"nameanatomicalimu\". Elle sera retirée prochainement");
         S2M_nameAnatomicalIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -325,7 +325,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Fonction de cinématique directe
     if(!toLower(cmd).compare("mimu")){
-        s2mError::s2mWarning(0, "La fonction \"mimu\" est obsolete. Remplacer par \"imu\". Elle sera retirée prochainement");
+        biorbd::utils::Error::warning(0, "La fonction \"mimu\" est obsolete. Remplacer par \"imu\". Elle sera retirée prochainement");
         S2M_IMU(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -336,7 +336,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Fonction de cinématique directe
     if(!toLower(cmd).compare("mimujacobian")){
-        s2mError::s2mWarning(0, "La fonction \"mimujacobian\" est obsolete. Remplacer par \"imujacobian\". Elle sera retirée prochainement");
+        biorbd::utils::Error::warning(0, "La fonction \"mimujacobian\" est obsolete. Remplacer par \"imujacobian\". Elle sera retirée prochainement");
         S2M_IMUJacobian(nlhs, plhs, nrhs, prhs);
         return;
     }

@@ -8,8 +8,8 @@ s2mWrappingCylinder::s2mWrappingCylinder(
         const double &dia, // Diametre vue du dessus
         const double &length, // Longueur du cylindre
         const int &side, // sens du wrapping (+1 ou -1)
-        const s2mString &name,  // Nom du cylindre
-        const s2mString &parentName) : // Nom du parent sur lequel il s'attache :
+        const biorbd::utils::String &name,  // Nom du cylindre
+        const biorbd::utils::String &parentName) : // Nom du parent sur lequel il s'attache :
     s2mWrappingObject(v.trans(),name,parentName),
     m_dia(dia),
     m_length(length),

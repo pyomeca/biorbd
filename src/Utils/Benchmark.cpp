@@ -1,16 +1,16 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Benchmark.h"
 
-s2mBenchmark::s2mBenchmark(){
+biorbd::utils::Benchmark::Benchmark(){
 
 }
 
-s2mBenchmark::~s2mBenchmark()
+biorbd::utils::Benchmark::~Benchmark()
 {
 
 }
 
-void s2mBenchmark::startTimer(const s2mString& s, bool force){
+void biorbd::utils::Benchmark::startTimer(const biorbd::utils::String& s, bool force){
     if (force)
         m_timers[s].start();
     else
@@ -18,31 +18,31 @@ void s2mBenchmark::startTimer(const s2mString& s, bool force){
             m_timers[s].start();
 }
 
-double s2mBenchmark::getLap(const s2mString& s){
+double biorbd::utils::Benchmark::getLap(const biorbd::utils::String& s){
     return m_timers[s].getLap();
 }
 
-double s2mBenchmark::stopTimer(const s2mString& s){
+double biorbd::utils::Benchmark::stopTimer(const biorbd::utils::String& s){
     return m_timers[s].stop();
 }
 
-void s2mBenchmark::pauseTimer(const s2mString& s){
+void biorbd::utils::Benchmark::pauseTimer(const biorbd::utils::String& s){
     m_timers[s].pause();
 }
 
-void s2mBenchmark::resumeTimer(const s2mString& s){
+void biorbd::utils::Benchmark::resumeTimer(const biorbd::utils::String& s){
     m_timers[s].resume();
 }
 
-void s2mBenchmark::addToCounter(const s2mString& s){
+void biorbd::utils::Benchmark::addToCounter(const biorbd::utils::String& s){
     ++(m_counts[s]);
 }
 
-int s2mBenchmark::getCount(const s2mString& s){
+int biorbd::utils::Benchmark::getCount(const biorbd::utils::String& s){
     return m_counts[s];
 }
 
-void s2mBenchmark::wasteTime(double seconds){
+void biorbd::utils::Benchmark::wasteTime(double seconds){
     // Wait for seconds ask doing dummy stuff
 
     std::clock_t start = std::clock();
@@ -50,6 +50,5 @@ void s2mBenchmark::wasteTime(double seconds){
     while (((static_cast<double>(std::clock() - start)) / CLOCKS_PER_SEC)<seconds)
     {
     }
-
 
 }

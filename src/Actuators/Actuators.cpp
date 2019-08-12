@@ -11,16 +11,14 @@
 #include "Utils/Tau.h"
 #include "Utils/GenCoord.h"
 
-namespace biorbd { namespace actuator {
-
-Actuators::Actuators() :
+biorbd::actuator::Actuators::Actuators() :
     m_isClose(false)
 {
     m_isDofSet = new bool[1];
     m_isDofSet[0] = false;
 }
 
-Actuators::Actuators(const Actuators& a) :
+biorbd::actuator::Actuators::Actuators(const biorbd::actuator::Actuators& a) :
     m_isClose(false)
 {
     m_isClose = a.m_isClose;
@@ -30,17 +28,17 @@ Actuators::Actuators(const Actuators& a) :
 }
 
 
-Actuators::~Actuators(){
+biorbd::actuator::Actuators::~Actuators(){
     delete[] m_isDofSet;
 }
 
 
 
-void Actuators::addActuator(const s2mJoints& m, Actuator &act){
-    s2mError::s2mAssert(!m_isClose, "You can't add actuator after closing the model");
+void biorbd::actuator::Actuators::addActuator(const s2mJoints& m, biorbd::actuator::Actuator &act){
+    biorbd::utils::Error::error(!m_isClose, "You can't add actuator after closing the model");
 
     // Vérifier que le dof target est associé à un dof qui existe déjà dans le modèle
-    s2mError::s2mAssert(act.index()<m.nbDof(), "Sent index is out of dof range");
+    biorbd::utils::Error::error(act.index()<m.nbDof(), "Sent index is out of dof range");
 
     // Pour fin de rapidité et de cohérence avec les Q, mettre l'actuator au même index que son dof associé
     unsigned int idx(act.index());
@@ -109,39 +107,39 @@ void Actuators::addActuator(const s2mJoints& m, Actuator &act){
         return;
     }
     else
-        s2mError::s2mAssert(0, "Actuator type not found");
+        biorbd::utils::Error::error(0, "Actuator type not found");
 
 }
 
-void Actuators::closeActuator(s2mJoints& m){
-    s2mError::s2mAssert(m.nbDof()==m_all.size(), "All dof must have their actuators set");
+void biorbd::actuator::Actuators::closeActuator(s2mJoints& m){
+    biorbd::utils::Error::error(m.nbDof()==m_all.size(), "All dof must have their actuators set");
 
     for (unsigned int i=0; i<m_all.size()*2; ++i)
-        s2mError::s2mAssert(m_isDofSet[i], "All DoF must have their actuators set before closing the model");
+        biorbd::utils::Error::error(m_isDofSet[i], "All DoF must have their actuators set before closing the model");
 
     m_isClose = true;
 }
 
-std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>> Actuators::actuator(unsigned int dof){
-    s2mError::s2mAssert(dof<nbActuators(), "Idx asked is higher than number of actuator");
+std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>> biorbd::actuator::Actuators::actuator(unsigned int dof){
+    biorbd::utils::Error::error(dof<nbActuators(), "Idx asked is higher than number of actuator");
     return *(m_all.begin() + dof);
 }
-std::shared_ptr<Actuator> Actuators::actuator(unsigned int dof, unsigned int idx){
-    std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>> tp(actuator(dof));
+std::shared_ptr<biorbd::actuator::Actuator> biorbd::actuator::Actuators::actuator(unsigned int dof, unsigned int idx){
+    std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>> tp(actuator(dof));
 
-    s2mError::s2mAssert(idx == 0 || idx == 1, "Index of actuator should be 0 or 1");
+    biorbd::utils::Error::error(idx == 0 || idx == 1, "Index of actuator should be 0 or 1");
     if (idx == 0)
         return tp.first;
     else
         return tp.second;
 }
 
-unsigned int Actuators::nbActuators() const
+unsigned int biorbd::actuator::Actuators::nbActuators() const
 {
     return static_cast<unsigned int>(m_all.size());
 }
 
-s2mTau Actuators::torque(
+biorbd::utils::Tau biorbd::actuator::Actuators::torque(
         const s2mJoints& m,
         const biorbd::utils::GenCoord& a,
         const biorbd::utils::GenCoord& Q,
@@ -154,7 +152,7 @@ s2mTau Actuators::torque(
             QdotResigned(i) = -Qdot(i);
 
     // Calcul des torque sous maximaux
-    s2mTau Tau(torqueMax(m, a,Q,QdotResigned));
+    biorbd::utils::Tau Tau(torqueMax(m, a,Q,QdotResigned));
 
     // Remettre les signes
     for (unsigned int i=0; i<Tau.size(); ++i)
@@ -164,13 +162,14 @@ s2mTau Actuators::torque(
 }
 
 
-std::pair<s2mTau, s2mTau> Actuators::torqueMax(
+std::pair<biorbd::utils::Tau, biorbd::utils::Tau> biorbd::actuator::Actuators::torqueMax(
         const s2mJoints &m,
         const biorbd::utils::GenCoord& Q,
         const biorbd::utils::GenCoord &Qdot){
-    s2mError::s2mAssert(m_isClose, "Close the actuator model before calling torqueMax");
+    biorbd::utils::Error::error(m_isClose, "Close the actuator model before calling torqueMax");
 
-    std::pair<s2mTau, s2mTau> maxTau_all = std::make_pair(s2mTau(m), s2mTau(m));
+    std::pair<biorbd::utils::Tau, biorbd::utils::Tau> maxTau_all =
+            std::make_pair(biorbd::utils::Tau(m), biorbd::utils::Tau(m));
 
     for (unsigned int i=0; i<m.nbDof(); ++i){
         std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>> Tau_tp(actuator(i));
@@ -185,7 +184,7 @@ std::pair<s2mTau, s2mTau> Actuators::torqueMax(
                 else if (std::dynamic_pointer_cast<ActuatorGauss6p> (Tau_tp.first))
                     maxTau_all.first[i] = std::static_pointer_cast<ActuatorGauss6p> (Tau_tp.first)->torqueMax(Q, Qdot);
                 else
-                    s2mError::s2mAssert(false, "Wrong type (should never get here because of previous safety)");
+                    biorbd::utils::Error::error(false, "Wrong type (should never get here because of previous safety)");
             else // Second
                 if (std::dynamic_pointer_cast<ActuatorGauss3p> (Tau_tp.second))
                     maxTau_all.second[i] = std::static_pointer_cast<ActuatorGauss3p> (Tau_tp.second)->torqueMax(Q, Qdot);
@@ -196,7 +195,7 @@ std::pair<s2mTau, s2mTau> Actuators::torqueMax(
                 else if (std::dynamic_pointer_cast<ActuatorGauss6p> (Tau_tp.second))
                     maxTau_all.second[i] = std::static_pointer_cast<ActuatorGauss6p> (Tau_tp.second)->torqueMax(Q, Qdot);
                 else
-                    s2mError::s2mAssert(false, "Wrong type (should never get here because of previous safety)");
+                    biorbd::utils::Error::error(false, "Wrong type (should never get here because of previous safety)");
         }
     }
 
@@ -204,14 +203,14 @@ std::pair<s2mTau, s2mTau> Actuators::torqueMax(
 }
 
 
-s2mTau Actuators::torqueMax(
+biorbd::utils::Tau biorbd::actuator::Actuators::torqueMax(
         const s2mJoints &m,
         const biorbd::utils::GenCoord& a,
         const biorbd::utils::GenCoord& Q,
         const biorbd::utils::GenCoord &Qdot){
-    s2mError::s2mAssert(m_isClose, "Close the actuator model before calling torqueMax");
+    biorbd::utils::Error::error(m_isClose, "Close the actuator model before calling torqueMax");
 
-    s2mTau maxTau_all;
+    biorbd::utils::Tau maxTau_all;
     maxTau_all.resize(m.nbDof());
 
     for (unsigned int i=0; i<m.nbDof(); ++i){
@@ -230,11 +229,9 @@ s2mTau Actuators::torqueMax(
         else if (std::dynamic_pointer_cast<ActuatorGauss6p> (Tau_tp))
             maxTau_all[i] = std::static_pointer_cast<ActuatorGauss6p> (Tau_tp)->torqueMax(Q, Qdot);
         else
-            s2mError::s2mAssert(false, "Wrong type (should never get here because of previous safety)");
+            biorbd::utils::Error::error(false, "Wrong type (should never get here because of previous safety)");
 
     }
 
     return maxTau_all;
 }
-
-}}

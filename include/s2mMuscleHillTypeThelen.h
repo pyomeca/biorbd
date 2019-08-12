@@ -7,7 +7,7 @@
 class BIORBD_API s2mMuscleHillTypeThelen : public s2mMuscleHillType
 {
 public:
-    s2mMuscleHillTypeThelen(const s2mString& s= "") : s2mMuscleHillType(s){setType();}
+    s2mMuscleHillTypeThelen(const biorbd::utils::String& s= "") : s2mMuscleHillType(s){setType();}
     s2mMuscleHillTypeThelen(
             const s2mMuscleGeometry& g,
             const s2mMuscleCaracteristics& c,
@@ -15,7 +15,7 @@ public:
             const s2mMuscleStateDynamics & s= s2mMuscleStateDynamics());
 
     s2mMuscleHillTypeThelen(
-            const s2mString& n,
+            const biorbd::utils::String& n,
             const s2mMuscleGeometry& g,
             const s2mMuscleCaracteristics& c,
             const s2mMusclePathChangers & w= s2mMusclePathChangers(),

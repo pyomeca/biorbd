@@ -13,8 +13,8 @@ public:
             const double & = 0, // Diametre vue du dessus
             const double & = 0, // Longueur du cylindre
             const int & =1, // sens du wrapping (+1 ou -1)
-            const s2mString& = "",  // Nom du cylindre
-            const s2mString& = ""); // Nom du parent sur lequel il s'attache
+            const biorbd::utils::String& = "",  // Nom du cylindre
+            const biorbd::utils::String& = ""); // Nom du parent sur lequel il s'attache
     virtual ~s2mWrappingCylinder();
 
     void wrapPoints(

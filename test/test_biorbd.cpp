@@ -20,7 +20,7 @@ static std::string modelPathForLoopConstraintTesting("models/loopConstrainedMode
 TEST(c3dConstraint, loopConstraint){
     s2mMusculoSkeletalModel model(modelPathForLoopConstraintTesting);
     biorbd::utils::GenCoord Q(model), QDot(model), QDDot_constrained(model), QDDot_expected(model);
-    s2mTau Tau(model);
+    biorbd::utils::Tau Tau(model);
     Q.setZero();
     QDot.setZero();
     QDDot_constrained.setZero();

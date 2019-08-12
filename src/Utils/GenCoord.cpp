@@ -3,33 +3,45 @@
 
 #include "s2mJoints.h"
 
-namespace biorbd { namespace utils {
-
-GenCoord::GenCoord() {}
-
-GenCoord::GenCoord(const GenCoord &Q):
-    s2mVector(Q)
+biorbd::utils::GenCoord::GenCoord()
 {
 
 }
 
-GenCoord::GenCoord(const s2mVector &v) : s2mVector(v) {}
-
-GenCoord::GenCoord(const Eigen::VectorXd &v) : s2mVector(v) {}
-
-GenCoord::GenCoord(unsigned int i) : s2mVector(i) {}
-
-GenCoord::GenCoord(const s2mJoints &j) :
-    s2mVector(j.nbDof()){
-
-}
-
-GenCoord::~GenCoord()
+biorbd::utils::GenCoord::GenCoord(const GenCoord &Q):
+    biorbd::utils::Vector(Q)
 {
 
 }
 
-GenCoord& GenCoord::operator=(const Eigen::VectorXd& vecX){
+biorbd::utils::GenCoord::GenCoord(const biorbd::utils::Vector &v) :
+    biorbd::utils::Vector(v)
+{
+
+}
+
+biorbd::utils::GenCoord::GenCoord(const Eigen::VectorXd &v) :
+    biorbd::utils::Vector(v)
+{
+
+}
+
+biorbd::utils::GenCoord::GenCoord(unsigned int i) : biorbd::utils::Vector(i)
+{
+
+}
+
+biorbd::utils::GenCoord::GenCoord(const s2mJoints &j) :
+    biorbd::utils::Vector(j.nbDof()){
+
+}
+
+biorbd::utils::GenCoord::~GenCoord()
+{
+
+}
+
+biorbd::utils::GenCoord& biorbd::utils::GenCoord::operator=(const Eigen::VectorXd& vecX){
     if (this==&vecX) // check for self-assigment
         return *this;
 
@@ -37,5 +49,3 @@ GenCoord& GenCoord::operator=(const Eigen::VectorXd& vecX){
 
     return *this;
 }
-
-}}

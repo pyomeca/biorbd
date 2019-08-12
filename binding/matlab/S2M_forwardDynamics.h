@@ -40,7 +40,7 @@ void S2M_forwardDynamics( int, mxArray *plhs[],
     // Recevoir Qdot
     std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
     // Recevoir Tau
-    std::vector<s2mTau> Tau = getParameterTau(prhs, 4, nTau, nRoot);
+    std::vector<biorbd::utils::Tau> Tau = getParameterTau(prhs, 4, nTau, nRoot);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));

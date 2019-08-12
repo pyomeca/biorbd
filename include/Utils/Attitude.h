@@ -1,14 +1,15 @@
-#ifndef S2M_ATTITUDE_H
-#define S2M_ATTITUDE_H
+#ifndef BIORBD_UTILS_ATTITUDE_H
+#define BIORBD_UTILS_ATTITUDE_H
 
 #include <vector>
 #include <Eigen/Dense>
 #include <rbdl/rbdl_math.h>
 #include "biorbdConfig.h"
 
-class s2mNode;
-class s2mString;
 namespace biorbd { namespace utils {
+class Node;
+class String;
+
 class BIORBD_API Attitude : public Eigen::Matrix4d
 {
 public:
@@ -16,7 +17,7 @@ public:
     Attitude(
             const Eigen::VectorXd&,
             const Eigen::Vector3d&,
-            const s2mString&);
+            const biorbd::utils::String&);
     Attitude(
             const Eigen::Matrix3d& rot,
             const Eigen::Vector3d& trans = Eigen::Vector3d::Zero());
@@ -37,15 +38,15 @@ public:
     static Eigen::Matrix4d transformCardanToMatrix(
             const Eigen::VectorXd&,
             const Eigen::Vector3d&,
-            const s2mString&);
+            const biorbd::utils::String&);
     static Eigen::VectorXd transformMatrixToCardan(
             const Attitude&,
-            const s2mString &seq);
+            const biorbd::utils::String &seq);
 
     const Attitude operator*(const Attitude&);
     const Eigen::Vector3d operator*(const Eigen::Vector3d&);
     const Eigen::Vector3d operator*(const Eigen::Vector4d&);
-    const s2mNode operator*(const s2mNode&);
+    const biorbd::utils::Node operator*(const biorbd::utils::Node&);
 
     static Attitude mean(const std::vector<Attitude>&); // Moyenne des matrices 4x4
 protected:
@@ -56,4 +57,4 @@ std::ostream& operator<<(std::ostream& os, const Attitude &a);
 
 }}
 
-#endif // S2M_ATTITUDE_H
+#endif // BIORBD_UTILS_ATTITUDE_H

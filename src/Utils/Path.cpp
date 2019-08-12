@@ -14,44 +14,44 @@
     #include <unistd.h>
 #endif
 
-s2mPath::s2mPath()
-    : s2mString("")
+biorbd::utils::Path::Path()
+    : biorbd::utils::String("")
 {
 
 }
 
-s2mPath::s2mPath(const char *c)
-    : s2mString(processInputForS2MSTRINGcstr(c))
-{
-    parseFileName();
-}
-
-s2mPath::s2mPath(const s2mString &s)
-    : s2mString(processInputForS2MSTRINGcstr(s))
+biorbd::utils::Path::Path(const char *c)
+    : biorbd::utils::String(processInputForStringCstr(c))
 {
     parseFileName();
 }
 
-s2mPath::s2mPath(const std::basic_string<char> &c)
-    : s2mString(processInputForS2MSTRINGcstr(c))
+biorbd::utils::Path::Path(const biorbd::utils::String &s)
+    : biorbd::utils::String(processInputForStringCstr(s))
 {
     parseFileName();
 }
 
-s2mPath::~s2mPath()
+biorbd::utils::Path::Path(const std::basic_string<char> &c)
+    : biorbd::utils::String(processInputForStringCstr(c))
+{
+    parseFileName();
+}
+
+biorbd::utils::Path::~Path()
 {
 
 }
 
-bool s2mPath::isFileExist() const
+bool biorbd::utils::Path::isFileExist() const
 {
-    return isFileExist(static_cast<s2mString>(*this));
+    return isFileExist(static_cast<biorbd::utils::String>(*this));
 }
-bool s2mPath::isFileExist(const s2mPath& path)
+bool biorbd::utils::Path::isFileExist(const Path& path)
 {
-    return isFileExist(static_cast<s2mString>(path));
+    return isFileExist(static_cast<biorbd::utils::String>(path));
 }
-bool s2mPath::isFileExist(const s2mString& path)
+bool biorbd::utils::Path::isFileExist(const biorbd::utils::String& path)
 {
     if (FILE *file = fopen(path.c_str(), "r")) {
         fclose(file);
@@ -61,17 +61,17 @@ bool s2mPath::isFileExist(const s2mString& path)
     }
 }
 
-bool s2mPath::isFolderExist() const
+bool biorbd::utils::Path::isFolderExist() const
 {
     return isFolderExist(*this);
 }
 
-bool s2mPath::isFolderExist(const s2mPath &path)
+bool biorbd::utils::Path::isFolderExist(const Path &path)
 {
 	return isFolderExist(path.folder());
 }
 
-bool s2mPath::isFolderExist(const s2mString & path)
+bool biorbd::utils::Path::isFolderExist(const biorbd::utils::String & path)
 {
 #ifdef _WIN64
 	if (GetFileAttributesA(path.c_str()) == INVALID_FILE_ATTRIBUTES)
@@ -102,7 +102,11 @@ bool s2mPath::isFolderExist(const s2mString & path)
 
 }
 
-void s2mPath::parseFileName(const s2mString &path, s2mString &folder, s2mString &filename, s2mString &extension)
+void biorbd::utils::Path::parseFileName(
+        const biorbd::utils::String &path,
+        biorbd::utils::String &folder,
+        biorbd::utils::String &filename,
+        biorbd::utils::String &extension)
 {
     size_t sep(path.find_last_of("\\")); //si on utilise le formalisme de windows
     if (sep == std::string::npos)
@@ -121,42 +125,42 @@ void s2mPath::parseFileName(const s2mString &path, s2mString &folder, s2mString 
     // Stocker le nom de fichier
     filename = path.substr(sep+1, ext-sep-1);
 }
-/*void s2mPath::parseFileName(const s2mPath &path, s2mString &folder, s2mString &filename, s2mString &extension){
+/*void biorbd::utils::Path::parseFileName(const Path &path, biorbd::utils::String &folder, biorbd::utils::String &filename, biorbd::utils::String &extension){
     return parseFileName(base::path, folder, filename, extension);
 }*/
 
-void s2mPath::parseFileName()
+void biorbd::utils::Path::parseFileName()
 {
     parseFileName(*this, m_path, m_filename, m_extension);
 }
 
-s2mString s2mPath::processInputForS2MSTRINGcstr(const s2mString &path)
+biorbd::utils::String biorbd::utils::Path::processInputForStringCstr(const biorbd::utils::String &path)
 {
-    s2mString folder, filename, extension;
+    biorbd::utils::String folder, filename, extension;
     parseFileName(path, folder, filename, extension);
     return folder + filename + "." + extension;
 }
 
 
 
-void s2mPath::setRelativePath(const s2mString &path)
+void biorbd::utils::Path::setRelativePath(const biorbd::utils::String &path)
 {
     m_path = getRelativePath(path);
 }
 
-s2mString s2mPath::getRelativePath()  const{
-    s2mString currentDir = getCurrentDir();
-    s2mString out(getRelativePath(currentDir));
+biorbd::utils::String biorbd::utils::Path::getRelativePath()  const{
+    biorbd::utils::String currentDir = getCurrentDir();
+    biorbd::utils::String out(getRelativePath(currentDir));
     return out;
 }
 
-s2mString s2mPath::getRelativePath(const s2mString& path) const
+biorbd::utils::String biorbd::utils::Path::getRelativePath(const biorbd::utils::String& path) const
 {
-    s2mString me(*this);
-    s2mString currentDir(path);
+    biorbd::utils::String me(*this);
+    biorbd::utils::String currentDir(path);
 
-    s2mString meFirstPart("");
-    s2mString currentDirFirstPart("");
+    biorbd::utils::String meFirstPart("");
+    biorbd::utils::String currentDirFirstPart("");
 
     size_t sepMe = std::string::npos;
     size_t sepCurrentDir = std::string::npos;
@@ -181,7 +185,7 @@ s2mString s2mPath::getRelativePath(const s2mString& path) const
         // Tant que les premières parties sont égales, continuer à avancer dans le path
     } while(!meFirstPart.compare(currentDirFirstPart));
 
-    s2mString outPath;
+    biorbd::utils::String outPath;
     while(currentDir.compare("")) { // Tant que currentDir n'est pas vide, reculer
         // Trouver le prochain séparateur
         sepCurrentDir = currentDir.find_first_of("\\"); //si on utilise le formalisme de windows
@@ -205,35 +209,35 @@ s2mString s2mPath::getRelativePath(const s2mString& path) const
     return outPath;
 }
 
-s2mString s2mPath::getAbsolutePath() const
+biorbd::utils::String biorbd::utils::Path::getAbsolutePath() const
 {
 #ifdef _WIN64
-    s2mString base("C:\\");
+    biorbd::utils::String base("C:\\");
 #elseif _WIN32
-    s2mString base("C:\\");
+    biorbd::utils::String base("C:\\");
 #else
-    s2mString base("/");
+    biorbd::utils::String base("/");
 #endif
-    s2mString test(base + getRelativePath(base) + m_filename + m_extension);
+    biorbd::utils::String test(base + getRelativePath(base) + m_filename + m_extension);
     return base + getRelativePath(base) + m_filename + m_extension;
 }
 
-const s2mString &s2mPath::folder() const
+const biorbd::utils::String &biorbd::utils::Path::folder() const
 {
     return m_path;
 }
 
-const s2mString& s2mPath::filename() const
+const biorbd::utils::String& biorbd::utils::Path::filename() const
 {
     return m_filename;
 }
 
-const s2mString& s2mPath::extension() const
+const biorbd::utils::String& biorbd::utils::Path::extension() const
 {
     return m_extension;
 }
 
-const char * s2mPath::getCurrentDir()
+const char * biorbd::utils::Path::getCurrentDir()
 {
     #ifdef _WIN64
         return _getcwd(nullptr, 0);
@@ -244,10 +248,10 @@ const char * s2mPath::getCurrentDir()
 #endif
 }
 
-void s2mPath::createFolder() const
+void biorbd::utils::Path::createFolder() const
 {
-    s2mString tp(folder());
-    s2mString tp2(tp);
+    biorbd::utils::String tp(folder());
+    biorbd::utils::String tp2(tp);
 
     size_t sep = std::string::npos;
     size_t sepTrack = 0;
@@ -264,7 +268,7 @@ void s2mPath::createFolder() const
             sepTrack += sep + 1 ;
 
             // Séparer la première et la dernière partie
-            if (!isFolderExist(static_cast<s2mString>(tp.substr(0, sepTrack)))){
+            if (!isFolderExist(static_cast<biorbd::utils::String>(tp.substr(0, sepTrack)))){
 #ifdef _WIN64
 				_mkdir(tp.substr(0, sepTrack).c_str());
 #elseif _WIN32

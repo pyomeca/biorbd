@@ -247,12 +247,12 @@ std::vector<biorbd::utils::GenCoord> getParameterQddot(const mxArray*prhs[], uns
 std::vector<biorbd::utils::GenCoord> getParameterQdot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
     return getParameterQ(prhs, idx, nDof, "qdot");
 }
-std::vector<s2mTau> getParameterTau(const mxArray*prhs[], unsigned int idx, unsigned int nControl, unsigned int nRoot){
+std::vector<biorbd::utils::Tau> getParameterTau(const mxArray*prhs[], unsigned int idx, unsigned int nControl, unsigned int nRoot){
     std::vector<biorbd::utils::GenCoord> AllTau_tp = getParameterQ(prhs, idx, nControl, "tau");
-    std::vector<s2mTau> AllTau;
+    std::vector<biorbd::utils::Tau> AllTau;
 
     for (unsigned int j=0; j<AllTau_tp.size(); ++j){
-        s2mTau Tau_tp(Eigen::VectorXd::Zero(nControl+nRoot));
+        biorbd::utils::Tau Tau_tp(Eigen::VectorXd::Zero(nControl+nRoot));
 
         for (unsigned int i=0; i<nRoot; ++i) // Root segment
             Tau_tp(i) =  0;
@@ -350,7 +350,7 @@ std::vector<double> getDoubleArray(const mxArray*prhs[], unsigned int idx){
     return out;
 }
 
-s2mString getString(const mxArray*prhs[], unsigned int idx){
+biorbd::utils::String getString(const mxArray*prhs[], unsigned int idx){
     // Check data type of input argument
     if (!(mxIsChar(prhs[idx]))) {
         std::ostringstream msg;
@@ -616,7 +616,7 @@ std::vector<std::vector<s2mNodeMuscle>> getMusclePosition(const mxArray*prhs[], 
     return out;
 }
 
-std::vector<s2mMatrix> getMusclePointsJaco(const mxArray*prhs[], unsigned int idx, Eigen::VectorXd nPointsByMuscles, unsigned int nQ){
+std::vector<biorbd::utils::Matrix> getMusclePointsJaco(const mxArray*prhs[], unsigned int idx, Eigen::VectorXd nPointsByMuscles, unsigned int nQ){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -647,12 +647,12 @@ std::vector<s2mMatrix> getMusclePointsJaco(const mxArray*prhs[], unsigned int id
     double *jaco=mxGetPr(prhs[idx]); //matrice de position
 
     // Préparer la matrice de sortie
-    std::vector<s2mMatrix> jacoOut;
+    std::vector<biorbd::utils::Matrix> jacoOut;
     unsigned int cmpMus(0);
 
     for (unsigned int i=0; i<nPointsByMuscles.rows(); ++i){
         // Préparer les matrices intermédiaires (chaque muscle)
-        s2mMatrix mus(static_cast<unsigned int>(nPointsByMuscles(i))*3, nQ);
+        biorbd::utils::Matrix mus(static_cast<unsigned int>(nPointsByMuscles(i))*3, nQ);
         for (unsigned int j=0; j<static_cast<unsigned int>(nPointsByMuscles(i)); ++j){
             // Stocker
             for (unsigned int k1 = 0; k1<3; ++k1)

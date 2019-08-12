@@ -10,6 +10,7 @@ class s2mMusculoSkeletalModel;
 namespace biorbd { namespace utils {
 class GenCoord;
 }}
+
 class BIORBD_API s2mKalmanRecons
 {
 public:
@@ -53,27 +54,27 @@ public:
 protected:
     // Calculs internes
     virtual void initialize();
-    s2mMatrix evolutionMatrix(
+    biorbd::utils::Matrix evolutionMatrix(
             const unsigned int m,
             unsigned int n,
             const double Te); // Création de la matrice d'évolution
-    s2mMatrix processNoiseMatrix(
+    biorbd::utils::Matrix processNoiseMatrix(
             const unsigned int nQ,
             const double Te);
-    s2mMatrix measurementNoiseMatrix(
+    biorbd::utils::Matrix measurementNoiseMatrix(
             const unsigned int nT,
             const double MN);
-    s2mMatrix initCovariance(
+    biorbd::utils::Matrix initCovariance(
             const unsigned int nQ,
             const double csnt);
     biorbd::utils::GenCoord initState(const unsigned int nQ);
     void iteration(
             Eigen::VectorXd measure,
             const Eigen::VectorXd &projectedMeasure,
-            const s2mMatrix &Hessian,
+            const biorbd::utils::Matrix &Hessian,
             const std::vector<unsigned int> &occlusion = std::vector<unsigned int>());
     virtual void manageOcclusionDuringIteration(
-            s2mMatrix &InvTp,
+            biorbd::utils::Matrix &InvTp,
             Eigen::VectorXd &measure,
             const std::vector<unsigned int> &occlusion);
 
@@ -85,10 +86,10 @@ protected:
 
     // Attributs du filtre de kalman
     Eigen::VectorXd m_xp; // Vecteur d'état
-    s2mMatrix m_A; // Matrice d'évolution
-    s2mMatrix m_Q; // Matrice de bruit
-    s2mMatrix m_R; // Matrice de bruit de la mesure
-    s2mMatrix m_Pp; // Matrice de covariance
+    biorbd::utils::Matrix m_A; // Matrice d'évolution
+    biorbd::utils::Matrix m_Q; // Matrice de bruit
+    biorbd::utils::Matrix m_R; // Matrice de bruit de la mesure
+    biorbd::utils::Matrix m_Pp; // Matrice de covariance
 
 };
 

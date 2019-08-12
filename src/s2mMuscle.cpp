@@ -8,7 +8,7 @@
 #include "Utils/GenCoord.h"
 
 s2mMuscle::s2mMuscle(
-        const s2mString& name,
+        const biorbd::utils::String& name,
         const s2mMuscleGeometry& g,
         const s2mMuscleCaracteristics& c,
         const s2mMusclePathChangers& w,
@@ -19,7 +19,7 @@ s2mMuscle::s2mMuscle(
 {
     setState(s);
 
-    s2mError::s2mAssert(w.nbWraps()!=1, "Multiple wrapping objects is not implemented yet");
+    biorbd::utils::Error::error(w.nbWraps()!=1, "Multiple wrapping objects is not implemented yet");
 }
 
 s2mMuscle::s2mMuscle(const s2mMuscle &m) :
@@ -52,13 +52,13 @@ void s2mMuscle::updateOrientations(
 }
 void s2mMuscle::updateOrientations(
         std::vector<s2mNodeMuscle>& musclePointsInGlobal,
-        s2mMatrix &jacoPointsInGlobal){
+        biorbd::utils::Matrix &jacoPointsInGlobal){
     // Update de la position des insertions et origines
     m_position.updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,nullptr,m_caract);
 }
 void s2mMuscle::updateOrientations(
         std::vector<s2mNodeMuscle>& musclePointsInGlobal,
-        s2mMatrix &jacoPointsInGlobal,
+        biorbd::utils::Matrix &jacoPointsInGlobal,
         const biorbd::utils::GenCoord &Qdot){
     // Update de la position des insertions et origines
     m_position.updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,&Qdot,m_caract);

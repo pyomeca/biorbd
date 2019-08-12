@@ -4,26 +4,25 @@
 #include "Utils/String.h"
 #include "Utils/GenCoord.h"
 
-namespace biorbd { namespace actuator {
-
-ActuatorConstant::ActuatorConstant(
-    int direction,
-    double Tmax,
-    unsigned int dofIdx, const s2mString &jointName) :
+biorbd::actuator::ActuatorConstant::ActuatorConstant(
+        int direction,
+        double Tmax,
+        unsigned int dofIdx,
+        const biorbd::utils::String &jointName) :
     Actuator(direction, dofIdx, jointName),
     m_Tmax(Tmax)
 {
 
 }
 
-ActuatorConstant::~ActuatorConstant()
+biorbd::actuator::ActuatorConstant::~ActuatorConstant()
 {
 
 }
 
 
-double ActuatorConstant::torqueMax(){
+double biorbd::actuator::ActuatorConstant::torqueMax(){
     return m_Tmax;
 }
 
-}}
+void biorbd::actuator::ActuatorConstant::setType(){m_type = "Constant";}

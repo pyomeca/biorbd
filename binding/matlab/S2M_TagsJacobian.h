@@ -28,7 +28,7 @@ void S2M_TagsJacobian( int, mxArray *plhs[],
 
 
     // Trouver la matrice jacobienne de tous les marqueurs
-    std::vector<s2mMatrix> Jac_tp;
+    std::vector<biorbd::utils::Matrix> Jac_tp;
     unsigned int nTags;
     if (technicalTagsOnly){
         Jac_tp = model->TechnicalTagsJacobian(*model, Q, removeAxes); // Retourne la jacobienne les Tags techniques
@@ -38,18 +38,18 @@ void S2M_TagsJacobian( int, mxArray *plhs[],
         Jac_tp = model->TagsJacobian(*model, Q, removeAxes); // Retourne la jacobienne les Tags
         nTags = model->nTags();
     }
-    std::vector<s2mMatrix>::iterator it=Jac_tp.begin();
+    std::vector<biorbd::utils::Matrix>::iterator it=Jac_tp.begin();
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( 3*nTags, nQ, mxREAL);
-        double *Jac = mxGetPr(plhs[0]);
-         for (unsigned int j=0; (it+j)!=Jac_tp.end(); ++j){
+    double *Jac = mxGetPr(plhs[0]);
+    for (unsigned int j=0; (it+j)!=Jac_tp.end(); ++j){
         for (unsigned int i=0; i<nQ; ++i){
-                        Jac[j+i*nTags*3] = (*(it+j))(0,i);
-                        Jac[j+nTags+i*nTags*3] = (*(it+j))(1,i);
-                        Jac[j+nTags*2+i*nTags*3] = (*(it+j))(2,i);
-                }
-         }
+            Jac[j+i*nTags*3] = (*(it+j))(0,i);
+            Jac[j+nTags+i*nTags*3] = (*(it+j))(1,i);
+            Jac[j+nTags*2+i*nTags*3] = (*(it+j))(2,i);
+        }
+    }
 
     return;
 }

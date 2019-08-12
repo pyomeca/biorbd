@@ -49,7 +49,7 @@ void S2M_muscleJointTorqueFromMuscleForce( int, mxArray *plhs[],
 
     // Remplir le output
     for (unsigned int i=0; i<nFrame; ++i){
-        s2mTau muscleTorque;
+        biorbd::utils::Tau muscleTorque;
         if (updateKin)
             muscleTorque = model->muscularJointTorque(*model, *(Fm.begin()+i), updateKin, &(*(Q.begin()+i)), &(*(QDot.begin()+i)));
         else

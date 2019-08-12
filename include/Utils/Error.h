@@ -1,16 +1,24 @@
-#ifndef S2M_ERROR_H
-#define S2M_ERROR_H
+#ifndef BIORBD_UTILS_ERROR_H
+#define BIORBD_UTILS_ERROR_H
 
 #include "biorbdConfig.h"
 
-class s2mString;
-class BIORBD_API s2mError
+namespace biorbd { namespace utils {
+class String;
+
+class BIORBD_API Error
 {
-    public:
-    static void s2mAssert(bool cond, const s2mString &message);
-    static void s2mWarning(bool cond, const s2mString &message);
+public:
+static void error(
+        bool cond,
+        const biorbd::utils::String &message);
+static void warning(
+        bool cond,
+        const biorbd::utils::String &message);
 };
 
-#endif // S2M_ERROR_H
+}}
+
+#endif // BIORBD_UTILS_ERROR_H
 
 

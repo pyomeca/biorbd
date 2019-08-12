@@ -4,14 +4,16 @@
 #include <memory>
 #include "biorbdConfig.h"
 
-class s2mString;
+namespace biorbd { namespace utils {
+class String;
+}}
 class s2mMuscle;
 class s2mMuscleStateDynamics;
 class s2mMuscleFatigueState;
 class BIORBD_API s2mMuscleFatigable
 {
 public:
-    s2mMuscleFatigable(const s2mString& dynamicFatigueType);
+    s2mMuscleFatigable(const biorbd::utils::String& dynamicFatigueType);
     s2mMuscleFatigable(const s2mMuscle& m);
     s2mMuscleFatigable(const std::shared_ptr<s2mMuscle> m);
     virtual ~s2mMuscleFatigable() = 0;

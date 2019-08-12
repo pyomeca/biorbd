@@ -33,7 +33,7 @@ void s2mKalmanReconsIMU::initialize(){
 }
 
 void s2mKalmanReconsIMU::manageOcclusionDuringIteration(
-        s2mMatrix &InvTp,
+        biorbd::utils::Matrix &InvTp,
         Eigen::VectorXd &measure,
         const std::vector<unsigned int> &occlusion)
 {
@@ -92,9 +92,9 @@ void s2mKalmanReconsIMU::reconstructFrame(
     // Markers projetés
     std::vector<s2mIMU> zest_tp = m.technicalIMU(m, Q_tp, false);
     // Jacobienne
-    std::vector<s2mMatrix> J_tp = m.TechnicalIMUJacobian(m, Q_tp, false);
+    std::vector<biorbd::utils::Matrix> J_tp = m.TechnicalIMUJacobian(m, Q_tp, false);
     // Faire une seule matrice pour zest et Jacobienne
-    s2mMatrix H(s2mMatrix::Zero(m_nMeasure, m_nDof*3)); // 3*nCentrales => X,Y,Z ; 3*nDof => Q, Qdot, Qddot
+    biorbd::utils::Matrix H(biorbd::utils::Matrix::Zero(m_nMeasure, m_nDof*3)); // 3*nCentrales => X,Y,Z ; 3*nDof => Q, Qdot, Qddot
     Eigen::VectorXd zest = Eigen::VectorXd::Zero(m_nMeasure);
     std::vector<unsigned int> occlusionIdx;
     for (unsigned int i=0; i<m_nMeasure/9; ++i){
@@ -119,5 +119,5 @@ void s2mKalmanReconsIMU::reconstructFrame(
 
 void s2mKalmanReconsIMU::reconstructFrame()
 {
-    s2mError::s2mAssert(false, "Implémentation impossible");
+    biorbd::utils::Error::error(false, "Implémentation impossible");
 }

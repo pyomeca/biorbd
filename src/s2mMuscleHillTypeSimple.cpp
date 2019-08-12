@@ -2,7 +2,7 @@
 #include "s2mMuscleHillTypeSimple.h"
 
 
-s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(const s2mString &s) :
+s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(const biorbd::utils::String &s) :
     s2mMuscleHillType(s)
 {
     setType();
@@ -19,7 +19,7 @@ s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(
 }
 
 s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(
-        const s2mString &n,
+        const biorbd::utils::String &n,
         const s2mMuscleGeometry &g,
         const s2mMuscleCaracteristics &c,
         const s2mMusclePathChangers &w,
