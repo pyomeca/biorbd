@@ -11,7 +11,9 @@ s2mMuscleForceFromOrigin::s2mMuscleForceFromOrigin(double x, double y, double z)
 {
 
 }
-s2mMuscleForceFromOrigin::s2mMuscleForceFromOrigin(const s2mMuscleGeometry& geo, double force) :
+s2mMuscleForceFromOrigin::s2mMuscleForceFromOrigin(
+        const s2mMuscleGeometry& geo,
+        double force) :
     s2mMuscleForce(geo, force)
 {
 

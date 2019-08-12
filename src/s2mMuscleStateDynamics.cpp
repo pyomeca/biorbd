@@ -5,7 +5,9 @@
 #include "Utils/String.h"
 #include "s2mMuscleCaracteristics.h"
 
-s2mMuscleStateDynamics::s2mMuscleStateDynamics(const double &e, const double &a) :
+s2mMuscleStateDynamics::s2mMuscleStateDynamics(
+        const double &e,
+        const double &a) :
     s2mMuscleState(e,a),
     m_excitationNorm(0),
     m_previousExcitation(0),
@@ -20,18 +22,27 @@ s2mMuscleStateDynamics::~s2mMuscleStateDynamics()
 }
 
 
-double s2mMuscleStateDynamics::timeDerivativeActivation(const s2mMuscleStateDynamics& state, const s2mMuscleCaracteristics& caract, const bool alreadyNormalized){
+double s2mMuscleStateDynamics::timeDerivativeActivation(
+        const s2mMuscleStateDynamics& state,
+        const s2mMuscleCaracteristics& caract,
+        const bool alreadyNormalized){
     return timeDerivativeActivation(state.excitation(), state.activation(), caract, alreadyNormalized);
 }
 
 
-double s2mMuscleStateDynamics::timeDerivativeActivation(double excitation, double activation, const s2mMuscleCaracteristics &caract, const bool alreadyNormalized){
+double s2mMuscleStateDynamics::timeDerivativeActivation(
+        double excitation,
+        double activation,
+        const s2mMuscleCaracteristics &caract,
+        const bool alreadyNormalized){
     setExcitation(excitation);
     setActivation(activation);
     return timeDerivativeActivation(caract, alreadyNormalized);
 }
 
-double s2mMuscleStateDynamics::timeDerivativeActivation(const s2mMuscleCaracteristics &caract, const bool alreadyNormalized){
+double s2mMuscleStateDynamics::timeDerivativeActivation(
+        const s2mMuscleCaracteristics &caract,
+        const bool alreadyNormalized){
     // Implémentation de la fonction da/dt = (u-a)/tau(u,a)
     // ou tau(u,a) = t_act(0.5+1.5*a) is u>a et tau(u,a)=t_deact(0.5+1.5*a) sinon
     if (m_activation<caract.minActivation())

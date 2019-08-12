@@ -36,7 +36,7 @@ void S2M_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
     }
 
     // Recueillir la cinématique
-    std::vector<s2mGenCoord> Q, QDot;
+    std::vector<biorbd::utils::GenCoord> Q, QDot;
     if (updateKin){ // Si on update pas la cinématique Q et Qdot ne sont pas nécessaire
         // Recevoir Q
         Q = getParameterQ(prhs, 3, nQ);

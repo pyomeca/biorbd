@@ -8,7 +8,9 @@
 #include "s2mNodeBone.h"
 #include "Utils/GenCoord.h"
 
-s2mKalmanReconsMarkers::s2mKalmanReconsMarkers(s2mMusculoSkeletalModel &m, s2mKalmanRecons::s2mKalmanParam params) :
+s2mKalmanReconsMarkers::s2mKalmanReconsMarkers(
+        s2mMusculoSkeletalModel &m,
+        s2mKalmanRecons::s2mKalmanParam params) :
     s2mKalmanRecons(m, m.nTechTags()*3, params),
     m_firstIteration(true)
 {
@@ -30,7 +32,10 @@ void s2mKalmanReconsMarkers::initialize(){
     m_PpInitial = m_Pp;
 }
 
-void s2mKalmanReconsMarkers::manageOcclusionDuringIteration(s2mMatrix &InvTp, Eigen::VectorXd &measure, const std::vector<unsigned int> &occlusion)
+void s2mKalmanReconsMarkers::manageOcclusionDuringIteration(
+        s2mMatrix &InvTp,
+        Eigen::VectorXd &measure,
+        const std::vector<unsigned int> &occlusion)
 {
     for (unsigned int i = 0; i < occlusion.size(); ++i)
          for (unsigned int j=occlusion[i] * 3; j< occlusion[i] * 3+3; ++j){
@@ -44,7 +49,13 @@ bool s2mKalmanReconsMarkers::first()
     return m_firstIteration;
 }
 
-void s2mKalmanReconsMarkers::reconstructFrame(s2mMusculoSkeletalModel &m, const s2mMarkers &Tobs, s2mGenCoord *Q, s2mGenCoord *Qdot, s2mGenCoord *Qddot, bool removeAxes){
+void s2mKalmanReconsMarkers::reconstructFrame(
+        s2mMusculoSkeletalModel &m,
+        const s2mMarkers &Tobs,
+        biorbd::utils::GenCoord *Q,
+        biorbd::utils::GenCoord *Qdot,
+        biorbd::utils::GenCoord *Qddot,
+        bool removeAxes){
     // Séparer les tobs en un grand vecteur
     Eigen::VectorXd T(3*Tobs.nTags());
     for (unsigned int i=0; i<Tobs.nTags(); ++i)
@@ -54,7 +65,13 @@ void s2mKalmanReconsMarkers::reconstructFrame(s2mMusculoSkeletalModel &m, const 
     reconstructFrame(m, T, Q, Qdot, Qddot, removeAxes);
 }
 
-void s2mKalmanReconsMarkers::reconstructFrame(s2mMusculoSkeletalModel &m, const std::vector<Eigen::Vector3d> &Tobs, s2mGenCoord *Q, s2mGenCoord *Qdot, s2mGenCoord *Qddot, bool removeAxes){
+void s2mKalmanReconsMarkers::reconstructFrame(
+        s2mMusculoSkeletalModel &m,
+        const std::vector<s2mNodeBone> &Tobs,
+        biorbd::utils::GenCoord *Q,
+        biorbd::utils::GenCoord *Qdot,
+        biorbd::utils::GenCoord *Qddot,
+        bool removeAxes){
     // Séparer les tobs en un grand vecteur
     Eigen::VectorXd T(3*Tobs.size());
     for (unsigned int i=0; i<Tobs.size(); ++i)
@@ -65,7 +82,13 @@ void s2mKalmanReconsMarkers::reconstructFrame(s2mMusculoSkeletalModel &m, const 
 }
 
 
-void s2mKalmanReconsMarkers::reconstructFrame(s2mMusculoSkeletalModel &m, const Eigen::VectorXd &Tobs, s2mGenCoord *Q, s2mGenCoord *Qdot, s2mGenCoord *Qddot, bool removeAxes){
+void s2mKalmanReconsMarkers::reconstructFrame(
+        s2mMusculoSkeletalModel &m,
+        const Eigen::VectorXd &Tobs,
+        biorbd::utils::GenCoord *Q,
+        biorbd::utils::GenCoord *Qdot,
+        biorbd::utils::GenCoord *Qddot,
+        bool removeAxes){
     // Une itération du filtre de Kalman
     if (m_firstIteration){
         m_firstIteration = false;

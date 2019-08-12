@@ -14,8 +14,8 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
 {
     public:
         s2mStaticOptimizationIpopt(s2mMusculoSkeletalModel &model,
-                const s2mGenCoord           &Q,
-                const s2mGenCoord           &Qdot,
+                const biorbd::utils::GenCoord           &Q,
+                const biorbd::utils::GenCoord           &Qdot,
                 const s2mTau                &tauTarget,
                 const s2mVector             &activationInit,
                 bool                        useResidual = true,
@@ -128,8 +128,8 @@ class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
         unsigned int m_nTauResidual;
         double m_eps;
         s2mVector m_activations;
-        s2mGenCoord m_Q;
-        s2mGenCoord m_Qdot;        
+        biorbd::utils::GenCoord m_Q;
+        biorbd::utils::GenCoord m_Qdot;
         s2mTau m_tauTarget;
         s2mVector m_tauResidual;
         double m_tauPonderation;

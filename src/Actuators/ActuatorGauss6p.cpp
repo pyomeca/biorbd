@@ -44,7 +44,7 @@ ActuatorGauss6p::~ActuatorGauss6p()
 }
 
 
-double ActuatorGauss6p::torqueMax(const s2mGenCoord &Q, const s2mGenCoord &Qdot){
+double ActuatorGauss6p::torqueMax(const biorbd::utils::GenCoord &Q, const biorbd::utils::GenCoord &Qdot){
     double pos(Q[m_dofIdx] * 180/M_PI);
     double speed(Qdot[m_dofIdx] * 180/M_PI);
 

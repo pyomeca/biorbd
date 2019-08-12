@@ -18,7 +18,10 @@ s2mMuscles::~s2mMuscles(){
 }
 
 
-void s2mMuscles::addMuscleGroup(const s2mString &name, const s2mString &originName, const s2mString &insertionName){
+void s2mMuscles::addMuscleGroup(
+        const s2mString &name,
+        const s2mString &originName,
+        const s2mString &insertionName){
     if (m_mus.size() > 0)
         s2mError::s2mAssert(getGroupId(name)==-1, "Muscle group already defined");
 
@@ -49,7 +52,13 @@ const s2mGroupeMusculaire &s2mMuscles::muscleGroup(const s2mString& name) const{
 }
 
 // From muscle activation (return muscle force)
-s2mTau s2mMuscles::muscularJointTorque(s2mJoints& m, const std::vector<s2mMuscleStateDynamics> &state, Eigen::VectorXd & F, bool updateKin, const s2mGenCoord* Q, const s2mGenCoord* QDot){
+s2mTau s2mMuscles::muscularJointTorque(
+        s2mJoints& m,
+        const std::vector<s2mMuscleStateDynamics> &state,
+        Eigen::VectorXd & F,
+        bool updateKin,
+        const biorbd::utils::GenCoord* Q,
+        const biorbd::utils::GenCoord* QDot){
 
     // Update de la position musculaire
     if (updateKin > 0)
@@ -64,13 +73,23 @@ s2mTau s2mMuscles::muscularJointTorque(s2mJoints& m, const std::vector<s2mMuscle
 }
 
 // From muscle activation (do not return muscle force)
-s2mTau s2mMuscles::muscularJointTorque(s2mJoints& m, const std::vector<s2mMuscleStateDynamics>& state, bool updateKin, const s2mGenCoord* Q, const s2mGenCoord* QDot){
-    s2mGenCoord dummy;
+s2mTau s2mMuscles::muscularJointTorque(
+        s2mJoints& m,
+        const std::vector<s2mMuscleStateDynamics>& state,
+        bool updateKin,
+        const biorbd::utils::GenCoord* Q,
+        const biorbd::utils::GenCoord* QDot){
+    biorbd::utils::GenCoord dummy;
     return muscularJointTorque(m, state, dummy, updateKin, Q, QDot);
 }
 
 // From Muscular Force
-s2mTau s2mMuscles::muscularJointTorque(s2mJoints& m, const Eigen::VectorXd& F, bool updateKin, const s2mGenCoord* Q, const s2mGenCoord* QDot){
+s2mTau s2mMuscles::muscularJointTorque(
+        s2mJoints& m,
+        const Eigen::VectorXd& F,
+        bool updateKin,
+        const biorbd::utils::GenCoord* Q,
+        const biorbd::utils::GenCoord* QDot){
 
     // Update de la position musculaire
     if (updateKin > 0)
@@ -84,7 +103,12 @@ s2mTau s2mMuscles::muscularJointTorque(s2mJoints& m, const Eigen::VectorXd& F, b
     return s2mTau(-jaco.transpose() * F);
 }
 
-std::vector<std::vector<std::shared_ptr<s2mMuscleForce>>> s2mMuscles::musclesForces(s2mJoints& m, const std::vector<s2mMuscleStateDynamics> &state, bool updateKin, const s2mGenCoord* Q, const s2mGenCoord* QDot){
+std::vector<std::vector<std::shared_ptr<s2mMuscleForce>>> s2mMuscles::musclesForces(
+        s2mJoints& m,
+        const std::vector<s2mMuscleStateDynamics> &state,
+        bool updateKin,
+        const biorbd::utils::GenCoord* Q,
+        const biorbd::utils::GenCoord* QDot){
 
     // Update de la position musculaire
     if (updateKin > 0)
@@ -125,7 +149,9 @@ s2mMatrix s2mMuscles::musclesLengthJacobian(s2mJoints &m)
 
 }
 
-s2mMatrix s2mMuscles::musclesLengthJacobian(s2mJoints& m, const s2mGenCoord &Q){
+s2mMatrix s2mMuscles::musclesLengthJacobian(
+        s2mJoints& m,
+        const biorbd::utils::GenCoord &Q){
 
     // Update de la position musculaire
     updateMuscles(m, Q, true);
@@ -140,7 +166,11 @@ unsigned int s2mMuscles::nbMuscleTotal() const{
     return total;
 }
 
-void s2mMuscles::updateMuscles(s2mJoints& m, const s2mGenCoord& Q, const s2mGenCoord& QDot, bool updateKin){
+void s2mMuscles::updateMuscles(
+        s2mJoints& m,
+        const biorbd::utils::GenCoord& Q,
+        const biorbd::utils::GenCoord& QDot,
+        bool updateKin){
 
     // Updater tous les muscles
     int updateKinTP;
@@ -156,7 +186,10 @@ void s2mMuscles::updateMuscles(s2mJoints& m, const s2mGenCoord& Q, const s2mGenC
             updateKinTP=1;
         }
 }
-void s2mMuscles::updateMuscles(s2mJoints& m, const s2mGenCoord& Q, bool updateKin){
+void s2mMuscles::updateMuscles(
+        s2mJoints& m,
+        const biorbd::utils::GenCoord& Q,
+        bool updateKin){
 
     // Updater tous les muscles
     int updateKinTP;
@@ -173,7 +206,10 @@ void s2mMuscles::updateMuscles(s2mJoints& m, const s2mGenCoord& Q, bool updateKi
             updateKinTP=1;
         }
 }
-void s2mMuscles::updateMuscles(std::vector<std::vector<s2mNodeMuscle>>& musclePointsInGlobal, std::vector<s2mMatrix> &jacoPointsInGlobal, const s2mGenCoord& QDot){
+void s2mMuscles::updateMuscles(
+        std::vector<std::vector<s2mNodeMuscle>>& musclePointsInGlobal,
+        std::vector<s2mMatrix> &jacoPointsInGlobal,
+        const biorbd::utils::GenCoord& QDot){
     std::vector<s2mGroupeMusculaire>::iterator grp=m_mus.begin();
     unsigned int cmpMuscle = 0;
     for (unsigned int i=0; i<m_mus.size(); ++i) // groupe musculaire
@@ -182,7 +218,9 @@ void s2mMuscles::updateMuscles(std::vector<std::vector<s2mNodeMuscle>>& musclePo
             ++cmpMuscle;
         }
 }
-void s2mMuscles::updateMuscles(std::vector<std::vector<s2mNodeMuscle>>& musclePointsInGlobal, std::vector<s2mMatrix> &jacoPointsInGlobal){
+void s2mMuscles::updateMuscles(
+        std::vector<std::vector<s2mNodeMuscle>>& musclePointsInGlobal,
+        std::vector<s2mMatrix> &jacoPointsInGlobal){
     // Updater tous les muscles
     std::vector<s2mGroupeMusculaire>::iterator grp=m_mus.begin();
     unsigned int cmpMuscle = 0;

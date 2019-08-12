@@ -16,7 +16,7 @@ void S2M_MusclesLength( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
 
     // Cellules de sortie
     mwSize dims[2];
@@ -51,7 +51,7 @@ void S2M_MusclesTendonLength( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
 
     // Cellules de sortie
     mwSize dims[2];

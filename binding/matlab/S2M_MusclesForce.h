@@ -17,10 +17,10 @@ void S2M_MusclesForce( int, mxArray *plhs[],
     unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Qdot = getParameterQ(prhs, 3, nQdot);
+    std::vector<biorbd::utils::GenCoord> Qdot = getParameterQ(prhs, 3, nQdot);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));

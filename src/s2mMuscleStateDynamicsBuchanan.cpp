@@ -3,7 +3,9 @@
 
 #include <math.h>
 
-s2mMuscleStateDynamicsBuchanan::s2mMuscleStateDynamicsBuchanan(const double &neuralCommand, const double &e) :
+s2mMuscleStateDynamicsBuchanan::s2mMuscleStateDynamicsBuchanan(
+        const double &neuralCommand,
+        const double &e) :
     s2mMuscleStateDynamics(e,0),
     m_neuralCommand(neuralCommand),
     m_shapeFactor(-3)
@@ -30,7 +32,9 @@ double s2mMuscleStateDynamicsBuchanan::shapeFactor()
     return m_shapeFactor;
 }
 
-double s2mMuscleStateDynamicsBuchanan::timeDerivativeExcitation(const s2mMuscleCaracteristics &caract, const bool alreadyNormalized){
+double s2mMuscleStateDynamicsBuchanan::timeDerivativeExcitation(
+        const s2mMuscleCaracteristics &caract,
+        const bool alreadyNormalized){
     // Move excitation to activation to use properly s2mMuscleStateDynamics::timeDerivativeActivation
     double activationTp = m_activation;
     m_activation = m_excitation;

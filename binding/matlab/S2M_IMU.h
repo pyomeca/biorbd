@@ -16,7 +16,7 @@ void S2M_IMU( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
 
     // Récupérer les IMU selon que l'on veut tous ou seulement anatomiques ou techniques
     unsigned int nIMUs(0); // Nombre de IMU
@@ -25,17 +25,17 @@ void S2M_IMU( int, mxArray *plhs[],
         s2mString type(getString(prhs,3));
         if (!type.tolower().compare("all")){
             nIMUs = model->nIMUs();
-            for (std::vector<s2mGenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
+            for (std::vector<biorbd::utils::GenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
                  IMU_tp.push_back(model->IMU(*model, *Q_it));
         }
         else if (!type.tolower().compare("anatomical")){
             nIMUs = model->nAnatIMUs();
-            for (std::vector<s2mGenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
+            for (std::vector<biorbd::utils::GenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
                  IMU_tp.push_back(model->anatomicalIMU(*model, *Q_it));
         }
         else if (!type.tolower().compare("technical")){
             nIMUs = model->nTechIMUs();
-            for (std::vector<s2mGenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
+            for (std::vector<biorbd::utils::GenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
                  IMU_tp.push_back(model->technicalIMU(*model, *Q_it));
         }
         else {
@@ -47,7 +47,7 @@ void S2M_IMU( int, mxArray *plhs[],
     }
     else {
         nIMUs = model->nIMUs();
-        for (std::vector<s2mGenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
+        for (std::vector<biorbd::utils::GenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
              IMU_tp.push_back(model->IMU(*model, *Q_it));
     }
 

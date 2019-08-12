@@ -3,13 +3,14 @@
 
 #include "Utils/Error.h"
 
-s2mNodeBone::s2mNodeBone(const Eigen::Vector3d &v,
-                         const s2mString &name,
-                         const s2mString &parentName,
-                         bool tech,
-                         bool ana,
-                         const s2mString& axesToRemove, // Axes à retirer
-                         int id) :
+s2mNodeBone::s2mNodeBone(
+        const Eigen::Vector3d &v,
+        const s2mString &name,
+        const s2mString &parentName,
+        bool tech,
+        bool ana,
+        const s2mString& axesToRemove, // Axes à retirer
+        int id) :
     s2mNode(v, name, parentName),
     m_nbAxesToRemove(0),
     m_technical(tech),

@@ -3,7 +3,10 @@
 
 #include <Eigen/Dense>
 
-s2mNodeAttitude::s2mNodeAttitude(const s2mAttitude &v, const s2mString &name, const s2mString &parentName) : // Nom du parent
+s2mNodeAttitude::s2mNodeAttitude(
+        const s2mAttitude &v,
+        const s2mString &name,
+        const s2mString &parentName) : // Nom du parent
     s2mAttitude(v),
     m_parentName(parentName),
     m_RTName(name)

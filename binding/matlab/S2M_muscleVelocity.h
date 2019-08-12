@@ -17,10 +17,10 @@ void S2M_muscleVelocity( int, mxArray *plhs[],
     unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
 
     // Recevoir Qdot
-    std::vector<s2mGenCoord> Qdot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::utils::GenCoord> Qdot = getParameterQdot(prhs, 3, nQdot);
 
     // S'assurer que le même nombre d'instants a été envoyé
     if (Q.size() != Qdot.size()) {

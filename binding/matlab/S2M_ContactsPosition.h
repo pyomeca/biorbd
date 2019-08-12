@@ -16,7 +16,7 @@ void S2M_ContactsPosition( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
 
     // Recevoir Q
-    s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Trouver où sont les marqueurs
     std::vector<s2mNode> Contact_tp = model->constraintsInGlobal(*model,Q, true);

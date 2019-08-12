@@ -17,9 +17,9 @@ void S2M_segmentsVelocities( int, mxArray *plhs[],
     unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
 
     // Recevoir Q
-    s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
     // Recevoir Qdot
-    s2mGenCoord QDot = *getParameterQdot(prhs, 3, nQdot).begin();
+    biorbd::utils::GenCoord QDot = *getParameterQdot(prhs, 3, nQdot).begin();
 
     // Update sur la cinématique
     RigidBodyDynamics::UpdateKinematicsCustom(*model, &Q, &QDot, nullptr);

@@ -7,12 +7,13 @@
 
 class BIORBD_API s2mNodeMuscle : public s2mNode
 {
-    public:
-        s2mNodeMuscle(const Eigen::Vector3d& = Eigen::Vector3d(0,0,0), // Position
-                      const s2mString& = "", // Nom du noeud
-                      const s2mString& = ""); //  Nom du parent
+public:
+    s2mNodeMuscle(
+            const Eigen::Vector3d& = Eigen::Vector3d(0,0,0), // Position
+            const s2mString& = "", // Nom du noeud
+            const s2mString& = ""); //  Nom du parent
 
-        virtual ~s2mNodeMuscle();
+    virtual ~s2mNodeMuscle();
 
 };
 

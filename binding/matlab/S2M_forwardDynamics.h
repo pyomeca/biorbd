@@ -36,9 +36,9 @@ void S2M_forwardDynamics( int, mxArray *plhs[],
     unsigned int nRoot = model->nbRoot();
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<s2mGenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
     // Recevoir Tau
     std::vector<s2mTau> Tau = getParameterTau(prhs, 4, nTau, nRoot);
 
@@ -65,13 +65,13 @@ void S2M_forwardDynamics( int, mxArray *plhs[],
         RigidBodyDynamics::UpdateKinematicsCustom(*model, &(*(Q.begin()+j)), &(*(QDot.begin()+j)), nullptr);
 
         // Trouver la dynamique directe a cette configuration
-        s2mGenCoord QDDot(Eigen::VectorXd::Zero(nQddot));
+        biorbd::utils::GenCoord QDDot(Eigen::VectorXd::Zero(nQddot));
         if (contact == 1){ // Si on a un contact
             model->getConstraints_nonConst(*model).linear_solver = RigidBodyDynamics::Math::LinearSolverColPivHouseholderQR;
             RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*model, *(Q.begin()+j), *(QDot.begin()+j), *(Tau.begin()+j), model->getConstraints_nonConst(*model),QDDot);// Forward dynamics
         }
         else if (contact == -1){ // Si on a une impulsion
-            s2mGenCoord QdotPost(static_cast<unsigned int>((*(Q.begin()+j)).size()));
+            biorbd::utils::GenCoord QdotPost(static_cast<unsigned int>((*(Q.begin()+j)).size()));
             RigidBodyDynamics::ComputeConstraintImpulsesDirect(*model, *(Q.begin()+j), *(QDot.begin()+j), model->getConstraints_nonConst(*model), QdotPost);
 
             // Calcul de la dynamique

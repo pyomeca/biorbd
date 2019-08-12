@@ -5,19 +5,22 @@
 #include "Utils/Vector.h"
 
 class s2mJoints;
-class BIORBD_API s2mGenCoord : public s2mVector
+namespace biorbd { namespace utils {
+class BIORBD_API GenCoord : public s2mVector
 {
 public:
-    s2mGenCoord();
-    s2mGenCoord(const s2mGenCoord &Q);
-    s2mGenCoord(const s2mVector& v);
-    s2mGenCoord(const Eigen::VectorXd& v);
-    s2mGenCoord(unsigned int i);
-    s2mGenCoord(const s2mJoints& j);
-    virtual ~s2mGenCoord();
+    GenCoord();
+    GenCoord(const GenCoord &Q);
+    GenCoord(const s2mVector& v);
+    GenCoord(const Eigen::VectorXd& v);
+    GenCoord(unsigned int i);
+    GenCoord(const s2mJoints& j);
+    virtual ~GenCoord();
 
-    s2mGenCoord& operator=(const Eigen::VectorXd& vecX);
+    GenCoord& operator=(const Eigen::VectorXd& vecX);
 
 };
+
+}}
 
 #endif // S2M_GEN_COORD_H

@@ -1,12 +1,6 @@
-[RBDL - dev]
-CMAKE_INSTALL_PREFIX {conda_env_path}
+[biorbd]
 
-[dlib]
-DLIB_JPEG_SUPPORT OFF
-DLIB_PNG_SUPPORT OFF
 
-[pyorbdl]
-CMAKE_INSTALL_PREFIX {conda_env_path}
-Faire un touch sur {conda_env_path_python_siteavailable}/S2MLib/__init__.py?
-
+[python]
+Segfault when using Tags (it doesn't control for the size of Q)
 

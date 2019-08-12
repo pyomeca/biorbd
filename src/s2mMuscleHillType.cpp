@@ -23,10 +23,11 @@ s2mMuscleHillType::s2mMuscleHillType(const s2mString& name) :
     setForce();
     //ctor
 }
-s2mMuscleHillType::s2mMuscleHillType(const s2mMuscleGeometry& g,
-                                     const s2mMuscleCaracteristics& c,
-                                     const s2mMusclePathChangers & w,
-                                     const s2mMuscleStateDynamics & s) :
+s2mMuscleHillType::s2mMuscleHillType(
+        const s2mMuscleGeometry& g,
+        const s2mMuscleCaracteristics& c,
+        const s2mMusclePathChangers & w,
+        const s2mMuscleStateDynamics & s) :
     s2mMuscle("",g,c,w,s),
     m_cste_FlCE_1(0.15),
     m_cste_FlCE_2(0.45),
@@ -42,11 +43,12 @@ s2mMuscleHillType::s2mMuscleHillType(const s2mMuscleGeometry& g,
     setForce();
     //ctor
 }
-s2mMuscleHillType::s2mMuscleHillType(const s2mString& name,
-                                     const s2mMuscleGeometry& g,
-                                     const s2mMuscleCaracteristics& c,
-                                     const s2mMusclePathChangers & w,
-                                     const s2mMuscleStateDynamics & s) :
+s2mMuscleHillType::s2mMuscleHillType(
+        const s2mString& name,
+        const s2mMuscleGeometry& g,
+        const s2mMuscleCaracteristics& c,
+        const s2mMusclePathChangers & w,
+        const s2mMuscleStateDynamics & s) :
     s2mMuscle(name,g,c,w,s),
     m_cste_FlCE_1(0.15),
     m_cste_FlCE_2(0.45),
@@ -129,7 +131,12 @@ void s2mMuscleHillType::setForce()
     //dtor
 }
 
-const std::vector<std::shared_ptr<s2mMuscleForce>>& s2mMuscleHillType::force(s2mJoints& m, const s2mGenCoord& Q, const s2mGenCoord& Qdot, const s2mMuscleStateDynamics& EMG, const int updateKinLevel){
+const std::vector<std::shared_ptr<s2mMuscleForce>>& s2mMuscleHillType::force(
+        s2mJoints& m,
+        const biorbd::utils::GenCoord& Q,
+        const biorbd::utils::GenCoord& Qdot,
+        const s2mMuscleStateDynamics& EMG,
+        const int updateKinLevel){
     // Update de la configuration
     if (updateKinLevel == 1)
         updateOrientations(m,Q,Qdot,false);
@@ -142,7 +149,11 @@ const std::vector<std::shared_ptr<s2mMuscleForce>>& s2mMuscleHillType::force(s2m
     return force(EMG);
 }
 
-const std::vector<std::shared_ptr<s2mMuscleForce>> &s2mMuscleHillType::force(s2mJoints &, const s2mGenCoord &, const s2mMuscleStateDynamics &, const int)
+const std::vector<std::shared_ptr<s2mMuscleForce>> &s2mMuscleHillType::force(
+        s2mJoints &,
+        const biorbd::utils::GenCoord &,
+        const s2mMuscleStateDynamics &,
+        const int)
 {
     s2mError::s2mAssert(0, "Hill type needs velocity");
     return m_force; // Will never reach here

@@ -75,7 +75,7 @@ void S2M_inverseKinematicsEKF_IMUstep( int , mxArray *plhs[],
     // Si c'est le premier frame recevoir Qinit
 
     if (kalman->first() && nrhs >= 5){
-        s2mGenCoord Qinit(*getParameterQ(prhs, 4, nQ).begin());
+        biorbd::utils::GenCoord Qinit(*getParameterQ(prhs, 4, nQ).begin());
         kalman->setInitState(&Qinit);
     }
 
@@ -88,9 +88,9 @@ void S2M_inverseKinematicsEKF_IMUstep( int , mxArray *plhs[],
     double *qddot = mxGetPr(plhs[2]);
 
     // Faire la cinématique inverse a chaque instant
-    s2mGenCoord Q(nQ);
-    s2mGenCoord QDot(nQdot);
-    s2mGenCoord QDDot(nQddot);
+    biorbd::utils::GenCoord Q(nQ);
+    biorbd::utils::GenCoord QDot(nQdot);
+    biorbd::utils::GenCoord QDDot(nQddot);
 
     // Faire la cinématique inverse
     kalman->reconstructFrame(*model, imus, &Q, &QDot, &QDDot);
@@ -138,7 +138,7 @@ void S2M_inverseKinematicsEKF_IMUallInOneCall( int, mxArray *plhs[],
 
     // Recevoir Qinit
     if (kalman.first() && nrhs >= 4){
-        s2mGenCoord Qinit(*getParameterQ(prhs, 3, nQ).begin());
+        biorbd::utils::GenCoord Qinit(*getParameterQ(prhs, 3, nQ).begin());
         kalman.setInitState(&Qinit);
     }
 
@@ -153,9 +153,9 @@ void S2M_inverseKinematicsEKF_IMUallInOneCall( int, mxArray *plhs[],
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrames; ++i){
         // Faire la cinématique inverse a chaque instant
-        s2mGenCoord Q(nQ);
-        s2mGenCoord QDot(nQdot);
-        s2mGenCoord QDDot(nQddot);
+        biorbd::utils::GenCoord Q(nQ);
+        biorbd::utils::GenCoord QDot(nQdot);
+        biorbd::utils::GenCoord QDDot(nQddot);
 
         // Faire la cinématique inverse
         kalman.reconstructFrame(*model, *(imusOverTime.begin()+i), &Q, &QDot, &QDDot);

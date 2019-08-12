@@ -3,12 +3,13 @@
 
 #include "s2mJoints.h"
 
-s2mWrappingCylinder::s2mWrappingCylinder(const s2mAttitude &v, // Position du centre
-                                         const double &dia, // Diametre vue du dessus
-                                         const double &length, // Longueur du cylindre
-                                         const int &side, // sens du wrapping (+1 ou -1)
-                                         const s2mString &name,  // Nom du cylindre
-                                         const s2mString &parentName) : // Nom du parent sur lequel il s'attache :
+s2mWrappingCylinder::s2mWrappingCylinder(
+        const s2mAttitude &v, // Position du centre
+        const double &dia, // Diametre vue du dessus
+        const double &length, // Longueur du cylindre
+        const int &side, // sens du wrapping (+1 ou -1)
+        const s2mString &name,  // Nom du cylindre
+        const s2mString &parentName) : // Nom du parent sur lequel il s'attache :
     s2mWrappingObject(v.trans(),name,parentName),
     m_dia(dia),
     m_length(length),
@@ -26,14 +27,20 @@ s2mWrappingCylinder::~s2mWrappingCylinder()
     //dtor
 }
 
-void s2mWrappingCylinder::wrapPoints(s2mNodeMuscle& p1, s2mNodeMuscle& p2, double *length){
+void s2mWrappingCylinder::wrapPoints(
+        s2mNodeMuscle& p1,
+        s2mNodeMuscle& p2,
+        double *length){
     p1 = m_p1Wrap;
     p2 = m_p2Wrap;
     if (length != nullptr)
         *length = m_lengthAroundWrap;
 }
 
-s2mAttitude s2mWrappingCylinder::RT(s2mJoints &m, const s2mGenCoord& Q, const bool &updateKin){
+s2mAttitude s2mWrappingCylinder::RT(
+        s2mJoints &m,
+        const biorbd::utils::GenCoord& Q,
+        const bool &updateKin){
 
     // Récupérer la matrice de rototrans du cylindre dans le global
     s2mAttitude parent(m.globalJCS(Q, m_parentName, updateKin));
@@ -66,12 +73,25 @@ void s2mWrappingCylinder::setLength(double val)
     m_length = val;
 }
 
-void s2mWrappingCylinder::wrapPoints(s2mJoints& m, const s2mGenCoord& Q, const s2mNodeMuscle& p1_bone, const s2mNodeMuscle& p2_bone, s2mNodeMuscle& p1, s2mNodeMuscle& p2, double *length) {
+void s2mWrappingCylinder::wrapPoints(
+        s2mJoints& m,
+        const biorbd::utils::GenCoord& Q,
+        const s2mNodeMuscle& p1_bone,
+        const s2mNodeMuscle& p2_bone,
+        s2mNodeMuscle& p1,
+        s2mNodeMuscle& p2,
+        double *length) {
     // Cette fonction prend un modele et une position du modele et trouve l'endroit ou le muscle 1 et 2 quittent le wrapping object
 
     wrapPoints(RT(m,Q), p1_bone, p2_bone, p1, p2, length);
 }
-void s2mWrappingCylinder::wrapPoints(const s2mAttitude& RT, const s2mNodeMuscle& p1_bone, const s2mNodeMuscle& p2_bone, s2mNodeMuscle& p1, s2mNodeMuscle& p2, double *length) {
+void s2mWrappingCylinder::wrapPoints(
+        const s2mAttitude& RT,
+        const s2mNodeMuscle& p1_bone,
+        const s2mNodeMuscle& p2_bone,
+        s2mNodeMuscle& p1,
+        s2mNodeMuscle& p2,
+        double *length) {
     // Cette fonction une position du wrapping et trouve l'endroit ou le muscle 1 et 2 quittent le wrapping object
 
     // Trouver les nodes dans le repere RT (du cylindre)
@@ -109,7 +129,9 @@ void s2mWrappingCylinder::wrapPoints(const s2mAttitude& RT, const s2mNodeMuscle&
         m_lengthAroundWrap = *length;
 }
 
-void s2mWrappingCylinder::findTangentToCircle(const s2mNodeMuscle& p, s2mNodeMuscle& p_tan) const {
+void s2mWrappingCylinder::findTangentToCircle(
+        const s2mNodeMuscle& p,
+        s2mNodeMuscle& p_tan) const {
     double p_dot = p.block(0,0,2,1).dot(p.block(0,0,2,1));
     Eigen::Vector2d Q0 = rayon()*rayon()/p_dot*p.block(0,0,2,1);
     Eigen::Matrix2d tp;
@@ -126,7 +148,9 @@ void s2mWrappingCylinder::findTangentToCircle(const s2mNodeMuscle& p, s2mNodeMus
     // Choisir une des deux tangente
     selectTangents(m, p_tan);
 }
-void s2mWrappingCylinder::selectTangents(const NodeMusclePair &p1, s2mNodeMuscle &p_tan) const {
+void s2mWrappingCylinder::selectTangents(
+        const NodeMusclePair &p1,
+        s2mNodeMuscle &p_tan) const {
     if (m_side < 0) // si le side est -1
         if (p1.m_p2(0) < p1.m_p1(0))
             p_tan = p1.m_p2;
@@ -141,7 +165,9 @@ void s2mWrappingCylinder::selectTangents(const NodeMusclePair &p1, s2mNodeMuscle
 
 
 }
-bool s2mWrappingCylinder::findVerticalNode(const NodeMusclePair &glob, NodeMusclePair &wrapper) const {
+bool s2mWrappingCylinder::findVerticalNode(
+        const NodeMusclePair &glob,
+        NodeMusclePair &wrapper) const {
     // Avant toute chose, s'assurer que les points wrapent
     if (!checkIfWraps(glob, wrapper)){ // S'ils ne doivent pas passer par le wrap, mettre des nan et arreter
         for (unsigned int i=0; i<3; ++i){
@@ -196,7 +222,9 @@ bool s2mWrappingCylinder::findVerticalNode(const NodeMusclePair &glob, NodeMuscl
 
     return true;
 }
-bool s2mWrappingCylinder::checkIfWraps(const NodeMusclePair &glob, NodeMusclePair &wrapper) const {
+bool s2mWrappingCylinder::checkIfWraps(
+        const NodeMusclePair &glob,
+        NodeMusclePair &wrapper) const {
     bool isWrap = true;
 
     // Premiers tests rapides

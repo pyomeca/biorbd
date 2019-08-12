@@ -16,7 +16,7 @@ void S2M_segmentsInertia( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */ /**** ATTENTION NDDL A ÉTÉ REMPLACÉ PAR NQ, SEGFAULT? ***/
 
     // Recevoir Q
-    s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Update sur la cinématique (placer les segments)
     RigidBodyDynamics::UpdateKinematicsCustom(*model, &Q, nullptr, nullptr);

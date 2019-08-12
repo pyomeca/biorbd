@@ -8,17 +8,22 @@
 // The type of container used to hold the state vector
 typedef std::vector< double > state_type;
 
-class s2mGenCoord;
+namespace biorbd { namespace utils {
+class GenCoord;
+}}
 class s2mJoints;
 class BIORBD_API s2mIntegrator
 {
     public:
         s2mIntegrator();
 
-        void integrate(RigidBodyDynamics::Model*, const s2mGenCoord&, const Eigen::VectorXd&, const double&, const double&, const double&);
+        void integrate(
+                RigidBodyDynamics::Model*,
+                const biorbd::utils::GenCoord&,
+                const Eigen::VectorXd&, const double&, const double&, const double&);
         void operator() ( const state_type &x , state_type &dxdt , const double /* t */ );
 
-        s2mGenCoord getX(const unsigned int&); // Return the Q for a given step
+        biorbd::utils::GenCoord getX(const unsigned int&); // Return the Q for a given step
         void showAll(); // Show every steps with every dof
         unsigned int steps() const {return m_steps+1;}
     protected:

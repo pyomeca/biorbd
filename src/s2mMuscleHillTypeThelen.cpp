@@ -1,19 +1,21 @@
 #define BIORBD_API_EXPORTS
 #include "s2mMuscleHillTypeThelen.h"
 
-s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(const s2mMuscleGeometry& g,
-                                                const s2mMuscleCaracteristics& c,
-                                                const s2mMusclePathChangers & w,
-                                                const s2mMuscleStateDynamics & s) :
+s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(
+        const s2mMuscleGeometry& g,
+        const s2mMuscleCaracteristics& c,
+        const s2mMusclePathChangers & w,
+        const s2mMuscleStateDynamics & s) :
     s2mMuscleHillType(g,c,w,s)
 {
     setType();
 }
-s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(const s2mString& n,
-                                                const s2mMuscleGeometry& g,
-                                                const s2mMuscleCaracteristics& c,
-                                                const s2mMusclePathChangers & w,
-                                                const s2mMuscleStateDynamics & s) :
+s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(
+        const s2mString& n,
+        const s2mMuscleGeometry& g,
+        const s2mMuscleCaracteristics& c,
+        const s2mMusclePathChangers & w,
+        const s2mMuscleStateDynamics & s) :
     s2mMuscleHillType(n,g,c,w,s)
 {
     setType();

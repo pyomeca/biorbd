@@ -824,7 +824,7 @@ std::vector<std::vector<Eigen::Vector3d>> s2mRead::readMarkerDataFile(const s2mS
     return markers;
 }
 
-std::vector<s2mGenCoord> s2mRead::readQDataFile(const s2mString &path){
+std::vector<biorbd::utils::GenCoord> s2mRead::readQDataFile(const s2mString &path){
     // Ouverture du fichier
     // std::cout << "Loading kin file: " << path << std::endl;
     s2mIfStream file(path.c_str(), std::ios::in);
@@ -845,7 +845,7 @@ std::vector<s2mGenCoord> s2mRead::readQDataFile(const s2mString &path){
     file.readSpecificTag("nbintervals", tp);
     unsigned int nbIntervals(static_cast<unsigned int>(atoi(tp.c_str())));
 
-    std::vector<s2mGenCoord> kinematics;
+    std::vector<biorbd::utils::GenCoord> kinematics;
     // Descendre jusqu'à la définition d'un markeur
     for (unsigned int j=0; j<nbIntervals+1; j++){
         while (tp.compare("T")){
@@ -855,7 +855,7 @@ std::vector<s2mGenCoord> s2mRead::readQDataFile(const s2mString &path){
 
         double time;
         file.read(time);
-        s2mGenCoord position(NDDL);
+        biorbd::utils::GenCoord position(NDDL);
         for (unsigned int i=0; i<NDDL; i++)
             file.read(position(i));
 

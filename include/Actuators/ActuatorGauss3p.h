@@ -4,7 +4,9 @@
 #include "biorbdConfig.h"
 #include "Actuators/Actuator.h"
 
-class s2mGenCoord;
+namespace biorbd { namespace utils {
+class GenCoord;
+}}
 namespace biorbd { namespace actuator {
 class BIORBD_API ActuatorGauss3p : public Actuator
 {
@@ -22,7 +24,9 @@ class BIORBD_API ActuatorGauss3p : public Actuator
                            unsigned int dofIdx,
                            const s2mString &jointName = "");
         virtual ~ActuatorGauss3p();
-        virtual double torqueMax(const s2mGenCoord &Q, const s2mGenCoord &Qdot);
+        virtual double torqueMax(
+                const biorbd::utils::GenCoord &Q,
+                const biorbd::utils::GenCoord &Qdot);
 
     protected:
 

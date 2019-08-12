@@ -21,7 +21,7 @@ void checkNombreInputParametres(int nrhs, int min, int max, std::string message 
     }
 }
 
-std::vector<std::vector<Eigen::Vector3d>> getParameterAllMarkers(const mxArray*prhs[], unsigned int idx, int nMark=-1){
+std::vector<std::vector<s2mNodeBone>> getParameterAllMarkers(const mxArray*prhs[], unsigned int idx, int nMark=-1){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -66,15 +66,15 @@ std::vector<std::vector<Eigen::Vector3d>> getParameterAllMarkers(const mxArray*p
 
 
     // Créer la sortie
-    std::vector<std::vector<Eigen::Vector3d>> markersOverTime;
+    std::vector<std::vector<s2mNodeBone>> markersOverTime;
 
     // Stocker les valeurs dans le format de sortie
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrames; ++i){
-        std::vector<Eigen::Vector3d> markers_tp; // Markers a un temps i
+        std::vector<s2mNodeBone> markers_tp; // Markers a un temps i
 
         for (int j=0; j<nMark; ++j){
-            Eigen::Vector3d tp(Eigen::Vector3d(markers[m*cmp+0], // m est 3 ou 4
+            s2mNodeBone tp(Eigen::Vector3d(markers[m*cmp+0], // m est 3 ou 4
                                            markers[m*cmp+1],
                                            markers[m*cmp+2]));
             markers_tp.push_back(tp);
@@ -160,7 +160,7 @@ std::vector<std::vector<s2mAttitude>> getParameterAllIMUs(const mxArray*prhs[], 
 }
 
 
-s2mGenCoord getVector(const mxArray*prhs[], unsigned int idx, std::string type = ""){
+biorbd::utils::GenCoord getVector(const mxArray*prhs[], unsigned int idx, std::string type = ""){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -185,14 +185,14 @@ s2mGenCoord getVector(const mxArray*prhs[], unsigned int idx, std::string type =
     double *q=mxGetPr(prhs[idx]); //matrice de position
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    s2mGenCoord vect(Eigen::VectorXd::Zero (static_cast<unsigned int>(length)));
+    biorbd::utils::GenCoord vect(Eigen::VectorXd::Zero (static_cast<unsigned int>(length)));
     for (unsigned int i=0; i<length; i++)
         vect(i) = q[i];
 
     return vect;
 }
 
-s2mGenCoord getVector(const mxArray*prhs[], unsigned int idx, unsigned int length, std::string type = ""){
+biorbd::utils::GenCoord getVector(const mxArray*prhs[], unsigned int idx, unsigned int length, std::string type = ""){
     mwSize m=mxGetM(prhs[idx]); // line
     // Get the number of elements in the input argument
     if ( !(m==length || m==1) ){ // on permet le nombre juste ou juste une valeur qui sera dupliquée
@@ -207,7 +207,7 @@ Eigen::Vector3d getVector3d(const mxArray*prhs[], unsigned int idx){
     return getVector(prhs, idx, 3, "Vector3d").vector();
 }
 
-std::vector<s2mGenCoord> getParameterQ(const mxArray*prhs[], unsigned int idx, unsigned int nDof, std::string type = "q"){
+std::vector<biorbd::utils::GenCoord> getParameterQ(const mxArray*prhs[], unsigned int idx, unsigned int nDof, std::string type = "q"){
 
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
@@ -230,9 +230,9 @@ std::vector<s2mGenCoord> getParameterQ(const mxArray*prhs[], unsigned int idx, u
     double *q=mxGetPr(prhs[idx]); //matrice de position
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    std::vector<s2mGenCoord> Q;
+    std::vector<biorbd::utils::GenCoord> Q;
     for (unsigned int j=0; j<nFrames; ++j){
-        s2mGenCoord Q_tp(Eigen::VectorXd::Zero(nDof));
+        biorbd::utils::GenCoord Q_tp(Eigen::VectorXd::Zero(nDof));
         for (unsigned int i=0; i<nDof; i++)
             Q_tp[i] = q[j*nDof+i];
 
@@ -241,14 +241,14 @@ std::vector<s2mGenCoord> getParameterQ(const mxArray*prhs[], unsigned int idx, u
 
     return Q;
 }
-std::vector<s2mGenCoord> getParameterQddot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
+std::vector<biorbd::utils::GenCoord> getParameterQddot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
     return getParameterQ(prhs, idx, nDof, "qddot");
 }
-std::vector<s2mGenCoord> getParameterQdot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
+std::vector<biorbd::utils::GenCoord> getParameterQdot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
     return getParameterQ(prhs, idx, nDof, "qdot");
 }
 std::vector<s2mTau> getParameterTau(const mxArray*prhs[], unsigned int idx, unsigned int nControl, unsigned int nRoot){
-    std::vector<s2mGenCoord> AllTau_tp = getParameterQ(prhs, idx, nControl, "tau");
+    std::vector<biorbd::utils::GenCoord> AllTau_tp = getParameterQ(prhs, idx, nControl, "tau");
     std::vector<s2mTau> AllTau;
 
     for (unsigned int j=0; j<AllTau_tp.size(); ++j){

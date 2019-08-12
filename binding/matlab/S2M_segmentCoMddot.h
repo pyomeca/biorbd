@@ -18,11 +18,11 @@ void S2M_segmentCOMddot( int, mxArray *plhs[],
     unsigned int nQddot = model->nbQddot(); /* Get the number of DoF */
 
     // Recevoir Q
-    s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
     // Recevoir Qdot
-    s2mGenCoord QDot = *getParameterQdot(prhs, 3, nQdot).begin();
+    biorbd::utils::GenCoord QDot = *getParameterQdot(prhs, 3, nQdot).begin();
     // Recevoir Qddot
-    s2mGenCoord QDDot = *getParameterQddot(prhs, 4, nQddot).begin();
+    biorbd::utils::GenCoord QDDot = *getParameterQddot(prhs, 4, nQddot).begin();
     // Recevoir le numéro du segment (optionnel)
     int i(0);
     if (nrhs==6)

@@ -17,9 +17,9 @@ void S2M_computeQdot( int, mxArray *plhs[],
     unsigned int nQdot = model->nbQdot();
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<s2mGenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
 
     // S'assurer que Q et Qdot sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));
@@ -36,7 +36,7 @@ void S2M_computeQdot( int, mxArray *plhs[],
         RigidBodyDynamics::UpdateKinematicsCustom(*model, &(*(Q.begin()+j)), &(*(QDot.begin()+j)), nullptr);
 
         // Trouver la dynamique directe a cette configuration
-        s2mGenCoord QDotPost;
+        biorbd::utils::GenCoord QDotPost;
         model->computeQdot(*model, *(Q.begin()+j), *(QDot.begin()+j), QDotPost); // Calcul du QdotPost
 
         // Remplir l'output

@@ -16,11 +16,11 @@ void S2M_globalJCS( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
 
     // Trouver les RT
     std::vector<std::vector<s2mAttitude>> JSC_vec;
-    for (std::vector<s2mGenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
+    for (std::vector<biorbd::utils::GenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
         JSC_vec.push_back(model->globalJCS(*Q_it));
 
     // Create a matrix for the return argument

@@ -10,7 +10,9 @@ class s2mMusculoSkeletalModel;
 class s2mPath;
 class s2mString;
 class s2mNode;
-class s2mGenCoord;
+namespace biorbd { namespace utils {
+class GenCoord;
+}}
 class s2mBoneMesh;
 class BIORBD_API s2mRead
 {
@@ -18,7 +20,7 @@ public:
     static s2mMusculoSkeletalModel readModelFile(const s2mPath &path); // Open a model file
     static void readModelFile(const s2mPath &path, s2mMusculoSkeletalModel*); // Open a model file
     static std::vector<std::vector<Eigen::Vector3d>> readMarkerDataFile(const s2mString &path); // Lire un fichier de marqueurs
-    static std::vector<s2mGenCoord> readQDataFile(const s2mString &path);
+    static std::vector<biorbd::utils::GenCoord> readQDataFile(const s2mString &path);
     static std::vector<Eigen::VectorXd> readActivationDataFile(const s2mString &path);
     static std::vector<Eigen::VectorXd> readTorqueDataFile(const s2mString &path);
     static std::vector<Eigen::VectorXd> readGrfDataFile(const s2mString &path);

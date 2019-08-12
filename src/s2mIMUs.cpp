@@ -66,7 +66,10 @@ const s2mIMU &s2mIMUs::IMU(const unsigned int &i)
 }
 
 // Se faire renvoyer les IMUs à la position donnée par Q
-std::vector<s2mIMU> s2mIMUs::IMU(s2mJoints& model, const s2mGenCoord &Q, const bool &updateKin){
+std::vector<s2mIMU> s2mIMUs::IMU(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        const bool &updateKin){
     std::vector<s2mIMU> pos;
     for (unsigned int i=0; i<nIMUs(); ++i)
         if (i==0)
@@ -78,7 +81,11 @@ std::vector<s2mIMU> s2mIMUs::IMU(s2mJoints& model, const s2mGenCoord &Q, const b
 }
 
 // Se faire renvoyer un IMU à la position donnée par Q
-s2mIMU s2mIMUs::IMU(s2mJoints& model, const s2mGenCoord &Q, const unsigned int &idx, const bool &updateKin){
+s2mIMU s2mIMUs::IMU(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        const unsigned int &idx,
+        const bool &updateKin){
     s2mIMU node = IMU(idx);
     unsigned int id = static_cast<unsigned int>(model.GetBodyS2MId(node.parent()));
 
@@ -90,7 +97,10 @@ s2mIMU s2mIMUs::IMU(s2mJoints& model, const s2mGenCoord &Q, const unsigned int &
 }
 
 // Se faire renvoyer les IMUs techniques
-std::vector<s2mIMU> s2mIMUs::technicalIMU(s2mJoints& model, const s2mGenCoord &Q, bool updateKin){
+std::vector<s2mIMU> s2mIMUs::technicalIMU(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        bool updateKin){
     std::vector<s2mIMU> pos;
     for (unsigned int i=0; i<nIMUs(); ++i)
         if ( IMU(i).isTechnical() ){
@@ -109,7 +119,10 @@ std::vector<s2mIMU> s2mIMUs::technicalIMU(){
 }
 
 // Se faire renvoyer les IMUs anatomiques
-std::vector<s2mIMU> s2mIMUs::anatomicalIMU(s2mJoints& model, const s2mGenCoord &Q, bool updateKin){
+std::vector<s2mIMU> s2mIMUs::anatomicalIMU(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        bool updateKin){
     std::vector<s2mIMU> pos;
     for (unsigned int i=0; i<nIMUs(); ++i)
         if ( IMU(i).isAnatomical() ){
@@ -127,7 +140,11 @@ std::vector<s2mIMU> s2mIMUs::anatomicalIMU(){
     return pos;
 }
 
-std::vector<s2mIMU> s2mIMUs::segmentIMU(s2mJoints& model, const s2mGenCoord &Q, const unsigned int &idx, const bool &updateKin){
+std::vector<s2mIMU> s2mIMUs::segmentIMU(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        const unsigned int &idx,
+        const bool &updateKin){
     // Update de la cinématique
     if (updateKin)
         RigidBodyDynamics::UpdateKinematicsCustom(model, &Q,nullptr, nullptr);
@@ -144,18 +161,28 @@ std::vector<s2mIMU> s2mIMUs::segmentIMU(s2mJoints& model, const s2mGenCoord &Q, 
 }
 
 // Se faire renvoyer la jacobienne des markers
-std::vector<s2mMatrix> s2mIMUs::IMUJacobian(s2mJoints& model, const s2mGenCoord &Q, const bool &updateKin){
+std::vector<s2mMatrix> s2mIMUs::IMUJacobian(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        const bool &updateKin){
     return IMUJacobian(model, Q, updateKin, false);
 }
 
 // Se faire renvoyer la jacobienne des marker techniques
-std::vector<s2mMatrix> s2mIMUs::TechnicalIMUJacobian(s2mJoints& model, const s2mGenCoord &Q, const bool &updateKin){
+std::vector<s2mMatrix> s2mIMUs::TechnicalIMUJacobian(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        const bool &updateKin){
     return IMUJacobian(model, Q, updateKin, true);
 }
 
 
 // Protected function
-std::vector<s2mMatrix> s2mIMUs::IMUJacobian(s2mJoints &model, const s2mGenCoord &Q, const bool &updateKin, bool lookForTechnical){
+std::vector<s2mMatrix> s2mIMUs::IMUJacobian(
+        s2mJoints &model,
+        const biorbd::utils::GenCoord &Q,
+        const bool &updateKin,
+        bool lookForTechnical){
     std::vector<s2mMatrix> G;
 
     bool first(true);

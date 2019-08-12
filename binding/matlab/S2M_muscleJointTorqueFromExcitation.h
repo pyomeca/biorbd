@@ -20,9 +20,9 @@ void S2M_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
     unsigned int nMuscleTotal = model->nbMuscleTotal();
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<s2mGenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
     // Recevoir muscleStates
     std::vector<std::vector<s2mMuscleStateDynamics>> s = getParameterMuscleStateExcitation(prhs,4,model->nbMuscleTotal());
 

@@ -8,20 +8,22 @@ s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(const s2mString &s) :
     setType();
 }
 
-s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(const s2mMuscleGeometry &g,
-                                                 const s2mMuscleCaracteristics &c,
-                                                 const s2mMusclePathChangers &w,
-                                                 const s2mMuscleStateDynamics &s) :
+s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(
+        const s2mMuscleGeometry &g,
+        const s2mMuscleCaracteristics &c,
+        const s2mMusclePathChangers &w,
+        const s2mMuscleStateDynamics &s) :
     s2mMuscleHillType(g,c,w,s)
 {
     setType();
 }
 
-s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(const s2mString &n,
-                                                 const s2mMuscleGeometry &g,
-                                                 const s2mMuscleCaracteristics &c,
-                                                 const s2mMusclePathChangers &w,
-                                                 const s2mMuscleStateDynamics &s) :
+s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(
+        const s2mString &n,
+        const s2mMuscleGeometry &g,
+        const s2mMuscleCaracteristics &c,
+        const s2mMusclePathChangers &w,
+        const s2mMuscleStateDynamics &s) :
     s2mMuscleHillType(n,g,c,w,s)
 {
     setType();

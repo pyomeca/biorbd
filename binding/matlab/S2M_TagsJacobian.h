@@ -16,7 +16,7 @@ void S2M_TagsJacobian( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */ /**** ATTENTION, NQ A REMPLACÉ NDDL, SEGFAULT? ****/
 
     // Recevoir Q
-    s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
 
     bool technicalTagsOnly(false);
     if (nrhs >= 4)

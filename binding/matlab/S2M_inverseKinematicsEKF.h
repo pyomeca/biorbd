@@ -75,13 +75,13 @@ void S2M_inverseKinematicsEKFstep( int, mxArray *plhs[],
 
 
     // Recevoir la matrice des markers (Ne traite que le premier frame)
-    std::vector<std::vector<Eigen::Vector3d>> markersOverTime = getParameterAllMarkers(prhs,3,static_cast<int>(model->nTechTags()));
-    std::vector<Eigen::Vector3d> markers = markersOverTime[0];
+    std::vector<std::vector<s2mNodeBone>> markersOverTime = getParameterAllMarkers(prhs,3,static_cast<int>(model->nTechTags()));
+    std::vector<s2mNodeBone> markers = markersOverTime[0];
 
     // Si c'est le premier frame recevoir Qinit
 
     if (kalman->first() && nrhs >= 5){
-        s2mGenCoord Qinit(*getParameterQ(prhs, 4, nQ).begin());
+        biorbd::utils::GenCoord Qinit(*getParameterQ(prhs, 4, nQ).begin());
         kalman->setInitState(&Qinit);
     }
 
@@ -94,9 +94,9 @@ void S2M_inverseKinematicsEKFstep( int, mxArray *plhs[],
     double *qddot = mxGetPr(plhs[2]);
 
     // Faire la cinématique inverse a chaque instant
-    s2mGenCoord Q(nQ);
-    s2mGenCoord QDot(nQdot);
-    s2mGenCoord QDDot(nQddot);
+    biorbd::utils::GenCoord Q(nQ);
+    biorbd::utils::GenCoord QDot(nQdot);
+    biorbd::utils::GenCoord QDDot(nQddot);
 
     // Faire la cinématique inverse
     kalman->reconstructFrame(*model, markers, &Q, &QDot, &QDDot, removeAxes);
@@ -146,12 +146,12 @@ void S2M_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
 
 
     // Recevoir la matrice des markers
-    std::vector<std::vector<Eigen::Vector3d>> markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechTags()));
+    std::vector<std::vector<s2mNodeBone>> markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechTags()));
     unsigned int nFrames(static_cast<unsigned int>(markersOverTime.size()));
 
     // Recevoir Qinit
     if (kalman.first() && nrhs >= 4){
-        s2mGenCoord Qinit(*getParameterQ(prhs, 3, nQ).begin());
+        biorbd::utils::GenCoord Qinit(*getParameterQ(prhs, 3, nQ).begin());
         kalman.setInitState(&Qinit);
     }
 
@@ -166,9 +166,9 @@ void S2M_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrames; ++i){
         // Faire la cinématique inverse a chaque instant
-        s2mGenCoord Q(nQ);
-        s2mGenCoord QDot(nQdot);
-        s2mGenCoord QDDot(nQddot);
+        biorbd::utils::GenCoord Q(nQ);
+        biorbd::utils::GenCoord QDot(nQdot);
+        biorbd::utils::GenCoord QDDot(nQddot);
 
         // Faire la cinématique inverse
         kalman.reconstructFrame(*model, *(markersOverTime.begin()+i), &Q, &QDot, &QDDot, removeAxes);

@@ -6,20 +6,20 @@
 
 class BIORBD_API s2mMuscleFatigueDynamicStateXia : public s2mMuscleFatigueDynamicState
 {
-    public:
-        s2mMuscleFatigueDynamicStateXia(
-                double active = 0,
-                double fatigued = 0,
-                double resting = 1);
+public:
+    s2mMuscleFatigueDynamicStateXia(
+            double active = 0,
+            double fatigued = 0,
+            double resting = 1);
 
-        s2mMuscleFatigueDynamicStateXia(const std::shared_ptr<s2mMuscleFatigueState> m);
+    s2mMuscleFatigueDynamicStateXia(const std::shared_ptr<s2mMuscleFatigueState> m);
 
-        virtual void timeDerivativeState(
-                const s2mMuscleStateDynamics &emg,
-                const s2mMuscleCaracteristics &caract
-         );
-    protected:
-        virtual void setType();
+    virtual void timeDerivativeState(
+            const s2mMuscleStateDynamics &emg,
+            const s2mMuscleCaracteristics &caract
+     );
+protected:
+    virtual void setType();
 
 };
 

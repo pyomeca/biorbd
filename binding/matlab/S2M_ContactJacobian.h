@@ -17,7 +17,7 @@ void S2M_ContactJacobian( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */ /**** ATTENTION, NQ A REMPLACÉ NDDL, SEGFAULT? ****/
 
     // Recevoir Q
-    s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Trouver la matrice jacobienne de tous les contacts
     unsigned int nContacts = model->nContacts();

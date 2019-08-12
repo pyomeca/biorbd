@@ -7,7 +7,9 @@
 #include "Utils/Vector.h"
 
 class s2mMusculoSkeletalModel;
-class s2mGenCoord;
+namespace biorbd { namespace utils {
+class GenCoord;
+}}
 class s2mTau;
 class s2mMuscleStateDynamics;
 class BIORBD_API s2mStaticOptimization
@@ -15,8 +17,8 @@ class BIORBD_API s2mStaticOptimization
     public:
         s2mStaticOptimization(
                 s2mMusculoSkeletalModel& model,
-                const s2mGenCoord& Q,
-                const s2mGenCoord& Qdot,
+                const biorbd::utils::GenCoord& Q,
+                const biorbd::utils::GenCoord& Qdot,
                 const s2mTau& tauTarget,
                 const s2mVector& initialActivationGuess = s2mVector(),
                 unsigned int pNormFactor = 2,
@@ -25,8 +27,8 @@ class BIORBD_API s2mStaticOptimization
                 );
         s2mStaticOptimization(
                 s2mMusculoSkeletalModel& model,
-                const s2mGenCoord& Q,
-                const s2mGenCoord& Qdot,
+                const biorbd::utils::GenCoord& Q,
+                const biorbd::utils::GenCoord& Qdot,
                 const s2mTau& tauTarget,
                 const std::vector<s2mMuscleStateDynamics>& initialActivationGuess,
                 unsigned int pNormFactor = 2,
@@ -36,8 +38,8 @@ class BIORBD_API s2mStaticOptimization
 
         s2mStaticOptimization(
                 s2mMusculoSkeletalModel& model,
-                const std::vector<s2mGenCoord>& allQ,
-                const std::vector<s2mGenCoord>& allQdot,
+                const std::vector<biorbd::utils::GenCoord>& allQ,
+                const std::vector<biorbd::utils::GenCoord>& allQdot,
                 const std::vector<s2mTau>& allTauTarget,
                 const s2mVector& initialActivationGuess = s2mVector(),
                 unsigned int pNormFactor = 2,
@@ -46,8 +48,8 @@ class BIORBD_API s2mStaticOptimization
                 );
         s2mStaticOptimization(
                 s2mMusculoSkeletalModel& model,
-                const std::vector<s2mGenCoord>& allQ,
-                const std::vector<s2mGenCoord>& allQdot,
+                const std::vector<biorbd::utils::GenCoord>& allQ,
+                const std::vector<biorbd::utils::GenCoord>& allQdot,
                 const std::vector<s2mTau>& allTauTarget,
                 const std::vector<s2mMuscleStateDynamics>& initialActivationGuess,
                 unsigned int pNormFactor = 2,
@@ -62,8 +64,8 @@ class BIORBD_API s2mStaticOptimization
     protected:
         s2mMusculoSkeletalModel& m_model;
         bool m_useResidualTorque;
-        std::vector<s2mGenCoord> m_allQ;
-        std::vector<s2mGenCoord> m_allQdot;
+        std::vector<biorbd::utils::GenCoord> m_allQ;
+        std::vector<biorbd::utils::GenCoord> m_allQdot;
         std::vector<s2mTau> m_allTauTarget;
         s2mVector m_initialActivationGuess;
         unsigned int m_pNormFactor;

@@ -8,7 +8,9 @@
 #include "s2mIMU.h"
 #include "Utils/GenCoord.h"
 
-s2mKalmanReconsIMU::s2mKalmanReconsIMU(s2mMusculoSkeletalModel &m, s2mKalmanRecons::s2mKalmanParam params) :
+s2mKalmanReconsIMU::s2mKalmanReconsIMU(
+        s2mMusculoSkeletalModel &m,
+        s2mKalmanRecons::s2mKalmanParam params) :
     s2mKalmanRecons(m, m.nTechIMUs()*9, params),
     m_firstIteration(true)
 {
@@ -30,7 +32,10 @@ void s2mKalmanReconsIMU::initialize(){
     m_PpInitial = m_Pp;
 }
 
-void s2mKalmanReconsIMU::manageOcclusionDuringIteration(s2mMatrix &InvTp, Eigen::VectorXd &measure, const std::vector<unsigned int> &occlusion)
+void s2mKalmanReconsIMU::manageOcclusionDuringIteration(
+        s2mMatrix &InvTp,
+        Eigen::VectorXd &measure,
+        const std::vector<unsigned int> &occlusion)
 {
     for (unsigned int i = 0; i < occlusion.size(); ++i)
          for (unsigned int j=occlusion[i] * 9; j< occlusion[i] * 9+9; ++j){
@@ -44,7 +49,12 @@ bool s2mKalmanReconsIMU::first()
     return m_firstIteration;
 }
 
-void s2mKalmanReconsIMU::reconstructFrame(s2mMusculoSkeletalModel &m, const std::vector<s2mAttitude> &IMUobs, s2mGenCoord *Q, s2mGenCoord *Qdot, s2mGenCoord *Qddot){
+void s2mKalmanReconsIMU::reconstructFrame(
+        s2mMusculoSkeletalModel &m,
+        const std::vector<s2mAttitude> &IMUobs,
+        biorbd::utils::GenCoord *Q,
+        biorbd::utils::GenCoord *Qdot,
+        biorbd::utils::GenCoord *Qddot){
     // Séparer les IMUobs en un grand vecteur
     Eigen::VectorXd T(3*3*IMUobs.size()); // Matrice 3*3 * nIMU
     for (unsigned int i=0; i<IMUobs.size(); ++i)
@@ -56,7 +66,12 @@ void s2mKalmanReconsIMU::reconstructFrame(s2mMusculoSkeletalModel &m, const std:
 }
 
 
-void s2mKalmanReconsIMU::reconstructFrame(s2mMusculoSkeletalModel &m, const Eigen::VectorXd &IMUobs, s2mGenCoord *Q, s2mGenCoord *Qdot, s2mGenCoord *Qddot){
+void s2mKalmanReconsIMU::reconstructFrame(
+        s2mMusculoSkeletalModel &m,
+        const Eigen::VectorXd &IMUobs,
+        biorbd::utils::GenCoord *Q,
+        biorbd::utils::GenCoord *Qdot,
+        biorbd::utils::GenCoord *Qddot){
     // Une itération du filtre de Kalman
     if (m_firstIteration){
         m_firstIteration = false;

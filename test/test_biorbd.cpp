@@ -19,7 +19,7 @@ TEST(c3dFileIO, OpenModel){
 static std::string modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
 TEST(c3dConstraint, loopConstraint){
     s2mMusculoSkeletalModel model(modelPathForLoopConstraintTesting);
-    s2mGenCoord Q(model), QDot(model), QDDot_constrained(model), QDDot_expected(model);
+    biorbd::utils::GenCoord Q(model), QDot(model), QDDot_constrained(model), QDDot_expected(model);
     s2mTau Tau(model);
     Q.setZero();
     QDot.setZero();

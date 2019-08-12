@@ -61,8 +61,8 @@ namespace std {
     %template(MatS2mVector) std::vector<std::vector<s2mVector>>;
     %template(VecS2mTau) std::vector<s2mTau>;
     %template(MatS2mTau) std::vector<std::vector<s2mTau>>;
-    %template(VecS2mGenCoord) std::vector<s2mGenCoord>;
-    %template(MatS2mGenCoord) std::vector<std::vector<s2mGenCoord>>;
+    %template(VecGenCoord) std::vector<biorbd::utils::GenCoord>;
+    %template(MatGenCoord) std::vector<std::vector<biorbd::utils::GenCoord>>;
 
     %template(SharedS2mMuscle) std::shared_ptr<s2mMuscle>;
     %template(VecS2mMuscleStateDynamics) std::vector<s2mMuscleStateDynamics>;
@@ -75,37 +75,56 @@ namespace std {
 
 // Exposing some useful functions
 %extend s2mMusculoSkeletalModel{
-    s2mTau InverseDynamics(const s2mGenCoord &Q, const s2mGenCoord &QDot, const s2mGenCoord &QDDot) {
+    s2mTau InverseDynamics(
+                const biorbd::utils::GenCoord &Q,
+                const biorbd::utils::GenCoord &QDot,
+                const biorbd::utils::GenCoord &QDDot) {
         s2mTau Tau(*self);
         RigidBodyDynamics::InverseDynamics(*self, Q, QDot, QDDot, Tau);
         return QDDot;
     }
 
-    s2mGenCoord ForwardDynamics(const s2mGenCoord &Q, const s2mGenCoord &QDot, const s2mTau &Tau) {
-        s2mGenCoord QDDot(*self);
+    biorbd::utils::GenCoord ForwardDynamics(
+                const biorbd::utils::GenCoord &Q,
+                const biorbd::utils::GenCoord &QDot,
+                const s2mTau &Tau) {
+        biorbd::utils::GenCoord QDDot(*self);
         RigidBodyDynamics::ForwardDynamics(*self, Q, QDot, Tau, QDDot);
         return QDDot;
     }
 
-    s2mGenCoord ForwardDynamicsLagrangian(const s2mGenCoord &Q, const s2mGenCoord &QDot, const s2mTau &Tau) {
-        s2mGenCoord QDDot(*self);
+    biorbd::utils::GenCoord ForwardDynamicsLagrangian(
+                const biorbd::utils::GenCoord &Q,
+                const biorbd::utils::GenCoord &QDot,
+                const s2mTau &Tau) {
+        biorbd::utils::GenCoord QDDot(*self);
         RigidBodyDynamics::ForwardDynamicsLagrangian(*self, Q, QDot, Tau, QDDot);
         return QDDot;
     }
 
-    s2mGenCoord ForwardDynamicsConstraintsDirect(const s2mGenCoord &Q, const s2mGenCoord &QDot, const s2mTau &Tau, s2mContacts& CS) {
-        s2mGenCoord QDDot(*self);
+    biorbd::utils::GenCoord ForwardDynamicsConstraintsDirect(
+                const biorbd::utils::GenCoord &Q,
+                const biorbd::utils::GenCoord &QDot,
+                const s2mTau &Tau,
+                s2mContacts& CS) {
+        biorbd::utils::GenCoord QDDot(*self);
         RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
         return QDDot;
     }
-    s2mGenCoord ForwardDynamicsConstraintsDirect(const s2mGenCoord &Q, const s2mGenCoord &QDot, const s2mTau &Tau) {
-        s2mGenCoord QDDot(*self);
+    biorbd::utils::GenCoord ForwardDynamicsConstraintsDirect(
+                const biorbd::utils::GenCoord &Q,
+                const biorbd::utils::GenCoord &QDot,
+                const s2mTau &Tau) {
+        biorbd::utils::GenCoord QDDot(*self);
         s2mContacts& CS = self->getConstraints_nonConst();
         RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
         return QDDot;
     }
 
-    s2mTau muscularJointTorque(const std::vector<s2mMuscleStateDynamics> &state, const s2mGenCoord &Q, const s2mGenCoord &QDot){
+    s2mTau muscularJointTorque(
+                const std::vector<s2mMuscleStateDynamics> &state,
+                const biorbd::utils::GenCoord &Q,
+                const biorbd::utils::GenCoord &QDot){
         return self->muscularJointTorque(*self, state, true, &Q, &QDot);
     }
 
@@ -157,11 +176,11 @@ namespace std {
 
 /* Includes all neceressary files from the API */
 %include "@CMAKE_BINARY_DIR@/include/biorbdConfig.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mGenCoord.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mVector.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mTau.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMatrix.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mAttitude.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/GenCoord.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Vector.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Tau.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Matrix.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Attitude.h"
 //%include "s2mNodeAttitude.h"
 //%include "s2mQuaternion.h"
 //%include "s2mNode.h"
@@ -176,8 +195,8 @@ namespace std {
 //%include "s2mEquation.h"
 //%include "s2mIfStream.h"
 //%include "s2mError.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mPath.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mRead.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Path.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Read.h"
 //%include "s2mIntegrator.h"
 
 %include "@CMAKE_SOURCE_DIR@/include/s2mJoints.h"

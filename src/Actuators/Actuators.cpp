@@ -141,10 +141,14 @@ unsigned int Actuators::nbActuators() const
     return static_cast<unsigned int>(m_all.size());
 }
 
-s2mTau Actuators::torque(const s2mJoints& m, const s2mGenCoord& a, const s2mGenCoord& Q, const s2mGenCoord &Qdot){
+s2mTau Actuators::torque(
+        const s2mJoints& m,
+        const biorbd::utils::GenCoord& a,
+        const biorbd::utils::GenCoord& Q,
+        const biorbd::utils::GenCoord &Qdot){
 
     // Mettre pour que qdot soit positif en concentrique et negatif en excentrique
-    s2mGenCoord QdotResigned(Qdot);
+    biorbd::utils::GenCoord QdotResigned(Qdot);
     for (unsigned int i=0; i<Qdot.size(); ++i)
         if (a(i)<0)
             QdotResigned(i) = -Qdot(i);
@@ -160,7 +164,10 @@ s2mTau Actuators::torque(const s2mJoints& m, const s2mGenCoord& a, const s2mGenC
 }
 
 
-std::pair<s2mTau, s2mTau> Actuators::torqueMax(const s2mJoints &m, const s2mGenCoord& Q, const s2mGenCoord &Qdot){
+std::pair<s2mTau, s2mTau> Actuators::torqueMax(
+        const s2mJoints &m,
+        const biorbd::utils::GenCoord& Q,
+        const biorbd::utils::GenCoord &Qdot){
     s2mError::s2mAssert(m_isClose, "Close the actuator model before calling torqueMax");
 
     std::pair<s2mTau, s2mTau> maxTau_all = std::make_pair(s2mTau(m), s2mTau(m));
@@ -197,7 +204,11 @@ std::pair<s2mTau, s2mTau> Actuators::torqueMax(const s2mJoints &m, const s2mGenC
 }
 
 
-s2mTau Actuators::torqueMax(const s2mJoints &m, const s2mGenCoord& a, const s2mGenCoord& Q, const s2mGenCoord &Qdot){
+s2mTau Actuators::torqueMax(
+        const s2mJoints &m,
+        const biorbd::utils::GenCoord& a,
+        const biorbd::utils::GenCoord& Q,
+        const biorbd::utils::GenCoord &Qdot){
     s2mError::s2mAssert(m_isClose, "Close the actuator model before calling torqueMax");
 
     s2mTau maxTau_all;

@@ -3,31 +3,33 @@
 
 #include "s2mJoints.h"
 
-s2mGenCoord::s2mGenCoord() {}
+namespace biorbd { namespace utils {
 
-s2mGenCoord::s2mGenCoord(const s2mGenCoord &Q):
+GenCoord::GenCoord() {}
+
+GenCoord::GenCoord(const GenCoord &Q):
     s2mVector(Q)
 {
 
 }
 
-s2mGenCoord::s2mGenCoord(const s2mVector &v) : s2mVector(v) {}
+GenCoord::GenCoord(const s2mVector &v) : s2mVector(v) {}
 
-s2mGenCoord::s2mGenCoord(const Eigen::VectorXd &v) : s2mVector(v) {}
+GenCoord::GenCoord(const Eigen::VectorXd &v) : s2mVector(v) {}
 
-s2mGenCoord::s2mGenCoord(unsigned int i) : s2mVector(i) {}
+GenCoord::GenCoord(unsigned int i) : s2mVector(i) {}
 
-s2mGenCoord::s2mGenCoord(const s2mJoints &j) :
+GenCoord::GenCoord(const s2mJoints &j) :
     s2mVector(j.nbDof()){
 
 }
 
-s2mGenCoord::~s2mGenCoord()
+GenCoord::~GenCoord()
 {
 
 }
 
-s2mGenCoord& s2mGenCoord::operator=(const Eigen::VectorXd& vecX){
+GenCoord& GenCoord::operator=(const Eigen::VectorXd& vecX){
     if (this==&vecX) // check for self-assigment
         return *this;
 
@@ -35,3 +37,5 @@ s2mGenCoord& s2mGenCoord::operator=(const Eigen::VectorXd& vecX){
 
     return *this;
 }
+
+}}

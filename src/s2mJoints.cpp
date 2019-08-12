@@ -103,17 +103,23 @@ double s2mJoints::mass() const {
 
 
 
-void s2mJoints::integrateKinematics(const s2mGenCoord& Q, const s2mGenCoord& QDot, const s2mTau& Tau){
-    s2mGenCoord v(static_cast<unsigned int>(Q.rows()+QDot.rows()));
+void s2mJoints::integrateKinematics(
+        const biorbd::utils::GenCoord& Q,
+        const biorbd::utils::GenCoord& QDot,
+        const s2mTau& Tau){
+    biorbd::utils::GenCoord v(static_cast<unsigned int>(Q.rows()+QDot.rows()));
     v << Q,QDot;
     integrator->integrate(this, v, Tau.vector(), 0, 1, 0.1); // vecteur, t0, tend, pas, effecteurs
     m_isKinematicsComputed = true;
 }
-void s2mJoints::getIntegratedKinematics(const unsigned int &step, s2mGenCoord &Q, s2mGenCoord &QDot){
+void s2mJoints::getIntegratedKinematics(
+        const unsigned int &step,
+        biorbd::utils::GenCoord &Q,
+        biorbd::utils::GenCoord &QDot){
     // Si la cinématique n'a pas été mise à jour
     s2mError::s2mAssert(m_isKinematicsComputed, "ComputeKinematics must be call before calling updateKinematics");
 
-    s2mGenCoord tp(integrator->getX(step));
+    biorbd::utils::GenCoord tp(integrator->getX(step));
     for (unsigned int i=0; i< static_cast<unsigned int>(tp.rows()/2); i++){
         Q(i) = tp(i);
         QDot(i) = tp(i+tp.rows()/2);
@@ -125,12 +131,13 @@ unsigned int s2mJoints::nbInterationStep() const
 }
 
 
-unsigned int s2mJoints::AddBone(const unsigned int &parent_id, // Numéro du parent
-                     const s2mString &seqT, const s2mString &seqR, // Séquence de Cardan pour classer les dof en rotation
-                     const s2mBoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
-                     const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
-                     const s2mString &name, // Nom du segment
-                     const int &PF){ // Numéro de la plateforme de force attaché à cet os
+unsigned int s2mJoints::AddBone(
+        const unsigned int &parent_id, // Numéro du parent
+        const s2mString &seqT, const s2mString &seqR, // Séquence de Cardan pour classer les dof en rotation
+        const s2mBoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
+        const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
+        const s2mString &name, // Nom du segment
+        const int &PF){ // Numéro de la plateforme de force attaché à cet os
     s2mBone tp(this, parent_id, seqT, seqR, caract, cor, name, PF);
 	if (parent_id == 0)
 		m_nbRoot += tp.nDof(); //  Si le nom du segment est "Root" ajouter le nombre de dof de racine
@@ -146,12 +153,13 @@ unsigned int s2mJoints::AddBone(const unsigned int &parent_id, // Numéro du par
     m_bones.push_back(tp);
     return 0;
 }
-unsigned int s2mJoints::AddBone(const unsigned int &parent_id, // Numéro du parent
-                     const s2mString &seqR, // Séquence de Cardan pour classer les dof en rotation
-                     const s2mBoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
-                     const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
-                     const s2mString &name, // Nom du segment
-                     const int &PF){ // Numéro de la plateforme de force attaché à cet os
+unsigned int s2mJoints::AddBone(
+        const unsigned int &parent_id, // Numéro du parent
+        const s2mString &seqR, // Séquence de Cardan pour classer les dof en rotation
+        const s2mBoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
+        const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
+        const s2mString &name, // Nom du segment
+        const int &PF){ // Numéro de la plateforme de force attaché à cet os
     s2mBone tp(this, parent_id, seqR, caract, cor, name, PF);
 	if (parent_id == 0)
         m_nbRoot += tp.nDof(); //  Si le nom du segment est "Root" ajouter le nombre de dof de racine
@@ -177,7 +185,9 @@ unsigned int s2mJoints::nbBone() const
      return static_cast<unsigned int>(m_bones.size());
 }
 
-std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> &sv, const unsigned int &frame) const{
+std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(
+        std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> &sv,
+        const unsigned int &frame) const{
     // Tableau de sortie
     std::vector<RigidBodyDynamics::Math::SpatialVector> sv_out;
 
@@ -195,7 +205,8 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(s
     return dispatchedForce(sv2);
 }
 
-std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(std::vector<RigidBodyDynamics::Math::SpatialVector> &sv) const{ // un SpatialVector par PF
+std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(
+        std::vector<RigidBodyDynamics::Math::SpatialVector> &sv) const{ // un SpatialVector par PF
     // Tableau de sortie
     std::vector<RigidBodyDynamics::Math::SpatialVector> sv_out;
 
@@ -223,7 +234,9 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(s
     return sv_out;
 }
 
-std::vector<s2mAttitude> s2mJoints::globalJCS(const s2mGenCoord &Q, const bool updateKin){
+std::vector<s2mAttitude> s2mJoints::globalJCS(
+        const biorbd::utils::GenCoord &Q,
+        const bool updateKin){
     std::vector<s2mAttitude> out;
 
     for (unsigned int i=0; i<m_bones.size(); ++i)
@@ -242,11 +255,17 @@ int s2mJoints::GetBodyS2MId(const s2mString &s) const{
     return -1;
 }
 
-s2mAttitude s2mJoints::globalJCS(const s2mGenCoord &Q, const s2mString &name, const bool updateKin){
+s2mAttitude s2mJoints::globalJCS(
+        const biorbd::utils::GenCoord &Q,
+        const s2mString &name,
+        const bool updateKin){
     return globalJCS(Q,static_cast<unsigned int>(GetBodyS2MId(name.c_str())),updateKin);
 }
 
-s2mAttitude s2mJoints::globalJCS(const s2mGenCoord &Q, const unsigned int i, const bool updateKin){
+s2mAttitude s2mJoints::globalJCS(
+        const biorbd::utils::GenCoord &Q,
+        const unsigned int i,
+        const bool updateKin){
     unsigned int id = m_bones[i].id();
 
     s2mAttitude RT;
@@ -277,7 +296,11 @@ s2mAttitude s2mJoints::localJCS(const unsigned int i) const{
 }
 
 
-std::vector<s2mNodeBone> s2mJoints::projectPoint(const s2mMarkers &marks, const s2mGenCoord &Q, const std::vector<Eigen::Vector3d> &v, bool updateKin)
+std::vector<s2mNodeBone> s2mJoints::projectPoint(
+        const s2mMarkers &marks,
+        const biorbd::utils::GenCoord &Q,
+        const std::vector<s2mNodeBone> &v,
+        bool updateKin)
 {
     // Sécurité
     s2mError::s2mAssert(marks.nTags() == v.size(), "Number of marker must be equal to number of Vector3d");
@@ -298,7 +321,12 @@ std::vector<s2mNodeBone> s2mJoints::projectPoint(const s2mMarkers &marks, const 
     return out;
 }
 
-s2mNodeBone s2mJoints::projectPoint(const s2mGenCoord &Q, const Eigen::Vector3d &v, int boneIdx, const s2mString& axesToRemove, bool updateKin)
+s2mNodeBone s2mJoints::projectPoint(
+        const biorbd::utils::GenCoord &Q,
+        const Eigen::Vector3d &v,
+        int boneIdx,
+        const s2mString& axesToRemove,
+        bool updateKin)
 {
     // Créer un marqueur
     s2mString boneName(bone(static_cast<unsigned int>(boneIdx)).name());
@@ -309,14 +337,21 @@ s2mNodeBone s2mJoints::projectPoint(const s2mGenCoord &Q, const Eigen::Vector3d 
     return projectPoint(Q, node, updateKin);
 }
 
-s2mNodeBone s2mJoints::projectPoint(const s2mGenCoord &Q, const s2mNodeBone &n, bool updateKin)
+s2mNodeBone s2mJoints::projectPoint(
+        const biorbd::utils::GenCoord &Q,
+        const s2mNodeBone &n,
+        bool updateKin)
 {
     s2mNodeBone out(n);
     out.setPosition(s2mMarkers::Tags(*this, Q, n, true, updateKin));
     return out;
 }
 
-s2mMatrix s2mJoints::projectPointJacobian(s2mJoints& model, const s2mGenCoord &Q, s2mNodeBone node, bool updateKin)
+s2mMatrix s2mJoints::projectPointJacobian(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        s2mNodeBone node,
+        bool updateKin)
 {
     // Si le point n'a pas été projeté, il n'y a donc aucun effet
     if (node.nAxesToRemove() != 0){
@@ -336,7 +371,13 @@ s2mMatrix s2mJoints::projectPointJacobian(s2mJoints& model, const s2mGenCoord &Q
         return s2mMatrix(s2mMatrix::Zero(3,nbQ()));
 }
 
-s2mMatrix s2mJoints::projectPointJacobian(s2mJoints& model, const s2mGenCoord &Q, const Eigen::Vector3d &v, int boneIdx, const s2mString& axesToRemove, bool updateKin)
+s2mMatrix s2mJoints::projectPointJacobian(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        const Eigen::Vector3d &v,
+        int boneIdx,
+        const s2mString& axesToRemove,
+        bool updateKin)
 {
     // Trouver le point
     s2mNodeBone p(projectPoint(Q, v, boneIdx, axesToRemove, updateKin));
@@ -345,7 +386,11 @@ s2mMatrix s2mJoints::projectPointJacobian(s2mJoints& model, const s2mGenCoord &Q
     return projectPointJacobian(model, Q, p, updateKin);
 }
 
-std::vector<s2mMatrix> s2mJoints::projectPointJacobian(s2mJoints& model, const s2mMarkers &marks, const s2mGenCoord &Q, const std::vector<Eigen::Vector3d> &v, bool updateKin)
+std::vector<s2mMatrix> s2mJoints::projectPointJacobian(s2mJoints& model,
+        const s2mMarkers &marks,
+        const biorbd::utils::GenCoord &Q,
+        const std::vector<s2mNodeBone> &v,
+        bool updateKin)
 {
     // Receuillir les points
     std::vector<s2mNodeBone> tp(projectPoint(marks, Q, v, updateKin));
@@ -363,10 +408,10 @@ std::vector<s2mMatrix> s2mJoints::projectPointJacobian(s2mJoints& model, const s
 }
 
 RigidBodyDynamics::Math::SpatialTransform s2mJoints::CalcBodyWorldTransformation (
-    s2mJoints &model,
-    const s2mGenCoord &Q,
-    const unsigned int body_id,
-    bool update_kinematics = true)
+        s2mJoints &model,
+        const biorbd::utils::GenCoord &Q,
+        const unsigned int body_id,
+        bool update_kinematics = true)
 {
     // update the Kinematics if necessary
     if (update_kinematics) {
@@ -387,7 +432,9 @@ RigidBodyDynamics::Math::SpatialTransform s2mJoints::CalcBodyWorldTransformation
     return transfo;
 }
 
-s2mNode s2mJoints::CoM(const s2mGenCoord &Q, bool updateKin){
+s2mNode s2mJoints::CoM(
+        const biorbd::utils::GenCoord &Q,
+        bool updateKin){
     // Retour la position du centre de masse a partir des coordonnées généralisées
 
     // S'assurer que le modele est dans la bonne configuration
@@ -407,13 +454,18 @@ s2mNode s2mJoints::CoM(const s2mGenCoord &Q, bool updateKin){
     return com;
 }
 
-RigidBodyDynamics::Math::Vector3d s2mJoints::angularMomentum(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const bool updateKin){
+RigidBodyDynamics::Math::Vector3d s2mJoints::angularMomentum(
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
+        const bool updateKin){
     return CalcAngularMomentum(*this, Q, Qdot, updateKin);
 
 }
 
 
-RigidBodyDynamics::Math::Vector3d s2mJoints::CoMdot(const s2mGenCoord &Q, const s2mGenCoord &Qdot){
+RigidBodyDynamics::Math::Vector3d s2mJoints::CoMdot(
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot){
     // Retour la vitesse du centre de masse a partir des coordonnées généralisées
 
     // S'assurer que le modele est dans la bonne configuration
@@ -434,7 +486,10 @@ RigidBodyDynamics::Math::Vector3d s2mJoints::CoMdot(const s2mGenCoord &Q, const 
     // Retourner la vitesse du CoM
     return com_dot;
 }
-RigidBodyDynamics::Math::Vector3d s2mJoints::CoMddot(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot){
+RigidBodyDynamics::Math::Vector3d s2mJoints::CoMddot(
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
+        const biorbd::utils::GenCoord &Qddot){
     // Retour l'accélération du centre de masse a partir des coordonnées généralisées
     s2mError::s2mAssert(0, "Com DDot is wrong, to be modified...");
 
@@ -457,7 +512,7 @@ RigidBodyDynamics::Math::Vector3d s2mJoints::CoMddot(const s2mGenCoord &Q, const
     return com_ddot;
 }
 
-s2mMatrix s2mJoints::CoMJacobian(const s2mGenCoord &Q){
+s2mMatrix s2mJoints::CoMJacobian(const biorbd::utils::GenCoord &Q){
     // Retour la position du centre de masse a partir des coordonnées généralisées
 
     // S'assurer que le modele est dans la bonne configuration
@@ -481,7 +536,9 @@ s2mMatrix s2mJoints::CoMJacobian(const s2mGenCoord &Q){
 }
 
 
-std::vector<s2mNodeBone> s2mJoints::CoMbySegment(const s2mGenCoord &Q, bool updateKin){// Position du centre de masse de chaque segment
+std::vector<s2mNodeBone> s2mJoints::CoMbySegment(
+        const biorbd::utils::GenCoord &Q,
+        bool updateKin){// Position du centre de masse de chaque segment
     std::vector<s2mNodeBone> tp; // vecteur de vecteurs de sortie
 
     for (unsigned int i=0; i<m_bones.size(); ++i){
@@ -492,7 +549,10 @@ std::vector<s2mNodeBone> s2mJoints::CoMbySegment(const s2mGenCoord &Q, bool upda
 }
 
 
-s2mNodeBone s2mJoints::CoMbySegment(const s2mGenCoord &Q, const unsigned int i, bool updateKin){ // Position du centre de masse du segment i
+s2mNodeBone s2mJoints::CoMbySegment(
+        const biorbd::utils::GenCoord &Q,
+        const unsigned int i,
+        bool updateKin){ // Position du centre de masse du segment i
 
     s2mError::s2mAssert(i < m_bones.size(), "Choosen segment doesn't exist");
     return RigidBodyDynamics::CalcBodyToBaseCoordinates(*this, Q, m_bones[i].id(),m_bones[i].caract().mCenterOfMass,updateKin);
@@ -500,7 +560,10 @@ s2mNodeBone s2mJoints::CoMbySegment(const s2mGenCoord &Q, const unsigned int i, 
 }
 
 
-std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CoMdotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, bool updateKin){// Position du centre de masse de chaque segment
+std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CoMdotBySegment(
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
+        bool updateKin){// Position du centre de masse de chaque segment
     std::vector<RigidBodyDynamics::Math::Vector3d> tp; // vecteur de vecteurs de sortie
 
     for (unsigned int i=0; i<m_bones.size(); ++i){
@@ -511,7 +574,11 @@ std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CoMdotBySegment(const 
 }
 
 
-RigidBodyDynamics::Math::Vector3d s2mJoints::CoMdotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const unsigned int i, bool updateKin){ // Position du centre de masse du segment i
+RigidBodyDynamics::Math::Vector3d s2mJoints::CoMdotBySegment(
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
+        const unsigned int i,
+        bool updateKin){ // Position du centre de masse du segment i
 
     s2mError::s2mAssert(i < m_bones.size(), "Choosen segment doesn't exist");
     return CalcPointVelocity(*this, Q, Qdot, m_bones[i].id(),m_bones[i].caract().mCenterOfMass,updateKin);
@@ -519,7 +586,11 @@ RigidBodyDynamics::Math::Vector3d s2mJoints::CoMdotBySegment(const s2mGenCoord &
 }
 
 
-std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CoMddotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, bool updateKin){// Position du centre de masse de chaque segment
+std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CoMddotBySegment(
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
+        const biorbd::utils::GenCoord &Qddot,
+        bool updateKin){// Position du centre de masse de chaque segment
     std::vector<RigidBodyDynamics::Math::Vector3d> tp; // vecteur de vecteurs de sortie
 
     for (unsigned int i=0; i<m_bones.size(); ++i){
@@ -530,14 +601,21 @@ std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CoMddotBySegment(const
 }
 
 
-RigidBodyDynamics::Math::Vector3d s2mJoints::CoMddotBySegment(const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, const unsigned int i, bool updateKin){ // Position du centre de masse du segment i
+RigidBodyDynamics::Math::Vector3d s2mJoints::CoMddotBySegment(
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
+        const biorbd::utils::GenCoord &Qddot,
+        const unsigned int i,
+        bool updateKin){ // Position du centre de masse du segment i
 
     s2mError::s2mAssert(i < m_bones.size(), "Choosen segment doesn't exist");
     return RigidBodyDynamics::CalcPointAcceleration(*this, Q, Qdot, Qddot, m_bones[i].id(),m_bones[i].caract().mCenterOfMass,updateKin);
 
 }
 
-std::vector<std::vector<s2mNodeBone>> s2mJoints::meshPoints(const s2mGenCoord &Q, const bool updateKin){
+std::vector<std::vector<s2mNodeBone>> s2mJoints::meshPoints(
+        const biorbd::utils::GenCoord &Q,
+        const bool updateKin){
 
     std::vector<std::vector<s2mNodeBone>> v; // Vecteur de vecteur de sortie (mesh par segment)
 
@@ -550,7 +628,10 @@ std::vector<std::vector<s2mNodeBone>> s2mJoints::meshPoints(const s2mGenCoord &Q
 
     return v;
 }
-std::vector<s2mNodeBone> s2mJoints::meshPoints(const s2mGenCoord &Q, const unsigned int &i, const bool updateKin){
+std::vector<s2mNodeBone> s2mJoints::meshPoints(
+        const biorbd::utils::GenCoord &Q,
+        const unsigned int &i,
+        const bool updateKin){
 
     // Trouver la position des segments
     std::vector<s2mAttitude> RT(globalJCS(Q, updateKin));
@@ -596,19 +677,19 @@ const s2mBoneMesh &s2mJoints::boneMesh(const unsigned int &idx) const
 
 RigidBodyDynamics::Math::Vector3d s2mJoints::CalcAngularMomentum (
         s2mJoints &model,
-        const s2mGenCoord &Q,
-        const s2mGenCoord &Qdot,
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
         bool update_kinematics)
 {
     // Qddot was added later in the RBDL. In order to keep backward compatilibity, 
-    s2mGenCoord Qddot(this->nbQddot());
+    biorbd::utils::GenCoord Qddot(this->nbQddot());
     return CalcAngularMomentum(model, Q, Qdot, Qddot, update_kinematics);
 }
 RigidBodyDynamics::Math::Vector3d s2mJoints::CalcAngularMomentum (
         s2mJoints &model,
-        const s2mGenCoord &Q,
-        const s2mGenCoord &Qdot,
-        const s2mGenCoord &Qddot,
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
+        const biorbd::utils::GenCoord &Qddot,
         bool update_kinematics)
 {
     // Définition des variables
@@ -621,12 +702,21 @@ RigidBodyDynamics::Math::Vector3d s2mJoints::CalcAngularMomentum (
     return angular_momentum;
 }
 
-std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CalcSegmentsAngularMomentum (s2mJoints &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, bool update_kinematics) {
-    s2mGenCoord Qddot(this->nbQddot());
+std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CalcSegmentsAngularMomentum (
+        s2mJoints &model,
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
+        bool update_kinematics) {
+    biorbd::utils::GenCoord Qddot(this->nbQddot());
     return CalcSegmentsAngularMomentum(model, Q, Qdot, Qddot, update_kinematics);
 }
 
-std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CalcSegmentsAngularMomentum (s2mJoints &model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const s2mGenCoord &Qddot, bool update_kinematics) {
+std::vector<RigidBodyDynamics::Math::Vector3d> s2mJoints::CalcSegmentsAngularMomentum (
+        s2mJoints &model,
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
+        const biorbd::utils::GenCoord &Qddot,
+        bool update_kinematics) {
     if (update_kinematics)
         UpdateKinematicsCustom (model, &Q, &Qdot, &Qddot);
 
@@ -796,7 +886,11 @@ unsigned int s2mJoints::nbQuat() const{
     return m_nRotAQuat;
 }
 
-void s2mJoints::computeQdot(s2mJoints &, const s2mGenCoord &Q, const s2mGenCoord &QDot, s2mGenCoord &QDotOut){
+void s2mJoints::computeQdot(
+        s2mJoints &,
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &QDot,
+        biorbd::utils::GenCoord &QDotOut){
     // Vérifier s'il y a des quaternions, sinon la dérivée est directement QDot
     if (!m_nRotAQuat){
         QDotOut = QDot;
@@ -857,7 +951,11 @@ unsigned int s2mJoints::getDofIndex(const s2mString& boneName, const s2mString& 
     return idx;
 }
 
-void s2mJoints::UpdateKinematicsCustom(s2mJoints &model, const s2mGenCoord *Q, const s2mGenCoord *Qdot, const s2mGenCoord *Qddot)
+void s2mJoints::UpdateKinematicsCustom(
+        s2mJoints &model,
+        const biorbd::utils::GenCoord *Q,
+        const biorbd::utils::GenCoord *Qdot,
+        const biorbd::utils::GenCoord *Qddot)
 {
     RigidBodyDynamics::UpdateKinematicsCustom(model, Q, Qdot, Qddot);
 }

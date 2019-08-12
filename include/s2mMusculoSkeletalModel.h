@@ -22,12 +22,16 @@ class BIORBD_API s2mMusculoSkeletalModel :
         ,public biorbd::actuator::Actuators
         #endif
 {
-    public:
-        s2mMusculoSkeletalModel();
-        virtual ~s2mMusculoSkeletalModel();
-        s2mMusculoSkeletalModel(const s2mPath&);
+public:
+    s2mMusculoSkeletalModel();
+    virtual ~s2mMusculoSkeletalModel();
+    s2mMusculoSkeletalModel(const s2mPath&);
 
-        bool InverseKinematics(const std::vector<Eigen::Vector3d>& Mark, const s2mGenCoord& Qinit, s2mGenCoord &Q, bool removeAxes=true);
+    bool InverseKinematics(
+            const std::vector<s2mNodeBone>& Mark,
+            const biorbd::utils::GenCoord& Qinit,
+            biorbd::utils::GenCoord &Q,
+            bool removeAxes=true);
 
 };
 

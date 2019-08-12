@@ -18,9 +18,9 @@ void S2M_segmentAngularMomentum( int, mxArray *plhs[],
     unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir QDot
-    std::vector<s2mGenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
 
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));
     if (QDot.size() != nFrame)

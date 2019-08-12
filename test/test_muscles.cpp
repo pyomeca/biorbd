@@ -12,7 +12,7 @@ static unsigned int muscleGroupForMuscleJacobian(1);
 static unsigned int muscleForMuscleJacobian(1);
 TEST(MuscleJacobian, jacobian){
     s2mMusculoSkeletalModel model(modelPathForMuscleJacobian);
-    s2mGenCoord Q(model);
+    biorbd::utils::GenCoord Q(model);
     Q.setZero();
 
     // Force computation of geometry
@@ -44,7 +44,7 @@ TEST(MuscleJacobian, jacobian){
 }
 TEST(MuscleJacobian, jacobianLength){
     s2mMusculoSkeletalModel model(modelPathForMuscleJacobian);
-    s2mGenCoord Q(model);
+    biorbd::utils::GenCoord Q(model);
     Q.setZero();
     model.updateMuscles(model, Q, true);
 
@@ -78,8 +78,8 @@ static double excessiveFibersQuantityForFatigueXiaSetStateLimitsTest(1.5);
 TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
     // Prepare the model
     s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
-    s2mGenCoord Q(model);
-    s2mGenCoord QDot(model);
+    biorbd::utils::GenCoord Q(model);
+    biorbd::utils::GenCoord QDot(model);
     Q.setZero();
     QDot.setZero();
     model.updateMuscles(model, Q, QDot, true);
@@ -129,8 +129,8 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
 TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
     // Prepare the model
     s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
-    s2mGenCoord Q(model);
-    s2mGenCoord QDot(model);
+    biorbd::utils::GenCoord Q(model);
+    biorbd::utils::GenCoord QDot(model);
     Q.setZero();
     QDot.setZero();
     model.updateMuscles(model, Q, QDot, true);
@@ -167,8 +167,8 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
 TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
     // Prepare the model
     s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
-    s2mGenCoord Q(model);
-    s2mGenCoord QDot(model);
+    biorbd::utils::GenCoord Q(model);
+    biorbd::utils::GenCoord QDot(model);
     Q.setZero();
     QDot.setZero();
     model.updateMuscles(model, Q, QDot, true);

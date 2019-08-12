@@ -2,17 +2,17 @@
 #include "s2mMuscleCaracteristics.h"
 
 
-s2mMuscleCaracteristics::s2mMuscleCaracteristics(const double &optLength,
-                                                 const double &fmax,
-                                                 const double &PCSA,
-                                                 const double &tendonSlackLength,
-                                                 const double &pennAngle,
-                                                 const s2mMuscleState &stateMax,
-                                                 const s2mMuscleFatigueParam &fatigueParameters,
-                                                 const double tauAct,
-                                                 const double tauDeact,
-                                                 const double &minAct
-                                                 ):
+s2mMuscleCaracteristics::s2mMuscleCaracteristics(
+        const double &optLength,
+        const double &fmax,
+        const double &PCSA,
+        const double &tendonSlackLength,
+        const double &pennAngle,
+        const s2mMuscleState &stateMax,
+        const s2mMuscleFatigueParam &fatigueParameters,
+        const double tauAct,
+        const double tauDeact,
+        const double &minAct):
     m_optimalLength(optLength),
     m_fIsoMax(fmax),
     m_PCSA(PCSA),

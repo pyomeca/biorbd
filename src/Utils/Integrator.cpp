@@ -15,9 +15,9 @@ s2mIntegrator::s2mIntegrator(){
 
 void s2mIntegrator::operator() ( const state_type &x , state_type &dxdt , const double ){
     // Équation différentielle : x/xdot => xdot/xddot
-    s2mGenCoord Q(m_nbre);
-    s2mGenCoord QDot(m_nbre);
-    s2mGenCoord QDDot(Eigen::VectorXd::Zero(m_nbre));
+    biorbd::utils::GenCoord Q(m_nbre);
+    biorbd::utils::GenCoord QDot(m_nbre);
+    biorbd::utils::GenCoord QDDot(Eigen::VectorXd::Zero(m_nbre));
     for (unsigned int i=0; i<m_nbre; i++){
         Q(i) = x[i];
         QDot(i) = x[i+m_nbre];
@@ -43,8 +43,8 @@ void s2mIntegrator::showAll(){
     }
 }
 
-s2mGenCoord s2mIntegrator::getX(const unsigned int &idx){
-    s2mGenCoord out(m_nbre*2);
+biorbd::utils::GenCoord s2mIntegrator::getX(const unsigned int &idx){
+    biorbd::utils::GenCoord out(m_nbre*2);
     s2mError::s2mAssert(idx <= m_steps, "Trying to get Q outside range");
     for (unsigned int i=0; i<m_nbre*2; i++){
         out(i) = m_x_vec[idx][i];
@@ -52,7 +52,10 @@ s2mGenCoord s2mIntegrator::getX(const unsigned int &idx){
     return out;
 }
 
-void s2mIntegrator::integrate(RigidBodyDynamics::Model *model, const s2mGenCoord &v, const Eigen::VectorXd& u, const double &t0, const double &tEnd, const double &time_step){
+void s2mIntegrator::integrate(
+        RigidBodyDynamics::Model *model,
+        const biorbd::utils::GenCoord &v,
+        const Eigen::VectorXd& u, const double &t0, const double &tEnd, const double &time_step){
     // Stocker le nombre d'élément à traiter
     m_nbre = static_cast<unsigned int>(v.rows())/2; // Q et Qdot
     m_u = u; // Copier les effecteurs

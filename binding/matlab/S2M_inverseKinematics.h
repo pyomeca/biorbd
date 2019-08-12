@@ -16,10 +16,10 @@ void S2M_inverseKinematics( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
 
     // Recevoir la matrice des markers
-    std::vector<std::vector<Eigen::Vector3d>> markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechTags()));
+    std::vector<std::vector<s2mNodeBone>> markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechTags()));
 
     // Recevoir Qinit
-    s2mGenCoord Qinit = *getParameterQ(prhs, 3, nQ).begin();
+    biorbd::utils::GenCoord Qinit = *getParameterQ(prhs, 3, nQ).begin();
 
     bool removeAxes(true);
     if (nrhs >= 5)
@@ -31,7 +31,7 @@ void S2M_inverseKinematics( int, mxArray *plhs[],
 
     // Faire la cinématique inverse a chaque instant
     for (unsigned int i=0; i<markersOverTime.size(); ++i){
-        s2mGenCoord Q(nQ);
+        biorbd::utils::GenCoord Q(nQ);
         Q.setZero();
 
         // Faire la cinématique inverse

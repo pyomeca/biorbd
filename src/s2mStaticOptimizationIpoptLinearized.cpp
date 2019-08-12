@@ -6,8 +6,8 @@
 
 s2mStaticOptimizationIpoptLinearized::s2mStaticOptimizationIpoptLinearized(
         s2mMusculoSkeletalModel &model,
-        const s2mGenCoord &Q,
-        const s2mGenCoord &Qdot,
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
         const s2mTau &tauTarget,
         const s2mVector &activationInit,
         bool useResidual,

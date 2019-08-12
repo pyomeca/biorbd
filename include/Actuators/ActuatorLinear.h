@@ -4,7 +4,9 @@
 #include "biorbdConfig.h"
 #include "Actuators/Actuator.h"
 
-class s2mGenCoord;
+namespace biorbd { namespace utils {
+class GenCoord;
+}}
 namespace biorbd { namespace actuator {
 class BIORBD_API ActuatorLinear : public Actuator
 {
@@ -15,7 +17,7 @@ class BIORBD_API ActuatorLinear : public Actuator
                           unsigned int dofIdx,
                           const s2mString &jointName = "");
         virtual ~ActuatorLinear();
-        virtual double torqueMax(const s2mGenCoord &Q) const;
+        virtual double torqueMax(const biorbd::utils::GenCoord &Q) const;
 
     protected:
 

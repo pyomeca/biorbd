@@ -39,7 +39,7 @@ ActuatorGauss3p::~ActuatorGauss3p()
 }
 
 
-double ActuatorGauss3p::torqueMax(const s2mGenCoord &Q, const s2mGenCoord &Qdot){
+double ActuatorGauss3p::torqueMax(const biorbd::utils::GenCoord &Q, const biorbd::utils::GenCoord &Qdot){
     double pos(Q[m_dofIdx] * 180/M_PI);
     double speed(Qdot[m_dofIdx] * 180/M_PI);
 

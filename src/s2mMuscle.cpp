@@ -7,11 +7,12 @@
 #include "s2mMuscleStateDynamicsBuchanan.h"
 #include "Utils/GenCoord.h"
 
-s2mMuscle::s2mMuscle(const s2mString& name,
-                     const s2mMuscleGeometry& g,
-                     const s2mMuscleCaracteristics& c,
-                     const s2mMusclePathChangers& w,
-                     const s2mMuscleStateDynamics& s) :
+s2mMuscle::s2mMuscle(
+        const s2mString& name,
+        const s2mMuscleGeometry& g,
+        const s2mMuscleCaracteristics& c,
+        const s2mMusclePathChangers& w,
+        const s2mMuscleStateDynamics& s) :
     s2mMuscleCompound(name,w),
     m_position(g),
     m_caract(c)
@@ -34,19 +35,31 @@ s2mMuscle::~s2mMuscle()
     //dtor
 }
 
-void s2mMuscle::updateOrientations(s2mJoints &m, const s2mGenCoord &Q, int updateKin){
+void s2mMuscle::updateOrientations(
+        s2mJoints &m,
+        const biorbd::utils::GenCoord &Q,
+        int updateKin){
     // Update de la position des insertions et origines
     m_position.updateKinematics(m,&Q,nullptr,m_caract,m_pathChanger,updateKin);
 }
-void s2mMuscle::updateOrientations(s2mJoints &m, const s2mGenCoord &Q, const s2mGenCoord &Qdot, int updateKin){
+void s2mMuscle::updateOrientations(
+        s2mJoints &m,
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
+        int updateKin){
     // Update de la position des insertions et origines
     m_position.updateKinematics(m,&Q,&Qdot,m_caract,m_pathChanger,updateKin);
 }
-void s2mMuscle::updateOrientations(std::vector<s2mNodeMuscle>& musclePointsInGlobal, s2mMatrix &jacoPointsInGlobal){
+void s2mMuscle::updateOrientations(
+        std::vector<s2mNodeMuscle>& musclePointsInGlobal,
+        s2mMatrix &jacoPointsInGlobal){
     // Update de la position des insertions et origines
     m_position.updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,nullptr,m_caract);
 }
-void s2mMuscle::updateOrientations(std::vector<s2mNodeMuscle>& musclePointsInGlobal, s2mMatrix &jacoPointsInGlobal, const s2mGenCoord &Qdot){
+void s2mMuscle::updateOrientations(
+        std::vector<s2mNodeMuscle>& musclePointsInGlobal,
+        s2mMatrix &jacoPointsInGlobal,
+        const biorbd::utils::GenCoord &Qdot){
     // Update de la position des insertions et origines
     m_position.updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,&Qdot,m_caract);
 }
@@ -55,21 +68,31 @@ const s2mMuscleGeometry &s2mMuscle::position() const {
     return m_position;
 }
 
-double s2mMuscle::length(s2mJoints &m, const s2mGenCoord &Q, int updateKin){
+double s2mMuscle::length(
+        s2mJoints &m,
+        const biorbd::utils::GenCoord &Q,
+        int updateKin){
     if (updateKin != 0)
         m_position.updateKinematics(m,&Q,nullptr,m_caract,m_pathChanger,updateKin);
 
     return m_position.length();
 }
 
-double s2mMuscle::musculoTendonLength(s2mJoints &m, const s2mGenCoord &Q, int updateKin){
+double s2mMuscle::musculoTendonLength(
+        s2mJoints &m,
+        const biorbd::utils::GenCoord &Q,
+        int updateKin){
     if (updateKin != 0)
         m_position.updateKinematics(m,&Q,nullptr,m_caract,m_pathChanger,updateKin);
 
     return m_position.musculoTendonLength();
 }
 
-double s2mMuscle::velocity(s2mJoints &m, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const bool updateKin){
+double s2mMuscle::velocity(
+        s2mJoints &m,
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
+        const bool updateKin){
     if (updateKin)
         m_position.updateKinematics(m,&Q,&Qdot,m_caract,m_pathChanger);
 
@@ -80,7 +103,10 @@ double s2mMuscle::activationDot(const s2mMuscleStateDynamics &s, const bool alre
     return m_state->timeDerivativeActivation(s, caract(), already);
 }
 
-const std::vector<s2mNodeMuscle> &s2mMuscle::musclesPointsInGlobal(s2mJoints &m, const s2mGenCoord &Q,const bool updateKin){
+const std::vector<s2mNodeMuscle> &s2mMuscle::musclesPointsInGlobal(
+        s2mJoints &m,
+        const biorbd::utils::GenCoord &Q,
+        const bool updateKin){
     if (updateKin)
         m_position.updateKinematics(m,&Q,nullptr,m_caract,m_pathChanger);
 

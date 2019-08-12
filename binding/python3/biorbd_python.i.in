@@ -11,8 +11,6 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 #include "numpy/arrayobject.h"
 %}
 
-%include ../biorbd.i
-
 %include "@CMAKE_CURRENT_SOURCE_DIR@/numpy.i"
 %init %{
     import_array();
@@ -129,11 +127,11 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
     }
 };
 
-/*** s2mGenCoord ***/
-%typemap(typecheck) s2mGenCoord &{
+/*** GenCoord ***/
+%typemap(typecheck) biorbd::utils::GenCoord &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mGenCoord,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIGTYPE_p_s2mGenCoord already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__GenCoord,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__GenCoord already exists
         $1 = true;
     } else if( PyArray_Check($input) ) {
         // test if it is a numpy array
@@ -142,11 +140,11 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         $1 = false;
     }
 }
-%typemap(in) s2mGenCoord &{
+%typemap(in) biorbd::utils::GenCoord &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mGenCoord,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__GenCoord,  0  | 0)) && argp1) {
         // Recast the pointer
-        $1 = reinterpret_cast< s2mGenCoord * >(argp1);
+        $1 = reinterpret_cast< biorbd::utils::GenCoord * >(argp1);
     } else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
@@ -154,7 +152,7 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 
         // Dimension controls
         if (ndim != 1 ){
-            PyErr_SetString(PyExc_ValueError, "s2mGenCoord must be a numpy vector");
+            PyErr_SetString(PyExc_ValueError, "GenCoord must be a numpy vector");
             SWIG_fail;
         }
 
@@ -162,12 +160,12 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
         // Copy the actual data
         unsigned int nQ(dims[0]);
-        $1 = new s2mGenCoord(nQ);
+        $1 = new biorbd::utils::GenCoord(nQ);
         for (unsigned int q=0; q<nQ; ++q)
             (*$1)[q] = *(double*)PyArray_GETPTR1(data, q);
 
     } else {
-        PyErr_SetString(PyExc_ValueError, "s2mGenCoord must be a s2mGenCoord or numpy vector");
+        PyErr_SetString(PyExc_ValueError, "GenCoord must be a GenCoord or numpy vector");
         SWIG_fail;
     }
 };
@@ -344,6 +342,3 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 };
 
 %include ../biorbd.i
-
-
-

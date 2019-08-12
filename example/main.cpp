@@ -18,9 +18,9 @@ int main()
 
     s2mString path("conv-arm26.bioMod"); // Model path
     s2mMusculoSkeletalModel model(path);
-    s2mGenCoord Q(model);
-    s2mGenCoord QDot(model);
-    s2mGenCoord QDDot(model);
+    biorbd::utils::GenCoord Q(model);
+    biorbd::utils::GenCoord QDot(model);
+    biorbd::utils::GenCoord QDDot(model);
     for (unsigned i = 0; i<model.nbQ(); i++){
         Q[i] = 0 ;
         QDot[i] = 0;
@@ -159,9 +159,9 @@ int main()
 
 
 ////    s2mMusculoSkeletalModel m3("test-os-masse.biomod");
-//    s2mGenCoord Q(m3);
-//    s2mGenCoord QDot(m3);
-//    s2mGenCoord QDDot(m3);
+//    biorbd::utils::GenCoord Q(m3);
+//    biorbd::utils::GenCoord QDot(m3);
+//    biorbd::utils::GenCoord QDDot(m3);
 
 ////    std::default_random_engine re(time(0));
 ////    std::uniform_int_distribution<int> distrib{0, 100};
@@ -221,11 +221,11 @@ int main()
 
 //    s2mMusculoSkeletalModel m3("pyomecaman.bioMod");
 
-//    s2mGenCoord q;
+//    biorbd::utils::GenCoord q;
 
 
-//    s2mGenCoord Q(m3);
-//    s2mGenCoord QDDot(m3);
+//    biorbd::utils::GenCoord Q(m3);
+//    biorbd::utils::GenCoord QDDot(m3);
 //    Q.setZero();
 //    s2mTau T(m3);
 //    T.setZero();

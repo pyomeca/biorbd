@@ -6,21 +6,25 @@
 
 class BIORBD_API s2mMuscleStateDynamicsBuchanan : public s2mMuscleStateDynamics
 {
-    public:
-        s2mMuscleStateDynamicsBuchanan(const double &neuralCommand = 0, const double &excitation = 0);
-        ~s2mMuscleStateDynamicsBuchanan();
+public:
+    s2mMuscleStateDynamicsBuchanan(
+            const double &neuralCommand = 0,
+            const double &excitation = 0);
+    ~s2mMuscleStateDynamicsBuchanan();
 
-        virtual double timeDerivativeExcitation(const s2mMuscleCaracteristics &c, const bool alreadyNormalized);
-        virtual void setExcitation(const double &val);
-        virtual void setNeuralCommand(const double &val);
-        void shapeFactor(double m_shape_factor);
-        double shapeFactor();
-        double activation();
+    virtual double timeDerivativeExcitation(
+            const s2mMuscleCaracteristics &c,
+            const bool alreadyNormalized);
+    virtual void setExcitation(const double &val);
+    virtual void setNeuralCommand(const double &val);
+    void shapeFactor(double m_shape_factor);
+    double shapeFactor();
+    double activation();
 
-    protected:
-        double m_neuralCommand;
-        double m_shapeFactor; //Buchanan2004, le 22 mars 2018
-        double m_excitationDot;
+protected:
+    double m_neuralCommand;
+    double m_shapeFactor; //Buchanan2004, le 22 mars 2018
+    double m_excitationDot;
 };
 
 #endif // S2M_MUSCLE_STATE_ACTUAL_BUCHANAN_H

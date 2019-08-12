@@ -8,8 +8,8 @@
 #include "s2mStaticOptimizationIpoptLinearized.h"
 
 s2mStaticOptimization::s2mStaticOptimization(s2mMusculoSkeletalModel& model,
-        const s2mGenCoord &Q,
-        const s2mGenCoord &Qdot,
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
         const s2mTau &tauTarget,
         const s2mVector &initialActivationGuess,
         unsigned int pNormFactor,
@@ -37,8 +37,8 @@ s2mStaticOptimization::s2mStaticOptimization(s2mMusculoSkeletalModel& model,
 
 s2mStaticOptimization::s2mStaticOptimization(
         s2mMusculoSkeletalModel& model,
-        const s2mGenCoord &Q,
-        const s2mGenCoord &Qdot,
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
         const s2mTau &tauTarget,
         const std::vector<s2mMuscleStateDynamics> &initialActivationGuess,
         unsigned int pNormFactor,
@@ -62,8 +62,8 @@ s2mStaticOptimization::s2mStaticOptimization(
 
 s2mStaticOptimization::s2mStaticOptimization(
         s2mMusculoSkeletalModel &model,
-        const std::vector<s2mGenCoord> &allQ,
-        const std::vector<s2mGenCoord> &allQdot,
+        const std::vector<biorbd::utils::GenCoord> &allQ,
+        const std::vector<biorbd::utils::GenCoord> &allQdot,
         const std::vector<s2mTau> &allTauTarget,
         const s2mVector &initialActivationGuess,
         unsigned int pNormFactor,
@@ -88,8 +88,8 @@ s2mStaticOptimization::s2mStaticOptimization(
 }
 
 s2mStaticOptimization::s2mStaticOptimization(s2mMusculoSkeletalModel& model,
-        const std::vector<s2mGenCoord> &allQ,
-        const std::vector<s2mGenCoord> &allQdot,
+        const std::vector<biorbd::utils::GenCoord> &allQ,
+        const std::vector<biorbd::utils::GenCoord> &allQdot,
         const std::vector<s2mTau> &allTauTarget,
         const std::vector<s2mMuscleStateDynamics> &initialActivationGuess,
         unsigned int pNormFactor,

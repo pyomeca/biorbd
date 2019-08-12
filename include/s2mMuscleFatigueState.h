@@ -7,33 +7,33 @@
 
 class BIORBD_API s2mMuscleFatigueState
 {
-    public:
-        s2mMuscleFatigueState(
-                double active = 0,
-                double fatigued = 0,
-                double resting = 1);
+public:
+    s2mMuscleFatigueState(
+            double active = 0,
+            double fatigued = 0,
+            double resting = 1);
 
-        s2mMuscleFatigueState(const std::shared_ptr<s2mMuscleFatigueState> fatigue);
-        virtual ~s2mMuscleFatigueState();
+    s2mMuscleFatigueState(const std::shared_ptr<s2mMuscleFatigueState> fatigue);
+    virtual ~s2mMuscleFatigueState();
 
-        // Set and Get
-        virtual void setState(
-                double active,
-                double fatigued,
-                double resting);
+    // Set and Get
+    virtual void setState(
+            double active,
+            double fatigued,
+            double resting);
 
-        double activeFibers() const;
-        double fatiguedFibers() const;
-        double restingFibers() const;
+    double activeFibers() const;
+    double fatiguedFibers() const;
+    double restingFibers() const;
 
-        std::string getType() const;
-    protected:
-        double m_activeFibers;
-        double m_fatiguedFibers;
-        double m_restingFibers;
+    std::string getType() const;
+protected:
+    double m_activeFibers;
+    double m_fatiguedFibers;
+    double m_restingFibers;
 
-        virtual void setType();
-        std::string m_type; // type of the muscle fatigue
+    virtual void setType();
+    std::string m_type; // type of the muscle fatigue
 
 };
 

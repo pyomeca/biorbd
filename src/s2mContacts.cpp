@@ -95,7 +95,10 @@ s2mString s2mContacts::name(unsigned int i) {
 }
 
 
-std::vector<s2mNode> s2mContacts::constraintsInGlobal(s2mJoints& m, const s2mGenCoord &Q, const bool updateKin){
+std::vector<s2mNode> s2mContacts::constraintsInGlobal(
+        s2mJoints& m,
+        const biorbd::utils::GenCoord &Q,
+        const bool updateKin){
     if (updateKin)
         RigidBodyDynamics::UpdateKinematicsCustom(m, &Q, nullptr, nullptr);
 

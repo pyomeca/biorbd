@@ -18,7 +18,7 @@ void S2M_MusclesPoints( int nlhs, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); /* Get the number of DoF */
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
 
     // Cellules de sortie
     plhs[0] = mxCreateCellMatrix(model->nbMuscleTotal(), Q.size());

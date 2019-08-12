@@ -9,7 +9,9 @@ s2mMuscleForce::s2mMuscleForce()
 s2mMuscleForce::s2mMuscleForce(double x, double y, double z){
     setForce(x,y,z);
 }
-s2mMuscleForce::s2mMuscleForce(const s2mMuscleGeometry& geo, double force){
+s2mMuscleForce::s2mMuscleForce(
+        const s2mMuscleGeometry& geo,
+        double force){
     setForce(geo, force);
 }
 

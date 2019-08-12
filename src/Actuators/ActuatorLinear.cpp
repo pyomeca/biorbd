@@ -23,7 +23,7 @@ ActuatorLinear::~ActuatorLinear()
 }
 
 
-double ActuatorLinear::torqueMax(const s2mGenCoord &Q) const {
+double ActuatorLinear::torqueMax(const biorbd::utils::GenCoord &Q) const {
 //    std::cout << "Q[" << m_dofIdx << "] = " << Q[m_dofIdx] << std::endl;
 //    std::cout << "M = " << m_m << std::endl;
 //    std::cout << "B = " << m_b << std::endl;

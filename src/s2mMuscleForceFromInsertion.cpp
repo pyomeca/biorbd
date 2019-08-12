@@ -11,7 +11,9 @@ s2mMuscleForceFromInsertion::s2mMuscleForceFromInsertion(double x, double y, dou
 {
 
 }
-s2mMuscleForceFromInsertion::s2mMuscleForceFromInsertion(const s2mMuscleGeometry& geo, double force) :
+s2mMuscleForceFromInsertion::s2mMuscleForceFromInsertion(
+        const s2mMuscleGeometry& geo,
+        double force) :
     s2mMuscleForce(geo, force)
 {
 

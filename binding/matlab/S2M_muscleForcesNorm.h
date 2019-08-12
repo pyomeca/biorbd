@@ -17,10 +17,10 @@ void S2M_muscleForcesNorm( int, mxArray *plhs[],
     unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
 
     // Recevoir QDot
-    std::vector<s2mGenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
 
     // Recevoir les états musculaires
     std::vector<std::vector<s2mMuscleStateDynamics>> state = getParameterMuscleStateActivation(prhs, 4, model->nbMuscleTotal());

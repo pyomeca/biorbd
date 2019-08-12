@@ -7,7 +7,9 @@
 #include "Actuators/Actuator.h"
 
 class s2mJoints;
-class s2mGenCoord;
+namespace biorbd { namespace utils {
+class GenCoord;
+}}
 class s2mTau;
 namespace biorbd { namespace actuator {
 class BIORBD_API Actuators
@@ -22,9 +24,20 @@ class BIORBD_API Actuators
 
         // Retourne deux vecteur de torque max (il manque l'entrée de puissance afin de savoir si c'est positif ou négatif
         // à chaque articulation, donc les deux sont retournés)
-        std::pair<s2mTau, s2mTau> torqueMax(const s2mJoints&, const s2mGenCoord& Q, const s2mGenCoord &Qdot);
-        s2mTau torqueMax(const s2mJoints&, const s2mGenCoord& a, const s2mGenCoord& Q, const s2mGenCoord &Qdot);
-        s2mTau torque(const s2mJoints&, const s2mGenCoord& a, const s2mGenCoord& Q, const s2mGenCoord &Qdot);
+        std::pair<s2mTau, s2mTau> torqueMax(
+                const s2mJoints&,
+                const biorbd::utils::GenCoord& Q,
+                const biorbd::utils::GenCoord& Qdot);
+        s2mTau torqueMax(
+                const s2mJoints&,
+                const biorbd::utils::GenCoord& a,
+                const biorbd::utils::GenCoord& Q,
+                const biorbd::utils::GenCoord &Qdot);
+        s2mTau torque(
+                const s2mJoints&,
+                const biorbd::utils::GenCoord& a,
+                const biorbd::utils::GenCoord& Q,
+                const biorbd::utils::GenCoord &Qdot);
 
         // Get and set
         virtual std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>> actuator(unsigned int dof);

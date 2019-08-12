@@ -18,9 +18,9 @@ void S2M_NLeffects( int, mxArray *plhs[],
     unsigned int nTau = model->nbTau() + model->nbRoot(); /* Nombre de Tau */
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<s2mGenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));

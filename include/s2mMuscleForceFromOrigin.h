@@ -10,7 +10,9 @@ class BIORBD_API s2mMuscleForceFromOrigin : public s2mMuscleForce
         s2mMuscleForceFromOrigin();
         s2mMuscleForceFromOrigin(double x, double y, double z);
         s2mMuscleForceFromOrigin(const Eigen::Vector3d& force);
-        s2mMuscleForceFromOrigin(const s2mMuscleGeometry& geo, double force);
+        s2mMuscleForceFromOrigin(
+                const s2mMuscleGeometry& geo,
+                double force);
         virtual ~s2mMuscleForceFromOrigin();
 
         // Get et set
