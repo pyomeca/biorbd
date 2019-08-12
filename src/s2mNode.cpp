@@ -49,7 +49,7 @@ const s2mNode &s2mNode::position() const
     return *this;
 }
 
-void s2mNode::applyRT(const s2mAttitude &a){
+void s2mNode::applyRT(const biorbd::utils::Attitude &a){
     Eigen::Vector4d tp;
     tp.block(0,0,3,1) = static_cast<Eigen::Vector3d>(*this);
     tp(3) = 1;

@@ -4,7 +4,9 @@
 #include "biorbdConfig.h"
 #include "s2mKalmanRecons.h"
 
-class s2mAttitude;
+namespace biorbd { namespace utils {
+class Attitude;
+}}
 class BIORBD_API s2mKalmanReconsIMU : public s2mKalmanRecons
 {
 public:
@@ -18,7 +20,7 @@ public:
     // Reconstruction d'un frame
     virtual void reconstructFrame(
             s2mMusculoSkeletalModel &m,
-            const std::vector<s2mAttitude> &IMUobs,
+            const std::vector<biorbd::utils::Attitude> &IMUobs,
             biorbd::utils::GenCoord *Q,
             biorbd::utils::GenCoord *Qdot,
             biorbd::utils::GenCoord *Qddot);

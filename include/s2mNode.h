@@ -5,7 +5,9 @@
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 
-class s2mAttitude;
+namespace biorbd { namespace utils {
+class Attitude;
+}}
 class BIORBD_API s2mNode : public Eigen::Vector3d
 {
     public:
@@ -27,7 +29,7 @@ class BIORBD_API s2mNode : public Eigen::Vector3d
     Eigen::Vector3d vector() const;
     void setName(const s2mString &name);
     const s2mString& name() const;
-    void applyRT(const s2mAttitude&);
+    void applyRT(const biorbd::utils::Attitude&);
     const s2mNode operator-(const s2mNode &) const; // overload d'opérateurs
     const s2mNode operator*(double) const; // overload d'opérateurs
     const s2mNode operator/(double) const; // overload d'opérateurs

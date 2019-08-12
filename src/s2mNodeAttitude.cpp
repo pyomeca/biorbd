@@ -4,10 +4,10 @@
 #include <Eigen/Dense>
 
 s2mNodeAttitude::s2mNodeAttitude(
-        const s2mAttitude &v,
+        const biorbd::utils::Attitude &v,
         const s2mString &name,
         const s2mString &parentName) : // Nom du parent
-    s2mAttitude(v),
+    biorbd::utils::Attitude(v),
     m_parentName(parentName),
     m_RTName(name)
 {
@@ -29,13 +29,13 @@ void s2mNodeAttitude::setParent(const s2mString &parentName)
     m_parentName = parentName;
 }
 
-void s2mNodeAttitude::setAttitude(const s2mAttitude &n)
+void s2mNodeAttitude::setAttitude(const Attitude &n)
 {
     this->block(0,0,4,4) = n.block(0,0,4,4);
 }
 
 
-const s2mAttitude &s2mNodeAttitude::attitude() const
+const biorbd::utils::Attitude &s2mNodeAttitude::attitude() const
 {
     return *this;
 }

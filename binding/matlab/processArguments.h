@@ -86,7 +86,7 @@ std::vector<std::vector<s2mNodeBone>> getParameterAllMarkers(const mxArray*prhs[
     // Retourner la matrice
     return markersOverTime;
 }
-std::vector<std::vector<s2mAttitude>> getParameterAllIMUs(const mxArray*prhs[], unsigned int idx){
+std::vector<std::vector<biorbd::utils::Attitude>> getParameterAllIMUs(const mxArray*prhs[], unsigned int idx){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -131,11 +131,11 @@ std::vector<std::vector<s2mAttitude>> getParameterAllIMUs(const mxArray*prhs[], 
     double *imus = mxGetPr(prhs[idx]);
 
     // Créer la sortie
-    std::vector<std::vector<s2mAttitude>> imuOverTime;
+    std::vector<std::vector<biorbd::utils::Attitude>> imuOverTime;
 
     // Stocker les valeurs dans le format de sortie
     for (unsigned int i=0; i<nFrames; ++i){
-        std::vector<s2mAttitude> imus_tp; // IMUs a un temps i
+        std::vector<biorbd::utils::Attitude> imus_tp; // IMUs a un temps i
         for (unsigned int j=0; j<nIMUs; ++j){
             Eigen::Matrix3d rot;
             Eigen::Vector3d trans;
@@ -150,7 +150,7 @@ std::vector<std::vector<s2mAttitude>> getParameterAllIMUs(const mxArray*prhs[], 
                         imus[i*9*nIMUs+j*9+2], imus[i*9*nIMUs+j*9+5], imus[i*9*nIMUs+j*9+8];
                 trans.setZero();
             }
-            imus_tp.push_back(s2mAttitude(rot, trans));
+            imus_tp.push_back(biorbd::utils::Attitude(rot, trans));
         }
         imuOverTime.push_back(imus_tp);
     }

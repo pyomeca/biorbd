@@ -20,12 +20,13 @@ s2mIMUs::~s2mIMUs()
 }
 
 // Ajouter un nouveau marker au pool de markers
-void s2mIMUs::addIMU(const s2mAttitude &pos,
-                       const s2mString &name,
-                       const s2mString &parentName,
-                       const bool &technical,
-                       const bool &anatomical,
-                       const int &id)
+void s2mIMUs::addIMU(
+        const biorbd::utils::Attitude &pos,
+        const s2mString &name,
+        const s2mString &parentName,
+        const bool &technical,
+        const bool &anatomical,
+        const int &id)
 {
     s2mIMU tp(pos, name, parentName, technical, anatomical, id);
     m_IMUs.push_back(tp);
@@ -89,7 +90,7 @@ s2mIMU s2mIMUs::IMU(
     s2mIMU node = IMU(idx);
     unsigned int id = static_cast<unsigned int>(model.GetBodyS2MId(node.parent()));
 
-    s2mAttitude parent(model.globalJCS(Q, id, updateKin));
+    biorbd::utils::Attitude parent(model.globalJCS(Q, id, updateKin));
 
     s2mIMU node_tp = node;
     node_tp.block(0,0,4,4) = parent * node;

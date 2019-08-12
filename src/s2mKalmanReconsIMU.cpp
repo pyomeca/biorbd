@@ -51,7 +51,7 @@ bool s2mKalmanReconsIMU::first()
 
 void s2mKalmanReconsIMU::reconstructFrame(
         s2mMusculoSkeletalModel &m,
-        const std::vector<s2mAttitude> &IMUobs,
+        const std::vector<biorbd::utils::Attitude> &IMUobs,
         biorbd::utils::GenCoord *Q,
         biorbd::utils::GenCoord *Qdot,
         biorbd::utils::GenCoord *Qddot){

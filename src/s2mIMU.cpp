@@ -1,12 +1,13 @@
 #define BIORBD_API_EXPORTS
 #include "s2mIMU.h"
 
-s2mIMU::s2mIMU(const s2mAttitude &v,
-                 const s2mString &name,
-                 const s2mString &parentName,
-                 const bool &tech,
-                 const bool &ana,
-                 const int &id) :
+s2mIMU::s2mIMU(
+        const biorbd::utils::Attitude &v,
+        const s2mString &name,
+        const s2mString &parentName,
+        const bool &tech,
+        const bool &ana,
+        const int &id) :
     s2mNodeAttitude(v, name, parentName),
     m_technical(tech),
     m_anatomical(ana),

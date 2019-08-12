@@ -63,9 +63,9 @@ void dispatchTagsOutput(const std::vector<s2mNodeBone> &allTags, double* tags);
 GenCoord dispatchQinput(s2mMusculoSkeletalModel* model, const double*Q);
 void dispatchQoutput(const GenCoord &eQ, double*Q);
 void dispatchDoubleOutput(const Eigen::VectorXd&, double*);
-s2mAttitude dispatchRTinput(const double* rt);
-void dispatchRToutput(const s2mAttitude& rt_in, double* rt_out);
-void dispatchRToutput(const std::vector<s2mAttitude>& rt_in, double* rt_out);
+Attitude dispatchRTinput(const double* rt);
+void dispatchRToutput(const Attitude& rt_in, double* rt_out);
+void dispatchRToutput(const std::vector<Attitude>& rt_in, double* rt_out);
 
 
 

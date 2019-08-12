@@ -219,7 +219,7 @@ const s2mString& s2mBone::seqR() const
     return m_seqR;
 }
 
-s2mAttitude s2mBone::localJCS() const {
+biorbd::utils::Attitude s2mBone::localJCS() const {
     return m_cor;
 }
 const s2mBoneCaracteristics &s2mBone::caract() const {

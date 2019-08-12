@@ -19,12 +19,12 @@ public:
             const s2mString &parentName = "");
     virtual ~s2mWrappingObject() ;
 
-    virtual s2mAttitude RT(
+    virtual biorbd::utils::Attitude RT(
             s2mJoints &m,
             const biorbd::utils::GenCoord& Q,
             const bool & = true) = 0;
     virtual void wrapPoints(
-            const s2mAttitude&,
+            const biorbd::utils::Attitude&,
             const s2mNodeMuscle&,
             const s2mNodeMuscle&,
             s2mNodeMuscle&,

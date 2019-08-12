@@ -22,7 +22,7 @@ public:
 
     // Set and get
     void addIMU(
-            const s2mAttitude &pos = s2mAttitude(),
+            const biorbd::utils::Attitude &pos = biorbd::utils::Attitude(),
             const s2mString &name = "",
             const s2mString &parentName = "",
             const bool &technical = true,

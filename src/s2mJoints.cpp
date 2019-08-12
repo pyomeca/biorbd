@@ -234,10 +234,10 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> s2mJoints::dispatchedForce(
     return sv_out;
 }
 
-std::vector<s2mAttitude> s2mJoints::globalJCS(
+std::vector<biorbd::utils::Attitude> s2mJoints::globalJCS(
         const biorbd::utils::GenCoord &Q,
         const bool updateKin){
-    std::vector<s2mAttitude> out;
+    std::vector<biorbd::utils::Attitude> out;
 
     for (unsigned int i=0; i<m_bones.size(); ++i)
         if (i==0)
@@ -255,20 +255,20 @@ int s2mJoints::GetBodyS2MId(const s2mString &s) const{
     return -1;
 }
 
-s2mAttitude s2mJoints::globalJCS(
+biorbd::utils::Attitude s2mJoints::globalJCS(
         const biorbd::utils::GenCoord &Q,
         const s2mString &name,
         const bool updateKin){
     return globalJCS(Q,static_cast<unsigned int>(GetBodyS2MId(name.c_str())),updateKin);
 }
 
-s2mAttitude s2mJoints::globalJCS(
+biorbd::utils::Attitude s2mJoints::globalJCS(
         const biorbd::utils::GenCoord &Q,
         const unsigned int i,
         const bool updateKin){
     unsigned int id = m_bones[i].id();
 
-    s2mAttitude RT;
+    biorbd::utils::Attitude RT;
     RigidBodyDynamics::Math::SpatialTransform tp_ST;
 
     tp_ST = CalcBodyWorldTransformation(*this,Q, id,updateKin);
@@ -280,18 +280,18 @@ s2mAttitude s2mJoints::globalJCS(
 }
 
 
-std::vector<s2mAttitude> s2mJoints::localJCS() const{
-    std::vector<s2mAttitude> out;
+std::vector<biorbd::utils::Attitude> s2mJoints::localJCS() const{
+    std::vector<biorbd::utils::Attitude> out;
 
     for (unsigned int i=0; i<m_bones.size(); ++i)
             out.push_back(localJCS(i));
 
     return out;
 }
-s2mAttitude s2mJoints::localJCS(const s2mString &name) const{
+biorbd::utils::Attitude s2mJoints::localJCS(const s2mString &name) const{
     return localJCS(static_cast<unsigned int>(GetBodyS2MId(name.c_str())));
 }
-s2mAttitude s2mJoints::localJCS(const unsigned int i) const{
+biorbd::utils::Attitude s2mJoints::localJCS(const unsigned int i) const{
     return m_bones[i].localJCS();
 }
 
@@ -421,9 +421,9 @@ RigidBodyDynamics::Math::SpatialTransform s2mJoints::CalcBodyWorldTransformation
     if (body_id >= model.fixed_body_discriminator) {
         unsigned int fbody_id = body_id - model.fixed_body_discriminator;
         unsigned int parent_id = model.mFixedBodies[fbody_id].mMovableParent;
-        s2mAttitude parentRT(model.X_base[parent_id].E.transpose(), model.X_base[parent_id].r);
-        s2mAttitude bodyRT(model.mFixedBodies[fbody_id].mParentTransform.E.transpose(), model.mFixedBodies[fbody_id].mParentTransform.r);
-        s2mAttitude transfo_tp = parentRT * bodyRT;
+        biorbd::utils::Attitude parentRT(model.X_base[parent_id].E.transpose(), model.X_base[parent_id].r);
+        biorbd::utils::Attitude bodyRT(model.mFixedBodies[fbody_id].mParentTransform.E.transpose(), model.mFixedBodies[fbody_id].mParentTransform.r);
+        biorbd::utils::Attitude transfo_tp = parentRT * bodyRT;
         RigidBodyDynamics::Math::SpatialTransform transfo(transfo_tp.rot(), transfo_tp.trans());
         return transfo;
     }
@@ -620,7 +620,7 @@ std::vector<std::vector<s2mNodeBone>> s2mJoints::meshPoints(
     std::vector<std::vector<s2mNodeBone>> v; // Vecteur de vecteur de sortie (mesh par segment)
 
     // Trouver la position des segments
-    std::vector<s2mAttitude> RT(globalJCS(Q, updateKin));
+    std::vector<biorbd::utils::Attitude> RT(globalJCS(Q, updateKin));
 
     // Pour tous les segments
     for (unsigned int i=0; i<nbBone(); ++i)
@@ -634,11 +634,13 @@ std::vector<s2mNodeBone> s2mJoints::meshPoints(
         const bool updateKin){
 
     // Trouver la position des segments
-    std::vector<s2mAttitude> RT(globalJCS(Q, updateKin));
+    std::vector<biorbd::utils::Attitude> RT(globalJCS(Q, updateKin));
 
     return meshPoints(RT,i);
 }
-std::vector<s2mNodeBone> s2mJoints::meshPoints(const std::vector<s2mAttitude> &RT, const unsigned int &i) const{
+std::vector<s2mNodeBone> s2mJoints::meshPoints(
+        const std::vector<biorbd::utils::Attitude> &RT,
+        const unsigned int &i) const{
 
     // Recueillir la position des meshings
     std::vector<s2mNodeBone> v;

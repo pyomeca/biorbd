@@ -11,9 +11,9 @@ class s2mVector;
 class s2mJoints;
 class s2mString;
 namespace biorbd { namespace utils {
+class Attitude;
 class GenCoord;
 }}
-class s2mAttitude;
 class BIORBD_API s2mContacts : public RigidBodyDynamics::ConstraintSet
 {
     public:
@@ -34,8 +34,8 @@ class BIORBD_API s2mContacts : public RigidBodyDynamics::ConstraintSet
         virtual unsigned int AddLoopConstraint(
                 unsigned int body_id_predecessor,
                 unsigned int body_id_successor,
-                const s2mAttitude& X_predecessor,
-                const s2mAttitude& X_successor,
+                const biorbd::utils::Attitude& X_predecessor,
+                const biorbd::utils::Attitude& X_successor,
                 const s2mVector& axis,
                 bool enableStabilization = false,
                 const double stabilizationParam = 0.1,

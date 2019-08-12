@@ -234,7 +234,7 @@ void s2mMuscleGeometry::musclesPointsInGlobal(
 
         // Récupérer la matrice de RT du wrap
         std::shared_ptr<s2mWrappingObject> w = std::static_pointer_cast<s2mWrappingObject>(objects.object(0));
-        s2mAttitude RT = w->RT(model,Q);
+        biorbd::utils::Attitude RT = w->RT(model,Q);
 
         // Alias
         s2mNodeMuscle po_mus = originInGlobal(model, Q);  // Origine sur l'os

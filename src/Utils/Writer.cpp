@@ -34,7 +34,7 @@ void s2mWriter::writeModel(s2mMusculoSkeletalModel & m, const s2mPath& pathToWri
     s2mModelFile << std::endl;
 
     // Informations sur les segments
-    std::vector<s2mAttitude> localJCS = m.localJCS();
+    std::vector<biorbd::utils::Attitude> localJCS = m.localJCS();
     for (unsigned int i = 0; i<m.nbBone(); ++i){
         s2mModelFile << com << " Informations about " << m.bone(i).name() << " segment" << std::endl;
         s2mModelFile << sep << com << " Segment" << std::endl;

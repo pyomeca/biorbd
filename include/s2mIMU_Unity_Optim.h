@@ -7,19 +7,26 @@
 
 class BIORBD_API s2mIMU_Unity_Optim
 {
+public:
+    typedef dlib::matrix<double,1,1> parameter_vector;
+    class OptimData{
     public:
-        typedef dlib::matrix<double,1,1> parameter_vector;
-        class OptimData{
-        public:
-            OptimData(const s2mAttitude &R1, const s2mAttitude &R2, int axe);
-            s2mAttitude m_R1;
-            s2mAttitude m_R2;
-            int m_axe;
-        };
-        static s2mAttitude alignSpecificAxisWithParentVertical(const s2mAttitude &r1, const s2mAttitude &r2, int idxAxe); // Optimization
+        OptimData(
+                const biorbd::utils::Attitude &R1,
+                const biorbd::utils::Attitude &R2, int axe);
+        biorbd::utils::Attitude m_R1;
+        biorbd::utils::Attitude m_R2;
+        int m_axe;
+    };
+    static biorbd::utils::Attitude alignSpecificAxisWithParentVertical(
+            const biorbd::utils::Attitude &r1,
+            const biorbd::utils::Attitude &r2,
+            int idxAxe); // Optimization
 
-    protected:
-		static double residual (const OptimData& data, const parameter_vector& x); // Optimization
+protected:
+    static double residual (
+            const OptimData& data,
+            const parameter_vector& x); // Optimization
 
 };
 

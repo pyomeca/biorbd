@@ -54,8 +54,8 @@ namespace std {
     %template(MatS2mNode) std::vector<std::vector<s2mNode>>;
     %template(VecS2mNodeBone) std::vector<s2mNodeBone>;
     %template(MatS2mNodeBone) std::vector<std::vector<s2mNodeBone>>;
-    %template(VecS2mAttitude) std::vector<s2mAttitude>;
-    %template(MatS2mAttitude) std::vector<std::vector<s2mAttitude>>;
+    %template(VecAttitude) std::vector<biorbd::utils::Attitude>;
+    %template(MatAttitude) std::vector<std::vector<biorbd::utils::Attitude>>;
 
     %template(VecS2mVector) std::vector<s2mVector>;
     %template(MatS2mVector) std::vector<std::vector<s2mVector>>;

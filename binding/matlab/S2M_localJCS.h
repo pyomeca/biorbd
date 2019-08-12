@@ -15,7 +15,7 @@ void S2M_localJCS( int, mxArray *plhs[],
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
 
     // Trouver les RT
-    std::vector<s2mAttitude> JSC_vec(model->localJCS());
+    std::vector<biorbd::utils::Attitude> JSC_vec(model->localJCS());
 
     // Create a matrix for the return argument
     const mwSize dims[3]={4,4,mwSize(model->nbBone())};
@@ -24,7 +24,7 @@ void S2M_localJCS( int, mxArray *plhs[],
 
     // Remplir l'output
     unsigned int cmpJCS = 0;
-    for (std::vector<s2mAttitude>::iterator JSC_it=JSC_vec.begin(); JSC_it!=JSC_vec.end(); ++JSC_it)
+    for (std::vector<biorbd::utils::Attitude>::iterator JSC_it=JSC_vec.begin(); JSC_it!=JSC_vec.end(); ++JSC_it)
         for (unsigned int i=0; i<4; ++i)
             for (unsigned int j=0; j<4; ++j){
                 JCS[cmpJCS] = (*JSC_it)(j,i);

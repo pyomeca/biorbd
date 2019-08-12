@@ -9,7 +9,7 @@ class BIORBD_API s2mWrappingCylinder : public s2mWrappingObject
 {
 public:
     s2mWrappingCylinder(
-            const s2mAttitude & = s2mAttitude(), // Position du centre
+            const biorbd::utils::Attitude & = biorbd::utils::Attitude(), // Position du centre
             const double & = 0, // Diametre vue du dessus
             const double & = 0, // Longueur du cylindre
             const int & =1, // sens du wrapping (+1 ou -1)
@@ -18,7 +18,7 @@ public:
     virtual ~s2mWrappingCylinder();
 
     void wrapPoints(
-            const s2mAttitude&,
+            const biorbd::utils::Attitude&,
             const s2mNodeMuscle&,
             const s2mNodeMuscle&,
             s2mNodeMuscle&,
@@ -39,7 +39,7 @@ public:
 
 
     // Set et get
-    virtual s2mAttitude RT(
+    virtual biorbd::utils::Attitude RT(
             s2mJoints &m,
             const biorbd::utils::GenCoord& Q,
             const bool &updateKin = true);
@@ -72,7 +72,7 @@ protected:
     double m_dia; // diametre du cylindre
     double m_length; // Longueur du cylindre
     int m_side; // sens autours duquel passe les muscles
-    s2mAttitude m_RTtoParent; // Matrice de rototrans avec le parent
+    biorbd::utils::Attitude m_RTtoParent; // Matrice de rototrans avec le parent
 
     s2mNodeMuscle m_p1Wrap; // Premier point de contact avec le wrap
     s2mNodeMuscle m_p2Wrap; // Deuxieme point de contact avec le wrap

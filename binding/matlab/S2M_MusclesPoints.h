@@ -24,7 +24,7 @@ void S2M_MusclesPoints( int nlhs, mxArray *plhs[],
     plhs[0] = mxCreateCellMatrix(model->nbMuscleTotal(), Q.size());
     // Utilisable que si nlhs >= 2
     std::vector<s2mString> wrap_forme; // forme du wrapping
-    std::vector<s2mAttitude> wrap_RT; // orientation du wrapping
+    std::vector<biorbd::utils::Attitude> wrap_RT; // orientation du wrapping
     std::vector<double> wrap_dim1; // dimension du wrapping
     std::vector<double> wrap_dim2; // dimension deux du wrapping
 
@@ -44,7 +44,7 @@ void S2M_MusclesPoints( int nlhs, mxArray *plhs[],
                     wrap_forme.push_back(forme);
 
                     // Dans quelle orientation
-                    s2mAttitude RT;
+                    biorbd::utils::Attitude RT;
                     RT.setIdentity();
                     RT = std::static_pointer_cast<s2mWrappingObject>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->RT(*model,*(Q.begin()+iQ),false);
                     wrap_RT.push_back(RT);

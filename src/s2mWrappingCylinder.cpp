@@ -4,7 +4,7 @@
 #include "s2mJoints.h"
 
 s2mWrappingCylinder::s2mWrappingCylinder(
-        const s2mAttitude &v, // Position du centre
+        const biorbd::utils::Attitude &v, // Position du centre
         const double &dia, // Diametre vue du dessus
         const double &length, // Longueur du cylindre
         const int &side, // sens du wrapping (+1 ou -1)
@@ -37,14 +37,14 @@ void s2mWrappingCylinder::wrapPoints(
         *length = m_lengthAroundWrap;
 }
 
-s2mAttitude s2mWrappingCylinder::RT(
+biorbd::utils::Attitude s2mWrappingCylinder::RT(
         s2mJoints &m,
         const biorbd::utils::GenCoord& Q,
         const bool &updateKin){
 
     // Récupérer la matrice de rototrans du cylindre dans le global
-    s2mAttitude parent(m.globalJCS(Q, m_parentName, updateKin));
-    s2mAttitude RT(parent * m_RTtoParent);
+    biorbd::utils::Attitude parent(m.globalJCS(Q, m_parentName, updateKin));
+    biorbd::utils::Attitude RT(parent * m_RTtoParent);
     return RT;
 }
 
@@ -86,7 +86,7 @@ void s2mWrappingCylinder::wrapPoints(
     wrapPoints(RT(m,Q), p1_bone, p2_bone, p1, p2, length);
 }
 void s2mWrappingCylinder::wrapPoints(
-        const s2mAttitude& RT,
+        const biorbd::utils::Attitude& RT,
         const s2mNodeMuscle& p1_bone,
         const s2mNodeMuscle& p2_bone,
         s2mNodeMuscle& p1,
@@ -199,7 +199,7 @@ bool s2mWrappingCylinder::findVerticalNode(
     Y = Y/Y.norm();
     Z = Z/Z.norm();
     // Concatener pour obtenir la matrice de rotation
-    s2mAttitude R;
+    biorbd::utils::Attitude R;
     R <<    X(0), X(1), X(2), 0,
             Y(0), Y(1), Y(2), 0,
             Z(0), Z(1), Z(2), 0,

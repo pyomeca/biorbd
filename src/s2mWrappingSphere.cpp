@@ -20,12 +20,12 @@ s2mWrappingSphere::~s2mWrappingSphere()
     //dtor
 }
 
-s2mAttitude s2mWrappingSphere::RT(
+biorbd::utils::Attitude s2mWrappingSphere::RT(
         s2mJoints &,
         const biorbd::utils::GenCoord &,
         const bool &)
 {
-    return s2mAttitude();
+    return biorbd::utils::Attitude();
 }
 
 double s2mWrappingSphere::size() const

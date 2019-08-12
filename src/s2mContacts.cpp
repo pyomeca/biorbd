@@ -44,8 +44,8 @@ unsigned int s2mContacts::AddConstraint(unsigned int body_id, const s2mNode& bod
 
 unsigned int s2mContacts::AddLoopConstraint(unsigned int body_id_predecessor,
         unsigned int body_id_successor,
-        const s2mAttitude &X_predecessor,
-        const s2mAttitude &X_successor,
+        const biorbd::utils::Attitude &X_predecessor,
+        const biorbd::utils::Attitude &X_successor,
         const s2mVector &axis,
         bool enableStabilization,
         const double stabilizationParam,

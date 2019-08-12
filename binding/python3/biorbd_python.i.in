@@ -322,7 +322,7 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
     }
 };
 
-%extend s2mAttitude{
+%extend biorbd::utils::Attitude{
     PyObject* get_array(){
         int nArraySize(2);
         npy_intp * arraySizes = new npy_intp[nArraySize];

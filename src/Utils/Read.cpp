@@ -155,7 +155,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                         // Transcrire les translations
                         for (unsigned int i=0; i<3; ++i)
                             file.read(trans(i));
-                        s2mAttitude RT(rot, trans, seq);
+                        biorbd::utils::Attitude RT(rot, trans, seq);
                         RT_R = RT.rot().transpose();
                         RT_T = RT.trans();
 
@@ -280,7 +280,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             file.read(name);
             unsigned int parent_int = 0;
             s2mString parent_str("root");
-            s2mAttitude RT;
+            biorbd::utils::Attitude RT;
             bool RTinMatrix(true);
             if (version == 3) // Par défaut pour la version 3 (pas en matrice)
                 RTinMatrix = false;
@@ -316,7 +316,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                         // Transcrire les translations
                         for (unsigned int i=0; i<3; ++i)
                             file.read(trans(i));
-                        RT = s2mAttitude(rot, trans, seq);
+                        RT = biorbd::utils::Attitude(rot, trans, seq);
                     }
                     isRTset = true;
                 }
@@ -370,8 +370,8 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
             unsigned int id_successor = 0;
             s2mString predecessor_str("root");
             s2mString successor_str("root");
-            s2mAttitude X_predecessor;
-            s2mAttitude X_successor;
+            biorbd::utils::Attitude X_predecessor;
+            biorbd::utils::Attitude X_successor;
             s2mVector axis(6);
             bool enableStabilization(false);
             double stabilizationParam(-1);
@@ -401,7 +401,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     // Transcrire les translations
                     for (unsigned int i=0; i<3; ++i)
                         file.read(trans(i));
-                    X_predecessor = s2mAttitude(rot, trans, seq);
+                    X_predecessor = biorbd::utils::Attitude(rot, trans, seq);
                 } else if (!tp.tolower().compare("rtsuccessor")){
                     s2mString seq("xyz");
                     s2mNode rot;
@@ -414,7 +414,7 @@ void s2mRead::readModelFile(const s2mPath &path, s2mMusculoSkeletalModel *model)
                     // Transcrire les translations
                     for (unsigned int i=0; i<3; ++i)
                         file.read(trans(i));
-                    X_successor = s2mAttitude(rot, trans, seq);
+                    X_successor = biorbd::utils::Attitude(rot, trans, seq);
                 } else if (!tp.tolower().compare("axis"))
                     for (unsigned int i=0; i<axis.size(); ++i)
                         file.read(axis(i), variable);
