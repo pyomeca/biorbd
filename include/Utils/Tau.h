@@ -19,7 +19,9 @@ public:
 
     biorbd::utils::Tau timeDerivativeActivation(const biorbd::utils::Tau &act);
 
+void test_tau();
 };
+
 
 }}
 
