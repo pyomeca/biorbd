@@ -72,7 +72,7 @@ add_subdirectory(src/Utils)
 list(APPEND BIORBD_MODULE_NAMES ${UTILS_MODULE_NAME})
 
 # Actuators
-option(MODULE_ACTUATORS "Choose if the module actuators is to be added to biorbd" OFF)
+option(MODULE_ACTUATORS "Choose if the module actuators is to be added to biorbd" ON)
 if (MODULE_ACTUATORS)
     add_subdirectory(src/Actuators)
     list(APPEND BIORBD_MODULE_NAMES ${ACTUATOR_MODULE_NAME})
