@@ -10,6 +10,9 @@ namespace biorbd { namespace utils {
 class Node;
 class String;
 
+///
+/// \brief The Attitude class is the 3d position given in a 4d matrix
+///
 class BIORBD_API Attitude : public Eigen::Matrix4d
 {
 public:
@@ -32,9 +35,17 @@ public:
     bool isIdentity();
 
     static Attitude SpatialTransform2Attitude(const RigidBodyDynamics::Math::SpatialTransform& st);
+
+    ///
+    /// \brief Create an Attitude matrix from a rotation and a translation
+    /// \param rot The matrix of rotation
+    /// \param trans The vector of translation
+    /// \return The matrix of attitude
+    ///
     static Attitude combineRotAndTrans(
             const Eigen::Matrix3d& rot,
             const Eigen::Vector3d& trans);
+
     static Eigen::Matrix4d transformCardanToMatrix(
             const Eigen::VectorXd&,
             const Eigen::Vector3d&,
@@ -49,6 +60,7 @@ public:
     const biorbd::utils::Node operator*(const biorbd::utils::Node&);
 
     static Attitude mean(const std::vector<Attitude>&); // Moyenne des matrices 4x4
+
 protected:
     Eigen::Vector4d expand3dTo4d(const Eigen::Vector3d&);
 
