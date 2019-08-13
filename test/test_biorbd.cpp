@@ -8,7 +8,7 @@
 #include "Utils/Tau.h"
 
 static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
-TEST(c3dFileIO, OpenModel){
+TEST(FileIO, OpenModel){
 #ifdef MODULE_ACTUATORS
     EXPECT_NO_THROW(s2mMusculoSkeletalModel model(modelPathForGeneralTesting));
 #else // MODULE_ACTUATORS
@@ -16,8 +16,13 @@ TEST(c3dFileIO, OpenModel){
 #endif // MODULE_ACTUATORS
 }
 
+TEST(GenericTests, mass){
+    s2mMusculoSkeletalModel model(modelPathForGeneralTesting);
+    EXPECT_DOUBLE_EQ(model.mass(), 52.412120000000002);
+}
+
 static std::string modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
-TEST(c3dConstraint, loopConstraint){
+TEST(Constraint, loopConstraint){
     s2mMusculoSkeletalModel model(modelPathForLoopConstraintTesting);
     biorbd::utils::GenCoord Q(model), QDot(model), QDDot_constrained(model), QDDot_expected(model);
     biorbd::utils::Tau Tau(model);
@@ -33,3 +38,5 @@ TEST(c3dConstraint, loopConstraint){
     for (unsigned int i = 0; i<model.nbQddot(); ++i)
         EXPECT_DOUBLE_EQ(QDDot_constrained[i], QDDot_expected[i]);
 }
+
+
