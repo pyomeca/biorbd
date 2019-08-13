@@ -6,7 +6,7 @@
 
 namespace biorbd { namespace utils {
 
-class BIORBD_API Vector : public Eigen::VectorXd
+class BIORBD_API Vector : public Eigen::Vector3d
 {
 public:
     Vector();
