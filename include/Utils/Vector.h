@@ -21,7 +21,7 @@ public:
     biorbd::utils::Vector normGradient(
             unsigned int p = 2,
             bool skipRoot = false);
-
+    void test_me();
 };
 
 }}
