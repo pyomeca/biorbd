@@ -18,6 +18,27 @@
 #include "s2mIMU.h"
 #include "s2mKalmanReconsIMU.h"
 #include "s2mKalmanReconsMarkers.h"
+
+#ifdef MODULE_MUSCLES
+#include "Muscles/StateDynamics.h"
+#include "Muscles/Muscle.h"
+#include "Muscles/MuscleGroup.h"
+#include "Muscles/HillType.h"
+#include "Muscles/HillTypeThelen.h"
+#include "Muscles/HillTypeSimple.h"
+#include "Muscles/HillTypeThelenFatigable.h"
+#include "Muscles/FatigueState.h"
+#include "Muscles/FatigueDynamicState.h"
+#include "Muscles/FatigueDynamicStateXia.h"
+#include "Muscles/StaticOptimization.h"
+#include "Muscles/MuscleNode.h"
+//%include "s2mNodeWrap.h"
+//%include "s2mViaPoint.h"
+//%include "s2mWrappingObject.h"
+//%include "s2mWrappingSphere.h"
+//%include "s2mWrappingCylinder.h"
+#endif // MODULE_MUSCLES
+
 %}
 %include exception.i
 %include <std_shared_ptr.i>
@@ -137,15 +158,9 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/s2mKalmanReconsMarkers.h"
 //%include "s2mIMU_Unity_Optim.h"
 
+@SWIG_MODULE_ACTUATORS_INCLUDE_COMMAND@
 
-//%include "Actuator.h"
-//%include "ActuatorConstant.h"
-//%include "ActuatorGauss3p.h"
-//%include "ActuatorGauss6p.h"
-//%include "ActuatorLinear.h"
-//%include "Actuators.h"
-
-#cmakedefine MODULE_MUSCLES "%include biorbd_muscles.i"
+@SWIG_MODULE_MUSCLES_INCLUDE_COMMAND@
 
 //%include "s2mJoint.h"
 %include "@CMAKE_SOURCE_DIR@/include/s2mJoints.h"

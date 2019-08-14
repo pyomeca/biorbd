@@ -8,7 +8,10 @@ if (BINDER_PYTHON3)
     find_package(SWIG REQUIRED)
 
     # Create the .i file
+    SET(SWIG_MODULE_MUSCLES_INCLUDE_COMMAND "%import \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_muscles.i\"")
+    SET(SWIG_MODULE_ACTUATORS_INCLUDE_COMMAND "%import \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_actuators.i\"")
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_muscles.i.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_muscles.i @ONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_actuators.i.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_actuators.i @ONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.i.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.i @ONLY)
 
     include(${SWIG_USE_FILE})
