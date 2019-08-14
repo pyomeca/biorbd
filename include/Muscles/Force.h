@@ -5,7 +5,8 @@
 #include "biorbdConfig.h"
 #include "Muscles/Geometry.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API Force : public Eigen::Vector3d
 {

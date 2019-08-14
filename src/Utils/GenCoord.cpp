@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/GenCoord.h"
 
-#include "s2mJoints.h"
+#include "RigidBody/Joints.h"
 
 biorbd::utils::GenCoord::GenCoord()
 {
@@ -31,7 +31,7 @@ biorbd::utils::GenCoord::GenCoord(unsigned int i) : biorbd::utils::Vector(i)
 
 }
 
-biorbd::utils::GenCoord::GenCoord(const s2mJoints &j) :
+biorbd::utils::GenCoord::GenCoord(const biorbd::rigidbody::Joints &j) :
     biorbd::utils::Vector(j.nbDof()){
 
 }

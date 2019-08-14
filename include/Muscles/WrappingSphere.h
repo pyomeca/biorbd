@@ -4,7 +4,8 @@
 #include "biorbdConfig.h"
 #include "Muscles/WrappingObject.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API WrappingSphere : public biorbd::muscles::WrappingObject
 {
@@ -17,7 +18,7 @@ public:
     virtual ~WrappingSphere();
 
     biorbd::utils::Attitude RT(
-            s2mJoints &,
+            biorbd::rigidbody::Joints &,
             const biorbd::utils::GenCoord& ,
             const bool & = true);
     virtual void wrapPoints(
@@ -27,7 +28,7 @@ public:
             biorbd::muscles::MuscleNode&,
             biorbd::muscles::MuscleNode&, double* = nullptr) {} // Premier et dernier points musculaire
     virtual void wrapPoints(
-            s2mJoints&,
+            biorbd::rigidbody::Joints&,
             const biorbd::utils::GenCoord&,
             const biorbd::muscles::MuscleNode&,
             const biorbd::muscles::MuscleNode&,

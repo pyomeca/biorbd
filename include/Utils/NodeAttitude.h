@@ -1,12 +1,12 @@
-#ifndef S2M_NODE_ATTITUDE_H
-#define S2M_NODE_ATTITUDE_H
+#ifndef BIORBD_UTILS_NODE_ATTITUDE_H
+#define BIORBD_UTILS_NODE_ATTITUDE_H
 
-#include <Eigen/Dense>
 #include "biorbdConfig.h"
 #include "Utils/Attitude.h"
 #include "Utils/String.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 
 class BIORBD_API NodeAttitude : public biorbd::utils::Attitude
 {
@@ -34,4 +34,4 @@ protected:
 
 }}
 
-#endif // S2M_NODE_ATTITUDE_H
+#endif // BIORBD_UTILS_NODE_ATTITUDE_H

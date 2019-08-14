@@ -11,7 +11,8 @@
 #include "Muscles/StateDynamics.h"
 #include "Muscles/PathChangers.h"
 
-namespace biorbd { namespace  muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API Compound
 {
@@ -29,13 +30,13 @@ public:
 
     const biorbd::utils::String& type() const;
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
-            s2mJoints& model,
+            biorbd::rigidbody::Joints& model,
             const biorbd::utils::GenCoord& Q,
             const biorbd::utils::GenCoord& Qdot,
             const biorbd::muscles::StateDynamics& emg,
             const int updateKin = 2) = 0;
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
-            s2mJoints& model,
+            biorbd::rigidbody::Joints& model,
             const biorbd::utils::GenCoord& Q,
             const biorbd::muscles::StateDynamics& emg,
             const int updateKin = 2) = 0;

@@ -4,10 +4,13 @@
 #include "biorbdConfig.h"
 #include "Actuators/Actuator.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 class GenCoord;
-}}
-namespace biorbd { namespace actuator {
+}
+
+namespace actuator {
+
 class BIORBD_API ActuatorLinear : public Actuator
 {
 public:

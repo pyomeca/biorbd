@@ -53,7 +53,7 @@ const biorbd::muscles::MuscleGroup &biorbd::muscles::Muscles::muscleGroup(const 
 
 // From muscle activation (return muscle force)
 biorbd::utils::Tau biorbd::muscles::Muscles::muscularJointTorque(
-        s2mJoints& m,
+        biorbd::rigidbody::Joints& m,
         const std::vector<biorbd::muscles::StateDynamics> &state,
         Eigen::VectorXd & F,
         bool updateKin,
@@ -74,7 +74,7 @@ biorbd::utils::Tau biorbd::muscles::Muscles::muscularJointTorque(
 
 // From muscle activation (do not return muscle force)
 biorbd::utils::Tau biorbd::muscles::Muscles::muscularJointTorque(
-        s2mJoints& m,
+        biorbd::rigidbody::Joints& m,
         const std::vector<biorbd::muscles::StateDynamics>& state,
         bool updateKin,
         const biorbd::utils::GenCoord* Q,
@@ -85,7 +85,7 @@ biorbd::utils::Tau biorbd::muscles::Muscles::muscularJointTorque(
 
 // From Muscular Force
 biorbd::utils::Tau biorbd::muscles::Muscles::muscularJointTorque(
-        s2mJoints& m,
+        biorbd::rigidbody::Joints& m,
         const Eigen::VectorXd& F,
         bool updateKin,
         const biorbd::utils::GenCoord* Q,
@@ -104,7 +104,7 @@ biorbd::utils::Tau biorbd::muscles::Muscles::muscularJointTorque(
 }
 
 std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> biorbd::muscles::Muscles::musclesForces(
-        s2mJoints& m,
+        biorbd::rigidbody::Joints& m,
         const std::vector<biorbd::muscles::StateDynamics> &state,
         bool updateKin,
         const biorbd::utils::GenCoord* Q,
@@ -134,7 +134,7 @@ unsigned int biorbd::muscles::Muscles::nbMuscleGroups() const {
     return static_cast<unsigned int>(m_mus.size());
 }
 
-biorbd::utils::Matrix biorbd::muscles::Muscles::musclesLengthJacobian(s2mJoints &m)
+biorbd::utils::Matrix biorbd::muscles::Muscles::musclesLengthJacobian(biorbd::rigidbody::Joints &m)
 {
     biorbd::utils::Matrix tp(biorbd::utils::Matrix::Zero(nbMuscleTotal(), m.nbDof()));
     unsigned int cmpMus(0);
@@ -150,7 +150,7 @@ biorbd::utils::Matrix biorbd::muscles::Muscles::musclesLengthJacobian(s2mJoints 
 }
 
 biorbd::utils::Matrix biorbd::muscles::Muscles::musclesLengthJacobian(
-        s2mJoints& m,
+        biorbd::rigidbody::Joints& m,
         const biorbd::utils::GenCoord &Q){
 
     // Update de la position musculaire
@@ -167,7 +167,7 @@ unsigned int biorbd::muscles::Muscles::nbMuscleTotal() const{
 }
 
 void biorbd::muscles::Muscles::updateMuscles(
-        s2mJoints& m,
+        biorbd::rigidbody::Joints& m,
         const biorbd::utils::GenCoord& Q,
         const biorbd::utils::GenCoord& QDot,
         bool updateKin){
@@ -187,7 +187,7 @@ void biorbd::muscles::Muscles::updateMuscles(
         }
 }
 void biorbd::muscles::Muscles::updateMuscles(
-        s2mJoints& m,
+        biorbd::rigidbody::Joints& m,
         const biorbd::utils::GenCoord& Q,
         bool updateKin){
 

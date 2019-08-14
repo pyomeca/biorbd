@@ -4,10 +4,10 @@
 #include <Eigen/Dense>
 #include <boost/numeric/odeint.hpp>
 #include <rbdl/Dynamics.h>
-#include "s2mJoints.h"
 #include "Utils/Error.h"
 #include "Utils/String.h"
 #include "Utils/GenCoord.h"
+#include "RigidBody/Joints.h"
 
 biorbd::utils::Integrator::Integrator(){
 

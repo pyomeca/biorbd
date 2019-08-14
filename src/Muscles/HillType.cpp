@@ -132,7 +132,7 @@ void biorbd::muscles::HillType::setForce()
 }
 
 const std::vector<std::shared_ptr<biorbd::muscles::Force>>& biorbd::muscles::HillType::force(
-        s2mJoints& m,
+        biorbd::rigidbody::Joints& m,
         const biorbd::utils::GenCoord& Q,
         const biorbd::utils::GenCoord& Qdot,
         const biorbd::muscles::StateDynamics& EMG,
@@ -150,7 +150,7 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force>>& biorbd::muscles::Hil
 }
 
 const std::vector<std::shared_ptr<biorbd::muscles::Force>> &biorbd::muscles::HillType::force(
-        s2mJoints &,
+        biorbd::rigidbody::Joints &,
         const biorbd::utils::GenCoord &,
         const biorbd::muscles::StateDynamics &,
         const int)

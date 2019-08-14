@@ -1,7 +1,7 @@
 #include <iostream>
 #include <gtest/gtest.h>
 
-#include "s2mMusculoSkeletalModel.h"
+#include "BiorbdModel.h"
 #include "biorbdConfig.h"
 #ifdef MODULE_MUSCLES
 #include "Muscles/Muscle.h"
@@ -13,7 +13,7 @@ static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
 static unsigned int muscleGroupForMuscleJacobian(1);
 static unsigned int muscleForMuscleJacobian(1);
 TEST(MuscleJacobian, jacobian){
-    s2mMusculoSkeletalModel model(modelPathForMuscleJacobian);
+    biorbd::Model model(modelPathForMuscleJacobian);
     biorbd::utils::GenCoord Q(model);
     Q.setZero();
 
@@ -45,7 +45,7 @@ TEST(MuscleJacobian, jacobian){
     EXPECT_LT( (muscle->position().jacobian() - jacoRef).squaredNorm(), 1e-6);
 }
 TEST(MuscleJacobian, jacobianLength){
-    s2mMusculoSkeletalModel model(modelPathForMuscleJacobian);
+    biorbd::Model model(modelPathForMuscleJacobian);
     biorbd::utils::GenCoord Q(model);
     Q.setZero();
     model.updateMuscles(model, Q, true);
@@ -79,7 +79,7 @@ static double negativeFibersQuantityForFatigueXiaSetStateLimitsTest(-1.0);
 static double excessiveFibersQuantityForFatigueXiaSetStateLimitsTest(1.5);
 TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
     // Prepare the model
-    s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
+    biorbd::Model model(modelPathForXiaDerivativeTest);
     biorbd::utils::GenCoord Q(model);
     biorbd::utils::GenCoord QDot(model);
     Q.setZero();
@@ -130,7 +130,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
 
 TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
     // Prepare the model
-    s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
+    biorbd::Model model(modelPathForXiaDerivativeTest);
     biorbd::utils::GenCoord Q(model);
     biorbd::utils::GenCoord QDot(model);
     Q.setZero();
@@ -168,7 +168,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
 
 TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
     // Prepare the model
-    s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
+    biorbd::Model model(modelPathForXiaDerivativeTest);
     biorbd::utils::GenCoord Q(model);
     biorbd::utils::GenCoord QDot(model);
     Q.setZero();
@@ -216,7 +216,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
 
 TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
     // Prepare the model
-    s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
+    biorbd::Model model(modelPathForXiaDerivativeTest);
     biorbd::muscles::HillTypeThelenFatigable muscle(
                 model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest));
     biorbd::muscles::FatigueDynamicStateXia fatigueModel(muscle.fatigueState());

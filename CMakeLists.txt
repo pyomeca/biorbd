@@ -27,7 +27,7 @@ find_package(Dlib REQUIRED)
 find_package(IPOPT REQUIRED)
 
 # Prepare add library
-aux_source_directory(src SRC_LIST)
+set(SRC_LIST src/BiorbdModel.cpp)
 if (BUILD_SHARED_LIBS)
     add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 else()
@@ -70,6 +70,10 @@ set(BIORBD_MODULE_NAMES)
 # Utils
 add_subdirectory(src/Utils)
 list(APPEND BIORBD_MODULE_NAMES ${UTILS_MODULE_NAME})
+
+# Utils
+add_subdirectory(src/RigidBody)
+list(APPEND BIORBD_MODULE_NAMES ${RIGIDBODY_MODULE_NAME})
 
 # Actuators
 option(MODULE_ACTUATORS "Choose if the module actuators is to be added to biorbd" ON)

@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Tau.h"
 
-#include "s2mJoints.h"
+#include "RigidBody/Joints.h"
 
 biorbd::utils::Tau::Tau() {}
 
@@ -23,7 +23,7 @@ biorbd::utils::Tau::Tau(const Eigen::VectorXd &v) :
 
 }
 
-biorbd::utils::Tau::Tau(const s2mJoints &j) :
+biorbd::utils::Tau::Tau(const biorbd::rigidbody::Joints &j) :
     biorbd::utils::Vector(j.nbTau())
 {
 

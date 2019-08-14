@@ -5,7 +5,8 @@
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API FatigueState
 {

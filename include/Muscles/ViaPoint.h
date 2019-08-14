@@ -5,7 +5,8 @@
 #include "biorbdConfig.h"
 #include "Muscles/PathChanger.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API ViaPoint : public biorbd::muscles::PathChanger{
 public:

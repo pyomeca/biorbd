@@ -5,7 +5,8 @@
 #include "Utils/Attitude.h"
 #include "Muscles/WrappingObject.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API WrappingCylinder : public biorbd::muscles::WrappingObject
 {
@@ -27,7 +28,7 @@ public:
             biorbd::muscles::MuscleNode&,
             double* = nullptr); // Premier et dernier points musculaire
     void wrapPoints(
-            s2mJoints&,
+            biorbd::rigidbody::Joints&,
             const biorbd::utils::GenCoord&,
             const biorbd::muscles::MuscleNode&,
             const biorbd::muscles::MuscleNode&,
@@ -42,7 +43,7 @@ public:
 
     // Set et get
     virtual biorbd::utils::Attitude RT(
-            s2mJoints &m,
+            biorbd::rigidbody::Joints &m,
             const biorbd::utils::GenCoord& Q,
             const bool &updateKin = true);
     double diameter() const;

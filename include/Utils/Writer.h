@@ -3,16 +3,17 @@
 
 #include "biorbdConfig.h"
 
-class s2mMusculoSkeletalModel;
+namespace biorbd {
+class Model;
 
-namespace biorbd { namespace utils {
+namespace utils {
 class Path;
 
 class BIORBD_API Writer
 {
 public:
     static void writeModel(
-            s2mMusculoSkeletalModel &,
+            biorbd::Model &,
             const biorbd::utils::Path& pathToWrite);
 
 };

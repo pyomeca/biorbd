@@ -6,12 +6,18 @@
 #include "biorbdConfig.h"
 #include "Actuators/Actuator.h"
 
-class s2mJoints;
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 class GenCoord;
 class Tau;
-}}
-namespace biorbd { namespace actuator {
+}
+
+namespace rigidbody {
+class Joints;
+}
+
+namespace actuator {
+
 class BIORBD_API Actuators
 {
 public:
@@ -19,22 +25,22 @@ public:
     Actuators(const Actuators&);
     virtual ~Actuators();
 
-    void addActuator(const s2mJoints&, Actuator &a);
-    void closeActuator(s2mJoints& m);
+    void addActuator(const biorbd::rigidbody::Joints&, Actuator &a);
+    void closeActuator(biorbd::rigidbody::Joints& m);
 
     // Retourne deux vecteur de torque max (il manque l'entrée de puissance afin de savoir si c'est positif ou négatif
     // à chaque articulation, donc les deux sont retournés)
     std::pair<biorbd::utils::Tau, biorbd::utils::Tau> torqueMax(
-            const s2mJoints&,
+            const biorbd::rigidbody::Joints&,
             const biorbd::utils::GenCoord& Q,
             const biorbd::utils::GenCoord& Qdot);
     biorbd::utils::Tau torqueMax(
-            const s2mJoints&,
+            const biorbd::rigidbody::Joints&,
             const biorbd::utils::GenCoord& a,
             const biorbd::utils::GenCoord& Q,
             const biorbd::utils::GenCoord &Qdot);
     biorbd::utils::Tau torque(
-            const s2mJoints&,
+            const biorbd::rigidbody::Joints&,
             const biorbd::utils::GenCoord& a,
             const biorbd::utils::GenCoord& Q,
             const biorbd::utils::GenCoord &Qdot);

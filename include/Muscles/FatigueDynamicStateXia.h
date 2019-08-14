@@ -4,7 +4,8 @@
 #include "biorbdConfig.h"
 #include "Muscles/FatigueDynamicState.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API FatigueDynamicStateXia : public biorbd::muscles::FatigueDynamicState
 {

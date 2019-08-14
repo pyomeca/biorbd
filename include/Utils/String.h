@@ -4,7 +4,8 @@
 #include <iostream>
 #include "biorbdConfig.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 
 class BIORBD_API String : public std::string
 {

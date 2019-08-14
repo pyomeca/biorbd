@@ -4,7 +4,8 @@
 #include "biorbdConfig.h"
 #include "Muscles/Force.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API ForceFromInsertion : public biorbd::muscles::Force
 {

@@ -6,7 +6,8 @@
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 #define PI 3.141592653589793
 
 class BIORBD_API Equation : public biorbd::utils::String

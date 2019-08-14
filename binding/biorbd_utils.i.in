@@ -1,0 +1,49 @@
+// File : biorbd_utils.i
+%{
+#include <rbdl/Dynamics.h>
+#include "BiorbdModel.h"
+#include "biorbdConfig.h"
+
+#include "Utils/Read.h"
+#include "Utils/Vector.h"
+#include "Utils/GenCoord.h"
+#include "Utils/Tau.h"
+%}
+
+// Instantiate templates
+namespace std {
+    %template(VecBiorbdNode) std::vector<biorbd::utils::Node>;
+    %template(MatBiorbdNode) std::vector<std::vector<biorbd::utils::Node>>;
+    %template(VecBiorbdNodeBone) std::vector<biorbd::rigidbody::NodeBone>;
+    %template(MatBiorbdNodeBone) std::vector<std::vector<biorbd::rigidbody::NodeBone>>;
+    %template(VecBiorbdAttitude) std::vector<biorbd::utils::Attitude>;
+    %template(MatBiorbdAttitude) std::vector<std::vector<biorbd::utils::Attitude>>;
+
+    %template(VecBiorbdVector) std::vector<biorbd::utils::Vector>;
+    %template(MatBiorbdVector) std::vector<std::vector<biorbd::utils::Vector>>;
+    %template(VecBiorbdTau) std::vector<biorbd::utils::Tau>;
+    %template(MatBiorbdTau) std::vector<std::vector<biorbd::utils::Tau>>;
+    %template(VecBiorbdGenCoord) std::vector<biorbd::utils::GenCoord>;
+    %template(MatBiorbdGenCoord) std::vector<std::vector<biorbd::utils::GenCoord>>;
+}
+
+
+%apply std::string { biorbd::utils::String };
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Path.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Read.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Vector.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/GenCoord.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Tau.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Matrix.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Attitude.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Node.h"
+//%include "Utils/NodeAttitude.h"
+//%include "Utils/Quaternion.h"
+//%include "Utils/Node.h"
+//%include "Utils/Time.h"
+//%include "Utils/Timer.h"
+//%include "Utils/Benchmark.h"
+//%include "Utils/Integrator.h"
+//%include "Utils/Writer.h"
+
+

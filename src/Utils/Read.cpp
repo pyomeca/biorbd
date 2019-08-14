@@ -3,24 +3,26 @@
 
 #include <limits.h>
 #include <fstream>
-#include "s2mMusculoSkeletalModel.h"
-#include "s2mBoneMesh.h"
-#include "s2mBoneCaracteristics.h"
-#include "s2mIMU.h"
-#include "s2mNodeBone.h"
-#include "s2mPatch.h"
+#include "BiorbdModel.h"
 #include "Utils/Error.h"
 #include "Utils/IfStream.h"
 #include "Utils/String.h"
 #include "Utils/Equation.h"
 #include "Utils/Vector.h"
 #include "Utils/GenCoord.h"
+#include "RigidBody/BoneMesh.h"
+#include "RigidBody/BoneCaracteristics.h"
+#include "RigidBody/IMU.h"
+#include "RigidBody/NodeBone.h"
+#include "RigidBody/Patch.h"
+
 #ifdef MODULE_ACTUATORS
-    #include "Actuators/ActuatorConstant.h"
-    #include "Actuators/ActuatorLinear.h"
-    #include "Actuators/ActuatorGauss3p.h"
-    #include "Actuators/ActuatorGauss6p.h"
+#include "Actuators/ActuatorConstant.h"
+#include "Actuators/ActuatorLinear.h"
+#include "Actuators/ActuatorGauss3p.h"
+#include "Actuators/ActuatorGauss6p.h"
 #endif // MODULE_ACTUATORS
+
 #ifdef MODULE_MUSCLES
 #include "Muscles/Muscle.h"
 #include "Muscles/Geometry.h"
@@ -54,14 +56,14 @@ bool biorbd::utils::Read::is_readable(const biorbd::utils::String &file) {
 }
 
 // ------ Public methods ------ //
-s2mMusculoSkeletalModel biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path){
+biorbd::Model biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path){
     // Ajouter les éléments entrés
-    s2mMusculoSkeletalModel model;
+    biorbd::Model model;
     readModelFile(path, &model);
     return model;
 }
 
-void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusculoSkeletalModel *model)
+void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, biorbd::Model *model)
 {	// Ouverture du fichier
     if (!is_readable(path))
         biorbd::utils::Error::error(false, "File " + path + " could not be open");
@@ -100,7 +102,7 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusc
             RigidBodyDynamics::Math::Matrix3d RT_R(Eigen::Matrix3d::Identity(3,3));
             RigidBodyDynamics::Math::Vector3d RT_T(0,0,0);
             Eigen::Vector3d com(0,0,0);
-            s2mBoneMesh boneMesh;
+            biorbd::rigidbody::Mesh boneMesh;
             int boneByFile(-1); // -1 non setté, 0 pas par file, 1 par file
             int PF = -1;
             while(file.read(tp) && tp.tolower().compare("endsegment")){
@@ -187,7 +189,7 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusc
                         boneByFile = 0;
                     else if (boneByFile == 1)
                         biorbd::utils::Error::error(0, "You must not mix file and mesh in segment");
-                    s2mPatch tp;
+                    biorbd::rigidbody::Patch tp;
                     for (int i=0; i<3; ++i)
                         file.read(tp(i));
                     boneMesh.addPatch(tp);
@@ -207,8 +209,8 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusc
                         filePath = path.folder() + filePath; // Si oui, le mettre en absolue (ou du moins relatif à "path", ce qui est suffisant)
                     }
                     filePath.parseFileName();
-                    if (!filePath.extension().compare("s2mBone"))
-                        boneMesh = readBoneMeshFileS2mBones(filePath);
+                    if (!filePath.extension().compare("biorbd::rigidbody::"))
+                        boneMesh = readBoneMeshFileBiorbdBones(filePath);
                     else if (!filePath.extension().compare("ply"))
                         boneMesh = readBoneMeshFilePly(filePath);
                     if (wasRelative)
@@ -217,7 +219,7 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusc
 
             }
             RigidBodyDynamics::Math::SpatialTransform RT(RT_R, RT_T);
-            s2mBoneCaracteristics caract(mass,com,inertia,boneMesh);
+            biorbd::rigidbody::Caracteristics caract(mass,com,inertia,boneMesh);
             model->AddBone(parent_int, trans, rot, caract, RT, name, PF);
         }
         else if (!tp.tolower().compare("root_actuated")){
@@ -1271,7 +1273,7 @@ std::vector<std::vector<biorbd::utils::Node>>  biorbd::utils::Read::readViconMar
     return data;
 }
 
-s2mBoneMesh biorbd::utils::Read::readBoneMeshFileS2mBones(const biorbd::utils::Path &path)
+biorbd::rigidbody::Mesh biorbd::utils::Read::readBoneMeshFileBiorbdBones(const biorbd::utils::Path &path)
 {
     // Lire un fichier d'os
 
@@ -1293,7 +1295,7 @@ s2mBoneMesh biorbd::utils::Read::readBoneMeshFileS2mBones(const biorbd::utils::P
     file.readSpecificTag("nfaces", tp);
     unsigned int nFaces(static_cast<unsigned int>(atoi(tp.c_str())));
 
-    s2mBoneMesh mesh;
+    biorbd::rigidbody::Mesh mesh;
     mesh.setPath(path);
     // Récupérer tous les points
     for (unsigned int iPoints=0; iPoints < nPoints; ++iPoints){
@@ -1309,7 +1311,7 @@ s2mBoneMesh biorbd::utils::Read::readBoneMeshFileS2mBones(const biorbd::utils::P
     }
 
     for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints){
-        s2mPatch patchTp;
+        biorbd::rigidbody::Patch patchTp;
         int nVertices;
         file.read(nVertices);
         if (nVertices != 3)
@@ -1322,7 +1324,7 @@ s2mBoneMesh biorbd::utils::Read::readBoneMeshFileS2mBones(const biorbd::utils::P
 }
 
 
-s2mBoneMesh biorbd::utils::Read::readBoneMeshFilePly(const biorbd::utils::Path &path)
+biorbd::rigidbody::Mesh biorbd::utils::Read::readBoneMeshFilePly(const biorbd::utils::Path &path)
 {
     // Lire un fichier d'os
 
@@ -1349,7 +1351,7 @@ s2mBoneMesh biorbd::utils::Read::readBoneMeshFilePly(const biorbd::utils::Path &
     // Trouver le nombre de
     file.reachSpecificTag("end_header");
 
-    s2mBoneMesh mesh;
+    biorbd::rigidbody::Mesh mesh;
     mesh.setPath(path);
     // Récupérer tous les points
     for (unsigned int iPoints=0; iPoints < nVertex; ++iPoints){
@@ -1365,7 +1367,7 @@ s2mBoneMesh biorbd::utils::Read::readBoneMeshFilePly(const biorbd::utils::Path &
     }
 
     for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints){
-        s2mPatch patchTp;
+        biorbd::rigidbody::Patch patchTp;
         int nVertices;
         file.read(nVertices);
         if (nVertices != 3)

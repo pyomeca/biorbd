@@ -4,9 +4,12 @@
 #include "biorbdConfig.h"
 #include "Utils/Vector.h"
 
-class s2mJoints;
+namespace biorbd {
+namespace rigidbody {
+class Joints;
+}
 
-namespace biorbd { namespace utils {
+namespace utils {
 
 class BIORBD_API GenCoord : public Vector
 {
@@ -16,7 +19,7 @@ public:
     GenCoord(const biorbd::utils::Vector& v);
     GenCoord(const Eigen::VectorXd& v);
     GenCoord(unsigned int i);
-    GenCoord(const s2mJoints& j);
+    GenCoord(const biorbd::rigidbody::Joints& j);
     virtual ~GenCoord();
 
     biorbd::utils::GenCoord& operator=(const Eigen::VectorXd& vecX);

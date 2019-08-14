@@ -36,14 +36,14 @@ biorbd::muscles::Muscle::~Muscle()
 }
 
 void biorbd::muscles::Muscle::updateOrientations(
-        s2mJoints &m,
+        biorbd::rigidbody::Joints &m,
         const biorbd::utils::GenCoord &Q,
         int updateKin){
     // Update de la position des insertions et origines
     m_position.updateKinematics(m,&Q,nullptr,m_caract,m_pathChanger,updateKin);
 }
 void biorbd::muscles::Muscle::updateOrientations(
-        s2mJoints &m,
+        biorbd::rigidbody::Joints &m,
         const biorbd::utils::GenCoord &Q,
         const biorbd::utils::GenCoord &Qdot,
         int updateKin){
@@ -69,7 +69,7 @@ const biorbd::muscles::Geometry &biorbd::muscles::Muscle::position() const {
 }
 
 double biorbd::muscles::Muscle::length(
-        s2mJoints &m,
+        biorbd::rigidbody::Joints &m,
         const biorbd::utils::GenCoord &Q,
         int updateKin){
     if (updateKin != 0)
@@ -79,7 +79,7 @@ double biorbd::muscles::Muscle::length(
 }
 
 double biorbd::muscles::Muscle::musculoTendonLength(
-        s2mJoints &m,
+        biorbd::rigidbody::Joints &m,
         const biorbd::utils::GenCoord &Q,
         int updateKin){
     if (updateKin != 0)
@@ -89,7 +89,7 @@ double biorbd::muscles::Muscle::musculoTendonLength(
 }
 
 double biorbd::muscles::Muscle::velocity(
-        s2mJoints &m,
+        biorbd::rigidbody::Joints &m,
         const biorbd::utils::GenCoord &Q,
         const biorbd::utils::GenCoord &Qdot,
         const bool updateKin){
@@ -104,7 +104,7 @@ double biorbd::muscles::Muscle::activationDot(const biorbd::muscles::StateDynami
 }
 
 const std::vector<biorbd::muscles::MuscleNode> &biorbd::muscles::Muscle::musclesPointsInGlobal(
-        s2mJoints &m,
+        biorbd::rigidbody::Joints &m,
         const biorbd::utils::GenCoord &Q,
         const bool updateKin){
     if (updateKin)

@@ -5,7 +5,8 @@
 #include "Utils/String.h"
 #include "Muscles/MuscleNode.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API PathChanger : public biorbd::muscles::MuscleNode
 {

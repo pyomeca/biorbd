@@ -6,9 +6,14 @@
 #include <rbdl/rbdl_math.h>
 #include "biorbdConfig.h"
 
-class s2mMusculoSkeletalModel;
-class s2mBoneMesh;
-namespace biorbd { namespace utils {
+namespace biorbd {
+class Model;
+
+namespace rigidbody {
+class Mesh;
+}
+
+namespace utils {
 class Path;
 class String;
 class Node;
@@ -17,8 +22,8 @@ class GenCoord;
 class BIORBD_API Read
 {
 public:
-    static s2mMusculoSkeletalModel readModelFile(const biorbd::utils::Path &path); // Open a model file
-    static void readModelFile(const biorbd::utils::Path &path, s2mMusculoSkeletalModel*); // Open a model file
+    static biorbd::Model readModelFile(const biorbd::utils::Path &path); // Open a model file
+    static void readModelFile(const biorbd::utils::Path &path, biorbd::Model*); // Open a model file
     static std::vector<std::vector<Eigen::Vector3d>> readMarkerDataFile(const biorbd::utils::String &path); // Lire un fichier de marqueurs
     static std::vector<biorbd::utils::GenCoord> readQDataFile(const biorbd::utils::String &path);
     static std::vector<Eigen::VectorXd> readActivationDataFile(const biorbd::utils::String &path);
@@ -42,8 +47,8 @@ public:
             std::vector<biorbd::utils::String> &markOrder,
             int nNodes =-1); // Path to the file, markers a conserver, nombres de noeuds (-1 => tous)
 
-    static s2mBoneMesh readBoneMeshFileS2mBones(const biorbd::utils::Path& path);
-    static s2mBoneMesh readBoneMeshFilePly(const biorbd::utils::Path& path);
+    static biorbd::rigidbody::Mesh readBoneMeshFileBiorbdBones(const biorbd::utils::Path& path);
+    static biorbd::rigidbody::Mesh readBoneMeshFilePly(const biorbd::utils::Path& path);
 
     static void pwd(); // Print the working directory
     static bool is_readable( const biorbd::utils::String & file );

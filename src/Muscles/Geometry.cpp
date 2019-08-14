@@ -32,7 +32,7 @@ biorbd::muscles::Geometry::~Geometry()
 
 // ------ FONCTIONS PUBLIQUES ------ //
 void biorbd::muscles::Geometry::updateKinematics(
-        s2mJoints &model,
+        biorbd::rigidbody::Joints &model,
         const biorbd::utils::GenCoord *Q,
         const biorbd::utils::GenCoord *Qdot,
         const biorbd::muscles::Caracteristics &c,
@@ -164,7 +164,7 @@ const biorbd::utils::Matrix &biorbd::muscles::Geometry::jacobianLength() const{
 
 
 const biorbd::muscles::MuscleNode &biorbd::muscles::Geometry::originInGlobal(
-        s2mJoints &model,
+        biorbd::rigidbody::Joints &model,
         const biorbd::utils::GenCoord &Q){
     // Sortir la position du marqueur en fonction de la position donnée
     m_originInGlobal.block(0,0,3,1) = RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(m_origin.parent().c_str()), m_origin.position(),false);
@@ -172,7 +172,7 @@ const biorbd::muscles::MuscleNode &biorbd::muscles::Geometry::originInGlobal(
 }
 
 const biorbd::muscles::MuscleNode &biorbd::muscles::Geometry::insertionInGlobal(
-        s2mJoints &model,
+        biorbd::rigidbody::Joints &model,
         const biorbd::utils::GenCoord &Q){
     // Sortir la position du marqueur en fonction de la position donnée
     m_insertionInGlobal.block(0,0,3,1) = RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(m_insertion.parent().c_str()), m_insertion.position(),false);
@@ -219,7 +219,7 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(std::vector<biorbd::muscle
 }
 
 void biorbd::muscles::Geometry::musclesPointsInGlobal(
-        s2mJoints &model,
+        biorbd::rigidbody::Joints &model,
         const biorbd::utils::GenCoord &Q,
         const biorbd::muscles::PathChangers& objects){
     // Variable de sortie (remettre a zero)
@@ -296,7 +296,7 @@ double biorbd::muscles::Geometry::velocity(const biorbd::utils::GenCoord &Qdot){
     return m_velocity;
 }
 
-void biorbd::muscles::Geometry::setJacobianDimension(s2mJoints &model)
+void biorbd::muscles::Geometry::setJacobianDimension(biorbd::rigidbody::Joints &model)
 {
     m_jacobian = biorbd::utils::Matrix::Zero(static_cast<unsigned int>(m_pointsInLocal.size()*3), model.dof_count);
     m_G = biorbd::utils::Matrix::Zero(3, model.dof_count);
@@ -308,7 +308,7 @@ void biorbd::muscles::Geometry::jacobian(const biorbd::utils::Matrix &jaco){
 }
 
 void biorbd::muscles::Geometry::jacobian(
-        s2mJoints &model,
+        biorbd::rigidbody::Joints &model,
         const biorbd::utils::GenCoord &Q){
     for (unsigned int i=0; i<m_pointsInLocal.size(); ++i){
         m_G.setZero();

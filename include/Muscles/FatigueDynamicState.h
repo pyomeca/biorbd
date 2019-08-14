@@ -4,10 +4,11 @@
 #include "biorbdConfig.h"
 #include "Muscles/FatigueState.h"
 
-namespace biorbd { namespace muscles {
-
+namespace biorbd {
+namespace muscles {
 class StateDynamics;
 class Caracteristics;
+
 class BIORBD_API FatigueDynamicState : public biorbd::muscles::FatigueState
 {
 public:

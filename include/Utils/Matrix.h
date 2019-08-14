@@ -4,7 +4,8 @@
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 
 class BIORBD_API Matrix : public Eigen::MatrixXd
 {

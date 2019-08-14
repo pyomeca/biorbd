@@ -2,14 +2,14 @@
 #include "Actuators/Actuators.h"
 
 #include <vector>
-#include "s2mJoints.h"
 #include "Utils/Error.h"
+#include "Utils/Tau.h"
+#include "Utils/GenCoord.h"
+#include "RigidBody/Joints.h"
 #include "Actuators/ActuatorGauss3p.h"
 #include "Actuators/ActuatorGauss6p.h"
 #include "Actuators/ActuatorConstant.h"
 #include "Actuators/ActuatorLinear.h"
-#include "Utils/Tau.h"
-#include "Utils/GenCoord.h"
 
 biorbd::actuator::Actuators::Actuators() :
     m_isClose(false)
@@ -34,7 +34,7 @@ biorbd::actuator::Actuators::~Actuators(){
 
 
 
-void biorbd::actuator::Actuators::addActuator(const s2mJoints& m, biorbd::actuator::Actuator &act){
+void biorbd::actuator::Actuators::addActuator(const biorbd::rigidbody::Joints& m, biorbd::actuator::Actuator &act){
     biorbd::utils::Error::error(!m_isClose, "You can't add actuator after closing the model");
 
     // Vérifier que le dof target est associé à un dof qui existe déjà dans le modèle
@@ -111,7 +111,7 @@ void biorbd::actuator::Actuators::addActuator(const s2mJoints& m, biorbd::actuat
 
 }
 
-void biorbd::actuator::Actuators::closeActuator(s2mJoints& m){
+void biorbd::actuator::Actuators::closeActuator(biorbd::rigidbody::Joints& m){
     biorbd::utils::Error::error(m.nbDof()==m_all.size(), "All dof must have their actuators set");
 
     for (unsigned int i=0; i<m_all.size()*2; ++i)
@@ -140,7 +140,7 @@ unsigned int biorbd::actuator::Actuators::nbActuators() const
 }
 
 biorbd::utils::Tau biorbd::actuator::Actuators::torque(
-        const s2mJoints& m,
+        const biorbd::rigidbody::Joints& m,
         const biorbd::utils::GenCoord& a,
         const biorbd::utils::GenCoord& Q,
         const biorbd::utils::GenCoord &Qdot){
@@ -163,7 +163,7 @@ biorbd::utils::Tau biorbd::actuator::Actuators::torque(
 
 
 std::pair<biorbd::utils::Tau, biorbd::utils::Tau> biorbd::actuator::Actuators::torqueMax(
-        const s2mJoints &m,
+        const biorbd::rigidbody::Joints &m,
         const biorbd::utils::GenCoord& Q,
         const biorbd::utils::GenCoord &Qdot){
     biorbd::utils::Error::error(m_isClose, "Close the actuator model before calling torqueMax");
@@ -204,7 +204,7 @@ std::pair<biorbd::utils::Tau, biorbd::utils::Tau> biorbd::actuator::Actuators::t
 
 
 biorbd::utils::Tau biorbd::actuator::Actuators::torqueMax(
-        const s2mJoints &m,
+        const biorbd::rigidbody::Joints &m,
         const biorbd::utils::GenCoord& a,
         const biorbd::utils::GenCoord& Q,
         const biorbd::utils::GenCoord &Qdot){

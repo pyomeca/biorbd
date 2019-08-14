@@ -1,11 +1,11 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/StaticOptimizationIpoptLinearized.h"
 
-#include "s2mMusculoSkeletalModel.h"
+#include "BiorbdModel.h"
 #include "Muscles/StateDynamics.h"
 
 biorbd::muscles::StaticOptimizationIpoptLinearized::StaticOptimizationIpoptLinearized(
-        s2mMusculoSkeletalModel &model,
+        biorbd::Model &model,
         const biorbd::utils::GenCoord &Q,
         const biorbd::utils::GenCoord &Qdot,
         const biorbd::utils::Tau &tauTarget,

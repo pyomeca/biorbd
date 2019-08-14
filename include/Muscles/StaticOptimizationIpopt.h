@@ -1,22 +1,23 @@
 #ifndef BIORBD_MUSCLES_STATIC_OPTIMIZATION_IPOPT_H
 #define BIORBD_MUSCLES_STATIC_OPTIMIZATION_IPOPT_H
 
-#include <Eigen/Dense>
 #include <IpIpoptApplication.hpp>
 #include <IpTNLP.hpp>
 #include "biorbdConfig.h"
 #include "Utils/GenCoord.h"
 #include "Utils/Tau.h"
 
-class s2mMusculoSkeletalModel;
-namespace biorbd { namespace muscles {
+namespace biorbd {
+class Model;
 
+namespace muscles {
 class StateDynamics;
+
 class BIORBD_API StaticOptimizationIpopt : public Ipopt::TNLP
 {
 public:
     StaticOptimizationIpopt(
-            s2mMusculoSkeletalModel &model,
+            biorbd::Model &model,
             const biorbd::utils::GenCoord &Q,
             const biorbd::utils::GenCoord &Qdot,
             const biorbd::utils::Tau &tauTarget,
@@ -114,7 +115,7 @@ public:
 
 
 protected:
-    s2mMusculoSkeletalModel &m_model;
+    biorbd::Model &m_model;
     unsigned int m_nQ;
     unsigned int m_nQdot;
     unsigned int m_nMus;
