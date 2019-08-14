@@ -1,23 +1,30 @@
 // File : biorbd.i
 %module biorbd
 %{
+
+#ifdef _WIN32
+// This is a hack because Eigen can't be dynamically compiled on Windows while dlib needs consistency in compilation.
+// Please note that this can result in undefined behavior while using biorbd::muscles::MuscleOptimisation...
+const int USER_ERROR__inconsistent_build_configuration__see_dlib_faq_1_ = 0;
+const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
+#endif
+
 #include <rbdl/Dynamics.h>
 
 #include "s2mMusculoSkeletalModel.h"
 #include "biorbdConfig.h"
-#include "Utils/Read.h"
 
+#include "Utils/Read.h"
 #include "Utils/Vector.h"
 #include "Utils/GenCoord.h"
 #include "Utils/Tau.h"
 
-#include "s2mBone.h"
-#include "s2mBoneMesh.h"
-#include "s2mNodeBone.h"
-
-#include "s2mIMU.h"
-#include "s2mKalmanReconsIMU.h"
-#include "s2mKalmanReconsMarkers.h"
+#include "RigidBody/Bone.h"
+#include "RigidBody/BoneMesh.h"
+#include "RigidBody/NodeBone.h"
+#include "RigidBody/IMU.h"
+#include "RigidBody/KalmanReconsIMU.h"
+#include "RigidBody/KalmanReconsMarkers.h"
 
 #ifdef MODULE_MUSCLES
 #include "Muscles/StateDynamics.h"
@@ -54,116 +61,19 @@
 }
 
 // Instantiate standard library
+// typemaps.i is a built-in swig interface that lets us map c++ types to other
+// types in our language of choice. We'll use it to map Eigen matrices to
+// Numpy arrays.
+%include <typemaps.i>
 %include <std_vector.i>
 %include <std_string.i>
 
-// Instantiate templates
-namespace std {
-    %template(VecBiorbdNode) std::vector<biorbd::utils::Node>;
-    %template(MatBiorbdNode) std::vector<std::vector<biorbd::utils::Node>>;
-    %template(VecBiorbdNodeBone) std::vector<s2mNodeBone>;
-    %template(MatBiorbdNodeBone) std::vector<std::vector<s2mNodeBone>>;
-    %template(VecBiorbdAttitude) std::vector<biorbd::utils::Attitude>;
-    %template(MatBiorbdAttitude) std::vector<std::vector<biorbd::utils::Attitude>>;
-
-    %template(VecBiorbdVector) std::vector<biorbd::utils::Vector>;
-    %template(MatBiorbdVector) std::vector<std::vector<biorbd::utils::Vector>>;
-    %template(VecBiorbdTau) std::vector<biorbd::utils::Tau>;
-    %template(MatBiorbdTau) std::vector<std::vector<biorbd::utils::Tau>>;
-    %template(VecBiorbdGenCoord) std::vector<biorbd::utils::GenCoord>;
-    %template(MatBiorbdGenCoord) std::vector<std::vector<biorbd::utils::GenCoord>>;
-}
-
-// Exposing some useful functions
-%extend s2mMusculoSkeletalModel{
-    biorbd::utils::Tau InverseDynamics(
-                const biorbd::utils::GenCoord &Q,
-                const biorbd::utils::GenCoord &QDot,
-                const biorbd::utils::GenCoord &QDDot) {
-        biorbd::utils::Tau Tau(*self);
-        RigidBodyDynamics::InverseDynamics(*self, Q, QDot, QDDot, Tau);
-        return Tau;
-    }
-
-    biorbd::utils::GenCoord ForwardDynamics(
-                const biorbd::utils::GenCoord &Q,
-                const biorbd::utils::GenCoord &QDot,
-                const biorbd::utils::Tau &Tau) {
-        biorbd::utils::GenCoord QDDot(*self);
-        RigidBodyDynamics::ForwardDynamics(*self, Q, QDot, Tau, QDDot);
-        return QDDot;
-    }
-
-    biorbd::utils::GenCoord ForwardDynamicsLagrangian(
-                const biorbd::utils::GenCoord &Q,
-                const biorbd::utils::GenCoord &QDot,
-                const biorbd::utils::Tau &Tau) {
-        biorbd::utils::GenCoord QDDot(*self);
-        RigidBodyDynamics::ForwardDynamicsLagrangian(*self, Q, QDot, Tau, QDDot);
-        return QDDot;
-    }
-
-    biorbd::utils::GenCoord ForwardDynamicsConstraintsDirect(
-                const biorbd::utils::GenCoord &Q,
-                const biorbd::utils::GenCoord &QDot,
-                const biorbd::utils::Tau &Tau,
-                s2mContacts& CS) {
-        biorbd::utils::GenCoord QDDot(*self);
-        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
-        return QDDot;
-    }
-    biorbd::utils::GenCoord ForwardDynamicsConstraintsDirect(
-                const biorbd::utils::GenCoord &Q,
-                const biorbd::utils::GenCoord &QDot,
-                const biorbd::utils::Tau &Tau) {
-        biorbd::utils::GenCoord QDDot(*self);
-        s2mContacts& CS = self->getConstraints_nonConst();
-        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
-        return QDDot;
-    }
-}
-
 // Includes all neceressary files from the API
 %include "@CMAKE_BINARY_DIR@/include/biorbdConfig.h"
-
-%apply std::string { biorbd::utils::String };
-%include "@CMAKE_SOURCE_DIR@/include/Utils/Path.h"
-%include "@CMAKE_SOURCE_DIR@/include/Utils/Read.h"
-%include "@CMAKE_SOURCE_DIR@/include/Utils/Vector.h"
-%include "@CMAKE_SOURCE_DIR@/include/Utils/GenCoord.h"
-%include "@CMAKE_SOURCE_DIR@/include/Utils/Tau.h"
-%include "@CMAKE_SOURCE_DIR@/include/Utils/Matrix.h"
-%include "@CMAKE_SOURCE_DIR@/include/Utils/Attitude.h"
-%include "@CMAKE_SOURCE_DIR@/include/Utils/Node.h"
-//%include "Utils/NodeAttitude.h"
-//%include "Utils/Quaternion.h"
-//%include "Utils/Node.h"
-//%include "Utils/Time.h"
-//%include "Utils/Timer.h"
-//%include "Utils/Benchmark.h"
-//%include "Utils/Integrator.h"
-//%include "Utils/Writer.h"
-
-%include "@CMAKE_SOURCE_DIR@/include/s2mMarkers.h"
-//%include "s2mPatch.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mContacts.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mNodeBone.h"
-//%include "s2mBone.h"
-//%include "s2mBoneCaracteristics.h"
-//%include "s2mBoneMesh.h"
-//%include "s2mIMU.h"
-//%include "s2mIMUs.h"
-//%include "s2mKalmanRecons.h"
-//%include "s2mKalmanReconsIMU.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mKalmanReconsMarkers.h"
-//%include "s2mIMU_Unity_Optim.h"
-
+@SWIG_MODULE_UTILS_INCLUDE_COMMAND@
+@SWIG_MODULE_RIGIDBODY_INCLUDE_COMMAND@
 @SWIG_MODULE_ACTUATORS_INCLUDE_COMMAND@
-
 @SWIG_MODULE_MUSCLES_INCLUDE_COMMAND@
-
-//%include "s2mJoint.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mJoints.h"
 %include "@CMAKE_SOURCE_DIR@/include/s2mMusculoSkeletalModel.h"
 
 

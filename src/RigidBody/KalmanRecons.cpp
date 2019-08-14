@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "s2mKalmanRecons.h"
+#include "RigidBody/KalmanRecons.h"
 
 #include "s2mMusculoSkeletalModel.h"
 #include "Utils/GenCoord.h"

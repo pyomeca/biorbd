@@ -1,15 +1,15 @@
 #define BIORBD_API_EXPORTS
-#include "s2mBone.h"
+#include "RigidBody/Bone.h"
 
 #include <limits.h>
 #include <rbdl/rbdl_math.h>
 #include "Utils/Error.h"
-#include "s2mJoints.h"
-#include "Utils/Attitude.h"
-#include "s2mBoneCaracteristics.h"
 #include "Utils/Node.h"
-#include "s2mBoneMesh.h"
-#include "s2mPatch.h"
+#include "Utils/Attitude.h"
+#include "RigidBody/Joints.h"
+#include "RigidBody/BoneMesh.h"
+#include "RigidBody/Patch.h"
+#include "RigidBody/BoneCaracteristics.h"
 
 s2mBone::s2mBone(
         s2mJoints *model,

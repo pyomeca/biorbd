@@ -2,8 +2,8 @@
 #define S2M_BONE_H
 
 #include "biorbdConfig.h"
-#include "s2mBoneCaracteristics.h"
-#include "s2mJoint.h"
+#include "RigidBody/BoneCaracteristics.h"
+#include "RigidBody/Joint.h"
 
 class s2mJoints;
 namespace biorbd { namespace utils {

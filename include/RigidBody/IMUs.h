@@ -3,10 +3,10 @@
 
 #include <vector>
 #include "biorbdConfig.h"
+#include "RigidBody/Patch.h"
 #include "Utils/Attitude.h"
 #include "Utils/String.h"
 #include "Utils/Node.h"
-#include "s2mPatch.h"
 
 class s2mJoints;
 class s2mIMU;

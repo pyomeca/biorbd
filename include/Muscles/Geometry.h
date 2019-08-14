@@ -2,9 +2,9 @@
 #define BIORBD_MUSCLES_GEOMETRY_H
 
 #include "biorbdConfig.h"
-#include "s2mJoints.h"
 #include "Utils/Matrix.h"
 #include "Utils/GenCoord.h"
+#include "RigidBody/Joints.h"
 #include "Muscles/MuscleNode.h"
 #include "Muscles/PathChangers.h"
 #include "Muscles/Caracteristics.h"

@@ -47,8 +47,6 @@
 #include "S2M_inverseKinematics.h"
 #include "S2M_inverseKinematicsEKF.h"
 #include "S2M_inverseKinematicsEKF_IMU.h"
-#include "s2mKalmanReconsMarkers.h"
-#include "s2mKalmanReconsIMU.h"
 #include "S2M_NLeffects.h"
 #include "S2M_inverseDynamics.h"
 #include "S2M_forwardDynamics.h"

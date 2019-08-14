@@ -5,7 +5,7 @@
 #include "s2mMusculoSkeletalModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
-#include "s2mKalmanReconsIMU.h"
+#include "RigidBody/KalmanReconsIMU.h"
 
 void S2M_setEKF_IMU(int nlhs, mxArray *plhs[],
                 int nrhs, const mxArray*prhs[] ){

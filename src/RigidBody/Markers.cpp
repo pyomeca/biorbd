@@ -1,15 +1,15 @@
 #define BIORBD_API_EXPORTS
-#include "s2mMarkers.h"
+#include "RigidBody/Markers.h"
 
 #include <rbdl/Model.h>
 #include <rbdl/Kinematics.h>
-#include "s2mJoints.h"
-#include "s2mPatch.h"
-#include "s2mNodeBone.h"
-#include "Utils/Matrix.h"
 #include "Utils/String.h"
-#include "s2mBone.h"
+#include "Utils/Matrix.h"
 #include "Utils/GenCoord.h"
+#include "RigidBody/Joints.h"
+#include "RigidBody/Patch.h"
+#include "RigidBody/NodeBone.h"
+#include "RigidBody/Bone.h"
 
 
 s2mMarkers::s2mMarkers()

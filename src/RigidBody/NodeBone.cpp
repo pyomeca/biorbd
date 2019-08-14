@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "s2mNodeBone.h"
+#include "RigidBody/NodeBone.h"
 
 #include "Utils/Error.h"
 

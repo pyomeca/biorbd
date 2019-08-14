@@ -1,12 +1,12 @@
 #define BIORBD_API_EXPORTS
-#include "s2mKalmanReconsIMU.h"
+#include "RigidBody/KalmanReconsIMU.h"
 
 #include <rbdl/Model.h>
 #include <rbdl/Kinematics.h>
 #include "s2mMusculoSkeletalModel.h"
 #include "Utils/Error.h"
-#include "s2mIMU.h"
 #include "Utils/GenCoord.h"
+#include "RigidBody/IMU.h"
 
 s2mKalmanReconsIMU::s2mKalmanReconsIMU(
         s2mMusculoSkeletalModel &m,

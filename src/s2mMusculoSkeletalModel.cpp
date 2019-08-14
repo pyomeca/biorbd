@@ -3,9 +3,9 @@
 
 #include <rbdl/Model.h>
 #include <rbdl/Kinematics.h>
-#include "s2mNodeBone.h"
 #include "Utils/Read.h"
 #include "Utils/GenCoord.h"
+#include "RigidBody/NodeBone.h"
 
 s2mMusculoSkeletalModel::s2mMusculoSkeletalModel()
 {

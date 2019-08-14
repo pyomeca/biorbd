@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "s2mIMU.h"
+#include "RigidBody/IMU.h"
 
 s2mIMU::s2mIMU(
         const biorbd::utils::Attitude &v,

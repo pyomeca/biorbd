@@ -5,9 +5,9 @@
 #include <fstream>
 #include "s2mMusculoSkeletalModel.h"
 #include "Utils/Path.h"
-#include "s2mIMU.h"
-#include "s2mNodeBone.h"
-#include "s2mBone.h"
+#include "RigidBody/IMU.h"
+#include "RigidBody/NodeBone.h"
+#include "RigidBody/Bone.h"
 
 void biorbd::utils::Writer::writeModel(
         s2mMusculoSkeletalModel & m,

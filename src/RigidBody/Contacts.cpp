@@ -1,13 +1,13 @@
 #define BIORBD_API_EXPORTS
-#include "s2mContacts.h"
+#include "RigidBody/Contacts.h"
 
 #include <rbdl/Kinematics.h>
-#include "s2mJoints.h"
 #include "Utils/String.h"
 #include "Utils/Error.h"
 #include "Utils/GenCoord.h"
 #include "Utils/Node.h"
 #include "Utils/Attitude.h"
+#include "RigidBody/Joints.h"
 
 s2mContacts::s2mContacts() :
     RigidBodyDynamics::ConstraintSet (),

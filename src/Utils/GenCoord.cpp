@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/GenCoord.h"
 
-#include "s2mJoints.h"
+#include "RigidBody/Joints.h"
 
 biorbd::utils::GenCoord::GenCoord()
 {

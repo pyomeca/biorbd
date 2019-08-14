@@ -71,6 +71,10 @@ set(BIORBD_MODULE_NAMES)
 add_subdirectory(src/Utils)
 list(APPEND BIORBD_MODULE_NAMES ${UTILS_MODULE_NAME})
 
+# Utils
+add_subdirectory(src/RigidBody)
+list(APPEND BIORBD_MODULE_NAMES ${RIGIDBODY_MODULE_NAME})
+
 # Actuators
 option(MODULE_ACTUATORS "Choose if the module actuators is to be added to biorbd" ON)
 if (MODULE_ACTUATORS)

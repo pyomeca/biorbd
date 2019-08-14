@@ -3,7 +3,7 @@
 
 #include <rbdl/Body.h>
 #include "biorbdConfig.h"
-#include "s2mBoneMesh.h"
+#include "RigidBody/BoneMesh.h"
 
 class BIORBD_API s2mBoneCaracteristics : public RigidBodyDynamics::Body
 {

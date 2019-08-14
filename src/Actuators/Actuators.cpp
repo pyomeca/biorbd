@@ -2,14 +2,14 @@
 #include "Actuators/Actuators.h"
 
 #include <vector>
-#include "s2mJoints.h"
 #include "Utils/Error.h"
+#include "Utils/Tau.h"
+#include "Utils/GenCoord.h"
+#include "RigidBody/Joints.h"
 #include "Actuators/ActuatorGauss3p.h"
 #include "Actuators/ActuatorGauss6p.h"
 #include "Actuators/ActuatorConstant.h"
 #include "Actuators/ActuatorLinear.h"
-#include "Utils/Tau.h"
-#include "Utils/GenCoord.h"
 
 biorbd::actuator::Actuators::Actuators() :
     m_isClose(false)

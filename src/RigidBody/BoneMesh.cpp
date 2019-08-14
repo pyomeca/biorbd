@@ -1,8 +1,8 @@
 #define BIORBD_API_EXPORTS
-#include "s2mBoneMesh.h"
+#include "RigidBody/BoneMesh.h"
 
 #include "Utils/Node.h"
-#include "s2mPatch.h"
+#include "RigidBody/Patch.h"
 
 s2mBoneMesh::s2mBoneMesh(
         const std::vector<biorbd::utils::Node> &mesh,

@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "s2mJoint.h"
+#include "RigidBody/Joint.h"
 
 s2mJoint::s2mJoint() :
     Joint() {

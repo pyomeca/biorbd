@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Tau.h"
 
-#include "s2mJoints.h"
+#include "RigidBody/Joints.h"
 
 biorbd::utils::Tau::Tau() {}
 

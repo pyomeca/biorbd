@@ -5,8 +5,8 @@
 #include "s2mMusculoSkeletalModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
-#include "s2mKalmanRecons.h"
-#include "s2mKalmanReconsMarkers.h"
+#include "RigidBody/KalmanRecons.h"
+#include "RigidBody/KalmanReconsMarkers.h"
 
 void S2M_setEKF(int nlhs, mxArray *plhs[],
                 int nrhs, const mxArray*prhs[] ){

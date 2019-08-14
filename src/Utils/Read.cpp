@@ -4,23 +4,25 @@
 #include <limits.h>
 #include <fstream>
 #include "s2mMusculoSkeletalModel.h"
-#include "s2mBoneMesh.h"
-#include "s2mBoneCaracteristics.h"
-#include "s2mIMU.h"
-#include "s2mNodeBone.h"
-#include "s2mPatch.h"
 #include "Utils/Error.h"
 #include "Utils/IfStream.h"
 #include "Utils/String.h"
 #include "Utils/Equation.h"
 #include "Utils/Vector.h"
 #include "Utils/GenCoord.h"
+#include "RigidBody/BoneMesh.h"
+#include "RigidBody/BoneCaracteristics.h"
+#include "RigidBody/IMU.h"
+#include "RigidBody/NodeBone.h"
+#include "RigidBody/Patch.h"
+
 #ifdef MODULE_ACTUATORS
-    #include "Actuators/ActuatorConstant.h"
-    #include "Actuators/ActuatorLinear.h"
-    #include "Actuators/ActuatorGauss3p.h"
-    #include "Actuators/ActuatorGauss6p.h"
+#include "Actuators/ActuatorConstant.h"
+#include "Actuators/ActuatorLinear.h"
+#include "Actuators/ActuatorGauss3p.h"
+#include "Actuators/ActuatorGauss6p.h"
 #endif // MODULE_ACTUATORS
+
 #ifdef MODULE_MUSCLES
 #include "Muscles/Muscle.h"
 #include "Muscles/Geometry.h"

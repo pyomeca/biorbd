@@ -1,18 +1,13 @@
 // File : biorbd_python.i
+
+// Import the main swig interface
+%include @CMAKE_CURRENT_BINARY_DIR@/../biorbd.i
+
+// Declare the Python specific interface
 %{
 #define SWIG_FILE_WITH_INIT
-#ifdef _WIN32
-// This is a hack because Eigen can't be dynamically compiled on Windows while dlib needs consistency in compilation.
-// Please note that this can result in undefined behavior while using biorbd::muscles::MuscleOptimisation...
-const int USER_ERROR__inconsistent_build_configuration__see_dlib_faq_1_ = 0;
-const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
-#endif
 #include "Python.h"
 #include "numpy/arrayobject.h"
-
-#include "Utils/Vector.h"
-#include "Utils/GenCoord.h"
-
 %}
 
 %include "@CMAKE_CURRENT_SOURCE_DIR@/numpy.i"
@@ -20,12 +15,6 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
     import_array();
 %}
 
-// typemaps.i is a built-in swig interface that lets us map c++ types to other
-// types in our language of choice. We'll use it to map Eigen matrices to
-// Numpy arrays.
-%include <typemaps.i>
-%include <std_vector.i>
-%include <std_string.i>
 
 // --- s2mJoints --- //
 %typemap(typecheck) s2mJoints &{
@@ -345,4 +334,3 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
     }
 };
 
-%include ../biorbd.i

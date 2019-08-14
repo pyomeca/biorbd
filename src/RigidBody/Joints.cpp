@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "s2mJoints.h"
+#include "RigidBody/Joints.h"
 
 #include <rbdl/rbdl_utils.h>
 #include <rbdl/Kinematics.h>
@@ -11,10 +11,10 @@
 #include "Utils/Tau.h"
 #include "Utils/Attitude.h"
 #include "Utils/Integrator.h"
-#include "s2mBone.h"
-#include "s2mMarkers.h"
-#include "s2mNodeBone.h"
-#include "s2mPatch.h"
+#include "RigidBody/Bone.h"
+#include "RigidBody/Markers.h"
+#include "RigidBody/NodeBone.h"
+#include "RigidBody/Patch.h"
 
 s2mJoints::s2mJoints() :
     m_nbRoot(0),

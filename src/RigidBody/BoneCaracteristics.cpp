@@ -1,8 +1,8 @@
 #define BIORBD_API_EXPORTS
-#include "s2mBoneCaracteristics.h"
+#include "RigidBody/BoneCaracteristics.h"
 
 #include "Utils/Node.h"
-#include "s2mPatch.h"
+#include "RigidBody/Patch.h"
 
 s2mBoneCaracteristics::s2mBoneCaracteristics() :
     Body(),

@@ -2,7 +2,7 @@
 #define KALMANRECONSMARKERS_HPP
 
 #include "biorbdConfig.h"
-#include "s2mKalmanRecons.h"
+#include "RigidBody/KalmanRecons.h"
 
 class s2mMarkers;
 class s2mNodeBone;

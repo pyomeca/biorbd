@@ -1,12 +1,12 @@
 #define BIORBD_API_EXPORTS
-#include "s2mKalmanReconsMarkers.h"
+#include "RigidBody/KalmanReconsMarkers.h"
 
 #include <rbdl/Model.h>
 #include <rbdl/Kinematics.h>
 #include "s2mMusculoSkeletalModel.h"
 #include "Utils/Error.h"
-#include "s2mNodeBone.h"
 #include "Utils/GenCoord.h"
+#include "RigidBody/NodeBone.h"
 
 s2mKalmanReconsMarkers::s2mKalmanReconsMarkers(
         s2mMusculoSkeletalModel &m,

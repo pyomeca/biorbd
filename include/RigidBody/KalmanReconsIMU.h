@@ -2,7 +2,7 @@
 #define S2M_KALMAN_RECONS_IMU_H
 
 #include "biorbdConfig.h"
-#include "s2mKalmanRecons.h"
+#include "RigidBody/KalmanRecons.h"
 
 namespace biorbd { namespace utils {
 class Attitude;

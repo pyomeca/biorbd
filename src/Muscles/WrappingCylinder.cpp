@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/WrappingCylinder.h"
 
-#include "s2mJoints.h"
+#include "RigidBody/Joints.h"
 
 biorbd::muscles::WrappingCylinder::WrappingCylinder(
         const biorbd::utils::Attitude &v, // Position du centre

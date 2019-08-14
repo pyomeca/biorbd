@@ -1,0 +1,83 @@
+// File : biorbd_rigidbody.i
+%{
+#include <rbdl/Dynamics.h>
+
+#include "s2mMusculoSkeletalModel.h"
+#include "biorbdConfig.h"
+#include "Utils/GenCoord.h"
+#include "Utils/Tau.h"
+
+#include "RigidBody/Bone.h"
+#include "RigidBody/BoneMesh.h"
+#include "RigidBody/NodeBone.h"
+#include "RigidBody/IMU.h"
+#include "RigidBody/KalmanReconsIMU.h"
+#include "RigidBody/KalmanReconsMarkers.h"
+%}
+
+// Exposing some useful functions
+%extend s2mJoints{
+    biorbd::utils::Tau InverseDynamics(
+                const biorbd::utils::GenCoord &Q,
+                const biorbd::utils::GenCoord &QDot,
+                const biorbd::utils::GenCoord &QDDot) {
+        biorbd::utils::Tau Tau(*self);
+        RigidBodyDynamics::InverseDynamics(*self, Q, QDot, QDDot, Tau);
+        return Tau;
+    }
+
+    biorbd::utils::GenCoord ForwardDynamics(
+                const biorbd::utils::GenCoord &Q,
+                const biorbd::utils::GenCoord &QDot,
+                const biorbd::utils::Tau &Tau) {
+        biorbd::utils::GenCoord QDDot(*self);
+        RigidBodyDynamics::ForwardDynamics(*self, Q, QDot, Tau, QDDot);
+        return QDDot;
+    }
+
+    biorbd::utils::GenCoord ForwardDynamicsLagrangian(
+                const biorbd::utils::GenCoord &Q,
+                const biorbd::utils::GenCoord &QDot,
+                const biorbd::utils::Tau &Tau) {
+        biorbd::utils::GenCoord QDDot(*self);
+        RigidBodyDynamics::ForwardDynamicsLagrangian(*self, Q, QDot, Tau, QDDot);
+        return QDDot;
+    }
+
+    biorbd::utils::GenCoord ForwardDynamicsConstraintsDirect(
+                const biorbd::utils::GenCoord &Q,
+                const biorbd::utils::GenCoord &QDot,
+                const biorbd::utils::Tau &Tau,
+                s2mContacts& CS) {
+        biorbd::utils::GenCoord QDDot(*self);
+        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
+        return QDDot;
+    }
+    biorbd::utils::GenCoord ForwardDynamicsConstraintsDirect(
+                const biorbd::utils::GenCoord &Q,
+                const biorbd::utils::GenCoord &QDot,
+                const biorbd::utils::Tau &Tau) {
+        biorbd::utils::GenCoord QDDot(*self);
+        s2mContacts& CS = self->getConstraints_nonConst();
+        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
+        return QDDot;
+    }
+}
+
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/Markers.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/Contacts.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/NodeBone.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/KalmanReconsMarkers.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/Joints.h"
+//%include "s2mPatch.h"
+//%include "RigidBody/Bone.h"
+//%include "RigidBody/BoneCaracteristics.h"
+//%include "RigidBody/BoneMesh.h"
+//%include "RigidBody/IMU.h"
+//%include "RigidBody/IMUs.h"
+//%include "RigidBody/KalmanRecons.h"
+//%include "RigidBody/KalmanReconsIMU.h"
+//%include "RigidBody/s2mJoint.h"
+
+
+
