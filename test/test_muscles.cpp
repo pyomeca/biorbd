@@ -2,10 +2,10 @@
 #include <gtest/gtest.h>
 
 #include "s2mMusculoSkeletalModel.h"
-#include "s2mMuscle.h"
-#include "s2mGroupeMusculaire.h"
-#include "s2mMuscleHillTypeThelenFatigable.h"
-#include "s2mMuscleFatigueDynamicStateXia.h"
+#include "Muscles/Muscle.h"
+#include "Muscles/MuscleGroup.h"
+#include "Muscles/HillTypeThelenFatigable.h"
+#include "Muscles/FatigueDynamicStateXia.h"
 
 static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
 static unsigned int muscleGroupForMuscleJacobian(1);

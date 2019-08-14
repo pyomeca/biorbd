@@ -13,23 +13,23 @@
 #include "s2mBone.h"
 #include "s2mBoneMesh.h"
 #include "s2mNodeBone.h"
-#include "s2mNodeMuscle.h"
+#include "Muscles/MuscleNode.h"
 
 #include "s2mIMU.h"
 #include "s2mKalmanReconsIMU.h"
 #include "s2mKalmanReconsMarkers.h"
 
-#include "s2mMuscleStateDynamics.h"
-#include "s2mMuscle.h"
-#include "s2mGroupeMusculaire.h"
-#include "s2mMuscleHillType.h"
-#include "s2mMuscleHillTypeThelen.h"
-#include "s2mMuscleHillTypeSimple.h"
-#include "s2mMuscleHillTypeThelenFatigable.h"
-#include "s2mMuscleFatigueState.h"
-#include "s2mMuscleFatigueDynamicState.h"
-#include "s2mMuscleFatigueDynamicStateXia.h"
-#include "s2mStaticOptimization.h"
+#include "Muscles/StateDynamics.h"
+#include "Muscles/Muscle.h"
+#include "Muscles/MuscleGroup.h"
+#include "Muscles/HillType.h"
+#include "Muscles/HillTypeThelen.h"
+#include "Muscles/HillTypeSimple.h"
+#include "Muscles/HillTypeThelenFatigable.h"
+#include "Muscles/FatigueState.h"
+#include "Muscles/FatigueDynamicState.h"
+#include "Muscles/FatigueDynamicStateXia.h"
+#include "Muscles/StaticOptimization.h"
 %}
 %include exception.i
 %include <std_shared_ptr.i>
@@ -81,7 +81,7 @@ namespace std {
                 const biorbd::utils::GenCoord &QDDot) {
         biorbd::utils::Tau Tau(*self);
         RigidBodyDynamics::InverseDynamics(*self, Q, QDot, QDDot, Tau);
-        return QDDot;
+        return Tau;
     }
 
     biorbd::utils::GenCoord ForwardDynamics(
@@ -215,33 +215,32 @@ namespace std {
 //%include "s2mBoneCaracteristics.h"
 //%include "s2mBoneMesh.h"
 
-%include "@CMAKE_SOURCE_DIR@/include/s2mNodeMuscle.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscleCompound.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscle.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscleFatigable.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscleHillType.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscleHillTypeThelen.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscleHillTypeThelenFatigable.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscleHillTypeSimple.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscles.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mGroupeMusculaire.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscleCaracteristics.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/MuscleNode.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/Compound.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscle.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/Fatigable.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillType.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeThelen.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeThelenFatigable.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeSimple.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscles.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/MuscleGroup.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/Caracteristics.h"
 
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscleFatigueParam.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscleFatigueState.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscleFatigueDynamicState.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscleFatigueDynamicStateXia.h"
-//%include "s2mMuscleForce.h"
-//%include "s2mMuscleForceFromInsertion.h"
-//%include "s2mMuscleForceFromOrigin.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscleGeometry.h"
-//%include "s2mMuscleMesh.h"
-//%include "s2mMusclePathChanger.h"
-//%include "s2mMusclePathChangers.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscleState.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMuscleStateDynamics.h"
-//%include "s2mMuscleStateDynamicsBuchanan.h"
-//%include "s2mMuscleOptimisation.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueParameters.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueState.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueDynamicState.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueDynamicStateXia.h"
+//%include "Muscles/Force.h"
+//%include "Muscles/ForceFromInsertion.h"
+//%include "Muscles/ForceFromOrigin.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/Geometry.h"
+//%include "Muscles/Mesh.h"
+//%include "Muscles/PathChanger.h"
+//%include "Muscles/PathChangers.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/State.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/StateDynamics.h"
+//%include "Muscles/StateDynamicsBuchanan.h"
 
 //%include "s2mIMU.h"
 //%include "s2mIMUs.h"
@@ -262,5 +261,5 @@ namespace std {
 
 %include "@CMAKE_SOURCE_DIR@/include/s2mMusculoSkeletalModel.h"
 
-%include "@CMAKE_SOURCE_DIR@/include/s2mStaticOptimization.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/StaticOptimization.h"
 

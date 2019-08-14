@@ -5,22 +5,22 @@
 #include "s2mJoints.h"
 #include "s2mMarkers.h"
 #include "s2mIMUs.h"
-#include "s2mMuscles.h"
 #include "s2mContacts.h"
 #ifdef MODULE_ACTUATORS
 #include "Actuators/Actuators.h"
 #endif
+#include "Muscles/Muscles.h"
 #include "Utils/Path.h"
 
 class BIORBD_API s2mMusculoSkeletalModel :
         public s2mJoints
         ,public s2mMarkers
         ,public s2mIMUs
-        ,public s2mMuscles
         ,public s2mContacts
         #ifdef MODULE_ACTUATORS
         ,public biorbd::actuator::Actuators
         #endif
+        ,public s2mMuscles
 {
 public:
     s2mMusculoSkeletalModel();

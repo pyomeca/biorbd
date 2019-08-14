@@ -7,23 +7,23 @@
 #include "Utils/Error.h"
 #include "Utils/IfStream.h"
 #include "Utils/String.h"
-#include "s2mPatch.h"
 #include "Utils/Equation.h"
+#include "s2mBoneMesh.h"
+#include "s2mBoneCaracteristics.h"
+#include "s2mIMU.h"
+#include "s2mNodeBone.h"
+#include "s2mPatch.h"
 #ifdef MODULE_ACTUATORS
     #include "Actuators/ActuatorConstant.h"
     #include "Actuators/ActuatorLinear.h"
     #include "Actuators/ActuatorGauss3p.h"
     #include "Actuators/ActuatorGauss6p.h"
 #endif // MODULE_ACTUATORS
-#include "s2mMuscle.h"
-#include "s2mIMU.h"
-#include "s2mNodeBone.h"
-#include "s2mMuscleGeometry.h"
-#include "s2mGroupeMusculaire.h"
-#include "s2mViaPoint.h"
-#include "s2mWrappingCylinder.h"
-#include "s2mBoneMesh.h"
-#include "s2mBoneCaracteristics.h"
+#include "Muscles/Muscle.h"
+#include "Muscles/Geometry.h"
+#include "Muscles/MuscleGroup.h"
+#include "Muscles/ViaPoint.h"
+#include "Muscles/WrappingCylinder.h"
 
 #ifdef _WIN64
     #include <direct.h>

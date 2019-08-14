@@ -1,13 +1,13 @@
 #include <iostream>
-#include "s2mMusculoSkeletalModel.h"
-#include "s2mStaticOptimization.h"
-#include "Utils/GenCoord.h"
-#include "s2mGroupeMusculaire.h"
-#include "s2mMuscleHillTypeThelenFatigable.h"
-#include "s2mMuscleFatigueDynamicStateXia.h"
 #include <memory>
 #include <cstdlib>
 #include <random>
+#include "s2mMusculoSkeletalModel.h"
+#include "Utils/GenCoord.h"
+#include "Muscles/MuscleGroup.h"
+#include "Muscles/HillTypeThelenFatigable.h"
+#include "Muscles/FatigueDynamicStateXia.h"
+#include "Muscles/StaticOptimization.h"
 #define BUILD_SANDBOX
 
 #ifdef BUILD_SANDBOX

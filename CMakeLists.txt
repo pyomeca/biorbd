@@ -78,6 +78,13 @@ if (MODULE_ACTUATORS)
     list(APPEND BIORBD_MODULE_NAMES ${ACTUATOR_MODULE_NAME})
 endif()
 
+# Muscles
+option(MODULE_MUSCLES "Choose if the module actuators is to be added to biorbd" ON)
+if (MODULE_MUSCLES)
+    add_subdirectory(src/Muscles)
+    list(APPEND BIORBD_MODULE_NAMES ${MUSCLE_MODULE_NAME})
+endif()
+
 # Add linker
 target_link_libraries(${PROJECT_NAME} ${BIORBD_MODULE_NAMES} ${RBDL_LIBRARY} ${DLIB_LIBRARY} ${IPOPT_LIBRARY})
 

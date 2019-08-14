@@ -6,7 +6,7 @@
 #include "s2mMusculoSkeletalModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
-#include "s2mWrappingCylinder.h"
+#include "Muscles/WrappingCylinder.h"
 
 void S2M_MusclesPoints( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){

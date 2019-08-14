@@ -1,14 +1,14 @@
 #ifndef MATLAB_PROCESS_ARGUMENTS_H
 #define MATLAB_PROCESS_ARGUMENTS_H
 #include <mex.h>
-#include "Utils/GenCoord.h"
-#include "Utils/Tau.h"
 #include "s2mBone.h"
 #include "s2mIMU.h"
 #include "s2mNodeBone.h"
-#include "s2mNodeMuscle.h"
-#include "s2mMuscleStateDynamics.h"
-#include "s2mMuscleStateDynamicsBuchanan.h"
+#include "Utils/GenCoord.h"
+#include "Utils/Tau.h"
+#include "Muscles/MuscleNode.h"
+#include "Muscles/StateDynamics.h"
+#include "Muscles/StateDynamicsBuchanan.h"
 
 void checkNombreInputParametres(int nrhs, int min, int max, std::string message = ""){
     if (nrhs < min){
