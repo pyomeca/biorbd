@@ -14,7 +14,8 @@ class GenCoord;
 class String;
 }}
 
-namespace biorbd { namespace rigidbody {
+namespace biorbd {
+namespace rigidbody {
 class Joints;
 
 class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet

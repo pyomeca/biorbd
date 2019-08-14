@@ -7,7 +7,8 @@
 #include "Muscles/State.h"
 #include "Muscles/FatigueParameters.h"
 
-namespace biorbd { namespace  muscles {
+namespace biorbd {
+namespace  muscles {
 
 class BIORBD_API Caracteristics
 {

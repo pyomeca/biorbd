@@ -6,11 +6,12 @@
 #include "biorbdConfig.h"
 #include "Utils/Path.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 class Node;
-}}
+}
 
-namespace biorbd { namespace rigidbody {
+namespace rigidbody {
 class Patch;
 
 class BIORBD_API Mesh

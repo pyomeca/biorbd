@@ -5,9 +5,10 @@
 #include <vector>
 #include "biorbdConfig.h"
 
-namespace biorbd { namespace muscles {
-
+namespace biorbd {
+namespace muscles {
 class PathChanger;
+
 class BIORBD_API PathChangers
 {
 public:

@@ -178,7 +178,7 @@ const biorbd::rigidbody::Bone& biorbd::rigidbody::Joints::bone(unsigned int i) c
 
 const biorbd::rigidbody::Bone &biorbd::rigidbody::Joints::bone(const biorbd::utils::String & name) const
 {
-    return bone(static_cast<unsigned int>(GetBodyS2MId(name.c_str())));
+    return bone(static_cast<unsigned int>(GetBodyBiorbdId(name.c_str())));
 }
 
 unsigned int biorbd::rigidbody::Joints::nbBone() const
@@ -249,7 +249,7 @@ std::vector<biorbd::utils::Attitude> biorbd::rigidbody::Joints::globalJCS(
     return out;
 }
 
-int biorbd::rigidbody::Joints::GetBodyS2MId(const biorbd::utils::String &s) const{
+int biorbd::rigidbody::Joints::GetBodyBiorbdId(const biorbd::utils::String &s) const{
     for (int i=0; i<static_cast<int>(m_bones.size()); ++i)
         if (!m_bones[static_cast<unsigned int>(i)].name().compare(s))
             return i;
@@ -260,7 +260,7 @@ biorbd::utils::Attitude biorbd::rigidbody::Joints::globalJCS(
         const biorbd::utils::GenCoord &Q,
         const biorbd::utils::String &name,
         const bool updateKin){
-    return globalJCS(Q,static_cast<unsigned int>(GetBodyS2MId(name.c_str())),updateKin);
+    return globalJCS(Q,static_cast<unsigned int>(GetBodyBiorbdId(name.c_str())),updateKin);
 }
 
 biorbd::utils::Attitude biorbd::rigidbody::Joints::globalJCS(
@@ -290,7 +290,7 @@ std::vector<biorbd::utils::Attitude> biorbd::rigidbody::Joints::localJCS() const
     return out;
 }
 biorbd::utils::Attitude biorbd::rigidbody::Joints::localJCS(const biorbd::utils::String &name) const{
-    return localJCS(static_cast<unsigned int>(GetBodyS2MId(name.c_str())));
+    return localJCS(static_cast<unsigned int>(GetBodyBiorbdId(name.c_str())));
 }
 biorbd::utils::Attitude biorbd::rigidbody::Joints::localJCS(const unsigned int i) const{
     return m_bones[i].localJCS();
@@ -310,7 +310,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::projectPoint
     for (unsigned int i=0;i<marks.nTags();++i){
         biorbd::rigidbody::NodeBone tp(marks.marker(i));
         if (tp.nAxesToRemove()!=0){
-            tp.setPosition(globalJCS(Q,static_cast<unsigned int>(GetBodyS2MId(tp.parent())),true).transpose()* (*(v.begin()+i)) );
+            tp.setPosition(globalJCS(Q,static_cast<unsigned int>(GetBodyBiorbdId(tp.parent())),true).transpose()* (*(v.begin()+i)) );
             // Prendre la position du nouveau marker avec les infos de celui du modèle
             out.push_back(projectPoint(Q,tp,updateKin));
             updateKin = false;

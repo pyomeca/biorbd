@@ -11,7 +11,8 @@
 #include "Muscles/StateDynamics.h"
 #include "Muscles/PathChangers.h"
 
-namespace biorbd { namespace  muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API Compound
 {

@@ -4,7 +4,8 @@
 #include "biorbdConfig.h"
 #include "Muscles/WrappingObject.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API WrappingSphere : public biorbd::muscles::WrappingObject
 {

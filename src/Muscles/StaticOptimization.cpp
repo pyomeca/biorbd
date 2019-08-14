@@ -2,13 +2,13 @@
 #include "Muscles/StaticOptimization.h"
 
 #include <IpIpoptApplication.hpp>
-#include "s2mMusculoSkeletalModel.h"
+#include "BiorbdModel.h"
 #include "Utils/Error.h"
 #include "Muscles/StateDynamics.h"
 #include "Muscles/StaticOptimizationIpoptLinearized.h"
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
-        s2mMusculoSkeletalModel& model,
+        biorbd::Model& model,
         const biorbd::utils::GenCoord &Q,
         const biorbd::utils::GenCoord &Qdot,
         const biorbd::utils::Tau &tauTarget,
@@ -36,7 +36,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
 }
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
-        s2mMusculoSkeletalModel& model,
+        biorbd::Model& model,
         const biorbd::utils::GenCoord &Q,
         const biorbd::utils::GenCoord &Qdot,
         const biorbd::utils::Tau &tauTarget,
@@ -61,7 +61,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
 }
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
-        s2mMusculoSkeletalModel &model,
+        biorbd::Model &model,
         const std::vector<biorbd::utils::GenCoord> &allQ,
         const std::vector<biorbd::utils::GenCoord> &allQdot,
         const std::vector<biorbd::utils::Tau> &allTauTarget,
@@ -88,7 +88,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
 }
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
-        s2mMusculoSkeletalModel& model,
+        biorbd::Model& model,
         const std::vector<biorbd::utils::GenCoord> &allQ,
         const std::vector<biorbd::utils::GenCoord> &allQdot,
         const std::vector<biorbd::utils::Tau> &allTauTarget,

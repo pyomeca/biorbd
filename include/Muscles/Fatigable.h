@@ -4,13 +4,16 @@
 #include <memory>
 #include "biorbdConfig.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 class String;
-}}
-namespace biorbd { namespace muscles {
+}
+
+namespace muscles {
 class Muscle;
 class StateDynamics;
 class FatigueState;
+
 class BIORBD_API Fatigable
 {
 public:

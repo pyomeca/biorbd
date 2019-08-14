@@ -4,7 +4,8 @@
 #include "biorbdConfig.h"
 #include "Muscles/HillType.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API HillTypeThelen : public biorbd::muscles::HillType
 {

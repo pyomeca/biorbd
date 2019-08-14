@@ -8,12 +8,13 @@
 #include "Utils/String.h"
 #include "Utils/Node.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 class Matrix;
 class GenCoord;
-}}
+}
 
-namespace biorbd { namespace rigidbody {
+namespace rigidbody {
 class Joints;
 class IMU;
 

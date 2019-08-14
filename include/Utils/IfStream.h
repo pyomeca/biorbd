@@ -5,7 +5,8 @@
 #include "biorbdConfig.h"
 #include "Utils/Path.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 class Equation;
 
 class BIORBD_API IfStream

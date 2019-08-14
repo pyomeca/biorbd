@@ -4,7 +4,8 @@
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
 
-namespace biorbd { namespace rigidbody {
+namespace biorbd {
+namespace rigidbody {
 
 class BIORBD_API Patch
 {

@@ -3,13 +3,13 @@
 
 #include <rbdl/Model.h>
 #include <rbdl/Kinematics.h>
-#include "s2mMusculoSkeletalModel.h"
+#include "BiorbdModel.h"
 #include "Utils/Error.h"
 #include "Utils/GenCoord.h"
 #include "RigidBody/IMU.h"
 
 biorbd::rigidbody::KalmanReconsIMU::KalmanReconsIMU(
-        s2mMusculoSkeletalModel &m,
+        biorbd::Model &m,
         biorbd::rigidbody::KalmanRecons::KalmanParam params) :
     biorbd::rigidbody::KalmanRecons(m, m.nTechIMUs()*9, params),
     m_firstIteration(true)
@@ -50,7 +50,7 @@ bool biorbd::rigidbody::KalmanReconsIMU::first()
 }
 
 void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
-        s2mMusculoSkeletalModel &m,
+        biorbd::Model &m,
         const std::vector<biorbd::utils::Attitude> &IMUobs,
         biorbd::utils::GenCoord *Q,
         biorbd::utils::GenCoord *Qdot,
@@ -67,7 +67,7 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
 
 
 void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
-        s2mMusculoSkeletalModel &m,
+        biorbd::Model &m,
         const Eigen::VectorXd &IMUobs,
         biorbd::utils::GenCoord *Q,
         biorbd::utils::GenCoord *Qdot,

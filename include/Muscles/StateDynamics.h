@@ -4,9 +4,10 @@
 #include "biorbdConfig.h"
 #include "Muscles/State.h"
 
-namespace biorbd { namespace muscles {
-
+namespace biorbd {
+namespace muscles {
 class Caracteristics;
+
 class BIORBD_API StateDynamics : public biorbd::muscles::State
 {
 public:

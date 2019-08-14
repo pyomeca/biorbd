@@ -2,7 +2,7 @@
 %{
 #include <rbdl/Dynamics.h>
 
-#include "s2mMusculoSkeletalModel.h"
+#include "BiorbdModel.h"
 #include "biorbdConfig.h"
 #include "Utils/GenCoord.h"
 #include "Utils/Tau.h"

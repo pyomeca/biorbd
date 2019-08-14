@@ -6,7 +6,8 @@
 #include "Utils/Timer.h"
 #include "Utils/String.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 
 class BIORBD_API Benchmark
 {

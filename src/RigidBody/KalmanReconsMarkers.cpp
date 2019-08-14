@@ -3,13 +3,13 @@
 
 #include <rbdl/Model.h>
 #include <rbdl/Kinematics.h>
-#include "s2mMusculoSkeletalModel.h"
+#include "BiorbdModel.h"
 #include "Utils/Error.h"
 #include "Utils/GenCoord.h"
 #include "RigidBody/NodeBone.h"
 
 biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers(
-        s2mMusculoSkeletalModel &m,
+        biorbd::Model &m,
         biorbd::rigidbody::KalmanRecons::KalmanParam params) :
     biorbd::rigidbody::KalmanRecons(m, m.nTechTags()*3, params),
     m_firstIteration(true)
@@ -50,7 +50,7 @@ bool biorbd::rigidbody::KalmanReconsMarkers::first()
 }
 
 void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
-        s2mMusculoSkeletalModel &m,
+        biorbd::Model &m,
         const biorbd::rigidbody::Markers &Tobs,
         biorbd::utils::GenCoord *Q,
         biorbd::utils::GenCoord *Qdot,
@@ -66,7 +66,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
 }
 
 void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
-        s2mMusculoSkeletalModel &m,
+        biorbd::Model &m,
         const std::vector<biorbd::rigidbody::NodeBone> &Tobs,
         biorbd::utils::GenCoord *Q,
         biorbd::utils::GenCoord *Qdot,
@@ -83,7 +83,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
 
 
 void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
-        s2mMusculoSkeletalModel &m,
+        biorbd::Model &m,
         const Eigen::VectorXd &Tobs,
         biorbd::utils::GenCoord *Q,
         biorbd::utils::GenCoord *Qdot,

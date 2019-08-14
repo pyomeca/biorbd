@@ -4,7 +4,8 @@
 #include "biorbdConfig.h"
 #include "Muscles/StateDynamics.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API StateDynamicsBuchanan : public biorbd::muscles::StateDynamics
 {

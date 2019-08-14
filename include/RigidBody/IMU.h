@@ -4,7 +4,8 @@
 #include "biorbdConfig.h"
 #include "Utils/NodeAttitude.h"
 
-namespace biorbd { namespace rigidbody {
+namespace biorbd {
+namespace rigidbody {
 
 class BIORBD_API IMU : public biorbd::utils::NodeAttitude
 { 

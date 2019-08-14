@@ -6,16 +6,18 @@
 #include "biorbdConfig.h"
 #include "Actuators/Actuator.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 class GenCoord;
 class Tau;
-}}
+}
 
-namespace biorbd { namespace rigidbody {
+namespace rigidbody {
 class Joints;
-}}
+}
 
-namespace biorbd { namespace actuator {
+namespace actuator {
+
 class BIORBD_API Actuators
 {
 public:

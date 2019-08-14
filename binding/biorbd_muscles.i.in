@@ -29,7 +29,7 @@ namespace std {
 }
 
 // Exposing some useful functions
-%extend s2mMusculoSkeletalModel{
+%extend biorbd::Model{
     biorbd::utils::Tau muscularJointTorque(
                 const std::vector<biorbd::muscles::StateDynamics> &state,
                 const biorbd::utils::GenCoord &Q,

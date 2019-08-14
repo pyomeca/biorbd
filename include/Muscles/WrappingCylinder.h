@@ -5,7 +5,8 @@
 #include "Utils/Attitude.h"
 #include "Muscles/WrappingObject.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API WrappingCylinder : public biorbd::muscles::WrappingObject
 {

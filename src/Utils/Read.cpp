@@ -3,7 +3,7 @@
 
 #include <limits.h>
 #include <fstream>
-#include "s2mMusculoSkeletalModel.h"
+#include "BiorbdModel.h"
 #include "Utils/Error.h"
 #include "Utils/IfStream.h"
 #include "Utils/String.h"
@@ -56,14 +56,14 @@ bool biorbd::utils::Read::is_readable(const biorbd::utils::String &file) {
 }
 
 // ------ Public methods ------ //
-s2mMusculoSkeletalModel biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path){
+biorbd::Model biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path){
     // Ajouter les éléments entrés
-    s2mMusculoSkeletalModel model;
+    biorbd::Model model;
     readModelFile(path, &model);
     return model;
 }
 
-void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusculoSkeletalModel *model)
+void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, biorbd::Model *model)
 {	// Ouverture du fichier
     if (!is_readable(path))
         biorbd::utils::Error::error(false, "File " + path + " could not be open");
@@ -210,7 +210,7 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusc
                     }
                     filePath.parseFileName();
                     if (!filePath.extension().compare("biorbd::rigidbody::"))
-                        boneMesh = readBoneMeshFileS2mBones(filePath);
+                        boneMesh = readBoneMeshFileBiorbdBones(filePath);
                     else if (!filePath.extension().compare("ply"))
                         boneMesh = readBoneMeshFilePly(filePath);
                     if (wasRelative)
@@ -1273,7 +1273,7 @@ std::vector<std::vector<biorbd::utils::Node>>  biorbd::utils::Read::readViconMar
     return data;
 }
 
-biorbd::rigidbody::Mesh biorbd::utils::Read::readBoneMeshFileS2mBones(const biorbd::utils::Path &path)
+biorbd::rigidbody::Mesh biorbd::utils::Read::readBoneMeshFileBiorbdBones(const biorbd::utils::Path &path)
 {
     // Lire un fichier d'os
 

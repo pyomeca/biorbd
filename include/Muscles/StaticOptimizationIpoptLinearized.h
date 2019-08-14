@@ -5,13 +5,14 @@
 #include "Utils/Matrix.h"
 #include "Muscles/StaticOptimizationIpopt.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API StaticOptimizationIpoptLinearized : public biorbd::muscles::StaticOptimizationIpopt
 {
 public:
     StaticOptimizationIpoptLinearized(
-            s2mMusculoSkeletalModel& model,
+            biorbd::Model& model,
             const biorbd::utils::GenCoord& Q,
             const biorbd::utils::GenCoord& Qdot,
             const biorbd::utils::Tau& tauTarget,

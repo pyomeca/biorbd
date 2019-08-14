@@ -1,11 +1,12 @@
-#ifndef S2M_NODE_H
-#define S2M_NODE_H
+#ifndef BIORBD_UTILS_NODE_H
+#define BIORBD_UTILS_NODE_H
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 class Attitude;
 
 class BIORBD_API Node : public Eigen::Vector3d
@@ -44,4 +45,4 @@ class BIORBD_API Node : public Eigen::Vector3d
 
 }}
 
-#endif // S2M_NODE_H
+#endif // BIORBD_UTILS_NODE_H

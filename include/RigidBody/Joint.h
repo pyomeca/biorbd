@@ -5,7 +5,8 @@
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 
-namespace biorbd { namespace rigidbody {
+namespace biorbd {
+namespace rigidbody {
 
 class BIORBD_API Joint : public RigidBodyDynamics::Joint
 {

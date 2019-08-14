@@ -6,20 +6,22 @@
 #include "biorbdConfig.h"
 #include "Utils/Vector.h"
 
-class s2mMusculoSkeletalModel;
-namespace biorbd { namespace utils {
+namespace biorbd {
+class Model;
+
+namespace utils {
 class GenCoord;
 class Tau;
-}}
+}
 
-namespace biorbd { namespace muscles {
+namespace muscles {
 
 class StateDynamics;
 class BIORBD_API StaticOptimization
 {
 public:
     StaticOptimization(
-            s2mMusculoSkeletalModel& model,
+            biorbd::Model& model,
             const biorbd::utils::GenCoord& Q,
             const biorbd::utils::GenCoord& Qdot,
             const biorbd::utils::Tau& tauTarget,
@@ -28,7 +30,7 @@ public:
             bool useResidualTorque = true,
             int verbose = 0);
     StaticOptimization(
-            s2mMusculoSkeletalModel& model,
+            biorbd::Model& model,
             const biorbd::utils::GenCoord& Q,
             const biorbd::utils::GenCoord& Qdot,
             const biorbd::utils::Tau& tauTarget,
@@ -37,7 +39,7 @@ public:
             bool useResidualTorque = true,
             int verbose = 0);
     StaticOptimization(
-            s2mMusculoSkeletalModel& model,
+            biorbd::Model& model,
             const std::vector<biorbd::utils::GenCoord>& allQ,
             const std::vector<biorbd::utils::GenCoord>& allQdot,
             const std::vector<biorbd::utils::Tau>& allTauTarget,
@@ -46,7 +48,7 @@ public:
             bool useResidualTorque = true,
             int verbose = 0);
     StaticOptimization(
-            s2mMusculoSkeletalModel& model,
+            biorbd::Model& model,
             const std::vector<biorbd::utils::GenCoord>& allQ,
             const std::vector<biorbd::utils::GenCoord>& allQdot,
             const std::vector<biorbd::utils::Tau>& allTauTarget,
@@ -60,7 +62,7 @@ public:
     biorbd::utils::Vector finalSolution(unsigned int index);
 
 protected:
-    s2mMusculoSkeletalModel& m_model;
+    biorbd::Model& m_model;
     bool m_useResidualTorque;
     std::vector<biorbd::utils::GenCoord> m_allQ;
     std::vector<biorbd::utils::GenCoord> m_allQdot;

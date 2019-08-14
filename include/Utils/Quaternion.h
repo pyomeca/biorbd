@@ -5,7 +5,8 @@
 #include <rbdl/Quaternion.h>
 #include "biorbdConfig.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 
 class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Quaternion
 {

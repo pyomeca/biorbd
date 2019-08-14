@@ -3,13 +3,13 @@
 
 #include <iostream>
 #include <iomanip>
-#include "s2mMusculoSkeletalModel.h"
+#include "BiorbdModel.h"
 #include "Utils/Error.h"
 #include "Utils/Matrix.h"
 #include "Muscles/StateDynamics.h"
 
 biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
-        s2mMusculoSkeletalModel &model,
+        biorbd::Model &model,
         const biorbd::utils::GenCoord &Q,
         const biorbd::utils::GenCoord &Qdot,
         const biorbd::utils::Tau &tauTarget,

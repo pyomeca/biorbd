@@ -5,12 +5,12 @@
 #include "RigidBody/BoneCaracteristics.h"
 #include "RigidBody/Joint.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 class Attitude;
-class s2mString;
-}}
+}
 
-namespace biorbd { namespace rigidbody {
+namespace rigidbody {
 class Joints;
 
 class BIORBD_API Bone

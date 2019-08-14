@@ -7,7 +7,8 @@
 #include "Utils/String.h"
 #include "Muscles/PathChangers.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class Muscle;
 class Geometry;

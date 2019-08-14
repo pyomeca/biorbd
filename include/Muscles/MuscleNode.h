@@ -1,11 +1,12 @@
-#ifndef S2M_MUSCLE_NODE_H
-#define S2M_MUSCLE_NODE_H
+#ifndef BIORBD_MUSCLES_MUSCLE_NODE_H
+#define BIORBD_MUSCLES_MUSCLE_NODE_H
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
 #include "Utils/Node.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API MuscleNode : public biorbd::utils::Node
 {
@@ -21,4 +22,4 @@ public:
 
 }}
 
-#endif // S2M_MUSCLE_NODE_H
+#endif // BIORBD_MUSCLES_MUSCLE_NODE_H

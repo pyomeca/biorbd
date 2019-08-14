@@ -8,7 +8,8 @@
 #include "Muscles/Caracteristics.h"
 #include "Muscles/StateDynamics.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API Muscle : public biorbd::muscles::Compound
 {

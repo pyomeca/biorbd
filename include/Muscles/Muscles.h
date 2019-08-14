@@ -1,5 +1,5 @@
-#ifndef S2M_MUSCLES_H
-#define S2M_MUSCLES_H
+#ifndef BIORBD_MUSCLES_MUSCLES_H
+#define BIORBD_MUSCLES_MUSCLES_H
 
 #include <vector>
 #include <memory>
@@ -7,18 +7,19 @@
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 class String;
 class Matrix;
 class GenCoord;
 class Tau;
-}}
+}
 
-namespace biorbd { namespace rigidbody {
+namespace rigidbody {
 class Joints;
-}}
+}
 
-namespace biorbd { namespace muscles {
+namespace muscles {
 class MuscleGroup;
 class StateDynamics;
 class Force;
@@ -97,5 +98,5 @@ protected:
 
 }}
 
-#endif // S2M_MUSCLES_H
+#endif // BIORBD_MUSCLES_MUSCLES_H
 

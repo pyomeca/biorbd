@@ -6,12 +6,14 @@
 #include "biorbdConfig.h"
 #include "Utils/Matrix.h"
 
-class s2mMusculoSkeletalModel;
-namespace biorbd { namespace utils {
-class GenCoord;
-}}
+namespace biorbd {
+class Model;
 
-namespace biorbd { namespace rigidbody {
+namespace utils {
+class GenCoord;
+}
+
+namespace rigidbody {
 
 class BIORBD_API KalmanRecons
 {
@@ -34,7 +36,7 @@ public:
 
     // Constructeur
     KalmanRecons(
-            s2mMusculoSkeletalModel&,
+            biorbd::Model&,
             unsigned int nMeasure,
             KalmanParam = KalmanParam());
     virtual ~KalmanRecons();

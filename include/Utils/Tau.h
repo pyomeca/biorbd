@@ -4,11 +4,12 @@
 #include "biorbdConfig.h"
 #include "Utils/Vector.h"
 
-namespace biorbd { namespace rigidbody {
+namespace biorbd {
+namespace rigidbody {
 class Joints;
-}}
+}
 
-namespace biorbd { namespace utils {
+namespace utils {
 
 class BIORBD_API Tau : public biorbd::utils::Vector
 {

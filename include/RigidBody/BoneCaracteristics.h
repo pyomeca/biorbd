@@ -5,7 +5,8 @@
 #include "biorbdConfig.h"
 #include "RigidBody/BoneMesh.h"
 
-namespace biorbd { namespace rigidbody {
+namespace biorbd {
+namespace rigidbody {
 
 class BIORBD_API Caracteristics : public RigidBodyDynamics::Body
 {

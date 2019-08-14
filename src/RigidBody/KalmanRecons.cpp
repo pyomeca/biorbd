@@ -1,11 +1,11 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/KalmanRecons.h"
 
-#include "s2mMusculoSkeletalModel.h"
+#include "BiorbdModel.h"
 #include "Utils/GenCoord.h"
 
 biorbd::rigidbody::KalmanRecons::KalmanRecons(
-        s2mMusculoSkeletalModel &m,
+        biorbd::Model &m,
         unsigned int nMeasure,
         KalmanParam params) :
     m_params(params),

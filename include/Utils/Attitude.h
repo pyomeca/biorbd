@@ -10,7 +10,8 @@ struct SpatialTransform;
 
 #include "biorbdConfig.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 class Node;
 class String;
 

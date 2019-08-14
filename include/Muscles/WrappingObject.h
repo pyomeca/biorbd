@@ -6,15 +6,16 @@
 #include "Utils/String.h"
 #include "Muscles/PathChanger.h"
 
-namespace biorbd { namespace rigidbody {
+namespace biorbd {
+namespace rigidbody {
 class Joints;
-}}
+}
 
-namespace biorbd { namespace utils {
+namespace utils {
 class GenCoord;
-}}
+}
 
-namespace biorbd { namespace muscles {
+namespace muscles {
 
 class BIORBD_API WrappingObject : public biorbd::muscles::PathChanger
 {

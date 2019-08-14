@@ -88,7 +88,7 @@ biorbd::rigidbody::IMU biorbd::rigidbody::IMUs::IMU(
         const unsigned int &idx,
         const bool &updateKin){
     biorbd::rigidbody::IMU node = IMU(idx);
-    unsigned int id = static_cast<unsigned int>(model.GetBodyS2MId(node.parent()));
+    unsigned int id = static_cast<unsigned int>(model.GetBodyBiorbdId(node.parent()));
 
     biorbd::utils::Attitude parent(model.globalJCS(Q, id, updateKin));
 

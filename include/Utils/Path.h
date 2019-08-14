@@ -4,7 +4,8 @@
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 
 class BIORBD_API Path : public biorbd::utils::String
 {
@@ -45,7 +46,7 @@ public:
     static const char* getCurrentDir();
 
 protected:
-    // Parse appelé durant la liste d'initiation pour s2mString
+    // Parse appelé durant la liste d'initiation pour String
     static biorbd::utils::String processInputForStringCstr(const biorbd::utils::String&);
 
     biorbd::utils::String m_path; // Comme il a été envoyé

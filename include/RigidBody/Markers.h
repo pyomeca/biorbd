@@ -6,12 +6,13 @@
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 class Matrix;
 class GenCoord;
-}}
+}
 
-namespace biorbd { namespace rigidbody {
+namespace rigidbody {
 class Joints;
 class NodeBone;
 

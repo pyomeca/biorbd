@@ -5,7 +5,8 @@
 #include "RigidBody/KalmanRecons.h"
 
 
-namespace biorbd { namespace rigidbody {
+namespace biorbd {
+namespace rigidbody {
 class Markers;
 class NodeBone;
 
@@ -15,27 +16,27 @@ public:
 
     // Constructeur
     KalmanReconsMarkers(
-            s2mMusculoSkeletalModel&,
+            biorbd::Model&,
             KalmanRecons::KalmanParam = KalmanRecons::KalmanParam());
     virtual ~KalmanReconsMarkers();
 
     // Reconstruction d'un frame
     virtual void reconstructFrame(
-            s2mMusculoSkeletalModel &m,
+            biorbd::Model &m,
             const biorbd::rigidbody::Markers &Tobs,
             biorbd::utils::GenCoord *Q,
             biorbd::utils::GenCoord *Qdot,
             biorbd::utils::GenCoord *Qddot,
             bool removeAxes=true);
     virtual void reconstructFrame(
-            s2mMusculoSkeletalModel &m,
+            biorbd::Model &m,
             const std::vector<biorbd::rigidbody::NodeBone> &Tobs,
             biorbd::utils::GenCoord *Q,
             biorbd::utils::GenCoord *Qdot,
             biorbd::utils::GenCoord *Qddot,
             bool removeAxes=true);
     virtual void reconstructFrame(
-            s2mMusculoSkeletalModel &m,
+            biorbd::Model &m,
             const Eigen::VectorXd &Tobs,
             biorbd::utils::GenCoord *Q = nullptr,
             biorbd::utils::GenCoord *Qdot = nullptr,

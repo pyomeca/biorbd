@@ -6,7 +6,8 @@
 #include "biorbdConfig.h"
 #include "Utils/Node.h"
 
-namespace biorbd { namespace rigidbody {
+namespace biorbd {
+namespace rigidbody {
 
 class BIORBD_API NodeBone : public biorbd::utils::Node
 { 

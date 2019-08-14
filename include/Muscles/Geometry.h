@@ -9,7 +9,8 @@
 #include "Muscles/PathChangers.h"
 #include "Muscles/Caracteristics.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API Geometry
 {

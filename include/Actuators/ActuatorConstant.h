@@ -4,7 +4,9 @@
 #include "biorbdConfig.h"
 #include "Actuators/Actuator.h"
 
-namespace biorbd { namespace actuator {
+namespace biorbd {
+namespace actuator {
+
 class BIORBD_API ActuatorConstant : public Actuator
 {
 public:

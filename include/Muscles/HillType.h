@@ -4,7 +4,8 @@
 #include "biorbdConfig.h"
 #include "Muscles/Muscle.h"
 
-namespace biorbd { namespace muscles {
+namespace biorbd {
+namespace muscles {
 
 class BIORBD_API HillType : public biorbd::muscles::Muscle
 {

@@ -6,16 +6,17 @@
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 
-namespace biorbd { namespace utils {
+namespace biorbd {
+namespace utils {
 class Attitude;
 class Integrator;
 class Matrix;
 class Node;
 class GenCoord;
 class Tau;
-}}
+}
 
-namespace biorbd { namespace rigidbody {
+namespace rigidbody {
 class Markers;
 class NodeBone;
 class Patch;
@@ -49,7 +50,7 @@ public:
 
 
     // -- INFORMATION ON THE MODEL -- //
-    int GetBodyS2MId(const biorbd::utils::String &) const;
+    int GetBodyBiorbdId(const biorbd::utils::String &) const;
     unsigned int nbTau() const;
     unsigned int nbBone() const; // Return the actual number of segments
     unsigned int nbDof() const;
@@ -111,7 +112,7 @@ public:
             const unsigned int i,
             const bool updateKin = true);  // Return the JCS for segment i in global coordinate system for the given q
     std::vector<biorbd::utils::Attitude> localJCS() const; // Return the JCSs in global coordinate system for the given q
-    biorbd::utils::Attitude localJCS(const biorbd::utils::String &) const;  // Return the JCS for segment named s2mString in parent coordinate system
+    biorbd::utils::Attitude localJCS(const biorbd::utils::String &) const;  // Return the JCS for segment named String in parent coordinate system
     biorbd::utils::Attitude localJCS(const unsigned int i) const;  // Return the JCS for segment i in parent coordinate system
     biorbd::rigidbody::NodeBone projectPoint(
             const biorbd::utils::GenCoord &Q,
