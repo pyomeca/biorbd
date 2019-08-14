@@ -15,10 +15,10 @@
 #endif
 
 class BIORBD_API s2mMusculoSkeletalModel :
-        public s2mJoints
-        ,public s2mMarkers
-        ,public s2mIMUs
-        ,public s2mContacts
+        public biorbd::rigidbody::Joints
+        ,public biorbd::rigidbody::Markers
+        ,public biorbd::rigidbody::IMUs
+        ,public biorbd::rigidbody::Contacts
         #ifdef MODULE_ACTUATORS
         ,public biorbd::actuator::Actuators
         #endif
@@ -32,7 +32,7 @@ public:
     s2mMusculoSkeletalModel(const biorbd::utils::Path&);
 
     bool InverseKinematics(
-            const std::vector<s2mNodeBone>& Mark,
+            const std::vector<biorbd::rigidbody::NodeBone>& Mark,
             const biorbd::utils::GenCoord& Qinit,
             biorbd::utils::GenCoord &Q,
             bool removeAxes=true);

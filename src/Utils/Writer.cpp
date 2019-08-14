@@ -56,7 +56,7 @@ void biorbd::utils::Writer::writeModel(
         s2mModelFile << std::endl;
 
         // Écrire les éventuels markers
-        std::vector<s2mNodeBone> markers (m.marker(m,i));
+        std::vector<biorbd::rigidbody::NodeBone> markers (m.marker(m,i));
         if (markers.size() > 0){
             s2mModelFile << sep << com << " Markers" << std::endl;
             for (size_t j = 0; j< markers.size(); ++j){
@@ -73,7 +73,7 @@ void biorbd::utils::Writer::writeModel(
         s2mModelFile << std::endl;
 
         // Écrire les centrales inertiels
-        std::vector<s2mIMU> imus(m.IMU(m,i));
+        std::vector<biorbd::rigidbody::IMU> imus(m.IMU(m,i));
         if (imus.size() > 0){
             s2mModelFile << sep << com << " Inertial Magnetic Unit" << std::endl;
             for (size_t j = 0; j< imus.size(); ++j){

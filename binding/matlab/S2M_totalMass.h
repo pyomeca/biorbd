@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_TOTAL_MASS_H
-#define MATLAB_S2M_TOTAL_MASS_H
+#ifndef BIORBD_MATLAB_TOTAL_MASS_H
+#define BIORBD_MATLAB_TOTAL_MASS_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -24,4 +24,4 @@ void S2M_totalMass( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_TOTAL_MASS_H
+#endif // BIORBD_MATLAB_TOTAL_MASS_H

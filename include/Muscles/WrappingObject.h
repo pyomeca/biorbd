@@ -6,7 +6,10 @@
 #include "Utils/String.h"
 #include "Muscles/PathChanger.h"
 
-class s2mJoints;
+namespace biorbd { namespace rigidbody {
+class Joints;
+}}
+
 namespace biorbd { namespace utils {
 class GenCoord;
 }}
@@ -23,7 +26,7 @@ public:
     virtual ~WrappingObject() ;
 
     virtual biorbd::utils::Attitude RT(
-            s2mJoints &m,
+            biorbd::rigidbody::Joints &m,
             const biorbd::utils::GenCoord& Q,
             const bool & = true) = 0;
     virtual void wrapPoints(
@@ -33,7 +36,7 @@ public:
             biorbd::muscles::MuscleNode&,
             biorbd::muscles::MuscleNode&, double* = nullptr) = 0 ; // Premier et dernier points musculaire
     virtual void wrapPoints(
-            s2mJoints&,
+            biorbd::rigidbody::Joints&,
             const biorbd::utils::GenCoord&,
             const biorbd::muscles::MuscleNode&,
             const biorbd::muscles::MuscleNode&,

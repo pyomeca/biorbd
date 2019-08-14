@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_PARENT_H
-#define MATLAB_S2M_PARENT_H
+#ifndef BIORBD_MATLAB_PARENT_H
+#define BIORBD_MATLAB_PARENT_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -36,4 +36,4 @@ void S2M_parent( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_PARENT_H
+#endif // BIORBD_MATLAB_PARENT_H

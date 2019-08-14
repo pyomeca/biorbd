@@ -23,7 +23,7 @@ biorbd::utils::Tau::Tau(const Eigen::VectorXd &v) :
 
 }
 
-biorbd::utils::Tau::Tau(const s2mJoints &j) :
+biorbd::utils::Tau::Tau(const biorbd::rigidbody::Joints &j) :
     biorbd::utils::Vector(j.nbTau())
 {
 

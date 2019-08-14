@@ -1,28 +1,28 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/Patch.h"
 
-s2mPatch::s2mPatch(const Eigen::Vector3i& points) :
+biorbd::rigidbody::Patch::Patch(const Eigen::Vector3i& points) :
     m_patch(points)
 {
 
 }
 
-int &s2mPatch::operator()(int i)
+int &biorbd::rigidbody::Patch::operator()(int i)
 {
     return m_patch[i];
 }
 
-s2mPatch s2mPatch::patch()
+biorbd::rigidbody::Patch biorbd::rigidbody::Patch::patch()
 {
     return m_patch;
 }
 
-void s2mPatch::patch(const Eigen::Vector3i & pts)
+void biorbd::rigidbody::Patch::patch(const Eigen::Vector3i & pts)
 {
     m_patch = pts;
 }
 
-void s2mPatch::patch(const s2mPatch &v)
+void biorbd::rigidbody::Patch::patch(const biorbd::rigidbody::Patch &v)
 {
     m_patch = v.m_patch;
 }

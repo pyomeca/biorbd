@@ -8,7 +8,10 @@
 // The type of container used to hold the state vector
 typedef std::vector< double > state_type;
 
-class s2mJoints;
+namespace biorbd { namespace rigidbody {
+class Joints;
+}}
+
 namespace biorbd { namespace utils {
 class GenCoord;
 

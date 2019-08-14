@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_MASS_MATRIX_H
-#define MATLAB_S2M_MASS_MATRIX_H
+#ifndef BIORBD_MATLAB_MASS_MATRIX_H
+#define BIORBD_MATLAB_MASS_MATRIX_H
 
 #include <mex.h>
 #include <rbdl/Model.h>
@@ -44,4 +44,4 @@ void S2M_massMatrix( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_MASS_MATRIX_H
+#endif // BIORBD_MATLAB_MASS_MATRIX_H

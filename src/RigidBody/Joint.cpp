@@ -1,31 +1,33 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/Joint.h"
 
-s2mJoint::s2mJoint() :
-    Joint() {
+biorbd::rigidbody::Joint::Joint() :
+    RigidBodyDynamics::Joint()
+{
     setType();
     //ctor
 }
-s2mJoint::s2mJoint(RigidBodyDynamics::JointType joint_type) :
-            Joint(joint_type){
+biorbd::rigidbody::Joint::Joint(RigidBodyDynamics::JointType joint_type) :
+    RigidBodyDynamics::Joint(joint_type)
+{
     setType();
 }
-s2mJoint::s2mJoint(RigidBodyDynamics::JointType joint_type, RigidBodyDynamics::Math::Vector3d axis) :
-            Joint(joint_type, axis){
+biorbd::rigidbody::Joint::Joint(RigidBodyDynamics::JointType joint_type, RigidBodyDynamics::Math::Vector3d axis) :
+    RigidBodyDynamics::Joint(joint_type, axis){
     setType();
 }
 
-s2mJoint::~s2mJoint()
+biorbd::rigidbody::Joint::~Joint()
 {
     //dtor
 }
 
-const biorbd::utils::String &s2mJoint::type() const
+const biorbd::utils::String &biorbd::rigidbody::Joint::type() const
 {
     return m_type;
 }
 
-void s2mJoint::setType()
+void biorbd::rigidbody::Joint::setType()
 {
     m_type = "IntraBone";
 }

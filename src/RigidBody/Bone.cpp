@@ -11,12 +11,12 @@
 #include "RigidBody/Patch.h"
 #include "RigidBody/BoneCaracteristics.h"
 
-s2mBone::s2mBone(
-        s2mJoints *model,
+biorbd::rigidbody::Bone::Bone(
+        biorbd::rigidbody::Joints *model,
         const unsigned int &parent_id,
         const biorbd::utils::String &seqT,
         const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
-        const s2mBoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
+        const biorbd::rigidbody::Caracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
         const biorbd::utils::String &name, // Nom du segment
         const int &PF) : // Numéro de la plateforme de force
@@ -46,11 +46,11 @@ s2mBone::s2mBone(
     // Add plateforme
     setPF(PF);
 }
-s2mBone::s2mBone(
-        s2mJoints *model,
+biorbd::rigidbody::Bone::Bone(
+        biorbd::rigidbody::Joints *model,
         const unsigned int &parent_id,
         const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
-        const s2mBoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
+        const biorbd::rigidbody::Caracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
         const biorbd::utils::String &name, // Nom du segment
         const int &PF): // Numéro de la plateforme de force
@@ -80,7 +80,7 @@ s2mBone::s2mBone(
     // Add plateforme
     setPF(PF);
 }
-s2mBone::s2mBone(const s2mBone& bone)
+biorbd::rigidbody::Bone::Bone(const biorbd::rigidbody::Bone& bone)
 {
     // Copy des attributs dimensionless
     m_name = bone.m_name;
@@ -141,7 +141,7 @@ s2mBone::s2mBone(const s2mBone& bone)
     }
 }
 
-s2mBone::~s2mBone(){
+biorbd::rigidbody::Bone::~Bone(){
     delete[] m_dofPosition;
     delete[] m_dofCaract;
     delete[] m_dof;
@@ -151,101 +151,101 @@ s2mBone::~s2mBone(){
     delete[] m_nomDof;
 }
 
-bool s2mBone::isRotationAQuaternion() const{
+bool biorbd::rigidbody::Bone::isRotationAQuaternion() const{
     return m_isQuaternion;
 }
 
-unsigned int s2mBone::id() const{
+unsigned int biorbd::rigidbody::Bone::id() const{
     if (m_nDof!=0)
         return m_idxDof[m_nDof-1];
     else
         return m_idxDof[m_nDof];
 }
 
-unsigned int s2mBone::parent_rbdl_id() const
+unsigned int biorbd::rigidbody::Bone::parent_rbdl_id() const
 {
     return m_parent_id;
 }
 
-biorbd::utils::String s2mBone::parentName(const s2mJoints &model) const
+biorbd::utils::String biorbd::rigidbody::Bone::parentName(const biorbd::rigidbody::Joints &model) const
 {
     return biorbd::utils::String(model.GetBodyName(m_parent_id));
 }
-int s2mBone::plateformeIdx() const{
+int biorbd::rigidbody::Bone::plateformeIdx() const{
     return m_idxPF;
 }
-unsigned int s2mBone::nTau() const{
+unsigned int biorbd::rigidbody::Bone::nTau() const{
     return m_nDof;
 }
-unsigned int s2mBone::nDof() const{
+unsigned int biorbd::rigidbody::Bone::nDof() const{
     return m_nDofTrueOutside;
 }
-unsigned int s2mBone::nDofTrans() const{
+unsigned int biorbd::rigidbody::Bone::nDofTrans() const{
     return m_nDofTrans;
 }
-unsigned int s2mBone::nDofRot() const{
+unsigned int biorbd::rigidbody::Bone::nDofRot() const{
     return m_nDofRot;
 }
-unsigned int s2mBone::nQ() const{
+unsigned int biorbd::rigidbody::Bone::nQ() const{
     return m_nDofTrue;
 }
-unsigned int s2mBone::nQdot() const{
+unsigned int biorbd::rigidbody::Bone::nQdot() const{
     return m_nQdot;
 }
-unsigned int s2mBone::nQddot() const{
+unsigned int biorbd::rigidbody::Bone::nQddot() const{
     return m_nQddot;
 }
 
 // Ajout de la plateforme
-void s2mBone::setPF(const int &PF){
+void biorbd::rigidbody::Bone::setPF(const int &PF){
     m_idxPF = PF;
 }
 
-const biorbd::utils::String &s2mBone::nameDof(const unsigned int i) const {
+const biorbd::utils::String &biorbd::rigidbody::Bone::nameDof(const unsigned int i) const {
     // Retourne le nombre de Dof de ce segment
     biorbd::utils::Error::error(i<m_nDofTrue, "Dof ouside N dof for this segment");
     return m_nomDof[i];
 }
 
 // Retourne le nom du segment
-const biorbd::utils::String &s2mBone::name() const {
+const biorbd::utils::String &biorbd::rigidbody::Bone::name() const {
     return m_name;
 }
 
-const biorbd::utils::String& s2mBone::seqT() const
+const biorbd::utils::String& biorbd::rigidbody::Bone::seqT() const
 {
     return m_seqT;
 }
 
-const biorbd::utils::String& s2mBone::seqR() const
+const biorbd::utils::String& biorbd::rigidbody::Bone::seqR() const
 {
     return m_seqR;
 }
 
-biorbd::utils::Attitude s2mBone::localJCS() const {
+biorbd::utils::Attitude biorbd::rigidbody::Bone::localJCS() const {
     return m_cor;
 }
-const s2mBoneCaracteristics &s2mBone::caract() const {
+const biorbd::rigidbody::Caracteristics &biorbd::rigidbody::Bone::caract() const {
     return m_caract;
 }
 
 // SetDofs => permet d'appeler correctement la fonction setJoints qui est nécessaire pour inclure les dof intrasegments
-void s2mBone::setDofs(
-        s2mJoints *model,
+void biorbd::rigidbody::Bone::setDofs(
+        biorbd::rigidbody::Joints *model,
         const unsigned int &parent_id,
         const biorbd::utils::String &seqT,
         const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
         const double &mass, // Masse du segment
         const RigidBodyDynamics::Math::Vector3d &com,   // Centre de masse du segment
         const RigidBodyDynamics::Math::Matrix3d &inertia){ // Insérer les valeurs des caractéristiques
-    setDofs(model, parent_id, seqT, seqR, s2mBoneCaracteristics(mass, com, inertia));
+    setDofs(model, parent_id, seqT, seqR, biorbd::rigidbody::Caracteristics(mass, com, inertia));
 }
-void s2mBone::setDofs(
-        s2mJoints *model,
+void biorbd::rigidbody::Bone::setDofs(
+        biorbd::rigidbody::Joints *model,
         const unsigned int &parent_id,
         const biorbd::utils::String &seqT,
         const biorbd::utils::String &seqR,// Séquence de Cardan pour classer les dof en rotation
-        const s2mBoneCaracteristics &b){
+        const biorbd::rigidbody::Caracteristics &b){
     m_caract = b;
     m_parent_id = parent_id;
 
@@ -255,17 +255,17 @@ void s2mBone::setDofs(
     setJoints(model);
 }
 
-void s2mBone::determineIfRotIsQuaternion(const biorbd::utils::String &seqR){
+void biorbd::rigidbody::Bone::determineIfRotIsQuaternion(const biorbd::utils::String &seqR){
     if (!seqR.tolower().compare("q"))
         m_isQuaternion = true;
 }
 
 
 // Fonctions membres
-void s2mBone::setParentToChildTransformation(const RigidBodyDynamics::Math::SpatialTransform &cor){
+void biorbd::rigidbody::Bone::setParentToChildTransformation(const RigidBodyDynamics::Math::SpatialTransform &cor){
     m_cor = cor;
 }
-void s2mBone::str2numSequence(
+void biorbd::rigidbody::Bone::str2numSequence(
         const biorbd::utils::String &seqT,
         const biorbd::utils::String &seqR){
     delete[] m_sequenceTrans;
@@ -290,7 +290,7 @@ void s2mBone::str2numSequence(
         m_nomDof[m_nDofTrans+m_nDofRot+i] =  biorbd::utils::String("Quat") + i;
 
 }
-void s2mBone::str2numSequence(
+void biorbd::rigidbody::Bone::str2numSequence(
         unsigned int * seqInt,
         const biorbd::utils::String &seqTexte){
     for (unsigned int i=0; i<seqTexte.length(); i++){
@@ -308,7 +308,7 @@ void s2mBone::str2numSequence(
             biorbd::utils::Error::error(0,"Wrong sequence!");
     }
 }
-void s2mBone::setNumberOfDof(const unsigned int &nTrans, const unsigned int &nRot){
+void biorbd::rigidbody::Bone::setNumberOfDof(const unsigned int &nTrans, const unsigned int &nRot){
     m_nDofTrans = nTrans;
     if (m_isQuaternion){
         m_nDofRot = 0;
@@ -330,12 +330,12 @@ void s2mBone::setNumberOfDof(const unsigned int &nTrans, const unsigned int &nRo
     }
 }
 
-void s2mBone::setSequence(const biorbd::utils::String &seqT, const biorbd::utils::String &seqR) { // Trouver les positions de x,y et z dans cette séquence
+void biorbd::rigidbody::Bone::setSequence(const biorbd::utils::String &seqT, const biorbd::utils::String &seqR) { // Trouver les positions de x,y et z dans cette séquence
     setNumberOfDof(static_cast<unsigned int>(seqT.length()), static_cast<unsigned int>(seqR.length()));
     str2numSequence(seqT, seqR);
     fillSequence();
 }
-void s2mBone::fillSequence(){
+void biorbd::rigidbody::Bone::fillSequence(){
     delete[] m_dofPosition;
     m_dofPosition = new unsigned int[m_nDof];
 
@@ -348,23 +348,23 @@ void s2mBone::fillSequence(){
             m_dofPosition[i+m_nDofTrans] = m_sequenceRot[i]; // Placer les rotation à la suite des translations dans l'ordre demandé
 }
 
-void s2mBone::setDofCaracteristicsOnLastSegment(){
+void biorbd::rigidbody::Bone::setDofCaracteristicsOnLastSegment(){
     delete[] m_dofCaract;
 
     if (m_nDof!=0){
-        m_dofCaract = new s2mBoneCaracteristics[m_nDof];
+        m_dofCaract = new biorbd::rigidbody::Caracteristics[m_nDof];
         for (unsigned int i=0; i<m_nDof-1; i++)
-            m_dofCaract[i] = s2mBoneCaracteristics();
+            m_dofCaract[i] = biorbd::rigidbody::Caracteristics();
 
         m_dofCaract[m_nDof-1] = m_caract;
     }
     else{
-        m_dofCaract = new s2mBoneCaracteristics[1];
+        m_dofCaract = new biorbd::rigidbody::Caracteristics[1];
         m_dofCaract[0] = m_caract;
     }
 }
 
-void s2mBone::setJointAxis(){
+void biorbd::rigidbody::Bone::setJointAxis(){
         // Définition des axes de rotation
     RigidBodyDynamics::Math::Vector3d axis[3];
     axis[0]  = RigidBodyDynamics::Math::Vector3d(1,0,0); // axe x
@@ -374,24 +374,24 @@ void s2mBone::setJointAxis(){
     // Déclaration des dof de translation
     delete[] m_dof;
     if (m_nDof != 0){
-        m_dof = new s2mJoint[m_nDof];
+        m_dof = new biorbd::rigidbody::Joint[m_nDof];
         for (unsigned int i=0; i<m_nDofTrans; i++)
-            m_dof[i] = s2mJoint(RigidBodyDynamics::JointTypePrismatic, axis[m_dofPosition[i]]);
+            m_dof[i] = biorbd::rigidbody::Joint(RigidBodyDynamics::JointTypePrismatic, axis[m_dofPosition[i]]);
 
         // Déclaration des dof de rotation
         if (m_isQuaternion)
-            m_dof[m_nDofTrans] = s2mJoint(RigidBodyDynamics::JointTypeSpherical); // Mettre un dof en sphérique
+            m_dof[m_nDofTrans] = biorbd::rigidbody::Joint(RigidBodyDynamics::JointTypeSpherical); // Mettre un dof en sphérique
         else
             for (unsigned int i=m_nDofTrans; i<m_nDofRot+m_nDofTrans; i++)
-                m_dof[i] = s2mJoint(RigidBodyDynamics::JointTypeRevolute, axis[m_dofPosition[i]]); // Mettre les axes de rotation dans le bon ordre
+                m_dof[i] = biorbd::rigidbody::Joint(RigidBodyDynamics::JointTypeRevolute, axis[m_dofPosition[i]]); // Mettre les axes de rotation dans le bon ordre
     }
     else{
-        m_dof = new s2mJoint[1];
-        m_dof[0] = s2mJoint(RigidBodyDynamics::JointTypeFixed); // Un axe au hasard, p
+        m_dof = new biorbd::rigidbody::Joint[1];
+        m_dof[0] = biorbd::rigidbody::Joint(RigidBodyDynamics::JointTypeFixed); // Un axe au hasard, p
     }
 }
 
-void s2mBone::setJoints(s2mJoints *model){
+void biorbd::rigidbody::Bone::setJoints(biorbd::rigidbody::Joints *model){
     setDofCaracteristicsOnLastSegment(); // Mettre les caractéristiques segmentaires uniquement sur le dernier segment
     setJointAxis(); // Choisir l'ordre des axes en fonction de la séquence sélectionnée
 
@@ -419,7 +419,7 @@ void s2mBone::setJoints(s2mJoints *model){
 
 }
 
-unsigned int s2mBone::getDofIdx(const biorbd::utils::String &dofName) const{
+unsigned int biorbd::rigidbody::Bone::getDofIdx(const biorbd::utils::String &dofName) const{
 
     unsigned int idx(INT_MAX);
     bool found = false;

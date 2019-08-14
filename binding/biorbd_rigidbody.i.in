@@ -16,7 +16,7 @@
 %}
 
 // Exposing some useful functions
-%extend s2mJoints{
+%extend biorbd::rigidbody::Joints{
     biorbd::utils::Tau InverseDynamics(
                 const biorbd::utils::GenCoord &Q,
                 const biorbd::utils::GenCoord &QDot,
@@ -48,7 +48,7 @@
                 const biorbd::utils::GenCoord &Q,
                 const biorbd::utils::GenCoord &QDot,
                 const biorbd::utils::Tau &Tau,
-                s2mContacts& CS) {
+                biorbd::rigidbody::Contacts& CS) {
         biorbd::utils::GenCoord QDDot(*self);
         RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
         return QDDot;
@@ -58,7 +58,7 @@
                 const biorbd::utils::GenCoord &QDot,
                 const biorbd::utils::Tau &Tau) {
         biorbd::utils::GenCoord QDDot(*self);
-        s2mContacts& CS = self->getConstraints_nonConst();
+        biorbd::rigidbody::Contacts& CS = self->getConstraints_nonConst();
         RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
         return QDDot;
     }
@@ -69,7 +69,7 @@
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/NodeBone.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/KalmanReconsMarkers.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Joints.h"
-//%include "s2mPatch.h"
+//%include "biorbd::rigidbody::Patch.h"
 //%include "RigidBody/Bone.h"
 //%include "RigidBody/BoneCaracteristics.h"
 //%include "RigidBody/BoneMesh.h"
@@ -77,7 +77,7 @@
 //%include "RigidBody/IMUs.h"
 //%include "RigidBody/KalmanRecons.h"
 //%include "RigidBody/KalmanReconsIMU.h"
-//%include "RigidBody/s2mJoint.h"
+//%include "RigidBody/biorbd::rigidbody::Joint.h"
 
 
 

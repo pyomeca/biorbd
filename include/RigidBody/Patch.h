@@ -1,22 +1,26 @@
-#ifndef S2M_PATCH_H
-#define S2M_PATCH_H
+#ifndef BIORBD_RIGIDBODY_PATCH_H
+#define BIORBD_RIGIDBODY_PATCH_H
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
 
-class BIORBD_API s2mPatch
+namespace biorbd { namespace rigidbody {
+
+class BIORBD_API Patch
 {
 public:
-    s2mPatch(const Eigen::Vector3i& = Eigen::Vector3i());
+    Patch(const Eigen::Vector3i& = Eigen::Vector3i());
 
     // Ajouter un patch au lot
     int &operator() (int);
     void patch(const Eigen::Vector3i&);
-    void patch(const s2mPatch&);
-    s2mPatch patch(); // retourne les patchs
+    void patch(const Patch&);
+    Patch patch(); // retourne les patchs
 protected:
     Eigen::Vector3i m_patch;
 
 };
 
-#endif // S2M_PATCH_H
+}}
+
+#endif // BIORBD_RIGIDBODY_PATCH_H

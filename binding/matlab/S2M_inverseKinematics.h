@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_INVERSE_KINEMATICS_H
-#define MATLAB_S2M_INVERSE_KINEMATICS_H
+#ifndef BIORBD_MATLAB_INVERSE_KINEMATICS_H
+#define BIORBD_MATLAB_INVERSE_KINEMATICS_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -16,7 +16,7 @@ void S2M_inverseKinematics( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir la matrice des markers
-    std::vector<std::vector<s2mNodeBone>> markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechTags()));
+    std::vector<std::vector<biorbd::rigidbody::NodeBone>> markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechTags()));
 
     // Recevoir Qinit
     biorbd::utils::GenCoord Qinit = *getParameterQ(prhs, 3, nQ).begin();
@@ -48,4 +48,4 @@ void S2M_inverseKinematics( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_INVERSE_KINEMATICS_H
+#endif // BIORBD_MATLAB_INVERSE_KINEMATICS_H

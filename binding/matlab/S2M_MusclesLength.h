@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_MUSCLES_LENGTH_H
-#define MATLAB_S2M_MUSCLES_LENGTH_H
+#ifndef BIORBD_MATLAB_MUSCLES_LENGTH_H
+#define BIORBD_MATLAB_MUSCLES_LENGTH_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -76,4 +76,4 @@ void S2M_MusclesTendonLength( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_MUSCLES_LENGTH_H
+#endif // BIORBD_MATLAB_MUSCLES_LENGTH_H

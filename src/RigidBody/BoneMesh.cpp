@@ -4,57 +4,57 @@
 #include "Utils/Node.h"
 #include "RigidBody/Patch.h"
 
-s2mBoneMesh::s2mBoneMesh(
+biorbd::rigidbody::Mesh::Mesh(
         const std::vector<biorbd::utils::Node> &mesh,
-        const std::vector<s2mPatch> & v) :
+        const std::vector<biorbd::rigidbody::Patch> & v) :
     m_pathFile(""),
     m_mesh(mesh),
     m_patch(v)
 {
 
 }
-s2mBoneMesh::~s2mBoneMesh(){
+biorbd::rigidbody::Mesh::~Mesh(){
 
 }
-void s2mBoneMesh::addPoint(const biorbd::utils::Node &node){
+void biorbd::rigidbody::Mesh::addPoint(const biorbd::utils::Node &node){
     m_mesh.push_back(node);
 }
-const biorbd::utils::Node &s2mBoneMesh::point(unsigned int i) const
+const biorbd::utils::Node &biorbd::rigidbody::Mesh::point(unsigned int i) const
 {
     return *(m_mesh.begin()+i);
 }
-unsigned int s2mBoneMesh::size() const
+unsigned int biorbd::rigidbody::Mesh::size() const
 {
     return static_cast<unsigned int>(m_mesh.size());
 }
 
-void s2mBoneMesh::setPath(const biorbd::utils::Path& path)
+void biorbd::rigidbody::Mesh::setPath(const biorbd::utils::Path& path)
 {
     m_pathFile = path;
 }
 
-const biorbd::utils::Path &s2mBoneMesh::path() const
+const biorbd::utils::Path &biorbd::rigidbody::Mesh::path() const
 {
     return m_pathFile;
 }
 
-unsigned int s2mBoneMesh::sizePatch()
+unsigned int biorbd::rigidbody::Mesh::sizePatch()
 {
     return static_cast<unsigned int>(m_patch.size());
 }
-void s2mBoneMesh::addPatch(const s2mPatch & v)
+void biorbd::rigidbody::Mesh::addPatch(const biorbd::rigidbody::Patch & v)
 {
     m_patch.push_back(v);
 }
-void s2mBoneMesh::addPatch(const Eigen::Vector3i & v)
+void biorbd::rigidbody::Mesh::addPatch(const Eigen::Vector3i & v)
 {
-    addPatch(s2mPatch(v));
+    addPatch(biorbd::rigidbody::Patch(v));
 }
-const std::vector<s2mPatch>& s2mBoneMesh::patch() const
+const std::vector<biorbd::rigidbody::Patch>& biorbd::rigidbody::Mesh::patch() const
 {
     return m_patch;
 }
-const s2mPatch &s2mBoneMesh::patch(unsigned int i) const
+const biorbd::rigidbody::Patch &biorbd::rigidbody::Mesh::patch(unsigned int i) const
 {
     return m_patch[i];
 }

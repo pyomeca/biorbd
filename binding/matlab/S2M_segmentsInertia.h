@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_SEGMENTS_INERTIA_H
-#define MATLAB_S2M_SEGMENTS_INERTIA_H
+#ifndef BIORBD_MATLAB_SEGMENTS_INERTIA_H
+#define BIORBD_MATLAB_SEGMENTS_INERTIA_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -102,4 +102,4 @@ void S2M_segmentsInertiaLocal( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_SEGMENTS_INERTIA_H
+#endif // BIORBD_MATLAB_SEGMENTS_INERTIA_H

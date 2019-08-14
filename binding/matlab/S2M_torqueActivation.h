@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_TORQUE_ACTIVATION_H
-#define MATLAB_S2M_TORQUE_ACTIVATION_H
+#ifndef BIORBD_MATLAB_TORQUE_ACTIVATION_H
+#define BIORBD_MATLAB_TORQUE_ACTIVATION_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -51,4 +51,4 @@ void S2M_torqueActivation( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_TORQUE_ACTIVATION_H
+#endif // BIORBD_MATLAB_TORQUE_ACTIVATION_H

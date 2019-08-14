@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_INVERSE_KINEMATICS_EKF_IMU_H
-#define MATLAB_S2M_INVERSE_KINEMATICS_EKF_IMU_H
+#ifndef BIORBD_MATLAB_INVERSE_KINEMATICS_EKF_IMU_H
+#define BIORBD_MATLAB_INVERSE_KINEMATICS_EKF_IMU_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -28,11 +28,11 @@ void S2M_setEKF_IMU(int nlhs, mxArray *plhs[],
         noiseF = getDouble(prhs,3,"Noise Factor");
     if (nrhs >= 3)
         freq = getDouble(prhs,2,"Acquisition Frequency");
-    s2mKalmanRecons::s2mKalmanParam kParams(freq, noiseF, errorF);
+    biorbd::rigidbody::KalmanRecons::KalmanParam kParams(freq, noiseF, errorF);
 
     // Créer un filtre de Kalman
     try{
-        plhs[0] = convertPtr2Mat<s2mKalmanReconsIMU>(new s2mKalmanReconsIMU(*model, kParams));
+        plhs[0] = convertPtr2Mat<biorbd::rigidbody::KalmanReconsIMU>(new biorbd::rigidbody::KalmanReconsIMU(*model, kParams));
     }
     catch (std::string m){
         mexErrMsgTxt(m.c_str());
@@ -46,7 +46,7 @@ void S2M_delEKF_IMU(int nlhs, mxArray *[],
     checkNombreInputParametres(nrhs, 2, 2, "2 arguments are required where the 2nd is the handler on the kalman filter");
 
     // Destroy the C++ object
-    destroyObject<s2mKalmanReconsIMU>(prhs[1]);
+    destroyObject<biorbd::rigidbody::KalmanReconsIMU>(prhs[1]);
     // Warn if other commands were ignored
     if (nlhs != 0 || nrhs != 2)
         mexWarnMsgTxt("Delete: Unexpected output arguments ignored.");
@@ -66,7 +66,7 @@ void S2M_inverseKinematicsEKF_IMUstep( int , mxArray *plhs[],
     unsigned int nQddot = model->nbQddot(); // Get the number of DoF
 
     // Recevoir le kalman
-    s2mKalmanReconsIMU * kalman = convertMat2Ptr<s2mKalmanReconsIMU>(prhs[2]);
+    biorbd::rigidbody::KalmanReconsIMU * kalman = convertMat2Ptr<biorbd::rigidbody::KalmanReconsIMU>(prhs[2]);
 
       // Recevoir la matrice des markers (Ne traite que le premier frame)
     std::vector<std::vector<biorbd::utils::Attitude>> imusOverTime = getParameterAllIMUs(prhs,3);
@@ -130,7 +130,7 @@ void S2M_inverseKinematicsEKF_IMUallInOneCall( int, mxArray *plhs[],
         freq = getDouble(prhs,4,"Acquisition Frequency");
 
     // Créer un filtre de Kalman
-    s2mKalmanReconsIMU kalman(*model, s2mKalmanRecons::s2mKalmanParam(freq, noiseF, errorF));
+    biorbd::rigidbody::KalmanReconsIMU kalman(*model, biorbd::rigidbody::KalmanRecons::KalmanParam(freq, noiseF, errorF));
 
     // Recevoir la matrice des imus
     std::vector<std::vector<biorbd::utils::Attitude>> imusOverTime = getParameterAllIMUs(prhs,2);
@@ -172,4 +172,4 @@ void S2M_inverseKinematicsEKF_IMUallInOneCall( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_INVERSE_KINEMATICS_EKF_IMU_H
+#endif // BIORBD_MATLAB_INVERSE_KINEMATICS_EKF_IMU_H

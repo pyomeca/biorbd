@@ -38,7 +38,7 @@ void biorbd::muscles::WrappingCylinder::wrapPoints(
 }
 
 biorbd::utils::Attitude biorbd::muscles::WrappingCylinder::RT(
-        s2mJoints &m,
+        biorbd::rigidbody::Joints &m,
         const biorbd::utils::GenCoord& Q,
         const bool &updateKin){
 
@@ -74,7 +74,7 @@ void biorbd::muscles::WrappingCylinder::setLength(double val)
 }
 
 void biorbd::muscles::WrappingCylinder::wrapPoints(
-        s2mJoints& m,
+        biorbd::rigidbody::Joints& m,
         const biorbd::utils::GenCoord& Q,
         const biorbd::muscles::MuscleNode& p1_bone,
         const biorbd::muscles::MuscleNode& p2_bone,

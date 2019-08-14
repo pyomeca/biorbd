@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_SEGMENT_TAGS_H
-#define MATLAB_S2M_SEGMENT_TAGS_H
+#ifndef BIORBD_MATLAB_SEGMENT_TAGS_H
+#define BIORBD_MATLAB_SEGMENT_TAGS_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -30,9 +30,9 @@ void S2M_segmentTags( int, mxArray *plhs[],
 
     if ( idx==-1){ // Si on a demande tous les segments
         // Trouver ou sont les marqueurs
-        std::vector<std::vector<s2mNodeBone>> allTags;
+        std::vector<std::vector<biorbd::rigidbody::NodeBone>> allTags;
         for (unsigned int i=0; i<model->nbBone(); ++i)    {
-            std::vector<s2mNodeBone> Tags_tp = model->segmentTags(*model, Q, i, removeAxes);
+            std::vector<biorbd::rigidbody::NodeBone> Tags_tp = model->segmentTags(*model, Q, i, removeAxes);
             allTags.push_back(Tags_tp);
         }
         // Create a matrix for the return argument
@@ -42,7 +42,7 @@ void S2M_segmentTags( int, mxArray *plhs[],
             double *Tags = mxGetPr(tags_out_tp);
 
             // Remplir le output
-            std::vector<s2mNodeBone>::iterator it=(*(allTags.begin()+i_bone)).begin();
+            std::vector<biorbd::rigidbody::NodeBone>::iterator it=(*(allTags.begin()+i_bone)).begin();
             for (unsigned int i=0; (it+i)!=(*(allTags.begin()+i_bone)).end(); ++i){
                 Tags[i*3] = (*(it+i))(0);
                 Tags[i*3+1] = (*(it+i))(1);
@@ -54,14 +54,14 @@ void S2M_segmentTags( int, mxArray *plhs[],
 
     }
     else{ // Si on a demande un segment precis
-        std::vector<s2mNodeBone> Tags_tp = model->segmentTags(*model, Q, idx, removeAxes);
+        std::vector<biorbd::rigidbody::NodeBone> Tags_tp = model->segmentTags(*model, Q, idx, removeAxes);
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix(3, Tags_tp.size(), mxREAL);
         double *Tags = mxGetPr(plhs[0]);
 
         // Remplir le output
-        std::vector<s2mNodeBone>::iterator it=Tags_tp.begin();
+        std::vector<biorbd::rigidbody::NodeBone>::iterator it=Tags_tp.begin();
         for (unsigned int i=0; (it+i)!=Tags_tp.end(); ++i){
             Tags[i*3] = (*(it+i))(0);
             Tags[i*3+1] = (*(it+i))(1);
@@ -71,4 +71,4 @@ void S2M_segmentTags( int, mxArray *plhs[],
     }
 }
 
-#endif // MATLAB_S2M_SEGMENT_TAGS_H
+#endif // BIORBD_MATLAB_SEGMENT_TAGS_H

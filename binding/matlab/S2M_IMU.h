@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_IMU_H
-#define MATLAB_S2M_IMU_H
+#ifndef BIORBD_MATLAB_IMU_H
+#define BIORBD_MATLAB_IMU_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -20,7 +20,7 @@ void S2M_IMU( int, mxArray *plhs[],
 
     // Récupérer les IMU selon que l'on veut tous ou seulement anatomiques ou techniques
     unsigned int nIMUs(0); // Nombre de IMU
-    std::vector<std::vector<s2mIMU>> IMU_tp; // récupérer les IMU
+    std::vector<std::vector<biorbd::rigidbody::IMU>> IMU_tp; // récupérer les IMU
     if (nrhs == 4){
         biorbd::utils::String type(getString(prhs,3));
         if (!type.tolower().compare("all")){
@@ -63,8 +63,8 @@ void S2M_IMU( int, mxArray *plhs[],
 
     // Remplir l'output
     unsigned int cmpIMU = 0;
-    for (std::vector<std::vector<s2mIMU>>::iterator AllIMU_it = IMU_tp.begin(); AllIMU_it != IMU_tp.end(); ++AllIMU_it)
-        for (std::vector<s2mIMU>::iterator IMU_it=(*AllIMU_it).begin(); IMU_it!=(*AllIMU_it).end(); ++IMU_it)
+    for (std::vector<std::vector<biorbd::rigidbody::IMU>>::iterator AllIMU_it = IMU_tp.begin(); AllIMU_it != IMU_tp.end(); ++AllIMU_it)
+        for (std::vector<biorbd::rigidbody::IMU>::iterator IMU_it=(*AllIMU_it).begin(); IMU_it!=(*AllIMU_it).end(); ++IMU_it)
             for (unsigned int i=0; i<4; ++i)
                 for (unsigned int j=0; j<4; ++j){
                     imu[cmpIMU] = (*IMU_it)(j,i);
@@ -74,4 +74,4 @@ void S2M_IMU( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_IMU_H
+#endif // BIORBD_MATLAB_IMU_H

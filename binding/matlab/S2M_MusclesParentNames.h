@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_MUSCLES_PARENT_NAMES_H
-#define MATLAB_S2M_MUSCLES_PARENT_NAMES_H
+#ifndef BIORBD_MATLAB_MUSCLES_PARENT_NAMES_H
+#define BIORBD_MATLAB_MUSCLES_PARENT_NAMES_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -45,4 +45,4 @@ void S2M_MusclesParentNames( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_MUSCLES_PARENT_NAMES_H
+#endif // BIORBD_MATLAB_MUSCLES_PARENT_NAMES_H

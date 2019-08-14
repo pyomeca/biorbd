@@ -8,10 +8,10 @@
 #include "Utils/GenCoord.h"
 #include "RigidBody/NodeBone.h"
 
-s2mKalmanReconsMarkers::s2mKalmanReconsMarkers(
+biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers(
         s2mMusculoSkeletalModel &m,
-        s2mKalmanRecons::s2mKalmanParam params) :
-    s2mKalmanRecons(m, m.nTechTags()*3, params),
+        biorbd::rigidbody::KalmanRecons::KalmanParam params) :
+    biorbd::rigidbody::KalmanRecons(m, m.nTechTags()*3, params),
     m_firstIteration(true)
 {
 
@@ -20,19 +20,19 @@ s2mKalmanReconsMarkers::s2mKalmanReconsMarkers(
 
 }
 
-s2mKalmanReconsMarkers::~s2mKalmanReconsMarkers()
+biorbd::rigidbody::KalmanReconsMarkers::~KalmanReconsMarkers()
 {
 
 }
 
-void s2mKalmanReconsMarkers::initialize(){
-    s2mKalmanRecons::initialize();
+void biorbd::rigidbody::KalmanReconsMarkers::initialize(){
+    biorbd::rigidbody::KalmanRecons::initialize();
 
     // Se souvenir de m_Pp de départ
     m_PpInitial = m_Pp;
 }
 
-void s2mKalmanReconsMarkers::manageOcclusionDuringIteration(
+void biorbd::rigidbody::KalmanReconsMarkers::manageOcclusionDuringIteration(
         biorbd::utils::Matrix &InvTp,
         Eigen::VectorXd &measure,
         const std::vector<unsigned int> &occlusion)
@@ -44,14 +44,14 @@ void s2mKalmanReconsMarkers::manageOcclusionDuringIteration(
          }
 }
 
-bool s2mKalmanReconsMarkers::first()
+bool biorbd::rigidbody::KalmanReconsMarkers::first()
 {
     return m_firstIteration;
 }
 
-void s2mKalmanReconsMarkers::reconstructFrame(
+void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         s2mMusculoSkeletalModel &m,
-        const s2mMarkers &Tobs,
+        const biorbd::rigidbody::Markers &Tobs,
         biorbd::utils::GenCoord *Q,
         biorbd::utils::GenCoord *Qdot,
         biorbd::utils::GenCoord *Qddot,
@@ -65,9 +65,9 @@ void s2mKalmanReconsMarkers::reconstructFrame(
     reconstructFrame(m, T, Q, Qdot, Qddot, removeAxes);
 }
 
-void s2mKalmanReconsMarkers::reconstructFrame(
+void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         s2mMusculoSkeletalModel &m,
-        const std::vector<s2mNodeBone> &Tobs,
+        const std::vector<biorbd::rigidbody::NodeBone> &Tobs,
         biorbd::utils::GenCoord *Q,
         biorbd::utils::GenCoord *Qdot,
         biorbd::utils::GenCoord *Qddot,
@@ -82,7 +82,7 @@ void s2mKalmanReconsMarkers::reconstructFrame(
 }
 
 
-void s2mKalmanReconsMarkers::reconstructFrame(
+void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         s2mMusculoSkeletalModel &m,
         const Eigen::VectorXd &Tobs,
         biorbd::utils::GenCoord *Q,
@@ -115,7 +115,7 @@ void s2mKalmanReconsMarkers::reconstructFrame(
     RigidBodyDynamics::UpdateKinematicsCustom (m, &Q_tp, nullptr, nullptr);
 
     // Markers projetés
-    std::vector<s2mNodeBone> zest_tp = m.technicalTags(m, Q_tp, removeAxes, false);
+    std::vector<biorbd::rigidbody::NodeBone> zest_tp = m.technicalTags(m, Q_tp, removeAxes, false);
     // Jacobienne
     std::vector<biorbd::utils::Matrix> J_tp = m.TechnicalTagsJacobian(m, Q_tp, removeAxes, false);
     // Faire une seule matrice pour zest et Jacobienne
@@ -136,7 +136,7 @@ void s2mKalmanReconsMarkers::reconstructFrame(
     getState(Q, Qdot, Qddot);
 }
 
-void s2mKalmanReconsMarkers::reconstructFrame()
+void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame()
 {
     biorbd::utils::Error::error(false, "Implémentation impossible");
 }

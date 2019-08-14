@@ -31,7 +31,7 @@ biorbd::utils::GenCoord::GenCoord(unsigned int i) : biorbd::utils::Vector(i)
 
 }
 
-biorbd::utils::GenCoord::GenCoord(const s2mJoints &j) :
+biorbd::utils::GenCoord::GenCoord(const biorbd::rigidbody::Joints &j) :
     biorbd::utils::Vector(j.nbDof()){
 
 }

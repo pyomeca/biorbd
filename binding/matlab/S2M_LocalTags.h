@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_LOCAL_TAGS_H
-#define MATLAB_S2M_LOCAL_TAGS_H
+#ifndef BIORBD_MATLAB_LOCAL_TAGS_H
+#define BIORBD_MATLAB_LOCAL_TAGS_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -24,18 +24,18 @@ void S2M_LocalTags( int, mxArray *plhs[],
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
     unsigned int nTags(0); // Nombre de marqueurs
-    std::vector<s2mNodeBone> Tags_tp; // récupérer les marqueurs
+    std::vector<biorbd::rigidbody::NodeBone> Tags_tp; // récupérer les marqueurs
     if (!type.tolower().compare("all")){
             nTags = model->nTags();
-            Tags_tp = model->s2mMarkers::Tags(removeAxes);
+            Tags_tp = model->biorbd::rigidbody::Markers::Tags(removeAxes);
         }
         else if (!type.tolower().compare("anatomical")){
             nTags = model->nAnatTags();
-            Tags_tp = model->s2mMarkers::anatomicalTags(removeAxes);
+            Tags_tp = model->biorbd::rigidbody::Markers::anatomicalTags(removeAxes);
         }
         else if (!type.tolower().compare("technical")){
             nTags = model->nTechTags();
-            Tags_tp = model->s2mMarkers::technicalTags(removeAxes);
+            Tags_tp = model->biorbd::rigidbody::Markers::technicalTags(removeAxes);
         }
         else {
             std::ostringstream msg;
@@ -53,7 +53,7 @@ void S2M_LocalTags( int, mxArray *plhs[],
 
     // Remplir le output
     unsigned int cmp(0);
-    std::vector<s2mNodeBone>::iterator it=Tags_tp.begin();
+    std::vector<biorbd::rigidbody::NodeBone>::iterator it=Tags_tp.begin();
         for (unsigned int i=0; (it+i)!=Tags_tp.end(); ++i){
             Tags[cmp+0] = (*(it+i))(0);
             Tags[cmp+1] = (*(it+i))(1);
@@ -64,4 +64,4 @@ void S2M_LocalTags( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_LOCAL_TAGS_H
+#endif // BIORBD_MATLAB_LOCAL_TAGS_H

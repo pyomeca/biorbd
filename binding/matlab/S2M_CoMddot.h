@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_COM_DDOT_H
-#define MATLAB_S2M_COM_DDOT_H
+#ifndef BIORBD_MATLAB_COM_DDOT_H
+#define BIORBD_MATLAB_COM_DDOT_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -49,4 +49,4 @@ void S2M_CoMddot( int nlhs, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_COM_DDOT_H
+#endif // BIORBD_MATLAB_COM_DDOT_H

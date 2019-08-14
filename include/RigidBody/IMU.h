@@ -1,13 +1,15 @@
-#ifndef S2M_IMU_H
-#define S2M_IMU_H
+#ifndef BIORBD_RIGIDBODY_IMU_H
+#define BIORBD_RIGIDBODY_IMU_H
 
 #include "biorbdConfig.h"
 #include "Utils/NodeAttitude.h"
 
-class BIORBD_API s2mIMU : public biorbd::utils::NodeAttitude
+namespace biorbd { namespace rigidbody {
+
+class BIORBD_API IMU : public biorbd::utils::NodeAttitude
 { 
 public:
-    s2mIMU(
+    IMU(
             const biorbd::utils::Attitude& = biorbd::utils::Attitude(), // Position
             const biorbd::utils::String& = "", // Nom du noeud
             const biorbd::utils::String& = "", // Nom du parent
@@ -15,7 +17,7 @@ public:
             const bool& = true, // Si le marker est un marker anatomique
             const int& = -1); // Numéro ID du parent
 
-    virtual ~s2mIMU();
+    virtual ~IMU();
     // Get and Set
     virtual bool isTechnical() const;
     virtual bool isAnatomical() const;
@@ -27,4 +29,6 @@ protected:
 
 };
 
-#endif // S2M_IMU_H
+}}
+
+#endif // BIORBD_RIGIDBODY_IMU_H

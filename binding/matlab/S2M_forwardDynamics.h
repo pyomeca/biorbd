@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_FORWARD_DYNAMICS_H
-#define MATLAB_S2M_FORWARD_DYNAMICS_H
+#ifndef BIORBD_MATLAB_FORWARD_DYNAMICS_H
+#define BIORBD_MATLAB_FORWARD_DYNAMICS_H
 
 #include <mex.h>
 #include <rbdl/Model.h>
@@ -97,4 +97,4 @@ void S2M_forwardDynamics( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_FORWARD_DYNAMICS_H
+#endif // BIORBD_MATLAB_FORWARD_DYNAMICS_H

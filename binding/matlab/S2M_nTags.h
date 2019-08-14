@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_N_TAGS_H
-#define MATLAB_S2M_N_TAGS_H
+#ifndef BIORBD_MATLAB_N_TAGS_H
+#define BIORBD_MATLAB_N_TAGS_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -23,4 +23,4 @@ void S2M_nTags( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_N_TAGS_H
+#endif // BIORBD_MATLAB_N_TAGS_H

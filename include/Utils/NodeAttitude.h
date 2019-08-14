@@ -1,7 +1,6 @@
 #ifndef S2M_NODE_ATTITUDE_H
 #define S2M_NODE_ATTITUDE_H
 
-#include <Eigen/Dense>
 #include "biorbdConfig.h"
 #include "Utils/Attitude.h"
 #include "Utils/String.h"

@@ -21,7 +21,7 @@ public:
 
     // Fonction a appeler avant d'appeler longueur/velocity ou autres!
     void updateKinematics(
-            s2mJoints &model,
+            biorbd::rigidbody::Joints &model,
             const biorbd::utils::GenCoord* Q = nullptr,
             const biorbd::utils::GenCoord* Qdot = nullptr,
             const biorbd::muscles::Caracteristics& = biorbd::muscles::Caracteristics(),
@@ -66,14 +66,14 @@ protected:
 
     // Calcul de la position des points dans le global
     const biorbd::muscles::MuscleNode& originInGlobal(
-            s2mJoints &model,
+            biorbd::rigidbody::Joints &model,
             const biorbd::utils::GenCoord &Q); // Update la cinématique puis retourne la position de l'origine dans l'espace
     const biorbd::muscles::MuscleNode& insertionInGlobal(
-            s2mJoints &model,
+            biorbd::rigidbody::Joints &model,
             const biorbd::utils::GenCoord &Q); // Update la cinématique puis retourne la position de l'insertion dans l'espace
     void musclesPointsInGlobal(std::vector<biorbd::muscles::MuscleNode>& ptsInGlobal); // Forcer les points dans le global
     void musclesPointsInGlobal(
-            s2mJoints &,
+            biorbd::rigidbody::Joints &,
             const biorbd::utils::GenCoord &Q,
             const biorbd::muscles::PathChangers&);
 
@@ -85,10 +85,10 @@ protected:
     double velocity(
             const biorbd::utils::GenCoord &Qdot); // Update the kinematics and compute and return muscle velocity assuming no via points nor wrapping objects
     // Calcul des jacobiennes des points
-    void setJacobianDimension(s2mJoints &model);
+    void setJacobianDimension(biorbd::rigidbody::Joints &model);
     void jacobian(const biorbd::utils::Matrix &jaco); // Forcer une jacobienne
     void jacobian(
-            s2mJoints &model,
+            biorbd::rigidbody::Joints &model,
             const biorbd::utils::GenCoord &Q);
     void computeJacobianLength();
 

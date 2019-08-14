@@ -7,7 +7,11 @@
 #include "biorbdConfig.h"
 
 class s2mMusculoSkeletalModel;
-class s2mBoneMesh;
+
+namespace biorbd { namespace rigidbody {
+class Mesh;
+}}
+
 namespace biorbd { namespace utils {
 class Path;
 class String;
@@ -42,8 +46,8 @@ public:
             std::vector<biorbd::utils::String> &markOrder,
             int nNodes =-1); // Path to the file, markers a conserver, nombres de noeuds (-1 => tous)
 
-    static s2mBoneMesh readBoneMeshFileS2mBones(const biorbd::utils::Path& path);
-    static s2mBoneMesh readBoneMeshFilePly(const biorbd::utils::Path& path);
+    static biorbd::rigidbody::Mesh readBoneMeshFileS2mBones(const biorbd::utils::Path& path);
+    static biorbd::rigidbody::Mesh readBoneMeshFilePly(const biorbd::utils::Path& path);
 
     static void pwd(); // Print the working directory
     static bool is_readable( const biorbd::utils::String & file );

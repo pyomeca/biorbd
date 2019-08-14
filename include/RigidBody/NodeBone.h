@@ -1,16 +1,17 @@
-#ifndef S2M_NODE_BONE_H
-#define S2M_NODE_BONE_H
+#ifndef BIORBD_RIGIDBODY_NODE_BONE_H
+#define BIORBD_RIGIDBODY_NODE_BONE_H
 
 #include <vector>
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
 #include "Utils/Node.h"
 
-class s2mNode;
-class BIORBD_API s2mNodeBone : public biorbd::utils::Node
+namespace biorbd { namespace rigidbody {
+
+class BIORBD_API NodeBone : public biorbd::utils::Node
 { 
 public:
-    s2mNodeBone(
+    NodeBone(
             const Eigen::Vector3d& = Eigen::Vector3d(0,0,0), // Position
             const biorbd::utils::String& = "", // Nom du noeud
             const biorbd::utils::String& = "", // Nom du parent
@@ -23,8 +24,8 @@ public:
     bool isTechnical() const;
     bool isAnatomical() const;
     int parentId() const;
-    const s2mNodeBone& position() const;
-    s2mNodeBone position(bool removeAxes) const;
+    const NodeBone& position() const;
+    NodeBone position(bool removeAxes) const;
 
     bool isAxisRemoved(unsigned int) const;
     bool isAxisKept(unsigned int) const;
@@ -43,4 +44,6 @@ protected:
 
 };
 
-#endif // S2M_NODE_BONE_H
+}}
+
+#endif // BIORBD_RIGIDBODY_NODE_BONE_H

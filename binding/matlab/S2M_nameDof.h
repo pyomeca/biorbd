@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_NAME_DOF_H
-#define MATLAB_S2M_NAME_DOF_H
+#ifndef BIORBD_MATLAB_NAME_DOF_H
+#define BIORBD_MATLAB_NAME_DOF_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -32,4 +32,4 @@ void S2M_nameDof( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_NAME_DOF_H
+#endif // BIORBD_MATLAB_NAME_DOF_H

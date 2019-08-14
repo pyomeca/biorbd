@@ -4,44 +4,44 @@
 #include "Utils/Node.h"
 #include "RigidBody/Patch.h"
 
-s2mBoneCaracteristics::s2mBoneCaracteristics() :
+biorbd::rigidbody::Caracteristics::Caracteristics() :
     Body(),
     m_length(0),
-    m_mesh(s2mBoneMesh())
+    m_mesh(biorbd::rigidbody::Mesh())
 {
 }
-s2mBoneCaracteristics::s2mBoneCaracteristics(
+biorbd::rigidbody::Caracteristics::Caracteristics(
         const double &mass,
         const biorbd::utils::Node &com,
         const RigidBodyDynamics::Math::Matrix3d &inertia,
-        const s2mBoneMesh &mesh) :
+        const biorbd::rigidbody::Mesh &mesh) :
     Body(mass, com, inertia),
     m_length(0),
     m_mesh(mesh)
 {
 }
 
-const s2mBoneMesh &s2mBoneCaracteristics::mesh() const {
+const biorbd::rigidbody::Mesh &biorbd::rigidbody::Caracteristics::mesh() const {
     return m_mesh;
 }
 
-const Eigen::Matrix3d &s2mBoneCaracteristics::inertia() const {
+const Eigen::Matrix3d &biorbd::rigidbody::Caracteristics::inertia() const {
     return mInertia;
 }
 
-s2mBoneCaracteristics::~s2mBoneCaracteristics()
+biorbd::rigidbody::Caracteristics::~Caracteristics()
 {
     //dtor
 }
 
-double s2mBoneCaracteristics::length() const {
+double biorbd::rigidbody::Caracteristics::length() const {
     return m_length;
 }
 
-double s2mBoneCaracteristics::mass() const {
+double biorbd::rigidbody::Caracteristics::mass() const {
     return mMass;
 }
 
-void s2mBoneCaracteristics::setLength(const double &val) {
+void biorbd::rigidbody::Caracteristics::setLength(const double &val) {
     m_length = val;
 }

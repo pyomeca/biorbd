@@ -21,7 +21,7 @@ void checkNombreInputParametres(int nrhs, int min, int max, std::string message 
     }
 }
 
-std::vector<std::vector<s2mNodeBone>> getParameterAllMarkers(const mxArray*prhs[], unsigned int idx, int nMark=-1){
+std::vector<std::vector<biorbd::rigidbody::NodeBone>> getParameterAllMarkers(const mxArray*prhs[], unsigned int idx, int nMark=-1){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -66,15 +66,15 @@ std::vector<std::vector<s2mNodeBone>> getParameterAllMarkers(const mxArray*prhs[
 
 
     // Créer la sortie
-    std::vector<std::vector<s2mNodeBone>> markersOverTime;
+    std::vector<std::vector<biorbd::rigidbody::NodeBone>> markersOverTime;
 
     // Stocker les valeurs dans le format de sortie
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrames; ++i){
-        std::vector<s2mNodeBone> markers_tp; // Markers a un temps i
+        std::vector<biorbd::rigidbody::NodeBone> markers_tp; // Markers a un temps i
 
         for (int j=0; j<nMark; ++j){
-            s2mNodeBone tp(Eigen::Vector3d(markers[m*cmp+0], // m est 3 ou 4
+            biorbd::rigidbody::NodeBone tp(Eigen::Vector3d(markers[m*cmp+0], // m est 3 ou 4
                                            markers[m*cmp+1],
                                            markers[m*cmp+2]));
             markers_tp.push_back(tp);

@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/IMU.h"
 
-s2mIMU::s2mIMU(
+biorbd::rigidbody::IMU::IMU(
         const biorbd::utils::Attitude &v,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName,
@@ -16,7 +16,7 @@ s2mIMU::s2mIMU(
     //ctor
 }
 
-s2mIMU::~s2mIMU()
+biorbd::rigidbody::IMU::~IMU()
 {
     //dtor
 }
@@ -24,20 +24,20 @@ s2mIMU::~s2mIMU()
 
 
 
-bool s2mIMU::isAnatomical() const
+bool biorbd::rigidbody::IMU::isAnatomical() const
 {
     return m_anatomical;
 }
 
 
 
-bool s2mIMU::isTechnical() const
+bool biorbd::rigidbody::IMU::isTechnical() const
 {
     return m_technical;
 }
 
 
-int s2mIMU::parentId() const
+int biorbd::rigidbody::IMU::parentId() const
 {
     return m_id;
 }

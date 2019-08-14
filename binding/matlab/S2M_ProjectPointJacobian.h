@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_PROJECT_POINT_JACOBIAN_H
-#define MATLAB_S2M_PROJECT_POINT_JACOBIAN_H
+#ifndef BIORBD_MATLAB_PROJECT_POINT_JACOBIAN_H
+#define BIORBD_MATLAB_PROJECT_POINT_JACOBIAN_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -19,7 +19,7 @@ void S2M_ProjectPointJacobian( int, mxArray *plhs[],
     biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
-    std::vector<s2mNodeBone> markersOverTime = *getParameterAllMarkers(prhs,3).begin();
+    std::vector<biorbd::rigidbody::NodeBone> markersOverTime = *getParameterAllMarkers(prhs,3).begin();
 
     // Trouver la matrice jacobienne de tous les marqueurs
     std::vector<biorbd::utils::Matrix> Jac_tp = model->projectPointJacobian(*model, *model, Q, markersOverTime, true);
@@ -37,4 +37,4 @@ void S2M_ProjectPointJacobian( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_PROJECT_POINT_JACOBIAN_H
+#endif // BIORBD_MATLAB_PROJECT_POINT_JACOBIAN_H

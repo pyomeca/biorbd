@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_CONTACT_GAMMA_H
-#define MATLAB_S2M_CONTACT_GAMMA_H
+#ifndef BIORBD_MATLAB_CONTACT_GAMMA_H
+#define BIORBD_MATLAB_CONTACT_GAMMA_H
 
 #include <mex.h>
 #include <rbdl/Constraints.h>
@@ -36,4 +36,4 @@ void S2M_ContactGamma( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_CONTACT_GAMMA_H
+#endif // BIORBD_MATLAB_CONTACT_GAMMA_H

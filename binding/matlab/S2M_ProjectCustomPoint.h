@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_PROJECT_CUSTOM_POINT_H
-#define MATLAB_S2M_PROJECT_CUSTOM_POINT_H
+#ifndef BIORBD_MATLAB_PROJECT_CUSTOM_POINT_H
+#define BIORBD_MATLAB_PROJECT_CUSTOM_POINT_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -19,7 +19,7 @@ void S2M_ProjectCustomPoint( int, mxArray *plhs[],
     std::vector<biorbd::utils::GenCoord> Qall = getParameterQ(prhs, 2, nQ);
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
-    std::vector<std::vector<s2mNodeBone>> markersOverTime = getParameterAllMarkers(prhs,3);
+    std::vector<std::vector<biorbd::rigidbody::NodeBone>> markersOverTime = getParameterAllMarkers(prhs,3);
 
     // Body index
     int bodyIdx(getInteger(prhs,4)-1);
@@ -45,8 +45,8 @@ void S2M_ProjectCustomPoint( int, mxArray *plhs[],
     for (unsigned int i=0; i<nFrames; ++i){
         biorbd::utils::GenCoord Q(*(Qall.begin()+i));
         for (unsigned int j=0; j<static_cast<unsigned int>(nMarker); ++j){
-            s2mNodeBone m(*((*(markersOverTime.begin()+i)).begin()+j)  );
-            s2mNodeBone tp;
+            biorbd::rigidbody::NodeBone m(*((*(markersOverTime.begin()+i)).begin()+j)  );
+            biorbd::rigidbody::NodeBone tp;
             if (j==1)
                 tp = model->projectPoint(Q, m.position(), bodyIdx, axesToRemove, true);
             else
@@ -61,4 +61,4 @@ void S2M_ProjectCustomPoint( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_PROJECT_CUSTOM_POINT_H
+#endif // BIORBD_MATLAB_PROJECT_CUSTOM_POINT_H

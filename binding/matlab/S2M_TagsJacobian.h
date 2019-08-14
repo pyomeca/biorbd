@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_TAGS_JACOBIAN_H
-#define MATLAB_S2M_TAGS_JACOBIAN_H
+#ifndef BIORBD_MATLAB_TAGS_JACOBIAN_H
+#define BIORBD_MATLAB_TAGS_JACOBIAN_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -54,4 +54,4 @@ void S2M_TagsJacobian( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_TAGS_JACOBIAN_H
+#endif // BIORBD_MATLAB_TAGS_JACOBIAN_H

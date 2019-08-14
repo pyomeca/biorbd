@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_SEGMENT_ANGULAR_MOMENTUM_H
-#define MATLAB_S2M_SEGMENT_ANGULAR_MOMENTUM_H
+#ifndef BIORBD_MATLAB_SEGMENT_ANGULAR_MOMENTUM_H
+#define BIORBD_MATLAB_SEGMENT_ANGULAR_MOMENTUM_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -79,4 +79,4 @@ void S2M_segmentAngularMomentum( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_SEGMENT_ANGULAR_MOMENTUM_H
+#endif // BIORBD_MATLAB_SEGMENT_ANGULAR_MOMENTUM_H

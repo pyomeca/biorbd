@@ -8,10 +8,10 @@
 #include "Utils/GenCoord.h"
 #include "RigidBody/IMU.h"
 
-s2mKalmanReconsIMU::s2mKalmanReconsIMU(
+biorbd::rigidbody::KalmanReconsIMU::KalmanReconsIMU(
         s2mMusculoSkeletalModel &m,
-        s2mKalmanRecons::s2mKalmanParam params) :
-    s2mKalmanRecons(m, m.nTechIMUs()*9, params),
+        biorbd::rigidbody::KalmanRecons::KalmanParam params) :
+    biorbd::rigidbody::KalmanRecons(m, m.nTechIMUs()*9, params),
     m_firstIteration(true)
 {
 
@@ -20,19 +20,19 @@ s2mKalmanReconsIMU::s2mKalmanReconsIMU(
 
 }
 
-s2mKalmanReconsIMU::~s2mKalmanReconsIMU()
+biorbd::rigidbody::KalmanReconsIMU::~KalmanReconsIMU()
 {
 
 }
 
-void s2mKalmanReconsIMU::initialize(){
-    s2mKalmanRecons::initialize();
+void biorbd::rigidbody::KalmanReconsIMU::initialize(){
+    biorbd::rigidbody::KalmanRecons::initialize();
 
     // Se souvenir de m_Pp de départ
     m_PpInitial = m_Pp;
 }
 
-void s2mKalmanReconsIMU::manageOcclusionDuringIteration(
+void biorbd::rigidbody::KalmanReconsIMU::manageOcclusionDuringIteration(
         biorbd::utils::Matrix &InvTp,
         Eigen::VectorXd &measure,
         const std::vector<unsigned int> &occlusion)
@@ -44,12 +44,12 @@ void s2mKalmanReconsIMU::manageOcclusionDuringIteration(
          }
 }
 
-bool s2mKalmanReconsIMU::first()
+bool biorbd::rigidbody::KalmanReconsIMU::first()
 {
     return m_firstIteration;
 }
 
-void s2mKalmanReconsIMU::reconstructFrame(
+void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         s2mMusculoSkeletalModel &m,
         const std::vector<biorbd::utils::Attitude> &IMUobs,
         biorbd::utils::GenCoord *Q,
@@ -66,7 +66,7 @@ void s2mKalmanReconsIMU::reconstructFrame(
 }
 
 
-void s2mKalmanReconsIMU::reconstructFrame(
+void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         s2mMusculoSkeletalModel &m,
         const Eigen::VectorXd &IMUobs,
         biorbd::utils::GenCoord *Q,
@@ -90,7 +90,7 @@ void s2mKalmanReconsIMU::reconstructFrame(
     RigidBodyDynamics::UpdateKinematicsCustom (m, &Q_tp, nullptr, nullptr);
 
     // Markers projetés
-    std::vector<s2mIMU> zest_tp = m.technicalIMU(m, Q_tp, false);
+    std::vector<biorbd::rigidbody::IMU> zest_tp = m.technicalIMU(m, Q_tp, false);
     // Jacobienne
     std::vector<biorbd::utils::Matrix> J_tp = m.TechnicalIMUJacobian(m, Q_tp, false);
     // Faire une seule matrice pour zest et Jacobienne
@@ -117,7 +117,7 @@ void s2mKalmanReconsIMU::reconstructFrame(
     getState(Q, Qdot, Qddot);
 }
 
-void s2mKalmanReconsIMU::reconstructFrame()
+void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame()
 {
     biorbd::utils::Error::error(false, "Implémentation impossible");
 }

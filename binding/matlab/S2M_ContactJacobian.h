@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_CONTACT_JACOBIAN_H
-#define MATLAB_S2M_CONTACT_JACOBIAN_H
+#ifndef BIORBD_MATLAB_CONTACT_JACOBIAN_H
+#define BIORBD_MATLAB_CONTACT_JACOBIAN_H
 
 #include <mex.h>
 #include <rbdl/Constraints.h>
@@ -34,4 +34,4 @@ void S2M_ContactJacobian( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_CONTACT_JACOBIAN_H
+#endif // BIORBD_MATLAB_CONTACT_JACOBIAN_H

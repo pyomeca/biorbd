@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_MUSCLES_FORCE_MAX_H
-#define MATLAB_S2M_MUSCLES_FORCE_MAX_H
+#ifndef BIORBD_MATLAB_MUSCLES_FORCE_MAX_H
+#define BIORBD_MATLAB_MUSCLES_FORCE_MAX_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -42,4 +42,4 @@ void S2M_MusclesForceMax( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_MUSCLES_FORCE_MAX_H
+#endif // BIORBD_MATLAB_MUSCLES_FORCE_MAX_H

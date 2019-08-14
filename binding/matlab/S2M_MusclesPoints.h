@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_MUSCLES_POINTS_H
-#define MATLAB_S2M_MUSCLES_POINTS_H
+#ifndef BIORBD_MATLAB_MUSCLES_POINTS_H
+#define BIORBD_MATLAB_MUSCLES_POINTS_H
 
 #include <memory>
 #include <mex.h>
@@ -117,4 +117,4 @@ void S2M_MusclesPoints( int nlhs, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_MUSCLES_POINTS_H
+#endif // BIORBD_MATLAB_MUSCLES_POINTS_H

@@ -27,13 +27,13 @@ public:
 
 
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
-            s2mJoints& model,
+            biorbd::rigidbody::Joints& model,
             const biorbd::utils::GenCoord& Q,
             const biorbd::utils::GenCoord& Qdot,
             const biorbd::muscles::StateDynamics& emg,
             const int updateKin = 2); // Compute muscle force
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
-            s2mJoints& model,
+            biorbd::rigidbody::Joints& model,
             const biorbd::utils::GenCoord& Q,
             const biorbd::muscles::StateDynamics& emg,
             const int updateKin = 2); // Compute muscle force

@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_CONTACS_POSITION_H
-#define MATLAB_S2M_CONTACS_POSITION_H
+#ifndef BIORBD_MATLAB_CONTACS_POSITION_H
+#define BIORBD_MATLAB_CONTACS_POSITION_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -37,4 +37,4 @@ void S2M_ContactsPosition( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_CONTACS_POSITION_H
+#endif // BIORBD_MATLAB_CONTACS_POSITION_H

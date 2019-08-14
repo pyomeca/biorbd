@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_NEW_H
-#define MATLAB_S2M_NEW_H
+#ifndef BIORBD_MATLAB_NEW_H
+#define BIORBD_MATLAB_NEW_H
 
 #include <iostream>
 #include <mex.h>
@@ -44,4 +44,4 @@ void S2M_new( int nlhs, mxArray *plhs[],
         return;
     }
 }
-#endif // MATLAB_S2M_NEW_H
+#endif // BIORBD_MATLAB_NEW_H

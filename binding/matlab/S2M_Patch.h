@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_PATCH_H
-#define MATLAB_S2M_PATCH_H
+#ifndef BIORBD_MATLAB_PATCH_H
+#define BIORBD_MATLAB_PATCH_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -22,7 +22,7 @@ void S2M_Patch( int, mxArray *plhs[],
     // Output
     if ( idx==-1){ // Si on a demande tous les segments
         // Trouver ou sont les marqueurs
-        std::vector<std::vector<s2mPatch>> allMesh(model->meshPatch());
+        std::vector<std::vector<biorbd::rigidbody::Patch>> allMesh(model->meshPatch());
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateCellMatrix( allMesh.size(), 1);
@@ -31,9 +31,9 @@ void S2M_Patch( int, mxArray *plhs[],
             double *Mesh = mxGetPr(mesh_out_tp);
 
             // Remplir le output
-            std::vector<s2mPatch>::iterator it=(*(allMesh.begin()+i_bone)).begin();
+            std::vector<biorbd::rigidbody::Patch>::iterator it=(*(allMesh.begin()+i_bone)).begin();
             for (unsigned int i=0; (it+i)!=(*(allMesh.begin()+i_bone)).end(); ++i){
-                Mesh[i*3] = (*(it+i))(0)+1; // +1 Car l'indice dans s2mBones est par rapport à 0
+                Mesh[i*3] = (*(it+i))(0)+1; // +1 Car l'indice dans biorbd::rigidbody::s est par rapport à 0
                 Mesh[i*3+1] = (*(it+i))(1)+1;
                 Mesh[i*3+2] = (*(it+i))(2)+1;
             }
@@ -43,16 +43,16 @@ void S2M_Patch( int, mxArray *plhs[],
 
     }
     else { // Si on a demande un segment precis
-        std::vector<s2mPatch> Mesh_tp(model->meshPatch(static_cast<unsigned int>(idx)));
+        std::vector<biorbd::rigidbody::Patch> Mesh_tp(model->meshPatch(static_cast<unsigned int>(idx)));
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix(3, Mesh_tp.size(), mxREAL);
         double *Mesh = mxGetPr(plhs[0]);
 
         // Remplir le output
-        std::vector<s2mPatch>::iterator it=Mesh_tp.begin();
+        std::vector<biorbd::rigidbody::Patch>::iterator it=Mesh_tp.begin();
         for (unsigned int i=0; (it+i)!=Mesh_tp.end(); ++i){
-            Mesh[i*3] = (*(it+i))(0)+1; // +1 Car l'indice dans s2mBones est par rapport à 0
+            Mesh[i*3] = (*(it+i))(0)+1; // +1 Car l'indice dans biorbd::rigidbody::s est par rapport à 0
             Mesh[i*3+1] = (*(it+i))(1)+1;
             Mesh[i*3+2] = (*(it+i))(2)+1;
         }
@@ -60,4 +60,4 @@ void S2M_Patch( int, mxArray *plhs[],
     }
 }
 
-#endif // MATLAB_S2M_PATCH_H
+#endif // BIORBD_MATLAB_PATCH_H

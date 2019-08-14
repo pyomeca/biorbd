@@ -4,7 +4,9 @@
 #include "biorbdConfig.h"
 #include "Utils/Vector.h"
 
-class s2mJoints;
+namespace biorbd { namespace rigidbody {
+class Joints;
+}}
 
 namespace biorbd { namespace utils {
 
@@ -15,7 +17,7 @@ public:
     Tau(const biorbd::utils::Vector& v);
     Tau(unsigned int i);
     Tau(const Eigen::VectorXd& v);
-    Tau(const s2mJoints& j);
+    Tau(const biorbd::rigidbody::Joints& j);
 
     biorbd::utils::Tau timeDerivativeActivation(const biorbd::utils::Tau &act);
 

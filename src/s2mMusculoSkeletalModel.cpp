@@ -23,14 +23,14 @@ s2mMusculoSkeletalModel::s2mMusculoSkeletalModel(const biorbd::utils::Path &path
 }
 
 bool s2mMusculoSkeletalModel::InverseKinematics(
-        const std::vector<s2mNodeBone> &markers,
+        const std::vector<biorbd::rigidbody::NodeBone> &markers,
         const biorbd::utils::GenCoord &Qinit,
         biorbd::utils::GenCoord &Q,
         bool removeAxes){
     // Trouver les markers techniques uniquement (body_point)
-    std::vector<s2mNodeBone> body_point(this->TechnicalTagsInLocal(removeAxes));
+    std::vector<biorbd::rigidbody::NodeBone> body_point(this->TechnicalTagsInLocal(removeAxes));
     std::vector<RigidBodyDynamics::Math::Vector3d> body_pointEigen;
-    for (std::vector<s2mNodeBone>::iterator it = body_point.begin(); it!=body_point.end(); ++it)
+    for (std::vector<biorbd::rigidbody::NodeBone>::iterator it = body_point.begin(); it!=body_point.end(); ++it)
         body_pointEigen.push_back((*it).vector());
 
     std::vector<RigidBodyDynamics::Math::Vector3d> markersInRbdl;

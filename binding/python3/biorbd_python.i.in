@@ -16,23 +16,23 @@
 %}
 
 
-// --- s2mJoints --- //
-%typemap(typecheck) s2mJoints &{
+// --- biorbd::rigidbody::Joints --- //
+%typemap(typecheck) biorbd::rigidbody::Joints &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mJoints,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIGTYPE_p_s2mJoints already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd::rigidbody::Joints,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_biorbd::rigidbody::Joints already exists
         $1 = true;
     } else {
         $1 = false;
     }
 }
-%typemap(in) s2mJoints &{
+%typemap(in) biorbd::rigidbody::Joints &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mJoints,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd::rigidbody::Joints,  0  | 0)) && argp1) {
         // Recast the pointer
-        $1 = reinterpret_cast< s2mJoints * >(argp1);
+        $1 = reinterpret_cast< biorbd::rigidbody::Joints * >(argp1);
     } else {
-        PyErr_SetString(PyExc_ValueError, "s2mJoints must be a s2mJoints");
+        PyErr_SetString(PyExc_ValueError, "biorbd::rigidbody::Joints must be a biorbd::rigidbody::Joints");
         SWIG_fail;
     }
 }
@@ -96,7 +96,7 @@
         // Recast the pointer
         $1 = reinterpret_cast< biorbd::utils::Vector * >(argp1);
     } else if( PyArray_Check($input) ) {
-        // Get dimensions of the data::::
+        // Get dimensions of the data::
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
         npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
 
@@ -208,23 +208,23 @@
 };
 
 
-// --- s2mMarkers --- //
-%typemap(typecheck) s2mMarkers &{
+// --- biorbd::rigidbody::Markers --- //
+%typemap(typecheck) biorbd::rigidbody::Markers &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mMarkers,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIGTYPE_p_s2mMarkers already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd::rigidbody::Markers,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_biorbd::rigidbody::Markers already exists
         $1 = true;
     } else {
         $1 = false;
     }
 }
-%typemap(in) s2mMarkers &{
+%typemap(in) biorbd::rigidbody::Markers &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mMarkers,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd::rigidbody::Markers,  0  | 0)) && argp1) {
         // Recast the pointer
-        $1 = reinterpret_cast< s2mMarkers * >(argp1);
+        $1 = reinterpret_cast< biorbd::rigidbody::Markers * >(argp1);
     } else {
-        PyErr_SetString(PyExc_ValueError, "s2mMarkers must be a s2mMarkers");
+        PyErr_SetString(PyExc_ValueError, "biorbd::rigidbody::Markers must be a biorbd::rigidbody::Markers");
         SWIG_fail;
     }
 }

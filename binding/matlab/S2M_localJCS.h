@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_LOCAL_JCS_H
-#define MATLAB_S2M_LOCAL_JCS_H
+#ifndef BIORBD_MATLAB_LOCAL_JCS_H
+#define BIORBD_MATLAB_LOCAL_JCS_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -34,4 +34,4 @@ void S2M_localJCS( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_LOCAL_JCS_H
+#endif // BIORBD_MATLAB_LOCAL_JCS_H

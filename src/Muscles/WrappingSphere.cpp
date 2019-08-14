@@ -21,7 +21,7 @@ biorbd::muscles::WrappingSphere::~WrappingSphere()
 }
 
 biorbd::utils::Attitude biorbd::muscles::WrappingSphere::RT(
-        s2mJoints &,
+        biorbd::rigidbody::Joints &,
         const biorbd::utils::GenCoord &,
         const bool &)
 {

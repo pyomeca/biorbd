@@ -1,5 +1,5 @@
-#ifndef S2M_IMUS_H
-#define S2M_IMUS_H
+#ifndef BIORBD_RIGIDBODY_IMUS_H
+#define BIORBD_RIGIDBODY_IMUS_H
 
 #include <vector>
 #include "biorbdConfig.h"
@@ -8,17 +8,20 @@
 #include "Utils/String.h"
 #include "Utils/Node.h"
 
-class s2mJoints;
-class s2mIMU;
 namespace biorbd { namespace utils {
 class Matrix;
 class GenCoord;
 }}
-class BIORBD_API s2mIMUs
+
+namespace biorbd { namespace rigidbody {
+class Joints;
+class IMU;
+
+class BIORBD_API IMUs
 {
 public:
-    s2mIMUs();
-    virtual ~s2mIMUs();
+    IMUs();
+    virtual ~IMUs();
 
     // Set and get
     void addIMU(
@@ -34,21 +37,21 @@ public:
     std::vector<biorbd::utils::String> technicalIMUsNames();
     std::vector<biorbd::utils::String> anatomicalIMUsNames();
 
-    std::vector<s2mIMU> IMU(); // Retour d'un STL vector de tous les IMU
-    std::vector<s2mIMU> IMU(s2mJoints& m, unsigned int idx); // Retour d'un STL vector de tous les IMU d'un segment idx
-    const s2mIMU& IMU(const unsigned int&); // Retour d'un IMU ind idx
+    std::vector<biorbd::rigidbody::IMU> IMU(); // Retour d'un STL vector de tous les IMU
+    std::vector<biorbd::rigidbody::IMU> IMU(biorbd::rigidbody::Joints& m, unsigned int idx); // Retour d'un STL vector de tous les IMU d'un segment idx
+    const biorbd::rigidbody::IMU& IMU(const unsigned int&); // Retour d'un IMU ind idx
 
-    std::vector<s2mIMU> IMU(
-            s2mJoints& model,
+    std::vector<biorbd::rigidbody::IMU> IMU(
+            biorbd::rigidbody::Joints& model,
             const biorbd::utils::GenCoord &Q,
             const bool &updateKin = true); // Retour d'un STL vector de tous les IMUs
-    s2mIMU IMU(
-            s2mJoints& model,
+    biorbd::rigidbody::IMU IMU(
+            biorbd::rigidbody::Joints& model,
             const biorbd::utils::GenCoord&,
             const unsigned int& idx,
             const bool &updateKin = true); // Retour d'un IMU ind idx
-    std::vector<s2mIMU> segmentIMU(
-            s2mJoints& model,
+    std::vector<biorbd::rigidbody::IMU> segmentIMU(
+            biorbd::rigidbody::Joints& model,
             const biorbd::utils::GenCoord&,
             const unsigned int& idx,
             const bool &updateKin = true); // Retour d'un STL vector de tous les IMUs d'un segment
@@ -56,38 +59,40 @@ public:
 
     unsigned int nTechIMUs(); // Retourne le nombre de marqueurs techniques
     unsigned int nAnatIMUs(); // Retourne le nombre de marqueurs anatomiques
-    std::vector<s2mIMU> technicalIMU(
-            s2mJoints& model,
+    std::vector<biorbd::rigidbody::IMU> technicalIMU(
+            biorbd::rigidbody::Joints& model,
             const biorbd::utils::GenCoord &Q,
             bool updateKin = true); // Retour d'un STL vector de tous les IMUs
-    std::vector<s2mIMU> technicalIMU(); // Retour d'un STL vector de tous les IMUs
-    std::vector<s2mIMU> anatomicalIMU(
-            s2mJoints& model,
+    std::vector<biorbd::rigidbody::IMU> technicalIMU(); // Retour d'un STL vector de tous les IMUs
+    std::vector<biorbd::rigidbody::IMU> anatomicalIMU(
+            biorbd::rigidbody::Joints& model,
             const biorbd::utils::GenCoord &Q,
             bool updateKin = true); // Retour d'un STL vector de tous les IMUs
-    std::vector<s2mIMU> anatomicalIMU(); // Retour d'un STL vector de tous les IMUs
+    std::vector<biorbd::rigidbody::IMU> anatomicalIMU(); // Retour d'un STL vector de tous les IMUs
 
 
 
 
     std::vector<biorbd::utils::Matrix> IMUJacobian(
-            s2mJoints& model,
+            biorbd::rigidbody::Joints& model,
             const biorbd::utils::GenCoord &Q,
             const bool &updateKin = true); // Retourne la jacobienne des Tags
     std::vector<biorbd::utils::Matrix> TechnicalIMUJacobian(
-            s2mJoints& model,
+            biorbd::rigidbody::Joints& model,
             const biorbd::utils::GenCoord &Q,
             const bool &updateKin = true); // Retourne la jacobienne des Tags pour les marqueurs techniques
 
 protected:
     std::vector<biorbd::utils::Matrix> IMUJacobian(
-            s2mJoints& model,
+            biorbd::rigidbody::Joints& model,
             const biorbd::utils::GenCoord &Q,
             const bool &updateKin,
             bool lookForTechnical); // Retourne la jacobienne des Tags
 
-    std::vector <s2mIMU> m_IMUs;
+    std::vector <biorbd::rigidbody::IMU> m_IMUs;
 
 };
 
-#endif // S2M_IMUS_H
+}}
+
+#endif // BIORBD_RIGIDBODY_IMUS_H

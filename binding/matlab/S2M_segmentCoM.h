@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_SEGMENT_COM_H
-#define MATLAB_S2M_SEGMENT_COM_H
+#ifndef BIORBD_MATLAB_SEGMENT_COM_H
+#define BIORBD_MATLAB_SEGMENT_COM_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -25,7 +25,7 @@ void S2M_segmentCOM( int, mxArray *plhs[],
 
     // Trouver la position du CoM
     if (i==-1){
-        std::vector<s2mNodeBone> COM = model->CoMbySegment(Q,true);
+        std::vector<biorbd::rigidbody::NodeBone> COM = model->CoMbySegment(Q,true);
         // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix( 3, model->nbBone(), mxREAL);
         // Remplir l'output
@@ -35,7 +35,7 @@ void S2M_segmentCOM( int, mxArray *plhs[],
                         tp[3*j+k] = COM[j][k]; // Transférer le tout dans un tableau de sortie
     }
     else {
-        s2mNodeBone COM = model->CoMbySegment(Q,static_cast<unsigned int>(i),true);
+        biorbd::rigidbody::NodeBone COM = model->CoMbySegment(Q,static_cast<unsigned int>(i),true);
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix( 3, 1, mxREAL);
@@ -48,4 +48,4 @@ void S2M_segmentCOM( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_SEGMENT_COM_H
+#endif // BIORBD_MATLAB_SEGMENT_COM_H

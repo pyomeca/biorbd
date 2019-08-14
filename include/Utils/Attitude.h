@@ -3,7 +3,11 @@
 
 #include <vector>
 #include <Eigen/Dense>
-#include <rbdl/rbdl_math.h>
+
+namespace RigidBodyDynamics { namespace Math {
+struct SpatialTransform;
+}}
+
 #include "biorbdConfig.h"
 
 namespace biorbd { namespace utils {

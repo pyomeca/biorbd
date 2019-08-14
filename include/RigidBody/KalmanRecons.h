@@ -1,5 +1,5 @@
-#ifndef S2M_KALMAN_RECONS_H
-#define S2M_KALMAN_RECONS_H
+#ifndef BIORBD_RIGIDBODY_KALMAN_RECONS_H
+#define BIORBD_RIGIDBODY_KALMAN_RECONS_H
 
 #include <vector>
 #include <Eigen/Dense>
@@ -11,12 +11,14 @@ namespace biorbd { namespace utils {
 class GenCoord;
 }}
 
-class BIORBD_API s2mKalmanRecons
+namespace biorbd { namespace rigidbody {
+
+class BIORBD_API KalmanRecons
 {
 public:
-    class s2mKalmanParam{
+    class KalmanParam{
     public:
-        s2mKalmanParam(
+        KalmanParam(
                 double frequency = 100,
                 double noiseFactor = 1e-10,
                 double errorFactor = 1e-5);
@@ -31,11 +33,11 @@ public:
     };
 
     // Constructeur
-    s2mKalmanRecons(
+    KalmanRecons(
             s2mMusculoSkeletalModel&,
             unsigned int nMeasure,
-            s2mKalmanParam = s2mKalmanParam());
-    virtual ~s2mKalmanRecons();
+            KalmanParam = KalmanParam());
+    virtual ~KalmanRecons();
 
     // Recueillir l'état (Q, Qdot, Qddot)
     void getState(
@@ -79,7 +81,7 @@ protected:
             const std::vector<unsigned int> &occlusion);
 
     // Attributs variables
-    s2mKalmanParam m_params; // Fréquence d'acquisition
+    KalmanParam m_params; // Fréquence d'acquisition
     double m_Te; // Parametre inérant a la frequence
     unsigned int m_nDof; // Nombre de DoF, calculé des qu'un modele est ouvert
     unsigned int m_nMeasure; // Nombre de marqueurs
@@ -93,4 +95,6 @@ protected:
 
 };
 
-#endif // S2M_KALMAN_RECONS_H
+}}
+
+#endif // BIORBD_RIGIDBODY_KALMAN_RECONS_H

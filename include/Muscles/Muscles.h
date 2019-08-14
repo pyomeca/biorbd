@@ -3,10 +3,10 @@
 
 #include <vector>
 #include <memory>
+
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
 
-class s2mJoints;
 namespace biorbd { namespace utils {
 class String;
 class Matrix;
@@ -14,12 +14,16 @@ class GenCoord;
 class Tau;
 }}
 
-namespace biorbd { namespace muscles {
+namespace biorbd { namespace rigidbody {
+class Joints;
+}}
 
+namespace biorbd { namespace muscles {
 class MuscleGroup;
 class StateDynamics;
 class Force;
 class MuscleNode;
+
 class BIORBD_API Muscles
 {
 public:
@@ -36,11 +40,11 @@ public:
     const biorbd::muscles::MuscleGroup& muscleGroup(const biorbd::utils::String&) const; //Retourne un groupe musculaire du nom demandé
 
     void updateMuscles(
-            s2mJoints&,
+            biorbd::rigidbody::Joints&,
             const biorbd::utils::GenCoord& Q,
             bool); // Update les positions/jacobiennes/vitesse, etc
     void updateMuscles(
-            s2mJoints&,
+            biorbd::rigidbody::Joints&,
             const biorbd::utils::GenCoord& Q,
             const biorbd::utils::GenCoord& QDot,
             bool); // Update les positions/jacobiennes/vitesse, etc
@@ -54,30 +58,30 @@ public:
 
     // Calcul des effets musculaires sur les os
     biorbd::utils::Tau muscularJointTorque(
-            s2mJoints& model,
+            biorbd::rigidbody::Joints& model,
             const Eigen::VectorXd & F,
             bool updateKin = true,
             const biorbd::utils::GenCoord* Q = nullptr,
             const biorbd::utils::GenCoord* QDot = nullptr);
     biorbd::utils::Tau muscularJointTorque(
-            s2mJoints& model,
+            biorbd::rigidbody::Joints& model,
             const std::vector<biorbd::muscles::StateDynamics> &state,
             Eigen::VectorXd & F,
             bool updateKin = true,
             const biorbd::utils::GenCoord* Q = nullptr,
             const biorbd::utils::GenCoord* QDot = nullptr);
     biorbd::utils::Tau muscularJointTorque(
-            s2mJoints& model,
+            biorbd::rigidbody::Joints& model,
             const std::vector<biorbd::muscles::StateDynamics> &state,
             bool updateKin = true,
             const biorbd::utils::GenCoord* Q = nullptr,
             const biorbd::utils::GenCoord* QDot = nullptr);
-    biorbd::utils::Matrix musclesLengthJacobian(s2mJoints& m);
+    biorbd::utils::Matrix musclesLengthJacobian(biorbd::rigidbody::Joints& m);
     biorbd::utils::Matrix musclesLengthJacobian(
-            s2mJoints& m,
+            biorbd::rigidbody::Joints& m,
             const biorbd::utils::GenCoord& Q);
     std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> musclesForces(
-            s2mJoints& m,
+            biorbd::rigidbody::Joints& m,
             const std::vector<biorbd::muscles::StateDynamics> &state,
             bool updateKin = true,
             const biorbd::utils::GenCoord* Q = nullptr,

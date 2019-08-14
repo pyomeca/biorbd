@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_INVERSE_KINEMATICS_EKF_H
-#define MATLAB_S2M_INVERSE_KINEMATICS_EKF_H
+#ifndef BIORBD_MATLAB_INVERSE_KINEMATICS_EKF_H
+#define BIORBD_MATLAB_INVERSE_KINEMATICS_EKF_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -29,11 +29,11 @@ void S2M_setEKF(int nlhs, mxArray *plhs[],
         noiseF = getDouble(prhs,3,"Noise Factor");
     if (nrhs >= 3)
         freq = getDouble(prhs,2,"Acquisition Frequency");
-    s2mKalmanRecons::s2mKalmanParam kParams(freq, noiseF, errorF);
+    biorbd::rigidbody::KalmanRecons::KalmanParam kParams(freq, noiseF, errorF);
 
     // Créer un filtre de Kalman
     try{
-        plhs[0] = convertPtr2Mat<s2mKalmanReconsMarkers>(new s2mKalmanReconsMarkers(*model, kParams));
+        plhs[0] = convertPtr2Mat<biorbd::rigidbody::KalmanReconsMarkers>(new biorbd::rigidbody::KalmanReconsMarkers(*model, kParams));
     }
     catch (std::string m){
         mexErrMsgTxt(m.c_str());
@@ -47,7 +47,7 @@ void S2M_delEKF(int nlhs, mxArray *[],
     checkNombreInputParametres(nrhs, 2, 2, "2 arguments are required where the 2nd is the handler on the kalman filter");
 
     // Destroy the C++ object
-    destroyObject<s2mKalmanReconsMarkers>(prhs[1]);
+    destroyObject<biorbd::rigidbody::KalmanReconsMarkers>(prhs[1]);
     // Warn if other commands were ignored
     if (nlhs != 0 || nrhs != 2)
         mexWarnMsgTxt("Delete: Unexpected output arguments ignored.");
@@ -67,7 +67,7 @@ void S2M_inverseKinematicsEKFstep( int, mxArray *plhs[],
     unsigned int nQddot = model->nbQddot(); // Get the number of DoF
 
     // Recevoir le kalman
-    s2mKalmanReconsMarkers * kalman = convertMat2Ptr<s2mKalmanReconsMarkers>(prhs[2]);
+    biorbd::rigidbody::KalmanReconsMarkers * kalman = convertMat2Ptr<biorbd::rigidbody::KalmanReconsMarkers>(prhs[2]);
 
     bool removeAxes(true);
     if (nrhs >= 6)
@@ -75,8 +75,8 @@ void S2M_inverseKinematicsEKFstep( int, mxArray *plhs[],
 
 
     // Recevoir la matrice des markers (Ne traite que le premier frame)
-    std::vector<std::vector<s2mNodeBone>> markersOverTime = getParameterAllMarkers(prhs,3,static_cast<int>(model->nTechTags()));
-    std::vector<s2mNodeBone> markers = markersOverTime[0];
+    std::vector<std::vector<biorbd::rigidbody::NodeBone>> markersOverTime = getParameterAllMarkers(prhs,3,static_cast<int>(model->nTechTags()));
+    std::vector<biorbd::rigidbody::NodeBone> markers = markersOverTime[0];
 
     // Si c'est le premier frame recevoir Qinit
 
@@ -138,7 +138,7 @@ void S2M_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
         freq = getDouble(prhs,4,"Acquisition Frequency");
 
     // Créer un filtre de Kalman
-    s2mKalmanReconsMarkers kalman(*model, s2mKalmanReconsMarkers::s2mKalmanParam(freq, noiseF, errorF));
+    biorbd::rigidbody::KalmanReconsMarkers kalman(*model, biorbd::rigidbody::KalmanReconsMarkers::KalmanParam(freq, noiseF, errorF));
 
     bool removeAxes(true);
     if (nrhs >= 8)
@@ -146,7 +146,7 @@ void S2M_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
 
 
     // Recevoir la matrice des markers
-    std::vector<std::vector<s2mNodeBone>> markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechTags()));
+    std::vector<std::vector<biorbd::rigidbody::NodeBone>> markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechTags()));
     unsigned int nFrames(static_cast<unsigned int>(markersOverTime.size()));
 
     // Recevoir Qinit
@@ -185,4 +185,4 @@ void S2M_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_INVERSE_KINEMATICS_EKF_H
+#endif // BIORBD_MATLAB_INVERSE_KINEMATICS_EKF_H

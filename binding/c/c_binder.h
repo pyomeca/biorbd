@@ -3,7 +3,7 @@
 #define __BIORBD_C_BINDER__
 
 #include "s2mMusculoSkeletalModel.h"
-#include "s2mKalmanReconsIMU.h"
+#include "biorbd::rigidbody::KalmanReconsIMU.h"
 #include <iostream>
 #include <fstream>
 
@@ -30,9 +30,9 @@ extern "C" {
     S2MLIBRARY_API int c_nIMUs(s2mMusculoSkeletalModel*);
     S2MLIBRARY_API void c_addIMU(s2mMusculoSkeletalModel *model, const double *imuRT, const char* name = "", const char* parentName = "", bool technical = true, bool anatomical = true);
     S2MLIBRARY_API void c_meanIMU(const double *imuRT, unsigned int nFrame, double* imuRT_mean);
-    S2MLIBRARY_API s2mKalmanReconsIMU* c_s2mKalmanReconsIMU(s2mMusculoSkeletalModel*, double* QinitialGuess = NULL, double freq = 100, double noiseF = 5e-3, double errorF = 1e-10);
-	S2MLIBRARY_API void c_deleteS2mKalmanReconsIMU(s2mKalmanReconsIMU*);
-    S2MLIBRARY_API void c_s2mKalmanReconsIMUstep(s2mMusculoSkeletalModel*, s2mKalmanReconsIMU*, double* imu, double* Q = NULL, double* QDot = NULL, double* QDDot = NULL);
+    S2MLIBRARY_API biorbd::rigidbody::KalmanReconsIMU* c_biorbd::rigidbody::KalmanReconsIMU(s2mMusculoSkeletalModel*, double* QinitialGuess = NULL, double freq = 100, double noiseF = 5e-3, double errorF = 1e-10);
+	S2MLIBRARY_API void c_deletebiorbd::rigidbody::KalmanReconsIMU(biorbd::rigidbody::KalmanReconsIMU*);
+    S2MLIBRARY_API void c_biorbd::rigidbody::KalmanReconsIMUstep(s2mMusculoSkeletalModel*, biorbd::rigidbody::KalmanReconsIMU*, double* imu, double* Q = NULL, double* QDot = NULL, double* QDDot = NULL);
 	
     // Joints functions
     S2MLIBRARY_API void c_globalJCS(s2mMusculoSkeletalModel*, const double* Q, double* jcs);
@@ -59,7 +59,7 @@ extern "C" {
 
 // Fonctions de dispatch pour les données d'entré et de sortie
 Eigen::Vector3d dispatchTagsInput(const double * pos);
-void dispatchTagsOutput(const std::vector<s2mNodeBone> &allTags, double* tags);
+void dispatchTagsOutput(const std::vector<biorbd::rigidbody::NodeBone> &allTags, double* tags);
 GenCoord dispatchQinput(s2mMusculoSkeletalModel* model, const double*Q);
 void dispatchQoutput(const GenCoord &eQ, double*Q);
 void dispatchDoubleOutput(const Eigen::VectorXd&, double*);
@@ -70,7 +70,7 @@ void dispatchRToutput(const std::vector<Attitude>& rt_in, double* rt_out);
 
 
 // Spécifique à des projets (IMU sous Unity)
-#include "s2mIMU_Unity_Optim.h"
+#include "biorbd::rigidbody::IMU_Unity_Optim.h"
 extern "C" { 
 	S2MLIBRARY_UNITY_API void c_alignSpecificAxisWithParentVertical(const double* parentRT, const double * childRT, int idxAxe, double * rotation);
 }

@@ -1,7 +1,6 @@
 #ifndef BIORBD_MUSCLES_STATIC_OPTIMIZATION_IPOPT_H
 #define BIORBD_MUSCLES_STATIC_OPTIMIZATION_IPOPT_H
 
-#include <Eigen/Dense>
 #include <IpIpoptApplication.hpp>
 #include <IpTNLP.hpp>
 #include "biorbdConfig.h"

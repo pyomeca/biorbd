@@ -9,7 +9,7 @@
 #include "Utils/Attitude.h"
 #include "RigidBody/Joints.h"
 
-s2mContacts::s2mContacts() :
+biorbd::rigidbody::Contacts::Contacts() :
     RigidBodyDynamics::ConstraintSet (),
     m_nbreConstraint(0),
     m_binded(false)
@@ -17,12 +17,12 @@ s2mContacts::s2mContacts() :
 
 }
 
-s2mContacts::~s2mContacts()
+biorbd::rigidbody::Contacts::~Contacts()
 {
 
 }
 
-unsigned int s2mContacts::AddConstraint(
+unsigned int biorbd::rigidbody::Contacts::AddConstraint(
         unsigned int body_id,
         const biorbd::utils::Node& body_point,
         const biorbd::utils::Node& world_normal,
@@ -31,7 +31,7 @@ unsigned int s2mContacts::AddConstraint(
     ++m_nbreConstraint;
     return RigidBodyDynamics::ConstraintSet::AddContactConstraint(body_id, body_point, world_normal, name.c_str(), acc);
 }
-unsigned int s2mContacts::AddConstraint(
+unsigned int biorbd::rigidbody::Contacts::AddConstraint(
         unsigned int body_id,
         const biorbd::utils::Node& body_point,
         const biorbd::utils::String& axis,
@@ -55,7 +55,7 @@ unsigned int s2mContacts::AddConstraint(
     return ret;
 }
 
-unsigned int s2mContacts::AddLoopConstraint(
+unsigned int biorbd::rigidbody::Contacts::AddLoopConstraint(
         unsigned int body_id_predecessor,
         unsigned int body_id_successor,
         const biorbd::utils::Attitude &X_predecessor,
@@ -75,7 +75,7 @@ unsigned int s2mContacts::AddLoopConstraint(
 }
 
 
-s2mContacts &s2mContacts::getConstraints_nonConst(const s2mJoints &m){
+biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints_nonConst(const biorbd::rigidbody::Joints &m){
     if (!m_binded){
         Bind(m);
         m_binded = true;
@@ -83,34 +83,34 @@ s2mContacts &s2mContacts::getConstraints_nonConst(const s2mJoints &m){
     return *this;
 }
 
-s2mContacts &s2mContacts::getConstraints_nonConst()
+biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints_nonConst()
 {
     if (!m_binded)
-        biorbd::utils::Error::error(0, "Please call getConstraints with s2mJoints model before!" );
+        biorbd::utils::Error::error(0, "Please call getConstraints with biorbd::rigidbody::Joints model before!" );
     return *this;
 }
-const s2mContacts &s2mContacts::getConstraints() const {
+const biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints() const {
     if (!m_binded)
-        biorbd::utils::Error::error(0, "Please call getConstraints with s2mJoints model before!" );
+        biorbd::utils::Error::error(0, "Please call getConstraints with biorbd::rigidbody::Joints model before!" );
     return *this;
 }
 
-bool s2mContacts::hasContacts() const {
+bool biorbd::rigidbody::Contacts::hasContacts() const {
     if (m_nbreConstraint>0) return true; else return false;
 }
 
-unsigned int s2mContacts::nContacts() const {
+unsigned int biorbd::rigidbody::Contacts::nContacts() const {
     return m_nbreConstraint;
 }
 
-biorbd::utils::String s2mContacts::name(unsigned int i) {
+biorbd::utils::String biorbd::rigidbody::Contacts::name(unsigned int i) {
     biorbd::utils::Error::error(i<m_nbreConstraint, "Idx for name is too high..");
     return RigidBodyDynamics::ConstraintSet::name[i];
 }
 
 
-std::vector<biorbd::utils::Node> s2mContacts::constraintsInGlobal(
-        s2mJoints& m,
+std::vector<biorbd::utils::Node> biorbd::rigidbody::Contacts::constraintsInGlobal(
+        biorbd::rigidbody::Joints& m,
         const biorbd::utils::GenCoord &Q,
         const bool updateKin){
     if (updateKin)
@@ -127,7 +127,7 @@ std::vector<biorbd::utils::Node> s2mContacts::constraintsInGlobal(
     return tp;
 }
 
-biorbd::utils::Vector s2mContacts::getForce() const
+biorbd::utils::Vector biorbd::rigidbody::Contacts::getForce() const
 {
     return this->force;
 }

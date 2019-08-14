@@ -4,10 +4,10 @@
 #include "s2mMusculoSkeletalModel.h"
 #include "Utils/GenCoord.h"
 
-s2mKalmanRecons::s2mKalmanRecons(
+biorbd::rigidbody::KalmanRecons::KalmanRecons(
         s2mMusculoSkeletalModel &m,
         unsigned int nMeasure,
-        s2mKalmanParam params) :
+        KalmanParam params) :
     m_params(params),
     m_Te(1.0/(m_params.acquisitionFrequency())),
     m_nDof(m.dof_count),
@@ -16,13 +16,13 @@ s2mKalmanRecons::s2mKalmanRecons(
 
 }
 
-s2mKalmanRecons::~s2mKalmanRecons()
+biorbd::rigidbody::KalmanRecons::~KalmanRecons()
 {
 
 }
 
 
-void s2mKalmanRecons::iteration(
+void biorbd::rigidbody::KalmanRecons::iteration(
         Eigen::VectorXd measure,
         const Eigen::VectorXd &projectedMeasure,
         const biorbd::utils::Matrix &Hessian,
@@ -44,7 +44,7 @@ void s2mKalmanRecons::iteration(
 
 }
 
-void s2mKalmanRecons::manageOcclusionDuringIteration(
+void biorbd::rigidbody::KalmanRecons::manageOcclusionDuringIteration(
         biorbd::utils::Matrix &InvTp,
         Eigen::VectorXd &measure,
         const std::vector<unsigned int> &occlusion){
@@ -55,7 +55,7 @@ void s2mKalmanRecons::manageOcclusionDuringIteration(
          }
 }
 
-void s2mKalmanRecons::getState(
+void biorbd::rigidbody::KalmanRecons::getState(
         biorbd::utils::GenCoord *Q,
         biorbd::utils::GenCoord *Qdot,
         biorbd::utils::GenCoord *Qddot){
@@ -70,7 +70,7 @@ void s2mKalmanRecons::getState(
 }
 
 
-biorbd::utils::Matrix s2mKalmanRecons::evolutionMatrix(
+biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::evolutionMatrix(
         const unsigned int nQ,
         unsigned int n,
         const double Te){
@@ -94,7 +94,7 @@ biorbd::utils::Matrix s2mKalmanRecons::evolutionMatrix(
     return A;
 }
 
-biorbd::utils::Matrix s2mKalmanRecons::processNoiseMatrix(
+biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::processNoiseMatrix(
         const unsigned int nQ,
         const double Te){
 
@@ -124,7 +124,7 @@ biorbd::utils::Matrix s2mKalmanRecons::processNoiseMatrix(
 }
 
 // Méthodes lors de l'initialisation
-void s2mKalmanRecons::initialize(){
+void biorbd::rigidbody::KalmanRecons::initialize(){
 
     // Déclaration de la matrice d'évolution
     m_A = evolutionMatrix(m_nDof, 2, m_Te);
@@ -143,7 +143,7 @@ void s2mKalmanRecons::initialize(){
 }
 
 
-biorbd::utils::Matrix s2mKalmanRecons::measurementNoiseMatrix(
+biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::measurementNoiseMatrix(
         const unsigned int nMeasure,
         const double MN){
     biorbd::utils::Matrix R(biorbd::utils::Matrix::Zero(nMeasure, nMeasure));
@@ -152,11 +152,11 @@ biorbd::utils::Matrix s2mKalmanRecons::measurementNoiseMatrix(
     return R;
 }
 
-biorbd::utils::GenCoord s2mKalmanRecons::initState(const unsigned int nQ){
+biorbd::utils::GenCoord biorbd::rigidbody::KalmanRecons::initState(const unsigned int nQ){
     return biorbd::utils::GenCoord(Eigen::VectorXd::Zero(3*nQ)); // Q, Qdot, Qddot
 }
 
-void s2mKalmanRecons::setInitState(
+void biorbd::rigidbody::KalmanRecons::setInitState(
         const biorbd::utils::GenCoord *Q,
         const biorbd::utils::GenCoord *Qdot,
         const biorbd::utils::GenCoord *Qddot){
@@ -171,7 +171,7 @@ void s2mKalmanRecons::setInitState(
 }
 
 
-biorbd::utils::Matrix s2mKalmanRecons::initCovariance(
+biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::initCovariance(
         const unsigned int nQ,
         const double csnt){
     biorbd::utils::Matrix Pp(biorbd::utils::Matrix::Zero(3*nQ, 3*nQ));
@@ -184,7 +184,7 @@ biorbd::utils::Matrix s2mKalmanRecons::initCovariance(
 
 
 
-s2mKalmanRecons::s2mKalmanParam::s2mKalmanParam(
+biorbd::rigidbody::KalmanRecons::KalmanParam::KalmanParam(
         double frequency,
         double noiseFactor,
         double errorFactor):
@@ -192,16 +192,16 @@ s2mKalmanRecons::s2mKalmanParam::s2mKalmanParam(
     m_noiseFactor(noiseFactor),
     m_errorFactor(errorFactor){}
 
-double s2mKalmanRecons::s2mKalmanParam::acquisitionFrequency() const{
+double biorbd::rigidbody::KalmanRecons::KalmanParam::acquisitionFrequency() const{
     return m_acquisitionFrequency;
 }
 
-double s2mKalmanRecons::s2mKalmanParam::noiseFactor() const
+double biorbd::rigidbody::KalmanRecons::KalmanParam::noiseFactor() const
 {
     return m_noiseFactor;
 }
 
-double s2mKalmanRecons::s2mKalmanParam::errorFactor() const
+double biorbd::rigidbody::KalmanRecons::KalmanParam::errorFactor() const
 {
     return m_errorFactor;
 }

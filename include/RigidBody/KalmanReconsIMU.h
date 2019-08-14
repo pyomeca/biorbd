@@ -1,5 +1,5 @@
-#ifndef S2M_KALMAN_RECONS_IMU_H
-#define S2M_KALMAN_RECONS_IMU_H
+#ifndef BIORBD_RIGIDBODY_KALMAN_RECONS_IMU_H
+#define BIORBD_RIGIDBODY_KALMAN_RECONS_IMU_H
 
 #include "biorbdConfig.h"
 #include "RigidBody/KalmanRecons.h"
@@ -7,15 +7,18 @@
 namespace biorbd { namespace utils {
 class Attitude;
 }}
-class BIORBD_API s2mKalmanReconsIMU : public s2mKalmanRecons
+
+namespace biorbd { namespace rigidbody {
+
+class BIORBD_API KalmanReconsIMU : public biorbd::rigidbody::KalmanRecons
 {
 public:
 
     // Constructeur
-    s2mKalmanReconsIMU(
+    KalmanReconsIMU(
             s2mMusculoSkeletalModel&,
-            s2mKalmanRecons::s2mKalmanParam = s2mKalmanRecons::s2mKalmanParam(100, 0.005, 1e-10));
-    virtual ~s2mKalmanReconsIMU();
+            biorbd::rigidbody::KalmanRecons::KalmanParam = biorbd::rigidbody::KalmanRecons::KalmanParam(100, 0.005, 1e-10));
+    virtual ~KalmanReconsIMU();
 
     // Reconstruction d'un frame
     virtual void reconstructFrame(
@@ -45,4 +48,6 @@ protected:
     bool m_firstIteration;
 };
 
-#endif // S2M_KALMAN_RECONS_IMU_H
+}}
+
+#endif // BIORBD_RIGIDBODY_KALMAN_RECONS_IMU_H

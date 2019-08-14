@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_HELP_H
-#define MATLAB_S2M_HELP_H
+#ifndef BIORBD_MATLAB_HELP_H
+#define BIORBD_MATLAB_HELP_H
 
 #include <iostream>
 
@@ -68,4 +68,4 @@ void S2M_help(){
     return;
 
 }
-#endif // MATLAB_S2M_HELP_H
+#endif // BIORBD_MATLAB_HELP_H

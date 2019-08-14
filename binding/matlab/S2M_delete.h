@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_DELETE_H
-#define MATLAB_S2M_DELETE_H
+#ifndef BIORBD_MATLAB_DELETE_H
+#define BIORBD_MATLAB_DELETE_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -20,4 +20,4 @@ void S2M_delete( int nlhs, mxArray *[],
     return;
 }
 
-#endif // MATLAB_S2M_DELETE_H¸
+#endif // BIORBD_MATLAB_DELETE_H¸
