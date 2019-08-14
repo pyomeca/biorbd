@@ -3,33 +3,33 @@
 
 #include "s2mJoints.h"
 
-s2mWrappingCylinder::s2mWrappingCylinder(
+biorbd::muscles::WrappingCylinder::WrappingCylinder(
         const biorbd::utils::Attitude &v, // Position du centre
         const double &dia, // Diametre vue du dessus
         const double &length, // Longueur du cylindre
         const int &side, // sens du wrapping (+1 ou -1)
         const biorbd::utils::String &name,  // Nom du cylindre
         const biorbd::utils::String &parentName) : // Nom du parent sur lequel il s'attache :
-    s2mWrappingObject(v.trans(),name,parentName),
+    biorbd::muscles::WrappingObject(v.trans(),name,parentName),
     m_dia(dia),
     m_length(length),
     m_side(side),
     m_RTtoParent(v),
-    m_p1Wrap(s2mNodeMuscle()),
-    m_p2Wrap(s2mNodeMuscle()),
+    m_p1Wrap(biorbd::muscles::MuscleNode()),
+    m_p2Wrap(biorbd::muscles::MuscleNode()),
     m_lengthAroundWrap(0)
 {
     m_forme = "Cylinder";
 }
 
-s2mWrappingCylinder::~s2mWrappingCylinder()
+biorbd::muscles::WrappingCylinder::~WrappingCylinder()
 {
     //dtor
 }
 
-void s2mWrappingCylinder::wrapPoints(
-        s2mNodeMuscle& p1,
-        s2mNodeMuscle& p2,
+void biorbd::muscles::WrappingCylinder::wrapPoints(
+        biorbd::muscles::MuscleNode& p1,
+        biorbd::muscles::MuscleNode& p2,
         double *length){
     p1 = m_p1Wrap;
     p2 = m_p2Wrap;
@@ -37,7 +37,7 @@ void s2mWrappingCylinder::wrapPoints(
         *length = m_lengthAroundWrap;
 }
 
-biorbd::utils::Attitude s2mWrappingCylinder::RT(
+biorbd::utils::Attitude biorbd::muscles::WrappingCylinder::RT(
         s2mJoints &m,
         const biorbd::utils::GenCoord& Q,
         const bool &updateKin){
@@ -48,49 +48,49 @@ biorbd::utils::Attitude s2mWrappingCylinder::RT(
     return RT;
 }
 
-double s2mWrappingCylinder::diameter() const
+double biorbd::muscles::WrappingCylinder::diameter() const
 {
     return m_dia;
 }
 
-double s2mWrappingCylinder::rayon() const
+double biorbd::muscles::WrappingCylinder::rayon() const
 {
     return m_dia/2;
 }
 
-void s2mWrappingCylinder::setDiameter(double val)
+void biorbd::muscles::WrappingCylinder::setDiameter(double val)
 {
     m_dia = val;
 }
 
-double s2mWrappingCylinder::length() const
+double biorbd::muscles::WrappingCylinder::length() const
 {
     return m_length;
 }
 
-void s2mWrappingCylinder::setLength(double val)
+void biorbd::muscles::WrappingCylinder::setLength(double val)
 {
     m_length = val;
 }
 
-void s2mWrappingCylinder::wrapPoints(
+void biorbd::muscles::WrappingCylinder::wrapPoints(
         s2mJoints& m,
         const biorbd::utils::GenCoord& Q,
-        const s2mNodeMuscle& p1_bone,
-        const s2mNodeMuscle& p2_bone,
-        s2mNodeMuscle& p1,
-        s2mNodeMuscle& p2,
+        const biorbd::muscles::MuscleNode& p1_bone,
+        const biorbd::muscles::MuscleNode& p2_bone,
+        biorbd::muscles::MuscleNode& p1,
+        biorbd::muscles::MuscleNode& p2,
         double *length) {
     // Cette fonction prend un modele et une position du modele et trouve l'endroit ou le muscle 1 et 2 quittent le wrapping object
 
     wrapPoints(RT(m,Q), p1_bone, p2_bone, p1, p2, length);
 }
-void s2mWrappingCylinder::wrapPoints(
+void biorbd::muscles::WrappingCylinder::wrapPoints(
         const biorbd::utils::Attitude& RT,
-        const s2mNodeMuscle& p1_bone,
-        const s2mNodeMuscle& p2_bone,
-        s2mNodeMuscle& p1,
-        s2mNodeMuscle& p2,
+        const biorbd::muscles::MuscleNode& p1_bone,
+        const biorbd::muscles::MuscleNode& p2_bone,
+        biorbd::muscles::MuscleNode& p1,
+        biorbd::muscles::MuscleNode& p2,
         double *length) {
     // Cette fonction une position du wrapping et trouve l'endroit ou le muscle 1 et 2 quittent le wrapping object
 
@@ -100,8 +100,8 @@ void s2mWrappingCylinder::wrapPoints(
     p_glob.m_p2.applyRT(RT.transpose());
 
     // Trouver les tangeantes de ces points au cercle (cylindre vu de dessus)
-    s2mNodeMuscle p1_tan;
-    s2mNodeMuscle p2_tan;
+    biorbd::muscles::MuscleNode p1_tan;
+    biorbd::muscles::MuscleNode p2_tan;
     findTangentToCircle(p_glob.m_p1, p1_tan);
     findTangentToCircle(p_glob.m_p2, p2_tan);
 
@@ -129,9 +129,9 @@ void s2mWrappingCylinder::wrapPoints(
         m_lengthAroundWrap = *length;
 }
 
-void s2mWrappingCylinder::findTangentToCircle(
-        const s2mNodeMuscle& p,
-        s2mNodeMuscle& p_tan) const {
+void biorbd::muscles::WrappingCylinder::findTangentToCircle(
+        const biorbd::muscles::MuscleNode& p,
+        biorbd::muscles::MuscleNode& p_tan) const {
     double p_dot = p.block(0,0,2,1).dot(p.block(0,0,2,1));
     Eigen::Vector2d Q0 = rayon()*rayon()/p_dot*p.block(0,0,2,1);
     Eigen::Matrix2d tp;
@@ -148,9 +148,9 @@ void s2mWrappingCylinder::findTangentToCircle(
     // Choisir une des deux tangente
     selectTangents(m, p_tan);
 }
-void s2mWrappingCylinder::selectTangents(
+void biorbd::muscles::WrappingCylinder::selectTangents(
         const NodeMusclePair &p1,
-        s2mNodeMuscle &p_tan) const {
+        biorbd::muscles::MuscleNode &p_tan) const {
     if (m_side < 0) // si le side est -1
         if (p1.m_p2(0) < p1.m_p1(0))
             p_tan = p1.m_p2;
@@ -165,7 +165,7 @@ void s2mWrappingCylinder::selectTangents(
 
 
 }
-bool s2mWrappingCylinder::findVerticalNode(
+bool biorbd::muscles::WrappingCylinder::findVerticalNode(
         const NodeMusclePair &glob,
         NodeMusclePair &wrapper) const {
     // Avant toute chose, s'assurer que les points wrapent
@@ -206,10 +206,10 @@ bool s2mWrappingCylinder::findVerticalNode(
             0,    0,    0,    1;
 
     // Tourner les points dans le repere R
-    s2mNodeMuscle globA(glob.m_p1);
-    s2mNodeMuscle globB(glob.m_p2);
-    s2mNodeMuscle wrapA(wrapper.m_p1);
-    s2mNodeMuscle wrapB(wrapper.m_p2);
+    biorbd::muscles::MuscleNode globA(glob.m_p1);
+    biorbd::muscles::MuscleNode globB(glob.m_p2);
+    biorbd::muscles::MuscleNode wrapA(wrapper.m_p1);
+    biorbd::muscles::MuscleNode wrapB(wrapper.m_p2);
     globA.applyRT(R);
     globB.applyRT(R);
     wrapA.applyRT(R);
@@ -222,7 +222,7 @@ bool s2mWrappingCylinder::findVerticalNode(
 
     return true;
 }
-bool s2mWrappingCylinder::checkIfWraps(
+bool biorbd::muscles::WrappingCylinder::checkIfWraps(
         const NodeMusclePair &glob,
         NodeMusclePair &wrapper) const {
     bool isWrap = true;
@@ -261,7 +261,7 @@ bool s2mWrappingCylinder::checkIfWraps(
     // Retourner la réponse
     return isWrap;
 }
-double s2mWrappingCylinder::computeLength(const NodeMusclePair &p) const {
+double biorbd::muscles::WrappingCylinder::computeLength(const NodeMusclePair &p) const {
     double arc = std::acos(    (p.m_p1(0)*p.m_p2(0) + p.m_p1(1)*p.m_p2(1))
                                             /
              std::sqrt( (p.m_p1(0)*p.m_p1(0)+p.m_p1(1)*p.m_p1(1)) * (p.m_p2(0)*p.m_p2(0)+p.m_p2(1)*p.m_p2(1))   )

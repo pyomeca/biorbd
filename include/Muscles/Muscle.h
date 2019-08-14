@@ -1,5 +1,5 @@
-#ifndef S2M_MUSCLE_H
-#define S2M_MUSCLE_H
+#ifndef BIORBD_MUSCLES_H
+#define BIORBD_MUSCLES_H
 
 #include "biorbdConfig.h"
 #include "Utils/String.h"
@@ -8,17 +8,19 @@
 #include "Muscles/Caracteristics.h"
 #include "Muscles/StateDynamics.h"
 
-class BIORBD_API s2mMuscle : public s2mMuscleCompound
+namespace biorbd { namespace muscles {
+
+class BIORBD_API Muscle : public biorbd::muscles::Compound
 {
 public:
-    s2mMuscle(
+    Muscle(
             const biorbd::utils::String& = "", // Nom du muscle
-            const s2mMuscleGeometry& = s2mMuscleGeometry(), // Position origine/insertion
-            const s2mMuscleCaracteristics& = s2mMuscleCaracteristics(), // Caractéristiques du muscle
-            const s2mMusclePathChangers& = s2mMusclePathChangers(), // Set de wrapping objects
-            const s2mMuscleStateDynamics& = s2mMuscleStateDynamics()); // Set d'un état actuel au départ
-    s2mMuscle(const s2mMuscle& m);
-    virtual ~s2mMuscle();
+            const biorbd::muscles::Geometry& = biorbd::muscles::Geometry(), // Position origine/insertion
+            const biorbd::muscles::Caracteristics& = biorbd::muscles::Caracteristics(), // Caractéristiques du muscle
+            const biorbd::muscles::PathChangers& = biorbd::muscles::PathChangers(), // Set de wrapping objects
+            const biorbd::muscles::StateDynamics& = biorbd::muscles::StateDynamics()); // Set d'un état actuel au départ
+    Muscle(const Muscle& m);
+    virtual ~Muscle();
 
     // Get and set
     double length(
@@ -42,33 +44,35 @@ public:
             const biorbd::utils::GenCoord &Qdot,
             int updateKin = 2); // Update de la position de ce muscle
     void updateOrientations(
-            std::vector<s2mNodeMuscle>& musclePointsInGlobal,
+            std::vector<biorbd::muscles::MuscleNode>& musclePointsInGlobal,
             biorbd::utils::Matrix& jacoPointsInGlobal); // Update de la position de ce muscle
     void updateOrientations(
-            std::vector<s2mNodeMuscle>& musclePointsInGlobal,
+            std::vector<biorbd::muscles::MuscleNode>& musclePointsInGlobal,
             biorbd::utils::Matrix& jacoPointsInGlobal,
             const biorbd::utils::GenCoord &Qdot); // Update de la position de ce muscle
 
-    const s2mMuscleGeometry& position() const;
-    const s2mMuscleCaracteristics& caract() const;
-    void setPosition(const s2mMuscleGeometry &val);
-    void setCaract(const s2mMuscleCaracteristics &val);
-    const std::vector<s2mNodeMuscle>& musclesPointsInGlobal(
+    const biorbd::muscles::Geometry& position() const;
+    const biorbd::muscles::Caracteristics& caract() const;
+    void setPosition(const biorbd::muscles::Geometry &val);
+    void setCaract(const biorbd::muscles::Caracteristics &val);
+    const std::vector<biorbd::muscles::MuscleNode>& musclesPointsInGlobal(
             s2mJoints &j,
             const biorbd::utils::GenCoord &Q,
             const bool updateKin = true);
     void forceIsoMax(double);
 
     // Get and set
-    void setState(const s2mMuscleStateDynamics &s);
-    const s2mMuscleStateDynamics& state() const;
-    s2mMuscleStateDynamics& state_nonConst() const;
-    double activationDot(const s2mMuscleStateDynamics &s, const bool =false);
+    void setState(const biorbd::muscles::StateDynamics &s);
+    const biorbd::muscles::StateDynamics& state() const;
+    biorbd::muscles::StateDynamics& state_nonConst() const;
+    double activationDot(const biorbd::muscles::StateDynamics &s, const bool =false);
 protected:
-    s2mMuscleGeometry m_position;
-    s2mMuscleCaracteristics m_caract;
-    s2mMuscleStateDynamics * m_state;
+    biorbd::muscles::Geometry m_position;
+    biorbd::muscles::Caracteristics m_caract;
+    biorbd::muscles::StateDynamics * m_state;
 
 };
 
-#endif // S2M_MUSCLE_H
+}}
+
+#endif // BIORBD_MUSCLES_H

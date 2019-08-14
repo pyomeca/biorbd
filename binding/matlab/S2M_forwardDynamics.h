@@ -29,7 +29,7 @@ void S2M_forwardDynamics( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot();
     unsigned int nQddot = model->nbQddot();
     unsigned int nTau = model->nbTau();

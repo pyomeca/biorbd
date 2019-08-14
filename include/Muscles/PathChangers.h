@@ -1,30 +1,34 @@
-#ifndef S2M_MUSCLE_PATH_CHANGERS_H
-#define S2M_MUSCLE_PATH_CHANGERS_H
+#ifndef BIORBD_MUSCLES_PATH_CHANGERS_H
+#define BIORBD_MUSCLES_PATH_CHANGERS_H
 
 #include <memory>
 #include <vector>
 #include "biorbdConfig.h"
 
-class s2mMusclePathChanger;
-class BIORBD_API s2mMusclePathChangers
+namespace biorbd { namespace muscles {
+
+class PathChanger;
+class BIORBD_API PathChangers
 {
 public:
-    s2mMusclePathChangers();
-    virtual ~s2mMusclePathChangers();
-    void addPathChanger(s2mMusclePathChanger&); // Ajouter un wrapping ou un via point
+    PathChangers();
+    virtual ~PathChangers();
+    void addPathChanger(biorbd::muscles::PathChanger&); // Ajouter un wrapping ou un via point
 
     // Set and get
     unsigned int nbWraps() const; // retourne le nombre total de wrapping objects
     unsigned int nbVia() const; // retourne le nombre total de via points
     unsigned int nbObjects() const; // Retourne le nombre total d'objects
-    const std::shared_ptr<s2mMusclePathChanger> object(const unsigned int& idx) const; // Get sur un wrapping
+    const std::shared_ptr<biorbd::muscles::PathChanger> object(const unsigned int& idx) const; // Get sur un wrapping
 
 protected:
-    std::vector<std::shared_ptr<s2mMusclePathChanger>> m_obj; // Tableau de pointeur sur les objects
+    std::vector<std::shared_ptr<biorbd::muscles::PathChanger>> m_obj; // Tableau de pointeur sur les objects
     unsigned int m_nbWraps;
     unsigned int m_nbVia;
     unsigned int m_totalObjects;
 
 };
 
-#endif // S2M_MUSCLE_PATH_CHANGERS_H
+}}
+
+#endif // BIORBD_MUSCLES_PATH_CHANGERS_H

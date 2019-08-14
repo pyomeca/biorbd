@@ -1,5 +1,5 @@
-#ifndef S2M_STATIC_OPTIMIZATION_H
-#define S2M_STATIC_OPTIMIZATION_H
+#ifndef BIORBD_MUSCLES_STATIC_OPTIMIZATION_H
+#define BIORBD_MUSCLES_STATIC_OPTIMIZATION_H
 
 #include <vector>
 #include <IpTNLP.hpp>
@@ -11,11 +11,14 @@ namespace biorbd { namespace utils {
 class GenCoord;
 class Tau;
 }}
-class s2mMuscleStateDynamics;
-class BIORBD_API s2mStaticOptimization
+
+namespace biorbd { namespace muscles {
+
+class StateDynamics;
+class BIORBD_API StaticOptimization
 {
 public:
-    s2mStaticOptimization(
+    StaticOptimization(
             s2mMusculoSkeletalModel& model,
             const biorbd::utils::GenCoord& Q,
             const biorbd::utils::GenCoord& Qdot,
@@ -24,16 +27,16 @@ public:
             unsigned int pNormFactor = 2,
             bool useResidualTorque = true,
             int verbose = 0);
-    s2mStaticOptimization(
+    StaticOptimization(
             s2mMusculoSkeletalModel& model,
             const biorbd::utils::GenCoord& Q,
             const biorbd::utils::GenCoord& Qdot,
             const biorbd::utils::Tau& tauTarget,
-            const std::vector<s2mMuscleStateDynamics>& initialActivationGuess,
+            const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess,
             unsigned int pNormFactor = 2,
             bool useResidualTorque = true,
             int verbose = 0);
-    s2mStaticOptimization(
+    StaticOptimization(
             s2mMusculoSkeletalModel& model,
             const std::vector<biorbd::utils::GenCoord>& allQ,
             const std::vector<biorbd::utils::GenCoord>& allQdot,
@@ -42,12 +45,12 @@ public:
             unsigned int pNormFactor = 2,
             bool useResidualTorque = true,
             int verbose = 0);
-    s2mStaticOptimization(
+    StaticOptimization(
             s2mMusculoSkeletalModel& model,
             const std::vector<biorbd::utils::GenCoord>& allQ,
             const std::vector<biorbd::utils::GenCoord>& allQdot,
             const std::vector<biorbd::utils::Tau>& allTauTarget,
-            const std::vector<s2mMuscleStateDynamics>& initialActivationGuess,
+            const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess,
             unsigned int pNormFactor = 2,
             bool useResidualTorque = true,
             int verbose = 0);
@@ -69,4 +72,7 @@ protected:
     bool m_alreadyRun;
 
 };
-#endif // S2M_STATIC_OPTIMIZATION_H
+
+}}
+
+#endif // BIORBD_MUSCLES_STATIC_OPTIMIZATION_H

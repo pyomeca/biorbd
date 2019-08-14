@@ -1,34 +1,39 @@
-#ifndef S2M_MUSCLE_HILL_TYPE_THELEN_H
-#define S2M_MUSCLE_HILL_TYPE_THELEN_H
+#ifndef BIORBD_MUSCLES_HILL_TYPE_THELEN_H
+#define BIORBD_MUSCLES_HILL_TYPE_THELEN_H
 
 #include "biorbdConfig.h"
 #include "Muscles/HillType.h"
 
-class BIORBD_API s2mMuscleHillTypeThelen : public s2mMuscleHillType
+namespace biorbd { namespace muscles {
+
+class BIORBD_API HillTypeThelen : public biorbd::muscles::HillType
 {
 public:
-    s2mMuscleHillTypeThelen(const biorbd::utils::String& s= "") : s2mMuscleHillType(s){setType();}
-    s2mMuscleHillTypeThelen(
-            const s2mMuscleGeometry& g,
-            const s2mMuscleCaracteristics& c,
-            const s2mMusclePathChangers & w= s2mMusclePathChangers(),
-            const s2mMuscleStateDynamics & s= s2mMuscleStateDynamics());
+    HillTypeThelen(const biorbd::utils::String& s= "") : biorbd::muscles::HillType(s){setType();}
+    HillTypeThelen(
+            const biorbd::muscles::Geometry& g,
+            const biorbd::muscles::Caracteristics& c,
+            const biorbd::muscles::PathChangers & w= biorbd::muscles::PathChangers(),
+            const biorbd::muscles::StateDynamics & s= biorbd::muscles::StateDynamics());
 
-    s2mMuscleHillTypeThelen(
+    HillTypeThelen(
             const biorbd::utils::String& n,
-            const s2mMuscleGeometry& g,
-            const s2mMuscleCaracteristics& c,
-            const s2mMusclePathChangers & w= s2mMusclePathChangers(),
-            const s2mMuscleStateDynamics & s= s2mMuscleStateDynamics());
-    s2mMuscleHillTypeThelen(const s2mMuscle& m);
-    s2mMuscleHillTypeThelen(const std::shared_ptr<s2mMuscle> m);
-    virtual ~s2mMuscleHillTypeThelen();
+            const biorbd::muscles::Geometry& g,
+            const biorbd::muscles::Caracteristics& c,
+            const biorbd::muscles::PathChangers & w= biorbd::muscles::PathChangers(),
+            const biorbd::muscles::StateDynamics & s= biorbd::muscles::StateDynamics());
+    HillTypeThelen(const biorbd::muscles::Muscle& m);
+    HillTypeThelen(const std::shared_ptr<biorbd::muscles::Muscle> m);
+    virtual ~HillTypeThelen();
 
     virtual void computeFlPE();
-    virtual void computeFlCE(const s2mMuscleStateDynamics &emg);
+    virtual void computeFlCE(const biorbd::muscles::StateDynamics &emg);
 
 protected:
     virtual void setType();
+
 };
 
-#endif // S2M_MUSCLE_HILL_TYPE_THELEN_H
+}}
+
+#endif // BIORBD_MUSCLES_HILL_TYPE_THELEN_H

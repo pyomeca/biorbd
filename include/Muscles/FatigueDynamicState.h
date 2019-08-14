@@ -1,28 +1,30 @@
-#ifndef S2M_MUSCLE_FATIGUE_DYNAMIC_STATE_H
-#define S2M_MUSCLE_FATIGUE_DYNAMIC_STATE_H
+#ifndef BIORBD_MUSCLES_FATIGUE_DYNAMIC_STATE_H
+#define BIORBD_MUSCLES_FATIGUE_DYNAMIC_STATE_H
 
 #include "biorbdConfig.h"
 #include "Muscles/FatigueState.h"
 
-class s2mMuscleStateDynamics;
-class s2mMuscleCaracteristics;
-class BIORBD_API s2mMuscleFatigueDynamicState : public s2mMuscleFatigueState
+namespace biorbd { namespace muscles {
+
+class StateDynamics;
+class Caracteristics;
+class BIORBD_API FatigueDynamicState : public biorbd::muscles::FatigueState
 {
 public:
-    s2mMuscleFatigueDynamicState(
+    FatigueDynamicState(
             double active = 0,
             double fatigued = 0,
             double resting = 1);
 
-    s2mMuscleFatigueDynamicState(const std::shared_ptr<s2mMuscleFatigueState> m);
+    FatigueDynamicState(const std::shared_ptr<biorbd::muscles::FatigueState> m);
 
     double activeFibersDot() const;
     double fatiguedFibersDot() const;
     double restingFibersDot() const;
 
     virtual void timeDerivativeState(
-            const s2mMuscleStateDynamics &emg,
-            const s2mMuscleCaracteristics &caract
+            const biorbd::muscles::StateDynamics &emg,
+            const biorbd::muscles::Caracteristics &caract
      ) = 0;
 
 protected:
@@ -33,4 +35,6 @@ protected:
     virtual void setType();
 };
 
-#endif // S2M_MUSCLE_FATIGUE_DYNAMIC_STATE_H
+}}
+
+#endif // BIORBD_MUSCLES_FATIGUE_DYNAMIC_STATE_H

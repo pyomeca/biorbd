@@ -3,46 +3,46 @@
 
 #include <math.h>
 
-s2mMuscleStateDynamicsBuchanan::s2mMuscleStateDynamicsBuchanan(
+biorbd::muscles::StateDynamicsBuchanan::StateDynamicsBuchanan(
         const double &neuralCommand,
         const double &e) :
-    s2mMuscleStateDynamics(e,0),
+    biorbd::muscles::StateDynamics(e,0),
     m_neuralCommand(neuralCommand),
     m_shapeFactor(-3)
 {
     // Update activation
-    s2mMuscleStateDynamicsBuchanan::activation();
+    biorbd::muscles::StateDynamicsBuchanan::activation();
 }
 
-s2mMuscleStateDynamicsBuchanan::~s2mMuscleStateDynamicsBuchanan()
+biorbd::muscles::StateDynamicsBuchanan::~StateDynamicsBuchanan()
 {
     //dtor
 }
 
-void s2mMuscleStateDynamicsBuchanan::shapeFactor(double shape_factor)
+void biorbd::muscles::StateDynamicsBuchanan::shapeFactor(double shape_factor)
 {
     m_shapeFactor = shape_factor;
 
     // Update activation
-    s2mMuscleStateDynamicsBuchanan::activation();
+    biorbd::muscles::StateDynamicsBuchanan::activation();
 }
 
-double s2mMuscleStateDynamicsBuchanan::shapeFactor()
+double biorbd::muscles::StateDynamicsBuchanan::shapeFactor()
 {
     return m_shapeFactor;
 }
 
-double s2mMuscleStateDynamicsBuchanan::timeDerivativeExcitation(
-        const s2mMuscleCaracteristics &caract,
+double biorbd::muscles::StateDynamicsBuchanan::timeDerivativeExcitation(
+        const biorbd::muscles::Caracteristics &caract,
         const bool alreadyNormalized){
-    // Move excitation to activation to use properly s2mMuscleStateDynamics::timeDerivativeActivation
+    // Move excitation to activation to use properly biorbd::muscles::StateDynamics::timeDerivativeActivation
     double activationTp = m_activation;
     m_activation = m_excitation;
     double excitationTp = m_excitation;
     m_excitation = m_neuralCommand;
 
     // Compute excitationDot
-    m_excitationDot = s2mMuscleStateDynamics::timeDerivativeActivation(caract, alreadyNormalized);
+    m_excitationDot = biorbd::muscles::StateDynamics::timeDerivativeActivation(caract, alreadyNormalized);
     // Set back activationDot to 0 (since it is suppose to calculate excitationDot)
     m_activationDot = 0;
     m_excitation = excitationTp;
@@ -51,20 +51,20 @@ double s2mMuscleStateDynamicsBuchanan::timeDerivativeExcitation(
     return m_excitationDot;
 }
 
-void s2mMuscleStateDynamicsBuchanan::setExcitation(const double &val)
+void biorbd::muscles::StateDynamicsBuchanan::setExcitation(const double &val)
 {
-     s2mMuscleStateDynamics::setExcitation(val);
+     biorbd::muscles::StateDynamics::setExcitation(val);
 
      // Update activation
-     s2mMuscleStateDynamicsBuchanan::activation();
+     biorbd::muscles::StateDynamicsBuchanan::activation();
 }
 
-void s2mMuscleStateDynamicsBuchanan::setNeuralCommand(const double &val)
+void biorbd::muscles::StateDynamicsBuchanan::setNeuralCommand(const double &val)
 {
      m_neuralCommand = val;
 }
 
-double s2mMuscleStateDynamicsBuchanan::activation()
+double biorbd::muscles::StateDynamicsBuchanan::activation()
 {
     double expShapeFactor(exp(m_shapeFactor));
     m_activation = (  pow(expShapeFactor, m_excitation) - 1) / (expShapeFactor - 1) ;

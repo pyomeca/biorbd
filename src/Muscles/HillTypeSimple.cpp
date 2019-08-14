@@ -2,61 +2,61 @@
 #include "Muscles/HillTypeSimple.h"
 
 
-s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(const biorbd::utils::String &s) :
-    s2mMuscleHillType(s)
+biorbd::muscles::HillTypeSimple::HillTypeSimple(const biorbd::utils::String &s) :
+    biorbd::muscles::HillType(s)
 {
     setType();
 }
 
-s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(
-        const s2mMuscleGeometry &g,
-        const s2mMuscleCaracteristics &c,
-        const s2mMusclePathChangers &w,
-        const s2mMuscleStateDynamics &s) :
-    s2mMuscleHillType(g,c,w,s)
+biorbd::muscles::HillTypeSimple::HillTypeSimple(
+        const biorbd::muscles::Geometry &g,
+        const biorbd::muscles::Caracteristics &c,
+        const biorbd::muscles::PathChangers &w,
+        const biorbd::muscles::StateDynamics &s) :
+    biorbd::muscles::HillType(g,c,w,s)
 {
     setType();
 }
 
-s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(
+biorbd::muscles::HillTypeSimple::HillTypeSimple(
         const biorbd::utils::String &n,
-        const s2mMuscleGeometry &g,
-        const s2mMuscleCaracteristics &c,
-        const s2mMusclePathChangers &w,
-        const s2mMuscleStateDynamics &s) :
-    s2mMuscleHillType(n,g,c,w,s)
+        const biorbd::muscles::Geometry &g,
+        const biorbd::muscles::Caracteristics &c,
+        const biorbd::muscles::PathChangers &w,
+        const biorbd::muscles::StateDynamics &s) :
+    biorbd::muscles::HillType(n,g,c,w,s)
 {
     setType();
 }
 
-s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(const s2mMuscle &m) :
-    s2mMuscleHillType (m)
+biorbd::muscles::HillTypeSimple::HillTypeSimple(const biorbd::muscles::Muscle &m) :
+    biorbd::muscles::HillType (m)
 {
     setType();
 }
 
-s2mMuscleHillTypeSimple::s2mMuscleHillTypeSimple(const std::shared_ptr<s2mMuscle> m) :
-    s2mMuscleHillType (m)
+biorbd::muscles::HillTypeSimple::HillTypeSimple(const std::shared_ptr<biorbd::muscles::Muscle> m) :
+    biorbd::muscles::HillType (m)
 {
     setType();
 }
 
-s2mMuscleHillTypeSimple::~s2mMuscleHillTypeSimple()
+biorbd::muscles::HillTypeSimple::~HillTypeSimple()
 {
     setType();
 }
 
-const std::vector<std::shared_ptr<s2mMuscleForce>> &s2mMuscleHillTypeSimple::force(const s2mMuscleStateDynamics &emg){
+const std::vector<std::shared_ptr<biorbd::muscles::Force>> &biorbd::muscles::HillTypeSimple::force(const biorbd::muscles::StateDynamics &emg){
     // Combiner les forces
     computeForce(emg);
     return m_force;
 }
 
-double s2mMuscleHillTypeSimple::multiplyCaractByActivationAndForce(const s2mMuscleStateDynamics &emg){
+double biorbd::muscles::HillTypeSimple::multiplyCaractByActivationAndForce(const biorbd::muscles::StateDynamics &emg){
     return caract().forceIsoMax() * (emg.activation());
 }
 
-void s2mMuscleHillTypeSimple::setType()
+void biorbd::muscles::HillTypeSimple::setType()
 {
     m_type = "HillSimple";
 }

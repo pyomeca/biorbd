@@ -1,40 +1,42 @@
-#ifndef S2M_WRAPPING_CYLINDER_H
-#define S2M_WRAPPING_CYLINDER_H
+#ifndef BIORBD_MUSCLES_WRAPPING_CYLINDER_H
+#define BIORBD_MUSCLES_WRAPPING_CYLINDER_H
 
 #include "biorbdConfig.h"
 #include "Utils/Attitude.h"
 #include "Muscles/WrappingObject.h"
 
-class BIORBD_API s2mWrappingCylinder : public s2mWrappingObject
+namespace biorbd { namespace muscles {
+
+class BIORBD_API WrappingCylinder : public biorbd::muscles::WrappingObject
 {
 public:
-    s2mWrappingCylinder(
+    WrappingCylinder(
             const biorbd::utils::Attitude & = biorbd::utils::Attitude(), // Position du centre
             const double & = 0, // Diametre vue du dessus
             const double & = 0, // Longueur du cylindre
             const int & =1, // sens du wrapping (+1 ou -1)
             const biorbd::utils::String& = "",  // Nom du cylindre
             const biorbd::utils::String& = ""); // Nom du parent sur lequel il s'attache
-    virtual ~s2mWrappingCylinder();
+    virtual ~WrappingCylinder();
 
     void wrapPoints(
             const biorbd::utils::Attitude&,
-            const s2mNodeMuscle&,
-            const s2mNodeMuscle&,
-            s2mNodeMuscle&,
-            s2mNodeMuscle&,
+            const biorbd::muscles::MuscleNode&,
+            const biorbd::muscles::MuscleNode&,
+            biorbd::muscles::MuscleNode&,
+            biorbd::muscles::MuscleNode&,
             double* = nullptr); // Premier et dernier points musculaire
     void wrapPoints(
             s2mJoints&,
             const biorbd::utils::GenCoord&,
-            const s2mNodeMuscle&,
-            const s2mNodeMuscle&,
-            s2mNodeMuscle&,
-            s2mNodeMuscle&,
+            const biorbd::muscles::MuscleNode&,
+            const biorbd::muscles::MuscleNode&,
+            biorbd::muscles::MuscleNode&,
+            biorbd::muscles::MuscleNode&,
             double* = nullptr) ; // Premier et dernier points musculaire
     void wrapPoints(
-            s2mNodeMuscle&,
-            s2mNodeMuscle&,
+            biorbd::muscles::MuscleNode&,
+            biorbd::muscles::MuscleNode&,
             double* = nullptr); // Premier et dernier points musculaire (si déja compute)
 
 
@@ -52,16 +54,16 @@ public:
 protected:
     class NodeMusclePair{
     public:
-        NodeMusclePair(const s2mNodeMuscle &p1, const s2mNodeMuscle &p2) : m_p1(p1),m_p2(p2){}
+        NodeMusclePair(const biorbd::muscles::MuscleNode &p1, const biorbd::muscles::MuscleNode &p2) : m_p1(p1),m_p2(p2){}
         ~NodeMusclePair(){}
-        s2mNodeMuscle m_p1;
-        s2mNodeMuscle m_p2;
+        biorbd::muscles::MuscleNode m_p1;
+        biorbd::muscles::MuscleNode m_p2;
     };
 
     // Trouve les deux tangentes d'un point avec un cercle
-    void findTangentToCircle(const s2mNodeMuscle&, s2mNodeMuscle&) const;
+    void findTangentToCircle(const biorbd::muscles::MuscleNode&, biorbd::muscles::MuscleNode&) const;
     // Selectionne parmi un set de noeuds lesquels sont a garder
-    void selectTangents(const NodeMusclePair&, s2mNodeMuscle&) const;
+    void selectTangents(const NodeMusclePair&, biorbd::muscles::MuscleNode&) const;
     // Trouver la hauteur des deux points (false = pas de wrap)
     bool findVerticalNode(const NodeMusclePair&, NodeMusclePair&) const;
     // Savoir s'il y a un wrapping qui doit etre fait
@@ -74,11 +76,13 @@ protected:
     int m_side; // sens autours duquel passe les muscles
     biorbd::utils::Attitude m_RTtoParent; // Matrice de rototrans avec le parent
 
-    s2mNodeMuscle m_p1Wrap; // Premier point de contact avec le wrap
-    s2mNodeMuscle m_p2Wrap; // Deuxieme point de contact avec le wrap
+    biorbd::muscles::MuscleNode m_p1Wrap; // Premier point de contact avec le wrap
+    biorbd::muscles::MuscleNode m_p2Wrap; // Deuxieme point de contact avec le wrap
     double m_lengthAroundWrap ; // Longeur entre p1 et p2
 
 };
 
-#endif // S2M_WRAPPING_CYLINDER_H
+}}
+
+#endif // BIORBD_MUSCLES_WRAPPING_CYLINDER_H
 

@@ -99,7 +99,7 @@
 
 #ifdef _WIN32
 // This is a hack because Eigen can't be dynamically compiled on Windows, while dlib needs consistency in compilation. 
-// Please note that this can result in undefined behavior while using s2mMuscleOptimisation...
+// Please note that this can result in undefined behavior while using biorbd::muscles::MuscleOptimisation...
 const int USER_ERROR__inconsistent_build_configuration__see_dlib_faq_1_ = 0;
 const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 #endif // _WIN32
@@ -111,19 +111,21 @@ std::string toLower(const std::string &str){
 }
 
 // MATLAB INTERFACE 
-/** \brief Entry point for the muscod application */
+///
+/// \brief Entry point for the muscod application
+///
 void mexFunction( int nlhs, mxArray *plhs[], 
                   int nrhs, const mxArray*prhs[] );
 void functionHub( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
-    /* Check for proper number of arguments */
+    // Check for proper number of arguments
     if (nrhs < 1) {
         mexErrMsgIdAndTxt( "MATLAB:yprime:invalidNumInputs",
                 "First argument should be the command");
     }
 
     // Traitement du 1er argument qui est la commande
-    /* Check for proper input type */
+    // Check for proper input type
     if (!mxIsChar(prhs[0]) || (mxGetM(prhs[0]) != 1 ) )  {
         mexErrMsgIdAndTxt( "MATLAB:mxmalloc:invalidInput",
                 "Input argument 1 must be a command string.");
@@ -141,13 +143,13 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Redirect vers les bonnes fonctions
 
-    /* À l'appel d'un nouveau modèle */
+    // À l'appel d'un nouveau modèle
     if (!toLower(cmd).compare("new")){
         S2M_new(nlhs, plhs, nrhs, prhs);
         return;
     }
 
-    /* À l'appel du delete du modèle */
+    // À l'appel du delete du modèle
     if (!toLower(cmd).compare("delete")){
         S2M_delete(nlhs, plhs, nrhs, prhs);
         return;

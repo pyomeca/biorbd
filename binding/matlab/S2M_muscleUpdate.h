@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_MUSCLE_UPDATE_H
-#define MATLAB_S2M_MUSCLE_UPDATE_H
+#ifndef MATLAB_BIORBD_MUSCLES_UPDATE_H
+#define MATLAB_BIORBD_MUSCLES_UPDATE_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -17,8 +17,8 @@ void S2M_muscleUpdate( int, mxArray *[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-    unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
+    unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
     std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
@@ -47,7 +47,7 @@ void S2M_muscleUpdate( int, mxArray *[],
         // Mettre le nombre nécessaire dans chaque case
         int cmpMus(0);
         for (unsigned int i = 0; i<model->nbMuscleGroups(); ++i){
-            s2mGroupeMusculaire grMus(model->muscleGroup(i));
+            biorbd::muscles::MuscleGroup grMus(model->muscleGroup(i));
             for (unsigned int j = 0; j<grMus.nbMuscles(); ++j){
                 nPoints(cmpMus) = grMus.muscle(j)->pathChanger().nbObjects() + 2; // nombre d'objet + origine + insertion
                 ++cmpMus;
@@ -56,7 +56,7 @@ void S2M_muscleUpdate( int, mxArray *[],
 //    }
 
     // Recueillir la matrice de points
-    std::vector<std::vector<s2mNodeMuscle>> musclePosition(getMusclePosition(prhs, 4, nPoints));
+    std::vector<std::vector<biorbd::muscles::MuscleNode>> musclePosition(getMusclePosition(prhs, 4, nPoints));
 
     // Recueillir la matrice jacobienne
     std::vector<biorbd::utils::Matrix> musclePointsJaco(getMusclePointsJaco(prhs, 5, nPoints, nQ));
@@ -67,4 +67,4 @@ void S2M_muscleUpdate( int, mxArray *[],
     return;
 }
 
-#endif // MATLAB_S2M_MUSCLE_UPDATE_H
+#endif // MATLAB_BIORBD_MUSCLES_UPDATE_H

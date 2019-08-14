@@ -1,39 +1,39 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/ForceFromInsertion.h"
 
-s2mMuscleForceFromInsertion::s2mMuscleForceFromInsertion() :
-    s2mMuscleForce()
+biorbd::muscles::ForceFromInsertion::ForceFromInsertion() :
+    biorbd::muscles::Force()
 {
 
 }
-s2mMuscleForceFromInsertion::s2mMuscleForceFromInsertion(double x, double y, double z) :
-    s2mMuscleForce(x,y,z)
+biorbd::muscles::ForceFromInsertion::ForceFromInsertion(double x, double y, double z) :
+    biorbd::muscles::Force(x,y,z)
 {
 
 }
-s2mMuscleForceFromInsertion::s2mMuscleForceFromInsertion(
-        const s2mMuscleGeometry& geo,
+biorbd::muscles::ForceFromInsertion::ForceFromInsertion(
+        const biorbd::muscles::Geometry& geo,
         double force) :
-    s2mMuscleForce(geo, force)
+    biorbd::muscles::Force(geo, force)
 {
 
 }
-s2mMuscleForceFromInsertion::s2mMuscleForceFromInsertion(const Eigen::Vector3d &force) :
-    s2mMuscleForce(force)
-{
-
-}
-
-s2mMuscleForceFromInsertion::~s2mMuscleForceFromInsertion()
+biorbd::muscles::ForceFromInsertion::ForceFromInsertion(const Eigen::Vector3d &force) :
+    biorbd::muscles::Force(force)
 {
 
 }
 
+biorbd::muscles::ForceFromInsertion::~ForceFromInsertion()
+{
+
+}
 
 
-void s2mMuscleForceFromInsertion::setForce(const s2mMuscleGeometry& geo, double force){
+
+void biorbd::muscles::ForceFromInsertion::setForce(const biorbd::muscles::Geometry& geo, double force){
     // Trouver le vecteur directeur
-    std::vector<s2mNodeMuscle> tp_via = geo.musclesPointsInGlobal();
+    std::vector<biorbd::muscles::MuscleNode> tp_via = geo.musclesPointsInGlobal();
     Eigen::Vector3d V ( tp_via[tp_via.size()-2] - tp_via[tp_via.size()-1] );
     V = V/V.norm();
 
@@ -41,5 +41,5 @@ void s2mMuscleForceFromInsertion::setForce(const s2mMuscleGeometry& geo, double 
     V = V*force;
 
     // Stocker cette valeur
-    s2mMuscleForce::setForce(V);
+    biorbd::muscles::Force::setForce(V);
 }

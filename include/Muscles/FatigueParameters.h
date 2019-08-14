@@ -1,12 +1,14 @@
-#ifndef S2M_MUSCLE_FATIGUE_PARAM_H
-#define S2M_MUSCLE_FATIGUE_PARAM_H
+#ifndef BIORBD_MUSCLES_FATIGUE_PARAMETERS_H
+#define BIORBD_MUSCLES_FATIGUE_PARAMETERS_H
 
 #include "biorbdConfig.h"
 
-class BIORBD_API s2mMuscleFatigueParam
+namespace biorbd { namespace muscles {
+
+class BIORBD_API FatigueParameters
 {
 public:
-    s2mMuscleFatigueParam(
+    FatigueParameters(
             double fatigueRate = 0,
             double recoveryRate = 0,
             double developFactor = 0,
@@ -31,4 +33,6 @@ protected:
 
 };
 
-#endif // S2M_MUSCLE_FATIGUE_PARAM_H
+}}
+
+#endif // BIORBD_MUSCLES_FATIGUE_PARAMETERS_H

@@ -15,7 +15,7 @@ void S2M_MusclesExcitationDotBuchanan( int, mxArray *plhs[],
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
 
     // Recevoir les états musculaires
-    std::vector<std::vector<s2mMuscleStateDynamicsBuchanan>> state = getParameterMuscleStateBuchanan(prhs, 2, 3, model->nbMuscleTotal());
+    std::vector<std::vector<biorbd::muscles::StateDynamicsBuchanan>> state = getParameterMuscleStateBuchanan(prhs, 2, 3, model->nbMuscleTotal());
 
     // Already normalized
     bool alreadyNormalized(false);
@@ -37,7 +37,7 @@ void S2M_MusclesExcitationDotBuchanan( int, mxArray *plhs[],
         for (unsigned int i=0; i<model->nbMuscleGroups(); ++i)
             for (unsigned int j=0; j<model->muscleGroup(i).nbMuscles(); ++j){
                  // Recueillir dérivées d'excitations
-                double shapeFactor = static_cast<s2mMuscleStateDynamicsBuchanan*>(&(model->muscleGroup(i).muscle(j)->state_nonConst()))->shapeFactor();
+                double shapeFactor = static_cast<biorbd::muscles::StateDynamicsBuchanan*>(&(model->muscleGroup(i).muscle(j)->state_nonConst()))->shapeFactor();
                 (*((*(state.begin()+iTime)).begin() + cmpState)).shapeFactor(shapeFactor);
                 edot[cmp] = (*((*(state.begin()+iTime)).begin() + cmpState)).timeDerivativeExcitation(model->muscleGroup(i).muscle(j)->caract(), true);
                 updateKin = false;

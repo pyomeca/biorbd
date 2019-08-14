@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_MUSCLE_FORCE_NORM_H
-#define MATLAB_S2M_MUSCLE_FORCE_NORM_H
+#ifndef MATLAB_BIORBD_MUSCLES_FORCE_NORM_H
+#define MATLAB_BIORBD_MUSCLES_FORCE_NORM_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -13,8 +13,8 @@ void S2M_muscleForcesNorm( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-    unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
+    unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
     std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
@@ -23,7 +23,7 @@ void S2M_muscleForcesNorm( int, mxArray *plhs[],
     std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
 
     // Recevoir les états musculaires
-    std::vector<std::vector<s2mMuscleStateDynamics>> state = getParameterMuscleStateActivation(prhs, 4, model->nbMuscleTotal());
+    std::vector<std::vector<biorbd::muscles::StateDynamics>> state = getParameterMuscleStateActivation(prhs, 4, model->nbMuscleTotal());
 
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
@@ -46,7 +46,7 @@ void S2M_muscleForcesNorm( int, mxArray *plhs[],
 
     unsigned int cmp=0;
     for (unsigned int iF=0; iF<nFrame; ++iF){
-        std::vector<std::vector<std::shared_ptr<s2mMuscleForce>>> Force;
+        std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> Force;
         if (updateKin)
             Force = model->musclesForces(*model, *(state.begin()+iF), updateKin, &(*(Q.begin()+iF)), &(*(QDot.begin()+iF)));
         else
@@ -61,5 +61,5 @@ void S2M_muscleForcesNorm( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_MUSCLE_FORCE_NORM_H
+#endif // MATLAB_BIORBD_MUSCLES_FORCE_NORM_H
 

@@ -13,7 +13,7 @@ void S2M_MusclesLength( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 3, 3, "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
     std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
@@ -48,7 +48,7 @@ void S2M_MusclesTendonLength( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 3, 3, "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
     std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);

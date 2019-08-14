@@ -1,5 +1,5 @@
-#ifndef S2M_WRAPPING_OBJECT_H
-#define S2M_WRAPPING_OBJECT_H
+#ifndef BIORBD_MUSCLES_WRAPPING_OBJECT_H
+#define BIORBD_MUSCLES_WRAPPING_OBJECT_H
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
@@ -10,14 +10,17 @@ class s2mJoints;
 namespace biorbd { namespace utils {
 class GenCoord;
 }}
-class BIORBD_API s2mWrappingObject : public s2mMusclePathChanger
+
+namespace biorbd { namespace muscles {
+
+class BIORBD_API WrappingObject : public biorbd::muscles::PathChanger
 {
 public:
-    s2mWrappingObject(
+    WrappingObject(
             const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
             const biorbd::utils::String &name = "",  // Nom du noeud
             const biorbd::utils::String &parentName = "");
-    virtual ~s2mWrappingObject() ;
+    virtual ~WrappingObject() ;
 
     virtual biorbd::utils::Attitude RT(
             s2mJoints &m,
@@ -25,21 +28,21 @@ public:
             const bool & = true) = 0;
     virtual void wrapPoints(
             const biorbd::utils::Attitude&,
-            const s2mNodeMuscle&,
-            const s2mNodeMuscle&,
-            s2mNodeMuscle&,
-            s2mNodeMuscle&, double* = nullptr) = 0 ; // Premier et dernier points musculaire
+            const biorbd::muscles::MuscleNode&,
+            const biorbd::muscles::MuscleNode&,
+            biorbd::muscles::MuscleNode&,
+            biorbd::muscles::MuscleNode&, double* = nullptr) = 0 ; // Premier et dernier points musculaire
     virtual void wrapPoints(
             s2mJoints&,
             const biorbd::utils::GenCoord&,
-            const s2mNodeMuscle&,
-            const s2mNodeMuscle&,
-            s2mNodeMuscle&,
-            s2mNodeMuscle&,
+            const biorbd::muscles::MuscleNode&,
+            const biorbd::muscles::MuscleNode&,
+            biorbd::muscles::MuscleNode&,
+            biorbd::muscles::MuscleNode&,
             double* = nullptr) = 0; // Premier et dernier points musculaire
     virtual void wrapPoints(
-            s2mNodeMuscle&,
-            s2mNodeMuscle&,
+            biorbd::muscles::MuscleNode&,
+            biorbd::muscles::MuscleNode&,
             double* = nullptr) = 0; // Assume un appel déja faits
 
     // Set and get
@@ -50,4 +53,6 @@ protected:
 
 };
 
-#endif // S2M_WRAPPING_OBJECT_H
+}}
+
+#endif // BIORBD_MUSCLES_WRAPPING_OBJECT_H

@@ -1,41 +1,41 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/Force.h"
 
-s2mMuscleForce::s2mMuscleForce()
+biorbd::muscles::Force::Force()
 {
     //ctor
     setForce(Eigen::Vector3d(0,0,0));
 }
-s2mMuscleForce::s2mMuscleForce(double x, double y, double z){
+biorbd::muscles::Force::Force(double x, double y, double z){
     setForce(x,y,z);
 }
-s2mMuscleForce::s2mMuscleForce(
-        const s2mMuscleGeometry& geo,
+biorbd::muscles::Force::Force(
+        const biorbd::muscles::Geometry& geo,
         double force){
     setForce(geo, force);
 }
 
 
-s2mMuscleForce::s2mMuscleForce(const Eigen::Vector3d &force) :
+biorbd::muscles::Force::Force(const Eigen::Vector3d &force) :
     Eigen::Vector3d(force)
 {
     //ctor
     //setForce(V); // Appel récurrent
 }
 
-double s2mMuscleForce::norme() const
+double biorbd::muscles::Force::norme() const
 {
     return m_force;
 }
 
-const Eigen::Vector3d &s2mMuscleForce::directionVector() const
+const Eigen::Vector3d &biorbd::muscles::Force::directionVector() const
 {
     return *this;
 }
 
 
 
-void s2mMuscleForce::setForce(const s2mMuscleGeometry& geo, double force){
+void biorbd::muscles::Force::setForce(const biorbd::muscles::Geometry& geo, double force){
     // Trouver le vecteur directeur
     Eigen::Vector3d V(geo.insertionInGlobal() - geo.originInGlobal());
     V = V/V.norm();
@@ -46,15 +46,15 @@ void s2mMuscleForce::setForce(const s2mMuscleGeometry& geo, double force){
     // Stocker cette valeur
     setForce(V);
 }
-void s2mMuscleForce::setForce(double x, double y, double z){
+void biorbd::muscles::Force::setForce(double x, double y, double z){
     setForce(Eigen::Vector3d(x, y, z));
 }
 
-void s2mMuscleForce::setForce(const Eigen::Vector3d &force){
+void biorbd::muscles::Force::setForce(const Eigen::Vector3d &force){
     *this = force;
     computeNorm();
 }
 
-void s2mMuscleForce::computeNorm(){
+void biorbd::muscles::Force::computeNorm(){
     m_force = (*this).norm();
 }

@@ -13,7 +13,7 @@ void S2M_Mesh( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 3, 4, "3 arguments are required (+1 optional) where the 2nd is the handler on the model, 3rd is the Q and 4th optional is a specific segment index");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
     biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();

@@ -1,44 +1,46 @@
-#ifndef S2M_MUSCLE_HILL_TYPE_H
-#define S2M_MUSCLE_HILL_TYPE_H
+#ifndef BIORBD_MUSCLES_HILL_TYPE_H
+#define BIORBD_MUSCLES_HILL_TYPE_H
 
 #include "biorbdConfig.h"
 #include "Muscles/Muscle.h"
 
-class BIORBD_API s2mMuscleHillType : public s2mMuscle
+namespace biorbd { namespace muscles {
+
+class BIORBD_API HillType : public biorbd::muscles::Muscle
 {
 public:
-    s2mMuscleHillType(const biorbd::utils::String& = "");
-    s2mMuscleHillType(
-            const s2mMuscleGeometry&,
-            const s2mMuscleCaracteristics&,
-            const s2mMusclePathChangers & = s2mMusclePathChangers(),
-            const s2mMuscleStateDynamics & = s2mMuscleStateDynamics());
-    s2mMuscleHillType(
+    HillType(const biorbd::utils::String& = "");
+    HillType(
+            const biorbd::muscles::Geometry&,
+            const biorbd::muscles::Caracteristics&,
+            const biorbd::muscles::PathChangers & = biorbd::muscles::PathChangers(),
+            const biorbd::muscles::StateDynamics & = biorbd::muscles::StateDynamics());
+    HillType(
             const biorbd::utils::String&,
-            const s2mMuscleGeometry&,
-            const s2mMuscleCaracteristics&,
-            const s2mMusclePathChangers & = s2mMusclePathChangers(),
-            const s2mMuscleStateDynamics & = s2mMuscleStateDynamics());
-    s2mMuscleHillType(const s2mMuscle& m);
-    s2mMuscleHillType(const std::shared_ptr<s2mMuscle> m);
-    virtual ~s2mMuscleHillType();
+            const biorbd::muscles::Geometry&,
+            const biorbd::muscles::Caracteristics&,
+            const biorbd::muscles::PathChangers & = biorbd::muscles::PathChangers(),
+            const biorbd::muscles::StateDynamics & = biorbd::muscles::StateDynamics());
+    HillType(const biorbd::muscles::Muscle& m);
+    HillType(const std::shared_ptr<biorbd::muscles::Muscle> m);
+    virtual ~HillType();
 
 
-    virtual const std::vector<std::shared_ptr<s2mMuscleForce>>& force(
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
             s2mJoints& model,
             const biorbd::utils::GenCoord& Q,
             const biorbd::utils::GenCoord& Qdot,
-            const s2mMuscleStateDynamics& emg,
+            const biorbd::muscles::StateDynamics& emg,
             const int updateKin = 2); // Compute muscle force
-    virtual const std::vector<std::shared_ptr<s2mMuscleForce>>& force(
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
             s2mJoints& model,
             const biorbd::utils::GenCoord& Q,
-            const s2mMuscleStateDynamics& emg,
+            const biorbd::muscles::StateDynamics& emg,
             const int updateKin = 2); // Compute muscle force
-    virtual const std::vector<std::shared_ptr<s2mMuscleForce>>& force(const s2mMuscleStateDynamics& emg); // Compute muscle force (assume updateOrientations has been done)
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(const biorbd::muscles::StateDynamics& emg); // Compute muscle force (assume updateOrientations has been done)
 
     // Get individual forces
-    double FlCE(const s2mMuscleStateDynamics& EMG);
+    double FlCE(const biorbd::muscles::StateDynamics& EMG);
     double FlPE();
     double FvCE();
     double damping();
@@ -49,12 +51,12 @@ protected:
 
     // Étapes intermédiaires du calcul de la force
     virtual void computeDamping(); // Force du ressort
-    virtual void computeFlCE(const s2mMuscleStateDynamics &EMG); // ForceLongueur element contractile
+    virtual void computeFlCE(const biorbd::muscles::StateDynamics &EMG); // ForceLongueur element contractile
     virtual void computeFvCE(); // ForceVitesse element contractile
     virtual void computeFlPE(); // ForceLongueur element passif
-    virtual void computeForce(const s2mMuscleStateDynamics &EMG); // Calcul des forces
-    virtual double multiplyCaractByActivationAndForce(const s2mMuscleStateDynamics &emg); // Voir dans la fonction pour descriptif
-    virtual s2mMuscleStateDynamics normalizeEMG(const s2mMuscleStateDynamics& emg);
+    virtual void computeForce(const biorbd::muscles::StateDynamics &EMG); // Calcul des forces
+    virtual double multiplyCaractByActivationAndForce(const biorbd::muscles::StateDynamics &emg); // Voir dans la fonction pour descriptif
+    virtual biorbd::muscles::StateDynamics normalizeEMG(const biorbd::muscles::StateDynamics& emg);
 
     // Attributs intermédiaires lors du calcul de la force
     double m_damping; // Force du ressort
@@ -75,4 +77,6 @@ protected:
 
 };
 
-#endif // S2M_MUSCLE_HILL_TYPE_H
+}}
+
+#endif // BIORBD_MUSCLES_HILL_TYPE_H

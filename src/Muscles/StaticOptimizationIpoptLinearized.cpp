@@ -4,7 +4,7 @@
 #include "s2mMusculoSkeletalModel.h"
 #include "Muscles/StateDynamics.h"
 
-s2mStaticOptimizationIpoptLinearized::s2mStaticOptimizationIpoptLinearized(
+biorbd::muscles::StaticOptimizationIpoptLinearized::StaticOptimizationIpoptLinearized(
         s2mMusculoSkeletalModel &model,
         const biorbd::utils::GenCoord &Q,
         const biorbd::utils::GenCoord &Qdot,
@@ -15,23 +15,23 @@ s2mStaticOptimizationIpoptLinearized::s2mStaticOptimizationIpoptLinearized(
         int verbose,
         double eps
         ) :
-    s2mStaticOptimizationIpopt(model, Q, Qdot, tauTarget, activationInit, useResidual, pNormFactor, verbose, eps),
+    biorbd::muscles::StaticOptimizationIpopt(model, Q, Qdot, tauTarget, activationInit, useResidual, pNormFactor, verbose, eps),
     m_jacobian(biorbd::utils::Matrix(m_nDof, m_nMus))
 {
     prepareJacobian();
 }
 
 
-void s2mStaticOptimizationIpoptLinearized::prepareJacobian()
+void biorbd::muscles::StaticOptimizationIpoptLinearized::prepareJacobian()
 {
     m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
-    std::vector<s2mMuscleStateDynamics> state_zero;
+    std::vector<biorbd::muscles::StateDynamics> state_zero;
     for (unsigned int i = 0; i<m_nMus; ++i){
-        state_zero.push_back(s2mMuscleStateDynamics(0, 0));
+        state_zero.push_back(biorbd::muscles::StateDynamics(0, 0));
     }
     biorbd::utils::Tau tau_zero(m_model.muscularJointTorque(m_model, state_zero, false, &m_Q, &m_Qdot));
     for (unsigned int i = 0; i<m_nMus; ++i){
-        std::vector<s2mMuscleStateDynamics> state;
+        std::vector<biorbd::muscles::StateDynamics> state;
         for (unsigned int j = 0; j<m_nMus; ++j){
             unsigned int delta;
             if (j == i){
@@ -40,7 +40,7 @@ void s2mStaticOptimizationIpoptLinearized::prepareJacobian()
             else {
                 delta = 0;
             }
-            state.push_back(s2mMuscleStateDynamics(0, delta*1));
+            state.push_back(biorbd::muscles::StateDynamics(0, delta*1));
         }
         biorbd::utils::Tau tau(m_model.muscularJointTorque(m_model, state, true, &m_Q, &m_Qdot));
         for (unsigned int j = 0; j<m_nTau; ++j){
@@ -49,12 +49,12 @@ void s2mStaticOptimizationIpoptLinearized::prepareJacobian()
     }
 }
 
-s2mStaticOptimizationIpoptLinearized::~s2mStaticOptimizationIpoptLinearized()
+biorbd::muscles::StaticOptimizationIpoptLinearized::~StaticOptimizationIpoptLinearized()
 {
 
 }
 
-bool s2mStaticOptimizationIpoptLinearized::eval_g(
+bool biorbd::muscles::StaticOptimizationIpoptLinearized::eval_g(
         Ipopt::Index n,
         const Ipopt::Number *x,
         bool new_x,
@@ -66,9 +66,9 @@ bool s2mStaticOptimizationIpoptLinearized::eval_g(
     if (new_x){
         dispatch(x);
     }
-    std::vector<s2mMuscleStateDynamics> state;// controls
+    std::vector<biorbd::muscles::StateDynamics> state;// controls
     for (unsigned int i = 0; i<m_nMus; ++i){
-        state.push_back(s2mMuscleStateDynamics(0, m_activations[i]));
+        state.push_back(biorbd::muscles::StateDynamics(0, m_activations[i]));
     }
     // Compute the torques from muscles
     biorbd::utils::Tau tau_calcul(m_model.muscularJointTorque(m_model, state, false, &m_Q, &m_Qdot));
@@ -87,7 +87,7 @@ bool s2mStaticOptimizationIpoptLinearized::eval_g(
     return true;
 }
 
-bool s2mStaticOptimizationIpoptLinearized::eval_jac_g(
+bool biorbd::muscles::StaticOptimizationIpoptLinearized::eval_jac_g(
         Ipopt::Index,
         const Ipopt::Number *x,
         bool new_x,

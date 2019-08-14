@@ -5,58 +5,58 @@
 #include "Muscles/Muscle.h"
 #include "Muscles/FatigueDynamicStateXia.h"
 
-s2mMuscleFatigable::s2mMuscleFatigable(const biorbd::utils::String &dynamicFatigueType)
+biorbd::muscles::Fatigable::Fatigable(const biorbd::utils::String &dynamicFatigueType)
 {
     if (!dynamicFatigueType.tolower().compare("simple"))
-        m_fatigueState = std::make_shared<s2mMuscleFatigueState>();
+        m_fatigueState = std::make_shared<biorbd::muscles::FatigueState>();
     else if (!dynamicFatigueType.tolower().compare("xia"))
-        m_fatigueState = std::make_shared<s2mMuscleFatigueDynamicStateXia>();
+        m_fatigueState = std::make_shared<biorbd::muscles::FatigueDynamicStateXia>();
     else
         biorbd::utils::Error::error(false, "Wrong muscle fatigue type");
 }
 
-s2mMuscleFatigable::s2mMuscleFatigable(const s2mMuscle &m)
+biorbd::muscles::Fatigable::Fatigable(const biorbd::muscles::Muscle &m)
 {
     try {
-        const s2mMuscleFatigable& m_tp(dynamic_cast<const s2mMuscleFatigable&>(m));
+        const biorbd::muscles::Fatigable& m_tp(dynamic_cast<const biorbd::muscles::Fatigable&>(m));
         this->m_fatigueState = m_tp.m_fatigueState;
     } catch (const std::bad_cast&) {
         biorbd::utils::Error::error(false, "This muscle is not fatigable");
     }
 }
 
-s2mMuscleFatigable::s2mMuscleFatigable(const std::shared_ptr<s2mMuscle> m)
+biorbd::muscles::Fatigable::Fatigable(const std::shared_ptr<biorbd::muscles::Muscle> m)
 {
-    const std::shared_ptr<s2mMuscleFatigable> m_tp(std::dynamic_pointer_cast<s2mMuscleFatigable>(m));
+    const std::shared_ptr<biorbd::muscles::Fatigable> m_tp(std::dynamic_pointer_cast<biorbd::muscles::Fatigable>(m));
     if (!m_tp)
         biorbd::utils::Error::error(false, "This muscle is not fatigable");
     this->m_fatigueState = m_tp->m_fatigueState;
 }
 
-s2mMuscleFatigable::~s2mMuscleFatigable()
+biorbd::muscles::Fatigable::~Fatigable()
 {
 
 }
 
-std::shared_ptr<s2mMuscleFatigueState> s2mMuscleFatigable::fatigueState()
+std::shared_ptr<biorbd::muscles::FatigueState> biorbd::muscles::Fatigable::fatigueState()
 {
     return m_fatigueState;
 }
 
-void s2mMuscleFatigable::fatigueState(double active, double fatigued, double resting)
+void biorbd::muscles::Fatigable::fatigueState(double active, double fatigued, double resting)
 {
     m_fatigueState->setState(active, fatigued, resting);
 }
 
 
-void s2mMuscleFatigable::computeTimeDerivativeState(const s2mMuscleStateDynamics &emg)
+void biorbd::muscles::Fatigable::computeTimeDerivativeState(const biorbd::muscles::StateDynamics &emg)
 {
-    if (std::dynamic_pointer_cast<s2mMuscleFatigueDynamicState>(m_fatigueState)) {
-        s2mMuscle* muscle = dynamic_cast<s2mMuscle*>(this);
+    if (std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicState>(m_fatigueState)) {
+        biorbd::muscles::Muscle* muscle = dynamic_cast<biorbd::muscles::Muscle*>(this);
         if (muscle)
-            std::static_pointer_cast<s2mMuscleFatigueDynamicState>(m_fatigueState)->timeDerivativeState(emg, muscle->caract());
+            std::static_pointer_cast<biorbd::muscles::FatigueDynamicState>(m_fatigueState)->timeDerivativeState(emg, muscle->caract());
         else
-            biorbd::utils::Error::error(false, "s2mMuscleFatigable should be a s2mMuscle");
+            biorbd::utils::Error::error(false, "biorbd::muscles::Fatigable should be a biorbd::muscles::Muscle");
    } else {
        biorbd::utils::Error::error(false, "Type cannot be fatigued");
     }

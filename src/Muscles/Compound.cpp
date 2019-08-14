@@ -1,9 +1,9 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/Compound.h"
 
-s2mMuscleCompound::s2mMuscleCompound(
+biorbd::muscles::Compound::Compound(
         const biorbd::utils::String &name,
-        const s2mMusclePathChangers& wrap) :
+        const biorbd::muscles::PathChangers& wrap) :
     m_pathChanger(wrap),
     m_name(name)
 {
@@ -11,7 +11,7 @@ s2mMuscleCompound::s2mMuscleCompound(
     //ctor
 }
 
-s2mMuscleCompound::s2mMuscleCompound(const s2mMuscleCompound &m)
+biorbd::muscles::Compound::Compound(const biorbd::muscles::Compound &m)
 {
     this->m_pathChanger = m.m_pathChanger;
     this->copyForce(m.m_force);
@@ -19,37 +19,37 @@ s2mMuscleCompound::s2mMuscleCompound(const s2mMuscleCompound &m)
     this->m_name = m.m_name;
 }
 
-s2mMuscleCompound::~s2mMuscleCompound()
+biorbd::muscles::Compound::~Compound()
 {
     //dtor
 }
 
-const s2mMusclePathChangers &s2mMuscleCompound::pathChanger() {
+const biorbd::muscles::PathChangers &biorbd::muscles::Compound::pathChanger() {
     return m_pathChanger;
 }
 
-void s2mMuscleCompound::addPathObject(s2mMusclePathChanger &w)  {
+void biorbd::muscles::Compound::addPathObject(biorbd::muscles::PathChanger &w)  {
     m_pathChanger.addPathChanger(w);
 }
 
-const biorbd::utils::String &s2mMuscleCompound::type() const
+const biorbd::utils::String &biorbd::muscles::Compound::type() const
 {
     return m_type;
 }
 
-const std::vector<std::shared_ptr<s2mMuscleForce>>& s2mMuscleCompound::force() {
+const std::vector<std::shared_ptr<biorbd::muscles::Force>>& biorbd::muscles::Compound::force() {
     return m_force;
 }
 
-const biorbd::utils::String &s2mMuscleCompound::name() const {
+const biorbd::utils::String &biorbd::muscles::Compound::name() const {
     return m_name;
 }
 
-void s2mMuscleCompound::setName(const biorbd::utils::String &name) {
+void biorbd::muscles::Compound::setName(const biorbd::utils::String &name) {
     m_name = name;
 }
 
-void s2mMuscleCompound::copyForce(const std::vector<std::shared_ptr<s2mMuscleForce>> &force)
+void biorbd::muscles::Compound::copyForce(const std::vector<std::shared_ptr<biorbd::muscles::Force>> &force)
 {
     m_force = force;
 }

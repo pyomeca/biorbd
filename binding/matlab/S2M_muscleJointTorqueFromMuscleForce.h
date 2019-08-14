@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_MUSCLE_JOINT_TORQUE_FROM_MUSCLE_FORCE_H
-#define MATLAB_S2M_MUSCLE_JOINT_TORQUE_FROM_MUSCLE_FORCE_H
+#ifndef MATLAB_BIORBD_MUSCLES_JOINT_TORQUE_FROM_MUSCLE_FORCE_H
+#define MATLAB_BIORBD_MUSCLES_JOINT_TORQUE_FROM_MUSCLE_FORCE_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -13,10 +13,10 @@ void S2M_muscleJointTorqueFromMuscleForce( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 5, 6, "5 arguments are required where the 2nd is the handler on the model, 3rd is the Q, 4th is QDot, 5th is the muscles force norm vector and optional 6th is if update [true] must be done. Note that if update is set to [false], the user MUST update it by himself before calling this function");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-    unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
-    unsigned int nTau = model->nbTau(); /* Get the number of DoF */
-    unsigned int nRoot = model->nbRoot(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
+    unsigned int nQdot = model->nbQdot(); // Get the number of DoF
+    unsigned int nTau = model->nbTau(); // Get the number of DoF
+    unsigned int nRoot = model->nbRoot(); // Get the number of DoF
     unsigned int nMuscleTotal = model->nbMuscleTotal();
 
     // Recevoir Q
@@ -65,4 +65,4 @@ void S2M_muscleJointTorqueFromMuscleForce( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_MUSCLE_JOINT_TORQUE_FROM_MUSCLE_FORCE_H
+#endif // MATLAB_BIORBD_MUSCLES_JOINT_TORQUE_FROM_MUSCLE_FORCE_H

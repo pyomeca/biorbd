@@ -1,23 +1,27 @@
-#ifndef S2M_MUSCLE_FORCE_FROM_ORIGIN_H
-#define S2M_MUSCLE_FORCE_FROM_ORIGIN_H
+#ifndef BIORBD_MUSCLES_FORCE_FROM_ORIGIN_H
+#define BIORBD_MUSCLES_FORCE_FROM_ORIGIN_H
 
 #include "biorbdConfig.h"
 #include "Muscles/Force.h"
 
-class BIORBD_API s2mMuscleForceFromOrigin : public s2mMuscleForce
+namespace biorbd { namespace muscles {
+
+class BIORBD_API ForceFromOrigin : public biorbd::muscles::Force
 {
     public:
-        s2mMuscleForceFromOrigin();
-        s2mMuscleForceFromOrigin(double x, double y, double z);
-        s2mMuscleForceFromOrigin(const Eigen::Vector3d& force);
-        s2mMuscleForceFromOrigin(
-                const s2mMuscleGeometry& geo,
+        ForceFromOrigin();
+        ForceFromOrigin(double x, double y, double z);
+        ForceFromOrigin(const Eigen::Vector3d& force);
+        ForceFromOrigin(
+                const biorbd::muscles::Geometry& geo,
                 double force);
-        virtual ~s2mMuscleForceFromOrigin();
+        virtual ~ForceFromOrigin();
 
         // Get et set
-        void setForce(const s2mMuscleGeometry& geo, double force);
+        void setForce(const biorbd::muscles::Geometry& geo, double force);
 
 };
 
-#endif // S2M_MUSCLE_FORCE_FROM_ORIGIN_H
+}}
+
+#endif // BIORBD_MUSCLES_FORCE_FROM_ORIGIN_H

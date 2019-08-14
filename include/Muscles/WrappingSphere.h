@@ -1,18 +1,20 @@
-#ifndef S2M_WRAPPING_SPHERE_H
-#define S2M_WRAPPING_SPHERE_H
+#ifndef BIORBD_MUSCLES_WRAPPING_SPHERE_H
+#define BIORBD_MUSCLES_WRAPPING_SPHERE_H
 
 #include "biorbdConfig.h"
 #include "Muscles/WrappingObject.h"
 
-class BIORBD_API s2mWrappingSphere : public s2mWrappingObject
+namespace biorbd { namespace muscles {
+
+class BIORBD_API WrappingSphere : public biorbd::muscles::WrappingObject
 {
 public:
-    s2mWrappingSphere(
+    WrappingSphere(
             const double &dia = 0, // Diametre de la sphere
             const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
             const biorbd::utils::String &name = "",  // Nom du noeud
             const biorbd::utils::String &parentName = "");
-    virtual ~s2mWrappingSphere();
+    virtual ~WrappingSphere();
 
     biorbd::utils::Attitude RT(
             s2mJoints &,
@@ -20,21 +22,21 @@ public:
             const bool & = true);
     virtual void wrapPoints(
             const biorbd::utils::Attitude&,
-            const s2mNodeMuscle&,
-            const s2mNodeMuscle&,
-            s2mNodeMuscle&,
-            s2mNodeMuscle&, double* = nullptr) {} // Premier et dernier points musculaire
+            const biorbd::muscles::MuscleNode&,
+            const biorbd::muscles::MuscleNode&,
+            biorbd::muscles::MuscleNode&,
+            biorbd::muscles::MuscleNode&, double* = nullptr) {} // Premier et dernier points musculaire
     virtual void wrapPoints(
             s2mJoints&,
             const biorbd::utils::GenCoord&,
-            const s2mNodeMuscle&,
-            const s2mNodeMuscle&,
-            s2mNodeMuscle&,
-            s2mNodeMuscle&,
+            const biorbd::muscles::MuscleNode&,
+            const biorbd::muscles::MuscleNode&,
+            biorbd::muscles::MuscleNode&,
+            biorbd::muscles::MuscleNode&,
             double* = nullptr) {} // Premier et dernier points musculaire
     virtual void wrapPoints(
-            s2mNodeMuscle&,
-            s2mNodeMuscle&,
+            biorbd::muscles::MuscleNode&,
+            biorbd::muscles::MuscleNode&,
             double* = nullptr) {} // Premier et dernier points musculaire
 
     // Get and set
@@ -45,4 +47,6 @@ protected:
 
 };
 
-#endif // S2M_WRAPPING_SPHERE_H
+}}
+
+#endif // BIORBD_MUSCLES_WRAPPING_SPHERE_H

@@ -13,7 +13,7 @@ void S2M_ProjectCustomPoint( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 6, 6, "6 arguments are required where the 2nd is the handler on the model, 3rd is the Q, 4th are the 3xNxT points in global reference frame, 5th is the body idx to project on and 6th are axes to remove on this body axes");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
     std::vector<biorbd::utils::GenCoord> Qall = getParameterQ(prhs, 2, nQ);

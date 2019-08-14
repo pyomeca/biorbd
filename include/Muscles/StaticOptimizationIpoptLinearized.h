@@ -1,14 +1,16 @@
-#ifndef S2M_STATIC_OPTIMIZATION_IPOPT_LINEARIZED_H
-#define S2M_STATIC_OPTIMIZATION_IPOPT_LINEARIZED_H
+#ifndef BIORBD_MUSCLES_STATIC_OPTIMIZATION_IPOPT_LINEARIZED_H
+#define BIORBD_MUSCLES_STATIC_OPTIMIZATION_IPOPT_LINEARIZED_H
 
 #include "biorbdConfig.h"
 #include "Utils/Matrix.h"
 #include "Muscles/StaticOptimizationIpopt.h"
 
-class BIORBD_API s2mStaticOptimizationIpoptLinearized : public s2mStaticOptimizationIpopt
+namespace biorbd { namespace muscles {
+
+class BIORBD_API StaticOptimizationIpoptLinearized : public biorbd::muscles::StaticOptimizationIpopt
 {
 public:
-    s2mStaticOptimizationIpoptLinearized(
+    StaticOptimizationIpoptLinearized(
             s2mMusculoSkeletalModel& model,
             const biorbd::utils::GenCoord& Q,
             const biorbd::utils::GenCoord& Qdot,
@@ -19,7 +21,7 @@ public:
             int verbose = 0,
             double eps = 1e-10);
 
-    virtual ~s2mStaticOptimizationIpoptLinearized();
+    virtual ~StaticOptimizationIpoptLinearized();
 
     // Method to return the constraint residuals
     virtual bool eval_g(
@@ -48,4 +50,6 @@ protected:
 
 };
 
-#endif // S2M_STATIC_OPTIMIZATION_IPOPT_LINEARIZED_H
+}}
+
+#endif // BIORBD_MUSCLES_STATIC_OPTIMIZATION_IPOPT_LINEARIZED_H

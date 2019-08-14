@@ -1,16 +1,16 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/ViaPoint.h"
 
-s2mViaPoint::s2mViaPoint(
+biorbd::muscles::ViaPoint::ViaPoint(
         const Eigen::Vector3d &v, // Position du noeud
         const biorbd::utils::String &name,  // Nom du noeud
         const biorbd::utils::String &parentName) :
-    s2mMusclePathChanger(v,name,parentName)
+    biorbd::muscles::PathChanger(v,name,parentName)
 {
     m_type = "Via";
 }
 
 
-s2mViaPoint::~s2mViaPoint(){
+biorbd::muscles::ViaPoint::~ViaPoint(){
 
 }

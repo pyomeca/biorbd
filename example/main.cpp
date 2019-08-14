@@ -31,7 +31,7 @@ int main()
 #ifdef MODULE_MUSCLES
     model.updateMuscles(model, Q, QDot, true);
 
-    s2mMuscleStateDynamics emg(0, 1);
+    biorbd::muscles::StateDynamics emg(0, 1);
     // METHOD 1
     {
         std::cout << "Method 1" << std::endl;
@@ -39,8 +39,8 @@ int main()
         // Showing the initial values
         {
             std::cout << "Initial values" << std::endl;
-            s2mMuscleHillTypeThelenFatigable muscle(model.muscleGroup(0).muscle(0));
-            s2mMuscleFatigueDynamicStateXia fatigueModel(muscle.fatigueState());
+            biorbd::muscles::HillTypeThelenFatigable muscle(model.muscleGroup(0).muscle(0));
+            biorbd::muscles::FatigueDynamicStateXia fatigueModel(muscle.fatigueState());
             std::cout << "activeFibersDot = " << fatigueModel.activeFibersDot() << std::endl;
             std::cout << "fatiguedFibersDot = " << fatigueModel.fatiguedFibersDot() << std::endl;
             std::cout << "restingFibersDot = " << fatigueModel.restingFibersDot() << std::endl;
@@ -48,23 +48,23 @@ int main()
 
         // Get and modify the values from the model itself
         {
-            std::shared_ptr<s2mMuscleHillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(model.muscleGroup(0).muscle(0)));
+            std::shared_ptr<biorbd::muscles::HillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(model.muscleGroup(0).muscle(0)));
             if (muscle){
-                std::shared_ptr<s2mMuscleFatigueDynamicStateXia> fatigueModel(std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(muscle->fatigueState()));
+                std::shared_ptr<biorbd::muscles::FatigueDynamicStateXia> fatigueModel(std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicStateXia>(muscle->fatigueState()));
                 if (fatigueModel){
                     fatigueModel->setState(0.9, 0, 0.1);
                     fatigueModel->timeDerivativeState(emg, model.muscleGroup(0).muscle(0)->caract());
                 } else
-                    throw std::runtime_error("Fatigue model is not a s2mMuscleFatigueDynamicStateXia");
+                    throw std::runtime_error("Fatigue model is not a biorbd::muscles::FatigueDynamicStateXia");
             } else
-                throw std::runtime_error("Muscle is not a s2mMuscleHillTypeThelenFatigable");
+                throw std::runtime_error("Muscle is not a biorbd::muscles::HillTypeThelenFatigable");
         }
 
         // Showing that it changed the underlying model values
         {
             std::cout << "Final values" << std::endl;
-            s2mMuscleHillTypeThelenFatigable muscle(model.muscleGroup(0).muscle(0));
-            s2mMuscleFatigueDynamicStateXia fatigueModel(muscle.fatigueState());
+            biorbd::muscles::HillTypeThelenFatigable muscle(model.muscleGroup(0).muscle(0));
+            biorbd::muscles::FatigueDynamicStateXia fatigueModel(muscle.fatigueState());
             std::cout << "activeFibersDot = " << fatigueModel.activeFibersDot() << std::endl;
             std::cout << "fatiguedFibersDot = " << fatigueModel.fatiguedFibersDot() << std::endl;
             std::cout << "restingFibersDot = " << fatigueModel.restingFibersDot() << std::endl;
@@ -74,8 +74,8 @@ int main()
 
     // RESET Fatigue param
     {
-        std::shared_ptr<s2mMuscleFatigueDynamicStateXia> fatigueModel(
-                    std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(model.muscleGroup(0).muscle(0))->fatigueState())
+        std::shared_ptr<biorbd::muscles::FatigueDynamicStateXia> fatigueModel(
+                    std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicStateXia>(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(model.muscleGroup(0).muscle(0))->fatigueState())
                     );
         fatigueModel->setState(1.0, 0, 0);
         fatigueModel->timeDerivativeState(emg, model.muscleGroup(0).muscle(0)->caract());
@@ -87,26 +87,26 @@ int main()
         // Showing the initial values
         {
             std::cout << "Initial values" << std::endl;
-            s2mMuscleHillTypeThelenFatigable muscle(model.muscleGroup(0).muscle(0));
-            s2mMuscleFatigueDynamicStateXia fatigueModel(muscle.fatigueState());
+            biorbd::muscles::HillTypeThelenFatigable muscle(model.muscleGroup(0).muscle(0));
+            biorbd::muscles::FatigueDynamicStateXia fatigueModel(muscle.fatigueState());
             std::cout << "activeFibersDot = " << fatigueModel.activeFibersDot() << std::endl;
             std::cout << "fatiguedFibersDot = " << fatigueModel.fatiguedFibersDot() << std::endl;
             std::cout << "restingFibersDot = " << fatigueModel.restingFibersDot() << std::endl;
         }
 
         // Get and modify the values from the model itself
-        std::shared_ptr<s2mMuscleHillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(model.muscleGroup(0).muscle(0)));
+        std::shared_ptr<biorbd::muscles::HillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(model.muscleGroup(0).muscle(0)));
         if (muscle){
             muscle->fatigueState(0.9, 0, 0.1);
             muscle->computeTimeDerivativeState(emg);
         } else
-            throw std::runtime_error("Muscle is not a s2mMuscleHillTypeThelenFatigable");
+            throw std::runtime_error("Muscle is not a biorbd::muscles::HillTypeThelenFatigable");
 
         // Showing that it changed the underlying model
         {
             std::cout << "Final values" << std::endl;
-            s2mMuscleHillTypeThelenFatigable muscle(model.muscleGroup(0).muscle(0));
-            s2mMuscleFatigueDynamicStateXia fatigueModel(muscle.fatigueState());
+            biorbd::muscles::HillTypeThelenFatigable muscle(model.muscleGroup(0).muscle(0));
+            biorbd::muscles::FatigueDynamicStateXia fatigueModel(muscle.fatigueState());
             std::cout << "activeFibersDot = " << fatigueModel.activeFibersDot() << std::endl;
             std::cout << "fatiguedFibersDot = " << fatigueModel.fatiguedFibersDot() << std::endl;
             std::cout << "restingFibersDot = " << fatigueModel.restingFibersDot() << std::endl;
@@ -116,8 +116,8 @@ int main()
 
     // RESET Fatigue param
     {
-        std::shared_ptr<s2mMuscleFatigueDynamicStateXia> fatigueModel(
-                    std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(model.muscleGroup(0).muscle(0))->fatigueState())
+        std::shared_ptr<biorbd::muscles::FatigueDynamicStateXia> fatigueModel(
+                    std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicStateXia>(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(model.muscleGroup(0).muscle(0))->fatigueState())
                     );
         fatigueModel->setState(1.0, 0, 0);
         fatigueModel->timeDerivativeState(emg, model.muscleGroup(0).muscle(0)->caract());
@@ -129,8 +129,8 @@ int main()
         // Showing the initial values
         {
             std::cout << "Initial values" << std::endl;
-            s2mMuscleHillTypeThelenFatigable muscle(model.muscleGroup(0).muscle(0));
-            s2mMuscleFatigueDynamicStateXia fatigueModel(muscle.fatigueState());
+            biorbd::muscles::HillTypeThelenFatigable muscle(model.muscleGroup(0).muscle(0));
+            biorbd::muscles::FatigueDynamicStateXia fatigueModel(muscle.fatigueState());
             std::cout << "activeFibersDot = " << fatigueModel.activeFibersDot() << std::endl;
             std::cout << "fatiguedFibersDot = " << fatigueModel.fatiguedFibersDot() << std::endl;
             std::cout << "restingFibersDot = " << fatigueModel.restingFibersDot() << std::endl;
@@ -139,8 +139,8 @@ int main()
         // Get the values
         {
             std::cout << "Computed values" << std::endl;
-            s2mMuscleHillTypeThelenFatigable muscle(model.muscleGroup(0).muscle(0));
-            s2mMuscleFatigueDynamicStateXia fatigueModel(muscle.fatigueState());
+            biorbd::muscles::HillTypeThelenFatigable muscle(model.muscleGroup(0).muscle(0));
+            biorbd::muscles::FatigueDynamicStateXia fatigueModel(muscle.fatigueState());
             fatigueModel.setState(0.9, 0, 0.1);
             fatigueModel.timeDerivativeState(emg, model.muscleGroup(0).muscle(0)->caract());
             std::cout << "activeFibersDot = " << fatigueModel.activeFibersDot() << std::endl;
@@ -151,8 +151,8 @@ int main()
         // Showing that it doesn't change the underlying model
         {
             std::cout << "Final values" << std::endl;
-            s2mMuscleHillTypeThelenFatigable muscle(model.muscleGroup(0).muscle(0));
-            s2mMuscleFatigueDynamicStateXia fatigueModel(muscle.fatigueState());
+            biorbd::muscles::HillTypeThelenFatigable muscle(model.muscleGroup(0).muscle(0));
+            biorbd::muscles::FatigueDynamicStateXia fatigueModel(muscle.fatigueState());
             std::cout << "activeFibersDot = " << fatigueModel.activeFibersDot() << std::endl;
             std::cout << "fatiguedFibersDot = " << fatigueModel.fatiguedFibersDot() << std::endl;
             std::cout << "restingFibersDot = " << fatigueModel.restingFibersDot() << std::endl;
@@ -178,9 +178,9 @@ int main()
     //QDDot[1] = 9.74539;
 
 
-//    std::vector<s2mMuscleStateDynamics> state;
+//    std::vector<biorbd::muscles::StateDynamics> state;
 //    for (unsigned int i = 0; i<m3.nbMuscleTotal(); ++i){
-//        state.push_back(s2mMuscleStateDynamics(0, 0.1));
+//        state.push_back(biorbd::muscles::StateDynamics(0, 0.1));
 //    }
 
 //    s2mTau tau_calcul = m3.muscularJointTorque(m3, state, true, &Q, &QDot);
@@ -192,7 +192,7 @@ int main()
 //    RigidBodyDynamics::InverseDynamics(m3, Q, QDot, QDDot, tau_inv);
 //    std::cout << "tau_inv :\n" << tau_inv << std::endl;
 
-//    std::vector<s2mMuscleStateDynamics> State(m3.nbMuscleTotal());
+//    std::vector<biorbd::muscles::StateDynamics> State(m3.nbMuscleTotal());
 //    for (unsigned int i = 0; i<m3.nbMuscleTotal(); ++i){
 //        State[i].setActivation(0.3925);
 //    }
@@ -212,7 +212,7 @@ int main()
 //        a[i] = -9.81;
 //    }
 //    s2mTau tau(a);
-//    s2mStaticOptimization optim(m3, Q, QDot, tau, state);
+//    biorbd::muscles::StaticOptimization optim(m3, Q, QDot, tau, state);
 //    optim.optimize();
 
 //    std::cout << "Q:\n" << Q << std::endl;

@@ -62,9 +62,9 @@ void S2M_inverseKinematicsEKFstep( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-    unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
-    unsigned int nQddot = model->nbQddot(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
+    unsigned int nQdot = model->nbQdot(); // Get the number of DoF
+    unsigned int nQddot = model->nbQddot(); // Get the number of DoF
 
     // Recevoir le kalman
     s2mKalmanReconsMarkers * kalman = convertMat2Ptr<s2mKalmanReconsMarkers>(prhs[2]);
@@ -124,9 +124,9 @@ void S2M_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-    unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
-    unsigned int nQddot = model->nbQddot(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
+    unsigned int nQdot = model->nbQdot(); // Get the number of DoF
+    unsigned int nQddot = model->nbQddot(); // Get the number of DoF
 
     // Recevoir les paramètres du filtre
     double freq=100, noiseF=1e-10, errorF=1e-5;

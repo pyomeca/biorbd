@@ -1,5 +1,5 @@
-#ifndef S2M_MUSCLE_CARACTERISTICS_H
-#define S2M_MUSCLE_CARACTERISTICS_H
+#ifndef BIORBD_MUSCLES_CARACTERISTICS_H
+#define BIORBD_MUSCLES_CARACTERISTICS_H
 
 #include <cstddef>
 #include "biorbdConfig.h"
@@ -7,23 +7,25 @@
 #include "Muscles/State.h"
 #include "Muscles/FatigueParameters.h"
 
-class BIORBD_API s2mMuscleCaracteristics
+namespace biorbd { namespace  muscles {
+
+class BIORBD_API Caracteristics
 {
 public:
-    s2mMuscleCaracteristics(
+    Caracteristics(
             const double &optLength = 0,
             const double &fmax = 0,
             const double &PCSA = 0,
             const double &tendonSlackLength = 0,
             const double &pennAngle = 0,
-            const s2mMuscleState& stateMax = s2mMuscleState(),
-            const s2mMuscleFatigueParam& fatigueParameters = s2mMuscleFatigueParam(),
+            const biorbd::muscles::State& stateMax = biorbd::muscles::State(),
+            const biorbd::muscles::FatigueParameters& fatigueParameters = biorbd::muscles::FatigueParameters(),
             const double tauAct = 0.01,
             const double tauDeact = 0.04,
             const double &minAct =.01);
-    s2mMuscleCaracteristics(const s2mMuscleCaracteristics&);
-    s2mMuscleCaracteristics& operator=(const s2mMuscleCaracteristics&);
-    virtual ~s2mMuscleCaracteristics();
+    Caracteristics(const Caracteristics&);
+    Caracteristics& operator=(const Caracteristics&);
+    virtual ~Caracteristics();
 
     // Get et Set
     virtual double optimalLength() const;
@@ -44,11 +46,11 @@ public:
     void PCSA(const double &val);
     void setTendonSlackLength(const double &val);
     void setPennationAngle(const double &val);
-    void setStateMax(const s2mMuscleState &stateMax);
-    const s2mMuscleState& stateMax() const;
+    void setStateMax(const biorbd::muscles::State &stateMax);
+    const biorbd::muscles::State& stateMax() const;
 
-    const s2mMuscleFatigueParam& fatigueParameters() const;
-    void fatigueParameters(const s2mMuscleFatigueParam& fatigueParameters);
+    const biorbd::muscles::FatigueParameters& fatigueParameters() const;
+    void fatigueParameters(const biorbd::muscles::FatigueParameters& fatigueParameters);
 
 protected:
     double m_optimalLength; // Longueur sans tension
@@ -56,7 +58,7 @@ protected:
     double m_PCSA;          // PCSA du muscle
     double m_tendonSlackLength; // Tendon slack length
     double m_pennationAngle; // Angle de pennation
-    s2mMuscleState m_stateMax; // Excitation et activation maximale du muscle
+    biorbd::muscles::State m_stateMax; // Excitation et activation maximale du muscle
 
     // Parametre d'activation
     double m_minActivation; // Activation minimale
@@ -64,7 +66,9 @@ protected:
     double m_tauDeactivation; // Time deactivation constant
 
     // Fatigue parameters
-    s2mMuscleFatigueParam m_fatigueParameters; // Fatigue parameters
+    biorbd::muscles::FatigueParameters m_fatigueParameters; // Fatigue parameters
 };
 
-#endif // S2M_MUSCLE_CARACTERISTICS_H
+}}
+
+#endif // BIORBD_MUSCLES_CARACTERISTICS_H

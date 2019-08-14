@@ -125,9 +125,9 @@ void biorbd::utils::Path::parseFileName(
     // Stocker le nom de fichier
     filename = path.substr(sep+1, ext-sep-1);
 }
-/*void biorbd::utils::Path::parseFileName(const Path &path, biorbd::utils::String &folder, biorbd::utils::String &filename, biorbd::utils::String &extension){
-    return parseFileName(base::path, folder, filename, extension);
-}*/
+//void biorbd::utils::Path::parseFileName(const Path &path, biorbd::utils::String &folder, biorbd::utils::String &filename, biorbd::utils::String &extension){
+//    return parseFileName(base::path, folder, filename, extension);
+//}
 
 void biorbd::utils::Path::parseFileName()
 {

@@ -14,7 +14,7 @@ void S2M_totalMass( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 2, 2, "2 arguments are required where the 2nd is the handler on the model");
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
 
-    /* Create a matrix for the return argument */
+    // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( 1, 1, mxREAL);
     double *mass = mxGetPr(plhs[0]);
 

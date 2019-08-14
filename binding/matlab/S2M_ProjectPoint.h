@@ -13,7 +13,7 @@ void S2M_ProjectPoint( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 4, 4, "6 arguments are required where the 2nd is the handler on the model, 3rd is the Q, 4th are the 3xNxT points in global reference frame where N = nTags of the model");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
     std::vector<biorbd::utils::GenCoord> Qall = getParameterQ(prhs, 2, nQ);

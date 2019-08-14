@@ -5,22 +5,22 @@
 #include "Muscles/Caracteristics.h"
 #include "Muscles/StateDynamics.h"
 
-s2mMuscleFatigueDynamicStateXia::s2mMuscleFatigueDynamicStateXia(
+biorbd::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(
         double active,
         double fatigued,
         double resting) :
-    s2mMuscleFatigueDynamicState(active,fatigued,resting)
+    biorbd::muscles::FatigueDynamicState(active,fatigued,resting)
 {
     setType();
 }
 
-s2mMuscleFatigueDynamicStateXia::s2mMuscleFatigueDynamicStateXia(const std::shared_ptr<s2mMuscleFatigueState> m):
-    s2mMuscleFatigueDynamicState(m)
+biorbd::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(const std::shared_ptr<biorbd::muscles::FatigueState> m):
+    biorbd::muscles::FatigueDynamicState(m)
 {
 
 }
 
-void s2mMuscleFatigueDynamicStateXia::timeDerivativeState(const s2mMuscleStateDynamics &emg, const s2mMuscleCaracteristics &caract){
+void biorbd::muscles::FatigueDynamicStateXia::timeDerivativeState(const biorbd::muscles::StateDynamics &emg, const biorbd::muscles::Caracteristics &caract){
     // Getting the command
     double targetCommand(emg.activation());
     double command(0);
@@ -41,7 +41,7 @@ void s2mMuscleFatigueDynamicStateXia::timeDerivativeState(const s2mMuscleStateDy
     biorbd::utils::Error::error(fabs(m_activeFibersDot + m_restingFibersDot + m_fatiguedFibersDot) <= 1e-7, "Sum of time derivates of fatigue states must be equal to 0");
 }
 
-void s2mMuscleFatigueDynamicStateXia::setType()
+void biorbd::muscles::FatigueDynamicStateXia::setType()
 {
     m_type = "Xia";
 }

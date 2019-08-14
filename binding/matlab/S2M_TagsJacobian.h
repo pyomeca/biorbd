@@ -13,7 +13,7 @@ void S2M_TagsJacobian( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */ /**** ATTENTION, NQ A REMPLACÉ NDDL, SEGFAULT? ****/
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
     biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();

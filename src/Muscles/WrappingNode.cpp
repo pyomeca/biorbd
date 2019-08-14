@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/WrappingNode.h"
 
-s2mNodeWrap::s2mNodeWrap(
+biorbd::muscles::WrappingNode::WrappingNode(
         const Eigen::Vector3d &v,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName) :
@@ -9,7 +9,7 @@ s2mNodeWrap::s2mNodeWrap(
 {
 }
 
-s2mNodeWrap::~s2mNodeWrap()
+biorbd::muscles::WrappingNode::~WrappingNode()
 {
     //dtor
 }

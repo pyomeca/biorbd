@@ -23,7 +23,7 @@ void S2M_new( int nlhs, mxArray *plhs[],
             "You must catch the pointer address!");
     }
     char *buf = mxArrayToString(prhs[1]);
-    std::string filepath(buf); /* Copier le cstring dans un std::string */
+    std::string filepath(buf); // Copier le cstring dans un std::string
 
     // Loader le modèle musculosquelettique
     // Definition des variables globales du modele
@@ -40,7 +40,7 @@ void S2M_new( int nlhs, mxArray *plhs[],
     }
     else {
         std::cout << filepath << " est inexistant ou non lisible.\n";
-        (void) plhs;    /* unused parameters */
+        (void) plhs;    // unused parameters
         return;
     }
 }

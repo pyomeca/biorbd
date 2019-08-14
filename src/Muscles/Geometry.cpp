@@ -6,9 +6,9 @@
 #include "Muscles/ViaPoint.h"
 #include "Utils/Attitude.h"
 
-s2mMuscleGeometry::s2mMuscleGeometry(
-        const s2mNodeMuscle &o,
-        const s2mNodeMuscle &i) :
+biorbd::muscles::Geometry::Geometry(
+        const biorbd::muscles::MuscleNode &o,
+        const biorbd::muscles::MuscleNode &i) :
     m_origin(o),
     m_insertion(i),
     m_originInGlobal(o),
@@ -23,20 +23,20 @@ s2mMuscleGeometry::s2mMuscleGeometry(
     m_insertionInGlobal.block(0,0,3,1) = Eigen::Vector3d::Zero();
 }
 
-s2mMuscleGeometry::~s2mMuscleGeometry()
+biorbd::muscles::Geometry::~Geometry()
 {
 
 }
 
 
 
-/********* FONCTIONS PUBLIQUES *********/
-void s2mMuscleGeometry::updateKinematics(
+// ------ FONCTIONS PUBLIQUES ------ //
+void biorbd::muscles::Geometry::updateKinematics(
         s2mJoints &model,
         const biorbd::utils::GenCoord *Q,
         const biorbd::utils::GenCoord *Qdot,
-        const s2mMuscleCaracteristics &c,
-        const s2mMusclePathChangers& o,
+        const biorbd::muscles::Caracteristics &c,
+        const biorbd::muscles::PathChangers& o,
         int updateKin){
     if (m_posAndJacoWereForced){
         biorbd::utils::Error::warning(false, "Warning, using updateKinematics overrides the previously sent position and jacobian");
@@ -57,11 +57,11 @@ void s2mMuscleGeometry::updateKinematics(
     _updateKinematics(Qdot, c, &o);
 }
 
-void s2mMuscleGeometry::updateKinematics(
-        std::vector<s2mNodeMuscle>& musclePointsInGlobal,
+void biorbd::muscles::Geometry::updateKinematics(
+        std::vector<biorbd::muscles::MuscleNode>& musclePointsInGlobal,
         biorbd::utils::Matrix &jacoPointsInGlobal,
         const biorbd::utils::GenCoord *Qdot,
-        const s2mMuscleCaracteristics &c){
+        const biorbd::muscles::Caracteristics &c){
     m_posAndJacoWereForced = true;
 
     // Position des points dans l'espace
@@ -74,10 +74,10 @@ void s2mMuscleGeometry::updateKinematics(
     _updateKinematics(Qdot, c);
 }
 
-void s2mMuscleGeometry::_updateKinematics(
+void biorbd::muscles::Geometry::_updateKinematics(
         const biorbd::utils::GenCoord *Qdot,
-        const s2mMuscleCaracteristics &c,
-        const s2mMusclePathChangers * o){
+        const biorbd::muscles::Caracteristics &c,
+        const biorbd::muscles::PathChangers * o){
     // Calculer les longueurs et vitesses
     length(c,o);
     m_isGeometryComputed = true;
@@ -94,76 +94,76 @@ void s2mMuscleGeometry::_updateKinematics(
 
 
 // Get and set des position d'origine et insertions
-const s2mNodeMuscle& s2mMuscleGeometry::originInLocal() const {
+const biorbd::muscles::MuscleNode& biorbd::muscles::Geometry::originInLocal() const {
     return m_origin;
 }
-const s2mNodeMuscle &s2mMuscleGeometry::insertionInLocal() const {
+const biorbd::muscles::MuscleNode &biorbd::muscles::Geometry::insertionInLocal() const {
     return m_insertion;
 }
-void s2mMuscleGeometry::originInLocal(const s2mNodeMuscle &val) {
+void biorbd::muscles::Geometry::originInLocal(const biorbd::muscles::MuscleNode &val) {
     m_origin = val;
 }
-void s2mMuscleGeometry::insertionInLocal(const s2mNodeMuscle &val) {
+void biorbd::muscles::Geometry::insertionInLocal(const biorbd::muscles::MuscleNode &val) {
     m_insertion = val;
 }
 
 // Position des muscles dans l'espace
-const s2mNodeMuscle &s2mMuscleGeometry::originInGlobal() const {
+const biorbd::muscles::MuscleNode &biorbd::muscles::Geometry::originInGlobal() const {
     biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed at least once before calling originInLocal()");
     return m_originInGlobal;
 }
-const s2mNodeMuscle &s2mMuscleGeometry::insertionInGlobal() const {
+const biorbd::muscles::MuscleNode &biorbd::muscles::Geometry::insertionInGlobal() const {
     biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed at least once before calling insertionInGlobal()");
     return m_insertionInGlobal;
 }
-const std::vector<s2mNodeMuscle> &s2mMuscleGeometry::musclesPointsInGlobal() const{
+const std::vector<biorbd::muscles::MuscleNode> &biorbd::muscles::Geometry::musclesPointsInGlobal() const{
     biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed at least once before calling musclesPointsInGlobal()");
     return m_pointsInGlobal;
 }
 
 // Retour des longueur et vitesse musculaires
-double s2mMuscleGeometry::length() const {
+double biorbd::muscles::Geometry::length() const {
     biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed at least before calling length()");
     return m_length;
 }
-double s2mMuscleGeometry::musculoTendonLength() const {
+double biorbd::muscles::Geometry::musculoTendonLength() const {
     biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed at least before calling length()");
     return m_muscleTendonLength;
 }
-double s2mMuscleGeometry::velocity() const {
+double biorbd::muscles::Geometry::velocity() const {
     biorbd::utils::Error::error(m_isVelocityComputed, "Geometry must be computed before calling velocity()");
     return m_velocity;
 }
 
 // Retour des jacobiennes
-const biorbd::utils::Matrix &s2mMuscleGeometry::jacobian() const {
+const biorbd::utils::Matrix &biorbd::muscles::Geometry::jacobian() const {
     biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed before calling jacobian()");
     return m_jacobian;
 } // Retourne la derniere jacobienne
-biorbd::utils::Matrix s2mMuscleGeometry::jacobianOrigin() const{
+biorbd::utils::Matrix biorbd::muscles::Geometry::jacobianOrigin() const{
     biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed before calling jacobianOrigin()");
     return biorbd::utils::Matrix(m_jacobian.block(0,0,3,m_jacobian.cols()));
 }
-biorbd::utils::Matrix s2mMuscleGeometry::jacobianInsertion() const {
+biorbd::utils::Matrix biorbd::muscles::Geometry::jacobianInsertion() const {
     biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed before calling jacobianInsertion()");
     return biorbd::utils::Matrix(m_jacobian.block(m_jacobian.rows()-3,0,3,m_jacobian.cols()));
 }
-biorbd::utils::Matrix s2mMuscleGeometry::jacobian(const unsigned int i) const {
+biorbd::utils::Matrix biorbd::muscles::Geometry::jacobian(const unsigned int i) const {
     biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed before calling jacobian(i)");
     return biorbd::utils::Matrix(m_jacobian.block(3*i,0,3,m_jacobian.cols()));
 }
 
-const biorbd::utils::Matrix &s2mMuscleGeometry::jacobianLength() const{
+const biorbd::utils::Matrix &biorbd::muscles::Geometry::jacobianLength() const{
     biorbd::utils::Error::error(m_isGeometryComputed, "Geometry must be computed before calling jacobianLength()");
     return m_jacobianLength;
 }
 
-/*********************************************/
+// --------------------------------------- //
 
 
 
 
-const s2mNodeMuscle &s2mMuscleGeometry::originInGlobal(
+const biorbd::muscles::MuscleNode &biorbd::muscles::Geometry::originInGlobal(
         s2mJoints &model,
         const biorbd::utils::GenCoord &Q){
     // Sortir la position du marqueur en fonction de la position donnée
@@ -171,7 +171,7 @@ const s2mNodeMuscle &s2mMuscleGeometry::originInGlobal(
     return m_originInGlobal;
 }
 
-const s2mNodeMuscle &s2mMuscleGeometry::insertionInGlobal(
+const biorbd::muscles::MuscleNode &biorbd::muscles::Geometry::insertionInGlobal(
         s2mJoints &model,
         const biorbd::utils::GenCoord &Q){
     // Sortir la position du marqueur en fonction de la position donnée
@@ -179,9 +179,9 @@ const s2mNodeMuscle &s2mMuscleGeometry::insertionInGlobal(
     return m_insertionInGlobal;
 }
 
-double s2mMuscleGeometry::length(
-        const s2mMuscleCaracteristics &c,
-        const s2mMusclePathChangers *objects){
+double biorbd::muscles::Geometry::length(
+        const biorbd::muscles::Caracteristics &c,
+        const biorbd::muscles::PathChangers *objects){
     m_muscleTendonLength = 0;
 
     // puisqu'on ne peut pas combiner, tester le premier (0) revient a savoir tous les types si plus d'un
@@ -190,17 +190,17 @@ double s2mMuscleGeometry::length(
         biorbd::utils::Error::error(objects->nbVia() == 0, "Cannot mix wrapping and via points yet" ) ;
         biorbd::utils::Error::error(objects->nbWraps() < 2, "Cannot compute more than one wrapping yet");
 
-        s2mNodeMuscle pi_wrap; // point sur le wrapping coté insertion
-        s2mNodeMuscle po_wrap; // point sur le wrapping coté origine
+        biorbd::muscles::MuscleNode pi_wrap; // point sur le wrapping coté insertion
+        biorbd::muscles::MuscleNode po_wrap; // point sur le wrapping coté origine
         double lengthWrap(0);
-        std::static_pointer_cast<s2mWrappingObject>(objects->object(0))->wrapPoints(po_wrap, pi_wrap, &lengthWrap);
+        std::static_pointer_cast<biorbd::muscles::WrappingObject>(objects->object(0))->wrapPoints(po_wrap, pi_wrap, &lengthWrap);
         m_muscleTendonLength = (*m_pointsInGlobal.begin() - pi_wrap).norm()   + // longueur avant le wrap
                     lengthWrap                 + // longueur sur le wrap
                     (*m_pointsInGlobal.end() - po_wrap).norm();   // longueur apres le wrap
 
     }
     else{
-        std::vector<s2mNodeMuscle>::iterator it = m_pointsInGlobal.begin();
+        std::vector<biorbd::muscles::MuscleNode>::iterator it = m_pointsInGlobal.begin();
         for (unsigned int i=0; i<m_pointsInGlobal.size()-1; ++i)
             m_muscleTendonLength += (*(it+i) - *(it+i+1)).norm();
 
@@ -212,16 +212,16 @@ double s2mMuscleGeometry::length(
 }
 
 
-void s2mMuscleGeometry::musclesPointsInGlobal(std::vector<s2mNodeMuscle>& ptsInGlobal){
+void biorbd::muscles::Geometry::musclesPointsInGlobal(std::vector<biorbd::muscles::MuscleNode>& ptsInGlobal){
     m_pointsInLocal.clear(); // Dans ce mode, nous n'avons pas besoin de de local, puisque la jacobienne des points DOIT également être donnée
     biorbd::utils::Error::error(ptsInGlobal.size() >= 2, "ptsInGlobal must at least have an origin and an insertion");
     m_pointsInGlobal = ptsInGlobal;
 }
 
-void s2mMuscleGeometry::musclesPointsInGlobal(
+void biorbd::muscles::Geometry::musclesPointsInGlobal(
         s2mJoints &model,
         const biorbd::utils::GenCoord &Q,
-        const s2mMusclePathChangers& objects){
+        const biorbd::muscles::PathChangers& objects){
     // Variable de sortie (remettre a zero)
     m_pointsInLocal.clear();
     m_pointsInGlobal.clear();
@@ -233,23 +233,23 @@ void s2mMuscleGeometry::musclesPointsInGlobal(
         biorbd::utils::Error::error(objects.nbWraps() < 2, "Cannot compute more than one wrapping yet");
 
         // Récupérer la matrice de RT du wrap
-        std::shared_ptr<s2mWrappingObject> w = std::static_pointer_cast<s2mWrappingObject>(objects.object(0));
+        std::shared_ptr<biorbd::muscles::WrappingObject> w = std::static_pointer_cast<biorbd::muscles::WrappingObject>(objects.object(0));
         biorbd::utils::Attitude RT = w->RT(model,Q);
 
         // Alias
-        s2mNodeMuscle po_mus = originInGlobal(model, Q);  // Origine sur l'os
-        s2mNodeMuscle pi_mus = insertionInGlobal(model,Q); // Insertion sur l'os
+        biorbd::muscles::MuscleNode po_mus = originInGlobal(model, Q);  // Origine sur l'os
+        biorbd::muscles::MuscleNode pi_mus = insertionInGlobal(model,Q); // Insertion sur l'os
 
-        s2mNodeMuscle pi_wrap; // point sur le wrapping coté insertion
-        s2mNodeMuscle po_wrap; // point sur le wrapping coté origine
+        biorbd::muscles::MuscleNode pi_wrap; // point sur le wrapping coté insertion
+        biorbd::muscles::MuscleNode po_wrap; // point sur le wrapping coté origine
 
-        std::static_pointer_cast<s2mWrappingObject>(objects.object(0))->wrapPoints(RT,po_mus,pi_mus,po_wrap, pi_wrap);
+        std::static_pointer_cast<biorbd::muscles::WrappingObject>(objects.object(0))->wrapPoints(RT,po_mus,pi_mus,po_wrap, pi_wrap);
 
         // Stocker les points dans le local
         biorbd::utils::Error::warning(0, "Attention le push_back de m_pointsInLocal n'a pas été validé");
         m_pointsInLocal.push_back(originInLocal());
-        m_pointsInLocal.push_back(s2mNodeMuscle(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(w->parent().c_str()),po_wrap.position(), false), "wrap_o", w->parent()));
-        m_pointsInLocal.push_back(s2mNodeMuscle(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(w->parent().c_str()),pi_wrap.position(), false), "wrap_i", w->parent()));
+        m_pointsInLocal.push_back(biorbd::muscles::MuscleNode(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(w->parent().c_str()),po_wrap.position(), false), "wrap_o", w->parent()));
+        m_pointsInLocal.push_back(biorbd::muscles::MuscleNode(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(w->parent().c_str()),pi_wrap.position(), false), "wrap_i", w->parent()));
         m_pointsInLocal.push_back(insertionInLocal());
 
         // Stocker les points dans le global
@@ -264,7 +264,7 @@ void s2mMuscleGeometry::musclesPointsInGlobal(
         m_pointsInLocal.push_back(originInLocal());
         m_pointsInGlobal.push_back(originInGlobal(model, Q));
         for (unsigned int i=0; i<objects.nbObjects(); ++i){
-            s2mViaPoint node ( *(std::static_pointer_cast<s2mViaPoint>(objects.object(i))) );
+            biorbd::muscles::ViaPoint node ( *(std::static_pointer_cast<biorbd::muscles::ViaPoint>(objects.object(i))) );
             m_pointsInLocal.push_back(node);
             node.setPosition(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(node.parent().c_str()), node, false));
             m_pointsInGlobal.push_back(node);
@@ -286,7 +286,7 @@ void s2mMuscleGeometry::musclesPointsInGlobal(
     setJacobianDimension(model);
 }
 
-double s2mMuscleGeometry::velocity(const biorbd::utils::GenCoord &Qdot){
+double biorbd::muscles::Geometry::velocity(const biorbd::utils::GenCoord &Qdot){
 
     // Calculer la vitesse d'élongation musculaire
     // TODO remove the construction of GenCoord and see for the calculation itself
@@ -296,18 +296,18 @@ double s2mMuscleGeometry::velocity(const biorbd::utils::GenCoord &Qdot){
     return m_velocity;
 }
 
-void s2mMuscleGeometry::setJacobianDimension(s2mJoints &model)
+void biorbd::muscles::Geometry::setJacobianDimension(s2mJoints &model)
 {
     m_jacobian = biorbd::utils::Matrix::Zero(static_cast<unsigned int>(m_pointsInLocal.size()*3), model.dof_count);
     m_G = biorbd::utils::Matrix::Zero(3, model.dof_count);
 }
 
-void s2mMuscleGeometry::jacobian(const biorbd::utils::Matrix &jaco){
+void biorbd::muscles::Geometry::jacobian(const biorbd::utils::Matrix &jaco){
     biorbd::utils::Error::error(jaco.rows()/3 == static_cast<int>(m_pointsInGlobal.size()), "Jacobian is the wrong size");
     m_jacobian = jaco;
 }
 
-void s2mMuscleGeometry::jacobian(
+void biorbd::muscles::Geometry::jacobian(
         s2mJoints &model,
         const biorbd::utils::GenCoord &Q){
     for (unsigned int i=0; i<m_pointsInLocal.size(); ++i){
@@ -317,9 +317,9 @@ void s2mMuscleGeometry::jacobian(
     }
 }
 
-void s2mMuscleGeometry::computeJacobianLength(){
+void biorbd::muscles::Geometry::computeJacobianLength(){
     m_jacobianLength = biorbd::utils::Matrix::Zero(1, m_jacobian.cols());
-    std::vector<s2mNodeMuscle>::iterator p = m_pointsInGlobal.begin();
+    std::vector<biorbd::muscles::MuscleNode>::iterator p = m_pointsInGlobal.begin();
     for (unsigned int i=0; i<m_pointsInGlobal.size()-1 ; ++i){
         m_jacobianLength +=   (( *(p+i+1) - *(p+i) ).transpose() * (jacobian(i+1) - jacobian(i)))
                                             /

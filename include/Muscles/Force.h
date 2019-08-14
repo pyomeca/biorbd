@@ -1,18 +1,20 @@
-#ifndef S2M_MUSCLE_FORCE_H
-#define S2M_MUSCLE_FORCE_H
+#ifndef BIORBD_MUSCLES_FORCE_H
+#define BIORBD_MUSCLES_FORCE_H
 
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
 #include "Muscles/Geometry.h"
 
-class BIORBD_API s2mMuscleForce : public Eigen::Vector3d
+namespace biorbd { namespace muscles {
+
+class BIORBD_API Force : public Eigen::Vector3d
 {
 public:
-    s2mMuscleForce();
-    s2mMuscleForce(double x, double y, double z);
-    s2mMuscleForce(const Eigen::Vector3d& force);
-    s2mMuscleForce(
-            const s2mMuscleGeometry& geo,
+    Force();
+    Force(double x, double y, double z);
+    Force(const Eigen::Vector3d& force);
+    Force(
+            const biorbd::muscles::Geometry& geo,
             double force);
 
     // Get et set
@@ -20,11 +22,13 @@ public:
     const Eigen::Vector3d& directionVector() const;
     virtual void setForce(const Eigen::Vector3d& force);
     virtual void setForce(double x, double y, double z);
-    virtual void setForce(const s2mMuscleGeometry& geo, double force);
+    virtual void setForce(const biorbd::muscles::Geometry& geo, double force);
 protected:
     void computeNorm();
     double m_force;
 
 };
 
-#endif // S2M_MUSCLE_FORCE_H
+}}
+
+#endif // BIORBD_MUSCLES_FORCE_H

@@ -3,62 +3,62 @@
 
 #include "Muscles/FatigueState.h"
 
-s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(
+biorbd::muscles::HillTypeThelenFatigable::HillTypeThelenFatigable(
         const biorbd::utils::String &s,
         const biorbd::utils::String &dynamicFatigueType) :
-    s2mMuscleHillTypeThelen(s),
-    s2mMuscleFatigable (dynamicFatigueType)
+    biorbd::muscles::HillTypeThelen(s),
+    biorbd::muscles::Fatigable (dynamicFatigueType)
 {
     setType();
 }
 
-s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(
-        const s2mMuscleGeometry &g,
-        const s2mMuscleCaracteristics &c,
-        const s2mMusclePathChangers &w,
-        const s2mMuscleStateDynamics &s,
+biorbd::muscles::HillTypeThelenFatigable::HillTypeThelenFatigable(
+        const biorbd::muscles::Geometry &g,
+        const biorbd::muscles::Caracteristics &c,
+        const biorbd::muscles::PathChangers &w,
+        const biorbd::muscles::StateDynamics &s,
         const biorbd::utils::String &dynamicFatigueType) :
-    s2mMuscleHillTypeThelen(g, c, w, s),
-    s2mMuscleFatigable (dynamicFatigueType)
+    biorbd::muscles::HillTypeThelen(g, c, w, s),
+    biorbd::muscles::Fatigable (dynamicFatigueType)
 {
     setType();
 }
 
-s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(
+biorbd::muscles::HillTypeThelenFatigable::HillTypeThelenFatigable(
         const biorbd::utils::String &n,
-        const s2mMuscleGeometry &g,
-        const s2mMuscleCaracteristics &c,
-        const s2mMusclePathChangers &w,
-        const s2mMuscleStateDynamics &s,
+        const biorbd::muscles::Geometry &g,
+        const biorbd::muscles::Caracteristics &c,
+        const biorbd::muscles::PathChangers &w,
+        const biorbd::muscles::StateDynamics &s,
         const biorbd::utils::String &dynamicFatigueType) :
-    s2mMuscleHillTypeThelen(n, g, c, w, s),
-    s2mMuscleFatigable (dynamicFatigueType)
+    biorbd::muscles::HillTypeThelen(n, g, c, w, s),
+    biorbd::muscles::Fatigable (dynamicFatigueType)
 {
     setType();
 }
 
-s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const s2mMuscle &m) :
-    s2mMuscleHillTypeThelen(m),
-    s2mMuscleFatigable (m)
+biorbd::muscles::HillTypeThelenFatigable::HillTypeThelenFatigable(const biorbd::muscles::Muscle &m) :
+    biorbd::muscles::HillTypeThelen(m),
+    biorbd::muscles::Fatigable (m)
 {
     setType();
 }
 
-s2mMuscleHillTypeThelenFatigable::s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m) :
-    s2mMuscleHillTypeThelen(m),
-    s2mMuscleFatigable(m)
+biorbd::muscles::HillTypeThelenFatigable::HillTypeThelenFatigable(const std::shared_ptr<biorbd::muscles::Muscle> m) :
+    biorbd::muscles::HillTypeThelen(m),
+    biorbd::muscles::Fatigable(m)
 {
     setType();
 }
 
-void s2mMuscleHillTypeThelenFatigable::computeFlCE(const s2mMuscleStateDynamics &EMG)
+void biorbd::muscles::HillTypeThelenFatigable::computeFlCE(const biorbd::muscles::StateDynamics &EMG)
 {
-    s2mMuscleHillTypeThelen::computeFlCE(EMG);   
+    biorbd::muscles::HillTypeThelen::computeFlCE(EMG);   
     // Do something with m_FlCE and m_caract.fatigueParameters
     m_FlCE *= m_fatigueState->activeFibers();
 }
 
-void s2mMuscleHillTypeThelenFatigable::setType()
+void biorbd::muscles::HillTypeThelenFatigable::setType()
 {
     m_type = "HillThelenFatigable";
 }

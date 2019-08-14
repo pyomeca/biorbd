@@ -1,20 +1,22 @@
-#ifndef S2M_MUSCLE_FATIGUE_STATE_H
-#define S2M_MUSCLE_FATIGUE_STATE_H
+#ifndef BIORBD_MUSCLES_FATIGUE_STATE_H
+#define BIORBD_MUSCLES_FATIGUE_STATE_H
 
 #include <memory>
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 
-class BIORBD_API s2mMuscleFatigueState
+namespace biorbd { namespace muscles {
+
+class BIORBD_API FatigueState
 {
 public:
-    s2mMuscleFatigueState(
+    FatigueState(
             double active = 0,
             double fatigued = 0,
             double resting = 1);
 
-    s2mMuscleFatigueState(const std::shared_ptr<s2mMuscleFatigueState> fatigue);
-    virtual ~s2mMuscleFatigueState();
+    FatigueState(const std::shared_ptr<FatigueState> fatigue);
+    virtual ~FatigueState();
 
     // Set and Get
     virtual void setState(
@@ -37,4 +39,6 @@ protected:
 
 };
 
-#endif // S2M_MUSCLE_FATIGUE_STATE_H
+}}
+
+#endif // BIORBD_MUSCLES_FATIGUE_STATE_H

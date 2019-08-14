@@ -5,10 +5,10 @@
 #include "Utils/String.h"
 #include "Muscles/Caracteristics.h"
 
-s2mMuscleStateDynamics::s2mMuscleStateDynamics(
+biorbd::muscles::StateDynamics::StateDynamics(
         const double &e,
         const double &a) :
-    s2mMuscleState(e,a),
+    biorbd::muscles::State(e,a),
     m_excitationNorm(0),
     m_previousExcitation(0),
     m_previousActivation(0),
@@ -16,32 +16,32 @@ s2mMuscleStateDynamics::s2mMuscleStateDynamics(
 {
 }
 
-s2mMuscleStateDynamics::~s2mMuscleStateDynamics()
+biorbd::muscles::StateDynamics::~StateDynamics()
 {
     //dtor
 }
 
 
-double s2mMuscleStateDynamics::timeDerivativeActivation(
-        const s2mMuscleStateDynamics& state,
-        const s2mMuscleCaracteristics& caract,
+double biorbd::muscles::StateDynamics::timeDerivativeActivation(
+        const biorbd::muscles::StateDynamics& state,
+        const biorbd::muscles::Caracteristics& caract,
         const bool alreadyNormalized){
     return timeDerivativeActivation(state.excitation(), state.activation(), caract, alreadyNormalized);
 }
 
 
-double s2mMuscleStateDynamics::timeDerivativeActivation(
+double biorbd::muscles::StateDynamics::timeDerivativeActivation(
         double excitation,
         double activation,
-        const s2mMuscleCaracteristics &caract,
+        const biorbd::muscles::Caracteristics &caract,
         const bool alreadyNormalized){
     setExcitation(excitation);
     setActivation(activation);
     return timeDerivativeActivation(caract, alreadyNormalized);
 }
 
-double s2mMuscleStateDynamics::timeDerivativeActivation(
-        const s2mMuscleCaracteristics &caract,
+double biorbd::muscles::StateDynamics::timeDerivativeActivation(
+        const biorbd::muscles::Caracteristics &caract,
         const bool alreadyNormalized){
     // Implémentation de la fonction da/dt = (u-a)/tau(u,a)
     // ou tau(u,a) = t_act(0.5+1.5*a) is u>a et tau(u,a)=t_deact(0.5+1.5*a) sinon
@@ -76,9 +76,9 @@ double s2mMuscleStateDynamics::timeDerivativeActivation(
 	return m_activationDot;
 }
 
-double s2mMuscleStateDynamics::timeDerivativeActivation() {return m_activationDot;}
+double biorbd::muscles::StateDynamics::timeDerivativeActivation() {return m_activationDot;}
 
-void s2mMuscleStateDynamics::setExcitation(const double &val) {
+void biorbd::muscles::StateDynamics::setExcitation(const double &val) {
     m_previousExcitation = m_excitation;
     if (val<0){
         biorbd::utils::Error::warning(0, "Excitation can't be lower than 0, 0 is used then");
@@ -87,7 +87,7 @@ void s2mMuscleStateDynamics::setExcitation(const double &val) {
     else
         m_excitation = val;
 }
-void s2mMuscleStateDynamics::setActivation(const double &val) {
+void biorbd::muscles::StateDynamics::setActivation(const double &val) {
     m_previousActivation = m_activation;
 
     if (val<0){
@@ -98,29 +98,29 @@ void s2mMuscleStateDynamics::setActivation(const double &val) {
         m_activation = val;
 }
 
-double s2mMuscleStateDynamics::excitationNorm(const s2mMuscleState &max) {
+double biorbd::muscles::StateDynamics::excitationNorm(const biorbd::muscles::State &max) {
     biorbd::utils::Error::warning(m_excitation<max.excitation(), "Excitation is higher than maximal excitation.");
     m_excitationNorm = m_excitation / max.excitation();
     
     return m_excitationNorm;
 }
 
-double s2mMuscleStateDynamics::excitationNorm() const
+double biorbd::muscles::StateDynamics::excitationNorm() const
 {
     return m_excitationNorm;
 }
 
-void s2mMuscleStateDynamics::setExcitationNorm(double val)
+void biorbd::muscles::StateDynamics::setExcitationNorm(double val)
 {
     m_excitationNorm = val;
 }
 
-double s2mMuscleStateDynamics::previousActivation() const
+double biorbd::muscles::StateDynamics::previousActivation() const
 {
     return m_previousActivation;
 }
 
-double s2mMuscleStateDynamics::previousExcitation() const
+double biorbd::muscles::StateDynamics::previousExcitation() const
 {
     return m_previousExcitation;
 }

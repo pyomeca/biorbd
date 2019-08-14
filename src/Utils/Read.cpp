@@ -53,7 +53,7 @@ bool biorbd::utils::Read::is_readable(const biorbd::utils::String &file) {
     return isOpen;
 }
 
-/* Public methods */
+// ------ Public methods ------ //
 s2mMusculoSkeletalModel biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path){
     // Ajouter les éléments entrés
     s2mMusculoSkeletalModel model;
@@ -626,7 +626,7 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusc
             double maxExcitation(0);
             double maxActivation(0);
             double PCSA(1);
-            s2mMuscleFatigueParam fatigueParameters;
+            biorbd::muscles::FatigueParameters fatigueParameters;
 
             // Lecture du fichier
             while(file.read(tp) && tp.tolower().compare("endmuscle")){
@@ -679,11 +679,11 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusc
                 }
             }
             biorbd::utils::Error::error(idxGroup!=-1, "No muscle group was provided!");
-            s2mMuscleGeometry geo(s2mNodeMuscle(origin_pos, name + "_origin", model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
-                                  s2mNodeMuscle(insert_pos, name + "_insertion", model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
-            s2mMuscleState stateMax(maxExcitation, maxActivation);
-            s2mMuscleCaracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax, fatigueParameters);
-            model->muscleGroup_nonConst(static_cast<unsigned int>(idxGroup)).addHillMuscle(name,type,geo,caract,s2mMusclePathChangers(),stateType,dynamicFatigueType);
+            biorbd::muscles::Geometry geo(biorbd::muscles::MuscleNode(origin_pos, name + "_origin", model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
+                                  biorbd::muscles::MuscleNode(insert_pos, name + "_insertion", model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
+            biorbd::muscles::State stateMax(maxExcitation, maxActivation);
+            biorbd::muscles::Caracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax, fatigueParameters);
+            model->muscleGroup_nonConst(static_cast<unsigned int>(idxGroup)).addHillMuscle(name,type,geo,caract,biorbd::muscles::PathChangers(),stateType,dynamicFatigueType);
 #else // MODULE_ACTUATORS
         biorbd::utils::Error::error(false, "Biorbd was build without the module Muscles but the model defines a muscle");
 #endif // MODULE_ACTUATORS
@@ -722,7 +722,7 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusc
             biorbd::utils::Error::error(iMuscleGroup!=-1, "No muscle group was provided!");
             iMuscle = model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscleID(muscle);
             biorbd::utils::Error::error(iMuscle!=-1, "No muscle was provided!");
-            s2mViaPoint v(position,name,parent);
+            biorbd::muscles::ViaPoint v(position,name,parent);
             model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle))->addPathObject(v);
 #else // MODULE_ACTUATORS
         biorbd::utils::Error::error(false, "Biorbd was build without the module Muscles but the model defines a viapoint");
@@ -779,7 +779,7 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusc
             biorbd::utils::Error::error(iMuscleGroup!=-1, "No muscle group was provided!");
             iMuscle = model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscleID(muscle);
             biorbd::utils::Error::error(iMuscle!=-1, "No muscle was provided!");
-            s2mWrappingCylinder cylinder(RT,dia,length,side,name,parent);
+            biorbd::muscles::WrappingCylinder cylinder(RT,dia,length,side,name,parent);
             model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle))->addPathObject(cylinder);
 #else // MODULE_ACTUATORS
         biorbd::utils::Error::error(false, "Biorbd was build without the module Muscles but the model defines a wrapping object");

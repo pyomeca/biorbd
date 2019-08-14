@@ -23,7 +23,7 @@ class BIORBD_API s2mMusculoSkeletalModel :
         ,public biorbd::actuator::Actuators
         #endif
         #ifdef MODULE_MUSCLES
-        ,public s2mMuscles
+        ,public biorbd::muscles::Muscles
         #endif
 {
 public:

@@ -1,21 +1,21 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/WrappingObject.h"
 
-s2mWrappingObject::s2mWrappingObject(
+biorbd::muscles::WrappingObject::WrappingObject(
         const Eigen::Vector3d &v, // Position du noeud
         const biorbd::utils::String &name,  // Nom du noeud
         const biorbd::utils::String &parentName) :
-    s2mMusclePathChanger(v,name,parentName)
+    biorbd::muscles::PathChanger(v,name,parentName)
 {
     m_type = "Wrapping";
 }
 
-s2mWrappingObject::~s2mWrappingObject()
+biorbd::muscles::WrappingObject::~WrappingObject()
 {
     //dtor
 }
 
-const biorbd::utils::String &s2mWrappingObject::forme() const
+const biorbd::utils::String &biorbd::muscles::WrappingObject::forme() const
 {
     return m_forme;
 }

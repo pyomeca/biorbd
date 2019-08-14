@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/MuscleNode.h"
 
-s2mNodeMuscle::s2mNodeMuscle(
+biorbd::muscles::MuscleNode::MuscleNode(
         const Eigen::Vector3d &v,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName) :
@@ -9,7 +9,7 @@ s2mNodeMuscle::s2mNodeMuscle(
 {
 }
 
-s2mNodeMuscle::~s2mNodeMuscle()
+biorbd::muscles::MuscleNode::~MuscleNode()
 {
     //dtor
 }

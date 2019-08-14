@@ -1,5 +1,5 @@
-#ifndef S2M_MUSCLE_COMPOUND_H
-#define S2M_MUSCLE_COMPOUND_H
+#ifndef BIORBD_MUSCLES_COMPOUND_H
+#define BIORBD_MUSCLES_COMPOUND_H
 
 #include <memory>
 #include "biorbdConfig.h"
@@ -11,41 +11,43 @@
 #include "Muscles/StateDynamics.h"
 #include "Muscles/PathChangers.h"
 
-class BIORBD_API s2mMuscleCompound
+namespace biorbd { namespace  muscles {
+
+class BIORBD_API Compound
 {
 public:
-    s2mMuscleCompound(
+    Compound(
             const biorbd::utils::String &name = "",
-            const s2mMusclePathChangers& = s2mMusclePathChangers());
-    s2mMuscleCompound(const s2mMuscleCompound& m);
-    virtual ~s2mMuscleCompound();
+            const biorbd::muscles::PathChangers& = biorbd::muscles::PathChangers());
+    Compound(const Compound& m);
+    virtual ~Compound();
 
     // Wrapping object
-    const s2mMusclePathChangers& pathChanger();
-    void addPathObject(s2mMusclePathChanger &w); // Ajouter un wrapping object
+    const biorbd::muscles::PathChangers& pathChanger();
+    void addPathObject(biorbd::muscles::PathChanger &w); // Ajouter un wrapping object
 
 
     const biorbd::utils::String& type() const;
-    virtual const std::vector<std::shared_ptr<s2mMuscleForce>>& force(
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
             s2mJoints& model,
             const biorbd::utils::GenCoord& Q,
             const biorbd::utils::GenCoord& Qdot,
-            const s2mMuscleStateDynamics& emg,
+            const biorbd::muscles::StateDynamics& emg,
             const int updateKin = 2) = 0;
-    virtual const std::vector<std::shared_ptr<s2mMuscleForce>>& force(
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
             s2mJoints& model,
             const biorbd::utils::GenCoord& Q,
-            const s2mMuscleStateDynamics& emg,
+            const biorbd::muscles::StateDynamics& emg,
             const int updateKin = 2) = 0;
-    virtual const std::vector<std::shared_ptr<s2mMuscleForce>>& force(const s2mMuscleStateDynamics& emg) = 0;
-    virtual const std::vector<std::shared_ptr<s2mMuscleForce>>& force(); // Return the last computed muscle force
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(const biorbd::muscles::StateDynamics& emg) = 0;
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(); // Return the last computed muscle force
 
     const biorbd::utils::String& name() const;
     void setName(const biorbd::utils::String& name);
 protected:
-    s2mMusclePathChangers m_pathChanger;
-    std::vector<std::shared_ptr<s2mMuscleForce>> m_force;
-    void copyForce(const std::vector<std::shared_ptr<s2mMuscleForce>>& force);
+    biorbd::muscles::PathChangers m_pathChanger;
+    std::vector<std::shared_ptr<biorbd::muscles::Force>> m_force;
+    void copyForce(const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force);
     virtual void setForce() = 0;
     virtual void setType()=0;
     biorbd::utils::String m_type;
@@ -53,4 +55,6 @@ protected:
 
 };
 
-#endif // S2M_MUSCLE_COMPOUND_H
+}}
+
+#endif // BIORBD_MUSCLES_COMPOUND_H

@@ -1,5 +1,5 @@
-#ifndef S2M_STATIC_OPTIMIZATION_IPOPT_H
-#define S2M_STATIC_OPTIMIZATION_IPOPT_H
+#ifndef BIORBD_MUSCLES_STATIC_OPTIMIZATION_IPOPT_H
+#define BIORBD_MUSCLES_STATIC_OPTIMIZATION_IPOPT_H
 
 #include <Eigen/Dense>
 #include <IpIpoptApplication.hpp>
@@ -8,12 +8,14 @@
 #include "Utils/GenCoord.h"
 #include "Utils/Tau.h"
 
-class s2mMuscleStateDynamics;
 class s2mMusculoSkeletalModel;
-class BIORBD_API s2mStaticOptimizationIpopt : public Ipopt::TNLP
+namespace biorbd { namespace muscles {
+
+class StateDynamics;
+class BIORBD_API StaticOptimizationIpopt : public Ipopt::TNLP
 {
 public:
-    s2mStaticOptimizationIpopt(
+    StaticOptimizationIpopt(
             s2mMusculoSkeletalModel &model,
             const biorbd::utils::GenCoord &Q,
             const biorbd::utils::GenCoord &Qdot,
@@ -24,7 +26,7 @@ public:
             int verbose = 0,
             const double eps = 1e-10);
 
-    virtual ~s2mStaticOptimizationIpopt();
+    virtual ~StaticOptimizationIpopt();
 
     // Method to return some info about the NLP
     virtual bool get_nlp_info(
@@ -69,7 +71,9 @@ public:
             bool new_x,
             Ipopt::Number* grad_f);
 
-    /** Method to return the constraint residuals */
+    ///
+    /// Method to return the constraint residuals
+    ///
     virtual bool eval_g(
             Ipopt::Index n,
             const Ipopt::Number* x,
@@ -124,7 +128,7 @@ protected:
     biorbd::utils::Tau m_tauTarget;
     biorbd::utils::Vector m_tauResidual;
     double m_tauPonderation;
-    std::vector<s2mMuscleStateDynamics> m_states;
+    std::vector<biorbd::muscles::StateDynamics> m_states;
     unsigned int m_pNormFactor;
     int m_verbose;
     biorbd::utils::Vector m_finalSolution;
@@ -134,4 +138,6 @@ protected:
 
 };
 
-#endif // S2M_STATIC_OPTIMIZATION_IPOPT_H
+}}
+
+#endif // BIORBD_MUSCLES_OPTIMIZATION_IPOPT_H

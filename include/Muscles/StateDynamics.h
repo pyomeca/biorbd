@@ -1,22 +1,24 @@
-#ifndef S2M_MUSCLE_STATE_DYNAMICS_H
-#define S2M_MUSCLE_STATE_DYNAMICS_H
+#ifndef BIORBD_MUSCLES_STATE_DYNAMICS_H
+#define BIORBD_MUSCLES_STATE_DYNAMICS_H
 
 #include "biorbdConfig.h"
 #include "Muscles/State.h"
 
-class s2mMuscleCaracteristics;
-class BIORBD_API s2mMuscleStateDynamics : public s2mMuscleState
+namespace biorbd { namespace muscles {
+
+class Caracteristics;
+class BIORBD_API StateDynamics : public biorbd::muscles::State
 {
 public:
-    s2mMuscleStateDynamics(
+    StateDynamics(
             const double &e = 0,
             const double &a = 0);
-    virtual ~s2mMuscleStateDynamics();
+    virtual ~StateDynamics();
 
     virtual void setExcitation(const double &val);
     virtual void setActivation(const double &val);
 
-    double excitationNorm(const s2mMuscleState &max);
+    double excitationNorm(const State &max);
     double excitationNorm() const; // Retourne la derniere excitation normalisee
     void setExcitationNorm(double val); // Retourne la derniere excitation normalisee
     double previousActivation() const;
@@ -25,14 +27,14 @@ public:
     virtual double timeDerivativeActivation(
             double excitation,
             double activation,
-            const s2mMuscleCaracteristics& caract,
+            const Caracteristics& caract,
             const bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
     virtual double timeDerivativeActivation(
-            const s2mMuscleStateDynamics& state,
-            const s2mMuscleCaracteristics& caract,
+            const StateDynamics& state,
+            const Caracteristics& caract,
             const bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
     virtual double timeDerivativeActivation(
-            const s2mMuscleCaracteristics& caract,
+            const Caracteristics& caract,
             const bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
     virtual double timeDerivativeActivation(); // Retourne la derniere valeur
 
@@ -44,4 +46,6 @@ protected:
 
 };
 
-#endif // S2M_MUSCLE_STATE_DYNAMICS_H
+}}
+
+#endif // BIORBD_MUSCLES_STATE_DYNAMICS_H

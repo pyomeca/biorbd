@@ -13,9 +13,9 @@ void S2M_segmentCOMddot( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-    unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
-    unsigned int nQddot = model->nbQddot(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
+    unsigned int nQdot = model->nbQdot(); // Get the number of DoF
+    unsigned int nQddot = model->nbQddot(); // Get the number of DoF
 
     // Recevoir Q
     biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
@@ -43,7 +43,7 @@ void S2M_segmentCOMddot( int, mxArray *plhs[],
     else {
         RigidBodyDynamics::Math::Vector3d COMddot = model->CoMddotBySegment(Q,QDot,QDDot,static_cast<unsigned int>(i),true);
 
-        /* Create a matrix for the return argument */
+        // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix( 3, 1, mxREAL);
         // Remplir l'output
         double *tp = mxGetPr(plhs[0]);

@@ -24,7 +24,7 @@ public:
             const double&,
             const double&,
             const double&);
-    void operator() ( const state_type &x , state_type &dxdt , const double /* t */ );
+    void operator() ( const state_type &x , state_type &dxdt , const double t );
 
     biorbd::utils::GenCoord getX(const unsigned int&); // Return the Q for a given step
     void showAll(); // Show every steps with every dof

@@ -1,15 +1,14 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/Caracteristics.h"
 
-
-s2mMuscleCaracteristics::s2mMuscleCaracteristics(
+biorbd::muscles::Caracteristics::Caracteristics(
         const double &optLength,
         const double &fmax,
         const double &PCSA,
         const double &tendonSlackLength,
         const double &pennAngle,
-        const s2mMuscleState &stateMax,
-        const s2mMuscleFatigueParam &fatigueParameters,
+        const biorbd::muscles::State &stateMax,
+        const biorbd::muscles::FatigueParameters &fatigueParameters,
         const double tauAct,
         const double tauDeact,
         const double &minAct):
@@ -28,29 +27,29 @@ s2mMuscleCaracteristics::s2mMuscleCaracteristics(
 }
 
 // Get et Set
-double s2mMuscleCaracteristics::optimalLength() const { return m_optimalLength; }
-double s2mMuscleCaracteristics::forceIsoMax() const { return m_fIsoMax; }
-double s2mMuscleCaracteristics::tendonSlackLength() const {return m_tendonSlackLength;}
-double s2mMuscleCaracteristics::pennationAngle() const {return m_pennationAngle;}
-double s2mMuscleCaracteristics::PCSA() const {return m_PCSA;}
+double biorbd::muscles::Caracteristics::optimalLength() const { return m_optimalLength; }
+double biorbd::muscles::Caracteristics::forceIsoMax() const { return m_fIsoMax; }
+double biorbd::muscles::Caracteristics::tendonSlackLength() const {return m_tendonSlackLength;}
+double biorbd::muscles::Caracteristics::pennationAngle() const {return m_pennationAngle;}
+double biorbd::muscles::Caracteristics::PCSA() const {return m_PCSA;}
 
-void s2mMuscleCaracteristics::minActivation(double val){ m_minActivation = val;}
-double s2mMuscleCaracteristics::minActivation() const { return m_minActivation;}
-void s2mMuscleCaracteristics::tauActivation(double val){ m_tauActivation = val;}
-double s2mMuscleCaracteristics::tauActivation() const { return m_tauActivation;}
-void s2mMuscleCaracteristics::tauDeactivation(double val){ m_tauDeactivation = val;}
-double s2mMuscleCaracteristics::tauDeactivation() const { return m_tauDeactivation;}
-
-
-void s2mMuscleCaracteristics::setOptimalLength(const double &val) { m_optimalLength = val; }
-void s2mMuscleCaracteristics::setForceIsoMax(const double &val) { m_fIsoMax = val; }
-void s2mMuscleCaracteristics::PCSA(const double &val) {m_PCSA = val;}
-void s2mMuscleCaracteristics::setTendonSlackLength(const double &val) {m_tendonSlackLength = val;}
-void s2mMuscleCaracteristics::setPennationAngle(const double &val) {m_pennationAngle = val;}
+void biorbd::muscles::Caracteristics::minActivation(double val){ m_minActivation = val;}
+double biorbd::muscles::Caracteristics::minActivation() const { return m_minActivation;}
+void biorbd::muscles::Caracteristics::tauActivation(double val){ m_tauActivation = val;}
+double biorbd::muscles::Caracteristics::tauActivation() const { return m_tauActivation;}
+void biorbd::muscles::Caracteristics::tauDeactivation(double val){ m_tauDeactivation = val;}
+double biorbd::muscles::Caracteristics::tauDeactivation() const { return m_tauDeactivation;}
 
 
+void biorbd::muscles::Caracteristics::setOptimalLength(const double &val) { m_optimalLength = val; }
+void biorbd::muscles::Caracteristics::setForceIsoMax(const double &val) { m_fIsoMax = val; }
+void biorbd::muscles::Caracteristics::PCSA(const double &val) {m_PCSA = val;}
+void biorbd::muscles::Caracteristics::setTendonSlackLength(const double &val) {m_tendonSlackLength = val;}
+void biorbd::muscles::Caracteristics::setPennationAngle(const double &val) {m_pennationAngle = val;}
 
-s2mMuscleCaracteristics::s2mMuscleCaracteristics(const s2mMuscleCaracteristics& c):
+
+
+biorbd::muscles::Caracteristics::Caracteristics(const biorbd::muscles::Caracteristics& c):
     m_optimalLength(c.m_optimalLength),
     m_fIsoMax(c.m_fIsoMax),
     m_PCSA(c.m_PCSA),
@@ -65,7 +64,7 @@ s2mMuscleCaracteristics::s2mMuscleCaracteristics(const s2mMuscleCaracteristics& 
 
 }
 
-s2mMuscleCaracteristics& s2mMuscleCaracteristics::operator=(const s2mMuscleCaracteristics& c){
+biorbd::muscles::Caracteristics& biorbd::muscles::Caracteristics::operator=(const biorbd::muscles::Caracteristics& c){
     if (this==&c) // check for self-assigment
         return *this;
 
@@ -83,25 +82,25 @@ s2mMuscleCaracteristics& s2mMuscleCaracteristics::operator=(const s2mMuscleCarac
     return *this;
 }
 
-s2mMuscleCaracteristics::~s2mMuscleCaracteristics()
+biorbd::muscles::Caracteristics::~Caracteristics()
 {
 
 }
 
-void s2mMuscleCaracteristics::setStateMax(const s2mMuscleState &stateMax) {
+void biorbd::muscles::Caracteristics::setStateMax(const biorbd::muscles::State &stateMax) {
     m_stateMax = stateMax;
 }
 
-const s2mMuscleState &s2mMuscleCaracteristics::stateMax() const {
+const biorbd::muscles::State &biorbd::muscles::Caracteristics::stateMax() const {
     return m_stateMax;
 }
 
-const s2mMuscleFatigueParam &s2mMuscleCaracteristics::fatigueParameters() const
+const biorbd::muscles::FatigueParameters &biorbd::muscles::Caracteristics::fatigueParameters() const
 {
     return m_fatigueParameters;
 }
 
-void s2mMuscleCaracteristics::fatigueParameters(const s2mMuscleFatigueParam &fatigueParameters)
+void biorbd::muscles::Caracteristics::fatigueParameters(const biorbd::muscles::FatigueParameters &fatigueParameters)
 {
     m_fatigueParameters = fatigueParameters;
 }

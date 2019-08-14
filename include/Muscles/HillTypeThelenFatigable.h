@@ -1,5 +1,5 @@
-#ifndef S2M_MUSCLE_HILL_TYPE_THELEN_FATIGABLE_H
-#define S2M_MUSCLE_HILL_TYPE_THELEN_FATIGABLE_H
+#ifndef BIORBD_MUSCLES_HILL_TYPE_THELEN_FATIGABLE_H
+#define BIORBD_MUSCLES_HILL_TYPE_THELEN_FATIGABLE_H
 
 #include "biorbdConfig.h"
 
@@ -8,42 +8,46 @@
 #include "Muscles/PathChangers.h"
 #include "Muscles/StateDynamics.h"
 
+namespace biorbd { namespace muscles {
+
 ///
-/// \brief The s2mMuscleHillTypeThelenFatigable class
+/// \brief The HillTypeThelenFatigable class
 /// Class of a Thelen fatigable type.
-/// Note that useful defaults values for the s2mMuscleFatigueParam caracteristics are:
+/// Note that useful defaults values for the FatigueParameters caracteristics are:
 /// fatigueRate = 0.01
 /// recoveryRate = 0.002
 /// developFactor = 10
 /// recoverFactor = 10
 ///
-class BIORBD_API s2mMuscleHillTypeThelenFatigable : public s2mMuscleHillTypeThelen, public s2mMuscleFatigable
+class BIORBD_API HillTypeThelenFatigable : public biorbd::muscles::HillTypeThelen, public biorbd::muscles::Fatigable
 {
 public:
-    s2mMuscleHillTypeThelenFatigable(
+    HillTypeThelenFatigable(
             const biorbd::utils::String& s= "",
             const biorbd::utils::String& dynamicFatigueType = "Simple");
-    s2mMuscleHillTypeThelenFatigable(const s2mMuscleGeometry& g,
-            const s2mMuscleCaracteristics& c,
-            const s2mMusclePathChangers & w= s2mMusclePathChangers(),
-            const s2mMuscleStateDynamics & s= s2mMuscleStateDynamics(),
+    HillTypeThelenFatigable(const Geometry& g,
+            const Caracteristics& c,
+            const biorbd::muscles::PathChangers & w= biorbd::muscles::PathChangers(),
+            const biorbd::muscles::StateDynamics & s= biorbd::muscles::StateDynamics(),
             const biorbd::utils::String& dynamicFatigueType = "Simple");
-    s2mMuscleHillTypeThelenFatigable(
+    HillTypeThelenFatigable(
             const biorbd::utils::String& n,
-            const s2mMuscleGeometry& g,
-            const s2mMuscleCaracteristics& c,
-            const s2mMusclePathChangers & w= s2mMusclePathChangers(),
-            const s2mMuscleStateDynamics & s= s2mMuscleStateDynamics(),
+            const Geometry& g,
+            const Caracteristics& c,
+            const biorbd::muscles::PathChangers & w= biorbd::muscles::PathChangers(),
+            const biorbd::muscles::StateDynamics & s= biorbd::muscles::StateDynamics(),
             const biorbd::utils::String& dynamicFatigueType = "Simple");
-    s2mMuscleHillTypeThelenFatigable(const s2mMuscle& m);
-    s2mMuscleHillTypeThelenFatigable(const std::shared_ptr<s2mMuscle> m);
-    virtual ~s2mMuscleHillTypeThelenFatigable(){}
+    HillTypeThelenFatigable(const biorbd::muscles::Muscle& m);
+    HillTypeThelenFatigable(const std::shared_ptr<biorbd::muscles::Muscle> m);
+    virtual ~HillTypeThelenFatigable(){}
 
-    virtual void computeFlCE(const s2mMuscleStateDynamics &EMG);
+    virtual void computeFlCE(const biorbd::muscles::StateDynamics &EMG);
 
 protected:
     virtual void setType();
 
 };
 
-#endif // S2M_MUSCLE_HILL_TYPE_THELEN_FATIGABLE_H
+}}
+
+#endif // BIORBD_MUSCLES_HILL_TYPE_THELEN_FATIGABLE_H

@@ -13,7 +13,7 @@ void S2M_Tags( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 3, 5, "3 arguments are required [+2 optional] where the 2nd is the handler on the model, 3rd is the Q and 4th is the wanted markerType to be return ('all', 'technical' or anatomical') and 5th if you want to remove axes as specified in the model file [default = true]");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
     std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);

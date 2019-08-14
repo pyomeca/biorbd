@@ -19,7 +19,6 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/HillTypeSimple.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/HillTypeThelen.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/HillTypeThelenFatigable.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Mesh.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Muscle.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MuscleGroup.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MuscleNode.cpp

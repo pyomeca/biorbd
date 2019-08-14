@@ -1,55 +1,55 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/HillTypeThelen.h"
 
-s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(
-        const s2mMuscleGeometry& g,
-        const s2mMuscleCaracteristics& c,
-        const s2mMusclePathChangers & w,
-        const s2mMuscleStateDynamics & s) :
-    s2mMuscleHillType(g,c,w,s)
+biorbd::muscles::HillTypeThelen::HillTypeThelen(
+        const biorbd::muscles::Geometry& g,
+        const biorbd::muscles::Caracteristics& c,
+        const biorbd::muscles::PathChangers & w,
+        const biorbd::muscles::StateDynamics & s) :
+    biorbd::muscles::HillType(g,c,w,s)
 {
     setType();
 }
-s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(
+biorbd::muscles::HillTypeThelen::HillTypeThelen(
         const biorbd::utils::String& n,
-        const s2mMuscleGeometry& g,
-        const s2mMuscleCaracteristics& c,
-        const s2mMusclePathChangers & w,
-        const s2mMuscleStateDynamics & s) :
-    s2mMuscleHillType(n,g,c,w,s)
+        const biorbd::muscles::Geometry& g,
+        const biorbd::muscles::Caracteristics& c,
+        const biorbd::muscles::PathChangers & w,
+        const biorbd::muscles::StateDynamics & s) :
+    biorbd::muscles::HillType(n,g,c,w,s)
 {
     setType();
 }
 
-s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(const s2mMuscle &m) :
-    s2mMuscleHillType (m)
+biorbd::muscles::HillTypeThelen::HillTypeThelen(const biorbd::muscles::Muscle &m) :
+    biorbd::muscles::HillType (m)
 {
     setType();
 }
 
-s2mMuscleHillTypeThelen::s2mMuscleHillTypeThelen(const std::shared_ptr<s2mMuscle> m):
-    s2mMuscleHillType (m)
+biorbd::muscles::HillTypeThelen::HillTypeThelen(const std::shared_ptr<biorbd::muscles::Muscle> m):
+    biorbd::muscles::HillType (m)
 {
     setType();
 }
 
-s2mMuscleHillTypeThelen::~s2mMuscleHillTypeThelen()
+biorbd::muscles::HillTypeThelen::~HillTypeThelen()
 {
 
 }
 
-void s2mMuscleHillTypeThelen::computeFlPE(){
+void biorbd::muscles::HillTypeThelen::computeFlPE(){
     if (m_position.length() > caract().tendonSlackLength())
         m_FlPE = (exp(m_cste_FlPE_1*(m_position.length()/caract().optimalLength()-1)) -1)/(exp(m_cste_FlPE_2)-1); //Thelen2003, le 07 août 2019
     else
         m_FlPE = 0;
 }
 
-void s2mMuscleHillTypeThelen::computeFlCE(const s2mMuscleStateDynamics&){
+void biorbd::muscles::HillTypeThelen::computeFlCE(const biorbd::muscles::StateDynamics&){
     m_FlCE = exp( -pow(((m_position.length() / caract().optimalLength())-1), 2 ) /  m_cste_FlCE_2 ); //Thelen2003, le 26 fevrier 2018
 }
 
-void s2mMuscleHillTypeThelen::setType()
+void biorbd::muscles::HillTypeThelen::setType()
 {
     m_type = "HillThelen";
 }

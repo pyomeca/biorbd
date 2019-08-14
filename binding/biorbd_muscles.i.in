@@ -12,73 +12,73 @@
 #include "Muscles/FatigueDynamicStateXia.h"
 #include "Muscles/StaticOptimization.h"
 #include "Muscles/MuscleNode.h"
-//%include "s2mNodeWrap.h"
-//%include "s2mViaPoint.h"
-//%include "s2mWrappingObject.h"
-//%include "s2mWrappingSphere.h"
-//%include "s2mWrappingCylinder.h"
+//%include "biorbd::muscles::WrappingNode.h"
+//%include "biorbd::muscles::ViaPoint.h"
+//%include "biorbd::muscles::WrappingObject.h"
+//%include "biorbd::muscles::WrappingSphere.h"
+//%include "biorbd::muscles::WrappingCylinder.h"
 %}
 // Instantiate templates
 namespace std {
-    %template(SharedBiorbdMuscle) std::shared_ptr<s2mMuscle>;
-    %template(VecBiorbdMuscleStateDynamics) std::vector<s2mMuscleStateDynamics>;
-    %template(MatBiorbdMuscleStateDynamics) std::vector<std::vector<s2mMuscleStateDynamics>>;
-    %template(VecBiorbdNodeMuscle) std::vector<s2mNodeMuscle>;
-    %template(MatBiorbdNodeMuscle) std::vector<std::vector<s2mNodeMuscle>>;
-    %template(SharedBiorbdMuscleFatigueState) std::shared_ptr<s2mMuscleFatigueState>;
+    %template(SharedBiorbdMuscle) std::shared_ptr<biorbd::muscles::Muscle>;
+    %template(VecBiorbdMuscleStateDynamics) std::vector<biorbd::muscles::StateDynamics>;
+    %template(MatBiorbdMuscleStateDynamics) std::vector<std::vector<biorbd::muscles::StateDynamics>>;
+    %template(VecBiorbdNodeMuscle) std::vector<biorbd::muscles::MuscleNode>;
+    %template(MatBiorbdNodeMuscle) std::vector<std::vector<biorbd::muscles::MuscleNode>>;
+    %template(SharedBiorbdMuscleFatigueState) std::shared_ptr<biorbd::muscles::FatigueState>;
 }
 
 // Exposing some useful functions
 %extend s2mMusculoSkeletalModel{
     biorbd::utils::Tau muscularJointTorque(
-                const std::vector<s2mMuscleStateDynamics> &state,
+                const std::vector<biorbd::muscles::StateDynamics> &state,
                 const biorbd::utils::GenCoord &Q,
                 const biorbd::utils::GenCoord &QDot){
         return self->muscularJointTorque(*self, state, true, &Q, &QDot);
     }
 
-    static biorbd::utils::String getMuscleType(const std::shared_ptr<s2mMuscle> m){
+    static biorbd::utils::String getMuscleType(const std::shared_ptr<biorbd::muscles::Muscle> m){
         return m->type();
     }
 }
 
 // extension of muscle casting
-%extend s2mMuscleHillType{
-    static s2mMuscleHillType& getRef(std::shared_ptr<s2mMuscle> m)
+%extend biorbd::muscles::HillType{
+    static biorbd::muscles::HillType& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
     {
-        return *(std::dynamic_pointer_cast<s2mMuscleHillType>(m));
+        return *(std::dynamic_pointer_cast<biorbd::muscles::HillType>(m));
     }
 }
-%extend s2mMuscleHillTypeThelen{
-    static s2mMuscleHillTypeThelen& getRef(std::shared_ptr<s2mMuscle> m)
+%extend biorbd::muscles::HillTypeThelen{
+    static biorbd::muscles::HillTypeThelen& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
     {
-        return *(std::dynamic_pointer_cast<s2mMuscleHillTypeThelen>(m));
+        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelen>(m));
     }
 }
-%extend s2mMuscleHillTypeThelenFatigable{
-    static s2mMuscleHillTypeThelenFatigable& getRef(std::shared_ptr<s2mMuscle> m)
+%extend biorbd::muscles::HillTypeThelenFatigable{
+    static biorbd::muscles::HillTypeThelenFatigable& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
     {
-        return *(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(m));
+        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(m));
     }
 }
-%extend s2mMuscleHillTypeSimple{
-    static s2mMuscleHillTypeSimple& getRef(std::shared_ptr<s2mMuscle> m)
+%extend biorbd::muscles::HillTypeSimple{
+    static biorbd::muscles::HillTypeSimple& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
     {
-        return *(std::dynamic_pointer_cast<s2mMuscleHillTypeSimple>(m));
+        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeSimple>(m));
     }
 }
 
 // extension of muscle fatigueState casting
-%extend s2mMuscleFatigueState{
-    static s2mMuscleFatigueState& getRef(std::shared_ptr<s2mMuscleFatigueState> s)
+%extend biorbd::muscles::FatigueState{
+    static biorbd::muscles::FatigueState& getRef(std::shared_ptr<biorbd::muscles::FatigueState> s)
     {
         return *s;
     }
 }
-%extend s2mMuscleFatigueDynamicStateXia{
-    static s2mMuscleFatigueDynamicStateXia& getRef(std::shared_ptr<s2mMuscleFatigueState> s)
+%extend biorbd::muscles::FatigueDynamicStateXia{
+    static biorbd::muscles::FatigueDynamicStateXia& getRef(std::shared_ptr<biorbd::muscles::FatigueState> s)
     {
-        return *(std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(s));
+        return *(std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicStateXia>(s));
     }
 }
 

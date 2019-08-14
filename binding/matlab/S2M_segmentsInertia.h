@@ -13,7 +13,7 @@ void S2M_segmentsInertia( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */ /**** ATTENTION NDDL A ÉTÉ REMPLACÉ PAR NQ, SEGFAULT? ***/
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
     biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
@@ -45,7 +45,7 @@ void S2M_segmentsInertiaLocal( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nBones = model->nbBone(); /* Get the number of DoF */
+    unsigned int nBones = model->nbBone(); // Get the number of DoF
 
 
 
@@ -63,7 +63,7 @@ void S2M_segmentsInertiaLocal( int, mxArray *plhs[],
             mexErrMsgIdAndTxt( "MATLAB:findnz:invalidInputType",msg.str().c_str());
         }
 
-        /* Create a matrix for the return argument */
+        // Create a matrix for the return argument
         const mwSize dims[2]={3,3};
         plhs[0] = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
         double *ia = mxGetPr(plhs[0]);

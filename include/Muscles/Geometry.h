@@ -1,5 +1,5 @@
-#ifndef S2M_MUSCLE_GEOMETRY_H
-#define S2M_MUSCLE_GEOMETRY_H
+#ifndef BIORBD_MUSCLES_GEOMETRY_H
+#define BIORBD_MUSCLES_GEOMETRY_H
 
 #include "biorbdConfig.h"
 #include "s2mJoints.h"
@@ -9,38 +9,40 @@
 #include "Muscles/PathChangers.h"
 #include "Muscles/Caracteristics.h"
 
-class BIORBD_API s2mMuscleGeometry
+namespace biorbd { namespace muscles {
+
+class BIORBD_API Geometry
 {
 public:
-    s2mMuscleGeometry(
-            const s2mNodeMuscle &origin = s2mNodeMuscle(),
-            const s2mNodeMuscle &insertion = s2mNodeMuscle());
-    virtual ~s2mMuscleGeometry();
+    Geometry(
+            const biorbd::muscles::MuscleNode &origin = biorbd::muscles::MuscleNode(),
+            const biorbd::muscles::MuscleNode &insertion = biorbd::muscles::MuscleNode());
+    virtual ~Geometry();
 
     // Fonction a appeler avant d'appeler longueur/velocity ou autres!
     void updateKinematics(
             s2mJoints &model,
             const biorbd::utils::GenCoord* Q = nullptr,
             const biorbd::utils::GenCoord* Qdot = nullptr,
-            const s2mMuscleCaracteristics& = s2mMuscleCaracteristics(),
-            const s2mMusclePathChangers& = s2mMusclePathChangers(),
+            const biorbd::muscles::Caracteristics& = biorbd::muscles::Caracteristics(),
+            const biorbd::muscles::PathChangers& = biorbd::muscles::PathChangers(),
             int updateKin = 2);
     void updateKinematics(
-            std::vector<s2mNodeMuscle>& musclePointsInGlobal,
+            std::vector<biorbd::muscles::MuscleNode>& musclePointsInGlobal,
             biorbd::utils::Matrix& jacoPointsInGlobal,
             const biorbd::utils::GenCoord* Qdot = nullptr,
-            const s2mMuscleCaracteristics& = s2mMuscleCaracteristics());
+            const biorbd::muscles::Caracteristics& = biorbd::muscles::Caracteristics());
 
     // Get and set des position d'origine et insertions
-    const s2mNodeMuscle& originInLocal() const;
-    const s2mNodeMuscle& insertionInLocal() const;
-    void originInLocal(const s2mNodeMuscle &val);
-    void insertionInLocal(const s2mNodeMuscle &val);
+    const biorbd::muscles::MuscleNode& originInLocal() const;
+    const biorbd::muscles::MuscleNode& insertionInLocal() const;
+    void originInLocal(const biorbd::muscles::MuscleNode &val);
+    void insertionInLocal(const biorbd::muscles::MuscleNode &val);
 
     // Position des muscles dans l'espace
-    const s2mNodeMuscle& originInGlobal() const; // Attention il est impératif d'avoir update une premiere fois pour que ceci fonctionne!
-    const s2mNodeMuscle& insertionInGlobal() const; // Attention il est impératif d'avoir update une premiere fois pour que ceci fonctionne!
-    const std::vector<s2mNodeMuscle>& musclesPointsInGlobal() const; // Return already computed via points
+    const biorbd::muscles::MuscleNode& originInGlobal() const; // Attention il est impératif d'avoir update une premiere fois pour que ceci fonctionne!
+    const biorbd::muscles::MuscleNode& insertionInGlobal() const; // Attention il est impératif d'avoir update une premiere fois pour que ceci fonctionne!
+    const std::vector<biorbd::muscles::MuscleNode>& musclesPointsInGlobal() const; // Return already computed via points
 
     // Retour des longueur et vitesse musculaires
     double length() const; // Return the already computed muscle length
@@ -59,26 +61,26 @@ protected:
     // Update commun de la cinématique
     void _updateKinematics(
             const biorbd::utils::GenCoord *Qdot,
-            const s2mMuscleCaracteristics &c,
-            const s2mMusclePathChangers* o = nullptr);
+            const biorbd::muscles::Caracteristics &c,
+            const biorbd::muscles::PathChangers* o = nullptr);
 
     // Calcul de la position des points dans le global
-    const s2mNodeMuscle& originInGlobal(
+    const biorbd::muscles::MuscleNode& originInGlobal(
             s2mJoints &model,
             const biorbd::utils::GenCoord &Q); // Update la cinématique puis retourne la position de l'origine dans l'espace
-    const s2mNodeMuscle& insertionInGlobal(
+    const biorbd::muscles::MuscleNode& insertionInGlobal(
             s2mJoints &model,
             const biorbd::utils::GenCoord &Q); // Update la cinématique puis retourne la position de l'insertion dans l'espace
-    void musclesPointsInGlobal(std::vector<s2mNodeMuscle>& ptsInGlobal); // Forcer les points dans le global
+    void musclesPointsInGlobal(std::vector<biorbd::muscles::MuscleNode>& ptsInGlobal); // Forcer les points dans le global
     void musclesPointsInGlobal(
             s2mJoints &,
             const biorbd::utils::GenCoord &Q,
-            const s2mMusclePathChangers&);
+            const biorbd::muscles::PathChangers&);
 
     // Calcul de la longueur musculaire
     double length(
-            const s2mMuscleCaracteristics&,
-            const s2mMusclePathChangers* pathChanger = nullptr); // Update the kinematics and compute and return muscle length
+            const biorbd::muscles::Caracteristics&,
+            const biorbd::muscles::PathChangers* pathChanger = nullptr); // Update the kinematics and compute and return muscle length
     // Calcul de la vitesse musculaire
     double velocity(
             const biorbd::utils::GenCoord &Qdot); // Update the kinematics and compute and return muscle velocity assuming no via points nor wrapping objects
@@ -91,13 +93,13 @@ protected:
     void computeJacobianLength();
 
     // Position des nodes dans le repere local
-    s2mNodeMuscle m_origin; // Node de l'origine
-    s2mNodeMuscle m_insertion; // Node de l'insertion
+    biorbd::muscles::MuscleNode m_origin; // Node de l'origine
+    biorbd::muscles::MuscleNode m_insertion; // Node de l'insertion
 
-    s2mNodeMuscle m_originInGlobal; // Position de l'origine dans le repere global
-    s2mNodeMuscle m_insertionInGlobal; // Position de l'origine dans le repere global
-    std::vector<s2mNodeMuscle> m_pointsInGlobal; // position de tous les points dans le global
-    std::vector<s2mNodeMuscle> m_pointsInLocal; // position de tous les points dans le global
+    biorbd::muscles::MuscleNode m_originInGlobal; // Position de l'origine dans le repere global
+    biorbd::muscles::MuscleNode m_insertionInGlobal; // Position de l'origine dans le repere global
+    std::vector<biorbd::muscles::MuscleNode> m_pointsInGlobal; // position de tous les points dans le global
+    std::vector<biorbd::muscles::MuscleNode> m_pointsInLocal; // position de tous les points dans le global
     biorbd::utils::Matrix m_jacobian;
     biorbd::utils::Matrix m_G;
     biorbd::utils::Matrix m_jacobianLength; // Incluant la
@@ -112,4 +114,6 @@ protected:
 
 };
 
-#endif // S2M_MUSCLE_GEOMETRY_H
+}}
+
+#endif // BIORBD_MUSCLES_GEOMETRY_H

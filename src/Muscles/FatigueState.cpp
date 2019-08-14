@@ -4,7 +4,7 @@
 #include <cmath>
 #include "Utils/Error.h"
 
-s2mMuscleFatigueState::s2mMuscleFatigueState(
+biorbd::muscles::FatigueState::FatigueState(
         double active,
         double fatigued,
         double resting) :
@@ -15,7 +15,7 @@ s2mMuscleFatigueState::s2mMuscleFatigueState(
     setType();
 }
 
-s2mMuscleFatigueState::s2mMuscleFatigueState(const std::shared_ptr<s2mMuscleFatigueState> m)
+biorbd::muscles::FatigueState::FatigueState(const std::shared_ptr<biorbd::muscles::FatigueState> m)
 {
     m_activeFibers = m->m_activeFibers;
     m_fatiguedFibers = m->m_fatiguedFibers;
@@ -23,12 +23,12 @@ s2mMuscleFatigueState::s2mMuscleFatigueState(const std::shared_ptr<s2mMuscleFati
     m_type = m->m_type;
 }
 
-s2mMuscleFatigueState::~s2mMuscleFatigueState()
+biorbd::muscles::FatigueState::~FatigueState()
 {
 
 }
 
-void s2mMuscleFatigueState::setState(double active, double fatigued, double resting)
+void biorbd::muscles::FatigueState::setState(double active, double fatigued, double resting)
 {
     // Sanity check for active fibers
     //
@@ -85,27 +85,27 @@ void s2mMuscleFatigueState::setState(double active, double fatigued, double rest
     m_restingFibers = resting;
 }
 
-double s2mMuscleFatigueState::activeFibers() const
+double biorbd::muscles::FatigueState::activeFibers() const
 {
     return m_activeFibers;
 }
 
-double s2mMuscleFatigueState::fatiguedFibers() const
+double biorbd::muscles::FatigueState::fatiguedFibers() const
 {
     return m_fatiguedFibers;
 }
 
-double s2mMuscleFatigueState::restingFibers() const
+double biorbd::muscles::FatigueState::restingFibers() const
 {
     return m_restingFibers;
 }
 
-std::string s2mMuscleFatigueState::getType() const
+std::string biorbd::muscles::FatigueState::getType() const
 {
     return m_type;
 }
 
-void s2mMuscleFatigueState::setType()
+void biorbd::muscles::FatigueState::setType()
 {
     m_type = "Simple";
 }

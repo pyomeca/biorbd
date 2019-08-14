@@ -1,23 +1,27 @@
-#ifndef S2M_MUSCLE_FORCE_FROM_INSERTION_H
-#define S2M_MUSCLE_FORCE_FROM_INSERTION_H
+#ifndef BIORBD_MUSCLES_FORCE_FROM_INSERTION_H
+#define BIORBD_MUSCLES_FORCE_FROM_INSERTION_H
 
 #include "biorbdConfig.h"
 #include "Muscles/Force.h"
 
-class BIORBD_API s2mMuscleForceFromInsertion : public s2mMuscleForce
+namespace biorbd { namespace muscles {
+
+class BIORBD_API ForceFromInsertion : public biorbd::muscles::Force
 {
 public:
-    s2mMuscleForceFromInsertion();
-    s2mMuscleForceFromInsertion(double x, double y, double z);
-    s2mMuscleForceFromInsertion(const Eigen::Vector3d& force);
-    s2mMuscleForceFromInsertion(
-            const s2mMuscleGeometry& geo,
+    ForceFromInsertion();
+    ForceFromInsertion(double x, double y, double z);
+    ForceFromInsertion(const Eigen::Vector3d& force);
+    ForceFromInsertion(
+            const biorbd::muscles::Geometry& geo,
             double force);
-    virtual ~s2mMuscleForceFromInsertion();
+    virtual ~ForceFromInsertion();
 
     // Get et set
-    virtual void setForce(const s2mMuscleGeometry& geo, double force);
+    virtual void setForce(const biorbd::muscles::Geometry& geo, double force);
 
 };
 
-#endif // S2M_MUSCLE_FORCE_FROM_INSERTION_H
+}}
+
+#endif // BIORBD_MUSCLES_FORCE_FROM_INSERTION_H

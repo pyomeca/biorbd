@@ -15,7 +15,7 @@ void S2M_MusclesActivationDot( int, mxArray *plhs[],
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
 
     // Recevoir les états musculaires
-    std::vector<std::vector<s2mMuscleStateDynamics>> state = getParameterMuscleState(prhs, 2, 3, model->nbMuscleTotal());
+    std::vector<std::vector<biorbd::muscles::StateDynamics>> state = getParameterMuscleState(prhs, 2, 3, model->nbMuscleTotal());
 
     // Already normalized
     bool areadyNormalized(false);

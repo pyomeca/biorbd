@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/State.h"
 
-s2mMuscleState::s2mMuscleState(
+biorbd::muscles::State::State(
         const double &e,
         const double &a) :
     m_excitation(e),
@@ -9,19 +9,19 @@ s2mMuscleState::s2mMuscleState(
 {
 }
 
-s2mMuscleState::~s2mMuscleState()
+biorbd::muscles::State::~State()
 {
     //dtor
 }
 
-void s2mMuscleState::setExcitation(const double &val) {
+void biorbd::muscles::State::setExcitation(const double &val) {
     if (m_excitation<=0)
         m_excitation = 0;
     else
         m_excitation = val;
 }
 
-void s2mMuscleState::setActivation(const double &val){
+void biorbd::muscles::State::setActivation(const double &val){
     if (m_activation<=0)
         m_activation = 0;
     else if (m_activation>=1)
@@ -30,12 +30,12 @@ void s2mMuscleState::setActivation(const double &val){
         m_activation = val;
 }
 
-double s2mMuscleState::excitation() const
+double biorbd::muscles::State::excitation() const
 {
     return m_excitation;
 }
 
-double s2mMuscleState::activation() const
+double biorbd::muscles::State::activation() const
 {
     return m_activation;
 }

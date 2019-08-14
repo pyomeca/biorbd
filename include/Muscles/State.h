@@ -1,15 +1,17 @@
-#ifndef S2M_MUSCLE_STATE_H
-#define S2M_MUSCLE_STATE_H
+#ifndef BIORBD_MUSCLES_STATE_H
+#define BIORBD_MUSCLES_STATE_H
 
 #include "biorbdConfig.h"
 
-class BIORBD_API s2mMuscleState
+namespace biorbd { namespace muscles {
+
+class BIORBD_API State
 {
 public:
-    s2mMuscleState(
+    State(
             const double &e = 0,
             const double &a = 0);
-    virtual ~s2mMuscleState();
+    virtual ~State();
 
     // Set and Get
     virtual void setExcitation(const double &val);
@@ -25,4 +27,6 @@ protected:
 
 };
 
-#endif // S2M_MUSCLE_STATE_H
+}}
+
+#endif // BIORBD_MUSCLES_STATE_H

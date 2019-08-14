@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_MUSCLE_LENGTH_JACOBIAN_H
-#define MATLAB_S2M_MUSCLE_LENGTH_JACOBIAN_H
+#ifndef MATLAB_BIORBD_MUSCLES_LENGTH_JACOBIAN_H
+#define MATLAB_BIORBD_MUSCLES_LENGTH_JACOBIAN_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -13,7 +13,7 @@ void S2M_muscleLengthJacobian( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
     biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
@@ -33,4 +33,4 @@ void S2M_muscleLengthJacobian( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_MUSCLE_LENGTH_JACOBIAN_H
+#endif // MATLAB_BIORBD_MUSCLES_LENGTH_JACOBIAN_H

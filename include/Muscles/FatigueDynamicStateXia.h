@@ -1,26 +1,30 @@
-#ifndef S2M_MUSCLE_FATIGUE_DYNAMIC_STATE_XIA_H
-#define S2M_MUSCLE_FATIGUE_DYNAMIC_STATE_XIA_H
+#ifndef BIORBD_MUSCLES_FATIGUE_DYNAMIC_STATE_XIA_H
+#define BIORBD_MUSCLES_FATIGUE_DYNAMIC_STATE_XIA_H
 
 #include "biorbdConfig.h"
 #include "Muscles/FatigueDynamicState.h"
 
-class BIORBD_API s2mMuscleFatigueDynamicStateXia : public s2mMuscleFatigueDynamicState
+namespace biorbd { namespace muscles {
+
+class BIORBD_API FatigueDynamicStateXia : public biorbd::muscles::FatigueDynamicState
 {
 public:
-    s2mMuscleFatigueDynamicStateXia(
+    FatigueDynamicStateXia(
             double active = 0,
             double fatigued = 0,
             double resting = 1);
 
-    s2mMuscleFatigueDynamicStateXia(const std::shared_ptr<s2mMuscleFatigueState> m);
+    FatigueDynamicStateXia(const std::shared_ptr<biorbd::muscles::FatigueState> m);
 
     virtual void timeDerivativeState(
-            const s2mMuscleStateDynamics &emg,
-            const s2mMuscleCaracteristics &caract
+            const biorbd::muscles::StateDynamics &emg,
+            const biorbd::muscles::Caracteristics &caract
      );
 protected:
     virtual void setType();
 
 };
 
-#endif // S2M_MUSCLE_FATIGUE_DYNAMIC_STATE_XIA_H
+}}
+
+#endif // BIORBD_MUSCLES_FATIGUE_DYNAMIC_STATE_XIA_H

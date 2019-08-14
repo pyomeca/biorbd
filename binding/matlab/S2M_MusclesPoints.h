@@ -15,7 +15,7 @@ void S2M_MusclesPoints( int nlhs, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 3, 3, "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
     std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
@@ -35,26 +35,26 @@ void S2M_MusclesPoints( int nlhs, mxArray *plhs[],
         for (unsigned int i=0; i<model->nbMuscleGroups(); ++i)
             for (unsigned int j=0; j<model->muscleGroup(i).nbMuscles(); ++j){
                 // Recueillir tout le chemin musculaire
-                std::vector<s2mNodeMuscle> via(model->muscleGroup(i).muscle(j)->musclesPointsInGlobal(*model,*(Q.begin()+iQ),true));
+                std::vector<biorbd::muscles::MuscleNode> via(model->muscleGroup(i).muscle(j)->musclesPointsInGlobal(*model,*(Q.begin()+iQ),true));
 
                 // Si le nombre de wrap est > 0, c'est qu'il n'y a pas de viapoints et il n'y a qu'UN wrap
                 if (model->muscleGroup(i).muscle(j)->pathChanger().nbWraps() > 0){
                     // De quel type
                     biorbd::utils::String forme(
-                                std::static_pointer_cast<s2mWrappingObject>(
+                                std::static_pointer_cast<biorbd::muscles::WrappingObject>(
                                     model->muscleGroup(0).muscle(0)->pathChanger().object(0))->forme());
                     wrap_forme.push_back(forme);
 
                     // Dans quelle orientation
                     biorbd::utils::Attitude RT;
                     RT.setIdentity();
-                    RT = std::static_pointer_cast<s2mWrappingObject>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->RT(*model,*(Q.begin()+iQ),false);
+                    RT = std::static_pointer_cast<biorbd::muscles::WrappingObject>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->RT(*model,*(Q.begin()+iQ),false);
                     wrap_RT.push_back(RT);
 
                     // Quel est sa dimension
                     if (!forme.tolower().compare("cylinder")){
-                        wrap_dim1.push_back(std::static_pointer_cast<s2mWrappingCylinder>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->rayon());
-                        wrap_dim2.push_back(std::static_pointer_cast<s2mWrappingCylinder>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->length());
+                        wrap_dim1.push_back(std::static_pointer_cast<biorbd::muscles::WrappingCylinder>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->rayon());
+                        wrap_dim2.push_back(std::static_pointer_cast<biorbd::muscles::WrappingCylinder>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->length());
                     }
                 }
 

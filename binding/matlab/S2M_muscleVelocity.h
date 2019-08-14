@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_MUSCLE_VELOCITY_H
-#define MATLAB_S2M_MUSCLE_VELOCITY_H
+#ifndef MATLAB_BIORBD_MUSCLES_VELOCITY_H
+#define MATLAB_BIORBD_MUSCLES_VELOCITY_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -13,8 +13,8 @@ void S2M_muscleVelocity( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 4, 4, "4 arguments are required where the 2nd is the handler on the model, 3rd is the Q and 4th is the Qdot");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-    unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
+    unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
     std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
@@ -48,4 +48,4 @@ void S2M_muscleVelocity( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_MUSCLE_VELOCITY_H
+#endif // MATLAB_BIORBD_MUSCLES_VELOCITY_H

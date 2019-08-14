@@ -3,24 +3,24 @@
 
 #include "Utils/Attitude.h"
 
-s2mWrappingSphere::s2mWrappingSphere(
+biorbd::muscles::WrappingSphere::WrappingSphere(
         const double &dia,
         const Eigen::Vector3d &v, // Position du noeud
         const biorbd::utils::String &name,  // Nom du noeud
         const biorbd::utils::String &parentName) :
-    s2mWrappingObject(v,name,parentName),
+    biorbd::muscles::WrappingObject(v,name,parentName),
     m_dia(dia)
 {
     m_forme = "Sphere";
 }
 
 
-s2mWrappingSphere::~s2mWrappingSphere()
+biorbd::muscles::WrappingSphere::~WrappingSphere()
 {
     //dtor
 }
 
-biorbd::utils::Attitude s2mWrappingSphere::RT(
+biorbd::utils::Attitude biorbd::muscles::WrappingSphere::RT(
         s2mJoints &,
         const biorbd::utils::GenCoord &,
         const bool &)
@@ -28,12 +28,12 @@ biorbd::utils::Attitude s2mWrappingSphere::RT(
     return biorbd::utils::Attitude();
 }
 
-double s2mWrappingSphere::size() const
+double biorbd::muscles::WrappingSphere::size() const
 {
     return m_dia;
 }
 
-void s2mWrappingSphere::setSize(const double &val)
+void biorbd::muscles::WrappingSphere::setSize(const double &val)
 {
     m_dia = val;
 }

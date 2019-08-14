@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_MUSCLE_JOINT_TORQUE_FROM_EXCITATION_H
-#define MATLAB_S2M_MUSCLE_JOINT_TORQUE_FROM_EXCITATION_H
+#ifndef MATLAB_BIORBD_MUSCLES_JOINT_TORQUE_FROM_EXCITATION_H
+#define MATLAB_BIORBD_MUSCLES_JOINT_TORQUE_FROM_EXCITATION_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -13,10 +13,10 @@ void S2M_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 5, 6, "5 arguments are required where the 2nd is the handler on the model, 3rd is the Q, 4th is QDot, 5th is the muscles excitation states and optional 6th is if update [true] must be done. Note that if update is set to [false], the user MUST update it by himself before calling this function");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-    unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
-    unsigned int nTau = model->nbTau(); /* Get the number of DoF */
-    unsigned int nRoot = model->nbRoot(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
+    unsigned int nQdot = model->nbQdot(); // Get the number of DoF
+    unsigned int nTau = model->nbTau(); // Get the number of DoF
+    unsigned int nRoot = model->nbRoot(); // Get the number of DoF
     unsigned int nMuscleTotal = model->nbMuscleTotal();
 
     // Recevoir Q
@@ -24,7 +24,7 @@ void S2M_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
     // Recevoir Qdot
     std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
     // Recevoir muscleStates
-    std::vector<std::vector<s2mMuscleStateDynamics>> s = getParameterMuscleStateExcitation(prhs,4,model->nbMuscleTotal());
+    std::vector<std::vector<biorbd::muscles::StateDynamics>> s = getParameterMuscleStateExcitation(prhs,4,model->nbMuscleTotal());
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));
@@ -93,4 +93,4 @@ void S2M_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_MUSCLE_JOINT_TORQUE_FROM_EXCITATION_H
+#endif // MATLAB_BIORBD_MUSCLES_JOINT_TORQUE_FROM_EXCITATION_H

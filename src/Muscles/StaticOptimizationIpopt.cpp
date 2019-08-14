@@ -8,7 +8,7 @@
 #include "Utils/Matrix.h"
 #include "Muscles/StateDynamics.h"
 
-s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
+biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
         s2mMusculoSkeletalModel &model,
         const biorbd::utils::GenCoord &Q,
         const biorbd::utils::GenCoord &Qdot,
@@ -32,7 +32,7 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
     m_tauTarget(tauTarget),
     m_tauResidual(Eigen::VectorXd::Zero(m_nTau)),
     m_tauPonderation(1000),
-    m_states(std::vector<s2mMuscleStateDynamics>(m_nMus)),
+    m_states(std::vector<biorbd::muscles::StateDynamics>(m_nMus)),
     m_pNormFactor(pNormFactor),
     m_verbose(verbose),
     m_finalSolution(biorbd::utils::Vector(m_nMus)),
@@ -50,12 +50,12 @@ s2mStaticOptimizationIpopt::s2mStaticOptimizationIpopt(
     }
 }
 
-s2mStaticOptimizationIpopt::~s2mStaticOptimizationIpopt()
+biorbd::muscles::StaticOptimizationIpopt::~StaticOptimizationIpopt()
 {
 
 }
 
-bool s2mStaticOptimizationIpopt::get_nlp_info(
+bool biorbd::muscles::StaticOptimizationIpopt::get_nlp_info(
         Ipopt::Index &n,
         Ipopt::Index &m,
         Ipopt::Index &nnz_jac_g,
@@ -82,7 +82,7 @@ bool s2mStaticOptimizationIpopt::get_nlp_info(
     return true;
 }
 
-bool s2mStaticOptimizationIpopt::get_bounds_info(
+bool biorbd::muscles::StaticOptimizationIpopt::get_bounds_info(
         Ipopt::Index n,
         Ipopt::Number *x_l,
         Ipopt::Number *x_u,
@@ -111,7 +111,7 @@ bool s2mStaticOptimizationIpopt::get_bounds_info(
     return true;
 }
 
-bool s2mStaticOptimizationIpopt::get_starting_point(
+bool biorbd::muscles::StaticOptimizationIpopt::get_starting_point(
         Ipopt::Index,
         bool init_x,
         Ipopt::Number* x,
@@ -142,7 +142,7 @@ bool s2mStaticOptimizationIpopt::get_starting_point(
     return true;
 }
 
-bool s2mStaticOptimizationIpopt::eval_f(
+bool biorbd::muscles::StaticOptimizationIpopt::eval_f(
         Ipopt::Index n,
         const Ipopt::Number *x,
         bool new_x,
@@ -159,7 +159,7 @@ bool s2mStaticOptimizationIpopt::eval_f(
     return true;
 }
 
-bool s2mStaticOptimizationIpopt::eval_grad_f(
+bool biorbd::muscles::StaticOptimizationIpopt::eval_grad_f(
         Ipopt::Index n,
         const Ipopt::Number *x,
         bool new_x,
@@ -180,7 +180,7 @@ bool s2mStaticOptimizationIpopt::eval_grad_f(
     return true;
 }
 
-bool s2mStaticOptimizationIpopt::eval_g(
+bool biorbd::muscles::StaticOptimizationIpopt::eval_g(
         Ipopt::Index n,
         const Ipopt::Number *x,
         bool new_x,
@@ -205,7 +205,7 @@ bool s2mStaticOptimizationIpopt::eval_g(
     return true;
 }
 
-bool s2mStaticOptimizationIpopt::eval_jac_g(
+bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
         Ipopt::Index n,
         const Ipopt::Number *x,
         bool new_x,
@@ -234,12 +234,12 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
         biorbd::utils::Tau tauMusc(m_model.muscularJointTorque(m_model, m_states, false, &m_Q, &m_Qdot));
         unsigned int k(0);
         for( unsigned int j = 0; j < m_nMus; ++j ){
-            std::vector<s2mMuscleStateDynamics> stateEpsilon;
+            std::vector<biorbd::muscles::StateDynamics> stateEpsilon;
             for (unsigned int i = 0; i < m_nMus; ++i){
                 unsigned int delta(0);
                 if (i == j)
                     delta = 1;
-                stateEpsilon.push_back(s2mMuscleStateDynamics(0, m_activations[i]+delta*m_eps));
+                stateEpsilon.push_back(biorbd::muscles::StateDynamics(0, m_activations[i]+delta*m_eps));
             }
             biorbd::utils::Tau tauCalculEpsilon(m_model.muscularJointTorque(m_model, stateEpsilon, false, &m_Q, &m_Qdot));
             for( Ipopt::Index i = 0; i < m; i++ ){
@@ -274,7 +274,7 @@ bool s2mStaticOptimizationIpopt::eval_jac_g(
 }
 
 
-void s2mStaticOptimizationIpopt::finalize_solution(
+void biorbd::muscles::StaticOptimizationIpopt::finalize_solution(
         Ipopt::SolverReturn,
         Ipopt::Index,
         const Ipopt::Number *x,
@@ -309,15 +309,15 @@ void s2mStaticOptimizationIpopt::finalize_solution(
     }
 }
 
-biorbd::utils::Vector s2mStaticOptimizationIpopt::finalSolution() const{
+biorbd::utils::Vector biorbd::muscles::StaticOptimizationIpopt::finalSolution() const{
     return m_finalSolution;
 }
 
-biorbd::utils::Vector s2mStaticOptimizationIpopt::finalResidual() const{
+biorbd::utils::Vector biorbd::muscles::StaticOptimizationIpopt::finalResidual() const{
     return m_finalResidual;
 }
 
-void s2mStaticOptimizationIpopt::dispatch(const Ipopt::Number *x)
+void biorbd::muscles::StaticOptimizationIpopt::dispatch(const Ipopt::Number *x)
 {
     for(unsigned int i = 0; i < m_nMus; i++ ){
         m_activations[i] = x[i];
