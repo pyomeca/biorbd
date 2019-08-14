@@ -14,10 +14,10 @@ void S2M_ContactJacobian( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */ /**** ATTENTION, NQ A REMPLACÉ NDDL, SEGFAULT? ****/
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Trouver la matrice jacobienne de tous les contacts
     unsigned int nContacts = model->nContacts();

@@ -13,10 +13,10 @@ void S2M_CoM( int nlhs, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
 
     // Create a matrix for the return argument
     mwSize dims[3];

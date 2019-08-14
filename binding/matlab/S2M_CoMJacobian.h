@@ -13,11 +13,11 @@ void S2M_CoMJacobian( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int NDDL = model->nbDof(); /* Get the number of DoF */
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
+    unsigned int NDDL = model->nbDof(); // Get the number of DoF
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Trouver la jacobienne du COM
     RigidBodyDynamics::Math::MatrixNd Jaco = model->CoMJacobian(Q).transpose();

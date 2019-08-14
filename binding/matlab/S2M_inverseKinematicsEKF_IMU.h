@@ -61,21 +61,21 @@ void S2M_inverseKinematicsEKF_IMUstep( int , mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-    unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
-    unsigned int nQddot = model->nbQddot(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
+    unsigned int nQdot = model->nbQdot(); // Get the number of DoF
+    unsigned int nQddot = model->nbQddot(); // Get the number of DoF
 
     // Recevoir le kalman
     s2mKalmanReconsIMU * kalman = convertMat2Ptr<s2mKalmanReconsIMU>(prhs[2]);
 
       // Recevoir la matrice des markers (Ne traite que le premier frame)
-    std::vector<std::vector<s2mAttitude>> imusOverTime = getParameterAllIMUs(prhs,3);
-    std::vector<s2mAttitude> imus = imusOverTime[0];
+    std::vector<std::vector<biorbd::utils::Attitude>> imusOverTime = getParameterAllIMUs(prhs,3);
+    std::vector<biorbd::utils::Attitude> imus = imusOverTime[0];
 
     // Si c'est le premier frame recevoir Qinit
 
     if (kalman->first() && nrhs >= 5){
-        s2mGenCoord Qinit(*getParameterQ(prhs, 4, nQ).begin());
+        biorbd::utils::GenCoord Qinit(*getParameterQ(prhs, 4, nQ).begin());
         kalman->setInitState(&Qinit);
     }
 
@@ -88,9 +88,9 @@ void S2M_inverseKinematicsEKF_IMUstep( int , mxArray *plhs[],
     double *qddot = mxGetPr(plhs[2]);
 
     // Faire la cinématique inverse a chaque instant
-    s2mGenCoord Q(nQ);
-    s2mGenCoord QDot(nQdot);
-    s2mGenCoord QDDot(nQddot);
+    biorbd::utils::GenCoord Q(nQ);
+    biorbd::utils::GenCoord QDot(nQdot);
+    biorbd::utils::GenCoord QDDot(nQddot);
 
     // Faire la cinématique inverse
     kalman->reconstructFrame(*model, imus, &Q, &QDot, &QDDot);
@@ -116,9 +116,9 @@ void S2M_inverseKinematicsEKF_IMUallInOneCall( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-    unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
-    unsigned int nQddot = model->nbQddot(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
+    unsigned int nQdot = model->nbQdot(); // Get the number of DoF
+    unsigned int nQddot = model->nbQddot(); // Get the number of DoF
 
     // Recevoir les paramètres du filtre
     double freq=100, noiseF=5e-3, errorF=1e-10;
@@ -133,12 +133,12 @@ void S2M_inverseKinematicsEKF_IMUallInOneCall( int, mxArray *plhs[],
     s2mKalmanReconsIMU kalman(*model, s2mKalmanRecons::s2mKalmanParam(freq, noiseF, errorF));
 
     // Recevoir la matrice des imus
-    std::vector<std::vector<s2mAttitude>> imusOverTime = getParameterAllIMUs(prhs,2);
+    std::vector<std::vector<biorbd::utils::Attitude>> imusOverTime = getParameterAllIMUs(prhs,2);
     unsigned int nFrames(static_cast<unsigned int>(imusOverTime.size()));
 
     // Recevoir Qinit
     if (kalman.first() && nrhs >= 4){
-        s2mGenCoord Qinit(*getParameterQ(prhs, 3, nQ).begin());
+        biorbd::utils::GenCoord Qinit(*getParameterQ(prhs, 3, nQ).begin());
         kalman.setInitState(&Qinit);
     }
 
@@ -153,9 +153,9 @@ void S2M_inverseKinematicsEKF_IMUallInOneCall( int, mxArray *plhs[],
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrames; ++i){
         // Faire la cinématique inverse a chaque instant
-        s2mGenCoord Q(nQ);
-        s2mGenCoord QDot(nQdot);
-        s2mGenCoord QDDot(nQddot);
+        biorbd::utils::GenCoord Q(nQ);
+        biorbd::utils::GenCoord QDot(nQdot);
+        biorbd::utils::GenCoord QDDot(nQddot);
 
         // Faire la cinématique inverse
         kalman.reconstructFrame(*model, *(imusOverTime.begin()+i), &Q, &QDot, &QDDot);

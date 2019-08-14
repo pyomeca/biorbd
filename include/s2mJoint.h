@@ -3,20 +3,22 @@
 
 #include <rbdl/Joint.h>
 #include "biorbdConfig.h"
-#include "s2mString.h"
+#include "Utils/String.h"
 
 class BIORBD_API s2mJoint : public RigidBodyDynamics::Joint
 {
     public:
         s2mJoint();
         s2mJoint(RigidBodyDynamics::JointType joint_type);
-        s2mJoint(RigidBodyDynamics::JointType joint_type, RigidBodyDynamics::Math::Vector3d axis);
+        s2mJoint(
+                RigidBodyDynamics::JointType joint_type,
+                RigidBodyDynamics::Math::Vector3d axis);
         virtual ~s2mJoint();
 
-        const s2mString& type() const;
+        const biorbd::utils::String& type() const;
     protected:
-        virtual void setType (){m_type = "IntraBone";}
-        s2mString m_type;
+        virtual void setType ();
+        biorbd::utils::String m_type;
 
 };
 

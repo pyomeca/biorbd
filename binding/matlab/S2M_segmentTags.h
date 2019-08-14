@@ -13,10 +13,10 @@ void S2M_segmentTags( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 3, 5, "3 arguments are required (+2 optional) where the 2nd is the handler on the model, 3rd is the Q, 4th if you want to remove axes as specified in the model file [default = true] and 5th optional is a specific segment index");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
 
     bool removeAxes(true);
     if (nrhs>=4)

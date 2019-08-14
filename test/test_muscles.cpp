@@ -2,26 +2,28 @@
 #include <gtest/gtest.h>
 
 #include "s2mMusculoSkeletalModel.h"
-#include "s2mMuscle.h"
-#include "s2mGroupeMusculaire.h"
-#include "s2mMuscleHillTypeThelenFatigable.h"
-#include "s2mMuscleFatigueDynamicStateXia.h"
+#include "biorbdConfig.h"
+#ifdef MODULE_MUSCLES
+#include "Muscles/Muscle.h"
+#include "Muscles/MuscleGroup.h"
+#include "Muscles/HillTypeThelenFatigable.h"
+#include "Muscles/FatigueDynamicStateXia.h"
 
 static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
 static unsigned int muscleGroupForMuscleJacobian(1);
 static unsigned int muscleForMuscleJacobian(1);
 TEST(MuscleJacobian, jacobian){
     s2mMusculoSkeletalModel model(modelPathForMuscleJacobian);
-    s2mGenCoord Q(model);
+    biorbd::utils::GenCoord Q(model);
     Q.setZero();
 
     // Force computation of geometry
-    std::shared_ptr<s2mMuscle> muscle(model.muscleGroup_nonConst(muscleForMuscleJacobian).muscle_nonConst(muscleGroupForMuscleJacobian));
+    std::shared_ptr<biorbd::muscles::Muscle> muscle(model.muscleGroup_nonConst(muscleForMuscleJacobian).muscle_nonConst(muscleGroupForMuscleJacobian));
     EXPECT_THROW(muscle->position().jacobian(), std::runtime_error);
     model.updateMuscles(model, Q, true);
 
     unsigned int nRows(3 * (muscle->pathChanger().nbObjects() + 2));
-    s2mMatrix jacoRef(nRows, model.nbQ());
+    biorbd::utils::Matrix jacoRef(nRows, model.nbQ());
     // Here we provide emperical values that we have confidence in (TODO finite differencing could be better)
     jacoRef(0, 0) = 0.136691;    jacoRef(0, 1) = 0;
     jacoRef(1, 0) = -0.00889905; jacoRef(1, 1) = 0;
@@ -44,12 +46,12 @@ TEST(MuscleJacobian, jacobian){
 }
 TEST(MuscleJacobian, jacobianLength){
     s2mMusculoSkeletalModel model(modelPathForMuscleJacobian);
-    s2mGenCoord Q(model);
+    biorbd::utils::GenCoord Q(model);
     Q.setZero();
     model.updateMuscles(model, Q, true);
 
     unsigned int nRows(model.nbMuscleTotal());
-    s2mMatrix jacoRef(nRows, model.nbQ());
+    biorbd::utils::Matrix jacoRef(nRows, model.nbQ());
     // Here we provide emperical values that we have confidence in (TODO finite differencing could be better)
     jacoRef(0, 0) = 0.0374639;      jacoRef(0, 1) = 0.0200953;
     jacoRef(1, 0) = -0.0166515;     jacoRef(1, 1) = -0.00937993;
@@ -78,20 +80,18 @@ static double excessiveFibersQuantityForFatigueXiaSetStateLimitsTest(1.5);
 TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
     // Prepare the model
     s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
-    s2mGenCoord Q(model);
-    s2mGenCoord QDot(model);
-    for (unsigned i = 0; i<model.nbQ(); i++){
-        Q[i] = 0 ;
-        QDot[i] = 0;
-    }
+    biorbd::utils::GenCoord Q(model);
+    biorbd::utils::GenCoord QDot(model);
+    Q.setZero();
+    QDot.setZero();
     model.updateMuscles(model, Q, QDot, true);
 
     {
-        std::shared_ptr<s2mMuscleHillTypeThelenFatigable> muscle(
-                    std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(
+        std::shared_ptr<biorbd::muscles::HillTypeThelenFatigable> muscle(
+                    std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(
                         model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest)));
         EXPECT_NE(muscle, nullptr); // Expected that the cast works
-        std::shared_ptr<s2mMuscleFatigueDynamicState> fatigueModel(std::dynamic_pointer_cast<s2mMuscleFatigueDynamicState>(muscle->fatigueState()));
+        std::shared_ptr<biorbd::muscles::FatigueDynamicState> fatigueModel(std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicState>(muscle->fatigueState()));
         EXPECT_NE(fatigueModel, nullptr); // Expected that the cast works
         // Sanity check for the fatigue model
         EXPECT_STREQ(fatigueModel->getType().c_str(), "Xia");
@@ -102,7 +102,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
         EXPECT_DOUBLE_EQ(fatigueModel->restingFibersDot(), 0);
 
         // Apply the derivative
-        s2mMuscleStateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
+        biorbd::muscles::StateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
         fatigueModel->setState(currentActiveFibersForXiaDerivativeTest,
                                currentFatiguedFibersForXiaDerivativeTest,
                                currentRestingFibersForXiaDerivativeTest);
@@ -116,9 +116,9 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
 
     // Values should be changed in the model itself
     {
-        std::shared_ptr<s2mMuscleHillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest)));
+        std::shared_ptr<biorbd::muscles::HillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest)));
         EXPECT_NE(muscle, nullptr); // Expected that the cast works
-        std::shared_ptr<s2mMuscleFatigueDynamicState> fatigueModel(std::dynamic_pointer_cast<s2mMuscleFatigueDynamicState>(muscle->fatigueState()));
+        std::shared_ptr<biorbd::muscles::FatigueDynamicState> fatigueModel(std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicState>(muscle->fatigueState()));
         EXPECT_NE(fatigueModel, nullptr); // Expected that the cast works
 
         // Check the values
@@ -131,22 +131,20 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
 TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
     // Prepare the model
     s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
-    s2mGenCoord Q(model);
-    s2mGenCoord QDot(model);
-    for (unsigned i = 0; i<model.nbQ(); i++){
-        Q[i] = 0 ;
-        QDot[i] = 0;
-    }
+    biorbd::utils::GenCoord Q(model);
+    biorbd::utils::GenCoord QDot(model);
+    Q.setZero();
+    QDot.setZero();
     model.updateMuscles(model, Q, QDot, true);
 
     {
-        std::shared_ptr<s2mMuscleHillTypeThelenFatigable> muscle(
-                    std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(
+        std::shared_ptr<biorbd::muscles::HillTypeThelenFatigable> muscle(
+                    std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(
                         model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest)));
         EXPECT_NE(muscle, nullptr); // Expected that the cast works
 
         // Apply the derivative
-        s2mMuscleStateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
+        biorbd::muscles::StateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
         muscle->fatigueState(currentActiveFibersForXiaDerivativeTest,
                              currentFatiguedFibersForXiaDerivativeTest,
                              currentRestingFibersForXiaDerivativeTest);
@@ -156,9 +154,9 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
 
     // Values should be changed in the model itself
     {
-        std::shared_ptr<s2mMuscleHillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(model.muscleGroup(0).muscle(0)));
+        std::shared_ptr<biorbd::muscles::HillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(model.muscleGroup(0).muscle(0)));
         EXPECT_NE(muscle, nullptr); // Expected that the cast works
-        std::shared_ptr<s2mMuscleFatigueDynamicState> fatigueModel(std::dynamic_pointer_cast<s2mMuscleFatigueDynamicState>(muscle->fatigueState()));
+        std::shared_ptr<biorbd::muscles::FatigueDynamicState> fatigueModel(std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicState>(muscle->fatigueState()));
         EXPECT_NE(fatigueModel, nullptr); // Expected that the cast works
 
         // Check the values
@@ -171,18 +169,16 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
 TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
     // Prepare the model
     s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
-    s2mGenCoord Q(model);
-    s2mGenCoord QDot(model);
-    for (unsigned i = 0; i<model.nbQ(); i++){
-        Q[i] = 0 ;
-        QDot[i] = 0;
-    }
+    biorbd::utils::GenCoord Q(model);
+    biorbd::utils::GenCoord QDot(model);
+    Q.setZero();
+    QDot.setZero();
     model.updateMuscles(model, Q, QDot, true);
 
     {
-        s2mMuscleHillTypeThelenFatigable muscle(
+        biorbd::muscles::HillTypeThelenFatigable muscle(
                     model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest));
-        s2mMuscleFatigueDynamicStateXia fatigueModel(muscle.fatigueState());
+        biorbd::muscles::FatigueDynamicStateXia fatigueModel(muscle.fatigueState());
         // Sanity check for the fatigue model
         EXPECT_STREQ(fatigueModel.getType().c_str(), "Xia");
 
@@ -192,7 +188,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
         EXPECT_DOUBLE_EQ(fatigueModel.restingFibersDot(), 0);
 
         // Apply the derivative
-        s2mMuscleStateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
+        biorbd::muscles::StateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
         fatigueModel.setState(currentActiveFibersForXiaDerivativeTest,
                               currentFatiguedFibersForXiaDerivativeTest,
                               currentRestingFibersForXiaDerivativeTest);
@@ -206,9 +202,9 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
 
     // Values should not be changed in the model itself
     {
-        std::shared_ptr<s2mMuscleHillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest)));
+        std::shared_ptr<biorbd::muscles::HillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest)));
         EXPECT_NE(muscle, nullptr); // Expected that the cast works
-        std::shared_ptr<s2mMuscleFatigueDynamicState> fatigueModel(std::dynamic_pointer_cast<s2mMuscleFatigueDynamicState>(muscle->fatigueState()));
+        std::shared_ptr<biorbd::muscles::FatigueDynamicState> fatigueModel(std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicState>(muscle->fatigueState()));
         EXPECT_NE(fatigueModel, nullptr); // Expected that the cast works
 
         // Check the values
@@ -221,9 +217,9 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
 TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
     // Prepare the model
     s2mMusculoSkeletalModel model(modelPathForXiaDerivativeTest);
-    s2mMuscleHillTypeThelenFatigable muscle(
+    biorbd::muscles::HillTypeThelenFatigable muscle(
                 model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest));
-    s2mMuscleFatigueDynamicStateXia fatigueModel(muscle.fatigueState());
+    biorbd::muscles::FatigueDynamicStateXia fatigueModel(muscle.fatigueState());
     // Sanity check for the fatigue model
     EXPECT_STREQ(fatigueModel.getType().c_str(), "Xia");
 
@@ -283,3 +279,4 @@ TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
 
     }
 }
+#endif // MODULE_MUSCLES

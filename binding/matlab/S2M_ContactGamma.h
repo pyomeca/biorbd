@@ -14,12 +14,12 @@ void S2M_ContactGamma( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */ /**** ATTENTION, NQ A REMPLACÉ NDDL, SEGFAULT? ****/
-    unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */ /**** ATTENTION, NQ A REMPLACÉ NDDL, SEGFAULT? ****/
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
+    unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
-    s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
-    s2mGenCoord QDot = *getParameterQdot(prhs, 3, nQdot).begin();
+    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::utils::GenCoord QDot = *getParameterQdot(prhs, 3, nQdot).begin();
     unsigned int nContacts = model->nContacts();
 
     Eigen::MatrixXd G_tp(Eigen::MatrixXd::Zero(nContacts,model->nbQ()));

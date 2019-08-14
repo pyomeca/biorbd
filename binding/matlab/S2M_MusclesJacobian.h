@@ -13,10 +13,10 @@ void S2M_MusclesJacobian( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 3, 3, "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */ /****** ATTENTION, nQ a remplacé NDDL Seg Fault? ******/
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
 
     // Cellules de sortie
     mwSize dims[4];

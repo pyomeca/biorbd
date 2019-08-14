@@ -13,13 +13,13 @@ void S2M_segmentCOMdot( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-    unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
+    unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
-    s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
     // Recevoir Qdot
-    s2mGenCoord QDot = *getParameterQdot(prhs, 3, nQdot).begin();
+    biorbd::utils::GenCoord QDot = *getParameterQdot(prhs, 3, nQdot).begin();
     // Recevoir le numéro du segment (optionnel)
     int i(0);
     if (nrhs==5)
@@ -29,7 +29,7 @@ void S2M_segmentCOMdot( int, mxArray *plhs[],
     // Trouver la vitesse du CoM
     if (i==-1){
         std::vector<RigidBodyDynamics::Math::Vector3d> COMdot = model->CoMdotBySegment(Q,QDot,true);
-        /* Create a matrix for the return argument */
+        // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix( 3, model->nbBone(), mxREAL);
         // Remplir l'output
         double *tp = mxGetPr(plhs[0]);

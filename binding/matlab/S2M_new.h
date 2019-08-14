@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <mex.h>
-#include "s2mRead.h"
+#include "Utils/Read.h"
 #include "class_handle.h"
 
 void S2M_new( int nlhs, mxArray *plhs[],
@@ -23,13 +23,14 @@ void S2M_new( int nlhs, mxArray *plhs[],
             "You must catch the pointer address!");
     }
     char *buf = mxArrayToString(prhs[1]);
-    std::string filepath(buf); /* Copier le cstring dans un std::string */
+    std::string filepath(buf); // Copier le cstring dans un std::string
 
     // Loader le modèle musculosquelettique
     // Definition des variables globales du modele
-    if (s2mRead::is_readable( filepath )){
+    if (biorbd::utils::Read::is_readable( filepath )){
         try{
-            plhs[0] = convertPtr2Mat<s2mMusculoSkeletalModel>(new s2mMusculoSkeletalModel(s2mRead::readModelFile(filepath)));
+            plhs[0] = convertPtr2Mat<s2mMusculoSkeletalModel>(
+                        new s2mMusculoSkeletalModel(biorbd::utils::Read::readModelFile(filepath)));
         }
         catch (std::string m){
             mexErrMsgTxt(m.c_str());
@@ -39,7 +40,7 @@ void S2M_new( int nlhs, mxArray *plhs[],
     }
     else {
         std::cout << filepath << " est inexistant ou non lisible.\n";
-        (void) plhs;    /* unused parameters */
+        (void) plhs;    // unused parameters
         return;
     }
 }

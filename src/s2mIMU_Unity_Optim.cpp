@@ -1,20 +1,25 @@
 #define BIORBD_API_EXPORTS
 #include "s2mIMU_Unity_Optim.h"
 
-#include "s2mString.h"
+#include "Utils/String.h"
 
-s2mIMU_Unity_Optim::OptimData::OptimData(const s2mAttitude &R1, const s2mAttitude &R2, int axe)
+s2mIMU_Unity_Optim::OptimData::OptimData(
+        const biorbd::utils::Attitude &R1,
+        const biorbd::utils::Attitude &R2,
+        int axe)
        : m_R1(R1), m_R2(R2), m_axe(axe)
 {
 
 }
 
 
-double s2mIMU_Unity_Optim::residual(const OptimData &data, const parameter_vector &x){
+double s2mIMU_Unity_Optim::residual(
+        const OptimData &data,
+        const parameter_vector &x){
 	Eigen::VectorXd rotation(1);
 	rotation(0) = x;
-    s2mAttitude toRot(rotation, Eigen::Vector3d::Zero(), "z");
-	s2mAttitude R2prime = toRot * data.m_R2;
+    biorbd::utils::Attitude toRot(rotation, Eigen::Vector3d::Zero(), "z");
+    biorbd::utils::Attitude R2prime = toRot * data.m_R2;
 	
 	//  Extraire les colonnes à trouver le produit scalaire
     Eigen::Vector3d axisR2 = R2prime.block(0,data.m_axe,3,1);
@@ -27,7 +32,10 @@ double s2mIMU_Unity_Optim::residual(const OptimData &data, const parameter_vecto
     return fabs(dotProd)-1;
 }
 
-s2mAttitude s2mIMU_Unity_Optim::alignSpecificAxisWithParentVertical(const s2mAttitude &r1, const s2mAttitude &r2, int idxAxe){
+biorbd::utils::Attitude s2mIMU_Unity_Optim::alignSpecificAxisWithParentVertical(
+        const biorbd::utils::Attitude &r1,
+        const biorbd::utils::Attitude &r2,
+        int idxAxe){
 	// Matrices à aliger (axe 2 (z) de r1 avec axe idxAxe de r2)
 
 	// Préparer l'optimisation (paramètre)
@@ -49,5 +57,5 @@ s2mAttitude s2mIMU_Unity_Optim::alignSpecificAxisWithParentVertical(const s2mAtt
     Eigen::VectorXd rotation(1);
     rotation(0) = x(0);
 
-    return s2mAttitude (rotation, Eigen::Vector3d::Zero(), "z");
+    return biorbd::utils::Attitude (rotation, Eigen::Vector3d::Zero(), "z");
 }

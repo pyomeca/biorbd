@@ -1,0 +1,348 @@
+// File : biorbd_python.i
+%{
+#define SWIG_FILE_WITH_INIT
+#ifdef _WIN32
+// This is a hack because Eigen can't be dynamically compiled on Windows while dlib needs consistency in compilation.
+// Please note that this can result in undefined behavior while using biorbd::muscles::MuscleOptimisation...
+const int USER_ERROR__inconsistent_build_configuration__see_dlib_faq_1_ = 0;
+const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
+#endif
+#include "Python.h"
+#include "numpy/arrayobject.h"
+
+#include "Utils/Vector.h"
+#include "Utils/GenCoord.h"
+
+%}
+
+%include "@CMAKE_CURRENT_SOURCE_DIR@/numpy.i"
+%init %{
+    import_array();
+%}
+
+// typemaps.i is a built-in swig interface that lets us map c++ types to other
+// types in our language of choice. We'll use it to map Eigen matrices to
+// Numpy arrays.
+%include <typemaps.i>
+%include <std_vector.i>
+%include <std_string.i>
+
+// --- s2mJoints --- //
+%typemap(typecheck) s2mJoints &{
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mJoints,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_s2mJoints already exists
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+}
+%typemap(in) s2mJoints &{
+    void * argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mJoints,  0  | 0)) && argp1) {
+        // Recast the pointer
+        $1 = reinterpret_cast< s2mJoints * >(argp1);
+    } else {
+        PyErr_SetString(PyExc_ValueError, "s2mJoints must be a s2mJoints");
+        SWIG_fail;
+    }
+}
+
+// --- Matrix --- //
+%extend biorbd::utils::Matrix{
+    PyObject* get_array(){
+        int nRows($self->rows());
+        int nCols($self->cols());
+        int nArraySize(2);
+        npy_intp * arraySizes = new npy_intp[nArraySize];
+        arraySizes[0] = nRows;
+        arraySizes[1] = nCols;
+
+        double * matrix = new double[nRows*nCols];
+        unsigned int k(0);
+        for (unsigned int i=0; i<nRows; ++i){
+            for (unsigned int j=0; j<nCols; ++j){
+                matrix[k] = (*$self)(i, j);
+                ++k;
+            }
+        }
+        PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, matrix);
+        PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+        return output;
+    };
+}
+
+// --- Vector --- //
+%extend biorbd::utils::Vector{
+    PyObject* get_array(){
+        int nElements($self->size());
+        int nArraySize(1);
+        npy_intp * arraySizes = new npy_intp[nArraySize];
+        arraySizes[0] = nElements;
+
+        double * vect = new double[nElements];
+        for (unsigned int i=0; i<nElements; ++i){
+            vect[i] = (*$self)(i);
+        }
+        PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, vect);
+        PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+        return output;
+    };
+}
+%typemap(typecheck) biorbd::utils::Vector &{
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Vector,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__Vector already exists
+        $1 = true;
+    } else if( PyArray_Check($input) ) {
+        // test if it is a numpy array
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+}
+%typemap(in) biorbd::utils::Vector &{
+    void * argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Vector,  0  | 0)) && argp1) {
+        // Recast the pointer
+        $1 = reinterpret_cast< biorbd::utils::Vector * >(argp1);
+    } else if( PyArray_Check($input) ) {
+        // Get dimensions of the data::::
+        int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
+        npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
+
+        // Dimension controls
+        if (ndim != 1 ){
+            PyErr_SetString(PyExc_ValueError, "Vector must be a numpy vector");
+            SWIG_fail;
+        }
+
+        // Cast the vector
+        PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
+        // Copy the actual data
+        unsigned int n(dims[0]);
+        $1 = new biorbd::utils::Vector(n);
+        for (unsigned int i=0; i<n; ++i)
+            (*$1)[i] = *(double*)PyArray_GETPTR1(data, i);
+
+    } else {
+        PyErr_SetString(PyExc_ValueError, "Vector must be a Vector or numpy vector");
+        SWIG_fail;
+    }
+};
+
+// --- GenCoord --- //
+%typemap(typecheck) biorbd::utils::GenCoord &{
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__GenCoord,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__GenCoord already exists
+        $1 = true;
+    } else if( PyArray_Check($input) ) {
+        // test if it is a numpy array
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+}
+%typemap(in) biorbd::utils::GenCoord &{
+    void * argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__GenCoord,  0  | 0)) && argp1) {
+        // Recast the pointer
+        $1 = reinterpret_cast< biorbd::utils::GenCoord * >(argp1);
+    } else if( PyArray_Check($input) ) {
+        // Get dimensions of the data
+        int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
+        npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
+
+        // Dimension controls
+        if (ndim != 1 ){
+            PyErr_SetString(PyExc_ValueError, "GenCoord must be a numpy vector");
+            SWIG_fail;
+        }
+
+        // Cast the vector
+        PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
+        // Copy the actual data
+        unsigned int nQ(dims[0]);
+        $1 = new biorbd::utils::GenCoord(nQ);
+        for (unsigned int q=0; q<nQ; ++q)
+            (*$1)[q] = *(double*)PyArray_GETPTR1(data, q);
+
+    } else {
+        PyErr_SetString(PyExc_ValueError, "GenCoord must be a GenCoord or numpy vector");
+        SWIG_fail;
+    }
+};
+
+// --- Tau --- //
+%typemap(typecheck) biorbd::utils::Tau &{
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Tau,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__Tau already exists
+        $1 = true;
+    } else if( PyArray_Check($input) ) {
+        // test if it is a numpy array
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+}
+%typemap(in) biorbd::utils::Tau &{
+    void * argp1 = 0;
+        if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Tau,  0  | 0)) && argp1) {
+        // If it is the right type, recast-it the pointer
+        $1 = reinterpret_cast< biorbd::utils::Tau * >(argp1);
+    } else if( PyArray_Check($input) ) {
+        // Get dimensions of the data
+        int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
+        npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
+
+        // Dimension controls (has to be a vector)
+        if (ndim != 1 ){
+            PyErr_SetString(PyExc_ValueError, "Tau must be a numpy vector");
+            SWIG_fail;
+        }
+
+        // Cast the vector
+        PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
+
+        // Copy the actual data
+        unsigned int nTau(dims[0]);
+        $1 = new biorbd::utils::Tau(nTau);
+        for (unsigned int tau=0; tau<nTau; ++tau)
+            (*$1)[tau] = *(double*)PyArray_GETPTR1(data, tau);
+
+    } else {
+        PyErr_SetString(PyExc_ValueError, "Tau must be a Tau or numpy vector");
+        SWIG_fail;
+    }
+};
+
+
+// --- s2mMarkers --- //
+%typemap(typecheck) s2mMarkers &{
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mMarkers,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_s2mMarkers already exists
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+}
+%typemap(in) s2mMarkers &{
+    void * argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_s2mMarkers,  0  | 0)) && argp1) {
+        // Recast the pointer
+        $1 = reinterpret_cast< s2mMarkers * >(argp1);
+    } else {
+        PyErr_SetString(PyExc_ValueError, "s2mMarkers must be a s2mMarkers");
+        SWIG_fail;
+    }
+}
+
+
+// --- Node --- //
+%typemap(typecheck) biorbd::utils::Node &{
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Node,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__Node already exists
+        $1 = true;
+    } else if( PyArray_Check($input) ) {
+        // test if it is a numpy array
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+}
+%typemap(in) biorbd::utils::Node &{
+    void * argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Node,  0  | 0)) && argp1) {
+        // Recast the pointer
+        $1 = reinterpret_cast< biorbd::utils::Node * >(argp1);
+    } else if( PyArray_Check($input) ) {
+        // Get dimensions of the data
+        int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
+        npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
+
+        // Dimension controls
+        if (ndim != 1 && (dims[0] < 3 || dims[0] > 4)){
+            PyErr_SetString(PyExc_ValueError, "Node must be a numpy 3d vector");
+            SWIG_fail;
+        }
+        // Cast the vector
+        PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
+
+        // Copy the actual data
+        $1 = new biorbd::utils::Node();
+        for (unsigned int i=0; i<3; ++i)
+            (*$1)[i] = *(double*)PyArray_GETPTR1(data, i);
+
+    } else {
+        PyErr_SetString(PyExc_ValueError, "Node must be a Node or numpy vector");
+        SWIG_fail;
+    }
+};
+%extend biorbd::utils::Node{
+    PyObject* get_array(){
+        int nArraySize(1);
+        npy_intp * arraySizes = new npy_intp[nArraySize];
+        arraySizes[0] = 3;
+
+        double * node = new double[3];
+        for (unsigned int i=0; i<3; ++i){
+            node[i] = (*$self)(i);
+        }
+        PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, node);
+        PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+        return output;
+    }
+};
+
+
+// --- Path --- //
+%typemap(typecheck) biorbd::utils::Path &{
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Path,  0  | 0)) && argp1) {
+        // Test if it is a pointer to Path already exists
+        $1 = true;
+    } else if( PyUnicode_Check($input) ) {
+        // test if it is a string (python3 has unicode)
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+};
+%typemap(in) biorbd::utils::Path &{
+    void * argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Path,  0  | 0)) && argp1) {
+        // Recast the pointer
+        $1 = reinterpret_cast< biorbd::utils::Path * >(argp1);
+    } else if( PyUnicode_Check($input) ) {
+        // Interpret the string
+        $1 = new biorbd::utils::Path(PyUnicode_AsUTF8($input));
+    } else {
+        PyErr_SetString(PyExc_ValueError, "Path must be a Path or string");
+        SWIG_fail;
+    }
+};
+
+%extend biorbd::utils::Attitude{
+    PyObject* get_array(){
+        int nArraySize(2);
+        npy_intp * arraySizes = new npy_intp[nArraySize];
+        arraySizes[0] = 4;
+        arraySizes[1] = 4;
+
+        double * values = new double[4*4];
+        for (unsigned int i=0; i<4; ++i){
+            for (unsigned int j=0; j<4; ++j){
+                values[i*4+j] = (*$self)(j*4+i);
+            }
+        }
+        PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, values);
+        PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+        return output;
+    }
+};
+
+%include ../biorbd.i

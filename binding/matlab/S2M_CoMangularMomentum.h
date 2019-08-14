@@ -13,13 +13,13 @@ void S2M_CoMangularMomentum( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-    unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
+    unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<s2mGenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
 
     // S'assurer que Q et Qdot font la même dimension
     if (Q.size()!=QDot.size()){

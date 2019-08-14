@@ -1,10 +1,12 @@
 #define BIORBD_API_EXPORTS
 #include "s2mBoneMesh.h"
 
-#include "s2mNode.h"
+#include "Utils/Node.h"
 #include "s2mPatch.h"
 
-s2mBoneMesh::s2mBoneMesh(const std::vector<s2mNode> &mesh, const std::vector<s2mPatch> & v) :
+s2mBoneMesh::s2mBoneMesh(
+        const std::vector<biorbd::utils::Node> &mesh,
+        const std::vector<s2mPatch> & v) :
     m_pathFile(""),
     m_mesh(mesh),
     m_patch(v)
@@ -14,10 +16,10 @@ s2mBoneMesh::s2mBoneMesh(const std::vector<s2mNode> &mesh, const std::vector<s2m
 s2mBoneMesh::~s2mBoneMesh(){
 
 }
-void s2mBoneMesh::addPoint(const s2mNode &node){
+void s2mBoneMesh::addPoint(const biorbd::utils::Node &node){
     m_mesh.push_back(node);
 }
-const s2mNode &s2mBoneMesh::point(unsigned int i) const
+const biorbd::utils::Node &s2mBoneMesh::point(unsigned int i) const
 {
     return *(m_mesh.begin()+i);
 }
@@ -26,12 +28,12 @@ unsigned int s2mBoneMesh::size() const
     return static_cast<unsigned int>(m_mesh.size());
 }
 
-void s2mBoneMesh::setPath(const s2mPath& path)
+void s2mBoneMesh::setPath(const biorbd::utils::Path& path)
 {
     m_pathFile = path;
 }
 
-const s2mPath &s2mBoneMesh::path() const
+const biorbd::utils::Path &s2mBoneMesh::path() const
 {
     return m_pathFile;
 }

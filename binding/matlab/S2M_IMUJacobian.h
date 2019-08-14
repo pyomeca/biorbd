@@ -13,20 +13,20 @@ void S2M_IMUJacobian( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */ /**** ATTENTION, NQ A REMPLACÉ NDDL, SEGFAULT? ****/
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
 
 
     // Trouver la matrice jacobienne de tous les marqueurs
-    std::vector<s2mMatrix> Jac_tp = model->IMUJacobian(*model, Q);
-        std::vector<s2mMatrix>::iterator it=Jac_tp.begin();
+    std::vector<biorbd::utils::Matrix> Jac_tp = model->IMUJacobian(*model, Q);
+    std::vector<biorbd::utils::Matrix>::iterator it=Jac_tp.begin();
 
     // Create a matrix for the return argument
     unsigned int nIMUs = model->nIMUs();
     plhs[0] = mxCreateDoubleMatrix( 9*nIMUs, nQ, mxREAL);
-        double *Jac = mxGetPr(plhs[0]);
+    double *Jac = mxGetPr(plhs[0]);
     int cmp(0);
     for (unsigned int i=0; i<nQ; ++i)
         for (unsigned int j=0; (it+j)!=Jac_tp.end(); ++j)

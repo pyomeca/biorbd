@@ -60,12 +60,12 @@ extern "C" {
 // Fonctions de dispatch pour les données d'entré et de sortie
 Eigen::Vector3d dispatchTagsInput(const double * pos);
 void dispatchTagsOutput(const std::vector<s2mNodeBone> &allTags, double* tags);
-s2mGenCoord dispatchQinput(s2mMusculoSkeletalModel* model, const double*Q);
-void dispatchQoutput(const s2mGenCoord &eQ, double*Q);
+GenCoord dispatchQinput(s2mMusculoSkeletalModel* model, const double*Q);
+void dispatchQoutput(const GenCoord &eQ, double*Q);
 void dispatchDoubleOutput(const Eigen::VectorXd&, double*);
-s2mAttitude dispatchRTinput(const double* rt);
-void dispatchRToutput(const s2mAttitude& rt_in, double* rt_out);
-void dispatchRToutput(const std::vector<s2mAttitude>& rt_in, double* rt_out);
+Attitude dispatchRTinput(const double* rt);
+void dispatchRToutput(const Attitude& rt_in, double* rt_out);
+void dispatchRToutput(const std::vector<Attitude>& rt_in, double* rt_out);
 
 
 

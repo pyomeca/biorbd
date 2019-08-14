@@ -20,7 +20,12 @@ s2mJoint::~s2mJoint()
     //dtor
 }
 
-const s2mString &s2mJoint::type() const
+const biorbd::utils::String &s2mJoint::type() const
 {
     return m_type;
+}
+
+void s2mJoint::setType()
+{
+    m_type = "IntraBone";
 }

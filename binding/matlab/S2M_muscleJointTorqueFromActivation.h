@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_MUSCLE_JOINT_TORQUE_FROM_ACTIVATION_H
-#define MATLAB_S2M_MUSCLE_JOINT_TORQUE_FROM_ACTIVATION_H
+#ifndef MATLAB_BIORBD_MUSCLES_JOINT_TORQUE_FROM_ACTIVATION_H
+#define MATLAB_BIORBD_MUSCLES_JOINT_TORQUE_FROM_ACTIVATION_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -15,14 +15,14 @@ void S2M_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
                                            "WARNING: if the function is called without Q and Qdot, the user MUST update by himself before calling this function (using updateMuscle).");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-    unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
-    unsigned int nTau = model->nbTau(); /* Get the number of DoF */
-    unsigned int nRoot = model->nbRoot(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
+    unsigned int nQdot = model->nbQdot(); // Get the number of DoF
+    unsigned int nTau = model->nbTau(); // Get the number of DoF
+    unsigned int nRoot = model->nbRoot(); // Get the number of DoF
     unsigned int nMuscleTotal = model->nbMuscleTotal();
 
     // Recevoir muscleStates
-    std::vector<std::vector<s2mMuscleStateDynamics>> s = getParameterMuscleStateActivation(prhs,2,nMuscleTotal);
+    std::vector<std::vector<biorbd::muscles::StateDynamics>> s = getParameterMuscleStateActivation(prhs,2,nMuscleTotal);
     unsigned int nFrame(static_cast<unsigned int>(s.size()));
 
     bool updateKin(false); // Par défaut c'est false, mais ce comportement est celui le moins attendu
@@ -36,7 +36,7 @@ void S2M_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
     }
 
     // Recueillir la cinématique
-    std::vector<s2mGenCoord> Q, QDot;
+    std::vector<biorbd::utils::GenCoord> Q, QDot;
     if (updateKin){ // Si on update pas la cinématique Q et Qdot ne sont pas nécessaire
         // Recevoir Q
         Q = getParameterQ(prhs, 3, nQ);
@@ -69,7 +69,7 @@ void S2M_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
 
     // Remplir le output
     for (unsigned int i=0; i<nFrame; ++i){
-        s2mTau muscleTorque;
+        biorbd::utils::Tau muscleTorque;
         Eigen::VectorXd force;
         if (nlhs >= 2) // Si on doit récupérer les forces
             if (updateKin)
@@ -98,4 +98,4 @@ void S2M_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_MUSCLE_JOINT_TORQUE_FROM_ACTIVATION_H
+#endif // MATLAB_BIORBD_MUSCLES_JOINT_TORQUE_FROM_ACTIVATION_H

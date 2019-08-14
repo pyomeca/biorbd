@@ -15,7 +15,7 @@ void S2M_nameIMU( int, mxArray *plhs[],
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
 
     // Trouver ou sont les marqueurs
-    std::vector<s2mString> allIMU(model->IMUsNames());
+    std::vector<biorbd::utils::String> allIMU(model->IMUsNames());
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateCellMatrix( allIMU.size(), 1);
@@ -36,7 +36,7 @@ void S2M_nameTechnicalIMU( int, mxArray *plhs[],
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
 
     // Trouver ou sont les marqueurs
-    std::vector<s2mString> allIMU(model->technicalIMUsNames());
+    std::vector<biorbd::utils::String> allIMU(model->technicalIMUsNames());
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateCellMatrix( allIMU.size(), 1);
@@ -57,7 +57,7 @@ void S2M_nameAnatomicalIMU( int, mxArray *plhs[],
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
 
     // Trouver ou sont les marqueurs
-    std::vector<s2mString> allIMU(model->anatomicalIMUsNames());
+    std::vector<biorbd::utils::String> allIMU(model->anatomicalIMUsNames());
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateCellMatrix( allIMU.size(), 1);

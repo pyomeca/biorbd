@@ -1,14 +1,14 @@
 #ifndef MATLAB_PROCESS_ARGUMENTS_H
 #define MATLAB_PROCESS_ARGUMENTS_H
 #include <mex.h>
-#include "s2mGenCoord.h"
-#include "s2mTau.h"
 #include "s2mBone.h"
 #include "s2mIMU.h"
 #include "s2mNodeBone.h"
-#include "s2mNodeMuscle.h"
-#include "s2mMuscleStateDynamics.h"
-#include "s2mMuscleStateDynamicsBuchanan.h"
+#include "Utils/GenCoord.h"
+#include "Utils/Tau.h"
+#include "Muscles/MuscleNode.h"
+#include "Muscles/StateDynamics.h"
+#include "Muscles/StateDynamicsBuchanan.h"
 
 void checkNombreInputParametres(int nrhs, int min, int max, std::string message = ""){
     if (nrhs < min){
@@ -21,7 +21,7 @@ void checkNombreInputParametres(int nrhs, int min, int max, std::string message 
     }
 }
 
-std::vector<std::vector<Eigen::Vector3d>> getParameterAllMarkers(const mxArray*prhs[], unsigned int idx, int nMark=-1){
+std::vector<std::vector<s2mNodeBone>> getParameterAllMarkers(const mxArray*prhs[], unsigned int idx, int nMark=-1){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -66,15 +66,15 @@ std::vector<std::vector<Eigen::Vector3d>> getParameterAllMarkers(const mxArray*p
 
 
     // Créer la sortie
-    std::vector<std::vector<Eigen::Vector3d>> markersOverTime;
+    std::vector<std::vector<s2mNodeBone>> markersOverTime;
 
     // Stocker les valeurs dans le format de sortie
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrames; ++i){
-        std::vector<Eigen::Vector3d> markers_tp; // Markers a un temps i
+        std::vector<s2mNodeBone> markers_tp; // Markers a un temps i
 
         for (int j=0; j<nMark; ++j){
-            Eigen::Vector3d tp(Eigen::Vector3d(markers[m*cmp+0], // m est 3 ou 4
+            s2mNodeBone tp(Eigen::Vector3d(markers[m*cmp+0], // m est 3 ou 4
                                            markers[m*cmp+1],
                                            markers[m*cmp+2]));
             markers_tp.push_back(tp);
@@ -86,7 +86,7 @@ std::vector<std::vector<Eigen::Vector3d>> getParameterAllMarkers(const mxArray*p
     // Retourner la matrice
     return markersOverTime;
 }
-std::vector<std::vector<s2mAttitude>> getParameterAllIMUs(const mxArray*prhs[], unsigned int idx){
+std::vector<std::vector<biorbd::utils::Attitude>> getParameterAllIMUs(const mxArray*prhs[], unsigned int idx){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -131,11 +131,11 @@ std::vector<std::vector<s2mAttitude>> getParameterAllIMUs(const mxArray*prhs[], 
     double *imus = mxGetPr(prhs[idx]);
 
     // Créer la sortie
-    std::vector<std::vector<s2mAttitude>> imuOverTime;
+    std::vector<std::vector<biorbd::utils::Attitude>> imuOverTime;
 
     // Stocker les valeurs dans le format de sortie
     for (unsigned int i=0; i<nFrames; ++i){
-        std::vector<s2mAttitude> imus_tp; // IMUs a un temps i
+        std::vector<biorbd::utils::Attitude> imus_tp; // IMUs a un temps i
         for (unsigned int j=0; j<nIMUs; ++j){
             Eigen::Matrix3d rot;
             Eigen::Vector3d trans;
@@ -150,7 +150,7 @@ std::vector<std::vector<s2mAttitude>> getParameterAllIMUs(const mxArray*prhs[], 
                         imus[i*9*nIMUs+j*9+2], imus[i*9*nIMUs+j*9+5], imus[i*9*nIMUs+j*9+8];
                 trans.setZero();
             }
-            imus_tp.push_back(s2mAttitude(rot, trans));
+            imus_tp.push_back(biorbd::utils::Attitude(rot, trans));
         }
         imuOverTime.push_back(imus_tp);
     }
@@ -160,7 +160,7 @@ std::vector<std::vector<s2mAttitude>> getParameterAllIMUs(const mxArray*prhs[], 
 }
 
 
-s2mGenCoord getVector(const mxArray*prhs[], unsigned int idx, std::string type = ""){
+biorbd::utils::GenCoord getVector(const mxArray*prhs[], unsigned int idx, std::string type = ""){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -185,14 +185,14 @@ s2mGenCoord getVector(const mxArray*prhs[], unsigned int idx, std::string type =
     double *q=mxGetPr(prhs[idx]); //matrice de position
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    s2mGenCoord vect(Eigen::VectorXd::Zero (static_cast<unsigned int>(length)));
+    biorbd::utils::GenCoord vect(Eigen::VectorXd::Zero (static_cast<unsigned int>(length)));
     for (unsigned int i=0; i<length; i++)
         vect(i) = q[i];
 
     return vect;
 }
 
-s2mGenCoord getVector(const mxArray*prhs[], unsigned int idx, unsigned int length, std::string type = ""){
+biorbd::utils::GenCoord getVector(const mxArray*prhs[], unsigned int idx, unsigned int length, std::string type = ""){
     mwSize m=mxGetM(prhs[idx]); // line
     // Get the number of elements in the input argument
     if ( !(m==length || m==1) ){ // on permet le nombre juste ou juste une valeur qui sera dupliquée
@@ -207,7 +207,7 @@ Eigen::Vector3d getVector3d(const mxArray*prhs[], unsigned int idx){
     return getVector(prhs, idx, 3, "Vector3d").vector();
 }
 
-std::vector<s2mGenCoord> getParameterQ(const mxArray*prhs[], unsigned int idx, unsigned int nDof, std::string type = "q"){
+std::vector<biorbd::utils::GenCoord> getParameterQ(const mxArray*prhs[], unsigned int idx, unsigned int nDof, std::string type = "q"){
 
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
@@ -230,9 +230,9 @@ std::vector<s2mGenCoord> getParameterQ(const mxArray*prhs[], unsigned int idx, u
     double *q=mxGetPr(prhs[idx]); //matrice de position
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    std::vector<s2mGenCoord> Q;
+    std::vector<biorbd::utils::GenCoord> Q;
     for (unsigned int j=0; j<nFrames; ++j){
-        s2mGenCoord Q_tp(Eigen::VectorXd::Zero(nDof));
+        biorbd::utils::GenCoord Q_tp(Eigen::VectorXd::Zero(nDof));
         for (unsigned int i=0; i<nDof; i++)
             Q_tp[i] = q[j*nDof+i];
 
@@ -241,18 +241,18 @@ std::vector<s2mGenCoord> getParameterQ(const mxArray*prhs[], unsigned int idx, u
 
     return Q;
 }
-std::vector<s2mGenCoord> getParameterQddot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
+std::vector<biorbd::utils::GenCoord> getParameterQddot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
     return getParameterQ(prhs, idx, nDof, "qddot");
 }
-std::vector<s2mGenCoord> getParameterQdot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
+std::vector<biorbd::utils::GenCoord> getParameterQdot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
     return getParameterQ(prhs, idx, nDof, "qdot");
 }
-std::vector<s2mTau> getParameterTau(const mxArray*prhs[], unsigned int idx, unsigned int nControl, unsigned int nRoot){
-    std::vector<s2mGenCoord> AllTau_tp = getParameterQ(prhs, idx, nControl, "tau");
-    std::vector<s2mTau> AllTau;
+std::vector<biorbd::utils::Tau> getParameterTau(const mxArray*prhs[], unsigned int idx, unsigned int nControl, unsigned int nRoot){
+    std::vector<biorbd::utils::GenCoord> AllTau_tp = getParameterQ(prhs, idx, nControl, "tau");
+    std::vector<biorbd::utils::Tau> AllTau;
 
     for (unsigned int j=0; j<AllTau_tp.size(); ++j){
-        s2mTau Tau_tp(Eigen::VectorXd::Zero(nControl+nRoot));
+        biorbd::utils::Tau Tau_tp(Eigen::VectorXd::Zero(nControl+nRoot));
 
         for (unsigned int i=0; i<nRoot; ++i) // Root segment
             Tau_tp(i) =  0;
@@ -350,7 +350,7 @@ std::vector<double> getDoubleArray(const mxArray*prhs[], unsigned int idx){
     return out;
 }
 
-s2mString getString(const mxArray*prhs[], unsigned int idx){
+biorbd::utils::String getString(const mxArray*prhs[], unsigned int idx){
     // Check data type of input argument
     if (!(mxIsChar(prhs[idx]))) {
         std::ostringstream msg;
@@ -403,7 +403,7 @@ bool isStateExist(const mxArray*prhs[], unsigned int nMus, int idx, bool &isTher
     return isThere;
 }
 
-std::vector<std::vector<s2mMuscleStateDynamics>> getParameterMuscleState(const mxArray*prhs[], int idxExcitation, int idxActivation, unsigned int nMus){
+std::vector<std::vector<biorbd::muscles::StateDynamics>> getParameterMuscleState(const mxArray*prhs[], int idxExcitation, int idxActivation, unsigned int nMus){
     // Get the number of frames in the input argument
     // Regarde ce qui se passe pour l'excitation
     bool isThereExcitation(false);
@@ -442,18 +442,18 @@ std::vector<std::vector<s2mMuscleStateDynamics>> getParameterMuscleState(const m
 
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    std::vector<std::vector<s2mMuscleStateDynamics>> States;
+    std::vector<std::vector<biorbd::muscles::StateDynamics>> States;
     for (unsigned int j=0; j<nFramesTotal; ++j){
-        std::vector<s2mMuscleStateDynamics> States_tp;
+        std::vector<biorbd::muscles::StateDynamics> States_tp;
         for (unsigned int i=0; i<nMus; i++)
             if (isThereExcitation && isThereActivation){
-                States_tp.push_back( s2mMuscleStateDynamics(stateExcitation[j*nMus+i], stateActivation[j*nMus+i]));
+                States_tp.push_back( biorbd::muscles::StateDynamics(stateExcitation[j*nMus+i], stateActivation[j*nMus+i]));
             }
             else if (!isThereExcitation && isThereActivation){
-                States_tp.push_back( s2mMuscleStateDynamics(0, stateActivation[j*nMus+i]));
+                States_tp.push_back( biorbd::muscles::StateDynamics(0, stateActivation[j*nMus+i]));
             }
             else if (isThereExcitation && !isThereActivation){
-                States_tp.push_back( s2mMuscleStateDynamics(stateExcitation[j*nMus+i], 0));
+                States_tp.push_back( biorbd::muscles::StateDynamics(stateExcitation[j*nMus+i], 0));
             }
 
         States.push_back(States_tp);
@@ -462,7 +462,7 @@ std::vector<std::vector<s2mMuscleStateDynamics>> getParameterMuscleState(const m
 }
 
 
-std::vector<std::vector<s2mMuscleStateDynamicsBuchanan>> getParameterMuscleStateBuchanan(const mxArray*prhs[], int idxExcitation, int idxActivation, unsigned int nMus){
+std::vector<std::vector<biorbd::muscles::StateDynamicsBuchanan>> getParameterMuscleStateBuchanan(const mxArray*prhs[], int idxExcitation, int idxActivation, unsigned int nMus){
     // Get the number of frames in the input argument
     // Regarde ce qui se passe pour l'excitation
     bool isThereExcitation(false);
@@ -501,18 +501,18 @@ std::vector<std::vector<s2mMuscleStateDynamicsBuchanan>> getParameterMuscleState
 
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    std::vector<std::vector<s2mMuscleStateDynamicsBuchanan>> States;
+    std::vector<std::vector<biorbd::muscles::StateDynamicsBuchanan>> States;
     for (unsigned int j=0; j<nFramesTotal; ++j){
-        std::vector<s2mMuscleStateDynamicsBuchanan> States_tp;
+        std::vector<biorbd::muscles::StateDynamicsBuchanan> States_tp;
         for (unsigned int i=0; i<nMus; i++)
             if (isThereExcitation && isThereActivation){
-                States_tp.push_back( s2mMuscleStateDynamicsBuchanan(stateExcitation[j*nMus+i], stateActivation[j*nMus+i]));
+                States_tp.push_back( biorbd::muscles::StateDynamicsBuchanan(stateExcitation[j*nMus+i], stateActivation[j*nMus+i]));
             }
             else if (!isThereExcitation && isThereActivation){
-                States_tp.push_back( s2mMuscleStateDynamicsBuchanan(0, stateActivation[j*nMus+i]));
+                States_tp.push_back( biorbd::muscles::StateDynamicsBuchanan(0, stateActivation[j*nMus+i]));
             }
             else if (isThereExcitation && !isThereActivation){
-                States_tp.push_back( s2mMuscleStateDynamicsBuchanan(stateExcitation[j*nMus+i], 0));
+                States_tp.push_back( biorbd::muscles::StateDynamicsBuchanan(stateExcitation[j*nMus+i], 0));
             }
 
         States.push_back(States_tp);
@@ -520,17 +520,17 @@ std::vector<std::vector<s2mMuscleStateDynamicsBuchanan>> getParameterMuscleState
     return States;
 }
 
-std::vector<std::vector<s2mMuscleStateDynamics>> getParameterMuscleStateActivation(const mxArray*prhs[], int idxActivation, unsigned int nMus){
+std::vector<std::vector<biorbd::muscles::StateDynamics>> getParameterMuscleStateActivation(const mxArray*prhs[], int idxActivation, unsigned int nMus){
     return getParameterMuscleState(prhs, -1, idxActivation, nMus);
 }
-std::vector<std::vector<s2mMuscleStateDynamics>> getParameterMuscleStateExcitation(const mxArray*prhs[], int idxExcitation, unsigned int nMus){
+std::vector<std::vector<biorbd::muscles::StateDynamics>> getParameterMuscleStateExcitation(const mxArray*prhs[], int idxExcitation, unsigned int nMus){
     return getParameterMuscleState(prhs, idxExcitation, -1, nMus);
 }
 
-std::vector<std::vector<s2mMuscleStateDynamicsBuchanan>> getParameterMuscleStateActivationBuchanan(const mxArray*prhs[], int idxActivation, unsigned int nMus){
+std::vector<std::vector<biorbd::muscles::StateDynamicsBuchanan>> getParameterMuscleStateActivationBuchanan(const mxArray*prhs[], int idxActivation, unsigned int nMus){
     return getParameterMuscleStateBuchanan(prhs, -1, idxActivation, nMus);
 }
-std::vector<std::vector<s2mMuscleStateDynamicsBuchanan>> getParameterMuscleStateExcitationBuchanan(const mxArray*prhs[], int idxExcitation, unsigned int nMus){
+std::vector<std::vector<biorbd::muscles::StateDynamicsBuchanan>> getParameterMuscleStateExcitationBuchanan(const mxArray*prhs[], int idxExcitation, unsigned int nMus){
     return getParameterMuscleStateBuchanan(prhs, idxExcitation, -1, nMus);
 }
 
@@ -568,7 +568,7 @@ std::vector<Eigen::VectorXd> getParameterMuscleForceNorm(const mxArray*prhs[], u
 }
 
 
-std::vector<std::vector<s2mNodeMuscle>> getMusclePosition(const mxArray*prhs[], unsigned int idx, Eigen::VectorXd nPointsByMuscles){
+std::vector<std::vector<biorbd::muscles::MuscleNode>> getMusclePosition(const mxArray*prhs[], unsigned int idx, Eigen::VectorXd nPointsByMuscles){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -600,13 +600,13 @@ std::vector<std::vector<s2mNodeMuscle>> getMusclePosition(const mxArray*prhs[], 
     double *via=mxGetPr(prhs[idx]); //matrice de position
 
     // Préparer la matrice de sortie
-    std::vector<std::vector<s2mNodeMuscle>> out;
+    std::vector<std::vector<biorbd::muscles::MuscleNode>> out;
     unsigned int cmpMus(0);
     for (unsigned int i=0; i<nPointsByMuscles.rows(); ++i){
         // Préparer les matrices intermédiaires (chaque muscle)
-        std::vector<s2mNodeMuscle> mus;
+        std::vector<biorbd::muscles::MuscleNode> mus;
         for (unsigned int j=0; j<nPointsByMuscles(i); ++j){
-            mus.push_back(s2mNodeMuscle(Eigen::Vector3d(via[cmpMus*nRows+0],via[cmpMus*nRows+1],via[cmpMus*nRows+2])));
+            mus.push_back(biorbd::muscles::MuscleNode(Eigen::Vector3d(via[cmpMus*nRows+0],via[cmpMus*nRows+1],via[cmpMus*nRows+2])));
             ++cmpMus;
         }
         out.push_back(mus);
@@ -616,7 +616,7 @@ std::vector<std::vector<s2mNodeMuscle>> getMusclePosition(const mxArray*prhs[], 
     return out;
 }
 
-std::vector<s2mMatrix> getMusclePointsJaco(const mxArray*prhs[], unsigned int idx, Eigen::VectorXd nPointsByMuscles, unsigned int nQ){
+std::vector<biorbd::utils::Matrix> getMusclePointsJaco(const mxArray*prhs[], unsigned int idx, Eigen::VectorXd nPointsByMuscles, unsigned int nQ){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -647,12 +647,12 @@ std::vector<s2mMatrix> getMusclePointsJaco(const mxArray*prhs[], unsigned int id
     double *jaco=mxGetPr(prhs[idx]); //matrice de position
 
     // Préparer la matrice de sortie
-    std::vector<s2mMatrix> jacoOut;
+    std::vector<biorbd::utils::Matrix> jacoOut;
     unsigned int cmpMus(0);
 
     for (unsigned int i=0; i<nPointsByMuscles.rows(); ++i){
         // Préparer les matrices intermédiaires (chaque muscle)
-        s2mMatrix mus(static_cast<unsigned int>(nPointsByMuscles(i))*3, nQ);
+        biorbd::utils::Matrix mus(static_cast<unsigned int>(nPointsByMuscles(i))*3, nQ);
         for (unsigned int j=0; j<static_cast<unsigned int>(nPointsByMuscles(i)); ++j){
             // Stocker
             for (unsigned int k1 = 0; k1<3; ++k1)

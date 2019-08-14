@@ -1,0 +1,161 @@
+#define BIORBD_API_EXPORTS
+#include "Utils/IfStream.h"
+
+#include <boost/lexical_cast.hpp>
+#include <fstream>
+#include "Utils/Error.h"
+#include "Utils/Equation.h"
+
+// Constructeur
+biorbd::utils::IfStream::IfStream(
+        const biorbd::utils::Path& path,
+        std::ios_base::openmode mode = std::ios_base::in ) :
+    m_path(path)
+{
+    open(path.c_str(), mode);
+}
+biorbd::utils::IfStream::IfStream(
+        const char* path,
+        std::ios_base::openmode mode = std::ios_base::in ) :
+    m_path(path)
+{
+    open(path, mode);
+}
+biorbd::utils::IfStream::IfStream( )
+{
+    m_isOpen = false;
+}
+
+biorbd::utils::IfStream::~IfStream()
+{
+    delete m_ifs;
+}
+
+
+// Ouvrir le fichier
+bool biorbd::utils::IfStream::open(
+        const biorbd::utils::Path& path,
+        std::ios_base::openmode mode = std::ios_base::in )
+{
+    return open(path.c_str(), mode);
+}
+bool biorbd::utils::IfStream::open(
+        const char* path,
+        std::ios_base::openmode mode = std::ios_base::in )
+{
+    m_ifs = new std::ifstream(path, mode);
+    biorbd::utils::Error::error(m_ifs!=nullptr, path + biorbd::utils::String(" file could not be opened"));
+    m_isOpen = true;
+    return m_isOpen;
+}
+
+
+// Lire le fichier
+bool biorbd::utils::IfStream::readSpecificTag(
+        const biorbd::utils::String& tag,
+        biorbd::utils::String& text){
+    reachSpecificTag(tag);
+    read(text);
+    return true;
+}
+bool biorbd::utils::IfStream::reachSpecificTag(const biorbd::utils::String& tag){
+    biorbd::utils::String text;
+    while (read(text))
+        if (!text.tolower().compare(tag))
+            return true;
+
+    biorbd::utils::String outMessage = tag + " parameter could not be found in Data file..";
+    biorbd::utils::Error::error(0, outMessage);
+    return false; // Il est impossible qu'on se rende ici, mais c'est mieux d'avoir un return pour le compilateur
+}
+
+int biorbd::utils::IfStream::countTagsInAConsecutiveLines(const biorbd::utils::String &tag)
+{
+    // Se souvenir où on était dans le fichier
+    long positionInFile(m_ifs->tellg());
+    biorbd::utils::String text;
+    int nTags(0);
+
+    // Lire le premier mot de la ligne
+    while (read(text))
+        // S'il est comme le tag, saute à la prochaine ligne et on recommence
+        if (!text.compare(tag)){
+            getline(text);
+            ++nTags;
+        }
+        else
+            break;
+
+    // Remettre le fichier au point d'origine
+    m_ifs->seekg(positionInFile);
+    return nTags;
+}
+
+bool biorbd::utils::IfStream::read(biorbd::utils::String& text){
+    bool out(*m_ifs >> text);
+
+    if (out == 0)
+        return out;
+
+    if (!text(0,1).compare("//")){ // si c'est un commentaire par //
+        getline(text);
+        read(text);
+    }
+    else if (!text(0,1).compare("/*")){ // si c'est une commentaire par / *
+        while (readIgnoreCommentedLine(text)){
+            if (!text(0,1).compare("*/") || (text.length()>=2 && !text(static_cast<unsigned int>(text.length()-2),static_cast<unsigned int>(text.length()-1)).compare("*/")))
+                break;
+        }
+        read(text);
+    }
+    return out;
+}
+bool biorbd::utils::IfStream::readIgnoreCommentedLine(biorbd::utils::String& text){
+    bool out(*m_ifs >> text);
+    return out;
+}
+bool biorbd::utils::IfStream::read(double& d){
+    std::map<biorbd::utils::Equation, double> dumb;
+    return read(d, dumb);
+}
+bool biorbd::utils::IfStream::read(double& d, const std::map<biorbd::utils::Equation, double> &variables){
+    biorbd::utils::Equation tp;
+    bool out(read(tp));
+    // gérer le cas d'une équation
+    d = biorbd::utils::Equation::resolveEquation(tp, variables);
+    return out;
+}
+bool biorbd::utils::IfStream::read(int& i){
+    biorbd::utils::String tp;
+    bool out(read(tp));
+    i = boost::lexical_cast<int>(tp);
+    return out;
+}
+bool biorbd::utils::IfStream::read(unsigned int& i){
+    biorbd::utils::String tp;
+    bool out(read(tp));
+    i = boost::lexical_cast<unsigned int>(tp);
+    return out;
+}
+bool biorbd::utils::IfStream::read(bool& i){
+    biorbd::utils::String tp;
+    bool out(read(tp));
+    i = boost::lexical_cast<bool>(tp);
+    return out;
+}
+// Lire toute une ligne
+void biorbd::utils::IfStream::getline(biorbd::utils::String& text){
+    std::getline(*m_ifs, text);
+}
+
+
+// Fermer le fichier
+bool biorbd::utils::IfStream::close(){
+    m_ifs->close();
+    return 1;
+}
+
+bool biorbd::utils::IfStream::eof()
+{
+    return m_ifs->eof();
+}

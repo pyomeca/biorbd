@@ -1,5 +1,5 @@
-#ifndef MATLAB_S2M_MUSCLE_FORCE_H
-#define MATLAB_S2M_MUSCLE_FORCE_H
+#ifndef MATLAB_BIORBD_MUSCLES_FORCE_H
+#define MATLAB_BIORBD_MUSCLES_FORCE_H
 
 #include <mex.h>
 #include "s2mMusculoSkeletalModel.h"
@@ -13,14 +13,14 @@ void S2M_MusclesForce( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 5, 6, "5 arguments are required [+1 optional] where the 2nd is the handler on the model, 3rd is the Q, 4th is Qdot, 5th is muscles states and optional 6th is if update [true] must be done. Note that if update is set to [false], the user MUST update it by himself before calling this function");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
-    unsigned int nQdot = model->nbQdot(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
+    unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Qdot = getParameterQ(prhs, 3, nQdot);
+    std::vector<biorbd::utils::GenCoord> Qdot = getParameterQ(prhs, 3, nQdot);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));
@@ -28,7 +28,7 @@ void S2M_MusclesForce( int, mxArray *plhs[],
         mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "QDot must have the same number of frames than Q");
 
     // Recevoir les états musculaires
-    std::vector<std::vector<s2mMuscleStateDynamics>> state = getParameterMuscleStateActivation(prhs, 4, model->nbMuscleTotal());
+    std::vector<std::vector<biorbd::muscles::StateDynamics>> state = getParameterMuscleStateActivation(prhs, 4, model->nbMuscleTotal());
 
     bool updateKin(true);
     if (nrhs >= 6){ // Si on doit récupérer si on update ou pas
@@ -49,14 +49,14 @@ void S2M_MusclesForce( int, mxArray *plhs[],
     // Aller chercher les valeurs
     unsigned int cmp(0);
     for (unsigned int iF=0; iF<nFrame; ++iF){
-        std::vector<std::vector<std::shared_ptr<s2mMuscleForce>>> Force;
+        std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> Force;
         if (updateKin)
             Force = model->musclesForces(*model, *(state.begin()+iF), updateKin, &(*(Q.begin()+iF)), &(*(Qdot.begin()+iF)));
         else
             Force = model->musclesForces(*model, *(state.begin()+iF), updateKin);
         for (unsigned int i=0; i<Force.size(); ++i){
-            s2mMuscleForce ori = (Force[i])[0]->directionVector();
-            s2mMuscleForce ins = (Force[i])[1]->directionVector();
+            biorbd::muscles::Force ori = (Force[i])[0]->directionVector();
+            biorbd::muscles::Force ins = (Force[i])[1]->directionVector();
             muscleForce[6*cmp+0] = ori[0];
             muscleForce[6*cmp+1] = ori[1];
             muscleForce[6*cmp+2] = ori[2];
@@ -70,4 +70,4 @@ void S2M_MusclesForce( int, mxArray *plhs[],
     return;
 }
 
-#endif // MATLAB_S2M_MUSCLE_FORCE_H
+#endif // MATLAB_BIORBD_MUSCLES_FORCE_H

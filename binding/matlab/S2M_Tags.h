@@ -13,10 +13,10 @@ void S2M_Tags( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 3, 5, "3 arguments are required [+2 optional] where the 2nd is the handler on the model, 3rd is the Q and 4th is the wanted markerType to be return ('all', 'technical' or anatomical') and 5th if you want to remove axes as specified in the model file [default = true]");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
 
     bool removeAxes(true);
     if (nrhs >= 5)
@@ -26,20 +26,20 @@ void S2M_Tags( int, mxArray *plhs[],
     unsigned int nTags(0); // Nombre de marqueurs
     std::vector<std::vector<s2mNodeBone>> Tags_tp; // récupérer les marqueurs
     if (nrhs >= 4){
-        s2mString type(getString(prhs,3));
+        biorbd::utils::String type(getString(prhs,3));
         if (!type.tolower().compare("all")){
             nTags = model->nTags();
-            for (std::vector<s2mGenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
+            for (std::vector<biorbd::utils::GenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
                  Tags_tp.push_back(model->Tags(*model,*Q_it, removeAxes));
         }
         else if (!type.tolower().compare("anatomical")){
                 nTags = model->nAnatTags();
-                for (std::vector<s2mGenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
+                for (std::vector<biorbd::utils::GenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
                      Tags_tp.push_back(model->anatomicalTags(*model,*Q_it, removeAxes));
         }
         else if (!type.tolower().compare("technical")){
             nTags = model->nTechTags();
-            for (std::vector<s2mGenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
+            for (std::vector<biorbd::utils::GenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
                  Tags_tp.push_back(model->technicalTags(*model,*Q_it, removeAxes));
         }
         else {
@@ -51,7 +51,7 @@ void S2M_Tags( int, mxArray *plhs[],
     }
     else {
         nTags = model->nTags();
-        for (std::vector<s2mGenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
+        for (std::vector<biorbd::utils::GenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
              Tags_tp.push_back(model->Tags(*model,*Q_it, removeAxes));
     }
 

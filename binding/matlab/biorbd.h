@@ -8,15 +8,17 @@
 #include <iostream>
 
 #include "s2mMusculoSkeletalModel.h"
-#include "s2mRead.h"
-#include "class_handle.h"
-#include "s2mKalmanReconsMarkers.h"
-#include "s2mKalmanReconsIMU.h"
-#include "s2mMatrix.h"
+#include "biorbdConfig.h"
+#include "Utils/Matrix.h"
+#include "Utils/Read.h"
+#include "Utils/Error.h"
 
+#include "class_handle.h"
 #include "S2M_help.h"
 #include "S2M_new.h"
 #include "S2M_delete.h"
+
+#include "S2M_parent.h"
 #include "S2M_changeGravity.h"
 #include "S2M_totalMass.h"
 #include "S2M_massMatrix.h"
@@ -45,6 +47,12 @@
 #include "S2M_inverseKinematics.h"
 #include "S2M_inverseKinematicsEKF.h"
 #include "S2M_inverseKinematicsEKF_IMU.h"
+#include "s2mKalmanReconsMarkers.h"
+#include "s2mKalmanReconsIMU.h"
+#include "S2M_NLeffects.h"
+#include "S2M_inverseDynamics.h"
+#include "S2M_forwardDynamics.h"
+#include "S2M_computeQdot.h"
 #include "S2M_Mesh.h"
 #include "S2M_Patch.h"
 #include "S2M_TagsJacobian.h"
@@ -63,6 +71,8 @@
 #include "S2M_segmentsInertia.h"
 #include "S2M_segmentsVelocities.h"
 #include "S2M_globalJCS.h"
+
+#ifdef MODULE_MUSCLES
 #include "S2M_muscleUpdate.h"
 #include "S2M_MusclesPoints.h"
 #include "S2M_MusclesJacobian.h"
@@ -81,20 +91,18 @@
 #include "S2M_MusclesActivationDot.h"
 #include "S2M_MusclesExcitationDotBuchanan.h"
 #include "S2M_ChangeShapeFactors.h"
-#include "S2M_parent.h"
+#endif // MODULE_MUSCLES
 
-#include "S2M_inverseDynamics.h"
+#ifdef MODULE_ACTUATORS
 #include "S2M_torqueActivation.h"
-#include "S2M_NLeffects.h"
-#include "S2M_forwardDynamics.h"
-#include "S2M_computeQdot.h"
+#endif // MODULE_ACTUATORS
 
 #ifdef _WIN32
 // This is a hack because Eigen can't be dynamically compiled on Windows, while dlib needs consistency in compilation. 
-// Please note that this can result in undefined behavior while using s2mMuscleOptimisation...
+// Please note that this can result in undefined behavior while using biorbd::muscles::MuscleOptimisation...
 const int USER_ERROR__inconsistent_build_configuration__see_dlib_faq_1_ = 0;
 const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
-#endif
+#endif // _WIN32
 
 std::string toLower(const std::string &str){
     std::string new_str = str;
@@ -103,19 +111,21 @@ std::string toLower(const std::string &str){
 }
 
 // MATLAB INTERFACE 
-/** \brief Entry point for the muscod application */
+///
+/// \brief Entry point for the muscod application
+///
 void mexFunction( int nlhs, mxArray *plhs[], 
                   int nrhs, const mxArray*prhs[] );
 void functionHub( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
-    /* Check for proper number of arguments */
+    // Check for proper number of arguments
     if (nrhs < 1) {
         mexErrMsgIdAndTxt( "MATLAB:yprime:invalidNumInputs",
                 "First argument should be the command");
     }
 
     // Traitement du 1er argument qui est la commande
-    /* Check for proper input type */
+    // Check for proper input type
     if (!mxIsChar(prhs[0]) || (mxGetM(prhs[0]) != 1 ) )  {
         mexErrMsgIdAndTxt( "MATLAB:mxmalloc:invalidInput",
                 "Input argument 1 must be a command string.");
@@ -133,13 +143,13 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Redirect vers les bonnes fonctions
 
-    /* À l'appel d'un nouveau modèle */
+    // À l'appel d'un nouveau modèle
     if (!toLower(cmd).compare("new")){
         S2M_new(nlhs, plhs, nrhs, prhs);
         return;
     }
 
-    /* À l'appel du delete du modèle */
+    // À l'appel du delete du modèle
     if (!toLower(cmd).compare("delete")){
         S2M_delete(nlhs, plhs, nrhs, prhs);
         return;
@@ -153,7 +163,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Nombre de controls (tau)
     if (!toLower(cmd).compare("ncontrol")){
-        s2mError::s2mWarning(0, "La fonction \"nControl\" est obsolete. Remplacer par \"nTau\". Elle sera retirée prochainement");
+        biorbd::utils::Error::warning(0, "La fonction \"nControl\" est obsolete. Remplacer par \"nTau\". Elle sera retirée prochainement");
         S2M_nTau(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -279,7 +289,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Nombre de Tags
     if (!toLower(cmd).compare("nmimu")){
-        s2mError::s2mWarning(0, "La fonction \"nmimu\" est obsolete. Remplacer par \"nimu\". Elle sera retirée prochainement");
+        biorbd::utils::Error::warning(0, "La fonction \"nmimu\" est obsolete. Remplacer par \"nimu\". Elle sera retirée prochainement");
         S2M_nIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -290,7 +300,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Noms des Tags
     if (!toLower(cmd).compare("namemimu")){
-        s2mError::s2mWarning(0, "La fonction \"namemimu\" est obsolete. Remplacer par \"nameimu\". Elle sera retirée prochainement");
+        biorbd::utils::Error::warning(0, "La fonction \"namemimu\" est obsolete. Remplacer par \"nameimu\". Elle sera retirée prochainement");
         S2M_nameIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -301,7 +311,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Noms des Tags techniques
     if (!toLower(cmd).compare("nametechnicalmimu")){
-        s2mError::s2mWarning(0, "La fonction \"nametechnicalmimu\" est obsolete. Remplacer par \"nametechnicalimu\". Elle sera retirée prochainement");
+        biorbd::utils::Error::warning(0, "La fonction \"nametechnicalmimu\" est obsolete. Remplacer par \"nametechnicalimu\". Elle sera retirée prochainement");
         S2M_nameTechnicalIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -312,7 +322,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Noms des Tags anatomiques
     if (!toLower(cmd).compare("nameanatomicalmimu")){
-        s2mError::s2mWarning(0, "La fonction \"nameanatomicalmimu\" est obsolete. Remplacer par \"nameanatomicalimu\". Elle sera retirée prochainement");
+        biorbd::utils::Error::warning(0, "La fonction \"nameanatomicalmimu\" est obsolete. Remplacer par \"nameanatomicalimu\". Elle sera retirée prochainement");
         S2M_nameAnatomicalIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -323,7 +333,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Fonction de cinématique directe
     if(!toLower(cmd).compare("mimu")){
-        s2mError::s2mWarning(0, "La fonction \"mimu\" est obsolete. Remplacer par \"imu\". Elle sera retirée prochainement");
+        biorbd::utils::Error::warning(0, "La fonction \"mimu\" est obsolete. Remplacer par \"imu\". Elle sera retirée prochainement");
         S2M_IMU(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -334,7 +344,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Fonction de cinématique directe
     if(!toLower(cmd).compare("mimujacobian")){
-        s2mError::s2mWarning(0, "La fonction \"mimujacobian\" est obsolete. Remplacer par \"imujacobian\". Elle sera retirée prochainement");
+        biorbd::utils::Error::warning(0, "La fonction \"mimujacobian\" est obsolete. Remplacer par \"imujacobian\". Elle sera retirée prochainement");
         S2M_IMUJacobian(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -511,7 +521,7 @@ void functionHub( int nlhs, mxArray *plhs[],
         return;
     }
 
-
+#ifdef MODULE_MUSCLES
     // Obtenir le nombre de muscles
     if(!toLower(cmd).compare("nmuscles")){
         S2M_nMuscles(nlhs, plhs, nrhs, prhs);
@@ -563,29 +573,6 @@ void functionHub( int nlhs, mxArray *plhs[],
     // Fonction de dynamique inverse
     if(!toLower(cmd).compare("inversedynamics")){
         S2M_inverseDynamics(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-
-    // Si on veut convertir des activations de torque en torque
-    if(!toLower(cmd).compare("torqueactivation")){
-        S2M_torqueActivation(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-
-
-    if(!toLower(cmd).compare("forwarddynamics")){
-        S2M_forwardDynamics(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-
-    if(!toLower(cmd).compare("computeqdot")){
-        S2M_computeQdot(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-
-    // Fonction de dynamique inverse
-    if(!toLower(cmd).compare("nleffects")){
-        S2M_NLeffects(nlhs, plhs, nrhs, prhs);
         return;
     }
 
@@ -644,6 +631,32 @@ void functionHub( int nlhs, mxArray *plhs[],
         return;
     }
 
+#endif // MODULE_MUSCLES
+
+#ifdef MODULE_ACTUATORS
+    // Si on veut convertir des activations de torque en torque
+    if(!toLower(cmd).compare("torqueactivation")){
+        S2M_torqueActivation(nlhs, plhs, nrhs, prhs);
+        return;
+    }
+#endif // MODULE_ACTUATORS
+
+
+    if(!toLower(cmd).compare("forwarddynamics")){
+        S2M_forwardDynamics(nlhs, plhs, nrhs, prhs);
+        return;
+    }
+
+    if(!toLower(cmd).compare("computeqdot")){
+        S2M_computeQdot(nlhs, plhs, nrhs, prhs);
+        return;
+    }
+
+    // Fonction de dynamique inverse
+    if(!toLower(cmd).compare("nleffects")){
+        S2M_NLeffects(nlhs, plhs, nrhs, prhs);
+        return;
+    }
 
     // Got here, so command is not recognized
     mexErrMsgTxt("Command for interface not recognized.");

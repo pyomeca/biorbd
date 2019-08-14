@@ -13,17 +13,17 @@ void S2M_ProjectPointJacobian( int, mxArray *plhs[],
 
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    s2mGenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
-    std::vector<Eigen::Vector3d> markersOverTime = *getParameterAllMarkers(prhs,3).begin();
+    std::vector<s2mNodeBone> markersOverTime = *getParameterAllMarkers(prhs,3).begin();
 
     // Trouver la matrice jacobienne de tous les marqueurs
-    std::vector<s2mMatrix> Jac_tp = model->projectPointJacobian(*model, *model, Q, markersOverTime, true);
-        std::vector<s2mMatrix>::iterator it=Jac_tp.begin();
+    std::vector<biorbd::utils::Matrix> Jac_tp = model->projectPointJacobian(*model, *model, Q, markersOverTime, true);
+    std::vector<biorbd::utils::Matrix>::iterator it=Jac_tp.begin();
 
     // Create a matrix for the return argument
     unsigned int nTags = model->nTags();

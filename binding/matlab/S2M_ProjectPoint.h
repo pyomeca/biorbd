@@ -13,13 +13,13 @@ void S2M_ProjectPoint( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 4, 4, "6 arguments are required where the 2nd is the handler on the model, 3rd is the Q, 4th are the 3xNxT points in global reference frame where N = nTags of the model");
     // Recevoir le model
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
-    unsigned int nQ = model->nbQ(); /* Get the number of DoF */
+    unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<s2mGenCoord> Qall = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::utils::GenCoord> Qall = getParameterQ(prhs, 2, nQ);
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
-    std::vector<std::vector<Eigen::Vector3d>> markersOverTime = getParameterAllMarkers(prhs,3);
+    std::vector<std::vector<s2mNodeBone>> markersOverTime = getParameterAllMarkers(prhs,3);
 
     unsigned int nFrames(static_cast<unsigned int>(markersOverTime.size()));
     if (Qall.size()!=nFrames)
@@ -37,7 +37,7 @@ void S2M_ProjectPoint( int, mxArray *plhs[],
     // Projeter les points
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrames; ++i){
-        s2mGenCoord Q(*(Qall.begin()+i));
+        biorbd::utils::GenCoord Q(*(Qall.begin()+i));
         std::vector<s2mNodeBone> projectedPoint(model->projectPoint(*model, Q, *(markersOverTime.begin()+i), true));
         for (unsigned int j=0; j<static_cast<unsigned int>(nMarker); ++j){
             s2mNodeBone tp(*(projectedPoint.begin()+j));

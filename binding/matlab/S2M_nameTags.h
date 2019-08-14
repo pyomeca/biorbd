@@ -15,7 +15,7 @@ void S2M_nameTags( int, mxArray *plhs[],
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
 
     // Trouver ou sont les marqueurs
-    std::vector<s2mString> allTags(model->markerNames());
+    std::vector<biorbd::utils::String> allTags(model->markerNames());
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateCellMatrix( allTags.size(), 1);
@@ -36,7 +36,7 @@ void S2M_nameTechnicalTags( int, mxArray *plhs[],
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
 
     // Trouver ou sont les marqueurs
-    std::vector<s2mString> allTags(model->technicalMarkerNames());
+    std::vector<biorbd::utils::String> allTags(model->technicalMarkerNames());
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateCellMatrix( allTags.size(), 1);
@@ -57,7 +57,7 @@ void S2M_nameAnatomicalTags( int, mxArray *plhs[],
     s2mMusculoSkeletalModel * model = convertMat2Ptr<s2mMusculoSkeletalModel>(prhs[1]);
 
      // Trouver ou sont les marqueurs
-    std::vector<s2mString> allTags(model->anatomicalMarkerNames());
+    std::vector<biorbd::utils::String> allTags(model->anatomicalMarkerNames());
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateCellMatrix( allTags.size(), 1);

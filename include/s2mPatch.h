@@ -6,16 +6,16 @@
 
 class BIORBD_API s2mPatch
 {
-    public:
-        s2mPatch(const Eigen::Vector3i& = Eigen::Vector3i());
+public:
+    s2mPatch(const Eigen::Vector3i& = Eigen::Vector3i());
 
-        // Ajouter un patch au lot
-        int &operator() (int);
-        void patch(const Eigen::Vector3i&);
-        void patch(const s2mPatch&);
-        s2mPatch patch(); // retourne les patchs
-    protected:
-        Eigen::Vector3i m_patch;
+    // Ajouter un patch au lot
+    int &operator() (int);
+    void patch(const Eigen::Vector3i&);
+    void patch(const s2mPatch&);
+    s2mPatch patch(); // retourne les patchs
+protected:
+    Eigen::Vector3i m_patch;
 
 };
 

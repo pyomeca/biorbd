@@ -6,10 +6,10 @@
 #include "s2mJoints.h"
 #include "s2mPatch.h"
 #include "s2mNodeBone.h"
-#include "s2mMatrix.h"
-#include "s2mString.h"
+#include "Utils/Matrix.h"
+#include "Utils/String.h"
 #include "s2mBone.h"
-#include "s2mGenCoord.h"
+#include "Utils/GenCoord.h"
 
 
 s2mMarkers::s2mMarkers()
@@ -23,13 +23,14 @@ s2mMarkers::~s2mMarkers()
 }
 
 // Ajouter un nouveau marker au pool de markers
-void s2mMarkers::addMarker(const Eigen::Vector3d &pos,
-                           const s2mString &name,
-                           const s2mString &parentName,
-                           bool technical,
-                           bool anatomical,
-                           const s2mString& axesToRemove,
-                           int id)
+void s2mMarkers::addMarker(
+        const Eigen::Vector3d &pos,
+        const biorbd::utils::String &name,
+        const biorbd::utils::String &parentName,
+        bool technical,
+        bool anatomical,
+        const biorbd::utils::String& axesToRemove,
+        int id)
 {
     s2mNodeBone tp(pos, name, parentName, technical, anatomical, axesToRemove, id);
     m_marks.push_back(tp);
@@ -40,10 +41,12 @@ const s2mNodeBone &s2mMarkers::marker(const unsigned int &i) const
     return m_marks[i];
 }
 
-std::vector<s2mNodeBone> s2mMarkers::marker(const s2mJoints& model, const unsigned int &idxBone) const
+std::vector<s2mNodeBone> s2mMarkers::marker(
+        const s2mJoints& model,
+        const unsigned int &idxBone) const
 {
     // Nom du segment a trouver
-    const s2mString& name(model.bone(idxBone).name());
+    const biorbd::utils::String& name(model.bone(idxBone).name());
 
     std::vector<s2mNodeBone> pos;
     for (unsigned int i=0; i<nTags(); ++i) // passer tous les markers et sélectionner les bons
@@ -54,7 +57,12 @@ std::vector<s2mNodeBone> s2mMarkers::marker(const s2mJoints& model, const unsign
 }
 
 // Se faire renvoyer un marqueur
-s2mNodeBone s2mMarkers::Tags(s2mJoints &model, const s2mGenCoord &Q, const s2mNodeBone &n, bool removeAxis, bool updateKin)
+s2mNodeBone s2mMarkers::Tags(
+        s2mJoints &model,
+        const biorbd::utils::GenCoord &Q,
+        const s2mNodeBone &n,
+        bool removeAxis,
+        bool updateKin)
 {
     unsigned int id = model.GetBodyId(n.parent().c_str());
     s2mNodeBone pos(n);
@@ -65,7 +73,12 @@ s2mNodeBone s2mMarkers::Tags(s2mJoints &model, const s2mGenCoord &Q, const s2mNo
 }
 
 // Se faire renvoyer un marker
-s2mNodeBone s2mMarkers::Tags(s2mJoints& model, const s2mGenCoord &Q, const unsigned int &idx, bool removeAxis, bool updateKin){
+s2mNodeBone s2mMarkers::Tags(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        const unsigned int &idx,
+        bool removeAxis,
+        bool updateKin){
     s2mNodeBone node = marker(idx);
     unsigned int id = model.GetBodyId(node.parent().c_str());
 
@@ -76,7 +89,9 @@ s2mNodeBone s2mMarkers::Tags(s2mJoints& model, const s2mGenCoord &Q, const unsig
     return pos;
 }
 // Se faire renvoyer un marker
-s2mNodeBone s2mMarkers::Tags(const unsigned int &idx, bool removeAxis){
+s2mNodeBone s2mMarkers::Tags(
+        const unsigned int &idx,
+        bool removeAxis){
     s2mNodeBone node = marker(idx);
     s2mNodeBone pos = node.position(removeAxis);
 
@@ -85,7 +100,11 @@ s2mNodeBone s2mMarkers::Tags(const unsigned int &idx, bool removeAxis){
 }
 
 // Se faire renvoyer les markers
-std::vector<s2mNodeBone> s2mMarkers::Tags(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin){
+std::vector<s2mNodeBone> s2mMarkers::Tags(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        bool removeAxis,
+        bool updateKin){
     std::vector<s2mNodeBone> pos;
     for (unsigned int i=0; i<nTags(); ++i)
         if (i==0)
@@ -105,7 +124,13 @@ std::vector<s2mNodeBone> s2mMarkers::Tags(bool removeAxis){
 }
 
 // Se faire renvoyer un marker
-s2mNodeBone s2mMarkers::TagsVelocity(s2mJoints& model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, const unsigned int &idx, bool removeAxis, bool updateKin){
+s2mNodeBone s2mMarkers::TagsVelocity(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
+        const unsigned int &idx,
+        bool removeAxis,
+        bool updateKin){
     s2mNodeBone node = marker(idx);
     unsigned int id = model.GetBodyId(node.parent().c_str());
 
@@ -118,7 +143,12 @@ s2mNodeBone s2mMarkers::TagsVelocity(s2mJoints& model, const s2mGenCoord &Q, con
 }
 
 // Se faire renvoyer les markers
-std::vector<s2mNodeBone> s2mMarkers::TagsVelocity(s2mJoints& model, const s2mGenCoord &Q, const s2mGenCoord &Qdot, bool removeAxis, bool updateKin){
+std::vector<s2mNodeBone> s2mMarkers::TagsVelocity(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::GenCoord &Qdot,
+        bool removeAxis,
+        bool updateKin){
     std::vector<s2mNodeBone> pos;
     for (unsigned int i=0; i<nTags(); ++i)
         if (i==0)
@@ -130,7 +160,11 @@ std::vector<s2mNodeBone> s2mMarkers::TagsVelocity(s2mJoints& model, const s2mGen
 }
 
 // Se faire renvoyer les markers techniques
-std::vector<s2mNodeBone> s2mMarkers::technicalTags(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin){
+std::vector<s2mNodeBone> s2mMarkers::technicalTags(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        bool removeAxis,
+        bool updateKin){
     std::vector<s2mNodeBone> pos;
     for (unsigned int i=0; i<nTags(); ++i)
         if ( marker(i).isTechnical() ){
@@ -148,7 +182,11 @@ std::vector<s2mNodeBone> s2mMarkers::technicalTags(bool removeAxis){
     return pos;
 }
 // Se faire renvoyer les markers anatomiques
-std::vector<s2mNodeBone> s2mMarkers::anatomicalTags(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin){
+std::vector<s2mNodeBone> s2mMarkers::anatomicalTags(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        bool removeAxis,
+        bool updateKin){
     std::vector<s2mNodeBone> pos;
     for (unsigned int i=0; i<nTags(); ++i)
         if ( marker(i).isAnatomical() ){
@@ -183,13 +221,18 @@ std::vector<s2mNodeBone> s2mMarkers::AnatomicalTagsInLocal(bool removeAxis){
 }
 
 
-std::vector<s2mNodeBone> s2mMarkers::segmentTags(s2mJoints& model, const s2mGenCoord &Q, const unsigned int &idx, bool removeAxis, bool updateKin){
+std::vector<s2mNodeBone> s2mMarkers::segmentTags(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        const unsigned int &idx,
+        bool removeAxis,
+        bool updateKin){
     // Update de la cinématique
     if (updateKin)
         RigidBodyDynamics::UpdateKinematicsCustom(model, &Q,nullptr, nullptr);
 
     // Nom du segment a trouver
-    s2mString name(model.bone(idx).name());
+    biorbd::utils::String name(model.bone(idx).name());
 
     std::vector<s2mNodeBone> pos;
     for (unsigned int i=0; i<nTags(); ++i) // passer tous les markers et sélectionner les bons
@@ -206,7 +249,7 @@ unsigned int s2mMarkers::nTags() const {
 
 unsigned int s2mMarkers::nTags(s2mJoints& model, unsigned int idxSegment) const {
     // Nom du segment a trouver
-    s2mString name(model.bone(idxSegment).name());
+    biorbd::utils::String name(model.bone(idxSegment).name());
 
     unsigned int n = 0;
     for (unsigned int i=0; i<nTags(); ++i) // passer tous les markers et sélectionner les bons
@@ -217,17 +260,30 @@ unsigned int s2mMarkers::nTags(s2mJoints& model, unsigned int idxSegment) const 
 }
 
 // Se faire renvoyer la jacobienne des markers
-std::vector<s2mMatrix> s2mMarkers::TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin){
+std::vector<biorbd::utils::Matrix> s2mMarkers::TagsJacobian(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        bool removeAxis,
+        bool updateKin){
     return TagsJacobian(model, Q, removeAxis, updateKin, false);
 }
 
-std::vector<s2mMatrix> s2mMarkers::TechnicalTagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin){
+std::vector<biorbd::utils::Matrix> s2mMarkers::TechnicalTagsJacobian(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        bool removeAxis,
+        bool updateKin){
     return TagsJacobian(model, Q, removeAxis, updateKin, true);
 }
 
 // Se faire renvoyer la jacobienne des marker techniques
-s2mMatrix s2mMarkers::TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, const s2mString& parentName, const Eigen::Vector3d& p, bool updateKin){
-    s2mMatrix G(s2mMatrix::Zero(3,model.nbQ()));;
+biorbd::utils::Matrix s2mMarkers::TagsJacobian(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        const biorbd::utils::String& parentName,
+        const Eigen::Vector3d& p,
+        bool updateKin){
+    biorbd::utils::Matrix G(biorbd::utils::Matrix::Zero(3,model.nbQ()));;
 
     // Calcul de la jacobienne de ce Tag
     unsigned int id = model.GetBodyId(parentName.c_str());
@@ -237,8 +293,13 @@ s2mMatrix s2mMarkers::TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, const
 }
 
 // Se faire renvoyer la jacobienne des marker techniques
-std::vector<s2mMatrix> s2mMarkers::TagsJacobian(s2mJoints& model, const s2mGenCoord &Q, bool removeAxis, bool updateKin, bool lookForTechnical){
-    std::vector<s2mMatrix> G;
+std::vector<biorbd::utils::Matrix> s2mMarkers::TagsJacobian(
+        s2mJoints& model,
+        const biorbd::utils::GenCoord &Q,
+        bool removeAxis,
+        bool updateKin,
+        bool lookForTechnical){
+    std::vector<biorbd::utils::Matrix> G;
 
     unsigned int idx2(0);
     for (unsigned int idx=0; idx<nTags(); ++idx){
@@ -249,7 +310,7 @@ std::vector<s2mMatrix> s2mMarkers::TagsJacobian(s2mJoints& model, const s2mGenCo
 
         unsigned int id = model.GetBodyId(node.parent().c_str());
         Eigen::Vector3d pos = Tags(idx, removeAxis);
-        s2mMatrix G_tp(s2mMatrix::Zero(3,model.nbQ()));
+        biorbd::utils::Matrix G_tp(biorbd::utils::Matrix::Zero(3,model.nbQ()));
 
         // Calcul de la jacobienne de ce Tag
         if (idx2==0)
@@ -278,7 +339,7 @@ unsigned int s2mMarkers::nTechTags(s2mJoints& model, unsigned int idxSegment){
     unsigned int nTechTags = 0;
 
     // Nom du segment a trouver
-    s2mString name(model.bone(idxSegment).name());
+    biorbd::utils::String name(model.bone(idxSegment).name());
 
     if (nTechTags == 0) // Si la fonction n'a jamais été appelée encore
         for (std::vector <s2mNodeBone>::iterator it = m_marks.begin(); it!=m_marks.end(); ++it)
@@ -299,18 +360,18 @@ unsigned int s2mMarkers::nAnatTags(){
     return nAnatTags;
 }
 
-std::vector<s2mString> s2mMarkers::markerNames() const{
+std::vector<biorbd::utils::String> s2mMarkers::markerNames() const{
     // Extrait le nom de tous les markers d'un modele
-    std::vector<s2mString> names;
+    std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nTags(); ++i)
         names.push_back(marker(i).name());
 
     return names;
 }
 
-std::vector<s2mString> s2mMarkers::technicalMarkerNames() const{
+std::vector<biorbd::utils::String> s2mMarkers::technicalMarkerNames() const{
     // Extrait le nom de tous les markers d'un modele
-    std::vector<s2mString> names;
+    std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nTags(); ++i)
         if (marker(i).isTechnical())
             names.push_back(marker(i).name());
@@ -318,9 +379,9 @@ std::vector<s2mString> s2mMarkers::technicalMarkerNames() const{
     return names;
 }
 
-std::vector<s2mString> s2mMarkers::anatomicalMarkerNames() const{
+std::vector<biorbd::utils::String> s2mMarkers::anatomicalMarkerNames() const{
     // Extrait le nom de tous les markers d'un modele
-    std::vector<s2mString> names;
+    std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nTags(); ++i)
         if (marker(i).isAnatomical())
             names.push_back(marker(i).name());
