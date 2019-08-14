@@ -4,10 +4,12 @@
 #include <random>
 #include "s2mMusculoSkeletalModel.h"
 #include "Utils/GenCoord.h"
+#ifdef MODULE_MUSCLES
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/HillTypeThelenFatigable.h"
 #include "Muscles/FatigueDynamicStateXia.h"
 #include "Muscles/StaticOptimization.h"
+#endif // MODULE_MUSCLES
 #define BUILD_SANDBOX
 
 #ifdef BUILD_SANDBOX
@@ -26,6 +28,7 @@ int main()
         QDot[i] = 0;
         QDDot[i] = 0;
     }
+#ifdef MODULE_MUSCLES
     model.updateMuscles(model, Q, QDot, true);
 
     s2mMuscleStateDynamics emg(0, 1);
@@ -156,7 +159,7 @@ int main()
         }
         std::cout << std::endl;
     }
-
+#endif // MODULE_MUSCLES
 
 ////    s2mMusculoSkeletalModel m3("test-os-masse.biomod");
 //    biorbd::utils::GenCoord Q(m3);

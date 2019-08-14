@@ -4,26 +4,30 @@
 #include <limits.h>
 #include <fstream>
 #include "s2mMusculoSkeletalModel.h"
-#include "Utils/Error.h"
-#include "Utils/IfStream.h"
-#include "Utils/String.h"
-#include "Utils/Equation.h"
 #include "s2mBoneMesh.h"
 #include "s2mBoneCaracteristics.h"
 #include "s2mIMU.h"
 #include "s2mNodeBone.h"
 #include "s2mPatch.h"
+#include "Utils/Error.h"
+#include "Utils/IfStream.h"
+#include "Utils/String.h"
+#include "Utils/Equation.h"
+#include "Utils/Vector.h"
+#include "Utils/GenCoord.h"
 #ifdef MODULE_ACTUATORS
     #include "Actuators/ActuatorConstant.h"
     #include "Actuators/ActuatorLinear.h"
     #include "Actuators/ActuatorGauss3p.h"
     #include "Actuators/ActuatorGauss6p.h"
 #endif // MODULE_ACTUATORS
+#ifdef MODULE_MUSCLES
 #include "Muscles/Muscle.h"
 #include "Muscles/Geometry.h"
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/ViaPoint.h"
 #include "Muscles/WrappingCylinder.h"
+#endif // MODULE_MUSCLES
 
 #ifdef _WIN64
     #include <direct.h>
@@ -573,6 +577,7 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusc
         biorbd::utils::Error::error(false, "Biorbd was build without the module Actuators but the model defines ones");
 #endif // MODULE_ACTUATORS
         } else if (!tp.tolower().compare("musclegroup")){
+#ifdef MODULE_MUSCLES
             biorbd::utils::String name;
             file.read(name); // Nom du groupe musculaire
 
@@ -597,8 +602,12 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusc
                 }
             }
             model->addMuscleGroup(name, origin_parent_str, insert_parent_str);
+#else // MODULE_ACTUATORS
+        biorbd::utils::Error::error(false, "Biorbd was build without the module Muscles but the model defines a muscle group");
+#endif // MODULE_ACTUATORS
         }
         else if (!tp.tolower().compare("muscle")){
+#ifdef MODULE_MUSCLES
             biorbd::utils::String name;
             file.read(name); // Nom du muscle
 
@@ -675,8 +684,12 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusc
             s2mMuscleState stateMax(maxExcitation, maxActivation);
             s2mMuscleCaracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax, fatigueParameters);
             model->muscleGroup_nonConst(static_cast<unsigned int>(idxGroup)).addHillMuscle(name,type,geo,caract,s2mMusclePathChangers(),stateType,dynamicFatigueType);
+#else // MODULE_ACTUATORS
+        biorbd::utils::Error::error(false, "Biorbd was build without the module Muscles but the model defines a muscle");
+#endif // MODULE_ACTUATORS
         }
         else if (!tp.tolower().compare("viapoint")){
+#ifdef MODULE_MUSCLES
             biorbd::utils::String name;
             file.read(name); // Nom du muscle... Éventuellement ajouter groupe musculaire
 
@@ -711,8 +724,12 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusc
             biorbd::utils::Error::error(iMuscle!=-1, "No muscle was provided!");
             s2mViaPoint v(position,name,parent);
             model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle))->addPathObject(v);
+#else // MODULE_ACTUATORS
+        biorbd::utils::Error::error(false, "Biorbd was build without the module Muscles but the model defines a viapoint");
+#endif // MODULE_ACTUATORS
         }
         else if (!tp.tolower().compare("wrap")){
+#ifdef MODULE_MUSCLES
             biorbd::utils::String name;
             file.read(name); // Nom du wrapping
 
@@ -764,6 +781,9 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, s2mMusc
             biorbd::utils::Error::error(iMuscle!=-1, "No muscle was provided!");
             s2mWrappingCylinder cylinder(RT,dia,length,side,name,parent);
             model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle))->addPathObject(cylinder);
+#else // MODULE_ACTUATORS
+        biorbd::utils::Error::error(false, "Biorbd was build without the module Muscles but the model defines a wrapping object");
+#endif // MODULE_ACTUATORS
         }
     }
 #ifdef MODULE_ACTUATORS

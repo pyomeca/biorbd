@@ -9,7 +9,9 @@
 #ifdef MODULE_ACTUATORS
 #include "Actuators/Actuators.h"
 #endif
+#ifdef MODULE_MUSCLES
 #include "Muscles/Muscles.h"
+#endif
 #include "Utils/Path.h"
 
 class BIORBD_API s2mMusculoSkeletalModel :
@@ -20,7 +22,9 @@ class BIORBD_API s2mMusculoSkeletalModel :
         #ifdef MODULE_ACTUATORS
         ,public biorbd::actuator::Actuators
         #endif
+        #ifdef MODULE_MUSCLES
         ,public s2mMuscles
+        #endif
 {
 public:
     s2mMusculoSkeletalModel();

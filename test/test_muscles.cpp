@@ -2,6 +2,8 @@
 #include <gtest/gtest.h>
 
 #include "s2mMusculoSkeletalModel.h"
+#include "biorbdConfig.h"
+#ifdef MODULE_MUSCLES
 #include "Muscles/Muscle.h"
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/HillTypeThelenFatigable.h"
@@ -277,3 +279,4 @@ TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
 
     }
 }
+#endif // MODULE_MUSCLES

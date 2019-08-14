@@ -6,17 +6,19 @@
 #include <iostream>
 #include <fstream>
 #include <iostream>
+
 #include "s2mMusculoSkeletalModel.h"
 #include "biorbdConfig.h"
-#include "Utils/Read.h"
-#include "class_handle.h"
-#include "s2mKalmanReconsMarkers.h"
-#include "s2mKalmanReconsIMU.h"
 #include "Utils/Matrix.h"
+#include "Utils/Read.h"
+#include "Utils/Error.h"
 
+#include "class_handle.h"
 #include "S2M_help.h"
 #include "S2M_new.h"
 #include "S2M_delete.h"
+
+#include "S2M_parent.h"
 #include "S2M_changeGravity.h"
 #include "S2M_totalMass.h"
 #include "S2M_massMatrix.h"
@@ -45,6 +47,12 @@
 #include "S2M_inverseKinematics.h"
 #include "S2M_inverseKinematicsEKF.h"
 #include "S2M_inverseKinematicsEKF_IMU.h"
+#include "s2mKalmanReconsMarkers.h"
+#include "s2mKalmanReconsIMU.h"
+#include "S2M_NLeffects.h"
+#include "S2M_inverseDynamics.h"
+#include "S2M_forwardDynamics.h"
+#include "S2M_computeQdot.h"
 #include "S2M_Mesh.h"
 #include "S2M_Patch.h"
 #include "S2M_TagsJacobian.h"
@@ -63,6 +71,8 @@
 #include "S2M_segmentsInertia.h"
 #include "S2M_segmentsVelocities.h"
 #include "S2M_globalJCS.h"
+
+#ifdef MODULE_MUSCLES
 #include "S2M_muscleUpdate.h"
 #include "S2M_MusclesPoints.h"
 #include "S2M_MusclesJacobian.h"
@@ -81,22 +91,18 @@
 #include "S2M_MusclesActivationDot.h"
 #include "S2M_MusclesExcitationDotBuchanan.h"
 #include "S2M_ChangeShapeFactors.h"
-#include "S2M_parent.h"
+#endif // MODULE_MUSCLES
 
-#include "S2M_inverseDynamics.h"
 #ifdef MODULE_ACTUATORS
 #include "S2M_torqueActivation.h"
-#endif
-#include "S2M_NLeffects.h"
-#include "S2M_forwardDynamics.h"
-#include "S2M_computeQdot.h"
+#endif // MODULE_ACTUATORS
 
 #ifdef _WIN32
 // This is a hack because Eigen can't be dynamically compiled on Windows, while dlib needs consistency in compilation. 
 // Please note that this can result in undefined behavior while using s2mMuscleOptimisation...
 const int USER_ERROR__inconsistent_build_configuration__see_dlib_faq_1_ = 0;
 const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
-#endif
+#endif // _WIN32
 
 std::string toLower(const std::string &str){
     std::string new_str = str;
@@ -513,7 +519,7 @@ void functionHub( int nlhs, mxArray *plhs[],
         return;
     }
 
-
+#ifdef MODULE_MUSCLES
     // Obtenir le nombre de muscles
     if(!toLower(cmd).compare("nmuscles")){
         S2M_nMuscles(nlhs, plhs, nrhs, prhs);
@@ -565,31 +571,6 @@ void functionHub( int nlhs, mxArray *plhs[],
     // Fonction de dynamique inverse
     if(!toLower(cmd).compare("inversedynamics")){
         S2M_inverseDynamics(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-
-#ifdef MODULE_ACTUATORS
-    // Si on veut convertir des activations de torque en torque
-    if(!toLower(cmd).compare("torqueactivation")){
-        S2M_torqueActivation(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-#endif // MODULE_ACTUATORS
-
-
-    if(!toLower(cmd).compare("forwarddynamics")){
-        S2M_forwardDynamics(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-
-    if(!toLower(cmd).compare("computeqdot")){
-        S2M_computeQdot(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-
-    // Fonction de dynamique inverse
-    if(!toLower(cmd).compare("nleffects")){
-        S2M_NLeffects(nlhs, plhs, nrhs, prhs);
         return;
     }
 
@@ -648,6 +629,32 @@ void functionHub( int nlhs, mxArray *plhs[],
         return;
     }
 
+#endif // MODULE_MUSCLES
+
+#ifdef MODULE_ACTUATORS
+    // Si on veut convertir des activations de torque en torque
+    if(!toLower(cmd).compare("torqueactivation")){
+        S2M_torqueActivation(nlhs, plhs, nrhs, prhs);
+        return;
+    }
+#endif // MODULE_ACTUATORS
+
+
+    if(!toLower(cmd).compare("forwarddynamics")){
+        S2M_forwardDynamics(nlhs, plhs, nrhs, prhs);
+        return;
+    }
+
+    if(!toLower(cmd).compare("computeqdot")){
+        S2M_computeQdot(nlhs, plhs, nrhs, prhs);
+        return;
+    }
+
+    // Fonction de dynamique inverse
+    if(!toLower(cmd).compare("nleffects")){
+        S2M_NLeffects(nlhs, plhs, nrhs, prhs);
+        return;
+    }
 
     // Got here, so command is not recognized
     mexErrMsgTxt("Command for interface not recognized.");

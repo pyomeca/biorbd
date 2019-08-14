@@ -16,6 +16,7 @@ Some day, if Eigen can be compile in DLL
 
 // Choice of modules
 #cmakedefine MODULE_ACTUATORS
+#cmakedefine MODULE_MUSCLES
 
 #ifndef _WIN32
 #ifndef NAN

@@ -4,6 +4,7 @@
 #include <rbdl/Dynamics.h>
 
 #include "s2mMusculoSkeletalModel.h"
+#include "biorbdConfig.h"
 #include "Utils/Read.h"
 
 #include "Utils/Vector.h"
@@ -13,23 +14,10 @@
 #include "s2mBone.h"
 #include "s2mBoneMesh.h"
 #include "s2mNodeBone.h"
-#include "Muscles/MuscleNode.h"
 
 #include "s2mIMU.h"
 #include "s2mKalmanReconsIMU.h"
 #include "s2mKalmanReconsMarkers.h"
-
-#include "Muscles/StateDynamics.h"
-#include "Muscles/Muscle.h"
-#include "Muscles/MuscleGroup.h"
-#include "Muscles/HillType.h"
-#include "Muscles/HillTypeThelen.h"
-#include "Muscles/HillTypeSimple.h"
-#include "Muscles/HillTypeThelenFatigable.h"
-#include "Muscles/FatigueState.h"
-#include "Muscles/FatigueDynamicState.h"
-#include "Muscles/FatigueDynamicStateXia.h"
-#include "Muscles/StaticOptimization.h"
 %}
 %include exception.i
 %include <std_shared_ptr.i>
@@ -63,14 +51,6 @@ namespace std {
     %template(MatBiorbdTau) std::vector<std::vector<biorbd::utils::Tau>>;
     %template(VecBiorbdGenCoord) std::vector<biorbd::utils::GenCoord>;
     %template(MatBiorbdGenCoord) std::vector<std::vector<biorbd::utils::GenCoord>>;
-
-    %template(SharedBiorbdMuscle) std::shared_ptr<s2mMuscle>;
-    %template(VecBiorbdMuscleStateDynamics) std::vector<s2mMuscleStateDynamics>;
-    %template(MatBiorbdMuscleStateDynamics) std::vector<std::vector<s2mMuscleStateDynamics>>;
-    %template(VecBiorbdNodeMuscle) std::vector<s2mNodeMuscle>;
-    %template(MatBiorbdNodeMuscle) std::vector<std::vector<s2mNodeMuscle>>;
-
-    %template(SharedBiorbdMuscleFatigueState) std::shared_ptr<s2mMuscleFatigueState>;
 }
 
 // Exposing some useful functions
@@ -120,87 +100,43 @@ namespace std {
         RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
         return QDDot;
     }
-
-    biorbd::utils::Tau muscularJointTorque(
-                const std::vector<s2mMuscleStateDynamics> &state,
-                const biorbd::utils::GenCoord &Q,
-                const biorbd::utils::GenCoord &QDot){
-        return self->muscularJointTorque(*self, state, true, &Q, &QDot);
-    }
-
-    static biorbd::utils::String getMuscleType(const std::shared_ptr<s2mMuscle> m){
-        return m->type();
-    }
 }
-
-// extension of muscle casting
-%extend s2mMuscleHillType{
-    static s2mMuscleHillType& getRef(std::shared_ptr<s2mMuscle> m)
-    {
-        return *(std::dynamic_pointer_cast<s2mMuscleHillType>(m));
-    }
-}
-%extend s2mMuscleHillTypeThelen{
-    static s2mMuscleHillTypeThelen& getRef(std::shared_ptr<s2mMuscle> m)
-    {
-        return *(std::dynamic_pointer_cast<s2mMuscleHillTypeThelen>(m));
-    }
-}
-%extend s2mMuscleHillTypeThelenFatigable{
-    static s2mMuscleHillTypeThelenFatigable& getRef(std::shared_ptr<s2mMuscle> m)
-    {
-        return *(std::dynamic_pointer_cast<s2mMuscleHillTypeThelenFatigable>(m));
-    }
-}
-%extend s2mMuscleHillTypeSimple{
-    static s2mMuscleHillTypeSimple& getRef(std::shared_ptr<s2mMuscle> m)
-    {
-        return *(std::dynamic_pointer_cast<s2mMuscleHillTypeSimple>(m));
-    }
-}
-
-// extension of muscle fatigueState casting
-%extend s2mMuscleFatigueState{
-    static s2mMuscleFatigueState& getRef(std::shared_ptr<s2mMuscleFatigueState> s)
-    {
-        return *s;
-    }
-}
-%extend s2mMuscleFatigueDynamicStateXia{
-    static s2mMuscleFatigueDynamicStateXia& getRef(std::shared_ptr<s2mMuscleFatigueState> s)
-    {
-        return *(std::dynamic_pointer_cast<s2mMuscleFatigueDynamicStateXia>(s));
-    }
-}
-
 
 /* Includes all neceressary files from the API */
 %include "@CMAKE_BINARY_DIR@/include/biorbdConfig.h"
-%include "@CMAKE_SOURCE_DIR@/include/Utils/GenCoord.h"
+
+%apply std::string { biorbd::utils::String };
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Path.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Read.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Vector.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/GenCoord.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Tau.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Matrix.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Attitude.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Node.h"
 //%include "Utils/NodeAttitude.h"
 //%include "Utils/Quaternion.h"
 //%include "Utils/Node.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mMarkers.h"
-
-//%include "s2mPatch.h"
 //%include "Utils/Time.h"
 //%include "Utils/Timer.h"
 //%include "Utils/Benchmark.h"
-%apply std::string { biorbd::utils::String };
-//%include "Utils/Equation.h"
-//%include "Utils/IfStream.h"
-//%include "Utils/Error.h"
-%include "@CMAKE_SOURCE_DIR@/include/Utils/Path.h"
-%include "@CMAKE_SOURCE_DIR@/include/Utils/Read.h"
 //%include "Utils/Integrator.h"
+//%include "Utils/Writer.h"
 
-%include "@CMAKE_SOURCE_DIR@/include/s2mJoints.h"
-//%include "s2mJoint.h"
+%include "@CMAKE_SOURCE_DIR@/include/s2mMarkers.h"
+//%include "s2mPatch.h"
 %include "@CMAKE_SOURCE_DIR@/include/s2mContacts.h"
+%include "@CMAKE_SOURCE_DIR@/include/s2mNodeBone.h"
+//%include "s2mBone.h"
+//%include "s2mBoneCaracteristics.h"
+//%include "s2mBoneMesh.h"
+//%include "s2mIMU.h"
+//%include "s2mIMUs.h"
+//%include "s2mKalmanRecons.h"
+//%include "s2mKalmanReconsIMU.h"
+%include "@CMAKE_SOURCE_DIR@/include/s2mKalmanReconsMarkers.h"
+//%include "s2mIMU_Unity_Optim.h"
+
 
 //%include "Actuator.h"
 //%include "ActuatorConstant.h"
@@ -209,57 +145,10 @@ namespace std {
 //%include "ActuatorLinear.h"
 //%include "Actuators.h"
 
-%include "@CMAKE_SOURCE_DIR@/include/Utils/Node.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mNodeBone.h"
-//%include "s2mBone.h"
-//%include "s2mBoneCaracteristics.h"
-//%include "s2mBoneMesh.h"
+#cmakedefine MODULE_MUSCLES "%include biorbd_muscles.i"
 
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/MuscleNode.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/Compound.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscle.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/Fatigable.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillType.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeThelen.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeThelenFatigable.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeSimple.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscles.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/MuscleGroup.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/Caracteristics.h"
-
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueParameters.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueState.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueDynamicState.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueDynamicStateXia.h"
-//%include "Muscles/Force.h"
-//%include "Muscles/ForceFromInsertion.h"
-//%include "Muscles/ForceFromOrigin.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/Geometry.h"
-//%include "Muscles/Mesh.h"
-//%include "Muscles/PathChanger.h"
-//%include "Muscles/PathChangers.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/State.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/StateDynamics.h"
-//%include "Muscles/StateDynamicsBuchanan.h"
-
-//%include "s2mIMU.h"
-//%include "s2mIMUs.h"
-
-
-//%include "s2mNodeWrap.h"
-//%include "s2mViaPoint.h"
-//%include "s2mWrappingObject.h"
-//%include "s2mWrappingSphere.h"
-//%include "s2mWrappingCylinder.h"
-//%include "Utils/Writer.h"
-
-//%include "s2mKalmanRecons.h"
-//%include "s2mKalmanReconsIMU.h"
-%include "@CMAKE_SOURCE_DIR@/include/s2mKalmanReconsMarkers.h"
-
-//%include "s2mIMU_Unity_Optim.h"
-
+//%include "s2mJoint.h"
+%include "@CMAKE_SOURCE_DIR@/include/s2mJoints.h"
 %include "@CMAKE_SOURCE_DIR@/include/s2mMusculoSkeletalModel.h"
 
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/StaticOptimization.h"
 
