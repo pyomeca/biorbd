@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <mex.h>
-#include "Utils/Read.h"
+#include "ModelReader.h"
 #include "class_handle.h"
 
 void Matlab_new( int nlhs, mxArray *plhs[],
@@ -27,10 +27,10 @@ void Matlab_new( int nlhs, mxArray *plhs[],
 
     // Loader le modèle musculosquelettique
     // Definition des variables globales du modele
-    if (biorbd::utils::Read::is_readable( filepath )){
+    if (biorbd::Reader::is_readable( filepath )){
         try{
             plhs[0] = convertPtr2Mat<biorbd::Model>(
-                        new biorbd::Model(biorbd::utils::Read::readModelFile(filepath)));
+                        new biorbd::Model(biorbd::Reader::readModelFile(filepath)));
         }
         catch (std::string m){
             mexErrMsgTxt(m.c_str());

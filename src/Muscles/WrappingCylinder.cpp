@@ -39,7 +39,7 @@ void biorbd::muscles::WrappingCylinder::wrapPoints(
 
 biorbd::utils::Attitude biorbd::muscles::WrappingCylinder::RT(
         biorbd::rigidbody::Joints &m,
-        const biorbd::utils::GenCoord& Q,
+        const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const bool &updateKin){
 
     // Récupérer la matrice de rototrans du cylindre dans le global
@@ -75,7 +75,7 @@ void biorbd::muscles::WrappingCylinder::setLength(double val)
 
 void biorbd::muscles::WrappingCylinder::wrapPoints(
         biorbd::rigidbody::Joints& m,
-        const biorbd::utils::GenCoord& Q,
+        const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::muscles::MuscleNode& p1_bone,
         const biorbd::muscles::MuscleNode& p2_bone,
         biorbd::muscles::MuscleNode& p1,

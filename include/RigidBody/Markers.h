@@ -9,11 +9,11 @@
 namespace biorbd {
 namespace utils {
 class Matrix;
-class GenCoord;
 }
 
 namespace rigidbody {
 class Joints;
+class GeneralizedCoordinates;
 class NodeBone;
 
 class BIORBD_API Markers
@@ -42,13 +42,13 @@ public:
 
     static biorbd::rigidbody::NodeBone Tags(
             biorbd::rigidbody::Joints& model,
-            const biorbd::utils::GenCoord& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::NodeBone& node,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un marqueur ind idx
     biorbd::rigidbody::NodeBone Tags(
             biorbd::rigidbody::Joints& model,
-            const biorbd::utils::GenCoord& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const unsigned int& idx,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un marqueur ind idx
@@ -57,34 +57,34 @@ public:
             bool removeAxis=true); // Retour d'un marqueur ind idx
     std::vector<biorbd::rigidbody::NodeBone> Tags(
             biorbd::rigidbody::Joints& model,
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un STL vector de tous les marqueurs
     std::vector<biorbd::rigidbody::NodeBone> Tags(
             bool removeAxis=true); // Retour d'un STL vector de tous les marqueurs
     biorbd::rigidbody::NodeBone TagsVelocity(
             biorbd::rigidbody::Joints& model,
-            const biorbd::utils::GenCoord&,
-            const biorbd::utils::GenCoord &Qdot,
+            const biorbd::rigidbody::GeneralizedCoordinates&,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             const unsigned int& idx,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un marqueur ind idx
     std::vector<biorbd::rigidbody::NodeBone> TagsVelocity(
             biorbd::rigidbody::Joints& model,
-            const biorbd::utils::GenCoord &Q,
-            const biorbd::utils::GenCoord &Qdot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un STL vector de tous les marqueurs
     std::vector<biorbd::rigidbody::NodeBone> technicalTags(
             biorbd::rigidbody::Joints& model,
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un STL vector de tous les marqueurs
     std::vector<biorbd::rigidbody::NodeBone> technicalTags(
             bool removeAxis=true); // Retour d'un STL vector de tous les marqueurs
     std::vector<biorbd::rigidbody::NodeBone> anatomicalTags(
             biorbd::rigidbody::Joints& model,
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un STL vector de tous les marqueurs
     std::vector<biorbd::rigidbody::NodeBone> anatomicalTags(
@@ -95,7 +95,7 @@ public:
             bool removeAxis=true); // Retour d'un STL vector de tous les marqueurs anatomiques dans leur body
     std::vector<biorbd::rigidbody::NodeBone> segmentTags(
             biorbd::rigidbody::Joints& model,
-            const biorbd::utils::GenCoord&,
+            const biorbd::rigidbody::GeneralizedCoordinates&,
             const unsigned int& idx,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un STL vector de tous les marqueurs d'un segment
@@ -112,17 +112,17 @@ public:
     unsigned int nAnatTags(); // Retourne le nombre de marqueurs anatomiques
     std::vector<biorbd::utils::Matrix> TagsJacobian(
             biorbd::rigidbody::Joints& model,
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxis=true,
             bool updateKin = true); // Retourne la jacobienne des Tags
     std::vector<biorbd::utils::Matrix> TechnicalTagsJacobian(
             biorbd::rigidbody::Joints& model,
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxis=true,
             bool updateKin = true); // Retourne la jacobienne des Tags pour les marqueurs techniques
     static biorbd::utils::Matrix TagsJacobian(
             biorbd::rigidbody::Joints& model,
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::utils::String& parentName,
             const Eigen::Vector3d& p,
             bool updateKin); // Jacobienne d'un marqueur au choix
@@ -130,7 +130,7 @@ public:
 protected:
     std::vector<biorbd::utils::Matrix> TagsJacobian(
             biorbd::rigidbody::Joints& model,
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxis,
             bool updateKin,
             bool lookForTechnical); // Retourne la jacobienne des Tags

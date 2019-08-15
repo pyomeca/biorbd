@@ -1,8 +1,8 @@
 #ifndef MATLAB_PROCESS_ARGUMENTS_H
 #define MATLAB_PROCESS_ARGUMENTS_H
 #include <mex.h>
-#include "Utils/GenCoord.h"
-#include "Utils/Tau.h"
+#include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/Bone.h"
 #include "RigidBody/IMU.h"
 #include "RigidBody/NodeBone.h"
@@ -160,7 +160,7 @@ std::vector<std::vector<biorbd::utils::Attitude>> getParameterAllIMUs(const mxAr
 }
 
 
-biorbd::utils::GenCoord getVector(const mxArray*prhs[], unsigned int idx, std::string type = ""){
+biorbd::rigidbody::GeneralizedCoordinates getVector(const mxArray*prhs[], unsigned int idx, std::string type = ""){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -185,14 +185,14 @@ biorbd::utils::GenCoord getVector(const mxArray*prhs[], unsigned int idx, std::s
     double *q=mxGetPr(prhs[idx]); //matrice de position
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    biorbd::utils::GenCoord vect(Eigen::VectorXd::Zero (static_cast<unsigned int>(length)));
+    biorbd::rigidbody::GeneralizedCoordinates vect(Eigen::VectorXd::Zero (static_cast<unsigned int>(length)));
     for (unsigned int i=0; i<length; i++)
         vect(i) = q[i];
 
     return vect;
 }
 
-biorbd::utils::GenCoord getVector(const mxArray*prhs[], unsigned int idx, unsigned int length, std::string type = ""){
+biorbd::rigidbody::GeneralizedCoordinates getVector(const mxArray*prhs[], unsigned int idx, unsigned int length, std::string type = ""){
     mwSize m=mxGetM(prhs[idx]); // line
     // Get the number of elements in the input argument
     if ( !(m==length || m==1) ){ // on permet le nombre juste ou juste une valeur qui sera dupliquée
@@ -207,7 +207,7 @@ Eigen::Vector3d getVector3d(const mxArray*prhs[], unsigned int idx){
     return getVector(prhs, idx, 3, "Vector3d").vector();
 }
 
-std::vector<biorbd::utils::GenCoord> getParameterQ(const mxArray*prhs[], unsigned int idx, unsigned int nDof, std::string type = "q"){
+std::vector<biorbd::rigidbody::GeneralizedCoordinates> getParameterQ(const mxArray*prhs[], unsigned int idx, unsigned int nDof, std::string type = "q"){
 
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
@@ -230,9 +230,9 @@ std::vector<biorbd::utils::GenCoord> getParameterQ(const mxArray*prhs[], unsigne
     double *q=mxGetPr(prhs[idx]); //matrice de position
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    std::vector<biorbd::utils::GenCoord> Q;
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q;
     for (unsigned int j=0; j<nFrames; ++j){
-        biorbd::utils::GenCoord Q_tp(Eigen::VectorXd::Zero(nDof));
+        biorbd::rigidbody::GeneralizedCoordinates Q_tp(Eigen::VectorXd::Zero(nDof));
         for (unsigned int i=0; i<nDof; i++)
             Q_tp[i] = q[j*nDof+i];
 
@@ -241,27 +241,27 @@ std::vector<biorbd::utils::GenCoord> getParameterQ(const mxArray*prhs[], unsigne
 
     return Q;
 }
-std::vector<biorbd::utils::GenCoord> getParameterQddot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
+std::vector<biorbd::rigidbody::GeneralizedCoordinates> getParameterQddot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
     return getParameterQ(prhs, idx, nDof, "qddot");
 }
-std::vector<biorbd::utils::GenCoord> getParameterQdot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
+std::vector<biorbd::rigidbody::GeneralizedCoordinates> getParameterQdot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
     return getParameterQ(prhs, idx, nDof, "qdot");
 }
-std::vector<biorbd::utils::Tau> getParameterTau(const mxArray*prhs[], unsigned int idx, unsigned int nControl, unsigned int nRoot){
-    std::vector<biorbd::utils::GenCoord> AllTau_tp = getParameterQ(prhs, idx, nControl, "tau");
-    std::vector<biorbd::utils::Tau> AllTau;
+std::vector<biorbd::rigidbody::GeneralizedTorque> getParameterGeneralizedTorque(const mxArray*prhs[], unsigned int idx, unsigned int nControl, unsigned int nRoot){
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> AllGeneralizedTorque_tp = getParameterQ(prhs, idx, nControl, "GeneralizedTorque");
+    std::vector<biorbd::rigidbody::GeneralizedTorque> AllGeneralizedTorque;
 
-    for (unsigned int j=0; j<AllTau_tp.size(); ++j){
-        biorbd::utils::Tau Tau_tp(Eigen::VectorXd::Zero(nControl+nRoot));
+    for (unsigned int j=0; j<AllGeneralizedTorque_tp.size(); ++j){
+        biorbd::rigidbody::GeneralizedTorque GeneralizedTorque_tp(Eigen::VectorXd::Zero(nControl+nRoot));
 
         for (unsigned int i=0; i<nRoot; ++i) // Root segment
-            Tau_tp(i) =  0;
+            GeneralizedTorque_tp(i) =  0;
         for (unsigned int i=nRoot; i < nControl+nRoot; ++i) // Everything else
-            Tau_tp(i) = (*(AllTau_tp.begin()+j))[i-nRoot];
+            GeneralizedTorque_tp(i) = (*(AllGeneralizedTorque_tp.begin()+j))[i-nRoot];
 
-        AllTau.push_back(Tau_tp);
+        AllGeneralizedTorque.push_back(GeneralizedTorque_tp);
     }
-    return AllTau;
+    return AllGeneralizedTorque;
 }
 
 std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> getForcePlate(const mxArray*prhs[], unsigned int idx){

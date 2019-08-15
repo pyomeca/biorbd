@@ -19,7 +19,7 @@ void Matlab_massMatrix( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
 
     // Create a matrix for the return argument
     mwSize ndim(3);
@@ -30,7 +30,7 @@ void Matlab_massMatrix( int, mxArray *plhs[],
     unsigned int cmp(0);
     // Trouver la matrice de masse
     RigidBodyDynamics::Math::MatrixNd Mass(nQ, nQ);
-    for (std::vector<biorbd::utils::GenCoord>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it){
+    for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it){
         Mass.setZero();
         RigidBodyDynamics::UpdateKinematicsCustom(*model, &(*Q_it), nullptr, nullptr);
         RigidBodyDynamics::CompositeRigidBodyAlgorithm(*model, *Q_it, Mass, false);

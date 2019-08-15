@@ -6,7 +6,7 @@
 #include <rbdl/Dynamics.h>
 #include "Utils/Error.h"
 #include "Utils/String.h"
-#include "Utils/GenCoord.h"
+#include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/Joints.h"
 
 biorbd::utils::Integrator::Integrator(){
@@ -18,9 +18,9 @@ void biorbd::utils::Integrator::operator() (
         state_type &dxdt ,
         const double ){
     // Équation différentielle : x/xdot => xdot/xddot
-    GenCoord Q(m_nbre);
-    GenCoord QDot(m_nbre);
-    GenCoord QDDot(Eigen::VectorXd::Zero(m_nbre));
+    biorbd::rigidbody::GeneralizedCoordinates Q(m_nbre);
+    biorbd::rigidbody::GeneralizedCoordinates QDot(m_nbre);
+    biorbd::rigidbody::GeneralizedCoordinates QDDot(Eigen::VectorXd::Zero(m_nbre));
     for (unsigned int i=0; i<m_nbre; i++){
         Q(i) = x[i];
         QDot(i) = x[i+m_nbre];
@@ -46,8 +46,8 @@ void biorbd::utils::Integrator::showAll(){
     }
 }
 
-biorbd::utils::GenCoord biorbd::utils::Integrator::getX(const unsigned int &idx){
-    GenCoord out(m_nbre*2);
+biorbd::rigidbody::GeneralizedCoordinates biorbd::utils::Integrator::getX(const unsigned int &idx){
+    biorbd::rigidbody::GeneralizedCoordinates out(m_nbre*2);
     biorbd::utils::Error::error(idx <= m_steps, "Trying to get Q outside range");
     for (unsigned int i=0; i<m_nbre*2; i++){
         out(i) = m_x_vec[idx][i];
@@ -57,7 +57,7 @@ biorbd::utils::GenCoord biorbd::utils::Integrator::getX(const unsigned int &idx)
 
 void biorbd::utils::Integrator::integrate(
         RigidBodyDynamics::Model *model,
-        const GenCoord &v,
+        const biorbd::rigidbody::GeneralizedCoordinates &v,
         const Eigen::VectorXd& u,
         const double &t0,
         const double &tEnd,

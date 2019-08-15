@@ -16,7 +16,7 @@ void Matlab_segmentCOM( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
     // Recevoir le numéro du segment (optionnel)
     int i(0);
     if (nrhs==4)

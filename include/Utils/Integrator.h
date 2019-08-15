@@ -11,10 +11,10 @@ typedef std::vector< double > state_type;
 namespace biorbd {
 namespace rigidbody {
 class Joints;
+class GeneralizedCoordinates;
 }
 
 namespace utils {
-class GenCoord;
 
 class BIORBD_API Integrator
 {
@@ -23,14 +23,14 @@ public:
 
     void integrate(
             RigidBodyDynamics::Model*,
-            const biorbd::utils::GenCoord&,
+            const biorbd::rigidbody::GeneralizedCoordinates&,
             const Eigen::VectorXd&,
             const double&,
             const double&,
             const double&);
     void operator() ( const state_type &x , state_type &dxdt , const double t );
 
-    biorbd::utils::GenCoord getX(const unsigned int&); // Return the Q for a given step
+    biorbd::rigidbody::GeneralizedCoordinates getX(const unsigned int&); // Return the Q for a given step
     void showAll(); // Show every steps with every dof
     unsigned int steps() const {return m_steps+1;}
 protected:

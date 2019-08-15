@@ -12,11 +12,11 @@ class Attitude;
 class Integrator;
 class Matrix;
 class Node;
-class GenCoord;
-class Tau;
 }
 
 namespace rigidbody {
+class GeneralizedCoordinates;
+class GeneralizedTorque;
 class Markers;
 class NodeBone;
 class Patch;
@@ -51,7 +51,7 @@ public:
 
     // -- INFORMATION ON THE MODEL -- //
     int GetBodyBiorbdId(const biorbd::utils::String &) const;
-    unsigned int nbTau() const;
+    unsigned int nbGeneralizedTorque() const;
     unsigned int nbBone() const; // Return the actual number of segments
     unsigned int nbDof() const;
     unsigned int getDofIndex(
@@ -84,58 +84,58 @@ public:
     // -- INTEGRATOR INTERFACE -- //
     void UpdateKinematicsCustom(
             Joints &model,
-            const biorbd::utils::GenCoord *Q = nullptr,
-            const biorbd::utils::GenCoord *Qdot = nullptr,
-            const biorbd::utils::GenCoord *Qddot = nullptr);
+            const biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
+            const biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,
+            const biorbd::rigidbody::GeneralizedCoordinates *Qddot = nullptr);
     void integrateKinematics(
-            const biorbd::utils::GenCoord& Q,
-            const biorbd::utils::GenCoord& QDot,
-            const biorbd::utils::Tau& Tau); // Process integration (Q, Qdot, effecteurs)
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates& QDot,
+            const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorque); // Process integration (Q, Qdot, effecteurs)
     void getIntegratedKinematics(
             const unsigned int& step,
-            biorbd::utils::GenCoord& Q,
-            biorbd::utils::GenCoord& Qdot);  // Put in a VectorNd the Qs a time t
+            biorbd::rigidbody::GeneralizedCoordinates& Q,
+            biorbd::rigidbody::GeneralizedCoordinates& Qdot);  // Put in a VectorNd the Qs a time t
     unsigned int nbInterationStep() const;
     // -------------------------- //
 
 
     // -- POSITION INTERFACE OF THE MODEL -- //
     std::vector<biorbd::utils::Attitude> globalJCS(
-            const biorbd::utils::GenCoord &,
+            const biorbd::rigidbody::GeneralizedCoordinates &,
             const bool updateKin = true); // Return the JCSs in global coordinate system for the given q
     biorbd::utils::Attitude globalJCS(
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::utils::String &parentName,
             const bool updateKin = true);  // Return the JCS for segment i in global coordinate system for the given q
     biorbd::utils::Attitude globalJCS(
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const unsigned int i,
             const bool updateKin = true);  // Return the JCS for segment i in global coordinate system for the given q
     std::vector<biorbd::utils::Attitude> localJCS() const; // Return the JCSs in global coordinate system for the given q
     biorbd::utils::Attitude localJCS(const biorbd::utils::String &) const;  // Return the JCS for segment named String in parent coordinate system
     biorbd::utils::Attitude localJCS(const unsigned int i) const;  // Return the JCS for segment i in parent coordinate system
     biorbd::rigidbody::NodeBone projectPoint(
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::NodeBone&, bool updateKin=true); // Projeter selon les axes/plan déterminé déjà dans nodeBone
     biorbd::rigidbody::NodeBone projectPoint(
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const Eigen::Vector3d &v,
             int boneIdx,
             const biorbd::utils::String& axesToRemove,
             bool updateKin=true); // Projeter un point dans le repère global
     std::vector<biorbd::rigidbody::NodeBone>  projectPoint(
             const biorbd::rigidbody::Markers &marks,
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const std::vector<biorbd::rigidbody::NodeBone> &v,
             bool updateKin=true); //Marqueurs projetés de points correspondant aux marqueurs du modèle (le vector doit être égal au nombre de marqueur et dans l'ordre donné par Tags)
     biorbd::utils::Matrix projectPointJacobian(
             Joints& model,
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             biorbd::rigidbody::NodeBone p,
             bool updateKin);
     biorbd::utils::Matrix projectPointJacobian(
             Joints& model,
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const Eigen::Vector3d &v,
             int boneIdx,
             const biorbd::utils::String& axesToRemove,
@@ -143,7 +143,7 @@ public:
     std::vector<biorbd::utils::Matrix> projectPointJacobian(
             Joints& model,
             const biorbd::rigidbody::Markers &marks,
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const std::vector<biorbd::rigidbody::NodeBone> &v,
             bool updateKin); // Matrice jacobienne des marqueurs projetés de points correspondant aux marqueurs du modèle (le vector doit être égal au nombre de marqueur et dans l'ordre donné par Tags et dans le repère global)
     // ------------------------------------- //
@@ -152,53 +152,53 @@ public:
     // -- MASS RELATED STUFF -- //
     double mass() const; // retourne la masse de tous les segments
     biorbd::utils::Node CoM(
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool updateKin=true); // Position du centre de masse
     std::vector<biorbd::rigidbody::NodeBone> CoMbySegment(
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool updateKin=true); // Position du centre de masse de chaque segment
     biorbd::rigidbody::NodeBone CoMbySegment(
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const unsigned int i,
             bool updateKin=true); // Position du centre de masse du segment i
     RigidBodyDynamics::Math::Vector3d CoMdot(
-            const biorbd::utils::GenCoord &Q,
-            const biorbd::utils::GenCoord &Qdot); // Vitesse du CoM
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot); // Vitesse du CoM
     RigidBodyDynamics::Math::Vector3d CoMddot(
-            const biorbd::utils::GenCoord &Q,
-            const biorbd::utils::GenCoord &Qdot,
-            const biorbd::utils::GenCoord &Qddot); // Acceleration du CoM
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qddot); // Acceleration du CoM
     std::vector<RigidBodyDynamics::Math::Vector3d> CoMdotBySegment(
-            const biorbd::utils::GenCoord &Q,
-            const biorbd::utils::GenCoord &Qdot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             bool updateKin=true); // vitesse du centre de masse de chaque segment
     RigidBodyDynamics::Math::Vector3d CoMdotBySegment(
-            const biorbd::utils::GenCoord &Q,
-            const biorbd::utils::GenCoord &Qdot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             const unsigned int i,
             bool updateKin=true); // vitesse du centre de masse du segment i
     std::vector<RigidBodyDynamics::Math::Vector3d> CoMddotBySegment(
-            const biorbd::utils::GenCoord &Q,
-            const biorbd::utils::GenCoord &Qdot,
-            const biorbd::utils::GenCoord &Qddot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
             bool updateKin=true); // accélération du centre de masse de chaque segment
     RigidBodyDynamics::Math::Vector3d CoMddotBySegment(
-            const biorbd::utils::GenCoord &Q,
-            const biorbd::utils::GenCoord &Qdot,
-            const biorbd::utils::GenCoord &Qddot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
             const unsigned int i,
             bool updateKin=true); // accélération du centre de masse du segment i
     biorbd::utils::Matrix CoMJacobian(
-            const biorbd::utils::GenCoord &Q); // Jacobienne
+            const biorbd::rigidbody::GeneralizedCoordinates &Q); // Jacobienne
     // ------------------------ //
 
 
     // -- MESH OF THE MODEL -- //
     std::vector<std::vector<biorbd::rigidbody::NodeBone>> meshPoints(
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const bool updateKin = true);
     std::vector<biorbd::rigidbody::NodeBone> meshPoints(
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const unsigned int& idx,
             const bool updateKin = true);
     std::vector<std::vector<biorbd::rigidbody::Patch>> meshPatch() const;
@@ -210,31 +210,31 @@ public:
 
     // -- ANGULAR MOMENTUM FUNCTIONS -- //
     RigidBodyDynamics::Math::Vector3d angularMomentum(
-            const biorbd::utils::GenCoord &Q,
-            const biorbd::utils::GenCoord &Qdot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             const bool updateKin = true); // Wrapper pour le moment angulaire
     // Réimplémentation de la fonction CalcAngularMomentum car elle a une erreur (inversion du calcul du com)
     RigidBodyDynamics::Math::Vector3d CalcAngularMomentum (
             Joints &model,
-            const biorbd::utils::GenCoord &Q,
-            const biorbd::utils::GenCoord &Qdot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             bool update_kinematics);
     RigidBodyDynamics::Math::Vector3d CalcAngularMomentum (
             Joints &model,
-            const biorbd::utils::GenCoord &Q,
-            const biorbd::utils::GenCoord &Qdot,
-            const biorbd::utils::GenCoord &Qddot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
             bool update_kinematics);
     std::vector<RigidBodyDynamics::Math::Vector3d> CalcSegmentsAngularMomentum (
             Joints &model,
-            const biorbd::utils::GenCoord &Q,
-            const biorbd::utils::GenCoord &Qdot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             bool update_kinematics);
     std::vector<RigidBodyDynamics::Math::Vector3d> CalcSegmentsAngularMomentum (
             Joints &model,
-            const biorbd::utils::GenCoord &Q,
-            const biorbd::utils::GenCoord &Qdot,
-            const biorbd::utils::GenCoord &Qddot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
             bool update_kinematics);
     // -------------------------------- //
 
@@ -250,15 +250,15 @@ public:
          Joints &model,
          const RigidBodyDynamics::Math::VectorNd &Q,
          const RigidBodyDynamics::Math::VectorNd &QDot,
-         const RigidBodyDynamics::Math::VectorNd &Tau,
+         const RigidBodyDynamics::Math::VectorNd &GeneralizedTorque,
          RigidBodyDynamics::ConstraintSet &CS,
          RigidBodyDynamics::Math::VectorNd &QDDot
          );
     void computeQdot(
             Joints &model,
-            const biorbd::utils::GenCoord &Q,
-            const biorbd::utils::GenCoord &QDot,
-            biorbd::utils::GenCoord &QDotOut); // Cette fonction retourne la dérivée de Q en fonction de Qdot (Si pas de Quaternion, QDot est directement retourné)
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &QDot,
+            biorbd::rigidbody::GeneralizedCoordinates &QDotOut); // Cette fonction retourne la dérivée de Q en fonction de Qdot (Si pas de Quaternion, QDot est directement retourné)
 
 protected:
     std::vector<biorbd::rigidbody::Bone> m_bones; // Toutes les articulations
@@ -276,7 +276,7 @@ protected:
     double m_totalMass; // Masse de tous les corps
     RigidBodyDynamics::Math::SpatialTransform CalcBodyWorldTransformation(
             Joints &model,
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const unsigned int body_id,
             bool update_kinematics); // Calculate the JCS in global
     std::vector<biorbd::rigidbody::NodeBone> meshPoints(

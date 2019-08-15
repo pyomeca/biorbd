@@ -18,11 +18,11 @@ void Matlab_CoMddot( int nlhs, mxArray *plhs[],
     unsigned int nQddot = model->nbQddot(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
     // Recevoir Qddot
-    std::vector<biorbd::utils::GenCoord> QDDot = getParameterQddot(prhs, 4, nQddot);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDDot = getParameterQddot(prhs, 4, nQddot);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(Q.size());

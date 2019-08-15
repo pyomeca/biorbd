@@ -10,13 +10,13 @@ namespace biorbd { namespace utils {
 class Attitude;
 class Node;
 class Vector;
-class GenCoord;
 class String;
 }}
 
 namespace biorbd {
 namespace rigidbody {
 class Joints;
+class GeneralizedCoordinates;
 
 class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
 {
@@ -55,7 +55,7 @@ public:
     biorbd::utils::String name(unsigned int i);
     std::vector<biorbd::utils::Node> constraintsInGlobal(
             biorbd::rigidbody::Joints& m,
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const bool updateKin); // Retourne la position des contraintes dans le rep`ere global
 
     // Set and get

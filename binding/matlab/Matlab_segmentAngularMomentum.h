@@ -18,9 +18,9 @@ void Matlab_segmentAngularMomentum( int, mxArray *plhs[],
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir QDot
-    std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
 
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));
     if (QDot.size() != nFrame)

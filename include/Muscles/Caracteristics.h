@@ -21,8 +21,8 @@ public:
             const double &pennAngle = 0,
             const biorbd::muscles::State& stateMax = biorbd::muscles::State(),
             const biorbd::muscles::FatigueParameters& fatigueParameters = biorbd::muscles::FatigueParameters(),
-            const double tauAct = 0.01,
-            const double tauDeact = 0.04,
+            const double GeneralizedTorqueAct = 0.01,
+            const double GeneralizedTorqueDeact = 0.04,
             const double &minAct =.01);
     Caracteristics(const Caracteristics&);
     Caracteristics& operator=(const Caracteristics&);
@@ -37,10 +37,10 @@ public:
 
     void minActivation(double val);
     double minActivation() const;
-    void tauActivation(double val);
-    double tauActivation() const;
-    void tauDeactivation(double val);
-    double tauDeactivation() const;
+    void GeneralizedTorqueActivation(double val);
+    double GeneralizedTorqueActivation() const;
+    void GeneralizedTorqueDeactivation(double val);
+    double GeneralizedTorqueDeactivation() const;
 
     void setOptimalLength(const double &val);
     virtual void setForceIsoMax(const double &val);
@@ -63,8 +63,8 @@ protected:
 
     // Parametre d'activation
     double m_minActivation; // Activation minimale
-    double m_tauActivation; // Time activation constant
-    double m_tauDeactivation; // Time deactivation constant
+    double m_GeneralizedTorqueActivation; // Time activation constant
+    double m_GeneralizedTorqueDeactivation; // Time deactivation constant
 
     // Fatigue parameters
     biorbd::muscles::FatigueParameters m_fatigueParameters; // Fatigue parameters

@@ -26,23 +26,23 @@ public:
     // Get and set
     double length(
             biorbd::rigidbody::Joints&,
-            const biorbd::utils::GenCoord&, int = 2);
+            const biorbd::rigidbody::GeneralizedCoordinates&, int = 2);
     double musculoTendonLength(
             biorbd::rigidbody::Joints&,
-            const biorbd::utils::GenCoord&, int = 2);
+            const biorbd::rigidbody::GeneralizedCoordinates&, int = 2);
     double velocity(
             biorbd::rigidbody::Joints&,
-            const biorbd::utils::GenCoord&,
-            const biorbd::utils::GenCoord&,
+            const biorbd::rigidbody::GeneralizedCoordinates&,
+            const biorbd::rigidbody::GeneralizedCoordinates&,
             const bool = true);
     void updateOrientations(
             biorbd::rigidbody::Joints &m,
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             int updateKin = 2); // Update de la position de ce muscle
     void updateOrientations(
             biorbd::rigidbody::Joints &m,
-            const biorbd::utils::GenCoord &Q,
-            const biorbd::utils::GenCoord &Qdot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             int updateKin = 2); // Update de la position de ce muscle
     void updateOrientations(
             std::vector<biorbd::muscles::MuscleNode>& musclePointsInGlobal,
@@ -50,7 +50,7 @@ public:
     void updateOrientations(
             std::vector<biorbd::muscles::MuscleNode>& musclePointsInGlobal,
             biorbd::utils::Matrix& jacoPointsInGlobal,
-            const biorbd::utils::GenCoord &Qdot); // Update de la position de ce muscle
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot); // Update de la position de ce muscle
 
     const biorbd::muscles::Geometry& position() const;
     const biorbd::muscles::Caracteristics& caract() const;
@@ -58,7 +58,7 @@ public:
     void setCaract(const biorbd::muscles::Caracteristics &val);
     const std::vector<biorbd::muscles::MuscleNode>& musclesPointsInGlobal(
             biorbd::rigidbody::Joints &j,
-            const biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const bool updateKin = true);
     void forceIsoMax(double);
 

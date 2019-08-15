@@ -15,14 +15,14 @@ void Matlab_muscleJointTorqueFromMuscleForce( int, mxArray *plhs[],
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
-    unsigned int nTau = model->nbTau(); // Get the number of DoF
+    unsigned int nGeneralizedTorque = model->nbGeneralizedTorque(); // Get the number of DoF
     unsigned int nRoot = model->nbRoot(); // Get the number of DoF
     unsigned int nMuscleTotal = model->nbMuscleTotal();
 
     // Recevoir Q
-    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
     // Recevoir muscleStates
     std::vector<Eigen::VectorXd> Fm = getParameterMuscleForceNorm(prhs,4,nMuscleTotal);
 
@@ -42,22 +42,22 @@ void Matlab_muscleJointTorqueFromMuscleForce( int, mxArray *plhs[],
 
     // Create a matrix for the return argument
     mwSize dims[2];
-    dims[0] = nTau;
+    dims[0] = nGeneralizedTorque;
     dims[1] = nFrame;
     plhs[0] = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
-    double *Tau = mxGetPr(plhs[0]);
+    double *GeneralizedTorque = mxGetPr(plhs[0]);
 
     // Remplir le output
     for (unsigned int i=0; i<nFrame; ++i){
-        biorbd::utils::Tau muscleTorque;
+        biorbd::rigidbody::GeneralizedTorque muscleTorque;
         if (updateKin)
             muscleTorque = model->muscularJointTorque(*model, *(Fm.begin()+i), updateKin, &(*(Q.begin()+i)), &(*(QDot.begin()+i)));
         else
             muscleTorque = model->muscularJointTorque(*model, *(Fm.begin()+i), updateKin);
 
-        // distribuer les Tau
-        for (unsigned int j=0; j<nTau; ++j){
-            Tau[i*nTau+j] = muscleTorque(j+nRoot);
+        // distribuer les GeneralizedTorque
+        for (unsigned int j=0; j<nGeneralizedTorque; ++j){
+            GeneralizedTorque[i*nGeneralizedTorque+j] = muscleTorque(j+nRoot);
         }
 
     }

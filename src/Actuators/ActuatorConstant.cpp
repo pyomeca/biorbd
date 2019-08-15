@@ -2,7 +2,7 @@
 #include "Actuators/ActuatorConstant.h"
 
 #include "Utils/String.h"
-#include "Utils/GenCoord.h"
+#include "RigidBody/GeneralizedCoordinates.h"
 
 biorbd::actuator::ActuatorConstant::ActuatorConstant(
         int direction,

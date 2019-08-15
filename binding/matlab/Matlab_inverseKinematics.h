@@ -19,7 +19,7 @@ void Matlab_inverseKinematics( int, mxArray *plhs[],
     std::vector<std::vector<biorbd::rigidbody::NodeBone>> markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechTags()));
 
     // Recevoir Qinit
-    biorbd::utils::GenCoord Qinit = *getParameterQ(prhs, 3, nQ).begin();
+    biorbd::rigidbody::GeneralizedCoordinates Qinit = *getParameterQ(prhs, 3, nQ).begin();
 
     bool removeAxes(true);
     if (nrhs >= 5)
@@ -31,7 +31,7 @@ void Matlab_inverseKinematics( int, mxArray *plhs[],
 
     // Faire la cinématique inverse a chaque instant
     for (unsigned int i=0; i<markersOverTime.size(); ++i){
-        biorbd::utils::GenCoord Q(nQ);
+        biorbd::rigidbody::GeneralizedCoordinates Q(nQ);
         Q.setZero();
 
         // Faire la cinématique inverse

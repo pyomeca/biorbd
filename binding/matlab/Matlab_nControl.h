@@ -6,7 +6,7 @@
 #include "class_handle.h"
 #include "processArguments.h"
 
-void Matlab_nTau(int, mxArray *plhs[],
+void Matlab_nGeneralizedTorque(int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
@@ -15,10 +15,10 @@ void Matlab_nTau(int, mxArray *plhs[],
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( 1, 1, mxREAL);
-    double *nTau = mxGetPr(plhs[0]);
+    double *nGeneralizedTorque = mxGetPr(plhs[0]);
 
     // Get nombre de controles
-    *nTau = model->nbTau();
+    *nGeneralizedTorque = model->nbGeneralizedTorque();
 
     return;
 }

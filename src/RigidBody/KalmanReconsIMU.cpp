@@ -5,7 +5,7 @@
 #include <rbdl/Kinematics.h>
 #include "BiorbdModel.h"
 #include "Utils/Error.h"
-#include "Utils/GenCoord.h"
+#include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/IMU.h"
 
 biorbd::rigidbody::KalmanReconsIMU::KalmanReconsIMU(
@@ -52,9 +52,9 @@ bool biorbd::rigidbody::KalmanReconsIMU::first()
 void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         biorbd::Model &m,
         const std::vector<biorbd::utils::Attitude> &IMUobs,
-        biorbd::utils::GenCoord *Q,
-        biorbd::utils::GenCoord *Qdot,
-        biorbd::utils::GenCoord *Qddot){
+        biorbd::rigidbody::GeneralizedCoordinates *Q,
+        biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+        biorbd::rigidbody::GeneralizedCoordinates *Qddot){
     // Séparer les IMUobs en un grand vecteur
     Eigen::VectorXd T(3*3*IMUobs.size()); // Matrice 3*3 * nIMU
     for (unsigned int i=0; i<IMUobs.size(); ++i)
@@ -69,9 +69,9 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
 void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         biorbd::Model &m,
         const Eigen::VectorXd &IMUobs,
-        biorbd::utils::GenCoord *Q,
-        biorbd::utils::GenCoord *Qdot,
-        biorbd::utils::GenCoord *Qddot){
+        biorbd::rigidbody::GeneralizedCoordinates *Q,
+        biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+        biorbd::rigidbody::GeneralizedCoordinates *Qddot){
     // Une itération du filtre de Kalman
     if (m_firstIteration){
         m_firstIteration = false;

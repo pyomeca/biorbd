@@ -17,10 +17,10 @@ void Matlab_muscleForcesNorm( int, mxArray *plhs[],
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
 
     // Recevoir QDot
-    std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
 
     // Recevoir les états musculaires
     std::vector<std::vector<biorbd::muscles::StateDynamics>> state = getParameterMuscleStateActivation(prhs, 4, model->nbMuscleTotal());

@@ -5,7 +5,7 @@
 #include <rbdl/Kinematics.h>
 #include "BiorbdModel.h"
 #include "Utils/Error.h"
-#include "Utils/GenCoord.h"
+#include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/NodeBone.h"
 
 biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers(
@@ -52,9 +52,9 @@ bool biorbd::rigidbody::KalmanReconsMarkers::first()
 void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         biorbd::Model &m,
         const biorbd::rigidbody::Markers &Tobs,
-        biorbd::utils::GenCoord *Q,
-        biorbd::utils::GenCoord *Qdot,
-        biorbd::utils::GenCoord *Qddot,
+        biorbd::rigidbody::GeneralizedCoordinates *Q,
+        biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+        biorbd::rigidbody::GeneralizedCoordinates *Qddot,
         bool removeAxes){
     // Séparer les tobs en un grand vecteur
     Eigen::VectorXd T(3*Tobs.nTags());
@@ -68,9 +68,9 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
 void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         biorbd::Model &m,
         const std::vector<biorbd::rigidbody::NodeBone> &Tobs,
-        biorbd::utils::GenCoord *Q,
-        biorbd::utils::GenCoord *Qdot,
-        biorbd::utils::GenCoord *Qddot,
+        biorbd::rigidbody::GeneralizedCoordinates *Q,
+        biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+        biorbd::rigidbody::GeneralizedCoordinates *Qddot,
         bool removeAxes){
     // Séparer les tobs en un grand vecteur
     Eigen::VectorXd T(3*Tobs.size());
@@ -85,9 +85,9 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
 void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         biorbd::Model &m,
         const Eigen::VectorXd &Tobs,
-        biorbd::utils::GenCoord *Q,
-        biorbd::utils::GenCoord *Qdot,
-        biorbd::utils::GenCoord *Qddot,
+        biorbd::rigidbody::GeneralizedCoordinates *Q,
+        biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+        biorbd::rigidbody::GeneralizedCoordinates *Qddot,
         bool removeAxes){
     // Une itération du filtre de Kalman
     if (m_firstIteration){

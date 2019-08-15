@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Actuators/ActuatorLinear.h"
 
-#include "Utils/GenCoord.h"
+#include "RigidBody/GeneralizedCoordinates.h"
 
 biorbd::actuator::ActuatorLinear::ActuatorLinear(
         int direction,
@@ -22,7 +22,7 @@ biorbd::actuator::ActuatorLinear::~ActuatorLinear()
 }
 
 
-double biorbd::actuator::ActuatorLinear::torqueMax(const biorbd::utils::GenCoord &Q) const {
+double biorbd::actuator::ActuatorLinear::torqueMax(const biorbd::rigidbody::GeneralizedCoordinates &Q) const {
 //    std::cout << "Q[" << m_dofIdx << "] = " << Q[m_dofIdx] << std::endl;
 //    std::cout << "M = " << m_m << std::endl;
 //    std::cout << "B = " << m_b << std::endl;

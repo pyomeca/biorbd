@@ -43,8 +43,8 @@ double biorbd::muscles::StateDynamics::timeDerivativeActivation(
 double biorbd::muscles::StateDynamics::timeDerivativeActivation(
         const biorbd::muscles::Caracteristics &caract,
         const bool alreadyNormalized){
-    // Implémentation de la fonction da/dt = (u-a)/tau(u,a)
-    // ou tau(u,a) = t_act(0.5+1.5*a) is u>a et tau(u,a)=t_deact(0.5+1.5*a) sinon
+    // Implémentation de la fonction da/dt = (u-a)/GeneralizedTorque(u,a)
+    // ou GeneralizedTorque(u,a) = t_act(0.5+1.5*a) is u>a et GeneralizedTorque(u,a)=t_deact(0.5+1.5*a) sinon
     if (m_activation<caract.minActivation())
         m_activation = caract.minActivation();
 
@@ -67,9 +67,9 @@ double biorbd::muscles::StateDynamics::timeDerivativeActivation(
     
     double denom; // dénominateur
     if (num>0)
-        denom = caract.tauActivation()   * (0.5+1.5*m_activation);
+        denom = caract.GeneralizedTorqueActivation()   * (0.5+1.5*m_activation);
     else
-        denom = caract.tauDeactivation() / (0.5+1.5*m_activation);
+        denom = caract.GeneralizedTorqueDeactivation() / (0.5+1.5*m_activation);
 
     m_activationDot = num/denom;
 

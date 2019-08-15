@@ -2,7 +2,7 @@
 #include "RigidBody/KalmanRecons.h"
 
 #include "BiorbdModel.h"
-#include "Utils/GenCoord.h"
+#include "RigidBody/GeneralizedCoordinates.h"
 
 biorbd::rigidbody::KalmanRecons::KalmanRecons(
         biorbd::Model &m,
@@ -56,9 +56,9 @@ void biorbd::rigidbody::KalmanRecons::manageOcclusionDuringIteration(
 }
 
 void biorbd::rigidbody::KalmanRecons::getState(
-        biorbd::utils::GenCoord *Q,
-        biorbd::utils::GenCoord *Qdot,
-        biorbd::utils::GenCoord *Qddot){
+        biorbd::rigidbody::GeneralizedCoordinates *Q,
+        biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+        biorbd::rigidbody::GeneralizedCoordinates *Qddot){
     if (Q != nullptr)
         *Q = m_xp.block(0,0,m_nDof,1);
 
@@ -152,14 +152,14 @@ biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::measurementNoiseMatrix(
     return R;
 }
 
-biorbd::utils::GenCoord biorbd::rigidbody::KalmanRecons::initState(const unsigned int nQ){
-    return biorbd::utils::GenCoord(Eigen::VectorXd::Zero(3*nQ)); // Q, Qdot, Qddot
+biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::KalmanRecons::initState(const unsigned int nQ){
+    return biorbd::rigidbody::GeneralizedCoordinates(Eigen::VectorXd::Zero(3*nQ)); // Q, Qdot, Qddot
 }
 
 void biorbd::rigidbody::KalmanRecons::setInitState(
-        const biorbd::utils::GenCoord *Q,
-        const biorbd::utils::GenCoord *Qdot,
-        const biorbd::utils::GenCoord *Qddot){
+        const biorbd::rigidbody::GeneralizedCoordinates *Q,
+        const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+        const biorbd::rigidbody::GeneralizedCoordinates *Qddot){
     if (Q != nullptr)
         m_xp.block(0,0,m_nDof,1) = *Q;
 

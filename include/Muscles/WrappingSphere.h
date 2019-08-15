@@ -19,7 +19,7 @@ public:
 
     biorbd::utils::Attitude RT(
             biorbd::rigidbody::Joints &,
-            const biorbd::utils::GenCoord& ,
+            const biorbd::rigidbody::GeneralizedCoordinates& ,
             const bool & = true);
     virtual void wrapPoints(
             const biorbd::utils::Attitude&,
@@ -29,7 +29,7 @@ public:
             biorbd::muscles::MuscleNode&, double* = nullptr) {} // Premier et dernier points musculaire
     virtual void wrapPoints(
             biorbd::rigidbody::Joints&,
-            const biorbd::utils::GenCoord&,
+            const biorbd::rigidbody::GeneralizedCoordinates&,
             const biorbd::muscles::MuscleNode&,
             const biorbd::muscles::MuscleNode&,
             biorbd::muscles::MuscleNode&,

@@ -46,7 +46,7 @@ else()
 endif()
 
 # Add the dependencies for insuring build order
-add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME}_utils)
+add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME}_rigidbody ${MASTER_PROJECT_NAME}_utils)
 
 # Add the include
 target_include_directories(${PROJECT_NAME} PUBLIC

@@ -17,9 +17,9 @@ void Matlab_segmentsVelocities( int, mxArray *plhs[],
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
     // Recevoir Qdot
-    biorbd::utils::GenCoord QDot = *getParameterQdot(prhs, 3, nQdot).begin();
+    biorbd::rigidbody::GeneralizedCoordinates QDot = *getParameterQdot(prhs, 3, nQdot).begin();
 
     // Update sur la cinématique
     RigidBodyDynamics::UpdateKinematicsCustom(*model, &Q, &QDot, nullptr);

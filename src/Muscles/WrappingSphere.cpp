@@ -22,7 +22,7 @@ biorbd::muscles::WrappingSphere::~WrappingSphere()
 
 biorbd::utils::Attitude biorbd::muscles::WrappingSphere::RT(
         biorbd::rigidbody::Joints &,
-        const biorbd::utils::GenCoord &,
+        const biorbd::rigidbody::GeneralizedCoordinates &,
         const bool &)
 {
     return biorbd::utils::Attitude();

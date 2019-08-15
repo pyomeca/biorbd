@@ -11,12 +11,12 @@ namespace biorbd {
 namespace utils {
 class String;
 class Matrix;
-class GenCoord;
-class Tau;
 }
 
 namespace rigidbody {
 class Joints;
+class GeneralizedCoordinates;
+class GeneralizedTorque;
 }
 
 namespace muscles {
@@ -42,12 +42,12 @@ public:
 
     void updateMuscles(
             biorbd::rigidbody::Joints&,
-            const biorbd::utils::GenCoord& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
             bool); // Update les positions/jacobiennes/vitesse, etc
     void updateMuscles(
             biorbd::rigidbody::Joints&,
-            const biorbd::utils::GenCoord& Q,
-            const biorbd::utils::GenCoord& QDot,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates& QDot,
             bool); // Update les positions/jacobiennes/vitesse, etc
     void updateMuscles(
             std::vector<std::vector<biorbd::muscles::MuscleNode>>& musclePointsInGlobal,
@@ -55,38 +55,38 @@ public:
     void updateMuscles(
             std::vector<std::vector<biorbd::muscles::MuscleNode>>& musclePointsInGlobal,
             std::vector<biorbd::utils::Matrix>& jacoPointsInGlobal,
-            const biorbd::utils::GenCoord& QDot); // Update les positions/jacobiennes/vitesse, etc
+            const biorbd::rigidbody::GeneralizedCoordinates& QDot); // Update les positions/jacobiennes/vitesse, etc
 
     // Calcul des effets musculaires sur les os
-    biorbd::utils::Tau muscularJointTorque(
+    biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
             biorbd::rigidbody::Joints& model,
             const Eigen::VectorXd & F,
             bool updateKin = true,
-            const biorbd::utils::GenCoord* Q = nullptr,
-            const biorbd::utils::GenCoord* QDot = nullptr);
-    biorbd::utils::Tau muscularJointTorque(
+            const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
+            const biorbd::rigidbody::GeneralizedCoordinates* QDot = nullptr);
+    biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
             biorbd::rigidbody::Joints& model,
             const std::vector<biorbd::muscles::StateDynamics> &state,
             Eigen::VectorXd & F,
             bool updateKin = true,
-            const biorbd::utils::GenCoord* Q = nullptr,
-            const biorbd::utils::GenCoord* QDot = nullptr);
-    biorbd::utils::Tau muscularJointTorque(
+            const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
+            const biorbd::rigidbody::GeneralizedCoordinates* QDot = nullptr);
+    biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
             biorbd::rigidbody::Joints& model,
             const std::vector<biorbd::muscles::StateDynamics> &state,
             bool updateKin = true,
-            const biorbd::utils::GenCoord* Q = nullptr,
-            const biorbd::utils::GenCoord* QDot = nullptr);
+            const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
+            const biorbd::rigidbody::GeneralizedCoordinates* QDot = nullptr);
     biorbd::utils::Matrix musclesLengthJacobian(biorbd::rigidbody::Joints& m);
     biorbd::utils::Matrix musclesLengthJacobian(
             biorbd::rigidbody::Joints& m,
-            const biorbd::utils::GenCoord& Q);
+            const biorbd::rigidbody::GeneralizedCoordinates& Q);
     std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> musclesForces(
             biorbd::rigidbody::Joints& m,
             const std::vector<biorbd::muscles::StateDynamics> &state,
             bool updateKin = true,
-            const biorbd::utils::GenCoord* Q = nullptr,
-            const biorbd::utils::GenCoord* QDot = nullptr);
+            const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
+            const biorbd::rigidbody::GeneralizedCoordinates* QDot = nullptr);
 
     // Set and get
     unsigned int nbMuscleGroups() const; // retourne le nombre total de groupes musculaires

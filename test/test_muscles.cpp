@@ -14,7 +14,7 @@ static unsigned int muscleGroupForMuscleJacobian(1);
 static unsigned int muscleForMuscleJacobian(1);
 TEST(MuscleJacobian, jacobian){
     biorbd::Model model(modelPathForMuscleJacobian);
-    biorbd::utils::GenCoord Q(model);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
     Q.setZero();
 
     // Force computation of geometry
@@ -46,7 +46,7 @@ TEST(MuscleJacobian, jacobian){
 }
 TEST(MuscleJacobian, jacobianLength){
     biorbd::Model model(modelPathForMuscleJacobian);
-    biorbd::utils::GenCoord Q(model);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
     Q.setZero();
     model.updateMuscles(model, Q, true);
 
@@ -80,8 +80,8 @@ static double excessiveFibersQuantityForFatigueXiaSetStateLimitsTest(1.5);
 TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
     // Prepare the model
     biorbd::Model model(modelPathForXiaDerivativeTest);
-    biorbd::utils::GenCoord Q(model);
-    biorbd::utils::GenCoord QDot(model);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedCoordinates QDot(model);
     Q.setZero();
     QDot.setZero();
     model.updateMuscles(model, Q, QDot, true);
@@ -131,8 +131,8 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
 TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
     // Prepare the model
     biorbd::Model model(modelPathForXiaDerivativeTest);
-    biorbd::utils::GenCoord Q(model);
-    biorbd::utils::GenCoord QDot(model);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedCoordinates QDot(model);
     Q.setZero();
     QDot.setZero();
     model.updateMuscles(model, Q, QDot, true);
@@ -169,8 +169,8 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
 TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
     // Prepare the model
     biorbd::Model model(modelPathForXiaDerivativeTest);
-    biorbd::utils::GenCoord Q(model);
-    biorbd::utils::GenCoord QDot(model);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedCoordinates QDot(model);
     Q.setZero();
     QDot.setZero();
     model.updateMuscles(model, Q, QDot, true);

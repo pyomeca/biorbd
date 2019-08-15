@@ -27,7 +27,11 @@ find_package(Dlib REQUIRED)
 find_package(IPOPT REQUIRED)
 
 # Prepare add library
-set(SRC_LIST src/BiorbdModel.cpp)
+set(SRC_LIST
+    src/BiorbdModel.cpp
+    src/ModelReader.cpp
+    src/ModelWriter.cpp
+)
 if (BUILD_SHARED_LIBS)
     add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 else()

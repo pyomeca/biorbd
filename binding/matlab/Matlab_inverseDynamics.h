@@ -18,14 +18,14 @@ void Matlab_inverseDynamics( int, mxArray *plhs[],
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
-    unsigned int nTau = model->nbTau() + model->nbRoot(); // Nombre de Tau
+    unsigned int nGeneralizedTorque = model->nbGeneralizedTorque() + model->nbRoot(); // Nombre de GeneralizedTorque
 
     // Recevoir Q
-    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
     // Recevoir Qddot
-    std::vector<biorbd::utils::GenCoord> QDDot = getParameterQddot(prhs, 4, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDDot = getParameterQddot(prhs, 4, nQdot);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));
@@ -42,25 +42,25 @@ void Matlab_inverseDynamics( int, mxArray *plhs[],
     }
 
     // Create a matrix for the return argument
-    plhs[0] = mxCreateDoubleMatrix(nTau , nFrame, mxREAL);
-    double *tau = mxGetPr(plhs[0]);
+    plhs[0] = mxCreateDoubleMatrix(nGeneralizedTorque , nFrame, mxREAL);
+    double *GeneralizedTorque = mxGetPr(plhs[0]);
     unsigned int cmp(0);
 
     // Trouver la dynamique inverse a cette configuration
     for (unsigned int j=0; j<Q.size(); ++j){
-        biorbd::utils::Tau Tau(Eigen::VectorXd::Zero (nTau));
+        biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(Eigen::VectorXd::Zero (nGeneralizedTorque));
         if (externalForces){
             // Recevoir les plates-formes
             std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext = model->dispatchedForce(f_tp[j]);
-            RigidBodyDynamics::InverseDynamics(*model, *(Q.begin()+j), *(QDot.begin()+j), *(QDDot.begin()+j), Tau, &f_ext);// Inverse Dynamics
+            RigidBodyDynamics::InverseDynamics(*model, *(Q.begin()+j), *(QDot.begin()+j), *(QDDot.begin()+j), GeneralizedTorque, &f_ext);// Inverse Dynamics
         }
         else
-            RigidBodyDynamics::InverseDynamics(*model, *(Q.begin()+j), *(QDot.begin()+j), *(QDDot.begin()+j), Tau);// Inverse Dynamics
+            RigidBodyDynamics::InverseDynamics(*model, *(Q.begin()+j), *(QDot.begin()+j), *(QDDot.begin()+j), GeneralizedTorque);// Inverse Dynamics
 
 
         // Remplir l'output
-        for (unsigned int i=0; i<nTau; i++){
-            tau[cmp] = Tau(i);
+        for (unsigned int i=0; i<nGeneralizedTorque; i++){
+            GeneralizedTorque[cmp] = GeneralizedTorque(i);
             ++cmp;
         }
     }

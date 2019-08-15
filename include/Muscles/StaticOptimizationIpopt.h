@@ -4,8 +4,8 @@
 #include <IpIpoptApplication.hpp>
 #include <IpTNLP.hpp>
 #include "biorbdConfig.h"
-#include "Utils/GenCoord.h"
-#include "Utils/Tau.h"
+#include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedTorque.h"
 
 namespace biorbd {
 class Model;
@@ -18,9 +18,9 @@ class BIORBD_API StaticOptimizationIpopt : public Ipopt::TNLP
 public:
     StaticOptimizationIpopt(
             biorbd::Model &model,
-            const biorbd::utils::GenCoord &Q,
-            const biorbd::utils::GenCoord &Qdot,
-            const biorbd::utils::Tau &tauTarget,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedTorque &GeneralizedTorqueTarget,
             const biorbd::utils::Vector &activationInit,
             bool  useResidual = true,
             unsigned int pNormFactor = 2,
@@ -120,15 +120,15 @@ protected:
     unsigned int m_nQdot;
     unsigned int m_nMus;
     unsigned int m_nDof;
-    unsigned int m_nTau;
-    unsigned int m_nTauResidual;
+    unsigned int m_nGeneralizedTorque;
+    unsigned int m_nGeneralizedTorqueResidual;
     double m_eps;
     biorbd::utils::Vector m_activations;
-    biorbd::utils::GenCoord m_Q;
-    biorbd::utils::GenCoord m_Qdot;
-    biorbd::utils::Tau m_tauTarget;
-    biorbd::utils::Vector m_tauResidual;
-    double m_tauPonderation;
+    biorbd::rigidbody::GeneralizedCoordinates m_Q;
+    biorbd::rigidbody::GeneralizedCoordinates m_Qdot;
+    biorbd::rigidbody::GeneralizedTorque m_GeneralizedTorqueTarget;
+    biorbd::utils::Vector m_GeneralizedTorqueResidual;
+    double m_GeneralizedTorquePonderation;
     std::vector<biorbd::muscles::StateDynamics> m_states;
     unsigned int m_pNormFactor;
     int m_verbose;

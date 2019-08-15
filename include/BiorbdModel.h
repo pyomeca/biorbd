@@ -35,8 +35,8 @@ public:
 
     bool InverseKinematics(
             const std::vector<biorbd::rigidbody::NodeBone>& Mark,
-            const biorbd::utils::GenCoord& Qinit,
-            biorbd::utils::GenCoord &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates& Qinit,
+            biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxes=true);
 
 };

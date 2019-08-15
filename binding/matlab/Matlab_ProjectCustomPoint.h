@@ -16,7 +16,7 @@ void Matlab_ProjectCustomPoint( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<biorbd::utils::GenCoord> Qall = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Qall = getParameterQ(prhs, 2, nQ);
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
     std::vector<std::vector<biorbd::rigidbody::NodeBone>> markersOverTime = getParameterAllMarkers(prhs,3);
@@ -43,7 +43,7 @@ void Matlab_ProjectCustomPoint( int, mxArray *plhs[],
     // Projeter les points
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrames; ++i){
-        biorbd::utils::GenCoord Q(*(Qall.begin()+i));
+        biorbd::rigidbody::GeneralizedCoordinates Q(*(Qall.begin()+i));
         for (unsigned int j=0; j<static_cast<unsigned int>(nMarker); ++j){
             biorbd::rigidbody::NodeBone m(*((*(markersOverTime.begin()+i)).begin()+j)  );
             biorbd::rigidbody::NodeBone tp;

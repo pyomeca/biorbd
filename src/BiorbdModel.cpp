@@ -3,8 +3,8 @@
 
 #include <rbdl/Model.h>
 #include <rbdl/Kinematics.h>
-#include "Utils/Read.h"
-#include "Utils/GenCoord.h"
+#include "ModelReader.h"
+#include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/NodeBone.h"
 
 biorbd::Model::Model()
@@ -19,13 +19,13 @@ biorbd::Model::~Model()
 
 biorbd::Model::Model(const biorbd::utils::Path &path)
 {
-    biorbd::utils::Read::readModelFile(path, this);
+    biorbd::Reader::readModelFile(path, this);
 }
 
 bool biorbd::Model::InverseKinematics(
         const std::vector<biorbd::rigidbody::NodeBone> &markers,
-        const biorbd::utils::GenCoord &Qinit,
-        biorbd::utils::GenCoord &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Qinit,
+        biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool removeAxes){
     // Trouver les markers techniques uniquement (body_point)
     std::vector<biorbd::rigidbody::NodeBone> body_point(this->TechnicalTagsInLocal(removeAxes));

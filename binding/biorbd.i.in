@@ -14,10 +14,10 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 #include "BiorbdModel.h"
 #include "biorbdConfig.h"
 
-#include "Utils/Read.h"
+#include "ModelReader.h"
 #include "Utils/Vector.h"
-#include "Utils/GenCoord.h"
-#include "Utils/Tau.h"
+#include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedTorque.h"
 
 #include "RigidBody/Bone.h"
 #include "RigidBody/BoneMesh.h"
@@ -74,6 +74,7 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 @SWIG_MODULE_RIGIDBODY_INCLUDE_COMMAND@
 @SWIG_MODULE_ACTUATORS_INCLUDE_COMMAND@
 @SWIG_MODULE_MUSCLES_INCLUDE_COMMAND@
+%include "@CMAKE_SOURCE_DIR@/include/ModelReader.h"
 %include "@CMAKE_SOURCE_DIR@/include/BiorbdModel.h"
 
 

@@ -8,6 +8,8 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/BoneCaracteristics.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/BoneMesh.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Contacts.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedCoordinates.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedTorque.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/IMU.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/IMUs.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Joint.cpp
@@ -26,6 +28,9 @@ if (BUILD_SHARED_LIBS)
 else()
     add_library(${PROJECT_NAME} STATIC ${SRC_LIST_MODULE})
 endif()
+
+# Add the dependencies for insuring build order
+add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME}_utils)
 
 # Add the include
 target_include_directories(${PROJECT_NAME} PUBLIC

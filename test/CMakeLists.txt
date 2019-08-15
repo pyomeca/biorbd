@@ -35,6 +35,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/${RELATIVE_PATH_TO_GTEST}
 enable_testing()
 file(GLOB TEST_SRC_FILES ${CMAKE_SOURCE_DIR}/test/*.cpp)
 add_executable(runUnitTests ${TEST_SRC_FILES})
+add_dependencies(runUnitTests ${MASTER_PROJECT_NAME})
 
 # headers for the project
 target_include_directories(runUnitTests PUBLIC

@@ -16,7 +16,7 @@ void Matlab_segmentsInertia( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Update sur la cinématique (placer les segments)
     RigidBodyDynamics::UpdateKinematicsCustom(*model, &Q, nullptr, nullptr);

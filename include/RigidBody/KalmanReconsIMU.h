@@ -25,15 +25,15 @@ public:
     virtual void reconstructFrame(
             biorbd::Model &m,
             const std::vector<biorbd::utils::Attitude> &IMUobs,
-            biorbd::utils::GenCoord *Q,
-            biorbd::utils::GenCoord *Qdot,
-            biorbd::utils::GenCoord *Qddot);
+            biorbd::rigidbody::GeneralizedCoordinates *Q,
+            biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+            biorbd::rigidbody::GeneralizedCoordinates *Qddot);
     virtual void reconstructFrame(
             biorbd::Model &m,
             const Eigen::VectorXd &IMUobs,
-            biorbd::utils::GenCoord *Q,
-            biorbd::utils::GenCoord *Qdot,
-            biorbd::utils::GenCoord *Qddot);
+            biorbd::rigidbody::GeneralizedCoordinates *Q,
+            biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+            biorbd::rigidbody::GeneralizedCoordinates *Qddot);
     virtual void reconstructFrame();
 
     bool first();

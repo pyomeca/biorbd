@@ -4,7 +4,7 @@
 #include <rbdl/Kinematics.h>
 #include "Utils/String.h"
 #include "Utils/Error.h"
-#include "Utils/GenCoord.h"
+#include "RigidBody/GeneralizedCoordinates.h"
 #include "Utils/Node.h"
 #include "Utils/Attitude.h"
 #include "RigidBody/Joints.h"
@@ -111,7 +111,7 @@ biorbd::utils::String biorbd::rigidbody::Contacts::name(unsigned int i) {
 
 std::vector<biorbd::utils::Node> biorbd::rigidbody::Contacts::constraintsInGlobal(
         biorbd::rigidbody::Joints& m,
-        const biorbd::utils::GenCoord &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const bool updateKin){
     if (updateKin)
         RigidBodyDynamics::UpdateKinematicsCustom(m, &Q, nullptr, nullptr);

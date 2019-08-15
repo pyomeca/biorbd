@@ -8,7 +8,6 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/Benchmark.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Equation.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Error.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/GenCoord.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/IfStream.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Integrator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Path.cpp
@@ -16,13 +15,10 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/Node.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/NodeAttitude.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Quaternion.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Read.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/String.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Tau.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Time.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Timer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Vector.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Writer.cpp
 )
 
 # Create the library
