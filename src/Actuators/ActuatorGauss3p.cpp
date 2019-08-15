@@ -1,6 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Actuators/ActuatorGauss3p.h"
 
+#include <math.h>
 #include "RigidBody/GeneralizedCoordinates.h"
 
 biorbd::actuator::ActuatorGauss3p::ActuatorGauss3p(

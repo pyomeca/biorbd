@@ -1,6 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Actuators/ActuatorLinear.h"
 
+#include <math.h>
 #include "RigidBody/GeneralizedCoordinates.h"
 
 biorbd::actuator::ActuatorLinear::ActuatorLinear(

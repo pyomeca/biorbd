@@ -46,7 +46,7 @@ else()
 endif()
 
 # Add the dependencies for insuring build order
-target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY} ${MASTER_PROJECT_NAME}_utils ${MASTER_PROJECT_NAME}_rigidbody)
+target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY} ${IPOPT_LIBRARY} ${MASTER_PROJECT_NAME}_utils ${MASTER_PROJECT_NAME}_rigidbody)
 add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME}_utils ${MASTER_PROJECT_NAME}_rigidbody)
 
 # Add the include
