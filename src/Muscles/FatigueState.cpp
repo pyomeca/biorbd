@@ -5,6 +5,7 @@
 #include "Utils/Error.h"
 
 #if defined(_WIN32) || defined(_WIN64)
+#include <sstream>
 namespace std {
 template < typename T > std::string to_string( const T& n )
 {
