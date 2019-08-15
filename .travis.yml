@@ -73,12 +73,16 @@ script:
         cp -r test/models/ .;
         make biorbd_coverage;
       elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
+        cd test;
         ./runUnitTests;
+        cd ..;
       elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
-        cp bin/Release/*.dll .;
-        cp Release/*.dll .;
-        cp Release/*.exe .;
+        cd test;
+        cp ../bin/Release/*.dll .;
+        cp ../Release/*.dll .;
+        cp ../Release/*.exe .;
         ./runUnitTests.exe;
+        cd ..;
       fi
     - ctest
     
