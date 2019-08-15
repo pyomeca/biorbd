@@ -28,6 +28,7 @@ public:
     biorbd::utils::String toupper() const;
 
 };
+std::ostream& operator<<(std::ostream& os, const String &a);
 
 }}
 

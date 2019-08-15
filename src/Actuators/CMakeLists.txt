@@ -20,7 +20,8 @@ else()
 endif()
 
 # Add the dependencies for insuring build order
-add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME}_rigidbody ${MASTER_PROJECT_NAME}_utils)
+target_link_libraries(${PROJECT_NAME} ${MASTER_PROJECT_NAME}_utils ${MASTER_PROJECT_NAME}_rigidbody)
+add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME}_utils ${MASTER_PROJECT_NAME}_rigidbody)
 
 # Add the include
 target_include_directories(${PROJECT_NAME} PUBLIC

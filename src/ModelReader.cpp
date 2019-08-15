@@ -31,10 +31,7 @@
 #include "Muscles/WrappingCylinder.h"
 #endif // MODULE_MUSCLES
 
-#ifdef _WIN64
-    #include <direct.h>
-    #define GetCurrentDir _getcwd
-#elseif _WIN32
+#if defined(_WIN32) || defined(_WIN64)
     #include <direct.h>
     #define GetCurrentDir _getcwd
 #else
