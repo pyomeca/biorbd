@@ -8,7 +8,9 @@
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/HillTypeThelenFatigable.h"
 #include "Muscles/FatigueDynamicStateXia.h"
+#ifdef IPOPT_FOUND
 #include "Muscles/StaticOptimization.h"
+#endif
 #endif // MODULE_MUSCLES
 #define BUILD_SANDBOX
 

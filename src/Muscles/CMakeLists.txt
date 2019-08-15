@@ -28,15 +28,20 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/State.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/StateDynamics.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/StateDynamicsBuchanan.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/StaticOptimization.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/StaticOptimizationIpopt.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/StaticOptimizationIpoptLinearized.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ViaPoint.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WrappingCylinder.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WrappingNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WrappingObject.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WrappingSphere.cpp
 )
+
+if (IPOPT_FOUND)
+    list(APPEND SRC_LIST_MODULE
+        ${CMAKE_CURRENT_SOURCE_DIR}/StaticOptimization.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/StaticOptimizationIpopt.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/StaticOptimizationIpoptLinearized.cpp
+    )
+endif()
 
 # Create the library
 if (BUILD_SHARED_LIBS)

@@ -45,7 +45,10 @@ before_install:
       fi
 
 install:
-    - conda install boost eigen rbdl dlib-cpp lapack numpy pytest swig ipopt -c conda-forge
+    - conda install boost eigen rbdl dlib-cpp lapack numpy pytest swig  -c conda-forge
+    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
+        conda install ipopt;
+      fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
         conda install lcov -c conda-forge;
       fi
