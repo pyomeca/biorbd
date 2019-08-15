@@ -78,7 +78,8 @@ script:
         cd test;
       elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
         cd test/Release;
-        xcopy ..\models /E;
+        cd;
+        dir;
       fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
         make biorbd_coverage;
