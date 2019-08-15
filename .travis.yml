@@ -47,7 +47,7 @@ before_install:
 install:
     - conda install boost eigen rbdl dlib-cpp lapack numpy pytest swig  -c conda-forge
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
-        conda install ipopt;
+        conda install ipopt -c conda-forge;
       fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
         conda install lcov -c conda-forge;
@@ -72,25 +72,24 @@ script:
         cmake --build ./ --config Release;
       fi
     # Only do the coverage on Linux, but run the test anyway to get a nice output
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        cp -r test/models/ .;
+      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
         cd test;
-      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
         cd test;
+        cp ../bin/Release/*.dll .;
+        cp ../Release/*.dll .;
+        cp ../Release/*.exe .;
       fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        cp -r test/models/ .;
         make biorbd_coverage;
       elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
         ./runUnitTests;
       elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
-        cp ../bin/Release/*.dll .;
-        cp ../Release/*.dll .;
-        cp ../Release/*.exe .;
         ./runUnitTests.exe;
       fi
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-        cd ..;
-      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+    - if [[ "$TRAVIS_OS_NAME" != "linux" ]]; then
         cd ..;
       fi
     - ctest
