@@ -30,6 +30,7 @@ endif()
 # Add the include
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${RBDL_INCLUDE_DIR}
+    ${RBDL_INCLUDE_DIR}/..
     ${Boost_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
     ${DLIB_INCLUDE_DIR}
