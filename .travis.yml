@@ -77,10 +77,10 @@ script:
       elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
         cd test;
       elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
-        cd test;
-        cp ../bin/Release/*.dll .;
-        cp ../Release/*.dll .;
-        cp ../Release/*.exe .;
+        cd test/Release;
+        cp ../../bin/Release/*.dll .;
+        cp ../../Release/*.dll .;
+        cp ../../Release/*.exe .;
       fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
         make biorbd_coverage;
@@ -89,9 +89,10 @@ script:
       elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         ./runUnitTests.exe;
       fi
-    - if [[ "$TRAVIS_OS_NAME" != "linux" ]]; then
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
         cd ..;
-      fi
+      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+        cd ../..;
     - ctest
     
       # Test if biorbd can be compile on the python binder
