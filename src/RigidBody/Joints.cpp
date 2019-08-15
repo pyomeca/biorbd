@@ -10,7 +10,7 @@
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "Utils/Attitude.h"
-#include "Utils/Integrator.h"
+#include "RigidBody/Integrator.h"
 #include "RigidBody/Bone.h"
 #include "RigidBody/Markers.h"
 #include "RigidBody/NodeBone.h"
@@ -29,7 +29,7 @@ biorbd::rigidbody::Joints::Joints() :
     m_totalMass(0)
 {
     this->gravity = RigidBodyDynamics::Math::Vector3d (0, 0, -9.81);  // Redéfinition de la gravité pour qu'elle soit en z
-    integrator = new biorbd::utils::Integrator();
+    integrator = new biorbd::rigidbody::Integrator();
     //ctor
 }
 
@@ -47,7 +47,7 @@ biorbd::rigidbody::Joints::Joints(const biorbd::rigidbody::Joints& j) :
     m_isKinematicsComputed(j.m_isKinematicsComputed),
     m_totalMass(j.m_totalMass)
 {
-    integrator = new biorbd::utils::Integrator(*(j.integrator));
+    integrator = new biorbd::rigidbody::Integrator(*(j.integrator));
 }
 
 biorbd::rigidbody::Joints::~Joints()

@@ -9,7 +9,6 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/Equation.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Error.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/IfStream.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Integrator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Path.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Matrix.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Node.cpp

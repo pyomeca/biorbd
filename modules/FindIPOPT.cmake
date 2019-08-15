@@ -21,6 +21,7 @@ FIND_LIBRARY (IPOPT_LIBRARY NAMES ipopt libipopt	PATHS
     /usr/lib
     /usr/local/lib
     ${CMAKE_INSTALL_PREFIX}/lib
+    ${CMAKE_INSTALL_PREFIX}/Library/lib
     $ENV{HOME}/local/lib
     $ENV{IPOPT_LIBRARY_PATH}
 )

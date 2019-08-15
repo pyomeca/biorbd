@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "Utils/Integrator.h"
+#include "RigidBody/Integrator.h"
 
 #include <Eigen/Dense>
 #include <boost/numeric/odeint.hpp>
@@ -9,11 +9,11 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/Joints.h"
 
-biorbd::utils::Integrator::Integrator(){
+biorbd::rigidbody::Integrator::Integrator(){
 
 }
 
-void biorbd::utils::Integrator::operator() (
+void biorbd::rigidbody::Integrator::operator() (
         const state_type &x ,
         state_type &dxdt ,
         const double ){
@@ -36,7 +36,7 @@ void biorbd::utils::Integrator::operator() (
 
 }
 
-void biorbd::utils::Integrator::showAll(){
+void biorbd::rigidbody::Integrator::showAll(){
     std::cout << "Test:" << std::endl;
     for (unsigned int i=0; i<=m_steps; i++){
         std::cout << m_times[i];
@@ -46,7 +46,7 @@ void biorbd::utils::Integrator::showAll(){
     }
 }
 
-biorbd::rigidbody::GeneralizedCoordinates biorbd::utils::Integrator::getX(const unsigned int &idx){
+biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Integrator::getX(const unsigned int &idx){
     biorbd::rigidbody::GeneralizedCoordinates out(m_nbre*2);
     biorbd::utils::Error::error(idx <= m_steps, "Trying to get Q outside range");
     for (unsigned int i=0; i<m_nbre*2; i++){
@@ -55,7 +55,7 @@ biorbd::rigidbody::GeneralizedCoordinates biorbd::utils::Integrator::getX(const 
     return out;
 }
 
-void biorbd::utils::Integrator::integrate(
+void biorbd::rigidbody::Integrator::integrate(
         RigidBodyDynamics::Model *model,
         const biorbd::rigidbody::GeneralizedCoordinates &v,
         const Eigen::VectorXd& u,

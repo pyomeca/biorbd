@@ -9,7 +9,6 @@
 namespace biorbd {
 namespace utils {
 class Attitude;
-class Integrator;
 class Matrix;
 class Node;
 }
@@ -23,6 +22,7 @@ class Patch;
 class Bone;
 class Caracteristics;
 class Mesh;
+class Integrator;
 
 class BIORBD_API Joints : public RigidBodyDynamics::Model
 {
@@ -263,7 +263,7 @@ public:
 protected:
     std::vector<biorbd::rigidbody::Bone> m_bones; // Toutes les articulations
 
-    biorbd::utils::Integrator * integrator;
+    biorbd::rigidbody::Integrator * integrator;
     unsigned int m_nbRoot; // Nombre de dof sur le segment racine
     unsigned int m_nDof; // Nombre de degré de liberté total
     unsigned int m_nbQ; // Nombre de q au total

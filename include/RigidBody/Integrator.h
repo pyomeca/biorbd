@@ -12,9 +12,6 @@ namespace biorbd {
 namespace rigidbody {
 class Joints;
 class GeneralizedCoordinates;
-}
-
-namespace utils {
 
 class BIORBD_API Integrator
 {

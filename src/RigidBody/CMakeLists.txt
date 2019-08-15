@@ -20,6 +20,7 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/Markers.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/NodeBone.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Patch.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Integrator.cpp
 )
 
 # Create the library
