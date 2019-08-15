@@ -17,7 +17,7 @@ FIND_PATH (IPOPT_INCLUDE_DIR IpIpoptApplication.hpp
     $ENV{IPOPT_INCLUDE_PATH}
 )
 
-FIND_LIBRARY (IPOPT_LIBRARY NAMES ipopt	PATHS
+FIND_LIBRARY (IPOPT_LIBRARY NAMES ipopt libipopt	PATHS
     /usr/lib
     /usr/local/lib
     ${CMAKE_INSTALL_PREFIX}/lib
