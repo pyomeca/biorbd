@@ -50,7 +50,7 @@ public:
     unsigned int nQ() const; // Retourne le nombre de Dof de ce segment
     unsigned int nQdot() const; // Retourne le nombre de Dof de ce segment
     unsigned int nQddot() const; // Retourne le nombre de Dof de ce segment
-    unsigned int nTau() const;
+    unsigned int nGeneralizedTorque() const;
     unsigned int getDofIdx(const biorbd::utils::String &dofName) const; // Retourne l'index d'un dof spéficique pour ce segment
     const biorbd::utils::String& nameDof(const unsigned int i) const;// Retourne le nom des Dof de ce segment
     biorbd::utils::Attitude localJCS() const; // retourne exactement ce qui est écrit dans le fichier

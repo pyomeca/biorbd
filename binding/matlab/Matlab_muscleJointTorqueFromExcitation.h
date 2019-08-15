@@ -15,14 +15,14 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
-    unsigned int nTau = model->nbTau(); // Get the number of DoF
+    unsigned int nGeneralizedTorque = model->nbGeneralizedTorque(); // Get the number of DoF
     unsigned int nRoot = model->nbRoot(); // Get the number of DoF
     unsigned int nMuscleTotal = model->nbMuscleTotal();
 
     // Recevoir Q
-    std::vector<biorbd::utils::GenCoord> Q = getParameterQ(prhs, 2, nQ);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::utils::GenCoord> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
     // Recevoir muscleStates
     std::vector<std::vector<biorbd::muscles::StateDynamics>> s = getParameterMuscleStateExcitation(prhs,4,model->nbMuscleTotal());
 
@@ -42,10 +42,10 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
 
     // Create a matrix for the return argument
     mwSize dims[2];
-    dims[0] = nTau;
+    dims[0] = nGeneralizedTorque;
     dims[1] = nFrame;
     plhs[0] = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
-    double *Tau = mxGetPr(plhs[0]);
+    double *GeneralizedTorque = mxGetPr(plhs[0]);
 
     // Si la personne a demandé de sortir les forces par muscle également
     double *Mus = nullptr;
@@ -66,7 +66,7 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
                 ++iMus;
             }
 
-        biorbd::utils::Tau muscleTorque;
+        biorbd::rigidbody::GeneralizedTorque muscleTorque;
         Eigen::VectorXd force;
         if (nlhs >= 2) // Si on doit récupérer les forces
             if (updateKin)
@@ -79,9 +79,9 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
             else
                 muscleTorque = model->muscularJointTorque(*model, *(s.begin()+i), updateKin);
 
-        // distribuer les Tau
-        for (unsigned int j=0; j<nTau; ++j){
-            Tau[i*nTau+j] = muscleTorque(j+nRoot);
+        // distribuer les GeneralizedTorque
+        for (unsigned int j=0; j<nGeneralizedTorque; ++j){
+            GeneralizedTorque[i*nGeneralizedTorque+j] = muscleTorque(j+nRoot);
         }
 
         // Distribuer les forces

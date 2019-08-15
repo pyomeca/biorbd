@@ -7,13 +7,11 @@
 #include "Actuators/Actuator.h"
 
 namespace biorbd {
-namespace utils {
-class GenCoord;
-class Tau;
-}
 
 namespace rigidbody {
 class Joints;
+class GeneralizedCoordinates;
+class GeneralizedTorque;
 }
 
 namespace actuator {
@@ -30,20 +28,20 @@ public:
 
     // Retourne deux vecteur de torque max (il manque l'entrée de puissance afin de savoir si c'est positif ou négatif
     // à chaque articulation, donc les deux sont retournés)
-    std::pair<biorbd::utils::Tau, biorbd::utils::Tau> torqueMax(
+    std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque> torqueMax(
             const biorbd::rigidbody::Joints&,
-            const biorbd::utils::GenCoord& Q,
-            const biorbd::utils::GenCoord& Qdot);
-    biorbd::utils::Tau torqueMax(
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates& Qdot);
+    biorbd::rigidbody::GeneralizedTorque torqueMax(
             const biorbd::rigidbody::Joints&,
-            const biorbd::utils::GenCoord& a,
-            const biorbd::utils::GenCoord& Q,
-            const biorbd::utils::GenCoord &Qdot);
-    biorbd::utils::Tau torque(
+            const biorbd::rigidbody::GeneralizedCoordinates& a,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot);
+    biorbd::rigidbody::GeneralizedTorque torque(
             const biorbd::rigidbody::Joints&,
-            const biorbd::utils::GenCoord& a,
-            const biorbd::utils::GenCoord& Q,
-            const biorbd::utils::GenCoord &Qdot);
+            const biorbd::rigidbody::GeneralizedCoordinates& a,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Qdot);
 
     // Get and set
     virtual std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>> actuator(unsigned int dof);

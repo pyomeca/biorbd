@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "Utils/Read.h"
+#include "ModelReader.h"
 
 #include <limits.h>
 #include <fstream>
@@ -9,7 +9,7 @@
 #include "Utils/String.h"
 #include "Utils/Equation.h"
 #include "Utils/Vector.h"
-#include "Utils/GenCoord.h"
+#include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/BoneMesh.h"
 #include "RigidBody/BoneCaracteristics.h"
 #include "RigidBody/IMU.h"
@@ -31,10 +31,7 @@
 #include "Muscles/WrappingCylinder.h"
 #endif // MODULE_MUSCLES
 
-#ifdef _WIN64
-    #include <direct.h>
-    #define GetCurrentDir _getcwd
-#elseif _WIN32
+#if defined(_WIN32) || defined(_WIN64)
     #include <direct.h>
     #define GetCurrentDir _getcwd
 #else
@@ -42,13 +39,13 @@
     #define GetCurrentDir getcwd
 #endif
 
-void biorbd::utils::Read::pwd(){
+void biorbd::Reader::pwd(){
 	char c[FILENAME_MAX];
     if (GetCurrentDir(c, sizeof(c)))
         std::cout << c << std::endl;
 }
 
-bool biorbd::utils::Read::is_readable(const biorbd::utils::String &file) {
+bool biorbd::Reader::is_readable(const biorbd::utils::String &file) {
     std::ifstream fichier( file.c_str() );
     bool isOpen(fichier.is_open());
     fichier.close();
@@ -56,14 +53,14 @@ bool biorbd::utils::Read::is_readable(const biorbd::utils::String &file) {
 }
 
 // ------ Public methods ------ //
-biorbd::Model biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path){
+biorbd::Model biorbd::Reader::readModelFile(const biorbd::utils::Path &path){
     // Ajouter les éléments entrés
     biorbd::Model model;
     readModelFile(path, &model);
     return model;
 }
 
-void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, biorbd::Model *model)
+void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Model *model)
 {	// Ouverture du fichier
     if (!is_readable(path))
         biorbd::utils::Error::error(false, "File " + path + " could not be open");
@@ -161,7 +158,7 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, biorbd:
                         // Transcrire les translations
                         for (unsigned int i=0; i<3; ++i)
                             file.read(trans(i));
-                        Attitude RT(rot, trans, seq);
+                        biorbd::utils::Attitude RT(rot, trans, seq);
                         RT_R = RT.rot().transpose();
                         RT_T = RT.trans();
 
@@ -286,7 +283,7 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, biorbd:
             file.read(name);
             unsigned int parent_int = 0;
             biorbd::utils::String parent_str("root");
-            Attitude RT;
+            biorbd::utils::Attitude RT;
             bool RTinMatrix(true);
             if (version == 3) // Par défaut pour la version 3 (pas en matrice)
                 RTinMatrix = false;
@@ -322,7 +319,7 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, biorbd:
                         // Transcrire les translations
                         for (unsigned int i=0; i<3; ++i)
                             file.read(trans(i));
-                        RT = Attitude(rot, trans, seq);
+                        RT = biorbd::utils::Attitude(rot, trans, seq);
                     }
                     isRTset = true;
                 }
@@ -376,8 +373,8 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, biorbd:
             unsigned int id_successor = 0;
             biorbd::utils::String predecessor_str("root");
             biorbd::utils::String successor_str("root");
-            Attitude X_predecessor;
-            Attitude X_successor;
+            biorbd::utils::Attitude X_predecessor;
+            biorbd::utils::Attitude X_successor;
             biorbd::utils::Vector axis(6);
             bool enableStabilization(false);
             double stabilizationParam(-1);
@@ -407,7 +404,7 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, biorbd:
                     // Transcrire les translations
                     for (unsigned int i=0; i<3; ++i)
                         file.read(trans(i));
-                    X_predecessor = Attitude(rot, trans, seq);
+                    X_predecessor = biorbd::utils::Attitude(rot, trans, seq);
                 } else if (!tp.tolower().compare("rtsuccessor")){
                     biorbd::utils::String seq("xyz");
                     biorbd::utils::Node rot;
@@ -420,7 +417,7 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, biorbd:
                     // Transcrire les translations
                     for (unsigned int i=0; i<3; ++i)
                         file.read(trans(i));
-                    X_successor = Attitude(rot, trans, seq);
+                    X_successor = biorbd::utils::Attitude(rot, trans, seq);
                 } else if (!tp.tolower().compare("axis"))
                     for (unsigned int i=0; i<axis.size(); ++i)
                         file.read(axis(i), variable);
@@ -796,7 +793,7 @@ void biorbd::utils::Read::readModelFile(const biorbd::utils::Path &path, biorbd:
     // std::cout << "Model file successfully loaded" << std::endl;
     file.close();
 }
-std::vector<std::vector<Eigen::Vector3d>> biorbd::utils::Read::readMarkerDataFile(const biorbd::utils::String &path){
+std::vector<std::vector<Eigen::Vector3d>> biorbd::Reader::readMarkerDataFile(const biorbd::utils::String &path){
     // Ouverture du fichier
     // std::cout << "Loading marker file: " << path << std::endl;
     biorbd::utils::IfStream file(path.c_str(), std::ios::in);
@@ -846,7 +843,7 @@ std::vector<std::vector<Eigen::Vector3d>> biorbd::utils::Read::readMarkerDataFil
     return markers;
 }
 
-std::vector<biorbd::utils::GenCoord> biorbd::utils::Read::readQDataFile(const biorbd::utils::String &path){
+std::vector<biorbd::rigidbody::GeneralizedCoordinates> biorbd::Reader::readQDataFile(const biorbd::utils::String &path){
     // Ouverture du fichier
     // std::cout << "Loading kin file: " << path << std::endl;
     biorbd::utils::IfStream file(path.c_str(), std::ios::in);
@@ -867,7 +864,7 @@ std::vector<biorbd::utils::GenCoord> biorbd::utils::Read::readQDataFile(const bi
     file.readSpecificTag("nbintervals", tp);
     unsigned int nbIntervals(static_cast<unsigned int>(atoi(tp.c_str())));
 
-    std::vector<GenCoord> kinematics;
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> kinematics;
     // Descendre jusqu'à la définition d'un markeur
     for (unsigned int j=0; j<nbIntervals+1; j++){
         while (tp.compare("T")){
@@ -877,7 +874,7 @@ std::vector<biorbd::utils::GenCoord> biorbd::utils::Read::readQDataFile(const bi
 
         double time;
         file.read(time);
-        GenCoord position(NDDL);
+        biorbd::rigidbody::GeneralizedCoordinates position(NDDL);
         for (unsigned int i=0; i<NDDL; i++)
             file.read(position(i));
 
@@ -892,7 +889,7 @@ std::vector<biorbd::utils::GenCoord> biorbd::utils::Read::readQDataFile(const bi
     return kinematics;
 }
 
-std::vector<Eigen::VectorXd> biorbd::utils::Read::readActivationDataFile(const biorbd::utils::String &path){
+std::vector<Eigen::VectorXd> biorbd::Reader::readActivationDataFile(const biorbd::utils::String &path){
     // Ouverture du fichier
     // std::cout << "Loading kin file: " << path << std::endl;
     biorbd::utils::IfStream file(path.c_str(), std::ios::in);
@@ -938,7 +935,7 @@ std::vector<Eigen::VectorXd> biorbd::utils::Read::readActivationDataFile(const b
     return activations;
 }
 
-std::vector<Eigen::VectorXd> biorbd::utils::Read::readTorqueDataFile(const biorbd::utils::String &path){
+std::vector<Eigen::VectorXd> biorbd::Reader::readTorqueDataFile(const biorbd::utils::String &path){
     // Ouverture du fichier
     // std::cout << "Loading kin file: " << path << std::endl;
     biorbd::utils::IfStream file(path.c_str(), std::ios::in);
@@ -951,9 +948,9 @@ std::vector<Eigen::VectorXd> biorbd::utils::Read::readTorqueDataFile(const biorb
     unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
     biorbd::utils::Error::error(version == 1, "Version not implemented yet");
 
-    // Déterminer le nombre de tau
-    file.readSpecificTag("ntau", tp); //
-    unsigned int nTau(static_cast<unsigned int>(atoi(tp.c_str())));
+    // Déterminer le nombre de GeneralizedTorque
+    file.readSpecificTag("nGeneralizedTorque", tp); //
+    unsigned int nGeneralizedTorque(static_cast<unsigned int>(atoi(tp.c_str())));
 
     // Déterminer le nombre de noeud
     file.readSpecificTag("nbintervals", tp);
@@ -964,16 +961,16 @@ std::vector<Eigen::VectorXd> biorbd::utils::Read::readTorqueDataFile(const biorb
     for (unsigned int j=0; j<nbIntervals+1; j++){
         while (tp.compare("T")){
             bool check = file.read(tp);
-            biorbd::utils::Error::error(check, "Kin file error, wrong size of NTAU or intervals?"); //
+            biorbd::utils::Error::error(check, "Kin file error, wrong size of NGeneralizedTorque or intervals?"); //
         }
 
         // Lire la première ligne qui est le timestamp
         double time;
         file.read(time);
 
-        // Lire le vecteur de Tau associé au time stamp
-        Eigen::VectorXd torque_tp(nTau);
-        for (unsigned int i=0; i<nTau; i++)
+        // Lire le vecteur de GeneralizedTorque associé au time stamp
+        Eigen::VectorXd torque_tp(nGeneralizedTorque);
+        for (unsigned int i=0; i<nGeneralizedTorque; i++)
             file.read(torque_tp(i));
 
         torque.push_back(torque_tp);
@@ -987,7 +984,7 @@ std::vector<Eigen::VectorXd> biorbd::utils::Read::readTorqueDataFile(const biorb
 
 }
 
-std::vector<Eigen::VectorXd> biorbd::utils::Read::readGrfDataFile(const biorbd::utils::String &path){
+std::vector<Eigen::VectorXd> biorbd::Reader::readGrfDataFile(const biorbd::utils::String &path){
     // Ouverture du fichier
     // std::cout << "Loading grf file: " << path << std::endl;
     biorbd::utils::IfStream file(path.c_str(), std::ios::in);
@@ -1020,7 +1017,7 @@ std::vector<Eigen::VectorXd> biorbd::utils::Read::readGrfDataFile(const biorbd::
         double time;
         file.read(time);
 
-        // Lire le vecteur de Tau associÃ© au time stamp
+        // Lire le vecteur de GeneralizedTorque associÃ© au time stamp
         Eigen::VectorXd grf_tp(NGRF);
         for (unsigned int i=0; i<NGRF; i++)
             file.read(grf_tp(i));
@@ -1036,7 +1033,7 @@ std::vector<Eigen::VectorXd> biorbd::utils::Read::readGrfDataFile(const biorbd::
 
 }
 
-void biorbd::utils::Read::readViconForceFile(const biorbd::utils::String &path, // Path to the file
+void biorbd::Reader::readViconForceFile(const biorbd::utils::String &path, // Path to the file
                                     std::vector<std::vector<unsigned int>> &frame, // Time vector * number of pf
                                     std::vector<unsigned int> &frequency,// Acquisition frequency * number of pf
                                     std::vector<std::vector<Eigen::Vector3d>> &force, // Linear forces (x,y,z) * number of pf
@@ -1121,7 +1118,7 @@ void biorbd::utils::Read::readViconForceFile(const biorbd::utils::String &path, 
     }
 }
 
-std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::utils::Read::readViconForceFile(const biorbd::utils::String &path){
+std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::Reader::readViconForceFile(const biorbd::utils::String &path){
     // Lire le fichier
     std::vector<std::vector<unsigned int>> frame;
     std::vector<unsigned int> frequency;// Acquisition frequency
@@ -1149,7 +1146,7 @@ std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::utils::
     return st;
 }
 
-std::vector<std::vector<biorbd::utils::Node>>  biorbd::utils::Read::readViconMarkerFile(const biorbd::utils::String &path, std::vector<biorbd::utils::String> &markOrder, int nNodes){
+std::vector<std::vector<biorbd::utils::Node>>  biorbd::Reader::readViconMarkerFile(const biorbd::utils::String &path, std::vector<biorbd::utils::String> &markOrder, int nNodes){
     // Lire le fichier
     biorbd::utils::IfStream file(path.c_str(), std::ios::in);
     biorbd::utils::String t;
@@ -1273,7 +1270,7 @@ std::vector<std::vector<biorbd::utils::Node>>  biorbd::utils::Read::readViconMar
     return data;
 }
 
-biorbd::rigidbody::Mesh biorbd::utils::Read::readBoneMeshFileBiorbdBones(const biorbd::utils::Path &path)
+biorbd::rigidbody::Mesh biorbd::Reader::readBoneMeshFileBiorbdBones(const biorbd::utils::Path &path)
 {
     // Lire un fichier d'os
 
@@ -1324,7 +1321,7 @@ biorbd::rigidbody::Mesh biorbd::utils::Read::readBoneMeshFileBiorbdBones(const b
 }
 
 
-biorbd::rigidbody::Mesh biorbd::utils::Read::readBoneMeshFilePly(const biorbd::utils::Path &path)
+biorbd::rigidbody::Mesh biorbd::Reader::readBoneMeshFilePly(const biorbd::utils::Path &path)
 {
     // Lire un fichier d'os
 
@@ -1384,7 +1381,7 @@ biorbd::rigidbody::Mesh biorbd::utils::Read::readBoneMeshFilePly(const biorbd::u
 }
 
 
-std::vector<std::vector<biorbd::utils::Node>>  biorbd::utils::Read::readViconMarkerFile(const biorbd::utils::String &path, int nNodes){
+std::vector<std::vector<biorbd::utils::Node>>  biorbd::Reader::readViconMarkerFile(const biorbd::utils::String &path, int nNodes){
     // Lire le fichier
     biorbd::utils::IfStream file(path.c_str(), std::ios::in);
     biorbd::utils::String t;

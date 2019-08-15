@@ -10,7 +10,7 @@
 #include "BiorbdModel.h"
 #include "biorbdConfig.h"
 #include "Utils/Matrix.h"
-#include "Utils/Read.h"
+#include "ModelReader.h"
 #include "Utils/Error.h"
 
 #include "class_handle.h"
@@ -159,16 +159,16 @@ void functionHub( int nlhs, mxArray *plhs[],
         return;
     }
 
-    // Nombre de controls (tau)
+    // Nombre de controls (GeneralizedTorque)
     if (!toLower(cmd).compare("ncontrol")){
-        biorbd::utils::Error::warning(0, "La fonction \"nControl\" est obsolete. Remplacer par \"nTau\". Elle sera retirée prochainement");
-        Matlab_nTau(nlhs, plhs, nrhs, prhs);
+        biorbd::utils::Error::warning(0, "La fonction \"nControl\" est obsolete. Remplacer par \"nGeneralizedTorque\". Elle sera retirée prochainement");
+        Matlab_nGeneralizedTorque(nlhs, plhs, nrhs, prhs);
         return;
     }
 
-    // Nombre de Tau
-    if (!toLower(cmd).compare("ntau")){
-        Matlab_nTau(nlhs, plhs, nrhs, prhs);
+    // Nombre de GeneralizedTorque
+    if (!toLower(cmd).compare("nGeneralizedTorque")){
+        Matlab_nGeneralizedTorque(nlhs, plhs, nrhs, prhs);
         return;
     }
 

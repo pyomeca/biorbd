@@ -17,7 +17,7 @@ void Matlab_CoMJacobian( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Trouver la jacobienne du COM
     RigidBodyDynamics::Math::MatrixNd Jaco = model->CoMJacobian(Q).transpose();

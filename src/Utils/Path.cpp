@@ -1,11 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Path.h"
 
-#ifdef _WIN64
-    #include <direct.h>
-    #include <Windows.h>
-    #undef max
-#elseif _WIN32
+#if defined(_WIN32) || defined(_WIN64)
     #include <direct.h>
     #include <Windows.h>
     #undef max
@@ -73,7 +69,7 @@ bool biorbd::utils::Path::isFolderExist(const Path &path)
 
 bool biorbd::utils::Path::isFolderExist(const biorbd::utils::String & path)
 {
-#ifdef _WIN64
+#if defined(_WIN32) || defined(_WIN64)
 	if (GetFileAttributesA(path.c_str()) == INVALID_FILE_ATTRIBUTES)
 		return false; // Le path est invalide
 	else
@@ -81,16 +77,7 @@ bool biorbd::utils::Path::isFolderExist(const biorbd::utils::String & path)
 		if (isFileExist(path))
 			return false;
 		else
-			return true;
-#elseif _WIN32
-	if (GetFileAttributesA(path.c_str()) == INVALID_FILE_ATTRIBUTES)
-		return false; // Le path est invalide
-	else
-		// Si on est ici, c'est que quelque chose existe, s'assurer que ça ne soit pas un fichier
-		if (isFileExist(path))
-			return false;
-		else
-			return true;
+            return true;
 #else
     struct stat statbuf;
     if (stat(path.c_str(), &statbuf) != -1) {
@@ -211,9 +198,7 @@ biorbd::utils::String biorbd::utils::Path::getRelativePath(const biorbd::utils::
 
 biorbd::utils::String biorbd::utils::Path::getAbsolutePath() const
 {
-#ifdef _WIN64
-    biorbd::utils::String base("C:\\");
-#elseif _WIN32
+#if defined(_WIN32) || defined(_WIN64)
     biorbd::utils::String base("C:\\");
 #else
     biorbd::utils::String base("/");
@@ -239,12 +224,10 @@ const biorbd::utils::String& biorbd::utils::Path::extension() const
 
 const char * biorbd::utils::Path::getCurrentDir()
 {
-    #ifdef _WIN64
-        return _getcwd(nullptr, 0);
-    #elseif _WIN32
-        return _getcwd(nullptr, 0);
-    #else
-        return getcwd(nullptr, 0);
+#if defined(_WIN32) || defined(_WIN64)
+    return _getcwd(nullptr, 0);
+#else
+    return getcwd(nullptr, 0);
 #endif
 }
 
@@ -269,12 +252,10 @@ void biorbd::utils::Path::createFolder() const
 
             // Séparer la première et la dernière partie
             if (!isFolderExist(static_cast<biorbd::utils::String>(tp.substr(0, sepTrack)))){
-#ifdef _WIN64
-				_mkdir(tp.substr(0, sepTrack).c_str());
-#elseif _WIN32
-				_mkdir(tp.substr(0, sepTrack).c_str());
+#if defined(_WIN32) || defined(_WIN64)
+    _mkdir(tp.substr(0, sepTrack).c_str());
 #else
-                mkdir(tp.substr(0, sepTrack).c_str(), 0777);
+    mkdir(tp.substr(0, sepTrack).c_str(), 0777);
 #endif
             }
         }

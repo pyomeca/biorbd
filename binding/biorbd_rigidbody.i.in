@@ -4,8 +4,8 @@
 
 #include "BiorbdModel.h"
 #include "biorbdConfig.h"
-#include "Utils/GenCoord.h"
-#include "Utils/Tau.h"
+#include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedTorque.h"
 
 #include "RigidBody/Bone.h"
 #include "RigidBody/BoneMesh.h"
@@ -17,53 +17,55 @@
 
 // Exposing some useful functions
 %extend biorbd::rigidbody::Joints{
-    biorbd::utils::Tau InverseDynamics(
-                const biorbd::utils::GenCoord &Q,
-                const biorbd::utils::GenCoord &QDot,
-                const biorbd::utils::GenCoord &QDDot) {
-        biorbd::utils::Tau Tau(*self);
-        RigidBodyDynamics::InverseDynamics(*self, Q, QDot, QDDot, Tau);
-        return Tau;
+    biorbd::rigidbody::GeneralizedTorque InverseDynamics(
+                const biorbd::rigidbody::GeneralizedCoordinates &Q,
+                const biorbd::rigidbody::GeneralizedCoordinates &QDot,
+                const biorbd::rigidbody::GeneralizedCoordinates &QDDot) {
+        biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(*self);
+        RigidBodyDynamics::InverseDynamics(*self, Q, QDot, QDDot, GeneralizedTorque);
+        return GeneralizedTorque;
     }
 
-    biorbd::utils::GenCoord ForwardDynamics(
-                const biorbd::utils::GenCoord &Q,
-                const biorbd::utils::GenCoord &QDot,
-                const biorbd::utils::Tau &Tau) {
-        biorbd::utils::GenCoord QDDot(*self);
-        RigidBodyDynamics::ForwardDynamics(*self, Q, QDot, Tau, QDDot);
+    biorbd::rigidbody::GeneralizedCoordinates ForwardDynamics(
+                const biorbd::rigidbody::GeneralizedCoordinates &Q,
+                const biorbd::rigidbody::GeneralizedCoordinates &QDot,
+                const biorbd::rigidbody::GeneralizedTorque &GeneralizedTorque) {
+        biorbd::rigidbody::GeneralizedCoordinates QDDot(*self);
+        RigidBodyDynamics::ForwardDynamics(*self, Q, QDot, GeneralizedTorque, QDDot);
         return QDDot;
     }
 
-    biorbd::utils::GenCoord ForwardDynamicsLagrangian(
-                const biorbd::utils::GenCoord &Q,
-                const biorbd::utils::GenCoord &QDot,
-                const biorbd::utils::Tau &Tau) {
-        biorbd::utils::GenCoord QDDot(*self);
-        RigidBodyDynamics::ForwardDynamicsLagrangian(*self, Q, QDot, Tau, QDDot);
+    biorbd::rigidbody::GeneralizedCoordinates ForwardDynamicsLagrangian(
+                const biorbd::rigidbody::GeneralizedCoordinates &Q,
+                const biorbd::rigidbody::GeneralizedCoordinates &QDot,
+                const biorbd::rigidbody::GeneralizedTorque &GeneralizedTorque) {
+        biorbd::rigidbody::GeneralizedCoordinates QDDot(*self);
+        RigidBodyDynamics::ForwardDynamicsLagrangian(*self, Q, QDot, GeneralizedTorque, QDDot);
         return QDDot;
     }
 
-    biorbd::utils::GenCoord ForwardDynamicsConstraintsDirect(
-                const biorbd::utils::GenCoord &Q,
-                const biorbd::utils::GenCoord &QDot,
-                const biorbd::utils::Tau &Tau,
+    biorbd::rigidbody::GeneralizedCoordinates ForwardDynamicsConstraintsDirect(
+                const biorbd::rigidbody::GeneralizedCoordinates &Q,
+                const biorbd::rigidbody::GeneralizedCoordinates &QDot,
+                const biorbd::rigidbody::GeneralizedTorque &GeneralizedTorque,
                 biorbd::rigidbody::Contacts& CS) {
-        biorbd::utils::GenCoord QDDot(*self);
-        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
+        biorbd::rigidbody::GeneralizedCoordinates QDDot(*self);
+        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, GeneralizedTorque, CS, QDDot);
         return QDDot;
     }
-    biorbd::utils::GenCoord ForwardDynamicsConstraintsDirect(
-                const biorbd::utils::GenCoord &Q,
-                const biorbd::utils::GenCoord &QDot,
-                const biorbd::utils::Tau &Tau) {
-        biorbd::utils::GenCoord QDDot(*self);
+    biorbd::rigidbody::GeneralizedCoordinates ForwardDynamicsConstraintsDirect(
+                const biorbd::rigidbody::GeneralizedCoordinates &Q,
+                const biorbd::rigidbody::GeneralizedCoordinates &QDot,
+                const biorbd::rigidbody::GeneralizedTorque &GeneralizedTorque) {
+        biorbd::rigidbody::GeneralizedCoordinates QDDot(*self);
         biorbd::rigidbody::Contacts& CS = self->getConstraints_nonConst();
-        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
+        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, GeneralizedTorque, CS, QDDot);
         return QDDot;
     }
 }
 
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/GeneralizedCoordinates.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/GeneralizedTorque.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Markers.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Contacts.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/NodeBone.h"

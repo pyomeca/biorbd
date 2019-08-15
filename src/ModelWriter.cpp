@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "Utils/Writer.h"
+#include "ModelWriter.h"
 
 #include <iostream>
 #include <fstream>
@@ -9,7 +9,7 @@
 #include "RigidBody/NodeBone.h"
 #include "RigidBody/Bone.h"
 
-void biorbd::utils::Writer::writeModel(
+void biorbd::Writer::writeModel(
         biorbd::Model & m,
         const biorbd::utils::Path& pathToWrite){
     biorbd::utils::String sep("\t"); // separator in the file
@@ -36,7 +36,7 @@ void biorbd::utils::Writer::writeModel(
     biorbdModelFile << std::endl;
 
     // Informations sur les segments
-    std::vector<Attitude> localJCS = m.localJCS();
+    std::vector<biorbd::utils::Attitude> localJCS = m.localJCS();
     for (unsigned int i = 0; i<m.nbBone(); ++i){
         biorbdModelFile << com << " Informations about " << m.bone(i).name() << " segment" << std::endl;
         biorbdModelFile << sep << com << " Segment" << std::endl;

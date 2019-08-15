@@ -33,8 +33,8 @@ biorbd::muscles::Geometry::~Geometry()
 // ------ FONCTIONS PUBLIQUES ------ //
 void biorbd::muscles::Geometry::updateKinematics(
         biorbd::rigidbody::Joints &model,
-        const biorbd::utils::GenCoord *Q,
-        const biorbd::utils::GenCoord *Qdot,
+        const biorbd::rigidbody::GeneralizedCoordinates *Q,
+        const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
         const biorbd::muscles::Caracteristics &c,
         const biorbd::muscles::PathChangers& o,
         int updateKin){
@@ -60,7 +60,7 @@ void biorbd::muscles::Geometry::updateKinematics(
 void biorbd::muscles::Geometry::updateKinematics(
         std::vector<biorbd::muscles::MuscleNode>& musclePointsInGlobal,
         biorbd::utils::Matrix &jacoPointsInGlobal,
-        const biorbd::utils::GenCoord *Qdot,
+        const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
         const biorbd::muscles::Caracteristics &c){
     m_posAndJacoWereForced = true;
 
@@ -75,7 +75,7 @@ void biorbd::muscles::Geometry::updateKinematics(
 }
 
 void biorbd::muscles::Geometry::_updateKinematics(
-        const biorbd::utils::GenCoord *Qdot,
+        const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
         const biorbd::muscles::Caracteristics &c,
         const biorbd::muscles::PathChangers * o){
     // Calculer les longueurs et vitesses
@@ -165,7 +165,7 @@ const biorbd::utils::Matrix &biorbd::muscles::Geometry::jacobianLength() const{
 
 const biorbd::muscles::MuscleNode &biorbd::muscles::Geometry::originInGlobal(
         biorbd::rigidbody::Joints &model,
-        const biorbd::utils::GenCoord &Q){
+        const biorbd::rigidbody::GeneralizedCoordinates &Q){
     // Sortir la position du marqueur en fonction de la position donnée
     m_originInGlobal.block(0,0,3,1) = RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(m_origin.parent().c_str()), m_origin.position(),false);
     return m_originInGlobal;
@@ -173,7 +173,7 @@ const biorbd::muscles::MuscleNode &biorbd::muscles::Geometry::originInGlobal(
 
 const biorbd::muscles::MuscleNode &biorbd::muscles::Geometry::insertionInGlobal(
         biorbd::rigidbody::Joints &model,
-        const biorbd::utils::GenCoord &Q){
+        const biorbd::rigidbody::GeneralizedCoordinates &Q){
     // Sortir la position du marqueur en fonction de la position donnée
     m_insertionInGlobal.block(0,0,3,1) = RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(m_insertion.parent().c_str()), m_insertion.position(),false);
     return m_insertionInGlobal;
@@ -220,7 +220,7 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(std::vector<biorbd::muscle
 
 void biorbd::muscles::Geometry::musclesPointsInGlobal(
         biorbd::rigidbody::Joints &model,
-        const biorbd::utils::GenCoord &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::muscles::PathChangers& objects){
     // Variable de sortie (remettre a zero)
     m_pointsInLocal.clear();
@@ -286,11 +286,11 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(
     setJacobianDimension(model);
 }
 
-double biorbd::muscles::Geometry::velocity(const biorbd::utils::GenCoord &Qdot){
+double biorbd::muscles::Geometry::velocity(const biorbd::rigidbody::GeneralizedCoordinates &Qdot){
 
     // Calculer la vitesse d'élongation musculaire
-    // TODO remove the construction of GenCoord and see for the calculation itself
-    biorbd::utils::GenCoord velocity(jacobianLength()*Qdot); // Vector 1 element, mais le compilateur ne le sais pas
+    // TODO remove the construction of GeneralizedCoordinates and see for the calculation itself
+    biorbd::rigidbody::GeneralizedCoordinates velocity(jacobianLength()*Qdot); // Vector 1 element, mais le compilateur ne le sais pas
     m_velocity = velocity[0];
 
     return m_velocity;
@@ -309,7 +309,7 @@ void biorbd::muscles::Geometry::jacobian(const biorbd::utils::Matrix &jaco){
 
 void biorbd::muscles::Geometry::jacobian(
         biorbd::rigidbody::Joints &model,
-        const biorbd::utils::GenCoord &Q){
+        const biorbd::rigidbody::GeneralizedCoordinates &Q){
     for (unsigned int i=0; i<m_pointsInLocal.size(); ++i){
         m_G.setZero();
         RigidBodyDynamics::CalcPointJacobian(model, Q, model.GetBodyId((m_pointsInLocal[i]).parent().c_str()), (m_pointsInLocal[i]).position(), m_G, false); // False for speed

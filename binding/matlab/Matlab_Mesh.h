@@ -16,7 +16,7 @@ void Matlab_Mesh( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Recevoir l'index (si envoye)
     int idx(-1);

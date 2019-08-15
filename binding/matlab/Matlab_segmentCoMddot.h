@@ -18,11 +18,11 @@ void Matlab_segmentCOMddot( int, mxArray *plhs[],
     unsigned int nQddot = model->nbQddot(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
     // Recevoir Qdot
-    biorbd::utils::GenCoord QDot = *getParameterQdot(prhs, 3, nQdot).begin();
+    biorbd::rigidbody::GeneralizedCoordinates QDot = *getParameterQdot(prhs, 3, nQdot).begin();
     // Recevoir Qddot
-    biorbd::utils::GenCoord QDDot = *getParameterQddot(prhs, 4, nQddot).begin();
+    biorbd::rigidbody::GeneralizedCoordinates QDDot = *getParameterQddot(prhs, 4, nQddot).begin();
     // Recevoir le numéro du segment (optionnel)
     int i(0);
     if (nrhs==6)

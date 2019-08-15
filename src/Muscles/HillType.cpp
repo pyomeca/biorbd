@@ -2,7 +2,7 @@
 #include "Muscles/HillType.h"
 
 #include "Utils/Error.h"
-#include "Utils/GenCoord.h"
+#include "RigidBody/GeneralizedCoordinates.h"
 #include "Muscles/ForceFromOrigin.h"
 #include "Muscles/ForceFromInsertion.h"
 
@@ -133,8 +133,8 @@ void biorbd::muscles::HillType::setForce()
 
 const std::vector<std::shared_ptr<biorbd::muscles::Force>>& biorbd::muscles::HillType::force(
         biorbd::rigidbody::Joints& m,
-        const biorbd::utils::GenCoord& Q,
-        const biorbd::utils::GenCoord& Qdot,
+        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+        const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
         const biorbd::muscles::StateDynamics& EMG,
         const int updateKinLevel){
     // Update de la configuration
@@ -151,7 +151,7 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force>>& biorbd::muscles::Hil
 
 const std::vector<std::shared_ptr<biorbd::muscles::Force>> &biorbd::muscles::HillType::force(
         biorbd::rigidbody::Joints &,
-        const biorbd::utils::GenCoord &,
+        const biorbd::rigidbody::GeneralizedCoordinates &,
         const biorbd::muscles::StateDynamics &,
         const int)
 {

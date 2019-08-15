@@ -5,7 +5,7 @@
 #include <rbdl/Kinematics.h>
 #include "Utils/String.h"
 #include "Utils/Matrix.h"
-#include "Utils/GenCoord.h"
+#include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/Patch.h"
 #include "RigidBody/NodeBone.h"
@@ -59,7 +59,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::marker(
 // Se faire renvoyer un marqueur
 biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::Tags(
         biorbd::rigidbody::Joints &model,
-        const biorbd::utils::GenCoord &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::NodeBone &n,
         bool removeAxis,
         bool updateKin)
@@ -75,7 +75,7 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::Tags(
 // Se faire renvoyer un marker
 biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::Tags(
         biorbd::rigidbody::Joints& model,
-        const biorbd::utils::GenCoord &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const unsigned int &idx,
         bool removeAxis,
         bool updateKin){
@@ -102,7 +102,7 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::Tags(
 // Se faire renvoyer les markers
 std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::Tags(
         biorbd::rigidbody::Joints& model,
-        const biorbd::utils::GenCoord &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool removeAxis,
         bool updateKin){
     std::vector<biorbd::rigidbody::NodeBone> pos;
@@ -126,8 +126,8 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::Tags(bool r
 // Se faire renvoyer un marker
 biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::TagsVelocity(
         biorbd::rigidbody::Joints& model,
-        const biorbd::utils::GenCoord &Q,
-        const biorbd::utils::GenCoord &Qdot,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         const unsigned int &idx,
         bool removeAxis,
         bool updateKin){
@@ -145,8 +145,8 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::TagsVelocity(
 // Se faire renvoyer les markers
 std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::TagsVelocity(
         biorbd::rigidbody::Joints& model,
-        const biorbd::utils::GenCoord &Q,
-        const biorbd::utils::GenCoord &Qdot,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         bool removeAxis,
         bool updateKin){
     std::vector<biorbd::rigidbody::NodeBone> pos;
@@ -162,7 +162,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::TagsVelocit
 // Se faire renvoyer les markers techniques
 std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::technicalTags(
         biorbd::rigidbody::Joints& model,
-        const biorbd::utils::GenCoord &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool removeAxis,
         bool updateKin){
     std::vector<biorbd::rigidbody::NodeBone> pos;
@@ -184,7 +184,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::technicalTa
 // Se faire renvoyer les markers anatomiques
 std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::anatomicalTags(
         biorbd::rigidbody::Joints& model,
-        const biorbd::utils::GenCoord &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool removeAxis,
         bool updateKin){
     std::vector<biorbd::rigidbody::NodeBone> pos;
@@ -223,7 +223,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::AnatomicalT
 
 std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::segmentTags(
         biorbd::rigidbody::Joints& model,
-        const biorbd::utils::GenCoord &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const unsigned int &idx,
         bool removeAxis,
         bool updateKin){
@@ -262,7 +262,7 @@ unsigned int biorbd::rigidbody::Markers::nTags(biorbd::rigidbody::Joints& model,
 // Se faire renvoyer la jacobienne des markers
 std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::TagsJacobian(
         biorbd::rigidbody::Joints& model,
-        const biorbd::utils::GenCoord &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool removeAxis,
         bool updateKin){
     return TagsJacobian(model, Q, removeAxis, updateKin, false);
@@ -270,7 +270,7 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::TagsJacobian(
 
 std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::TechnicalTagsJacobian(
         biorbd::rigidbody::Joints& model,
-        const biorbd::utils::GenCoord &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool removeAxis,
         bool updateKin){
     return TagsJacobian(model, Q, removeAxis, updateKin, true);
@@ -279,7 +279,7 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::TechnicalTagsJaco
 // Se faire renvoyer la jacobienne des marker techniques
 biorbd::utils::Matrix biorbd::rigidbody::Markers::TagsJacobian(
         biorbd::rigidbody::Joints& model,
-        const biorbd::utils::GenCoord &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::utils::String& parentName,
         const Eigen::Vector3d& p,
         bool updateKin){
@@ -295,7 +295,7 @@ biorbd::utils::Matrix biorbd::rigidbody::Markers::TagsJacobian(
 // Se faire renvoyer la jacobienne des marker techniques
 std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::TagsJacobian(
         biorbd::rigidbody::Joints& model,
-        const biorbd::utils::GenCoord &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool removeAxis,
         bool updateKin,
         bool lookForTechnical){

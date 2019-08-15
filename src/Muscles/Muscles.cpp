@@ -2,8 +2,8 @@
 #include "Muscles/Muscles.h"
 
 #include "Utils/Error.h"
-#include "Utils/GenCoord.h"
-#include "Utils/Tau.h"
+#include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedTorque.h"
 #include "Muscles/Muscle.h"
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/StateDynamics.h"
@@ -52,13 +52,13 @@ const biorbd::muscles::MuscleGroup &biorbd::muscles::Muscles::muscleGroup(const 
 }
 
 // From muscle activation (return muscle force)
-biorbd::utils::Tau biorbd::muscles::Muscles::muscularJointTorque(
+biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorque(
         biorbd::rigidbody::Joints& m,
         const std::vector<biorbd::muscles::StateDynamics> &state,
         Eigen::VectorXd & F,
         bool updateKin,
-        const biorbd::utils::GenCoord* Q,
-        const biorbd::utils::GenCoord* QDot){
+        const biorbd::rigidbody::GeneralizedCoordinates* Q,
+        const biorbd::rigidbody::GeneralizedCoordinates* QDot){
 
     // Update de la position musculaire
     if (updateKin > 0)
@@ -73,23 +73,23 @@ biorbd::utils::Tau biorbd::muscles::Muscles::muscularJointTorque(
 }
 
 // From muscle activation (do not return muscle force)
-biorbd::utils::Tau biorbd::muscles::Muscles::muscularJointTorque(
+biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorque(
         biorbd::rigidbody::Joints& m,
         const std::vector<biorbd::muscles::StateDynamics>& state,
         bool updateKin,
-        const biorbd::utils::GenCoord* Q,
-        const biorbd::utils::GenCoord* QDot){
-    biorbd::utils::GenCoord dummy;
+        const biorbd::rigidbody::GeneralizedCoordinates* Q,
+        const biorbd::rigidbody::GeneralizedCoordinates* QDot){
+    biorbd::rigidbody::GeneralizedCoordinates dummy;
     return muscularJointTorque(m, state, dummy, updateKin, Q, QDot);
 }
 
 // From Muscular Force
-biorbd::utils::Tau biorbd::muscles::Muscles::muscularJointTorque(
+biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorque(
         biorbd::rigidbody::Joints& m,
         const Eigen::VectorXd& F,
         bool updateKin,
-        const biorbd::utils::GenCoord* Q,
-        const biorbd::utils::GenCoord* QDot){
+        const biorbd::rigidbody::GeneralizedCoordinates* Q,
+        const biorbd::rigidbody::GeneralizedCoordinates* QDot){
 
     // Update de la position musculaire
     if (updateKin > 0)
@@ -100,15 +100,15 @@ biorbd::utils::Tau biorbd::muscles::Muscles::muscularJointTorque(
     biorbd::utils::Matrix jaco(musclesLengthJacobian(m));
 
     // Calcul de la réaction des forces sur les corps
-    return biorbd::utils::Tau(-jaco.transpose() * F);
+    return biorbd::rigidbody::GeneralizedTorque(-jaco.transpose() * F);
 }
 
 std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> biorbd::muscles::Muscles::musclesForces(
         biorbd::rigidbody::Joints& m,
         const std::vector<biorbd::muscles::StateDynamics> &state,
         bool updateKin,
-        const biorbd::utils::GenCoord* Q,
-        const biorbd::utils::GenCoord* QDot){
+        const biorbd::rigidbody::GeneralizedCoordinates* Q,
+        const biorbd::rigidbody::GeneralizedCoordinates* QDot){
 
     // Update de la position musculaire
     if (updateKin > 0)
@@ -151,7 +151,7 @@ biorbd::utils::Matrix biorbd::muscles::Muscles::musclesLengthJacobian(biorbd::ri
 
 biorbd::utils::Matrix biorbd::muscles::Muscles::musclesLengthJacobian(
         biorbd::rigidbody::Joints& m,
-        const biorbd::utils::GenCoord &Q){
+        const biorbd::rigidbody::GeneralizedCoordinates &Q){
 
     // Update de la position musculaire
     updateMuscles(m, Q, true);
@@ -168,8 +168,8 @@ unsigned int biorbd::muscles::Muscles::nbMuscleTotal() const{
 
 void biorbd::muscles::Muscles::updateMuscles(
         biorbd::rigidbody::Joints& m,
-        const biorbd::utils::GenCoord& Q,
-        const biorbd::utils::GenCoord& QDot,
+        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+        const biorbd::rigidbody::GeneralizedCoordinates& QDot,
         bool updateKin){
 
     // Updater tous les muscles
@@ -188,7 +188,7 @@ void biorbd::muscles::Muscles::updateMuscles(
 }
 void biorbd::muscles::Muscles::updateMuscles(
         biorbd::rigidbody::Joints& m,
-        const biorbd::utils::GenCoord& Q,
+        const biorbd::rigidbody::GeneralizedCoordinates& Q,
         bool updateKin){
 
     // Updater tous les muscles
@@ -209,7 +209,7 @@ void biorbd::muscles::Muscles::updateMuscles(
 void biorbd::muscles::Muscles::updateMuscles(
         std::vector<std::vector<biorbd::muscles::MuscleNode>>& musclePointsInGlobal,
         std::vector<biorbd::utils::Matrix> &jacoPointsInGlobal,
-        const biorbd::utils::GenCoord& QDot){
+        const biorbd::rigidbody::GeneralizedCoordinates& QDot){
     std::vector<biorbd::muscles::MuscleGroup>::iterator grp=m_mus.begin();
     unsigned int cmpMuscle = 0;
     for (unsigned int i=0; i<m_mus.size(); ++i) // groupe musculaire

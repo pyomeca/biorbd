@@ -4,7 +4,7 @@
 #include <memory>
 #include "biorbdConfig.h"
 #include "Utils/String.h"
-#include "Utils/GenCoord.h"
+#include "RigidBody/GeneralizedCoordinates.h"
 #include "Muscles/Force.h"
 #include "Muscles/Geometry.h"
 #include "Muscles/Caracteristics.h"
@@ -31,13 +31,13 @@ public:
     const biorbd::utils::String& type() const;
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
             biorbd::rigidbody::Joints& model,
-            const biorbd::utils::GenCoord& Q,
-            const biorbd::utils::GenCoord& Qdot,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
             const biorbd::muscles::StateDynamics& emg,
             const int updateKin = 2) = 0;
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
             biorbd::rigidbody::Joints& model,
-            const biorbd::utils::GenCoord& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::muscles::StateDynamics& emg,
             const int updateKin = 2) = 0;
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(const biorbd::muscles::StateDynamics& emg) = 0;

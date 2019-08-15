@@ -1,7 +1,10 @@
 #define BIORBD_API_EXPORTS
 #include "Actuators/ActuatorGauss6p.h"
 
-#include "Utils/GenCoord.h"
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+#include "RigidBody/GeneralizedCoordinates.h"
 
 biorbd::actuator::ActuatorGauss6p::ActuatorGauss6p(
         int direction,
@@ -45,8 +48,8 @@ biorbd::actuator::ActuatorGauss6p::~ActuatorGauss6p()
 
 
 double biorbd::actuator::ActuatorGauss6p::torqueMax(
-        const biorbd::utils::GenCoord &Q,
-        const biorbd::utils::GenCoord &Qdot){
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Qdot){
     double pos(Q[m_dofIdx] * 180/M_PI);
     double speed(Qdot[m_dofIdx] * 180/M_PI);
 

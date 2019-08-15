@@ -30,10 +30,10 @@ namespace std {
 
 // Exposing some useful functions
 %extend biorbd::Model{
-    biorbd::utils::Tau muscularJointTorque(
+    biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
                 const std::vector<biorbd::muscles::StateDynamics> &state,
-                const biorbd::utils::GenCoord &Q,
-                const biorbd::utils::GenCoord &QDot){
+                const biorbd::rigidbody::GeneralizedCoordinates &Q,
+                const biorbd::rigidbody::GeneralizedCoordinates &QDot){
         return self->muscularJointTorque(*self, state, true, &Q, &QDot);
     }
 

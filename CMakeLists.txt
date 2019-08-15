@@ -27,7 +27,11 @@ find_package(Dlib REQUIRED)
 find_package(IPOPT REQUIRED)
 
 # Prepare add library
-set(SRC_LIST src/BiorbdModel.cpp)
+set(SRC_LIST
+    src/BiorbdModel.cpp
+    src/ModelReader.cpp
+    src/ModelWriter.cpp
+)
 if (BUILD_SHARED_LIBS)
     add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 else()
@@ -98,7 +102,8 @@ install(TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION ${${PROJECT_NAME}_BIN_FOLDER}
         LIBRARY DESTINATION ${${PROJECT_NAME}_LIB_FOLDER}
         )
-install(DIRECTORY include DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER})
+install(DIRECTORY include/ DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER})
+install(FILES ${CMAKE_BINARY_DIR}/include/biorbdConfig.h DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER})
         
 # Add binding subdirectory
 add_subdirectory(binding)

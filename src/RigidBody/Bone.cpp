@@ -174,7 +174,7 @@ biorbd::utils::String biorbd::rigidbody::Bone::parentName(const biorbd::rigidbod
 int biorbd::rigidbody::Bone::plateformeIdx() const{
     return m_idxPF;
 }
-unsigned int biorbd::rigidbody::Bone::nTau() const{
+unsigned int biorbd::rigidbody::Bone::nGeneralizedTorque() const{
     return m_nDof;
 }
 unsigned int biorbd::rigidbody::Bone::nDof() const{

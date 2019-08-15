@@ -29,7 +29,7 @@ public:
             double* = nullptr); // Premier et dernier points musculaire
     void wrapPoints(
             biorbd::rigidbody::Joints&,
-            const biorbd::utils::GenCoord&,
+            const biorbd::rigidbody::GeneralizedCoordinates&,
             const biorbd::muscles::MuscleNode&,
             const biorbd::muscles::MuscleNode&,
             biorbd::muscles::MuscleNode&,
@@ -44,7 +44,7 @@ public:
     // Set et get
     virtual biorbd::utils::Attitude RT(
             biorbd::rigidbody::Joints &m,
-            const biorbd::utils::GenCoord& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const bool &updateKin = true);
     double diameter() const;
     double rayon() const;

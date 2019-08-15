@@ -16,7 +16,7 @@ void Matlab_ContactsPosition( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Trouver où sont les marqueurs
     std::vector<biorbd::utils::Node> Contact_tp = model->constraintsInGlobal(*model,Q, true);

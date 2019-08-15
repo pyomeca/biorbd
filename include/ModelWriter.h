@@ -8,6 +8,7 @@ class Model;
 
 namespace utils {
 class Path;
+}
 
 class BIORBD_API Writer
 {
@@ -18,6 +19,6 @@ public:
 
 };
 
-}}
+}
 
 #endif // BIORBD_UTILS_WRITER_H

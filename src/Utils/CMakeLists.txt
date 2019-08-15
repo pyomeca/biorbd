@@ -8,21 +8,16 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/Benchmark.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Equation.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Error.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/GenCoord.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/IfStream.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Integrator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Path.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Matrix.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Node.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/NodeAttitude.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Quaternion.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Read.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/String.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Tau.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Time.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Timer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Vector.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Writer.cpp
 )
 
 # Create the library
@@ -35,6 +30,7 @@ endif()
 # Add the include
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${RBDL_INCLUDE_DIR}
+    ${RBDL_INCLUDE_DIR}/..
     ${Boost_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
     ${DLIB_INCLUDE_DIR}
@@ -50,3 +46,5 @@ install(
     RUNTIME DESTINATION ${${MASTER_PROJECT_NAME}_BIN_FOLDER}
     LIBRARY DESTINATION ${${MASTER_PROJECT_NAME}_LIB_FOLDER}
 )
+set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH ${${MASTER_PROJECT_NAME}_BIN_FOLDER})
+set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)

@@ -9,8 +9,8 @@ biorbd::muscles::Caracteristics::Caracteristics(
         const double &pennAngle,
         const biorbd::muscles::State &stateMax,
         const biorbd::muscles::FatigueParameters &fatigueParameters,
-        const double tauAct,
-        const double tauDeact,
+        const double GeneralizedTorqueAct,
+        const double GeneralizedTorqueDeact,
         const double &minAct):
     m_optimalLength(optLength),
     m_fIsoMax(fmax),
@@ -19,8 +19,8 @@ biorbd::muscles::Caracteristics::Caracteristics(
     m_pennationAngle(pennAngle),
     m_stateMax(stateMax),
     m_minActivation(minAct),
-    m_tauActivation(tauAct),
-    m_tauDeactivation(tauDeact),
+    m_GeneralizedTorqueActivation(GeneralizedTorqueAct),
+    m_GeneralizedTorqueDeactivation(GeneralizedTorqueDeact),
     m_fatigueParameters(fatigueParameters)
 {
 
@@ -35,10 +35,10 @@ double biorbd::muscles::Caracteristics::PCSA() const {return m_PCSA;}
 
 void biorbd::muscles::Caracteristics::minActivation(double val){ m_minActivation = val;}
 double biorbd::muscles::Caracteristics::minActivation() const { return m_minActivation;}
-void biorbd::muscles::Caracteristics::tauActivation(double val){ m_tauActivation = val;}
-double biorbd::muscles::Caracteristics::tauActivation() const { return m_tauActivation;}
-void biorbd::muscles::Caracteristics::tauDeactivation(double val){ m_tauDeactivation = val;}
-double biorbd::muscles::Caracteristics::tauDeactivation() const { return m_tauDeactivation;}
+void biorbd::muscles::Caracteristics::GeneralizedTorqueActivation(double val){ m_GeneralizedTorqueActivation = val;}
+double biorbd::muscles::Caracteristics::GeneralizedTorqueActivation() const { return m_GeneralizedTorqueActivation;}
+void biorbd::muscles::Caracteristics::GeneralizedTorqueDeactivation(double val){ m_GeneralizedTorqueDeactivation = val;}
+double biorbd::muscles::Caracteristics::GeneralizedTorqueDeactivation() const { return m_GeneralizedTorqueDeactivation;}
 
 
 void biorbd::muscles::Caracteristics::setOptimalLength(const double &val) { m_optimalLength = val; }
@@ -57,8 +57,8 @@ biorbd::muscles::Caracteristics::Caracteristics(const biorbd::muscles::Caracteri
     m_pennationAngle(c.m_pennationAngle),
     m_stateMax(c.m_stateMax),
     m_minActivation(c.m_minActivation),
-    m_tauActivation(c.m_tauActivation),
-    m_tauDeactivation(c.m_tauDeactivation),
+    m_GeneralizedTorqueActivation(c.m_GeneralizedTorqueActivation),
+    m_GeneralizedTorqueDeactivation(c.m_GeneralizedTorqueDeactivation),
     m_fatigueParameters(c.m_fatigueParameters)
 {
 
@@ -75,8 +75,8 @@ biorbd::muscles::Caracteristics& biorbd::muscles::Caracteristics::operator=(cons
     m_pennationAngle = c.m_pennationAngle;
     setStateMax(c.m_stateMax);
     m_minActivation = c.m_minActivation;
-    m_tauActivation = c.m_tauActivation;
-    m_tauDeactivation = c.m_tauDeactivation;
+    m_GeneralizedTorqueActivation = c.m_GeneralizedTorqueActivation;
+    m_GeneralizedTorqueDeactivation = c.m_GeneralizedTorqueDeactivation;
     m_fatigueParameters = c.m_fatigueParameters;
 
     return *this;

@@ -13,9 +13,9 @@ class BIORBD_API StaticOptimizationIpoptLinearized : public biorbd::muscles::Sta
 public:
     StaticOptimizationIpoptLinearized(
             biorbd::Model& model,
-            const biorbd::utils::GenCoord& Q,
-            const biorbd::utils::GenCoord& Qdot,
-            const biorbd::utils::Tau& tauTarget,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
+            const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueTarget,
             const biorbd::utils::Vector& activationInit,
             bool useResidual = true,
             unsigned int pNormFactor = 2,

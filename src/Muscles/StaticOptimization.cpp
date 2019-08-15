@@ -9,9 +9,9 @@
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
         biorbd::Model& model,
-        const biorbd::utils::GenCoord &Q,
-        const biorbd::utils::GenCoord &Qdot,
-        const biorbd::utils::Tau &tauTarget,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+        const biorbd::rigidbody::GeneralizedTorque &GeneralizedTorqueTarget,
         const biorbd::utils::Vector &initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
@@ -24,7 +24,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
 {
     m_allQ.push_back(Q);
     m_allQdot.push_back(Qdot);
-    m_allTauTarget.push_back(tauTarget);
+    m_allGeneralizedTorqueTarget.push_back(GeneralizedTorqueTarget);
 
     if (initialActivationGuess.size() == 0){
         m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscleTotal());
@@ -37,9 +37,9 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
         biorbd::Model& model,
-        const biorbd::utils::GenCoord &Q,
-        const biorbd::utils::GenCoord &Qdot,
-        const biorbd::utils::Tau &tauTarget,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+        const biorbd::rigidbody::GeneralizedTorque &GeneralizedTorqueTarget,
         const std::vector<biorbd::muscles::StateDynamics> &initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
@@ -53,7 +53,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
 {
     m_allQ.push_back(Q);
     m_allQdot.push_back(Qdot);
-    m_allTauTarget.push_back(tauTarget);
+    m_allGeneralizedTorqueTarget.push_back(GeneralizedTorqueTarget);
 
     m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscleTotal());
     for (unsigned int i = 0; i<m_model.nbMuscleTotal(); i++)
@@ -62,9 +62,9 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
         biorbd::Model &model,
-        const std::vector<biorbd::utils::GenCoord> &allQ,
-        const std::vector<biorbd::utils::GenCoord> &allQdot,
-        const std::vector<biorbd::utils::Tau> &allTauTarget,
+        const std::vector<biorbd::rigidbody::GeneralizedCoordinates> &allQ,
+        const std::vector<biorbd::rigidbody::GeneralizedCoordinates> &allQdot,
+        const std::vector<biorbd::rigidbody::GeneralizedTorque> &allGeneralizedTorqueTarget,
         const biorbd::utils::Vector &initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
@@ -73,7 +73,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_useResidualTorque(useResidualTorque),
     m_allQ(allQ),
     m_allQdot(allQdot),
-    m_allTauTarget(allTauTarget),
+    m_allGeneralizedTorqueTarget(allGeneralizedTorqueTarget),
     m_pNormFactor(pNormFactor),
     m_verbose(verbose),
     m_alreadyRun(false)
@@ -89,9 +89,9 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
         biorbd::Model& model,
-        const std::vector<biorbd::utils::GenCoord> &allQ,
-        const std::vector<biorbd::utils::GenCoord> &allQdot,
-        const std::vector<biorbd::utils::Tau> &allTauTarget,
+        const std::vector<biorbd::rigidbody::GeneralizedCoordinates> &allQ,
+        const std::vector<biorbd::rigidbody::GeneralizedCoordinates> &allQdot,
+        const std::vector<biorbd::rigidbody::GeneralizedTorque> &allGeneralizedTorqueTarget,
         const std::vector<biorbd::muscles::StateDynamics> &initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
@@ -100,7 +100,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_useResidualTorque(useResidualTorque),
     m_allQ(allQ),
     m_allQdot(allQdot),
-    m_allTauTarget(allTauTarget),
+    m_allGeneralizedTorqueTarget(allGeneralizedTorqueTarget),
     m_pNormFactor(pNormFactor),
     m_verbose(verbose),
     m_alreadyRun(false)
@@ -129,14 +129,14 @@ void biorbd::muscles::StaticOptimization::run(bool LinearizedState)
         if (LinearizedState)
             m_staticOptimProblem.push_back(
                         new biorbd::muscles::StaticOptimizationIpoptLinearized(
-                            m_model, m_allQ[i], m_allQdot[i], m_allTauTarget[i], m_initialActivationGuess,
+                            m_model, m_allQ[i], m_allQdot[i], m_allGeneralizedTorqueTarget[i], m_initialActivationGuess,
                             m_useResidualTorque, m_pNormFactor, m_verbose
                             )
                         );
         else
             m_staticOptimProblem.push_back(
                         new biorbd::muscles::StaticOptimizationIpopt(
-                            m_model, m_allQ[i], m_allQdot[i], m_allTauTarget[i], m_initialActivationGuess,
+                            m_model, m_allQ[i], m_allQdot[i], m_allGeneralizedTorqueTarget[i], m_initialActivationGuess,
                             m_useResidualTorque, m_pNormFactor, m_verbose
                             )
                         );

@@ -9,9 +9,9 @@
 namespace biorbd {
 class Model;
 
-namespace utils {
-class GenCoord;
-class Tau;
+namespace rigidbody {
+class GeneralizedCoordinates;
+class GeneralizedTorque;
 }
 
 namespace muscles {
@@ -22,36 +22,36 @@ class BIORBD_API StaticOptimization
 public:
     StaticOptimization(
             biorbd::Model& model,
-            const biorbd::utils::GenCoord& Q,
-            const biorbd::utils::GenCoord& Qdot,
-            const biorbd::utils::Tau& tauTarget,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
+            const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueTarget,
             const biorbd::utils::Vector& initialActivationGuess = biorbd::utils::Vector(),
             unsigned int pNormFactor = 2,
             bool useResidualTorque = true,
             int verbose = 0);
     StaticOptimization(
             biorbd::Model& model,
-            const biorbd::utils::GenCoord& Q,
-            const biorbd::utils::GenCoord& Qdot,
-            const biorbd::utils::Tau& tauTarget,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
+            const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueTarget,
             const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess,
             unsigned int pNormFactor = 2,
             bool useResidualTorque = true,
             int verbose = 0);
     StaticOptimization(
             biorbd::Model& model,
-            const std::vector<biorbd::utils::GenCoord>& allQ,
-            const std::vector<biorbd::utils::GenCoord>& allQdot,
-            const std::vector<biorbd::utils::Tau>& allTauTarget,
+            const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
+            const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQdot,
+            const std::vector<biorbd::rigidbody::GeneralizedTorque>& allGeneralizedTorqueTarget,
             const biorbd::utils::Vector& initialActivationGuess = biorbd::utils::Vector(),
             unsigned int pNormFactor = 2,
             bool useResidualTorque = true,
             int verbose = 0);
     StaticOptimization(
             biorbd::Model& model,
-            const std::vector<biorbd::utils::GenCoord>& allQ,
-            const std::vector<biorbd::utils::GenCoord>& allQdot,
-            const std::vector<biorbd::utils::Tau>& allTauTarget,
+            const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
+            const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQdot,
+            const std::vector<biorbd::rigidbody::GeneralizedTorque>& allGeneralizedTorqueTarget,
             const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess,
             unsigned int pNormFactor = 2,
             bool useResidualTorque = true,
@@ -64,9 +64,9 @@ public:
 protected:
     biorbd::Model& m_model;
     bool m_useResidualTorque;
-    std::vector<biorbd::utils::GenCoord> m_allQ;
-    std::vector<biorbd::utils::GenCoord> m_allQdot;
-    std::vector<biorbd::utils::Tau> m_allTauTarget;
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> m_allQ;
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> m_allQdot;
+    std::vector<biorbd::rigidbody::GeneralizedTorque> m_allGeneralizedTorqueTarget;
     biorbd::utils::Vector m_initialActivationGuess;
     unsigned int m_pNormFactor;
     int m_verbose;

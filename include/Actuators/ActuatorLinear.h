@@ -5,8 +5,8 @@
 #include "Actuators/Actuator.h"
 
 namespace biorbd {
-namespace utils {
-class GenCoord;
+namespace rigidbody {
+class GeneralizedCoordinates;
 }
 
 namespace actuator {
@@ -21,7 +21,7 @@ public:
             unsigned int dofIdx,
             const biorbd::utils::String &jointName = "");
     virtual ~ActuatorLinear();
-    virtual double torqueMax(const biorbd::utils::GenCoord &Q) const;
+    virtual double torqueMax(const biorbd::rigidbody::GeneralizedCoordinates &Q) const;
 
 protected:
 

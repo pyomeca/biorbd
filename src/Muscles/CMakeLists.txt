@@ -45,9 +45,14 @@ else()
     add_library(${PROJECT_NAME} STATIC ${SRC_LIST_MODULE})
 endif()
 
+# Add the dependencies for insuring build order
+target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY} ${IPOPT_LIBRARY} ${MASTER_PROJECT_NAME}_utils ${MASTER_PROJECT_NAME}_rigidbody)
+add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME}_utils ${MASTER_PROJECT_NAME}_rigidbody)
+
 # Add the include
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${RBDL_INCLUDE_DIR}
+    ${RBDL_INCLUDE_DIR}/..
     ${Boost_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
     ${DLIB_INCLUDE_DIR}
@@ -63,3 +68,5 @@ install(
     RUNTIME DESTINATION ${${MASTER_PROJECT_NAME}_BIN_FOLDER}
     LIBRARY DESTINATION ${${MASTER_PROJECT_NAME}_LIB_FOLDER}
 )
+set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH ${${MASTER_PROJECT_NAME}_BIN_FOLDER})
+set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)

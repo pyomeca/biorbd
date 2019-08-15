@@ -18,8 +18,8 @@ void Matlab_ContactGamma( int, mxArray *plhs[],
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
-    biorbd::utils::GenCoord QDot = *getParameterQdot(prhs, 3, nQdot).begin();
+    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::rigidbody::GeneralizedCoordinates QDot = *getParameterQdot(prhs, 3, nQdot).begin();
     unsigned int nContacts = model->nContacts();
 
     Eigen::MatrixXd G_tp(Eigen::MatrixXd::Zero(nContacts,model->nbQ()));

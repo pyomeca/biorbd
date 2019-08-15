@@ -81,7 +81,7 @@ void Matlab_inverseKinematicsEKFstep( int, mxArray *plhs[],
     // Si c'est le premier frame recevoir Qinit
 
     if (kalman->first() && nrhs >= 5){
-        biorbd::utils::GenCoord Qinit(*getParameterQ(prhs, 4, nQ).begin());
+        biorbd::rigidbody::GeneralizedCoordinates Qinit(*getParameterQ(prhs, 4, nQ).begin());
         kalman->setInitState(&Qinit);
     }
 
@@ -94,9 +94,9 @@ void Matlab_inverseKinematicsEKFstep( int, mxArray *plhs[],
     double *qddot = mxGetPr(plhs[2]);
 
     // Faire la cinématique inverse a chaque instant
-    biorbd::utils::GenCoord Q(nQ);
-    biorbd::utils::GenCoord QDot(nQdot);
-    biorbd::utils::GenCoord QDDot(nQddot);
+    biorbd::rigidbody::GeneralizedCoordinates Q(nQ);
+    biorbd::rigidbody::GeneralizedCoordinates QDot(nQdot);
+    biorbd::rigidbody::GeneralizedCoordinates QDDot(nQddot);
 
     // Faire la cinématique inverse
     kalman->reconstructFrame(*model, markers, &Q, &QDot, &QDDot, removeAxes);
@@ -151,7 +151,7 @@ void Matlab_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
 
     // Recevoir Qinit
     if (kalman.first() && nrhs >= 4){
-        biorbd::utils::GenCoord Qinit(*getParameterQ(prhs, 3, nQ).begin());
+        biorbd::rigidbody::GeneralizedCoordinates Qinit(*getParameterQ(prhs, 3, nQ).begin());
         kalman.setInitState(&Qinit);
     }
 
@@ -166,9 +166,9 @@ void Matlab_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrames; ++i){
         // Faire la cinématique inverse a chaque instant
-        biorbd::utils::GenCoord Q(nQ);
-        biorbd::utils::GenCoord QDot(nQdot);
-        biorbd::utils::GenCoord QDDot(nQddot);
+        biorbd::rigidbody::GeneralizedCoordinates Q(nQ);
+        biorbd::rigidbody::GeneralizedCoordinates QDot(nQdot);
+        biorbd::rigidbody::GeneralizedCoordinates QDDot(nQddot);
 
         // Faire la cinématique inverse
         kalman.reconstructFrame(*model, *(markersOverTime.begin()+i), &Q, &QDot, &QDDot, removeAxes);

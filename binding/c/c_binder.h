@@ -33,7 +33,7 @@ extern "C" {
     BIORBD_API int c_nQ(biorbd::Model* model);
     BIORBD_API int c_nQDot(biorbd::Model* model);
     BIORBD_API int c_nQDDot(biorbd::Model* model);
-    BIORBD_API int c_nQTau(biorbd::Model* model);
+    BIORBD_API int c_nQGeneralizedTorque(biorbd::Model* model);
 
 	// Markers functions
     BIORBD_API int c_nTags(biorbd::Model* model);
@@ -48,8 +48,8 @@ extern "C" {
 // Fonctions de dispatch pour les données d'entré et de sortie
 Eigen::Vector3d dispatchTagsInput(const double * pos);
 void dispatchTagsOutput(const std::vector<biorbd::rigidbody::NodeBone> &allTags, double* tags);
-GenCoord dispatchQinput(biorbd::Model* model, const double*Q);
-void dispatchQoutput(const GenCoord &eQ, double*Q);
+GeneralizedCoordinates dispatchQinput(biorbd::Model* model, const double*Q);
+void dispatchQoutput(const GeneralizedCoordinates &eQ, double*Q);
 void dispatchDoubleOutput(const Eigen::VectorXd&, double*);
 Attitude dispatchRTinput(const double* rt);
 void dispatchRToutput(const Attitude& rt_in, double* rt_out);

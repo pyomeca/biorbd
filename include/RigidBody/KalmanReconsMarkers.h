@@ -24,23 +24,23 @@ public:
     virtual void reconstructFrame(
             biorbd::Model &m,
             const biorbd::rigidbody::Markers &Tobs,
-            biorbd::utils::GenCoord *Q,
-            biorbd::utils::GenCoord *Qdot,
-            biorbd::utils::GenCoord *Qddot,
+            biorbd::rigidbody::GeneralizedCoordinates *Q,
+            biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+            biorbd::rigidbody::GeneralizedCoordinates *Qddot,
             bool removeAxes=true);
     virtual void reconstructFrame(
             biorbd::Model &m,
             const std::vector<biorbd::rigidbody::NodeBone> &Tobs,
-            biorbd::utils::GenCoord *Q,
-            biorbd::utils::GenCoord *Qdot,
-            biorbd::utils::GenCoord *Qddot,
+            biorbd::rigidbody::GeneralizedCoordinates *Q,
+            biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+            biorbd::rigidbody::GeneralizedCoordinates *Qddot,
             bool removeAxes=true);
     virtual void reconstructFrame(
             biorbd::Model &m,
             const Eigen::VectorXd &Tobs,
-            biorbd::utils::GenCoord *Q = nullptr,
-            biorbd::utils::GenCoord *Qdot = nullptr,
-            biorbd::utils::GenCoord *Qddot = nullptr,
+            biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
+            biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,
+            biorbd::rigidbody::GeneralizedCoordinates *Qddot = nullptr,
             bool removeAxes=true); // Faire la reconstruction cinematique
     virtual void reconstructFrame();
 

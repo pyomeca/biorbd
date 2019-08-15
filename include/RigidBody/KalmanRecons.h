@@ -9,11 +9,8 @@
 namespace biorbd {
 class Model;
 
-namespace utils {
-class GenCoord;
-}
-
 namespace rigidbody {
+class GeneralizedCoordinates;
 
 class BIORBD_API KalmanRecons
 {
@@ -43,13 +40,13 @@ public:
 
     // Recueillir l'état (Q, Qdot, Qddot)
     void getState(
-            biorbd::utils::GenCoord *Q = nullptr,
-            biorbd::utils::GenCoord *Qdot = nullptr,
-            biorbd::utils::GenCoord *Qddot = nullptr);
+            biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
+            biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,
+            biorbd::rigidbody::GeneralizedCoordinates *Qddot = nullptr);
     void setInitState(
-            const biorbd::utils::GenCoord *Q = nullptr,
-            const biorbd::utils::GenCoord *Qdot = nullptr,
-            const biorbd::utils::GenCoord *Qddot = nullptr);
+            const biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
+            const biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,
+            const biorbd::rigidbody::GeneralizedCoordinates *Qddot = nullptr);
 
     // Cette fonction doit être réimplémentée de la façon nécessaire (avec les arguments souhaités). Je mets celle-ci pour force l'utilisateur à implémenter au moins cette fonction.
     // Ceci dit, sans argument (particulièrement les données d'entrées), il est douteux que la réimplémentation puisse fonctionner
@@ -71,7 +68,7 @@ protected:
     biorbd::utils::Matrix initCovariance(
             const unsigned int nQ,
             const double csnt);
-    biorbd::utils::GenCoord initState(const unsigned int nQ);
+    biorbd::rigidbody::GeneralizedCoordinates initState(const unsigned int nQ);
     void iteration(
             Eigen::VectorXd measure,
             const Eigen::VectorXd &projectedMeasure,

@@ -3,8 +3,8 @@
 
 #include <vector>
 #include "Utils/Error.h"
-#include "Utils/Tau.h"
-#include "Utils/GenCoord.h"
+#include "RigidBody/GeneralizedTorque.h"
+#include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/Joints.h"
 #include "Actuators/ActuatorGauss3p.h"
 #include "Actuators/ActuatorGauss6p.h"
@@ -139,99 +139,99 @@ unsigned int biorbd::actuator::Actuators::nbActuators() const
     return static_cast<unsigned int>(m_all.size());
 }
 
-biorbd::utils::Tau biorbd::actuator::Actuators::torque(
+biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
         const biorbd::rigidbody::Joints& m,
-        const biorbd::utils::GenCoord& a,
-        const biorbd::utils::GenCoord& Q,
-        const biorbd::utils::GenCoord &Qdot){
+        const biorbd::rigidbody::GeneralizedCoordinates& a,
+        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Qdot){
 
     // Mettre pour que qdot soit positif en concentrique et negatif en excentrique
-    biorbd::utils::GenCoord QdotResigned(Qdot);
+    biorbd::rigidbody::GeneralizedCoordinates QdotResigned(Qdot);
     for (unsigned int i=0; i<Qdot.size(); ++i)
         if (a(i)<0)
             QdotResigned(i) = -Qdot(i);
 
     // Calcul des torque sous maximaux
-    biorbd::utils::Tau Tau(torqueMax(m, a,Q,QdotResigned));
+    biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(torqueMax(m, a,Q,QdotResigned));
 
     // Remettre les signes
-    for (unsigned int i=0; i<Tau.size(); ++i)
-        Tau(i) *= a(i);
+    for (unsigned int i=0; i<GeneralizedTorque.size(); ++i)
+        GeneralizedTorque(i) *= a(i);
 
-    return Tau;
+    return GeneralizedTorque;
 }
 
 
-std::pair<biorbd::utils::Tau, biorbd::utils::Tau> biorbd::actuator::Actuators::torqueMax(
+std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque> biorbd::actuator::Actuators::torqueMax(
         const biorbd::rigidbody::Joints &m,
-        const biorbd::utils::GenCoord& Q,
-        const biorbd::utils::GenCoord &Qdot){
+        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Qdot){
     biorbd::utils::Error::error(m_isClose, "Close the actuator model before calling torqueMax");
 
-    std::pair<biorbd::utils::Tau, biorbd::utils::Tau> maxTau_all =
-            std::make_pair(biorbd::utils::Tau(m), biorbd::utils::Tau(m));
+    std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque> maxGeneralizedTorque_all =
+            std::make_pair(biorbd::rigidbody::GeneralizedTorque(m), biorbd::rigidbody::GeneralizedTorque(m));
 
     for (unsigned int i=0; i<m.nbDof(); ++i){
-        std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>> Tau_tp(actuator(i));
+        std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>> GeneralizedTorque_tp(actuator(i));
         for (unsigned p=0; p<2; ++p){
             if (p==0) // First
-                if (std::dynamic_pointer_cast<ActuatorGauss3p> (Tau_tp.first))
-                   maxTau_all.first[i] = std::static_pointer_cast<ActuatorGauss3p> (Tau_tp.first)->torqueMax(Q, Qdot);
-                else if (std::dynamic_pointer_cast<ActuatorConstant> (Tau_tp.first))
-                    maxTau_all.first[i] = std::static_pointer_cast<ActuatorConstant> (Tau_tp.first)->torqueMax();
-                else if (std::dynamic_pointer_cast<ActuatorLinear> (Tau_tp.first))
-                    maxTau_all.first[i] = std::static_pointer_cast<ActuatorLinear> (Tau_tp.first)->torqueMax(Q);
-                else if (std::dynamic_pointer_cast<ActuatorGauss6p> (Tau_tp.first))
-                    maxTau_all.first[i] = std::static_pointer_cast<ActuatorGauss6p> (Tau_tp.first)->torqueMax(Q, Qdot);
+                if (std::dynamic_pointer_cast<ActuatorGauss3p> (GeneralizedTorque_tp.first))
+                   maxGeneralizedTorque_all.first[i] = std::static_pointer_cast<ActuatorGauss3p> (GeneralizedTorque_tp.first)->torqueMax(Q, Qdot);
+                else if (std::dynamic_pointer_cast<ActuatorConstant> (GeneralizedTorque_tp.first))
+                    maxGeneralizedTorque_all.first[i] = std::static_pointer_cast<ActuatorConstant> (GeneralizedTorque_tp.first)->torqueMax();
+                else if (std::dynamic_pointer_cast<ActuatorLinear> (GeneralizedTorque_tp.first))
+                    maxGeneralizedTorque_all.first[i] = std::static_pointer_cast<ActuatorLinear> (GeneralizedTorque_tp.first)->torqueMax(Q);
+                else if (std::dynamic_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp.first))
+                    maxGeneralizedTorque_all.first[i] = std::static_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp.first)->torqueMax(Q, Qdot);
                 else
                     biorbd::utils::Error::error(false, "Wrong type (should never get here because of previous safety)");
             else // Second
-                if (std::dynamic_pointer_cast<ActuatorGauss3p> (Tau_tp.second))
-                    maxTau_all.second[i] = std::static_pointer_cast<ActuatorGauss3p> (Tau_tp.second)->torqueMax(Q, Qdot);
-                else if (std::dynamic_pointer_cast<ActuatorConstant> (Tau_tp.second))
-                    maxTau_all.second[i] = std::static_pointer_cast<ActuatorConstant> (Tau_tp.second)->torqueMax();
-                else if (std::dynamic_pointer_cast<ActuatorLinear> (Tau_tp.second))
-                    maxTau_all.second[i] = std::static_pointer_cast<ActuatorLinear> (Tau_tp.second)->torqueMax(Q);
-                else if (std::dynamic_pointer_cast<ActuatorGauss6p> (Tau_tp.second))
-                    maxTau_all.second[i] = std::static_pointer_cast<ActuatorGauss6p> (Tau_tp.second)->torqueMax(Q, Qdot);
+                if (std::dynamic_pointer_cast<ActuatorGauss3p> (GeneralizedTorque_tp.second))
+                    maxGeneralizedTorque_all.second[i] = std::static_pointer_cast<ActuatorGauss3p> (GeneralizedTorque_tp.second)->torqueMax(Q, Qdot);
+                else if (std::dynamic_pointer_cast<ActuatorConstant> (GeneralizedTorque_tp.second))
+                    maxGeneralizedTorque_all.second[i] = std::static_pointer_cast<ActuatorConstant> (GeneralizedTorque_tp.second)->torqueMax();
+                else if (std::dynamic_pointer_cast<ActuatorLinear> (GeneralizedTorque_tp.second))
+                    maxGeneralizedTorque_all.second[i] = std::static_pointer_cast<ActuatorLinear> (GeneralizedTorque_tp.second)->torqueMax(Q);
+                else if (std::dynamic_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp.second))
+                    maxGeneralizedTorque_all.second[i] = std::static_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp.second)->torqueMax(Q, Qdot);
                 else
                     biorbd::utils::Error::error(false, "Wrong type (should never get here because of previous safety)");
         }
     }
 
-    return maxTau_all;
+    return maxGeneralizedTorque_all;
 }
 
 
-biorbd::utils::Tau biorbd::actuator::Actuators::torqueMax(
+biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torqueMax(
         const biorbd::rigidbody::Joints &m,
-        const biorbd::utils::GenCoord& a,
-        const biorbd::utils::GenCoord& Q,
-        const biorbd::utils::GenCoord &Qdot){
+        const biorbd::rigidbody::GeneralizedCoordinates& a,
+        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Qdot){
     biorbd::utils::Error::error(m_isClose, "Close the actuator model before calling torqueMax");
 
-    biorbd::utils::Tau maxTau_all;
-    maxTau_all.resize(m.nbDof());
+    biorbd::rigidbody::GeneralizedTorque maxGeneralizedTorque_all;
+    maxGeneralizedTorque_all.resize(m.nbDof());
 
     for (unsigned int i=0; i<m.nbDof(); ++i){
-        std::shared_ptr<Actuator> Tau_tp;
+        std::shared_ptr<Actuator> GeneralizedTorque_tp;
         if (a[i]>=0) // First
-            Tau_tp = actuator(i).first;
+            GeneralizedTorque_tp = actuator(i).first;
         else
-            Tau_tp = actuator(i).second;
+            GeneralizedTorque_tp = actuator(i).second;
 
-        if (std::dynamic_pointer_cast<ActuatorGauss3p> (Tau_tp))
-            maxTau_all[i] = std::static_pointer_cast<ActuatorGauss3p> (Tau_tp)->torqueMax(Q, Qdot);
-        else if (std::dynamic_pointer_cast<ActuatorConstant> (Tau_tp))
-            maxTau_all[i] = std::static_pointer_cast<ActuatorConstant> (Tau_tp)->torqueMax();
-        else if (std::dynamic_pointer_cast<ActuatorLinear> (Tau_tp))
-            maxTau_all[i] = std::static_pointer_cast<ActuatorLinear> (Tau_tp)->torqueMax(Q);
-        else if (std::dynamic_pointer_cast<ActuatorGauss6p> (Tau_tp))
-            maxTau_all[i] = std::static_pointer_cast<ActuatorGauss6p> (Tau_tp)->torqueMax(Q, Qdot);
+        if (std::dynamic_pointer_cast<ActuatorGauss3p> (GeneralizedTorque_tp))
+            maxGeneralizedTorque_all[i] = std::static_pointer_cast<ActuatorGauss3p> (GeneralizedTorque_tp)->torqueMax(Q, Qdot);
+        else if (std::dynamic_pointer_cast<ActuatorConstant> (GeneralizedTorque_tp))
+            maxGeneralizedTorque_all[i] = std::static_pointer_cast<ActuatorConstant> (GeneralizedTorque_tp)->torqueMax();
+        else if (std::dynamic_pointer_cast<ActuatorLinear> (GeneralizedTorque_tp))
+            maxGeneralizedTorque_all[i] = std::static_pointer_cast<ActuatorLinear> (GeneralizedTorque_tp)->torqueMax(Q);
+        else if (std::dynamic_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp))
+            maxGeneralizedTorque_all[i] = std::static_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp)->torqueMax(Q, Qdot);
         else
             biorbd::utils::Error::error(false, "Wrong type (should never get here because of previous safety)");
 
     }
 
-    return maxTau_all;
+    return maxGeneralizedTorque_all;
 }

@@ -16,7 +16,7 @@ void Matlab_ProjectPointJacobian( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::utils::GenCoord Q = *getParameterQ(prhs, 2, nQ).begin();
+    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
     std::vector<biorbd::rigidbody::NodeBone> markersOverTime = *getParameterAllMarkers(prhs,3).begin();

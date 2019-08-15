@@ -4,10 +4,10 @@
 #include "BiorbdModel.h"
 #include "biorbdConfig.h"
 
-#include "Utils/Read.h"
+#include "ModelReader.h"
 #include "Utils/Vector.h"
-#include "Utils/GenCoord.h"
-#include "Utils/Tau.h"
+#include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedTorque.h"
 %}
 
 // Instantiate templates
@@ -21,19 +21,16 @@ namespace std {
 
     %template(VecBiorbdVector) std::vector<biorbd::utils::Vector>;
     %template(MatBiorbdVector) std::vector<std::vector<biorbd::utils::Vector>>;
-    %template(VecBiorbdTau) std::vector<biorbd::utils::Tau>;
-    %template(MatBiorbdTau) std::vector<std::vector<biorbd::utils::Tau>>;
-    %template(VecBiorbdGenCoord) std::vector<biorbd::utils::GenCoord>;
-    %template(MatBiorbdGenCoord) std::vector<std::vector<biorbd::utils::GenCoord>>;
+    %template(VecBiorbdGeneralizedTorque) std::vector<biorbd::rigidbody::GeneralizedTorque>;
+    %template(MatBiorbdGeneralizedTorque) std::vector<std::vector<biorbd::rigidbody::GeneralizedTorque>>;
+    %template(VecBiorbdGeneralizedCoordinates) std::vector<biorbd::rigidbody::GeneralizedCoordinates>;
+    %template(MatBiorbdGeneralizedCoordinates) std::vector<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>;
 }
 
 
 %apply std::string { biorbd::utils::String };
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Path.h"
-%include "@CMAKE_SOURCE_DIR@/include/Utils/Read.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Vector.h"
-%include "@CMAKE_SOURCE_DIR@/include/Utils/GenCoord.h"
-%include "@CMAKE_SOURCE_DIR@/include/Utils/Tau.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Matrix.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Attitude.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Node.h"
