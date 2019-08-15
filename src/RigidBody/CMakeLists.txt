@@ -30,6 +30,8 @@ else()
     add_library(${PROJECT_NAME} STATIC ${SRC_LIST_MODULE})
 endif()
 
+target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY})
+
 # Add the dependencies for insuring build order
 add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME}_utils)
 

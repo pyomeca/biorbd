@@ -12,6 +12,7 @@ FIND_PATH (IPOPT_INCLUDE_DIR IpIpoptApplication.hpp
     /usr/local/include/coin
     $ENV{HOME}/local/include/coin
     ${CMAKE_INSTALL_PREFIX}/include/coin
+    ${CMAKE_INSTALL_PREFIX}/Library/include/coin
     $ENV{IPOPT_PATH}/src/coin
     $ENV{IPOPT_PATH}/include/coin
     $ENV{IPOPT_INCLUDE_PATH}
