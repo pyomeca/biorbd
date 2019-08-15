@@ -102,7 +102,8 @@ install(TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION ${${PROJECT_NAME}_BIN_FOLDER}
         LIBRARY DESTINATION ${${PROJECT_NAME}_LIB_FOLDER}
         )
-install(DIRECTORY include DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER})
+install(DIRECTORY include/ DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER})
+install(FILES ${CMAKE_BINARY_DIR}/include/biorbdConfig.h DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER})
         
 # Add binding subdirectory
 add_subdirectory(binding)
