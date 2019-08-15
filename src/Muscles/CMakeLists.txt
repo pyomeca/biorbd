@@ -45,6 +45,9 @@ else()
     add_library(${PROJECT_NAME} STATIC ${SRC_LIST_MODULE})
 endif()
 
+# Add the dependencies for insuring build order
+add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME}_utils)
+
 # Add the include
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${RBDL_INCLUDE_DIR}
