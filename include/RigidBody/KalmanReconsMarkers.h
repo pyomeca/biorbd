@@ -17,7 +17,7 @@ public:
     // Constructeur
     KalmanReconsMarkers(
             biorbd::Model&,
-            KalmanRecons::KalmanParam = KalmanRecons::KalmanParam());
+            biorbd::rigidbody::KalmanRecons::KalmanRecons::KalmanParam = biorbd::rigidbody::KalmanRecons::KalmanRecons::KalmanParam());
     virtual ~KalmanReconsMarkers();
 
     // Reconstruction d'un frame

@@ -11,23 +11,19 @@
 #include "Muscles/FatigueDynamicState.h"
 #include "Muscles/FatigueDynamicStateXia.h"
 #include "Muscles/MuscleNode.h"
-//%include "biorbd::muscles::WrappingNode.h"
-//%include "biorbd::muscles::ViaPoint.h"
-//%include "biorbd::muscles::WrappingObject.h"
-//%include "biorbd::muscles::WrappingSphere.h"
-//%include "biorbd::muscles::WrappingCylinder.h"
+#include "Muscles/Geometry.h"
 #ifdef IPOPT_FOUND
 #include "Muscles/StaticOptimization.h"
 #endif
 %}
 // Instantiate templates
 namespace std {
-    %template(SharedBiorbdMuscle) std::shared_ptr<biorbd::muscles::Muscle>;
-    %template(VecBiorbdMuscleStateDynamics) std::vector<biorbd::muscles::StateDynamics>;
-    %template(MatBiorbdMuscleStateDynamics) std::vector<std::vector<biorbd::muscles::StateDynamics>>;
-    %template(VecBiorbdNodeMuscle) std::vector<biorbd::muscles::MuscleNode>;
-    %template(MatBiorbdNodeMuscle) std::vector<std::vector<biorbd::muscles::MuscleNode>>;
-    %template(SharedBiorbdMuscleFatigueState) std::shared_ptr<biorbd::muscles::FatigueState>;
+%template(SharedBiorbdMuscle) std::shared_ptr<biorbd::muscles::Muscle>;
+%template(VecBiorbdMuscleStateDynamics) std::vector<biorbd::muscles::StateDynamics>;
+%template(MatBiorbdMuscleStateDynamics) std::vector<std::vector<biorbd::muscles::StateDynamics>>;
+%template(VecBiorbdNodeMuscle) std::vector<biorbd::muscles::MuscleNode>;
+%template(MatBiorbdNodeMuscle) std::vector<std::vector<biorbd::muscles::MuscleNode>>;
+%template(SharedBiorbdMuscleFatigueState) std::shared_ptr<biorbd::muscles::FatigueState>;
 }
 
 // Exposing some useful functions

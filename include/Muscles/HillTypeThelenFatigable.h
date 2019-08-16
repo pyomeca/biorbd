@@ -26,15 +26,15 @@ public:
     HillTypeThelenFatigable(
             const biorbd::utils::String& s= "",
             const biorbd::utils::String& dynamicFatigueType = "Simple");
-    HillTypeThelenFatigable(const Geometry& g,
-            const Caracteristics& c,
+    HillTypeThelenFatigable(const biorbd::muscles::Geometry& g,
+            const biorbd::muscles::Caracteristics& c,
             const biorbd::muscles::PathChangers & w= biorbd::muscles::PathChangers(),
             const biorbd::muscles::StateDynamics & s= biorbd::muscles::StateDynamics(),
             const biorbd::utils::String& dynamicFatigueType = "Simple");
     HillTypeThelenFatigable(
             const biorbd::utils::String& n,
-            const Geometry& g,
-            const Caracteristics& c,
+            const biorbd::muscles::Geometry& g,
+            const biorbd::muscles::Caracteristics& c,
             const biorbd::muscles::PathChangers & w= biorbd::muscles::PathChangers(),
             const biorbd::muscles::StateDynamics & s= biorbd::muscles::StateDynamics(),
             const biorbd::utils::String& dynamicFatigueType = "Simple");

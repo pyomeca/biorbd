@@ -2,15 +2,15 @@
 option(BINDER_PYTHON3 "Build Python SWIG module" OFF)
 option(BINDER_MATLAB "Build Matlab module" OFF)
  
-# If at least one interface
+# Common to all swig interface
 if (BINDER_PYTHON3)
     # Set up swig
     find_package(SWIG REQUIRED)
 
     # Create the .i file
-    SET(SWIG_MODULE_UTILS_INCLUDE_COMMAND "%import \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_utils.i\"")
-    SET(SWIG_MODULE_RIGIDBODY_INCLUDE_COMMAND "%import \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_rigidbody.i\"")
-    SET(SWIG_MODULE_MUSCLES_INCLUDE_COMMAND "%import \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_muscles.i\"")
+    SET(SWIG_MODULE_UTILS_INCLUDE_COMMAND "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_utils.i\"")
+    SET(SWIG_MODULE_RIGIDBODY_INCLUDE_COMMAND "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_rigidbody.i\"")
+    SET(SWIG_MODULE_MUSCLES_INCLUDE_COMMAND "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_muscles.i\"")
     if (IPOPT_FOUND)
         SET(SWIG_STATIC_OPTIMIZATION_INCLUDE_COMMAND "%include \"${CMAKE_SOURCE_DIR}/include/Muscles/StaticOptimization.h\"")
     endif()
