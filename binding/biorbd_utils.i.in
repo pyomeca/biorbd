@@ -1,5 +1,6 @@
 // File : biorbd_utils.i
 %{
+#include "Utils/String.h"
 #include "Utils/Vector.h"
 #include "Utils/Matrix.h"
 #include "Utils/Attitude.h"
@@ -17,8 +18,14 @@ namespace std {
 %template(MatBiorbdNode) std::vector<std::vector<biorbd::utils::Node>>;
 }
 
+%include <std_string.i>
+%extend biorbd::utils::String{
+    std::string getString(){
+        return *$self;
+    }
+}
 
-%apply std::string { biorbd::utils::String };
+%include "@CMAKE_SOURCE_DIR@/include/Utils/String.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Path.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Vector.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Matrix.h"

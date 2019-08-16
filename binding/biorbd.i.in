@@ -9,46 +9,9 @@ const int USER_ERROR__inconsistent_build_configuration__see_dlib_faq_1_ = 0;
 const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 #endif
 
-//#include <rbdl/Dynamics.h>
-
 #include "BiorbdModel.h"
 #include "biorbdConfig.h"
 #include "ModelReader.h"
-
-//#include "ModelReader.h"
-//#include "Utils/Vector.h"
-//#include "RigidBody/GeneralizedCoordinates.h"
-//#include "RigidBody/GeneralizedTorque.h"
-
-//#include "RigidBody/Bone.h"
-//#include "RigidBody/BoneMesh.h"
-//#include "RigidBody/NodeBone.h"
-//#include "RigidBody/IMU.h"
-//#include "RigidBody/KalmanReconsIMU.h"
-//#include "RigidBody/KalmanReconsMarkers.h"
-
-//#ifdef MODULE_MUSCLES
-//#include "Muscles/StateDynamics.h"
-//#include "Muscles/Muscle.h"
-//#include "Muscles/MuscleGroup.h"
-//#include "Muscles/HillType.h"
-//#include "Muscles/HillTypeThelen.h"
-//#include "Muscles/HillTypeSimple.h"
-//#include "Muscles/HillTypeThelenFatigable.h"
-//#include "Muscles/FatigueState.h"
-//#include "Muscles/FatigueDynamicState.h"
-//#include "Muscles/FatigueDynamicStateXia.h"
-//#include "Muscles/MuscleNode.h"
-////%include "biorbd::muscles::WrappingNode.h"
-////%include "biorbd::muscles::ViaPoint.h"
-////%include "biorbd::muscles::WrappingObject.h"
-////%include "biorbd::muscles::WrappingSphere.h"
-////%include "biorbd::muscles::WrappingCylinder.h"
-//#ifdef IPOPT_FOUND
-//#include "Muscles/StaticOptimization.h"
-//#endif // IPOPT_FOUND
-//#endif // MODULE_MUSCLES
-
 %}
 %include exception.i
 %include <std_shared_ptr.i>
@@ -69,7 +32,6 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 // Numpy arrays.
 %include <typemaps.i>
 %include <std_vector.i>
-%include <std_string.i>
 
 //// Includes all neceressary files from the API
 %include "@CMAKE_BINARY_DIR@/include/biorbdConfig.h"
@@ -79,7 +41,6 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 @SWIG_MODULE_MUSCLES_INCLUDE_COMMAND@
 
 %include "@CMAKE_SOURCE_DIR@/include/BiorbdModel.h"
-//%include "@CMAKE_SOURCE_DIR@/include/ModelReader.h"
 //%include "@CMAKE_SOURCE_DIR@/include/ModelWriter.h"
 
 
