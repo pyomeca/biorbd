@@ -33,7 +33,7 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 %include <typemaps.i>
 %include <std_vector.i>
 
-//// Includes all neceressary files from the API
+// Includes all neceressary files from the API
 %include "@CMAKE_BINARY_DIR@/include/biorbdConfig.h"
 @SWIG_MODULE_UTILS_INCLUDE_COMMAND@
 @SWIG_MODULE_RIGIDBODY_INCLUDE_COMMAND@

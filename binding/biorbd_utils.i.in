@@ -3,9 +3,9 @@
 #include "Utils/String.h"
 #include "Utils/Vector.h"
 #include "Utils/Matrix.h"
-#include "Utils/Attitude.h"
 #include "Utils/Quaternion.h"
 #include "Utils/Node.h"
+#include "Utils/Attitude.h"
 %}
 
 // Instantiate templates
@@ -31,8 +31,8 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Matrix.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Quaternion.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Node.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Attitude.h"
 
-//%include "@CMAKE_SOURCE_DIR@/include/Utils/Attitude.h"
 //%include "@CMAKE_SOURCE_DIR@/include/Utils/NodeAttitude.h"
 //%include "@CMAKE_SOURCE_DIR@/include/Utils/Time.h"
 //%include "@CMAKE_SOURCE_DIR@/include/Utils/Timer.h"

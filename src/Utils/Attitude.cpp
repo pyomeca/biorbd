@@ -1,10 +1,8 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Attitude.h"
 
-#include <iostream>
 #include <rbdl/rbdl_math.h>
 #include "Utils/Error.h"
-#include "Utils/String.h"
 #include "Utils/Node.h"
 
 biorbd::utils::Attitude::Attitude(const Eigen::Matrix4d& m) :
@@ -259,7 +257,8 @@ const Eigen::Vector3d biorbd::utils::Attitude::operator*(const Eigen::Vector3d &
     return operator*(expand3dTo4d(v));
 }
 
-std::ostream& operator<<(std::ostream& os, const biorbd::utils::Attitude &a){
+std::ostream &operator<<(std::ostream &os, const biorbd::utils::Attitude &a)
+{
     os << a.block(0,0,4,4);
     return os;
 }
