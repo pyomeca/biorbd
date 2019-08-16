@@ -24,7 +24,7 @@ namespace std {
 }
 
 // Exposing some useful functions
-%extend biorbd::rigidbody::Joints{
+%extend biorbd::Model{
     biorbd::rigidbody::GeneralizedTorque InverseDynamics(
                 const biorbd::rigidbody::GeneralizedCoordinates &Q,
                 const biorbd::rigidbody::GeneralizedCoordinates &QDot,
@@ -61,8 +61,7 @@ namespace std {
         RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, GeneralizedTorque, CS, QDDot);
         return QDDot;
     }
-}
-%extend biorbd::Model{
+
     biorbd::rigidbody::GeneralizedCoordinates ForwardDynamicsConstraintsDirect(
                 const biorbd::rigidbody::GeneralizedCoordinates &Q,
                 const biorbd::rigidbody::GeneralizedCoordinates &QDot,
