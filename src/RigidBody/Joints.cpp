@@ -310,7 +310,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::projectPoint
     for (unsigned int i=0;i<marks.nTags();++i){
         biorbd::rigidbody::NodeBone tp(marks.marker(i));
         if (tp.nAxesToRemove()!=0){
-            tp.setPosition(globalJCS(Q,static_cast<unsigned int>(GetBodyBiorbdId(tp.parent())),true).transpose()* (*(v.begin()+i)) );
+            tp.setPosition(globalJCS(Q,static_cast<unsigned int>(GetBodyBiorbdId(tp.parent())),true).transpose() * v[i] );
             // Prendre la position du nouveau marker avec les infos de celui du modèle
             out.push_back(projectPoint(Q,tp,updateKin));
             updateKin = false;

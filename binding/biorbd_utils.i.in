@@ -1,46 +1,42 @@
 // File : biorbd_utils.i
 %{
-#include <rbdl/Dynamics.h>
-#include "BiorbdModel.h"
-#include "biorbdConfig.h"
-
-#include "ModelReader.h"
+#include "Utils/String.h"
 #include "Utils/Vector.h"
-#include "RigidBody/GeneralizedCoordinates.h"
-#include "RigidBody/GeneralizedTorque.h"
+#include "Utils/Matrix.h"
+#include "Utils/Quaternion.h"
+#include "Utils/Node.h"
+#include "Utils/Attitude.h"
 %}
 
 // Instantiate templates
 namespace std {
-    %template(VecBiorbdNode) std::vector<biorbd::utils::Node>;
-    %template(MatBiorbdNode) std::vector<std::vector<biorbd::utils::Node>>;
-    %template(VecBiorbdNodeBone) std::vector<biorbd::rigidbody::NodeBone>;
-    %template(MatBiorbdNodeBone) std::vector<std::vector<biorbd::rigidbody::NodeBone>>;
-    %template(VecBiorbdAttitude) std::vector<biorbd::utils::Attitude>;
-    %template(MatBiorbdAttitude) std::vector<std::vector<biorbd::utils::Attitude>>;
-
-    %template(VecBiorbdVector) std::vector<biorbd::utils::Vector>;
-    %template(MatBiorbdVector) std::vector<std::vector<biorbd::utils::Vector>>;
-    %template(VecBiorbdGeneralizedTorque) std::vector<biorbd::rigidbody::GeneralizedTorque>;
-    %template(MatBiorbdGeneralizedTorque) std::vector<std::vector<biorbd::rigidbody::GeneralizedTorque>>;
-    %template(VecBiorbdGeneralizedCoordinates) std::vector<biorbd::rigidbody::GeneralizedCoordinates>;
-    %template(MatBiorbdGeneralizedCoordinates) std::vector<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>;
+%template(VecBiorbdVector) std::vector<biorbd::utils::Vector>;
+%template(MatBiorbdVector) std::vector<std::vector<biorbd::utils::Vector>>;
+%template(VecBiorbdAttitude) std::vector<biorbd::utils::Attitude>;
+%template(MatBiorbdAttitude) std::vector<std::vector<biorbd::utils::Attitude>>;
+%template(VecBiorbdNode) std::vector<biorbd::utils::Node>;
+%template(MatBiorbdNode) std::vector<std::vector<biorbd::utils::Node>>;
 }
 
+%include <std_string.i>
+%extend biorbd::utils::String{
+    std::string getString(){
+        return *$self;
+    }
+}
 
-%apply std::string { biorbd::utils::String };
+%include "@CMAKE_SOURCE_DIR@/include/Utils/String.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Path.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Vector.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Matrix.h"
-%include "@CMAKE_SOURCE_DIR@/include/Utils/Attitude.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Quaternion.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Node.h"
-//%include "Utils/NodeAttitude.h"
-//%include "Utils/Quaternion.h"
-//%include "Utils/Node.h"
-//%include "Utils/Time.h"
-//%include "Utils/Timer.h"
-//%include "Utils/Benchmark.h"
-//%include "Utils/Integrator.h"
-//%include "Utils/Writer.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Attitude.h"
+
+//%include "@CMAKE_SOURCE_DIR@/include/Utils/NodeAttitude.h"
+//%include "@CMAKE_SOURCE_DIR@/include/Utils/Time.h"
+//%include "@CMAKE_SOURCE_DIR@/include/Utils/Timer.h"
+//%include "@CMAKE_SOURCE_DIR@/include/Utils/Benchmark.h"
+//%include "@CMAKE_SOURCE_DIR@/include/Utils/Integrator.h"
 
 

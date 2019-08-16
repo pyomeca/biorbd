@@ -13,6 +13,7 @@
 //#endif
 
 #define BIORBD_API
+#cmakedefine IPOPT_FOUND
 
 // Choice of modules
 #cmakedefine MODULE_ACTUATORS

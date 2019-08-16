@@ -24,7 +24,12 @@ set(BOOST_ROOT ${CMAKE_INSTALL_PREFIX})
 find_package(Boost REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Dlib REQUIRED)
-find_package(IPOPT REQUIRED)
+find_package(IPOPT)
+if (NOT IPOPT_FOUND)
+    # Variable are used, so we must give them a value
+    set(IPOPT_INCLUDE_DIR "")
+    set(IPOPT_LIBRARY "")
+endif()
 
 # Prepare add library
 set(SRC_LIST

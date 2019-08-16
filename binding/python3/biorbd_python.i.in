@@ -1,13 +1,15 @@
 // File : biorbd_python.i
 
-// Import the main swig interface
-%include @CMAKE_CURRENT_BINARY_DIR@/../biorbd.i
-
 // Declare the Python specific interface
 %{
 #define SWIG_FILE_WITH_INIT
 #include "Python.h"
 #include "numpy/arrayobject.h"
+
+#include "BiorbdModel.h"
+#include "Utils/Matrix.h"
+#include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedTorque.h"
 %}
 
 %include "@CMAKE_CURRENT_SOURCE_DIR@/numpy.i"
@@ -19,8 +21,8 @@
 // --- biorbd::rigidbody::Joints --- //
 %typemap(typecheck) biorbd::rigidbody::Joints &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd::rigidbody::Joints,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIGTYPE_p_biorbd::rigidbody::Joints already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__Joints,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_biorbd__rigidbody__Joints already exists
         $1 = true;
     } else {
         $1 = false;
@@ -28,7 +30,7 @@
 }
 %typemap(in) biorbd::rigidbody::Joints &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd::rigidbody::Joints,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__Joints,  0  | 0)) && argp1) {
         // Recast the pointer
         $1 = reinterpret_cast< biorbd::rigidbody::Joints * >(argp1);
     } else {
@@ -123,8 +125,8 @@
 // --- GeneralizedCoordinates --- //
 %typemap(typecheck) biorbd::rigidbody::GeneralizedCoordinates &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__GeneralizedCoordinates,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__GeneralizedCoordinates already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates already exists
         $1 = true;
     } else if( PyArray_Check($input) ) {
         // test if it is a numpy array
@@ -135,7 +137,7 @@
 }
 %typemap(in) biorbd::rigidbody::GeneralizedCoordinates &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__GeneralizedCoordinates,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates,  0  | 0)) && argp1) {
         // Recast the pointer
         $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedCoordinates * >(argp1);
     } else if( PyArray_Check($input) ) {
@@ -166,8 +168,8 @@
 // --- GeneralizedTorque --- //
 %typemap(typecheck) biorbd::rigidbody::GeneralizedTorque &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__GeneralizedTorque,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__GeneralizedTorque already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedTorque,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_biorbd__rigidbody__GeneralizedTorque already exists
         $1 = true;
     } else if( PyArray_Check($input) ) {
         // test if it is a numpy array
@@ -178,7 +180,7 @@
 }
 %typemap(in) biorbd::rigidbody::GeneralizedTorque &{
     void * argp1 = 0;
-        if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__GeneralizedTorque,  0  | 0)) && argp1) {
+        if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedTorque,  0  | 0)) && argp1) {
         // If it is the right type, recast-it the pointer
         $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedTorque * >(argp1);
     } else if( PyArray_Check($input) ) {
@@ -211,8 +213,8 @@
 // --- biorbd::rigidbody::Markers --- //
 %typemap(typecheck) biorbd::rigidbody::Markers &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd::rigidbody::Markers,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIGTYPE_p_biorbd::rigidbody::Markers already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__Markers,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIGTYPE_p_biorbd__rigidbody__Markers already exists
         $1 = true;
     } else {
         $1 = false;
@@ -220,7 +222,7 @@
 }
 %typemap(in) biorbd::rigidbody::Markers &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd::rigidbody::Markers,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__Markers,  0  | 0)) && argp1) {
         // Recast the pointer
         $1 = reinterpret_cast< biorbd::rigidbody::Markers * >(argp1);
     } else {
@@ -334,3 +336,5 @@
     }
 };
 
+// Import the main swig interface
+%include @CMAKE_CURRENT_BINARY_DIR@/../biorbd.i

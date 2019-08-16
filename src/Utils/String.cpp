@@ -92,7 +92,7 @@ biorbd::utils::String biorbd::utils::String::toupper() const{
 }
 
 
-std::ostream &biorbd::utils::operator<<(std::ostream &os, const biorbd::utils::String &a)
+std::ostream &operator<<(std::ostream &os, const biorbd::utils::String &a)
 {
     os << a.c_str();
     return os;
