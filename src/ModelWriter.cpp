@@ -56,7 +56,7 @@ void biorbd::Writer::writeModel(
         biorbdModelFile << std::endl;
 
         // Écrire les éventuels markers
-        std::vector<biorbd::rigidbody::NodeBone> markers (m.marker(m,i));
+        std::vector<biorbd::rigidbody::NodeBone> markers (m.marker(m.bone(i).name()));
         if (markers.size() > 0){
             biorbdModelFile << sep << com << " Markers" << std::endl;
             for (size_t j = 0; j< markers.size(); ++j){

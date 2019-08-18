@@ -12,7 +12,6 @@ class Matrix;
 }
 
 namespace rigidbody {
-class Joints;
 class GeneralizedCoordinates;
 class NodeBone;
 
@@ -30,24 +29,22 @@ public:
             bool technical = true,
             bool anatomical = false,
             const biorbd::utils::String& axesToRemove = biorbd::utils::String(),
-            int id = -1); // Ajouter un nouveau marker
+            int id = -1
+        );
     const biorbd::rigidbody::NodeBone& marker(
             const unsigned int &i) const;
     std::vector<biorbd::rigidbody::NodeBone> marker(
-            const biorbd::rigidbody::Joints& model,
-            const unsigned int &idxBone) const;
+            const biorbd::utils::String &segmentName) const;
     std::vector<biorbd::utils::String> markerNames() const;
     std::vector<biorbd::utils::String> technicalMarkerNames() const;
     std::vector<biorbd::utils::String> anatomicalMarkerNames() const;
 
-    static biorbd::rigidbody::NodeBone Tags(
-            biorbd::rigidbody::Joints& model,
+    biorbd::rigidbody::NodeBone Tags(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::NodeBone& node,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un marqueur ind idx
     biorbd::rigidbody::NodeBone Tags(
-            biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const unsigned int& idx,
             bool removeAxis=true,
@@ -56,34 +53,29 @@ public:
             const unsigned int& idx,
             bool removeAxis=true); // Retour d'un marqueur ind idx
     std::vector<biorbd::rigidbody::NodeBone> Tags(
-            biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un STL vector de tous les marqueurs
     std::vector<biorbd::rigidbody::NodeBone> Tags(
             bool removeAxis=true); // Retour d'un STL vector de tous les marqueurs
     biorbd::rigidbody::NodeBone TagsVelocity(
-            biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates&,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             const unsigned int& idx,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un marqueur ind idx
     std::vector<biorbd::rigidbody::NodeBone> TagsVelocity(
-            biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un STL vector de tous les marqueurs
     std::vector<biorbd::rigidbody::NodeBone> technicalTags(
-            biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un STL vector de tous les marqueurs
     std::vector<biorbd::rigidbody::NodeBone> technicalTags(
             bool removeAxis=true); // Retour d'un STL vector de tous les marqueurs
     std::vector<biorbd::rigidbody::NodeBone> anatomicalTags(
-            biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un STL vector de tous les marqueurs
@@ -94,7 +86,6 @@ public:
     std::vector<biorbd::rigidbody::NodeBone> AnatomicalTagsInLocal(
             bool removeAxis=true); // Retour d'un STL vector de tous les marqueurs anatomiques dans leur body
     std::vector<biorbd::rigidbody::NodeBone> segmentTags(
-            biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates&,
             const unsigned int& idx,
             bool removeAxis=true,
@@ -102,26 +93,19 @@ public:
 
 
     unsigned int nTags() const; // Retourne le nombre de marqueurs
-    unsigned int nTags(
-            biorbd::rigidbody::Joints& model,
-            unsigned int idxSegment = static_cast<unsigned int>(-1)) const; // Retourne le nombre de marqueurs du segment idxSegment. Si aucun, somme de tous
+    unsigned int nTags(unsigned int idxSegment) const; // Retourne le nombre de marqueurs du segment idxSegment. Si aucun, somme de tous
     unsigned int nTechTags(); // Retourne le nombre de marqueurs techniques
-    unsigned int nTechTags(
-            biorbd::rigidbody::Joints& model,
-            unsigned int idxSegment); // Retourne le nombre de marqueurs techniques pour le segment idxSegment
+    unsigned int nTechTags(unsigned int idxSegment); // Retourne le nombre de marqueurs techniques pour le segment idxSegment
     unsigned int nAnatTags(); // Retourne le nombre de marqueurs anatomiques
     std::vector<biorbd::utils::Matrix> TagsJacobian(
-            biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxis=true,
             bool updateKin = true); // Retourne la jacobienne des Tags
     std::vector<biorbd::utils::Matrix> TechnicalTagsJacobian(
-            biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxis=true,
             bool updateKin = true); // Retourne la jacobienne des Tags pour les marqueurs techniques
-    static biorbd::utils::Matrix TagsJacobian(
-            biorbd::rigidbody::Joints& model,
+    biorbd::utils::Matrix TagsJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::utils::String& parentName,
             const Eigen::Vector3d& p,
@@ -129,7 +113,6 @@ public:
 
 protected:
     std::vector<biorbd::utils::Matrix> TagsJacobian(
-            biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxis,
             bool updateKin,

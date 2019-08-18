@@ -30,17 +30,17 @@ void Matlab_Tags( int, mxArray *plhs[],
         if (!type.tolower().compare("all")){
             nTags = model->nTags();
             for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
-                 Tags_tp.push_back(model->Tags(*model,*Q_it, removeAxes));
+                 Tags_tp.push_back(model->Tags(*Q_it, removeAxes));
         }
         else if (!type.tolower().compare("anatomical")){
                 nTags = model->nAnatTags();
                 for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
-                     Tags_tp.push_back(model->anatomicalTags(*model,*Q_it, removeAxes));
+                     Tags_tp.push_back(model->anatomicalTags(*Q_it, removeAxes));
         }
         else if (!type.tolower().compare("technical")){
             nTags = model->nTechTags();
             for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
-                 Tags_tp.push_back(model->technicalTags(*model,*Q_it, removeAxes));
+                 Tags_tp.push_back(model->technicalTags(*Q_it, removeAxes));
         }
         else {
             std::ostringstream msg;
@@ -52,7 +52,7 @@ void Matlab_Tags( int, mxArray *plhs[],
     else {
         nTags = model->nTags();
         for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
-             Tags_tp.push_back(model->Tags(*model,*Q_it, removeAxes));
+             Tags_tp.push_back(model->Tags(*Q_it, removeAxes));
     }
 
     // Create a matrix for the return argument

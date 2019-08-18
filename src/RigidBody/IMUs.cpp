@@ -198,9 +198,9 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::IMUJacobian(
 
         // Calcul de la jacobienne de ce Tag
         if (first)
-            model.CalcMatRotJacobian(model, Q, id, node.rot(), G_tp, updateKin);
+            model.CalcMatRotJacobian(Q, id, node.rot(), G_tp, updateKin);
         else
-            model.CalcMatRotJacobian(model, Q, id, node.rot(), G_tp, false); // False for speed
+            model.CalcMatRotJacobian(Q, id, node.rot(), G_tp, false); // False for speed
 
         G.push_back(G_tp);
         first = false;

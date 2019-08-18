@@ -16,7 +16,6 @@ class Node;
 namespace rigidbody {
 class GeneralizedCoordinates;
 class GeneralizedTorque;
-class Markers;
 class NodeBone;
 class Patch;
 class Bone;
@@ -83,7 +82,6 @@ public:
 
     // -- INTEGRATOR INTERFACE -- //
     void UpdateKinematicsCustom(
-            Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
             const biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,
             const biorbd::rigidbody::GeneralizedCoordinates *Qddot = nullptr);
@@ -124,25 +122,20 @@ public:
             const biorbd::utils::String& axesToRemove,
             bool updateKin=true); // Projeter un point dans le repère global
     std::vector<biorbd::rigidbody::NodeBone>  projectPoint(
-            const biorbd::rigidbody::Markers &marks,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const std::vector<biorbd::rigidbody::NodeBone> &v,
             bool updateKin=true); //Marqueurs projetés de points correspondant aux marqueurs du modèle (le vector doit être égal au nombre de marqueur et dans l'ordre donné par Tags)
     biorbd::utils::Matrix projectPointJacobian(
-            Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             biorbd::rigidbody::NodeBone p,
             bool updateKin);
     biorbd::utils::Matrix projectPointJacobian(
-            Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const Eigen::Vector3d &v,
             int boneIdx,
             const biorbd::utils::String& axesToRemove,
             bool updateKin);
     std::vector<biorbd::utils::Matrix> projectPointJacobian(
-            Joints& model,
-            const biorbd::rigidbody::Markers &marks,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const std::vector<biorbd::rigidbody::NodeBone> &v,
             bool updateKin); // Matrice jacobienne des marqueurs projetés de points correspondant aux marqueurs du modèle (le vector doit être égal au nombre de marqueur et dans l'ordre donné par Tags et dans le repère global)
@@ -215,23 +208,19 @@ public:
             const bool updateKin = true); // Wrapper pour le moment angulaire
     // Réimplémentation de la fonction CalcAngularMomentum car elle a une erreur (inversion du calcul du com)
     RigidBodyDynamics::Math::Vector3d CalcAngularMomentum (
-            Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             bool update_kinematics);
     RigidBodyDynamics::Math::Vector3d CalcAngularMomentum (
-            Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
             bool update_kinematics);
     std::vector<RigidBodyDynamics::Math::Vector3d> CalcSegmentsAngularMomentum (
-            Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             bool update_kinematics);
     std::vector<RigidBodyDynamics::Math::Vector3d> CalcSegmentsAngularMomentum (
-            Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
@@ -239,7 +228,6 @@ public:
     // -------------------------------- //
 
     void CalcMatRotJacobian (
-            Joints &model,
             const RigidBodyDynamics::Math::VectorNd &Q,
             unsigned int body_id,
             const RigidBodyDynamics::Math::Matrix3d &rotation,
@@ -247,15 +235,12 @@ public:
             bool update_kinematics); // Calcule la matrice jacobienne d'une matrice de rotation
 
     void ForwardDynamicsContactsLagrangian (
-         Joints &model,
-         const RigidBodyDynamics::Math::VectorNd &Q,
-         const RigidBodyDynamics::Math::VectorNd &QDot,
-         const RigidBodyDynamics::Math::VectorNd &GeneralizedTorque,
-         RigidBodyDynamics::ConstraintSet &CS,
-         RigidBodyDynamics::Math::VectorNd &QDDot
-         );
+            const RigidBodyDynamics::Math::VectorNd &Q,
+            const RigidBodyDynamics::Math::VectorNd &QDot,
+            const RigidBodyDynamics::Math::VectorNd &GeneralizedTorque,
+            RigidBodyDynamics::ConstraintSet &CS,
+            RigidBodyDynamics::Math::VectorNd &QDDot);
     void computeQdot(
-            Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &QDot,
             biorbd::rigidbody::GeneralizedCoordinates &QDotOut); // Cette fonction retourne la dérivée de Q en fonction de Qdot (Si pas de Quaternion, QDot est directement retourné)
@@ -275,7 +260,6 @@ protected:
     bool m_isKinematicsComputed;
     double m_totalMass; // Masse de tous les corps
     RigidBodyDynamics::Math::SpatialTransform CalcBodyWorldTransformation(
-            Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const unsigned int body_id,
             bool update_kinematics); // Calculate the JCS in global

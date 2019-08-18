@@ -31,11 +31,11 @@ void Matlab_TagsJacobian( int, mxArray *plhs[],
     std::vector<biorbd::utils::Matrix> Jac_tp;
     unsigned int nTags;
     if (technicalTagsOnly){
-        Jac_tp = model->TechnicalTagsJacobian(*model, Q, removeAxes); // Retourne la jacobienne les Tags techniques
+        Jac_tp = model->TechnicalTagsJacobian(Q, removeAxes); // Retourne la jacobienne les Tags techniques
         nTags = model->nTechTags();
     }
     else {
-        Jac_tp = model->TagsJacobian(*model, Q, removeAxes); // Retourne la jacobienne les Tags
+        Jac_tp = model->TagsJacobian(Q, removeAxes); // Retourne la jacobienne les Tags
         nTags = model->nTags();
     }
     std::vector<biorbd::utils::Matrix>::iterator it=Jac_tp.begin();

@@ -22,7 +22,7 @@ void Matlab_ProjectPointJacobian( int, mxArray *plhs[],
     std::vector<biorbd::rigidbody::NodeBone> markersOverTime = *getParameterAllMarkers(prhs,3).begin();
 
     // Trouver la matrice jacobienne de tous les marqueurs
-    std::vector<biorbd::utils::Matrix> Jac_tp = model->projectPointJacobian(*model, *model, Q, markersOverTime, true);
+    std::vector<biorbd::utils::Matrix> Jac_tp = model->projectPointJacobian(Q, markersOverTime, true);
     std::vector<biorbd::utils::Matrix>::iterator it=Jac_tp.begin();
 
     // Create a matrix for the return argument

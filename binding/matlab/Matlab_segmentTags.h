@@ -32,7 +32,7 @@ void Matlab_segmentTags( int, mxArray *plhs[],
         // Trouver ou sont les marqueurs
         std::vector<std::vector<biorbd::rigidbody::NodeBone>> allTags;
         for (unsigned int i=0; i<model->nbBone(); ++i)    {
-            std::vector<biorbd::rigidbody::NodeBone> Tags_tp = model->segmentTags(*model, Q, i, removeAxes);
+            std::vector<biorbd::rigidbody::NodeBone> Tags_tp = model->segmentTags(Q, i, removeAxes);
             allTags.push_back(Tags_tp);
         }
         // Create a matrix for the return argument
@@ -54,7 +54,7 @@ void Matlab_segmentTags( int, mxArray *plhs[],
 
     }
     else{ // Si on a demande un segment precis
-        std::vector<biorbd::rigidbody::NodeBone> Tags_tp = model->segmentTags(*model, Q, idx, removeAxes);
+        std::vector<biorbd::rigidbody::NodeBone> Tags_tp = model->segmentTags(Q, idx, removeAxes);
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix(3, Tags_tp.size(), mxREAL);

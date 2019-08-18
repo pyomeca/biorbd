@@ -93,7 +93,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     if (m_firstIteration){
         m_firstIteration = false;
         Eigen::VectorXd TobsTP = Tobs;
-        TobsTP.block(3*m.nTechTags(m,0),0,3*m.nTechTags()-3*m.nTechTags(m,0),1) = Eigen::VectorXd::Zero(3*m.nTechTags()-3*m.nTechTags(m,0)); // Ne conserver que les marqueurs de la racine
+        TobsTP.block(3*m.nTechTags(0),0,3*m.nTechTags()-3*m.nTechTags(0),1) = Eigen::VectorXd::Zero(3*m.nTechTags()-3*m.nTechTags(0)); // Ne conserver que les marqueurs de la racine
         for (unsigned int j = 0; j < 2; ++j){ // Faire la racine, puis le reste du corps
             if (j != 0)
                 TobsTP = Tobs; // Reprendre tous les marqueurs
@@ -115,9 +115,9 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     RigidBodyDynamics::UpdateKinematicsCustom (m, &Q_tp, nullptr, nullptr);
 
     // Markers projetés
-    std::vector<biorbd::rigidbody::NodeBone> zest_tp = m.technicalTags(m, Q_tp, removeAxes, false);
+    std::vector<biorbd::rigidbody::NodeBone> zest_tp = m.technicalTags(Q_tp, removeAxes, false);
     // Jacobienne
-    std::vector<biorbd::utils::Matrix> J_tp = m.TechnicalTagsJacobian(m, Q_tp, removeAxes, false);
+    std::vector<biorbd::utils::Matrix> J_tp = m.TechnicalTagsJacobian(Q_tp, removeAxes, false);
     // Faire une seule matrice pour zest et Jacobienne
     biorbd::utils::Matrix H(biorbd::utils::Matrix::Zero(m_nMeasure, m_nDof*3)); // 3*nTags => X,Y,Z ; 3*nDof => Q, Qdot, Qddot
     Eigen::VectorXd zest = Eigen::VectorXd::Zero(m_nMeasure);

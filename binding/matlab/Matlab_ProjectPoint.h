@@ -38,7 +38,7 @@ void Matlab_ProjectPoint( int, mxArray *plhs[],
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrames; ++i){
         biorbd::rigidbody::GeneralizedCoordinates Q(*(Qall.begin()+i));
-        std::vector<biorbd::rigidbody::NodeBone> projectedPoint(model->projectPoint(*model, Q, *(markersOverTime.begin()+i), true));
+        std::vector<biorbd::rigidbody::NodeBone> projectedPoint(model->projectPoint(Q, *(markersOverTime.begin()+i), true));
         for (unsigned int j=0; j<static_cast<unsigned int>(nMarker); ++j){
             biorbd::rigidbody::NodeBone tp(*(projectedPoint.begin()+j));
             Markers[cmp+0] = tp(0);
