@@ -31,7 +31,7 @@ int main()
         QDDot[i] = 0;
     }
 #ifdef MODULE_MUSCLES
-    model.updateMuscles(model, Q, QDot, true);
+    model.updateMuscles(Q, QDot, true);
 
     biorbd::muscles::StateDynamics emg(0, 1);
     // METHOD 1

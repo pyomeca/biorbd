@@ -20,7 +20,7 @@ TEST(MuscleJacobian, jacobian){
     // Force computation of geometry
     std::shared_ptr<biorbd::muscles::Muscle> muscle(model.muscleGroup_nonConst(muscleForMuscleJacobian).muscle_nonConst(muscleGroupForMuscleJacobian));
     EXPECT_THROW(muscle->position().jacobian(), std::runtime_error);
-    model.updateMuscles(model, Q, true);
+    model.updateMuscles(Q, true);
 
     unsigned int nRows(3 * (muscle->pathChanger().nbObjects() + 2));
     biorbd::utils::Matrix jacoRef(nRows, model.nbQ());
@@ -48,7 +48,7 @@ TEST(MuscleJacobian, jacobianLength){
     biorbd::Model model(modelPathForMuscleJacobian);
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
     Q.setZero();
-    model.updateMuscles(model, Q, true);
+    model.updateMuscles(Q, true);
 
     unsigned int nRows(model.nbMuscleTotal());
     biorbd::utils::Matrix jacoRef(nRows, model.nbQ());
@@ -61,7 +61,7 @@ TEST(MuscleJacobian, jacobianLength){
     jacoRef(5, 0) = -1.05977e-18;   jacoRef(5, 1) = 0.00262888;
 
     // Compare with computed values
-    EXPECT_LT( (model.musclesLengthJacobian(model, Q) - jacoRef).squaredNorm(), 1e-6);
+    EXPECT_LT( (model.musclesLengthJacobian(Q) - jacoRef).squaredNorm(), 1e-6);
 }
 
 static std::string modelPathForXiaDerivativeTest("models/arm26.bioMod");
@@ -84,7 +84,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
     biorbd::rigidbody::GeneralizedCoordinates QDot(model);
     Q.setZero();
     QDot.setZero();
-    model.updateMuscles(model, Q, QDot, true);
+    model.updateMuscles(Q, QDot, true);
 
     {
         std::shared_ptr<biorbd::muscles::HillTypeThelenFatigable> muscle(
@@ -135,7 +135,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
     biorbd::rigidbody::GeneralizedCoordinates QDot(model);
     Q.setZero();
     QDot.setZero();
-    model.updateMuscles(model, Q, QDot, true);
+    model.updateMuscles(Q, QDot, true);
 
     {
         std::shared_ptr<biorbd::muscles::HillTypeThelenFatigable> muscle(
@@ -173,7 +173,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
     biorbd::rigidbody::GeneralizedCoordinates QDot(model);
     Q.setZero();
     QDot.setZero();
-    model.updateMuscles(model, Q, QDot, true);
+    model.updateMuscles(Q, QDot, true);
 
     {
         biorbd::muscles::HillTypeThelenFatigable muscle(

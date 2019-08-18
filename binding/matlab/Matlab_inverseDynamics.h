@@ -2,6 +2,7 @@
 #define BIORBD_MATLAB_INVERSE_DYNAMICS_H
 
 #include <mex.h>
+#include <rbdl/Dynamics.h>
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
@@ -48,19 +49,19 @@ void Matlab_inverseDynamics( int, mxArray *plhs[],
 
     // Trouver la dynamique inverse a cette configuration
     for (unsigned int j=0; j<Q.size(); ++j){
-        biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(Eigen::VectorXd::Zero (nGeneralizedTorque));
+        biorbd::rigidbody::GeneralizedTorque Tau(Eigen::VectorXd::Zero (nGeneralizedTorque));
         if (externalForces){
             // Recevoir les plates-formes
             std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext = model->dispatchedForce(f_tp[j]);
-            RigidBodyDynamics::InverseDynamics(*model, *(Q.begin()+j), *(QDot.begin()+j), *(QDDot.begin()+j), GeneralizedTorque, &f_ext);// Inverse Dynamics
+            RigidBodyDynamics::InverseDynamics(*model, *(Q.begin()+j), *(QDot.begin()+j), *(QDDot.begin()+j), Tau, &f_ext);// Inverse Dynamics
         }
         else
-            RigidBodyDynamics::InverseDynamics(*model, *(Q.begin()+j), *(QDot.begin()+j), *(QDDot.begin()+j), GeneralizedTorque);// Inverse Dynamics
+            RigidBodyDynamics::InverseDynamics(*model, *(Q.begin()+j), *(QDot.begin()+j), *(QDDot.begin()+j), Tau);// Inverse Dynamics
 
 
         // Remplir l'output
         for (unsigned int i=0; i<nGeneralizedTorque; i++){
-            GeneralizedTorque[cmp] = GeneralizedTorque(i);
+            GeneralizedTorque[cmp] = Tau(i);
             ++cmp;
         }
     }

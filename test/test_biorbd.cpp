@@ -33,7 +33,7 @@ TEST(Constraint, loopConstraint){
             0.67809701484785911, -6.251969045745929e-16, 5.9580819677934563e-15, 15.822263679783546, 2.4880587040480365e-15, -9.930136612989094e-15;
     GeneralizedTorque.setZero();
 
-    biorbd::rigidbody::Contacts& cs(model.getConstraints_nonConst(model));
+    biorbd::rigidbody::Contacts& cs(model.getConstraints_nonConst());
     RigidBodyDynamics::ForwardDynamicsConstraintsDirect(model, Q, QDot, GeneralizedTorque, cs, QDDot_constrained);
     for (unsigned int i = 0; i<model.nbQddot(); ++i)
         EXPECT_NEAR(QDDot_constrained[i], QDDot_expected[i], 1e-6);

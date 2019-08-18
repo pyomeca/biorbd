@@ -11,12 +11,12 @@ biorbd::muscles::Compound::Compound(
     //ctor
 }
 
-biorbd::muscles::Compound::Compound(const biorbd::muscles::Compound &m)
+biorbd::muscles::Compound::Compound(const biorbd::muscles::Compound &muscle)
 {
-    this->m_pathChanger = m.m_pathChanger;
-    this->copyForce(m.m_force);
-    this->m_type = m.m_type;
-    this->m_name = m.m_name;
+    this->m_pathChanger = muscle.m_pathChanger;
+    this->copyForce(muscle.m_force);
+    this->m_type = muscle.m_type;
+    this->m_name = muscle.m_name;
 }
 
 biorbd::muscles::Compound::~Compound()

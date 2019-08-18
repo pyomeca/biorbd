@@ -28,17 +28,22 @@ biorbd::actuator::Actuators::Actuators(const biorbd::actuator::Actuators& a) :
 }
 
 
-biorbd::actuator::Actuators::~Actuators(){
+biorbd::actuator::Actuators::~Actuators()
+{
     delete[] m_isDofSet;
 }
 
 
 
-void biorbd::actuator::Actuators::addActuator(const biorbd::rigidbody::Joints& m, biorbd::actuator::Actuator &act){
+void biorbd::actuator::Actuators::addActuator(biorbd::actuator::Actuator &act)
+{
     biorbd::utils::Error::error(!m_isClose, "You can't add actuator after closing the model");
 
+    // Assuming that this is also a Joints type (via BiorbdModel)
+    const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+
     // Vérifier que le dof target est associé à un dof qui existe déjà dans le modèle
-    biorbd::utils::Error::error(act.index()<m.nbDof(), "Sent index is out of dof range");
+    biorbd::utils::Error::error(act.index()<model.nbDof(), "Sent index is out of dof range");
 
     // Pour fin de rapidité et de cohérence avec les Q, mettre l'actuator au même index que son dof associé
     unsigned int idx(act.index());
@@ -111,8 +116,12 @@ void biorbd::actuator::Actuators::addActuator(const biorbd::rigidbody::Joints& m
 
 }
 
-void biorbd::actuator::Actuators::closeActuator(biorbd::rigidbody::Joints& m){
-    biorbd::utils::Error::error(m.nbDof()==m_all.size(), "All dof must have their actuators set");
+void biorbd::actuator::Actuators::closeActuator()
+{
+    // Assuming that this is also a Joints type (via BiorbdModel)
+    const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+
+    biorbd::utils::Error::error(model.nbDof()==m_all.size(), "All dof must have their actuators set");
 
     for (unsigned int i=0; i<m_all.size()*2; ++i)
         biorbd::utils::Error::error(m_isDofSet[i], "All DoF must have their actuators set before closing the model");
@@ -120,11 +129,13 @@ void biorbd::actuator::Actuators::closeActuator(biorbd::rigidbody::Joints& m){
     m_isClose = true;
 }
 
-std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>> biorbd::actuator::Actuators::actuator(unsigned int dof){
+std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>> biorbd::actuator::Actuators::actuator(unsigned int dof)
+{
     biorbd::utils::Error::error(dof<nbActuators(), "Idx asked is higher than number of actuator");
     return *(m_all.begin() + dof);
 }
-std::shared_ptr<biorbd::actuator::Actuator> biorbd::actuator::Actuators::actuator(unsigned int dof, unsigned int idx){
+std::shared_ptr<biorbd::actuator::Actuator> biorbd::actuator::Actuators::actuator(unsigned int dof, unsigned int idx)
+{
     std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>> tp(actuator(dof));
 
     biorbd::utils::Error::error(idx == 0 || idx == 1, "Index of actuator should be 0 or 1");
@@ -140,11 +151,10 @@ unsigned int biorbd::actuator::Actuators::nbActuators() const
 }
 
 biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
-        const biorbd::rigidbody::Joints& m,
         const biorbd::rigidbody::GeneralizedCoordinates& a,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot){
-
+        const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
+{
     // Mettre pour que qdot soit positif en concentrique et negatif en excentrique
     biorbd::rigidbody::GeneralizedCoordinates QdotResigned(Qdot);
     for (unsigned int i=0; i<Qdot.size(); ++i)
@@ -152,7 +162,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
             QdotResigned(i) = -Qdot(i);
 
     // Calcul des torque sous maximaux
-    biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(torqueMax(m, a,Q,QdotResigned));
+    biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(torqueMax(a,Q,QdotResigned));
 
     // Remettre les signes
     for (unsigned int i=0; i<GeneralizedTorque.size(); ++i)
@@ -163,15 +173,18 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
 
 
 std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque> biorbd::actuator::Actuators::torqueMax(
-        const biorbd::rigidbody::Joints &m,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot){
+        const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
+{
     biorbd::utils::Error::error(m_isClose, "Close the actuator model before calling torqueMax");
 
-    std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque> maxGeneralizedTorque_all =
-            std::make_pair(biorbd::rigidbody::GeneralizedTorque(m), biorbd::rigidbody::GeneralizedTorque(m));
+    // Assuming that this is also a Joints type (via BiorbdModel)
+    const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
-    for (unsigned int i=0; i<m.nbDof(); ++i){
+    std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque> maxGeneralizedTorque_all =
+            std::make_pair(biorbd::rigidbody::GeneralizedTorque(model), biorbd::rigidbody::GeneralizedTorque(model));
+
+    for (unsigned int i=0; i<model.nbDof(); ++i){
         std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>> GeneralizedTorque_tp(actuator(i));
         for (unsigned p=0; p<2; ++p){
             if (p==0) // First
@@ -204,16 +217,19 @@ std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTo
 
 
 biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torqueMax(
-        const biorbd::rigidbody::Joints &m,
         const biorbd::rigidbody::GeneralizedCoordinates& a,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot){
+        const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
+{
     biorbd::utils::Error::error(m_isClose, "Close the actuator model before calling torqueMax");
 
-    biorbd::rigidbody::GeneralizedTorque maxGeneralizedTorque_all;
-    maxGeneralizedTorque_all.resize(m.nbDof());
+    // Assuming that this is also a Joints type (via BiorbdModel)
+    const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
-    for (unsigned int i=0; i<m.nbDof(); ++i){
+    biorbd::rigidbody::GeneralizedTorque maxGeneralizedTorque_all;
+    maxGeneralizedTorque_all.resize(model.nbDof());
+
+    for (unsigned int i=0; i<model.nbDof(); ++i){
         std::shared_ptr<Actuator> GeneralizedTorque_tp;
         if (a[i]>=0) // First
             GeneralizedTorque_tp = actuator(i).first;

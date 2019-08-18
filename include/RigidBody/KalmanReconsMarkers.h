@@ -16,27 +16,27 @@ public:
 
     // Constructeur
     KalmanReconsMarkers(
-            biorbd::Model&,
+            biorbd::Model& model,
             biorbd::rigidbody::KalmanRecons::KalmanRecons::KalmanParam = biorbd::rigidbody::KalmanRecons::KalmanRecons::KalmanParam());
     virtual ~KalmanReconsMarkers();
 
     // Reconstruction d'un frame
     virtual void reconstructFrame(
-            biorbd::Model &m,
+            biorbd::Model &model,
             const biorbd::rigidbody::Markers &Tobs,
             biorbd::rigidbody::GeneralizedCoordinates *Q,
             biorbd::rigidbody::GeneralizedCoordinates *Qdot,
             biorbd::rigidbody::GeneralizedCoordinates *Qddot,
             bool removeAxes=true);
     virtual void reconstructFrame(
-            biorbd::Model &m,
+            biorbd::Model &model,
             const std::vector<biorbd::rigidbody::NodeBone> &Tobs,
             biorbd::rigidbody::GeneralizedCoordinates *Q,
             biorbd::rigidbody::GeneralizedCoordinates *Qdot,
             biorbd::rigidbody::GeneralizedCoordinates *Qddot,
             bool removeAxes=true);
     virtual void reconstructFrame(
-            biorbd::Model &m,
+            biorbd::Model &model,
             const Eigen::VectorXd &Tobs,
             biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
             biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,

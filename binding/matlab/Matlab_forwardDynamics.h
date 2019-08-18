@@ -67,15 +67,15 @@ void Matlab_forwardDynamics( int, mxArray *plhs[],
         // Trouver la dynamique directe a cette configuration
         biorbd::rigidbody::GeneralizedCoordinates QDDot(Eigen::VectorXd::Zero(nQddot));
         if (contact == 1){ // Si on a un contact
-            model->getConstraints_nonConst(*model).linear_solver = RigidBodyDynamics::Math::LinearSolverColPivHouseholderQR;
-            RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*model, *(Q.begin()+j), *(QDot.begin()+j), *(GeneralizedTorque.begin()+j), model->getConstraints_nonConst(*model),QDDot);// Forward dynamics
+            model->getConstraints_nonConst().linear_solver = RigidBodyDynamics::Math::LinearSolverColPivHouseholderQR;
+            RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*model, *(Q.begin()+j), *(QDot.begin()+j), *(GeneralizedTorque.begin()+j), model->getConstraints_nonConst(), QDDot);// Forward dynamics
         }
         else if (contact == -1){ // Si on a une impulsion
             biorbd::rigidbody::GeneralizedCoordinates QdotPost(static_cast<unsigned int>((*(Q.begin()+j)).size()));
-            RigidBodyDynamics::ComputeConstraintImpulsesDirect(*model, *(Q.begin()+j), *(QDot.begin()+j), model->getConstraints_nonConst(*model), QdotPost);
+            RigidBodyDynamics::ComputeConstraintImpulsesDirect(*model, *(Q.begin()+j), *(QDot.begin()+j), model->getConstraints_nonConst(), QdotPost);
 
             // Calcul de la dynamique
-            RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*model, *(Q.begin()+j), QdotPost, *(GeneralizedTorque.begin()+j), model->getConstraints_nonConst(*model),QDDot);// Forward dynamics
+            RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*model, *(Q.begin()+j), QdotPost, *(GeneralizedTorque.begin()+j), model->getConstraints_nonConst(),QDDot);// Forward dynamics
         }
         else {
             RigidBodyDynamics::ForwardDynamicsLagrangian(*model, *(Q.begin()+j), *(QDot.begin()+j), *(GeneralizedTorque.begin()+j), QDDot);// Forward dynamics

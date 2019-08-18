@@ -33,7 +33,7 @@ public:
 
     // Constructeur
     KalmanRecons(
-            biorbd::Model&,
+            biorbd::Model& model,
             unsigned int nMeasure,
             KalmanParam = KalmanParam());
     virtual ~KalmanRecons();

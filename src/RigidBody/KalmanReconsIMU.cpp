@@ -9,9 +9,9 @@
 #include "RigidBody/IMU.h"
 
 biorbd::rigidbody::KalmanReconsIMU::KalmanReconsIMU(
-        biorbd::Model &m,
+        biorbd::Model &model,
         biorbd::rigidbody::KalmanRecons::KalmanParam params) :
-    biorbd::rigidbody::KalmanRecons(m, m.nTechIMUs()*9, params),
+    biorbd::rigidbody::KalmanRecons(model, model.nTechIMUs()*9, params),
     m_firstIteration(true)
 {
 
@@ -67,7 +67,7 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
 
 
 void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
-        biorbd::Model &m,
+        biorbd::Model &model,
         const Eigen::VectorXd &IMUobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
         biorbd::rigidbody::GeneralizedCoordinates *Qdot,
@@ -77,7 +77,7 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         m_firstIteration = false;
         for (unsigned int i=0; i<500; ++i){
             // La premiere fois, appeler de facon recursive pour avoir une position initiale decente
-            reconstructFrame(m, IMUobs, nullptr, nullptr, nullptr);
+            reconstructFrame(model, IMUobs, nullptr, nullptr, nullptr);
 
             // Remettre Pp à initial (parce qu'on ne s'intéresse pas à la vitesse pour se rendre à la position initiale
             m_xp.block(m_nDof, 0, m_nDof*2,1) = Eigen::VectorXd::Zero(m_nDof*2); // Mettre vitesse et accélération à 0
@@ -87,12 +87,12 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
     // État projeté
     Eigen::VectorXd xkm = m_A * m_xp;
     Eigen::VectorXd Q_tp = xkm.topRows(m_nDof);
-    RigidBodyDynamics::UpdateKinematicsCustom (m, &Q_tp, nullptr, nullptr);
+    RigidBodyDynamics::UpdateKinematicsCustom (model, &Q_tp, nullptr, nullptr);
 
     // Markers projetés
-    std::vector<biorbd::rigidbody::IMU> zest_tp = m.technicalIMU(m, Q_tp, false);
+    std::vector<biorbd::rigidbody::IMU> zest_tp = model.technicalIMU(Q_tp, false);
     // Jacobienne
-    std::vector<biorbd::utils::Matrix> J_tp = m.TechnicalIMUJacobian(m, Q_tp, false);
+    std::vector<biorbd::utils::Matrix> J_tp = model.TechnicalIMUJacobian(Q_tp, false);
     // Faire une seule matrice pour zest et Jacobienne
     biorbd::utils::Matrix H(biorbd::utils::Matrix::Zero(m_nMeasure, m_nDof*3)); // 3*nCentrales => X,Y,Z ; 3*nDof => Q, Qdot, Qddot
     Eigen::VectorXd zest = Eigen::VectorXd::Zero(m_nMeasure);

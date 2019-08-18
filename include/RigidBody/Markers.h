@@ -59,7 +59,7 @@ public:
     std::vector<biorbd::rigidbody::NodeBone> Tags(
             bool removeAxis=true); // Retour d'un STL vector de tous les marqueurs
     biorbd::rigidbody::NodeBone TagsVelocity(
-            const biorbd::rigidbody::GeneralizedCoordinates&,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             unsigned int  idx,
             bool removeAxis=true,
@@ -86,7 +86,7 @@ public:
     std::vector<biorbd::rigidbody::NodeBone> AnatomicalTagsInLocal(
             bool removeAxis=true); // Retour d'un STL vector de tous les marqueurs anatomiques dans leur body
     std::vector<biorbd::rigidbody::NodeBone> segmentTags(
-            const biorbd::rigidbody::GeneralizedCoordinates&,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             unsigned int  idx,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un STL vector de tous les marqueurs d'un segment

@@ -569,7 +569,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                 actuator = new biorbd::actuator::ActuatorConstant(int_direction, Tmax, dofIdx, name); // Échec de compilation sinon
             }
 
-            model->addActuator(*model, *actuator);
+            model->addActuator(*actuator);
             delete actuator;
 
 #else // MODULE_ACTUATORS
@@ -787,7 +787,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
     }
 #ifdef MODULE_ACTUATORS
     if (hasActuators)
-        model->closeActuator(*model);
+        model->closeActuator();
 #endif // MODULE_ACTUATORS
     // Fermer le fichier
     // std::cout << "Model file successfully loaded" << std::endl;

@@ -36,7 +36,8 @@ unsigned int biorbd::rigidbody::Contacts::AddConstraint(
         const biorbd::utils::Node& body_point,
         const biorbd::utils::String& axis,
         const biorbd::utils::String& name,
-        double acc){
+        double acc)
+{
     unsigned int ret(0);
     for (unsigned int i=0; i<axis.length(); ++i){
         ++m_nbreConstraint;
@@ -75,46 +76,54 @@ unsigned int biorbd::rigidbody::Contacts::AddLoopConstraint(
 }
 
 
-biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints_nonConst(const biorbd::rigidbody::Joints &m){
+biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints_nonConst()
+{
     if (!m_binded){
-        Bind(m);
+        // Assuming that this is also a Joints type (via BiorbdModel)
+        const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+        Bind(model);
         m_binded = true;
     }
     return *this;
 }
 
-biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints_nonConst()
+const biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints()
 {
-    if (!m_binded)
-        biorbd::utils::Error::error(0, "Please call getConstraints with biorbd::rigidbody::Joints model before!" );
-    return *this;
-}
-const biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints() const {
-    if (!m_binded)
-        biorbd::utils::Error::error(0, "Please call getConstraints with biorbd::rigidbody::Joints model before!" );
+    if (!m_binded){
+        // Assuming that this is also a Joints type (via BiorbdModel)
+        const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+        Bind(model);
+        m_binded = true;
+    }
     return *this;
 }
 
-bool biorbd::rigidbody::Contacts::hasContacts() const {
+bool biorbd::rigidbody::Contacts::hasContacts() const
+{
     if (m_nbreConstraint>0) return true; else return false;
 }
 
-unsigned int biorbd::rigidbody::Contacts::nContacts() const {
+unsigned int biorbd::rigidbody::Contacts::nContacts() const
+{
     return m_nbreConstraint;
 }
 
-biorbd::utils::String biorbd::rigidbody::Contacts::name(unsigned int i) {
+biorbd::utils::String biorbd::rigidbody::Contacts::name(unsigned int i)
+{
     biorbd::utils::Error::error(i<m_nbreConstraint, "Idx for name is too high..");
     return RigidBodyDynamics::ConstraintSet::name[i];
 }
 
 
 std::vector<biorbd::utils::Node> biorbd::rigidbody::Contacts::constraintsInGlobal(
-        biorbd::rigidbody::Joints& m,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        bool updateKin){
+        bool updateKin)
+{
+    // Assuming that this is also a Joints type (via BiorbdModel)
+    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+
     if (updateKin)
-        RigidBodyDynamics::UpdateKinematicsCustom(m, &Q, nullptr, nullptr);
+        RigidBodyDynamics::UpdateKinematicsCustom(model, &Q, nullptr, nullptr);
 
     // Variable de sortie
     std::vector<biorbd::utils::Node> tp;
@@ -122,7 +131,7 @@ std::vector<biorbd::utils::Node> biorbd::rigidbody::Contacts::constraintsInGloba
 
     // Sur chaque controle, appliquer la rotation et enregistrer sa position
     for (unsigned int i=0; i<size(); ++i)
-        tp.push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(m, Q,body[i],point[i],false));
+        tp.push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q,body[i],point[i],false));
 
     return tp;
 }

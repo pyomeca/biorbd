@@ -41,7 +41,7 @@ biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     if (m_eps < 1e-12){
         biorbd::utils::Error::error(false, "epsilon for partial derivates approximation is too small ! \nLimit for epsilon is 1e-12");
     }
-    m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
+    m_model.updateMuscles(m_Q, m_Qdot, true);
     if (!useResidual){
         m_GeneralizedTorqueResidual.setZero();
         m_nGeneralizedTorqueResidual = 0;
@@ -192,7 +192,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_g(
     if (new_x)
         dispatch(x);
 
-    biorbd::rigidbody::GeneralizedTorque GeneralizedTorqueMusc = m_model.muscularJointTorque(m_model, m_states, false, &m_Q, &m_Qdot);
+    biorbd::rigidbody::GeneralizedTorque GeneralizedTorqueMusc = m_model.muscularJointTorque(m_states, false, &m_Q, &m_Qdot);
 
     // TODO : adjust dimensions for when "root_actuated" is set to false in bioMod file
     for( Ipopt::Index i = 0; i < m; i++ )
@@ -231,7 +231,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
     } else {
         if (new_x)
             dispatch(x);
-        biorbd::rigidbody::GeneralizedTorque GeneralizedTorqueMusc(m_model.muscularJointTorque(m_model, m_states, false, &m_Q, &m_Qdot));
+        biorbd::rigidbody::GeneralizedTorque GeneralizedTorqueMusc(m_model.muscularJointTorque(m_states, false, &m_Q, &m_Qdot));
         unsigned int k(0);
         for( unsigned int j = 0; j < m_nMus; ++j ){
             std::vector<biorbd::muscles::StateDynamics> stateEpsilon;
@@ -241,7 +241,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
                     delta = 1;
                 stateEpsilon.push_back(biorbd::muscles::StateDynamics(0, m_activations[i]+delta*m_eps));
             }
-            biorbd::rigidbody::GeneralizedTorque GeneralizedTorqueCalculEpsilon(m_model.muscularJointTorque(m_model, stateEpsilon, false, &m_Q, &m_Qdot));
+            biorbd::rigidbody::GeneralizedTorque GeneralizedTorqueCalculEpsilon(m_model.muscularJointTorque(stateEpsilon, false, &m_Q, &m_Qdot));
             for( Ipopt::Index i = 0; i < m; i++ ){
                 values[k++] = (GeneralizedTorqueCalculEpsilon[i]-GeneralizedTorqueMusc[i])/m_eps;
                 if (m_verbose >= 3){
@@ -297,7 +297,7 @@ void biorbd::muscles::StaticOptimizationIpopt::finalize_solution(
         std::cout << std::endl << "Final results" << std::endl;
         std::cout << "f(x*) = " << obj_value << std::endl;
         std::cout << "Activations = " << m_activations.transpose() << std::endl;
-        std::cout << "Muscular torques = " << m_model.muscularJointTorque(m_model, m_states, false, &m_Q, &m_Qdot).transpose() << std::endl;
+        std::cout << "Muscular torques = " << m_model.muscularJointTorque(m_states, false, &m_Q, &m_Qdot).transpose() << std::endl;
         std::cout << "GeneralizedTorque target = " << m_GeneralizedTorqueTarget.transpose() << std::endl;
         if (m_nGeneralizedTorqueResidual){
             std::cout << "Residual torques= " << m_GeneralizedTorqueResidual.transpose() << std::endl;

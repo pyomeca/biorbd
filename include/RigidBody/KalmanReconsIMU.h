@@ -23,13 +23,13 @@ public:
 
     // Reconstruction d'un frame
     virtual void reconstructFrame(
-            biorbd::Model &m,
+            biorbd::Model &model,
             const std::vector<biorbd::utils::Attitude> &IMUobs,
             biorbd::rigidbody::GeneralizedCoordinates *Q,
             biorbd::rigidbody::GeneralizedCoordinates *Qdot,
             biorbd::rigidbody::GeneralizedCoordinates *Qddot);
     virtual void reconstructFrame(
-            biorbd::Model &m,
+            biorbd::Model &model,
             const Eigen::VectorXd &IMUobs,
             biorbd::rigidbody::GeneralizedCoordinates *Q,
             biorbd::rigidbody::GeneralizedCoordinates *Qdot,

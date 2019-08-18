@@ -38,12 +38,12 @@ void biorbd::muscles::WrappingCylinder::wrapPoints(
 }
 
 biorbd::utils::Attitude biorbd::muscles::WrappingCylinder::RT(
-        biorbd::rigidbody::Joints &m,
+        biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         bool updateKin){
 
     // Récupérer la matrice de rototrans du cylindre dans le global
-    biorbd::utils::Attitude parent(m.globalJCS(Q, m_parentName, updateKin));
+    biorbd::utils::Attitude parent(model.globalJCS(Q, m_parentName, updateKin));
     biorbd::utils::Attitude RT(parent * m_RTtoParent);
     return RT;
 }

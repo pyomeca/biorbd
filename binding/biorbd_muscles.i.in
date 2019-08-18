@@ -32,51 +32,51 @@ namespace std {
                 const std::vector<biorbd::muscles::StateDynamics> &state,
                 const biorbd::rigidbody::GeneralizedCoordinates &Q,
                 const biorbd::rigidbody::GeneralizedCoordinates &QDot){
-        return self->muscularJointTorque(*self, state, true, &Q, &QDot);
+        return self->muscularJointTorque(state, true, &Q, &QDot);
     }
 
-    static biorbd::utils::String getMuscleType(const std::shared_ptr<biorbd::muscles::Muscle> m){
-        return m->type();
+    static biorbd::utils::String getMuscleType(const std::shared_ptr<biorbd::muscles::Muscle> muscle){
+        return muscle->type();
     }
 }
 
 // extension of muscle casting
 %extend biorbd::muscles::HillType{
-    static biorbd::muscles::HillType& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
+    static biorbd::muscles::HillType& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::HillType>(m));
+        return *(std::dynamic_pointer_cast<biorbd::muscles::HillType>(muscle));
     }
 }
 %extend biorbd::muscles::HillTypeThelen{
-    static biorbd::muscles::HillTypeThelen& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
+    static biorbd::muscles::HillTypeThelen& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelen>(m));
+        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelen>(muscle));
     }
 }
 %extend biorbd::muscles::HillTypeThelenFatigable{
-    static biorbd::muscles::HillTypeThelenFatigable& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
+    static biorbd::muscles::HillTypeThelenFatigable& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(m));
+        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(muscle));
     }
 }
 %extend biorbd::muscles::HillTypeSimple{
-    static biorbd::muscles::HillTypeSimple& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
+    static biorbd::muscles::HillTypeSimple& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeSimple>(m));
+        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeSimple>(muscle));
     }
 }
 
 // extension of muscle fatigueState casting
 %extend biorbd::muscles::FatigueState{
-    static biorbd::muscles::FatigueState& getRef(std::shared_ptr<biorbd::muscles::FatigueState> s)
+    static biorbd::muscles::FatigueState& getRef(std::shared_ptr<biorbd::muscles::FatigueState> state)
     {
-        return *s;
+        return *state;
     }
 }
 %extend biorbd::muscles::FatigueDynamicStateXia{
-    static biorbd::muscles::FatigueDynamicStateXia& getRef(std::shared_ptr<biorbd::muscles::FatigueState> s)
+    static biorbd::muscles::FatigueDynamicStateXia& getRef(std::shared_ptr<biorbd::muscles::FatigueState> state)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicStateXia>(s));
+        return *(std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicStateXia>(state));
     }
 }
 

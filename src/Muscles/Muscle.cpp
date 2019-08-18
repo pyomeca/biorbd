@@ -22,12 +22,12 @@ biorbd::muscles::Muscle::Muscle(
     biorbd::utils::Error::error(w.nbWraps()!=1, "Multiple wrapping objects is not implemented yet");
 }
 
-biorbd::muscles::Muscle::Muscle(const biorbd::muscles::Muscle &m) :
-    biorbd::muscles::Compound (m)
+biorbd::muscles::Muscle::Muscle(const biorbd::muscles::Muscle &muscle) :
+    biorbd::muscles::Compound (muscle)
 {
-    this->m_position = m.m_position;
-    this->m_caract = m.m_caract;
-    this->m_state = m.m_state;
+    this->m_position = muscle.m_position;
+    this->m_caract = muscle.m_caract;
+    this->m_state = muscle.m_state;
 }
 
 biorbd::muscles::Muscle::~Muscle()

@@ -20,7 +20,7 @@ public:
     Compound(
             const biorbd::utils::String &name = "",
             const biorbd::muscles::PathChangers& = biorbd::muscles::PathChangers());
-    Compound(const Compound& m);
+    Compound(const Compound& muscle);
     virtual ~Compound();
 
     // Wrapping object

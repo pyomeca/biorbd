@@ -9,9 +9,9 @@
 #include "RigidBody/NodeBone.h"
 
 biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers(
-        biorbd::Model &m,
+        biorbd::Model &model,
         biorbd::rigidbody::KalmanRecons::KalmanParam params) :
-    biorbd::rigidbody::KalmanRecons(m, m.nTechTags()*3, params),
+    biorbd::rigidbody::KalmanRecons(model, model.nTechTags()*3, params),
     m_firstIteration(true)
 {
 
@@ -50,7 +50,7 @@ bool biorbd::rigidbody::KalmanReconsMarkers::first()
 }
 
 void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
-        biorbd::Model &m,
+        biorbd::Model &model,
         const biorbd::rigidbody::Markers &Tobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
         biorbd::rigidbody::GeneralizedCoordinates *Qdot,
@@ -62,11 +62,11 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         T.block(i*3,0,3,1) = Tobs.marker(i).position();
 
     // Reconstruire la cinématique
-    reconstructFrame(m, T, Q, Qdot, Qddot, removeAxes);
+    reconstructFrame(model, T, Q, Qdot, Qddot, removeAxes);
 }
 
 void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
-        biorbd::Model &m,
+        biorbd::Model &model,
         const std::vector<biorbd::rigidbody::NodeBone> &Tobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
         biorbd::rigidbody::GeneralizedCoordinates *Qdot,
@@ -78,12 +78,12 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         T.block(i*3,0,3,1) = Tobs[i];
 
     // Reconstruire la cinématique
-    reconstructFrame(m, T, Q, Qdot, Qddot, removeAxes);
+    reconstructFrame(model, T, Q, Qdot, Qddot, removeAxes);
 }
 
 
 void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
-        biorbd::Model &m,
+        biorbd::Model &model,
         const Eigen::VectorXd &Tobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
         biorbd::rigidbody::GeneralizedCoordinates *Qdot,
@@ -93,14 +93,14 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     if (m_firstIteration){
         m_firstIteration = false;
         Eigen::VectorXd TobsTP = Tobs;
-        TobsTP.block(3*m.nTechTags(0),0,3*m.nTechTags()-3*m.nTechTags(0),1) = Eigen::VectorXd::Zero(3*m.nTechTags()-3*m.nTechTags(0)); // Ne conserver que les marqueurs de la racine
+        TobsTP.block(3*model.nTechTags(0),0,3*model.nTechTags()-3*model.nTechTags(0),1) = Eigen::VectorXd::Zero(3*model.nTechTags()-3*model.nTechTags(0)); // Ne conserver que les marqueurs de la racine
         for (unsigned int j = 0; j < 2; ++j){ // Faire la racine, puis le reste du corps
             if (j != 0)
                 TobsTP = Tobs; // Reprendre tous les marqueurs
 
             for (unsigned int i=0; i<50; ++i){
                 // La premiere fois, appeler de facon recursive pour avoir une position initiale decente
-                reconstructFrame(m, TobsTP, nullptr, nullptr, nullptr);
+                reconstructFrame(model, TobsTP, nullptr, nullptr, nullptr);
 
                 // Remettre Pp à initial (parce qu'on ne s'intéresse pas à la vitesse pour se rendre à la position initiale
                 m_Pp = m_PpInitial;
@@ -112,12 +112,12 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     // État projeté
     Eigen::VectorXd xkm = m_A * m_xp;
     Eigen::VectorXd Q_tp = xkm.topRows(m_nDof);
-    RigidBodyDynamics::UpdateKinematicsCustom (m, &Q_tp, nullptr, nullptr);
+    RigidBodyDynamics::UpdateKinematicsCustom (model, &Q_tp, nullptr, nullptr);
 
     // Markers projetés
-    std::vector<biorbd::rigidbody::NodeBone> zest_tp = m.technicalTags(Q_tp, removeAxes, false);
+    std::vector<biorbd::rigidbody::NodeBone> zest_tp = model.technicalTags(Q_tp, removeAxes, false);
     // Jacobienne
-    std::vector<biorbd::utils::Matrix> J_tp = m.TechnicalTagsJacobian(Q_tp, removeAxes, false);
+    std::vector<biorbd::utils::Matrix> J_tp = model.TechnicalTagsJacobian(Q_tp, removeAxes, false);
     // Faire une seule matrice pour zest et Jacobienne
     biorbd::utils::Matrix H(biorbd::utils::Matrix::Zero(m_nMeasure, m_nDof*3)); // 3*nTags => X,Y,Z ; 3*nDof => Q, Qdot, Qddot
     Eigen::VectorXd zest = Eigen::VectorXd::Zero(m_nMeasure);

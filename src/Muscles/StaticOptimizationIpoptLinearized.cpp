@@ -24,12 +24,12 @@ biorbd::muscles::StaticOptimizationIpoptLinearized::StaticOptimizationIpoptLinea
 
 void biorbd::muscles::StaticOptimizationIpoptLinearized::prepareJacobian()
 {
-    m_model.updateMuscles(m_model, m_Q, m_Qdot, true);
+    m_model.updateMuscles(m_Q, m_Qdot, true);
     std::vector<biorbd::muscles::StateDynamics> state_zero;
     for (unsigned int i = 0; i<m_nMus; ++i){
         state_zero.push_back(biorbd::muscles::StateDynamics(0, 0));
     }
-    biorbd::rigidbody::GeneralizedTorque GeneralizedTorque_zero(m_model.muscularJointTorque(m_model, state_zero, false, &m_Q, &m_Qdot));
+    biorbd::rigidbody::GeneralizedTorque GeneralizedTorque_zero(m_model.muscularJointTorque(state_zero, false, &m_Q, &m_Qdot));
     for (unsigned int i = 0; i<m_nMus; ++i){
         std::vector<biorbd::muscles::StateDynamics> state;
         for (unsigned int j = 0; j<m_nMus; ++j){
@@ -42,7 +42,7 @@ void biorbd::muscles::StaticOptimizationIpoptLinearized::prepareJacobian()
             }
             state.push_back(biorbd::muscles::StateDynamics(0, delta*1));
         }
-        biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(m_model.muscularJointTorque(m_model, state, true, &m_Q, &m_Qdot));
+        biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(m_model.muscularJointTorque(state, true, &m_Q, &m_Qdot));
         for (unsigned int j = 0; j<m_nGeneralizedTorque; ++j){
             m_jacobian(j, i) = GeneralizedTorque(j)-GeneralizedTorque_zero(j);
         }
@@ -71,7 +71,7 @@ bool biorbd::muscles::StaticOptimizationIpoptLinearized::eval_g(
         state.push_back(biorbd::muscles::StateDynamics(0, m_activations[i]));
     }
     // Compute the torques from muscles
-    biorbd::rigidbody::GeneralizedTorque GeneralizedTorque_calcul(m_model.muscularJointTorque(m_model, state, false, &m_Q, &m_Qdot));
+    biorbd::rigidbody::GeneralizedTorque GeneralizedTorque_calcul(m_model.muscularJointTorque(state, false, &m_Q, &m_Qdot));
     biorbd::utils::Vector res(static_cast<unsigned int>(m));
     for( Ipopt::Index i = 0; i < m; i++ )
        {

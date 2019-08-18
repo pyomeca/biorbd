@@ -3,6 +3,7 @@
 
 #include <mex.h>
 #include "BiorbdModel.h"
+#include "Muscles/Force.h"
 #include "class_handle.h"
 #include "processArguments.h"
 
@@ -51,9 +52,9 @@ void Matlab_MusclesForce( int, mxArray *plhs[],
     for (unsigned int iF=0; iF<nFrame; ++iF){
         std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> Force;
         if (updateKin)
-            Force = model->musclesForces(*model, *(state.begin()+iF), updateKin, &(*(Q.begin()+iF)), &(*(Qdot.begin()+iF)));
+            Force = model->musclesForces(*(state.begin()+iF), updateKin, &(*(Q.begin()+iF)), &(*(Qdot.begin()+iF)));
         else
-            Force = model->musclesForces(*model, *(state.begin()+iF), updateKin);
+            Force = model->musclesForces(*(state.begin()+iF), updateKin);
         for (unsigned int i=0; i<Force.size(); ++i){
             biorbd::muscles::Force ori = (Force[i])[0]->directionVector();
             biorbd::muscles::Force ins = (Force[i])[1]->directionVector();

@@ -48,9 +48,9 @@ void Matlab_muscleForcesNorm( int, mxArray *plhs[],
     for (unsigned int iF=0; iF<nFrame; ++iF){
         std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> Force;
         if (updateKin)
-            Force = model->musclesForces(*model, *(state.begin()+iF), updateKin, &(*(Q.begin()+iF)), &(*(QDot.begin()+iF)));
+            Force = model->musclesForces(*(state.begin()+iF), updateKin, &(*(Q.begin()+iF)), &(*(QDot.begin()+iF)));
         else
-            Force = model->musclesForces(*model, *(state.begin()+iF), updateKin);
+            Force = model->musclesForces(*(state.begin()+iF), updateKin);
 
         for (unsigned int i=0; i<Force.size(); ++i){
             force[cmp] = (Force[i])[0]->norme();

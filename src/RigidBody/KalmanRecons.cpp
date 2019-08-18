@@ -5,12 +5,12 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 
 biorbd::rigidbody::KalmanRecons::KalmanRecons(
-        biorbd::Model &m,
+        biorbd::Model &model,
         unsigned int nMeasure,
         KalmanParam params) :
     m_params(params),
     m_Te(1.0/(m_params.acquisitionFrequency())),
-    m_nDof(m.dof_count),
+    m_nDof(model.dof_count),
     m_nMeasure(nMeasure)
 {
 

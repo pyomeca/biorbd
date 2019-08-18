@@ -43,7 +43,7 @@ public:
 
     // Set et get
     virtual biorbd::utils::Attitude RT(
-            biorbd::rigidbody::Joints &m,
+            biorbd::rigidbody::Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             bool updateKin = true);
     double diameter() const;

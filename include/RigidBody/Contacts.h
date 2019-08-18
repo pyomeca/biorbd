@@ -45,16 +45,14 @@ public:
             double stabilizationParam = 0.1,
             const biorbd::utils::String& name = biorbd::utils::String() );
 
-    Contacts &getConstraints_nonConst(const biorbd::rigidbody::Joints& jointsModel); // La premiere fois il faut appeler cette fonction avec cet arguement, ensuite, il n'est plus utile
     Contacts &getConstraints_nonConst();
-    const Contacts &getConstraints() const;
+    const Contacts &getConstraints();
 
     bool hasContacts() const;
     unsigned int nContacts() const;
 
     biorbd::utils::String name(unsigned int i);
     std::vector<biorbd::utils::Node> constraintsInGlobal(
-            biorbd::rigidbody::Joints& m,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool updateKin); // Retourne la position des contraintes dans le rep`ere global
 

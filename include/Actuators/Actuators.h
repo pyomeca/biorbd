@@ -9,7 +9,6 @@
 namespace biorbd {
 
 namespace rigidbody {
-class Joints;
 class GeneralizedCoordinates;
 class GeneralizedTorque;
 }
@@ -23,22 +22,19 @@ public:
     Actuators(const Actuators&);
     virtual ~Actuators();
 
-    void addActuator(const biorbd::rigidbody::Joints&, Actuator &a);
-    void closeActuator(biorbd::rigidbody::Joints& m);
+    void addActuator(Actuator &a);
+    void closeActuator();
 
     // Retourne deux vecteur de torque max (il manque l'entrée de puissance afin de savoir si c'est positif ou négatif
     // à chaque articulation, donc les deux sont retournés)
     std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque> torqueMax(
-            const biorbd::rigidbody::Joints&,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedCoordinates& Qdot);
     biorbd::rigidbody::GeneralizedTorque torqueMax(
-            const biorbd::rigidbody::Joints&,
             const biorbd::rigidbody::GeneralizedCoordinates& a,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot);
     biorbd::rigidbody::GeneralizedTorque torque(
-            const biorbd::rigidbody::Joints&,
             const biorbd::rigidbody::GeneralizedCoordinates& a,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot);

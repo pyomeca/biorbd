@@ -20,7 +20,7 @@ public:
             const biorbd::muscles::Caracteristics& = biorbd::muscles::Caracteristics(), // Caractéristiques du muscle
             const biorbd::muscles::PathChangers& = biorbd::muscles::PathChangers(), // Set de wrapping objects
             const biorbd::muscles::StateDynamics& = biorbd::muscles::StateDynamics()); // Set d'un état actuel au départ
-    Muscle(const Muscle& m);
+    Muscle(const Muscle& muscle);
     virtual ~Muscle();
 
     // Get and set
