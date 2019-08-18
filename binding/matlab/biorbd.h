@@ -7,96 +7,100 @@
 #include <fstream>
 #include <iostream>
 
-#include "s2mMusculoSkeletalModel.h"
-#include "s2mRead.h"
+#include "BiorbdModel.h"
+#include "biorbdConfig.h"
+#include "Utils/Matrix.h"
+#include "ModelReader.h"
+#include "Utils/Error.h"
+
 #include "class_handle.h"
-#include "s2mKalmanReconsMarkers.h"
-#include "s2mKalmanReconsIMU.h"
-#include "s2mMuscleOptimisation.h"
-#include "s2mMatrix.h"
+#include "Matlab_help.h"
+#include "Matlab_new.h"
+#include "Matlab_delete.h"
 
-#include "S2M_help.h"
-#include "S2M_new.h"
-#include "S2M_delete.h"
-#include "S2M_changeGravity.h"
-#include "S2M_totalMass.h"
-#include "S2M_massMatrix.h"
-#include "S2M_nControl.h"
-#include "S2M_nQ.h"
-#include "S2M_nQdot.h"
-#include "S2M_nQddot.h"
-#include "S2M_nameDof.h"
-#include "S2M_nRoot.h"
-#include "S2M_nTags.h"
-#include "S2M_nameTags.h"
-#include "S2M_nBody.h"
-#include "S2M_nameBody.h"
-#include "S2M_segmentMass.h"
-#include "S2M_Tags.h"
-#include "S2M_ProjectCustomPoint.h"
-#include "S2M_ProjectPoint.h"
-#include "S2M_ProjectPointJacobian.h"
-#include "S2M_nIMU.h"
-#include "S2M_nameIMU.h"
-#include "S2M_IMU.h"
-#include "S2M_IMUJacobian.h"
-#include "S2M_LocalTags.h"
-#include "S2M_localJCS.h"
-#include "S2M_segmentTags.h"
-#include "S2M_inverseKinematics.h"
-#include "S2M_inverseKinematicsEKF.h"
-#include "S2M_inverseKinematicsEKF_IMU.h"
-#include "S2M_Mesh.h"
-#include "S2M_Patch.h"
-#include "S2M_TagsJacobian.h"
-#include "S2M_ContactsPosition.h"
-#include "S2M_ContactJacobian.h"
-#include "S2M_ContactGamma.h"
-#include "S2M_CoM.h"
-#include "S2M_CoMJacobian.h"
-#include "S2M_CoMdot.h"
-#include "S2M_CoMddot.h"
-#include "S2M_segmentCoM.h"
-#include "S2M_segmentCoMdot.h"
-#include "S2M_segmentCoMddot.h"
-#include "S2M_CoMangularMomentum.h"
-#include "S2M_segmentAngularMomentum.h"
-#include "S2M_segmentsInertia.h"
-#include "S2M_segmentsVelocities.h"
-#include "S2M_globalJCS.h"
-#include "S2M_muscleUpdate.h"
-#include "S2M_MusclesPoints.h"
-#include "S2M_MusclesJacobian.h"
-#include "S2M_MusclesLength.h"
-#include "S2M_muscleLengthJacobian.h"
-#include "S2M_muscleVelocity.h"
-#include "S2M_MusclesNames.h"
-#include "S2M_MusclesParentNames.h"
-#include "S2M_nMuscles.h"
-#include "S2M_muscleJointTorqueFromActivation.h"
-#include "S2M_muscleJointTorqueFromExcitation.h"
-#include "S2M_muscleJointTorqueFromMuscleForce.h"
-#include "S2M_MusclesForce.h"
-#include "S2M_MusclesForceMax.h"
-#include "S2M_muscleForcesNorm.h"
-#include "S2M_MusclesActivationDot.h"
-#include "S2M_MusclesExcitationDotBuchanan.h"
-#include "S2M_ChangeShapeFactors.h"
-#include "S2M_MaximeMuscleOptim.h"
-#include "S2M_parent.h"
+#include "Matlab_parent.h"
+#include "Matlab_changeGravity.h"
+#include "Matlab_totalMass.h"
+#include "Matlab_massMatrix.h"
+#include "Matlab_nControl.h"
+#include "Matlab_nQ.h"
+#include "Matlab_nQdot.h"
+#include "Matlab_nQddot.h"
+#include "Matlab_nameDof.h"
+#include "Matlab_nRoot.h"
+#include "Matlab_nTags.h"
+#include "Matlab_nameTags.h"
+#include "Matlab_nBody.h"
+#include "Matlab_nameBody.h"
+#include "Matlab_segmentMass.h"
+#include "Matlab_Tags.h"
+#include "Matlab_ProjectCustomPoint.h"
+#include "Matlab_ProjectPoint.h"
+#include "Matlab_ProjectPointJacobian.h"
+#include "Matlab_nIMU.h"
+#include "Matlab_nameIMU.h"
+#include "Matlab_IMU.h"
+#include "Matlab_IMUJacobian.h"
+#include "Matlab_LocalTags.h"
+#include "Matlab_localJCS.h"
+#include "Matlab_segmentTags.h"
+#include "Matlab_inverseKinematics.h"
+#include "Matlab_inverseKinematicsEKF.h"
+#include "Matlab_inverseKinematicsEKF_IMU.h"
+#include "Matlab_NLeffects.h"
+#include "Matlab_inverseDynamics.h"
+#include "Matlab_forwardDynamics.h"
+#include "Matlab_computeQdot.h"
+#include "Matlab_Mesh.h"
+#include "Matlab_Patch.h"
+#include "Matlab_TagsJacobian.h"
+#include "Matlab_ContactsPosition.h"
+#include "Matlab_ContactJacobian.h"
+#include "Matlab_ContactGamma.h"
+#include "Matlab_CoM.h"
+#include "Matlab_CoMJacobian.h"
+#include "Matlab_CoMdot.h"
+#include "Matlab_CoMddot.h"
+#include "Matlab_segmentCoM.h"
+#include "Matlab_segmentCoMdot.h"
+#include "Matlab_segmentCoMddot.h"
+#include "Matlab_CoMangularMomentum.h"
+#include "Matlab_segmentAngularMomentum.h"
+#include "Matlab_segmentsInertia.h"
+#include "Matlab_segmentsVelocities.h"
+#include "Matlab_globalJCS.h"
 
-#include "S2M_inverseDynamics.h"
-#include "S2M_torqueActivation.h"
-#include "S2M_NLeffects.h"
-#include "S2M_forwardDynamics.h"
-#include "S2M_computeQdot.h"
+#ifdef MODULE_MUSCLES
+#include "Matlab_muscleUpdate.h"
+#include "Matlab_MusclesPoints.h"
+#include "Matlab_MusclesJacobian.h"
+#include "Matlab_MusclesLength.h"
+#include "Matlab_muscleLengthJacobian.h"
+#include "Matlab_muscleVelocity.h"
+#include "Matlab_MusclesNames.h"
+#include "Matlab_MusclesParentNames.h"
+#include "Matlab_nMuscles.h"
+#include "Matlab_muscleJointTorqueFromActivation.h"
+#include "Matlab_muscleJointTorqueFromExcitation.h"
+#include "Matlab_muscleJointTorqueFromMuscleForce.h"
+#include "Matlab_MusclesForce.h"
+#include "Matlab_MusclesForceMax.h"
+#include "Matlab_muscleForcesNorm.h"
+#include "Matlab_MusclesActivationDot.h"
+#include "Matlab_MusclesExcitationDotBuchanan.h"
+#include "Matlab_ChangeShapeFactors.h"
+#endif // MODULE_MUSCLES
+
+#ifdef MODULE_ACTUATORS
+#include "Matlab_torqueActivation.h"
+#endif // MODULE_ACTUATORS
 
 #ifdef _WIN32
 // This is a hack because Eigen can't be dynamically compiled on Windows, while dlib needs consistency in compilation. 
-// Please note that this can result in undefined behavior while using s2mMuscleOptimisation...
+// Please note that this can result in undefined behavior while using biorbd::muscles::MuscleOptimisation...
 const int USER_ERROR__inconsistent_build_configuration__see_dlib_faq_1_ = 0;
 const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
-#endif
+#endif // _WIN32
 
 std::string toLower(const std::string &str){
     std::string new_str = str;
@@ -105,19 +109,21 @@ std::string toLower(const std::string &str){
 }
 
 // MATLAB INTERFACE 
-/** \brief Entry point for the muscod application */
+///
+/// \brief Entry point for the muscod application
+///
 void mexFunction( int nlhs, mxArray *plhs[], 
                   int nrhs, const mxArray*prhs[] );
 void functionHub( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
-    /* Check for proper number of arguments */
+    // Check for proper number of arguments
     if (nrhs < 1) {
         mexErrMsgIdAndTxt( "MATLAB:yprime:invalidNumInputs",
                 "First argument should be the command");
     }
 
     // Traitement du 1er argument qui est la commande
-    /* Check for proper input type */
+    // Check for proper input type
     if (!mxIsChar(prhs[0]) || (mxGetM(prhs[0]) != 1 ) )  {
         mexErrMsgIdAndTxt( "MATLAB:mxmalloc:invalidInput",
                 "Input argument 1 must be a command string.");
@@ -128,531 +134,527 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Si on a demandé de l'aide
     if (!toLower(cmd).compare("help")){//!strcmp("help", cmd)){
-        S2M_help();
+        Matlab_help();
         return;
     }
 
 
     // Redirect vers les bonnes fonctions
 
-    /* À l'appel d'un nouveau modèle */
+    // À l'appel d'un nouveau modèle
     if (!toLower(cmd).compare("new")){
-        S2M_new(nlhs, plhs, nrhs, prhs);
+        Matlab_new(nlhs, plhs, nrhs, prhs);
         return;
     }
 
-    /* À l'appel du delete du modèle */
+    // À l'appel du delete du modèle
     if (!toLower(cmd).compare("delete")){
-        S2M_delete(nlhs, plhs, nrhs, prhs);
+        Matlab_delete(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Changer la gravité du modèle
     if (!toLower(cmd).compare("gravity")){
-        S2M_changeGravity(nlhs, plhs, nrhs, prhs);
+        Matlab_changeGravity(nlhs, plhs, nrhs, prhs);
         return;
     }
 
-    // Nombre de controls (tau)
+    // Nombre de controls (GeneralizedTorque)
     if (!toLower(cmd).compare("ncontrol")){
-        s2mError::s2mWarning(0, "La fonction \"nControl\" est obsolete. Remplacer par \"nTau\". Elle sera retirée prochainement");
-        S2M_nTau(nlhs, plhs, nrhs, prhs);
+        biorbd::utils::Error::warning(0, "La fonction \"nControl\" est obsolete. Remplacer par \"nGeneralizedTorque\". Elle sera retirée prochainement");
+        Matlab_nGeneralizedTorque(nlhs, plhs, nrhs, prhs);
         return;
     }
 
-    // Nombre de Tau
-    if (!toLower(cmd).compare("ntau")){
-        S2M_nTau(nlhs, plhs, nrhs, prhs);
+    // Nombre de GeneralizedTorque
+    if (!toLower(cmd).compare("nGeneralizedTorque")){
+        Matlab_nGeneralizedTorque(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Nombre de dof sur le segment racine
     if (!toLower(cmd).compare("nroot")){
-        S2M_nRoot(nlhs, plhs, nrhs, prhs);
+        Matlab_nRoot(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Nombre de dof sur le segment racine
     if (!toLower(cmd).compare("parent")){
-        S2M_parent(nlhs, plhs, nrhs, prhs);
+        Matlab_parent(nlhs, plhs, nrhs, prhs);
         return;
     }
 
 
     // mass totale du systeme
     if (!toLower(cmd).compare("totalmass")){
-        S2M_totalMass(nlhs, plhs, nrhs, prhs);
+        Matlab_totalMass(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // matrice de masse en fonction de la position
     if(!toLower(cmd).compare("massmatrix")){
-        S2M_massMatrix(nlhs, plhs, nrhs, prhs);
+        Matlab_massMatrix(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Nombre de dof
     if (!toLower(cmd).compare("nq")){
-        S2M_nQ(nlhs, plhs, nrhs, prhs);
+        Matlab_nQ(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Nombre de qdot
     if (!toLower(cmd).compare("nqdot")){
-        S2M_nQdot(nlhs, plhs, nrhs, prhs);
+        Matlab_nQdot(nlhs, plhs, nrhs, prhs);
         return;
     }
     // Nombre de dof
     if (!toLower(cmd).compare("nqddot")){
-        S2M_nQddot(nlhs, plhs, nrhs, prhs);
+        Matlab_nQddot(nlhs, plhs, nrhs, prhs);
         return;
     }
     // Nombre de dof
     if (!toLower(cmd).compare("namedof")){
-        S2M_nameDof(nlhs, plhs, nrhs, prhs);
+        Matlab_nameDof(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Nombre de Tags
     if (!toLower(cmd).compare("ntags")){
-        S2M_nTags(nlhs, plhs, nrhs, prhs);
+        Matlab_nTags(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Noms des Tags
     if (!toLower(cmd).compare("nametags")){
-        S2M_nameTags(nlhs, plhs, nrhs, prhs);
+        Matlab_nameTags(nlhs, plhs, nrhs, prhs);
         return;
     }
     // Noms des Tags techniques
     if (!toLower(cmd).compare("nametechnicaltags")){
-        S2M_nameTechnicalTags(nlhs, plhs, nrhs, prhs);
+        Matlab_nameTechnicalTags(nlhs, plhs, nrhs, prhs);
         return;
     }
     // Noms des Tags anatomiques
     if (!toLower(cmd).compare("nameanatomicaltags")){
-        S2M_nameAnatomicalTags(nlhs, plhs, nrhs, prhs);
+        Matlab_nameAnatomicalTags(nlhs, plhs, nrhs, prhs);
         return;
     }
     // Local Tags
     if (!toLower(cmd).compare("localtags")){
-        S2M_LocalTags(nlhs, plhs, nrhs, prhs);
+        Matlab_LocalTags(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Nombre de segments
     if (!toLower(cmd).compare("nbody")){
-        S2M_nBody(nlhs, plhs, nrhs, prhs);
+        Matlab_nBody(nlhs, plhs, nrhs, prhs);
         return;
     }
     // Noms des segments
     if (!toLower(cmd).compare("namebody")){
-        S2M_nameBody(nlhs, plhs, nrhs, prhs);
+        Matlab_nameBody(nlhs, plhs, nrhs, prhs);
         return;
     }
     // Masse des segments
     if (!toLower(cmd).compare("segmentmass")){
-        S2M_segmentMass(nlhs, plhs, nrhs, prhs);
+        Matlab_segmentMass(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction de cinématique directe
     if(!toLower(cmd).compare("tags")){
-        S2M_Tags(nlhs, plhs, nrhs, prhs);
+        Matlab_Tags(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction de cinématique directe
     if(!toLower(cmd).compare("projectpoint")){
-        S2M_ProjectPoint(nlhs, plhs, nrhs, prhs);
+        Matlab_ProjectPoint(nlhs, plhs, nrhs, prhs);
         return;
     }
     // Fonction de cinématique directe
     if(!toLower(cmd).compare("projectpointjacobian")){
-        S2M_ProjectPointJacobian(nlhs, plhs, nrhs, prhs);
+        Matlab_ProjectPointJacobian(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction de cinématique directe
     if(!toLower(cmd).compare("projectcustompoint")){
-        S2M_ProjectCustomPoint(nlhs, plhs, nrhs, prhs);
+        Matlab_ProjectCustomPoint(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Nombre de Tags
     if (!toLower(cmd).compare("nmimu")){
-        s2mError::s2mWarning(0, "La fonction \"nmimu\" est obsolete. Remplacer par \"nimu\". Elle sera retirée prochainement");
-        S2M_nIMU(nlhs, plhs, nrhs, prhs);
+        biorbd::utils::Error::warning(0, "La fonction \"nmimu\" est obsolete. Remplacer par \"nimu\". Elle sera retirée prochainement");
+        Matlab_nIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
     if (!toLower(cmd).compare("nimu")){
-        S2M_nIMU(nlhs, plhs, nrhs, prhs);
+        Matlab_nIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Noms des Tags
     if (!toLower(cmd).compare("namemimu")){
-        s2mError::s2mWarning(0, "La fonction \"namemimu\" est obsolete. Remplacer par \"nameimu\". Elle sera retirée prochainement");
-        S2M_nameIMU(nlhs, plhs, nrhs, prhs);
+        biorbd::utils::Error::warning(0, "La fonction \"namemimu\" est obsolete. Remplacer par \"nameimu\". Elle sera retirée prochainement");
+        Matlab_nameIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
     if (!toLower(cmd).compare("nameimu")){
-        S2M_nameIMU(nlhs, plhs, nrhs, prhs);
+        Matlab_nameIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Noms des Tags techniques
     if (!toLower(cmd).compare("nametechnicalmimu")){
-        s2mError::s2mWarning(0, "La fonction \"nametechnicalmimu\" est obsolete. Remplacer par \"nametechnicalimu\". Elle sera retirée prochainement");
-        S2M_nameTechnicalIMU(nlhs, plhs, nrhs, prhs);
+        biorbd::utils::Error::warning(0, "La fonction \"nametechnicalmimu\" est obsolete. Remplacer par \"nametechnicalimu\". Elle sera retirée prochainement");
+        Matlab_nameTechnicalIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
     if (!toLower(cmd).compare("nametechnicalimu")){
-        S2M_nameTechnicalIMU(nlhs, plhs, nrhs, prhs);
+        Matlab_nameTechnicalIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Noms des Tags anatomiques
     if (!toLower(cmd).compare("nameanatomicalmimu")){
-        s2mError::s2mWarning(0, "La fonction \"nameanatomicalmimu\" est obsolete. Remplacer par \"nameanatomicalimu\". Elle sera retirée prochainement");
-        S2M_nameAnatomicalIMU(nlhs, plhs, nrhs, prhs);
+        biorbd::utils::Error::warning(0, "La fonction \"nameanatomicalmimu\" est obsolete. Remplacer par \"nameanatomicalimu\". Elle sera retirée prochainement");
+        Matlab_nameAnatomicalIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
     if (!toLower(cmd).compare("nameanatomicalmimu")){
-        S2M_nameAnatomicalIMU(nlhs, plhs, nrhs, prhs);
+        Matlab_nameAnatomicalIMU(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction de cinématique directe
     if(!toLower(cmd).compare("mimu")){
-        s2mError::s2mWarning(0, "La fonction \"mimu\" est obsolete. Remplacer par \"imu\". Elle sera retirée prochainement");
-        S2M_IMU(nlhs, plhs, nrhs, prhs);
+        biorbd::utils::Error::warning(0, "La fonction \"mimu\" est obsolete. Remplacer par \"imu\". Elle sera retirée prochainement");
+        Matlab_IMU(nlhs, plhs, nrhs, prhs);
         return;
     }
     if(!toLower(cmd).compare("imu")){
-        S2M_IMU(nlhs, plhs, nrhs, prhs);
+        Matlab_IMU(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction de cinématique directe
     if(!toLower(cmd).compare("mimujacobian")){
-        s2mError::s2mWarning(0, "La fonction \"mimujacobian\" est obsolete. Remplacer par \"imujacobian\". Elle sera retirée prochainement");
-        S2M_IMUJacobian(nlhs, plhs, nrhs, prhs);
+        biorbd::utils::Error::warning(0, "La fonction \"mimujacobian\" est obsolete. Remplacer par \"imujacobian\". Elle sera retirée prochainement");
+        Matlab_IMUJacobian(nlhs, plhs, nrhs, prhs);
         return;
     }
     if(!toLower(cmd).compare("imujacobian")){
-        S2M_IMUJacobian(nlhs, plhs, nrhs, prhs);
+        Matlab_IMUJacobian(nlhs, plhs, nrhs, prhs);
         return;
     }
 
 
     // Fonction de cinématique inverse
     if(!toLower(cmd).compare("ik")){
-        S2M_inverseKinematics(nlhs, plhs, nrhs, prhs);
+        Matlab_inverseKinematics(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction de cinématique inverse
     if(!toLower(cmd).compare("ik_ekf")){
-        S2M_inverseKinematicsEKFallInOneCall(nlhs, plhs, nrhs, prhs);
+        Matlab_inverseKinematicsEKFallInOneCall(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction de cinématique inverse par filtre de kalman
     if(!toLower(cmd).compare("ik_ekf_new")){
-        S2M_setEKF(nlhs, plhs, nrhs, prhs);
+        Matlab_setEKF(nlhs, plhs, nrhs, prhs);
         return;
     }
     if(!toLower(cmd).compare("ik_ekf_step")){
-        S2M_inverseKinematicsEKFstep(nlhs, plhs, nrhs, prhs);
+        Matlab_inverseKinematicsEKFstep(nlhs, plhs, nrhs, prhs);
         return;
     }
     if(!toLower(cmd).compare("ik_ekf_delete")){
-        S2M_delEKF(nlhs, plhs, nrhs, prhs);
+        Matlab_delEKF(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction de cinématique inverse
     if(!toLower(cmd).compare("ik_ekf_imu")){
-        S2M_inverseKinematicsEKF_IMUallInOneCall(nlhs, plhs, nrhs, prhs);
+        Matlab_inverseKinematicsEKF_IMUallInOneCall(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction de cinématique inverse par filtre de kalman
     if(!toLower(cmd).compare("ik_ekf_imu_new")){
-        S2M_setEKF_IMU(nlhs, plhs, nrhs, prhs);
+        Matlab_setEKF_IMU(nlhs, plhs, nrhs, prhs);
         return;
     }
     if(!toLower(cmd).compare("ik_ekf_imu_step")){
-        S2M_inverseKinematicsEKF_IMUstep(nlhs, plhs, nrhs, prhs);
+        Matlab_inverseKinematicsEKF_IMUstep(nlhs, plhs, nrhs, prhs);
         return;
     }
     if(!toLower(cmd).compare("ik_ekf_imu_delete")){
-        S2M_delEKF_IMU(nlhs, plhs, nrhs, prhs);
+        Matlab_delEKF_IMU(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction de cinématique directe
     if(!toLower(cmd).compare("segmentstags")){
-        S2M_segmentTags(nlhs, plhs, nrhs, prhs);
+        Matlab_segmentTags(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction de la Jacobienne de la cinématique directe
     if(!toLower(cmd).compare("tagsjacobian")){
-        S2M_TagsJacobian(nlhs, plhs, nrhs, prhs);
+        Matlab_TagsJacobian(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction de cinématique directe pour les points de contacts
     if(!toLower(cmd).compare("contacts")){
-        S2M_ContactsPosition(nlhs, plhs, nrhs, prhs);
+        Matlab_ContactsPosition(nlhs, plhs, nrhs, prhs);
         return;
     }
     if(!toLower(cmd).compare("contactjacobian")){
-        S2M_ContactJacobian(nlhs, plhs, nrhs, prhs);
+        Matlab_ContactJacobian(nlhs, plhs, nrhs, prhs);
         return;
     }
     if(!toLower(cmd).compare("contactgamma")){
-        S2M_ContactGamma(nlhs, plhs, nrhs, prhs);
+        Matlab_ContactGamma(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction pour trouver le Centre de masse
     if(!toLower(cmd).compare("com")){
-        S2M_CoM(nlhs, plhs, nrhs, prhs);
+        Matlab_CoM(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction pour obtenir la jacobienne du centre de masse
     if(!toLower(cmd).compare("comjacobian")){
-        S2M_CoMJacobian(nlhs, plhs, nrhs, prhs);
+        Matlab_CoMJacobian(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction pour trouver la vitesse du Centre de masse
     if(!toLower(cmd).compare("comdot")){
-        S2M_CoMdot(nlhs, plhs, nrhs, prhs);
+        Matlab_CoMdot(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction pour trouver l'acceleration du Centre de masse
     if(!toLower(cmd).compare("comddot")){
-        S2M_CoMddot(nlhs, plhs, nrhs, prhs);
+        Matlab_CoMddot(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction pour trouver l'acceleration du Centre de masse
     if(!toLower(cmd).compare("mesh")){
-        S2M_Mesh(nlhs, plhs, nrhs, prhs);
+        Matlab_Mesh(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction pour trouver l'acceleration du Centre de masse
     if(!toLower(cmd).compare("patch")){
-        S2M_Patch(nlhs, plhs, nrhs, prhs);
+        Matlab_Patch(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // moment angulaire du centre de masse
     if(!toLower(cmd).compare("comangularmomentum")){
-        S2M_CoMangularMomentum(nlhs, plhs, nrhs, prhs);
+        Matlab_CoMangularMomentum(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // moment angulaire du centre de masse
     if(!toLower(cmd).compare("segmentangularmomentum")){
-        S2M_segmentAngularMomentum(nlhs, plhs, nrhs, prhs);
+        Matlab_segmentAngularMomentum(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction pour trouver le Centre de masse des segments
     if(!toLower(cmd).compare("segmentcom")){
-        S2M_segmentCOM(nlhs, plhs, nrhs, prhs);
+        Matlab_segmentCOM(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction pour trouver la vitesse Centre de masse des segments
     if(!toLower(cmd).compare("segmentcomdot")){
-        S2M_segmentCOMdot(nlhs, plhs, nrhs, prhs);
+        Matlab_segmentCOMdot(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction pour trouver l'accélération Centre de masse des segments
     if(!toLower(cmd).compare("segmentcomddot")){
-        S2M_segmentCOMddot(nlhs, plhs, nrhs, prhs);
+        Matlab_segmentCOMddot(nlhs, plhs, nrhs, prhs);
         return;
     }
 
 
     if(!toLower(cmd).compare("segmentsvelocities")){
-        S2M_segmentsVelocities(nlhs, plhs, nrhs, prhs);
+        Matlab_segmentsVelocities(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Inerties segmentaires
     if(!toLower(cmd).compare("segmentsinertia")){
-        S2M_segmentsInertia(nlhs, plhs, nrhs, prhs);
+        Matlab_segmentsInertia(nlhs, plhs, nrhs, prhs);
         return;
     }
     if(!toLower(cmd).compare("segmentsinertialocal")){
-        S2M_segmentsInertiaLocal(nlhs, plhs, nrhs, prhs);
+        Matlab_segmentsInertiaLocal(nlhs, plhs, nrhs, prhs);
         return;
     }
 
 
     // Obtenir les JCS dans le global
     if(!toLower(cmd).compare("globaljcs")){
-        S2M_globalJCS(nlhs, plhs, nrhs, prhs);
+        Matlab_globalJCS(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Obtenir les JCS dans le global
     if(!toLower(cmd).compare("localjcs")){
-        S2M_localJCS(nlhs, plhs, nrhs, prhs);
+        Matlab_localJCS(nlhs, plhs, nrhs, prhs);
         return;
     }
 
-
+#ifdef MODULE_MUSCLES
     // Obtenir le nombre de muscles
     if(!toLower(cmd).compare("nmuscles")){
-        S2M_nMuscles(nlhs, plhs, nrhs, prhs);
+        Matlab_nMuscles(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Obtenir le noms des muscles
     if(!toLower(cmd).compare("musclesnames")){
-        S2M_MusclesNames(nlhs, plhs, nrhs, prhs);
+        Matlab_MusclesNames(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Obtenir le noms des muscles
     if(!toLower(cmd).compare("musclesparentnames")){
-        S2M_MusclesParentNames(nlhs, plhs, nrhs, prhs);
+        Matlab_MusclesParentNames(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Obtenir la position des muscles dans le global
     if(!toLower(cmd).compare("musclepoints")){
-        S2M_MusclesPoints(nlhs, plhs, nrhs, prhs);
+        Matlab_MusclesPoints(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     if(!toLower(cmd).compare("muscleupdate")){
-        S2M_muscleUpdate(nlhs, plhs, nrhs, prhs);
+        Matlab_muscleUpdate(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Obtenir la position des muscles dans le global
     if(!toLower(cmd).compare("musclelength")){
-        S2M_MusclesLength(nlhs, plhs, nrhs, prhs);
+        Matlab_MusclesLength(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Obtenir la position des muscles dans le global
     if(!toLower(cmd).compare("muscletendonlength")){
-        S2M_MusclesTendonLength(nlhs, plhs, nrhs, prhs);
+        Matlab_MusclesTendonLength(nlhs, plhs, nrhs, prhs);
         return;
     }
 
 
     // Obtenir la vitesse d'élongation des muscles
     if(!toLower(cmd).compare("musclevelocity")){
-        S2M_muscleVelocity(nlhs, plhs, nrhs, prhs);
+        Matlab_muscleVelocity(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction de dynamique inverse
     if(!toLower(cmd).compare("inversedynamics")){
-        S2M_inverseDynamics(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-
-    // Si on veut convertir des activations de torque en torque
-    if(!toLower(cmd).compare("torqueactivation")){
-        S2M_torqueActivation(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-
-
-    if(!toLower(cmd).compare("forwarddynamics")){
-        S2M_forwardDynamics(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-
-    if(!toLower(cmd).compare("computeqdot")){
-        S2M_computeQdot(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-
-    // Fonction de dynamique inverse
-    if(!toLower(cmd).compare("nleffects")){
-        S2M_NLeffects(nlhs, plhs, nrhs, prhs);
+        Matlab_inverseDynamics(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     if(!toLower(cmd).compare("jointtorquefromforce")){
-        S2M_muscleJointTorqueFromMuscleForce(nlhs, plhs, nrhs, prhs);
+        Matlab_muscleJointTorqueFromMuscleForce(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     if(!toLower(cmd).compare("jointtorquefromactivation")){
-        S2M_muscleJointTorqueFromActivation(nlhs, plhs, nrhs, prhs);
+        Matlab_muscleJointTorqueFromActivation(nlhs, plhs, nrhs, prhs);
         return;
     }
     if(!toLower(cmd).compare("jointtorquefromexcitation")){
-        S2M_muscleJointTorqueFromExcitation(nlhs, plhs, nrhs, prhs);
+        Matlab_muscleJointTorqueFromExcitation(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     if(!toLower(cmd).compare("muscleactivationdot")){
-        S2M_MusclesActivationDot(nlhs, plhs, nrhs, prhs);
+        Matlab_MusclesActivationDot(nlhs, plhs, nrhs, prhs);
         return;
     }
     if(!toLower(cmd).compare("muscleexcitationdotbuchanan")){
-        S2M_MusclesExcitationDotBuchanan(nlhs, plhs, nrhs, prhs);
+        Matlab_MusclesExcitationDotBuchanan(nlhs, plhs, nrhs, prhs);
         return;
     }
 
 
     if(!toLower(cmd).compare("muscleforce")){
-        S2M_MusclesForce(nlhs, plhs, nrhs, prhs);
+        Matlab_MusclesForce(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     if(!toLower(cmd).compare("muscleforcemax")){
-        S2M_MusclesForceMax(nlhs, plhs, nrhs, prhs);
+        Matlab_MusclesForceMax(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     if(!toLower(cmd).compare("muscleforcenorm")){
-        S2M_muscleForcesNorm(nlhs, plhs, nrhs, prhs);
+        Matlab_muscleForcesNorm(nlhs, plhs, nrhs, prhs);
         return;
     }
 
 
     if(!toLower(cmd).compare("musclejacobian")){
-        S2M_MusclesJacobian(nlhs, plhs, nrhs, prhs);
+        Matlab_MusclesJacobian(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     if(!toLower(cmd).compare("musclelengthjacobian")){
-        S2M_muscleLengthJacobian(nlhs, plhs, nrhs, prhs);
+        Matlab_muscleLengthJacobian(nlhs, plhs, nrhs, prhs);
         return;
     }
-
-#ifdef S2M_MUSCLE_OPTIMIZATION
-    if(!toLower(cmd).compare("maximeoptim")){
-        S2M_MaximeMuscleOptim(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-#endif
 
     if(!toLower(cmd).compare("changeshapefactors")){
-        S2M_ChangeShapeFactors(nlhs, plhs, nrhs, prhs);
+        Matlab_ChangeShapeFactors(nlhs, plhs, nrhs, prhs);
         return;
     }
 
+#endif // MODULE_MUSCLES
+
+#ifdef MODULE_ACTUATORS
+    // Si on veut convertir des activations de torque en torque
+    if(!toLower(cmd).compare("torqueactivation")){
+        Matlab_torqueActivation(nlhs, plhs, nrhs, prhs);
+        return;
+    }
+#endif // MODULE_ACTUATORS
+
+
+    if(!toLower(cmd).compare("forwarddynamics")){
+        Matlab_forwardDynamics(nlhs, plhs, nrhs, prhs);
+        return;
+    }
+
+    if(!toLower(cmd).compare("computeqdot")){
+        Matlab_computeQdot(nlhs, plhs, nrhs, prhs);
+        return;
+    }
+
+    // Fonction de dynamique inverse
+    if(!toLower(cmd).compare("nleffects")){
+        Matlab_NLeffects(nlhs, plhs, nrhs, prhs);
+        return;
+    }
 
     // Got here, so command is not recognized
     mexErrMsgTxt("Command for interface not recognized.");

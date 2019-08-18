@@ -1,0 +1,112 @@
+// File : biorbd_muscles.i
+%{
+#include "Muscles/StateDynamics.h"
+#include "Muscles/Muscle.h"
+#include "Muscles/MuscleGroup.h"
+#include "Muscles/HillType.h"
+#include "Muscles/HillTypeThelen.h"
+#include "Muscles/HillTypeSimple.h"
+#include "Muscles/HillTypeThelenFatigable.h"
+#include "Muscles/FatigueState.h"
+#include "Muscles/FatigueDynamicState.h"
+#include "Muscles/FatigueDynamicStateXia.h"
+#include "Muscles/MuscleNode.h"
+#include "Muscles/Geometry.h"
+#ifdef IPOPT_FOUND
+#include "Muscles/StaticOptimization.h"
+#endif
+%}
+// Instantiate templates
+namespace std {
+%template(SharedBiorbdMuscle) std::shared_ptr<biorbd::muscles::Muscle>;
+%template(VecBiorbdMuscleStateDynamics) std::vector<biorbd::muscles::StateDynamics>;
+%template(MatBiorbdMuscleStateDynamics) std::vector<std::vector<biorbd::muscles::StateDynamics>>;
+%template(VecBiorbdNodeMuscle) std::vector<biorbd::muscles::MuscleNode>;
+%template(MatBiorbdNodeMuscle) std::vector<std::vector<biorbd::muscles::MuscleNode>>;
+%template(SharedBiorbdMuscleFatigueState) std::shared_ptr<biorbd::muscles::FatigueState>;
+}
+
+// Exposing some useful functions
+%extend biorbd::Model{
+    biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
+                const std::vector<biorbd::muscles::StateDynamics> &state,
+                const biorbd::rigidbody::GeneralizedCoordinates &Q,
+                const biorbd::rigidbody::GeneralizedCoordinates &QDot){
+        return self->muscularJointTorque(*self, state, true, &Q, &QDot);
+    }
+
+    static biorbd::utils::String getMuscleType(const std::shared_ptr<biorbd::muscles::Muscle> m){
+        return m->type();
+    }
+}
+
+// extension of muscle casting
+%extend biorbd::muscles::HillType{
+    static biorbd::muscles::HillType& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
+    {
+        return *(std::dynamic_pointer_cast<biorbd::muscles::HillType>(m));
+    }
+}
+%extend biorbd::muscles::HillTypeThelen{
+    static biorbd::muscles::HillTypeThelen& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
+    {
+        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelen>(m));
+    }
+}
+%extend biorbd::muscles::HillTypeThelenFatigable{
+    static biorbd::muscles::HillTypeThelenFatigable& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
+    {
+        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(m));
+    }
+}
+%extend biorbd::muscles::HillTypeSimple{
+    static biorbd::muscles::HillTypeSimple& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
+    {
+        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeSimple>(m));
+    }
+}
+
+// extension of muscle fatigueState casting
+%extend biorbd::muscles::FatigueState{
+    static biorbd::muscles::FatigueState& getRef(std::shared_ptr<biorbd::muscles::FatigueState> s)
+    {
+        return *s;
+    }
+}
+%extend biorbd::muscles::FatigueDynamicStateXia{
+    static biorbd::muscles::FatigueDynamicStateXia& getRef(std::shared_ptr<biorbd::muscles::FatigueState> s)
+    {
+        return *(std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicStateXia>(s));
+    }
+}
+
+
+// Includes all neceressary files from the API
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/MuscleNode.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/Compound.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscle.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/Fatigable.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillType.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeThelen.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeThelenFatigable.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeSimple.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscles.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/MuscleGroup.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/Caracteristics.h"
+
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueParameters.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueState.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueDynamicState.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueDynamicStateXia.h"
+//%include "Muscles/Force.h"
+//%include "Muscles/ForceFromInsertion.h"
+//%include "Muscles/ForceFromOrigin.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/Geometry.h"
+//%include "Muscles/Mesh.h"
+//%include "Muscles/PathChanger.h"
+//%include "Muscles/PathChangers.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/State.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/StateDynamics.h"
+//%include "Muscles/StateDynamicsBuchanan.h"
+@SWIG_STATIC_OPTIMIZATION_INCLUDE_COMMAND@
+

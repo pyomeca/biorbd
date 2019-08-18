@@ -5,12 +5,15 @@ include_directories(${Python3_INCLUDE_DIRS})
 find_package(Numpy REQUIRED)
 include_directories(${NUMPY_INCLUDES})
 if(WIN32)
-	link_directories(${Python3_RUNTIME_LIBRARY_DIRS}/libs)
+    link_directories(${Python3_RUNTIME_LIBRARY_DIRS}/libs)
 endif()
+
+# Create the .i file
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_python.i.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_python.i @ONLY)
 
 # Add swig module
 set(CMAKE_SWIG_FLAGS "")
-set(I_SOURCE_FILE ${PROJECT_NAME}_python.i)
+set(I_SOURCE_FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_python.i)
 
 set_property(SOURCE ${I_SOURCE_FILE} PROPERTY CPLUSPLUS ON)
 SWIG_ADD_LIBRARY(${PROJECT_NAME} TYPE MODULE LANGUAGE python SOURCES ${I_SOURCE_FILE})
@@ -23,7 +26,9 @@ target_include_directories(_${PROJECT_NAME} PUBLIC
     ${EIGEN3_INCLUDE_DIR}
     ${DLIB_INCLUDE_DIR}
     ${NUMPY_INCLUDES}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../include
+    ${IPOPT_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_BINARY_DIR}/include
     ${PYTHON_INCLUDE_DIRS}
 )
 

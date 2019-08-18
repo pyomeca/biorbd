@@ -1,0 +1,46 @@
+// File : biorbd.i
+%module biorbd
+%{
+
+#ifdef _WIN32
+// This is a hack because Eigen can't be dynamically compiled on Windows while dlib needs consistency in compilation.
+// Please note that this can result in undefined behavior while using biorbd::muscles::MuscleOptimisation...
+const int USER_ERROR__inconsistent_build_configuration__see_dlib_faq_1_ = 0;
+const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
+#endif
+
+#include "BiorbdModel.h"
+#include "biorbdConfig.h"
+#include "ModelReader.h"
+%}
+%include exception.i
+%include <std_shared_ptr.i>
+
+%exception {
+    try {
+        $action
+    } catch(const std::exception& e) {
+        SWIG_exception(SWIG_RuntimeError, e.what());
+    } catch(...) {
+        SWIG_exception(SWIG_RuntimeError, "Unknown exception");
+    }
+}
+
+// Instantiate standard library
+// typemaps.i is a built-in swig interface that lets us map c++ types to other
+// types in our language of choice. We'll use it to map Eigen matrices to
+// Numpy arrays.
+%include <typemaps.i>
+%include <std_vector.i>
+
+// Includes all neceressary files from the API
+%include "@CMAKE_BINARY_DIR@/include/biorbdConfig.h"
+@SWIG_MODULE_UTILS_INCLUDE_COMMAND@
+@SWIG_MODULE_RIGIDBODY_INCLUDE_COMMAND@
+@SWIG_MODULE_ACTUATORS_INCLUDE_COMMAND@
+@SWIG_MODULE_MUSCLES_INCLUDE_COMMAND@
+
+%include "@CMAKE_SOURCE_DIR@/include/BiorbdModel.h"
+//%include "@CMAKE_SOURCE_DIR@/include/ModelWriter.h"
+
+

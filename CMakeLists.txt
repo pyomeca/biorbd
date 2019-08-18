@@ -18,21 +18,34 @@ IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   SET_PROPERTY(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 ENDIF()
 
-# Prepare linking with RBDL
+# Prepare linkings
 find_package(RBDL REQUIRED)
 set(BOOST_ROOT ${CMAKE_INSTALL_PREFIX})
 find_package(Boost REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Dlib REQUIRED)
+find_package(IPOPT)
+if (NOT IPOPT_FOUND)
+    # Variable are used, so we must give them a value
+    set(IPOPT_INCLUDE_DIR "")
+    set(IPOPT_LIBRARY "")
+endif()
 
 # Prepare add library
-aux_source_directory(src SRC_LIST)
+set(SRC_LIST
+    src/BiorbdModel.cpp
+    src/ModelReader.cpp
+    src/ModelWriter.cpp
+)
 if (BUILD_SHARED_LIBS)
     add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 else()
     add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_debug")
+
+# Create the configuration header file associated with the asked options
+configure_file(${CMAKE_SOURCE_DIR}/include/biorbdConfig.h.in ${CMAKE_BINARY_DIR}/include/biorbdConfig.h)
 
 # Add headers
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -41,13 +54,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${Boost_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
     ${DLIB_INCLUDE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${IPOPT_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_BINARY_DIR}/include
 )
 
-# Add linker
-target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY} ${DLIB_LIBRARY})
-
-# Installation
+# Installation directories
 if(WIN32)
     set(${PROJECT_NAME}_LIB_FOLDER Lib)
     set(${PROJECT_NAME}_BIN_FOLDER bin)
@@ -56,102 +68,61 @@ else()
     set(${PROJECT_NAME}_LIB_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
     set(${PROJECT_NAME}_BIN_FOLDER ${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME})
     set(${PROJECT_NAME}_INCLUDE_FOLDER ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
-    SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH ${${PROJECT_NAME}_BIN_FOLDER})
+set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+
+# Add the different modules of biorbd
+set(BIORBD_MODULE_NAMES)
+
+# Utils
+add_subdirectory(src/Utils)
+list(APPEND BIORBD_MODULE_NAMES ${UTILS_MODULE_NAME})
+
+# Utils
+add_subdirectory(src/RigidBody)
+list(APPEND BIORBD_MODULE_NAMES ${RIGIDBODY_MODULE_NAME})
+
+# Actuators
+option(MODULE_ACTUATORS "Choose if the module actuators is to be added to biorbd" ON)
+if (MODULE_ACTUATORS)
+    add_subdirectory(src/Actuators)
+    list(APPEND BIORBD_MODULE_NAMES ${ACTUATOR_MODULE_NAME})
+endif()
+
+# Muscles
+option(MODULE_MUSCLES "Choose if the module actuators is to be added to biorbd" ON)
+if (MODULE_MUSCLES)
+    add_subdirectory(src/Muscles)
+    list(APPEND BIORBD_MODULE_NAMES ${MUSCLE_MODULE_NAME})
+endif()
+
+# Add linker
+target_link_libraries(${PROJECT_NAME} ${BIORBD_MODULE_NAMES} ${RBDL_LIBRARY} ${DLIB_LIBRARY} ${IPOPT_LIBRARY})
+
+# installation
 install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION ${${PROJECT_NAME}_LIB_FOLDER}
         RUNTIME DESTINATION ${${PROJECT_NAME}_BIN_FOLDER}
         LIBRARY DESTINATION ${${PROJECT_NAME}_LIB_FOLDER}
         )
-install(DIRECTORY include DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER})
+install(DIRECTORY include/ DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER})
+install(FILES ${CMAKE_BINARY_DIR}/include/biorbdConfig.h DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER})
         
 # Add binding subdirectory
 add_subdirectory(binding)
 
 # Add the example if asked
-set(BUILD_EXAMPLE TRUE CACHE BOOL "Build a C++ example")
+option(BUILD_EXAMPLE "Build a C++ example" ON)
 if (BUILD_EXAMPLE)
     add_subdirectory(example)
 endif()
 
-
-
-################################
 # Testing
-################################
-
-# Options. Turn on with 'cmake -DBUILD_TESTS=ON'.
 option(BUILD_TESTS "Build all tests." OFF) # Makes boolean 'test' available.
-
 if (BUILD_TESTS)
-    # Download gtest if necessary
-    set(RELATIVE_PATH_TO_GTEST external/googletest)
-    find_path(GTEST_INCLUDE_DIR gtest.h HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${RELATIVE_PATH_TO_GTEST}/googletest/include/gtest)
-
-    if((NOT GTEST_INCLUDE_DIR) OR (NOT EXISTS ${GTEST_INCLUDE_DIR}))
-        # we couldn't find the header files for gtest or they don't exist
-        message("Unable to find gtest")
-
-        # we have a submodule setup for gtest, assume it is under external/gtest
-        # now we need to clone this submodule
-        execute_process(COMMAND git submodule update --init -- external/googletest
-                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-
-        find_path(GTEST_INCLUDE_DIR gtest.h HINTS ${CMAKE_CURRENT_SOURCE_DIR}/${RELATIVE_PATH_TO_GTEST}/googletest/include/gtest)
-    endif()
-
-    # Prevent overriding the parent project's compiler/linker
-    # settings on Windows
-    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-
-    # Add googletest directly to our build. This defines
-    # the gtest and gtest_main targets.
-    set(BUILD_GMOCK OFF)
-    set(INSTALL_GTEST OFF)
-    add_subdirectory(${RELATIVE_PATH_TO_GTEST}
-                     ${CMAKE_BINARY_DIR}/gtest
-                     EXCLUDE_FROM_ALL)
-
-    ##############
-    # Unit Tests
-    ##############
-    enable_testing()
-    file(GLOB TEST_SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp)
-    add_executable(runUnitTests ${TEST_SRC_FILES})
-
-    # headers for the project
-    target_include_directories(runUnitTests PUBLIC
-        ${RBDL_INCLUDE_DIR}
-        ${Boost_INCLUDE_DIRS}
-        ${EIGEN3_INCLUDE_DIR}
-        ${DLIB_INCLUDE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-    )
-
-    # Standard linking to gtest stuff.
-    target_link_libraries(runUnitTests gtest_main)
-
-    # Extra linking for the project.
-    target_link_libraries(runUnitTests ${PROJECT_NAME})
-
-    # This is so you can do 'make test' to see all your tests run, instead of
-    # manually running the executable runUnitTests to see those specific tests.
-    add_test(UnitTests runUnitTests)
-
-    if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
-        set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/.travis/cmake)
-
-        include(CodeCoverage)
-        setup_target_for_coverage(${PROJECT_NAME}_coverage runUnitTests coverage)
-
-        SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
-        SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
-    endif() #CMAKE_BUILD_TYPE STREQUAL "Coverage"
-
-    # Copy the c3d of the example
-    file(GLOB C3D_TEST_FILES ${CMAKE_CURRENT_SOURCE_DIR}/test/models/*.bioMod)
-    file(COPY ${C3D_TEST_FILES}
-         DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/models/)
+    add_subdirectory(test)
 endif()
 
 

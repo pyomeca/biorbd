@@ -28,9 +28,9 @@ for i in range(nb_frames):
 
 # Reconstruct the kinematics from simulated marker
 k = biorbd.s2mKalmanReconsMarkers(m)
-Q = biorbd.s2mGenCoord()
-Qdot = biorbd.s2mGenCoord()
-Qddot = biorbd.s2mGenCoord()
+Q = biorbd.GenCoord()
+Qdot = biorbd.GenCoord()
+Qddot = biorbd.GenCoord()
 for marker in markers:
     k.reconstructFrame(m, marker, Q, Qdot, Qddot)
     
