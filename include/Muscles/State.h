@@ -10,13 +10,13 @@ class BIORBD_API State
 {
 public:
     State(
-            const double &e = 0,
-            const double &a = 0);
+            double e = 0,
+            double a = 0);
     virtual ~State();
 
     // Set and Get
-    virtual void setExcitation(const double &val);
-    virtual void setActivation(const double &val);
+    virtual void setExcitation(double val);
+    virtual void setActivation(double val);
 
     double excitation() const;
     double activation() const;

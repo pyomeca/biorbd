@@ -12,12 +12,12 @@ class BIORBD_API StateDynamics : public biorbd::muscles::State
 {
 public:
     StateDynamics(
-            const double &e = 0,
-            const double &a = 0);
+            double e = 0,
+            double a = 0);
     virtual ~StateDynamics();
 
-    virtual void setExcitation(const double &val);
-    virtual void setActivation(const double &val);
+    virtual void setExcitation(double val);
+    virtual void setActivation(double val);
 
     double excitationNorm(const State &max);
     double excitationNorm() const; // Retourne la derniere excitation normalisee
@@ -29,14 +29,14 @@ public:
             double excitation,
             double activation,
             const Caracteristics& caract,
-            const bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
+            bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
     virtual double timeDerivativeActivation(
             const StateDynamics& state,
             const Caracteristics& caract,
-            const bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
+            bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
     virtual double timeDerivativeActivation(
             const Caracteristics& caract,
-            const bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
+            bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
     virtual double timeDerivativeActivation(); // Retourne la derniere valeur
 
 protected:

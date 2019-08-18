@@ -17,7 +17,7 @@ biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
         bool useResidual,
         unsigned int pNormFactor,
         int verbose,
-        const double eps) :
+        double eps) :
     m_model(model),
     m_nQ(model.nbQ()),
     m_nQdot(model.nbQdot()),

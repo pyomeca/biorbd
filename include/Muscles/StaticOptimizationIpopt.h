@@ -25,7 +25,7 @@ public:
             bool  useResidual = true,
             unsigned int pNormFactor = 2,
             int verbose = 0,
-            const double eps = 1e-10);
+            double eps = 1e-10);
 
     virtual ~StaticOptimizationIpopt();
 

@@ -23,12 +23,12 @@ biorbd::muscles::MuscleGroup::~MuscleGroup()
 
 }
 
-std::shared_ptr<biorbd::muscles::Muscle> biorbd::muscles::MuscleGroup::muscle_nonConst(const unsigned int &idx)
+std::shared_ptr<biorbd::muscles::Muscle> biorbd::muscles::MuscleGroup::muscle_nonConst(unsigned int idx)
 {
     biorbd::utils::Error::error(idx<nbMuscles(), "Idx asked is higher than number of muscles");
     return m_mus[idx];
 }
-const std::shared_ptr<biorbd::muscles::Muscle> biorbd::muscles::MuscleGroup::muscle(const unsigned int &idx) const{
+const std::shared_ptr<biorbd::muscles::Muscle> biorbd::muscles::MuscleGroup::muscle(unsigned int idx) const{
     biorbd::utils::Error::error(idx<nbMuscles(), "Idx asked is higher than number of muscles");
     return m_mus[idx];
 }

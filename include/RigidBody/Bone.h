@@ -19,21 +19,21 @@ public:
     // Constructeurs
     Bone(
             biorbd::rigidbody::Joints *model,
-            const unsigned int &parent_id,
+            unsigned int parent_id,
             const biorbd::utils::String &seqT,
             const biorbd::utils::String &seqR,// Séquence de Cardan pour classer les dof en rotation
             const biorbd::rigidbody::Caracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
             const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
             const biorbd::utils::String &name = "", // nom du segment
-            const int &PF = -1);  // Index de la plateforme
+            int PF = -1);  // Index de la plateforme
     Bone(
             biorbd::rigidbody::Joints *model,
-            const unsigned int &parent_id, // Assume no translation
+            unsigned int parent_id, // Assume no translation
             const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
             const biorbd::rigidbody::Caracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
             const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
             const biorbd::utils::String &name = "", // nom du segment
-            const int &PF = -1);  // Index de la plateforme
+            int PF = -1);  // Index de la plateforme
     Bone(const Bone&);
     virtual ~Bone();
 
@@ -61,7 +61,7 @@ protected:
     biorbd::utils::String m_name; // Nom du segment
     unsigned int m_parent_id; // Numéro du segment parent
     int m_idxPF; // Index de la plateforme sur lequel il est -1 est pas de plateforme
-    void setPF(const int &); // Setter l'index de la plateforme
+    void setPF(int ); // Setter l'index de la plateforme
 
     // Info sur la relation parent enfant
     void setParentToChildTransformation(const RigidBodyDynamics::Math::SpatialTransform&);
@@ -70,21 +70,21 @@ protected:
     // DOF
     virtual void setDofs(
             biorbd::rigidbody::Joints *model,
-            const unsigned int &parent_id,
+            unsigned int parent_id,
             const biorbd::utils::String &seqT,
             const biorbd::utils::String &seqR,// Séquence de Cardan pour classer les dof en rotation
-            const double &mass, // Masse du segment
+            double mass, // Masse du segment
             const RigidBodyDynamics::Math::Vector3d &com,   // Centre de masse du segment
             const RigidBodyDynamics::Math::Matrix3d &inertia);  // Inertie du segment
     virtual void setDofs(
             biorbd::rigidbody::Joints *model,
-            const unsigned int &parent_id,
+            unsigned int parent_id,
             const biorbd::utils::String &seqT,
             const biorbd::utils::String &seqR,// Séquence de Cardan pour classer les dof en rotation
             const biorbd::rigidbody::Caracteristics&);  // Inertie du segment
     virtual void setNumberOfDof(
-            const unsigned int&,
-            const unsigned int&); // Détermine le nombre de DoF Total
+            unsigned int ,
+            unsigned int ); // Détermine le nombre de DoF Total
     biorbd::utils::String m_seqT;   // Séquence en translation telle qu'écrite dans le fichier
     biorbd::utils::String m_seqR;   // Séquence de rotation telle qu'écrite dans le fichier
     unsigned int m_nDof;    // Nombre de degrés de liberté

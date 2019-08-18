@@ -32,7 +32,7 @@ public:
             int id = -1
         );
     const biorbd::rigidbody::NodeBone& marker(
-            const unsigned int &i) const;
+            unsigned int i) const;
     std::vector<biorbd::rigidbody::NodeBone> marker(
             const biorbd::utils::String &segmentName) const;
     std::vector<biorbd::utils::String> markerNames() const;
@@ -46,11 +46,11 @@ public:
             bool updateKin = true); // Retour d'un marqueur ind idx
     biorbd::rigidbody::NodeBone Tags(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const unsigned int& idx,
+            unsigned int  idx,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un marqueur ind idx
     biorbd::rigidbody::NodeBone Tags(
-            const unsigned int& idx,
+            unsigned int  idx,
             bool removeAxis=true); // Retour d'un marqueur ind idx
     std::vector<biorbd::rigidbody::NodeBone> Tags(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
@@ -61,7 +61,7 @@ public:
     biorbd::rigidbody::NodeBone TagsVelocity(
             const biorbd::rigidbody::GeneralizedCoordinates&,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
-            const unsigned int& idx,
+            unsigned int  idx,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un marqueur ind idx
     std::vector<biorbd::rigidbody::NodeBone> TagsVelocity(
@@ -87,7 +87,7 @@ public:
             bool removeAxis=true); // Retour d'un STL vector de tous les marqueurs anatomiques dans leur body
     std::vector<biorbd::rigidbody::NodeBone> segmentTags(
             const biorbd::rigidbody::GeneralizedCoordinates&,
-            const unsigned int& idx,
+            unsigned int  idx,
             bool removeAxis=true,
             bool updateKin = true); // Retour d'un STL vector de tous les marqueurs d'un segment
 

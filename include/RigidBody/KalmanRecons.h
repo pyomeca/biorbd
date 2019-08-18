@@ -58,16 +58,16 @@ protected:
     biorbd::utils::Matrix evolutionMatrix(
             const unsigned int m,
             unsigned int n,
-            const double Te); // Création de la matrice d'évolution
+            double Te); // Création de la matrice d'évolution
     biorbd::utils::Matrix processNoiseMatrix(
             const unsigned int nQ,
-            const double Te);
+            double Te);
     biorbd::utils::Matrix measurementNoiseMatrix(
             const unsigned int nT,
-            const double MN);
+            double MN);
     biorbd::utils::Matrix initCovariance(
             const unsigned int nQ,
-            const double csnt);
+            double csnt);
     biorbd::rigidbody::GeneralizedCoordinates initState(const unsigned int nQ);
     void iteration(
             Eigen::VectorXd measure,

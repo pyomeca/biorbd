@@ -42,7 +42,7 @@ public:
             const biorbd::utils::Attitude& X_successor,
             const biorbd::utils::Vector& axis,
             bool enableStabilization = false,
-            const double stabilizationParam = 0.1,
+            double stabilizationParam = 0.1,
             const biorbd::utils::String& name = biorbd::utils::String() );
 
     Contacts &getConstraints_nonConst(const biorbd::rigidbody::Joints& jointsModel); // La premiere fois il faut appeler cette fonction avec cet arguement, ensuite, il n'est plus utile
@@ -56,7 +56,7 @@ public:
     std::vector<biorbd::utils::Node> constraintsInGlobal(
             biorbd::rigidbody::Joints& m,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const bool updateKin); // Retourne la position des contraintes dans le rep`ere global
+            bool updateKin); // Retourne la position des contraintes dans le rep`ere global
 
     // Set and get
     biorbd::utils::Vector getForce() const;

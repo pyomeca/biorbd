@@ -62,7 +62,7 @@ unsigned int biorbd::rigidbody::Contacts::AddLoopConstraint(
         const biorbd::utils::Attitude &X_successor,
         const biorbd::utils::Vector &axis,
         bool enableStabilization,
-        const double stabilizationParam,
+        double stabilizationParam,
         const biorbd::utils::String &name)
 {
     ++m_nbreConstraint;
@@ -112,7 +112,7 @@ biorbd::utils::String biorbd::rigidbody::Contacts::name(unsigned int i) {
 std::vector<biorbd::utils::Node> biorbd::rigidbody::Contacts::constraintsInGlobal(
         biorbd::rigidbody::Joints& m,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const bool updateKin){
+        bool updateKin){
     if (updateKin)
         RigidBodyDynamics::UpdateKinematicsCustom(m, &Q, nullptr, nullptr);
 

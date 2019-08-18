@@ -20,7 +20,7 @@ public:
     unsigned int nbWraps() const; // retourne le nombre total de wrapping objects
     unsigned int nbVia() const; // retourne le nombre total de via points
     unsigned int nbObjects() const; // Retourne le nombre total d'objects
-    const std::shared_ptr<biorbd::muscles::PathChanger> object(const unsigned int& idx) const; // Get sur un wrapping
+    const std::shared_ptr<biorbd::muscles::PathChanger> object(unsigned int  idx) const; // Get sur un wrapping
 
 protected:
     std::vector<std::shared_ptr<biorbd::muscles::PathChanger>> m_obj; // Tableau de pointeur sur les objects

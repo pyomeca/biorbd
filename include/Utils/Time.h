@@ -10,11 +10,11 @@ class BIORBD_API Time
 {
 public:
     Time(
-            const double &timeStep,
-            const unsigned int &nbSteps);
+            double timeStep,
+            unsigned int nbSteps);
     virtual ~Time();
 
-    double time(const unsigned int &t); // Return time at index t
+    double time(unsigned int t); // Return time at index t
 protected:
     double * m_time;
     unsigned int m_nbSteps;

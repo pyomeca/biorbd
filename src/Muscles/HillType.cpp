@@ -136,7 +136,7 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force>>& biorbd::muscles::Hil
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
         const biorbd::muscles::StateDynamics& EMG,
-        const int updateKinLevel){
+        int updateKinLevel){
     // Update de la configuration
     if (updateKinLevel == 1)
         updateOrientations(m,Q,Qdot,false);
@@ -153,7 +153,7 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force>> &biorbd::muscles::Hil
         biorbd::rigidbody::Joints &,
         const biorbd::rigidbody::GeneralizedCoordinates &,
         const biorbd::muscles::StateDynamics &,
-        const int)
+        int)
 {
     biorbd::utils::Error::error(0, "Hill type needs velocity");
     return m_force; // Will never reach here

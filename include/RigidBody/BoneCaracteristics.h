@@ -13,7 +13,7 @@ class BIORBD_API Caracteristics : public RigidBodyDynamics::Body
 public:
     Caracteristics();
     Caracteristics(
-            const double &mass, // Mass of the body
+            double mass, // Mass of the body
             const biorbd::utils::Node &com, // Center of Mass
             const RigidBodyDynamics::Math::Matrix3d &inertia, // Inertia matrix
             const Mesh &mesh = Mesh()) ; // position des meshings de l'os
@@ -22,7 +22,7 @@ public:
     // Set and Get
     double length() const;
     double mass() const;
-    void setLength(const double &val);
+    void setLength(double val);
     const Mesh& mesh() const;
     const Eigen::Matrix3d& inertia() const;
 

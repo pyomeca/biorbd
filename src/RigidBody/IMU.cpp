@@ -5,9 +5,9 @@ biorbd::rigidbody::IMU::IMU(
         const biorbd::utils::Attitude &v,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName,
-        const bool &tech,
-        const bool &ana,
-        const int &id) :
+        bool tech,
+        bool ana,
+        int id) :
     biorbd::utils::NodeAttitude(v, name, parentName),
     m_technical(tech),
     m_anatomical(ana),

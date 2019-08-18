@@ -73,7 +73,7 @@ void biorbd::rigidbody::KalmanRecons::getState(
 biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::evolutionMatrix(
         const unsigned int nQ,
         unsigned int n,
-        const double Te){
+        double Te){
     // m  : nombre de degré de liberté
     // n  : ordre du développent de Taylor
     // Te : 1 / (frequence d'acquisition)
@@ -96,7 +96,7 @@ biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::evolutionMatrix(
 
 biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::processNoiseMatrix(
         const unsigned int nQ,
-        const double Te){
+        double Te){
 
     // Trouver la valeur des coefficients
     double c1 = 1.0/20.0 * pow(Te,5);
@@ -145,7 +145,7 @@ void biorbd::rigidbody::KalmanRecons::initialize(){
 
 biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::measurementNoiseMatrix(
         const unsigned int nMeasure,
-        const double MN){
+        double MN){
     biorbd::utils::Matrix R(biorbd::utils::Matrix::Zero(nMeasure, nMeasure));
     for (unsigned int i=0; i<nMeasure; ++i)
         R(i,i) = MN;
@@ -173,7 +173,7 @@ void biorbd::rigidbody::KalmanRecons::setInitState(
 
 biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::initCovariance(
         const unsigned int nQ,
-        const double csnt){
+        double csnt){
     biorbd::utils::Matrix Pp(biorbd::utils::Matrix::Zero(3*nQ, 3*nQ));
     for (unsigned int i=0; i<3*nQ; ++i)
         Pp(i,i) = csnt;

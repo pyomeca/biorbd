@@ -26,7 +26,7 @@ public:
     virtual biorbd::utils::Attitude RT(
             biorbd::rigidbody::Joints &m,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const bool & = true) = 0;
+            bool  = true) = 0;
     virtual void wrapPoints(
             const biorbd::utils::Attitude&,
             const biorbd::muscles::MuscleNode&,

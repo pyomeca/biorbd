@@ -4,8 +4,8 @@
 #include <math.h>
 
 biorbd::muscles::StateDynamicsBuchanan::StateDynamicsBuchanan(
-        const double &neuralCommand,
-        const double &e) :
+        double neuralCommand,
+        double e) :
     biorbd::muscles::StateDynamics(e,0),
     m_neuralCommand(neuralCommand),
     m_shapeFactor(-3)
@@ -34,7 +34,7 @@ double biorbd::muscles::StateDynamicsBuchanan::shapeFactor()
 
 double biorbd::muscles::StateDynamicsBuchanan::timeDerivativeExcitation(
         const biorbd::muscles::Caracteristics &caract,
-        const bool alreadyNormalized){
+        bool alreadyNormalized){
     // Move excitation to activation to use properly biorbd::muscles::StateDynamics::timeDerivativeActivation
     double activationTp = m_activation;
     m_activation = m_excitation;
@@ -51,7 +51,7 @@ double biorbd::muscles::StateDynamicsBuchanan::timeDerivativeExcitation(
     return m_excitationDot;
 }
 
-void biorbd::muscles::StateDynamicsBuchanan::setExcitation(const double &val)
+void biorbd::muscles::StateDynamicsBuchanan::setExcitation(double val)
 {
      biorbd::muscles::StateDynamics::setExcitation(val);
 
@@ -59,7 +59,7 @@ void biorbd::muscles::StateDynamicsBuchanan::setExcitation(const double &val)
      biorbd::muscles::StateDynamicsBuchanan::activation();
 }
 
-void biorbd::muscles::StateDynamicsBuchanan::setNeuralCommand(const double &val)
+void biorbd::muscles::StateDynamicsBuchanan::setNeuralCommand(double val)
 {
      m_neuralCommand = val;
 }

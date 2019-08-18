@@ -16,7 +16,7 @@ biorbd::rigidbody::Integrator::Integrator(){
 void biorbd::rigidbody::Integrator::operator() (
         const state_type &x ,
         state_type &dxdt ,
-        const double ){
+        double ){
     // Équation différentielle : x/xdot => xdot/xddot
     biorbd::rigidbody::GeneralizedCoordinates Q(m_nbre);
     biorbd::rigidbody::GeneralizedCoordinates QDot(m_nbre);
@@ -46,7 +46,7 @@ void biorbd::rigidbody::Integrator::showAll(){
     }
 }
 
-biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Integrator::getX(const unsigned int &idx){
+biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Integrator::getX(unsigned int idx){
     biorbd::rigidbody::GeneralizedCoordinates out(m_nbre*2);
     biorbd::utils::Error::error(idx <= m_steps, "Trying to get Q outside range");
     for (unsigned int i=0; i<m_nbre*2; i++){
@@ -59,9 +59,9 @@ void biorbd::rigidbody::Integrator::integrate(
         RigidBodyDynamics::Model *model,
         const biorbd::rigidbody::GeneralizedCoordinates &v,
         const Eigen::VectorXd& u,
-        const double &t0,
-        const double &tEnd,
-        const double &time_step){
+        double t0,
+        double tEnd,
+        double time_step){
     // Stocker le nombre d'élément à traiter
     m_nbre = static_cast<unsigned int>(v.rows())/2; // Q et Qdot
     m_u = u; // Copier les effecteurs

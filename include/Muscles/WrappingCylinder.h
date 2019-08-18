@@ -13,9 +13,9 @@ class BIORBD_API WrappingCylinder : public biorbd::muscles::WrappingObject
 public:
     WrappingCylinder(
             const biorbd::utils::Attitude & = biorbd::utils::Attitude(), // Position du centre
-            const double & = 0, // Diametre vue du dessus
-            const double & = 0, // Longueur du cylindre
-            const int & =1, // sens du wrapping (+1 ou -1)
+            double  = 0, // Diametre vue du dessus
+            double  = 0, // Longueur du cylindre
+            int  =1, // sens du wrapping (+1 ou -1)
             const biorbd::utils::String& = "",  // Nom du cylindre
             const biorbd::utils::String& = ""); // Nom du parent sur lequel il s'attache
     virtual ~WrappingCylinder();
@@ -45,7 +45,7 @@ public:
     virtual biorbd::utils::Attitude RT(
             biorbd::rigidbody::Joints &m,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const bool &updateKin = true);
+            bool updateKin = true);
     double diameter() const;
     double rayon() const;
     void setDiameter(double val);

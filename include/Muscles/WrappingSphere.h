@@ -11,7 +11,7 @@ class BIORBD_API WrappingSphere : public biorbd::muscles::WrappingObject
 {
 public:
     WrappingSphere(
-            const double &dia = 0, // Diametre de la sphere
+            double dia = 0, // Diametre de la sphere
             const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
             const biorbd::utils::String &name = "",  // Nom du noeud
             const biorbd::utils::String &parentName = "");
@@ -20,7 +20,7 @@ public:
     biorbd::utils::Attitude RT(
             biorbd::rigidbody::Joints &,
             const biorbd::rigidbody::GeneralizedCoordinates& ,
-            const bool & = true);
+            bool  = true);
     virtual void wrapPoints(
             const biorbd::utils::Attitude&,
             const biorbd::muscles::MuscleNode&,
@@ -42,7 +42,7 @@ public:
 
     // Get and set
     double size() const;
-    void setSize(const double &val);
+    void setSize(double val);
 protected:
     double m_dia;
 

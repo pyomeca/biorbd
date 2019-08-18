@@ -37,7 +37,7 @@ void biorbd::rigidbody::Markers::addMarker(
 }
 
 const biorbd::rigidbody::NodeBone &biorbd::rigidbody::Markers::marker(
-        const unsigned int &i) const
+        unsigned int i) const
 {
     return m_marks[i];
 }
@@ -74,7 +74,7 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::Tags(
 // Se faire renvoyer un marker
 biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::Tags(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const unsigned int &idx,
+        unsigned int idx,
         bool removeAxis,
         bool updateKin)
 {
@@ -92,7 +92,7 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::Tags(
 }
 // Se faire renvoyer un marker
 biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::Tags(
-        const unsigned int &idx,
+        unsigned int idx,
         bool removeAxis)
 {
     biorbd::rigidbody::NodeBone node = marker(idx);
@@ -131,7 +131,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::Tags(bool r
 biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::TagsVelocity(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
-        const unsigned int &idx,
+        unsigned int idx,
         bool removeAxis,
         bool updateKin)
 {
@@ -235,7 +235,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::AnatomicalT
 
 std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::segmentTags(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const unsigned int &idx,
+        unsigned int idx,
         bool removeAxis,
         bool updateKin)
 {

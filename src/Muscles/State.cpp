@@ -2,8 +2,8 @@
 #include "Muscles/State.h"
 
 biorbd::muscles::State::State(
-        const double &e,
-        const double &a) :
+        double e,
+        double a) :
     m_excitation(e),
     m_activation(a)
 {
@@ -14,14 +14,14 @@ biorbd::muscles::State::~State()
     //dtor
 }
 
-void biorbd::muscles::State::setExcitation(const double &val) {
+void biorbd::muscles::State::setExcitation(double val) {
     if (m_excitation<=0)
         m_excitation = 0;
     else
         m_excitation = val;
 }
 
-void biorbd::muscles::State::setActivation(const double &val){
+void biorbd::muscles::State::setActivation(double val){
     if (m_activation<=0)
         m_activation = 0;
     else if (m_activation>=1)

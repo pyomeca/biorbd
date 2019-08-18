@@ -2,16 +2,16 @@
 #include "Muscles/Caracteristics.h"
 
 biorbd::muscles::Caracteristics::Caracteristics(
-        const double &optLength,
-        const double &fmax,
-        const double &PCSA,
-        const double &tendonSlackLength,
-        const double &pennAngle,
+        double optLength,
+        double fmax,
+        double PCSA,
+        double tendonSlackLength,
+        double pennAngle,
         const biorbd::muscles::State &stateMax,
         const biorbd::muscles::FatigueParameters &fatigueParameters,
-        const double GeneralizedTorqueAct,
-        const double GeneralizedTorqueDeact,
-        const double &minAct):
+        double GeneralizedTorqueAct,
+        double GeneralizedTorqueDeact,
+        double minAct):
     m_optimalLength(optLength),
     m_fIsoMax(fmax),
     m_PCSA(PCSA),
@@ -41,11 +41,11 @@ void biorbd::muscles::Caracteristics::GeneralizedTorqueDeactivation(double val){
 double biorbd::muscles::Caracteristics::GeneralizedTorqueDeactivation() const { return m_GeneralizedTorqueDeactivation;}
 
 
-void biorbd::muscles::Caracteristics::setOptimalLength(const double &val) { m_optimalLength = val; }
-void biorbd::muscles::Caracteristics::setForceIsoMax(const double &val) { m_fIsoMax = val; }
-void biorbd::muscles::Caracteristics::PCSA(const double &val) {m_PCSA = val;}
-void biorbd::muscles::Caracteristics::setTendonSlackLength(const double &val) {m_tendonSlackLength = val;}
-void biorbd::muscles::Caracteristics::setPennationAngle(const double &val) {m_pennationAngle = val;}
+void biorbd::muscles::Caracteristics::setOptimalLength(double val) { m_optimalLength = val; }
+void biorbd::muscles::Caracteristics::setForceIsoMax(double val) { m_fIsoMax = val; }
+void biorbd::muscles::Caracteristics::PCSA(double val) {m_PCSA = val;}
+void biorbd::muscles::Caracteristics::setTendonSlackLength(double val) {m_tendonSlackLength = val;}
+void biorbd::muscles::Caracteristics::setPennationAngle(double val) {m_pennationAngle = val;}
 
 
 

@@ -34,8 +34,8 @@ public:
 
     // Set and get
     unsigned int nbMuscles() const;
-    std::shared_ptr<biorbd::muscles::Muscle> muscle_nonConst(const unsigned int &idx);
-    const std::shared_ptr<biorbd::muscles::Muscle> muscle(const unsigned int &idx) const;
+    std::shared_ptr<biorbd::muscles::Muscle> muscle_nonConst(unsigned int idx);
+    const std::shared_ptr<biorbd::muscles::Muscle> muscle(unsigned int idx) const;
     int muscleID(const biorbd::utils::String&); // Retourne l'index du muscle
     void setName(const biorbd::utils::String& name);
     void setOrigin(const biorbd::utils::String& name);

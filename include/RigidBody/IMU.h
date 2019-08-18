@@ -14,9 +14,9 @@ public:
             const biorbd::utils::Attitude& = biorbd::utils::Attitude(), // Position
             const biorbd::utils::String& = "", // Nom du noeud
             const biorbd::utils::String& = "", // Nom du parent
-            const bool& = true, // Si le marker est un marker technique
-            const bool& = true, // Si le marker est un marker anatomique
-            const int& = -1); // Numéro ID du parent
+            bool = true, // Si le marker est un marker technique
+            bool = true, // Si le marker est un marker anatomique
+            int = -1); // Numéro ID du parent
 
     virtual ~IMU();
     // Get and Set

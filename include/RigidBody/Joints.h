@@ -32,24 +32,24 @@ public:
 
     // Set and Get
     unsigned int AddBone(
-            const unsigned int &parent_id, // Numéro du parent
-            const biorbd::utils::String &seqT,
-            const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
+            unsigned int parentId, // Numéro du parent
+            const biorbd::utils::String &translationSequence,
+            const biorbd::utils::String &rotationSequence, // Séquence de Cardan pour classer les dof en rotation
             const biorbd::rigidbody::Caracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
-            const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
-            const biorbd::utils::String &name="", // Nom du segment
-            const int &PF=-1); // Numéro de la plateforme de force attaché à cet os
+            const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, // Transformation du parent vers l'enfant
+            const biorbd::utils::String &segmentName="", // Nom du segment
+            int forcePlates=-1); // Numéro de la plateforme de force attaché à cet os
     unsigned int AddBone(
-            const unsigned int &parent_id, // Numéro du parent
-            const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
-            const biorbd::rigidbody::Caracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
-            const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
-            const biorbd::utils::String &name="", // Nom du segment
-            const int &PF=-1); // Numéro de la plateforme de force attaché à cet os
+            unsigned int parentId, // Numéro du parent
+            const biorbd::utils::String &translationSequence, // Séquence de Cardan pour classer les dof en rotation
+            const biorbd::rigidbody::Caracteristics& rotationSequence, // Mase, Centre de masse du segment, Inertie du segment, etc.
+            const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, // Transformation du parent vers l'enfant
+            const biorbd::utils::String &segmentName="", // Nom du segment
+            int forcePlates=-1); // Numéro de la plateforme de force attaché à cet os
 
 
     // -- INFORMATION ON THE MODEL -- //
-    int GetBodyBiorbdId(const biorbd::utils::String &) const;
+    int GetBodyBiorbdId(const biorbd::utils::String &segmentName) const;
     unsigned int nbGeneralizedTorque() const;
     unsigned int nbBone() const; // Return the actual number of segments
     unsigned int nbDof() const;
@@ -62,19 +62,19 @@ public:
     unsigned int nbQddot() const;
     unsigned int nbRoot() const; // retourne le nombre d'élément qui ne sont pas actionnés
     unsigned int nbQuat() const;
-    void setIsRootActuated(const bool &a); // Determine if root segment is actuated or not
+    void setIsRootActuated(bool a); // Determine if root segment is actuated or not
     bool isRootActuated() const;
-    void setHasExternalForces(const bool &f); // If the model includes external force
+    void setHasExternalForces(bool f); // If the model includes external force
     bool hasExternalForces() const;
-    const biorbd::rigidbody::Bone& bone(unsigned int i) const;
-    const biorbd::rigidbody::Bone& bone(const biorbd::utils::String&) const;
+    const biorbd::rigidbody::Bone& bone(unsigned int idxSegment) const;
+    const biorbd::rigidbody::Bone& bone(const biorbd::utils::String& nameSegment) const;
     // ------------------------------ //
 
 
     // -- FORCE PLATE DISPATCHER -- //
     std::vector<RigidBodyDynamics::Math::SpatialVector> dispatchedForce(
-            std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> &,
-            const unsigned int &frame) const;
+            std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> &spatialVector,
+            unsigned int frame) const;
     std::vector<RigidBodyDynamics::Math::SpatialVector> dispatchedForce(
             std::vector<RigidBodyDynamics::Math::SpatialVector> &) const; // un SpatialVector par PF
     // ---------------------------- //
@@ -90,7 +90,7 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates& QDot,
             const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorque); // Process integration (Q, Qdot, effecteurs)
     void getIntegratedKinematics(
-            const unsigned int& step,
+            unsigned int  step,
             biorbd::rigidbody::GeneralizedCoordinates& Q,
             biorbd::rigidbody::GeneralizedCoordinates& Qdot);  // Put in a VectorNd the Qs a time t
     unsigned int nbInterationStep() const;
@@ -99,18 +99,18 @@ public:
 
     // -- POSITION INTERFACE OF THE MODEL -- //
     std::vector<biorbd::utils::Attitude> globalJCS(
-            const biorbd::rigidbody::GeneralizedCoordinates &,
-            const bool updateKin = true); // Return the JCSs in global coordinate system for the given q
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            bool updateKin = true); // Return the JCSs in global coordinate system for the given q
     biorbd::utils::Attitude globalJCS(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::utils::String &parentName,
-            const bool updateKin = true);  // Return the JCS for segment i in global coordinate system for the given q
+            bool updateKin = true);  // Return the JCS for segment i in global coordinate system for the given q
     biorbd::utils::Attitude globalJCS(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const unsigned int i,
-            const bool updateKin = true);  // Return the JCS for segment i in global coordinate system for the given q
+            bool updateKin = true);  // Return the JCS for segment i in global coordinate system for the given q
     std::vector<biorbd::utils::Attitude> localJCS() const; // Return the JCSs in global coordinate system for the given q
-    biorbd::utils::Attitude localJCS(const biorbd::utils::String &) const;  // Return the JCS for segment named String in parent coordinate system
+    biorbd::utils::Attitude localJCS(const biorbd::utils::String &segmentName) const;  // Return the JCS for segment named String in parent coordinate system
     biorbd::utils::Attitude localJCS(const unsigned int i) const;  // Return the JCS for segment i in parent coordinate system
     biorbd::rigidbody::NodeBone projectPoint(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
@@ -189,15 +189,15 @@ public:
     // -- MESH OF THE MODEL -- //
     std::vector<std::vector<biorbd::rigidbody::NodeBone>> meshPoints(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const bool updateKin = true);
+            bool updateKin = true);
     std::vector<biorbd::rigidbody::NodeBone> meshPoints(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const unsigned int& idx,
-            const bool updateKin = true);
+            unsigned int  idx,
+            bool updateKin = true);
     std::vector<std::vector<biorbd::rigidbody::Patch>> meshPatch() const;
-    const std::vector<biorbd::rigidbody::Patch>& meshPatch(const unsigned int &i) const;
+    const std::vector<biorbd::rigidbody::Patch>& meshPatch(unsigned int i) const;
     std::vector<biorbd::rigidbody::Mesh> boneMesh() const;
-    const biorbd::rigidbody::Mesh& boneMesh(const unsigned int& idx) const;
+    const biorbd::rigidbody::Mesh& boneMesh(unsigned int  idx) const;
     // ----------------------- //
 
 
@@ -205,7 +205,7 @@ public:
     RigidBodyDynamics::Math::Vector3d angularMomentum(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
-            const bool updateKin = true); // Wrapper pour le moment angulaire
+            bool updateKin = true); // Wrapper pour le moment angulaire
     // Réimplémentation de la fonction CalcAngularMomentum car elle a une erreur (inversion du calcul du com)
     RigidBodyDynamics::Math::Vector3d CalcAngularMomentum (
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
@@ -265,7 +265,7 @@ protected:
             bool update_kinematics); // Calculate the JCS in global
     std::vector<biorbd::rigidbody::NodeBone> meshPoints(
             const std::vector<biorbd::utils::Attitude>&,
-            const unsigned int& idx) const;
+            unsigned int  idx) const;
 
 };
 

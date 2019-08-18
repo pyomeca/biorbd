@@ -11,15 +11,15 @@ class BIORBD_API StateDynamicsBuchanan : public biorbd::muscles::StateDynamics
 {
 public:
     StateDynamicsBuchanan(
-            const double &neuralCommand = 0,
-            const double &excitation = 0);
+            double neuralCommand = 0,
+            double excitation = 0);
     ~StateDynamicsBuchanan();
 
     virtual double timeDerivativeExcitation(
             const Caracteristics &c,
-            const bool alreadyNormalized);
-    virtual void setExcitation(const double &val);
-    virtual void setNeuralCommand(const double &val);
+            bool alreadyNormalized);
+    virtual void setExcitation(double val);
+    virtual void setNeuralCommand(double val);
     void shapeFactor(double m_shape_factor);
     double shapeFactor();
     double activation();

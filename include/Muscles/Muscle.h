@@ -34,7 +34,7 @@ public:
             biorbd::rigidbody::Joints&,
             const biorbd::rigidbody::GeneralizedCoordinates&,
             const biorbd::rigidbody::GeneralizedCoordinates&,
-            const bool = true);
+            bool = true);
     void updateOrientations(
             biorbd::rigidbody::Joints &m,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
@@ -59,14 +59,14 @@ public:
     const std::vector<biorbd::muscles::MuscleNode>& musclesPointsInGlobal(
             biorbd::rigidbody::Joints &j,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const bool updateKin = true);
+            bool updateKin = true);
     void forceIsoMax(double);
 
     // Get and set
     void setState(const biorbd::muscles::StateDynamics &s);
     const biorbd::muscles::StateDynamics& state() const;
     biorbd::muscles::StateDynamics& state_nonConst() const;
-    double activationDot(const biorbd::muscles::StateDynamics &s, const bool =false);
+    double activationDot(const biorbd::muscles::StateDynamics &s, bool =false);
 protected:
     biorbd::muscles::Geometry m_position;
     biorbd::muscles::Caracteristics m_caract;

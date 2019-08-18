@@ -14,16 +14,16 @@ class BIORBD_API Caracteristics
 {
 public:
     Caracteristics(
-            const double &optLength = 0,
-            const double &fmax = 0,
-            const double &PCSA = 0,
-            const double &tendonSlackLength = 0,
-            const double &pennAngle = 0,
+            double optLength = 0,
+            double fmax = 0,
+            double PCSA = 0,
+            double tendonSlackLength = 0,
+            double pennAngle = 0,
             const biorbd::muscles::State& stateMax = biorbd::muscles::State(),
             const biorbd::muscles::FatigueParameters& fatigueParameters = biorbd::muscles::FatigueParameters(),
-            const double GeneralizedTorqueAct = 0.01,
-            const double GeneralizedTorqueDeact = 0.04,
-            const double &minAct =.01);
+            double GeneralizedTorqueAct = 0.01,
+            double GeneralizedTorqueDeact = 0.04,
+            double minAct =.01);
     Caracteristics(const Caracteristics&);
     Caracteristics& operator=(const Caracteristics&);
     virtual ~Caracteristics();
@@ -42,11 +42,11 @@ public:
     void GeneralizedTorqueDeactivation(double val);
     double GeneralizedTorqueDeactivation() const;
 
-    void setOptimalLength(const double &val);
-    virtual void setForceIsoMax(const double &val);
-    void PCSA(const double &val);
-    void setTendonSlackLength(const double &val);
-    void setPennationAngle(const double &val);
+    void setOptimalLength(double val);
+    virtual void setForceIsoMax(double val);
+    void PCSA(double val);
+    void setTendonSlackLength(double val);
+    void setPennationAngle(double val);
     void setStateMax(const biorbd::muscles::State &stateMax);
     const biorbd::muscles::State& stateMax() const;
 

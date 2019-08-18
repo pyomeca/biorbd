@@ -6,8 +6,8 @@
 #include "Muscles/Caracteristics.h"
 
 biorbd::muscles::StateDynamics::StateDynamics(
-        const double &e,
-        const double &a) :
+        double e,
+        double a) :
     biorbd::muscles::State(e,a),
     m_excitationNorm(0),
     m_previousExcitation(0),
@@ -25,7 +25,7 @@ biorbd::muscles::StateDynamics::~StateDynamics()
 double biorbd::muscles::StateDynamics::timeDerivativeActivation(
         const biorbd::muscles::StateDynamics& state,
         const biorbd::muscles::Caracteristics& caract,
-        const bool alreadyNormalized){
+        bool alreadyNormalized){
     return timeDerivativeActivation(state.excitation(), state.activation(), caract, alreadyNormalized);
 }
 
@@ -34,7 +34,7 @@ double biorbd::muscles::StateDynamics::timeDerivativeActivation(
         double excitation,
         double activation,
         const biorbd::muscles::Caracteristics &caract,
-        const bool alreadyNormalized){
+        bool alreadyNormalized){
     setExcitation(excitation);
     setActivation(activation);
     return timeDerivativeActivation(caract, alreadyNormalized);
@@ -42,7 +42,7 @@ double biorbd::muscles::StateDynamics::timeDerivativeActivation(
 
 double biorbd::muscles::StateDynamics::timeDerivativeActivation(
         const biorbd::muscles::Caracteristics &caract,
-        const bool alreadyNormalized){
+        bool alreadyNormalized){
     // Implémentation de la fonction da/dt = (u-a)/GeneralizedTorque(u,a)
     // ou GeneralizedTorque(u,a) = t_act(0.5+1.5*a) is u>a et GeneralizedTorque(u,a)=t_deact(0.5+1.5*a) sinon
     if (m_activation<caract.minActivation())
@@ -78,7 +78,7 @@ double biorbd::muscles::StateDynamics::timeDerivativeActivation(
 
 double biorbd::muscles::StateDynamics::timeDerivativeActivation() {return m_activationDot;}
 
-void biorbd::muscles::StateDynamics::setExcitation(const double &val) {
+void biorbd::muscles::StateDynamics::setExcitation(double val) {
     m_previousExcitation = m_excitation;
     if (val<0){
         biorbd::utils::Error::warning(0, "Excitation can't be lower than 0, 0 is used then");
@@ -87,7 +87,7 @@ void biorbd::muscles::StateDynamics::setExcitation(const double &val) {
     else
         m_excitation = val;
 }
-void biorbd::muscles::StateDynamics::setActivation(const double &val) {
+void biorbd::muscles::StateDynamics::setActivation(double val) {
     m_previousActivation = m_activation;
 
     if (val<0){

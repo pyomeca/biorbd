@@ -24,9 +24,9 @@ void biorbd::rigidbody::IMUs::addIMU(
         const biorbd::utils::Attitude &pos,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName,
-        const bool &technical,
-        const bool &anatomical,
-        const int &id)
+        bool technical,
+        bool anatomical,
+        int id)
 {
     biorbd::rigidbody::IMU tp(pos, name, parentName, technical, anatomical, id);
     m_IMUs.push_back(tp);
@@ -59,7 +59,7 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::IMU(biorbd::rigidbo
     return pos;
 }
 
-const biorbd::rigidbody::IMU &biorbd::rigidbody::IMUs::IMU(const unsigned int &i)
+const biorbd::rigidbody::IMU &biorbd::rigidbody::IMUs::IMU(unsigned int i)
 {
     std::vector <biorbd::rigidbody::IMU>::iterator it;
     it = m_IMUs.begin()+i;
@@ -70,7 +70,7 @@ const biorbd::rigidbody::IMU &biorbd::rigidbody::IMUs::IMU(const unsigned int &i
 std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::IMU(
         biorbd::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const bool &updateKin){
+        bool updateKin){
     std::vector<biorbd::rigidbody::IMU> pos;
     for (unsigned int i=0; i<nIMUs(); ++i)
         if (i==0)
@@ -85,8 +85,8 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::IMU(
 biorbd::rigidbody::IMU biorbd::rigidbody::IMUs::IMU(
         biorbd::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const unsigned int &idx,
-        const bool &updateKin){
+        unsigned int idx,
+        bool updateKin){
     biorbd::rigidbody::IMU node = IMU(idx);
     unsigned int id = static_cast<unsigned int>(model.GetBodyBiorbdId(node.parent()));
 
@@ -144,8 +144,8 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::anatomicalIMU(){
 std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::segmentIMU(
         biorbd::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const unsigned int &idx,
-        const bool &updateKin){
+        unsigned int idx,
+        bool updateKin){
     // Update de la cinématique
     if (updateKin)
         RigidBodyDynamics::UpdateKinematicsCustom(model, &Q,nullptr, nullptr);
@@ -165,7 +165,7 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::segmentIMU(
 std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::IMUJacobian(
         biorbd::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const bool &updateKin){
+        bool updateKin){
     return IMUJacobian(model, Q, updateKin, false);
 }
 
@@ -173,7 +173,7 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::IMUJacobian(
 std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::TechnicalIMUJacobian(
         biorbd::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const bool &updateKin){
+        bool updateKin){
     return IMUJacobian(model, Q, updateKin, true);
 }
 
@@ -182,7 +182,7 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::TechnicalIMUJacobian
 std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::IMUJacobian(
         biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const bool &updateKin,
+        bool updateKin,
         bool lookForTechnical){
     std::vector<biorbd::utils::Matrix> G;
 

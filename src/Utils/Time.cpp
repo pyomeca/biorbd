@@ -2,8 +2,8 @@
 #include "Utils/Time.h"
 
 biorbd::utils::Time::Time(
-        const double &timeStep,
-        const unsigned int &nbSteps)
+        double timeStep,
+        unsigned int nbSteps)
 {
     //ctor
     m_nbSteps = nbSteps;
@@ -18,7 +18,7 @@ biorbd::utils::Time::~Time()
     delete[] m_time;
 }
 
-double biorbd::utils::Time::time(const unsigned int &t)
+double biorbd::utils::Time::time(unsigned int t)
 {
     if (t>=m_nbSteps)
         return 0;

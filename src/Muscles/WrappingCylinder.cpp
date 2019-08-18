@@ -5,9 +5,9 @@
 
 biorbd::muscles::WrappingCylinder::WrappingCylinder(
         const biorbd::utils::Attitude &v, // Position du centre
-        const double &dia, // Diametre vue du dessus
-        const double &length, // Longueur du cylindre
-        const int &side, // sens du wrapping (+1 ou -1)
+        double dia, // Diametre vue du dessus
+        double length, // Longueur du cylindre
+        int side, // sens du wrapping (+1 ou -1)
         const biorbd::utils::String &name,  // Nom du cylindre
         const biorbd::utils::String &parentName) : // Nom du parent sur lequel il s'attache :
     biorbd::muscles::WrappingObject(v.trans(),name,parentName),
@@ -40,7 +40,7 @@ void biorbd::muscles::WrappingCylinder::wrapPoints(
 biorbd::utils::Attitude biorbd::muscles::WrappingCylinder::RT(
         biorbd::rigidbody::Joints &m,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const bool &updateKin){
+        bool updateKin){
 
     // Récupérer la matrice de rototrans du cylindre dans le global
     biorbd::utils::Attitude parent(m.globalJCS(Q, m_parentName, updateKin));

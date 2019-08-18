@@ -84,13 +84,13 @@ unsigned int biorbd::rigidbody::Joints::nbQddot() const {
 unsigned int biorbd::rigidbody::Joints::nbRoot() const {
     if (m_isRootActuated) return 0; else return m_nbRoot;
 }
-void biorbd::rigidbody::Joints::setIsRootActuated(const bool &a) {
+void biorbd::rigidbody::Joints::setIsRootActuated(bool a) {
     m_isRootActuated = a;
 }
 bool biorbd::rigidbody::Joints::isRootActuated() const {
     return m_isRootActuated;
 }
-void biorbd::rigidbody::Joints::setHasExternalForces(const bool &f) {
+void biorbd::rigidbody::Joints::setHasExternalForces(bool f) {
     m_hasExternalForces = f;
 }
 bool biorbd::rigidbody::Joints::hasExternalForces() const {
@@ -113,7 +113,7 @@ void biorbd::rigidbody::Joints::integrateKinematics(
     m_isKinematicsComputed = true;
 }
 void biorbd::rigidbody::Joints::getIntegratedKinematics(
-        const unsigned int &step,
+        unsigned int step,
         biorbd::rigidbody::GeneralizedCoordinates &Q,
         biorbd::rigidbody::GeneralizedCoordinates &QDot){
     // Si la cinématique n'a pas été mise à jour
@@ -132,15 +132,15 @@ unsigned int biorbd::rigidbody::Joints::nbInterationStep() const
 
 
 unsigned int biorbd::rigidbody::Joints::AddBone(
-        const unsigned int &parent_id, // Numéro du parent
-        const biorbd::utils::String &seqT,
-        const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
+        unsigned int parentId, // Numéro du parent
+        const biorbd::utils::String &translationSequence,
+        const biorbd::utils::String &rotationSequence, // Séquence de Cardan pour classer les dof en rotation
         const biorbd::rigidbody::Caracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
-        const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
-        const biorbd::utils::String &name, // Nom du segment
-        const int &PF){ // Numéro de la plateforme de force attaché à cet os
-    biorbd::rigidbody::Bone tp(this, parent_id, seqT, seqR, caract, cor, name, PF);
-	if (parent_id == 0)
+        const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, // Transformation du parent vers l'enfant
+        const biorbd::utils::String &segmentName, // Nom du segment
+        int forcePlates){ // Numéro de la plateforme de force attaché à cet os
+    biorbd::rigidbody::Bone tp(this, parentId, translationSequence, rotationSequence, caract, centreOfRotation, segmentName, forcePlates);
+    if (parentId == 0)
 		m_nbRoot += tp.nDof(); //  Si le nom du segment est "Root" ajouter le nombre de dof de racine
 	m_nDof += tp.nDof();
     m_nbQ += tp.nQ();
@@ -155,13 +155,13 @@ unsigned int biorbd::rigidbody::Joints::AddBone(
     return 0;
 }
 unsigned int biorbd::rigidbody::Joints::AddBone(
-        const unsigned int &parent_id, // Numéro du parent
+        unsigned int parent_id, // Numéro du parent
         const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
         const biorbd::rigidbody::Caracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
         const biorbd::utils::String &name, // Nom du segment
-        const int &PF){ // Numéro de la plateforme de force attaché à cet os
-    biorbd::rigidbody::Bone tp(this, parent_id, seqR, caract, cor, name, PF);
+        int forcePlates){ // Numéro de la plateforme de force attaché à cet os
+    biorbd::rigidbody::Bone tp(this, parent_id, seqR, caract, cor, name, forcePlates);
 	if (parent_id == 0)
         m_nbRoot += tp.nDof(); //  Si le nom du segment est "Root" ajouter le nombre de dof de racine
 	m_nDof += tp.nDof();
@@ -171,14 +171,14 @@ unsigned int biorbd::rigidbody::Joints::AddBone(
     return 0;
 }
 
-const biorbd::rigidbody::Bone& biorbd::rigidbody::Joints::bone(unsigned int i) const {
-    biorbd::utils::Error::error(i < m_bones.size(), "Asked for a wrong segment (out of range)");
-    return m_bones[i];
+const biorbd::rigidbody::Bone& biorbd::rigidbody::Joints::bone(unsigned int idxSegment) const {
+    biorbd::utils::Error::error(idxSegment < m_bones.size(), "Asked for a wrong segment (out of range)");
+    return m_bones[idxSegment];
 }
 
-const biorbd::rigidbody::Bone &biorbd::rigidbody::Joints::bone(const biorbd::utils::String & name) const
+const biorbd::rigidbody::Bone &biorbd::rigidbody::Joints::bone(const biorbd::utils::String & nameSegment) const
 {
-    return bone(static_cast<unsigned int>(GetBodyBiorbdId(name.c_str())));
+    return bone(static_cast<unsigned int>(GetBodyBiorbdId(nameSegment.c_str())));
 }
 
 unsigned int biorbd::rigidbody::Joints::nbBone() const
@@ -187,8 +187,8 @@ unsigned int biorbd::rigidbody::Joints::nbBone() const
 }
 
 std::vector<RigidBodyDynamics::Math::SpatialVector> biorbd::rigidbody::Joints::dispatchedForce(
-        std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> &sv,
-        const unsigned int &frame) const{
+        std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> &spatialVector,
+        unsigned int frame) const{
     // Tableau de sortie
     std::vector<RigidBodyDynamics::Math::SpatialVector> sv_out;
 
@@ -197,7 +197,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> biorbd::rigidbody::Joints::d
 
     // Itérateur sur le tableau de force
     std::vector<RigidBodyDynamics::Math::SpatialVector> sv2; // Mettre dans un même tableau les valeurs d'un même instant de différentes plateformes
-    for (std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>>::iterator it = sv.begin(); it!=sv.end(); ++it){
+    for (std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>>::iterator it = spatialVector.begin(); it!=spatialVector.end(); ++it){
         std::vector<RigidBodyDynamics::Math::SpatialVector>::iterator sv2_tp = (*it).begin();
         sv2.push_back(*(sv2_tp+frame));
     }
@@ -237,7 +237,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> biorbd::rigidbody::Joints::d
 
 std::vector<biorbd::utils::Attitude> biorbd::rigidbody::Joints::globalJCS(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const bool updateKin){
+        bool updateKin){
     std::vector<biorbd::utils::Attitude> out;
 
     for (unsigned int i=0; i<m_bones.size(); ++i)
@@ -249,9 +249,9 @@ std::vector<biorbd::utils::Attitude> biorbd::rigidbody::Joints::globalJCS(
     return out;
 }
 
-int biorbd::rigidbody::Joints::GetBodyBiorbdId(const biorbd::utils::String &s) const{
+int biorbd::rigidbody::Joints::GetBodyBiorbdId(const biorbd::utils::String &segmentName) const{
     for (int i=0; i<static_cast<int>(m_bones.size()); ++i)
-        if (!m_bones[static_cast<unsigned int>(i)].name().compare(s))
+        if (!m_bones[static_cast<unsigned int>(i)].name().compare(segmentName))
             return i;
     return -1;
 }
@@ -259,14 +259,14 @@ int biorbd::rigidbody::Joints::GetBodyBiorbdId(const biorbd::utils::String &s) c
 biorbd::utils::Attitude biorbd::rigidbody::Joints::globalJCS(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::utils::String &name,
-        const bool updateKin){
+        bool updateKin){
     return globalJCS(Q,static_cast<unsigned int>(GetBodyBiorbdId(name.c_str())),updateKin);
 }
 
 biorbd::utils::Attitude biorbd::rigidbody::Joints::globalJCS(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const unsigned int i,
-        const bool updateKin){
+        bool updateKin){
     unsigned int id = m_bones[i].id();
 
     biorbd::utils::Attitude RT;
@@ -289,8 +289,8 @@ std::vector<biorbd::utils::Attitude> biorbd::rigidbody::Joints::localJCS() const
 
     return out;
 }
-biorbd::utils::Attitude biorbd::rigidbody::Joints::localJCS(const biorbd::utils::String &name) const{
-    return localJCS(static_cast<unsigned int>(GetBodyBiorbdId(name.c_str())));
+biorbd::utils::Attitude biorbd::rigidbody::Joints::localJCS(const biorbd::utils::String &segmentName) const{
+    return localJCS(static_cast<unsigned int>(GetBodyBiorbdId(segmentName.c_str())));
 }
 biorbd::utils::Attitude biorbd::rigidbody::Joints::localJCS(const unsigned int i) const{
     return m_bones[i].localJCS();
@@ -462,7 +462,7 @@ biorbd::utils::Node biorbd::rigidbody::Joints::CoM(
 RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::angularMomentum(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
-        const bool updateKin){
+        bool updateKin){
     return CalcAngularMomentum(*this, Q, Qdot, updateKin);
 
 }
@@ -620,7 +620,7 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMddotBySegment(
 
 std::vector<std::vector<biorbd::rigidbody::NodeBone>> biorbd::rigidbody::Joints::meshPoints(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const bool updateKin){
+        bool updateKin){
 
     std::vector<std::vector<biorbd::rigidbody::NodeBone>> v; // Vecteur de vecteur de sortie (mesh par segment)
 
@@ -635,8 +635,8 @@ std::vector<std::vector<biorbd::rigidbody::NodeBone>> biorbd::rigidbody::Joints:
 }
 std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::meshPoints(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const unsigned int &i,
-        const bool updateKin){
+        unsigned int i,
+        bool updateKin){
 
     // Trouver la position des segments
     std::vector<biorbd::utils::Attitude> RT(globalJCS(Q, updateKin));
@@ -645,7 +645,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::meshPoints(
 }
 std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::meshPoints(
         const std::vector<biorbd::utils::Attitude> &RT,
-        const unsigned int &i) const{
+        unsigned int i) const{
 
     // Recueillir la position des meshings
     std::vector<biorbd::rigidbody::NodeBone> v;
@@ -664,7 +664,7 @@ std::vector<std::vector<biorbd::rigidbody::Patch>> biorbd::rigidbody::Joints::me
         v_all.push_back(meshPatch(j));
     return v_all;
 }
-const std::vector<biorbd::rigidbody::Patch> &biorbd::rigidbody::Joints::meshPatch(const unsigned int &i) const{
+const std::vector<biorbd::rigidbody::Patch> &biorbd::rigidbody::Joints::meshPatch(unsigned int i) const{
     // Recueillir la position des meshings pour un segment i
     return boneMesh(i).patch();
 }
@@ -677,7 +677,7 @@ std::vector<biorbd::rigidbody::Mesh> biorbd::rigidbody::Joints::boneMesh() const
     return boneOut;
 }
 
-const biorbd::rigidbody::Mesh &biorbd::rigidbody::Joints::boneMesh(const unsigned int &idx) const
+const biorbd::rigidbody::Mesh &biorbd::rigidbody::Joints::boneMesh(unsigned int idx) const
 {
     return bone(idx).caract().mesh();
 }

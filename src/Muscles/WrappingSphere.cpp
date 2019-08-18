@@ -4,7 +4,7 @@
 #include "Utils/Attitude.h"
 
 biorbd::muscles::WrappingSphere::WrappingSphere(
-        const double &dia,
+        double dia,
         const Eigen::Vector3d &v, // Position du noeud
         const biorbd::utils::String &name,  // Nom du noeud
         const biorbd::utils::String &parentName) :
@@ -23,7 +23,7 @@ biorbd::muscles::WrappingSphere::~WrappingSphere()
 biorbd::utils::Attitude biorbd::muscles::WrappingSphere::RT(
         biorbd::rigidbody::Joints &,
         const biorbd::rigidbody::GeneralizedCoordinates &,
-        const bool &)
+        bool )
 {
     return biorbd::utils::Attitude();
 }
@@ -33,7 +33,7 @@ double biorbd::muscles::WrappingSphere::size() const
     return m_dia;
 }
 
-void biorbd::muscles::WrappingSphere::setSize(const double &val)
+void biorbd::muscles::WrappingSphere::setSize(double val)
 {
     m_dia = val;
 }

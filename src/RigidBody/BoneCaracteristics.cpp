@@ -11,7 +11,7 @@ biorbd::rigidbody::Caracteristics::Caracteristics() :
 {
 }
 biorbd::rigidbody::Caracteristics::Caracteristics(
-        const double &mass,
+        double mass,
         const biorbd::utils::Node &com,
         const RigidBodyDynamics::Math::Matrix3d &inertia,
         const biorbd::rigidbody::Mesh &mesh) :
@@ -42,6 +42,6 @@ double biorbd::rigidbody::Caracteristics::mass() const {
     return mMass;
 }
 
-void biorbd::rigidbody::Caracteristics::setLength(const double &val) {
+void biorbd::rigidbody::Caracteristics::setLength(double val) {
     m_length = val;
 }

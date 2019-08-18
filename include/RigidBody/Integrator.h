@@ -22,12 +22,12 @@ public:
             RigidBodyDynamics::Model*,
             const biorbd::rigidbody::GeneralizedCoordinates&,
             const Eigen::VectorXd&,
-            const double&,
-            const double&,
-            const double&);
-    void operator() ( const state_type &x , state_type &dxdt , const double t );
+            double,
+            double,
+            double);
+    void operator() ( const state_type &x , state_type &dxdt , double t );
 
-    biorbd::rigidbody::GeneralizedCoordinates getX(const unsigned int&); // Return the Q for a given step
+    biorbd::rigidbody::GeneralizedCoordinates getX(unsigned int ); // Return the Q for a given step
     void showAll(); // Show every steps with every dof
     unsigned int steps() const {return m_steps+1;}
 protected:

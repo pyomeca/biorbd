@@ -58,7 +58,7 @@ unsigned int biorbd::muscles::PathChangers::nbObjects() const
 }
 
 
-const std::shared_ptr<biorbd::muscles::PathChanger> biorbd::muscles::PathChangers::object(const unsigned int &idx) const{
+const std::shared_ptr<biorbd::muscles::PathChanger> biorbd::muscles::PathChangers::object(unsigned int idx) const{
     biorbd::utils::Error::error(idx<nbObjects(), "Idx asked is higher than number of wrapping objects");
     return m_obj[idx];
 }

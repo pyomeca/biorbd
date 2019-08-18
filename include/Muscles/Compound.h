@@ -34,12 +34,12 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
             const biorbd::muscles::StateDynamics& emg,
-            const int updateKin = 2) = 0;
+            int updateKin = 2) = 0;
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::muscles::StateDynamics& emg,
-            const int updateKin = 2) = 0;
+            int updateKin = 2) = 0;
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(const biorbd::muscles::StateDynamics& emg) = 0;
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(); // Return the last computed muscle force
 

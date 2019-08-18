@@ -92,21 +92,21 @@ double biorbd::muscles::Muscle::velocity(
         biorbd::rigidbody::Joints &m,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
-        const bool updateKin){
+        bool updateKin){
     if (updateKin)
         m_position.updateKinematics(m,&Q,&Qdot,m_caract,m_pathChanger);
 
     return m_position.velocity();
 }
 
-double biorbd::muscles::Muscle::activationDot(const biorbd::muscles::StateDynamics &s, const bool already){
+double biorbd::muscles::Muscle::activationDot(const biorbd::muscles::StateDynamics &s, bool already){
     return m_state->timeDerivativeActivation(s, caract(), already);
 }
 
 const std::vector<biorbd::muscles::MuscleNode> &biorbd::muscles::Muscle::musclesPointsInGlobal(
         biorbd::rigidbody::Joints &m,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const bool updateKin){
+        bool updateKin){
     if (updateKin)
         m_position.updateKinematics(m,&Q,nullptr,m_caract,m_pathChanger);
 
