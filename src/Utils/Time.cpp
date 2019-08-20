@@ -7,21 +7,11 @@ biorbd::utils::Time::Time(
 {
     //ctor
     m_nbSteps = nbSteps;
-    m_time = new double[nbSteps];
     for (unsigned int i=0; i<nbSteps; i++)
-        m_time[i] =  timeStep*i;
-}
-
-biorbd::utils::Time::~Time()
-{
-    //dtor
-    delete[] m_time;
+        m_time.push_back(timeStep*i);
 }
 
 double biorbd::utils::Time::time(unsigned int t)
 {
-    if (t>=m_nbSteps)
-        return 0;
-    else
-        return m_time[t];
+    return m_time.at(t);
 }

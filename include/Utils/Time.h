@@ -1,6 +1,7 @@
 #ifndef BIORBD_UTILS_TIME_H
 #define BIORBD_UTILS_TIME_H
 
+#include <vector>
 #include "biorbdConfig.h"
 
 namespace biorbd {
@@ -12,11 +13,10 @@ public:
     Time(
             double timeStep,
             unsigned int nbSteps);
-    virtual ~Time();
 
     double time(unsigned int t); // Return time at index t
 protected:
-    double * m_time;
+    std::vector<double> m_time;
     unsigned int m_nbSteps;
 
 };
