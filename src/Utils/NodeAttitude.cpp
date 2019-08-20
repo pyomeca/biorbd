@@ -4,30 +4,33 @@
 #include <Eigen/Dense>
 #include "Utils/String.h"
 
+biorbd::utils::NodeAttitude::NodeAttitude() :
+    biorbd::utils::Attitude(),
+    biorbd::utils::Node()
+{
+
+}
+
+biorbd::utils::NodeAttitude::NodeAttitude(const biorbd::utils::Attitude &attitude) :
+    biorbd::utils::Attitude(attitude),
+    biorbd::utils::Node()
+{
+
+}
+
 biorbd::utils::NodeAttitude::NodeAttitude(
         const Attitude &v,
         const biorbd::utils::String &name,
-        const biorbd::utils::String &parentName) : // Nom du parent
+        const biorbd::utils::String &parentName) :
     biorbd::utils::Attitude(v),
-    m_parentName(std::make_shared<biorbd::utils::String>(parentName)),
-    m_RTName(std::make_shared<biorbd::utils::String>(name))
+    biorbd::utils::Node(name, parentName)
 {
 
 }
 
-biorbd::utils::NodeAttitude::~NodeAttitude()
+biorbd::utils::NodeAttitude biorbd::utils::NodeAttitude::DeepCopy()
 {
-    //dtor
-}
-
-const biorbd::utils::String &biorbd::utils::NodeAttitude::parent() const
-{
-    return *m_parentName;
-}
-
-void biorbd::utils::NodeAttitude::setParent(const biorbd::utils::String &parentName)
-{
-    *m_parentName = parentName;
+    return biorbd::utils::NodeAttitude(this->attitude(), this->name(), this->parent());
 }
 
 void biorbd::utils::NodeAttitude::setAttitude(const biorbd::utils::Attitude &n)
@@ -39,15 +42,4 @@ void biorbd::utils::NodeAttitude::setAttitude(const biorbd::utils::Attitude &n)
 const biorbd::utils::Attitude &biorbd::utils::NodeAttitude::attitude() const
 {
     return *this;
-}
-
-
-void biorbd::utils::NodeAttitude::setName(const biorbd::utils::String &name)
-{
-    *m_RTName = name;
-}
-
-const biorbd::utils::String &biorbd::utils::NodeAttitude::name() const
-{
-    return *m_RTName;
 }

@@ -4,32 +4,26 @@
 #include <memory>
 #include "biorbdConfig.h"
 #include "Utils/Attitude.h"
+#include "Utils/Node.h"
 
 namespace biorbd {
 namespace utils {
 class String;
 
-class BIORBD_API NodeAttitude : public biorbd::utils::Attitude
+class BIORBD_API NodeAttitude : public biorbd::utils::Attitude, public biorbd::utils::Node
 {
 public:
+    NodeAttitude();
+    NodeAttitude(const Attitude& attitude);
     NodeAttitude(
-            const Attitude&, // Position du noeud
-            const biorbd::utils::String &name,  // Nom du noeud
+            const Attitude& attitude,
+            const biorbd::utils::String &name,
             const biorbd::utils::String &parentName);
-    virtual ~NodeAttitude();
-
-    const biorbd::utils::String& parent() const;
-    void setParent(const biorbd::utils::String &parentName);
-    void setName(const biorbd::utils::String &name);
-    const biorbd::utils::String& name() const;
+    biorbd::utils::NodeAttitude DeepCopy();
 
     // Get and Set
     void setAttitude(const Attitude&);
     const Attitude& attitude() const;
-
-protected:
-    std::shared_ptr<biorbd::utils::String> m_parentName;
-    std::shared_ptr<biorbd::utils::String> m_RTName;
 
 };
 
