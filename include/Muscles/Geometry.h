@@ -16,8 +16,8 @@ class BIORBD_API Geometry
 {
 public:
     Geometry(
-            const biorbd::muscles::MuscleNode &origin = biorbd::muscles::MuscleNode(),
-            const biorbd::muscles::MuscleNode &insertion = biorbd::muscles::MuscleNode());
+            const biorbd::muscles::MuscleNode &origin = biorbd::muscles::MuscleNode(0, 0, 0),
+            const biorbd::muscles::MuscleNode &insertion = biorbd::muscles::MuscleNode(0, 0, 0));
     virtual ~Geometry();
 
     // Fonction a appeler avant d'appeler longueur/velocity ou autres!

@@ -17,12 +17,6 @@ biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque(unsigned int i) :
 
 }
 
-biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque(const Eigen::VectorXd &v) :
-    biorbd::utils::Vector(v)
-{
-
-}
-
 biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque(const biorbd::rigidbody::Joints &j) :
     biorbd::utils::Vector(j.nbGeneralizedTorque())
 {

@@ -19,8 +19,8 @@ biorbd::muscles::Geometry::Geometry(
     m_isVelocityComputed(false),
     m_posAndJacoWereForced(false)
 {
-    m_originInGlobal.block(0,0,3,1) = Eigen::Vector3d::Zero();
-    m_insertionInGlobal.block(0,0,3,1) = Eigen::Vector3d::Zero();
+    m_originInGlobal.block(0,0,3,1) = biorbd::muscles::MuscleNode::Zero();
+    m_insertionInGlobal.block(0,0,3,1) = biorbd::muscles::MuscleNode::Zero();
 }
 
 biorbd::muscles::Geometry::~Geometry()
@@ -190,8 +190,8 @@ double biorbd::muscles::Geometry::length(
         biorbd::utils::Error::error(objects->nbVia() == 0, "Cannot mix wrapping and via points yet" ) ;
         biorbd::utils::Error::error(objects->nbWraps() < 2, "Cannot compute more than one wrapping yet");
 
-        biorbd::muscles::MuscleNode pi_wrap; // point sur le wrapping coté insertion
-        biorbd::muscles::MuscleNode po_wrap; // point sur le wrapping coté origine
+        biorbd::muscles::MuscleNode pi_wrap(0, 0, 0); // point sur le wrapping coté insertion
+        biorbd::muscles::MuscleNode po_wrap(0, 0, 0); // point sur le wrapping coté origine
         double lengthWrap(0);
         std::static_pointer_cast<biorbd::muscles::WrappingObject>(objects->object(0))->wrapPoints(po_wrap, pi_wrap, &lengthWrap);
         m_muscleTendonLength = (*m_pointsInGlobal.begin() - pi_wrap).norm()   + // longueur avant le wrap
@@ -240,8 +240,8 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(
         biorbd::muscles::MuscleNode po_mus = originInGlobal(model, Q);  // Origine sur l'os
         biorbd::muscles::MuscleNode pi_mus = insertionInGlobal(model,Q); // Insertion sur l'os
 
-        biorbd::muscles::MuscleNode pi_wrap; // point sur le wrapping coté insertion
-        biorbd::muscles::MuscleNode po_wrap; // point sur le wrapping coté origine
+        biorbd::muscles::MuscleNode pi_wrap(0, 0, 0); // point sur le wrapping coté insertion
+        biorbd::muscles::MuscleNode po_wrap(0, 0, 0); // point sur le wrapping coté origine
 
         std::static_pointer_cast<biorbd::muscles::WrappingObject>(objects.object(0))->wrapPoints(RT,po_mus,pi_mus,po_wrap, pi_wrap);
 
@@ -290,7 +290,7 @@ double biorbd::muscles::Geometry::velocity(const biorbd::rigidbody::GeneralizedC
 
     // Calculer la vitesse d'élongation musculaire
     // TODO remove the construction of GeneralizedCoordinates and see for the calculation itself
-    biorbd::rigidbody::GeneralizedCoordinates velocity(jacobianLength()*Qdot); // Vector 1 element, mais le compilateur ne le sais pas
+    biorbd::rigidbody::GeneralizedCoordinates velocity(static_cast<Eigen::VectorXd>(jacobianLength()*Qdot)); // Vector 1 element, mais le compilateur ne le sais pas
     m_velocity = velocity[0];
 
     return m_velocity;

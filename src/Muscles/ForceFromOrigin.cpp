@@ -18,7 +18,7 @@ biorbd::muscles::ForceFromOrigin::ForceFromOrigin(
 {
 
 }
-biorbd::muscles::ForceFromOrigin::ForceFromOrigin(const Eigen::Vector3d &force) :
+biorbd::muscles::ForceFromOrigin::ForceFromOrigin(const biorbd::utils::Node &force) :
     biorbd::muscles::Force(force)
 {
 
@@ -35,7 +35,7 @@ void biorbd::muscles::ForceFromOrigin::setForce(const biorbd::muscles::Geometry&
     // Trouver le vecteur directeur
     // Trouver le vecteur directeur
     std::vector<biorbd::muscles::MuscleNode> tp_via = geo.musclesPointsInGlobal();
-    Eigen::Vector3d V ( tp_via[1] - tp_via[0]  );
+    biorbd::utils::Node V ( tp_via[1] - tp_via[0]  );
     V = V/V.norm();
 
     // Agrandir le vecteur selon sa vraie grandeur (fonction de la force)

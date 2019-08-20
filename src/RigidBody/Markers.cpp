@@ -24,7 +24,7 @@ biorbd::rigidbody::Markers::~Markers()
 
 // Ajouter un nouveau marker au pool de markers
 void biorbd::rigidbody::Markers::addMarker(
-        const Eigen::Vector3d &pos,
+        const biorbd::rigidbody::NodeBone &pos,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName,
         bool technical,
@@ -300,7 +300,7 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::TechnicalTagsJaco
 biorbd::utils::Matrix biorbd::rigidbody::Markers::TagsJacobian(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::utils::String& parentName,
-        const Eigen::Vector3d& p,
+        const biorbd::rigidbody::NodeBone& p,
         bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
@@ -335,7 +335,7 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::TagsJacobian(
             continue;
 
         unsigned int id = model.GetBodyId(node.parent().c_str());
-        Eigen::Vector3d pos = Tags(idx, removeAxis);
+        biorbd::utils::Node pos = Tags(idx, removeAxis);
         biorbd::utils::Matrix G_tp(biorbd::utils::Matrix::Zero(3,model.nbQ()));
 
         // Calcul de la jacobienne de ce Tag

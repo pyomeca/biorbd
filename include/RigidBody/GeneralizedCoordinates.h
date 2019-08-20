@@ -14,11 +14,11 @@ public:
     GeneralizedCoordinates();
     GeneralizedCoordinates(const biorbd::rigidbody::GeneralizedCoordinates &Q);
     GeneralizedCoordinates(const biorbd::utils::Vector& v);
-    GeneralizedCoordinates(const Eigen::VectorXd& v);
     GeneralizedCoordinates(unsigned int i);
     GeneralizedCoordinates(const biorbd::rigidbody::Joints& j);
     virtual ~GeneralizedCoordinates();
 
+    biorbd::rigidbody::GeneralizedCoordinates& operator=(const biorbd::utils::Vector& vecX);
     biorbd::rigidbody::GeneralizedCoordinates& operator=(const Eigen::VectorXd& vecX);
 
 };

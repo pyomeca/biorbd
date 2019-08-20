@@ -30,7 +30,7 @@ public:
             biorbd::rigidbody::GeneralizedCoordinates *Qddot);
     virtual void reconstructFrame(
             biorbd::Model &model,
-            const Eigen::VectorXd &IMUobs,
+            const biorbd::utils::Vector &IMUobs,
             biorbd::rigidbody::GeneralizedCoordinates *Q,
             biorbd::rigidbody::GeneralizedCoordinates *Qdot,
             biorbd::rigidbody::GeneralizedCoordinates *Qddot);
@@ -42,7 +42,7 @@ protected:
     virtual void initialize();
     virtual void manageOcclusionDuringIteration(
             biorbd::utils::Matrix&,
-            Eigen::VectorXd &measure,
+            biorbd::utils::Vector &measure,
             const std::vector<unsigned int> &occlusion);
 
     biorbd::utils::Matrix m_PpInitial; // Se souvenir de Pp inital

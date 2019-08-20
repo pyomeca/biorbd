@@ -37,7 +37,7 @@ public:
             bool removeAxes=true);
     virtual void reconstructFrame(
             biorbd::Model &model,
-            const Eigen::VectorXd &Tobs,
+            const biorbd::utils::Vector &Tobs,
             biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
             biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,
             biorbd::rigidbody::GeneralizedCoordinates *Qddot = nullptr,
@@ -50,7 +50,7 @@ protected:
     virtual void initialize();
     virtual void manageOcclusionDuringIteration(
             biorbd::utils::Matrix&,
-            Eigen::VectorXd &measure,
+            biorbd::utils::Vector &measure,
             const std::vector<unsigned int> &occlusion);
     biorbd::utils::Matrix m_PpInitial; // Se souvenir de Pp inital
     bool m_firstIteration;

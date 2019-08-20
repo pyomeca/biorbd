@@ -4,18 +4,38 @@
 #include "Utils/Error.h"
 
 biorbd::rigidbody::NodeBone::NodeBone(
-        const Eigen::Vector3d &v,
+        double x,
+        double y,
+        double z,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName,
-        bool tech,
-        bool ana,
-        const biorbd::utils::String& axesToRemove, // Axes à retirer
-        int id) :
-    biorbd::utils::Node(v, name, parentName),
+        bool isTechnical,
+        bool isAnatomical,
+        const biorbd::utils::String &axesToRemove,
+        int parentID) :
+    biorbd::utils::Node(x, y, z, name, parentName),
     m_nbAxesToRemove(0),
-    m_technical(tech),
-    m_anatomical(ana),
-    m_id(id)
+    m_technical(isTechnical),
+    m_anatomical(isAnatomical),
+    m_id(parentID)
+{
+    m_axesRemoved.resize(3);
+    addAxesToRemove(axesToRemove);
+}
+
+biorbd::rigidbody::NodeBone::NodeBone(
+        const biorbd::utils::Node &node,
+        const biorbd::utils::String &name,
+        const biorbd::utils::String &parentName,
+        bool isTechnical,
+        bool isAnatomical,
+        const biorbd::utils::String& axesToRemove, // Axes à retirer
+        int parentID) :
+    biorbd::utils::Node(node, name, parentName),
+    m_nbAxesToRemove(0),
+    m_technical(isTechnical),
+    m_anatomical(isAnatomical),
+    m_id(parentID)
 {
     m_axesRemoved.resize(3);
     addAxesToRemove(axesToRemove);

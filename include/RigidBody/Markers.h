@@ -2,7 +2,6 @@
 #define BIORBD_RIGIDBODY_MARKERS_H
 
 #include <vector>
-#include <Eigen/Dense>
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 
@@ -23,7 +22,7 @@ public:
 
     // Set and get
     void addMarker(
-            const Eigen::Vector3d &pos = Eigen::Vector3d(0,0,0),
+            const biorbd::rigidbody::NodeBone &pos,
             const biorbd::utils::String &name = "",
             const biorbd::utils::String &parentName = "",
             bool technical = true,
@@ -108,7 +107,7 @@ public:
     biorbd::utils::Matrix TagsJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::utils::String& parentName,
-            const Eigen::Vector3d& p,
+            const biorbd::rigidbody::NodeBone& p,
             bool updateKin); // Jacobienne d'un marqueur au choix
 
 protected:

@@ -4,13 +4,13 @@
 #include <vector>
 #include <memory>
 
-#include <Eigen/Dense>
 #include "biorbdConfig.h"
 
 namespace biorbd {
 namespace utils {
 class String;
 class Matrix;
+class Vector;
 }
 
 namespace rigidbody {
@@ -56,13 +56,13 @@ public:
 
     // Calcul des effets musculaires sur les os
     biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
-            const Eigen::VectorXd & F,
+            const biorbd::utils::Vector& F,
             bool updateKin = true,
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
             const biorbd::rigidbody::GeneralizedCoordinates* QDot = nullptr);
     biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
             const std::vector<biorbd::muscles::StateDynamics> &state,
-            Eigen::VectorXd & F,
+            biorbd::utils::Vector& F,
             bool updateKin = true,
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
             const biorbd::rigidbody::GeneralizedCoordinates* QDot = nullptr);

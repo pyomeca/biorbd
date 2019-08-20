@@ -4,12 +4,25 @@
 #include "Utils/Attitude.h"
 
 biorbd::muscles::WrappingSphere::WrappingSphere(
-        double dia,
-        const Eigen::Vector3d &v, // Position du noeud
+        double x,
+        double y,
+        double z,
+        double diameter,
+        const biorbd::utils::String &name,
+        const biorbd::utils::String &parentName) :
+    biorbd::muscles::WrappingObject(x, y, z, name, parentName),
+    m_dia(diameter)
+{
+    m_forme = "Sphere";
+}
+
+biorbd::muscles::WrappingSphere::WrappingSphere(
+        const biorbd::utils::Node &v,
+        double diameter, // Position du noeud
         const biorbd::utils::String &name,  // Nom du noeud
         const biorbd::utils::String &parentName) :
-    biorbd::muscles::WrappingObject(v,name,parentName),
-    m_dia(dia)
+    biorbd::muscles::WrappingObject(v, name, parentName),
+    m_dia(diameter)
 {
     m_forme = "Sphere";
 }

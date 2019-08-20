@@ -67,6 +67,15 @@ biorbd::utils::Vector biorbd::utils::Vector::normGradient(
     }
 }
 
+biorbd::utils::Vector &biorbd::utils::Vector::operator=(const Eigen::VectorXd &other)
+{
+    if (this==&other) // check for self-assigment
+        return *this;
+
+    this->block(0,0,this->rows(),1) = other;
+    return *this;
+}
+
 biorbd::utils::Vector::~Vector()
 {
 

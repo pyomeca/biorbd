@@ -57,7 +57,7 @@ const biorbd::muscles::MuscleGroup &biorbd::muscles::Muscles::muscleGroup(const 
 // From muscle activation (return muscle force)
 biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorque(
         const std::vector<biorbd::muscles::StateDynamics> &state,
-        Eigen::VectorXd & F,
+        biorbd::utils::Vector &F,
         bool updateKin,
         const biorbd::rigidbody::GeneralizedCoordinates* Q,
         const biorbd::rigidbody::GeneralizedCoordinates* QDot)
@@ -67,7 +67,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
         updateMuscles(*Q,*QDot,updateKin);
 
     std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> force_tp = musclesForces(state, false);
-    F = Eigen::VectorXd::Zero(static_cast<unsigned int>(force_tp.size()));
+    F = biorbd::utils::Vector(static_cast<unsigned int>(force_tp.size())).setZero();
     for (unsigned int i=0; i<force_tp.size(); ++i)
         F(i) = (force_tp[i])[0]->norme();
 
@@ -87,7 +87,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
 
 // From Muscular Force
 biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorque(
-        const Eigen::VectorXd& F,
+        const biorbd::utils::Vector &F,
         bool updateKin,
         const biorbd::rigidbody::GeneralizedCoordinates* Q,
         const biorbd::rigidbody::GeneralizedCoordinates* QDot)
@@ -102,7 +102,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
     biorbd::utils::Matrix jaco(musclesLengthJacobian());
 
     // Calcul de la réaction des forces sur les corps
-    return biorbd::rigidbody::GeneralizedTorque(-jaco.transpose() * F);
+    return biorbd::rigidbody::GeneralizedTorque(static_cast<Eigen::VectorXd>(-jaco.transpose() * F));
 }
 
 std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> biorbd::muscles::Muscles::musclesForces(

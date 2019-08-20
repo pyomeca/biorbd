@@ -32,23 +32,23 @@ void Matlab_forwardDynamics( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot();
     unsigned int nQddot = model->nbQddot();
-    unsigned int nGeneralizedTorque = model->nbGeneralizedTorque();
+    unsigned int nTau = model->nbGeneralizedTorque();
     unsigned int nRoot = model->nbRoot();
 
     // Recevoir Q
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
-    // Recevoir GeneralizedTorque
-    std::vector<biorbd::rigidbody::GeneralizedTorque> GeneralizedTorque = getParameterGeneralizedTorque(prhs, 4, nGeneralizedTorque, nRoot);
+    // Recevoir Tau
+    std::vector<biorbd::rigidbody::GeneralizedTorque> Tau = getParameterGeneralizedTorque(prhs, 4, nTau, nRoot);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));
 
     if (QDot.size() != nFrame)
         mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "QDot must have the same number of frames than Q");
-    if (GeneralizedTorque.size() != nFrame)
-        mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "GeneralizedTorque must have the same number of frames than Q");
+    if (Tau.size() != nFrame)
+        mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "Tau must have the same number of frames than Q");
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( nQddot, nFrame, mxREAL);
@@ -61,24 +61,25 @@ void Matlab_forwardDynamics( int, mxArray *plhs[],
         force = mxGetPr(plhs[1]); // Force sur les points de contacts
     }
 
+    biorbd::rigidbody::GeneralizedCoordinates QDDot(nQddot);
     for (unsigned int j=0; j<nFrame; ++j){
         RigidBodyDynamics::UpdateKinematicsCustom(*model, &(*(Q.begin()+j)), &(*(QDot.begin()+j)), nullptr);
 
         // Trouver la dynamique directe a cette configuration
-        biorbd::rigidbody::GeneralizedCoordinates QDDot(Eigen::VectorXd::Zero(nQddot));
+        QDDot.setZero();
         if (contact == 1){ // Si on a un contact
             model->getConstraints_nonConst().linear_solver = RigidBodyDynamics::Math::LinearSolverColPivHouseholderQR;
-            RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*model, *(Q.begin()+j), *(QDot.begin()+j), *(GeneralizedTorque.begin()+j), model->getConstraints_nonConst(), QDDot);// Forward dynamics
+            RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*model, Q[j], QDot[j], Tau[j], model->getConstraints_nonConst(), QDDot);// Forward dynamics
         }
         else if (contact == -1){ // Si on a une impulsion
             biorbd::rigidbody::GeneralizedCoordinates QdotPost(static_cast<unsigned int>((*(Q.begin()+j)).size()));
-            RigidBodyDynamics::ComputeConstraintImpulsesDirect(*model, *(Q.begin()+j), *(QDot.begin()+j), model->getConstraints_nonConst(), QdotPost);
+            RigidBodyDynamics::ComputeConstraintImpulsesDirect(*model, Q[j], QDot[j], model->getConstraints_nonConst(), QdotPost);
 
             // Calcul de la dynamique
-            RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*model, *(Q.begin()+j), QdotPost, *(GeneralizedTorque.begin()+j), model->getConstraints_nonConst(),QDDot);// Forward dynamics
+            RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*model, Q[j], QdotPost, Tau[j], model->getConstraints_nonConst(),QDDot);// Forward dynamics
         }
         else {
-            RigidBodyDynamics::ForwardDynamicsLagrangian(*model, *(Q.begin()+j), *(QDot.begin()+j), *(GeneralizedTorque.begin()+j), QDDot);// Forward dynamics
+            RigidBodyDynamics::ForwardDynamicsLagrangian(*model, Q[j], QDot[j], Tau[j], QDDot);// Forward dynamics
         }
 
 

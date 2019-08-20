@@ -20,7 +20,7 @@ void biorbd::rigidbody::Integrator::operator() (
     // Équation différentielle : x/xdot => xdot/xddot
     biorbd::rigidbody::GeneralizedCoordinates Q(m_nbre);
     biorbd::rigidbody::GeneralizedCoordinates QDot(m_nbre);
-    biorbd::rigidbody::GeneralizedCoordinates QDDot(Eigen::VectorXd::Zero(m_nbre));
+    biorbd::rigidbody::GeneralizedCoordinates QDDot(biorbd::utils::Vector(m_nbre).setZero());
     for (unsigned int i=0; i<m_nbre; i++){
         Q(i) = x[i];
         QDot(i) = x[i+m_nbre];
@@ -56,9 +56,9 @@ biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Integrator::getX(un
 }
 
 void biorbd::rigidbody::Integrator::integrate(
-        RigidBodyDynamics::Model *model,
+        biorbd::rigidbody::Joints *model,
         const biorbd::rigidbody::GeneralizedCoordinates &v,
-        const Eigen::VectorXd& u,
+        const biorbd::utils::Vector &u,
         double t0,
         double tEnd,
         double time_step){

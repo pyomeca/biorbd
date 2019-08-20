@@ -23,12 +23,12 @@ biorbd::rigidbody::KalmanRecons::~KalmanRecons()
 
 
 void biorbd::rigidbody::KalmanRecons::iteration(
-        Eigen::VectorXd measure,
-        const Eigen::VectorXd &projectedMeasure,
+        biorbd::utils::Vector measure,
+        const biorbd::utils::Vector &projectedMeasure,
         const biorbd::utils::Matrix &Hessian,
         const std::vector<unsigned int> &occlusion){
     // Prédiction
-    Eigen::VectorXd xkm = m_A * m_xp;
+    biorbd::utils::Vector xkm(m_A * m_xp);
     biorbd::utils::Matrix Pkm(m_A * m_Pp * m_A.transpose() + m_Q);
 
     // Correction
@@ -36,7 +36,7 @@ void biorbd::rigidbody::KalmanRecons::iteration(
     manageOcclusionDuringIteration(InvTp, measure, occlusion);
     biorbd::utils::Matrix K(Pkm*Hessian.transpose() * InvTp); // Gain
 
-    m_xp = xkm+K*(measure-projectedMeasure); // New estimated state
+    m_xp = biorbd::utils::Vector(xkm+K*(measure-projectedMeasure)); // New estimated state
     m_Pp =  (biorbd::utils::Matrix::Identity(3*m_nDof, 3*m_nDof) - K*Hessian) *
              Pkm *
             (biorbd::utils::Matrix::Identity(3*m_nDof, 3*m_nDof) - K*Hessian).transpose() +
@@ -46,7 +46,7 @@ void biorbd::rigidbody::KalmanRecons::iteration(
 
 void biorbd::rigidbody::KalmanRecons::manageOcclusionDuringIteration(
         biorbd::utils::Matrix &InvTp,
-        Eigen::VectorXd &measure,
+        biorbd::utils::Vector &measure,
         const std::vector<unsigned int> &occlusion){
     for (unsigned int i = 0; i < occlusion.size(); ++i)
          for (unsigned int j=occlusion[i]; j< occlusion[i]+1; ++j){
@@ -153,7 +153,7 @@ biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::measurementNoiseMatrix(
 }
 
 biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::KalmanRecons::initState(const unsigned int nQ){
-    return biorbd::rigidbody::GeneralizedCoordinates(Eigen::VectorXd::Zero(3*nQ)); // Q, Qdot, Qddot
+    return biorbd::rigidbody::GeneralizedCoordinates(biorbd::utils::Vector(3*nQ).setZero()); // Q, Qdot, Qddot
 }
 
 void biorbd::rigidbody::KalmanRecons::setInitState(

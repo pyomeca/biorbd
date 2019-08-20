@@ -18,7 +18,7 @@ biorbd::muscles::ForceFromInsertion::ForceFromInsertion(
 {
 
 }
-biorbd::muscles::ForceFromInsertion::ForceFromInsertion(const Eigen::Vector3d &force) :
+biorbd::muscles::ForceFromInsertion::ForceFromInsertion(const biorbd::utils::Node &force) :
     biorbd::muscles::Force(force)
 {
 
@@ -34,7 +34,7 @@ biorbd::muscles::ForceFromInsertion::~ForceFromInsertion()
 void biorbd::muscles::ForceFromInsertion::setForce(const biorbd::muscles::Geometry& geo, double force){
     // Trouver le vecteur directeur
     std::vector<biorbd::muscles::MuscleNode> tp_via = geo.musclesPointsInGlobal();
-    Eigen::Vector3d V ( tp_via[tp_via.size()-2] - tp_via[tp_via.size()-1] );
+    biorbd::utils::Node V ( tp_via[tp_via.size()-2] - tp_via[tp_via.size()-1] );
     V = V/V.norm();
 
     // Agrandir le vecteur selon sa vraie grandeur (fonction de la force)

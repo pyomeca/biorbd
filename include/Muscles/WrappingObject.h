@@ -1,7 +1,6 @@
 #ifndef BIORBD_MUSCLES_WRAPPING_OBJECT_H
 #define BIORBD_MUSCLES_WRAPPING_OBJECT_H
 
-#include <Eigen/Dense>
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 #include "Muscles/PathChanger.h"
@@ -18,7 +17,13 @@ class BIORBD_API WrappingObject : public biorbd::muscles::PathChanger
 {
 public:
     WrappingObject(
-            const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
+            double x,
+            double y,
+            double z,
+            const biorbd::utils::String &name = "",  // Nom du noeud
+            const biorbd::utils::String &parentName = "");
+    WrappingObject(
+            const biorbd::utils::Node &v, // Position du noeud
             const biorbd::utils::String &name = "",  // Nom du noeud
             const biorbd::utils::String &parentName = "");
     virtual ~WrappingObject() ;

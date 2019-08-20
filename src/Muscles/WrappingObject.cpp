@@ -2,7 +2,18 @@
 #include "Muscles/WrappingObject.h"
 
 biorbd::muscles::WrappingObject::WrappingObject(
-        const Eigen::Vector3d &v, // Position du noeud
+        double x,
+        double y,
+        double z,
+        const biorbd::utils::String &name,
+        const biorbd::utils::String &parentName) :
+    biorbd::muscles::PathChanger(x, y, z, name, parentName)
+{
+
+}
+
+biorbd::muscles::WrappingObject::WrappingObject(
+        const biorbd::utils::Node &v, // Position du noeud
         const biorbd::utils::String &name,  // Nom du noeud
         const biorbd::utils::String &parentName) :
     biorbd::muscles::PathChanger(v,name,parentName)

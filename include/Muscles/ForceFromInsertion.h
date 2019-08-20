@@ -12,7 +12,7 @@ class BIORBD_API ForceFromInsertion : public biorbd::muscles::Force
 public:
     ForceFromInsertion();
     ForceFromInsertion(double x, double y, double z);
-    ForceFromInsertion(const Eigen::Vector3d& force);
+    ForceFromInsertion(const biorbd::utils::Node& force);
     ForceFromInsertion(
             const biorbd::muscles::Geometry& geo,
             double force);

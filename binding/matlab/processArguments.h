@@ -74,9 +74,9 @@ std::vector<std::vector<biorbd::rigidbody::NodeBone>> getParameterAllMarkers(con
         std::vector<biorbd::rigidbody::NodeBone> markers_tp; // Markers a un temps i
 
         for (int j=0; j<nMark; ++j){
-            biorbd::rigidbody::NodeBone tp(Eigen::Vector3d(markers[m*cmp+0], // m est 3 ou 4
+            biorbd::rigidbody::NodeBone tp(markers[m*cmp+0], // m est 3 ou 4
                                            markers[m*cmp+1],
-                                           markers[m*cmp+2]));
+                                           markers[m*cmp+2]);
             markers_tp.push_back(tp);
             ++cmp;
         }
@@ -185,7 +185,7 @@ biorbd::rigidbody::GeneralizedCoordinates getVector(const mxArray*prhs[], unsign
     double *q=mxGetPr(prhs[idx]); //matrice de position
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    biorbd::rigidbody::GeneralizedCoordinates vect(Eigen::VectorXd::Zero (static_cast<unsigned int>(length)));
+    biorbd::rigidbody::GeneralizedCoordinates vect(static_cast<unsigned int>(length));
     for (unsigned int i=0; i<length; i++)
         vect(i) = q[i];
 
@@ -232,7 +232,7 @@ std::vector<biorbd::rigidbody::GeneralizedCoordinates> getParameterQ(const mxArr
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q;
     for (unsigned int j=0; j<nFrames; ++j){
-        biorbd::rigidbody::GeneralizedCoordinates Q_tp(Eigen::VectorXd::Zero(nDof));
+        biorbd::rigidbody::GeneralizedCoordinates Q_tp(nDof);
         for (unsigned int i=0; i<nDof; i++)
             Q_tp[i] = q[j*nDof+i];
 
@@ -252,7 +252,7 @@ std::vector<biorbd::rigidbody::GeneralizedTorque> getParameterGeneralizedTorque(
     std::vector<biorbd::rigidbody::GeneralizedTorque> AllGeneralizedTorque;
 
     for (unsigned int j=0; j<AllGeneralizedTorque_tp.size(); ++j){
-        biorbd::rigidbody::GeneralizedTorque GeneralizedTorque_tp(Eigen::VectorXd::Zero(nControl+nRoot));
+        biorbd::rigidbody::GeneralizedTorque GeneralizedTorque_tp(nControl+nRoot);
 
         for (unsigned int i=0; i<nRoot; ++i) // Root segment
             GeneralizedTorque_tp(i) =  0;
@@ -606,7 +606,7 @@ std::vector<std::vector<biorbd::muscles::MuscleNode>> getMusclePosition(const mx
         // Préparer les matrices intermédiaires (chaque muscle)
         std::vector<biorbd::muscles::MuscleNode> mus;
         for (unsigned int j=0; j<nPointsByMuscles(i); ++j){
-            mus.push_back(biorbd::muscles::MuscleNode(Eigen::Vector3d(via[cmpMus*nRows+0],via[cmpMus*nRows+1],via[cmpMus*nRows+2])));
+            mus.push_back(biorbd::muscles::MuscleNode(via[cmpMus*nRows+0],via[cmpMus*nRows+1],via[cmpMus*nRows+2]));
             ++cmpMus;
         }
         out.push_back(mus);

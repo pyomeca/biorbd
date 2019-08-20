@@ -5,6 +5,8 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "Muscles/MuscleGroup.h"
+#include "Muscles/Muscle.h"
 
 void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
@@ -67,17 +69,17 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
             }
 
         biorbd::rigidbody::GeneralizedTorque muscleTorque;
-        Eigen::VectorXd force;
+        biorbd::utils::Vector force;
         if (nlhs >= 2) // Si on doit récupérer les forces
             if (updateKin)
-                muscleTorque = model->muscularJointTorque(*(s.begin()+i), force, updateKin, &(*(Q.begin()+i)), &(*(QDot.begin()+i)));
+                muscleTorque = model->muscularJointTorque(s[i], force, updateKin, &Q[i], &QDot[i]);
             else
-                muscleTorque = model->muscularJointTorque(*(s.begin()+i), force, updateKin);
+                muscleTorque = model->muscularJointTorque(s[i], force, updateKin);
         else // Si non
             if (updateKin)
-                muscleTorque = model->muscularJointTorque(*(s.begin()+i), updateKin, &(*(Q.begin()+i)), &(*(QDot.begin()+i)));
+                muscleTorque = model->muscularJointTorque(s[i], updateKin, &Q[i], &QDot[i]);
             else
-                muscleTorque = model->muscularJointTorque(*(s.begin()+i), updateKin);
+                muscleTorque = model->muscularJointTorque(s[i], updateKin);
 
         // distribuer les GeneralizedTorque
         for (unsigned int j=0; j<nGeneralizedTorque; ++j){

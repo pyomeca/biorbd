@@ -117,7 +117,7 @@ public:
             const biorbd::rigidbody::NodeBone&, bool updateKin=true); // Projeter selon les axes/plan déterminé déjà dans nodeBone
     biorbd::rigidbody::NodeBone projectPoint(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const Eigen::Vector3d &v,
+            const biorbd::utils::Node &v,
             int boneIdx,
             const biorbd::utils::String& axesToRemove,
             bool updateKin=true); // Projeter un point dans le repère global
@@ -131,7 +131,7 @@ public:
             bool updateKin);
     biorbd::utils::Matrix projectPointJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const Eigen::Vector3d &v,
+            const biorbd::utils::Node &v,
             int boneIdx,
             const biorbd::utils::String& axesToRemove,
             bool updateKin);
@@ -150,7 +150,7 @@ public:
     std::vector<biorbd::rigidbody::NodeBone> CoMbySegment(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool updateKin=true); // Position du centre de masse de chaque segment
-    biorbd::rigidbody::NodeBone CoMbySegment(
+    biorbd::utils::Node CoMbySegment(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const unsigned int i,
             bool updateKin=true); // Position du centre de masse du segment i

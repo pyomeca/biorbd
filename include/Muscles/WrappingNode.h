@@ -1,20 +1,25 @@
 #ifndef BIORBD_MUSCLES_WRAPPING_NODE_H
 #define BIORBD_MUSCLES_WRAPPING_NODE_H
 
-#include <Eigen/Dense>
 #include "biorbdConfig.h"
-#include "Utils/Node.h"
+#include "Muscles/PathChanger.h"
 
 namespace biorbd {
 namespace muscles {
 
-class BIORBD_API WrappingNode : public biorbd::utils::Node
+class BIORBD_API WrappingNode : public biorbd::muscles::PathChanger
 {
 public:
     WrappingNode(
-            const Eigen::Vector3d& = Eigen::Vector3d(0,0,0), // Position
-            const biorbd::utils::String& = "", // Nom du noeud
-            const biorbd::utils::String& = ""); //  Nom du parent
+            double x,
+            double y,
+            double z,
+            const biorbd::utils::String& nodeName = "", // Nom du noeud
+            const biorbd::utils::String& parentName = ""); //  Nom du parent
+    WrappingNode(
+            const biorbd::utils::Node& node,
+            const biorbd::utils::String& nodeName = "", // Nom du noeud
+            const biorbd::utils::String& parentName = ""); //  Nom du parent
 
     virtual ~WrappingNode();
 

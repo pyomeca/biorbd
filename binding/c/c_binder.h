@@ -10,17 +10,17 @@
 
 extern "C" { 
 	// Create a pointer on a model
-    BIORBD_API biorbd::Model* c_biorbd::Model(const char* pathToModel);
-    BIORBD_API void c_deletebiorbd::Model(biorbd::Model*);
-    BIORBD_API void c_writebiorbd::Model(biorbd::Model*, const char * path);
+    BIORBD_API biorbd::Model* c_biorbdModel(const char* pathToModel);
+    BIORBD_API void c_deleteBiorbdModel(biorbd::Model*);
+    BIORBD_API void c_writeBiorbdModel(biorbd::Model*, const char * path);
 	
     // IMUs functions
     BIORBD_API int c_nIMUs(biorbd::Model*);
     BIORBD_API void c_addIMU(biorbd::Model *model, const double *imuRT, const char* name = "", const char* parentName = "", bool technical = true, bool anatomical = true);
     BIORBD_API void c_meanIMU(const double *imuRT, unsigned int nFrame, double* imuRT_mean);
-    BIORBD_API biorbd::rigidbody::KalmanReconsIMU* c_biorbd::rigidbody::KalmanReconsIMU(biorbd::Model*, double* QinitialGuess = NULL, double freq = 100, double noiseF = 5e-3, double errorF = 1e-10);
-    BIORBD_API void c_deletebiorbd::rigidbody::KalmanReconsIMU(biorbd::rigidbody::KalmanReconsIMU*);
-    BIORBD_API void c_biorbd::rigidbody::KalmanReconsIMUstep(biorbd::Model*, biorbd::rigidbody::KalmanReconsIMU*, double* imu, double* Q = NULL, double* QDot = NULL, double* QDDot = NULL);
+    BIORBD_API biorbd::rigidbody::KalmanReconsIMU* c_BiorbdKalmanReconsIMU(biorbd::Model*, double* QinitialGuess = NULL, double freq = 100, double noiseF = 5e-3, double errorF = 1e-10);
+    BIORBD_API void c_deleteBiorbdKalmanReconsIMU(biorbd::rigidbody::KalmanReconsIMU*);
+    BIORBD_API void c_BiorbdKalmanReconsIMUstep(biorbd::Model*, biorbd::rigidbody::KalmanReconsIMU*, double* imu, double* Q = NULL, double* QDot = NULL, double* QDDot = NULL);
 	
     // Joints functions
     BIORBD_API void c_globalJCS(biorbd::Model*, const double* Q, double* jcs);
@@ -46,19 +46,19 @@ extern "C" {
 }
 
 // Fonctions de dispatch pour les données d'entré et de sortie
-Eigen::Vector3d dispatchTagsInput(const double * pos);
+biorbd::utils::Node dispatchTagsInput(const double * pos);
 void dispatchTagsOutput(const std::vector<biorbd::rigidbody::NodeBone> &allTags, double* tags);
-GeneralizedCoordinates dispatchQinput(biorbd::Model* model, const double*Q);
-void dispatchQoutput(const GeneralizedCoordinates &eQ, double*Q);
-void dispatchDoubleOutput(const Eigen::VectorXd&, double*);
-Attitude dispatchRTinput(const double* rt);
-void dispatchRToutput(const Attitude& rt_in, double* rt_out);
-void dispatchRToutput(const std::vector<Attitude>& rt_in, double* rt_out);
+biorbd::rigidbody::GeneralizedCoordinates dispatchQinput(biorbd::Model* model, const double*Q);
+void dispatchQoutput(const biorbd::rigidbody::GeneralizedCoordinates &eQ, double*Q);
+void dispatchDoubleOutput(const biorbd::utils::Vector&, double*);
+biorbd::utils::Attitude dispatchRTinput(const double* rt);
+void dispatchRToutput(const biorbd::utils::Attitude& rt_in, double* rt_out);
+void dispatchRToutput(const std::vector<biorbd::utils::Attitude>& rt_in, double* rt_out);
 
 
 
 // Spécifique à des projets (IMU sous Unity)
-#include "biorbd::rigidbody::IMU_Unity_Optim.h"
+#include "IMU_Unity_Optim.h"
 extern "C" { 
     BIORBD_API void c_alignSpecificAxisWithParentVertical(const double* parentRT, const double * childRT, int idxAxe, double * rotation);
 }

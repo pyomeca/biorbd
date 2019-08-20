@@ -264,7 +264,7 @@
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
 
         // Copy the actual data
-        $1 = new biorbd::utils::Node();
+        $1 = new biorbd::utils::Node(0, 0, 0);
         for (unsigned int i=0; i<3; ++i)
             (*$1)[i] = *(double*)PyArray_GETPTR1(data, i);
 

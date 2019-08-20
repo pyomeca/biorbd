@@ -30,7 +30,7 @@ biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     m_Q(Q),
     m_Qdot(Qdot),
     m_GeneralizedTorqueTarget(GeneralizedTorqueTarget),
-    m_GeneralizedTorqueResidual(Eigen::VectorXd::Zero(m_nGeneralizedTorque)),
+    m_GeneralizedTorqueResidual(biorbd::utils::Vector(m_nGeneralizedTorque).setZero()),
     m_GeneralizedTorquePonderation(1000),
     m_states(std::vector<biorbd::muscles::StateDynamics>(m_nMus)),
     m_pNormFactor(pNormFactor),

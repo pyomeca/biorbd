@@ -15,8 +15,8 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder(
     m_length(length),
     m_side(side),
     m_RTtoParent(v),
-    m_p1Wrap(biorbd::muscles::MuscleNode()),
-    m_p2Wrap(biorbd::muscles::MuscleNode()),
+    m_p1Wrap(biorbd::muscles::MuscleNode(0, 0, 0)),
+    m_p2Wrap(biorbd::muscles::MuscleNode(0, 0, 0)),
     m_lengthAroundWrap(0)
 {
     m_forme = "Cylinder";
@@ -100,8 +100,8 @@ void biorbd::muscles::WrappingCylinder::wrapPoints(
     p_glob.m_p2.applyRT(RT.transpose());
 
     // Trouver les tangeantes de ces points au cercle (cylindre vu de dessus)
-    biorbd::muscles::MuscleNode p1_tan;
-    biorbd::muscles::MuscleNode p2_tan;
+    biorbd::muscles::MuscleNode p1_tan(0, 0, 0);
+    biorbd::muscles::MuscleNode p2_tan(0, 0, 0);
     findTangentToCircle(p_glob.m_p1, p1_tan);
     findTangentToCircle(p_glob.m_p2, p2_tan);
 
@@ -187,11 +187,11 @@ bool biorbd::muscles::WrappingCylinder::findVerticalNode(
     // ou les points croisent avec le cylindre
 
     // X est la droite entre les deux points
-    Eigen::Vector3d X(glob.m_p2 - glob.m_p1);
+    biorbd::utils::Node X(glob.m_p2 - glob.m_p1);
     // Z est l'axe du vide du cylindre
-    Eigen::Vector3d Z(0,0,1);
+    biorbd::utils::Node Z(0,0,1);
 
-    Eigen::Vector3d Y(Z.cross(X));
+    biorbd::utils::Node Y(Z.cross(X));
     // Recalculer X pour qu'il soit aligné avec le cylindre
     X = Y.cross(Z);
     // Normaliser le tout

@@ -13,11 +13,13 @@ class BIORBD_API Node : public Eigen::Vector3d
 {
     public:
     Node(
-            double x, double y, double z, // Position du noeud
+            double x = 0,
+            double y = 0,
+            double z = 0, // Position du noeud
             const biorbd::utils::String &name = "",  // Nom du noeud
             const biorbd::utils::String &parentName = "");
     Node(
-            const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
+            const Eigen::Vector3d &v, // Position du noeud
             const biorbd::utils::String &name = "",  // Nom du noeud
             const biorbd::utils::String &parentName = "");
 

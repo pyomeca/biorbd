@@ -14,7 +14,6 @@ public:
     GeneralizedTorque();
     GeneralizedTorque(const biorbd::utils::Vector& v);
     GeneralizedTorque(unsigned int i);
-    GeneralizedTorque(const Eigen::VectorXd& v);
     GeneralizedTorque(const biorbd::rigidbody::Joints& j);
 
     biorbd::rigidbody::GeneralizedTorque timeDerivativeActivation(const biorbd::rigidbody::GeneralizedTorque &act);

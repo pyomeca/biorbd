@@ -23,7 +23,11 @@ public:
             unsigned int p = 2,
             bool skipRoot = false);
 
+    biorbd::utils::Vector& operator=(const Eigen::VectorXd& rhs);
+    biorbd::utils::Vector& operator=(const Eigen::Matrix<double, -1, -1, 0, -1, -1>& rhs);
 };
+
+
 
 }}
 

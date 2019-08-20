@@ -1,6 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/Joints.h"
 
+#include <rbdl/rbdl_math.h>
 #include <rbdl/rbdl_utils.h>
 #include <rbdl/Kinematics.h>
 #include <rbdl/Dynamics.h>
@@ -326,7 +327,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::projectPoint
 
 biorbd::rigidbody::NodeBone biorbd::rigidbody::Joints::projectPoint(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const Eigen::Vector3d &v,
+        const utils::Node &v,
         int boneIdx,
         const biorbd::utils::String& axesToRemove,
         bool updateKin)
@@ -365,7 +366,7 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::projectPointJacobian(
     if (node.nAxesToRemove() != 0){
         // Jacobienne du marqueur
         node.applyRT(globalJCS(Q, node.parent(),updateKin).transpose());
-        biorbd::utils::Matrix G_tp(marks.TagsJacobian(Q, node.parent(), Eigen::Vector3d(0,0,0), updateKin));
+        biorbd::utils::Matrix G_tp(marks.TagsJacobian(Q, node.parent(), biorbd::utils::Node(0,0,0), updateKin));
         biorbd::utils::Matrix JCor(biorbd::utils::Matrix::Zero(9,nbQ()));
         CalcMatRotJacobian(Q, GetBodyId(node.parent().c_str()), Eigen::Matrix3d::Identity(3,3), JCor,false);
         for (unsigned int n=0; n<3; ++n)
@@ -381,7 +382,7 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::projectPointJacobian(
 
 biorbd::utils::Matrix biorbd::rigidbody::Joints::projectPointJacobian(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const Eigen::Vector3d &v,
+        const utils::Node &v,
         int boneIdx,
         const biorbd::utils::String& axesToRemove,
         bool updateKin)
@@ -448,7 +449,7 @@ biorbd::utils::Node biorbd::rigidbody::Joints::CoM(
 
     // Pour chaque segment, trouver le CoM (CoM = somme(masse_segmentaire * pos_com_seg)/masse_totale)
     std::vector<biorbd::rigidbody::NodeBone> com_segment(CoMbySegment(Q,true));
-    biorbd::utils::Node com;
+    biorbd::utils::Node com(0, 0, 0);
     for (unsigned int i=0; i<com_segment.size(); ++i)
         com += m_bones[i].caract().mMass * (*(com_segment.begin()+i));
 
@@ -554,14 +555,13 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::CoMbySegment
 }
 
 
-biorbd::rigidbody::NodeBone biorbd::rigidbody::Joints::CoMbySegment(
+biorbd::utils::Node biorbd::rigidbody::Joints::CoMbySegment(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const unsigned int i,
         bool updateKin){ // Position du centre de masse du segment i
-
     biorbd::utils::Error::error(i < m_bones.size(), "Choosen segment doesn't exist");
-    return RigidBodyDynamics::CalcBodyToBaseCoordinates(*this, Q, m_bones[i].id(),m_bones[i].caract().mCenterOfMass,updateKin);
-
+    return RigidBodyDynamics::CalcBodyToBaseCoordinates(
+                *this, Q, m_bones[i].id(), m_bones[i].caract().mCenterOfMass, updateKin);
 }
 
 
@@ -980,10 +980,10 @@ void biorbd::rigidbody::Joints::CalcMatRotJacobian(
 
     assert (G.rows() == 9 && G.cols() == this->qdot_size );
 
-    std::vector<Eigen::Vector3d> axes;
-    axes.push_back(Eigen::Vector3d(1,0,0));
-    axes.push_back(Eigen::Vector3d(0,1,0));
-    axes.push_back(Eigen::Vector3d(0,0,1));
+    std::vector<biorbd::utils::Node> axes;
+    axes.push_back(biorbd::utils::Node(1,0,0));
+    axes.push_back(biorbd::utils::Node(0,1,0));
+    axes.push_back(biorbd::utils::Node(0,0,1));
     for (unsigned int iAxes=0; iAxes<3; ++iAxes){
         RigidBodyDynamics::Math::Matrix3d bodyMatRot (
                     RigidBodyDynamics::CalcBodyWorldOrientation (*this, Q, body_id, false).transpose());

@@ -2,7 +2,6 @@
 #define BIORBD_RIGIDBODY_NODE_BONE_H
 
 #include <vector>
-#include <Eigen/Dense>
 #include "biorbdConfig.h"
 #include "Utils/Node.h"
 
@@ -13,13 +12,23 @@ class BIORBD_API NodeBone : public biorbd::utils::Node
 { 
 public:
     NodeBone(
-            const Eigen::Vector3d& = Eigen::Vector3d(0,0,0), // Position
-            const biorbd::utils::String& = "", // Nom du noeud
-            const biorbd::utils::String& = "", // Nom du parent
-            bool = true, // Si le marker est un marker technique
-            bool = true, // Si le marker est un marker anatomique
+            double x = 0,
+            double y = 0,
+            double z = 0,
+            const biorbd::utils::String& name= "", // Nom du noeud
+            const biorbd::utils::String& parentName= "", // Nom du parent
+            bool isTechnical = true, // Si le marker est un marker technique
+            bool isAnatomical = true, // Si le marker est un marker anatomique
             const biorbd::utils::String& axesToRemove = biorbd::utils::String(), // Axes à retirer
-            int = -1); // Numéro ID du parent
+            int parentID = -1); // Numéro ID du parent
+    NodeBone(
+            const biorbd::utils::Node& node, // Position
+            const biorbd::utils::String& name= "", // Nom du noeud
+            const biorbd::utils::String& parentName= "", // Nom du parent
+            bool isTechnical = true, // Si le marker est un marker technique
+            bool isAnatomical = true, // Si le marker est un marker anatomique
+            const biorbd::utils::String& axesToRemove = biorbd::utils::String(), // Axes à retirer
+            int parentID = -1); // Numéro ID du parent
 
     // Get and Set
     bool isTechnical() const;

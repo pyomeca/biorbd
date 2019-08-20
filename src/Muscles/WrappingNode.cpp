@@ -2,10 +2,21 @@
 #include "Muscles/WrappingNode.h"
 
 biorbd::muscles::WrappingNode::WrappingNode(
-        const Eigen::Vector3d &v,
-        const biorbd::utils::String &name,
+        double x,
+        double y,
+        double z,
+        const biorbd::utils::String &nodeName,
         const biorbd::utils::String &parentName) :
-    biorbd::utils::Node(v, name,parentName)
+    biorbd::muscles::PathChanger(x, y, z, nodeName, parentName)
+{
+
+}
+
+biorbd::muscles::WrappingNode::WrappingNode(
+        const biorbd::utils::Node &v,
+        const biorbd::utils::String &nodeName,
+        const biorbd::utils::String &parentName) :
+    biorbd::muscles::PathChanger(v, nodeName, parentName)
 {
 }
 

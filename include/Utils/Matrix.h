@@ -5,6 +5,10 @@
 #include "biorbdConfig.h"
 
 namespace biorbd {
+namespace rigidbody {
+class GeneralizedCoordinates;
+}
+
 namespace utils {
 
 class BIORBD_API Matrix : public Eigen::MatrixXd
@@ -18,7 +22,6 @@ public:
     biorbd::utils::Matrix & operator= (Eigen::MatrixXd other);
 
     virtual Eigen::MatrixXd matrix() const;
-
 };
 
 }}

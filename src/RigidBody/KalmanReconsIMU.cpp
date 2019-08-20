@@ -34,7 +34,7 @@ void biorbd::rigidbody::KalmanReconsIMU::initialize(){
 
 void biorbd::rigidbody::KalmanReconsIMU::manageOcclusionDuringIteration(
         biorbd::utils::Matrix &InvTp,
-        Eigen::VectorXd &measure,
+        biorbd::utils::Vector &measure,
         const std::vector<unsigned int> &occlusion)
 {
     for (unsigned int i = 0; i < occlusion.size(); ++i)
@@ -56,7 +56,7 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         biorbd::rigidbody::GeneralizedCoordinates *Qdot,
         biorbd::rigidbody::GeneralizedCoordinates *Qddot){
     // Séparer les IMUobs en un grand vecteur
-    Eigen::VectorXd T(3*3*IMUobs.size()); // Matrice 3*3 * nIMU
+    biorbd::utils::Vector T(static_cast<unsigned int>(3*3*IMUobs.size())); // Matrice 3*3 * nIMU
     for (unsigned int i=0; i<IMUobs.size(); ++i)
         for (unsigned int j=0; j<3; ++j)
            T.block(9*i+3*j,0,3,1) = IMUobs[i].block(0,j,3,1);
@@ -68,7 +68,7 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
 
 void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         biorbd::Model &model,
-        const Eigen::VectorXd &IMUobs,
+        const utils::Vector &IMUobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
         biorbd::rigidbody::GeneralizedCoordinates *Qdot,
         biorbd::rigidbody::GeneralizedCoordinates *Qddot){
@@ -80,13 +80,13 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
             reconstructFrame(model, IMUobs, nullptr, nullptr, nullptr);
 
             // Remettre Pp à initial (parce qu'on ne s'intéresse pas à la vitesse pour se rendre à la position initiale
-            m_xp.block(m_nDof, 0, m_nDof*2,1) = Eigen::VectorXd::Zero(m_nDof*2); // Mettre vitesse et accélération à 0
+            m_xp.block(m_nDof, 0, m_nDof*2,1) = biorbd::utils::Vector(m_nDof*2).setZero(); // Mettre vitesse et accélération à 0
         }
     }
 
     // État projeté
-    Eigen::VectorXd xkm = m_A * m_xp;
-    Eigen::VectorXd Q_tp = xkm.topRows(m_nDof);
+    biorbd::utils::Vector xkm = biorbd::utils::Vector(m_A * m_xp);
+    biorbd::utils::Vector Q_tp = biorbd::utils::Vector(xkm.topRows(m_nDof));
     RigidBodyDynamics::UpdateKinematicsCustom (model, &Q_tp, nullptr, nullptr);
 
     // Markers projetés
@@ -95,7 +95,7 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
     std::vector<biorbd::utils::Matrix> J_tp = model.TechnicalIMUJacobian(Q_tp, false);
     // Faire une seule matrice pour zest et Jacobienne
     biorbd::utils::Matrix H(biorbd::utils::Matrix::Zero(m_nMeasure, m_nDof*3)); // 3*nCentrales => X,Y,Z ; 3*nDof => Q, Qdot, Qddot
-    Eigen::VectorXd zest = Eigen::VectorXd::Zero(m_nMeasure);
+    biorbd::utils::Vector zest = biorbd::utils::Vector(m_nMeasure).setZero();
     std::vector<unsigned int> occlusionIdx;
     for (unsigned int i=0; i<m_nMeasure/9; ++i){
         double sum = 0;

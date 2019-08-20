@@ -4,11 +4,13 @@
 #include <vector>
 #include <rbdl/Model.h>
 #include "biorbdConfig.h"
+#include "Utils/Vector.h"
 
 // The type of container used to hold the state vector
 typedef std::vector< double > state_type;
 
 namespace biorbd {
+
 namespace rigidbody {
 class Joints;
 class GeneralizedCoordinates;
@@ -19,9 +21,9 @@ public:
     Integrator();
 
     void integrate(
-            RigidBodyDynamics::Model*,
-            const biorbd::rigidbody::GeneralizedCoordinates&,
-            const Eigen::VectorXd&,
+            biorbd::rigidbody::Joints* model,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::utils::Vector&,
             double,
             double,
             double);
@@ -38,7 +40,7 @@ protected:
     // Déclarer un observeur
     std::vector<state_type> m_x_vec;
     std::vector<double> m_times;
-    Eigen::VectorXd m_u; // Effecteurs
+    biorbd::utils::Vector m_u; // Effecteurs
 
 
     // Structure permettant de conserver les valeurs

@@ -19,7 +19,7 @@ void Matlab_inverseDynamics( int, mxArray *plhs[],
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
-    unsigned int nGeneralizedTorque = model->nbGeneralizedTorque() + model->nbRoot(); // Nombre de GeneralizedTorque
+    unsigned int nTau = model->nbGeneralizedTorque() + model->nbRoot(); // Nombre de GeneralizedTorque
 
     // Recevoir Q
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
@@ -43,13 +43,14 @@ void Matlab_inverseDynamics( int, mxArray *plhs[],
     }
 
     // Create a matrix for the return argument
-    plhs[0] = mxCreateDoubleMatrix(nGeneralizedTorque , nFrame, mxREAL);
-    double *GeneralizedTorque = mxGetPr(plhs[0]);
+    plhs[0] = mxCreateDoubleMatrix(nTau , nFrame, mxREAL);
+    double *tau = mxGetPr(plhs[0]);
     unsigned int cmp(0);
 
     // Trouver la dynamique inverse a cette configuration
+    biorbd::rigidbody::GeneralizedTorque Tau(nTau);
     for (unsigned int j=0; j<Q.size(); ++j){
-        biorbd::rigidbody::GeneralizedTorque Tau(Eigen::VectorXd::Zero (nGeneralizedTorque));
+        Tau.setZero();
         if (externalForces){
             // Recevoir les plates-formes
             std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext = model->dispatchedForce(f_tp[j]);
@@ -60,8 +61,8 @@ void Matlab_inverseDynamics( int, mxArray *plhs[],
 
 
         // Remplir l'output
-        for (unsigned int i=0; i<nGeneralizedTorque; i++){
-            GeneralizedTorque[cmp] = Tau(i);
+        for (unsigned int i=0; i<nTau; i++){
+            tau[cmp] = Tau(i);
             ++cmp;
         }
     }

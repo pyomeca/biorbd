@@ -11,8 +11,15 @@ class BIORBD_API WrappingSphere : public biorbd::muscles::WrappingObject
 {
 public:
     WrappingSphere(
-            double dia = 0, // Diametre de la sphere
-            const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
+            double x,
+            double y,
+            double z,
+            double diameter, // Diametre de la sphere
+            const biorbd::utils::String &name = "",  // Nom du noeud
+            const biorbd::utils::String &parentName = "");
+    WrappingSphere(
+            const biorbd::utils::Node &v, // Position du noeud
+            double diameter, // Diametre de la sphere
             const biorbd::utils::String &name = "",  // Nom du noeud
             const biorbd::utils::String &parentName = "");
     virtual ~WrappingSphere();

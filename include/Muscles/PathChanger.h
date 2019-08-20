@@ -12,7 +12,13 @@ class BIORBD_API PathChanger : public biorbd::muscles::MuscleNode
 {
 public:
     PathChanger(
-            const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
+            double x = 0,
+            double y = 0,
+            double z = 0,
+            const biorbd::utils::String &name = "",  // Nom du noeud
+            const biorbd::utils::String &parentName = "");
+    PathChanger(
+            const biorbd::muscles::MuscleNode &v, // Position du noeud
             const biorbd::utils::String &name = "",  // Nom du noeud
             const biorbd::utils::String &parentName = "");
     virtual ~PathChanger() = 0;

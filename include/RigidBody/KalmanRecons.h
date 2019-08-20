@@ -2,9 +2,9 @@
 #define BIORBD_RIGIDBODY_KALMAN_RECONS_H
 
 #include <vector>
-#include <Eigen/Dense>
 #include "biorbdConfig.h"
 #include "Utils/Matrix.h"
+#include "Utils/Vector.h"
 
 namespace biorbd {
 class Model;
@@ -70,13 +70,13 @@ protected:
             double csnt);
     biorbd::rigidbody::GeneralizedCoordinates initState(const unsigned int nQ);
     void iteration(
-            Eigen::VectorXd measure,
-            const Eigen::VectorXd &projectedMeasure,
+            biorbd::utils::Vector measure,
+            const biorbd::utils::Vector &projectedMeasure,
             const biorbd::utils::Matrix &Hessian,
             const std::vector<unsigned int> &occlusion = std::vector<unsigned int>());
     virtual void manageOcclusionDuringIteration(
             biorbd::utils::Matrix &InvTp,
-            Eigen::VectorXd &measure,
+            biorbd::utils::Vector &measure,
             const std::vector<unsigned int> &occlusion);
 
     // Attributs variables
@@ -86,7 +86,7 @@ protected:
     unsigned int m_nMeasure; // Nombre de marqueurs
 
     // Attributs du filtre de kalman
-    Eigen::VectorXd m_xp; // Vecteur d'état
+    biorbd::utils::Vector m_xp; // Vecteur d'état
     biorbd::utils::Matrix m_A; // Matrice d'évolution
     biorbd::utils::Matrix m_Q; // Matrice de bruit
     biorbd::utils::Matrix m_R; // Matrice de bruit de la mesure
