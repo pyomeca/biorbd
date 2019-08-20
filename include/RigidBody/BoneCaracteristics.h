@@ -14,7 +14,7 @@ public:
     Caracteristics();
     Caracteristics(
             double mass, // Mass of the body
-            const biorbd::utils::Node &com, // Center of Mass
+            const biorbd::utils::Node3d &com, // Center of Mass
             const RigidBodyDynamics::Math::Matrix3d &inertia, // Inertia matrix
             const Mesh &mesh = Mesh()) ; // position des meshings de l'os
     virtual ~Caracteristics();

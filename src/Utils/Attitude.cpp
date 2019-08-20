@@ -3,7 +3,8 @@
 
 #include <rbdl/rbdl_math.h>
 #include "Utils/Error.h"
-#include "Utils/Node.h"
+#include "Utils/Node3d.h"
+#include "Utils/String.h"
 
 biorbd::utils::Attitude::Attitude(const Eigen::Matrix4d& m) :
     Eigen::Matrix4d(m)
@@ -216,9 +217,9 @@ const biorbd::utils::Attitude biorbd::utils::Attitude::operator*(const Attitude&
     out.block(0,0,4,4) = static_cast<Eigen::Matrix4d>(*this) * static_cast<Eigen::Matrix4d>(s1);
     return out;
 }
-const biorbd::utils::Node biorbd::utils::Attitude::operator*(const biorbd::utils::Node &n)
+const biorbd::utils::Node3d biorbd::utils::Attitude::operator*(const biorbd::utils::Node3d &n)
 {
-    biorbd::utils::Node out(n);
+    biorbd::utils::Node3d out(n);
     Eigen::Vector4d v(static_cast<Eigen::Matrix4d>(*this) * expand3dTo4d(out.position()));
     out.setPosition(v);
     return out;

@@ -8,7 +8,7 @@
 
 namespace biorbd { namespace utils {
 class Attitude;
-class Node;
+class Node3d;
 class Vector;
 class String;
 }}
@@ -25,13 +25,13 @@ public:
     virtual ~Contacts();
     unsigned int AddConstraint(
             unsigned int body_id,
-            const biorbd::utils::Node &body_point,
-            const biorbd::utils::Node &world_normal,
+            const biorbd::utils::Node3d &body_point,
+            const biorbd::utils::Node3d &world_normal,
             const biorbd::utils::String& name,
             double acc = 0);
     unsigned int AddConstraint(
             unsigned int body_id,
-            const biorbd::utils::Node &body_point,
+            const biorbd::utils::Node3d &body_point,
             const biorbd::utils::String& axis,
             const biorbd::utils::String& name,
             double acc = 0);
@@ -52,7 +52,7 @@ public:
     unsigned int nContacts() const;
 
     biorbd::utils::String name(unsigned int i);
-    std::vector<biorbd::utils::Node> constraintsInGlobal(
+    std::vector<biorbd::utils::Node3d> constraintsInGlobal(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool updateKin); // Retourne la position des contraintes dans le rep`ere global
 

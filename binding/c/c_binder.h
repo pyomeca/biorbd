@@ -46,7 +46,7 @@ extern "C" {
 }
 
 // Fonctions de dispatch pour les données d'entré et de sortie
-biorbd::utils::Node dispatchTagsInput(const double * pos);
+biorbd::utils::Node3d dispatchTagsInput(const double * pos);
 void dispatchTagsOutput(const std::vector<biorbd::rigidbody::NodeBone> &allTags, double* tags);
 biorbd::rigidbody::GeneralizedCoordinates dispatchQinput(biorbd::Model* model, const double*Q);
 void dispatchQoutput(const biorbd::rigidbody::GeneralizedCoordinates &eQ, double*Q);

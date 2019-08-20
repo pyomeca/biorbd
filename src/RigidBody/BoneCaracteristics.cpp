@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/BoneCaracteristics.h"
 
-#include "Utils/Node.h"
+#include "Utils/Node3d.h"
 #include "RigidBody/Patch.h"
 
 biorbd::rigidbody::Caracteristics::Caracteristics() :
@@ -12,7 +12,7 @@ biorbd::rigidbody::Caracteristics::Caracteristics() :
 }
 biorbd::rigidbody::Caracteristics::Caracteristics(
         double mass,
-        const biorbd::utils::Node &com,
+        const biorbd::utils::Node3d &com,
         const RigidBodyDynamics::Math::Matrix3d &inertia,
         const biorbd::rigidbody::Mesh &mesh) :
     Body(mass, com, inertia),

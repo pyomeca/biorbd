@@ -12,7 +12,7 @@ class BIORBD_API ForceFromOrigin : public biorbd::muscles::Force
     public:
         ForceFromOrigin();
         ForceFromOrigin(double x, double y, double z);
-        ForceFromOrigin(const biorbd::utils::Node& force);
+        ForceFromOrigin(const biorbd::utils::Node3d& force);
         ForceFromOrigin(
                 const biorbd::muscles::Geometry& geo,
                 double force);

@@ -17,8 +17,10 @@ TEST(FileIO, OpenModel){
 }
 
 TEST(GenericTests, mass){
+#ifdef MODULE_ACTUATORS
     biorbd::Model model(modelPathForGeneralTesting);
     EXPECT_DOUBLE_EQ(model.mass(), 52.412120000000002);
+#endif
 }
 
 static std::string modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");

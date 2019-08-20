@@ -17,7 +17,7 @@ public:
             const biorbd::utils::String& nodeName = "", // Nom du noeud
             const biorbd::utils::String& parentName = ""); //  Nom du parent
     WrappingNode(
-            const biorbd::utils::Node& node,
+            const biorbd::utils::Node3d& node,
             const biorbd::utils::String& nodeName = "", // Nom du noeud
             const biorbd::utils::String& parentName = ""); //  Nom du parent
 

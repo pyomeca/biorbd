@@ -13,7 +13,7 @@ biorbd::rigidbody::NodeBone::NodeBone(
         bool isAnatomical,
         const biorbd::utils::String &axesToRemove,
         int parentID) :
-    biorbd::utils::Node(x, y, z, name, parentName),
+    biorbd::utils::Node3d(x, y, z, name, parentName),
     m_nbAxesToRemove(0),
     m_technical(isTechnical),
     m_anatomical(isAnatomical),
@@ -24,14 +24,14 @@ biorbd::rigidbody::NodeBone::NodeBone(
 }
 
 biorbd::rigidbody::NodeBone::NodeBone(
-        const biorbd::utils::Node &node,
+        const biorbd::utils::Node3d &node,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName,
         bool isTechnical,
         bool isAnatomical,
         const biorbd::utils::String& axesToRemove, // Axes à retirer
         int parentID) :
-    biorbd::utils::Node(node, name, parentName),
+    biorbd::utils::Node3d(node, name, parentName),
     m_nbAxesToRemove(0),
     m_technical(isTechnical),
     m_anatomical(isAnatomical),

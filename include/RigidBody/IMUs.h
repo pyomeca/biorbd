@@ -6,7 +6,7 @@
 #include "RigidBody/Patch.h"
 #include "Utils/Attitude.h"
 #include "Utils/String.h"
-#include "Utils/Node.h"
+#include "Utils/Node3d.h"
 
 namespace biorbd {
 namespace utils {

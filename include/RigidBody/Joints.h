@@ -10,7 +10,7 @@ namespace biorbd {
 namespace utils {
 class Attitude;
 class Matrix;
-class Node;
+class Node3d;
 }
 
 namespace rigidbody {
@@ -117,7 +117,7 @@ public:
             const biorbd::rigidbody::NodeBone&, bool updateKin=true); // Projeter selon les axes/plan déterminé déjà dans nodeBone
     biorbd::rigidbody::NodeBone projectPoint(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::utils::Node &v,
+            const biorbd::utils::Node3d &v,
             int boneIdx,
             const biorbd::utils::String& axesToRemove,
             bool updateKin=true); // Projeter un point dans le repère global
@@ -131,7 +131,7 @@ public:
             bool updateKin);
     biorbd::utils::Matrix projectPointJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::utils::Node &v,
+            const biorbd::utils::Node3d &v,
             int boneIdx,
             const biorbd::utils::String& axesToRemove,
             bool updateKin);
@@ -144,13 +144,13 @@ public:
 
     // -- MASS RELATED STUFF -- //
     double mass() const; // retourne la masse de tous les segments
-    biorbd::utils::Node CoM(
+    biorbd::utils::Node3d CoM(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool updateKin=true); // Position du centre de masse
     std::vector<biorbd::rigidbody::NodeBone> CoMbySegment(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool updateKin=true); // Position du centre de masse de chaque segment
-    biorbd::utils::Node CoMbySegment(
+    biorbd::utils::Node3d CoMbySegment(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const unsigned int i,
             bool updateKin=true); // Position du centre de masse du segment i

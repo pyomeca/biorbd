@@ -13,7 +13,7 @@ biorbd::muscles::WrappingNode::WrappingNode(
 }
 
 biorbd::muscles::WrappingNode::WrappingNode(
-        const biorbd::utils::Node &v,
+        const biorbd::utils::Node3d &v,
         const biorbd::utils::String &nodeName,
         const biorbd::utils::String &parentName) :
     biorbd::muscles::PathChanger(v, nodeName, parentName)

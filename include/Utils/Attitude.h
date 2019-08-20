@@ -12,7 +12,7 @@ struct SpatialTransform;
 
 namespace biorbd {
 namespace utils {
-class Node;
+class Node3d;
 class String;
 
 ///
@@ -62,7 +62,7 @@ public:
     const biorbd::utils::Attitude operator*(const biorbd::utils::Attitude&);
     const Eigen::Vector3d operator*(const Eigen::Vector3d&);
     const Eigen::Vector3d operator*(const Eigen::Vector4d&);
-    const biorbd::utils::Node operator*(const biorbd::utils::Node&);
+    const biorbd::utils::Node3d operator*(const biorbd::utils::Node3d&);
 
     static biorbd::utils::Attitude mean(const std::vector<biorbd::utils::Attitude>&); // Moyenne des matrices 4x4
 

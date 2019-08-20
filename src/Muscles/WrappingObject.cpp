@@ -13,7 +13,7 @@ biorbd::muscles::WrappingObject::WrappingObject(
 }
 
 biorbd::muscles::WrappingObject::WrappingObject(
-        const biorbd::utils::Node &v, // Position du noeud
+        const biorbd::utils::Node3d &v, // Position du noeud
         const biorbd::utils::String &name,  // Nom du noeud
         const biorbd::utils::String &parentName) :
     biorbd::muscles::PathChanger(v,name,parentName)

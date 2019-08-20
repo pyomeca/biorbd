@@ -1,20 +1,21 @@
 #ifndef BIORBD_UTILS_NODE_ATTITUDE_H
 #define BIORBD_UTILS_NODE_ATTITUDE_H
 
+#include <memory>
 #include "biorbdConfig.h"
 #include "Utils/Attitude.h"
-#include "Utils/String.h"
 
 namespace biorbd {
 namespace utils {
+class String;
 
 class BIORBD_API NodeAttitude : public biorbd::utils::Attitude
 {
 public:
     NodeAttitude(
-            const Attitude& = Attitude(), // Position du noeud
-            const biorbd::utils::String &name = "",  // Nom du noeud
-            const biorbd::utils::String &parentName = "");
+            const Attitude&, // Position du noeud
+            const biorbd::utils::String &name,  // Nom du noeud
+            const biorbd::utils::String &parentName);
     virtual ~NodeAttitude();
 
     const biorbd::utils::String& parent() const;
@@ -27,8 +28,8 @@ public:
     const Attitude& attitude() const;
 
 protected:
-    biorbd::utils::String m_parentName;
-    biorbd::utils::String m_RTName;
+    std::shared_ptr<biorbd::utils::String> m_parentName;
+    std::shared_ptr<biorbd::utils::String> m_RTName;
 
 };
 

@@ -2,14 +2,15 @@
 #include "Utils/NodeAttitude.h"
 
 #include <Eigen/Dense>
+#include "Utils/String.h"
 
 biorbd::utils::NodeAttitude::NodeAttitude(
         const Attitude &v,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName) : // Nom du parent
     biorbd::utils::Attitude(v),
-    m_parentName(parentName),
-    m_RTName(name)
+    m_parentName(std::make_shared<biorbd::utils::String>(parentName)),
+    m_RTName(std::make_shared<biorbd::utils::String>(name))
 {
 
 }
@@ -21,12 +22,12 @@ biorbd::utils::NodeAttitude::~NodeAttitude()
 
 const biorbd::utils::String &biorbd::utils::NodeAttitude::parent() const
 {
-    return m_parentName;
+    return *m_parentName;
 }
 
 void biorbd::utils::NodeAttitude::setParent(const biorbd::utils::String &parentName)
 {
-    m_parentName = parentName;
+    *m_parentName = parentName;
 }
 
 void biorbd::utils::NodeAttitude::setAttitude(const biorbd::utils::Attitude &n)
@@ -43,10 +44,10 @@ const biorbd::utils::Attitude &biorbd::utils::NodeAttitude::attitude() const
 
 void biorbd::utils::NodeAttitude::setName(const biorbd::utils::String &name)
 {
-    m_RTName = name;
+    *m_RTName = name;
 }
 
 const biorbd::utils::String &biorbd::utils::NodeAttitude::name() const
 {
-    return m_RTName;
+    return *m_RTName;
 }

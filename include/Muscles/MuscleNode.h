@@ -2,12 +2,12 @@
 #define BIORBD_MUSCLES_MUSCLE_NODE_H
 
 #include "biorbdConfig.h"
-#include "Utils/Node.h"
-
+#include "Utils/Node3d.h"
+#include "Utils/String.h"
 namespace biorbd {
 namespace muscles {
 
-class BIORBD_API MuscleNode : public biorbd::utils::Node
+class BIORBD_API MuscleNode : public biorbd::utils::Node3d
 {
 public:
     MuscleNode(
@@ -17,7 +17,7 @@ public:
             const biorbd::utils::String& nodeName = "", // Nom du noeud
             const biorbd::utils::String& parentName= "");
     MuscleNode(
-            const biorbd::utils::Node&, // Position
+            const biorbd::utils::Node3d&, // Position
             const biorbd::utils::String& nodeName = "", // Nom du noeud
             const biorbd::utils::String& parentName= ""); //  Nom du parent
 

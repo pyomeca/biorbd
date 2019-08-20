@@ -16,9 +16,21 @@
 
 #ifdef BUILD_SANDBOX
 
-
 int main()
 {
+    {
+        biorbd::utils::Node3d coucou(1, 2, 3, "coucou", "coucou2");
+        biorbd::utils::Node3d coucou2(coucou);
+        biorbd::utils::Node3d coucou3(coucou.DeepCopy());
+
+        std::cout << "parent1 = " << coucou.parent() << std::endl;
+        std::cout << "parent2 = " << coucou2.parent() << std::endl;
+        std::cout << "parent3 = " << coucou3.parent() << std::endl;
+        coucou2.setParent("coucou3");
+        std::cout << "parent1 = " << coucou.parent() << std::endl;
+        std::cout << "parent2 = " << coucou2.parent() << std::endl;
+        std::cout << "parent3 = " << coucou3.parent() << std::endl;
+    }
 
     biorbd::utils::String path("conv-arm26.bioMod"); // Model path
     biorbd::Model model(path);

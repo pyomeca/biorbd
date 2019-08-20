@@ -7,16 +7,16 @@ biorbd::muscles::MuscleNode::MuscleNode(
         double z,
         const biorbd::utils::String &nodeName,
         const biorbd::utils::String &parentName) :
-    biorbd::utils::Node(x, y, z, nodeName,parentName)
+    biorbd::utils::Node3d(x, y, z, nodeName,parentName)
 {
 
 }
 
 biorbd::muscles::MuscleNode::MuscleNode(
-        const biorbd::utils::Node &v,
+        const biorbd::utils::Node3d &v,
         const biorbd::utils::String &nodeName,
         const biorbd::utils::String &parentName) :
-    biorbd::utils::Node(v, nodeName,parentName)
+    biorbd::utils::Node3d(v, nodeName,parentName)
 {
 }
 

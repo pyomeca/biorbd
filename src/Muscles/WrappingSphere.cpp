@@ -17,7 +17,7 @@ biorbd::muscles::WrappingSphere::WrappingSphere(
 }
 
 biorbd::muscles::WrappingSphere::WrappingSphere(
-        const biorbd::utils::Node &v,
+        const biorbd::utils::Node3d &v,
         double diameter, // Position du noeud
         const biorbd::utils::String &name,  // Nom du noeud
         const biorbd::utils::String &parentName) :

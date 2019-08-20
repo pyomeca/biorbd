@@ -43,7 +43,7 @@ biorbd::utils::Attitude biorbd::muscles::WrappingCylinder::RT(
         bool updateKin){
 
     // Récupérer la matrice de rototrans du cylindre dans le global
-    biorbd::utils::Attitude parent(model.globalJCS(Q, m_parentName, updateKin));
+    biorbd::utils::Attitude parent(model.globalJCS(Q, *m_parentName, updateKin));
     biorbd::utils::Attitude RT(parent * m_RTtoParent);
     return RT;
 }
@@ -187,11 +187,11 @@ bool biorbd::muscles::WrappingCylinder::findVerticalNode(
     // ou les points croisent avec le cylindre
 
     // X est la droite entre les deux points
-    biorbd::utils::Node X(glob.m_p2 - glob.m_p1);
+    biorbd::utils::Node3d X(glob.m_p2 - glob.m_p1);
     // Z est l'axe du vide du cylindre
-    biorbd::utils::Node Z(0,0,1);
+    biorbd::utils::Node3d Z(0,0,1);
 
-    biorbd::utils::Node Y(Z.cross(X));
+    biorbd::utils::Node3d Y(Z.cross(X));
     // Recalculer X pour qu'il soit aligné avec le cylindre
     X = Y.cross(Z);
     // Normaliser le tout

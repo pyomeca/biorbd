@@ -4,7 +4,7 @@
 #include <limits.h>
 #include <rbdl/rbdl_math.h>
 #include "Utils/Error.h"
-#include "Utils/Node.h"
+#include "Utils/Node3d.h"
 #include "Utils/Attitude.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/BoneMesh.h"

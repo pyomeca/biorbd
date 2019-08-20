@@ -3,12 +3,13 @@
 
 #include <vector>
 #include "biorbdConfig.h"
-#include "Utils/Node.h"
+#include "Utils/Node3d.h"
 
+#include "Utils/String.h"
 namespace biorbd {
 namespace rigidbody {
 
-class BIORBD_API NodeBone : public biorbd::utils::Node
+class BIORBD_API NodeBone : public biorbd::utils::Node3d
 { 
 public:
     NodeBone(
@@ -22,7 +23,7 @@ public:
             const biorbd::utils::String& axesToRemove = biorbd::utils::String(), // Axes à retirer
             int parentID = -1); // Numéro ID du parent
     NodeBone(
-            const biorbd::utils::Node& node, // Position
+            const biorbd::utils::Node3d& node, // Position
             const biorbd::utils::String& name= "", // Nom du noeud
             const biorbd::utils::String& parentName= "", // Nom du parent
             bool isTechnical = true, // Si le marker est un marker technique

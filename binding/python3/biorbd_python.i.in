@@ -233,7 +233,7 @@
 
 
 // --- Node --- //
-%typemap(typecheck) biorbd::utils::Node &{
+%typemap(typecheck) biorbd::utils::Node3d &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Node,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__Node already exists
@@ -245,11 +245,11 @@
         $1 = false;
     }
 }
-%typemap(in) biorbd::utils::Node &{
+%typemap(in) biorbd::utils::Node3d &{
     void * argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Node,  0  | 0)) && argp1) {
         // Recast the pointer
-        $1 = reinterpret_cast< biorbd::utils::Node * >(argp1);
+        $1 = reinterpret_cast< biorbd::utils::Node3d * >(argp1);
     } else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
@@ -264,7 +264,7 @@
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
 
         // Copy the actual data
-        $1 = new biorbd::utils::Node(0, 0, 0);
+        $1 = new biorbd::utils::Node3d(0, 0, 0);
         for (unsigned int i=0; i<3; ++i)
             (*$1)[i] = *(double*)PyArray_GETPTR1(data, i);
 
@@ -273,7 +273,7 @@
         SWIG_fail;
     }
 };
-%extend biorbd::utils::Node{
+%extend biorbd::utils::Node3d{
     PyObject* get_array(){
         int nArraySize(1);
         npy_intp * arraySizes = new npy_intp[nArraySize];

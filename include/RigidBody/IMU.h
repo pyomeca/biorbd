@@ -3,6 +3,7 @@
 
 #include "biorbdConfig.h"
 #include "Utils/NodeAttitude.h"
+#include "Utils/String.h"
 
 namespace biorbd {
 namespace rigidbody {

@@ -1,11 +1,11 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/BoneMesh.h"
 
-#include "Utils/Node.h"
+#include "Utils/Node3d.h"
 #include "RigidBody/Patch.h"
 
 biorbd::rigidbody::Mesh::Mesh(
-        const std::vector<biorbd::utils::Node> &mesh,
+        const std::vector<biorbd::utils::Node3d> &mesh,
         const std::vector<biorbd::rigidbody::Patch> & v) :
     m_pathFile(""),
     m_mesh(mesh),
@@ -16,10 +16,10 @@ biorbd::rigidbody::Mesh::Mesh(
 biorbd::rigidbody::Mesh::~Mesh(){
 
 }
-void biorbd::rigidbody::Mesh::addPoint(const biorbd::utils::Node &node){
+void biorbd::rigidbody::Mesh::addPoint(const biorbd::utils::Node3d &node){
     m_mesh.push_back(node);
 }
-const biorbd::utils::Node &biorbd::rigidbody::Mesh::point(unsigned int i) const
+const biorbd::utils::Node3d &biorbd::rigidbody::Mesh::point(unsigned int i) const
 {
     return *(m_mesh.begin()+i);
 }
