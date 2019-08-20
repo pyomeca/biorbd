@@ -133,15 +133,15 @@ unsigned int biorbd::rigidbody::Joints::nbInterationStep() const
 
 
 unsigned int biorbd::rigidbody::Joints::AddBone(
-        unsigned int parentId, // Numéro du parent
+        const biorbd::utils::String &segmentName, // Nom du segment
+        const biorbd::utils::String &parentName, // Nom du segment
         const biorbd::utils::String &translationSequence,
         const biorbd::utils::String &rotationSequence, // Séquence de Cardan pour classer les dof en rotation
         const biorbd::rigidbody::Caracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, // Transformation du parent vers l'enfant
-        const biorbd::utils::String &segmentName, // Nom du segment
         int forcePlates){ // Numéro de la plateforme de force attaché à cet os
-    biorbd::rigidbody::Bone tp(this, parentId, translationSequence, rotationSequence, caract, centreOfRotation, segmentName, forcePlates);
-    if (parentId == 0)
+    biorbd::rigidbody::Bone tp(this, segmentName, parentName, translationSequence, rotationSequence, caract, centreOfRotation, forcePlates);
+    if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max())
 		m_nbRoot += tp.nDof(); //  Si le nom du segment est "Root" ajouter le nombre de dof de racine
 	m_nDof += tp.nDof();
     m_nbQ += tp.nQ();
@@ -156,14 +156,14 @@ unsigned int biorbd::rigidbody::Joints::AddBone(
     return 0;
 }
 unsigned int biorbd::rigidbody::Joints::AddBone(
-        unsigned int parent_id, // Numéro du parent
+        const biorbd::utils::String &segmentName, // Nom du segment
+        const biorbd::utils::String &parentName, // Nom du segment
         const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
         const biorbd::rigidbody::Caracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
-        const biorbd::utils::String &name, // Nom du segment
         int forcePlates){ // Numéro de la plateforme de force attaché à cet os
-    biorbd::rigidbody::Bone tp(this, parent_id, seqR, caract, cor, name, forcePlates);
-	if (parent_id == 0)
+    biorbd::rigidbody::Bone tp(this, segmentName, parentName, seqR, caract, cor, forcePlates);
+    if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max())
         m_nbRoot += tp.nDof(); //  Si le nom du segment est "Root" ajouter le nombre de dof de racine
 	m_nDof += tp.nDof();
 	
@@ -618,11 +618,11 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMddotBySegment(
 
 }
 
-std::vector<std::vector<biorbd::rigidbody::NodeBone>> biorbd::rigidbody::Joints::meshPoints(
+std::vector<std::vector<biorbd::utils::Node3d>> biorbd::rigidbody::Joints::meshPoints(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin){
 
-    std::vector<std::vector<biorbd::rigidbody::NodeBone>> v; // Vecteur de vecteur de sortie (mesh par segment)
+    std::vector<std::vector<biorbd::utils::Node3d>> v; // Vecteur de vecteur de sortie (mesh par segment)
 
     // Trouver la position des segments
     std::vector<biorbd::utils::Attitude> RT(globalJCS(Q, updateKin));
@@ -633,7 +633,7 @@ std::vector<std::vector<biorbd::rigidbody::NodeBone>> biorbd::rigidbody::Joints:
 
     return v;
 }
-std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::meshPoints(
+std::vector<biorbd::utils::Node3d> biorbd::rigidbody::Joints::meshPoints(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         unsigned int i,
         bool updateKin){
@@ -643,12 +643,12 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::meshPoints(
 
     return meshPoints(RT,i);
 }
-std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::meshPoints(
+std::vector<biorbd::utils::Node3d> biorbd::rigidbody::Joints::meshPoints(
         const std::vector<biorbd::utils::Attitude> &RT,
         unsigned int i) const{
 
     // Recueillir la position des meshings
-    std::vector<biorbd::rigidbody::NodeBone> v;
+    std::vector<biorbd::utils::Node3d> v;
     for (unsigned int j=0; j<boneMesh(i).size(); ++j){
         biorbd::utils::Node3d tp (boneMesh(i).point(j));
         tp.applyRT(*(RT.begin()+i));

@@ -31,6 +31,7 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Matrix.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Quaternion.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Node.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Node3d.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Attitude.h"
 
 //%include "@CMAKE_SOURCE_DIR@/include/Utils/NodeAttitude.h"

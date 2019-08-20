@@ -32,19 +32,19 @@ public:
 
     // Set and Get
     unsigned int AddBone(
-            unsigned int parentId, // Numéro du parent
+            const biorbd::utils::String &segmentName, // Nom du segment
+            const biorbd::utils::String &parentName, // Nom du segment
             const biorbd::utils::String &translationSequence,
             const biorbd::utils::String &rotationSequence, // Séquence de Cardan pour classer les dof en rotation
             const biorbd::rigidbody::Caracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
             const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, // Transformation du parent vers l'enfant
-            const biorbd::utils::String &segmentName="", // Nom du segment
             int forcePlates=-1); // Numéro de la plateforme de force attaché à cet os
     unsigned int AddBone(
-            unsigned int parentId, // Numéro du parent
+            const biorbd::utils::String &segmentName, // Nom du segment
+            const biorbd::utils::String &parentName, // Nom du segment
             const biorbd::utils::String &translationSequence, // Séquence de Cardan pour classer les dof en rotation
             const biorbd::rigidbody::Caracteristics& rotationSequence, // Mase, Centre de masse du segment, Inertie du segment, etc.
             const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, // Transformation du parent vers l'enfant
-            const biorbd::utils::String &segmentName="", // Nom du segment
             int forcePlates=-1); // Numéro de la plateforme de force attaché à cet os
 
 
@@ -187,10 +187,10 @@ public:
 
 
     // -- MESH OF THE MODEL -- //
-    std::vector<std::vector<biorbd::rigidbody::NodeBone>> meshPoints(
+    std::vector<std::vector<biorbd::utils::Node3d>> meshPoints(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool updateKin = true);
-    std::vector<biorbd::rigidbody::NodeBone> meshPoints(
+    std::vector<biorbd::utils::Node3d> meshPoints(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             unsigned int  idx,
             bool updateKin = true);
@@ -263,7 +263,7 @@ protected:
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const unsigned int body_id,
             bool update_kinematics); // Calculate the JCS in global
-    std::vector<biorbd::rigidbody::NodeBone> meshPoints(
+    std::vector<biorbd::utils::Node3d> meshPoints(
             const std::vector<biorbd::utils::Attitude>&,
             unsigned int  idx) const;
 

@@ -40,7 +40,7 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
         biorbdModelFile << com << " Informations about " << model.bone(i).name() << " segment" << std::endl;
         biorbdModelFile << sep << com << " Segment" << std::endl;
         biorbdModelFile << sep << "segment" << sep << model.bone(i).name() << std::endl;
-        biorbdModelFile << sep << sep << "parent" << sep << model.bone(i).parentName(model) << std::endl;
+        biorbdModelFile << sep << sep << "parent" << sep << model.bone(i).parent() << std::endl;
         biorbdModelFile << sep << sep << "RTinMatrix" << sep << true << std::endl;
         biorbdModelFile << sep << sep << "RT" << std::endl;
         for (unsigned int j=0; j<4; ++j)

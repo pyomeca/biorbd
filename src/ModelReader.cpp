@@ -9,12 +9,13 @@
 #include "Utils/String.h"
 #include "Utils/Equation.h"
 #include "Utils/Vector.h"
+#include "Utils/Node3d.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/BoneMesh.h"
 #include "RigidBody/BoneCaracteristics.h"
 #include "RigidBody/IMU.h"
-#include "RigidBody/NodeBone.h"
 #include "RigidBody/Patch.h"
+#include "RigidBody/NodeBone.h"
 
 #ifdef MODULE_ACTUATORS
 #include "Actuators/ActuatorConstant.h"
@@ -86,7 +87,6 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
         if (!tp.tolower().compare("segment")){
             biorbd::utils::String name;
             file.read(name);
-            unsigned int parent_int = 0;
             biorbd::utils::String parent_str("root");
             biorbd::utils::String trans = "";
             biorbd::utils::String rot = "";
@@ -106,13 +106,8 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                 if (!tp.tolower().compare("parent")){
                     // Trouver dynamiquement le numéro du parent
                     file.read(parent_str);
-                    if (!parent_str.tolower().compare("root"))
-                        parent_int = 0;
-                    else{
-                        parent_int = model->GetBodyId(parent_str.c_str());
-                        // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                        biorbd::utils::Error::error(model->IsBodyId(parent_int), "Wrong name in a segment");
-                    }
+                    if (parent_str.tolower().compare("root"))
+                        biorbd::utils::Error::error(model->GetBodyId(parent_str.c_str()), "Wrong name in a segment");
                 }
                 else if (!tp.tolower().compare("translations"))
                     file.read(trans);
@@ -217,7 +212,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
             }
             RigidBodyDynamics::Math::SpatialTransform RT(RT_R, RT_T);
             biorbd::rigidbody::Caracteristics caract(mass,com,inertia,boneMesh);
-            model->AddBone(parent_int, trans, rot, caract, RT, name, PF);
+            model->AddBone(name, parent_str, trans, rot, caract, RT, PF);
         }
         else if (!tp.tolower().compare("root_actuated")){
             bool rootActuated = true;

@@ -24,7 +24,7 @@ public:
     void setParent(const biorbd::utils::String &parentName);
 
 protected:
-    std::shared_ptr<biorbd::utils::String> m_markName;
+    std::shared_ptr<biorbd::utils::String> m_name;
     std::shared_ptr<biorbd::utils::String> m_parentName;
 
 };

@@ -4,7 +4,7 @@
 #include "Utils/String.h"
 
 biorbd::utils::Node::Node() :
-    m_markName(std::make_shared<biorbd::utils::String>("")),
+    m_name(std::make_shared<biorbd::utils::String>("")),
     m_parentName(std::make_shared<biorbd::utils::String>(""))
 {
 
@@ -13,7 +13,7 @@ biorbd::utils::Node::Node() :
 biorbd::utils::Node::Node(
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName) :
-    m_markName(std::make_shared<biorbd::utils::String>(name)),
+    m_name(std::make_shared<biorbd::utils::String>(name)),
     m_parentName(std::make_shared<biorbd::utils::String>(parentName))
 {
 
@@ -27,12 +27,12 @@ biorbd::utils::Node biorbd::utils::Node::DeepCopy()
 
 const biorbd::utils::String &biorbd::utils::Node::name() const
 {
-    return *m_markName;
+    return *m_name;
 }
 
 void biorbd::utils::Node::setName(const biorbd::utils::String &name)
 {
-    *m_markName = name;
+    *m_name = name;
 }
 
 const biorbd::utils::String& biorbd::utils::Node::parent() const
