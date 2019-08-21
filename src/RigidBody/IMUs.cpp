@@ -91,7 +91,7 @@ biorbd::rigidbody::IMU biorbd::rigidbody::IMUs::IMU(
     biorbd::utils::Attitude parent(model.globalJCS(Q, id, updateKin));
 
     biorbd::rigidbody::IMU node_tp = node;
-    node_tp.block(0,0,4,4) = parent * node;
+    node_tp.setMatrix(parent * node);
     return node_tp;
 }
 

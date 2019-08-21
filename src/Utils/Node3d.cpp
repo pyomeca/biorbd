@@ -75,7 +75,7 @@ void biorbd::utils::Node3d::applyRT(const Attitude &a){
     Eigen::Vector4d tp;
     tp.block(0,0,3,1) = static_cast<Eigen::Vector3d>(*this);
     tp(3) = 1;
-    tp = static_cast<Eigen::Matrix4d>(a) * tp;
+    tp = a.matrix() * tp;
     this->setPosition(tp);
 }
 

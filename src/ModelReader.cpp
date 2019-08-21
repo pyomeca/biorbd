@@ -296,10 +296,13 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                     file.read(RTinMatrix);
                 }
                 else if (!tp.tolower().compare("rt")){
-                    if (RTinMatrix) // Matrice 4x4
+                    if (RTinMatrix){ // Matrice 4x4
+                        Eigen::Matrix4d rt_tp;
                         for (unsigned int i=0; i<4;++i)
                             for (unsigned int j=0; j<4;++j)
-                                file.read(RT(i,j), variable);
+                                file.read(rt_tp(i,j), variable);
+                        RT.setMatrix(rt_tp);
+                    }
                     else{
                         biorbd::utils::String seq("xyz");
                         biorbd::utils::Node3d rot(0, 0, 0);
@@ -748,9 +751,11 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                     biorbd::utils::Error::error(model->IsBodyId(idx), "Wrong origin parent name for a muscle");
                 }
                 else if (!tp.tolower().compare("rt")){
+                    Eigen::Matrix4d rt_tp;
                     for (unsigned int i=0; i<4;++i)
                         for (unsigned int j=0; j<4; ++j)
-                            file.read(RT(i,j), variable);
+                            file.read(rt_tp(i,j), variable);
+                    RT.setMatrix(rt_tp);
                 }
                 else if (!tp.tolower().compare("muscle"))
                     file.read(muscle);
@@ -762,8 +767,6 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                     file.read(length, variable);
                 else if (!tp.tolower().compare("wrappingside"))
                     file.read(side);
-
-
             }
             biorbd::utils::Error::error(dia != 0.0, "Diameter was not defined");
             biorbd::utils::Error::error(length != 0.0, "Length was not defined");

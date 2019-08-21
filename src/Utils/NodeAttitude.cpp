@@ -11,6 +11,28 @@ biorbd::utils::NodeAttitude::NodeAttitude() :
 
 }
 
+biorbd::utils::NodeAttitude::NodeAttitude(
+        double e00, double e01, double e02, double e03,
+        double e10, double e11, double e12, double e13,
+        double e20, double e21, double e22, double e23,
+        double e30, double e31, double e32, double e33) :
+    biorbd::utils::Attitude( e00,  e01,  e02,  e03, e10,  e11,  e12,  e13, e20,  e21,  e22,  e23, e30,  e31,  e32,  e33),
+    biorbd::utils::Node()
+{
+
+}
+biorbd::utils::NodeAttitude::NodeAttitude(
+        double e00, double e01, double e02, double e03,
+        double e10, double e11, double e12, double e13,
+        double e20, double e21, double e22, double e23,
+        double e30, double e31, double e32, double e33,
+        const biorbd::utils::String &name,
+        const biorbd::utils::String &parentName) :
+    biorbd::utils::Attitude( e00,  e01,  e02,  e03, e10,  e11,  e12,  e13, e20,  e21,  e22,  e23, e30,  e31,  e32,  e33),
+    biorbd::utils::Node(name, parentName)
+{
+
+}
 biorbd::utils::NodeAttitude::NodeAttitude(const biorbd::utils::Attitude &attitude) :
     biorbd::utils::Attitude(attitude),
     biorbd::utils::Node()
@@ -19,10 +41,10 @@ biorbd::utils::NodeAttitude::NodeAttitude(const biorbd::utils::Attitude &attitud
 }
 
 biorbd::utils::NodeAttitude::NodeAttitude(
-        const Attitude &v,
+        const Attitude &attitude,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName) :
-    biorbd::utils::Attitude(v),
+    biorbd::utils::Attitude(attitude),
     biorbd::utils::Node(name, parentName)
 {
 
@@ -30,16 +52,5 @@ biorbd::utils::NodeAttitude::NodeAttitude(
 
 biorbd::utils::NodeAttitude biorbd::utils::NodeAttitude::DeepCopy() const
 {
-    return biorbd::utils::NodeAttitude(this->attitude(), this->name(), this->parent());
-}
-
-void biorbd::utils::NodeAttitude::setAttitude(const biorbd::utils::Attitude &n)
-{
-    this->block(0,0,4,4) = n.block(0,0,4,4);
-}
-
-
-const biorbd::utils::Attitude &biorbd::utils::NodeAttitude::attitude() const
-{
-    return *this;
+    return biorbd::utils::NodeAttitude(this->biorbd::utils::Attitude::DeepCopy(), this->name(), this->parent());
 }

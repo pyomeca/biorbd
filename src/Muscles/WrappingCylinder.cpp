@@ -199,11 +199,11 @@ bool biorbd::muscles::WrappingCylinder::findVerticalNode(
     Y = Y/Y.norm();
     Z = Z/Z.norm();
     // Concatener pour obtenir la matrice de rotation
-    biorbd::utils::Attitude R;
-    R <<    X(0), X(1), X(2), 0,
-            Y(0), Y(1), Y(2), 0,
-            Z(0), Z(1), Z(2), 0,
-            0,    0,    0,    1;
+    biorbd::utils::Attitude R(
+                X(0), X(1), X(2), 0,
+                Y(0), Y(1), Y(2), 0,
+                Z(0), Z(1), Z(2), 0,
+                0,    0,    0,    1);
 
     // Tourner les points dans le repere R
     biorbd::muscles::MuscleNode globA(glob.m_p1);

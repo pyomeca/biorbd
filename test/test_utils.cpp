@@ -4,8 +4,9 @@
 
 #include "Utils/String.h"
 #include "Utils/Node3d.h"
+#include "Utils/NodeAttitude.h"
 
-TEST(Node, Copy){
+TEST(Node3d, Copy){
     biorbd::utils::Node3d MainNode(1, 2, 3, "MainNodeName", "NoParent");
     biorbd::utils::Node3d ShallowCopy(MainNode);
     biorbd::utils::Node3d DeepCopy(MainNode.DeepCopy());
@@ -47,3 +48,66 @@ TEST(Node, Copy){
     EXPECT_DOUBLE_EQ(DeepCopy.y(), 2);
     EXPECT_DOUBLE_EQ(DeepCopy.z(), 3);
 }
+
+TEST(Matrix, Copy){
+    biorbd::utils::NodeAttitude MainNodeAttitude(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, "NoName", "NoParent");
+    biorbd::utils::NodeAttitude ShallowCopy(MainNodeAttitude);
+    biorbd::utils::NodeAttitude DeepCopy(MainNodeAttitude.DeepCopy());
+
+    EXPECT_STREQ(MainNodeAttitude.parent().c_str(), "NoParent");
+    EXPECT_STREQ(ShallowCopy.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopy.parent().c_str(), "NoParent");
+
+    // Test for the names
+    // Give a parent to the ShallowCopy
+    ShallowCopy.setParent("NewParent");
+
+    // Parent of MainNode should also change, but not of the DeepCopy
+    EXPECT_STREQ(MainNodeAttitude.parent().c_str(), "NewParent");
+    EXPECT_STREQ(ShallowCopy.parent().c_str(), "NewParent");
+    EXPECT_STREQ(DeepCopy.parent().c_str(), "NoParent");
+
+    // Test for the values
+    EXPECT_DOUBLE_EQ(MainNodeAttitude.matrix(2, 2), 10);
+    EXPECT_DOUBLE_EQ(ShallowCopy.matrix(2, 2), 10);
+    EXPECT_DOUBLE_EQ(DeepCopy.matrix(2, 2), 10);
+    // Change the values of ShallowCopy
+    ShallowCopy.setZero();
+
+    // Parent values should also avec changed
+    EXPECT_DOUBLE_EQ(MainNodeAttitude.matrix(2, 2), 0);
+    EXPECT_DOUBLE_EQ(ShallowCopy.matrix(2, 2), 0);
+    EXPECT_DOUBLE_EQ(DeepCopy.matrix(2, 2), 10);
+}
+
+TEST(NodeAttitude, Copy){
+    biorbd::utils::NodeAttitude MainNodeAttitude(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, "NoName", "NoParent");
+    biorbd::utils::NodeAttitude ShallowCopy(MainNodeAttitude);
+    biorbd::utils::NodeAttitude DeepCopy(MainNodeAttitude.DeepCopy());
+
+    EXPECT_STREQ(MainNodeAttitude.parent().c_str(), "NoParent");
+    EXPECT_STREQ(ShallowCopy.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopy.parent().c_str(), "NoParent");
+
+    // Test for the names
+    // Give a parent to the ShallowCopy
+    ShallowCopy.setParent("NewParent");
+
+    // Parent of MainNode should also change, but not of the DeepCopy
+    EXPECT_STREQ(MainNodeAttitude.parent().c_str(), "NewParent");
+    EXPECT_STREQ(ShallowCopy.parent().c_str(), "NewParent");
+    EXPECT_STREQ(DeepCopy.parent().c_str(), "NoParent");
+
+    // Test for the values
+    EXPECT_DOUBLE_EQ(MainNodeAttitude.matrix(2, 2), 10);
+    EXPECT_DOUBLE_EQ(ShallowCopy.matrix(2, 2), 10);
+    EXPECT_DOUBLE_EQ(DeepCopy.matrix(2, 2), 10);
+    // Change the values of ShallowCopy
+    ShallowCopy.setZero();
+
+    // Parent values should also avec changed
+    EXPECT_DOUBLE_EQ(MainNodeAttitude.matrix(2, 2), 0);
+    EXPECT_DOUBLE_EQ(ShallowCopy.matrix(2, 2), 0);
+    EXPECT_DOUBLE_EQ(DeepCopy.matrix(2, 2), 10);
+}
+

@@ -276,10 +276,7 @@ biorbd::utils::Attitude biorbd::rigidbody::Joints::globalJCS(
     RigidBodyDynamics::Math::SpatialTransform tp_ST;
 
     tp_ST = CalcBodyWorldTransformation(Q, id,updateKin);
-    RT.block(0,0,3,3) = tp_ST.E;
-    RT.block(0,3,3,1) = tp_ST.r;
-    RT.block(3,0,1,4) << 0,0,0,1;
-
+    RT.setMatrix(RT.combineRotAndTrans(tp_ST.E, tp_ST.r));
     return RT;
 }
 
@@ -373,13 +370,16 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::projectPointJacobian(
         CalcMatRotJacobian(Q, GetBodyId(node.parent().c_str()), Eigen::Matrix3d::Identity(3,3), JCor,false);
         for (unsigned int n=0; n<3; ++n)
             if (node.isAxisKept(n))
-                G_tp += JCor.block(n*3,0,3,nbQ())* node(n);
+                G_tp += JCor.matrix().block(n*3,0,3,nbQ()) * node(n);
 
         return G_tp;
     }
-    else
+    else {
         // Retourner la valeur
-        return biorbd::utils::Matrix(biorbd::utils::Matrix::Zero(3,nbQ()));
+        biorbd::utils::Matrix out(biorbd::utils::Matrix(3,nbQ()));
+        out.setZero();
+        return out;
+    }
 }
 
 biorbd::utils::Matrix biorbd::rigidbody::Joints::projectPointJacobian(
@@ -527,7 +527,8 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::CoMJacobian(const biorbd::rigid
     RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,nullptr,nullptr);
 
    // Jacobienne totale
-    biorbd::utils::Matrix JacTotal(biorbd::utils::Matrix::Zero(3,this->dof_count));
+    biorbd::utils::Matrix JacTotal(biorbd::utils::Matrix(3,this->dof_count));
+    JacTotal.setZero();
 
     // CoMdot = somme(masse_seg * Jacobienne * qdot)/masse totale
     for (std::vector<biorbd::rigidbody::Bone>::iterator b_it=m_bones.begin(); b_it!=m_bones.end(); ++b_it){

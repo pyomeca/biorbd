@@ -59,7 +59,7 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
     biorbd::utils::Vector T(static_cast<unsigned int>(3*3*IMUobs.size())); // Matrice 3*3 * nIMU
     for (unsigned int i=0; i<IMUobs.size(); ++i)
         for (unsigned int j=0; j<3; ++j)
-           T.block(9*i+3*j,0,3,1) = IMUobs[i].block(0,j,3,1);
+           T.block(9*i+3*j,0,3,1) = IMUobs[i].matrix().block(0,j,3,1);
 
     // Reconstruire la cinématique
     reconstructFrame(m, T, Q, Qdot, Qddot);

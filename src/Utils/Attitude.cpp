@@ -7,29 +7,58 @@
 #include "Utils/String.h"
 
 biorbd::utils::Attitude::Attitude(const Eigen::Matrix4d& m) :
-    Eigen::Matrix4d(m)
+    m_matrix(std::make_shared<Eigen::Matrix4d>(m))
 {
+
 }
 
+biorbd::utils::Attitude::Attitude(
+        double e00, double e01, double e02, double e03,
+        double e10, double e11, double e12, double e13,
+        double e20, double e21, double e22, double e23,
+        double e30, double e31, double e32, double e33) :
+    m_matrix(std::make_shared<Eigen::Matrix4d>())
+{
+    (*this->m_matrix)(0, 0)  = e00;
+    (*this->m_matrix)(1, 0)  = e10;
+    (*this->m_matrix)(2, 0)  = e20;
+    (*this->m_matrix)(3, 0)  = e30;
+    (*this->m_matrix)(0, 1)  = e01;
+    (*this->m_matrix)(1, 1)  = e11;
+    (*this->m_matrix)(2, 1)  = e21;
+    (*this->m_matrix)(3, 1)  = e31;
+    (*this->m_matrix)(0, 2)  = e02;
+    (*this->m_matrix)(1, 2)  = e12;
+    (*this->m_matrix)(2, 2) = e22;
+    (*this->m_matrix)(3, 2) = e32;
+    (*this->m_matrix)(0, 3) = e03;
+    (*this->m_matrix)(1, 3) = e13;
+    (*this->m_matrix)(2, 3) = e23;
+    (*this->m_matrix)(3, 3) = e33;
+}
 biorbd::utils::Attitude::Attitude(
         const Eigen::Matrix3d& rot,
         const Eigen::Vector3d& trans) :
-    Eigen::Matrix4d(combineRotAndTrans(rot,trans))
+    m_matrix(std::make_shared<Eigen::Matrix4d>(*combineRotAndTrans(rot,trans).m_matrix))
 {
 
 }
-biorbd::utils::Attitude::Attitude(
-        const Eigen::VectorXd& rot,
-        const Eigen::Vector3d& trans,
-        const biorbd::utils::String& seq) :
-    Eigen::Matrix4d(transformCardanToMatrix(rot, trans,seq))
+biorbd::utils::Attitude::Attitude(const Eigen::VectorXd& rotation,
+        const Eigen::Vector3d& translation,
+        const biorbd::utils::String& rotationSequence) :
+    m_matrix(std::make_shared<Eigen::Matrix4d>(transformCardanToMatrix(rotation, translation, rotationSequence)))
 {
 
 }
 biorbd::utils::Attitude::Attitude(const RigidBodyDynamics::Math::SpatialTransform& st) :
-    Eigen::Matrix4d(SpatialTransform2Attitude(st))
+    m_matrix(std::make_shared<Eigen::Matrix4d>(*SpatialTransform2Attitude(st).m_matrix))
 {
 
+}
+
+biorbd::utils::Attitude biorbd::utils::Attitude::DeepCopy() const
+{
+    return biorbd::utils::Attitude(this->matrix());
 }
 
 Eigen::Vector3d biorbd::utils::Attitude::axe(int i)
@@ -39,17 +68,17 @@ Eigen::Vector3d biorbd::utils::Attitude::axe(int i)
 }
 
 void biorbd::utils::Attitude::setIdentity(){
-    this->block(0,0,4,4) << 1,0,0,0,
-                            0,1,0,0,
-                            0,0,1,0,
-            0,0,0,1;
+    m_matrix->setIdentity();
 }
 
 bool biorbd::utils::Attitude::isIdentity()
 {
-    Attitude eye;
-    eye.setIdentity();
-    return *this == eye;
+    return *m_matrix == Eigen::Matrix4d::Identity();
+}
+
+void biorbd::utils::Attitude::setZero()
+{
+    *m_matrix = Eigen::Matrix4d::Zero();
 }
 
 biorbd::utils::Attitude biorbd::utils::Attitude::SpatialTransform2Attitude(const RigidBodyDynamics::Math::SpatialTransform& st){
@@ -60,28 +89,48 @@ biorbd::utils::Attitude biorbd::utils::Attitude::combineRotAndTrans(
         const Eigen::Matrix3d& rot,
         const Eigen::Vector3d& trans){
     Attitude tp;
-    tp.block(0,0,3,3) = rot;
-    tp.block(0,3,3,1) = trans;
-    tp.block(3,0,1,4) << 0,0,0,1;
+    tp.m_matrix->block(0,0,3,3) = rot;
+    tp.m_matrix->block(0,3,3,1) = trans;
+    tp.m_matrix->block(3,0,1,4) << 0,0,0,1;
     return tp;
 }
 
 biorbd::utils::Attitude biorbd::utils::Attitude::transpose() const{
     Attitude tp;
-    tp.block(0,0,3,3) = this->block(0,0,3,3).transpose();
-    tp.block(0,3,3,1) =-tp.block(0,0,3,3) * this->block(0,3,3,1);
-    tp.block(3,0,1,4) << 0,0,0,1;
+    tp.m_matrix->block(0,0,3,3) = this->m_matrix->block(0,0,3,3).transpose();
+    tp.m_matrix->block(0,3,3,1) = -tp.m_matrix->block(0,0,3,3) * this->m_matrix->block(0,3,3,1);
+    tp.m_matrix->block(3,0,1,4) << 0,0,0,1;
     return tp;
+}
+
+const Eigen::Matrix4d &biorbd::utils::Attitude::matrix() const
+{
+    return *m_matrix;
+}
+
+double biorbd::utils::Attitude::matrix(unsigned int row, unsigned int col) const
+{
+    return (*m_matrix)(row, col);
+}
+
+void biorbd::utils::Attitude::setMatrix(const biorbd::utils::Attitude &attitude)
+{
+    this->m_matrix->block(0,0,4,4) = attitude.matrix();
+}
+
+void biorbd::utils::Attitude::setMatrix(const Eigen::Matrix4d &matrix)
+{
+    this->m_matrix->block(0,0,4,4) = matrix;
 }
 
 Eigen::Vector3d biorbd::utils::Attitude::trans() const
 {
-    return this->block(0,3,3,1);
+    return this->m_matrix->block(0,3,3,1);
 }
 
 Eigen::Matrix3d biorbd::utils::Attitude::rot() const
 {
-    return this->block(0,0,3,3);
+    return this->m_matrix->block(0,0,3,3);
 }
 
 
@@ -202,6 +251,20 @@ Eigen::VectorXd biorbd::utils::Attitude::transformMatrixToCardan(
     return v;
 }
 
+double biorbd::utils::Attitude::operator()(unsigned int row, unsigned int col) const
+{
+    return (*m_matrix)(row, col);
+}
+
+biorbd::utils::Attitude &biorbd::utils::Attitude::operator=(const Eigen::Matrix4d &other)
+{
+    if (&this->matrix()==&other) // check for self-assigment
+        return *this;
+
+    *this->m_matrix = other;
+    return *this;
+}
+
 
 Eigen::Vector4d biorbd::utils::Attitude::expand3dTo4d(const Eigen::Vector3d &v1)
 {
@@ -212,15 +275,13 @@ Eigen::Vector4d biorbd::utils::Attitude::expand3dTo4d(const Eigen::Vector3d &v1)
 }
 
 
-const biorbd::utils::Attitude biorbd::utils::Attitude::operator*(const Attitude& s1){
-    Attitude out;
-    out.block(0,0,4,4) = static_cast<Eigen::Matrix4d>(*this) * static_cast<Eigen::Matrix4d>(s1);
-    return out;
+biorbd::utils::Attitude biorbd::utils::Attitude::operator*(const Attitude& s1){
+    return Eigen::Matrix4d(*this->m_matrix * *s1.m_matrix);
 }
-const biorbd::utils::Node3d biorbd::utils::Attitude::operator*(const biorbd::utils::Node3d &n)
+biorbd::utils::Node3d biorbd::utils::Attitude::operator*(const biorbd::utils::Node3d &n)
 {
     biorbd::utils::Node3d out(n);
-    Eigen::Vector4d v(static_cast<Eigen::Matrix4d>(*this) * expand3dTo4d(out.position()));
+    Eigen::Vector4d v(*this->m_matrix * expand3dTo4d(out.position()));
     out.setPosition(v);
     return out;
 }
@@ -248,18 +309,18 @@ biorbd::utils::Attitude biorbd::utils::Attitude::mean(const std::vector<Attitude
     return m_out;
 }
 
-const Eigen::Vector3d biorbd::utils::Attitude::operator*(const Eigen::Vector4d &v)
+Eigen::Vector3d biorbd::utils::Attitude::operator*(const Eigen::Vector4d &v)
 {
-    Eigen::Vector4d out (static_cast<Eigen::Matrix4d>(*this) * static_cast<Eigen::Vector4d>(v));
+    Eigen::Vector4d out (*this->m_matrix * v);
     return out.block(0,0,3,1);
 }
-const Eigen::Vector3d biorbd::utils::Attitude::operator*(const Eigen::Vector3d &v)
+Eigen::Vector3d biorbd::utils::Attitude::operator*(const Eigen::Vector3d &v)
 {
     return operator*(expand3dTo4d(v));
 }
 
 std::ostream &operator<<(std::ostream &os, const biorbd::utils::Attitude &a)
 {
-    os << a.block(0,0,4,4);
+    os << a.matrix().block(0,0,4,4);
     return os;
 }

@@ -46,7 +46,7 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
         biorbdModelFile << sep << sep << "RTinMatrix" << sep << true << std::endl;
         biorbdModelFile << sep << sep << "RT" << std::endl;
         for (unsigned int j=0; j<4; ++j)
-            biorbdModelFile << sep << sep << sep << localJCS[i].block(j,0,1,4) << std::endl;
+            biorbdModelFile << sep << sep << sep << localJCS[i].matrix().block(j,0,1,4) << std::endl;
         if (model.bone(i).nDofTrans() > 0)
             biorbdModelFile << sep << sep << "translations" << sep << model.bone(i).seqT() << std::endl;
         if (model.bone(i).nDofRot() > 0)
@@ -83,7 +83,7 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
                 biorbdModelFile << sep << sep << "RTinMatrix" << sep << true << std::endl;
                 biorbdModelFile << sep << sep << "RT" << std::endl;
                 for (unsigned int k=0; k<4; ++k)
-                    biorbdModelFile << sep << sep << sep << imus[j].attitude().block(k,0,1,4) << std::endl;
+                    biorbdModelFile << sep << sep << sep << imus[j].matrix().block(k,0,1,4) << std::endl;
                 biorbdModelFile << sep << sep << "technical" << sep << imus[j].isTechnical() << std::endl;
                 biorbdModelFile << sep << sep << "anatomical" << sep << imus[j].isAnatomical() << std::endl;
                 biorbdModelFile << sep << "endimu" << sep << std::endl;
