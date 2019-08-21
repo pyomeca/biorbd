@@ -21,14 +21,11 @@ biorbd::rigidbody::IMUs::~IMUs()
 
 // Ajouter un nouveau marker au pool de markers
 void biorbd::rigidbody::IMUs::addIMU(
-        const biorbd::utils::Attitude &pos,
-        const biorbd::utils::String &name,
-        const biorbd::utils::String &parentName,
+        const biorbd::utils::NodeAttitude &attitude,
         bool technical,
-        bool anatomical,
-        int id)
+        bool anatomical)
 {
-    biorbd::rigidbody::IMU tp(pos, name, parentName, technical, anatomical, id);
+    biorbd::rigidbody::IMU tp(attitude, technical, anatomical);
     m_IMUs.push_back(tp);
 }
 

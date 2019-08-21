@@ -4,7 +4,7 @@
 #include <vector>
 #include "biorbdConfig.h"
 #include "RigidBody/Patch.h"
-#include "Utils/Attitude.h"
+#include "Utils/NodeAttitude.h"
 #include "Utils/String.h"
 #include "Utils/Node3d.h"
 
@@ -25,12 +25,9 @@ public:
 
     // Set and get
     void addIMU(
-            const biorbd::utils::Attitude &pos = biorbd::utils::Attitude(),
-            const biorbd::utils::String &name = "",
-            const biorbd::utils::String &parentName = "",
+            const biorbd::utils::NodeAttitude &attitude = biorbd::utils::Attitude(),
             bool technical = true,
-            bool anatomical = false,
-            int id = -1); // Ajouter un nouveau marker
+            bool anatomical = false); // Ajouter un nouveau marker
     unsigned int nIMUs() const; // Retourne le nombre de marqueurs
 
     std::vector<biorbd::utils::String> IMUsNames();

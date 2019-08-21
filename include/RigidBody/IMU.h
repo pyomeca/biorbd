@@ -3,31 +3,31 @@
 
 #include "biorbdConfig.h"
 #include "Utils/NodeAttitude.h"
-#include "Utils/String.h"
 
 namespace biorbd {
+namespace utils {
+class String;
+}
+
 namespace rigidbody {
 
 class BIORBD_API IMU : public biorbd::utils::NodeAttitude
 { 
 public:
+    IMU();
     IMU(
-            const biorbd::utils::Attitude& = biorbd::utils::Attitude(), // Position
-            const biorbd::utils::String& = "", // Nom du noeud
-            const biorbd::utils::String& = "", // Nom du parent
-            bool = true, // Si le marker est un marker technique
-            bool = true, // Si le marker est un marker anatomique
-            int = -1); // Numéro ID du parent
+            const biorbd::utils::NodeAttitude& attitude, // Position
+            bool isTechnical = true, // Si le marker est un marker technique
+            bool isAnatomical = true); // Si le marker est un marker anatomique
+    biorbd::rigidbody::IMU DeepCopy();
 
-    virtual ~IMU();
     // Get and Set
-    virtual bool isTechnical() const;
-    virtual bool isAnatomical() const;
-    int parentId() const;
+    bool isTechnical() const;
+    bool isAnatomical() const;
+
 protected:
     bool m_technical; // If a marker is a technical marker
     bool m_anatomical; // It marker is a anatomical marker
-    int m_id;
 
 };
 

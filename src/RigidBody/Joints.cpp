@@ -5,17 +5,18 @@
 #include <rbdl/rbdl_utils.h>
 #include <rbdl/Kinematics.h>
 #include <rbdl/Dynamics.h>
-#include "Utils/Error.h"
-#include "RigidBody/GeneralizedCoordinates.h"
 #include "Utils/Quaternion.h"
 #include "Utils/Matrix.h"
-#include "RigidBody/GeneralizedTorque.h"
+#include "Utils/Error.h"
 #include "Utils/Attitude.h"
+#include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/Integrator.h"
 #include "RigidBody/Bone.h"
 #include "RigidBody/Markers.h"
 #include "RigidBody/NodeBone.h"
 #include "RigidBody/Patch.h"
+#include "RigidBody/BoneMesh.h"
 
 biorbd::rigidbody::Joints::Joints() :
     m_nbRoot(0),
@@ -669,15 +670,15 @@ const std::vector<biorbd::rigidbody::Patch> &biorbd::rigidbody::Joints::meshPatc
     return boneMesh(i).patch();
 }
 
-std::vector<biorbd::rigidbody::Mesh> biorbd::rigidbody::Joints::boneMesh() const
+std::vector<biorbd::rigidbody::BoneMesh> biorbd::rigidbody::Joints::boneMesh() const
 {
-    std::vector<biorbd::rigidbody::Mesh> boneOut;
+    std::vector<biorbd::rigidbody::BoneMesh> boneOut;
     for (unsigned int i=0; i<nbBone(); ++i)
         boneOut.push_back(boneMesh(i));
     return boneOut;
 }
 
-const biorbd::rigidbody::Mesh &biorbd::rigidbody::Joints::boneMesh(unsigned int idx) const
+const biorbd::rigidbody::BoneMesh &biorbd::rigidbody::Joints::boneMesh(unsigned int idx) const
 {
     return bone(idx).caract().mesh();
 }

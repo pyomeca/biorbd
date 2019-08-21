@@ -20,7 +20,7 @@ class NodeBone;
 class Patch;
 class Bone;
 class Caracteristics;
-class Mesh;
+class BoneMesh;
 class Integrator;
 
 class BIORBD_API Joints : public RigidBodyDynamics::Model
@@ -196,8 +196,8 @@ public:
             bool updateKin = true);
     std::vector<std::vector<biorbd::rigidbody::Patch>> meshPatch() const;
     const std::vector<biorbd::rigidbody::Patch>& meshPatch(unsigned int i) const;
-    std::vector<biorbd::rigidbody::Mesh> boneMesh() const;
-    const biorbd::rigidbody::Mesh& boneMesh(unsigned int  idx) const;
+    std::vector<biorbd::rigidbody::BoneMesh> boneMesh() const;
+    const biorbd::rigidbody::BoneMesh& boneMesh(unsigned int  idx) const;
     // ----------------------- //
 
 

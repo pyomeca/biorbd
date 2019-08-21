@@ -12,12 +12,7 @@
 biorbd::rigidbody::Contacts::Contacts() :
     RigidBodyDynamics::ConstraintSet (),
     m_nbreConstraint(0),
-    m_binded(false)
-{
-
-}
-
-biorbd::rigidbody::Contacts::~Contacts()
+    m_isBinded(false)
 {
 
 }
@@ -75,25 +70,29 @@ unsigned int biorbd::rigidbody::Contacts::AddLoopConstraint(
                 enableStabilization, stabilizationParam, name.c_str());
 }
 
+biorbd::rigidbody::Contacts::~Contacts()
+{
+
+}
 
 biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints_nonConst()
 {
-    if (!m_binded){
+    if (!m_isBinded){
         // Assuming that this is also a Joints type (via BiorbdModel)
         const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
         Bind(model);
-        m_binded = true;
+        m_isBinded = true;
     }
     return *this;
 }
 
 const biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints()
 {
-    if (!m_binded){
+    if (!m_isBinded){
         // Assuming that this is also a Joints type (via BiorbdModel)
         const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
         Bind(model);
-        m_binded = true;
+        m_isBinded = true;
     }
     return *this;
 }

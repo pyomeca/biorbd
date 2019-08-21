@@ -10,7 +10,7 @@ class Model;
 
 namespace rigidbody {
 class GeneralizedCoordinates;
-class Mesh;
+class BoneMesh;
 }
 
 namespace utils {
@@ -48,8 +48,8 @@ public:
             std::vector<biorbd::utils::String> &markOrder,
             int nNodes =-1); // Path to the file, markers a conserver, nombres de noeuds (-1 => tous)
 
-    static biorbd::rigidbody::Mesh readBoneMeshFileBiorbdBones(const biorbd::utils::Path& path);
-    static biorbd::rigidbody::Mesh readBoneMeshFilePly(const biorbd::utils::Path& path);
+    static biorbd::rigidbody::BoneMesh readBoneMeshFileBiorbdBones(const biorbd::utils::Path& path);
+    static biorbd::rigidbody::BoneMesh readBoneMeshFilePly(const biorbd::utils::Path& path);
 
     static void pwd(); // Print the working directory
     static bool is_readable( const biorbd::utils::String & file );

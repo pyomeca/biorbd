@@ -22,7 +22,6 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
 {
 public:
     Contacts();
-    virtual ~Contacts();
     unsigned int AddConstraint(
             unsigned int body_id,
             const biorbd::utils::Node3d &body_point,
@@ -35,7 +34,7 @@ public:
             const biorbd::utils::String& axis,
             const biorbd::utils::String& name,
             double acc = 0);
-    virtual unsigned int AddLoopConstraint(
+    unsigned int AddLoopConstraint(
             unsigned int body_id_predecessor,
             unsigned int body_id_successor,
             const biorbd::utils::Attitude& X_predecessor,
@@ -44,6 +43,7 @@ public:
             bool enableStabilization = false,
             double stabilizationParam = 0.1,
             const biorbd::utils::String& name = biorbd::utils::String() );
+    virtual ~Contacts();
 
     Contacts &getConstraints_nonConst();
     const Contacts &getConstraints();
@@ -60,7 +60,7 @@ public:
     biorbd::utils::Vector getForce() const;
 protected:
     unsigned int m_nbreConstraint;
-    bool m_binded;
+    bool m_isBinded;
 
 };
 

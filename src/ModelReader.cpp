@@ -99,7 +99,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
             RigidBodyDynamics::Math::Matrix3d RT_R(Eigen::Matrix3d::Identity(3,3));
             RigidBodyDynamics::Math::Vector3d RT_T(0,0,0);
             biorbd::utils::Node3d com(0,0,0);
-            biorbd::rigidbody::Mesh boneMesh;
+            biorbd::rigidbody::BoneMesh boneMesh;
             int boneByFile(-1); // -1 non setté, 0 pas par file, 1 par file
             int PF = -1;
             while(file.read(tp) && tp.tolower().compare("endsegment")){
@@ -276,9 +276,8 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
         else if (!tp.tolower().compare("imu") || !tp.tolower().compare("mimu")){
             biorbd::utils::String name;
             file.read(name);
-            unsigned int parent_int = 0;
             biorbd::utils::String parent_str("root");
-            biorbd::utils::Attitude RT;
+            biorbd::utils::NodeAttitude RT;
             bool RTinMatrix(true);
             if (version == 3) // Par défaut pour la version 3 (pas en matrice)
                 RTinMatrix = false;
@@ -289,9 +288,8 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                 if (!tp.tolower().compare("parent")){
                     // Trouver dynamiquement le numéro du parent
                     file.read(parent_str);
-                    parent_int = model->GetBodyId(parent_str.c_str());
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
-                    biorbd::utils::Error::error(model->IsBodyId(parent_int), "Wrong name in a segment");
+                    biorbd::utils::Error::error(model->IsBodyId(model->GetBodyId(parent_str.c_str())), "Wrong name in a segment");
                 }
                 else if (!tp.tolower().compare("rtinmatrix")){
                     biorbd::utils::Error::error(isRTset==false, "RT should not appear before RTinMatrix");
@@ -323,7 +321,9 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                 else if (!tp.tolower().compare("anatomical"))
                     file.read(anatomical);
             }
-            model->addIMU(RT, name, parent_str, technical, anatomical, static_cast<int>(parent_int));
+            RT.setName(name);
+            RT.setParent(parent_str);
+            model->addIMU(RT, technical, anatomical);
         }
         else if (!tp.tolower().compare("contact")){
             biorbd::utils::String name;
@@ -1261,7 +1261,7 @@ std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarker
     return data;
 }
 
-biorbd::rigidbody::Mesh biorbd::Reader::readBoneMeshFileBiorbdBones(const biorbd::utils::Path &path)
+biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFileBiorbdBones(const biorbd::utils::Path &path)
 {
     // Lire un fichier d'os
 
@@ -1283,7 +1283,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readBoneMeshFileBiorbdBones(const biorbd
     file.readSpecificTag("nfaces", tp);
     unsigned int nFaces(static_cast<unsigned int>(atoi(tp.c_str())));
 
-    biorbd::rigidbody::Mesh mesh;
+    biorbd::rigidbody::BoneMesh mesh;
     mesh.setPath(path);
     // Récupérer tous les points
     for (unsigned int iPoints=0; iPoints < nPoints; ++iPoints){
@@ -1312,7 +1312,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readBoneMeshFileBiorbdBones(const biorbd
 }
 
 
-biorbd::rigidbody::Mesh biorbd::Reader::readBoneMeshFilePly(const biorbd::utils::Path &path)
+biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFilePly(const biorbd::utils::Path &path)
 {
     // Lire un fichier d'os
 
@@ -1339,7 +1339,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readBoneMeshFilePly(const biorbd::utils:
     // Trouver le nombre de
     file.reachSpecificTag("end_header");
 
-    biorbd::rigidbody::Mesh mesh;
+    biorbd::rigidbody::BoneMesh mesh;
     mesh.setPath(path);
     // Récupérer tous les points
     for (unsigned int iPoints=0; iPoints < nVertex; ++iPoints){

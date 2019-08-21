@@ -8,6 +8,7 @@
 #include "RigidBody/IMU.h"
 #include "RigidBody/NodeBone.h"
 #include "RigidBody/Bone.h"
+#include "RigidBody/BoneMesh.h"
 
 void biorbd::Writer::writeModel(biorbd::Model & model,
         const biorbd::utils::Path& pathToWrite){

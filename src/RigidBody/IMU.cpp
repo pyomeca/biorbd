@@ -1,43 +1,37 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/IMU.h"
 
+#include "Utils/String.h"
+
+biorbd::rigidbody::IMU::IMU() :
+    biorbd::utils::NodeAttitude(),
+    m_technical(true),
+    m_anatomical(true)
+{
+
+}
 biorbd::rigidbody::IMU::IMU(
-        const biorbd::utils::Attitude &v,
-        const biorbd::utils::String &name,
-        const biorbd::utils::String &parentName,
-        bool tech,
-        bool ana,
-        int id) :
-    biorbd::utils::NodeAttitude(v, name, parentName),
-    m_technical(tech),
-    m_anatomical(ana),
-    m_id(id)
+        const biorbd::utils::NodeAttitude &attitude,
+        bool isTechnical,
+        bool isAnatomical) :
+    biorbd::utils::NodeAttitude(attitude),
+    m_technical(isTechnical),
+    m_anatomical(isAnatomical)
 {
-    //ctor
+
 }
 
-biorbd::rigidbody::IMU::~IMU()
+biorbd::rigidbody::IMU biorbd::rigidbody::IMU::DeepCopy()
 {
-    //dtor
+    return biorbd::rigidbody::IMU(this->biorbd::utils::NodeAttitude::DeepCopy(), this->isTechnical(), this->isAnatomical());
 }
-
-
-
 
 bool biorbd::rigidbody::IMU::isAnatomical() const
 {
     return m_anatomical;
 }
 
-
-
 bool biorbd::rigidbody::IMU::isTechnical() const
 {
     return m_technical;
-}
-
-
-int biorbd::rigidbody::IMU::parentId() const
-{
-    return m_id;
 }
