@@ -14,12 +14,14 @@ namespace rigidbody {
 class BIORBD_API IMU : public biorbd::utils::NodeAttitude
 { 
 public:
-    IMU();
+    IMU(
+            bool isTechnical = true, // Si le marker est un marker technique
+            bool isAnatomical = true);
     IMU(
             const biorbd::utils::NodeAttitude& attitude, // Position
             bool isTechnical = true, // Si le marker est un marker technique
             bool isAnatomical = true); // Si le marker est un marker anatomique
-    biorbd::rigidbody::IMU DeepCopy();
+    biorbd::rigidbody::IMU DeepCopy() const;
 
     // Get and Set
     bool isTechnical() const;

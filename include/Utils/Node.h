@@ -15,7 +15,7 @@ public:
     Node(
             const biorbd::utils::String &name,  // Nom du noeud
             const biorbd::utils::String &parentName);
-    biorbd::utils::Node DeepCopy();
+    biorbd::utils::Node DeepCopy() const;
 
     const biorbd::utils::String& name() const;
     void setName(const biorbd::utils::String &name);

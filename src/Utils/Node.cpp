@@ -19,7 +19,7 @@ biorbd::utils::Node::Node(
 
 }
 
-biorbd::utils::Node biorbd::utils::Node::DeepCopy()
+biorbd::utils::Node biorbd::utils::Node::DeepCopy() const
 {
     return biorbd::utils::Node(this->name(), this->parent());
 

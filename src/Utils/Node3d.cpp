@@ -46,7 +46,7 @@ biorbd::utils::Node3d::Node3d(
 
 }
 
-biorbd::utils::Node3d biorbd::utils::Node3d::DeepCopy()
+biorbd::utils::Node3d biorbd::utils::Node3d::DeepCopy() const
 {
     return biorbd::utils::Node3d(this->vector(), this->name(), this->parent());
 }

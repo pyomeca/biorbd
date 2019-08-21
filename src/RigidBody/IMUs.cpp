@@ -16,7 +16,14 @@ biorbd::rigidbody::IMUs::IMUs()
 
 biorbd::rigidbody::IMUs::~IMUs()
 {
-    //dtor
+
+}
+
+void biorbd::rigidbody::IMUs::addIMU(
+        bool technical,
+        bool anatomical)
+{
+    m_IMUs.push_back(biorbd::rigidbody::IMU(technical, anatomical));
 }
 
 // Ajouter un nouveau marker au pool de markers
@@ -25,8 +32,7 @@ void biorbd::rigidbody::IMUs::addIMU(
         bool technical,
         bool anatomical)
 {
-    biorbd::rigidbody::IMU tp(attitude, technical, anatomical);
-    m_IMUs.push_back(tp);
+    m_IMUs.push_back(biorbd::rigidbody::IMU(attitude, technical, anatomical));
 }
 
 unsigned int biorbd::rigidbody::IMUs::nIMUs() const
@@ -36,13 +42,9 @@ unsigned int biorbd::rigidbody::IMUs::nIMUs() const
 
 
 // Se faire renvoyer les markers dans le repère local
-std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::IMU()
+const std::vector<biorbd::rigidbody::IMU>& biorbd::rigidbody::IMUs::IMU() const
 {
-    std::vector<biorbd::rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nIMUs(); ++i)
-        pos.push_back(IMU(i));// Forward kinematics
-
-    return pos;
+    return m_IMUs;
 }
 
 std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::IMU(const biorbd::utils::String& segmentName)
@@ -51,15 +53,12 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::IMU(const biorbd::u
     for (unsigned int i=0; i<nIMUs(); ++i) // passer tous les markers et sélectionner les bons
         if (!IMU(i).parent().compare(segmentName))
             pos.push_back(IMU(i));
-
     return pos;
 }
 
-const biorbd::rigidbody::IMU &biorbd::rigidbody::IMUs::IMU(unsigned int i)
+const biorbd::rigidbody::IMU& biorbd::rigidbody::IMUs::IMU(unsigned int i)
 {
-    std::vector <biorbd::rigidbody::IMU>::iterator it;
-    it = m_IMUs.begin()+i;
-    return *it;
+    return m_IMUs[i];
 }
 
 // Se faire renvoyer les IMUs à la position donnée par Q
@@ -244,7 +243,6 @@ std::vector<biorbd::utils::String> biorbd::rigidbody::IMUs::IMUsNames()
     std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nIMUs(); ++i)
         names.push_back(IMU(i).name());
-
     return names;
 }
 

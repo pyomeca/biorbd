@@ -15,7 +15,7 @@ biorbd::rigidbody::BoneMesh::BoneMesh(
 
 }
 
-biorbd::rigidbody::BoneMesh biorbd::rigidbody::BoneMesh::DeepCopy()
+biorbd::rigidbody::BoneMesh biorbd::rigidbody::BoneMesh::DeepCopy() const
 {
     biorbd::rigidbody::BoneMesh tp(*this);
     tp.setPath(this->path());

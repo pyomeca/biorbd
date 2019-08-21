@@ -3,10 +3,12 @@
 
 #include "Utils/String.h"
 
-biorbd::rigidbody::IMU::IMU() :
+biorbd::rigidbody::IMU::IMU(
+        bool isTechnical,
+        bool isAnatomical) :
     biorbd::utils::NodeAttitude(),
-    m_technical(true),
-    m_anatomical(true)
+    m_technical(isTechnical),
+    m_anatomical(isAnatomical)
 {
 
 }
@@ -21,7 +23,7 @@ biorbd::rigidbody::IMU::IMU(
 
 }
 
-biorbd::rigidbody::IMU biorbd::rigidbody::IMU::DeepCopy()
+biorbd::rigidbody::IMU biorbd::rigidbody::IMU::DeepCopy() const
 {
     return biorbd::rigidbody::IMU(this->biorbd::utils::NodeAttitude::DeepCopy(), this->isTechnical(), this->isAnatomical());
 }

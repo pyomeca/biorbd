@@ -211,7 +211,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
 
             }
             RigidBodyDynamics::Math::SpatialTransform RT(RT_R, RT_T);
-            biorbd::rigidbody::Caracteristics caract(mass,com,inertia,boneMesh);
+            biorbd::rigidbody::BoneCaracteristics caract(mass,com,inertia,boneMesh);
             model->AddBone(name, parent_str, trans, rot, caract, RT, PF);
         }
         else if (!tp.tolower().compare("root_actuated")){

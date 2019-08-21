@@ -25,16 +25,19 @@ public:
 
     // Set and get
     void addIMU(
-            const biorbd::utils::NodeAttitude &attitude = biorbd::utils::Attitude(),
             bool technical = true,
-            bool anatomical = false); // Ajouter un nouveau marker
-    unsigned int nIMUs() const; // Retourne le nombre de marqueurs
+            bool anatomical = true); // Add a new IMU
+    void addIMU(
+            const biorbd::utils::NodeAttitude &attitude,
+            bool technical = true,
+            bool anatomical = true); // Add a new IMU
+    unsigned int nIMUs() const; // Retourne le nombre de IMU
 
     std::vector<biorbd::utils::String> IMUsNames();
     std::vector<biorbd::utils::String> technicalIMUsNames();
     std::vector<biorbd::utils::String> anatomicalIMUsNames();
 
-    std::vector<biorbd::rigidbody::IMU> IMU(); // Retour d'un STL vector de tous les IMU
+    const std::vector<biorbd::rigidbody::IMU>& IMU() const; // Retour d'un STL vector de tous les IMU
     std::vector<biorbd::rigidbody::IMU> IMU(const biorbd::utils::String& segmentName); // Retour d'un STL vector de tous les IMU d'un segment idx
     const biorbd::rigidbody::IMU& IMU(unsigned int ); // Retour d'un IMU ind idx
 

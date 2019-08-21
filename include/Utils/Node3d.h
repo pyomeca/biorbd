@@ -31,7 +31,7 @@ class BIORBD_API Node3d : public Eigen::Vector3d, public biorbd::utils::Node
             const Eigen::Vector3d &v, // Position du noeud
             const biorbd::utils::String &name,  // Nom du noeud
             const biorbd::utils::String &parentName);
-    biorbd::utils::Node3d DeepCopy();
+    biorbd::utils::Node3d DeepCopy() const;
 
     // Get and Set
     void setPosition(const biorbd::utils::Node3d& n);

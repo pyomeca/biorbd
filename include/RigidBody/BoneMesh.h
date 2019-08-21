@@ -21,7 +21,7 @@ public:
     BoneMesh(
             const std::vector<biorbd::utils::Node3d>& = std::vector<biorbd::utils::Node3d>(),
             const std::vector<biorbd::rigidbody::Patch>& = std::vector<biorbd::rigidbody::Patch>());
-    biorbd::rigidbody::BoneMesh DeepCopy();
+    biorbd::rigidbody::BoneMesh DeepCopy() const;
 
     // Concernant les points du mesh
     void addPoint(const biorbd::utils::Node3d &);

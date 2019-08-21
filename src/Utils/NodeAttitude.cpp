@@ -28,7 +28,7 @@ biorbd::utils::NodeAttitude::NodeAttitude(
 
 }
 
-biorbd::utils::NodeAttitude biorbd::utils::NodeAttitude::DeepCopy()
+biorbd::utils::NodeAttitude biorbd::utils::NodeAttitude::DeepCopy() const
 {
     return biorbd::utils::NodeAttitude(this->attitude(), this->name(), this->parent());
 }

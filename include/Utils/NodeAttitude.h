@@ -19,7 +19,7 @@ public:
             const Attitude& attitude,
             const biorbd::utils::String &name,
             const biorbd::utils::String &parentName);
-    biorbd::utils::NodeAttitude DeepCopy();
+    biorbd::utils::NodeAttitude DeepCopy() const;
 
     // Get and Set
     void setAttitude(const Attitude&);

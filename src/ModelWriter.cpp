@@ -9,6 +9,7 @@
 #include "RigidBody/NodeBone.h"
 #include "RigidBody/Bone.h"
 #include "RigidBody/BoneMesh.h"
+#include "RigidBody/BoneCaracteristics.h"
 
 void biorbd::Writer::writeModel(biorbd::Model & model,
         const biorbd::utils::Path& pathToWrite){

@@ -17,6 +17,7 @@
 #include "RigidBody/NodeBone.h"
 #include "RigidBody/Patch.h"
 #include "RigidBody/BoneMesh.h"
+#include "RigidBody/BoneCaracteristics.h"
 
 biorbd::rigidbody::Joints::Joints() :
     m_nbRoot(0),
@@ -138,10 +139,10 @@ unsigned int biorbd::rigidbody::Joints::AddBone(
         const biorbd::utils::String &parentName, // Nom du segment
         const biorbd::utils::String &translationSequence,
         const biorbd::utils::String &rotationSequence, // Séquence de Cardan pour classer les dof en rotation
-        const biorbd::rigidbody::Caracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
+        const biorbd::rigidbody::BoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, // Transformation du parent vers l'enfant
         int forcePlates){ // Numéro de la plateforme de force attaché à cet os
-    biorbd::rigidbody::Bone tp(this, segmentName, parentName, translationSequence, rotationSequence, caract, centreOfRotation, forcePlates);
+    biorbd::rigidbody::Bone tp(*this, segmentName, parentName, translationSequence, rotationSequence, caract, centreOfRotation, forcePlates);
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max())
 		m_nbRoot += tp.nDof(); //  Si le nom du segment est "Root" ajouter le nombre de dof de racine
 	m_nDof += tp.nDof();
@@ -160,10 +161,10 @@ unsigned int biorbd::rigidbody::Joints::AddBone(
         const biorbd::utils::String &segmentName, // Nom du segment
         const biorbd::utils::String &parentName, // Nom du segment
         const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
-        const biorbd::rigidbody::Caracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
+        const biorbd::rigidbody::BoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
         int forcePlates){ // Numéro de la plateforme de force attaché à cet os
-    biorbd::rigidbody::Bone tp(this, segmentName, parentName, seqR, caract, cor, forcePlates);
+    biorbd::rigidbody::Bone tp(*this, segmentName, parentName, seqR, caract, cor, forcePlates);
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max())
         m_nbRoot += tp.nDof(); //  Si le nom du segment est "Root" ajouter le nombre de dof de racine
 	m_nDof += tp.nDof();

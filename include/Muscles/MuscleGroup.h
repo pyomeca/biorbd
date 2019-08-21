@@ -9,10 +9,10 @@
 
 namespace biorbd {
 namespace muscles {
-
 class Muscle;
 class Geometry;
 class Caracteristics;
+
 class BIORBD_API MuscleGroup
 {
 public:
