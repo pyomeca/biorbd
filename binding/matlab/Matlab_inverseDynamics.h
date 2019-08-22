@@ -54,10 +54,10 @@ void Matlab_inverseDynamics( int, mxArray *plhs[],
         if (externalForces){
             // Recevoir les plates-formes
             std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext = model->dispatchedForce(f_tp[j]);
-            RigidBodyDynamics::InverseDynamics(*model, *(Q.begin()+j), *(QDot.begin()+j), *(QDDot.begin()+j), Tau, &f_ext);// Inverse Dynamics
+            RigidBodyDynamics::InverseDynamics(*model, Q[j], QDot[j], QDDot[j], Tau, &f_ext);// Inverse Dynamics
         }
         else
-            RigidBodyDynamics::InverseDynamics(*model, *(Q.begin()+j), *(QDot.begin()+j), *(QDDot.begin()+j), Tau);// Inverse Dynamics
+            RigidBodyDynamics::InverseDynamics(*model, Q[j], QDot[j], QDDot[j], Tau);// Inverse Dynamics
 
 
         // Remplir l'output

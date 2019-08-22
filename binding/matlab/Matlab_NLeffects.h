@@ -36,7 +36,7 @@ void Matlab_NLeffects( int, mxArray *plhs[],
     biorbd::rigidbody::GeneralizedTorque Tau(nTau);
     for (unsigned int j=0; j<Q.size(); ++j){
         Tau.setZero();
-        RigidBodyDynamics::NonlinearEffects(*model, *(Q.begin()+j), *(QDot.begin()+j), Tau);// Inverse Dynamics
+        RigidBodyDynamics::NonlinearEffects(*model, Q[j], QDot[j], Tau);// Inverse Dynamics
 
         // Remplir l'output
         for (unsigned int i=0; i<nTau; i++){

@@ -45,7 +45,7 @@ void biorbd::muscles::Geometry::updateKinematics(
 
     // S'assurer que le modele est dans la bonne configuration
     if (updateKin > 1)
-        RigidBodyDynamics::UpdateKinematicsCustom(model, Q, Qdot, nullptr);
+        model.UpdateKinematicsCustom(Q, Qdot, nullptr);
 
     // Position des points dans l'espace
     musclesPointsInGlobal(model, *Q, o);
@@ -290,7 +290,7 @@ double biorbd::muscles::Geometry::velocity(const biorbd::rigidbody::GeneralizedC
 
     // Calculer la vitesse d'élongation musculaire
     // TODO remove the construction of GeneralizedCoordinates and see for the calculation itself
-    biorbd::rigidbody::GeneralizedCoordinates velocity(static_cast<Eigen::VectorXd>(jacobianLength()*Qdot)); // Vector 1 element, mais le compilateur ne le sais pas
+    biorbd::rigidbody::GeneralizedCoordinates velocity(jacobianLength()*Qdot); // Vector 1 element, mais le compilateur ne le sais pas
     m_velocity = velocity[0];
 
     return m_velocity;
@@ -319,10 +319,10 @@ void biorbd::muscles::Geometry::jacobian(
 
 void biorbd::muscles::Geometry::computeJacobianLength(){
     m_jacobianLength = biorbd::utils::Matrix::Zero(1, m_jacobian.cols());
-    std::vector<biorbd::muscles::MuscleNode>::iterator p = m_pointsInGlobal.begin();
+    const std::vector<biorbd::muscles::MuscleNode>& p = m_pointsInGlobal;
     for (unsigned int i=0; i<m_pointsInGlobal.size()-1 ; ++i){
-        m_jacobianLength +=   (( *(p+i+1) - *(p+i) ).transpose() * (jacobian(i+1) - jacobian(i)))
+        m_jacobianLength +=   (( p[i+1] - p[i] ).transpose() * (jacobian(i+1) - jacobian(i)))
                                             /
-                             ( *(p+i+1) - *(p+i) ).norm();
+                             ( p[i+1] - p[i] ).norm();
     }
 }

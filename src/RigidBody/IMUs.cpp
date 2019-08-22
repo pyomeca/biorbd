@@ -151,7 +151,7 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::segmentIMU(
 
     // Update de la cinématique
     if (updateKin)
-        RigidBodyDynamics::UpdateKinematicsCustom(model, &Q,nullptr, nullptr);
+        model.UpdateKinematicsCustom(&Q,nullptr, nullptr);
 
     // Nom du segment a trouver
     biorbd::utils::String name(model.bone(idx).name());

@@ -204,7 +204,7 @@ biorbd::rigidbody::GeneralizedCoordinates getVector(const mxArray*prhs[], unsign
     return getVector(prhs, idx, type);
 }
 Eigen::Vector3d getVector3d(const mxArray*prhs[], unsigned int idx){
-    return getVector(prhs, idx, 3, "Vector3d").vector();
+    return getVector(prhs, idx, 3, "Vector3d");
 }
 
 std::vector<biorbd::rigidbody::GeneralizedCoordinates> getParameterQ(const mxArray*prhs[], unsigned int idx, unsigned int nDof, std::string type = "q"){

@@ -58,7 +58,7 @@ biorbd::utils::Attitude::Attitude(const RigidBodyDynamics::Math::SpatialTransfor
 
 biorbd::utils::Attitude biorbd::utils::Attitude::DeepCopy() const
 {
-    return biorbd::utils::Attitude(this->matrix());
+    return biorbd::utils::Attitude(this->eigen());
 }
 
 Eigen::Vector3d biorbd::utils::Attitude::axe(int i)
@@ -103,7 +103,7 @@ biorbd::utils::Attitude biorbd::utils::Attitude::transpose() const{
     return tp;
 }
 
-const Eigen::Matrix4d &biorbd::utils::Attitude::matrix() const
+const Eigen::Matrix4d &biorbd::utils::Attitude::eigen() const
 {
     return *m_matrix;
 }
@@ -115,7 +115,7 @@ double biorbd::utils::Attitude::matrix(unsigned int row, unsigned int col) const
 
 void biorbd::utils::Attitude::setMatrix(const biorbd::utils::Attitude &attitude)
 {
-    this->m_matrix->block(0,0,4,4) = attitude.matrix();
+    this->m_matrix->block(0,0,4,4) = attitude.eigen();
 }
 
 void biorbd::utils::Attitude::setMatrix(const Eigen::Matrix4d &matrix)
@@ -258,7 +258,7 @@ double biorbd::utils::Attitude::operator()(unsigned int row, unsigned int col) c
 
 biorbd::utils::Attitude &biorbd::utils::Attitude::operator=(const Eigen::Matrix4d &other)
 {
-    if (&this->matrix()==&other) // check for self-assigment
+    if (&this->eigen()==&other) // check for self-assigment
         return *this;
 
     *this->m_matrix = other;
@@ -321,6 +321,6 @@ Eigen::Vector3d biorbd::utils::Attitude::operator*(const Eigen::Vector3d &v)
 
 std::ostream &operator<<(std::ostream &os, const biorbd::utils::Attitude &a)
 {
-    os << a.matrix().block(0,0,4,4);
+    os << a.eigen().block(0,0,4,4);
     return os;
 }

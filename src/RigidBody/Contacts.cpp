@@ -122,7 +122,7 @@ std::vector<biorbd::utils::Node3d> biorbd::rigidbody::Contacts::constraintsInGlo
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
     if (updateKin)
-        RigidBodyDynamics::UpdateKinematicsCustom(model, &Q, nullptr, nullptr);
+        model.UpdateKinematicsCustom(&Q, nullptr, nullptr);
 
     // Variable de sortie
     std::vector<biorbd::utils::Node3d> tp;
@@ -130,7 +130,7 @@ std::vector<biorbd::utils::Node3d> biorbd::rigidbody::Contacts::constraintsInGlo
 
     // Sur chaque controle, appliquer la rotation et enregistrer sa position
     for (unsigned int i=0; i<size(); ++i)
-        tp.push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q,body[i],point[i],false));
+        tp.push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, body[i], point[i], false));
 
     return tp;
 }

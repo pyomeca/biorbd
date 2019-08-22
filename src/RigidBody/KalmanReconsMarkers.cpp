@@ -59,7 +59,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     // Séparer les tobs en un grand vecteur
     biorbd::utils::Vector T(3*Tobs.nTags());
     for (unsigned int i=0; i<Tobs.nTags(); ++i)
-        T.block(i*3,0,3,1) = Tobs.marker(i).position();
+        T.block(i*3, 0, 3, 1) = Tobs.marker(i).position();
 
     // Reconstruire la cinématique
     reconstructFrame(model, T, Q, Qdot, Qddot, removeAxes);
@@ -75,7 +75,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     // Séparer les tobs en un grand vecteur
     biorbd::utils::Vector T(static_cast<unsigned int>(3*Tobs.size()));
     for (unsigned int i=0; i<Tobs.size(); ++i)
-        T.block(i*3,0,3,1) = Tobs[i];
+        T.block(i*3, 0, 3, 1) = Tobs[i];
 
     // Reconstruire la cinématique
     reconstructFrame(model, T, Q, Qdot, Qddot, removeAxes);
@@ -93,8 +93,8 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     if (m_firstIteration){
         m_firstIteration = false;
         biorbd::utils::Vector TobsTP(Tobs);
-        TobsTP.block(3*model.nTechTags(0),0,3*model.nTechTags()-3*model.nTechTags(0),1) =
-                biorbd::utils::Vector(3*model.nTechTags()-3*model.nTechTags(0)).setZero(); // Ne conserver que les marqueurs de la racine
+        TobsTP.block(3*model.nTechTags(0), 0, 3*model.nTechTags()-3*model.nTechTags(0), 1) =
+                Eigen::VectorXd::Zero(3*model.nTechTags()-3*model.nTechTags(0)); // Ne conserver que les marqueurs de la racine
         for (unsigned int j = 0; j < 2; ++j){ // Faire la racine, puis le reste du corps
             if (j != 0)
                 TobsTP = Tobs; // Reprendre tous les marqueurs
@@ -105,15 +105,15 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
 
                 // Remettre Pp à initial (parce qu'on ne s'intéresse pas à la vitesse pour se rendre à la position initiale
                 m_Pp = m_PpInitial;
-                m_xp.block(m_nDof, 0, m_nDof*2,1) = biorbd::utils::Vector(m_nDof*2).setZero(); // Mettre vitesse et accélération à 0
+                m_xp.block(m_nDof, 0, m_nDof*2, 1) = Eigen::VectorXd::Zero(m_nDof*2); // Mettre vitesse et accélération à 0
             }
         }
     }
 
     // État projeté
-    biorbd::utils::Vector xkm = biorbd::utils::Vector(m_A * m_xp);
-    biorbd::utils::Vector Q_tp = biorbd::utils::Vector(xkm.topRows(m_nDof));
-    RigidBodyDynamics::UpdateKinematicsCustom (model, &Q_tp, nullptr, nullptr);
+    biorbd::utils::Vector xkm(biorbd::utils::Vector(m_A * m_xp));
+    biorbd::rigidbody::GeneralizedCoordinates Q_tp(biorbd::utils::Vector(xkm.topRows(m_nDof)));
+    model.UpdateKinematicsCustom (&Q_tp, nullptr, nullptr);
 
     // Markers projetés
     std::vector<biorbd::rigidbody::NodeBone> zest_tp = model.technicalTags(Q_tp, removeAxes, false);
@@ -125,8 +125,8 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     std::vector<unsigned int> occlusionIdx;
     for (unsigned int i=0; i<m_nMeasure/3; ++i) // Divisé par 3 parce qu'on intègre d'un coup xyz
         if (Tobs(i*3)*Tobs(i*3) + Tobs(i*3+1)*Tobs(i*3+1) + Tobs(i*3+2)*Tobs(i*3+2) != 0.0){ // S'il y a un marqueur
-            H.block(i*3,0,3,m_nDof) = *(J_tp.begin()+i);
-            zest.block(i*3, 0,3,1) = *(zest_tp.begin()+i);
+            H.block(i*3,0,3,m_nDof) = J_tp[i];
+            zest.block(i*3, 0, 3, 1) = zest_tp[i];
         }
         else
             occlusionIdx.push_back(i);

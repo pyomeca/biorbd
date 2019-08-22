@@ -15,13 +15,16 @@ class BIORBD_API Matrix : public Eigen::MatrixXd
 {
 public:
     Matrix();
-    Matrix(const Eigen::MatrixXd& m);
+    template<typename OtherDerived> Matrix(const Eigen::MatrixBase<OtherDerived>& other) :
+        Eigen::MatrixXd(other){}
     Matrix(unsigned int i, unsigned int j);
-    virtual ~Matrix();
 
-    biorbd::utils::Matrix & operator= (Eigen::MatrixXd other);
+    template<typename OtherDerived>
+        biorbd::utils::Matrix& operator=(const Eigen::MatrixBase <OtherDerived>& other){
+            this->Eigen::MatrixXd::operator=(other);
+            return *this;
+        }
 
-    virtual Eigen::MatrixXd matrix() const;
 };
 
 }}

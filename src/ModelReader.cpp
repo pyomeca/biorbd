@@ -1234,14 +1234,14 @@ std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarker
             if (cmp>1 && cmp<3*MarkersInFile.size()+2){ // Retirer les timespans et ne pas dépasser
                 int idx = ordre[cmp-2];
                 if (idx>=0)
-                    data_tp(idx) = f;
+                    data_tp(static_cast<unsigned int>(idx)) = f;
             }
             ++cmp;
         }
         // Une fois les markers en ordre, les séparer
         std::vector<biorbd::utils::Node3d> data_tp2;
         for (unsigned int i=0; i<static_cast<unsigned int>(data_tp.size())/3; ++i){
-            biorbd::utils::Node3d node(data_tp.block(3*i,0,3,1)/1000);
+            biorbd::utils::Node3d node(data_tp.block(3*i, 0, 3, 1)/1000);
             data_tp2.push_back(node);
         }
         // Stocker le vecteur de marker a ce temps t

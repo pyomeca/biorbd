@@ -112,7 +112,7 @@ void biorbd::rigidbody::Joints::integrateKinematics(
         const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorque){
     biorbd::rigidbody::GeneralizedCoordinates v(static_cast<unsigned int>(Q.rows()+QDot.rows()));
     v << Q,QDot;
-    integrator->integrate(this, v, GeneralizedTorque.vector(), 0, 1, 0.1); // vecteur, t0, tend, pas, effecteurs
+    integrator->integrate(this, v, GeneralizedTorque, 0, 1, 0.1); // vecteur, t0, tend, pas, effecteurs
     m_isKinematicsComputed = true;
 }
 void biorbd::rigidbody::Joints::getIntegratedKinematics(
@@ -370,15 +370,13 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::projectPointJacobian(
         CalcMatRotJacobian(Q, GetBodyId(node.parent().c_str()), Eigen::Matrix3d::Identity(3,3), JCor,false);
         for (unsigned int n=0; n<3; ++n)
             if (node.isAxisKept(n))
-                G_tp += JCor.matrix().block(n*3,0,3,nbQ()) * node(n);
+                G_tp += JCor.block(n*3,0,3,nbQ()) * node(n);
 
         return G_tp;
     }
     else {
         // Retourner la valeur
-        biorbd::utils::Matrix out(biorbd::utils::Matrix(3,nbQ()));
-        out.setZero();
-        return out;
+        return biorbd::utils::Matrix::Zero(3,nbQ());
     }
 }
 
@@ -423,7 +421,7 @@ RigidBodyDynamics::Math::SpatialTransform biorbd::rigidbody::Joints::CalcBodyWor
 {
     // update the Kinematics if necessary
     if (update_kinematics) {
-        RigidBodyDynamics::UpdateKinematicsCustom (*this, &Q, nullptr, nullptr);
+        UpdateKinematicsCustom (&Q, nullptr, nullptr);
     }
 
     if (body_id >= this->fixed_body_discriminator) {
@@ -447,7 +445,7 @@ biorbd::utils::Node3d biorbd::rigidbody::Joints::CoM(
 
     // S'assurer que le modele est dans la bonne configuration
     if (updateKin)
-        RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,nullptr,nullptr);
+        UpdateKinematicsCustom(&Q, nullptr, nullptr);
 
     // Pour chaque segment, trouver le CoM (CoM = somme(masse_segmentaire * pos_com_seg)/masse_totale)
     std::vector<biorbd::rigidbody::NodeBone> com_segment(CoMbySegment(Q,true));
@@ -477,16 +475,16 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMdot(
     // Retour la vitesse du centre de masse a partir des coordonnées généralisées
 
     // S'assurer que le modele est dans la bonne configuration
-    RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,&Qdot,nullptr);
+    UpdateKinematicsCustom(&Q, &Qdot, nullptr);
 
     // Pour chaque segment, trouver le CoM
     RigidBodyDynamics::Math::Vector3d com_dot = RigidBodyDynamics::Math::Vector3d(0,0,0);
 
     // CoMdot = somme(masse_seg * Jacobienne * qdot)/masse totale
     for (std::vector<biorbd::rigidbody::Bone>::iterator b_it=m_bones.begin(); b_it!=m_bones.end(); ++b_it){
-        biorbd::utils::Matrix Jac(biorbd::utils::Matrix::Zero(3,this->dof_count));
+        biorbd::utils::Matrix Jac(biorbd::utils::Matrix(3,this->dof_count).setZero());
         RigidBodyDynamics::CalcPointJacobian(*this, Q, this->GetBodyId((*b_it).name().c_str()), (*b_it).caract().mCenterOfMass, Jac, false); // False for speed
-        com_dot += (*b_it).caract().mMass*(Jac*Qdot);
+        com_dot += ((Jac*Qdot) * (*b_it).caract().mMass);
     }
     // Diviser par la masse totale
     com_dot = com_dot/this->mass();
@@ -502,7 +500,7 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMddot(
     biorbd::utils::Error::error(0, "Com DDot is wrong, to be modified...");
 
     // S'assurer que le modele est dans la bonne configuration
-    RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,&Qdot,&Qddot);
+    UpdateKinematicsCustom(&Q, &Qdot, &Qddot);
 
     // Pour chaque segment, trouver le CoM
     RigidBodyDynamics::Math::Vector3d com_ddot = RigidBodyDynamics::Math::Vector3d(0,0,0);
@@ -511,7 +509,7 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMddot(
     for (std::vector<biorbd::rigidbody::Bone>::iterator b_it=m_bones.begin(); b_it!=m_bones.end(); ++b_it){
         biorbd::utils::Matrix Jac(biorbd::utils::Matrix::Zero(3,this->dof_count));
         RigidBodyDynamics::CalcPointJacobian(*this, Q, this->GetBodyId((*b_it).name().c_str()), (*b_it).caract().mCenterOfMass, Jac, false); // False for speed
-        com_ddot += (*b_it).caract().mMass*(Jac*Qddot);
+        com_ddot += ((Jac*Qddot) * (*b_it).caract().mMass);
     }
     // Diviser par la masse totale
     com_ddot = com_ddot/this->mass();
@@ -524,11 +522,10 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::CoMJacobian(const biorbd::rigid
     // Retour la position du centre de masse a partir des coordonnées généralisées
 
     // S'assurer que le modele est dans la bonne configuration
-    RigidBodyDynamics::UpdateKinematicsCustom(*this,&Q,nullptr,nullptr);
+    UpdateKinematicsCustom(&Q, nullptr, nullptr);
 
    // Jacobienne totale
-    biorbd::utils::Matrix JacTotal(biorbd::utils::Matrix(3,this->dof_count));
-    JacTotal.setZero();
+    biorbd::utils::Matrix JacTotal(biorbd::utils::Matrix::Zero(3,this->dof_count));
 
     // CoMdot = somme(masse_seg * Jacobienne * qdot)/masse totale
     for (std::vector<biorbd::rigidbody::Bone>::iterator b_it=m_bones.begin(); b_it!=m_bones.end(); ++b_it){
@@ -538,7 +535,7 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::CoMJacobian(const biorbd::rigid
     }
 
     // Diviser par la masse totale
-    JacTotal = JacTotal/this->mass();
+    JacTotal /= this->mass();
 
     // Retourner la jacobienne du CoM
     return JacTotal;
@@ -908,14 +905,14 @@ void biorbd::rigidbody::Joints::computeQdot(
         biorbd::rigidbody::Bone bone_i=bone(i);
         if (bone_i.isRotationAQuaternion()){
             // Extraire le quaternion
-            biorbd::utils::Quaternion quat_tp(Q.block(cmpDof+bone_i.nDofTrans(),0,3,1), Q(Q.size()-m_nRotAQuat+cmpQuat));
+            biorbd::utils::Quaternion quat_tp(Q.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1), Q(Q.size()-m_nRotAQuat+cmpQuat));
 
             // Placer dans le vecteur de sortie
-            QDotOut.block(cmpDof, 0, bone_i.nDofTrans(),1) = QDot.block(cmpDof, 0, bone_i.nDofTrans(),1); // La dérivée des translations est celle directement de qdot
+            QDotOut.block(cmpDof, 0, bone_i.nDofTrans(), 1) = QDot.block(cmpDof, 0, bone_i.nDofTrans(), 1); // La dérivée des translations est celle directement de qdot
 
             // Dériver
-            quat_tp.derivate(QDot.block(cmpDof+bone_i.nDofTrans(),0,3,1));
-            QDotOut.block(cmpDof+bone_i.nDofTrans(),0,3,1) = quat_tp.block(0,0,3,1);
+            quat_tp.derivate(QDot.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1));
+            QDotOut.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1) = quat_tp.block(0,0,3,1);
             QDotOut(Q.size()-m_nRotAQuat+cmpQuat) = quat_tp(3);// Placer dans le vecteur de sortie
 
            // Incrémenter le nombre de quaternions faits
@@ -923,7 +920,7 @@ void biorbd::rigidbody::Joints::computeQdot(
         }
         else{
             // Si c'est un normal, faire ce qu'il est fait d'habitude
-            QDotOut.block(cmpDof,0,bone_i.nDof(),1) = QDot.block(cmpDof,0,bone_i.nDof(),1);
+            QDotOut.block(cmpDof, 0, bone_i.nDof(), 1) = QDot.block(cmpDof, 0, bone_i.nDof(), 1);
         }
         cmpDof += bone_i.nDof();
     }

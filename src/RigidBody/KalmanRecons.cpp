@@ -51,7 +51,7 @@ void biorbd::rigidbody::KalmanRecons::manageOcclusionDuringIteration(
     for (unsigned int i = 0; i < occlusion.size(); ++i)
          for (unsigned int j=occlusion[i]; j< occlusion[i]+1; ++j){
              InvTp(j,j) = 0; // Artéfact du au fait que m_R a une valeur à (j:j+2,j:j+2)
-             measure[j] = 0;
+             measure(j) = 0;
          }
 }
 
@@ -60,13 +60,13 @@ void biorbd::rigidbody::KalmanRecons::getState(
         biorbd::rigidbody::GeneralizedCoordinates *Qdot,
         biorbd::rigidbody::GeneralizedCoordinates *Qddot){
     if (Q != nullptr)
-        *Q = m_xp.block(0,0,m_nDof,1);
+        *Q = m_xp.block(0, 0, m_nDof, 1);
 
     if (Qdot != nullptr)
-        *Qdot = m_xp.block(m_nDof,0,m_nDof,1);
+        *Qdot = m_xp.block(m_nDof, 0, m_nDof, 1);
 
     if (Qddot != nullptr)
-        *Qddot = m_xp.block(2*m_nDof,0,m_nDof,1);
+        *Qddot = m_xp.block(2*m_nDof, 0, m_nDof, 1);
 }
 
 
@@ -83,12 +83,12 @@ biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::evolutionMatrix(
     double c = 1;
     for (unsigned int i=2; i<n+1; ++i){
 
-        double j=(i-1) * nQ;
+        unsigned int j=(i-1) * nQ;
         c = c/(i-1);
 
 
-        for (int cmp=0; cmp<nQ*n-j; ++cmp)
-            A(int(0+cmp),int(j+cmp)) += c* static_cast<double>(std::pow(Te,(static_cast<double>(i)-1.0)));
+        for (unsigned int cmp=0; cmp<nQ*n-j; ++cmp)
+            A(0+cmp,j+cmp) += c* static_cast<double>(std::pow(Te,(static_cast<double>(i)-1.0)));
     }
 
     return A;
@@ -153,7 +153,7 @@ biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::measurementNoiseMatrix(
 }
 
 biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::KalmanRecons::initState(const unsigned int nQ){
-    return biorbd::rigidbody::GeneralizedCoordinates(biorbd::utils::Vector(3*nQ).setZero()); // Q, Qdot, Qddot
+    return biorbd::rigidbody::GeneralizedCoordinates(biorbd::utils::Vector::Zero(3*nQ)); // Q, Qdot, Qddot
 }
 
 void biorbd::rigidbody::KalmanRecons::setInitState(
@@ -161,13 +161,13 @@ void biorbd::rigidbody::KalmanRecons::setInitState(
         const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
         const biorbd::rigidbody::GeneralizedCoordinates *Qddot){
     if (Q != nullptr)
-        m_xp.block(0,0,m_nDof,1) = *Q;
+        m_xp.block(0, 0, m_nDof, 1) = *Q;
 
     if (Qdot != nullptr)
-        m_xp.block(m_nDof,0,m_nDof,1) = *Qdot;
+        m_xp.block(m_nDof, 0, m_nDof, 1) = *Qdot;
 
     if (Qddot != nullptr)
-        m_xp.block(2*m_nDof,0,m_nDof,1) = *Qddot;
+        m_xp.block(2*m_nDof, 0, m_nDof, 1) = *Qddot;
 }
 
 

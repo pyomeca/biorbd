@@ -5,6 +5,7 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "Utils/Matrix.h"
 
 void Matlab_CoMJacobian( int, mxArray *plhs[],
                                 int nrhs, const mxArray*prhs[] ){
@@ -13,14 +14,13 @@ void Matlab_CoMJacobian( int, mxArray *plhs[],
 
     // Recevoir le model
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
-    unsigned int NDDL = model->nbDof(); // Get the number of DoF
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
     biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Trouver la jacobienne du COM
-    RigidBodyDynamics::Math::MatrixNd Jaco = model->CoMJacobian(Q).transpose();
+    RigidBodyDynamics::Math::MatrixNd Jaco(model->CoMJacobian(Q).transpose());
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( 3, nQ, mxREAL);

@@ -5,6 +5,7 @@
 #include <rbdl/Kinematics.h>
 #include "BiorbdModel.h"
 #include "Utils/Error.h"
+#include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/IMU.h"
 
@@ -25,7 +26,8 @@ biorbd::rigidbody::KalmanReconsIMU::~KalmanReconsIMU()
 
 }
 
-void biorbd::rigidbody::KalmanReconsIMU::initialize(){
+void biorbd::rigidbody::KalmanReconsIMU::initialize()
+{
     biorbd::rigidbody::KalmanRecons::initialize();
 
     // Se souvenir de m_Pp de départ
@@ -54,12 +56,13 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         const std::vector<biorbd::utils::Attitude> &IMUobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
         biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-        biorbd::rigidbody::GeneralizedCoordinates *Qddot){
+        biorbd::rigidbody::GeneralizedCoordinates *Qddot)
+{
     // Séparer les IMUobs en un grand vecteur
     biorbd::utils::Vector T(static_cast<unsigned int>(3*3*IMUobs.size())); // Matrice 3*3 * nIMU
     for (unsigned int i=0; i<IMUobs.size(); ++i)
         for (unsigned int j=0; j<3; ++j)
-           T.block(9*i+3*j,0,3,1) = IMUobs[i].matrix().block(0,j,3,1);
+           T.block(9*i+3*j, 0, 3, 1) = IMUobs[i].eigen().block(0,j,3,1);
 
     // Reconstruire la cinématique
     reconstructFrame(m, T, Q, Qdot, Qddot);
@@ -71,7 +74,8 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         const utils::Vector &IMUobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
         biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-        biorbd::rigidbody::GeneralizedCoordinates *Qddot){
+        biorbd::rigidbody::GeneralizedCoordinates *Qddot)
+{
     // Une itération du filtre de Kalman
     if (m_firstIteration){
         m_firstIteration = false;
@@ -80,14 +84,14 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
             reconstructFrame(model, IMUobs, nullptr, nullptr, nullptr);
 
             // Remettre Pp à initial (parce qu'on ne s'intéresse pas à la vitesse pour se rendre à la position initiale
-            m_xp.block(m_nDof, 0, m_nDof*2,1) = biorbd::utils::Vector(m_nDof*2).setZero(); // Mettre vitesse et accélération à 0
+            m_xp.block(m_nDof, 0, m_nDof*2, 1) = Eigen::VectorXd::Zero(m_nDof*2); // Mettre vitesse et accélération à 0
         }
     }
 
     // État projeté
     biorbd::utils::Vector xkm = biorbd::utils::Vector(m_A * m_xp);
-    biorbd::utils::Vector Q_tp = biorbd::utils::Vector(xkm.topRows(m_nDof));
-    RigidBodyDynamics::UpdateKinematicsCustom (model, &Q_tp, nullptr, nullptr);
+    biorbd::rigidbody::GeneralizedCoordinates Q_tp(biorbd::utils::Vector(xkm.topRows(m_nDof)));
+    model.UpdateKinematicsCustom (&Q_tp, nullptr, nullptr);
 
     // Markers projetés
     std::vector<biorbd::rigidbody::IMU> zest_tp = model.technicalIMU(Q_tp, false);
@@ -102,10 +106,10 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         for (unsigned int j = 0; j < 9; ++j) // Calculer la norme des 9 composantes
             sum += IMUobs(i*9+j)*IMUobs(i*9+j);
         if (sum != 0.0 && sum == sum){ // S'il y a un imu (pas de zéro ou nan)
-            H.block(i*9,0,9,m_nDof) = *(J_tp.begin()+i);
-            Eigen::Matrix3d rot = (*(zest_tp.begin()+i)).rot();
+            H.block(i*9,0,9,m_nDof) = J_tp[i];
+            Eigen::Matrix3d rot = zest_tp[i].rot();
             for (unsigned int j = 0; j < 3; ++j)
-                zest.block(i*9+j*3, 0,3,1) = rot.block(0, j, 3, 1);
+                zest.block(i*9+j*3, 0, 3, 1) = rot.block(0, j, 3, 1);
         }
         else
             occlusionIdx.push_back(i);

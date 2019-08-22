@@ -7,20 +7,18 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
 
-static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
-TEST(FileIO, OpenModel){
 #ifdef MODULE_ACTUATORS
-    EXPECT_NO_THROW(biorbd::Model model(modelPathForGeneralTesting));
+static std::string modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");
 #else // MODULE_ACTUATORS
-    EXPECT_THROW(biorbd::Model model(modelPathForGeneralTesting), std::runtime_error);
+static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
 #endif // MODULE_ACTUATORS
+TEST(FileIO, OpenModel){
+    EXPECT_NO_THROW(biorbd::Model model(modelPathForGeneralTesting));
 }
 
 TEST(GenericTests, mass){
-#ifdef MODULE_ACTUATORS
     biorbd::Model model(modelPathForGeneralTesting);
     EXPECT_DOUBLE_EQ(model.mass(), 52.412120000000002);
-#endif
 }
 
 TEST(Dynamics, Forward){

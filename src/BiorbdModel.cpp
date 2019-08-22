@@ -30,8 +30,8 @@ bool biorbd::Model::InverseKinematics(
     // Trouver les markers techniques uniquement (body_point)
     std::vector<biorbd::rigidbody::NodeBone> body_point(this->TechnicalTagsInLocal(removeAxes));
     std::vector<RigidBodyDynamics::Math::Vector3d> body_pointEigen;
-    for (std::vector<biorbd::rigidbody::NodeBone>::iterator it = body_point.begin(); it!=body_point.end(); ++it)
-        body_pointEigen.push_back((*it).vector());
+    for (unsigned int i=0; i<body_point.size(); ++i)
+        body_pointEigen.push_back(body_point[i]);
 
     std::vector<RigidBodyDynamics::Math::Vector3d> markersInRbdl;
     for (unsigned int i = 0; i<markers.size(); ++i)

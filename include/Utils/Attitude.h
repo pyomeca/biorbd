@@ -41,7 +41,7 @@ public:
     Eigen::Vector3d axe(int); // Aller récupérer un axe en particulier
 
     biorbd::utils::Attitude transpose() const;
-    const Eigen::Matrix4d& matrix() const;
+    const Eigen::Matrix4d& eigen() const;
     double matrix(unsigned int row, unsigned int col) const;
     void setMatrix(const biorbd::utils::Attitude& attitude);
     void setMatrix(const Eigen::Matrix4d &matrix);

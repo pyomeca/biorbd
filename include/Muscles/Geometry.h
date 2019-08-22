@@ -2,6 +2,7 @@
 #define BIORBD_MUSCLES_GEOMETRY_H
 
 #include "biorbdConfig.h"
+#include "Utils/Vector.h"
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/Joints.h"

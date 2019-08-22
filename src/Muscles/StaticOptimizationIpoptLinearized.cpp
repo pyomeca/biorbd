@@ -73,7 +73,7 @@ bool biorbd::muscles::StaticOptimizationIpoptLinearized::eval_g(
     // Compute the torques from muscles
     biorbd::rigidbody::GeneralizedTorque GeneralizedTorque_calcul(m_model.muscularJointTorque(state, false, &m_Q, &m_Qdot));
     biorbd::utils::Vector res(static_cast<unsigned int>(m));
-    for( Ipopt::Index i = 0; i < m; i++ )
+    for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ )
        {
         for (unsigned int j = 0; j<m_nMus; j++){
             res[i] += m_jacobian(i,j)*x[j];
@@ -120,7 +120,7 @@ bool biorbd::muscles::StaticOptimizationIpoptLinearized::eval_jac_g(
         unsigned int k(0);
         for( unsigned int j = 0; j < m_nMus; j++ )
            {
-            for( Ipopt::Index i = 0; i < m; i++ )
+            for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ )
             {
                 values[k++] = m_jacobian(i,j);
            }

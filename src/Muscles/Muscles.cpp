@@ -102,7 +102,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
     biorbd::utils::Matrix jaco(musclesLengthJacobian());
 
     // Calcul de la réaction des forces sur les corps
-    return biorbd::rigidbody::GeneralizedTorque(static_cast<Eigen::VectorXd>(-jaco.transpose() * F));
+    return biorbd::rigidbody::GeneralizedTorque( -jaco.transpose() * F );
 }
 
 std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> biorbd::muscles::Muscles::musclesForces(

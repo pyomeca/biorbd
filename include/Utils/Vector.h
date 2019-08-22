@@ -11,11 +11,10 @@ class BIORBD_API Vector : public Eigen::VectorXd
 {
 public:
     Vector();
-    Vector(const Eigen::VectorXd& v);
-    Vector(const biorbd::utils::Vector& v);
+    template<typename OtherDerived> Vector(const Eigen::MatrixBase<OtherDerived>& other) :
+        Eigen::VectorXd(other){}
     Vector(unsigned int i);
-    virtual ~Vector();
-    Eigen::VectorXd vector() const;
+
     double norm(
             unsigned int p = 2,
             bool skipRoot = false);
@@ -23,11 +22,12 @@ public:
             unsigned int p = 2,
             bool skipRoot = false);
 
-    biorbd::utils::Vector& operator=(const Eigen::VectorXd& rhs);
-    biorbd::utils::Vector& operator=(const Eigen::Matrix<double, -1, -1, 0, -1, -1>& rhs);
+    template<typename OtherDerived>
+        biorbd::utils::Vector& operator=(const Eigen::MatrixBase <OtherDerived>& other){
+            this->Eigen::VectorXd::operator=(other);
+            return *this;
+        }
 };
-
-
 
 }}
 

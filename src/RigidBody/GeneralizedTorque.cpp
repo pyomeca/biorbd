@@ -5,12 +5,6 @@
 
 biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque() {}
 
-biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque(const biorbd::utils::Vector &v) :
-    biorbd::utils::Vector(v)
-{
-
-}
-
 biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque(unsigned int i) :
     biorbd::utils::Vector(i)
 {

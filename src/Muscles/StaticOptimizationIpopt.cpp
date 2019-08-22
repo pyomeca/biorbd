@@ -195,7 +195,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_g(
     biorbd::rigidbody::GeneralizedTorque GeneralizedTorqueMusc = m_model.muscularJointTorque(m_states, false, &m_Q, &m_Qdot);
 
     // TODO : adjust dimensions for when "root_actuated" is set to false in bioMod file
-    for( Ipopt::Index i = 0; i < m; i++ )
+    for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ )
          g[i] = GeneralizedTorqueMusc[i] + m_GeneralizedTorqueResidual[i] - m_GeneralizedTorqueTarget[i];
 
     if (m_verbose >= 2){
@@ -242,7 +242,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
                 stateEpsilon.push_back(biorbd::muscles::StateDynamics(0, m_activations[i]+delta*m_eps));
             }
             biorbd::rigidbody::GeneralizedTorque GeneralizedTorqueCalculEpsilon(m_model.muscularJointTorque(stateEpsilon, false, &m_Q, &m_Qdot));
-            for( Ipopt::Index i = 0; i < m; i++ ){
+            for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ ){
                 values[k++] = (GeneralizedTorqueCalculEpsilon[i]-GeneralizedTorqueMusc[i])/m_eps;
                 if (m_verbose >= 3){
                     std::cout << std::setprecision (20) << std::endl;
@@ -261,7 +261,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
             biorbd::utils::Matrix jacobian(m_nGeneralizedTorque, static_cast<unsigned int>(n));
             jacobian.setZero();
             for( unsigned int j = 0; j < m_nMus; j++ )
-                for( Ipopt::Index i = 0; i < m; i++ )
+                for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ )
                     jacobian(i,j) = values[k++];
             for( unsigned int j = 0; j < m_nGeneralizedTorqueResidual; j++ ){
                 jacobian(j, j+m_nMus) = values[k++];

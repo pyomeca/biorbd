@@ -5,6 +5,7 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "Utils/Matrix.h"
 
 void Matlab_MusclesJacobian( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){

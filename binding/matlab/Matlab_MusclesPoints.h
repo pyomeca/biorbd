@@ -89,8 +89,10 @@ void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
             // Transcrire les valeurs RT dans un tableau matlab
             mxArray *tp_RT = mxCreateDoubleMatrix(4,4,mxREAL);
             double *RT = mxGetPr(tp_RT);
-            for (unsigned int j=0;j<16;++j)
-                RT[j] = (*(wrap_RT.begin()+i))(j);
+            int cmp(0);
+            for (unsigned int j=0;j<4;++j)
+                for (unsigned int k=0;k<4;++k)
+                    RT[cmp++] = wrap_RT[i](k, j);
 
             // Transcrire les valeurs de dimension1
             mxArray *tp_dim1 = mxCreateDoubleMatrix(1,1,mxREAL);

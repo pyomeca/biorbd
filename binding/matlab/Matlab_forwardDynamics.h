@@ -63,7 +63,7 @@ void Matlab_forwardDynamics( int, mxArray *plhs[],
 
     biorbd::rigidbody::GeneralizedCoordinates QDDot(nQddot);
     for (unsigned int j=0; j<nFrame; ++j){
-        RigidBodyDynamics::UpdateKinematicsCustom(*model, &(*(Q.begin()+j)), &(*(QDot.begin()+j)), nullptr);
+        model->UpdateKinematicsCustom(&Q[j], &QDot[j], nullptr);
 
         // Trouver la dynamique directe a cette configuration
         QDDot.setZero();

@@ -58,6 +58,46 @@ external_forces 0
         endmarker
     
 
+    // Actuator
+        actuator    Pelvis
+            type    Constant
+            dof    TransY
+            direction    positive
+            Tmax    0.000000
+        endactuator
+        actuator    Pelvis
+            type    Constant
+            dof    TransZ
+            direction    positive
+            Tmax    0.000000
+        endactuator
+        actuator    Pelvis
+            type    Constant
+            dof    RotX
+            direction    positive
+            Tmax    0.000000
+        endactuator
+        actuator    Pelvis
+            type    Constant
+            dof    TransY
+            direction    negative
+            Tmax    0.000000
+        endactuator
+        actuator    Pelvis
+            type    Constant
+            dof    TransZ
+            direction    negative
+            Tmax    0.000000
+        endactuator
+        actuator    Pelvis
+            type    Constant
+            dof    RotX
+            direction    negative
+            Tmax    0.000000
+        endactuator
+
+
+
 
 // Informations about Tronc segment
     // Segment
@@ -172,6 +212,11 @@ external_forces 0
             position    -0.00029    -0.00944    0.30907
         endmarker
 
+    // Actuator
+        // No acturator for this segment
+
+
+
 
 // Informations about Tete segment
     // Segment
@@ -228,6 +273,10 @@ external_forces 0
             parent Tete
             position    -0.07122    -0.04303    0.41862
         endmarker
+
+    // Actuator
+        // No acturator for this segment
+
 
 
 // Informations about BrasD segment
@@ -359,6 +408,56 @@ external_forces 0
             position    0.10240    0.15441    -0.51431
         endmarker
 
+    // Actuator
+        actuator    BrasD
+            type    constant
+            dof     RotZ
+            direction       positive
+            Tmax    15
+        endactuator
+        actuator        BrasD
+            type    constant
+            dof     RotZ
+            direction       negative
+            Tmax    15
+        endactuator
+        actuator    BrasD
+            type    Gauss6p
+            dof     RotX
+            direction    positive
+            Tmax    32.655002
+            T0      25.780265
+            wmax    812.499995
+            wc      324.999996
+            amin    0.500000
+            wr      28.424707
+            w1      90.000000
+            r       28.832873
+            qopt    133.000000
+            facteur 3.862687
+            r2      73.500000
+            qopt2   73.500000
+        endactuator
+        actuator    BrasD
+            type    Gauss6p
+            dof     RotX
+            direction    negative
+            Tmax    41.779398
+            T0      32.853388
+            wmax    1000.000000
+            wc      400.000000
+            amin    0.602364
+            wr      10.177422
+            w1      47.600548
+            r       74.100000
+            qopt    132.416627
+            facteur 2.080254
+            r2      60.375000
+            qopt2   24.694161
+        endactuator
+        
+
+
 
 // Informations about BrasG segment
     // Segment
@@ -489,6 +588,54 @@ external_forces 0
             position    -0.10240    0.15441    -0.51431
         endmarker
 
+    // Actuator
+        actuator    BrasG
+            type    constant
+            dof     RotZ
+            direction       positive
+            Tmax    15
+        endactuator
+        actuator    BrasG
+            type    constant
+            dof     RotZ
+            direction       negative
+            Tmax    15
+        endactuator
+        actuator   BrasG
+            type   Gauss6p
+            dof    RotX
+            direction    positive
+            Tmax    32.655002
+            T0      25.780265
+            wmax    812.499995
+            wc      324.999996
+            amin    0.500000
+            wr      28.424707
+            w1      90.000000
+            r       28.832873
+            qopt    133.000000
+            facteur 3.862687
+            r2      73.500000
+            qopt2   73.500000
+        endactuator
+        actuator    BrasG
+            type    Gauss6p
+            dof    RotX
+            direction    negative
+            Tmax     41.779398
+            T0       32.853388
+            wmax     1000.000000
+            wc       400.000000
+            amin     0.602364
+            wr       10.177422
+            w1       47.600548
+            r        74.100000
+            qopt     132.416627
+            facteur  2.080254
+            r2       60.375000
+            qopt2    24.694161
+        endactuator
+        
         
 // Informations about CuisseD segment
     // Segment
@@ -548,6 +695,39 @@ external_forces 0
         endmarker
         
     
+    
+
+    // Actuator
+        actuator    CuisseD
+            type    Gauss3p
+            dof     RotX
+            direction   positive
+            Tmax	232.135218
+            T0	    183.264629
+            wmax	475.000000
+            wc	    190.000000
+            amin	0.990000
+            wr	    40.000000
+            w1	    -90.000000
+            qopt	14.193982
+            r	    65.925096
+        endactuator
+        actuator    CuisseD
+            type    Gauss3p
+            dof     RotX
+            direction    negative
+            Tmax	592.619244
+            T0	    467.857298
+            wmax	562.500000
+            wc	    225.000000
+            amin	0.500000
+            wr	    40.000000
+            w1	    -78.046135
+            qopt	85.510899
+            r	    -67.744985
+        endactuator
+
+
     
 // Informations about JambeD segment
     // Segment
@@ -611,6 +791,36 @@ external_forces 0
             parent JambeD
             position    0.00952    0.04773    -0.02947
         endmarker
+
+    // Actuator
+        actuator    JambeD
+            type    Gauss3p
+            dof     RotX
+            direction    positive
+            Tmax	385.101300
+            T0	    275.072368
+            wmax	1437.500000
+            wc	    575.000000
+            amin	0.990000
+            wr	    40.000000
+            w1	    -89.999999
+            qopt	-63.850357
+            r	    -31.721902
+        endactuator
+        actuator    JambeD
+            type    Gauss3p
+            dof     RotX
+            direction    negative
+            Tmax	177.638132
+            T0	    126.884380
+            wmax	950.000000
+            wc	    380.000000
+            amin	0.990000
+            wr	    40.000000
+            w1	    -90.000000
+            qopt	-35.508215
+            r	    54.590448
+        endactuator
 
 
 // Informations about PiedG segment
@@ -691,6 +901,37 @@ external_forces 0
         endcontact
 
 
+    // Actuator
+        actuator    PiedD
+            type    Gauss3p
+            dof     RotX
+            direction    positive
+            Tmax	53.822999
+            T0	    38.331862
+            wmax	2375.000000
+            wc	    375.000000
+            amin	0.910290
+            wr	    40.000000
+            w1	    -90.000000
+            qopt	0.744576
+            r	    58.983760
+        endactuator
+        actuator    PiedD
+            type    Gauss3p
+            dof     RotX
+            direction    negative
+            Tmax	257.854740
+            T0	    168.214981
+            wmax	2000.000000
+            wc	    800.000000
+            amin	0.782747
+            wr	    90.000000
+            w1	    -53.230301
+            qopt	30.550320
+            r	    34.514038
+        endactuator
+
+
 
 // Informations about CuisseG segment
     // Segment
@@ -748,6 +989,38 @@ external_forces 0
             parent CuisseG
             position    -0.01361    -0.05144    -0.15273
         endmarker
+
+    // Actuator
+        actuator    CuisseG
+            type    Gauss3p
+            dof     RotX
+            direction   positive
+            Tmax	232.135218
+            T0	    183.264629
+            wmax	475.000000
+            wc	    190.000000
+            amin	0.990000
+            wr	    40.000000
+            w1	    -90.000000
+            qopt	14.193982
+            r	    65.925096
+        endactuator
+        actuator    CuisseG
+            type    Gauss3p
+            dof     RotX
+            direction    negative
+            Tmax	592.619244
+            T0	    467.857298
+            wmax	562.500000
+            wc	    225.000000
+            amin	0.500000
+            wr	    40.000000
+            w1	    -78.046135
+            qopt	85.510899
+            r	    -67.744985
+        endactuator
+    
+    
 
 
 // Informations about JambeG segment
@@ -812,6 +1085,38 @@ external_forces 0
             parent JambeG
             position    -0.00952    0.04773    -0.02947
         endmarker
+
+    // Actuator
+        actuator    JambeG
+            type    Gauss3p
+            dof     RotX
+            direction    positive
+            Tmax	385.101300
+            T0	    275.072368
+            wmax	1437.500000
+            wc	    575.000000
+            amin	0.990000
+            wr	    40.000000
+            w1	    -89.999999
+            qopt	-63.850357
+            r	    -31.721902
+        endactuator
+        actuator    JambeG
+            type    Gauss3p
+            dof     RotX
+            direction    negative
+            Tmax	177.638132
+            T0	    126.884380
+            wmax	950.000000
+            wc	    380.000000
+            amin	0.990000
+            wr	    40.000000
+            w1	    -90.000000
+            qopt	-35.508215
+            r	    54.590448
+        endactuator
+
+
 
 
 // Informations about PiedG segment
@@ -890,4 +1195,37 @@ external_forces 0
         position    -0.00757    0.01189    -0.01802
         axis    z
     endcontact
+
+
+    // Actuator
+        actuator    PiedG
+            type    Gauss3p
+            dof     RotX
+            direction    positive
+            Tmax	53.822999
+            T0	    38.331862
+            wmax	2375.000000
+            wc	    375.000000
+            amin	0.910290
+            wr	    40.000000
+            w1	    -90.000000
+            qopt	0.744576
+            r	    58.983760
+        endactuator
+        actuator    PiedG
+            type    Gauss3p
+            dof     RotX
+            direction    negative
+            Tmax	257.854740
+            T0	    168.214981
+            wmax	2000.000000
+            wc	    800.000000
+            amin	0.782747
+            wr	    90.000000
+            w1	    -53.230301
+            qopt	30.550320
+            r	    34.514038
+        endactuator
+
+
 
