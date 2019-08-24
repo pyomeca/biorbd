@@ -19,6 +19,7 @@ class BIORBD_API Node3d : public Eigen::Vector3d, public biorbd::utils::Node
             double x,
             double y,
             double z);
+    Node3d(const Eigen::Vector4d& v);
     template<typename OtherDerived> Node3d(const Eigen::MatrixBase<OtherDerived>& other) :
         Eigen::Vector3d(other), biorbd::utils::Node () {}
     template<typename OtherDerived> Node3d(
@@ -35,14 +36,15 @@ class BIORBD_API Node3d : public Eigen::Vector3d, public biorbd::utils::Node
     biorbd::utils::Node3d DeepCopy() const;
 
     // Get and Set
-    void setPosition(const biorbd::utils::Node3d& n);
-    void setPosition(Eigen::Vector3d& n);
-    void setPosition(Eigen::Vector4d& n);
-    const biorbd::utils::Node3d& position() const;
-    void applyRT(const Attitude&);
-    const biorbd::utils::Node3d operator-(const biorbd::utils::Node3d &) const; // overload d'opérateurs
-    const biorbd::utils::Node3d operator*(double) const; // overload d'opérateurs
-    const biorbd::utils::Node3d operator/(double) const; // overload d'opérateurs
+    biorbd::utils::Node3d applyRT(const RotoTrans&) const;
+    void applyRT(const RotoTrans&);
+
+    biorbd::utils::Node3d& operator=(const Eigen::Vector4d& other);
+    template<typename OtherDerived>
+        biorbd::utils::Node3d& operator=(const Eigen::MatrixBase <OtherDerived>& other){
+            this->Eigen::Vector3d::operator=(other);
+            return *this;
+        }
 
 };
 

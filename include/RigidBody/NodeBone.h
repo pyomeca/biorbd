@@ -35,9 +35,8 @@ public:
     bool isTechnical() const;
     bool isAnatomical() const;
     int parentId() const;
-    const NodeBone& position() const;
-    NodeBone position(bool removeAxes) const;
 
+    NodeBone removeAxes() const;
     bool isAxisRemoved(unsigned int) const;
     bool isAxisKept(unsigned int) const;
     void addAxesToRemove(unsigned int); // Ajouter un axes à retirer
@@ -46,6 +45,13 @@ public:
     void addAxesToRemove(const std::vector<biorbd::utils::String>& axis); // Ajouter un axes à retirer
     biorbd::utils::String axesToRemove();
     int nAxesToRemove() const; // Nombre d'axes à retirer
+
+    template<typename OtherDerived>
+        biorbd::rigidbody::NodeBone& operator=(const Eigen::MatrixBase <OtherDerived>& other){
+            this->biorbd::utils::Node3d::operator=(other);
+            return *this;
+        }
+
 protected:
     std::vector<bool> m_axesRemoved; // Matrice de projection
     int m_nbAxesToRemove; // Retirer un ou plusieurs axes (1 axe : projeter sur un plan, 2 axes : projeter sur le 3ième axes, 3 axes : retourne la position du repère parent

@@ -12,6 +12,7 @@ class BIORBD_API GeneralizedTorque : public biorbd::utils::Vector
 {
 public:
     GeneralizedTorque();
+    GeneralizedTorque(const biorbd::rigidbody::GeneralizedTorque& Q);
     template<typename OtherDerived> GeneralizedTorque(const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::Vector(other){}
     GeneralizedTorque(unsigned int i);

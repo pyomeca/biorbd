@@ -61,21 +61,12 @@ int biorbd::rigidbody::NodeBone::parentId() const
     return m_id;
 }
 
-const biorbd::rigidbody::NodeBone& biorbd::rigidbody::NodeBone::position() const
-{
-    return *this;
-}
-
-biorbd::rigidbody::NodeBone biorbd::rigidbody::NodeBone::position(bool removeAxes) const
+biorbd::rigidbody::NodeBone biorbd::rigidbody::NodeBone::removeAxes() const
 {
     biorbd::rigidbody::NodeBone pos(*this);
-
-    // S'il faut retirer des axes, les retirer
-    if (removeAxes)
-        for (unsigned int i=0; i<m_axesRemoved.size(); ++i)
-            if (isAxisRemoved(i))
-                pos(i) = 0;
-
+    for (unsigned int i=0; i<m_axesRemoved.size(); ++i)
+        if (isAxisRemoved(i))
+            pos(i) = 0;
     return pos;
 }
 

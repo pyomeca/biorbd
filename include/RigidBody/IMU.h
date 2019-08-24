@@ -26,6 +26,7 @@ public:
     biorbd::rigidbody::IMU DeepCopy() const;
 
     // Get and Set
+    // TODO Inherit isTechnical
     bool isTechnical() const;
     bool isAnatomical() const;
     template<typename OtherDerived>

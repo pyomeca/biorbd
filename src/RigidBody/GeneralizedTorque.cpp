@@ -5,6 +5,12 @@
 
 biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque() {}
 
+biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque(const biorbd::rigidbody::GeneralizedTorque &Q) :
+    biorbd::utils::Vector(Q)
+{
+
+}
+
 biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque(unsigned int i) :
     biorbd::utils::Vector(i)
 {

@@ -30,6 +30,10 @@
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/ViaPoint.h"
 #include "Muscles/WrappingCylinder.h"
+#include "Muscles/FatigueParameters.h"
+#include "Muscles/State.h"
+#include "Muscles/Caracteristics.h"
+#include "Muscles/ViaPoint.h"
 #endif // MODULE_MUSCLES
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -674,8 +678,9 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                 }
             }
             biorbd::utils::Error::error(idxGroup!=-1, "No muscle group was provided!");
-            biorbd::muscles::Geometry geo(biorbd::muscles::MuscleNode(origin_pos, name + "_origin", model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
-                                  biorbd::muscles::MuscleNode(insert_pos, name + "_insertion", model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
+            biorbd::muscles::Geometry geo(
+                        biorbd::utils::Node3d(origin_pos, name + "_origin", model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
+                        biorbd::utils::Node3d(insert_pos, name + "_insertion", model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
             biorbd::muscles::State stateMax(maxExcitation, maxActivation);
             biorbd::muscles::Caracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax, fatigueParameters);
             model->muscleGroup_nonConst(static_cast<unsigned int>(idxGroup)).addHillMuscle(name,type,geo,caract,biorbd::muscles::PathChangers(),stateType,dynamicFatigueType);
@@ -694,7 +699,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
             biorbd::utils::String musclegroup("");
             int iMuscleGroup(-1);
             int iMuscle(-1);
-            biorbd::utils::Node3d position(0,0,0);
+            biorbd::muscles::ViaPoint position(0,0,0);
 
             // Lecture du fichier
             while(file.read(tp) && tp.tolower().compare("endviapoint")){
@@ -717,8 +722,10 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
             biorbd::utils::Error::error(iMuscleGroup!=-1, "No muscle group was provided!");
             iMuscle = model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscleID(muscle);
             biorbd::utils::Error::error(iMuscle!=-1, "No muscle was provided!");
-            biorbd::muscles::ViaPoint v(position,name,parent);
-            model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle))->addPathObject(v);
+            position.setName(name);
+            position.setParent(parent);
+            model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup))
+                    .muscle(static_cast<unsigned int>(iMuscle))->addPathObject(position);
 #else // MODULE_ACTUATORS
         biorbd::utils::Error::error(false, "Biorbd was build without the module Muscles but the model defines a viapoint");
 #endif // MODULE_ACTUATORS

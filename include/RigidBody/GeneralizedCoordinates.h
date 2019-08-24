@@ -12,11 +12,11 @@ class BIORBD_API GeneralizedCoordinates : public biorbd::utils::Vector
 {
 public:
     GeneralizedCoordinates();
+    GeneralizedCoordinates(const biorbd::rigidbody::GeneralizedCoordinates& Q);
     template<typename OtherDerived> GeneralizedCoordinates(const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::Vector(other){}
     GeneralizedCoordinates(unsigned int i);
     GeneralizedCoordinates(const biorbd::rigidbody::Joints& j);
-
     virtual ~GeneralizedCoordinates();
 
     template<typename OtherDerived>

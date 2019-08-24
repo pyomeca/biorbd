@@ -8,6 +8,12 @@ biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates()
 
 }
 
+biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(const biorbd::rigidbody::GeneralizedCoordinates &Q) :
+    biorbd::utils::Vector(Q)
+{
+
+}
+
 biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(unsigned int i) : biorbd::utils::Vector(i)
 {
 

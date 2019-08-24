@@ -3,11 +3,16 @@
 
 #include "BiorbdModel.h"
 #include "biorbdConfig.h"
+#include "Utils/Matrix.h"
+#include "RigidBody/GeneralizedCoordinates.h"
 #ifdef MODULE_MUSCLES
 #include "Muscles/Muscle.h"
+#include "Muscles/Geometry.h"
+#include "Muscles/Caracteristics.h"
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/HillTypeThelenFatigable.h"
 #include "Muscles/FatigueDynamicStateXia.h"
+#include "Muscles/StateDynamics.h"
 
 static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
 static unsigned int muscleGroupForMuscleJacobian(1);

@@ -2,6 +2,7 @@
 #define BIORBD_UTILS_ERROR_H
 
 #include "biorbdConfig.h"
+#include "Utils/String.h"
 
 namespace biorbd {
 namespace utils {

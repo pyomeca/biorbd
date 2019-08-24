@@ -64,11 +64,10 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::Tags(
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
     unsigned int id = model.GetBodyId(n.parent().c_str());
-    biorbd::rigidbody::NodeBone pos(n);
-    pos.setPosition(n.position(removeAxis));
-
-    pos.setPosition(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, pos, updateKin));
-    return pos;
+    if (removeAxis)
+        return biorbd::rigidbody::NodeBone(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, n.removeAxes(), updateKin));
+    else
+        return biorbd::rigidbody::NodeBone(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, n, updateKin));
 }
 
 // Se faire renvoyer un marker
@@ -87,8 +86,7 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::Tags(
     // Récupérer la position du marker dans le repère local
     biorbd::rigidbody::NodeBone pos = Tags(idx, removeAxis);
 
-    pos.setPosition(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, pos, updateKin));
-    return pos;
+    return biorbd::rigidbody::NodeBone(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, pos, updateKin));
 }
 // Se faire renvoyer un marker
 biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::Tags(
@@ -96,10 +94,10 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::Tags(
         bool removeAxis)
 {
     biorbd::rigidbody::NodeBone node = marker(idx);
-    biorbd::rigidbody::NodeBone pos = node.position(removeAxis);
-
-    // Retourner la position
-    return pos;
+    if (removeAxis)
+        return node.removeAxes();
+    else
+        return node;
 }
 
 // Se faire renvoyer les markers
@@ -145,8 +143,7 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::TagsVelocity(
     biorbd::rigidbody::NodeBone pos(Tags(idx, removeAxis));
 
     // Calcul de la vitesse du point
-    pos.setPosition(RigidBodyDynamics::CalcPointVelocity(model, Q, Qdot, id, pos, updateKin));
-    return pos;
+    return biorbd::rigidbody::NodeBone(RigidBodyDynamics::CalcPointVelocity(model, Q, Qdot, id, pos, updateKin));
 }
 
 // Se faire renvoyer les markers
