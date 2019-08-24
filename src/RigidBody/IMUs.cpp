@@ -28,11 +28,11 @@ void biorbd::rigidbody::IMUs::addIMU(
 
 // Ajouter un nouveau marker au pool de markers
 void biorbd::rigidbody::IMUs::addIMU(
-        const biorbd::utils::NodeAttitude &attitude,
+        const biorbd::utils::RotoTransNode &RotoTrans,
         bool technical,
         bool anatomical)
 {
-    m_IMUs.push_back(biorbd::rigidbody::IMU(attitude, technical, anatomical));
+    m_IMUs.push_back(biorbd::rigidbody::IMU(RotoTrans, technical, anatomical));
 }
 
 unsigned int biorbd::rigidbody::IMUs::nIMUs() const
@@ -88,11 +88,9 @@ biorbd::rigidbody::IMU biorbd::rigidbody::IMUs::IMU(
     biorbd::rigidbody::IMU node = IMU(idx);
     unsigned int id = static_cast<unsigned int>(model.GetBodyBiorbdId(node.parent()));
 
-    biorbd::utils::Attitude parent(model.globalJCS(Q, id, updateKin));
+    biorbd::utils::RotoTrans parent(model.globalJCS(Q, id, updateKin));
 
-    biorbd::rigidbody::IMU node_tp = node;
-    node_tp.setMatrix(parent * node);
-    return node_tp;
+    return biorbd::rigidbody::IMU (parent * node);
 }
 
 // Se faire renvoyer les IMUs techniques

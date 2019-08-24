@@ -2,6 +2,7 @@
 #include "Muscles/Geometry.h"
 
 #include <rbdl/Kinematics.h>
+#include "Utils/RotoTrans.h"
 #include "Muscles/WrappingObject.h"
 #include "Muscles/ViaPoint.h"
 #include "Utils/Attitude.h"
@@ -234,7 +235,7 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(
 
         // Récupérer la matrice de RT du wrap
         std::shared_ptr<biorbd::muscles::WrappingObject> w = std::static_pointer_cast<biorbd::muscles::WrappingObject>(objects.object(0));
-        biorbd::utils::Attitude RT = w->RT(model,Q);
+        const biorbd::utils::RotoTrans& RT = w.RT(model,Q);
 
         // Alias
         biorbd::muscles::MuscleNode po_mus = originInGlobal(model, Q);  // Origine sur l'os

@@ -2,7 +2,7 @@
 #define BIORBD_MUSCLES_WRAPPING_CYLINDER_H
 
 #include "biorbdConfig.h"
-#include "Utils/Attitude.h"
+#include "Utils/RotoTrans.h"
 #include "Muscles/WrappingObject.h"
 
 namespace biorbd {
@@ -12,16 +12,16 @@ class BIORBD_API WrappingCylinder : public biorbd::muscles::WrappingObject
 {
 public:
     WrappingCylinder(
-            const biorbd::utils::Attitude & = biorbd::utils::Attitude(), // Position du centre
+            const biorbd::utils::RotoTrans& rt,
             double  = 0, // Diametre vue du dessus
             double  = 0, // Longueur du cylindre
             int  =1, // sens du wrapping (+1 ou -1)
             const biorbd::utils::String& = "",  // Nom du cylindre
-            const biorbd::utils::String& = ""); // Nom du parent sur lequel il s'attache
+            const biorbd::utils::RotoTrans& rt,
     virtual ~WrappingCylinder();
 
     void wrapPoints(
-            const biorbd::utils::Attitude&,
+            const biorbd::utils::RotoTrans&,
             const biorbd::muscles::MuscleNode&,
             const biorbd::muscles::MuscleNode&,
             biorbd::muscles::MuscleNode&,
@@ -42,7 +42,7 @@ public:
 
 
     // Set et get
-    virtual biorbd::utils::Attitude RT(
+    virtual const biorbd::utils::RotoTrans& RT(
             biorbd::rigidbody::Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             bool updateKin = true);
@@ -75,7 +75,7 @@ protected:
     double m_dia; // diametre du cylindre
     double m_length; // Longueur du cylindre
     int m_side; // sens autours duquel passe les muscles
-    biorbd::utils::Attitude m_RTtoParent; // Matrice de rototrans avec le parent
+    std::shared_ptr<biorbd::utils::RotoTrans> m_RTtoParent; // Matrice de rototrans avec le parent
 
     biorbd::muscles::MuscleNode m_p1Wrap; // Premier point de contact avec le wrap
     biorbd::muscles::MuscleNode m_p2Wrap; // Deuxieme point de contact avec le wrap

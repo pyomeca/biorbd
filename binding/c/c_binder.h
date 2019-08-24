@@ -51,9 +51,9 @@ void dispatchTagsOutput(const std::vector<biorbd::rigidbody::NodeBone> &allTags,
 biorbd::rigidbody::GeneralizedCoordinates dispatchQinput(biorbd::Model* model, const double*Q);
 void dispatchQoutput(const biorbd::rigidbody::GeneralizedCoordinates &eQ, double*Q);
 void dispatchDoubleOutput(const biorbd::utils::Vector&, double*);
-biorbd::utils::Attitude dispatchRTinput(const double* rt);
-void dispatchRToutput(const biorbd::utils::Attitude& rt_in, double* rt_out);
-void dispatchRToutput(const std::vector<biorbd::utils::Attitude>& rt_in, double* rt_out);
+biorbd::utils::RotoTrans dispatchRTinput(const double* rt);
+void dispatchRToutput(const biorbd::utils::RotoTrans& rt_in, double* rt_out);
+void dispatchRToutput(const std::vector<biorbd::utils::RotoTrans>& rt_in, double* rt_out);
 
 
 

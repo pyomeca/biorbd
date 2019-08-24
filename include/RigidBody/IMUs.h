@@ -4,7 +4,7 @@
 #include <vector>
 #include "biorbdConfig.h"
 #include "RigidBody/Patch.h"
-#include "Utils/NodeAttitude.h"
+#include "Utils/RotoTransNode.h"
 #include "Utils/String.h"
 #include "Utils/Node3d.h"
 
@@ -28,7 +28,7 @@ public:
             bool technical = true,
             bool anatomical = true); // Add a new IMU
     void addIMU(
-            const biorbd::utils::NodeAttitude &attitude,
+            const biorbd::utils::RotoTransNode &RotoTrans,
             bool technical = true,
             bool anatomical = true); // Add a new IMU
     unsigned int nIMUs() const; // Retourne le nombre de IMU

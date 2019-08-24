@@ -3,11 +3,14 @@
 #include <cstdlib>
 #include <random>
 #include "BiorbdModel.h"
+#include "Utils/Benchmark.h"
+#include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #ifdef MODULE_MUSCLES
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/HillTypeThelenFatigable.h"
 #include "Muscles/FatigueDynamicStateXia.h"
+#include "Muscles/StateDynamics.h"
 #ifdef IPOPT_FOUND
 #include "Muscles/StaticOptimization.h"
 #endif

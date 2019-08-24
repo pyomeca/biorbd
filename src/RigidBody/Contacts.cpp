@@ -6,7 +6,7 @@
 #include "Utils/Error.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "Utils/Node3d.h"
-#include "Utils/Attitude.h"
+#include "Utils/RotoTrans.h"
 #include "RigidBody/Joints.h"
 
 biorbd::rigidbody::Contacts::Contacts() :
@@ -54,8 +54,8 @@ unsigned int biorbd::rigidbody::Contacts::AddConstraint(
 unsigned int biorbd::rigidbody::Contacts::AddLoopConstraint(
         unsigned int body_id_predecessor,
         unsigned int body_id_successor,
-        const biorbd::utils::Attitude &X_predecessor,
-        const biorbd::utils::Attitude &X_successor,
+        const biorbd::utils::RotoTrans &X_predecessor,
+        const biorbd::utils::RotoTrans &X_successor,
         const biorbd::utils::Vector &axis,
         bool enableStabilization,
         double stabilizationParam,

@@ -24,12 +24,12 @@ public:
             const biorbd::utils::String &parentName = "");
     virtual ~WrappingSphere();
 
-    biorbd::utils::Attitude RT(
+    const biorbd::utils::RotoTrans& RT(
             biorbd::rigidbody::Joints &,
             const biorbd::rigidbody::GeneralizedCoordinates& ,
             bool  = true);
     virtual void wrapPoints(
-            const biorbd::utils::Attitude&,
+            const biorbd::utils::RotoTrans&,
             const biorbd::muscles::MuscleNode&,
             const biorbd::muscles::MuscleNode&,
             biorbd::muscles::MuscleNode&,

@@ -6,7 +6,7 @@
 
 namespace biorbd {
 namespace utils {
-class Attitude;
+class RotoTrans;
 }
 
 namespace rigidbody {
@@ -24,7 +24,7 @@ public:
     // Reconstruction d'un frame
     virtual void reconstructFrame(
             biorbd::Model &model,
-            const std::vector<biorbd::utils::Attitude> &IMUobs,
+            const std::vector<biorbd::utils::RotoTrans> &IMUobs,
             biorbd::rigidbody::GeneralizedCoordinates *Q,
             biorbd::rigidbody::GeneralizedCoordinates *Qdot,
             biorbd::rigidbody::GeneralizedCoordinates *Qddot);

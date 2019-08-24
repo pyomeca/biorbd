@@ -8,7 +8,7 @@
 #include "Utils/Quaternion.h"
 #include "Utils/Matrix.h"
 #include "Utils/Error.h"
-#include "Utils/Attitude.h"
+#include "Utils/RotoTrans.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/Integrator.h"
@@ -238,10 +238,10 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> biorbd::rigidbody::Joints::d
     return sv_out;
 }
 
-std::vector<biorbd::utils::Attitude> biorbd::rigidbody::Joints::globalJCS(
+std::vector<biorbd::utils::RotoTrans> biorbd::rigidbody::Joints::globalJCS(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin){
-    std::vector<biorbd::utils::Attitude> out;
+    std::vector<biorbd::utils::RotoTrans> out;
 
     for (unsigned int i=0; i<m_bones.size(); ++i)
         if (i==0)
@@ -259,40 +259,40 @@ int biorbd::rigidbody::Joints::GetBodyBiorbdId(const biorbd::utils::String &segm
     return -1;
 }
 
-biorbd::utils::Attitude biorbd::rigidbody::Joints::globalJCS(
+biorbd::utils::RotoTrans biorbd::rigidbody::Joints::globalJCS(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::utils::String &name,
         bool updateKin){
     return globalJCS(Q,static_cast<unsigned int>(GetBodyBiorbdId(name.c_str())),updateKin);
 }
 
-biorbd::utils::Attitude biorbd::rigidbody::Joints::globalJCS(
+biorbd::utils::RotoTrans biorbd::rigidbody::Joints::globalJCS(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const unsigned int i,
         bool updateKin){
     unsigned int id = m_bones[i].id();
 
-    biorbd::utils::Attitude RT;
+    biorbd::utils::RotoTrans RT;
     RigidBodyDynamics::Math::SpatialTransform tp_ST;
 
     tp_ST = CalcBodyWorldTransformation(Q, id,updateKin);
-    RT.setMatrix(RT.combineRotAndTrans(tp_ST.E, tp_ST.r));
+    RT = RT.combineRotAndTrans(tp_ST.E, tp_ST.r);
     return RT;
 }
 
 
-std::vector<biorbd::utils::Attitude> biorbd::rigidbody::Joints::localJCS() const{
-    std::vector<biorbd::utils::Attitude> out;
+std::vector<biorbd::utils::RotoTrans> biorbd::rigidbody::Joints::localJCS() const{
+    std::vector<biorbd::utils::RotoTrans> out;
 
     for (unsigned int i=0; i<m_bones.size(); ++i)
             out.push_back(localJCS(i));
 
     return out;
 }
-biorbd::utils::Attitude biorbd::rigidbody::Joints::localJCS(const biorbd::utils::String &segmentName) const{
+biorbd::utils::RotoTrans biorbd::rigidbody::Joints::localJCS(const biorbd::utils::String &segmentName) const{
     return localJCS(static_cast<unsigned int>(GetBodyBiorbdId(segmentName.c_str())));
 }
-biorbd::utils::Attitude biorbd::rigidbody::Joints::localJCS(const unsigned int i) const{
+biorbd::utils::RotoTrans biorbd::rigidbody::Joints::localJCS(const unsigned int i) const{
     return m_bones[i].localJCS();
 }
 
@@ -312,14 +312,14 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::projectPoint
     for (unsigned int i=0;i<marks.nTags();++i){
         biorbd::rigidbody::NodeBone tp(marks.marker(i));
         if (tp.nAxesToRemove()!=0){
-            tp.setPosition(globalJCS(Q,static_cast<unsigned int>(GetBodyBiorbdId(tp.parent())),true).transpose() * v[i] );
+            tp = v[i].applyRT(globalJCS(Q,tp.parent(),true).transpose());
             // Prendre la position du nouveau marker avec les infos de celui du modèle
             out.push_back(projectPoint(Q,tp,updateKin));
             updateKin = false;
         }
         else
             // S'il ne faut rien retirer (renvoyer tout de suite la même position)
-            out.push_back( *(v.begin()+i) );
+            out.push_back( v[i] );
     }
     return out;
 }
@@ -333,7 +333,7 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Joints::projectPoint(
 {
     // Créer un marqueur
     biorbd::utils::String boneName(bone(static_cast<unsigned int>(boneIdx)).name());
-    biorbd::rigidbody::NodeBone node(globalJCS(Q,static_cast<unsigned int>(boneIdx),true).transpose()*v, "tp", boneName,
+    biorbd::rigidbody::NodeBone node( v.applyRT(globalJCS(Q,static_cast<unsigned int>(boneIdx),true).transpose()), "tp", boneName,
                      true, true, axesToRemove, static_cast<int>(GetBodyId(boneName.c_str())));
 
     // projeté puis remettre dans le global
@@ -348,8 +348,7 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Joints::projectPoint(
     // Assuming that this is also a Marker type (via BiorbdModel)
     biorbd::rigidbody::Markers &marks = dynamic_cast<biorbd::rigidbody::Markers &>(*this);
 
-    biorbd::rigidbody::NodeBone out(n);
-    out.setPosition(marks.Tags(Q, n, true, updateKin));
+    biorbd::rigidbody::NodeBone out(marks.Tags(Q, n, true, updateKin));
     return out;
 }
 
@@ -407,9 +406,7 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Joints::projectPointJacobi
 
     for (unsigned int i=0; i<tp.size(); ++i){
         // Marqueur actuel
-        biorbd::rigidbody::NodeBone node = *(tp.begin()+i);
-        node.setPosition((*(v.begin()+i)));
-        G.push_back(projectPointJacobian(Q, node, false));
+        G.push_back(projectPointJacobian(Q, biorbd::rigidbody::NodeBone (v[i]), false));
     }
     return G;
 }
@@ -427,9 +424,9 @@ RigidBodyDynamics::Math::SpatialTransform biorbd::rigidbody::Joints::CalcBodyWor
     if (body_id >= this->fixed_body_discriminator) {
         unsigned int fbody_id = body_id - this->fixed_body_discriminator;
         unsigned int parent_id = this->mFixedBodies[fbody_id].mMovableParent;
-        biorbd::utils::Attitude parentRT(this->X_base[parent_id].E.transpose(), this->X_base[parent_id].r);
-        biorbd::utils::Attitude bodyRT(this->mFixedBodies[fbody_id].mParentTransform.E.transpose(), this->mFixedBodies[fbody_id].mParentTransform.r);
-        biorbd::utils::Attitude transfo_tp = parentRT * bodyRT;
+        biorbd::utils::RotoTrans parentRT(this->X_base[parent_id].E.transpose(), this->X_base[parent_id].r);
+        biorbd::utils::RotoTrans bodyRT(this->mFixedBodies[fbody_id].mParentTransform.E.transpose(), this->mFixedBodies[fbody_id].mParentTransform.r);
+        biorbd::utils::RotoTrans transfo_tp = parentRT * bodyRT;
         RigidBodyDynamics::Math::SpatialTransform transfo(transfo_tp.rot(), transfo_tp.trans());
         return transfo;
     }
@@ -625,7 +622,7 @@ std::vector<std::vector<biorbd::utils::Node3d>> biorbd::rigidbody::Joints::meshP
     std::vector<std::vector<biorbd::utils::Node3d>> v; // Vecteur de vecteur de sortie (mesh par segment)
 
     // Trouver la position des segments
-    std::vector<biorbd::utils::Attitude> RT(globalJCS(Q, updateKin));
+    std::vector<biorbd::utils::RotoTrans> RT(globalJCS(Q, updateKin));
 
     // Pour tous les segments
     for (unsigned int i=0; i<nbBone(); ++i)
@@ -639,12 +636,12 @@ std::vector<biorbd::utils::Node3d> biorbd::rigidbody::Joints::meshPoints(
         bool updateKin){
 
     // Trouver la position des segments
-    std::vector<biorbd::utils::Attitude> RT(globalJCS(Q, updateKin));
+    std::vector<biorbd::utils::RotoTrans> RT(globalJCS(Q, updateKin));
 
     return meshPoints(RT,i);
 }
 std::vector<biorbd::utils::Node3d> biorbd::rigidbody::Joints::meshPoints(
-        const std::vector<biorbd::utils::Attitude> &RT,
+        const std::vector<biorbd::utils::RotoTrans> &RT,
         unsigned int i) const{
 
     // Recueillir la position des meshings

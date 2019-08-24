@@ -153,7 +153,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                         // Transcrire les translations
                         for (unsigned int i=0; i<3; ++i)
                             file.read(trans(i));
-                        biorbd::utils::Attitude RT(rot, trans, seq);
+                        biorbd::utils::RotoTrans RT(rot, trans, seq);
                         RT_R = RT.rot().transpose();
                         RT_T = RT.trans();
 
@@ -277,7 +277,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
             biorbd::utils::String name;
             file.read(name);
             biorbd::utils::String parent_str("root");
-            biorbd::utils::NodeAttitude RT;
+            biorbd::utils::RotoTransNode RT;
             bool RTinMatrix(true);
             if (version == 3) // Par défaut pour la version 3 (pas en matrice)
                 RTinMatrix = false;
@@ -297,11 +297,9 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                 }
                 else if (!tp.tolower().compare("rt")){
                     if (RTinMatrix){ // Matrice 4x4
-                        Eigen::Matrix4d rt_tp;
                         for (unsigned int i=0; i<4;++i)
                             for (unsigned int j=0; j<4;++j)
-                                file.read(rt_tp(i,j), variable);
-                        RT.setMatrix(rt_tp);
+                                file.read(RT(i,j), variable);
                     }
                     else{
                         biorbd::utils::String seq("xyz");
@@ -315,7 +313,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                         // Transcrire les translations
                         for (unsigned int i=0; i<3; ++i)
                             file.read(trans(i));
-                        RT = biorbd::utils::Attitude(rot, trans, seq);
+                        RT = biorbd::utils::RotoTrans(rot, trans, seq);
                     }
                     isRTset = true;
                 }
@@ -371,8 +369,8 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
             unsigned int id_successor = 0;
             biorbd::utils::String predecessor_str("root");
             biorbd::utils::String successor_str("root");
-            biorbd::utils::Attitude X_predecessor;
-            biorbd::utils::Attitude X_successor;
+            biorbd::utils::RotoTrans X_predecessor;
+            biorbd::utils::RotoTrans X_successor;
             biorbd::utils::Vector axis(6);
             bool enableStabilization(false);
             double stabilizationParam(-1);
@@ -402,7 +400,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                     // Transcrire les translations
                     for (unsigned int i=0; i<3; ++i)
                         file.read(trans(i));
-                    X_predecessor = biorbd::utils::Attitude(rot, trans, seq);
+                    X_predecessor = biorbd::utils::RotoTrans(rot, trans, seq);
                 } else if (!tp.tolower().compare("rtsuccessor")){
                     biorbd::utils::String seq("xyz");
                     biorbd::utils::Node3d rot(0, 0, 0);
@@ -415,7 +413,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                     // Transcrire les translations
                     for (unsigned int i=0; i<3; ++i)
                         file.read(trans(i));
-                    X_successor = biorbd::utils::Attitude(rot, trans, seq);
+                    X_successor = biorbd::utils::RotoTrans(rot, trans, seq);
                 } else if (!tp.tolower().compare("axis"))
                     for (unsigned int i=0; i<axis.size(); ++i)
                         file.read(axis(i), variable);
@@ -736,7 +734,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
             int iMuscleGroup(-1);
             int iMuscle(-1);
             biorbd::utils::String parent("");
-            biorbd::utils::Attitude RT;
+            biorbd::utils::RotoTrans RT;
             double dia(0);
             double length(0);
             int side(1);
@@ -751,11 +749,9 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                     biorbd::utils::Error::error(model->IsBodyId(idx), "Wrong origin parent name for a muscle");
                 }
                 else if (!tp.tolower().compare("rt")){
-                    Eigen::Matrix4d rt_tp;
                     for (unsigned int i=0; i<4;++i)
                         for (unsigned int j=0; j<4; ++j)
-                            file.read(rt_tp(i,j), variable);
-                    RT.setMatrix(rt_tp);
+                            file.read(RT(i,j), variable);
                 }
                 else if (!tp.tolower().compare("muscle"))
                     file.read(muscle);

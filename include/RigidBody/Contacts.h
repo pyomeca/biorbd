@@ -7,7 +7,7 @@
 #include "Utils/String.h"
 
 namespace biorbd { namespace utils {
-class Attitude;
+class RotoTrans;
 class Node3d;
 class Vector;
 class String;
@@ -37,8 +37,8 @@ public:
     unsigned int AddLoopConstraint(
             unsigned int body_id_predecessor,
             unsigned int body_id_successor,
-            const biorbd::utils::Attitude& X_predecessor,
-            const biorbd::utils::Attitude& X_successor,
+            const biorbd::utils::RotoTrans& X_predecessor,
+            const biorbd::utils::RotoTrans& X_successor,
             const biorbd::utils::Vector& axis,
             bool enableStabilization = false,
             double stabilizationParam = 0.1,

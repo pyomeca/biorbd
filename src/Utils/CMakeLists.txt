@@ -4,7 +4,7 @@ set(UTILS_MODULE_NAME ${MASTER_PROJECT_NAME}_utils PARENT_SCOPE)
 
 # Add the relevant files
 set(SRC_LIST_MODULE
-    ${CMAKE_CURRENT_SOURCE_DIR}/Attitude.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/RotoTrans.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Benchmark.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Equation.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Error.cpp
@@ -13,7 +13,7 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/Matrix.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Node.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Node3d.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/NodeAttitude.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/RotoTransNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Quaternion.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/String.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Time.cpp

@@ -8,7 +8,7 @@
 
 namespace biorbd {
 namespace utils {
-class Attitude;
+class RotoTrans;
 class Matrix;
 class Node3d;
 }
@@ -98,20 +98,20 @@ public:
 
 
     // -- POSITION INTERFACE OF THE MODEL -- //
-    std::vector<biorbd::utils::Attitude> globalJCS(
+    std::vector<biorbd::utils::RotoTrans> globalJCS(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool updateKin = true); // Return the JCSs in global coordinate system for the given q
-    biorbd::utils::Attitude globalJCS(
+    biorbd::utils::RotoTrans globalJCS(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::utils::String &parentName,
             bool updateKin = true);  // Return the JCS for segment i in global coordinate system for the given q
-    biorbd::utils::Attitude globalJCS(
+    biorbd::utils::RotoTrans globalJCS(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const unsigned int i,
             bool updateKin = true);  // Return the JCS for segment i in global coordinate system for the given q
-    std::vector<biorbd::utils::Attitude> localJCS() const; // Return the JCSs in global coordinate system for the given q
-    biorbd::utils::Attitude localJCS(const biorbd::utils::String &segmentName) const;  // Return the JCS for segment named String in parent coordinate system
-    biorbd::utils::Attitude localJCS(const unsigned int i) const;  // Return the JCS for segment i in parent coordinate system
+    std::vector<biorbd::utils::RotoTrans> localJCS() const; // Return the JCSs in global coordinate system for the given q
+    biorbd::utils::RotoTrans localJCS(const biorbd::utils::String &segmentName) const;  // Return the JCS for segment named String in parent coordinate system
+    biorbd::utils::RotoTrans localJCS(const unsigned int i) const;  // Return the JCS for segment i in parent coordinate system
     biorbd::rigidbody::NodeBone projectPoint(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::NodeBone&, bool updateKin=true); // Projeter selon les axes/plan déterminé déjà dans nodeBone
@@ -264,7 +264,7 @@ protected:
             const unsigned int body_id,
             bool update_kinematics); // Calculate the JCS in global
     std::vector<biorbd::utils::Node3d> meshPoints(
-            const std::vector<biorbd::utils::Attitude>&,
+            const std::vector<biorbd::utils::RotoTrans>&,
             unsigned int  idx) const;
 
 };

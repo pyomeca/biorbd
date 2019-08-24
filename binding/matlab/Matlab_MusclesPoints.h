@@ -24,7 +24,7 @@ void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
     plhs[0] = mxCreateCellMatrix(model->nbMuscleTotal(), Q.size());
     // Utilisable que si nlhs >= 2
     std::vector<biorbd::utils::String> wrap_forme; // forme du wrapping
-    std::vector<biorbd::utils::Attitude> wrap_RT; // orientation du wrapping
+    std::vector<biorbd::utils::RotoTrans> wrap_RT; // orientation du wrapping
     std::vector<double> wrap_dim1; // dimension du wrapping
     std::vector<double> wrap_dim2; // dimension deux du wrapping
 
@@ -46,7 +46,7 @@ void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
                     wrap_forme.push_back(forme);
 
                     // Dans quelle orientation
-                    biorbd::utils::Attitude RT;
+                    biorbd::utils::RotoTrans RT;
                     RT.setIdentity();
                     RT = std::static_pointer_cast<biorbd::muscles::WrappingObject>(model->muscleGroup(0).muscle(0)->pathChanger().object(0))->RT(*model,*(Q.begin()+iQ),false);
                     wrap_RT.push_back(RT);

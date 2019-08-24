@@ -6,17 +6,17 @@
 biorbd::rigidbody::IMU::IMU(
         bool isTechnical,
         bool isAnatomical) :
-    biorbd::utils::NodeAttitude(),
+    biorbd::utils::RotoTransNode(),
     m_technical(isTechnical),
     m_anatomical(isAnatomical)
 {
 
 }
 biorbd::rigidbody::IMU::IMU(
-        const biorbd::utils::NodeAttitude &attitude,
+        const biorbd::utils::RotoTransNode &RotoTrans,
         bool isTechnical,
         bool isAnatomical) :
-    biorbd::utils::NodeAttitude(attitude),
+    biorbd::utils::RotoTransNode(RotoTrans),
     m_technical(isTechnical),
     m_anatomical(isAnatomical)
 {
@@ -25,7 +25,7 @@ biorbd::rigidbody::IMU::IMU(
 
 biorbd::rigidbody::IMU biorbd::rigidbody::IMU::DeepCopy() const
 {
-    return biorbd::rigidbody::IMU(this->biorbd::utils::NodeAttitude::DeepCopy(), this->isTechnical(), this->isAnatomical());
+    return biorbd::rigidbody::IMU(this->biorbd::utils::RotoTransNode::DeepCopy(), this->isTechnical(), this->isAnatomical());
 }
 
 bool biorbd::rigidbody::IMU::isAnatomical() const

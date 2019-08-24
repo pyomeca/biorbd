@@ -5,7 +5,7 @@
 #include "Utils/String.h"
 #include "Utils/Error.h"
 #include "Utils/Node3d.h"
-#include "Utils/Attitude.h"
+#include "Utils/RotoTrans.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/BoneMesh.h"
 #include "RigidBody/Patch.h"
@@ -140,7 +140,7 @@ const biorbd::utils::String& biorbd::rigidbody::Bone::seqR() const
     return *m_seqR;
 }
 
-biorbd::utils::Attitude biorbd::rigidbody::Bone::localJCS() const {
+biorbd::utils::RotoTrans biorbd::rigidbody::Bone::localJCS() const {
     return *m_cor;
 }
 const biorbd::rigidbody::BoneCaracteristics &biorbd::rigidbody::Bone::caract() const {

@@ -4,7 +4,7 @@
 #include "RigidBody/Joints.h"
 
 biorbd::muscles::WrappingCylinder::WrappingCylinder(
-        const biorbd::utils::Attitude &v, // Position du centre
+        const biorbd::utils::RotoTrans &rt,
         double dia, // Diametre vue du dessus
         double length, // Longueur du cylindre
         int side, // sens du wrapping (+1 ou -1)
@@ -37,7 +37,7 @@ void biorbd::muscles::WrappingCylinder::wrapPoints(
         *length = m_lengthAroundWrap;
 }
 
-biorbd::utils::Attitude biorbd::muscles::WrappingCylinder::RT(
+const biorbd::utils::RotoTrans& biorbd::muscles::WrappingCylinder::RT(
         biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         bool updateKin){

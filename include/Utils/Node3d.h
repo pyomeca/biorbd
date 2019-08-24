@@ -8,7 +8,7 @@
 
 namespace biorbd {
 namespace utils {
-class Attitude;
+class RotoTrans;
 class String;
 
 class BIORBD_API Node3d : public Eigen::Vector3d, public biorbd::utils::Node

@@ -53,7 +53,7 @@ bool biorbd::rigidbody::KalmanReconsIMU::first()
 
 void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         biorbd::Model &m,
-        const std::vector<biorbd::utils::Attitude> &IMUobs,
+        const std::vector<biorbd::utils::RotoTrans> &IMUobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
         biorbd::rigidbody::GeneralizedCoordinates *Qdot,
         biorbd::rigidbody::GeneralizedCoordinates *Qddot)
@@ -62,7 +62,7 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
     biorbd::utils::Vector T(static_cast<unsigned int>(3*3*IMUobs.size())); // Matrice 3*3 * nIMU
     for (unsigned int i=0; i<IMUobs.size(); ++i)
         for (unsigned int j=0; j<3; ++j)
-           T.block(9*i+3*j, 0, 3, 1) = IMUobs[i].eigen().block(0,j,3,1);
+           T.block(9*i+3*j, 0, 3, 1) = IMUobs[i].block(0,j,3,1);
 
     // Reconstruire la cinématique
     reconstructFrame(m, T, Q, Qdot, Qddot);

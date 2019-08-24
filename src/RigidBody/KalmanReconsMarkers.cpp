@@ -59,7 +59,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     // Séparer les tobs en un grand vecteur
     biorbd::utils::Vector T(3*Tobs.nTags());
     for (unsigned int i=0; i<Tobs.nTags(); ++i)
-        T.block(i*3, 0, 3, 1) = Tobs.marker(i).position();
+        T.block(i*3, 0, 3, 1) = Tobs.marker(i);
 
     // Reconstruire la cinématique
     reconstructFrame(model, T, Q, Qdot, Qddot, removeAxes);
