@@ -7,6 +7,8 @@
 #include "Muscles/Caracteristics.h"
 #include "Muscles/PathChangers.h"
 #include "Muscles/StateDynamics.h"
+#include "Muscles/ForceFromOrigin.h"
+#include "Muscles/ForceFromInsertion.h"
 
 biorbd::muscles::Compound::Compound() :
     m_name(std::make_shared<biorbd::utils::String>("")),
@@ -14,7 +16,8 @@ biorbd::muscles::Compound::Compound() :
     m_pathChanger(std::make_shared<biorbd::muscles::PathChangers>()),
     m_force(std::make_shared<std::vector<biorbd::muscles::Force>>())
 {
-
+    m_force->push_back(biorbd::muscles::ForceFromOrigin());
+    m_force->push_back(biorbd::muscles::ForceFromInsertion());
 }
 
 biorbd::muscles::Compound::Compound(const biorbd::utils::String &name) :
@@ -23,7 +26,8 @@ biorbd::muscles::Compound::Compound(const biorbd::utils::String &name) :
     m_pathChanger(std::make_shared<biorbd::muscles::PathChangers>()),
     m_force(std::make_shared<std::vector<biorbd::muscles::Force>>())
 {
-
+    m_force->push_back(biorbd::muscles::ForceFromOrigin());
+    m_force->push_back(biorbd::muscles::ForceFromInsertion());
 }
 
 biorbd::muscles::Compound::Compound(
@@ -34,7 +38,8 @@ biorbd::muscles::Compound::Compound(
     m_pathChanger(std::make_shared<biorbd::muscles::PathChangers>(wrap)),
     m_force(std::make_shared<std::vector<biorbd::muscles::Force>>())
 {
-
+    m_force->push_back(biorbd::muscles::ForceFromOrigin());
+    m_force->push_back(biorbd::muscles::ForceFromInsertion());
 }
 
 biorbd::muscles::Compound::Compound(
@@ -68,6 +73,11 @@ const biorbd::utils::String &biorbd::muscles::Compound::name() const
 void biorbd::muscles::Compound::setName(const biorbd::utils::String &name)
 {
     *m_name = name;
+}
+
+const biorbd::utils::String &biorbd::muscles::Compound::type() const
+{
+    return *m_type;
 }
 
 const biorbd::muscles::PathChangers &biorbd::muscles::Compound::pathChanger() {

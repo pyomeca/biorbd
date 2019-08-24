@@ -22,7 +22,7 @@ public:
             const biorbd::utils::String &insertionName);
     virtual ~MuscleGroup();
 
-    virtual void addHillMuscle(
+    virtual void addMuscle(
             const biorbd::utils::String&,
             const biorbd::utils::String&,
             const biorbd::muscles::Geometry&,

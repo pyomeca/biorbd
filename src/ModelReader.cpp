@@ -683,7 +683,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                         biorbd::utils::Node3d(insert_pos, name + "_insertion", model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
             biorbd::muscles::State stateMax(maxExcitation, maxActivation);
             biorbd::muscles::Caracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax, fatigueParameters);
-            model->muscleGroup_nonConst(static_cast<unsigned int>(idxGroup)).addHillMuscle(name,type,geo,caract,biorbd::muscles::PathChangers(),stateType,dynamicFatigueType);
+            model->muscleGroup_nonConst(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,caract,biorbd::muscles::PathChangers(),stateType,dynamicFatigueType);
 #else // MODULE_ACTUATORS
         biorbd::utils::Error::error(false, "Biorbd was build without the module Muscles but the model defines a muscle");
 #endif // MODULE_ACTUATORS

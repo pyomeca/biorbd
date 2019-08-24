@@ -13,7 +13,7 @@ class Node3d;
 namespace muscles {
 class Geometry;
 class Caracteristics;
-class StateDynamics;
+class State;
 
 class BIORBD_API Muscle : public biorbd::muscles::Compound
 {
@@ -38,22 +38,24 @@ public:
 
     // Get and set
     double length(
-            biorbd::rigidbody::Joints&,
-            const biorbd::rigidbody::GeneralizedCoordinates&, int = 2);
+            biorbd::rigidbody::Joints& model,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            int updateKin = 2);
     double musculoTendonLength(
-            biorbd::rigidbody::Joints&,
-            const biorbd::rigidbody::GeneralizedCoordinates&, int = 2);
+            biorbd::rigidbody::Joints& model,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            int updateKin = 2);
     double velocity(
-            biorbd::rigidbody::Joints&,
-            const biorbd::rigidbody::GeneralizedCoordinates&,
-            const biorbd::rigidbody::GeneralizedCoordinates&,
-            bool = true);
+            biorbd::rigidbody::Joints& model,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
+            bool updateKin = true);
     void updateOrientations(
-            biorbd::rigidbody::Joints &m,
+            biorbd::rigidbody::Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             int updateKin = 2); // Update de la position de ce muscle
     void updateOrientations(
-            biorbd::rigidbody::Joints &m,
+            biorbd::rigidbody::Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             int updateKin = 2); // Update de la position de ce muscle
@@ -81,6 +83,8 @@ public:
     biorbd::muscles::StateDynamics& state_nonConst() const;
     double activationDot(const biorbd::muscles::StateDynamics &s, bool =false);
 protected:
+    virtual void computeForce(const biorbd::muscles::State &emg); // Calcul des forces
+    virtual double getForceFromActivation(const biorbd::muscles::State &emg) = 0;
     std::shared_ptr<biorbd::muscles::Geometry> m_position;
     std::shared_ptr<biorbd::muscles::Caracteristics> m_caract;
     std::shared_ptr<biorbd::muscles::StateDynamics> m_state;

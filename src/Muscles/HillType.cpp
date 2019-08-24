@@ -26,7 +26,6 @@ biorbd::muscles::HillType::HillType() :
     m_cste_vitesseRaccourMax(std::make_shared<double>(10.0))
 {
     setType();
-    setForce();
 }
 
 biorbd::muscles::HillType::HillType(
@@ -72,7 +71,6 @@ biorbd::muscles::HillType::HillType(
     m_cste_vitesseRaccourMax(std::make_shared<double>(10.0))
 {
     setType();
-    setForce();
 }
 
 biorbd::muscles::HillType::HillType(
@@ -188,14 +186,6 @@ void biorbd::muscles::HillType::setType()
     *m_type = "Hill";
 }
 
-void biorbd::muscles::HillType::setForce()
-{
-    m_force->clear();
-    m_force->push_back(biorbd::muscles::ForceFromOrigin());
-    m_force->push_back(biorbd::muscles::ForceFromInsertion());
-    //dtor
-}
-
 void biorbd::muscles::HillType::computeDamping(){
     *m_damping = position().velocity() / (*m_cste_vitesseRaccourMax * m_caract->optimalLength()) * *m_cste_damping;
 }
@@ -224,13 +214,9 @@ void biorbd::muscles::HillType::computeFlPE(){
         *m_FlPE = 0;
 }
 
-void biorbd::muscles::HillType::computeForce(const biorbd::muscles::StateDynamics &EMG){
-    double force = multiplyCaractByActivationAndForce(EMG);
-    (*m_force)[0].setForceFromMuscleGeometry(*m_position, force); // origine vers le deuxieme point
-    (*m_force)[1].setForceFromMuscleGeometry(*m_position, force); // insertion vers l'avant-dernier point
-}
-
-double biorbd::muscles::HillType::multiplyCaractByActivationAndForce(const biorbd::muscles::StateDynamics &emg){
+double biorbd::muscles::HillType::getForceFromActivation(
+        const biorbd::muscles::State &emg)
+{
     // Fonction qui permet de modifier la facon dont la multiplication est faite dans computeForce(EMG)
     return caract().forceIsoMax() * (emg.activation() * *m_FlCE * *m_FvCE + *m_FlPE + *m_damping);
 }

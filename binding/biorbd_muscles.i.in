@@ -1,17 +1,19 @@
 // File : biorbd_muscles.i
 %{
 #include "Muscles/StateDynamics.h"
-#include "Muscles/Muscle.h"
 #include "Muscles/MuscleGroup.h"
+#include "Muscles/Muscle.h"
+#include "Muscles/Caracteristics.h"
+#include "Muscles/Geometry.h"
 #include "Muscles/HillType.h"
 #include "Muscles/HillTypeThelen.h"
-#include "Muscles/HillTypeSimple.h"
+#include "Muscles/IdealizedActuator.h"
 #include "Muscles/HillTypeThelenFatigable.h"
+#include "Muscles/FatigueParameters.h"
 #include "Muscles/FatigueState.h"
 #include "Muscles/FatigueDynamicState.h"
 #include "Muscles/FatigueDynamicStateXia.h"
-#include "Muscles/MuscleNode.h"
-#include "Muscles/Geometry.h"
+#include "Muscles/Force.h"
 #ifdef IPOPT_FOUND
 #include "Muscles/StaticOptimization.h"
 #endif
@@ -21,8 +23,6 @@ namespace std {
 %template(SharedBiorbdMuscle) std::shared_ptr<biorbd::muscles::Muscle>;
 %template(VecBiorbdMuscleStateDynamics) std::vector<biorbd::muscles::StateDynamics>;
 %template(MatBiorbdMuscleStateDynamics) std::vector<std::vector<biorbd::muscles::StateDynamics>>;
-%template(VecBiorbdNodeMuscle) std::vector<biorbd::muscles::MuscleNode>;
-%template(MatBiorbdNodeMuscle) std::vector<std::vector<biorbd::muscles::MuscleNode>>;
 %template(SharedBiorbdMuscleFatigueState) std::shared_ptr<biorbd::muscles::FatigueState>;
 }
 
@@ -41,6 +41,13 @@ namespace std {
 }
 
 // extension of muscle casting
+%extend biorbd::muscles::Muscle{
+    static biorbd::muscles::Muscle& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
+    {
+        return *(std::dynamic_pointer_cast<biorbd::muscles::Muscle>(muscle));
+    }
+}
+
 %extend biorbd::muscles::HillType{
     static biorbd::muscles::HillType& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
     {
@@ -59,10 +66,10 @@ namespace std {
         return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(muscle));
     }
 }
-%extend biorbd::muscles::HillTypeSimple{
-    static biorbd::muscles::HillTypeSimple& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
+%extend biorbd::muscles::IdealizedActuator{
+    static biorbd::muscles::IdealizedActuator& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeSimple>(muscle));
+        return *(std::dynamic_pointer_cast<biorbd::muscles::IdealizedActuator>(muscle));
     }
 }
 
@@ -82,14 +89,13 @@ namespace std {
 
 
 // Includes all neceressary files from the API
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/MuscleNode.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Compound.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscle.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Fatigable.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/HillType.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeThelen.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeThelenFatigable.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeSimple.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/IdealizedActuator.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscles.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/MuscleGroup.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Caracteristics.h"

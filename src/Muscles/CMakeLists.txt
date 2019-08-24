@@ -16,7 +16,7 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/ForceFromOrigin.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Geometry.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/HillType.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/HillTypeSimple.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/IdealizedActuator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/HillTypeThelen.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/HillTypeThelenFatigable.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Muscle.cpp

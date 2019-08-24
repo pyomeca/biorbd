@@ -48,15 +48,13 @@ public:
 
 protected:
     virtual void setType();
-    virtual void setForce();
 
     // Étapes intermédiaires du calcul de la force
     virtual void computeDamping(); // Force du ressort
     virtual void computeFlCE(const biorbd::muscles::StateDynamics &EMG); // ForceLongueur element contractile
     virtual void computeFvCE(); // ForceVitesse element contractile
     virtual void computeFlPE(); // ForceLongueur element passif
-    virtual void computeForce(const biorbd::muscles::StateDynamics &EMG); // Calcul des forces
-    virtual double multiplyCaractByActivationAndForce(const biorbd::muscles::StateDynamics &emg); // Voir dans la fonction pour descriptif
+    virtual double getForceFromActivation(const biorbd::muscles::State &emg); // Voir dans la fonction pour descriptif
     virtual biorbd::muscles::StateDynamics normalizeEMG(const biorbd::muscles::StateDynamics& emg);
 
     // Attributs intermédiaires lors du calcul de la force

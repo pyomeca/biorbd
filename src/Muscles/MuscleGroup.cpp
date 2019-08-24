@@ -2,8 +2,8 @@
 #include "Muscles/MuscleGroup.h"
 
 #include "Utils/Error.h"
+#include "Muscles/IdealizedActuator.h"
 #include "Muscles/HillType.h"
-#include "Muscles/HillTypeSimple.h"
 #include "Muscles/HillTypeThelen.h"
 #include "Muscles/HillTypeThelenFatigable.h"
 #include "Muscles/StateDynamicsBuchanan.h"
@@ -34,7 +34,7 @@ const std::shared_ptr<biorbd::muscles::Muscle> biorbd::muscles::MuscleGroup::mus
 }
 
 
-void biorbd::muscles::MuscleGroup::addHillMuscle(
+void biorbd::muscles::MuscleGroup::addMuscle(
         const biorbd::utils::String& name,
         const biorbd::utils::String& s,
         const biorbd::muscles::Geometry& g,
@@ -52,12 +52,12 @@ void biorbd::muscles::MuscleGroup::addHillMuscle(
         biorbd::utils::Error::error(false, "Wrong state type");
     }
 
-    if (!s.tolower().compare("hill")){
+    if (!s.tolower().compare("idealizedactuator")){
+            biorbd::muscles::IdealizedActuator m(name,g,c,w,*st);
+            addMuscle(m);
+        }
+    else if (!s.tolower().compare("hill")){
         biorbd::muscles::HillType m(name,g,c,w,*st);
-        addMuscle(m);
-    }
-    else if (!s.tolower().compare("hillsimple") || !s.tolower().compare("simple")){
-        biorbd::muscles::HillTypeSimple m(name,g,c,w,*st);
         addMuscle(m);
     }
     else if (!s.tolower().compare("hillthelen") || !s.tolower().compare("thelen")){
@@ -79,8 +79,8 @@ void biorbd::muscles::MuscleGroup::addMuscle(biorbd::muscles::Muscle &val){
     biorbd::utils::Error::error(muscleID(val.name()) == -1, "This muscle name was already defined for this muscle group");
 
     // Ajouter un muscle au pool de muscle selon son type
-    if (dynamic_cast<biorbd::muscles::HillTypeSimple*> (&val)){
-        m_mus.push_back(std::shared_ptr<biorbd::muscles::Muscle> (new biorbd::muscles::HillTypeSimple(dynamic_cast <biorbd::muscles::HillTypeSimple&> (val))));
+    if (dynamic_cast<biorbd::muscles::IdealizedActuator*> (&val)){
+        m_mus.push_back(std::shared_ptr<biorbd::muscles::Muscle> (new biorbd::muscles::IdealizedActuator(dynamic_cast <biorbd::muscles::IdealizedActuator&> (val))));
         return;
     }
     else if (dynamic_cast<biorbd::muscles::HillTypeThelenFatigable*> (&val)){

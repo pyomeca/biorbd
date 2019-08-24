@@ -39,6 +39,7 @@ public:
 
     const biorbd::utils::String& name() const;
     void setName(const biorbd::utils::String& name);
+    const biorbd::utils::String& type() const;
 
     // Wrapping object
     const biorbd::muscles::PathChangers& pathChanger();
@@ -64,7 +65,6 @@ protected:
     std::shared_ptr<biorbd::muscles::PathChangers> m_pathChanger;
     std::shared_ptr<std::vector<biorbd::muscles::Force>> m_force;
     void copyForce(const std::shared_ptr<std::vector<biorbd::muscles::Force>>& force);
-    virtual void setForce() = 0;
     virtual void setType()=0;
 
 };
