@@ -18,8 +18,8 @@ class BIORBD_API Fatigable
 {
 public:
     Fatigable(const biorbd::utils::String& dynamicFatigueType);
-    Fatigable(const biorbd::muscles::Muscle& m);
-    Fatigable(const std::shared_ptr<biorbd::muscles::Muscle> m);
+    Fatigable(const biorbd::muscles::Fatigable& m);
+    Fatigable(const std::shared_ptr<biorbd::muscles::Fatigable> m);
     virtual ~Fatigable() = 0;
 
     virtual void computeTimeDerivativeState(const biorbd::muscles::StateDynamics& emg);

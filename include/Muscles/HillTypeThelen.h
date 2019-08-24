@@ -10,22 +10,21 @@ namespace muscles {
 class BIORBD_API HillTypeThelen : public biorbd::muscles::HillType
 {
 public:
-    HillTypeThelen(const biorbd::utils::String& s= "") : biorbd::muscles::HillType(s){setType();}
+    HillTypeThelen();
     HillTypeThelen(
-            const biorbd::muscles::Geometry& g,
-            const biorbd::muscles::Caracteristics& c,
-            const biorbd::muscles::PathChangers & w= biorbd::muscles::PathChangers(),
-            const biorbd::muscles::StateDynamics & s= biorbd::muscles::StateDynamics());
-
+            const biorbd::utils::String& name,
+            const biorbd::muscles::Geometry& geometry,
+            const biorbd::muscles::Caracteristics& caract);
     HillTypeThelen(
-            const biorbd::utils::String& n,
-            const biorbd::muscles::Geometry& g,
-            const biorbd::muscles::Caracteristics& c,
-            const biorbd::muscles::PathChangers & w= biorbd::muscles::PathChangers(),
-            const biorbd::muscles::StateDynamics & s= biorbd::muscles::StateDynamics());
-    HillTypeThelen(const biorbd::muscles::Muscle& m);
-    HillTypeThelen(const std::shared_ptr<biorbd::muscles::Muscle> m);
-    virtual ~HillTypeThelen();
+            const biorbd::utils::String& name,
+            const biorbd::muscles::Geometry& geometry,
+            const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::PathChangers& pathChangers,
+            const biorbd::muscles::StateDynamics& dynamicState);
+    HillTypeThelen(
+            const biorbd::muscles::Muscle& muscle);
+    HillTypeThelen(
+            const std::shared_ptr<biorbd::muscles::Muscle> muscle);
 
     virtual void computeFlPE();
     virtual void computeFlCE(const biorbd::muscles::StateDynamics &emg);

@@ -11,6 +11,7 @@ namespace utils {
 class String;
 class Matrix;
 class Vector;
+class Node3d;
 }
 
 namespace rigidbody {
@@ -22,7 +23,6 @@ namespace muscles {
 class MuscleGroup;
 class StateDynamics;
 class Force;
-class MuscleNode;
 
 class BIORBD_API Muscles
 {
@@ -47,10 +47,10 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates& QDot,
             bool); // Update les positions/jacobiennes/vitesse, etc
     void updateMuscles(
-            std::vector<std::vector<biorbd::muscles::MuscleNode>>& musclePointsInGlobal,
+            std::vector<std::vector<biorbd::utils::Node3d>>& musclePointsInGlobal,
             std::vector<biorbd::utils::Matrix>& jacoPointsInGlobal); // Update les positions/jacobiennes/vitesse, etc
     void updateMuscles(
-            std::vector<std::vector<biorbd::muscles::MuscleNode>>& musclePointsInGlobal,
+            std::vector<std::vector<biorbd::utils::Node3d>>& musclePointsInGlobal,
             std::vector<biorbd::utils::Matrix>& jacoPointsInGlobal,
             const biorbd::rigidbody::GeneralizedCoordinates& QDot); // Update les positions/jacobiennes/vitesse, etc
 
@@ -73,7 +73,7 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates* QDot = nullptr);
     biorbd::utils::Matrix musclesLengthJacobian();
     biorbd::utils::Matrix musclesLengthJacobian(const biorbd::rigidbody::GeneralizedCoordinates& Q);
-    std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> musclesForces(
+    std::vector<std::vector<biorbd::muscles::Force> > musclesForces(
             const std::vector<biorbd::muscles::StateDynamics> &state,
             bool updateKin = true,
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,

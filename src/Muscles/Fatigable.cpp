@@ -5,7 +5,8 @@
 #include "Muscles/Muscle.h"
 #include "Muscles/FatigueDynamicStateXia.h"
 
-biorbd::muscles::Fatigable::Fatigable(const biorbd::utils::String &dynamicFatigueType)
+biorbd::muscles::Fatigable::Fatigable(
+        const biorbd::utils::String &dynamicFatigueType)
 {
     if (!dynamicFatigueType.tolower().compare("simple"))
         m_fatigueState = std::make_shared<biorbd::muscles::FatigueState>();
@@ -15,22 +16,18 @@ biorbd::muscles::Fatigable::Fatigable(const biorbd::utils::String &dynamicFatigu
         biorbd::utils::Error::error(false, "Wrong muscle fatigue type");
 }
 
-biorbd::muscles::Fatigable::Fatigable(const biorbd::muscles::Muscle &m)
+biorbd::muscles::Fatigable::Fatigable(
+        const biorbd::muscles::Fatigable &m) :
+    m_fatigueState(m.m_fatigueState)
 {
-    try {
-        const biorbd::muscles::Fatigable& m_tp(dynamic_cast<const biorbd::muscles::Fatigable&>(m));
-        this->m_fatigueState = m_tp.m_fatigueState;
-    } catch (const std::bad_cast&) {
-        biorbd::utils::Error::error(false, "This muscle is not fatigable");
-    }
+
 }
 
-biorbd::muscles::Fatigable::Fatigable(const std::shared_ptr<biorbd::muscles::Muscle> m)
+biorbd::muscles::Fatigable::Fatigable(
+        const std::shared_ptr<biorbd::muscles::Fatigable> m)
 {
-    const std::shared_ptr<biorbd::muscles::Fatigable> m_tp(std::dynamic_pointer_cast<biorbd::muscles::Fatigable>(m));
-    if (!m_tp)
-        biorbd::utils::Error::error(false, "This muscle is not fatigable");
-    this->m_fatigueState = m_tp->m_fatigueState;
+    biorbd::utils::Error::error(static_cast<bool>(m), "This muscle is not fatigable");
+    this->m_fatigueState = m->m_fatigueState;
 }
 
 biorbd::muscles::Fatigable::~Fatigable()

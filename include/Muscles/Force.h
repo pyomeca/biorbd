@@ -1,35 +1,47 @@
 #ifndef BIORBD_MUSCLES_FORCE_H
 #define BIORBD_MUSCLES_FORCE_H
 
+#include <memory>
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
-#include "Utils/Node3d.h"
-#include "Muscles/Geometry.h"
 
 namespace biorbd {
+namespace utils {
+class Node3d;
+}
+
 namespace muscles {
+class Geometry;
 
 class BIORBD_API Force : public Eigen::Vector3d
 {
 public:
+    Force();
     Force(
-            double x = 0,
-            double y = 0,
-            double z = 0);
-    Force(const biorbd::utils::Node3d& force);
+            double x,
+            double y,
+            double z);
+    Force(
+            const biorbd::muscles::Force& force);
+    template<typename OtherDerived> Force(const Eigen::MatrixBase<OtherDerived>& other) :
+        Eigen::Vector3d(other){}
+    Force(
+            const biorbd::utils::Node3d& force);
     Force(
             const biorbd::muscles::Geometry& geo,
-            double force);
+            double vectorNorm);
+    virtual ~Force();
 
     // Get et set
-    double norme() const;
-    const Force &directionVector() const;
-    virtual void setForce(const biorbd::utils::Node3d &force);
-    virtual void setForce(double x, double y, double z);
-    virtual void setForce(const biorbd::muscles::Geometry& geo, double force);
-protected:
-    void computeNorm();
-    double m_force;
+    virtual void setForceFromMuscleGeometry(
+            const biorbd::muscles::Geometry& geo,
+            double vectorNorm);
+
+    template<typename OtherDerived>
+        biorbd::muscles::Force& operator=(const Eigen::MatrixBase <OtherDerived>& other){
+            this->Eigen::Vector3d::operator=(other);
+            return *this;
+        }
 
 };
 

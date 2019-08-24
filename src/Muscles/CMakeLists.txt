@@ -21,16 +21,13 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/HillTypeThelenFatigable.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Muscle.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MuscleGroup.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/MuscleNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Muscles.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/PathChanger.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/PathChangers.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/State.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/StateDynamics.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/StateDynamicsBuchanan.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ViaPoint.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WrappingCylinder.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/WrappingNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WrappingObject.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WrappingSphere.cpp
 )

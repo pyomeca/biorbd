@@ -10,25 +10,27 @@ namespace muscles {
 class BIORBD_API HillTypeSimple : public biorbd::muscles::HillType
 {
 public:
-    HillTypeSimple(const biorbd::utils::String& s= "");
+    HillTypeSimple();
     HillTypeSimple(
-            const biorbd::muscles::Geometry& g,
-            const biorbd::muscles::Caracteristics& c,
-            const biorbd::muscles::PathChangers & w= biorbd::muscles::PathChangers(),
-            const biorbd::muscles::StateDynamics & s= biorbd::muscles::StateDynamics());
+            const biorbd::utils::String& name,
+            const biorbd::muscles::Geometry& geometry,
+            const biorbd::muscles::Caracteristics& caract);
     HillTypeSimple(
-            const biorbd::utils::String& n,
-            const biorbd::muscles::Geometry& g,
-            const biorbd::muscles::Caracteristics& c,
-            const biorbd::muscles::PathChangers & w= biorbd::muscles::PathChangers(),
-            const biorbd::muscles::StateDynamics & s= biorbd::muscles::StateDynamics());
-    HillTypeSimple(const biorbd::muscles::Muscle& m);
-    HillTypeSimple(const std::shared_ptr<biorbd::muscles::Muscle> m);
-    virtual ~HillTypeSimple();
+            const biorbd::utils::String& name,
+            const biorbd::muscles::Geometry& geometry,
+            const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::PathChangers& pathChangers,
+            const biorbd::muscles::StateDynamics& dynamicState);
+    HillTypeSimple(
+            const HillType& muscle);
+    HillTypeSimple(
+            const std::shared_ptr<HillType> muscle);
 
-    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(const biorbd::muscles::StateDynamics &emg);
+    virtual const std::vector<biorbd::muscles::Force>& force(
+            const biorbd::muscles::StateDynamics &emg);
 protected:
-    double multiplyCaractByActivationAndForce(const biorbd::muscles::StateDynamics &emg); // Voir dans la fonction pour descriptif
+    double multiplyCaractByActivationAndForce(
+            const biorbd::muscles::StateDynamics &emg); // Voir dans la fonction pour descriptif
     virtual void setType();
 
 };

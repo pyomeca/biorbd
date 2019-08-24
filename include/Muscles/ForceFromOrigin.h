@@ -10,17 +10,27 @@ namespace muscles {
 class BIORBD_API ForceFromOrigin : public biorbd::muscles::Force
 {
     public:
-        ForceFromOrigin();
-        ForceFromOrigin(double x, double y, double z);
-        ForceFromOrigin(const biorbd::utils::Node3d& force);
+        ForceFromOrigin(
+                double x = 0,
+                double y = 0,
+                double z = 0);
+        template<typename OtherDerived> ForceFromOrigin(const Eigen::MatrixBase<OtherDerived>& other) :
+            biorbd::muscles::Force(other){}
         ForceFromOrigin(
                 const biorbd::muscles::Geometry& geo,
-                double force);
+                double vectorNorm);
         virtual ~ForceFromOrigin();
 
         // Get et set
-        void setForce(const biorbd::muscles::Geometry& geo, double force);
+        virtual void setForceFromMuscleGeometry(
+                const biorbd::muscles::Geometry& geo,
+                double vectorNorm);
 
+        template<typename OtherDerived>
+            biorbd::muscles::ForceFromOrigin& operator=(const Eigen::MatrixBase <OtherDerived>& other){
+                this->biorbd::muscles::Force::operator=(other);
+                return *this;
+            }
 };
 
 }}

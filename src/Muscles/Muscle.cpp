@@ -6,6 +6,44 @@
 #include "Muscles/PathChangers.h"
 #include "Muscles/StateDynamics.h"
 #include "Muscles/StateDynamicsBuchanan.h"
+#include "Muscles/Caracteristics.h"
+#include "Muscles/Geometry.h"
+
+biorbd::muscles::Muscle::Muscle() :
+    biorbd::muscles::Compound(),
+    m_position(std::make_shared<biorbd::muscles::Geometry>()),
+    m_caract(std::make_shared<biorbd::muscles::Caracteristics>())
+{
+
+}
+
+biorbd::muscles::Muscle::Muscle(
+        const biorbd::utils::String & name,
+        const biorbd::muscles::Geometry & position,
+        const biorbd::muscles::Caracteristics &caract) :
+    biorbd::muscles::Compound (name),
+    m_position(std::make_shared<biorbd::muscles::Geometry>(position)),
+    m_caract(std::make_shared<biorbd::muscles::Caracteristics>(caract))
+{
+
+}
+
+biorbd::muscles::Muscle::Muscle(const biorbd::muscles::Muscle &muscle) :
+    biorbd::muscles::Compound (muscle)
+{
+    m_position = muscle.m_position;
+    m_caract = muscle.m_caract;
+    m_state = muscle.m_state;
+}
+
+biorbd::muscles::Muscle::Muscle(
+        const std::shared_ptr<biorbd::muscles::Muscle> muscle) :
+    biorbd::muscles::Compound (muscle)
+{
+    m_position = muscle->m_position;
+    m_caract = muscle->m_caract;
+    m_state = muscle->m_state;
+}
 
 biorbd::muscles::Muscle::Muscle(
         const biorbd::utils::String& name,
@@ -14,20 +52,12 @@ biorbd::muscles::Muscle::Muscle(
         const biorbd::muscles::PathChangers& w,
         const biorbd::muscles::StateDynamics& s) :
     biorbd::muscles::Compound(name,w),
-    m_position(g),
-    m_caract(c)
+    m_position(std::make_shared<biorbd::muscles::Geometry>(g)),
+    m_caract(std::make_shared<biorbd::muscles::Caracteristics>(c))
 {
     setState(s);
 
     biorbd::utils::Error::error(w.nbWraps()!=1, "Multiple wrapping objects is not implemented yet");
-}
-
-biorbd::muscles::Muscle::Muscle(const biorbd::muscles::Muscle &muscle) :
-    biorbd::muscles::Compound (muscle)
-{
-    this->m_position = muscle.m_position;
-    this->m_caract = muscle.m_caract;
-    this->m_state = muscle.m_state;
 }
 
 biorbd::muscles::Muscle::~Muscle()
@@ -40,7 +70,7 @@ void biorbd::muscles::Muscle::updateOrientations(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         int updateKin){
     // Update de la position des insertions et origines
-    m_position.updateKinematics(m,&Q,nullptr,m_caract,m_pathChanger,updateKin);
+    m_position->updateKinematics(m,*m_caract,*m_pathChanger,&Q,nullptr,updateKin);
 }
 void biorbd::muscles::Muscle::updateOrientations(
         biorbd::rigidbody::Joints &m,
@@ -48,24 +78,24 @@ void biorbd::muscles::Muscle::updateOrientations(
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         int updateKin){
     // Update de la position des insertions et origines
-    m_position.updateKinematics(m,&Q,&Qdot,m_caract,m_pathChanger,updateKin);
+    m_position->updateKinematics(m,*m_caract,*m_pathChanger,&Q,&Qdot,updateKin);
 }
 void biorbd::muscles::Muscle::updateOrientations(
-        std::vector<biorbd::muscles::MuscleNode>& musclePointsInGlobal,
+        std::vector<biorbd::utils::Node3d>& musclePointsInGlobal,
         biorbd::utils::Matrix &jacoPointsInGlobal){
     // Update de la position des insertions et origines
-    m_position.updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,nullptr,m_caract);
+    m_position->updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,*m_caract,nullptr);
 }
 void biorbd::muscles::Muscle::updateOrientations(
-        std::vector<biorbd::muscles::MuscleNode>& musclePointsInGlobal,
+        std::vector<biorbd::utils::Node3d>& musclePointsInGlobal,
         biorbd::utils::Matrix &jacoPointsInGlobal,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot){
     // Update de la position des insertions et origines
-    m_position.updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,&Qdot,m_caract);
+    m_position->updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,*m_caract,&Qdot);
 }
 
 const biorbd::muscles::Geometry &biorbd::muscles::Muscle::position() const {
-    return m_position;
+    return *m_position;
 }
 
 double biorbd::muscles::Muscle::length(
@@ -73,9 +103,9 @@ double biorbd::muscles::Muscle::length(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         int updateKin){
     if (updateKin != 0)
-        m_position.updateKinematics(m,&Q,nullptr,m_caract,m_pathChanger,updateKin);
+        m_position->updateKinematics(m,*m_caract,*m_pathChanger,&Q,nullptr,updateKin);
 
-    return m_position.length();
+    return position().length();
 }
 
 double biorbd::muscles::Muscle::musculoTendonLength(
@@ -83,9 +113,9 @@ double biorbd::muscles::Muscle::musculoTendonLength(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         int updateKin){
     if (updateKin != 0)
-        m_position.updateKinematics(m,&Q,nullptr,m_caract,m_pathChanger,updateKin);
+        m_position->updateKinematics(m,*m_caract,*m_pathChanger,&Q,nullptr,updateKin);
 
-    return m_position.musculoTendonLength();
+    return m_position->musculoTendonLength();
 }
 
 double biorbd::muscles::Muscle::velocity(
@@ -94,48 +124,48 @@ double biorbd::muscles::Muscle::velocity(
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         bool updateKin){
     if (updateKin)
-        m_position.updateKinematics(m,&Q,&Qdot,m_caract,m_pathChanger);
+        m_position->updateKinematics(m,*m_caract,*m_pathChanger,&Q,&Qdot);
 
-    return m_position.velocity();
+    return m_position->velocity();
 }
 
 double biorbd::muscles::Muscle::activationDot(const biorbd::muscles::StateDynamics &s, bool already){
     return m_state->timeDerivativeActivation(s, caract(), already);
 }
 
-const std::vector<biorbd::muscles::MuscleNode> &biorbd::muscles::Muscle::musclesPointsInGlobal(
+const std::vector<biorbd::utils::Node3d> &biorbd::muscles::Muscle::musclesPointsInGlobal(
         biorbd::rigidbody::Joints &m,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin){
     if (updateKin)
-        m_position.updateKinematics(m,&Q,nullptr,m_caract,m_pathChanger);
+        m_position->updateKinematics(m,*m_caract,*m_pathChanger,&Q,nullptr);
 
-    return m_position.musclesPointsInGlobal();
+    return m_position->musclesPointsInGlobal();
 }
 
 
 void biorbd::muscles::Muscle::forceIsoMax(double val){
-    m_caract.setForceIsoMax(val);
+    m_caract->setForceIsoMax(val);
 }
 
 
 const biorbd::muscles::Caracteristics& biorbd::muscles::Muscle::caract() const {
-    return m_caract;
+    return *m_caract;
 }
 void biorbd::muscles::Muscle::setPosition(const biorbd::muscles::Geometry &val) {
-    m_position = val;
+    *m_position = val;
 }
 void biorbd::muscles::Muscle::setCaract(const biorbd::muscles::Caracteristics &val) {
-    m_caract = val;
+    *m_caract = val;
 }
 
 // Get and set
 void biorbd::muscles::Muscle::setState(const biorbd::muscles::StateDynamics &s){
     if (dynamic_cast<const biorbd::muscles::StateDynamicsBuchanan*> (&s)){
-        m_state = new biorbd::muscles::StateDynamicsBuchanan();
+        m_state = std::make_shared<biorbd::muscles::StateDynamicsBuchanan>(biorbd::muscles::StateDynamicsBuchanan());
     }
     else if (dynamic_cast<const biorbd::muscles::StateDynamics*> (&s)){
-        m_state = new biorbd::muscles::StateDynamics();
+        m_state = std::make_shared<biorbd::muscles::StateDynamics>(biorbd::muscles::StateDynamics());
     }
     *m_state = s;
 }

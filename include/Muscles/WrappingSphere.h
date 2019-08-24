@@ -10,19 +10,22 @@ namespace muscles {
 class BIORBD_API WrappingSphere : public biorbd::muscles::WrappingObject
 {
 public:
+    WrappingSphere();
+    WrappingSphere(
+            double x,
+            double y,
+            double z,
+            double diameter);
     WrappingSphere(
             double x,
             double y,
             double z,
             double diameter, // Diametre de la sphere
-            const biorbd::utils::String &name = "",  // Nom du noeud
-            const biorbd::utils::String &parentName = "");
+            const biorbd::utils::String &name, // Nom du noeud
+            const biorbd::utils::String &parentName);
     WrappingSphere(
             const biorbd::utils::Node3d &v, // Position du noeud
-            double diameter, // Diametre de la sphere
-            const biorbd::utils::String &name = "",  // Nom du noeud
-            const biorbd::utils::String &parentName = "");
-    virtual ~WrappingSphere();
+            double diameter);
 
     const biorbd::utils::RotoTrans& RT(
             biorbd::rigidbody::Joints &,
@@ -30,28 +33,28 @@ public:
             bool  = true);
     virtual void wrapPoints(
             const biorbd::utils::RotoTrans&,
-            const biorbd::muscles::MuscleNode&,
-            const biorbd::muscles::MuscleNode&,
-            biorbd::muscles::MuscleNode&,
-            biorbd::muscles::MuscleNode&, double* = nullptr) {} // Premier et dernier points musculaire
+            const biorbd::utils::Node3d&,
+            const biorbd::utils::Node3d&,
+            biorbd::utils::Node3d&,
+            biorbd::utils::Node3d&, double* = nullptr) {} // Premier et dernier points musculaire
     virtual void wrapPoints(
             biorbd::rigidbody::Joints&,
             const biorbd::rigidbody::GeneralizedCoordinates&,
-            const biorbd::muscles::MuscleNode&,
-            const biorbd::muscles::MuscleNode&,
-            biorbd::muscles::MuscleNode&,
-            biorbd::muscles::MuscleNode&,
+            const biorbd::utils::Node3d&,
+            const biorbd::utils::Node3d&,
+            biorbd::utils::Node3d&,
+            biorbd::utils::Node3d&,
             double* = nullptr) {} // Premier et dernier points musculaire
     virtual void wrapPoints(
-            biorbd::muscles::MuscleNode&,
-            biorbd::muscles::MuscleNode&,
+            biorbd::utils::Node3d&,
+            biorbd::utils::Node3d&,
             double* = nullptr) {} // Premier et dernier points musculaire
 
     // Get and set
     double size() const;
     void setSize(double val);
 protected:
-    double m_dia;
+    std::shared_ptr<double> m_dia;
 
 };
 
