@@ -23,7 +23,7 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
 
     // Ouvrir le fichier
     std::ofstream biorbdModelFile;
-    biorbdModelFile.open(pathToWrite.c_str());
+    biorbdModelFile.open(pathToWrite.relativePath().c_str());
 
     // Écrire le fichier
     biorbdModelFile << "version 3" << std::endl;
@@ -51,8 +51,8 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
             biorbdModelFile << sep << sep << "translations" << sep << model.bone(i).seqT() << std::endl;
         if (model.bone(i).nDofRot() > 0)
             biorbdModelFile << sep << sep << "rotations" << sep << model.bone(i).seqR() << std::endl;
-        if (model.bone(i).caract().mesh().path().compare("")) // Si ce n'est pas vide
-            biorbdModelFile << sep << sep << "meshfile" << sep << model.bone(i).caract().mesh().path() << std::endl;
+        if (model.bone(i).caract().mesh().path().filename().compare("")) // Si ce n'est pas vide
+            biorbdModelFile << sep << sep << "meshfile" << sep << model.bone(i).caract().mesh().path().originalPath() << std::endl;
         biorbdModelFile << sep << "endsegment" << sep << std::endl;
         biorbdModelFile << std::endl;
 

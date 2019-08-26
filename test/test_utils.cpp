@@ -3,8 +3,71 @@
 #include <rbdl/Dynamics.h>
 
 #include "Utils/String.h"
+#include "Utils/Path.h"
 #include "Utils/Node3d.h"
 #include "Utils/RotoTransNode.h"
+
+TEST(Path, Create){
+
+    biorbd::utils::Path absolutePath("/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
+    EXPECT_STREQ(absolutePath.absolutePath().c_str(), "/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
+    EXPECT_STREQ(absolutePath.filename().c_str(), "ToMyLovelyFile");
+    EXPECT_STREQ(absolutePath.extension().c_str(), "biorbd");
+    EXPECT_STREQ(absolutePath.originalPath().c_str(), "/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
+
+    biorbd::utils::Path relativePath("MyLovely/RelativePath/ToMyLovelyFile.biorbd");
+    EXPECT_STREQ(relativePath.absolutePath().c_str(), (biorbd::utils::Path::currentDir() + "MyLovely/RelativePath/ToMyLovelyFile.biorbd").c_str());
+    EXPECT_STREQ(relativePath.filename().c_str(), "ToMyLovelyFile");
+    EXPECT_STREQ(relativePath.extension().c_str(), "biorbd");
+    EXPECT_STREQ(relativePath.relativePath().c_str(), "./MyLovely/RelativePath/ToMyLovelyFile.biorbd");
+    EXPECT_STREQ(relativePath.originalPath().c_str(), "MyLovely/RelativePath/ToMyLovelyFile.biorbd");
+
+    biorbd::utils::Path weirdRelativePath("./MyLovely/RelativePath/ToMyLovelyFile.biorbd");
+    EXPECT_STREQ(weirdRelativePath.absolutePath().c_str(), (biorbd::utils::Path::currentDir() + "MyLovely/RelativePath/ToMyLovelyFile.biorbd").c_str());
+    EXPECT_STREQ(weirdRelativePath.filename().c_str(), "ToMyLovelyFile");
+    EXPECT_STREQ(weirdRelativePath.extension().c_str(), "biorbd");
+    EXPECT_STREQ(weirdRelativePath.relativePath().c_str(), "./MyLovely/RelativePath/ToMyLovelyFile.biorbd");
+    EXPECT_STREQ(weirdRelativePath.originalPath().c_str(), "./MyLovely/RelativePath/ToMyLovelyFile.biorbd");
+
+    biorbd::utils::Path noPath("MyLonelyFile.biorbd");
+    EXPECT_STREQ(noPath.absolutePath().c_str(), (biorbd::utils::Path::currentDir() + "MyLonelyFile.biorbd").c_str());
+    EXPECT_STREQ(noPath.filename().c_str(), "MyLonelyFile");
+    EXPECT_STREQ(noPath.extension().c_str(), "biorbd");
+    EXPECT_STREQ(noPath.relativePath().c_str(), "./MyLonelyFile.biorbd");
+    EXPECT_STREQ(noPath.originalPath().c_str(), "MyLonelyFile.biorbd");
+
+    biorbd::utils::Path almostNoPath("./MyKindOfLonelyFile.biorbd");
+    EXPECT_STREQ(almostNoPath.absolutePath().c_str(), (biorbd::utils::Path::currentDir() + "MyKindOfLonelyFile.biorbd").c_str());
+    EXPECT_STREQ(almostNoPath.filename().c_str(), "MyKindOfLonelyFile");
+    EXPECT_STREQ(almostNoPath.extension().c_str(), "biorbd");
+    EXPECT_STREQ(almostNoPath.relativePath().c_str(), "./MyKindOfLonelyFile.biorbd");
+    EXPECT_STREQ(almostNoPath.originalPath().c_str(), "./MyKindOfLonelyFile.biorbd");
+}
+
+TEST(Path, Copy){
+    biorbd::utils::Path MainPath("MyLovelyPath.biorbd");
+    biorbd::utils::Path ShallowCopy(MainPath);
+    biorbd::utils::Path DeepCopy(MainPath.DeepCopy());
+
+    EXPECT_STREQ(MainPath.relativePath().c_str(), "./MyLovelyPath.biorbd");
+    EXPECT_STREQ(ShallowCopy.relativePath().c_str(), "./MyLovelyPath.biorbd");
+    EXPECT_STREQ(DeepCopy.relativePath().c_str(), "./MyLovelyPath.biorbd");
+    EXPECT_STREQ(MainPath.originalPath().c_str(), "MyLovelyPath.biorbd");
+    EXPECT_STREQ(ShallowCopy.originalPath().c_str(), "MyLovelyPath.biorbd");
+    EXPECT_STREQ(DeepCopy.originalPath().c_str(), "MyLovelyPath.biorbd");
+
+    // Changing the ShallowCopy should change the Main, but not the Deep
+    ShallowCopy.setFilename("MySecondLovelyPath");
+    ShallowCopy.setExtension("newExt");
+
+    EXPECT_STREQ(MainPath.relativePath().c_str(), "./MySecondLovelyPath.newExt");
+    EXPECT_STREQ(ShallowCopy.relativePath().c_str(), "./MySecondLovelyPath.newExt");
+    EXPECT_STREQ(DeepCopy.relativePath().c_str(), "./MyLovelyPath.biorbd");
+    EXPECT_STREQ(MainPath.originalPath().c_str(), "MyLovelyPath.biorbd");
+    EXPECT_STREQ(ShallowCopy.originalPath().c_str(), "MyLovelyPath.biorbd");
+    EXPECT_STREQ(DeepCopy.originalPath().c_str(), "MyLovelyPath.biorbd");
+}
+
 
 TEST(Node3d, Copy){
     biorbd::utils::Node3d MainNode(1, 2, 3, "MainNodeName", "NoParent");

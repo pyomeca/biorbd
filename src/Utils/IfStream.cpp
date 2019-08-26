@@ -12,7 +12,7 @@ biorbd::utils::IfStream::IfStream(
         std::ios_base::openmode mode = std::ios_base::in ) :
     m_path(path)
 {
-    open(path.c_str(), mode);
+    open(path.absolutePath().c_str(), mode);
 }
 biorbd::utils::IfStream::IfStream(
         const char* path,
@@ -37,18 +37,11 @@ bool biorbd::utils::IfStream::open(
         const biorbd::utils::Path& path,
         std::ios_base::openmode mode = std::ios_base::in )
 {
-    return open(path.c_str(), mode);
-}
-bool biorbd::utils::IfStream::open(
-        const char* path,
-        std::ios_base::openmode mode = std::ios_base::in )
-{
-    m_ifs = new std::ifstream(path, mode);
-    biorbd::utils::Error::error(m_ifs!=nullptr, path + biorbd::utils::String(" file could not be opened"));
+    biorbd::utils::Error::error(path.isFileExist(), path.absolutePath() + " could not be loaded");
+    m_ifs = new std::ifstream(path.relativePath().c_str(), mode);
     m_isOpen = true;
     return m_isOpen;
 }
-
 
 // Lire le fichier
 bool biorbd::utils::IfStream::readSpecificTag(

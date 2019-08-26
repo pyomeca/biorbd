@@ -41,13 +41,13 @@ TEST(BoneMesh, copy)
     biorbd::rigidbody::BoneMesh ShallowCopy(MasterMesh);
     biorbd::rigidbody::BoneMesh DeepCopy(MasterMesh.DeepCopy());
 
-    EXPECT_STREQ(MasterMesh.path().c_str(), "./MyFile.bioMesh");
-    EXPECT_STREQ(ShallowCopy.path().c_str(), "./MyFile.bioMesh");
-    EXPECT_STREQ(DeepCopy.path().c_str(), "./MyFile.bioMesh");
+    EXPECT_STREQ(MasterMesh.path().relativePath().c_str(), "./MyFile.bioMesh");
+    EXPECT_STREQ(ShallowCopy.path().relativePath().c_str(), "./MyFile.bioMesh");
+    EXPECT_STREQ(DeepCopy.path().relativePath().c_str(), "./MyFile.bioMesh");
     ShallowCopy.setPath("./MyNewFile.bioMesh");
-    EXPECT_STREQ(MasterMesh.path().c_str(), "./MyNewFile.bioMesh");
-    EXPECT_STREQ(ShallowCopy.path().c_str(), "./MyNewFile.bioMesh");
-    EXPECT_STREQ(DeepCopy.path().c_str(), "./MyNewFile.bioMesh");
+    EXPECT_STREQ(MasterMesh.path().relativePath().c_str(), "./MyNewFile.bioMesh");
+    EXPECT_STREQ(ShallowCopy.path().relativePath().c_str(), "./MyNewFile.bioMesh");
+    EXPECT_STREQ(DeepCopy.path().relativePath().c_str(), "./MyNewFile.bioMesh");
 }
 
 TEST(Dynamics, Forward){

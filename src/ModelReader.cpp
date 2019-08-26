@@ -50,15 +50,17 @@ void biorbd::Reader::pwd(){
         std::cout << c << std::endl;
 }
 
-bool biorbd::Reader::is_readable(const biorbd::utils::String &file) {
-    std::ifstream fichier( file.c_str() );
+bool biorbd::Reader::is_readable(const biorbd::utils::Path &file)
+{
+    std::ifstream fichier( file.absolutePath().c_str() );
     bool isOpen(fichier.is_open());
     fichier.close();
     return isOpen;
 }
 
 // ------ Public methods ------ //
-biorbd::Model biorbd::Reader::readModelFile(const biorbd::utils::Path &path){
+biorbd::Model biorbd::Reader::readModelFile(const biorbd::utils::Path &path)
+{
     // Ajouter les éléments entrés
     biorbd::Model model;
     readModelFile(path, &model);
@@ -68,9 +70,9 @@ biorbd::Model biorbd::Reader::readModelFile(const biorbd::utils::Path &path){
 void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Model *model)
 {	// Ouverture du fichier
     if (!is_readable(path))
-        biorbd::utils::Error::error(false, "File " + path + " could not be open");
+        biorbd::utils::Error::error(false, "File " + path.absolutePath() + " could not be open");
 
-    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
+    biorbd::utils::IfStream file(path.absolutePath().c_str(), std::ios::in);
 
     // Lecture du fichier
     biorbd::utils::String tp;
@@ -195,22 +197,15 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                         boneByFile = 1;
                     else if (boneByFile == 0)
                         biorbd::utils::Error::error(0, "You must not mix file and mesh in segment");
-                    biorbd::utils::Path filePath;
-                    file.read(filePath);
-                    bool wasRelative = false;
-                    biorbd::utils::Path tpIfWasRelative = "";
-                    if (!biorbd::utils::Path::isFileExist(filePath)){ // regarder si on est en chemin relatif
-                        wasRelative = true;
-                        tpIfWasRelative = filePath;
-                        filePath = path.folder() + filePath; // Si oui, le mettre en absolue (ou du moins relatif à "path", ce qui est suffisant)
-                    }
-                    filePath.parseFileName();
-                    if (!filePath.extension().compare("biorbd::rigidbody::"))
-                        boneMesh = readBoneMeshFileBiorbdBones(filePath);
+                    biorbd::utils::String filePathInString;
+                    file.read(filePathInString);
+                    biorbd::utils::Path filePath(filePathInString);
+                    if (!filePath.extension().compare("bioMesh"))
+                        boneMesh = readBoneMeshFileBiorbdBones(path.folder() + filePath.relativePath());
                     else if (!filePath.extension().compare("ply"))
-                        boneMesh = readBoneMeshFilePly(filePath);
-                    if (wasRelative)
-                        boneMesh.setPath(tpIfWasRelative); // enlever la partie non relative
+                        boneMesh = readBoneMeshFilePly(path.folder() + filePath.relativePath());
+                    else
+                        biorbd::utils::Error::error(false, filePath.extension() + " is an unrecognized mesh file.");
                 }
 
             }

@@ -4,6 +4,7 @@
 #include <map>
 #include "biorbdConfig.h"
 #include "Utils/Path.h"
+#include <iostream>
 
 namespace biorbd {
 namespace utils {
@@ -24,9 +25,6 @@ public:
     bool open(
             const biorbd::utils::Path& path,
             std::ios_base::openmode mode );
-    bool open(
-            const char* path,
-            std::ios_base::openmode mode  );
 
     bool read(biorbd::utils::String&);
     bool readIgnoreCommentedLine(biorbd::utils::String&);

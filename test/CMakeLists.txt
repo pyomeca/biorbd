@@ -67,7 +67,10 @@ if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
     SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
 endif() #CMAKE_BUILD_TYPE STREQUAL "Coverage"
 
-# Copy the c3d of the example
+# Copy the necessary file for the tests
 file(GLOB C3D_TEST_FILES ${CMAKE_SOURCE_DIR}/test/models/*.bioMod)
 file(COPY ${C3D_TEST_FILES}
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/models/)
+file(GLOB C3D_TEST_FILES ${CMAKE_SOURCE_DIR}/test/models/meshFiles/*.bioMesh)
+file(COPY ${C3D_TEST_FILES}
+  DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/models/meshFiles/)
