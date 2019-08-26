@@ -21,7 +21,7 @@ void Matlab_globalJCS( int, mxArray *plhs[],
     // Trouver les RT
     std::vector<std::vector<biorbd::utils::RotoTrans>> JSC_vec;
     for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
-        JSC_vec.push_back(model->globalJCS(*Q_it));
+        JSC_vec.push_back(model->allGlobalJCS(*Q_it));
 
     // Create a matrix for the return argument
     const mwSize dims[4]={4,4,mwSize(model->nbBone()),mwSize(JSC_vec.size())};

@@ -56,7 +56,7 @@ void Matlab_muscleUpdate( int, mxArray *[],
 //    }
 
     // Recueillir la matrice de points
-    std::vector<std::vector<biorbd::muscles::MuscleNode>> musclePosition(getMusclePosition(prhs, 4, nPoints));
+    std::vector<std::vector<biorbd::utils::Node3d>> musclePosition(getMusclePosition(prhs, 4, nPoints));
 
     // Recueillir la matrice jacobienne
     std::vector<biorbd::utils::Matrix> musclePointsJaco(getMusclePointsJaco(prhs, 5, nPoints, nQ));

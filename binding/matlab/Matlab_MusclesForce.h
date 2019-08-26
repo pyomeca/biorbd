@@ -50,14 +50,14 @@ void Matlab_MusclesForce( int, mxArray *plhs[],
     // Aller chercher les valeurs
     unsigned int cmp(0);
     for (unsigned int iF=0; iF<nFrame; ++iF){
-        std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> Force;
+        std::vector<std::vector<biorbd::muscles::Force>> Force;
         if (updateKin)
-            Force = model->musclesForces(*(state.begin()+iF), updateKin, &(*(Q.begin()+iF)), &(*(Qdot.begin()+iF)));
+            Force = model->musclesForces(state[iF], updateKin, &Q[iF], &Qdot[iF]);
         else
-            Force = model->musclesForces(*(state.begin()+iF), updateKin);
+            Force = model->musclesForces(state[iF], updateKin);
         for (unsigned int i=0; i<Force.size(); ++i){
-            biorbd::muscles::Force ori = (Force[i])[0]->directionVector();
-            biorbd::muscles::Force ins = (Force[i])[1]->directionVector();
+            const biorbd::muscles::Force& ori = Force[i][0];
+            const biorbd::muscles::Force& ins = Force[i][1];
             muscleForce[6*cmp+0] = ori[0];
             muscleForce[6*cmp+1] = ori[1];
             muscleForce[6*cmp+2] = ori[2];

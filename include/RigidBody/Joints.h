@@ -98,17 +98,19 @@ public:
 
 
     // -- POSITION INTERFACE OF THE MODEL -- //
-    std::vector<biorbd::utils::RotoTrans> globalJCS(
-            const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            bool updateKin = true); // Return the JCSs in global coordinate system for the given q
+    std::vector<biorbd::utils::RotoTrans> allGlobalJCS(
+            const biorbd::rigidbody::GeneralizedCoordinates &Q); // Return the JCSs in global coordinate system for the given q
+    std::vector<biorbd::utils::RotoTrans> allGlobalJCS() const; // Return the JCSs in global coordinate system for the given q
     biorbd::utils::RotoTrans globalJCS(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::utils::String &parentName,
-            bool updateKin = true);  // Return the JCS for segment i in global coordinate system for the given q
+            const biorbd::utils::String &parentName);  // Return the JCS for segment i in global coordinate system for the given q
     biorbd::utils::RotoTrans globalJCS(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const unsigned int i,
-            bool updateKin = true);  // Return the JCS for segment i in global coordinate system for the given q
+            unsigned int idx);  // Return the JCS for segment i in global coordinate system for the given q
+    biorbd::utils::RotoTrans globalJCS(
+            const biorbd::utils::String &parentName) const;
+    biorbd::utils::RotoTrans globalJCS(
+            unsigned int idx) const;
     std::vector<biorbd::utils::RotoTrans> localJCS() const; // Return the JCSs in global coordinate system for the given q
     biorbd::utils::RotoTrans localJCS(const biorbd::utils::String &segmentName) const;  // Return the JCS for segment named String in parent coordinate system
     biorbd::utils::RotoTrans localJCS(const unsigned int i) const;  // Return the JCS for segment i in parent coordinate system
@@ -263,6 +265,8 @@ protected:
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const unsigned int body_id,
             bool update_kinematics); // Calculate the JCS in global
+    RigidBodyDynamics::Math::SpatialTransform CalcBodyWorldTransformation(
+            const unsigned int body_id) const; // Calculate the JCS in global
     std::vector<biorbd::utils::Node3d> meshPoints(
             const std::vector<biorbd::utils::RotoTrans>&,
             unsigned int  idx) const;

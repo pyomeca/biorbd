@@ -149,17 +149,19 @@ void biorbd::muscles::Muscle::computeForce(const biorbd::muscles::State &emg)
     (*m_force)[1].setForceFromMuscleGeometry(*m_position, force); // insertion vers l'avant-dernier point
 }
 
-const std::vector<biorbd::utils::Node3d> &biorbd::muscles::Muscle::musclesPointsInGlobal(
+const std::vector<biorbd::utils::Node3d>& biorbd::muscles::Muscle::musclesPointsInGlobal(
         biorbd::rigidbody::Joints &m,
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        bool updateKin)
+        const biorbd::rigidbody::GeneralizedCoordinates &Q)
 {
-    if (updateKin)
-        m_position->updateKinematics(m,*m_caract,*m_pathChanger,&Q,nullptr);
+    m_position->updateKinematics(m,*m_caract,*m_pathChanger,&Q,nullptr);
 
-    return m_position->musclesPointsInGlobal();
+    return musclesPointsInGlobal();
 }
 
+const std::vector<biorbd::utils::Node3d> &biorbd::muscles::Muscle::musclesPointsInGlobal() const
+{
+    return m_position->musclesPointsInGlobal();
+}
 
 void biorbd::muscles::Muscle::forceIsoMax(double val)
 {

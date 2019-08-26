@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <mex.h>
+#include "BiorbdModel.h"
 #include "ModelReader.h"
 #include "class_handle.h"
 

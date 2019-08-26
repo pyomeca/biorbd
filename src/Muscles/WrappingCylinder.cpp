@@ -123,10 +123,13 @@ void biorbd::muscles::WrappingCylinder::wrapPoints(
 const biorbd::utils::RotoTrans& biorbd::muscles::WrappingCylinder::RT(
         biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        bool updateKin){
+        bool updateKin)
+{
+    if (updateKin)
+        model.UpdateKinematicsCustom(&Q);
 
     // Récupérer la matrice de rototrans du cylindre dans le global
-    *m_RT = model.globalJCS(Q, *m_parentName, updateKin) * *m_RTtoParent;
+    *m_RT = model.globalJCS(*m_parentName) * *m_RTtoParent;
     return *m_RT;
 }
 

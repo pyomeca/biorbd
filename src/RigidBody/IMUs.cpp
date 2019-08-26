@@ -85,12 +85,13 @@ biorbd::rigidbody::IMU biorbd::rigidbody::IMUs::IMU(
     // Assuming that this is also a Joints type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
+    if (updateKin)
+        model.UpdateKinematicsCustom (&Q, nullptr, nullptr);
+
     biorbd::rigidbody::IMU node = IMU(idx);
     unsigned int id = static_cast<unsigned int>(model.GetBodyBiorbdId(node.parent()));
 
-    biorbd::utils::RotoTrans parent(model.globalJCS(Q, id, updateKin));
-
-    return biorbd::rigidbody::IMU (parent * node);
+    return biorbd::rigidbody::IMU (model.globalJCS(id) * node);
 }
 
 // Se faire renvoyer les IMUs techniques

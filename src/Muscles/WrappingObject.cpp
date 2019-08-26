@@ -48,3 +48,8 @@ biorbd::muscles::WrappingObject::WrappingObject(
 {
     *m_typeOfNode = "Wrapping";
 }
+
+const biorbd::utils::RotoTrans &biorbd::muscles::WrappingObject::RT() const
+{
+    return *m_RT;
+}

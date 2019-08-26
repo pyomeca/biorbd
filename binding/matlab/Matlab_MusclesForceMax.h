@@ -5,6 +5,10 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "Muscles/MuscleGroup.h"
+#include "Muscles/Muscle.h"
+#include "Muscles/Geometry.h"
+#include "Muscles/Caracteristics.h"
 
 void Matlab_MusclesForceMax( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){

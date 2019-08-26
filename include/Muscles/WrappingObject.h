@@ -37,29 +37,31 @@ public:
             const biorbd::utils::String& name,
             const biorbd::utils::String& parentName);
 
-    virtual const biorbd::utils::RotoTrans& RT(
-            biorbd::rigidbody::Joints &m,
-            const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            bool  = true) = 0;
     virtual void wrapPoints(
-            const biorbd::utils::RotoTrans&,
-            const biorbd::utils::Node3d&,
-            const biorbd::utils::Node3d&,
-            biorbd::utils::Node3d&,
-            biorbd::utils::Node3d&,
+            const biorbd::utils::RotoTrans& rt,
+            const biorbd::utils::Node3d& p1_bone,
+            const biorbd::utils::Node3d& p2_bone,
+            biorbd::utils::Node3d& p1,
+            biorbd::utils::Node3d& p2,
             double* muscleLength = nullptr) = 0 ; // Premier et dernier points musculaire
     virtual void wrapPoints(
-            biorbd::rigidbody::Joints&,
-            const biorbd::rigidbody::GeneralizedCoordinates&,
-            const biorbd::utils::Node3d&,
-            const biorbd::utils::Node3d&,
-            biorbd::utils::Node3d&,
-            biorbd::utils::Node3d&,
+            biorbd::rigidbody::Joints& model,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::utils::Node3d& p1_bone,
+            const biorbd::utils::Node3d& p2_bone,
+            biorbd::utils::Node3d& p1,
+            biorbd::utils::Node3d& p2,
             double* muscleLength = nullptr) = 0; // Premier et dernier points musculaire
     virtual void wrapPoints(
-            biorbd::utils::Node3d&,
-            biorbd::utils::Node3d&,
+            biorbd::utils::Node3d& p1,
+            biorbd::utils::Node3d& p2,
             double* muscleLength = nullptr) = 0; // Assume un appel déja faits
+
+    virtual const biorbd::utils::RotoTrans& RT(
+            biorbd::rigidbody::Joints &model,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            bool updateKin = true) = 0;
+    const biorbd::utils::RotoTrans& RT() const;
 
     biorbd::muscles::WrappingObject& operator=(const biorbd::utils::Node3d& other){
         this->biorbd::utils::Node3d::operator=(other);

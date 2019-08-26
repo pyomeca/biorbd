@@ -4,20 +4,12 @@
 #include <mex.h>
 #include <cmath>
 #include <iostream>
-#include <fstream>
-#include <iostream>
-
-#include "BiorbdModel.h"
-#include "biorbdConfig.h"
-#include "Utils/Matrix.h"
-#include "ModelReader.h"
+#include <algorithm>
 #include "Utils/Error.h"
 
-#include "class_handle.h"
 #include "Matlab_help.h"
 #include "Matlab_new.h"
 #include "Matlab_delete.h"
-
 #include "Matlab_parent.h"
 #include "Matlab_changeGravity.h"
 #include "Matlab_totalMass.h"

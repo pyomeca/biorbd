@@ -73,8 +73,8 @@ public:
     void setCaract(const biorbd::muscles::Caracteristics &val);
     const std::vector<biorbd::utils::Node3d>& musclesPointsInGlobal(
             biorbd::rigidbody::Joints &j,
-            const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            bool updateKin = true);
+            const biorbd::rigidbody::GeneralizedCoordinates &Q);
+    const std::vector<biorbd::utils::Node3d>& musclesPointsInGlobal() const;
     void forceIsoMax(double);
 
     // Get and set

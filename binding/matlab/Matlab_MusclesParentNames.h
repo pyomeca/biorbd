@@ -5,6 +5,9 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "Muscles/MuscleGroup.h"
+#include "Muscles/Muscle.h"
+#include "Muscles/Geometry.h"
 
 void Matlab_MusclesParentNames( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
@@ -30,7 +33,7 @@ void Matlab_MusclesParentNames( int, mxArray *plhs[],
             mxArray * nameOrigin = mxCreateString(model->muscleGroup(i).muscle(j)->position().originInLocal().parent().c_str()); // Origine
             mxSetCell(viaNames, 0, nameOrigin);
             for (unsigned int k=0; k<model->muscleGroup(i).muscle(j)->pathChanger().nbObjects(); ++k){
-                mxArray * viaName = mxCreateString(model->muscleGroup(i).muscle(j)->pathChanger().object(k)->parent().c_str()); // Recueillir le nom du muscle
+                mxArray * viaName = mxCreateString(model->muscleGroup(i).muscle(j)->pathChanger().object(k).parent().c_str()); // Recueillir le nom du muscle
                 mxSetCell(viaNames, k+1, viaName); // Les mettres une cellule (+1 pour skipper origin)
             }
             mxArray * nameInsertion = mxCreateString(model->muscleGroup(i).muscle(j)->position().insertionInLocal().parent().c_str()); // Insertion

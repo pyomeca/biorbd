@@ -1,12 +1,12 @@
 #ifndef MATLAB_PROCESS_ARGUMENTS_H
 #define MATLAB_PROCESS_ARGUMENTS_H
 #include <mex.h>
+#include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/Bone.h"
 #include "RigidBody/IMU.h"
 #include "RigidBody/NodeBone.h"
-#include "Muscles/MuscleNode.h"
 #include "Muscles/StateDynamics.h"
 #include "Muscles/StateDynamicsBuchanan.h"
 
@@ -568,7 +568,7 @@ std::vector<Eigen::VectorXd> getParameterMuscleForceNorm(const mxArray*prhs[], u
 }
 
 
-std::vector<std::vector<biorbd::muscles::MuscleNode>> getMusclePosition(const mxArray*prhs[], unsigned int idx, Eigen::VectorXd nPointsByMuscles){
+std::vector<std::vector<biorbd::utils::Node3d>> getMusclePosition(const mxArray*prhs[], unsigned int idx, Eigen::VectorXd nPointsByMuscles){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -600,13 +600,13 @@ std::vector<std::vector<biorbd::muscles::MuscleNode>> getMusclePosition(const mx
     double *via=mxGetPr(prhs[idx]); //matrice de position
 
     // Préparer la matrice de sortie
-    std::vector<std::vector<biorbd::muscles::MuscleNode>> out;
+    std::vector<std::vector<biorbd::utils::Node3d>> out;
     unsigned int cmpMus(0);
     for (unsigned int i=0; i<nPointsByMuscles.rows(); ++i){
         // Préparer les matrices intermédiaires (chaque muscle)
-        std::vector<biorbd::muscles::MuscleNode> mus;
+        std::vector<biorbd::utils::Node3d> mus;
         for (unsigned int j=0; j<nPointsByMuscles(i); ++j){
-            mus.push_back(biorbd::muscles::MuscleNode(via[cmpMus*nRows+0],via[cmpMus*nRows+1],via[cmpMus*nRows+2]));
+            mus.push_back(biorbd::utils::Node3d(via[cmpMus*nRows+0],via[cmpMus*nRows+1],via[cmpMus*nRows+2]));
             ++cmpMus;
         }
         out.push_back(mus);

@@ -5,6 +5,7 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "Muscles/Force.h"
 
 void Matlab_muscleForcesNorm( int, mxArray *plhs[],
                                 int nrhs, const mxArray*prhs[] ){
@@ -46,14 +47,14 @@ void Matlab_muscleForcesNorm( int, mxArray *plhs[],
 
     unsigned int cmp=0;
     for (unsigned int iF=0; iF<nFrame; ++iF){
-        std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> Force;
+        std::vector<std::vector<biorbd::muscles::Force>> Force;
         if (updateKin)
-            Force = model->musclesForces(*(state.begin()+iF), updateKin, &(*(Q.begin()+iF)), &(*(QDot.begin()+iF)));
+            Force = model->musclesForces(state[iF], updateKin, &Q[iF], &QDot[iF]);
         else
-            Force = model->musclesForces(*(state.begin()+iF), updateKin);
+            Force = model->musclesForces(state[iF], updateKin);
 
         for (unsigned int i=0; i<Force.size(); ++i){
-            force[cmp] = (Force[i])[0]->norme();
+            force[cmp] = Force[i][0].norm();
             ++cmp;
         }
     }
