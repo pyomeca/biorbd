@@ -2,6 +2,9 @@
 #define BIORBD_UTILS_PATH_H
 
 #include <memory>
+#ifdef _WIN32
+#include <string>
+#endif
 #include "biorbdConfig.h"
 
 namespace biorbd {
