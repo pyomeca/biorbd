@@ -689,7 +689,7 @@ std::vector<biorbd::utils::Node3d> biorbd::rigidbody::Joints::meshPoints(
     std::vector<biorbd::utils::Node3d> v;
     for (unsigned int j=0; j<boneMesh(i).size(); ++j){
         biorbd::utils::Node3d tp (boneMesh(i).point(j));
-        tp.applyRT(*(RT.begin()+i));
+        tp.applyRT(RT[i]);
         v.push_back(tp);
     }
 

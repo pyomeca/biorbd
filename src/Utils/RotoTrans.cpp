@@ -40,7 +40,7 @@ Eigen::Vector3d biorbd::utils::RotoTrans::axe(int i)
 
 biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::SpatialTransform2RotoTrans(const RigidBodyDynamics::Math::SpatialTransform& st)
 {
-    return combineRotAndTrans(st.E.transpose(),st.r);
+    return combineRotAndTrans(st.E,st.r);
 }
 
 biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::combineRotAndTrans(

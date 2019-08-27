@@ -10,6 +10,7 @@
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/BoneMesh.h"
 #include "RigidBody/BoneCaracteristics.h"
+#include "RigidBody/NodeBone.h"
 #include "RigidBody/Bone.h"
 
 #ifdef MODULE_ACTUATORS
@@ -50,7 +51,32 @@ TEST(BoneMesh, copy)
     EXPECT_STREQ(DeepCopy.path().relativePath().c_str(), "./MyNewFile.bioMesh");
 }
 
-TEST(Dynamics, Forward){
+static std::string modelPathMeshEqualsMarker("models/meshsEqualMarkers.bioMod");
+TEST(BoneMesh, position)
+{
+    biorbd::Model model(modelPathMeshEqualsMarker);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    for (unsigned int q=0; q<model.nbQ(); ++q){
+        Q.setZero();
+        Q[q] = 1;
+        std::vector<std::vector<biorbd::utils::Node3d>> mesh(model.meshPoints(Q));
+        std::vector<biorbd::rigidbody::NodeBone> markers(model.Tags(Q));
+        for (unsigned int idx=0; idx<markers.size(); ++idx)
+            for (unsigned int xyz =0; xyz<3; ++xyz)
+                EXPECT_DOUBLE_EQ(mesh[0][idx][xyz], markers[idx][xyz]);
+    }
+    {
+        Q.setOnes();
+        std::vector<std::vector<biorbd::utils::Node3d>> mesh(model.meshPoints(Q));
+        std::vector<biorbd::rigidbody::NodeBone> markers(model.Tags(Q));
+        for (unsigned int idx=0; idx<markers.size(); ++idx)
+            for (unsigned int xyz =0; xyz<3; ++xyz)
+                EXPECT_DOUBLE_EQ(mesh[0][idx][xyz], markers[idx][xyz]);
+    }
+}
+
+TEST(Dynamics, Forward)
+{
     biorbd::Model model(modelPathForGeneralTesting);
     biorbd::rigidbody::GeneralizedCoordinates Q(model), QDot(model), QDDot(model), QDDot_expected(model);
     biorbd::rigidbody::GeneralizedTorque Tau(model);
