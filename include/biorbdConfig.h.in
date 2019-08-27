@@ -12,6 +12,10 @@
 //#  define BIORBD_API
 //#endif
 
+#ifdef _WIN32
+#define _ENABLE_EXTENDED_ALIGNED_STORAGE
+#endif
+
 #define BIORBD_API
 #cmakedefine IPOPT_FOUND
 

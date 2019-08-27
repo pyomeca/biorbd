@@ -302,7 +302,7 @@ biorbd::utils::String biorbd::utils::Path::currentDir()
 {
     char buff[FILENAME_MAX];
 #if defined(_WIN32) || defined(_WIN64)
-    return _getcwd(buff, FILENAME_MAX);
+     _getcwd(buff, FILENAME_MAX);
 #else
     getcwd(buff, FILENAME_MAX);
 #endif
