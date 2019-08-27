@@ -23,7 +23,7 @@ TEST(Path, Create){
         biorbd::utils::String path("/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
 #endif
         biorbd::utils::Path absolutePath(path);
-        EXPECT_STREQ(absolutePath.absolutePath().c_str(), "/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
+        EXPECT_STREQ(absolutePath.absolutePath().c_str(), path.c_str());
         EXPECT_STREQ(absolutePath.filename().c_str(), "ToMyLovelyFile");
         EXPECT_STREQ(absolutePath.extension().c_str(), "biorbd");
         EXPECT_STREQ(absolutePath.originalPath().c_str(), path.c_str());
