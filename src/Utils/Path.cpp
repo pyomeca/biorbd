@@ -204,7 +204,7 @@ biorbd::utils::String biorbd::utils::Path::relativePath(const biorbd::utils::Pat
         outPath += "../";
         // Tant que les premières parties sont égales, continuer à avancer dans le path
     };
-    if (!outPath.compare(""))
+    if (!outPath.compare("") && me.find("../") != 0)
         outPath += "./";
 
     outPath += me;
