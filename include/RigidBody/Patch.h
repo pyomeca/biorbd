@@ -1,6 +1,7 @@
 #ifndef BIORBD_RIGIDBODY_PATCH_H
 #define BIORBD_RIGIDBODY_PATCH_H
 
+#include <memory>
 #include <Eigen/Dense>
 #include "biorbdConfig.h"
 
@@ -18,7 +19,7 @@ public:
     void patch(const Patch&);
     Patch patch(); // retourne les patchs
 protected:
-    Eigen::Vector3i m_patch;
+    std::shared_ptr<Eigen::Vector3i> m_patch;
 
 };
 

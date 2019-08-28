@@ -15,10 +15,12 @@ class BIORBD_API KalmanReconsMarkers : public biorbd::rigidbody::KalmanRecons
 public:
 
     // Constructeur
+    KalmanReconsMarkers();
     KalmanReconsMarkers(
             biorbd::Model& model,
             biorbd::rigidbody::KalmanRecons::KalmanRecons::KalmanParam = biorbd::rigidbody::KalmanRecons::KalmanRecons::KalmanParam());
-    virtual ~KalmanReconsMarkers();
+    biorbd::rigidbody::KalmanReconsMarkers DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::KalmanReconsMarkers& other);
 
     // Reconstruction d'un frame
     virtual void reconstructFrame(
@@ -52,8 +54,8 @@ protected:
             biorbd::utils::Matrix&,
             biorbd::utils::Vector &measure,
             const std::vector<unsigned int> &occlusion);
-    biorbd::utils::Matrix m_PpInitial; // Se souvenir de Pp inital
-    bool m_firstIteration;
+    std::shared_ptr<biorbd::utils::Matrix> m_PpInitial; // Se souvenir de Pp inital
+    std::shared_ptr<bool> m_firstIteration;
 };
 
 }}

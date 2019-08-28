@@ -8,7 +8,6 @@
 #include "Utils/RotoTrans.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/BoneMesh.h"
-#include "RigidBody/Patch.h"
 #include "RigidBody/BoneCaracteristics.h"
 
 biorbd::rigidbody::Bone::Bone() :
@@ -142,7 +141,7 @@ biorbd::rigidbody::Bone biorbd::rigidbody::Bone::DeepCopy() const
 
 void biorbd::rigidbody::Bone::DeepCopy(const biorbd::rigidbody::Bone &other)
 {
-    biorbd::utils::Node::DeepCopy(static_cast<const biorbd::utils::Node&>(other));
+    biorbd::utils::Node::DeepCopy(other);
     m_idxPF = std::make_shared<int>(*other.m_idxPF);
     m_cor = std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(*other.m_cor);
     m_seqT = std::make_shared<biorbd::utils::String>(*other.m_seqT);

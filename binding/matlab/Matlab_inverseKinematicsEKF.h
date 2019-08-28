@@ -75,7 +75,7 @@ void Matlab_inverseKinematicsEKFstep( int, mxArray *plhs[],
 
 
     // Recevoir la matrice des markers (Ne traite que le premier frame)
-    std::vector<std::vector<biorbd::rigidbody::NodeBone>> markersOverTime = getParameterAllMarkers(prhs,3,static_cast<int>(model->nTechTags()));
+    std::vector<std::vector<biorbd::rigidbody::NodeBone>> markersOverTime = getParameterAllMarkers(prhs,3,static_cast<int>(model->nTechnicalMarkers()));
     std::vector<biorbd::rigidbody::NodeBone> markers = markersOverTime[0];
 
     // Si c'est le premier frame recevoir Qinit
@@ -146,7 +146,7 @@ void Matlab_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
 
 
     // Recevoir la matrice des markers
-    std::vector<std::vector<biorbd::rigidbody::NodeBone>> markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechTags()));
+    std::vector<std::vector<biorbd::rigidbody::NodeBone>> markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechnicalMarkers()));
     unsigned int nFrames(static_cast<unsigned int>(markersOverTime.size()));
 
     // Recevoir Qinit

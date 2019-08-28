@@ -40,7 +40,7 @@ void Matlab_IMU( int, mxArray *plhs[],
         }
         else {
             std::ostringstream msg;
-            msg << "Wrong type for tags!";
+            msg << "Wrong type for markers!";
             mexErrMsgTxt(msg.str().c_str());
         }
 

@@ -363,10 +363,10 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::projectPoint
     const biorbd::rigidbody::Markers &marks = dynamic_cast<biorbd::rigidbody::Markers &>(*this);
 
     // Sécurité
-    biorbd::utils::Error::error(marks.nTags() == v.size(), "Number of marker must be equal to number of Vector3d");
+    biorbd::utils::Error::error(marks.nMarkers() == v.size(), "Number of marker must be equal to number of Vector3d");
 
     std::vector<biorbd::rigidbody::NodeBone> out;
-    for (unsigned int i=0;i<marks.nTags();++i){
+    for (unsigned int i=0;i<marks.nMarkers();++i){
         biorbd::rigidbody::NodeBone tp(marks.marker(i));
         if (tp.nAxesToRemove()!=0){
             tp = v[i].applyRT(globalJCS(tp.parent()).transpose());
@@ -407,7 +407,7 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Joints::projectPoint(
     // Assuming that this is also a Marker type (via BiorbdModel)
     biorbd::rigidbody::Markers &marks = dynamic_cast<biorbd::rigidbody::Markers &>(*this);
 
-    biorbd::rigidbody::NodeBone out(marks.Tags(Q, n, true, updateKin));
+    biorbd::rigidbody::NodeBone out(marks.marker(Q, n, true, updateKin));
     return out;
 }
 
@@ -426,7 +426,7 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::projectPointJacobian(
     if (node.nAxesToRemove() != 0){
         // Jacobienne du marqueur
         node.applyRT(globalJCS(node.parent()).transpose());
-        biorbd::utils::Matrix G_tp(marks.TagsJacobian(Q, node.parent(), biorbd::utils::Node3d(0,0,0), updateKin));
+        biorbd::utils::Matrix G_tp(marks.markersJacobian(Q, node.parent(), biorbd::utils::Node3d(0,0,0), updateKin));
         biorbd::utils::Matrix JCor(biorbd::utils::Matrix::Zero(9,nbQ()));
         CalcMatRotJacobian(Q, GetBodyId(node.parent().c_str()), Eigen::Matrix3d::Identity(3,3), JCor,false);
         for (unsigned int n=0; n<3; ++n)

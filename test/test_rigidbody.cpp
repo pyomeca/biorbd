@@ -68,7 +68,7 @@ TEST(BoneMesh, position)
         Q.setZero();
         Q[q] = 1;
         std::vector<std::vector<biorbd::utils::Node3d>> mesh(model.meshPoints(Q));
-        std::vector<biorbd::rigidbody::NodeBone> markers(model.Tags(Q));
+        std::vector<biorbd::rigidbody::NodeBone> markers(model.markers(Q));
         for (unsigned int idx=0; idx<markers.size(); ++idx)
             for (unsigned int xyz =0; xyz<3; ++xyz)
                 EXPECT_DOUBLE_EQ(mesh[0][idx][xyz], markers[idx][xyz]);
@@ -76,7 +76,7 @@ TEST(BoneMesh, position)
     {
         Q.setOnes();
         std::vector<std::vector<biorbd::utils::Node3d>> mesh(model.meshPoints(Q));
-        std::vector<biorbd::rigidbody::NodeBone> markers(model.Tags(Q));
+        std::vector<biorbd::rigidbody::NodeBone> markers(model.markers(Q));
         for (unsigned int idx=0; idx<markers.size(); ++idx)
             for (unsigned int xyz =0; xyz<3; ++xyz)
                 EXPECT_DOUBLE_EQ(mesh[0][idx][xyz], markers[idx][xyz]);

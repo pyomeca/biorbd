@@ -129,7 +129,7 @@ public:
     std::vector<biorbd::rigidbody::NodeBone>  projectPoint(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const std::vector<biorbd::rigidbody::NodeBone> &v,
-            bool updateKin=true); //Marqueurs projetés de points correspondant aux marqueurs du modèle (le vector doit être égal au nombre de marqueur et dans l'ordre donné par Tags)
+            bool updateKin=true); //Marqueurs projetés de points correspondant aux marqueurs du modèle (le vector doit être égal au nombre de marqueur et dans l'ordre donné par Markers)
     biorbd::utils::Matrix projectPointJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             biorbd::rigidbody::NodeBone p,
@@ -143,7 +143,7 @@ public:
     std::vector<biorbd::utils::Matrix> projectPointJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const std::vector<biorbd::rigidbody::NodeBone> &v,
-            bool updateKin); // Matrice jacobienne des marqueurs projetés de points correspondant aux marqueurs du modèle (le vector doit être égal au nombre de marqueur et dans l'ordre donné par Tags et dans le repère global)
+            bool updateKin); // Matrice jacobienne des marqueurs projetés de points correspondant aux marqueurs du modèle (le vector doit être égal au nombre de marqueur et dans l'ordre donné par Markers et dans le repère global)
     // ------------------------------------- //
 
 
@@ -199,8 +199,8 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             unsigned int  idx,
             bool updateKin = true);
-    std::vector<std::vector<biorbd::rigidbody::Patch>> meshPatch() const;
-    const std::vector<biorbd::rigidbody::Patch>& meshPatch(unsigned int i) const;
+    std::vector<std::vector<Patch> > meshPatch() const;
+    const std::vector<biorbd::rigidbody::Patch> &meshPatch(unsigned int i) const;
     std::vector<biorbd::rigidbody::BoneMesh> boneMesh() const;
     const biorbd::rigidbody::BoneMesh& boneMesh(unsigned int  idx) const;
     // ----------------------- //

@@ -16,10 +16,12 @@ class BIORBD_API KalmanReconsIMU : public biorbd::rigidbody::KalmanRecons
 public:
 
     // Constructeur
+    KalmanReconsIMU();
     KalmanReconsIMU(
             biorbd::Model&,
             biorbd::rigidbody::KalmanRecons::KalmanParam = biorbd::rigidbody::KalmanRecons::KalmanParam(100, 0.005, 1e-10));
-    virtual ~KalmanReconsIMU();
+    biorbd::rigidbody::KalmanReconsIMU DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::KalmanReconsIMU& other);
 
     // Reconstruction d'un frame
     virtual void reconstructFrame(
@@ -45,8 +47,8 @@ protected:
             biorbd::utils::Vector &measure,
             const std::vector<unsigned int> &occlusion);
 
-    biorbd::utils::Matrix m_PpInitial; // Se souvenir de Pp inital
-    bool m_firstIteration;
+    std::shared_ptr<biorbd::utils::Matrix> m_PpInitial; // Se souvenir de Pp inital
+    std::shared_ptr<bool> m_firstIteration;
 };
 
 }}

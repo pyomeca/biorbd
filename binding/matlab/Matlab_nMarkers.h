@@ -1,12 +1,12 @@
-#ifndef BIORBD_MATLAB_N_TAGS_H
-#define BIORBD_MATLAB_N_TAGS_H
+#ifndef BIORBD_MATLAB_N_MARKERS_H
+#define BIORBD_MATLAB_N_MARKERS_H
 
 #include <mex.h>
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
 
-void Matlab_nTags( int, mxArray *plhs[],
+void Matlab_nMarkers( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
@@ -15,12 +15,12 @@ void Matlab_nTags( int, mxArray *plhs[],
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( 1, 1, mxREAL);
-    double *nTags = mxGetPr(plhs[0]);
+    double *nMarkers = mxGetPr(plhs[0]);
 
     // Get nombre de marqueurs
-    *nTags = model->nTags();
+    *nMarkers = static_cast<double>(model->nMarkers());
 
     return;
 }
 
-#endif // BIORBD_MATLAB_N_TAGS_H
+#endif // BIORBD_MATLAB_N_MARKERS_H

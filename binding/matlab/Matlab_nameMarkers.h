@@ -1,12 +1,12 @@
-#ifndef BIORBD_MATLAB_NAME_TAGS_H
-#define BIORBD_MATLAB_NAME_TAGS_H
+#ifndef BIORBD_MATLAB_NAME_MARKERS_H
+#define BIORBD_MATLAB_N_MARKERS_H
 
 #include <mex.h>
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
 
-void Matlab_nameTags( int, mxArray *plhs[],
+void Matlab_nameMarkers( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entree
@@ -15,19 +15,19 @@ void Matlab_nameTags( int, mxArray *plhs[],
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
 
     // Trouver ou sont les marqueurs
-    std::vector<biorbd::utils::String> allTags(model->markerNames());
+    std::vector<biorbd::utils::String> allMarkers(model->markerNames());
 
     // Create a matrix for the return argument
-    plhs[0] = mxCreateCellMatrix( allTags.size(), 1);
-    for (unsigned int i_bone=0; i_bone<allTags.size(); ++i_bone){
-        mxArray * tags_out_tp = mxCreateString((*(allTags.begin()+i_bone)).c_str());
-        mxSetCell(plhs[0],i_bone,tags_out_tp);
+    plhs[0] = mxCreateCellMatrix( allMarkers.size(), 1);
+    for (unsigned int i_bone=0; i_bone<allMarkers.size(); ++i_bone){
+        mxArray * markers_out_tp = mxCreateString((*(allMarkers.begin()+i_bone)).c_str());
+        mxSetCell(plhs[0],i_bone,markers_out_tp);
     }
 
     return;
 }
 
-void Matlab_nameTechnicalTags( int, mxArray *plhs[],
+void Matlab_nameTechnicalMarkers( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entree
@@ -36,19 +36,19 @@ void Matlab_nameTechnicalTags( int, mxArray *plhs[],
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
 
     // Trouver ou sont les marqueurs
-    std::vector<biorbd::utils::String> allTags(model->technicalMarkerNames());
+    std::vector<biorbd::utils::String> allMarkers(model->technicalMarkerNames());
 
     // Create a matrix for the return argument
-    plhs[0] = mxCreateCellMatrix( allTags.size(), 1);
-    for (unsigned int i_bone=0; i_bone<allTags.size(); ++i_bone){
-        mxArray * tags_out_tp = mxCreateString((*(allTags.begin()+i_bone)).c_str());
-        mxSetCell(plhs[0],i_bone,tags_out_tp);
+    plhs[0] = mxCreateCellMatrix( allMarkers.size(), 1);
+    for (unsigned int i_bone=0; i_bone<allMarkers.size(); ++i_bone){
+        mxArray * markers_out_tp = mxCreateString((*(allMarkers.begin()+i_bone)).c_str());
+        mxSetCell(plhs[0],i_bone,markers_out_tp);
     }
 
     return;
 }
 
-void Matlab_nameAnatomicalTags( int, mxArray *plhs[],
+void Matlab_nameAnatomicalMarkers( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entree
@@ -57,16 +57,16 @@ void Matlab_nameAnatomicalTags( int, mxArray *plhs[],
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
 
      // Trouver ou sont les marqueurs
-    std::vector<biorbd::utils::String> allTags(model->anatomicalMarkerNames());
+    std::vector<biorbd::utils::String> allMarkers(model->anatomicalMarkerNames());
 
     // Create a matrix for the return argument
-    plhs[0] = mxCreateCellMatrix( allTags.size(), 1);
-    for (unsigned int i_bone=0; i_bone<allTags.size(); ++i_bone){
-        mxArray * tags_out_tp = mxCreateString((*(allTags.begin()+i_bone)).c_str());
-        mxSetCell(plhs[0],i_bone,tags_out_tp);
+    plhs[0] = mxCreateCellMatrix( allMarkers.size(), 1);
+    for (unsigned int i_bone=0; i_bone<allMarkers.size(); ++i_bone){
+        mxArray * markers_out_tp = mxCreateString((*(allMarkers.begin()+i_bone)).c_str());
+        mxSetCell(plhs[0],i_bone,markers_out_tp);
     }
 
     return;
 }
 
-#endif // BIORBD_MATLAB_NAME_TAGS_H
+#endif // BIORBD_MATLAB_N_MARKERS_H

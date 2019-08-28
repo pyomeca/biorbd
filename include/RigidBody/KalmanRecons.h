@@ -1,13 +1,17 @@
 #ifndef BIORBD_RIGIDBODY_KALMAN_RECONS_H
 #define BIORBD_RIGIDBODY_KALMAN_RECONS_H
 
+#include <memory>
 #include <vector>
 #include "biorbdConfig.h"
-#include "Utils/Matrix.h"
-#include "Utils/Vector.h"
 
 namespace biorbd {
 class Model;
+
+namespace utils {
+class Matrix;
+class Vector;
+}
 
 namespace rigidbody {
 class GeneralizedCoordinates;
@@ -32,11 +36,13 @@ public:
     };
 
     // Constructeur
+    KalmanRecons();
     KalmanRecons(
             biorbd::Model& model,
             unsigned int nMeasure,
             KalmanParam = KalmanParam());
     virtual ~KalmanRecons();
+    void DeepCopy(const biorbd::rigidbody::KalmanRecons& other);
 
     // Recueillir l'état (Q, Qdot, Qddot)
     void getState(
@@ -80,17 +86,17 @@ protected:
             const std::vector<unsigned int> &occlusion);
 
     // Attributs variables
-    KalmanParam m_params; // Fréquence d'acquisition
-    double m_Te; // Parametre inérant a la frequence
-    unsigned int m_nDof; // Nombre de DoF, calculé des qu'un modele est ouvert
-    unsigned int m_nMeasure; // Nombre de marqueurs
+    std::shared_ptr<KalmanParam> m_params; // Fréquence d'acquisition
+    std::shared_ptr<double> m_Te; // Parametre inérant a la frequence
+    std::shared_ptr<unsigned int> m_nDof; // Nombre de DoF, calculé des qu'un modele est ouvert
+    std::shared_ptr<unsigned int> m_nMeasure; // Nombre de marqueurs
 
     // Attributs du filtre de kalman
-    biorbd::utils::Vector m_xp; // Vecteur d'état
-    biorbd::utils::Matrix m_A; // Matrice d'évolution
-    biorbd::utils::Matrix m_Q; // Matrice de bruit
-    biorbd::utils::Matrix m_R; // Matrice de bruit de la mesure
-    biorbd::utils::Matrix m_Pp; // Matrice de covariance
+    std::shared_ptr<biorbd::utils::Vector> m_xp; // Vecteur d'état
+    std::shared_ptr<biorbd::utils::Matrix> m_A; // Matrice d'évolution
+    std::shared_ptr<biorbd::utils::Matrix> m_Q; // Matrice de bruit
+    std::shared_ptr<biorbd::utils::Matrix> m_R; // Matrice de bruit de la mesure
+    std::shared_ptr<biorbd::utils::Matrix> m_Pp; // Matrice de covariance
 
 };
 

@@ -3,6 +3,39 @@
 
 #include "Utils/Error.h"
 
+biorbd::rigidbody::NodeBone::NodeBone() :
+    biorbd::utils::Node3d(0, 0, 0),
+    m_axesRemoved(std::make_shared<std::vector<bool>>(3)),
+    m_nbAxesToRemove(std::make_shared<int>(0)),
+    m_technical(std::make_shared<bool>(true)),
+    m_anatomical(std::make_shared<bool>(false)),
+    m_id(std::make_shared<int>(-1))
+{
+
+}
+
+biorbd::rigidbody::NodeBone::NodeBone(double x, double y, double z) :
+    biorbd::utils::Node3d(x, y, z),
+    m_axesRemoved(std::make_shared<std::vector<bool>>(3)),
+    m_nbAxesToRemove(std::make_shared<int>(0)),
+    m_technical(std::make_shared<bool>(true)),
+    m_anatomical(std::make_shared<bool>(false)),
+    m_id(std::make_shared<int>(-1))
+{
+
+}
+
+biorbd::rigidbody::NodeBone::NodeBone(const biorbd::utils::Node3d &other) :
+    biorbd::utils::Node3d(other),
+    m_axesRemoved(std::make_shared<std::vector<bool>>(3)),
+    m_nbAxesToRemove(std::make_shared<int>(0)),
+    m_technical(std::make_shared<bool>(true)),
+    m_anatomical(std::make_shared<bool>(false)),
+    m_id(std::make_shared<int>(-1))
+{
+
+}
+
 biorbd::rigidbody::NodeBone::NodeBone(
         double x,
         double y,
@@ -14,12 +47,12 @@ biorbd::rigidbody::NodeBone::NodeBone(
         const biorbd::utils::String &axesToRemove,
         int parentID) :
     biorbd::utils::Node3d(x, y, z, name, parentName),
-    m_nbAxesToRemove(0),
-    m_technical(isTechnical),
-    m_anatomical(isAnatomical),
-    m_id(parentID)
+    m_axesRemoved(std::make_shared<std::vector<bool>>(3)),
+    m_nbAxesToRemove(std::make_shared<int>(0)),
+    m_technical(std::make_shared<bool>(isTechnical)),
+    m_anatomical(std::make_shared<bool>(isAnatomical)),
+    m_id(std::make_shared<int>(parentID))
 {
-    m_axesRemoved.resize(3);
     addAxesToRemove(axesToRemove);
 }
 
@@ -32,39 +65,61 @@ biorbd::rigidbody::NodeBone::NodeBone(
         const biorbd::utils::String& axesToRemove, // Axes à retirer
         int parentID) :
     biorbd::utils::Node3d(node, name, parentName),
-    m_nbAxesToRemove(0),
-    m_technical(isTechnical),
-    m_anatomical(isAnatomical),
-    m_id(parentID)
+    m_axesRemoved(std::make_shared<std::vector<bool>>(3)),
+    m_nbAxesToRemove(std::make_shared<int>(0)),
+    m_technical(std::make_shared<bool>(isTechnical)),
+    m_anatomical(std::make_shared<bool>(isAnatomical)),
+    m_id(std::make_shared<int>(parentID))
 {
-    m_axesRemoved.resize(3);
     addAxesToRemove(axesToRemove);
     //ctor
+}
+
+biorbd::rigidbody::NodeBone biorbd::rigidbody::NodeBone::DeepCopy() const
+{
+    biorbd::rigidbody::NodeBone copy;
+    static_cast<biorbd::utils::Node3d&>(copy) = *this;
+    *copy.m_axesRemoved = *this->m_axesRemoved;
+    *copy.m_nbAxesToRemove = *this->m_nbAxesToRemove;
+    *copy.m_technical = *this->m_technical;
+    *copy.m_anatomical = *this->m_anatomical;
+    *copy.m_id = *this->m_id;
+    return copy;
+}
+
+void biorbd::rigidbody::NodeBone::DeepCopy(const biorbd::rigidbody::NodeBone &other)
+{
+    this->biorbd::utils::Node::DeepCopy(other);
+    *this->m_axesRemoved = *other.m_axesRemoved;
+    *this->m_nbAxesToRemove = *other.m_nbAxesToRemove;
+    *this->m_technical = *other.m_technical;
+    *this->m_anatomical = *other.m_anatomical;
+    *this->m_id = *other.m_id;
 }
 
 
 bool biorbd::rigidbody::NodeBone::isAnatomical() const
 {
-    return m_anatomical;
+    return *m_anatomical;
 }
 
 
 
 bool biorbd::rigidbody::NodeBone::isTechnical() const
 {
-    return m_technical;
+    return *m_technical;
 }
 
 
 int biorbd::rigidbody::NodeBone::parentId() const
 {
-    return m_id;
+    return *m_id;
 }
 
 biorbd::rigidbody::NodeBone biorbd::rigidbody::NodeBone::removeAxes() const
 {
     biorbd::rigidbody::NodeBone pos(*this);
-    for (unsigned int i=0; i<m_axesRemoved.size(); ++i)
+    for (unsigned int i=0; i<m_axesRemoved->size(); ++i)
         if (isAxisRemoved(i))
             pos(i) = 0;
     return pos;
@@ -72,7 +127,7 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::NodeBone::removeAxes() const
 
 bool biorbd::rigidbody::NodeBone::isAxisRemoved(unsigned int i) const
 {
-    return m_axesRemoved[i];
+    return (*m_axesRemoved)[i];
 }
 
 bool biorbd::rigidbody::NodeBone::isAxisKept(unsigned int i) const
@@ -82,15 +137,15 @@ bool biorbd::rigidbody::NodeBone::isAxisKept(unsigned int i) const
 
 int biorbd::rigidbody::NodeBone::nAxesToRemove() const
 {
-    return m_nbAxesToRemove;
+    return *m_nbAxesToRemove;
 }
 
 void biorbd::rigidbody::NodeBone::addAxesToRemove(unsigned int a)
 {
     if (a>2)
         biorbd::utils::Error::error(false, "Axis must be 0 (\"x\"), 1 (\"y\") or 2 (\"z\")");
-    m_axesRemoved[a] = true;
-    ++m_nbAxesToRemove;
+    (*m_axesRemoved)[a] = true;
+    ++*m_nbAxesToRemove;
 }
 
 void biorbd::rigidbody::NodeBone::addAxesToRemove(const biorbd::utils::String& s)

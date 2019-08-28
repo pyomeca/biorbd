@@ -1,12 +1,12 @@
-#ifndef BIORBD_MATLAB_TAGS_H
-#define BIORBD_MATLAB_TAGS_H
+#ifndef BIORBD_MATLAB_MARKERS_H
+#define BIORBD_MATLAB_MARKERS_H
 
 #include <mex.h>
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
 
-void Matlab_Tags( int, mxArray *plhs[],
+void Matlab_Markers( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
@@ -23,55 +23,55 @@ void Matlab_Tags( int, mxArray *plhs[],
         removeAxes = getBool(prhs, 4);
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
-    unsigned int nTags(0); // Nombre de marqueurs
-    std::vector<std::vector<biorbd::rigidbody::NodeBone>> Tags_tp; // récupérer les marqueurs
+    unsigned int nMarkers(0); // Nombre de marqueurs
+    std::vector<std::vector<biorbd::rigidbody::NodeBone>> markers_tp; // récupérer les marqueurs
     if (nrhs >= 4){
         biorbd::utils::String type(getString(prhs,3));
         if (!type.tolower().compare("all")){
-            nTags = model->nTags();
+            nMarkers = model->nMarkers();
             for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
-                 Tags_tp.push_back(model->Tags(*Q_it, removeAxes));
+                 markers_tp.push_back(model->markers(*Q_it, removeAxes));
         }
         else if (!type.tolower().compare("anatomical")){
-                nTags = model->nAnatTags();
+                nMarkers = model->nAnatomicalMarkers();
                 for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
-                     Tags_tp.push_back(model->anatomicalTags(*Q_it, removeAxes));
+                     markers_tp.push_back(model->anatomicalMarkers(*Q_it, removeAxes));
         }
         else if (!type.tolower().compare("technical")){
-            nTags = model->nTechTags();
+            nMarkers = model->nTechnicalMarkers();
             for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
-                 Tags_tp.push_back(model->technicalTags(*Q_it, removeAxes));
+                 markers_tp.push_back(model->technicalMarkers(*Q_it, removeAxes));
         }
         else {
             std::ostringstream msg;
-            msg << "Wrong type for tags!";
+            msg << "Wrong type for markers!";
             mexErrMsgTxt(msg.str().c_str());
         }
 
     }
     else {
-        nTags = model->nTags();
+        nMarkers = model->nMarkers();
         for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
-             Tags_tp.push_back(model->Tags(*Q_it, removeAxes));
+             markers_tp.push_back(model->markers(*Q_it, removeAxes));
     }
 
     // Create a matrix for the return argument
     mwSize dims[3];
     dims[0] = 3;
-    dims[1] = nTags;
-    dims[2] = Tags_tp.size();
+    dims[1] = nMarkers;
+    dims[2] = markers_tp.size();
 
     plhs[0] = mxCreateNumericArray(3, dims, mxDOUBLE_CLASS, mxREAL);
-    double *Tags = mxGetPr(plhs[0]);
+    double *markers = mxGetPr(plhs[0]);
 
     // Remplir le output
     unsigned int cmp(0);
-    for (std::vector<std::vector<biorbd::rigidbody::NodeBone>>::iterator Tags_it = Tags_tp.begin(); Tags_it!=Tags_tp.end(); ++Tags_it){
-        std::vector<biorbd::rigidbody::NodeBone>::iterator it=(*Tags_it).begin();
-        for (unsigned int i=0; (it+i)!=(*Tags_it).end(); ++i){
-            Tags[cmp+0] = (*(it+i))(0);
-            Tags[cmp+1] = (*(it+i))(1);
-            Tags[cmp+2] = (*(it+i))(2);
+    for (std::vector<std::vector<biorbd::rigidbody::NodeBone>>::iterator markers_it = markers_tp.begin(); markers_it!=markers_tp.end(); ++markers_it){
+        std::vector<biorbd::rigidbody::NodeBone>::iterator it=(*markers_it).begin();
+        for (unsigned int i=0; (it+i)!=(*markers_it).end(); ++i){
+            markers[cmp+0] = (*(it+i))(0);
+            markers[cmp+1] = (*(it+i))(1);
+            markers[cmp+2] = (*(it+i))(2);
             cmp += 3;
         }
     }
@@ -79,4 +79,4 @@ void Matlab_Tags( int, mxArray *plhs[],
     return;
 }
 
-#endif // BIORBD_MATLAB_TAGS_H
+#endif // BIORBD_MATLAB_MARKERS_H

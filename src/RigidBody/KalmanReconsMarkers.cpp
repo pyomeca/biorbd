@@ -5,14 +5,24 @@
 #include <rbdl/Kinematics.h>
 #include "BiorbdModel.h"
 #include "Utils/Error.h"
+#include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/NodeBone.h"
+
+biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers() :
+    biorbd::rigidbody::KalmanRecons(),
+    m_PpInitial(std::make_shared<biorbd::utils::Matrix>()),
+    m_firstIteration(std::make_shared<bool>(true))
+{
+
+}
 
 biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers(
         biorbd::Model &model,
         biorbd::rigidbody::KalmanRecons::KalmanParam params) :
-    biorbd::rigidbody::KalmanRecons(model, model.nTechTags()*3, params),
-    m_firstIteration(true)
+    biorbd::rigidbody::KalmanRecons(model, model.nTechnicalMarkers()*3, params),
+    m_PpInitial(std::make_shared<biorbd::utils::Matrix>()),
+    m_firstIteration(std::make_shared<bool>(true))
 {
 
     // Initialiser le filtre
@@ -20,9 +30,20 @@ biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers(
 
 }
 
-biorbd::rigidbody::KalmanReconsMarkers::~KalmanReconsMarkers()
+biorbd::rigidbody::KalmanReconsMarkers biorbd::rigidbody::KalmanReconsMarkers::DeepCopy() const
 {
+    biorbd::rigidbody::KalmanReconsMarkers copy;
+    copy.biorbd::rigidbody::KalmanRecons::DeepCopy(*this);
+    *copy.m_PpInitial = *m_PpInitial;
+    *copy.m_firstIteration = *m_firstIteration;
+    return copy;
+}
 
+void biorbd::rigidbody::KalmanReconsMarkers::DeepCopy(const biorbd::rigidbody::KalmanReconsMarkers &other)
+{
+    static_cast<biorbd::rigidbody::KalmanRecons&>(*this) = other;
+    *m_PpInitial = *other.m_PpInitial;
+    *m_firstIteration = *other.m_firstIteration;
 }
 
 void biorbd::rigidbody::KalmanReconsMarkers::initialize(){
@@ -46,7 +67,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::manageOcclusionDuringIteration(
 
 bool biorbd::rigidbody::KalmanReconsMarkers::first()
 {
-    return m_firstIteration;
+    return *m_firstIteration;
 }
 
 void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
@@ -57,8 +78,8 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         biorbd::rigidbody::GeneralizedCoordinates *Qddot,
         bool removeAxes){
     // Séparer les tobs en un grand vecteur
-    biorbd::utils::Vector T(3*Tobs.nTags());
-    for (unsigned int i=0; i<Tobs.nTags(); ++i)
+    biorbd::utils::Vector T(3*Tobs.nMarkers());
+    for (unsigned int i=0; i<Tobs.nMarkers(); ++i)
         T.block(i*3, 0, 3, 1) = Tobs.marker(i);
 
     // Reconstruire la cinématique
@@ -90,11 +111,11 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         biorbd::rigidbody::GeneralizedCoordinates *Qddot,
         bool removeAxes){
     // Une itération du filtre de Kalman
-    if (m_firstIteration){
-        m_firstIteration = false;
+    if (*m_firstIteration){
+        *m_firstIteration = false;
         biorbd::utils::Vector TobsTP(Tobs);
-        TobsTP.block(3*model.nTechTags(0), 0, 3*model.nTechTags()-3*model.nTechTags(0), 1) =
-                Eigen::VectorXd::Zero(3*model.nTechTags()-3*model.nTechTags(0)); // Ne conserver que les marqueurs de la racine
+        TobsTP.block(3*model.nTechnicalMarkers(0), 0, 3*model.nTechnicalMarkers()-3*model.nTechnicalMarkers(0), 1) =
+                Eigen::VectorXd::Zero(3*model.nTechnicalMarkers()-3*model.nTechnicalMarkers(0)); // Ne conserver que les marqueurs de la racine
         for (unsigned int j = 0; j < 2; ++j){ // Faire la racine, puis le reste du corps
             if (j != 0)
                 TobsTP = Tobs; // Reprendre tous les marqueurs
@@ -105,27 +126,27 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
 
                 // Remettre Pp à initial (parce qu'on ne s'intéresse pas à la vitesse pour se rendre à la position initiale
                 m_Pp = m_PpInitial;
-                m_xp.block(m_nDof, 0, m_nDof*2, 1) = Eigen::VectorXd::Zero(m_nDof*2); // Mettre vitesse et accélération à 0
+                m_xp->block(*m_nDof, 0, *m_nDof*2, 1) = Eigen::VectorXd::Zero(*m_nDof*2); // Mettre vitesse et accélération à 0
             }
         }
     }
 
     // État projeté
-    biorbd::utils::Vector xkm(biorbd::utils::Vector(m_A * m_xp));
-    biorbd::rigidbody::GeneralizedCoordinates Q_tp(biorbd::utils::Vector(xkm.topRows(m_nDof)));
+    biorbd::utils::Vector xkm(biorbd::utils::Vector(*m_A * *m_xp));
+    biorbd::rigidbody::GeneralizedCoordinates Q_tp(biorbd::utils::Vector(xkm.topRows(*m_nDof)));
     model.UpdateKinematicsCustom (&Q_tp, nullptr, nullptr);
 
     // Markers projetés
-    std::vector<biorbd::rigidbody::NodeBone> zest_tp = model.technicalTags(Q_tp, removeAxes, false);
+    std::vector<biorbd::rigidbody::NodeBone> zest_tp = model.technicalMarkers(Q_tp, removeAxes, false);
     // Jacobienne
-    std::vector<biorbd::utils::Matrix> J_tp = model.TechnicalTagsJacobian(Q_tp, removeAxes, false);
+    std::vector<biorbd::utils::Matrix> J_tp = model.TechnicalMarkersJacobian(Q_tp, removeAxes, false);
     // Faire une seule matrice pour zest et Jacobienne
-    biorbd::utils::Matrix H(biorbd::utils::Matrix::Zero(m_nMeasure, m_nDof*3)); // 3*nTags => X,Y,Z ; 3*nDof => Q, Qdot, Qddot
-    biorbd::utils::Vector zest = biorbd::utils::Vector(m_nMeasure).setZero();
+    biorbd::utils::Matrix H(biorbd::utils::Matrix::Zero(*m_nMeasure, *m_nDof*3)); // 3*nMarkers => X,Y,Z ; 3*nDof => Q, Qdot, Qddot
+    biorbd::utils::Vector zest = biorbd::utils::Vector(*m_nMeasure).setZero();
     std::vector<unsigned int> occlusionIdx;
-    for (unsigned int i=0; i<m_nMeasure/3; ++i) // Divisé par 3 parce qu'on intègre d'un coup xyz
+    for (unsigned int i=0; i<*m_nMeasure/3; ++i) // Divisé par 3 parce qu'on intègre d'un coup xyz
         if (Tobs(i*3)*Tobs(i*3) + Tobs(i*3+1)*Tobs(i*3+1) + Tobs(i*3+2)*Tobs(i*3+2) != 0.0){ // S'il y a un marqueur
-            H.block(i*3,0,3,m_nDof) = J_tp[i];
+            H.block(i*3,0,3,*m_nDof) = J_tp[i];
             zest.block(i*3, 0, 3, 1) = zest_tp[i];
         }
         else

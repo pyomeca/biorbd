@@ -2,16 +2,37 @@
 #include "RigidBody/KalmanRecons.h"
 
 #include "BiorbdModel.h"
+#include "Utils/Matrix.h"
+#include "Utils/Vector.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+
+biorbd::rigidbody::KalmanRecons::KalmanRecons() :
+    m_params(std::make_shared<KalmanParam>()),
+    m_Te(std::make_shared<double>(1.0/(m_params->acquisitionFrequency()))),
+    m_nDof(std::make_shared<unsigned int>()),
+    m_nMeasure(std::make_shared<unsigned int>()),
+    m_xp(std::make_shared<biorbd::utils::Vector>()),
+    m_A(std::make_shared<biorbd::utils::Matrix>()),
+    m_Q(std::make_shared<biorbd::utils::Matrix>()),
+    m_R(std::make_shared<biorbd::utils::Matrix>()),
+    m_Pp(std::make_shared<biorbd::utils::Matrix>())
+{
+
+}
 
 biorbd::rigidbody::KalmanRecons::KalmanRecons(
         biorbd::Model &model,
         unsigned int nMeasure,
         KalmanParam params) :
-    m_params(params),
-    m_Te(1.0/(m_params.acquisitionFrequency())),
-    m_nDof(model.dof_count),
-    m_nMeasure(nMeasure)
+    m_params(std::make_shared<KalmanParam>(params)),
+    m_Te(std::make_shared<double>(1.0/(m_params->acquisitionFrequency()))),
+    m_nDof(std::make_shared<unsigned int>(model.dof_count)),
+    m_nMeasure(std::make_shared<unsigned int>(nMeasure)),
+    m_xp(std::make_shared<biorbd::utils::Vector>()),
+    m_A(std::make_shared<biorbd::utils::Matrix>()),
+    m_Q(std::make_shared<biorbd::utils::Matrix>()),
+    m_R(std::make_shared<biorbd::utils::Matrix>()),
+    m_Pp(std::make_shared<biorbd::utils::Matrix>())
 {
 
 }
@@ -21,6 +42,18 @@ biorbd::rigidbody::KalmanRecons::~KalmanRecons()
 
 }
 
+void biorbd::rigidbody::KalmanRecons::DeepCopy(const biorbd::rigidbody::KalmanRecons &other)
+{
+    *m_params = *other.m_params;
+    *m_Te = *other.m_Te;
+    *m_nDof = *other.m_nDof;
+    *m_nMeasure = *other.m_nMeasure;
+    *m_xp = *other.m_xp;
+    *m_A = *other.m_A;
+    *m_Q = *other.m_Q;
+    *m_R = *other.m_R;
+    *m_Pp = *other.m_Pp;
+}
 
 void biorbd::rigidbody::KalmanRecons::iteration(
         biorbd::utils::Vector measure,
@@ -28,25 +61,25 @@ void biorbd::rigidbody::KalmanRecons::iteration(
         const biorbd::utils::Matrix &Hessian,
         const std::vector<unsigned int> &occlusion){
     // Prédiction
-    biorbd::utils::Vector xkm(m_A * m_xp);
-    biorbd::utils::Matrix Pkm(m_A * m_Pp * m_A.transpose() + m_Q);
+    biorbd::utils::Vector xkm(*m_A * *m_xp);
+    biorbd::utils::Matrix Pkm(*m_A * *m_Pp * m_A->transpose() + *m_Q);
 
     // Correction
 #ifdef _WIN32
 	// For some reason windows fails to compile the next line directly...
-    Eigen::MatrixXd InvTp_windowsTp((Hessian * Pkm * Hessian.transpose() + m_R).inverse());
+    Eigen::MatrixXd InvTp_windowsTp((Hessian * Pkm * Hessian.transpose() + *m_R).inverse());
 	biorbd::utils::Matrix InvTp(InvTp_windowsTp);
 #else
-	biorbd::utils::Matrix InvTp((Hessian * Pkm * Hessian.transpose() + m_R).inverse());
+    biorbd::utils::Matrix InvTp((Hessian * Pkm * Hessian.transpose() + *m_R).inverse());
 #endif
     manageOcclusionDuringIteration(InvTp, measure, occlusion);
     biorbd::utils::Matrix K(Pkm*Hessian.transpose() * InvTp); // Gain
 
-    m_xp = biorbd::utils::Vector(xkm+K*(measure-projectedMeasure)); // New estimated state
-    m_Pp =  (biorbd::utils::Matrix::Identity(3*m_nDof, 3*m_nDof) - K*Hessian) *
+    *m_xp = biorbd::utils::Vector(xkm+K*(measure-projectedMeasure)); // New estimated state
+    *m_Pp =  (biorbd::utils::Matrix::Identity(3* *m_nDof, 3* *m_nDof) - K*Hessian) *
              Pkm *
-            (biorbd::utils::Matrix::Identity(3*m_nDof, 3*m_nDof) - K*Hessian).transpose() +
-            K*m_R*K.transpose();
+            (biorbd::utils::Matrix::Identity(3* *m_nDof, 3* *m_nDof) - K*Hessian).transpose() +
+            K* *m_R*K.transpose();
 
 }
 
@@ -66,13 +99,13 @@ void biorbd::rigidbody::KalmanRecons::getState(
         biorbd::rigidbody::GeneralizedCoordinates *Qdot,
         biorbd::rigidbody::GeneralizedCoordinates *Qddot){
     if (Q != nullptr)
-        *Q = m_xp.block(0, 0, m_nDof, 1);
+        *Q = m_xp->block(0, 0, *m_nDof, 1);
 
     if (Qdot != nullptr)
-        *Qdot = m_xp.block(m_nDof, 0, m_nDof, 1);
+        *Qdot = m_xp->block(*m_nDof, 0, *m_nDof, 1);
 
     if (Qddot != nullptr)
-        *Qddot = m_xp.block(2*m_nDof, 0, m_nDof, 1);
+        *Qddot = m_xp->block(2* *m_nDof, 0, *m_nDof, 1);
 }
 
 
@@ -133,19 +166,19 @@ biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::processNoiseMatrix(
 void biorbd::rigidbody::KalmanRecons::initialize(){
 
     // Déclaration de la matrice d'évolution
-    m_A = evolutionMatrix(m_nDof, 2, m_Te);
+    *m_A = evolutionMatrix(*m_nDof, 2, *m_Te);
 
     // Process Noise Matrix
-    m_Q = processNoiseMatrix(m_nDof, m_Te);
+    *m_Q = processNoiseMatrix(*m_nDof, *m_Te);
 
     // Matrice de bruit sur la mesure
-    m_R = measurementNoiseMatrix(m_nMeasure, m_params.noiseFactor());
+    *m_R = measurementNoiseMatrix(*m_nMeasure, m_params->noiseFactor());
 
     // Initialiser l'état
-    m_xp = initState(m_nDof);
+    *m_xp = initState(*m_nDof);
 
     // Matrice Pp
-    m_Pp = initCovariance(m_nDof, m_params.errorFactor());
+    *m_Pp = initCovariance(*m_nDof, m_params->errorFactor());
 }
 
 
@@ -167,13 +200,13 @@ void biorbd::rigidbody::KalmanRecons::setInitState(
         const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
         const biorbd::rigidbody::GeneralizedCoordinates *Qddot){
     if (Q != nullptr)
-        m_xp.block(0, 0, m_nDof, 1) = *Q;
+        m_xp->block(0, 0, *m_nDof, 1) = *Q;
 
     if (Qdot != nullptr)
-        m_xp.block(m_nDof, 0, m_nDof, 1) = *Qdot;
+        m_xp->block(*m_nDof, 0, *m_nDof, 1) = *Qdot;
 
     if (Qddot != nullptr)
-        m_xp.block(2*m_nDof, 0, m_nDof, 1) = *Qddot;
+        m_xp->block(2* *m_nDof, 0, *m_nDof, 1) = *Qddot;
 }
 
 

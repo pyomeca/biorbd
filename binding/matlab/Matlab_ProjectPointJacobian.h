@@ -9,7 +9,7 @@
 void Matlab_ProjectPointJacobian( int, mxArray *plhs[],
                                 int nrhs, const mxArray*prhs[] ){
     // Verifier les arguments d'entrée
-    checkNombreInputParametres(nrhs, 4, 4, "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q and 4th are the 3xN markers where N=nTags of the model");
+    checkNombreInputParametres(nrhs, 4, 4, "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q and 4th are the 3xN markers where N=nMarkers of the model");
 
     // Recevoir le model
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
@@ -26,13 +26,13 @@ void Matlab_ProjectPointJacobian( int, mxArray *plhs[],
     std::vector<biorbd::utils::Matrix>::iterator it=Jac_tp.begin();
 
     // Create a matrix for the return argument
-    unsigned int nTags = model->nTags();
-    plhs[0] = mxCreateDoubleMatrix( 3*nTags, nQ, mxREAL);
+    unsigned int nMarkers = model->nMarkers();
+    plhs[0] = mxCreateDoubleMatrix( 3*nMarkers, nQ, mxREAL);
         double *Jac = mxGetPr(plhs[0]);
      for (unsigned int j=0; (it+j)!=Jac_tp.end(); ++j)
         for (unsigned int i=0; i<nQ; ++i)
             for (unsigned int k=0; k<3; ++k)
-                Jac[j+nTags*k+i*nTags*3] = (*(it+j))(k,i);
+                Jac[j+nMarkers*k+i*nMarkers*3] = (*(it+j))(k,i);
 
     return;
 }

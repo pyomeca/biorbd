@@ -1,12 +1,12 @@
-#ifndef BIORBD_MATLAB_LOCAL_TAGS_H
-#define BIORBD_MATLAB_LOCAL_TAGS_H
+#ifndef BIORBD_MATLAB_LOCAL_MARKERS_H
+#define BIORBD_MATLAB_LOCAL_MARKERS_H
 
 #include <mex.h>
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
 
-void Matlab_LocalTags( int, mxArray *plhs[],
+void Matlab_LocalMarkers( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
@@ -23,45 +23,45 @@ void Matlab_LocalTags( int, mxArray *plhs[],
         removeAxes = getBool(prhs, 3);
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
-    unsigned int nTags(0); // Nombre de marqueurs
-    std::vector<biorbd::rigidbody::NodeBone> Tags_tp; // récupérer les marqueurs
+    unsigned int nMarkers(0); // Nombre de marqueurs
+    std::vector<biorbd::rigidbody::NodeBone> markers_tp; // récupérer les marqueurs
     if (!type.tolower().compare("all")){
-            nTags = model->nTags();
-            Tags_tp = model->biorbd::rigidbody::Markers::Tags(removeAxes);
+            nMarkers = model->nMarkers();
+            markers_tp = model->biorbd::rigidbody::Markers::markers(removeAxes);
         }
         else if (!type.tolower().compare("anatomical")){
-            nTags = model->nAnatTags();
-            Tags_tp = model->biorbd::rigidbody::Markers::anatomicalTags(removeAxes);
+            nMarkers = model->nAnatomicalMarkers();
+            markers_tp = model->biorbd::rigidbody::Markers::anatomicalMarkers(removeAxes);
         }
         else if (!type.tolower().compare("technical")){
-            nTags = model->nTechTags();
-            Tags_tp = model->biorbd::rigidbody::Markers::technicalTags(removeAxes);
+            nMarkers = model->nTechnicalMarkers();
+            markers_tp = model->biorbd::rigidbody::Markers::technicalMarkers(removeAxes);
         }
         else {
             std::ostringstream msg;
-            msg << "Wrong type for tags!";
+            msg << "Wrong type for markers!";
             mexErrMsgTxt(msg.str().c_str());
         }
 
     // Create a matrix for the return argument
     mwSize dims[2];
     dims[0] = 3;
-    dims[1] = nTags;
+    dims[1] = nMarkers;
 
     plhs[0] = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
-    double *Tags = mxGetPr(plhs[0]);
+    double *markers = mxGetPr(plhs[0]);
 
     // Remplir le output
     unsigned int cmp(0);
-    std::vector<biorbd::rigidbody::NodeBone>::iterator it=Tags_tp.begin();
-        for (unsigned int i=0; (it+i)!=Tags_tp.end(); ++i){
-            Tags[cmp+0] = (*(it+i))(0);
-            Tags[cmp+1] = (*(it+i))(1);
-            Tags[cmp+2] = (*(it+i))(2);
+    std::vector<biorbd::rigidbody::NodeBone>::iterator it=markers_tp.begin();
+        for (unsigned int i=0; (it+i)!=markers_tp.end(); ++i){
+            markers[cmp+0] = (*(it+i))(0);
+            markers[cmp+1] = (*(it+i))(1);
+            markers[cmp+2] = (*(it+i))(2);
             cmp += 3;
         }
 
     return;
 }
 
-#endif // BIORBD_MATLAB_LOCAL_TAGS_H
+#endif // BIORBD_MATLAB_LOCAL_MARKERS_H

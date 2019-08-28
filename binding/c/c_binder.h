@@ -1,6 +1,6 @@
 
-#ifndef __BIORBD_C_BINDER__
-#define __BIORBD_C_BINDER__
+#ifndef BIORBD_C_BINDER
+#define BIORBD_C_BINDER
 
 #include "BiorbdModel.h"
 #include "biorbdConfig.h"
@@ -18,9 +18,9 @@ extern "C" {
     BIORBD_API int c_nIMUs(biorbd::Model*);
     BIORBD_API void c_addIMU(biorbd::Model *model, const double *imuRT, const char* name = "", const char* parentName = "", bool technical = true, bool anatomical = true);
     BIORBD_API void c_meanIMU(const double *imuRT, unsigned int nFrame, double* imuRT_mean);
-    BIORBD_API biorbd::rigidbody::KalmanReconsIMU* c_BiorbdKalmanReconsIMU(biorbd::Model*, double* QinitialGuess = NULL, double freq = 100, double noiseF = 5e-3, double errorF = 1e-10);
+    BIORBD_API biorbd::rigidbody::KalmanReconsIMU* c_BiorbdKalmanReconsIMU(biorbd::Model*, double* QinitialGuess = nullptr, double freq = 100, double noiseF = 5e-3, double errorF = 1e-10);
     BIORBD_API void c_deleteBiorbdKalmanReconsIMU(biorbd::rigidbody::KalmanReconsIMU*);
-    BIORBD_API void c_BiorbdKalmanReconsIMUstep(biorbd::Model*, biorbd::rigidbody::KalmanReconsIMU*, double* imu, double* Q = NULL, double* QDot = NULL, double* QDDot = NULL);
+    BIORBD_API void c_BiorbdKalmanReconsIMUstep(biorbd::Model*, biorbd::rigidbody::KalmanReconsIMU*, double* imu, double* Q = nullptr, double* QDot = nullptr, double* QDDot = nullptr);
 	
     // Joints functions
     BIORBD_API void c_globalJCS(biorbd::Model*, const double* Q, double* jcs);
@@ -36,18 +36,18 @@ extern "C" {
     BIORBD_API int c_nQGeneralizedTorque(biorbd::Model* model);
 
 	// Markers functions
-    BIORBD_API int c_nTags(biorbd::Model* model);
-    BIORBD_API void c_Tags(biorbd::Model* model, const double* Q, double* markPos, bool removeAxis = true, bool updateKin = true);
-    BIORBD_API void c_TagsInLocal(biorbd::Model* model, double* markPos);
-    BIORBD_API void c_addTags(biorbd::Model *model, const double *markPos, const char* name = "", const char* parentName = "", bool technical = true, bool anatomical = true, const char* axesToRemove = "");
+    BIORBD_API int c_nMarkers(biorbd::Model* model);
+    BIORBD_API void c_markers(biorbd::Model* model, const double* Q, double* markPos, bool removeAxis = true, bool updateKin = true);
+    BIORBD_API void c_markerssInLocal(biorbd::Model* model, double* markPos);
+    BIORBD_API void c_addMarker(biorbd::Model *model, const double *markPos, const char* name = "", const char* parentName = "", bool technical = true, bool anatomical = true, const char* axesToRemove = "");
 
     // Maths functions
     BIORBD_API void c_transformMatrixToCardan(const double* M, const char* sequence, double* cardanOut);
 }
 
 // Fonctions de dispatch pour les données d'entré et de sortie
-biorbd::utils::Node3d dispatchTagsInput(const double * pos);
-void dispatchTagsOutput(const std::vector<biorbd::rigidbody::NodeBone> &allTags, double* tags);
+biorbd::utils::Node3d dispatchMarkersInput(const double * pos);
+void dispatchMarkersOutput(const std::vector<biorbd::rigidbody::NodeBone> &allMarkers, double* markers);
 biorbd::rigidbody::GeneralizedCoordinates dispatchQinput(biorbd::Model* model, const double*Q);
 void dispatchQoutput(const biorbd::rigidbody::GeneralizedCoordinates &eQ, double*Q);
 void dispatchDoubleOutput(const biorbd::utils::Vector&, double*);
@@ -56,12 +56,13 @@ void dispatchRToutput(const biorbd::utils::RotoTrans& rt_in, double* rt_out);
 void dispatchRToutput(const std::vector<biorbd::utils::RotoTrans>& rt_in, double* rt_out);
 
 
-
+#ifdef UNITY
 // Spécifique à des projets (IMU sous Unity)
 #include "IMU_Unity_Optim.h"
 extern "C" { 
     BIORBD_API void c_alignSpecificAxisWithParentVertical(const double* parentRT, const double * childRT, int idxAxe, double * rotation);
 }
+#endif
 
 
-#endif // __BIORBD_C_BINDER__
+#endif // BIORBD_C_BINDER

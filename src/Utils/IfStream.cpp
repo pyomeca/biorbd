@@ -69,21 +69,21 @@ int biorbd::utils::IfStream::countTagsInAConsecutiveLines(const biorbd::utils::S
     // Se souvenir où on était dans le fichier
     long positionInFile(m_ifs->tellg());
     biorbd::utils::String text;
-    int nTags(0);
+    int nMarkers(0);
 
     // Lire le premier mot de la ligne
     while (read(text))
         // S'il est comme le tag, saute à la prochaine ligne et on recommence
         if (!text.compare(tag)){
             getline(text);
-            ++nTags;
+            ++nMarkers;
         }
         else
             break;
 
     // Remettre le fichier au point d'origine
     m_ifs->seekg(positionInFile);
-    return nTags;
+    return nMarkers;
 }
 
 bool biorbd::utils::IfStream::read(biorbd::utils::String& text){

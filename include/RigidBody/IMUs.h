@@ -72,16 +72,16 @@ public:
 
     std::vector<biorbd::utils::Matrix> IMUJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            bool updateKin = true); // Retourne la jacobienne des Tags
+            bool updateKin = true); // Retourne la jacobienne des Markers
     std::vector<biorbd::utils::Matrix> TechnicalIMUJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            bool updateKin = true); // Retourne la jacobienne des Tags pour les marqueurs techniques
+            bool updateKin = true); // Retourne la jacobienne des Markers pour les marqueurs techniques
 
 protected:
     std::vector<biorbd::utils::Matrix> IMUJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool updateKin,
-            bool lookForTechnical); // Retourne la jacobienne des Tags
+            bool lookForTechnical); // Retourne la jacobienne des Markers
 
     std::shared_ptr<std::vector<biorbd::rigidbody::IMU>> m_IMUs;
 
