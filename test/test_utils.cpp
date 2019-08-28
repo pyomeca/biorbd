@@ -78,14 +78,18 @@ TEST(Path, Create){
 TEST(Path, Copy){
     biorbd::utils::Path MainPath("MyLovelyPath.biorbd");
     biorbd::utils::Path ShallowCopy(MainPath);
-    biorbd::utils::Path DeepCopy(MainPath.DeepCopy());
+    biorbd::utils::Path DeepCopyNow(MainPath.DeepCopy());
+    biorbd::utils::Path DeepCopyLater;
+    DeepCopyLater.DeepCopy(MainPath);
 
     EXPECT_STREQ(MainPath.relativePath().c_str(), "./MyLovelyPath.biorbd");
     EXPECT_STREQ(ShallowCopy.relativePath().c_str(), "./MyLovelyPath.biorbd");
-    EXPECT_STREQ(DeepCopy.relativePath().c_str(), "./MyLovelyPath.biorbd");
+    EXPECT_STREQ(DeepCopyNow.relativePath().c_str(), "./MyLovelyPath.biorbd");
+    EXPECT_STREQ(DeepCopyLater.relativePath().c_str(), "./MyLovelyPath.biorbd");
     EXPECT_STREQ(MainPath.originalPath().c_str(), "MyLovelyPath.biorbd");
     EXPECT_STREQ(ShallowCopy.originalPath().c_str(), "MyLovelyPath.biorbd");
-    EXPECT_STREQ(DeepCopy.originalPath().c_str(), "MyLovelyPath.biorbd");
+    EXPECT_STREQ(DeepCopyNow.originalPath().c_str(), "MyLovelyPath.biorbd");
+    EXPECT_STREQ(DeepCopyLater.originalPath().c_str(), "MyLovelyPath.biorbd");
 
     // Changing the ShallowCopy should change the Main, but not the Deep
     ShallowCopy.setFilename("MySecondLovelyPath");
@@ -93,21 +97,26 @@ TEST(Path, Copy){
 
     EXPECT_STREQ(MainPath.relativePath().c_str(), "./MySecondLovelyPath.newExt");
     EXPECT_STREQ(ShallowCopy.relativePath().c_str(), "./MySecondLovelyPath.newExt");
-    EXPECT_STREQ(DeepCopy.relativePath().c_str(), "./MyLovelyPath.biorbd");
+    EXPECT_STREQ(DeepCopyNow.relativePath().c_str(), "./MyLovelyPath.biorbd");
+    EXPECT_STREQ(DeepCopyLater.relativePath().c_str(), "./MyLovelyPath.biorbd");
     EXPECT_STREQ(MainPath.originalPath().c_str(), "MyLovelyPath.biorbd");
     EXPECT_STREQ(ShallowCopy.originalPath().c_str(), "MyLovelyPath.biorbd");
-    EXPECT_STREQ(DeepCopy.originalPath().c_str(), "MyLovelyPath.biorbd");
+    EXPECT_STREQ(DeepCopyNow.originalPath().c_str(), "MyLovelyPath.biorbd");
+    EXPECT_STREQ(DeepCopyLater.originalPath().c_str(), "MyLovelyPath.biorbd");
 }
 
 
 TEST(Node3d, Copy){
     biorbd::utils::Node3d MainNode(1, 2, 3, "MainNodeName", "NoParent");
     biorbd::utils::Node3d ShallowCopy(MainNode);
-    biorbd::utils::Node3d DeepCopy(MainNode.DeepCopy());
+    biorbd::utils::Node3d DeepCopyNow(MainNode.DeepCopy());
+    biorbd::utils::Node3d DeepCopyLater;
+    DeepCopyLater.DeepCopy(MainNode);
 
     EXPECT_STREQ(MainNode.parent().c_str(), "NoParent");
     EXPECT_STREQ(ShallowCopy.parent().c_str(), "NoParent");
-    EXPECT_STREQ(DeepCopy.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
 
     // Test for the names
     // Give a parent to the ShallowCopy
@@ -116,7 +125,8 @@ TEST(Node3d, Copy){
     // Parent of MainNode should also change, but not of the DeepCopy
     EXPECT_STREQ(MainNode.parent().c_str(), "NewParent");
     EXPECT_STREQ(ShallowCopy.parent().c_str(), "NewParent");
-    EXPECT_STREQ(DeepCopy.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
 
     // Test for the values
     EXPECT_DOUBLE_EQ(MainNode.x(), 1);
@@ -125,9 +135,12 @@ TEST(Node3d, Copy){
     EXPECT_DOUBLE_EQ(ShallowCopy.x(), 1);
     EXPECT_DOUBLE_EQ(ShallowCopy.y(), 2);
     EXPECT_DOUBLE_EQ(ShallowCopy.z(), 3);
-    EXPECT_DOUBLE_EQ(DeepCopy.x(), 1);
-    EXPECT_DOUBLE_EQ(DeepCopy.y(), 2);
-    EXPECT_DOUBLE_EQ(DeepCopy.z(), 3);
+    EXPECT_DOUBLE_EQ(DeepCopyNow.x(), 1);
+    EXPECT_DOUBLE_EQ(DeepCopyNow.y(), 2);
+    EXPECT_DOUBLE_EQ(DeepCopyNow.z(), 3);
+    EXPECT_DOUBLE_EQ(DeepCopyLater.x(), 1);
+    EXPECT_DOUBLE_EQ(DeepCopyLater.y(), 2);
+    EXPECT_DOUBLE_EQ(DeepCopyLater.z(), 3);
     // Change the values of ShallowCopy
     ShallowCopy.setZero();
 
@@ -138,9 +151,12 @@ TEST(Node3d, Copy){
     EXPECT_DOUBLE_EQ(ShallowCopy.x(), 0);
     EXPECT_DOUBLE_EQ(ShallowCopy.y(), 0);
     EXPECT_DOUBLE_EQ(ShallowCopy.z(), 0);
-    EXPECT_DOUBLE_EQ(DeepCopy.x(), 1);
-    EXPECT_DOUBLE_EQ(DeepCopy.y(), 2);
-    EXPECT_DOUBLE_EQ(DeepCopy.z(), 3);
+    EXPECT_DOUBLE_EQ(DeepCopyNow.x(), 1);
+    EXPECT_DOUBLE_EQ(DeepCopyNow.y(), 2);
+    EXPECT_DOUBLE_EQ(DeepCopyNow.z(), 3);
+    EXPECT_DOUBLE_EQ(DeepCopyLater.x(), 1);
+    EXPECT_DOUBLE_EQ(DeepCopyLater.y(), 2);
+    EXPECT_DOUBLE_EQ(DeepCopyLater.z(), 3);
 }
 
 TEST(Matrix, Copy){
@@ -148,11 +164,14 @@ TEST(Matrix, Copy){
     tp << 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15;
     biorbd::utils::RotoTransNode MainRotoTransNode(tp, "NoName", "NoParent");
     biorbd::utils::RotoTransNode ShallowCopy(MainRotoTransNode);
-    biorbd::utils::RotoTransNode DeepCopy(MainRotoTransNode.DeepCopy());
+    biorbd::utils::RotoTransNode DeepCopyNow(MainRotoTransNode.DeepCopy());
+    biorbd::utils::RotoTransNode DeepCopyLater;
+    DeepCopyLater.DeepCopy(MainRotoTransNode);
 
     EXPECT_STREQ(MainRotoTransNode.parent().c_str(), "NoParent");
     EXPECT_STREQ(ShallowCopy.parent().c_str(), "NoParent");
-    EXPECT_STREQ(DeepCopy.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
 
     // Test for the names
     // Give a parent to the ShallowCopy
@@ -161,19 +180,22 @@ TEST(Matrix, Copy){
     // Parent of MainNode should also change, but not of the DeepCopy
     EXPECT_STREQ(MainRotoTransNode.parent().c_str(), "NewParent");
     EXPECT_STREQ(ShallowCopy.parent().c_str(), "NewParent");
-    EXPECT_STREQ(DeepCopy.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
 
     // Test for the values
     EXPECT_DOUBLE_EQ(MainRotoTransNode(2, 2), 10);
     EXPECT_DOUBLE_EQ(ShallowCopy(2, 2), 10);
-    EXPECT_DOUBLE_EQ(DeepCopy(2, 2), 10);
+    EXPECT_DOUBLE_EQ(DeepCopyNow(2, 2), 10);
+    EXPECT_DOUBLE_EQ(DeepCopyLater(2, 2), 10);
     // Change the values of ShallowCopy
     ShallowCopy.setZero();
 
     // Data are NOT shallow copy, therefore the parent should keep its values
     EXPECT_DOUBLE_EQ(MainRotoTransNode(2, 2), 10);
     EXPECT_DOUBLE_EQ(ShallowCopy(2, 2), 0);
-    EXPECT_DOUBLE_EQ(DeepCopy(2, 2), 10);
+    EXPECT_DOUBLE_EQ(DeepCopyNow(2, 2), 10);
+    EXPECT_DOUBLE_EQ(DeepCopyLater(2, 2), 10);
 }
 
 TEST(RotoTransNode, Copy){
@@ -181,11 +203,14 @@ TEST(RotoTransNode, Copy){
     tp << 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15;
     biorbd::utils::RotoTransNode MainRotoTransNode(tp, "NoName", "NoParent");
     biorbd::utils::RotoTransNode ShallowCopy(MainRotoTransNode);
-    biorbd::utils::RotoTransNode DeepCopy(MainRotoTransNode.DeepCopy());
+    biorbd::utils::RotoTransNode DeepCopyNow(MainRotoTransNode.DeepCopy());
+    biorbd::utils::RotoTransNode DeepCopyLater;
+    DeepCopyLater.DeepCopy(MainRotoTransNode);
 
     EXPECT_STREQ(MainRotoTransNode.parent().c_str(), "NoParent");
     EXPECT_STREQ(ShallowCopy.parent().c_str(), "NoParent");
-    EXPECT_STREQ(DeepCopy.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
 
     // Test for the names
     // Give a parent to the ShallowCopy
@@ -194,18 +219,21 @@ TEST(RotoTransNode, Copy){
     // Parent of MainNode should also change, but not of the DeepCopy
     EXPECT_STREQ(MainRotoTransNode.parent().c_str(), "NewParent");
     EXPECT_STREQ(ShallowCopy.parent().c_str(), "NewParent");
-    EXPECT_STREQ(DeepCopy.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
 
     // Test for the values
     EXPECT_DOUBLE_EQ(MainRotoTransNode(2, 2), 10);
     EXPECT_DOUBLE_EQ(ShallowCopy(2, 2), 10);
-    EXPECT_DOUBLE_EQ(DeepCopy(2, 2), 10);
+    EXPECT_DOUBLE_EQ(DeepCopyNow(2, 2), 10);
+    EXPECT_DOUBLE_EQ(DeepCopyLater(2, 2), 10);
     // Change the values of ShallowCopy
     ShallowCopy.setZero();
 
     // Data are NOT shallow copy, therefore the parent should keep its values
     EXPECT_DOUBLE_EQ(MainRotoTransNode(2, 2), 10);
     EXPECT_DOUBLE_EQ(ShallowCopy(2, 2), 0);
-    EXPECT_DOUBLE_EQ(DeepCopy(2, 2), 10);
+    EXPECT_DOUBLE_EQ(DeepCopyNow(2, 2), 10);
+    EXPECT_DOUBLE_EQ(DeepCopyLater(2, 2), 10);
 }
 

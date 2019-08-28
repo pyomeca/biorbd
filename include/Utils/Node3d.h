@@ -34,6 +34,7 @@ class BIORBD_API Node3d : public Eigen::Vector3d, public biorbd::utils::Node
             const biorbd::utils::String &name,  // Nom du noeud
             const biorbd::utils::String &parentName);
     biorbd::utils::Node3d DeepCopy() const;
+    void DeepCopy(const biorbd::utils::Node3d& other);
 
     // Get and Set
     biorbd::utils::Node3d applyRT(const RotoTrans&) const;

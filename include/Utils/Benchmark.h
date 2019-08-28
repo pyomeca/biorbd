@@ -1,6 +1,7 @@
 #ifndef BIORBD_UTILS_BENCHMARK_H
 #define BIORBD_UTILS_BENCHMARK_H
 
+#include <memory>
 #include <map>
 #include "biorbdConfig.h"
 #include "Utils/Timer.h"
@@ -13,8 +14,6 @@ class BIORBD_API Benchmark
 {
     public:
         Benchmark();
-        ~Benchmark();
-
 
         // Timers
         void startTimer(const biorbd::utils::String&, bool force=false); // Start a timer related to name
@@ -23,14 +22,16 @@ class BIORBD_API Benchmark
         double getLap(const biorbd::utils::String&);
         double stopTimer(const biorbd::utils::String&);
         static void wasteTime(double timeInSec);
+        biorbd::utils::Benchmark DeepCopy() const;
+        void DeepCopy(const biorbd::utils::Benchmark& other);
 
         // Counters
         void addToCounter(const biorbd::utils::String&); // Start a counter to count
         int getCount(const biorbd::utils::String&); // Get number of counts
 
     protected:
-        std::map<biorbd::utils::String, biorbd::utils::Timer> m_timers;
-        std::map<biorbd::utils::String, int> m_counts;
+        std::shared_ptr<std::map<biorbd::utils::String, biorbd::utils::Timer>> m_timers;
+        std::shared_ptr<std::map<biorbd::utils::String, int>> m_counts;
 
 };
 

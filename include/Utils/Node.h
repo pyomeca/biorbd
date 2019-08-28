@@ -21,6 +21,7 @@ public:
             const biorbd::utils::String &parentName);
     virtual ~Node();
     biorbd::utils::Node DeepCopy() const;
+    void DeepCopy(const biorbd::utils::Node& other);
 
     const biorbd::utils::String& name() const;
     void setName(const biorbd::utils::String &name);

@@ -11,12 +11,12 @@ class String;
 class BIORBD_API Error
 {
 public:
-static void error(
-        bool cond,
-        const biorbd::utils::String &message);
-static void warning(
-        bool cond,
-        const biorbd::utils::String &message);
+    static void error(
+            bool cond,
+            const biorbd::utils::String &message);
+    static void warning(
+            bool cond,
+            const biorbd::utils::String &message);
 };
 
 }}

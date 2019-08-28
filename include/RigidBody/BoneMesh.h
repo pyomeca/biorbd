@@ -22,6 +22,7 @@ public:
             const std::vector<biorbd::utils::Node3d>& = std::vector<biorbd::utils::Node3d>(),
             const std::vector<biorbd::rigidbody::Patch>& = std::vector<biorbd::rigidbody::Patch>());
     biorbd::rigidbody::BoneMesh DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::BoneMesh& other);
 
     // Concernant les points du mesh
     void addPoint(const biorbd::utils::Node3d &);
@@ -40,8 +41,8 @@ public:
     const biorbd::utils::Path& path() const;
 
 protected:
-    std::vector<biorbd::utils::Node3d> m_mesh;
-    std::vector<biorbd::rigidbody::Patch> m_patch;
+    std::shared_ptr<std::vector<biorbd::utils::Node3d>> m_mesh;
+    std::shared_ptr<std::vector<biorbd::rigidbody::Patch>> m_patch;
     std::shared_ptr<biorbd::utils::Path> m_pathFile;
 };
 

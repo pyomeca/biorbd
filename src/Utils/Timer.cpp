@@ -2,9 +2,11 @@
 #include "Utils/Timer.h"
 
 biorbd::utils::Timer::Timer(bool startNow) :
-    m_isStarted(false),
-    m_isPaused(false),
-    m_totalPauseTime(0.0)
+    m_isStarted(std::make_shared<bool>(false)),
+    m_isPaused(std::make_shared<bool>(false)),
+    m_start(std::make_shared<std::clock_t>()),
+    m_pauseTime(std::make_shared<std::clock_t>()),
+    m_totalPauseTime(std::make_shared<double>(0.0))
 {
     if (startNow)
         start();
@@ -17,30 +19,30 @@ biorbd::utils::Timer::~Timer()
 
 void biorbd::utils::Timer::start()
 {
-    m_start = std::clock();
-    m_totalPauseTime = 0;
-    m_isPaused = false;
-    m_isStarted = true;
+    *m_start = std::clock();
+    *m_totalPauseTime = 0;
+    *m_isPaused = false;
+    *m_isStarted = true;
 } // Start a timer
 
 bool biorbd::utils::Timer::isStarted(){
-    return m_isStarted;
+    return *m_isStarted;
 }
 
 void biorbd::utils::Timer::pause(){
-    if (!m_isPaused){
-        m_isPaused = true;
-        m_pauseTime = std::clock();
+    if (!*m_isPaused){
+        *m_isPaused = true;
+        *m_pauseTime = std::clock();
     }
 }
 
 void biorbd::utils::Timer::resume(){
-    if (!m_isStarted)
+    if (!*m_isStarted)
         start();
 
-    else if (m_isPaused){
+    else if (*m_isPaused){
         addPauseTime();
-        m_isPaused = false;
+        *m_isPaused = false;
     }
 }
 
@@ -48,16 +50,16 @@ double biorbd::utils::Timer::getLap()
 {
     addPauseTime();
 
-    if (m_isStarted)
-        return getTime(m_start) - m_totalPauseTime;
+    if (*m_isStarted)
+        return getTime(*m_start) - *m_totalPauseTime;
     else
         return 0;
 }
 
 double biorbd::utils::Timer::stop()
 {
-    if (m_isStarted){
-        m_isStarted = false;
+    if (*m_isStarted){
+        *m_isStarted = false;
         return getLap();
     }
     else
@@ -65,9 +67,9 @@ double biorbd::utils::Timer::stop()
 }
 
 void biorbd::utils::Timer::addPauseTime(){
-    if (m_isPaused){
-        m_totalPauseTime += getTime(m_pauseTime);
-        m_pauseTime = std::clock();
+    if (*m_isPaused){
+        *m_totalPauseTime += getTime(*m_pauseTime);
+        *m_pauseTime = std::clock();
     }
 }
 

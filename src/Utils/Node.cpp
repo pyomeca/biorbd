@@ -44,8 +44,19 @@ biorbd::utils::Node::~Node()
 
 biorbd::utils::Node biorbd::utils::Node::DeepCopy() const
 {
-    return biorbd::utils::Node(this->name(), this->parent());
+    biorbd::utils::Node copy;
+    *copy.m_name = *m_name;
+    *copy.m_parentName = *m_parentName;
+    *copy.m_typeOfNode = *m_typeOfNode;
+    return copy;
+}
 
+void biorbd::utils::Node::DeepCopy(
+        const biorbd::utils::Node &other)
+{
+    m_name = std::make_shared<biorbd::utils::String>(*other.m_name);
+    m_parentName = std::make_shared<biorbd::utils::String>(*other.m_parentName);
+    m_typeOfNode = std::make_shared<biorbd::utils::String>(*other.m_typeOfNode);
 }
 
 const biorbd::utils::String &biorbd::utils::Node::name() const

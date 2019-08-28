@@ -21,6 +21,7 @@ class BIORBD_API Bone : public biorbd::utils::Node
 {
 public:
     // Constructeurs
+    Bone();
     Bone(
             biorbd::rigidbody::Joints& model,
             const biorbd::utils::String &name, // nom du segment
@@ -39,6 +40,7 @@ public:
             const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
             int PF = -1);  // Index de la plateforme
     biorbd::rigidbody::Bone DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::Bone& other);
     virtual ~Bone();
 
     unsigned int id() const;
@@ -63,7 +65,7 @@ public:
     bool isRotationAQuaternion() const; // Retourne si la rotation de ce segment est un quaternion
 
 protected:
-    int m_idxPF; // Index de la plateforme sur lequel il est -1 est pas de plateforme
+    std::shared_ptr<int> m_idxPF; // Index de la plateforme sur lequel il est -1 est pas de plateforme
     void setPF(int ); // Setter l'index de la plateforme
 
     // Info sur la relation parent enfant
@@ -80,20 +82,20 @@ protected:
 
     std::shared_ptr<biorbd::utils::String> m_seqT;   // Séquence en translation telle qu'écrite dans le fichier
     std::shared_ptr<biorbd::utils::String> m_seqR;   // Séquence de rotation telle qu'écrite dans le fichier
-    unsigned int m_nDof;    // Nombre de degrés de liberté
-    unsigned int m_nQdot;   // Nombre de Qdot
-    unsigned int m_nQddot;   // Nombre de Qdot
-    unsigned int m_nDofTrue;    // Nombre de degrés de liberté
-    unsigned int m_nDofTrueOutside; // Nombre de degré de liberté lu de l'extérieur (Idem à nDof sauf si Quaternion)
-    unsigned int m_nDofTrans; // Nombre de degrés de liberté en translation
-    unsigned int m_nDofRot; // Nombre de degrés de liberté en rotation
-    unsigned int m_nDofQuat; // Nombre de degrés de liberté en rotation
+    std::shared_ptr<unsigned int> m_nDof;    // Nombre de degrés de liberté
+    std::shared_ptr<unsigned int> m_nQdot;   // Nombre de Qdot
+    std::shared_ptr<unsigned int> m_nQddot;   // Nombre de Qdot
+    std::shared_ptr<unsigned int> m_nDofTrue;    // Nombre de degrés de liberté
+    std::shared_ptr<unsigned int> m_nDofTrueOutside; // Nombre de degré de liberté lu de l'extérieur (Idem à nDof sauf si Quaternion)
+    std::shared_ptr<unsigned int> m_nDofTrans; // Nombre de degrés de liberté en translation
+    std::shared_ptr<unsigned int> m_nDofRot; // Nombre de degrés de liberté en rotation
+    std::shared_ptr<unsigned int> m_nDofQuat; // Nombre de degrés de liberté en rotation
 
-    bool m_isQuaternion; // conserver si les dof en rotation est un quaternion
+    std::shared_ptr<bool> m_isQuaternion; // conserver si les dof en rotation est un quaternion
     void determineIfRotIsQuaternion(const biorbd::utils::String &seqR);
 
-    std::vector<RigidBodyDynamics::Joint> m_dof; // Articulation des dof : t1, t2, t3, r1, r2, r3; selon l'ordre réel des coordonnées généralisées
-    std::vector<unsigned int> m_idxDof;  // Index de l'articulation parent à mettre dans la variable model,
+    std::shared_ptr<std::vector<RigidBodyDynamics::Joint>> m_dof; // Articulation des dof : t1, t2, t3, r1, r2, r3; selon l'ordre réel des coordonnées généralisées
+    std::shared_ptr<std::vector<unsigned int>> m_idxDof;  // Index de l'articulation parent à mettre dans la variable model,
                                 // lorsque l'utilisateur demande le parent_id de ce segment, le dernier indice est envoyé
 
     // Sequence d'angle et de translation
@@ -107,19 +109,19 @@ protected:
     void str2numSequence(
             const biorbd::utils::String&,
             const biorbd::utils::String&); // Stockage dans m_sequence des strings en integer
-    std::vector<unsigned int> m_sequenceTrans; // Séquence de translation
-    std::vector<unsigned int> m_sequenceRot; // Séquence de rotation de Cardan ou d'Euler
-    std::vector<biorbd::utils::String> m_nameDof;
+    std::shared_ptr<std::vector<unsigned int>> m_sequenceTrans; // Séquence de translation
+    std::shared_ptr<std::vector<unsigned int>> m_sequenceRot; // Séquence de rotation de Cardan ou d'Euler
+    std::shared_ptr<std::vector<biorbd::utils::String>> m_nameDof;
 
     // Définition de l'articulation intra segment
     virtual void setJoints(biorbd::rigidbody::Joints& model); // Déclare tous les joints intrasegments
     virtual void setJointAxis();    // Choisir les axes de rotation en fonction de la séquence demandée
-    std::vector<unsigned int> m_dofPosition; // position dans la séquence de x, y et z
+    std::shared_ptr<std::vector<unsigned int>> m_dofPosition; // position dans la séquence de x, y et z
 
     // Définition formelle du segment
     void setDofCaracteristicsOnLastSegment(); // Mettre m_caract sur le dernier segment
     std::shared_ptr<biorbd::rigidbody::BoneCaracteristics> m_caract;// Segment virtuel non utilisé, il permet de "sauvegarder" les données et donc d'éviter l'usage de multiples variables intermédiaires
-    std::vector<biorbd::rigidbody::BoneCaracteristics> m_dofCaract; // Variable contenant les données Inertielles et autre de chaque sous segment (0 à 4 devraient être vide et 5 rempli)
+    std::shared_ptr<std::vector<biorbd::rigidbody::BoneCaracteristics>> m_dofCaract; // Variable contenant les données Inertielles et autre de chaque sous segment (0 à 4 devraient être vide et 5 rempli)
 
 };
 

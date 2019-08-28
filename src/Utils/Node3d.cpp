@@ -38,7 +38,16 @@ biorbd::utils::Node3d::Node3d(
 
 biorbd::utils::Node3d biorbd::utils::Node3d::DeepCopy() const
 {
-    return biorbd::utils::Node3d(*this, this->name(), this->parent());
+    biorbd::utils::Node3d copy;
+    static_cast<Eigen::Vector3d&>(copy) = *this;
+    static_cast<biorbd::utils::Node&>(copy) = this->biorbd::utils::Node::DeepCopy();
+    return copy;
+}
+
+void biorbd::utils::Node3d::DeepCopy(const Node3d &other)
+{
+    *this = static_cast<Eigen::Vector3d>(other);
+    biorbd::utils::Node::DeepCopy(other);
 }
 
 biorbd::utils::Node3d biorbd::utils::Node3d::applyRT(const biorbd::utils::RotoTrans &rt) const

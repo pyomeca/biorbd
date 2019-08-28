@@ -32,6 +32,18 @@ biorbd::utils::RotoTrans::RotoTrans(const RigidBodyDynamics::Math::SpatialTransf
 
 }
 
+biorbd::utils::RotoTrans biorbd::utils::RotoTrans::DeepCopy() const
+{
+    biorbd::utils::RotoTrans copy;
+    static_cast<Eigen::Matrix4d&>(copy) = *this;
+    return copy;
+}
+
+void biorbd::utils::RotoTrans::DeepCopy(const biorbd::utils::RotoTrans &other)
+{
+    *this = static_cast<Eigen::Matrix4d>(other);
+}
+
 Eigen::Vector3d biorbd::utils::RotoTrans::axe(int i)
 {
     biorbd::utils::Error::error(i>=0 && i<=2, "Axis must be between 0 and 2 included");

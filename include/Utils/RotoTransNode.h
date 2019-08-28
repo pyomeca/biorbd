@@ -21,6 +21,7 @@ public:
             const biorbd::utils::String &name,
             const biorbd::utils::String &parentName);
     biorbd::utils::RotoTransNode DeepCopy() const;
+    void DeepCopy(const biorbd::utils::RotoTransNode& other);
     template<typename OtherDerived>
         biorbd::utils::RotoTransNode& operator=(const Eigen::MatrixBase <OtherDerived>& other){
             this->biorbd::utils::RotoTrans::operator=(other);

@@ -33,6 +33,8 @@ public:
             const Eigen::Matrix3d& rot,
             const Eigen::Vector3d& trans = Eigen::Vector3d::Zero());
     RotoTrans(const RigidBodyDynamics::Math::SpatialTransform&);
+    biorbd::utils::RotoTrans DeepCopy() const;
+    void DeepCopy(const biorbd::utils::RotoTrans& other);
 
     Eigen::Vector3d axe(int); // Aller récupérer un axe en particulier
 

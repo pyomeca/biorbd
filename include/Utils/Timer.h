@@ -1,6 +1,7 @@
 #ifndef BIORBD_UTILS_TIMER_H
 #define BIORBD_UTILS_TIMER_H
 
+#include <memory>
 #include <ctime>
 #include "biorbdConfig.h"
 
@@ -24,11 +25,11 @@ protected:
     void addPauseTime();
     double getTime(const std::clock_t&);
 
-    bool m_isStarted;
-    bool m_isPaused;
-    std::clock_t m_start;
-    std::clock_t m_pauseTime;
-    double m_totalPauseTime;
+    std::shared_ptr<bool> m_isStarted;
+    std::shared_ptr<bool> m_isPaused;
+    std::shared_ptr<std::clock_t> m_start;
+    std::shared_ptr<std::clock_t> m_pauseTime;
+    std::shared_ptr<double> m_totalPauseTime;
 
 };
 

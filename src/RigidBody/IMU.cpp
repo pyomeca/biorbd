@@ -7,8 +7,8 @@ biorbd::rigidbody::IMU::IMU(
         bool isTechnical,
         bool isAnatomical) :
     biorbd::utils::RotoTransNode(),
-    m_technical(isTechnical),
-    m_anatomical(isAnatomical)
+    m_technical(std::make_shared<bool>(isTechnical)),
+    m_anatomical(std::make_shared<bool>(isAnatomical))
 {
 
 }
@@ -17,23 +17,34 @@ biorbd::rigidbody::IMU::IMU(
         bool isTechnical,
         bool isAnatomical) :
     biorbd::utils::RotoTransNode(RotoTrans),
-    m_technical(isTechnical),
-    m_anatomical(isAnatomical)
+    m_technical(std::make_shared<bool>(isTechnical)),
+    m_anatomical(std::make_shared<bool>(isAnatomical))
 {
 
 }
 
 biorbd::rigidbody::IMU biorbd::rigidbody::IMU::DeepCopy() const
 {
-    return biorbd::rigidbody::IMU(this->biorbd::utils::RotoTransNode::DeepCopy(), this->isTechnical(), this->isAnatomical());
+    biorbd::rigidbody::IMU copy;
+    static_cast<biorbd::utils::RotoTransNode&>(copy) = this->biorbd::utils::RotoTransNode::DeepCopy();
+    *copy.m_technical = *m_technical;
+    *copy.m_anatomical = *m_anatomical;
+    return copy;
+}
+
+void biorbd::rigidbody::IMU::DeepCopy(const IMU &other)
+{
+    biorbd::utils::RotoTransNode::DeepCopy(other);
+    m_technical = std::make_shared<bool>(other.m_technical);
+    m_anatomical = std::make_shared<bool>(other.m_anatomical);
 }
 
 bool biorbd::rigidbody::IMU::isAnatomical() const
 {
-    return m_anatomical;
+    return *m_anatomical;
 }
 
 bool biorbd::rigidbody::IMU::isTechnical() const
 {
-    return m_technical;
+    return *m_technical;
 }

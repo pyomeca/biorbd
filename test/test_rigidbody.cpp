@@ -24,15 +24,19 @@ TEST(Bone, copy)
     biorbd::rigidbody::BoneCaracteristics caract(10, biorbd::utils::Node3d(0.5, 0.5, 0.5), RigidBodyDynamics::Math::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
     biorbd::rigidbody::Bone MasterBone(model, "MasterBone", "NoParent", "zyx", "yzx", caract, RigidBodyDynamics::Math::SpatialTransform());
     biorbd::rigidbody::Bone ShallowCopy(MasterBone);
-    biorbd::rigidbody::Bone DeepCopy(MasterBone.DeepCopy());
+    biorbd::rigidbody::Bone DeepCopyNow(MasterBone.DeepCopy());
+    biorbd::rigidbody::Bone DeepCopyLater;
+    DeepCopyLater.DeepCopy(MasterBone);
 
     EXPECT_STREQ(MasterBone.parent().c_str(), "NoParent");
     EXPECT_STREQ(ShallowCopy.parent().c_str(), "NoParent");
-    EXPECT_STREQ(DeepCopy.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
     ShallowCopy.setParent("MyLovelyParent");
     EXPECT_STREQ(MasterBone.parent().c_str(), "MyLovelyParent");
     EXPECT_STREQ(ShallowCopy.parent().c_str(), "MyLovelyParent");
-    EXPECT_STREQ(DeepCopy.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
+    EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
 }
 
 TEST(BoneMesh, copy)
@@ -40,15 +44,19 @@ TEST(BoneMesh, copy)
     biorbd::rigidbody::BoneMesh MasterMesh;
     MasterMesh.setPath("./MyFile.bioMesh");
     biorbd::rigidbody::BoneMesh ShallowCopy(MasterMesh);
-    biorbd::rigidbody::BoneMesh DeepCopy(MasterMesh.DeepCopy());
+    biorbd::rigidbody::BoneMesh DeepCopyNow(MasterMesh.DeepCopy());
+    biorbd::rigidbody::BoneMesh DeepCopyLater;
+    DeepCopyLater.DeepCopy(MasterMesh);
 
     EXPECT_STREQ(MasterMesh.path().relativePath().c_str(), "./MyFile.bioMesh");
     EXPECT_STREQ(ShallowCopy.path().relativePath().c_str(), "./MyFile.bioMesh");
-    EXPECT_STREQ(DeepCopy.path().relativePath().c_str(), "./MyFile.bioMesh");
+    EXPECT_STREQ(DeepCopyNow.path().relativePath().c_str(), "./MyFile.bioMesh");
+    EXPECT_STREQ(DeepCopyLater.path().relativePath().c_str(), "./MyFile.bioMesh");
     ShallowCopy.setPath("./MyNewFile.bioMesh");
     EXPECT_STREQ(MasterMesh.path().relativePath().c_str(), "./MyNewFile.bioMesh");
     EXPECT_STREQ(ShallowCopy.path().relativePath().c_str(), "./MyNewFile.bioMesh");
-    EXPECT_STREQ(DeepCopy.path().relativePath().c_str(), "./MyNewFile.bioMesh");
+    EXPECT_STREQ(DeepCopyNow.path().relativePath().c_str(), "./MyFile.bioMesh");
+    EXPECT_STREQ(DeepCopyLater.path().relativePath().c_str(), "./MyFile.bioMesh");
 }
 
 static std::string modelPathMeshEqualsMarker("models/meshsEqualMarkers.bioMod");

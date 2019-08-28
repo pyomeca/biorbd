@@ -18,7 +18,8 @@ public:
     Path(const char *c);
     Path(const biorbd::utils::String &s);
     Path(const std::basic_string<char> &c);
-    biorbd::utils::Path DeepCopy();
+    biorbd::utils::Path DeepCopy() const;
+    void DeepCopy(const biorbd::utils::Path& other);
 
     // parser un path en folder, filename,e extension
     static void parseFileName(

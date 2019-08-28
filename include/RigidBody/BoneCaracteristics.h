@@ -27,6 +27,7 @@ public:
             const RigidBodyDynamics::Math::Matrix3d &inertia, // Inertia matrix
             const biorbd::rigidbody::BoneMesh &mesh); // position des meshings de l'os
     biorbd::rigidbody::BoneCaracteristics DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::BoneCaracteristics& other);
 
     // Set and Get
     double length() const;
@@ -36,7 +37,7 @@ public:
     const Eigen::Matrix3d& inertia() const;
 
 protected:
-    double m_length;
+    std::shared_ptr<double> m_length;
     std::shared_ptr<biorbd::rigidbody::BoneMesh> m_mesh;
 };
 

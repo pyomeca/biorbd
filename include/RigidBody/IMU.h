@@ -1,6 +1,7 @@
 #ifndef BIORBD_RIGIDBODY_IMU_H
 #define BIORBD_RIGIDBODY_IMU_H
 
+#include <memory>
 #include "biorbdConfig.h"
 #include "Utils/RotoTransNode.h"
 
@@ -24,6 +25,7 @@ public:
     template<typename OtherDerived> IMU(const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::RotoTransNode(other){}
     biorbd::rigidbody::IMU DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::IMU& other);
 
     // Get and Set
     // TODO Inherit isTechnical
@@ -36,8 +38,8 @@ public:
         }
 
 protected:
-    bool m_technical; // If a marker is a technical marker
-    bool m_anatomical; // It marker is a anatomical marker
+    std::shared_ptr<bool> m_technical; // If a marker is a technical marker
+    std::shared_ptr<bool> m_anatomical; // It marker is a anatomical marker
 
 };
 

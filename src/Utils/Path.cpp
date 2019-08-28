@@ -62,9 +62,26 @@ biorbd::utils::Path::Path(const std::basic_string<char> &c) :
     setPath();
 }
 
-biorbd::utils::Path biorbd::utils::Path::DeepCopy()
+biorbd::utils::Path biorbd::utils::Path::DeepCopy() const
 {
-    return biorbd::utils::Path(*m_originalPath);
+    biorbd::utils::Path copy;
+    *copy.m_path = *m_path;
+    *copy.m_originalPath = *m_originalPath;
+    *copy.m_folder = *m_folder;
+    *copy.m_isFolderAbsolute = *m_isFolderAbsolute;
+    *copy.m_filename = *m_filename;
+    *copy.m_extension = *m_extension;
+    return copy;
+}
+
+void biorbd::utils::Path::DeepCopy(const Path &other)
+{
+    m_path = std::make_shared<biorbd::utils::String>(*other.m_path);
+    m_originalPath = std::make_shared<biorbd::utils::String>(*other.m_originalPath);
+    m_folder = std::make_shared<biorbd::utils::String>(*other.m_folder);
+    m_isFolderAbsolute = std::make_shared<bool>(*other.m_isFolderAbsolute);
+    m_filename = std::make_shared<biorbd::utils::String>(*other.m_filename);
+    m_extension = std::make_shared<biorbd::utils::String>(*other.m_extension);
 }
 
 bool biorbd::utils::Path::isFileExist() const

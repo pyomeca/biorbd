@@ -7,28 +7,30 @@
 #include "Utils/Equation.h"
 
 // Constructeur
+biorbd::utils::IfStream::IfStream() :
+    m_isOpen(std::make_shared<bool>(false)),
+    m_ifs(std::make_shared<std::ifstream>()),
+    m_path(std::make_shared<biorbd::utils::Path>())
+{
+
+}
 biorbd::utils::IfStream::IfStream(
         const biorbd::utils::Path& path,
         std::ios_base::openmode mode = std::ios_base::in ) :
-    m_path(path)
+    m_isOpen(std::make_shared<bool>(false)),
+    m_ifs(std::make_shared<std::ifstream>()),
+    m_path(std::make_shared<biorbd::utils::Path>(path))
 {
-    open(path.absolutePath().c_str(), mode);
+    open(m_path->absolutePath().c_str(), mode);
 }
 biorbd::utils::IfStream::IfStream(
         const char* path,
         std::ios_base::openmode mode = std::ios_base::in ) :
-    m_path(path)
+    m_isOpen(std::make_shared<bool>(false)),
+    m_ifs(std::make_shared<std::ifstream>()),
+    m_path(std::make_shared<biorbd::utils::Path>(path))
 {
-    open(path, mode);
-}
-biorbd::utils::IfStream::IfStream( )
-{
-    m_isOpen = false;
-}
-
-biorbd::utils::IfStream::~IfStream()
-{
-    delete m_ifs;
+    open(m_path->absolutePath().c_str(), mode);
 }
 
 
@@ -38,9 +40,9 @@ bool biorbd::utils::IfStream::open(
         std::ios_base::openmode mode = std::ios_base::in )
 {
     biorbd::utils::Error::error(path.isFileExist(), path.absolutePath() + " could not be loaded");
-    m_ifs = new std::ifstream(path.relativePath().c_str(), mode);
-    m_isOpen = true;
-    return m_isOpen;
+    *m_ifs = std::ifstream(path.relativePath().c_str(), mode);
+    *m_isOpen = true;
+    return *m_isOpen;
 }
 
 // Lire le fichier

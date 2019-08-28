@@ -7,7 +7,7 @@
 
 biorbd::rigidbody::BoneCaracteristics::BoneCaracteristics() :
     Body(),
-    m_length(0),
+    m_length(std::make_shared<double>(0)),
     m_mesh(std::make_shared<biorbd::rigidbody::BoneMesh>())
 {
 
@@ -17,7 +17,7 @@ biorbd::rigidbody::BoneCaracteristics::BoneCaracteristics(
         const biorbd::utils::Node3d &com,
         const RigidBodyDynamics::Math::Matrix3d &inertia) :
     Body(mass, com, inertia),
-    m_length(0),
+    m_length(std::make_shared<double>(0)),
     m_mesh(std::make_shared<biorbd::rigidbody::BoneMesh>())
 {
 
@@ -28,7 +28,7 @@ biorbd::rigidbody::BoneCaracteristics::BoneCaracteristics(
         const RigidBodyDynamics::Math::Matrix3d &inertia,
         const biorbd::rigidbody::BoneMesh &mesh) :
     Body(mass, com, inertia),
-    m_length(0),
+    m_length(std::make_shared<double>(0)),
     m_mesh(std::make_shared<biorbd::rigidbody::BoneMesh>(mesh))
 {
 
@@ -36,9 +36,18 @@ biorbd::rigidbody::BoneCaracteristics::BoneCaracteristics(
 
 biorbd::rigidbody::BoneCaracteristics biorbd::rigidbody::BoneCaracteristics::DeepCopy() const
 {
-    biorbd::rigidbody::BoneCaracteristics copy(*this);
-    copy.m_mesh = std::make_shared<biorbd::rigidbody::BoneMesh>(this->mesh());
+    biorbd::rigidbody::BoneCaracteristics copy;
+    static_cast<RigidBodyDynamics::Body&>(copy) = *this;
+    *copy.m_length = *m_length;
+    *copy.m_mesh = *m_mesh;
     return copy;
+}
+
+void biorbd::rigidbody::BoneCaracteristics::DeepCopy(const BoneCaracteristics &other)
+{
+    static_cast<RigidBodyDynamics::Body&>(*this) = other;
+    m_length = std::make_shared<double>(*other.m_length);
+    m_mesh = std::make_shared<biorbd::rigidbody::BoneMesh>(*other.m_mesh);
 }
 
 const biorbd::rigidbody::BoneMesh &biorbd::rigidbody::BoneCaracteristics::mesh() const
@@ -53,7 +62,7 @@ const Eigen::Matrix3d &biorbd::rigidbody::BoneCaracteristics::inertia() const
 
 double biorbd::rigidbody::BoneCaracteristics::length() const
 {
-    return m_length;
+    return *m_length;
 }
 
 double biorbd::rigidbody::BoneCaracteristics::mass() const
@@ -63,5 +72,5 @@ double biorbd::rigidbody::BoneCaracteristics::mass() const
 
 void biorbd::rigidbody::BoneCaracteristics::setLength(double val)
 {
-    m_length = val;
+    *m_length = val;
 }

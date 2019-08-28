@@ -23,6 +23,15 @@ biorbd::utils::RotoTransNode::RotoTransNode(
 
 biorbd::utils::RotoTransNode biorbd::utils::RotoTransNode::DeepCopy() const
 {
-    return biorbd::utils::RotoTransNode(*this, this->name(), this->parent());
+    biorbd::utils::RotoTransNode copy;
+    static_cast<biorbd::utils::RotoTrans&>(copy) = this->biorbd::utils::RotoTrans::DeepCopy();
+    static_cast<biorbd::utils::Node&>(copy) = this->biorbd::utils::Node::DeepCopy();
+    return copy;
+}
+
+void biorbd::utils::RotoTransNode::DeepCopy(const RotoTransNode &other)
+{
+    biorbd::utils::RotoTrans::DeepCopy(other);
+    biorbd::utils::Node::DeepCopy(other);
 }
 
