@@ -1,6 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/WrappingCylinder.h"
 
+#include "Utils/String.h"
 #include "RigidBody/Joints.h"
 
 biorbd::muscles::WrappingCylinder::WrappingCylinder() :

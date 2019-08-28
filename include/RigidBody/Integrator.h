@@ -1,15 +1,18 @@
 #ifndef BIORBD_UTILS_INTEGRATOR_H
 #define BIORBD_UTILS_INTEGRATOR_H
 
+#include <memory>
 #include <vector>
 #include <rbdl/Model.h>
 #include "biorbdConfig.h"
-#include "Utils/Vector.h"
 
 // The type of container used to hold the state vector
 typedef std::vector< double > state_type;
 
 namespace biorbd {
+namespace utils {
+class Vector;
+}
 
 namespace rigidbody {
 class Joints;
@@ -19,9 +22,11 @@ class BIORBD_API Integrator
 {
 public:
     Integrator();
+    biorbd::rigidbody::Integrator DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::Integrator& other);
 
     void integrate(
-            biorbd::rigidbody::Joints* model,
+            biorbd::rigidbody::Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::utils::Vector&,
             double,
@@ -31,16 +36,16 @@ public:
 
     biorbd::rigidbody::GeneralizedCoordinates getX(unsigned int ); // Return the Q for a given step
     void showAll(); // Show every steps with every dof
-    unsigned int steps() const {return m_steps+1;}
+    unsigned int steps() const;
 protected:
-    unsigned int m_nbre; // Nombre d'élément dans l'intégration
-    unsigned int m_steps; // Nombre de step pour l'intégration
-    RigidBodyDynamics::Model * m_model; // Model dans lequel il faut appeler forwardDynamics
+    std::shared_ptr<unsigned int> m_nbre; // Nombre d'élément dans l'intégration
+    std::shared_ptr<unsigned int> m_steps; // Nombre de step pour l'intégration
+    std::shared_ptr<RigidBodyDynamics::Model> m_model; // Model dans lequel il faut appeler forwardDynamics
 
     // Déclarer un observeur
-    std::vector<state_type> m_x_vec;
-    std::vector<double> m_times;
-    biorbd::utils::Vector m_u; // Effecteurs
+    std::shared_ptr<std::vector<state_type>> m_x_vec;
+    std::shared_ptr<std::vector<double>> m_times;
+    std::shared_ptr<biorbd::utils::Vector> m_u; // Effecteurs
 
 
     // Structure permettant de conserver les valeurs

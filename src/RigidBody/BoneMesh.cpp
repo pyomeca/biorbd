@@ -5,6 +5,23 @@
 #include "Utils/Node3d.h"
 #include "RigidBody/Patch.h"
 
+biorbd::rigidbody::BoneMesh::BoneMesh() :
+    m_mesh(std::make_shared<std::vector<biorbd::utils::Node3d>>()),
+    m_patch(std::make_shared<std::vector<biorbd::rigidbody::Patch>>()),
+    m_pathFile(std::make_shared<biorbd::utils::Path>())
+{
+
+}
+
+biorbd::rigidbody::BoneMesh::BoneMesh(
+        const std::vector<biorbd::utils::Node3d> &mesh) :
+    m_mesh(std::make_shared<std::vector<biorbd::utils::Node3d>>(mesh)),
+    m_patch(std::make_shared<std::vector<biorbd::rigidbody::Patch>>()),
+    m_pathFile(std::make_shared<biorbd::utils::Path>())
+{
+
+}
+
 biorbd::rigidbody::BoneMesh::BoneMesh(
         const std::vector<biorbd::utils::Node3d> &mesh,
         const std::vector<biorbd::rigidbody::Patch> & v) :

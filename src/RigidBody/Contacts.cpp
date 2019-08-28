@@ -11,9 +11,26 @@
 
 biorbd::rigidbody::Contacts::Contacts() :
     RigidBodyDynamics::ConstraintSet (),
-    m_nbreConstraint(0),
-    m_isBinded(false)
+    m_nbreConstraint(std::make_shared<unsigned int>(0)),
+    m_isBinded(std::make_shared<bool>(false))
 {
+
+}
+
+biorbd::rigidbody::Contacts biorbd::rigidbody::Contacts::DeepCopy() const
+{
+    biorbd::rigidbody::Contacts copy;
+    static_cast<RigidBodyDynamics::ConstraintSet&>(copy) = *this;
+    *copy.m_nbreConstraint = *m_nbreConstraint;
+    *copy.m_isBinded = *m_isBinded;
+    return copy;
+}
+
+void biorbd::rigidbody::Contacts::DeepCopy(const biorbd::rigidbody::Contacts &other)
+{
+    static_cast<RigidBodyDynamics::ConstraintSet&>(*this) = other;
+    *m_nbreConstraint = *other.m_nbreConstraint;
+    *m_isBinded = *other.m_isBinded;
 
 }
 
@@ -23,7 +40,7 @@ unsigned int biorbd::rigidbody::Contacts::AddConstraint(
         const biorbd::utils::Node3d& world_normal,
         const biorbd::utils::String& name,
         double acc){
-    ++m_nbreConstraint;
+    ++*m_nbreConstraint;
     return RigidBodyDynamics::ConstraintSet::AddContactConstraint(body_id, body_point, world_normal, name.c_str(), acc);
 }
 unsigned int biorbd::rigidbody::Contacts::AddConstraint(
@@ -35,7 +52,7 @@ unsigned int biorbd::rigidbody::Contacts::AddConstraint(
 {
     unsigned int ret(0);
     for (unsigned int i=0; i<axis.length(); ++i){
-        ++m_nbreConstraint;
+        ++*m_nbreConstraint;
         if      (axis.tolower()[i] == 'x')
             ret += RigidBodyDynamics::ConstraintSet::AddContactConstraint(
                         body_id, body_point, biorbd::utils::Node3d(1,0,0), (name + "_X").c_str(), acc);
@@ -57,11 +74,11 @@ unsigned int biorbd::rigidbody::Contacts::AddLoopConstraint(
         const biorbd::utils::RotoTrans &X_predecessor,
         const biorbd::utils::RotoTrans &X_successor,
         const biorbd::utils::Vector &axis,
+        const biorbd::utils::String &name,
         bool enableStabilization,
-        double stabilizationParam,
-        const biorbd::utils::String &name)
+        double stabilizationParam)
 {
-    ++m_nbreConstraint;
+    ++*m_nbreConstraint;
     return RigidBodyDynamics::ConstraintSet::AddLoopConstraint(
                 body_id_predecessor, body_id_successor,
                 RigidBodyDynamics::Math::SpatialTransform(X_predecessor.rot(), X_predecessor.trans()),
@@ -77,39 +94,42 @@ biorbd::rigidbody::Contacts::~Contacts()
 
 biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints_nonConst()
 {
-    if (!m_isBinded){
+    if (!*m_isBinded){
         // Assuming that this is also a Joints type (via BiorbdModel)
         const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
         Bind(model);
-        m_isBinded = true;
+        *m_isBinded = true;
     }
     return *this;
 }
 
 const biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints()
 {
-    if (!m_isBinded){
+    if (!*m_isBinded){
         // Assuming that this is also a Joints type (via BiorbdModel)
         const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
         Bind(model);
-        m_isBinded = true;
+        *m_isBinded = true;
     }
     return *this;
 }
 
 bool biorbd::rigidbody::Contacts::hasContacts() const
 {
-    if (m_nbreConstraint>0) return true; else return false;
+    if (*m_nbreConstraint>0) return
+        true;
+    else
+        return false;
 }
 
 unsigned int biorbd::rigidbody::Contacts::nContacts() const
 {
-    return m_nbreConstraint;
+    return *m_nbreConstraint;
 }
 
 biorbd::utils::String biorbd::rigidbody::Contacts::name(unsigned int i)
 {
-    biorbd::utils::Error::error(i<m_nbreConstraint, "Idx for name is too high..");
+    biorbd::utils::Error::error(i<*m_nbreConstraint, "Idx for name is too high..");
     return RigidBodyDynamics::ConstraintSet::name[i];
 }
 

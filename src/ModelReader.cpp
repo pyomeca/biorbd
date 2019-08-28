@@ -423,7 +423,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
             if (stabilizationParam > 0)
                 enableStabilization = true;
             name = "Loop_" + predecessor_str + "_" + successor_str;
-            model->AddLoopConstraint(id_predecessor, id_successor, X_predecessor, X_successor, axis, enableStabilization, stabilizationParam, name);
+            model->AddLoopConstraint(id_predecessor, id_successor, X_predecessor, X_successor, axis, name, enableStabilization, stabilizationParam);
         }
         else if (!tp.tolower().compare("actuator")){
 #ifdef MODULE_ACTUATORS

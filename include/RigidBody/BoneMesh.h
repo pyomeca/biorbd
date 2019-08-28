@@ -18,9 +18,12 @@ class Patch;
 class BIORBD_API BoneMesh
 {
 public:
+    BoneMesh();
     BoneMesh(
-            const std::vector<biorbd::utils::Node3d>& = std::vector<biorbd::utils::Node3d>(),
-            const std::vector<biorbd::rigidbody::Patch>& = std::vector<biorbd::rigidbody::Patch>());
+            const std::vector<biorbd::utils::Node3d>&);
+    BoneMesh(
+            const std::vector<biorbd::utils::Node3d>&,
+            const std::vector<biorbd::rigidbody::Patch>&);
     biorbd::rigidbody::BoneMesh DeepCopy() const;
     void DeepCopy(const biorbd::rigidbody::BoneMesh& other);
 

@@ -2,15 +2,14 @@
 #define BIORBD_RIGIDBODY_IMUS_H
 
 #include <vector>
+#include <memory>
 #include "biorbdConfig.h"
-#include "RigidBody/Patch.h"
-#include "Utils/RotoTransNode.h"
-#include "Utils/String.h"
-#include "Utils/Node3d.h"
 
 namespace biorbd {
 namespace utils {
+class String;
 class Matrix;
+class RotoTransNode;
 }
 
 namespace rigidbody {
@@ -21,7 +20,10 @@ class BIORBD_API IMUs
 {
 public:
     IMUs();
+    IMUs(const biorbd::rigidbody::IMUs& other);
     virtual ~IMUs();
+    biorbd::rigidbody::IMUs DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::IMUs& other);
 
     // Set and get
     void addIMU(
@@ -81,7 +83,7 @@ protected:
             bool updateKin,
             bool lookForTechnical); // Retourne la jacobienne des Tags
 
-    std::vector <biorbd::rigidbody::IMU> m_IMUs;
+    std::shared_ptr<std::vector<biorbd::rigidbody::IMU>> m_IMUs;
 
 };
 

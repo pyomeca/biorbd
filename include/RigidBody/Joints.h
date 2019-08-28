@@ -1,13 +1,14 @@
 #ifndef BIORBD_RIGIDBODY_JOINTS_H
 #define BIORBD_RIGIDBODY_JOINTS_H
 
+#include <memory>
 #include <rbdl/Model.h>
 #include <rbdl/Constraints.h>
 #include "biorbdConfig.h"
-#include "Utils/String.h"
 
 namespace biorbd {
 namespace utils {
+class String;
 class RotoTrans;
 class Matrix;
 class Node3d;
@@ -27,8 +28,10 @@ class BIORBD_API Joints : public RigidBodyDynamics::Model
 {
 public:
     Joints();
-    Joints(const Joints&);
+    Joints(const biorbd::rigidbody::Joints& other);
     virtual ~Joints();
+    biorbd::rigidbody::Joints DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::Joints& other);
 
     // Set and Get
     unsigned int AddBone(
@@ -248,19 +251,19 @@ public:
             biorbd::rigidbody::GeneralizedCoordinates &QDotOut); // Cette fonction retourne la dérivée de Q en fonction de Qdot (Si pas de Quaternion, QDot est directement retourné)
 
 protected:
-    std::vector<biorbd::rigidbody::Bone> m_bones; // Toutes les articulations
+    std::shared_ptr<std::vector<biorbd::rigidbody::Bone>> m_bones; // Toutes les articulations
 
-    biorbd::rigidbody::Integrator * integrator;
-    unsigned int m_nbRoot; // Nombre de dof sur le segment racine
-    unsigned int m_nDof; // Nombre de degré de liberté total
-    unsigned int m_nbQ; // Nombre de q au total
-    unsigned int m_nbQdot; // Nombre de qdot au total
-    unsigned int m_nbQddot; // Nombre de qddot au total
-    unsigned int m_nRotAQuat; // Nombre de segments par quaternion
-    bool m_isRootActuated; // If the root segment is controled or not
-    bool m_hasExternalForces; // If the model includes external force
-    bool m_isKinematicsComputed;
-    double m_totalMass; // Masse de tous les corps
+    std::shared_ptr<biorbd::rigidbody::Integrator> m_integrator;
+    std::shared_ptr<unsigned int> m_nbRoot; // Nombre de dof sur le segment racine
+    std::shared_ptr<unsigned int> m_nDof; // Nombre de degré de liberté total
+    std::shared_ptr<unsigned int> m_nbQ; // Nombre de q au total
+    std::shared_ptr<unsigned int> m_nbQdot; // Nombre de qdot au total
+    std::shared_ptr<unsigned int> m_nbQddot; // Nombre de qddot au total
+    std::shared_ptr<unsigned int> m_nRotAQuat; // Nombre de segments par quaternion
+    std::shared_ptr<bool> m_isRootActuated; // If the root segment is controled or not
+    std::shared_ptr<bool> m_hasExternalForces; // If the model includes external force
+    std::shared_ptr<bool> m_isKinematicsComputed;
+    std::shared_ptr<double> m_totalMass; // Masse de tous les corps
     RigidBodyDynamics::Math::SpatialTransform CalcBodyWorldTransformation(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const unsigned int body_id,

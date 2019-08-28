@@ -10,6 +10,7 @@
 #include "RigidBody/Contacts.h"
 #include "RigidBody/BoneMesh.h"
 #include "RigidBody/KalmanReconsMarkers.h"
+#include "RigidBody/Patch.h"
 %}
 
 

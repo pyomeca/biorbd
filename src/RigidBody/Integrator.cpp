@@ -9,8 +9,38 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/Joints.h"
 
-biorbd::rigidbody::Integrator::Integrator(){
+biorbd::rigidbody::Integrator::Integrator() :
+    m_nbre(std::shared_ptr<unsigned int>()),
+    m_steps(std::shared_ptr<unsigned int>()),
+    m_model(std::shared_ptr<RigidBodyDynamics::Model>()),
+    m_x_vec(std::shared_ptr<std::vector<state_type>>()),
+    m_times(std::shared_ptr<std::vector<double>>()),
+    m_u(std::shared_ptr<biorbd::utils::Vector>())
 
+{
+
+}
+
+biorbd::rigidbody::Integrator biorbd::rigidbody::Integrator::DeepCopy() const
+{
+    biorbd::rigidbody::Integrator copy;
+    *copy.m_nbre = *m_nbre;
+    *copy.m_steps = *m_steps;
+    *copy.m_model = *m_model;
+    *copy.m_x_vec = *m_x_vec;
+    *copy.m_times = *m_times;
+    *copy.m_u = *m_u;
+    return copy;
+}
+
+void biorbd::rigidbody::Integrator::DeepCopy(const biorbd::rigidbody::Integrator &other)
+{
+    *m_nbre = *other.m_nbre;
+    *m_steps = *other.m_steps;
+    *m_model = *other.m_model;
+    *m_x_vec = *other.m_x_vec;
+    *m_times = *other.m_times;
+    *m_u = *other.m_u;
 }
 
 void biorbd::rigidbody::Integrator::operator() (
@@ -18,61 +48,66 @@ void biorbd::rigidbody::Integrator::operator() (
         state_type &dxdt ,
         double ){
     // Équation différentielle : x/xdot => xdot/xddot
-    biorbd::rigidbody::GeneralizedCoordinates Q(m_nbre);
-    biorbd::rigidbody::GeneralizedCoordinates QDot(m_nbre);
-    biorbd::rigidbody::GeneralizedCoordinates QDDot(biorbd::utils::Vector(m_nbre).setZero());
-    for (unsigned int i=0; i<m_nbre; i++){
+    biorbd::rigidbody::GeneralizedCoordinates Q(*m_nbre);
+    biorbd::rigidbody::GeneralizedCoordinates QDot(*m_nbre);
+    biorbd::rigidbody::GeneralizedCoordinates QDDot(biorbd::utils::Vector(*m_nbre).setZero());
+    for (unsigned int i=0; i<*m_nbre; i++){
         Q(i) = x[i];
-        QDot(i) = x[i+m_nbre];
+        QDot(i) = x[i+*m_nbre];
     }
 
-    RigidBodyDynamics::ForwardDynamics (*m_model, Q, QDot, m_u, QDDot);
+    RigidBodyDynamics::ForwardDynamics (*m_model, Q, QDot, *m_u, QDDot);
 
     // Faire sortir xdot/xddot
-    for (unsigned int i=0; i<m_nbre; i++){
+    for (unsigned int i=0; i<*m_nbre; i++){
         dxdt[i] = QDot[i];
-        dxdt[i+m_nbre] = QDDot[i];
+        dxdt[i + *m_nbre] = QDDot[i];
     }
 
 }
 
 void biorbd::rigidbody::Integrator::showAll(){
     std::cout << "Test:" << std::endl;
-    for (unsigned int i=0; i<=m_steps; i++){
-        std::cout << m_times[i];
-        for (unsigned int j=0; j<m_nbre; j++)
-            std::cout << " " << m_x_vec[i][j];
+    for (unsigned int i=0; i<=*m_steps; i++){
+        std::cout << (*m_times)[i];
+        for (unsigned int j=0; j<*m_nbre; j++)
+            std::cout << " " << (*m_x_vec)[i][j];
         std::cout << std::endl;
     }
 }
 
+unsigned int biorbd::rigidbody::Integrator::steps() const
+{
+    return *m_steps+1;
+}
+
 biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Integrator::getX(unsigned int idx){
-    biorbd::rigidbody::GeneralizedCoordinates out(m_nbre*2);
-    biorbd::utils::Error::error(idx <= m_steps, "Trying to get Q outside range");
-    for (unsigned int i=0; i<m_nbre*2; i++){
-        out(i) = m_x_vec[idx][i];
+    biorbd::rigidbody::GeneralizedCoordinates out(*m_nbre*2);
+    biorbd::utils::Error::error(idx <= *m_steps, "Trying to get Q outside range");
+    for (unsigned int i=0; i<*m_nbre*2; i++){
+        out(i) = (*m_x_vec)[idx][i];
         }
     return out;
 }
 
 void biorbd::rigidbody::Integrator::integrate(
-        biorbd::rigidbody::Joints *model,
+        biorbd::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates &v,
         const biorbd::utils::Vector &u,
         double t0,
         double tEnd,
         double time_step){
     // Stocker le nombre d'élément à traiter
-    m_nbre = static_cast<unsigned int>(v.rows())/2; // Q et Qdot
-    m_u = u; // Copier les effecteurs
-    m_model = model;
+    *m_nbre = static_cast<unsigned int>(v.rows())/2; // Q et Qdot
+    *m_u = u; // Copier les effecteurs
+    *m_model = model;
 
     // Remplissage de la variable par les positions et vitesse
-    state_type x(m_nbre*2);
-    for (unsigned int i=0; i<m_nbre*2; i++)
+    state_type x(*m_nbre*2);
+    for (unsigned int i=0; i<*m_nbre*2; i++)
         x[i] = v(i);
 
     // Choix de l'algorithme et intégration
     boost::numeric::odeint::runge_kutta4< state_type > stepper;
-    m_steps = static_cast<unsigned int>(boost::numeric::odeint::integrate_const( stepper, (*this), x, t0, tEnd, time_step, push_back_state_and_time( m_x_vec , m_times )));
+    *m_steps = static_cast<unsigned int>(boost::numeric::odeint::integrate_const( stepper, (*this), x, t0, tEnd, time_step, push_back_state_and_time( *m_x_vec , *m_times )));
 }

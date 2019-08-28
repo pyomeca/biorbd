@@ -2,9 +2,9 @@
 #define BIORBD_RIGIDBODY_CONTACTS_H
 
 #include <vector>
+#include <memory>
 #include <rbdl/Constraints.h>
 #include "biorbdConfig.h"
-#include "Utils/String.h"
 
 namespace biorbd { namespace utils {
 class RotoTrans;
@@ -22,6 +22,9 @@ class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
 {
 public:
     Contacts();
+    biorbd::rigidbody::Contacts DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::Contacts& other);
+
     unsigned int AddConstraint(
             unsigned int body_id,
             const biorbd::utils::Node3d &body_point,
@@ -40,9 +43,9 @@ public:
             const biorbd::utils::RotoTrans& X_predecessor,
             const biorbd::utils::RotoTrans& X_successor,
             const biorbd::utils::Vector& axis,
+            const biorbd::utils::String& name,
             bool enableStabilization = false,
-            double stabilizationParam = 0.1,
-            const biorbd::utils::String& name = biorbd::utils::String() );
+            double stabilizationParam = 0.1);
     virtual ~Contacts();
 
     Contacts &getConstraints_nonConst();
@@ -59,8 +62,8 @@ public:
     // Set and get
     biorbd::utils::Vector getForce() const;
 protected:
-    unsigned int m_nbreConstraint;
-    bool m_isBinded;
+    std::shared_ptr<unsigned int> m_nbreConstraint;
+    std::shared_ptr<bool> m_isBinded;
 
 };
 
