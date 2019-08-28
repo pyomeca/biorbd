@@ -12,6 +12,8 @@ class BIORBD_API Patch
 {
 public:
     Patch(const Eigen::Vector3i& = Eigen::Vector3i());
+    biorbd::rigidbody::Patch DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::Patch& other);
 
     // Ajouter un patch au lot
     int &operator() (int);
