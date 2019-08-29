@@ -35,3 +35,21 @@ biorbd::muscles::ViaPoint::ViaPoint(
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::VIA_POINT;
 }
+
+biorbd::muscles::ViaPoint::ViaPoint(const biorbd::muscles::ViaPoint &other) :
+    biorbd::utils::Node3d(other)
+{
+
+}
+
+biorbd::muscles::ViaPoint biorbd::muscles::ViaPoint::DeepCopy() const
+{
+    biorbd::muscles::ViaPoint copy;
+    copy.biorbd::utils::Node3d::DeepCopy(*this);
+    return copy;
+}
+
+void biorbd::muscles::ViaPoint::DeepCopy(const biorbd::muscles::ViaPoint &other)
+{
+    biorbd::utils::Node3d::DeepCopy(other);
+}

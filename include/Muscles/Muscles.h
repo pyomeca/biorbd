@@ -28,7 +28,10 @@ class BIORBD_API Muscles
 {
 public:
     Muscles();
+    Muscles(const biorbd::muscles::Muscles& other);
     virtual ~Muscles();
+    biorbd::muscles::Muscles DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::Muscles& other);
 
     void addMuscleGroup(
             const biorbd::utils::String &name,
@@ -83,7 +86,7 @@ public:
     unsigned int nbMuscleGroups() const; // retourne le nombre total de groupes musculaires
     unsigned int nbMuscleTotal() const; // retourne le nombre total de muscles
 protected:
-    std::vector<biorbd::muscles::MuscleGroup> m_mus;
+    std::shared_ptr<std::vector<biorbd::muscles::MuscleGroup>> m_mus;
 
 };
 

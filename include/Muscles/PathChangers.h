@@ -16,6 +16,9 @@ class BIORBD_API PathChangers
 {
 public:
     PathChangers();
+    biorbd::muscles::PathChangers DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::PathChangers& other);
+
     void addPathChanger(biorbd::utils::Node3d&); // Ajouter un wrapping ou un via point
 
     // Set and get

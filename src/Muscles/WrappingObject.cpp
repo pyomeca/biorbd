@@ -49,6 +49,12 @@ biorbd::muscles::WrappingObject::WrappingObject(
     *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_OBJECT;
 }
 
+void biorbd::muscles::WrappingObject::DeepCopy(const biorbd::muscles::WrappingObject &other)
+{
+    biorbd::utils::Node3d::DeepCopy(other);
+    *m_RT = *other.m_RT;
+}
+
 const biorbd::utils::RotoTrans &biorbd::muscles::WrappingObject::RT() const
 {
     return *m_RT;

@@ -2,6 +2,7 @@
 #include "Muscles/WrappingCylinder.h"
 
 #include "Utils/String.h"
+#include "Utils/RotoTrans.h"
 #include "RigidBody/Joints.h"
 
 biorbd::muscles::WrappingCylinder::WrappingCylinder() :
@@ -51,6 +52,32 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder(
     m_lengthAroundWrap(std::make_shared<double>(0))
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_CYLINDER;
+}
+
+biorbd::muscles::WrappingCylinder biorbd::muscles::WrappingCylinder::DeepCopy() const
+{
+    biorbd::muscles::WrappingCylinder copy;
+    copy.biorbd::muscles::WrappingObject::DeepCopy(*this);
+    *copy.m_dia = *m_dia;
+    *copy.m_length = *m_length;
+    *copy.m_isCylinderPositiveSign = *m_isCylinderPositiveSign;
+    *copy.m_RTtoParent = *m_RTtoParent;
+    *copy.m_p1Wrap = *m_p1Wrap;
+    *copy.m_p2Wrap = *m_p2Wrap;
+    *copy.m_lengthAroundWrap = *m_lengthAroundWrap;
+    return copy;
+}
+
+void biorbd::muscles::WrappingCylinder::DeepCopy(const biorbd::muscles::WrappingCylinder &other)
+{
+    biorbd::muscles::WrappingObject::DeepCopy(other);
+    *m_dia = *other.m_dia;
+    *m_length = *other.m_length;
+    *m_isCylinderPositiveSign = *other.m_isCylinderPositiveSign;
+    *m_RTtoParent = *other.m_RTtoParent;
+    *m_p1Wrap = *other.m_p1Wrap;
+    *m_p2Wrap = *other.m_p2Wrap;
+    *m_lengthAroundWrap = *other.m_lengthAroundWrap;
 }
 
 void biorbd::muscles::WrappingCylinder::wrapPoints(

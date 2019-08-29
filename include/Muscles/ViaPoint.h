@@ -26,6 +26,10 @@ public:
             const biorbd::utils::String &parentName);
     ViaPoint(
             const biorbd::utils::Node3d& other);
+    ViaPoint(
+            const biorbd::muscles::ViaPoint& other);
+    biorbd::muscles::ViaPoint DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::ViaPoint& other);
 
     template<typename OtherDerived>
         biorbd::muscles::ViaPoint& operator=(const biorbd::utils::Node3d& other){

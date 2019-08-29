@@ -1,6 +1,7 @@
 #ifndef BIORBD_MUSCLES_STATE_H
 #define BIORBD_MUSCLES_STATE_H
 
+#include <memory>
 #include "biorbdConfig.h"
 #include "Muscles/MusclesEnums.h"
 
@@ -11,9 +12,12 @@ class BIORBD_API State
 {
 public:
     State(
-            double e = 0,
-            double a = 0);
+            double excitation = 0,
+            double activation = 0);
+    State(const biorbd::muscles::State& other);
     virtual ~State();
+    biorbd::muscles::State DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::State& other);
 
     // Set and Get
     virtual void setExcitation(double val);
@@ -26,9 +30,9 @@ public:
 protected:
     virtual void setType();
 
-    biorbd::muscles::STATE_TYPE m_stateType;
-    double m_excitation;
-    double m_activation;
+    std::shared_ptr<biorbd::muscles::STATE_TYPE> m_stateType;
+    std::shared_ptr<double> m_excitation;
+    std::shared_ptr<double> m_activation;
 
 };
 

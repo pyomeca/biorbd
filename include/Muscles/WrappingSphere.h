@@ -26,6 +26,8 @@ public:
     WrappingSphere(
             const biorbd::utils::Node3d &v, // Position du noeud
             double diameter);
+    biorbd::muscles::WrappingSphere DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::WrappingSphere& other);
 
     const biorbd::utils::RotoTrans& RT(
             biorbd::rigidbody::Joints &,

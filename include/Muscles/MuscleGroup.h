@@ -20,11 +20,15 @@ class PathChangers;
 class BIORBD_API MuscleGroup
 {
 public:
+    MuscleGroup();
+    MuscleGroup(const biorbd::muscles::MuscleGroup& other);
     MuscleGroup(
             const biorbd::utils::String &name,
             const biorbd::utils::String &originName,
             const biorbd::utils::String &insertionName);
     virtual ~MuscleGroup();
+    biorbd::muscles::MuscleGroup DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::MuscleGroup& other);
 
     virtual void addMuscle(
             const biorbd::utils::String& name,

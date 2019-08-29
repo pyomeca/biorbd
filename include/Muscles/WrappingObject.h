@@ -36,6 +36,7 @@ public:
             const Eigen::Vector3d& other,
             const biorbd::utils::String& name,
             const biorbd::utils::String& parentName);
+    void DeepCopy(const biorbd::muscles::WrappingObject& other);
 
     virtual void wrapPoints(
             const biorbd::utils::RotoTrans& rt,

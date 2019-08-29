@@ -2,7 +2,6 @@
 #define BIORBD_MUSCLES_WRAPPING_CYLINDER_H
 
 #include "biorbdConfig.h"
-#include "Utils/RotoTrans.h"
 #include "Muscles/WrappingObject.h"
 
 namespace biorbd {
@@ -24,6 +23,8 @@ public:
             bool isCylinderPositiveSign,
             const biorbd::utils::String& name,
             const biorbd::utils::String& parentName);
+    biorbd::muscles::WrappingCylinder DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::WrappingCylinder& other);
 
     void wrapPoints(
             const biorbd::utils::RotoTrans& rt,

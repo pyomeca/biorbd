@@ -8,6 +8,24 @@
 #include "Muscles/HillThelenTypeFatigable.h"
 #include "Muscles/StateDynamicsBuchanan.h"
 
+biorbd::muscles::MuscleGroup::MuscleGroup() :
+    m_mus(std::make_shared<std::vector<std::shared_ptr<biorbd::muscles::Muscle>>>()),
+    m_name(std::make_shared<biorbd::utils::String>()),
+    m_originName(std::make_shared<biorbd::utils::String>()),
+    m_insertName(std::make_shared<biorbd::utils::String>())
+{
+
+}
+
+biorbd::muscles::MuscleGroup::MuscleGroup(const biorbd::muscles::MuscleGroup &other) :
+    m_mus(other.m_mus),
+    m_name(other.m_name),
+    m_originName(other.m_originName),
+    m_insertName(other.m_insertName)
+{
+
+}
+
 biorbd::muscles::MuscleGroup::MuscleGroup(
         const biorbd::utils::String &name,
         const biorbd::utils::String &originName,
@@ -22,6 +40,24 @@ biorbd::muscles::MuscleGroup::MuscleGroup(
 biorbd::muscles::MuscleGroup::~MuscleGroup()
 {
 
+}
+
+biorbd::muscles::MuscleGroup biorbd::muscles::MuscleGroup::DeepCopy() const
+{
+    biorbd::muscles::MuscleGroup copy;
+    *copy.m_mus = *m_mus;
+    *copy.m_name = *m_name;
+    *copy.m_originName = *m_originName;
+    *copy.m_insertName = *m_insertName;
+    return copy;
+}
+
+void biorbd::muscles::MuscleGroup::DeepCopy(const biorbd::muscles::MuscleGroup &other)
+{
+    *m_mus = *other.m_mus;
+    *m_name = *other.m_name;
+    *m_originName = *other.m_originName;
+    *m_insertName = *other.m_insertName;
 }
 
 void biorbd::muscles::MuscleGroup::addMuscle(

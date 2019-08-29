@@ -1,14 +1,22 @@
 #ifndef BIORBD_MUSCLES_STATIC_OPTIMIZATION_IPOPT_H
 #define BIORBD_MUSCLES_STATIC_OPTIMIZATION_IPOPT_H
 
+#include <memory>
 #include <IpIpoptApplication.hpp>
 #include <IpTNLP.hpp>
 #include "biorbdConfig.h"
-#include "RigidBody/GeneralizedCoordinates.h"
-#include "RigidBody/GeneralizedTorque.h"
 
 namespace biorbd {
 class Model;
+
+namespace utils {
+class Vector;
+}
+
+namespace rigidbody {
+class GeneralizedCoordinates;
+class GeneralizedTorque;
+}
 
 namespace muscles {
 class StateDynamics;
@@ -115,25 +123,25 @@ public:
 
 
 protected:
-    biorbd::Model &m_model;
-    unsigned int m_nQ;
-    unsigned int m_nQdot;
-    unsigned int m_nMus;
-    unsigned int m_nDof;
-    unsigned int m_nGeneralizedTorque;
-    unsigned int m_nGeneralizedTorqueResidual;
-    double m_eps;
-    biorbd::utils::Vector m_activations;
-    biorbd::rigidbody::GeneralizedCoordinates m_Q;
-    biorbd::rigidbody::GeneralizedCoordinates m_Qdot;
-    biorbd::rigidbody::GeneralizedTorque m_GeneralizedTorqueTarget;
-    biorbd::utils::Vector m_GeneralizedTorqueResidual;
-    double m_GeneralizedTorquePonderation;
-    std::vector<biorbd::muscles::StateDynamics> m_states;
-    unsigned int m_pNormFactor;
-    int m_verbose;
-    biorbd::utils::Vector m_finalSolution;
-    biorbd::utils::Vector m_finalResidual;
+    biorbd::Model& m_model;
+    std::shared_ptr<unsigned int> m_nQ;
+    std::shared_ptr<unsigned int> m_nQdot;
+    std::shared_ptr<unsigned int> m_nMus;
+    std::shared_ptr<unsigned int> m_nDof;
+    std::shared_ptr<unsigned int> m_nGeneralizedTorque;
+    std::shared_ptr<unsigned int> m_nGeneralizedTorqueResidual;
+    std::shared_ptr<double> m_eps;
+    std::shared_ptr<biorbd::utils::Vector> m_activations;
+    std::shared_ptr<biorbd::rigidbody::GeneralizedCoordinates> m_Q;
+    std::shared_ptr<biorbd::rigidbody::GeneralizedCoordinates> m_Qdot;
+    std::shared_ptr<biorbd::rigidbody::GeneralizedTorque> m_GeneralizedTorqueTarget;
+    std::shared_ptr<biorbd::utils::Vector> m_GeneralizedTorqueResidual;
+    std::shared_ptr<double> m_GeneralizedTorquePonderation;
+    std::shared_ptr<std::vector<biorbd::muscles::StateDynamics>> m_states;
+    std::shared_ptr<unsigned int> m_pNormFactor;
+    std::shared_ptr<int> m_verbose;
+    std::shared_ptr<biorbd::utils::Vector> m_finalSolution;
+    std::shared_ptr<biorbd::utils::Vector> m_finalResidual;
 
     void dispatch(const Ipopt::Number* x);
 

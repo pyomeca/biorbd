@@ -12,9 +12,12 @@ class BIORBD_API StateDynamics : public biorbd::muscles::State
 {
 public:
     StateDynamics(
-            double e = 0,
-            double a = 0);
+            double excitation = 0,
+            double activation = 0);
+    StateDynamics(const biorbd::muscles::StateDynamics& other);
     virtual ~StateDynamics();
+    biorbd::muscles::StateDynamics DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::StateDynamics& other);
 
     virtual void setExcitation(double val);
     virtual void setActivation(double val);
@@ -41,10 +44,10 @@ public:
 
 protected:
     virtual void setType();
-    double m_excitationNorm;
-    double m_previousExcitation;
-    double m_previousActivation;
-    double m_activationDot;
+    std::shared_ptr<double> m_excitationNorm;
+    std::shared_ptr<double> m_previousExcitation;
+    std::shared_ptr<double> m_previousActivation;
+    std::shared_ptr<double> m_activationDot;
 
 };
 

@@ -2,10 +2,13 @@
 #define BIORBD_MUSCLES_STATIC_OPTIMIZATION_IPOPT_LINEARIZED_H
 
 #include "biorbdConfig.h"
-#include "Utils/Matrix.h"
 #include "Muscles/StaticOptimizationIpopt.h"
 
 namespace biorbd {
+namespace utils {
+class Matrix;
+}
+
 namespace muscles {
 
 class BIORBD_API StaticOptimizationIpoptLinearized : public biorbd::muscles::StaticOptimizationIpopt
@@ -46,7 +49,7 @@ public:
        Ipopt::Number* values);
 
 protected:
-    biorbd::utils::Matrix m_jacobian;
+    std::shared_ptr<biorbd::utils::Matrix> m_jacobian;
     void prepareJacobian();
 
 };
