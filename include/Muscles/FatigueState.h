@@ -3,6 +3,7 @@
 
 #include <memory>
 #include "biorbdConfig.h"
+#include "MusclesEnums.h"
 
 namespace biorbd {
 namespace muscles {
@@ -30,14 +31,14 @@ public:
     double fatiguedFibers() const;
     double restingFibers() const;
 
-    std::string getType() const;
+    biorbd::muscles::STATE_FATIGUE_TYPE getType() const;
 protected:
     std::shared_ptr<double> m_activeFibers;
     std::shared_ptr<double> m_fatiguedFibers;
     std::shared_ptr<double> m_restingFibers;
 
     virtual void setType();
-    std::shared_ptr<std::string> m_type; // type of the muscle fatigue
+    std::shared_ptr<biorbd::muscles::STATE_FATIGUE_TYPE> m_type; // type of the muscle fatigue
 
 };
 

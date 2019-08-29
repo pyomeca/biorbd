@@ -41,7 +41,7 @@ biorbd::rigidbody::KalmanReconsMarkers biorbd::rigidbody::KalmanReconsMarkers::D
 
 void biorbd::rigidbody::KalmanReconsMarkers::DeepCopy(const biorbd::rigidbody::KalmanReconsMarkers &other)
 {
-    static_cast<biorbd::rigidbody::KalmanRecons&>(*this) = other;
+    biorbd::rigidbody::KalmanRecons::DeepCopy(other);
     *m_PpInitial = *other.m_PpInitial;
     *m_firstIteration = *other.m_firstIteration;
 }

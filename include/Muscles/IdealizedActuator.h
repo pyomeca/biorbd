@@ -19,12 +19,24 @@ public:
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
             const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::StateDynamics& dynamicState);
+    IdealizedActuator(
+            const biorbd::utils::String& name,
+            const biorbd::muscles::Geometry& geometry,
+            const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::PathChangers& pathChangers);
+    IdealizedActuator(
+            const biorbd::utils::String& name,
+            const biorbd::muscles::Geometry& geometry,
+            const biorbd::muscles::Caracteristics& caract,
             const biorbd::muscles::PathChangers& pathChangers,
             const biorbd::muscles::StateDynamics& dynamicState);
     IdealizedActuator(
             const Muscle& muscle);
     IdealizedActuator(
             const std::shared_ptr<Muscle> muscle);
+    biorbd::muscles::IdealizedActuator DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::IdealizedActuator& other);
 
     virtual const std::vector<biorbd::muscles::Force>& force(
             const biorbd::muscles::StateDynamics& emg);

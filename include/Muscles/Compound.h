@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include "biorbdConfig.h"
+#include "Muscles/MusclesEnums.h"
 
 namespace biorbd {
 namespace utils {
@@ -25,6 +26,7 @@ class StateDynamics;
 class BIORBD_API Compound
 {
 public:
+
     Compound();
     Compound(
             const biorbd::utils::String &name);
@@ -40,7 +42,7 @@ public:
 
     const biorbd::utils::String& name() const;
     void setName(const biorbd::utils::String& name);
-    const biorbd::utils::String& type() const;
+    biorbd::muscles::MUSCLE_TYPE type() const;
 
     // Wrapping object
     const biorbd::muscles::PathChangers& pathChanger();
@@ -62,7 +64,7 @@ public:
 
 protected:
     std::shared_ptr<biorbd::utils::String> m_name;
-    std::shared_ptr<biorbd::utils::String> m_type;
+    std::shared_ptr<biorbd::muscles::MUSCLE_TYPE> m_type;
     std::shared_ptr<biorbd::muscles::PathChangers> m_pathChanger;
     std::shared_ptr<std::vector<biorbd::muscles::Force>> m_force;
     void copyForce(const std::shared_ptr<std::vector<biorbd::muscles::Force>>& force);

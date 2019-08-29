@@ -19,12 +19,24 @@ public:
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
             const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::StateDynamics& dynamicState);
+    HillType(
+            const biorbd::utils::String& name,
+            const biorbd::muscles::Geometry& geometry,
+            const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::PathChangers& pathChangers);
+    HillType(
+            const biorbd::utils::String& name,
+            const biorbd::muscles::Geometry& geometry,
+            const biorbd::muscles::Caracteristics& caract,
             const biorbd::muscles::PathChangers& pathChangers,
             const biorbd::muscles::StateDynamics& dynamicState);
     HillType(
             const biorbd::muscles::Muscle& muscle);
     HillType(
             const std::shared_ptr<biorbd::muscles::Muscle> muscle);
+    biorbd::muscles::HillType DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::HillType& other);
 
     virtual const std::vector<biorbd::muscles::Force>& force(
             const biorbd::muscles::StateDynamics& emg);

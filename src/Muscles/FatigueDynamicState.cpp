@@ -49,8 +49,3 @@ double biorbd::muscles::FatigueDynamicState::restingFibersDot() const
     return *m_restingFibersDot;
 }
 
-void biorbd::muscles::FatigueDynamicState::setType()
-{
-    *m_type = "DynamicAbstract";
-}
-

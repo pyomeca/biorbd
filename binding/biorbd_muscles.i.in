@@ -6,9 +6,9 @@
 #include "Muscles/Caracteristics.h"
 #include "Muscles/Geometry.h"
 #include "Muscles/HillType.h"
-#include "Muscles/HillTypeThelen.h"
+#include "Muscles/HillThelenType.h"
 #include "Muscles/IdealizedActuator.h"
-#include "Muscles/HillTypeThelenFatigable.h"
+#include "Muscles/HillThelenTypeFatigable.h"
 #include "Muscles/FatigueParameters.h"
 #include "Muscles/FatigueState.h"
 #include "Muscles/FatigueDynamicState.h"
@@ -54,16 +54,16 @@ namespace std {
         return *(std::dynamic_pointer_cast<biorbd::muscles::HillType>(muscle));
     }
 }
-%extend biorbd::muscles::HillTypeThelen{
-    static biorbd::muscles::HillTypeThelen& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
+%extend biorbd::muscles::HillThelenType{
+    static biorbd::muscles::HillThelenType& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelen>(muscle));
+        return *(std::dynamic_pointer_cast<biorbd::muscles::HillThelenType>(muscle));
     }
 }
-%extend biorbd::muscles::HillTypeThelenFatigable{
-    static biorbd::muscles::HillTypeThelenFatigable& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
+%extend biorbd::muscles::HillThelenTypeFatigable{
+    static biorbd::muscles::HillThelenTypeFatigable& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(muscle));
+        return *(std::dynamic_pointer_cast<biorbd::muscles::HillThelenTypeFatigable>(muscle));
     }
 }
 %extend biorbd::muscles::IdealizedActuator{
@@ -93,8 +93,8 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscle.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Fatigable.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/HillType.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeThelen.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeThelenFatigable.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillThelenType.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillThelenTypeFatigable.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/IdealizedActuator.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscles.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/MuscleGroup.h"

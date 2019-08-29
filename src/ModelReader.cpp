@@ -34,6 +34,7 @@
 #include "Muscles/State.h"
 #include "Muscles/Caracteristics.h"
 #include "Muscles/ViaPoint.h"
+#include "Muscles/PathChangers.h"
 #endif // MODULE_MUSCLES
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -606,9 +607,9 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
             file.read(name); // Nom du muscle
 
             // Déclaration des variables
-            biorbd::utils::String type("");
-            biorbd::utils::String stateType("default");
-            biorbd::utils::String dynamicFatigueType("simple");
+            biorbd::muscles::MUSCLE_TYPE type(biorbd::muscles::MUSCLE_TYPE::NO_TYPE);
+            biorbd::muscles::STATE_TYPE stateType(biorbd::muscles::STATE_TYPE::NO_STATE_TYPE);
+            biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType(biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
             biorbd::utils::String muscleGroup("");
             int idxGroup(-1);
             biorbd::utils::Node3d origin_pos(0,0,0);
@@ -631,10 +632,28 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                     // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
                     biorbd::utils::Error::error(idxGroup!=-1, "Could not find muscle group");
                 }
-                else if (!tp.tolower().compare("type"))
-                    file.read(type);
-                else if (!tp.tolower().compare("statetype"))
-                    file.read(stateType);
+                else if (!tp.tolower().compare("type")){
+                    biorbd::utils::String tp;
+                    file.read(tp);
+                    if (!tp.tolower().compare("idealizedactuator"))
+                        type = biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR;
+                    else if (!tp.tolower().compare("hil"))
+                        type = biorbd::muscles::MUSCLE_TYPE::HILL;
+                    else if (!tp.tolower().compare("hillthelen") || !tp.tolower().compare("thelen"))
+                        type = biorbd::muscles::MUSCLE_TYPE::HILL_THELEN;
+                    else if (!tp.tolower().compare("hillthelenfatigable") || !tp.tolower().compare("thelenfatigable"))
+                        type = biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE;
+                    else
+                        biorbd::utils::Error::error(false, tp + " is not a valid muscle type");
+                }
+                else if (!tp.tolower().compare("statetype")){
+                    biorbd::utils::String tp;
+                    file.read(tp);
+                    if (!tp.tolower().compare("buchanan"))
+                        stateType = biorbd::muscles::STATE_TYPE::BUCHANAN;
+                    else
+                        biorbd::utils::Error::error(false, tp + " is not a valid muscle state type");
+                }
                 else if (!tp.tolower().compare("originposition"))
                     for (unsigned int i=0; i<3; ++i)
                         file.read(origin_pos(i), variable);
@@ -656,7 +675,14 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                 else if (!tp.tolower().compare("fatigueparameters")){
                     while(file.read(tp) && tp.tolower().compare("endfatigueparameters")){
                         if (!tp.tolower().compare("type")){
-                            file.read(dynamicFatigueType);
+                            biorbd::utils::String tp;
+                            file.read(tp);
+                            if (!tp.tolower().compare("simple"))
+                                dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE;
+                            else if (!tp.tolower().compare("xia"))
+                                dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA;
+                            else
+                                biorbd::utils::Error::error(false, tp + " is not a value fatigue parameter type");
                         } else {
                             double param(0);
                             file.read(param);
@@ -720,7 +746,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
             position.setName(name);
             position.setParent(parent);
             model->muscleGroup(static_cast<unsigned int>(iMuscleGroup))
-                    .muscle(static_cast<unsigned int>(iMuscle))->addPathObject(position);
+                    .muscle(static_cast<unsigned int>(iMuscle)).addPathObject(position);
 #else // MODULE_ACTUATORS
         biorbd::utils::Error::error(false, "Biorbd was build without the module Muscles but the model defines a viapoint");
 #endif // MODULE_ACTUATORS
@@ -775,7 +801,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
             iMuscle = model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscleID(muscle);
             biorbd::utils::Error::error(iMuscle!=-1, "No muscle was provided!");
             biorbd::muscles::WrappingCylinder cylinder(RT,dia,length,side,name,parent);
-            model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle))->addPathObject(cylinder);
+            model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle)).addPathObject(cylinder);
 #else // MODULE_ACTUATORS
         biorbd::utils::Error::error(false, "Biorbd was build without the module Muscles but the model defines a wrapping object");
 #endif // MODULE_ACTUATORS

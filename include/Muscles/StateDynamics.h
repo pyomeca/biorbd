@@ -40,6 +40,7 @@ public:
     virtual double timeDerivativeActivation(); // Retourne la derniere valeur
 
 protected:
+    virtual void setType();
     double m_excitationNorm;
     double m_previousExcitation;
     double m_previousActivation;

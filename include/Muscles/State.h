@@ -2,6 +2,7 @@
 #define BIORBD_MUSCLES_STATE_H
 
 #include "biorbdConfig.h"
+#include "Muscles/MusclesEnums.h"
 
 namespace biorbd {
 namespace muscles {
@@ -23,6 +24,9 @@ public:
 
 
 protected:
+    virtual void setType();
+
+    biorbd::muscles::STATE_TYPE m_stateType;
     double m_excitation;
     double m_activation;
 

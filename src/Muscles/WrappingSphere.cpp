@@ -8,7 +8,7 @@ biorbd::muscles::WrappingSphere::WrappingSphere() :
     biorbd::muscles::WrappingObject (),
     m_dia(std::make_shared<double>(0))
 {
-    *m_typeOfNode = "WrappingSphere";
+    *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_SPHERE;
 }
 
 biorbd::muscles::WrappingSphere::WrappingSphere(
@@ -20,7 +20,7 @@ biorbd::muscles::WrappingSphere::WrappingSphere(
     m_dia(std::make_shared<double>(diameter))
 
 {
-    *m_typeOfNode = "WrappingSphere";
+    *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_SPHERE;
 }
 
 biorbd::muscles::WrappingSphere::WrappingSphere(
@@ -33,7 +33,7 @@ biorbd::muscles::WrappingSphere::WrappingSphere(
     biorbd::muscles::WrappingObject (x, y, z, name, parentName),
     m_dia(std::make_shared<double>(diameter))
 {
-    *m_typeOfNode = "WrappingSphere";
+    *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_SPHERE;
 }
 
 biorbd::muscles::WrappingSphere::WrappingSphere(
@@ -42,7 +42,7 @@ biorbd::muscles::WrappingSphere::WrappingSphere(
     biorbd::muscles::WrappingObject(v),
     m_dia(std::make_shared<double>(diameter))
 {
-    *m_typeOfNode = "WrappingSphere";
+    *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_SPHERE;
 }
 
 const biorbd::utils::RotoTrans& biorbd::muscles::WrappingSphere::RT(

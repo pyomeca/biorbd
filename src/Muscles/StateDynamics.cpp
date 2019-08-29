@@ -124,3 +124,8 @@ double biorbd::muscles::StateDynamics::previousExcitation() const
 {
     return m_previousExcitation;
 }
+
+void biorbd::muscles::StateDynamics::setType()
+{
+    m_stateType = biorbd::muscles::STATE_TYPE::DYNAMIC;
+}

@@ -111,7 +111,7 @@ TEST(Dynamics, ForwardLoopConstraint){
             44.636461505611521, 0.67809701484785911, 0, 0, 15.822263679783546, 0, 0;
     Tau.setZero();
 
-    biorbd::rigidbody::Contacts& cs(model.getConstraints_nonConst());
+    biorbd::rigidbody::Contacts& cs(model.getConstraints());
     RigidBodyDynamics::ForwardDynamicsConstraintsDirect(model, Q, QDot, Tau, cs, QDDot_constrained);
     for (unsigned int i = 0; i<model.nbQddot(); ++i)
         EXPECT_NEAR(QDDot_constrained[i], QDDot_expected[i], 1e-6);

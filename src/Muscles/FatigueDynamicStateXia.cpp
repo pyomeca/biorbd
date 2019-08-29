@@ -25,7 +25,7 @@ biorbd::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(const std::share
 biorbd::muscles::FatigueDynamicStateXia biorbd::muscles::FatigueDynamicStateXia::DeepCopy() const
 {
     biorbd::muscles::FatigueDynamicStateXia copy;
-    static_cast<biorbd::muscles::FatigueDynamicState&>(copy) = *this;
+    copy.biorbd::muscles::FatigueDynamicState::DeepCopy(*this);
     return copy;
 }
 
@@ -57,5 +57,5 @@ void biorbd::muscles::FatigueDynamicStateXia::timeDerivativeState(const biorbd::
 
 void biorbd::muscles::FatigueDynamicStateXia::setType()
 {
-    *m_type = "Xia";
+    *m_type =biorbd::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA;
 }

@@ -3,6 +3,7 @@
 
 #include <memory>
 #include "biorbdConfig.h"
+#include "Utils/UtilsEnum.h"
 
 namespace biorbd {
 namespace utils {
@@ -29,12 +30,12 @@ public:
     const biorbd::utils::String &parent() const;
     void setParent(const biorbd::utils::String &parentName);
 
-    const biorbd::utils::String &typeOfNode() const;
+    biorbd::utils::NODE_TYPE typeOfNode() const;
 
 protected:
     std::shared_ptr<biorbd::utils::String> m_name;
     std::shared_ptr<biorbd::utils::String> m_parentName;
-    std::shared_ptr<biorbd::utils::String> m_typeOfNode;
+    std::shared_ptr<biorbd::utils::NODE_TYPE> m_typeOfNode;
 
 };
 

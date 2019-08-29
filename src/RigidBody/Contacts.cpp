@@ -92,18 +92,7 @@ biorbd::rigidbody::Contacts::~Contacts()
 
 }
 
-biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints_nonConst()
-{
-    if (!*m_isBinded){
-        // Assuming that this is also a Joints type (via BiorbdModel)
-        const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-        Bind(model);
-        *m_isBinded = true;
-    }
-    return *this;
-}
-
-const biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints()
+biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints()
 {
     if (!*m_isBinded){
         // Assuming that this is also a Joints type (via BiorbdModel)

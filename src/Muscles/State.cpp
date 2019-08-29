@@ -7,6 +7,7 @@ biorbd::muscles::State::State(
     m_excitation(e),
     m_activation(a)
 {
+    setType();
 }
 
 biorbd::muscles::State::~State()
@@ -38,4 +39,9 @@ double biorbd::muscles::State::excitation() const
 double biorbd::muscles::State::activation() const
 {
     return m_activation;
+}
+
+void biorbd::muscles::State::setType()
+{
+    m_stateType = biorbd::muscles::STATE_TYPE::SIMPLE_STATE;
 }

@@ -23,7 +23,7 @@ biorbd::muscles::FatigueState::FatigueState(
     m_activeFibers(std::make_shared<double>(active)),
     m_fatiguedFibers(std::make_shared<double>(fatigued)),
     m_restingFibers(std::make_shared<double>(resting)),
-    m_type(std::make_shared<biorbd::utils::String>())
+    m_type(std::make_shared<biorbd::muscles::STATE_FATIGUE_TYPE>())
 {
     setType();
 }
@@ -141,12 +141,12 @@ double biorbd::muscles::FatigueState::restingFibers() const
     return *m_restingFibers;
 }
 
-std::string biorbd::muscles::FatigueState::getType() const
+biorbd::muscles::STATE_FATIGUE_TYPE biorbd::muscles::FatigueState::getType() const
 {
     return *m_type;
 }
 
 void biorbd::muscles::FatigueState::setType()
 {
-    *m_type = "Simple";
+    *m_type = biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE;
 }

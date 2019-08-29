@@ -33,7 +33,6 @@ protected:
     std::shared_ptr<double> m_fatiguedFibersDot;
     std::shared_ptr<double> m_restingFibersDot;
 
-    virtual void setType();
 };
 
 }}

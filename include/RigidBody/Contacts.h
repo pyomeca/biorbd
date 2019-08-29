@@ -48,8 +48,7 @@ public:
             double stabilizationParam = 0.1);
     virtual ~Contacts();
 
-    Contacts &getConstraints_nonConst();
-    const Contacts &getConstraints();
+    Contacts &getConstraints();
 
     bool hasContacts() const;
     unsigned int nContacts() const;

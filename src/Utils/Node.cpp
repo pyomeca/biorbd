@@ -6,7 +6,7 @@
 biorbd::utils::Node::Node() :
     m_name(std::make_shared<biorbd::utils::String>("")),
     m_parentName(std::make_shared<biorbd::utils::String>("")),
-    m_typeOfNode(std::make_shared<biorbd::utils::String>("NoType"))
+    m_typeOfNode(std::make_shared<biorbd::utils::NODE_TYPE>(biorbd::utils::NODE_TYPE::NO_TYPE))
 {
 
 }
@@ -22,7 +22,7 @@ biorbd::utils::Node::Node(const biorbd::utils::Node &node)
 biorbd::utils::Node::Node(const biorbd::utils::String &name) :
     m_name(std::make_shared<biorbd::utils::String>(name)),
     m_parentName(std::make_shared<biorbd::utils::String>("")),
-    m_typeOfNode(std::make_shared<biorbd::utils::String>("NoType"))
+    m_typeOfNode(std::make_shared<biorbd::utils::NODE_TYPE>(biorbd::utils::NODE_TYPE::NO_TYPE))
 {
 
 }
@@ -32,7 +32,7 @@ biorbd::utils::Node::Node(
         const biorbd::utils::String &parentName) :
     m_name(std::make_shared<biorbd::utils::String>(name)),
     m_parentName(std::make_shared<biorbd::utils::String>(parentName)),
-    m_typeOfNode(std::make_shared<biorbd::utils::String>("NoType"))
+    m_typeOfNode(std::make_shared<biorbd::utils::NODE_TYPE>(biorbd::utils::NODE_TYPE::NO_TYPE))
 {
 
 }
@@ -56,7 +56,7 @@ void biorbd::utils::Node::DeepCopy(
 {
     m_name = std::make_shared<biorbd::utils::String>(*other.m_name);
     m_parentName = std::make_shared<biorbd::utils::String>(*other.m_parentName);
-    m_typeOfNode = std::make_shared<biorbd::utils::String>(*other.m_typeOfNode);
+    m_typeOfNode = std::make_shared<biorbd::utils::NODE_TYPE>(*other.m_typeOfNode);
 }
 
 const biorbd::utils::String &biorbd::utils::Node::name() const
@@ -79,7 +79,7 @@ void biorbd::utils::Node::setParent(const biorbd::utils::String &parentName)
     *m_parentName = parentName;
 }
 
-const biorbd::utils::String &biorbd::utils::Node::typeOfNode() const
+biorbd::utils::NODE_TYPE biorbd::utils::Node::typeOfNode() const
 {
     return *m_typeOfNode;
 }

@@ -21,6 +21,26 @@ biorbd::muscles::IdealizedActuator::IdealizedActuator(
 }
 
 biorbd::muscles::IdealizedActuator::IdealizedActuator(
+        const biorbd::utils::String &name,
+        const biorbd::muscles::Geometry &geometry,
+        const biorbd::muscles::Caracteristics &caract,
+        const biorbd::muscles::StateDynamics &dynamicState) :
+    biorbd::muscles::Muscle(name,geometry,caract,dynamicState)
+{
+    setType();
+}
+
+biorbd::muscles::IdealizedActuator::IdealizedActuator(
+        const biorbd::utils::String &name,
+        const biorbd::muscles::Geometry &geometry,
+        const biorbd::muscles::Caracteristics &caract,
+        const biorbd::muscles::PathChangers &pathChangers) :
+    biorbd::muscles::Muscle(name,geometry,caract, pathChangers)
+{
+    setType();
+}
+
+biorbd::muscles::IdealizedActuator::IdealizedActuator(
         const biorbd::utils::String& name,
         const biorbd::muscles::Geometry& geometry,
         const biorbd::muscles::Caracteristics& caract,
@@ -43,6 +63,18 @@ biorbd::muscles::IdealizedActuator::IdealizedActuator(
     biorbd::muscles::Muscle (muscle)
 {
 
+}
+
+biorbd::muscles::IdealizedActuator biorbd::muscles::IdealizedActuator::DeepCopy() const
+{
+    biorbd::muscles::IdealizedActuator copy;
+    copy.biorbd::muscles::Muscle::DeepCopy(*this);
+    return copy;
+}
+
+void biorbd::muscles::IdealizedActuator::DeepCopy(const biorbd::muscles::IdealizedActuator &other)
+{
+    biorbd::muscles::Muscle::DeepCopy(other);
 }
 
 const std::vector<biorbd::muscles::Force> &biorbd::muscles::IdealizedActuator::force(
@@ -81,5 +113,5 @@ double biorbd::muscles::IdealizedActuator::getForceFromActivation(
 
 void biorbd::muscles::IdealizedActuator::setType()
 {
-    *m_type = "IdealizedActuator";
+    *m_type = biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR;
 }

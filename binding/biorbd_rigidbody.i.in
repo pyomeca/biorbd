@@ -68,7 +68,7 @@ namespace std {
                 const biorbd::rigidbody::GeneralizedCoordinates &QDot,
                 const biorbd::rigidbody::GeneralizedTorque &GeneralizedTorque) {
         biorbd::rigidbody::GeneralizedCoordinates QDDot(*self);
-        biorbd::rigidbody::Contacts& CS = self->getConstraints_nonConst();
+        biorbd::rigidbody::Contacts& CS = self->getConstraints();
         RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, GeneralizedTorque, CS, QDDot);
         return QDDot;
     }

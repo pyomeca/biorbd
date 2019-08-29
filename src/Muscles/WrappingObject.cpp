@@ -8,7 +8,7 @@ biorbd::muscles::WrappingObject::WrappingObject() :
     biorbd::utils::Node3d (),
     m_RT(std::make_shared<biorbd::utils::RotoTrans>())
 {
-    *m_typeOfNode = "Wrapping";
+    *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_OBJECT;
 }
 
 biorbd::muscles::WrappingObject::WrappingObject(
@@ -18,7 +18,7 @@ biorbd::muscles::WrappingObject::WrappingObject(
     biorbd::utils::Node3d(x, y, z),
     m_RT(std::make_shared<biorbd::utils::RotoTrans>())
 {
-    *m_typeOfNode = "Wrapping";
+    *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_OBJECT;
 }
 
 biorbd::muscles::WrappingObject::WrappingObject(
@@ -30,14 +30,14 @@ biorbd::muscles::WrappingObject::WrappingObject(
     biorbd::utils::Node3d(x, y, z, name, parentName),
     m_RT(std::make_shared<biorbd::utils::RotoTrans>())
 {
-    *m_typeOfNode = "Wrapping";
+    *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_OBJECT;
 }
 
 biorbd::muscles::WrappingObject::WrappingObject(const biorbd::utils::Node3d &other) :
     biorbd::utils::Node3d (other),
     m_RT(std::make_shared<biorbd::utils::RotoTrans>())
 {
-    *m_typeOfNode = "Wrapping";
+    *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_OBJECT;
 }
 
 biorbd::muscles::WrappingObject::WrappingObject(
@@ -46,7 +46,7 @@ biorbd::muscles::WrappingObject::WrappingObject(
         const biorbd::utils::String &parentName) :
     biorbd::utils::Node3d (other, name, parentName)
 {
-    *m_typeOfNode = "Wrapping";
+    *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_OBJECT;
 }
 
 const biorbd::utils::RotoTrans &biorbd::muscles::WrappingObject::RT() const

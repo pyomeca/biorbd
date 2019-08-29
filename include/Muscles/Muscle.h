@@ -23,7 +23,16 @@ public:
             const biorbd::utils::String& name, // Nom du muscle
             const biorbd::muscles::Geometry& position, // Position origine/insertion
             const biorbd::muscles::Caracteristics& caract); // Set d'un état actuel au départ
-
+    Muscle(
+            const biorbd::utils::String& name, // Nom du muscle
+            const biorbd::muscles::Geometry& position, // Position origine/insertion
+            const biorbd::muscles::Caracteristics& caract, // Set d'un état actuel au départ
+            const biorbd::muscles::StateDynamics& dynamicState);
+    Muscle(
+            const biorbd::utils::String& name, // Nom du muscle
+            const biorbd::muscles::Geometry& position, // Position origine/insertion
+            const biorbd::muscles::Caracteristics& caract, // Caractéristiques du muscle
+            const biorbd::muscles::PathChangers& wrap);
     Muscle(
             const biorbd::utils::String&, // Nom du muscle
             const biorbd::muscles::Geometry&, // Position origine/insertion
@@ -35,6 +44,7 @@ public:
     Muscle(
             const std::shared_ptr<biorbd::muscles::Muscle> muscle);
     virtual ~Muscle();
+    void DeepCopy(const biorbd::muscles::Muscle& other);
 
     // Get and set
     double length(
@@ -80,7 +90,7 @@ public:
     // Get and set
     void setState(const biorbd::muscles::StateDynamics &s);
     const biorbd::muscles::StateDynamics& state() const;
-    biorbd::muscles::StateDynamics& state_nonConst() const;
+    biorbd::muscles::StateDynamics& state();
     double activationDot(const biorbd::muscles::StateDynamics &s, bool =false);
 protected:
     virtual void computeForce(const biorbd::muscles::State &emg); // Calcul des forces

@@ -125,7 +125,7 @@ std::vector<std::vector<biorbd::muscles::Force>> biorbd::muscles::Muscles::muscl
     for (unsigned int i=0; i<m_mus.size(); ++i) // groupe musculaire
         for (unsigned int j=0; j<m_mus[i].nbMuscles(); ++j){
             // forces musculaire
-            forces.push_back(m_mus[i].muscle(j)->force(state[cmpMus]));
+            forces.push_back(m_mus[i].muscle(j).force(state[cmpMus]));
             cmpMus++;
         }
 
@@ -147,7 +147,7 @@ biorbd::utils::Matrix biorbd::muscles::Muscles::musclesLengthJacobian()
     for (unsigned int i=0; i<nbMuscleGroups(); ++i){ // groupe musculaire
         for (unsigned int j=0; j<(m_mus[i]).nbMuscles(); ++j){
             // forces musculaire
-            tp.block(cmpMus,0,1,model.nbDof()) = (m_mus[i]).muscle(j)->position().jacobianLength();
+            tp.block(cmpMus,0,1,model.nbDof()) = (m_mus[i]).muscle(j).position().jacobianLength();
             ++cmpMus;
         }
     }
@@ -189,7 +189,7 @@ void biorbd::muscles::Muscles::updateMuscles(
     std::vector<biorbd::muscles::MuscleGroup>::iterator grp=m_mus.begin();
     for (unsigned int i=0; i<m_mus.size(); ++i) // groupe musculaire
         for (unsigned int j=0; j<(*(grp+i)).nbMuscles(); ++j){
-            (*(grp+i)).muscle(j)->updateOrientations(model, Q, QDot, updateKinTP);
+            (*(grp+i)).muscle(j).updateOrientations(model, Q, QDot, updateKinTP);
             updateKinTP=1;
         }
 }
@@ -210,7 +210,7 @@ void biorbd::muscles::Muscles::updateMuscles(
     // Updater tous les muscles
     for (unsigned int i=0; i<m_mus.size(); ++i) // groupe musculaire
         for (unsigned int j=0; j<m_mus[i].nbMuscles(); ++j){
-            m_mus[i].muscle(j)->updateOrientations(model, Q,updateKinTP);
+            m_mus[i].muscle(j).updateOrientations(model, Q,updateKinTP);
             updateKinTP=1;
         }
 }
@@ -222,7 +222,7 @@ void biorbd::muscles::Muscles::updateMuscles(
     unsigned int cmpMuscle = 0;
     for (unsigned int i=0; i<m_mus.size(); ++i) // groupe musculaire
         for (unsigned int j=0; j<m_mus[i].nbMuscles(); ++j){
-            m_mus[i].muscle(j)->updateOrientations(musclePointsInGlobal[cmpMuscle], jacoPointsInGlobal[cmpMuscle], QDot);
+            m_mus[i].muscle(j).updateOrientations(musclePointsInGlobal[cmpMuscle], jacoPointsInGlobal[cmpMuscle], QDot);
             ++cmpMuscle;
         }
 }
@@ -235,7 +235,7 @@ void biorbd::muscles::Muscles::updateMuscles(
     unsigned int cmpMuscle = 0;
     for (unsigned int i=0; i<m_mus.size(); ++i) // groupe musculaire
         for (unsigned int j=0; j<(*(grp+i)).nbMuscles(); ++j){
-            (*(grp+i)).muscle(j)->updateOrientations(musclePointsInGlobal[cmpMuscle], jacoPointsInGlobal[cmpMuscle]);
+            (*(grp+i)).muscle(j).updateOrientations(musclePointsInGlobal[cmpMuscle], jacoPointsInGlobal[cmpMuscle]);
             ++cmpMuscle;
         }
 }

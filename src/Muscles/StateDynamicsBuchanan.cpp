@@ -72,3 +72,8 @@ double biorbd::muscles::StateDynamicsBuchanan::activation()
     return m_activation;
 }
 
+void biorbd::muscles::StateDynamicsBuchanan::setType()
+{
+    m_stateType = biorbd::muscles::STATE_TYPE::BUCHANAN;
+}
+

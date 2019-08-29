@@ -55,6 +55,46 @@ biorbd::muscles::Geometry::Geometry(
 
 }
 
+biorbd::muscles::Geometry biorbd::muscles::Geometry::DeepCopy() const
+{
+    biorbd::muscles::Geometry copy;
+    *copy.m_origin = *m_origin;
+    *copy.m_insertion = *m_insertion;
+    *copy.m_originInGlobal = *m_originInGlobal;
+    *copy.m_insertionInGlobal = *m_insertionInGlobal;
+    *copy.m_pointsInGlobal = *m_pointsInGlobal;
+    *copy.m_pointsInLocal = *m_pointsInLocal;
+    *copy.m_jacobian = *m_jacobian;
+    *copy.m_G = *m_G;
+    *copy.m_jacobianLength = *m_jacobianLength;
+    *copy.m_length = *m_length;
+    *copy.m_muscleTendonLength = *m_muscleTendonLength;
+    *copy.m_velocity = *m_velocity;
+    *copy.m_isGeometryComputed = *m_isGeometryComputed;
+    *copy.m_isVelocityComputed = *m_isVelocityComputed;
+    *copy.m_posAndJacoWereForced = *m_posAndJacoWereForced;
+    return copy;
+}
+
+void biorbd::muscles::Geometry::DeepCopy(const biorbd::muscles::Geometry &other)
+{
+    *m_origin = *other.m_origin;
+    *m_insertion = *other.m_insertion;
+    *m_originInGlobal = *other.m_originInGlobal;
+    *m_insertionInGlobal = *other.m_insertionInGlobal;
+    *m_pointsInGlobal = *other.m_pointsInGlobal;
+    *m_pointsInLocal = *other.m_pointsInLocal;
+    *m_jacobian = *other.m_jacobian;
+    *m_G = *other.m_G;
+    *m_jacobianLength = *other.m_jacobianLength;
+    *m_length = *other.m_length;
+    *m_muscleTendonLength = *other.m_muscleTendonLength;
+    *m_velocity = *other.m_velocity;
+    *m_isGeometryComputed = *other.m_isGeometryComputed;
+    *m_isVelocityComputed = *other.m_isVelocityComputed;
+    *m_posAndJacoWereForced = *other.m_posAndJacoWereForced;
+}
+
 
 // ------ FONCTIONS PUBLIQUES ------ //
 void biorbd::muscles::Geometry::updateKinematics(
@@ -319,7 +359,7 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(
 
     }
 
-    else if (objects->nbObjects()!=0 && !objects->object(0).typeOfNode().compare("ViaPoint")){
+    else if (objects->nbObjects()!=0 && objects->object(0).typeOfNode() == biorbd::utils::NODE_TYPE::VIA_POINT){
         m_pointsInLocal->push_back(originInLocal());
         m_pointsInGlobal->push_back(originInGlobal(model, Q));
         for (unsigned int i=0; i<objects->nbObjects(); ++i){

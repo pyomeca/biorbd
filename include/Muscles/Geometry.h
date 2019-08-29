@@ -28,6 +28,8 @@ public:
     Geometry(
             const biorbd::utils::Node3d &origin,
             const biorbd::utils::Node3d &insertion);
+    biorbd::muscles::Geometry DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::Geometry& other);
 
     // Fonction a appeler avant d'appeler longueur/velocity ou autres!
     void updateKinematics(

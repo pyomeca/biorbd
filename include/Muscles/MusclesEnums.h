@@ -1,0 +1,30 @@
+#ifndef BIORBD_MUSCLES_ENUMS_H
+#define BIORBD_MUSCLES_ENUMS_H
+
+namespace biorbd {
+namespace muscles {
+
+enum MUSCLE_TYPE {
+    IDEALIZED_ACTUATOR,
+    HILL,
+    HILL_THELEN,
+    HILL_THELEN_FATIGABLE,
+    NO_TYPE
+};
+
+enum STATE_TYPE {
+    SIMPLE_STATE,
+    DYNAMIC,
+    BUCHANAN,
+    NO_STATE_TYPE
+};
+
+enum STATE_FATIGUE_TYPE {
+    SIMPLE_STATE_FATIGUE,
+    DYNAMIC_XIA,
+    NO_FATIGUE_STATE_TYPE
+};
+
+}}
+
+#endif // BIORBD_MUSCLES_ENUMS_H

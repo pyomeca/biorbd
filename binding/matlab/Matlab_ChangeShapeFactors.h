@@ -27,7 +27,7 @@ void Matlab_ChangeShapeFactors( int, mxArray *[],
     for (unsigned int i=0; i<model->nbMuscleGroups(); ++i)
         for (unsigned int j=0; j<model->muscleGroup(i).nbMuscles(); ++j){
              // Recueillir shape factor
-            static_cast<biorbd::muscles::StateDynamicsBuchanan*>(&(model->muscleGroup(i).muscle(j)->state_nonConst()))->shapeFactor(shapeFactors[cmp]);
+            static_cast<biorbd::muscles::StateDynamicsBuchanan*>(&(model->muscleGroup(i).muscle(j)->state()))->shapeFactor(shapeFactors[cmp]);
             ++cmp;
         }
 

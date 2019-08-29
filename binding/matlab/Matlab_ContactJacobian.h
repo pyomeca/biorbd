@@ -22,7 +22,7 @@ void Matlab_ContactJacobian( int, mxArray *plhs[],
     // Trouver la matrice jacobienne de tous les contacts
     unsigned int nContacts = model->nContacts();
     Eigen::MatrixXd G_tp(Eigen::MatrixXd::Zero(nContacts,model->nbQ()));
-    RigidBodyDynamics::CalcConstraintsJacobian(*model, Q, model->getConstraints_nonConst(), G_tp, true);
+    RigidBodyDynamics::CalcConstraintsJacobian(*model, Q, model->getConstraints(), G_tp, true);
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( nContacts, nQ, mxREAL);

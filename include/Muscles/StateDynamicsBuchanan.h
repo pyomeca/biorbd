@@ -25,6 +25,8 @@ public:
     double activation();
 
 protected:
+    virtual void setType();
+
     double m_neuralCommand;
     double m_shapeFactor; //Buchanan2004, le 22 mars 2018
     double m_excitationDot;

@@ -14,7 +14,7 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder() :
     m_p2Wrap(std::make_shared<biorbd::utils::Node3d>()),
     m_lengthAroundWrap(std::make_shared<double>(0))
 {
-    *m_typeOfNode = "WrappingCylinder";
+    *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_CYLINDER;
 }
 
 biorbd::muscles::WrappingCylinder::WrappingCylinder(
@@ -31,7 +31,7 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder(
     m_p2Wrap(std::make_shared<biorbd::utils::Node3d>()),
     m_lengthAroundWrap(std::make_shared<double>(0))
 {
-    *m_typeOfNode = "WrappingCylinder";
+    *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_CYLINDER;
 }
 
 biorbd::muscles::WrappingCylinder::WrappingCylinder(
@@ -50,7 +50,7 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder(
     m_p2Wrap(std::make_shared<biorbd::utils::Node3d>()),
     m_lengthAroundWrap(std::make_shared<double>(0))
 {
-    *m_typeOfNode = "WrappingCylinder";
+    *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_CYLINDER;
 }
 
 void biorbd::muscles::WrappingCylinder::wrapPoints(

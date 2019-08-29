@@ -14,7 +14,8 @@
 biorbd::muscles::Muscle::Muscle() :
     biorbd::muscles::Compound(),
     m_position(std::make_shared<biorbd::muscles::Geometry>()),
-    m_caract(std::make_shared<biorbd::muscles::Caracteristics>())
+    m_caract(std::make_shared<biorbd::muscles::Caracteristics>()),
+    m_state(std::make_shared<biorbd::muscles::StateDynamics>())
 {
 
 }
@@ -25,26 +26,55 @@ biorbd::muscles::Muscle::Muscle(
         const biorbd::muscles::Caracteristics &caract) :
     biorbd::muscles::Compound (name),
     m_position(std::make_shared<biorbd::muscles::Geometry>(position)),
-    m_caract(std::make_shared<biorbd::muscles::Caracteristics>(caract))
+    m_caract(std::make_shared<biorbd::muscles::Caracteristics>(caract)),
+    m_state(std::make_shared<biorbd::muscles::StateDynamics>())
+{
+
+}
+
+biorbd::muscles::Muscle::Muscle(
+        const biorbd::utils::String &name,
+        const biorbd::muscles::Geometry &position,
+        const biorbd::muscles::Caracteristics &caract,
+        const biorbd::muscles::StateDynamics &dynamicState) :
+    biorbd::muscles::Compound (name),
+    m_position(std::make_shared<biorbd::muscles::Geometry>(position)),
+    m_caract(std::make_shared<biorbd::muscles::Caracteristics>(caract)),
+    m_state(std::make_shared<biorbd::muscles::StateDynamics>(dynamicState))
+{
+
+}
+
+biorbd::muscles::Muscle::Muscle(
+        const biorbd::utils::String &name,
+        const biorbd::muscles::Geometry &position,
+        const biorbd::muscles::Caracteristics &caract,
+        const biorbd::muscles::PathChangers &wrap) :
+    biorbd::muscles::Compound (name, wrap),
+    m_position(std::make_shared<biorbd::muscles::Geometry>(position)),
+    m_caract(std::make_shared<biorbd::muscles::Caracteristics>(caract)),
+    m_state(std::make_shared<biorbd::muscles::StateDynamics>())
 {
 
 }
 
 biorbd::muscles::Muscle::Muscle(const biorbd::muscles::Muscle &muscle) :
-    biorbd::muscles::Compound (muscle)
+    biorbd::muscles::Compound (muscle),
+    m_position(muscle.m_position),
+    m_caract(muscle.m_caract),
+    m_state(muscle.m_state)
 {
-    m_position = muscle.m_position;
-    m_caract = muscle.m_caract;
-    m_state = muscle.m_state;
+
 }
 
 biorbd::muscles::Muscle::Muscle(
         const std::shared_ptr<biorbd::muscles::Muscle> muscle) :
-    biorbd::muscles::Compound (muscle)
+    biorbd::muscles::Compound (muscle),
+    m_position(muscle->m_position),
+    m_caract(muscle->m_caract),
+    m_state(muscle->m_state)
 {
-    m_position = muscle->m_position;
-    m_caract = muscle->m_caract;
-    m_state = muscle->m_state;
+
 }
 
 biorbd::muscles::Muscle::Muscle(
@@ -55,7 +85,8 @@ biorbd::muscles::Muscle::Muscle(
         const biorbd::muscles::StateDynamics& s) :
     biorbd::muscles::Compound(name,w),
     m_position(std::make_shared<biorbd::muscles::Geometry>(g)),
-    m_caract(std::make_shared<biorbd::muscles::Caracteristics>(c))
+    m_caract(std::make_shared<biorbd::muscles::Caracteristics>(c)),
+    m_state(std::make_shared<biorbd::muscles::StateDynamics>())
 {
     setState(s);
 
@@ -65,6 +96,13 @@ biorbd::muscles::Muscle::Muscle(
 biorbd::muscles::Muscle::~Muscle()
 {
     //dtor
+}
+
+void biorbd::muscles::Muscle::DeepCopy(const biorbd::muscles::Muscle &other)
+{
+    *m_position = *other.m_position;
+    *m_caract = *other.m_caract;
+    *m_state = *other.m_state;
 }
 
 void biorbd::muscles::Muscle::updateOrientations(
@@ -197,7 +235,7 @@ const biorbd::muscles::StateDynamics& biorbd::muscles::Muscle::state() const
 {
     return *m_state;
 }
-biorbd::muscles::StateDynamics& biorbd::muscles::Muscle::state_nonConst() const
+biorbd::muscles::StateDynamics& biorbd::muscles::Muscle::state()
 {
     return *m_state;
 }
