@@ -15,20 +15,20 @@ biorbd::muscles::Compound::Compound() :
     m_name(std::make_shared<biorbd::utils::String>("")),
     m_type(std::make_shared<biorbd::utils::String>("")),
     m_pathChanger(std::make_shared<biorbd::muscles::PathChangers>()),
-    m_force(std::make_shared<std::vector<biorbd::muscles::Force>>())
+    m_force(std::make_shared<std::vector<biorbd::muscles::Force>>(2))
 {
-    m_force->push_back(biorbd::muscles::ForceFromOrigin());
-    m_force->push_back(biorbd::muscles::ForceFromInsertion());
+    (*m_force)[0] = biorbd::muscles::ForceFromOrigin();
+    (*m_force)[1] = biorbd::muscles::ForceFromInsertion();
 }
 
 biorbd::muscles::Compound::Compound(const biorbd::utils::String &name) :
     m_name(std::make_shared<biorbd::utils::String>(name)),
     m_type(std::make_shared<biorbd::utils::String>("")),
     m_pathChanger(std::make_shared<biorbd::muscles::PathChangers>()),
-    m_force(std::make_shared<std::vector<biorbd::muscles::Force>>())
+    m_force(std::make_shared<std::vector<biorbd::muscles::Force>>(2))
 {
-    m_force->push_back(biorbd::muscles::ForceFromOrigin());
-    m_force->push_back(biorbd::muscles::ForceFromInsertion());
+    (*m_force)[0] = biorbd::muscles::ForceFromOrigin();
+    (*m_force)[1] = biorbd::muscles::ForceFromInsertion();
 }
 
 biorbd::muscles::Compound::Compound(
@@ -37,33 +37,42 @@ biorbd::muscles::Compound::Compound(
     m_name(std::make_shared<biorbd::utils::String>(name)),
     m_type(std::make_shared<biorbd::utils::String>("")),
     m_pathChanger(std::make_shared<biorbd::muscles::PathChangers>(wrap)),
-    m_force(std::make_shared<std::vector<biorbd::muscles::Force>>())
+    m_force(std::make_shared<std::vector<biorbd::muscles::Force>>(2))
 {
-    m_force->push_back(biorbd::muscles::ForceFromOrigin());
-    m_force->push_back(biorbd::muscles::ForceFromInsertion());
+    (*m_force)[0] = biorbd::muscles::ForceFromOrigin();
+    (*m_force)[1] = biorbd::muscles::ForceFromInsertion();
 }
 
 biorbd::muscles::Compound::Compound(
-        const biorbd::muscles::Compound &muscle)
+        const biorbd::muscles::Compound &muscle) :
+    m_name(muscle.m_name),
+    m_type(muscle.m_type),
+    m_pathChanger(muscle.m_pathChanger),
+    m_force(muscle.m_force)
 {
-    m_name = muscle.m_name;
-    m_type = muscle.m_type;
-    m_pathChanger = muscle.m_pathChanger;
-    m_force = muscle.m_force;
+
 }
 
 biorbd::muscles::Compound::Compound(
-        std::shared_ptr<biorbd::muscles::Compound> muscle)
+        std::shared_ptr<biorbd::muscles::Compound> muscle) :
+    m_name(muscle->m_name),
+    m_type(muscle->m_type),
+    m_pathChanger(muscle->m_pathChanger),
+    m_force(muscle->m_force)
 {
-    m_name = muscle->m_name;
-    m_type = muscle->m_type;
-    m_pathChanger = muscle->m_pathChanger;
-    m_force = muscle->m_force;
 }
 
 biorbd::muscles::Compound::~Compound()
 {
 
+}
+
+void biorbd::muscles::Compound::DeepCopy(const biorbd::muscles::Compound &other)
+{
+    *m_name = *other.m_name;
+    *m_type = *other.m_type;
+    *m_pathChanger = *other.m_pathChanger;
+    *m_force = *other.m_force;
 }
 
 const biorbd::utils::String &biorbd::muscles::Compound::name() const

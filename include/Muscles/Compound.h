@@ -36,6 +36,7 @@ public:
     Compound(
             const std::shared_ptr<biorbd::muscles::Compound> muscle);
     virtual ~Compound();
+    void DeepCopy(const biorbd::muscles::Compound& other);
 
     const biorbd::utils::String& name() const;
     void setName(const biorbd::utils::String& name);

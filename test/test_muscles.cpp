@@ -193,7 +193,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
     }
 }
 
-TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
+TEST(MuscleFatigue, FatigueXiaDerivativeShallowViaCopy){
     // Prepare the model
     biorbd::Model model(modelPathForXiaDerivativeTest);
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
@@ -227,7 +227,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
         EXPECT_DOUBLE_EQ(fatigueModel.restingFibersDot(), expectedRestingDotForXiaDerivativeTest);
     }
 
-    // Values should not be changed in the model itself
+    // Values should be changed in the model itself since everything is shallowcopied
     {
         std::shared_ptr<biorbd::muscles::HillTypeThelenFatigable> muscle(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest)));
         EXPECT_NE(muscle, nullptr); // Expected that the cast works
@@ -235,9 +235,9 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaCopy){
         EXPECT_NE(fatigueModel, nullptr); // Expected that the cast works
 
         // Check the values
-        EXPECT_DOUBLE_EQ(fatigueModel->activeFibersDot(), 0);
-        EXPECT_DOUBLE_EQ(fatigueModel->fatiguedFibersDot(), 0);
-        EXPECT_DOUBLE_EQ(fatigueModel->restingFibersDot(), 0);
+        EXPECT_DOUBLE_EQ(fatigueModel->activeFibersDot(), expectedActivationDotForXiaDerivativeTest);
+        EXPECT_DOUBLE_EQ(fatigueModel->fatiguedFibersDot(), expectedFatiguedDotForXiaDerivativeTest);
+        EXPECT_DOUBLE_EQ(fatigueModel->restingFibersDot(), expectedRestingDotForXiaDerivativeTest);
     }
 }
 

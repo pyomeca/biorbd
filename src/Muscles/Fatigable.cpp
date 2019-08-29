@@ -24,15 +24,20 @@ biorbd::muscles::Fatigable::Fatigable(
 }
 
 biorbd::muscles::Fatigable::Fatigable(
-        const std::shared_ptr<biorbd::muscles::Fatigable> m)
+        const std::shared_ptr<biorbd::muscles::Fatigable> m) :
+    m_fatigueState(m->m_fatigueState)
 {
-    biorbd::utils::Error::error(static_cast<bool>(m), "This muscle is not fatigable");
-    this->m_fatigueState = m->m_fatigueState;
+
 }
 
 biorbd::muscles::Fatigable::~Fatigable()
 {
 
+}
+
+void biorbd::muscles::Fatigable::DeepCopy(const biorbd::muscles::Fatigable &other)
+{
+    *m_fatigueState = *other.m_fatigueState;
 }
 
 std::shared_ptr<biorbd::muscles::FatigueState> biorbd::muscles::Fatigable::fatigueState()

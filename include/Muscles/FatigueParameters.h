@@ -1,6 +1,7 @@
 #ifndef BIORBD_MUSCLES_FATIGUE_PARAMETERS_H
 #define BIORBD_MUSCLES_FATIGUE_PARAMETERS_H
 
+#include <memory>
 #include "biorbdConfig.h"
 
 namespace biorbd {
@@ -14,6 +15,8 @@ public:
             double recoveryRate = 0,
             double developFactor = 0,
             double recoveryFactor = 0);
+    biorbd::muscles::FatigueParameters DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::FatigueParameters& other);
 
     // Get and Set
     double fatigueRate() const;
@@ -27,10 +30,10 @@ public:
     void recoveryFactor(double recoveryFactor);
 
 protected:
-    double m_fatigueRate;
-    double m_recoveryRate;
-    double m_developFactor;
-    double m_recoveryFactor;
+    std::shared_ptr<double> m_fatigueRate;
+    std::shared_ptr<double> m_recoveryRate;
+    std::shared_ptr<double> m_developFactor;
+    std::shared_ptr<double> m_recoveryFactor;
 
 };
 

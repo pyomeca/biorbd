@@ -16,8 +16,8 @@ public:
             double active = 0,
             double fatigued = 0,
             double resting = 1);
-
     FatigueDynamicState(const std::shared_ptr<biorbd::muscles::FatigueState> m);
+    void DeepCopy(const biorbd::muscles::FatigueDynamicState& other);
 
     double activeFibersDot() const;
     double fatiguedFibersDot() const;
@@ -29,9 +29,9 @@ public:
      ) = 0;
 
 protected:
-    double m_activeFibersDot;
-    double m_fatiguedFibersDot;
-    double m_restingFibersDot;
+    std::shared_ptr<double> m_activeFibersDot;
+    std::shared_ptr<double> m_fatiguedFibersDot;
+    std::shared_ptr<double> m_restingFibersDot;
 
     virtual void setType();
 };

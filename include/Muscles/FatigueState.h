@@ -3,7 +3,6 @@
 
 #include <memory>
 #include "biorbdConfig.h"
-#include "Utils/String.h"
 
 namespace biorbd {
 namespace muscles {
@@ -15,9 +14,11 @@ public:
             double active = 0,
             double fatigued = 0,
             double resting = 1);
-
-    FatigueState(const std::shared_ptr<FatigueState> fatigue);
+    FatigueState(const biorbd::muscles::FatigueState& other);
+    FatigueState(const std::shared_ptr<biorbd::muscles::FatigueState> other);
     virtual ~FatigueState();
+    biorbd::muscles::FatigueState DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::FatigueState& other);
 
     // Set and Get
     virtual void setState(
@@ -31,12 +32,12 @@ public:
 
     std::string getType() const;
 protected:
-    double m_activeFibers;
-    double m_fatiguedFibers;
-    double m_restingFibers;
+    std::shared_ptr<double> m_activeFibers;
+    std::shared_ptr<double> m_fatiguedFibers;
+    std::shared_ptr<double> m_restingFibers;
 
     virtual void setType();
-    std::string m_type; // type of the muscle fatigue
+    std::shared_ptr<std::string> m_type; // type of the muscle fatigue
 
 };
 

@@ -22,28 +22,40 @@ biorbd::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(const std::share
 
 }
 
+biorbd::muscles::FatigueDynamicStateXia biorbd::muscles::FatigueDynamicStateXia::DeepCopy() const
+{
+    biorbd::muscles::FatigueDynamicStateXia copy;
+    static_cast<biorbd::muscles::FatigueDynamicState&>(copy) = *this;
+    return copy;
+}
+
+void biorbd::muscles::FatigueDynamicStateXia::DeepCopy(const biorbd::muscles::FatigueDynamicStateXia &other)
+{
+    biorbd::muscles::FatigueDynamicState::DeepCopy(other);
+}
+
 void biorbd::muscles::FatigueDynamicStateXia::timeDerivativeState(const biorbd::muscles::StateDynamics &emg, const biorbd::muscles::Caracteristics &caract){
     // Getting the command
     double targetCommand(emg.activation());
     double command(0);
-    if (m_activeFibers < targetCommand){
-        if (m_restingFibers > targetCommand - m_activeFibers){
-            command = caract.fatigueParameters().developFactor()*(targetCommand - m_activeFibers);
+    if (*m_activeFibers < targetCommand){
+        if (*m_restingFibers > targetCommand - *m_activeFibers){
+            command = caract.fatigueParameters().developFactor()*(targetCommand - *m_activeFibers);
         } else {
-            command = caract.fatigueParameters().developFactor()*m_restingFibers;
+            command = caract.fatigueParameters().developFactor()* *m_restingFibers;
         }
     } else {
-        command = caract.fatigueParameters().recoveryFactor()*(targetCommand - m_activeFibers);
+        command = caract.fatigueParameters().recoveryFactor()*(targetCommand - *m_activeFibers);
     }
 
     // Applying the command to the fibers
-    m_activeFibersDot = command - caract.fatigueParameters().fatigueRate()*m_activeFibers;
-    m_restingFibersDot = -command + caract.fatigueParameters().recoveryRate()*m_fatiguedFibers;
-    m_fatiguedFibersDot = caract.fatigueParameters().fatigueRate()*m_activeFibers - caract.fatigueParameters().recoveryRate()*m_fatiguedFibers;
-    biorbd::utils::Error::error(fabs(m_activeFibersDot + m_restingFibersDot + m_fatiguedFibersDot) <= 1e-7, "Sum of time derivates of fatigue states must be equal to 0");
+    *m_activeFibersDot = command - caract.fatigueParameters().fatigueRate()* *m_activeFibers;
+    *m_restingFibersDot = -command + caract.fatigueParameters().recoveryRate()* *m_fatiguedFibers;
+    *m_fatiguedFibersDot = caract.fatigueParameters().fatigueRate()* *m_activeFibers - caract.fatigueParameters().recoveryRate()* *m_fatiguedFibers;
+    biorbd::utils::Error::error(fabs(*m_activeFibersDot + *m_restingFibersDot + *m_fatiguedFibersDot) <= 1e-7, "Sum of time derivates of fatigue states must be equal to 0");
 }
 
 void biorbd::muscles::FatigueDynamicStateXia::setType()
 {
-    m_type = "Xia";
+    *m_type = "Xia";
 }

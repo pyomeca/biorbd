@@ -20,24 +20,53 @@ biorbd::muscles::FatigueState::FatigueState(
         double active,
         double fatigued,
         double resting) :
-    m_activeFibers(active),
-    m_fatiguedFibers(fatigued),
-    m_restingFibers(resting)
+    m_activeFibers(std::make_shared<double>(active)),
+    m_fatiguedFibers(std::make_shared<double>(fatigued)),
+    m_restingFibers(std::make_shared<double>(resting)),
+    m_type(std::make_shared<biorbd::utils::String>())
 {
     setType();
 }
 
-biorbd::muscles::FatigueState::FatigueState(const std::shared_ptr<biorbd::muscles::FatigueState> m)
+biorbd::muscles::FatigueState::FatigueState(const biorbd::muscles::FatigueState &other) :
+    m_activeFibers(other.m_activeFibers),
+    m_fatiguedFibers(other.m_fatiguedFibers),
+    m_restingFibers(other.m_restingFibers),
+    m_type(other.m_type)
 {
-    m_activeFibers = m->m_activeFibers;
-    m_fatiguedFibers = m->m_fatiguedFibers;
-    m_restingFibers = m->m_restingFibers;
-    m_type = m->m_type;
+
+}
+
+biorbd::muscles::FatigueState::FatigueState(const std::shared_ptr<biorbd::muscles::FatigueState> other) :
+    m_activeFibers(other->m_activeFibers),
+    m_fatiguedFibers(other->m_fatiguedFibers),
+    m_restingFibers(other->m_restingFibers),
+    m_type(other->m_type)
+{
+
 }
 
 biorbd::muscles::FatigueState::~FatigueState()
 {
 
+}
+
+biorbd::muscles::FatigueState biorbd::muscles::FatigueState::DeepCopy() const
+{
+    biorbd::muscles::FatigueState copy;
+    *copy.m_activeFibers = *m_activeFibers;
+    *copy.m_fatiguedFibers = *m_fatiguedFibers;
+    *copy.m_restingFibers = *m_restingFibers;
+    *copy.m_type = *m_type;
+    return copy;
+}
+
+void biorbd::muscles::FatigueState::DeepCopy(const biorbd::muscles::FatigueState &other)
+{
+    *m_activeFibers = *other.m_activeFibers;
+    *m_fatiguedFibers = *other.m_fatiguedFibers;
+    *m_restingFibers = *other.m_restingFibers;
+    *m_type = *other.m_type;
 }
 
 void biorbd::muscles::FatigueState::setState(double active, double fatigued, double resting)
@@ -92,32 +121,32 @@ void biorbd::muscles::FatigueState::setState(double active, double fatigued, dou
         biorbd::utils::Error::error(false, "Sum of the fatigued states must be equal to 1");
     }
 
-    m_activeFibers = active;
-    m_fatiguedFibers = fatigued;
-    m_restingFibers = resting;
+    *m_activeFibers = active;
+    *m_fatiguedFibers = fatigued;
+    *m_restingFibers = resting;
 }
 
 double biorbd::muscles::FatigueState::activeFibers() const
 {
-    return m_activeFibers;
+    return *m_activeFibers;
 }
 
 double biorbd::muscles::FatigueState::fatiguedFibers() const
 {
-    return m_fatiguedFibers;
+    return *m_fatiguedFibers;
 }
 
 double biorbd::muscles::FatigueState::restingFibers() const
 {
-    return m_restingFibers;
+    return *m_restingFibers;
 }
 
 std::string biorbd::muscles::FatigueState::getType() const
 {
-    return m_type;
+    return *m_type;
 }
 
 void biorbd::muscles::FatigueState::setType()
 {
-    m_type = "Simple";
+    *m_type = "Simple";
 }

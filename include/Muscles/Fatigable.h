@@ -21,6 +21,7 @@ public:
     Fatigable(const biorbd::muscles::Fatigable& m);
     Fatigable(const std::shared_ptr<biorbd::muscles::Fatigable> m);
     virtual ~Fatigable() = 0;
+    void DeepCopy(const biorbd::muscles::Fatigable& other);
 
     virtual void computeTimeDerivativeState(const biorbd::muscles::StateDynamics& emg);
 

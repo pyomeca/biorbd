@@ -14,8 +14,9 @@ public:
             double active = 0,
             double fatigued = 0,
             double resting = 1);
-
     FatigueDynamicStateXia(const std::shared_ptr<biorbd::muscles::FatigueState> m);
+    biorbd::muscles::FatigueDynamicStateXia DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::FatigueDynamicStateXia& other);
 
     virtual void timeDerivativeState(
             const biorbd::muscles::StateDynamics &emg,

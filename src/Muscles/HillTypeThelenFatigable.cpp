@@ -1,6 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/HillTypeThelenFatigable.h"
 
+#include "Utils/String.h"
 #include "Muscles/FatigueState.h"
 
 biorbd::muscles::HillTypeThelenFatigable::HillTypeThelenFatigable() :

@@ -8,9 +8,9 @@ biorbd::muscles::FatigueDynamicState::FatigueDynamicState(
         double fatigued,
         double resting) :
     biorbd::muscles::FatigueState(active,fatigued,resting),
-    m_activeFibersDot(0),
-    m_fatiguedFibersDot(0),
-    m_restingFibersDot(0)
+    m_activeFibersDot(std::make_shared<double>(0)),
+    m_fatiguedFibersDot(std::make_shared<double>(0)),
+    m_restingFibersDot(std::make_shared<double>(0))
 {
     setType();
 }
@@ -18,31 +18,39 @@ biorbd::muscles::FatigueDynamicState::FatigueDynamicState(
 biorbd::muscles::FatigueDynamicState::FatigueDynamicState(const std::shared_ptr<biorbd::muscles::FatigueState> m) :
     biorbd::muscles::FatigueState(m)
 {
-    std::shared_ptr<biorbd::muscles::FatigueDynamicState> m_tp(std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicState>(m));
-    if (!m_tp)
+    std::shared_ptr<biorbd::muscles::FatigueDynamicState> muscle_tp(std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicState>(m));
+    if (!muscle_tp)
         biorbd::utils::Error::error(false, "This is not a dynamically fatigable muscle");
-    m_activeFibersDot = m_tp->m_activeFibersDot;
-    m_fatiguedFibersDot = m_tp->m_fatiguedFibersDot;
-    m_restingFibersDot = m_tp->m_restingFibersDot;
+    m_activeFibersDot = muscle_tp->m_activeFibersDot;
+    m_fatiguedFibersDot = muscle_tp->m_fatiguedFibersDot;
+    m_restingFibersDot = muscle_tp->m_restingFibersDot;
+}
+
+void biorbd::muscles::FatigueDynamicState::DeepCopy(const biorbd::muscles::FatigueDynamicState &other)
+{
+    biorbd::muscles::FatigueState::DeepCopy(other);
+    *m_activeFibersDot = *other.m_activeFibersDot;
+    *m_fatiguedFibersDot = *other.m_fatiguedFibersDot;
+    *m_restingFibersDot = *other.m_restingFibersDot;
 }
 
 double biorbd::muscles::FatigueDynamicState::activeFibersDot() const
 {
-    return m_activeFibersDot;
+    return *m_activeFibersDot;
 }
 
 double biorbd::muscles::FatigueDynamicState::fatiguedFibersDot() const
 {
-    return m_fatiguedFibersDot;
+    return *m_fatiguedFibersDot;
 }
 
 double biorbd::muscles::FatigueDynamicState::restingFibersDot() const
 {
-    return m_restingFibersDot;
+    return *m_restingFibersDot;
 }
 
 void biorbd::muscles::FatigueDynamicState::setType()
 {
-    m_type = "DynamicAbstract";
+    *m_type = "DynamicAbstract";
 }
 
