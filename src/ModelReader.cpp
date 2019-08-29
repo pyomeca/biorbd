@@ -678,7 +678,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                         biorbd::utils::Node3d(insert_pos, name + "_insertion", model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
             biorbd::muscles::State stateMax(maxExcitation, maxActivation);
             biorbd::muscles::Caracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax, fatigueParameters);
-            model->muscleGroup_nonConst(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,caract,biorbd::muscles::PathChangers(),stateType,dynamicFatigueType);
+            model->muscleGroup(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,caract,biorbd::muscles::PathChangers(),stateType,dynamicFatigueType);
 #else // MODULE_ACTUATORS
         biorbd::utils::Error::error(false, "Biorbd was build without the module Muscles but the model defines a muscle");
 #endif // MODULE_ACTUATORS
@@ -715,11 +715,11 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
             }
             iMuscleGroup = model->getGroupId(musclegroup);
             biorbd::utils::Error::error(iMuscleGroup!=-1, "No muscle group was provided!");
-            iMuscle = model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscleID(muscle);
+            iMuscle = model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscleID(muscle);
             biorbd::utils::Error::error(iMuscle!=-1, "No muscle was provided!");
             position.setName(name);
             position.setParent(parent);
-            model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup))
+            model->muscleGroup(static_cast<unsigned int>(iMuscleGroup))
                     .muscle(static_cast<unsigned int>(iMuscle))->addPathObject(position);
 #else // MODULE_ACTUATORS
         biorbd::utils::Error::error(false, "Biorbd was build without the module Muscles but the model defines a viapoint");
@@ -772,10 +772,10 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
             biorbd::utils::Error::error(parent != "", "Parent was not defined");
             iMuscleGroup = model->getGroupId(musclegroup);
             biorbd::utils::Error::error(iMuscleGroup!=-1, "No muscle group was provided!");
-            iMuscle = model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscleID(muscle);
+            iMuscle = model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscleID(muscle);
             biorbd::utils::Error::error(iMuscle!=-1, "No muscle was provided!");
             biorbd::muscles::WrappingCylinder cylinder(RT,dia,length,side,name,parent);
-            model->muscleGroup_nonConst(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle))->addPathObject(cylinder);
+            model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle))->addPathObject(cylinder);
 #else // MODULE_ACTUATORS
         biorbd::utils::Error::error(false, "Biorbd was build without the module Muscles but the model defines a wrapping object");
 #endif // MODULE_ACTUATORS

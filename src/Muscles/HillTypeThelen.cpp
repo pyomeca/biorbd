@@ -2,6 +2,7 @@
 #include "Muscles/HillTypeThelen.h"
 
 #include <math.h>
+#include "Utils/String.h"
 #include "Muscles/Geometry.h"
 #include "Muscles/Caracteristics.h"
 

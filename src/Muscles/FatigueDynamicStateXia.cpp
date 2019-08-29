@@ -2,7 +2,9 @@
 #include "Muscles/FatigueDynamicStateXia.h"
 
 #include <cmath>
+#include "Utils/Error.h"
 #include "Muscles/Caracteristics.h"
+#include "Muscles/FatigueParameters.h"
 #include "Muscles/StateDynamics.h"
 
 biorbd::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(

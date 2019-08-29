@@ -1,32 +1,34 @@
 #ifndef BIORBD_MUSCLES_CARACTERISTICS_H
 #define BIORBD_MUSCLES_CARACTERISTICS_H
 
+#include <memory>
 #include <cstddef>
 #include "biorbdConfig.h"
-#include "Utils/Error.h"
-#include "Muscles/State.h"
-#include "Muscles/FatigueParameters.h"
 
 namespace biorbd {
 namespace  muscles {
+class State;
+class FatigueParameters;
 
 class BIORBD_API Caracteristics
 {
 public:
+    Caracteristics();
+    Caracteristics(const biorbd::muscles::Caracteristics& other);
     Caracteristics(
-            double optLength = 0,
-            double fmax = 0,
-            double PCSA = 0,
-            double tendonSlackLength = 0,
-            double pennAngle = 0,
-            const biorbd::muscles::State& stateMax = biorbd::muscles::State(),
-            const biorbd::muscles::FatigueParameters& fatigueParameters = biorbd::muscles::FatigueParameters(),
+            double optLength,
+            double fmax,
+            double PCSA,
+            double tendonSlackLength,
+            double pennAngle,
+            const biorbd::muscles::State& stateMax,
+            const biorbd::muscles::FatigueParameters& fatigueParameters,
             double GeneralizedTorqueAct = 0.01,
             double GeneralizedTorqueDeact = 0.04,
-            double minAct =.01);
-    Caracteristics(const Caracteristics&);
-    Caracteristics& operator=(const Caracteristics&);
+            double minAct = 0.01);
     virtual ~Caracteristics();
+    biorbd::muscles::Caracteristics DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::Caracteristics& other);
 
     // Get et Set
     virtual double optimalLength() const;
@@ -54,20 +56,20 @@ public:
     void fatigueParameters(const biorbd::muscles::FatigueParameters& fatigueParameters);
 
 protected:
-    double m_optimalLength; // Longueur sans tension
-    double m_fIsoMax;       // Force maximale isométrique
-    double m_PCSA;          // PCSA du muscle
-    double m_tendonSlackLength; // Tendon slack length
-    double m_pennationAngle; // Angle de pennation
-    biorbd::muscles::State m_stateMax; // Excitation et activation maximale du muscle
+    std::shared_ptr<double> m_optimalLength; // Longueur sans tension
+    std::shared_ptr<double> m_fIsoMax;       // Force maximale isométrique
+    std::shared_ptr<double> m_PCSA;          // PCSA du muscle
+    std::shared_ptr<double> m_tendonSlackLength; // Tendon slack length
+    std::shared_ptr<double> m_pennationAngle; // Angle de pennation
+    std::shared_ptr<biorbd::muscles::State> m_stateMax; // Excitation et activation maximale du muscle
 
     // Parametre d'activation
-    double m_minActivation; // Activation minimale
-    double m_GeneralizedTorqueActivation; // Time activation constant
-    double m_GeneralizedTorqueDeactivation; // Time deactivation constant
+    std::shared_ptr<double> m_minActivation; // Activation minimale
+    std::shared_ptr<double> m_GeneralizedTorqueActivation; // Time activation constant
+    std::shared_ptr<double> m_GeneralizedTorqueDeactivation; // Time deactivation constant
 
     // Fatigue parameters
-    biorbd::muscles::FatigueParameters m_fatigueParameters; // Fatigue parameters
+    std::shared_ptr<biorbd::muscles::FatigueParameters> m_fatigueParameters; // Fatigue parameters
 };
 
 }}

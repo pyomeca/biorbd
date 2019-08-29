@@ -1,10 +1,12 @@
 #include <iostream>
 #include <gtest/gtest.h>
 
+#include <rbdl/Dynamics.h>
 #include "BiorbdModel.h"
 #include "biorbdConfig.h"
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedTorque.h"
 #ifdef MODULE_MUSCLES
 #include "Muscles/Muscle.h"
 #include "Muscles/Geometry.h"
@@ -13,6 +15,26 @@
 #include "Muscles/HillTypeThelenFatigable.h"
 #include "Muscles/FatigueDynamicStateXia.h"
 #include "Muscles/StateDynamics.h"
+
+static std::string modelPathForMuscleForce("models/arm26.bioMod");
+TEST(MuscleForce, torqueFromMuscles)
+{
+    biorbd::Model model(modelPathForMuscleForce);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model), QDot(model), QDDot(model), QDDotExpected(model);
+    Q.setOnes()/10;
+    QDot.setOnes()/10;
+    std::vector<biorbd::muscles::StateDynamics> states;
+    for (unsigned int i=0; i<model.nbMuscleTotal(); ++i)
+        states.push_back(biorbd::muscles::StateDynamics(0, 0.2));
+    QDDotExpected << -0.046239425378874474, 0.12579777534720743;
+
+    biorbd::rigidbody::GeneralizedTorque Tau(model.muscularJointTorque(states, true, &Q, &QDot));
+    RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot);
+
+    for (unsigned int i=0; i<QDDot.size(); ++i)
+        EXPECT_DOUBLE_EQ(QDDot[i], QDDotExpected[i]);
+
+}
 
 static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
 static unsigned int muscleGroupForMuscleJacobian(1);
@@ -23,7 +45,7 @@ TEST(MuscleJacobian, jacobian){
     Q.setZero();
 
     // Force computation of geometry
-    std::shared_ptr<biorbd::muscles::Muscle> muscle(model.muscleGroup_nonConst(muscleForMuscleJacobian).muscle_nonConst(muscleGroupForMuscleJacobian));
+    std::shared_ptr<biorbd::muscles::Muscle> muscle(model.muscleGroup(muscleForMuscleJacobian).muscle_nonConst(muscleGroupForMuscleJacobian));
     EXPECT_THROW(muscle->position().jacobian(), std::runtime_error);
     model.updateMuscles(Q, true);
 

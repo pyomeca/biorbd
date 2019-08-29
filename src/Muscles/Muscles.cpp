@@ -41,7 +41,7 @@ int biorbd::muscles::Muscles::getGroupId(const biorbd::utils::String &name) cons
     return -1;
 }
 
-biorbd::muscles::MuscleGroup &biorbd::muscles::Muscles::muscleGroup_nonConst(unsigned int idx)
+biorbd::muscles::MuscleGroup &biorbd::muscles::Muscles::muscleGroup(unsigned int idx)
 {
     biorbd::utils::Error::error(idx<nbMuscleGroups(), "Idx asked is higher than number of muscle groups");
     return m_mus[idx];

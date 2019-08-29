@@ -1,6 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/IdealizedActuator.h"
 
+#include "Utils/String.h"
 #include "Muscles/Caracteristics.h"
 #include "Muscles/StateDynamics.h"
 

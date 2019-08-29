@@ -3,6 +3,7 @@
 
 #include <rbdl/Model.h>
 #include <rbdl/Kinematics.h>
+#include "Utils/Error.h"
 #include "Utils/Matrix.h"
 #include "Utils/RotoTrans.h"
 #include "RigidBody/Joints.h"

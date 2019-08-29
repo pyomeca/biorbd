@@ -1,6 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/Compound.h"
 
+#include "Utils/String.h"
 #include "Utils/Node3d.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "Muscles/Force.h"

@@ -35,7 +35,7 @@ public:
             const biorbd::utils::String &originName,
             const biorbd::utils::String &insertionName);
     int getGroupId(const biorbd::utils::String &name) const; // Trouve l'index d'un groupe musculaire, -1 s'il n'a pas trouvé
-    biorbd::muscles::MuscleGroup& muscleGroup_nonConst(unsigned int idx); //Retourne un groupe musculaire d'index i
+    biorbd::muscles::MuscleGroup& muscleGroup(unsigned int idx); //Retourne un groupe musculaire d'index i
     const biorbd::muscles::MuscleGroup& muscleGroup(unsigned int) const; //Retourne un groupe musculaire d'index i
     const biorbd::muscles::MuscleGroup& muscleGroup(const biorbd::utils::String&) const; //Retourne un groupe musculaire du nom demandé
 
