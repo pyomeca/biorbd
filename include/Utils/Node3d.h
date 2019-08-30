@@ -47,6 +47,8 @@ class BIORBD_API Node3d : public Eigen::Vector3d, public biorbd::utils::Node
             return *this;
         }
 
+protected:
+    void setType();
 };
 
 }}

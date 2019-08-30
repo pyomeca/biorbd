@@ -8,20 +8,20 @@ biorbd::utils::Node3d::Node3d() :
     Eigen::Vector3d (),
     biorbd::utils::Node ()
 {
-
+    setType();
 }
 
 biorbd::utils::Node3d::Node3d(double x, double y, double z) :
     Eigen::Vector3d (x, y, z),
     biorbd::utils::Node ()
 {
-
+    setType();
 }
 
 biorbd::utils::Node3d::Node3d(const Eigen::Vector4d &v) :
     Eigen::Vector3d(v[0], v[1], v[2]), biorbd::utils::Node ()
 {
-
+    setType();
 }
 
 biorbd::utils::Node3d::Node3d(
@@ -33,14 +33,14 @@ biorbd::utils::Node3d::Node3d(
     Eigen::Vector3d (x, y, z),
     biorbd::utils::Node (name, parentName)
 {
-
+    setType();
 }
 
 biorbd::utils::Node3d biorbd::utils::Node3d::DeepCopy() const
 {
     biorbd::utils::Node3d copy;
     static_cast<Eigen::Vector3d&>(copy) = *this;
-    static_cast<biorbd::utils::Node&>(copy) = this->biorbd::utils::Node::DeepCopy();
+    copy.biorbd::utils::Node::DeepCopy(*this);
     return copy;
 }
 
@@ -68,4 +68,9 @@ void biorbd::utils::Node3d::applyRT(const biorbd::utils::RotoTrans &rt){
 biorbd::utils::Node3d &biorbd::utils::Node3d::operator=(const Eigen::Vector4d &v){
     this->Eigen::Vector3d::operator=(biorbd::utils::Node3d(v));
     return *this;
+}
+
+void biorbd::utils::Node3d::setType()
+{
+    *m_typeOfNode = biorbd::utils::NODE3D;
 }

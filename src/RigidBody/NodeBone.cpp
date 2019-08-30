@@ -11,7 +11,7 @@ biorbd::rigidbody::NodeBone::NodeBone() :
     m_anatomical(std::make_shared<bool>(false)),
     m_id(std::make_shared<int>(-1))
 {
-
+    setType();
 }
 
 biorbd::rigidbody::NodeBone::NodeBone(double x, double y, double z) :
@@ -22,7 +22,7 @@ biorbd::rigidbody::NodeBone::NodeBone(double x, double y, double z) :
     m_anatomical(std::make_shared<bool>(false)),
     m_id(std::make_shared<int>(-1))
 {
-
+    setType();
 }
 
 biorbd::rigidbody::NodeBone::NodeBone(const biorbd::utils::Node3d &other) :
@@ -33,7 +33,7 @@ biorbd::rigidbody::NodeBone::NodeBone(const biorbd::utils::Node3d &other) :
     m_anatomical(std::make_shared<bool>(false)),
     m_id(std::make_shared<int>(-1))
 {
-
+    setType();
 }
 
 biorbd::rigidbody::NodeBone::NodeBone(
@@ -138,6 +138,11 @@ bool biorbd::rigidbody::NodeBone::isAxisKept(unsigned int i) const
 int biorbd::rigidbody::NodeBone::nAxesToRemove() const
 {
     return *m_nbAxesToRemove;
+}
+
+void biorbd::rigidbody::NodeBone::setType()
+{
+    *m_typeOfNode = biorbd::utils::NODE_TYPE::BONE_POINT;
 }
 
 void biorbd::rigidbody::NodeBone::addAxesToRemove(unsigned int a)

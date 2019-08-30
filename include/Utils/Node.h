@@ -21,7 +21,6 @@ public:
             const biorbd::utils::String &name,  // Nom du noeud
             const biorbd::utils::String &parentName);
     virtual ~Node();
-    biorbd::utils::Node DeepCopy() const;
     void DeepCopy(const biorbd::utils::Node& other);
 
     const biorbd::utils::String& name() const;
@@ -33,6 +32,7 @@ public:
     biorbd::utils::NODE_TYPE typeOfNode() const;
 
 protected:
+    virtual void setType() = 0;
     std::shared_ptr<biorbd::utils::String> m_name;
     std::shared_ptr<biorbd::utils::String> m_parentName;
     std::shared_ptr<biorbd::utils::NODE_TYPE> m_typeOfNode;

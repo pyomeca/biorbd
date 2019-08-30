@@ -65,6 +65,8 @@ public:
     bool isRotationAQuaternion() const; // Retourne si la rotation de ce segment est un quaternion
 
 protected:
+    void setType();
+
     std::shared_ptr<int> m_idxPF; // Index de la plateforme sur lequel il est -1 est pas de plateforme
     void setPF(int ); // Setter l'index de la plateforme
 

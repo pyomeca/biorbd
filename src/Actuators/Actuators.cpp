@@ -6,38 +6,40 @@
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/Joints.h"
+#include "Actuators/Actuator.h"
 #include "Actuators/ActuatorGauss3p.h"
 #include "Actuators/ActuatorGauss6p.h"
 #include "Actuators/ActuatorConstant.h"
 #include "Actuators/ActuatorLinear.h"
 
 biorbd::actuator::Actuators::Actuators() :
-    m_isClose(false)
+    m_all(std::make_shared<std::vector<std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>>>>()),
+    m_isDofSet(std::make_shared<std::vector<bool>>(1)),
+    m_isClose(std::make_shared<bool>(false))
 {
-    m_isDofSet = new bool[1];
-    m_isDofSet[0] = false;
+    (*m_isDofSet)[0] = false;
 }
 
-biorbd::actuator::Actuators::Actuators(const biorbd::actuator::Actuators& a) :
-    m_isClose(false)
+biorbd::actuator::Actuators::Actuators(
+        const biorbd::actuator::Actuators& other) :
+    m_all(other.m_all),
+    m_isDofSet(other.m_isDofSet),
+    m_isClose(other.m_isClose)
 {
-    m_isClose = a.m_isClose;
-    m_isDofSet = new bool[1];
-    m_isDofSet[0] = a.m_isDofSet[0];
-    m_all = a.m_all;
+
 }
 
 
 biorbd::actuator::Actuators::~Actuators()
 {
-    delete[] m_isDofSet;
+
 }
 
 
 
-void biorbd::actuator::Actuators::addActuator(biorbd::actuator::Actuator &act)
+void biorbd::actuator::Actuators::addActuator(const biorbd::actuator::Actuator &act)
 {
-    biorbd::utils::Error::error(!m_isClose, "You can't add actuator after closing the model");
+    biorbd::utils::Error::error(!*m_isClose, "You can't add actuator after closing the model");
 
     // Assuming that this is also a Joints type (via BiorbdModel)
     const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
@@ -49,65 +51,53 @@ void biorbd::actuator::Actuators::addActuator(biorbd::actuator::Actuator &act)
     unsigned int idx(act.index());
 
     // S'il y a moins d'actuateurs déjà déclaré qu'il n'y a de dof, il faut agrandir le vecteur
-    if (idx >= m_all.size()){
-        unsigned int oldSize = static_cast<unsigned int>(m_all.size());
-        bool * isDofSet = new bool[oldSize*2+1];
-        for (unsigned int i=0; i<oldSize*2; ++i)
-            isDofSet[i] = m_isDofSet[i];
-        m_all.resize(idx+1);
-
-        delete[] m_isDofSet;
-        m_isDofSet = new bool[idx*2+1];
-        for (unsigned int i=0; i<m_all.size()*2; ++i)
-            if (i<oldSize*2)
-                m_isDofSet[i] = isDofSet[i];
-            else
-                m_isDofSet[i] = false;
-
+    if (idx >= m_all->size()){
+        m_all->resize(idx+1);
+        m_isDofSet->resize((idx+1)*2, false);
     }
 
     // Ajouter un actuator au pool d'actuator selon son type
-    if (dynamic_cast<ActuatorGauss3p*> (&act)){
+    if (act.type() == biorbd::actuator::TYPE::CONSTANT){
         if (act.direction() == 1){
-            m_all[idx].first = std::shared_ptr<Actuator> (new ActuatorGauss3p(dynamic_cast <ActuatorGauss3p&> (act)));
-            m_isDofSet[idx*2] = true;
+            (*m_all)[idx].first = std::make_shared<biorbd::actuator::ActuatorConstant>(static_cast<const biorbd::actuator::ActuatorConstant&>(act));
+            (*m_isDofSet)[idx*2] = true;
         }
         else{
-            m_all[idx].second = std::shared_ptr<Actuator> (new ActuatorGauss3p(dynamic_cast <ActuatorGauss3p&> (act)));
-            m_isDofSet[idx*2+1] = true;
+            (*m_all)[idx].second = std::make_shared<biorbd::actuator::ActuatorConstant>(static_cast<const biorbd::actuator::ActuatorConstant&>(act));
+            (*m_isDofSet)[idx*2+1] = true;
         }
         return;
     }
-    else if (dynamic_cast<ActuatorConstant*> (&act)){
+    else if (act.type() == biorbd::actuator::TYPE::LINEAR){
         if (act.direction() == 1){
-            m_all[idx].first = std::shared_ptr<Actuator> (new ActuatorConstant(dynamic_cast <ActuatorConstant&> (act)));
-            m_isDofSet[idx*2] = true;
+            (*m_all)[idx].first = std::make_shared<biorbd::actuator::ActuatorLinear>(static_cast<const biorbd::actuator::ActuatorLinear&>(act));
+            (*m_isDofSet)[idx*2] = true;
         }
         else{
-            m_all[idx].second = std::shared_ptr<Actuator> (new ActuatorConstant(dynamic_cast <ActuatorConstant&> (act)));
-            m_isDofSet[idx*2+1] = true;
+            (*m_all)[idx].second = std::make_shared<biorbd::actuator::ActuatorLinear>(static_cast<const biorbd::actuator::ActuatorLinear&>(act));
+            (*m_isDofSet)[idx*2+1] = true;
         }
         return;
     }
-    else if (dynamic_cast<ActuatorLinear*> (&act)){
+    else if (act.type() == biorbd::actuator::TYPE::GAUSS3P){
         if (act.direction() == 1){
-            m_all[idx].first = std::shared_ptr<Actuator> (new ActuatorLinear(dynamic_cast <ActuatorLinear&> (act)));
-            m_isDofSet[idx*2] = true;
+            (*m_all)[idx].first = std::make_shared<biorbd::actuator::ActuatorGauss3p>(static_cast<const biorbd::actuator::ActuatorGauss3p&>(act));
+            (*m_isDofSet)[idx*2] = true;
         }
-        else{
-            m_all[idx].second = std::shared_ptr<Actuator> (new ActuatorLinear(dynamic_cast <ActuatorLinear&> (act)));
-            m_isDofSet[idx*2+1] = true;
+        else {
+            (*m_all)[idx].second = std::make_shared<biorbd::actuator::ActuatorGauss3p>(static_cast<const biorbd::actuator::ActuatorGauss3p&>(act));
+            (*m_isDofSet)[idx*2+1] = true;
         }
         return;
     }
-    else if (dynamic_cast<ActuatorGauss6p*> (&act)){
+    else if (act.type() == biorbd::actuator::TYPE::GAUSS6P){
         if (act.direction() == 1){
-            m_all[idx].first = std::shared_ptr<Actuator> (new ActuatorGauss6p(dynamic_cast <ActuatorGauss6p&> (act)));
-            m_isDofSet[idx*2] = true;
+            (*m_all)[idx].first = std::make_shared<biorbd::actuator::ActuatorGauss6p>(static_cast<const biorbd::actuator::ActuatorGauss6p&>(act));
+            (*m_isDofSet)[idx*2] = true;
         }
         else{
-            m_all[idx].second = std::shared_ptr<Actuator> (new ActuatorGauss6p(dynamic_cast <ActuatorGauss6p&> (act)));
-            m_isDofSet[idx*2+1] = true;
+            (*m_all)[idx].second = std::make_shared<biorbd::actuator::ActuatorGauss6p>(static_cast<const biorbd::actuator::ActuatorGauss6p&>(act));
+            (*m_isDofSet)[idx*2+1] = true;
         }
         return;
     }
@@ -121,33 +111,33 @@ void biorbd::actuator::Actuators::closeActuator()
     // Assuming that this is also a Joints type (via BiorbdModel)
     const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
-    biorbd::utils::Error::error(model.nbDof()==m_all.size(), "All dof must have their actuators set");
+    biorbd::utils::Error::error(model.nbDof()==m_all->size(), "All dof must have their actuators set");
 
-    for (unsigned int i=0; i<m_all.size()*2; ++i)
-        biorbd::utils::Error::error(m_isDofSet[i], "All DoF must have their actuators set before closing the model");
+    for (unsigned int i=0; i<m_all->size()*2; ++i)
+        biorbd::utils::Error::error((*m_isDofSet)[i], "All DoF must have their actuators set before closing the model");
 
-    m_isClose = true;
+    *m_isClose = true;
 }
 
-std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>> biorbd::actuator::Actuators::actuator(unsigned int dof)
+const std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>>& biorbd::actuator::Actuators::actuator(unsigned int dof)
 {
     biorbd::utils::Error::error(dof<nbActuators(), "Idx asked is higher than number of actuator");
-    return *(m_all.begin() + dof);
+    return (*m_all)[dof];
 }
-std::shared_ptr<biorbd::actuator::Actuator> biorbd::actuator::Actuators::actuator(unsigned int dof, unsigned int idx)
+const biorbd::actuator::Actuator& biorbd::actuator::Actuators::actuator(unsigned int dof, unsigned int idx)
 {
-    std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>> tp(actuator(dof));
+    const std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>>& tp(actuator(dof));
 
     biorbd::utils::Error::error(idx == 0 || idx == 1, "Index of actuator should be 0 or 1");
     if (idx == 0)
-        return tp.first;
+        return *tp.first;
     else
-        return tp.second;
+        return *tp.second;
 }
 
 unsigned int biorbd::actuator::Actuators::nbActuators() const
 {
-    return static_cast<unsigned int>(m_all.size());
+    return static_cast<unsigned int>(m_all->size());
 }
 
 biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
@@ -176,7 +166,7 @@ std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTo
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
 {
-    biorbd::utils::Error::error(m_isClose, "Close the actuator model before calling torqueMax");
+    biorbd::utils::Error::error(*m_isClose, "Close the actuator model before calling torqueMax");
 
     // Assuming that this is also a Joints type (via BiorbdModel)
     const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
@@ -221,7 +211,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torqueMax(
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
 {
-    biorbd::utils::Error::error(m_isClose, "Close the actuator model before calling torqueMax");
+    biorbd::utils::Error::error(*m_isClose, "Close the actuator model before calling torqueMax");
 
     // Assuming that this is also a Joints type (via BiorbdModel)
     const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);

@@ -6,6 +6,35 @@
 #endif
 #include "RigidBody/GeneralizedCoordinates.h"
 
+biorbd::actuator::ActuatorLinear::ActuatorLinear() :
+    Actuator(),
+    m_m(std::make_shared<double>(0)),
+    m_b(std::make_shared<double>(0))
+{
+    setType();
+}
+
+biorbd::actuator::ActuatorLinear::ActuatorLinear(
+        const biorbd::actuator::ActuatorLinear &other) :
+    Actuator(other),
+    m_m(other.m_m),
+    m_b(other.m_b)
+{
+
+}
+
+biorbd::actuator::ActuatorLinear::ActuatorLinear(
+        int direction,
+        double T0,
+        double pente,
+        unsigned int dofIdx) :
+    Actuator(direction, dofIdx),
+    m_m(std::make_shared<double>(pente)),
+    m_b(std::make_shared<double>(T0))
+{
+    setType();
+}
+
 biorbd::actuator::ActuatorLinear::ActuatorLinear(
         int direction,
         double T0,
@@ -13,15 +42,31 @@ biorbd::actuator::ActuatorLinear::ActuatorLinear(
         unsigned int dofIdx,
         const biorbd::utils::String &jointName) :
     Actuator(direction, dofIdx, jointName),
-    m_m(pente),
-    m_b(T0)
+    m_m(std::make_shared<double>(pente)),
+    m_b(std::make_shared<double>(T0))
 {
-
+    setType();
 }
 
 biorbd::actuator::ActuatorLinear::~ActuatorLinear()
 {
 
+}
+
+biorbd::actuator::ActuatorLinear biorbd::actuator::ActuatorLinear::DeepCopy() const
+{
+    biorbd::actuator::ActuatorLinear copy;
+    copy.biorbd::actuator::Actuator::DeepCopy(*this);
+    *copy.m_m = *m_m;
+    *copy.m_b = *m_b;
+    return copy;
+}
+
+void biorbd::actuator::ActuatorLinear::DeepCopy(const biorbd::actuator::ActuatorLinear &other)
+{
+    biorbd::actuator::Actuator::DeepCopy(other);
+    *m_m = *other.m_m;
+    *m_b = *other.m_b;
 }
 
 
@@ -31,10 +76,10 @@ double biorbd::actuator::ActuatorLinear::torqueMax(const biorbd::rigidbody::Gene
 //    std::cout << "B = " << m_b << std::endl;
 //    std::cout << "Torque = " << (Q[m_dofIdx]*180/PI)*m_m+m_b << std::endl << std::endl;
 
-    return (Q[m_dofIdx]*180/M_PI)*m_m+m_b;
+    return (Q[*m_dofIdx]*180/M_PI) * *m_m + *m_b;
 }
 
 void biorbd::actuator::ActuatorLinear::setType()
 {
-    m_type = "Linear";
+    *m_type = biorbd::actuator::TYPE::LINEAR;
 }

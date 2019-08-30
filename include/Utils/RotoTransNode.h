@@ -28,6 +28,9 @@ public:
             return *this;
         }
 
+protected:
+    void setType();
+
 };
 
 }}

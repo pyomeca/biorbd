@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include "BiorbdModel.h"
+#include "Utils/String.h"
 #include "Utils/Path.h"
 #include "RigidBody/IMU.h"
 #include "RigidBody/NodeBone.h"

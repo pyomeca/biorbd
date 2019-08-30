@@ -4,7 +4,6 @@
 #include <vector>
 #include <memory>
 #include "biorbdConfig.h"
-#include "Actuators/Actuator.h"
 
 namespace biorbd {
 
@@ -14,15 +13,18 @@ class GeneralizedTorque;
 }
 
 namespace actuator {
+class Actuator;
 
 class BIORBD_API Actuators
 {
 public:
     Actuators();
-    Actuators(const Actuators&);
+    Actuators(
+            const biorbd::actuator::Actuators& other);
     virtual ~Actuators();
 
-    void addActuator(Actuator &a);
+    void addActuator(
+            const biorbd::actuator::Actuator &a);
     void closeActuator();
 
     // Retourne deux vecteur de torque max (il manque l'entrée de puissance afin de savoir si c'est positif ou négatif
@@ -40,14 +42,14 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot);
 
     // Get and set
-    virtual std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>> actuator(unsigned int dof);
-    virtual std::shared_ptr<Actuator> actuator(unsigned int dof, unsigned int idx);
+    const std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>>& actuator(unsigned int dof);
+    const biorbd::actuator::Actuator& actuator(unsigned int dof, unsigned int idx);
     unsigned int nbActuators() const;
 
 protected:
-    std::vector<std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>>> m_all; // Tous les actuators réunis / pair (+ ou -)
-    bool * m_isDofSet;
-    bool m_isClose;
+    std::shared_ptr<std::vector<std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>>>> m_all; // Tous les actuators réunis / pair (+ ou -)
+    std::shared_ptr<std::vector<bool>> m_isDofSet;
+    std::shared_ptr<bool> m_isClose;
 
 };
 

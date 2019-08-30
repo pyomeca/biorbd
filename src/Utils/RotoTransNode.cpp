@@ -8,7 +8,7 @@ biorbd::utils::RotoTransNode::RotoTransNode() :
     biorbd::utils::RotoTrans(),
     biorbd::utils::Node()
 {
-
+    setType();
 }
 
 biorbd::utils::RotoTransNode::RotoTransNode(
@@ -18,14 +18,14 @@ biorbd::utils::RotoTransNode::RotoTransNode(
     biorbd::utils::RotoTrans(rt),
     biorbd::utils::Node(name, parentName)
 {
-
+    setType();
 }
 
 biorbd::utils::RotoTransNode biorbd::utils::RotoTransNode::DeepCopy() const
 {
     biorbd::utils::RotoTransNode copy;
     static_cast<biorbd::utils::RotoTrans&>(copy) = this->biorbd::utils::RotoTrans::DeepCopy();
-    static_cast<biorbd::utils::Node&>(copy) = this->biorbd::utils::Node::DeepCopy();
+    copy.biorbd::utils::Node::DeepCopy(*this);
     return copy;
 }
 
@@ -33,5 +33,10 @@ void biorbd::utils::RotoTransNode::DeepCopy(const RotoTransNode &other)
 {
     biorbd::utils::RotoTrans::DeepCopy(other);
     biorbd::utils::Node::DeepCopy(other);
+}
+
+void biorbd::utils::RotoTransNode::setType()
+{
+    *m_typeOfNode = biorbd::utils::NODE_TYPE::ROTOTRANS;
 }
 

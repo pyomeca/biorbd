@@ -34,7 +34,7 @@ biorbd::rigidbody::Bone::Bone() :
     m_caract(std::make_shared<biorbd::rigidbody::BoneCaracteristics>()),
     m_dofCaract(std::make_shared<std::vector<biorbd::rigidbody::BoneCaracteristics>>())
 {
-
+    setType();
 }
 
 biorbd::rigidbody::Bone::Bone(
@@ -69,6 +69,7 @@ biorbd::rigidbody::Bone::Bone(
     m_caract(std::make_shared<biorbd::rigidbody::BoneCaracteristics>(caract)),
     m_dofCaract(std::make_shared<std::vector<biorbd::rigidbody::BoneCaracteristics>>())
 {
+    setType();
     // Call proper functions
     setDofs(model, seqT, seqR);
     // Add plateforme
@@ -105,6 +106,7 @@ biorbd::rigidbody::Bone::Bone(
     m_caract(std::make_shared<biorbd::rigidbody::BoneCaracteristics>(caract)),
     m_dofCaract(std::make_shared<std::vector<biorbd::rigidbody::BoneCaracteristics>>())
 {
+    setType();
     // Call proper functions
     setDofs(model, "", seqR);
     // Add plateforme
@@ -114,7 +116,7 @@ biorbd::rigidbody::Bone::Bone(
 biorbd::rigidbody::Bone biorbd::rigidbody::Bone::DeepCopy() const
 {
     biorbd::rigidbody::Bone copy;
-    static_cast<biorbd::utils::Node&>(copy) = biorbd::utils::Node::DeepCopy();
+    copy.biorbd::utils::Node::DeepCopy(*this);
     *copy.m_idxPF = *m_idxPF;
     *copy.m_cor = *m_cor;
     *copy.m_seqT = *m_seqT;
@@ -171,6 +173,11 @@ biorbd::rigidbody::Bone::~Bone(){
 
 bool biorbd::rigidbody::Bone::isRotationAQuaternion() const{
     return *m_isQuaternion;
+}
+
+void biorbd::rigidbody::Bone::setType()
+{
+    *m_typeOfNode = biorbd::utils::NODE_TYPE::BONE;
 }
 
 unsigned int biorbd::rigidbody::Bone::id() const{

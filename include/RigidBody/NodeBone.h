@@ -64,6 +64,7 @@ public:
         }
 
 protected:
+    void setType();
     std::shared_ptr<std::vector<bool>> m_axesRemoved; // Matrice de projection
     std::shared_ptr<int> m_nbAxesToRemove; // Retirer un ou plusieurs axes (1 axe : projeter sur un plan, 2 axes : projeter sur le 3ième axes, 3 axes : retourne la position du repère parent
     std::shared_ptr<bool> m_technical; // If a marker is a technical marker
