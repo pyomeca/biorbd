@@ -44,10 +44,29 @@ biorbd::muscles::Force::~Force()
 
 }
 
+biorbd::muscles::Force biorbd::muscles::Force::DeepCopy() const
+{
+    return *this;
+}
+
+void biorbd::muscles::Force::DeepCopy(const biorbd::muscles::Force &other)
+{
+    *this = other;
+}
+
 void biorbd::muscles::Force::setForceFromMuscleGeometry(
         const biorbd::muscles::Geometry& geo,
         double vectorNorm)
 {
     *this = geo.insertionInGlobal() - geo.originInGlobal();
     *this /= this->norm() * vectorNorm;
+}
+
+biorbd::muscles::Force &biorbd::muscles::Force::operator=(const biorbd::muscles::Force &other)
+{
+    if (this == &other)
+        return *this;
+
+    this->Eigen::Vector3d::operator=(other);
+    return *this;
 }

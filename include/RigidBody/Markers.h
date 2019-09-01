@@ -1,6 +1,7 @@
 #ifndef BIORBD_RIGIDBODY_MARKERS_H
 #define BIORBD_RIGIDBODY_MARKERS_H
 
+#include <memory>
 #include <vector>
 #include "biorbdConfig.h"
 
@@ -18,7 +19,10 @@ class BIORBD_API Markers
 {
 public:
     Markers();
+    Markers(const biorbd::rigidbody::Markers& other);
     virtual ~Markers();
+    biorbd::rigidbody::Markers DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::Markers& other);
 
     // Set and get
     void addMarker(
@@ -117,7 +121,7 @@ protected:
             bool updateKin,
             bool lookForTechnical); // Retourne la jacobienne des markers
 
-    std::vector <biorbd::rigidbody::NodeBone> m_marks;
+    std::shared_ptr<std::vector<biorbd::rigidbody::NodeBone>> m_marks;
 
 };
 

@@ -18,9 +18,16 @@ biorbd::muscles::ForceFromInsertion::ForceFromInsertion(
     setForceFromMuscleGeometry(geo, vectorNorm);
 }
 
-biorbd::muscles::ForceFromInsertion::~ForceFromInsertion()
+biorbd::muscles::ForceFromInsertion biorbd::muscles::ForceFromInsertion::DeepCopy() const
 {
+    biorbd::muscles::ForceFromInsertion copy;
+    copy.DeepCopy(*this);
+    return copy;
+}
 
+void biorbd::muscles::ForceFromInsertion::DeepCopy(const biorbd::muscles::ForceFromInsertion &other)
+{
+    biorbd::muscles::Force::DeepCopy(other);
 }
 
 void biorbd::muscles::ForceFromInsertion::setForceFromMuscleGeometry(

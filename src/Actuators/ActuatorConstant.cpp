@@ -43,8 +43,7 @@ biorbd::actuator::ActuatorConstant::ActuatorConstant(
 biorbd::actuator::ActuatorConstant biorbd::actuator::ActuatorConstant::DeepCopy() const
 {
     biorbd::actuator::ActuatorConstant copy;
-    copy.biorbd::actuator::Actuator::DeepCopy(*this);
-    *copy.m_Tmax = *m_Tmax;
+    copy.DeepCopy(*this);
     return copy;
 }
 

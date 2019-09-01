@@ -45,7 +45,7 @@ biorbd::muscles::ViaPoint::ViaPoint(const biorbd::muscles::ViaPoint &other) :
 biorbd::muscles::ViaPoint biorbd::muscles::ViaPoint::DeepCopy() const
 {
     biorbd::muscles::ViaPoint copy;
-    copy.biorbd::utils::Node3d::DeepCopy(*this);
+    copy.DeepCopy(*this);
     return copy;
 }
 

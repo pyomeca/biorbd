@@ -158,10 +158,16 @@ biorbd::muscles::StaticOptimization biorbd::muscles::StaticOptimization::DeepCop
 {
     biorbd::muscles::StaticOptimization copy(this->m_model);
     *copy.m_useResidualTorque = *m_useResidualTorque;
-    *copy.m_allQ = *m_allQ;
-    *copy.m_allQdot = *m_allQdot;
-    *copy.m_allGeneralizedTorqueTarget = *m_allGeneralizedTorqueTarget;
-    *copy.m_initialActivationGuess = *m_initialActivationGuess;
+    copy.m_allQ->resize(m_allQ->size());
+    for (unsigned int i=0; i<m_allQ->size(); ++i)
+        (*copy.m_allQ)[i] = (*m_allQ)[i].DeepCopy();
+    copy.m_allQdot->resize(m_allQdot->size());
+    for (unsigned int i=0; i<m_allQdot->size(); ++i)
+        (*copy.m_allQdot)[i] = (*m_allQdot)[i].DeepCopy();
+    copy.m_allGeneralizedTorqueTarget->resize(m_allGeneralizedTorqueTarget->size());
+    for (unsigned int i=0; i<m_allGeneralizedTorqueTarget->size(); ++i)
+        (*copy.m_allGeneralizedTorqueTarget)[i] = (*m_allGeneralizedTorqueTarget)[i].DeepCopy();
+    *copy.m_initialActivationGuess = m_initialActivationGuess->DeepCopy();
     *copy.m_pNormFactor = *m_pNormFactor;
     *copy.m_verbose = *m_verbose;
     *copy.m_staticOptimProblem = *m_staticOptimProblem;

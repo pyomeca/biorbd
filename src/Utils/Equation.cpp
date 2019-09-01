@@ -42,6 +42,18 @@ biorbd::utils::Equation::Equation(const std::basic_string<char> &c) :
 
 }
 
+biorbd::utils::Equation biorbd::utils::Equation::DeepCopy() const
+{
+    biorbd::utils::Equation copy;
+    copy.DeepCopy(*this);
+    return copy;
+}
+
+void biorbd::utils::Equation::DeepCopy(const biorbd::utils::Equation &other)
+{
+    biorbd::utils::String::DeepCopy(other);
+}
+
 std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(biorbd::utils::Equation wholeEq, const std::map<biorbd::utils::Equation, double>& variables){
     // variable de sortie
     std::vector<biorbd::utils::Equation> eq;

@@ -106,18 +106,7 @@ biorbd::actuator::ActuatorGauss3p::~ActuatorGauss3p()
 biorbd::actuator::ActuatorGauss3p biorbd::actuator::ActuatorGauss3p::DeepCopy() const
 {
     biorbd::actuator::ActuatorGauss3p copy;
-    copy.biorbd::actuator::Actuator::DeepCopy(*this);
-    *copy.m_k = *m_k;
-    *copy.m_Tmax = *m_Tmax;
-    *copy.m_T0 = *m_T0;
-    *copy.m_wmax = *m_wmax;
-    *copy.m_wc = *m_wc;
-    *copy.m_amax = *m_amax;
-    *copy.m_amin = *m_amin;
-    *copy.m_wr = *m_wr;
-    *copy.m_w1 = *m_w1;
-    *copy.m_r = *m_r;
-    *copy.m_qopt = *m_qopt;
+    copy.DeepCopy(*this);
     return copy;
 }
 

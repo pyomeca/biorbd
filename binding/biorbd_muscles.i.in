@@ -34,61 +34,62 @@ namespace std {
                 const biorbd::rigidbody::GeneralizedCoordinates &QDot){
         return self->muscularJointTorque(state, true, &Q, &QDot);
     }
-
-    static biorbd::utils::String getMuscleType(const std::shared_ptr<biorbd::muscles::Muscle> muscle){
-        return muscle->type();
-    }
 }
 
 // extension of muscle casting
-%extend biorbd::muscles::Muscle{
-    static biorbd::muscles::Muscle& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
+%extend biorbd::muscles::IdealizedActuator{
+    static biorbd::muscles::IdealizedActuator DeepCopy(const biorbd::muscles::Muscle& other)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::Muscle>(muscle));
+        biorbd::muscles::IdealizedActuator copy;
+        copy.DeepCopy(dynamic_cast<const biorbd::muscles::IdealizedActuator&>(other));
+        return copy;
     }
 }
 
 %extend biorbd::muscles::HillType{
-    static biorbd::muscles::HillType& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
+    static biorbd::muscles::HillType DeepCopy(const biorbd::muscles::Muscle& other)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::HillType>(muscle));
+        biorbd::muscles::HillType copy;
+        copy.DeepCopy(dynamic_cast<const biorbd::muscles::HillType&>(other));
+        return copy;
     }
 }
 %extend biorbd::muscles::HillThelenType{
-    static biorbd::muscles::HillThelenType& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
+    static biorbd::muscles::HillThelenType DeepCopy(const biorbd::muscles::Muscle& other)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::HillThelenType>(muscle));
+        biorbd::muscles::HillThelenType copy;
+        copy.DeepCopy(dynamic_cast<const biorbd::muscles::HillThelenType&>(other));
+        return copy;
     }
 }
 %extend biorbd::muscles::HillThelenTypeFatigable{
-    static biorbd::muscles::HillThelenTypeFatigable& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
+    static biorbd::muscles::HillThelenTypeFatigable DeepCopy(const biorbd::muscles::Muscle& other)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::HillThelenTypeFatigable>(muscle));
-    }
-}
-%extend biorbd::muscles::IdealizedActuator{
-    static biorbd::muscles::IdealizedActuator& getRef(std::shared_ptr<biorbd::muscles::Muscle> muscle)
-    {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::IdealizedActuator>(muscle));
+        biorbd::muscles::HillThelenTypeFatigable copy;
+        copy.DeepCopy(dynamic_cast<const biorbd::muscles::HillThelenTypeFatigable&>(other));
+        return copy;
     }
 }
 
 // extension of muscle fatigueState casting
-%extend biorbd::muscles::FatigueState{
-    static biorbd::muscles::FatigueState& getRef(std::shared_ptr<biorbd::muscles::FatigueState> state)
-    {
-        return *state;
-    }
-}
 %extend biorbd::muscles::FatigueDynamicStateXia{
-    static biorbd::muscles::FatigueDynamicStateXia& getRef(std::shared_ptr<biorbd::muscles::FatigueState> state)
+    static biorbd::muscles::FatigueDynamicStateXia DeepCopy(const biorbd::muscles::FatigueState& other)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicStateXia>(state));
+        biorbd::muscles::FatigueDynamicStateXia copy;
+        copy.DeepCopy(dynamic_cast<const biorbd::muscles::FatigueDynamicStateXia&>(other));
+        return copy;
+    }
+    static biorbd::muscles::FatigueDynamicStateXia DeepCopy(const biorbd::muscles::FatigueDynamicState& other)
+    {
+        biorbd::muscles::FatigueDynamicStateXia copy;
+        copy.DeepCopy(dynamic_cast<const biorbd::muscles::FatigueDynamicStateXia&>(other));
+        return copy;
     }
 }
 
 
 // Includes all neceressary files from the API
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/MusclesEnums.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Compound.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscle.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Fatigable.h"

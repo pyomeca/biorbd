@@ -16,6 +16,7 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/RotoTransNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Quaternion.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/String.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ShallowCopyObject.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Time.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Timer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Vector.cpp

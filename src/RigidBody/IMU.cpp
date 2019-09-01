@@ -26,17 +26,15 @@ biorbd::rigidbody::IMU::IMU(
 biorbd::rigidbody::IMU biorbd::rigidbody::IMU::DeepCopy() const
 {
     biorbd::rigidbody::IMU copy;
-    static_cast<biorbd::utils::RotoTransNode&>(copy) = this->biorbd::utils::RotoTransNode::DeepCopy();
-    *copy.m_technical = *m_technical;
-    *copy.m_anatomical = *m_anatomical;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::rigidbody::IMU::DeepCopy(const IMU &other)
 {
     biorbd::utils::RotoTransNode::DeepCopy(other);
-    m_technical = std::make_shared<bool>(other.m_technical);
-    m_anatomical = std::make_shared<bool>(other.m_anatomical);
+    *m_technical = *other.m_technical;
+    *m_anatomical = *other.m_anatomical;
 }
 
 bool biorbd::rigidbody::IMU::isAnatomical() const

@@ -34,11 +34,7 @@ biorbd::muscles::StateDynamics::~StateDynamics()
 biorbd::muscles::StateDynamics biorbd::muscles::StateDynamics::DeepCopy() const
 {
     biorbd::muscles::StateDynamics copy;
-    copy.biorbd::muscles::State::DeepCopy(*this);
-    *copy.m_excitationNorm = *m_excitationNorm;
-    *copy.m_previousExcitation = *m_previousExcitation;
-    *copy.m_previousActivation = *m_previousActivation;
-    *copy.m_activationDot = *m_activationDot;
+    copy.DeepCopy(*this);
     return copy;
 }
 

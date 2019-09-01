@@ -65,23 +65,18 @@ biorbd::utils::Path::Path(const std::basic_string<char> &c) :
 biorbd::utils::Path biorbd::utils::Path::DeepCopy() const
 {
     biorbd::utils::Path copy;
-    *copy.m_path = *m_path;
-    *copy.m_originalPath = *m_originalPath;
-    *copy.m_folder = *m_folder;
-    *copy.m_isFolderAbsolute = *m_isFolderAbsolute;
-    *copy.m_filename = *m_filename;
-    *copy.m_extension = *m_extension;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::utils::Path::DeepCopy(const Path &other)
 {
-    m_path = std::make_shared<biorbd::utils::String>(*other.m_path);
-    m_originalPath = std::make_shared<biorbd::utils::String>(*other.m_originalPath);
-    m_folder = std::make_shared<biorbd::utils::String>(*other.m_folder);
-    m_isFolderAbsolute = std::make_shared<bool>(*other.m_isFolderAbsolute);
-    m_filename = std::make_shared<biorbd::utils::String>(*other.m_filename);
-    m_extension = std::make_shared<biorbd::utils::String>(*other.m_extension);
+    *m_path = other.m_path->DeepCopy();
+    *m_originalPath = other.m_originalPath->DeepCopy();
+    *m_folder = other.m_folder->DeepCopy();
+    *m_isFolderAbsolute = *other.m_isFolderAbsolute;
+    *m_filename = other.m_filename->DeepCopy();
+    *m_extension = other.m_extension->DeepCopy();
 }
 
 bool biorbd::utils::Path::isFileExist() const

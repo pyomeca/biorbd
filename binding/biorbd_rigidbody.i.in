@@ -74,6 +74,7 @@ namespace std {
     }
 }
 
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/RigidBodyEnums.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Joints.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/GeneralizedCoordinates.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/GeneralizedTorque.h"

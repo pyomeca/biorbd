@@ -24,12 +24,7 @@ biorbd::rigidbody::Integrator::Integrator() :
 biorbd::rigidbody::Integrator biorbd::rigidbody::Integrator::DeepCopy() const
 {
     biorbd::rigidbody::Integrator copy;
-    *copy.m_nbre = *m_nbre;
-    *copy.m_steps = *m_steps;
-    *copy.m_model = *m_model;
-    *copy.m_x_vec = *m_x_vec;
-    *copy.m_times = *m_times;
-    *copy.m_u = *m_u;
+    copy.DeepCopy(*this);
     return copy;
 }
 
@@ -38,9 +33,13 @@ void biorbd::rigidbody::Integrator::DeepCopy(const biorbd::rigidbody::Integrator
     *m_nbre = *other.m_nbre;
     *m_steps = *other.m_steps;
     *m_model = *other.m_model;
-    *m_x_vec = *other.m_x_vec;
-    *m_times = *other.m_times;
-    *m_u = *other.m_u;
+    m_x_vec->resize(other.m_x_vec->size());
+    for (unsigned int i=0; i<other.m_x_vec->size(); ++i)
+        (*m_x_vec)[i] = (*other.m_x_vec)[i];
+    m_times->resize(other.m_times->size());
+    for (unsigned int i=0; i<other.m_times->size(); ++i)
+        (*m_times)[i] = (*other.m_times)[i];
+    *m_u = other.m_u->DeepCopy();
 }
 
 void biorbd::rigidbody::Integrator::operator() (

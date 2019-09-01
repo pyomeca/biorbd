@@ -45,19 +45,29 @@ biorbd::muscles::MuscleGroup::~MuscleGroup()
 biorbd::muscles::MuscleGroup biorbd::muscles::MuscleGroup::DeepCopy() const
 {
     biorbd::muscles::MuscleGroup copy;
-    *copy.m_mus = *m_mus;
-    *copy.m_name = *m_name;
-    *copy.m_originName = *m_originName;
-    *copy.m_insertName = *m_insertName;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::muscles::MuscleGroup::DeepCopy(const biorbd::muscles::MuscleGroup &other)
 {
+    m_mus->resize(other.m_mus->size());
+    for (unsigned int i=0; i<other.m_mus->size(); ++i){
+        if ((*other.m_mus)[i]->type() == biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR)
+            (*m_mus)[i] = std::make_shared<biorbd::muscles::IdealizedActuator>((*other.m_mus)[i]);
+        else if ((*other.m_mus)[i]->type() == biorbd::muscles::MUSCLE_TYPE::HILL)
+            (*m_mus)[i] = std::make_shared<biorbd::muscles::HillType>((*other.m_mus)[i]);
+        else if ((*other.m_mus)[i]->type() == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN)
+            (*m_mus)[i] = std::make_shared<biorbd::muscles::HillThelenType>((*other.m_mus)[i]);
+        else if ((*other.m_mus)[i]->type() == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE)
+            (*m_mus)[i] = std::make_shared<biorbd::muscles::HillThelenTypeFatigable>((*other.m_mus)[i]);
+        else
+            biorbd::utils::Error::error(false, "DeepCopy was not prepared to copy " + biorbd::utils::String(biorbd::muscles::MUSCLE_TYPE_toStr((*other.m_mus)[i]->type())) + " type");
+    }
     *m_mus = *other.m_mus;
-    *m_name = *other.m_name;
-    *m_originName = *other.m_originName;
-    *m_insertName = *other.m_insertName;
+    *m_name = other.m_name->DeepCopy();
+    *m_originName = other.m_originName->DeepCopy();
+    *m_insertName = other.m_insertName->DeepCopy();
 }
 
 void biorbd::muscles::MuscleGroup::addMuscle(

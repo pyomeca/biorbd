@@ -28,9 +28,7 @@ biorbd::muscles::State::~State()
 biorbd::muscles::State biorbd::muscles::State::DeepCopy() const
 {
     biorbd::muscles::State copy;
-    *copy.m_stateType = *m_stateType;
-    *copy.m_excitation = *m_excitation;
-    *copy.m_activation = *m_activation;
+    copy.DeepCopy(*this);
     return copy;
 }
 

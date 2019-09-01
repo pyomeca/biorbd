@@ -14,6 +14,7 @@ public:
     String(const char *c);
     String(const biorbd::utils::String &s);
     String(const std::basic_string<char> &c);
+    String& operator=(const biorbd::utils::String& other);
     String operator+(unsigned int);
     String operator+(int);
     String operator+(double);
@@ -21,6 +22,8 @@ public:
     String operator()(unsigned int) const;
     String operator()(unsigned int, unsigned int) const;
     virtual ~String();
+    biorbd::utils::String DeepCopy() const;
+    void DeepCopy(const biorbd::utils::String& other);
 
     static biorbd::utils::String tolower(const biorbd::utils::String &str); // convert a string to a lower case string
     biorbd::utils::String tolower() const;

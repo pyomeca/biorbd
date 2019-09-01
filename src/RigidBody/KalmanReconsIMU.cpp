@@ -31,16 +31,14 @@ biorbd::rigidbody::KalmanReconsIMU::KalmanReconsIMU(
 biorbd::rigidbody::KalmanReconsIMU biorbd::rigidbody::KalmanReconsIMU::DeepCopy() const
 {
     biorbd::rigidbody::KalmanReconsIMU copy;
-    copy.biorbd::rigidbody::KalmanRecons::DeepCopy(*this);
-    *copy.m_PpInitial = *m_PpInitial;
-    *copy.m_firstIteration = *m_firstIteration;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::rigidbody::KalmanReconsIMU::DeepCopy(const biorbd::rigidbody::KalmanReconsIMU &other)
 {
     biorbd::rigidbody::KalmanRecons::DeepCopy(other);
-    *m_PpInitial = *other.m_PpInitial;
+    *m_PpInitial = other.m_PpInitial->DeepCopy();
     *m_firstIteration = *other.m_firstIteration;
 }
 

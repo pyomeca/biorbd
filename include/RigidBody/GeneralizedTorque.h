@@ -17,6 +17,8 @@ public:
         biorbd::utils::Vector(other){}
     GeneralizedTorque(unsigned int i);
     GeneralizedTorque(const biorbd::rigidbody::Joints& j);
+    biorbd::rigidbody::GeneralizedTorque DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::GeneralizedTorque& other);
 
     biorbd::rigidbody::GeneralizedTorque timeDerivativeActivation(const biorbd::rigidbody::GeneralizedTorque &act);
 

@@ -1,6 +1,9 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Benchmark.h"
 
+#include "Utils/Timer.h"
+#include "Utils/String.h"
+
 biorbd::utils::Benchmark::Benchmark() :
     m_timers(std::make_shared<std::map<biorbd::utils::String, biorbd::utils::Timer>>()),
     m_counts(std::make_shared<std::map<biorbd::utils::String, int>>())
@@ -55,8 +58,7 @@ void biorbd::utils::Benchmark::wasteTime(double seconds){
 biorbd::utils::Benchmark biorbd::utils::Benchmark::DeepCopy() const
 {
     biorbd::utils::Benchmark copy;
-    *copy.m_timers = *m_timers;
-    *copy.m_counts = *m_counts;
+    copy.DeepCopy(*this);
     return copy;
 }
 

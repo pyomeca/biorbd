@@ -37,9 +37,9 @@ void Matlab_MusclesForceMax( int, mxArray *plhs[],
     for (unsigned int i=0; i<model->nbMuscleGroups(); ++i)
         for (unsigned int j=0; j<model->muscleGroup(i).nbMuscles(); ++j){
             if (nrhs == 2) // Recueillir toutes les forces max
-                muscleForceMax[cmp]  = model->muscleGroup(i).muscle(j)->caract().forceIsoMax();
+                muscleForceMax[cmp]  = model->muscleGroup(i).muscle(j).caract().forceIsoMax();
             else // Remplacer les valeurs
-                model->muscleGroup(i).muscle(j)->forceIsoMax(Forces(cmp));
+                model->muscleGroup(i).muscle(j).forceIsoMax(Forces(cmp));
             ++cmp;
         }
 

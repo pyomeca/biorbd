@@ -35,17 +35,19 @@ biorbd::rigidbody::BoneMesh::BoneMesh(
 biorbd::rigidbody::BoneMesh biorbd::rigidbody::BoneMesh::DeepCopy() const
 {
     biorbd::rigidbody::BoneMesh copy;
-    *copy.m_mesh = *m_mesh;
-    *copy.m_patch = *m_patch;
-    *copy.m_pathFile = *m_pathFile;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::rigidbody::BoneMesh::DeepCopy(const biorbd::rigidbody::BoneMesh &other)
 {
-    m_mesh = std::make_shared<std::vector<biorbd::utils::Node3d>>(*other.m_mesh);
-    m_patch = std::make_shared<std::vector<biorbd::rigidbody::Patch>>(*other.m_patch);
-    m_pathFile = std::make_shared<biorbd::utils::Path>(*other.m_pathFile);
+    m_mesh->resize(other.m_mesh->size());
+    for (unsigned int i=0; i<other.m_mesh->size(); ++i)
+        (*m_mesh)[i] = (*other.m_mesh)[i].DeepCopy();
+    m_patch->resize(other.m_patch->size());
+    for (unsigned int i=0; i<other.m_patch->size(); ++i)
+        (*m_patch)[i] = (*other.m_patch)[i].DeepCopy();
+    *m_pathFile = other.m_pathFile->DeepCopy();
 }
 
 void biorbd::rigidbody::BoneMesh::addPoint(const biorbd::utils::Node3d &node)

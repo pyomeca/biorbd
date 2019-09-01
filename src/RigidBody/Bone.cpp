@@ -116,55 +116,40 @@ biorbd::rigidbody::Bone::Bone(
 biorbd::rigidbody::Bone biorbd::rigidbody::Bone::DeepCopy() const
 {
     biorbd::rigidbody::Bone copy;
-    copy.biorbd::utils::Node::DeepCopy(*this);
-    *copy.m_idxPF = *m_idxPF;
-    *copy.m_cor = *m_cor;
-    *copy.m_seqT = *m_seqT;
-    *copy.m_seqR = *m_seqR;
-    *copy.m_nDof = *m_nDof;
-    *copy.m_nQdot = *m_nQdot;
-    *copy.m_nQddot = *m_nQddot;
-    *copy.m_nDofTrue = *m_nDofTrue;
-    *copy.m_nDofTrueOutside = *m_nDofTrueOutside;
-    *copy.m_nDofTrans = *m_nDofTrans;
-    *copy.m_nDofRot = *m_nDofRot;
-    *copy.m_nDofQuat = *m_nDofQuat;
-    *copy.m_isQuaternion = *m_isQuaternion;
-    *copy.m_dof = *m_dof;
-    *copy.m_idxDof = *m_idxDof;
-    *copy.m_sequenceTrans = *m_sequenceTrans;
-    *copy.m_sequenceRot = *m_sequenceRot;
-    *copy.m_nameDof = *m_nameDof;
-    *copy.m_dofPosition = *m_dofPosition;
-    *copy.m_caract = *m_caract;
-    *copy.m_dofCaract = *m_dofCaract;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::rigidbody::Bone::DeepCopy(const biorbd::rigidbody::Bone &other)
 {
     biorbd::utils::Node::DeepCopy(other);
-    m_idxPF = std::make_shared<int>(*other.m_idxPF);
-    m_cor = std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(*other.m_cor);
-    m_seqT = std::make_shared<biorbd::utils::String>(*other.m_seqT);
-    m_seqR = std::make_shared<biorbd::utils::String>(*other.m_seqR);
-    m_nDof = std::make_shared<unsigned int>(*other.m_nDof);
-    m_nQdot = std::make_shared<unsigned int>(*other.m_nQdot);
-    m_nQddot = std::make_shared<unsigned int>(*other.m_nQddot);
-    m_nDofTrue = std::make_shared<unsigned int>(*other.m_nDofTrue);
-    m_nDofTrueOutside = std::make_shared<unsigned int>(*other.m_nDofTrueOutside);
-    m_nDofTrans = std::make_shared<unsigned int>(*other.m_nDofTrans);
-    m_nDofRot = std::make_shared<unsigned int>(*other.m_nDofRot);
-    m_nDofQuat = std::make_shared<unsigned int>(*other.m_nDofQuat);
-    m_isQuaternion = std::make_shared<bool>(*other.m_isQuaternion);
-    m_dof = std::make_shared<std::vector<RigidBodyDynamics::Joint>>(*other.m_dof);
-    m_idxDof = std::make_shared<std::vector<unsigned int>>(*other.m_idxDof);
-    m_sequenceTrans = std::make_shared<std::vector<unsigned int>>(*other.m_sequenceTrans);
-    m_sequenceRot = std::make_shared<std::vector<unsigned int>>(*other.m_sequenceRot);
-    m_nameDof = std::make_shared<std::vector<biorbd::utils::String>>(*other.m_nameDof);
-    m_dofPosition = std::make_shared<std::vector<unsigned int>>(*other.m_dofPosition);
-    m_caract = std::make_shared<biorbd::rigidbody::BoneCaracteristics>(*other.m_caract);
-    m_dofCaract = std::make_shared<std::vector<biorbd::rigidbody::BoneCaracteristics>>(*other.m_dofCaract);
+    *m_idxPF = *other.m_idxPF;
+    *m_cor = *other.m_cor;
+    *m_seqT = other.m_seqT->DeepCopy();
+    *m_seqR = other.m_seqR->DeepCopy();
+    *m_nDof = *other.m_nDof;
+    *m_nQdot = *other.m_nQdot;
+    *m_nQddot = *other.m_nQddot;
+    *m_nDofTrue = *other.m_nDofTrue;
+    *m_nDofTrueOutside = *other.m_nDofTrueOutside;
+    *m_nDofTrans = *other.m_nDofTrans;
+    *m_nDofRot = *other.m_nDofRot;
+    *m_nDofQuat = *other.m_nDofQuat;
+    *m_isQuaternion = *other.m_isQuaternion;
+    m_dof->resize(other.m_dof->size());
+    for (unsigned int i=0; i<other.m_dof->size(); ++i)
+        (*m_dof)[i] = (*other.m_dof)[i];
+    *m_idxDof = *other.m_idxDof;
+    *m_sequenceTrans = *other.m_sequenceTrans;
+    *m_sequenceRot = *other.m_sequenceRot;
+    m_nameDof->resize(other.m_nameDof->size());
+    for (unsigned int i=0; i<other.m_nameDof->size(); ++i)
+        (*m_nameDof)[i] = (*other.m_nameDof)[i].DeepCopy();
+    *m_dofPosition = *other.m_dofPosition;
+    *m_caract = other.m_caract->DeepCopy();
+    m_dofCaract->resize(other.m_dofCaract->size());
+    for (unsigned int i=0; i<other.m_dofCaract->size(); ++i)
+        (*m_dofCaract)[i] = (*other.m_dofCaract)[i].DeepCopy();
 }
 
 biorbd::rigidbody::Bone::~Bone(){

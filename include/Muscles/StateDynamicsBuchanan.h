@@ -24,8 +24,8 @@ public:
     virtual void setExcitation(double val);
     virtual void setNeuralCommand(double val);
     void shapeFactor(double m_shape_factor);
-    double shapeFactor();
-    double activation();
+    double shapeFactor() const;
+    void setActivation(double notUsed);
 
 protected:
     virtual void setType();

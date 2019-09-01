@@ -20,9 +20,7 @@ biorbd::rigidbody::Contacts::Contacts() :
 biorbd::rigidbody::Contacts biorbd::rigidbody::Contacts::DeepCopy() const
 {
     biorbd::rigidbody::Contacts copy;
-    static_cast<RigidBodyDynamics::ConstraintSet&>(copy) = *this;
-    *copy.m_nbreConstraint = *m_nbreConstraint;
-    *copy.m_isBinded = *m_isBinded;
+    copy.DeepCopy(*this);
     return copy;
 }
 

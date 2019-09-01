@@ -35,7 +35,48 @@ biorbd::actuator::Actuators::~Actuators()
 
 }
 
-
+void biorbd::actuator::Actuators::DeepCopy(const biorbd::actuator::Actuators &other)
+{
+    m_all->resize(other.m_all->size());
+    for (unsigned int i=0; i<other.m_all->size(); ++i){
+        if ((*other.m_all)[i].first->type() == biorbd::actuator::TYPE::CONSTANT)
+            (*m_all)[i].first = std::make_shared<biorbd::actuator::ActuatorConstant>(
+                    static_cast<const biorbd::actuator::ActuatorConstant&>( *(*other.m_all)[i].first) );
+        else if ((*other.m_all)[i].first->type() == biorbd::actuator::TYPE::LINEAR)
+            (*m_all)[i].first = std::make_shared<biorbd::actuator::ActuatorLinear>(
+                    static_cast<const biorbd::actuator::ActuatorLinear&>( *(*other.m_all)[i].first) );
+        else if ((*other.m_all)[i].first->type() == biorbd::actuator::TYPE::GAUSS3P)
+            (*m_all)[i].first = std::make_shared<biorbd::actuator::ActuatorGauss3p>(
+                    static_cast<const biorbd::actuator::ActuatorGauss3p&>( *(*other.m_all)[i].first) );
+        else if ((*other.m_all)[i].first->type() == biorbd::actuator::TYPE::GAUSS6P)
+            (*m_all)[i].first = std::make_shared<biorbd::actuator::ActuatorGauss6p>(
+                    static_cast<const biorbd::actuator::ActuatorGauss6p&>( *(*other.m_all)[i].first) );
+        else
+            biorbd::utils::Error::error(false, "Actuator " + biorbd::utils::String(
+                                            biorbd::actuator::TYPE_toStr((*other.m_all)[i].first->type()))
+                                                + " in DeepCopy");
+        if ((*other.m_all)[i].second->type() == biorbd::actuator::TYPE::CONSTANT)
+            (*m_all)[i].second = std::make_shared<biorbd::actuator::ActuatorConstant>(
+                    static_cast<const biorbd::actuator::ActuatorConstant&>( *(*other.m_all)[i].second) );
+        else if ((*other.m_all)[i].second->type() == biorbd::actuator::TYPE::LINEAR)
+            (*m_all)[i].second = std::make_shared<biorbd::actuator::ActuatorLinear>(
+                    static_cast<const biorbd::actuator::ActuatorLinear&>( *(*other.m_all)[i].second) );
+        else if ((*other.m_all)[i].second->type() == biorbd::actuator::TYPE::GAUSS3P)
+            (*m_all)[i].second = std::make_shared<biorbd::actuator::ActuatorGauss3p>(
+                    static_cast<const biorbd::actuator::ActuatorGauss3p&>( *(*other.m_all)[i].second) );
+        else if ((*other.m_all)[i].second->type() == biorbd::actuator::TYPE::GAUSS6P)
+            (*m_all)[i].second = std::make_shared<biorbd::actuator::ActuatorGauss6p>(
+                    static_cast<const biorbd::actuator::ActuatorGauss6p&>( *(*other.m_all)[i].second) );
+        else
+            biorbd::utils::Error::error(false, "Actuator " + biorbd::utils::String(
+                                            biorbd::actuator::TYPE_toStr((*other.m_all)[i].second->type()))
+                                                + " in DeepCopy");
+    }
+    m_isDofSet->resize(other.m_isDofSet->size());
+    for (unsigned int i=0; i<other.m_isDofSet->size(); ++i)
+        (*m_isDofSet)[i] = (*other.m_isDofSet)[i];
+    *m_isClose = *other.m_isClose;
+}
 
 void biorbd::actuator::Actuators::addActuator(const biorbd::actuator::Actuator &act)
 {

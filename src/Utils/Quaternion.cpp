@@ -32,8 +32,7 @@ biorbd::utils::Quaternion::Quaternion (
 biorbd::utils::Quaternion biorbd::utils::Quaternion::DeepCopy() const
 {
     biorbd::utils::Quaternion copy;
-    static_cast<RigidBodyDynamics::Math::Quaternion&>(copy) = *this;
-    *copy.m_Kstab = *m_Kstab;
+    copy.DeepCopy(*this);
     return copy;
 }
 

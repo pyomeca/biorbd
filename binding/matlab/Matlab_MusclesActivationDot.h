@@ -5,6 +5,8 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "Muscles/Muscle.h"
+#include "Muscles/MuscleGroup.h"
 
 void Matlab_MusclesActivationDot( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
@@ -37,7 +39,7 @@ void Matlab_MusclesActivationDot( int, mxArray *plhs[],
         for (unsigned int i=0; i<model->nbMuscleGroups(); ++i)
             for (unsigned int j=0; j<model->muscleGroup(i).nbMuscles(); ++j){
                  // Recueillir dérivées d'activtion
-                adot[cmp]   = model->muscleGroup(i).muscle(j)->activationDot(  *((*(state.begin()+iTime)).begin() + cmpState), areadyNormalized);
+                adot[cmp]   = model->muscleGroup(i).muscle(j).activationDot( state[iTime][cmpState], areadyNormalized);
                 updateKin = false;
                 ++cmp;
                 ++cmpState;

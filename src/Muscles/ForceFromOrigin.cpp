@@ -18,11 +18,17 @@ biorbd::muscles::ForceFromOrigin::ForceFromOrigin(
     setForceFromMuscleGeometry(geo, vectorNorm);
 }
 
-biorbd::muscles::ForceFromOrigin::~ForceFromOrigin()
+biorbd::muscles::ForceFromOrigin biorbd::muscles::ForceFromOrigin::DeepCopy() const
 {
-
+    biorbd::muscles::ForceFromOrigin copy;
+    copy.DeepCopy(*this);
+    return copy;
 }
 
+void biorbd::muscles::ForceFromOrigin::DeepCopy(const biorbd::muscles::ForceFromOrigin &other)
+{
+    biorbd::muscles::Force::DeepCopy(other);
+}
 
 
 void biorbd::muscles::ForceFromOrigin::setForceFromMuscleGeometry(

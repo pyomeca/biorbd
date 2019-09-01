@@ -11,14 +11,35 @@
 #include "RigidBody/Bone.h"
 
 
-biorbd::rigidbody::Markers::Markers()
+biorbd::rigidbody::Markers::Markers() :
+    m_marks(std::make_shared<std::vector<biorbd::rigidbody::NodeBone>>())
 {
     //ctor
+}
+
+biorbd::rigidbody::Markers::Markers(const biorbd::rigidbody::Markers &other) :
+    m_marks(other.m_marks)
+{
+
 }
 
 biorbd::rigidbody::Markers::~Markers()
 {
     //dtor
+}
+
+biorbd::rigidbody::Markers biorbd::rigidbody::Markers::DeepCopy() const
+{
+    biorbd::rigidbody::Markers copy;
+    copy.DeepCopy(*this);
+    return copy;
+}
+
+void biorbd::rigidbody::Markers::DeepCopy(const biorbd::rigidbody::Markers &other)
+{
+    m_marks->resize(other.m_marks->size());
+    for (unsigned int i=0; i<other.m_marks->size(); ++i)
+        (*m_marks)[i] = (*other.m_marks)[i].DeepCopy();
 }
 
 // Ajouter un nouveau marker au pool de markers
@@ -32,13 +53,13 @@ void biorbd::rigidbody::Markers::addMarker(
         int id)
 {
     biorbd::rigidbody::NodeBone tp(pos, name, parentName, technical, anatomical, axesToRemove, id);
-    m_marks.push_back(tp);
+    m_marks->push_back(tp);
 }
 
 const biorbd::rigidbody::NodeBone &biorbd::rigidbody::Markers::marker(
         unsigned int i) const
 {
-    return m_marks[i];
+    return (*m_marks)[i];
 }
 
 std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::marker(
@@ -247,7 +268,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::segmentMark
 
     std::vector<biorbd::rigidbody::NodeBone> pos;
     for (unsigned int i=0; i<nMarkers(); ++i) // passer tous les markers et sélectionner les bons
-        if (!(m_marks.begin()+i)->parent().compare(name))
+        if ((*m_marks)[i].parent().compare(name))
             pos.push_back(marker(Q,i,removeAxis,false));
 
     return pos;
@@ -256,7 +277,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::segmentMark
 
 unsigned int biorbd::rigidbody::Markers::nMarkers() const
 {
-    return static_cast<unsigned int>(m_marks.size());
+    return static_cast<unsigned int>(m_marks->size());
 }
 
 unsigned int biorbd::rigidbody::Markers::nMarkers(unsigned int idxSegment) const
@@ -269,7 +290,7 @@ unsigned int biorbd::rigidbody::Markers::nMarkers(unsigned int idxSegment) const
 
     unsigned int n = 0;
     for (unsigned int i=0; i<nMarkers(); ++i) // passer tous les markers et sélectionner les bons
-        if (!(m_marks.begin()+i)->parent().compare(name))
+        if ((*m_marks)[i].parent().compare(name))
             ++n;
 
     return n;
@@ -351,8 +372,8 @@ unsigned int biorbd::rigidbody::Markers::nTechnicalMarkers()
 {
     unsigned int nTechMarkers = 0;
     if (nTechMarkers == 0) // Si la fonction n'a jamais été appelée encore
-        for (std::vector <biorbd::rigidbody::NodeBone>::iterator it = m_marks.begin(); it!=m_marks.end(); ++it)
-            if ((*it).isTechnical())
+        for (auto mark : *m_marks)
+            if (mark.isTechnical())
                 ++nTechMarkers;
 
     return nTechMarkers;
@@ -369,8 +390,8 @@ unsigned int biorbd::rigidbody::Markers::nTechnicalMarkers(unsigned int idxSegme
     biorbd::utils::String name(model.bone(idxSegment).name());
 
     if (nTechMarkers == 0) // Si la fonction n'a jamais été appelée encore
-        for (std::vector <biorbd::rigidbody::NodeBone>::iterator it = m_marks.begin(); it!=m_marks.end(); ++it)
-            if ((*it).isTechnical() && !(*it).parent().compare(name))
+        for (auto mark : *m_marks)
+            if (mark.isTechnical() && !mark.parent().compare(name))
                 ++nTechMarkers;
 
     return nTechMarkers;
@@ -381,8 +402,8 @@ unsigned int biorbd::rigidbody::Markers::nAnatomicalMarkers()
 {
     unsigned int nAnatMarkers = 0;
     if (nAnatMarkers == 0) // Si la fonction n'a jamais été appelée encore
-        for (std::vector <biorbd::rigidbody::NodeBone>::iterator it = m_marks.begin(); it!=m_marks.end(); ++it)
-            if ((*it).isAnatomical())
+        for (auto mark : *m_marks)
+            if (mark.isAnatomical())
                 ++nAnatMarkers;
 
     return nAnatMarkers;

@@ -35,7 +35,7 @@ biorbd::utils::RotoTrans::RotoTrans(const RigidBodyDynamics::Math::SpatialTransf
 biorbd::utils::RotoTrans biorbd::utils::RotoTrans::DeepCopy() const
 {
     biorbd::utils::RotoTrans copy;
-    static_cast<Eigen::Matrix4d&>(copy) = *this;
+    copy.DeepCopy(*this);
     return copy;
 }
 

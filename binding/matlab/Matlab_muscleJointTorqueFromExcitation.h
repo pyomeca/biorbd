@@ -64,7 +64,7 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
         unsigned int iMus = 0;
         for (unsigned int k=0; k<model->nbMuscleGroups(); ++k)
             for (unsigned int j=0; j<model->muscleGroup(k).nbMuscles(); ++j){
-                (*((*(s.begin()+i)).begin()+iMus)).timeDerivativeActivation(model->muscleGroup(k).muscle(j)->caract(),true);
+                s[i][iMus].timeDerivativeActivation(model->muscleGroup(k).muscle(j).caract(),true);
                 ++iMus;
             }
 

@@ -37,17 +37,15 @@ biorbd::rigidbody::BoneCaracteristics::BoneCaracteristics(
 biorbd::rigidbody::BoneCaracteristics biorbd::rigidbody::BoneCaracteristics::DeepCopy() const
 {
     biorbd::rigidbody::BoneCaracteristics copy;
-    static_cast<RigidBodyDynamics::Body&>(copy) = *this;
-    *copy.m_length = *m_length;
-    *copy.m_mesh = *m_mesh;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::rigidbody::BoneCaracteristics::DeepCopy(const BoneCaracteristics &other)
 {
     static_cast<RigidBodyDynamics::Body&>(*this) = other;
-    m_length = std::make_shared<double>(*other.m_length);
-    m_mesh = std::make_shared<biorbd::rigidbody::BoneMesh>(*other.m_mesh);
+    *m_length = *other.m_length;
+    *m_mesh = other.m_mesh->DeepCopy();
 }
 
 const biorbd::rigidbody::BoneMesh &biorbd::rigidbody::BoneCaracteristics::mesh() const

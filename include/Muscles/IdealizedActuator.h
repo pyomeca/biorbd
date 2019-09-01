@@ -32,9 +32,9 @@ public:
             const biorbd::muscles::PathChangers& pathChangers,
             const biorbd::muscles::StateDynamics& dynamicState);
     IdealizedActuator(
-            const Muscle& muscle);
+            const biorbd::muscles::Muscle& muscle);
     IdealizedActuator(
-            const std::shared_ptr<Muscle> muscle);
+            const std::shared_ptr<biorbd::muscles::Muscle> muscle);
     biorbd::muscles::IdealizedActuator DeepCopy() const;
     void DeepCopy(const biorbd::muscles::IdealizedActuator& other);
 

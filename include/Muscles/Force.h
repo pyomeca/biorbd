@@ -31,6 +31,8 @@ public:
             const biorbd::muscles::Geometry& geo,
             double vectorNorm);
     virtual ~Force();
+    biorbd::muscles::Force DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::Force& other);
 
     // Get et set
     virtual void setForceFromMuscleGeometry(
@@ -42,7 +44,7 @@ public:
             this->Eigen::Vector3d::operator=(other);
             return *this;
         }
-
+    biorbd::muscles::Force& operator=(const biorbd::muscles::Force& other);
 };
 
 }}

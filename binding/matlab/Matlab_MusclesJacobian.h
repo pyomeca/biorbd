@@ -37,9 +37,9 @@ void Matlab_MusclesJacobian( int, mxArray *plhs[],
         for (unsigned int i=0; i<model->nbMuscleGroups(); ++i)
             for (unsigned int j=0; j<model->muscleGroup(i).nbMuscles(); ++j){
                 // Recueillir toutes les longueurs musculaire
-                model->muscleGroup(i).muscle(j)->updateOrientations(*model, *(Q.begin()+iQ), updateKin);
+                model->muscleGroup(i).muscle(j).updateOrientations(*model, Q[iQ], updateKin);
                 updateKin = 1;
-                Eigen::MatrixXd tp = model->muscleGroup(i).muscle(j)->position().jacobian();
+                Eigen::MatrixXd tp = model->muscleGroup(i).muscle(j).position().jacobian();
 
                 // Transférer les données dans une matrice matlab
                 mxArray* jacoByMus = mxCreateDoubleMatrix(static_cast<mwSize>(tp.rows()), static_cast<mwSize>(tp.cols()), mxREAL);

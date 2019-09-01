@@ -12,9 +12,20 @@ biorbd::utils::Timer::Timer(bool startNow) :
         start();
 }
 
-biorbd::utils::Timer::~Timer()
+biorbd::utils::Timer biorbd::utils::Timer::DeepCopy() const
 {
+    biorbd::utils::Timer copy;
+    copy.DeepCopy(*this);
+    return copy;
+}
 
+void biorbd::utils::Timer::DeepCopy(const biorbd::utils::Timer &other)
+{
+    *m_isStarted = *other.m_isStarted;
+    *m_isPaused = *other.m_isPaused;
+    *m_start = *other.m_start;
+    *m_pauseTime = *other.m_pauseTime;
+    *m_totalPauseTime = *other.m_totalPauseTime;
 }
 
 void biorbd::utils::Timer::start()

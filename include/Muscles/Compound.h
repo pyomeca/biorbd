@@ -67,7 +67,6 @@ protected:
     std::shared_ptr<biorbd::muscles::MUSCLE_TYPE> m_type;
     std::shared_ptr<biorbd::muscles::PathChangers> m_pathChanger;
     std::shared_ptr<std::vector<biorbd::muscles::Force>> m_force;
-    void copyForce(const std::shared_ptr<std::vector<biorbd::muscles::Force>>& force);
     virtual void setType()=0;
 
 };

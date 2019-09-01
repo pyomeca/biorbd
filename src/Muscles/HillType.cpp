@@ -163,25 +163,13 @@ biorbd::muscles::HillType::HillType(
 biorbd::muscles::HillType biorbd::muscles::HillType::DeepCopy() const
 {
     biorbd::muscles::HillType copy;
-    copy.biorbd::muscles::Muscle::DeepCopy(*this);
-    *copy.m_damping = *m_damping;
-    *copy.m_FlCE = *m_FlCE;
-    *copy.m_FlPE = *m_FlPE;
-    *copy.m_FvCE = *m_FvCE;
-    *copy.m_cste_FlCE_1 = *m_cste_FlCE_1;
-    *copy.m_cste_FlCE_2 = *m_cste_FlCE_2;
-    *copy.m_cste_FvCE_1 = *m_cste_FvCE_1;
-    *copy.m_cste_FvCE_2 = *m_cste_FvCE_2;
-    *copy.m_cste_FlPE_1 = *m_cste_FlPE_1;
-    *copy.m_cste_FlPE_2 = *m_cste_FlPE_2;
-    *copy.m_cste_forceExcentriqueMultiplier = *m_cste_forceExcentriqueMultiplier;
-    *copy.m_cste_damping = *m_cste_damping;
-    *copy.m_cste_vitesseRaccourMax = *m_cste_vitesseRaccourMax;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::muscles::HillType::DeepCopy(const biorbd::muscles::HillType &other)
 {
+    biorbd::muscles::Muscle::DeepCopy(other);
     *m_damping = *other.m_damping;
     *m_FlCE = *other.m_FlCE;
     *m_FlPE = *other.m_FlPE;

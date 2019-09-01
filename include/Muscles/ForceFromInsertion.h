@@ -19,7 +19,8 @@ public:
     ForceFromInsertion(
             const biorbd::muscles::Geometry& geo,
             double vectorNorm);
-    virtual ~ForceFromInsertion();
+    biorbd::muscles::ForceFromInsertion DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::ForceFromInsertion& other);
 
     // Get et set
     virtual void setForceFromMuscleGeometry(

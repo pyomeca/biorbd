@@ -12,7 +12,8 @@ class BIORBD_API Timer
 {
 public:
     Timer(bool startNow = false);
-    virtual ~Timer();
+    biorbd::utils::Timer DeepCopy() const;
+    void DeepCopy(const biorbd::utils::Timer& other);
 
     void start(); // Start a timer
     bool isStarted();

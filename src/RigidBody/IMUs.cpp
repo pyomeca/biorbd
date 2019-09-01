@@ -29,13 +29,15 @@ biorbd::rigidbody::IMUs::~IMUs()
 biorbd::rigidbody::IMUs biorbd::rigidbody::IMUs::DeepCopy() const
 {
     biorbd::rigidbody::IMUs copy;
-    *copy.m_IMUs = *m_IMUs;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::rigidbody::IMUs::DeepCopy(const biorbd::rigidbody::IMUs &other)
 {
-    *m_IMUs = *other.m_IMUs;
+    m_IMUs->resize(other.m_IMUs->size());
+    for (unsigned int i=0; i<other.m_IMUs->size(); ++i)
+        (*m_IMUs)[i] = (*other.m_IMUs)[i].DeepCopy();
 }
 
 void biorbd::rigidbody::IMUs::addIMU(

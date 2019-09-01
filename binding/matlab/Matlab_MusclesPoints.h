@@ -10,6 +10,7 @@
 #include "Muscles/WrappingCylinder.h"
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/Muscle.h"
+#include "Muscles/PathChangers.h"
 
 void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
@@ -26,7 +27,7 @@ void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
     // Cellules de sortie
     plhs[0] = mxCreateCellMatrix(model->nbMuscleTotal(), Q.size());
     // Utilisable que si nlhs >= 2
-    std::vector<biorbd::utils::String> wrap_type; // forme du wrapping
+    std::vector<biorbd::utils::NODE_TYPE> wrap_type; // forme du wrapping
     std::vector<biorbd::utils::RotoTrans> wrap_RT; // orientation du wrapping
     std::vector<double> wrap_dim1; // dimension du wrapping
     std::vector<double> wrap_dim2; // dimension deux du wrapping
@@ -40,22 +41,22 @@ void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
                 model->UpdateKinematicsCustom(&Q[iQ]);
 
                 // Recueillir tout le chemin musculaire
-                std::vector<biorbd::utils::Node3d> via(model->muscleGroup(i).muscle(j)->musclesPointsInGlobal());
+                std::vector<biorbd::utils::Node3d> via(model->muscleGroup(i).muscle(j).musclesPointsInGlobal());
 
                 // Si le nombre de wrap est > 0, c'est qu'il n'y a pas de viapoints et il n'y a qu'UN wrap
-                if (model->muscleGroup(i).muscle(j)->pathChanger().nbWraps() > 0){
+                if (model->muscleGroup(i).muscle(j).pathChanger().nbWraps() > 0){
                     const biorbd::muscles::WrappingObject& wrappingObject(dynamic_cast<const biorbd::muscles::WrappingObject&>(
-                                                                              model->muscleGroup(0).muscle(0)->pathChanger().object(0)));
+                                                                              model->muscleGroup(0).muscle(0).pathChanger().object(0)));
 
                     // De quel type
-                    const biorbd::utils::String& type(wrappingObject.typeOfNode());
+                    biorbd::utils::NODE_TYPE type(wrappingObject.typeOfNode());
                     wrap_type.push_back(type);
 
                     // Dans quelle orientation
                     wrap_RT.push_back(wrappingObject.RT());
 
                     // Quel est sa dimension
-                    if (!type.tolower().compare("cylinder")){
+                    if (type == biorbd::utils::NODE_TYPE::WRAPPING_CYLINDER){
                         const biorbd::muscles::WrappingCylinder& cylinder(dynamic_cast<const biorbd::muscles::WrappingCylinder&>(wrappingObject));
                         wrap_dim1.push_back(cylinder.rayon());
                         wrap_dim2.push_back(cylinder.length());
@@ -88,7 +89,7 @@ void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
 
         for (unsigned int i=0; i<wrap_RT.size(); ++i){
             // Transcrire les formes dans un tableau matlab
-            mxArray *tp_forme = mxCreateString( wrap_type[i].c_str() );
+            mxArray *tp_forme = mxCreateString( biorbd::utils::NODE_TYPE_toStr(wrap_type[i]) );
 
             // Transcrire les valeurs RT dans un tableau matlab
             mxArray *tp_RT = mxCreateDoubleMatrix(4,4,mxREAL);

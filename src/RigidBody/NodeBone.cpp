@@ -78,23 +78,18 @@ biorbd::rigidbody::NodeBone::NodeBone(
 biorbd::rigidbody::NodeBone biorbd::rigidbody::NodeBone::DeepCopy() const
 {
     biorbd::rigidbody::NodeBone copy;
-    static_cast<biorbd::utils::Node3d&>(copy) = *this;
-    *copy.m_axesRemoved = *this->m_axesRemoved;
-    *copy.m_nbAxesToRemove = *this->m_nbAxesToRemove;
-    *copy.m_technical = *this->m_technical;
-    *copy.m_anatomical = *this->m_anatomical;
-    *copy.m_id = *this->m_id;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::rigidbody::NodeBone::DeepCopy(const biorbd::rigidbody::NodeBone &other)
 {
-    this->biorbd::utils::Node::DeepCopy(other);
-    *this->m_axesRemoved = *other.m_axesRemoved;
-    *this->m_nbAxesToRemove = *other.m_nbAxesToRemove;
-    *this->m_technical = *other.m_technical;
-    *this->m_anatomical = *other.m_anatomical;
-    *this->m_id = *other.m_id;
+    biorbd::utils::Node::DeepCopy(other);
+    *m_axesRemoved = *other.m_axesRemoved;
+    *m_nbAxesToRemove = *other.m_nbAxesToRemove;
+    *m_technical = *other.m_technical;
+    *m_anatomical = *other.m_anatomical;
+    *m_id = *other.m_id;
 }
 
 

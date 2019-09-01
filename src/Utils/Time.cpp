@@ -20,13 +20,15 @@ biorbd::utils::Time::Time(
 biorbd::utils::Time biorbd::utils::Time::DeepCopy() const
 {
     biorbd::utils::Time copy;
-    *copy.m_time = *m_time;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::utils::Time::DeepCopy(const biorbd::utils::Time &other)
 {
-    *m_time = *other.m_time;
+    m_time->resize(other.m_time->size());
+    for (unsigned int i=0; i<other.m_time->size(); ++i)
+        (*m_time)[i] = (*other.m_time)[i];
 }
 
 double biorbd::utils::Time::time(unsigned int t)

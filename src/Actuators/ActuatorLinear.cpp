@@ -56,9 +56,7 @@ biorbd::actuator::ActuatorLinear::~ActuatorLinear()
 biorbd::actuator::ActuatorLinear biorbd::actuator::ActuatorLinear::DeepCopy() const
 {
     biorbd::actuator::ActuatorLinear copy;
-    copy.biorbd::actuator::Actuator::DeepCopy(*this);
-    *copy.m_m = *m_m;
-    *copy.m_b = *m_b;
+    copy.DeepCopy(*this);
     return copy;
 }
 

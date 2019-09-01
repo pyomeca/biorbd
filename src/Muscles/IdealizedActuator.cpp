@@ -68,7 +68,7 @@ biorbd::muscles::IdealizedActuator::IdealizedActuator(
 biorbd::muscles::IdealizedActuator biorbd::muscles::IdealizedActuator::DeepCopy() const
 {
     biorbd::muscles::IdealizedActuator copy;
-    copy.biorbd::muscles::Muscle::DeepCopy(*this);
+    copy.DeepCopy(*this);
     return copy;
 }
 

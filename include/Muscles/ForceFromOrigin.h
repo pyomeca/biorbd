@@ -19,7 +19,8 @@ class BIORBD_API ForceFromOrigin : public biorbd::muscles::Force
         ForceFromOrigin(
                 const biorbd::muscles::Geometry& geo,
                 double vectorNorm);
-        virtual ~ForceFromOrigin();
+        biorbd::muscles::ForceFromOrigin DeepCopy() const;
+        void DeepCopy(const biorbd::muscles::ForceFromOrigin& other);
 
         // Get et set
         virtual void setForceFromMuscleGeometry(

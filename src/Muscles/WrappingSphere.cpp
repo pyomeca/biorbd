@@ -48,8 +48,7 @@ biorbd::muscles::WrappingSphere::WrappingSphere(
 biorbd::muscles::WrappingSphere biorbd::muscles::WrappingSphere::DeepCopy() const
 {
     biorbd::muscles::WrappingSphere copy;
-    copy.biorbd::muscles::WrappingObject::DeepCopy(*this);
-    *copy.m_dia = *m_dia;
+    copy.DeepCopy(*this);
     return copy;
 }
 

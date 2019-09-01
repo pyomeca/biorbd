@@ -13,7 +13,7 @@
 
 biorbd::muscles::Compound::Compound() :
     m_name(std::make_shared<biorbd::utils::String>("")),
-    m_type(std::make_shared<biorbd::muscles::MUSCLE_TYPE>(biorbd::muscles::MUSCLE_TYPE::NO_TYPE)),
+    m_type(std::make_shared<biorbd::muscles::MUSCLE_TYPE>(biorbd::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_pathChanger(std::make_shared<biorbd::muscles::PathChangers>()),
     m_force(std::make_shared<std::vector<biorbd::muscles::Force>>(2))
 {
@@ -23,7 +23,7 @@ biorbd::muscles::Compound::Compound() :
 
 biorbd::muscles::Compound::Compound(const biorbd::utils::String &name) :
     m_name(std::make_shared<biorbd::utils::String>(name)),
-    m_type(std::make_shared<biorbd::muscles::MUSCLE_TYPE>(biorbd::muscles::MUSCLE_TYPE::NO_TYPE)),
+    m_type(std::make_shared<biorbd::muscles::MUSCLE_TYPE>(biorbd::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_pathChanger(std::make_shared<biorbd::muscles::PathChangers>()),
     m_force(std::make_shared<std::vector<biorbd::muscles::Force>>(2))
 {
@@ -35,7 +35,7 @@ biorbd::muscles::Compound::Compound(
         const biorbd::utils::String &name,
         const biorbd::muscles::PathChangers& wrap) :
     m_name(std::make_shared<biorbd::utils::String>(name)),
-    m_type(std::make_shared<biorbd::muscles::MUSCLE_TYPE>(biorbd::muscles::MUSCLE_TYPE::NO_TYPE)),
+    m_type(std::make_shared<biorbd::muscles::MUSCLE_TYPE>(biorbd::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_pathChanger(std::make_shared<biorbd::muscles::PathChangers>(wrap)),
     m_force(std::make_shared<std::vector<biorbd::muscles::Force>>(2))
 {
@@ -69,10 +69,12 @@ biorbd::muscles::Compound::~Compound()
 
 void biorbd::muscles::Compound::DeepCopy(const biorbd::muscles::Compound &other)
 {
-    *m_name = *other.m_name;
+    *m_name = other.m_name->DeepCopy();
     *m_type = *other.m_type;
-    *m_pathChanger = *other.m_pathChanger;
-    *m_force = *other.m_force;
+    *m_pathChanger = other.m_pathChanger->DeepCopy();
+    m_force->resize(other.m_force->size());
+    for (unsigned int i=0; i<other.m_force->size(); ++i)
+        (*m_force)[i] = (*other.m_force)[i].DeepCopy();
 }
 
 const biorbd::utils::String &biorbd::muscles::Compound::name() const
@@ -100,10 +102,5 @@ void biorbd::muscles::Compound::addPathObject(biorbd::utils::Node3d &w)  {
 
 const std::vector<biorbd::muscles::Force>& biorbd::muscles::Compound::force() {
     return *m_force;
-}
-
-void biorbd::muscles::Compound::copyForce(const std::shared_ptr<std::vector<Force> > &force)
-{
-    m_force = force;
 }
 

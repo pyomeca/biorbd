@@ -22,6 +22,7 @@ public:
     Actuators(
             const biorbd::actuator::Actuators& other);
     virtual ~Actuators();
+    void DeepCopy(const biorbd::actuator::Actuators& other);
 
     void addActuator(
             const biorbd::actuator::Actuator &a);

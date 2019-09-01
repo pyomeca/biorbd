@@ -607,7 +607,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
             file.read(name); // Nom du muscle
 
             // Déclaration des variables
-            biorbd::muscles::MUSCLE_TYPE type(biorbd::muscles::MUSCLE_TYPE::NO_TYPE);
+            biorbd::muscles::MUSCLE_TYPE type(biorbd::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE);
             biorbd::muscles::STATE_TYPE stateType(biorbd::muscles::STATE_TYPE::NO_STATE_TYPE);
             biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType(biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
             biorbd::utils::String muscleGroup("");

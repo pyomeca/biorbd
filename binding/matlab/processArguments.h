@@ -1,6 +1,7 @@
 #ifndef MATLAB_PROCESS_ARGUMENTS_H
 #define MATLAB_PROCESS_ARGUMENTS_H
 #include <mex.h>
+#include "Utils/String.h"
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"

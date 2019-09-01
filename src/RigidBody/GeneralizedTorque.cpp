@@ -23,6 +23,18 @@ biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque(const biorbd::rigidbody:
 
 }
 
+biorbd::rigidbody::GeneralizedTorque biorbd::rigidbody::GeneralizedTorque::DeepCopy() const
+{
+    biorbd::rigidbody::GeneralizedTorque copy;
+    copy.DeepCopy(*this);
+    return copy;
+}
+
+void biorbd::rigidbody::GeneralizedTorque::DeepCopy(const biorbd::rigidbody::GeneralizedTorque &other)
+{
+    biorbd::utils::Vector::DeepCopy(other);
+}
+
 biorbd::rigidbody::GeneralizedTorque biorbd::rigidbody::GeneralizedTorque::timeDerivativeActivation(const biorbd::rigidbody::GeneralizedTorque &act)
 {
     // Implémentation de la fonction da/dt = (u-a)/GeneralizedTorque(u,a)

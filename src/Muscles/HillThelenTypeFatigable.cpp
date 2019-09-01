@@ -78,8 +78,7 @@ biorbd::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
 biorbd::muscles::HillThelenTypeFatigable biorbd::muscles::HillThelenTypeFatigable::DeepCopy() const
 {
     biorbd::muscles::HillThelenTypeFatigable copy;
-    copy.biorbd::muscles::HillThelenType::DeepCopy(*this);
-    copy.biorbd::muscles::Fatigable::DeepCopy(*this);
+    copy.DeepCopy(*this);
     return copy;
 }
 

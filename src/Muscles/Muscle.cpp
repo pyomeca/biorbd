@@ -100,9 +100,9 @@ biorbd::muscles::Muscle::~Muscle()
 
 void biorbd::muscles::Muscle::DeepCopy(const biorbd::muscles::Muscle &other)
 {
-    *m_position = *other.m_position;
-    *m_caract = *other.m_caract;
-    *m_state = *other.m_state;
+    *m_position = other.m_position->DeepCopy();
+    *m_caract = other.m_caract->DeepCopy();
+    *m_state = other.m_state->DeepCopy();
 }
 
 void biorbd::muscles::Muscle::updateOrientations(

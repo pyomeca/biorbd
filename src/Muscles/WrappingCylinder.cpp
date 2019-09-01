@@ -57,14 +57,7 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder(
 biorbd::muscles::WrappingCylinder biorbd::muscles::WrappingCylinder::DeepCopy() const
 {
     biorbd::muscles::WrappingCylinder copy;
-    copy.biorbd::muscles::WrappingObject::DeepCopy(*this);
-    *copy.m_dia = *m_dia;
-    *copy.m_length = *m_length;
-    *copy.m_isCylinderPositiveSign = *m_isCylinderPositiveSign;
-    *copy.m_RTtoParent = *m_RTtoParent;
-    *copy.m_p1Wrap = *m_p1Wrap;
-    *copy.m_p2Wrap = *m_p2Wrap;
-    *copy.m_lengthAroundWrap = *m_lengthAroundWrap;
+    copy.DeepCopy(*this);
     return copy;
 }
 
@@ -74,9 +67,9 @@ void biorbd::muscles::WrappingCylinder::DeepCopy(const biorbd::muscles::Wrapping
     *m_dia = *other.m_dia;
     *m_length = *other.m_length;
     *m_isCylinderPositiveSign = *other.m_isCylinderPositiveSign;
-    *m_RTtoParent = *other.m_RTtoParent;
-    *m_p1Wrap = *other.m_p1Wrap;
-    *m_p2Wrap = *other.m_p2Wrap;
+    *m_RTtoParent = other.m_RTtoParent->DeepCopy();
+    *m_p1Wrap = other.m_p1Wrap->DeepCopy();
+    *m_p2Wrap = other.m_p2Wrap->DeepCopy();
     *m_lengthAroundWrap = *other.m_lengthAroundWrap;
 }
 

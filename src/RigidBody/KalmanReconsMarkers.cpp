@@ -33,16 +33,14 @@ biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers(
 biorbd::rigidbody::KalmanReconsMarkers biorbd::rigidbody::KalmanReconsMarkers::DeepCopy() const
 {
     biorbd::rigidbody::KalmanReconsMarkers copy;
-    copy.biorbd::rigidbody::KalmanRecons::DeepCopy(*this);
-    *copy.m_PpInitial = *m_PpInitial;
-    *copy.m_firstIteration = *m_firstIteration;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::rigidbody::KalmanReconsMarkers::DeepCopy(const biorbd::rigidbody::KalmanReconsMarkers &other)
 {
     biorbd::rigidbody::KalmanRecons::DeepCopy(other);
-    *m_PpInitial = *other.m_PpInitial;
+    *m_PpInitial = other.m_PpInitial->DeepCopy();
     *m_firstIteration = *other.m_firstIteration;
 }
 

@@ -25,7 +25,7 @@ biorbd::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(const std::share
 biorbd::muscles::FatigueDynamicStateXia biorbd::muscles::FatigueDynamicStateXia::DeepCopy() const
 {
     biorbd::muscles::FatigueDynamicStateXia copy;
-    copy.biorbd::muscles::FatigueDynamicState::DeepCopy(*this);
+    copy.DeepCopy(*this);
     return copy;
 }
 

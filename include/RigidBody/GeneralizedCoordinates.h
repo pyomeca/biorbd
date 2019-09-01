@@ -18,6 +18,8 @@ public:
     GeneralizedCoordinates(unsigned int i);
     GeneralizedCoordinates(const biorbd::rigidbody::Joints& j);
     virtual ~GeneralizedCoordinates();
+    biorbd::rigidbody::GeneralizedCoordinates DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::GeneralizedCoordinates& other);
 
     template<typename OtherDerived>
         biorbd::rigidbody::GeneralizedCoordinates& operator=(const Eigen::MatrixBase <OtherDerived>& other){

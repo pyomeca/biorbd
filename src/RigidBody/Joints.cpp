@@ -64,27 +64,17 @@ biorbd::rigidbody::Joints::~Joints()
 biorbd::rigidbody::Joints biorbd::rigidbody::Joints::DeepCopy() const
 {
     biorbd::rigidbody::Joints copy;
-    static_cast<RigidBodyDynamics::Model&>(copy) = *this;
-    *copy.m_bones = *m_bones;
-    *copy.m_integrator = *m_integrator;
-    *copy.m_nbRoot = *m_nbRoot;
-    *copy.m_nDof = *m_nDof;
-    *copy.m_nbQ = *m_nbQ;
-    *copy.m_nbQdot = *m_nbQdot;
-    *copy.m_nbQddot = *m_nbQddot;
-    *copy.m_nRotAQuat = *m_nRotAQuat;
-    *copy.m_isRootActuated = *m_isRootActuated;
-    *copy.m_hasExternalForces = *m_hasExternalForces;
-    *copy.m_isKinematicsComputed = *m_isKinematicsComputed;
-    *copy.m_totalMass = *m_totalMass;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::rigidbody::Joints::DeepCopy(const biorbd::rigidbody::Joints &other)
 {
     static_cast<RigidBodyDynamics::Model&>(*this) = other;
-    *m_bones = *other.m_bones;
-    *m_integrator = *other.m_integrator;
+    m_bones->resize(other.m_bones->size());
+    for (unsigned int i=0; i<other.m_bones->size(); ++i)
+        (*m_bones)[i] = (*other.m_bones)[i].DeepCopy();
+    *m_integrator = other.m_integrator->DeepCopy();
     *m_nbRoot = *other.m_nbRoot;
     *m_nDof = *other.m_nDof;
     *m_nbQ = *other.m_nbQ;

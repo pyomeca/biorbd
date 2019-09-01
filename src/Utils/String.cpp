@@ -31,6 +31,15 @@ biorbd::utils::String::String(const std::basic_string<char> &c)
 
 }
 
+biorbd::utils::String &biorbd::utils::String::operator=(const biorbd::utils::String &other)
+{
+    if (this==&other) // check for self-assigment
+        return *this;
+
+    this->std::string::operator=(other);
+    return *this;
+}
+
 biorbd::utils::String biorbd::utils::String::operator+(const char *c){
     String tp = *this;
     tp.append(c);
@@ -69,6 +78,16 @@ biorbd::utils::String biorbd::utils::String::operator()(unsigned int i, unsigned
 biorbd::utils::String::~String()
 {
 
+}
+
+biorbd::utils::String biorbd::utils::String::DeepCopy() const
+{
+    return *this;
+}
+
+void biorbd::utils::String::DeepCopy(const biorbd::utils::String &other)
+{
+    *this = other;
 }
 
 biorbd::utils::String biorbd::utils::String::tolower(const biorbd::utils::String &str){

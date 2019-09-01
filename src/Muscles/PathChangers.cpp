@@ -19,16 +19,15 @@ biorbd::muscles::PathChangers::PathChangers() :
 biorbd::muscles::PathChangers biorbd::muscles::PathChangers::DeepCopy() const
 {
     biorbd::muscles::PathChangers copy;
-    *copy.m_obj = *m_obj;
-    *copy.m_nbWraps = *m_nbWraps;
-    *copy.m_nbVia = *m_nbVia;
-    *copy.m_totalObjects = *m_totalObjects;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::muscles::PathChangers::DeepCopy(const biorbd::muscles::PathChangers &other)
 {
-    *m_obj = *other.m_obj;
+    m_obj->resize(other.m_obj->size());
+    for (unsigned int i=0; i<other.m_obj->size(); ++i)
+        (*m_obj)[i] = (*other.m_obj)[i].DeepCopy();
     *m_nbWraps = *other.m_nbWraps;
     *m_nbVia = *other.m_nbVia;
     *m_totalObjects = *other.m_totalObjects;

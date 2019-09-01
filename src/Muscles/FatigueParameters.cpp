@@ -17,10 +17,7 @@ biorbd::muscles::FatigueParameters::FatigueParameters(
 biorbd::muscles::FatigueParameters biorbd::muscles::FatigueParameters::DeepCopy() const
 {
     biorbd::muscles::FatigueParameters copy;
-    *copy.m_fatigueRate = *m_fatigueRate;
-    *copy.m_recoveryRate = *m_recoveryRate;
-    *copy.m_developFactor = *m_developFactor;
-    *copy.m_recoveryFactor = *m_recoveryFactor;
+    copy.DeepCopy(*this);
     return copy;
 }
 

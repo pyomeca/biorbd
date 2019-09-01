@@ -58,35 +58,25 @@ biorbd::muscles::Geometry::Geometry(
 biorbd::muscles::Geometry biorbd::muscles::Geometry::DeepCopy() const
 {
     biorbd::muscles::Geometry copy;
-    *copy.m_origin = *m_origin;
-    *copy.m_insertion = *m_insertion;
-    *copy.m_originInGlobal = *m_originInGlobal;
-    *copy.m_insertionInGlobal = *m_insertionInGlobal;
-    *copy.m_pointsInGlobal = *m_pointsInGlobal;
-    *copy.m_pointsInLocal = *m_pointsInLocal;
-    *copy.m_jacobian = *m_jacobian;
-    *copy.m_G = *m_G;
-    *copy.m_jacobianLength = *m_jacobianLength;
-    *copy.m_length = *m_length;
-    *copy.m_muscleTendonLength = *m_muscleTendonLength;
-    *copy.m_velocity = *m_velocity;
-    *copy.m_isGeometryComputed = *m_isGeometryComputed;
-    *copy.m_isVelocityComputed = *m_isVelocityComputed;
-    *copy.m_posAndJacoWereForced = *m_posAndJacoWereForced;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::muscles::Geometry::DeepCopy(const biorbd::muscles::Geometry &other)
 {
-    *m_origin = *other.m_origin;
-    *m_insertion = *other.m_insertion;
-    *m_originInGlobal = *other.m_originInGlobal;
-    *m_insertionInGlobal = *other.m_insertionInGlobal;
-    *m_pointsInGlobal = *other.m_pointsInGlobal;
-    *m_pointsInLocal = *other.m_pointsInLocal;
-    *m_jacobian = *other.m_jacobian;
-    *m_G = *other.m_G;
-    *m_jacobianLength = *other.m_jacobianLength;
+    *m_origin = other.m_origin->DeepCopy();
+    *m_insertion = other.m_insertion->DeepCopy();
+    *m_originInGlobal = other.m_originInGlobal->DeepCopy();
+    *m_insertionInGlobal = other.m_insertionInGlobal->DeepCopy();
+    m_pointsInGlobal->resize(other.m_pointsInGlobal->size());
+    for (unsigned int i=0; i<other.m_pointsInGlobal->size(); ++i)
+        (*m_pointsInGlobal)[i] = (*other.m_pointsInGlobal)[i].DeepCopy();
+    m_pointsInLocal->resize(other.m_pointsInLocal->size());
+    for (unsigned int i=0; i<other.m_pointsInLocal->size(); ++i)
+        (*m_pointsInLocal)[i] = (*other.m_pointsInLocal)[i].DeepCopy();
+    *m_jacobian = other.m_jacobian->DeepCopy();
+    *m_G = other.m_G->DeepCopy();
+    *m_jacobianLength = other.m_jacobianLength->DeepCopy();
     *m_length = *other.m_length;
     *m_muscleTendonLength = *other.m_muscleTendonLength;
     *m_velocity = *other.m_velocity;

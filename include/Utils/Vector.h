@@ -14,6 +14,8 @@ public:
     template<typename OtherDerived> Vector(const Eigen::MatrixBase<OtherDerived>& other) :
         Eigen::VectorXd(other){}
     Vector(unsigned int i);
+    biorbd::utils::Vector DeepCopy() const;
+    void DeepCopy(const biorbd::utils::Vector& other);
 
     double norm(
             unsigned int p = 2,

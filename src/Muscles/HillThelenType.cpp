@@ -68,7 +68,7 @@ biorbd::muscles::HillThelenType::HillThelenType(
 biorbd::muscles::HillThelenType biorbd::muscles::HillThelenType::DeepCopy() const
 {
     biorbd::muscles::HillThelenType copy;
-    copy.biorbd::muscles::HillType::DeepCopy(*this);
+    copy.DeepCopy(*this);
     return copy;
 }
 

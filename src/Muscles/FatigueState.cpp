@@ -54,10 +54,7 @@ biorbd::muscles::FatigueState::~FatigueState()
 biorbd::muscles::FatigueState biorbd::muscles::FatigueState::DeepCopy() const
 {
     biorbd::muscles::FatigueState copy;
-    *copy.m_activeFibers = *m_activeFibers;
-    *copy.m_fatiguedFibers = *m_fatiguedFibers;
-    *copy.m_restingFibers = *m_restingFibers;
-    *copy.m_type = *m_type;
+    copy.DeepCopy(*this);
     return copy;
 }
 

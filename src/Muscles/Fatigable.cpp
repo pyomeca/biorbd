@@ -37,7 +37,7 @@ biorbd::muscles::Fatigable::~Fatigable()
 
 void biorbd::muscles::Fatigable::DeepCopy(const biorbd::muscles::Fatigable &other)
 {
-    *m_fatigueState = *other.m_fatigueState;
+    *m_fatigueState = other.m_fatigueState->DeepCopy();
 }
 
 biorbd::muscles::FatigueState& biorbd::muscles::Fatigable::fatigueState()

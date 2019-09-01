@@ -5,6 +5,7 @@
 #include "Muscles/FatigueParameters.h"
 
 biorbd::muscles::Caracteristics::Caracteristics() :
+    biorbd::utils::ShallowCopyObject (),
     m_optimalLength(std::make_shared<double>(0)),
     m_fIsoMax(std::make_shared<double>(0)),
     m_PCSA(std::make_shared<double>(0)),
@@ -20,6 +21,7 @@ biorbd::muscles::Caracteristics::Caracteristics() :
 }
 
 biorbd::muscles::Caracteristics::Caracteristics(const biorbd::muscles::Caracteristics &other) :
+    biorbd::utils::ShallowCopyObject (other),
     m_optimalLength(other.m_optimalLength),
     m_fIsoMax(other.m_fIsoMax),
     m_PCSA(other.m_PCSA),
@@ -45,6 +47,7 @@ biorbd::muscles::Caracteristics::Caracteristics(
         double GeneralizedTorqueAct,
         double GeneralizedTorqueDeact,
         double minAct):
+    biorbd::utils::ShallowCopyObject (),
     m_optimalLength(std::make_shared<double>(optLength)),
     m_fIsoMax(std::make_shared<double>(fmax)),
     m_PCSA(std::make_shared<double>(PCSA)),
@@ -67,31 +70,24 @@ biorbd::muscles::Caracteristics::~Caracteristics()
 biorbd::muscles::Caracteristics biorbd::muscles::Caracteristics::DeepCopy() const
 {
     biorbd::muscles::Caracteristics copy;
-    *copy.m_optimalLength = *m_optimalLength;
-    *copy.m_fIsoMax = *m_fIsoMax;
-    *copy.m_PCSA = *m_PCSA;
-    *copy.m_tendonSlackLength = *m_tendonSlackLength;
-    *copy.m_pennationAngle = *m_pennationAngle;
-    *copy.m_stateMax = *m_stateMax;
-    *copy.m_minActivation = *m_minActivation;
-    *copy.m_GeneralizedTorqueActivation = *m_GeneralizedTorqueActivation;
-    *copy.m_GeneralizedTorqueDeactivation = *m_GeneralizedTorqueDeactivation;
-    *copy.m_fatigueParameters = *m_fatigueParameters;
+    copy.DeepCopy(*this);
     return copy;
 }
-
+#include<iostream>
 void biorbd::muscles::Caracteristics::DeepCopy(const biorbd::muscles::Caracteristics &other)
 {
+    std::cout << this->getObjectId() << std::endl;
+    std::cout << other.getObjectId() << std::endl;
     *m_optimalLength = *other.m_optimalLength;
     *m_fIsoMax = *other.m_fIsoMax;
     *m_PCSA = *other.m_PCSA;
     *m_tendonSlackLength = *other.m_tendonSlackLength;
     *m_pennationAngle = *other.m_pennationAngle;
-    *m_stateMax = *other.m_stateMax;
+    *m_stateMax = other.m_stateMax->DeepCopy();
     *m_minActivation = *other.m_minActivation;
     *m_GeneralizedTorqueActivation = *other.m_GeneralizedTorqueActivation;
     *m_GeneralizedTorqueDeactivation = *other.m_GeneralizedTorqueDeactivation;
-    *m_fatigueParameters = *other.m_fatigueParameters;
+    *m_fatigueParameters = other.m_fatigueParameters->DeepCopy();
 }
 
 // Get et Set

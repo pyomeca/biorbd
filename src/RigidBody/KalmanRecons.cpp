@@ -48,11 +48,11 @@ void biorbd::rigidbody::KalmanRecons::DeepCopy(const biorbd::rigidbody::KalmanRe
     *m_Te = *other.m_Te;
     *m_nDof = *other.m_nDof;
     *m_nMeasure = *other.m_nMeasure;
-    *m_xp = *other.m_xp;
-    *m_A = *other.m_A;
-    *m_Q = *other.m_Q;
-    *m_R = *other.m_R;
-    *m_Pp = *other.m_Pp;
+    *m_xp = other.m_xp->DeepCopy();
+    *m_A = other.m_A->DeepCopy();
+    *m_Q = other.m_Q->DeepCopy();
+    *m_R = other.m_R->DeepCopy();
+    *m_Pp = other.m_Pp->DeepCopy();
 }
 
 void biorbd::rigidbody::KalmanRecons::iteration(

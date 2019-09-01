@@ -32,13 +32,15 @@ biorbd::muscles::Muscles::~Muscles()
 biorbd::muscles::Muscles biorbd::muscles::Muscles::DeepCopy() const
 {
     biorbd::muscles::Muscles copy;
-    *copy.m_mus = *m_mus;
+    copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::muscles::Muscles::DeepCopy(const biorbd::muscles::Muscles &other)
 {
-    *m_mus = *other.m_mus;
+    m_mus->resize(other.m_mus->size());
+    for (unsigned int i=0; i<other.m_mus->size(); ++i)
+        (*m_mus)[i] = (*other.m_mus)[i];
 }
 
 

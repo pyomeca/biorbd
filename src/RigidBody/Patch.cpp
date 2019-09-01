@@ -10,7 +10,7 @@ biorbd::rigidbody::Patch::Patch(const Eigen::Vector3i& points) :
 biorbd::rigidbody::Patch biorbd::rigidbody::Patch::DeepCopy() const
 {
     biorbd::rigidbody::Patch copy;
-    *copy.m_patch = *m_patch;
+    copy.DeepCopy(*this);
     return copy;
 }
 
