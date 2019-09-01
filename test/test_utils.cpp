@@ -7,6 +7,30 @@
 #include "Utils/Node3d.h"
 #include "Utils/RotoTransNode.h"
 
+TEST(ShallowCopy, DeepCopy){
+    // DeepCopying a shallow copy, should also change the reference
+    // Warning that may be surprising because one may be tend to DeepCopy
+    // itself afterward, this doesn't release the shallowcopy referencing
+    biorbd::utils::Node3d MainNode(0, 0, 0, "NoName", "NoParent");
+    biorbd::utils::Node3d ShallowToDeep(MainNode);
+    biorbd::utils::Node3d NewNode(0, 0, 0, "MyName", "MyParent");
+    EXPECT_STREQ(MainNode.name().c_str(), "NoName");
+    EXPECT_STREQ(ShallowToDeep.name().c_str(), "NoName");
+    EXPECT_STREQ(NewNode.name().c_str(), "MyName");
+    ShallowToDeep.setName("StillNoName");
+    EXPECT_STREQ(MainNode.name().c_str(), "StillNoName");
+    EXPECT_STREQ(ShallowToDeep.name().c_str(), "StillNoName");
+    EXPECT_STREQ(NewNode.name().c_str(), "MyName");
+    ShallowToDeep.DeepCopy(NewNode);
+    EXPECT_STREQ(MainNode.name().c_str(), "MyName");
+    EXPECT_STREQ(ShallowToDeep.name().c_str(), "MyName");
+    EXPECT_STREQ(NewNode.name().c_str(), "MyName");
+    ShallowToDeep.setName("BackToNoName");
+    EXPECT_STREQ(MainNode.name().c_str(), "BackToNoName");
+    EXPECT_STREQ(ShallowToDeep.name().c_str(), "BackToNoName");
+    EXPECT_STREQ(NewNode.name().c_str(), "MyName");
+}
+
 TEST(Path, Create){
     {
         biorbd::utils::Path emptyPath;

@@ -5,7 +5,6 @@
 #include "Muscles/FatigueParameters.h"
 
 biorbd::muscles::Caracteristics::Caracteristics() :
-    biorbd::utils::ShallowCopyObject (),
     m_optimalLength(std::make_shared<double>(0)),
     m_fIsoMax(std::make_shared<double>(0)),
     m_PCSA(std::make_shared<double>(0)),
@@ -21,7 +20,6 @@ biorbd::muscles::Caracteristics::Caracteristics() :
 }
 
 biorbd::muscles::Caracteristics::Caracteristics(const biorbd::muscles::Caracteristics &other) :
-    biorbd::utils::ShallowCopyObject (other),
     m_optimalLength(other.m_optimalLength),
     m_fIsoMax(other.m_fIsoMax),
     m_PCSA(other.m_PCSA),
@@ -47,7 +45,6 @@ biorbd::muscles::Caracteristics::Caracteristics(
         double GeneralizedTorqueAct,
         double GeneralizedTorqueDeact,
         double minAct):
-    biorbd::utils::ShallowCopyObject (),
     m_optimalLength(std::make_shared<double>(optLength)),
     m_fIsoMax(std::make_shared<double>(fmax)),
     m_PCSA(std::make_shared<double>(PCSA)),
@@ -76,8 +73,6 @@ biorbd::muscles::Caracteristics biorbd::muscles::Caracteristics::DeepCopy() cons
 #include<iostream>
 void biorbd::muscles::Caracteristics::DeepCopy(const biorbd::muscles::Caracteristics &other)
 {
-    std::cout << this->getObjectId() << std::endl;
-    std::cout << other.getObjectId() << std::endl;
     *m_optimalLength = *other.m_optimalLength;
     *m_fIsoMax = *other.m_fIsoMax;
     *m_PCSA = *other.m_PCSA;
