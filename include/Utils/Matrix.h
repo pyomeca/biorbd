@@ -18,9 +18,6 @@ public:
     template<typename OtherDerived> Matrix(const Eigen::MatrixBase<OtherDerived>& other) :
         Eigen::MatrixXd(other){}
     Matrix(unsigned int i, unsigned int j);
-    biorbd::utils::Matrix DeepCopy() const;
-    void DeepCopy(const biorbd::utils::Matrix& other);
-
 
     template<typename OtherDerived>
         biorbd::utils::Matrix& operator=(const Eigen::MatrixBase <OtherDerived>& other){

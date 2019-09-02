@@ -30,7 +30,7 @@ biorbd::utils::RotoTransNode biorbd::utils::RotoTransNode::DeepCopy() const
 
 void biorbd::utils::RotoTransNode::DeepCopy(const RotoTransNode &other)
 {
-    biorbd::utils::RotoTrans::DeepCopy(other);
+    *this = static_cast<Eigen::Matrix4d>(other);
     biorbd::utils::Node::DeepCopy(other);
 }
 

@@ -45,8 +45,8 @@ biorbd::utils::Node::~Node()
 void biorbd::utils::Node::DeepCopy(
         const biorbd::utils::Node &other)
 {
-    *m_name = other.m_name->DeepCopy();
-    *m_parentName = other.m_parentName->DeepCopy();
+    *m_name = *other.m_name;
+    *m_parentName = *other.m_parentName;
     *m_typeOfNode = *other.m_typeOfNode;
 }
 

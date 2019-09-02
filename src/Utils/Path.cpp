@@ -71,12 +71,12 @@ biorbd::utils::Path biorbd::utils::Path::DeepCopy() const
 
 void biorbd::utils::Path::DeepCopy(const Path &other)
 {
-    *m_path = other.m_path->DeepCopy();
-    *m_originalPath = other.m_originalPath->DeepCopy();
-    *m_folder = other.m_folder->DeepCopy();
+    *m_path = *other.m_path;
+    *m_originalPath = *other.m_originalPath;
+    *m_folder = *other.m_folder;
     *m_isFolderAbsolute = *other.m_isFolderAbsolute;
-    *m_filename = other.m_filename->DeepCopy();
-    *m_extension = other.m_extension->DeepCopy();
+    *m_filename = *other.m_filename;
+    *m_extension = *other.m_extension;
 }
 
 bool biorbd::utils::Path::isFileExist() const

@@ -22,15 +22,3 @@ biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque(const biorbd::rigidbody:
 {
 
 }
-
-biorbd::rigidbody::GeneralizedTorque biorbd::rigidbody::GeneralizedTorque::DeepCopy() const
-{
-    biorbd::rigidbody::GeneralizedTorque copy;
-    copy.DeepCopy(*this);
-    return copy;
-}
-
-void biorbd::rigidbody::GeneralizedTorque::DeepCopy(const biorbd::rigidbody::GeneralizedTorque &other)
-{
-    biorbd::utils::Vector::DeepCopy(other);
-}

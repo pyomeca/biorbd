@@ -6,14 +6,14 @@
 
 biorbd::utils::Quaternion::Quaternion () :
     RigidBodyDynamics::Math::Quaternion(),
-    m_Kstab(std::make_shared<double>(100))
+    m_Kstab(100)
 {
 
 }
 
 biorbd::utils::Quaternion::Quaternion (const Eigen::Vector4d &vec4) :
     RigidBodyDynamics::Math::Quaternion(vec4),
-    m_Kstab(std::make_shared<double>(100))
+    m_Kstab(100)
 {
 
 }
@@ -24,29 +24,16 @@ biorbd::utils::Quaternion::Quaternion (
         double z,
         double w) :
     RigidBodyDynamics::Math::Quaternion(x, y, z, w),
-    m_Kstab(std::make_shared<double>(100))
+    m_Kstab(100)
 {
 
-}
-
-biorbd::utils::Quaternion biorbd::utils::Quaternion::DeepCopy() const
-{
-    biorbd::utils::Quaternion copy;
-    copy.DeepCopy(*this);
-    return copy;
-}
-
-void biorbd::utils::Quaternion::DeepCopy(const biorbd::utils::Quaternion &other)
-{
-    static_cast<RigidBodyDynamics::Math::Quaternion&>(*this) = other;
-    *m_Kstab = *other.m_Kstab;
 }
 
 biorbd::utils::Quaternion::Quaternion (
         const Eigen::Vector3d &vec4,
         double w) :
     RigidBodyDynamics::Math::Quaternion(vec4(0), vec4(1), vec4(2), w),
-    m_Kstab(std::make_shared<double>(100))
+    m_Kstab(100)
 {
 
 }
@@ -95,7 +82,7 @@ void biorbd::utils::Quaternion::derivate(
             qz, -qy,  qx,  qw;
 
     // Ajout du paramètre de stabilisation
-    Eigen::Vector4d w_tp (*m_Kstab*w.norm()*(1-this->norm()), w(0), w(1), w(2));
+    Eigen::Vector4d w_tp (m_Kstab*w.norm()*(1-this->norm()), w(0), w(1), w(2));
     biorbd::utils::Quaternion quatDot(0.5 * Q * w_tp);
     biorbd::utils::Quaternion quatDot_tp(Eigen::Vector4d(quatDot(1), quatDot(2), quatDot(3), quatDot(0)));
     *this =  quatDot_tp; // Le quaternion est tourné à cause de la facon dont est faite la multiplication

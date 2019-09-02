@@ -17,8 +17,6 @@ public:
         biorbd::utils::Vector(other){}
     GeneralizedTorque(unsigned int i);
     GeneralizedTorque(const biorbd::rigidbody::Joints& j);
-    biorbd::rigidbody::GeneralizedTorque DeepCopy() const;
-    void DeepCopy(const biorbd::rigidbody::GeneralizedTorque& other);
 
     template<typename OtherDerived>
         biorbd::rigidbody::GeneralizedTorque& operator=(const Eigen::MatrixBase <OtherDerived>& other){

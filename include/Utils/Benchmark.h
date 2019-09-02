@@ -24,16 +24,14 @@ public:
     double getLap(const biorbd::utils::String&);
     double stopTimer(const biorbd::utils::String&);
     static void wasteTime(double timeInSec);
-    biorbd::utils::Benchmark DeepCopy() const;
-    void DeepCopy(const biorbd::utils::Benchmark& other);
 
     // Counters
     void addToCounter(const biorbd::utils::String&); // Start a counter to count
     int getCount(const biorbd::utils::String&); // Get number of counts
 
 protected:
-    std::shared_ptr<std::map<biorbd::utils::String, biorbd::utils::Timer>> m_timers;
-    std::shared_ptr<std::map<biorbd::utils::String, int>> m_counts;
+    std::map<biorbd::utils::String, biorbd::utils::Timer> m_timers;
+    std::map<biorbd::utils::String, int> m_counts;
 
 };
 

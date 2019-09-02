@@ -28,15 +28,3 @@ biorbd::rigidbody::GeneralizedCoordinates::~GeneralizedCoordinates()
 {
 
 }
-
-biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::GeneralizedCoordinates::DeepCopy() const
-{
-    biorbd::rigidbody::GeneralizedCoordinates copy;
-    copy.DeepCopy(*this);
-    return copy;
-}
-
-void biorbd::rigidbody::GeneralizedCoordinates::DeepCopy(const biorbd::rigidbody::GeneralizedCoordinates &other)
-{
-    biorbd::utils::Vector::DeepCopy(other);
-}

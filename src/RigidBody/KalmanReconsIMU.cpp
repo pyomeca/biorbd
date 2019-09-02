@@ -38,7 +38,7 @@ biorbd::rigidbody::KalmanReconsIMU biorbd::rigidbody::KalmanReconsIMU::DeepCopy(
 void biorbd::rigidbody::KalmanReconsIMU::DeepCopy(const biorbd::rigidbody::KalmanReconsIMU &other)
 {
     biorbd::rigidbody::KalmanRecons::DeepCopy(other);
-    *m_PpInitial = other.m_PpInitial->DeepCopy();
+    *m_PpInitial = *other.m_PpInitial;
     *m_firstIteration = *other.m_firstIteration;
 }
 

@@ -55,7 +55,7 @@ void biorbd::actuator::Actuator::DeepCopy(const biorbd::actuator::Actuator &othe
 {
     *m_type = *other.m_type;
     *m_direction = *other.m_direction;
-    *m_jointName = other.m_jointName->DeepCopy();
+    *m_jointName = *other.m_jointName;
     *m_dofIdx = *other.m_dofIdx;
 }
 

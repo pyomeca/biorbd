@@ -69,7 +69,7 @@ biorbd::muscles::Compound::~Compound()
 
 void biorbd::muscles::Compound::DeepCopy(const biorbd::muscles::Compound &other)
 {
-    *m_name = other.m_name->DeepCopy();
+    *m_name = *other.m_name;
     *m_type = *other.m_type;
     *m_pathChanger = other.m_pathChanger->DeepCopy();
     m_force->resize(other.m_force->size());

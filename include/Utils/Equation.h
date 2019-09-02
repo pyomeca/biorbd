@@ -17,8 +17,6 @@ public:
     Equation(const char *c);
     Equation(const biorbd::utils::String &s);
     Equation(const std::basic_string<char> &c);
-    biorbd::utils::Equation DeepCopy() const;
-    void DeepCopy(const biorbd::utils::Equation& other);
 
     static std::vector<biorbd::utils::Equation> splitIntoEquation(
             biorbd::utils::Equation, const std::map<biorbd::utils::Equation, double>&);

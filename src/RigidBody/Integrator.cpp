@@ -39,7 +39,7 @@ void biorbd::rigidbody::Integrator::DeepCopy(const biorbd::rigidbody::Integrator
     m_times->resize(other.m_times->size());
     for (unsigned int i=0; i<other.m_times->size(); ++i)
         (*m_times)[i] = (*other.m_times)[i];
-    *m_u = other.m_u->DeepCopy();
+    *m_u = *other.m_u;
 }
 
 void biorbd::rigidbody::Integrator::operator() (

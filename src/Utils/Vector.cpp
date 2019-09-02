@@ -15,16 +15,6 @@ biorbd::utils::Vector::Vector(unsigned int i) :
 
 }
 
-biorbd::utils::Vector biorbd::utils::Vector::DeepCopy() const
-{
-    return *this;
-}
-
-void biorbd::utils::Vector::DeepCopy(const biorbd::utils::Vector &other)
-{
-    *this = other;
-}
-
 double biorbd::utils::Vector::norm(
         unsigned int p,
         bool skipRoot)

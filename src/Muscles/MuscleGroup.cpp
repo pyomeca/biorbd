@@ -65,9 +65,9 @@ void biorbd::muscles::MuscleGroup::DeepCopy(const biorbd::muscles::MuscleGroup &
             biorbd::utils::Error::error(false, "DeepCopy was not prepared to copy " + biorbd::utils::String(biorbd::muscles::MUSCLE_TYPE_toStr((*other.m_mus)[i]->type())) + " type");
     }
     *m_mus = *other.m_mus;
-    *m_name = other.m_name->DeepCopy();
-    *m_originName = other.m_originName->DeepCopy();
-    *m_insertName = other.m_insertName->DeepCopy();
+    *m_name = *other.m_name;
+    *m_originName = *other.m_originName;
+    *m_insertName = *other.m_insertName;
 }
 
 void biorbd::muscles::MuscleGroup::addMuscle(

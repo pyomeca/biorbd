@@ -22,8 +22,6 @@ public:
             double y,
             double z,
             double w);
-    biorbd::utils::Quaternion DeepCopy() const;
-    void DeepCopy(const biorbd::utils::Quaternion& other);
 
     Quaternion& operator=(const Eigen::Vector4d& vec4);
     double w() const;
@@ -33,7 +31,7 @@ public:
 
     void derivate(const Eigen::VectorXd &w);
 protected:
-    std::shared_ptr<double> m_Kstab; // Facteur de stabilisation lors de la derivation
+    double m_Kstab; // Facteur de stabilisation lors de la derivation
 
 };
 

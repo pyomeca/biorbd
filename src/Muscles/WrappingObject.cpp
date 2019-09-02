@@ -52,7 +52,7 @@ biorbd::muscles::WrappingObject::WrappingObject(
 void biorbd::muscles::WrappingObject::DeepCopy(const biorbd::muscles::WrappingObject &other)
 {
     biorbd::utils::Node3d::DeepCopy(other);
-    *m_RT = other.m_RT->DeepCopy();
+    *m_RT = *other.m_RT;
 }
 
 const biorbd::utils::RotoTrans &biorbd::muscles::WrappingObject::RT() const

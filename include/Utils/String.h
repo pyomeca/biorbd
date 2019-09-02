@@ -22,8 +22,6 @@ public:
     String operator()(unsigned int) const;
     String operator()(unsigned int, unsigned int) const;
     virtual ~String();
-    biorbd::utils::String DeepCopy() const;
-    void DeepCopy(const biorbd::utils::String& other);
 
     static biorbd::utils::String tolower(const biorbd::utils::String &str); // convert a string to a lower case string
     biorbd::utils::String tolower() const;

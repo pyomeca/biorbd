@@ -15,12 +15,10 @@ public:
     Time(
             double timeStep,
             unsigned int nbSteps);
-    biorbd::utils::Time DeepCopy() const;
-    void DeepCopy(const biorbd::utils::Time& other);
 
     double time(unsigned int t); // Return time at index t
 protected:
-    std::shared_ptr<std::vector<double>> m_time;
+    std::vector<double> m_time;
 
 };
 

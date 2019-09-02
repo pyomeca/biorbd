@@ -74,9 +74,9 @@ void biorbd::muscles::Geometry::DeepCopy(const biorbd::muscles::Geometry &other)
     m_pointsInLocal->resize(other.m_pointsInLocal->size());
     for (unsigned int i=0; i<other.m_pointsInLocal->size(); ++i)
         (*m_pointsInLocal)[i] = (*other.m_pointsInLocal)[i].DeepCopy();
-    *m_jacobian = other.m_jacobian->DeepCopy();
-    *m_G = other.m_G->DeepCopy();
-    *m_jacobianLength = other.m_jacobianLength->DeepCopy();
+    *m_jacobian = *other.m_jacobian;
+    *m_G = *other.m_G;
+    *m_jacobianLength = *other.m_jacobianLength;
     *m_length = *other.m_length;
     *m_muscleTendonLength = *other.m_muscleTendonLength;
     *m_velocity = *other.m_velocity;

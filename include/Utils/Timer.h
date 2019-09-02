@@ -12,8 +12,6 @@ class BIORBD_API Timer
 {
 public:
     Timer(bool startNow = false);
-    biorbd::utils::Timer DeepCopy() const;
-    void DeepCopy(const biorbd::utils::Timer& other);
 
     void start(); // Start a timer
     bool isStarted();
@@ -26,11 +24,11 @@ protected:
     void addPauseTime();
     double getTime(const std::clock_t&);
 
-    std::shared_ptr<bool> m_isStarted;
-    std::shared_ptr<bool> m_isPaused;
-    std::shared_ptr<std::clock_t> m_start;
-    std::shared_ptr<std::clock_t> m_pauseTime;
-    std::shared_ptr<double> m_totalPauseTime;
+    bool m_isStarted;
+    bool m_isPaused;
+    std::clock_t m_start;
+    std::clock_t m_pauseTime;
+    double m_totalPauseTime;
 
 };
 

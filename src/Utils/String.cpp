@@ -80,16 +80,6 @@ biorbd::utils::String::~String()
 
 }
 
-biorbd::utils::String biorbd::utils::String::DeepCopy() const
-{
-    return *this;
-}
-
-void biorbd::utils::String::DeepCopy(const biorbd::utils::String &other)
-{
-    *this = other;
-}
-
 biorbd::utils::String biorbd::utils::String::tolower(const biorbd::utils::String &str){
     biorbd::utils::String new_str = str;
     std::transform(new_str.begin(), new_str.end(), new_str.begin(), ::tolower);

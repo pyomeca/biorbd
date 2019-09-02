@@ -125,8 +125,8 @@ void biorbd::rigidbody::Bone::DeepCopy(const biorbd::rigidbody::Bone &other)
     biorbd::utils::Node::DeepCopy(other);
     *m_idxPF = *other.m_idxPF;
     *m_cor = *other.m_cor;
-    *m_seqT = other.m_seqT->DeepCopy();
-    *m_seqR = other.m_seqR->DeepCopy();
+    *m_seqT = *other.m_seqT;
+    *m_seqR = *other.m_seqR;
     *m_nDof = *other.m_nDof;
     *m_nQdot = *other.m_nQdot;
     *m_nQddot = *other.m_nQddot;
@@ -144,7 +144,7 @@ void biorbd::rigidbody::Bone::DeepCopy(const biorbd::rigidbody::Bone &other)
     *m_sequenceRot = *other.m_sequenceRot;
     m_nameDof->resize(other.m_nameDof->size());
     for (unsigned int i=0; i<other.m_nameDof->size(); ++i)
-        (*m_nameDof)[i] = (*other.m_nameDof)[i].DeepCopy();
+        (*m_nameDof)[i] = (*other.m_nameDof)[i];
     *m_dofPosition = *other.m_dofPosition;
     *m_caract = other.m_caract->DeepCopy();
     m_dofCaract->resize(other.m_dofCaract->size());
