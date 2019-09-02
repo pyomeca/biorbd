@@ -59,7 +59,7 @@ bool biorbd::utils::IfStream::reachSpecificTag(const biorbd::utils::String& tag)
         if (!text.tolower().compare(tag))
             return true;
 
-    biorbd::utils::String outMessage = tag + " parameter could not be found in Data file..";
+    biorbd::utils::String outMessage(tag + " parameter could not be found in Data file..");
     biorbd::utils::Error::error(0, outMessage);
     return false; // Il est impossible qu'on se rende ici, mais c'est mieux d'avoir un return pour le compilateur
 }

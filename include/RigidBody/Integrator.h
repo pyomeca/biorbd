@@ -27,14 +27,18 @@ public:
 
     void integrate(
             biorbd::rigidbody::Joints &model,
-            const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::utils::Vector&,
-            double,
-            double,
-            double);
-    void operator() ( const state_type &x , state_type &dxdt , double t );
+            const biorbd::utils::Vector& Q_Qdot,
+            const biorbd::utils::Vector& u,
+            double t0,
+            double tend,
+            double timeStep);
+    void operator() (
+            const state_type &x,
+            state_type &dxdt,
+            double t );
 
-    biorbd::rigidbody::GeneralizedCoordinates getX(unsigned int ); // Return the Q for a given step
+    biorbd::utils::Vector getX(
+            unsigned int idx); // Return the Q for a given step
     void showAll(); // Show every steps with every dof
     unsigned int steps() const;
 protected:

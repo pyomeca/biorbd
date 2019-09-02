@@ -13,6 +13,7 @@ biorbd::muscles::StateDynamics::StateDynamics(double excitation,
     m_previousActivation(std::make_shared<double>(0)),
     m_activationDot(std::make_shared<double>(0))
 {
+    setType();
 }
 
 biorbd::muscles::StateDynamics::StateDynamics(

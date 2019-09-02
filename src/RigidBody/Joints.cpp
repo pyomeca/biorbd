@@ -143,7 +143,7 @@ void biorbd::rigidbody::Joints::integrateKinematics(
         const biorbd::rigidbody::GeneralizedCoordinates& QDot,
         const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorque)
 {
-    biorbd::rigidbody::GeneralizedCoordinates v(static_cast<unsigned int>(Q.rows()+QDot.rows()));
+    biorbd::utils::Vector v(static_cast<unsigned int>(Q.rows()+QDot.rows()));
     v << Q,QDot;
     m_integrator->integrate(*this, v, GeneralizedTorque, 0, 1, 0.1); // vecteur, t0, tend, pas, effecteurs
     *m_isKinematicsComputed = true;
@@ -156,7 +156,7 @@ void biorbd::rigidbody::Joints::getIntegratedKinematics(
     // Si la cinématique n'a pas été mise à jour
     biorbd::utils::Error::error(*m_isKinematicsComputed, "ComputeKinematics must be call before calling updateKinematics");
 
-    biorbd::rigidbody::GeneralizedCoordinates tp(m_integrator->getX(step));
+    const biorbd::utils::Vector& tp(m_integrator->getX(step));
     for (unsigned int i=0; i< static_cast<unsigned int>(tp.rows()/2); i++){
         Q(i) = tp(i);
         QDot(i) = tp(i+tp.rows()/2);
@@ -227,19 +227,12 @@ unsigned int biorbd::rigidbody::Joints::nbBone() const
 
 std::vector<RigidBodyDynamics::Math::SpatialVector> biorbd::rigidbody::Joints::dispatchedForce(
         std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> &spatialVector,
-        unsigned int frame) const{
-    // Tableau de sortie
-    std::vector<RigidBodyDynamics::Math::SpatialVector> sv_out;
-
-    // Spatial vector nul pour remplir le tableau final
-    RigidBodyDynamics::Math::SpatialVector sv_zero(0,0,0,0,0,0);
-
+        unsigned int frame) const
+{
     // Itérateur sur le tableau de force
     std::vector<RigidBodyDynamics::Math::SpatialVector> sv2; // Mettre dans un même tableau les valeurs d'un même instant de différentes plateformes
-    for (std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>>::iterator it = spatialVector.begin(); it!=spatialVector.end(); ++it){
-        std::vector<RigidBodyDynamics::Math::SpatialVector>::iterator sv2_tp = (*it).begin();
-        sv2.push_back(*(sv2_tp+frame));
-    }
+    for (auto vec : spatialVector)
+        sv2.push_back(vec[frame]);
 
     // Appel de la fonction équivalente qui ne gere qu'a un instant
     return dispatchedForce(sv2);
@@ -254,16 +247,15 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> biorbd::rigidbody::Joints::d
     RigidBodyDynamics::Math::SpatialVector sv_zero(0,0,0,0,0,0);
     sv_out.push_back(sv_zero); // Le premier est associé a l'univers
 
-    std::vector<RigidBodyDynamics::Math::SpatialVector>::iterator sv_it = sv.begin();
     // Dispatch des forces
-    for (unsigned int i=0; i<m_bones->size(); ++i){
-        unsigned int nDof = (*m_bones)[i].nDof();
+    for (auto bone : *m_bones){
+        unsigned int nDof = bone.nDof();
         if (nDof != 0){ // Ne rien ajouter si le nDof est à 0
             // Pour chaque segment,
             for (unsigned int i=0; i<nDof-1; ++i) // mettre un sv_zero sur tous les dof sauf le dernier
                 sv_out.push_back(sv_zero);
-            if ((*m_bones)[i].plateformeIdx() >= 0){ // Si le solide fait contact avec la plateforme (!= -1)
-                sv_out.push_back(*(sv_it + (*m_bones)[i].plateformeIdx())); // Mettre la force de la plateforme correspondante
+            if (bone.plateformeIdx() >= 0){ // Si le solide fait contact avec la plateforme (!= -1)
+                sv_out.push_back(sv[static_cast<unsigned int>(bone.plateformeIdx())]); // Mettre la force de la plateforme correspondante
             }
             else
                 sv_out.push_back(sv_zero); // Sinon, mettre 0
@@ -381,7 +373,7 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Joints::projectPoint(
         UpdateKinematicsCustom (&Q, nullptr, nullptr);
 
     // Créer un marqueur
-    biorbd::utils::String boneName(bone(static_cast<unsigned int>(boneIdx)).name());
+    const biorbd::utils::String& boneName(bone(static_cast<unsigned int>(boneIdx)).name());
     biorbd::rigidbody::NodeBone node( v.applyRT(globalJCS(static_cast<unsigned int>(boneIdx)).transpose()), "tp", boneName,
                      true, true, axesToRemove, static_cast<int>(GetBodyId(boneName.c_str())));
 
@@ -395,10 +387,7 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Joints::projectPoint(
         bool updateKin)
 {
     // Assuming that this is also a Marker type (via BiorbdModel)
-    biorbd::rigidbody::Markers &marks = dynamic_cast<biorbd::rigidbody::Markers &>(*this);
-
-    biorbd::rigidbody::NodeBone out(marks.marker(Q, n, true, updateKin));
-    return out;
+    return dynamic_cast<biorbd::rigidbody::Markers &>(*this).marker(Q, n, true, updateKin);
 }
 
 biorbd::utils::Matrix biorbd::rigidbody::Joints::projectPointJacobian(
@@ -439,7 +428,7 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::projectPointJacobian(
         bool updateKin)
 {
     // Trouver le point
-    biorbd::rigidbody::NodeBone p(projectPoint(Q, v, boneIdx, axesToRemove, updateKin));
+    const biorbd::rigidbody::NodeBone& p(projectPoint(Q, v, boneIdx, axesToRemove, updateKin));
 
     // Retourner la valeur
     return projectPointJacobian(Q, p, updateKin);
@@ -451,14 +440,14 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Joints::projectPointJacobi
         bool updateKin)
 {
     // Receuillir les points
-    std::vector<biorbd::rigidbody::NodeBone> tp(projectPoint(Q, v, updateKin));
+    const std::vector<biorbd::rigidbody::NodeBone>& tp(projectPoint(Q, v, updateKin));
 
     // Calculer la jacobienne si le point doit être projeté
     std::vector<biorbd::utils::Matrix> G;
 
     for (unsigned int i=0; i<tp.size(); ++i){
         // Marqueur actuel
-        G.push_back(projectPointJacobian(Q, biorbd::rigidbody::NodeBone (v[i]), false));
+        G.push_back(projectPointJacobian(Q, biorbd::rigidbody::NodeBone(v[i]), false));
     }
     return G;
 }
@@ -483,9 +472,8 @@ RigidBodyDynamics::Math::SpatialTransform biorbd::rigidbody::Joints::CalcBodyWor
         unsigned int parent_id = this->mFixedBodies[fbody_id].mMovableParent;
         biorbd::utils::RotoTrans parentRT(this->X_base[parent_id].E.transpose(), this->X_base[parent_id].r);
         biorbd::utils::RotoTrans bodyRT(this->mFixedBodies[fbody_id].mParentTransform.E.transpose(), this->mFixedBodies[fbody_id].mParentTransform.r);
-        biorbd::utils::RotoTrans transfo_tp = parentRT * bodyRT;
-        RigidBodyDynamics::Math::SpatialTransform transfo(transfo_tp.rot(), transfo_tp.trans());
-        return transfo;
+        const biorbd::utils::RotoTrans& transfo_tp = parentRT * bodyRT;
+        return RigidBodyDynamics::Math::SpatialTransform (transfo_tp.rot(), transfo_tp.trans());
     }
 
     return RigidBodyDynamics::Math::SpatialTransform (this->X_base[body_id].E.transpose(), this->X_base[body_id].r);
@@ -502,10 +490,10 @@ biorbd::utils::Node3d biorbd::rigidbody::Joints::CoM(
         UpdateKinematicsCustom(&Q, nullptr, nullptr);
 
     // Pour chaque segment, trouver le CoM (CoM = somme(masse_segmentaire * pos_com_seg)/masse_totale)
-    std::vector<biorbd::rigidbody::NodeBone> com_segment(CoMbySegment(Q,true));
+    const std::vector<biorbd::rigidbody::NodeBone>& com_segment(CoMbySegment(Q,true));
     biorbd::utils::Node3d com(0, 0, 0);
     for (unsigned int i=0; i<com_segment.size(); ++i)
-        com += (*m_bones)[i].caract().mMass * (*(com_segment.begin()+i));
+        com += (*m_bones)[i].caract().mMass * com_segment[i];
 
     // Diviser par la masse totale
     com = com/this->mass();
@@ -520,7 +508,6 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::angularMomentum(
         bool updateKin)
 {
     return CalcAngularMomentum(*this, Q, Qdot, updateKin);
-
 }
 
 
@@ -534,11 +521,12 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMdot(
     UpdateKinematicsCustom(&Q, &Qdot, nullptr);
 
     // Pour chaque segment, trouver le CoM
-    RigidBodyDynamics::Math::Vector3d com_dot = RigidBodyDynamics::Math::Vector3d(0,0,0);
+    RigidBodyDynamics::Math::Vector3d com_dot(0,0,0);
 
     // CoMdot = somme(masse_seg * Jacobienne * qdot)/masse totale
+    biorbd::utils::Matrix Jac(biorbd::utils::Matrix(3,this->dof_count));
     for (auto bone : *m_bones){
-        biorbd::utils::Matrix Jac(biorbd::utils::Matrix(3,this->dof_count).setZero());
+        Jac.setZero();
         RigidBodyDynamics::CalcPointJacobian(*this, Q, this->GetBodyId(bone.name().c_str()), bone.caract().mCenterOfMass, Jac, false); // False for speed
         com_dot += ((Jac*Qdot) * bone.caract().mMass);
     }
@@ -560,11 +548,12 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMddot(
     UpdateKinematicsCustom(&Q, &Qdot, &Qddot);
 
     // Pour chaque segment, trouver le CoM
-    RigidBodyDynamics::Math::Vector3d com_ddot = RigidBodyDynamics::Math::Vector3d(0,0,0);
+    RigidBodyDynamics::Math::Vector3d com_ddot(0,0,0);
 
     // CoMdot = somme(masse_seg * Jacobienne * qdot)/masse totale
+    biorbd::utils::Matrix Jac(biorbd::utils::Matrix(3,this->dof_count));
     for (auto bone : *m_bones){
-        biorbd::utils::Matrix Jac(biorbd::utils::Matrix::Zero(3,this->dof_count));
+        Jac.setZero();
         RigidBodyDynamics::CalcPointJacobian(*this, Q, this->GetBodyId(bone.name().c_str()), bone.caract().mCenterOfMass, Jac, false); // False for speed
         com_ddot += ((Jac*Qddot) * bone.caract().mMass);
     }
@@ -586,8 +575,9 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::CoMJacobian(const biorbd::rigid
     biorbd::utils::Matrix JacTotal(biorbd::utils::Matrix::Zero(3,this->dof_count));
 
     // CoMdot = somme(masse_seg * Jacobienne * qdot)/masse totale
+    biorbd::utils::Matrix Jac(biorbd::utils::Matrix::Zero(3,this->dof_count));
     for (auto bone : *m_bones){
-        biorbd::utils::Matrix Jac(biorbd::utils::Matrix::Zero(3,this->dof_count));
+        Jac.setZero();
         RigidBodyDynamics::CalcPointJacobian(*this, Q, this->GetBodyId(bone.name().c_str()), bone.caract().mCenterOfMass, Jac, false); // False for speed
         JacTotal += bone.caract().mMass*Jac;
     }
@@ -646,10 +636,8 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMdotBySegment(
         const unsigned int i,
         bool updateKin)
 { // Position du centre de masse du segment i
-
     biorbd::utils::Error::error(i < m_bones->size(), "Choosen segment doesn't exist");
     return CalcPointVelocity(*this, Q, Qdot, (*m_bones)[i].id(),(*m_bones)[i].caract().mCenterOfMass,updateKin);
-
 }
 
 
@@ -676,10 +664,8 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMddotBySegment(
         const unsigned int i,
         bool updateKin)
 { // Position du centre de masse du segment i
-
     biorbd::utils::Error::error(i < m_bones->size(), "Choosen segment doesn't exist");
     return RigidBodyDynamics::CalcPointAcceleration(*this, Q, Qdot, Qddot, (*m_bones)[i].id(),(*m_bones)[i].caract().mCenterOfMass,updateKin);
-
 }
 
 std::vector<std::vector<biorbd::utils::Node3d>> biorbd::rigidbody::Joints::meshPoints(

@@ -26,7 +26,7 @@ public:
     double excitation() const;
     double activation() const;
 
-
+    biorbd::muscles::STATE_TYPE type() const;
 protected:
     virtual void setType();
 

@@ -80,8 +80,9 @@ unsigned int biorbd::rigidbody::Integrator::steps() const
     return *m_steps+1;
 }
 
-biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Integrator::getX(unsigned int idx){
-    biorbd::rigidbody::GeneralizedCoordinates out(*m_nbre*2);
+biorbd::utils::Vector biorbd::rigidbody::Integrator::getX(
+        unsigned int idx){
+    biorbd::utils::Vector out(*m_nbre*2);
     biorbd::utils::Error::error(idx <= *m_steps, "Trying to get Q outside range");
     for (unsigned int i=0; i<*m_nbre*2; i++){
         out(i) = (*m_x_vec)[idx][i];
@@ -91,22 +92,22 @@ biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Integrator::getX(un
 
 void biorbd::rigidbody::Integrator::integrate(
         biorbd::rigidbody::Joints& model,
-        const biorbd::rigidbody::GeneralizedCoordinates &v,
+        const biorbd::utils::Vector &Q_Qdot,
         const biorbd::utils::Vector &u,
         double t0,
-        double tEnd,
-        double time_step){
+        double tend,
+        double timeStep){
     // Stocker le nombre d'élément à traiter
-    *m_nbre = static_cast<unsigned int>(v.rows())/2; // Q et Qdot
+    *m_nbre = static_cast<unsigned int>(Q_Qdot.rows())/2; // Q et Qdot
     *m_u = u; // Copier les effecteurs
     *m_model = model;
 
     // Remplissage de la variable par les positions et vitesse
     state_type x(*m_nbre*2);
     for (unsigned int i=0; i<*m_nbre*2; i++)
-        x[i] = v(i);
+        x[i] = Q_Qdot(i);
 
     // Choix de l'algorithme et intégration
     boost::numeric::odeint::runge_kutta4< state_type > stepper;
-    *m_steps = static_cast<unsigned int>(boost::numeric::odeint::integrate_const( stepper, (*this), x, t0, tEnd, time_step, push_back_state_and_time( *m_x_vec , *m_times )));
+    *m_steps = static_cast<unsigned int>(boost::numeric::odeint::integrate_const( stepper, (*this), x, t0, tend, timeStep, push_back_state_and_time( *m_x_vec , *m_times )));
 }

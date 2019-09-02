@@ -47,7 +47,7 @@ int biorbd::utils::Benchmark::getCount(const biorbd::utils::String& s){
 void biorbd::utils::Benchmark::wasteTime(double seconds){
     // Wait for seconds ask doing dummy stuff
 
-    std::clock_t start = std::clock();
+    std::clock_t start(std::clock());
 
     while (((static_cast<double>(std::clock() - start)) / CLOCKS_PER_SEC)<seconds)
     {

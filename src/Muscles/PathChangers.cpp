@@ -37,17 +37,17 @@ void biorbd::muscles::PathChangers::DeepCopy(const biorbd::muscles::PathChangers
 void biorbd::muscles::PathChangers::addPathChanger(biorbd::utils::Node3d &val){
 
     // Ajouter un muscle au pool de muscle selon son type
-    if (dynamic_cast<biorbd::muscles::WrappingSphere*> (&val)){
+    if (val.typeOfNode() == biorbd::utils::NODE_TYPE::WRAPPING_SPHERE){
         biorbd::utils::Error::error(*m_nbVia == 0, "Cannot mix via points and wrapping objects yet");
         m_obj->push_back(biorbd::muscles::WrappingSphere(static_cast<biorbd::muscles::WrappingSphere&> (val)));
         ++*m_nbWraps;
     }
-    else if (dynamic_cast<biorbd::muscles::WrappingCylinder*> (&val)){
+    else if (val.typeOfNode() == biorbd::utils::NODE_TYPE::WRAPPING_CYLINDER){
         biorbd::utils::Error::error(*m_nbVia == 0, "Cannot mix via points and wrapping objects yet");
         m_obj->push_back(biorbd::muscles::WrappingCylinder(dynamic_cast <biorbd::muscles::WrappingCylinder&> (val)));
         ++*m_nbWraps;
     }
-    else if (dynamic_cast<biorbd::muscles::ViaPoint*> (&val)){
+    else if (val.typeOfNode() == biorbd::utils::NODE_TYPE::VIA_POINT){
         biorbd::utils::Error::error(*m_nbWraps == 0, "Cannot mix via points and wrapping objects yet");
         m_obj->push_back(biorbd::muscles::ViaPoint(dynamic_cast <biorbd::muscles::ViaPoint&> (val)));
         ++*m_nbVia;

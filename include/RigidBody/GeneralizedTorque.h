@@ -20,8 +20,6 @@ public:
     biorbd::rigidbody::GeneralizedTorque DeepCopy() const;
     void DeepCopy(const biorbd::rigidbody::GeneralizedTorque& other);
 
-    biorbd::rigidbody::GeneralizedTorque timeDerivativeActivation(const biorbd::rigidbody::GeneralizedTorque &act);
-
     template<typename OtherDerived>
         biorbd::rigidbody::GeneralizedTorque& operator=(const Eigen::MatrixBase <OtherDerived>& other){
             this->biorbd::utils::Vector::operator=(other);

@@ -183,12 +183,12 @@ void biorbd::muscles::WrappingCylinder::findTangentToCircle(
         const biorbd::utils::Node3d& p,
         biorbd::utils::Node3d& p_tan) const {
     double p_dot = p.block(0,0,2,1).dot(p.block(0,0,2,1));
-    Eigen::Vector2d Q0 = rayon()*rayon()/p_dot*p.block(0,0,2,1);
+    const Eigen::Vector2d& Q0(rayon()*rayon()/p_dot*p.block(0,0,2,1));
     Eigen::Matrix2d tp;
     tp << 0, -1,
           1, 0;
 
-    Eigen::Vector2d T = rayon()/p_dot*std::sqrt(p_dot-rayon()*rayon()) * tp * p.block(0,0,2,1);
+    const Eigen::Vector2d& T(rayon()/p_dot*std::sqrt(p_dot-rayon()*rayon()) * tp * p.block(0,0,2,1));
 
     // Sortir la tangente des deux cotés
     NodeMusclePair m(p,p);

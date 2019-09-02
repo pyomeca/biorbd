@@ -130,17 +130,17 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     }
 
     // État projeté
-    biorbd::utils::Vector xkm(biorbd::utils::Vector(*m_A * *m_xp));
-    biorbd::rigidbody::GeneralizedCoordinates Q_tp(biorbd::utils::Vector(xkm.topRows(*m_nDof)));
+    const biorbd::utils::Vector& xkm(*m_A * *m_xp);
+    const biorbd::rigidbody::GeneralizedCoordinates& Q_tp(xkm.topRows(*m_nDof));
     model.UpdateKinematicsCustom (&Q_tp, nullptr, nullptr);
 
     // Markers projetés
-    std::vector<biorbd::rigidbody::NodeBone> zest_tp = model.technicalMarkers(Q_tp, removeAxes, false);
+    const std::vector<biorbd::rigidbody::NodeBone>& zest_tp(model.technicalMarkers(Q_tp, removeAxes, false));
     // Jacobienne
-    std::vector<biorbd::utils::Matrix> J_tp = model.TechnicalMarkersJacobian(Q_tp, removeAxes, false);
+   const  std::vector<biorbd::utils::Matrix>& J_tp(model.TechnicalMarkersJacobian(Q_tp, removeAxes, false));
     // Faire une seule matrice pour zest et Jacobienne
     biorbd::utils::Matrix H(biorbd::utils::Matrix::Zero(*m_nMeasure, *m_nDof*3)); // 3*nMarkers => X,Y,Z ; 3*nDof => Q, Qdot, Qddot
-    biorbd::utils::Vector zest = biorbd::utils::Vector(*m_nMeasure).setZero();
+    biorbd::utils::Vector zest(biorbd::utils::Vector::Zero(*m_nMeasure));
     std::vector<unsigned int> occlusionIdx;
     for (unsigned int i=0; i<*m_nMeasure/3; ++i) // Divisé par 3 parce qu'on intègre d'un coup xyz
         if (Tobs(i*3)*Tobs(i*3) + Tobs(i*3+1)*Tobs(i*3+1) + Tobs(i*3+2)*Tobs(i*3+2) != 0.0){ // S'il y a un marqueur

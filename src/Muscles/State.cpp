@@ -65,6 +65,11 @@ double biorbd::muscles::State::activation() const
     return *m_activation;
 }
 
+biorbd::muscles::STATE_TYPE biorbd::muscles::State::type() const
+{
+    return *m_stateType;
+}
+
 void biorbd::muscles::State::setType()
 {
     *m_stateType = biorbd::muscles::STATE_TYPE::SIMPLE_STATE;

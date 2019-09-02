@@ -195,7 +195,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_g(
     if (new_x)
         dispatch(x);
 
-    biorbd::rigidbody::GeneralizedTorque GeneralizedTorqueMusc = m_model.muscularJointTorque(*m_states, false, m_Q.get(), m_Qdot.get());
+    const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueMusc(m_model.muscularJointTorque(*m_states, false, m_Q.get(), m_Qdot.get()));
 
     // TODO : adjust dimensions for when "root_actuated" is set to false in bioMod file
     for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ )
@@ -234,7 +234,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
     } else {
         if (new_x)
             dispatch(x);
-        biorbd::rigidbody::GeneralizedTorque GeneralizedTorqueMusc(m_model.muscularJointTorque(*m_states, false, m_Q.get(), m_Qdot.get()));
+        const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueMusc(m_model.muscularJointTorque(*m_states, false, m_Q.get(), m_Qdot.get()));
         unsigned int k(0);
         for( unsigned int j = 0; j < *m_nMus; ++j ){
             std::vector<biorbd::muscles::StateDynamics> stateEpsilon;
@@ -244,7 +244,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
                     delta = 1;
                 stateEpsilon.push_back(biorbd::muscles::StateDynamics(0, (*m_activations)[i]+delta* *m_eps));
             }
-            biorbd::rigidbody::GeneralizedTorque GeneralizedTorqueCalculEpsilon(m_model.muscularJointTorque(stateEpsilon, false, m_Q.get(), m_Qdot.get()));
+            const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueCalculEpsilon(m_model.muscularJointTorque(stateEpsilon, false, m_Q.get(), m_Qdot.get()));
             for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ ){
                 values[k++] = (GeneralizedTorqueCalculEpsilon[i]-GeneralizedTorqueMusc[i])/ *m_eps;
                 if (*m_verbose >= 3){
@@ -261,8 +261,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
 
         if (*m_verbose >= 2){
             k = 0;
-            biorbd::utils::Matrix jacobian(*m_nGeneralizedTorque, static_cast<unsigned int>(n));
-            jacobian.setZero();
+            biorbd::utils::Matrix jacobian(biorbd::utils::Matrix::Zero(*m_nGeneralizedTorque, static_cast<unsigned int>(n)));
             for( unsigned int j = 0; j < *m_nMus; j++ )
                 for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ )
                     jacobian(i,j) = values[k++];

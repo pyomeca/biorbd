@@ -96,23 +96,25 @@ biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::transformCardanToMatrix(
     // Trouver la matrice de rotation
     Eigen::Matrix3d tp;
     for (unsigned int i=0; i<seq.length(); ++i){
+        double cosVi(std::cos(v[i]));
+        double sinVi(std::sin(v[i]));
         if (seq.tolower()[i] == 'x')
             // Matrice de rotation en x
-            tp <<   1,          0,          0,
-                    0,          std::cos(v[i]),  -std::sin(v[i]),
-                    0,          std::sin(v(i)),  std::cos(v(i));
+            tp <<   1,     0,      0,
+                    0, cosVi, -sinVi,
+                    0, sinVi,  cosVi;
 
         else if (seq.tolower()[i] == 'y')
             // Matrice de rotation en y
-            tp <<   std::cos(v(i)),  0,          std::sin(v(i)),
-                    0,          1,          0,
-                    -std::sin(v(i)), 0,          std::cos(v(i));
+            tp <<   cosVi, 0, sinVi,
+                        0, 1,     0,
+                   -sinVi, 0, cosVi;
 
         else if (seq.tolower()[i] == 'z')
             // Matrice de rotation en z
-            tp <<   std::cos(v(i)),  -std::sin(v(i)), 0,
-                    std::sin(v(i)),  std::cos(v(i)),  0,
-                    0,          0,          1;
+            tp <<  cosVi, -sinVi,  0,
+                   sinVi,  cosVi,  0,
+                       0,      0,  1;
         else
             biorbd::utils::Error::error(0, "Rotation sequence not recognized");
 

@@ -11,6 +11,7 @@ biorbd::muscles::StateDynamicsBuchanan::StateDynamicsBuchanan(
     m_shapeFactor(std::make_shared<double>(-3)),
     m_excitationDot(std::make_shared<double>(0))
 {
+    setType();
     // Update activation
     biorbd::muscles::StateDynamicsBuchanan::activation();
 }

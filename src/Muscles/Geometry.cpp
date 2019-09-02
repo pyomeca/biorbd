@@ -235,17 +235,17 @@ const biorbd::utils::Matrix& biorbd::muscles::Geometry::jacobian() const
 biorbd::utils::Matrix biorbd::muscles::Geometry::jacobianOrigin() const
 {
     biorbd::utils::Error::error(*m_isGeometryComputed, "Geometry must be computed before calling jacobianOrigin()");
-    return biorbd::utils::Matrix(m_jacobian->block(0,0,3,m_jacobian->cols()));
+    return m_jacobian->block(0,0,3,m_jacobian->cols());
 }
 biorbd::utils::Matrix biorbd::muscles::Geometry::jacobianInsertion() const
 {
     biorbd::utils::Error::error(*m_isGeometryComputed, "Geometry must be computed before calling jacobianInsertion()");
-    return biorbd::utils::Matrix(m_jacobian->block(m_jacobian->rows()-3,0,3,m_jacobian->cols()));
+    return m_jacobian->block(m_jacobian->rows()-3,0,3,m_jacobian->cols());
 }
 biorbd::utils::Matrix biorbd::muscles::Geometry::jacobian(unsigned int idxMarker) const
 {
     biorbd::utils::Error::error(*m_isGeometryComputed, "Geometry must be computed before calling jacobian(i)");
-    return biorbd::utils::Matrix(m_jacobian->block(3*idxMarker,0,3,m_jacobian->cols()));
+    return m_jacobian->block(3*idxMarker,0,3,m_jacobian->cols());
 }
 
 const biorbd::utils::Matrix &biorbd::muscles::Geometry::jacobianLength() const
@@ -320,8 +320,8 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(
         const biorbd::utils::RotoTrans& RT = w.RT(model,Q);
 
         // Alias
-        biorbd::utils::Node3d po_mus = originInGlobal(model, Q);  // Origine sur l'os
-        biorbd::utils::Node3d pi_mus = insertionInGlobal(model,Q); // Insertion sur l'os
+        const biorbd::utils::Node3d& po_mus = originInGlobal(model, Q);  // Origine sur l'os
+        const biorbd::utils::Node3d& pi_mus = insertionInGlobal(model,Q); // Insertion sur l'os
 
         biorbd::utils::Node3d pi_wrap(0, 0, 0); // point sur le wrapping coté insertion
         biorbd::utils::Node3d po_wrap(0, 0, 0); // point sur le wrapping coté origine
@@ -353,7 +353,7 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(
         m_pointsInLocal->push_back(originInLocal());
         m_pointsInGlobal->push_back(originInGlobal(model, Q));
         for (unsigned int i=0; i<objects->nbObjects(); ++i){
-            biorbd::muscles::ViaPoint& node(static_cast<biorbd::muscles::ViaPoint&>(objects->object(i)));
+            const biorbd::muscles::ViaPoint& node(static_cast<biorbd::muscles::ViaPoint&>(objects->object(i)));
             m_pointsInLocal->push_back(node);
             m_pointsInGlobal->push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(node.parent().c_str()), node, false));
         }

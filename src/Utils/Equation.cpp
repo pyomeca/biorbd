@@ -59,7 +59,7 @@ std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(
     std::vector<biorbd::utils::Equation> eq;
 
     // Déclaration des marqueurs arithmétiques
-    std::vector<biorbd::utils::Equation> symbols(prepareMathSymbols());
+    const std::vector<biorbd::utils::Equation>& symbols(prepareMathSymbols());
 
     // Sur tout le long du string
     while (1){
@@ -91,7 +91,7 @@ std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(
         else if (firstIdx == 0){
             if (!wholeEq(0).compare("-")){
                 // Si l'équation commencer par un -
-                std::vector<biorbd::utils::Equation> tp = splitIntoEquation(wholeEq.substr(1), variables);
+                std::vector<biorbd::utils::Equation> tp(splitIntoEquation(wholeEq.substr(1), variables));
                 tp[0] = "-" + tp[0];
                 if (eq.size()==0) // S'il n'y a rien avant, est faux dans les cas 1e-x
                     return tp;
@@ -102,7 +102,7 @@ std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(
             }
             else if (!wholeEq(0).compare("+")){
                 // Si l'équation commencer par un +
-                std::vector<biorbd::utils::Equation> tp = splitIntoEquation(wholeEq.substr(1), variables);
+                std::vector<biorbd::utils::Equation> tp(splitIntoEquation(wholeEq.substr(1), variables));
                 tp[0] = "+" + tp[0];
                 if (eq.size()==0) // S'il n'y a rien avant, est faux dans les cas 1e-x
                     return tp;
@@ -163,7 +163,7 @@ double biorbd::utils::Equation::resolveEquation(
         return boost::lexical_cast<double>(eq[0]);
 
     // Déclaration des marqueurs arithmétiques
-    std::vector<biorbd::utils::Equation> symbols(prepareMathSymbols());
+    const std::vector<biorbd::utils::Equation>& symbols(prepareMathSymbols());
     std::vector<biorbd::utils::Equation> eq2;
     bool continuer(true);
 

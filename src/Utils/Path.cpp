@@ -227,9 +227,9 @@ biorbd::utils::String biorbd::utils::Path::relativePath(const biorbd::utils::Pat
 biorbd::utils::String biorbd::utils::Path::absoluteFolder(const biorbd::utils::Path &path)
 {
 #if defined(_WIN32) || defined(_WIN64)
-    biorbd::utils::String base("C:\\");
+    const biorbd::utils::String& base("C:\\");
 #else
-    biorbd::utils::String base("/");
+    const biorbd::utils::String& base("/");
 #endif
     return base + relativePath(path, base);
 }
@@ -294,9 +294,9 @@ void biorbd::utils::Path::setPath()
 void biorbd::utils::Path::setIsFolderAbsolute()
 {
 #if defined(_WIN32) || defined(_WIN64)
-    biorbd::utils::String base("C:\\");
+    const biorbd::utils::String& base("C:\\");
 #else
-    biorbd::utils::String base("/");
+    const biorbd::utils::String& base("/");
 #endif
     size_t pos(m_folder->find_first_of(base.c_str()));
     if (pos == 0)
@@ -323,7 +323,7 @@ biorbd::utils::String biorbd::utils::Path::currentDir()
 
 void biorbd::utils::Path::createFolder() const
 {
-    biorbd::utils::String tp(folder());
+    const biorbd::utils::String& tp(folder());
     biorbd::utils::String tp2(tp);
 
     size_t sep = std::string::npos;

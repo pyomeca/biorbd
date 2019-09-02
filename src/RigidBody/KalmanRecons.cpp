@@ -61,8 +61,8 @@ void biorbd::rigidbody::KalmanRecons::iteration(
         const biorbd::utils::Matrix &Hessian,
         const std::vector<unsigned int> &occlusion){
     // Prédiction
-    biorbd::utils::Vector xkm(*m_A * *m_xp);
-    biorbd::utils::Matrix Pkm(*m_A * *m_Pp * m_A->transpose() + *m_Q);
+    const biorbd::utils::Vector& xkm(*m_A * *m_xp);
+    const biorbd::utils::Matrix& Pkm(*m_A * *m_Pp * m_A->transpose() + *m_Q);
 
     // Correction
 #ifdef _WIN32
@@ -73,13 +73,11 @@ void biorbd::rigidbody::KalmanRecons::iteration(
     biorbd::utils::Matrix InvTp((Hessian * Pkm * Hessian.transpose() + *m_R).inverse());
 #endif
     manageOcclusionDuringIteration(InvTp, measure, occlusion);
-    biorbd::utils::Matrix K(Pkm*Hessian.transpose() * InvTp); // Gain
+    const biorbd::utils::Matrix& K(Pkm*Hessian.transpose() * InvTp); // Gain
 
-    *m_xp = biorbd::utils::Vector(xkm+K*(measure-projectedMeasure)); // New estimated state
-    *m_Pp =  (biorbd::utils::Matrix::Identity(3* *m_nDof, 3* *m_nDof) - K*Hessian) *
-             Pkm *
-            (biorbd::utils::Matrix::Identity(3* *m_nDof, 3* *m_nDof) - K*Hessian).transpose() +
-            K* *m_R*K.transpose();
+    *m_xp = xkm+K*(measure-projectedMeasure); // New estimated state
+    const Eigen::MatrixXd& temp(biorbd::utils::Matrix::Identity(3* *m_nDof, 3* *m_nDof) - K*Hessian);
+    *m_Pp =  temp * Pkm * temp.transpose() + K* *m_R*K.transpose();
 
 }
 

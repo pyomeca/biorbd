@@ -112,7 +112,7 @@ biorbd::rigidbody::IMU biorbd::rigidbody::IMUs::IMU(
     biorbd::rigidbody::IMU node = IMU(idx);
     unsigned int id = static_cast<unsigned int>(model.GetBodyBiorbdId(node.parent()));
 
-    return biorbd::rigidbody::IMU (model.globalJCS(id) * node);
+    return model.globalJCS(id) * node;
 }
 
 // Se faire renvoyer les IMUs techniques
