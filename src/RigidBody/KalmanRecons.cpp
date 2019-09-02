@@ -65,13 +65,7 @@ void biorbd::rigidbody::KalmanRecons::iteration(
     const biorbd::utils::Matrix& Pkm(*m_A * *m_Pp * m_A->transpose() + *m_Q);
 
     // Correction
-#ifdef _WIN32
-	// For some reason windows fails to compile the next line directly...
-    Eigen::MatrixXd InvTp_windowsTp((Hessian * Pkm * Hessian.transpose() + *m_R).inverse());
-	biorbd::utils::Matrix InvTp(InvTp_windowsTp);
-#else
-    biorbd::utils::Matrix InvTp((Hessian * Pkm * Hessian.transpose() + *m_R).inverse());
-#endif
+    biorbd::utils::Matrix InvTp( Eigen::MatrixXd( (Hessian * Pkm * Hessian.transpose() + *m_R).inverse() ) );
     manageOcclusionDuringIteration(InvTp, measure, occlusion);
     const biorbd::utils::Matrix& K(Pkm*Hessian.transpose() * InvTp); // Gain
 

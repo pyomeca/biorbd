@@ -8,14 +8,7 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
 #ifdef MODULE_MUSCLES
-#include "Muscles/Muscle.h"
-#include "Muscles/Geometry.h"
-#include "Muscles/Caracteristics.h"
-#include "Muscles/MuscleGroup.h"
-#include "Muscles/HillThelenTypeFatigable.h"
-#include "Muscles/FatigueDynamicStateXia.h"
-#include "Muscles/StateDynamics.h"
-#include "Muscles/PathChangers.h"
+#include "Muscles/all.h"
 
 static std::string modelPathForMuscleForce("models/arm26.bioMod");
 TEST(MuscleForce, torqueFromMuscles)

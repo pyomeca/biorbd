@@ -1,6 +1,8 @@
 #ifndef BIORBD_MUSCLES_ALL_H
 #define BIORBD_MUSCLES_ALL_H
 
+#include "biorbdConfig.h"
+
 #include "Muscles/Caracteristics.h"
 #include "Muscles/Compound.h"
 #include "Muscles/Fatigable.h"
@@ -24,13 +26,16 @@
 #include "Muscles/State.h"
 #include "Muscles/StateDynamics.h"
 #include "Muscles/StateDynamicsBuchanan.h"
-#include "Muscles/StaticOptimization.h"
-#include "Muscles/StaticOptimizationIpopt.h"
-#include "Muscles/StaticOptimizationIpoptLinearized.h"
 #include "Muscles/ViaPoint.h"
 #include "Muscles/WrappingCylinder.h"
 #include "Muscles/WrappingObject.h"
 #include "Muscles/WrappingSphere.h"
+
+#ifdef IPOPT_FOUND
+#include "Muscles/StaticOptimization.h"
+#include "Muscles/StaticOptimizationIpopt.h"
+#include "Muscles/StaticOptimizationIpoptLinearized.h"
+#endif
 
 #endif // BIORBD_MUSCLES_ALL_H
 
