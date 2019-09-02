@@ -25,6 +25,7 @@ TEST(GenericTests, mass){
 static std::string modelPathWithMeshFile("models/simpleWithMeshFile.bioMod");
 TEST(MeshFile, FileIO){
     EXPECT_NO_THROW(biorbd::Model model(modelPathWithMeshFile));
+    biorbd::Model model(modelPathWithMeshFile);
 }
 
 // TODO : Copy of a model with mesh file for the path
