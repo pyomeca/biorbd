@@ -2,6 +2,7 @@
 #include "Utils/Path.h"
 
 #include "Utils/String.h"
+#include "Utils/Error.h"
 
 #if defined(_WIN32) || defined(_WIN64)
     #include <direct.h>
@@ -314,9 +315,9 @@ biorbd::utils::String biorbd::utils::Path::currentDir()
 {
     char buff[FILENAME_MAX];
 #if defined(_WIN32) || defined(_WIN64)
-     _getcwd(buff, FILENAME_MAX);
+     biorbd::utils::Error::error(_getcwd(buff, FILENAME_MAX), "Could not find the current directory");
 #else
-    getcwd(buff, FILENAME_MAX);
+    biorbd::utils::Error::error(getcwd(buff, FILENAME_MAX), "Could not find the current directory");
 #endif
     return biorbd::utils::String(buff) + "/";
 }
