@@ -116,3 +116,28 @@ TEST(Dynamics, ForwardLoopConstraint){
     for (unsigned int i = 0; i<model.nbQddot(); ++i)
         EXPECT_NEAR(QDDot_constrained[i], QDDot_expected[i], 1e-6);
 }
+
+// TODO: confirm these tests
+TEST(Dynamics, ForwardAccelerationConstraint){
+    biorbd::Model model(modelPathForGeneralTesting);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model), QDot(model), QDDot_constrained(model), QDDot_expected(model);
+    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    Eigen::VectorXd forces_expected(model.nContacts());
+    Q.setOnes()/10;
+    QDot.setOnes()/10;
+    QDDot_expected << 1.9402069774422919,  -9.1992692111538243,  2.9930159570454702,
+            5.2738378853554133, 8.9387539396273699, 6.0938738229550751, 9.9560407885164217,
+            38.6297746304162, -52.159023390563554, 36.702385054876714, 38.629774630416208, -52.159023390563561,
+            36.70238505487675;
+    Tau.setOnes()/10;
+    forces_expected << -16.344680827308579, -30.485214214095951, 112.8234134576031, -16.344680827308611,
+            -30.485214214095965, 112.82341345760311;
+
+    biorbd::rigidbody::Contacts& cs(model.getConstraints());
+    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(model, Q, QDot, Tau, cs, QDDot_constrained);
+    for (unsigned int i = 0; i<model.nbQddot(); ++i)
+        EXPECT_NEAR(QDDot_constrained[i], QDDot_expected[i], 1e-6);
+
+    for (unsigned int i=0; i<cs.force.size(); ++i)
+        EXPECT_NEAR(cs.force[i], forces_expected[i], 1e-6);
+}
