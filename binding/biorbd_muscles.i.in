@@ -22,18 +22,22 @@
 // Instantiate templates
 namespace std {
 %template(SharedBiorbdMuscle) std::shared_ptr<biorbd::muscles::Muscle>;
-%template(VecBiorbdMuscleStateDynamics) std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>;
-%template(MatBiorbdMuscleStateDynamics) std::vector<std::shared_ptr<std::vector<biorbd::muscles::StateDynamics>>>;
+%template(VecBiorbdMuscleStateDynamics) std::vector<biorbd::muscles::StateDynamics>;
+%template(MatBiorbdMuscleStateDynamics) std::vector<std::vector<biorbd::muscles::StateDynamics>>;
 %template(SharedBiorbdMuscleFatigueState) std::shared_ptr<biorbd::muscles::FatigueState>;
 }
 
 // Exposing some useful functions
 %extend biorbd::Model{
     biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
-                const std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> &state,
+                const std::vector<biorbd::muscles::StateDynamics> &state,
                 const biorbd::rigidbody::GeneralizedCoordinates &Q,
-                const biorbd::rigidbody::GeneralizedCoordinates &QDot){
-        return self->muscularJointTorque(state, true, &Q, &QDot);
+                const biorbd::rigidbody::GeneralizedCoordinates &QDot)
+    {
+        std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> state_ptr(state.size());
+        for (unsigned int i=0; i<state.size(); ++i)
+            state_ptr[i] = std::make_shared<biorbd::muscles::StateDynamics>(state[i]);
+        return self->muscularJointTorque(state_ptr, true, &Q, &QDot);
     }
 }
 
