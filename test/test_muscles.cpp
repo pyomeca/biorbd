@@ -20,11 +20,15 @@ TEST(MuscleForce, torqueFromMuscles)
     std::vector<biorbd::muscles::StateDynamics> states;
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i)
         states.push_back(biorbd::muscles::StateDynamics(0, 0.2));
-    QDDotExpected << -0.046239425378874474, 0.12579777534720743;
 
-    biorbd::rigidbody::GeneralizedTorque Tau(model.muscularJointTorque(states, true, &Q, &QDot));
+    biorbd::rigidbody::GeneralizedTorque Tau(model), TauExpected(model);
+    TauExpected << -18.3161, -7.75098;
+    Tau = model.muscularJointTorque(states, true, &Q, &QDot);
+    for (unsigned int i=0; i<QDDot.size(); ++i)
+        EXPECT_DOUBLE_EQ(Tau[i], TauExpected[i]);
+
     RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot);
-
+    QDDotExpected << -0.046239425378874474, 0.12579777534720743;
     for (unsigned int i=0; i<QDDot.size(); ++i)
         EXPECT_DOUBLE_EQ(QDDot[i], QDDotExpected[i]);
 
@@ -36,7 +40,7 @@ static unsigned int muscleForMuscleJacobian(1);
 TEST(MuscleJacobian, jacobian){
     biorbd::Model model(modelPathForMuscleJacobian);
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    Q.setZero();
+    Q = Q.setOnes()/10;
 
     // Force computation of geometry
     biorbd::muscles::Muscle& muscle(model.muscleGroup(muscleForMuscleJacobian).muscle(muscleGroupForMuscleJacobian));
@@ -45,44 +49,91 @@ TEST(MuscleJacobian, jacobian){
 
     unsigned int nRows(3 * (muscle.pathChanger().nbObjects() + 2));
     biorbd::utils::Matrix jacoRef(nRows, model.nbQ());
-    // Here we provide emperical values that we have confidence in (TODO finite differencing could be better)
-    jacoRef(0, 0) = 0.136691;    jacoRef(0, 1) = 0;
-    jacoRef(1, 0) = -0.00889905; jacoRef(1, 1) = 0;
-    jacoRef(2, 0) = 0.00808536;  jacoRef(2, 1) = 0;
-    jacoRef(3, 0) = 0.151102;    jacoRef(3, 1) = 0;
-    jacoRef(4, 0) = -0.0266009;  jacoRef(4, 1) = 0;
-    jacoRef(5, 0) = 0.00897639;  jacoRef(5, 1) = 0;
-    jacoRef(6, 0) = 0.225948;    jacoRef(6, 1) = 0;
-    jacoRef(7, 0) = -0.0325014;  jacoRef(7, 1) = 0;
-    jacoRef(8, 0) = 0.013406;    jacoRef(8, 1) = 0;
-    jacoRef(9, 0) = 0.267077;    jacoRef(9, 1) = 0;
-    jacoRef(10, 0) = -0.0181112; jacoRef(10, 1) = 0;
-    jacoRef(11, 0) = 0.0157994;  jacoRef(11, 1) = 0;
-    jacoRef(12, 0) = 0.279423;   jacoRef(12, 1) = -0.0104688;
-    jacoRef(13, 0) = -0.0165429; jacoRef(13, 1) = -0.02182;
-    jacoRef(14, 0) = 0.0165243;  jacoRef(14, 1) = 0.00131826;
+    // Here we provide emperical values that we have confidence in
+    jacoRef(0, 0) = 0.13689690274955996;    jacoRef(0, 1) = 0;
+    jacoRef(1, 0) = 0.0048155626519999824; jacoRef(1, 1) = 0;
+    jacoRef(2, 0) = 0.0080659044260533528;  jacoRef(2, 1) = 0;
+    jacoRef(3, 0) = 0.1530001664829288;    jacoRef(3, 1) = 0;
+    jacoRef(4, 0) = -0.011356405676791911;  jacoRef(4, 1) = 0;
+    jacoRef(5, 0) = 0.0090532669706573556;  jacoRef(5, 1) = 0;
+    jacoRef(6, 0) = 0.22806179660848588;    jacoRef(6, 1) = 0;
+    jacoRef(7, 0) = -0.0097422466736260017;  jacoRef(7, 1) = 0;
+    jacoRef(8, 0) = 0.013478229213671932;    jacoRef(8, 1) = 0;
+    jacoRef(9, 0) = 0.2675513197235147;    jacoRef(9, 1) = 0;
+    jacoRef(10, 0) = 0.0086890497375387721; jacoRef(10, 1) = 0;
+    jacoRef(11, 0) = 0.015765668988435677;  jacoRef(11, 1) = 0;
+    jacoRef(12, 0) = 0.28198829726211816;   jacoRef(12, 1) = -0.0059281232164749703;
+    jacoRef(13, 0) = 0.010784640478103213; jacoRef(13, 1) = -0.023460590547529164;
+    jacoRef(14, 0) = 0.016612631083717935;  jacoRef(14, 1) = 0.0013801799073302687;
 
     // Compare with computed values
-    EXPECT_LT( (muscle.position().jacobian() - jacoRef).squaredNorm(), 1e-6);
+    biorbd::utils::Matrix jaco(muscle.position().jacobian());
+    for (unsigned int i=0; i<jaco.rows(); ++i)
+        for (unsigned int j=0; j<jaco.cols(); ++j)
+            EXPECT_DOUBLE_EQ(jaco(i, j), jacoRef(i, j));
+
+    // Change Q
+    Q.setOnes();
+    model.updateMuscles(Q, true);
+    // Here we provide emperical values that we have confidence in
+    jacoRef(0, 0) = 0.08134540996216065;    jacoRef(0, 1) = 0;
+    jacoRef(1, 0) = 0.11041411771499073; jacoRef(1, 1) = 0;
+    jacoRef(2, 0) = 0.0045450332887922848;  jacoRef(2, 1) = 0;
+    jacoRef(3, 0) = 0.10400305103312649;    jacoRef(3, 1) = 0;
+    jacoRef(4, 0) = 0.1129992026935549;  jacoRef(4, 1) = 0;
+    jacoRef(5, 0) = 0.0058758916739148634;  jacoRef(5, 1) = 0;
+    jacoRef(6, 0) = 0.14940786497893349;    jacoRef(6, 1) = 0;
+    jacoRef(7, 0) = 0.17290229814238411;  jacoRef(7, 1) = 0;
+    jacoRef(8, 0) = 0.008416785894586807;    jacoRef(8, 1) = 0;
+    jacoRef(9, 0) = 0.1595464389865561;    jacoRef(9, 1) = 0;
+    jacoRef(10, 0) = 0.21534433421098692; jacoRef(10, 1) = 0;
+    jacoRef(11, 0) = 0.0089171811535144387;  jacoRef(11, 1) = 0;
+    jacoRef(12, 0) = 0.17634886417858722;   jacoRef(12, 1) = 0.024220863439657705;
+    jacoRef(13, 0) = 0.24680272575831863; jacoRef(13, 1) = -0.00046752133823085851;
+    jacoRef(14, 0) = 0.0098360540170798361;  jacoRef(14, 1) = 0.00076029489073317982;
+
+    // Compare with computed values
+    jaco = muscle.position().jacobian();
+    for (unsigned int i=0; i<jaco.rows(); ++i)
+        for (unsigned int j=0; j<jaco.cols(); ++j)
+            EXPECT_DOUBLE_EQ(jaco(i, j), jacoRef(i, j));
 }
 TEST(MuscleJacobian, jacobianLength){
     biorbd::Model model(modelPathForMuscleJacobian);
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    Q.setZero();
+    Q = Q.setOnes()/10;
     model.updateMuscles(Q, true);
 
     unsigned int nRows(model.nbMuscleTotal());
     biorbd::utils::Matrix jacoRef(nRows, model.nbQ());
-    // Here we provide emperical values that we have confidence in (TODO finite differencing could be better)
-    jacoRef(0, 0) = 0.0374639;      jacoRef(0, 1) = 0.0200953;
-    jacoRef(1, 0) = -0.0166515;     jacoRef(1, 1) = -0.00937993;
-    jacoRef(2, 0) = -0.00743218;    jacoRef(2, 1) = -0.00937993;
-    jacoRef(3, 0) = -1.11881e-17;   jacoRef(3, 1) = 0.0200953;
-    jacoRef(4, 0) = -2.95716e-17;   jacoRef(4, 1) = 0.0200953;
-    jacoRef(5, 0) = -1.05977e-18;   jacoRef(5, 1) = 0.00262888;
+    // Here we provide emperical values that we have confidence in
+    jacoRef(0, 0) = 0.037620360527045288;      jacoRef(0, 1) = 0.022230374109936522;
+    jacoRef(1, 0) = -0.017006708057341259;     jacoRef(1, 1) = -0.012779004692822197;
+    jacoRef(2, 0) = -0.0016529882883160136;    jacoRef(2, 1) = -0.012779004692822197;
+    jacoRef(3, 0) =  2.6526502766149064e-17;   jacoRef(3, 1) = 0.022230374109936522;
+    jacoRef(4, 0) =  5.2979083494670027e-18;   jacoRef(4, 1) = 0.022230374109936522;
+    jacoRef(5, 0) =  5.3888967663972615e-18;   jacoRef(5, 1) = 0.00064415763125857495;
 
     // Compare with computed values
-    EXPECT_LT( (model.musclesLengthJacobian(Q) - jacoRef).squaredNorm(), 1e-6);
+    biorbd::utils::Matrix jaco(model.musclesLengthJacobian(Q));
+    for (unsigned int i=0; i<jaco.rows(); ++i)
+        for (unsigned int j=0; j<jaco.cols(); ++j)
+            EXPECT_DOUBLE_EQ(jaco(i, j), jacoRef(i, j));
+
+    // Change Q
+    Q.setOnes();
+    model.updateMuscles(Q, true);
+    // Here we provide emperical values that we have confidence in
+    jacoRef(0, 0) = 0.025994784772561841;      jacoRef(0, 1) = 0.021586396946686921;
+    jacoRef(1, 0) = -0.011088003983559729;     jacoRef(1, 1) = -0.039462418895871744;
+    jacoRef(2, 0) = 0.032285277521606391;    jacoRef(2, 1) = -0.039462418895871744;
+    jacoRef(3, 0) =  1.1900679209044559e-19;   jacoRef(3, 1) = 0.021586396946686921;
+    jacoRef(4, 0) =  1.4848744796707674e-17;   jacoRef(4, 1) = 0.021586396946686921;
+    jacoRef(5, 0) =  -2.5088055592238924e-17;   jacoRef(5, 1) = -0.015991501107813871;
+    jaco = model.musclesLengthJacobian(Q);
+        for (unsigned int i=0; i<jaco.rows(); ++i)
+            for (unsigned int j=0; j<jaco.cols(); ++j)
+                EXPECT_DOUBLE_EQ(jaco(i, j), jacoRef(i, j));
 }
 
 static std::string modelPathForXiaDerivativeTest("models/arm26.bioMod");
