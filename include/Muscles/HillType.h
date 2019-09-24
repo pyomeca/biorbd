@@ -38,15 +38,15 @@ public:
     biorbd::muscles::HillType DeepCopy() const;
     void DeepCopy(const biorbd::muscles::HillType& other);
 
-    virtual const std::vector<biorbd::muscles::Force>& force(
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
             const biorbd::muscles::StateDynamics& emg);
-    virtual const std::vector<biorbd::muscles::Force>& force(
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
             const biorbd::muscles::StateDynamics& emg,
             int updateKin = 2);
-    virtual const std::vector<biorbd::muscles::Force>& force(
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::muscles::StateDynamics& emg,

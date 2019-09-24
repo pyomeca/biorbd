@@ -11,9 +11,9 @@ class BIORBD_API FatigueDynamicStateXia : public biorbd::muscles::FatigueDynamic
 {
 public:
     FatigueDynamicStateXia(
-            double active = 0,
+            double active = 1,
             double fatigued = 0,
-            double resting = 1);
+            double resting = 0);
     FatigueDynamicStateXia(const std::shared_ptr<biorbd::muscles::FatigueState> m);
     biorbd::muscles::FatigueDynamicStateXia DeepCopy() const;
     void DeepCopy(const biorbd::muscles::FatigueDynamicStateXia& other);

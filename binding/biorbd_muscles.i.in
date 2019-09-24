@@ -18,18 +18,19 @@
 #include "Muscles/StaticOptimization.h"
 #endif
 %}
+
 // Instantiate templates
 namespace std {
 %template(SharedBiorbdMuscle) std::shared_ptr<biorbd::muscles::Muscle>;
-%template(VecBiorbdMuscleStateDynamics) std::vector<biorbd::muscles::StateDynamics>;
-%template(MatBiorbdMuscleStateDynamics) std::vector<std::vector<biorbd::muscles::StateDynamics>>;
+%template(VecBiorbdMuscleStateDynamics) std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>;
+%template(MatBiorbdMuscleStateDynamics) std::vector<std::shared_ptr<std::vector<biorbd::muscles::StateDynamics>>>;
 %template(SharedBiorbdMuscleFatigueState) std::shared_ptr<biorbd::muscles::FatigueState>;
 }
 
 // Exposing some useful functions
 %extend biorbd::Model{
     biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
-                const std::vector<biorbd::muscles::StateDynamics> &state,
+                const std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> &state,
                 const biorbd::rigidbody::GeneralizedCoordinates &Q,
                 const biorbd::rigidbody::GeneralizedCoordinates &QDot){
         return self->muscularJointTorque(state, true, &Q, &QDot);

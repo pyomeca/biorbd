@@ -44,11 +44,11 @@ public:
 
     void updateMuscles(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            bool); // Update les positions/jacobiennes/vitesse, etc
+            bool updateKin); // Update les positions/jacobiennes/vitesse, etc
     void updateMuscles(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedCoordinates& QDot,
-            bool); // Update les positions/jacobiennes/vitesse, etc
+            bool updateKin); // Update les positions/jacobiennes/vitesse, etc
     void updateMuscles(
             std::vector<std::vector<biorbd::utils::Node3d>>& musclePointsInGlobal,
             std::vector<biorbd::utils::Matrix>& jacoPointsInGlobal); // Update les positions/jacobiennes/vitesse, etc
@@ -64,20 +64,20 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
             const biorbd::rigidbody::GeneralizedCoordinates* QDot = nullptr);
     biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
-            const std::vector<biorbd::muscles::StateDynamics> &state,
+            const std::vector<std::shared_ptr<StateDynamics>> &state,
             biorbd::utils::Vector& F,
             bool updateKin = true,
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
             const biorbd::rigidbody::GeneralizedCoordinates* QDot = nullptr);
     biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
-            const std::vector<biorbd::muscles::StateDynamics> &state,
+            const std::vector<std::shared_ptr<StateDynamics>> &state,
             bool updateKin = true,
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
             const biorbd::rigidbody::GeneralizedCoordinates* QDot = nullptr);
     biorbd::utils::Matrix musclesLengthJacobian();
     biorbd::utils::Matrix musclesLengthJacobian(const biorbd::rigidbody::GeneralizedCoordinates& Q);
-    std::vector<std::vector<biorbd::muscles::Force> > musclesForces(
-            const std::vector<biorbd::muscles::StateDynamics> &state,
+    std::vector<std::vector<std::shared_ptr<Force>>> musclesForces(
+            const std::vector<std::shared_ptr<StateDynamics>> &state,
             bool updateKin = true,
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
             const biorbd::rigidbody::GeneralizedCoordinates* QDot = nullptr);

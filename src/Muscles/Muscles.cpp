@@ -80,7 +80,7 @@ const biorbd::muscles::MuscleGroup &biorbd::muscles::Muscles::muscleGroup(const 
 
 // From muscle activation (return muscle force)
 biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorque(
-        const std::vector<biorbd::muscles::StateDynamics> &state,
+        const std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> &state,
         biorbd::utils::Vector &F,
         bool updateKin,
         const biorbd::rigidbody::GeneralizedCoordinates* Q,
@@ -90,17 +90,17 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
     if (updateKin > 0)
         updateMuscles(*Q,*QDot,updateKin);
 
-    const std::vector<std::vector<biorbd::muscles::Force>>& force_tp = musclesForces(state, false);
+    const std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>>& force_tp = musclesForces(state, false);
     F = biorbd::utils::Vector(static_cast<unsigned int>(force_tp.size()));
     for (unsigned int i=0; i<force_tp.size(); ++i)
-        F(i) = (force_tp[i])[0].norm();
+        F(i) = (force_tp[i])[0]->norm();
 
     return muscularJointTorque(F, false, Q, QDot);
 }
 
 // From muscle activation (do not return muscle force)
 biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorque(
-        const std::vector<biorbd::muscles::StateDynamics>& state,
+        const std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>& state,
         bool updateKin,
         const biorbd::rigidbody::GeneralizedCoordinates* Q,
         const biorbd::rigidbody::GeneralizedCoordinates* QDot)
@@ -129,8 +129,8 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
     return biorbd::rigidbody::GeneralizedTorque( -jaco.transpose() * F );
 }
 
-std::vector<std::vector<biorbd::muscles::Force>> biorbd::muscles::Muscles::musclesForces(
-        const std::vector<biorbd::muscles::StateDynamics> &state,
+std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> biorbd::muscles::Muscles::musclesForces(
+        const std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> &state,
         bool updateKin,
         const biorbd::rigidbody::GeneralizedCoordinates* Q,
         const biorbd::rigidbody::GeneralizedCoordinates* QDot)
@@ -140,12 +140,12 @@ std::vector<std::vector<biorbd::muscles::Force>> biorbd::muscles::Muscles::muscl
         updateMuscles(*Q,*QDot,updateKin);
 
     // Variable de sortie
-    std::vector<std::vector<biorbd::muscles::Force>> forces; // Tous les muscles/Deux pointeurs par muscles (origine/insertion)
+    std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> forces; // Tous les muscles/Deux pointeurs par muscles (origine/insertion)
 
     unsigned int cmpMus(0);
     for (unsigned int i=0; i<m_mus->size(); ++i) // groupe musculaire
         for (unsigned int j=0; j<(*m_mus)[i].nbMuscles(); ++j)
-            forces.push_back((*m_mus)[i].muscle(j).force(state[cmpMus++]));
+            forces.push_back((*m_mus)[i].muscle(j).force(*state[cmpMus++]));
 
     // Les forces
     return forces;

@@ -38,5 +38,6 @@ void biorbd::muscles::ForceFromOrigin::setForceFromMuscleGeometry(
     // Trouver le vecteur directeur
     const std::vector<biorbd::utils::Node3d>& tp_via = geo.musclesPointsInGlobal();
     *this = tp_via[1] - tp_via[0];
-    *this /= this->norm() * vectorNorm;
+    *this /= this->norm();
+    *this *= vectorNorm;
 }

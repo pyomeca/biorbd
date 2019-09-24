@@ -12,9 +12,9 @@ class BIORBD_API FatigueState
 {
 public:
     FatigueState(
-            double active = 0,
+            double active = 1,
             double fatigued = 0,
-            double resting = 1);
+            double resting = 0);
     FatigueState(const biorbd::muscles::FatigueState& other);
     FatigueState(const std::shared_ptr<biorbd::muscles::FatigueState> other);
     virtual ~FatigueState();

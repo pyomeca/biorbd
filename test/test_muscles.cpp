@@ -11,24 +11,47 @@
 #include "Muscles/all.h"
 
 static std::string modelPathForMuscleForce("models/arm26.bioMod");
+TEST(MuscleForce, force)
+{
+    biorbd::Model model(modelPathForMuscleForce);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model), QDot(model);
+    Q.setOnes()/10;
+    QDot.setOnes()/10;
+    std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> states;
+    for (unsigned int i=0; i<model.nbMuscleTotal(); ++i)
+        states.push_back(std::make_shared<biorbd::muscles::StateDynamics>(0, 0.2));
+    model.updateMuscles(Q, QDot, true);
+
+    const std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>>& force_tp = model.musclesForces(states, false);
+    Eigen::VectorXd F = biorbd::utils::Vector(static_cast<unsigned int>(force_tp.size()));
+    for (unsigned int i=0; i<force_tp.size(); ++i)
+        F(i) = (force_tp[i])[0]->norm();
+
+    Eigen::VectorXd ExpectedForce(model.nbMuscleTotal());
+    ExpectedForce << 647.25276356553593, 119.55997461719004, 85.85568070134883,
+            118.01635424513141, 113.18455892403414, 189.84361438713745;
+    for (unsigned int i=0; i<model.nbMuscleTotal(); ++i)
+        EXPECT_DOUBLE_EQ(F(i), ExpectedForce(i));
+}
+
 TEST(MuscleForce, torqueFromMuscles)
 {
     biorbd::Model model(modelPathForMuscleForce);
     biorbd::rigidbody::GeneralizedCoordinates Q(model), QDot(model), QDDot(model), QDDotExpected(model);
     Q.setOnes()/10;
     QDot.setOnes()/10;
-    std::vector<biorbd::muscles::StateDynamics> states;
+    std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> states;
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i)
-        states.push_back(biorbd::muscles::StateDynamics(0, 0.2));
+        states.push_back(std::make_shared<biorbd::muscles::StateDynamics>(0, 0.2));
 
     biorbd::rigidbody::GeneralizedTorque Tau(model), TauExpected(model);
-    TauExpected << -18.3161, -7.75098;
+    TauExpected << -18.271389285751727, -7.820566757538376;
     Tau = model.muscularJointTorque(states, true, &Q, &QDot);
     for (unsigned int i=0; i<QDDot.size(); ++i)
         EXPECT_DOUBLE_EQ(Tau[i], TauExpected[i]);
 
     RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot);
-    QDDotExpected << -0.046239425378874474, 0.12579777534720743;
+    QDDotExpected << -2.4941551687243537, 0.04600953825654895;
     for (unsigned int i=0; i<QDDot.size(); ++i)
         EXPECT_DOUBLE_EQ(QDDot[i], QDDotExpected[i]);
 

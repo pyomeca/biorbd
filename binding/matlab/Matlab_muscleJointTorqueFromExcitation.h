@@ -26,7 +26,7 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
     // Recevoir Qdot
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
     // Recevoir muscleStates
-    std::vector<std::vector<biorbd::muscles::StateDynamics>> s = getParameterMuscleStateExcitation(prhs,4,model->nbMuscleTotal());
+    std::vector<std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>> s = getParameterMuscleStateExcitation(prhs,4,model->nbMuscleTotal());
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));
@@ -64,7 +64,7 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
         unsigned int iMus = 0;
         for (unsigned int k=0; k<model->nbMuscleGroups(); ++k)
             for (unsigned int j=0; j<model->muscleGroup(k).nbMuscles(); ++j){
-                s[i][iMus].timeDerivativeActivation(model->muscleGroup(k).muscle(j).caract(),true);
+                s[i][iMus]->timeDerivativeActivation(model->muscleGroup(k).muscle(j).caract(),true);
                 ++iMus;
             }
 

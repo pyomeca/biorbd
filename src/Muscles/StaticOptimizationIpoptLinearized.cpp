@@ -27,13 +27,13 @@ biorbd::muscles::StaticOptimizationIpoptLinearized::StaticOptimizationIpoptLinea
 void biorbd::muscles::StaticOptimizationIpoptLinearized::prepareJacobian()
 {
     m_model.updateMuscles(*m_Q, *m_Qdot, true);
-    std::vector<biorbd::muscles::StateDynamics> state_zero;
+    std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> state_zero;
     for (unsigned int i = 0; i<*m_nMus; ++i){
-        state_zero.push_back(biorbd::muscles::StateDynamics(0, 0));
+        state_zero.push_back(std::make_shared<biorbd::muscles::StateDynamics>(biorbd::muscles::StateDynamics(0, 0)));
     }
     const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorque_zero(m_model.muscularJointTorque(state_zero, false, m_Q.get(), m_Qdot.get()));
     for (unsigned int i = 0; i<*m_nMus; ++i){
-        std::vector<biorbd::muscles::StateDynamics> state;
+        std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> state;
         for (unsigned int j = 0; j<*m_nMus; ++j){
             unsigned int delta;
             if (j == i){
@@ -42,7 +42,7 @@ void biorbd::muscles::StaticOptimizationIpoptLinearized::prepareJacobian()
             else {
                 delta = 0;
             }
-            state.push_back(biorbd::muscles::StateDynamics(0, delta*1));
+            state.push_back(std::make_shared<biorbd::muscles::StateDynamics>(biorbd::muscles::StateDynamics(0, delta*1)));
         }
         const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorque(m_model.muscularJointTorque(state, true, m_Q.get(), m_Qdot.get()));
         for (unsigned int j = 0; j<*m_nGeneralizedTorque; ++j){

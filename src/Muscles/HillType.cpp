@@ -185,7 +185,7 @@ void biorbd::muscles::HillType::DeepCopy(const biorbd::muscles::HillType &other)
     *m_cste_vitesseRaccourMax = *other.m_cste_vitesseRaccourMax;
 }
 
-const std::vector<biorbd::muscles::Force>& biorbd::muscles::HillType::force(
+const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::HillType::force(
         const biorbd::muscles::StateDynamics& emg){
     // Calculer chacune les forces dans chaque éléments
     computeFvCE();
@@ -198,7 +198,7 @@ const std::vector<biorbd::muscles::Force>& biorbd::muscles::HillType::force(
     return *m_force;
 }
 
-const std::vector<biorbd::muscles::Force> &biorbd::muscles::HillType::force(
+const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::HillType::force(
         biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
@@ -217,7 +217,7 @@ const std::vector<biorbd::muscles::Force> &biorbd::muscles::HillType::force(
     return force(emg);
 }
 
-const std::vector<biorbd::muscles::Force> &biorbd::muscles::HillType::force(
+const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::HillType::force(
         biorbd::rigidbody::Joints &,
         const biorbd::rigidbody::GeneralizedCoordinates &,
         const biorbd::muscles::StateDynamics &,

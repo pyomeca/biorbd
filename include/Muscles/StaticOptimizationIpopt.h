@@ -137,7 +137,7 @@ protected:
     std::shared_ptr<biorbd::rigidbody::GeneralizedTorque> m_GeneralizedTorqueTarget;
     std::shared_ptr<biorbd::utils::Vector> m_GeneralizedTorqueResidual;
     std::shared_ptr<double> m_GeneralizedTorquePonderation;
-    std::shared_ptr<std::vector<biorbd::muscles::StateDynamics>> m_states;
+    std::shared_ptr<std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>> m_states;
     std::shared_ptr<unsigned int> m_pNormFactor;
     std::shared_ptr<int> m_verbose;
     std::shared_ptr<biorbd::utils::Vector> m_finalSolution;

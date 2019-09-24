@@ -48,15 +48,15 @@ public:
     const biorbd::muscles::PathChangers& pathChanger();
     void addPathObject(biorbd::utils::Node3d &w); // Ajouter un wrapping object
 
-    virtual const std::vector<biorbd::muscles::Force>& force(); // Return the last computed muscle force
-    virtual const std::vector<biorbd::muscles::Force>& force(const biorbd::muscles::StateDynamics& emg) = 0;
-    virtual const std::vector<biorbd::muscles::Force>& force(
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(); // Return the last computed muscle force
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(const biorbd::muscles::StateDynamics& emg) = 0;
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
             const biorbd::muscles::StateDynamics& emg,
             int updateKin = 2) = 0;
-    virtual const std::vector<biorbd::muscles::Force>& force(
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::muscles::StateDynamics& emg,
@@ -66,7 +66,7 @@ protected:
     std::shared_ptr<biorbd::utils::String> m_name;
     std::shared_ptr<biorbd::muscles::MUSCLE_TYPE> m_type;
     std::shared_ptr<biorbd::muscles::PathChangers> m_pathChanger;
-    std::shared_ptr<std::vector<biorbd::muscles::Force>> m_force;
+    std::shared_ptr<std::vector<std::shared_ptr<biorbd::muscles::Force>>> m_force;
     virtual void setType()=0;
 
 };

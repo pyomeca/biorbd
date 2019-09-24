@@ -183,8 +183,8 @@ double biorbd::muscles::Muscle::activationDot(const biorbd::muscles::StateDynami
 void biorbd::muscles::Muscle::computeForce(const biorbd::muscles::State &emg)
 {
     double force = getForceFromActivation(emg);
-    (*m_force)[0].setForceFromMuscleGeometry(*m_position, force); // origine vers le deuxieme point
-    (*m_force)[1].setForceFromMuscleGeometry(*m_position, force); // insertion vers l'avant-dernier point
+    (*m_force)[0]->setForceFromMuscleGeometry(*m_position, force); // origine vers le deuxieme point
+    (*m_force)[1]->setForceFromMuscleGeometry(*m_position, force); // insertion vers l'avant-dernier point
 }
 
 const std::vector<biorbd::utils::Node3d>& biorbd::muscles::Muscle::musclesPointsInGlobal(

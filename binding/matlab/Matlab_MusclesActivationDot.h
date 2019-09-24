@@ -17,7 +17,7 @@ void Matlab_MusclesActivationDot( int, mxArray *plhs[],
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
 
     // Recevoir les états musculaires
-    std::vector<std::vector<biorbd::muscles::StateDynamics>> state = getParameterMuscleState(prhs, 2, 3, model->nbMuscleTotal());
+    std::vector<std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>> state = getParameterMuscleState(prhs, 2, 3, model->nbMuscleTotal());
 
     // Already normalized
     bool areadyNormalized(false);
@@ -39,7 +39,7 @@ void Matlab_MusclesActivationDot( int, mxArray *plhs[],
         for (unsigned int i=0; i<model->nbMuscleGroups(); ++i)
             for (unsigned int j=0; j<model->muscleGroup(i).nbMuscles(); ++j){
                  // Recueillir dérivées d'activtion
-                adot[cmp]   = model->muscleGroup(i).muscle(j).activationDot( state[iTime][cmpState], areadyNormalized);
+                adot[cmp]   = model->muscleGroup(i).muscle(j).activationDot( *state[iTime][cmpState], areadyNormalized);
                 updateKin = false;
                 ++cmp;
                 ++cmpState;

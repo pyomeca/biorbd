@@ -35,7 +35,7 @@ biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     m_GeneralizedTorqueTarget(std::make_shared<biorbd::rigidbody::GeneralizedTorque>(GeneralizedTorqueTarget)),
     m_GeneralizedTorqueResidual(std::make_shared<biorbd::utils::Vector>(biorbd::utils::Vector::Zero(*m_nGeneralizedTorque))),
     m_GeneralizedTorquePonderation(std::make_shared<double>(1000)),
-    m_states(std::make_shared<std::vector<biorbd::muscles::StateDynamics>>(*m_nMus)),
+    m_states(std::make_shared<std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>>(*m_nMus)),
     m_pNormFactor(std::make_shared<unsigned int>(pNormFactor)),
     m_verbose(std::make_shared<int>(verbose)),
     m_finalSolution(std::make_shared<biorbd::utils::Vector>(biorbd::utils::Vector(*m_nMus))),
@@ -237,12 +237,12 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
         const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueMusc(m_model.muscularJointTorque(*m_states, false, m_Q.get(), m_Qdot.get()));
         unsigned int k(0);
         for( unsigned int j = 0; j < *m_nMus; ++j ){
-            std::vector<biorbd::muscles::StateDynamics> stateEpsilon;
+            std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> stateEpsilon;
             for (unsigned int i = 0; i < *m_nMus; ++i){
                 unsigned int delta(0);
                 if (i == j)
                     delta = 1;
-                stateEpsilon.push_back(biorbd::muscles::StateDynamics(0, (*m_activations)[i]+delta* *m_eps));
+                stateEpsilon.push_back(std::make_shared<biorbd::muscles::StateDynamics>(biorbd::muscles::StateDynamics(0, (*m_activations)[i]+delta* *m_eps)));
             }
             const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueCalculEpsilon(m_model.muscularJointTorque(stateEpsilon, false, m_Q.get(), m_Qdot.get()));
             for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ ){
@@ -323,7 +323,7 @@ void biorbd::muscles::StaticOptimizationIpopt::dispatch(const Ipopt::Number *x)
 {
     for(unsigned int i = 0; i < *m_nMus; i++ ){
         (*m_activations)[i] = x[i];
-        (*m_states)[i].setActivation((*m_activations)[i]);
+        (*m_states)[i]->setActivation((*m_activations)[i]);
     }
 
     for(unsigned int i = 0; i < *m_nGeneralizedTorqueResidual; i++ )
