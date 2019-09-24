@@ -60,6 +60,70 @@ TEST(BoneMesh, copy)
 }
 
 static std::string modelPathMeshEqualsMarker("models/meshsEqualMarkers.bioMod");
+static std::vector<double> QforMarkers = {0.1, 0.1, 0.1, 0.3, 0.3, 0.3};
+static std::vector<Eigen::Vector3d> expectedMarkers = {
+    Eigen::Vector3d(1.0126678074548392, 0.46575286691125295, -0.082379586527044829),
+    Eigen::Vector3d(-0.18232123669751762,  0.98685937986570527,  0.46575286691125295),
+    Eigen::Vector3d(0.39552020666133958, -0.18232123669751762,   1.0126678074548392),
+    Eigen::Vector3d(1.0258667774186612, 1.0702910100794407, 1.1960410878390473)
+};
+TEST(Markers, allPositions)
+{
+    biorbd::Model model(modelPathMeshEqualsMarker);
+    EXPECT_EQ(model.nbQ(), 6);
+    EXPECT_EQ(model.nMarkers(), 4);
+
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    for (unsigned int i=0; i<model.nbQ(); ++i)
+        Q[i] = QforMarkers[i];
+
+    // All markers at once
+    std::vector<biorbd::rigidbody::NodeBone> markers(model.markers(Q, true, true));
+    for (unsigned int i=0; i<model.nMarkers(); ++i)
+        for (unsigned int j=0; j<3; ++j)
+            EXPECT_DOUBLE_EQ(markers[i][j], expectedMarkers[i][j]);
+}
+TEST(Markers, individualPositions)
+{
+    biorbd::Model model(modelPathMeshEqualsMarker);
+    EXPECT_EQ(model.nbQ(), 6);
+    EXPECT_EQ(model.nMarkers(), 4);
+
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    for (unsigned int i=0; i<model.nbQ(); ++i)
+        Q[i] = QforMarkers[i];
+
+    // One marker at a time, only update Q once
+    for (unsigned int i=0; i<model.nMarkers(); ++i){
+        biorbd::rigidbody::NodeBone marker;
+        if (i==0)
+            marker = model.marker(Q, i, true, true);
+        else
+            marker = model.marker(Q, i, true, false);
+        for (unsigned int j=0; j<3; ++j)
+            EXPECT_DOUBLE_EQ(marker[j], expectedMarkers[i][j]);
+    }
+
+    // Change Q
+    Q << 0.3, 0.3, 0.3, 0.1, 0.1, 0.1;
+    static std::vector<Eigen::Vector3d> expectedMarkers2 = {
+        Eigen::Vector3d(1.290033288920621, 0.40925158443563553, 0.21112830525233722),
+        Eigen::Vector3d(0.20066533460246938,  1.2890382781008347, 0.40925158443563558),
+        Eigen::Vector3d(0.39983341664682814, 0.20066533460246938,  1.290033288920621),
+        Eigen::Vector3d(1.2905320401699185, 1.2989551971389397, 1.310413178608594)
+    };
+    // One marker at a time, only update Q once
+    for (unsigned int i=0; i<model.nMarkers(); ++i){
+        biorbd::rigidbody::NodeBone marker;
+        if (i==0)
+            marker = model.marker(Q, i, true, true);
+        else
+            marker = model.marker(Q, i, true, false);
+        for (unsigned int j=0; j<3; ++j)
+            EXPECT_DOUBLE_EQ(marker[j], expectedMarkers2[i][j]);
+    }
+}
+
 TEST(BoneMesh, position)
 {
     biorbd::Model model(modelPathMeshEqualsMarker);
