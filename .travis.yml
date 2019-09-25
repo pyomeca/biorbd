@@ -12,8 +12,6 @@ matrix:
     env:
       - COMPILER=xcode7.2
   - os: windows
-    env:
-      - VS
 
     
 before_install:
