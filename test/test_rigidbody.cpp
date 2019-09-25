@@ -13,6 +13,8 @@
 #include "RigidBody/NodeBone.h"
 #include "RigidBody/Bone.h"
 
+static double requiredPrecision(1e-10);
+
 #ifdef MODULE_ACTUATORS
 static std::string modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");
 #else // MODULE_ACTUATORS
@@ -81,7 +83,7 @@ TEST(Markers, allPositions)
     std::vector<biorbd::rigidbody::NodeBone> markers(model.markers(Q, true, true));
     for (unsigned int i=0; i<model.nMarkers(); ++i)
         for (unsigned int j=0; j<3; ++j)
-            EXPECT_DOUBLE_EQ(markers[i][j], expectedMarkers[i][j]);
+            EXPECT_NEAR(markers[i][j], expectedMarkers[i][j], requiredPrecision);
 }
 TEST(Markers, individualPositions)
 {
@@ -101,7 +103,7 @@ TEST(Markers, individualPositions)
         else
             marker = model.marker(Q, i, true, false);
         for (unsigned int j=0; j<3; ++j)
-            EXPECT_DOUBLE_EQ(marker[j], expectedMarkers[i][j]);
+            EXPECT_NEAR(marker[j], expectedMarkers[i][j], requiredPrecision);
     }
 
     // Change Q
@@ -120,7 +122,7 @@ TEST(Markers, individualPositions)
         else
             marker = model.marker(Q, i, true, false);
         for (unsigned int j=0; j<3; ++j)
-            EXPECT_DOUBLE_EQ(marker[j], expectedMarkers2[i][j]);
+            EXPECT_NEAR(marker[j], expectedMarkers2[i][j], requiredPrecision);
     }
 }
 
@@ -135,7 +137,7 @@ TEST(BoneMesh, position)
         std::vector<biorbd::rigidbody::NodeBone> markers(model.markers(Q));
         for (unsigned int idx=0; idx<markers.size(); ++idx)
             for (unsigned int xyz =0; xyz<3; ++xyz)
-                EXPECT_DOUBLE_EQ(mesh[0][idx][xyz], markers[idx][xyz]);
+                EXPECT_NEAR(mesh[0][idx][xyz], markers[idx][xyz], requiredPrecision);
     }
     {
         Q.setOnes();
@@ -143,7 +145,7 @@ TEST(BoneMesh, position)
         std::vector<biorbd::rigidbody::NodeBone> markers(model.markers(Q));
         for (unsigned int idx=0; idx<markers.size(); ++idx)
             for (unsigned int xyz =0; xyz<3; ++xyz)
-                EXPECT_DOUBLE_EQ(mesh[0][idx][xyz], markers[idx][xyz]);
+                EXPECT_NEAR(mesh[0][idx][xyz], markers[idx][xyz], requiredPrecision);
     }
 }
 

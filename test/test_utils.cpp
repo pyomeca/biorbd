@@ -7,6 +7,8 @@
 #include "Utils/Node3d.h"
 #include "Utils/RotoTransNode.h"
 
+static double requiredPrecision(1e-10);
+
 TEST(ShallowCopy, DeepCopy){
     // DeepCopying a shallow copy, should also change the reference
     // Warning that may be surprising because one may be tend to DeepCopy
@@ -153,34 +155,34 @@ TEST(Node3d, Copy){
     EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
 
     // Test for the values
-    EXPECT_DOUBLE_EQ(MainNode.x(), 1);
-    EXPECT_DOUBLE_EQ(MainNode.y(), 2);
-    EXPECT_DOUBLE_EQ(MainNode.z(), 3);
-    EXPECT_DOUBLE_EQ(ShallowCopy.x(), 1);
-    EXPECT_DOUBLE_EQ(ShallowCopy.y(), 2);
-    EXPECT_DOUBLE_EQ(ShallowCopy.z(), 3);
-    EXPECT_DOUBLE_EQ(DeepCopyNow.x(), 1);
-    EXPECT_DOUBLE_EQ(DeepCopyNow.y(), 2);
-    EXPECT_DOUBLE_EQ(DeepCopyNow.z(), 3);
-    EXPECT_DOUBLE_EQ(DeepCopyLater.x(), 1);
-    EXPECT_DOUBLE_EQ(DeepCopyLater.y(), 2);
-    EXPECT_DOUBLE_EQ(DeepCopyLater.z(), 3);
+    EXPECT_NEAR(MainNode.x(), 1, requiredPrecision);
+    EXPECT_NEAR(MainNode.y(), 2, requiredPrecision);
+    EXPECT_NEAR(MainNode.z(), 3, requiredPrecision);
+    EXPECT_NEAR(ShallowCopy.x(), 1, requiredPrecision);
+    EXPECT_NEAR(ShallowCopy.y(), 2, requiredPrecision);
+    EXPECT_NEAR(ShallowCopy.z(), 3, requiredPrecision);
+    EXPECT_NEAR(DeepCopyNow.x(), 1, requiredPrecision);
+    EXPECT_NEAR(DeepCopyNow.y(), 2, requiredPrecision);
+    EXPECT_NEAR(DeepCopyNow.z(), 3, requiredPrecision);
+    EXPECT_NEAR(DeepCopyLater.x(), 1, requiredPrecision);
+    EXPECT_NEAR(DeepCopyLater.y(), 2, requiredPrecision);
+    EXPECT_NEAR(DeepCopyLater.z(), 3, requiredPrecision);
     // Change the values of ShallowCopy
     ShallowCopy.setZero();
 
     // Data are NOT shallow copy, therefore the parent should keep its values
-    EXPECT_DOUBLE_EQ(MainNode.x(), 1);
-    EXPECT_DOUBLE_EQ(MainNode.y(), 2);
-    EXPECT_DOUBLE_EQ(MainNode.z(), 3);
-    EXPECT_DOUBLE_EQ(ShallowCopy.x(), 0);
-    EXPECT_DOUBLE_EQ(ShallowCopy.y(), 0);
-    EXPECT_DOUBLE_EQ(ShallowCopy.z(), 0);
-    EXPECT_DOUBLE_EQ(DeepCopyNow.x(), 1);
-    EXPECT_DOUBLE_EQ(DeepCopyNow.y(), 2);
-    EXPECT_DOUBLE_EQ(DeepCopyNow.z(), 3);
-    EXPECT_DOUBLE_EQ(DeepCopyLater.x(), 1);
-    EXPECT_DOUBLE_EQ(DeepCopyLater.y(), 2);
-    EXPECT_DOUBLE_EQ(DeepCopyLater.z(), 3);
+    EXPECT_NEAR(MainNode.x(), 1, requiredPrecision);
+    EXPECT_NEAR(MainNode.y(), 2, requiredPrecision);
+    EXPECT_NEAR(MainNode.z(), 3, requiredPrecision);
+    EXPECT_NEAR(ShallowCopy.x(), 0, requiredPrecision);
+    EXPECT_NEAR(ShallowCopy.y(), 0, requiredPrecision);
+    EXPECT_NEAR(ShallowCopy.z(), 0, requiredPrecision);
+    EXPECT_NEAR(DeepCopyNow.x(), 1, requiredPrecision);
+    EXPECT_NEAR(DeepCopyNow.y(), 2, requiredPrecision);
+    EXPECT_NEAR(DeepCopyNow.z(), 3, requiredPrecision);
+    EXPECT_NEAR(DeepCopyLater.x(), 1, requiredPrecision);
+    EXPECT_NEAR(DeepCopyLater.y(), 2, requiredPrecision);
+    EXPECT_NEAR(DeepCopyLater.z(), 3, requiredPrecision);
 }
 
 TEST(Matrix, Copy){
@@ -208,18 +210,18 @@ TEST(Matrix, Copy){
     EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
 
     // Test for the values
-    EXPECT_DOUBLE_EQ(MainRotoTransNode(2, 2), 10);
-    EXPECT_DOUBLE_EQ(ShallowCopy(2, 2), 10);
-    EXPECT_DOUBLE_EQ(DeepCopyNow(2, 2), 10);
-    EXPECT_DOUBLE_EQ(DeepCopyLater(2, 2), 10);
+    EXPECT_NEAR(MainRotoTransNode(2, 2), 10, requiredPrecision);
+    EXPECT_NEAR(ShallowCopy(2, 2), 10, requiredPrecision);
+    EXPECT_NEAR(DeepCopyNow(2, 2), 10, requiredPrecision);
+    EXPECT_NEAR(DeepCopyLater(2, 2), 10, requiredPrecision);
     // Change the values of ShallowCopy
     ShallowCopy.setZero();
 
     // Data are NOT shallow copy, therefore the parent should keep its values
-    EXPECT_DOUBLE_EQ(MainRotoTransNode(2, 2), 10);
-    EXPECT_DOUBLE_EQ(ShallowCopy(2, 2), 0);
-    EXPECT_DOUBLE_EQ(DeepCopyNow(2, 2), 10);
-    EXPECT_DOUBLE_EQ(DeepCopyLater(2, 2), 10);
+    EXPECT_NEAR(MainRotoTransNode(2, 2), 10, requiredPrecision);
+    EXPECT_NEAR(ShallowCopy(2, 2), 0, requiredPrecision);
+    EXPECT_NEAR(DeepCopyNow(2, 2), 10, requiredPrecision);
+    EXPECT_NEAR(DeepCopyLater(2, 2), 10, requiredPrecision);
 }
 
 TEST(RotoTransNode, Copy){
@@ -247,17 +249,17 @@ TEST(RotoTransNode, Copy){
     EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
 
     // Test for the values
-    EXPECT_DOUBLE_EQ(MainRotoTransNode(2, 2), 10);
-    EXPECT_DOUBLE_EQ(ShallowCopy(2, 2), 10);
-    EXPECT_DOUBLE_EQ(DeepCopyNow(2, 2), 10);
-    EXPECT_DOUBLE_EQ(DeepCopyLater(2, 2), 10);
+    EXPECT_NEAR(MainRotoTransNode(2, 2), 10, requiredPrecision);
+    EXPECT_NEAR(ShallowCopy(2, 2), 10, requiredPrecision);
+    EXPECT_NEAR(DeepCopyNow(2, 2), 10, requiredPrecision);
+    EXPECT_NEAR(DeepCopyLater(2, 2), 10, requiredPrecision);
     // Change the values of ShallowCopy
     ShallowCopy.setZero();
 
     // Data are NOT shallow copy, therefore the parent should keep its values
-    EXPECT_DOUBLE_EQ(MainRotoTransNode(2, 2), 10);
-    EXPECT_DOUBLE_EQ(ShallowCopy(2, 2), 0);
-    EXPECT_DOUBLE_EQ(DeepCopyNow(2, 2), 10);
-    EXPECT_DOUBLE_EQ(DeepCopyLater(2, 2), 10);
+    EXPECT_NEAR(MainRotoTransNode(2, 2), 10, requiredPrecision);
+    EXPECT_NEAR(ShallowCopy(2, 2), 0, requiredPrecision);
+    EXPECT_NEAR(DeepCopyNow(2, 2), 10, requiredPrecision);
+    EXPECT_NEAR(DeepCopyLater(2, 2), 10, requiredPrecision);
 }
 

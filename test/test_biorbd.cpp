@@ -7,6 +7,8 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
 
+static double requiredPrecision(1e-10);
+
 #ifdef MODULE_ACTUATORS
 static std::string modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");
 #else // MODULE_ACTUATORS
@@ -19,7 +21,7 @@ TEST(FileIO, OpenModel){
 
 TEST(GenericTests, mass){
     biorbd::Model model(modelPathForGeneralTesting);
-    EXPECT_DOUBLE_EQ(model.mass(), 52.412120000000002);
+    EXPECT_NEAR(model.mass(), 52.41212, requiredPrecision);
 }
 
 static std::string modelPathWithMeshFile("models/simpleWithMeshFile.bioMod");

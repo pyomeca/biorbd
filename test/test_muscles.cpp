@@ -10,6 +10,8 @@
 #ifdef MODULE_MUSCLES
 #include "Muscles/all.h"
 
+static double requiredPrecision(1e-10);
+
 static std::string modelPathForMuscleForce("models/arm26.bioMod");
 TEST(MuscleForce, force)
 {
@@ -31,7 +33,7 @@ TEST(MuscleForce, force)
     ExpectedForce << 647.25276356553593, 119.55997461719004, 85.85568070134883,
             118.01635424513141, 113.18455892403414, 189.84361438713745;
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i)
-        EXPECT_DOUBLE_EQ(F(i), ExpectedForce(i));
+        EXPECT_NEAR(F(i), ExpectedForce(i), requiredPrecision);
 }
 
 TEST(MuscleForce, torqueFromMuscles)
@@ -48,12 +50,12 @@ TEST(MuscleForce, torqueFromMuscles)
     TauExpected << -18.271389285751727, -7.820566757538376;
     Tau = model.muscularJointTorque(states, true, &Q, &QDot);
     for (unsigned int i=0; i<QDDot.size(); ++i)
-        EXPECT_DOUBLE_EQ(Tau[i], TauExpected[i]);
+        EXPECT_NEAR(Tau[i], TauExpected[i], requiredPrecision);
 
     RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot);
     QDDotExpected << -2.4941551687243537, 0.04600953825654895;
     for (unsigned int i=0; i<QDDot.size(); ++i)
-        EXPECT_DOUBLE_EQ(QDDot[i], QDDotExpected[i]);
+        EXPECT_NEAR(QDDot[i], QDDotExpected[i], requiredPrecision);
 
 }
 
@@ -93,7 +95,7 @@ TEST(MuscleJacobian, jacobian){
     biorbd::utils::Matrix jaco(muscle.position().jacobian());
     for (unsigned int i=0; i<jaco.rows(); ++i)
         for (unsigned int j=0; j<jaco.cols(); ++j)
-            EXPECT_DOUBLE_EQ(jaco(i, j), jacoRef(i, j));
+            EXPECT_NEAR(jaco(i, j), jacoRef(i, j), requiredPrecision);
 
     // Change Q
     Q.setOnes();
@@ -119,7 +121,7 @@ TEST(MuscleJacobian, jacobian){
     jaco = muscle.position().jacobian();
     for (unsigned int i=0; i<jaco.rows(); ++i)
         for (unsigned int j=0; j<jaco.cols(); ++j)
-            EXPECT_DOUBLE_EQ(jaco(i, j), jacoRef(i, j));
+            EXPECT_NEAR(jaco(i, j), jacoRef(i, j), requiredPrecision);
 }
 TEST(MuscleJacobian, jacobianLength){
     biorbd::Model model(modelPathForMuscleJacobian);
@@ -141,7 +143,7 @@ TEST(MuscleJacobian, jacobianLength){
     biorbd::utils::Matrix jaco(model.musclesLengthJacobian(Q));
     for (unsigned int i=0; i<jaco.rows(); ++i)
         for (unsigned int j=0; j<jaco.cols(); ++j)
-            EXPECT_DOUBLE_EQ(jaco(i, j), jacoRef(i, j));
+            EXPECT_NEAR(jaco(i, j), jacoRef(i, j), requiredPrecision);
 
     // Change Q
     Q.setOnes();
@@ -156,7 +158,7 @@ TEST(MuscleJacobian, jacobianLength){
     jaco = model.musclesLengthJacobian(Q);
         for (unsigned int i=0; i<jaco.rows(); ++i)
             for (unsigned int j=0; j<jaco.cols(); ++j)
-                EXPECT_DOUBLE_EQ(jaco(i, j), jacoRef(i, j));
+                EXPECT_NEAR(jaco(i, j), jacoRef(i, j), requiredPrecision);
 }
 
 static std::string modelPathForXiaDerivativeTest("models/arm26.bioMod");
@@ -188,9 +190,9 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
         EXPECT_EQ(fatigueModel.getType(), biorbd::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
         // Initial value sanity check
-        EXPECT_DOUBLE_EQ(fatigueModel.activeFibersDot(), 0);
-        EXPECT_DOUBLE_EQ(fatigueModel.fatiguedFibersDot(), 0);
-        EXPECT_DOUBLE_EQ(fatigueModel.restingFibersDot(), 0);
+        EXPECT_NEAR(fatigueModel.activeFibersDot(), 0, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.fatiguedFibersDot(), 0, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.restingFibersDot(), 0, requiredPrecision);
 
         // Apply the derivative
         biorbd::muscles::StateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
@@ -200,9 +202,9 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
         fatigueModel.timeDerivativeState(emg, model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest).caract());
 
         // Check the values
-        EXPECT_DOUBLE_EQ(fatigueModel.activeFibersDot(), expectedActivationDotForXiaDerivativeTest);
-        EXPECT_DOUBLE_EQ(fatigueModel.fatiguedFibersDot(), expectedFatiguedDotForXiaDerivativeTest);
-        EXPECT_DOUBLE_EQ(fatigueModel.restingFibersDot(), expectedRestingDotForXiaDerivativeTest);
+        EXPECT_NEAR(fatigueModel.activeFibersDot(), expectedActivationDotForXiaDerivativeTest, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.fatiguedFibersDot(), expectedFatiguedDotForXiaDerivativeTest, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.restingFibersDot(), expectedRestingDotForXiaDerivativeTest, requiredPrecision);
     }
 
     // Values should be changed in the model itself
@@ -211,9 +213,9 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
         biorbd::muscles::FatigueDynamicState& fatigueModel(dynamic_cast<biorbd::muscles::FatigueDynamicState&>(muscle.fatigueState()));
 
         // Check the values
-        EXPECT_DOUBLE_EQ(fatigueModel.activeFibersDot(), expectedActivationDotForXiaDerivativeTest);
-        EXPECT_DOUBLE_EQ(fatigueModel.fatiguedFibersDot(), expectedFatiguedDotForXiaDerivativeTest);
-        EXPECT_DOUBLE_EQ(fatigueModel.restingFibersDot(), expectedRestingDotForXiaDerivativeTest);
+        EXPECT_NEAR(fatigueModel.activeFibersDot(), expectedActivationDotForXiaDerivativeTest, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.fatiguedFibersDot(), expectedFatiguedDotForXiaDerivativeTest, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.restingFibersDot(), expectedRestingDotForXiaDerivativeTest, requiredPrecision);
     }
 }
 
@@ -244,9 +246,9 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
         biorbd::muscles::FatigueDynamicState& fatigueModel(dynamic_cast<biorbd::muscles::FatigueDynamicState&>(muscle.fatigueState()));
 
         // Check the values
-        EXPECT_DOUBLE_EQ(fatigueModel.activeFibersDot(), expectedActivationDotForXiaDerivativeTest);
-        EXPECT_DOUBLE_EQ(fatigueModel.fatiguedFibersDot(), expectedFatiguedDotForXiaDerivativeTest);
-        EXPECT_DOUBLE_EQ(fatigueModel.restingFibersDot(), expectedRestingDotForXiaDerivativeTest);
+        EXPECT_NEAR(fatigueModel.activeFibersDot(), expectedActivationDotForXiaDerivativeTest, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.fatiguedFibersDot(), expectedFatiguedDotForXiaDerivativeTest, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.restingFibersDot(), expectedRestingDotForXiaDerivativeTest, requiredPrecision);
     }
 }
 
@@ -267,9 +269,9 @@ TEST(MuscleFatigue, FatigueXiaDerivativeShallowViaCopy){
         EXPECT_EQ(fatigueModel.getType(), biorbd::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
         // Initial value sanity check
-        EXPECT_DOUBLE_EQ(fatigueModel.activeFibersDot(), 0);
-        EXPECT_DOUBLE_EQ(fatigueModel.fatiguedFibersDot(), 0);
-        EXPECT_DOUBLE_EQ(fatigueModel.restingFibersDot(), 0);
+        EXPECT_NEAR(fatigueModel.activeFibersDot(), 0, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.fatiguedFibersDot(), 0, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.restingFibersDot(), 0, requiredPrecision);
 
         // Apply the derivative
         biorbd::muscles::StateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
@@ -279,9 +281,9 @@ TEST(MuscleFatigue, FatigueXiaDerivativeShallowViaCopy){
         fatigueModel.timeDerivativeState(emg, model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest).caract());
 
         // Check the values
-        EXPECT_DOUBLE_EQ(fatigueModel.activeFibersDot(), expectedActivationDotForXiaDerivativeTest);
-        EXPECT_DOUBLE_EQ(fatigueModel.fatiguedFibersDot(), expectedFatiguedDotForXiaDerivativeTest);
-        EXPECT_DOUBLE_EQ(fatigueModel.restingFibersDot(), expectedRestingDotForXiaDerivativeTest);
+        EXPECT_NEAR(fatigueModel.activeFibersDot(), expectedActivationDotForXiaDerivativeTest, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.fatiguedFibersDot(), expectedFatiguedDotForXiaDerivativeTest, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.restingFibersDot(), expectedRestingDotForXiaDerivativeTest, requiredPrecision);
     }
 
     // Values should be changed in the model itself since everything is shallowcopied
@@ -290,9 +292,9 @@ TEST(MuscleFatigue, FatigueXiaDerivativeShallowViaCopy){
         biorbd::muscles::FatigueDynamicState& fatigueModel(dynamic_cast<biorbd::muscles::FatigueDynamicState&>(muscle.fatigueState()));
 
         // Check the values
-        EXPECT_DOUBLE_EQ(fatigueModel.activeFibersDot(), expectedActivationDotForXiaDerivativeTest);
-        EXPECT_DOUBLE_EQ(fatigueModel.fatiguedFibersDot(), expectedFatiguedDotForXiaDerivativeTest);
-        EXPECT_DOUBLE_EQ(fatigueModel.restingFibersDot(), expectedRestingDotForXiaDerivativeTest);
+        EXPECT_NEAR(fatigueModel.activeFibersDot(), expectedActivationDotForXiaDerivativeTest, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.fatiguedFibersDot(), expectedFatiguedDotForXiaDerivativeTest, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.restingFibersDot(), expectedRestingDotForXiaDerivativeTest, requiredPrecision);
     }
 }
 
@@ -314,9 +316,9 @@ TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
 
 
         // Check the values
-        EXPECT_DOUBLE_EQ(fatigueModel.activeFibers(), 0);
-        EXPECT_DOUBLE_EQ(fatigueModel.fatiguedFibers(), positiveFibersQuantityForFatigueXiaSetStateLimitsTest);
-        EXPECT_DOUBLE_EQ(fatigueModel.restingFibers(), positiveFibersQuantityForFatigueXiaSetStateLimitsTest+negativeFibersQuantityForFatigueXiaSetStateLimitsTest);
+        EXPECT_NEAR(fatigueModel.activeFibers(), 0, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.fatiguedFibers(), positiveFibersQuantityForFatigueXiaSetStateLimitsTest, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.restingFibers(), positiveFibersQuantityForFatigueXiaSetStateLimitsTest+negativeFibersQuantityForFatigueXiaSetStateLimitsTest, requiredPrecision);
 
         // Set values over 1
         fatigueModel.setState(excessiveFibersQuantityForFatigueXiaSetStateLimitsTest,
@@ -325,9 +327,9 @@ TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
 
 
         // Check the values
-        EXPECT_DOUBLE_EQ(fatigueModel.activeFibers(), positiveFibersQuantityForFatigueXiaSetStateLimitsTest);
-        EXPECT_DOUBLE_EQ(fatigueModel.fatiguedFibers(), 0);
-        EXPECT_DOUBLE_EQ(fatigueModel.restingFibers(), 0);
+        EXPECT_NEAR(fatigueModel.activeFibers(), positiveFibersQuantityForFatigueXiaSetStateLimitsTest, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.fatiguedFibers(), 0, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.restingFibers(), 0, requiredPrecision);
 
     }
 
@@ -339,9 +341,9 @@ TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
                               negativeFibersQuantityForFatigueXiaSetStateLimitsTest);
 
         // Check the values
-        EXPECT_DOUBLE_EQ(fatigueModel.activeFibers(), positiveFibersQuantityForFatigueXiaSetStateLimitsTest+negativeFibersQuantityForFatigueXiaSetStateLimitsTest);
-        EXPECT_DOUBLE_EQ(fatigueModel.fatiguedFibers(), positiveFibersQuantityForFatigueXiaSetStateLimitsTest);
-        EXPECT_DOUBLE_EQ(fatigueModel.restingFibers(), 0);
+        EXPECT_NEAR(fatigueModel.activeFibers(), positiveFibersQuantityForFatigueXiaSetStateLimitsTest+negativeFibersQuantityForFatigueXiaSetStateLimitsTest, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.fatiguedFibers(), positiveFibersQuantityForFatigueXiaSetStateLimitsTest, requiredPrecision);
+        EXPECT_NEAR(fatigueModel.restingFibers(), 0, requiredPrecision);
 
         // Set incorrect values
         EXPECT_THROW(fatigueModel.setState(positiveFibersQuantityForFatigueXiaSetStateLimitsTest,
