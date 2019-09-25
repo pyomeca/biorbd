@@ -162,7 +162,7 @@ TEST(Dynamics, Forward)
 
     RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot);
     for (unsigned int i = 0; i<model.nbQddot(); ++i)
-        EXPECT_NEAR(QDDot[i], QDDot_expected[i], 1e-6);
+        EXPECT_NEAR(QDDot[i], QDDot_expected[i], requiredPrecision);
 }
 
 static std::string modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
@@ -180,7 +180,7 @@ TEST(Dynamics, ForwardLoopConstraint){
     biorbd::rigidbody::Contacts& cs(model.getConstraints());
     RigidBodyDynamics::ForwardDynamicsConstraintsDirect(model, Q, QDot, Tau, cs, QDDot_constrained);
     for (unsigned int i = 0; i<model.nbQddot(); ++i)
-        EXPECT_NEAR(QDDot_constrained[i], QDDot_expected[i], 1e-6);
+        EXPECT_NEAR(QDDot_constrained[i], QDDot_expected[i], requiredPrecision);
 }
 
 // TODO: confirm these tests
@@ -202,8 +202,8 @@ TEST(Dynamics, ForwardAccelerationConstraint){
     biorbd::rigidbody::Contacts& cs(model.getConstraints());
     RigidBodyDynamics::ForwardDynamicsConstraintsDirect(model, Q, QDot, Tau, cs, QDDot_constrained);
     for (unsigned int i = 0; i<model.nbQddot(); ++i)
-        EXPECT_NEAR(QDDot_constrained[i], QDDot_expected[i], 1e-6);
+        EXPECT_NEAR(QDDot_constrained[i], QDDot_expected[i], requiredPrecision);
 
     for (unsigned int i=0; i<cs.force.size(); ++i)
-        EXPECT_NEAR(cs.force[i], forces_expected[i], 1e-6);
+        EXPECT_NEAR(cs.force[i], forces_expected[i], requiredPrecision);
 }
