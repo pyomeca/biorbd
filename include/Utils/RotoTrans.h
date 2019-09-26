@@ -53,9 +53,9 @@ public:
             const Eigen::Vector3d& trans);
 
     biorbd::utils::RotoTrans& transformCardanToMatrix(
-            const Eigen::VectorXd&,
-            const Eigen::Vector3d&,
-            const biorbd::utils::String&);
+            const Eigen::VectorXd& rot,
+            const Eigen::Vector3d& trans,
+            const biorbd::utils::String& seq);
     static Eigen::VectorXd transformMatrixToCardan(
             const biorbd::utils::RotoTrans&,
             const biorbd::utils::String &seq);

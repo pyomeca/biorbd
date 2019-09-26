@@ -73,19 +73,19 @@ Eigen::Matrix3d biorbd::utils::RotoTrans::rot() const
 
 
 biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::transformCardanToMatrix(
-        const Eigen::VectorXd& v,
-        const Eigen::Vector3d& t,
+        const Eigen::VectorXd& rot,
+        const Eigen::Vector3d& trans,
         const biorbd::utils::String& seq)
 {
     // S'assurer que le vecteur et la sequence d'angle aient le mpeme nombre d'élément
-    biorbd::utils::Error::error(seq.length() == static_cast<unsigned int>(v.rows()), "Rotation and sequence of rotation must be the same length");
+    biorbd::utils::Error::error(seq.length() == static_cast<unsigned int>(rot.rows()), "Rotation and sequence of rotation must be the same length");
 
     setIdentity();
     // Trouver la matrice de rotation
     Eigen::Matrix3d tp;
     for (unsigned int i=0; i<seq.length(); ++i){
-        double cosVi(std::cos(v[i]));
-        double sinVi(std::sin(v[i]));
+        double cosVi(std::cos(rot[i]));
+        double sinVi(std::sin(rot[i]));
         if (seq.tolower()[i] == 'x')
             // Matrice de rotation en x
             tp <<   1,     0,      0,
@@ -108,7 +108,7 @@ biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::transformCardanToMatrix(
 
         block(0,0,3,3) *= tp;
     }
-    block(0,3,3,1) = t;
+    block(0,3,3,1) = trans;
     return *this;
 }
 

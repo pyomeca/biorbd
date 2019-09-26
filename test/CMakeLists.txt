@@ -1,5 +1,5 @@
 set(MASTER_PROJECT_NAME ${PROJECT_NAME})
-project(${MASTER_PROJECT_NAME}_test)
+project(${MASTER_PROJECT_NAME}_tests)
 
 # Download gtest if necessary
 set(RELATIVE_PATH_TO_GTEST external/googletest)
@@ -34,11 +34,11 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/${RELATIVE_PATH_TO_GTEST}
 ##############
 enable_testing()
 file(GLOB TEST_SRC_FILES ${CMAKE_SOURCE_DIR}/test/*.cpp)
-add_executable(runUnitTests ${TEST_SRC_FILES})
-add_dependencies(runUnitTests ${MASTER_PROJECT_NAME})
+add_executable(${PROJECT_NAME} ${TEST_SRC_FILES})
+add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME})
 
 # headers for the project
-target_include_directories(runUnitTests PUBLIC
+target_include_directories(${PROJECT_NAME} PUBLIC
     ${RBDL_INCLUDE_DIR}
     ${Boost_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIR}
@@ -48,14 +48,10 @@ target_include_directories(runUnitTests PUBLIC
 )
 
 # Standard linking to gtest stuff.
-target_link_libraries(runUnitTests gtest_main)
+target_link_libraries(${PROJECT_NAME} gtest_main)
 
 # Extra linking for the project.
-target_link_libraries(runUnitTests ${MASTER_PROJECT_NAME})
-
-# This is so you can do 'make test' to see all your tests run, instead of
-# manually running the executable runUnitTests to see those specific tests.
-add_test(UnitTests runUnitTests)
+target_link_libraries(${PROJECT_NAME} ${MASTER_PROJECT_NAME})
 
 if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
     set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/.travis/cmake)
@@ -74,3 +70,13 @@ file(COPY ${BIORBD_TEST_FILES}
 file(GLOB BIORBD_TEST_FILES ${CMAKE_SOURCE_DIR}/test/models/meshFiles/*.bioMesh)
 file(COPY ${BIORBD_TEST_FILES}
   DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/models/meshFiles/)
+
+set(ALL_TESTS ${PROJECT_NAME})
+if (BINDER_C)
+    add_subdirectory(binding/c)
+    list(APPEND ALL_TESTS ${ALL_TESTS} ${C_BINDER_TESTS_NAME})
+endif()
+
+# This is so you can do 'make test' to see all your tests run, instead of
+# manually running the executable runUnitTests to see those specific tests.
+add_test(UnitTests ${ALL_TESTS})

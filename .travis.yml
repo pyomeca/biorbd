@@ -82,9 +82,9 @@ script:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
         make biorbd_coverage;
       elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
-        ./runUnitTests;
+        ./biorbd_tests;
       elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
-        ./runUnitTests.exe;
+        ./biorbd_tests.exe;
       fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
         cd ..;
