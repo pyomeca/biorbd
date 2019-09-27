@@ -57,7 +57,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
     set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/.travis/cmake)
 
     include(CodeCoverage)
-    setup_target_for_coverage(${MASTER_PROJECT_NAME}_coverage runUnitTests coverage)
+    setup_target_for_coverage(${MASTER_PROJECT_NAME}_coverage ${PROJECT_NAME} coverage)
 
     SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
     SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
