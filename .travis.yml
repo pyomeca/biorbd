@@ -69,6 +69,7 @@ script:
         cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=$ToolsDir/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..;
         cmake --build ./ --config Release;
       fi
+    - type C:/Users/travis/build/pyomeca/biorbd/build/CMakeFiles/CMakeOutput.log
     # Only do the coverage on Linux, but run the test anyway to get a nice output
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
         cp -r test/models/ .;
