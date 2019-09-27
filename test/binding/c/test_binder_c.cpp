@@ -149,7 +149,7 @@ TEST(BinderC, kalmanImu)
     biorbd::rigidbody::KalmanReconsIMU* kalman_c(c_BiorbdKalmanReconsIMU(model));
 
     // Compute reference
-    std::vector<biorbd::utils::RotoTrans> targetImus;
+    std::vector<biorbd::rigidbody::IMU> targetImus;
     for (unsigned int i=0; i<model->nIMUs(); ++i){
         biorbd::utils::RotoTrans rt;
         rt.transformCardanToMatrix(Eigen::Vector3d(0.1*i, 0.1*i, 0.1*i), Eigen::Vector3d(0.1*i, 0.1*i, 0.1*i), "xyz");

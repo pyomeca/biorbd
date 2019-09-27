@@ -284,7 +284,7 @@ std::vector<biorbd::utils::RotoTrans> biorbd::rigidbody::Joints::allGlobalJCS() 
 {
     std::vector<biorbd::utils::RotoTrans> out;
     for (unsigned int i=0; i<m_bones->size(); ++i)
-            out.push_back(globalJCS(i));
+        out.push_back(globalJCS(i));
     return out;
 }
 

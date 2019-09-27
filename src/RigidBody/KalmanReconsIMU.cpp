@@ -69,7 +69,7 @@ bool biorbd::rigidbody::KalmanReconsIMU::first()
 
 void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         biorbd::Model &m,
-        const std::vector<biorbd::utils::RotoTrans> &IMUobs,
+        const std::vector<biorbd::rigidbody::IMU> &IMUobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
         biorbd::rigidbody::GeneralizedCoordinates *Qdot,
         biorbd::rigidbody::GeneralizedCoordinates *Qddot)

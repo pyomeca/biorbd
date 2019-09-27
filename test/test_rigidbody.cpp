@@ -12,11 +12,15 @@
 #include "RigidBody/BoneCaracteristics.h"
 #include "RigidBody/NodeBone.h"
 #include "RigidBody/Bone.h"
+#include "RigidBody/KalmanReconsMarkers.h"
+#include "RigidBody/KalmanReconsIMU.h"
+#include "RigidBody/IMU.h"
 
 static double requiredPrecision(1e-10);
 
 #ifdef MODULE_ACTUATORS
 static std::string modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");
+static std::string modelPathForImuTesting("models/pyomecaman_withIMUs.bioMod");
 #else // MODULE_ACTUATORS
 static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
 #endif // MODULE_ACTUATORS
@@ -206,4 +210,115 @@ TEST(Dynamics, ForwardAccelerationConstraint){
 
     for (unsigned int i=0; i<cs.force.size(); ++i)
         EXPECT_NEAR(cs.force[i], forces_expected[i], requiredPrecision);
+}
+
+// Kalman is actually very slow when compiling in debug
+#ifndef DEBUG
+//TEST(Kalman, markers)
+//{
+//    biorbd::Model model(modelPathForGeneralTesting);
+//    biorbd::rigidbody::KalmanReconsMarkers kalman(model);
+
+//    // Compute reference
+//    biorbd::rigidbody::GeneralizedCoordinates Qref(model);
+//    Qref = Qref.setOnes()*0.2;
+//    std::vector<biorbd::rigidbody::NodeBone> targetMarkers(model.markers(Qref));
+
+//    biorbd::rigidbody::GeneralizedCoordinates Q(model), Qdot(model), Qddot(model);
+//    kalman.reconstructFrame(model, targetMarkers, &Q, &Qdot, &Qddot);
+
+//    // Compare results (since the initialization of the filter is done 50X, it is expected to have converged)
+//    for (unsigned int i=0; i<model.nbQ(); ++i){
+//        EXPECT_NEAR(Q[i], Qref[i], 1e-6);
+//        EXPECT_NEAR(Qdot[i], 0, 1e-6);
+//        EXPECT_NEAR(Qddot[i], 0, 1e-6);
+//    }
+
+//    Qref = Qref.setOnes()*0.3;
+//    targetMarkers = model.markers(Qref);
+//    kalman.reconstructFrame(model, targetMarkers, &Q, &Qdot, &Qddot);
+
+//    // Compare results (Here the filter should not have the time to converge)
+//    for (unsigned int i=0; i<model.nbQ(); ++i){
+//        EXPECT_GT(abs(Q[i] - Qref[i]), 1e-4);
+//        EXPECT_GT(abs(Qdot[i]), 5);
+//        EXPECT_GT(abs(Qddot[i]), 100);
+//    }
+
+//    // Force the filter to converge
+//    for (unsigned int i=0; i<100; ++i)
+//        kalman.reconstructFrame(model, targetMarkers, &Q, &Qdot, &Qddot);
+
+//    // Now it should be more or less equal
+//    for (unsigned int i=0; i<model.nbQ(); ++i){
+//        EXPECT_NEAR(Q[i], Qref[i], 1e-6);
+//        EXPECT_NEAR(Qdot[i], 0, 1e-6);
+//        EXPECT_NEAR(Qddot[i], 0, 1e-6);
+//    }
+//}
+#endif
+
+TEST(Kalman, imu)
+{
+    biorbd::Model model(modelPathForImuTesting);
+    biorbd::rigidbody::KalmanReconsIMU kalman(model);
+
+    // Compute reference
+    biorbd::rigidbody::GeneralizedCoordinates Qref(model);
+    Qref = Qref.setOnes()*0.2;
+    std::vector<biorbd::rigidbody::IMU> targetImus(model.IMU(Qref));
+
+    biorbd::rigidbody::GeneralizedCoordinates Q(model), Qdot(model), Qddot(model);
+    kalman.reconstructFrame(model, targetImus, &Q, &Qdot, &Qddot);
+
+    // Compare results (since the initialization of the filter is done 50X, it is expected to have converged)
+    for (unsigned int i=0; i<model.nbQ(); ++i){
+        if (i < 2){
+            // Translations are not reconstructed from IMU
+            EXPECT_EQ(Q[i], 0);
+            EXPECT_EQ(Qdot[i], 0);
+            EXPECT_EQ(Qddot[i], 0);
+        }
+        else {
+            EXPECT_NEAR(Q[i], Qref[i], 1e-6);
+            EXPECT_NEAR(Qdot[i], 0, 1e-6);
+            EXPECT_NEAR(Qddot[i], 0, 1e-6);
+        }
+    }
+
+    Qref = Qref.setOnes()*0.3;
+    targetImus = model.IMU(Qref);
+    kalman.reconstructFrame(model, targetImus, &Q, &Qdot, &Qddot);
+
+    // Compare results (Here the filter should not have the time to converge)
+    for (unsigned int i=0; i<model.nbQ(); ++i){
+        if (i<2){
+            EXPECT_EQ(Q[i], 0);
+            EXPECT_EQ(Qdot[i], 0);
+            EXPECT_EQ(Qddot[i], 0);
+        } else {
+            EXPECT_GT(abs(Q[i] - Qref[i]), 1e-4);
+            EXPECT_GT(abs(Qdot[i]), 1e-2);
+            EXPECT_GT(abs(Qddot[i]), 1e-1);
+        }
+    }
+
+    // Force the filter to converge
+    for (unsigned int i=0; i<1000; ++i)
+        kalman.reconstructFrame(model, targetImus, &Q, &Qdot, &Qddot);
+
+    // Now it should be more or less equal
+    for (unsigned int i=0; i<model.nbQ(); ++i){
+        if (i < 2){
+            // Translations are not reconstructed from IMU
+            EXPECT_EQ(Q[i], 0);
+            EXPECT_EQ(Qdot[i], 0);
+            EXPECT_EQ(Qddot[i], 0);
+        }
+        else {
+            EXPECT_NEAR(Q[i], Qref[i], 1e-6);
+            EXPECT_NEAR(Qdot[i], 0, 1e-6);
+            EXPECT_NEAR(Qddot[i], 0, 1e-6);
+        }
+    }
 }

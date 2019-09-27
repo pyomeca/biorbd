@@ -65,7 +65,7 @@ void biorbd::rigidbody::KalmanRecons::iteration(
     const biorbd::utils::Matrix& Pkm(*m_A * *m_Pp * m_A->transpose() + *m_Q);
 
     // Correction
-    biorbd::utils::Matrix InvTp( Eigen::MatrixXd( (Hessian * Pkm * Hessian.transpose() + *m_R).inverse() ) );
+    biorbd::utils::Matrix InvTp( (Hessian * Pkm * Hessian.transpose() + *m_R).inverse() );
     manageOcclusionDuringIteration(InvTp, measure, occlusion);
     const biorbd::utils::Matrix& K(Pkm*Hessian.transpose() * InvTp); // Gain
 
