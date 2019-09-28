@@ -54,10 +54,8 @@ public:
     void setExtension(const biorbd::utils::String& ext);
 
 protected:
-    void setPath();
     void setIsFolderAbsolute();
 
-    std::shared_ptr<biorbd::utils::String> m_path;
     std::shared_ptr<biorbd::utils::String> m_originalPath;
     std::shared_ptr<biorbd::utils::String> m_folder;
     std::shared_ptr<bool> m_isFolderAbsolute;

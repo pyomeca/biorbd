@@ -14,7 +14,6 @@
 #endif
 
 biorbd::utils::Path::Path() :
-    m_path(std::make_shared<biorbd::utils::String>()),
     m_originalPath(std::make_shared<biorbd::utils::String>()),
     m_folder(std::make_shared<biorbd::utils::String>()),
     m_isFolderAbsolute(std::make_shared<bool>()),
@@ -25,7 +24,6 @@ biorbd::utils::Path::Path() :
 }
 
 biorbd::utils::Path::Path(const char *c) :
-    m_path(std::make_shared<biorbd::utils::String>()),
     m_originalPath(std::make_shared<biorbd::utils::String>(c)),
     m_folder(std::make_shared<biorbd::utils::String>()),
     m_isFolderAbsolute(std::make_shared<bool>()),
@@ -34,11 +32,9 @@ biorbd::utils::Path::Path(const char *c) :
 {
     parseFileName(*m_originalPath, *m_folder, *m_filename, *m_extension);
     setIsFolderAbsolute();
-    setPath();
 }
 
 biorbd::utils::Path::Path(const biorbd::utils::String &s) :
-    m_path(std::make_shared<biorbd::utils::String>()),
     m_originalPath(std::make_shared<biorbd::utils::String>(s)),
     m_folder(std::make_shared<biorbd::utils::String>()),
     m_isFolderAbsolute(std::make_shared<bool>()),
@@ -47,11 +43,9 @@ biorbd::utils::Path::Path(const biorbd::utils::String &s) :
 {
     parseFileName(*m_originalPath, *m_folder, *m_filename, *m_extension);
     setIsFolderAbsolute();
-    setPath();
 }
 
 biorbd::utils::Path::Path(const std::basic_string<char> &c) :
-    m_path(std::make_shared<biorbd::utils::String>()),
     m_originalPath(std::make_shared<biorbd::utils::String>(c)),
     m_folder(std::make_shared<biorbd::utils::String>()),
     m_isFolderAbsolute(std::make_shared<bool>()),
@@ -60,7 +54,6 @@ biorbd::utils::Path::Path(const std::basic_string<char> &c) :
 {
     parseFileName(*m_originalPath, *m_folder, *m_filename, *m_extension);
     setIsFolderAbsolute();
-    setPath();
 }
 
 biorbd::utils::Path biorbd::utils::Path::DeepCopy() const
@@ -72,7 +65,6 @@ biorbd::utils::Path biorbd::utils::Path::DeepCopy() const
 
 void biorbd::utils::Path::DeepCopy(const Path &other)
 {
-    *m_path = *other.m_path;
     *m_originalPath = *other.m_originalPath;
     *m_folder = *other.m_folder;
     *m_isFolderAbsolute = *other.m_isFolderAbsolute;
@@ -277,19 +269,6 @@ const biorbd::utils::String& biorbd::utils::Path::filename() const
 void biorbd::utils::Path::setExtension(const biorbd::utils::String &ext)
 {
     *m_extension = ext;
-}
-
-void biorbd::utils::Path::setPath()
-{
-    biorbd::utils::String path;
-
-    if (m_filename->compare("")){
-        if (m_extension->compare(""))
-            *m_path = absolutePath() + *m_filename + "." + *m_extension;
-        else
-            *m_path = absolutePath() + *m_filename;
-    } else
-        *m_path = path;
 }
 
 void biorbd::utils::Path::setIsFolderAbsolute()
