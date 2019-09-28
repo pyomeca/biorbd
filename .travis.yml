@@ -83,7 +83,9 @@ script:
         cd test\\Release;
         xcopy ..\\models .\\models\\;
         xcopy ..\\models\\meshFiles .\\models\\meshFiles\\;
+        xcopy ..\\binding\\c\\Release\\biorbd_tests_binding_c.exe;
         ./biorbd_tests.exe;
+        ./biorbd_tests_binding_c.exe;
         cd ../..;
       fi
     - ctest
@@ -96,7 +98,6 @@ script:
         cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=$ToolsDir/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
         cmake --build ./ --config Release --target install;
       fi
-    - if 
     - python -c "import biorbd"    
 
 after_success:
