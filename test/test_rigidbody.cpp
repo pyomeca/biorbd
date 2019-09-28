@@ -212,7 +212,7 @@ TEST(Dynamics, ForwardAccelerationConstraint){
         EXPECT_NEAR(cs.force[i], forces_expected[i], requiredPrecision);
 }
 
-#ifdef SKIP_LONG_TESTS
+#ifndef SKIP_LONG_TESTS
 TEST(Kalman, markers)
 {
     biorbd::Model model(modelPathForGeneralTesting);
@@ -257,7 +257,7 @@ TEST(Kalman, markers)
 }
 #endif
 
-#ifdef SKIP_LONG_TESTS
+#ifndef SKIP_LONG_TESTS
 TEST(Kalman, imu)
 {
     biorbd::Model model(modelPathForImuTesting);
