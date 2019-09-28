@@ -23,6 +23,9 @@
 #cmakedefine MODULE_ACTUATORS
 #cmakedefine MODULE_MUSCLES
 
+// Options for tests
+#cmakedefine SKIP_LONG_TESTS
+
 #ifndef _WIN32
 #ifndef NAN
     //static const unsigned long __nan[2] = {0xffffffff, 0x7fffffff};

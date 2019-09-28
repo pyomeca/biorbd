@@ -1,6 +1,9 @@
 set(MASTER_PROJECT_NAME ${PROJECT_NAME})
 project(${MASTER_PROJECT_NAME}_tests)
 
+# Set a define to skip or not long tests
+option(SKIP_LONG_TESTS "Skip some longer tests, mostly for debug purposes" FALSE)
+
 # Download gtest if necessary
 set(RELATIVE_PATH_TO_GTEST external/googletest)
 find_path(GTEST_INCLUDE_DIR gtest.h HINTS ${CMAKE_SOURCE_DIR}/${RELATIVE_PATH_TO_GTEST}/googletest/include/gtest)
