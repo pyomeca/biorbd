@@ -20,3 +20,8 @@ target_link_libraries(${PROJECT_NAME} gtest_main)
 
 # Extra linking for the project.
 target_link_libraries(${PROJECT_NAME} ${MASTER_PROJECT_NAME}_c)
+
+# Copy the necessary file for the tests
+file(GLOB BIORBD_TEST_FILES ${CMAKE_SOURCE_DIR}/test/models/*.bioMod)
+file(COPY ${BIORBD_TEST_FILES}
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/models/)
