@@ -7,9 +7,12 @@ set(C_BINDING_PATH ${CMAKE_SOURCE_DIR}/binding/c)
 
 # Get the file to compile
 set(C_FILE ${C_BINDING_PATH}/${MASTER_PROJECT_NAME}_c.cpp)
-add_library(${PROJECT_NAME} SHARED
-    ${C_FILE})
-
+if (BUILD_SHARED_LIBS)
+    add_library(${PROJECT_NAME} SHARED ${C_FILE})
+else()
+    add_library(${PROJECT_NAME} STATIC ${C_FILE})
+endif()
+    
 # Add headers
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${RBDL_INCLUDE_DIR}
