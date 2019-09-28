@@ -38,22 +38,22 @@ void biorbd::muscles::PathChangers::addPathChanger(biorbd::utils::Node3d &val){
 
     // Ajouter un muscle au pool de muscle selon son type
     if (val.typeOfNode() == biorbd::utils::NODE_TYPE::WRAPPING_SPHERE){
-        biorbd::utils::Error::error(*m_nbVia == 0, "Cannot mix via points and wrapping objects yet");
+        biorbd::utils::Error::check(*m_nbVia == 0, "Cannot mix via points and wrapping objects yet");
         m_obj->push_back(biorbd::muscles::WrappingSphere(static_cast<biorbd::muscles::WrappingSphere&> (val)));
         ++*m_nbWraps;
     }
     else if (val.typeOfNode() == biorbd::utils::NODE_TYPE::WRAPPING_CYLINDER){
-        biorbd::utils::Error::error(*m_nbVia == 0, "Cannot mix via points and wrapping objects yet");
+        biorbd::utils::Error::check(*m_nbVia == 0, "Cannot mix via points and wrapping objects yet");
         m_obj->push_back(biorbd::muscles::WrappingCylinder(dynamic_cast <biorbd::muscles::WrappingCylinder&> (val)));
         ++*m_nbWraps;
     }
     else if (val.typeOfNode() == biorbd::utils::NODE_TYPE::VIA_POINT){
-        biorbd::utils::Error::error(*m_nbWraps == 0, "Cannot mix via points and wrapping objects yet");
+        biorbd::utils::Error::check(*m_nbWraps == 0, "Cannot mix via points and wrapping objects yet");
         m_obj->push_back(biorbd::muscles::ViaPoint(dynamic_cast <biorbd::muscles::ViaPoint&> (val)));
         ++*m_nbVia;
     }
     else
-        biorbd::utils::Error::error(0, "Wrapping type not found");
+        biorbd::utils::Error::raise("Wrapping type not found");
     ++*m_totalObjects;
 }
 
@@ -73,13 +73,13 @@ unsigned int biorbd::muscles::PathChangers::nbObjects() const
 
 biorbd::utils::Node3d &biorbd::muscles::PathChangers::object(unsigned int idx)
 {
-    biorbd::utils::Error::error(idx<nbObjects(), "Idx asked is higher than number of wrapping objects");
+    biorbd::utils::Error::check(idx<nbObjects(), "Idx asked is higher than number of wrapping objects");
     return (*m_obj)[idx];
 }
 
 
 const biorbd::utils::Node3d& biorbd::muscles::PathChangers::object(unsigned int idx) const{
-    biorbd::utils::Error::error(idx<nbObjects(), "Idx asked is higher than number of wrapping objects");
+    biorbd::utils::Error::check(idx<nbObjects(), "Idx asked is higher than number of wrapping objects");
     return (*m_obj)[idx];
 }
 

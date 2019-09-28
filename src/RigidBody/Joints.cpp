@@ -154,7 +154,7 @@ void biorbd::rigidbody::Joints::getIntegratedKinematics(
         biorbd::rigidbody::GeneralizedCoordinates &QDot)
 {
     // Si la cinématique n'a pas été mise à jour
-    biorbd::utils::Error::error(*m_isKinematicsComputed, "ComputeKinematics must be call before calling updateKinematics");
+    biorbd::utils::Error::check(*m_isKinematicsComputed, "ComputeKinematics must be call before calling updateKinematics");
 
     const biorbd::utils::Vector& tp(m_integrator->getX(step));
     for (unsigned int i=0; i< static_cast<unsigned int>(tp.rows()/2); i++){
@@ -211,7 +211,7 @@ unsigned int biorbd::rigidbody::Joints::AddBone(
 }
 
 const biorbd::rigidbody::Bone& biorbd::rigidbody::Joints::bone(unsigned int idxSegment) const {
-    biorbd::utils::Error::error(idxSegment < m_bones->size(), "Asked for a wrong segment (out of range)");
+    biorbd::utils::Error::check(idxSegment < m_bones->size(), "Asked for a wrong segment (out of range)");
     return (*m_bones)[idxSegment];
 }
 
@@ -345,7 +345,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::projectPoint
     const biorbd::rigidbody::Markers &marks = dynamic_cast<biorbd::rigidbody::Markers &>(*this);
 
     // Sécurité
-    biorbd::utils::Error::error(marks.nMarkers() == v.size(), "Number of marker must be equal to number of Vector3d");
+    biorbd::utils::Error::check(marks.nMarkers() == v.size(), "Number of marker must be equal to number of Vector3d");
 
     std::vector<biorbd::rigidbody::NodeBone> out;
     for (unsigned int i=0;i<marks.nMarkers();++i){
@@ -542,7 +542,7 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMddot(
         const biorbd::rigidbody::GeneralizedCoordinates &Qddot)
 {
     // Retour l'accélération du centre de masse a partir des coordonnées généralisées
-    biorbd::utils::Error::error(0, "Com DDot is wrong, to be modified...");
+    biorbd::utils::Error::raise("Com DDot is wrong, to be modified...");
 
     // S'assurer que le modele est dans la bonne configuration
     UpdateKinematicsCustom(&Q, &Qdot, &Qddot);
@@ -609,7 +609,7 @@ biorbd::utils::Node3d biorbd::rigidbody::Joints::CoMbySegment(
         const unsigned int i,
         bool updateKin)
 { // Position du centre de masse du segment i
-    biorbd::utils::Error::error(i < m_bones->size(), "Choosen segment doesn't exist");
+    biorbd::utils::Error::check(i < m_bones->size(), "Choosen segment doesn't exist");
     return RigidBodyDynamics::CalcBodyToBaseCoordinates(
                 *this, Q, (*m_bones)[i].id(), (*m_bones)[i].caract().mCenterOfMass, updateKin);
 }
@@ -636,7 +636,7 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMdotBySegment(
         const unsigned int i,
         bool updateKin)
 { // Position du centre de masse du segment i
-    biorbd::utils::Error::error(i < m_bones->size(), "Choosen segment doesn't exist");
+    biorbd::utils::Error::check(i < m_bones->size(), "Choosen segment doesn't exist");
     return CalcPointVelocity(*this, Q, Qdot, (*m_bones)[i].id(),(*m_bones)[i].caract().mCenterOfMass,updateKin);
 }
 
@@ -664,7 +664,7 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMddotBySegment(
         const unsigned int i,
         bool updateKin)
 { // Position du centre de masse du segment i
-    biorbd::utils::Error::error(i < m_bones->size(), "Choosen segment doesn't exist");
+    biorbd::utils::Error::check(i < m_bones->size(), "Choosen segment doesn't exist");
     return RigidBodyDynamics::CalcPointAcceleration(*this, Q, Qdot, Qddot, (*m_bones)[i].id(),(*m_bones)[i].caract().mCenterOfMass,updateKin);
 }
 
@@ -866,7 +866,7 @@ void biorbd::rigidbody::Joints::ForwardDynamicsContactsLagrangian (
     else if (CS.normal[i] == RigidBodyDynamics::Math::Vector3d(0., 0., 1.))
        axis_index = 2;
     else
-       biorbd::utils::Error::error (0, "Invalid contact normal axis!");
+       biorbd::utils::Error::raise("Invalid contact normal axis!");
 
         // only compute point accelerations when necessary
      if (prev_body_id != CS.body[i] || prev_body_point != CS.point[i]) {
@@ -924,7 +924,7 @@ void biorbd::rigidbody::Joints::ForwardDynamicsContactsLagrangian (
 #ifdef RBDL_ENABLE_LOGGING
        LOG << "Error: Invalid linear solver: " << CS.linear_solver << std::endl;
 #endif
-       biorbd::utils::Error::error(0, "Error: Invalid linear solver");
+       biorbd::utils::Error::raise("Error: Invalid linear solver");
      break;
    }
 
@@ -995,7 +995,7 @@ unsigned int biorbd::rigidbody::Joints::getDofIndex(
     unsigned int iB = 0;
     bool found = false;
     while (1){
-        biorbd::utils::Error::error(iB!=m_bones->size(), "Bone not found");
+        biorbd::utils::Error::check(iB!=m_bones->size(), "Bone not found");
 
         if (boneName.compare(  (*m_bones)[iB].name() )   )
             idx +=  (*m_bones)[iB].nDof();
@@ -1008,7 +1008,7 @@ unsigned int biorbd::rigidbody::Joints::getDofIndex(
         ++iB;
     }
 
-    biorbd::utils::Error::error(found, "Dof not found");
+    biorbd::utils::Error::check(found, "Dof not found");
     return idx;
 }
 

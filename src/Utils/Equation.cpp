@@ -186,7 +186,7 @@ double biorbd::utils::Equation::resolveEquation(
                         eq_tp.push_back(eq[k]);
                         ++cmpValues;
                     }
-                    biorbd::utils::Error::error(foundIdx, "You must close brackets!");
+                    biorbd::utils::Error::check(foundIdx, "You must close brackets!");
 
                     eq2.push_back(boost::lexical_cast<std::string>(boost::lexical_cast<std::string>(resolveEquation(eq_tp))));
                     j+=static_cast<unsigned int>(cmpValues);

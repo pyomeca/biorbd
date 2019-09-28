@@ -143,7 +143,7 @@ void biorbd::rigidbody::NodeBone::setType()
 void biorbd::rigidbody::NodeBone::addAxesToRemove(unsigned int a)
 {
     if (a>2)
-        biorbd::utils::Error::error(false, "Axis must be 0 (\"x\"), 1 (\"y\") or 2 (\"z\")");
+        biorbd::utils::Error::raise("Axis must be 0 (\"x\"), 1 (\"y\") or 2 (\"z\")");
     (*m_axesRemoved)[a] = true;
     ++*m_nbAxesToRemove;
 }
@@ -158,7 +158,7 @@ void biorbd::rigidbody::NodeBone::addAxesToRemove(const biorbd::utils::String& s
         else if (!s(i).compare("z"))
             addAxesToRemove(2);
         else
-            biorbd::utils::Error::error(false, "Axis must be 0 (\"x\"), 1 (\"y\") or 2 (\"z\")");
+            biorbd::utils::Error::raise("Axis must be 0 (\"x\"), 1 (\"y\") or 2 (\"z\")");
 }
 
 void biorbd::rigidbody::NodeBone::addAxesToRemove(const std::vector<unsigned int>& axis)

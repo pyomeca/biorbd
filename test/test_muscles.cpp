@@ -13,6 +13,10 @@
 static double requiredPrecision(1e-10);
 
 static std::string modelPathForMuscleForce("models/arm26.bioMod");
+static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
+static unsigned int muscleGroupForMuscleJacobian(1);
+static unsigned int muscleForMuscleJacobian(1);
+
 TEST(MuscleForce, force)
 {
     biorbd::Model model(modelPathForMuscleForce);
@@ -59,9 +63,6 @@ TEST(MuscleForce, torqueFromMuscles)
 
 }
 
-static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
-static unsigned int muscleGroupForMuscleJacobian(1);
-static unsigned int muscleForMuscleJacobian(1);
 TEST(MuscleJacobian, jacobian){
     biorbd::Model model(modelPathForMuscleJacobian);
     biorbd::rigidbody::GeneralizedCoordinates Q(model);

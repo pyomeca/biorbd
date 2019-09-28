@@ -204,7 +204,7 @@ void biorbd::rigidbody::Bone::setPF(int PF){
 
 const biorbd::utils::String &biorbd::rigidbody::Bone::nameDof(const unsigned int i) const {
     // Retourne le nombre de Dof de ce segment
-    biorbd::utils::Error::error(i<*m_nDofTrue, "Dof ouside N dof for this segment");
+    biorbd::utils::Error::check(i<*m_nDofTrue, "Dof ouside N dof for this segment");
     return (*m_nameDof)[i];
 }
 
@@ -283,7 +283,7 @@ void biorbd::rigidbody::Bone::str2numSequence(
             sequenceInteger[i] = 3;
         }
         else
-            biorbd::utils::Error::error(0,"Wrong sequence!");
+            biorbd::utils::Error::raise("Wrong sequence!");
     }
 }
 void biorbd::rigidbody::Bone::setNumberOfDof(unsigned int nTrans, unsigned int nRot){
@@ -413,7 +413,7 @@ unsigned int biorbd::rigidbody::Bone::getDofIdx(const biorbd::utils::String &dof
     }
 
 
-    biorbd::utils::Error::error(found, "Type should be \"Rot\" or \"Trans\" and axis should be \"X\", \"Y\" or \"Z\", e.g. \"RotY\" for Rotation around y or \"TransX\" for Translation on x");
+    biorbd::utils::Error::check(found, "Type should be \"Rot\" or \"Trans\" and axis should be \"X\", \"Y\" or \"Z\", e.g. \"RotY\" for Rotation around y or \"TransX\" for Translation on x");
 
     return idx;
 

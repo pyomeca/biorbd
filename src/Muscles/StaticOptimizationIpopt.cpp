@@ -42,7 +42,7 @@ biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     m_finalResidual(std::make_shared<biorbd::utils::Vector>(biorbd::utils::Vector(*m_nQ)))
 {
     if (*m_eps < 1e-12){
-        biorbd::utils::Error::error(false, "epsilon for partial derivates approximation is too small ! \nLimit for epsilon is 1e-12");
+        biorbd::utils::Error::raise("epsilon for partial derivates approximation is too small ! \nLimit for epsilon is 1e-12");
     }
     m_model.updateMuscles(*m_Q, *m_Qdot, true);
     if (!useResidual){

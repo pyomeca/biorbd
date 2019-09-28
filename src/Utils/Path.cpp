@@ -294,9 +294,9 @@ biorbd::utils::String biorbd::utils::Path::currentDir()
 {
     char buff[FILENAME_MAX];
 #if defined(_WIN32) || defined(_WIN64)
-     biorbd::utils::Error::error(_getcwd(buff, FILENAME_MAX), "Could not find the current directory");
+     biorbd::utils::Error::check(_getcwd(buff, FILENAME_MAX), "Could not find the current directory");
 #else
-    biorbd::utils::Error::error(getcwd(buff, FILENAME_MAX), "Could not find the current directory");
+    biorbd::utils::Error::check(getcwd(buff, FILENAME_MAX), "Could not find the current directory");
 #endif
     return biorbd::utils::String(buff) + "/";
 }

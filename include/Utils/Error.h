@@ -11,7 +11,9 @@ class String;
 class BIORBD_API Error
 {
 public:
-    static void error(
+    [[noreturn]] static void raise(
+            const biorbd::utils::String &message);
+    static void check(
             bool cond,
             const biorbd::utils::String &message);
     static void warning(

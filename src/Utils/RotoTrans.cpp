@@ -34,7 +34,7 @@ biorbd::utils::RotoTrans::RotoTrans(const RigidBodyDynamics::Math::SpatialTransf
 
 Eigen::Vector3d biorbd::utils::RotoTrans::axe(int i)
 {
-    biorbd::utils::Error::error(i>=0 && i<=2, "Axis must be between 0 and 2 included");
+    biorbd::utils::Error::check(i>=0 && i<=2, "Axis must be between 0 and 2 included");
     return rot().block(0,i,3,1);
 }
 
@@ -78,7 +78,7 @@ biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::transformCardanToMatrix(
         const biorbd::utils::String& seq)
 {
     // S'assurer que le vecteur et la sequence d'angle aient le mpeme nombre d'élément
-    biorbd::utils::Error::error(seq.length() == static_cast<unsigned int>(rot.rows()), "Rotation and sequence of rotation must be the same length");
+    biorbd::utils::Error::check(seq.length() == static_cast<unsigned int>(rot.rows()), "Rotation and sequence of rotation must be the same length");
 
     setIdentity();
     // Trouver la matrice de rotation
@@ -104,7 +104,7 @@ biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::transformCardanToMatrix(
                    sinVi,  cosVi,  0,
                        0,      0,  1;
         else
-            biorbd::utils::Error::error(0, "Rotation sequence not recognized");
+            biorbd::utils::Error::raise("Rotation sequence not recognized");
 
         block(0,0,3,3) *= tp;
     }
@@ -186,7 +186,7 @@ Eigen::VectorXd biorbd::utils::RotoTrans::transformMatrixToCardan(
     }
 
     else {
-        biorbd::utils::Error::error(false, "Angle sequence is not recognized");
+        biorbd::utils::Error::raise("Angle sequence is not recognized");
     }
 
     return v;

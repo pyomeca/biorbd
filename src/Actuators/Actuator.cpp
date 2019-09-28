@@ -43,7 +43,7 @@ biorbd::actuator::Actuator::Actuator(
     m_jointName(std::make_shared<biorbd::utils::String>(jointName)),
     m_dofIdx(std::make_shared<unsigned int>(dofIdx))
 {
-    biorbd::utils::Error::error(*m_direction==-1 || *m_direction==1, "Direction should be -1 or 1");
+    biorbd::utils::Error::check(*m_direction==-1 || *m_direction==1, "Direction should be -1 or 1");
 }
 
 biorbd::actuator::Actuator::~Actuator()

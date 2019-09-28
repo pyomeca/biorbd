@@ -52,7 +52,7 @@ void biorbd::actuator::Actuators::DeepCopy(const biorbd::actuator::Actuators &ot
             (*m_all)[i].first = std::make_shared<biorbd::actuator::ActuatorGauss6p>(
                     static_cast<const biorbd::actuator::ActuatorGauss6p&>( *(*other.m_all)[i].first) );
         else
-            biorbd::utils::Error::error(false, "Actuator " + biorbd::utils::String(
+            biorbd::utils::Error::raise("Actuator " + biorbd::utils::String(
                                             biorbd::actuator::TYPE_toStr((*other.m_all)[i].first->type()))
                                                 + " in DeepCopy");
         if ((*other.m_all)[i].second->type() == biorbd::actuator::TYPE::CONSTANT)
@@ -68,7 +68,7 @@ void biorbd::actuator::Actuators::DeepCopy(const biorbd::actuator::Actuators &ot
             (*m_all)[i].second = std::make_shared<biorbd::actuator::ActuatorGauss6p>(
                     static_cast<const biorbd::actuator::ActuatorGauss6p&>( *(*other.m_all)[i].second) );
         else
-            biorbd::utils::Error::error(false, "Actuator " + biorbd::utils::String(
+            biorbd::utils::Error::raise("Actuator " + biorbd::utils::String(
                                             biorbd::actuator::TYPE_toStr((*other.m_all)[i].second->type()))
                                                 + " in DeepCopy");
     }
@@ -80,13 +80,13 @@ void biorbd::actuator::Actuators::DeepCopy(const biorbd::actuator::Actuators &ot
 
 void biorbd::actuator::Actuators::addActuator(const biorbd::actuator::Actuator &act)
 {
-    biorbd::utils::Error::error(!*m_isClose, "You can't add actuator after closing the model");
+    biorbd::utils::Error::check(!*m_isClose, "You can't add actuator after closing the model");
 
     // Assuming that this is also a Joints type (via BiorbdModel)
     const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
     // Vérifier que le dof target est associé à un dof qui existe déjà dans le modèle
-    biorbd::utils::Error::error(act.index()<model.nbDof(), "Sent index is out of dof range");
+    biorbd::utils::Error::check(act.index()<model.nbDof(), "Sent index is out of dof range");
 
     // Pour fin de rapidité et de cohérence avec les Q, mettre l'actuator au même index que son dof associé
     unsigned int idx(act.index());
@@ -143,7 +143,7 @@ void biorbd::actuator::Actuators::addActuator(const biorbd::actuator::Actuator &
         return;
     }
     else
-        biorbd::utils::Error::error(0, "Actuator type not found");
+        biorbd::utils::Error::raise("Actuator type not found");
 
 }
 
@@ -152,24 +152,24 @@ void biorbd::actuator::Actuators::closeActuator()
     // Assuming that this is also a Joints type (via BiorbdModel)
     const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
-    biorbd::utils::Error::error(model.nbDof()==m_all->size(), "All dof must have their actuators set");
+    biorbd::utils::Error::check(model.nbDof()==m_all->size(), "All dof must have their actuators set");
 
     for (unsigned int i=0; i<m_all->size()*2; ++i)
-        biorbd::utils::Error::error((*m_isDofSet)[i], "All DoF must have their actuators set before closing the model");
+        biorbd::utils::Error::check((*m_isDofSet)[i], "All DoF must have their actuators set before closing the model");
 
     *m_isClose = true;
 }
 
 const std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>>& biorbd::actuator::Actuators::actuator(unsigned int dof)
 {
-    biorbd::utils::Error::error(dof<nbActuators(), "Idx asked is higher than number of actuator");
+    biorbd::utils::Error::check(dof<nbActuators(), "Idx asked is higher than number of actuator");
     return (*m_all)[dof];
 }
 const biorbd::actuator::Actuator& biorbd::actuator::Actuators::actuator(unsigned int dof, unsigned int idx)
 {
     const std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>>& tp(actuator(dof));
 
-    biorbd::utils::Error::error(idx == 0 || idx == 1, "Index of actuator should be 0 or 1");
+    biorbd::utils::Error::check(idx == 0 || idx == 1, "Index of actuator should be 0 or 1");
     if (idx == 0)
         return *tp.first;
     else
@@ -207,7 +207,7 @@ std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTo
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
 {
-    biorbd::utils::Error::error(*m_isClose, "Close the actuator model before calling torqueMax");
+    biorbd::utils::Error::check(*m_isClose, "Close the actuator model before calling torqueMax");
 
     // Assuming that this is also a Joints type (via BiorbdModel)
     const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
@@ -228,7 +228,7 @@ std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTo
                 else if (std::dynamic_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp.first))
                     maxGeneralizedTorque_all.first[i] = std::static_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp.first)->torqueMax(Q, Qdot);
                 else
-                    biorbd::utils::Error::error(false, "Wrong type (should never get here because of previous safety)");
+                    biorbd::utils::Error::raise("Wrong type (should never get here because of previous safety)");
             else // Second
                 if (std::dynamic_pointer_cast<ActuatorGauss3p> (GeneralizedTorque_tp.second))
                     maxGeneralizedTorque_all.second[i] = std::static_pointer_cast<ActuatorGauss3p> (GeneralizedTorque_tp.second)->torqueMax(Q, Qdot);
@@ -239,7 +239,7 @@ std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTo
                 else if (std::dynamic_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp.second))
                     maxGeneralizedTorque_all.second[i] = std::static_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp.second)->torqueMax(Q, Qdot);
                 else
-                    biorbd::utils::Error::error(false, "Wrong type (should never get here because of previous safety)");
+                    biorbd::utils::Error::raise("Wrong type (should never get here because of previous safety)");
         }
     }
 
@@ -252,7 +252,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torqueMax(
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
 {
-    biorbd::utils::Error::error(*m_isClose, "Close the actuator model before calling torqueMax");
+    biorbd::utils::Error::check(*m_isClose, "Close the actuator model before calling torqueMax");
 
     // Assuming that this is also a Joints type (via BiorbdModel)
     const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
@@ -276,7 +276,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torqueMax(
         else if (std::dynamic_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp))
             maxGeneralizedTorque_all[i] = std::static_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp)->torqueMax(Q, Qdot);
         else
-            biorbd::utils::Error::error(false, "Wrong type (should never get here because of previous safety)");
+            biorbd::utils::Error::raise("Wrong type (should never get here because of previous safety)");
 
     }
 

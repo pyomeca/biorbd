@@ -52,7 +52,7 @@ void biorbd::muscles::FatigueDynamicStateXia::timeDerivativeState(const biorbd::
     *m_activeFibersDot = command - caract.fatigueParameters().fatigueRate()* *m_activeFibers;
     *m_restingFibersDot = -command + caract.fatigueParameters().recoveryRate()* *m_fatiguedFibers;
     *m_fatiguedFibersDot = caract.fatigueParameters().fatigueRate()* *m_activeFibers - caract.fatigueParameters().recoveryRate()* *m_fatiguedFibers;
-    biorbd::utils::Error::error(fabs(*m_activeFibersDot + *m_restingFibersDot + *m_fatiguedFibersDot) <= 1e-7, "Sum of time derivates of fatigue states must be equal to 0");
+    biorbd::utils::Error::check(fabs(*m_activeFibersDot + *m_restingFibersDot + *m_fatiguedFibersDot) <= 1e-7, "Sum of time derivates of fatigue states must be equal to 0");
 }
 
 void biorbd::muscles::FatigueDynamicStateXia::setType()

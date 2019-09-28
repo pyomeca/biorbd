@@ -2,10 +2,12 @@
 #include <gtest/gtest.h>
 #include <rbdl/Dynamics.h>
 
+#include "BiorbdModel.h"
 #include "Utils/String.h"
 #include "Utils/Path.h"
 #include "Utils/Node3d.h"
 #include "Utils/RotoTransNode.h"
+#include "RigidBody/GeneralizedCoordinates.h"
 
 static double requiredPrecision(1e-10);
 
@@ -261,5 +263,17 @@ TEST(RotoTransNode, Copy){
     EXPECT_NEAR(ShallowCopy(2, 2), 0, requiredPrecision);
     EXPECT_NEAR(DeepCopyNow(2, 2), 10, requiredPrecision);
     EXPECT_NEAR(DeepCopyLater(2, 2), 10, requiredPrecision);
+}
+
+TEST(ModelReading, equations)
+{
+    // The equation model was built so the x coordinates of the meshes should
+    // be evaluated to the y coordinates.
+
+    biorbd::Model m("models/equations.bioMod");
+    std::vector<biorbd::utils::Node3d> mesh(
+                m.meshPoints(biorbd::rigidbody::GeneralizedCoordinates(m).setZero(), 0, true));
+    for (auto node : mesh)
+        EXPECT_DOUBLE_EQ(node.x(), node.y());
 }
 

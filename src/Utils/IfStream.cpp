@@ -39,7 +39,7 @@ bool biorbd::utils::IfStream::open(
         const biorbd::utils::Path& path,
         std::ios_base::openmode mode = std::ios_base::in )
 {
-    biorbd::utils::Error::error(path.isFileExist(), path.absolutePath() + " could not be loaded");
+    biorbd::utils::Error::check(path.isFileExist(), path.absolutePath() + " could not be loaded");
     *m_ifs = std::ifstream(path.relativePath().c_str(), mode);
     *m_isOpen = true;
     return *m_isOpen;
@@ -60,7 +60,7 @@ bool biorbd::utils::IfStream::reachSpecificTag(const biorbd::utils::String& tag)
             return true;
 
     biorbd::utils::String outMessage(tag + " parameter could not be found in Data file..");
-    biorbd::utils::Error::error(0, outMessage);
+    biorbd::utils::Error::raise(outMessage);
     return false; // Il est impossible qu'on se rende ici, mais c'est mieux d'avoir un return pour le compilateur
 }
 
@@ -117,7 +117,11 @@ bool biorbd::utils::IfStream::read(double& d, const std::map<biorbd::utils::Equa
     biorbd::utils::Equation tp;
     bool out(read(tp));
     // gérer le cas d'une équation
-    d = biorbd::utils::Equation::resolveEquation(tp, variables);
+    try {
+        d = biorbd::utils::Equation::resolveEquation(tp, variables);
+    } catch (boost::bad_lexical_cast) {
+        biorbd::utils::Error::raise("The following expression cannot be parsed properly: " + tp);
+    }
     return out;
 }
 bool biorbd::utils::IfStream::read(int& i){

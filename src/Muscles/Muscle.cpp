@@ -90,7 +90,7 @@ biorbd::muscles::Muscle::Muscle(
 {
     setState(s);
 
-    biorbd::utils::Error::error(w.nbWraps() <= 1, "Multiple wrapping objects is not implemented yet");
+    biorbd::utils::Error::check(w.nbWraps() <= 1, "Multiple wrapping objects is not implemented yet");
 }
 
 biorbd::muscles::Muscle::~Muscle()
@@ -230,7 +230,7 @@ void biorbd::muscles::Muscle::setState(const biorbd::muscles::StateDynamics &s)
         m_state = std::make_shared<biorbd::muscles::StateDynamics>(biorbd::muscles::StateDynamics());
     }
     else
-        biorbd::utils::Error::error(false, biorbd::utils::String(biorbd::muscles::STATE_TYPE_toStr(s.type())) + " is not a valid type for setState");
+        biorbd::utils::Error::raise(biorbd::utils::String(biorbd::muscles::STATE_TYPE_toStr(s.type())) + " is not a valid type for setState");
     *m_state = s;
 }
 const biorbd::muscles::StateDynamics& biorbd::muscles::Muscle::state() const

@@ -19,7 +19,7 @@ double biorbd::utils::Vector::norm(
         unsigned int p,
         bool skipRoot)
 {
-    biorbd::utils::Error::error(p >= 2, "p must be superior or equal to 2");
+    biorbd::utils::Error::check(p >= 2, "p must be superior or equal to 2");
 
     if (p == 2){
         double n = dot(*this);
@@ -42,7 +42,7 @@ biorbd::utils::Vector biorbd::utils::Vector::normGradient(
         unsigned int p,
         bool skipRoot)
 {
-    biorbd::utils::Error::error(p >= 2, "p must be superior or equal to 2");
+    biorbd::utils::Error::check(p >= 2, "p must be superior or equal to 2");
 
     if (p == 2){
         if (skipRoot)
@@ -56,7 +56,7 @@ biorbd::utils::Vector biorbd::utils::Vector::normGradient(
             res[i] = (*this)[i] * std::pow(fabs((*this)[i]), p - 2);
         res /= normalized;
         if (skipRoot)
-            biorbd::utils::Error::error(false, "skip root not implemented for p > 2");
+            biorbd::utils::Error::raise("skip root not implemented for p > 2");
         return res;
     }
 }

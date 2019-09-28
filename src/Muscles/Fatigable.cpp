@@ -13,7 +13,7 @@ biorbd::muscles::Fatigable::Fatigable(
     else if (dynamicFatigueType == biorbd::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA)
         m_fatigueState = std::make_shared<biorbd::muscles::FatigueDynamicStateXia>();
     else
-        biorbd::utils::Error::error(false, "Wrong muscle fatigue type");
+        biorbd::utils::Error::raise("Wrong muscle fatigue type");
 }
 
 biorbd::muscles::Fatigable::Fatigable(
@@ -63,9 +63,9 @@ void biorbd::muscles::Fatigable::computeTimeDerivativeState(const biorbd::muscle
         if (muscle)
             std::static_pointer_cast<biorbd::muscles::FatigueDynamicState>(m_fatigueState)->timeDerivativeState(emg, muscle->caract());
         else
-            biorbd::utils::Error::error(false, "biorbd::muscles::Fatigable should be a biorbd::muscles::Muscle");
+            biorbd::utils::Error::raise("biorbd::muscles::Fatigable should be a biorbd::muscles::Muscle");
    } else {
-       biorbd::utils::Error::error(false, "Type cannot be fatigued");
+       biorbd::utils::Error::raise("Type cannot be fatigued");
     }
 }
 

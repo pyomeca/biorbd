@@ -188,7 +188,7 @@ void biorbd::muscles::StaticOptimization::run(bool LinearizedState)
 
     Ipopt::ApplicationReturnStatus status;
     status = app->Initialize();
-    biorbd::utils::Error::error(status == Ipopt::Solve_Succeeded, "Ipopt initialization failed");
+    biorbd::utils::Error::check(status == Ipopt::Solve_Succeeded, "Ipopt initialization failed");
 
     for (unsigned int i=0; i<m_allQ->size(); ++i){
         if (LinearizedState)
@@ -218,7 +218,7 @@ std::vector<biorbd::utils::Vector> biorbd::muscles::StaticOptimization::finalSol
 {
     std::vector<biorbd::utils::Vector> res;
     if (!*m_alreadyRun){
-        biorbd::utils::Error::error(0, "Problem has not been ran through the optimization process yet, you should optimize it first to get the optimized solution");
+        biorbd::utils::Error::raise("Problem has not been ran through the optimization process yet, you should optimize it first to get the optimized solution");
     }
     else {
         for (unsigned int i=0; i<m_allQ->size(); ++i){
@@ -233,7 +233,7 @@ biorbd::utils::Vector biorbd::muscles::StaticOptimization::finalSolution(unsigne
 {
     biorbd::utils::Vector res;
     if (!*m_alreadyRun){
-        biorbd::utils::Error::error(0, "Problem has not been ran through the optimization process yet, you should optimize it first to get the optimized solution");
+        biorbd::utils::Error::raise("Problem has not been ran through the optimization process yet, you should optimize it first to get the optimized solution");
     }
     else {
         res = static_cast<biorbd::muscles::StaticOptimizationIpopt*>(Ipopt::GetRawPtr((*m_staticOptimProblem)[index]))->finalSolution();

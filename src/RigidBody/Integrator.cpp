@@ -83,7 +83,7 @@ unsigned int biorbd::rigidbody::Integrator::steps() const
 biorbd::utils::Vector biorbd::rigidbody::Integrator::getX(
         unsigned int idx){
     biorbd::utils::Vector out(*m_nbre*2);
-    biorbd::utils::Error::error(idx <= *m_steps, "Trying to get Q outside range");
+    biorbd::utils::Error::check(idx <= *m_steps, "Trying to get Q outside range");
     for (unsigned int i=0; i<*m_nbre*2; i++){
         out(i) = (*m_x_vec)[idx][i];
         }

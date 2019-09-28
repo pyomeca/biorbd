@@ -61,7 +61,7 @@ unsigned int biorbd::rigidbody::Contacts::AddConstraint(
             ret += RigidBodyDynamics::ConstraintSet::AddContactConstraint(
                         body_id, body_point, biorbd::utils::Node3d(0,0,1), (name + "_Z").c_str(), acc);
         else
-            biorbd::utils::Error::error(0,"Wrong axis!");
+            biorbd::utils::Error::raise("Wrong axis!");
     }
     return ret;
 }
@@ -116,7 +116,7 @@ unsigned int biorbd::rigidbody::Contacts::nContacts() const
 
 biorbd::utils::String biorbd::rigidbody::Contacts::name(unsigned int i)
 {
-    biorbd::utils::Error::error(i<*m_nbreConstraint, "Idx for name is too high..");
+    biorbd::utils::Error::check(i<*m_nbreConstraint, "Idx for name is too high..");
     return RigidBodyDynamics::ConstraintSet::name[i];
 }
 

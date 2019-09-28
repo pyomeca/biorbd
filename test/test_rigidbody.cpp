@@ -24,6 +24,9 @@ static std::string modelPathForImuTesting("models/pyomecaman_withIMUs.bioMod");
 #else // MODULE_ACTUATORS
 static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
 #endif // MODULE_ACTUATORS
+static std::string modelPathMeshEqualsMarker("models/meshsEqualMarkers.bioMod");
+static std::string modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
+
 TEST(Bone, copy)
 {
     biorbd::Model model(modelPathForGeneralTesting);
@@ -65,7 +68,6 @@ TEST(BoneMesh, copy)
     EXPECT_STREQ(DeepCopyLater.path().relativePath().c_str(), "./MyFile.bioMesh");
 }
 
-static std::string modelPathMeshEqualsMarker("models/meshsEqualMarkers.bioMod");
 static std::vector<double> QforMarkers = {0.1, 0.1, 0.1, 0.3, 0.3, 0.3};
 static std::vector<Eigen::Vector3d> expectedMarkers = {
     Eigen::Vector3d(1.0126678074548392, 0.46575286691125295, -0.082379586527044829),
@@ -112,7 +114,7 @@ TEST(Markers, individualPositions)
 
     // Change Q
     Q << 0.3, 0.3, 0.3, 0.1, 0.1, 0.1;
-    static std::vector<Eigen::Vector3d> expectedMarkers2 = {
+    std::vector<Eigen::Vector3d> expectedMarkers2 = {
         Eigen::Vector3d(1.290033288920621, 0.40925158443563553, 0.21112830525233722),
         Eigen::Vector3d(0.20066533460246938,  1.2890382781008347, 0.40925158443563558),
         Eigen::Vector3d(0.39983341664682814, 0.20066533460246938,  1.290033288920621),
@@ -169,7 +171,6 @@ TEST(Dynamics, Forward)
         EXPECT_NEAR(QDDot[i], QDDot_expected[i], requiredPrecision);
 }
 
-static std::string modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
 TEST(Dynamics, ForwardLoopConstraint){
     biorbd::Model model(modelPathForLoopConstraintTesting);
     biorbd::rigidbody::GeneralizedCoordinates Q(model), QDot(model), QDDot_constrained(model), QDDot_expected(model);

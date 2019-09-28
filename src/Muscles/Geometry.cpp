@@ -195,62 +195,62 @@ void biorbd::muscles::Geometry::setInsertionInLocal(const utils::Node3d &val)
 // Position des muscles dans l'espace
 const biorbd::utils::Node3d &biorbd::muscles::Geometry::originInGlobal() const
 {
-    biorbd::utils::Error::error(*m_isGeometryComputed, "Geometry must be computed at least once before calling originInLocal()");
+    biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed at least once before calling originInLocal()");
     return *m_originInGlobal;
 }
 const biorbd::utils::Node3d &biorbd::muscles::Geometry::insertionInGlobal() const
 {
-    biorbd::utils::Error::error(*m_isGeometryComputed, "Geometry must be computed at least once before calling insertionInGlobal()");
+    biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed at least once before calling insertionInGlobal()");
     return *m_insertionInGlobal;
 }
 const std::vector<biorbd::utils::Node3d> &biorbd::muscles::Geometry::musclesPointsInGlobal() const
 {
-    biorbd::utils::Error::error(*m_isGeometryComputed, "Geometry must be computed at least once before calling musclesPointsInGlobal()");
+    biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed at least once before calling musclesPointsInGlobal()");
     return *m_pointsInGlobal;
 }
 
 // Retour des longueur et vitesse musculaires
 double biorbd::muscles::Geometry::length() const
 {
-    biorbd::utils::Error::error(*m_isGeometryComputed, "Geometry must be computed at least before calling length()");
+    biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed at least before calling length()");
     return *m_length;
 }
 double biorbd::muscles::Geometry::musculoTendonLength() const
 {
-    biorbd::utils::Error::error(*m_isGeometryComputed, "Geometry must be computed at least before calling length()");
+    biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed at least before calling length()");
     return *m_muscleTendonLength;
 }
 double biorbd::muscles::Geometry::velocity() const
 {
-    biorbd::utils::Error::error(*m_isVelocityComputed, "Geometry must be computed before calling velocity()");
+    biorbd::utils::Error::check(*m_isVelocityComputed, "Geometry must be computed before calling velocity()");
     return *m_velocity;
 }
 
 // Retour des jacobiennes
 const biorbd::utils::Matrix& biorbd::muscles::Geometry::jacobian() const
 {
-    biorbd::utils::Error::error(*m_isGeometryComputed, "Geometry must be computed before calling jacobian()");
+    biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed before calling jacobian()");
     return *m_jacobian;
 } // Retourne la derniere jacobienne
 biorbd::utils::Matrix biorbd::muscles::Geometry::jacobianOrigin() const
 {
-    biorbd::utils::Error::error(*m_isGeometryComputed, "Geometry must be computed before calling jacobianOrigin()");
+    biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed before calling jacobianOrigin()");
     return m_jacobian->block(0,0,3,m_jacobian->cols());
 }
 biorbd::utils::Matrix biorbd::muscles::Geometry::jacobianInsertion() const
 {
-    biorbd::utils::Error::error(*m_isGeometryComputed, "Geometry must be computed before calling jacobianInsertion()");
+    biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed before calling jacobianInsertion()");
     return m_jacobian->block(m_jacobian->rows()-3,0,3,m_jacobian->cols());
 }
 biorbd::utils::Matrix biorbd::muscles::Geometry::jacobian(unsigned int idxMarker) const
 {
-    biorbd::utils::Error::error(*m_isGeometryComputed, "Geometry must be computed before calling jacobian(i)");
+    biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed before calling jacobian(i)");
     return m_jacobian->block(3*idxMarker,0,3,m_jacobian->cols());
 }
 
 const biorbd::utils::Matrix &biorbd::muscles::Geometry::jacobianLength() const
 {
-    biorbd::utils::Error::error(*m_isGeometryComputed, "Geometry must be computed before calling jacobianLength()");
+    biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed before calling jacobianLength()");
     return *m_jacobianLength;
 }
 
@@ -295,7 +295,7 @@ const biorbd::utils::Node3d &biorbd::muscles::Geometry::insertionInGlobal(
 
 void biorbd::muscles::Geometry::musclesPointsInGlobal(std::vector<utils::Node3d> &ptsInGlobal)
 {
-    biorbd::utils::Error::error(ptsInGlobal.size() >= 2, "ptsInGlobal must at least have an origin and an insertion");
+    biorbd::utils::Error::check(ptsInGlobal.size() >= 2, "ptsInGlobal must at least have an origin and an insertion");
     m_pointsInLocal->clear(); // Dans ce mode, nous n'avons pas besoin de de local, puisque la jacobienne des points DOIT également être donnée
     *m_pointsInGlobal = ptsInGlobal;
 }
@@ -312,8 +312,8 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(
     // Ne pas le faire sur les wrappings objects
     if (objects->nbWraps()!=0){
         // CHECK A MODIFIER AVEC L'AVANCEMENT DES PROJETS
-        biorbd::utils::Error::error(objects->nbVia() == 0, "Cannot mix wrapping and via points yet") ;
-        biorbd::utils::Error::error(objects->nbWraps() < 2, "Cannot compute more than one wrapping yet");
+        biorbd::utils::Error::check(objects->nbVia() == 0, "Cannot mix wrapping and via points yet") ;
+        biorbd::utils::Error::check(objects->nbWraps() < 2, "Cannot compute more than one wrapping yet");
 
         // Récupérer la matrice de RT du wrap
         biorbd::muscles::WrappingObject& w = static_cast<biorbd::muscles::WrappingObject&>(objects->object(0));
@@ -368,7 +368,7 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(
         m_pointsInGlobal->push_back(insertionInGlobal(model,Q));
     }
     else
-        biorbd::utils::Error::error(0, "Length for this type of object was not implemented");
+        biorbd::utils::Error::raise("Length for this type of object was not implemented");
 
     // Set the dimension of jacobian
     setJacobianDimension(model);
@@ -383,8 +383,8 @@ double biorbd::muscles::Geometry::length(
     // puisqu'on ne peut pas combiner, tester le premier (0) revient a savoir tous les types si plus d'un
     if (objects != nullptr && objects->nbWraps()!=0){
         // CHECK A MODIFIER AVEC L'AVANCEMENT DES PROJETS
-        biorbd::utils::Error::error(objects->nbVia() == 0, "Cannot mix wrapping and via points yet" ) ;
-        biorbd::utils::Error::error(objects->nbWraps() < 2, "Cannot compute more than one wrapping yet");
+        biorbd::utils::Error::check(objects->nbVia() == 0, "Cannot mix wrapping and via points yet" ) ;
+        biorbd::utils::Error::check(objects->nbWraps() < 2, "Cannot compute more than one wrapping yet");
 
         biorbd::utils::Node3d pi_wrap(0, 0, 0); // point sur le wrapping coté insertion
         biorbd::utils::Node3d po_wrap(0, 0, 0); // point sur le wrapping coté origine
@@ -420,7 +420,7 @@ void biorbd::muscles::Geometry::setJacobianDimension(biorbd::rigidbody::Joints &
 
 void biorbd::muscles::Geometry::jacobian(const biorbd::utils::Matrix &jaco)
 {
-    biorbd::utils::Error::error(jaco.rows()/3 == static_cast<int>(m_pointsInGlobal->size()), "Jacobian is the wrong size");
+    biorbd::utils::Error::check(jaco.rows()/3 == static_cast<int>(m_pointsInGlobal->size()), "Jacobian is the wrong size");
     *m_jacobian = jaco;
 }
 

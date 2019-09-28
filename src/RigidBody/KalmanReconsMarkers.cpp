@@ -158,5 +158,5 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
 
 void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame()
 {
-    biorbd::utils::Error::error(false, "Implémentation impossible");
+    biorbd::utils::Error::raise("Implémentation impossible");
 }

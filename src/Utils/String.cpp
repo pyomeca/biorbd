@@ -56,7 +56,7 @@ biorbd::utils::String biorbd::utils::String::operator+(int d){
 }
 
 biorbd::utils::String biorbd::utils::String::operator()(unsigned int i) const{
-    biorbd::utils::Error::error(i<this->length(), "Index for string out of range");
+    biorbd::utils::Error::check(i<this->length(), "Index for string out of range");
     char out[2];
     out[0] = (*this)[i];
     out[1] = '\0';
@@ -64,8 +64,8 @@ biorbd::utils::String biorbd::utils::String::operator()(unsigned int i) const{
 }
 
 biorbd::utils::String biorbd::utils::String::operator()(unsigned int i, unsigned int j) const{
-    biorbd::utils::Error::error((i<this->length() || j<this->length()), "Index for string out of range");
-    biorbd::utils::Error::error(j>i, "Second argument should be higher than first!");
+    biorbd::utils::Error::check((i<this->length() || j<this->length()), "Index for string out of range");
+    biorbd::utils::Error::check(j>i, "Second argument should be higher than first!");
     char *out = static_cast<char*>(malloc(j-i+2*sizeof(char)));
     for (unsigned int k=0; k<j-i+1; ++k)
         out[k] = (*this)[i+k];

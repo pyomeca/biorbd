@@ -90,10 +90,10 @@ void biorbd::muscles::FatigueState::setState(double active, double fatigued, dou
 
     // Sanity check for fatigued fibers
     if (fatigued < 0){
-        biorbd::utils::Error::error(0, "Fatigued Fibers Quantity can't be lower than 0");
+        biorbd::utils::Error::raise("Fatigued Fibers Quantity can't be lower than 0");
     }
     else if (fatigued > 1){
-        biorbd::utils::Error::error(0, "Fatigued Fibers Quantity can't be higher than 1");
+        biorbd::utils::Error::raise("Fatigued Fibers Quantity can't be higher than 1");
     }
 
     // Sanity check for resting fibers
@@ -110,12 +110,12 @@ void biorbd::muscles::FatigueState::setState(double active, double fatigued, dou
         resting = 0;
     }
     else if (resting > 1){
-        biorbd::utils::Error::error(0, "Resting Fibers Quantity can't be higher than 1");
+        biorbd::utils::Error::raise("Resting Fibers Quantity can't be higher than 1");
 
     }
 
     if (fabs(active + fatigued + resting - 1.0) > 0.1){
-        biorbd::utils::Error::error(false, "Sum of the fatigued states must be equal to 1");
+        biorbd::utils::Error::raise("Sum of the fatigued states must be equal to 1");
     }
 
     *m_activeFibers = active;

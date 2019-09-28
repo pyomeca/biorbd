@@ -144,7 +144,7 @@ biorbd::muscles::HillType::HillType(
     biorbd::muscles::Muscle (muscle)
 {
     const std::shared_ptr<biorbd::muscles::HillType> m_tp(std::dynamic_pointer_cast<biorbd::muscles::HillType>(muscle));
-    biorbd::utils::Error::error(m_tp != nullptr, "Muscle must be of a Hill Type");
+    biorbd::utils::Error::check(m_tp != nullptr, "Muscle must be of a Hill Type");
     m_damping = m_tp->m_damping;
     m_FlCE = m_tp->m_FlCE;
     m_FlPE = m_tp->m_FlPE;
@@ -211,7 +211,7 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::Hi
     else if (updateKin == 2)
         updateOrientations(model,Q,Qdot,true);
     else
-        biorbd::utils::Error::error(updateKin == 0, "Wrong level of update in force function");
+        biorbd::utils::Error::check(updateKin == 0, "Wrong level of update in force function");
 
     // Calculs
     return force(emg);
@@ -223,7 +223,7 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::Hi
         const biorbd::muscles::StateDynamics &,
         int)
 {
-    biorbd::utils::Error::error(0, "Hill type needs velocity");
+    biorbd::utils::Error::raise("Hill type needs velocity");
     return *m_force; // Will never reach here
 }
 
