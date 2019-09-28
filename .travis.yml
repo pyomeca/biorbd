@@ -60,35 +60,30 @@ script:
     - cd build
     # Perform tests on all platform, but only perform code coverage on Linux
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON .. ;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=ON ..;
         make;
       elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON .. ;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=ON ..;
         make;
       elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
-        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..;
+        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON -DBINDER_C=ON ..;
         cmake --build ./ --config Release;
       fi
     # Only do the coverage on Linux, but run the test anyway to get a nice output
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
         cp -r test/models/ .;
+        make biorbd_coverage;
       elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
         cd test;
-      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+        ./biorbd_tests;
+        cd binding/c;
+        ./biorbd_tests_binding_c;
+        cd ../../..;
+      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         cd test\\Release;
         xcopy ..\\models .\\models\\;
         xcopy ..\\models\\meshFiles .\\models\\meshFiles\\;
-      fi
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        make biorbd_coverage;
-      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
-        ./biorbd_tests;
-      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         ./biorbd_tests.exe;
-      fi
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
-        cd ..;
-      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         cd ../..;
       fi
     - ctest
@@ -101,6 +96,7 @@ script:
         cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=$ToolsDir/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
         cmake --build ./ --config Release --target install;
       fi
+    - if 
     - python -c "import biorbd"    
 
 after_success:
