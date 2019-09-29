@@ -5,6 +5,7 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "Muscles/Force.h"
 
 void Matlab_muscleForcesNorm( int, mxArray *plhs[],
                                 int nrhs, const mxArray*prhs[] ){
@@ -23,7 +24,7 @@ void Matlab_muscleForcesNorm( int, mxArray *plhs[],
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
 
     // Recevoir les états musculaires
-    std::vector<std::vector<biorbd::muscles::StateDynamics>> state = getParameterMuscleStateActivation(prhs, 4, model->nbMuscleTotal());
+    std::vector<std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>> state = getParameterMuscleStateActivation(prhs, 4, model->nbMuscleTotal());
 
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
@@ -48,12 +49,12 @@ void Matlab_muscleForcesNorm( int, mxArray *plhs[],
     for (unsigned int iF=0; iF<nFrame; ++iF){
         std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> Force;
         if (updateKin)
-            Force = model->musclesForces(*model, *(state.begin()+iF), updateKin, &(*(Q.begin()+iF)), &(*(QDot.begin()+iF)));
+            Force = model->musclesForces(state[iF], updateKin, &Q[iF], &QDot[iF]);
         else
-            Force = model->musclesForces(*model, *(state.begin()+iF), updateKin);
+            Force = model->musclesForces(state[iF], updateKin);
 
         for (unsigned int i=0; i<Force.size(); ++i){
-            force[cmp] = (Force[i])[0]->norme();
+            force[cmp] = Force[i][0]->norm();
             ++cmp;
         }
     }

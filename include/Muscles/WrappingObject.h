@@ -1,12 +1,14 @@
 #ifndef BIORBD_MUSCLES_WRAPPING_OBJECT_H
 #define BIORBD_MUSCLES_WRAPPING_OBJECT_H
 
-#include <Eigen/Dense>
 #include "biorbdConfig.h"
-#include "Utils/String.h"
-#include "Muscles/PathChanger.h"
+#include "Utils/Node3d.h"
 
 namespace biorbd {
+namespace utils {
+class String;
+}
+
 namespace rigidbody {
 class Joints;
 class GeneralizedCoordinates;
@@ -14,44 +16,60 @@ class GeneralizedCoordinates;
 
 namespace muscles {
 
-class BIORBD_API WrappingObject : public biorbd::muscles::PathChanger
+class BIORBD_API WrappingObject : public biorbd::utils::Node3d
 {
 public:
+    WrappingObject();
     WrappingObject(
-            const Eigen::Vector3d &v = Eigen::Vector3d(0,0,0), // Position du noeud
-            const biorbd::utils::String &name = "",  // Nom du noeud
-            const biorbd::utils::String &parentName = "");
-    virtual ~WrappingObject() ;
+            double x,
+            double y,
+            double z);
+    WrappingObject(
+            double x,
+            double y,
+            double z,
+            const biorbd::utils::String &name,  // Nom du noeud
+            const biorbd::utils::String &parentName);
+    WrappingObject(
+            const biorbd::utils::Node3d& other);
+    WrappingObject(
+            const Eigen::Vector3d& other,
+            const biorbd::utils::String& name,
+            const biorbd::utils::String& parentName);
+    void DeepCopy(const biorbd::muscles::WrappingObject& other);
 
-    virtual biorbd::utils::Attitude RT(
-            biorbd::rigidbody::Joints &m,
+    virtual void wrapPoints(
+            const biorbd::utils::RotoTrans& rt,
+            const biorbd::utils::Node3d& p1_bone,
+            const biorbd::utils::Node3d& p2_bone,
+            biorbd::utils::Node3d& p1,
+            biorbd::utils::Node3d& p2,
+            double* muscleLength = nullptr) = 0 ; // Premier et dernier points musculaire
+    virtual void wrapPoints(
+            biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const bool & = true) = 0;
+            const biorbd::utils::Node3d& p1_bone,
+            const biorbd::utils::Node3d& p2_bone,
+            biorbd::utils::Node3d& p1,
+            biorbd::utils::Node3d& p2,
+            double* muscleLength = nullptr) = 0; // Premier et dernier points musculaire
     virtual void wrapPoints(
-            const biorbd::utils::Attitude&,
-            const biorbd::muscles::MuscleNode&,
-            const biorbd::muscles::MuscleNode&,
-            biorbd::muscles::MuscleNode&,
-            biorbd::muscles::MuscleNode&, double* = nullptr) = 0 ; // Premier et dernier points musculaire
-    virtual void wrapPoints(
-            biorbd::rigidbody::Joints&,
-            const biorbd::rigidbody::GeneralizedCoordinates&,
-            const biorbd::muscles::MuscleNode&,
-            const biorbd::muscles::MuscleNode&,
-            biorbd::muscles::MuscleNode&,
-            biorbd::muscles::MuscleNode&,
-            double* = nullptr) = 0; // Premier et dernier points musculaire
-    virtual void wrapPoints(
-            biorbd::muscles::MuscleNode&,
-            biorbd::muscles::MuscleNode&,
-            double* = nullptr) = 0; // Assume un appel déja faits
+            biorbd::utils::Node3d& p1,
+            biorbd::utils::Node3d& p2,
+            double* muscleLength = nullptr) = 0; // Assume un appel déja faits
 
-    // Set and get
-    const biorbd::utils::String& forme() const;
+    virtual const biorbd::utils::RotoTrans& RT(
+            biorbd::rigidbody::Joints &model,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            bool updateKin = true) = 0;
+    const biorbd::utils::RotoTrans& RT() const;
 
+    biorbd::muscles::WrappingObject& operator=(const biorbd::utils::Node3d& other){
+        this->biorbd::utils::Node3d::operator=(other);
+        return *this;
+    }
 protected:
-    biorbd::utils::String m_forme;
-
+    std::shared_ptr<biorbd::utils::RotoTrans> m_RT;
 };
 
 }}

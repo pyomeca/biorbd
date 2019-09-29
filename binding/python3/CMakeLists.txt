@@ -3,6 +3,7 @@ find_package(PYTHON3 REQUIRED)
 include_directories(${Python3_INCLUDE_DIRS})
 
 find_package(Numpy REQUIRED)
+
 include_directories(${NUMPY_INCLUDES})
 if(WIN32)
     link_directories(${Python3_RUNTIME_LIBRARY_DIRS}/libs)
@@ -48,14 +49,14 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.py
 
 # Check if swig has its version 3 or 4, to choose the right place to put the library
 if(${SWIG_VERSION} MATCHES "^3(\.[0-9]*)*$")
-  set(PYTHON_INSTALL_DESTINATION ${Python3_SITELIB})
+    set(PYTHON_INSTALL_DESTINATION ${Python3_SITELIB})
 elseif(${SWIG_VERSION} MATCHES "^4(\.[0-9]*)*$")
-  set(PYTHON_INSTALL_DESTINATION ${Python3_SITELIB}/${PROJECT_NAME})
+    set(PYTHON_INSTALL_DESTINATION ${Python3_SITELIB}/${PROJECT_NAME})
 else()
-  message( FATAL_ERROR "Swig must be version 3 or 4" )
+    message( FATAL_ERROR "Swig must be version 3 or 4" )
 endif()
 
 # Install the library
 INSTALL(TARGETS _${PROJECT_NAME}
-                DESTINATION ${PYTHON_INSTALL_DESTINATION})
+    DESTINATION ${PYTHON_INSTALL_DESTINATION})
 

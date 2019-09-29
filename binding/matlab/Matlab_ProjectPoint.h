@@ -10,7 +10,7 @@ void Matlab_ProjectPoint( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
-    checkNombreInputParametres(nrhs, 4, 4, "6 arguments are required where the 2nd is the handler on the model, 3rd is the Q, 4th are the 3xNxT points in global reference frame where N = nTags of the model");
+    checkNombreInputParametres(nrhs, 4, 4, "6 arguments are required where the 2nd is the handler on the model, 3rd is the Q, 4th are the 3xNxT points in global reference frame where N = nMarkers of the model");
     // Recevoir le model
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
@@ -38,7 +38,7 @@ void Matlab_ProjectPoint( int, mxArray *plhs[],
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrames; ++i){
         biorbd::rigidbody::GeneralizedCoordinates Q(*(Qall.begin()+i));
-        std::vector<biorbd::rigidbody::NodeBone> projectedPoint(model->projectPoint(*model, Q, *(markersOverTime.begin()+i), true));
+        std::vector<biorbd::rigidbody::NodeBone> projectedPoint(model->projectPoint(Q, *(markersOverTime.begin()+i), true));
         for (unsigned int j=0; j<static_cast<unsigned int>(nMarker); ++j){
             biorbd::rigidbody::NodeBone tp(*(projectedPoint.begin()+j));
             Markers[cmp+0] = tp(0);

@@ -4,15 +4,12 @@
 biorbd::utils::Timer::Timer(bool startNow) :
     m_isStarted(false),
     m_isPaused(false),
+    m_start(),
+    m_pauseTime(),
     m_totalPauseTime(0.0)
 {
     if (startNow)
         start();
-}
-
-biorbd::utils::Timer::~Timer()
-{
-
 }
 
 void biorbd::utils::Timer::start()

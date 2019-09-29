@@ -4,6 +4,7 @@
 #include <map>
 #include "biorbdConfig.h"
 #include "Utils/Path.h"
+#include <iostream>
 
 namespace biorbd {
 namespace utils {
@@ -12,21 +13,17 @@ class Equation;
 class BIORBD_API IfStream
 {
 public:
+    IfStream();
     IfStream(
             const biorbd::utils::Path& path,
             std::ios_base::openmode mode );
     IfStream(
             const char* path,
             std::ios_base::openmode mode );
-    IfStream( );
-    virtual ~IfStream();
 
     bool open(
             const biorbd::utils::Path& path,
             std::ios_base::openmode mode );
-    bool open(
-            const char* path,
-            std::ios_base::openmode mode  );
 
     bool read(biorbd::utils::String&);
     bool readIgnoreCommentedLine(biorbd::utils::String&);
@@ -48,11 +45,11 @@ public:
     bool eof();
 
 protected:
-    bool m_isOpen;
+    std::shared_ptr<bool> m_isOpen;
 
 private:
-    std::ifstream *m_ifs;
-    biorbd::utils::Path m_path;
+    std::shared_ptr<std::ifstream> m_ifs;
+    std::shared_ptr<biorbd::utils::Path> m_path;
 };
 
 }}

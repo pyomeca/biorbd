@@ -5,6 +5,7 @@
 
 
 // Includes all neceressary files from the API
+//%include "@CMAKE_SOURCE_DIR@/include/Actuators/ActuatorEnum.h"
 //%include "@CMAKE_SOURCE_DIR@/include/Actuators/Actuator.h"
 //%include "ActuatorConstant.h"
 //%include "ActuatorGauss3p.h"

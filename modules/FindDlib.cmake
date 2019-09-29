@@ -11,7 +11,7 @@ if (DLIB_INCLUDE_DIR)
 endif (DLIB_INCLUDE_DIR)
 
 find_path (DLIB_INCLUDE_DIR "dlib/algs.h"
-  PATHS "${DLIB_DIR}")
+  PATHS "${DLIB_DIR}" ${CMAKE_INSTALL_PREFIX}/Library/include)
 
 if(WIN32)
 	# For some reason find_library won't find dlib with only "dlib" name, it must have the full previously unknown name
@@ -19,7 +19,7 @@ if(WIN32)
 	get_filename_component(LibNames ${LibPath} NAME)
 	find_library (DLIB_LIBRARY 
 			NAMES ${LibNames}
-			HINTS ${CMAKE_INSTALL_PREFIX}/bin)
+			HINTS ${CMAKE_INSTALL_PREFIX}/bin ${CMAKE_INSTALL_PREFIX}/Library/lib)
 else()
 	set (DLIB_NAMES dlib)
 	find_library (DLIB_LIBRARY NAMES ${DLIB_NAMES})

@@ -1,0 +1,31 @@
+version 3
+
+segment Segment1
+  translations xyz
+  rotations xyz
+  mesh 1 0 0
+  mesh 0 1 0
+  mesh 0 0 1
+  mesh 1 1 1
+endsegment
+
+marker mark1
+  parent Segment1
+  position 1 0 0
+endmarker
+
+marker mark2
+  parent Segment1
+  position 0 1 0
+endmarker
+
+marker mark3
+  parent Segment1
+  position 0 0 1
+endmarker
+
+marker mark4
+  parent Segment1
+  position 1 1 1
+endmarker
+

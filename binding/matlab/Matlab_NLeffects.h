@@ -15,7 +15,7 @@ void Matlab_NLeffects( int, mxArray *plhs[],
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
-    unsigned int nGeneralizedTorque = model->nbGeneralizedTorque() + model->nbRoot(); // Nombre de GeneralizedTorque
+    unsigned int nTau = model->nbGeneralizedTorque() + model->nbRoot(); // Nombre de GeneralizedTorque
 
     // Recevoir Q
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
@@ -28,18 +28,19 @@ void Matlab_NLeffects( int, mxArray *plhs[],
         mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "QDot must have the same number of frames than Q");
 
     // Create a matrix for the return argument
-    plhs[0] = mxCreateDoubleMatrix(nGeneralizedTorque , nFrame, mxREAL);
-    double *GeneralizedTorque = mxGetPr(plhs[0]);
+    plhs[0] = mxCreateDoubleMatrix(nTau , nFrame, mxREAL);
+    double *tau = mxGetPr(plhs[0]);
     unsigned int cmp(0);
 
     // Trouver les effets non-linéaires pour chaque configuration
+    biorbd::rigidbody::GeneralizedTorque Tau(nTau);
     for (unsigned int j=0; j<Q.size(); ++j){
-        biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(Eigen::VectorXd::Zero (nGeneralizedTorque));
-        RigidBodyDynamics::NonlinearEffects(*model, *(Q.begin()+j), *(QDot.begin()+j), GeneralizedTorque);// Inverse Dynamics
+        Tau.setZero();
+        RigidBodyDynamics::NonlinearEffects(*model, Q[j], QDot[j], Tau);// Inverse Dynamics
 
         // Remplir l'output
-        for (unsigned int i=0; i<nGeneralizedTorque; i++){
-            GeneralizedTorque[cmp] = GeneralizedTorque(i);
+        for (unsigned int i=0; i<nTau; i++){
+            tau[cmp] = Tau(i);
             ++cmp;
         }
     }

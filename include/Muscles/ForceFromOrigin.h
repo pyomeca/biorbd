@@ -10,17 +10,28 @@ namespace muscles {
 class BIORBD_API ForceFromOrigin : public biorbd::muscles::Force
 {
     public:
-        ForceFromOrigin();
-        ForceFromOrigin(double x, double y, double z);
-        ForceFromOrigin(const Eigen::Vector3d& force);
+        ForceFromOrigin(
+                double x = 0,
+                double y = 0,
+                double z = 0);
+        template<typename OtherDerived> ForceFromOrigin(const Eigen::MatrixBase<OtherDerived>& other) :
+            biorbd::muscles::Force(other){}
         ForceFromOrigin(
                 const biorbd::muscles::Geometry& geo,
-                double force);
-        virtual ~ForceFromOrigin();
+                double vectorNorm);
+        biorbd::muscles::ForceFromOrigin DeepCopy() const;
+        void DeepCopy(const biorbd::muscles::ForceFromOrigin& other);
 
         // Get et set
-        void setForce(const biorbd::muscles::Geometry& geo, double force);
+        virtual void setForceFromMuscleGeometry(
+                const biorbd::muscles::Geometry& geo,
+                double vectorNorm);
 
+        template<typename OtherDerived>
+            biorbd::muscles::ForceFromOrigin& operator=(const Eigen::MatrixBase <OtherDerived>& other){
+                this->biorbd::muscles::Force::operator=(other);
+                return *this;
+            }
 };
 
 }}

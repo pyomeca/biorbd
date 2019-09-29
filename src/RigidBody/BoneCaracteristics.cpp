@@ -1,47 +1,74 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/BoneCaracteristics.h"
 
-#include "Utils/Node.h"
+#include "Utils/Node3d.h"
 #include "RigidBody/Patch.h"
+#include "RigidBody/BoneMesh.h"
 
-biorbd::rigidbody::Caracteristics::Caracteristics() :
+biorbd::rigidbody::BoneCaracteristics::BoneCaracteristics() :
     Body(),
-    m_length(0),
-    m_mesh(biorbd::rigidbody::Mesh())
+    m_length(std::make_shared<double>(0)),
+    m_mesh(std::make_shared<biorbd::rigidbody::BoneMesh>())
 {
+
 }
-biorbd::rigidbody::Caracteristics::Caracteristics(
-        const double &mass,
-        const biorbd::utils::Node &com,
-        const RigidBodyDynamics::Math::Matrix3d &inertia,
-        const biorbd::rigidbody::Mesh &mesh) :
+biorbd::rigidbody::BoneCaracteristics::BoneCaracteristics(
+        double mass,
+        const biorbd::utils::Node3d &com,
+        const RigidBodyDynamics::Math::Matrix3d &inertia) :
     Body(mass, com, inertia),
-    m_length(0),
-    m_mesh(mesh)
+    m_length(std::make_shared<double>(0)),
+    m_mesh(std::make_shared<biorbd::rigidbody::BoneMesh>())
 {
+
+}
+biorbd::rigidbody::BoneCaracteristics::BoneCaracteristics(
+        double mass,
+        const biorbd::utils::Node3d &com,
+        const RigidBodyDynamics::Math::Matrix3d &inertia,
+        const biorbd::rigidbody::BoneMesh &mesh) :
+    Body(mass, com, inertia),
+    m_length(std::make_shared<double>(0)),
+    m_mesh(std::make_shared<biorbd::rigidbody::BoneMesh>(mesh))
+{
+
 }
 
-const biorbd::rigidbody::Mesh &biorbd::rigidbody::Caracteristics::mesh() const {
-    return m_mesh;
+biorbd::rigidbody::BoneCaracteristics biorbd::rigidbody::BoneCaracteristics::DeepCopy() const
+{
+    biorbd::rigidbody::BoneCaracteristics copy;
+    copy.DeepCopy(*this);
+    return copy;
 }
 
-const Eigen::Matrix3d &biorbd::rigidbody::Caracteristics::inertia() const {
+void biorbd::rigidbody::BoneCaracteristics::DeepCopy(const BoneCaracteristics &other)
+{
+    static_cast<RigidBodyDynamics::Body&>(*this) = other;
+    *m_length = *other.m_length;
+    *m_mesh = other.m_mesh->DeepCopy();
+}
+
+const biorbd::rigidbody::BoneMesh &biorbd::rigidbody::BoneCaracteristics::mesh() const
+{
+    return *m_mesh;
+}
+
+const Eigen::Matrix3d &biorbd::rigidbody::BoneCaracteristics::inertia() const
+{
     return mInertia;
 }
 
-biorbd::rigidbody::Caracteristics::~Caracteristics()
+double biorbd::rigidbody::BoneCaracteristics::length() const
 {
-    //dtor
+    return *m_length;
 }
 
-double biorbd::rigidbody::Caracteristics::length() const {
-    return m_length;
-}
-
-double biorbd::rigidbody::Caracteristics::mass() const {
+double biorbd::rigidbody::BoneCaracteristics::mass() const
+{
     return mMass;
 }
 
-void biorbd::rigidbody::Caracteristics::setLength(const double &val) {
-    m_length = val;
+void biorbd::rigidbody::BoneCaracteristics::setLength(double val)
+{
+    *m_length = val;
 }

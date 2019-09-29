@@ -1,28 +1,29 @@
 // File : biorbd_muscles.i
 %{
 #include "Muscles/StateDynamics.h"
-#include "Muscles/Muscle.h"
 #include "Muscles/MuscleGroup.h"
+#include "Muscles/Muscle.h"
+#include "Muscles/Caracteristics.h"
+#include "Muscles/Geometry.h"
 #include "Muscles/HillType.h"
-#include "Muscles/HillTypeThelen.h"
-#include "Muscles/HillTypeSimple.h"
-#include "Muscles/HillTypeThelenFatigable.h"
+#include "Muscles/HillThelenType.h"
+#include "Muscles/IdealizedActuator.h"
+#include "Muscles/HillThelenTypeFatigable.h"
+#include "Muscles/FatigueParameters.h"
 #include "Muscles/FatigueState.h"
 #include "Muscles/FatigueDynamicState.h"
 #include "Muscles/FatigueDynamicStateXia.h"
-#include "Muscles/MuscleNode.h"
-#include "Muscles/Geometry.h"
+#include "Muscles/Force.h"
 #ifdef IPOPT_FOUND
 #include "Muscles/StaticOptimization.h"
 #endif
 %}
+
 // Instantiate templates
 namespace std {
 %template(SharedBiorbdMuscle) std::shared_ptr<biorbd::muscles::Muscle>;
 %template(VecBiorbdMuscleStateDynamics) std::vector<biorbd::muscles::StateDynamics>;
 %template(MatBiorbdMuscleStateDynamics) std::vector<std::vector<biorbd::muscles::StateDynamics>>;
-%template(VecBiorbdNodeMuscle) std::vector<biorbd::muscles::MuscleNode>;
-%template(MatBiorbdNodeMuscle) std::vector<std::vector<biorbd::muscles::MuscleNode>>;
 %template(SharedBiorbdMuscleFatigueState) std::shared_ptr<biorbd::muscles::FatigueState>;
 }
 
@@ -31,65 +32,76 @@ namespace std {
     biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
                 const std::vector<biorbd::muscles::StateDynamics> &state,
                 const biorbd::rigidbody::GeneralizedCoordinates &Q,
-                const biorbd::rigidbody::GeneralizedCoordinates &QDot){
-        return self->muscularJointTorque(*self, state, true, &Q, &QDot);
-    }
-
-    static biorbd::utils::String getMuscleType(const std::shared_ptr<biorbd::muscles::Muscle> m){
-        return m->type();
+                const biorbd::rigidbody::GeneralizedCoordinates &QDot)
+    {
+        std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> state_ptr(state.size());
+        for (unsigned int i=0; i<state.size(); ++i)
+            state_ptr[i] = std::make_shared<biorbd::muscles::StateDynamics>(state[i]);
+        return self->muscularJointTorque(state_ptr, true, &Q, &QDot);
     }
 }
 
 // extension of muscle casting
+%extend biorbd::muscles::IdealizedActuator{
+    static biorbd::muscles::IdealizedActuator DeepCopy(const biorbd::muscles::Muscle& other)
+    {
+        biorbd::muscles::IdealizedActuator copy;
+        copy.DeepCopy(dynamic_cast<const biorbd::muscles::IdealizedActuator&>(other));
+        return copy;
+    }
+}
+
 %extend biorbd::muscles::HillType{
-    static biorbd::muscles::HillType& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
+    static biorbd::muscles::HillType DeepCopy(const biorbd::muscles::Muscle& other)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::HillType>(m));
+        biorbd::muscles::HillType copy;
+        copy.DeepCopy(dynamic_cast<const biorbd::muscles::HillType&>(other));
+        return copy;
     }
 }
-%extend biorbd::muscles::HillTypeThelen{
-    static biorbd::muscles::HillTypeThelen& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
+%extend biorbd::muscles::HillThelenType{
+    static biorbd::muscles::HillThelenType DeepCopy(const biorbd::muscles::Muscle& other)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelen>(m));
+        biorbd::muscles::HillThelenType copy;
+        copy.DeepCopy(dynamic_cast<const biorbd::muscles::HillThelenType&>(other));
+        return copy;
     }
 }
-%extend biorbd::muscles::HillTypeThelenFatigable{
-    static biorbd::muscles::HillTypeThelenFatigable& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
+%extend biorbd::muscles::HillThelenTypeFatigable{
+    static biorbd::muscles::HillThelenTypeFatigable DeepCopy(const biorbd::muscles::Muscle& other)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeThelenFatigable>(m));
-    }
-}
-%extend biorbd::muscles::HillTypeSimple{
-    static biorbd::muscles::HillTypeSimple& getRef(std::shared_ptr<biorbd::muscles::Muscle> m)
-    {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::HillTypeSimple>(m));
+        biorbd::muscles::HillThelenTypeFatigable copy;
+        copy.DeepCopy(dynamic_cast<const biorbd::muscles::HillThelenTypeFatigable&>(other));
+        return copy;
     }
 }
 
 // extension of muscle fatigueState casting
-%extend biorbd::muscles::FatigueState{
-    static biorbd::muscles::FatigueState& getRef(std::shared_ptr<biorbd::muscles::FatigueState> s)
-    {
-        return *s;
-    }
-}
 %extend biorbd::muscles::FatigueDynamicStateXia{
-    static biorbd::muscles::FatigueDynamicStateXia& getRef(std::shared_ptr<biorbd::muscles::FatigueState> s)
+    static biorbd::muscles::FatigueDynamicStateXia DeepCopy(const biorbd::muscles::FatigueState& other)
     {
-        return *(std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicStateXia>(s));
+        biorbd::muscles::FatigueDynamicStateXia copy;
+        copy.DeepCopy(dynamic_cast<const biorbd::muscles::FatigueDynamicStateXia&>(other));
+        return copy;
+    }
+    static biorbd::muscles::FatigueDynamicStateXia DeepCopy(const biorbd::muscles::FatigueDynamicState& other)
+    {
+        biorbd::muscles::FatigueDynamicStateXia copy;
+        copy.DeepCopy(dynamic_cast<const biorbd::muscles::FatigueDynamicStateXia&>(other));
+        return copy;
     }
 }
 
 
 // Includes all neceressary files from the API
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/MuscleNode.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/MusclesEnums.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Compound.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscle.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Fatigable.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/HillType.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeThelen.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeThelenFatigable.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillTypeSimple.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillThelenType.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillThelenTypeFatigable.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/IdealizedActuator.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscles.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/MuscleGroup.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Caracteristics.h"

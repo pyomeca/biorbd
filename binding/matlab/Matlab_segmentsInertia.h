@@ -5,6 +5,7 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "Utils/Vector.h"
 
 void Matlab_segmentsInertia( int, mxArray *plhs[],
                                 int nrhs, const mxArray*prhs[] ){
@@ -19,7 +20,7 @@ void Matlab_segmentsInertia( int, mxArray *plhs[],
     biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Update sur la cinématique (placer les segments)
-    RigidBodyDynamics::UpdateKinematicsCustom(*model, &Q, nullptr, nullptr);
+    model->UpdateKinematicsCustom(&Q, nullptr, nullptr);
 
     // Create a matrix for the return argument
     const mwSize dims[3]={6,6, static_cast<mwSize>(nQ+1)};//model->nbBone()};

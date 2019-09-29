@@ -14,7 +14,7 @@ class BIORBD_API Writer
 {
 public:
     static void writeModel(
-            biorbd::Model &,
+            biorbd::Model &model,
             const biorbd::utils::Path& pathToWrite);
 
 };

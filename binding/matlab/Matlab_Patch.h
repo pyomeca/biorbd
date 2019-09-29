@@ -5,6 +5,7 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "RigidBody/Patch.h"
 
 void Matlab_Patch( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
@@ -27,15 +28,14 @@ void Matlab_Patch( int, mxArray *plhs[],
         // Create a matrix for the return argument
         plhs[0] = mxCreateCellMatrix( allMesh.size(), 1);
         for (unsigned int i_bone=0; i_bone<allMesh.size(); ++i_bone){
-            mxArray *mesh_out_tp = mxCreateDoubleMatrix( 3, (*(allMesh.begin()+i_bone)).size(), mxREAL);
+            mxArray *mesh_out_tp = mxCreateDoubleMatrix( 3, allMesh[i_bone].size(), mxREAL);
             double *Mesh = mxGetPr(mesh_out_tp);
 
             // Remplir le output
-            std::vector<biorbd::rigidbody::Patch>::iterator it=(*(allMesh.begin()+i_bone)).begin();
-            for (unsigned int i=0; (it+i)!=(*(allMesh.begin()+i_bone)).end(); ++i){
-                Mesh[i*3] = (*(it+i))(0)+1; // +1 Car l'indice dans biorbd::rigidbody::s est par rapport à 0
-                Mesh[i*3+1] = (*(it+i))(1)+1;
-                Mesh[i*3+2] = (*(it+i))(2)+1;
+            for (unsigned int i=0; allMesh[i_bone].size(); ++i){
+                Mesh[i*3] = allMesh[i_bone][i](0)+1; // +1 Car l'indice dans biorbd::rigidbody::s est par rapport à 0
+                Mesh[i*3+1] = allMesh[i_bone][i](1)+1;
+                Mesh[i*3+2] = allMesh[i_bone][i](2)+1;
             }
             mxSetCell(plhs[0],i_bone,mesh_out_tp);
         }

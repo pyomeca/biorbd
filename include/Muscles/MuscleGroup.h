@@ -4,51 +4,86 @@
 #include <memory>
 #include <vector>
 #include "biorbdConfig.h"
-#include "Utils/String.h"
-#include "Muscles/PathChangers.h"
+#include "Muscles/MusclesEnums.h"
 
 namespace biorbd {
-namespace muscles {
+namespace utils {
+class String;
+}
 
+namespace muscles {
 class Muscle;
 class Geometry;
 class Caracteristics;
+class PathChangers;
+
 class BIORBD_API MuscleGroup
 {
 public:
+    MuscleGroup();
+    MuscleGroup(const biorbd::muscles::MuscleGroup& other);
     MuscleGroup(
             const biorbd::utils::String &name,
             const biorbd::utils::String &originName,
             const biorbd::utils::String &insertionName);
     virtual ~MuscleGroup();
+    biorbd::muscles::MuscleGroup DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::MuscleGroup& other);
 
-    virtual void addHillMuscle(
-            const biorbd::utils::String&,
-            const biorbd::utils::String&,
-            const biorbd::muscles::Geometry&,
-            const biorbd::muscles::Caracteristics&,
-            const biorbd::muscles::PathChangers& = biorbd::muscles::PathChangers(),
-            const biorbd::utils::String& stateType = "default",
-            const biorbd::utils::String &dynamicFatigueType = "Simple");
-    virtual void addMuscle(biorbd::muscles::Muscle &val);
+    virtual void addMuscle(
+            const biorbd::utils::String& name,
+            biorbd::muscles::MUSCLE_TYPE type,
+            const biorbd::muscles::Geometry& geometry,
+            const biorbd::muscles::Caracteristics& caracteristics,
+            biorbd::muscles::STATE_TYPE stateType = biorbd::muscles::STATE_TYPE::NO_STATE_TYPE,
+            biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+    virtual void addMuscle(
+            const biorbd::utils::String& name,
+            biorbd::muscles::MUSCLE_TYPE type,
+            const biorbd::muscles::Geometry& geometry,
+            const biorbd::muscles::Caracteristics& caracteristics,
+            biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType);
+    virtual void addMuscle(
+            const biorbd::utils::String& name,
+            biorbd::muscles::MUSCLE_TYPE type,
+            const biorbd::muscles::Geometry& geometry,
+            const biorbd::muscles::Caracteristics& caracteristics,
+            const biorbd::muscles::PathChangers& pathChangers,
+            biorbd::muscles::STATE_TYPE stateType = biorbd::muscles::STATE_TYPE::NO_STATE_TYPE,
+            biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+    virtual void addMuscle(
+            const biorbd::utils::String& name,
+            biorbd::muscles::MUSCLE_TYPE type,
+            const biorbd::muscles::Geometry& geometry,
+            const biorbd::muscles::Caracteristics& caracteristics,
+            const biorbd::muscles::PathChangers& pathChangers,
+            biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType);
+    virtual void addMuscle(
+            const biorbd::muscles::Muscle &val);
 
     // Set and get
     unsigned int nbMuscles() const;
-    std::shared_ptr<biorbd::muscles::Muscle> muscle_nonConst(const unsigned int &idx);
-    const std::shared_ptr<biorbd::muscles::Muscle> muscle(const unsigned int &idx) const;
-    int muscleID(const biorbd::utils::String&); // Retourne l'index du muscle
-    void setName(const biorbd::utils::String& name);
-    void setOrigin(const biorbd::utils::String& name);
-    void setInsertion(const biorbd::utils::String& name);
+    biorbd::muscles::Muscle& muscle(
+            unsigned int idx);
+    const biorbd::muscles::Muscle& muscle(
+            unsigned int idx) const;
+    int muscleID(
+            const biorbd::utils::String& name); // Retourne l'index du muscle
+    void setName(
+            const biorbd::utils::String& name);
+    void setOrigin(
+            const biorbd::utils::String& name);
+    void setInsertion(
+            const biorbd::utils::String& name);
     const biorbd::utils::String& name() const;
     const biorbd::utils::String& origin() const;
     const biorbd::utils::String& insertion() const;
 
 protected:
-    std::vector<std::shared_ptr<biorbd::muscles::Muscle>> m_mus;
-    biorbd::utils::String m_name;
-    biorbd::utils::String m_originName;
-    biorbd::utils::String m_insertName;
+    std::shared_ptr<std::vector<std::shared_ptr<biorbd::muscles::Muscle>>> m_mus;
+    std::shared_ptr<biorbd::utils::String> m_name;
+    std::shared_ptr<biorbd::utils::String> m_originName;
+    std::shared_ptr<biorbd::utils::String> m_insertName;
 
 };
 

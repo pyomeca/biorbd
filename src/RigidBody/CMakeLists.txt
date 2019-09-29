@@ -12,7 +12,6 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedTorque.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/IMU.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/IMUs.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Joint.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Joints.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/KalmanRecons.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/KalmanReconsIMU.cpp

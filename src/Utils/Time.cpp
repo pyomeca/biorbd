@@ -1,27 +1,23 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Time.h"
 
+biorbd::utils::Time::Time() :
+    m_time(std::vector<double>())
+{
+
+}
+
 biorbd::utils::Time::Time(
-        const double &timeStep,
-        const unsigned int &nbSteps)
+        double timeStep,
+        unsigned int nbSteps) :
+    m_time(std::vector<double>())
 {
     //ctor
-    m_nbSteps = nbSteps;
-    m_time = new double[nbSteps];
     for (unsigned int i=0; i<nbSteps; i++)
-        m_time[i] =  timeStep*i;
+        m_time.push_back(timeStep*i);
 }
 
-biorbd::utils::Time::~Time()
+double biorbd::utils::Time::time(unsigned int t)
 {
-    //dtor
-    delete[] m_time;
-}
-
-double biorbd::utils::Time::time(const unsigned int &t)
-{
-    if (t>=m_nbSteps)
-        return 0;
-    else
-        return m_time[t];
+    return m_time.at(t);
 }

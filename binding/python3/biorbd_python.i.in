@@ -19,7 +19,7 @@
 
 
 // --- biorbd::rigidbody::Joints --- //
-%typemap(typecheck) biorbd::rigidbody::Joints &{
+%typemap(typecheck, precedence=2005) biorbd::rigidbody::Joints &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__Joints,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_biorbd__rigidbody__Joints already exists
@@ -80,7 +80,7 @@
         return output;
     };
 }
-%typemap(typecheck) biorbd::utils::Vector &{
+%typemap(typecheck, precedence=2000) biorbd::utils::Vector &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Vector,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__Vector already exists
@@ -123,7 +123,7 @@
 };
 
 // --- GeneralizedCoordinates --- //
-%typemap(typecheck) biorbd::rigidbody::GeneralizedCoordinates &{
+%typemap(typecheck, precedence=2010) biorbd::rigidbody::GeneralizedCoordinates &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates already exists
@@ -166,7 +166,7 @@
 };
 
 // --- GeneralizedTorque --- //
-%typemap(typecheck) biorbd::rigidbody::GeneralizedTorque &{
+%typemap(typecheck, precedence=2010) biorbd::rigidbody::GeneralizedTorque &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedTorque,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_biorbd__rigidbody__GeneralizedTorque already exists
@@ -211,7 +211,7 @@
 
 
 // --- biorbd::rigidbody::Markers --- //
-%typemap(typecheck) biorbd::rigidbody::Markers &{
+%typemap(typecheck, precedence=2010) biorbd::rigidbody::Markers &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__Markers,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_biorbd__rigidbody__Markers already exists
@@ -233,7 +233,7 @@
 
 
 // --- Node --- //
-%typemap(typecheck) biorbd::utils::Node &{
+%typemap(typecheck, precedence=2010) biorbd::utils::Node3d &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Node,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__Node already exists
@@ -245,11 +245,11 @@
         $1 = false;
     }
 }
-%typemap(in) biorbd::utils::Node &{
+%typemap(in) biorbd::utils::Node3d &{
     void * argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Node,  0  | 0)) && argp1) {
         // Recast the pointer
-        $1 = reinterpret_cast< biorbd::utils::Node * >(argp1);
+        $1 = reinterpret_cast< biorbd::utils::Node3d * >(argp1);
     } else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
@@ -264,7 +264,7 @@
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
 
         // Copy the actual data
-        $1 = new biorbd::utils::Node();
+        $1 = new biorbd::utils::Node3d(0, 0, 0);
         for (unsigned int i=0; i<3; ++i)
             (*$1)[i] = *(double*)PyArray_GETPTR1(data, i);
 
@@ -273,7 +273,7 @@
         SWIG_fail;
     }
 };
-%extend biorbd::utils::Node{
+%extend biorbd::utils::Node3d{
     PyObject* get_array(){
         int nArraySize(1);
         npy_intp * arraySizes = new npy_intp[nArraySize];
@@ -291,7 +291,7 @@
 
 
 // --- Path --- //
-%typemap(typecheck) biorbd::utils::Path &{
+%typemap(typecheck, precedence=2000) biorbd::utils::Path &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Path,  0  | 0)) && argp1) {
         // Test if it is a pointer to Path already exists
@@ -317,7 +317,7 @@
     }
 };
 
-%extend biorbd::utils::Attitude{
+%extend biorbd::utils::RotoTrans{
     PyObject* get_array(){
         int nArraySize(2);
         npy_intp * arraySizes = new npy_intp[nArraySize];

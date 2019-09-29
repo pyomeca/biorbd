@@ -39,11 +39,11 @@ void Matlab_torqueActivation( int, mxArray *plhs[],
     // Trouver la dynamique inverse a cette configuration
     for (unsigned int j=0; j<Q.size(); ++j){
         // Calcul des couples
-        Eigen::VectorXd GeneralizedTorque(model->torque(*model, (*(act.begin()+j)), (*(Q.begin()+j)), (*(QDot.begin()+j))));
+        Eigen::VectorXd Tau(model->torque(act[j], Q[j], QDot[j]));
 
         // Remplir l'output
         for (unsigned int i=model->nbRoot(); i<nGeneralizedTorque; i++){
-            GeneralizedTorque[cmp] = GeneralizedTorque(i);
+            GeneralizedTorque[cmp] = Tau(i);
             ++cmp;
         }
     }

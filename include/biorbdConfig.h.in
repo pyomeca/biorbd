@@ -12,12 +12,19 @@
 //#  define BIORBD_API
 //#endif
 
+#ifdef _WIN32
+#define _ENABLE_EXTENDED_ALIGNED_STORAGE
+#endif
+
 #define BIORBD_API
 #cmakedefine IPOPT_FOUND
 
 // Choice of modules
 #cmakedefine MODULE_ACTUATORS
 #cmakedefine MODULE_MUSCLES
+
+// Options for tests
+#cmakedefine SKIP_LONG_TESTS
 
 #ifndef _WIN32
 #ifndef NAN

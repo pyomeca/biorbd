@@ -8,20 +8,8 @@ biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates()
 
 }
 
-biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(const GeneralizedCoordinates &Q):
+biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(const biorbd::rigidbody::GeneralizedCoordinates &Q) :
     biorbd::utils::Vector(Q)
-{
-
-}
-
-biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(const biorbd::utils::Vector &v) :
-    biorbd::utils::Vector(v)
-{
-
-}
-
-biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(const Eigen::VectorXd &v) :
-    biorbd::utils::Vector(v)
 {
 
 }
@@ -39,13 +27,4 @@ biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(const biorbd::
 biorbd::rigidbody::GeneralizedCoordinates::~GeneralizedCoordinates()
 {
 
-}
-
-biorbd::rigidbody::GeneralizedCoordinates& biorbd::rigidbody::GeneralizedCoordinates::operator=(const Eigen::VectorXd& vecX){
-    if (this==&vecX) // check for self-assigment
-        return *this;
-
-    this->block(0,0,this->rows(),1) = vecX;
-
-    return *this;
 }

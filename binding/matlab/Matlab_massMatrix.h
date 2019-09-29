@@ -30,10 +30,10 @@ void Matlab_massMatrix( int, mxArray *plhs[],
     unsigned int cmp(0);
     // Trouver la matrice de masse
     RigidBodyDynamics::Math::MatrixNd Mass(nQ, nQ);
-    for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it){
+    for (unsigned int j = 0; j<Q.size(); ++j){
         Mass.setZero();
-        RigidBodyDynamics::UpdateKinematicsCustom(*model, &(*Q_it), nullptr, nullptr);
-        RigidBodyDynamics::CompositeRigidBodyAlgorithm(*model, *Q_it, Mass, false);
+        model->UpdateKinematicsCustom(&Q[j], nullptr, nullptr);
+        RigidBodyDynamics::CompositeRigidBodyAlgorithm(*model, Q[j], Mass, false);
 
         // Remplir l'output
         for (unsigned int i=0; i<nQ*nQ; ++i)

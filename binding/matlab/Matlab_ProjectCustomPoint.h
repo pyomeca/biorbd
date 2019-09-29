@@ -30,7 +30,7 @@ void Matlab_ProjectCustomPoint( int, mxArray *plhs[],
     unsigned int nFrames(static_cast<unsigned int>(markersOverTime.size()));
     if (Qall.size()!=nFrames)
         mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "Q must have the same number of frames than markers");
-    int nMarker(static_cast<int>((*(markersOverTime.begin())).size()));
+    int nMarker(static_cast<int>(markersOverTime[0].size()));
 
     // Create a matrix for the return argument
     mwSize dims[3];
@@ -45,12 +45,11 @@ void Matlab_ProjectCustomPoint( int, mxArray *plhs[],
     for (unsigned int i=0; i<nFrames; ++i){
         biorbd::rigidbody::GeneralizedCoordinates Q(*(Qall.begin()+i));
         for (unsigned int j=0; j<static_cast<unsigned int>(nMarker); ++j){
-            biorbd::rigidbody::NodeBone m(*((*(markersOverTime.begin()+i)).begin()+j)  );
             biorbd::rigidbody::NodeBone tp;
             if (j==1)
-                tp = model->projectPoint(Q, m.position(), bodyIdx, axesToRemove, true);
+                tp = model->projectPoint(Q, markersOverTime[i][j], bodyIdx, axesToRemove, true);
             else
-                tp = model->projectPoint(Q, m.position(), bodyIdx, axesToRemove, false);
+                tp = model->projectPoint(Q, markersOverTime[i][j], bodyIdx, axesToRemove, false);
             Markers[cmp+0] = tp(0);
             Markers[cmp+1] = tp(1);
             Markers[cmp+2] = tp(2);

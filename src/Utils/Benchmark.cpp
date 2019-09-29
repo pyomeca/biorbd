@@ -1,14 +1,16 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Benchmark.h"
 
-biorbd::utils::Benchmark::Benchmark(){
+#include "Utils/Timer.h"
+#include "Utils/String.h"
 
-}
-
-biorbd::utils::Benchmark::~Benchmark()
+biorbd::utils::Benchmark::Benchmark() :
+    m_timers(std::map<biorbd::utils::String, biorbd::utils::Timer>()),
+    m_counts(std::map<biorbd::utils::String, int>())
 {
 
 }
+
 
 void biorbd::utils::Benchmark::startTimer(const biorbd::utils::String& s, bool force){
     if (force)
@@ -45,7 +47,7 @@ int biorbd::utils::Benchmark::getCount(const biorbd::utils::String& s){
 void biorbd::utils::Benchmark::wasteTime(double seconds){
     // Wait for seconds ask doing dummy stuff
 
-    std::clock_t start = std::clock();
+    std::clock_t start(std::clock());
 
     while (((static_cast<double>(std::clock() - start)) / CLOCKS_PER_SEC)<seconds)
     {

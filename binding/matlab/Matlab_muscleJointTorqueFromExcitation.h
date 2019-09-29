@@ -5,6 +5,8 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "Muscles/MuscleGroup.h"
+#include "Muscles/Muscle.h"
 
 void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
@@ -24,7 +26,7 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
     // Recevoir Qdot
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
     // Recevoir muscleStates
-    std::vector<std::vector<biorbd::muscles::StateDynamics>> s = getParameterMuscleStateExcitation(prhs,4,model->nbMuscleTotal());
+    std::vector<std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>> s = getParameterMuscleStateExcitation(prhs,4,model->nbMuscleTotal());
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));
@@ -62,22 +64,22 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
         unsigned int iMus = 0;
         for (unsigned int k=0; k<model->nbMuscleGroups(); ++k)
             for (unsigned int j=0; j<model->muscleGroup(k).nbMuscles(); ++j){
-                (*((*(s.begin()+i)).begin()+iMus)).timeDerivativeActivation(model->muscleGroup(k).muscle(j)->caract(),true);
+                s[i][iMus]->timeDerivativeActivation(model->muscleGroup(k).muscle(j).caract(),true);
                 ++iMus;
             }
 
         biorbd::rigidbody::GeneralizedTorque muscleTorque;
-        Eigen::VectorXd force;
+        biorbd::utils::Vector force;
         if (nlhs >= 2) // Si on doit récupérer les forces
             if (updateKin)
-                muscleTorque = model->muscularJointTorque(*model, *(s.begin()+i), force, updateKin, &(*(Q.begin()+i)), &(*(QDot.begin()+i)));
+                muscleTorque = model->muscularJointTorque(s[i], force, updateKin, &Q[i], &QDot[i]);
             else
-                muscleTorque = model->muscularJointTorque(*model, *(s.begin()+i), force, updateKin);
+                muscleTorque = model->muscularJointTorque(s[i], force, updateKin);
         else // Si non
             if (updateKin)
-                muscleTorque = model->muscularJointTorque(*model, *(s.begin()+i), updateKin, &(*(Q.begin()+i)), &(*(QDot.begin()+i)));
+                muscleTorque = model->muscularJointTorque(s[i], updateKin, &Q[i], &QDot[i]);
             else
-                muscleTorque = model->muscularJointTorque(*model, *(s.begin()+i), updateKin);
+                muscleTorque = model->muscularJointTorque(s[i], updateKin);
 
         // distribuer les GeneralizedTorque
         for (unsigned int j=0; j<nGeneralizedTorque; ++j){

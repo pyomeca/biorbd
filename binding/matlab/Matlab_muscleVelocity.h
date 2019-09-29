@@ -5,6 +5,8 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "Muscles/Muscle.h"
+#include "Muscles/MuscleGroup.h"
 
 void Matlab_muscleVelocity( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
@@ -41,7 +43,7 @@ void Matlab_muscleVelocity( int, mxArray *plhs[],
         for (unsigned int i=0; i<model->nbMuscleGroups(); ++i)
             for (unsigned int j=0; j<model->muscleGroup(i).nbMuscles(); ++j){
                 // Recueillir toutes les longueurs musculaire
-                length[cmp]   = model->muscleGroup(i).muscle(j)->velocity(*model,*(Q.begin()+iQ),*(Qdot.begin()+iQ),true);
+                length[cmp]   = model->muscleGroup(i).muscle(j).velocity(*model,Q[iQ],Qdot[iQ],true);
                 ++cmp;
             }
 

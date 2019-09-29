@@ -1,6 +1,7 @@
 #ifndef BIORBD_UTILS_TIMER_H
 #define BIORBD_UTILS_TIMER_H
 
+#include <memory>
 #include <ctime>
 #include "biorbdConfig.h"
 
@@ -11,7 +12,6 @@ class BIORBD_API Timer
 {
 public:
     Timer(bool startNow = false);
-    virtual ~Timer();
 
     void start(); // Start a timer
     bool isStarted();
