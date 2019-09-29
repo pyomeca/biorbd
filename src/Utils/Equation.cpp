@@ -42,9 +42,15 @@ biorbd::utils::Equation::Equation(const std::basic_string<char> &c) :
 
 }
 
-std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(biorbd::utils::Equation wholeEq, const std::map<biorbd::utils::Equation, double>& variables){
+std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(
+        biorbd::utils::Equation wholeEq,
+        const std::map<biorbd::utils::Equation, double>& variables)
+{
     // variable de sortie
     std::vector<biorbd::utils::Equation> eq;
+
+    // Remplacer les variables par un nombre
+    replaceVar(wholeEq, variables);
 
     // Déclaration des marqueurs arithmétiques
     const std::vector<biorbd::utils::Equation>& symbols(prepareMathSymbols());
@@ -120,37 +126,43 @@ std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(
     // Remplacer les constantes par un nombre
     replaceCste(eq);
 
-    // Remplacer les variables par un nombre
-    replaceVar(eq, variables);
-
     // Retourner l'équation
     return eq;
 }
 
-void biorbd::utils::Equation::replaceCste(std::vector<biorbd::utils::Equation> &eq){
+void biorbd::utils::Equation::replaceCste(
+        std::vector<biorbd::utils::Equation> &eq)
+{
     for (unsigned int i=0; i<eq.size(); ++i)
         if (!eq[i].tolower().compare("pi"))
             eq[i] = boost::lexical_cast< std::string>(PI);
 }
 
 void biorbd::utils::Equation::replaceVar(
-        std::vector<biorbd::utils::Equation> &eq,
-        const std::map<biorbd::utils::Equation, double>&var){
-    for (unsigned int i=0; i<eq.size(); ++i)
-        if (var.find(eq[i]) == var.end())
-            continue;
-        else
-            eq[i] = boost::lexical_cast< std::string>( var.find(eq[i])->second );
+        biorbd::utils::Equation &eq,
+        const std::map<biorbd::utils::Equation, double>& variables)
+{
+    for (auto var : variables)
+        while (eq.find(var.first) != std::string::npos){
+            size_t pos(eq.find(var.first));
+            size_t length(var.first.length());
+            eq = eq.substr(0, pos) + "(" +
+                    std::to_string(var.second) + ")" +
+                    eq.substr(pos + length);
+        }
 }
 
 
-double biorbd::utils::Equation::resolveEquation(std::vector<biorbd::utils::Equation> eq){
-    return resolveEquation(eq,0);
+double biorbd::utils::Equation::resolveEquation(
+        std::vector<biorbd::utils::Equation> wholeEq)
+{
+    return resolveEquation(wholeEq,0);
 }
 
 double biorbd::utils::Equation::resolveEquation(
         std::vector<biorbd::utils::Equation> eq,
-        unsigned int math){
+        unsigned int math)
+{
     // Si on a traité tout
     if (eq.size() == 1)
         return boost::lexical_cast<double>(eq[0]);
@@ -232,10 +244,15 @@ double biorbd::utils::Equation::resolveEquation(
         return resolveEquation(eq2, math);
 }
 
-double biorbd::utils::Equation::resolveEquation(biorbd::utils::Equation wholeEq, const std::map<biorbd::utils::Equation, double>& variables){
+double biorbd::utils::Equation::resolveEquation(
+        biorbd::utils::Equation wholeEq,
+        const std::map<biorbd::utils::Equation, double>& variables)
+{
     return resolveEquation(splitIntoEquation(wholeEq, variables));
 }
-double biorbd::utils::Equation::resolveEquation(biorbd::utils::Equation wholeEq){
+double biorbd::utils::Equation::resolveEquation(
+        biorbd::utils::Equation wholeEq)
+{
     std::map<biorbd::utils::Equation, double> dumb;
     return resolveEquation(splitIntoEquation(wholeEq, dumb));
 }
