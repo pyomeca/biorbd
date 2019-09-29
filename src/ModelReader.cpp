@@ -813,7 +813,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
         }
     } catch (std::runtime_error message) {
         biorbd::utils::String error_message("Reading of file \"" + path.filename() + "." + path.extension() + "\" failed with the following error:");
-        error_message += "\n" + biorbd::utils::String(message.what());
+        error_message += "\n" + biorbd::utils::String(message.what()) + "\n";
         if (name.compare(""))
             error_message += "Element: " + main_tag + ", named: " + name + "\n";
         if (property_tag.compare("") && property_tag.find_first_of("end") != 0)

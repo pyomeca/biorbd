@@ -78,26 +78,31 @@ std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(
         }
         else if (firstIdx == 0){
             if (!wholeEq(0).compare("-")){
-                // Si l'équation commencer par un -
+                // Si l'équation commencer par un "-"
                 std::vector<biorbd::utils::Equation> tp(splitIntoEquation(wholeEq.substr(1), variables));
-                tp[0] = "-" + tp[0];
-                if (eq.size()==0) // S'il n'y a rien avant, est faux dans les cas 1e-x
-                    return tp;
-                else{
+                if (eq.size() != 0 && !eq[eq.size()-1].compare("e") ){
+                    // special case of scientific notation (1e-x)
                     eq.push_back(wholeEq(0));
                     wholeEq = wholeEq.substr(1);
+                } else if (!tp[0].compare("(")) {
+                    // Resolve now the parenthese to apply the minus after
+                    size_t idx = wholeEq.find_first_of(")");
+                    biorbd::utils::Equation newWholeEq(wholeEq.substr(2, idx-2));
+                    double res(-1*resolveEquation(splitIntoEquation(newWholeEq, variables)));
+                    wholeEq = std::to_string(res) + wholeEq.substr(idx+1);
+                } else {
+                    tp[0] = "-" + tp[0];
+                    eq.insert(eq.end(), tp.begin(), tp.end());
+                    return eq;
                 }
             }
             else if (!wholeEq(0).compare("+")){
                 // Si l'équation commencer par un +
                 std::vector<biorbd::utils::Equation> tp(splitIntoEquation(wholeEq.substr(1), variables));
-                tp[0] = "+" + tp[0];
-                if (eq.size()==0) // S'il n'y a rien avant, est faux dans les cas 1e-x
-                    return tp;
-                else{
-                    eq.push_back(wholeEq(0));
-                    wholeEq = wholeEq.substr(1);
-                }
+                if (eq.size() != 0) // S'il n'y a rien avant, est faux dans les cas 1ex
+                    eq.push_back("+");
+                eq.insert(eq.end(), tp.begin(), tp.end());
+                return eq;
             }
             else{
                 eq.push_back(wholeEq(0));

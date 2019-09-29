@@ -120,7 +120,7 @@ bool biorbd::utils::IfStream::read(double& d, const std::map<biorbd::utils::Equa
     try {
         d = biorbd::utils::Equation::resolveEquation(tp, variables);
     } catch (boost::bad_lexical_cast) {
-        biorbd::utils::Error::raise("The following expression cannot be parsed properly: " + tp);
+        biorbd::utils::Error::raise("The following expression cannot be parsed properly: \"" + tp + "\"");
     }
     return out;
 }

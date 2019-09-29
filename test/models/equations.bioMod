@@ -3,45 +3,46 @@ version 4
 // This is a model test to see if equations works properly
 // The mesh are used to hold that information. The x coordinate uses an equation
 // The y coordinate is the expected value for this coordinate.
+// Each answer is unique so it is easier to find which one is problematic
+// if needed
 
     // Segment
     segment base
-        mesh 2*-2 -4 0
-    
-    
         // Plus and minus
-        mesh 1+1 2 0
-        mesh -2+1 -1 0
-        mesh 2-1 1 0
-        mesh 1-2 -1 0
-        mesh -2-1 -3 0
+        mesh 100+100         200          0
+        mesh -200+1         -199          0
+        mesh 200-1           199          0
+        mesh 2-200          -198          0
+        mesh -200-1         -201          0
 
         // Multiplications
-        mesh 2*2 4 0
-        mesh -2*2 -4 0
-        mesh 2*-2 -4 0
+        mesh 20*2            40           0
+        mesh -22*2          -44           0
+        mesh 20*-3          -60           0
         
         // Division
-        mesh 4/2 2 0
-        mesh -4/2 -2 0
-        mesh 4/-2 -2 0
+        mesh 40/2            20           0
+        mesh -40/2          -20           0
+        mesh 80/-2          -40           0
         
         // Parentheses and order of operation
-        mesh 2+2*3 8 0
-        mesh (2+2)*3 12 0
-        mesh 4+4/2 6 0
-        mesh (4+4)/2 4 0
-        mesh -(1)+2 1 0
-        mesh (-1)+2 1 0
-        mesh 2+((2+3)*3)*2 32 0
-        mesh 2+(2+3*3)*2 24 0
-        mesh 2+2+3*3*2 22 0
+        mesh 2+2*3           8            0
+        mesh (2+2)*3        12            0
+        mesh 4+4/2           6            0
+        mesh (4+4)/2         4            0
+        mesh -(1)+4          3            0
+        mesh 5-(-2)          7            0
+        mesh (-1)+3          2            0
+        mesh 2+((2+3)*3)*2  32            0
+        mesh 2+(2+3*3)*2    24            0
+        mesh 2+2+3*3*2      22            0
         
         // scientific notation
-        mesh 1e1 1 0
-        mesh 1e2 10 0
-        mesh 1e-1 0.1 0
-        mesh 1e-2 0.01 0
-        // mesh 1e-10 0.0000000001 0
+        mesh 1e0             1            0
+        mesh 1e2           100            0
+        mesh 1e10  10000000000            0
+        mesh 1e-1            0.1          0
+        mesh 1e-2            0.01         0
+        mesh 1e-10           0.0000000001 0
     endsegment
 
