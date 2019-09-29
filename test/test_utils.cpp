@@ -169,11 +169,10 @@ TEST(Node3d, rotate)
     EXPECT_NEAR(nodeRot[2], 6.698557158514987, requiredPrecision);
 
     biorbd::utils::Node3d nodeTrans(node.DeepCopy());
-    nodeTrans.applyRT( biorbd::utils::RotoTrans(Eigen::Vector3d(0, 0, 0), Eigen::Vector3d(2, 2, 2), "zxy") );
+    nodeTrans.applyRT( biorbd::utils::RotoTrans(Eigen::Vector3d(0, 0, 0), Eigen::Vector3d(2, 2, 2), "xyz") );
     EXPECT_NEAR(nodeTrans[0], node[0] + trans, requiredPrecision);
     EXPECT_NEAR(nodeTrans[1], node[1] + trans, requiredPrecision);
     EXPECT_NEAR(nodeTrans[2], node[2] + trans, requiredPrecision);
-
 }
 
 TEST(Node3d, Copy){
