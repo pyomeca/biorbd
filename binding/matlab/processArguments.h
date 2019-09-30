@@ -87,7 +87,7 @@ std::vector<std::vector<biorbd::rigidbody::NodeBone>> getParameterAllMarkers(con
     // Retourner la matrice
     return markersOverTime;
 }
-std::vector<std::vector<biorbd::utils::RotoTrans>> getParameterAllIMUs(const mxArray*prhs[], unsigned int idx){
+std::vector<std::vector<biorbd::rigidbody::IMU>> getParameterAllIMUs(const mxArray*prhs[], unsigned int idx){
     // Check data type of input argument
     if (!(mxIsDouble(prhs[idx]))) {
         std::ostringstream msg;
@@ -132,11 +132,11 @@ std::vector<std::vector<biorbd::utils::RotoTrans>> getParameterAllIMUs(const mxA
     double *imus = mxGetPr(prhs[idx]);
 
     // Créer la sortie
-    std::vector<std::vector<biorbd::utils::RotoTrans>> imuOverTime;
+    std::vector<std::vector<biorbd::rigidbody::IMU>> imuOverTime;
 
     // Stocker les valeurs dans le format de sortie
     for (unsigned int i=0; i<nFrames; ++i){
-        std::vector<biorbd::utils::RotoTrans> imus_tp; // IMUs a un temps i
+        std::vector<biorbd::rigidbody::IMU> imus_tp; // IMUs a un temps i
         for (unsigned int j=0; j<nIMUs; ++j){
             Eigen::Matrix3d rot;
             Eigen::Vector3d trans;
