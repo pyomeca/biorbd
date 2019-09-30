@@ -18,7 +18,8 @@ int main()
 #else
 int main()
 {
-    // Anything you want to quickly test can be tested here assuming you uncommented the #define BUILD_SANDBOX line at the beggining of the file
+    // Anything you want to quickly test can be tested here assuming that you
+    // uncommented the "#define BUILD_SANDBOX" line at the beginning of the file
     return 0;
 }
 #endif
