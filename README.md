@@ -10,7 +10,7 @@ So, without further ado, let's begin our investigation of BIORBD!
 There are two main ways to install BIORBD on your computer: installing the binaries from Anaconda (easiest, but limited to C++ and Python3) or compiling the source code yourself (more versatile and up to date; for C++, Python3 and MATLAB).
 
 ## Anaconda (For Windows, Linux and Mac)
-The easiest way to install BIORBD is to download the binaries from anaconda (https://anaconda.org/) repositories (binaries are not available though for MATLAB). The project is hosted on the conda-forge channel (https://anaconda.org/conda-forge/biorbd).
+The easiest way to install BIORBD is to download the binaries from Anaconda (https://anaconda.org/) repositories (binaries are not available though for MATLAB). The project is hosted on the conda-forge channel (https://anaconda.org/conda-forge/biorbd).
 
 After having installed properly an anaconda client [my suggestion would be Miniconda (https://conda.io/miniconda.html)] and loaded the desired environment to install BIORBD in, just type the following command:
 ```bash
@@ -19,52 +19,53 @@ conda install -c conda-forge biorbd
 The binaries and includes of the core of BIORBD will be installed in `bin` and `include` folders of the environment respectively. Moreover, the Python3 binder will also be installed in the environment.
 
 ## Compiling (For Windows, Linux and Mac)
-The main drawback with downloading the pre-compiled version from Anaconda is that this version may be out-of-date (even if I do my best to keep the release version up-to-date). Moreover, since it is already compiled, it doesn't allow you to modify BIORBD if you need to. Therefore, a more versatile way to enjoy BIORBD is to compile it by yourself.
+The main drawback with downloading the pre-compiled version from Anaconda is that this version may be out-of-date (even if I do my best to keep the release versions up-to-date). Moreover, since it is already compiled, it doesn't allow you to modify BIORBD if you need to. Therefore, a more versatile way to enjoy BIORBD is to compile it by yourself.
 
 ### Dependencies
-BIORBD relies on several libraries that one must install from himself before compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda. Therefore the following command should install everything you need to compile BIORBD:
+BIORBD relies on several libraries (namely Boost (https://www.boost.org/), eigen (http://eigen.tuxfamily.org), dlib (http://dlib.net/), rbdl (https://rbdl.bitbucket.io/) and Ipopt (https://github.com/coin-or/Ipopt)) that one must install prior to compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda. Therefore the following command will install everything you need to compile BIORBD:
 ```bash
 conda install -c conda-forge boost eigen dlib-cpp rbdl ipopt
 ```
-Please note that ```ipopt``` is optional, but required for the *Static optimization* module. 
+Please note that ```ipopt``` is optional, but is required for the *Static optimization* module. 
 
-Additionnally, for the Python3 interface requires *numpy* (https://numpy.org/) and *SWIG* (http://www.swig.org/). One could easily install these dependencies from Anaconda using the following command:
+Additionnally, for the Python3 interface requires *numpy* (https://numpy.org/) and *SWIG* (http://www.swig.org/). Again, one can easily install these dependencies from Anaconda using the following command:
 ```bash
 conda install -c conda-forge numpy swig
 ```
-or directly from their respective websites. 
 
-Finally, the MATLAB interface requires MATLAB to be installed.
+Finally, the MATLAB interface (indeed) requires MATLAB to be installed.
+
+If ones is interested in developping BIORBD, the ```googletest``` suite is required to test your modifications. Fortunately, the CMake should download and compile the test suite for you!
 
 ### CMake
-BIORBD comes in the form of a CMake (https://cmake.org/) project. If you don't know how to use CMake, you will find many examples on Internet. The main variables to set are:
+BIORBD comes with a CMake (https://cmake.org/) project. If you don't know how to use CMake, you will find many examples on Internet. The main variables to set are:
 
 > `CMAKE_INSTALL_PREFIX` Which is the `path/to/install` BIORBD in. If you compile the Python3 binder, a valid installation of Python with Numpy should be installed relatived to this path.
 >
-> `BUILD_SHARED_LIBS` If you wan to build BIORBD in a shared `TRUE` or static `FALSE` library manner. Default is `TRUE`.
+> `BUILD_SHARED_LIBS` If you wan to build BIORBD in a shared `TRUE` or static `FALSE` library manner. Default is `TRUE`. Please note that due to the dependencies, on Windows BIORBD must be statically built.
 >
-> `CMAKE_BUILD_TYPE` Which type of build you want. Options are `Debug`, `RelWithDebInfo`, `MinSizeRel` or `Release`. This is relevant only for the build done using the `make` command. Please note that you may experience a slow BIORBD library if you compile it without any optimization (i.e. `Debug`) especially on Windows. 
+> `CMAKE_BUILD_TYPE` Which type of build you want. Options are `Debug`, `RelWithDebInfo`, `MinSizeRel` or `Release`. This is relevant only for the build done using the `make` command. Please note that you will experience a slow BIORBD library if you compile it without any optimization (i.e. `Debug`), especially for all functions that requires linear algebra. 
 >
 > `BUILD_EXAMPLE` If you want (`TRUE`) or not (`FALSE`) to build the C++ example. Default is `TRUE`.
 >
-> `BUILD_TESTS` If you want (`ON`) or not (`OFF`) to build the tests of the project. Please note that this will download gtest (https://github.com/google/googletest). Default is `OFF`.
+> `BUILD_TESTS` If you want (`ON`) or not (`OFF`) to build the tests of the project. Please note that this will automatically download gtest (https://github.com/google/googletest). Default is `OFF`.
 >
 > `BUILD_DOC` If you want (`ON`) or not (`OFF`) to build the documentation of the project. Default is `OFF`.
 >
 > `BINDER_PYTHON3` If you want (`ON`) or not (`OFF`) to build the Python binder. Default is `OFF`.
 >
-> `Python3_EXECUTABLE`  If `BINDER_PYTHON3` is set to `ON` then this variable should point to the Python executable. This python should have *SWIG* and *Numpy* installed with it. This variable should be found automatically, but anaconda seems to find the base prior to the actual environment, so one should gives attention to that particular variable.
+> `Python3_EXECUTABLE`  If `BINDER_PYTHON3` is set to `ON` then this variable should point to the Python executable. This python should have *SWIG* and *Numpy* installed with it. This variable should be found automatically, but Anaconda finds the base prior to the actual environment, so one should gives attention to that particular variable.
 >
-> `SWIG_EXECUTABLE`  If `BINDER_PYTHON3` is set to `ON` then this variable should point to the SWIG executable. This variable should be found automatically.
+> `SWIG_EXECUTABLE`  If `BINDER_PYTHON3` is set to `ON` then this variable should point to the SWIG executable. This variable will be found automatically if `Python3_EXECUTABLE` is properly set.
 >
 > `BINDER_MATLAB` If you want (`ON`) or not (`OFF`) to build the MATLAB binder. Default is `OFF`.
 >
 > `MATLAB_ROOT_DIR` If `BINDER_MATLAB` is set to `ON` then this variable should point to the root path of MATLAB directory. Please note that the MATLAB binder is based on MATLAB R2018a API and won't compile on earlier versions. This variable should be found automatically, except on Mac where the value should manually be set to the MATLAB in the App folder.
 >
-> `MATLAB_biorbd_INSTALL_DIR` If `BINDER_MATLAB` is set to `ON` then this variable should point to the path where you want to install BIORBD. Typically, this is {MY DOCUMENTS}/MATLAB. The default value is the toolbox folder of MATLAB. Please note that if you leave the default value, you will probably need to grant administrator rights to the installer. 
+> `MATLAB_biorbd_INSTALL_DIR` If `BINDER_MATLAB` is set to `ON` then this variable should point to the path where you want to install BIORBD. Typically, this is `{MY DOCUMENTS}/MATLAB`. The default value is the toolbox folder of MATLAB. Please note that if you leave the default value, you will probably need to grant administrator rights to the installer. 
 
 # How to use
-BIORBD provides as much as possible explicit names for the filter so one can intuitively find what he wants from the library. Still, this is a C++ library and it can be sometimes hard to find what ones need. Due to the varity of functions implemented in the library, minimal examples are shown here. One is encourage to have a look at the `example` and `test` folders to get a better overview of the possibility of the API. For an in-depth detail of the API, the Doxygen documentation (to come) is the way to go.
+BIORBD provides as much as possible explicit names for the filter so one can intuitively find what he wants from the library. Still, this is a C++ library and it can be sometimes hard to find what you need. Due to the varity of functions implemented in the library, minimal examples are shown here. One is encourage to have a look at the `example` and `test` folders to get a better overview of the possibility of the API. For an in-depth detail of the API, the Doxygen documentation (to come) is the way to go.
 
 ## The C++ API
 The core code is written in C++, meaning that you can fully use BIORBD from C++.  Moreover, the linear algebra is using the Eigen library which makes it fairly easy to perform further computation and analyses.
@@ -73,316 +74,237 @@ The informations that follows is a basic guide that should allow you to perform 
 ### Create an empty yet valid model
 To create a new valid yet empty model, just call the `biorbd::Model` class without parameter.
 ```C++
-biorbd::Model myModel;
-```
-This model must thereafter being populated using the *biorbd* add methods. Even if this is not the prefered way of creating/loading a model, one can have a look at the *src/ModelReader.cpp* in order to know what functions that must be called to populate the model manually. 
-
-### Read a bioMod file
-The prefered method to load a model is to read the in-house bioMod format file.  read a C3D file you simply have to call the `c3d` class with a path
-```C++
-ezc3d::c3d c3d("path_to_c3d.c3d");
-```
-Please note that on Windows, the path must be `/` or `\\` separated, for obvious reasons. 
-
-### Write a C3D
-A `c3d` class is able to write itself to a file using the method `write`
-```C++
-ezc3d::c3d c3d;
-c3d.write("path_to_c3d.c3d")
-```
-
-### Navigating through the C3D class
-The C3D class mimics the C3D structures as defined by the standard, that is separated into a `header`, a `parameters` and a `data` class. You can get a const-reference to these classes by simply calling their names (see below for more specific examples)
-
-#### Get a value from the header 
-To retrieve some information from the header, just call the `header` class and then the specific information you are interested in. If for example, you want to get the frame rate of the cameras, you should do as follow:
-```C++
-ezc3d::c3d c3d("path_to_c3d.c3d");
-float pointRate(c3d.header().frameRate());
-```
-Please note that the names mimics those used by the C3D format as described by the c3d.org documentation. For more information on what you can get from the header, please refer to the documentation on [header](https://pyomeca.github.io/Documentation/ezc3d/classezc3d_1_1Header.html).
-
-#### Set a value to the header
-It is not possible from outside to add, remove or even modify the header directly. The reason for that is that the header has a very specific formatting to be compliant to the standard. Therefore, the header will update itself if needed when the parameters class is modify. If it doesn't this is a bug that should be reported. 
-
-#### Get a parameter
-Parameters in C3D are arranged in a GROUP:PAMETER manner and the classes in EZC3D mimic this arrangement. Therefore a particular parameter always stands inside of a group. For example, if you are interested in the labels of the points, you can navigate up to the POINT group and then to the LABELS parameter. 
-```C++
-ezc3d::c3d c3d;
-std::vector<std::string> point_labels(c3d.parameters().group("POINT").parameter("LABELS").valuesAsString());
-for (size_t m = 0; m < point_labels.size(); ++m){
-  std::cout << point_labels[m] << std::endl;
+#include "biorbd.h"
+int main()
+{
+    biorbd::Model myModel;
 }
 ```
-For more information on what you can get from the parameters, please refer to the documentation on [parameters](https://pyomeca.github.io/Documentation/ezc3d/classezc3d_1_1ParametersNS_1_1Parameters.html).
+This model can thereafter be populated using the *biorbd* add methods. Even if this is not the prefered way of loading a model, one can have a look at the *src/ModelReader.cpp* in order to know what functions that must be called to populate the model manually. 
 
-#### Set a parameter 
-To set a parameter into a group, you must call the accessor method provided into the `c3d` class. The first parameter of the function is the name of the group to set the new parameter in, and the second parameter of the function is the actual parameter to set.
+### Read and write a bioMod file
+The prefered method to load a model is to read the in-house *.bioMod* format file.  To do so, one must simply call the `biorbd::Model` constructur with a valid path to the model. Afterward, one can modify manually the model and write it back to a new file. 
 ```C++
-ezc3d::c3d c3d;
-ezc3d::ParametersNS::GroupNS::Parameter param("name_of_my_new_parameter"); // Create a new parameter
-param.set(2.0); // Give a value to the parameter
-c3d.parameter("GroupName", param); // Add the parameter to the c3d structure
-```
-Please note that if this parameter already exist in the group named "GroupName", then this parameter is replaced by the new one. Otherwise, if it doesn't exist or the group doesn't exist, then it is added to the group or the group is created then the parameter is added. For more information on how to set a new parameter from `c3d` accessors methods, please refer to the documentation on [c3d](https://pyomeca.github.io/Documentation/ezc3d/classezc3d_1_1c3d.html).
-
-#### Get data
-Point and analogous data are the core of the C3D file. To understand the structure though it is essential to understand that everything is based on points. For example, the base frame rate the point frame rate, while the analogous data is based on the number of data per point frame. Therefore to get a particular point in time, you must get the data at a certain frame and specify which point you are interested in, while to get a particular analogous data you must also specify the subframe.
-```C++
-ezc3d::c3d c3d("path_to_c3d.c3d");
-ezc3d::DataNS::Points3dNS::Point pt(new_c3d.c3d.data().frame(f).points().point(0));
-pt.print();
-ezc3d::DataNS::AnalogsNS::Channel channel(new_c3d.c3d.data().frame(0).analogs().subframe(0).channel("channel1"));
-channel.print();
-```
-For more information on what you can get from the points, please refer to the documentation on [points](https://pyomeca.github.io/Documentation/ezc3d/classezc3d_1_1DataNS_1_1Points3dNS_1_1Points.html) or [analogs](https://pyomeca.github.io/Documentation/ezc3d/classezc3d_1_1DataNS_1_1AnalogsNS_1_1Analogs.html).
-
-#### Set data 
-There are two ways to add data to the data set. 
-
-##### Using the c3d accessor
-The first and prefered way is to add a frame via the accessors method of the class `c3d`. The parameter to send is the filled frame to add/replace to the data structure. 
-Please note that the points and channel must have been declare to the parameters before adding them to the data set. This is so the whole c3d structure is properly harmonized. 
-Please also note, for the same reason, that POINT:RATE and ANALOG:RATE must have been declared before adding points and analogs. 
-Here is a full example that creates a new C3D, add points and analogs and print it to the console. 
-```C++
-// Create an empyt c3d
-ezc3d::c3d c3d_empty;
-
-// Declare rates
-ezc3d::ParametersNS::GroupNS::Parameter pointRate("RATE");
-pointRate.set(std::vector<float>() = {100}, {1});
-c3d_empty.parameter("POINT", pointRate);
-
-ezc3d::ParametersNS::GroupNS::Parameter analogRate("RATE");
-analogRate.set(std::vector<float>() = {1000}, {1});
-c3d_empty.parameter("ANALOG", analogRate);
-
-// Declare the points and channels to the c3d
-c3d_empty.point("new_marker1"); // Add empty
-c3d_empty.point("new_marker2"); // Add empty
-c3d_empty.analog("new_analog1"); // add the empty
-c3d_empty.analog("new_analog2"); // add the empty
-
-// Fill them with some random values
-ezc3d::DataNS::Frame f;
-std::vector<std::string>labels(c3d_empty.parameters().group("POINT").parameter("LABELS").valuesAsString());
-int nPoints(c3d_empty.parameters().group("POINT").parameter("USED").valuesAsInt()[0]);
-ezc3d::DataNS::Points3dNS::Points pts;
-for (size_t i=0; i<static_cast<size_t>(nPoints); ++i){
-    ezc3d::DataNS::Points3dNS::Point pt;
-    pt.name(labels[i]);
-    pt.x(1.0);
-    pt.y(2.0);
-    pt.z(3.0);
-    pts.point(pt);
+#include "biorbd.h"
+int main()
+{
+    biorbd::Model myModel myModel("path/to/mymodel.bioMod");
+    // Do some changes...
+    biorbd::Writer::writeModel(myModel, "path/to/newFile.bioMod");
+    return 0;
 }
-ezc3d::DataNS::AnalogsNS::Analogs analog;
-ezc3d::DataNS::AnalogsNS::SubFrame subframe;
-for (size_t i=0; i < c3d_empty.header().nbAnalogs(); ++i){
-    ezc3d::DataNS::AnalogsNS::Channel c;
-    c.data(i+1);
-    subframe.channel(c);
-}
-for (size_t i=0; i < c3d_empty.header().nbAnalogByFrame(); ++i)
-    analog.subframe(subframe);
+```
+Please note that on Windows, the path must be `/` or `\\` separated (and not only`\`), for obvious reasons. 
+
+### Perform some analyses
+BIORBD is made to work with the RBDL functions (the doc can be found here https://rbdl.bitbucket.io/). Therefore, every functions available in RBDL is also available on BIORBD. Additionnal are of course also made available, for example the whole muscle module. 
+
+The most obvious and probably the most used function is the forward kinematics, where one knows the configuration of the body and is interested in the resulting position of skin markers. The following code performs that task.
+```C++
+#include "biorbd.h"
+int main()
+{
+    // Load the model
+    biorbd::Model model("path/to/model.bioMod");
     
-// add them to the data set
-f.add(pts, analog);
-c3d_empty.frame(f);
-c3d_empty.frame(f); // Why not adding a second frame?
-
-// Print them to the console
-c3d_empty.print();
-```
-For more information on how to set data from `c3d` accessors methods, please refer to the documentation on [c3d](https://pyomeca.github.io/Documentation/ezc3d/classezc3d_1_1c3d.html).
-
-##### Using the nonConst reference
-The second method is more designed for internal purpose. However, you may find yourself in situation where the normal method is just to long or restrictive for what you want to do. Then you can access directly the data via a nonConst reference. For example, you can add channels that way:
-```C++
-// Add a new analog to the c3d (one filled with zeros, the other one with data)
-ezc3d::c3d c3d;
-
-// Add a analog rate
-ezc3d::ParametersNS::GroupNS::Parameter analog_rate("RATE");
-analog_rate.set(1000.0);
-c3d.parameter("ANALOG", analog_rate);
-
-c3d.analog("new_analog1"); // Declare an empty channel (Note the name will be overriden)
-std::vector<ezc3d::DataNS::Frame> frames_analog;
-ezc3d::DataNS::Frame frame;
-// Fill the frame
-for (size_t sf = 0; sf < c3d.header().nbAnalogByFrame(); ++sf){
-    ezc3d::DataNS::AnalogsNS::Channel newChannel("new_analogs2");
-    newChannel.data(sf+1);
-    ezc3d::DataNS::AnalogsNS::SubFrame subframes_analog;
-    subframes_analog.channel(newChannel);
-    frame.analogs_nonConst().subframe(subframes_analog); // The non-const reference makes it easier to add the subframe
+    // Prepare the model
+    biorbd::rigidbody::GeneralizedCoordinates Q(model); 
+    Q.setOnes()/10; // Set the model position
+    
+    // Perform forward kinematics
+    std::vector<biorbd::rigidbody::NodeBone> markers(model.markers(Q));
+    
+    // Print the results
+    for (auto marker : markers)
+        std::cout << marker.name() << " is at the coordinates: " << marker.transpose() << std::endl;
+    return 0;
 }
-c3d.frame(frame);
-
-// Print it
-c3d.print();
 ```
-Please note that this method by-passes some protection and may create invalid C3D if not used properly.
+
+Another common analysis to perform is to compute the effect of the muscles on the acceleration of the model. Assuming that the model that is loaded has muscles, the following code perform this task.
+```C++
+#include "biorbd.h"
+int main()
+{
+    // Load the model
+    biorbd::Model model("path/to/model.bioMod");
+    
+    // Prepare the model
+    biorbd::rigidbody::GeneralizedCoordinates Q(model), Qdot(model); // position, velocity
+    Q.setOnes()/10; // Set the model position
+    Qdot.setOnes()/10; // Set the model velocity
+    // Muscles activations
+    std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> states(model.nbMuscleTotal());
+    for (auto& state : states){
+        state = std::make_shared<biorbd::muscles::StateDynamics>();
+        state->setActivation(0.5); // Set the muscle activation
+    }
+
+    // Compute the joint torques based on muscle
+    biorbd::rigidbody::GeneralizedTorque muscleTorque(
+                model.muscularJointTorque(states, true, &Q, &Qdot));
+
+    // Compute the acceleration of the model due to these torques
+    biorbd::rigidbody::GeneralizedCoordinates Qddot(model);
+    RigidBodyDynamics::ForwardDynamics(model, Q, Qdot, muscleTorque, Qddot);
+
+    // Print the results
+    std::cout << " The joints accelerations are: " << Qddot.transpose() << std::endl;
+    return 0;
+}
+```
+
+There are many other analyses and filters that are available. Please refer to the BIORBD and RBDL Docs to see what is available. 
 
 ## MATLAB
-MATLAB (https://www.mathworks.com/) is a prototyping langage largely used in industry and faily used by the biomecanical scientific community. Despite the growing popularity of Python as a free and open-source alternative or Octave as a very similar langage open-source, MATLAB remains an important player. Therefore EZC3D comes with a binder for MATLAB.
+MATLAB (https://www.mathworks.com/) is a prototyping langage largely used in industry and faily used by the biomechanical scientific community. Despite the existance of Octave as an open-source and very similar langage or the growing popularity of Python as a free and open-source alternative, MATLAB remains an important player as a programming languages. Therefore BIORBD comes with a binder for MATLAB (that can theoretically used with Octave as well with some minor changes to the CMakeLists.txt file).
 
-MATLAB stands for Matrix laboratory. As the name suggest, it is mainly used to perform operation on matrix. With that in mind, the binder was written to organize the point so it is easy to perform matrix multiplication on them. Hence, EZC3D works on MATLAB structure that separate the `header`, the `parameter` and the `data`. Into the `header` structure, you will find information on the `points`, the `analogs` and the `events`. Into the `parameter`, you will find all the groups and parameters as they appear in the C3D file. Finally, in the `data`, there is the `points` values organized into a 3d hypermatrix (XYZ x N_POINTS x N_FRAMES) and the `analogs` values organized into a 2d matrix (N_FRAMES x N_CHANNELS).
+Most of the functions available in C++ are also available in MATLAB. Still, they were manually binded, therefore it may happen that some important one (for you) are not there. If so, do not hesitate to open an issue on GitHub to required the add of that particular function. The philosophy behind the MATLAB binder is that you open a particular model and a reference to that model is gave back to you. Thereafter, the functions can be called, assuming the pass back that model reference. That implies, however, that ones must himself deallocate the memory of the model when it is no more needed. Failing to do so results in an certain memory leak.
 
-### Create an empty yet valid C3D structure
-To create a new valid yet empty C3D, just call the `ezc3dRead` without any argument. 
+### Perform some analyses
+Please find here the same tasks previously described for the C++ interface done in the MATLAB interface. Notice that the MATLAB interface takes advantage of the matrix nature of MATLAB and therefore can usually perform the analyses on multiple frames at once. 
+
+Forward kinematics can be performed as follow
 ```MATLAB
-c3d = ezc3dRead();
-disp(c3d.parameter.POINT.USED); % Print the number of points used
+nFrames = 10; % Set the number of frames to simulate
+
+% Load the model
+model = biorbd('new', 'path/to/model.bioMod');
+
+% Prepare the model
+Q = ones(biorbd('nQ', model), nFrames)/10; % Set the model position
+
+% Perform the forward kinematics
+markers = biorbd('markers', model, Q);
+
+% Print the results
+disp(markers);
+
+% Deallocate the model
+biorbd('delete', model);
 ```
 
-### Read a C3D
-To read a C3D file you simply to call the `ezc3dRead` with the path to c3d as the first argument.
+The joint accelerations from muscle activations can be performed as follow
 ```MATLAB
-c3d = ezc3dRead('path_to_c3d.c3d');
-disp(c3d.parameter.POINT.USED); % Print the number of points used
+nFrames = 10; % Set the number of frames to simulate
+
+% Load the model
+model = biorbd('new', 'path/to/model.bioMod');
+
+% Prepare the model
+Q = ones(biorbd('nQ', model), nFrames)/10; % Set the model position
+Qdot = ones(biorbd('nQdot', model), nFrames)/10; % Set the model velocity
+activations = ones(biorbd('nMuscles', model), nFrames)/2; % Set muscles activations
+
+% Compute the joint torques based on muscle
+jointTorque = biorbd('jointTorqueFromActivation', model, activations, Q, Qdot);
+
+% Compute the acceleration of the model due to these torques
+Qddot = biorbd('forwardDynamics', model, Q, Qdot, jointTorque);
+
+% Print the results
+disp(Qddot);
+
+% Deallocate the model
+biorbd('delete', model);
 ```
 
-### Write a C3D
-To write a C3D to a file, you must call the `ezc3dWrite` function. This function waits for the path of the C3D to write and a valid structure. Please note that the header is actually ignore since it is fully constructed from required parameters. Hence, a valid structure may omit the header. Still, for simplicity, it is easier to send a structure created via the `ezc3dRead` function.
+### Help
+One can print all the available functions by type the `help` command
 ```MATLAB
-% Create a valid structure to work on
-c3d = ezc3dRead();
-
-% Add a point to the structure. 
-c3d.parameter.POINT.RATE = 100;
-c3d.parameter.POINT.USED = c3d.parameter.POINT.USED + 1;
-c3d.parameter.POINT.LABELS = [c3d.parameter.POINT.LABELS, 'NewMarkerName'];
-c3d.data.points = rand(3,1,100);
-
-% Write the C3D
-ezc3dWrite('path_to_c3d.c3d', c3d);
+biorbd('help')
 ```
+Please note that it seems that on Windows, the command returns nothing. One must therefore look in the source code (`biorbd/binding/matlab/Matlab_help.h`) what should the command have returned.
+
+
 ## Python 3
-Python (https://www.python.org/) is a scripting langage that has taken more and more importance over the past years. So much that now it is one of the prefered langage of the scientific community. It simplicity yet its large power perform a large variety of tasks makes it almost a certainty that its popularity won't decrease for the next years.
+Python (https://www.python.org/) is a scripting langage that has taken more and more importance over the past years. So much that now it is one of the prefered langage of the scientific community. Its simplicity yet its large power to perform a large variety of tasks makes it a certainty that its popularity won't decrease for the next years.
 
-To interface the C++ code with Python, SWIG is a great tool. It creates very efficiently an interface in the target langage with minimal code to write. However, the resulting code in the target langage is far from being easy to use. Actually, it gives a mixed-API not far from the original C++ langage. When this is useful to rapidly create the interface, it lacks of user-friendlyness. EZC3D interface the C++ code using SWIG, but add a more pythonic layer on top of it. This top layer is not mandatory for the user (it is possible to call directly the SWIG interface via `ezc3d.ezc3d` instead of `ezc3d.c3d`), but the time lost to organized the data into a dictionary is insignificant compared to the ease of use this interface provides. I therefore strongly suggest to used this python interface. 
+To interface the C++ code with Python, SWIG is a great tool. It creates very rapidly an interface in the target langage with minimal code to write. However, the resulting code in the target language can be far from being easy to use. In effect, it gives a mixed-API not far from the original C++ language, which may not comply to best practises of the target language. When this is useful to rapidly create an interface, it sometime lacks of user-friendlyness and expose the user to the possibility of the C++ such as segmentation fault (unlike the MATLAB API which won't suffer from this devil problem). 
 
-Please note, to navigate the c3d struture provided by the interface, the easiest way is to use the `keys()` method since this is a dictionary. 
+BIORBD interfaces the C++ code using SWIG. While it has some inherent limit as discussed previously, it has the great advantage of providing almost for free the complete API. Because of that, much more of the C++ API is interfaced in Python than the MATLAB one. Again, if for some reason, part of the code which is not accessible yet is important for you, don't hesitate to open an issus asking for that particular feature!
 
-### Create an empty yet valid C3D structure
-To create a new valid yet empty C3D, just call the `ezc3d.c3d()` method without any argument. 
-```python3
-from ezc3d import c3d
-c = c3d()
-print(c['parameters']['POINT']['USED']['value'][0]);  # Print the number of points used
-```
+### Perform some analyses
+Please find here the same tasks previously described for the C++ interface done in the Python3 interface. Please note that the interface usually takes advantage of the numpy arrays in order to interact with the user while a vector is needed. 
 
-### Read a C3D
-To read a C3D file you simply to call the `ezc3d.c3d()` with the path to c3d as the first argument.
-```python3
-from ezc3d import c3d
-c = c3d('path_to_c3d.c3d')
-print(c['parameters']['POINT']['USED']['value'][0]);  # Print the number of points used
-point_data = c['data']['points']
-analog_data = c['data']['analogs']
-```
-> Please note that the shape of `point_data` is 4xNxT, where 4 represent the components XYZ1 (the extra 1 allows for rototranslation multiplications), N is the number of points and T is the number of frames. 
-> Similarly, and to be consistent with the point shape, the shape of `analog_data` are 1xNxT, where 1 is the value, N is the number of analogous data and T is the number of frames. 
-
-### Write a C3D
-To write a C3D to a file, you must call the `write` method of a c3d dictionnary. This method waits for the path of the C3D to write. Please note that the header is actually ignore since it is fully constructed from required parameters. 
-
-The example that follows contructs a new C3D from scratch, adding data and adding a custom parameter.
-```python3
+Forward kinematics can be performed as follow
+```Python
 import numpy as np
+import biorbd
 
-import ezc3d
+# Load the model
+model = biorbd.Model('path/to/model.bioMod')
 
-# Load an empty c3d structure
-c3d = ezc3d.c3d()
+# Prepare the model
+Q = np.ones(model.nbQ())/10  # Set the model position
 
-# Fill it with random data
-c3d['parameters']['POINT']['RATE']['value'] = [100]
-c3d['parameters']['POINT']['LABELS']['value'] = ('point1', 'point2', 'point3', 'point4', 'point5')
-c3d['data']['points'] = np.random.rand(4, 5, 100)
-c3d['data']['points'][1, :, :] = 2
-c3d['data']['points'][2, :, :] = 3
+# Perform the forward kinematics
+markers = model.markers(Q)
 
-c3d['parameters']['ANALOG']['RATE']['value'] = [1000]
-c3d['parameters']['ANALOG']['LABELS']['value'] = ('analog1', 'analog2', 'analog3', 'analog4', 'analog5', 'analog6')
-c3d['data']['analogs'] = np.random.rand(1, 6, 1000)
-c3d['data']['analogs'][0, 0, :] = 4
-c3d['data']['analogs'][0, 1, :] = 5
-c3d['data']['analogs'][0, 2, :] = 6
-c3d['data']['analogs'][0, 3, :] = 7
-c3d['data']['analogs'][0, 4, :] = 8
-c3d['data']['analogs'][0, 5, :] = 9
+# Print the results
+for marker in markers:
+    print(marker.get_array())
 
-# Add a custom parameter to the POINT group
-c3d.add_parameter("POINT", "newParam", [1, 2, 3])
+```
 
-# Add a custom parameter a new group
-c3d.add_parameter("NewGroup", "newParam", ["MyParam1", "MyParam2"])
+The joint accelerations from muscle activations can be performed as follow
+```Python
+import numpy as np
+import biorbd
 
-# Write the data
-c3d.write("path_to_c3d.c3d")
+# Load the model
+model = biorbd.Model('path/to/model.bioMod')
+
+# Prepare the model
+Q = np.ones(model.nbQ())/10  # Set the model position
+Qdot = np.ones(model.nbQ())/10  # Set the model velocity
+states = biorbd.VecBiorbdMuscleStateDynamics(model.nbMuscleTotal())
+for state in states:
+    state.setActivation(0.5)  # Set muscles activations
+
+# Compute the joint torques based on muscle
+joint_torque = model.muscularJointTorque(states, Q, Qdot)
+
+# Compute the acceleration of the model due to these torques
+Qddot = model.ForwardDynamics(Q, Qdot, joint_torque)
+
+# Print the results
+print(Qddot.get_array())
+
 ```
 
 # How to contribute
 You are very welcome to contribute to the project! There are to main ways to contribute. 
 
-The first way is to actually code new features to EZC3D. The easiest way to do so is to fork the project make the modifications and then open a pull request to the main project. Don't forget to add your name to the contributor in the documentation of the page if you do so!
+The first way is to actually code new features for BIORBD. The easiest way to do so is to fork the project make the modifications and then open a pull request to the main project. Don't forget to add your name to the contributor in the documentation of the page if you do so!
 
-The second way is to provide me with non-working C3D files (See the C3D Softwares section below for more details). There is another repository for test files in the pyomeca (https://github.com/pyomeca/ezc3d_c3dTestFiles). You can fork this project, add your C3D in according to the recommandations and pull request it. This will be greatly appreciated by me and the biomechanics community!
+The second way is to open issues to report bugs or to ask for new features. I am trying to be as reactive as possible, so don't hesitate to do so!
 
-# Supported generated C3D
-The software companies have loosely implemented the C3D standard proposed by http://C3D.org. Hence, there are some workaround that must be incorporated to the code to be able to read the C3D created using third-party softwares. So far, C3D from three different companies were tested. Vicon (https://www.vicon.com/), Qualisys (https://www.qualisys.com/) and Optotrak (https://www.ndigital.com/msci/products/optotrak-certus/). But I am sure there is plenty of other obscure companies or simply cases that were not tested from these companies (simply because I don't have C3D to test). If you find yourself with a bug when trying to read a C3D that should work, please open an issue and provide me with the corresponding C3D (see How to contribute). 
+# Graphical User Interface (GUI)
+For now, there is no GUI for the C++ interface and the MATLAB one is so poor I decided not to release it. However, there is a Python interface that worths to have a look at. Installation procedure and documentation can be found at the GitHub repository (https://github.com/pyomeca/biorbd-viz).
 
 # Documentation
-## C3D format
-The C3D format is maintained by http://c3d.org. They provide recommandation on how to implement reader/writer for the format. There is a copy of the documentation PDF in the `doc` folder. You are also welcome to have a look at a newer version if they ever create an update. 
+The documentation is not ready yet, but will come soon, when it is ready the next paragraph applies.
 
-## EZC3D
-The documentation is automatically generated using Doxygen (http://www.doxygen.org/). You can compile it youself if you want (by setting `BUILD_DOC` to `ON`). Otherwise, you can access a copy of it that I try to keep up-to-date in the Documentation project of pyomeca (https://pyomeca.github.io/Documentation/) by selecting `ezc3d`. 
+The documentation is automatically generated using Doxygen (http://www.doxygen.org/). You can compile it youself if you want (by setting `BUILD_DOC` to `ON`). Otherwise, you can access a copy of it that I try to keep up-to-date in the Documentation project of pyomeca (https://pyomeca.github.io/Documentation/) by selecting `biorbd`. 
 
 # Troubleshoots
-Despite my efforts to make a bug-free library, EZC3D may fails sometimes. If it does, please refer to the section below to know what to do. I will fill this section with the issue over time.
+Despite my efforts to make a bug-free library, BIORBD may fails sometimes. If it does, please refer to the section below to know what to do. I will fill this section with the issue over time.
 
-## Slow C3D opening
-If you experience a slow C3D opening (more than 10 seconds), even for a huge C3D file. You may be in one of two cases. 
+## Slow BIORBD
+If you experience a slow BIORBD, you are probably using a non optimized version, that is compiled with `debug` level. Please use at least `RelWithDebInfo` level of optimization while compiling BIORBD. 
 
-First, mak sure you are using EZC3D compiled with optimizations (RelWithDebInfo or Release). Indeed, the way C3D files are formated implies back and fourth memory allocations between points and analogs. If the optimization are turned off, it may take a little while to perform. 
+If you actually are using a released level of optimization, you may actually experiencing a bug. You are therefore welcomed to provide me with a minimal example of your slow code and I'll see how to improve the speed!
 
-If you actually are using a released level of optimization, you may actually experience a bug. You are therefore welcomed to send me the long to open C3D file so I can optimize few things by myself. Everyone will benefit!
-
-## Non-working C3D
-The C3D format allows for some pretty old and probably useless stuff. For example, you are allowed to store the points in the form of integers instead of floating points that you would scale afterwards. Since it may have make sense many years ago, it is very unlikely anyone would need this nowadays. Hence, and because I did not have any examples of such C3D to test, I decided to ignore these features (you would know easily since the code raises a `not implemented exception`). However, at some point, for some reason, you may need these features. If so, you are welcomed to open an issue and to provide me with the non-working  C3D. I will make my best to add the feature ASAP. 
-
-Moreover, as stated before, some (all?) companies were pretty loose in their implementation of the C3D standard. Actually, the standard itself states how much you don't need to follow it, which it kind of strange, the least to say. Because of that, entire sections that are supposed to be mandatory may be missing, or checksum may have the wrong value (these are real omissions...), or anything which hasn't happened yet may occurs. There is no way for me, of course, to know that in advance, hence these exception are not implemented yet. If you encounter such files (the exception raised may be from any nature, but the most probable is segmentation fault), again do not hesitate to open an issue and to provide me with the non-working C3D. 
-
-## Cite
+# Cite
 If you use ezc3d, we would be grateful if you could cite it as follows:
 
 ```
 @misc{Michaud2018ezc3d,
     author = {Michaud, Benjamin and Begon, Mickael},
-    title = {EZC3D: Easy to use C3D reader/writer in C++, Python and Matlab},
+    title = {BIORBD: Toolbox for biomechanical analyses},
     howpublished={Web page},
-    url = {https://github.com/pyomeca/ezc3d},
+    url = {https://github.com/pyomeca/biorbd},
     year = {2018}
 }
 ```
-
-# Changes log
-## Version 0.1.0
-First working version of a C++ C3D reader. 
-
-## Version 0.2.0
-Reader and writer in C++, Python interface with SWIG for the reader, MATLAB interface for the reader and writer
-
-## Version 0.3.0
-Pythonic interface for the python reader and started to interface the writer. 
-
-## Version 0.3.1
-Documentation using Doxygen added for the C++ code, Major refactor of the code in order to harmonized it across the classes.
-
-## Version 0.3.2
-Added tests and example files for Python3 and MATLAB. 
