@@ -273,6 +273,21 @@ print(Qddot.get_array())
 
 ```
 # Model files
+## *bioMod* files
+The preferred method to load a model is by using a *.bioMod* file. This type of file is an in-house language that describes the segments of the model, their interactions and additionnal elements attached to them. The following section describe the structure of the file and all the tags that exists so far. 
+### Header
+The very first tag that **must** appear at the first line in file is the version of the file. The current version of the *.bioMod* files is $4$. Please note that most of the version are backward compatible, unless specified
+```bash
+version 4
+```
+From that point, the order of the tags is not important, header can even be at the end of the file. For simplicity though we suggest to put everything related to the header at the top of the file. 
+
+The `gravity` tag is used to reorient and/or change the magnitude of the gravity. The default value is $(0, 0, -9.81)$. 
+```bash
+gravity 0 0 -9.81
+```
+
+The
 
 
 # How to contribute
