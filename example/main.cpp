@@ -1,13 +1,7 @@
-#include <iostream>
-#include <memory>
-#include <cstdlib>
-#include <random>
-
-#include "all.h"
+#include "biorbd.h"
 //#define BUILD_SANDBOX
 
 #ifndef BUILD_SANDBOX
-
 int main()
 {
     // One can look at the tests to find more in-depth examples
