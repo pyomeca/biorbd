@@ -275,22 +275,89 @@ print(Qddot.get_array())
 # Model files
 ## *bioMod* files
 The preferred method to load a model is by using a *.bioMod* file. This type of file is an in-house language that describes the segments of the model, their interactions and additionnal elements attached to them. The following section describe the structure of the file and all the tags that exists so far. 
+
+Comments can be added to the file in a C-style way, meaning that everything a on line following a `//` will be considered as a comment and everything between `/*` and `*/` will also be ignored. 
+
+Please note that the *bioMod* is not case dependent, so `Version`and `version` are for instance fully equivalent. The *bioMod* reader also ignore the tabulation, which is therefore only aesthetic. 
+
+When a tag waits for multiple values, they must be separate by a space, a tabulation or a return of line. Also, anytime a tag waits for a value, it is possible to use simple equations (assuming no spaces are used) and/or variables. For example, the following snippet is a valid way to set the gravity parameter to $(0, 0, -9.81)$. 
+```c
+variables
+    $my_useless_variable 0
+endvariables
+gravity 2*(1-1) -2*$my_useless_variable
+        -9.81
+```
+
 ### Header
-The very first tag that **must** appear at the first line in file is the version of the file. The current version of the *.bioMod* files is $4$. Please note that most of the version are backward compatible, unless specified
-```bash
+#### version
+The very first tag that **must** appear at the first line in file is the version of the file. The current version of the *.bioMod* files is $4$. Please note that most of the version are backward compatible, unless specified. This tag waits for $1$ value.
+```c
 version 4
 ```
 From that point, the order of the tags is not important, header can even be at the end of the file. For simplicity though we suggest to put everything related to the header at the top of the file. 
 
-The `gravity` tag is used to reorient and/or change the magnitude of the gravity. The default value is $(0, 0, -9.81)$. 
-```bash
+#### gravity
+The `gravity` tag is used to reorient and/or change the magnitude of the gravity. The default value is $(0, 0, -9.81)$. This tag waits for $3$ values.
+```c
+// Restate the default value
 gravity 0 0 -9.81
 ```
 
-The
+#### root_actuated
+The `root_actuated` tag allows to change the number of non-zero degrees-of-freedom on the first segment. Typically, if the whole body is modeled, this is set to false, otherwise to true. Please note, that even if this tag is false, the *GeneralizedTorque* vector sent to `RigidBodyDynamic` must be of the same size as *qddot*. The default value is true ($1$). This tags waits for $1$ value. 
+```c
+// Restate the default value
+root_actuated 1
+```
+
+#### external_forces
+The `external_forces` tag allows to inform BIORBD that external forces exists in the model. So far, this tag has no effect. The default value is false ($0$) This tags waits for $1$ value. 
+```c
+// Restate the default value
+external_forces 0
+```
+
+#### variables / endvariables
+The `variables / endvariables` tag pair allows to declare variables that can be used within the file. This allows for example to template the *bioMod* file by only changing the values in the variables. Please note that contrary to the rest of the file, the actual variables are case dependent. 
+
+The `\$` sign is mandatory and later in the file, everything with that sign followed by the same name will be converted to the values specified in the tag. 
+```c
+// Restate the default value
+variables
+    $my_first_variable_is_an_int 10
+    $my_second_variable_is_a_double 10.1
+    $myThirdVariableIsCamelCase 1
+    $myLastVariableIsPi pi
+endvariables
+```
+As you may have noticed, the constant $\pi$ is defined as $3.141592653589793$.
+
+### Definition of the model
+A BIORBD model consists of a chain of segment, linked by joints with up to six DoF (3 translations, 3 rotations). It is imperative when attaching something to a segment of the model that particular segment must have been previously defined. For instance, if the `thorax` is attached to the `pelvis`, then the latter must be defined before the former in the file. 
+
+#### segment
+The `segment xxx / endsegment`tag pair is the core of a *bioMod* file. It describes a segment of the model with the name `xxx`, that is most of the time a bone of the skeleton. For internal reasons, the name cannot be `root`. The `xxx` must be present and consists of $1$ string. The segment is composed of multiple subtags, described here. 
+
+##### parent
+The `parent` tag is the name of the segment that particular segment is attached to. If no segment parent is provided, it is considered to be attached to the environment. The parent must be defined earlier in the file and is case dependent. This tag waits for $1$ string.
+
+#### translations
+The `translations` tag specifies the number of degrees-of-freedom in translation and their order. The possible values are `x`, `y` and/or `z` combined whatever fits the model. Please note that the vector of generalized coordinate will comply the the order wrote in this tag. If no translations are provided, then the segment has no translation relative to its parent. This tag waits for $1$ string.
+
+#### rotations
+The `rotations` tag specifies the number of degrees-of-freedom in rotation and their order. The possible values are `x`, `y` and/or `z` combined whatever fits the model. Please note that the vector of generalized coordinate will comply the the order wrote in this tag. If no rotations are provided, then the segment has no rotation relative to its parent. This tag waits for $1$ string.
+
+#### mass
+The `mass` tag specifies the mass of the segment in kilogram. This tag waits for $1$ value.
+
+#### inertia
+The `inertia` tag allows to specify the matrix of inertia of the segment. It waits for $9$ values.
+
 
 
 # How to contribute
+
 You are very welcome to contribute to the project! There are to main ways to contribute. 
 
 The first way is to actually code new features for BIORBD. The easiest way to do so is to fork the project, make the modifications and then open a pull request to the main project. Don't forget to add your name to the contributor in the documentation of the page if you do so!
