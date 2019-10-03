@@ -8,7 +8,9 @@
 #include "RigidBody/NodeBone.h"
 #include "RigidBody/Bone.h"
 #include "RigidBody/IMU.h"
+#ifndef SKIP_KALMAN
 #include "RigidBody/KalmanReconsIMU.h"
+#endif
 
 static double requiredPrecision(1e-10);
 
@@ -142,6 +144,7 @@ TEST(BinderC, imu)
     c_deleteBiorbdModel(model);
 }
 
+#ifndef SKIP_KALMAN
 TEST(BinderC, kalmanImu)
 {
     biorbd::Model* model(c_biorbdModel(modelPathForIMUTesting.c_str()));
@@ -181,6 +184,7 @@ TEST(BinderC, kalmanImu)
     c_deleteBiorbdKalmanReconsIMU(kalman_c);
     c_deleteBiorbdModel(model);
 }
+#endif
 
 TEST(BinderC, math)
 {

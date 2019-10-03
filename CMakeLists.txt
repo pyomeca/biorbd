@@ -31,6 +31,14 @@ if (NOT IPOPT_FOUND)
     set(IPOPT_LIBRARY "")
 endif()
 
+# Define some skip if ones doesn't want to compile them
+option(SKIP_KALMAN "If Kalman filter should be compiled" OFF)
+if (IPOPT_FOUND)
+    option(SKIP_STATIC_OPTIM "If Static optimization should be compiled" OFF)
+else()
+    set(SKIP_STATIC_OPTIM ON CACHE BOOL "Static optimization can't be compiled since Ipopt was not foudn" FORCE)
+endif()
+
 # Prepare add library
 set(SRC_LIST
     src/BiorbdModel.cpp
