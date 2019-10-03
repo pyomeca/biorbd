@@ -12,9 +12,12 @@
 #include "RigidBody/BoneCaracteristics.h"
 #include "RigidBody/NodeBone.h"
 #include "RigidBody/Bone.h"
+#include "RigidBody/IMU.h"
+#ifndef SKIP_KALMAN
 #include "RigidBody/KalmanReconsMarkers.h"
 #include "RigidBody/KalmanReconsIMU.h"
-#include "RigidBody/IMU.h"
+#endif
+
 
 static double requiredPrecision(1e-10);
 
@@ -213,6 +216,7 @@ TEST(Dynamics, ForwardAccelerationConstraint){
         EXPECT_NEAR(cs.force[i], forces_expected[i], requiredPrecision);
 }
 
+#ifndef SKIP_KALMAN
 #ifndef SKIP_LONG_TESTS
 TEST(Kalman, markers)
 {
@@ -323,4 +327,5 @@ TEST(Kalman, imu)
         }
     }
 }
+#endif
 #endif
