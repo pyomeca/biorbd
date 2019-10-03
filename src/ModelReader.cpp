@@ -1,3 +1,5 @@
+// Copyright 2019 Pariterre
+
 #define BIORBD_API_EXPORTS
 #include "ModelReader.h"
 
@@ -47,8 +49,9 @@
 
 void biorbd::Reader::pwd(){
 	char c[FILENAME_MAX];
-    if (GetCurrentDir(c, sizeof(c)))
+    if (GetCurrentDir(c, sizeof(c))){
         std::cout << c << std::endl;
+    }
 }
 
 bool biorbd::Reader::is_readable(const biorbd::utils::Path &file)
@@ -70,8 +73,9 @@ biorbd::Model biorbd::Reader::readModelFile(const biorbd::utils::Path &path)
 
 void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Model *model)
 {	// Ouverture du fichier
-    if (!is_readable(path))
+    if (!is_readable(path)){
         biorbd::utils::Error::raise("File " + path.absolutePath() + " could not be open");
+    }
 
     biorbd::utils::IfStream file(path.absolutePath().c_str(), std::ios::in);
 
@@ -108,8 +112,9 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                 biorbd::utils::String trans = "";
                 biorbd::utils::String rot = "";
                 bool RTinMatrix(true);
-                if (version == 3) // Par défaut pour la version 3 (pas en matrice)
+                if (version == 3){ // Par défaut pour la version 3 (pas en matrice)
                     RTinMatrix = false;
+                }
                 bool isRTset(false);
                 double mass = 0.00000001;
                 Eigen::Matrix3d inertia(Eigen::Matrix3d::Identity(3,3));
@@ -123,15 +128,19 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                     if (!property_tag.tolower().compare("parent")){
                         // Trouver dynamiquement le numéro du parent
                         file.read(parent_str);
-                        if (parent_str.tolower().compare("root"))
+                        if (parent_str.tolower().compare("root")){
                             biorbd::utils::Error::check(model->GetBodyId(parent_str.c_str()), "Wrong name in a segment");
+                        }
                     }
-                    else if (!property_tag.tolower().compare("translations"))
+                    else if (!property_tag.tolower().compare("translations")){
                         file.read(trans);
-                    else if (!property_tag.tolower().compare("rotations"))
+                    }
+                    else if (!property_tag.tolower().compare("rotations")){
                         file.read(rot);
-                    else if (!property_tag.tolower().compare("mass"))
+                    }
+                    else if (!property_tag.tolower().compare("mass")){
                          file.read(mass, variable);
+                    }
                     else if (!property_tag.tolower().compare("inertia")){
                         Eigen::Matrix3d inertia_tp(Eigen::Matrix3d::Identity(3,3));
                         for (unsigned int i=0; i<9;++i)
@@ -152,13 +161,13 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                                     file.read(RT_R(cmp_M), variable);
                                     ++cmp_M;
                                 }
-                                else{
+                                else {
                                     file.read(RT_T(cmp_T), variable);
                                     ++cmp_T;
                                 }
                              }
                         }
-                        else{
+                        else {
                             biorbd::utils::String seq("xyz");
                             biorbd::utils::Node3d rot(0, 0, 0);
                             biorbd::utils::Node3d trans(0, 0, 0);
@@ -178,45 +187,58 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
 
                         isRTset = true;
                     }
-                    else if (!property_tag.tolower().compare("com"))
-                        for (unsigned int i=0; i<3; ++i)
+                    else if (!property_tag.tolower().compare("com")){
+                        for (unsigned int i=0; i<3; ++i){
                             file.read(com(i), variable);
-                    else if (!property_tag.tolower().compare("forceplate"))
+                        }
+                    }
+                    else if (!property_tag.tolower().compare("forceplate")){
                         file.read(PF);
+                    }
                     else if (!property_tag.tolower().compare("mesh")){
-                        if (boneByFile==-1)
+                        if (boneByFile==-1){
                             boneByFile = 0;
-                        else if (boneByFile == 1)
+                        }
+                        else if (boneByFile == 1){
                             biorbd::utils::Error::raise("You must not mix file and mesh in segment");
+                        }
                         biorbd::utils::Node3d tp(0, 0, 0);
-                        for (unsigned int i=0; i<3; ++i)
+                        for (unsigned int i=0; i<3; ++i){
                             file.read(tp(i), variable);
+                        }
                         boneMesh.addPoint(tp);
                     }
                     else if (!property_tag.tolower().compare("patch")){
-                        if (boneByFile==-1)
+                        if (boneByFile==-1){
                             boneByFile = 0;
-                        else if (boneByFile == 1)
+                        }
+                        else if (boneByFile == 1){
                             biorbd::utils::Error::raise("You must not mix file and mesh in segment");
+                        }
                         biorbd::rigidbody::Patch tp;
                         for (int i=0; i<3; ++i)
                             file.read(tp(i));
                         boneMesh.addPatch(tp);
                     }
                     else if (!property_tag.tolower().compare("meshfile")){
-                        if (boneByFile==-1)
+                        if (boneByFile==-1){
                             boneByFile = 1;
-                        else if (boneByFile == 0)
+                        }
+                        else if (boneByFile == 0){
                             biorbd::utils::Error::raise("You must not mix file and mesh in segment");
+                        }
                         biorbd::utils::String filePathInString;
                         file.read(filePathInString);
                         biorbd::utils::Path filePath(filePathInString);
-                        if (!filePath.extension().compare("bioMesh"))
+                        if (!filePath.extension().compare("bioMesh")){
                             boneMesh = readBoneMeshFileBiorbdBones(path.folder() + filePath.relativePath());
-                        else if (!filePath.extension().compare("ply"))
+                        }
+                        else if (!filePath.extension().compare("ply")){
                             boneMesh = readBoneMeshFilePly(path.folder() + filePath.relativePath());
-                        else
+                        }
+                        else {
                             biorbd::utils::Error::raise(filePath.extension() + " is an unrecognized mesh file");
+                        }
                     }
                 }
                 RigidBodyDynamics::Math::SpatialTransform RT(RT_R, RT_T);
@@ -259,7 +281,7 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                 bool technical = true;
                 bool anatomical = false;
                 biorbd::utils::String axesToRemove;
-                while(file.read(property_tag) && property_tag.tolower().compare("endmarker"))
+                while(file.read(property_tag) && property_tag.tolower().compare("endmarker")){
                     if (!property_tag.tolower().compare("parent")){
                         // Trouver dynamiquement le numéro du parent
                         file.read(parent_str);
@@ -267,15 +289,21 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                         // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
                         biorbd::utils::Error::check(model->IsBodyId(parent_int), "Wrong name in a segment");
                     }
-                    else if (!property_tag.tolower().compare("position"))
-                        for (unsigned int i=0; i<3; ++i)
+                    else if (!property_tag.tolower().compare("position")){
+                        for (unsigned int i=0; i<3; ++i){
                             file.read(pos(i), variable);
-                    else if (!property_tag.tolower().compare("technical"))
+                        }
+                    }
+                    else if (!property_tag.tolower().compare("technical")){
                         file.read(technical);
-                    else if (!property_tag.tolower().compare("anatomical"))
+                    }
+                    else if (!property_tag.tolower().compare("anatomical")){
                         file.read(anatomical);
-                    else if (!property_tag.tolower().compare("axestoremove"))
+                    }
+                    else if (!property_tag.tolower().compare("axestoremove")){
                         file.read(axesToRemove);
+                    }
+                }
 
                 model->addMarker(pos, name, parent_str, technical, anatomical, axesToRemove, static_cast<int>(parent_int));
             }
@@ -288,8 +316,9 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                 biorbd::utils::String parent_str("root");
                 biorbd::utils::RotoTransNode RT;
                 bool RTinMatrix(true);
-                if (version == 3) // Par défaut pour la version 3 (pas en matrice)
+                if (version == 3){ // Par défaut pour la version 3 (pas en matrice)
                     RTinMatrix = false;
+                }
                 bool isRTset(false);
                 bool technical = true;
                 bool anatomical = false;
@@ -327,10 +356,12 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                         }
                         isRTset = true;
                     }
-                    else if (!property_tag.tolower().compare("technical"))
+                    else if (!property_tag.tolower().compare("technical")){
                         file.read(technical);
-                    else if (!property_tag.tolower().compare("anatomical"))
+                    }
+                    else if (!property_tag.tolower().compare("anatomical")){
                         file.read(anatomical);
+                    }
                     RT.setName(name);
                     RT.setParent(parent_str);
                     model->addIMU(RT, technical, anatomical);
@@ -353,16 +384,22 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                         // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
                         biorbd::utils::Error::check(model->IsBodyId(parent_int), "Wrong name in a segment");
                     }
-                    else if (!property_tag.tolower().compare("position"))
-                        for (unsigned int i=0; i<3; ++i)
+                    else if (!property_tag.tolower().compare("position")){
+                        for (unsigned int i=0; i<3; ++i){
                             file.read(pos(i), variable);
-                    else if (!property_tag.tolower().compare("normal"))
-                        for (unsigned int i=0; i<3; ++i)
+                        }
+                    }
+                    else if (!property_tag.tolower().compare("normal")){
+                        for (unsigned int i=0; i<3; ++i){
                             file.read(norm(i), variable);
-                    else if (!property_tag.tolower().compare("axis"))
+                        }
+                    }
+                    else if (!property_tag.tolower().compare("axis")){
                         file.read(axis);
-                    else if (!property_tag.tolower().compare("acceleration"))
+                    }
+                    else if (!property_tag.tolower().compare("acceleration")){
                             file.read(acc, variable);
+                    }
                 }
                 if (version == 1){
                     biorbd::utils::Error::check(norm.norm() == 1.0, "Normal of the contact must be provided" );
@@ -392,13 +429,14 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                         // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
                         biorbd::utils::Error::check(model->IsBodyId(id_predecessor), "Wrong name in a segment");
                     }
-                    if (!property_tag.tolower().compare("successor")){
+                    else if (!property_tag.tolower().compare("successor")){
                         // Trouver dynamiquement le numéro du parent
                         file.read(successor_str);
                         id_successor = model->GetBodyId(successor_str.c_str());
                         // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
                         biorbd::utils::Error::check(model->IsBodyId(id_successor), "Wrong name in a segment");
-                    } else if (!property_tag.tolower().compare("rtpredecessor")){
+                    }
+                    else if (!property_tag.tolower().compare("rtpredecessor")){
                         biorbd::utils::String seq("xyz");
                         biorbd::utils::Node3d rot(0, 0, 0);
                         biorbd::utils::Node3d trans(0, 0, 0);
@@ -411,7 +449,8 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                         for (unsigned int i=0; i<3; ++i)
                             file.read(trans(i));
                         X_predecessor = biorbd::utils::RotoTrans(rot, trans, seq);
-                    } else if (!property_tag.tolower().compare("rtsuccessor")){
+                    }
+                    else if (!property_tag.tolower().compare("rtsuccessor")){
                         biorbd::utils::String seq("xyz");
                         biorbd::utils::Node3d rot(0, 0, 0);
                         biorbd::utils::Node3d trans(0, 0, 0);
@@ -424,14 +463,19 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                         for (unsigned int i=0; i<3; ++i)
                             file.read(trans(i));
                         X_successor = biorbd::utils::RotoTrans(rot, trans, seq);
-                    } else if (!property_tag.tolower().compare("axis"))
-                        for (unsigned int i=0; i<axis.size(); ++i)
+                    }
+                    else if (!property_tag.tolower().compare("axis")){
+                        for (unsigned int i=0; i<axis.size(); ++i){
                             file.read(axis(i), variable);
-                    else if (!property_tag.tolower().compare("stabilizationparameter"))
+                        }
+                    }
+                    else if (!property_tag.tolower().compare("stabilizationparameter")){
                         file.read(stabilizationParam, variable);
+                    }
                 }
-                if (stabilizationParam > 0)
+                if (stabilizationParam > 0){
                     enableStabilization = true;
+                }
                 name = "Loop_" + predecessor_str + "_" + successor_str;
                 model->AddLoopConstraint(id_predecessor, id_successor, X_predecessor, X_successor,
                                          axis, name, enableStabilization, stabilizationParam);
@@ -482,10 +526,12 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                         biorbd::utils::Error::check(!str_direction.tolower().compare("positive") ||
                                             !str_direction.tolower().compare("negative"),
                                             "Direction should be \"positive\" or \"negative\"");
-                        if (!str_direction.tolower().compare("positive"))
+                        if (!str_direction.tolower().compare("positive")){
                             int_direction = 1;
-                        else
+                        }
+                        else {
                             int_direction = -1;
+                        }
                         isDirectionSet = true;
                     }
                     else if (!property_tag.tolower().compare("tmax")){
@@ -577,7 +623,8 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
     #else // MODULE_ACTUATORS
             biorbd::utils::Error::raise("Biorbd was build without the module Actuators but the model defines ones");
     #endif // MODULE_ACTUATORS
-            } else if (!main_tag.tolower().compare("musclegroup")){
+            }
+            else if (!main_tag.tolower().compare("musclegroup")){
     #ifdef MODULE_MUSCLES
                 biorbd::utils::String name;
                 file.read(name); // Nom du groupe musculaire
@@ -639,65 +686,93 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                     else if (!property_tag.tolower().compare("type")){
                         biorbd::utils::String tp_type;
                         file.read(tp_type);
-                        if (!tp_type.tolower().compare("idealizedactuator"))
+                        if (!tp_type.tolower().compare("idealizedactuator")){
                             type = biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR;
-                        else if (!tp_type.tolower().compare("hil"))
+                        }
+                        else if (!tp_type.tolower().compare("hil")){
                             type = biorbd::muscles::MUSCLE_TYPE::HILL;
-                        else if (!tp_type.tolower().compare("hillthelen") || !tp_type.tolower().compare("thelen"))
+                        }
+                        else if (!tp_type.tolower().compare("hillthelen")
+                                 || !tp_type.tolower().compare("thelen")){
                             type = biorbd::muscles::MUSCLE_TYPE::HILL_THELEN;
-                        else if (!tp_type.tolower().compare("hillthelenfatigable") || !tp_type.tolower().compare("thelenfatigable"))
+                        }
+                        else if (!tp_type.tolower().compare("hillthelenfatigable")
+                                 || !tp_type.tolower().compare("thelenfatigable")){
                             type = biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE;
-                        else
+                        }
+                        else {
                             biorbd::utils::Error::raise(property_tag + " is not a valid muscle type");
+                        }
                     }
                     else if (!property_tag.tolower().compare("statetype")){
                         biorbd::utils::String tp_state;
                         file.read(tp_state);
-                        if (!tp_state.tolower().compare("buchanan"))
+                        if (!tp_state.tolower().compare("buchanan")){
                             stateType = biorbd::muscles::STATE_TYPE::BUCHANAN;
-                        else
+                        }
+                        else {
                             biorbd::utils::Error::raise(property_tag + " is not a valid muscle state type");
+                        }
                     }
-                    else if (!property_tag.tolower().compare("originposition"))
-                        for (unsigned int i=0; i<3; ++i)
+                    else if (!property_tag.tolower().compare("originposition")){
+                        for (unsigned int i=0; i<3; ++i){
                             file.read(origin_pos(i), variable);
-                    else if (!property_tag.tolower().compare("insertionposition"))
-                        for (unsigned int i=0; i<3; ++i)
+                        }
+                    }
+                    else if (!property_tag.tolower().compare("insertionposition")){
+                        for (unsigned int i=0; i<3; ++i){
                             file.read(insert_pos(i), variable);
-                    else if (!property_tag.tolower().compare("optimallength"))
+                        }
+                    }
+                    else if (!property_tag.tolower().compare("optimallength")){
                         file.read(optimalLength, variable);
-                    else if (!property_tag.tolower().compare("tendonslacklength"))
+                    }
+                    else if (!property_tag.tolower().compare("tendonslacklength")){
                         file.read(tendonSlackLength, variable);
-                    else if (!property_tag.tolower().compare("pennationangle"))
+                    }
+                    else if (!property_tag.tolower().compare("pennationangle")){
                         file.read(pennAngle, variable);
-                    else if (!property_tag.tolower().compare("maximalforce"))
+                    }
+                    else if (!property_tag.tolower().compare("maximalforce")){
                         file.read(maxForce, variable);
-                    else if (!property_tag.tolower().compare("maximalexcitation"))
+                    }
+                    else if (!property_tag.tolower().compare("maximalexcitation")){
                         file.read(maxExcitation, variable);
-                    else if (!property_tag.tolower().compare("pcsa"))
+                    }
+                    else if (!property_tag.tolower().compare("pcsa")){
                         file.read(PCSA, variable);
+                    }
                     else if (!property_tag.tolower().compare("fatigueparameters")){
-                        while(file.read(subproperty_tag) && subproperty_tag.tolower().compare("endfatigueparameters")){
+                        while(file.read(subproperty_tag)
+                              && subproperty_tag.tolower().compare("endfatigueparameters")){
                             if (!subproperty_tag.tolower().compare("type")){
                                 biorbd::utils::String tp_fatigue_type;
                                 file.read(tp_fatigue_type);
-                                if (!tp_fatigue_type.tolower().compare("simple"))
+                                if (!tp_fatigue_type.tolower().compare("simple")){
                                     dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE;
-                                else if (!tp_fatigue_type.tolower().compare("xia"))
+                                }
+                                else if (!tp_fatigue_type.tolower().compare("xia")){
                                     dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA;
-                                else
+                                }
+                                else {
                                     biorbd::utils::Error::raise(tp_fatigue_type + " is not a value fatigue parameter type");
-                            } else {
+                                }
+                            }
+                            else {
                                 double param(0);
                                 file.read(param);
-                                if (!subproperty_tag.tolower().compare("fatiguerate"))
+                                if (!subproperty_tag.tolower().compare("fatiguerate")){
                                     fatigueParameters.fatigueRate(param);
-                                else if (!subproperty_tag.tolower().compare("recoveryrate"))
+                                }
+                                else if (!subproperty_tag.tolower().compare("recoveryrate")){
                                     fatigueParameters.recoveryRate(param);
-                                else if (!subproperty_tag.tolower().compare("developfactor"))
+                                }
+                                else if (!subproperty_tag.tolower().compare("developfactor")){
                                     fatigueParameters.developFactor(param);
-                                else if (!subproperty_tag.tolower().compare("recoveryfactor"))
+                                }
+                                else if (!subproperty_tag.tolower().compare("recoveryfactor")){
                                     fatigueParameters.recoveryFactor(param);
+                                }
                             }
                         }
                     }
@@ -735,13 +810,17 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                         // Si parent_int est encore égal à zéro c'est qu'aucun nom a concordé
                         biorbd::utils::Error::check(model->IsBodyId(idx), "Wrong origin parent name for a muscle");
                     }
-                    else if (!property_tag.tolower().compare("muscle"))
+                    else if (!property_tag.tolower().compare("muscle")){
                         file.read(muscle);
-                    else if (!property_tag.tolower().compare("musclegroup"))
+                    }
+                    else if (!property_tag.tolower().compare("musclegroup")){
                         file.read(musclegroup);
-                    else if (!property_tag.tolower().compare("position"))
-                        for (unsigned int i=0; i<3; ++i)
+                    }
+                    else if (!property_tag.tolower().compare("position")){
+                        for (unsigned int i=0; i<3; ++i){
                             file.read(position(i), variable);
+                        }
+                    }
                 }
                 iMuscleGroup = model->getGroupId(musclegroup);
                 biorbd::utils::Error::check(iMuscleGroup!=-1, "No muscle group was provided!");
@@ -781,20 +860,27 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
                         biorbd::utils::Error::check(model->IsBodyId(idx), "Wrong origin parent name for a muscle");
                     }
                     else if (!property_tag.tolower().compare("rt")){
-                        for (unsigned int i=0; i<4;++i)
-                            for (unsigned int j=0; j<4; ++j)
+                        for (unsigned int i=0; i<4;++i){
+                            for (unsigned int j=0; j<4; ++j){
                                 file.read(RT(i,j), variable);
+                            }
+                        }
                     }
-                    else if (!property_tag.tolower().compare("muscle"))
+                    else if (!property_tag.tolower().compare("muscle")){
                         file.read(muscle);
-                    else if (!property_tag.tolower().compare("musclegroup"))
+                    }
+                    else if (!property_tag.tolower().compare("musclegroup")){
                         file.read(musclegroup);
-                    else if (!property_tag.tolower().compare("diameter"))
+                    }
+                    else if (!property_tag.tolower().compare("diameter")){
                         file.read(dia, variable);
-                    else if (!property_tag.tolower().compare("length"))
+                    }
+                    else if (!property_tag.tolower().compare("length")){
                         file.read(length, variable);
-                    else if (!property_tag.tolower().compare("wrappingside"))
+                    }
+                    else if (!property_tag.tolower().compare("wrappingside")){
                         file.read(side);
+                    }
                 }
                 biorbd::utils::Error::check(dia != 0.0, "Diameter was not defined");
                 biorbd::utils::Error::check(length != 0.0, "Length was not defined");
@@ -814,24 +900,30 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
     } catch (std::runtime_error message) {
         biorbd::utils::String error_message("Reading of file \"" + path.filename() + "." + path.extension() + "\" failed with the following error:");
         error_message += "\n" + biorbd::utils::String(message.what()) + "\n";
-        if (name.compare(""))
+        if (name.compare("")){
             error_message += "Element: " + main_tag + ", named: " + name + "\n";
-        if (property_tag.compare("") && property_tag.find_first_of("end") != 0)
+        }
+        if (property_tag.compare("") && property_tag.find_first_of("end") != 0){
             error_message += "Property: " + property_tag + "\n";
-        if (subproperty_tag.compare("") && subproperty_tag.find_first_of("end") != 0)
+        }
+        if (subproperty_tag.compare("") && subproperty_tag.find_first_of("end") != 0){
             error_message += "Subproperty: " + subproperty_tag + "\n";
+        }
 
         biorbd::utils::Error::raise(error_message);
     }
 #ifdef MODULE_ACTUATORS
-    if (hasActuators)
+    if (hasActuators){
         model->closeActuator();
+    }
 #endif // MODULE_ACTUATORS
     // Fermer le fichier
     // std::cout << "Model file successfully loaded" << std::endl;
     file.close();
 }
-std::vector<std::vector<biorbd::utils::Node3d>> biorbd::Reader::readMarkerDataFile(const biorbd::utils::String &path){
+std::vector<std::vector<biorbd::utils::Node3d>> biorbd::Reader::readMarkerDataFile(
+        const biorbd::utils::String &path)
+{
     // Ouverture du fichier
     // std::cout << "Loading marker file: " << path << std::endl;
     biorbd::utils::IfStream file(path.c_str(), std::ios::in);
@@ -881,7 +973,9 @@ std::vector<std::vector<biorbd::utils::Node3d>> biorbd::Reader::readMarkerDataFi
     return markers;
 }
 
-std::vector<biorbd::rigidbody::GeneralizedCoordinates> biorbd::Reader::readQDataFile(const biorbd::utils::String &path){
+std::vector<biorbd::rigidbody::GeneralizedCoordinates> biorbd::Reader::readQDataFile(
+        const biorbd::utils::String &path)
+{
     // Ouverture du fichier
     // std::cout << "Loading kin file: " << path << std::endl;
     biorbd::utils::IfStream file(path.c_str(), std::ios::in);
@@ -913,8 +1007,9 @@ std::vector<biorbd::rigidbody::GeneralizedCoordinates> biorbd::Reader::readQData
         double time;
         file.read(time);
         biorbd::rigidbody::GeneralizedCoordinates position(NDDL);
-        for (unsigned int i=0; i<NDDL; i++)
+        for (unsigned int i=0; i<NDDL; i++){
             file.read(position(i));
+        }
 
         kinematics.push_back(position);
         // réinitiation pour la prochaine itération
@@ -927,7 +1022,9 @@ std::vector<biorbd::rigidbody::GeneralizedCoordinates> biorbd::Reader::readQData
     return kinematics;
 }
 
-std::vector<biorbd::utils::Vector> biorbd::Reader::readActivationDataFile(const biorbd::utils::String &path){
+std::vector<biorbd::utils::Vector> biorbd::Reader::readActivationDataFile(
+        const biorbd::utils::String &path)
+{
     // Ouverture du fichier
     // std::cout << "Loading kin file: " << path << std::endl;
     biorbd::utils::IfStream file(path.c_str(), std::ios::in);
@@ -973,7 +1070,9 @@ std::vector<biorbd::utils::Vector> biorbd::Reader::readActivationDataFile(const 
     return activations;
 }
 
-std::vector<biorbd::utils::Vector> biorbd::Reader::readTorqueDataFile(const biorbd::utils::String &path){
+std::vector<biorbd::utils::Vector> biorbd::Reader::readTorqueDataFile(
+        const biorbd::utils::String &path)
+{
     // Ouverture du fichier
     // std::cout << "Loading kin file: " << path << std::endl;
     biorbd::utils::IfStream file(path.c_str(), std::ios::in);
@@ -1022,7 +1121,9 @@ std::vector<biorbd::utils::Vector> biorbd::Reader::readTorqueDataFile(const bior
 
 }
 
-std::vector<biorbd::utils::Vector> biorbd::Reader::readGrfDataFile(const biorbd::utils::String &path){
+std::vector<biorbd::utils::Vector> biorbd::Reader::readGrfDataFile(
+        const biorbd::utils::String &path)
+{
     // Ouverture du fichier
     // std::cout << "Loading grf file: " << path << std::endl;
     biorbd::utils::IfStream file(path.c_str(), std::ios::in);
@@ -1103,8 +1204,9 @@ void biorbd::Reader::readViconForceFile(
         unsigned int frequency1pf(static_cast<unsigned int>(atoi(tp.c_str())));
 
         // Passer l'en-tête
-        for (unsigned int i=0; i<4; ++i)
+        for (unsigned int i=0; i<4; ++i){
             file.getline(tp);
+        }
 
         // Transcrire les valeurs
         while(!file.eof()){  // return false if it fails
@@ -1157,7 +1259,9 @@ void biorbd::Reader::readViconForceFile(
     }
 }
 
-std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::Reader::readViconForceFile(const biorbd::utils::String &path){
+std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::Reader::readViconForceFile(
+        const biorbd::utils::String &path)
+{
     // Lire le fichier
     std::vector<std::vector<unsigned int>> frame;
     std::vector<unsigned int> frequency;// Acquisition frequency
@@ -1180,7 +1284,11 @@ std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::Reader:
     return st;
 }
 
-std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarkerFile(const biorbd::utils::String &path, std::vector<biorbd::utils::String> &markOrder, int nNodes){
+std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarkerFile(
+        const biorbd::utils::String &path,
+        std::vector<biorbd::utils::String> &markOrder,
+        int nNodes)
+{
     // Lire le fichier
     biorbd::utils::IfStream file(path.c_str(), std::ios::in);
     biorbd::utils::String t;
@@ -1190,8 +1298,9 @@ std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarker
     // frequency = atoi(findImportantParameter(file, "trajectories").c_str());
 
     // Récupérer l'ordre des marqueurs dans le fichier
-    for (unsigned int i=0; i<3; ++i) // passer l'entete
+    for (unsigned int i=0; i<3; ++i){ // passer l'entete
         file.read(t);
+    }
     size_t idx_tp = 0;
     std::vector<unsigned int> idx_init;
     std::vector<unsigned int> idx_end;
@@ -1227,17 +1336,20 @@ std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarker
                 ordre[3*cmp+2] = 3*i+2;
                 break;
             }
-            else
+            else {
                 ++cmp;
-//            biorbd::utils::Error::check(cmp<MarkersInFile.size(), "Le marqueur demandé n'a pas été trouvé dans le fichier!");
-            if (cmp>=MarkersInFile.size())
+//                biorbd::utils::Error::check(cmp<MarkersInFile.size(), "Le marqueur demandé n'a pas été trouvé dans le fichier!");
+            }
+            if (cmp>=MarkersInFile.size()){
                 break;
+            }
         }
     }
 
     // Se rendre aux données
-    for (unsigned int i=0; i<4; ++i) // passer l'entete
+    for (unsigned int i=0; i<4; ++i){ // passer l'entete
         file.read(t);
+    }
 
     // Trouver le nombre de frames total
     unsigned int jumps(1);
@@ -1273,8 +1385,9 @@ std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarker
             fs >> f;
             if (cmp>1 && cmp<3*MarkersInFile.size()+2){ // Retirer les timespans et ne pas dépasser
                 int idx = ordre[cmp-2];
-                if (idx>=0)
+                if (idx>=0){
                     data_tp(static_cast<unsigned int>(idx)) = f;
+                }
             }
             ++cmp;
         }
@@ -1291,7 +1404,7 @@ std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarker
                 file.read(t); // récupérer une ligne
                 cmpFrames++;
             }
-            else{
+            else {
                 file.read(t);
                 break;
             }
@@ -1304,7 +1417,8 @@ std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarker
     return data;
 }
 
-biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFileBiorbdBones(const biorbd::utils::Path &path)
+biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFileBiorbdBones(
+        const biorbd::utils::Path &path)
 {
     // Lire un fichier d'os
 
@@ -1331,31 +1445,36 @@ biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFileBiorbdBones(const bi
     // Récupérer tous les points
     for (unsigned int iPoints=0; iPoints < nPoints; ++iPoints){
         biorbd::utils::Node3d nodeTp(0, 0, 0);
-        for (unsigned int i=0; i<3; ++i)
+        for (unsigned int i=0; i<3; ++i){
             file.read(nodeTp(i));
+        }
         mesh.addPoint(nodeTp);
-        if (version == 2)
+        if (version == 2){
             for (unsigned int i=0; i<3; ++i){
                 double dump; // Ignorer les colonnes 4 5 6
                 file.read(dump);
             }
+        }
     }
 
     for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints){
         biorbd::rigidbody::Patch patchTp;
         int nVertices;
         file.read(nVertices);
-        if (nVertices != 3)
+        if (nVertices != 3){
             biorbd::utils::Error::raise("Patches must be 3 vertices!");
-        for (int i=0; i<nVertices; ++i)
+        }
+        for (int i=0; i<nVertices; ++i){
             file.read(patchTp(i));
+        }
         mesh.addPatch(patchTp);
     }
     return mesh;
 }
 
 
-biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFilePly(const biorbd::utils::Path &path)
+biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFilePly(
+        const biorbd::utils::Path &path)
 {
     // Lire un fichier d'os
 
@@ -1387,8 +1506,9 @@ biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFilePly(const biorbd::ut
     // Récupérer tous les points
     for (unsigned int iPoints=0; iPoints < nVertex; ++iPoints){
         biorbd::utils::Node3d nodeTp(0, 0, 0);
-        for (unsigned int i=0; i<3; ++i)
+        for (unsigned int i=0; i<3; ++i){
             file.read(nodeTp(i));
+        }
         mesh.addPoint(nodeTp);
         // Ignorer les colonnes post XYZ
         for (int i=0; i<nVertexProperties-3; ++i){
@@ -1401,21 +1521,27 @@ biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFilePly(const biorbd::ut
         biorbd::rigidbody::Patch patchTp;
         int nVertices;
         file.read(nVertices);
-        if (nVertices != 3)
+        if (nVertices != 3){
             biorbd::utils::Error::raise("Patches must be 3 vertices!");
-        for (int i=0; i<nVertices; ++i)
+        }
+        for (int i=0; i<nVertices; ++i){
             file.read(patchTp(i));
+        }
         int dump;
         // Retirer s'il y a des colonnes de trop
-        for (int i=0; i<nFacesProperties-1; ++i)
+        for (int i=0; i<nFacesProperties-1; ++i){
             file.read(dump);
+        }
         mesh.addPatch(patchTp);
     }
     return mesh;
 }
 
 
-std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarkerFile(const biorbd::utils::String &path, int nNodes){
+std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarkerFile(
+        const biorbd::utils::String &path,
+        int nNodes)
+{
     // Lire le fichier
     biorbd::utils::IfStream file(path.c_str(), std::ios::in);
     biorbd::utils::String t;
@@ -1425,13 +1551,14 @@ std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarker
     // frequency = atoi(findImportantParameter(file, "trajectories").c_str());
 
     // Récupérer l'ordre des marqueurs dans le fichier
-    for (unsigned int i=0; i<3; ++i) // passer l'entete
+    for (unsigned int i=0; i<3; ++i){ // passer l'entete
         file.read(t);
+    }
     size_t idx_tp = 0;
     std::vector<unsigned int> idx_init;
     std::vector<unsigned int> idx_end;
     // Trouver les séparateurs (: et ,)
-    while (idx_tp < t.length()) {
+    while (idx_tp < t.length()){
         idx_tp = t.find(":", idx_tp+1);
         idx_init.push_back(static_cast<unsigned int>(idx_tp));
         idx_end.push_back(static_cast<unsigned int>(t.find(",", idx_tp+1)));
@@ -1440,8 +1567,9 @@ std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarker
     std::vector<biorbd::utils::String> MarkersInFile;
     for (unsigned int i=0; i<idx_init.size()-1; ++i){
         biorbd::utils::String tp;
-        for (unsigned int j=*(idx_init.begin()+i)+1; j<*(idx_end.begin()+i); ++j)
+        for (unsigned int j=*(idx_init.begin()+i)+1; j<*(idx_end.begin()+i); ++j){
             tp.push_back(t.at(j));
+        }
         MarkersInFile.push_back(tp);
     }
 

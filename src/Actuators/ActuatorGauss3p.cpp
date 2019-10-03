@@ -1,3 +1,5 @@
+// Copyright 2019 Pariterre
+
 #define BIORBD_API_EXPORTS
 #include "Actuators/ActuatorGauss3p.h"
 
@@ -18,8 +20,7 @@ biorbd::actuator::ActuatorGauss3p::ActuatorGauss3p() :
     m_wr(std::make_shared<double>(0)),
     m_w1(std::make_shared<double>(0)),
     m_r(std::make_shared<double>(0)),
-    m_qopt(std::make_shared<double>(0))
-{
+    m_qopt(std::make_shared<double>(0)) {
     setType();
 }
 
@@ -36,9 +37,7 @@ biorbd::actuator::ActuatorGauss3p::ActuatorGauss3p(
     m_wr(other.m_wr),
     m_w1(other.m_w1),
     m_r(other.m_r),
-    m_qopt(other.m_qopt)
-{
-
+    m_qopt(other.m_qopt) {
 }
 
 biorbd::actuator::ActuatorGauss3p::ActuatorGauss3p(
@@ -54,18 +53,17 @@ biorbd::actuator::ActuatorGauss3p::ActuatorGauss3p(
         double qopt,
         unsigned int dofIdx) :
     biorbd::actuator::Actuator(direction, dofIdx),
-    m_k(std::make_shared<double>(4.3)), // Default value
+    m_k(std::make_shared<double>(4.3)),  // Default value
     m_Tmax(std::make_shared<double>(Tmax)),
     m_T0(std::make_shared<double>(T0)),
     m_wmax(std::make_shared<double>(wmax)),
     m_wc(std::make_shared<double>(wc)),
-    m_amax(std::make_shared<double>(1.0)), // Default value
+    m_amax(std::make_shared<double>(1.0)),  // Default value
     m_amin(std::make_shared<double>(amin)),
     m_wr(std::make_shared<double>(wr)),
     m_w1(std::make_shared<double>(w1)),
     m_r(std::make_shared<double>(r)),
-    m_qopt(std::make_shared<double>(qopt))
-{
+    m_qopt(std::make_shared<double>(qopt)) {
     setType();
 }
 
@@ -83,36 +81,32 @@ biorbd::actuator::ActuatorGauss3p::ActuatorGauss3p(
         unsigned int dofIdx,
         const biorbd::utils::String &jointName) :
     biorbd::actuator::Actuator(direction, dofIdx, jointName),
-    m_k(std::make_shared<double>(4.3)), // Default value
+    m_k(std::make_shared<double>(4.3)),  // Default value
     m_Tmax(std::make_shared<double>(Tmax)),
     m_T0(std::make_shared<double>(T0)),
     m_wmax(std::make_shared<double>(wmax)),
     m_wc(std::make_shared<double>(wc)),
-    m_amax(std::make_shared<double>(1.0)), // Default value
+    m_amax(std::make_shared<double>(1.0)),  // Default value
     m_amin(std::make_shared<double>(amin)),
     m_wr(std::make_shared<double>(wr)),
     m_w1(std::make_shared<double>(w1)),
     m_r(std::make_shared<double>(r)),
-    m_qopt(std::make_shared<double>(qopt))
-{
+    m_qopt(std::make_shared<double>(qopt)) {
     setType();
 }
 
-biorbd::actuator::ActuatorGauss3p::~ActuatorGauss3p()
-{
-
+biorbd::actuator::ActuatorGauss3p::~ActuatorGauss3p() {
 }
 
-biorbd::actuator::ActuatorGauss3p biorbd::actuator::ActuatorGauss3p::DeepCopy() const
-{
+biorbd::actuator::ActuatorGauss3p
+biorbd::actuator::ActuatorGauss3p::DeepCopy() const {
     biorbd::actuator::ActuatorGauss3p copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
 void biorbd::actuator::ActuatorGauss3p::DeepCopy(
-        const biorbd::actuator::ActuatorGauss3p &other)
-{
+        const biorbd::actuator::ActuatorGauss3p &other) {
     biorbd::actuator::Actuator::DeepCopy(other);
     *m_k = *other.m_k;
     *m_Tmax = *other.m_Tmax;
@@ -130,34 +124,36 @@ void biorbd::actuator::ActuatorGauss3p::DeepCopy(
 
 double biorbd::actuator::ActuatorGauss3p::torqueMax(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot){
+        const biorbd::rigidbody::GeneralizedCoordinates &Qdot) {
     double pos(Q[*m_dofIdx] * 180/M_PI);
     double speed(Qdot[*m_dofIdx] * 180/M_PI);
 
     // Tetanic torque max
     double Tc = *m_T0 * *m_wc / *m_wmax;
-    double C = Tc * (*m_wmax + *m_wc); // en concentrique
-    double we = ( (*m_Tmax - *m_T0) * *m_wmax * *m_wc )   /    ( *m_k * *m_T0 * (*m_wmax + *m_wc) );
-    double E = -( *m_Tmax - *m_T0 ) * we; // en excentrique
+    double C = Tc * (*m_wmax + *m_wc);  // en concentrique
+    double we = ((*m_Tmax - *m_T0) * *m_wmax * *m_wc )
+            /    ( *m_k * *m_T0 * (*m_wmax + *m_wc) );
+    double E = -(*m_Tmax - *m_T0 ) * we;  // en excentrique
 
-    double Tw; // Initiation d'une variable
+    double Tw;  // Initiation d'une variable
     if (speed >= 0)
-        Tw = C / ( *m_wc + speed )  - Tc; // Pour le concentrique
+        Tw = C / (*m_wc + speed )  - Tc;  // Pour le concentrique
     else
-        Tw = E / ( we - speed ) + *m_Tmax; // Pour l'excentrique
+        Tw = E / (we - speed ) + *m_Tmax;  // Pour l'excentrique
 
 
     // Differential activation
-    double A = *m_amin + ( *m_amax - *m_amin ) / ( 1 + exp( -(speed - *m_w1) / *m_wr   ) );
+    double A = *m_amin + (*m_amax - *m_amin )
+            / ( 1 + exp( -(speed - *m_w1) / *m_wr ) );
 
     // Torque angle
-    double Ta = exp( -(*m_qopt - pos) * (*m_qopt - pos)   /   (2 * *m_r * *m_r)   );
+    double Ta = exp(-(*m_qopt - pos) * (*m_qopt - pos)
+                    /   (2 * *m_r * *m_r) );
 
     // Calcul du couple max
     return Tw * A * Ta;
-
 }
 
-void biorbd::actuator::ActuatorGauss3p::setType(){
+void biorbd::actuator::ActuatorGauss3p::setType() {
     *m_type = biorbd::actuator::TYPE::GAUSS3P;
 }
