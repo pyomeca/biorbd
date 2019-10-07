@@ -31,7 +31,7 @@
 #include "Muscles/WrappingObject.h"
 #include "Muscles/WrappingSphere.h"
 
-#ifdef IPOPT_FOUND
+#ifndef SKIP_STATIC_OPTIM
 #include "Muscles/StaticOptimization.h"
 #include "Muscles/StaticOptimizationIpopt.h"
 #include "Muscles/StaticOptimizationIpoptLinearized.h"
