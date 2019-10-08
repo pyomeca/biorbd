@@ -7,7 +7,9 @@
 
 namespace biorbd {
 namespace rigidbody {
+#ifndef SKIP_KALMAN
 class KalmanReconsIMU;
+#endif
 }
 
 }
@@ -80,6 +82,7 @@ extern "C" {
             bool anatomical = true);
 
     // Kalman IMU
+#ifndef SKIP_KALMAN
     BIORBD_API biorbd::rigidbody::KalmanReconsIMU* c_BiorbdKalmanReconsIMU(
             biorbd::Model*,
             double* QinitialGuess = nullptr,
@@ -95,7 +98,7 @@ extern "C" {
             double* Q = nullptr,
             double* QDot = nullptr,
             double* QDDot = nullptr);
-
+#endif
 
     // Math functions
     BIORBD_API void c_matrixMultiplication(

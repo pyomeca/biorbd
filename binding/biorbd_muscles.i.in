@@ -14,7 +14,7 @@
 #include "Muscles/FatigueDynamicState.h"
 #include "Muscles/FatigueDynamicStateXia.h"
 #include "Muscles/Force.h"
-#ifdef IPOPT_FOUND
+#ifndef SKIP_STATIC_OPTIM
 #include "Muscles/StaticOptimization.h"
 #endif
 %}

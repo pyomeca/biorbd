@@ -37,8 +37,10 @@
 #include "Matlab_localJCS.h"
 #include "Matlab_segmentMarkers.h"
 #include "Matlab_inverseKinematics.h"
+#ifndef SKIP_KALMAN
 #include "Matlab_inverseKinematicsEKF.h"
 #include "Matlab_inverseKinematicsEKF_IMU.h"
+#endif
 #include "Matlab_NLeffects.h"
 #include "Matlab_inverseDynamics.h"
 #include "Matlab_forwardDynamics.h"
@@ -350,6 +352,7 @@ void functionHub( int nlhs, mxArray *plhs[],
         return;
     }
 
+#ifndef SKIP_KALMAN
     // Fonction de cinématique inverse
     if(!toLower(cmd).compare("ik_ekf")){
         Matlab_inverseKinematicsEKFallInOneCall(nlhs, plhs, nrhs, prhs);
@@ -389,6 +392,7 @@ void functionHub( int nlhs, mxArray *plhs[],
         Matlab_delEKF_IMU(nlhs, plhs, nrhs, prhs);
         return;
     }
+#endif
 
     // Fonction de cinématique directe
     if(!toLower(cmd).compare("segmentsmarkers")){

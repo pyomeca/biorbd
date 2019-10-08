@@ -17,7 +17,7 @@ if (BINDER_PYTHON3)
 
     if (MODULE_MUSCLES)
         SET(SWIG_MODULE_MUSCLES_INCLUDE_COMMAND "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_muscles.i\"")
-        if (IPOPT_FOUND)
+        if (NOT SKIP_STATIC_OPTIM)
             SET(SWIG_STATIC_OPTIMIZATION_INCLUDE_COMMAND "%include \"${CMAKE_SOURCE_DIR}/include/Muscles/StaticOptimization.h\"")
         endif()
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_muscles.i.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_muscles.i @ONLY)

@@ -8,10 +8,12 @@
 #include "Utils/RotoTrans.h"
 #include "Utils/RotoTransNode.h"
 #include "RigidBody/Bone.h"
-#include "RigidBody/KalmanReconsIMU.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/NodeBone.h"
+#ifndef SKIP_KALMAN
+#include "RigidBody/KalmanReconsIMU.h"
+#endif
 
 biorbd::Model* c_biorbdModel(
         const char* pathToModel) {
@@ -144,6 +146,7 @@ void c_addIMU(
 
 
 // Kalman IMU
+#ifndef SKIP_KALMAN
 biorbd::rigidbody::KalmanReconsIMU* c_BiorbdKalmanReconsIMU(
         biorbd::Model* model,
         double* QinitialGuess,
@@ -197,7 +200,7 @@ void c_BiorbdKalmanReconsIMUstep(
     dispatchQoutput(e_QDot, QDot);
     dispatchQoutput(e_QDDot, QDDot);
 }
-
+#endif
 
 // Math functions
 void c_matrixMultiplication(
