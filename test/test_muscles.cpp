@@ -43,6 +43,12 @@ TEST(MuscleForce, force)
 TEST(MuscleForce, unitTest)
 {
 	EXPECT_NO_THROW(biorbd::muscles::Force())
+	{
+		biorbd::muscles::Force force(1,2,3);
+		for (unsigned int i=0; i<3; ++i){
+			EXPECT_NEAR(force[i], i + 1, requiredPrecision);
+		}
+	}
 }
 
 TEST(MuscleForce, torqueFromMuscles)
