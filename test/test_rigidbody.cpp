@@ -29,6 +29,27 @@ static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
 #endif // MODULE_ACTUATORS
 static std::string modelPathMeshEqualsMarker("models/meshsEqualMarkers.bioMod");
 static std::string modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
+static std::string modelNoRoot("models/pyomecaman_freeFall.bioMod");
+
+TEST(DegreesOfFreedom, count)
+{
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        EXPECT_EQ(model.nbQ(), 13);
+        EXPECT_EQ(model.nbQdot(), 13);
+        EXPECT_EQ(model.nbQddot(), 13);
+        EXPECT_EQ(model.nbGeneralizedTorque(), 13);
+        EXPECT_EQ(model.nbRoot(), 0);
+    }
+    {
+        biorbd::Model model(modelNoRoot);
+        EXPECT_EQ(model.nbQ(), 13);
+        EXPECT_EQ(model.nbQdot(), 13);
+        EXPECT_EQ(model.nbQddot(), 13);
+        EXPECT_EQ(model.nbGeneralizedTorque(), 13 - 3);
+        EXPECT_EQ(model.nbRoot(), 3);
+    }
+}
 
 TEST(Bone, copy)
 {

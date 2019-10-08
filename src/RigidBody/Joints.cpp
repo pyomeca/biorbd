@@ -114,7 +114,7 @@ unsigned int biorbd::rigidbody::Joints::nbQddot() const {
     return *m_nbQddot;
 }
 unsigned int biorbd::rigidbody::Joints::nbRoot() const {
-    if (m_isRootActuated)
+    if (*m_isRootActuated)
         return 0;
     else
         return *m_nbRoot;
