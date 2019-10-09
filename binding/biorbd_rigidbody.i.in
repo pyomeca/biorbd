@@ -30,7 +30,7 @@ namespace std {
                 const biorbd::rigidbody::GeneralizedCoordinates &Q,
                 const biorbd::rigidbody::GeneralizedCoordinates &QDot,
                 const biorbd::rigidbody::GeneralizedCoordinates &QDDot) {
-        biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(*self);
+        biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(self->nbGeneralizedTorque() + self->nbRoot());
         RigidBodyDynamics::InverseDynamics(*self, Q, QDot, QDDot, GeneralizedTorque);
         return GeneralizedTorque;
     }
