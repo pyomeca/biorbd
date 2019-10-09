@@ -136,7 +136,11 @@ void biorbd::utils::Path::parseFileName(
     if (sep == std::string::npos) // If no separator is found, then there is no separator and therefore the path is ./
         folder = "";
     else
-        folder = path.substr(0,sep) + "/";
+#ifdef _WIN32
+        folder = path.substr(0,sep) + "\\";
+#else
+        folder = path.substr(0, sep) + "/";
+#endif
     if (folder.find("./") == 0) // Remove the leading ./ if necessary
         folder = folder.substr(2);
 
@@ -295,10 +299,11 @@ biorbd::utils::String biorbd::utils::Path::currentDir()
     char buff[FILENAME_MAX];
 #if defined(_WIN32) || defined(_WIN64)
      biorbd::utils::Error::check(_getcwd(buff, FILENAME_MAX), "Could not find the current directory");
+     return biorbd::utils::String(buff) + "\\";
 #else
     biorbd::utils::Error::check(getcwd(buff, FILENAME_MAX), "Could not find the current directory");
-#endif
     return biorbd::utils::String(buff) + "/";
+#endif
 }
 
 void biorbd::utils::Path::createFolder() const

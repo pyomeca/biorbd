@@ -105,6 +105,9 @@ Pipfile.lock
 # Visual code
 .vscode
 
+# Visual studio
+.vs
+
 # CMake
 CMakeCache.txt
 CMakeFiles
