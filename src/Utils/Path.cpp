@@ -97,19 +97,19 @@ bool biorbd::utils::Path::isFolderExist() const
 
 bool biorbd::utils::Path::isFolderExist(const Path &path)
 {
-	return isFolderExist(path.folder());
+    return isFolderExist(path.folder());
 }
 
 bool biorbd::utils::Path::isFolderExist(const biorbd::utils::String & path)
 {
 #if defined(_WIN32) || defined(_WIN64)
-	if (GetFileAttributesA(path.c_str()) == INVALID_FILE_ATTRIBUTES)
-		return false; // Le path est invalide
-	else
-		// Si on est ici, c'est que quelque chose existe, s'assurer que ça ne soit pas un fichier
-		if (isFileExist(path))
-			return false;
-		else
+    if (GetFileAttributesA(path.c_str()) == INVALID_FILE_ATTRIBUTES)
+        return false; // Le path est invalide
+    else
+        // Si on est ici, c'est que quelque chose existe, s'assurer que ça ne soit pas un fichier
+        if (isFileExist(path))
+            return false;
+        else
             return true;
 #else
     struct stat statbuf;
@@ -128,31 +128,33 @@ void biorbd::utils::Path::parseFileName(
         biorbd::utils::String &filename,
         biorbd::utils::String &extension)
 {
-    size_t sep(path.find_last_of("/")); // Assume UNIX formalism
-    if (sep == std::string::npos)
-        sep = path.find_last_of("\\"); // If nothing is found check for windows formalism
+#ifdef _WIN32
+    biorbd::utils::String sep("\\");
+#else
+    biorbd::utils::String sep("/");
+#endif
+    biorbd::utils::String pathSep(convertToOsSeparator(path));
+
+    size_t sepPos(pathSep.find_last_of(sep));
 
     // Stocker le folder
-    if (sep == std::string::npos) // If no separator is found, then there is no separator and therefore the path is ./
+    if (sepPos == std::string::npos) // If no separator is found, then there is no separator and therefore the path is ./
         folder = "";
     else
-#ifdef _WIN32
-        folder = path.substr(0,sep) + "\\";
-#else
-        folder = path.substr(0, sep) + "/";
-#endif
-    if (folder.find("./") == 0) // Remove the leading ./ if necessary
+        folder = pathSep.substr(0, sepPos) + sep;
+
+    if (folder.find("." + sep) == 0) // Remove the leading ./ if necessary
         folder = folder.substr(2);
 
     // Stocker l'extension
-    size_t ext(path.find_last_of("."));
+    size_t ext(pathSep.find_last_of("."));
     if (ext != SIZE_MAX)
-        extension = path.substr(ext+1);
+        extension = pathSep.substr(ext+1);
     else
         extension = "";
 
     // Stocker le nom de fichier
-    filename = path.substr(sep+1, ext-sep-1);
+    filename = pathSep.substr(sepPos+1, ext- sepPos-1);
 }
 
 biorbd::utils::String biorbd::utils::Path::relativePath()  const{
@@ -248,6 +250,26 @@ biorbd::utils::String biorbd::utils::Path::absolutePath() const
             return absoluteFolder() + *m_filename;
     } else
         return absoluteFolder();
+}
+
+biorbd::utils::String biorbd::utils::Path::convertToOsSeparator(const biorbd::utils::String& path)
+{
+#ifdef _WIN32
+    biorbd::utils::String sepToReplace("/");
+    int lengthToReplace(1);
+    biorbd::utils::String replaceBy("\\");
+#else
+    biorbd::utils::String sepToReplace("\\");
+    int lengthToReplace(2);
+    biorbd::utils::String replaceBy("/");
+#endif
+    biorbd::utils::String pathOut(path);
+    size_t pos(pathOut.find_last_of(sepToReplace));
+    while (pos != std::string::npos) {
+        pathOut.replace(pos, lengthToReplace, replaceBy);
+        pos = pathOut.find_last_of(sepToReplace);
+    }
+    return pathOut;
 }
 
 const biorbd::utils::String &biorbd::utils::Path::originalPath() const

@@ -45,6 +45,7 @@ public:
     biorbd::utils::String absoluteFolder() const; // Relative to root
     biorbd::utils::String absolutePath() const; // Relative to root
 
+    static biorbd::utils::String convertToOsSeparator(const biorbd::utils::String& path); 
     // Accessor
     const biorbd::utils::String& originalPath() const;
     const biorbd::utils::String& folder() const;
