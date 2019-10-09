@@ -156,9 +156,9 @@
         // Copy the actual data
         unsigned int nQ(dims[0]);
         $1 = new biorbd::rigidbody::GeneralizedCoordinates(nQ);
-        for (unsigned int q=0; q<nQ; ++q)
+	for (unsigned int q=0; q<nQ; ++q){
             (*$1)[q] = *(double*)PyArray_GETPTR1(data, q);
-
+	}
     } else {
         PyErr_SetString(PyExc_ValueError, "GeneralizedCoordinates must be a GeneralizedCoordinates or numpy vector");
         SWIG_fail;
