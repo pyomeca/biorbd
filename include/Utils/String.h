@@ -14,12 +14,13 @@ public:
     String(const char *c);
     String(const biorbd::utils::String &s);
     String(const std::basic_string<char> &c);
-    String operator+(const unsigned int);
-    String operator+(const int);
-    String operator+(const double);
+    String& operator=(const biorbd::utils::String& other);
+    String operator+(unsigned int);
+    String operator+(int);
+    String operator+(double);
     String operator+(const char *c);
-    String operator()(const unsigned int) const;
-    String operator()(const unsigned int, const unsigned int) const;
+    String operator()(unsigned int) const;
+    String operator()(unsigned int, unsigned int) const;
     virtual ~String();
 
     static biorbd::utils::String tolower(const biorbd::utils::String &str); // convert a string to a lower case string

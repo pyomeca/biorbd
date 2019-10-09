@@ -1,0 +1,68 @@
+version 4
+
+// This is a model test to see if equations works properly
+// The mesh are used to hold that information. The x coordinate uses an equation
+// The y coordinate is the expected value for this coordinate.
+// Each answer is unique so it is easier to find which one is problematic
+// if needed
+
+
+// Segment
+segment PlusAndMinus
+  // Plus and minus
+  mesh 2+2   4 0
+  mesh -2+1 -1 0
+  mesh 3-1   2 0
+  mesh 2-5  -3 0
+  mesh -3-1 -4 0
+  mesh -3--6 3 0
+endsegment
+
+segment MultiplicationAndDivision
+  mesh 2*2   4 0
+  mesh -2*2 -4 0
+  mesh 2*-3 -6 0
+  mesh 4/2   2 0
+  mesh -4/2 -2 0
+  mesh 6/-2 -3 0    
+endsegment
+
+segment ParentheseAndOrderOfOperation
+  mesh 2+2*3          8 0
+  mesh (2+2)*3       12 0
+  mesh 4+4/2          6 0
+  mesh (4+4)/2        4 0
+  mesh -(1)+4         3 0
+  mesh 5-(-2)         7 0
+  mesh (-1)+3         2 0
+  mesh 2+((2+3)*3)*2 32 0
+  mesh 2+(2+3*3)*2   24 0
+  mesh 2+2+3*3*2     22 0
+endsegment
+    
+segment ScientificNotation
+  mesh 1e0             1            0
+  mesh 1e2           100            0
+  mesh 1e10  10000000000            0
+  mesh 1e-1            0.1          0
+  mesh 1e-2            0.01         0
+  mesh 1e-10           0.0000000001 0
+endsegment
+
+segment Constant
+  mesh pi     3.141592653589793 0
+  mesh -pi   -3.141592653589793 0
+  mesh 2*-pi -6.283185307179586 0
+endsegment
+
+variables
+  $my_first_variable   2
+  $my_second_variable -3
+endvariables
+
+segment WithVariables
+  mesh $my_first_variable                       2 0
+  mesh $my_second_variable                     -3 0
+  mesh $my_first_variable*-$my_second_variable  6 0
+endsegment
+

@@ -69,8 +69,8 @@ void Matlab_inverseKinematicsEKF_IMUstep( int , mxArray *plhs[],
     biorbd::rigidbody::KalmanReconsIMU * kalman = convertMat2Ptr<biorbd::rigidbody::KalmanReconsIMU>(prhs[2]);
 
       // Recevoir la matrice des markers (Ne traite que le premier frame)
-    std::vector<std::vector<biorbd::utils::Attitude>> imusOverTime = getParameterAllIMUs(prhs,3);
-    std::vector<biorbd::utils::Attitude> imus = imusOverTime[0];
+    std::vector<std::vector<biorbd::rigidbody::IMU>> imusOverTime = getParameterAllIMUs(prhs,3);
+    std::vector<biorbd::rigidbody::IMU> imus = imusOverTime[0];
 
     // Si c'est le premier frame recevoir Qinit
 
@@ -133,7 +133,7 @@ void Matlab_inverseKinematicsEKF_IMUallInOneCall( int, mxArray *plhs[],
     biorbd::rigidbody::KalmanReconsIMU kalman(*model, biorbd::rigidbody::KalmanRecons::KalmanParam(freq, noiseF, errorF));
 
     // Recevoir la matrice des imus
-    std::vector<std::vector<biorbd::utils::Attitude>> imusOverTime = getParameterAllIMUs(prhs,2);
+    std::vector<std::vector<biorbd::rigidbody::IMU>> imusOverTime = getParameterAllIMUs(prhs,2);
     unsigned int nFrames(static_cast<unsigned int>(imusOverTime.size()));
 
     // Recevoir Qinit

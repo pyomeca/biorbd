@@ -11,13 +11,20 @@
 //#else
 //#  define BIORBD_API
 //#endif
-
 #define BIORBD_API
-#cmakedefine IPOPT_FOUND
+
+#ifdef _WIN32
+#define _ENABLE_EXTENDED_ALIGNED_STORAGE
+#endif
 
 // Choice of modules
 #cmakedefine MODULE_ACTUATORS
 #cmakedefine MODULE_MUSCLES
+
+// Define some skip if ones doesn't want to compile them
+#cmakedefine SKIP_KALMAN
+#cmakedefine SKIP_STATIC_OPTIM
+#cmakedefine SKIP_LONG_TESTS
 
 #ifndef _WIN32
 #ifndef NAN

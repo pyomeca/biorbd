@@ -7,28 +7,30 @@
 #include "Utils/Equation.h"
 
 // Constructeur
+biorbd::utils::IfStream::IfStream() :
+    m_isOpen(std::make_shared<bool>(false)),
+    m_ifs(std::make_shared<std::ifstream>()),
+    m_path(std::make_shared<biorbd::utils::Path>())
+{
+
+}
 biorbd::utils::IfStream::IfStream(
         const biorbd::utils::Path& path,
         std::ios_base::openmode mode = std::ios_base::in ) :
-    m_path(path)
+    m_isOpen(std::make_shared<bool>(false)),
+    m_ifs(std::make_shared<std::ifstream>()),
+    m_path(std::make_shared<biorbd::utils::Path>(path))
 {
-    open(path.c_str(), mode);
+    open(m_path->absolutePath().c_str(), mode);
 }
 biorbd::utils::IfStream::IfStream(
         const char* path,
         std::ios_base::openmode mode = std::ios_base::in ) :
-    m_path(path)
+    m_isOpen(std::make_shared<bool>(false)),
+    m_ifs(std::make_shared<std::ifstream>()),
+    m_path(std::make_shared<biorbd::utils::Path>(path))
 {
-    open(path, mode);
-}
-biorbd::utils::IfStream::IfStream( )
-{
-    m_isOpen = false;
-}
-
-biorbd::utils::IfStream::~IfStream()
-{
-    delete m_ifs;
+    open(m_path->absolutePath().c_str(), mode);
 }
 
 
@@ -37,18 +39,11 @@ bool biorbd::utils::IfStream::open(
         const biorbd::utils::Path& path,
         std::ios_base::openmode mode = std::ios_base::in )
 {
-    return open(path.c_str(), mode);
+    biorbd::utils::Error::check(path.isFileExist(), path.absolutePath() + " could not be loaded");
+    *m_ifs = std::ifstream(path.relativePath().c_str(), mode);
+    *m_isOpen = true;
+    return *m_isOpen;
 }
-bool biorbd::utils::IfStream::open(
-        const char* path,
-        std::ios_base::openmode mode = std::ios_base::in )
-{
-    m_ifs = new std::ifstream(path, mode);
-    biorbd::utils::Error::error(m_ifs!=nullptr, path + biorbd::utils::String(" file could not be opened"));
-    m_isOpen = true;
-    return m_isOpen;
-}
-
 
 // Lire le fichier
 bool biorbd::utils::IfStream::readSpecificTag(
@@ -64,8 +59,8 @@ bool biorbd::utils::IfStream::reachSpecificTag(const biorbd::utils::String& tag)
         if (!text.tolower().compare(tag))
             return true;
 
-    biorbd::utils::String outMessage = tag + " parameter could not be found in Data file..";
-    biorbd::utils::Error::error(0, outMessage);
+    biorbd::utils::String outMessage(tag + " parameter could not be found in Data file..");
+    biorbd::utils::Error::raise(outMessage);
     return false; // Il est impossible qu'on se rende ici, mais c'est mieux d'avoir un return pour le compilateur
 }
 
@@ -74,21 +69,21 @@ int biorbd::utils::IfStream::countTagsInAConsecutiveLines(const biorbd::utils::S
     // Se souvenir où on était dans le fichier
     long positionInFile(m_ifs->tellg());
     biorbd::utils::String text;
-    int nTags(0);
+    int nMarkers(0);
 
     // Lire le premier mot de la ligne
     while (read(text))
         // S'il est comme le tag, saute à la prochaine ligne et on recommence
         if (!text.compare(tag)){
             getline(text);
-            ++nTags;
+            ++nMarkers;
         }
         else
             break;
 
     // Remettre le fichier au point d'origine
     m_ifs->seekg(positionInFile);
-    return nTags;
+    return nMarkers;
 }
 
 bool biorbd::utils::IfStream::read(biorbd::utils::String& text){
@@ -122,7 +117,11 @@ bool biorbd::utils::IfStream::read(double& d, const std::map<biorbd::utils::Equa
     biorbd::utils::Equation tp;
     bool out(read(tp));
     // gérer le cas d'une équation
-    d = biorbd::utils::Equation::resolveEquation(tp, variables);
+    try {
+        d = biorbd::utils::Equation::resolveEquation(tp, variables);
+    } catch (boost::bad_lexical_cast) {
+        biorbd::utils::Error::raise("The following expression cannot be parsed properly: \"" + tp + "\"");
+    }
     return out;
 }
 bool biorbd::utils::IfStream::read(int& i){

@@ -31,6 +31,14 @@ if (NOT IPOPT_FOUND)
     set(IPOPT_LIBRARY "")
 endif()
 
+# Define some skip if ones doesn't want to compile them
+option(SKIP_KALMAN "If Kalman filter should be compiled" OFF)
+if (IPOPT_FOUND)
+    option(SKIP_STATIC_OPTIM "If Static optimization should be compiled" OFF)
+else()
+    set(SKIP_STATIC_OPTIM ON CACHE BOOL "Static optimization can't be compiled since Ipopt was not foudn" FORCE)
+endif()
+
 # Prepare add library
 set(SRC_LIST
     src/BiorbdModel.cpp
@@ -101,7 +109,7 @@ endif()
 # Add linker
 target_link_libraries(${PROJECT_NAME} ${BIORBD_MODULE_NAMES} ${RBDL_LIBRARY} ${DLIB_LIBRARY} ${IPOPT_LIBRARY})
 
-# installation
+# install target
 install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION ${${PROJECT_NAME}_LIB_FOLDER}
         RUNTIME DESTINATION ${${PROJECT_NAME}_BIN_FOLDER}
@@ -109,6 +117,18 @@ install(TARGETS ${PROJECT_NAME}
         )
 install(DIRECTORY include/ DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER})
 install(FILES ${CMAKE_BINARY_DIR}/include/biorbdConfig.h DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER})
+        
+# uninstall target
+if(NOT TARGET uninstall)
+    configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+        IMMEDIATE @ONLY)
+
+    add_custom_target(uninstall
+        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+endif()
+
         
 # Add binding subdirectory
 add_subdirectory(binding)

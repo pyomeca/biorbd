@@ -31,7 +31,7 @@ void Matlab_parent( int, mxArray *plhs[],
     }
 
     // Sortie du nom du segment parent
-    plhs[0] = mxCreateString ( model->GetBodyName(model->bone(idx-1).parent_rbdl_id()).c_str()); // Recueillir le nom
+    plhs[0] = mxCreateString ( model->bone(idx-1).name().c_str()); // Recueillir le nom
 
     return;
 }

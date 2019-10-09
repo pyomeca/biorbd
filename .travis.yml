@@ -12,8 +12,6 @@ matrix:
     env:
       - COMPILER=xcode7.2
   - os: windows
-    env:
-      - VS
 
     
 before_install:
@@ -30,7 +28,7 @@ before_install:
         bash miniconda.sh -b -p $HOME/miniconda;
       elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         choco install miniconda3 --params="'/AddToPath:1'";
-        export PATH="/c/tools/miniconda3/scripts:/c/tools/miniconda3/:$PATH";
+        export PATH="/c/tools/miniconda3/scripts:/c/tools/miniconda3/:/c/Program Files/Git/miniconda3/bin/:$PATH";
       fi
     - export PATH="$HOME/miniconda/bin:$PATH"
     - hash -r
@@ -62,33 +60,33 @@ script:
     - cd build
     # Perform tests on all platform, but only perform code coverage on Linux
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON .. ;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=ON ..;
         make;
       elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON .. ;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=ON ..;
         make;
       elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
-        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..;
-        cmake --build ./ --config Release --target install;
+        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON -DBINDER_C=ON ..;
+        cmake --build ./ --config Release;
       fi
     # Only do the coverage on Linux, but run the test anyway to get a nice output
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-        cp -r test/models/ .;
-      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
-        cd test;
-      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
-        cd test\\Release;
-        xcopy ..\\models .\\models\\;
-      fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+        cp -r test/models/ .;
         make biorbd_coverage;
       elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
-        ./runUnitTests;
+        cd test;
+        ./biorbd_tests;
+        cd binding/c;
+        ./biorbd_tests_binding_c;
+        cd ../../..;
       elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
-        ./runUnitTests.exe;
-      fi
-    - if [[ "$TRAVIS_OS_NAME" != "linux" ]]; then 
-        cd ..;
+        cd test\\Release;
+        xcopy ..\\models .\\models\\;
+        xcopy ..\\models\\meshFiles .\\models\\meshFiles\\;
+        xcopy ..\\binding\\c\\Release\\biorbd_tests_binding_c.exe;
+        ./biorbd_tests.exe;
+        ./biorbd_tests_binding_c.exe;
+        cd ../..;
       fi
     - ctest
     
@@ -97,7 +95,7 @@ script:
         cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
         make install;
       else
-        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
+        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=$ToolsDir/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
         cmake --build ./ --config Release --target install;
       fi
     - python -c "import biorbd"    

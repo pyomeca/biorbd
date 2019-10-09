@@ -31,32 +31,41 @@ biorbd::utils::String::String(const std::basic_string<char> &c)
 
 }
 
+biorbd::utils::String &biorbd::utils::String::operator=(const biorbd::utils::String &other)
+{
+    if (this==&other) // check for self-assigment
+        return *this;
+
+    this->std::string::operator=(other);
+    return *this;
+}
+
 biorbd::utils::String biorbd::utils::String::operator+(const char *c){
     String tp = *this;
     tp.append(c);
     return tp;
 }
-biorbd::utils::String biorbd::utils::String::operator+(const double d){
+biorbd::utils::String biorbd::utils::String::operator+(double d){
     return *this + boost::lexical_cast<std::string>(d);
 }
-biorbd::utils::String biorbd::utils::String::operator+(const unsigned int d){
+biorbd::utils::String biorbd::utils::String::operator+(unsigned int d){
     return *this + boost::lexical_cast<std::string>(d);
 }
-biorbd::utils::String biorbd::utils::String::operator+(const int d){
+biorbd::utils::String biorbd::utils::String::operator+(int d){
     return *this + boost::lexical_cast<std::string>(d);
 }
 
-biorbd::utils::String biorbd::utils::String::operator()(const unsigned int i) const{
-    biorbd::utils::Error::error(i<this->length(), "Index for string out of range");
+biorbd::utils::String biorbd::utils::String::operator()(unsigned int i) const{
+    biorbd::utils::Error::check(i<this->length(), "Index for string out of range");
     char out[2];
     out[0] = (*this)[i];
     out[1] = '\0';
     return out;
 }
 
-biorbd::utils::String biorbd::utils::String::operator()(const unsigned int i, const unsigned int j) const{
-    biorbd::utils::Error::error((i<this->length() || j<this->length()), "Index for string out of range");
-    biorbd::utils::Error::error(j>i, "Second argument should be higher than first!");
+biorbd::utils::String biorbd::utils::String::operator()(unsigned int i, unsigned int j) const{
+    biorbd::utils::Error::check((i<this->length() || j<this->length()), "Index for string out of range");
+    biorbd::utils::Error::check(j>i, "Second argument should be higher than first!");
     char *out = static_cast<char*>(malloc(j-i+2*sizeof(char)));
     for (unsigned int k=0; k<j-i+1; ++k)
         out[k] = (*this)[i+k];

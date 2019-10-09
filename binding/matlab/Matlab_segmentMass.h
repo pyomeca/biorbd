@@ -5,6 +5,7 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "RigidBody/BoneCaracteristics.h"
 
 void Matlab_segmentMass( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){

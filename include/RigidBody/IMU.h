@@ -1,32 +1,45 @@
 #ifndef BIORBD_RIGIDBODY_IMU_H
 #define BIORBD_RIGIDBODY_IMU_H
 
+#include <memory>
 #include "biorbdConfig.h"
-#include "Utils/NodeAttitude.h"
+#include "Utils/RotoTransNode.h"
 
 namespace biorbd {
+namespace utils {
+class String;
+}
+
 namespace rigidbody {
 
-class BIORBD_API IMU : public biorbd::utils::NodeAttitude
+class BIORBD_API IMU : public biorbd::utils::RotoTransNode
 { 
 public:
     IMU(
-            const biorbd::utils::Attitude& = biorbd::utils::Attitude(), // Position
-            const biorbd::utils::String& = "", // Nom du noeud
-            const biorbd::utils::String& = "", // Nom du parent
-            const bool& = true, // Si le marker est un marker technique
-            const bool& = true, // Si le marker est un marker anatomique
-            const int& = -1); // Numéro ID du parent
+            bool isTechnical = true, // Si le marker est un marker technique
+            bool isAnatomical = true);
+    IMU(
+            const biorbd::utils::RotoTransNode& RotoTrans, // Position
+            bool isTechnical = true, // Si le marker est un marker technique
+            bool isAnatomical = true); // Si le marker est un marker anatomique
+    template<typename OtherDerived> IMU(const Eigen::MatrixBase<OtherDerived>& other) :
+        biorbd::utils::RotoTransNode(other){}
+    biorbd::rigidbody::IMU DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::IMU& other);
 
-    virtual ~IMU();
     // Get and Set
-    virtual bool isTechnical() const;
-    virtual bool isAnatomical() const;
-    int parentId() const;
+    // TODO Inherit isTechnical
+    bool isTechnical() const;
+    bool isAnatomical() const;
+    template<typename OtherDerived>
+        biorbd::rigidbody::IMU& operator=(const Eigen::MatrixBase <OtherDerived>& other){
+            this->biorbd::utils::RotoTransNode::operator=(other);
+            return *this;
+        }
+
 protected:
-    bool m_technical; // If a marker is a technical marker
-    bool m_anatomical; // It marker is a anatomical marker
-    int m_id;
+    std::shared_ptr<bool> m_technical; // If a marker is a technical marker
+    std::shared_ptr<bool> m_anatomical; // It marker is a anatomical marker
 
 };
 

@@ -1,6 +1,7 @@
 #ifndef BIORBD_UTILS_QUATERNION_H
 #define BIORBD_UTILS_QUATERNION_H
 
+#include <memory>
 #include <rbdl/rbdl_math.h>
 #include <rbdl/Quaternion.h>
 #include "biorbdConfig.h"

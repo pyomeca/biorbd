@@ -11,23 +11,28 @@ class BIORBD_API StateDynamicsBuchanan : public biorbd::muscles::StateDynamics
 {
 public:
     StateDynamicsBuchanan(
-            const double &neuralCommand = 0,
-            const double &excitation = 0);
+            double neuralCommand = 0,
+            double excitation = 0);
+    StateDynamicsBuchanan(const biorbd::muscles::StateDynamicsBuchanan& other);
     ~StateDynamicsBuchanan();
+    biorbd::muscles::StateDynamicsBuchanan DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::StateDynamicsBuchanan& other);
 
     virtual double timeDerivativeExcitation(
             const Caracteristics &c,
-            const bool alreadyNormalized);
-    virtual void setExcitation(const double &val);
-    virtual void setNeuralCommand(const double &val);
+            bool alreadyNormalized);
+    virtual void setExcitation(double val);
+    virtual void setNeuralCommand(double val);
     void shapeFactor(double m_shape_factor);
-    double shapeFactor();
-    double activation();
+    double shapeFactor() const;
+    void setActivation(double notUsed);
 
 protected:
-    double m_neuralCommand;
-    double m_shapeFactor; //Buchanan2004, le 22 mars 2018
-    double m_excitationDot;
+    virtual void setType();
+
+    std::shared_ptr<double> m_neuralCommand;
+    std::shared_ptr<double> m_shapeFactor; //Buchanan2004, le 22 mars 2018
+    std::shared_ptr<double> m_excitationDot;
 
 };
 

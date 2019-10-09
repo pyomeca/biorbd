@@ -20,7 +20,7 @@ void Matlab_IMUJacobian( int, mxArray *plhs[],
 
 
     // Trouver la matrice jacobienne de tous les marqueurs
-    std::vector<biorbd::utils::Matrix> Jac_tp = model->IMUJacobian(*model, Q);
+    std::vector<biorbd::utils::Matrix> Jac_tp = model->IMUJacobian(Q);
     std::vector<biorbd::utils::Matrix>::iterator it=Jac_tp.begin();
 
     // Create a matrix for the return argument

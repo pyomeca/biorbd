@@ -3,7 +3,7 @@
 
 #include <memory>
 #include "biorbdConfig.h"
-#include "Utils/String.h"
+#include "MusclesEnums.h"
 
 namespace biorbd {
 namespace muscles {
@@ -12,12 +12,14 @@ class BIORBD_API FatigueState
 {
 public:
     FatigueState(
-            double active = 0,
+            double active = 1,
             double fatigued = 0,
-            double resting = 1);
-
-    FatigueState(const std::shared_ptr<FatigueState> fatigue);
+            double resting = 0);
+    FatigueState(const biorbd::muscles::FatigueState& other);
+    FatigueState(const std::shared_ptr<biorbd::muscles::FatigueState> other);
     virtual ~FatigueState();
+    biorbd::muscles::FatigueState DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::FatigueState& other);
 
     // Set and Get
     virtual void setState(
@@ -29,14 +31,14 @@ public:
     double fatiguedFibers() const;
     double restingFibers() const;
 
-    std::string getType() const;
+    biorbd::muscles::STATE_FATIGUE_TYPE getType() const;
 protected:
-    double m_activeFibers;
-    double m_fatiguedFibers;
-    double m_restingFibers;
+    std::shared_ptr<double> m_activeFibers;
+    std::shared_ptr<double> m_fatiguedFibers;
+    std::shared_ptr<double> m_restingFibers;
 
     virtual void setType();
-    std::string m_type; // type of the muscle fatigue
+    std::shared_ptr<biorbd::muscles::STATE_FATIGUE_TYPE> m_type; // type of the muscle fatigue
 
 };
 

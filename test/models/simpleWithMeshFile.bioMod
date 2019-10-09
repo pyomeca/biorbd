@@ -1,0 +1,5 @@
+version 3
+
+segment Segment1
+  meshfile meshFiles/cube.bioMesh
+endsegment

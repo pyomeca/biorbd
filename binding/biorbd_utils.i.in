@@ -5,17 +5,17 @@
 #include "Utils/Matrix.h"
 #include "Utils/Quaternion.h"
 #include "Utils/Node.h"
-#include "Utils/Attitude.h"
+#include "Utils/RotoTrans.h"
 %}
 
 // Instantiate templates
 namespace std {
 %template(VecBiorbdVector) std::vector<biorbd::utils::Vector>;
 %template(MatBiorbdVector) std::vector<std::vector<biorbd::utils::Vector>>;
-%template(VecBiorbdAttitude) std::vector<biorbd::utils::Attitude>;
-%template(MatBiorbdAttitude) std::vector<std::vector<biorbd::utils::Attitude>>;
-%template(VecBiorbdNode) std::vector<biorbd::utils::Node>;
-%template(MatBiorbdNode) std::vector<std::vector<biorbd::utils::Node>>;
+%template(VecBiorbdRotoTrans) std::vector<biorbd::utils::RotoTrans>;
+%template(MatBiorbdRotoTrans) std::vector<std::vector<biorbd::utils::RotoTrans>>;
+%template(VecBiorbdNode) std::vector<biorbd::utils::Node3d>;
+%template(MatBiorbdNode) std::vector<std::vector<biorbd::utils::Node3d>>;
 }
 
 %include <std_string.i>
@@ -25,15 +25,17 @@ namespace std {
     }
 }
 
+%include "@CMAKE_SOURCE_DIR@/include/Utils/UtilsEnum.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/String.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Path.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Vector.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Matrix.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Quaternion.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Node.h"
-%include "@CMAKE_SOURCE_DIR@/include/Utils/Attitude.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Node3d.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/RotoTrans.h"
 
-//%include "@CMAKE_SOURCE_DIR@/include/Utils/NodeAttitude.h"
+//%include "@CMAKE_SOURCE_DIR@/include/Utils/RotoTransNode.h"
 //%include "@CMAKE_SOURCE_DIR@/include/Utils/Time.h"
 //%include "@CMAKE_SOURCE_DIR@/include/Utils/Timer.h"
 //%include "@CMAKE_SOURCE_DIR@/include/Utils/Benchmark.h"

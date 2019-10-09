@@ -4,20 +4,12 @@
 #include <mex.h>
 #include <cmath>
 #include <iostream>
-#include <fstream>
-#include <iostream>
-
-#include "BiorbdModel.h"
-#include "biorbdConfig.h"
-#include "Utils/Matrix.h"
-#include "ModelReader.h"
+#include <algorithm>
 #include "Utils/Error.h"
 
-#include "class_handle.h"
 #include "Matlab_help.h"
 #include "Matlab_new.h"
 #include "Matlab_delete.h"
-
 #include "Matlab_parent.h"
 #include "Matlab_changeGravity.h"
 #include "Matlab_totalMass.h"
@@ -28,12 +20,12 @@
 #include "Matlab_nQddot.h"
 #include "Matlab_nameDof.h"
 #include "Matlab_nRoot.h"
-#include "Matlab_nTags.h"
-#include "Matlab_nameTags.h"
+#include "Matlab_nMarkers.h"
+#include "Matlab_nameMarkers.h"
 #include "Matlab_nBody.h"
 #include "Matlab_nameBody.h"
 #include "Matlab_segmentMass.h"
-#include "Matlab_Tags.h"
+#include "Matlab_Markers.h"
 #include "Matlab_ProjectCustomPoint.h"
 #include "Matlab_ProjectPoint.h"
 #include "Matlab_ProjectPointJacobian.h"
@@ -41,19 +33,21 @@
 #include "Matlab_nameIMU.h"
 #include "Matlab_IMU.h"
 #include "Matlab_IMUJacobian.h"
-#include "Matlab_LocalTags.h"
+#include "Matlab_LocalMarkers.h"
 #include "Matlab_localJCS.h"
-#include "Matlab_segmentTags.h"
+#include "Matlab_segmentMarkers.h"
 #include "Matlab_inverseKinematics.h"
+#ifndef SKIP_KALMAN
 #include "Matlab_inverseKinematicsEKF.h"
 #include "Matlab_inverseKinematicsEKF_IMU.h"
+#endif
 #include "Matlab_NLeffects.h"
 #include "Matlab_inverseDynamics.h"
 #include "Matlab_forwardDynamics.h"
 #include "Matlab_computeQdot.h"
 #include "Matlab_Mesh.h"
 #include "Matlab_Patch.h"
-#include "Matlab_TagsJacobian.h"
+#include "Matlab_MarkersJacobian.h"
 #include "Matlab_ContactsPosition.h"
 #include "Matlab_ContactJacobian.h"
 #include "Matlab_ContactGamma.h"
@@ -219,30 +213,30 @@ void functionHub( int nlhs, mxArray *plhs[],
         return;
     }
 
-    // Nombre de Tags
-    if (!toLower(cmd).compare("ntags")){
-        Matlab_nTags(nlhs, plhs, nrhs, prhs);
+    // Nombre de Markers
+    if (!toLower(cmd).compare("nmarkers")){
+        Matlab_nMarkers(nlhs, plhs, nrhs, prhs);
         return;
     }
 
-    // Noms des Tags
-    if (!toLower(cmd).compare("nametags")){
-        Matlab_nameTags(nlhs, plhs, nrhs, prhs);
+    // Noms des Markers
+    if (!toLower(cmd).compare("namemarkers")){
+        Matlab_nameMarkers(nlhs, plhs, nrhs, prhs);
         return;
     }
-    // Noms des Tags techniques
-    if (!toLower(cmd).compare("nametechnicaltags")){
-        Matlab_nameTechnicalTags(nlhs, plhs, nrhs, prhs);
+    // Noms des Markers techniques
+    if (!toLower(cmd).compare("nametechnicalmarkers")){
+        Matlab_nameTechnicalMarkers(nlhs, plhs, nrhs, prhs);
         return;
     }
-    // Noms des Tags anatomiques
-    if (!toLower(cmd).compare("nameanatomicaltags")){
-        Matlab_nameAnatomicalTags(nlhs, plhs, nrhs, prhs);
+    // Noms des Markers anatomiques
+    if (!toLower(cmd).compare("nameanatomicalmarkers")){
+        Matlab_nameAnatomicalMarkers(nlhs, plhs, nrhs, prhs);
         return;
     }
-    // Local Tags
-    if (!toLower(cmd).compare("localtags")){
-        Matlab_LocalTags(nlhs, plhs, nrhs, prhs);
+    // Local Markers
+    if (!toLower(cmd).compare("localmarkers")){
+        Matlab_LocalMarkers(nlhs, plhs, nrhs, prhs);
         return;
     }
 
@@ -263,8 +257,8 @@ void functionHub( int nlhs, mxArray *plhs[],
     }
 
     // Fonction de cinématique directe
-    if(!toLower(cmd).compare("tags")){
-        Matlab_Tags(nlhs, plhs, nrhs, prhs);
+    if(!toLower(cmd).compare("markers")){
+        Matlab_Markers(nlhs, plhs, nrhs, prhs);
         return;
     }
 
@@ -285,7 +279,7 @@ void functionHub( int nlhs, mxArray *plhs[],
         return;
     }
 
-    // Nombre de Tags
+    // Nombre de Markers
     if (!toLower(cmd).compare("nmimu")){
         biorbd::utils::Error::warning(0, "La fonction \"nmimu\" est obsolete. Remplacer par \"nimu\". Elle sera retirée prochainement");
         Matlab_nIMU(nlhs, plhs, nrhs, prhs);
@@ -296,7 +290,7 @@ void functionHub( int nlhs, mxArray *plhs[],
         return;
     }
 
-    // Noms des Tags
+    // Noms des Markers
     if (!toLower(cmd).compare("namemimu")){
         biorbd::utils::Error::warning(0, "La fonction \"namemimu\" est obsolete. Remplacer par \"nameimu\". Elle sera retirée prochainement");
         Matlab_nameIMU(nlhs, plhs, nrhs, prhs);
@@ -307,7 +301,7 @@ void functionHub( int nlhs, mxArray *plhs[],
         return;
     }
 
-    // Noms des Tags techniques
+    // Noms des Markers techniques
     if (!toLower(cmd).compare("nametechnicalmimu")){
         biorbd::utils::Error::warning(0, "La fonction \"nametechnicalmimu\" est obsolete. Remplacer par \"nametechnicalimu\". Elle sera retirée prochainement");
         Matlab_nameTechnicalIMU(nlhs, plhs, nrhs, prhs);
@@ -318,7 +312,7 @@ void functionHub( int nlhs, mxArray *plhs[],
         return;
     }
 
-    // Noms des Tags anatomiques
+    // Noms des Markers anatomiques
     if (!toLower(cmd).compare("nameanatomicalmimu")){
         biorbd::utils::Error::warning(0, "La fonction \"nameanatomicalmimu\" est obsolete. Remplacer par \"nameanatomicalimu\". Elle sera retirée prochainement");
         Matlab_nameAnatomicalIMU(nlhs, plhs, nrhs, prhs);
@@ -358,6 +352,7 @@ void functionHub( int nlhs, mxArray *plhs[],
         return;
     }
 
+#ifndef SKIP_KALMAN
     // Fonction de cinématique inverse
     if(!toLower(cmd).compare("ik_ekf")){
         Matlab_inverseKinematicsEKFallInOneCall(nlhs, plhs, nrhs, prhs);
@@ -397,16 +392,17 @@ void functionHub( int nlhs, mxArray *plhs[],
         Matlab_delEKF_IMU(nlhs, plhs, nrhs, prhs);
         return;
     }
+#endif
 
     // Fonction de cinématique directe
-    if(!toLower(cmd).compare("segmentstags")){
-        Matlab_segmentTags(nlhs, plhs, nrhs, prhs);
+    if(!toLower(cmd).compare("segmentsmarkers")){
+        Matlab_segmentMarkers(nlhs, plhs, nrhs, prhs);
         return;
     }
 
     // Fonction de la Jacobienne de la cinématique directe
-    if(!toLower(cmd).compare("tagsjacobian")){
-        Matlab_TagsJacobian(nlhs, plhs, nrhs, prhs);
+    if(!toLower(cmd).compare("markersjacobian")){
+        Matlab_MarkersJacobian(nlhs, plhs, nrhs, prhs);
         return;
     }
 

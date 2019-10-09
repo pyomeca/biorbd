@@ -1,20 +1,25 @@
 #ifndef BIORBD_UTILS_PATH_H
 #define BIORBD_UTILS_PATH_H
 
+#include <memory>
+#ifdef _WIN32
+#include <string>
+#endif
 #include "biorbdConfig.h"
-#include "Utils/String.h"
 
 namespace biorbd {
 namespace utils {
+class String;
 
-class BIORBD_API Path : public biorbd::utils::String
+class BIORBD_API Path
 {
 public: 
     Path();
     Path(const char *c);
     Path(const biorbd::utils::String &s);
     Path(const std::basic_string<char> &c);
-    virtual ~Path();
+    biorbd::utils::Path DeepCopy() const;
+    void DeepCopy(const biorbd::utils::Path& other);
 
     // parser un path en folder, filename,e extension
     static void parseFileName(
@@ -22,7 +27,6 @@ public:
             biorbd::utils::String& folder,
             biorbd::utils::String& filename,
             biorbd::utils::String& ext);
-    void parseFileName();
 
     // Tests sur les fichiers
     bool isFileExist() const;
@@ -33,25 +37,30 @@ public:
     static bool isFolderExist(const biorbd::utils::String&);
     void createFolder() const;
 
-    // Ces fonctions sont partielles et ne fonctionnent que dans le cas où il y a un certain tronc commun avec m_path
-    void setRelativePath(const biorbd::utils::String&); // setter le path relatif à un dossier précis
-    biorbd::utils::String getRelativePath() const; // Relative path par rapport au path courant
-    biorbd::utils::String getRelativePath(const biorbd::utils::String& relPath) const; // relative path par rapport au chemin envoyé
-    biorbd::utils::String getAbsolutePath() const;
+    static biorbd::utils::String currentDir();
+    biorbd::utils::String relativePath() const; // Relative to current working directory
+    biorbd::utils::String relativePath(const biorbd::utils::String &relativeTo) const; // Relative to that path
+    static biorbd::utils::String relativePath(const biorbd::utils::Path &path, const biorbd::utils::String &relativeTo); // Relative to that path
+    static biorbd::utils::String absoluteFolder(const biorbd::utils::Path &path); // Relative to root
+    biorbd::utils::String absoluteFolder() const; // Relative to root
+    biorbd::utils::String absolutePath() const; // Relative to root
 
     // Accessor
+    const biorbd::utils::String& originalPath() const;
     const biorbd::utils::String& folder() const;
     const biorbd::utils::String& filename() const;
+    void setFilename(const biorbd::utils::String& name);
     const biorbd::utils::String &extension() const;
-    static const char* getCurrentDir();
+    void setExtension(const biorbd::utils::String& ext);
 
 protected:
-    // Parse appelé durant la liste d'initiation pour String
-    static biorbd::utils::String processInputForStringCstr(const biorbd::utils::String&);
+    void setIsFolderAbsolute();
 
-    biorbd::utils::String m_path; // Comme il a été envoyé
-    biorbd::utils::String m_filename;
-    biorbd::utils::String m_extension;
+    std::shared_ptr<biorbd::utils::String> m_originalPath;
+    std::shared_ptr<biorbd::utils::String> m_folder;
+    std::shared_ptr<bool> m_isFolderAbsolute;
+    std::shared_ptr<biorbd::utils::String> m_filename;
+    std::shared_ptr<biorbd::utils::String> m_extension;
 };
 
 }}

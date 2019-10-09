@@ -26,21 +26,21 @@ void Matlab_IMU( int, mxArray *plhs[],
         if (!type.tolower().compare("all")){
             nIMUs = model->nIMUs();
             for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
-                 IMU_tp.push_back(model->IMU(*model, *Q_it));
+                 IMU_tp.push_back(model->IMU(*Q_it));
         }
         else if (!type.tolower().compare("anatomical")){
             nIMUs = model->nAnatIMUs();
             for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
-                 IMU_tp.push_back(model->anatomicalIMU(*model, *Q_it));
+                 IMU_tp.push_back(model->anatomicalIMU(*Q_it));
         }
         else if (!type.tolower().compare("technical")){
             nIMUs = model->nTechIMUs();
             for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
-                 IMU_tp.push_back(model->technicalIMU(*model, *Q_it));
+                 IMU_tp.push_back(model->technicalIMU(*Q_it));
         }
         else {
             std::ostringstream msg;
-            msg << "Wrong type for tags!";
+            msg << "Wrong type for markers!";
             mexErrMsgTxt(msg.str().c_str());
         }
 
@@ -48,7 +48,7 @@ void Matlab_IMU( int, mxArray *plhs[],
     else {
         nIMUs = model->nIMUs();
         for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
-             IMU_tp.push_back(model->IMU(*model, *Q_it));
+             IMU_tp.push_back(model->IMU(*Q_it));
     }
 
     // Create a matrix for the return argument

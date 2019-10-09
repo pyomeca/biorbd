@@ -12,16 +12,19 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedTorque.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/IMU.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/IMUs.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Joint.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Joints.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/KalmanRecons.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/KalmanReconsIMU.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/KalmanReconsMarkers.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Markers.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/NodeBone.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Patch.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Integrator.cpp
 )
+if (NOT SKIP_KALMAN)
+    list(APPEND SRC_LIST_MODULE
+        ${CMAKE_CURRENT_SOURCE_DIR}/KalmanRecons.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/KalmanReconsIMU.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/KalmanReconsMarkers.cpp
+    )
+endif()
 
 # Create the library
 if (BUILD_SHARED_LIBS)

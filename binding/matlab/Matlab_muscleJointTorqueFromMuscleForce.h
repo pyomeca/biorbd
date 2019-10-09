@@ -51,9 +51,9 @@ void Matlab_muscleJointTorqueFromMuscleForce( int, mxArray *plhs[],
     for (unsigned int i=0; i<nFrame; ++i){
         biorbd::rigidbody::GeneralizedTorque muscleTorque;
         if (updateKin)
-            muscleTorque = model->muscularJointTorque(*model, *(Fm.begin()+i), updateKin, &(*(Q.begin()+i)), &(*(QDot.begin()+i)));
+            muscleTorque = model->muscularJointTorque(*(Fm.begin()+i), updateKin, &(*(Q.begin()+i)), &(*(QDot.begin()+i)));
         else
-            muscleTorque = model->muscularJointTorque(*model, *(Fm.begin()+i), updateKin);
+            muscleTorque = model->muscularJointTorque(*(Fm.begin()+i), updateKin);
 
         // distribuer les GeneralizedTorque
         for (unsigned int j=0; j<nGeneralizedTorque; ++j){

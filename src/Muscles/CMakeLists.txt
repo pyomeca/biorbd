@@ -16,26 +16,23 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/ForceFromOrigin.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Geometry.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/HillType.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/HillTypeSimple.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/HillTypeThelen.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/HillTypeThelenFatigable.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/IdealizedActuator.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/HillThelenType.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/HillThelenTypeFatigable.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Muscle.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MuscleGroup.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/MuscleNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Muscles.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/PathChanger.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/PathChangers.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/State.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/StateDynamics.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/StateDynamicsBuchanan.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ViaPoint.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WrappingCylinder.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/WrappingNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WrappingObject.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WrappingSphere.cpp
 )
 
-if (IPOPT_FOUND)
+if (NOT SKIP_STATIC_OPTIM)
     list(APPEND SRC_LIST_MODULE
         ${CMAKE_CURRENT_SOURCE_DIR}/StaticOptimization.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/StaticOptimizationIpopt.cpp

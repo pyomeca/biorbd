@@ -39,14 +39,14 @@ void Matlab_help(){
     std::cout << "I = biorbd('segmentsInertiaLocal', h, [idx])" 			<< std::endl << "\t=> Return the 3x3 inertia matrix for all segment for the model 'h'. If idx is provided, only asked segment is returned" 			<< std::endl;
     std::cout << "w = biorbd('segmentsVelocities', h, Q, Qdot)" 	<< std::endl << "\t=> Return Plücker's velocity vector for each segment of the model 'h' at Q and Qdot" << std::endl << std::endl;
 
-    std::cout << "nTags = biorbd('nTags', h)" 			<< std::endl << "\t=> Return the number of markers for the model 'h'" 				<< std::endl;
-    std::cout << "nameTags = biorbd('nameTags', h)" 			<< std::endl << "\t=> Return the names of the markers for the model 'h'" 				<< std::endl ;
-    std::cout << "nameTags = biorbd('nameTechnicalTags', h)" 			<< std::endl << "\t=> Return the names of the technical markers for the model 'h'" 				<< std::endl;
-    std::cout << "nameTags = biorbd('nameAnatomicalTags', h)" 			<< std::endl << "\t=> Return the names of the anatomical markers for the model 'h'" 				<< std::endl ;
-    std::cout << "T = biorbd('LocalTags', h, ['all' (default), 'technical', 'anatomical'])" 			<< std::endl << "\t=> Return the position (X,Y,Z) in lcoal reference of 'all', 'technical' or 'anatomical' markers of the model 'h' at Q" << std::endl;
-        std::cout << "T = biorbd('Tags', h, Q)" 			<< std::endl << "\t=> Return the position (X,Y,Z) in global reference of all markers of the model 'h' at Q" << std::endl;
-        std::cout << "T = biorbd('segmentsTags', h, Q)" 	<< std::endl << "\t=> Return Tags for each segment (in cells) of the model 'h' at Q" << std::endl;
-    std::cout << "TJ = biorbd('TagsJacobian', h, Q)"	<< std::endl << "\t=> Return the jacobian matrix of all markers of the model 'h' at Q" << std::endl;
+    std::cout << "nMarkers = biorbd('nMarkers', h)" 			<< std::endl << "\t=> Return the number of markers for the model 'h'" 				<< std::endl;
+    std::cout << "nameMarkers = biorbd('nameMarkers', h)" 			<< std::endl << "\t=> Return the names of the markers for the model 'h'" 				<< std::endl ;
+    std::cout << "nameMarkers = biorbd('nameTechnicalMarkers', h)" 			<< std::endl << "\t=> Return the names of the technical markers for the model 'h'" 				<< std::endl;
+    std::cout << "nameMarkers = biorbd('nameAnatomicalMarkers', h)" 			<< std::endl << "\t=> Return the names of the anatomical markers for the model 'h'" 				<< std::endl ;
+    std::cout << "T = biorbd('LocalMarkers', h, ['all' (default), 'technical', 'anatomical'])" 			<< std::endl << "\t=> Return the position (X,Y,Z) in lcoal reference of 'all', 'technical' or 'anatomical' markers of the model 'h' at Q" << std::endl;
+        std::cout << "T = biorbd('Markers', h, Q)" 			<< std::endl << "\t=> Return the position (X,Y,Z) in global reference of all markers of the model 'h' at Q" << std::endl;
+        std::cout << "T = biorbd('segmentsMarkers', h, Q)" 	<< std::endl << "\t=> Return Markers for each segment (in cells) of the model 'h' at Q" << std::endl;
+    std::cout << "TJ = biorbd('MarkersJacobian', h, Q)"	<< std::endl << "\t=> Return the jacobian matrix of all markers of the model 'h' at Q" << std::endl;
     std::cout << "C = biorbd('contacts', h, Q)" << std::endl << "\t=> Return the position of contact points (p) of the model 'h' at Q" << std::endl;
     std::cout << "m = biorbd('mesh', h, Q)" << std::endl << "\t=> Return position of all points of the model meshing (m) of the model 'h' at Q" << std::endl << std::endl;
 

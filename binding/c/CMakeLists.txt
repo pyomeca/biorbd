@@ -1,21 +1,38 @@
-project(biorbd_c)
-cmake_minimum_required(VERSION 2.8)
+set(MASTER_PROJECT_NAME ${PROJECT_NAME})
 
-set(C_WRAPPER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/wrapper/c)
+project(${MASTER_PROJECT_NAME}_c)
+cmake_minimum_required(VERSION 3.8)
+
+set(C_BINDING_PATH ${CMAKE_SOURCE_DIR}/binding/c)
 
 # Get the file to compile
-set(C_FILE ${C_WRAPPER_PATH}/c_wrapper.cpp)
+set(C_FILE ${C_BINDING_PATH}/${MASTER_PROJECT_NAME}_c.cpp)
+if (BUILD_SHARED_LIBS)
+    add_library(${PROJECT_NAME} SHARED ${C_FILE})
+else()
+    add_library(${PROJECT_NAME} STATIC ${C_FILE})
+endif()
+    
+# Add headers
+target_include_directories(${PROJECT_NAME} PUBLIC
+    ${RBDL_INCLUDE_DIR}
+    ${RBDL_INCLUDE_DIR}/..
+    ${Boost_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIR}
+    ${DLIB_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_BINARY_DIR}/include
+    ${C_BINDING_PATH}
+)
 
-# Compile biorbd_c
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
-add_library(${PROJECT_NAME} SHARED ${C_FILE})
+# Set runtime path for linux
+SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES INSTALL_RPATH ${${MASTER_PROJECT_NAME}_BIN_FOLDER})
+SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-target_link_libraries(${PROJECT_NAME} biorbd)
-install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+# Linker and instalation
+target_link_libraries(${PROJECT_NAME}
+    ${MASTER_PROJECT_NAME}
+)
 
-
-
-
-
-
+install(TARGETS ${PROJECT_NAME} DESTINATION ${${MASTER_PROJECT_NAME}_BIN_FOLDER})
 

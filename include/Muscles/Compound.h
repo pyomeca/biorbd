@@ -2,57 +2,72 @@
 #define BIORBD_MUSCLES_COMPOUND_H
 
 #include <memory>
+#include <vector>
 #include "biorbdConfig.h"
-#include "Utils/String.h"
-#include "RigidBody/GeneralizedCoordinates.h"
-#include "Muscles/Force.h"
-#include "Muscles/Geometry.h"
-#include "Muscles/Caracteristics.h"
-#include "Muscles/StateDynamics.h"
-#include "Muscles/PathChangers.h"
+#include "Muscles/MusclesEnums.h"
 
 namespace biorbd {
+namespace utils {
+class String;
+class Node3d;
+}
+
+namespace rigidbody {
+class Joints;
+class GeneralizedCoordinates;
+}
+
 namespace muscles {
+class Force;
+class Caracteristics;
+class PathChangers;
+class StateDynamics;
 
 class BIORBD_API Compound
 {
 public:
+
+    Compound();
     Compound(
-            const biorbd::utils::String &name = "",
-            const biorbd::muscles::PathChangers& = biorbd::muscles::PathChangers());
-    Compound(const Compound& m);
+            const biorbd::utils::String &name);
+    Compound(
+            const biorbd::utils::String &name,
+            const biorbd::muscles::PathChangers&);
+    Compound(
+            const biorbd::muscles::Compound& muscle);
+    Compound(
+            const std::shared_ptr<biorbd::muscles::Compound> muscle);
     virtual ~Compound();
+    void DeepCopy(const biorbd::muscles::Compound& other);
+
+    const biorbd::utils::String& name() const;
+    void setName(const biorbd::utils::String& name);
+    biorbd::muscles::MUSCLE_TYPE type() const;
 
     // Wrapping object
     const biorbd::muscles::PathChangers& pathChanger();
-    void addPathObject(biorbd::muscles::PathChanger &w); // Ajouter un wrapping object
+    void addPathObject(biorbd::utils::Node3d &w); // Ajouter un wrapping object
 
-
-    const biorbd::utils::String& type() const;
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(); // Return the last computed muscle force
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(const biorbd::muscles::StateDynamics& emg) = 0;
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
             const biorbd::muscles::StateDynamics& emg,
-            const int updateKin = 2) = 0;
+            int updateKin = 2) = 0;
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::muscles::StateDynamics& emg,
-            const int updateKin = 2) = 0;
-    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(const biorbd::muscles::StateDynamics& emg) = 0;
-    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(); // Return the last computed muscle force
+            int updateKin = 2) = 0;
 
-    const biorbd::utils::String& name() const;
-    void setName(const biorbd::utils::String& name);
 protected:
-    biorbd::muscles::PathChangers m_pathChanger;
-    std::vector<std::shared_ptr<biorbd::muscles::Force>> m_force;
-    void copyForce(const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force);
-    virtual void setForce() = 0;
+    std::shared_ptr<biorbd::utils::String> m_name;
+    std::shared_ptr<biorbd::muscles::MUSCLE_TYPE> m_type;
+    std::shared_ptr<biorbd::muscles::PathChangers> m_pathChanger;
+    std::shared_ptr<std::vector<std::shared_ptr<biorbd::muscles::Force>>> m_force;
     virtual void setType()=0;
-    biorbd::utils::String m_type;
-    biorbd::utils::String m_name;
 
 };
 

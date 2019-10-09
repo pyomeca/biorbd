@@ -26,7 +26,7 @@ void Matlab_Mesh( int, mxArray *plhs[],
     // Output
     if ( idx==-1){ // Si on a demande tous les segments
         // Trouver ou sont les marqueurs
-        std::vector<std::vector<biorbd::rigidbody::NodeBone>> allMesh(model->meshPoints(Q));
+        std::vector<std::vector<biorbd::utils::Node3d>> allMesh(model->meshPoints(Q));
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateCellMatrix( allMesh.size(), 1);
@@ -35,11 +35,10 @@ void Matlab_Mesh( int, mxArray *plhs[],
             double *Mesh = mxGetPr(mesh_out_tp);
 
             // Remplir le output
-            std::vector<biorbd::rigidbody::NodeBone>::iterator it=(*(allMesh.begin()+i_bone)).begin();
-            for (unsigned int i=0; (it+i)!=(*(allMesh.begin()+i_bone)).end(); ++i){
-                Mesh[i*3] = (*(it+i))(0);
-                Mesh[i*3+1] = (*(it+i))(1);
-                Mesh[i*3+2] = (*(it+i))(2);
+            for (unsigned int i=0; i<allMesh[i_bone].size(); ++i){
+                Mesh[i*3] = allMesh[i_bone][i](0);
+                Mesh[i*3+1] = allMesh[i_bone][i](1);
+                Mesh[i*3+2] = allMesh[i_bone][i](2);
             }
             mxSetCell(plhs[0],i_bone,mesh_out_tp);
         }
@@ -47,18 +46,17 @@ void Matlab_Mesh( int, mxArray *plhs[],
 
     }
     else{ // Si on a demande un segment precis
-        std::vector<biorbd::rigidbody::NodeBone> Mesh_tp(model->meshPoints(Q,static_cast<unsigned int>(idx)));
+        std::vector<biorbd::utils::Node3d> Mesh_tp(model->meshPoints(Q,static_cast<unsigned int>(idx)));
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix(3, Mesh_tp.size(), mxREAL);
         double *Mesh = mxGetPr(plhs[0]);
 
         // Remplir le output
-        std::vector<biorbd::rigidbody::NodeBone>::iterator it=Mesh_tp.begin();
-        for (unsigned int i=0; (it+i)!=Mesh_tp.end(); ++i){
-            Mesh[i*3] = (*(it+i))(0);
-            Mesh[i*3+1] = (*(it+i))(1);
-            Mesh[i*3+2] = (*(it+i))(2);
+        for (unsigned int i=0; i<Mesh_tp.size(); ++i){
+            Mesh[i*3] = Mesh_tp[i](0);
+            Mesh[i*3+1] = Mesh_tp[i](1);
+            Mesh[i*3+2] = Mesh_tp[i](2);
         }
         return;
     }

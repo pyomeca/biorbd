@@ -19,7 +19,7 @@ void Matlab_ContactsPosition( int, mxArray *plhs[],
     biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Trouver où sont les marqueurs
-    std::vector<biorbd::utils::Node> Contact_tp = model->constraintsInGlobal(*model,Q, true);
+    std::vector<biorbd::utils::Node3d> Contact_tp = model->constraintsInGlobal(Q, true);
 
 
     // Create a matrix for the return argument
@@ -27,7 +27,7 @@ void Matlab_ContactsPosition( int, mxArray *plhs[],
     double *contact = mxGetPr(plhs[0]);
 
     // Remplir le output
-    std::vector<biorbd::utils::Node>::iterator it=Contact_tp.begin();
+    std::vector<biorbd::utils::Node3d>::iterator it=Contact_tp.begin();
     for (unsigned int i=0; (it+i)!=Contact_tp.end(); ++i){
         contact[i*3] = (*(it+i))(0);
         contact[i*3+1] = (*(it+i))(1);

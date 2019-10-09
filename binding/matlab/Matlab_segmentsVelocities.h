@@ -5,6 +5,7 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
+#include "Utils/Vector.h"
 
 void Matlab_segmentsVelocities( int, mxArray *plhs[],
                                 int nrhs, const mxArray*prhs[] ){
@@ -22,7 +23,7 @@ void Matlab_segmentsVelocities( int, mxArray *plhs[],
     biorbd::rigidbody::GeneralizedCoordinates QDot = *getParameterQdot(prhs, 3, nQdot).begin();
 
     // Update sur la cinématique
-    RigidBodyDynamics::UpdateKinematicsCustom(*model, &Q, &QDot, nullptr);
+    model->UpdateKinematicsCustom(&Q, &QDot, nullptr);
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( 6, nQ+1, mxREAL);

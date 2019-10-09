@@ -6,27 +6,33 @@
 #include "biorbdConfig.h"
 
 namespace biorbd {
+namespace utils {
+class Node3d;
+}
+
 namespace muscles {
-class PathChanger;
 
 class BIORBD_API PathChangers
 {
 public:
     PathChangers();
-    virtual ~PathChangers();
-    void addPathChanger(biorbd::muscles::PathChanger&); // Ajouter un wrapping ou un via point
+    biorbd::muscles::PathChangers DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::PathChangers& other);
+
+    void addPathChanger(biorbd::utils::Node3d&); // Ajouter un wrapping ou un via point
 
     // Set and get
     unsigned int nbWraps() const; // retourne le nombre total de wrapping objects
     unsigned int nbVia() const; // retourne le nombre total de via points
     unsigned int nbObjects() const; // Retourne le nombre total d'objects
-    const std::shared_ptr<biorbd::muscles::PathChanger> object(const unsigned int& idx) const; // Get sur un wrapping
+    biorbd::utils::Node3d& object(unsigned int  idx); // Get sur un wrapping
+    const biorbd::utils::Node3d& object(unsigned int  idx) const; // Get sur un wrapping
 
 protected:
-    std::vector<std::shared_ptr<biorbd::muscles::PathChanger>> m_obj; // Tableau de pointeur sur les objects
-    unsigned int m_nbWraps;
-    unsigned int m_nbVia;
-    unsigned int m_totalObjects;
+    std::shared_ptr<std::vector<biorbd::utils::Node3d>> m_obj; // Tableau de pointeur sur les objects
+    std::shared_ptr<unsigned int> m_nbWraps;
+    std::shared_ptr<unsigned int> m_nbVia;
+    std::shared_ptr<unsigned int> m_totalObjects;
 
 };
 

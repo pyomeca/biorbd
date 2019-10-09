@@ -2,6 +2,8 @@
 #define BIORBD_MATLAB_COMPUTE_Q_DOT_H
 
 #include <mex.h>
+#include <rbdl/Model.h>
+#include <rbdl/Kinematics.h>
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
@@ -33,11 +35,11 @@ void Matlab_computeQdot( int, mxArray *plhs[],
     unsigned int cmp(0);
 
     for (unsigned int j=0; j<nFrame; ++j){
-        RigidBodyDynamics::UpdateKinematicsCustom(*model, &(*(Q.begin()+j)), &(*(QDot.begin()+j)), nullptr);
+        model->UpdateKinematicsCustom(&Q[j], &QDot[j], nullptr);
 
         // Trouver la dynamique directe a cette configuration
         biorbd::rigidbody::GeneralizedCoordinates QDotPost;
-        model->computeQdot(*model, *(Q.begin()+j), *(QDot.begin()+j), QDotPost); // Calcul du QdotPost
+        model->computeQdot(*(Q.begin()+j), *(QDot.begin()+j), QDotPost); // Calcul du QdotPost
 
         // Remplir l'output
         for (unsigned int i=0; i<nQ; i++){

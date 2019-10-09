@@ -23,9 +23,9 @@ void Matlab_ContactGamma( int, mxArray *plhs[],
     unsigned int nContacts = model->nContacts();
 
     Eigen::MatrixXd G_tp(Eigen::MatrixXd::Zero(nContacts,model->nbQ()));
-    RigidBodyDynamics::CalcConstraintsJacobian(*model, Q, model->getConstraints_nonConst(*model), G_tp, true);
+    RigidBodyDynamics::CalcConstraintsJacobian(*model, Q, model->getConstraints(), G_tp, true);
 
-    RigidBodyDynamics::Math::VectorNd Gamma = model->getConstraints_nonConst(*model).gamma;
+    RigidBodyDynamics::Math::VectorNd Gamma = model->getConstraints().gamma;
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( nContacts, 1, mxREAL);

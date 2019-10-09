@@ -4,7 +4,8 @@
 #include <Eigen/Dense>
 #include <rbdl/Quaternion.h>
 
-biorbd::utils::Quaternion::Quaternion () : RigidBodyDynamics::Math::Quaternion(),
+biorbd::utils::Quaternion::Quaternion () :
+    RigidBodyDynamics::Math::Quaternion(),
     m_Kstab(100)
 {
 
@@ -37,7 +38,9 @@ biorbd::utils::Quaternion::Quaternion (
 
 }
 
-biorbd::utils::Quaternion& biorbd::utils::Quaternion::operator=(const Eigen::Vector4d& vec4){
+biorbd::utils::Quaternion& biorbd::utils::Quaternion::operator=(
+        const Eigen::Vector4d& vec4)
+{
     if (this==&vec4) // check for self-assigment
         return *this;
 
@@ -46,20 +49,26 @@ biorbd::utils::Quaternion& biorbd::utils::Quaternion::operator=(const Eigen::Vec
 }
 
 
-double biorbd::utils::Quaternion::w() const{
+double biorbd::utils::Quaternion::w() const
+{
     return (*this)(3);
 }
-double biorbd::utils::Quaternion::x() const{
+double biorbd::utils::Quaternion::x() const
+{
     return (*this)(0);
 }
-double biorbd::utils::Quaternion::y() const{
+double biorbd::utils::Quaternion::y() const
+{
     return (*this)(1);
 }
-double biorbd::utils::Quaternion::z() const{
+double biorbd::utils::Quaternion::z() const
+{
     return (*this)(2);
 }
 
-void biorbd::utils::Quaternion::derivate(const Eigen::VectorXd &w){
+void biorbd::utils::Quaternion::derivate(
+        const Eigen::VectorXd &w)
+{
 
     // Création du quaternion de "préproduit vectoriel"
     double qw = (*this)(3);

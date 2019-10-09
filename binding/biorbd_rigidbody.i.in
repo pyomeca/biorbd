@@ -10,6 +10,7 @@
 #include "RigidBody/Contacts.h"
 #include "RigidBody/BoneMesh.h"
 #include "RigidBody/KalmanReconsMarkers.h"
+#include "RigidBody/Patch.h"
 %}
 
 
@@ -67,12 +68,13 @@ namespace std {
                 const biorbd::rigidbody::GeneralizedCoordinates &QDot,
                 const biorbd::rigidbody::GeneralizedTorque &GeneralizedTorque) {
         biorbd::rigidbody::GeneralizedCoordinates QDDot(*self);
-        biorbd::rigidbody::Contacts& CS = self->getConstraints_nonConst();
+        biorbd::rigidbody::Contacts& CS = self->getConstraints();
         RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, GeneralizedTorque, CS, QDDot);
         return QDDot;
     }
 }
 
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/RigidBodyEnums.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Joints.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/GeneralizedCoordinates.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/GeneralizedTorque.h"
@@ -88,7 +90,6 @@ namespace std {
 //%include "RigidBody/IMUs.h"
 //%include "RigidBody/KalmanRecons.h"
 //%include "RigidBody/KalmanReconsIMU.h"
-//%include "RigidBody/Joint.h"
 
 
 
