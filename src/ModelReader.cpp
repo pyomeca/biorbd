@@ -2,7 +2,6 @@
 #include "ModelReader.h"
 
 #include <limits.h>
-#include <fstream>
 #include "BiorbdModel.h"
 #include "Utils/Error.h"
 #include "Utils/IfStream.h"
@@ -37,28 +36,6 @@
 #include "Muscles/PathChangers.h"
 #endif // MODULE_MUSCLES
 
-#if defined(_WIN32) || defined(_WIN64)
-    #include <direct.h>
-    #define GetCurrentDir _getcwd
-#else
-    #include <unistd.h>
-    #define GetCurrentDir getcwd
-#endif
-
-void biorbd::Reader::pwd(){
-	char c[FILENAME_MAX];
-    if (GetCurrentDir(c, sizeof(c)))
-        std::cout << c << std::endl;
-}
-
-bool biorbd::Reader::is_readable(const biorbd::utils::Path &file)
-{
-    std::ifstream fichier( file.absolutePath().c_str() );
-    bool isOpen(fichier.is_open());
-    fichier.close();
-    return isOpen;
-}
-
 // ------ Public methods ------ //
 biorbd::Model biorbd::Reader::readModelFile(const biorbd::utils::Path &path)
 {
@@ -68,10 +45,14 @@ biorbd::Model biorbd::Reader::readModelFile(const biorbd::utils::Path &path)
     return model;
 }
 
-void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Model *model)
+void biorbd::Reader::readModelFile(
+        const biorbd::utils::Path &path,
+        biorbd::Model *model)
 {	// Ouverture du fichier
-    if (!is_readable(path))
-        biorbd::utils::Error::raise("File " + path.absolutePath() + " could not be open");
+    if (!path.isFileReadable())
+        biorbd::utils::Error::raise("File "
+                                    + path.absolutePath()
+                                    + " could not be open");
 
     biorbd::utils::IfStream file(path.absolutePath().c_str(), std::ios::in);
 

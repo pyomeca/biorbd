@@ -39,15 +39,41 @@ TEST(ShallowCopy, DeepCopy){
 TEST(Path, Create){
     {
         biorbd::utils::Path emptyPath;
-        EXPECT_STREQ(emptyPath.absolutePath().c_str(), biorbd::utils::Path::currentDir().c_str());
+        EXPECT_STREQ(emptyPath.absolutePath().c_str(),
+                     biorbd::utils::Path::currentDir().c_str());
         EXPECT_STREQ(emptyPath.filename().c_str(), "");
         EXPECT_STREQ(emptyPath.extension().c_str(), "");
         EXPECT_STREQ(emptyPath.originalPath().c_str(), "");
     }
 
     {
+        EXPECT_STREQ(
+            biorbd::utils::Path::toUnixFormat(
+                            "MyUgly\\\\WindowsPath\\\\ToMyFile.biorbd").c_str(),
+                    biorbd::utils::String (
+                            "MyUgly/WindowsPath/ToMyFile.biorbd").c_str());
+
+        EXPECT_STREQ(
+            biorbd::utils::Path::toWindowsFormat(
+                            "MyCute/UnixPath/ToMyFile.biorbd").c_str(),
+                    biorbd::utils::String (
+                            "MyCute\\\\UnixPath\\\\ToMyFile.biorbd").c_str());
+    }
+
+    {
+        biorbd::utils::String myPathInUglyWindowsStyleString(
+                    "MyUgly\\\\WindowsPath\\\\ToMyFile.biorbd");
+        biorbd::utils::Path myPathInUglyWindowsStyle(
+                    myPathInUglyWindowsStyleString);
+        EXPECT_STREQ(myPathInUglyWindowsStyle.relativePath().c_str(),
+                     "./MyUgly/WindowsPath/ToMyFile.biorbd");
+        EXPECT_STREQ(myPathInUglyWindowsStyle.originalPath().c_str(),
+                     myPathInUglyWindowsStyleString.c_str());
+    }
+
+    {
 #ifdef _WIN32
-        biorbd::utils::String path("C:/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
+        biorbd::utils::String path("C:\\MyLovely\\AbsolutePath\\ToMyLovelyFile.biorbd");
 #else
         biorbd::utils::String path("/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
 #endif

@@ -51,9 +51,6 @@ public:
     static biorbd::rigidbody::BoneMesh readBoneMeshFileBiorbdBones(const biorbd::utils::Path& path);
     static biorbd::rigidbody::BoneMesh readBoneMeshFilePly(const biorbd::utils::Path& path);
 
-    static void pwd(); // Print the working directory
-    static bool is_readable(const utils::Path &file );
-
 };
 
 }

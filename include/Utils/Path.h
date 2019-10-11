@@ -15,11 +15,15 @@ class BIORBD_API Path
 {
 public: 
     Path();
-    Path(const char *c);
-    Path(const biorbd::utils::String &s);
-    Path(const std::basic_string<char> &c);
+    Path(
+            const char *c);
+    Path(
+            const biorbd::utils::String &s);
+    Path(
+            const std::basic_string<char> &c);
     biorbd::utils::Path DeepCopy() const;
-    void DeepCopy(const biorbd::utils::Path& other);
+    void DeepCopy(
+            const biorbd::utils::Path& other);
 
     // parser un path en folder, filename,e extension
     static void parseFileName(
@@ -30,29 +34,44 @@ public:
 
     // Tests sur les fichiers
     bool isFileExist() const;
-    static bool isFileExist(const biorbd::utils::Path&);
-    static bool isFileExist(const biorbd::utils::String&);
+    static bool isFileExist(
+            const biorbd::utils::Path&);
+    static bool isFileExist(
+            const biorbd::utils::String&);
+    bool isFileReadable() const;
+
     bool isFolderExist() const;
-    static bool isFolderExist(const biorbd::utils::Path&);
-    static bool isFolderExist(const biorbd::utils::String&);
+    static bool isFolderExist(
+            const biorbd::utils::Path&);
+    static bool isFolderExist(
+            const biorbd::utils::String&);
     void createFolder() const;
 
     static biorbd::utils::String currentDir();
     biorbd::utils::String relativePath() const; // Relative to current working directory
-    biorbd::utils::String relativePath(const biorbd::utils::String &relativeTo) const; // Relative to that path
-    static biorbd::utils::String relativePath(const biorbd::utils::Path &path, const biorbd::utils::String &relativeTo); // Relative to that path
-    static biorbd::utils::String absoluteFolder(const biorbd::utils::Path &path); // Relative to root
+    biorbd::utils::String relativePath(
+            const biorbd::utils::String &relativeTo) const; // Relative to that path
+    static biorbd::utils::String relativePath(
+            const biorbd::utils::Path &path,
+            const biorbd::utils::String &relativeTo); // Relative to that path
+    static biorbd::utils::String absoluteFolder(
+            const biorbd::utils::Path &path); // Relative to root
     biorbd::utils::String absoluteFolder() const; // Relative to root
     biorbd::utils::String absolutePath() const; // Relative to root
 
-    static biorbd::utils::String convertToOsSeparator(const biorbd::utils::String& path); 
+    static biorbd::utils::String toUnixFormat(
+            const biorbd::utils::String& path);
+    static biorbd::utils::String toWindowsFormat(
+            const biorbd::utils::String& path);
     // Accessor
     const biorbd::utils::String& originalPath() const;
     const biorbd::utils::String& folder() const;
     const biorbd::utils::String& filename() const;
-    void setFilename(const biorbd::utils::String& name);
+    void setFilename(
+            const biorbd::utils::String& name);
     const biorbd::utils::String &extension() const;
-    void setExtension(const biorbd::utils::String& ext);
+    void setExtension(
+            const biorbd::utils::String& ext);
 
 protected:
     void setIsFolderAbsolute();
