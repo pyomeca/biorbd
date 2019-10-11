@@ -1,7 +1,7 @@
 version    3
 
 // General informations
-root_actuated 0
+root_actuated 1
 external_forces 0
 
 
