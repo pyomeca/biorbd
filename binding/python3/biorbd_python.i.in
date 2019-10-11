@@ -34,7 +34,9 @@
         // Recast the pointer
         $1 = reinterpret_cast< biorbd::rigidbody::Joints * >(argp1);
     } else {
-        PyErr_SetString(PyExc_ValueError, "biorbd::rigidbody::Joints must be a biorbd::rigidbody::Joints");
+        PyErr_SetString(PyExc_ValueError,
+                        "biorbd::rigidbody::Joints must be "
+                        "a biorbd::rigidbody::Joints");
         SWIG_fail;
     }
 }
@@ -80,7 +82,7 @@
         return output;
     };
 }
-%typemap(typecheck, precedence=2000) biorbd::utils::Vector &{
+%typemap(typecheck, precedence=2000) biorbd::utils::Vector & {
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Vector,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__Vector already exists
@@ -92,9 +94,12 @@
         $1 = false;
     }
 }
-%typemap(in) biorbd::utils::Vector &{
+%typemap(in) biorbd::utils::Vector & {
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Vector,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(
+                SWIG_ConvertPtr($input, &argp1,
+                                SWIGTYPE_p_biorbd__utils__Vector,  0  | 0))
+            && argp1) {
         // Recast the pointer
         $1 = reinterpret_cast< biorbd::utils::Vector * >(argp1);
     } else if( PyArray_Check($input) ) {
@@ -117,37 +122,56 @@
             (*$1)[i] = *(double*)PyArray_GETPTR1(data, i);
 
     } else {
-        PyErr_SetString(PyExc_ValueError, "Vector must be a Vector or numpy vector");
+        PyErr_SetString(PyExc_ValueError,
+                        "Vector must be a one dimension "
+                        "vector when using a numpy array");
         SWIG_fail;
     }
 };
 
 // --- GeneralizedCoordinates --- //
-%typemap(typecheck, precedence=2010) biorbd::rigidbody::GeneralizedCoordinates &{
+%typemap(typecheck, precedence=2010)
+biorbd::rigidbody::GeneralizedCoordinates & {
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates already exists
+    if (SWIG_IsOK(
+                SWIG_ConvertPtr(
+                    $input, &argp1,
+                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates,
+                    0  | 0))
+            && argp1) {
+        // Test if it is a pointer to
+        // SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates already exists
         $1 = true;
-    } else if( PyArray_Check($input) ) {
+    }
+    else if( PyArray_Check($input) ) {
         // test if it is a numpy array
         $1 = true;
-    } else {
+    }
+    else {
         $1 = false;
     }
 }
-%typemap(in) biorbd::rigidbody::GeneralizedCoordinates &{
+%typemap(in) biorbd::rigidbody::GeneralizedCoordinates & {
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(
+                SWIG_ConvertPtr(
+                    $input, &argp1,
+                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates,
+                    0  | 0))
+            && argp1) {
         // Recast the pointer
         $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedCoordinates * >(argp1);
-    } else if( PyArray_Check($input) ) {
+    }
+    else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
         npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
 
         // Dimension controls
         if (ndim != 1 ){
-            PyErr_SetString(PyExc_ValueError, "GeneralizedCoordinates must be a numpy vector");
+            PyErr_SetString(PyExc_ValueError,
+                            "GeneralizedCoordinates must be a one dimension "
+                            "vector when using a numpy array");
             SWIG_fail;
         }
 
@@ -156,11 +180,15 @@
         // Copy the actual data
         unsigned int nQ(dims[0]);
         $1 = new biorbd::rigidbody::GeneralizedCoordinates(nQ);
-	for (unsigned int q=0; q<nQ; ++q){
+        for (unsigned int q=0; q<nQ; ++q){
             (*$1)[q] = *(double*)PyArray_GETPTR1(data, q);
-	}
-    } else {
-        PyErr_SetString(PyExc_ValueError, "GeneralizedCoordinates must be a GeneralizedCoordinates or numpy vector");
+        }
+    }
+    else {
+        PyErr_SetString(
+                    PyExc_ValueError,
+                    "GeneralizedCoordinates must be a "
+                    "GeneralizedCoordinates or numpy vector");
         SWIG_fail;
     }
 };
@@ -190,7 +218,9 @@
 
         // Dimension controls (has to be a vector)
         if (ndim != 1 ){
-            PyErr_SetString(PyExc_ValueError, "GeneralizedTorque must be a numpy vector");
+            PyErr_SetString(PyExc_ValueError,
+                            "GeneralizedTorque must be a one dimension "
+                            "vector when using a numpy array");
             SWIG_fail;
         }
 
@@ -204,7 +234,9 @@
             (*$1)[GeneralizedTorque] = *(double*)PyArray_GETPTR1(data, GeneralizedTorque);
 
     } else {
-        PyErr_SetString(PyExc_ValueError, "GeneralizedTorque must be a GeneralizedTorque or numpy vector");
+        PyErr_SetString(PyExc_ValueError,
+                        "GeneralizedTorque must be a "
+                        "GeneralizedTorque or numpy vector");
         SWIG_fail;
     }
 };
@@ -226,7 +258,9 @@
         // Recast the pointer
         $1 = reinterpret_cast< biorbd::rigidbody::Markers * >(argp1);
     } else {
-        PyErr_SetString(PyExc_ValueError, "biorbd::rigidbody::Markers must be a biorbd::rigidbody::Markers");
+        PyErr_SetString(PyExc_ValueError,
+                        "biorbd::rigidbody::Markers must be "
+                        "a biorbd::rigidbody::Markers");
         SWIG_fail;
     }
 }

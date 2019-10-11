@@ -511,7 +511,7 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::angularMomentum(
 }
 
 
-RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMdot(
+biorbd::utils::Node3d biorbd::rigidbody::Joints::CoMdot(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
 {
@@ -521,7 +521,7 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMdot(
     UpdateKinematicsCustom(&Q, &Qdot, nullptr);
 
     // Pour chaque segment, trouver le CoM
-    RigidBodyDynamics::Math::Vector3d com_dot(0,0,0);
+    biorbd::utils::Node3d com_dot(0,0,0);
 
     // CoMdot = somme(masse_seg * Jacobienne * qdot)/masse totale
     biorbd::utils::Matrix Jac(biorbd::utils::Matrix(3,this->dof_count));
@@ -536,7 +536,7 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMdot(
     // Retourner la vitesse du CoM
     return com_dot;
 }
-RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMddot(
+biorbd::utils::Node3d biorbd::rigidbody::Joints::CoMddot(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         const biorbd::rigidbody::GeneralizedCoordinates &Qddot)
