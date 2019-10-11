@@ -532,7 +532,7 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMdot(
     }
     // Diviser par la masse totale
     com_dot = com_dot/this->mass();
-	
+
     // Retourner la vitesse du CoM
     return com_dot;
 }
@@ -541,24 +541,12 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMddot(
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         const biorbd::rigidbody::GeneralizedCoordinates &Qddot)
 {
-    // Retour l'accélération du centre de masse a partir des coordonnées généralisées
-    biorbd::utils::Error::raise("Com DDot is wrong, to be modified...");
+    double mass;
+    RigidBodyDynamics::Math::Vector3d com, com_ddot;
+    RigidBodyDynamics::Utils::CalcCenterOfMass(
+                *this, Q, Qdot, &Qddot, mass, com, nullptr, &com_ddot,
+                nullptr, nullptr, true);
 
-    // S'assurer que le modele est dans la bonne configuration
-    UpdateKinematicsCustom(&Q, &Qdot, &Qddot);
-
-    // Pour chaque segment, trouver le CoM
-    RigidBodyDynamics::Math::Vector3d com_ddot(0,0,0);
-
-    // CoMdot = somme(masse_seg * Jacobienne * qdot)/masse totale
-    biorbd::utils::Matrix Jac(biorbd::utils::Matrix(3,this->dof_count));
-    for (auto bone : *m_bones){
-        Jac.setZero();
-        RigidBodyDynamics::CalcPointJacobian(*this, Q, this->GetBodyId(bone.name().c_str()), bone.caract().mCenterOfMass, Jac, false); // False for speed
-        com_ddot += ((Jac*Qddot) * bone.caract().mMass);
-    }
-    // Diviser par la masse totale
-    com_ddot = com_ddot/this->mass();
 
     // Retourner l'accélération du CoM
     return com_ddot;
@@ -758,7 +746,9 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CalcAngularMomentum
     double mass;
 
     // Calcul du angular momentum par la fonction de la position du centre de masse
-    RigidBodyDynamics::Utils::CalcCenterOfMass(*this, Q, Qdot, &Qddot, mass, com, nullptr, nullptr, &angular_momentum, nullptr, update_kinematics);
+    RigidBodyDynamics::Utils::CalcCenterOfMass(
+                *this, Q, Qdot, &Qddot, mass, com, nullptr, nullptr,
+                &angular_momentum, nullptr, update_kinematics);
 
     return angular_momentum;
 }
