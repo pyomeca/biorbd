@@ -288,10 +288,21 @@ biorbd::utils::String biorbd::utils::Path::toUnixFormat(
         const biorbd::utils::String& path)
 {
     biorbd::utils::String pathOut(path);
+
+    // Depending on the string origin, "\\" is either the character "\"
+    // escaped or the character "\" written twice. Test for both
     size_t pos(pathOut.rfind("\\\\"));
     while (pos != std::string::npos) {
         pathOut.replace(pos, 2, "/");
         pos = pathOut.rfind("\\\\");
+    }
+
+    // However, this next hunk can create false positive each time a 
+    // legitimate escape character is used (should not happen in a path?)
+    pos = pathOut.rfind("\\");
+    while (pos != std::string::npos) {
+        pathOut.replace(pos, 1, "/");
+        pos = pathOut.rfind("\\");
     }
     return pathOut;
 }
