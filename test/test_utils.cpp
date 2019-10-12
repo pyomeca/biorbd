@@ -73,11 +73,17 @@ TEST(Path, Create){
 
     {
 #ifdef _WIN32
-        biorbd::utils::String path("C:\\MyLovely\\AbsolutePath\\ToMyLovelyFile.biorbd");
+        biorbd::utils::String path(
+                    "C:\\MyLovely\\AbsolutePath\\ToMyLovelyFile.biorbd");
+        biorbd::utils::String unixPath(
+                    "C:/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
 #else
-        biorbd::utils::String path("/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
+        biorbd::utils::String path(
+                    "/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
+        biorbd::utils::String unixPath(
+                    "/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
 #endif
-        biorbd::utils::String unixPath("C:/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
+        unixPath = "coucou";
 
         biorbd::utils::Path absolutePath(path);
         EXPECT_STREQ(absolutePath.absolutePath().c_str(), unixPath.c_str());
