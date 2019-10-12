@@ -69,17 +69,9 @@ script:
         cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON -DBINDER_C=ON ..;
         cmake --build ./ --config Release;
       fi
-    # Only do the coverage on Linux, but run the test anyway to get a nice output
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        cp -r test/models/ .;
-        make biorbd_coverage;
-      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
-        cd test;
-        ./biorbd_tests;
-        cd binding/c;
-        ./biorbd_tests_binding_c;
-        cd ../../..;
-      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+      
+    # Move and copy mandatory files and run the tests for all platforms
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         cd test\\Release;
         xcopy ..\\models .\\models\\;
         xcopy ..\\models\\meshFiles .\\models\\meshFiles\\;
@@ -87,6 +79,29 @@ script:
         ./biorbd_tests.exe;
         ./biorbd_tests_binding_c.exe;
         cd ../..;
+      fi
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+        ./biorbd_tests.exe;
+      else
+        cd test;
+        ./biorbd_tests;
+      fi
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+        ./biorbd_tests_binding_c.exe;
+      else
+        cd binding/c;
+        ./biorbd_tests_binding_c;
+      fi
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+        cd ../..;
+      else
+        cd ../../..;
+      fi
+      
+    # Only do the coverage on Linux, but run the test anyway to get a nice output
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+        cp -r test/models/ .;
+        make biorbd_coverage;
       fi
     - ctest
     
