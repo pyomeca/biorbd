@@ -59,47 +59,56 @@ script:
     - mkdir -p build
     - cd build
     # Perform tests on all platform, but only perform code coverage on Linux
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=ON ..;
-        make;
-      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=ON ..;
-        make;
-      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON -DBINDER_C=ON ..;
         cmake --build ./ --config Release;
+      else
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=ON ..;
+        make;
       fi
-    # Only do the coverage on Linux, but run the test anyway to get a nice output
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        cp -r test/models/ .;
-        make biorbd_coverage;
-      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
-        cd test;
-        ./biorbd_tests;
-        cd binding/c;
-        ./biorbd_tests_binding_c;
-        cd ../../..;
-      elif [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+      
+    # Move and copy mandatory files and run the tests for all platforms
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         cd test\\Release;
         xcopy ..\\models .\\models\\;
         xcopy ..\\models\\meshFiles .\\models\\meshFiles\\;
         xcopy ..\\binding\\c\\Release\\biorbd_tests_binding_c.exe;
         ./biorbd_tests.exe;
-        ./biorbd_tests_binding_c.exe;
-        cd ../..;
-      fi
-    - ctest
-    
-      # Test if biorbd can be compile on the python binder
-    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then 
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
-        make install;
       else
+        cd test;
+        ./biorbd_tests;
+      fi
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+        ./biorbd_tests_binding_c.exe;
+      else
+        cd binding/c;
+        ./biorbd_tests_binding_c;
+      fi
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+        cd ../..;
+      else
+        cd ../../..;
+      fi
+      
+      # Test if biorbd can be compile on the python binder
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=$ToolsDir/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
         cmake --build ./ --config Release --target install;
+      else
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
+        make install;
       fi
     - python -c "import biorbd"    
 
+    # Only do the coverage on Linux, but run the test anyway to get a nice output
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=OFF ..;
+        make;
+        cp -r test/models/ .;
+        make biorbd_coverage;
+      fi
+    - ctest
+    
 after_success:
     # Uploading report to CodeCov
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
