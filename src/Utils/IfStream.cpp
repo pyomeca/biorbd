@@ -67,7 +67,7 @@ bool biorbd::utils::IfStream::reachSpecificTag(const biorbd::utils::String& tag)
 int biorbd::utils::IfStream::countTagsInAConsecutiveLines(const biorbd::utils::String &tag)
 {
     // Se souvenir où on était dans le fichier
-    long positionInFile(m_ifs->tellg());
+    std::streamoff positionInFile(m_ifs->tellg());
     biorbd::utils::String text;
     int nMarkers(0);
 
