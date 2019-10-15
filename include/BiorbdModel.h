@@ -29,9 +29,15 @@ class BIORBD_API Model :
         #endif
 {
 public:
+
     Model();
     virtual ~Model();
-    Model(const biorbd::utils::Path&);
+
+    ///
+    /// \brief Construct a model from a bioMod file
+    /// \param path The path of the file
+    ///
+    Model(const biorbd::utils::Path& path);
 
     bool InverseKinematics(
             const std::vector<biorbd::rigidbody::NodeBone>& Mark,
