@@ -139,6 +139,12 @@ if (BUILD_EXAMPLE)
     add_subdirectory(example)
 endif()
 
+# Doc
+option(BUILD_DOC "Build documentation" OFF)
+if (BUILD_DOC)
+    add_subdirectory(docs)
+endif (BUILD_DOC)
+
 # Testing
 option(BUILD_TESTS "Build all tests." OFF) # Makes boolean 'test' available.
 if (BUILD_TESTS)
