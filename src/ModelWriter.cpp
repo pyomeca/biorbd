@@ -17,27 +17,27 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
     biorbd::utils::String sep("\t"); // separator in the file
     biorbd::utils::String com("//"); // commentaire
 
-    // Gérer le cas où le dossier de destination n'existe pas
+    // Manage the case where the destination folder does not exist
     if(!pathToWrite.isFolderExist()) {
         pathToWrite.createFolder();
     }
 
-    // Ouvrir le fichier
+    //  Open file
     std::ofstream biorbdModelFile;
     biorbdModelFile.open(pathToWrite.relativePath().c_str());
 
-    // Écrire le fichier
+    // Write file
     biorbdModelFile << "version 3" << std::endl;
     biorbdModelFile << std::endl;
 
-    // Informations générale
+    // General information
     biorbdModelFile << std::endl;
     biorbdModelFile << com << " General informations" << std::endl;
     biorbdModelFile << "root_actuated" << sep << model.isRootActuated() << std::endl;
     biorbdModelFile << "external_forces" << sep << model.hasExternalForces() << std::endl;
     biorbdModelFile << std::endl;
 
-    // Informations sur les segments
+    // Information on the segments
     std::vector<biorbd::utils::RotoTrans> localJCS = model.localJCS();
     for (unsigned int i = 0; i<model.nbBone(); ++i){
         biorbdModelFile << com << " Informations about " << model.bone(i).name() << " segment" << std::endl;
@@ -57,7 +57,7 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
         biorbdModelFile << sep << "endsegment" << sep << std::endl;
         biorbdModelFile << std::endl;
 
-        // Écrire les éventuels markers
+        // Write the prospective markers
         std::vector<biorbd::rigidbody::NodeBone> markers (model.marker(model.bone(i).name()));
         if (markers.size() > 0){
             biorbdModelFile << sep << com << " Markers" << std::endl;
@@ -74,7 +74,7 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
         }
         biorbdModelFile << std::endl;
 
-        // Écrire les centrales inertiels
+        // Write the inertial units
         std::vector<biorbd::rigidbody::IMU> imus(model.IMU(model.bone(i).name()));
         if (imus.size() > 0){
             biorbdModelFile << sep << com << " Inertial Magnetic Unit" << std::endl;
@@ -104,7 +104,7 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
 
 
     biorbdModelFile << std::endl;
-    // Fermeture du fichier
+    // Close file
     biorbdModelFile.close();
 
 }
