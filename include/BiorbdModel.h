@@ -39,8 +39,15 @@ public:
     ///
     Model(const biorbd::utils::Path& path);
 
+    ///
+    /// \brief Applies inverse kinematics
+    /// \param marker Markers
+    /// \param Qinit Initial guess for the state
+    /// \param Q State vector of the internal joints
+    /// \param removeAxes
+    /// 
     bool InverseKinematics(
-            const std::vector<biorbd::rigidbody::NodeBone>& Mark,
+            const std::vector<biorbd::rigidbody::NodeBone>& markers,
             const biorbd::rigidbody::GeneralizedCoordinates& Qinit,
             biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxes=true);

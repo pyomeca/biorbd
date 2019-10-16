@@ -27,7 +27,7 @@ bool biorbd::Model::InverseKinematics(
         const biorbd::rigidbody::GeneralizedCoordinates &Qinit,
         biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool removeAxes){
-    // Trouver les markers techniques uniquement (body_point)
+    // Find the technical markers only (body_point)
     std::vector<biorbd::rigidbody::NodeBone> body_point(this->TechnicalMarkersInLocal(removeAxes));
     std::vector<RigidBodyDynamics::Math::Vector3d> body_pointEigen;
     for (unsigned int i=0; i<body_point.size(); ++i)
@@ -37,11 +37,11 @@ bool biorbd::Model::InverseKinematics(
     for (unsigned int i = 0; i<markers.size(); ++i)
         markersInRbdl.push_back(markers[i]);
 
-    // Associer le numéro de body a chaque marker technique (body_id)
+    // Associate the body number to each technical marker (body_id)
     std::vector<unsigned int> body_id;
     for (unsigned int i=0; i<body_point.size(); ++i)
         body_id.push_back( static_cast<unsigned int>((*(body_point.begin()+i)).parentId()) );
 
-    // Appeler la fonction de base
+    // Call the base function 
     return RigidBodyDynamics::InverseKinematics(*this, Qinit, body_id, body_pointEigen, markersInRbdl, Q);
 }
