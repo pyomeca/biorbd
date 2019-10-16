@@ -40,6 +40,17 @@ TEST(MuscleForce, force)
         EXPECT_NEAR(F(i), ExpectedForce(i), requiredPrecision);
 }
 
+TEST(MuscleForce, unitTest)
+{
+	EXPECT_NO_THROW(biorbd::muscles::Force());
+	{
+		biorbd::muscles::Force force(1,2,3);
+		for (unsigned int i=0; i<3; ++i){
+			EXPECT_NEAR(force[i], i + 1, requiredPrecision);
+		}
+	}
+}
+
 TEST(MuscleForce, torqueFromMuscles)
 {
     biorbd::Model model(modelPathForMuscleForce);
