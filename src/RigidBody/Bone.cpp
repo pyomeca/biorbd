@@ -172,7 +172,7 @@ unsigned int biorbd::rigidbody::Bone::id() const{
         return (*m_idxDof)[*m_nDof];
 }
 
-int biorbd::rigidbody::Bone::plateformeIdx() const{
+int biorbd::rigidbody::Bone::platformIdx() const{
     return *m_idxPF;
 }
 unsigned int biorbd::rigidbody::Bone::nGeneralizedTorque() const{
