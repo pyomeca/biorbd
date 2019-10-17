@@ -20,7 +20,7 @@ public:
 
     virtual void timeDerivativeState(
             const biorbd::muscles::StateDynamics &emg,
-            const biorbd::muscles::Caracteristics &caract
+            const biorbd::muscles::Characteristics &characteristics
      );
 protected:
     virtual void setType();

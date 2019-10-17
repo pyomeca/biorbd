@@ -5,7 +5,7 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
-#include "RigidBody/BoneCaracteristics.h"
+#include "RigidBody/BoneCharacteristics.h"
 
 void Matlab_segmentMass( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
@@ -32,7 +32,7 @@ void Matlab_segmentMass( int, mxArray *plhs[],
         // Sortie des masses
         plhs[0] = mxCreateDoubleMatrix (1,1,mxREAL);
         double *mass = mxGetPr(plhs[0]);
-        mass[0] = model->bone(idx-1).caract().mass(); // Mettre les masses dans la variable de sortie
+        mass[0] = model->bone(idx-1).characteristics().mass(); // Mettre les masses dans la variable de sortie
     }
     else {
         // Sortie des noms
@@ -41,7 +41,7 @@ void Matlab_segmentMass( int, mxArray *plhs[],
 
         // Stocker chaque valeur
         for (unsigned int i=0; i<model->nbBone(); ++i)
-            mass[i] = model->bone(i).caract().mass(); // Mettre les masses dans la variable de sortie
+            mass[i] = model->bone(i).characteristics().mass(); // Mettre les masses dans la variable de sortie
     }
 
     return;

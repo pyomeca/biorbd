@@ -14,7 +14,7 @@ class String;
 namespace muscles {
 class Muscle;
 class Geometry;
-class Caracteristics;
+class Characteristics;
 class PathChangers;
 
 class BIORBD_API MuscleGroup
@@ -34,20 +34,20 @@ public:
             const biorbd::utils::String& name,
             biorbd::muscles::MUSCLE_TYPE type,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caracteristics,
+            const biorbd::muscles::Characteristics& characteristics,
             biorbd::muscles::STATE_TYPE stateType = biorbd::muscles::STATE_TYPE::NO_STATE_TYPE,
             biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
     virtual void addMuscle(
             const biorbd::utils::String& name,
             biorbd::muscles::MUSCLE_TYPE type,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caracteristics,
+            const biorbd::muscles::Characteristics& characteristics,
             biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType);
     virtual void addMuscle(
             const biorbd::utils::String& name,
             biorbd::muscles::MUSCLE_TYPE type,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caracteristics,
+            const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::PathChangers& pathChangers,
             biorbd::muscles::STATE_TYPE stateType = biorbd::muscles::STATE_TYPE::NO_STATE_TYPE,
             biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
@@ -55,7 +55,7 @@ public:
             const biorbd::utils::String& name,
             biorbd::muscles::MUSCLE_TYPE type,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caracteristics,
+            const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::PathChangers& pathChangers,
             biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType);
     virtual void addMuscle(

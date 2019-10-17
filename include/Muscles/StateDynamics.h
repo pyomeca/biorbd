@@ -6,7 +6,7 @@
 
 namespace biorbd {
 namespace muscles {
-class Caracteristics;
+class Characteristics;
 
 class BIORBD_API StateDynamics : public biorbd::muscles::State
 {
@@ -31,14 +31,14 @@ public:
     virtual double timeDerivativeActivation(
             double excitation,
             double activation,
-            const Caracteristics& caract,
+            const Characteristics& characteristics,
             bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
     virtual double timeDerivativeActivation(
             const StateDynamics& state,
-            const Caracteristics& caract,
+            const Characteristics& characteristics,
             bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
     virtual double timeDerivativeActivation(
-            const Caracteristics& caract,
+            const Characteristics& characteristics,
             bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
     virtual double timeDerivativeActivation(); // Retourne la derniere valeur
 

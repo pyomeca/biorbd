@@ -14,21 +14,21 @@ public:
     HillThelenType(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caract);
+            const biorbd::muscles::Characteristics& characteristics);
     HillThelenType(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::StateDynamics& dynamicState);
     HillThelenType(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::PathChangers& pathChangers);
     HillThelenType(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::PathChangers& pathChangers,
             const biorbd::muscles::StateDynamics& dynamicState);
     HillThelenType(

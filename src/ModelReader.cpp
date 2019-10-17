@@ -11,7 +11,7 @@
 #include "Utils/Node3d.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/BoneMesh.h"
-#include "RigidBody/BoneCaracteristics.h"
+#include "RigidBody/BoneCharacteristics.h"
 #include "RigidBody/IMU.h"
 #include "RigidBody/Patch.h"
 #include "RigidBody/NodeBone.h"
@@ -31,7 +31,7 @@
 #include "Muscles/WrappingCylinder.h"
 #include "Muscles/FatigueParameters.h"
 #include "Muscles/State.h"
-#include "Muscles/Caracteristics.h"
+#include "Muscles/Characteristics.h"
 #include "Muscles/ViaPoint.h"
 #include "Muscles/PathChangers.h"
 #endif // MODULE_MUSCLES
@@ -207,8 +207,8 @@ void biorbd::Reader::readModelFile(
                     }
                 }
                 RigidBodyDynamics::Math::SpatialTransform RT(RT_R, RT_T);
-                biorbd::rigidbody::BoneCaracteristics caract(mass,com,inertia,boneMesh);
-                model->AddBone(name, parent_str, trans, rot, caract, RT, PF);
+                biorbd::rigidbody::BoneCharacteristics characteristics(mass,com,inertia,boneMesh);
+                model->AddBone(name, parent_str, trans, rot, characteristics, RT, PF);
             }
             else if (!main_tag.tolower().compare("root_actuated")){
                 bool rootActuated = true;
@@ -694,8 +694,8 @@ void biorbd::Reader::readModelFile(
                             biorbd::utils::Node3d(origin_pos, name + "_origin", model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
                             biorbd::utils::Node3d(insert_pos, name + "_insertion", model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
                 biorbd::muscles::State stateMax(maxExcitation, maxActivation);
-                biorbd::muscles::Caracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax, fatigueParameters);
-                model->muscleGroup(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,caract,biorbd::muscles::PathChangers(),stateType,dynamicFatigueType);
+                biorbd::muscles::Characteristics characteristics(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax, fatigueParameters);
+                model->muscleGroup(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,characteristics,biorbd::muscles::PathChangers(),stateType,dynamicFatigueType);
     #else // MODULE_MUSCLES
             biorbd::utils::Error::raise("Biorbd was build without the module Muscles but the model defines a muscle");
     #endif // MODULE_MUSCLES

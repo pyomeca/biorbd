@@ -4,7 +4,7 @@
 #include "biorbdConfig.h"
 
 #include "RigidBody/Bone.h"
-#include "RigidBody/BoneCaracteristics.h"
+#include "RigidBody/BoneCharacteristics.h"
 #include "RigidBody/BoneMesh.h"
 #include "RigidBody/Contacts.h"
 #include "RigidBody/GeneralizedCoordinates.h"

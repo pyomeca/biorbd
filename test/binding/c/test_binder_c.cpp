@@ -144,6 +144,7 @@ TEST(BinderC, imu)
     c_deleteBiorbdModel(model);
 }
 
+#ifndef SKIP_LONG_TESTS
 #ifndef SKIP_KALMAN
 TEST(BinderC, kalmanImu)
 {
@@ -185,6 +186,7 @@ TEST(BinderC, kalmanImu)
     c_deleteBiorbdModel(model);
 }
 #endif
+#endif  // SKIP_LONG_TESTS
 
 TEST(BinderC, math)
 {

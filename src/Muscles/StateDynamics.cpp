@@ -3,7 +3,7 @@
 
 #include "Utils/Error.h"
 #include "Utils/String.h"
-#include "Muscles/Caracteristics.h"
+#include "Muscles/Characteristics.h"
 
 biorbd::muscles::StateDynamics::StateDynamics(double excitation,
         double activation) :
@@ -51,32 +51,32 @@ void biorbd::muscles::StateDynamics::DeepCopy(const biorbd::muscles::StateDynami
 
 double biorbd::muscles::StateDynamics::timeDerivativeActivation(
         const biorbd::muscles::StateDynamics& state,
-        const biorbd::muscles::Caracteristics& caract,
+        const biorbd::muscles::Characteristics& characteristics,
         bool alreadyNormalized){
-    return timeDerivativeActivation(state.excitation(), state.activation(), caract, alreadyNormalized);
+    return timeDerivativeActivation(state.excitation(), state.activation(), characteristics, alreadyNormalized);
 }
 
 
 double biorbd::muscles::StateDynamics::timeDerivativeActivation(
         double excitation,
         double activation,
-        const biorbd::muscles::Caracteristics &caract,
+        const biorbd::muscles::Characteristics &characteristics,
         bool alreadyNormalized){
     setExcitation(excitation);
     setActivation(activation);
-    return timeDerivativeActivation(caract, alreadyNormalized);
+    return timeDerivativeActivation(characteristics, alreadyNormalized);
 }
 
 double biorbd::muscles::StateDynamics::timeDerivativeActivation(
-        const biorbd::muscles::Caracteristics &caract,
+        const biorbd::muscles::Characteristics &characteristics,
         bool alreadyNormalized){
     // Implémentation de la fonction da/dt = (u-a)/GeneralizedTorque(u,a)
     // ou GeneralizedTorque(u,a) = t_act(0.5+1.5*a) is u>a et GeneralizedTorque(u,a)=t_deact(0.5+1.5*a) sinon
-    if (*m_activation<caract.minActivation())
-        *m_activation = caract.minActivation();
+    if (*m_activation<characteristics.minActivation())
+        *m_activation = characteristics.minActivation();
 
-    if (*m_excitation<caract.minActivation())
-        *m_excitation = caract.minActivation();
+    if (*m_excitation<characteristics.minActivation())
+        *m_excitation = characteristics.minActivation();
 
 
 
@@ -90,13 +90,13 @@ double biorbd::muscles::StateDynamics::timeDerivativeActivation(
     if (alreadyNormalized)
         num = *m_excitation- *m_activation; // numérateur
     else
-        num = excitationNorm(caract.stateMax())- *m_activation; // numérateur
+        num = excitationNorm(characteristics.stateMax())- *m_activation; // numérateur
     
     double denom; // dénominateur
     if (num>0)
-        denom = caract.GeneralizedTorqueActivation()   * (0.5+1.5* *m_activation);
+        denom = characteristics.GeneralizedTorqueActivation()   * (0.5+1.5* *m_activation);
     else
-        denom = caract.GeneralizedTorqueDeactivation() / (0.5+1.5* *m_activation);
+        denom = characteristics.GeneralizedTorqueDeactivation() / (0.5+1.5* *m_activation);
 
     *m_activationDot = num/denom;
 

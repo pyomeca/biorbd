@@ -9,7 +9,7 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/BoneMesh.h"
-#include "RigidBody/BoneCaracteristics.h"
+#include "RigidBody/BoneCharacteristics.h"
 #include "RigidBody/NodeBone.h"
 #include "RigidBody/Bone.h"
 #include "RigidBody/IMU.h"
@@ -87,8 +87,8 @@ TEST(CoM, kinematics)
 TEST(Bone, copy)
 {
     biorbd::Model model(modelPathForGeneralTesting);
-    biorbd::rigidbody::BoneCaracteristics caract(10, biorbd::utils::Node3d(0.5, 0.5, 0.5), RigidBodyDynamics::Math::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
-    biorbd::rigidbody::Bone MasterBone(model, "MasterBone", "NoParent", "zyx", "yzx", caract, RigidBodyDynamics::Math::SpatialTransform());
+    biorbd::rigidbody::BoneCharacteristics characteristics(10, biorbd::utils::Node3d(0.5, 0.5, 0.5), RigidBodyDynamics::Math::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
+    biorbd::rigidbody::Bone MasterBone(model, "MasterBone", "NoParent", "zyx", "yzx", characteristics, RigidBodyDynamics::Math::SpatialTransform());
     biorbd::rigidbody::Bone ShallowCopy(MasterBone);
     biorbd::rigidbody::Bone DeepCopyNow(MasterBone.DeepCopy());
     biorbd::rigidbody::Bone DeepCopyLater;

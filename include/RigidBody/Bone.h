@@ -15,7 +15,7 @@ class RotoTrans;
 
 namespace rigidbody {
 class Joints;
-class BoneCaracteristics;
+class BoneCharacteristics;
 
 class BIORBD_API Bone : public biorbd::utils::Node
 {
@@ -28,7 +28,7 @@ public:
             const biorbd::utils::String &parentName, // nom du segment parent
             const biorbd::utils::String &seqT,
             const biorbd::utils::String &seqR,// Séquence de Cardan pour classer les dof en rotation
-            const biorbd::rigidbody::BoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
+            const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mase, Centre de masse du segment, Inertie du segment, etc.
             const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
             int PF = -1);  // Index de la plateforme
     Bone(
@@ -36,7 +36,7 @@ public:
             const biorbd::utils::String &name, // nom du segment
             const biorbd::utils::String &parentName, // nom du segment parent
             const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
-            const biorbd::rigidbody::BoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
+            const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mase, Centre de masse du segment, Inertie du segment, etc.
             const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
             int PF = -1);  // Index de la plateforme
     biorbd::rigidbody::Bone DeepCopy() const;
@@ -61,7 +61,7 @@ public:
 
     biorbd::utils::RotoTrans localJCS() const; // retourne exactement ce qui est écrit dans le fichier
 
-    const biorbd::rigidbody::BoneCaracteristics& caract() const; // Retourne
+    const biorbd::rigidbody::BoneCharacteristics& characteristics() const; // Retourne
     bool isRotationAQuaternion() const; // Retourne si la rotation de ce segment est un quaternion
 
 protected:
@@ -121,9 +121,9 @@ protected:
     std::shared_ptr<std::vector<unsigned int>> m_dofPosition; // position dans la séquence de x, y et z
 
     // Définition formelle du segment
-    void setDofCaracteristicsOnLastSegment(); // Mettre m_caract sur le dernier segment
-    std::shared_ptr<biorbd::rigidbody::BoneCaracteristics> m_caract;// Segment virtuel non utilisé, il permet de "sauvegarder" les données et donc d'éviter l'usage de multiples variables intermédiaires
-    std::shared_ptr<std::vector<biorbd::rigidbody::BoneCaracteristics>> m_dofCaract; // Variable contenant les données Inertielles et autre de chaque sous segment (0 à 4 devraient être vide et 5 rempli)
+    void setDofCharacteristicsOnLastSegment(); // Mettre m_characteristics sur le dernier segment
+    std::shared_ptr<biorbd::rigidbody::BoneCharacteristics> m_characteristics;// Segment virtuel non utilisé, il permet de "sauvegarder" les données et donc d'éviter l'usage de multiples variables intermédiaires
+    std::shared_ptr<std::vector<biorbd::rigidbody::BoneCharacteristics>> m_dofCharacteristics; // Variable contenant les données Inertielles et autre de chaque sous segment (0 à 4 devraient être vide et 5 rempli)
 
 };
 

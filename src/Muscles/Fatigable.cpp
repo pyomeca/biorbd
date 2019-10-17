@@ -61,7 +61,7 @@ void biorbd::muscles::Fatigable::computeTimeDerivativeState(const biorbd::muscle
     if (std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicState>(m_fatigueState)) {
         biorbd::muscles::Muscle* muscle = dynamic_cast<biorbd::muscles::Muscle*>(this);
         if (muscle)
-            std::static_pointer_cast<biorbd::muscles::FatigueDynamicState>(m_fatigueState)->timeDerivativeState(emg, muscle->caract());
+            std::static_pointer_cast<biorbd::muscles::FatigueDynamicState>(m_fatigueState)->timeDerivativeState(emg, muscle->characteristics());
         else
             biorbd::utils::Error::raise("biorbd::muscles::Fatigable should be a biorbd::muscles::Muscle");
    } else {
