@@ -36,6 +36,16 @@ extern "C" {
             biorbd::Model*,
             const double* Q,
             double* jcs);
+    BIORBD_API void c_inverseDynamics(
+            biorbd::Model* model,
+            const double* q,
+            const double* qdot,
+            const double* qddot,
+            double* tau);
+    BIORBD_API void c_massMatrix(
+            biorbd::Model* model,
+            const double* q,
+            double* massMatrix);
 
 
     // dof functions
@@ -131,6 +141,9 @@ biorbd::rigidbody::GeneralizedCoordinates dispatchQinput(
 void dispatchQoutput(
         const biorbd::rigidbody::GeneralizedCoordinates &eQ,
         double* Q);
+void dispatchTauOutput(
+        const biorbd::rigidbody::GeneralizedTorque &eTau,
+        double* Tau);
 void dispatchDoubleOutput(
         const biorbd::utils::Vector&,
         double*);
