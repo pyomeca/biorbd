@@ -55,9 +55,9 @@ biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::combineRotAndTrans(
 biorbd::utils::RotoTrans biorbd::utils::RotoTrans::transpose() const
 {
     biorbd::utils::RotoTrans tp;
-    tp.block(0,0,3,3) = block(0,0,3,3).transpose();
-    tp.block(0,3,3,1) = block(0,0,3,3) * block(0,3,3,1);
-    tp.block(3,0,1,4) << 0,0,0,1;
+    tp.block(0, 0, 3, 3) = block(0, 0, 3, 3).transpose();
+    tp.block(0, 3, 3, 1) = -tp.block(0, 0, 3, 3) * block(0, 3, 3, 1);
+    tp.block(3, 0, 1, 4) << 0, 0, 0, 1;
     return tp;
 }
 
