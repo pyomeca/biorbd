@@ -502,12 +502,12 @@ biorbd::utils::Node3d biorbd::rigidbody::Joints::CoM(
     return com;
 }
 
-RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::angularMomentum(
+biorbd::utils::Node3d biorbd::rigidbody::Joints::angularMomentum(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         bool updateKin)
 {
-    return CalcAngularMomentum(*this, Q, Qdot, updateKin);
+    return CalcAngularMomentum(Q, Qdot, updateKin);
 }
 
 
@@ -603,12 +603,12 @@ biorbd::utils::Node3d biorbd::rigidbody::Joints::CoMbySegment(
 }
 
 
-std::vector<RigidBodyDynamics::Math::Vector3d> biorbd::rigidbody::Joints::CoMdotBySegment(
+std::vector<biorbd::utils::Node3d> biorbd::rigidbody::Joints::CoMdotBySegment(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         bool updateKin)
 {// Position du centre de masse de chaque segment
-    std::vector<RigidBodyDynamics::Math::Vector3d> tp; // vecteur de vecteurs de sortie
+    std::vector<biorbd::utils::Node3d> tp; // vecteur de vecteurs de sortie
 
     for (unsigned int i=0; i<m_bones->size(); ++i){
         tp.push_back(CoMdotBySegment(Q,Qdot,i,updateKin));
@@ -618,7 +618,7 @@ std::vector<RigidBodyDynamics::Math::Vector3d> biorbd::rigidbody::Joints::CoMdot
 }
 
 
-RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMdotBySegment(
+biorbd::utils::Node3d biorbd::rigidbody::Joints::CoMdotBySegment(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         const unsigned int i,
@@ -629,13 +629,13 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMdotBySegment(
 }
 
 
-std::vector<RigidBodyDynamics::Math::Vector3d> biorbd::rigidbody::Joints::CoMddotBySegment(
+std::vector<biorbd::utils::Node3d> biorbd::rigidbody::Joints::CoMddotBySegment(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
         bool updateKin)
 {// Position du centre de masse de chaque segment
-    std::vector<RigidBodyDynamics::Math::Vector3d> tp; // vecteur de vecteurs de sortie
+    std::vector<biorbd::utils::Node3d> tp; // vecteur de vecteurs de sortie
 
     for (unsigned int i=0; i<m_bones->size(); ++i){
         tp.push_back(CoMddotBySegment(Q,Qdot,Qddot,i,updateKin));
@@ -645,7 +645,7 @@ std::vector<RigidBodyDynamics::Math::Vector3d> biorbd::rigidbody::Joints::CoMddo
 }
 
 
-RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CoMddotBySegment(
+biorbd::utils::Node3d biorbd::rigidbody::Joints::CoMddotBySegment(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
@@ -726,16 +726,21 @@ const biorbd::rigidbody::BoneMesh &biorbd::rigidbody::Joints::boneMesh(unsigned 
     return bone(idx).caract().mesh();
 }
 
-RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CalcAngularMomentum (
+biorbd::utils::Node3d biorbd::rigidbody::Joints::CalcAngularMomentum (
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         bool update_kinematics)
 {
-    // Qddot was added later in the RBDL. In order to keep backward compatilibity, 
-    biorbd::rigidbody::GeneralizedCoordinates Qddot(this->nbQddot());
-    return CalcAngularMomentum(Q, Qdot, Qddot, update_kinematics);
+    RigidBodyDynamics::Math::Vector3d com,  angular_momentum;
+    double mass;
+    
+    // Calcul du angular momentum par la fonction de la position du centre de masse
+    RigidBodyDynamics::Utils::CalcCenterOfMass(
+                *this, Q, Qdot, nullptr, mass, com, nullptr, nullptr,
+                &angular_momentum, nullptr, update_kinematics);
+    return angular_momentum;
 }
-RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CalcAngularMomentum (
+biorbd::utils::Node3d biorbd::rigidbody::Joints::CalcAngularMomentum (
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
@@ -753,28 +758,19 @@ RigidBodyDynamics::Math::Vector3d biorbd::rigidbody::Joints::CalcAngularMomentum
     return angular_momentum;
 }
 
-std::vector<RigidBodyDynamics::Math::Vector3d> biorbd::rigidbody::Joints::CalcSegmentsAngularMomentum (
+std::vector<biorbd::utils::Node3d> biorbd::rigidbody::Joints::CalcSegmentsAngularMomentum (
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
-        bool update_kinematics) {
-    biorbd::rigidbody::GeneralizedCoordinates Qddot(this->nbQddot());
-    return CalcSegmentsAngularMomentum(Q, Qdot, Qddot, update_kinematics);
-}
-
-std::vector<RigidBodyDynamics::Math::Vector3d> biorbd::rigidbody::Joints::CalcSegmentsAngularMomentum (
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
         bool update_kinematics) {
     if (update_kinematics)
-        UpdateKinematicsCustom (&Q, &Qdot, &Qddot);
-
+        UpdateKinematicsCustom (&Q, &Qdot, nullptr);
+        
     double mass;
     RigidBodyDynamics::Math::Vector3d com;
-    RigidBodyDynamics::Utils::CalcCenterOfMass (*this, Q, Qdot, &Qddot, mass, com, nullptr, nullptr, nullptr, nullptr, false);
+    RigidBodyDynamics::Utils::CalcCenterOfMass (*this, Q, Qdot, nullptr, mass, com, nullptr, nullptr, nullptr, nullptr, false);
     RigidBodyDynamics::Math::SpatialTransform X_to_COM (RigidBodyDynamics::Math::Xtrans(com));
 
-    std::vector<RigidBodyDynamics::Math::Vector3d> h_segment;
+    std::vector<biorbd::utils::Node3d> h_segment;
     for (unsigned int i = 1; i < this->mBodies.size(); i++) {
         this->Ic[i] = this->I[i];
         this->hc[i] = this->Ic[i].toMatrix() * this->v[i];
@@ -788,7 +784,41 @@ std::vector<RigidBodyDynamics::Math::Vector3d> biorbd::rigidbody::Joints::CalcSe
             } while (this->lambda[j]!=0);
         }
         h = X_to_COM.applyAdjoint (h);
-        h_segment.push_back(RigidBodyDynamics::Math::Vector3d(h[0],h[1],h[2]));
+        h_segment.push_back(biorbd::utils::Node3d(h[0],h[1],h[2]));
+    }
+
+
+    return h_segment;
+}
+
+std::vector<biorbd::utils::Node3d> biorbd::rigidbody::Joints::CalcSegmentsAngularMomentum (
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+        const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
+        bool update_kinematics) {
+    if (update_kinematics)
+        UpdateKinematicsCustom (&Q, &Qdot, &Qddot);
+        
+    double mass;
+    RigidBodyDynamics::Math::Vector3d com;
+    RigidBodyDynamics::Utils::CalcCenterOfMass (*this, Q, Qdot, &Qddot, mass, com, nullptr, nullptr, nullptr, nullptr, false);
+    RigidBodyDynamics::Math::SpatialTransform X_to_COM (RigidBodyDynamics::Math::Xtrans(com));
+
+    std::vector<biorbd::utils::Node3d> h_segment;
+    for (unsigned int i = 1; i < this->mBodies.size(); i++) {
+        this->Ic[i] = this->I[i];
+        this->hc[i] = this->Ic[i].toMatrix() * this->v[i];
+
+        RigidBodyDynamics::Math::SpatialVector h = this->X_lambda[i].applyTranspose (this->hc[i]);
+        if (this->lambda[i] != 0) {
+            unsigned int j(i);
+            do {
+                j = this->lambda[j];
+                h = this->X_lambda[j].applyTranspose (h);
+            } while (this->lambda[j]!=0);
+        }
+        h = X_to_COM.applyAdjoint (h);
+        h_segment.push_back(biorbd::utils::Node3d(h[0],h[1],h[2]));
     }
 
 
