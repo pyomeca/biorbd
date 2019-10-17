@@ -42,7 +42,7 @@ void c_boneRotationSequence(
 {
     // Memory for seq must be already allocated
     biorbd::utils::String sequence(m->bone(segName).seqR());
-    strcpy(seq, sequence.c_str());
+    snprintf(seq, sequence.length() + 1, "%s", sequence.c_str());
 }
 void c_localJCS(
         biorbd::Model* m,
