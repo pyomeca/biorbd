@@ -166,21 +166,21 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             const biorbd::rigidbody::GeneralizedCoordinates &Qddot); // Acceleration du CoM
-    std::vector<RigidBodyDynamics::Math::Vector3d> CoMdotBySegment(
+    std::vector<biorbd::utils::Node3d> CoMdotBySegment(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             bool updateKin=true); // vitesse du centre de masse de chaque segment
-    RigidBodyDynamics::Math::Vector3d CoMdotBySegment(
+    biorbd::utils::Node3d CoMdotBySegment(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             const unsigned int i,
             bool updateKin=true); // vitesse du centre de masse du segment i
-    std::vector<RigidBodyDynamics::Math::Vector3d> CoMddotBySegment(
+    std::vector<biorbd::utils::Node3d> CoMddotBySegment(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
             bool updateKin=true); // accélération du centre de masse de chaque segment
-    RigidBodyDynamics::Math::Vector3d CoMddotBySegment(
+    biorbd::utils::Node3d CoMddotBySegment(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
@@ -207,25 +207,25 @@ public:
 
 
     // -- ANGULAR MOMENTUM FUNCTIONS -- //
-    RigidBodyDynamics::Math::Vector3d angularMomentum(
+    biorbd::utils::Node3d angularMomentum(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             bool updateKin = true); // Wrapper pour le moment angulaire
     // Réimplémentation de la fonction CalcAngularMomentum car elle a une erreur (inversion du calcul du com)
-    RigidBodyDynamics::Math::Vector3d CalcAngularMomentum (
+    biorbd::utils::Node3d CalcAngularMomentum (
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             bool update_kinematics);
-    RigidBodyDynamics::Math::Vector3d CalcAngularMomentum (
+    biorbd::utils::Node3d CalcAngularMomentum (
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
             bool update_kinematics);
-    std::vector<RigidBodyDynamics::Math::Vector3d> CalcSegmentsAngularMomentum (
+    std::vector<biorbd::utils::Node3d> CalcSegmentsAngularMomentum (
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             bool update_kinematics);
-    std::vector<RigidBodyDynamics::Math::Vector3d> CalcSegmentsAngularMomentum (
+    std::vector<biorbd::utils::Node3d> CalcSegmentsAngularMomentum (
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
