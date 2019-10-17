@@ -20,17 +20,20 @@ class Node3d;
 class Vector;
 }
 
+///
+/// \brief Class Reader
+///
 class BIORBD_API Reader
 {
 public:
     ///
-    /// \brief Opens a model file
+    /// \brief Open a model file
     /// \param path The path of the file
     ///
     static biorbd::Model readModelFile(const biorbd::utils::Path &path); // Open a model file
 
     ///
-    /// \brief Opens a model file
+    /// \brief Open a model file
     /// \param path The path of the file
     /// \param model The model
     /// \return Returns the model
@@ -38,42 +41,42 @@ public:
     static void readModelFile(const biorbd::utils::Path &path, biorbd::Model *model); // Open a model file
 
     ///
-    /// \brief Reads a file containing markers
+    /// \brief Read a file containing markers
     /// \param path The path of the file
     /// \return Returns the markers
     ///
     static std::vector<std::vector<biorbd::utils::Node3d>> readMarkerDataFile(const utils::Path &path); 
 
     /// 
-    /// \brief Reads a kin file
+    /// \brief Read a kin file
     /// \param path The path of the file
     /// \return Returns the kinematics
     /// 
     static std::vector<biorbd::rigidbody::GeneralizedCoordinates> readQDataFile(const biorbd::utils::Path &path);
 
     ///
-    /// \brief Reads an activation data file
+    /// \brief Read an activation data file
     /// \param path The path of the file
     /// \return Returns the activations
     ///
     static std::vector<biorbd::utils::Vector> readActivationDataFile(const biorbd::utils::Path &path);
 
     ///
-    /// \brief Reads a torque data file
+    /// \brief Read a torque data file
     /// \param path The path of the file
     /// \return Returns the torque
     ///
     static std::vector<biorbd::utils::Vector> readTorqueDataFile(const biorbd::utils::Path &path);
 
     ///
-    /// \brief Reads a grf file
+    /// \brief Read a grf file
     /// \param path The path of the file
     /// \return Returns the ground reaction force
     /// 
     static std::vector<biorbd::utils::Vector> readGrfDataFile(const biorbd::utils::Path &path);
 
     /// 
-    /// \brief Reads a Vicon force file
+    /// \brief Read a Vicon force file
     /// \param path The path of the file
     /// \param frame The fame vector
     /// \param frequency The acquisition frequency
@@ -90,14 +93,14 @@ public:
             std::vector<std::vector<biorbd::utils::Node3d>> &cop); // Center of pressure (x,y,z)
 
     ///
-    /// \brief Reads a Vicon force file
+    /// \brief Read a Vicon force file
     /// \param path The path of the file
     /// \return Returns a Spatial Transform vector
     ///
     static std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>>  readViconForceFile(const biorbd::utils::String &path);
 
     ///
-    /// \brief Reads a Vicon marker file CSV formated
+    /// \brief Read a Vicon marker file CSV formated
     /// \param path The path of the file
     /// \param nNodes The number of nodes (-1 => all) [keeps all of the markers]
     ///
@@ -106,7 +109,7 @@ public:
             int nNodes =-1); // Path to the file, number of nodes (-1 => all) [keeps all of the markers]
 
     /// 
-    /// \brief Reads a Vicon marker file CSV formated
+    /// \brief Read a Vicon marker file CSV formated
     /// \param path The path of the file
     /// \param markOrder The markers to keep
     /// \param nNodes The number of nodes (-1 => all) [keeps all of the markers]
@@ -118,14 +121,14 @@ public:
             int nNodes =-1); // Path to the file, markers to keep, number of nodes (-1 => all)
 
     ///
-    /// \brief Reads a biorbd bone mesh file
+    /// \brief Read a biorbd bone mesh file
     /// \param path The path of the file
     /// \return Returns the mesh
     ///
     static biorbd::rigidbody::BoneMesh readBoneMeshFileBiorbdBones(const biorbd::utils::Path& path);
 
     ///
-    /// \Reads a PLY bone mesh file
+    /// \brief Read a PLY bone mesh file
     /// \param path The path of the file
     /// \return Returns the mesh
 

@@ -29,8 +29,14 @@ class BIORBD_API Model :
         #endif
 {
 public:
-
+    ///
+    /// \brief Construct a model
+    ///
     Model();
+
+    ///
+    /// \brief Destroy the class properly
+    ///
     virtual ~Model();
 
     ///
@@ -41,7 +47,7 @@ public:
 
     ///
     /// \brief Applies inverse kinematics
-    /// \param marker Markers
+    /// \param markers Markers
     /// \param Qinit Initial guess for the state
     /// \param Q State vector of the internal joints
     /// \param removeAxes
