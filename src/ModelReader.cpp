@@ -2,7 +2,6 @@
 #include "ModelReader.h"
 
 #include <limits.h>
-#include <fstream>
 #include "BiorbdModel.h"
 #include "Utils/Error.h"
 #include "Utils/IfStream.h"
@@ -37,28 +36,6 @@
 #include "Muscles/PathChangers.h"
 #endif // MODULE_MUSCLES
 
-#if defined(_WIN32) || defined(_WIN64)
-    #include <direct.h>
-    #define GetCurrentDir _getcwd
-#else
-    #include <unistd.h>
-    #define GetCurrentDir getcwd
-#endif
-
-void biorbd::Reader::pwd(){
-	char c[FILENAME_MAX];
-    if (GetCurrentDir(c, sizeof(c)))
-        std::cout << c << std::endl;
-}
-
-bool biorbd::Reader::is_readable(const biorbd::utils::Path &file)
-{
-    std::ifstream fichier( file.absolutePath().c_str() );
-    bool isOpen(fichier.is_open());
-    fichier.close();
-    return isOpen;
-}
-
 // ------ Public methods ------ //
 biorbd::Model biorbd::Reader::readModelFile(const biorbd::utils::Path &path)
 {
@@ -68,12 +45,22 @@ biorbd::Model biorbd::Reader::readModelFile(const biorbd::utils::Path &path)
     return model;
 }
 
-void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Model *model)
+void biorbd::Reader::readModelFile(
+        const biorbd::utils::Path &path,
+        biorbd::Model *model)
 {	// Ouverture du fichier
-    if (!is_readable(path))
-        biorbd::utils::Error::raise("File " + path.absolutePath() + " could not be open");
+    if (!path.isFileReadable())
+        biorbd::utils::Error::raise("File " + path.absolutePath()
+                                    + " could not be open");
 
-    biorbd::utils::IfStream file(path.absolutePath().c_str(), std::ios::in);
+#ifdef _WIN32
+    biorbd::utils::IfStream file(
+                biorbd::utils::Path::toWindowsFormat(
+                    path.absolutePath()).c_str(), std::ios::in);
+#else
+    biorbd::utils::IfStream file(
+                path.absolutePath().c_str(), std::ios::in);
+#endif
 
     // Lecture du fichier
     biorbd::utils::String main_tag;
@@ -831,10 +818,19 @@ void biorbd::Reader::readModelFile(const biorbd::utils::Path &path, biorbd::Mode
     // std::cout << "Model file successfully loaded" << std::endl;
     file.close();
 }
-std::vector<std::vector<biorbd::utils::Node3d>> biorbd::Reader::readMarkerDataFile(const biorbd::utils::String &path){
+std::vector<std::vector<biorbd::utils::Node3d>>
+biorbd::Reader::readMarkerDataFile(
+        const biorbd::utils::Path &path){
     // Ouverture du fichier
     // std::cout << "Loading marker file: " << path << std::endl;
-    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
+#ifdef _WIN32
+    biorbd::utils::IfStream file(
+                biorbd::utils::Path::toWindowsFormat(
+                    path.absolutePath()).c_str(), std::ios::in);
+#else
+    biorbd::utils::IfStream file(
+                path.absolutePath().c_str(), std::ios::in);
+#endif
 
     // Lecture du fichier
     biorbd::utils::String tp;
@@ -881,10 +877,19 @@ std::vector<std::vector<biorbd::utils::Node3d>> biorbd::Reader::readMarkerDataFi
     return markers;
 }
 
-std::vector<biorbd::rigidbody::GeneralizedCoordinates> biorbd::Reader::readQDataFile(const biorbd::utils::String &path){
+std::vector<biorbd::rigidbody::GeneralizedCoordinates>
+biorbd::Reader::readQDataFile(
+        const utils::Path &path){
     // Ouverture du fichier
     // std::cout << "Loading kin file: " << path << std::endl;
-    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
+#ifdef _WIN32
+    biorbd::utils::IfStream file(
+                biorbd::utils::Path::toWindowsFormat(
+                    path.absolutePath()).c_str(), std::ios::in);
+#else
+    biorbd::utils::IfStream file(
+                path.absolutePath().c_str(), std::ios::in);
+#endif
 
     // Lecture du fichier
     biorbd::utils::String tp;
@@ -927,10 +932,19 @@ std::vector<biorbd::rigidbody::GeneralizedCoordinates> biorbd::Reader::readQData
     return kinematics;
 }
 
-std::vector<biorbd::utils::Vector> biorbd::Reader::readActivationDataFile(const biorbd::utils::String &path){
+std::vector<biorbd::utils::Vector>
+biorbd::Reader::readActivationDataFile(
+        const utils::Path &path){
     // Ouverture du fichier
     // std::cout << "Loading kin file: " << path << std::endl;
-    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
+#ifdef _WIN32
+    biorbd::utils::IfStream file(
+                biorbd::utils::Path::toWindowsFormat(
+                    path.absolutePath()).c_str(), std::ios::in);
+#else
+    biorbd::utils::IfStream file(
+                path.absolutePath().c_str(), std::ios::in);
+#endif
 
     // Lecture du fichier
     biorbd::utils::String tp;
@@ -973,10 +987,19 @@ std::vector<biorbd::utils::Vector> biorbd::Reader::readActivationDataFile(const 
     return activations;
 }
 
-std::vector<biorbd::utils::Vector> biorbd::Reader::readTorqueDataFile(const biorbd::utils::String &path){
+std::vector<biorbd::utils::Vector>
+biorbd::Reader::readTorqueDataFile(
+        const utils::Path &path){
     // Ouverture du fichier
     // std::cout << "Loading kin file: " << path << std::endl;
-    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
+#ifdef _WIN32
+    biorbd::utils::IfStream file(
+                biorbd::utils::Path::toWindowsFormat(
+                    path.absolutePath()).c_str(), std::ios::in);
+#else
+    biorbd::utils::IfStream file(
+                path.absolutePath().c_str(), std::ios::in);
+#endif
 
     // Lecture du fichier
     biorbd::utils::String tp;
@@ -1022,10 +1045,19 @@ std::vector<biorbd::utils::Vector> biorbd::Reader::readTorqueDataFile(const bior
 
 }
 
-std::vector<biorbd::utils::Vector> biorbd::Reader::readGrfDataFile(const biorbd::utils::String &path){
+std::vector<biorbd::utils::Vector>
+biorbd::Reader::readGrfDataFile(
+        const utils::Path &path){
     // Ouverture du fichier
     // std::cout << "Loading grf file: " << path << std::endl;
-    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
+#ifdef _WIN32
+    biorbd::utils::IfStream file(
+                biorbd::utils::Path::toWindowsFormat(
+                    path.absolutePath()).c_str(), std::ios::in);
+#else
+    biorbd::utils::IfStream file(
+                path.absolutePath().c_str(), std::ios::in);
+#endif
  
     // Lecture du fichier 
     biorbd::utils::String tp;
@@ -1072,15 +1104,22 @@ std::vector<biorbd::utils::Vector> biorbd::Reader::readGrfDataFile(const biorbd:
 }
 
 void biorbd::Reader::readViconForceFile(
-        const biorbd::utils::String &path, // Path to the file
+        const utils::Path &path, // Path to the file
         std::vector<std::vector<unsigned int>> &frame, // Time vector * number of pf
-        std::vector<unsigned int> &frequency,// Acquisition frequency * number of pf
+        std::vector<unsigned int> &frequency, // Acquisition frequency * number of pf
         std::vector<std::vector<biorbd::utils::Node3d>> &force, // Linear forces (x,y,z) * number of pf
         std::vector<std::vector<biorbd::utils::Node3d>> &moment, // Moments (x,y,z) * number of pf
         std::vector<std::vector<biorbd::utils::Node3d>> &cop){// Center of pressure (x,y,z) * number of pf
     // Ouverture du fichier
     // std::cout << "Loading force file: " << path << std::endl;
-    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
+#ifdef _WIN32
+    biorbd::utils::IfStream file(
+                biorbd::utils::Path::toWindowsFormat(
+                    path.absolutePath()).c_str(), std::ios::in);
+#else
+    biorbd::utils::IfStream file(
+                path.absolutePath().c_str(), std::ios::in);
+#endif
 
     frame.clear();
     force.clear();
@@ -1180,9 +1219,20 @@ std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::Reader:
     return st;
 }
 
-std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarkerFile(const biorbd::utils::String &path, std::vector<biorbd::utils::String> &markOrder, int nNodes){
+std::vector<std::vector<biorbd::utils::Node3d>>
+biorbd::Reader::readViconMarkerFile(
+        const utils::Path &path,
+        std::vector<biorbd::utils::String> &markOrder,
+        int nNodes) {
     // Lire le fichier
-    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
+#ifdef _WIN32
+    biorbd::utils::IfStream file(
+                biorbd::utils::Path::toWindowsFormat(
+                    path.absolutePath()).c_str(), std::ios::in);
+#else
+    biorbd::utils::IfStream file(
+                path.absolutePath().c_str(), std::ios::in);
+#endif
     biorbd::utils::String t;
 
 
@@ -1248,11 +1298,21 @@ std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarker
             nbFrames++;
         }
         file.close();
-        file.open(path.c_str(), std::ios::in);
+#ifdef _WIN32
+    biorbd::utils::IfStream file(
+                biorbd::utils::Path::toWindowsFormat(
+                    path.absolutePath()).c_str(), std::ios::in);
+#else
+    biorbd::utils::IfStream file(
+                path.absolutePath().c_str(), std::ios::in);
+#endif
         // passer l'entete
         for (unsigned int i=0; i<7; ++i)
             file.read(t);
-        biorbd::utils::Error::check(nNodes!=0 && nNodes!=1 && static_cast<unsigned int>(nNodes)<=nbFrames, "nNode should not be 0, 1 or greater than number of frame");
+        biorbd::utils::Error::check(nNodes!=0 && nNodes!=1
+                && static_cast<unsigned int>(nNodes)<=nbFrames,
+                                    "nNode should not be 0, 1 or greater "
+                                    "than number of frame");
         jumps = nbFrames/static_cast<unsigned int>(nNodes)+1;
     }
 
@@ -1304,13 +1364,22 @@ std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarker
     return data;
 }
 
-biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFileBiorbdBones(const biorbd::utils::Path &path)
+biorbd::rigidbody::BoneMesh
+biorbd::Reader::readBoneMeshFileBiorbdBones(
+        const biorbd::utils::Path &path)
 {
     // Lire un fichier d'os
 
     // Ouverture du fichier
     // std::cout << "Loading marker file: " << path << std::endl;
-    biorbd::utils::IfStream file(path, std::ios::in);
+#ifdef _WIN32
+    biorbd::utils::IfStream file(
+                biorbd::utils::Path::toWindowsFormat(
+                    path.absolutePath()).c_str(), std::ios::in);
+#else
+    biorbd::utils::IfStream file(
+                path.absolutePath().c_str(), std::ios::in);
+#endif
 
     // Lecture du fichier
     biorbd::utils::String tp;
@@ -1355,13 +1424,21 @@ biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFileBiorbdBones(const bi
 }
 
 
-biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFilePly(const biorbd::utils::Path &path)
+biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFilePly(
+        const biorbd::utils::Path &path)
 {
     // Lire un fichier d'os
 
     // Ouverture du fichier
     // std::cout << "Loading marker file: " << path << std::endl;
-    biorbd::utils::IfStream file(path, std::ios::in);
+#ifdef _WIN32
+    biorbd::utils::IfStream file(
+                biorbd::utils::Path::toWindowsFormat(
+                    path.absolutePath()).c_str(), std::ios::in);
+#else
+    biorbd::utils::IfStream file(
+                path.absolutePath().c_str(), std::ios::in);
+#endif
 
     // Lecture du fichier
     biorbd::utils::String tp;
@@ -1415,9 +1492,19 @@ biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFilePly(const biorbd::ut
 }
 
 
-std::vector<std::vector<biorbd::utils::Node3d>>  biorbd::Reader::readViconMarkerFile(const biorbd::utils::String &path, int nNodes){
+std::vector<std::vector<biorbd::utils::Node3d>>
+biorbd::Reader::readViconMarkerFile(
+        const biorbd::utils::Path &path,
+        int nNodes){
     // Lire le fichier
-    biorbd::utils::IfStream file(path.c_str(), std::ios::in);
+#ifdef _WIN32
+    biorbd::utils::IfStream file(
+                biorbd::utils::Path::toWindowsFormat(
+                    path.absolutePath()).c_str(), std::ios::in);
+#else
+    biorbd::utils::IfStream file(
+                path.absolutePath().c_str(), std::ios::in);
+#endif
     biorbd::utils::String t;
 
 

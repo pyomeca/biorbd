@@ -87,7 +87,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
         const biorbd::rigidbody::GeneralizedCoordinates* QDot)
 {
     // Update de la position musculaire
-    if (updateKin > 0)
+    if (updateKin)
         updateMuscles(*Q,*QDot,updateKin);
 
     const std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>>& force_tp = musclesForces(state, false);
@@ -118,7 +118,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
 {
 
     // Update de la position musculaire
-    if (updateKin > 0)
+    if (updateKin)
         updateMuscles(*Q,*QDot,updateKin);
 
     // Récupérer la matrice jacobienne et
@@ -136,7 +136,7 @@ std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> biorbd::muscle
         const biorbd::rigidbody::GeneralizedCoordinates* QDot)
 {
     // Update de la position musculaire
-    if (updateKin > 0)
+    if (updateKin)
         updateMuscles(*Q,*QDot,updateKin);
 
     // Variable de sortie

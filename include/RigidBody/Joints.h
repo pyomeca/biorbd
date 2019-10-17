@@ -159,10 +159,10 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const unsigned int i,
             bool updateKin=true); // Position du centre de masse du segment i
-    RigidBodyDynamics::Math::Vector3d CoMdot(
+    biorbd::utils::Node3d CoMdot(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot); // Vitesse du CoM
-    RigidBodyDynamics::Math::Vector3d CoMddot(
+    biorbd::utils::Node3d CoMddot(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
             const biorbd::rigidbody::GeneralizedCoordinates &Qddot); // Acceleration du CoM
