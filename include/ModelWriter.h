@@ -24,8 +24,8 @@ public:
 
 ///
 /// \brief Writes the model
-/// \param model The model
-/// \param pathToWrite The path to write (folder in which to write)
+/// \param model The model to write
+/// \param pathToWrite The path to write
 ///
     static void writeModel(
             biorbd::Model &model,

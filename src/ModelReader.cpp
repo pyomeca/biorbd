@@ -1046,10 +1046,10 @@ biorbd::Reader::readTorqueDataFile(
 }
 
 std::vector<biorbd::utils::Vector>
-biorbd::Reader::readGrfDataFile(
+biorbd::Reader::readGroundReactionForceDataFile(
         const utils::Path &path){
     // Open file
-    // std::cout << "Loading grf file: " << path << std::endl;
+    // std::cout << "Loading ground reaction force file: " << path << std::endl;
 #ifdef _WIN32
     biorbd::utils::IfStream file(
                 biorbd::utils::Path::toWindowsFormat(

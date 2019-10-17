@@ -35,8 +35,8 @@ public:
     ///
     /// \brief Open a model file
     /// \param path The path of the file
-    /// \param model The model
-    /// \return Returns the model
+    /// \param model The model to fill
+    /// \return Returns the model to fill
     ///
     static void readModelFile(const biorbd::utils::Path &path, biorbd::Model *model); // Open a model file
 
@@ -69,11 +69,11 @@ public:
     static std::vector<biorbd::utils::Vector> readTorqueDataFile(const biorbd::utils::Path &path);
 
     ///
-    /// \brief Read a grf file
+    /// \brief Read a ground reaction force file
     /// \param path The path of the file
     /// \return Returns the ground reaction force
     /// 
-    static std::vector<biorbd::utils::Vector> readGrfDataFile(const biorbd::utils::Path &path);
+    static std::vector<biorbd::utils::Vector> readGroundReactionForceDataFile(const biorbd::utils::Path &path);
 
     /// 
     /// \brief Read a Vicon force file
@@ -131,7 +131,7 @@ public:
     /// \brief Read a PLY bone mesh file
     /// \param path The path of the file
     /// \return Returns the mesh
-
+    ///
     static biorbd::rigidbody::BoneMesh readBoneMeshFilePly(const biorbd::utils::Path& path);
 
 };
