@@ -1,5 +1,7 @@
 #include "biorbd_c.h"
 
+#include "rbdl/Dynamics.h"
+
 #include "ModelReader.h"
 #include "ModelWriter.h"
 #include "Utils/String.h"
@@ -64,8 +66,40 @@ void c_globalJCS(
     // Dispatch de l'output
     dispatchRToutput(pre_jcs, jcs);
 }
+void c_inverseDynamics(
+        biorbd::Model *model,
+        const double *q,
+        const double *qdot,
+        const double *qddot,
+        double *tau) {
+    biorbd::rigidbody::GeneralizedCoordinates Q(
+                dispatchQinput(model, q));
+    biorbd::rigidbody::GeneralizedCoordinates Qdot(
+                dispatchQinput(model, qdot));
+    biorbd::rigidbody::GeneralizedCoordinates Qddot(
+                dispatchQinput(model, qddot));
 
+    biorbd::rigidbody::GeneralizedTorque Tau(*model);
+    RigidBodyDynamics::InverseDynamics(*model, Q, Qdot, Qddot, Tau);
 
+    dispatchTauOutput(Tau, tau);
+}
+void c_massMatrix(
+        biorbd::Model* model,
+        const double* q,
+        double* massMatrix) {
+    unsigned int nQ(model->nbQ());
+    biorbd::rigidbody::GeneralizedCoordinates Q(
+                dispatchQinput(model, q));
+
+    RigidBodyDynamics::Math::MatrixNd Mass(nQ, nQ);
+    Mass.setZero();
+    RigidBodyDynamics::CompositeRigidBodyAlgorithm(*model, Q, Mass);
+
+    // Remplir l'output
+    for (unsigned int i=0; i<nQ*nQ; ++i)
+        massMatrix[i] = Mass(i);
+}
 
 
 // dof functions
@@ -297,6 +331,14 @@ void dispatchQoutput(const biorbd::rigidbody::GeneralizedCoordinates &eQ, double
     // Warnging Q must already be allocated
     for (unsigned int i=0; i<eQ.size(); ++i){
         Q[i] = eQ[i];
+    }
+}
+void dispatchTauOutput(
+        const biorbd::rigidbody::GeneralizedTorque &eTau,
+        double* Tau) {
+    // Warnging Q must already be allocated
+    for (unsigned int i = 0; i < eTau.size(); ++i) {
+        Tau[i] = eTau[i];
     }
 }
 void dispatchDoubleOutput(

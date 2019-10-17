@@ -28,7 +28,7 @@ void Matlab_segmentCOMdot( int, mxArray *plhs[],
 
     // Trouver la vitesse du CoM
     if (i==-1){
-        std::vector<RigidBodyDynamics::Math::Vector3d> COMdot = model->CoMdotBySegment(Q,QDot,true);
+        std::vector<biorbd::utils::Node3d> COMdot = model->CoMdotBySegment(Q,QDot,true);
         // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix( 3, model->nbBone(), mxREAL);
         // Remplir l'output
@@ -38,7 +38,7 @@ void Matlab_segmentCOMdot( int, mxArray *plhs[],
                 tp[3*j+k] = COMdot[j][k]; // Transférer le tout dans un tableau de sortie
     }
     else {
-        RigidBodyDynamics::Math::Vector3d COMdot = model->CoMdotBySegment(Q,QDot,static_cast<unsigned int>(i),true);
+        biorbd::utils::Node3d COMdot = model->CoMdotBySegment(Q,QDot,static_cast<unsigned int>(i),true);
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix( 3, 1, mxREAL);
