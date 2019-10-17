@@ -10,7 +10,7 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "Muscles/WrappingObject.h"
 #include "Muscles/PathChangers.h"
-#include "Muscles/Caracteristics.h"
+#include "Muscles/Characteristics.h"
 #include "Muscles/ViaPoint.h"
 
 biorbd::muscles::Geometry::Geometry() :
@@ -114,7 +114,7 @@ void biorbd::muscles::Geometry::updateKinematics(
 
 void biorbd::muscles::Geometry::updateKinematics(
         biorbd::rigidbody::Joints &model,
-        const biorbd::muscles::Caracteristics& c,
+        const biorbd::muscles::Characteristics& c,
         biorbd::muscles::PathChangers& o,
         const biorbd::rigidbody::GeneralizedCoordinates *Q,
         const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
@@ -159,7 +159,7 @@ void biorbd::muscles::Geometry::updateKinematics(
 void biorbd::muscles::Geometry::updateKinematics(
         std::vector<utils::Node3d> &musclePointsInGlobal,
         biorbd::utils::Matrix &jacoPointsInGlobal,
-        const biorbd::muscles::Caracteristics &c,
+        const biorbd::muscles::Characteristics &c,
         const biorbd::rigidbody::GeneralizedCoordinates *Qdot)
 {
     *m_posAndJacoWereForced = true;
@@ -258,7 +258,7 @@ const biorbd::utils::Matrix &biorbd::muscles::Geometry::jacobianLength() const
 
 void biorbd::muscles::Geometry::_updateKinematics(
         const biorbd::rigidbody::GeneralizedCoordinates* Qdot,
-        const biorbd::muscles::Caracteristics* c,
+        const biorbd::muscles::Characteristics* c,
         biorbd::muscles::PathChangers* o)
 {
     // Calculer les longueurs et vitesses
@@ -375,7 +375,7 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(
 }
 
 double biorbd::muscles::Geometry::length(
-        const biorbd::muscles::Caracteristics *caract,
+        const biorbd::muscles::Characteristics *characteristics,
         biorbd::muscles::PathChangers *objects)
 {
     *m_muscleTendonLength = 0;
@@ -400,7 +400,7 @@ double biorbd::muscles::Geometry::length(
             *m_muscleTendonLength += ((*m_pointsInGlobal)[i+1] - (*m_pointsInGlobal)[i]).norm();
     }
 
-    *m_length = (*m_muscleTendonLength - caract->tendonSlackLength())/cos(caract->pennationAngle());
+    *m_length = (*m_muscleTendonLength - characteristics->tendonSlackLength())/cos(characteristics->pennationAngle());
 
     return *m_length;
 }

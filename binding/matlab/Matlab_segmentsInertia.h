@@ -70,7 +70,7 @@ void Matlab_segmentsInertiaLocal( int, mxArray *plhs[],
         double *ia = mxGetPr(plhs[0]);
 
         // Remplir l'output
-        Eigen::Matrix3d Im =  model->bone(idx-1).caract().inertia(); // Mettre les masses dans la variable de sortie
+        Eigen::Matrix3d Im =  model->bone(idx-1).characteristics().inertia(); // Mettre les masses dans la variable de sortie
         unsigned int cmp(0);
         for (unsigned int i = 0; i<3; ++i)
             for (unsigned int j = 0; j<3; ++j){
@@ -87,7 +87,7 @@ void Matlab_segmentsInertiaLocal( int, mxArray *plhs[],
         // Remplir l'output
         unsigned int cmp (0);
         for (unsigned int idx=0; idx<nBones; ++idx){
-            Eigen::Matrix3d Im =  model->bone(idx).caract().inertia(); // Mettre les masses dans la variable de sortie
+            Eigen::Matrix3d Im =  model->bone(idx).characteristics().inertia(); // Mettre les masses dans la variable de sortie
             unsigned int cmp2(0);
             for (unsigned int i = 0; i<3; ++i)
                 for (unsigned int j = 0; j<3; ++j){

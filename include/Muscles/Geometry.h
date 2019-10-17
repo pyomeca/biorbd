@@ -19,7 +19,7 @@ class GeneralizedCoordinates;
 
 namespace muscles {
 class PathChangers;
-class Caracteristics;
+class Characteristics;
 
 class BIORBD_API Geometry
 {
@@ -39,7 +39,7 @@ public:
             int updateKin = 2);
     void updateKinematics(
             biorbd::rigidbody::Joints &model,
-            const biorbd::muscles::Caracteristics&,
+            const biorbd::muscles::Characteristics&,
             biorbd::muscles::PathChangers&,
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
             const biorbd::rigidbody::GeneralizedCoordinates* Qdot = nullptr,
@@ -51,7 +51,7 @@ public:
     void updateKinematics(
             std::vector<biorbd::utils::Node3d>& musclePointsInGlobal,
             biorbd::utils::Matrix& jacoPointsInGlobal,
-            const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::Characteristics& characteristics,
             const biorbd::rigidbody::GeneralizedCoordinates* Qdot = nullptr);
 
     // Get and set des position d'origine et insertions
@@ -85,7 +85,7 @@ protected:
     // Update commun de la cinématique
     void _updateKinematics(
             const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-            const biorbd::muscles::Caracteristics* c = nullptr,
+            const biorbd::muscles::Characteristics* c = nullptr,
             biorbd::muscles::PathChangers* o = nullptr);
 
     // Calcul de la position des points dans le global
@@ -104,7 +104,7 @@ protected:
 
     // Calcul de la longueur musculaire
     double length(
-            const biorbd::muscles::Caracteristics* caract = nullptr,
+            const biorbd::muscles::Characteristics* characteristics = nullptr,
             biorbd::muscles::PathChangers* pathChanger = nullptr); // Update the kinematics and compute and return muscle length
     // Calcul de la vitesse musculaire
     double velocity(
