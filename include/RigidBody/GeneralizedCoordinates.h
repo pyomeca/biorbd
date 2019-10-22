@@ -28,13 +28,13 @@ public:
         biorbd::utils::Vector(other){}
 
     ///
-    /// \brief Create generalized coordinates of a vector at a specified position
+    /// \brief Create generalized coordinates of a vector at a specific position
     /// \param i Vector position
     ///
     GeneralizedCoordinates(unsigned int i);
 
     ///
-    /// \brief Create generalized coordinates of specified joint
+    /// \brief Create generalized coordinates of specific joint
     /// \param j The joint
     ///
     GeneralizedCoordinates(const biorbd::rigidbody::Joints& j);

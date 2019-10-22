@@ -11,11 +11,30 @@ class Joints;
 class BIORBD_API GeneralizedTorque : public biorbd::utils::Vector
 {
 public:
+
+    ///
+    /// \brief Create generalized torque
+    ///
     GeneralizedTorque();
+
+    ///
+    /// \brief Create generalized torque
+    /// \param Q State vector of the internal joints
+    ///
     GeneralizedTorque(const biorbd::rigidbody::GeneralizedTorque& Q);
     template<typename OtherDerived> GeneralizedTorque(const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::Vector(other){}
+
+    ///
+    /// \brief Create generalized torque of ja vector at a specific position
+    /// \param i Position of the vector
+    ///
     GeneralizedTorque(unsigned int i);
+
+    ///
+    /// \brief Create generalized torque of specific joint
+    /// \param j The joint
+    ///
     GeneralizedTorque(const biorbd::rigidbody::Joints& j);
 
     template<typename OtherDerived>
