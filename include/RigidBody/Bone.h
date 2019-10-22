@@ -86,18 +86,18 @@ public:
     /// \return Copy of bone
     ///
 =======
-            const biorbd::utils::String &seqR,// Séquence de Cardan pour classer les dof en rotation
-            const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mase, Centre de masse du segment, Inertie du segment, etc.
+            const biorbd::utils::String &seqR,// Cardan sequence to classify the dof in rotation
+            const biorbd::rigidbody::BoneCharacteristics& characteristics, // The mass, the center of mass of the segment, the segment inertia, etc.
             const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
             int PF = -1);  // Index de la plateforme
     Bone(
             biorbd::rigidbody::Joints& model,
-            const biorbd::utils::String &name, // nom du segment
-            const biorbd::utils::String &parentName, // nom du segment parent
-            const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
-            const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mase, Centre de masse du segment, Inertie du segment, etc.
-            const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
-            int PF = -1);  // Index de la plateforme
+            const biorbd::utils::String &name, // Segment name
+            const biorbd::utils::String &parentName, // Parent segment name
+            const biorbd::utils::String &seqR, // Cardan sequence to classify the dof in rotation
+            const biorbd::rigidbody::BoneCharacteristics& characteristics, // The mass, the center of mass of the segment, the segment inertia, etc.
+            const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation from parent to child
+            int PF = -1);  // Platform index
 >>>>>>> master
     biorbd::rigidbody::Bone DeepCopy() const;
 

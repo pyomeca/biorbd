@@ -48,10 +48,10 @@ biorbd::rigidbody::Bone::Bone(
         const RigidBodyDynamics::Math::SpatialTransform& cor, 
         int PF) : 
 =======
-        const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
-        const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mase, Centre de masse du segment, Inertie du segment, etc.
-        const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
-        int PF) : // Numéro de la plateforme de force
+        const biorbd::utils::String &seqR, // Cardan sequence to classify the rotation DoF
+        const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mass, Center of mass of segment, Inertia of segment, etc.
+        const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation from parent to child
+        int PF) : // Force platform number
 >>>>>>> master
     biorbd::utils::Node(name, parentName),
     m_idxPF (std::make_shared<int>(PF)),
@@ -92,12 +92,12 @@ biorbd::rigidbody::Bone::Bone(
         const RigidBodyDynamics::Math::SpatialTransform& cor,
         int PF): 
 =======
-        const biorbd::utils::String &name, // Nom du segment
-        const biorbd::utils::String &parentName, // Nom du segment
-        const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
-        const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mase, Centre de masse du segment, Inertie du segment, etc.
-        const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
-        int PF): // Numéro de la plateforme de force
+        const biorbd::utils::String &name, // Name of segment
+        const biorbd::utils::String &parentName, // Name of segment
+        const biorbd::utils::String &seqR, // Cardan sequence to classify the rotation DoF
+        const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mass, Center of mass of segment, Inertia of segment, etc.
+        const RigidBodyDynamics::Math::SpatialTransform& cor, //  Transformation from parent to child
+        int PF): // Force platform number
 >>>>>>> master
     biorbd::utils::Node(name, parentName),
     m_idxPF (std::make_shared<int>(PF)),
@@ -391,7 +391,7 @@ void biorbd::rigidbody::Bone::setJoints(biorbd::rigidbody::Joints& model){
     setJointAxis(); // Choose the axis order in relation to the selected sequence
 =======
     setDofCharacteristicsOnLastSegment(); // Put characteristics on the last segment
-    setJointAxis(); // Choisir l'ordre des axes en fonction de la séquence sélectionnée
+    setJointAxis(); // Choose the axis order according to the selected sequence
 >>>>>>> master
 
     RigidBodyDynamics::Math::SpatialTransform zero (RigidBodyDynamics::Math::Matrix3dIdentity, RigidBodyDynamics::Math::Vector3d(0,0,0));
