@@ -15,21 +15,52 @@ namespace rigidbody {
 class BIORBD_API IMU : public biorbd::utils::RotoTransNode
 { 
 public:
+
+    ///
+    /// \brief Create inertial measurement unit data
+    /// \param isTechnical True if the marker is a technical marker
+    /// \param isAnatomical True if the marker is an anatomical marker
+    ///
     IMU(
-            bool isTechnical = true, // Si le marker est un marker technique
+            bool isTechnical = true, 
             bool isAnatomical = true);
+
+    ///
+    /// \brief Create inertial measurement unit data
+    /// \param RotoTrans The position
+    /// \param isTechnical True if the marker is a technical marker
+    /// \param isAnatomical True if the marker is an anatomical marker
+    ///
     IMU(
-            const biorbd::utils::RotoTransNode& RotoTrans, // Position
-            bool isTechnical = true, // Si le marker est un marker technique
-            bool isAnatomical = true); // Si le marker est un marker anatomique
+            const biorbd::utils::RotoTransNode& RotoTrans, /
+            bool isTechnical = true, 
+            bool isAnatomical = true); 
     template<typename OtherDerived> IMU(const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::RotoTransNode(other){}
+
+    ///
+    /// \brief Deep copy of the IMU data
+    /// \return Copy of the IMU data
     biorbd::rigidbody::IMU DeepCopy() const;
+
+    ///
+    /// \brief Deep copy if the IMU data
+    /// \param other TODO:?
+    ///
     void DeepCopy(const biorbd::rigidbody::IMU& other);
 
     // Get and Set
     // TODO Inherit isTechnical
+    ///
+    /// \brief Return if the maker is technical or not
+    /// \return True or False
+    ///
     bool isTechnical() const;
+
+    ///
+    /// \brief Return if the marker is anatomical or not
+    /// \return True or False
+    ///
     bool isAnatomical() const;
     template<typename OtherDerived>
         biorbd::rigidbody::IMU& operator=(const Eigen::MatrixBase <OtherDerived>& other){

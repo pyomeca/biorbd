@@ -25,22 +25,24 @@ class BoneMesh;
 class BIORBD_API BoneCharacteristics : public RigidBodyDynamics::Body
 {
 public:
-<<<<<<< HEAD:include/RigidBody/BoneCaracteristics.h
-    ///
-    /// \brief Get bone characteristics
-    ///
-    BoneCaracteristics();
 
-    ///
-    /// \brief Get bone characteristics
-    /// \param mass Mass of the body
-    /// \param Center of mass
-    /// \param inertia Inertia matrix
-    ///
-    BoneCaracteristics(
-            double mass, 
-            const biorbd::utils::Node3d &com, 
-            const RigidBodyDynamics::Math::Matrix3d &inertia);
+
+///
+/// \brief Construct bone characteristics
+///
+    BoneCharacteristics();
+
+///
+/// \brief Get bone characteristics
+/// \param mass Mass of the body
+/// \param Center of mass
+/// \param inertia Inertia matrix
+///
+    BoneCharacteristics(
+            double mass, // Mass of the body
+            const biorbd::utils::Node3d &com, // Center of Mass
+            const RigidBodyDynamics::Math::Matrix3d &inertia); // Inertia matrix
+
 
     ///
     /// \brief Get the bone characteristics
@@ -49,38 +51,24 @@ public:
     /// \param inertia Inertia matrix
     /// \param mesh Position of the bone meshing
     ///
-    BoneCaracteristics(
-            double mass, 
-            const biorbd::utils::Node3d &com, 
-            const RigidBodyDynamics::Math::Matrix3d &inertia, 
-            const biorbd::rigidbody::BoneMesh &mesh); 
-
-    ///
-    /// \brief TODO: Copy the bone characteristics
-    /// \return Copy of the bone characteristics
-    ///
-    biorbd::rigidbody::BoneCaracteristics DeepCopy() const;
-
-    ///
-    /// \brief Copy the bone characteristics
-    /// \param other TODO: ?
-    ///
-
-    void DeepCopy(const biorbd::rigidbody::BoneCaracteristics& other);
-=======
-    BoneCharacteristics();
-    BoneCharacteristics(
-            double mass, // Mass of the body
-            const biorbd::utils::Node3d &com, // Center of Mass
-            const RigidBodyDynamics::Math::Matrix3d &inertia); // Inertia matrix
     BoneCharacteristics(
             double mass, // Mass of the body
             const biorbd::utils::Node3d &com, // Center of Mass
             const RigidBodyDynamics::Math::Matrix3d &inertia, // Inertia matrix
             const biorbd::rigidbody::BoneMesh &mesh); // position des meshings de l'os
+
+    ///
+    /// \brief Deep copy of the bone characteristics
+    /// \return Copy of the bone characteristics
+    ///
     biorbd::rigidbody::BoneCharacteristics DeepCopy() const;
+
+    ///
+    /// \brief Copy the bone characteristics
+    /// \param other The characteristics to copy
+    ///
     void DeepCopy(const biorbd::rigidbody::BoneCharacteristics& other);
->>>>>>> master:include/RigidBody/BoneCharacteristics.h
+
 
     // Set and Get
     ///
