@@ -1,5 +1,5 @@
-#ifndef BIORBD_MUSCLES_CARACTERISTICS_H
-#define BIORBD_MUSCLES_CARACTERISTICS_H
+#ifndef BIORBD_MUSCLES_CHARACTERISTICS_H
+#define BIORBD_MUSCLES_CHARACTERISTICS_H
 
 #include <memory>
 #include <cstddef>
@@ -10,12 +10,12 @@ namespace  muscles {
 class State;
 class FatigueParameters;
 
-class BIORBD_API Caracteristics
+class BIORBD_API Characteristics
 {
 public:
-    Caracteristics();
-    Caracteristics(const biorbd::muscles::Caracteristics& other);
-    Caracteristics(
+    Characteristics();
+    Characteristics(const biorbd::muscles::Characteristics& other);
+    Characteristics(
             double optLength,
             double fmax,
             double PCSA,
@@ -26,9 +26,9 @@ public:
             double GeneralizedTorqueAct = 0.01,
             double GeneralizedTorqueDeact = 0.04,
             double minAct = 0.01);
-    virtual ~Caracteristics();
-    biorbd::muscles::Caracteristics DeepCopy() const;
-    void DeepCopy(const biorbd::muscles::Caracteristics& other);
+    virtual ~Characteristics();
+    biorbd::muscles::Characteristics DeepCopy() const;
+    void DeepCopy(const biorbd::muscles::Characteristics& other);
 
     // Get et Set
     virtual double optimalLength() const;
@@ -74,4 +74,4 @@ protected:
 
 }}
 
-#endif // BIORBD_MUSCLES_CARACTERISTICS_H
+#endif // BIORBD_MUSCLES_CHARACTERISTICS_H

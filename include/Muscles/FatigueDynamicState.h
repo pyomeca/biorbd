@@ -7,7 +7,7 @@
 namespace biorbd {
 namespace muscles {
 class StateDynamics;
-class Caracteristics;
+class Characteristics;
 
 class BIORBD_API FatigueDynamicState : public biorbd::muscles::FatigueState
 {
@@ -25,7 +25,7 @@ public:
 
     virtual void timeDerivativeState(
             const biorbd::muscles::StateDynamics &emg,
-            const biorbd::muscles::Caracteristics &caract
+            const biorbd::muscles::Characteristics &characteristics
      ) = 0;
 
 protected:

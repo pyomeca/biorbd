@@ -4,7 +4,7 @@ set(MUSCLE_MODULE_NAME ${MASTER_PROJECT_NAME}_muscles PARENT_SCOPE)
 
 # Add the relevant files
 set(SRC_LIST_MODULE
-    ${CMAKE_CURRENT_SOURCE_DIR}/Caracteristics.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Characteristics.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compound.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Fatigable.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/FatigueDynamicState.cpp

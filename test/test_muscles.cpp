@@ -211,7 +211,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
         fatigueModel.setState(currentActiveFibersForXiaDerivativeTest,
                                currentFatiguedFibersForXiaDerivativeTest,
                                currentRestingFibersForXiaDerivativeTest);
-        fatigueModel.timeDerivativeState(emg, model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest).caract());
+        fatigueModel.timeDerivativeState(emg, model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest).characteristics());
 
         // Check the values
         EXPECT_NEAR(fatigueModel.activeFibersDot(), expectedActivationDotForXiaDerivativeTest, requiredPrecision);
@@ -290,7 +290,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeShallowViaCopy){
         fatigueModel.setState(currentActiveFibersForXiaDerivativeTest,
                               currentFatiguedFibersForXiaDerivativeTest,
                               currentRestingFibersForXiaDerivativeTest);
-        fatigueModel.timeDerivativeState(emg, model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest).caract());
+        fatigueModel.timeDerivativeState(emg, model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest).characteristics());
 
         // Check the values
         EXPECT_NEAR(fatigueModel.activeFibersDot(), expectedActivationDotForXiaDerivativeTest, requiredPrecision);

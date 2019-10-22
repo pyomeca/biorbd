@@ -26,7 +26,7 @@ class RotoTrans;
 ///
 namespace rigidbody {
 class Joints;
-class BoneCaracteristics;
+class BoneCharacteristics;
 
 ///
 /// \brief Class for each segment
@@ -56,6 +56,7 @@ public:
             const biorbd::utils::String &name, 
             const biorbd::utils::String &parentName, 
             const biorbd::utils::String &seqT,
+<<<<<<< HEAD
             const biorbd::utils::String &seqR,
             const biorbd::rigidbody::BoneCaracteristics& caract, 
             const RigidBodyDynamics::Math::SpatialTransform& cor, 
@@ -84,6 +85,20 @@ public:
     /// \brief TODO: Deep copy of bone
     /// \return Copy of bone
     ///
+=======
+            const biorbd::utils::String &seqR,// Séquence de Cardan pour classer les dof en rotation
+            const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mase, Centre de masse du segment, Inertie du segment, etc.
+            const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
+            int PF = -1);  // Index de la plateforme
+    Bone(
+            biorbd::rigidbody::Joints& model,
+            const biorbd::utils::String &name, // nom du segment
+            const biorbd::utils::String &parentName, // nom du segment parent
+            const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
+            const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mase, Centre de masse du segment, Inertie du segment, etc.
+            const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
+            int PF = -1);  // Index de la plateforme
+>>>>>>> master
     biorbd::rigidbody::Bone DeepCopy() const;
 
     ///
@@ -181,6 +196,7 @@ public:
     ///
     biorbd::utils::RotoTrans localJCS() const; // retourne exactement ce qui est écrit dans le fichier
 
+<<<<<<< HEAD
     ///
     /// \brief The bone characteristics
     /// \return The bone characteristics
@@ -191,6 +207,9 @@ public:
     /// \brief Returns if the rotation of this segment is a quaternion
     /// \return True or false
     ///
+=======
+    const biorbd::rigidbody::BoneCharacteristics& characteristics() const; // Retourne
+>>>>>>> master
     bool isRotationAQuaternion() const; // Retourne si la rotation de ce segment est un quaternion
 
 protected:
@@ -285,6 +304,7 @@ protected:
     /// \param seqR Cardan sequence to classify the dof in rotation
     ///
     void str2numSequence(
+<<<<<<< HEAD
             const biorbd::utils::String &seqT,
             const biorbd::utils::String &seqR);
 
@@ -323,6 +343,23 @@ protected:
     std::shared_ptr<biorbd::rigidbody::BoneCaracteristics> m_caract;///< Non-used virtual segment; it allows to "save" the data and to avoid the use of multiple intermediate variables
 
     std::shared_ptr<std::vector<biorbd::rigidbody::BoneCaracteristics>> m_dofCaract; ///< Variable containing the inertial data and other from each segment (0 to 4 should be empty and 5 filled)
+=======
+            const biorbd::utils::String&,
+            const biorbd::utils::String&); // Stockage dans m_sequence des strings en integer
+    std::shared_ptr<std::vector<unsigned int>> m_sequenceTrans; // Séquence de translation
+    std::shared_ptr<std::vector<unsigned int>> m_sequenceRot; // Séquence de rotation de Cardan ou d'Euler
+    std::shared_ptr<std::vector<biorbd::utils::String>> m_nameDof;
+
+    // Définition de l'articulation intra segment
+    virtual void setJoints(biorbd::rigidbody::Joints& model); // Déclare tous les joints intrasegments
+    virtual void setJointAxis();    // Choisir les axes de rotation en fonction de la séquence demandée
+    std::shared_ptr<std::vector<unsigned int>> m_dofPosition; // position dans la séquence de x, y et z
+
+    // Définition formelle du segment
+    void setDofCharacteristicsOnLastSegment(); // Mettre m_characteristics sur le dernier segment
+    std::shared_ptr<biorbd::rigidbody::BoneCharacteristics> m_characteristics;// Segment virtuel non utilisé, il permet de "sauvegarder" les données et donc d'éviter l'usage de multiples variables intermédiaires
+    std::shared_ptr<std::vector<biorbd::rigidbody::BoneCharacteristics>> m_dofCharacteristics; // Variable contenant les données Inertielles et autre de chaque sous segment (0 à 4 devraient être vide et 5 rempli)
+>>>>>>> master
 
 };
 

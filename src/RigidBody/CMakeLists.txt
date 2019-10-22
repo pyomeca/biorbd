@@ -5,7 +5,7 @@ set(RIGIDBODY_MODULE_NAME ${MASTER_PROJECT_NAME}_rigidbody PARENT_SCOPE)
 # Add the relevant files
 set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/Bone.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/BoneCaracteristics.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/BoneCharacteristics.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/BoneMesh.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Contacts.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedCoordinates.cpp

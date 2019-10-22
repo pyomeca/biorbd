@@ -3,7 +3,7 @@
 
 #include "biorbdConfig.h"
 
-#include "Muscles/Caracteristics.h"
+#include "Muscles/Characteristics.h"
 #include "Muscles/Compound.h"
 #include "Muscles/Fatigable.h"
 #include "Muscles/FatigueDynamicState.h"

@@ -16,7 +16,7 @@ namespace muscles {
 ///
 /// \brief The HillThelenTypeFatigable class
 /// Class of a Thelen fatigable type.
-/// Note that useful defaults values for the FatigueParameters caracteristics are:
+/// Note that useful defaults values for the FatigueParameters characteristics are:
 /// fatigueRate = 0.01
 /// recoveryRate = 0.002
 /// developFactor = 10
@@ -29,24 +29,24 @@ public:
     HillThelenTypeFatigable(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::Characteristics& characteristics,
             biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
     HillThelenTypeFatigable(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::StateDynamics& dynamicState,
             biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
     HillThelenTypeFatigable(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::PathChangers& pathChangers,
             biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
     HillThelenTypeFatigable(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::PathChangers& pathChangers,
             const biorbd::muscles::StateDynamics& dynamicState,
             biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);

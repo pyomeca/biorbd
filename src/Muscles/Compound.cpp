@@ -5,7 +5,7 @@
 #include "Utils/Node3d.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "Muscles/Force.h"
-#include "Muscles/Caracteristics.h"
+#include "Muscles/Characteristics.h"
 #include "Muscles/PathChangers.h"
 #include "Muscles/StateDynamics.h"
 #include "Muscles/ForceFromOrigin.h"

@@ -18,7 +18,7 @@
 #include "RigidBody/NodeBone.h"
 #include "RigidBody/Patch.h"
 #include "RigidBody/BoneMesh.h"
-#include "RigidBody/BoneCaracteristics.h"
+#include "RigidBody/BoneCharacteristics.h"
 
 biorbd::rigidbody::Joints::Joints() :
     RigidBodyDynamics::Model(),
@@ -173,11 +173,11 @@ unsigned int biorbd::rigidbody::Joints::AddBone(
         const biorbd::utils::String &parentName, // Nom du segment
         const biorbd::utils::String &translationSequence,
         const biorbd::utils::String &rotationSequence, // Séquence de Cardan pour classer les dof en rotation
-        const biorbd::rigidbody::BoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
+        const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mase, Centre de masse du segment, Inertie du segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, // Transformation du parent vers l'enfant
         int forcePlates)
 { // Numéro de la plateforme de force attaché à cet os
-    biorbd::rigidbody::Bone tp(*this, segmentName, parentName, translationSequence, rotationSequence, caract, centreOfRotation, forcePlates);
+    biorbd::rigidbody::Bone tp(*this, segmentName, parentName, translationSequence, rotationSequence, characteristics, centreOfRotation, forcePlates);
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max())
         *m_nbRoot += tp.nDof(); //  Si le nom du segment est "Root" ajouter le nombre de dof de racine
     *m_nDof += tp.nDof();
@@ -188,7 +188,7 @@ unsigned int biorbd::rigidbody::Joints::AddBone(
     if (tp.isRotationAQuaternion())
         ++*m_nRotAQuat;
 		
-    *m_totalMass += caract.mMass; // Ajouter la masse segmentaire a la masse totale du corps
+    *m_totalMass += characteristics.mMass; // Ajouter la masse segmentaire a la masse totale du corps
     m_bones->push_back(tp);
     return 0;
 }
@@ -196,16 +196,16 @@ unsigned int biorbd::rigidbody::Joints::AddBone(
         const biorbd::utils::String &segmentName, // Nom du segment
         const biorbd::utils::String &parentName, // Nom du segment
         const biorbd::utils::String &seqR, // Séquence de Cardan pour classer les dof en rotation
-        const biorbd::rigidbody::BoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
+        const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mase, Centre de masse du segment, Inertie du segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
         int forcePlates)
 { // Numéro de la plateforme de force attaché à cet os
-    biorbd::rigidbody::Bone tp(*this, segmentName, parentName, seqR, caract, cor, forcePlates);
+    biorbd::rigidbody::Bone tp(*this, segmentName, parentName, seqR, characteristics, cor, forcePlates);
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max())
         *m_nbRoot += tp.nDof(); //  Si le nom du segment est "Root" ajouter le nombre de dof de racine
     *m_nDof += tp.nDof();
 	
-    *m_totalMass += caract.mMass; // Ajouter la masse segmentaire a la masse totale du corps
+    *m_totalMass += characteristics.mMass; // Ajouter la masse segmentaire a la masse totale du corps
     m_bones->push_back(tp);
     return 0;
 }
@@ -493,7 +493,7 @@ biorbd::utils::Node3d biorbd::rigidbody::Joints::CoM(
     const std::vector<biorbd::rigidbody::NodeBone>& com_segment(CoMbySegment(Q,true));
     biorbd::utils::Node3d com(0, 0, 0);
     for (unsigned int i=0; i<com_segment.size(); ++i)
-        com += (*m_bones)[i].caract().mMass * com_segment[i];
+        com += (*m_bones)[i].characteristics().mMass * com_segment[i];
 
     // Diviser par la masse totale
     com = com/this->mass();
@@ -527,8 +527,8 @@ biorbd::utils::Node3d biorbd::rigidbody::Joints::CoMdot(
     biorbd::utils::Matrix Jac(biorbd::utils::Matrix(3,this->dof_count));
     for (auto bone : *m_bones){
         Jac.setZero();
-        RigidBodyDynamics::CalcPointJacobian(*this, Q, this->GetBodyId(bone.name().c_str()), bone.caract().mCenterOfMass, Jac, false); // False for speed
-        com_dot += ((Jac*Qdot) * bone.caract().mMass);
+        RigidBodyDynamics::CalcPointJacobian(*this, Q, this->GetBodyId(bone.name().c_str()), bone.characteristics().mCenterOfMass, Jac, false); // False for speed
+        com_dot += ((Jac*Qdot) * bone.characteristics().mMass);
     }
     // Diviser par la masse totale
     com_dot = com_dot/this->mass();
@@ -566,8 +566,8 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::CoMJacobian(const biorbd::rigid
     biorbd::utils::Matrix Jac(biorbd::utils::Matrix::Zero(3,this->dof_count));
     for (auto bone : *m_bones){
         Jac.setZero();
-        RigidBodyDynamics::CalcPointJacobian(*this, Q, this->GetBodyId(bone.name().c_str()), bone.caract().mCenterOfMass, Jac, false); // False for speed
-        JacTotal += bone.caract().mMass*Jac;
+        RigidBodyDynamics::CalcPointJacobian(*this, Q, this->GetBodyId(bone.name().c_str()), bone.characteristics().mCenterOfMass, Jac, false); // False for speed
+        JacTotal += bone.characteristics().mMass*Jac;
     }
 
     // Diviser par la masse totale
@@ -599,7 +599,7 @@ biorbd::utils::Node3d biorbd::rigidbody::Joints::CoMbySegment(
 { // Position du centre de masse du segment i
     biorbd::utils::Error::check(i < m_bones->size(), "Choosen segment doesn't exist");
     return RigidBodyDynamics::CalcBodyToBaseCoordinates(
-                *this, Q, (*m_bones)[i].id(), (*m_bones)[i].caract().mCenterOfMass, updateKin);
+                *this, Q, (*m_bones)[i].id(), (*m_bones)[i].characteristics().mCenterOfMass, updateKin);
 }
 
 
@@ -625,7 +625,7 @@ biorbd::utils::Node3d biorbd::rigidbody::Joints::CoMdotBySegment(
         bool updateKin)
 { // Position du centre de masse du segment i
     biorbd::utils::Error::check(i < m_bones->size(), "Choosen segment doesn't exist");
-    return CalcPointVelocity(*this, Q, Qdot, (*m_bones)[i].id(),(*m_bones)[i].caract().mCenterOfMass,updateKin);
+    return CalcPointVelocity(*this, Q, Qdot, (*m_bones)[i].id(),(*m_bones)[i].characteristics().mCenterOfMass,updateKin);
 }
 
 
@@ -653,7 +653,7 @@ biorbd::utils::Node3d biorbd::rigidbody::Joints::CoMddotBySegment(
         bool updateKin)
 { // Position du centre de masse du segment i
     biorbd::utils::Error::check(i < m_bones->size(), "Choosen segment doesn't exist");
-    return RigidBodyDynamics::CalcPointAcceleration(*this, Q, Qdot, Qddot, (*m_bones)[i].id(),(*m_bones)[i].caract().mCenterOfMass,updateKin);
+    return RigidBodyDynamics::CalcPointAcceleration(*this, Q, Qdot, Qddot, (*m_bones)[i].id(),(*m_bones)[i].characteristics().mCenterOfMass,updateKin);
 }
 
 std::vector<std::vector<biorbd::utils::Node3d>> biorbd::rigidbody::Joints::meshPoints(
@@ -723,7 +723,7 @@ std::vector<biorbd::rigidbody::BoneMesh> biorbd::rigidbody::Joints::boneMesh() c
 
 const biorbd::rigidbody::BoneMesh &biorbd::rigidbody::Joints::boneMesh(unsigned int idx) const
 {
-    return bone(idx).caract().mesh();
+    return bone(idx).characteristics().mesh();
 }
 
 biorbd::utils::Node3d biorbd::rigidbody::Joints::CalcAngularMomentum (
