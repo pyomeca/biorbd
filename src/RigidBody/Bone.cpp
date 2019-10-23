@@ -42,17 +42,12 @@ biorbd::rigidbody::Bone::Bone(
         const biorbd::utils::String &name, 
         const biorbd::utils::String &parentName, 
         const biorbd::utils::String &seqT,
-<<<<<<< HEAD
-        const biorbd::utils::String &seqR, 
-        const biorbd::rigidbody::BoneCaracteristics& caract, 
-        const RigidBodyDynamics::Math::SpatialTransform& cor, 
-        int PF) : 
-=======
+
         const biorbd::utils::String &seqR, // Cardan sequence to classify the rotation DoF
         const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mass, Center of mass of segment, Inertia of segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation from parent to child
         int PF) : // Force platform number
->>>>>>> master
+
     biorbd::utils::Node(name, parentName),
     m_idxPF (std::make_shared<int>(PF)),
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(cor)),
@@ -84,21 +79,15 @@ biorbd::rigidbody::Bone::Bone(
 }
 biorbd::rigidbody::Bone::Bone(
         biorbd::rigidbody::Joints& model,
-<<<<<<< HEAD
-        const biorbd::utils::String &name, 
-        const biorbd::utils::String &parentName, 
-        const biorbd::utils::String &seqR, 
-        const biorbd::rigidbody::BoneCaracteristics& caract, 
-        const RigidBodyDynamics::Math::SpatialTransform& cor,
-        int PF): 
-=======
+
         const biorbd::utils::String &name, // Name of segment
         const biorbd::utils::String &parentName, // Name of segment
         const biorbd::utils::String &seqR, // Cardan sequence to classify the rotation DoF
         const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mass, Center of mass of segment, Inertia of segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& cor, //  Transformation from parent to child
         int PF): // Force platform number
->>>>>>> master
+
+
     biorbd::utils::Node(name, parentName),
     m_idxPF (std::make_shared<int>(PF)),
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(cor)),
@@ -191,25 +180,25 @@ unsigned int biorbd::rigidbody::Bone::id() const{
 int biorbd::rigidbody::Bone::platformIdx() const{
     return *m_idxPF;
 }
-unsigned int biorbd::rigidbody::Bone::nGeneralizedTorque() const{
+unsigned int biorbd::rigidbody::Bone::nbGeneralizedTorque() const{
     return *m_nDof;
 }
-unsigned int biorbd::rigidbody::Bone::nDof() const{
+unsigned int biorbd::rigidbody::Bone::nbDof() const{
     return *m_nDofTrueOutside;
 }
-unsigned int biorbd::rigidbody::Bone::nDofTrans() const{
+unsigned int biorbd::rigidbody::Bone::nbDofTrans() const{
     return *m_nDofTrans;
 }
-unsigned int biorbd::rigidbody::Bone::nDofRot() const{
+unsigned int biorbd::rigidbody::Bone::nbDofRot() const{
     return *m_nDofRot;
 }
-unsigned int biorbd::rigidbody::Bone::nQ() const{
+unsigned int biorbd::rigidbody::Bone::nbQ() const{
     return *m_nDofTrue;
 }
-unsigned int biorbd::rigidbody::Bone::nQdot() const{
+unsigned int biorbd::rigidbody::Bone::nbQdot() const{
     return *m_nQdot;
 }
-unsigned int biorbd::rigidbody::Bone::nQddot() const{
+unsigned int biorbd::rigidbody::Bone::nbQddot() const{
     return *m_nQddot;
 }
 
@@ -386,13 +375,9 @@ void biorbd::rigidbody::Bone::setJointAxis(){
 }
 
 void biorbd::rigidbody::Bone::setJoints(biorbd::rigidbody::Joints& model){
-<<<<<<< HEAD
-    setDofCaracteristicsOnLastSegment(); // Apply the segment caracteristics only to the last segment
+    setDofCharacteristicsOnLastSegment(); // Apply the segment caracteristics only to the last segment
     setJointAxis(); // Choose the axis order in relation to the selected sequence
-=======
-    setDofCharacteristicsOnLastSegment(); // Put characteristics on the last segment
-    setJointAxis(); // Choose the axis order according to the selected sequence
->>>>>>> master
+
 
     RigidBodyDynamics::Math::SpatialTransform zero (RigidBodyDynamics::Math::Matrix3dIdentity, RigidBodyDynamics::Math::Vector3d(0,0,0));
     // Create the articulations (intra segment)
@@ -425,7 +410,7 @@ unsigned int biorbd::rigidbody::Bone::getDofIdx(const biorbd::utils::String &dof
 
     unsigned int idx(INT_MAX);
     bool found = false;
-    for (unsigned int i=0; i<nDof(); ++i){
+    for (unsigned int i=0; i<nbDof(); ++i){
         if (!dofName.tolower().compare((*m_nameDof)[i].tolower())){
             idx = i;
             found = true;

@@ -34,7 +34,7 @@ class BoneCharacteristics;
 class BIORBD_API Bone : public biorbd::utils::Node
 {
 public:
-    // Constructors
+
     /// 
     /// \brief Construct a bone
     ///
@@ -56,11 +56,11 @@ public:
             const biorbd::utils::String &name, 
             const biorbd::utils::String &parentName, 
             const biorbd::utils::String &seqT,
-<<<<<<< HEAD
             const biorbd::utils::String &seqR,
-            const biorbd::rigidbody::BoneCaracteristics& caract, 
-            const RigidBodyDynamics::Math::SpatialTransform& cor, 
-            int PF = -1); 
+            const biorbd::rigidbody::BoneCharacteristics& characteristics,
+            const RigidBodyDynamics::Math::SpatialTransform& cor,
+            int PF = -1);  
+
     ///
     /// \brief Construct a bone
     /// \param model The model
@@ -71,39 +71,24 @@ public:
     /// \param cor Transformation from parent to child
     /// \param PF Platform index
     ///
-
     Bone(
             biorbd::rigidbody::Joints& model,
             const biorbd::utils::String &name, 
-            const biorbd::utils::String &parentName,
+            const biorbd::utils::String &parentName, 
             const biorbd::utils::String &seqR, 
-            const biorbd::rigidbody::BoneCaracteristics& caract, 
+            const biorbd::rigidbody::BoneCharacteristics& characteristics, 
             const RigidBodyDynamics::Math::SpatialTransform& cor, 
             int PF = -1); 
 
     ///
-    /// \brief TODO: Deep copy of bone
-    /// \return Copy of bone
+    /// \brief Create a deep copy of Bone
+    /// \return Copy of Bone
     ///
-=======
-            const biorbd::utils::String &seqR,// Cardan sequence to classify the dof in rotation
-            const biorbd::rigidbody::BoneCharacteristics& characteristics, // The mass, the center of mass of the segment, the segment inertia, etc.
-            const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
-            int PF = -1);  // Index de la plateforme
-    Bone(
-            biorbd::rigidbody::Joints& model,
-            const biorbd::utils::String &name, // Segment name
-            const biorbd::utils::String &parentName, // Parent segment name
-            const biorbd::utils::String &seqR, // Cardan sequence to classify the dof in rotation
-            const biorbd::rigidbody::BoneCharacteristics& characteristics, // The mass, the center of mass of the segment, the segment inertia, etc.
-            const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation from parent to child
-            int PF = -1);  // Platform index
->>>>>>> master
     biorbd::rigidbody::Bone DeepCopy() const;
 
     ///
-    /// \brief Deep copy of bone
-    /// \param other 
+    /// \brief Deep copy of Bone
+    /// \param other The Bone to copy
     ///
     void DeepCopy(const biorbd::rigidbody::Bone& other);
 
@@ -113,104 +98,97 @@ public:
     virtual ~Bone();
 
     ///
-    /// \brief TODO: Returns the ??
-    /// \return
+    /// \brief TODO: Returns the bone ID??
+    /// \return The bone ID?
     ///
     unsigned int id() const;
 
     ///
-    /// \brief The platform index
+    /// \brief Return the platform index
     /// \return The platform index
     ///
     int platformIdx() const;
 
     /// 
-    /// \brief The translation sequence in text
+    /// \brief Return the translation sequence in text
     /// \return The translation sequence in text
     ///
     const biorbd::utils::String& seqT() const;
 
     ///
-    /// \brief The angle sequence in text
+    /// \brief Return the angle sequence in text
     /// \return The angle sequence in text
     ///
     const biorbd::utils::String& seqR() const; 
 
     ///
-    /// \brief The number of Dof of the segment
+    /// \brief Return the number of Dof of the segment
     /// \return The number of Dof of the segment
     ///
-    unsigned int nDof() const;
+    unsigned int nbDof() const;
 
     /// 
-    /// \brief The number of Dof in translation of the segment
+    /// \brief Return the number of Dof in translation of the segment
     /// \return The number of Dof in translation of the segment
     ///
-    unsigned int nDofTrans() const;
+    unsigned int nbDofTrans() const;
 
     ///
-    /// \brief The number of Dof in rotation of the segment
+    /// \brief Return the number of Dof in rotation of the segment
     /// \return The number of Dof in rotation of the segment
     ///
-    unsigned int nDofRot() const;
+    unsigned int nbDofRot() const;
 
     /// 
-    /// \brief The bone position
-    /// \return The bone position
+    /// \brief Return the number of bone position
+    /// \return The number bone position
     ///
-    unsigned int nQ() const; // Retourne le nombre de Dof de ce segment
+    unsigned int nbQ() const;
     
     ///
-    /// \brief The bone velocity
-    /// \return The bone velocity
+    /// \brief Return the number of bone velocity
+    /// \return The number bone velocity
     ///
-    unsigned int nQdot() const; // Retourne le nombre de Dof de ce segment
+    unsigned int nbQdot() const; 
+    ///
+    /// \brief Return the number of bone acceleration
+    /// \return The number bone acceleration
+    ///
+    unsigned int nbQddot() const; 
+    ///
+    /// \brief Return the  number of generalized torque
+    /// \return The number of generalized torque
+    ///
+    unsigned int nbGeneralizedTorque() const;
 
     ///
-    /// \brief The bone acceleration
-    /// \return The bone acceleration
-    ///
-    unsigned int nQddot() const; // Retourne le nombre de Dof de ce segment
-    
-    ///
-    /// \brief The generalized torque
-    /// \return The generalized torque
-    ///
-    unsigned int nGeneralizedTorque() const;
-
-    ///
-    /// \brief The index of a specific Dof for this segment
+    /// \brief Return the index of a specific Dof for this segment
     /// \return The index of a specific Dof for this segment
     ///
-    unsigned int getDofIdx(const biorbd::utils::String &dofName) const; // Retourne l'index d'un dof spéficique pour ce segment
-
+    unsigned int getDofIdx(const biorbd::utils::String &dofName) const; 
     ///
-    /// \brief The name of the Dof of this segment
+    /// \brief Return the name of the Dof of this segment
     /// \return The name of the Dof of this segment
     ///
-    const biorbd::utils::String& nameDof(const unsigned int i) const;// Retourne le nom des Dof de ce segment
-
+    const biorbd::utils::String& nameDof(const unsigned int i) const;
     ///
-    /// \brief Returns exactly what is written in the file
+    /// \brief Return exactly what is written in the file
     /// \return Exactly what is written in the file
     ///
-    biorbd::utils::RotoTrans localJCS() const; // retourne exactement ce qui est écrit dans le fichier
+    biorbd::utils::RotoTrans localJCS() const; 
 
-<<<<<<< HEAD
+
     ///
-    /// \brief The bone characteristics
+    /// \brief Return the bone characteristics
     /// \return The bone characteristics
     ///
-    const biorbd::rigidbody::BoneCaracteristics& caract() const; // Retourne
+    const biorbd::rigidbody::BoneCharacteristics& characteristics() const; 
 
     ///
-    /// \brief Returns if the rotation of this segment is a quaternion
+    /// \brief Return if the rotation of this segment is a quaternion
     /// \return True or false
     ///
-=======
-    const biorbd::rigidbody::BoneCharacteristics& characteristics() const; // Retourne
->>>>>>> master
-    bool isRotationAQuaternion() const; // Retourne si la rotation de ce segment est un quaternion
+    bool isRotationAQuaternion() const;
 
 protected:
     ///
@@ -242,23 +220,23 @@ protected:
 
     ///
     /// \brief Set the total number of DoF
-    /// \param nTrans Number of DoF in translation
-    /// \param nRot Number of DoF in rotation
+    /// \param nbTrans Number of DoF in translation
+    /// \param nbRot Number of DoF in rotation
     ///
     void setNumberOfDof(
-            unsigned int nTrans,
-            unsigned int nRot);
+            unsigned int nbTrans,
+            unsigned int nbRot);
 
-    std::shared_ptr<biorbd::utils::String> m_seqT;  ///< Translation sequency as written in the file
+    std::shared_ptr<biorbd::utils::String> m_seqT;  ///< Translation sequence as written in the file
     std::shared_ptr<biorbd::utils::String> m_seqR;  ///< Rotation sequence as written in the file0
-    std::shared_ptr<unsigned int> m_nDof;   ///< Number of degrees of freedom 
-    std::shared_ptr<unsigned int> m_nQdot;  ///< Number of Qdot
-    std::shared_ptr<unsigned int> m_nQddot;  ///< Number of Qddot
-    std::shared_ptr<unsigned int> m_nDofTrue;    ///< TODO: Number of degrees of freedom TRUE?
-    std::shared_ptr<unsigned int> m_nDofTrueOutside; // Number of degree of freedom read from the outside (Same as nDof except if Quaternion)
-    std::shared_ptr<unsigned int> m_nDofTrans; ///< Number of degrees of freedom in translation
-    std::shared_ptr<unsigned int> m_nDofRot; ///< Number of degrees of freedom in rotation
-    std::shared_ptr<unsigned int> m_nDofQuat; ///< Number of degrees of freedom in rotation? TODO: Nombre de degrés de liberté en rotation
+    std::shared_ptr<unsigned int> m_nbDof;   ///< Number of degrees of freedom 
+    std::shared_ptr<unsigned int> m_nbQdot;  ///< Number of Qdot
+    std::shared_ptr<unsigned int> m_nbQddot;  ///< Number of Qddot
+    std::shared_ptr<unsigned int> m_nbDofTrue;    ///< Number of degrees of freedom
+    std::shared_ptr<unsigned int> m_nbDofTrueOutside; // Number of degree of freedom read from the outside (Same as nDof except if Quaternion)
+    std::shared_ptr<unsigned int> m_nbDofTrans; ///< Number of degrees of freedom in translation
+    std::shared_ptr<unsigned int> m_nbDofRot; ///< Number of degrees of freedom in rotation
+    std::shared_ptr<unsigned int> m_nbDofQuat; ///< Number of degrees of freedom in rotation? TODO: Nombre de degrés de liberté en rotation
 
     std::shared_ptr<bool> m_isQuaternion; ///< Keep if DoF in rotation is a Quaternion
 
@@ -304,62 +282,42 @@ protected:
     /// \param seqR Cardan sequence to classify the dof in rotation
     ///
     void str2numSequence(
-<<<<<<< HEAD
             const biorbd::utils::String &seqT,
-            const biorbd::utils::String &seqR);
+            const biorbd::utils::String &seqR); 
 
     std::shared_ptr<std::vector<unsigned int>> m_sequenceTrans; ///< Translation sequence
     std::shared_ptr<std::vector<unsigned int>> m_sequenceRot; ///< Cardan or Euler rotation sequence
     std::shared_ptr<std::vector<biorbd::utils::String>> m_nameDof; ///< To store the DoF names
 
-    // Definition of the intra segment articulation
-    
+
     ///
     /// \brief Declare all the intrasegment joints
     /// \param model TODO: The model
     ///
     /// Part of the definition of the intra segment articulation
     ///
-    virtual void setJoints(biorbd::rigidbody::Joints& model);
+    virtual void setJoints(biorbd::rigidbody::Joints& model); 
 
     ///
     /// \brief Determine the rotation axis in relation to the requested sequence
     ///
     /// Part of the definition of the intra segment articulation
     ///
-    virtual void setJointAxis();  
+    virtual void setJointAxis();
 
-    std::shared_ptr<std::vector<unsigned int>> m_dofPosition; ///< Position in the x, y, and z sequence
 
-    // Formal definition of the segment
+    std::shared_ptr<std::vector<unsigned int>> m_dofPosition;  ///< Position in the x, y, and z sequence
 
     ///
     /// \brief Set the DoF caracteristics (m_caract) on the last segment
     ///
     /// Part of the formal definition of the segment
     ///
-    void setDofCaracteristicsOnLastSegment(); 
+    void setDofCharacteristicsOnLastSegment();
 
-    std::shared_ptr<biorbd::rigidbody::BoneCaracteristics> m_caract;///< Non-used virtual segment; it allows to "save" the data and to avoid the use of multiple intermediate variables
+    std::shared_ptr<biorbd::rigidbody::BoneCharacteristics> m_characteristics;///< Non-used virtual segment; it allows to "save" the data and to avoid the use of multiple intermediate variables
+    std::shared_ptr<std::vector<biorbd::rigidbody::BoneCharacteristics>> m_dofCharacteristics;  ///< Variable containing the inertial data and other from each segment (0 to 4 should be empty and 5 filled)
 
-    std::shared_ptr<std::vector<biorbd::rigidbody::BoneCaracteristics>> m_dofCaract; ///< Variable containing the inertial data and other from each segment (0 to 4 should be empty and 5 filled)
-=======
-            const biorbd::utils::String&,
-            const biorbd::utils::String&); // Stockage dans m_sequence des strings en integer
-    std::shared_ptr<std::vector<unsigned int>> m_sequenceTrans; // Séquence de translation
-    std::shared_ptr<std::vector<unsigned int>> m_sequenceRot; // Séquence de rotation de Cardan ou d'Euler
-    std::shared_ptr<std::vector<biorbd::utils::String>> m_nameDof;
-
-    // Définition de l'articulation intra segment
-    virtual void setJoints(biorbd::rigidbody::Joints& model); // Déclare tous les joints intrasegments
-    virtual void setJointAxis();    // Choisir les axes de rotation en fonction de la séquence demandée
-    std::shared_ptr<std::vector<unsigned int>> m_dofPosition; // position dans la séquence de x, y et z
-
-    // Définition formelle du segment
-    void setDofCharacteristicsOnLastSegment(); // Mettre m_characteristics sur le dernier segment
-    std::shared_ptr<biorbd::rigidbody::BoneCharacteristics> m_characteristics;// Segment virtuel non utilisé, il permet de "sauvegarder" les données et donc d'éviter l'usage de multiples variables intermédiaires
-    std::shared_ptr<std::vector<biorbd::rigidbody::BoneCharacteristics>> m_dofCharacteristics; // Variable contenant les données Inertielles et autre de chaque sous segment (0 à 4 devraient être vide et 5 rempli)
->>>>>>> master
 
 };
 

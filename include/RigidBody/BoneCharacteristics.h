@@ -9,9 +9,7 @@
 /// \brief Namespace biorbd
 ///
 namespace biorbd {
-///
-/// \brief Namespace utils
-///
+
 namespace utils {
 class Node3d;
 }
