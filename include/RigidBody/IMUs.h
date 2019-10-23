@@ -15,17 +15,19 @@ class RotoTransNode;
 namespace rigidbody {
 class GeneralizedCoordinates;
 class IMU;
-
+///
+/// \brief Class IMUs 
+///
 class BIORBD_API IMUs
 {
 public:
     ///
-    /// \brief Create inertial measurement units data
+    /// \brief Construct inertial measurement units data
     ///
     IMUs();
 
     ///
-    /// \brief Create inertial measurement units data
+    /// \brief Construct inertial measurement units data
     /// \param other TODO: ?
     ///
     IMUs(const biorbd::rigidbody::IMUs& other);
@@ -42,6 +44,7 @@ public:
     biorbd::rigidbody::IMUs DeepCopy() const;
     ///
     /// \brief Deep copy the inertial measurement units data
+    /// \param other The IMUs data to copy
     ///
     void DeepCopy(const biorbd::rigidbody::IMUs& other);
 
@@ -116,7 +119,7 @@ public:
     ///
     /// \brief Return an STL vector of all the inertial measurement units (IMUs) at the position given by Q
     /// \param Q State vector of the internal joints
-    /// \param updatekin True by default
+    /// \param updateKin True by default
     /// \return STL vector of all the inertial measurement units (IMUs) at the position given by Q
     ///
     std::vector<biorbd::rigidbody::IMU> IMU(
@@ -127,7 +130,7 @@ public:
     /// \brief Return an IMU at the position given by Q
     /// \param Q State vector of the internal joints
     /// \param idx Specific index
-    /// \param updatekin True by default
+    /// \param updateKin True by default
     /// \return an inertial measurement unit
     ///
     biorbd::rigidbody::IMU IMU(
@@ -217,7 +220,7 @@ protected:
     /// \brief Return the Jacobian of the IMUs (Markers)
     /// \param Q State vector of the internal joints
     /// \param updateKin 
-    /// \lookForTechnical Check if there are any technical IMUs
+    /// \param lookForTechnical Check if there are any technical IMUs
     ///
     std::vector<biorbd::utils::Matrix> IMUJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,

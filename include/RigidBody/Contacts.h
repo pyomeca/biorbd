@@ -18,11 +18,14 @@ namespace rigidbody {
 class Joints;
 class GeneralizedCoordinates;
 
+///
+/// \brief Class Contacts
+///
 class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
 {
 public:
     ///
-    /// \brief Create contacts
+    /// \brief Construct contacts
     ///
     Contacts();
 
@@ -34,17 +37,17 @@ public:
 
     ///
     /// \brief Deep copy of contacts 
-    /// \param other TODO: ?
+    /// \param other The contacts to copy
     /// 
     void DeepCopy(const biorbd::rigidbody::Contacts& other);
 
     ///
-    /// \brief Add a constraint
-    /// \param body_id The ID of the body on which to add constraint
-    /// \param body_point The point of the body on which to add constraint
-    /// \param world_normal TODO: ?
-    /// \param name The name of the constraint
-    /// \param acc Equals 0 by default
+    /// \brief Add a constraint to the constraint set
+    /// \param body_id The body which is affected directly by the constraint
+    /// \param body_point The point that is constrained relative to the contact body
+    /// \param world_normal The normal along the constraint acts (in base coordinates)
+    /// \param name A human readable name
+    /// \param acc The acceleration of the contact along the normal (optional, default: 0)
     ///
     unsigned int AddConstraint(
             unsigned int body_id,
@@ -54,11 +57,12 @@ public:
             double acc = 0);
 
     ///
-    /// \brief Add a constraint
-    /// \param body_id The ID of the body on which to add constraint
-    /// \param axis The axis
-    /// \param name The name of the constraint
-    /// \param acc Equals 0 by default
+    /// \brief Add a constraint to the constraint set
+    /// \param body_id The body which is affected directly by the constraint
+    /// \param body_point The point that is constrained relative to the contact body
+    /// \param axis The axis along which the constraint acts
+    /// \param name A human readable name
+    /// \param acc The acceleration of the contact along the normal (optional, default: 0)
     ///
 
     unsigned int AddConstraint(
@@ -69,15 +73,15 @@ public:
             double acc = 0);
 
     ///
-    /// \brief Add a loop constraint
-    /// \param body_id_predecessor The body ID of the predecessor
-    /// \param body_id_successor The body ID of the successor
-    /// \param X_predecessor The predecessor
-    /// \param X_successor The successor
-    /// \param axis The axis 
-    /// \param name The name of the constraint
-    /// \param enableStabilization False by default
-    /// \param stabilizationParam equals 0.1 by default
+    /// \brief Add a loop constraint to the constraint set
+    /// \param body_id_predecessor The identifier of the predecessor body
+    /// \param body_id_successor The identifier of the successor body
+    /// \param X_predecessor A spatial transform localizing the constrained frames on the predecessor body, expressed with respect to the predecessor body frame
+    /// \param X_successor A spatial transform localizing the constrained frames on the successor body, expressed with respect to the successor body frame
+    /// \param axis A spatial vector indicating the axis along which the constraint acts
+    /// \param name A human readable name
+    /// \param enableStabilization Whether stabilization should be enabled or not
+    /// \param stabilizationParam The value used for stabilization (default: 0.1)
     ///
     unsigned int AddLoopConstraint(
             unsigned int body_id_predecessor,
@@ -121,8 +125,8 @@ public:
 
     ///
     /// \brief Return the contraints position in the global reference
-    /// \param Q Generalized coordinates
-    /// \param updateKin Update kinematics
+    /// \param Q The generalized positions of the joints
+    /// \param updateKin Whether the kinematics of the model should be updated from Q
     /// \return The contraints positions in the global reference
     ///
     std::vector<biorbd::utils::Node3d> constraintsInGlobal(

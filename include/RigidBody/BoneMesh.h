@@ -15,23 +15,26 @@ class Path;
 namespace rigidbody {
 class Patch;
 
+///
+/// \brief Class BoneMesh
+///
 class BIORBD_API BoneMesh
 {
 public:
     ///
-    /// \brief Create bone mesh
+    /// \brief Construct bone mesh
     ///
     BoneMesh();
 
     ///
-    /// \brief Create bone mesh
+    /// \brief Construct bone mesh
     /// \brief mesh Nodes
     ///
     BoneMesh(
             const std::vector<biorbd::utils::Node3d>& mesh);
 
     ///
-    /// \brief Create bone mesh
+    /// \brief Construct bone mesh
     /// \param mesh Nodes
     /// \param v Patch
     ///
@@ -47,7 +50,7 @@ public:
 
     ///
     /// \brief Deep copy of the bone mesh
-    /// \param other The mesh? TODO:
+    /// \param other The mesh to copy
     ///
     void DeepCopy(const biorbd::rigidbody::BoneMesh& other);
 

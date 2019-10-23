@@ -47,7 +47,7 @@ public:
     /// \param parentName The name of the parent segment
     /// \param seqT Sequence to classify the dof in translation
     /// \param seqR Cardan sequence to classify the dof in rotation
-    /// \param caract The mass, the center of mass of the segment, the segment inertia, etc.
+    /// \param characteristics The mass, the center of mass of the segment, the segment inertia, etc.
     /// \param cor Transformation from parent to child
     /// \param PF Platform index
     ///
@@ -67,7 +67,7 @@ public:
     /// \param name The name of the segment
     /// \param parentName The name of the parent segment
     /// \param seqR Cardan sequence to classify the dof in rotation
-    /// \param caract The mass, the center of mass of the segment, the segment inertia, etc.
+    /// \param characteristics The mass, the center of mass of the segment, the segment inertia, etc.
     /// \param cor Transformation from parent to child
     /// \param PF Platform index
     ///
@@ -209,7 +209,7 @@ protected:
 
     ///
     /// \brief Set the DoF
-    /// \brief model The model
+    /// \param model The model
     /// \param seqT Sequence to classify the dof in translation
     /// \param seqR Cardan sequence to classify the dof in rotation
     ///
@@ -233,7 +233,7 @@ protected:
     std::shared_ptr<unsigned int> m_nbQdot;  ///< Number of Qdot
     std::shared_ptr<unsigned int> m_nbQddot;  ///< Number of Qddot
     std::shared_ptr<unsigned int> m_nbDofTrue;    ///< Number of degrees of freedom
-    std::shared_ptr<unsigned int> m_nbDofTrueOutside; // Number of degree of freedom read from the outside (Same as nDof except if Quaternion)
+    std::shared_ptr<unsigned int> m_nbDofTrueOutside; ///< Number of degree of freedom read from the outside (Same as nDof except if Quaternion)
     std::shared_ptr<unsigned int> m_nbDofTrans; ///< Number of degrees of freedom in translation
     std::shared_ptr<unsigned int> m_nbDofRot; ///< Number of degrees of freedom in rotation
     std::shared_ptr<unsigned int> m_nbDofQuat; ///< Number of degrees of freedom in rotation? TODO: Nombre de degrés de liberté en rotation
@@ -309,7 +309,7 @@ protected:
     std::shared_ptr<std::vector<unsigned int>> m_dofPosition;  ///< Position in the x, y, and z sequence
 
     ///
-    /// \brief Set the DoF caracteristics (m_caract) on the last segment
+    /// \brief Set the DoF characteristics (m_characteristics) on the last segment
     ///
     /// Part of the formal definition of the segment
     ///

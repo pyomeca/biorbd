@@ -13,11 +13,15 @@ namespace biorbd {
 namespace utils {
 class Vector;
 }
-
+///
+/// \brief Namespace rigidbody containing the class Joints and GeneralizedCoordinates
 namespace rigidbody {
 class Joints;
 class GeneralizedCoordinates;
 
+///
+/// \brief Class Integrator
+///
 class BIORBD_API Integrator
 {
 public:
@@ -98,17 +102,29 @@ protected:
     std::shared_ptr<biorbd::utils::Vector> m_u; ///< Effectors
 
 
-    // Structure allowing to conserve the values
 
+    ///
+    /// \brief Structure containing the states and time
+    ///
     struct push_back_state_and_time{
-        std::vector< state_type >& m_states;
-        std::vector< double >& m_times;
+        std::vector< state_type >& m_states; ///< The states
+        std::vector< double >& m_times; ///< The times
+
+        ///
+        /// \brief Store the states and times
+        /// \param states A vector containing the states
+        /// \param times A vector containing the times
+        ///
         push_back_state_and_time(
                 std::vector< state_type > &states ,
                 std::vector< double > &times )
         : m_states( states ) , m_times( times ) { }
 
-
+        ///
+        /// \brief TODO:
+        /// \param x
+        /// \param t
+        ///
         void operator()(
                 const state_type &x ,
                 double t ){

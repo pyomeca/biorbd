@@ -20,6 +20,9 @@ class Node3d;
 namespace rigidbody {
 class BoneMesh;
 
+///
+/// \brief Class BoneCharacteristics
+///
 class BIORBD_API BoneCharacteristics : public RigidBodyDynamics::Body
 {
 public:
@@ -33,13 +36,13 @@ public:
 ///
 /// \brief Get bone characteristics
 /// \param mass Mass of the body
-/// \param Center of mass
+/// \param com Center of mass
 /// \param inertia Inertia matrix
 ///
     BoneCharacteristics(
-            double mass, // Mass of the body
-            const biorbd::utils::Node3d &com, // Center of Mass
-            const RigidBodyDynamics::Math::Matrix3d &inertia); // Inertia matrix
+            double mass, 
+            const biorbd::utils::Node3d &com, 
+            const RigidBodyDynamics::Math::Matrix3d &inertia); 
 
 
     ///
@@ -50,10 +53,10 @@ public:
     /// \param mesh Position of the bone meshing
     ///
     BoneCharacteristics(
-            double mass, // Mass of the body
-            const biorbd::utils::Node3d &com, // Center of Mass
-            const RigidBodyDynamics::Math::Matrix3d &inertia, // Inertia matrix
-            const biorbd::rigidbody::BoneMesh &mesh); // position des meshings de l'os
+            double mass, 
+            const biorbd::utils::Node3d &com, 
+            const RigidBodyDynamics::Math::Matrix3d &inertia, 
+            const biorbd::rigidbody::BoneMesh &mesh); 
 
     ///
     /// \brief Deep copy of the bone characteristics
