@@ -46,7 +46,7 @@ void biorbd::rigidbody::Integrator::operator() (
         const state_type &x ,
         state_type &dxdt ,
         double ){
-    // Équation différentielle : x/xdot => xdot/xddot
+    // Differential equation : x/xdot => xdot/xddot
     biorbd::rigidbody::GeneralizedCoordinates Q(*m_nbre);
     biorbd::rigidbody::GeneralizedCoordinates QDot(*m_nbre);
     biorbd::rigidbody::GeneralizedCoordinates QDDot(biorbd::utils::Vector(*m_nbre).setZero());
@@ -57,7 +57,7 @@ void biorbd::rigidbody::Integrator::operator() (
 
     RigidBodyDynamics::ForwardDynamics (*m_model, Q, QDot, *m_u, QDDot);
 
-    // Faire sortir xdot/xddot
+    // Output xdot/xddot
     for (unsigned int i=0; i<*m_nbre; i++){
         dxdt[i] = QDot[i];
         dxdt[i + *m_nbre] = QDDot[i];
@@ -97,17 +97,17 @@ void biorbd::rigidbody::Integrator::integrate(
         double t0,
         double tend,
         double timeStep){
-    // Stocker le nombre d'élément à traiter
-    *m_nbre = static_cast<unsigned int>(Q_Qdot.rows())/2; // Q et Qdot
-    *m_u = u; // Copier les effecteurs
+    // Store the number of elements to analyze
+    *m_nbre = static_cast<unsigned int>(Q_Qdot.rows())/2; // Q and Qdot
+    *m_u = u; // Copy the effectors
     *m_model = model;
 
-    // Remplissage de la variable par les positions et vitesse
+    // Fill the variable with positions and velocities
     state_type x(*m_nbre*2);
     for (unsigned int i=0; i<*m_nbre*2; i++)
         x[i] = Q_Qdot(i);
 
-    // Choix de l'algorithme et intégration
+    // Choice of algorithm and integration 
     boost::numeric::odeint::runge_kutta4< state_type > stepper;
     *m_steps = static_cast<unsigned int>(boost::numeric::odeint::integrate_const( stepper, (*this), x, t0, tend, timeStep, push_back_state_and_time( *m_x_vec , *m_times )));
 }
