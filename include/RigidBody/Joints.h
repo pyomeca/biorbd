@@ -27,13 +27,47 @@ class Integrator;
 class BIORBD_API Joints : public RigidBodyDynamics::Model
 {
 public:
+
+    ///
+    /// \brief Construct joints
+    ///
     Joints();
+
+    ///
+    /// \brief Construct joints
+    /// \param other Joint to copy (TODO:?)
+    ///
     Joints(const biorbd::rigidbody::Joints& other);
+
+    ///
+    /// \brief Properly destroy class
+    ///
     virtual ~Joints();
+
+    /// 
+    /// \brief Deep copy of the joints
+    /// \return Copy of the joints
+    ///
     biorbd::rigidbody::Joints DeepCopy() const;
+
+    ///
+    /// \brief Deep copy of the joints
+    /// \param other The joints to copy
+    ///
     void DeepCopy(const biorbd::rigidbody::Joints& other);
 
     // Set and Get
+
+    /// 
+    /// \brief Add a bone
+    /// \param segmentName Name of the segment
+    /// \param Name of the segment parent
+    /// \param translationSequence The translation sequence
+    /// \param rotationSequence Cardan sequence of rotation to classify the DoF in rotation
+    /// \param characteristics The mass, segment's center of mass, inertia of the segment, etc.
+    /// \param centreofRotation Transformation of the parent to child
+    /// \param forcePlates The number of the force platform attached to the bone (default: -1)
+    ///
     unsigned int AddBone(
             const biorbd::utils::String &segmentName, // Nom du segment
             const biorbd::utils::String &parentName, // Nom du segment
@@ -42,52 +76,176 @@ public:
             const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mase, Centre de masse du segment, Inertie du segment, etc.
             const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, // Transformation du parent vers l'enfant
             int forcePlates=-1); // Numéro de la plateforme de force attaché à cet os
+
+    ///
+    /// \brief Add a bone
+    /// \param segmentName Name of the segment
+    /// \param Name of the segment parent
+    /// \param translationSequence The translation sequence
+    /// \param rotationSequence Cardan sequence of rotation to classify the DoF in rotation
+    /// \param centreofRotation Transformation of the parent to child
+    /// \param forcePlates The number of the force platform attached to the bone (default: -1)
+    ///
     unsigned int AddBone(
-            const biorbd::utils::String &segmentName, // Nom du segment
-            const biorbd::utils::String &parentName, // Nom du segment
-            const biorbd::utils::String &translationSequence, // Séquence de Cardan pour classer les dof en rotation
-            const biorbd::rigidbody::BoneCharacteristics& rotationSequence, // Mase, Centre de masse du segment, Inertie du segment, etc.
-            const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, // Transformation du parent vers l'enfant
-            int forcePlates=-1); // Numéro de la plateforme de force attaché à cet os
+            const biorbd::utils::String &segmentName, 
+            const biorbd::utils::String &parentName, 
+            const biorbd::utils::String &translationSequence, 
+            const biorbd::rigidbody::BoneCharacteristics& rotationSequence, 
+            const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, 
+            int forcePlates=-1); 
 
 
     // -- INFORMATION ON THE MODEL -- //
+
+    ///
+    /// \brief Return the biorbd body identification
+    /// \param segmentName The name of the segment
+    /// \return The biorbd body identification
+    ///
     int GetBodyBiorbdId(const biorbd::utils::String &segmentName) const;
+
+    ///
+    /// \brief Return the number of generalized torque
+    /// \return The number of generalized torque
+    ///
     unsigned int nbGeneralizedTorque() const;
-    unsigned int nbBone() const; // Return the actual number of segments
+
+    ///
+    /// \brief Return the actual number of segment 
+    /// \return The actual number of segment
+    ///
+    unsigned int nbBone() const;
+
+    ///
+    /// \brief Return the number of degrees of freedom (DoF)
+    /// \return The number of DoF
+    ///
     unsigned int nbDof() const;
+
+    ///
+    /// \brief Return the identification of the bone
+    /// \param boneName The name of the bone
+    /// \param dofName The name of the degree of freedom (DoF)
+    /// \return The identification of the bone
+    ///
     unsigned int getDofIndex(
             const biorbd::utils::String& boneName,
             const biorbd::utils::String& dofName);
+
+    ///
+    /// \brief Return the names of the degree of freedom (DoF)
+    /// \return The names of the DoF
+    ///
     std::vector<std::string> nameDof() const;
+
+    ///
+    /// \brief Return the number of Q
+    /// \return The number of Q
+    ///
     unsigned int nbQ() const;
+
+    ///
+    /// \brief Return the number of Qdot
+    /// \return The number of Qdot
+    ///
     unsigned int nbQdot() const;
+
+    ///
+    /// \brief Return the number of Qddot
+    /// \return The number of Qddot
+    ///
     unsigned int nbQddot() const;
-    unsigned int nbRoot() const; // retourne le nombre d'élément qui ne sont pas actionnés
+
+    ///
+    /// \brief Return the number of elements that are not actuated
+    /// \return The number of elements that are not actuated
+    ///
+    unsigned int nbRoot() const;
+
+    ///
+    /// \brief Return the number of quaternions
+    /// \return The number of quaternions
+    ///
     unsigned int nbQuat() const;
-    void setIsRootActuated(bool a); // Determine if root segment is actuated or not
+
+    ///
+    /// \brief Set root segment to be actuated or not
+    /// \param a True or False 
+    ///
+    void setIsRootActuated(bool a);
+
+    ///
+    /// \brief Determine if root segment is actuated or not
+    /// \return True(1) or False(0)
+    ///
     bool isRootActuated() const;
-    void setHasExternalForces(bool f); // If the model includes external force
+
+    ///
+    /// \brief Set model to include external forces or note
+    /// \param f True (1) or False (0)
+    ///
+    void setHasExternalForces(bool f);
+
+    ///
+    /// \brief Determine if model has external forces
+    /// \return True (1) or False (0)
+    ///
     bool hasExternalForces() const;
+
+    ///
+    /// \brief Get bone 
+    /// \param idxSegment Identification of the segment
+    ///
     const biorbd::rigidbody::Bone& bone(unsigned int idxSegment) const;
+
+    ///
+    /// \brief Get bone
+    /// \param nameSegment Name of the segment
+    ///
     const biorbd::rigidbody::Bone& bone(const biorbd::utils::String& nameSegment) const;
     // ------------------------------ //
 
 
     // -- FORCE PLATE DISPATCHER -- //
+    ///
+    /// \brief TODO: Dispatch the forces from the force plate in a vector 
+    /// \param spatialVector 
+    /// \param frame
+    /// \return A spatial vector with the forces
+    ///
+   
     std::vector<RigidBodyDynamics::Math::SpatialVector> dispatchedForce(
             std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> &spatialVector,
             unsigned int frame) const;
+
+    ///
+    /// \brief TODO: Dispatch the forces from the force plate in a spatial vector
+    /// \param sv One spatial vector per force platform
+    /// \return A spatial vector with the forces
+    ///
     std::vector<RigidBodyDynamics::Math::SpatialVector> dispatchedForce(
-            std::vector<RigidBodyDynamics::Math::SpatialVector> &) const; // un SpatialVector par PF
+            std::vector<RigidBodyDynamics::Math::SpatialVector> &sv) const; // un SpatialVector par PF
     // ---------------------------- //
 
 
     // -- INTEGRATOR INTERFACE -- //
+
+    ///
+    /// \brief Update the kinematic variables such as body velocities and accelerations in the model to reflect the variables passed to this function
+    /// \param Q The positional variables of the model
+    /// \param QDot The generalized velocities of the joints
+    /// \param QDDot The generalized accelerations of the joints
+    /// 
     void UpdateKinematicsCustom(
             const biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
             const biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,
             const biorbd::rigidbody::GeneralizedCoordinates *Qddot = nullptr);
+    ///
+    /// \brief Process integration of the kinematics
+    /// \param Q The positional variables of the model
+    /// \param QDot The generalized velocities of the joints
+    /// \param GeneralizedTorque The effectors
+    /// 
     void integrateKinematics(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedCoordinates& QDot,
