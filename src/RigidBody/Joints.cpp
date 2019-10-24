@@ -25,7 +25,7 @@ biorbd::rigidbody::Joints::Joints() :
     m_bones(std::make_shared<std::vector<biorbd::rigidbody::Bone>>()),
     m_integrator(std::make_shared<biorbd::rigidbody::Integrator>()),
     m_nbRoot(std::make_shared<unsigned int>(0)),
-    m_nDof(std::make_shared<unsigned int>(0)),
+    m_nbDof(std::make_shared<unsigned int>(0)),
     m_nbQ(std::make_shared<unsigned int>(0)),
     m_nbQdot(std::make_shared<unsigned int>(0)),
     m_nbQddot(std::make_shared<unsigned int>(0)),
@@ -43,7 +43,7 @@ biorbd::rigidbody::Joints::Joints(const biorbd::rigidbody::Joints &other) :
     m_bones(other.m_bones),
     m_integrator(other.m_integrator),
     m_nbRoot(other.m_nbRoot),
-    m_nDof(other.m_nDof),
+    m_nbDof(other.m_nbDof),
     m_nbQ(other.m_nbQ),
     m_nbQdot(other.m_nbQdot),
     m_nbQddot(other.m_nbQddot),
@@ -76,7 +76,7 @@ void biorbd::rigidbody::Joints::DeepCopy(const biorbd::rigidbody::Joints &other)
         (*m_bones)[i] = (*other.m_bones)[i].DeepCopy();
     *m_integrator = other.m_integrator->DeepCopy();
     *m_nbRoot = *other.m_nbRoot;
-    *m_nDof = *other.m_nDof;
+    *m_nbDof = *other.m_nbDof;
     *m_nbQ = *other.m_nbQ;
     *m_nbQdot = *other.m_nbQdot;
     *m_nbQddot = *other.m_nbQddot;
@@ -91,14 +91,14 @@ unsigned int biorbd::rigidbody::Joints::nbGeneralizedTorque() const {
     return dof_count-nbRoot();
 }
 unsigned int biorbd::rigidbody::Joints::nbDof() const {
-    return *m_nDof;
+    return *m_nbDof;
 }
 
 std::vector<std::string> biorbd::rigidbody::Joints::nameDof() const
 {
     std::vector<std::string> names;
     for (unsigned int i=0; i<nbBone(); ++i){
-        for (unsigned int j=0; j<bone(i).nDof(); ++j){
+        for (unsigned int j=0; j<bone(i).nbDof(); ++j){
             names.push_back(bone(i).name() + "_" + bone(i).nameDof(j));
         }
     }
@@ -179,11 +179,11 @@ unsigned int biorbd::rigidbody::Joints::AddBone(
 { // Numéro de la plateforme de force attaché à cet os
     biorbd::rigidbody::Bone tp(*this, segmentName, parentName, translationSequence, rotationSequence, characteristics, centreOfRotation, forcePlates);
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max())
-        *m_nbRoot += tp.nDof(); //  Si le nom du segment est "Root" ajouter le nombre de dof de racine
-    *m_nDof += tp.nDof();
-    *m_nbQ += tp.nQ();
-    *m_nbQdot += tp.nQdot();
-    *m_nbQddot += tp.nQddot();
+        *m_nbRoot += tp.nbDof(); //  Si le nom du segment est "Root" ajouter le nombre de dof de racine
+    *m_nbDof += tp.nbDof();
+    *m_nbQ += tp.nbQ();
+    *m_nbQdot += tp.nbQdot();
+    *m_nbQddot += tp.nbQddot();
 
     if (tp.isRotationAQuaternion())
         ++*m_nRotAQuat;
@@ -202,8 +202,8 @@ unsigned int biorbd::rigidbody::Joints::AddBone(
 { // Numéro de la plateforme de force attaché à cet os
     biorbd::rigidbody::Bone tp(*this, segmentName, parentName, seqR, characteristics, cor, forcePlates);
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max())
-        *m_nbRoot += tp.nDof(); //  Si le nom du segment est "Root" ajouter le nombre de dof de racine
-    *m_nDof += tp.nDof();
+        *m_nbRoot += tp.nbDof(); //  Si le nom du segment est "Root" ajouter le nombre de dof de racine
+    *m_nbDof += tp.nbDof();
 	
     *m_totalMass += characteristics.mMass; // Ajouter la masse segmentaire a la masse totale du corps
     m_bones->push_back(tp);
@@ -249,10 +249,10 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> biorbd::rigidbody::Joints::d
 
     // Dispatch des forces
     for (auto bone : *m_bones){
-        unsigned int nDof = bone.nDof();
-        if (nDof != 0){ // Ne rien ajouter si le nDof est à 0
+        unsigned int nbDof = bone.nbDof();
+        if (nbDof != 0){ // Ne rien ajouter si le nbDof est à 0
             // Pour chaque segment,
-            for (unsigned int i=0; i<nDof-1; ++i) // mettre un sv_zero sur tous les dof sauf le dernier
+            for (unsigned int i=0; i<nbDof-1; ++i) // mettre un sv_zero sur tous les dof sauf le dernier
                 sv_out.push_back(sv_zero);
             if (bone.plateformeIdx() >= 0){ // Si le solide fait contact avec la plateforme (!= -1)
                 sv_out.push_back(sv[static_cast<unsigned int>(bone.plateformeIdx())]); // Mettre la force de la plateforme correspondante
@@ -982,14 +982,14 @@ void biorbd::rigidbody::Joints::computeQdot(
         biorbd::rigidbody::Bone bone_i=bone(i);
         if (bone_i.isRotationAQuaternion()){
             // Extraire le quaternion
-            biorbd::utils::Quaternion quat_tp(Q.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1), Q(Q.size()-*m_nRotAQuat+cmpQuat));
+            biorbd::utils::Quaternion quat_tp(Q.block(cmpDof+bone_i.nbDofTrans(), 0, 3, 1), Q(Q.size()-*m_nRotAQuat+cmpQuat));
 
             // Placer dans le vecteur de sortie
-            QDotOut.block(cmpDof, 0, bone_i.nDofTrans(), 1) = QDot.block(cmpDof, 0, bone_i.nDofTrans(), 1); // La dérivée des translations est celle directement de qdot
+            QDotOut.block(cmpDof, 0, bone_i.nbDofTrans(), 1) = QDot.block(cmpDof, 0, bone_i.nbDofTrans(), 1); // La dérivée des translations est celle directement de qdot
 
             // Dériver
-            quat_tp.derivate(QDot.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1));
-            QDotOut.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1) = quat_tp.block(0,0,3,1);
+            quat_tp.derivate(QDot.block(cmpDof+bone_i.nbDofTrans(), 0, 3, 1));
+            QDotOut.block(cmpDof+bone_i.nbDofTrans(), 0, 3, 1) = quat_tp.block(0,0,3,1);
             QDotOut(Q.size()-*m_nRotAQuat+cmpQuat) = quat_tp(3);// Placer dans le vecteur de sortie
 
            // Incrémenter le nombre de quaternions faits
@@ -997,9 +997,9 @@ void biorbd::rigidbody::Joints::computeQdot(
         }
         else{
             // Si c'est un normal, faire ce qu'il est fait d'habitude
-            QDotOut.block(cmpDof, 0, bone_i.nDof(), 1) = QDot.block(cmpDof, 0, bone_i.nDof(), 1);
+            QDotOut.block(cmpDof, 0, bone_i.nbDof(), 1) = QDot.block(cmpDof, 0, bone_i.nbDof(), 1);
         }
-        cmpDof += bone_i.nDof();
+        cmpDof += bone_i.nbDof();
     }
 
 }
@@ -1018,7 +1018,7 @@ unsigned int biorbd::rigidbody::Joints::getDofIndex(
         biorbd::utils::Error::check(iB!=m_bones->size(), "Bone not found");
 
         if (boneName.compare(  (*m_bones)[iB].name() )   )
-            idx +=  (*m_bones)[iB].nDof();
+            idx +=  (*m_bones)[iB].nbDof();
         else{
             idx += (*m_bones)[iB].getDofIdx(dofName);
             found = true;

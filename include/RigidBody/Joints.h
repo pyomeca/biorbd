@@ -413,7 +413,7 @@ protected:
 
     std::shared_ptr<biorbd::rigidbody::Integrator> m_integrator;
     std::shared_ptr<unsigned int> m_nbRoot; // Nombre de dof sur le segment racine
-    std::shared_ptr<unsigned int> m_nDof; // Nombre de degré de liberté total
+    std::shared_ptr<unsigned int> m_nbDof; // Nombre de degré de liberté total
     std::shared_ptr<unsigned int> m_nbQ; // Nombre de q au total
     std::shared_ptr<unsigned int> m_nbQdot; // Nombre de qdot au total
     std::shared_ptr<unsigned int> m_nbQddot; // Nombre de qddot au total

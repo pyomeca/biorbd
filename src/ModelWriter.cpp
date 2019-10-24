@@ -48,9 +48,9 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
         biorbdModelFile << sep << sep << "RT" << std::endl;
         for (unsigned int j=0; j<4; ++j)
             biorbdModelFile << sep << sep << sep << localJCS[i].block(j,0,1,4) << std::endl;
-        if (model.bone(i).nDofTrans() > 0)
+        if (model.bone(i).nbDofTrans() > 0)
             biorbdModelFile << sep << sep << "translations" << sep << model.bone(i).seqT() << std::endl;
-        if (model.bone(i).nDofRot() > 0)
+        if (model.bone(i).nbDofRot() > 0)
             biorbdModelFile << sep << sep << "rotations" << sep << model.bone(i).seqR() << std::endl;
         if (model.bone(i).characteristics().mesh().path().filename().compare("")) // Si ce n'est pas vide
             biorbdModelFile << sep << sep << "meshfile" << sep << model.bone(i).characteristics().mesh().path().originalPath() << std::endl;

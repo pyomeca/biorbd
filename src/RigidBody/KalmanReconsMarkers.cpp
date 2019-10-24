@@ -124,14 +124,14 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
 
                 // Remettre Pp à initial (parce qu'on ne s'intéresse pas à la vitesse pour se rendre à la position initiale
                 m_Pp = m_PpInitial;
-                m_xp->block(*m_nDof, 0, *m_nDof*2, 1) = Eigen::VectorXd::Zero(*m_nDof*2); // Mettre vitesse et accélération à 0
+                m_xp->block(*m_nbDof, 0, *m_nbDof*2, 1) = Eigen::VectorXd::Zero(*m_nbDof*2); // Mettre vitesse et accélération à 0
             }
         }
     }
 
     // État projeté
     const biorbd::utils::Vector& xkm(*m_A * *m_xp);
-    const biorbd::rigidbody::GeneralizedCoordinates& Q_tp(xkm.topRows(*m_nDof));
+    const biorbd::rigidbody::GeneralizedCoordinates& Q_tp(xkm.topRows(*m_nbDof));
     model.UpdateKinematicsCustom (&Q_tp, nullptr, nullptr);
 
     // Markers projetés
@@ -139,12 +139,12 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     // Jacobienne
    const  std::vector<biorbd::utils::Matrix>& J_tp(model.TechnicalMarkersJacobian(Q_tp, removeAxes, false));
     // Faire une seule matrice pour zest et Jacobienne
-    biorbd::utils::Matrix H(biorbd::utils::Matrix::Zero(*m_nMeasure, *m_nDof*3)); // 3*nMarkers => X,Y,Z ; 3*nDof => Q, Qdot, Qddot
+    biorbd::utils::Matrix H(biorbd::utils::Matrix::Zero(*m_nMeasure, *m_nbDof*3)); // 3*nMarkers => X,Y,Z ; 3*nbDof => Q, Qdot, Qddot
     biorbd::utils::Vector zest(biorbd::utils::Vector::Zero(*m_nMeasure));
     std::vector<unsigned int> occlusionIdx;
     for (unsigned int i=0; i<*m_nMeasure/3; ++i) // Divisé par 3 parce qu'on intègre d'un coup xyz
         if (Tobs(i*3)*Tobs(i*3) + Tobs(i*3+1)*Tobs(i*3+1) + Tobs(i*3+2)*Tobs(i*3+2) != 0.0){ // S'il y a un marqueur
-            H.block(i*3,0,3,*m_nDof) = J_tp[i];
+            H.block(i*3,0,3,*m_nbDof) = J_tp[i];
             zest.block(i*3, 0, 3, 1) = zest_tp[i];
         }
         else

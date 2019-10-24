@@ -88,7 +88,7 @@ protected:
     // Attributs variables
     std::shared_ptr<KalmanParam> m_params; // Fréquence d'acquisition
     std::shared_ptr<double> m_Te; // Parametre inérant a la frequence
-    std::shared_ptr<unsigned int> m_nDof; // Nombre de DoF, calculé des qu'un modele est ouvert
+    std::shared_ptr<unsigned int> m_nbDof; // Nombre de DoF, calculé des qu'un modele est ouvert
     std::shared_ptr<unsigned int> m_nMeasure; // Nombre de marqueurs
 
     // Attributs du filtre de kalman

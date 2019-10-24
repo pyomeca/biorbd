@@ -16,14 +16,14 @@ biorbd::rigidbody::Bone::Bone() :
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>()),
     m_seqT(std::make_shared<biorbd::utils::String>()),
     m_seqR(std::make_shared<biorbd::utils::String>()),
-    m_nDof(std::make_shared<unsigned int>(0)),
-    m_nQdot(std::make_shared<unsigned int>(0)),
-    m_nQddot(std::make_shared<unsigned int>(0)),
-    m_nDofTrue(std::make_shared<unsigned int>(0)),
-    m_nDofTrueOutside(std::make_shared<unsigned int>(0)),
-    m_nDofTrans(std::make_shared<unsigned int>(0)),
-    m_nDofRot(std::make_shared<unsigned int>(0)),
-    m_nDofQuat(std::make_shared<unsigned int>(0)),
+    m_nbDof(std::make_shared<unsigned int>(0)),
+    m_nbQdot(std::make_shared<unsigned int>(0)),
+    m_nbQddot(std::make_shared<unsigned int>(0)),
+    m_nbDofTrue(std::make_shared<unsigned int>(0)),
+    m_nbDofTrueOutside(std::make_shared<unsigned int>(0)),
+    m_nbDofTrans(std::make_shared<unsigned int>(0)),
+    m_nbDofRot(std::make_shared<unsigned int>(0)),
+    m_nbDofQuat(std::make_shared<unsigned int>(0)),
     m_isQuaternion(std::make_shared<bool>(false)),
     m_dof(std::make_shared<std::vector<RigidBodyDynamics::Joint>>()),
     m_idxDof(std::make_shared<std::vector<unsigned int>>()),
@@ -53,14 +53,14 @@ biorbd::rigidbody::Bone::Bone(
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(cor)),
     m_seqT(std::make_shared<biorbd::utils::String>(seqT)),
     m_seqR(std::make_shared<biorbd::utils::String>(seqR)),
-    m_nDof(std::make_shared<unsigned int>(0)),
-    m_nQdot(std::make_shared<unsigned int>(0)),
-    m_nQddot(std::make_shared<unsigned int>(0)),
-    m_nDofTrue(std::make_shared<unsigned int>(0)),
-    m_nDofTrueOutside(std::make_shared<unsigned int>(0)),
-    m_nDofTrans(std::make_shared<unsigned int>(0)),
-    m_nDofRot(std::make_shared<unsigned int>(0)),
-    m_nDofQuat(std::make_shared<unsigned int>(0)),
+    m_nbDof(std::make_shared<unsigned int>(0)),
+    m_nbQdot(std::make_shared<unsigned int>(0)),
+    m_nbQddot(std::make_shared<unsigned int>(0)),
+    m_nbDofTrue(std::make_shared<unsigned int>(0)),
+    m_nbDofTrueOutside(std::make_shared<unsigned int>(0)),
+    m_nbDofTrans(std::make_shared<unsigned int>(0)),
+    m_nbDofRot(std::make_shared<unsigned int>(0)),
+    m_nbDofQuat(std::make_shared<unsigned int>(0)),
     m_isQuaternion(std::make_shared<bool>(false)),
     m_dof(std::make_shared<std::vector<RigidBodyDynamics::Joint>>()),
     m_idxDof(std::make_shared<std::vector<unsigned int>>()),
@@ -93,14 +93,14 @@ biorbd::rigidbody::Bone::Bone(
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(cor)),
     m_seqT(std::make_shared<biorbd::utils::String>()),
     m_seqR(std::make_shared<biorbd::utils::String>(seqR)),
-    m_nDof(std::make_shared<unsigned int>(0)),
-    m_nQdot(std::make_shared<unsigned int>(0)),
-    m_nQddot(std::make_shared<unsigned int>(0)),
-    m_nDofTrue(std::make_shared<unsigned int>(0)),
-    m_nDofTrueOutside(std::make_shared<unsigned int>(0)),
-    m_nDofTrans(std::make_shared<unsigned int>(0)),
-    m_nDofRot(std::make_shared<unsigned int>(0)),
-    m_nDofQuat(std::make_shared<unsigned int>(0)),
+    m_nbDof(std::make_shared<unsigned int>(0)),
+    m_nbQdot(std::make_shared<unsigned int>(0)),
+    m_nbQddot(std::make_shared<unsigned int>(0)),
+    m_nbDofTrue(std::make_shared<unsigned int>(0)),
+    m_nbDofTrueOutside(std::make_shared<unsigned int>(0)),
+    m_nbDofTrans(std::make_shared<unsigned int>(0)),
+    m_nbDofRot(std::make_shared<unsigned int>(0)),
+    m_nbDofQuat(std::make_shared<unsigned int>(0)),
     m_isQuaternion(std::make_shared<bool>(false)),
     m_dof(std::make_shared<std::vector<RigidBodyDynamics::Joint>>()),
     m_idxDof(std::make_shared<std::vector<unsigned int>>()),
@@ -132,14 +132,14 @@ void biorbd::rigidbody::Bone::DeepCopy(const biorbd::rigidbody::Bone &other)
     *m_cor = *other.m_cor;
     *m_seqT = *other.m_seqT;
     *m_seqR = *other.m_seqR;
-    *m_nDof = *other.m_nDof;
-    *m_nQdot = *other.m_nQdot;
-    *m_nQddot = *other.m_nQddot;
-    *m_nDofTrue = *other.m_nDofTrue;
-    *m_nDofTrueOutside = *other.m_nDofTrueOutside;
-    *m_nDofTrans = *other.m_nDofTrans;
-    *m_nDofRot = *other.m_nDofRot;
-    *m_nDofQuat = *other.m_nDofQuat;
+    *m_nbDof = *other.m_nbDof;
+    *m_nbQdot = *other.m_nbQdot;
+    *m_nbQddot = *other.m_nbQddot;
+    *m_nbDofTrue = *other.m_nbDofTrue;
+    *m_nbDofTrueOutside = *other.m_nbDofTrueOutside;
+    *m_nbDofTrans = *other.m_nbDofTrans;
+    *m_nbDofRot = *other.m_nbDofRot;
+    *m_nbDofQuat = *other.m_nbDofQuat;
     *m_isQuaternion = *other.m_isQuaternion;
     m_dof->resize(other.m_dof->size());
     for (unsigned int i=0; i<other.m_dof->size(); ++i)
@@ -171,35 +171,35 @@ void biorbd::rigidbody::Bone::setType()
 }
 
 unsigned int biorbd::rigidbody::Bone::id() const{
-    if (*m_nDof!=0)
-        return (*m_idxDof)[*m_nDof-1];
+    if (*m_nbDof!=0)
+        return (*m_idxDof)[*m_nbDof-1];
     else
-        return (*m_idxDof)[*m_nDof];
+        return (*m_idxDof)[*m_nbDof];
 }
 
 int biorbd::rigidbody::Bone::platformIdx() const{
     return *m_idxPF;
 }
 unsigned int biorbd::rigidbody::Bone::nbGeneralizedTorque() const{
-    return *m_nDof;
+    return *m_nbDof;
 }
 unsigned int biorbd::rigidbody::Bone::nbDof() const{
-    return *m_nDofTrueOutside;
+    return *m_nbDofTrueOutside;
 }
 unsigned int biorbd::rigidbody::Bone::nbDofTrans() const{
-    return *m_nDofTrans;
+    return *m_nbDofTrans;
 }
 unsigned int biorbd::rigidbody::Bone::nbDofRot() const{
-    return *m_nDofRot;
+    return *m_nbDofRot;
 }
 unsigned int biorbd::rigidbody::Bone::nbQ() const{
-    return *m_nDofTrue;
+    return *m_nbDofTrue;
 }
 unsigned int biorbd::rigidbody::Bone::nbQdot() const{
-    return *m_nQdot;
+    return *m_nbQdot;
 }
 unsigned int biorbd::rigidbody::Bone::nbQddot() const{
-    return *m_nQddot;
+    return *m_nbQddot;
 }
 
 // Add platform
@@ -209,7 +209,7 @@ void biorbd::rigidbody::Bone::setPF(int PF){
 
 const biorbd::utils::String &biorbd::rigidbody::Bone::nameDof(const unsigned int i) const {
     // Return the number of DoF of the segment
-    biorbd::utils::Error::check(i<*m_nDofTrue, "Dof ouside N dof for this segment");
+    biorbd::utils::Error::check(i<*m_nbDofTrue, "Dof ouside N dof for this segment");
     return (*m_nameDof)[i];
 }
 
@@ -252,25 +252,25 @@ void biorbd::rigidbody::Bone::str2numSequence(
         const biorbd::utils::String &seqT,
         const biorbd::utils::String &seqR){
     m_sequenceTrans->clear();
-    m_sequenceTrans->resize(*m_nDofTrans);
+    m_sequenceTrans->resize(*m_nbDofTrans);
     m_sequenceRot->clear();
     if (*m_isQuaternion)
         m_sequenceRot->resize(1);
     else
-        m_sequenceRot->resize(*m_nDofRot);
+        m_sequenceRot->resize(*m_nbDofRot);
 
     str2numSequence(*m_sequenceTrans, seqT);
     str2numSequence(*m_sequenceRot, seqR);
 
     // Store the names of the DoFs
     m_nameDof->clear();
-    m_nameDof->resize(*m_nDofTrue);
-    for (unsigned int i=0; i<*m_nDofTrans; ++i)
+    m_nameDof->resize(*m_nbDofTrue);
+    for (unsigned int i=0; i<*m_nbDofTrans; ++i)
         (*m_nameDof)[i] = "Trans" + seqT(i).toupper();
-    for (unsigned int i=0; i<*m_nDofRot; ++i)
-        (*m_nameDof)[*m_nDofTrans+i] = "Rot" + seqR(i).toupper();
-    for (unsigned int i=0; i<*m_nDofQuat; ++i)
-        (*m_nameDof)[*m_nDofTrans+*m_nDofRot+i] =  biorbd::utils::String("Quat") + i;
+    for (unsigned int i=0; i<*m_nbDofRot; ++i)
+        (*m_nameDof)[*m_nbDofTrans+i] = "Rot" + seqR(i).toupper();
+    for (unsigned int i=0; i<*m_nbDofQuat; ++i)
+        (*m_nameDof)[*m_nbDofTrans+*m_nbDofRot+i] =  biorbd::utils::String("Quat") + i;
 
 }
 void biorbd::rigidbody::Bone::str2numSequence(
@@ -292,24 +292,24 @@ void biorbd::rigidbody::Bone::str2numSequence(
     }
 }
 void biorbd::rigidbody::Bone::setNumberOfDof(unsigned int nTrans, unsigned int nRot){
-    *m_nDofTrans = nTrans;
+    *m_nbDofTrans = nTrans;
     if (*m_isQuaternion){
-        *m_nDofRot = 0;
-        *m_nDofQuat = 4;
-        *m_nDof = nTrans + 1;
-        *m_nQdot = nTrans + 3;
-        *m_nQddot = nTrans + 3;
-        *m_nDofTrue = nTrans + *m_nDofQuat;
-        *m_nDofTrueOutside = nTrans + 3;
+        *m_nbDofRot = 0;
+        *m_nbDofQuat = 4;
+        *m_nbDof = nTrans + 1;
+        *m_nbQdot = nTrans + 3;
+        *m_nbQddot = nTrans + 3;
+        *m_nbDofTrue = nTrans + *m_nbDofQuat;
+        *m_nbDofTrueOutside = nTrans + 3;
     }
     else{
-        *m_nDofRot = nRot;
-        *m_nDofQuat = 0;
-        *m_nDof = nTrans + *m_nDofRot;
-        *m_nQdot = *m_nDof;
-        *m_nQddot = *m_nDof;
-        *m_nDofTrue = *m_nDof;
-        *m_nDofTrueOutside = *m_nDof;
+        *m_nbDofRot = nRot;
+        *m_nbDofQuat = 0;
+        *m_nbDof = nTrans + *m_nbDofRot;
+        *m_nbQdot = *m_nbDof;
+        *m_nbQddot = *m_nbDof;
+        *m_nbDofTrue = *m_nbDof;
+        *m_nbDofTrueOutside = *m_nbDof;
     }
 }
 
@@ -320,26 +320,26 @@ void biorbd::rigidbody::Bone::setSequence(const biorbd::utils::String &seqT, con
 }
 void biorbd::rigidbody::Bone::fillSequence(){
     m_dofPosition->clear();
-    m_dofPosition->resize(*m_nDof);
+    m_dofPosition->resize(*m_nbDof);
 
-    for (unsigned int i=0; i<*m_nDofTrans; i++)
+    for (unsigned int i=0; i<*m_nbDofTrans; i++)
         (*m_dofPosition)[i] = (*m_sequenceTrans)[i]; // Place the translation first in the requested order
     if (*m_isQuaternion)
-        (*m_dofPosition)[*m_nDofTrans] = (*m_sequenceRot)[0];
+        (*m_dofPosition)[*m_nbDofTrans] = (*m_sequenceRot)[0];
     else
-        for (unsigned int i=0; i<*m_nDofRot; i++)
-            (*m_dofPosition)[i+*m_nDofTrans] = (*m_sequenceRot)[i]; // Place the rotation following the translations in the requested order
+        for (unsigned int i=0; i<*m_nbDofRot; i++)
+            (*m_dofPosition)[i+*m_nbDofTrans] = (*m_sequenceRot)[i]; // Place the rotation following the translations in the requested order
 }
 
 void biorbd::rigidbody::Bone::setDofCharacteristicsOnLastSegment(){
     m_dofCharacteristics->clear();
 
-    if (*m_nDof!=0){
-        m_dofCharacteristics->resize(*m_nDof);
-        for (unsigned int i=0; i<*m_nDof-1; i++)
+    if (*m_nbDof!=0){
+        m_dofCharacteristics->resize(*m_nbDof);
+        for (unsigned int i=0; i<*m_nbDof-1; i++)
             (*m_dofCharacteristics)[i] = biorbd::rigidbody::BoneCharacteristics();
 
-        (*m_dofCharacteristics)[*m_nDof-1] = *m_characteristics;
+        (*m_dofCharacteristics)[*m_nbDof-1] = *m_characteristics;
     }
     else{
         m_dofCharacteristics->resize(1);
@@ -356,16 +356,16 @@ void biorbd::rigidbody::Bone::setJointAxis(){
 
     // Declaration of DoFs in translation
     m_dof->clear();
-    if (*m_nDof != 0){
-        m_dof->resize(*m_nDof);
-        for (unsigned int i=0; i<*m_nDofTrans; i++)
+    if (*m_nbDof != 0){
+        m_dof->resize(*m_nbDof);
+        for (unsigned int i=0; i<*m_nbDofTrans; i++)
             (*m_dof)[i] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypePrismatic, axis[(*m_dofPosition)[i]]);
 
         // Declaration of the DoFs in rotation
         if (*m_isQuaternion)
-            (*m_dof)[*m_nDofTrans] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypeSpherical); // Put a DoF in spherical
+            (*m_dof)[*m_nbDofTrans] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypeSpherical); // Put a DoF in spherical
         else
-            for (unsigned int i=*m_nDofTrans; i<*m_nDofRot+*m_nDofTrans; i++)
+            for (unsigned int i=*m_nbDofTrans; i<*m_nbDofRot+*m_nbDofTrans; i++)
                 (*m_dof)[i] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypeRevolute, axis[(*m_dofPosition)[i]]); // Put the rotation axis in the right order
     }
     else{
@@ -383,22 +383,22 @@ void biorbd::rigidbody::Bone::setJoints(biorbd::rigidbody::Joints& model){
     // Create the articulations (intra segment)
     m_idxDof->clear();
 
-    if (*m_nDof==0)
+    if (*m_nbDof==0)
         m_idxDof->resize(1);
     else
-        m_idxDof->resize(*m_nDof);
+        m_idxDof->resize(*m_nbDof);
 
     unsigned int parent_id(model.GetBodyId(parent().c_str()));
     if (parent_id == std::numeric_limits<unsigned int>::max())
         parent_id = 0;
-    if (*m_nDof==0)
+    if (*m_nbDof==0)
         (*m_idxDof)[0] = model.AddBody(parent_id, *m_cor, (*m_dof)[0], (*m_dofCharacteristics)[0], name());
-    else if (*m_nDof == 1)
+    else if (*m_nbDof == 1)
         (*m_idxDof)[0] = model.AddBody(parent_id, *m_cor, (*m_dof)[0], (*m_dofCharacteristics)[0], name());
     else{
         (*m_idxDof)[0] = model.AddBody(parent_id, *m_cor, (*m_dof)[0], (*m_dofCharacteristics)[0]);
-        for (unsigned int i=1; i<*m_nDof; i++)
-            if (i!=*m_nDof-1)
+        for (unsigned int i=1; i<*m_nbDof; i++)
+            if (i!=*m_nbDof-1)
                 (*m_idxDof)[i] = model.AddBody((*m_idxDof)[i-1], zero, (*m_dof)[i], (*m_dofCharacteristics)[i]);
             else
                 (*m_idxDof)[i] = model.AddBody((*m_idxDof)[i-1], zero, (*m_dof)[i], (*m_dofCharacteristics)[i], name());
