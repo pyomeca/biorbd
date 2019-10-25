@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(biorbd VERSION 0.1.3)
+project(biorbd VERSION 1.0.1)
 set (CMAKE_CXX_STANDARD 11)
 
 # Set some variables
