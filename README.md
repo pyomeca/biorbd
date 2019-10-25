@@ -18,6 +18,10 @@ conda install -c conda-forge biorbd
 ```
 The binaries and includes of the core of BIORBD will be installed in `bin` and `include` folders of the environment respectively. Moreover, the Python3 binder will also be installed in the environment.
 
+| Name | Downloads | Version | Platforms |
+| --- | --- | --- | --- |
+| [![Conda Recipe](https://img.shields.io/badge/recipe-biorbd-green.svg)](https://anaconda.org/conda-forge/biorbd) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/biorbd.svg)](https://anaconda.org/conda-forge/biorbd) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/biorbd.svg)](https://anaconda.org/conda-forge/biorbd) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/biorbd.svg)](https://anaconda.org/conda-forge/biorbd) |
+
 ## Compiling (For Windows, Linux and Mac)
 The main drawback with downloading the pre-compiled version from Anaconda is that this version may be out-of-date (even if I do my best to keep the release versions up-to-date). Moreover, since it is already compiled, it doesn't allow you to modify BIORBD if you need to. Therefore, a more versatile way to enjoy BIORBD is to compile it by yourself.
 
@@ -384,7 +388,7 @@ If you actually are using a released level of optimization, you may actually exp
 If you use BIORBD, we would be grateful if you could cite it as follows:
 
 ```
-@misc{Michaud2018ezc3d,
+@misc{Michaud2018biorbd,
     author = {Michaud, Benjamin and Begon, Mickael},
     title = {BIORBD: Toolbox for biomechanical analyses},
     howpublished={Web page},
