@@ -348,24 +348,144 @@ As you may have noticed, the constant $\pi$ is defined as $3.141592653589793$.
 ### Definition of the model
 A BIORBD model consists of a chain of segment, linked by joints with up to six DoF (3 translations, 3 rotations). It is imperative when attaching something to a segment of the model that particular segment must have been previously defined. For instance, if the `thorax` is attached to the `pelvis`, then the latter must be defined before the former in the file. 
 
-#### segment
+#### Segment
 The `segment xxx / endsegment`tag pair is the core of a *bioMod* file. It describes a segment of the model with the name `xxx`, that is most of the time a bone of the skeleton. For internal reasons, the name cannot be `root`. The `xxx` must be present and consists of $1$ string. The segment is composed of multiple subtags, described here. 
 
-##### parent
-The `parent` tag is the name of the segment that particular segment is attached to. If no segment parent is provided, it is considered to be attached to the environment. The parent must be defined earlier in the file and is case dependent. This tag waits for $1$ string.
+```c
+segment default_segment
+    parent ROOT
+    rtinmatrix 0
+    rt 0 0 0 xyz 0 0 0
+    translation xyz
+    rotations xyz
+    com 0 0 0
+    inertia 
+        1 0 0
+        0 1 0
+        0 0 1
+endsegment
 
-#### translations
+segment second_segment
+    parent default_segment
+endsegment
+```
+
+##### parent
+The `parent` tag is the name of the segment that particular segment is attached to. If no segment parent is provided, it is considered to be attached to the environment. The parent must be defined earlier in the file and is case dependent. This tag is waits for $1$ string.
+
+##### rt
+The `homogeneous matrix` of transformation (rototranslation) of the current segment relative to its parent. If `rtinmatrix` is defined to `1`, `rt` waits for a 4 by 4 matrix (the 3 x 3 matrix of rotation and the 4th column being the translation and the last row being 0 0 0 1); if it is defined to `0` it waits for the 3 rotations, the rotation sequence and the translation. The default value is the identity matrix.
+
+##### rtinmatrix
+The tag that defines if the `rt` is in matrix or not. If the `version` of the file is higher or equal than $3$, the default value is false ($0$), otherwise, it true ($1$). 
+
+##### translations
 The `translations` tag specifies the number of degrees-of-freedom in translation and their order. The possible values are `x`, `y` and/or `z` combined whatever fits the model. Please note that the vector of generalized coordinate will comply the the order wrote in this tag. If no translations are provided, then the segment has no translation relative to its parent. This tag waits for $1$ string.
 
-#### rotations
+##### rotations
 The `rotations` tag specifies the number of degrees-of-freedom in rotation and their order. The possible values are `x`, `y` and/or `z` combined whatever fits the model. Please note that the vector of generalized coordinate will comply the the order wrote in this tag. If no rotations are provided, then the segment has no rotation relative to its parent. This tag waits for $1$ string.
 
-#### mass
-The `mass` tag specifies the mass of the segment in kilogram. This tag waits for $1$ value.
+##### mass
+The `mass` tag specifies the mass of the segment in kilogram. This tag waits for $1$ value. The default value is $0.00001$. Please note that a pure $0$ can create a singularity. 
 
-#### inertia
-The `inertia` tag allows to specify the matrix of inertia of the segment. It waits for $9$ values.
+##### com
+The $3$ values position of the `center of mass` relative to the local reference of the segment. The default values are `0 0 0`. 
 
+##### inertia
+The `inertia` tag allows to specify the matrix of inertia of the segment. It waits for $9$ values. The default values are the `identity matrix`
+
+##### foreceplate
+When calculating the inverse dynamics, if force plates are used, this tag dispatch the force plates, the first force plate being $0$. If no force plate is acting on this segment, the value is $-1$. 
+
+##### meshfile or ply
+The path of the meshing `.bioBone` or `.ply` file respectively. It can be relative to the current running folder or absolute (relative being preferred) and UNIX or Windows formatted (`/` vs `\\`, UNIX being preferred).
+
+##### mesh
+If the mesh is not written in a file, it can be written directly in the segment. If so, the `mesh` tag stands for the vertex. Therefore, there are as many `mesh` tags as vertex. It waits for $3$ values being the position relative to reference of the segment. 
+
+##### patch
+The patches to define the orientation of the patches of the mesh. It waits for $3$ values being the $0-based$ of the index of the vertex defined by the `mesh`.
+
+#### Marker
+The marker with a unique name attached to a body segment. 
+
+```c
+marker my_marker
+    parent segment_name
+    position 0 0 0
+    technical 1
+    anatomical 0
+endmarker
+```
+
+##### parent
+The `parent` tag is the name of the segment that particular segment is attached to. The parent must be defined earlier in the file and is case dependent. This tag is waits for $1$ string.
+
+##### position
+The `position` of the marker in the local reference frame of the segment. 
+
+##### technical
+If the marker will be taged as technical (will be returned when asking technical markers). Default value is true ($1$).
+
+##### anatomical
+If the marker will be taged as anatomical (will be returned when asking anatomical markers). Default value is false ($0$).
+
+##### axestoremove
+It is possible to project the marker onto some axes, if so, write the name of the axes to project onto here. Waits for the axes in a string.
+
+#### Imu
+Same as a marker, but for inertial measurement unit. 
+```c
+imu my_imu
+    parent segment_parent
+    rtinmatrix 0
+    rt 0 0 0 xyz 0 0 0
+    technical 1
+    anatomical 0
+endimu
+```
+##### parent
+The `parent` tag is the name of the segment that particular segment is attached to. The parent must be defined earlier in the file and is case dependent. This tag is waits for $1$ string.
+
+##### rt
+The `homogeneous matrix` of transformation (rototranslation) of the current segment relative to its parent. If `rtinmatrix` is defined to `1`, `rt` waits for a 4 by 4 matrix (the 3 x 3 matrix of rotation and the 4th column being the translation and the last row being 0 0 0 1); if it is defined to `0` it waits for the 3 rotations, the rotation sequence and the translation. The default value is the identity matrix.
+
+##### rtinmatrix
+The tag that defines if the `rt` is in matrix or not. If the `version` of the file is higher or equal than $3$, the default value is false ($0$), otherwise, it true ($1$). 
+
+##### technical
+If the marker will be taged as technical (will be returned when asking technical markers). Default value is true ($1$).
+
+##### anatomical
+If the marker will be taged as anatomical (will be returned when asking anatomical markers). Default value is false ($0$).
+
+#### Contact
+The position of a non acceleration point while computing the forward dynamics. 
+```c
+contact my_contact
+    parent parent_segment
+    position 0 0 0
+    axis xyz
+endcontact
+```
+##### parent
+The `parent` tag is the name of the segment that particular segment is attached to. The parent must be defined earlier in the file and is case dependent. This tag is waits for $1$ string.
+
+##### position
+The `position` of the marker in the local reference frame of the segment. 
+
+##### axis
+The name of the `axis` that the contact acts on. If the version of the file is $1$, this tag has no effect. 
+
+##### normal
+The `normal` that the contact acts on. This tags waits for $3$ values with a norm $1$. If the version of the file is not $1$, this tag has no effect. To get the `x`, `y` and `z` axes, one must therefore define three separate contacts. 
+
+##### acceleration
+The constant `acceleration` of the contact point. The default values are `0, 0, 0`. 
+
+#### Loopconstraint
+
+##### 
 
 
 # How to contribute
