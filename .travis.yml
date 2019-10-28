@@ -79,7 +79,7 @@ script:
       fi
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         xcopy ..\\binding\\c\\Release\\biorbd_tests_binding_c.exe;
-        xcopy ..\\..\\binding\\c\\Release\\*.dll
+        xcopy ..\\..\\binding\\c\\Release\\*.dll;
         ./biorbd_tests_binding_c.exe;
       else
         cd binding/c;
