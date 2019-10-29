@@ -190,7 +190,6 @@ TEST(BinderC, kalmanImu)
 
 TEST(BinderC, math)
 {
-    std::cout << "coucou1" << std::endl;
     // Simple matrix multiplaction (RT3 = RT1 * RT2)
     {
         biorbd::utils::RotoTrans RT1, RT2, RT3;
@@ -203,7 +202,6 @@ TEST(BinderC, math)
             for (unsigned int j=0; j<4; ++j){
                 rt1[j*4 + i] = RT1(i, j);
                 rt2[j*4 + i] = RT2(i, j);
-                std::cout << "i = " << i << "; j = " << j << std::endl;
             }
         }
         c_matrixMultiplication(rt1, rt2, rt3);
@@ -211,11 +209,9 @@ TEST(BinderC, math)
         for (unsigned int row=0; row<4; ++row) {
             for (unsigned int col=0; col<4; ++col) {
                 EXPECT_NEAR(rt3[col*4+row], RT3(row, col), requiredPrecision);
-                std::cout << "row = " << row << "; col = " << col << std::endl;
             }
         }
     }
-    std::cout << "coucou2" << std::endl;
 
     // Mean multiple matrices
     {
@@ -232,7 +228,6 @@ TEST(BinderC, math)
             for (unsigned int col=0; col<4; ++col) {
                 for (unsigned int row=0; row<4; ++row) {
                     rt[i*16 + col*4 + row] = allRT[i](row, col);
-                    std::cout << "i = " << i << ";row = " << row << "; col = " << col << std::endl;
                 }
             }
         }
@@ -242,12 +237,10 @@ TEST(BinderC, math)
         for (unsigned int row=0; row<4; ++row) {
             for (unsigned int col=0; col<4; ++col) {
                 EXPECT_NEAR(mean_rt[col*4+row], meanRT(row, col), requiredPrecision);
-                std::cout << "row = " << row << "; col = " << col << std::endl;
             }
         }
     }
 
-    std::cout << "coucou3" << std::endl;
     // Project jcs onto another (RT3 = RT1.tranpose() * RT2)
     {
         biorbd::utils::RotoTrans RT1, RT2, RT3;
@@ -260,7 +253,6 @@ TEST(BinderC, math)
             for (unsigned int j=0; j<4; ++j){
                 rt1[j*4 + i] = RT1(i, j);
                 rt2[j*4 + i] = RT2(i, j);
-                std::cout << "i = " << i << "; j = " << j << std::endl;
             }
         }
         c_projectJCSinParentBaseCoordinate(rt1, rt2, rt3);
@@ -268,12 +260,10 @@ TEST(BinderC, math)
         for (unsigned int row=0; row<4; ++row) {
             for (unsigned int col=0; col<4; ++col) {
                 EXPECT_NEAR(rt3[col*4+row], RT3(row, col), requiredPrecision);
-                std::cout << "row = " << row << "; col = " << col << std::endl;
             }
         }
     }
 
-    std::cout << "coucou4" << std::endl;
     // Get the cardan angles from a matrix
     {
         biorbd::utils::RotoTrans RT;
@@ -284,7 +274,6 @@ TEST(BinderC, math)
         for (unsigned int i=0; i<4; ++i) {
             for (unsigned int j=0; j<4; ++j) {
                 rt[j*4 + i] = RT(i, j);
-                std::cout << "i = " << i << "; j = " << j << std::endl;
             }
         }
 
@@ -293,8 +282,6 @@ TEST(BinderC, math)
 
         for (unsigned int i=0; i<3; ++i) {
             EXPECT_NEAR(cardan[i], realCardan[i], requiredPrecision);
-            std::cout << "i = " << i << std::endl;
         }
     }
-    std::cout << "coucou5" << std::endl;
 }
