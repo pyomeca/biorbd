@@ -5,15 +5,16 @@ set (CMAKE_CXX_STANDARD 11)
 # Set some variables
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)
 
-# Set a default build type to 'Release' if none was specified
+# Because of Eigen, it is not possible to compile biorbd as a dynamic library
 if (WIN32)
-    SET(BUILD_SHARED_LIBS FALSE CACHE BOOL "Choose if the static library should be build" FORCE)
+    SET(BUILD_SHARED_LIBS FALSE CACHE BOOL "Choose if the dynamic library should be build" FORCE)
 else()
-    SET(BUILD_SHARED_LIBS TRUE CACHE BOOL "Choose if the static library should be build" FORCE)
+    SET(BUILD_SHARED_LIBS TRUE CACHE BOOL "Choose if the dynamic library should be build")
 endif()
+# Set a default build type to 'Release' if none was specified
 IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 	MESSAGE(STATUS "Setting build type to 'Release' as none was specified.")
-	SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+	SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build.")
   # Set the possible values of build type for cmake-gui
   SET_PROPERTY(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 ENDIF()

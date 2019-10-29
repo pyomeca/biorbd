@@ -13,10 +13,14 @@ set(SRC_LIST_MODULE
 )
 
 # Create the library
-if (BUILD_SHARED_LIBS)
-    add_library(${PROJECT_NAME} SHARED ${SRC_LIST_MODULE})
-else()
+if (WIN32)
     add_library(${PROJECT_NAME} STATIC ${SRC_LIST_MODULE})
+else()
+    if (BUILD_SHARED_LIBS)
+        add_library(${PROJECT_NAME} SHARED ${SRC_LIST_MODULE})
+    else()
+        add_library(${PROJECT_NAME} STATIC ${SRC_LIST_MODULE})
+    endif()
 endif()
 
 # Add the dependencies for insuring build order
