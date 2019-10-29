@@ -5,9 +5,11 @@ cmake_minimum_required(VERSION 3.8)
 
 set(C_BINDING_PATH ${CMAKE_SOURCE_DIR}/binding/c)
 
+SET(BUILD_SHARED_LIBS_C TRUE CACHE BOOL "Choose if the static library should be build")
+
 # Get the file to compile
 set(C_FILE ${C_BINDING_PATH}/${MASTER_PROJECT_NAME}_c.cpp)
-if (BUILD_SHARED_LIBS)
+if (BUILD_SHARED_LIBS_C)
     add_library(${PROJECT_NAME} SHARED ${C_FILE})
 else()
     add_library(${PROJECT_NAME} STATIC ${C_FILE})

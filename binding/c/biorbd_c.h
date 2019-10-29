@@ -4,6 +4,11 @@
 
 #include "BiorbdModel.h"
 #include "biorbdConfig.h"
+#ifdef _WIN32
+    #define BIORBD_API_C __declspec(dllexport)
+#else
+    #define BIORBD_API_C
+#endif
 
 namespace biorbd {
 namespace rigidbody {
@@ -15,63 +20,63 @@ class KalmanReconsIMU;
 }
 extern "C" { 
 	// Create a pointer on a model
-    BIORBD_API biorbd::Model* c_biorbdModel(
+	BIORBD_API_C biorbd::Model* c_biorbdModel(
             const char* pathToModel);
-    BIORBD_API void c_deleteBiorbdModel(
+	BIORBD_API_C void c_deleteBiorbdModel(
             biorbd::Model*);
-    BIORBD_API void c_writeBiorbdModel(
+	BIORBD_API_C void c_writeBiorbdModel(
             biorbd::Model*, const char * path);
 
 
     // Joints functions
-    BIORBD_API void c_boneRotationSequence( // Return the angle sequence of a bone named segName
+	BIORBD_API_C void c_boneRotationSequence( // Return the angle sequence of a bone named segName
             biorbd::Model* m,
             const char* segName,
             char* seq);
-    BIORBD_API void c_localJCS( // Return the LCS for segment of index i in parent coordinate system
+	BIORBD_API_C void c_localJCS( // Return the LCS for segment of index i in parent coordinate system
             biorbd::Model* m,
             int i,
             double* RtOut);
-    BIORBD_API void c_globalJCS(
+	BIORBD_API_C void c_globalJCS(
             biorbd::Model*,
             const double* Q,
             double* jcs);
-    BIORBD_API void c_inverseDynamics(
+	BIORBD_API_C void c_inverseDynamics(
             biorbd::Model* model,
             const double* q,
             const double* qdot,
             const double* qddot,
             double* tau);
-    BIORBD_API void c_massMatrix(
+	BIORBD_API_C void c_massMatrix(
             biorbd::Model* model,
             const double* q,
             double* massMatrix);
 
 
     // dof functions
-    BIORBD_API int c_nQ(
+	BIORBD_API_C int c_nQ(
             biorbd::Model* model);
-    BIORBD_API int c_nQDot(
+	BIORBD_API_C int c_nQDot(
             biorbd::Model* model);
-    BIORBD_API int c_nQDDot(
+	BIORBD_API_C int c_nQDDot(
             biorbd::Model* model);
-    BIORBD_API int c_nGeneralizedTorque(
+	BIORBD_API_C int c_nGeneralizedTorque(
             biorbd::Model* model);
 
 
     // Markers functions
-    BIORBD_API int c_nMarkers(
+	BIORBD_API_C int c_nMarkers(
             biorbd::Model* model);
-    BIORBD_API void c_markersInLocal(
+	BIORBD_API_C void c_markersInLocal(
             biorbd::Model* model,
             double* markPos);
-    BIORBD_API void c_markers(
+	BIORBD_API_C void c_markers(
             biorbd::Model* model,
             const double* Q,
             double* markPos,
             bool removeAxis = true,
             bool updateKin = true);
-    BIORBD_API void c_addMarker(
+	BIORBD_API_C void c_addMarker(
             biorbd::Model *model,
             const double *markPos,
             const char* name = "",
@@ -81,9 +86,9 @@ extern "C" {
             const char* axesToRemove = "");
 
     // IMUs functions
-    BIORBD_API int c_nIMUs(
+	BIORBD_API_C int c_nIMUs(
             biorbd::Model*);
-    BIORBD_API void c_addIMU(
+	BIORBD_API_C void c_addIMU(
             biorbd::Model *model,
             const double *imuRT,
             const char* name = "",
@@ -93,15 +98,15 @@ extern "C" {
 
     // Kalman IMU
 #ifndef SKIP_KALMAN
-    BIORBD_API biorbd::rigidbody::KalmanReconsIMU* c_BiorbdKalmanReconsIMU(
+	BIORBD_API_C biorbd::rigidbody::KalmanReconsIMU* c_BiorbdKalmanReconsIMU(
             biorbd::Model*,
             double* QinitialGuess = nullptr,
             double freq = 100,
             double noiseF = 5e-3,
             double errorF = 1e-10);
-    BIORBD_API void c_deleteBiorbdKalmanReconsIMU(
+	BIORBD_API_C void c_deleteBiorbdKalmanReconsIMU(
             biorbd::rigidbody::KalmanReconsIMU*);
-    BIORBD_API void c_BiorbdKalmanReconsIMUstep(
+	BIORBD_API_C void c_BiorbdKalmanReconsIMUstep(
             biorbd::Model*,
             biorbd::rigidbody::KalmanReconsIMU*,
             double* imu,
@@ -111,19 +116,19 @@ extern "C" {
 #endif
 
     // Math functions
-    BIORBD_API void c_matrixMultiplication(
+	BIORBD_API_C void c_matrixMultiplication(
             const double* M1,
             const double* M2,
             double* Mout);
-    BIORBD_API void c_meanRT(
+	BIORBD_API_C void c_meanRT(
             const double *imuRT,
             unsigned int nFrame,
             double* imuRT_mean);
-    BIORBD_API void c_projectJCSinParentBaseCoordinate(
+	BIORBD_API_C void c_projectJCSinParentBaseCoordinate(
             const double* parent,
             const double* jcs,
             double * out);
-    BIORBD_API void c_transformMatrixToCardan(
+	BIORBD_API_C void c_transformMatrixToCardan(
             const double* M,
             const char* sequence,
             double* cardanOut);

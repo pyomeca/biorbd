@@ -198,16 +198,19 @@ TEST(BinderC, math)
         RT3 = RT1 * RT2;
 
         double rt1[16], rt2[16], rt3[16];
-        for (unsigned int i=0; i<4; ++i)
+        for (unsigned int i=0; i<4; ++i) {
             for (unsigned int j=0; j<4; ++j){
                 rt1[j*4 + i] = RT1(i, j);
                 rt2[j*4 + i] = RT2(i, j);
             }
+        }
         c_matrixMultiplication(rt1, rt2, rt3);
 
-        for (unsigned int row=0; row<4; ++row)
-            for (unsigned int col=0; col<4; ++col)
+        for (unsigned int row=0; row<4; ++row) {
+            for (unsigned int col=0; col<4; ++col) {
                 EXPECT_NEAR(rt3[col*4+row], RT3(row, col), requiredPrecision);
+            }
+        }
     }
 
     // Mean multiple matrices
@@ -221,17 +224,21 @@ TEST(BinderC, math)
 
         double* rt = new double[meanRT.size()*16];
         double mean_rt[16];
-        for (unsigned int i=0; i<meanRT.size(); ++i)
-            for (unsigned int col=0; col<4; ++col)
-                for (unsigned int row=0; row<4; ++row){
+        for (unsigned int i=0; i<meanRT.size(); ++i) {
+            for (unsigned int col=0; col<4; ++col) {
+                for (unsigned int row=0; row<4; ++row) {
                     rt[i*16 + col*4 + row] = allRT[i](row, col);
                 }
+            }
+        }
         c_meanRT(rt, static_cast<unsigned int>(allRT.size()), mean_rt);
         delete[] rt;
 
-        for (unsigned int row=0; row<4; ++row)
-            for (unsigned int col=0; col<4; ++col)
+        for (unsigned int row=0; row<4; ++row) {
+            for (unsigned int col=0; col<4; ++col) {
                 EXPECT_NEAR(mean_rt[col*4+row], meanRT(row, col), requiredPrecision);
+            }
+        }
     }
 
     // Project jcs onto another (RT3 = RT1.tranpose() * RT2)
@@ -242,16 +249,19 @@ TEST(BinderC, math)
         RT3 = RT1.transpose() * RT2;
 
         double rt1[16], rt2[16], rt3[16];
-        for (unsigned int i=0; i<4; ++i)
+        for (unsigned int i=0; i<4; ++i) {
             for (unsigned int j=0; j<4; ++j){
                 rt1[j*4 + i] = RT1(i, j);
                 rt2[j*4 + i] = RT2(i, j);
             }
+        }
         c_projectJCSinParentBaseCoordinate(rt1, rt2, rt3);
 
-        for (unsigned int row=0; row<4; ++row)
-            for (unsigned int col=0; col<4; ++col)
+        for (unsigned int row=0; row<4; ++row) {
+            for (unsigned int col=0; col<4; ++col) {
                 EXPECT_NEAR(rt3[col*4+row], RT3(row, col), requiredPrecision);
+            }
+        }
     }
 
     // Get the cardan angles from a matrix
@@ -261,14 +271,17 @@ TEST(BinderC, math)
         biorbd::utils::Vector realCardan(biorbd::utils::RotoTrans::transformMatrixToCardan(RT, "xyz"));
 
         double rt[16];
-        for (unsigned int i=0; i<4; ++i)
-            for (unsigned int j=0; j<4; ++j)
+        for (unsigned int i=0; i<4; ++i) {
+            for (unsigned int j=0; j<4; ++j) {
                 rt[j*4 + i] = RT(i, j);
+            }
+        }
 
         double cardan[3];
         c_transformMatrixToCardan(rt, "xyz", cardan);
 
-        for (unsigned int i=0; i<3; ++i)
+        for (unsigned int i=0; i<3; ++i) {
             EXPECT_NEAR(cardan[i], realCardan[i], requiredPrecision);
+        }
     }
 }
