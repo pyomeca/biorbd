@@ -24,6 +24,9 @@ class BoneCharacteristics;
 class BoneMesh;
 class Integrator;
 
+///
+/// \brief Class Joints
+///
 class BIORBD_API Joints : public RigidBodyDynamics::Model
 {
 public:
@@ -61,11 +64,11 @@ public:
     /// 
     /// \brief Add a bone
     /// \param segmentName Name of the segment
-    /// \param Name of the segment parent
+    /// \param parentName Name of the segment parent
     /// \param translationSequence The translation sequence
     /// \param rotationSequence Cardan sequence of rotation to classify the DoF in rotation
     /// \param characteristics The mass, segment's center of mass, inertia of the segment, etc.
-    /// \param centreofRotation Transformation of the parent to child
+    /// \param centreOfRotation Transformation of the parent to child
     /// \param forcePlates The number of the force platform attached to the bone (default: -1)
     ///
     unsigned int AddBone(
@@ -80,10 +83,10 @@ public:
     ///
     /// \brief Add a bone
     /// \param segmentName Name of the segment
-    /// \param Name of the segment parent
+    /// \param parentName Name of the parent segment
     /// \param translationSequence The translation sequence
     /// \param rotationSequence Cardan sequence of rotation to classify the DoF in rotation
-    /// \param centreofRotation Transformation of the parent to child
+    /// \param centreOfRotation Transformation of the parent to child
     /// \param forcePlates The number of the force platform attached to the bone (default: -1)
     ///
     unsigned int AddBone(
@@ -233,8 +236,8 @@ public:
     ///
     /// \brief Update the kinematic variables such as body velocities and accelerations in the model to reflect the variables passed to this function
     /// \param Q The positional variables of the model
-    /// \param QDot The generalized velocities of the joints
-    /// \param QDDot The generalized accelerations of the joints
+    /// \param Qdot The generalized velocities of the joints
+    /// \param Qddot The generalized accelerations of the joints
     /// 
     void UpdateKinematicsCustom(
             const biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
@@ -260,7 +263,7 @@ public:
     void getIntegratedKinematics(
             unsigned int  step,
             biorbd::rigidbody::GeneralizedCoordinates& Q,
-            biorbd::rigidbody::GeneralizedCoordinates& Qdot);  // Put in a VectorNd the Qs a time t
+            biorbd::rigidbody::GeneralizedCoordinates& QDot);  // Put in a VectorNd the Qs a time t
 
     ///
     /// \brief Return number of iteration steps
@@ -289,7 +292,7 @@ public:
     ///
     /// \brief Return the JCSs for segment i in global coordinate system for the given Q
     /// \param Q The positional variables of the model
-    /// \param parentName The name of the segment (TODO?)
+    /// \param name The name of the segment (TODO?)
     /// \return The JCSs for segment i in global coordinate system for the given Q
     ///
     biorbd::utils::RotoTrans globalJCS(
@@ -643,7 +646,7 @@ public:
     /// \brief Calculate the segment angular momentum 
     /// \param Q The position variables of the model
     /// \param Qdot The velocity variables of the model
-    /// \param update_kinematicsn Update kinematics if necessary
+    /// \param update_kinematics Update kinematics if necessary
     /// \return The segment angular momentum
     ///
     std::vector<biorbd::utils::Node3d> CalcSegmentsAngularMomentum (
@@ -684,7 +687,7 @@ public:
     ///
     /// \brief Forward Dynamics TODO
     /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param QDot The velocity variables of the model
     /// \param GeneralizedTorque The generalized torque of the model
     /// \param CS The constraint set
     /// \param QDDot The acceleration variables of the model

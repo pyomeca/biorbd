@@ -30,7 +30,7 @@ public:
     public:
         /// 
         /// \brief Set the Kalman filter parameters
-        /// \param frequence The acquisition frequency (default: 100)
+        /// \param frequency The acquisition frequency (default: 100)
         /// \param noiseFactor The noise factor (default: 1e-10)
         /// \param errorFactor The error factor (default: 1e-5)
         /// 
@@ -71,7 +71,6 @@ public:
     /// \brief Kalman reconstruction
     /// \param model The model
     /// \param nMeasure The number of measure TODO?
-    /// \param KalmanParam The Kalman parameters
     ///
     KalmanRecons(
             biorbd::Model& model,
@@ -85,7 +84,7 @@ public:
 
     ///
     /// \brief Deep copy of Kalman reconstruction
-    /// \other The Kalman reconstruction to copy
+    /// \param other The Kalman reconstruction to copy
     ///
     void DeepCopy(const biorbd::rigidbody::KalmanRecons& other);
 
@@ -161,7 +160,7 @@ protected:
     /// \brief Return Pp matrix
     /// \param nQ TODO
     /// \param csnt TODO
-    /// \retun The Pp matrix
+    /// \return The Pp matrix
     ///
     biorbd::utils::Matrix initCovariance(
             const unsigned int nQ,
