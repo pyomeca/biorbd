@@ -17,7 +17,6 @@ static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
 #endif // MODULE_ACTUATORS
 
 TEST(FileIO, OpenModel){
-    biorbd::Model model(modelPathForGeneralTesting);
     EXPECT_NO_THROW(biorbd::Model model(modelPathForGeneralTesting));
 }
 
