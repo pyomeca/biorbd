@@ -60,7 +60,7 @@ void biorbd::rigidbody::KalmanRecons::iteration(
         const biorbd::utils::Vector &projectedMeasure,
         const biorbd::utils::Matrix &Hessian,
         const std::vector<unsigned int> &occlusion){
-    // Prédiction
+    // Prediction
     const biorbd::utils::Vector& xkm(*m_A * *m_xp);
     const biorbd::utils::Matrix& Pkm(*m_A * *m_Pp * m_A->transpose() + *m_Q);
 
@@ -81,7 +81,7 @@ void biorbd::rigidbody::KalmanRecons::manageOcclusionDuringIteration(
         const std::vector<unsigned int> &occlusion){
     for (unsigned int i = 0; i < occlusion.size(); ++i)
          for (unsigned int j=occlusion[i]; j< occlusion[i]+1; ++j){
-             InvTp(j,j) = 0; // Artéfact du au fait que m_R a une valeur à (j:j+2,j:j+2)
+             InvTp(j,j) = 0; // Artifact due to the fact that m_R has a value at (j:j+2,j:j+2)
              measure(j) = 0;
          }
 }
@@ -105,9 +105,9 @@ biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::evolutionMatrix(
         const unsigned int nQ,
         unsigned int n,
         double Te){
-    // m  : nombre de degré de liberté
-    // n  : ordre du développent de Taylor
-    // Te : 1 / (frequence d'acquisition)
+    // m  : number of degrees of freedom
+    // n  : order of Taylor development
+    // Te : 1 / (acquisition frequency)
 
     n += 1;
     biorbd::utils::Matrix A(biorbd::utils::Matrix::Identity(nQ*n,nQ*n));
@@ -129,7 +129,7 @@ biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::processNoiseMatrix(
         const unsigned int nQ,
         double Te){
 
-    // Trouver la valeur des coefficients
+    // Find the coefficients values
     double c1 = 1.0/20.0 * pow(Te,5);
     double c2 = 1.0/8.0  * pow(Te,4);
     double c3 = 1.0/6.0  * pow(Te,3);
@@ -137,7 +137,7 @@ biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::processNoiseMatrix(
     double c5 = 1.0/2.0  * pow(Te,2);
     double c6 = Te;
 
-    // Matrice de sortie
+    // Ouput matrix
     biorbd::utils::Matrix Q(biorbd::utils::Matrix::Zero(3*nQ,3*nQ));
     for (unsigned int j=0; j<nQ; ++j){
         Q(     j,      j) = c1;
@@ -154,22 +154,22 @@ biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::processNoiseMatrix(
     return Q;
 }
 
-// Méthodes lors de l'initialisation
+// Methods during the initialization
 void biorbd::rigidbody::KalmanRecons::initialize(){
 
-    // Déclaration de la matrice d'évolution
+    // Declaration of the evolution matrix
     *m_A = evolutionMatrix(*m_nbDof, 2, *m_Te);
 
     // Process Noise Matrix
     *m_Q = processNoiseMatrix(*m_nbDof, *m_Te);
 
-    // Matrice de bruit sur la mesure
+    // Matrix of the noise on the measurement
     *m_R = measurementNoiseMatrix(*m_nMeasure, m_params->noiseFactor());
 
-    // Initialiser l'état
+    // Initialize the state
     *m_xp = initState(*m_nbDof);
 
-    // Matrice Pp
+    // Matrix Pp
     *m_Pp = initCovariance(*m_nbDof, m_params->errorFactor());
 }
 
