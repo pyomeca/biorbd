@@ -20,7 +20,7 @@ biorbd::rigidbody::KalmanReconsIMU::KalmanReconsIMU() :
 biorbd::rigidbody::KalmanReconsIMU::KalmanReconsIMU(
         biorbd::Model &model,
         biorbd::rigidbody::KalmanRecons::KalmanParam params) :
-    biorbd::rigidbody::KalmanRecons(model, model.nTechIMUs()*9, params),
+    biorbd::rigidbody::KalmanRecons(model, model.nbTechIMUs()*9, params),
     m_PpInitial(std::make_shared<biorbd::utils::Matrix>()),
     m_firstIteration(std::make_shared<bool>(true))
 {

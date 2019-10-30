@@ -254,8 +254,8 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> biorbd::rigidbody::Joints::d
             // For each segment
             for (unsigned int i=0; i<nbDof-1; ++i) // Put a sv_zero on each DoF except the last one
                 sv_out.push_back(sv_zero);
-            if (bone.plateformeIdx() >= 0){ // If the solid is in contact with the platform (!= -1)
-                sv_out.push_back(sv[static_cast<unsigned int>(bone.plateformeIdx())]); // Put the force of the corresponding platform
+            if (bone.platformIdx() >= 0){ // If the solid is in contact with the platform (!= -1)
+                sv_out.push_back(sv[static_cast<unsigned int>(bone.platformIdx())]); // Put the force of the corresponding platform
             }
             else
                 sv_out.push_back(sv_zero); // Otherwise, put zero

@@ -249,7 +249,7 @@ TEST(Dynamics, ForwardAccelerationConstraint){
     biorbd::Model model(modelPathForGeneralTesting);
     biorbd::rigidbody::GeneralizedCoordinates Q(model), QDot(model), QDDot_constrained(model), QDDot_expected(model);
     biorbd::rigidbody::GeneralizedTorque Tau(model);
-    Eigen::VectorXd forces_expected(model.nContacts());
+    Eigen::VectorXd forces_expected(model.nbContacts());
     Q.setOnes()/10;
     QDot.setOnes()/10;
     QDDot_expected << 1.9402069774422919,  -9.1992692111538243,  2.9930159570454702,
