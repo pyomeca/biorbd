@@ -188,8 +188,8 @@ protected:
 
     ///
     /// \brief Manage the occlusion during the iteration
-    /// \param InvTp TODO
-    /// \param measure The measure
+    /// \param InvTp The inverse of the Tp matrix
+    /// \param measure The measurement
     /// \param occlusion TODO
     ///
     virtual void manageOcclusionDuringIteration(
