@@ -71,6 +71,7 @@ public:
     /// \brief Kalman reconstruction
     /// \param model The model
     /// \param nMeasure The number of measure TODO?
+    /// \param params The Kalman filter parameters
     ///
     KalmanRecons(
             biorbd::Model& model,
@@ -88,7 +89,7 @@ public:
     ///
     void DeepCopy(const biorbd::rigidbody::KalmanRecons& other);
 
-    //Recueillir l'état (Q, Qdot, Qddot)
+
     ///
     /// \brief Get the state (Q, Qdot, Qddot)
     /// \param Q The position variables of the model
