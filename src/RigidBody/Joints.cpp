@@ -350,7 +350,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::projectPoint
     std::vector<biorbd::rigidbody::NodeBone> out;
     for (unsigned int i=0;i<marks.nbMarkers();++i){
         biorbd::rigidbody::NodeBone tp(marks.marker(i));
-        if (tp.nAxesToRemove()!=0){
+        if (tp.nbAxesToRemove()!=0){
             tp = v[i].applyRT(globalJCS(tp.parent()).transpose());
             // Take the position of the new marker with the info from the model
             out.push_back(projectPoint(Q,tp,updateKin));
@@ -402,7 +402,7 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::projectPointJacobian(
     biorbd::rigidbody::Markers &marks = dynamic_cast<biorbd::rigidbody::Markers &>(*this);
 
     // If the point has not been projected, there is no effect
-    if (node.nAxesToRemove() != 0){
+    if (node.nbAxesToRemove() != 0){
         // Jacobian of the marker
         node.applyRT(globalJCS(node.parent()).transpose());
         biorbd::utils::Matrix G_tp(marks.markersJacobian(Q, node.parent(), biorbd::utils::Node3d(0,0,0), updateKin));

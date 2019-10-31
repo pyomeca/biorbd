@@ -62,8 +62,8 @@ biorbd::rigidbody::NodeBone::NodeBone(
         const biorbd::utils::String &parentName,
         bool isTechnical,
         bool isAnatomical,
-        const biorbd::utils::String& axesToRemove, // Axes à retirer
-        int parentID) :
+        const biorbd::utils::String& axesToRemove, // Axis to remove 
+    int parentID) :
     biorbd::utils::Node3d(node, name, parentName),
     m_axesRemoved(std::make_shared<std::vector<bool>>(3)),
     m_nbAxesToRemove(std::make_shared<int>(0)),
@@ -130,7 +130,7 @@ bool biorbd::rigidbody::NodeBone::isAxisKept(unsigned int i) const
     return !isAxisRemoved(i);
 }
 
-int biorbd::rigidbody::NodeBone::nAxesToRemove() const
+int biorbd::rigidbody::NodeBone::nbAxesToRemove() const
 {
     return *m_nbAxesToRemove;
 }
@@ -140,11 +140,11 @@ void biorbd::rigidbody::NodeBone::setType()
     *m_typeOfNode = biorbd::utils::NODE_TYPE::BONE_POINT;
 }
 
-void biorbd::rigidbody::NodeBone::addAxesToRemove(unsigned int a)
+void biorbd::rigidbody::NodeBone::addAxesToRemove(unsigned int axisNumber)
 {
-    if (a>2)
+    if (axisNumber>2)
         biorbd::utils::Error::raise("Axis must be 0 (\"x\"), 1 (\"y\") or 2 (\"z\")");
-    (*m_axesRemoved)[a] = true;
+    (*m_axesRemoved)[axisNumber] = true;
     ++*m_nbAxesToRemove;
 }
 
@@ -161,10 +161,10 @@ void biorbd::rigidbody::NodeBone::addAxesToRemove(const biorbd::utils::String& s
             biorbd::utils::Error::raise("Axis must be 0 (\"x\"), 1 (\"y\") or 2 (\"z\")");
 }
 
-void biorbd::rigidbody::NodeBone::addAxesToRemove(const std::vector<unsigned int>& axis)
+void biorbd::rigidbody::NodeBone::addAxesToRemove(const std::vector<unsigned int>& axes)
 {
-    for (unsigned int i=0; i<axis.size(); ++i)
-        addAxesToRemove(axis[i]);
+    for (unsigned int i=0; i<axes.size(); ++i)
+        addAxesToRemove(axes[i]);
 }
 
 void biorbd::rigidbody::NodeBone::addAxesToRemove(const std::vector<biorbd::utils::String>& axis)
