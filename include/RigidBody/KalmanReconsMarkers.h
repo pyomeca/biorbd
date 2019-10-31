@@ -10,6 +10,9 @@ namespace rigidbody {
 class Markers;
 class NodeBone;
 
+///
+/// \brief Class KalmanReconsMarkers that includes class KalmanRecons
+///
 class BIORBD_API KalmanReconsMarkers : public biorbd::rigidbody::KalmanRecons
 {
 public:
@@ -28,7 +31,7 @@ public:
     ///
     KalmanReconsMarkers(
             biorbd::Model& model,
-            biorbd::rigidbody::KalmanRecons::KalmanRecons::KalmanParam = biorbd::rigidbody::KalmanRecons::KalmanRecons::KalmanParam());
+            biorbd::rigidbody::KalmanRecons::KalmanRecons::KalmanParam params = biorbd::rigidbody::KalmanRecons::KalmanRecons::KalmanParam());
 
     /// 
     /// \brief Deep copy of the Kalman reconstruction
@@ -119,7 +122,7 @@ protected:
     /// \param occlusion The occlusion TODO
     ///
     virtual void manageOcclusionDuringIteration(
-            biorbd::utils::Matrix&,
+            biorbd::utils::Matrix& InvTp,
             biorbd::utils::Vector &measure,
             const std::vector<unsigned int> &occlusion);
     std::shared_ptr<biorbd::utils::Matrix> m_PpInitial; ///< Initial Pp matrix

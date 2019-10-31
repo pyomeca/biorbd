@@ -8,6 +8,9 @@
 namespace biorbd {
 namespace rigidbody {
 
+///
+/// \brief Class Patch
+///
 class BIORBD_API Patch
 {
 public:
@@ -44,7 +47,7 @@ public:
 
     ///
     /// \brief Construct patch with another patch TODO
-    /// \v The other patch TODO
+    /// \param v The other patch TODO
     ///
     void patch(const Patch&v);
 

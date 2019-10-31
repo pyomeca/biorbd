@@ -167,10 +167,10 @@ void biorbd::rigidbody::NodeBone::addAxesToRemove(const std::vector<unsigned int
         addAxesToRemove(axes[i]);
 }
 
-void biorbd::rigidbody::NodeBone::addAxesToRemove(const std::vector<biorbd::utils::String>& axis)
+void biorbd::rigidbody::NodeBone::addAxesToRemove(const std::vector<biorbd::utils::String>& axes)
 {
-    for (unsigned int i=0; i<axis.size(); ++i)
-        addAxesToRemove(axis[i]);
+    for (unsigned int i=0; i<axes.size(); ++i)
+        addAxesToRemove(axes[i]);
 }
 
 biorbd::utils::String biorbd::rigidbody::NodeBone::axesToRemove()

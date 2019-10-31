@@ -304,7 +304,7 @@ public:
     ///
     /// \brief Return the Jacobian of a chosen marker
     /// \param Q The position variables of the model
-    /// \parentName The marker's parent name
+    /// \param parentName The marker's parent name
     /// \param p  The position of the point in body-local data
     /// \param  updateKin If the kinematics should be updated
     /// \return The Jacobian of a chosen marker

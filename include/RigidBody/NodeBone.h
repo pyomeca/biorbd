@@ -12,6 +12,9 @@ class String;
 
 namespace rigidbody {
 
+///
+/// \brief Class NodeBone
+///
 class BIORBD_API NodeBone : public biorbd::utils::Node3d
 { 
 public:
@@ -63,6 +66,7 @@ public:
     ///
     /// \brief Construct a segment node
     /// \param node The position of the node
+    /// \param name The name of the node
     /// \param parentName The name of the parent
     /// \param isTechnical If the node is technical
     /// \param isAnatomical If the node is anatomical
@@ -143,15 +147,15 @@ public:
 
     ///
     /// \brief Add multiple axes to remove
-    /// \param axis The multiples axes numbers to remove (must be 0 (x), 1 (y) or 2 (z))
+    /// \param axes The multiples axes numbers to remove (must be 0 (x), 1 (y) or 2 (z))
     ///
     void addAxesToRemove(const std::vector<unsigned int>& axes); 
 
     ///
     /// \brief Add multiple axes to remove
-    /// \param axis The multiples axes names to remove (x,y,z)
+    /// \param axes The multiples axes names to remove (x,y,z)
     ///
-    void addAxesToRemove(const std::vector<biorbd::utils::String>& axis); 
+    void addAxesToRemove(const std::vector<biorbd::utils::String>& axes); 
 
     ///
     /// \brief Check which axes have been removed

@@ -76,7 +76,7 @@ public:
     KalmanRecons(
             biorbd::Model& model,
             unsigned int nMeasure,
-            KalmanParam = KalmanParam());
+            KalmanParam params = KalmanParam());
 
     ///
     /// \brief Destroy class properly
