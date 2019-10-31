@@ -11,17 +11,50 @@ namespace rigidbody {
 class BIORBD_API Patch
 {
 public:
-    Patch(const Eigen::Vector3i& = Eigen::Vector3i());
+
+    ///
+    /// \brief Contruct patch
+    /// \param vertex The vertex that connect to form a patch
+    ///
+    Patch(const Eigen::Vector3i& vertex= Eigen::Vector3i());
+
+    ///
+    /// \brief Deep copy of a patch
+    /// \return A deep copy of a patch
+    ///
     biorbd::rigidbody::Patch DeepCopy() const;
+
+    ///
+    /// \brief Deep copy of a patch into another one
+    /// \param other The patch to copy
+    ///
     void DeepCopy(const biorbd::rigidbody::Patch& other);
 
-    // Ajouter un patch au lot
-    int &operator() (int);
-    void patch(const Eigen::Vector3i&);
-    void patch(const Patch&);
-    Patch patch(); // retourne les patchs
+    ///
+    /// \brief  TODO
+    /// \param i TODO
+    ///
+    int &operator() (int i);
+
+    ///
+    /// \brief Construct patch with new points TODO
+    /// \param pts The new points to construct patch TODO
+    ///
+    void patch(const Eigen::Vector3i& pts);
+
+    ///
+    /// \brief Construct patch with another patch TODO
+    /// \v The other patch TODO
+    ///
+    void patch(const Patch&v);
+
+    ///
+    /// \brief Return the patches
+    /// \return The patches
+    ///
+    Patch patch();
 protected:
-    std::shared_ptr<Eigen::Vector3i> m_patch;
+    std::shared_ptr<Eigen::Vector3i> m_patch; ///< Patch
 
 };
 

@@ -1,8 +1,8 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/Patch.h"
 
-biorbd::rigidbody::Patch::Patch(const Eigen::Vector3i& points) :
-    m_patch(std::make_shared<Eigen::Vector3i>(points))
+biorbd::rigidbody::Patch::Patch(const Eigen::Vector3i& vertex) :
+    m_patch(std::make_shared<Eigen::Vector3i>(vertex))
 {
 
 }

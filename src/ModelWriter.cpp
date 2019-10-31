@@ -67,7 +67,7 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
                 biorbdModelFile << sep << sep << "position" << sep << markers[j].transpose() << std::endl;
                 biorbdModelFile << sep << sep << "technical" << sep << markers[j].isTechnical() << std::endl;
                 biorbdModelFile << sep << sep << "anatomical" << sep << markers[j].isAnatomical() << std::endl;
-                if (markers[j].nAxesToRemove() != 0)
+                if (markers[j].nbAxesToRemove() != 0)
                     biorbdModelFile << sep << sep << "axestoremove" << sep << markers[j].axesToRemove() << std::endl;
                 biorbdModelFile << sep << "endmarker" << sep << std::endl;
             }
