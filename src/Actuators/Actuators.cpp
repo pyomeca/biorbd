@@ -85,19 +85,19 @@ void biorbd::actuator::Actuators::addActuator(const biorbd::actuator::Actuator &
     // Assuming that this is also a Joints type (via BiorbdModel)
     const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
-    // Vérifier que le dof target est associé à un dof qui existe déjà dans le modèle
+    // Verify that the target dof is associated to a dof that already exists in the model
     biorbd::utils::Error::check(act.index()<model.nbDof(), "Sent index is out of dof range");
 
-    // Pour fin de rapidité et de cohérence avec les Q, mettre l'actuator au même index que son dof associé
+    // For speed purposes and coherence with the Q, set the actuator to the same index as its associated dof
     unsigned int idx(act.index());
 
-    // S'il y a moins d'actuateurs déjà déclaré qu'il n'y a de dof, il faut agrandir le vecteur
+    // If there are less actuators declared than dof, the vector must be enlarged
     if (idx >= m_all->size()){
         m_all->resize(idx+1);
         m_isDofSet->resize((idx+1)*2, false);
     }
 
-    // Ajouter un actuator au pool d'actuator selon son type
+    // Add an actuator to the pool of actuators according to its type
     if (act.type() == biorbd::actuator::TYPE::CONSTANT){
         if (act.direction() == 1){
             (*m_all)[idx].first = std::make_shared<biorbd::actuator::ActuatorConstant>(static_cast<const biorbd::actuator::ActuatorConstant&>(act));
@@ -186,16 +186,17 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
 {
-    // Mettre pour que qdot soit positif en concentrique et negatif en excentrique
+    // Set qdot to be positive if concentric and negative is excentric
+    // Set qdot to be positive if concentric and negative is excentric
     biorbd::rigidbody::GeneralizedCoordinates QdotResigned(Qdot);
     for (unsigned int i=0; i<Qdot.size(); ++i)
         if (a(i)<0)
             QdotResigned(i) = -Qdot(i);
 
-    // Calcul des torque sous maximaux
+    // Calculate the maximal torques
     biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(torqueMax(a,Q,QdotResigned));
 
-    // Remettre les signes
+    // Put the signs
     for (unsigned int i=0; i<GeneralizedTorque.size(); ++i)
         GeneralizedTorque(i) *= a(i);
 
