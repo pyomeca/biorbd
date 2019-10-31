@@ -26,7 +26,7 @@ public:
     
     ///
     /// \brief Construct actuator from another actuator
-    /// \other The other actuator
+    /// \param other The other actuator
     ///
     Actuator(const biorbd::actuator::Actuator& other);
 

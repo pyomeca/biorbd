@@ -110,7 +110,7 @@ public:
 
     /// 
     /// \brief Deep copy of the Gauss 3p actuator from another Gauss 6p actuator
-    /// \other The Gauss 6p actuator to copy
+    /// \param other The Gauss 6p actuator to copy
     ///
     void DeepCopy(const biorbd::actuator::ActuatorGauss6p& other);
 
@@ -132,24 +132,24 @@ protected:
 
     // For informations on these parameters, see Monique Iris Jackson's these from page 54
     // Angular/velocity relationship
-    std::shared_ptr<double> m_k;         // Ratio of slope of the eccentric and concentric phases
-    std::shared_ptr<double> m_Tmax;      // Maximum torque in the eccentric phase
-    std::shared_ptr<double> m_T0;        // Maximum torque isometric
-    std::shared_ptr<double> m_wmax;      // Maximum angular velocity above which torque cannot be produced
-    std::shared_ptr<double> m_wc;        // Angular velocity of the vertical asymptote of the concentric hyperbola
+    std::shared_ptr<double> m_k;         ///< Ratio of slope of the eccentric and concentric phases
+    std::shared_ptr<double> m_Tmax;      ///< Maximum torque in the eccentric phase
+    std::shared_ptr<double> m_T0;        ///< Maximum torque isometric
+    std::shared_ptr<double> m_wmax;      ///< Maximum angular velocity above which torque cannot be produced
+    std::shared_ptr<double> m_wc;        ///< Angular velocity of the vertical asymptote of the concentric hyperbola
 
     // Activation/velocity relationship
-    std::shared_ptr<double> m_amax;      // Maximum activation level (set to 1)
-    std::shared_ptr<double> m_amin;      // Low plateau level
-    std::shared_ptr<double> m_wr;        // 1/10 of the distance amax/amin
-    std::shared_ptr<double> m_w1;        // Mid point plateau
+    std::shared_ptr<double> m_amax;      ///< Maximum activation level (set to 1)
+    std::shared_ptr<double> m_amin;      ///< Low plateau level
+    std::shared_ptr<double> m_wr;        ///< 1/10 of the distance amax/amin
+    std::shared_ptr<double> m_w1;        ///< Mid point plateau
 
     // Torque/angle relationship
-    std::shared_ptr<double> m_r;         // width of the gaussian curve
-    std::shared_ptr<double> m_qopt;      // Optimal position
-    std::shared_ptr<double> m_facteur;   // Factor of the 6p
-    std::shared_ptr<double> m_r2;        // width of the gaussian curve2
-    std::shared_ptr<double> m_qopt2;     // Optimal position 2
+    std::shared_ptr<double> m_r;         ///< width of the gaussian curve
+    std::shared_ptr<double> m_qopt;      ///< Optimal position
+    std::shared_ptr<double> m_facteur;   ///< Factor of the 6p
+    std::shared_ptr<double> m_r2;        ///< width of the gaussian curve2
+    std::shared_ptr<double> m_qopt2;     ///< Optimal position 2
 
 };
 

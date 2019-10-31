@@ -98,7 +98,7 @@ public:
 
     /// 
     /// \brief Deep copy of the Gauss 3p actuator from another Gauss 3p actuator
-    /// \other The Gauss 3p actuator to copy
+    /// \param other The Gauss 3p actuator to copy
     ///
     void DeepCopy(const biorbd::actuator::ActuatorGauss3p& other);
 

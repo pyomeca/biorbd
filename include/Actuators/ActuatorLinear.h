@@ -33,8 +33,8 @@ public:
     /// \brief Construct a linear actuator
     /// \param direction The direction of the actuator (+1 or -1)
     /// \param T0  The maximal torque isometric
-    /// \slope The slope
-    /// \dofIdx Index of the DoF associated with actuator
+    /// \param slope The slope
+    /// \param dofIdx Index of the DoF associated with actuator
     ///
     ActuatorLinear(
             int direction,
@@ -46,9 +46,9 @@ public:
     /// \brief Construct a linear actuator
     /// \param direction The direction of the actuator (+1 or -1)
     /// \param T0  The maximal torque isometric
-    /// \slope The slope
-    /// \dofIdx Index of the DoF associated with actuator
-    /// \jointName The name of the parent joint
+    /// \param slope The slope
+    /// \param dofIdx Index of the DoF associated with actuator
+    /// \param jointName The name of the parent joint
     ///
 
     ActuatorLinear(
@@ -71,25 +71,27 @@ public:
 
     /// 
     /// \brief Deep copy of the linear actuator from another linear actuator
-    /// \other The linear actuator to copy
+    /// \param other The linear actuator to copy
     ///
     void DeepCopy(const biorbd::actuator::ActuatorLinear& other);
 
     ///
     /// \brief Return the maximal torque
     /// \param Q The position variables of the actuator
+    /// \return The maximal torque
     ///
     virtual double torqueMax(const biorbd::rigidbody::GeneralizedCoordinates &Q) const;
 
 protected:
+
     ///
     /// \brief Set the type of actuator
     ///
     virtual void setType();            
 
     // mx+b
-    std::shared_ptr<double> m_m;      // slope
-    std::shared_ptr<double> m_b; // Torque at zero
+    std::shared_ptr<double> m_m;      ///< Slope
+    std::shared_ptr<double> m_b; ///< Torque at zero
 
 };
 

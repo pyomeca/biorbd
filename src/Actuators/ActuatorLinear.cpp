@@ -29,7 +29,7 @@ biorbd::actuator::ActuatorLinear::ActuatorLinear(
         double slope,
         unsigned int dofIdx) :
     Actuator(direction, dofIdx),
-    m_m(std::make_shared<double>(pente)),
+    m_m(std::make_shared<double>(slope)),
     m_b(std::make_shared<double>(T0))
 {
     setType();
@@ -42,7 +42,7 @@ biorbd::actuator::ActuatorLinear::ActuatorLinear(
         unsigned int dofIdx,
         const biorbd::utils::String &jointName) :
     Actuator(direction, dofIdx, jointName),
-    m_m(std::make_shared<double>(pente)),
+    m_m(std::make_shared<double>(slope)),
     m_b(std::make_shared<double>(T0))
 {
     setType();
