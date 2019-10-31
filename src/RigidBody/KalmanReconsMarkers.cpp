@@ -20,7 +20,7 @@ biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers() :
 biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers(
         biorbd::Model &model,
         biorbd::rigidbody::KalmanRecons::KalmanParam params) :
-    biorbd::rigidbody::KalmanRecons(model, model.nTechnicalMarkers()*3, params),
+    biorbd::rigidbody::KalmanRecons(model, model.nbTechnicalMarkers()*3, params),
     m_PpInitial(std::make_shared<biorbd::utils::Matrix>()),
     m_firstIteration(std::make_shared<bool>(true))
 {
@@ -76,8 +76,8 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         biorbd::rigidbody::GeneralizedCoordinates *Qddot,
         bool removeAxes){
     // Separate the tobs in a big vector
-    biorbd::utils::Vector T(3*Tobs.nMarkers());
-    for (unsigned int i=0; i<Tobs.nMarkers(); ++i)
+    biorbd::utils::Vector T(3*Tobs.nbMarkers());
+    for (unsigned int i=0; i<Tobs.nbMarkers(); ++i)
         T.block(i*3, 0, 3, 1) = Tobs.marker(i);
 
     // Reconstruct the kinematics
@@ -112,8 +112,8 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     if (*m_firstIteration){
         *m_firstIteration = false;
         biorbd::utils::Vector TobsTP(Tobs);
-        TobsTP.block(3*model.nTechnicalMarkers(0), 0, 3*model.nTechnicalMarkers()-3*model.nTechnicalMarkers(0), 1) =
-                Eigen::VectorXd::Zero(3*model.nTechnicalMarkers()-3*model.nTechnicalMarkers(0)); // Only keep the markers of the root
+        TobsTP.block(3*model.nbTechnicalMarkers(0), 0, 3*model.nbTechnicalMarkers()-3*model.nbTechnicalMarkers(0), 1) =
+                Eigen::VectorXd::Zero(3*model.nbTechnicalMarkers()-3*model.nbTechnicalMarkers(0)); // Only keep the markers of the root
         for (unsigned int j = 0; j < 2; ++j){ // Do the root and then the rest of the body
             if (j != 0)
                 TobsTP = Tobs; // Re-take all the markers

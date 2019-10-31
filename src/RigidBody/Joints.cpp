@@ -345,10 +345,10 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::projectPoint
     const biorbd::rigidbody::Markers &marks = dynamic_cast<biorbd::rigidbody::Markers &>(*this);
 
     // Safety
-    biorbd::utils::Error::check(marks.nMarkers() == v.size(), "Number of marker must be equal to number of Vector3d");
+    biorbd::utils::Error::check(marks.nbMarkers() == v.size(), "Number of marker must be equal to number of Vector3d");
 
     std::vector<biorbd::rigidbody::NodeBone> out;
-    for (unsigned int i=0;i<marks.nMarkers();++i){
+    for (unsigned int i=0;i<marks.nbMarkers();++i){
         biorbd::rigidbody::NodeBone tp(marks.marker(i));
         if (tp.nAxesToRemove()!=0){
             tp = v[i].applyRT(globalJCS(tp.parent()).transpose());

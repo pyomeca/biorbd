@@ -135,7 +135,7 @@ TEST(Markers, allPositions)
 {
     biorbd::Model model(modelPathMeshEqualsMarker);
     EXPECT_EQ(model.nbQ(), 6);
-    EXPECT_EQ(model.nMarkers(), 4);
+    EXPECT_EQ(model.nbMarkers(), 4);
 
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
     for (unsigned int i=0; i<model.nbQ(); ++i)
@@ -143,7 +143,7 @@ TEST(Markers, allPositions)
 
     // All markers at once
     std::vector<biorbd::rigidbody::NodeBone> markers(model.markers(Q, true, true));
-    for (unsigned int i=0; i<model.nMarkers(); ++i)
+    for (unsigned int i=0; i<model.nbMarkers(); ++i)
         for (unsigned int j=0; j<3; ++j)
             EXPECT_NEAR(markers[i][j], expectedMarkers[i][j], requiredPrecision);
 }
@@ -151,14 +151,14 @@ TEST(Markers, individualPositions)
 {
     biorbd::Model model(modelPathMeshEqualsMarker);
     EXPECT_EQ(model.nbQ(), 6);
-    EXPECT_EQ(model.nMarkers(), 4);
+    EXPECT_EQ(model.nbMarkers(), 4);
 
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
     for (unsigned int i=0; i<model.nbQ(); ++i)
         Q[i] = QtestEqualsMarker[i];
 
     // One marker at a time, only update Q once
-    for (unsigned int i=0; i<model.nMarkers(); ++i){
+    for (unsigned int i=0; i<model.nbMarkers(); ++i){
         biorbd::rigidbody::NodeBone marker;
         if (i==0)
             marker = model.marker(Q, i, true, true);
@@ -177,7 +177,7 @@ TEST(Markers, individualPositions)
         Eigen::Vector3d(1.2905320401699185, 1.2989551971389397, 1.310413178608594)
     };
     // One marker at a time, only update Q once
-    for (unsigned int i=0; i<model.nMarkers(); ++i){
+    for (unsigned int i=0; i<model.nbMarkers(); ++i){
         biorbd::rigidbody::NodeBone marker;
         if (i==0)
             marker = model.marker(Q, i, true, true);
