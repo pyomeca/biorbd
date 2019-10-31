@@ -33,7 +33,7 @@ public:
     /// \brief Construct Gauss 3p actuator 
     /// \param direction The direction of the Gauss 3p actuator
     /// \param Tmax The maximal torque in the eccentric phase
-    /// \param T0 The maxaiml torque isometric
+    /// \param T0 The maximal torque isometric
     /// \param wmax Maximum angular velocity above which torque cannot be produced
     /// \param wc Angluar velocity of the vertical asymptote of the concentric hyperbola
     /// \param amin Low plateau level
@@ -60,7 +60,7 @@ public:
     /// \brief Construct Gauss 3p actuator 
     /// \param direction The direction of the Gauss 3p actuator
     /// \param Tmax The maximal torque in the eccentric phase
-    /// \param T0 The maxaiml torque isometric
+    /// \param T0 The maximal torque isometric
     /// \param wmax Maximum angular velocity above which torque cannot be produced
     /// \param wc Angluar velocity of the vertical asymptote of the concentric hyperbola
     /// \param amin Low plateau level
