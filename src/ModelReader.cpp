@@ -202,8 +202,10 @@ void biorbd::Reader::readModelFile(
                             boneMesh = readBoneMeshFileBiorbdBones(path.folder() + filePath.relativePath());
                         else if (!filePath.extension().compare("ply"))
                             boneMesh = readBoneMeshFilePly(path.folder() + filePath.relativePath());
+#ifdef MODULE_VTP_FILES_READER
                         else if (!filePath.extension().compare("vtp"))
                             boneMesh = readBoneMeshFileVtp(path.folder() + filePath.relativePath());
+#endif
                         else
                             biorbd::utils::Error::raise(filePath.extension() + " is an unrecognized mesh file");
                     }
