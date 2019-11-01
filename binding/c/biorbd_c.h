@@ -5,9 +5,9 @@
 #include "BiorbdModel.h"
 #include "biorbdConfig.h"
 #ifdef _WIN32
-#    define BIORBD_API_C __declspec(dllexport)
+    #define BIORBD_API_C __declspec(dllexport)
 #else
-#  define BIORBD_API
+    #define BIORBD_API_C
 #endif
 
 namespace biorbd {

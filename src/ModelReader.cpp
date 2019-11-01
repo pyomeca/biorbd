@@ -1196,7 +1196,9 @@ void biorbd::Reader::readViconForceFile(
     }
 }
 
-std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::Reader::readViconForceFile(const biorbd::utils::String &path){
+std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>>
+biorbd::Reader::readViconForceFile(
+        const biorbd::utils::Path &path) {
     // Lire le fichier
     std::vector<std::vector<unsigned int>> frame;
     std::vector<unsigned int> frequency;// Acquisition frequency
