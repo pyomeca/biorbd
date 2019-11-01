@@ -41,4 +41,3 @@ TEST(MeshFile, FileIoVtp) {
     biorbd::Model model(modelPathWithVtp);
 }
 #endif
-// TODO : Copy of a model with mesh file for the path
