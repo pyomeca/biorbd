@@ -14,8 +14,7 @@ if (BINDER_PYTHON3)
 
     SET(SWIG_MODULE_RIGIDBODY_INCLUDE_COMMAND "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_rigidbody.i\"")
     if (NOT SKIP_KALMAN)
-        message(coucou)
-        SET(SWIG_KALMAN_INCLUDE_COMMAND "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_rigidbody.i\"")
+        SET(SWIG_KALMAN_INCLUDE_COMMAND "%include \"${CMAKE_CURRENT_SOURCE_DIR}/../include/RigidBody/KalmanReconsMarkers.h\"")
     endif()
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_rigidbody.i.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_rigidbody.i @ONLY)
 
