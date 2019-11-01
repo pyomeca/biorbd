@@ -50,6 +50,7 @@ public:
 
     static biorbd::rigidbody::BoneMesh readBoneMeshFileBiorbdBones(const biorbd::utils::Path& path);
     static biorbd::rigidbody::BoneMesh readBoneMeshFilePly(const biorbd::utils::Path& path);
+    static biorbd::rigidbody::BoneMesh readBoneMeshFileVtp(const biorbd::utils::Path& path);
 
 };
 

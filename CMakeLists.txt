@@ -31,6 +31,12 @@ if (NOT IPOPT_FOUND)
     set(IPOPT_INCLUDE_DIR "")
     set(IPOPT_LIBRARY "")
 endif()
+find_package(TinyXML REQUIRED)
+if (NOT TinyXML_FOUND)
+    set(MODULE_VTP_FILES OFF BOOL "If one can read vtp files from opensim")
+else()
+    set(MODULE_VTP_FILES ON CACHE BOOL "If one can read vtp files from opensim")
+endif()
 
 # Define some skip if ones doesn't want to compile them
 option(SKIP_KALMAN "If Kalman filter should be compiled" OFF)
