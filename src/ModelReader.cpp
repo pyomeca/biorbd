@@ -1493,72 +1493,25 @@ biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFilePly(
     return mesh;
 }
 
-#ifdef MODULE_VTP_FILES
+#ifdef MODULE_VTP_FILES_READER
+#include "tinyxml.h"
 biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFileVtp(
         const biorbd::utils::Path &path) {
     // Read an opensim formatted mesh file
 
     // Read the file
 #ifdef _WIN32
-    biorbd::utils::IfStream file(
-                biorbd::utils::Path::toWindowsFormat(
-                    path.absolutePath()).c_str(), std::ios::in);
+    biorbd::utils::String filepath( biorbd::utils::Path::toWindowsFormat(
+                    path.absolutePath()).c_str());
 #else
-    biorbd::utils::IfStream file(
-                path.absolutePath().c_str(), std::ios::in);
+    biorbd::utils::String filepath( path.absolutePath().c_str() );
 #endif
 
-    // Lecture du fichier
-    biorbd::utils::String tp;
-
-    // Savoir le nombre de points
-    file.reachSpecificTag("element");
-    file.readSpecificTag("vertex", tp);
-    unsigned int nVertex(static_cast<unsigned int>(atoi(tp.c_str())));
-    int nVertexProperties(file.countTagsInAConsecutiveLines("property"));
-
-    // Trouver le nombre de colonne pour les vertex
-    file.reachSpecificTag("element");
-    file.readSpecificTag("face", tp);
-    unsigned int nFaces(static_cast<unsigned int>(atoi(tp.c_str())));
-    int nFacesProperties(file.countTagsInAConsecutiveLines("property"));
-
-
-    // Trouver le nombre de
-    file.reachSpecificTag("end_header");
-
-    biorbd::rigidbody::BoneMesh mesh;
-    mesh.setPath(path);
-    // Récupérer tous les points
-    for (unsigned int iPoints=0; iPoints < nVertex; ++iPoints){
-        biorbd::utils::Node3d nodeTp(0, 0, 0);
-        for (unsigned int i=0; i<3; ++i)
-            file.read(nodeTp(i));
-        mesh.addPoint(nodeTp);
-        // Ignorer les colonnes post XYZ
-        for (int i=0; i<nVertexProperties-3; ++i){
-            double dump;
-            file.read(dump);
-        }
-    }
-
-    for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints){
-        biorbd::rigidbody::Patch patchTp;
-        int nVertices;
-        file.read(nVertices);
-        if (nVertices != 3)
-            biorbd::utils::Error::raise("Patches must be 3 vertices!");
-        for (int i=0; i<nVertices; ++i)
-            file.read(patchTp(i));
-        int dump;
-        // Retirer s'il y a des colonnes de trop
-        for (int i=0; i<nFacesProperties-1; ++i)
-            file.read(dump);
-        mesh.addPatch(patchTp);
-    }
-    return mesh;
+    TiXmlDocument doc(filepath);
+    biorbd::utils::Error::check(doc.LoadFile(), "Failed to load file " + filepath);
+//    doc.Parse();
 }
-#endif
+#endif  // MODULE_VTP_FILES_READER
 
 
 std::vector<std::vector<biorbd::utils::Node3d>>

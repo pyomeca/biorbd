@@ -73,6 +73,10 @@ file(COPY ${BIORBD_TEST_FILES}
 file(GLOB BIORBD_TEST_FILES ${CMAKE_SOURCE_DIR}/test/models/meshFiles/*.bioMesh)
 file(COPY ${BIORBD_TEST_FILES}
   DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/models/meshFiles/)
+file(GLOB BIORBD_TEST_FILES ${CMAKE_SOURCE_DIR}/test/models/meshFiles/vtp/*.vtp)
+file(COPY ${BIORBD_TEST_FILES}
+  DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/models/meshFiles/vtp/)
+message(${CMAKE_CURRENT_BINARY_DIR}/models/meshFiles/vtp/)
 
 set(ALL_TESTS ${PROJECT_NAME})
 if (BINDER_C)
