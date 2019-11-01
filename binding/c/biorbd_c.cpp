@@ -7,6 +7,8 @@
 #include "Utils/String.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/RotoTransNode.h"
+#include "Utils/Vector.h"
+#include "Utils/Matrix.h"
 #include "RigidBody/Bone.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
@@ -80,8 +82,8 @@ void c_inverseDynamics(
                 dispatchQinput(model, qddot));
 
     biorbd::rigidbody::GeneralizedTorque Tau(*model);
-    RigidBodyDynamics::InverseDynamics(*model, Q, Qdot, Qddot, Tau);
 
+    RigidBodyDynamics::InverseDynamics(*model, Q, Qdot, Qddot, Tau);
     dispatchTauOutput(Tau, tau);
 }
 void c_massMatrix(
@@ -299,6 +301,22 @@ void c_transformMatrixToCardan(
 }
 
 
+void c_solveLinearSystem (
+		const double* A,
+		int nCols,
+		int nRows,
+		const double* b,
+		double* x) {
+	biorbd::utils::Matrix matA(dispatchMatrixInput(A, nRows,  nCols));
+	biorbd::utils::Vector vecB(dispatchVectorInput(b, nRows));
+	
+	// Solving using Eigen
+	biorbd::utils::Vector solX(matA.householderQr().solve(vecB));
+	//Retourner x
+	dispatchVectorOutput(solX, x);
+}
+
+
 // Fonctions de dispatch des données d'entré ou de sortie
 biorbd::utils::Node3d dispatchMarkersInput(
         const double * pos)
@@ -316,11 +334,13 @@ void dispatchMarkersOutput(
         }
     }
 }
+
 biorbd::rigidbody::GeneralizedCoordinates dispatchQinput(
         biorbd::Model* model,
         const double* Q)
 {
-    // Prepare parameters
+	// Prepare parameters
+
     biorbd::rigidbody::GeneralizedCoordinates eQ(*model);
     for (int i = 0; i < static_cast<int>(model->nbQ()); ++i){
         eQ[i] = Q[i];
@@ -379,6 +399,37 @@ void dispatchRToutput(
             rt_out[i*16+j] = rt_in[i](j%4, j/4);
         }
     }
+}
+
+biorbd::utils::Matrix dispatchMatrixInput(
+		const double* matXd, 
+		int nRows,
+		int nCols) {
+	biorbd::utils::Matrix res(nRows,nCols);
+	for (int i = 0; i < nCols; ++i) {
+		for (int j = 0; j < nRows; ++j) {
+			res(j, i) = matXd[j + i * nCols];
+		}
+	}
+	return res;
+}
+
+biorbd::utils::Vector dispatchVectorInput(
+		const double* vecXd, 
+		int nElements) {
+	biorbd::utils::Vector res(nElements);
+	for (int i = 0; i < nElements; ++i) {
+		res(i) = vecXd[i];
+	}
+	return res;
+}
+void dispatchVectorOutput(
+		const biorbd::utils::Vector& vect, 
+		double* vect_out) {
+	// Warnging vect_out must already be allocated
+	for (int i = 0; i < vect.size(); i++) {
+		vect_out[i] = vect[i];
+	}
 }
 
 

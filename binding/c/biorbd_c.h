@@ -132,6 +132,12 @@ extern "C" {
             const double* M,
             const char* sequence,
             double* cardanOut);
+	BIORBD_API_C void c_solveLinearSystem(
+			const double* A,
+			int nRows,
+			int nCol,
+			const double* b,
+			double* x);
 }
 
 // Fonctions de dispatch pour les données d'entré et de sortie
@@ -160,7 +166,16 @@ void dispatchRToutput(
 void dispatchRToutput(
         const std::vector<biorbd::utils::RotoTrans>& rt_in,
         double* rt_out);
-
+biorbd::utils::Matrix dispatchMatrixInput(
+		const double* matXd, 
+		int nRows, 
+		int nCols);
+biorbd::utils::Vector dispatchVectorInput(
+		const double* vecXd,
+		int nElement);
+void dispatchVectorOutput(
+		const biorbd::utils::Vector& vect,
+		double* vect_out);
 
 //#ifdef UNITY
 //// Spécifique à des projets (IMU sous Unity)
