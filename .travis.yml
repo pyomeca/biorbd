@@ -72,6 +72,7 @@ script:
         cd test\\Release;
         xcopy ..\\models .\\models\\;
         xcopy ..\\models\\meshFiles .\\models\\meshFiles\\;
+        xcopy ..\\models\\meshFiles\\vtp .\\models\\meshFiles\\vtp\\;
         ./biorbd_tests.exe;
       else
         cd test;
