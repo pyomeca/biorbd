@@ -199,6 +199,10 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             unsigned int  idx,
             bool updateKin = true);
+    std::vector<biorbd::utils::Matrix> meshPointsInMatrix(
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            bool updateKin = true
+            );
     std::vector<std::vector<Patch> > meshPatch() const;
     const std::vector<biorbd::rigidbody::Patch> &meshPatch(unsigned int i) const;
     std::vector<biorbd::rigidbody::BoneMesh> boneMesh() const;

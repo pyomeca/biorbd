@@ -687,6 +687,28 @@ std::vector<biorbd::utils::Node3d> biorbd::rigidbody::Joints::meshPoints(
 
     return meshPoints(RT,i);
 }
+
+std::vector<biorbd::utils::Matrix>
+biorbd::rigidbody::Joints::meshPointsInMatrix(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        bool updateKin)
+{
+    if (updateKin)
+        UpdateKinematicsCustom (&Q, nullptr, nullptr);
+    const std::vector<biorbd::utils::RotoTrans>& RT(allGlobalJCS());
+
+    std::vector<biorbd::utils::Matrix> all_points;
+    for (unsigned int i=0; i<m_bones->size(); ++i) {
+        biorbd::utils::Matrix mat(3, boneMesh(i).size());
+        for (unsigned int j=0; j<boneMesh(i).size(); ++j){
+            biorbd::utils::Node3d tp (boneMesh(i).point(j));
+            tp.applyRT(RT[i]);
+            mat.block(0, j, 3, 1) = tp;
+        }
+        all_points.push_back(mat);
+    }
+    return all_points;
+}
 std::vector<biorbd::utils::Node3d> biorbd::rigidbody::Joints::meshPoints(
         const std::vector<biorbd::utils::RotoTrans> &RT,
         unsigned int i) const{

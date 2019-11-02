@@ -6,6 +6,10 @@
 #include "biorbdConfig.h"
 
 namespace biorbd {
+namespace utils {
+class Node3d;
+}
+
 namespace rigidbody {
 
 class BIORBD_API Patch
@@ -19,7 +23,7 @@ public:
     int &operator() (int);
     void patch(const Eigen::Vector3i&);
     void patch(const Patch&);
-    Patch patch(); // retourne les patchs
+    biorbd::utils::Node3d patchAsDouble(); // retourne les patchs
 protected:
     std::shared_ptr<Eigen::Vector3i> m_patch;
 
