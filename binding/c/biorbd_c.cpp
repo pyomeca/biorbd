@@ -82,8 +82,8 @@ void c_inverseDynamics(
                 dispatchQinput(model, qddot));
 
     biorbd::rigidbody::GeneralizedTorque Tau(*model);
-
     RigidBodyDynamics::InverseDynamics(*model, Q, Qdot, Qddot, Tau);
+	
     dispatchTauOutput(Tau, tau);
 }
 void c_massMatrix(
