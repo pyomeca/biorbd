@@ -4,6 +4,8 @@
 #include "biorbd_c.h"
 #include "Utils/String.h"
 #include "Utils/RotoTrans.h"
+#include "Utils/Vector.h"
+#include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/NodeBone.h"
 #include "RigidBody/Bone.h"
@@ -284,4 +286,25 @@ TEST(BinderC, math)
             EXPECT_NEAR(cardan[i], realCardan[i], requiredPrecision);
         }
     }
+}
+
+TEST(BinderC, solveLinearSystem)
+{
+	//Solve matrix system Ax=b using Eigen : HouseholderQR decomposition
+	biorbd::utils::Matrix matA;
+	biorbd::utils::Vector vecB;
+	matA << 1, 2, 3,
+			4, 5, 6,
+			7, 8, 10;
+	vecB << 3, 3, 4;
+	biorbd::utils::Vector solX = matA.householderQr().solve(vecB);
+
+	//Values of the real solution (https://eigen.tuxfamily.org/dox/group__TutorialLinearAlgebra.html)
+	biorbd::utils::Vector solutionExacteX;
+	solutionExacteX << -2, 1, 1;
+
+	for (int i = 0; i < solutionExacteX.size(); ++i)
+	{
+		EXPECT_NEAR(solX(i), solutionExacteX(i), requiredPrecision);
+	}
 }
