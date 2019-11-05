@@ -124,7 +124,7 @@ public:
 
 protected:
     biorbd::Model& m_model;
-    std::shared_ptr<unsigned int> m_nQ;
+    std::shared_ptr<unsigned int> m_nbQ;
     std::shared_ptr<unsigned int> m_nbQdot;
     std::shared_ptr<unsigned int> m_nMus;
     std::shared_ptr<unsigned int> m_nbDof;

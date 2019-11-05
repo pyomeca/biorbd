@@ -36,7 +36,7 @@ TEST(BinderC, nDofs)
 TEST(BinderC, markers)
 {
     biorbd::Model* model(c_biorbdModel(modelPathForGeneralTesting.c_str()));
-    EXPECT_EQ(c_nMarkers(model), model->nMarkers());
+    EXPECT_EQ(c_nMarkers(model), model->nbMarkers());
 
     // Markers in global reference frame
     biorbd::rigidbody::GeneralizedCoordinates Q(*model);
@@ -45,19 +45,19 @@ TEST(BinderC, markers)
         Q[i] = 0.1;
         dQ[i] = 0.1;
     }
-    double *dMarkersInGlobal = new double[model->nMarkers()*3];
+    double *dMarkersInGlobal = new double[model->nbMarkers()*3];
     c_markers(model, dQ, dMarkersInGlobal);
     std::vector<biorbd::rigidbody::NodeBone> markersInGlobal(model->markers(Q));
-    for (unsigned int i=0; i<model->nMarkers(); ++i)
+    for (unsigned int i=0; i<model->nbMarkers(); ++i)
         for (unsigned int j=0; j<3; ++j)
             EXPECT_NEAR(dMarkersInGlobal[i*3+j], markersInGlobal[i][j], requiredPrecision);
     delete[] dMarkersInGlobal;
 
     // Add a marker
     double newMarkerPosition[3] = {1, 2, 3};
-    unsigned int nMarkersBeforeAdding(model->nMarkers());
+    unsigned int nMarkersBeforeAdding(model->nbMarkers());
     c_addMarker(model, newMarkerPosition, "MyNewMarker", model->bone(1).name().c_str(), false, true, "x");
-    EXPECT_EQ(model->nMarkers(), nMarkersBeforeAdding + 1);
+    EXPECT_EQ(model->nbMarkers(), nMarkersBeforeAdding + 1);
     biorbd::rigidbody::NodeBone newMarker(model->marker(nMarkersBeforeAdding));
     EXPECT_STREQ(newMarker.name().c_str(), "MyNewMarker");
     EXPECT_STREQ(newMarker.parent().c_str(), model->bone(1).name().c_str());
@@ -66,10 +66,10 @@ TEST(BinderC, markers)
     EXPECT_STREQ(newMarker.axesToRemove().c_str(), "x");
 
     // Markers in local reference frame
-    double *dMarkersInLocal = new double[model->nMarkers()*3];
+    double *dMarkersInLocal = new double[model->nbMarkers()*3];
     c_markersInLocal(model, dMarkersInLocal);
     std::vector<biorbd::rigidbody::NodeBone> markersInLocal(model->markers());
-    for (unsigned int i=0; i<model->nMarkers(); ++i)
+    for (unsigned int i=0; i<model->nbMarkers(); ++i)
         for (unsigned int j=0; j<3; ++j)
             EXPECT_NEAR(dMarkersInLocal[i*3+j], markersInLocal[i][j], requiredPrecision);
     delete[] dMarkersInLocal;
@@ -122,7 +122,7 @@ TEST(BinderC, jcs)
 TEST(BinderC, imu)
 {
     biorbd::Model* model(c_biorbdModel(modelPathForIMUTesting.c_str()));
-    EXPECT_EQ(c_nIMUs(model), model->nIMUs());
+    EXPECT_EQ(c_nIMUs(model), model->nbIMUs());
 
     biorbd::utils::RotoTrans RT;
     RT.transformCardanToMatrix(Eigen::Vector3d(0.1, 0.1, 0.1), Eigen::Vector3d(0.1, 0.1, 0.1), "xyz");
@@ -132,9 +132,9 @@ TEST(BinderC, imu)
             rt[j*4 + i] = RT(i, j);
 
     // Add an imu
-    unsigned int nImuBeforeAdding(model->nIMUs());
+    unsigned int nImuBeforeAdding(model->nbIMUs());
     c_addIMU(model, rt, "MyNewIMU", "Tete", false, true);
-    EXPECT_EQ(model->nIMUs(), nImuBeforeAdding+1);
+    EXPECT_EQ(model->nbIMUs(), nImuBeforeAdding+1);
     biorbd::rigidbody::IMU newImu(model->IMU(nImuBeforeAdding));
     EXPECT_STREQ(newImu.name().c_str(), "MyNewIMU");
     EXPECT_STREQ(newImu.parent().c_str(), "Tete");
@@ -154,7 +154,7 @@ TEST(BinderC, kalmanImu)
 
     // Compute reference
     std::vector<biorbd::rigidbody::IMU> targetImus;
-    for (unsigned int i=0; i<model->nIMUs(); ++i){
+    for (unsigned int i=0; i<model->nbIMUs(); ++i){
         biorbd::utils::RotoTrans rt;
         rt.transformCardanToMatrix(Eigen::Vector3d(0.1*i, 0.1*i, 0.1*i), Eigen::Vector3d(0.1*i, 0.1*i, 0.1*i), "xyz");
         targetImus.push_back(rt);
@@ -163,8 +163,8 @@ TEST(BinderC, kalmanImu)
     kalman.reconstructFrame(*model, targetImus, &Q, &Qdot, &Qddot);
 
     // Compute from C-interface
-    double* target = new double[model->nIMUs()*3*3];
-    for (unsigned int i=0; i<model->nIMUs(); ++i)
+    double* target = new double[model->nbIMUs()*3*3];
+    for (unsigned int i=0; i<model->nbIMUs(); ++i)
         for (unsigned int row=0; row<3; ++row)
             for (unsigned int col=0; col<3; ++col)
                 target[i*9+3*col+row] = targetImus[i](row, col);

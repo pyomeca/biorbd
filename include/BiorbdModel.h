@@ -16,6 +16,9 @@
 
 namespace biorbd {
 
+///
+/// \class Model
+///
 class BIORBD_API Model :
         public biorbd::rigidbody::Joints
         ,public biorbd::rigidbody::Markers
