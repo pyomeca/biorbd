@@ -8,6 +8,9 @@
 namespace biorbd {
 namespace muscles {
 
+/// 
+/// \brief Class FatigueState
+///
 class BIORBD_API FatigueState
 {
 public:
