@@ -126,10 +126,10 @@ protected:
     biorbd::Model& m_model;
     std::shared_ptr<unsigned int> m_nbQ;
     std::shared_ptr<unsigned int> m_nbQdot;
-    std::shared_ptr<unsigned int> m_nMus;
+    std::shared_ptr<unsigned int> m_nbMus;
     std::shared_ptr<unsigned int> m_nbDof;
-    std::shared_ptr<unsigned int> m_nGeneralizedTorque;
-    std::shared_ptr<unsigned int> m_nGeneralizedTorqueResidual;
+    std::shared_ptr<unsigned int> m_nbGeneralizedTorque;
+    std::shared_ptr<unsigned int> m_nbGeneralizedTorqueResidual;
     std::shared_ptr<double> m_eps;
     std::shared_ptr<biorbd::utils::Vector> m_activations;
     std::shared_ptr<biorbd::rigidbody::GeneralizedCoordinates> m_Q;
