@@ -225,7 +225,7 @@ void c_BiorbdKalmanReconsIMUstep(
         double* QDDot)
 {
     // Copier les valeurs des matrices de rotation des IMUs dans un stl Vector
-    Eigen::VectorXd T(3*3*model->nIMUs()); // Matrice 3*3 * nIMU
+    biorbd::utils::Vector T(3*3*model->nIMUs()); // Matrice 3*3 * nIMU
     for (unsigned int i=0; i<model->nIMUs(); ++i)
         for (unsigned int j=0; j<9; ++j){ // matrice 3*3
             T[9*i+j] = imu[9*i+j];
