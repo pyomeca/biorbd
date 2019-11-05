@@ -134,6 +134,11 @@ public:
     ///
     static biorbd::rigidbody::BoneMesh readBoneMeshFilePly(const biorbd::utils::Path& path);
 #ifdef MODULE_VTP_FILES_READER
+    ///
+    /// \brief Read a Vtp bone mesh file
+    /// \param path The path of the file
+    /// \return Returns the mesh
+    ///
     static biorbd::rigidbody::BoneMesh readBoneMeshFileVtp(const biorbd::utils::Path& path);
 #endif
 

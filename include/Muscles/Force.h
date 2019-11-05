@@ -12,15 +12,33 @@ class Node3d;
 
 namespace muscles {
 class Geometry;
-
+///
+/// \brief Class Force 
+///
 class BIORBD_API Force : public Eigen::Vector3d
 {
 public:
+    ///
+    /// \brief Construct force
+    ///
     Force();
+    ///
+    /// \brief Construct force
+    /// \param x Position on X axis
+    /// \param y Position on Y axis
+    /// \param z Position on Z axis
+    /// 
     Force(
             double x,
             double y,
             double z);
+
+    ///
+    /// \brief Construct force
+    /// \param x Position on X axis
+    /// \param y Position on Y axis
+    /// \param z Position on Z axis
+    /// 
     Force(
             const biorbd::muscles::Force& force);
     template<typename OtherDerived> Force(const Eigen::MatrixBase<OtherDerived>& other) :
