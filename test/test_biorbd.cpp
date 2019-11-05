@@ -16,6 +16,10 @@ static std::string modelPathForGeneralTesting("models/pyomecaman_withActuators.b
 static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
 #endif // MODULE_ACTUATORS
 
+#ifdef MODULE_VTP_FILES_READER
+static std::string modelPathWithVtp("models/thoraxWithVtp.bioMod");
+#endif
+
 TEST(FileIO, OpenModel){
     EXPECT_NO_THROW(biorbd::Model model(modelPathForGeneralTesting));
 }
@@ -30,4 +34,9 @@ TEST(MeshFile, FileIO){
     biorbd::Model model(modelPathWithMeshFile);
 }
 
-// TODO : Copy of a model with mesh file for the path
+#ifdef MODULE_VTP_FILES_READER
+TEST(MeshFile, FileIoVtp) {
+    EXPECT_NO_THROW(biorbd::Model model(modelPathWithVtp));
+    biorbd::Model model(modelPathWithVtp);
+}
+#endif

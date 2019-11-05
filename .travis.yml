@@ -43,7 +43,7 @@ before_install:
       fi
 
 install:
-    - conda install boost eigen rbdl dlib-cpp lapack numpy pytest swig  -c conda-forge
+    - conda install boost eigen rbdl dlib-cpp tinyxml lapack numpy pytest swig -c conda-forge
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
         conda install ipopt -c conda-forge;
       fi
@@ -72,6 +72,7 @@ script:
         cd test\\Release;
         xcopy ..\\models .\\models\\;
         xcopy ..\\models\\meshFiles .\\models\\meshFiles\\;
+        xcopy ..\\models\\meshFiles\\vtp .\\models\\meshFiles\\vtp\\;
         ./biorbd_tests.exe;
       else
         cd test;

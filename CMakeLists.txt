@@ -26,19 +26,27 @@ find_package(Boost REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Dlib REQUIRED)
 find_package(IPOPT)
-if (NOT IPOPT_FOUND)
-    # Variable are used, so we must give them a value
-    set(IPOPT_INCLUDE_DIR "")
-    set(IPOPT_LIBRARY "")
-endif()
+find_package(TinyXML)
 
-# Define some skip if ones doesn't want to compile them
+# Manage options
 option(SKIP_KALMAN "If Kalman filter should be compiled" OFF)
+
 if (IPOPT_FOUND)
     option(SKIP_STATIC_OPTIM "If Static optimization should be compiled" OFF)
 else()
-    set(SKIP_STATIC_OPTIM ON CACHE BOOL "Static optimization can't be compiled since Ipopt was not foudn" FORCE)
+    set(IPOPT_INCLUDE_DIR "")
+    set(IPOPT_LIBRARY "")
+    set(SKIP_STATIC_OPTIM ON CACHE BOOL "Static optimization can't be compiled since Ipopt was not found" FORCE)
 endif()
+
+if (TinyXML_FOUND)
+    option(MODULE_VTP_FILES_READER "If reader for geometry vtp files from opensim should be compiled" ON)
+else()
+    set(TinyXML_INCLUDE_DIR "")
+    set(TinyXML_LIBRARY "")
+    set(MODULE_VTP_FILES_READER OFF CACHE BOOL "VTP cannot be used since TinyXML was not found" FORCE)
+endif()
+
 
 # Prepare add library
 set(SRC_LIST
@@ -64,6 +72,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${EIGEN3_INCLUDE_DIR}
     ${DLIB_INCLUDE_DIR}
     ${IPOPT_INCLUDE_DIR}
+    ${TinyXML_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_BINARY_DIR}/include
 )
@@ -108,7 +117,13 @@ if (MODULE_MUSCLES)
 endif()
 
 # Add linker
-target_link_libraries(${PROJECT_NAME} ${BIORBD_MODULE_NAMES} ${RBDL_LIBRARY} ${DLIB_LIBRARY} ${IPOPT_LIBRARY})
+target_link_libraries(${PROJECT_NAME}
+    ${BIORBD_MODULE_NAMES}
+    ${RBDL_LIBRARY}
+    ${DLIB_LIBRARY}
+    ${IPOPT_LIBRARY}
+    ${TinyXML_LIBRARY}
+)
 
 # install target
 install(TARGETS ${PROJECT_NAME}

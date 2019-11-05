@@ -12,6 +12,7 @@
 namespace std {
 %template(VecBiorbdVector) std::vector<biorbd::utils::Vector>;
 %template(MatBiorbdVector) std::vector<std::vector<biorbd::utils::Vector>>;
+%template(MatBiorbdMatrix) std::vector<biorbd::utils::Matrix>;
 %template(VecBiorbdRotoTrans) std::vector<biorbd::utils::RotoTrans>;
 %template(MatBiorbdRotoTrans) std::vector<std::vector<biorbd::utils::RotoTrans>>;
 %template(VecBiorbdNode) std::vector<biorbd::utils::Node3d>;

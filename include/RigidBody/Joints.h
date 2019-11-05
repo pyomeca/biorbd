@@ -572,6 +572,10 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             unsigned int  idx,
             bool updateKin = true);
+    std::vector<biorbd::utils::Matrix> meshPointsInMatrix(
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            bool updateKin = true
+            );
 
     ///
     /// \brief Return the mesh patch for all segments

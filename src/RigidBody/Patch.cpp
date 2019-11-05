@@ -1,6 +1,8 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/Patch.h"
 
+#include "Utils/Node3d.h"
+
 biorbd::rigidbody::Patch::Patch(const Eigen::Vector3i& vertex) :
     m_patch(std::make_shared<Eigen::Vector3i>(vertex))
 {
@@ -24,9 +26,11 @@ int &biorbd::rigidbody::Patch::operator()(int i)
     return (*m_patch)[i];
 }
 
-biorbd::rigidbody::Patch biorbd::rigidbody::Patch::patch()
+biorbd::utils::Node3d biorbd::rigidbody::Patch::patchAsDouble()
 {
-    return *m_patch;
+    return biorbd::utils::Node3d(static_cast<double>(m_patch->x()),
+                                 static_cast<double>(m_patch->y()),
+                                 static_cast<double>(m_patch->z()));
 }
 
 void biorbd::rigidbody::Patch::patch(const Eigen::Vector3i & pts)

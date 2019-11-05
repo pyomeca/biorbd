@@ -20,6 +20,7 @@
 // Choice of modules
 #cmakedefine MODULE_ACTUATORS
 #cmakedefine MODULE_MUSCLES
+#cmakedefine MODULE_VTP_FILES_READER
 
 // Define some skip if ones doesn't want to compile them
 #cmakedefine SKIP_KALMAN
