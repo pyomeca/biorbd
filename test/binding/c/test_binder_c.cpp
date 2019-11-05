@@ -291,18 +291,18 @@ TEST(BinderC, math)
 TEST(BinderC, solveLinearSystem)
 {
 	//Solve matrix system Ax=b using Eigen : HouseholderQR decomposition
-	double matrixA[9] = { 1, 2, 3, 4, 5, 6, 7, 8, 10 };
+	//Matrix A is 3x3 , cols after cols
+	double matrixA[9] = { 1, 4, 7, 2, 5, 8, 3, 6, 10 };
 	double vectorB[3] = { 3, 3, 4 };
 	double solX[3];
 
 	c_solveLinearSystem(matrixA, 3, 3, vectorB, solX);
 
 	//Value of the real solution
-	biorbd::utils::Vector solutionExacteX;
-	solutionExacteX << -2, 1, 1;
+	double solutionExacteX[3] = {-2, 1, 1};
 
-	for (int i = 0; i < solutionExacteX.size(); ++i)
+	for (int i = 0; i < 3; ++i)
 	{
-		EXPECT_NEAR(solX[i], solutionExacteX(i), requiredPrecision);
+		EXPECT_NEAR(solX[i], solutionExacteX[i], requiredPrecision);
 	}
 }
