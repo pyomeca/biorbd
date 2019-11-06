@@ -3,37 +3,41 @@
 
 #include <Eigen/Dense>
 #include <rbdl/Quaternion.h>
+#include "Utils/Node3d.h"
+#include "Utils/Vector.h"
 
-biorbd::utils::Quaternion::Quaternion () :
+biorbd::utils::Quaternion::Quaternion (double kStabilizer) :
     RigidBodyDynamics::Math::Quaternion(),
-    m_Kstab(100)
+    m_Kstab(kStabilizer)
 {
 
 }
 
-biorbd::utils::Quaternion::Quaternion (const Eigen::Vector4d &vec4) :
-    RigidBodyDynamics::Math::Quaternion(vec4),
-    m_Kstab(100)
+biorbd::utils::Quaternion::Quaternion (const biorbd::utils::Vector &vec, double kStabilizer) :
+    RigidBodyDynamics::Math::Quaternion(vec),
+    m_Kstab(kStabilizer)
 {
 
 }
 
 biorbd::utils::Quaternion::Quaternion (
+        double w,
         double x,
         double y,
         double z,
-        double w) :
+        double kStabilizer) :
     RigidBodyDynamics::Math::Quaternion(x, y, z, w),
-    m_Kstab(100)
+    m_Kstab(kStabilizer)
 {
 
 }
 
 biorbd::utils::Quaternion::Quaternion (
-        const Eigen::Vector3d &vec4,
-        double w) :
-    RigidBodyDynamics::Math::Quaternion(vec4(0), vec4(1), vec4(2), w),
-    m_Kstab(100)
+        double w,
+        const biorbd::utils::Node3d &vec3,
+        double kStabilizer) :
+    RigidBodyDynamics::Math::Quaternion(vec3(0), vec3(1), vec3(2), w),
+    m_Kstab(kStabilizer)
 {
 
 }
@@ -67,9 +71,8 @@ double biorbd::utils::Quaternion::z() const
 }
 
 void biorbd::utils::Quaternion::derivate(
-        const Eigen::VectorXd &w)
+        const biorbd::utils::Vector &w)
 {
-
     // Création du quaternion de "préproduit vectoriel"
     double qw = (*this)(3);
     double qx = (*this)(0);

@@ -41,6 +41,30 @@
     }
 }
 
+// --- Quaternion --- //
+%extend biorbd::utils::Quaternion{
+    PyObject* get_array(){
+        int nRows(1);
+        int nCols(4);
+        int nArraySize(2);
+        npy_intp * arraySizes = new npy_intp[nArraySize];
+        arraySizes[0] = nRows;
+        arraySizes[1] = nCols;
+
+        double * quat = new double[nRows*nCols];
+        unsigned int k(0);
+        for (unsigned int i=0; i<nRows; ++i){
+            for (unsigned int j=0; j<nCols; ++j){
+                quat[k] = (*$self)(j,i);
+                ++k;
+            }
+        }
+        PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, quat);
+        PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+        return output;
+    };
+}
+
 // --- Matrix --- //
 %extend biorbd::utils::Matrix{
     PyObject* get_array(){

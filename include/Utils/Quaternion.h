@@ -8,20 +8,26 @@
 
 namespace biorbd {
 namespace utils {
+class Node3d;
+class Vector;
 
 class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Quaternion
 {
 public:
-    Quaternion();
-    Quaternion (const Eigen::Vector4d &vec4);
+    Quaternion(double kStabilizer = 100);
     Quaternion (
-            const Eigen::Vector3d &vec4,
-            double w);
+        const biorbd::utils::Vector &vec, 
+        double kStabilizer = 100);
     Quaternion (
+        double w,
+        const biorbd::utils::Node3d &vec3, 
+        double kStabilizer = 100);
+    Quaternion (
+            double w,
             double x,
             double y,
             double z,
-            double w);
+            double kStabilizer = 100);
 
     Quaternion& operator=(const Eigen::Vector4d& vec4);
     double w() const;
@@ -29,9 +35,9 @@ public:
     double y() const;
     double z() const;
 
-    void derivate(const Eigen::VectorXd &w);
+    void derivate(const biorbd::utils::Vector &w);
 protected:
-    double m_Kstab; // Facteur de stabilisation lors de la derivation
+    double m_Kstab; // Facteur de stabilisation pour la derivation
 
 };
 

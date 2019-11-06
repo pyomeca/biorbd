@@ -17,7 +17,7 @@ biorbd::utils::Vector::Vector(unsigned int i) :
 
 double biorbd::utils::Vector::norm(
         unsigned int p,
-        bool skipRoot)
+        bool skipRoot) const 
 {
     biorbd::utils::Error::check(p >= 2, "p must be superior or equal to 2");
 

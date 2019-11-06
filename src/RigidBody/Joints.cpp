@@ -982,7 +982,7 @@ void biorbd::rigidbody::Joints::computeQdot(
         biorbd::rigidbody::Bone bone_i=bone(i);
         if (bone_i.isRotationAQuaternion()){
             // Extraire le quaternion
-            biorbd::utils::Quaternion quat_tp(Q.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1), Q(Q.size()-*m_nRotAQuat+cmpQuat));
+            biorbd::utils::Quaternion quat_tp(Q(Q.size()-*m_nRotAQuat+cmpQuat), Q.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1));
 
             // Placer dans le vecteur de sortie
             QDotOut.block(cmpDof, 0, bone_i.nDofTrans(), 1) = QDot.block(cmpDof, 0, bone_i.nDofTrans(), 1); // La dérivée des translations est celle directement de qdot
