@@ -41,7 +41,7 @@ void Matlab_MusclesExcitationDotBuchanan( int, mxArray *plhs[],
                  // Recueillir dérivées d'excitations
                 double shapeFactor = dynamic_cast<const biorbd::muscles::StateDynamicsBuchanan&>( model->muscleGroup(i).muscle(j).state() ).shapeFactor();
                 (*((*(state.begin()+iTime)).begin() + cmpState)).shapeFactor(shapeFactor);
-                edot[cmp] = (*((*(state.begin()+iTime)).begin() + cmpState)).timeDerivativeExcitation(model->muscleGroup(i).muscle(j).caract(), true);
+                edot[cmp] = (*((*(state.begin()+iTime)).begin() + cmpState)).timeDerivativeExcitation(model->muscleGroup(i).muscle(j).characteristics(), true);
                 updateKin = false;
                 ++cmp;
                 ++cmpState;

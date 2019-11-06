@@ -1,19 +1,20 @@
 cmake_minimum_required(VERSION 3.8)
-project(biorbd VERSION 0.1.3)
+project(biorbd VERSION 1.0.1)
 set (CMAKE_CXX_STANDARD 11)
 
 # Set some variables
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules)
 
-# Set a default build type to 'Release' if none was specified
+# Because of Eigen, it is not possible to compile biorbd as a dynamic library
 if (WIN32)
-    SET(BUILD_SHARED_LIBS FALSE CACHE BOOL "Choose if the static library should be build" FORCE)
+    SET(BUILD_SHARED_LIBS FALSE CACHE BOOL "Choose if the dynamic library should be build" FORCE)
 else()
-    SET(BUILD_SHARED_LIBS TRUE CACHE BOOL "Choose if the static library should be build" FORCE)
+    SET(BUILD_SHARED_LIBS TRUE CACHE BOOL "Choose if the dynamic library should be build")
 endif()
+# Set a default build type to 'Release' if none was specified
 IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 	MESSAGE(STATUS "Setting build type to 'Release' as none was specified.")
-	SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+	SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build.")
   # Set the possible values of build type for cmake-gui
   SET_PROPERTY(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 ENDIF()
@@ -25,19 +26,27 @@ find_package(Boost REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Dlib REQUIRED)
 find_package(IPOPT)
-if (NOT IPOPT_FOUND)
-    # Variable are used, so we must give them a value
-    set(IPOPT_INCLUDE_DIR "")
-    set(IPOPT_LIBRARY "")
-endif()
+find_package(TinyXML)
 
-# Define some skip if ones doesn't want to compile them
+# Manage options
 option(SKIP_KALMAN "If Kalman filter should be compiled" OFF)
+
 if (IPOPT_FOUND)
     option(SKIP_STATIC_OPTIM "If Static optimization should be compiled" OFF)
 else()
-    set(SKIP_STATIC_OPTIM ON CACHE BOOL "Static optimization can't be compiled since Ipopt was not foudn" FORCE)
+    set(IPOPT_INCLUDE_DIR "")
+    set(IPOPT_LIBRARY "")
+    set(SKIP_STATIC_OPTIM ON CACHE BOOL "Static optimization can't be compiled since Ipopt was not found" FORCE)
 endif()
+
+if (TinyXML_FOUND)
+    option(MODULE_VTP_FILES_READER "If reader for geometry vtp files from opensim should be compiled" ON)
+else()
+    set(TinyXML_INCLUDE_DIR "")
+    set(TinyXML_LIBRARY "")
+    set(MODULE_VTP_FILES_READER OFF CACHE BOOL "VTP cannot be used since TinyXML was not found" FORCE)
+endif()
+
 
 # Prepare add library
 set(SRC_LIST
@@ -63,6 +72,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${EIGEN3_INCLUDE_DIR}
     ${DLIB_INCLUDE_DIR}
     ${IPOPT_INCLUDE_DIR}
+    ${TinyXML_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_BINARY_DIR}/include
 )
@@ -107,7 +117,13 @@ if (MODULE_MUSCLES)
 endif()
 
 # Add linker
-target_link_libraries(${PROJECT_NAME} ${BIORBD_MODULE_NAMES} ${RBDL_LIBRARY} ${DLIB_LIBRARY} ${IPOPT_LIBRARY})
+target_link_libraries(${PROJECT_NAME}
+    ${BIORBD_MODULE_NAMES}
+    ${RBDL_LIBRARY}
+    ${DLIB_LIBRARY}
+    ${IPOPT_LIBRARY}
+    ${TinyXML_LIBRARY}
+)
 
 # install target
 install(TARGETS ${PROJECT_NAME}

@@ -19,7 +19,7 @@ public:
     void DeepCopy(const biorbd::muscles::StateDynamicsBuchanan& other);
 
     virtual double timeDerivativeExcitation(
-            const Caracteristics &c,
+            const Characteristics &c,
             bool alreadyNormalized);
     virtual void setExcitation(double val);
     virtual void setNeuralCommand(double val);

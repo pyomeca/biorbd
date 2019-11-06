@@ -10,7 +10,7 @@
 #include "RigidBody/NodeBone.h"
 #include "RigidBody/Bone.h"
 #include "RigidBody/BoneMesh.h"
-#include "RigidBody/BoneCaracteristics.h"
+#include "RigidBody/BoneCharacteristics.h"
 
 void biorbd::Writer::writeModel(biorbd::Model & model,
         const biorbd::utils::Path& pathToWrite){
@@ -52,8 +52,8 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
             biorbdModelFile << sep << sep << "translations" << sep << model.bone(i).seqT() << std::endl;
         if (model.bone(i).nDofRot() > 0)
             biorbdModelFile << sep << sep << "rotations" << sep << model.bone(i).seqR() << std::endl;
-        if (model.bone(i).caract().mesh().path().filename().compare("")) // Si ce n'est pas vide
-            biorbdModelFile << sep << sep << "meshfile" << sep << model.bone(i).caract().mesh().path().originalPath() << std::endl;
+        if (model.bone(i).characteristics().mesh().path().filename().compare("")) // Si ce n'est pas vide
+            biorbdModelFile << sep << sep << "meshfile" << sep << model.bone(i).characteristics().mesh().path().originalPath() << std::endl;
         biorbdModelFile << sep << "endsegment" << sep << std::endl;
         biorbdModelFile << std::endl;
 

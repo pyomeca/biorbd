@@ -38,7 +38,7 @@ public:
             std::vector<std::vector<biorbd::utils::Node3d>> &force, // Linear forces (x,y,z)
             std::vector<std::vector<biorbd::utils::Node3d>> &moment, // Moments (x,y,z)
             std::vector<std::vector<biorbd::utils::Node3d>> &cop); // Center of pressure (x,y,z)
-    static std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>>  readViconForceFile(const biorbd::utils::String &path);
+    static std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>>  readViconForceFile(const utils::Path &path);
     // Read a marker file CSV formated
     static std::vector<std::vector<biorbd::utils::Node3d>>  readViconMarkerFile(
             const biorbd::utils::Path &path,
@@ -50,6 +50,9 @@ public:
 
     static biorbd::rigidbody::BoneMesh readBoneMeshFileBiorbdBones(const biorbd::utils::Path& path);
     static biorbd::rigidbody::BoneMesh readBoneMeshFilePly(const biorbd::utils::Path& path);
+#ifdef MODULE_VTP_FILES_READER
+    static biorbd::rigidbody::BoneMesh readBoneMeshFileVtp(const biorbd::utils::Path& path);
+#endif
 
 };
 

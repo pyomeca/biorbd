@@ -4,7 +4,7 @@ set(MUSCLE_MODULE_NAME ${MASTER_PROJECT_NAME}_muscles PARENT_SCOPE)
 
 # Add the relevant files
 set(SRC_LIST_MODULE
-    ${CMAKE_CURRENT_SOURCE_DIR}/Caracteristics.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Characteristics.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compound.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Fatigable.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/FatigueDynamicState.cpp
@@ -41,10 +41,14 @@ if (NOT SKIP_STATIC_OPTIM)
 endif()
 
 # Create the library
-if (BUILD_SHARED_LIBS)
-    add_library(${PROJECT_NAME} SHARED ${SRC_LIST_MODULE})
-else()
+if (WIN32)
     add_library(${PROJECT_NAME} STATIC ${SRC_LIST_MODULE})
+else()
+    if (BUILD_SHARED_LIBS)
+        add_library(${PROJECT_NAME} SHARED ${SRC_LIST_MODULE})
+    else()
+        add_library(${PROJECT_NAME} STATIC ${SRC_LIST_MODULE})
+    endif()
 endif()
 
 # Add the dependencies for insuring build order

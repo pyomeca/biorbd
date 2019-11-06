@@ -1,10 +1,10 @@
 #define BIORBD_API_EXPORTS
-#include "Muscles/Caracteristics.h"
+#include "Muscles/Characteristics.h"
 
 #include "Muscles/State.h"
 #include "Muscles/FatigueParameters.h"
 
-biorbd::muscles::Caracteristics::Caracteristics() :
+biorbd::muscles::Characteristics::Characteristics() :
     m_optimalLength(std::make_shared<double>(0)),
     m_fIsoMax(std::make_shared<double>(0)),
     m_PCSA(std::make_shared<double>(0)),
@@ -19,7 +19,7 @@ biorbd::muscles::Caracteristics::Caracteristics() :
 
 }
 
-biorbd::muscles::Caracteristics::Caracteristics(const biorbd::muscles::Caracteristics &other) :
+biorbd::muscles::Characteristics::Characteristics(const biorbd::muscles::Characteristics &other) :
     m_optimalLength(other.m_optimalLength),
     m_fIsoMax(other.m_fIsoMax),
     m_PCSA(other.m_PCSA),
@@ -34,7 +34,7 @@ biorbd::muscles::Caracteristics::Caracteristics(const biorbd::muscles::Caracteri
 
 }
 
-biorbd::muscles::Caracteristics::Caracteristics(
+biorbd::muscles::Characteristics::Characteristics(
         double optLength,
         double fmax,
         double PCSA,
@@ -59,19 +59,19 @@ biorbd::muscles::Caracteristics::Caracteristics(
 
 }
 
-biorbd::muscles::Caracteristics::~Caracteristics()
+biorbd::muscles::Characteristics::~Characteristics()
 {
 
 }
 
-biorbd::muscles::Caracteristics biorbd::muscles::Caracteristics::DeepCopy() const
+biorbd::muscles::Characteristics biorbd::muscles::Characteristics::DeepCopy() const
 {
-    biorbd::muscles::Caracteristics copy;
+    biorbd::muscles::Characteristics copy;
     copy.DeepCopy(*this);
     return copy;
 }
 #include<iostream>
-void biorbd::muscles::Caracteristics::DeepCopy(const biorbd::muscles::Caracteristics &other)
+void biorbd::muscles::Characteristics::DeepCopy(const biorbd::muscles::Characteristics &other)
 {
     *m_optimalLength = *other.m_optimalLength;
     *m_fIsoMax = *other.m_fIsoMax;
@@ -86,88 +86,88 @@ void biorbd::muscles::Caracteristics::DeepCopy(const biorbd::muscles::Caracteris
 }
 
 // Get et Set
-double biorbd::muscles::Caracteristics::optimalLength() const
+double biorbd::muscles::Characteristics::optimalLength() const
 {
     return *m_optimalLength;
 }
-double biorbd::muscles::Caracteristics::forceIsoMax() const
+double biorbd::muscles::Characteristics::forceIsoMax() const
 {
     return *m_fIsoMax;
 }
-double biorbd::muscles::Caracteristics::tendonSlackLength() const
+double biorbd::muscles::Characteristics::tendonSlackLength() const
 {
     return *m_tendonSlackLength;
 }
-double biorbd::muscles::Caracteristics::pennationAngle() const
+double biorbd::muscles::Characteristics::pennationAngle() const
 {
     return *m_pennationAngle;
 }
-double biorbd::muscles::Caracteristics::PCSA() const
+double biorbd::muscles::Characteristics::PCSA() const
 {
     return *m_PCSA;
 }
 
-void biorbd::muscles::Caracteristics::minActivation(double val)
+void biorbd::muscles::Characteristics::minActivation(double val)
 {
     *m_minActivation = val;
 }
-double biorbd::muscles::Caracteristics::minActivation() const
+double biorbd::muscles::Characteristics::minActivation() const
 {
     return *m_minActivation;
 }
-void biorbd::muscles::Caracteristics::GeneralizedTorqueActivation(double val)
+void biorbd::muscles::Characteristics::GeneralizedTorqueActivation(double val)
 {
     *m_GeneralizedTorqueActivation = val;
 }
-double biorbd::muscles::Caracteristics::GeneralizedTorqueActivation() const
+double biorbd::muscles::Characteristics::GeneralizedTorqueActivation() const
 {
     return *m_GeneralizedTorqueActivation;
 }
-void biorbd::muscles::Caracteristics::GeneralizedTorqueDeactivation(double val)
+void biorbd::muscles::Characteristics::GeneralizedTorqueDeactivation(double val)
 {
     *m_GeneralizedTorqueDeactivation = val;
 }
-double biorbd::muscles::Caracteristics::GeneralizedTorqueDeactivation() const
+double biorbd::muscles::Characteristics::GeneralizedTorqueDeactivation() const
 {
     return *m_GeneralizedTorqueDeactivation;
 }
 
 
-void biorbd::muscles::Caracteristics::setOptimalLength(double val)
+void biorbd::muscles::Characteristics::setOptimalLength(double val)
 {
     *m_optimalLength = val;
 }
-void biorbd::muscles::Caracteristics::setForceIsoMax(double val)
+void biorbd::muscles::Characteristics::setForceIsoMax(double val)
 {
     *m_fIsoMax = val;
 }
-void biorbd::muscles::Caracteristics::PCSA(double val)
+void biorbd::muscles::Characteristics::PCSA(double val)
 {
     *m_PCSA = val;
 }
-void biorbd::muscles::Caracteristics::setTendonSlackLength(double val)
+void biorbd::muscles::Characteristics::setTendonSlackLength(double val)
 {
     *m_tendonSlackLength = val;
 }
-void biorbd::muscles::Caracteristics::setPennationAngle(double val)
+void biorbd::muscles::Characteristics::setPennationAngle(double val)
 {
     *m_pennationAngle = val;
 }
 
-void biorbd::muscles::Caracteristics::setStateMax(const biorbd::muscles::State &stateMax) {
+void biorbd::muscles::Characteristics::setStateMax(const biorbd::muscles::State &stateMax) {
     *m_stateMax = stateMax;
 }
 
-const biorbd::muscles::State &biorbd::muscles::Caracteristics::stateMax() const {
+const biorbd::muscles::State &biorbd::muscles::Characteristics::stateMax() const {
     return *m_stateMax;
 }
 
-const biorbd::muscles::FatigueParameters &biorbd::muscles::Caracteristics::fatigueParameters() const
+const biorbd::muscles::FatigueParameters &biorbd::muscles::Characteristics::fatigueParameters() const
 {
     return *m_fatigueParameters;
 }
 
-void biorbd::muscles::Caracteristics::fatigueParameters(const biorbd::muscles::FatigueParameters &fatigueParameters)
+void biorbd::muscles::Characteristics::fatigueParameters(const biorbd::muscles::FatigueParameters &fatigueParameters)
 {
     *m_fatigueParameters = fatigueParameters;
 }

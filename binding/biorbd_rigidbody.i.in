@@ -22,6 +22,8 @@ namespace std {
 
 %template(VecBiorbdNodeBone) std::vector<biorbd::rigidbody::NodeBone>;
 %template(MatBiorbdNodeBone) std::vector<std::vector<biorbd::rigidbody::NodeBone>>;
+%template(VecBiorbdPatch) std::vector<biorbd::rigidbody::Patch>;
+%template(MatBiorbdPatch) std::vector<std::vector<biorbd::rigidbody::Patch>>;
 }
 
 // Exposing some useful functions
@@ -81,10 +83,10 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Markers.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/NodeBone.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Contacts.h"
-%include "@CMAKE_SOURCE_DIR@/include/RigidBody/KalmanReconsMarkers.h"
-//%include "RigidBody/Patch.h"
+@SWIG_KALMAN_INCLUDE_COMMAND@
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/Patch.h"
 //%include "RigidBody/Bone.h"
-//%include "RigidBody/BoneCaracteristics.h"
+//%include "RigidBody/BoneCharacteristics.h"
 //%include "RigidBody/BoneMesh.h"
 //%include "RigidBody/IMU.h"
 //%include "RigidBody/IMUs.h"

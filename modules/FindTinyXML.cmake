@@ -1,0 +1,40 @@
+# Searches for tinyxml includes and library files
+#
+# Sets the variables
+#   TinyXML_FOUND
+#   TinyXML_INCLUDE_DIR
+#   TinyXML_LIBRARY
+
+SET (TinyXML_FOUND FALSE)
+
+FIND_PATH (TinyXML_INCLUDE_DIR tinyxml.h
+	/usr/include
+	/usr/local/include
+  ${CMAKE_INSTALL_PREFIX}/include
+)
+FIND_LIBRARY (TinyXML_LIBRARY NAMES tinyxml	PATHS
+  /usr/lib
+  /usr/local/lib
+  ${CMAKE_INSTALL_PREFIX}/lib
+)
+
+IF (TinyXML_INCLUDE_DIR AND TinyXML_LIBRARY)
+  SET (TinyXML_FOUND TRUE)
+ENDIF (TinyXML_INCLUDE_DIR AND TinyXML_LIBRARY)
+
+IF (TinyXML_FOUND)
+  IF (NOT TinyXML_FIND_QUIETLY)
+    MESSAGE(STATUS "Found TinyXML: ${TinyXML_LIBRARY}")
+  ENDIF (NOT TinyXML_FIND_QUIETLY)
+ELSE (TinyXML_FOUND)
+  IF (TinyXML_FIND_REQUIRED)
+    MESSAGE(FATAL_ERROR "Could not find TinyXML")
+  ENDIF (TinyXML_FIND_REQUIRED)
+ENDIF (TinyXML_FOUND)
+
+MARK_AS_ADVANCED (
+  TinyXML_FOUND
+  TinyXML_INCLUDE_DIR
+  TinyXML_LIBRARY
+)
+

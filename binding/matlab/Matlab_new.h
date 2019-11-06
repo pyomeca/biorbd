@@ -1,11 +1,12 @@
 #ifndef BIORBD_MATLAB_NEW_H
 #define BIORBD_MATLAB_NEW_H
 
-#include <iostream>
 #include <mex.h>
 #include "BiorbdModel.h"
 #include "ModelReader.h"
 #include "class_handle.h"
+
+#include "Utils/String.h"
 
 void Matlab_new( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
@@ -24,25 +25,18 @@ void Matlab_new( int nlhs, mxArray *plhs[],
             "You must catch the pointer address!");
     }
     char *buf = mxArrayToString(prhs[1]);
-    std::string filepath(buf); // Copier le cstring dans un std::string
+    biorbd::utils::String filepath(buf); // Copier le cstring dans un std::string
 
     // Loader le modèle musculosquelettique
     // Definition des variables globales du modele
-    if (biorbd::Reader::is_readable( filepath )){
-        try{
-            plhs[0] = convertPtr2Mat<biorbd::Model>(
-                        new biorbd::Model(biorbd::Reader::readModelFile(filepath)));
-        }
-        catch (std::string m){
-            mexErrMsgTxt(m.c_str());
-        }
+    try{
+        plhs[0] = convertPtr2Mat<biorbd::Model>(
+                    new biorbd::Model(biorbd::Reader::readModelFile(filepath)));
+    }
+    catch (std::string m){
+        mexErrMsgTxt(m.c_str());
+    }
 
-        return;
-    }
-    else {
-        std::cout << filepath << " est inexistant ou non lisible.\n";
-        (void) plhs;    // unused parameters
-        return;
-    }
+    return;
 }
 #endif // BIORBD_MATLAB_NEW_H

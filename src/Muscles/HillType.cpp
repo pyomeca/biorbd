@@ -5,7 +5,7 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "Muscles/ForceFromOrigin.h"
 #include "Muscles/ForceFromInsertion.h"
-#include "Muscles/Caracteristics.h"
+#include "Muscles/Characteristics.h"
 #include "Muscles/Geometry.h"
 #include "Muscles/StateDynamics.h"
 
@@ -31,8 +31,8 @@ biorbd::muscles::HillType::HillType() :
 biorbd::muscles::HillType::HillType(
         const biorbd::utils::String &name,
         const biorbd::muscles::Geometry &geometry,
-        const biorbd::muscles::Caracteristics &caract) :
-    biorbd::muscles::Muscle(name,geometry,caract),
+        const biorbd::muscles::Characteristics &characteristics) :
+    biorbd::muscles::Muscle(name,geometry,characteristics),
     m_damping(std::make_shared<double>()),
     m_FlCE(std::make_shared<double>()),
     m_FlPE(std::make_shared<double>()),
@@ -53,9 +53,9 @@ biorbd::muscles::HillType::HillType(
 biorbd::muscles::HillType::HillType(
         const biorbd::utils::String &name,
         const biorbd::muscles::Geometry &geometry,
-        const biorbd::muscles::Caracteristics &caract,
+        const biorbd::muscles::Characteristics &characteristics,
         const biorbd::muscles::StateDynamics &dynamicState) :
-    biorbd::muscles::Muscle(name,geometry,caract, dynamicState),
+    biorbd::muscles::Muscle(name,geometry,characteristics, dynamicState),
     m_damping(std::make_shared<double>()),
     m_FlCE(std::make_shared<double>()),
     m_FlPE(std::make_shared<double>()),
@@ -76,9 +76,9 @@ biorbd::muscles::HillType::HillType(
 biorbd::muscles::HillType::HillType(
         const biorbd::utils::String &name,
         const biorbd::muscles::Geometry &geometry,
-        const biorbd::muscles::Caracteristics &caract,
+        const biorbd::muscles::Characteristics &characteristics,
         const biorbd::muscles::PathChangers &pathChangers) :
-    biorbd::muscles::Muscle(name,geometry,caract,pathChangers),
+    biorbd::muscles::Muscle(name,geometry,characteristics,pathChangers),
     m_damping(std::make_shared<double>()),
     m_FlCE(std::make_shared<double>()),
     m_FlPE(std::make_shared<double>()),
@@ -98,10 +98,10 @@ biorbd::muscles::HillType::HillType(
 biorbd::muscles::HillType::HillType(
         const biorbd::utils::String& name,
         const biorbd::muscles::Geometry& geometry,
-        const biorbd::muscles::Caracteristics& caract,
+        const biorbd::muscles::Characteristics& characteristics,
         const biorbd::muscles::PathChangers & wrapper,
         const biorbd::muscles::StateDynamics & state) :
-    biorbd::muscles::Muscle(name,geometry,caract,wrapper,state),
+    biorbd::muscles::Muscle(name,geometry,characteristics,wrapper,state),
     m_damping(std::make_shared<double>()),
     m_FlCE(std::make_shared<double>()),
     m_FlPE(std::make_shared<double>()),
@@ -258,11 +258,11 @@ void biorbd::muscles::HillType::setType()
 }
 
 void biorbd::muscles::HillType::computeDamping(){
-    *m_damping = position().velocity() / (*m_cste_vitesseRaccourMax * m_caract->optimalLength()) * *m_cste_damping;
+    *m_damping = position().velocity() / (*m_cste_vitesseRaccourMax * m_characteristics->optimalLength()) * *m_cste_damping;
 }
 
 void biorbd::muscles::HillType::computeFlCE(const biorbd::muscles::StateDynamics &emg){
-    *m_FlCE = exp( -pow(( position().length() / m_caract->optimalLength() / (*m_cste_FlCE_1*(1-emg.activation())+1) -1 ), 2)
+    *m_FlCE = exp( -pow(( position().length() / m_characteristics->optimalLength() / (*m_cste_FlCE_1*(1-emg.activation())+1) -1 ), 2)
                   /
                   *m_cste_FlCE_2   );
 }
@@ -279,8 +279,8 @@ void biorbd::muscles::HillType::computeFvCE(){
 }
 
 void biorbd::muscles::HillType::computeFlPE(){
-    if (position().length() > caract().tendonSlackLength())
-        *m_FlPE = exp(*m_cste_FlPE_1*(position().length()/caract().optimalLength()-1) - *m_cste_FlPE_2);
+    if (position().length() > characteristics().tendonSlackLength())
+        *m_FlPE = exp(*m_cste_FlPE_1*(position().length()/characteristics().optimalLength()-1) - *m_cste_FlPE_2);
     else
         *m_FlPE = 0;
 }
@@ -289,11 +289,11 @@ double biorbd::muscles::HillType::getForceFromActivation(
         const biorbd::muscles::State &emg)
 {
     // Fonction qui permet de modifier la facon dont la multiplication est faite dans computeForce(EMG)
-    return caract().forceIsoMax() * (emg.activation() * *m_FlCE * *m_FvCE + *m_FlPE + *m_damping);
+    return characteristics().forceIsoMax() * (emg.activation() * *m_FlCE * *m_FvCE + *m_FlPE + *m_damping);
 }
 
 biorbd::muscles::StateDynamics biorbd::muscles::HillType::normalizeEMG(const biorbd::muscles::StateDynamics &emg){
     biorbd::muscles::StateDynamics emg_out(emg);
-    emg_out.excitationNorm(caract().stateMax());
+    emg_out.excitationNorm(characteristics().stateMax());
     return emg_out;
 }

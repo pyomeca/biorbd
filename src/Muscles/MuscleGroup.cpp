@@ -74,7 +74,7 @@ void biorbd::muscles::MuscleGroup::addMuscle(
         const biorbd::utils::String &name,
         biorbd::muscles::MUSCLE_TYPE type,
         const biorbd::muscles::Geometry &geometry,
-        const biorbd::muscles::Caracteristics &caracteristics,
+        const biorbd::muscles::Characteristics &characteristics,
         biorbd::muscles::STATE_TYPE stateType,
         biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
 {
@@ -92,13 +92,13 @@ void biorbd::muscles::MuscleGroup::addMuscle(
         state = std::make_shared<biorbd::muscles::StateDynamics>();
 
     if (type == biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR)
-        muscle = std::make_shared<biorbd::muscles::IdealizedActuator>(name,geometry,caracteristics, *state);
+        muscle = std::make_shared<biorbd::muscles::IdealizedActuator>(name,geometry,characteristics, *state);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL)
-        muscle = std::make_shared<biorbd::muscles::HillType>(name,geometry,caracteristics, *state);
+        muscle = std::make_shared<biorbd::muscles::HillType>(name,geometry,characteristics, *state);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN)
-        muscle = std::make_shared<biorbd::muscles::HillThelenType>(name,geometry,caracteristics, *state);
+        muscle = std::make_shared<biorbd::muscles::HillThelenType>(name,geometry,characteristics, *state);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE)
-        muscle = std::make_shared<biorbd::muscles::HillThelenTypeFatigable>(name,geometry,caracteristics, *state, dynamicFatigueType);
+        muscle = std::make_shared<biorbd::muscles::HillThelenTypeFatigable>(name,geometry,characteristics, *state, dynamicFatigueType);
     else
         biorbd::utils::Error::raise("Wrong muscle type");
     addMuscle(*muscle);
@@ -108,18 +108,18 @@ void biorbd::muscles::MuscleGroup::addMuscle(
         const biorbd::utils::String &name,
         biorbd::muscles::MUSCLE_TYPE type,
         const biorbd::muscles::Geometry &geometry,
-        const biorbd::muscles::Caracteristics &caracteristics,
+        const biorbd::muscles::Characteristics &characteristics,
         biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
 {
     std::shared_ptr<biorbd::muscles::Muscle> muscle;
     if (type == biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR)
-        muscle = std::make_shared<biorbd::muscles::IdealizedActuator>(name,geometry,caracteristics);
+        muscle = std::make_shared<biorbd::muscles::IdealizedActuator>(name,geometry,characteristics);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL)
-        muscle = std::make_shared<biorbd::muscles::HillType>(name,geometry,caracteristics);
+        muscle = std::make_shared<biorbd::muscles::HillType>(name,geometry,characteristics);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN)
-        muscle = std::make_shared<biorbd::muscles::HillThelenType>(name,geometry,caracteristics);
+        muscle = std::make_shared<biorbd::muscles::HillThelenType>(name,geometry,characteristics);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE)
-        muscle = std::make_shared<biorbd::muscles::HillThelenTypeFatigable>(name,geometry,caracteristics, dynamicFatigueType);
+        muscle = std::make_shared<biorbd::muscles::HillThelenTypeFatigable>(name,geometry,characteristics, dynamicFatigueType);
     else
         biorbd::utils::Error::raise("Wrong muscle type");
     addMuscle(*muscle);
@@ -129,7 +129,7 @@ void biorbd::muscles::MuscleGroup::addMuscle(
         const biorbd::utils::String& name,
         biorbd::muscles::MUSCLE_TYPE type,
         const biorbd::muscles::Geometry& geometry,
-        const biorbd::muscles::Caracteristics& caracteristics,
+        const biorbd::muscles::Characteristics& characteristics,
         const biorbd::muscles::PathChangers& pathChangers,
         biorbd::muscles::STATE_TYPE stateType,
         biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
@@ -146,16 +146,16 @@ void biorbd::muscles::MuscleGroup::addMuscle(
 
     if (type == biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR)
         muscle = std::make_shared<biorbd::muscles::IdealizedActuator>
-                (name,geometry,caracteristics,pathChangers,*state);
+                (name,geometry,characteristics,pathChangers,*state);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL)
         muscle = std::make_shared<biorbd::muscles::HillType>
-                (name,geometry,caracteristics,pathChangers,*state);
+                (name,geometry,characteristics,pathChangers,*state);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN)
         muscle = std::make_shared<biorbd::muscles::HillThelenType>
-                (name,geometry,caracteristics,pathChangers,*state);
+                (name,geometry,characteristics,pathChangers,*state);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE)
         muscle = std::make_shared<biorbd::muscles::HillThelenTypeFatigable>(
-                    name,geometry,caracteristics,pathChangers,*state,dynamicFatigueType);
+                    name,geometry,characteristics,pathChangers,*state,dynamicFatigueType);
     else
         biorbd::utils::Error::raise("Wrong muscle type");
     addMuscle(*muscle);
@@ -165,20 +165,20 @@ void biorbd::muscles::MuscleGroup::addMuscle(
         const biorbd::utils::String &name,
         biorbd::muscles::MUSCLE_TYPE type,
         const biorbd::muscles::Geometry &geometry,
-        const biorbd::muscles::Caracteristics &caracteristics,
+        const biorbd::muscles::Characteristics &characteristics,
         const biorbd::muscles::PathChangers &pathChangers,
         biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
 {
     std::shared_ptr<biorbd::muscles::Muscle> muscle;
 
     if (type == biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR)
-        muscle = std::make_shared<biorbd::muscles::IdealizedActuator>(name,geometry,caracteristics,pathChangers);
+        muscle = std::make_shared<biorbd::muscles::IdealizedActuator>(name,geometry,characteristics,pathChangers);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL)
-        muscle = std::make_shared<biorbd::muscles::HillType>(name,geometry,caracteristics,pathChangers);
+        muscle = std::make_shared<biorbd::muscles::HillType>(name,geometry,characteristics,pathChangers);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN)
-        muscle = std::make_shared<biorbd::muscles::HillThelenType>(name,geometry,caracteristics,pathChangers);
+        muscle = std::make_shared<biorbd::muscles::HillThelenType>(name,geometry,characteristics,pathChangers);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE)
-        muscle = std::make_shared<biorbd::muscles::HillThelenTypeFatigable>(name,geometry,caracteristics,pathChangers,dynamicFatigueType);
+        muscle = std::make_shared<biorbd::muscles::HillThelenTypeFatigable>(name,geometry,characteristics,pathChangers,dynamicFatigueType);
     else
         biorbd::utils::Error::raise("Wrong muscle type");
     addMuscle(*muscle);

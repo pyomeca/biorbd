@@ -14,21 +14,21 @@ public:
     IdealizedActuator(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caract);
+            const biorbd::muscles::Characteristics& characteristics);
     IdealizedActuator(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::StateDynamics& dynamicState);
     IdealizedActuator(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::PathChangers& pathChangers);
     IdealizedActuator(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
-            const biorbd::muscles::Caracteristics& caract,
+            const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::PathChangers& pathChangers,
             const biorbd::muscles::StateDynamics& dynamicState);
     IdealizedActuator(

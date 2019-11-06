@@ -56,23 +56,21 @@ void Matlab_segmentAngularMomentum( int, mxArray *plhs[],
     // Préparer la sortie conditionnelle (tous si idx==-1, seulement celui demandé sinon)
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrame; ++i){
-        std::vector<RigidBodyDynamics::Math::Vector3d> am_all(model->CalcSegmentsAngularMomentum (*model, *(Q.begin()+i), *(QDot.begin()+i), true));
+        std::vector<biorbd::utils::Node3d> am_all(model->CalcSegmentsAngularMomentum (*model, *(Q.begin()+i), *(QDot.begin()+i), true));
         if (idx==-1){
             // Remplir le output
-            std::vector<RigidBodyDynamics::Math::Vector3d>::iterator it=am_all.begin();
-            for (unsigned int i=0; (it+i)!=am_all.end(); ++i){
-                angularMomentum[cmp*3  ] = (*(it+i))(0);
-                angularMomentum[cmp*3+1] = (*(it+i))(1);
-                angularMomentum[cmp*3+2] = (*(it+i))(2);
+            for (auto am : am_all){
+                angularMomentum[cmp*3  ] = am(0);
+                angularMomentum[cmp*3+1] = am(1);
+                angularMomentum[cmp*3+2] = am(2);
                 cmp++;
             }
         }
         else{
             // Remplir le output
-            std::vector<RigidBodyDynamics::Math::Vector3d>::iterator it=am_all.begin();
-            angularMomentum[i*3+0] = (*(it+idx))(0);
-            angularMomentum[i*3+1] = (*(it+idx))(1);
-            angularMomentum[i*3+2] = (*(it+idx))(2);
+            angularMomentum[i*3+0] = am_all[0](0);
+            angularMomentum[i*3+1] = am_all[0](1);
+            angularMomentum[i*3+2] = am_all[0](2);
         }
     }
 

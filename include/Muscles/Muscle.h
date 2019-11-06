@@ -12,7 +12,7 @@ class Node3d;
 
 namespace muscles {
 class Geometry;
-class Caracteristics;
+class Characteristics;
 class State;
 
 class BIORBD_API Muscle : public biorbd::muscles::Compound
@@ -22,21 +22,21 @@ public:
     Muscle(
             const biorbd::utils::String& name, // Nom du muscle
             const biorbd::muscles::Geometry& position, // Position origine/insertion
-            const biorbd::muscles::Caracteristics& caract); // Set d'un état actuel au départ
+            const biorbd::muscles::Characteristics& characteristics); // Set d'un état actuel au départ
     Muscle(
             const biorbd::utils::String& name, // Nom du muscle
             const biorbd::muscles::Geometry& position, // Position origine/insertion
-            const biorbd::muscles::Caracteristics& caract, // Set d'un état actuel au départ
+            const biorbd::muscles::Characteristics& characteristics, // Set d'un état actuel au départ
             const biorbd::muscles::StateDynamics& dynamicState);
     Muscle(
             const biorbd::utils::String& name, // Nom du muscle
             const biorbd::muscles::Geometry& position, // Position origine/insertion
-            const biorbd::muscles::Caracteristics& caract, // Caractéristiques du muscle
+            const biorbd::muscles::Characteristics& characteristics, // Muscle characteristics
             const biorbd::muscles::PathChangers& wrap);
     Muscle(
             const biorbd::utils::String&, // Nom du muscle
             const biorbd::muscles::Geometry&, // Position origine/insertion
-            const biorbd::muscles::Caracteristics&, // Caractéristiques du muscle
+            const biorbd::muscles::Characteristics&, // Muscle characteristics
             const biorbd::muscles::PathChangers&, // Set de wrapping objects
             const biorbd::muscles::StateDynamics&); // Set d'un état actuel au départ
     Muscle(
@@ -78,9 +78,9 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot); // Update de la position de ce muscle
 
     const biorbd::muscles::Geometry& position() const;
-    const biorbd::muscles::Caracteristics& caract() const;
+    const biorbd::muscles::Characteristics& characteristics() const;
     void setPosition(const biorbd::muscles::Geometry &val);
-    void setCaract(const biorbd::muscles::Caracteristics &val);
+    void setCharacteristics(const biorbd::muscles::Characteristics &val);
     const std::vector<biorbd::utils::Node3d>& musclesPointsInGlobal(
             biorbd::rigidbody::Joints &j,
             const biorbd::rigidbody::GeneralizedCoordinates &Q);
@@ -96,7 +96,7 @@ protected:
     virtual void computeForce(const biorbd::muscles::State &emg); // Calcul des forces
     virtual double getForceFromActivation(const biorbd::muscles::State &emg) = 0;
     std::shared_ptr<biorbd::muscles::Geometry> m_position;
-    std::shared_ptr<biorbd::muscles::Caracteristics> m_caract;
+    std::shared_ptr<biorbd::muscles::Characteristics> m_characteristics;
     std::shared_ptr<biorbd::muscles::StateDynamics> m_state;
 
 };

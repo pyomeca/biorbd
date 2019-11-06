@@ -300,6 +300,41 @@ TEST(Matrix, Copy){
     EXPECT_NEAR(DeepCopyLater(2, 2), 10, requiredPrecision);
 }
 
+TEST(RotoTrans, unitTest){
+    biorbd::utils::RotoTrans rt(
+                Eigen::Vector3d(1, 1, 1), Eigen::Vector3d(1, 1, 1), "xyz");
+    Eigen::Matrix4d rtExpected;
+    rtExpected <<
+            0.29192658172642888, -0.45464871341284091,  0.84147098480789650, 1,
+            0.83722241402998721, -0.30389665486452672, -0.45464871341284091, 1,
+            0.46242567005663016,  0.83722241402998732,  0.29192658172642888, 1,
+            0, 0, 0, 1;
+    for (unsigned int i = 0; i<4; ++i){
+        for (unsigned int j = 0; j<4; ++j){
+            EXPECT_NEAR(rt(i, j), rtExpected(i,j), requiredPrecision);
+        }
+    }
+
+    biorbd::utils::RotoTrans rt_t(rt.transpose());
+    Eigen::Matrix4d rtTransposedExpected;
+    rtTransposedExpected <<
+            0.29192658172642888,  0.83722241402998721, 0.46242567005663016, -1.5915746658130461,
+           -0.45464871341284091, -0.30389665486452672, 0.83722241402998732, -0.07867704575261969,
+            0.84147098480789650, -0.45464871341284091, 0.29192658172642888, -0.67874885312148447,
+            0, 0, 0, 1;
+    for (unsigned int i = 0; i<4; ++i){
+        for (unsigned int j = 0; j<4; ++j){
+            EXPECT_NEAR(rt_t(i, j), rtTransposedExpected(i,j),
+                        requiredPrecision);
+        }
+    }
+
+    biorbd::utils::Node3d marker(1, 1, 1);
+    marker.applyRT(rt_t);
+    for (unsigned int i=0; i<3; ++i)
+        EXPECT_NEAR(marker[i], 0, requiredPrecision);
+}
+
 TEST(RotoTransNode, Copy){
     Eigen::Matrix4d tp;
     tp << 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15;

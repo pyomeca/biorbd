@@ -1,5 +1,5 @@
-#ifndef BIORBD_RIGIDBODY_BONE_CARACTERISTICS_H
-#define BIORBD_RIGIDBODY_BONE_CARACTERISTICS_H
+#ifndef BIORBD_RIGIDBODY_BONE_CHARACTERISTICS_H
+#define BIORBD_RIGIDBODY_BONE_CHARACTERISTICS_H
 
 #include <memory>
 #include <rbdl/Body.h>
@@ -13,21 +13,21 @@ class Node3d;
 namespace rigidbody {
 class BoneMesh;
 
-class BIORBD_API BoneCaracteristics : public RigidBodyDynamics::Body
+class BIORBD_API BoneCharacteristics : public RigidBodyDynamics::Body
 {
 public:
-    BoneCaracteristics();
-    BoneCaracteristics(
+    BoneCharacteristics();
+    BoneCharacteristics(
             double mass, // Mass of the body
             const biorbd::utils::Node3d &com, // Center of Mass
             const RigidBodyDynamics::Math::Matrix3d &inertia); // Inertia matrix
-    BoneCaracteristics(
+    BoneCharacteristics(
             double mass, // Mass of the body
             const biorbd::utils::Node3d &com, // Center of Mass
             const RigidBodyDynamics::Math::Matrix3d &inertia, // Inertia matrix
             const biorbd::rigidbody::BoneMesh &mesh); // position des meshings de l'os
-    biorbd::rigidbody::BoneCaracteristics DeepCopy() const;
-    void DeepCopy(const biorbd::rigidbody::BoneCaracteristics& other);
+    biorbd::rigidbody::BoneCharacteristics DeepCopy() const;
+    void DeepCopy(const biorbd::rigidbody::BoneCharacteristics& other);
 
     // Set and Get
     double length() const;
@@ -43,4 +43,4 @@ protected:
 
 }}
 
-#endif // BIORBD_RIGIDBODY_BONE_CARACTERISTICS_H
+#endif // BIORBD_RIGIDBODY_BONE_CHARACTERISTICS_H

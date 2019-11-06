@@ -20,7 +20,7 @@ class GeneralizedTorque;
 class NodeBone;
 class Patch;
 class Bone;
-class BoneCaracteristics;
+class BoneCharacteristics;
 class BoneMesh;
 class Integrator;
 
@@ -39,14 +39,14 @@ public:
             const biorbd::utils::String &parentName, // Nom du segment
             const biorbd::utils::String &translationSequence,
             const biorbd::utils::String &rotationSequence, // Séquence de Cardan pour classer les dof en rotation
-            const biorbd::rigidbody::BoneCaracteristics& caract, // Mase, Centre de masse du segment, Inertie du segment, etc.
+            const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mase, Centre de masse du segment, Inertie du segment, etc.
             const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, // Transformation du parent vers l'enfant
             int forcePlates=-1); // Numéro de la plateforme de force attaché à cet os
     unsigned int AddBone(
             const biorbd::utils::String &segmentName, // Nom du segment
             const biorbd::utils::String &parentName, // Nom du segment
             const biorbd::utils::String &translationSequence, // Séquence de Cardan pour classer les dof en rotation
-            const biorbd::rigidbody::BoneCaracteristics& rotationSequence, // Mase, Centre de masse du segment, Inertie du segment, etc.
+            const biorbd::rigidbody::BoneCharacteristics& rotationSequence, // Mase, Centre de masse du segment, Inertie du segment, etc.
             const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, // Transformation du parent vers l'enfant
             int forcePlates=-1); // Numéro de la plateforme de force attaché à cet os
 
@@ -199,6 +199,10 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             unsigned int  idx,
             bool updateKin = true);
+    std::vector<biorbd::utils::Matrix> meshPointsInMatrix(
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            bool updateKin = true
+            );
     std::vector<std::vector<Patch> > meshPatch() const;
     const std::vector<biorbd::rigidbody::Patch> &meshPatch(unsigned int i) const;
     std::vector<biorbd::rigidbody::BoneMesh> boneMesh() const;

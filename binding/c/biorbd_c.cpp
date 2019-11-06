@@ -1,10 +1,14 @@
 #include "biorbd_c.h"
 
+#include "rbdl/Dynamics.h"
+
 #include "ModelReader.h"
 #include "ModelWriter.h"
 #include "Utils/String.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/RotoTransNode.h"
+#include "Utils/Vector.h"
+#include "Utils/Matrix.h"
 #include "RigidBody/Bone.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
@@ -21,7 +25,7 @@ biorbd::Model* c_biorbdModel(
 void c_deleteBiorbdModel(
         biorbd::Model* model)
 {
-	delete model;
+     delete model;
 }
 void c_writeBiorbdModel(
         biorbd::Model* model,
@@ -40,7 +44,7 @@ void c_boneRotationSequence(
 {
     // Memory for seq must be already allocated
     biorbd::utils::String sequence(m->bone(segName).seqR());
-    strcpy(seq, sequence.c_str());
+    snprintf(seq, sequence.length() + 1, "%s", sequence.c_str());
 }
 void c_localJCS(
         biorbd::Model* m,
@@ -64,8 +68,40 @@ void c_globalJCS(
     // Dispatch de l'output
     dispatchRToutput(pre_jcs, jcs);
 }
+void c_inverseDynamics(
+        biorbd::Model *model,
+        const double *q,
+        const double *qdot,
+        const double *qddot,
+        double *tau) {
+    biorbd::rigidbody::GeneralizedCoordinates Q(
+                dispatchQinput(model, q));
+    biorbd::rigidbody::GeneralizedCoordinates Qdot(
+                dispatchQinput(model, qdot));
+    biorbd::rigidbody::GeneralizedCoordinates Qddot(
+                dispatchQinput(model, qddot));
 
+    biorbd::rigidbody::GeneralizedTorque Tau(*model);
+    RigidBodyDynamics::InverseDynamics(*model, Q, Qdot, Qddot, Tau);
 
+    dispatchTauOutput(Tau, tau);
+}
+void c_massMatrix(
+        biorbd::Model* model,
+        const double* q,
+        double* massMatrix) {
+    unsigned int nQ(model->nbQ());
+    biorbd::rigidbody::GeneralizedCoordinates Q(
+                dispatchQinput(model, q));
+
+    RigidBodyDynamics::Math::MatrixNd Mass(nQ, nQ);
+    Mass.setZero();
+    RigidBodyDynamics::CompositeRigidBodyAlgorithm(*model, Q, Mass);
+
+    // Remplir l'output
+    for (unsigned int i=0; i<nQ*nQ; ++i)
+        massMatrix[i] = Mass(i);
+}
 
 
 // dof functions
@@ -166,7 +202,7 @@ biorbd::rigidbody::KalmanReconsIMU* c_BiorbdKalmanReconsIMU(
     // Créer un pointeur sur un filtre de kalman
     biorbd::rigidbody::KalmanReconsIMU* kalman = new biorbd::rigidbody::KalmanReconsIMU(
                 *model, biorbd::rigidbody::KalmanReconsIMU::KalmanParam(freq, noiseF, errorF));
-	
+
     // Mettre le initial guess
     biorbd::rigidbody::GeneralizedCoordinates e_QinitialGuess(*model);
     if (QinitialGuess != nullptr){
@@ -174,7 +210,7 @@ biorbd::rigidbody::KalmanReconsIMU* c_BiorbdKalmanReconsIMU(
             e_QinitialGuess[static_cast<int>(i)] = QinitialGuess[i];
         kalman->setInitState(&e_QinitialGuess);
     }
-		
+
     return kalman;
 }
 void c_deleteBiorbdKalmanReconsIMU(biorbd::rigidbody::KalmanReconsIMU* model){
@@ -189,18 +225,17 @@ void c_BiorbdKalmanReconsIMUstep(
         double* QDDot)
 {
     // Copier les valeurs des matrices de rotation des IMUs dans un stl Vector
-    Eigen::VectorXd T(3*3*model->nIMUs()); // Matrice 3*3 * nIMU
+    biorbd::utils::Vector T(3*3*model->nIMUs()); // Matrice 3*3 * nIMU
     for (unsigned int i=0; i<model->nIMUs(); ++i)
         for (unsigned int j=0; j<9; ++j){ // matrice 3*3
             T[9*i+j] = imu[9*i+j];
         }
-	
     // Se faire des entrés sur Q, QDot et QDDot
     biorbd::rigidbody::GeneralizedCoordinates e_Q(*model), e_QDot(*model), e_QDDot(*model);
 
     // Faire le filtre
     kalman->reconstructFrame(*model, T, &e_Q, &e_QDot, &e_QDDot);
-	
+
     // Transcrire les réponses vers les arguments de sortie
     dispatchQoutput(e_Q, Q);
     dispatchQoutput(e_QDot, QDot);
@@ -265,6 +300,22 @@ void c_transformMatrixToCardan(
 }
 
 
+void c_solveLinearSystem (
+        const double* A,
+        int nCols,
+        int nRows,
+        const double* b,
+        double* x) {
+    biorbd::utils::Matrix matA(dispatchMatrixInput(A, nRows,  nCols));
+    biorbd::utils::Vector vecB(dispatchVectorInput(b, nRows));
+
+    // Solving using Eigen
+    biorbd::utils::Vector solX(matA.householderQr().solve(vecB));
+
+    dispatchVectorOutput(solX, x);
+}
+
+
 // Fonctions de dispatch des données d'entré ou de sortie
 biorbd::utils::Node3d dispatchMarkersInput(
         const double * pos)
@@ -282,11 +333,11 @@ void dispatchMarkersOutput(
         }
     }
 }
+
 biorbd::rigidbody::GeneralizedCoordinates dispatchQinput(
         biorbd::Model* model,
         const double* Q)
 {
-    // Prepare parameters
     biorbd::rigidbody::GeneralizedCoordinates eQ(*model);
     for (int i = 0; i < static_cast<int>(model->nbQ()); ++i){
         eQ[i] = Q[i];
@@ -297,6 +348,14 @@ void dispatchQoutput(const biorbd::rigidbody::GeneralizedCoordinates &eQ, double
     // Warnging Q must already be allocated
     for (unsigned int i=0; i<eQ.size(); ++i){
         Q[i] = eQ[i];
+    }
+}
+void dispatchTauOutput(
+        const biorbd::rigidbody::GeneralizedTorque &eTau,
+        double* Tau) {
+    // Warnging Q must already be allocated
+    for (unsigned int i = 0; i < eTau.size(); ++i) {
+        Tau[i] = eTau[i];
     }
 }
 void dispatchDoubleOutput(
@@ -339,6 +398,37 @@ void dispatchRToutput(
     }
 }
 
+biorbd::utils::Matrix dispatchMatrixInput(
+        const double* matXd, 
+        int nRows,
+        int nCols) {
+    biorbd::utils::Matrix res(nRows,nCols);
+    for (int i = 0; i < nCols; ++i) {
+        for (int j = 0; j < nRows; ++j) {
+            res(j, i) = matXd[j + i * nCols];
+        }
+    } 
+    return res;
+}
+
+biorbd::utils::Vector dispatchVectorInput(
+        const double* vecXd, 
+        int nElements) {
+    biorbd::utils::Vector res(nElements);
+    for (int i = 0; i < nElements; ++i) {
+        res(i) = vecXd[i];
+    }
+    return res;
+}
+void dispatchVectorOutput(
+        const biorbd::utils::Vector& vect, 
+        double* vect_out) {
+    // Warnging vect_out must already be allocated
+    for (int i = 0; i < vect.size(); i++) {
+        vect_out[i] = vect[i];
+    }
+}
+
 
 
 
@@ -348,9 +438,9 @@ void dispatchRToutput(
 
 //// Spécifique à des projets (IMU sous Unity)
 //S2MLIBRARY_UNITY_API void c_alignSpecificAxisWithParentVertical(const double* parentRT, const double * childRT, int idxAxe, double * rotation){
-//	// Matrices à aliger (axe 2 de r1 avec axe idxAxe de r2)
-//	s2mAttitude r1(dispatchRTinput(parentRT));
-//	s2mAttitude r2(dispatchRTinput(childRT));
+//    // Matrices à aliger (axe 2 de r1 avec axe idxAxe de r2)
+//    s2mAttitude r1(dispatchRTinput(parentRT));
+//    s2mAttitude r2(dispatchRTinput(childRT));
 
 //    s2mAttitude rotationMat = s2mIMU_Unity_Optim::alignSpecificAxisWithParentVertical(r1, r2, idxAxe);
 

@@ -5,7 +5,7 @@ set(RIGIDBODY_MODULE_NAME ${MASTER_PROJECT_NAME}_rigidbody PARENT_SCOPE)
 # Add the relevant files
 set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/Bone.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/BoneCaracteristics.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/BoneCharacteristics.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/BoneMesh.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Contacts.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedCoordinates.cpp
@@ -27,10 +27,14 @@ if (NOT SKIP_KALMAN)
 endif()
 
 # Create the library
-if (BUILD_SHARED_LIBS)
-    add_library(${PROJECT_NAME} SHARED ${SRC_LIST_MODULE})
-else()
+if (WIN32)
     add_library(${PROJECT_NAME} STATIC ${SRC_LIST_MODULE})
+else()
+    if (BUILD_SHARED_LIBS)
+        add_library(${PROJECT_NAME} SHARED ${SRC_LIST_MODULE})
+    else()
+        add_library(${PROJECT_NAME} STATIC ${SRC_LIST_MODULE})
+    endif()
 endif()
 
 # Add the dependencies for insuring build order

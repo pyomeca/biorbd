@@ -11,7 +11,7 @@
 #include "Utils/Node3d.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/BoneMesh.h"
-#include "RigidBody/BoneCaracteristics.h"
+#include "RigidBody/BoneCharacteristics.h"
 #include "RigidBody/IMU.h"
 #include "RigidBody/Patch.h"
 #include "RigidBody/NodeBone.h"
@@ -31,7 +31,7 @@
 #include "Muscles/WrappingCylinder.h"
 #include "Muscles/FatigueParameters.h"
 #include "Muscles/State.h"
-#include "Muscles/Caracteristics.h"
+#include "Muscles/Characteristics.h"
 #include "Muscles/ViaPoint.h"
 #include "Muscles/PathChangers.h"
 #endif // MODULE_MUSCLES
@@ -202,13 +202,17 @@ void biorbd::Reader::readModelFile(
                             boneMesh = readBoneMeshFileBiorbdBones(path.folder() + filePath.relativePath());
                         else if (!filePath.extension().compare("ply"))
                             boneMesh = readBoneMeshFilePly(path.folder() + filePath.relativePath());
+#ifdef MODULE_VTP_FILES_READER
+                        else if (!filePath.extension().compare("vtp"))
+                            boneMesh = readBoneMeshFileVtp(path.folder() + filePath.relativePath());
+#endif
                         else
                             biorbd::utils::Error::raise(filePath.extension() + " is an unrecognized mesh file");
                     }
                 }
                 RigidBodyDynamics::Math::SpatialTransform RT(RT_R, RT_T);
-                biorbd::rigidbody::BoneCaracteristics caract(mass,com,inertia,boneMesh);
-                model->AddBone(name, parent_str, trans, rot, caract, RT, PF);
+                biorbd::rigidbody::BoneCharacteristics characteristics(mass,com,inertia,boneMesh);
+                model->AddBone(name, parent_str, trans, rot, characteristics, RT, PF);
             }
             else if (!main_tag.tolower().compare("root_actuated")){
                 bool rootActuated = true;
@@ -694,8 +698,8 @@ void biorbd::Reader::readModelFile(
                             biorbd::utils::Node3d(origin_pos, name + "_origin", model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
                             biorbd::utils::Node3d(insert_pos, name + "_insertion", model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
                 biorbd::muscles::State stateMax(maxExcitation, maxActivation);
-                biorbd::muscles::Caracteristics caract(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax, fatigueParameters);
-                model->muscleGroup(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,caract,biorbd::muscles::PathChangers(),stateType,dynamicFatigueType);
+                biorbd::muscles::Characteristics characteristics(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax, fatigueParameters);
+                model->muscleGroup(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,characteristics,biorbd::muscles::PathChangers(),stateType,dynamicFatigueType);
     #else // MODULE_MUSCLES
             biorbd::utils::Error::raise("Biorbd was build without the module Muscles but the model defines a muscle");
     #endif // MODULE_MUSCLES
@@ -1196,7 +1200,9 @@ void biorbd::Reader::readViconForceFile(
     }
 }
 
-std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::Reader::readViconForceFile(const biorbd::utils::String &path){
+std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>>
+biorbd::Reader::readViconForceFile(
+        const biorbd::utils::Path &path) {
     // Lire le fichier
     std::vector<std::vector<unsigned int>> frame;
     std::vector<unsigned int> frequency;// Acquisition frequency
@@ -1490,6 +1496,95 @@ biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFilePly(
     }
     return mesh;
 }
+
+#ifdef MODULE_VTP_FILES_READER
+#include "tinyxml.h"
+biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFileVtp(
+        const biorbd::utils::Path &path) {
+    // Read an opensim formatted mesh file
+
+    // Read the file
+#ifdef _WIN32
+    biorbd::utils::String filepath( biorbd::utils::Path::toWindowsFormat(
+                    path.absolutePath()).c_str());
+#else
+    biorbd::utils::String filepath( path.absolutePath().c_str() );
+#endif
+
+    TiXmlDocument doc(filepath);
+    biorbd::utils::Error::check(doc.LoadFile(), "Failed to load file " + filepath);
+    TiXmlHandle hDoc(&doc);
+    biorbd::rigidbody::BoneMesh mesh;
+    mesh.setPath(path);
+
+    // Navigate up to VTKFile/PolyData/Piece
+    TiXmlHandle polydata =
+            hDoc.ChildElement("VTKFile", 0)
+            .ChildElement("PolyData", 0)
+            .ChildElement("Piece", 0);
+    int numberOfPoints, NumberOfPolys;
+    polydata.ToElement()->QueryIntAttribute("NumberOfPoints", &numberOfPoints);
+    polydata.ToElement()->QueryIntAttribute("NumberOfPolys", &NumberOfPolys);
+
+    biorbd::utils::String field;
+
+    // Get the points
+    {
+        biorbd::utils::String points(
+                    polydata.ChildElement("Points", 0)
+                    .ChildElement("DataArray", 0).Element()->GetText());
+        std::stringstream ss( points );
+        for (int i = 0; i < numberOfPoints; ++i){
+            double x, y, z;
+            {
+                getline( ss, field, ' ' );
+                std::stringstream fs( field );
+                fs >> x;
+            }
+            {
+                getline( ss, field, ' ' );
+                std::stringstream fs( field );
+                fs >> y;
+            }
+            {
+                getline( ss, field, ' ' );
+                std::stringstream fs( field );
+                fs >> z;
+            }
+            mesh.addPoint(biorbd::utils::Node3d(x, y, z));
+        }
+    }
+
+    // Get the patches
+    {
+        biorbd::utils::String polys(
+                    polydata.ChildElement("Polys", 0)
+                    .ChildElement("DataArray", 0).Element()->GetText());
+        std::stringstream ss( polys );
+        for (int i = 0; i < NumberOfPolys; ++i){
+            int vertex1, vertex2, vertex3;
+            {
+                getline( ss, field, ' ' );
+                std::stringstream fs( field );
+                fs >> vertex1;
+            }
+            {
+                getline( ss, field, ' ' );
+                std::stringstream fs( field );
+                fs >> vertex2;
+            }
+            {
+                getline( ss, field, ' ' );
+                std::stringstream fs( field );
+                fs >> vertex3;
+            }
+            mesh.addPatch(Eigen::Vector3i(vertex1, vertex2, vertex3));
+        }
+    }
+
+    return mesh;
+}
+#endif  // MODULE_VTP_FILES_READER
 
 
 std::vector<std::vector<biorbd::utils::Node3d>>

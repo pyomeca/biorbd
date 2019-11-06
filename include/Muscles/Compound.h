@@ -19,7 +19,7 @@ class GeneralizedCoordinates;
 
 namespace muscles {
 class Force;
-class Caracteristics;
+class Characteristics;
 class PathChangers;
 class StateDynamics;
 

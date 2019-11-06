@@ -7,14 +7,14 @@
 #include "Muscles/PathChangers.h"
 #include "Muscles/StateDynamics.h"
 #include "Muscles/StateDynamicsBuchanan.h"
-#include "Muscles/Caracteristics.h"
+#include "Muscles/Characteristics.h"
 #include "Muscles/Geometry.h"
 #include "Muscles/Force.h"
 
 biorbd::muscles::Muscle::Muscle() :
     biorbd::muscles::Compound(),
     m_position(std::make_shared<biorbd::muscles::Geometry>()),
-    m_caract(std::make_shared<biorbd::muscles::Caracteristics>()),
+    m_characteristics(std::make_shared<biorbd::muscles::Characteristics>()),
     m_state(std::make_shared<biorbd::muscles::StateDynamics>())
 {
 
@@ -23,10 +23,10 @@ biorbd::muscles::Muscle::Muscle() :
 biorbd::muscles::Muscle::Muscle(
         const biorbd::utils::String & name,
         const biorbd::muscles::Geometry & position,
-        const biorbd::muscles::Caracteristics &caract) :
+        const biorbd::muscles::Characteristics &characteristics) :
     biorbd::muscles::Compound (name),
     m_position(std::make_shared<biorbd::muscles::Geometry>(position)),
-    m_caract(std::make_shared<biorbd::muscles::Caracteristics>(caract)),
+    m_characteristics(std::make_shared<biorbd::muscles::Characteristics>(characteristics)),
     m_state(std::make_shared<biorbd::muscles::StateDynamics>())
 {
 
@@ -35,11 +35,11 @@ biorbd::muscles::Muscle::Muscle(
 biorbd::muscles::Muscle::Muscle(
         const biorbd::utils::String &name,
         const biorbd::muscles::Geometry &position,
-        const biorbd::muscles::Caracteristics &caract,
+        const biorbd::muscles::Characteristics &characteristics,
         const biorbd::muscles::StateDynamics &dynamicState) :
     biorbd::muscles::Compound (name),
     m_position(std::make_shared<biorbd::muscles::Geometry>(position)),
-    m_caract(std::make_shared<biorbd::muscles::Caracteristics>(caract)),
+    m_characteristics(std::make_shared<biorbd::muscles::Characteristics>(characteristics)),
     m_state(std::make_shared<biorbd::muscles::StateDynamics>(dynamicState))
 {
 
@@ -48,11 +48,11 @@ biorbd::muscles::Muscle::Muscle(
 biorbd::muscles::Muscle::Muscle(
         const biorbd::utils::String &name,
         const biorbd::muscles::Geometry &position,
-        const biorbd::muscles::Caracteristics &caract,
+        const biorbd::muscles::Characteristics &characteristics,
         const biorbd::muscles::PathChangers &wrap) :
     biorbd::muscles::Compound (name, wrap),
     m_position(std::make_shared<biorbd::muscles::Geometry>(position)),
-    m_caract(std::make_shared<biorbd::muscles::Caracteristics>(caract)),
+    m_characteristics(std::make_shared<biorbd::muscles::Characteristics>(characteristics)),
     m_state(std::make_shared<biorbd::muscles::StateDynamics>())
 {
 
@@ -61,7 +61,7 @@ biorbd::muscles::Muscle::Muscle(
 biorbd::muscles::Muscle::Muscle(const biorbd::muscles::Muscle &muscle) :
     biorbd::muscles::Compound (muscle),
     m_position(muscle.m_position),
-    m_caract(muscle.m_caract),
+    m_characteristics(muscle.m_characteristics),
     m_state(muscle.m_state)
 {
 
@@ -71,7 +71,7 @@ biorbd::muscles::Muscle::Muscle(
         const std::shared_ptr<biorbd::muscles::Muscle> muscle) :
     biorbd::muscles::Compound (muscle),
     m_position(muscle->m_position),
-    m_caract(muscle->m_caract),
+    m_characteristics(muscle->m_characteristics),
     m_state(muscle->m_state)
 {
 
@@ -80,12 +80,12 @@ biorbd::muscles::Muscle::Muscle(
 biorbd::muscles::Muscle::Muscle(
         const biorbd::utils::String& name,
         const biorbd::muscles::Geometry& g,
-        const biorbd::muscles::Caracteristics& c,
+        const biorbd::muscles::Characteristics& c,
         const biorbd::muscles::PathChangers& w,
         const biorbd::muscles::StateDynamics& s) :
     biorbd::muscles::Compound(name,w),
     m_position(std::make_shared<biorbd::muscles::Geometry>(g)),
-    m_caract(std::make_shared<biorbd::muscles::Caracteristics>(c)),
+    m_characteristics(std::make_shared<biorbd::muscles::Characteristics>(c)),
     m_state(std::make_shared<biorbd::muscles::StateDynamics>())
 {
     setState(s);
@@ -101,7 +101,7 @@ biorbd::muscles::Muscle::~Muscle()
 void biorbd::muscles::Muscle::DeepCopy(const biorbd::muscles::Muscle &other)
 {
     *m_position = other.m_position->DeepCopy();
-    *m_caract = other.m_caract->DeepCopy();
+    *m_characteristics = other.m_characteristics->DeepCopy();
     *m_state = other.m_state->DeepCopy();
 }
 
@@ -111,7 +111,7 @@ void biorbd::muscles::Muscle::updateOrientations(
         int updateKin)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(model,*m_caract,*m_pathChanger,&Q,nullptr,updateKin);
+    m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
 }
 void biorbd::muscles::Muscle::updateOrientations(
         biorbd::rigidbody::Joints& model,
@@ -120,13 +120,13 @@ void biorbd::muscles::Muscle::updateOrientations(
         int updateKin)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(model,*m_caract,*m_pathChanger,&Q,&Qdot,updateKin);
+    m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,&Qdot,updateKin);
 }
 void biorbd::muscles::Muscle::updateOrientations(
         std::vector<biorbd::utils::Node3d>& musclePointsInGlobal,
         biorbd::utils::Matrix &jacoPointsInGlobal){
     // Update de la position des insertions et origines
-    m_position->updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,*m_caract,nullptr);
+    m_position->updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,*m_characteristics,nullptr);
 }
 void biorbd::muscles::Muscle::updateOrientations(
         std::vector<biorbd::utils::Node3d>& musclePointsInGlobal,
@@ -134,7 +134,7 @@ void biorbd::muscles::Muscle::updateOrientations(
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,*m_caract,&Qdot);
+    m_position->updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,*m_characteristics,&Qdot);
 }
 
 const biorbd::muscles::Geometry &biorbd::muscles::Muscle::position() const {
@@ -147,7 +147,7 @@ double biorbd::muscles::Muscle::length(
         int updateKin)
 {
     if (updateKin != 0)
-        m_position->updateKinematics(model,*m_caract,*m_pathChanger,&Q,nullptr,updateKin);
+        m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
 
     return position().length();
 }
@@ -158,7 +158,7 @@ double biorbd::muscles::Muscle::musculoTendonLength(
         int updateKin)
 {
     if (updateKin != 0)
-        m_position->updateKinematics(m,*m_caract,*m_pathChanger,&Q,nullptr,updateKin);
+        m_position->updateKinematics(m,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
 
     return m_position->musculoTendonLength();
 }
@@ -170,14 +170,14 @@ double biorbd::muscles::Muscle::velocity(
         bool updateKin)
 {
     if (updateKin)
-        m_position->updateKinematics(model,*m_caract,*m_pathChanger,&Q,&Qdot);
+        m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,&Qdot);
 
     return m_position->velocity();
 }
 
 double biorbd::muscles::Muscle::activationDot(const biorbd::muscles::StateDynamics &s, bool already)
 {
-    return m_state->timeDerivativeActivation(s, caract(), already);
+    return m_state->timeDerivativeActivation(s, characteristics(), already);
 }
 
 void biorbd::muscles::Muscle::computeForce(const biorbd::muscles::State &emg)
@@ -191,7 +191,7 @@ const std::vector<biorbd::utils::Node3d>& biorbd::muscles::Muscle::musclesPoints
         biorbd::rigidbody::Joints &m,
         const biorbd::rigidbody::GeneralizedCoordinates &Q)
 {
-    m_position->updateKinematics(m,*m_caract,*m_pathChanger,&Q,nullptr);
+    m_position->updateKinematics(m,*m_characteristics,*m_pathChanger,&Q,nullptr);
 
     return musclesPointsInGlobal();
 }
@@ -203,21 +203,21 @@ const std::vector<biorbd::utils::Node3d> &biorbd::muscles::Muscle::musclesPoints
 
 void biorbd::muscles::Muscle::forceIsoMax(double val)
 {
-    m_caract->setForceIsoMax(val);
+    m_characteristics->setForceIsoMax(val);
 }
 
 
-const biorbd::muscles::Caracteristics& biorbd::muscles::Muscle::caract() const
+const biorbd::muscles::Characteristics& biorbd::muscles::Muscle::characteristics() const
 {
-    return *m_caract;
+    return *m_characteristics;
 }
 void biorbd::muscles::Muscle::setPosition(const biorbd::muscles::Geometry &val)
 {
     *m_position = val;
 }
-void biorbd::muscles::Muscle::setCaract(const biorbd::muscles::Caracteristics &val)
+void biorbd::muscles::Muscle::setCharacteristics(const biorbd::muscles::Characteristics &val)
 {
-    *m_caract = val;
+    *m_characteristics = val;
 }
 
 // Get and set
