@@ -17,7 +17,7 @@
 namespace biorbd {
 
 ///
-/// \class Model
+/// \brief class Model
 ///
 class BIORBD_API Model :
         public biorbd::rigidbody::Joints

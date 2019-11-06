@@ -18,7 +18,7 @@ biorbd::muscles::StaticOptimizationIpoptLinearized::StaticOptimizationIpoptLinea
         double eps
         ) :
     biorbd::muscles::StaticOptimizationIpopt(model, Q, Qdot, GeneralizedTorqueTarget, activationInit, useResidual, pNormFactor, verbose, eps),
-    m_jacobian(std::make_shared<biorbd::utils::Matrix>(*m_nDof, *m_nbMus))
+    m_jacobian(std::make_shared<biorbd::utils::Matrix>(*m_nbDof, *m_nbMus))
 {
     prepareJacobian();
 }
