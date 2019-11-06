@@ -225,7 +225,7 @@ int biorbd::muscles::MuscleGroup::muscleID(const biorbd::utils::String& nameToFi
        if (!nameToFind.compare( (*m_mus)[i]->name()) )
            return static_cast<int>(i);
     }
-    // Si on se rend ici, c'est qu'il n'y a pas de muscle de ce nom dans le groupe
+    // If we get here, there is no muscle of that name in this group
     return -1;
 }
 

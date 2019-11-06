@@ -59,9 +59,9 @@ void biorbd::muscles::WrappingSphere::DeepCopy(const biorbd::muscles::WrappingSp
 }
 
 const biorbd::utils::RotoTrans& biorbd::muscles::WrappingSphere::RT(
-        biorbd::rigidbody::Joints &,
-        const biorbd::rigidbody::GeneralizedCoordinates &,
-        bool )
+        biorbd::rigidbody::Joints &model,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        bool updateKin)
 {
     return *m_RT;
 }

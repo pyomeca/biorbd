@@ -36,7 +36,7 @@ void biorbd::muscles::PathChangers::DeepCopy(const biorbd::muscles::PathChangers
 // Private method to assing values
 void biorbd::muscles::PathChangers::addPathChanger(biorbd::utils::Node3d &val){
 
-    // Ajouter un muscle au pool de muscle selon son type
+    // Add a muscle to the pool of muscle depending on type
     if (val.typeOfNode() == biorbd::utils::NODE_TYPE::WRAPPING_SPHERE){
         biorbd::utils::Error::check(*m_nbVia == 0, "Cannot mix via points and wrapping objects yet");
         m_obj->push_back(biorbd::muscles::WrappingSphere(static_cast<biorbd::muscles::WrappingSphere&> (val)));
