@@ -131,7 +131,7 @@ int c_nGeneralizedTorque(
 int c_nMarkers(
         biorbd::Model* model)
 {
-    return static_cast<int>(model->nMarkers());
+    return static_cast<int>(model->nbMarkers());
 }
 void c_markersInLocal(
         biorbd::Model* model,
@@ -175,7 +175,7 @@ void c_addMarker(
 int c_nIMUs(
         biorbd::Model* model)
 {
-    return static_cast<int>(model->nIMUs());
+    return static_cast<int>(model->nbIMUs());
 }
 void c_addIMU(
         biorbd::Model *model,
@@ -225,8 +225,8 @@ void c_BiorbdKalmanReconsIMUstep(
         double* QDDot)
 {
     // Copier les valeurs des matrices de rotation des IMUs dans un stl Vector
-    biorbd::utils::Vector T(3*3*model->nIMUs()); // Matrice 3*3 * nIMU
-    for (unsigned int i=0; i<model->nIMUs(); ++i)
+    biorbd::utils::Vector T(3*3*model->nbIMUs()); // Matrice 3*3 * nIMU
+    for (unsigned int i=0; i<model->nbIMUs(); ++i)
         for (unsigned int j=0; j<9; ++j){ // matrice 3*3
             T[9*i+j] = imu[9*i+j];
         }
