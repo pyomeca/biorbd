@@ -269,6 +269,18 @@ TEST(Dynamics, ForwardAccelerationConstraint){
         EXPECT_NEAR(cs.force[i], forces_expected[i], requiredPrecision);
 }
 
+TEST(Kinematics, computeQdot)
+{
+    biorbd::Model m("models/simple_quat.bioMod");
+    biorbd::rigidbody::GeneralizedCoordinates Q_quat(m.nbQ()), QDot(m), QDot_quat(m.nbQ()), QDot_quat_expected(m.nbQ());
+    Q_quat << 0,0,0,1;
+    QDot << 1,2,3;
+    QDot_quat_expected << 0.5,1,1.5,0;
+    QDot_quat = m.computeQdot(Q_quat,QDot);
+    for (unsigned int i=0; i<m.nbQ(); ++i)
+        EXPECT_NEAR(QDot_quat[i],QDot_quat_expected[i], requiredPrecision);
+}
+
 #ifndef SKIP_KALMAN
 #ifndef SKIP_LONG_TESTS
 TEST(Kalman, markers)
