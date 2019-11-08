@@ -29,7 +29,10 @@ public:
             double z,
             double kStabilizer = 100);
 
-    Quaternion& operator=(const Eigen::Vector4d& vec4);
+    biorbd::utils::Quaternion& operator=(const Eigen::Vector4d& other);
+    biorbd::utils::Quaternion operator*(biorbd::utils::Quaternion& other) const;
+    biorbd::utils::Quaternion operator+(const biorbd::utils::Quaternion& other) const;
+
     double w() const;
     double x() const;
     double y() const;

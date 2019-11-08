@@ -43,15 +43,26 @@ biorbd::utils::Quaternion::Quaternion (
 }
 
 biorbd::utils::Quaternion& biorbd::utils::Quaternion::operator=(
-        const Eigen::Vector4d& vec4)
+        const Eigen::Vector4d& other)
 {
-    if (this==&vec4) // check for self-assigment
+    if (this==&other) // check for self-assigment
         return *this;
 
-    *this = vec4;
+    *this = other;
     return *this;
 }
 
+biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
+        biorbd::utils::Quaternion& other) const
+{
+    return biorbd::utils::Quaternion(this->RigidBodyDynamics::Math::Quaternion::operator*(other));
+}
+
+biorbd::utils::Quaternion biorbd::utils::Quaternion::operator+(
+        const biorbd::utils::Quaternion& other) const
+{
+	return biorbd::utils::Quaternion(this->RigidBodyDynamics::Math::Quaternion::operator+(other));
+}
 
 double biorbd::utils::Quaternion::w() const
 {
