@@ -9,6 +9,7 @@
 #include "Utils/RotoTrans.h"
 #include "Utils/RotoTransNode.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "Utils/Quaternion.h"
 
 static double requiredPrecision(1e-10);
 
@@ -386,3 +387,67 @@ TEST(ModelReading, equations)
         EXPECT_DOUBLE_EQ(node.x(), node.y());
 }
 
+TEST(Quaternion, addition)
+{
+    biorbd::utils::Quaternion q1(1,2,3,4);
+    biorbd::utils::Quaternion q2(2,3,4,5);
+    EXPECT_NEAR(q1[3], 1, requiredPrecision);
+    EXPECT_NEAR(q1[0], 2, requiredPrecision);
+    EXPECT_NEAR(q1[1], 3, requiredPrecision);
+    EXPECT_NEAR(q1[2], 4, requiredPrecision);
+    EXPECT_NEAR(q2[3], 2, requiredPrecision);
+    EXPECT_NEAR(q2[0], 3, requiredPrecision);
+    EXPECT_NEAR(q2[1], 4, requiredPrecision);
+    EXPECT_NEAR(q2[2], 5, requiredPrecision);
+    biorbd::utils::Quaternion q12 = q1+q2;
+    EXPECT_NEAR(q12[3], 3, requiredPrecision);
+    EXPECT_NEAR(q12[0], 5, requiredPrecision);
+    EXPECT_NEAR(q12[1], 7, requiredPrecision);
+    EXPECT_NEAR(q12[2], 9, requiredPrecision);
+}
+
+
+TEST(Quaternion, multiplication)
+{
+    biorbd::utils::Quaternion q1(1,2,3,4);
+    biorbd::utils::Quaternion q2(2,3,4,5);
+    EXPECT_NEAR(q1[3], 1, requiredPrecision);
+    EXPECT_NEAR(q1[0], 2, requiredPrecision);
+    EXPECT_NEAR(q1[1], 3, requiredPrecision);
+    EXPECT_NEAR(q1[2], 4, requiredPrecision);
+    EXPECT_NEAR(q2[3], 2, requiredPrecision);
+    EXPECT_NEAR(q2[0], 3, requiredPrecision);
+    EXPECT_NEAR(q2[1], 4, requiredPrecision);
+    EXPECT_NEAR(q2[2], 5, requiredPrecision);
+    biorbd::utils::Quaternion q12 = q1*q2;
+    EXPECT_NEAR(q12[3], -36, requiredPrecision);
+    EXPECT_NEAR(q12[0], 6, requiredPrecision);
+    EXPECT_NEAR(q12[1], 12, requiredPrecision);
+    EXPECT_NEAR(q12[2], 12, requiredPrecision);
+}
+
+TEST(Quaternion, derivative)
+{
+    biorbd::utils::Quaternion q1;
+    biorbd::utils::Vector v(3);
+    v << 1,2,3;
+    EXPECT_NEAR(q1[3], 1, requiredPrecision);
+    EXPECT_NEAR(q1[0], 0, requiredPrecision);
+    EXPECT_NEAR(q1[1], 0, requiredPrecision);
+    EXPECT_NEAR(q1[2], 0, requiredPrecision);
+    q1.derivate(v);
+    EXPECT_NEAR(q1[3], 0, requiredPrecision);
+    EXPECT_NEAR(q1[0], 0.5, requiredPrecision);
+    EXPECT_NEAR(q1[1], 1, requiredPrecision);
+    EXPECT_NEAR(q1[2], 1.5, requiredPrecision);
+    double w(0.07035975447302918);
+    double x(0.7035975447302919);
+    double y(0.7035975447302919);
+    double z(0.07035975447302918);
+    biorbd::utils::Quaternion q2(w,x,y,z);
+    q2.derivate(v);
+    EXPECT_NEAR(q2[3],-1.1609359488049815, requiredPrecision);
+    EXPECT_NEAR(q2[0], 1.0202164398589233, requiredPrecision);
+    EXPECT_NEAR(q2[1],-0.9498566853858941, requiredPrecision);
+    EXPECT_NEAR(q2[2], 0.45733840407468973, requiredPrecision);
+}
