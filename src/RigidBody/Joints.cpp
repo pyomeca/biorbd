@@ -986,17 +986,16 @@ unsigned int biorbd::rigidbody::Joints::nbQuat() const{
     return *m_nRotAQuat;
 }
 
-void biorbd::rigidbody::Joints::computeQdot(
+biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Joints::computeQdot(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &QDot,
-        biorbd::rigidbody::GeneralizedCoordinates &QDotOut)
+        const biorbd::rigidbody::GeneralizedCoordinates &QDot)
 {
+    biorbd::rigidbody::GeneralizedCoordinates QDotOut;
     // Vérifier s'il y a des quaternions, sinon la dérivée est directement QDot
     if (!m_nRotAQuat){
         QDotOut = QDot;
-        return;
+        return QDotOut;
     }
-
     QDotOut.resize(Q.size()); // Créer un vecteur vide de la dimension finale.
     unsigned int cmpQuat(0);
     unsigned int cmpDof(0);
@@ -1023,7 +1022,7 @@ void biorbd::rigidbody::Joints::computeQdot(
         }
         cmpDof += bone_i.nDof();
     }
-
+    return QDotOut;
 }
 
 
