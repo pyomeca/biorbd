@@ -64,6 +64,12 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
     return biorbd::utils::Quaternion(this->RigidBodyDynamics::Math::Quaternion::operator*(other));
 }
 
+biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
+        float& other) const
+{
+    return biorbd::utils::Quaternion(this->RigidBodyDynamics::Math::Quaternion::operator*(other));
+}
+
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator+(
         const biorbd::utils::Quaternion& other) const
 {

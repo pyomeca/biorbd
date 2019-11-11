@@ -412,6 +412,7 @@ TEST(Quaternion, multiplication)
     biorbd::utils::Quaternion q1(1,2,3,4);
     biorbd::utils::Quaternion q2(2,3,4,5);
     double d(5);
+    float f(5);
     EXPECT_NEAR(q1[3], 1, requiredPrecision);
     EXPECT_NEAR(q1[0], 2, requiredPrecision);
     EXPECT_NEAR(q1[1], 3, requiredPrecision);
@@ -430,6 +431,11 @@ TEST(Quaternion, multiplication)
     EXPECT_NEAR(q1d[0], 10, requiredPrecision);
     EXPECT_NEAR(q1d[1], 15, requiredPrecision);
     EXPECT_NEAR(q1d[2], 20, requiredPrecision);
+    biorbd::utils::Quaternion q1f = q1*f;
+    EXPECT_NEAR(q1f[3], 5, requiredPrecision);
+    EXPECT_NEAR(q1f[0], 10, requiredPrecision);
+    EXPECT_NEAR(q1f[1], 15, requiredPrecision);
+    EXPECT_NEAR(q1f[2], 20, requiredPrecision);
 }
 
 TEST(Quaternion, derivative)
