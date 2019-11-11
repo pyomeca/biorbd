@@ -5,7 +5,6 @@
 #include <rbdl/rbdl_math.h>
 #include <rbdl/Quaternion.h>
 #include "biorbdConfig.h"
-
 namespace biorbd {
 namespace utils {
 class Node3d;
@@ -30,11 +29,11 @@ public:
             double kStabilizer = 100);
 
     biorbd::utils::Quaternion& operator=(const Eigen::Vector4d& other);
-    biorbd::utils::Quaternion operator*(biorbd::utils::Quaternion& other) const;
-    biorbd::utils::Quaternion operator*(double& other) const;
-    biorbd::utils::Quaternion operator*(float& other) const;
-
+    biorbd::utils::Quaternion operator*(const biorbd::utils::Quaternion& other) const;
+    biorbd::utils::Quaternion operator*(double other) const;
+    biorbd::utils::Quaternion operator*(float other) const;
     biorbd::utils::Quaternion operator+(const biorbd::utils::Quaternion& other) const;
+
     double w() const;
     double x() const;
     double y() const;
