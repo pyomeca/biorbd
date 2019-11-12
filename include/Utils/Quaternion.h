@@ -13,31 +13,33 @@ class Vector;
 class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Quaternion
 {
 public:
-    Quaternion(double kStabilizer = 100);
+    Quaternion(double kStabilizer = 1);
     Quaternion (
         const biorbd::utils::Vector &vec, 
-        double kStabilizer = 100);
+        double kStabilizer = 1);
     Quaternion (
         double w,
         const biorbd::utils::Node3d &vec3, 
-        double kStabilizer = 100);
+        double kStabilizer = 1);
     Quaternion (
             double w,
             double x,
             double y,
             double z,
-            double kStabilizer = 100);
+            double kStabilizer = 1);
 
     biorbd::utils::Quaternion& operator=(const Eigen::Vector4d& other);
     biorbd::utils::Quaternion operator*(const biorbd::utils::Quaternion& other) const;
     biorbd::utils::Quaternion operator*(double other) const;
     biorbd::utils::Quaternion operator*(float other) const;
     biorbd::utils::Quaternion operator+(const biorbd::utils::Quaternion& other) const;
+    biorbd::utils::Quaternion operator-(const biorbd::utils::Quaternion& other) const;
 
     double w() const;
     double x() const;
     double y() const;
     double z() const;
+    double k_stab() const;
 
     void derivate(const biorbd::utils::Vector &w);
 protected:

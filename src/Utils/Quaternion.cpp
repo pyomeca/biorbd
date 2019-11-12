@@ -76,6 +76,12 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::operator+(
 	return biorbd::utils::Quaternion(this->RigidBodyDynamics::Math::Quaternion::operator+(other));
 }
 
+biorbd::utils::Quaternion biorbd::utils::Quaternion::operator-(
+        const biorbd::utils::Quaternion& other) const
+{
+	return biorbd::utils::Quaternion(this->RigidBodyDynamics::Math::Quaternion::operator-(other));
+}
+
 double biorbd::utils::Quaternion::w() const
 {
     return (*this)(3);
@@ -91,6 +97,11 @@ double biorbd::utils::Quaternion::y() const
 double biorbd::utils::Quaternion::z() const
 {
     return (*this)(2);
+}
+
+double biorbd::utils::Quaternion::k_stab() const
+{
+    return m_Kstab;
 }
 
 void biorbd::utils::Quaternion::derivate(
