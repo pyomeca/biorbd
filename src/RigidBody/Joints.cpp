@@ -988,7 +988,8 @@ unsigned int biorbd::rigidbody::Joints::nbQuat() const{
 
 biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Joints::computeQdot(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &QDot)
+        const biorbd::rigidbody::GeneralizedCoordinates &QDot,
+        const double k_stab)
 {
     biorbd::rigidbody::GeneralizedCoordinates QDotOut;
     // Vérifier s'il y a des quaternions, sinon la dérivée est directement QDot
@@ -1003,7 +1004,7 @@ biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Joints::computeQdot
         biorbd::rigidbody::Bone bone_i=bone(i);
         if (bone_i.isRotationAQuaternion()){
             // Extraire le quaternion
-            biorbd::utils::Quaternion quat_tp(Q(Q.size()-*m_nRotAQuat+cmpQuat), Q.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1));
+            biorbd::utils::Quaternion quat_tp(Q(Q.size()-*m_nRotAQuat+cmpQuat), Q.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1),k_stab);
 
             // Placer dans le vecteur de sortie
             QDotOut.block(cmpDof, 0, bone_i.nDofTrans(), 1) = QDot.block(cmpDof, 0, bone_i.nDofTrans(), 1); // La dérivée des translations est celle directement de qdot

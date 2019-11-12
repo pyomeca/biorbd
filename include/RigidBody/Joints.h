@@ -252,7 +252,8 @@ public:
 	
     biorbd::rigidbody::GeneralizedCoordinates computeQdot(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &QDot); // Cette fonction retourne la dérivée de Q en fonction de Qdot (Si pas de Quaternion, QDot est directement retourné)
+        const biorbd::rigidbody::GeneralizedCoordinates &QDot,
+        const double k_stab = 1); // Cette fonction retourne la dérivée de Q en fonction de Qdot (Si pas de Quaternion, QDot est directement retourné)
 
 protected:
     std::shared_ptr<std::vector<biorbd::rigidbody::Bone>> m_bones; // Toutes les articulations
