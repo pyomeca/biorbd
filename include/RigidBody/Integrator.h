@@ -21,12 +21,11 @@ class GeneralizedCoordinates;
 class BIORBD_API Integrator
 {
 public:
-    Integrator();
+    Integrator(biorbd::rigidbody::Joints &model);
     biorbd::rigidbody::Integrator DeepCopy() const;
     void DeepCopy(const biorbd::rigidbody::Integrator& other);
 
     void integrate(
-            biorbd::rigidbody::Joints &model,
             const biorbd::utils::Vector& Q_Qdot,
             const biorbd::utils::Vector& u,
             double t0,
@@ -44,7 +43,7 @@ public:
 protected:
     std::shared_ptr<unsigned int> m_nbre; // Nombre d'élément dans l'intégration
     std::shared_ptr<unsigned int> m_steps; // Nombre de step pour l'intégration
-    std::shared_ptr<RigidBodyDynamics::Model> m_model; // Model dans lequel il faut appeler forwardDynamics
+    biorbd::rigidbody::Joints* m_model; // Model dans lequel il faut appeler forwardDynamics
 
     // Déclarer un observeur
     std::shared_ptr<std::vector<state_type>> m_x_vec;
