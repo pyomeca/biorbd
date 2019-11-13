@@ -14,7 +14,7 @@ biorbd::utils::Quaternion::Quaternion (double kStabilizer) :
 }
 
 biorbd::utils::Quaternion::Quaternion (const biorbd::utils::Vector &vec, double kStabilizer) :
-    RigidBodyDynamics::Math::Quaternion(vec),
+    RigidBodyDynamics::Math::Quaternion(vec[3], vec[0], vec[1], vec[2]),
     m_Kstab(kStabilizer)
 {
 
@@ -55,31 +55,37 @@ biorbd::utils::Quaternion& biorbd::utils::Quaternion::operator=(
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
         const biorbd::utils::Quaternion& other) const
 {
-    return biorbd::utils::Quaternion(this->RigidBodyDynamics::Math::Quaternion::operator*(other));
+    return biorbd::utils::Quaternion(
+                this->RigidBodyDynamics::Math::Quaternion::operator*(other));
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
         double other) const
 {
-    return biorbd::utils::Quaternion(this->RigidBodyDynamics::Math::Quaternion::operator*(other));
+    return biorbd::utils::Quaternion(
+                this->RigidBodyDynamics::Math::Quaternion::operator*(other));
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
         float other) const
 {
-    return biorbd::utils::Quaternion(this->RigidBodyDynamics::Math::Quaternion::operator*(double(other)));
+    return biorbd::utils::Quaternion(
+                this->RigidBodyDynamics::Math::Quaternion::operator*(
+                    double(other)));
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator+(
         const biorbd::utils::Quaternion& other) const
 {
-	return biorbd::utils::Quaternion(this->RigidBodyDynamics::Math::Quaternion::operator+(other));
+    return biorbd::utils::Quaternion(
+                this->RigidBodyDynamics::Math::Quaternion::operator+(other));
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator-(
         const biorbd::utils::Quaternion& other) const
 {
-	return biorbd::utils::Quaternion(this->RigidBodyDynamics::Math::Quaternion::operator-(other));
+    return biorbd::utils::Quaternion(
+                this->RigidBodyDynamics::Math::Quaternion::operator-(other));
 }
 
 double biorbd::utils::Quaternion::w() const
@@ -120,7 +126,8 @@ void biorbd::utils::Quaternion::derivate(
 
     // Ajout du paramètre de stabilisation
     Eigen::Vector4d w_tp (m_Kstab*w.norm()*(1-this->norm()), w(0), w(1), w(2));
-    biorbd::utils::Quaternion quatDot(0.5 * Q * w_tp);
-    biorbd::utils::Quaternion quatDot_tp(Eigen::Vector4d(quatDot(1), quatDot(2), quatDot(3), quatDot(0)));
+    Eigen::Vector4d quatDot(0.5 * Q * w_tp);
+    biorbd::utils::Quaternion quatDot_tp(quatDot(0), quatDot(1), quatDot(2), quatDot(3));
+//    biorbd::utils::Quaternion quatDot_tp2(quatDot);
     *this =  quatDot_tp; // Le quaternion est tourné à cause de la facon dont est faite la multiplication
 }

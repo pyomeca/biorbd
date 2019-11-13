@@ -15,7 +15,7 @@ class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Quaternion
 public:
     Quaternion(double kStabilizer = 1);
     Quaternion (
-        const biorbd::utils::Vector &vec, 
+        const biorbd::utils::Vector &vec,
         double kStabilizer = 1);
     Quaternion (
         double w,
