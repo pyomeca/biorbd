@@ -31,7 +31,7 @@ public:
             double t0,
             double tend,
             double timeStep);
-    void operator() (
+    virtual void operator() (
             const state_type &x,
             state_type &dxdt,
             double t );
@@ -51,6 +51,11 @@ protected:
     std::shared_ptr<std::vector<double>> m_times;
     std::shared_ptr<biorbd::utils::Vector> m_u; // Effecteurs
 
+    virtual void launchIntegrate(
+            state_type& x,
+            double t0,
+            double tend,
+            double timeStep);
 
     // Structure permettant de conserver les valeurs
     struct push_back_state_and_time{

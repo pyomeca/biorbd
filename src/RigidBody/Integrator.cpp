@@ -112,10 +112,19 @@ void biorbd::rigidbody::Integrator::integrate(
     for (unsigned int i=0; i<*m_nQ + *m_nQdot; i++)
         x[i] = Q_Qdot(i);
 
+    launchIntegrate(x, t0, tend, timeStep);
+}
+
+void biorbd::rigidbody::Integrator::launchIntegrate(
+        state_type& x,
+        double t0,
+        double tend,
+        double timeStep)
+{
     // Choix de l'algorithme et intégration
     boost::numeric::odeint::runge_kutta4< state_type > stepper;
     *m_steps = static_cast<unsigned int>(
                 boost::numeric::odeint::integrate_const(
-                    stepper, (*this), x, t0, tend, timeStep,
+                    stepper, *this, x, t0, tend, timeStep,
                     push_back_state_and_time( *m_x_vec , *m_times )));
 }
