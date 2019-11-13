@@ -4,6 +4,8 @@
 #include "biorbd_c.h"
 #include "Utils/String.h"
 #include "Utils/RotoTrans.h"
+#include "Utils/Vector.h"
+#include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/NodeBone.h"
 #include "RigidBody/Bone.h"
@@ -284,4 +286,23 @@ TEST(BinderC, math)
             EXPECT_NEAR(cardan[i], realCardan[i], requiredPrecision);
         }
     }
+}
+
+TEST(BinderC, solveLinearSystem)
+{
+	//Solve matrix system Ax=b using Eigen : HouseholderQR decomposition
+	//Matrix A is 3x3 , cols after cols
+	double matrixA[9] = { 1, 4, 7, 2, 5, 8, 3, 6, 10 };
+	double vectorB[3] = { 3, 3, 4 };
+	double solX[3];
+
+	c_solveLinearSystem(matrixA, 3, 3, vectorB, solX);
+
+	//Value of the real solution
+	double solutionExacteX[3] = {-2, 1, 1};
+
+	for (int i = 0; i < 3; ++i)
+	{
+		EXPECT_NEAR(solX[i], solutionExacteX[i], requiredPrecision);
+	}
 }
