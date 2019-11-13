@@ -109,5 +109,8 @@ void biorbd::rigidbody::Integrator::integrate(
 
     // Choix de l'algorithme et intégration
     boost::numeric::odeint::runge_kutta4< state_type > stepper;
-    *m_steps = static_cast<unsigned int>(boost::numeric::odeint::integrate_const( stepper, (*this), x, t0, tend, timeStep, push_back_state_and_time( *m_x_vec , *m_times )));
+    *m_steps = static_cast<unsigned int>(
+                boost::numeric::odeint::integrate_const(
+                    stepper, (*this), x, t0, tend, timeStep,
+                    push_back_state_and_time( *m_x_vec , *m_times )));
 }
