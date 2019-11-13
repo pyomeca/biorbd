@@ -142,6 +142,9 @@ void biorbd::muscles::MuscleGroup::addMuscle(
         state = std::make_shared<biorbd::muscles::StateDynamics>();
     else if (stateType == biorbd::muscles::STATE_TYPE::BUCHANAN)
         state = std::make_shared<biorbd::muscles::StateDynamicsBuchanan>();
+    else {
+        state = std::make_shared<biorbd::muscles::StateDynamics>();
+    }
 
 
     if (type == biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR)
