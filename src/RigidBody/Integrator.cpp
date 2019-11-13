@@ -4,14 +4,13 @@
 #include <Eigen/Dense>
 #include <boost/numeric/odeint.hpp>
 #include <rbdl/Dynamics.h>
+
 #include "Utils/Error.h"
 #include "Utils/String.h"
-#include "BiorbdModel.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/Joints.h"
 
 biorbd::rigidbody::Integrator::Integrator(biorbd::rigidbody::Joints &model) :
-    m_nbre(std::make_shared<unsigned int>()),
     m_steps(std::make_shared<unsigned int>()),
     m_model(&model),
     m_x_vec(std::make_shared<std::vector<state_type>>()),
@@ -29,7 +28,6 @@ biorbd::rigidbody::Integrator biorbd::rigidbody::Integrator::DeepCopy() const
 
 void biorbd::rigidbody::Integrator::DeepCopy(const biorbd::rigidbody::Integrator &other)
 {
-    *m_nbre = *other.m_nbre;
     *m_steps = *other.m_steps;
     m_model = other.m_model;
     m_x_vec->resize(other.m_x_vec->size());
@@ -45,31 +43,36 @@ void biorbd::rigidbody::Integrator::operator() (
         const state_type &x ,
         state_type &dxdt ,
         double ){
+
     // Équation différentielle : x/xdot => xdot/xddot
-    biorbd::rigidbody::GeneralizedCoordinates Q(*m_nbre);
-    biorbd::rigidbody::GeneralizedCoordinates QDot(*m_nbre);
-    biorbd::rigidbody::GeneralizedCoordinates QDDot(
-                biorbd::utils::Vector(*m_nbre).setZero());
-    for (unsigned int i=0; i<*m_nbre; i++){
+    biorbd::rigidbody::GeneralizedCoordinates Q(*m_model);
+    biorbd::rigidbody::GeneralizedCoordinates QDot(*m_model);
+    biorbd::rigidbody::GeneralizedCoordinates QDDot(*m_model);
+    QDDot.setZero();
+    for (unsigned int i=0; i<*m_nQ; i++){
         Q(i) = x[i];
-        QDot(i) = x[i+*m_nbre];
+    }
+    for (unsigned int i=0; i<*m_nQdot; i++){
+        QDot(i) = x[i+*m_nQ];
     }
 
     RigidBodyDynamics::ForwardDynamics (*m_model, Q, QDot, *m_u, QDDot);
 
     // Faire sortir xdot/xddot
-    for (unsigned int i=0; i<*m_nbre; i++){
+    for (unsigned int i=0; i<*m_nQ; i++){
         dxdt[i] = QDot[i];
-        dxdt[i + *m_nbre] = QDDot[i];
+    }
+    for (unsigned int i=0; i<*m_nQdot; i++){
+        dxdt[i + *m_nQ] = QDDot[i];
     }
 
 }
 
 void biorbd::rigidbody::Integrator::showAll(){
     std::cout << "Test:" << std::endl;
-    for (unsigned int i=0; i<=*m_steps; i++){
+    for (unsigned int i=0; i <= *m_steps; i++){
         std::cout << (*m_times)[i];
-        for (unsigned int j=0; j<*m_nbre; j++)
+        for (unsigned int j = 0; j < *m_nQ + *m_nQdot; j++)
             std::cout << " " << (*m_x_vec)[i][j];
         std::cout << std::endl;
     }
@@ -82,9 +85,9 @@ unsigned int biorbd::rigidbody::Integrator::steps() const
 
 biorbd::utils::Vector biorbd::rigidbody::Integrator::getX(
         unsigned int idx){
-    biorbd::utils::Vector out(*m_nbre*2);
+    biorbd::utils::Vector out(*m_nQ + *m_nQdot);
     biorbd::utils::Error::check(idx <= *m_steps, "Trying to get Q outside range");
-    for (unsigned int i=0; i<*m_nbre*2; i++){
+    for (unsigned int i=0; i<*m_nQ + *m_nQdot; i++){
         out(i) = (*m_x_vec)[idx][i];
         }
     return out;
@@ -96,13 +99,17 @@ void biorbd::rigidbody::Integrator::integrate(
         double t0,
         double tend,
         double timeStep){
-    // Stocker le nombre d'élément à traiter
-    *m_nbre = static_cast<unsigned int>(Q_Qdot.rows())/2; // Q et Qdot
-    *m_u = u; // Copier les effecteurs
+    // These variable can't be computer a construct time because of
+    // interaction calls with biorbd::rigidbody::Joints
+    m_nQ = std::make_shared<unsigned int>(m_model->nbQ());
+    m_nQdot = std::make_shared<unsigned int>(m_model->nbQdot());
+
+    // Assume constant torque over the whole integration
+    *m_u = u;
 
     // Remplissage de la variable par les positions et vitesse
-    state_type x(*m_nbre*2);
-    for (unsigned int i=0; i<*m_nbre*2; i++)
+    state_type x(*m_nQ + *m_nQdot);
+    for (unsigned int i=0; i<*m_nQ + *m_nQdot; i++)
         x[i] = Q_Qdot(i);
 
     // Choix de l'algorithme et intégration

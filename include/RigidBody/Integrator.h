@@ -41,9 +41,10 @@ public:
     void showAll(); // Show every steps with every dof
     unsigned int steps() const;
 protected:
-    std::shared_ptr<unsigned int> m_nbre; // Nombre d'élément dans l'intégration
     std::shared_ptr<unsigned int> m_steps; // Nombre de step pour l'intégration
     biorbd::rigidbody::Joints* m_model; // Model dans lequel il faut appeler forwardDynamics
+    std::shared_ptr<unsigned int> m_nQ;
+    std::shared_ptr<unsigned int> m_nQdot;
 
     // Déclarer un observeur
     std::shared_ptr<std::vector<state_type>> m_x_vec;
