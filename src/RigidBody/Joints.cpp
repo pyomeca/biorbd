@@ -23,7 +23,6 @@
 biorbd::rigidbody::Joints::Joints() :
     RigidBodyDynamics::Model(),
     m_bones(std::make_shared<std::vector<biorbd::rigidbody::Bone>>()),
-    m_integrator(std::make_shared<biorbd::rigidbody::Integrator>()),
     m_nbRoot(std::make_shared<unsigned int>(0)),
     m_nDof(std::make_shared<unsigned int>(0)),
     m_nbQ(std::make_shared<unsigned int>(0)),
@@ -35,6 +34,7 @@ biorbd::rigidbody::Joints::Joints() :
     m_isKinematicsComputed(std::make_shared<bool>(false)),
     m_totalMass(std::make_shared<double>(0))
 {
+    m_integrator = std::make_shared<biorbd::rigidbody::Integrator>(*this);
     this->gravity = RigidBodyDynamics::Math::Vector3d (0, 0, -9.81);  // Redéfinition de la gravité pour qu'elle soit en z
 }
 
@@ -141,11 +141,14 @@ double biorbd::rigidbody::Joints::mass() const {
 void biorbd::rigidbody::Joints::integrateKinematics(
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::rigidbody::GeneralizedCoordinates& QDot,
-        const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorque)
+        const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorque,
+        double t0,
+        double tend,
+        double timeStep)
 {
     biorbd::utils::Vector v(static_cast<unsigned int>(Q.rows()+QDot.rows()));
     v << Q,QDot;
-    m_integrator->integrate(*this, v, GeneralizedTorque, 0, 1, 0.1); // vecteur, t0, tend, pas, effecteurs
+    m_integrator->integrate(v, GeneralizedTorque, t0, tend, timeStep); // vecteur, t0, tend, pas, effecteurs
     *m_isKinematicsComputed = true;
 }
 void biorbd::rigidbody::Joints::getIntegratedKinematics(
@@ -1004,15 +1007,19 @@ biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Joints::computeQdot
         const biorbd::rigidbody::Bone& bone_i = bone(i);
         if (bone_i.isRotationAQuaternion()){
             // Extraire le quaternion
-            biorbd::utils::Quaternion quat_tp(Q(Q.size()-*m_nRotAQuat+cmpQuat), Q.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1),k_stab);
+            biorbd::utils::Quaternion quat_tp(
+                        Q(Q.size()-*m_nRotAQuat+cmpQuat),
+                        Q.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1),
+                        k_stab);
 
-            // Placer dans le vecteur de sortie
-            QDotOut.block(cmpDof, 0, bone_i.nDofTrans(), 1) = QDot.block(cmpDof, 0, bone_i.nDofTrans(), 1); // La dérivée des translations est celle directement de qdot
+            // QDot for translation is actual QDot
+            QDotOut.block(cmpDof, 0, bone_i.nDofTrans(), 1)
+                    = QDot.block(cmpDof, 0, bone_i.nDofTrans(), 1);
 
-            // Dériver
+            // Get the 4d derivative for the quaternion part
             quat_tp.derivate(QDot.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1));
-            QDotOut.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1) = quat_tp.block(0,0,3,1);
-            QDotOut(Q.size()-*m_nRotAQuat+cmpQuat) = quat_tp(3);// Placer dans le vecteur de sortie
+            QDotOut.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1) = quat_tp.block(1,0,3,1);
+            QDotOut(Q.size()-*m_nRotAQuat+cmpQuat) = quat_tp(0);// Placer dans le vecteur de sortie
 
            // Incrémenter le nombre de quaternions faits
             ++cmpQuat;
