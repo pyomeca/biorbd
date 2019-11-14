@@ -36,6 +36,7 @@ else()
         add_library(${PROJECT_NAME} STATIC ${SRC_LIST_MODULE})
     endif()
 endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_debug")
 
 # Add the dependencies for insuring build order
 target_link_libraries(${PROJECT_NAME} ${RBDL_LIBRARY} ${MASTER_PROJECT_NAME}_utils)

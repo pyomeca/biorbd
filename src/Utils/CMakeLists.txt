@@ -31,6 +31,7 @@ else()
         add_library(${PROJECT_NAME} STATIC ${SRC_LIST_MODULE})
     endif()
 endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_debug")
 
 # Add the include
 target_include_directories(${PROJECT_NAME} PUBLIC
