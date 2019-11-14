@@ -522,11 +522,20 @@ TEST(Quaternion, conversion) {
         EXPECT_NEAR(q.z(), 0.35610835008729086, requiredPrecision);
         EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
     }
-    biorbd::utils::RotoTrans rot(
+    biorbd::utils::RotoTrans rt(
                 Eigen::Vector3d(2, 3, 4), Eigen::Vector3d(), "xyz");
     {
         biorbd::utils::Quaternion q(
-                    biorbd::utils::Quaternion::fromMatrix(rot.rot(), 5));
+                    biorbd::utils::Quaternion::fromMatrix(rt, 5));
+        EXPECT_NEAR(q.w(), 0.77913560959923722, requiredPrecision);
+        EXPECT_NEAR(q.x(), 0.46529436049374817, requiredPrecision);
+        EXPECT_NEAR(q.y(), -0.27840624141687692, requiredPrecision);
+        EXPECT_NEAR(q.z(), -0.31454542547502823, requiredPrecision);
+        EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
+    }
+    {
+        biorbd::utils::Quaternion q(
+                    biorbd::utils::Quaternion::fromMatrix(rt.rot(), 5));
         EXPECT_NEAR(q.w(), 0.77913560959923722, requiredPrecision);
         EXPECT_NEAR(q.x(), 0.46529436049374817, requiredPrecision);
         EXPECT_NEAR(q.y(), -0.27840624141687692, requiredPrecision);
@@ -565,7 +574,8 @@ TEST(Quaternion, conversion) {
     }
     {
         biorbd::utils::Quaternion q(2, 3, 4, 5, 6);
-        Eigen::Matrix3d mat(q.toMatrix());
+        biorbd::utils::RotoTrans rt(q.toMatrix());
+        Eigen::Matrix3d mat(rt.rot());
 
         EXPECT_NEAR(mat(0, 0), -81, requiredPrecision);
         EXPECT_NEAR(mat(0, 1), 44, requiredPrecision);

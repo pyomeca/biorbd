@@ -4,6 +4,7 @@
 #include <Eigen/Dense>
 #include "Utils/Node3d.h"
 #include "Utils/Vector.h"
+#include "Utils/RotoTrans.h"
 
 biorbd::utils::Quaternion::Quaternion (
         double kStabilizer) :
@@ -136,6 +137,12 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::fromAxisAngle(
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromMatrix(
+        const biorbd::utils::RotoTrans &mat,
+        double kStab) {
+    return fromMatrix(mat.rot(), kStab);
+}
+
+biorbd::utils::Quaternion biorbd::utils::Quaternion::fromMatrix(
         const Eigen::Matrix3d &mat,
         double kStab) {
     double w = std::sqrt (1. + mat(0,0) + mat(1,1) + mat(2,2)) * 0.5;
@@ -170,15 +177,16 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::fromXYZAngles(
             * fromAxisAngle (xyz_angles[0], Eigen::Vector3d (1., 0., 0.), kStab);
 }
 
-Eigen::Matrix3d biorbd::utils::Quaternion::toMatrix() const {
+biorbd::utils::RotoTrans biorbd::utils::Quaternion::toMatrix() const {
     double w = (*this)[0];
     double x = (*this)[1];
     double y = (*this)[2];
     double z = (*this)[3];
-    Eigen::Matrix3d out;
-    out <<  1 - 2*y*y - 2*z*z,  2*x*y + 2*w*z,      2*x*z - 2*w*y,
+    Eigen::Matrix3d mat_tp;
+    mat_tp <<  1 - 2*y*y - 2*z*z,  2*x*y + 2*w*z,      2*x*z - 2*w*y,
             2*x*y - 2*w*z,      1 - 2*x*x - 2*z*z,  2*y*z + 2*w*x,
             2*x*z + 2*w*y,      2*y*z - 2*w*x,      1 - 2*x*x - 2*y*y;
+    biorbd::utils::RotoTrans out(mat_tp);
     return out;
 }
 

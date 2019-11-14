@@ -9,6 +9,7 @@ namespace biorbd {
 namespace utils {
 class Node3d;
 class Vector;
+class RotoTrans;
 
 class BIORBD_API Quaternion : public Eigen::Vector4d
 {
@@ -69,6 +70,10 @@ public:
             double kStab = 1);
 
     static biorbd::utils::Quaternion fromMatrix (
+            const biorbd::utils::RotoTrans &mat,
+            double kStab = 1);
+
+    static biorbd::utils::Quaternion fromMatrix (
             const Eigen::Matrix3d &mat,
             double kStab = 1);
 
@@ -84,7 +89,7 @@ public:
             const Eigen::Vector3d &xyz_angles,
             double kStab = 1);
 
-    Eigen::Matrix3d toMatrix() const;
+    biorbd::utils::RotoTrans toMatrix() const;
 
     biorbd::utils::Quaternion slerp (
             double alpha,
