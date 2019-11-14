@@ -1001,7 +1001,7 @@ biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Joints::computeQdot
     unsigned int cmpQuat(0);
     unsigned int cmpDof(0);
     for (unsigned int i=0; i<nbBone(); ++i){
-        biorbd::rigidbody::Bone bone_i=bone(i);
+        const biorbd::rigidbody::Bone& bone_i = bone(i);
         if (bone_i.isRotationAQuaternion()){
             // Extraire le quaternion
             biorbd::utils::Quaternion quat_tp(Q(Q.size()-*m_nRotAQuat+cmpQuat), Q.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1),k_stab);
