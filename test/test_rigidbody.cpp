@@ -13,7 +13,6 @@
 #include "RigidBody/NodeBone.h"
 #include "RigidBody/Bone.h"
 #include "RigidBody/IMU.h"
-#include "Utils/Quaternion.h"
 #ifndef SKIP_KALMAN
 #include "RigidBody/KalmanReconsMarkers.h"
 #include "RigidBody/KalmanReconsIMU.h"
@@ -273,22 +272,35 @@ TEST(Dynamics, ForwardAccelerationConstraint){
 TEST(Kinematics, computeQdot)
 {
     biorbd::Model m("models/simple_quat.bioMod");
-    biorbd::utils::Quaternion Q_quat;
-    biorbd::rigidbody::GeneralizedCoordinates QDot(m), QDot_quat(m.nbQ()), QDot_quat2(m.nbQ()), QDot_quat_expected(m.nbQ());
+    biorbd::rigidbody::GeneralizedCoordinates
+            QDot(m), QDot_quat_expected(m.nbQ());
     QDot << 1,2,3;
-    QDot_quat_expected << 0.5,1,1.5,0;
-    QDot_quat = m.computeQdot(Q_quat,QDot);
-    for (unsigned int i=0; i<m.nbQ(); ++i)
-        EXPECT_NEAR(QDot_quat[i],QDot_quat_expected[i], requiredPrecision);
-    double w(0.07035975447302918);
-    double x(0.7035975447302919);
-    double y(0.7035975447302919);
-    double z(0.07035975447302918);
-    biorbd::utils::Quaternion Q_quat2(w,x,y,z);
-    QDot_quat_expected << 1.0202164398589233,-0.9498566853858941,0.45733840407468973,-1.1609359488049815;
-    QDot_quat2 = m.computeQdot(Q_quat2,QDot);
-    for (unsigned int i=0; i<m.nbQ(); ++i)
-        EXPECT_NEAR(QDot_quat2[i],QDot_quat_expected[i], requiredPrecision);
+    {
+        biorbd::rigidbody::GeneralizedCoordinates Q_quat(m.nbQ());
+        Q_quat << 0, 0, 0, 1;
+        QDot_quat_expected << 0.5, 1, 1.5, 0;
+
+        biorbd::rigidbody::GeneralizedCoordinates QDot_quat(
+                    m.computeQdot(Q_quat, QDot));
+        for (unsigned int i=0; i<m.nbQ(); ++i) {
+            EXPECT_NEAR(QDot_quat[i],QDot_quat_expected[i], requiredPrecision);
+        }
+    }
+    {
+        double w(0.07035975447302918);
+        double x(0.7035975447302919);
+        double y(0.7035975447302919);
+        double z(0.07035975447302918);
+        biorbd::rigidbody::GeneralizedCoordinates Q_quat(m.nbQ());
+        Q_quat << x, y, z, w;
+        QDot_quat_expected << 1.0202164398589233, -0.9498566853858941,
+                0.45733840407468973,-1.1609359488049815;
+        biorbd::rigidbody::GeneralizedCoordinates QDot_quat(
+                    m.computeQdot(Q_quat,QDot));
+
+        for (unsigned int i=0; i<m.nbQ(); ++i)
+            EXPECT_NEAR(QDot_quat[i], QDot_quat_expected[i], requiredPrecision);
+    }
 }
 
 #ifndef SKIP_KALMAN
