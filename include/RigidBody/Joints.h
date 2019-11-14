@@ -91,7 +91,10 @@ public:
     void integrateKinematics(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedCoordinates& QDot,
-            const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorque); // Process integration (Q, Qdot, effecteurs)
+            const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorque,
+            double t0,
+            double tend,
+            double timeStep); // Process integration (Q, Qdot, effecteurs)
     void getIntegratedKinematics(
             unsigned int  step,
             biorbd::rigidbody::GeneralizedCoordinates& Q,
