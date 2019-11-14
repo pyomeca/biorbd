@@ -623,12 +623,13 @@ TEST(Quaternion, otherOperations)
     }
     {
         biorbd::utils::Quaternion q(2, 3, 4, 5, 6);
-        Eigen::Vector4d qdot(q.omegaToQDot(biorbd::utils::Node3d(7, 8, 9)));
+        biorbd::utils::Quaternion qdot(q.omegaToQDot(biorbd::utils::Node3d(7, 8, 9)));
 
-        EXPECT_NEAR(qdot[0], -49, requiredPrecision);
-        EXPECT_NEAR(qdot[1], 5, requiredPrecision);
-        EXPECT_NEAR(qdot[2], 12, requiredPrecision);
-        EXPECT_NEAR(qdot[3], 7, requiredPrecision);
+        EXPECT_NEAR(qdot.w(), -49, requiredPrecision);
+        EXPECT_NEAR(qdot.x(), 5, requiredPrecision);
+        EXPECT_NEAR(qdot.y(), 12, requiredPrecision);
+        EXPECT_NEAR(qdot.z(), 7, requiredPrecision);
+        EXPECT_NEAR(qdot.kStab(), 6, requiredPrecision);
     }
     {
         biorbd::utils::Quaternion q1(1, 0, 0, 0, 5);

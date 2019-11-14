@@ -235,14 +235,14 @@ biorbd::utils::Node3d biorbd::utils::Quaternion::rotate(
 }
 
 #include <iostream>
-Eigen::Vector4d biorbd::utils::Quaternion::omegaToQDot(
+biorbd::utils::Quaternion biorbd::utils::Quaternion::omegaToQDot(
         const Eigen::Vector3d &omega) const {
     Eigen::MatrixXd m(4, 3);
     m(0, 0) = -(*this)[1];   m(0, 1) = -(*this)[2];   m(0, 2) = -(*this)[3];
     m(1, 0) =  (*this)[0];   m(1, 1) = -(*this)[3];   m(1, 2) =  (*this)[2];
     m(2, 0) =  (*this)[3];   m(2, 1) =  (*this)[0];   m(2, 2) = -(*this)[1];
     m(3, 0) = -(*this)[2];   m(3, 1) =  (*this)[1];   m(3, 2) =  (*this)[0];
-    return Eigen::Vector4d(0.5 * m * omega);
+    return biorbd::utils::Quaternion(0.5 * m * omega, this->m_Kstab);
 }
 
 void biorbd::utils::Quaternion::derivate(
