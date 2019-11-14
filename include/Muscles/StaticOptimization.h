@@ -19,13 +19,34 @@ class GeneralizedTorque;
 }
 
 namespace muscles {
-
+///
+/// \brief Class StateDynamics
+///
 class StateDynamics;
+///
+/// \brief Class StaticOptimization
+///
 class BIORBD_API StaticOptimization
 {
 public:
+///
+/// \brief Construct static optimization
+/// \param model The Model
+///
     StaticOptimization(
             biorbd::Model& model);
+            
+///
+/// \brief Construct static optimization
+/// \param model The model
+/// \param Q The position variables
+/// \param Qdot The velocity variables
+/// \param GeneralizedTorqueTarget The generalized torque target
+/// \param initialActivationGuess The initial activation guess (vector)
+/// \param pNormFactor The norm factor (default: 2)
+/// \param useResidualTorque If use residual torque (default: true)
+/// \param verbose (default: 0)
+///
     StaticOptimization(
             biorbd::Model& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
@@ -35,50 +56,104 @@ public:
             unsigned int pNormFactor = 2,
             bool useResidualTorque = true,
             int verbose = 0);
-    StaticOptimization(
-            biorbd::Model& model,
-            const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
-            const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueTarget,
-            const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess = std::vector<biorbd::muscles::StateDynamics>(),
-            unsigned int pNormFactor = 2,
-            bool useResidualTorque = true,
-            int verbose = 0);
-    StaticOptimization(
-            biorbd::Model& model,
-            const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
-            const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQdot,
-            const std::vector<biorbd::rigidbody::GeneralizedTorque>& allGeneralizedTorqueTarget,
-            const biorbd::utils::Vector& initialActivationGuess,
-            unsigned int pNormFactor = 2,
-            bool useResidualTorque = true,
-            int verbose = 0);
-    StaticOptimization(
-            biorbd::Model& model,
-            const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
-            const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQdot,
-            const std::vector<biorbd::rigidbody::GeneralizedTorque>& allGeneralizedTorqueTarget,
-            const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess = std::vector<biorbd::muscles::StateDynamics>(),
-            unsigned int pNormFactor = 2,
-            bool useResidualTorque = true,
-            int verbose = 0);
-    biorbd::muscles::StaticOptimization DeepCopy() const;
 
+///
+/// \brief Construct static optimization
+/// \param model The model
+/// \param Q The position variables
+/// \param Qdot The velocity variables
+/// \param GeneralizedTorqueTarget The generalized torque target
+/// \param initialActivationGuess The initial activation guess (vector)
+/// \param pNormFactor The norm factor (default: 2)
+/// \param useResidualTorque If use residual torque (default: true)
+/// \param verbose (default: 0)
+///
+    StaticOptimization(
+            biorbd::Model& model,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
+            const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueTarget,
+            const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess = std::vector<biorbd::muscles::StateDynamics>(),
+            unsigned int pNormFactor = 2,
+            bool useResidualTorque = true,
+            int verbose = 0);
+
+///
+/// \brief Construct static optimization
+/// \param model The model
+/// \param allQ The position variables
+/// \param allQdot The velocity variables
+/// \param allGeneralizedTorqueTarget The generalized torque target
+/// \param initialActivationGuess The initial activation guess (vector)
+/// \param pNormFactor The norm factor (default: 2)
+/// \param useResidualTorque If use residual torque (default: true)
+/// \param verbose (default: 0)
+///
+    StaticOptimization(
+            biorbd::Model& model,
+            const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
+            const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQdot,
+            const std::vector<biorbd::rigidbody::GeneralizedTorque>& allGeneralizedTorqueTarget,
+            const biorbd::utils::Vector& initialActivationGuess,
+            unsigned int pNormFactor = 2,
+            bool useResidualTorque = true,
+            int verbose = 0);
+
+///
+/// \brief Construct static optimization
+/// \param model The model
+/// \param allQ The position variables
+/// \param allQdot The velocity variables
+/// \param allGeneralizedTorqueTarget The generalized torque target
+/// \param initialActivationGuess The initial activation guess (vector)
+/// \param pNormFactor The norm factor (default: 2)
+/// \param useResidualTorque If use residual torque (default: true)
+/// \param verbose (default: 0)
+///
+    StaticOptimization(
+            biorbd::Model& model,
+            const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
+            const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQdot,
+            const std::vector<biorbd::rigidbody::GeneralizedTorque>& allGeneralizedTorqueTarget,
+            const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess = std::vector<biorbd::muscles::StateDynamics>(),
+            unsigned int pNormFactor = 2,
+            bool useResidualTorque = true,
+            int verbose = 0);
+            
+///
+/// \brief Deep copy of the static optimization
+/// \return A deep copy of the static optimization
+///
+    biorbd::muscles::StaticOptimization DeepCopy() const;
+///
+/// \brief Run the static optimization
+/// \param useLinearizedState If use linearized state (default: false)
+///
     void run(bool useLinearizedState = false);
+    
+///
+/// \brief Return the final solution
+/// \return The final solution
+///
     std::vector<biorbd::utils::Vector> finalSolution();
+    
+///
+/// \brief Return the final solution at a specific index
+/// \return The final solution at a specific index
+///
     biorbd::utils::Vector finalSolution(unsigned int index);
 
 protected:
-    biorbd::Model& m_model;
-    std::shared_ptr<bool> m_useResidualTorque;
-    std::shared_ptr<std::vector<biorbd::rigidbody::GeneralizedCoordinates>> m_allQ;
-    std::shared_ptr<std::vector<biorbd::rigidbody::GeneralizedCoordinates>> m_allQdot;
-    std::shared_ptr<std::vector<biorbd::rigidbody::GeneralizedTorque>> m_allGeneralizedTorqueTarget;
-    std::shared_ptr<biorbd::utils::Vector> m_initialActivationGuess;
-    std::shared_ptr<unsigned int> m_pNormFactor;
-    std::shared_ptr<int> m_verbose;
-    std::shared_ptr<std::vector<Ipopt::SmartPtr<Ipopt::TNLP>>> m_staticOptimProblem;
-    std::shared_ptr<bool> m_alreadyRun;
+    biorbd::Model& m_model; ///< The model
+    std::shared_ptr<bool> m_useResidualTorque; ///< To use residual torque
+    std::shared_ptr<std::vector<biorbd::rigidbody::GeneralizedCoordinates>> m_allQ; ///< All the position variables
+    std::shared_ptr<std::vector<biorbd::rigidbody::GeneralizedCoordinates>> m_allQdot; ///< All the velocity variables
+    std::shared_ptr<std::vector<biorbd::rigidbody::GeneralizedTorque>> m_allGeneralizedTorqueTarget; ///< All the generalized torque targets   
+    std::shared_ptr<biorbd::utils::Vector> m_initialActivationGuess; ///< Initial activation guess 
+    std::shared_ptr<unsigned int> m_pNormFactor; ///< The norm factor
+    std::shared_ptr<int> m_verbose; ///<Verbose
+    std::shared_ptr<std::vector<Ipopt::SmartPtr<Ipopt::TNLP>>> m_staticOptimProblem; ///<The static optimization problem
+    std::shared_ptr<bool> m_alreadyRun; ///< If already ran the static optimization
 
 };
 

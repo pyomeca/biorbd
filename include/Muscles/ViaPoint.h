@@ -64,7 +64,7 @@ public:
     biorbd::muscles::ViaPoint DeepCopy() const;
     ///
     /// \brief Deep copy of a ViaPoint into another ViaPoint
-    /// \parma other The ViaPoint to copy
+    /// \param other The ViaPoint to copy
     ///
     void DeepCopy(const biorbd::muscles::ViaPoint& other);
 

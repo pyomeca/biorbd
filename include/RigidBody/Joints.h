@@ -248,7 +248,10 @@ public:
     /// \param Q The positional variables of the model
     /// \param QDot The generalized velocities of the joints
     /// \param GeneralizedTorque The effectors
-    /// 
+    /// \param t0 Start time
+    /// \param tend End time
+    /// \param timeStep The time step (dt)
+    ///
     void integrateKinematics(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedCoordinates& QDot,
@@ -574,6 +577,13 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             unsigned int  idx,
             bool updateKin = true);
+
+    ///
+    /// \brief Return the mesh points in matrix
+    /// \param Q The position variables of the model
+    /// \param updateKin (default: True)
+    /// \return All the mesh points
+    ///
     std::vector<biorbd::utils::Matrix> meshPointsInMatrix(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool updateKin = true

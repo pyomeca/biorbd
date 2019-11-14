@@ -15,7 +15,7 @@ public:
    ///
    /// \brief Construct state dynamics
    /// \param neuralCommand The muscle neural command (default: 0)
-   /// \param activation The muscle activation (default: 0)
+   /// \param excitation The muscle excitation (default: 0)
    ///
     StateDynamicsBuchanan(
             double neuralCommand = 0,
@@ -36,7 +36,7 @@ public:
     biorbd::muscles::StateDynamicsBuchanan DeepCopy() const;
     ///
     /// \brief Deep copy of state dynamics Buchanan into another state dynamics Buchanan
-    /// \parma other The state dynamics Buchanan to copy
+    /// \param other The state dynamics Buchanan to copy
     ///
     void DeepCopy(const biorbd::muscles::StateDynamicsBuchanan& other);
     ///
@@ -46,7 +46,7 @@ public:
     /// \return The excitation velocity
     ///
     virtual double timeDerivativeExcitation(
-            const Characteristics &c,
+            const Characteristics &characteristics,
             bool alreadyNormalized);
     ///
     /// \brief Set the muscle excitation
@@ -60,7 +60,7 @@ public:
     virtual void setNeuralCommand(double val);
    ///
    /// \brief Set the shape factor
-   /// \param val Value of the shape factor
+   /// \param m_shape_factor Value of the shape factor
    ///
     void shapeFactor(double m_shape_factor);
    ///
@@ -70,7 +70,7 @@ public:
     double shapeFactor() const;
     ///
     /// \brief Set the muscle activation
-    /// \param val The value of the muscle activation
+    /// \param notUsed The value of the muscle activation
     ///
     void setActivation(double notUsed);
 

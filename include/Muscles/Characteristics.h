@@ -22,7 +22,7 @@ public:
 
     ///
     /// \brief Construct characteristics from other characteristics
-    /// \other The other characteristics
+    /// \param other The other characteristics
     ///
     Characteristics(const biorbd::muscles::Characteristics& other);
 
@@ -34,10 +34,10 @@ public:
     /// \param tendonSlackLength The tendon slack length
     /// \param pennAngle The angle of pennation
     /// \param stateMax Maximal excitation and activation of the muscle
-    /// \fatigueParamaters The fatigue parameters
-    /// \GeneralizedTorqueAct Time activation constant (default: 0.01)
-    /// \GeneratlizedTorqueDeact Time deactivation constant (default: 0.04)
-    /// \minAct Minimal activation (default: 0.01)
+    /// \param fatigueParameters The fatigue parameters
+    /// \param GeneralizedTorqueAct Time activation constant (default: 0.01)
+    /// \param GeneralizedTorqueDeact Time deactivation constant (default: 0.04)
+    /// \param minAct Minimal activation (default: 0.01)
     ///
     Characteristics(
             double optLength,
@@ -64,7 +64,7 @@ public:
 
     ///
     /// \brief Deep copy of characteristics from another characteristics 
-    /// \other The characteristics to copy from
+    /// \param other The characteristics to copy from
     ///
     void DeepCopy(const biorbd::muscles::Characteristics& other);
 
@@ -167,7 +167,7 @@ public:
 
     ///
     /// \brief Set the maximal excitation and activation of the muscle
-    /// \param val Value of the maximal excitation and activation of the muscle
+    /// \param stateMax Value of the maximal excitation and activation of the muscle
     ///
     void setStateMax(const biorbd::muscles::State &stateMax);
 
@@ -194,7 +194,7 @@ protected:
     std::shared_ptr<double> m_PCSA;          ///< Physiological cross-sectional area of the muscle
     std::shared_ptr<double> m_tendonSlackLength; ///< Tendon slack length
     std::shared_ptr<double> m_pennationAngle; ///< Angle of pennation
-    std::shared_ptr<biorbd::muscles::State> m_stateMax; /// Maximal excitation et activation of the muscle
+    std::shared_ptr<biorbd::muscles::State> m_stateMax; ///< Maximal excitation et activation of the muscle
 
     // Parametre d'activation
     std::shared_ptr<double> m_minActivation; ///< Minimal activation 
@@ -202,7 +202,7 @@ protected:
     std::shared_ptr<double> m_GeneralizedTorqueDeactivation; ///< Time deactivation constant
 
     // Fatigue parameters
-    std::shared_ptr<biorbd::muscles::FatigueParameters> m_fatigueParameters; // Fatigue parameters
+    std::shared_ptr<biorbd::muscles::FatigueParameters> m_fatigueParameters; ///< Fatigue parameters
 };
 
 }}

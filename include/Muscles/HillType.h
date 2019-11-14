@@ -188,12 +188,16 @@ protected:
     /// \param emg The EMG data
     /// \return The force from activation
     virtual double getForceFromActivation(const biorbd::muscles::State &emg); 
+    ///
+    /// \brief Normalize the EMG data
+    /// \param emg EMG data
+    ///
     virtual biorbd::muscles::StateDynamics normalizeEMG(const biorbd::muscles::StateDynamics& emg);
 
     // Attributs intermédiaires lors du calcul de la force
     std::shared_ptr<double> m_damping; ///< Muscle damping (spring force)
     std::shared_ptr<double> m_FlCE; ///<Force-Length contractile element
-    std::shared_ptr<double> m_FlPE; /// Force-Length passive element 
+    std::shared_ptr<double> m_FlPE; ///< Force-Length passive element 
     std::shared_ptr<double> m_FvCE; ///<Force-Velocity contractile element 
 
     // Declaration of multiple constants

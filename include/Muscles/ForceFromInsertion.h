@@ -57,7 +57,7 @@ public:
     ///
     /// \brief Set the force from muscle geometry
     /// \param geo THe muscle geometry
-    /// \parm vectorNorm The norm of the vector
+    /// \param vectorNorm The norm of the vector
     ///
     virtual void setForceFromMuscleGeometry(
             const biorbd::muscles::Geometry& geo,

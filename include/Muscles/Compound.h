@@ -150,6 +150,10 @@ protected:
     std::shared_ptr<biorbd::muscles::MUSCLE_TYPE> m_type; ///< The type of the compound
     std::shared_ptr<biorbd::muscles::PathChangers> m_pathChanger; ///< THe path changer
     std::shared_ptr<std::vector<std::shared_ptr<biorbd::muscles::Force>>> m_force; ///< The force
+
+    ///
+    /// \brief Set the type
+    ///
     virtual void setType()=0;
 
 };

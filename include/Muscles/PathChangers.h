@@ -37,7 +37,7 @@ public:
     /// \brief Add a wrapping or a via point
     /// \param point The wrapping or via point to add
     ///
-    void addPathChanger(biorbd::utils::Node3d&); 
+    void addPathChanger(biorbd::utils::Node3d&point); 
 
     // Set and get
     ///

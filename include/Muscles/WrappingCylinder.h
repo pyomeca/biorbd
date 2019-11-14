@@ -211,7 +211,7 @@ protected:
     /// \return The muscle lengh on the cylinder
     ///
     double computeLength(
-            const NodeMusclePair &) const;
+            const NodeMusclePair &p) const;
 
     std::shared_ptr<double> m_dia; ///< Diameter of the cylinder diametre du cylindre
     std::shared_ptr<double> m_length; ///< Length of the cylinder

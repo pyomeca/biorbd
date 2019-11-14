@@ -66,25 +66,25 @@ public:
 
     ///
     /// \brief Set the fatigue rate
-    /// \param The fatigue rate
+    /// \param fatigueRate The fatigue rate
     ///
     void fatigueRate(double fatigueRate);
 
     ///
     /// \brief Set the recovery rate
-    /// \param The recovery rate
+    /// \param recoveryRate The recovery rate
     ///
     void recoveryRate(double recoveryRate);
 
     ///
     /// \brief Set the develop factor
-    /// \param The develop factor
+    /// \param developFactor The develop factor
     ///
     void developFactor(double developFactor);
 
     ///
     /// \brief Set the recovery factor
-    /// \param The recovery factor
+    /// \param recoveryFactor The recovery factor
     ///
     void recoveryFactor(double recoveryFactor);
 

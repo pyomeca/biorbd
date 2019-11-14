@@ -223,13 +223,13 @@ public:
 
     ///
     /// \brief Set the maximal isometric force
-    /// \param The force to set
+    /// \param val The force to set
     ///
     void forceIsoMax(double val);
 
     ///
     /// \brief Set the dynamic state
-    /// \param The dynamic state value
+    /// \param s The dynamic state value
     ///
     void setState(const biorbd::muscles::StateDynamics &s);
     ///

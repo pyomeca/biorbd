@@ -55,7 +55,7 @@ public:
     ///
     void patch(const Patch&v);
 
-    biorbd::utils::Node3d patchAsDouble(); // retourne les patchs
+    biorbd::utils::Node3d patchAsDouble(); ///< Return the patches
 protected:
     std::shared_ptr<Eigen::Vector3i> m_patch; ///< Patch
 

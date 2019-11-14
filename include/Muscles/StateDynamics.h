@@ -61,7 +61,6 @@ public:
     double excitationNorm(const State &max);
     ///
     /// \brief Return the last normalized excitation
-    /// \param max The state
     /// \return The last normalized excitation
     ///
     double excitationNorm() const;
@@ -109,7 +108,6 @@ public:
 
     ///
     /// \brief Compute and return the activation velocity 
-    /// \param state The dynamic state
     /// \param characteristics The muscle characteristics
     /// \param alreadyNormalized If already normalized (default: false)
     /// \return The activation velocity

@@ -118,7 +118,7 @@ public:
     void DeepCopy(const biorbd::muscles::HillThelenTypeFatigable& other);
     ///
     /// \brief Compute the Force-Length contractile element
-    /// \param emg EMG data
+    /// \param EMG EMG data
     ///
     virtual void computeFlCE(const biorbd::muscles::StateDynamics &EMG);
 

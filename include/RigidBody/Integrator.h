@@ -44,7 +44,6 @@ public:
 
     ///
     /// \brief Perform integration
-    /// \param model The model to integrate
     /// \param Q_Qdot Vector containing position and velocity
     /// \param u Effectors
     /// \param t0 The initial time
@@ -57,6 +56,12 @@ public:
             double t0,
             double tend,
             double timeStep);
+    ///
+    /// \brief Get Qdot and Qddot
+    /// \param x The position variables
+    /// \param dxdt The velocity variables
+    /// \param t The time
+    ///
     virtual void operator() (
             const state_type &x,
             state_type &dxdt,
@@ -84,15 +89,22 @@ public:
 
 protected:
     std::shared_ptr<unsigned int> m_steps; ///< Number of steps in the integration
-    biorbd::rigidbody::Joints* m_model; // Model dans lequel il faut appeler forwardDynamics
-    std::shared_ptr<unsigned int> m_nQ;
-    std::shared_ptr<unsigned int> m_nQdot;
+    biorbd::rigidbody::Joints* m_model; ///< Model in which Model we have to call forwardDynamics
+    std::shared_ptr<unsigned int> m_nQ; ///< Number of position variables
+    std::shared_ptr<unsigned int> m_nQdot;///< Number of velocity variables
 
     // Declare an observer
     std::shared_ptr<std::vector<state_type>> m_x_vec; ///< Vector of x
     std::shared_ptr<std::vector<double>> m_times; ///< Vector of time
     std::shared_ptr<biorbd::utils::Vector> m_u; ///< Effectors
 
+    ///
+    /// \brief Launch integration
+    /// \param x Start state
+    /// \param t0 Start time
+    /// \param tend End time
+    /// \param timeStep Time step (dt)
+    ///
     virtual void launchIntegrate(
             state_type& x,
             double t0,

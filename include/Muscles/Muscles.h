@@ -53,7 +53,7 @@ public:
     biorbd::muscles::Muscles DeepCopy() const;
     ///
     /// \brief Deep copy of muscles into another mucles
-    /// \parma other The muscles to copy
+    /// \param other The muscles to copy
     ///
     void DeepCopy(const biorbd::muscles::Muscles& other);
     ///
@@ -85,7 +85,7 @@ public:
     /// \param idx The index of the muscle group to return
     /// \return A muscle group
     ///
-    const biorbd::muscles::MuscleGroup& muscleGroup(unsigned int) const; 
+    const biorbd::muscles::MuscleGroup& muscleGroup(unsigned int idx) const; 
 
     ///
     /// \brief Return the muscle group of specific name
@@ -136,7 +136,7 @@ public:
     ///
     /// \brief Compute the muscular joint torque
     /// \param F The force? TODO
-    /// \param updatekin Update kinematics (default: true)
+    /// \param updateKin Update kinematics (default: true)
     /// \param Q The position variables
     /// \param QDot The velocity variables
     /// 
@@ -149,7 +149,7 @@ public:
     /// \brief Compute the muscular joint torque
     /// \param state The dynamic state
     /// \param F The force? TODO
-    /// \param updatekin Update kinematics (default: true)
+    /// \param updateKin Update kinematics (default: true)
     /// \param Q The position variables
     /// \param QDot The velocity variables
     /// 
@@ -162,7 +162,7 @@ public:
     ///
     /// \brief Compute the muscular joint torque
     /// \param state The dynamic state
-    /// \param updatekin Update kinematics (default: true)
+    /// \param updateKin Update kinematics (default: true)
     /// \param Q The position variables
     /// \param QDot The velocity variables
     /// 

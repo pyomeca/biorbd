@@ -37,7 +37,7 @@ public:
     biorbd::muscles::State DeepCopy() const;
     ///
     /// \brief Deep copy of state into another state
-    /// \parma other The state to copy
+    /// \param other The state to copy
     ///
     void DeepCopy(const biorbd::muscles::State& other);
 

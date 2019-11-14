@@ -86,7 +86,7 @@ public:
     ///
     /// \brief Update kinematics
     /// \param musclePointsInGlobal Position of all the points in global
-    /// \param jacoPOintsInGlobal Position of all the Jacobian points in global
+    /// \param jacoPointsInGlobal Position of all the Jacobian points in global
     /// \param Qdot The velocity variables 
     ///
     void updateKinematics(
@@ -97,7 +97,7 @@ public:
     ///
     /// \brief Update kinematics
     /// \param musclePointsInGlobal Position of all the points in global
-    /// \param jacoPOintsInGlobal Position of all the Jacobian points in global
+    /// \param jacoPointsInGlobal Position of all the Jacobian points in global
     /// \param characteristics The muscle characteristics
     /// \param Qdot The velocity variables 
     ///

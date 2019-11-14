@@ -33,7 +33,7 @@ public:
     MuscleGroup(const biorbd::muscles::MuscleGroup& other);
     /// 
     /// \brief Construct a muscle group
-    /// \param The name
+    /// \param name The name
     /// \param originName The name of the origin
     /// \param insertionName The name of the insertion
     ///
