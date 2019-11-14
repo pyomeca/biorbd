@@ -15,6 +15,7 @@ static std::string modelPathForGeneralTesting("models/pyomecaman_withActuators.b
 #else // MODULE_ACTUATORS
 static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
 #endif // MODULE_ACTUATORS
+static std::string modelFreeFall("models/pyomecaman_freeFall.bioMod");
 
 #ifdef MODULE_VTP_FILES_READER
 static std::string modelPathWithVtp("models/thoraxWithVtp.bioMod");
@@ -40,3 +41,31 @@ TEST(MeshFile, FileIoVtp) {
     biorbd::Model model(modelPathWithVtp);
 }
 #endif
+
+TEST(Integrate, freefall) {
+    biorbd::Model model(modelFreeFall);
+    biorbd::rigidbody::GeneralizedCoordinates
+            Q(model), Qdot(model),
+            QIntegrated(model), QdotIntegrated(model);
+    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    Q.setZero();
+    Qdot.setZero();
+    Tau.setZero();
+    model.integrateKinematics(Q, Qdot, Tau, 0, 1, 0.01);
+
+    EXPECT_EQ(model.nbInterationStep(), 101);
+
+    // Just test the last position
+    model.getIntegratedKinematics(model.nbInterationStep()-1,
+                                  QIntegrated, QdotIntegrated);
+    for (unsigned int i=0; i<Q.size(); ++i) {
+        if (i == 1) {
+            EXPECT_NEAR(QIntegrated(i), -4.905, requiredPrecision);
+            EXPECT_NEAR(QdotIntegrated(i), -9.81, requiredPrecision);
+        }
+        else {
+            EXPECT_NEAR(QIntegrated(i), 0, requiredPrecision);
+            EXPECT_NEAR(QdotIntegrated(i), 0, requiredPrecision);
+        }
+    }
+}

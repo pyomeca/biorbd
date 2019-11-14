@@ -23,7 +23,6 @@
 biorbd::rigidbody::Joints::Joints() :
     RigidBodyDynamics::Model(),
     m_bones(std::make_shared<std::vector<biorbd::rigidbody::Bone>>()),
-    m_integrator(std::make_shared<biorbd::rigidbody::Integrator>()),
     m_nbRoot(std::make_shared<unsigned int>(0)),
     m_nbDof(std::make_shared<unsigned int>(0)),
     m_nbQ(std::make_shared<unsigned int>(0)),
@@ -35,7 +34,8 @@ biorbd::rigidbody::Joints::Joints() :
     m_isKinematicsComputed(std::make_shared<bool>(false)),
     m_totalMass(std::make_shared<double>(0))
 {
-    this->gravity = RigidBodyDynamics::Math::Vector3d (0, 0, -9.81);  // Redefine the gravity in z
+    m_integrator = std::make_shared<biorbd::rigidbody::Integrator>(*this);
+    this->gravity = RigidBodyDynamics::Math::Vector3d (0, 0, -9.81);  // Redéfinition de la gravité pour qu'elle soit en z
 }
 
 biorbd::rigidbody::Joints::Joints(const biorbd::rigidbody::Joints &other) :
@@ -141,11 +141,14 @@ double biorbd::rigidbody::Joints::mass() const {
 void biorbd::rigidbody::Joints::integrateKinematics(
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::rigidbody::GeneralizedCoordinates& QDot,
-        const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorque)
+        const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorque,
+        double t0,
+        double tend,
+        double timeStep)
 {
     biorbd::utils::Vector v(static_cast<unsigned int>(Q.rows()+QDot.rows()));
     v << Q,QDot;
-    m_integrator->integrate(*this, v, GeneralizedTorque, 0, 1, 0.1); // vecteur, t0, tend, pas, effecteurs
+    m_integrator->integrate(v, GeneralizedTorque, t0, tend, timeStep); // vecteur, t0, tend, pas, effecteurs
     *m_isKinematicsComputed = true;
 }
 void biorbd::rigidbody::Joints::getIntegratedKinematics(

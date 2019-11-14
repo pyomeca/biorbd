@@ -29,8 +29,7 @@ public:
     ///
     /// \brief Construct integrator
     ///
-    Integrator();
-
+    Integrator(biorbd::rigidbody::Joints &model);
     ///
     /// \brief Deep copy of integrator
     /// \return Copy of integrator
@@ -53,20 +52,12 @@ public:
     /// \param timeStep Time step for the integration
     ///
     void integrate(
-            biorbd::rigidbody::Joints &model,
             const biorbd::utils::Vector& Q_Qdot,
             const biorbd::utils::Vector& u,
             double t0,
             double tend,
             double timeStep);
-
-    ///
-    /// \brief Construct operator
-    /// \param x Generalized coordinates: Q
-    /// \param dxdt Derivate of x with respect to t
-    /// \param t Time
-    ///
-    void operator() (
+    virtual void operator() (
             const state_type &x,
             state_type &dxdt,
             double t );
@@ -92,15 +83,21 @@ public:
     unsigned int steps() const;
 
 protected:
-    std::shared_ptr<unsigned int> m_nbre; ///< Number of elements in the integration
     std::shared_ptr<unsigned int> m_steps; ///< Number of steps in the integration
-    std::shared_ptr<RigidBodyDynamics::Model> m_model; ///< Model in which we will call forwardDynamics
+    biorbd::rigidbody::Joints* m_model; // Model dans lequel il faut appeler forwardDynamics
+    std::shared_ptr<unsigned int> m_nQ;
+    std::shared_ptr<unsigned int> m_nQdot;
 
     // Declare an observer
     std::shared_ptr<std::vector<state_type>> m_x_vec; ///< Vector of x
     std::shared_ptr<std::vector<double>> m_times; ///< Vector of time
     std::shared_ptr<biorbd::utils::Vector> m_u; ///< Effectors
 
+    virtual void launchIntegrate(
+            state_type& x,
+            double t0,
+            double tend,
+            double timeStep);
 
 
     ///
