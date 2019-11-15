@@ -124,7 +124,6 @@ biorbd::utils::Vector biorbd::utils::RotoTrans::transformMatrixToCardan(
     else
         v = biorbd::utils::Vector(seq.length());
 
-
     if (!seq.compare("x")) {
         v[0] = asin(a(2, 1));           // x
     } else if (!seq.compare("y")) {

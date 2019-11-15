@@ -249,7 +249,7 @@ biorbd::utils::Node3d biorbd::utils::Quaternion::rotate(
 
 #include <iostream>
 biorbd::utils::Quaternion biorbd::utils::Quaternion::omegaToQDot(
-        const Eigen::Vector3d &omega) const {
+        const biorbd::utils::Node3d &omega) const {
     Eigen::MatrixXd m(4, 3);
     m(0, 0) = -(*this)[1];   m(0, 1) = -(*this)[2];   m(0, 2) = -(*this)[3];
     m(1, 0) =  (*this)[0];   m(1, 1) = -(*this)[3];   m(1, 2) =  (*this)[2];

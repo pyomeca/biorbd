@@ -113,7 +113,7 @@ public:
     * quaternion corresponding to omega.
     *
     */
-    biorbd::utils::Quaternion omegaToQDot(const Eigen::Vector3d& omega) const;
+    biorbd::utils::Quaternion omegaToQDot(const biorbd::utils::Node3d& omega) const;
 
     void derivate(const biorbd::utils::Vector &w);
 
