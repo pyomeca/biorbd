@@ -15,13 +15,14 @@ biorbd::utils::RotoTrans::RotoTrans(const Eigen::Matrix4d& m) :
 
 biorbd::utils::RotoTrans::RotoTrans(
         const Eigen::Matrix3d& rot,
-        const Eigen::Vector3d& trans) :
+        const biorbd::utils::Node3d& trans) :
     Eigen::Matrix4d(combineRotAndTrans(rot,trans))
 {
 
 }
-biorbd::utils::RotoTrans::RotoTrans(const Eigen::VectorXd& rotation,
-        const Eigen::Vector3d& translation,
+biorbd::utils::RotoTrans::RotoTrans(
+        const biorbd::utils::Vector& rotation,
+        const biorbd::utils::Node3d& translation,
         const biorbd::utils::String& rotationSequence) :
     Eigen::Matrix4d(transformCardanToMatrix(rotation, translation, rotationSequence))
 {

@@ -152,33 +152,33 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::fromMatrix(
     double w = std::sqrt (1. + mat(0,0) + mat(1,1) + mat(2,2)) * 0.5;
     return Quaternion (
                 w,
-                (mat(1,2) - mat(2,1)) / (w * 4.),
-                (mat(2,0) - mat(0,2)) / (w * 4.),
-                (mat(0,1) - mat(1,0)) / (w * 4.),
+                (mat(2,1) - mat(1,2)) / (w * 4.),
+                (mat(0,2) - mat(2,0)) / (w * 4.),
+                (mat(1,0) - mat(0,1)) / (w * 4.),
                 kStab);
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromZYXAngles(
-        const Eigen::Vector3d &zyx_angles,
+        const biorbd::utils::Node3d &zyx_angles,
         double kStab) {
-    return fromAxisAngle (zyx_angles[0], Eigen::Vector3d (0., 0., 1.), kStab)
+    return fromAxisAngle (zyx_angles[2], Eigen::Vector3d (0., 0., 1.), kStab)
             * fromAxisAngle (zyx_angles[1], Eigen::Vector3d (0., 1., 0.), kStab)
-            * fromAxisAngle (zyx_angles[2], Eigen::Vector3d (1., 0., 0.), kStab);
+            * fromAxisAngle (zyx_angles[0], Eigen::Vector3d (1., 0., 0.), kStab);
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromYXZAngles(
-        const Eigen::Vector3d &yxz_angles,
+        const biorbd::utils::Node3d &yxz_angles,
         double kStab) {
-    return fromAxisAngle (yxz_angles[0], Eigen::Vector3d (0., 1., 0.), kStab)
-            * fromAxisAngle (yxz_angles[1], Eigen::Vector3d (1., 0., 0.), kStab)
+    return fromAxisAngle (yxz_angles[1], Eigen::Vector3d (0., 1., 0.), kStab)
+            * fromAxisAngle (yxz_angles[0], Eigen::Vector3d (1., 0., 0.), kStab)
             * fromAxisAngle (yxz_angles[2], Eigen::Vector3d (0., 0., 1.), kStab);
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromXYZAngles(
-        const Eigen::Vector3d &xyz_angles, double kStab) {
-    return fromAxisAngle (xyz_angles[2], Eigen::Vector3d (0., 0., 1.), kStab)
+        const biorbd::utils::Node3d &xyz_angles, double kStab) {
+    return fromAxisAngle (xyz_angles[0], Eigen::Vector3d (1., 0., 0.), kStab)
             * fromAxisAngle (xyz_angles[1], Eigen::Vector3d (0., 1., 0.), kStab)
-            * fromAxisAngle (xyz_angles[0], Eigen::Vector3d (1., 0., 0.), kStab);
+            * fromAxisAngle (xyz_angles[2], Eigen::Vector3d (0., 0., 1.), kStab);
 }
 
 biorbd::utils::RotoTrans biorbd::utils::Quaternion::toMatrix() const {
@@ -187,9 +187,10 @@ biorbd::utils::RotoTrans biorbd::utils::Quaternion::toMatrix() const {
     double y = (*this)[2];
     double z = (*this)[3];
     Eigen::Matrix3d mat_tp;
-    mat_tp <<  1 - 2*y*y - 2*z*z,  2*x*y + 2*w*z,      2*x*z - 2*w*y,
-            2*x*y - 2*w*z,      1 - 2*x*x - 2*z*z,  2*y*z + 2*w*x,
-            2*x*z + 2*w*y,      2*y*z - 2*w*x,      1 - 2*x*x - 2*y*y;
+    mat_tp <<  
+        1 - 2*y*y - 2*z*z,  2*x*y - 2*w*z,      2*x*z + 2*w*y,
+        2*x*y + 2*w*z,      1 - 2*x*x - 2*z*z,  2*y*z - 2*w*x,
+        2*x*z - 2*w*y,      2*y*z + 2*w*x,      1 - 2*x*x - 2*y*y;
     biorbd::utils::RotoTrans out(mat_tp);
     return out;
 }

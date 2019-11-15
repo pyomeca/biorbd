@@ -11,6 +11,7 @@ class Node3d;
 class Vector;
 class RotoTrans;
 
+// The definition for conversions are taken from https://www.euclideanspace.com/maths/geometry/rotations/conversions/index.htm
 class BIORBD_API Quaternion : public Eigen::Vector4d
 {
 public:
@@ -78,15 +79,15 @@ public:
             double kStab = 1);
 
     static biorbd::utils::Quaternion fromZYXAngles (
-            const Eigen::Vector3d &zyx_angles,
+            const biorbd::utils::Node3d &zyx_angles,
             double kStab = 1);
 
     static biorbd::utils::Quaternion fromYXZAngles (
-            const Eigen::Vector3d &yxz_angles,
+            const biorbd::utils::Node3d &yxz_angles,
             double kStab = 1);
 
     static biorbd::utils::Quaternion fromXYZAngles (
-            const Eigen::Vector3d &xyz_angles,
+            const biorbd::utils::Node3d &xyz_angles,
             double kStab = 1);
 
     biorbd::utils::RotoTrans toMatrix() const;

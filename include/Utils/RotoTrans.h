@@ -27,12 +27,12 @@ public:
     template<typename OtherDerived> RotoTrans(const Eigen::MatrixBase<OtherDerived>& other) :
         Eigen::Matrix4d(other){}
     RotoTrans(
-            const Eigen::VectorXd& rotation,
-            const Eigen::Vector3d& translation,
+            const biorbd::utils::Vector& rotation,
+            const biorbd::utils::Node3d& translation,
             const biorbd::utils::String &rotationSequence);
     RotoTrans(
             const Eigen::Matrix3d& rot,
-            const Eigen::Vector3d& trans = Eigen::Vector3d::Zero());
+            const biorbd::utils::Node3d& trans = Eigen::Vector3d::Zero());
     RotoTrans(const RigidBodyDynamics::Math::SpatialTransform&);
 
     biorbd::utils::Vector axe(int); // Aller récupérer un axe en particulier
