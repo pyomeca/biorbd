@@ -10,6 +10,7 @@
 
 // Instantiate templates
 namespace std {
+%template(VecBiorbdString) std::vector<biorbd::utils::String>;
 %template(VecBiorbdVector) std::vector<biorbd::utils::Vector>;
 %template(MatBiorbdVector) std::vector<std::vector<biorbd::utils::Vector>>;
 %template(MatBiorbdMatrix) std::vector<biorbd::utils::Matrix>;
@@ -21,7 +22,7 @@ namespace std {
 
 %include <std_string.i>
 %extend biorbd::utils::String{
-    std::string getString(){
+    std::string get_string(){
         return *$self;
     }
 }
