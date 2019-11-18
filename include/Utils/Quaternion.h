@@ -2,36 +2,123 @@
 #define BIORBD_UTILS_QUATERNION_H
 
 #include <memory>
-#include <rbdl/rbdl_math.h>
-#include <rbdl/Quaternion.h>
-#include "biorbdConfig.h"
+#include <Eigen/Dense>
 
+#include "biorbdConfig.h"
 namespace biorbd {
 namespace utils {
+class Node3d;
+class Vector;
+class RotoTrans;
 
-class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Quaternion
+// The definition for conversions are taken from https://www.euclideanspace.com/maths/geometry/rotations/conversions/index.htm
+class BIORBD_API Quaternion : public Eigen::Vector4d
 {
 public:
-    Quaternion();
-    Quaternion (const Eigen::Vector4d &vec4);
+    Quaternion (double kStabilizer = 1);
+    Quaternion(const biorbd::utils::Quaternion &other);
     Quaternion (
-            const Eigen::Vector3d &vec4,
-            double w);
-    Quaternion (
+            double w,
             double x,
             double y,
             double z,
-            double w);
+            double kStabilizer = 1);
+    Quaternion (
+        double w,
+        const biorbd::utils::Node3d &vec3, 
+        double kStabilizer = 1);
+    Quaternion (
+        const biorbd::utils::Vector &vec,
+        double kStabilizer = 1);
 
-    Quaternion& operator=(const Eigen::Vector4d& vec4);
     double w() const;
     double x() const;
     double y() const;
     double z() const;
 
-    void derivate(const Eigen::VectorXd &w);
+    void setKStab(double newKStab);
+    double kStab() const;
+
+    template<typename OtherDerived>
+    biorbd::utils::Quaternion& operator=(
+            const Eigen::MatrixBase <OtherDerived>& other){
+        this->Eigen::Vector4d::operator=(other);
+        // I don't understand why the next line doesn't SegFault...
+        this->m_Kstab = static_cast<biorbd::utils::Quaternion>(other).m_Kstab;
+        return *this;
+    }
+    biorbd::utils::Quaternion operator*(
+            const biorbd::utils::Quaternion& other) const;
+    biorbd::utils::Quaternion operator*(
+            double s) const;
+    biorbd::utils::Quaternion operator*(
+            float other) const;
+    biorbd::utils::Quaternion operator+(
+            const biorbd::utils::Quaternion& other) const;
+    biorbd::utils::Quaternion operator-(
+            const biorbd::utils::Quaternion& other) const;
+
+    static biorbd::utils::Quaternion fromGLRotate (
+            double angle,
+            double x,
+            double y,
+            double z,
+            double kStab = 1);
+
+    static biorbd::utils::Quaternion fromAxisAngle (
+            double angle_rad,
+            const biorbd::utils::Node3d &axis,
+            double kStab = 1);
+
+    static biorbd::utils::Quaternion fromMatrix (
+            const biorbd::utils::RotoTrans &mat,
+            double kStab = 1);
+
+    static biorbd::utils::Quaternion fromMatrix (
+            const Eigen::Matrix3d &mat,
+            double kStab = 1);
+
+    static biorbd::utils::Quaternion fromZYXAngles (
+            const biorbd::utils::Node3d &zyx_angles,
+            double kStab = 1);
+
+    static biorbd::utils::Quaternion fromYXZAngles (
+            const biorbd::utils::Node3d &yxz_angles,
+            double kStab = 1);
+
+    static biorbd::utils::Quaternion fromXYZAngles (
+            const biorbd::utils::Node3d &xyz_angles,
+            double kStab = 1);
+
+    biorbd::utils::RotoTrans toMatrix() const;
+
+    biorbd::utils::Quaternion slerp (
+            double alpha,
+            const Quaternion &quat) const;
+
+    biorbd::utils::Quaternion conjugate() const;
+
+    biorbd::utils::Quaternion timeStep (
+            const Eigen::Vector3d &omega,
+            double dt);
+
+    biorbd::utils::Node3d rotate (const biorbd::utils::Node3d &vec) const;
+
+    /** \brief Converts a 3d angular velocity vector into a 4d derivative of the
+    * components of the quaternion.
+    *
+    * \param omega the angular velocity.
+    *
+    * \return a 4d vector containing the derivatives of the 4 components of the
+    * quaternion corresponding to omega.
+    *
+    */
+    biorbd::utils::Quaternion omegaToQDot(const biorbd::utils::Node3d& omega) const;
+
+    void derivate(const biorbd::utils::Vector &w);
+
 protected:
-    double m_Kstab; // Facteur de stabilisation lors de la derivation
+    double m_Kstab; // Facteur de stabilisation pour la derivation
 
 };
 

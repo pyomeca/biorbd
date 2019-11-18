@@ -17,7 +17,7 @@ public:
 
     double norm(
             unsigned int p = 2,
-            bool skipRoot = false);
+            bool skipRoot = false) const;
     biorbd::utils::Vector normGradient(
             unsigned int p = 2,
             bool skipRoot = false);

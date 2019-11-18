@@ -252,10 +252,11 @@ public:
             const RigidBodyDynamics::Math::VectorNd &GeneralizedTorque,
             RigidBodyDynamics::ConstraintSet &CS,
             RigidBodyDynamics::Math::VectorNd &QDDot);
-    void computeQdot(
-            const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &QDot,
-            biorbd::rigidbody::GeneralizedCoordinates &QDotOut); // Cette fonction retourne la dérivée de Q en fonction de Qdot (Si pas de Quaternion, QDot est directement retourné)
+	
+    biorbd::rigidbody::GeneralizedCoordinates computeQdot(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &QDot,
+        const double k_stab = 1); // Cette fonction retourne la dérivée de Q en fonction de Qdot (Si pas de Quaternion, QDot est directement retourné)
 
 protected:
     std::shared_ptr<std::vector<biorbd::rigidbody::Bone>> m_bones; // Toutes les articulations
