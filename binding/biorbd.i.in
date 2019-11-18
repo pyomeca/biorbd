@@ -31,7 +31,11 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 // types in our language of choice. We'll use it to map Eigen matrices to
 // Numpy arrays.
 %include <typemaps.i>
+%include <std_string.i>
 %include <std_vector.i>
+namespace std {
+%template(VecStdString) std::vector<std::string>;
+}
 
 // Includes all neceressary files from the API
 %include "@CMAKE_BINARY_DIR@/include/biorbdConfig.h"
