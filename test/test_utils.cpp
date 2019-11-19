@@ -684,3 +684,17 @@ TEST(Quaternion, otherOperations)
         EXPECT_NEAR(q2.kStab(), 5, requiredPrecision);
     }
 }
+
+TEST(Quaternion, velocities) {
+    {
+        biorbd::utils::Node3d e(0.1,0.2,0.3);
+        biorbd::utils::Node3d eR(0.4,0.5,0.6);
+        biorbd::utils::Quaternion q;
+        biorbd::utils::Node3d w(q.eulerDotToOmega(eR,e,"xyz"));
+
+        EXPECT_NEAR(w[0], 0.52227744876434945, requiredPrecision);
+        EXPECT_NEAR(w[1], 0.36181645351259678, requiredPrecision);
+        EXPECT_NEAR(w[2], 0.67946773231802449, requiredPrecision);
+    }
+
+}
