@@ -10,22 +10,52 @@
 namespace biorbd {
 namespace utils {
 class String;
-
+///
+/// \brief Class Path
+///
 class BIORBD_API Path
 {
 public: 
+    ///
+    /// \brief Construct path
+    ///
     Path();
+    ///
+    /// \brief Construct path
+    /// \param c The path (char)
+    /// 
     Path(
             const char *c);
+    ///
+    /// \brief Construct path
+    /// \param s The path (string)
     Path(
             const biorbd::utils::String &s);
+    ///
+    /// \brief Construct path
+    /// \param c The path (basic string char)
+    ///
     Path(
             const std::basic_string<char> &c);
+    
+    ///
+    /// \brief Deep copy of path
+    /// \return A deep copy of path
+    ///
     biorbd::utils::Path DeepCopy() const;
+    ///
+    /// \brief Deep copy of path from another path
+    /// \param other The path to copy
+    ///
     void DeepCopy(
             const biorbd::utils::Path& other);
 
-    // parser un path en folder, filename,e extension
+
+    ///
+    /// \brief Parse a path in folder, filename and extension
+    /// \param path The path to parse
+    /// \param folder The folder
+    
     static void parseFileName(
             const biorbd::utils::String& path,
             biorbd::utils::String& folder,
