@@ -714,7 +714,6 @@ public:
             const RigidBodyDynamics::Math::VectorNd &GeneralizedTorque,
             RigidBodyDynamics::ConstraintSet &CS,
             RigidBodyDynamics::Math::VectorNd &QDDot);
-
     ///
     /// \brief Return the derivate of Q in function of Qdot (if not Quaternion, Qdot is directly returned)
     /// \param Q The position variables of the model
@@ -722,10 +721,11 @@ public:
     /// \param QDotOut The output vector
     /// \return The derivate of Q in function of Qdot
     ///
-    void computeQdot(
-            const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &QDot,
-            biorbd::rigidbody::GeneralizedCoordinates &QDotOut); 
+	
+    biorbd::rigidbody::GeneralizedCoordinates computeQdot(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedCoordinates &QDot,
+        const double k_stab = 1); // Cette fonction retourne la dérivée de Q en fonction de Qdot (Si pas de Quaternion, QDot est directement retourné)
 
 protected:
     std::shared_ptr<std::vector<biorbd::rigidbody::Segment>> m_segments; ///< All the articulations

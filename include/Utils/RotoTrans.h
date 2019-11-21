@@ -15,6 +15,7 @@ struct SpatialTransform;
 namespace biorbd {
 namespace utils {
 class String;
+class Vector;
 
 ///
 /// \brief The RotoTrans class is the 3d position given in a 4d matrix
@@ -42,8 +43,8 @@ public:
     /// \param rotationSequence The rotation sequence
     ///
     RotoTrans(
-            const Eigen::VectorXd& rotation,
-            const Eigen::Vector3d& translation,
+            const biorbd::utils::Vector& rotation,
+            const biorbd::utils::Node3d& translation,
             const biorbd::utils::String &rotationSequence);
     ///
     /// \brief Contruct Rototrans
@@ -59,6 +60,7 @@ public:
     /// \param st The sptial transform
     ///
     RotoTrans(const RigidBodyDynamics::Math::SpatialTransform&st);
+    biorbd::utils::Vector axe(int); // Aller récupérer un axe en particulier
 
     ///
     /// \brief Get a particular axis
@@ -77,7 +79,7 @@ public:
     /// \brief Return the translation vector
     /// \return The translation vector
     ///
-    Eigen::Vector3d trans() const;
+    biorbd::utils::Node3d trans() const;
     ///
     /// \brief Return the rotation matrix
     /// \return The rotation matrix

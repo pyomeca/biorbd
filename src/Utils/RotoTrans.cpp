@@ -5,6 +5,7 @@
 #include "Utils/Error.h"
 #include "Utils/Vector3d.h"
 #include "Utils/String.h"
+#include "Utils/Vector.h"
 
 biorbd::utils::RotoTrans::RotoTrans(const Eigen::Matrix4d& m) :
     Eigen::Matrix4d(m)
@@ -14,13 +15,14 @@ biorbd::utils::RotoTrans::RotoTrans(const Eigen::Matrix4d& m) :
 
 biorbd::utils::RotoTrans::RotoTrans(
         const Eigen::Matrix3d& rot,
-        const Eigen::Vector3d& trans) :
+        const biorbd::utils::Node3d& trans) :
     Eigen::Matrix4d(combineRotAndTrans(rot,trans))
 {
 
 }
-biorbd::utils::RotoTrans::RotoTrans(const Eigen::VectorXd& rotation,
-        const Eigen::Vector3d& translation,
+biorbd::utils::RotoTrans::RotoTrans(
+        const biorbd::utils::Vector& rotation,
+        const biorbd::utils::Node3d& translation,
         const biorbd::utils::String& rotationSequence) :
     Eigen::Matrix4d(transformCardanToMatrix(rotation, translation, rotationSequence))
 {
@@ -32,7 +34,7 @@ biorbd::utils::RotoTrans::RotoTrans(const RigidBodyDynamics::Math::SpatialTransf
 
 }
 
-Eigen::Vector3d biorbd::utils::RotoTrans::axe(int i)
+biorbd::utils::Vector biorbd::utils::RotoTrans::axe(int i)
 {
     biorbd::utils::Error::check(i>=0 && i<=2, "Axis must be between 0 and 2 included");
     return rot().block(0,i,3,1);
@@ -61,7 +63,7 @@ biorbd::utils::RotoTrans biorbd::utils::RotoTrans::transpose() const
     return tp;
 }
 
-Eigen::Vector3d biorbd::utils::RotoTrans::trans() const
+biorbd::utils::Node3d biorbd::utils::RotoTrans::trans() const
 {
     return this->block(0,3,3,1);
 }
@@ -112,16 +114,15 @@ biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::transformCardanToMatrix(
     return *this;
 }
 
-Eigen::VectorXd biorbd::utils::RotoTrans::transformMatrixToCardan(
+biorbd::utils::Vector biorbd::utils::RotoTrans::transformMatrixToCardan(
         const RotoTrans& a,
         const biorbd::utils::String &seq)
 {
-    Eigen::VectorXd v;
+    biorbd::utils::Vector v;
     if (!seq.compare("zyzz"))
-        v = Eigen::VectorXd(3);
+        v = biorbd::utils::Vector(3);
     else
-        v = Eigen::VectorXd(seq.length());
-
+        v = biorbd::utils::Vector(seq.length());
 
     if (!seq.compare("x")) {
         v[0] = asin(a(2, 1));           // x

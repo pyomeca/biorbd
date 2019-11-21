@@ -195,14 +195,14 @@ public:
     std::vector<biorbd::rigidbody::IMU> anatomicalIMU(); 
 
     ///
-    /// \brief Return the Jacobian of the IMUs (TODO: or of the markers?)
+    /// \brief Return the Jacobian of the IMUs (TODO: or of the IMUs?)
     /// \param Q State vector of the internal joints
     /// \param updateKin True by default
     /// \return The Jacobien of the IMUs
     ///
     std::vector<biorbd::utils::Matrix> IMUJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            bool updateKin = true); // Retourne la jacobienne des Markers
+            bool updateKin = true); // Retourne la jacobienne des IMUs
 
     ///
     /// \brief Return the Jacobian of the technical IMUs
@@ -212,12 +212,12 @@ public:
     ///
     std::vector<biorbd::utils::Matrix> TechnicalIMUJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            bool updateKin = true); // Retourne la jacobienne des Markers pour les marqueurs techniques
+            bool updateKin = true); // Retourne la jacobienne des IMUs pour les marqueurs techniques
 
 protected:
 
     ///
-    /// \brief Return the Jacobian of the IMUs (Markers)
+    /// \brief Return the Jacobian of the IMUs (IMUs)
     /// \param Q State vector of the internal joints
     /// \param updateKin 
     /// \param lookForTechnical Check if there are any technical IMUs

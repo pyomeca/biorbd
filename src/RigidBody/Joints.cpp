@@ -989,33 +989,37 @@ unsigned int biorbd::rigidbody::Joints::nbQuat() const{
     return *m_nRotAQuat;
 }
 
-void biorbd::rigidbody::Joints::computeQdot(
+biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Joints::computeQdot(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &QDot,
-        biorbd::rigidbody::GeneralizedCoordinates &QDotOut)
+        const double k_stab)
 {
+    biorbd::rigidbody::GeneralizedCoordinates QDotOut;
     // Verify if there are quaternions, if not the derivate is directly QDot
     if (!m_nRotAQuat){
         QDotOut = QDot;
-        return;
+        return QDotOut;
     }
-
     QDotOut.resize(Q.size()); // Create an empty vector of the final dimension
     unsigned int cmpQuat(0);
     unsigned int cmpDof(0);
-    for (unsigned int i=0; i<nbSegment(); ++i){
-        biorbd::rigidbody::Segment segment_i= segment(i);
-        if (segment_i.isRotationAQuaternion()){
-            // Extract the quaternion
-            biorbd::utils::Quaternion quat_tp(Q.block(cmpDof+ segment_i.nbDofTrans(), 0, 3, 1), Q(Q.size()-*m_nRotAQuat+cmpQuat));
+    for (unsigned int i=0; i<nbBone(); ++i){
+        const biorbd::rigidbody::Bone& bone_i = bone(i);
+        if (bone_i.isRotationAQuaternion()){
+            // Extraire le quaternion
+            biorbd::utils::Quaternion quat_tp(
+                        Q(Q.size()-*m_nRotAQuat+cmpQuat),
+                        Q.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1),
+                        k_stab);
 
-            // Place the output vector
-            QDotOut.block(cmpDof, 0, segment_i.nbDofTrans(), 1) = QDot.block(cmpDof, 0, segment_i.nbDofTrans(), 1); // La dérivée des translations est celle directement de qdot
+            // QDot for translation is actual QDot
+            QDotOut.block(cmpDof, 0, bone_i.nDofTrans(), 1)
+                    = QDot.block(cmpDof, 0, bone_i.nDofTrans(), 1);
 
-            // Derive
-            quat_tp.derivate(QDot.block(cmpDof+ segment_i.nbDofTrans(), 0, 3, 1));
-            QDotOut.block(cmpDof+segment_i.nbDofTrans(), 0, 3, 1) = quat_tp.block(0,0,3,1);
-            QDotOut(Q.size()-*m_nRotAQuat+cmpQuat) = quat_tp(3);// Placer dans le vecteur de sortie
+            // Get the 4d derivative for the quaternion part
+            quat_tp.derivate(QDot.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1));
+            QDotOut.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1) = quat_tp.block(1,0,3,1);
+            QDotOut(Q.size()-*m_nRotAQuat+cmpQuat) = quat_tp(0);// Placer dans le vecteur de sortie
 
            // Increment the number of done quaternions
             ++cmpQuat;
@@ -1026,7 +1030,7 @@ void biorbd::rigidbody::Joints::computeQdot(
         }
         cmpDof += segment_i.nbDof();
     }
-
+    return QDotOut;
 }
 
 
