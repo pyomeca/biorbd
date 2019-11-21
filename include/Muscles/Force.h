@@ -7,7 +7,7 @@
 
 namespace biorbd {
 namespace utils {
-class Node3d;
+class Vector3d;
 }
 
 namespace muscles {
@@ -52,7 +52,7 @@ public:
     /// \param force Force in Node3D format
     ///
     Force(
-            const biorbd::utils::Node3d& force);
+            const biorbd::utils::Vector3d& force);
 
     ///
     /// \brief Construct force

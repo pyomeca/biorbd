@@ -2,7 +2,7 @@
 #define BIORBD_MUSCLES_WRAPPING_OBJECT_H
 
 #include "biorbdConfig.h"
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 
 namespace biorbd {
 namespace utils {
@@ -18,7 +18,7 @@ namespace muscles {
     ///
     /// \brief Class WrappingObject
     ///
-class BIORBD_API WrappingObject : public biorbd::utils::Node3d
+class BIORBD_API WrappingObject : public biorbd::utils::Vector3d
 {
 public:
     ///
@@ -55,7 +55,7 @@ public:
     /// \param other The 3d node
     ///
     WrappingObject(
-            const biorbd::utils::Node3d& other);
+            const biorbd::utils::Vector3d& other);
     ///
     /// \brief Construct a wrapping object
     /// \param other Eigen vector
@@ -83,10 +83,10 @@ public:
     ///
     virtual void wrapPoints(
             const biorbd::utils::RotoTrans& rt,
-            const biorbd::utils::Node3d& p1_bone,
-            const biorbd::utils::Node3d& p2_bone,
-            biorbd::utils::Node3d& p1,
-            biorbd::utils::Node3d& p2,
+            const biorbd::utils::Vector3d& p1_bone,
+            const biorbd::utils::Vector3d& p2_bone,
+            biorbd::utils::Vector3d& p1,
+            biorbd::utils::Vector3d& p2,
             double* muscleLength = nullptr) = 0 ; // Premier et dernier points musculaire
     ///
     /// \brief This function takes a model and a position and finds the location where muscle 1 and 2 leave the wrapping object
@@ -101,10 +101,10 @@ public:
     virtual void wrapPoints(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::utils::Node3d& p1_bone,
-            const biorbd::utils::Node3d& p2_bone,
-            biorbd::utils::Node3d& p1,
-            biorbd::utils::Node3d& p2,
+            const biorbd::utils::Vector3d& p1_bone,
+            const biorbd::utils::Vector3d& p2_bone,
+            biorbd::utils::Vector3d& p1,
+            biorbd::utils::Vector3d& p2,
             double* muscleLength = nullptr) = 0; // Premier et dernier points musculaire
 
     ///
@@ -114,8 +114,8 @@ public:
     /// \param muscleLength Length of the muscle (default: nullptr)
     ///
     virtual void wrapPoints(
-            biorbd::utils::Node3d& p1,
-            biorbd::utils::Node3d& p2,
+            biorbd::utils::Vector3d& p1,
+            biorbd::utils::Vector3d& p2,
             double* muscleLength = nullptr) = 0; // Assume un appel déja faits
     ///
     /// \brief Return the RotoTrans matrix of the wrapping object
@@ -137,8 +137,8 @@ public:
     ///
     /// \brief To be able to use the equal "=" operator to define wrapping object 
     /// \param other The 3d node to define the wrapping object
-    biorbd::muscles::WrappingObject& operator=(const biorbd::utils::Node3d& other){
-        this->biorbd::utils::Node3d::operator=(other);
+    biorbd::muscles::WrappingObject& operator=(const biorbd::utils::Vector3d& other){
+        this->biorbd::utils::Vector3d::operator=(other);
         return *this;
     }
 protected:

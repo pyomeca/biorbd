@@ -26,22 +26,22 @@ class RotoTrans;
 ///
 namespace rigidbody {
 class Joints;
-class BoneCharacteristics;
+class SegmentCharacteristics;
 
 ///
 /// \brief Class for each segment
 ///
-class BIORBD_API Bone : public biorbd::utils::Node
+class BIORBD_API Segment : public biorbd::utils::Node
 {
 public:
 
     /// 
-    /// \brief Construct a bone
+    /// \brief Construct a Segment
     ///
-    Bone();
+    Segment();
     
     ///
-    /// \brief Construct a bone
+    /// \brief Construct a Segment
     /// \param model The model
     /// \param name The name of the segment
     /// \param parentName The name of the parent segment
@@ -51,18 +51,18 @@ public:
     /// \param cor Transformation from parent to child
     /// \param PF Platform index
     ///
-    Bone(
+    Segment(
             biorbd::rigidbody::Joints& model,
             const biorbd::utils::String &name, 
             const biorbd::utils::String &parentName, 
             const biorbd::utils::String &seqT,
             const biorbd::utils::String &seqR,
-            const biorbd::rigidbody::BoneCharacteristics& characteristics,
+            const biorbd::rigidbody::SegmentCharacteristics& characteristics,
             const RigidBodyDynamics::Math::SpatialTransform& cor,
             int PF = -1);  
 
     ///
-    /// \brief Construct a bone
+    /// \brief Construct a Segment
     /// \param model The model
     /// \param name The name of the segment
     /// \param parentName The name of the parent segment
@@ -71,35 +71,35 @@ public:
     /// \param cor Transformation from parent to child
     /// \param PF Platform index
     ///
-    Bone(
+    Segment(
             biorbd::rigidbody::Joints& model,
             const biorbd::utils::String &name, 
             const biorbd::utils::String &parentName, 
             const biorbd::utils::String &seqR, 
-            const biorbd::rigidbody::BoneCharacteristics& characteristics, 
+            const biorbd::rigidbody::SegmentCharacteristics& characteristics, 
             const RigidBodyDynamics::Math::SpatialTransform& cor, 
             int PF = -1); 
 
     ///
-    /// \brief Create a deep copy of Bone
-    /// \return Copy of Bone
+    /// \brief Create a deep copy of Segment
+    /// \return Copy of Segment
     ///
-    biorbd::rigidbody::Bone DeepCopy() const;
+    biorbd::rigidbody::Segment DeepCopy() const;
 
     ///
-    /// \brief Deep copy of Bone
-    /// \param other The Bone to copy
+    /// \brief Deep copy of Segment
+    /// \param other The Segment to copy
     ///
-    void DeepCopy(const biorbd::rigidbody::Bone& other);
+    void DeepCopy(const biorbd::rigidbody::Segment& other);
 
     ///
     /// \brief Destroy the class properly
     ///
-    virtual ~Bone();
+    virtual ~Segment();
 
     ///
-    /// \brief TODO: Returns the bone ID??
-    /// \return The bone ID?
+    /// \brief TODO: Returns the Segment ID??
+    /// \return The Segment ID?
     ///
     unsigned int id() const;
 
@@ -140,19 +140,19 @@ public:
     unsigned int nbDofRot() const;
 
     /// 
-    /// \brief Return the number of bone position
-    /// \return The number bone position
+    /// \brief Return the number of Segment position
+    /// \return The number Segment position
     ///
     unsigned int nbQ() const;
     
     ///
-    /// \brief Return the number of bone velocity
-    /// \return The number bone velocity
+    /// \brief Return the number of Segment velocity
+    /// \return The number Segment velocity
     ///
     unsigned int nbQdot() const; 
     ///
-    /// \brief Return the number of bone acceleration
-    /// \return The number bone acceleration
+    /// \brief Return the number of Segment acceleration
+    /// \return The number Segment acceleration
     ///
     unsigned int nbQddot() const; 
     ///
@@ -179,10 +179,10 @@ public:
 
 
     ///
-    /// \brief Return the bone characteristics
-    /// \return The bone characteristics
+    /// \brief Return the Segment characteristics
+    /// \return The Segment characteristics
     ///
-    const biorbd::rigidbody::BoneCharacteristics& characteristics() const; 
+    const biorbd::rigidbody::SegmentCharacteristics& characteristics() const; 
 
     ///
     /// \brief Return if the rotation of this segment is a quaternion
@@ -315,12 +315,12 @@ protected:
     ///
     void setDofCharacteristicsOnLastSegment();
 
-    std::shared_ptr<biorbd::rigidbody::BoneCharacteristics> m_characteristics;///< Non-used virtual segment; it allows to "save" the data and to avoid the use of multiple intermediate variables
-    std::shared_ptr<std::vector<biorbd::rigidbody::BoneCharacteristics>> m_dofCharacteristics;  ///< Variable containing the inertial data and other from each segment (0 to 4 should be empty and 5 filled)
+    std::shared_ptr<biorbd::rigidbody::SegmentCharacteristics> m_characteristics;///< Non-used virtual segment; it allows to "save" the data and to avoid the use of multiple intermediate variables
+    std::shared_ptr<std::vector<biorbd::rigidbody::SegmentCharacteristics>> m_dofCharacteristics;  ///< Variable containing the inertial data and other from each segment (0 to 4 should be empty and 5 filled)
 
 
 };
 
 }}
 
-#endif // BIORBD_RIGIDBODY_BONE_H
+#endif // BIORBD_RIGIDBODY_SEGMENT_H

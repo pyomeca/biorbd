@@ -5,7 +5,7 @@
 #include "Utils/String.h"
 #include "Utils/Error.h"
 #include "RigidBody/GeneralizedCoordinates.h"
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 #include "Utils/RotoTrans.h"
 #include "RigidBody/Joints.h"
 
@@ -34,8 +34,8 @@ void biorbd::rigidbody::Contacts::DeepCopy(const biorbd::rigidbody::Contacts &ot
 
 unsigned int biorbd::rigidbody::Contacts::AddConstraint(
         unsigned int body_id,
-        const biorbd::utils::Node3d& body_point,
-        const biorbd::utils::Node3d& world_normal,
+        const biorbd::utils::Vector3d& body_point,
+        const biorbd::utils::Vector3d& world_normal,
         const biorbd::utils::String& name,
         double acc){
     ++*m_nbreConstraint;
@@ -43,7 +43,7 @@ unsigned int biorbd::rigidbody::Contacts::AddConstraint(
 }
 unsigned int biorbd::rigidbody::Contacts::AddConstraint(
         unsigned int body_id,
-        const biorbd::utils::Node3d& body_point,
+        const biorbd::utils::Vector3d& body_point,
         const biorbd::utils::String& axis,
         const biorbd::utils::String& name,
         double acc)
@@ -53,13 +53,13 @@ unsigned int biorbd::rigidbody::Contacts::AddConstraint(
         ++*m_nbreConstraint;
         if      (axis.tolower()[i] == 'x')
             ret += RigidBodyDynamics::ConstraintSet::AddContactConstraint(
-                        body_id, body_point, biorbd::utils::Node3d(1,0,0), (name + "_X").c_str(), acc);
+                        body_id, body_point, biorbd::utils::Vector3d(1,0,0), (name + "_X").c_str(), acc);
         else if (axis.tolower()[i] == 'y')
             ret += RigidBodyDynamics::ConstraintSet::AddContactConstraint(
-                        body_id, body_point, biorbd::utils::Node3d(0,1,0), (name + "_Y").c_str(), acc);
+                        body_id, body_point, biorbd::utils::Vector3d(0,1,0), (name + "_Y").c_str(), acc);
         else if (axis.tolower()[i] == 'z')
             ret += RigidBodyDynamics::ConstraintSet::AddContactConstraint(
-                        body_id, body_point, biorbd::utils::Node3d(0,0,1), (name + "_Z").c_str(), acc);
+                        body_id, body_point, biorbd::utils::Vector3d(0,0,1), (name + "_Z").c_str(), acc);
         else
             biorbd::utils::Error::raise("Wrong axis!");
     }
@@ -121,7 +121,7 @@ biorbd::utils::String biorbd::rigidbody::Contacts::name(unsigned int i)
 }
 
 
-std::vector<biorbd::utils::Node3d> biorbd::rigidbody::Contacts::constraintsInGlobal(
+std::vector<biorbd::utils::Vector3d> biorbd::rigidbody::Contacts::constraintsInGlobal(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {
@@ -132,7 +132,7 @@ std::vector<biorbd::utils::Node3d> biorbd::rigidbody::Contacts::constraintsInGlo
         model.UpdateKinematicsCustom(&Q, nullptr, nullptr);
 
     // Output variable
-    std::vector<biorbd::utils::Node3d> tp;
+    std::vector<biorbd::utils::Vector3d> tp;
 
 
     // On each control, apply the rotation and save the position

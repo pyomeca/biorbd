@@ -5,7 +5,7 @@
 #include "BiorbdModel.h"
 #include "Utils/String.h"
 #include "Utils/Path.h"
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/RotoTransNode.h"
 #include "RigidBody/GeneralizedCoordinates.h"
@@ -16,9 +16,9 @@ TEST(ShallowCopy, DeepCopy){
     // DeepCopying a shallow copy, should also change the reference
     // Warning that may be surprising because one may be tend to DeepCopy
     // itself afterward, this doesn't release the shallowcopy referencing
-    biorbd::utils::Node3d MainNode(0, 0, 0, "NoName", "NoParent");
-    biorbd::utils::Node3d ShallowToDeep(MainNode);
-    biorbd::utils::Node3d NewNode(0, 0, 0, "MyName", "MyParent");
+    biorbd::utils::Vector3d MainNode(0, 0, 0, "NoName", "NoParent");
+    biorbd::utils::Vector3d ShallowToDeep(MainNode);
+    biorbd::utils::Vector3d NewNode(0, 0, 0, "MyName", "MyParent");
     EXPECT_STREQ(MainNode.name().c_str(), "NoName");
     EXPECT_STREQ(ShallowToDeep.name().c_str(), "NoName");
     EXPECT_STREQ(NewNode.name().c_str(), "MyName");
@@ -167,52 +167,52 @@ TEST(Path, Copy){
     EXPECT_STREQ(DeepCopyLater.originalPath().c_str(), "MyLovelyPath.biorbd");
 }
 
-TEST(Node3d, rotate)
+TEST(Vector3d, rotate)
 {
-    biorbd::utils::Node3d node(2, 3, 4);
-    biorbd::utils::Node3d nodeXrot(node.DeepCopy());
+    biorbd::utils::Vector3d node(2, 3, 4);
+    biorbd::utils::Vector3d nodeXrot(node.DeepCopy());
     nodeXrot.applyRT( biorbd::utils::RotoTrans(Eigen::Vector3d(M_PI, 0, 0), Eigen::Vector3d(0, 0, 0), "xyz") );
     EXPECT_NEAR(nodeXrot[0], node[0], requiredPrecision);
     EXPECT_NEAR(nodeXrot[1], -node[1], requiredPrecision);
     EXPECT_NEAR(nodeXrot[2], -node[2], requiredPrecision);
 
-    biorbd::utils::Node3d nodeYrot(node.DeepCopy());
+    biorbd::utils::Vector3d nodeYrot(node.DeepCopy());
     nodeYrot.applyRT( biorbd::utils::RotoTrans(Eigen::Vector3d(0, M_PI, 0), Eigen::Vector3d(0, 0, 0), "xyz") );
     EXPECT_NEAR(nodeYrot[0], -node[0], requiredPrecision);
     EXPECT_NEAR(nodeYrot[1], node[1], requiredPrecision);
     EXPECT_NEAR(nodeYrot[2], -node[2], requiredPrecision);
 
-    biorbd::utils::Node3d nodeZrot(node.DeepCopy());
+    biorbd::utils::Vector3d nodeZrot(node.DeepCopy());
     nodeZrot.applyRT( biorbd::utils::RotoTrans(Eigen::Vector3d(0, 0, M_PI), Eigen::Vector3d(0, 0, 0), "xyz") );
     EXPECT_NEAR(nodeZrot[0], -node[0], requiredPrecision);
     EXPECT_NEAR(nodeZrot[1], -node[1], requiredPrecision);
     EXPECT_NEAR(nodeZrot[2], node[2], requiredPrecision);
 
-    biorbd::utils::Node3d nodeZrot2(node.DeepCopy());
+    biorbd::utils::Vector3d nodeZrot2(node.DeepCopy());
     nodeZrot2.applyRT( biorbd::utils::RotoTrans(Eigen::Vector3d(M_PI, 0, 0), Eigen::Vector3d(0, 0, 0), "zxy") );
     EXPECT_NEAR(nodeZrot2[0], -node[0], requiredPrecision);
     EXPECT_NEAR(nodeZrot2[1], -node[1], requiredPrecision);
     EXPECT_NEAR(nodeZrot2[2], node[2], requiredPrecision);
 
     double trans(2);
-    biorbd::utils::Node3d nodeRot(node.DeepCopy());
+    biorbd::utils::Vector3d nodeRot(node.DeepCopy());
     nodeRot.applyRT( biorbd::utils::RotoTrans(Eigen::Vector3d(M_PI/6, M_PI/6, M_PI/6), Eigen::Vector3d(trans, trans, trans), "xyz") );
     EXPECT_NEAR(nodeRot[0], 4.200961894323342, requiredPrecision);
     EXPECT_NEAR(nodeRot[1], 3.4419872981077808, requiredPrecision);
     EXPECT_NEAR(nodeRot[2], 6.698557158514987, requiredPrecision);
 
-    biorbd::utils::Node3d nodeTrans(node.DeepCopy());
+    biorbd::utils::Vector3d nodeTrans(node.DeepCopy());
     nodeTrans.applyRT( biorbd::utils::RotoTrans(Eigen::Vector3d(0, 0, 0), Eigen::Vector3d(2, 2, 2), "xyz") );
     EXPECT_NEAR(nodeTrans[0], node[0] + trans, requiredPrecision);
     EXPECT_NEAR(nodeTrans[1], node[1] + trans, requiredPrecision);
     EXPECT_NEAR(nodeTrans[2], node[2] + trans, requiredPrecision);
 }
 
-TEST(Node3d, Copy){
-    biorbd::utils::Node3d MainNode(1, 2, 3, "MainNodeName", "NoParent");
-    biorbd::utils::Node3d ShallowCopy(MainNode);
-    biorbd::utils::Node3d DeepCopyNow(MainNode.DeepCopy());
-    biorbd::utils::Node3d DeepCopyLater;
+TEST(Vector3d, Copy){
+    biorbd::utils::Vector3d MainNode(1, 2, 3, "MainNodeName", "NoParent");
+    biorbd::utils::Vector3d ShallowCopy(MainNode);
+    biorbd::utils::Vector3d DeepCopyNow(MainNode.DeepCopy());
+    biorbd::utils::Vector3d DeepCopyLater;
     DeepCopyLater.DeepCopy(MainNode);
 
     EXPECT_STREQ(MainNode.parent().c_str(), "NoParent");
@@ -329,7 +329,7 @@ TEST(RotoTrans, unitTest){
         }
     }
 
-    biorbd::utils::Node3d marker(1, 1, 1);
+    biorbd::utils::Vector3d marker(1, 1, 1);
     marker.applyRT(rt_t);
     for (unsigned int i=0; i<3; ++i)
         EXPECT_NEAR(marker[i], 0, requiredPrecision);
@@ -380,7 +380,7 @@ TEST(ModelReading, equations)
     // be evaluated to the y coordinates.
 
     biorbd::Model m("models/equations.bioMod");
-    std::vector<biorbd::utils::Node3d> mesh(
+    std::vector<biorbd::utils::Vector3d> mesh(
                 m.meshPoints(biorbd::rigidbody::GeneralizedCoordinates(m).setZero(), 0, true));
     for (auto node : mesh)
         EXPECT_DOUBLE_EQ(node.x(), node.y());

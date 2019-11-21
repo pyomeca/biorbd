@@ -67,10 +67,10 @@ public:
     ///
     void wrapPoints(
             const biorbd::utils::RotoTrans& rt,
-            const biorbd::utils::Node3d& p1_bone,
-            const biorbd::utils::Node3d& p2_bone,
-            biorbd::utils::Node3d& p1,
-            biorbd::utils::Node3d& p2,
+            const biorbd::utils::Vector3d& p1_bone,
+            const biorbd::utils::Vector3d& p2_bone,
+            biorbd::utils::Vector3d& p1,
+            biorbd::utils::Vector3d& p2,
             double* length = nullptr); 
 
     ///
@@ -86,10 +86,10 @@ public:
     void wrapPoints(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::utils::Node3d& p1_bone,
-            const biorbd::utils::Node3d& p2_bone,
-            biorbd::utils::Node3d& p1,
-            biorbd::utils::Node3d& p2,
+            const biorbd::utils::Vector3d& p1_bone,
+            const biorbd::utils::Vector3d& p2_bone,
+            biorbd::utils::Vector3d& p1,
+            biorbd::utils::Vector3d& p2,
             double* length = nullptr) ; 
     ///
     /// \brief This function takes finds the location where muscle 1 and 2 leave the wrapping object (if already computed)
@@ -98,8 +98,8 @@ public:
     /// \param length Length of the muscle (default: nullptr)
     ///
     void wrapPoints(
-            biorbd::utils::Node3d& p1,
-            biorbd::utils::Node3d& p2,
+            biorbd::utils::Vector3d& p1,
+            biorbd::utils::Vector3d& p2,
             double* length = nullptr); 
 
     // Set et get
@@ -155,13 +155,13 @@ protected:
         /// \param p2 Point 2
         ///
         NodeMusclePair(
-                const biorbd::utils::Node3d &p1,
-                const biorbd::utils::Node3d &p2) :
-            m_p1(std::make_shared<biorbd::utils::Node3d>(p1)),
-            m_p2(std::make_shared<biorbd::utils::Node3d>(p2))
+                const biorbd::utils::Vector3d &p1,
+                const biorbd::utils::Vector3d &p2) :
+            m_p1(std::make_shared<biorbd::utils::Vector3d>(p1)),
+            m_p2(std::make_shared<biorbd::utils::Vector3d>(p2))
         {}
-        std::shared_ptr<biorbd::utils::Node3d> m_p1; ///< Point 1
-        std::shared_ptr<biorbd::utils::Node3d> m_p2;///< Point 2
+        std::shared_ptr<biorbd::utils::Vector3d> m_p1; ///< Point 1
+        std::shared_ptr<biorbd::utils::Vector3d> m_p2;///< Point 2
     };
 
  
@@ -171,8 +171,8 @@ protected:
     /// \param p_tan The point tangent
     ///
     void findTangentToCircle(
-            const biorbd::utils::Node3d& p,
-            biorbd::utils::Node3d&p_tan) const;
+            const biorbd::utils::Vector3d& p,
+            biorbd::utils::Vector3d&p_tan) const;
     
     ///
     /// \brief Select between a set of nodes which ones to keep
@@ -181,7 +181,7 @@ protected:
     /// 
     void selectTangents(
             const NodeMusclePair&p, 
-        biorbd::utils::Node3d&p_tan) const;
+        biorbd::utils::Vector3d&p_tan) const;
 
     ///
     /// \brief Find the height of both points
@@ -218,8 +218,8 @@ protected:
     std::shared_ptr<bool> m_isCylinderPositiveSign; ///<orientation of the muscle passing
     std::shared_ptr<biorbd::utils::RotoTrans> m_RTtoParent; ///<RotoTrans matrix with the parent
 
-    std::shared_ptr<biorbd::utils::Node3d> m_p1Wrap; ///< First point of contact with the wrap
-    std::shared_ptr<biorbd::utils::Node3d> m_p2Wrap; ///< Second point of contact with the wrap
+    std::shared_ptr<biorbd::utils::Vector3d> m_p1Wrap; ///< First point of contact with the wrap
+    std::shared_ptr<biorbd::utils::Vector3d> m_p2Wrap; ///< Second point of contact with the wrap
     std::shared_ptr<double> m_lengthAroundWrap ; ///< Length between p1 and p2
 
 };

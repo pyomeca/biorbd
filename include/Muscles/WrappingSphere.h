@@ -51,7 +51,7 @@ public:
     /// \param diameter Diameter of the sphere
     ///
     WrappingSphere(
-            const biorbd::utils::Node3d &v, 
+            const biorbd::utils::Vector3d &v, 
             double diameter);
     ///
     /// \brief Deep copy of the wrapping sphere
@@ -86,10 +86,10 @@ public:
     ///
     virtual void wrapPoints(
             const biorbd::utils::RotoTrans&rt,
-            const biorbd::utils::Node3d&p1_bone,
-            const biorbd::utils::Node3d&p2_bone,
-            biorbd::utils::Node3d&p1,
-            biorbd::utils::Node3d&p2, double* length= nullptr) {} 
+            const biorbd::utils::Vector3d&p1_bone,
+            const biorbd::utils::Vector3d&p2_bone,
+            biorbd::utils::Vector3d&p1,
+            biorbd::utils::Vector3d&p2, double* length= nullptr) {} 
 
     ///
     /// \brief This function takes a model and a position and finds the location where muscle 1 and 2 leave the wrapping object
@@ -104,10 +104,10 @@ public:
     virtual void wrapPoints(
             biorbd::rigidbody::Joints&model,
             const biorbd::rigidbody::GeneralizedCoordinates&Q,
-            const biorbd::utils::Node3d&p1_bone,
-            const biorbd::utils::Node3d&p2_bone,
-            biorbd::utils::Node3d&p1,
-            biorbd::utils::Node3d&p2,
+            const biorbd::utils::Vector3d&p1_bone,
+            const biorbd::utils::Vector3d&p2_bone,
+            biorbd::utils::Vector3d&p1,
+            biorbd::utils::Vector3d&p2,
             double* length = nullptr) {}
 
     ///
@@ -117,8 +117,8 @@ public:
     /// \param length Length of the muscle (default: nullptr)
     ///
     virtual void wrapPoints(
-            biorbd::utils::Node3d&p1,
-            biorbd::utils::Node3d&p2,
+            biorbd::utils::Vector3d&p1,
+            biorbd::utils::Vector3d&p2,
             double* length= nullptr) {} 
 
     // Get and set

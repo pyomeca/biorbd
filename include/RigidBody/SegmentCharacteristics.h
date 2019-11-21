@@ -1,5 +1,5 @@
-#ifndef BIORBD_RIGIDBODY_BONE_CHARACTERISTICS_H
-#define BIORBD_RIGIDBODY_BONE_CHARACTERISTICS_H
+#ifndef BIORBD_RIGIDBODY_SEGMENT_CHARACTERISTICS_H
+#define BIORBD_RIGIDBODY_SEGMENT_CHARACTERISTICS_H
 
 #include <memory>
 #include <rbdl/Body.h>
@@ -11,102 +11,102 @@
 namespace biorbd {
 
 namespace utils {
-class Node3d;
+class Vector3d;
 }
 
 ///
-/// \brief Namespace rigidbody that holds the bone caracteristics and mesh
+/// \brief Namespace rigidbody that holds the segment caracteristics and mesh
 ///
 namespace rigidbody {
-class BoneMesh;
+class Mesh;
 
 ///
-/// \brief Class BoneCharacteristics
+/// \brief Class SegmentCharacteristics
 ///
-class BIORBD_API BoneCharacteristics : public RigidBodyDynamics::Body
+class BIORBD_API SegmentCharacteristics : public RigidBodyDynamics::Body
 {
 public:
 
 
 ///
-/// \brief Construct bone characteristics
+/// \brief Construct segment characteristics
 ///
-    BoneCharacteristics();
+    SegmentCharacteristics();
 
 ///
-/// \brief Get bone characteristics
+/// \brief Get segment characteristics
 /// \param mass Mass of the body
 /// \param com Center of mass
 /// \param inertia Inertia matrix
 ///
-    BoneCharacteristics(
+    SegmentCharacteristics(
             double mass, 
-            const biorbd::utils::Node3d &com, 
+            const biorbd::utils::Vector3d &com, 
             const RigidBodyDynamics::Math::Matrix3d &inertia); 
 
 
     ///
-    /// \brief Get the bone characteristics
+    /// \brief Get the segment characteristics
     /// \param mass Mass of the body
     /// \param com Center of Mass
     /// \param inertia Inertia matrix
-    /// \param mesh Position of the bone meshing
+    /// \param mesh Position of the meshing
     ///
-    BoneCharacteristics(
+    SegmentCharacteristics(
             double mass, 
-            const biorbd::utils::Node3d &com, 
+            const biorbd::utils::Vector3d &com, 
             const RigidBodyDynamics::Math::Matrix3d &inertia, 
-            const biorbd::rigidbody::BoneMesh &mesh); 
+            const biorbd::rigidbody::Mesh &mesh); 
 
     ///
-    /// \brief Deep copy of the bone characteristics
-    /// \return Copy of the bone characteristics
+    /// \brief Deep copy of the segment characteristics
+    /// \return Copy of the segment characteristics
     ///
-    biorbd::rigidbody::BoneCharacteristics DeepCopy() const;
+    biorbd::rigidbody::SegmentCharacteristics DeepCopy() const;
 
     ///
-    /// \brief Copy the bone characteristics
+    /// \brief Copy the segment characteristics
     /// \param other The characteristics to copy
     ///
-    void DeepCopy(const biorbd::rigidbody::BoneCharacteristics& other);
+    void DeepCopy(const biorbd::rigidbody::SegmentCharacteristics& other);
 
 
     // Set and Get
     ///
-    /// \brief Returns the bone length
-    /// \return The bone length
+    /// \brief Returns the segment length
+    /// \return The segment length
     ///
     double length() const;
 
     ///
-    /// \brief Returns the bone mass
-    /// \return The bone mass
+    /// \brief Returns the segment mass
+    /// \return The segment mass
     ///
     double mass() const;
 
     ///
-    /// \brief Set the bone length
+    /// \brief Set the segment length
     /// \param val Value of the new length
     ///
     void setLength(double val);
 
     ///
-    /// \brief Returns the bone mesh
-    /// \return The bone mesh
+    /// \brief Returns the segment mesh
+    /// \return The segment mesh
     ///
-    const biorbd::rigidbody::BoneMesh& mesh() const;
+    const biorbd::rigidbody::Mesh& mesh() const;
 
     ///
-    /// \brief Returns the bone inertia
-    /// \return The bone inertia
+    /// \brief Returns the segment inertia
+    /// \return The segment inertia
     ///
     const Eigen::Matrix3d& inertia() const;
 
 protected:
-    std::shared_ptr<double> m_length; ///< Length of the bone
-    std::shared_ptr<biorbd::rigidbody::BoneMesh> m_mesh; ///< Mesh of the bone
+    std::shared_ptr<double> m_length; ///< Length of the segment
+    std::shared_ptr<biorbd::rigidbody::Mesh> m_mesh; ///< Mesh of the segment
 };
 
 }}
 
-#endif // BIORBD_RIGIDBODY_BONE_CHARACTERISTICS_H
+#endif // BIORBD_RIGIDBODY_SEGMENT_CHARACTERISTICS_H

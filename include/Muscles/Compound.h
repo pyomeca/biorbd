@@ -9,7 +9,7 @@
 namespace biorbd {
 namespace utils {
 class String;
-class Node3d;
+class Vector3d;
 }
 
 namespace rigidbody {
@@ -100,7 +100,7 @@ public:
     /// \brief Add a wrapping object
     /// \param w Wrap to add
     ///
-    void addPathObject(biorbd::utils::Node3d &w);
+    void addPathObject(biorbd::utils::Vector3d &w);
 
     ///
     /// \brief Return the last computed muscle force

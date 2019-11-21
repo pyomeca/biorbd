@@ -4,7 +4,7 @@
 #include <limits.h>
 #include "Utils/String.h"
 #include "Utils/Error.h"
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 #include "Utils/RotoTrans.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/Mesh.h"

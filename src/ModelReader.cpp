@@ -8,10 +8,10 @@
 #include "Utils/String.h"
 #include "Utils/Equation.h"
 #include "Utils/Vector.h"
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 #include "RigidBody/GeneralizedCoordinates.h"
-#include "RigidBody/BoneMesh.h"
-#include "RigidBody/BoneCharacteristics.h"
+#include "RigidBody/Mesh.h"
+#include "RigidBody/SegmentCharacteristics.h"
 #include "RigidBody/IMU.h"
 #include "RigidBody/Patch.h"
 #include "RigidBody/NodeBone.h"
@@ -102,9 +102,9 @@ void biorbd::Reader::readModelFile(
                 Eigen::Matrix3d inertia(Eigen::Matrix3d::Identity(3,3));
                 RigidBodyDynamics::Math::Matrix3d RT_R(Eigen::Matrix3d::Identity(3,3));
                 RigidBodyDynamics::Math::Vector3d RT_T(0,0,0);
-                biorbd::utils::Node3d com(0,0,0);
-                biorbd::rigidbody::BoneMesh boneMesh;
-                int boneByFile(-1); // -1 non setté, 0 pas par file, 1 par file
+                biorbd::utils::Vector3d com(0,0,0);
+                biorbd::rigidbody::Mesh Mesh;
+                int segmentByFile(-1); // -1 non setté, 0 pas par file, 1 par file
                 int PF = -1;
                 while(file.read(property_tag) && property_tag.tolower().compare("endsegment")){
                     if (!property_tag.tolower().compare("parent")){
@@ -147,8 +147,8 @@ void biorbd::Reader::readModelFile(
                         }
                         else{
                             biorbd::utils::String seq("xyz");
-                            biorbd::utils::Node3d rot(0, 0, 0);
-                            biorbd::utils::Node3d trans(0, 0, 0);
+                            biorbd::utils::Vector3d rot(0, 0, 0);
+                            biorbd::utils::Vector3d trans(0, 0, 0);
                             // Transcribe the rotations 
                             for (unsigned int i=0; i<3; ++i)
                                 file.read(rot(i));
@@ -171,48 +171,48 @@ void biorbd::Reader::readModelFile(
                     else if (!property_tag.tolower().compare("forceplate"))
                         file.read(PF);
                     else if (!property_tag.tolower().compare("mesh")){
-                        if (boneByFile==-1)
-                            boneByFile = 0;
-                        else if (boneByFile == 1)
+                        if (segmentByFile==-1)
+                            segmentByFile = 0;
+                        else if (segmentByFile == 1)
                             biorbd::utils::Error::raise("You must not mix file and mesh in segment");
-                        biorbd::utils::Node3d tp(0, 0, 0);
+                        biorbd::utils::Vector3d tp(0, 0, 0);
                         for (unsigned int i=0; i<3; ++i)
                             file.read(tp(i), variable);
-                        boneMesh.addPoint(tp);
+                        Mesh.addPoint(tp);
                     }
                     else if (!property_tag.tolower().compare("patch")){
-                        if (boneByFile==-1)
-                            boneByFile = 0;
-                        else if (boneByFile == 1)
+                        if (segmentByFile==-1)
+                            segmentByFile = 0;
+                        else if (segmentByFile == 1)
                             biorbd::utils::Error::raise("You must not mix file and mesh in segment");
                         biorbd::rigidbody::Patch tp;
                         for (int i=0; i<3; ++i)
                             file.read(tp(i));
-                        boneMesh.addPatch(tp);
+                        Mesh.addPatch(tp);
                     }
                     else if (!property_tag.tolower().compare("meshfile")){
-                        if (boneByFile==-1)
-                            boneByFile = 1;
-                        else if (boneByFile == 0)
+                        if (segmentByFile==-1)
+                            segmentByFile = 1;
+                        else if (segmentByFile == 0)
                             biorbd::utils::Error::raise("You must not mix file and mesh in segment");
                         biorbd::utils::String filePathInString;
                         file.read(filePathInString);
                         biorbd::utils::Path filePath(filePathInString);
                         if (!filePath.extension().compare("bioMesh"))
-                            boneMesh = readBoneMeshFileBiorbdBones(path.folder() + filePath.relativePath());
+                            Mesh = readMeshFileBiorbdSegments(path.folder() + filePath.relativePath());
                         else if (!filePath.extension().compare("ply"))
-                            boneMesh = readBoneMeshFilePly(path.folder() + filePath.relativePath());
+                            Mesh = readMeshFilePly(path.folder() + filePath.relativePath());
 #ifdef MODULE_VTP_FILES_READER
                         else if (!filePath.extension().compare("vtp"))
-                            boneMesh = readBoneMeshFileVtp(path.folder() + filePath.relativePath());
+                            Mesh = readMeshFileVtp(path.folder() + filePath.relativePath());
 #endif
                         else
                             biorbd::utils::Error::raise(filePath.extension() + " is an unrecognized mesh file");
                     }
                 }
                 RigidBodyDynamics::Math::SpatialTransform RT(RT_R, RT_T);
-                biorbd::rigidbody::BoneCharacteristics characteristics(mass,com,inertia,boneMesh);
-                model->AddBone(name, parent_str, trans, rot, characteristics, RT, PF);
+                biorbd::rigidbody::SegmentCharacteristics characteristics(mass,com,inertia,Mesh);
+                model->AddSegment(name, parent_str, trans, rot, characteristics, RT, PF);
             }
             else if (!main_tag.tolower().compare("root_actuated")){
                 bool rootActuated = true;
@@ -225,7 +225,7 @@ void biorbd::Reader::readModelFile(
                 model->setHasExternalForces(externalF);
             }
             else if (!main_tag.tolower().compare("gravity")){
-                biorbd::utils::Node3d gravity(0,0,0);
+                biorbd::utils::Vector3d gravity(0,0,0);
                 for (unsigned int i=0; i<3; ++i)
                     file.read(gravity(i), variable);
                 model->gravity = gravity;
@@ -246,7 +246,7 @@ void biorbd::Reader::readModelFile(
                 file.read(name);
                 unsigned int parent_int = 0;
                 biorbd::utils::String parent_str("root");
-                biorbd::utils::Node3d pos(0,0,0);
+                biorbd::utils::Vector3d pos(0,0,0);
                 bool technical = true;
                 bool anatomical = false;
                 biorbd::utils::String axesToRemove;
@@ -304,8 +304,8 @@ void biorbd::Reader::readModelFile(
                         }
                         else {
                             biorbd::utils::String seq("xyz");
-                            biorbd::utils::Node3d rot(0, 0, 0);
-                            biorbd::utils::Node3d trans(0, 0, 0);
+                            biorbd::utils::Vector3d rot(0, 0, 0);
+                            biorbd::utils::Vector3d trans(0, 0, 0);
                             // Transcribe the rotations
                             for (unsigned int i=0; i<3; ++i)
                                 file.read(rot(i));
@@ -332,8 +332,8 @@ void biorbd::Reader::readModelFile(
                 file.read(name);
                 unsigned int parent_int = 0;
                 biorbd::utils::String parent_str("root");
-                biorbd::utils::Node3d pos(0,0,0);
-                biorbd::utils::Node3d norm(0,0,0);
+                biorbd::utils::Vector3d pos(0,0,0);
+                biorbd::utils::Vector3d norm(0,0,0);
                 biorbd::utils::String axis("");
                 double acc = 0;
                 while(file.read(property_tag) && property_tag.tolower().compare("endcontact")){
@@ -391,8 +391,8 @@ void biorbd::Reader::readModelFile(
                         biorbd::utils::Error::check(model->IsBodyId(id_successor), "Wrong name in a segment");
                     } else if (!property_tag.tolower().compare("rtpredecessor")){
                         biorbd::utils::String seq("xyz");
-                        biorbd::utils::Node3d rot(0, 0, 0);
-                        biorbd::utils::Node3d trans(0, 0, 0);
+                        biorbd::utils::Vector3d rot(0, 0, 0);
+                        biorbd::utils::Vector3d trans(0, 0, 0);
                         // Transcribe the rotations
                         for (unsigned int i=0; i<3; ++i)
                             file.read(rot(i));
@@ -404,8 +404,8 @@ void biorbd::Reader::readModelFile(
                         X_predecessor = biorbd::utils::RotoTrans(rot, trans, seq);
                     } else if (!property_tag.tolower().compare("rtsuccessor")){
                         biorbd::utils::String seq("xyz");
-                        biorbd::utils::Node3d rot(0, 0, 0);
-                        biorbd::utils::Node3d trans(0, 0, 0);
+                        biorbd::utils::Vector3d rot(0, 0, 0);
+                        biorbd::utils::Vector3d trans(0, 0, 0);
                         // Transcribe the rotations
                         for (unsigned int i=0; i<3; ++i)
                             file.read(rot(i));
@@ -607,8 +607,8 @@ void biorbd::Reader::readModelFile(
                 biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType(biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
                 biorbd::utils::String muscleGroup("");
                 int idxGroup(-1);
-                biorbd::utils::Node3d origin_pos(0,0,0);
-                biorbd::utils::Node3d insert_pos(0,0,0);
+                biorbd::utils::Vector3d origin_pos(0,0,0);
+                biorbd::utils::Vector3d insert_pos(0,0,0);
                 double optimalLength(0);
                 double maxForce(0);
                 double tendonSlackLength(0);
@@ -695,8 +695,8 @@ void biorbd::Reader::readModelFile(
                 }
                 biorbd::utils::Error::check(idxGroup!=-1, "No muscle group was provided!");
                 biorbd::muscles::Geometry geo(
-                            biorbd::utils::Node3d(origin_pos, name + "_origin", model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
-                            biorbd::utils::Node3d(insert_pos, name + "_insertion", model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
+                            biorbd::utils::Vector3d(origin_pos, name + "_origin", model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
+                            biorbd::utils::Vector3d(insert_pos, name + "_insertion", model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
                 biorbd::muscles::State stateMax(maxExcitation, maxActivation);
                 biorbd::muscles::Characteristics characteristics(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax, fatigueParameters);
                 model->muscleGroup(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,characteristics,biorbd::muscles::PathChangers(),stateType,dynamicFatigueType);
@@ -822,7 +822,7 @@ void biorbd::Reader::readModelFile(
     // std::cout << "Model file successfully loaded" << std::endl;
     file.close();
 }
-std::vector<std::vector<biorbd::utils::Node3d>>
+std::vector<std::vector<biorbd::utils::Vector3d>>
 biorbd::Reader::readMarkerDataFile(
         const biorbd::utils::Path &path){
     // Open file
@@ -852,8 +852,8 @@ biorbd::Reader::readMarkerDataFile(
     file.readSpecificTag("nbintervals", tp);
     unsigned int nbIntervals(static_cast<unsigned int>(atoi(tp.c_str())));
 
-    std::vector<std::vector<biorbd::utils::Node3d>> markers;
-    std::vector<biorbd::utils::Node3d> position;
+    std::vector<std::vector<biorbd::utils::Vector3d>> markers;
+    std::vector<biorbd::utils::Vector3d> position;
     // Scroll down until the definition of a marker
     for (unsigned int j=0; j<nbMark; j++){
         while (tp.compare("Marker")){
@@ -864,7 +864,7 @@ biorbd::Reader::readMarkerDataFile(
         unsigned int noMarker;
         file.read(noMarker);
         for (unsigned int i=0; i<=nbIntervals; i++){ // <= because there is nbIntervals+1 values
-            biorbd::utils::Node3d mark(0, 0, 0);
+            biorbd::utils::Vector3d mark(0, 0, 0);
             for (unsigned int j=0; j<3; ++j)
                 file.read(mark[j]);
             position.push_back(mark);
@@ -1111,9 +1111,9 @@ void biorbd::Reader::readViconForceFile(
         const utils::Path &path, // Path to the file
         std::vector<std::vector<unsigned int>> &frame, // Time vector * number of pf
         std::vector<unsigned int> &frequency, // Acquisition frequency * number of pf
-        std::vector<std::vector<biorbd::utils::Node3d>> &force, // Linear forces (x,y,z) * number of pf
-        std::vector<std::vector<biorbd::utils::Node3d>> &moment, // Moments (x,y,z) * number of pf
-        std::vector<std::vector<biorbd::utils::Node3d>> &cop){// Center of pressure (x,y,z) * number of pf
+        std::vector<std::vector<biorbd::utils::Vector3d>> &force, // Linear forces (x,y,z) * number of pf
+        std::vector<std::vector<biorbd::utils::Vector3d>> &moment, // Moments (x,y,z) * number of pf
+        std::vector<std::vector<biorbd::utils::Vector3d>> &cop){// Center of pressure (x,y,z) * number of pf
     // Open file
     // std::cout << "Loading force file: " << path << std::endl;
 #ifdef _WIN32
@@ -1137,9 +1137,9 @@ void biorbd::Reader::readViconForceFile(
     while(!file.eof()){
         // Put everything in temporary per platform (Mettre tout en temporaire par plate-forme)
         std::vector<unsigned int> frame1pf;
-        std::vector<biorbd::utils::Node3d> force1fp;
-        std::vector<biorbd::utils::Node3d> moment1fp;
-        std::vector<biorbd::utils::Node3d> cop1fp;
+        std::vector<biorbd::utils::Vector3d> force1fp;
+        std::vector<biorbd::utils::Vector3d> moment1fp;
+        std::vector<biorbd::utils::Vector3d> cop1fp;
 
         // Get the acquisition frequency
         file.readSpecificTag("devices", tp);
@@ -1179,9 +1179,9 @@ void biorbd::Reader::readViconForceFile(
             // Fill in the fields
             frame1pf.push_back(static_cast<unsigned int>(data[0]));  // Frame stamp
     //        unsigned int subFrame = static_cast<unsigned int>(data[1]); // Subframes (not interesting)
-            biorbd::utils::Node3d cop_tp(0, 0, 0); // Center of pressure
-            biorbd::utils::Node3d for_tp(0, 0, 0); // Force
-            biorbd::utils::Node3d M_tp(0, 0, 0);   // Moment
+            biorbd::utils::Vector3d cop_tp(0, 0, 0); // Center of pressure
+            biorbd::utils::Vector3d for_tp(0, 0, 0); // Force
+            biorbd::utils::Vector3d M_tp(0, 0, 0);   // Moment
             for (unsigned int i=0; i<3; ++i){
                 cop_tp[i] = data[i+2]/1000; // from mm to m
                 for_tp[i] = data[i+5];
@@ -1204,9 +1204,9 @@ std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::Reader:
     // Read file
     std::vector<std::vector<unsigned int>> frame;
     std::vector<unsigned int> frequency;// Acquisition frequency
-    std::vector<std::vector<biorbd::utils::Node3d>> force; // Linear forces (x,y,z)
-    std::vector<std::vector<biorbd::utils::Node3d>> moment; // Moments (x,y,z)
-    std::vector<std::vector<biorbd::utils::Node3d>> cop; // Center of pressure (x,y,z)
+    std::vector<std::vector<biorbd::utils::Vector3d>> force; // Linear forces (x,y,z)
+    std::vector<std::vector<biorbd::utils::Vector3d>> moment; // Moments (x,y,z)
+    std::vector<std::vector<biorbd::utils::Vector3d>> cop; // Center of pressure (x,y,z)
     readViconForceFile(path, frame, frequency, force, moment, cop);
 
     // Redispatch the values in a vector of SpatialTransform
@@ -1214,8 +1214,8 @@ std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::Reader:
     for (unsigned int j=0; j<force.size(); ++j){// nb platform
         std::vector<RigidBodyDynamics::Math::SpatialVector> tp;
         for (unsigned int i=0; i<force[j].size(); ++i){ // timestamp
-            const biorbd::utils::Node3d& f = force[j][i];  // Linear forces (x,y,z)
-            const biorbd::utils::Node3d& m = moment[j][i]; // Moments (x,y,z)
+            const biorbd::utils::Vector3d& f = force[j][i];  // Linear forces (x,y,z)
+            const biorbd::utils::Vector3d& m = moment[j][i]; // Moments (x,y,z)
             tp.push_back(RigidBodyDynamics::Math::SpatialVector(m[0], m[1], m[2], f[0], f[1], f[2]));
         }
         st.push_back(tp);
@@ -1223,7 +1223,7 @@ std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::Reader:
     return st;
 }
 
-std::vector<std::vector<biorbd::utils::Node3d>>
+std::vector<std::vector<biorbd::utils::Vector3d>>
 biorbd::Reader::readViconMarkerFile(
         const utils::Path &path,
         std::vector<biorbd::utils::String> &markOrder,
@@ -1322,7 +1322,7 @@ biorbd::Reader::readViconMarkerFile(
     }
 
 
-    std::vector<std::vector<biorbd::utils::Node3d>> data;
+    std::vector<std::vector<biorbd::utils::Vector3d>> data;
     // now we'll use a stringstream to separate the fields out of the line (comma separated)
     unsigned int cmpFrames(1);
     while(!file.eof()){
@@ -1344,9 +1344,9 @@ biorbd::Reader::readViconMarkerFile(
             ++cmp;
         }
         // Once the markers are in order, separate them
-        std::vector<biorbd::utils::Node3d> data_tp2;
+        std::vector<biorbd::utils::Vector3d> data_tp2;
         for (unsigned int i=0; i<static_cast<unsigned int>(data_tp.size())/3; ++i){
-            biorbd::utils::Node3d node(data_tp.block(3*i, 0, 3, 1)/1000);
+            biorbd::utils::Vector3d node(data_tp.block(3*i, 0, 3, 1)/1000);
             data_tp2.push_back(node);
         }
         // Stock the marker vector a that time t
@@ -1369,11 +1369,11 @@ biorbd::Reader::readViconMarkerFile(
     return data;
 }
 
-biorbd::rigidbody::BoneMesh
-biorbd::Reader::readBoneMeshFileBiorbdBones(
+biorbd::rigidbody::Mesh
+biorbd::Reader::readMeshFileBiorbdSegments(
         const biorbd::utils::Path &path)
 {
-    // Read a bone file
+    // Read a segment file
 
     // Open file
     // std::cout << "Loading marker file: " << path << std::endl;
@@ -1400,11 +1400,11 @@ biorbd::Reader::readBoneMeshFileBiorbdBones(
     file.readSpecificTag("nfaces", tp);
     unsigned int nFaces(static_cast<unsigned int>(atoi(tp.c_str())));
 
-    biorbd::rigidbody::BoneMesh mesh;
+    biorbd::rigidbody::Mesh mesh;
     mesh.setPath(path);
     // Get all the points
     for (unsigned int iPoints=0; iPoints < nPoints; ++iPoints){
-        biorbd::utils::Node3d nodeTp(0, 0, 0);
+        biorbd::utils::Vector3d nodeTp(0, 0, 0);
         for (unsigned int i=0; i<3; ++i)
             file.read(nodeTp(i));
         mesh.addPoint(nodeTp);
@@ -1429,7 +1429,7 @@ biorbd::Reader::readBoneMeshFileBiorbdBones(
 }
 
 
-biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFilePly(
+biorbd::rigidbody::Mesh biorbd::Reader::readMeshFilePly(
         const biorbd::utils::Path &path)
 {
     // Read a bone file
@@ -1464,11 +1464,11 @@ biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFilePly(
     // Trouver le nombre de ??
     file.reachSpecificTag("end_header");
 
-    biorbd::rigidbody::BoneMesh mesh;
+    biorbd::rigidbody::Mesh mesh;
     mesh.setPath(path);
     // Get all the points
     for (unsigned int iPoints=0; iPoints < nVertex; ++iPoints){
-        biorbd::utils::Node3d nodeTp(0, 0, 0);
+        biorbd::utils::Vector3d nodeTp(0, 0, 0);
         for (unsigned int i=0; i<3; ++i)
             file.read(nodeTp(i));
         mesh.addPoint(nodeTp);
@@ -1498,7 +1498,7 @@ biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFilePly(
 
 #ifdef MODULE_VTP_FILES_READER
 #include "tinyxml.h"
-biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFileVtp(
+biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileVtp(
         const biorbd::utils::Path &path) {
     // Read an opensim formatted mesh file
 
@@ -1513,7 +1513,7 @@ biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFileVtp(
     TiXmlDocument doc(filepath);
     biorbd::utils::Error::check(doc.LoadFile(), "Failed to load file " + filepath);
     TiXmlHandle hDoc(&doc);
-    biorbd::rigidbody::BoneMesh mesh;
+    biorbd::rigidbody::Mesh mesh;
     mesh.setPath(path);
 
     // Navigate up to VTKFile/PolyData/Piece
@@ -1550,7 +1550,7 @@ biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFileVtp(
                 std::stringstream fs( field );
                 fs >> z;
             }
-            mesh.addPoint(biorbd::utils::Node3d(x, y, z));
+            mesh.addPoint(biorbd::utils::Vector3d(x, y, z));
         }
     }
 
@@ -1586,7 +1586,7 @@ biorbd::rigidbody::BoneMesh biorbd::Reader::readBoneMeshFileVtp(
 #endif  // MODULE_VTP_FILES_READER
 
 
-std::vector<std::vector<biorbd::utils::Node3d>>
+std::vector<std::vector<biorbd::utils::Vector3d>>
 biorbd::Reader::readViconMarkerFile(
         const biorbd::utils::Path &path,
         int nNodes){

@@ -3,7 +3,7 @@
 
 #include <rbdl/rbdl_math.h>
 #include "Utils/Error.h"
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 #include "Utils/String.h"
 
 biorbd::utils::RotoTrans::RotoTrans(const Eigen::Matrix4d& m) :

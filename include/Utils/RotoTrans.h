@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 #include <Eigen/Dense>
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 
 namespace RigidBodyDynamics { namespace Math {
 struct SpatialTransform;

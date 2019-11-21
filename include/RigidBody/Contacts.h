@@ -8,7 +8,7 @@
 
 namespace biorbd { namespace utils {
 class RotoTrans;
-class Node3d;
+class Vector3d;
 class Vector;
 class String;
 }}
@@ -51,8 +51,8 @@ public:
     ///
     unsigned int AddConstraint(
             unsigned int body_id,
-            const biorbd::utils::Node3d &body_point,
-            const biorbd::utils::Node3d &world_normal,
+            const biorbd::utils::Vector3d &body_point,
+            const biorbd::utils::Vector3d &world_normal,
             const biorbd::utils::String& name,
             double acc = 0);
 
@@ -67,7 +67,7 @@ public:
 
     unsigned int AddConstraint(
             unsigned int body_id,
-            const biorbd::utils::Node3d &body_point,
+            const biorbd::utils::Vector3d &body_point,
             const biorbd::utils::String& axis,
             const biorbd::utils::String& name,
             double acc = 0);
@@ -129,7 +129,7 @@ public:
     /// \param updateKin Whether the kinematics of the model should be updated from Q
     /// \return The contraints positions in the global reference
     ///
-    std::vector<biorbd::utils::Node3d> constraintsInGlobal(
+    std::vector<biorbd::utils::Vector3d> constraintsInGlobal(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool updateKin); 
 

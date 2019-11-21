@@ -2,7 +2,7 @@
 #define BIORBD_MUSCLES_VIAPOINT_H
 
 #include "biorbdConfig.h"
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 
 namespace biorbd {
 namespace utils {
@@ -13,7 +13,7 @@ namespace muscles {
 ///
     /// \brief Class ViaPoint
     ///
-class BIORBD_API ViaPoint : public biorbd::utils::Node3d{
+class BIORBD_API ViaPoint : public biorbd::utils::Vector3d{
 public:
     ///
     /// \brief Contruct ViaPoint
@@ -49,7 +49,7 @@ public:
     /// \param other The 3D node
     ///
     ViaPoint(
-            const biorbd::utils::Node3d& other);
+            const biorbd::utils::Vector3d& other);
     ///
     /// \brief Construct ViaPoint from another ViaPoint
     /// \param other The other ViaPoint
@@ -73,8 +73,8 @@ public:
     /// \param other The 3D node to assign to ViaPoint
     ///
     template<typename OtherDerived>
-        biorbd::muscles::ViaPoint& operator=(const biorbd::utils::Node3d& other){
-            this->biorbd::utils::Node3d::operator=(other);
+        biorbd::muscles::ViaPoint& operator=(const biorbd::utils::Vector3d& other){
+            this->biorbd::utils::Vector3d::operator=(other);
             return *this;
         }
 };

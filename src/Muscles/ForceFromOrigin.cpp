@@ -2,7 +2,7 @@
 #include "Muscles/ForceFromOrigin.h"
 
 #include <vector>
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 #include "Muscles/Geometry.h"
 
 biorbd::muscles::ForceFromOrigin::ForceFromOrigin(double x, double y, double z) :
@@ -36,7 +36,7 @@ void biorbd::muscles::ForceFromOrigin::setForceFromMuscleGeometry(
         double vectorNorm)
 {
     //Find the direction vector
-    const std::vector<biorbd::utils::Node3d>& tp_via = geo.musclesPointsInGlobal();
+    const std::vector<biorbd::utils::Vector3d>& tp_via = geo.musclesPointsInGlobal();
     *this = tp_via[1] - tp_via[0];
     *this /= this->norm();
     *this *= vectorNorm;

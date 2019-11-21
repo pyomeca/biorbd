@@ -11,8 +11,8 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder() :
     m_length(std::make_shared<double>(0)),
     m_isCylinderPositiveSign(std::make_shared<bool>(true)),
     m_RTtoParent(std::make_shared<biorbd::utils::RotoTrans>()),
-    m_p1Wrap(std::make_shared<biorbd::utils::Node3d>()),
-    m_p2Wrap(std::make_shared<biorbd::utils::Node3d>()),
+    m_p1Wrap(std::make_shared<biorbd::utils::Vector3d>()),
+    m_p2Wrap(std::make_shared<biorbd::utils::Vector3d>()),
     m_lengthAroundWrap(std::make_shared<double>(0))
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_CYLINDER;
@@ -28,8 +28,8 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder(
     m_length(std::make_shared<double>(length)),
     m_isCylinderPositiveSign(std::make_shared<bool>(isCylinderPositiveSign)),
     m_RTtoParent(std::make_shared<biorbd::utils::RotoTrans>(rt)),
-    m_p1Wrap(std::make_shared<biorbd::utils::Node3d>()),
-    m_p2Wrap(std::make_shared<biorbd::utils::Node3d>()),
+    m_p1Wrap(std::make_shared<biorbd::utils::Vector3d>()),
+    m_p2Wrap(std::make_shared<biorbd::utils::Vector3d>()),
     m_lengthAroundWrap(std::make_shared<double>(0))
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_CYLINDER;
@@ -47,8 +47,8 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder(
     m_length(std::make_shared<double>(length)),
     m_isCylinderPositiveSign(std::make_shared<bool>(isCylinderPositiveSign)),
     m_RTtoParent(std::make_shared<biorbd::utils::RotoTrans>(rt)),
-    m_p1Wrap(std::make_shared<biorbd::utils::Node3d>()),
-    m_p2Wrap(std::make_shared<biorbd::utils::Node3d>()),
+    m_p1Wrap(std::make_shared<biorbd::utils::Vector3d>()),
+    m_p2Wrap(std::make_shared<biorbd::utils::Vector3d>()),
     m_lengthAroundWrap(std::make_shared<double>(0))
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_CYLINDER;
@@ -75,10 +75,10 @@ void biorbd::muscles::WrappingCylinder::DeepCopy(const biorbd::muscles::Wrapping
 
 void biorbd::muscles::WrappingCylinder::wrapPoints(
         const biorbd::utils::RotoTrans& rt,
-        const biorbd::utils::Node3d& p1_bone,
-        const biorbd::utils::Node3d& p2_bone,
-        biorbd::utils::Node3d& p1,
-        biorbd::utils::Node3d& p2,
+        const biorbd::utils::Vector3d& p1_bone,
+        const biorbd::utils::Vector3d& p2_bone,
+        biorbd::utils::Vector3d& p1,
+        biorbd::utils::Vector3d& p2,
         double *length)
 {
     // This function takes the position of the wrapping and finds the location where muscle 1 and 2 leave the wrapping object
@@ -89,8 +89,8 @@ void biorbd::muscles::WrappingCylinder::wrapPoints(
     p_glob.m_p2->applyRT(rt.transpose());
 
     //Find the tangents of these points to the circle (cylinder seen from above)
-    biorbd::utils::Node3d p1_tan(0, 0, 0);
-    biorbd::utils::Node3d p2_tan(0, 0, 0);
+    biorbd::utils::Vector3d p1_tan(0, 0, 0);
+    biorbd::utils::Vector3d p2_tan(0, 0, 0);
     findTangentToCircle(*p_glob.m_p1, p1_tan);
     findTangentToCircle(*p_glob.m_p2, p2_tan);
 
@@ -121,10 +121,10 @@ void biorbd::muscles::WrappingCylinder::wrapPoints(
 void biorbd::muscles::WrappingCylinder::wrapPoints(
         biorbd::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::utils::Node3d& p1_bone,
-        const biorbd::utils::Node3d& p2_bone,
-        biorbd::utils::Node3d& p1,
-        biorbd::utils::Node3d& p2,
+        const biorbd::utils::Vector3d& p1_bone,
+        const biorbd::utils::Vector3d& p2_bone,
+        biorbd::utils::Vector3d& p1,
+        biorbd::utils::Vector3d& p2,
         double *length) {
     // This function takes a model and a position of the model and returns the location where muscle 1 et 2 leave the wrapping object
 
@@ -132,8 +132,8 @@ void biorbd::muscles::WrappingCylinder::wrapPoints(
 }
 
 void biorbd::muscles::WrappingCylinder::wrapPoints(
-        biorbd::utils::Node3d& p1,
-        biorbd::utils::Node3d& p2,
+        biorbd::utils::Vector3d& p1,
+        biorbd::utils::Vector3d& p2,
         double *length){
     p1 = *m_p1Wrap;
     p2 = *m_p2Wrap;
@@ -180,8 +180,8 @@ void biorbd::muscles::WrappingCylinder::setLength(double val)
 }
 
 void biorbd::muscles::WrappingCylinder::findTangentToCircle(
-        const biorbd::utils::Node3d& p,
-        biorbd::utils::Node3d& p_tan) const {
+        const biorbd::utils::Vector3d& p,
+        biorbd::utils::Vector3d& p_tan) const {
     double p_dot = p.block(0,0,2,1).dot(p.block(0,0,2,1));
     const Eigen::Vector2d& Q0(rayon()*rayon()/p_dot*p.block(0,0,2,1));
     Eigen::Matrix2d tp;
@@ -201,7 +201,7 @@ void biorbd::muscles::WrappingCylinder::findTangentToCircle(
 
 void biorbd::muscles::WrappingCylinder::selectTangents(
         const NodeMusclePair &p1,
-        biorbd::utils::Node3d &p_tan) const {
+        biorbd::utils::Vector3d &p_tan) const {
     if (m_isCylinderPositiveSign){
         if ((*p1.m_p2)(0) >= (*p1.m_p1)(0))
             p_tan = *p1.m_p2;
@@ -236,11 +236,11 @@ bool biorbd::muscles::WrappingCylinder::findVerticalNode(
     // Strategy : Find the matrix of the passage between the aligned points in x and the cylinder. Find the location where the points cross the cylinder
 
     // X is the straight line between the two points
-    biorbd::utils::Node3d X(*glob.m_p2 - *glob.m_p1);
+    biorbd::utils::Vector3d X(*glob.m_p2 - *glob.m_p1);
     // Z is the empty axis of the cylinder
-    biorbd::utils::Node3d Z(0,0,1);
+    biorbd::utils::Vector3d Z(0,0,1);
 
-    biorbd::utils::Node3d Y(Z.cross(X));
+    biorbd::utils::Vector3d Y(Z.cross(X));
     // Re-compute X for it to be aligned with the cylinder
     X = Y.cross(Z);
     // Normalise everything
@@ -255,10 +255,10 @@ bool biorbd::muscles::WrappingCylinder::findVerticalNode(
          0,    0,    0,    1;
 
     // Turn the points in the R reference
-    biorbd::utils::Node3d globA(*glob.m_p1);
-    biorbd::utils::Node3d globB(*glob.m_p2);
-    biorbd::utils::Node3d wrapA(*wrapper.m_p1);
-    biorbd::utils::Node3d wrapB(*wrapper.m_p2);
+    biorbd::utils::Vector3d globA(*glob.m_p1);
+    biorbd::utils::Vector3d globB(*glob.m_p2);
+    biorbd::utils::Vector3d wrapA(*wrapper.m_p1);
+    biorbd::utils::Vector3d wrapB(*wrapper.m_p2);
     globA.applyRT(R);
     globB.applyRT(R);
     wrapA.applyRT(R);

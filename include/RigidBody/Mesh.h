@@ -1,5 +1,5 @@
-#ifndef BIORBD_RIGIDBODY_BONE_MESH_H
-#define BIORBD_RIGIDBODY_BONE_MESH_H
+#ifndef BIORBD_RIGIDBODY_MESH_H
+#define BIORBD_RIGIDBODY_MESH_H
 
 #include <memory>
 #include <vector>
@@ -8,7 +8,7 @@
 
 namespace biorbd {
 namespace utils {
-class Node3d;
+class Vector3d;
 class Path;
 }
 
@@ -16,43 +16,43 @@ namespace rigidbody {
 class Patch;
 
 ///
-/// \brief Class BoneMesh
+/// \brief Class Mesh
 ///
-class BIORBD_API BoneMesh
+class BIORBD_API Mesh
 {
 public:
     ///
-    /// \brief Construct bone mesh
+    /// \brief Construct mesh
     ///
-    BoneMesh();
+    Mesh();
 
     ///
-    /// \brief Construct bone mesh
-    /// \brief mesh Nodes
+    /// \brief Construct mesh
+    /// \brief mesh 3D vector
     ///
-    BoneMesh(
-            const std::vector<biorbd::utils::Node3d>& mesh);
+    Mesh(
+            const std::vector<biorbd::utils::Vector3d>& mesh);
 
     ///
-    /// \brief Construct bone mesh
-    /// \param mesh Nodes
+    /// \brief Construct mesh
+    /// \param mesh 3D vector
     /// \param v Patch
     ///
-    BoneMesh(
-            const std::vector<biorbd::utils::Node3d>& mesh,
+   Mesh(
+            const std::vector<biorbd::utils::Vector3d>& mesh,
             const std::vector<biorbd::rigidbody::Patch>&v);
 
     ///
-    /// \brief Deep copy of the bone mesh
-    /// \return A copy of bone mesh
+    /// \brief Deep copy of the mesh
+    /// \return A copy of mesh
     ///
-    biorbd::rigidbody::BoneMesh DeepCopy() const;
+    biorbd::rigidbody::Mesh DeepCopy() const;
 
     ///
-    /// \brief Deep copy of the bone mesh
+    /// \brief Deep copy of the mesh
     /// \param other The mesh to copy
     ///
-    void DeepCopy(const biorbd::rigidbody::BoneMesh& other);
+    void DeepCopy(const biorbd::rigidbody::Mesh& other);
 
     // Related to the mesh points
 
@@ -60,14 +60,14 @@ public:
     /// \brief Add a point to the mesh
     /// \param node The point to add
     ///
-    void addPoint(const biorbd::utils::Node3d & node);
+    void addPoint(const biorbd::utils::Vector3d & node);
 
     ///
     /// \brief Return a point at a specific position
     /// \param i Position
     /// \return A point at position i
     ///
-    const biorbd::utils::Node3d& point(unsigned int i) const;
+    const biorbd::utils::Vector3d& point(unsigned int i) const;
 
     ///
     /// \brief Returns the size of the mesh
@@ -106,7 +106,7 @@ public:
     /// \brief Return the size of the patch
     /// \return The size of the patch
     ///
-    unsigned int sizePatch();
+    unsigned int nbPatch();
 
     
     ///
@@ -122,11 +122,11 @@ public:
     const biorbd::utils::Path& path() const;
 
 protected:
-    std::shared_ptr<std::vector<biorbd::utils::Node3d>> m_mesh; ///< The bone mesh
+    std::shared_ptr<std::vector<biorbd::utils::Vector3d>> m_vertex; ///< The vertex
     std::shared_ptr<std::vector<biorbd::rigidbody::Patch>> m_patch; ///< The patch
     std::shared_ptr<biorbd::utils::Path> m_pathFile; ///< The path to the mesh file
 };
 
 }}
 
-#endif // BIORBD_RIGIDBODY_BONE_MESH_H
+#endif // BIORBD_RIGIDBODY_MESH_H

@@ -4,7 +4,7 @@
 #include "Utils/String.h"
 
 biorbd::muscles::ViaPoint::ViaPoint() :
-    biorbd::utils::Node3d()
+    biorbd::utils::Vector3d()
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::VIA_POINT;
 }
@@ -13,7 +13,7 @@ biorbd::muscles::ViaPoint::ViaPoint(
         double x,
         double y,
         double z) :
-    biorbd::utils::Node3d(x, y, z)
+    biorbd::utils::Vector3d(x, y, z)
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::VIA_POINT;
 }
@@ -24,20 +24,20 @@ biorbd::muscles::ViaPoint::ViaPoint(
         double z,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName) :
-    biorbd::utils::Node3d(x, y, z, name, parentName)
+    biorbd::utils::Vector3d(x, y, z, name, parentName)
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::VIA_POINT;
 }
 
 biorbd::muscles::ViaPoint::ViaPoint(
-        const biorbd::utils::Node3d &other) :
-    biorbd::utils::Node3d(other)
+        const biorbd::utils::Vector3d &other) :
+    biorbd::utils::Vector3d(other)
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::VIA_POINT;
 }
 
 biorbd::muscles::ViaPoint::ViaPoint(const biorbd::muscles::ViaPoint &other) :
-    biorbd::utils::Node3d(other)
+    biorbd::utils::Vector3d(other)
 {
 
 }
@@ -51,5 +51,5 @@ biorbd::muscles::ViaPoint biorbd::muscles::ViaPoint::DeepCopy() const
 
 void biorbd::muscles::ViaPoint::DeepCopy(const biorbd::muscles::ViaPoint &other)
 {
-    biorbd::utils::Node3d::DeepCopy(other);
+    biorbd::utils::Vector3d::DeepCopy(other);
 }

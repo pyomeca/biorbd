@@ -9,7 +9,7 @@ namespace biorbd {
 namespace utils {
 class Matrix;
 class Vector;
-class Node3d;
+class Vector3d;
 }
 
 namespace rigidbody {
@@ -36,8 +36,8 @@ public:
     /// \param insertion The insertion node
     /// 
     Geometry(
-            const biorbd::utils::Node3d &origin,
-            const biorbd::utils::Node3d &insertion);
+            const biorbd::utils::Vector3d &origin,
+            const biorbd::utils::Vector3d &insertion);
 
     ///
     /// \brief Deep copy of a geometry
@@ -90,7 +90,7 @@ public:
     /// \param Qdot The velocity variables 
     ///
     void updateKinematics(
-            std::vector<biorbd::utils::Node3d>& musclePointsInGlobal,
+            std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
             biorbd::utils::Matrix& jacoPointsInGlobal,
             const biorbd::rigidbody::GeneralizedCoordinates* Qdot = nullptr);
 
@@ -102,7 +102,7 @@ public:
     /// \param Qdot The velocity variables 
     ///
     void updateKinematics(
-            std::vector<biorbd::utils::Node3d>& musclePointsInGlobal,
+            std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
             biorbd::utils::Matrix& jacoPointsInGlobal,
             const biorbd::muscles::Characteristics& characteristics,
             const biorbd::rigidbody::GeneralizedCoordinates* Qdot = nullptr);
@@ -111,27 +111,27 @@ public:
     /// \brief Return the origin node
     /// \return The origin node
     ///
-    const biorbd::utils::Node3d& originInLocal() const;
+    const biorbd::utils::Vector3d& originInLocal() const;
 
     ///
     /// \brief Set the origin node
     /// \param val The origin node to set
     ///
     void setOriginInLocal(
-            const biorbd::utils::Node3d &val);
+            const biorbd::utils::Vector3d &val);
 
     ///
     /// \brief Return the insertion node
     /// \return The insertion node
     ///
-    const biorbd::utils::Node3d& insertionInLocal() const;
+    const biorbd::utils::Vector3d& insertionInLocal() const;
 
     ///
     /// \brief Set the insertion node
     /// \param val THe insertion node value to set
     ///
     void setInsertionInLocal(
-            const biorbd::utils::Node3d &val);
+            const biorbd::utils::Vector3d &val);
 
     // Position of the muscles in space
 
@@ -141,7 +141,7 @@ public:
     ///
     /// Geometry must be computed at least once before calling originInLocal()
     ///
-    const biorbd::utils::Node3d& originInGlobal() const;
+    const biorbd::utils::Vector3d& originInGlobal() const;
 
     ///
     /// \brief Return the insertion node in the global reference
@@ -149,7 +149,7 @@ public:
     ///
     /// Geometry must be computed at least once before calling
     ///
-    const biorbd::utils::Node3d& insertionInGlobal() const; 
+    const biorbd::utils::Vector3d& insertionInGlobal() const; 
 
     ///
     /// \brief Return the muscles points in the global reference
@@ -157,7 +157,7 @@ public:
     ///
     /// Geometry must be computed at least once before calling. Return already computed via points
     ///
-    const std::vector<biorbd::utils::Node3d>& musclesPointsInGlobal() const;
+    const std::vector<biorbd::utils::Vector3d>& musclesPointsInGlobal() const;
 
     // Retour des longueur et vitesse musculaires
 
@@ -235,7 +235,7 @@ protected:
     /// \param Q The position variables of the model
     /// \return The position of the origin node in space
     ///
-    const biorbd::utils::Node3d& originInGlobal(
+    const biorbd::utils::Vector3d& originInGlobal(
             biorbd::rigidbody::Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q);
 
@@ -245,7 +245,7 @@ protected:
     /// \param Q The position variables of the model
     /// \return The position of the insertion node in space
     ///
-    const biorbd::utils::Node3d& insertionInGlobal(
+    const biorbd::utils::Vector3d& insertionInGlobal(
             biorbd::rigidbody::Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q); 
 
@@ -254,7 +254,7 @@ protected:
     /// \param ptsInGlobal The new muscle points in global
     ///
     void musclesPointsInGlobal(
-            std::vector<biorbd::utils::Node3d>& ptsInGlobal); 
+            std::vector<biorbd::utils::Vector3d>& ptsInGlobal); 
 
     ///
     /// \brief Set the muscle points in global
@@ -314,13 +314,13 @@ protected:
     void computeJacobianLength();
 
     // Position des nodes dans le repere local
-    std::shared_ptr<biorbd::utils::Node3d> m_origin; ///< Origin node
-    std::shared_ptr<biorbd::utils::Node3d> m_insertion; ///< Insertion node
+    std::shared_ptr<biorbd::utils::Vector3d> m_origin; ///< Origin node
+    std::shared_ptr<biorbd::utils::Vector3d> m_insertion; ///< Insertion node
 
-    std::shared_ptr<biorbd::utils::Node3d> m_originInGlobal; ///< Position of the origin in the global reference
-    std::shared_ptr<biorbd::utils::Node3d> m_insertionInGlobal; ///< Position of the insertion node in the global reference
-    std::shared_ptr<std::vector<biorbd::utils::Node3d>> m_pointsInGlobal; ///< Position of all the points in the global reference
-    std::shared_ptr<std::vector<biorbd::utils::Node3d>> m_pointsInLocal; ///< Position of all the points in local
+    std::shared_ptr<biorbd::utils::Vector3d> m_originInGlobal; ///< Position of the origin in the global reference
+    std::shared_ptr<biorbd::utils::Vector3d> m_insertionInGlobal; ///< Position of the insertion node in the global reference
+    std::shared_ptr<std::vector<biorbd::utils::Vector3d>> m_pointsInGlobal; ///< Position of all the points in the global reference
+    std::shared_ptr<std::vector<biorbd::utils::Vector3d>> m_pointsInLocal; ///< Position of all the points in local
     std::shared_ptr<biorbd::utils::Matrix> m_jacobian; ///<The Jacobian matrix
     std::shared_ptr<biorbd::utils::Matrix> m_G; ///< TODO
     std::shared_ptr<biorbd::utils::Matrix> m_jacobianLength; ///< The Jacobian length

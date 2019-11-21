@@ -10,13 +10,13 @@ class Model;
 
 namespace rigidbody {
 class GeneralizedCoordinates;
-class BoneMesh;
+class Mesh;
 }
 
 namespace utils {
 class Path;
 class String;
-class Node3d;
+class Vector3d;
 class Vector;
 }
 
@@ -45,7 +45,7 @@ public:
     /// \param path The path of the file
     /// \return Returns the markers
     ///
-    static std::vector<std::vector<biorbd::utils::Node3d>> readMarkerDataFile(const utils::Path &path); 
+    static std::vector<std::vector<biorbd::utils::Vector3d>> readMarkerDataFile(const utils::Path &path); 
 
     /// 
     /// \brief Read a kin file
@@ -88,9 +88,9 @@ public:
             const biorbd::utils::Path &path, // Path to the file
             std::vector<std::vector<unsigned int>> &frame, // Frame vector (time is frame/frequency)
             std::vector<unsigned int> &frequency ,// Acquisition frequency
-            std::vector<std::vector<biorbd::utils::Node3d>> &force, // Linear forces (x,y,z)
-            std::vector<std::vector<biorbd::utils::Node3d>> &moment, // Moments (x,y,z)
-            std::vector<std::vector<biorbd::utils::Node3d>> &cop); // Center of pressure (x,y,z)
+            std::vector<std::vector<biorbd::utils::Vector3d>> &force, // Linear forces (x,y,z)
+            std::vector<std::vector<biorbd::utils::Vector3d>> &moment, // Moments (x,y,z)
+            std::vector<std::vector<biorbd::utils::Vector3d>> &cop); // Center of pressure (x,y,z)
 
     ///
     /// \brief Read a Vicon force file
@@ -104,7 +104,7 @@ public:
     /// \param path The path of the file
     /// \param nNodes The number of nodes (-1 => all) [keeps all of the markers]
     ///
-    static std::vector<std::vector<biorbd::utils::Node3d>>  readViconMarkerFile(
+    static std::vector<std::vector<biorbd::utils::Vector3d>>  readViconMarkerFile(
             const biorbd::utils::Path &path,
             int nNodes =-1); // Path to the file, number of nodes (-1 => all) [keeps all of the markers]
 
@@ -115,7 +115,7 @@ public:
     /// \param nNodes The number of nodes (-1 => all) [keeps all of the markers]
     /// \return Returns the data
     ///
-    static std::vector<std::vector<biorbd::utils::Node3d>>  readViconMarkerFile(
+    static std::vector<std::vector<biorbd::utils::Vector3d>>  readViconMarkerFile(
             const biorbd::utils::Path &path,
             std::vector<biorbd::utils::String> &markOrder,
             int nNodes =-1); // Path to the file, markers to keep, number of nodes (-1 => all)
@@ -125,21 +125,21 @@ public:
     /// \param path The path of the file
     /// \return Returns the mesh
     ///
-    static biorbd::rigidbody::BoneMesh readBoneMeshFileBiorbdBones(const biorbd::utils::Path& path);
+    static biorbd::rigidbody::Mesh readMeshFileBiorbdBones(const biorbd::utils::Path& path);
 
     ///
     /// \brief Read a PLY bone mesh file
     /// \param path The path of the file
     /// \return Returns the mesh
     ///
-    static biorbd::rigidbody::BoneMesh readBoneMeshFilePly(const biorbd::utils::Path& path);
+    static biorbd::rigidbody::Mesh readMeshFilePly(const biorbd::utils::Path& path);
 #ifdef MODULE_VTP_FILES_READER
     ///
     /// \brief Read a Vtp bone mesh file
     /// \param path The path of the file
     /// \return Returns the mesh
     ///
-    static biorbd::rigidbody::BoneMesh readBoneMeshFileVtp(const biorbd::utils::Path& path);
+    static biorbd::rigidbody::Mesh readMeshFileVtp(const biorbd::utils::Path& path);
 #endif
 
 };

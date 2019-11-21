@@ -14,12 +14,12 @@
 #include "Muscles/ViaPoint.h"
 
 biorbd::muscles::Geometry::Geometry() :
-    m_origin(std::make_shared<biorbd::utils::Node3d>()),
-    m_insertion(std::make_shared<biorbd::utils::Node3d>()),
-    m_originInGlobal(std::make_shared<biorbd::utils::Node3d>(biorbd::utils::Node3d::Zero())),
-    m_insertionInGlobal(std::make_shared<biorbd::utils::Node3d>(biorbd::utils::Node3d::Zero())),
-    m_pointsInGlobal(std::make_shared<std::vector<biorbd::utils::Node3d>>()),
-    m_pointsInLocal(std::make_shared<std::vector<biorbd::utils::Node3d>>()),
+    m_origin(std::make_shared<biorbd::utils::Vector3d>()),
+    m_insertion(std::make_shared<biorbd::utils::Vector3d>()),
+    m_originInGlobal(std::make_shared<biorbd::utils::Vector3d>(biorbd::utils::Vector3d::Zero())),
+    m_insertionInGlobal(std::make_shared<biorbd::utils::Vector3d>(biorbd::utils::Vector3d::Zero())),
+    m_pointsInGlobal(std::make_shared<std::vector<biorbd::utils::Vector3d>>()),
+    m_pointsInLocal(std::make_shared<std::vector<biorbd::utils::Vector3d>>()),
     m_jacobian(std::make_shared<biorbd::utils::Matrix>()),
     m_G(std::make_shared<biorbd::utils::Matrix>()),
     m_jacobianLength(std::make_shared<biorbd::utils::Matrix>()),
@@ -34,14 +34,14 @@ biorbd::muscles::Geometry::Geometry() :
 }
 
 biorbd::muscles::Geometry::Geometry(
-        const biorbd::utils::Node3d &origin,
-        const biorbd::utils::Node3d &insertion) :
-    m_origin(std::make_shared<biorbd::utils::Node3d>(origin)),
-    m_insertion(std::make_shared<biorbd::utils::Node3d>(insertion)),
-    m_originInGlobal(std::make_shared<biorbd::utils::Node3d>(biorbd::utils::Node3d::Zero())),
-    m_insertionInGlobal(std::make_shared<biorbd::utils::Node3d>(biorbd::utils::Node3d::Zero())),
-    m_pointsInGlobal(std::make_shared<std::vector<biorbd::utils::Node3d>>()),
-    m_pointsInLocal(std::make_shared<std::vector<biorbd::utils::Node3d>>()),
+        const biorbd::utils::Vector3d &origin,
+        const biorbd::utils::Vector3d &insertion) :
+    m_origin(std::make_shared<biorbd::utils::Vector3d>(origin)),
+    m_insertion(std::make_shared<biorbd::utils::Vector3d>(insertion)),
+    m_originInGlobal(std::make_shared<biorbd::utils::Vector3d>(biorbd::utils::Vector3d::Zero())),
+    m_insertionInGlobal(std::make_shared<biorbd::utils::Vector3d>(biorbd::utils::Vector3d::Zero())),
+    m_pointsInGlobal(std::make_shared<std::vector<biorbd::utils::Vector3d>>()),
+    m_pointsInLocal(std::make_shared<std::vector<biorbd::utils::Vector3d>>()),
     m_jacobian(std::make_shared<biorbd::utils::Matrix>()),
     m_G(std::make_shared<biorbd::utils::Matrix>()),
     m_jacobianLength(std::make_shared<biorbd::utils::Matrix>()),
@@ -140,7 +140,7 @@ void biorbd::muscles::Geometry::updateKinematics(
 }
 
 void biorbd::muscles::Geometry::updateKinematics(
-        std::vector<utils::Node3d> &musclePointsInGlobal,
+        std::vector<utils::Vector3d> &musclePointsInGlobal,
         biorbd::utils::Matrix &jacoPointsInGlobal,
         const biorbd::rigidbody::GeneralizedCoordinates *Qdot)
 {
@@ -157,7 +157,7 @@ void biorbd::muscles::Geometry::updateKinematics(
 }
 
 void biorbd::muscles::Geometry::updateKinematics(
-        std::vector<utils::Node3d> &musclePointsInGlobal,
+        std::vector<utils::Vector3d> &musclePointsInGlobal,
         biorbd::utils::Matrix &jacoPointsInGlobal,
         const biorbd::muscles::Characteristics &c,
         const biorbd::rigidbody::GeneralizedCoordinates *Qdot)
@@ -175,35 +175,35 @@ void biorbd::muscles::Geometry::updateKinematics(
 }
 
 // Get and set the positions of the origins and insertions
-const biorbd::utils::Node3d& biorbd::muscles::Geometry::originInLocal() const
+const biorbd::utils::Vector3d& biorbd::muscles::Geometry::originInLocal() const
 {
     return *m_origin;
 }
-void biorbd::muscles::Geometry::setOriginInLocal(const utils::Node3d &val)
+void biorbd::muscles::Geometry::setOriginInLocal(const utils::Vector3d &val)
 {
     *m_origin = val;
 }
-const biorbd::utils::Node3d &biorbd::muscles::Geometry::insertionInLocal() const
+const biorbd::utils::Vector3d &biorbd::muscles::Geometry::insertionInLocal() const
 {
     return *m_insertion;
 }
-void biorbd::muscles::Geometry::setInsertionInLocal(const utils::Node3d &val)
+void biorbd::muscles::Geometry::setInsertionInLocal(const utils::Vector3d &val)
 {
     *m_insertion = val;
 }
 
 // Position of the muscles in space
-const biorbd::utils::Node3d &biorbd::muscles::Geometry::originInGlobal() const
+const biorbd::utils::Vector3d &biorbd::muscles::Geometry::originInGlobal() const
 {
     biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed at least once before calling originInLocal()");
     return *m_originInGlobal;
 }
-const biorbd::utils::Node3d &biorbd::muscles::Geometry::insertionInGlobal() const
+const biorbd::utils::Vector3d &biorbd::muscles::Geometry::insertionInGlobal() const
 {
     biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed at least once before calling insertionInGlobal()");
     return *m_insertionInGlobal;
 }
-const std::vector<biorbd::utils::Node3d> &biorbd::muscles::Geometry::musclesPointsInGlobal() const
+const std::vector<biorbd::utils::Vector3d> &biorbd::muscles::Geometry::musclesPointsInGlobal() const
 {
     biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed at least once before calling musclesPointsInGlobal()");
     return *m_pointsInGlobal;
@@ -275,7 +275,7 @@ void biorbd::muscles::Geometry::_updateKinematics(
         *m_isVelocityComputed = false;
 }
 
-const biorbd::utils::Node3d &biorbd::muscles::Geometry::originInGlobal(
+const biorbd::utils::Vector3d &biorbd::muscles::Geometry::originInGlobal(
         biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q)
 {
@@ -284,7 +284,7 @@ const biorbd::utils::Node3d &biorbd::muscles::Geometry::originInGlobal(
     return *m_originInGlobal;
 }
 
-const biorbd::utils::Node3d &biorbd::muscles::Geometry::insertionInGlobal(
+const biorbd::utils::Vector3d &biorbd::muscles::Geometry::insertionInGlobal(
         biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q)
 {
@@ -293,7 +293,7 @@ const biorbd::utils::Node3d &biorbd::muscles::Geometry::insertionInGlobal(
     return *m_insertionInGlobal;
 }
 
-void biorbd::muscles::Geometry::musclesPointsInGlobal(std::vector<utils::Node3d> &ptsInGlobal)
+void biorbd::muscles::Geometry::musclesPointsInGlobal(std::vector<utils::Vector3d> &ptsInGlobal)
 {
     biorbd::utils::Error::check(ptsInGlobal.size() >= 2, "ptsInGlobal must at least have an origin and an insertion");
     m_pointsInLocal->clear(); // In this mode, we don't need the local, because the Jacobian of the points has to be given as well
@@ -320,11 +320,11 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(
         const biorbd::utils::RotoTrans& RT = w.RT(model,Q);
 
         // Alias
-        const biorbd::utils::Node3d& po_mus = originInGlobal(model, Q);  // Origin on bone
-        const biorbd::utils::Node3d& pi_mus = insertionInGlobal(model,Q); // Insertion on bone
+        const biorbd::utils::Vector3d& po_mus = originInGlobal(model, Q);  // Origin on bone
+        const biorbd::utils::Vector3d& pi_mus = insertionInGlobal(model,Q); // Insertion on bone
 
-        biorbd::utils::Node3d pi_wrap(0, 0, 0); // point on the wrapping related to insertion
-        biorbd::utils::Node3d po_wrap(0, 0, 0); // point on the wrapping related to origin
+        biorbd::utils::Vector3d pi_wrap(0, 0, 0); // point on the wrapping related to insertion
+        biorbd::utils::Vector3d po_wrap(0, 0, 0); // point on the wrapping related to origin
 
         w.wrapPoints(RT,po_mus,pi_mus,po_wrap, pi_wrap);
 
@@ -332,11 +332,11 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(
         biorbd::utils::Error::warning(0, "Attention le push_back de m_pointsInLocal n'a pas été validé");
         m_pointsInLocal->push_back(originInLocal());
         m_pointsInLocal->push_back(
-                    biorbd::utils::Node3d(RigidBodyDynamics::CalcBodyToBaseCoordinates(
+                    biorbd::utils::Vector3d(RigidBodyDynamics::CalcBodyToBaseCoordinates(
                                               model, Q, model.GetBodyId(w.parent().c_str()),po_wrap, false),
                                           "wrap_o", w.parent()));
         m_pointsInLocal->push_back(
-                    biorbd::utils::Node3d(RigidBodyDynamics::CalcBodyToBaseCoordinates(
+                    biorbd::utils::Vector3d(RigidBodyDynamics::CalcBodyToBaseCoordinates(
                                               model, Q, model.GetBodyId(w.parent().c_str()),pi_wrap, false),
                                           "wrap_i", w.parent()));
         m_pointsInLocal->push_back(insertionInLocal());
@@ -386,8 +386,8 @@ double biorbd::muscles::Geometry::length(
         biorbd::utils::Error::check(objects->nbVia() == 0, "Cannot mix wrapping and via points yet" ) ;
         biorbd::utils::Error::check(objects->nbWraps() < 2, "Cannot compute more than one wrapping yet");
 
-        biorbd::utils::Node3d pi_wrap(0, 0, 0); // point on the wrapping related to insertion
-        biorbd::utils::Node3d po_wrap(0, 0, 0); // point on the wrapping related to origin
+        biorbd::utils::Vector3d pi_wrap(0, 0, 0); // point on the wrapping related to insertion
+        biorbd::utils::Vector3d po_wrap(0, 0, 0); // point on the wrapping related to origin
         double lengthWrap(0);
         static_cast<biorbd::muscles::WrappingObject&>(objects->object(0)).wrapPoints(po_wrap, pi_wrap, &lengthWrap);
         *m_muscleTendonLength = ((*m_pointsInGlobal)[0] - pi_wrap).norm()   + // length before the wrap
@@ -438,7 +438,7 @@ void biorbd::muscles::Geometry::jacobian(
 void biorbd::muscles::Geometry::computeJacobianLength()
 {
     *m_jacobianLength = biorbd::utils::Matrix::Zero(1, m_jacobian->cols());
-    const std::vector<biorbd::utils::Node3d>& p = *m_pointsInGlobal;
+    const std::vector<biorbd::utils::Vector3d>& p = *m_pointsInGlobal;
     for (unsigned int i=0; i<p.size()-1 ; ++i){
         *m_jacobianLength += (( p[i+1] - p[i] ).transpose() * (jacobian(i+1) - jacobian(i)))
                                             /

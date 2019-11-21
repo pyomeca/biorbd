@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "biorbdConfig.h"
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 
 namespace biorbd {
 namespace utils {
@@ -15,7 +15,7 @@ namespace rigidbody {
 ///
 /// \brief Class NodeBone
 ///
-class BIORBD_API NodeBone : public biorbd::utils::Node3d
+class BIORBD_API NodeBone : public biorbd::utils::Vector3d
 { 
 public:
     ///
@@ -38,7 +38,7 @@ public:
     /// \brief Construct a segment node from another node
     /// \param other The other node
     ///
-    NodeBone(const biorbd::utils::Node3d& other);
+    NodeBone(const biorbd::utils::Vector3d& other);
     
     ///
     /// \brief Construct a segment node
@@ -75,7 +75,7 @@ public:
     ///
 
     NodeBone(
-            const biorbd::utils::Node3d& node, 
+            const biorbd::utils::Vector3d& node, 
             const biorbd::utils::String& name, 
             const biorbd::utils::String& parentName, 
             bool isTechnical, 
@@ -175,7 +175,7 @@ public:
     ///
     template<typename OtherDerived>
         biorbd::rigidbody::NodeBone& operator=(const Eigen::MatrixBase <OtherDerived>& other){
-            this->biorbd::utils::Node3d::operator=(other);
+            this->biorbd::utils::Vector3d::operator=(other);
             return *this;
         }
 

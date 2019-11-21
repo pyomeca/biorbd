@@ -4,7 +4,7 @@
 #include "Utils/Error.h"
 
 biorbd::rigidbody::NodeBone::NodeBone() :
-    biorbd::utils::Node3d(0, 0, 0),
+    biorbd::utils::Vector3d(0, 0, 0),
     m_axesRemoved(std::make_shared<std::vector<bool>>(3)),
     m_nbAxesToRemove(std::make_shared<int>(0)),
     m_technical(std::make_shared<bool>(true)),
@@ -15,7 +15,7 @@ biorbd::rigidbody::NodeBone::NodeBone() :
 }
 
 biorbd::rigidbody::NodeBone::NodeBone(double x, double y, double z) :
-    biorbd::utils::Node3d(x, y, z),
+    biorbd::utils::Vector3d(x, y, z),
     m_axesRemoved(std::make_shared<std::vector<bool>>(3)),
     m_nbAxesToRemove(std::make_shared<int>(0)),
     m_technical(std::make_shared<bool>(true)),
@@ -25,8 +25,8 @@ biorbd::rigidbody::NodeBone::NodeBone(double x, double y, double z) :
     setType();
 }
 
-biorbd::rigidbody::NodeBone::NodeBone(const biorbd::utils::Node3d &other) :
-    biorbd::utils::Node3d(other),
+biorbd::rigidbody::NodeBone::NodeBone(const biorbd::utils::Vector3d &other) :
+    biorbd::utils::Vector3d(other),
     m_axesRemoved(std::make_shared<std::vector<bool>>(3)),
     m_nbAxesToRemove(std::make_shared<int>(0)),
     m_technical(std::make_shared<bool>(true)),
@@ -46,7 +46,7 @@ biorbd::rigidbody::NodeBone::NodeBone(
         bool isAnatomical,
         const biorbd::utils::String &axesToRemove,
         int parentID) :
-    biorbd::utils::Node3d(x, y, z, name, parentName),
+    biorbd::utils::Vector3d(x, y, z, name, parentName),
     m_axesRemoved(std::make_shared<std::vector<bool>>(3)),
     m_nbAxesToRemove(std::make_shared<int>(0)),
     m_technical(std::make_shared<bool>(isTechnical)),
@@ -57,14 +57,14 @@ biorbd::rigidbody::NodeBone::NodeBone(
 }
 
 biorbd::rigidbody::NodeBone::NodeBone(
-        const biorbd::utils::Node3d &node,
+        const biorbd::utils::Vector3d &node,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName,
         bool isTechnical,
         bool isAnatomical,
         const biorbd::utils::String& axesToRemove, // Axis to remove 
     int parentID) :
-    biorbd::utils::Node3d(node, name, parentName),
+    biorbd::utils::Vector3d(node, name, parentName),
     m_axesRemoved(std::make_shared<std::vector<bool>>(3)),
     m_nbAxesToRemove(std::make_shared<int>(0)),
     m_technical(std::make_shared<bool>(isTechnical)),

@@ -7,7 +7,7 @@
 
 namespace biorbd {
 namespace utils {
-class Node3d;
+class Vector3d;
 }
 
 namespace muscles {
@@ -37,7 +37,7 @@ public:
     /// \brief Add a wrapping or a via point
     /// \param point The wrapping or via point to add
     ///
-    void addPathChanger(biorbd::utils::Node3d&point); 
+    void addPathChanger(biorbd::utils::Vector3d&point); 
 
     // Set and get
     ///
@@ -63,16 +63,16 @@ public:
     /// \param idx Index of the object
     /// \return The object at a specific index
     ///
-    biorbd::utils::Node3d& object(unsigned int  idx);
+    biorbd::utils::Vector3d& object(unsigned int  idx);
     ///
     /// \brief Return an object at a specific index
     /// \param idx Index of the object
     /// \return The object at a specific index
     ///
-    const biorbd::utils::Node3d& object(unsigned int  idx) const; 
+    const biorbd::utils::Vector3d& object(unsigned int  idx) const; 
 
 protected:
-    std::shared_ptr<std::vector<biorbd::utils::Node3d>> m_obj; ///<Tbale of pointers on the objects
+    std::shared_ptr<std::vector<biorbd::utils::Vector3d>> m_obj; ///<Tbale of pointers on the objects
     std::shared_ptr<unsigned int> m_nbWraps; ///< Number of wraps
     std::shared_ptr<unsigned int> m_nbVia; ///< TODO: ?
     std::shared_ptr<unsigned int> m_totalObjects; ///< Total objects

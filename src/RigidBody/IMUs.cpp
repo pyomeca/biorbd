@@ -7,7 +7,7 @@
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/Joints.h"
-#include "RigidBody/Bone.h"
+#include "RigidBody/Segment.h"
 #include "RigidBody/IMU.h"
 
 biorbd::rigidbody::IMUs::IMUs() :
@@ -174,7 +174,7 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::segmentIMU(
         model.UpdateKinematicsCustom(&Q,nullptr, nullptr);
 
     // Segment name to find
-    biorbd::utils::String name(model.bone(idx).name());
+    biorbd::utils::String name(model.Segment(idx).name());
 
     std::vector<biorbd::rigidbody::IMU> pos;
     for (unsigned int i=0; i<nbIMUs(); ++i) // scan all the markers and select the right ones
