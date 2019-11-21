@@ -48,7 +48,7 @@ TEST(Integrate, freefall) {
     biorbd::rigidbody::GeneralizedCoordinates
             Q(model), Qdot(model),
             QIntegrated(model), QdotIntegrated(model);
-    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    biorbd::rigidbody::GeneralizedTorque Tau(model.nbQ());
     Q.setZero();
     Qdot.setZero();
     Tau.setZero();
