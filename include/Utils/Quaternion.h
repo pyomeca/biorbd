@@ -134,6 +134,7 @@ public:
             const biorbd::utils::String& seq);
 
     void derivate(const biorbd::utils::Vector &w);
+    void normalize();
 
 protected:
     double m_Kstab; // Facteur de stabilisation pour la derivation

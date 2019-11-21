@@ -698,3 +698,15 @@ TEST(Quaternion, velocities) {
     }
 
 }
+
+TEST(Quaternion, normalization) {
+    {
+        biorbd::utils::Quaternion q(1,1,1,1);
+        q.normalize();
+        EXPECT_NEAR(q[0], 0.5, requiredPrecision);
+        EXPECT_NEAR(q[1], 0.5, requiredPrecision);
+        EXPECT_NEAR(q[2], 0.5, requiredPrecision);
+        EXPECT_NEAR(q[3], 0.5, requiredPrecision);
+    }
+
+}

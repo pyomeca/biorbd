@@ -299,3 +299,8 @@ void biorbd::utils::Quaternion::derivate(
     *this = 0.5 * Q * w_tp; // Since it passes through a Mat*vec, it looses stab
     this->m_Kstab = kStab;
 }
+
+void biorbd::utils::Quaternion::normalize()
+{
+    *this = *this / this->norm(); 
+}
