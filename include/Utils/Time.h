@@ -7,18 +7,32 @@
 
 namespace biorbd {
 namespace utils {
-
+///
+/// \brief Class Time
+ ///
 class BIORBD_API Time
 {
 public:
+    ///
+    /// \brief Construct time
+    ///
     Time();
+    ///
+    /// \brief Construct time
+    /// \param timeStep The time step
+    /// \param nbSteps The number of steps
+    ///
     Time(
             double timeStep,
             unsigned int nbSteps);
-
-    double time(unsigned int t); // Return time at index t
+    ///
+    /// \brief Return the time at index t
+    /// \param t Index 
+    /// \return The time at index t
+    ///
+    double time(unsigned int t); 
 protected:
-    std::vector<double> m_time;
+    std::vector<double> m_time; ///< The time
 
 };
 

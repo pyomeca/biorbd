@@ -68,10 +68,10 @@ public:
 
     ///
     /// \brief Read text and gives it a number TODO:
-    /// \param bool True or False
+    /// \param tf True or False
     /// \return True (text read) or False
     ///
-    bool read(bool&bool);
+    bool read(bool&tf);
     ///
     /// \brief Read text and gives it a number TODO:
     /// \param i The number to give

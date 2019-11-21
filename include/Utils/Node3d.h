@@ -59,7 +59,7 @@ class BIORBD_API Node3d : public Eigen::Vector3d, public biorbd::utils::Node
     /// \brief Construct a 3D node
     /// \param x Position of the node on the x axis
     /// \param y Position of the node on the y axis
-    /// \param y Position of the node on the z axis
+    /// \param z Position of the node on the z axis
     /// \param name Name of the node
     /// \param parentName Name of the parent segment
     ///
