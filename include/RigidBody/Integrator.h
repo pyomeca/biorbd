@@ -38,6 +38,7 @@ public:
 
     biorbd::utils::Vector getX(
             unsigned int idx); // Return the Q for a given step
+    double time(unsigned int idx); // Return the time a step idx
     void showAll(); // Show every steps with every dof
     unsigned int steps() const;
 protected:
