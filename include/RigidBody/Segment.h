@@ -1,5 +1,5 @@
-#ifndef BIORBD_RIGIDBODY_BONE_H
-#define BIORBD_RIGIDBODY_BONE_H
+#ifndef BIORBD_RIGIDBODY_SEGMENT_H
+#define BIORBD_RIGIDBODY_SEGMENT_H
 
 #include <vector>
 #include <rbdl/Model.h>
