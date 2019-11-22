@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <Eigen/Dense>
+#include "Utils/Node3d.h"
 
 #include "biorbdConfig.h"
 namespace biorbd {
@@ -10,6 +11,7 @@ namespace utils {
 class Node3d;
 class Vector;
 class RotoTrans;
+class String;
 
 // The definition for conversions are taken from https://www.euclideanspace.com/maths/geometry/rotations/conversions/index.htm
 class BIORBD_API Quaternion : public Eigen::Vector4d
@@ -115,7 +117,24 @@ public:
     */
     biorbd::utils::Quaternion omegaToQDot(const biorbd::utils::Node3d& omega) const;
 
+    /** \brief Converts a 3d velocity vector expressed in terms of euler angles rate 
+    * into the 3d angular velocity vector expressed in the fixed parent frame.
+    * See # https://davidbrown3.github.io/2017-07-25/EulerAngles/ for correct equations.
+    *
+    * \param eulerDot the Euler angle rates.
+    * \param euler the Euler angles.
+    * \param seq   the Euler angles sequence.
+    * 
+    * \return omega, the angular velocity.
+    *
+    */
+    biorbd::utils::Node3d  eulerDotToOmega(
+            const biorbd::utils::Node3d &eulerDot, 
+            const biorbd::utils::Node3d &euler,
+            const biorbd::utils::String& seq);
+
     void derivate(const biorbd::utils::Vector &w);
+    void normalize();
 
 protected:
     double m_Kstab; // Facteur de stabilisation pour la derivation

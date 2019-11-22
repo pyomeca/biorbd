@@ -264,8 +264,9 @@ void biorbd::rigidbody::Bone::str2numSequence(
         (*m_nameDof)[i] = "Trans" + seqT(i).toupper();
     for (unsigned int i=0; i<*m_nDofRot; ++i)
         (*m_nameDof)[*m_nDofTrans+i] = "Rot" + seqR(i).toupper();
+    biorbd::utils::String xyz("XYZW");
     for (unsigned int i=0; i<*m_nDofQuat; ++i)
-        (*m_nameDof)[*m_nDofTrans+*m_nDofRot+i] =  biorbd::utils::String("Quat") + i;
+        (*m_nameDof)[*m_nDofTrans+*m_nDofRot+i] =  biorbd::utils::String("Quat") + xyz.substr(i, 1);
 
 }
 void biorbd::rigidbody::Bone::str2numSequence(
