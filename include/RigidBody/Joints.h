@@ -59,7 +59,7 @@ public:
     unsigned int getDofIndex(
             const biorbd::utils::String& boneName,
             const biorbd::utils::String& dofName);
-    std::vector<std::string> nameDof() const;
+    std::vector<biorbd::utils::String> nameDof() const;
     unsigned int nbQ() const;
     unsigned int nbQdot() const;
     unsigned int nbQddot() const;
