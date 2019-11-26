@@ -7,7 +7,7 @@
 
 namespace biorbd {
 namespace utils {
-class Node3d;
+class Vector3d;
 }
 
 namespace rigidbody {
@@ -55,7 +55,8 @@ public:
     ///
     void patch(const Patch&v);
 
-    biorbd::utils::Node3d patchAsDouble(); ///< Return the patches
+    biorbd::utils::Vector3d patchAsDouble(); ///< Return the patches
+
 protected:
     std::shared_ptr<Eigen::Vector3i> m_patch; ///< Patch
 

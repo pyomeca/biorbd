@@ -7,7 +7,7 @@
 #include "biorbdConfig.h"
 namespace biorbd {
 namespace utils {
-class Node3d;
+class Vector3d;
 class Vector;
 class RotoTrans;
 
@@ -25,7 +25,7 @@ public:
             double kStabilizer = 1);
     Quaternion (
         double w,
-        const biorbd::utils::Node3d &vec3, 
+        const biorbd::utils::Vector3d &vec3, 
         double kStabilizer = 1);
     Quaternion (
         const biorbd::utils::Vector &vec,
@@ -67,7 +67,7 @@ public:
 
     static biorbd::utils::Quaternion fromAxisAngle (
             double angle_rad,
-            const biorbd::utils::Node3d &axis,
+            const biorbd::utils::Vector3d &axis,
             double kStab = 1);
 
     static biorbd::utils::Quaternion fromMatrix (
@@ -79,15 +79,15 @@ public:
             double kStab = 1);
 
     static biorbd::utils::Quaternion fromZYXAngles (
-            const biorbd::utils::Node3d &zyx_angles,
+            const biorbd::utils::Vector3d &zyx_angles,
             double kStab = 1);
 
     static biorbd::utils::Quaternion fromYXZAngles (
-            const biorbd::utils::Node3d &yxz_angles,
+            const biorbd::utils::Vector3d &yxz_angles,
             double kStab = 1);
 
     static biorbd::utils::Quaternion fromXYZAngles (
-            const biorbd::utils::Node3d &xyz_angles,
+            const biorbd::utils::Vector3d &xyz_angles,
             double kStab = 1);
 
     biorbd::utils::RotoTrans toMatrix() const;
@@ -102,7 +102,7 @@ public:
             const Eigen::Vector3d &omega,
             double dt);
 
-    biorbd::utils::Node3d rotate (const biorbd::utils::Node3d &vec) const;
+    biorbd::utils::Vector3d rotate (const biorbd::utils::Vector3d &vec) const;
 
     /** \brief Converts a 3d angular velocity vector into a 4d derivative of the
     * components of the quaternion.
@@ -113,7 +113,7 @@ public:
     * quaternion corresponding to omega.
     *
     */
-    biorbd::utils::Quaternion omegaToQDot(const biorbd::utils::Node3d& omega) const;
+    biorbd::utils::Quaternion omegaToQDot(const biorbd::utils::Vector3d& omega) const;
 
     void derivate(const biorbd::utils::Vector &w);
 

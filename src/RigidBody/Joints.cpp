@@ -336,38 +336,38 @@ biorbd::utils::RotoTrans biorbd::rigidbody::Joints::localJCS(const unsigned int 
 
 
 std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::projectPoint(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const std::vector<biorbd::rigidbody::NodeBone> &v,
-        bool updateKin)
+    const biorbd::rigidbody::GeneralizedCoordinates& Q,
+    const std::vector<biorbd::rigidbody::NodeBone>& v,
+    bool updateKin)
 {
     if (updateKin)
         UpdateKinematicsCustom(&Q, nullptr, nullptr);
     updateKin = false;
 
     // Assuming that this is also a marker type (via BiorbdModel)
-    const biorbd::rigidbody::Markers &marks = dynamic_cast<biorbd::rigidbody::Markers &>(*this);
+    const biorbd::rigidbody::Markers& marks = dynamic_cast<biorbd::rigidbody::Markers&>(*this);
 
-    // Safety
+    // Sécurité
     biorbd::utils::Error::check(marks.nbMarkers() == v.size(), "Number of marker must be equal to number of Vector3d");
 
     std::vector<biorbd::rigidbody::NodeBone> out;
-    for (unsigned int i=0;i<marks.nbMarkers();++i){
+    for (unsigned int i = 0; i < marks.nbMarkers(); ++i) {
         biorbd::rigidbody::NodeBone tp(marks.marker(i));
-        if (tp.nbAxesToRemove()!=0){
+        if (tp.nbAxesToRemove() != 0) {
             tp = v[i].applyRT(globalJCS(tp.parent()).transpose());
-            // Take the position of the new marker with the info from the model
-            out.push_back(projectPoint(Q,tp,updateKin));
+            // Prendre la position du nouveau marker avec les infos de celui du modèle
+            out.push_back(projectPoint(Q, tp, updateKin));
         }
         else
-            // If we don't have to remove anything (return the same position immediately)
-            out.push_back( v[i] );
+            // S'il ne faut rien retirer (renvoyer tout de suite la même position)
+            out.push_back(v[i]);
     }
     return out;
 }
 
 biorbd::rigidbody::NodeBone biorbd::rigidbody::Joints::projectPoint(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const utils::Vector3d &v,
+        const biorbd::utils::Vector3d &v,
         int segmentIdx,
         const biorbd::utils::String& axesToRemove,
         bool updateKin)
@@ -376,7 +376,7 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Joints::projectPoint(
         UpdateKinematicsCustom (&Q, nullptr, nullptr);
 
     // Create a marker
-    const biorbd::utils::String& segmentName(segment(static_cast<unsigned int>(segmentIdx)).name());
+    const biorbd::utils::String& segmentName(Segment(static_cast<unsigned int>(segmentIdx)).name());
     biorbd::rigidbody::NodeBone node( v.applyRT(globalJCS(static_cast<unsigned int>(segmentIdx)).transpose()), "tp", segmentName,
                      true, true, axesToRemove, static_cast<int>(GetBodyId(segmentName.c_str())));
 
@@ -748,7 +748,7 @@ std::vector<biorbd::rigidbody::Mesh> biorbd::rigidbody::Joints::Mesh() const
 
 const biorbd::rigidbody::Mesh &biorbd::rigidbody::Joints::Mesh(unsigned int idx) const
 {
-    return segment(idx).characteristics().mesh();
+    return Segment(idx).characteristics().mesh();
 }
 
 biorbd::utils::Vector3d biorbd::rigidbody::Joints::CalcAngularMomentum (
@@ -1003,22 +1003,22 @@ biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Joints::computeQdot
     QDotOut.resize(Q.size()); // Create an empty vector of the final dimension
     unsigned int cmpQuat(0);
     unsigned int cmpDof(0);
-    for (unsigned int i=0; i<nbBone(); ++i){
-        const biorbd::rigidbody::Bone& bone_i = bone(i);
-        if (bone_i.isRotationAQuaternion()){
+    for (unsigned int i=0; i<nbSegment(); ++i){
+        const biorbd::rigidbody::Segment& segment_i = Segment(i);
+        if (segment_i.isRotationAQuaternion()){
             // Extraire le quaternion
             biorbd::utils::Quaternion quat_tp(
                         Q(Q.size()-*m_nRotAQuat+cmpQuat),
-                        Q.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1),
+                        Q.block(cmpDof+segment_i.nbDofTrans(), 0, 3, 1),
                         k_stab);
 
             // QDot for translation is actual QDot
-            QDotOut.block(cmpDof, 0, bone_i.nDofTrans(), 1)
-                    = QDot.block(cmpDof, 0, bone_i.nDofTrans(), 1);
+            QDotOut.block(cmpDof, 0, segment_i.nbDofTrans(), 1)
+                    = QDot.block(cmpDof, 0, segment_i.nbDofTrans(), 1);
 
             // Get the 4d derivative for the quaternion part
-            quat_tp.derivate(QDot.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1));
-            QDotOut.block(cmpDof+bone_i.nDofTrans(), 0, 3, 1) = quat_tp.block(1,0,3,1);
+            quat_tp.derivate(QDot.block(cmpDof+segment_i.nbDofTrans(), 0, 3, 1));
+            QDotOut.block(cmpDof+segment_i.nbDofTrans(), 0, 3, 1) = quat_tp.block(1,0,3,1);
             QDotOut(Q.size()-*m_nRotAQuat+cmpQuat) = quat_tp(0);// Placer dans le vecteur de sortie
 
            // Increment the number of done quaternions

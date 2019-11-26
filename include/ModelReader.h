@@ -121,21 +121,21 @@ public:
             int nNodes =-1); // Path to the file, markers to keep, number of nodes (-1 => all)
 
     ///
-    /// \brief Read a biorbd bone mesh file
+    /// \brief Read a biorbd segment mesh file
     /// \param path The path of the file
     /// \return Returns the mesh
     ///
-    static biorbd::rigidbody::Mesh readMeshFileBiorbdBones(const biorbd::utils::Path& path);
+    static biorbd::rigidbody::Mesh readMeshFileBiorbdSegments(const biorbd::utils::Path& path);
 
     ///
-    /// \brief Read a PLY bone mesh file
+    /// \brief Read a PLY segment mesh file
     /// \param path The path of the file
     /// \return Returns the mesh
     ///
     static biorbd::rigidbody::Mesh readMeshFilePly(const biorbd::utils::Path& path);
 #ifdef MODULE_VTP_FILES_READER
     ///
-    /// \brief Read a Vtp bone mesh file
+    /// \brief Read a Vtp segment mesh file
     /// \param path The path of the file
     /// \return Returns the mesh
     ///

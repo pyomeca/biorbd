@@ -335,7 +335,7 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::markersJacobian(
             continue;
 
         unsigned int id = model.GetBodyId(node.parent().c_str());
-        const biorbd::utils::Node3d& pos(marker(idx, removeAxis));
+        const biorbd::utils::Vector3d& pos(marker(idx, removeAxis));
         biorbd::utils::Matrix G_tp(biorbd::utils::Matrix::Zero(3,model.nbQ()));
 
         // Calculate the Jacobian of this Tag

@@ -17,7 +17,7 @@ class Vector3d;
 namespace rigidbody {
 class GeneralizedCoordinates;
 class GeneralizedTorque;
-class nodeBone;
+class NodeBone;
 class Patch;
 class Segment;
 class SegmentCharacteristics;
@@ -350,18 +350,10 @@ public:
     ///
     biorbd::utils::RotoTrans localJCS(const unsigned int i) const; 
 
-    ///
-    /// \brief Project a point on axis/plan already determined in nodeBone
-    /// \param Q The positional variables of the model
-    /// \param updateKin (Default: True)
-    /// \return A marker
-    ///
-    biorbd::rigidbody::nodeBone projectPoint(
-            const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::nodeBone&, bool updateKin=true); // Projeter selon les axes/plan déterminé déjà dans nodeBone
+
 
     ///
-    /// \brief Project de point in the global coordinate system
+    /// \brief Project a point in the global coordinate system
     /// \param Q The positional variables of the model
     /// \param v The nodes
     /// \param SegmentIdx The Segment identification
@@ -369,7 +361,7 @@ public:
     /// \param updateKin (default: True)
     /// \return 
     ///
-    biorbd::rigidbody::nodeBone projectPoint(
+    biorbd::rigidbody::NodeBone projectPoint(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::utils::Vector3d &v,
             int SegmentIdx,
@@ -383,9 +375,9 @@ public:
     /// \param updateKin (default: True)
     /// \return Projected markers from points corresponding to markers from the model
     ///
-    std::vector<biorbd::rigidbody::nodeBone>  projectPoint(
+    std::vector<biorbd::rigidbody::NodeBone>  projectPoint(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const std::vector<biorbd::rigidbody::nodeBone> &v,
+            const std::vector<biorbd::rigidbody::NodeBone> &v,
             bool updateKin=true); 
 
     ///
@@ -397,9 +389,14 @@ public:
     ///
     biorbd::utils::Matrix projectPointJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            biorbd::rigidbody::nodeBone p,
+            biorbd::rigidbody::NodeBone p,
             bool updateKin);
 
+
+    biorbd::rigidbody::NodeBone biorbd::rigidbody::Joints::projectPoint(
+        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+        const biorbd::rigidbody::NodeBone& n,
+        bool updateKin);
     ///
     /// \brief Return the Jacobian matrix of the projected markers from points corresponding to markers from the model
     /// \param Q
@@ -425,7 +422,7 @@ public:
     ///
     std::vector<biorbd::utils::Matrix> projectPointJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const std::vector<biorbd::rigidbody::nodeBone> &v,
+            const std::vector<biorbd::rigidbody::NodeBone> &v,
             bool updateKin); 
     // ------------------------------------- //
 
@@ -451,7 +448,7 @@ public:
     /// \param updateKin (default: True)
     /// \return The position of the center of mass of each segment
     ///
-    std::vector<biorbd::rigidbody::nodeBone> CoMbySegment(
+    std::vector<biorbd::rigidbody::NodeBone> CoMbySegment(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool updateKin=true);
 

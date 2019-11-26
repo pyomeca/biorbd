@@ -37,7 +37,7 @@ biorbd::muscles::WrappingSphere::WrappingSphere(
 }
 
 biorbd::muscles::WrappingSphere::WrappingSphere(
-        const biorbd::utils::Node3d &v,
+        const biorbd::utils::Vector3d &v,
         double diameter) :
     biorbd::muscles::WrappingObject(v),
     m_dia(std::make_shared<double>(diameter))

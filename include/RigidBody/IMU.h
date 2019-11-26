@@ -21,8 +21,8 @@ public:
 
     ///
     /// \brief Construct inertial measurement unit data
-    /// \param isTechnical True if the marker is a technical marker
-    /// \param isAnatomical True if the marker is an anatomical marker
+    /// \param isTechnical True if the IMU is a technical IMU
+    /// \param isAnatomical True if the IMU is an anatomical IMU
     ///
     IMU(
             bool isTechnical = true, 
@@ -31,8 +31,8 @@ public:
     ///
     /// \brief Construct inertial measurement unit data
     /// \param RotoTrans TODO: ? The position
-    /// \param isTechnical True if the marker is a technical marker
-    /// \param isAnatomical True if the marker is an anatomical marker
+    /// \param isTechnical True if the IMU is a technical IMU
+    /// \param isAnatomical True if the IMU is an anatomical IMU
     ///
     IMU(
             const biorbd::utils::RotoTransNode& RotoTrans, 
@@ -61,13 +61,13 @@ public:
     // Get and Set
 
     ///
-    /// \brief Return if the maker is technical
+    /// \brief Return if the IMU is technical
     /// \return True or False
     ///
     bool isTechnical() const;
 
     ///
-    /// \brief Return if the marker is anatomical
+    /// \brief Return if the IMU is anatomical
     /// \return True or False
     ///
     bool isAnatomical() const;
@@ -83,8 +83,8 @@ public:
         }
 
 protected:
-    std::shared_ptr<bool> m_technical; ///< If a marker is a technical marker
-    std::shared_ptr<bool> m_anatomical; ///< It marker is a anatomical marker
+    std::shared_ptr<bool> m_technical; ///< If a IMU is a technical IMU
+    std::shared_ptr<bool> m_anatomical; ///< It IMU is a anatomical IMU
 
 };
 

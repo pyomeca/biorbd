@@ -29,8 +29,8 @@ int &biorbd::rigidbody::Patch::operator()(int i)
 biorbd::utils::Vector3d biorbd::rigidbody::Patch::patchAsDouble()
 {
     return biorbd::utils::Vector3d(static_cast<double>(m_patch->x()),
-                                 static_cast<double>(m_patch->y()),
-                                 static_cast<double>(m_patch->z()));
+        static_cast<double>(m_patch->y()),
+        static_cast<double>(m_patch->z()));
 }
 
 void biorbd::rigidbody::Patch::patch(const Eigen::Vector3i & pts)

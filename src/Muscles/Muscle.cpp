@@ -123,13 +123,13 @@ void biorbd::muscles::Muscle::updateOrientations(
     m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,&Qdot,updateKin);
 }
 void biorbd::muscles::Muscle::updateOrientations(
-        std::vector<biorbd::utils::Node3d>& musclePointsInGlobal,
+        std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
         biorbd::utils::Matrix &jacoPointsInGlobal){
     // Update de la position des insertions et origines
     m_position->updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,*m_characteristics,nullptr);
 }
 void biorbd::muscles::Muscle::updateOrientations(
-        std::vector<biorbd::utils::Node3d>& musclePointsInGlobal,
+        std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
         biorbd::utils::Matrix &jacoPointsInGlobal,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
 {
@@ -187,7 +187,7 @@ void biorbd::muscles::Muscle::computeForce(const biorbd::muscles::State &emg)
     (*m_force)[1]->setForceFromMuscleGeometry(*m_position, force); // insertion vers l'avant-dernier point
 }
 
-const std::vector<biorbd::utils::Node3d>& biorbd::muscles::Muscle::musclesPointsInGlobal(
+const std::vector<biorbd::utils::Vector3d>& biorbd::muscles::Muscle::musclesPointsInGlobal(
         biorbd::rigidbody::Joints &m,
         const biorbd::rigidbody::GeneralizedCoordinates &Q)
 {
@@ -196,7 +196,7 @@ const std::vector<biorbd::utils::Node3d>& biorbd::muscles::Muscle::musclesPoints
     return musclesPointsInGlobal();
 }
 
-const std::vector<biorbd::utils::Node3d> &biorbd::muscles::Muscle::musclesPointsInGlobal() const
+const std::vector<biorbd::utils::Vector3d> &biorbd::muscles::Muscle::musclesPointsInGlobal() const
 {
     return m_position->musclesPointsInGlobal();
 }

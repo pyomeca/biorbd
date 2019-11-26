@@ -8,7 +8,7 @@
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/NodeBone.h"
-#include "RigidBody/Bone.h"
+#include "RigidBody/Segment.h"
 #include "RigidBody/IMU.h"
 #ifndef SKIP_KALMAN
 #include "RigidBody/KalmanReconsIMU.h"
@@ -58,11 +58,11 @@ TEST(BinderC, markers)
     // Add a marker
     double newMarkerPosition[3] = {1, 2, 3};
     unsigned int nMarkersBeforeAdding(model->nbMarkers());
-    c_addMarker(model, newMarkerPosition, "MyNewMarker", model->bone(1).name().c_str(), false, true, "x");
+    c_addMarker(model, newMarkerPosition, "MyNewMarker", model->Segment(1).name().c_str(), false, true, "x");
     EXPECT_EQ(model->nbMarkers(), nMarkersBeforeAdding + 1);
     biorbd::rigidbody::NodeBone newMarker(model->marker(nMarkersBeforeAdding));
     EXPECT_STREQ(newMarker.name().c_str(), "MyNewMarker");
-    EXPECT_STREQ(newMarker.parent().c_str(), model->bone(1).name().c_str());
+    EXPECT_STREQ(newMarker.parent().c_str(), model->Segment(1).name().c_str());
     EXPECT_EQ(newMarker.isTechnical(), false);
     EXPECT_EQ(newMarker.isAnatomical(), true);
     EXPECT_STREQ(newMarker.axesToRemove().c_str(), "x");
@@ -85,10 +85,10 @@ TEST(BinderC, jcs)
     biorbd::Model* model(c_biorbdModel(modelPathForGeneralTesting.c_str()));
 
     // Get angle sequence of some bodies
-    for (unsigned int i=0; i<model->nbBone(); ++i){
+    for (unsigned int i=0; i<model->nbSegment(); ++i){
         char sequence[4];
-        c_boneRotationSequence(model, model->bone(i).name().c_str(), sequence);
-        EXPECT_STREQ(sequence, model->bone(i).seqR().c_str());
+        c_boneRotationSequence(model, model->Segment(i).name().c_str(), sequence);
+        EXPECT_STREQ(sequence, model->Segment(i).seqR().c_str());
     }
 
     // JCS in global reference frame
@@ -98,20 +98,20 @@ TEST(BinderC, jcs)
         Q[i] = 0.1;
         dQ[i] = 0.1;
     }
-    double *dRtInGlobal = new double[model->nbBone()*4*4];
+    double *dRtInGlobal = new double[model->nbSegment()*4*4];
     c_globalJCS(model, dQ, dRtInGlobal);
     std::vector<biorbd::utils::RotoTrans> jcsInGlobal(model->allGlobalJCS(Q));
-    for (unsigned int i=0; i<model->nbBone(); ++i)
+    for (unsigned int i=0; i<model->nbSegment(); ++i)
         for (unsigned int row=0; row<4; ++row)
             for (unsigned int col=0; col<4; ++col)
                 EXPECT_NEAR(dRtInGlobal[i*16+col*4+row], jcsInGlobal[i](row, col), requiredPrecision);
     delete[] dRtInGlobal;
 
     // JCS in local reference frame
-    double *dRtInLocal = new double[model->nbBone()*4*4];
+    double *dRtInLocal = new double[model->nbSegment()*4*4];
     c_globalJCS(model, dQ, dRtInLocal);
     std::vector<biorbd::utils::RotoTrans> jcsInLocal(model->allGlobalJCS());
-    for (unsigned int i=0; i<model->nbBone(); ++i)
+    for (unsigned int i=0; i<model->nbSegment(); ++i)
         for (unsigned int row=0; row<4; ++row)
             for (unsigned int col=0; col<4; ++col)
                 EXPECT_NEAR(dRtInLocal[i*16+col*4+row], jcsInLocal[i](row, col), requiredPrecision);

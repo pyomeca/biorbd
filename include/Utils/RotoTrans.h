@@ -44,7 +44,7 @@ public:
     ///
     RotoTrans(
             const biorbd::utils::Vector& rotation,
-            const biorbd::utils::Node3d& translation,
+            const biorbd::utils::Vector3d& translation,
             const biorbd::utils::String &rotationSequence);
     ///
     /// \brief Contruct Rototrans
@@ -53,21 +53,17 @@ public:
     ///
     RotoTrans(
             const Eigen::Matrix3d& rot,
-            const Eigen::Vector3d& trans = Eigen::Vector3d::Zero());
+            const biorbd::utils::Vector3d& trans = biorbd::utils::Vector3d::Zero());
 
-    ///
-    /// \brief Construct RotoTrans from a spatial transform
-    /// \param st The sptial transform
-    ///
-    RotoTrans(const RigidBodyDynamics::Math::SpatialTransform&st);
-    biorbd::utils::Vector axe(int); // Aller récupérer un axe en particulier
+    RotoTrans(
+            const RigidBodyDynamics::Math::SpatialTransform& st);
 
     ///
     /// \brief Get a particular axis
     /// \param i Number of axis (must be between 0 and 2)
     /// \return The data on the axis
     ///
-    Eigen::Vector3d axe(int i); // Aller récupérer un axe en particulier
+    biorbd::utils::Vector3d axe(int i); // Aller récupérer un axe en particulier
 
     ///
     /// \brief Tranpose matrix
@@ -79,7 +75,7 @@ public:
     /// \brief Return the translation vector
     /// \return The translation vector
     ///
-    biorbd::utils::Node3d trans() const;
+    biorbd::utils::Vector3d trans() const;
     ///
     /// \brief Return the rotation matrix
     /// \return The rotation matrix
@@ -90,7 +86,8 @@ public:
     /// \brief Spatial transform to RotoTrans
     /// \param st The spatial transform
     ///
-    biorbd::utils::RotoTrans& SpatialTransform2RotoTrans(const RigidBodyDynamics::Math::SpatialTransform& st);
+    biorbd::utils::RotoTrans& SpatialTransform2RotoTrans(
+            const RigidBodyDynamics::Math::SpatialTransform& st);
 
     ///
     /// \brief Create an RotoTrans matrix from a rotation and a translation
@@ -100,7 +97,7 @@ public:
     ///
     biorbd::utils::RotoTrans& combineRotAndTrans(
             const Eigen::Matrix3d& rot,
-            const Eigen::Vector3d& trans);
+            const biorbd::utils::Vector3d& trans);
 
     ///
     /// \brief Transform Cardan to Matrix
@@ -110,7 +107,7 @@ public:
     ///
     biorbd::utils::RotoTrans& transformCardanToMatrix(
             const Eigen::VectorXd& rot,
-            const Eigen::Vector3d& trans,
+            const biorbd::utils::Vector3d& trans,
             const biorbd::utils::String& seq);
 
 
@@ -119,9 +116,9 @@ public:
     /// \param rt The RotoTrans matrix
     /// \param seq The rotation sequence
     ///
-    static Eigen::VectorXd transformMatrixToCardan(
-            const biorbd::utils::RotoTrans&rt,
-            const biorbd::utils::String &seq);
+    static biorbd::utils::Vector transformMatrixToCardan(
+            const biorbd::utils::RotoTrans& rt,
+            const biorbd::utils::String& seq);
 
     ///
     /// \brief Get the mean of the 4x4 matrices
@@ -142,7 +139,7 @@ protected:
     /// \brief Expand 3D vector to 4D
     /// \param v1 Vector to expand
     ///
-    Eigen::Vector4d expand3dTo4d(const Eigen::Vector3d&v1);
+    Eigen::Vector4d expand3dTo4d(const biorbd::utils::Vector3d&v1);
 };
 
 }}

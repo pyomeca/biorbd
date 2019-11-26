@@ -7,7 +7,7 @@
 namespace biorbd {
 namespace utils {
 class Matrix;
-class Node3d;
+class Vector3d;
 }
 
 namespace muscles {
@@ -168,7 +168,7 @@ public:
     /// \param jacoPointsInGlobal The Jacobian points in space
     ///
     void updateOrientations(
-            std::vector<biorbd::utils::Node3d>& musclePointsInGlobal,
+            std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
             biorbd::utils::Matrix& jacoPointsInGlobal); 
 
     ///
@@ -178,7 +178,7 @@ public:
     /// \param Qdot The velocity variables
     ///
     void updateOrientations(
-            std::vector<biorbd::utils::Node3d>& musclePointsInGlobal,
+            std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
             biorbd::utils::Matrix& jacoPointsInGlobal,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot); 
 
@@ -212,14 +212,14 @@ public:
     /// \param Q The position variables
     /// \return The muscle points in space
     ///
-    const std::vector<biorbd::utils::Node3d>& musclesPointsInGlobal(
+    const std::vector<biorbd::utils::Vector3d>& musclesPointsInGlobal(
             biorbd::rigidbody::Joints &j,
             const biorbd::rigidbody::GeneralizedCoordinates &Q);
     ///
     /// \brief Return the muscle points in space
     /// \return The muscle points in space
     ///
-    const std::vector<biorbd::utils::Node3d>& musclesPointsInGlobal() const;
+    const std::vector<biorbd::utils::Vector3d>& musclesPointsInGlobal() const;
 
     ///
     /// \brief Set the maximal isometric force

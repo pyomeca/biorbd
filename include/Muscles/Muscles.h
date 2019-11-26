@@ -11,7 +11,7 @@ namespace utils {
 class String;
 class Matrix;
 class Vector;
-class Node3d;
+class Vector3d;
 }
 
 namespace rigidbody {
@@ -118,7 +118,7 @@ public:
     /// \param jacoPointsInGlobal The jacobian points in space
     ///
     void updateMuscles(
-            std::vector<std::vector<biorbd::utils::Node3d>>& musclePointsInGlobal,
+            std::vector<std::vector<biorbd::utils::Vector3d>>& musclePointsInGlobal,
             std::vector<biorbd::utils::Matrix>& jacoPointsInGlobal); 
 
     ///
@@ -128,7 +128,7 @@ public:
     /// \param QDot The velocity variables
     ///
     void updateMuscles(
-            std::vector<std::vector<biorbd::utils::Node3d>>& musclePointsInGlobal,
+            std::vector<std::vector<biorbd::utils::Vector3d>>& musclePointsInGlobal,
             std::vector<biorbd::utils::Matrix>& jacoPointsInGlobal,
             const biorbd::rigidbody::GeneralizedCoordinates& QDot);
 

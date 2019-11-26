@@ -15,14 +15,14 @@ biorbd::utils::RotoTrans::RotoTrans(const Eigen::Matrix4d& m) :
 
 biorbd::utils::RotoTrans::RotoTrans(
         const Eigen::Matrix3d& rot,
-        const biorbd::utils::Node3d& trans) :
+        const biorbd::utils::Vector3d& trans) :
     Eigen::Matrix4d(combineRotAndTrans(rot,trans))
 {
 
 }
 biorbd::utils::RotoTrans::RotoTrans(
         const biorbd::utils::Vector& rotation,
-        const biorbd::utils::Node3d& translation,
+        const biorbd::utils::Vector3d& translation,
         const biorbd::utils::String& rotationSequence) :
     Eigen::Matrix4d(transformCardanToMatrix(rotation, translation, rotationSequence))
 {
@@ -34,7 +34,7 @@ biorbd::utils::RotoTrans::RotoTrans(const RigidBodyDynamics::Math::SpatialTransf
 
 }
 
-biorbd::utils::Vector biorbd::utils::RotoTrans::axe(int i)
+biorbd::utils::Vector3d biorbd::utils::RotoTrans::axe(int i)
 {
     biorbd::utils::Error::check(i>=0 && i<=2, "Axis must be between 0 and 2 included");
     return rot().block(0,i,3,1);
@@ -47,7 +47,7 @@ biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::SpatialTransform2RotoTrans(c
 
 biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::combineRotAndTrans(
         const Eigen::Matrix3d& rot,
-        const Eigen::Vector3d& trans){
+        const biorbd::utils::Vector3d& trans){
     block(0,0,3,3) = rot;
     block(0,3,3,1) = trans;
     block(3,0,1,4) << 0,0,0,1;
@@ -63,7 +63,7 @@ biorbd::utils::RotoTrans biorbd::utils::RotoTrans::transpose() const
     return tp;
 }
 
-biorbd::utils::Node3d biorbd::utils::RotoTrans::trans() const
+biorbd::utils::Vector3d biorbd::utils::RotoTrans::trans() const
 {
     return this->block(0,3,3,1);
 }
@@ -76,7 +76,7 @@ Eigen::Matrix3d biorbd::utils::RotoTrans::rot() const
 
 biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::transformCardanToMatrix(
         const Eigen::VectorXd& rot,
-        const Eigen::Vector3d& trans,
+        const biorbd::utils::Vector3d& trans,
         const biorbd::utils::String& seq)
 {
     // S'assurer que le vecteur et la sequence d'angle aient le mpeme nombre d'élément
@@ -115,7 +115,7 @@ biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::transformCardanToMatrix(
 }
 
 biorbd::utils::Vector biorbd::utils::RotoTrans::transformMatrixToCardan(
-        const RotoTrans& a,
+        const biorbd::utils::RotoTrans& a,
         const biorbd::utils::String &seq)
 {
     biorbd::utils::Vector v;
@@ -193,7 +193,7 @@ biorbd::utils::Vector biorbd::utils::RotoTrans::transformMatrixToCardan(
     return v;
 }
 
-Eigen::Vector4d biorbd::utils::RotoTrans::expand3dTo4d(const Eigen::Vector3d &v1)
+Eigen::Vector4d biorbd::utils::RotoTrans::expand3dTo4d(const biorbd::utils::Vector3d &v1)
 {
     Eigen::Vector4d v2;
     v2.block(0,0,3,1) = v1;
@@ -204,7 +204,7 @@ Eigen::Vector4d biorbd::utils::RotoTrans::expand3dTo4d(const Eigen::Vector3d &v1
 biorbd::utils::RotoTrans biorbd::utils::RotoTrans::mean(const std::vector<RotoTrans> & mToMean)
 {
     Eigen::Matrix3d m_tp; // matrice rot tp
-    Eigen::Vector3d v_tp; // translation tp
+    biorbd::utils::Vector3d v_tp; // translation tp
     m_tp.setZero();
     v_tp.setZero();
 

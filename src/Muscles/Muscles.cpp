@@ -229,7 +229,7 @@ void biorbd::muscles::Muscles::updateMuscles(
         }
 }
 void biorbd::muscles::Muscles::updateMuscles(
-        std::vector<std::vector<biorbd::utils::Node3d>>& musclePointsInGlobal,
+        std::vector<std::vector<biorbd::utils::Vector3d>>& musclePointsInGlobal,
         std::vector<biorbd::utils::Matrix> &jacoPointsInGlobal,
         const biorbd::rigidbody::GeneralizedCoordinates& QDot)
 {
@@ -241,7 +241,7 @@ void biorbd::muscles::Muscles::updateMuscles(
         }
 }
 void biorbd::muscles::Muscles::updateMuscles(
-        std::vector<std::vector<biorbd::utils::Node3d>>& musclePointsInGlobal,
+        std::vector<std::vector<biorbd::utils::Vector3d>>& musclePointsInGlobal,
         std::vector<biorbd::utils::Matrix> &jacoPointsInGlobal)
 {
     // Updater all the muscles

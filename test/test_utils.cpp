@@ -515,7 +515,7 @@ TEST(Quaternion, conversion) {
     {
         biorbd::utils::Quaternion q(
                     biorbd::utils::Quaternion::fromAxisAngle(
-                        1, biorbd::utils::Node3d(2, 3, 4), 5));
+                        1, biorbd::utils::Vector3d(2, 3, 4), 5));
         EXPECT_NEAR(q.w(), 0.87758256189037276, requiredPrecision);
         EXPECT_NEAR(q.x(), 0.17805417504364543, requiredPrecision);
         EXPECT_NEAR(q.y(), 0.26708126256546816, requiredPrecision);
@@ -545,7 +545,7 @@ TEST(Quaternion, conversion) {
     {
         biorbd::utils::Quaternion q(
                     biorbd::utils::Quaternion::fromZYXAngles(
-                        biorbd::utils::Node3d(2, 3, 4), 5));
+                        biorbd::utils::Vector3d(2, 3, 4), 5));
         EXPECT_NEAR(q.w(), 0.74732578388941839, requiredPrecision);
         EXPECT_NEAR(q.x(), -0.51483522877414645, requiredPrecision);
         EXPECT_NEAR(q.y(), -0.17015746936361908, requiredPrecision);
@@ -555,7 +555,7 @@ TEST(Quaternion, conversion) {
     {
         biorbd::utils::Quaternion q(
                     biorbd::utils::Quaternion::fromYXZAngles(
-                        biorbd::utils::Node3d(2, 3, 4), 5));
+                        biorbd::utils::Vector3d(2, 3, 4), 5));
         EXPECT_NEAR(q.w(), 0.74732578388941828, requiredPrecision);
         EXPECT_NEAR(q.x(), 0.46529436049374834, requiredPrecision);
         EXPECT_NEAR(q.y(), -0.27840624141687698, requiredPrecision);
@@ -565,7 +565,7 @@ TEST(Quaternion, conversion) {
     {
         biorbd::utils::Quaternion q(
                     biorbd::utils::Quaternion::fromXYZAngles(
-                        biorbd::utils::Node3d(2, 3, 4), 5));
+                        biorbd::utils::Vector3d(2, 3, 4), 5));
         EXPECT_NEAR(q.w(), -0.77913560959923722, requiredPrecision);
         EXPECT_NEAR(q.x(), 0.46529436049374834, requiredPrecision);
         EXPECT_NEAR(q.y(), -0.27840624141687698, requiredPrecision);
@@ -588,9 +588,9 @@ TEST(Quaternion, conversion) {
         EXPECT_NEAR(mat(2, 2), -49, requiredPrecision);
     }
     {
-        biorbd::utils::Node3d rot (0.2, 0.3, 0.4);
+        biorbd::utils::Vector3d rot (0.2, 0.3, 0.4);
         biorbd::utils::RotoTrans rt_from_euler;
-        rt_from_euler.transformCardanToMatrix(rot, biorbd::utils::Node3d(), "xyz");
+        rt_from_euler.transformCardanToMatrix(rot, biorbd::utils::Vector3d(), "xyz");
         
         biorbd::utils::Quaternion q(
                     biorbd::utils::Quaternion::fromXYZAngles(rot, 5));
@@ -635,7 +635,7 @@ TEST(Quaternion, otherOperations)
     {
         biorbd::utils::Quaternion q(2, 3, 4, 5, 6);
         biorbd::utils::Quaternion qTime(
-                    q.timeStep(biorbd::utils::Node3d(7, 8, 9), 0.1));
+                    q.timeStep(biorbd::utils::Vector3d(7, 8, 9), 0.1));
 
         EXPECT_NEAR(qTime.w(), -2.9791236033976602, requiredPrecision);
         EXPECT_NEAR(qTime.x(), 3.1304258212109395, requiredPrecision);
@@ -645,7 +645,7 @@ TEST(Quaternion, otherOperations)
     }
     {
         biorbd::utils::Quaternion q(2, 3, 4, 5, 6);
-        biorbd::utils::Node3d vec(q.rotate(biorbd::utils::Node3d(7, 8, 9)));
+        biorbd::utils::Vector3d vec(q.rotate(biorbd::utils::Vector3d(7, 8, 9)));
 
         EXPECT_NEAR(vec.x(), 282, requiredPrecision);
         EXPECT_NEAR(vec.y(), 384, requiredPrecision);
@@ -653,7 +653,7 @@ TEST(Quaternion, otherOperations)
     }
     {
         biorbd::utils::Quaternion q(2, 3, 4, 5, 6);
-        biorbd::utils::Quaternion qdot(q.omegaToQDot(biorbd::utils::Node3d(7, 8, 9)));
+        biorbd::utils::Quaternion qdot(q.omegaToQDot(biorbd::utils::Vector3d(7, 8, 9)));
 
         EXPECT_NEAR(qdot.w(), -49, requiredPrecision);
         EXPECT_NEAR(qdot.x(), 5, requiredPrecision);
