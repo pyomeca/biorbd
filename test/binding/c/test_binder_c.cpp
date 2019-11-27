@@ -7,7 +7,7 @@
 #include "Utils/Vector.h"
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
-#include "RigidBody/NodeBone.h"
+#include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
 #include "RigidBody/IMU.h"
 #ifndef SKIP_KALMAN
@@ -49,7 +49,7 @@ TEST(BinderC, markers)
     }
     double *dMarkersInGlobal = new double[model->nbMarkers()*3];
     c_markers(model, dQ, dMarkersInGlobal);
-    std::vector<biorbd::rigidbody::NodeBone> markersInGlobal(model->markers(Q));
+    std::vector<biorbd::rigidbody::NodeSegment> markersInGlobal(model->markers(Q));
     for (unsigned int i=0; i<model->nbMarkers(); ++i)
         for (unsigned int j=0; j<3; ++j)
             EXPECT_NEAR(dMarkersInGlobal[i*3+j], markersInGlobal[i][j], requiredPrecision);
@@ -60,7 +60,7 @@ TEST(BinderC, markers)
     unsigned int nMarkersBeforeAdding(model->nbMarkers());
     c_addMarker(model, newMarkerPosition, "MyNewMarker", model->Segment(1).name().c_str(), false, true, "x");
     EXPECT_EQ(model->nbMarkers(), nMarkersBeforeAdding + 1);
-    biorbd::rigidbody::NodeBone newMarker(model->marker(nMarkersBeforeAdding));
+    biorbd::rigidbody::NodeSegment newMarker(model->marker(nMarkersBeforeAdding));
     EXPECT_STREQ(newMarker.name().c_str(), "MyNewMarker");
     EXPECT_STREQ(newMarker.parent().c_str(), model->Segment(1).name().c_str());
     EXPECT_EQ(newMarker.isTechnical(), false);
@@ -70,7 +70,7 @@ TEST(BinderC, markers)
     // Markers in local reference frame
     double *dMarkersInLocal = new double[model->nbMarkers()*3];
     c_markersInLocal(model, dMarkersInLocal);
-    std::vector<biorbd::rigidbody::NodeBone> markersInLocal(model->markers());
+    std::vector<biorbd::rigidbody::NodeSegment> markersInLocal(model->markers());
     for (unsigned int i=0; i<model->nbMarkers(); ++i)
         for (unsigned int j=0; j<3; ++j)
             EXPECT_NEAR(dMarkersInLocal[i*3+j], markersInLocal[i][j], requiredPrecision);

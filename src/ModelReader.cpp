@@ -14,7 +14,7 @@
 #include "RigidBody/SegmentCharacteristics.h"
 #include "RigidBody/IMU.h"
 #include "RigidBody/Patch.h"
-#include "RigidBody/NodeBone.h"
+#include "RigidBody/NodeSegment.h"
 
 #ifdef MODULE_ACTUATORS
 #include "Actuators/ActuatorConstant.h"

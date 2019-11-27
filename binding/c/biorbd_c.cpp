@@ -12,7 +12,7 @@
 #include "RigidBody/Segment.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
-#include "RigidBody/NodeBone.h"
+#include "RigidBody/NodeSegment.h"
 #ifndef SKIP_KALMAN
 #include "RigidBody/KalmanReconsIMU.h"
 #endif
@@ -151,7 +151,7 @@ void c_markers(
     biorbd::rigidbody::GeneralizedCoordinates eQ(dispatchQinput(model, Q));
 
     // Call the main function
-    std::vector<biorbd::rigidbody::NodeBone> pos(model->markers(eQ, removeAxis, updateKin));
+    std::vector<biorbd::rigidbody::NodeSegment> pos(model->markers(eQ, removeAxis, updateKin));
 
     // Prepare output
     dispatchMarkersOutput(pos, markPos);
@@ -323,7 +323,7 @@ biorbd::utils::Vector3d dispatchMarkersInput(
     return biorbd::utils::Vector3d(pos[0], pos[1], pos[2]);
 }
 void dispatchMarkersOutput(
-        const std::vector<biorbd::rigidbody::NodeBone> &allMarkers,
+        const std::vector<biorbd::rigidbody::NodeSegment> &allMarkers,
         double* markers)
 {
     // Warning markers must already be allocated!

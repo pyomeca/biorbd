@@ -7,7 +7,7 @@
 #include "Utils/String.h"
 #include "Utils/Path.h"
 #include "RigidBody/IMU.h"
-#include "RigidBody/NodeBone.h"
+#include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
@@ -58,7 +58,7 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
         biorbdModelFile << std::endl;
 
         // Write the prospective markers
-        std::vector<biorbd::rigidbody::NodeBone> markers (model.marker(model.Segment(i).name()));
+        std::vector<biorbd::rigidbody::NodeSegment> markers (model.marker(model.Segment(i).name()));
         if (markers.size() > 0){
             biorbdModelFile << sep << com << " Markers" << std::endl;
             for (size_t j = 0; j< markers.size(); ++j){

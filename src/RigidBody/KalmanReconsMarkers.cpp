@@ -7,7 +7,7 @@
 #include "Utils/Error.h"
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
-#include "RigidBody/NodeBone.h"
+#include "RigidBody/NodeSegment.h"
 
 biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers() :
     biorbd::rigidbody::KalmanRecons(),
@@ -86,7 +86,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
 
 void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         biorbd::Model &model,
-        const std::vector<biorbd::rigidbody::NodeBone> &Tobs,
+        const std::vector<biorbd::rigidbody::NodeSegment> &Tobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
         biorbd::rigidbody::GeneralizedCoordinates *Qdot,
         biorbd::rigidbody::GeneralizedCoordinates *Qddot,
@@ -135,7 +135,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     model.UpdateKinematicsCustom (&Q_tp, nullptr, nullptr);
 
     // Projected markers
-    const std::vector<biorbd::rigidbody::NodeBone>& zest_tp(model.technicalMarkers(Q_tp, removeAxes, false));
+    const std::vector<biorbd::rigidbody::NodeSegment>& zest_tp(model.technicalMarkers(Q_tp, removeAxes, false));
     // Jacobian
    const  std::vector<biorbd::utils::Matrix>& J_tp(model.TechnicalMarkersJacobian(Q_tp, removeAxes, false));
     // Create only one matrix for zest and Jacobian

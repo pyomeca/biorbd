@@ -14,7 +14,7 @@
 #include "RigidBody/Integrator.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/Markers.h"
-#include "RigidBody/NodeBone.h"
+#include "RigidBody/NodeSegment.h"
 #include "RigidBody/Patch.h"
 #include "RigidBody/RigidBodyEnums.h"
 #ifndef SKIP_KALMAN

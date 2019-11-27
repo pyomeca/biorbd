@@ -7,12 +7,12 @@
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/Joints.h"
-#include "RigidBody/NodeBone.h"
+#include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
 
 
 biorbd::rigidbody::Markers::Markers() :
-    m_marks(std::make_shared<std::vector<biorbd::rigidbody::NodeBone>>())
+    m_marks(std::make_shared<std::vector<biorbd::rigidbody::NodeSegment>>())
 {
     //ctor
 }
@@ -44,7 +44,7 @@ void biorbd::rigidbody::Markers::DeepCopy(const biorbd::rigidbody::Markers &othe
 
 // Add a new marker to the markers pool
 void biorbd::rigidbody::Markers::addMarker(
-        const biorbd::rigidbody::NodeBone &pos,
+        const biorbd::rigidbody::NodeSegment &pos,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName,
         bool technical,
@@ -52,20 +52,20 @@ void biorbd::rigidbody::Markers::addMarker(
         const biorbd::utils::String& axesToRemove,
         int id)
 {
-    biorbd::rigidbody::NodeBone tp(pos, name, parentName, technical, anatomical, axesToRemove, id);
+    biorbd::rigidbody::NodeSegment tp(pos, name, parentName, technical, anatomical, axesToRemove, id);
     m_marks->push_back(tp);
 }
 
-const biorbd::rigidbody::NodeBone &biorbd::rigidbody::Markers::marker(
+const biorbd::rigidbody::NodeSegment &biorbd::rigidbody::Markers::marker(
         unsigned int i) const
 {
     return (*m_marks)[i];
 }
 
-std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::marker(
+std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::marker(
         const biorbd::utils::String& segmentName) const
 {
-    std::vector<biorbd::rigidbody::NodeBone> pos;
+    std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i) // Go through all the markers and select the right ones
         if (!marker(i).parent().compare(segmentName))
             pos.push_back(marker(i));
@@ -74,9 +74,9 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::marker(
 }
 
 // Return a marker
-biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::marker(
+biorbd::rigidbody::NodeSegment biorbd::rigidbody::Markers::marker(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::NodeBone &n,
+        const biorbd::rigidbody::NodeSegment &n,
         bool removeAxis,
         bool updateKin)
 {
@@ -85,13 +85,13 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::marker(
 
     unsigned int id = model.GetBodyId(n.parent().c_str());
     if (removeAxis)
-        return biorbd::rigidbody::NodeBone(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, n.removeAxes(), updateKin));
+        return biorbd::rigidbody::NodeSegment(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, n.removeAxes(), updateKin));
     else
-        return biorbd::rigidbody::NodeBone(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, n, updateKin));
+        return biorbd::rigidbody::NodeSegment(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, n, updateKin));
 }
 
 // Get a marker
-biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::marker(
+biorbd::rigidbody::NodeSegment biorbd::rigidbody::Markers::marker(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         unsigned int idx,
         bool removeAxis,
@@ -100,20 +100,20 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::marker(
     // Assuming that this is also a joint type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
-    const biorbd::rigidbody::NodeBone& node(marker(idx));
+    const biorbd::rigidbody::NodeSegment& node(marker(idx));
     unsigned int id = model.GetBodyId(node.parent().c_str());
 
     // Retrieve the position of the marker in the local reference
-    const biorbd::rigidbody::NodeBone& pos = marker(idx, removeAxis);
+    const biorbd::rigidbody::NodeSegment& pos = marker(idx, removeAxis);
 
-    return biorbd::rigidbody::NodeBone(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, pos, updateKin));
+    return biorbd::rigidbody::NodeSegment(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, pos, updateKin));
 }
 // Get a marker
-biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::marker(
+biorbd::rigidbody::NodeSegment biorbd::rigidbody::Markers::marker(
         unsigned int idx,
         bool removeAxis)
 {
-    const biorbd::rigidbody::NodeBone& node(marker(idx));
+    const biorbd::rigidbody::NodeSegment& node(marker(idx));
     if (removeAxis)
         return node.removeAxes();
     else
@@ -121,12 +121,12 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::marker(
 }
 
 // Get all the markers
-std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::markers(
+std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::markers(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool removeAxis,
         bool updateKin)
 {
-    std::vector<biorbd::rigidbody::NodeBone> pos;
+    std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i)
         if (i==0)
             pos.push_back(marker(Q, i, removeAxis, updateKin));// Forward kinematics
@@ -136,9 +136,9 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::markers(
     return pos;
 }
 // Get all the markers in the local reference
-std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::markers(bool removeAxis)
+std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::markers(bool removeAxis)
 {
-    std::vector<biorbd::rigidbody::NodeBone> pos;
+    std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i)
         pos.push_back(marker(i, removeAxis));// Forward kinematics
 
@@ -146,7 +146,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::markers(boo
 }
 
 // Get a marker's velocity
-biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::markerVelocity(
+biorbd::rigidbody::NodeSegment biorbd::rigidbody::Markers::markerVelocity(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         unsigned int idx,
@@ -156,24 +156,24 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Markers::markerVelocity(
     // Assuming that this is also a joint type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
-    const biorbd::rigidbody::NodeBone& node(marker(idx));
+    const biorbd::rigidbody::NodeSegment& node(marker(idx));
     unsigned int id(model.GetBodyId(node.parent().c_str()));
 
     // Retrieve the position of the marker in the local reference 
-    const biorbd::rigidbody::NodeBone& pos(marker(idx, removeAxis));
+    const biorbd::rigidbody::NodeSegment& pos(marker(idx, removeAxis));
 
     // Calculate the velocity of the point
-    return biorbd::rigidbody::NodeBone(RigidBodyDynamics::CalcPointVelocity(model, Q, Qdot, id, pos, updateKin));
+    return biorbd::rigidbody::NodeSegment(RigidBodyDynamics::CalcPointVelocity(model, Q, Qdot, id, pos, updateKin));
 }
 
 // Get the makers'velocities
-std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::markersVelocity(
+std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::markersVelocity(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         bool removeAxis,
         bool updateKin)
 {
-    std::vector<biorbd::rigidbody::NodeBone> pos;
+    std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i)
         if (i==0)
             pos.push_back(markerVelocity(Q, Qdot, i, removeAxis, updateKin));// Forward kinematics
@@ -184,12 +184,12 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::markersVelo
 }
 
 // Get the technical markers
-std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::technicalMarkers(
+std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::technicalMarkers(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool removeAxis,
         bool updateKin)
 {
-    std::vector<biorbd::rigidbody::NodeBone> pos;
+    std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i)
         if ( marker(i).isTechnical() )
         {
@@ -199,21 +199,21 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::technicalMa
     return pos;
 }
 // Get the technical markers in a local reference
-std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::technicalMarkers(bool removeAxis)
+std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::technicalMarkers(bool removeAxis)
 {
-    std::vector<biorbd::rigidbody::NodeBone> pos;
+    std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i)
         if ( marker(i).isTechnical() )
             pos.push_back(marker(i, removeAxis));// Forward kinematics
     return pos;
 }
 // Get the anatomical markers
-std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::anatomicalMarkers(
+std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::anatomicalMarkers(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool removeAxis,
         bool updateKin)
 {
-    std::vector<biorbd::rigidbody::NodeBone> pos;
+    std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i)
         if ( marker(i).isAnatomical() ){
             pos.push_back(marker(Q, i, removeAxis, updateKin));// Forward kinematics
@@ -222,9 +222,9 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::anatomicalM
     return pos;
 }
 // Get the anatomical markers in a local reference
-std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::anatomicalMarkers(bool removeAxis)
+std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::anatomicalMarkers(bool removeAxis)
 {
-    std::vector<biorbd::rigidbody::NodeBone> pos;
+    std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i)
         if ( marker(i).isAnatomical() )
             pos.push_back(marker(i, removeAxis));// Forward kinematics
@@ -233,7 +233,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::anatomicalM
 
 
 
-std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::segmentMarkers(
+std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::segmentMarkers(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         unsigned int idx,
         bool removeAxis,
@@ -249,7 +249,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Markers::segmentMark
     // Name of the segment to find
     const biorbd::utils::String& name(model.Segment(idx).name());
 
-    std::vector<biorbd::rigidbody::NodeBone> pos;
+    std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i) // Go through all the markers and select the right ones
         if ((*m_marks)[i].parent().compare(name))
             pos.push_back(marker(Q,i,removeAxis,false));
@@ -300,7 +300,7 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::TechnicalMarkersJ
 biorbd::utils::Matrix biorbd::rigidbody::Markers::markersJacobian(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::utils::String& parentName,
-        const biorbd::rigidbody::NodeBone& p,
+        const biorbd::rigidbody::NodeSegment& p,
         bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
@@ -330,7 +330,7 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::markersJacobian(
     unsigned int idx2(0);
     for (unsigned int idx=0; idx<nbMarkers(); ++idx){
         // Actual marker
-        const biorbd::rigidbody::NodeBone& node(marker(idx));
+        const biorbd::rigidbody::NodeSegment& node(marker(idx));
         if (lookForTechnical && !node.isTechnical())
             continue;
 

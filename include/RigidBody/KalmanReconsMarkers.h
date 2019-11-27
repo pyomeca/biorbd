@@ -8,7 +8,7 @@
 namespace biorbd {
 namespace rigidbody {
 class Markers;
-class NodeBone;
+class NodeSegment;
 
 ///
 /// \brief Class KalmanReconsMarkers that includes class KalmanRecons
@@ -74,7 +74,7 @@ public:
     ///
     virtual void reconstructFrame(
             biorbd::Model &model,
-            const std::vector<biorbd::rigidbody::NodeBone> &Tobs,
+            const std::vector<biorbd::rigidbody::NodeSegment> &Tobs,
             biorbd::rigidbody::GeneralizedCoordinates *Q,
             biorbd::rigidbody::GeneralizedCoordinates *Qdot,
             biorbd::rigidbody::GeneralizedCoordinates *Qddot,
