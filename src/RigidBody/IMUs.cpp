@@ -5,6 +5,7 @@
 #include <rbdl/Kinematics.h>
 #include "Utils/String.h"
 #include "Utils/Matrix.h"
+#include "Utils/Rotation.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/Bone.h"

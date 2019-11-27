@@ -38,8 +38,8 @@ void Matlab_computeQdot( int, mxArray *plhs[],
         model->UpdateKinematicsCustom(&Q[j], &QDot[j], nullptr);
 
         // Trouver la dynamique directe a cette configuration
-        biorbd::rigidbody::GeneralizedCoordinates QDotPost;
-        model->computeQdot(*(Q.begin()+j), *(QDot.begin()+j), QDotPost); // Calcul du QdotPost
+        biorbd::rigidbody::GeneralizedCoordinates QDotPost(
+                    model->computeQdot(Q[j], QDot[j]) );
 
         // Remplir l'output
         for (unsigned int i=0; i<nQ; i++){

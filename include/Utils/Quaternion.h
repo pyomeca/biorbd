@@ -11,6 +11,7 @@ namespace utils {
 class Node3d;
 class Vector;
 class RotoTrans;
+class Rotation;
 class String;
 
 // The definition for conversions are taken from https://www.euclideanspace.com/maths/geometry/rotations/conversions/index.htm
@@ -77,7 +78,7 @@ public:
             double kStab = 1);
 
     static biorbd::utils::Quaternion fromMatrix (
-            const Eigen::Matrix3d &mat,
+            const biorbd::utils::Rotation &mat,
             double kStab = 1);
 
     static biorbd::utils::Quaternion fromZYXAngles (
@@ -92,7 +93,7 @@ public:
             const biorbd::utils::Node3d &xyz_angles,
             double kStab = 1);
 
-    biorbd::utils::RotoTrans toMatrix() const;
+    biorbd::utils::Rotation toMatrix() const;
 
     biorbd::utils::Quaternion slerp (
             double alpha,

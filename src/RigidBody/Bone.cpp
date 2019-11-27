@@ -374,7 +374,9 @@ void biorbd::rigidbody::Bone::setJoints(biorbd::rigidbody::Joints& model){
     setDofCharacteristicsOnLastSegment(); // Put characteristics on the last segment
     setJointAxis(); // Choisir l'ordre des axes en fonction de la séquence sélectionnée
 
-    RigidBodyDynamics::Math::SpatialTransform zero (RigidBodyDynamics::Math::Matrix3dIdentity, RigidBodyDynamics::Math::Vector3d(0,0,0));
+    RigidBodyDynamics::Math::SpatialTransform zero (
+                RigidBodyDynamics::Math::Matrix3dIdentity,
+                RigidBodyDynamics::Math::Vector3d(0,0,0));
     // Faire les articulations (intra segment)
     m_idxDof->clear();
 

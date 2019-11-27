@@ -9,6 +9,7 @@
 #include "Utils/Equation.h"
 #include "Utils/Vector.h"
 #include "Utils/Node3d.h"
+#include "Utils/Rotation.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/BoneMesh.h"
 #include "RigidBody/BoneCharacteristics.h"
@@ -100,8 +101,8 @@ void biorbd::Reader::readModelFile(
                 bool isRTset(false);
                 double mass = 0.00000001;
                 Eigen::Matrix3d inertia(Eigen::Matrix3d::Identity(3,3));
-                RigidBodyDynamics::Math::Matrix3d RT_R(Eigen::Matrix3d::Identity(3,3));
-                RigidBodyDynamics::Math::Vector3d RT_T(0,0,0);
+                biorbd::utils::Rotation RT_R(Eigen::Matrix3d::Identity(3,3));
+                biorbd::utils::Node3d RT_T(0,0,0);
                 biorbd::utils::Node3d com(0,0,0);
                 biorbd::rigidbody::BoneMesh boneMesh;
                 int boneByFile(-1); // -1 non setté, 0 pas par file, 1 par file

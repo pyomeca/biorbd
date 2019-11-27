@@ -7,6 +7,7 @@
 #include "Utils/Vector.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/Error.h"
+#include "Utils/Rotation.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -149,7 +150,7 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::fromMatrix(
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromMatrix(
-        const Eigen::Matrix3d &mat,
+        const biorbd::utils::Rotation &mat,
         double kStab) {
     double w = std::sqrt (1. + mat(0,0) + mat(1,1) + mat(2,2)) * 0.5;
     return Quaternion (
@@ -183,17 +184,16 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::fromXYZAngles(
             * fromAxisAngle (xyz_angles[2], Eigen::Vector3d (0., 0., 1.), kStab);
 }
 
-biorbd::utils::RotoTrans biorbd::utils::Quaternion::toMatrix() const {
+biorbd::utils::Rotation biorbd::utils::Quaternion::toMatrix() const {
     double w = (*this)[0];
     double x = (*this)[1];
     double y = (*this)[2];
     double z = (*this)[3];
-    Eigen::Matrix3d mat_tp;
-    mat_tp <<  
+    biorbd::utils::Rotation out;
+    out <<
         1 - 2*y*y - 2*z*z,  2*x*y - 2*w*z,      2*x*z + 2*w*y,
         2*x*y + 2*w*z,      1 - 2*x*x - 2*z*z,  2*y*z - 2*w*x,
         2*x*z - 2*w*y,      2*y*z + 2*w*x,      1 - 2*x*x - 2*y*y;
-    biorbd::utils::RotoTrans out(mat_tp);
     return out;
 }
 

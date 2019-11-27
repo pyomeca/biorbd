@@ -8,6 +8,7 @@
 #include "Utils/Node3d.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/RotoTransNode.h"
+#include "Utils/Rotation.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "Utils/Quaternion.h"
 
@@ -575,7 +576,7 @@ TEST(Quaternion, conversion) {
     {
         biorbd::utils::Quaternion q(2, 3, 4, 5, 6);
         biorbd::utils::RotoTrans rt(q.toMatrix());
-        Eigen::Matrix3d mat(rt.rot());
+        biorbd::utils::Rotation mat(rt.rot());
 
         EXPECT_NEAR(mat(0, 0), -81, requiredPrecision);
         EXPECT_NEAR(mat(0, 1), 4, requiredPrecision);
@@ -590,7 +591,7 @@ TEST(Quaternion, conversion) {
     {
         biorbd::utils::Node3d rot (0.2, 0.3, 0.4);
         biorbd::utils::RotoTrans rt_from_euler;
-        rt_from_euler.transformCardanToMatrix(rot, biorbd::utils::Node3d(), "xyz");
+        rt_from_euler.fromEulerAngles(rot, biorbd::utils::Node3d(), "xyz");
         
         biorbd::utils::Quaternion q(
                     biorbd::utils::Quaternion::fromXYZAngles(rot, 5));

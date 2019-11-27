@@ -16,6 +16,7 @@ namespace biorbd {
 namespace utils {
 class String;
 class Vector;
+class Rotation;
 
 ///
 /// \brief The RotoTrans class is the 3d position given in a 4d matrix
@@ -31,7 +32,7 @@ public:
             const biorbd::utils::Node3d& translation,
             const biorbd::utils::String &rotationSequence);
     RotoTrans(
-            const Eigen::Matrix3d& rot,
+            const biorbd::utils::Rotation& rot,
             const biorbd::utils::Node3d& trans = Eigen::Vector3d::Zero());
     RotoTrans(const RigidBodyDynamics::Math::SpatialTransform&);
 
@@ -39,9 +40,7 @@ public:
 
     biorbd::utils::RotoTrans transpose() const;
     biorbd::utils::Node3d trans() const;
-    Eigen::Matrix3d rot() const;
-
-    biorbd::utils::RotoTrans& SpatialTransform2RotoTrans(const RigidBodyDynamics::Math::SpatialTransform& st);
+    biorbd::utils::Rotation rot() const;
 
     ///
     /// \brief Create an RotoTrans matrix from a rotation and a translation
@@ -50,14 +49,16 @@ public:
     /// \return The matrix of RotoTrans
     ///
     biorbd::utils::RotoTrans& combineRotAndTrans(
-            const Eigen::Matrix3d& rot,
-            const Eigen::Vector3d& trans);
+            const biorbd::utils::Rotation& rot,
+            const biorbd::utils::Node3d& trans);
 
-    biorbd::utils::RotoTrans& transformCardanToMatrix(
-            const Eigen::VectorXd& rot,
-            const Eigen::Vector3d& trans,
+    biorbd::utils::RotoTrans& fromSpatialTransform(
+            const RigidBodyDynamics::Math::SpatialTransform& st);
+    biorbd::utils::RotoTrans& fromEulerAngles(
+            const biorbd::utils::Vector &rot,
+            const biorbd::utils::Node3d &trans,
             const biorbd::utils::String& seq);
-    static  biorbd::utils::Vector transformMatrixToCardan(
+    static  biorbd::utils::Vector toEulerAngles(
             const biorbd::utils::RotoTrans&,
             const biorbd::utils::String &seq);
 

@@ -293,7 +293,8 @@ void c_transformMatrixToCardan(
     biorbd::utils::RotoTrans mM(dispatchRTinput(M));
     biorbd::utils::String seq(sequence);
 
-    biorbd::utils::Vector cardan(biorbd::utils::RotoTrans::transformMatrixToCardan(mM, seq));
+    biorbd::utils::Vector cardan(
+                biorbd::utils::RotoTrans::toEulerAngles(mM, seq));
 
     // On assume que la mémoire pour cardanOut a déjà été octroyée
     dispatchDoubleOutput(cardan, cardanOut);
@@ -402,7 +403,9 @@ biorbd::utils::Matrix dispatchMatrixInput(
         const double* matXd, 
         int nRows,
         int nCols) {
-    biorbd::utils::Matrix res(nRows,nCols);
+    biorbd::utils::Matrix res(
+                static_cast<unsigned int>(nRows),
+                static_cast<unsigned int>(nCols));
     for (int i = 0; i < nCols; ++i) {
         for (int j = 0; j < nRows; ++j) {
             res(j, i) = matXd[j + i * nCols];
@@ -414,7 +417,7 @@ biorbd::utils::Matrix dispatchMatrixInput(
 biorbd::utils::Vector dispatchVectorInput(
         const double* vecXd, 
         int nElements) {
-    biorbd::utils::Vector res(nElements);
+    biorbd::utils::Vector res(static_cast<unsigned int>(nElements));
     for (int i = 0; i < nElements; ++i) {
         res(i) = vecXd[i];
     }

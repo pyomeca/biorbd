@@ -10,6 +10,7 @@
 #include "Utils/Matrix.h"
 #include "Utils/Error.h"
 #include "Utils/RotoTrans.h"
+#include "Utils/Rotation.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/Integrator.h"
@@ -480,8 +481,12 @@ RigidBodyDynamics::Math::SpatialTransform biorbd::rigidbody::Joints::CalcBodyWor
     if (body_id >= this->fixed_body_discriminator) {
         unsigned int fbody_id = body_id - this->fixed_body_discriminator;
         unsigned int parent_id = this->mFixedBodies[fbody_id].mMovableParent;
-        biorbd::utils::RotoTrans parentRT(this->X_base[parent_id].E.transpose(), this->X_base[parent_id].r);
-        biorbd::utils::RotoTrans bodyRT(this->mFixedBodies[fbody_id].mParentTransform.E.transpose(), this->mFixedBodies[fbody_id].mParentTransform.r);
+        biorbd::utils::RotoTrans parentRT(
+                    this->X_base[parent_id].E.transpose(),
+                    this->X_base[parent_id].r);
+        biorbd::utils::RotoTrans bodyRT(
+                    this->mFixedBodies[fbody_id].mParentTransform.E.transpose(),
+                    this->mFixedBodies[fbody_id].mParentTransform.r);
         const biorbd::utils::RotoTrans& transfo_tp = parentRT * bodyRT;
         return RigidBodyDynamics::Math::SpatialTransform (transfo_tp.rot(), transfo_tp.trans());
     }
