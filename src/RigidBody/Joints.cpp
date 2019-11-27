@@ -96,16 +96,16 @@ unsigned int biorbd::rigidbody::Joints::nbDof() const {
 
 std::vector<biorbd::utils::String> biorbd::rigidbody::Joints::nameDof() const
 {
-    std::vector<std::string> names;
-    for (unsigned int i=0; i<nbSegment(); ++i){
-        for (unsigned int j=0; j<Segment(i).nbDof(); ++j){
+    std::vector<biorbd::utils::String> names;
+    for (unsigned int i = 0; i < nbSegment(); ++i) {
+        for (unsigned int j = 0; j < Segment(i).nbDof(); ++j) {
             names.push_back(Segment(i).name() + "_" + Segment(i).nameDof(j));
         }
     }
     // Append Quaternion Q
-    for (unsigned int i=0; i<nbBone(); ++i){
-        if (bone(i).isRotationAQuaternion()) {
-            names.push_back(bone(i).name() + "_" + bone(i).nameDof(3));
+    for (unsigned int i = 0; i < nbSegment(); ++i) {
+        if (Segment(i).isRotationAQuaternion()) {
+            names.push_back(Segment(i).name() + "_" + Segment(i).nameDof(3));
         }
     }
     return names;

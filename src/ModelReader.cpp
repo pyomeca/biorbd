@@ -1108,12 +1108,12 @@ biorbd::Reader::readGroundReactionForceDataFile(
 }
 
 void biorbd::Reader::readViconForceFile(
-        const utils::Path &path, // Path to the file
-        std::vector<std::vector<unsigned int>> &frame, // Time vector * number of pf
-        std::vector<unsigned int> &frequency, // Acquisition frequency * number of pf
-        std::vector<std::vector<biorbd::utils::Vector3d>> &force, // Linear forces (x,y,z) * number of pf
-        std::vector<std::vector<biorbd::utils::Vector3d>> &moment, // Moments (x,y,z) * number of pf
-        std::vector<std::vector<biorbd::utils::Vector3d>> &cop){// Center of pressure (x,y,z) * number of pf
+    const biorbd::utils::Path& path, // Path to the file
+    std::vector<std::vector<unsigned int>>& frame, // Frame vector (time is frame/frequency)
+    std::vector<unsigned int>& frequency,// Acquisition frequency
+    std::vector<std::vector<biorbd::utils::Vector3d>>& force, // Linear forces (x,y,z)
+    std::vector<std::vector<biorbd::utils::Vector3d>>& moment, // Moments (x,y,z)
+    std::vector<std::vector<biorbd::utils::Vector3d>>& cop) {// Center of pressure (x,y,z) * number of pf
     // Open file
     // std::cout << "Loading force file: " << path << std::endl;
 #ifdef _WIN32
@@ -1225,9 +1225,9 @@ std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::Reader:
 
 std::vector<std::vector<biorbd::utils::Vector3d>>
 biorbd::Reader::readViconMarkerFile(
-        const utils::Path &path,
-        std::vector<biorbd::utils::String> &markOrder,
-        int nNodes) {
+    const biorbd::utils::Path& path,
+    std::vector<biorbd::utils::String>& markOrder,
+    int nNodes) {
     // Read file
 #ifdef _WIN32
     biorbd::utils::IfStream file(

@@ -172,38 +172,38 @@ TEST(Vector3d, rotate)
 {
     biorbd::utils::Vector3d node(2, 3, 4);
     biorbd::utils::Vector3d nodeXrot(node.DeepCopy());
-    nodeXrot.applyRT( biorbd::utils::RotoTrans(Eigen::Vector3d(M_PI, 0, 0), Eigen::Vector3d(0, 0, 0), "xyz") );
+    nodeXrot.applyRT( biorbd::utils::RotoTrans(biorbd::utils::Vector3d(M_PI, 0, 0), biorbd::utils::Vector3d(0, 0, 0), "xyz") );
     EXPECT_NEAR(nodeXrot[0], node[0], requiredPrecision);
     EXPECT_NEAR(nodeXrot[1], -node[1], requiredPrecision);
     EXPECT_NEAR(nodeXrot[2], -node[2], requiredPrecision);
 
     biorbd::utils::Vector3d nodeYrot(node.DeepCopy());
-    nodeYrot.applyRT( biorbd::utils::RotoTrans(Eigen::Vector3d(0, M_PI, 0), Eigen::Vector3d(0, 0, 0), "xyz") );
+    nodeYrot.applyRT( biorbd::utils::RotoTrans(biorbd::utils::Vector3d(0, M_PI, 0), biorbd::utils::Vector3d(0, 0, 0), "xyz") );
     EXPECT_NEAR(nodeYrot[0], -node[0], requiredPrecision);
     EXPECT_NEAR(nodeYrot[1], node[1], requiredPrecision);
     EXPECT_NEAR(nodeYrot[2], -node[2], requiredPrecision);
 
     biorbd::utils::Vector3d nodeZrot(node.DeepCopy());
-    nodeZrot.applyRT( biorbd::utils::RotoTrans(Eigen::Vector3d(0, 0, M_PI), Eigen::Vector3d(0, 0, 0), "xyz") );
+    nodeZrot.applyRT( biorbd::utils::RotoTrans(biorbd::utils::Vector3d(0, 0, M_PI), biorbd::utils::Vector3d(0, 0, 0), "xyz") );
     EXPECT_NEAR(nodeZrot[0], -node[0], requiredPrecision);
     EXPECT_NEAR(nodeZrot[1], -node[1], requiredPrecision);
     EXPECT_NEAR(nodeZrot[2], node[2], requiredPrecision);
 
     biorbd::utils::Vector3d nodeZrot2(node.DeepCopy());
-    nodeZrot2.applyRT( biorbd::utils::RotoTrans(Eigen::Vector3d(M_PI, 0, 0), Eigen::Vector3d(0, 0, 0), "zxy") );
+    nodeZrot2.applyRT( biorbd::utils::RotoTrans(biorbd::utils::Vector3d(M_PI, 0, 0), biorbd::utils::Vector3d(0, 0, 0), "zxy") );
     EXPECT_NEAR(nodeZrot2[0], -node[0], requiredPrecision);
     EXPECT_NEAR(nodeZrot2[1], -node[1], requiredPrecision);
     EXPECT_NEAR(nodeZrot2[2], node[2], requiredPrecision);
 
     double trans(2);
     biorbd::utils::Vector3d nodeRot(node.DeepCopy());
-    nodeRot.applyRT( biorbd::utils::RotoTrans(Eigen::Vector3d(M_PI/6, M_PI/6, M_PI/6), Eigen::Vector3d(trans, trans, trans), "xyz") );
+    nodeRot.applyRT( biorbd::utils::RotoTrans(biorbd::utils::Vector3d(M_PI/6, M_PI/6, M_PI/6), biorbd::utils::Vector3d(trans, trans, trans), "xyz") );
     EXPECT_NEAR(nodeRot[0], 4.200961894323342, requiredPrecision);
     EXPECT_NEAR(nodeRot[1], 3.4419872981077808, requiredPrecision);
     EXPECT_NEAR(nodeRot[2], 6.698557158514987, requiredPrecision);
 
     biorbd::utils::Vector3d nodeTrans(node.DeepCopy());
-    nodeTrans.applyRT( biorbd::utils::RotoTrans(Eigen::Vector3d(0, 0, 0), Eigen::Vector3d(2, 2, 2), "xyz") );
+    nodeTrans.applyRT( biorbd::utils::RotoTrans(biorbd::utils::Vector3d(0, 0, 0), biorbd::utils::Vector3d(2, 2, 2), "xyz") );
     EXPECT_NEAR(nodeTrans[0], node[0] + trans, requiredPrecision);
     EXPECT_NEAR(nodeTrans[1], node[1] + trans, requiredPrecision);
     EXPECT_NEAR(nodeTrans[2], node[2] + trans, requiredPrecision);
@@ -303,7 +303,7 @@ TEST(Matrix, Copy){
 
 TEST(RotoTrans, unitTest){
     biorbd::utils::RotoTrans rt(
-                Eigen::Vector3d(1, 1, 1), Eigen::Vector3d(1, 1, 1), "xyz");
+                biorbd::utils::Vector3d(1, 1, 1), biorbd::utils::Vector3d(1, 1, 1), "xyz");
     Eigen::Matrix4d rtExpected;
     rtExpected <<
             0.29192658172642888, -0.45464871341284091,  0.84147098480789650, 1,
@@ -416,7 +416,7 @@ TEST(Quaternion, creation)
         EXPECT_NEAR(quat.z(), 4, requiredPrecision);
     }
     {
-        biorbd::utils::Quaternion quat(1, Eigen::Vector3d(2,3,4));
+        biorbd::utils::Quaternion quat(1, biorbd::utils::Vector3d(2,3,4));
         EXPECT_NEAR(quat.w(), 1, requiredPrecision);
         EXPECT_NEAR(quat.x(), 2, requiredPrecision);
         EXPECT_NEAR(quat.y(), 3, requiredPrecision);
@@ -523,7 +523,7 @@ TEST(Quaternion, conversion) {
         EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
     }
     biorbd::utils::RotoTrans rt(
-                Eigen::Vector3d(2, 3, 4), Eigen::Vector3d(), "xyz");
+                biorbd::utils::Vector3d(2, 3, 4), biorbd::utils::Vector3d(), "xyz");
     {
         biorbd::utils::Quaternion q(
                     biorbd::utils::Quaternion::fromMatrix(rt, 5));
@@ -687,10 +687,10 @@ TEST(Quaternion, otherOperations)
 
 TEST(Quaternion, velocities) {
     {
-        biorbd::utils::Node3d e(0.1,0.2,0.3);
-        biorbd::utils::Node3d eR(0.4,0.5,0.6);
+        biorbd::utils::Vector3d e(0.1,0.2,0.3);
+        biorbd::utils::Vector3d eR(0.4,0.5,0.6);
         biorbd::utils::Quaternion q;
-        biorbd::utils::Node3d w(q.eulerDotToOmega(eR,e,"xyz"));
+        biorbd::utils::Vector3d w(q.eulerDotToOmega(eR,e,"xyz"));
 
         EXPECT_NEAR(w[0], 0.52227744876434945, requiredPrecision);
         EXPECT_NEAR(w[1], 0.36181645351259678, requiredPrecision);

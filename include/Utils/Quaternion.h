@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <Eigen/Dense>
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 
 #include "biorbdConfig.h"
 namespace biorbd {
@@ -101,7 +101,7 @@ public:
     biorbd::utils::Quaternion conjugate() const;
 
     biorbd::utils::Quaternion timeStep (
-            const Eigen::Vector3d &omega,
+            const biorbd::utils::Vector3d &omega,
             double dt);
 
     biorbd::utils::Vector3d rotate (const biorbd::utils::Vector3d &vec) const;
@@ -128,9 +128,9 @@ public:
     * \return omega, the angular velocity.
     *
     */
-    biorbd::utils::Node3d  eulerDotToOmega(
-            const biorbd::utils::Node3d &eulerDot, 
-            const biorbd::utils::Node3d &euler,
+    biorbd::utils::Vector3d  eulerDotToOmega(
+            const biorbd::utils::Vector3d &eulerDot, 
+            const biorbd::utils::Vector3d &euler,
             const biorbd::utils::String& seq);
 
     void derivate(const biorbd::utils::Vector &w);

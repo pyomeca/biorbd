@@ -163,24 +163,24 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::fromMatrix(
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromZYXAngles(
         const biorbd::utils::Vector3d &zyx_angles,
         double kStab) {
-    return fromAxisAngle (zyx_angles[2], Eigen::Vector3d (0., 0., 1.), kStab)
-            * fromAxisAngle (zyx_angles[1], Eigen::Vector3d (0., 1., 0.), kStab)
-            * fromAxisAngle (zyx_angles[0], Eigen::Vector3d (1., 0., 0.), kStab);
+    return fromAxisAngle (zyx_angles[2], biorbd::utils::Vector3d (0., 0., 1.), kStab)
+            * fromAxisAngle (zyx_angles[1], biorbd::utils::Vector3d (0., 1., 0.), kStab)
+            * fromAxisAngle (zyx_angles[0], biorbd::utils::Vector3d (1., 0., 0.), kStab);
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromYXZAngles(
         const biorbd::utils::Vector3d &yxz_angles,
         double kStab) {
-    return fromAxisAngle (yxz_angles[1], Eigen::Vector3d (0., 1., 0.), kStab)
-            * fromAxisAngle (yxz_angles[0], Eigen::Vector3d (1., 0., 0.), kStab)
-            * fromAxisAngle (yxz_angles[2], Eigen::Vector3d (0., 0., 1.), kStab);
+    return fromAxisAngle (yxz_angles[1], biorbd::utils::Vector3d (0., 1., 0.), kStab)
+            * fromAxisAngle (yxz_angles[0], biorbd::utils::Vector3d (1., 0., 0.), kStab)
+            * fromAxisAngle (yxz_angles[2], biorbd::utils::Vector3d (0., 0., 1.), kStab);
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromXYZAngles(
         const biorbd::utils::Vector3d &xyz_angles, double kStab) {
-    return fromAxisAngle (xyz_angles[0], Eigen::Vector3d (1., 0., 0.), kStab)
-            * fromAxisAngle (xyz_angles[1], Eigen::Vector3d (0., 1., 0.), kStab)
-            * fromAxisAngle (xyz_angles[2], Eigen::Vector3d (0., 0., 1.), kStab);
+    return fromAxisAngle (xyz_angles[0], biorbd::utils::Vector3d (1., 0., 0.), kStab)
+            * fromAxisAngle (xyz_angles[1], biorbd::utils::Vector3d (0., 1., 0.), kStab)
+            * fromAxisAngle (xyz_angles[2], biorbd::utils::Vector3d (0., 0., 1.), kStab);
 }
 
 biorbd::utils::RotoTrans biorbd::utils::Quaternion::toMatrix() const {
@@ -232,7 +232,7 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::conjugate() const {
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::timeStep(
-        const Eigen::Vector3d &omega,
+        const biorbd::utils::Vector3d &omega,
         double dt) {
     double omega_norm = omega.norm();
     return fromAxisAngle (
@@ -260,12 +260,12 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::omegaToQDot(
     return biorbd::utils::Quaternion(0.5 * m * omega, this->m_Kstab);
 }
 
-biorbd::utils::Node3d  biorbd::utils::Quaternion::eulerDotToOmega(
-            const biorbd::utils::Node3d &eulerDot, 
-            const biorbd::utils::Node3d &euler, 
+biorbd::utils::Vector3d  biorbd::utils::Quaternion::eulerDotToOmega(
+            const biorbd::utils::Vector3d &eulerDot, 
+            const biorbd::utils::Vector3d &euler, 
             const biorbd::utils::String& seq) {
     
-                biorbd::utils::Node3d w;
+                biorbd::utils::Vector3d w;
                 double dph, dth, dps, ph, th, ps;
                 dph = eulerDot[0]; dth = eulerDot[1]; dps = eulerDot[2];
                 ph = euler[0]; th = euler[1]; ps = euler[2]; 
