@@ -56,7 +56,7 @@ public:
     /// \param removeAxes
     /// 
     bool InverseKinematics(
-            const std::vector<biorbd::rigidbody::NodeBone>& markers,
+            const std::vector<biorbd::rigidbody::NodeSegment>& markers,
             const biorbd::rigidbody::GeneralizedCoordinates& Qinit,
             biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxes=true);

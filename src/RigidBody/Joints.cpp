@@ -15,7 +15,7 @@
 #include "RigidBody/Integrator.h"
 #include "RigidBody/Segment.h"
 #include "RigidBody/Markers.h"
-#include "RigidBody/NodeBone.h"
+#include "RigidBody/NodeSegment.h"
 #include "RigidBody/Patch.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
@@ -342,9 +342,9 @@ biorbd::utils::RotoTrans biorbd::rigidbody::Joints::localJCS(const unsigned int 
 }
 
 
-std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::projectPoint(
+std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Joints::projectPoint(
     const biorbd::rigidbody::GeneralizedCoordinates& Q,
-    const std::vector<biorbd::rigidbody::NodeBone>& v,
+    const std::vector<biorbd::rigidbody::NodeSegment>& v,
     bool updateKin)
 {
     if (updateKin)
@@ -357,9 +357,9 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::projectPoint
     // Sécurité
     biorbd::utils::Error::check(marks.nbMarkers() == v.size(), "Number of marker must be equal to number of Vector3d");
 
-    std::vector<biorbd::rigidbody::NodeBone> out;
+    std::vector<biorbd::rigidbody::NodeSegment> out;
     for (unsigned int i = 0; i < marks.nbMarkers(); ++i) {
-        biorbd::rigidbody::NodeBone tp(marks.marker(i));
+        biorbd::rigidbody::NodeSegment tp(marks.marker(i));
         if (tp.nbAxesToRemove() != 0) {
             tp = v[i].applyRT(globalJCS(tp.parent()).transpose());
             // Prendre la position du nouveau marker avec les infos de celui du modèle
@@ -372,7 +372,7 @@ std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::projectPoint
     return out;
 }
 
-biorbd::rigidbody::NodeBone biorbd::rigidbody::Joints::projectPoint(
+biorbd::rigidbody::NodeSegment biorbd::rigidbody::Joints::projectPoint(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::utils::Vector3d &v,
         int segmentIdx,
@@ -384,16 +384,16 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Joints::projectPoint(
 
     // Create a marker
     const biorbd::utils::String& segmentName(Segment(static_cast<unsigned int>(segmentIdx)).name());
-    biorbd::rigidbody::NodeBone node( v.applyRT(globalJCS(static_cast<unsigned int>(segmentIdx)).transpose()), "tp", segmentName,
+    biorbd::rigidbody::NodeSegment node( v.applyRT(globalJCS(static_cast<unsigned int>(segmentIdx)).transpose()), "tp", segmentName,
                      true, true, axesToRemove, static_cast<int>(GetBodyId(segmentName.c_str())));
 
     // Project and then reset in global
     return projectPoint(Q, node, updateKin);
 }
 
-biorbd::rigidbody::NodeBone biorbd::rigidbody::Joints::projectPoint(
+biorbd::rigidbody::NodeSegment biorbd::rigidbody::Joints::projectPoint(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::NodeBone &n,
+        const biorbd::rigidbody::NodeSegment &n,
         bool updateKin)
 {
     // Assuming that this is also a Marker type (via BiorbdModel)
@@ -402,7 +402,7 @@ biorbd::rigidbody::NodeBone biorbd::rigidbody::Joints::projectPoint(
 
 biorbd::utils::Matrix biorbd::rigidbody::Joints::projectPointJacobian(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        biorbd::rigidbody::NodeBone node,
+        biorbd::rigidbody::NodeSegment node,
         bool updateKin)
 {
     if (updateKin)
@@ -438,7 +438,7 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::projectPointJacobian(
         bool updateKin)
 {
     // Find the point
-    const biorbd::rigidbody::NodeBone& p(projectPoint(Q, v, segmentIdx, axesToRemove, updateKin));
+    const biorbd::rigidbody::NodeSegment& p(projectPoint(Q, v, segmentIdx, axesToRemove, updateKin));
 
     // Return the value
     return projectPointJacobian(Q, p, updateKin);
@@ -446,18 +446,18 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::projectPointJacobian(
 
 std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Joints::projectPointJacobian(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const std::vector<biorbd::rigidbody::NodeBone> &v,
+        const std::vector<biorbd::rigidbody::NodeSegment> &v,
         bool updateKin)
 {
     // Gather the points
-    const std::vector<biorbd::rigidbody::NodeBone>& tp(projectPoint(Q, v, updateKin));
+    const std::vector<biorbd::rigidbody::NodeSegment>& tp(projectPoint(Q, v, updateKin));
 
     // Calculate the Jacobian if the point is not projected
     std::vector<biorbd::utils::Matrix> G;
 
     for (unsigned int i=0; i<tp.size(); ++i){
         // Actual marker 
-        G.push_back(projectPointJacobian(Q, biorbd::rigidbody::NodeBone(v[i]), false));
+        G.push_back(projectPointJacobian(Q, biorbd::rigidbody::NodeSegment(v[i]), false));
     }
     return G;
 }
@@ -500,7 +500,7 @@ biorbd::utils::Vector3d biorbd::rigidbody::Joints::CoM(
         UpdateKinematicsCustom(&Q, nullptr, nullptr);
 
     // For each segment, find the CoM (CoM = sum(segment_mass * pos_com_seg) / total mass)
-    const std::vector<biorbd::rigidbody::NodeBone>& com_segment(CoMbySegment(Q,true));
+    const std::vector<biorbd::rigidbody::NodeSegment>& com_segment(CoMbySegment(Q,true));
     biorbd::utils::Vector3d com(0, 0, 0);
     for (unsigned int i=0; i<com_segment.size(); ++i)
         com += (*m_segments)[i].characteristics().mMass * com_segment[i];
@@ -588,11 +588,11 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::CoMJacobian(const biorbd::rigid
 }
 
 
-std::vector<biorbd::rigidbody::NodeBone> biorbd::rigidbody::Joints::CoMbySegment(
+std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Joints::CoMbySegment(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {// Position of the center of mass for each segment
-    std::vector<biorbd::rigidbody::NodeBone> tp; // vector of the output vectors
+    std::vector<biorbd::rigidbody::NodeSegment> tp; // vector of the output vectors
 
     for (unsigned int i=0; i<m_segments->size(); ++i){
         tp.push_back(CoMbySegment(Q,i,updateKin));

@@ -1,5 +1,5 @@
-#ifndef BIORBD_RIGIDBODY_NODE_BONE_H
-#define BIORBD_RIGIDBODY_NODE_BONE_H
+#ifndef BIORBD_RIGIDBODY_NODE_SEGMENT_H
+#define BIORBD_RIGIDBODY_NODE_SEGMENT_H
 
 #include <vector>
 #include "biorbdConfig.h"
@@ -15,13 +15,13 @@ namespace rigidbody {
 ///
 /// \brief Class NodeBone
 ///
-class BIORBD_API NodeBone : public biorbd::utils::Vector3d
+class BIORBD_API NodeSegment : public biorbd::utils::Vector3d
 { 
 public:
     ///
     /// \brief Construct a segment node
     ///
-    NodeBone();
+    NodeSegment();
     
     ///
     /// \brief Construct a segment node
@@ -29,7 +29,7 @@ public:
     /// \param y Position of the node on the y axis
     /// \param z Position of the node on the z axis
     ///
-    NodeBone(
+    NodeSegment(
             double x,
             double y,
             double z);
@@ -38,7 +38,7 @@ public:
     /// \brief Construct a segment node from another node
     /// \param other The other node
     ///
-    NodeBone(const biorbd::utils::Vector3d& other);
+    NodeSegment(const biorbd::utils::Vector3d& other);
     
     ///
     /// \brief Construct a segment node
@@ -52,7 +52,7 @@ public:
     /// \param axesToRemove The axis to remove
     /// \param parentID The identification number of the parent
     ///
-    NodeBone(
+    NodeSegment(
             double x,
             double y,
             double z,
@@ -74,7 +74,7 @@ public:
     /// \param parentID The identification number of the parent
     ///
 
-    NodeBone(
+    NodeSegment(
             const biorbd::utils::Vector3d& node, 
             const biorbd::utils::String& name, 
             const biorbd::utils::String& parentName, 
@@ -87,13 +87,13 @@ public:
     /// \brief Deep copy of the segment node
     /// \return A deep copy of the segment node
     ///
-    biorbd::rigidbody::NodeBone DeepCopy() const;
+    biorbd::rigidbody::NodeSegment DeepCopy() const;
 
     ///
     /// \brief Deep copy of the segment node
     /// \param other The segment node to copy
     ///
-    void DeepCopy(const biorbd::rigidbody::NodeBone& other);
+    void DeepCopy(const biorbd::rigidbody::NodeSegment& other);
 
     // Get and Set
 
@@ -119,7 +119,7 @@ public:
     /// \brief To remove axis
     /// \return Position variables without the axis TODO
     ///
-    NodeBone removeAxes() const;
+    NodeSegment removeAxes() const;
 
     ///
     /// \brief Check if axis is removed
@@ -174,7 +174,7 @@ public:
     /// \param other TODO
     ///
     template<typename OtherDerived>
-        biorbd::rigidbody::NodeBone& operator=(const Eigen::MatrixBase <OtherDerived>& other){
+        biorbd::rigidbody::NodeSegment & operator=(const Eigen::MatrixBase <OtherDerived>& other){
             this->biorbd::utils::Vector3d::operator=(other);
             return *this;
         }
@@ -194,4 +194,4 @@ protected:
 
 }}
 
-#endif // BIORBD_RIGIDBODY_NODE_BONE_H
+#endif // BIORBD_RIGIDBODY_NODE_SEGMENT_H

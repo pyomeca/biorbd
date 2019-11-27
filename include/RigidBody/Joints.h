@@ -17,7 +17,7 @@ class Vector3d;
 namespace rigidbody {
 class GeneralizedCoordinates;
 class GeneralizedTorque;
-class NodeBone;
+class NodeSegment;
 class Patch;
 class Segment;
 class SegmentCharacteristics;
@@ -361,7 +361,7 @@ public:
     /// \param updateKin (default: True)
     /// \return 
     ///
-    biorbd::rigidbody::NodeBone projectPoint(
+    biorbd::rigidbody::NodeSegment projectPoint(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::utils::Vector3d &v,
             int SegmentIdx,
@@ -375,9 +375,9 @@ public:
     /// \param updateKin (default: True)
     /// \return Projected markers from points corresponding to markers from the model
     ///
-    std::vector<biorbd::rigidbody::NodeBone>  projectPoint(
+    std::vector<biorbd::rigidbody::NodeSegment>  projectPoint(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const std::vector<biorbd::rigidbody::NodeBone> &v,
+            const std::vector<biorbd::rigidbody::NodeSegment> &v,
             bool updateKin=true); 
 
     ///
@@ -389,13 +389,13 @@ public:
     ///
     biorbd::utils::Matrix projectPointJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            biorbd::rigidbody::NodeBone p,
+            biorbd::rigidbody::NodeSegment p,
             bool updateKin);
 
 
-    biorbd::rigidbody::NodeBone biorbd::rigidbody::Joints::projectPoint(
+    biorbd::rigidbody::NodeSegment projectPoint(
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::NodeBone& n,
+        const biorbd::rigidbody::NodeSegment& n,
         bool updateKin);
     ///
     /// \brief Return the Jacobian matrix of the projected markers from points corresponding to markers from the model
@@ -422,7 +422,7 @@ public:
     ///
     std::vector<biorbd::utils::Matrix> projectPointJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const std::vector<biorbd::rigidbody::NodeBone> &v,
+            const std::vector<biorbd::rigidbody::NodeSegment> &v,
             bool updateKin); 
     // ------------------------------------- //
 
@@ -448,7 +448,7 @@ public:
     /// \param updateKin (default: True)
     /// \return The position of the center of mass of each segment
     ///
-    std::vector<biorbd::rigidbody::NodeBone> CoMbySegment(
+    std::vector<biorbd::rigidbody::NodeSegment> CoMbySegment(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool updateKin=true);
 

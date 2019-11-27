@@ -5,7 +5,7 @@
 #include <rbdl/Kinematics.h>
 #include "ModelReader.h"
 #include "RigidBody/GeneralizedCoordinates.h"
-#include "RigidBody/NodeBone.h"
+#include "RigidBody/NodeSegment.h"
 
 biorbd::Model::Model()
 {
@@ -23,12 +23,12 @@ biorbd::Model::Model(const biorbd::utils::Path &path)
 }
 
 bool biorbd::Model::InverseKinematics(
-        const std::vector<biorbd::rigidbody::NodeBone> &markers,
+        const std::vector<biorbd::rigidbody::NodeSegment> &markers,
         const biorbd::rigidbody::GeneralizedCoordinates &Qinit,
         biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool removeAxes){
     // Find the technical markers only (body_point)
-    std::vector<biorbd::rigidbody::NodeBone> body_point(this->technicalMarkers(removeAxes));
+    std::vector<biorbd::rigidbody::NodeSegment> body_point(this->technicalMarkers(removeAxes));
     std::vector<RigidBodyDynamics::Math::Vector3d> body_pointEigen;
     for (unsigned int i=0; i<body_point.size(); ++i)
         body_pointEigen.push_back(body_point[i]);

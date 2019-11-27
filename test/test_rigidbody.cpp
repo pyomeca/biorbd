@@ -10,7 +10,7 @@
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
-#include "RigidBody/NodeBone.h"
+#include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
 #include "RigidBody/IMU.h"
 #ifndef SKIP_KALMAN
@@ -142,7 +142,7 @@ TEST(Markers, allPositions)
         Q[i] = QtestEqualsMarker[i];
 
     // All markers at once
-    std::vector<biorbd::rigidbody::NodeBone> markers(model.markers(Q, true, true));
+    std::vector<biorbd::rigidbody::NodeSegment> markers(model.markers(Q, true, true));
     for (unsigned int i=0; i<model.nbMarkers(); ++i)
         for (unsigned int j=0; j<3; ++j)
             EXPECT_NEAR(markers[i][j], expectedMarkers[i][j], requiredPrecision);
@@ -159,7 +159,7 @@ TEST(Markers, individualPositions)
 
     // One marker at a time, only update Q once
     for (unsigned int i=0; i<model.nbMarkers(); ++i){
-        biorbd::rigidbody::NodeBone marker;
+        biorbd::rigidbody::NodeSegment marker;
         if (i==0)
             marker = model.marker(Q, i, true, true);
         else
@@ -178,7 +178,7 @@ TEST(Markers, individualPositions)
     };
     // One marker at a time, only update Q once
     for (unsigned int i=0; i<model.nbMarkers(); ++i){
-        biorbd::rigidbody::NodeBone marker;
+        biorbd::rigidbody::NodeSegment marker;
         if (i==0)
             marker = model.marker(Q, i, true, true);
         else
@@ -196,7 +196,7 @@ TEST(Mesh, position)
         Q.setZero();
         Q[q] = 1;
         std::vector<std::vector<biorbd::utils::Vector3d>> mesh(model.meshPoints(Q));
-        std::vector<biorbd::rigidbody::NodeBone> markers(model.markers(Q));
+        std::vector<biorbd::rigidbody::NodeSegment> markers(model.markers(Q));
         for (unsigned int idx=0; idx<markers.size(); ++idx)
             for (unsigned int xyz =0; xyz<3; ++xyz)
                 EXPECT_NEAR(mesh[0][idx][xyz], markers[idx][xyz], requiredPrecision);
@@ -204,7 +204,7 @@ TEST(Mesh, position)
     {
         Q.setOnes();
         std::vector<std::vector<biorbd::utils::Vector3d>> mesh(model.meshPoints(Q));
-        std::vector<biorbd::rigidbody::NodeBone> markers(model.markers(Q));
+        std::vector<biorbd::rigidbody::NodeSegment> markers(model.markers(Q));
         for (unsigned int idx=0; idx<markers.size(); ++idx)
             for (unsigned int xyz =0; xyz<3; ++xyz)
                 EXPECT_NEAR(mesh[0][idx][xyz], markers[idx][xyz], requiredPrecision);
@@ -313,7 +313,7 @@ TEST(Kalman, markers)
     // Compute reference
     biorbd::rigidbody::GeneralizedCoordinates Qref(model);
     Qref = Qref.setOnes()*0.2;
-    std::vector<biorbd::rigidbody::NodeBone> targetMarkers(model.markers(Qref));
+    std::vector<biorbd::rigidbody::NodeSegment> targetMarkers(model.markers(Qref));
 
     biorbd::rigidbody::GeneralizedCoordinates Q(model), Qdot(model), Qddot(model);
     kalman.reconstructFrame(model, targetMarkers, &Q, &Qdot, &Qddot);
