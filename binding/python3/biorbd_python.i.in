@@ -105,6 +105,7 @@
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
         return output;
     };
+
 }
 %typemap(typecheck, precedence=2000) biorbd::utils::Vector & {
     void *argp1 = 0;

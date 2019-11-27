@@ -139,7 +139,7 @@ public:
     /// \brief Return the names of the degree of freedom (DoF)
     /// \return The names of the DoF
     ///
-    std::vector<std::string> nameDof() const;
+    std::vector<biorbd::utils::String> nameDof() const;
 
     ///
     /// \brief Return the number of Q

@@ -76,6 +76,7 @@ public:
     biorbd::utils::Vector getX(
             unsigned int idx);
 
+    double time(unsigned int idx); // Return the time a step idx
     ///
     /// \brief Show every steps with every DoF
     /// 

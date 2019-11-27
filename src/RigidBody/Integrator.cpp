@@ -93,6 +93,11 @@ biorbd::utils::Vector biorbd::rigidbody::Integrator::getX(
     return out;
 }
 
+double biorbd::rigidbody::Integrator::time(unsigned int idx)
+{
+    return (*m_times)[idx];
+}
+
 void biorbd::rigidbody::Integrator::integrate(
         const biorbd::utils::Vector &Q_Qdot,
         const biorbd::utils::Vector &u,

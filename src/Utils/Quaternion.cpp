@@ -1,10 +1,12 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Quaternion.h"
 
+#include <rbdl/rbdl_math.h>
 #include <Eigen/Dense>
 #include "Utils/Vector3d.h"
 #include "Utils/Vector.h"
 #include "Utils/RotoTrans.h"
+#include "Utils/Error.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -258,6 +260,25 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::omegaToQDot(
     return biorbd::utils::Quaternion(0.5 * m * omega, this->m_Kstab);
 }
 
+biorbd::utils::Node3d  biorbd::utils::Quaternion::eulerDotToOmega(
+            const biorbd::utils::Node3d &eulerDot, 
+            const biorbd::utils::Node3d &euler, 
+            const biorbd::utils::String& seq) {
+    
+                biorbd::utils::Node3d w;
+                double dph, dth, dps, ph, th, ps;
+                dph = eulerDot[0]; dth = eulerDot[1]; dps = eulerDot[2];
+                ph = euler[0]; th = euler[1]; ps = euler[2]; 
+                if (!seq.compare("xyz")) {          // xyz
+                    w[0] = dph*std::cos(th)*std::cos(ps) + dth*std::sin(ps);           
+                    w[1] = dth*std::cos(ps) - dph*std::cos(th)*std::sin(ps);         
+                    w[2] = dph*std::sin(th) + dps;     
+                } else {
+                    biorbd::utils::Error::raise("Angle sequence is either nor implemented or not recognized");
+                }
+                return w;
+}
+
 void biorbd::utils::Quaternion::derivate(
         const biorbd::utils::Vector &w)
 {
@@ -277,4 +298,9 @@ void biorbd::utils::Quaternion::derivate(
     double kStab = this->m_Kstab;
     *this = 0.5 * Q * w_tp; // Since it passes through a Mat*vec, it looses stab
     this->m_Kstab = kStab;
+}
+
+void biorbd::utils::Quaternion::normalize()
+{
+    *this = *this / this->norm(); 
 }
