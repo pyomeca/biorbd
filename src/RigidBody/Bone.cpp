@@ -46,6 +46,8 @@ biorbd::rigidbody::Bone::Bone(
         const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mase, Centre de masse du segment, Inertie du segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
         int PF) : // Numéro de la plateforme de force
+
+
     biorbd::utils::Node(name, parentName),
     m_idxPF (std::make_shared<int>(PF)),
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(cor)),
@@ -83,6 +85,8 @@ biorbd::rigidbody::Bone::Bone(
         const biorbd::rigidbody::BoneCharacteristics& characteristics, // Mase, Centre de masse du segment, Inertie du segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation du parent vers l'enfant
         int PF): // Numéro de la plateforme de force
+
+
     biorbd::utils::Node(name, parentName),
     m_idxPF (std::make_shared<int>(PF)),
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(cor)),

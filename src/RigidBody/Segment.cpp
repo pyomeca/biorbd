@@ -79,7 +79,6 @@ biorbd::rigidbody::Segment::Segment(
 }
 biorbd::rigidbody::Segment::Segment(
         biorbd::rigidbody::Joints& model,
-
         const biorbd::utils::String &name, // Name of segment
         const biorbd::utils::String &parentName, // Name of segment
         const biorbd::utils::String &seqR, // Cardan sequence to classify the rotation DoF
@@ -269,8 +268,9 @@ void biorbd::rigidbody::Segment::str2numSequence(
         (*m_nameDof)[i] = "Trans" + seqT(i).toupper();
     for (unsigned int i=0; i<*m_nbDofRot; ++i)
         (*m_nameDof)[*m_nbDofTrans+i] = "Rot" + seqR(i).toupper();
+    biorbd::utils::String xyz("XYZW");
     for (unsigned int i=0; i<*m_nbDofQuat; ++i)
-        (*m_nameDof)[*m_nbDofTrans+*m_nbDofRot+i] =  biorbd::utils::String("Quat") + i;
+        (*m_nameDof)[*m_nbDofTrans + *m_nbDofRot + i] = biorbd::utils::String("Quat") + xyz.substr(i, 1);
 
 }
 void biorbd::rigidbody::Segment::str2numSequence(
