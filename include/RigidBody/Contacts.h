@@ -39,7 +39,8 @@ public:
     /// \brief Deep copy of contacts 
     /// \param other The contacts to copy
     /// 
-    void DeepCopy(const biorbd::rigidbody::Contacts& other);
+    void DeepCopy(
+            const biorbd::rigidbody::Contacts& other);
 
     ///
     /// \brief Add a constraint to the constraint set
@@ -47,7 +48,7 @@ public:
     /// \param body_point The point that is constrained relative to the contact body
     /// \param world_normal The normal along the constraint acts (in base coordinates)
     /// \param name A human readable name
-    /// \param acc The acceleration of the contact along the normal (optional, default: 0)
+    /// \param acc The acceleration of the contact along the normal
     ///
     unsigned int AddConstraint(
             unsigned int body_id,
@@ -62,7 +63,7 @@ public:
     /// \param body_point The point that is constrained relative to the contact body
     /// \param axis The axis along which the constraint acts
     /// \param name A human readable name
-    /// \param acc The acceleration of the contact along the normal (optional, default: 0)
+    /// \param acc The acceleration of the contact along the normal
     ///
 
     unsigned int AddConstraint(
@@ -81,7 +82,7 @@ public:
     /// \param axis A spatial vector indicating the axis along which the constraint acts
     /// \param name A human readable name
     /// \param enableStabilization Whether stabilization should be enabled or not
-    /// \param stabilizationParam The value used for stabilization (default: 0.1)
+    /// \param stabilizationParam The value used for stabilization
     ///
     unsigned int AddLoopConstraint(
             unsigned int body_id_predecessor,
@@ -106,7 +107,7 @@ public:
 
     ///
     /// \brief Check if there are contacts
-    /// \return True or False
+    /// \return The presence of contacts
     ///
     bool hasContacts() const;
 
@@ -117,15 +118,15 @@ public:
     unsigned int nbContacts() const;
 
     ///
-    /// \brief Return the name of the contact at a specified position
-    /// \param i The position
-    /// \return The name of the contact at position i
+    /// \brief Return the name of the contact of a specified axis
+    /// \param i The axis
+    /// \return The name of the contact of a specified axis
     ///
     biorbd::utils::String name(unsigned int i);
 
     ///
     /// \brief Return the contraints position in the global reference
-    /// \param Q The generalized positions of the joints
+    /// \param Q The generalized coordinates of the joints
     /// \param updateKin Whether the kinematics of the model should be updated from Q
     /// \return The contraints positions in the global reference
     ///
@@ -133,15 +134,15 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool updateKin); 
 
-    // Set and get
     /// 
-    /// \brief Return the force 
-    /// \return The force
+    /// \brief Return the force acting on the contraint
+    /// \return The force acting on the contraint
     ///
     biorbd::utils::Vector getForce() const;
+
 protected:
     std::shared_ptr<unsigned int> m_nbreConstraint; ///< Number of constraints
-    std::shared_ptr<bool> m_isBinded; ///< TODO:? Binded: true or false
+    std::shared_ptr<bool> m_isBinded; ///< If the model is ready
 
 };
 

@@ -19,6 +19,11 @@ biorbd::rigidbody::Integrator::Integrator(biorbd::rigidbody::Joints &model) :
 
 }
 
+biorbd::rigidbody::Integrator::~Integrator()
+{
+
+}
+
 biorbd::rigidbody::Integrator biorbd::rigidbody::Integrator::DeepCopy() const
 {
     biorbd::rigidbody::Integrator copy(*this->m_model);

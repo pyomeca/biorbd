@@ -21,34 +21,37 @@ public:
     GeneralizedTorque();
 
     ///
-    /// \brief Construct generalized torque
-    /// \param Q State vector of the internal joints
+    /// \brief Construct generalized torque from anoter Generalized torque
+    /// \param other The other generalized torque
     ///
-    GeneralizedTorque(const biorbd::rigidbody::GeneralizedTorque& Q);
+    GeneralizedTorque(
+            const biorbd::rigidbody::GeneralizedTorque& other);
 
     ///
     /// \brief Construct generalized torque
-    /// \param other TODO:
+    /// \param other The other generalized torque
     ///
-    template<typename OtherDerived> GeneralizedTorque(const Eigen::MatrixBase<OtherDerived>& other) :
+    template<typename OtherDerived> GeneralizedTorque(
+            const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::Vector(other){}
 
     ///
-    /// \brief Construct generalized torque of a vector at a specific position
-    /// \param i Position of the vector
+    /// \brief Construct generalized torque of dimension nTorque
+    /// \param nTorque Position of the vector
     ///
-    GeneralizedTorque(unsigned int i);
+    GeneralizedTorque(
+            unsigned int nTorque);
 
     ///
-    /// \brief Construct generalized torque of specific joint
-    /// \param j The joint
+    /// \brief Construct generalized torque from a joint model
+    /// \param j The joint model
     ///
     GeneralizedTorque(const biorbd::rigidbody::Joints& j);
 
     ///
-    /// \brief TODO:
-    /// \param other TODO:
-    /// \return TODO:
+    /// \brief Allows for operator= to be used
+    /// \param other
+    /// \return The current Generalized Torque
     ///
     template<typename OtherDerived>
         biorbd::rigidbody::GeneralizedTorque& operator=(const Eigen::MatrixBase <OtherDerived>& other){

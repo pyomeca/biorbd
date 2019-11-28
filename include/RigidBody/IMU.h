@@ -20,7 +20,7 @@ class BIORBD_API IMU : public biorbd::utils::RotoTransNode
 public:
 
     ///
-    /// \brief Construct inertial measurement unit data
+    /// \brief Construct inertial measurement unit
     /// \param isTechnical True if the IMU is a technical IMU
     /// \param isAnatomical True if the IMU is an anatomical IMU
     ///
@@ -30,7 +30,7 @@ public:
 
     ///
     /// \brief Construct inertial measurement unit data
-    /// \param RotoTrans TODO: ? The position
+    /// \param RotoTrans The RotoTrans matrix attaching the IMU
     /// \param isTechnical True if the IMU is a technical IMU
     /// \param isAnatomical True if the IMU is an anatomical IMU
     ///
@@ -40,10 +40,11 @@ public:
             bool isAnatomical = true); 
 
     ///
-    /// \brief Construct inertial measurement unit data
-    /// \param other
+    /// \brief Construct inertial measurement unit data from a Matrix4d
+    /// \param other The other matrix
     ///
-    template<typename OtherDerived> IMU(const Eigen::MatrixBase<OtherDerived>& other) :
+    template<typename OtherDerived> IMU(
+            const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::RotoTransNode(other){}
 
     ///
@@ -58,24 +59,23 @@ public:
     ///
     void DeepCopy(const biorbd::rigidbody::IMU& other);
 
-    // Get and Set
-
     ///
     /// \brief Return if the IMU is technical
-    /// \return True or False
+    /// \return If the IMU is technical
     ///
     bool isTechnical() const;
 
     ///
     /// \brief Return if the IMU is anatomical
-    /// \return True or False
+    /// \return If the IMU is anatomical
     ///
     bool isAnatomical() const;
 
     ///
-    /// \brief TODO:?
-    /// \param other TODO:
-    /// \return TODO:
+    /// \brief Allows for operator= to be used
+    /// \param other
+    /// \return The current IMU
+    ///
     template<typename OtherDerived>
         biorbd::rigidbody::IMU& operator=(const Eigen::MatrixBase <OtherDerived>& other){
             this->biorbd::utils::RotoTransNode::operator=(other);

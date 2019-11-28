@@ -77,9 +77,9 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::IMU(const biorbd::u
     return pos;
 }
 
-const biorbd::rigidbody::IMU& biorbd::rigidbody::IMUs::IMU(unsigned int i)
+const biorbd::rigidbody::IMU& biorbd::rigidbody::IMUs::IMU(unsigned int idx)
 {
-    return (*m_IMUs)[i];
+    return (*m_IMUs)[idx];
 }
 
 // Get the IMUs at the position given by Q

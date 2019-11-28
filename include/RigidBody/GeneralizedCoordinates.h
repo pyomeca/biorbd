@@ -24,25 +24,28 @@ public:
     /// \brief Construct generalized coordinates
     /// \param Q State vector of the internal joints
     ///
-    GeneralizedCoordinates(const biorbd::rigidbody::GeneralizedCoordinates& Q);
+    GeneralizedCoordinates(
+            const biorbd::rigidbody::GeneralizedCoordinates& Q);
 
     ///
-    /// \brief Construct generalized coordinates
+    /// \brief Construct generalized coordinates from another vector
     /// \param other Eigen matrix
     ///
 
-    template<typename OtherDerived> GeneralizedCoordinates(const Eigen::MatrixBase<OtherDerived>& other) :
+    template<typename OtherDerived> GeneralizedCoordinates(
+            const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::Vector(other){}
 
     ///
-    /// \brief Create generalized coordinates of a vector at a specific position
-    /// \param i Vector position
+    /// \brief Create generalized coordinates of dimension nbDof
+    /// \param nbDof number of degrees-of-freedom
     ///
-    GeneralizedCoordinates(unsigned int i);
+    GeneralizedCoordinates(
+            unsigned int nbDof);
 
     ///
-    /// \brief Create generalized coordinates of specific joint
-    /// \param j The joint
+    /// \brief Create generalized coordinates from a joint Model
+    /// \param j The joint model
     ///
     GeneralizedCoordinates(const biorbd::rigidbody::Joints& j);
 
@@ -52,9 +55,10 @@ public:
     virtual ~GeneralizedCoordinates();
 
     ///
-    /// \brief TODO:
+    /// \brief Allows for operator= to be used
     /// \param other
-    /// \return A template
+    /// \return The current Generalized Coordinate
+    ///
     template<typename OtherDerived>
         biorbd::rigidbody::GeneralizedCoordinates& operator=(const Eigen::MatrixBase <OtherDerived>& other){
             this->biorbd::utils::Vector::operator=(other);
