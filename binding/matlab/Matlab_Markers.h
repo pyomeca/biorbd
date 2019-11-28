@@ -24,21 +24,21 @@ void Matlab_Markers( int, mxArray *plhs[],
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
     unsigned int nMarkers(0); // Nombre de marqueurs
-    std::vector<std::vector<biorbd::rigidbody::NodeBone>> markers_tp; // récupérer les marqueurs
+    std::vector<std::vector<biorbd::rigidbody::NodeSegment>> markers_tp; // récupérer les marqueurs
     if (nrhs >= 4){
         biorbd::utils::String type(getString(prhs,3));
         if (!type.tolower().compare("all")){
-            nMarkers = model->nMarkers();
+            nMarkers = model->nbMarkers();
             for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
                  markers_tp.push_back(model->markers(*Q_it, removeAxes));
         }
         else if (!type.tolower().compare("anatomical")){
-                nMarkers = model->nAnatomicalMarkers();
+                nMarkers = model->nbAnatomicalMarkers();
                 for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
                      markers_tp.push_back(model->anatomicalMarkers(*Q_it, removeAxes));
         }
         else if (!type.tolower().compare("technical")){
-            nMarkers = model->nTechnicalMarkers();
+            nMarkers = model->nbTechnicalMarkers();
             for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
                  markers_tp.push_back(model->technicalMarkers(*Q_it, removeAxes));
         }
@@ -50,7 +50,7 @@ void Matlab_Markers( int, mxArray *plhs[],
 
     }
     else {
-        nMarkers = model->nMarkers();
+        nMarkers = model->nbMarkers();
         for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
              markers_tp.push_back(model->markers(*Q_it, removeAxes));
     }
@@ -66,8 +66,8 @@ void Matlab_Markers( int, mxArray *plhs[],
 
     // Remplir le output
     unsigned int cmp(0);
-    for (std::vector<std::vector<biorbd::rigidbody::NodeBone>>::iterator markers_it = markers_tp.begin(); markers_it!=markers_tp.end(); ++markers_it){
-        std::vector<biorbd::rigidbody::NodeBone>::iterator it=(*markers_it).begin();
+    for (std::vector<std::vector<biorbd::rigidbody::NodeSegment>>::iterator markers_it = markers_tp.begin(); markers_it!=markers_tp.end(); ++markers_it){
+        std::vector<biorbd::rigidbody::NodeSegment>::iterator it=(*markers_it).begin();
         for (unsigned int i=0; (it+i)!=(*markers_it).end(); ++i){
             markers[cmp+0] = (*(it+i))(0);
             markers[cmp+1] = (*(it+i))(1);

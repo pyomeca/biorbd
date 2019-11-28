@@ -58,11 +58,11 @@ TEST(BinderC, markers)
     // Add a marker
     double newMarkerPosition[3] = {1, 2, 3};
     unsigned int nMarkersBeforeAdding(model->nbMarkers());
-    c_addMarker(model, newMarkerPosition, "MyNewMarker", model->Segment(1).name().c_str(), false, true, "x");
+    c_addMarker(model, newMarkerPosition, "MyNewMarker", model->segment(1).name().c_str(), false, true, "x");
     EXPECT_EQ(model->nbMarkers(), nMarkersBeforeAdding + 1);
     biorbd::rigidbody::NodeSegment newMarker(model->marker(nMarkersBeforeAdding));
     EXPECT_STREQ(newMarker.name().c_str(), "MyNewMarker");
-    EXPECT_STREQ(newMarker.parent().c_str(), model->Segment(1).name().c_str());
+    EXPECT_STREQ(newMarker.parent().c_str(), model->segment(1).name().c_str());
     EXPECT_EQ(newMarker.isTechnical(), false);
     EXPECT_EQ(newMarker.isAnatomical(), true);
     EXPECT_STREQ(newMarker.axesToRemove().c_str(), "x");
@@ -87,8 +87,8 @@ TEST(BinderC, jcs)
     // Get angle sequence of some bodies
     for (unsigned int i=0; i<model->nbSegment(); ++i){
         char sequence[4];
-        c_boneRotationSequence(model, model->Segment(i).name().c_str(), sequence);
-        EXPECT_STREQ(sequence, model->Segment(i).seqR().c_str());
+        c_boneRotationSequence(model, model->segment(i).name().c_str(), sequence);
+        EXPECT_STREQ(sequence, model->segment(i).seqR().c_str());
     }
 
     // JCS in global reference frame

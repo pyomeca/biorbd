@@ -18,7 +18,7 @@ void Matlab_nMarkers( int, mxArray *plhs[],
     double *nMarkers = mxGetPr(plhs[0]);
 
     // Get nombre de marqueurs
-    *nMarkers = static_cast<double>(model->nMarkers());
+    *nMarkers = static_cast<double>(model->nbMarkers());
 
     return;
 }

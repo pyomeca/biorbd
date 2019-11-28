@@ -24,7 +24,7 @@ void Matlab_globalJCS( int, mxArray *plhs[],
         JSC_vec.push_back(model->allGlobalJCS(*Q_it));
 
     // Create a matrix for the return argument
-    const mwSize dims[4]={4,4,mwSize(model->nbBone()),mwSize(JSC_vec.size())};
+    const mwSize dims[4]={4,4,mwSize(model->nbSegment()),mwSize(JSC_vec.size())};
     plhs[0] = mxCreateNumericArray(4, dims, mxDOUBLE_CLASS, mxREAL);
     double *JCS = mxGetPr(plhs[0]);
 

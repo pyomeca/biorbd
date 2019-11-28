@@ -40,25 +40,25 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
     // Information on the segments
     std::vector<biorbd::utils::RotoTrans> localJCS = model.localJCS();
     for (unsigned int i = 0; i<model.nbSegment(); ++i){
-        biorbdModelFile << com << " Informations about " << model.Segment(i).name() << " segment" << std::endl;
+        biorbdModelFile << com << " Informations about " << model.segment(i).name() << " segment" << std::endl;
         biorbdModelFile << sep << com << " Segment" << std::endl;
-        biorbdModelFile << sep << "segment" << sep << model.Segment(i).name() << std::endl;
-        biorbdModelFile << sep << sep << "parent" << sep << model.Segment(i).parent() << std::endl;
+        biorbdModelFile << sep << "segment" << sep << model.segment(i).name() << std::endl;
+        biorbdModelFile << sep << sep << "parent" << sep << model.segment(i).parent() << std::endl;
         biorbdModelFile << sep << sep << "RTinMatrix" << sep << true << std::endl;
         biorbdModelFile << sep << sep << "RT" << std::endl;
         for (unsigned int j=0; j<4; ++j)
             biorbdModelFile << sep << sep << sep << localJCS[i].block(j,0,1,4) << std::endl;
-        if (model.Segment(i).nbDofTrans() > 0)
-            biorbdModelFile << sep << sep << "translations" << sep << model.Segment(i).seqT() << std::endl;
-        if (model.Segment(i).nbDofRot() > 0)
-            biorbdModelFile << sep << sep << "rotations" << sep << model.Segment(i).seqR() << std::endl;
-        if (model.Segment(i).characteristics().mesh().path().filename().compare("")) // Si ce n'est pas vide
-            biorbdModelFile << sep << sep << "meshfile" << sep << model.Segment(i).characteristics().mesh().path().originalPath() << std::endl;
+        if (model.segment(i).nbDofTrans() > 0)
+            biorbdModelFile << sep << sep << "translations" << sep << model.segment(i).seqT() << std::endl;
+        if (model.segment(i).nbDofRot() > 0)
+            biorbdModelFile << sep << sep << "rotations" << sep << model.segment(i).seqR() << std::endl;
+        if (model.segment(i).characteristics().mesh().path().filename().compare("")) // Si ce n'est pas vide
+            biorbdModelFile << sep << sep << "meshfile" << sep << model.segment(i).characteristics().mesh().path().originalPath() << std::endl;
         biorbdModelFile << sep << "endsegment" << sep << std::endl;
         biorbdModelFile << std::endl;
 
         // Write the prospective markers
-        std::vector<biorbd::rigidbody::NodeSegment> markers (model.marker(model.Segment(i).name()));
+        std::vector<biorbd::rigidbody::NodeSegment> markers (model.marker(model.segment(i).name()));
         if (markers.size() > 0){
             biorbdModelFile << sep << com << " Markers" << std::endl;
             for (size_t j = 0; j< markers.size(); ++j){
@@ -75,7 +75,7 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
         biorbdModelFile << std::endl;
 
         // Write the inertial units
-        std::vector<biorbd::rigidbody::IMU> imus(model.IMU(model.Segment(i).name()));
+        std::vector<biorbd::rigidbody::IMU> imus(model.IMU(model.segment(i).name()));
         if (imus.size() > 0){
             biorbdModelFile << sep << com << " Inertial Magnetic Unit" << std::endl;
             for (size_t j = 0; j< imus.size(); ++j){

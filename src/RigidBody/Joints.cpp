@@ -98,14 +98,14 @@ std::vector<biorbd::utils::String> biorbd::rigidbody::Joints::nameDof() const
 {
     std::vector<biorbd::utils::String> names;
     for (unsigned int i = 0; i < nbSegment(); ++i) {
-        for (unsigned int j = 0; j < Segment(i).nbDof(); ++j) {
-            names.push_back(Segment(i).name() + "_" + Segment(i).nameDof(j));
+        for (unsigned int j = 0; j < segment(i).nbDof(); ++j) {
+            names.push_back(segment(i).name() + "_" + segment(i).nameDof(j));
         }
     }
     // Append Quaternion Q
     for (unsigned int i = 0; i < nbSegment(); ++i) {
-        if (Segment(i).isRotationAQuaternion()) {
-            names.push_back(Segment(i).name() + "_" + Segment(i).nameDof(3));
+        if (segment(i).isRotationAQuaternion()) {
+            names.push_back(segment(i).name() + "_" + segment(i).nameDof(3));
         }
     }
     return names;
@@ -220,14 +220,14 @@ unsigned int biorbd::rigidbody::Joints::AddSegment(
     return 0;
 }
 
-const biorbd::rigidbody::Segment& biorbd::rigidbody::Joints::Segment(unsigned int idxSegment) const {
+const biorbd::rigidbody::Segment& biorbd::rigidbody::Joints::segment(unsigned int idxSegment) const {
     biorbd::utils::Error::check(idxSegment < m_segments->size(), "Asked for a wrong segment (out of range)");
     return (*m_segments)[idxSegment];
 }
 
-const biorbd::rigidbody::Segment &biorbd::rigidbody::Joints::Segment(const biorbd::utils::String & nameSegment) const
+const biorbd::rigidbody::Segment &biorbd::rigidbody::Joints::segment(const biorbd::utils::String & nameSegment) const
 {
-    return Segment(static_cast<unsigned int>(GetBodyBiorbdId(nameSegment.c_str())));
+    return segment(static_cast<unsigned int>(GetBodyBiorbdId(nameSegment.c_str())));
 }
 
 unsigned int biorbd::rigidbody::Joints::nbSegment() const
@@ -383,7 +383,7 @@ biorbd::rigidbody::NodeSegment biorbd::rigidbody::Joints::projectPoint(
         UpdateKinematicsCustom (&Q, nullptr, nullptr);
 
     // Create a marker
-    const biorbd::utils::String& segmentName(Segment(static_cast<unsigned int>(segmentIdx)).name());
+    const biorbd::utils::String& segmentName(segment(static_cast<unsigned int>(segmentIdx)).name());
     biorbd::rigidbody::NodeSegment node( v.applyRT(globalJCS(static_cast<unsigned int>(segmentIdx)).transpose()), "tp", segmentName,
                      true, true, axesToRemove, static_cast<int>(GetBodyId(segmentName.c_str())));
 
@@ -755,7 +755,7 @@ std::vector<biorbd::rigidbody::Mesh> biorbd::rigidbody::Joints::Mesh() const
 
 const biorbd::rigidbody::Mesh &biorbd::rigidbody::Joints::Mesh(unsigned int idx) const
 {
-    return Segment(idx).characteristics().mesh();
+    return segment(idx).characteristics().mesh();
 }
 
 biorbd::utils::Vector3d biorbd::rigidbody::Joints::CalcAngularMomentum (
@@ -974,10 +974,12 @@ void biorbd::rigidbody::Joints::ForwardDynamicsContactsLagrangian (
        break;
      default:
 #ifdef RBDL_ENABLE_LOGGING
-       LOG << "Error: Invalid linear solver: " << CS.linear_solver << std::endl;
+        LOG << "Error: Invalid linear solver: " << CS.linear_solver << std::endl;
 #endif
-       biorbd::utils::Error::raise("Error: Invalid linear solver");
-     break;
+        biorbd::utils::Error::raise("Error: Invalid linear solver");
+#ifdef _WIN32
+        break;
+#endif
    }
 
    //std::cout << "x = " << std::endl << CS.x << std::endl;
@@ -1011,7 +1013,7 @@ biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Joints::computeQdot
     unsigned int cmpQuat(0);
     unsigned int cmpDof(0);
     for (unsigned int i=0; i<nbSegment(); ++i){
-        const biorbd::rigidbody::Segment& segment_i = Segment(i);
+        const biorbd::rigidbody::Segment& segment_i = segment(i);
         if (segment_i.isRotationAQuaternion()){
             // Extraire le quaternion
             biorbd::utils::Quaternion quat_tp(

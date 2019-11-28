@@ -174,7 +174,7 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::segmentIMU(
         model.UpdateKinematicsCustom(&Q,nullptr, nullptr);
 
     // Segment name to find
-    biorbd::utils::String name(model.Segment(idx).name());
+    biorbd::utils::String name(model.segment(idx).name());
 
     std::vector<biorbd::rigidbody::IMU> pos;
     for (unsigned int i=0; i<nbIMUs(); ++i) // scan all the markers and select the right ones

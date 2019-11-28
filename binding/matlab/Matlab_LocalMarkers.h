@@ -24,17 +24,17 @@ void Matlab_LocalMarkers( int, mxArray *plhs[],
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
     unsigned int nMarkers(0); // Nombre de marqueurs
-    std::vector<biorbd::rigidbody::NodeBone> markers_tp; // récupérer les marqueurs
+    std::vector<biorbd::rigidbody::NodeSegment> markers_tp; // récupérer les marqueurs
     if (!type.tolower().compare("all")){
-            nMarkers = model->nMarkers();
+            nMarkers = model->nbMarkers();
             markers_tp = model->biorbd::rigidbody::Markers::markers(removeAxes);
         }
         else if (!type.tolower().compare("anatomical")){
-            nMarkers = model->nAnatomicalMarkers();
+            nMarkers = model->nbAnatomicalMarkers();
             markers_tp = model->biorbd::rigidbody::Markers::anatomicalMarkers(removeAxes);
         }
         else if (!type.tolower().compare("technical")){
-            nMarkers = model->nTechnicalMarkers();
+            nMarkers = model->nbTechnicalMarkers();
             markers_tp = model->biorbd::rigidbody::Markers::technicalMarkers(removeAxes);
         }
         else {
@@ -53,7 +53,7 @@ void Matlab_LocalMarkers( int, mxArray *plhs[],
 
     // Remplir le output
     unsigned int cmp(0);
-    std::vector<biorbd::rigidbody::NodeBone>::iterator it=markers_tp.begin();
+    std::vector<biorbd::rigidbody::NodeSegment>::iterator it=markers_tp.begin();
         for (unsigned int i=0; (it+i)!=markers_tp.end(); ++i){
             markers[cmp+0] = (*(it+i))(0);
             markers[cmp+1] = (*(it+i))(1);

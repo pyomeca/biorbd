@@ -18,7 +18,7 @@ void Matlab_nBody( int, mxArray *plhs[],
     double *nBody = mxGetPr(plhs[0]);
 
     // Get nombre de degrés de liberté
-    *nBody = model->nbBone();
+    *nBody = model->nbSegment();
 
     return;
 }

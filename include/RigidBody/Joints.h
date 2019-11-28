@@ -199,13 +199,13 @@ public:
     /// \brief Get Segment 
     /// \param idxSegment Identification of the segment
     ///
-    const biorbd::rigidbody::Segment& Segment(unsigned int idxSegment) const;
+    const biorbd::rigidbody::Segment& segment(unsigned int idxSegment) const;
 
     ///
     /// \brief Get Segment
     /// \param nameSegment Name of the segment
     ///
-    const biorbd::rigidbody::Segment& Segment(const biorbd::utils::String& nameSegment) const;
+    const biorbd::rigidbody::Segment& segment(const biorbd::utils::String& nameSegment) const;
     // ------------------------------ //
 
 

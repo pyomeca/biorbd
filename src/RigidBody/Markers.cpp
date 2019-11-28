@@ -247,7 +247,7 @@ std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::segmentM
         model.UpdateKinematicsCustom(&Q, nullptr, nullptr);
 
     // Name of the segment to find
-    const biorbd::utils::String& name(model.Segment(idx).name());
+    const biorbd::utils::String& name(model.segment(idx).name());
 
     std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i) // Go through all the markers and select the right ones
@@ -269,7 +269,7 @@ unsigned int biorbd::rigidbody::Markers::nbMarkers(unsigned int idxSegment) cons
     const biorbd::rigidbody::Joints &model = dynamic_cast<const biorbd::rigidbody::Joints &>(*this);
 
     // Name of the segment to find
-    const biorbd::utils::String& name(model.Segment(idxSegment).name());
+    const biorbd::utils::String& name(model.segment(idxSegment).name());
 
     unsigned int n = 0;
     for (unsigned int i=0; i<nbMarkers(); ++i) // Go through all the markers and select the right ones
@@ -370,7 +370,7 @@ unsigned int biorbd::rigidbody::Markers::nbTechnicalMarkers(unsigned int idxSegm
     unsigned int nTechMarkers = 0;
 
     // Name of the segment to find
-    const biorbd::utils::String& name(model.Segment(idxSegment).name());
+    const biorbd::utils::String& name(model.segment(idxSegment).name());
 
     if (nTechMarkers == 0) // If the function has never been called before
         for (auto mark : *m_marks)

@@ -20,7 +20,7 @@ void Matlab_ContactGamma( int, mxArray *plhs[],
     // Recevoir Q
     biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
     biorbd::rigidbody::GeneralizedCoordinates QDot = *getParameterQdot(prhs, 3, nQdot).begin();
-    unsigned int nContacts = model->nContacts();
+    unsigned int nContacts = model->nbContacts();
 
     Eigen::MatrixXd G_tp(Eigen::MatrixXd::Zero(nContacts,model->nbQ()));
     RigidBodyDynamics::CalcConstraintsJacobian(*model, Q, model->getConstraints(), G_tp, true);

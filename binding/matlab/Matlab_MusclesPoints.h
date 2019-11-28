@@ -6,7 +6,7 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 #include "Muscles/WrappingCylinder.h"
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/Muscle.h"
@@ -41,7 +41,7 @@ void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
                 model->UpdateKinematicsCustom(&Q[iQ]);
 
                 // Recueillir tout le chemin musculaire
-                std::vector<biorbd::utils::Node3d> via(model->muscleGroup(i).muscle(j).musclesPointsInGlobal());
+                std::vector<biorbd::utils::Vector3d> via(model->muscleGroup(i).muscle(j).musclesPointsInGlobal());
 
                 // Si le nombre de wrap est > 0, c'est qu'il n'y a pas de viapoints et il n'y a qu'UN wrap
                 if (model->muscleGroup(i).muscle(j).pathChanger().nbWraps() > 0){

@@ -43,7 +43,7 @@ void c_boneRotationSequence(
         char* seq)
 {
     // Memory for seq must be already allocated
-    biorbd::utils::String sequence(m->Segment(segName).seqR());
+    biorbd::utils::String sequence(m->segment(segName).seqR());
     snprintf(seq, sequence.length() + 1, "%s", sequence.c_str());
 }
 void c_localJCS(
@@ -51,7 +51,7 @@ void c_localJCS(
         int i,
         double* rt_out)
 {
-    biorbd::utils::RotoTrans RT(m->Segment(static_cast<unsigned int>(i)).localJCS());
+    biorbd::utils::RotoTrans RT(m->segment(static_cast<unsigned int>(i)).localJCS());
     dispatchRToutput(RT, rt_out);
 }
 void c_globalJCS(

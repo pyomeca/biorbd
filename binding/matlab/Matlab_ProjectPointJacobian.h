@@ -19,14 +19,14 @@ void Matlab_ProjectPointJacobian( int, mxArray *plhs[],
     biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
-    std::vector<biorbd::rigidbody::NodeBone> markersOverTime = *getParameterAllMarkers(prhs,3).begin();
+    std::vector<biorbd::rigidbody::NodeSegment> markersOverTime = *getParameterAllMarkers(prhs,3).begin();
 
     // Trouver la matrice jacobienne de tous les marqueurs
     std::vector<biorbd::utils::Matrix> Jac_tp = model->projectPointJacobian(Q, markersOverTime, true);
     std::vector<biorbd::utils::Matrix>::iterator it=Jac_tp.begin();
 
     // Create a matrix for the return argument
-    unsigned int nMarkers = model->nMarkers();
+    unsigned int nMarkers = model->nbMarkers();
     plhs[0] = mxCreateDoubleMatrix( 3*nMarkers, nQ, mxREAL);
         double *Jac = mxGetPr(plhs[0]);
      for (unsigned int j=0; (it+j)!=Jac_tp.end(); ++j)
