@@ -4,6 +4,9 @@
 namespace biorbd {
 namespace muscles {
 
+///
+/// \brief The available muscle type
+///
 enum MUSCLE_TYPE {
     IDEALIZED_ACTUATOR,
     HILL,
@@ -11,6 +14,12 @@ enum MUSCLE_TYPE {
     HILL_THELEN_FATIGABLE,
     NO_MUSCLE_TYPE
 };
+
+///
+/// \brief MUSCLE_TYPE_toStr returns the type name in a string format
+/// \param type The type to convert to string
+/// \return The name of the type
+///
 inline const char* MUSCLE_TYPE_toStr(biorbd::muscles::MUSCLE_TYPE type)
 {
     switch (type)
@@ -23,12 +32,21 @@ inline const char* MUSCLE_TYPE_toStr(biorbd::muscles::MUSCLE_TYPE type)
     }
 }
 
+///
+/// \brief The available emg state type
+///
 enum STATE_TYPE {
     SIMPLE_STATE,
     DYNAMIC,
     BUCHANAN,
     NO_STATE_TYPE
 };
+
+///
+/// \brief STATE_TYPE_toStr returns the type name in a string format
+/// \param type The type to convert to string
+/// \return The name of the type
+///
 inline const char* STATE_TYPE_toStr(biorbd::muscles::STATE_TYPE type)
 {
     switch (type)

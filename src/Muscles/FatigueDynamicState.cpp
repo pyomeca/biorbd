@@ -15,10 +15,11 @@ biorbd::muscles::FatigueDynamicState::FatigueDynamicState(
     setType();
 }
 
-biorbd::muscles::FatigueDynamicState::FatigueDynamicState(const std::shared_ptr<biorbd::muscles::FatigueState> m) :
-    biorbd::muscles::FatigueState(m)
+biorbd::muscles::FatigueDynamicState::FatigueDynamicState(
+        const std::shared_ptr<biorbd::muscles::FatigueState> other) :
+    biorbd::muscles::FatigueState(other)
 {
-    std::shared_ptr<biorbd::muscles::FatigueDynamicState> muscle_tp(std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicState>(m));
+    std::shared_ptr<biorbd::muscles::FatigueDynamicState> muscle_tp(std::dynamic_pointer_cast<biorbd::muscles::FatigueDynamicState>(other));
     if (!muscle_tp)
         biorbd::utils::Error::raise("This is not a dynamically fatigable muscle");
     m_activeFibersDot = muscle_tp->m_activeFibersDot;

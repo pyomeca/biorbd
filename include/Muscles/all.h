@@ -5,7 +5,7 @@
 
 #include "Muscles/Characteristics.h"
 #include "Muscles/Compound.h"
-#include "Muscles/Fatigable.h"
+#include "Muscles/FatigueModel.h"
 #include "Muscles/FatigueDynamicState.h"
 #include "Muscles/FatigueDynamicStateXia.h"
 #include "Muscles/FatigueParameters.h"
@@ -22,7 +22,7 @@
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/Muscles.h"
 #include "Muscles/MusclesEnums.h"
-#include "Muscles/PathChangers.h"
+#include "Muscles/PathModifiers.h"
 #include "Muscles/State.h"
 #include "Muscles/StateDynamics.h"
 #include "Muscles/StateDynamicsBuchanan.h"

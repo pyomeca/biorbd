@@ -50,10 +50,10 @@ void biorbd::muscles::StateDynamics::DeepCopy(const biorbd::muscles::StateDynami
 
 
 double biorbd::muscles::StateDynamics::timeDerivativeActivation(
-        const biorbd::muscles::StateDynamics& state,
+        const biorbd::muscles::StateDynamics& emg,
         const biorbd::muscles::Characteristics& characteristics,
         bool alreadyNormalized){
-    return timeDerivativeActivation(state.excitation(), state.activation(), characteristics, alreadyNormalized);
+    return timeDerivativeActivation(emg.excitation(), emg.activation(), characteristics, alreadyNormalized);
 }
 
 
@@ -94,9 +94,9 @@ double biorbd::muscles::StateDynamics::timeDerivativeActivation(
     
     double denom; // dénominateur
     if (num>0)
-        denom = characteristics.GeneralizedTorqueActivation()   * (0.5+1.5* *m_activation);
+        denom = characteristics.torqueActivation()   * (0.5+1.5* *m_activation);
     else
-        denom = characteristics.GeneralizedTorqueDeactivation() / (0.5+1.5* *m_activation);
+        denom = characteristics.torqueDeactivation() / (0.5+1.5* *m_activation);
 
     *m_activationDot = num/denom;
 

@@ -7,7 +7,7 @@
 #include "processArguments.h"
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/Muscle.h"
-#include "Muscles/PathChangers.h"
+#include "Muscles/PathModifiers.h"
 
 void Matlab_muscleUpdate( int, mxArray *[],
                   int nrhs, const mxArray*prhs[] ){
@@ -50,7 +50,7 @@ void Matlab_muscleUpdate( int, mxArray *[],
         for (unsigned int i = 0; i<model->nbMuscleGroups(); ++i){
             biorbd::muscles::MuscleGroup grMus(model->muscleGroup(i));
             for (unsigned int j = 0; j<grMus.nbMuscles(); ++j){
-                nPoints(cmpMus) = grMus.muscle(j).pathChanger().nbObjects() + 2; // nombre d'objet + origine + insertion
+                nPoints(cmpMus) = grMus.muscle(j).pathModifier().nbObjects() + 2; // nombre d'objet + origine + insertion
                 ++cmpMus;
             }
         }

@@ -4,7 +4,7 @@
 #include "biorbdConfig.h"
 
 #include "Muscles/HillThelenType.h"
-#include "Muscles/Fatigable.h"
+#include "Muscles/FatigueModel.h"
 
 namespace biorbd {
 namespace utils {
@@ -14,15 +14,14 @@ class String;
 namespace muscles {
 
 ///
-/// \brief The HillThelenTypeFatigable class
-/// Class of a Thelen fatigable type.
+/// \brief Add a fatigue model to the HillThelen type
 /// Note that useful defaults values for the FatigueParameters characteristics are:
 /// fatigueRate = 0.01
 /// recoveryRate = 0.002
 /// developFactor = 10
 /// recoverFactor = 10
 ///
-class BIORBD_API HillThelenTypeFatigable : public biorbd::muscles::HillThelenType, public biorbd::muscles::Fatigable
+class BIORBD_API HillThelenTypeFatigable : public biorbd::muscles::HillThelenType, public biorbd::muscles::FatigueModel
 {
 public:
     ///
@@ -49,7 +48,7 @@ public:
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
     /// \param dynamicState The muscle dynamic state
-    /// \param dynamicFatigueType The muscle dynamic fatigue type
+    /// \param dynamicFatigueType The muscle dynamic fatigue model
     ///
     HillThelenTypeFatigable(
             const biorbd::utils::String& name,
@@ -63,14 +62,14 @@ public:
     /// \param name The muscle name
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
-    /// \param pathChangers The path changers
-    /// \param dynamicFatigueType The muscle dynamic fatigue type
+    /// \param pathModifiers The set of path modifiers
+    /// \param dynamicFatigueType The muscle dynamic fatigue model
     ///
     HillThelenTypeFatigable(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
             const biorbd::muscles::Characteristics& characteristics,
-            const biorbd::muscles::PathChangers& pathChangers,
+            const biorbd::muscles::PathModifiers& pathModifiers,
             biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
     ///
@@ -78,31 +77,31 @@ public:
     /// \param name The muscle name
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
-    /// \param pathChangers The path changers
+    /// \param pathModifiers The set of path modifiers
     /// \param dynamicState The muscle dynamic state
-    /// \param dynamicFatigueType The muscle dynamic fatigue type
+    /// \param dynamicFatigueType The muscle dynamic fatigue model
     ///
     HillThelenTypeFatigable(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
             const biorbd::muscles::Characteristics& characteristics,
-            const biorbd::muscles::PathChangers& pathChangers,
+            const biorbd::muscles::PathModifiers& pathModifiers,
             const biorbd::muscles::StateDynamics& dynamicState,
             biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
     ///
     /// \brief Construct a Hill-Thelen-type fatigable muscle from another muscle
-    /// \param muscle The other muscle
+    /// \param other The other muscle
     ///
     HillThelenTypeFatigable(
-            const biorbd::muscles::Muscle& muscle);
+            const biorbd::muscles::Muscle& other);
 
     ///
     /// \brief Construct a Hill-Thelen-type muscle from another muscle
-    /// \param muscle The other muscle (pointer)
+    /// \param other The other muscle (pointer)
     ///
     HillThelenTypeFatigable(
-            const std::shared_ptr<biorbd::muscles::Muscle> muscle);
+            const std::shared_ptr<biorbd::muscles::Muscle> other);
 
     ///
     /// \brief Deep copy of a Hill-Thelen-type fatigable muscle
@@ -116,8 +115,9 @@ public:
     /// \param other The Hill-Thelen-type fatigable muscle to copy
     ///
     void DeepCopy(const biorbd::muscles::HillThelenTypeFatigable& other);
+
     ///
-    /// \brief Compute the Force-Length contractile element
+    /// \brief Compute the Force-Length of the contractile element
     /// \param EMG EMG data
     ///
     virtual void computeFlCE(const biorbd::muscles::StateDynamics &EMG);

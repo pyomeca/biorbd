@@ -16,7 +16,7 @@ enum TYPE {
 };
 
 ///
-/// \brief TYPE_toStr Returns the type name in a string format
+/// \brief TYPE_toStr returns the type name in a string format
 /// \param type The type to convert to string
 /// \return The name of the type
 ///

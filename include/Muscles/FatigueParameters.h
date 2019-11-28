@@ -16,10 +16,10 @@ public:
 
     ///
     /// \brief Construct the fatigue parameters
-    /// \param fatigueRate The fatigue rate (default: 0)
-    /// \param recoveryRate The recovery rate (default: 0)
-    /// \param developFactor The develop factor (default: 0)
-    /// \param recoveryFactor The recovery factor (default: 0)
+    /// \param fatigueRate The fatigue rate
+    /// \param recoveryRate The recovery rate
+    /// \param developFactor The develop factor
+    /// \param recoveryFactor The recovery factor
     ///
     FatigueParameters(
             double fatigueRate = 0,
@@ -37,7 +37,14 @@ public:
     /// \brief Deep copy of fatigue parameters into another FatigueParameters
     /// \param other The fatigue parameters to copy
     ///
-    void DeepCopy(const biorbd::muscles::FatigueParameters& other);
+    void DeepCopy(
+            const biorbd::muscles::FatigueParameters& other);
+
+    ///
+    /// \brief Set the fatigue rate
+    /// \param fatigueRate The fatigue rate
+    ///
+    void setFatigueRate(double fatigueRate);
 
     // Get and Set
     ///
@@ -45,48 +52,42 @@ public:
     /// \return The fatigue rate
     ///
     double fatigueRate() const;
-    
-    ///
-    /// \brief Return the recovery rate
-    /// \return The recovery rate
-    ///
-    double recoveryRate() const;
-    
-    ///
-    /// \brief Return the develop factor
-    /// \return The develop factor
-    ///
-    double developFactor() const;
-    
-    ///
-    /// \brief Return the recovery factor
-    /// \return The recovery factor
-    ///
-    double recoveryFactor() const;
-
-    ///
-    /// \brief Set the fatigue rate
-    /// \param fatigueRate The fatigue rate
-    ///
-    void fatigueRate(double fatigueRate);
 
     ///
     /// \brief Set the recovery rate
     /// \param recoveryRate The recovery rate
     ///
-    void recoveryRate(double recoveryRate);
+    void setRecoveryRate(double recoveryRate);
+
+    ///
+    /// \brief Return the recovery rate
+    /// \return The recovery rate
+    ///
+    double recoveryRate() const;
 
     ///
     /// \brief Set the develop factor
     /// \param developFactor The develop factor
     ///
-    void developFactor(double developFactor);
+    void setDevelopFactor(double developFactor);
+
+    ///
+    /// \brief Return the develop factor
+    /// \return The develop factor
+    ///
+    double developFactor() const;
 
     ///
     /// \brief Set the recovery factor
     /// \param recoveryFactor The recovery factor
     ///
-    void recoveryFactor(double recoveryFactor);
+    void setRecoveryFactor(double recoveryFactor);
+
+    ///
+    /// \brief Return the recovery factor
+    /// \return The recovery factor
+    ///
+    double recoveryFactor() const;
 
 protected:
     std::shared_ptr<double> m_fatigueRate; ///< The fatigue rate

@@ -20,45 +20,47 @@ class GeneralizedCoordinates;
 namespace muscles {
 class Force;
 class Characteristics;
-class PathChangers;
+class PathModifiers;
 class StateDynamics;
 ///
-/// \brief Class compound
+/// \brief Class compound is a very generic definition of what a muscle is. It should be the base class of every muscles
 ///
 class BIORBD_API Compound
 {
 public:
     ///
-    /// \brief Construct compound
+    /// \brief Construct muscle compound
     ///
     Compound();
+
     ///
     /// \brief Construct compound
     /// \param name Name of the compound
     ///
     Compound(
             const biorbd::utils::String &name);
-    ///
-    /// \brief Construct compound
-    /// \param name Name of the compound
-    /// \param wrap Path changer TODO?
-    ///
-    Compound(
-            const biorbd::utils::String &name,
-            const biorbd::muscles::PathChangers&wrap);
-    ///
-    /// \brief Construct compound
-    /// \param muscle Muscle to which it is associated
-    ///
-    Compound(
-            const biorbd::muscles::Compound& muscle);
 
     ///
     /// \brief Construct compound
-    /// \param muscle Muscle to which it is associated (pointer)
+    /// \param name Name of the compound
+    /// \param pathModifiers The set of path modifiers
     ///
     Compound(
-            const std::shared_ptr<biorbd::muscles::Compound> muscle);
+            const biorbd::utils::String& name,
+            const biorbd::muscles::PathModifiers& pathModifiers);
+    ///
+    /// \brief Construct compound from another muscle
+    /// \param other The muscle to shallow copy
+    ///
+    Compound(
+            const biorbd::muscles::Compound& other);
+
+    ///
+    /// \brief Construct compound from another muscle
+    /// \param other The muscle to shallow copy
+    ///
+    Compound(
+            const std::shared_ptr<biorbd::muscles::Compound> other);
 
     ///
     /// \brief Destroy class properly
@@ -69,38 +71,40 @@ public:
     /// \brief Deep copy of a compound
     /// \param other Compound to copy
     ///
-    void DeepCopy(const biorbd::muscles::Compound& other);
+    void DeepCopy(
+            const biorbd::muscles::Compound& other);
 
     ///
-    /// \brief Return the name of the compound
-    /// \return The name of the compound
-    ///
-    const biorbd::utils::String& name() const;
-    ///
-    /// \brief Set name to a compound
-    /// \param name Name of the compound
+    /// \brief Set the name of a muscle
+    /// \param name Name of the muscle
     ///
     void setName(const biorbd::utils::String& name);
 
     ///
-    /// \brief Return the type of the compound
-    /// \return The type of the compound
+    /// \brief Return the name of the muscle
+    /// \return The name of the muscle
+    ///
+    const biorbd::utils::String& name() const;
+
+
+    ///
+    /// \brief Return the type of the muscle
+    /// \return The type of the muscle
     ///
     biorbd::muscles::MUSCLE_TYPE type() const;
 
     // Wrapping object
-
     ///
-    /// \brief Return the path changer TODO?
-    /// \return The path changer
+    /// \brief Return the path modifier
+    /// \return The path modifier
     ///
-    const biorbd::muscles::PathChangers& pathChanger();
+    const biorbd::muscles::PathModifiers& pathModifier();
 
     /// 
-    /// \brief Add a wrapping object
-    /// \param w Wrap to add
+    /// \brief Add a path modifier object
+    /// \param wrap Position of the object
     ///
-    void addPathObject(biorbd::utils::Vector3d &w);
+    void addPathObject(biorbd::utils::Vector3d& wrap);
 
     ///
     /// \brief Return the last computed muscle force
@@ -109,19 +113,20 @@ public:
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force();
 
     ///
-    /// \brief Return the computed forces from the EMG TODO ?
+    /// \brief Computes and returns the forces from the EMG
     /// \param emg EMG data
-    /// \return The computed forces from the EMG TODO?
+    /// \return The computed forces from the EMG
     ///
-    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(const biorbd::muscles::StateDynamics& emg) = 0;
+    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
+            const biorbd::muscles::StateDynamics& emg) = 0;
 
     ///
     /// \brief Return the computed force from EMG
-    /// \param model The model
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param model The joints model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param emg EMG data
-    /// \param updateKin Update kinematics (default: 2)
+    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     /// \return The computed force from EMG
     ///
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
@@ -133,10 +138,10 @@ public:
 
     ///
     /// \brief Return the computed force from EMG
-    /// \param model The model
-    /// \param Q The position variables of the model
+    /// \param model The joints model
+    /// \param Q The generalized coordinates of the model
     /// \param emg EMG data
-    /// \param updateKin Update kinematics (default: 2)
+    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     /// \return The computed force from EMG
     ///
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
@@ -146,13 +151,13 @@ public:
             int updateKin = 2) = 0;
 
 protected:
-    std::shared_ptr<biorbd::utils::String> m_name; ///< The name of the compound
-    std::shared_ptr<biorbd::muscles::MUSCLE_TYPE> m_type; ///< The type of the compound
-    std::shared_ptr<biorbd::muscles::PathChangers> m_pathChanger; ///< THe path changer
-    std::shared_ptr<std::vector<std::shared_ptr<biorbd::muscles::Force>>> m_force; ///< The force
+    std::shared_ptr<biorbd::utils::String> m_name; ///< The name of the muscle
+    std::shared_ptr<biorbd::muscles::MUSCLE_TYPE> m_type; ///< The type of muscle
+    std::shared_ptr<biorbd::muscles::PathModifiers> m_pathChanger; ///< The set of path modifiers
+    std::shared_ptr<std::vector<std::shared_ptr<biorbd::muscles::Force>>> m_force; ///< The last computed force
 
     ///
-    /// \brief Set the type
+    /// \brief Set the type of muscle
     ///
     virtual void setType()=0;
 

@@ -7,17 +7,17 @@
 namespace biorbd {
 namespace muscles {
 
-    ///
-    /// \brief Class ForceFromInsertion
-    ///
+///
+/// \brief Class Force in the muscle from the insertion perspective
+///
 class BIORBD_API ForceFromInsertion : public biorbd::muscles::Force
 {
 public:
     ///
-    /// \brief Construct force from insertion
-    /// \param x Position on the x axis (default: 0)
-    /// \param y Position on the y axis (default: 0)
-    /// \param z Position on the z axis (default: 0)
+    /// \brief Construct force
+    /// \param x X-component of the force
+    /// \param y Y-component of the force
+    /// \param z Z-component of the force
     ///
     ForceFromInsertion(
             double x = 0,
@@ -28,7 +28,8 @@ public:
     /// \brief Construct force from insertion from Eiggen matrix
     /// \param other The Eigen force matrix
     ///
-    template<typename OtherDerived> ForceFromInsertion(const Eigen::MatrixBase<OtherDerived>& other) :
+    template<typename OtherDerived> ForceFromInsertion(
+            const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::muscles::Force(other){}
 
     ///
@@ -57,11 +58,11 @@ public:
     ///
     /// \brief Set the force from muscle geometry
     /// \param geo THe muscle geometry
-    /// \param vectorNorm The norm of the vector
+    /// \param norm The norm of the force
     ///
     virtual void setForceFromMuscleGeometry(
             const biorbd::muscles::Geometry& geo,
-            double vectorNorm);
+            double norm);
 
     ///
     /// \brief Equal operator to be used with an Eigen matrix to construct force from insertion
@@ -69,10 +70,11 @@ public:
     /// \return The force from insertion
     ///
     template<typename OtherDerived>
-        biorbd::muscles::ForceFromInsertion& operator=(const Eigen::MatrixBase <OtherDerived>& other){
-            this->biorbd::muscles::Force::operator=(other);
-            return *this;
-        }
+    biorbd::muscles::ForceFromInsertion& operator=(
+            const Eigen::MatrixBase <OtherDerived>& other){
+        this->biorbd::muscles::Force::operator=(other);
+        return *this;
+    }
 };
 
 }}

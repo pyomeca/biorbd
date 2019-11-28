@@ -10,16 +10,16 @@ class StateDynamics;
 class Characteristics;
 
 ///
-/// \brief Class FatigueDynamicState that holds the FatigueState class
+/// \brief Class A state of fatigue that dynamically evolves over the usage of the muscle
 ///
 class BIORBD_API FatigueDynamicState : public biorbd::muscles::FatigueState
 {
 public:
     ///
     /// \brief Construct the fatigue dynamic state
-    /// \param active Muscle activation (default: 0)
-    /// \param fatigued Muscle fatigue (default: 0)
-    /// \param resting Muscle resting (default: 1)
+    /// \param active Muscle activation
+    /// \param fatigued Muscle fatigue
+    /// \param resting Muscle resting
     ///
     FatigueDynamicState(
             double active = 0,
@@ -28,35 +28,38 @@ public:
 
     ///
     /// \brief Construct the fatigue dynamic state from other state
-    /// \param m The other fatigue state
+    /// \param other The other fatigue state
     ///
-    FatigueDynamicState(const std::shared_ptr<biorbd::muscles::FatigueState> m);
+    FatigueDynamicState(
+            const std::shared_ptr<biorbd::muscles::FatigueState> other);
 
     ///
     /// \brief Deep copy of a fatigue dynamic state
+    /// \param other The other fatigue state
     /// 
-    void DeepCopy(const biorbd::muscles::FatigueDynamicState& other);
+    void DeepCopy(
+            const biorbd::muscles::FatigueDynamicState& other);
 
     ///
-    /// \brief Return the active fibers velocity? TODO
-    /// \return The active fibers velocity? TODO
+    /// \brief Return the active fibers derivative
+    /// \return The active fibers derivative
     ///
     double activeFibersDot() const;
 
     ///
-    /// \brief Return the fatigued fibers velocity? TODO
-    /// \return The fatigued fibers velocity? TODO
+    /// \brief Return the fatigued fibers derivative
+    /// \return The fatigued fibers derivative
     ///
     double fatiguedFibersDot() const;
 
     ///
-    /// \brief Return the resting fibers velocity? TODO
-    /// \return The resting fibers velocity? TODO
+    /// \brief Return the resting fibers derivative
+    /// \return The resting fibers derivative
     ///
     double restingFibersDot() const;
 
     ///
-    /// \brief TODO?
+    /// \brief Compute the derivative of the current state
     /// \param emg EMG data
     /// \param characteristics The muscle characteristics
     ///
@@ -66,9 +69,9 @@ public:
      ) = 0;
 
 protected:
-    std::shared_ptr<double> m_activeFibersDot; ///< The active fibers velocity? TODO
-    std::shared_ptr<double> m_fatiguedFibersDot; ///< The fatigued fibers velocity? TODO
-    std::shared_ptr<double> m_restingFibersDot; ///< The resting fibers velocity? TODO
+    std::shared_ptr<double> m_activeFibersDot; ///< The active fibers derivative
+    std::shared_ptr<double> m_fatiguedFibersDot; ///< The fatigued fibers derivative
+    std::shared_ptr<double> m_restingFibersDot; ///< The resting fibers derivative
 
 };
 

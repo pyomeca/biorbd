@@ -1,5 +1,5 @@
-#ifndef BIORBD_MUSCLES_PATH_CHANGERS_H
-#define BIORBD_MUSCLES_PATH_CHANGERS_H
+#ifndef BIORBD_MUSCLES_PATH_MODIFIERS_H
+#define BIORBD_MUSCLES_PATH_MODIFIERS_H
 
 #include <memory>
 #include <vector>
@@ -11,27 +11,27 @@ class Vector3d;
 }
 
 namespace muscles {
-    ///
-    /// \brief Class Path Changers
-    ///
-class BIORBD_API PathChangers
+///
+/// \brief Holder of all the path modifiers of a muscle
+///
+class BIORBD_API PathModifiers
 {
 public:
     ///
     /// \brief Construct path changers
     /// 
-    PathChangers();
+    PathModifiers();
     
     /// 
     /// \brief Deep copy of path changers
     /// \return A deep copy of path changers
     ///
-    biorbd::muscles::PathChangers DeepCopy() const;
+    biorbd::muscles::PathModifiers DeepCopy() const;
     /// 
     /// \brief Deep copy of path changers from another path changers
     /// \param other THe path changers to copy
     ///    
-    void DeepCopy(const biorbd::muscles::PathChangers& other);
+    void DeepCopy(const biorbd::muscles::PathModifiers& other);
 
     ///
     /// \brief Add a wrapping or a via point
@@ -81,4 +81,4 @@ protected:
 
 }}
 
-#endif // BIORBD_MUSCLES_PATH_CHANGERS_H
+#endif // BIORBD_MUSCLES_PATH_MODIFIERS_H

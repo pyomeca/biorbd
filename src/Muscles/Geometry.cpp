@@ -9,9 +9,10 @@
 #include "RigidBody/Joints.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "Muscles/WrappingObject.h"
-#include "Muscles/PathChangers.h"
+#include "Muscles/PathModifiers.h"
 #include "Muscles/Characteristics.h"
 #include "Muscles/ViaPoint.h"
+#include "Muscles/PathModifiers.h"
 
 biorbd::muscles::Geometry::Geometry() :
     m_origin(std::make_shared<biorbd::utils::Vector3d>()),
@@ -103,7 +104,7 @@ void biorbd::muscles::Geometry::updateKinematics(
         model.UpdateKinematicsCustom(Q, Qdot, nullptr);
 
     // Position of the points in space
-    musclesPointsInGlobal(model, *Q);
+    setMusclesPointsInGlobal(model, *Q);
 
     // Compute the Jacobian of the muscle points
      jacobian(model, *Q);
@@ -112,10 +113,9 @@ void biorbd::muscles::Geometry::updateKinematics(
     _updateKinematics(Qdot);
 }
 
-void biorbd::muscles::Geometry::updateKinematics(
-        biorbd::rigidbody::Joints &model,
-        const biorbd::muscles::Characteristics& c,
-        biorbd::muscles::PathChangers& o,
+void biorbd::muscles::Geometry::updateKinematics(biorbd::rigidbody::Joints &model,
+        const biorbd::muscles::Characteristics& characteristics,
+        biorbd::muscles::PathModifiers &pathModifiers,
         const biorbd::rigidbody::GeneralizedCoordinates *Q,
         const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
         int updateKin)
@@ -130,13 +130,13 @@ void biorbd::muscles::Geometry::updateKinematics(
         model.UpdateKinematicsCustom(Q, Qdot, nullptr);
 
     // Position of the points in space
-    musclesPointsInGlobal(model, *Q, &o);
+    setMusclesPointsInGlobal(model, *Q, &pathModifiers);
 
     // Compute the Jacobian of the muscle points
     jacobian(model, *Q);
 
     // Complete the update
-    _updateKinematics(Qdot, &c, &o);
+    _updateKinematics(Qdot, &characteristics, &pathModifiers);
 }
 
 void biorbd::muscles::Geometry::updateKinematics(
@@ -147,7 +147,7 @@ void biorbd::muscles::Geometry::updateKinematics(
     *m_posAndJacoWereForced = true;
 
     // Position of the points in space
-    musclesPointsInGlobal(musclePointsInGlobal);
+    setMusclesPointsInGlobal(musclePointsInGlobal);
 
     // Compute the Jacobian of the muscle points
     jacobian(jacoPointsInGlobal);
@@ -165,7 +165,7 @@ void biorbd::muscles::Geometry::updateKinematics(
     *m_posAndJacoWereForced = true;
 
     // Position of the points in space
-    musclesPointsInGlobal(musclePointsInGlobal);
+    setMusclesPointsInGlobal(musclePointsInGlobal);
 
     // Compute the Jacobian of the muscle points
     jacobian(jacoPointsInGlobal);
@@ -175,21 +175,24 @@ void biorbd::muscles::Geometry::updateKinematics(
 }
 
 // Get and set the positions of the origins and insertions
+void biorbd::muscles::Geometry::setOrigin(
+        const utils::Vector3d &position)
+{
+    *m_origin = position;
+}
 const biorbd::utils::Vector3d& biorbd::muscles::Geometry::originInLocal() const
 {
     return *m_origin;
 }
-void biorbd::muscles::Geometry::setOriginInLocal(const utils::Vector3d &val)
+
+void biorbd::muscles::Geometry::setInsertionInLocal(
+        const utils::Vector3d &position)
 {
-    *m_origin = val;
+    *m_insertion = position;
 }
 const biorbd::utils::Vector3d &biorbd::muscles::Geometry::insertionInLocal() const
 {
     return *m_insertion;
-}
-void biorbd::muscles::Geometry::setInsertionInLocal(const utils::Vector3d &val)
-{
-    *m_insertion = val;
 }
 
 // Position of the muscles in space
@@ -242,10 +245,10 @@ biorbd::utils::Matrix biorbd::muscles::Geometry::jacobianInsertion() const
     biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed before calling jacobianInsertion()");
     return m_jacobian->block(m_jacobian->rows()-3,0,3,m_jacobian->cols());
 }
-biorbd::utils::Matrix biorbd::muscles::Geometry::jacobian(unsigned int idxMarker) const
+biorbd::utils::Matrix biorbd::muscles::Geometry::jacobian(unsigned int idxViaPoint) const
 {
     biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed before calling jacobian(i)");
-    return m_jacobian->block(3*idxMarker,0,3,m_jacobian->cols());
+    return m_jacobian->block(3*idxViaPoint,0,3,m_jacobian->cols());
 }
 
 const biorbd::utils::Matrix &biorbd::muscles::Geometry::jacobianLength() const
@@ -258,11 +261,11 @@ const biorbd::utils::Matrix &biorbd::muscles::Geometry::jacobianLength() const
 
 void biorbd::muscles::Geometry::_updateKinematics(
         const biorbd::rigidbody::GeneralizedCoordinates* Qdot,
-        const biorbd::muscles::Characteristics* c,
-        biorbd::muscles::PathChangers* o)
+        const biorbd::muscles::Characteristics* characteristics,
+        biorbd::muscles::PathModifiers *pathModifiers)
 {
     // Compute the length and velocities
-    length(c,o);
+    length(characteristics, pathModifiers);
     *m_isGeometryComputed = true;
 
     // Compute the jacobian of the lengths
@@ -293,30 +296,30 @@ const biorbd::utils::Vector3d &biorbd::muscles::Geometry::insertionInGlobal(
     return *m_insertionInGlobal;
 }
 
-void biorbd::muscles::Geometry::musclesPointsInGlobal(std::vector<utils::Vector3d> &ptsInGlobal)
+void biorbd::muscles::Geometry::setMusclesPointsInGlobal(std::vector<utils::Vector3d> &ptsInGlobal)
 {
     biorbd::utils::Error::check(ptsInGlobal.size() >= 2, "ptsInGlobal must at least have an origin and an insertion");
     m_pointsInLocal->clear(); // In this mode, we don't need the local, because the Jacobian of the points has to be given as well
     *m_pointsInGlobal = ptsInGlobal;
 }
 
-void biorbd::muscles::Geometry::musclesPointsInGlobal(
+void biorbd::muscles::Geometry::setMusclesPointsInGlobal(
         biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        biorbd::muscles::PathChangers* objects)
+        biorbd::muscles::PathModifiers *pathModifiers)
 {
     // Output varible (reset to zero)
     m_pointsInLocal->clear();
     m_pointsInGlobal->clear();
 
     // Do not apply on wrapping objects
-    if (objects->nbWraps()!=0){
+    if (pathModifiers->nbWraps()!=0){
         // CHECK TO MODIFY BEFOR GOING FORWARD WITH PROJECTS
-        biorbd::utils::Error::check(objects->nbVia() == 0, "Cannot mix wrapping and via points yet") ;
-        biorbd::utils::Error::check(objects->nbWraps() < 2, "Cannot compute more than one wrapping yet");
+        biorbd::utils::Error::check(pathModifiers->nbVia() == 0, "Cannot mix wrapping and via points yet") ;
+        biorbd::utils::Error::check(pathModifiers->nbWraps() < 2, "Cannot compute more than one wrapping yet");
 
         // Get the matrix of Rt of the wrap
-        biorbd::muscles::WrappingObject& w = static_cast<biorbd::muscles::WrappingObject&>(objects->object(0));
+        biorbd::muscles::WrappingObject& w = static_cast<biorbd::muscles::WrappingObject&>(pathModifiers->object(0));
         const biorbd::utils::RotoTrans& RT = w.RT(model,Q);
 
         // Alias
@@ -349,11 +352,11 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(
 
     }
 
-    else if (objects->nbObjects()!=0 && objects->object(0).typeOfNode() == biorbd::utils::NODE_TYPE::VIA_POINT){
+    else if (pathModifiers->nbObjects()!=0 && pathModifiers->object(0).typeOfNode() == biorbd::utils::NODE_TYPE::VIA_POINT){
         m_pointsInLocal->push_back(originInLocal());
         m_pointsInGlobal->push_back(originInGlobal(model, Q));
-        for (unsigned int i=0; i<objects->nbObjects(); ++i){
-            const biorbd::muscles::ViaPoint& node(static_cast<biorbd::muscles::ViaPoint&>(objects->object(i)));
+        for (unsigned int i=0; i<pathModifiers->nbObjects(); ++i){
+            const biorbd::muscles::ViaPoint& node(static_cast<biorbd::muscles::ViaPoint&>(pathModifiers->object(i)));
             m_pointsInLocal->push_back(node);
             m_pointsInGlobal->push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, model.GetBodyId(node.parent().c_str()), node, false));
         }
@@ -361,7 +364,7 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(
         m_pointsInGlobal->push_back(insertionInGlobal(model,Q));
 
     }
-    else if (objects->nbObjects()==0){
+    else if (pathModifiers->nbObjects()==0){
         m_pointsInLocal->push_back(originInLocal());
         m_pointsInLocal->push_back(insertionInLocal());
         m_pointsInGlobal->push_back(originInGlobal(model, Q));
@@ -376,20 +379,20 @@ void biorbd::muscles::Geometry::musclesPointsInGlobal(
 
 double biorbd::muscles::Geometry::length(
         const biorbd::muscles::Characteristics *characteristics,
-        biorbd::muscles::PathChangers *objects)
+        biorbd::muscles::PathModifiers *pathModifiers)
 {
     *m_muscleTendonLength = 0;
 
     // because we can't combine, test the first (0) will let us know all the types if more than one
-    if (objects != nullptr && objects->nbWraps()!=0){
+    if (pathModifiers != nullptr && pathModifiers->nbWraps()!=0){
         // CHECK TO MODIFY BEFORE GOING FORWARD WITH PROJECTS
-        biorbd::utils::Error::check(objects->nbVia() == 0, "Cannot mix wrapping and via points yet" ) ;
-        biorbd::utils::Error::check(objects->nbWraps() < 2, "Cannot compute more than one wrapping yet");
+        biorbd::utils::Error::check(pathModifiers->nbVia() == 0, "Cannot mix wrapping and via points yet" ) ;
+        biorbd::utils::Error::check(pathModifiers->nbWraps() < 2, "Cannot compute more than one wrapping yet");
 
         biorbd::utils::Vector3d pi_wrap(0, 0, 0); // point on the wrapping related to insertion
         biorbd::utils::Vector3d po_wrap(0, 0, 0); // point on the wrapping related to origin
         double lengthWrap(0);
-        static_cast<biorbd::muscles::WrappingObject&>(objects->object(0)).wrapPoints(po_wrap, pi_wrap, &lengthWrap);
+        static_cast<biorbd::muscles::WrappingObject&>(pathModifiers->object(0)).wrapPoints(po_wrap, pi_wrap, &lengthWrap);
         *m_muscleTendonLength = ((*m_pointsInGlobal)[0] - pi_wrap).norm()   + // length before the wrap
                     lengthWrap                 + // length on the wrap
                     (*m_pointsInGlobal->end() - po_wrap).norm();   // length after the wrap
@@ -408,7 +411,7 @@ double biorbd::muscles::Geometry::length(
 double biorbd::muscles::Geometry::velocity(const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
 {
     // Compute the velocity of the muscular elongation
-    *m_velocity = (jacobianLength()*Qdot)[0]; // This a double but the compiler doesn't know it
+    *m_velocity = (jacobianLength()*Qdot)[0];
     return *m_velocity;
 }
 

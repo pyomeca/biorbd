@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "Muscles/PathChangers.h"
+#include "Muscles/PathModifiers.h"
 
 #include "Utils/Error.h"
 #include "Utils/Vector3d.h"
@@ -7,7 +7,7 @@
 #include "Muscles/WrappingSphere.h"
 #include "Muscles/WrappingCylinder.h"
 
-biorbd::muscles::PathChangers::PathChangers() :
+biorbd::muscles::PathModifiers::PathModifiers() :
     m_obj(std::make_shared<std::vector<biorbd::utils::Vector3d>>()),
     m_nbWraps(std::make_shared<unsigned int>(0)),
     m_nbVia(std::make_shared<unsigned int>(0)),
@@ -16,14 +16,14 @@ biorbd::muscles::PathChangers::PathChangers() :
 
 }
 
-biorbd::muscles::PathChangers biorbd::muscles::PathChangers::DeepCopy() const
+biorbd::muscles::PathModifiers biorbd::muscles::PathModifiers::DeepCopy() const
 {
-    biorbd::muscles::PathChangers copy;
+    biorbd::muscles::PathModifiers copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void biorbd::muscles::PathChangers::DeepCopy(const biorbd::muscles::PathChangers &other)
+void biorbd::muscles::PathModifiers::DeepCopy(const biorbd::muscles::PathModifiers &other)
 {
     m_obj->resize(other.m_obj->size());
     for (unsigned int i=0; i<other.m_obj->size(); ++i)
@@ -34,7 +34,7 @@ void biorbd::muscles::PathChangers::DeepCopy(const biorbd::muscles::PathChangers
 }
 
 // Private method to assing values
-void biorbd::muscles::PathChangers::addPathChanger(biorbd::utils::Vector3d &val){
+void biorbd::muscles::PathModifiers::addPathChanger(biorbd::utils::Vector3d &val){
 
     // Add a muscle to the pool of muscle depending on type
     if (val.typeOfNode() == biorbd::utils::NODE_TYPE::WRAPPING_SPHERE){
@@ -57,28 +57,28 @@ void biorbd::muscles::PathChangers::addPathChanger(biorbd::utils::Vector3d &val)
     ++*m_totalObjects;
 }
 
-unsigned int biorbd::muscles::PathChangers::nbWraps() const {
+unsigned int biorbd::muscles::PathModifiers::nbWraps() const {
     return *m_nbWraps;
 }
 
-unsigned int biorbd::muscles::PathChangers::nbVia() const
+unsigned int biorbd::muscles::PathModifiers::nbVia() const
 {
     return *m_nbVia;
 }
 
-unsigned int biorbd::muscles::PathChangers::nbObjects() const
+unsigned int biorbd::muscles::PathModifiers::nbObjects() const
 {
     return *m_totalObjects;
 }
 
-biorbd::utils::Vector3d &biorbd::muscles::PathChangers::object(unsigned int idx)
+biorbd::utils::Vector3d &biorbd::muscles::PathModifiers::object(unsigned int idx)
 {
     biorbd::utils::Error::check(idx<nbObjects(), "Idx asked is higher than number of wrapping objects");
     return (*m_obj)[idx];
 }
 
 
-const biorbd::utils::Vector3d& biorbd::muscles::PathChangers::object(unsigned int idx) const{
+const biorbd::utils::Vector3d& biorbd::muscles::PathModifiers::object(unsigned int idx) const{
     biorbd::utils::Error::check(idx<nbObjects(), "Idx asked is higher than number of wrapping objects");
     return (*m_obj)[idx];
 }

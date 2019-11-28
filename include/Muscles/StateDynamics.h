@@ -96,13 +96,13 @@ public:
             bool alreadyNormalized = false); 
     ///
     /// \brief Compute and return the activation velocity 
-    /// \param state The dynamic state
+    /// \param emg The emg
     /// \param characteristics The muscle characteristics
     /// \param alreadyNormalized If already normalized (default: false)
     /// \return The activation velocity
     ///
     virtual double timeDerivativeActivation(
-            const StateDynamics& state,
+            const StateDynamics& emg,
             const Characteristics& characteristics,
             bool alreadyNormalized = false); 
 

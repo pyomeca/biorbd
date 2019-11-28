@@ -34,8 +34,8 @@ biorbd::muscles::IdealizedActuator::IdealizedActuator(
         const biorbd::utils::String &name,
         const biorbd::muscles::Geometry &geometry,
         const biorbd::muscles::Characteristics &characteristics,
-        const biorbd::muscles::PathChangers &pathChangers) :
-    biorbd::muscles::Muscle(name,geometry,characteristics, pathChangers)
+        const biorbd::muscles::PathModifiers &pathModifiers) :
+    biorbd::muscles::Muscle(name,geometry,characteristics, pathModifiers)
 {
     setType();
 }
@@ -44,23 +44,21 @@ biorbd::muscles::IdealizedActuator::IdealizedActuator(
         const biorbd::utils::String& name,
         const biorbd::muscles::Geometry& geometry,
         const biorbd::muscles::Characteristics& characteristics,
-        const biorbd::muscles::PathChangers& pathChangers,
+        const biorbd::muscles::PathModifiers &pathModifiers,
         const biorbd::muscles::StateDynamics& dynamicState) :
-    biorbd::muscles::Muscle(name,geometry,characteristics,pathChangers,dynamicState)
+    biorbd::muscles::Muscle(name,geometry,characteristics,pathModifiers,dynamicState)
 {
     setType();
 }
 
-biorbd::muscles::IdealizedActuator::IdealizedActuator(
-        const biorbd::muscles::Muscle &muscle) :
-    biorbd::muscles::Muscle (muscle)
+biorbd::muscles::IdealizedActuator::IdealizedActuator(const biorbd::muscles::Muscle &other) :
+    biorbd::muscles::Muscle (other)
 {
 
 }
 
-biorbd::muscles::IdealizedActuator::IdealizedActuator(
-        const std::shared_ptr<biorbd::muscles::Muscle> muscle) :
-    biorbd::muscles::Muscle (muscle)
+biorbd::muscles::IdealizedActuator::IdealizedActuator(const std::shared_ptr<biorbd::muscles::Muscle> other) :
+    biorbd::muscles::Muscle (other)
 {
 
 }

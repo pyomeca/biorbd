@@ -33,7 +33,7 @@
 #include "Muscles/State.h"
 #include "Muscles/Characteristics.h"
 #include "Muscles/ViaPoint.h"
-#include "Muscles/PathChangers.h"
+#include "Muscles/PathModifiers.h"
 #endif // MODULE_MUSCLES
 
 // ------ Public methods ------ //
@@ -560,7 +560,9 @@ void biorbd::Reader::readModelFile(
                 }
                 else {
                     biorbd::utils::Error::raise("Actuator do not correspond to an implemented one");
+#ifdef _WIN32
                     actuator = new biorbd::actuator::ActuatorConstant(int_direction, Tmax, dofIdx, name); // Échec de compilation sinon
+#endif
                 }
 
                 model->addActuator(*actuator);
@@ -682,13 +684,13 @@ void biorbd::Reader::readModelFile(
                                 double param(0);
                                 file.read(param);
                                 if (!subproperty_tag.tolower().compare("fatiguerate"))
-                                    fatigueParameters.fatigueRate(param);
+                                    fatigueParameters.setFatigueRate(param);
                                 else if (!subproperty_tag.tolower().compare("recoveryrate"))
-                                    fatigueParameters.recoveryRate(param);
+                                    fatigueParameters.setRecoveryRate(param);
                                 else if (!subproperty_tag.tolower().compare("developfactor"))
-                                    fatigueParameters.developFactor(param);
+                                    fatigueParameters.setDevelopFactor(param);
                                 else if (!subproperty_tag.tolower().compare("recoveryfactor"))
-                                    fatigueParameters.recoveryFactor(param);
+                                    fatigueParameters.setRecoveryFactor(param);
                             }
                         }
                     }
@@ -699,7 +701,7 @@ void biorbd::Reader::readModelFile(
                             biorbd::utils::Vector3d(insert_pos, name + "_insertion", model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
                 biorbd::muscles::State stateMax(maxExcitation, maxActivation);
                 biorbd::muscles::Characteristics characteristics(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax, fatigueParameters);
-                model->muscleGroup(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,characteristics,biorbd::muscles::PathChangers(),stateType,dynamicFatigueType);
+                model->muscleGroup(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,characteristics,biorbd::muscles::PathModifiers(),stateType,dynamicFatigueType);
     #else // MODULE_MUSCLES
             biorbd::utils::Error::raise("Biorbd was build without the module Muscles but the model defines a muscle");
     #endif // MODULE_MUSCLES

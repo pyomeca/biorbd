@@ -16,8 +16,9 @@ biorbd::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(
     setType();
 }
 
-biorbd::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(const std::shared_ptr<biorbd::muscles::FatigueState> m):
-    biorbd::muscles::FatigueDynamicState(m)
+biorbd::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(
+        const std::shared_ptr<biorbd::muscles::FatigueState> other):
+    biorbd::muscles::FatigueDynamicState(other)
 {
 
 }

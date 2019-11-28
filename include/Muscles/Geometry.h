@@ -18,10 +18,11 @@ class GeneralizedCoordinates;
 }
 
 namespace muscles {
-class PathChangers;
+class PathModifiers;
 class Characteristics;
+
 ///
-/// \brief Class Geometry
+/// \brief Class Geometry of the muscle
 ///
 class BIORBD_API Geometry
 {
@@ -30,10 +31,11 @@ public:
     /// \brief Construct geometry
     ///
     Geometry();
+
     ///
     /// \brief Construct geometry
-    /// \param origin The origin node
-    /// \param insertion The insertion node
+    /// \param origin The origin node of the muscle
+    /// \param insertion The insertion node of the muscle
     /// 
     Geometry(
             const biorbd::utils::Vector3d &origin,
@@ -49,16 +51,17 @@ public:
     /// \brief Deep copy of a geometry from another geometry
     /// \param other The geometry to copy
     ///
-    void DeepCopy(const biorbd::muscles::Geometry& other);
-
-    // Function to call before calling length/velocity or others!
+    void DeepCopy(
+            const biorbd::muscles::Geometry& other);
 
     ///
-    /// \brief Update kinematics
-    /// \param model The model
-    /// \param Q The position variables
-    /// \param Qdot The velocity variables 
-    /// \param updateKin TODO (default: 2)
+    /// \brief Updates the position and dynamic elements of the muscles.
+    /// \param model The joint model
+    /// \param Q The generalized coordinates of the joints (not needed if updateKin is less than 2)
+    /// \param Qdot The generalized velocities of the joints (not needed if updateKin is less than 2)
+    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
+    ///
+    /// updateKinematics MUST be called before retreiving data that are dependent on Q and/or Qdot
     ///
     void updateKinematics(
             biorbd::rigidbody::Joints &model,
@@ -67,27 +70,31 @@ public:
             int updateKin = 2);
 
     ///
-    /// \brief Update kinematics
-    /// \param model The model
-    /// \param c The muscle characteristics
-    /// \param o The path changers
-    /// \param Q The position variables
-    /// \param Qdot The velocity variables 
-    /// \param updateKin TODO (default: 2)
+    /// \brief Updates the position and dynamic elements of the muscles.
+    /// \param model The joint model
+    /// \param characteristics The muscle characteristics
+    /// \param pathModifiers The path modifiers
+    /// \param Q The generalized coordinates of the joints (not needed if updateKin is less than 2)
+    /// \param Qdot The generalized velocities of the joints (not needed if updateKin is less than 2)
+    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
+    ///
+    /// updateKinematics MUST be called before retreiving data that are dependent on Q and/or Qdot
     ///
     void updateKinematics(
             biorbd::rigidbody::Joints &model,
-            const biorbd::muscles::Characteristics&c,
-            biorbd::muscles::PathChangers&o,
+            const biorbd::muscles::Characteristics& characteristics,
+            biorbd::muscles::PathModifiers& pathModifiers,
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
             const biorbd::rigidbody::GeneralizedCoordinates* Qdot = nullptr,
             int updateKin = 2);
 
     ///
-    /// \brief Update kinematics
+    /// \brief Updates the position and dynamic elements of the muscles by hand.
     /// \param musclePointsInGlobal Position of all the points in global
     /// \param jacoPointsInGlobal Position of all the Jacobian points in global
-    /// \param Qdot The velocity variables 
+    /// \param Qdot The generalized velocities of the joints
+    ///
+    /// updateKinematics MUST be called before retreiving data that are dependent on Q and/or Qdot
     ///
     void updateKinematics(
             std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
@@ -95,11 +102,13 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates* Qdot = nullptr);
 
     ///
-    /// \brief Update kinematics
+    /// \brief Updates the position and dynamic elements of the muscles by hand.
     /// \param musclePointsInGlobal Position of all the points in global
     /// \param jacoPointsInGlobal Position of all the Jacobian points in global
     /// \param characteristics The muscle characteristics
-    /// \param Qdot The velocity variables 
+    /// \param Qdot The generalized velocities of the joints
+    ///
+    /// updateKinematics MUST be called before retreiving data that are dependent on Q and/or Qdot
     ///
     void updateKinematics(
             std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
@@ -108,46 +117,44 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates* Qdot = nullptr);
 
     ///
-    /// \brief Return the origin node
-    /// \return The origin node
+    /// \brief Set the origin position in the local reference frame of the muscle
+    /// \param position The origin position to set
+    ///
+    void setOrigin(
+            const biorbd::utils::Vector3d &position);
+
+    ///
+    /// \brief Return the origin position
+    /// \return The origin position
     ///
     const biorbd::utils::Vector3d& originInLocal() const;
 
     ///
-    /// \brief Set the origin node
-    /// \param val The origin node to set
+    /// \brief Set the insertion position
+    /// \param position The insertion position value to set
     ///
-    void setOriginInLocal(
-            const biorbd::utils::Vector3d &val);
+    void setInsertionInLocal(
+            const biorbd::utils::Vector3d &position);
 
     ///
-    /// \brief Return the insertion node
-    /// \return The insertion node
+    /// \brief Return the insertion position
+    /// \return The insertion position
     ///
     const biorbd::utils::Vector3d& insertionInLocal() const;
 
     ///
-    /// \brief Set the insertion node
-    /// \param val THe insertion node value to set
+    /// \brief Return the origin position in the global reference
+    /// \return The origin position in the global reference
     ///
-    void setInsertionInLocal(
-            const biorbd::utils::Vector3d &val);
-
-    // Position of the muscles in space
-
-    ///
-    /// \brief Return the origin node in the global reference
-    /// \return The origin node in the global reference 
-    ///
-    /// Geometry must be computed at least once before calling originInLocal()
+    /// Geometry (updateKin) must be computed at least once before calling originInLocal()
     ///
     const biorbd::utils::Vector3d& originInGlobal() const;
 
     ///
-    /// \brief Return the insertion node in the global reference
-    /// \return The insertion node in the global reference 
+    /// \brief Return the insertion position in the global reference
+    /// \return The insertion position in the global reference
     ///
-    /// Geometry must be computed at least once before calling
+    /// Geometry (updateKin) must be computed at least once before calling
     ///
     const biorbd::utils::Vector3d& insertionInGlobal() const; 
 
@@ -155,95 +162,88 @@ public:
     /// \brief Return the muscles points in the global reference
     /// \return The muscle points in the global reference 
     ///
-    /// Geometry must be computed at least once before calling. Return already computed via points
+    /// Geometry (updateKin) must be computed at least once before calling. Return already computed via points
     ///
     const std::vector<biorbd::utils::Vector3d>& musclesPointsInGlobal() const;
 
-    // Retour des longueur et vitesse musculaires
+    ///
+    /// \brief Return the previously computed muscle length
+    /// \return The muscle lengh
+    ///
+    double length() const;
 
     ///
-    /// \brief Return the already computed muscle length
-    /// \return The already computed muscled lengh
-    ///
-    double length() const; // Return the already computed muscle length
-
-    ///
-    /// \brief Return the already computed muscle-tendon length
-    /// \return The already computed muscle-tendon length
+    /// \brief Return the previously computed muscle-tendon length
+    /// \return The muscle-tendon length
     ///
     double musculoTendonLength() const;
 
     ///
-    /// \brief Return the already computed velocity
-    /// \return The already computed velocity
+    /// \brief Return the previously computed velocity
+    /// \return The computed velocity
     ///
     double velocity() const;
 
-    // Retour des jacobiennes
-
     ///
-    /// \brief Return the last Jacobian
-    /// \return The last Jacobian
+    /// \brief Return the previously computed muscle jacobian
+    /// \return The muscle jacobian
     ///
     const biorbd::utils::Matrix& jacobian() const;
 
     ///
-    /// \brief Return the origin Jacobian
-    /// \return The origin Jacobian
+    /// \brief Return the gradient of the jacobian for the origin node
+    /// \return The origin's node jacobian
     ///
     biorbd::utils::Matrix jacobianOrigin() const;
 
     ///
-    /// \brief Return the insertion Jacobian
-    /// \return the insertion Jacobian
+    /// \brief Return the gradient of the jacobian for the insertion node
+    /// \return The insertion's node jacobian
     ///
     biorbd::utils::Matrix jacobianInsertion() const ;
 
     ///
-    /// \brief Return the Jacobian
-    /// \param idxMarker The markers identification
-    /// \return The Jacobian
+    /// \brief Return the gradient of the jacobian for the via specified node
+    /// \brief idxViaPoint the index of the via point (0 being the the origin)
+    /// \return The via point's node jacobian
     ///
     biorbd::utils::Matrix jacobian(
-            unsigned int idxMarker) const;
+            unsigned int idxViaPoint) const;
 
     /// 
-    /// \brief Return the Jacobian length
-    /// \return The Jacobian length
+    /// \brief Return the jacobian length of the muscle
+    /// \return The jacobian length
     ///
     const biorbd::utils::Matrix& jacobianLength() const;
 
 
 protected:
-    // Update commun de la cinématique
     /// 
-    /// \brief Update the kinematics
-    /// \param Qdot The velocity variables
-    /// \param c The muscle characteristics
-    /// \param o Path changers
+    /// \brief Actual function that implements the update of the kinematics
+    /// \param Qdot The generalized velocities
+    /// \param characteristics The muscle characteristics
+    /// \param pathModifiers The set of path modifiers
     ///
     void _updateKinematics(
             const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-            const biorbd::muscles::Characteristics* c = nullptr,
-            biorbd::muscles::PathChangers* o = nullptr);
-
-    // Calcul de la position des points dans le global
+            const biorbd::muscles::Characteristics* characteristics = nullptr,
+            biorbd::muscles::PathModifiers* pathModifiers = nullptr);
 
     /// 
-    /// \brief Updates the kinematics and return the position of the origin node in space
-    /// \param model The model
-    /// \param Q The position variables of the model
-    /// \return The position of the origin node in space
+    /// \brief Updates the kinematics and return the position of the origin node
+    /// \param model The joint model
+    /// \param Q The generalized coordinates of the model
+    /// \return The origin position in the global reference
     ///
     const biorbd::utils::Vector3d& originInGlobal(
             biorbd::rigidbody::Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q);
 
-    /// 
-    /// \brief Updates the kinematics and return the position of the insertion node in space
-    /// \param model The model
-    /// \param Q The position variables of the model
-    /// \return The position of the insertion node in space
+    ///
+    /// \brief Updates the kinematics and return the position of the insertion node
+    /// \param model The joint model
+    /// \param Q The generalized coordinates of the model
+    /// \return The origin position in the global reference
     ///
     const biorbd::utils::Vector3d& insertionInGlobal(
             biorbd::rigidbody::Joints &model,
@@ -253,30 +253,30 @@ protected:
     /// \brief Set the muscle points in global
     /// \param ptsInGlobal The new muscle points in global
     ///
-    void musclesPointsInGlobal(
+    void setMusclesPointsInGlobal(
             std::vector<biorbd::utils::Vector3d>& ptsInGlobal); 
 
     ///
     /// \brief Set the muscle points in global
-    /// \param model The model
-    /// \param Q The position variables of the model
-    /// \param pathChangers The path changers
+    /// \param model The joint model
+    /// \param Q The generalized coordinates of the model
+    /// \param pathModifiers The set of path modifiers
     ///
-    void musclesPointsInGlobal(
+    void setMusclesPointsInGlobal(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            biorbd::muscles::PathChangers* pathChangers = nullptr);
+            biorbd::muscles::PathModifiers* pathModifiers = nullptr);
 
   
     ///
     /// \brief Update the kinematics, compute and return the muscle length
     /// \param characteristics The muscle characteristics
-    /// \param pathChanger The path changer
+    /// \param pathModifiers The set of path modifiers
     /// \return The muscle length
     ///
     double length(
             const biorbd::muscles::Characteristics* characteristics = nullptr,
-            biorbd::muscles::PathChangers* pathChanger = nullptr); // Update the kinematics and compute and return muscle length
+            biorbd::muscles::PathModifiers* pathModifiers = nullptr);
 
     ///
     /// \brief Update the kinematics, compute and return the muscle velocity assuming not via points nor wrapping objects
@@ -285,31 +285,32 @@ protected:
     ///
     double velocity(
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot); 
-    // Calcul des jacobiennes des points
+
     ///
-    /// \brief Set the Jacobian dimensions
-    /// \param model The model
+    /// \brief Set the jacobian dimensions
+    /// \param model The joint model
     ///
     void setJacobianDimension(
             biorbd::rigidbody::Joints &model);
 
     ///
-    /// \brief Force a Jacobian
-    /// \param jaco The Jacobian 
+    /// \brief Force a jacobian computed from the user
+    /// \param jaco The jacobian
     ///
     void jacobian(
-            const biorbd::utils::Matrix &jaco); // Forcer une jacobienne
+            const biorbd::utils::Matrix &jaco);
     
     ///
-    /// \brief Construct a Jacobian
-    /// \param model The model
-    /// \param Q The position variables
+    /// \brief Compute the jacobian
+    /// \param model The joint model
+    /// \param Q The generalize coordinates
     ///
     void jacobian(
             biorbd::rigidbody::Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q);
+
     ///
-    /// \brief Compute the Jacobian length
+    /// \brief Compute the muscle length jacobian
     ///
     void computeJacobianLength();
 
@@ -321,9 +322,9 @@ protected:
     std::shared_ptr<biorbd::utils::Vector3d> m_insertionInGlobal; ///< Position of the insertion node in the global reference
     std::shared_ptr<std::vector<biorbd::utils::Vector3d>> m_pointsInGlobal; ///< Position of all the points in the global reference
     std::shared_ptr<std::vector<biorbd::utils::Vector3d>> m_pointsInLocal; ///< Position of all the points in local
-    std::shared_ptr<biorbd::utils::Matrix> m_jacobian; ///<The Jacobian matrix
-    std::shared_ptr<biorbd::utils::Matrix> m_G; ///< TODO
-    std::shared_ptr<biorbd::utils::Matrix> m_jacobianLength; ///< The Jacobian length
+    std::shared_ptr<biorbd::utils::Matrix> m_jacobian; ///<The jacobian matrix
+    std::shared_ptr<biorbd::utils::Matrix> m_G; ///< Internal matrix of the jacobian dimension to speed up calculation
+    std::shared_ptr<biorbd::utils::Matrix> m_jacobianLength; ///< The muscle length jacobian
 
     std::shared_ptr<double> m_length; ///< Muscle length
     std::shared_ptr<double> m_muscleTendonLength; ///< Muscle tendon length

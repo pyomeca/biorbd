@@ -4,7 +4,7 @@
 #include "Utils/Error.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/GeneralizedCoordinates.h"
-#include "Muscles/PathChangers.h"
+#include "Muscles/PathModifiers.h"
 #include "Muscles/StateDynamics.h"
 #include "Muscles/StateDynamicsBuchanan.h"
 #include "Muscles/Characteristics.h"
@@ -49,8 +49,8 @@ biorbd::muscles::Muscle::Muscle(
         const biorbd::utils::String &name,
         const biorbd::muscles::Geometry &position,
         const biorbd::muscles::Characteristics &characteristics,
-        const biorbd::muscles::PathChangers &wrap) :
-    biorbd::muscles::Compound (name, wrap),
+        const biorbd::muscles::PathModifiers &pathModifiers) :
+    biorbd::muscles::Compound (name, pathModifiers),
     m_position(std::make_shared<biorbd::muscles::Geometry>(position)),
     m_characteristics(std::make_shared<biorbd::muscles::Characteristics>(characteristics)),
     m_state(std::make_shared<biorbd::muscles::StateDynamics>())
@@ -58,39 +58,37 @@ biorbd::muscles::Muscle::Muscle(
 
 }
 
-biorbd::muscles::Muscle::Muscle(const biorbd::muscles::Muscle &muscle) :
-    biorbd::muscles::Compound (muscle),
-    m_position(muscle.m_position),
-    m_characteristics(muscle.m_characteristics),
-    m_state(muscle.m_state)
+biorbd::muscles::Muscle::Muscle(const biorbd::muscles::Muscle &other) :
+    biorbd::muscles::Compound (other),
+    m_position(other.m_position),
+    m_characteristics(other.m_characteristics),
+    m_state(other.m_state)
 {
 
 }
 
-biorbd::muscles::Muscle::Muscle(
-        const std::shared_ptr<biorbd::muscles::Muscle> muscle) :
-    biorbd::muscles::Compound (muscle),
-    m_position(muscle->m_position),
-    m_characteristics(muscle->m_characteristics),
-    m_state(muscle->m_state)
+biorbd::muscles::Muscle::Muscle(const std::shared_ptr<biorbd::muscles::Muscle> other) :
+    biorbd::muscles::Compound (other),
+    m_position(other->m_position),
+    m_characteristics(other->m_characteristics),
+    m_state(other->m_state)
 {
 
 }
 
-biorbd::muscles::Muscle::Muscle(
-        const biorbd::utils::String& name,
+biorbd::muscles::Muscle::Muscle(const biorbd::utils::String& name,
         const biorbd::muscles::Geometry& g,
         const biorbd::muscles::Characteristics& c,
-        const biorbd::muscles::PathChangers& w,
+        const biorbd::muscles::PathModifiers &pathModifiers,
         const biorbd::muscles::StateDynamics& s) :
-    biorbd::muscles::Compound(name,w),
+    biorbd::muscles::Compound(name,pathModifiers),
     m_position(std::make_shared<biorbd::muscles::Geometry>(g)),
     m_characteristics(std::make_shared<biorbd::muscles::Characteristics>(c)),
     m_state(std::make_shared<biorbd::muscles::StateDynamics>())
 {
     setState(s);
 
-    biorbd::utils::Error::check(w.nbWraps() <= 1, "Multiple wrapping objects is not implemented yet");
+    biorbd::utils::Error::check(pathModifiers.nbWraps() <= 1, "Multiple wrapping objects is not implemented yet");
 }
 
 biorbd::muscles::Muscle::~Muscle()
@@ -137,6 +135,11 @@ void biorbd::muscles::Muscle::updateOrientations(
     m_position->updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,*m_characteristics,&Qdot);
 }
 
+void biorbd::muscles::Muscle::setPosition(
+        const biorbd::muscles::Geometry &positions)
+{
+    *m_position = positions;
+}
 const biorbd::muscles::Geometry &biorbd::muscles::Muscle::position() const {
     return *m_position;
 }
@@ -175,9 +178,10 @@ double biorbd::muscles::Muscle::velocity(
     return m_position->velocity();
 }
 
-double biorbd::muscles::Muscle::activationDot(const biorbd::muscles::StateDynamics &s, bool already)
+double biorbd::muscles::Muscle::activationDot(
+        const biorbd::muscles::StateDynamics &state, bool alreadyNormalized)
 {
-    return m_state->timeDerivativeActivation(s, characteristics(), already);
+    return m_state->timeDerivativeActivation(state, characteristics(), alreadyNormalized);
 }
 
 void biorbd::muscles::Muscle::computeForce(const biorbd::muscles::State &emg)
@@ -188,10 +192,10 @@ void biorbd::muscles::Muscle::computeForce(const biorbd::muscles::State &emg)
 }
 
 const std::vector<biorbd::utils::Vector3d>& biorbd::muscles::Muscle::musclesPointsInGlobal(
-        biorbd::rigidbody::Joints &m,
+        biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q)
 {
-    m_position->updateKinematics(m,*m_characteristics,*m_pathChanger,&Q,nullptr);
+    m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,nullptr);
 
     return musclesPointsInGlobal();
 }
@@ -201,37 +205,34 @@ const std::vector<biorbd::utils::Vector3d> &biorbd::muscles::Muscle::musclesPoin
     return m_position->musclesPointsInGlobal();
 }
 
-void biorbd::muscles::Muscle::forceIsoMax(double val)
+void biorbd::muscles::Muscle::setForceIsoMax(double forceMax)
 {
-    m_characteristics->setForceIsoMax(val);
+    m_characteristics->setForceIsoMax(forceMax);
 }
 
-
+void biorbd::muscles::Muscle::setCharacteristics(
+        const biorbd::muscles::Characteristics &characteristics)
+{
+    *m_characteristics = characteristics;
+}
 const biorbd::muscles::Characteristics& biorbd::muscles::Muscle::characteristics() const
 {
     return *m_characteristics;
 }
-void biorbd::muscles::Muscle::setPosition(const biorbd::muscles::Geometry &val)
-{
-    *m_position = val;
-}
-void biorbd::muscles::Muscle::setCharacteristics(const biorbd::muscles::Characteristics &val)
-{
-    *m_characteristics = val;
-}
 
 // Get and set
-void biorbd::muscles::Muscle::setState(const biorbd::muscles::StateDynamics &s)
+void biorbd::muscles::Muscle::setState(
+        const biorbd::muscles::StateDynamics &emg)
 {
-    if (s.type() == biorbd::muscles::STATE_TYPE::BUCHANAN){
+    if (emg.type() == biorbd::muscles::STATE_TYPE::BUCHANAN){
         m_state = std::make_shared<biorbd::muscles::StateDynamicsBuchanan>(biorbd::muscles::StateDynamicsBuchanan());
     }
-    else if (s.type() == biorbd::muscles::STATE_TYPE::DYNAMIC){
+    else if (emg.type() == biorbd::muscles::STATE_TYPE::DYNAMIC){
         m_state = std::make_shared<biorbd::muscles::StateDynamics>(biorbd::muscles::StateDynamics());
     }
     else
-        biorbd::utils::Error::raise(biorbd::utils::String(biorbd::muscles::STATE_TYPE_toStr(s.type())) + " is not a valid type for setState");
-    *m_state = s;
+        biorbd::utils::Error::raise(biorbd::utils::String(biorbd::muscles::STATE_TYPE_toStr(emg.type())) + " is not a valid type for setState");
+    *m_state = emg;
 }
 const biorbd::muscles::StateDynamics& biorbd::muscles::Muscle::state() const
 {

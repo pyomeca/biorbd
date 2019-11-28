@@ -10,7 +10,7 @@
 #include "Muscles/WrappingCylinder.h"
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/Muscle.h"
-#include "Muscles/PathChangers.h"
+#include "Muscles/PathModifiers.h"
 
 void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
@@ -44,9 +44,9 @@ void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
                 std::vector<biorbd::utils::Vector3d> via(model->muscleGroup(i).muscle(j).musclesPointsInGlobal());
 
                 // Si le nombre de wrap est > 0, c'est qu'il n'y a pas de viapoints et il n'y a qu'UN wrap
-                if (model->muscleGroup(i).muscle(j).pathChanger().nbWraps() > 0){
+                if (model->muscleGroup(i).muscle(j).pathModifier().nbWraps() > 0){
                     const biorbd::muscles::WrappingObject& wrappingObject(dynamic_cast<const biorbd::muscles::WrappingObject&>(
-                                                                              model->muscleGroup(0).muscle(0).pathChanger().object(0)));
+                                                                              model->muscleGroup(0).muscle(0).pathModifier().object(0)));
 
                     // De quel type
                     biorbd::utils::NODE_TYPE type(wrappingObject.typeOfNode());

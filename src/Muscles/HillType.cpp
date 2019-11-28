@@ -21,9 +21,9 @@ biorbd::muscles::HillType::HillType() :
     m_cste_FvCE_2(std::make_shared<double>(-.33/2 * *m_cste_FvCE_1/(1+*m_cste_FvCE_1))),
     m_cste_FlPE_1(std::make_shared<double>(10.0)),
     m_cste_FlPE_2(std::make_shared<double>(5.0)),
-    m_cste_forceExcentriqueMultiplier(std::make_shared<double>(1.8)),
+    m_cste_eccentricForceMultiplier(std::make_shared<double>(1.8)),
     m_cste_damping(std::make_shared<double>(0.1)),
-    m_cste_vitesseRaccourMax(std::make_shared<double>(10.0))
+    m_cste_maxShorteningSpeed(std::make_shared<double>(10.0))
 {
     setType();
 }
@@ -43,9 +43,9 @@ biorbd::muscles::HillType::HillType(
     m_cste_FvCE_2(std::make_shared<double>(-.33/2 * *m_cste_FvCE_1/(1+*m_cste_FvCE_1))),
     m_cste_FlPE_1(std::make_shared<double>(10.0)),
     m_cste_FlPE_2(std::make_shared<double>(5.0)),
-    m_cste_forceExcentriqueMultiplier(std::make_shared<double>(1.8)),
+    m_cste_eccentricForceMultiplier(std::make_shared<double>(1.8)),
     m_cste_damping(std::make_shared<double>(0.1)),
-    m_cste_vitesseRaccourMax(std::make_shared<double>(10.0))
+    m_cste_maxShorteningSpeed(std::make_shared<double>(10.0))
 {
     setType();
 }
@@ -66,9 +66,9 @@ biorbd::muscles::HillType::HillType(
     m_cste_FvCE_2(std::make_shared<double>(-.33/2 * *m_cste_FvCE_1/(1+*m_cste_FvCE_1))),
     m_cste_FlPE_1(std::make_shared<double>(10.0)),
     m_cste_FlPE_2(std::make_shared<double>(5.0)),
-    m_cste_forceExcentriqueMultiplier(std::make_shared<double>(1.8)),
+    m_cste_eccentricForceMultiplier(std::make_shared<double>(1.8)),
     m_cste_damping(std::make_shared<double>(0.1)),
-    m_cste_vitesseRaccourMax(std::make_shared<double>(10.0))
+    m_cste_maxShorteningSpeed(std::make_shared<double>(10.0))
 {
     setType();
 }
@@ -77,8 +77,8 @@ biorbd::muscles::HillType::HillType(
         const biorbd::utils::String &name,
         const biorbd::muscles::Geometry &geometry,
         const biorbd::muscles::Characteristics &characteristics,
-        const biorbd::muscles::PathChangers &pathChangers) :
-    biorbd::muscles::Muscle(name,geometry,characteristics,pathChangers),
+        const biorbd::muscles::PathModifiers &pathModifiers) :
+    biorbd::muscles::Muscle(name,geometry,characteristics,pathModifiers),
     m_damping(std::make_shared<double>()),
     m_FlCE(std::make_shared<double>()),
     m_FlPE(std::make_shared<double>()),
@@ -89,9 +89,9 @@ biorbd::muscles::HillType::HillType(
     m_cste_FvCE_2(std::make_shared<double>(-.33/2 * *m_cste_FvCE_1/(1+*m_cste_FvCE_1))),
     m_cste_FlPE_1(std::make_shared<double>(10.0)),
     m_cste_FlPE_2(std::make_shared<double>(5.0)),
-    m_cste_forceExcentriqueMultiplier(std::make_shared<double>(1.8)),
+    m_cste_eccentricForceMultiplier(std::make_shared<double>(1.8)),
     m_cste_damping(std::make_shared<double>(0.1)),
-    m_cste_vitesseRaccourMax(std::make_shared<double>(10.0))
+    m_cste_maxShorteningSpeed(std::make_shared<double>(10.0))
 {
     setType();
 }
@@ -99,9 +99,9 @@ biorbd::muscles::HillType::HillType(
         const biorbd::utils::String& name,
         const biorbd::muscles::Geometry& geometry,
         const biorbd::muscles::Characteristics& characteristics,
-        const biorbd::muscles::PathChangers & wrapper,
+        const biorbd::muscles::PathModifiers &pathModifiers,
         const biorbd::muscles::StateDynamics & state) :
-    biorbd::muscles::Muscle(name,geometry,characteristics,wrapper,state),
+    biorbd::muscles::Muscle(name,geometry,characteristics,pathModifiers,state),
     m_damping(std::make_shared<double>()),
     m_FlCE(std::make_shared<double>()),
     m_FlPE(std::make_shared<double>()),
@@ -112,18 +112,17 @@ biorbd::muscles::HillType::HillType(
     m_cste_FvCE_2(std::make_shared<double>(-.33/2 * *m_cste_FvCE_1/(1+*m_cste_FvCE_1))),
     m_cste_FlPE_1(std::make_shared<double>(10.0)),
     m_cste_FlPE_2(std::make_shared<double>(5.0)),
-    m_cste_forceExcentriqueMultiplier(std::make_shared<double>(1.8)),
+    m_cste_eccentricForceMultiplier(std::make_shared<double>(1.8)),
     m_cste_damping(std::make_shared<double>(0.1)),
-    m_cste_vitesseRaccourMax(std::make_shared<double>(10.0))
+    m_cste_maxShorteningSpeed(std::make_shared<double>(10.0))
 {
     setType();
 }
 
-biorbd::muscles::HillType::HillType(
-        const biorbd::muscles::Muscle &muscle) :
-    biorbd::muscles::Muscle (muscle)
+biorbd::muscles::HillType::HillType(const biorbd::muscles::Muscle &other) :
+    biorbd::muscles::Muscle (other)
 {
-    const biorbd::muscles::HillType & m_tp(dynamic_cast<const biorbd::muscles::HillType &>(muscle));
+    const biorbd::muscles::HillType & m_tp(dynamic_cast<const biorbd::muscles::HillType &>(other));
     m_damping = m_tp.m_damping;
     m_FlCE = m_tp.m_FlCE;
     m_FlPE = m_tp.m_FlPE;
@@ -134,16 +133,16 @@ biorbd::muscles::HillType::HillType(
     m_cste_FvCE_2 = m_tp.m_cste_FvCE_2;
     m_cste_FlPE_1 = m_tp.m_cste_FlPE_1;
     m_cste_FlPE_2 = m_tp.m_cste_FlPE_2;
-    m_cste_forceExcentriqueMultiplier = m_tp.m_cste_forceExcentriqueMultiplier;
+    m_cste_eccentricForceMultiplier = m_tp.m_cste_eccentricForceMultiplier;
     m_cste_damping = m_tp.m_cste_damping;
-    m_cste_vitesseRaccourMax = m_tp.m_cste_vitesseRaccourMax;
+    m_cste_maxShorteningSpeed = m_tp.m_cste_maxShorteningSpeed;
 }
 
 biorbd::muscles::HillType::HillType(
-        const std::shared_ptr<biorbd::muscles::Muscle> muscle) :
-    biorbd::muscles::Muscle (muscle)
+        const std::shared_ptr<biorbd::muscles::Muscle> other) :
+    biorbd::muscles::Muscle (other)
 {
-    const std::shared_ptr<biorbd::muscles::HillType> m_tp(std::dynamic_pointer_cast<biorbd::muscles::HillType>(muscle));
+    const std::shared_ptr<biorbd::muscles::HillType> m_tp(std::dynamic_pointer_cast<biorbd::muscles::HillType>(other));
     biorbd::utils::Error::check(m_tp != nullptr, "Muscle must be of a Hill Type");
     m_damping = m_tp->m_damping;
     m_FlCE = m_tp->m_FlCE;
@@ -155,9 +154,9 @@ biorbd::muscles::HillType::HillType(
     m_cste_FvCE_2 = m_tp->m_cste_FvCE_2;
     m_cste_FlPE_1 = m_tp->m_cste_FlPE_1;
     m_cste_FlPE_2 = m_tp->m_cste_FlPE_2;
-    m_cste_forceExcentriqueMultiplier = m_tp->m_cste_forceExcentriqueMultiplier;
+    m_cste_eccentricForceMultiplier = m_tp->m_cste_eccentricForceMultiplier;
     m_cste_damping = m_tp->m_cste_damping;
-    m_cste_vitesseRaccourMax = m_tp->m_cste_vitesseRaccourMax;
+    m_cste_maxShorteningSpeed = m_tp->m_cste_maxShorteningSpeed;
 }
 
 biorbd::muscles::HillType biorbd::muscles::HillType::DeepCopy() const
@@ -180,9 +179,9 @@ void biorbd::muscles::HillType::DeepCopy(const biorbd::muscles::HillType &other)
     *m_cste_FvCE_2 = *other.m_cste_FvCE_2;
     *m_cste_FlPE_1 = *other.m_cste_FlPE_1;
     *m_cste_FlPE_2 = *other.m_cste_FlPE_2;
-    *m_cste_forceExcentriqueMultiplier = *other.m_cste_forceExcentriqueMultiplier;
+    *m_cste_eccentricForceMultiplier = *other.m_cste_eccentricForceMultiplier;
     *m_cste_damping = *other.m_cste_damping;
-    *m_cste_vitesseRaccourMax = *other.m_cste_vitesseRaccourMax;
+    *m_cste_maxShorteningSpeed = *other.m_cste_maxShorteningSpeed;
 }
 
 const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::HillType::force(
@@ -224,7 +223,9 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::Hi
         int)
 {
     biorbd::utils::Error::raise("Hill type needs velocity");
+#ifdef _WIN32
     return *m_force; // Will never reach here
+#endif
 }
 
 double biorbd::muscles::HillType::FlCE(
@@ -258,7 +259,7 @@ void biorbd::muscles::HillType::setType()
 }
 
 void biorbd::muscles::HillType::computeDamping(){
-    *m_damping = position().velocity() / (*m_cste_vitesseRaccourMax * m_characteristics->optimalLength()) * *m_cste_damping;
+    *m_damping = position().velocity() / (*m_cste_maxShorteningSpeed * m_characteristics->optimalLength()) * *m_cste_damping;
 }
 
 void biorbd::muscles::HillType::computeFlCE(const biorbd::muscles::StateDynamics &emg){
@@ -271,11 +272,11 @@ void biorbd::muscles::HillType::computeFvCE(){
     // The relation is different if velocity< 0  or > 0
     double v = m_position->velocity();
     if (v<=0)
-        *m_FvCE = (1-abs(v) / *m_cste_vitesseRaccourMax) /
-            (1+abs(v) / *m_cste_vitesseRaccourMax / *m_cste_FvCE_1);
+        *m_FvCE = (1-abs(v) / *m_cste_maxShorteningSpeed) /
+            (1+abs(v) / *m_cste_maxShorteningSpeed / *m_cste_FvCE_1);
     else
-        *m_FvCE = (1-1.33*v / *m_cste_vitesseRaccourMax / *m_cste_FvCE_2) /
-                   (1-v / *m_cste_vitesseRaccourMax / *m_cste_FvCE_2);
+        *m_FvCE = (1-1.33*v / *m_cste_maxShorteningSpeed / *m_cste_FvCE_2) /
+                   (1-v / *m_cste_maxShorteningSpeed / *m_cste_FvCE_2);
 }
 
 void biorbd::muscles::HillType::computeFlPE(){

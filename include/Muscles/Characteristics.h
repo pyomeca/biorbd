@@ -10,7 +10,7 @@ namespace  muscles {
 class State;
 class FatigueParameters;
 ///
-/// \brief Class Characterisitcs that holds that muscle characteristics
+/// \brief Class Holds that muscle characteristics
 ///
 class BIORBD_API Characteristics
 {
@@ -24,19 +24,20 @@ public:
     /// \brief Construct characteristics from other characteristics
     /// \param other The other characteristics
     ///
-    Characteristics(const biorbd::muscles::Characteristics& other);
+    Characteristics(
+            const biorbd::muscles::Characteristics& other);
 
     ///
     /// \brief Construct characteristics
-    /// \param optLength Length without tension
-    /// \param fmax The maximal isometric force
-    /// \param PCSA  Physiological cross-sectional area of the muscle 
+    /// \param optLength Optimal length (where maximal force occurs)
+    /// \param fmax The maximal isometric force at optimal length
+    /// \param PCSA Physiological cross-sectional area of the muscle
     /// \param tendonSlackLength The tendon slack length
     /// \param pennAngle The angle of pennation
-    /// \param stateMax Maximal excitation and activation of the muscle
-    /// \param fatigueParameters The fatigue parameters
-    /// \param GeneralizedTorqueAct Time activation constant (default: 0.01)
-    /// \param GeneralizedTorqueDeact Time deactivation constant (default: 0.04)
+    /// \param emgMax Maximal excitation and activation of the muscle
+    /// \param fatigueParameters The fatigue model
+    /// \param torqueAct Time activation constant (default: 0.01)
+    /// \param torqueDeact Time deactivation constant (default: 0.04)
     /// \param minAct Minimal activation (default: 0.01)
     ///
     Characteristics(
@@ -45,10 +46,10 @@ public:
             double PCSA,
             double tendonSlackLength,
             double pennAngle,
-            const biorbd::muscles::State& stateMax,
+            const biorbd::muscles::State& emgMax,
             const biorbd::muscles::FatigueParameters& fatigueParameters,
-            double GeneralizedTorqueAct = 0.01,
-            double GeneralizedTorqueDeact = 0.04,
+            double torqueAct = 0.01,
+            double torqueDeact = 0.04,
             double minAct = 0.01);
 
     ///
@@ -66,21 +67,39 @@ public:
     /// \brief Deep copy of characteristics from another characteristics 
     /// \param other The characteristics to copy from
     ///
-    void DeepCopy(const biorbd::muscles::Characteristics& other);
+    void DeepCopy(
+            const biorbd::muscles::Characteristics& other);
 
 
     ///
-    /// \brief Return the length without tension
+    /// \brief Set the length without tension
+    /// \param val Value of the length without tension
+    ///
+    void setOptimalLength(double val);
+
+    ///
+    /// \brief Return the optimal length at which maximal force occurs
     /// \return The length without tension
     ///
     virtual double optimalLength() const;
 
     ///
-    /// \brief Return the maximal isometric force
+    /// \brief Set the maximal isometric force
+    /// \param val Value of the maximal isometric force
+    ///
+    virtual void setForceIsoMax(double val);
+
+    ///
+    /// \brief Return the maximal isometric force at optimal length
     /// \return The maximal isometric force
     ///    
     double forceIsoMax() const;
 
+    ///
+    /// \brief Set the tendon slack length
+    /// \param val Value of the tendon slack length
+    ///
+    void setTendonSlackLength(double val);
     ///
     /// \brief Return the tendon slack length
     /// \return The tendon slack length
@@ -88,10 +107,21 @@ public:
     double tendonSlackLength() const;
 
     ///
+    /// \brief Set the angle of pennation
+    /// \param val Value of the angle of pennation
+    ///
+    void setPennationAngle(double val);
+    ///
     /// \brief Return the angle of pennation
     /// \return The angle of pennation
     /// 
     double pennationAngle() const;
+
+    ///
+    /// \brief Set the physiological cross-sectional area of the muscle
+    /// \param val Value of the physiological cross-sectional area of the muscle
+    ///
+    void setPCSA(double val);
 
     ///
     /// \brief Return the physiological cross-sectional area of the muscle 
@@ -103,7 +133,7 @@ public:
     /// \brief Set the minimal activation of the muscle
     /// \param val The value of the minimal activation of the muscle
     ///
-    void minActivation(double val);
+    void setMinActivation(double val);
 
     ///
     /// \brief Return the minimal activation of the muscle
@@ -115,61 +145,32 @@ public:
     /// \brief Set the time activation constant
     /// \param val The value of the time activation constant 
     ///
-    void setGeneralizedTorqueActivation(double val);
+    void setTorqueActivation(double val);
 
     ///
     /// \brief Return the time activation constant
     /// \return The time activation constant
     ///
-    double GeneralizedTorqueActivation() const;
+    double torqueActivation() const;
     
     ///
     /// \brief Set the time deactivation constant
     /// \param val The value of the time deactivation constant
     ///
-    void setGeneralizedTorqueDeactivation(double val);
+    void setTorqueDeactivation(double val);
 
     ///
     /// \brief Return the time deactivation constant
     /// \return The time deactivation constant
     ///
-    double GeneralizedTorqueDeactivation() const;
-
-    ///
-    /// \brief Set the length without tension
-    /// \param val Value of the length without tension
-    ///
-    void setOptimalLength(double val);
-
-    ///
-    /// \brief Set the maximal isometric force
-    /// \param val Value of the maximal isometric force
-    ///
-    virtual void setForceIsoMax(double val);
-
-    ///
-    /// \brief Set the physiological cross-sectional area of the muscle
-    /// \param val Value of the physiological cross-sectional area of the muscle
-    ///
-    void setPCSA(double val);
-
-    ///
-    /// \brief Set the tendon slack length
-    /// \param val Value of the tendon slack length
-    ///
-    void setTendonSlackLength(double val);
-
-    ///
-    /// \brief Set the angle of pennation
-    /// \param val Value of the angle of pennation
-    ///
-    void setPennationAngle(double val);
+    double torqueDeactivation() const;
 
     ///
     /// \brief Set the maximal excitation and activation of the muscle
-    /// \param stateMax Value of the maximal excitation and activation of the muscle
+    /// \param emgMax Value of the maximal excitation and activation of the muscle
     ///
-    void setStateMax(const biorbd::muscles::State &stateMax);
+    void setStateMax(
+            const biorbd::muscles::State &emgMax);
 
     ///
     /// \brief Return the maximal excitation and activation of the muscle
@@ -178,15 +179,16 @@ public:
     const biorbd::muscles::State& stateMax() const;
 
     ///
+    /// \brief Set the fatigue parameters
+    /// \param fatigueParameters The values of the fatigue parameters
+    ///
+    void setFatigueParameters(
+            const biorbd::muscles::FatigueParameters& fatigueParameters);
+    ///
     /// \brief Return the fatigue parameters
     /// \return The fatigue parameters
     ///
     const biorbd::muscles::FatigueParameters& fatigueParameters() const;
-    ///
-    /// \brief Set the fatigue parameters
-    /// \param fatigueParameters The values of the fatigue parameters
-    ///
-    void fatigueParameters(const biorbd::muscles::FatigueParameters& fatigueParameters);
 
 protected:
     std::shared_ptr<double> m_optimalLength; ///< Length without tension
@@ -198,8 +200,8 @@ protected:
 
     // Parametre d'activation
     std::shared_ptr<double> m_minActivation; ///< Minimal activation 
-    std::shared_ptr<double> m_GeneralizedTorqueActivation; ///<  Time activation constant
-    std::shared_ptr<double> m_GeneralizedTorqueDeactivation; ///< Time deactivation constant
+    std::shared_ptr<double> m_torqueActivation; ///<  Time activation constant
+    std::shared_ptr<double> m_torqueDeactivation; ///< Time deactivation constant
 
     // Fatigue parameters
     std::shared_ptr<biorbd::muscles::FatigueParameters> m_fatigueParameters; ///< Fatigue parameters

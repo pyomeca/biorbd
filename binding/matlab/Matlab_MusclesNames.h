@@ -7,7 +7,7 @@
 #include "processArguments.h"
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/Muscle.h"
-#include "Muscles/PathChangers.h"
+#include "Muscles/PathModifiers.h"
 
 void Matlab_MusclesNames( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
@@ -37,9 +37,9 @@ void Matlab_MusclesNames( int, mxArray *plhs[],
             mxSetCell(muscleNames, j, name); // Les mettres une cellule
 
             // Pour chaque via points / wraping
-            mxArray *viaNames = mxCreateCellMatrix(model->muscleGroup(i).muscle(j).pathChanger().nbObjects(),1);
-            for (unsigned int k=0; k<model->muscleGroup(i).muscle(j).pathChanger().nbObjects(); ++k){
-                mxArray * viaName = mxCreateString(model->muscleGroup(i).muscle(j).pathChanger().object(k).name().c_str()); // Recueillir le nom du muscle
+            mxArray *viaNames = mxCreateCellMatrix(model->muscleGroup(i).muscle(j).pathModifier().nbObjects(),1);
+            for (unsigned int k=0; k<model->muscleGroup(i).muscle(j).pathModifier().nbObjects(); ++k){
+                mxArray * viaName = mxCreateString(model->muscleGroup(i).muscle(j).pathModifier().object(k).name().c_str()); // Recueillir le nom du muscle
                 mxSetCell(viaNames, k, viaName); // Les mettres une cellule
             }
             mxSetCell(viaNamesByMuscles, j, viaNames); // Mettre la matrice de viapoints dans une matrice

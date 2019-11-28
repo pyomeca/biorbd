@@ -8,16 +8,16 @@ namespace biorbd {
 namespace muscles {
 
 ///
-/// \brief Class FatigueDynamicStateXia that holds FatigueDynamicState class
+/// \brief Implementation of Xia (https://www.sciencedirect.com/science/article/pii/S0021929008003692) dynamic fatigue model
 /// 
 class BIORBD_API FatigueDynamicStateXia : public biorbd::muscles::FatigueDynamicState
 {
 public:
     ///
     /// \brief Construct FatigueDynamicStateXia
-    /// \param active Active muscle (default:1)
-    /// \param fatigued Fatigued muscle (default: 0)
-    /// \param resting Resting muscle (default: 0)
+    /// \param active Active muscle
+    /// \param fatigued Fatigued muscle
+    /// \param resting Resting muscle
     ///
     FatigueDynamicStateXia(
             double active = 1,
@@ -26,9 +26,10 @@ public:
 
     ///
     /// \brief Contruct FatigueDynamicsStateXia from another fatigue state
-    /// \param m The other fatigue state
+    /// \param other The other fatigue state
     ///
-    FatigueDynamicStateXia(const std::shared_ptr<biorbd::muscles::FatigueState> m);
+    FatigueDynamicStateXia(
+            const std::shared_ptr<biorbd::muscles::FatigueState> other);
 
     ///
     /// \brief Deep copy of the fatigue dynamic state xia
@@ -40,10 +41,11 @@ public:
     /// \brief Deep copy of a fatigue dynamic state xia
     /// \param other The fatigue dynamic state xia to copy
     ///
-    void DeepCopy(const biorbd::muscles::FatigueDynamicStateXia& other);
+    void DeepCopy(
+            const biorbd::muscles::FatigueDynamicStateXia& other);
 
     ///
-    /// \brief Time derivative state TODO?
+    /// \brief Time derivative state of the current states
     /// \param emg The EMG data
     /// \param characteristics The muscle characteristics
     ///
