@@ -11,31 +11,33 @@ class String;
 
 namespace muscles {
 ///
-    /// \brief Class ViaPoint
-    ///
+/// \brief Via point of a muscle
+///
 class BIORBD_API ViaPoint : public biorbd::utils::Vector3d{
 public:
     ///
     /// \brief Contruct ViaPoint
     ///
     ViaPoint();
+
     ///
     /// \brief Construct ViaPoint
-    /// \param x Position of point on x axis
-    /// \param y Position of point on y axis
-    /// \param z Position of point on z axis
+    /// \param X-Component of the ViaPoint
+    /// \param Y-Component of the ViaPoint
+    /// \param Z-Component of the ViaPoint
     ///
     ViaPoint(
             double x,
             double y,
             double z);
+
     ///
     /// \brief Construct ViaPoint
-    /// \param x Position of point on x axis
-    /// \param y Position of point on y axis
-    /// \param z Position of point on z axis
-    /// \param name The name of the node
-    /// \param parentName The name of the parent
+    /// \param X-Component of the ViaPoint
+    /// \param Y-Component of the ViaPoint
+    /// \param Z-Component of the ViaPoint
+    /// \param name The name of the via point
+    /// \param parentName The name of the parent segment
     ///
     ViaPoint(
             double x,
@@ -45,11 +47,12 @@ public:
             const biorbd::utils::String &parentName);
 
     ///
-    /// \brief Construct ViaPoint from a 3D node
-    /// \param other The 3D node
+    /// \brief Construct ViaPoint from a vector
+    /// \param other The vector
     ///
     ViaPoint(
             const biorbd::utils::Vector3d& other);
+
     ///
     /// \brief Construct ViaPoint from another ViaPoint
     /// \param other The other ViaPoint
@@ -62,6 +65,7 @@ public:
     /// \return A deep copy of a ViaPoint
     ///
     biorbd::muscles::ViaPoint DeepCopy() const;
+
     ///
     /// \brief Deep copy of a ViaPoint into another ViaPoint
     /// \param other The ViaPoint to copy

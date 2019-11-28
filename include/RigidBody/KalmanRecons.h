@@ -92,8 +92,8 @@ public:
 
     ///
     /// \brief Get the state (Q, Qdot, Qddot)
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param Qddot The acceleration variables of the model
     ///
     void getState(

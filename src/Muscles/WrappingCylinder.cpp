@@ -88,7 +88,7 @@ void biorbd::muscles::WrappingCylinder::wrapPoints(
     p_glob.m_p1->applyRT(rt.transpose());
     p_glob.m_p2->applyRT(rt.transpose());
 
-    //Find the tangents of these points to the circle (cylinder seen from above)
+    // Find the tangents of these points to the circle (cylinder seen from above)
     biorbd::utils::Vector3d p1_tan(0, 0, 0);
     biorbd::utils::Vector3d p2_tan(0, 0, 0);
     findTangentToCircle(*p_glob.m_p1, p1_tan);
@@ -154,24 +154,19 @@ const biorbd::utils::RotoTrans& biorbd::muscles::WrappingCylinder::RT(
     return *m_RT;
 }
 
-double biorbd::muscles::WrappingCylinder::diameter() const
-{
-    return *m_dia;
-}
-
 void biorbd::muscles::WrappingCylinder::setDiameter(double val)
 {
     *m_dia = val;
 }
 
-double biorbd::muscles::WrappingCylinder::rayon() const
+double biorbd::muscles::WrappingCylinder::diameter() const
 {
-    return *m_dia/2;
+    return *m_dia;
 }
 
-double biorbd::muscles::WrappingCylinder::length() const
+double biorbd::muscles::WrappingCylinder::radius() const
 {
-    return *m_length;
+    return *m_dia/2;
 }
 
 void biorbd::muscles::WrappingCylinder::setLength(double val)
@@ -179,16 +174,21 @@ void biorbd::muscles::WrappingCylinder::setLength(double val)
     *m_length = val;
 }
 
+double biorbd::muscles::WrappingCylinder::length() const
+{
+    return *m_length;
+}
+
 void biorbd::muscles::WrappingCylinder::findTangentToCircle(
         const biorbd::utils::Vector3d& p,
         biorbd::utils::Vector3d& p_tan) const {
     double p_dot = p.block(0,0,2,1).dot(p.block(0,0,2,1));
-    const Eigen::Vector2d& Q0(rayon()*rayon()/p_dot*p.block(0,0,2,1));
+    const Eigen::Vector2d& Q0(radius()*radius()/p_dot*p.block(0,0,2,1));
     Eigen::Matrix2d tp;
     tp << 0, -1,
           1, 0;
 
-    const Eigen::Vector2d& T(rayon()/p_dot*std::sqrt(p_dot-rayon()*rayon()) * tp * p.block(0,0,2,1));
+    const Eigen::Vector2d& T(radius()/p_dot*std::sqrt(p_dot-radius()*radius()) * tp * p.block(0,0,2,1));
 
     // GEt the tangent on both sides
     NodeMusclePair m(p,p);
@@ -215,28 +215,27 @@ void biorbd::muscles::WrappingCylinder::selectTangents(
     }
 
 }
-bool biorbd::muscles::WrappingCylinder::findVerticalNode(
-        const NodeMusclePair &glob,
-        NodeMusclePair &wrapper) const {
+bool biorbd::muscles::WrappingCylinder::findVerticalNode(const NodeMusclePair &pointsInGlobal,
+        NodeMusclePair &pointsToWrap) const {
     // Before eerything, make sure the point wrap
-    if (!checkIfWraps(glob, wrapper)){ // If it doesn't pass by the wrap, put NaN and stop
+    if (!checkIfWraps(pointsInGlobal, pointsToWrap)){ // If it doesn't pass by the wrap, put NaN and stop
         for (unsigned int i=0; i<3; ++i){
-            (*wrapper.m_p1)(i) = static_cast<double>(NAN);
-            (*wrapper.m_p2)(i) = static_cast<double>(NAN);
+            (*pointsToWrap.m_p1)(i) = static_cast<double>(NAN);
+            (*pointsToWrap.m_p2)(i) = static_cast<double>(NAN);
         }
         return false;
     }
     else{
         // Make sure the z component won't cause any problem in the rotation computation
-        (*wrapper.m_p1)(2) = 0;
-        (*wrapper.m_p2)(2) = 0;
+        (*pointsToWrap.m_p1)(2) = 0;
+        (*pointsToWrap.m_p2)(2) = 0;
     }
 
 
     // Strategy : Find the matrix of the passage between the aligned points in x and the cylinder. Find the location where the points cross the cylinder
 
     // X is the straight line between the two points
-    biorbd::utils::Vector3d X(*glob.m_p2 - *glob.m_p1);
+    biorbd::utils::Vector3d X(*pointsInGlobal.m_p2 - *pointsInGlobal.m_p1);
     // Z is the empty axis of the cylinder
     biorbd::utils::Vector3d Z(0,0,1);
 
@@ -255,53 +254,53 @@ bool biorbd::muscles::WrappingCylinder::findVerticalNode(
          0,    0,    0,    1;
 
     // Turn the points in the R reference
-    biorbd::utils::Vector3d globA(*glob.m_p1);
-    biorbd::utils::Vector3d globB(*glob.m_p2);
-    biorbd::utils::Vector3d wrapA(*wrapper.m_p1);
-    biorbd::utils::Vector3d wrapB(*wrapper.m_p2);
+    biorbd::utils::Vector3d globA(*pointsInGlobal.m_p1);
+    biorbd::utils::Vector3d globB(*pointsInGlobal.m_p2);
+    biorbd::utils::Vector3d wrapA(*pointsToWrap.m_p1);
+    biorbd::utils::Vector3d wrapB(*pointsToWrap.m_p2);
     globA.applyRT(R);
     globB.applyRT(R);
     wrapA.applyRT(R);
     wrapB.applyRT(R);
 
     // The height depends on the relative distance
-    (*wrapper.m_p1)(2) = (wrapA(0)-globB(0)) / (globA(0)-globB(0)) * ((*glob.m_p1)(2)-(*glob.m_p2)(2)) + (*glob.m_p2)(2);
-    (*wrapper.m_p2)(2) = (wrapB(0)-globB(0)) / (globA(0)-globB(0)) * ((*glob.m_p1)(2)-(*glob.m_p2)(2)) + (*glob.m_p2)(2);
+    (*pointsToWrap.m_p1)(2) = (wrapA(0)-globB(0)) / (globA(0)-globB(0)) * ((*pointsInGlobal.m_p1)(2)-(*pointsInGlobal.m_p2)(2)) + (*pointsInGlobal.m_p2)(2);
+    (*pointsToWrap.m_p2)(2) = (wrapB(0)-globB(0)) / (globA(0)-globB(0)) * ((*pointsInGlobal.m_p1)(2)-(*pointsInGlobal.m_p2)(2)) + (*pointsInGlobal.m_p2)(2);
 
     return true;
 }
 bool biorbd::muscles::WrappingCylinder::checkIfWraps(
-        const NodeMusclePair &glob,
-        NodeMusclePair &wrapper) const {
+        const NodeMusclePair &pointsInGlobal,
+        NodeMusclePair &pointsToWrap) const {
     bool isWrap = true;
 
     // First quick tests
     // if both points are on the left and we have to go left
     if (m_isCylinderPositiveSign){
-        if ((*glob.m_p1)(0) > rayon() && (*glob.m_p2)(0) > rayon())
+        if ((*pointsInGlobal.m_p1)(0) > radius() && (*pointsInGlobal.m_p2)(0) > radius())
             isWrap = false;
     }
     // if both points are on the right and we have to go right
     else{
-        if ((*glob.m_p1)(0) < -rayon() && (*glob.m_p2)(0) < -rayon())
+        if ((*pointsInGlobal.m_p1)(0) < -radius() && (*pointsInGlobal.m_p2)(0) < -radius())
             isWrap = false;
     }
 
     // If we are on top of the wrap, it is impossible to determine because the wrap Si on est en haut du wrap*, 
     // is not a cylinder but a half-cylinder
     // * en haut lorsque vue de dessus avec l'axe y pointant vers le haut...
-    if ( ( (*glob.m_p1)(1) > 0 && (*glob.m_p2)(1) > 0) || ( (*glob.m_p1)(1) < 0 && (*glob.m_p2)(1) < 0) )
+    if ( ( (*pointsInGlobal.m_p1)(1) > 0 && (*pointsInGlobal.m_p2)(1) > 0) || ( (*pointsInGlobal.m_p1)(1) < 0 && (*pointsInGlobal.m_p2)(1) < 0) )
         isWrap = false;
 
     // If we have a height* smaller than the radius, there is a numerical aberation
     // * en haut lorsque vue de dessus avec l'axe y pointant vers le haut...
-    if ( abs( (*glob.m_p1)(1)) < rayon() || abs( (*glob.m_p2)(1)) < rayon() )
+    if ( abs( (*pointsInGlobal.m_p1)(1)) < radius() || abs( (*pointsInGlobal.m_p2)(1)) < radius() )
         isWrap = false;
 
     // If we have reached this stage, one test is left
     // If the straight line between the two points go through the cylinder,there is a wrap
-    if (    ( (*wrapper.m_p1)(0) < (*wrapper.m_p2)(0) && (*glob.m_p1)(0) > (*glob.m_p2)(0)) ||
-            ( (*wrapper.m_p1)(0) > (*wrapper.m_p2)(0) && (*glob.m_p1)(0) < (*glob.m_p2)(0))   )
+    if (    ( (*pointsToWrap.m_p1)(0) < (*pointsToWrap.m_p2)(0) && (*pointsInGlobal.m_p1)(0) > (*pointsInGlobal.m_p2)(0)) ||
+            ( (*pointsToWrap.m_p1)(0) > (*pointsToWrap.m_p2)(0) && (*pointsInGlobal.m_p1)(0) < (*pointsInGlobal.m_p2)(0))   )
         isWrap = false;
     else
         isWrap = true;
@@ -314,7 +313,7 @@ double biorbd::muscles::WrappingCylinder::computeLength(const NodeMusclePair &p)
                                             /
              std::sqrt( ((*p.m_p1)(0) * (*p.m_p1)(0) + (*p.m_p1)(1) * (*p.m_p1)(1)) *
                         ( (*p.m_p2)(0) * (*p.m_p2)(0) + (*p.m_p2)(1) * (*p.m_p2)(1))   )
-            ) * rayon();
+            ) * radius();
 
     return std::sqrt(arc*arc + ( (*p.m_p1)(2) - (*p.m_p2)(2)) * ( (*p.m_p1)(2) - (*p.m_p2)(2))  );
 }

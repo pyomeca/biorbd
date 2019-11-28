@@ -47,7 +47,8 @@ void biorbd::muscles::StateDynamicsBuchanan::DeepCopy(
     *m_excitationDot = *other.m_excitationDot;
 }
 
-void biorbd::muscles::StateDynamicsBuchanan::shapeFactor(double shape_factor)
+void biorbd::muscles::StateDynamicsBuchanan::shapeFactor(
+        double shape_factor)
 {
     *m_shapeFactor = shape_factor;
 

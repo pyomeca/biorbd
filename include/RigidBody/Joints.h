@@ -461,7 +461,7 @@ public:
 
     ///
     /// \brief Return the position of the center of mass of segment i
-    /// \param Q The position variables of the model
+    /// \param Q The generalized coordinates of the model
     /// \param i The segment identification
     /// \param updateKin (default: True)
     /// \return The position of the center of mass of segment i
@@ -473,8 +473,8 @@ public:
 
     ///
     /// \brief Return the velocity of the center of mass 
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \return The velocity of the center of mass
     ///
     biorbd::utils::Vector3d CoMdot(
@@ -483,8 +483,8 @@ public:
 
     ///
     /// \brief Return the acceleration of the center of mass 
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param Qddot The acceleration variables of the model
     /// \return The acceleration of the center of mass
     ///
@@ -495,8 +495,8 @@ public:
 
     /// 
     /// \brief Return the velocity of the center of mass of each segment
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param updateKin (default: True)
     /// \return The velocity of the center of mass of each segment
     ///
@@ -507,8 +507,8 @@ public:
 
     ///
     /// \brief Return the velocity of the center of mass of segment i
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param i The segment identification
     /// \param updateKin (default: True)
     /// \return The velocity of the center of mass of segment i
@@ -521,8 +521,8 @@ public:
 
     ///
     /// \brief Return the acceleration of the center of mass of each segment
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param Qddot The acceleration variables of the model
     /// \param updateKin (default: True)
     /// \return The acceleration of the center of mass of each segment
@@ -535,8 +535,8 @@ public:
 
     ///
     /// \brief Return the acceleration of the center of mass of segment i
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param Qddot The acceleration variables of the model
     /// \param i The segment identification
     /// \param updateKin (default: True)
@@ -551,7 +551,7 @@ public:
 
     /// 
     /// \brief Return the Jacobian of the center of mass
-    /// \param Q The position variables of the model
+    /// \param Q The generalized coordinates of the model
     /// \return The Jacobian of the center of mass
     ///
     biorbd::utils::Matrix CoMJacobian(
@@ -562,7 +562,7 @@ public:
     // -- MESH OF THE MODEL -- //
     ///
     /// \brief Return the position of the meshing for all segments
-    /// \param Q The position variables of the model
+    /// \param Q The generalized coordinates of the model
     /// \param updateKin (default: True)
     /// \return The position of the meshing for all segments
     ///
@@ -572,7 +572,7 @@ public:
 
     ///
     /// \brief Return the position of the meshing for segment i
-    /// \param Q The position variables of the model
+    /// \param Q The generalized coordinates of the model
     /// \param idx The segment identification
     /// \param updateKin (default: True)
     /// \return The position of the meshing for segment i
@@ -584,7 +584,7 @@ public:
 
     ///
     /// \brief Return the mesh points in matrix
-    /// \param Q The position variables of the model
+    /// \param Q The generalized coordinates of the model
     /// \param updateKin (default: True)
     /// \return All the mesh points
     ///
@@ -625,8 +625,8 @@ public:
 
     ///
     /// \brief Calculate the angular momentum (wrapper for the angular momentum)
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param updateKin (default: True)
     /// \return The angular momentum
     ///
@@ -638,8 +638,8 @@ public:
    
     ///
     /// \brief Calculate the angular momentum 
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param update_kinematics
     /// \return The angular momentum
     ///
@@ -650,8 +650,8 @@ public:
 
     ///
     /// \brief Calculate the angular momentum 
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param Qddot The acceleration variables of the model
     /// \param update_kinematics
     /// \return The angular momentum
@@ -664,8 +664,8 @@ public:
 
     ///
     /// \brief Calculate the segment angular momentum 
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param update_kinematics Update kinematics if necessary
     /// \return The segment angular momentum
     ///
@@ -676,8 +676,8 @@ public:
 
     ///
     /// \brief Calculate the segment angular momentum 
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param Qddot The acceleration variables of the model
     /// \param update_kinematics Update kinematics if necessary
     /// \return The segment angular momentum
@@ -691,7 +691,7 @@ public:
 
     ///
     /// \brief Calculate the Jacobian matrix of a rotation matrix
-    /// \param Q The position variables of the model
+    /// \param Q The generalized coordinates of the model
     /// \param body_id The body identification
     /// \param rotation The rotation matrix
     /// \param G TODO?
@@ -706,8 +706,8 @@ public:
 
     ///
     /// \brief Forward Dynamics TODO
-    /// \param Q The position variables of the model
-    /// \param QDot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param GeneralizedTorque The generalized torque of the model
     /// \param CS The constraint set
     /// \param QDDot The acceleration variables of the model
@@ -720,8 +720,8 @@ public:
             RigidBodyDynamics::Math::VectorNd &QDDot);
     ///
     /// \brief Return the derivate of Q in function of Qdot (if not Quaternion, Qdot is directly returned)
-    /// \param Q The position variables of the model
-    /// \param QDot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param k_stab 
     /// \return The derivate of Q in function of Qdot
     ///
@@ -748,7 +748,7 @@ protected:
 
     ///
     /// \brief Calculate the JCS in global
-    /// \param Q The position variables of the model
+    /// \param Q The generalized coordinates of the model
     /// \param body_id The body identification
     /// \param update_kinematics Update the kinematics if necessary
     /// \return The JCS in global

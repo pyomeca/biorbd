@@ -7,7 +7,7 @@
 namespace biorbd {
 namespace muscles {
 ///
-/// \brief Class WrappingCylinder
+/// \brief Cylinder object that makes the muscle to wrap around
 ///
 class BIORBD_API WrappingCylinder : public biorbd::muscles::WrappingObject
 {
@@ -16,9 +16,10 @@ public:
     /// \brief Construct a wrapping cylinder
     ///
     WrappingCylinder();
+
     ///
     /// \brief Construct a wrapping cylinder
-    /// \param rt RotoTrans matrix
+    /// \param rt RotoTrans matrix of the origin of the cylinder
     /// \param diameter Diameter of the cylinder
     /// \param length Length of the cylinder
     /// \param isCylinderPositiveSign If cylinder is of positive sign
@@ -28,14 +29,15 @@ public:
             double diameter,
             double length,
             bool isCylinderPositiveSign);
+
     ///
     /// \brief Construct a wrapping cylinder
     /// \param rt RotoTrans matrix
     /// \param diameter Diameter of the cylinder
     /// \param length Length of the cylinder
     /// \param isCylinderPositiveSign If cylinder is of positive sign
-    /// \param name The name
-    /// \param parentName The parent name
+    /// \param name The name of the cylinder
+    /// \param parentName The parent name segment
     ///
     WrappingCylinder(
             const biorbd::utils::RotoTrans& rt,
@@ -50,20 +52,22 @@ public:
     /// \return A deep copy of the wrapping cylinder
     ///
     biorbd::muscles::WrappingCylinder DeepCopy() const;
+
     ///
     /// \brief Deep copy of the wrapping cylinder in another wrapping cylinder
     /// \param other The wrapping cylinder to copy
     ///
-    void DeepCopy(const biorbd::muscles::WrappingCylinder& other);
+    void DeepCopy(
+            const biorbd::muscles::WrappingCylinder& other);
 
     ///
-    /// \brief This function takes the position of the wrapping and finds the location where muscle 1 and 2 leave the wrapping object
-    /// \param rt RotoTrans matrix
-    /// \param p1_bone TODO
-    /// \param p2_bone TODO
-    /// \param p1 TODO
-    /// \param p2 TODO
-    /// \param length Length of the muscle (default: nullptr)
+    /// \brief From the position of the cylinder, return the 2 locations where the muscle leaves the wrapping object
+    /// \param rt RotoTrans matrix of the cylinder
+    /// \param p1_bone 1st position of the muscle node
+    /// \param p2_bone 2n position of the muscle node
+    /// \param p1 The 1st position on the cylinder the muscle leave
+    /// \param p2 The 2nd position on the cylinder the muscle leave
+    /// \param length Length of the muscle (ignored if no value is provided)
     ///
     void wrapPoints(
             const biorbd::utils::RotoTrans& rt,
@@ -74,14 +78,14 @@ public:
             double* length = nullptr); 
 
     ///
-    /// \brief This function takes a model and a position and finds the location where muscle 1 and 2 leave the wrapping object
-    /// \param model The model
-    /// \param Q The position variables 
-    /// \param p1_bone
-    /// \param p2_bone
-    /// \param p1
-    /// \param p2
-    /// \param length Length of the muscle (default: nullptr)
+    /// \brief From the position of the cylinder, return the 2 locations where the muscle leaves the wrapping object
+    /// \param model The joint model
+    /// \param Q The generalized coordinates
+    /// \param p1_bone 1st position of the muscle node
+    /// \param p2_bone 2n position of the muscle node
+    /// \param p1 The 1st position on the cylinder the muscle leave
+    /// \param p2 The 2nd position on the cylinder the muscle leave
+    /// \param length Length of the muscle (ignored if no value is provided)
     ///
     void wrapPoints(
             biorbd::rigidbody::Joints& model,
@@ -91,35 +95,29 @@ public:
             biorbd::utils::Vector3d& p1,
             biorbd::utils::Vector3d& p2,
             double* length = nullptr) ; 
+
     ///
-    /// \brief This function takes finds the location where muscle 1 and 2 leave the wrapping object (if already computed)
-    /// \param p1
-    /// \param p2
-    /// \param length Length of the muscle (default: nullptr)
+    /// \brief Returns the previously computed 2 locations where the muscle leaves the wrapping object
+    /// \param p1 The 1st position on the cylinder the muscle leave
+    /// \param p2 The 2nd position on the cylinder the muscle leave
+    /// \param length Length of the muscle (ignored if no value is provided)
     ///
     void wrapPoints(
             biorbd::utils::Vector3d& p1,
             biorbd::utils::Vector3d& p2,
             double* length = nullptr); 
 
-    // Set et get
     ///
-    /// \brief Return the RotoTrans matrix of the wrapping cylinder
-    /// \param model The model
-    /// \param Q The position variables
-    /// \param updateKin Update kinematics (default: True)
-    /// \return The RotoTrans matrix of the wrapping cylinder
+    /// \brief Return the RotoTrans matrix of the cylinder
+    /// \param model The joint model
+    /// \param Q The generalized coordinates
+    /// \param updateKin If the kinematics should be computed
+    /// \return The RotoTrans matrix of the cylinder
     ///
     virtual const biorbd::utils::RotoTrans& RT(
             biorbd::rigidbody::Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             bool updateKin = true);
-
-    ///
-    /// \brief Return the diameter of the wrapping cylinder
-    /// \return The diameter of the wrapping cylinder
-    ///
-    double diameter() const;
 
     ///
     /// \brief Set the diameter of the wrapping cylinder
@@ -128,24 +126,32 @@ public:
     void setDiameter(double val);
 
     ///
-    /// \brief Return the radius of the wrapping cylinder
-    /// \return The radius of the wrapping cylinder
+    /// \brief Return the diameter of the cylinder
+    /// \return The diameter of the cylinder
     ///
-    double rayon() const;
+    double diameter() const;
+
     ///
-    /// \brief Return the length of the wrapping cylinder
-    /// \return The length of the wrapping cylinder
+    /// \brief Return the radius of the cylinder
+    /// \return The radius of the cylinder
     ///
-    double length() const;
+    double radius() const;
+
     ///
-    /// \brief Set the length of the wrapping cylinder
-    /// \param val Value of the length to set
+    /// \brief Set the length of the cylinder
+    /// \param val Value of the to set
     ///
     void setLength(double val);
 
+    ///
+    /// \brief Return the length of the cylinder
+    /// \return The length of the cylinder
+    ///
+    double length() const;
+
 protected:
     ///
-    /// \brief Class NodeMusclePair
+    /// \brief Pair of 2 muscles points
     ///
     class NodeMusclePair{
     public:
@@ -161,7 +167,7 @@ protected:
             m_p2(std::make_shared<biorbd::utils::Vector3d>(p2))
         {}
         std::shared_ptr<biorbd::utils::Vector3d> m_p1; ///< Point 1
-        std::shared_ptr<biorbd::utils::Vector3d> m_p2;///< Point 2
+        std::shared_ptr<biorbd::utils::Vector3d> m_p2; ///< Point 2
     };
 
  
@@ -172,42 +178,40 @@ protected:
     ///
     void findTangentToCircle(
             const biorbd::utils::Vector3d& p,
-            biorbd::utils::Vector3d&p_tan) const;
+            biorbd::utils::Vector3d& p_tan) const;
     
     ///
     /// \brief Select between a set of nodes which ones to keep
-    /// \param p TODO
-    /// \param p_tan TODO
+    /// \param p The 2 muscles points
+    /// \param p_tan The selected point
     /// 
     void selectTangents(
-            const NodeMusclePair&p, 
-        biorbd::utils::Vector3d&p_tan) const;
+            const NodeMusclePair&p,
+            biorbd::utils::Vector3d& p_tan) const;
 
     ///
     /// \brief Find the height of both points
-    /// \param glob TODO
-    /// \param wrapper The wrap
-    /// \return True or False (false = no wrap)
+    /// \param pointsInGlobal The position of the muscle pair in global reference frame
+    /// \param pointsToWrap The points to wrap
+    /// \return Return false if no wrap is needed
     ///
     bool findVerticalNode(
-            const NodeMusclePair&glob,
-            NodeMusclePair&wrapper) const;
-    // Savoir s'il y a un wrapping qui doit etre fait
+            const NodeMusclePair& pointsInGlobal,
+            NodeMusclePair& pointsToWrap) const;
 
     ///
-    /// \brief To know if a wrapper has to be done
-    /// \param glob
-    /// \param wrapper The wrap
-    /// \return True or false
+    /// \brief Check if a wrapper has to be done
+    /// \param pointsInGlobal The position of the muscle pair in global reference frame
+    /// \param pointsToWrap The points to wrap
+    /// \return If the wrapper has to be done
     ///
     bool checkIfWraps(
-            const NodeMusclePair &glob,
-            NodeMusclePair &wrapper) const;
+            const NodeMusclePair &pointsInGlobal,
+            NodeMusclePair &pointsToWrap) const;
 
-    // Calcul de la longueur musculaire sur le cylindre
     ///
     /// \brief Compute the muscle length on the cylinder
-    /// \param p TODO
+    /// \param p the muscle node pair
     /// \return The muscle lengh on the cylinder
     ///
     double computeLength(

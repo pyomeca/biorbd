@@ -15,7 +15,7 @@ biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
         biorbd::Model &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
-        const biorbd::rigidbody::GeneralizedTorque &GeneralizedTorqueTarget,
+        const biorbd::rigidbody::GeneralizedTorque &torqueTarget,
         const biorbd::utils::Vector &activationInit,
         bool useResidual,
         unsigned int pNormFactor,
@@ -26,15 +26,15 @@ biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     m_nbQdot(std::make_shared<unsigned int>(model.nbQdot())),
     m_nbMus(std::make_shared<unsigned int>(model.nbMuscleTotal())),
     m_nbDof(std::make_shared<unsigned int>(model.nbDof())),
-    m_nbGeneralizedTorque(std::make_shared<unsigned int>(model.nbGeneralizedTorque())),
-    m_nbGeneralizedTorqueResidual(std::make_shared<unsigned int>(*m_nbQ)),
+    m_nbTorque(std::make_shared<unsigned int>(model.nbGeneralizedTorque())),
+    m_nbTorqueResidual(std::make_shared<unsigned int>(*m_nbQ)),
     m_eps(std::make_shared<double>(eps)),
     m_activations(std::make_shared<biorbd::utils::Vector>(activationInit)),
     m_Q(std::make_shared<biorbd::rigidbody::GeneralizedCoordinates>(Q)),
     m_Qdot(std::make_shared<biorbd::rigidbody::GeneralizedCoordinates>(Qdot)),
-    m_GeneralizedTorqueTarget(std::make_shared<biorbd::rigidbody::GeneralizedTorque>(GeneralizedTorqueTarget)),
-    m_GeneralizedTorqueResidual(std::make_shared<biorbd::utils::Vector>(biorbd::utils::Vector::Zero(*m_nbGeneralizedTorque))),
-    m_GeneralizedTorquePonderation(std::make_shared<double>(1000)),
+    m_torqueTarget(std::make_shared<biorbd::rigidbody::GeneralizedTorque>(torqueTarget)),
+    m_torqueResidual(std::make_shared<biorbd::utils::Vector>(biorbd::utils::Vector::Zero(*m_nbTorque))),
+    m_torquePonderation(std::make_shared<double>(1000)),
     m_states(std::make_shared<std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>>(*m_nbMus)),
     m_pNormFactor(std::make_shared<unsigned int>(pNormFactor)),
     m_verbose(std::make_shared<int>(verbose)),
@@ -46,9 +46,9 @@ biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     }
     m_model.updateMuscles(*m_Q, *m_Qdot, true);
     if (!useResidual){
-        m_GeneralizedTorqueResidual->setZero();
-        *m_nbGeneralizedTorqueResidual = 0;
-        *m_GeneralizedTorquePonderation = 0;
+        m_torqueResidual->setZero();
+        *m_nbTorqueResidual = 0;
+        *m_torquePonderation = 0;
 
     }
 }
@@ -68,15 +68,15 @@ bool biorbd::muscles::StaticOptimizationIpopt::get_nlp_info(
     index_style = TNLP::C_STYLE;
 
     // variables
-    n = static_cast<int>(*m_nbMus + *m_nbGeneralizedTorqueResidual);
+    n = static_cast<int>(*m_nbMus + *m_nbTorqueResidual);
 
     // Constraints
-    m = static_cast<int>(*m_nbGeneralizedTorque);
-    if (*m_nbGeneralizedTorqueResidual)
-        nnz_jac_g = (static_cast<int>(*m_nbMus) + 1) * static_cast<int>(*m_nbGeneralizedTorque);
+    m = static_cast<int>(*m_nbTorque);
+    if (*m_nbTorqueResidual)
+        nnz_jac_g = (static_cast<int>(*m_nbMus) + 1) * static_cast<int>(*m_nbTorque);
     else
-        nnz_jac_g = static_cast<int>(*m_nbMus) * static_cast<int>(*m_nbGeneralizedTorque);
-    nnz_h_lag = static_cast<int>(*m_nbGeneralizedTorque) * static_cast<int>(*m_nbGeneralizedTorque);
+        nnz_jac_g = static_cast<int>(*m_nbMus) * static_cast<int>(*m_nbTorque);
+    nnz_h_lag = static_cast<int>(*m_nbTorque) * static_cast<int>(*m_nbTorque);
 
     if (*m_verbose >= 2){
         std::cout << "n: " << n << std::endl;
@@ -94,21 +94,21 @@ bool biorbd::muscles::StaticOptimizationIpopt::get_bounds_info(
         Ipopt::Number *g_u)
 {
     // Should not be necessary?
-    assert(static_cast<unsigned int>(n) == *m_nbMus + *m_nbGeneralizedTorqueResidual);
-    assert(static_cast<unsigned int>(m) == *m_nbGeneralizedTorque);
+    assert(static_cast<unsigned int>(n) == *m_nbMus + *m_nbTorqueResidual);
+    assert(static_cast<unsigned int>(m) == *m_nbTorque);
 
     // Variables
     for( unsigned int i = 0; i < *m_nbMus; ++i ){
         x_l[i] = 0.0001;
         x_u[i] = 0.9999;
     }
-    for( unsigned int i = *m_nbMus; i < *m_nbMus+ *m_nbGeneralizedTorqueResidual; ++i ){
+    for( unsigned int i = *m_nbMus; i < *m_nbMus+ *m_nbTorqueResidual; ++i ){
         x_l[i] = -1000.0;
         x_u[i] = 1000.0;
     }
 
     // Constraints
-    for( unsigned int i = 0; i < *m_nbGeneralizedTorque; ++i )
+    for( unsigned int i = 0; i < *m_nbTorque; ++i )
         g_l[i] = g_u[i] = 0;
 
     return true;
@@ -132,14 +132,14 @@ bool biorbd::muscles::StaticOptimizationIpopt::get_starting_point(
     for( unsigned int i = 0; i < *m_nbMus; i++ )
         x[i] = (*m_activations)[i];
 
-    for( unsigned int i = 0; i < *m_nbGeneralizedTorqueResidual; i++ )
-        x[i+ *m_nbMus] = (*m_GeneralizedTorqueResidual)[i];
+    for( unsigned int i = 0; i < *m_nbTorqueResidual; i++ )
+        x[i+ *m_nbMus] = (*m_torqueResidual)[i];
 
     if (*m_verbose >= 2){
         std::cout << std::endl << "Initial guesses" << std::endl;
         std::cout << "Activations = " << m_activations->transpose() << std::endl;
-        if (*m_nbGeneralizedTorqueResidual)
-            std::cout << "Residuals = " << m_GeneralizedTorqueResidual->transpose() << std::endl;
+        if (*m_nbTorqueResidual)
+            std::cout << "Residuals = " << m_torqueResidual->transpose() << std::endl;
     }
 
     return true;
@@ -151,13 +151,13 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_f(
         bool new_x,
         Ipopt::Number &obj_value)
 {
-    assert(static_cast<unsigned int>(n) == *m_nbMus + *m_nbGeneralizedTorqueResidual);
+    assert(static_cast<unsigned int>(n) == *m_nbMus + *m_nbTorqueResidual);
 
     if (new_x)
         dispatch(x);
 
     // Warning, residual norm HAS to be a non-sqrt, otherwise the problem is degenerated. The activation is just a speed matter.
-    obj_value = m_activations->norm(*m_pNormFactor, true) + *m_GeneralizedTorquePonderation*m_GeneralizedTorqueResidual->norm(2, true);
+    obj_value = m_activations->norm(*m_pNormFactor, true) + *m_torquePonderation*m_torqueResidual->norm(2, true);
 
     return true;
 }
@@ -168,18 +168,18 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_grad_f(
         bool new_x,
         Ipopt::Number *grad_f)
 {
-    assert(static_cast<unsigned int>(n) == *m_nbMus + *m_nbGeneralizedTorqueResidual);
+    assert(static_cast<unsigned int>(n) == *m_nbMus + *m_nbTorqueResidual);
 
     if (new_x)
         dispatch(x);
 
     biorbd::utils::Vector grad_activ(m_activations->normGradient(*m_pNormFactor, true));
-    biorbd::utils::Vector grad_residual(m_GeneralizedTorqueResidual->normGradient(2, true));
+    biorbd::utils::Vector grad_residual(m_torqueResidual->normGradient(2, true));
 
     for( unsigned i = 0; i < *m_nbMus; i++ )
         grad_f[i] = grad_activ[i];
-    for( unsigned int i = 0; i < *m_nbGeneralizedTorqueResidual; i++ )
-        grad_f[i+ *m_nbMus] = *m_GeneralizedTorquePonderation*grad_residual[i];
+    for( unsigned int i = 0; i < *m_nbTorqueResidual; i++ )
+        grad_f[i+ *m_nbMus] = *m_torquePonderation*grad_residual[i];
     return true;
 }
 
@@ -190,8 +190,8 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_g(
         Ipopt::Index m,
         Ipopt::Number *g)
 {
-    assert(static_cast<unsigned int>(n) == *m_nbMus + *m_nbGeneralizedTorqueResidual);
-    assert(static_cast<unsigned int>(m) == *m_nbGeneralizedTorque);
+    assert(static_cast<unsigned int>(n) == *m_nbMus + *m_nbTorqueResidual);
+    assert(static_cast<unsigned int>(m) == *m_nbTorque);
     if (new_x)
         dispatch(x);
 
@@ -199,11 +199,11 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_g(
 
     // TODO : adjust dimensions for when "root_actuated" is set to false in bioMod file
     for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ )
-         g[i] = GeneralizedTorqueMusc[i] + (*m_GeneralizedTorqueResidual)[i] - (*m_GeneralizedTorqueTarget)[i];
+         g[i] = GeneralizedTorqueMusc[i] + (*m_torqueResidual)[i] - (*m_torqueTarget)[i];
 
     if (*m_verbose >= 2){
         std::cout << "GeneralizedTorque_musc = " << GeneralizedTorqueMusc.transpose() << std::endl;
-        std::cout << "GeneralizedTorque_residual = " << m_GeneralizedTorqueResidual->transpose() << std::endl;
+        std::cout << "GeneralizedTorque_residual = " << m_torqueResidual->transpose() << std::endl;
     }
     return true;
 }
@@ -227,7 +227,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
                 jCol[k++] = j;
             }
         }
-        for (Ipopt::Index j = 0; static_cast<unsigned int>(j) < *m_nbGeneralizedTorqueResidual; ++j ){
+        for (Ipopt::Index j = 0; static_cast<unsigned int>(j) < *m_nbTorqueResidual; ++j ){
             iRow[k] = j;
             jCol[k++] = j+ static_cast<Ipopt::Index>(*m_nbMus);
         }
@@ -256,16 +256,16 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
 
             }
         }
-        for( unsigned int j = 0; j < *m_nbGeneralizedTorqueResidual; j++ )
+        for( unsigned int j = 0; j < *m_nbTorqueResidual; j++ )
             values[k++] = 1;
 
         if (*m_verbose >= 2){
             k = 0;
-            biorbd::utils::Matrix jacobian(biorbd::utils::Matrix::Zero(*m_nbGeneralizedTorque, static_cast<unsigned int>(n)));
+            biorbd::utils::Matrix jacobian(biorbd::utils::Matrix::Zero(*m_nbTorque, static_cast<unsigned int>(n)));
             for( unsigned int j = 0; j < *m_nbMus; j++ )
                 for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ )
                     jacobian(i,j) = values[k++];
-            for( unsigned int j = 0; j < *m_nbGeneralizedTorqueResidual; j++ ){
+            for( unsigned int j = 0; j < *m_nbTorqueResidual; j++ ){
                 jacobian(j, j+ *m_nbMus) = values[k++];
             }
             std::cout << "jacobian = " << std::endl << jacobian << std::endl;
@@ -292,7 +292,7 @@ void biorbd::muscles::StaticOptimizationIpopt::finalize_solution(
     // Storing to solution
     dispatch(x);
     m_finalSolution = m_activations;
-    m_finalResidual = m_GeneralizedTorqueResidual;
+    m_finalResidual = m_torqueResidual;
 
     // Plot it, if it makes sense
     if (*m_verbose >= 1){
@@ -300,9 +300,9 @@ void biorbd::muscles::StaticOptimizationIpopt::finalize_solution(
         std::cout << "f(x*) = " << obj_value << std::endl;
         std::cout << "Activations = " << m_activations->transpose() << std::endl;
         std::cout << "Muscular torques = " << m_model.muscularJointTorque(*m_states, false, m_Q.get(), m_Qdot.get()).transpose() << std::endl;
-        std::cout << "GeneralizedTorque target = " << m_GeneralizedTorqueTarget->transpose() << std::endl;
-        if (*m_nbGeneralizedTorqueResidual){
-            std::cout << "Residual torques= " << m_GeneralizedTorqueResidual->transpose() << std::endl;
+        std::cout << "GeneralizedTorque target = " << m_torqueTarget->transpose() << std::endl;
+        if (*m_nbTorqueResidual){
+            std::cout << "Residual torques= " << m_torqueResidual->transpose() << std::endl;
         }
 //        // Uncomment to show lagrange multipliers
 //        std::cout << "Solution of the bound multipliers, z_L and z_U" << std::endl;
@@ -326,8 +326,8 @@ void biorbd::muscles::StaticOptimizationIpopt::dispatch(const Ipopt::Number *x)
         (*m_states)[i]->setActivation((*m_activations)[i]);
     }
 
-    for(unsigned int i = 0; i < *m_nbGeneralizedTorqueResidual; i++ )
-        (*m_GeneralizedTorqueResidual)[i] = x[i+ *m_nbMus];
+    for(unsigned int i = 0; i < *m_nbTorqueResidual; i++ )
+        (*m_torqueResidual)[i] = x[i+ *m_nbMus];
 }
 
 

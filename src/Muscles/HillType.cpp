@@ -295,6 +295,6 @@ double biorbd::muscles::HillType::getForceFromActivation(
 
 biorbd::muscles::StateDynamics biorbd::muscles::HillType::normalizeEMG(const biorbd::muscles::StateDynamics &emg){
     biorbd::muscles::StateDynamics emg_out(emg);
-    emg_out.excitationNorm(characteristics().stateMax());
+    emg_out.normalizeExcitation(characteristics().stateMax());
     return emg_out;
 }

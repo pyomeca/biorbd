@@ -50,8 +50,8 @@ public:
     /// \brief Reconstruct the kinematics from markers data
     /// \param model The model
     /// \param Tobs The observed markers
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param Qddot The acceleration variables of the model
     /// \param removeAxes (default=True)
     ///
@@ -67,8 +67,8 @@ public:
     /// \brief Reconstruct the kinematics from markers data
     /// \param model The model
     /// \param Tobs The observed markers
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param Qddot The acceleration variables of the model
     /// \param removeAxes (default=True)
     ///
@@ -84,8 +84,8 @@ public:
     /// \brief Reconstruct the kinematics from markers data
     /// \param model The model
     /// \param Tobs The observed markers (all already in a big vector)
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param Qddot The acceleration variables of the model
     /// \param removeAxes (default=True)
     ///

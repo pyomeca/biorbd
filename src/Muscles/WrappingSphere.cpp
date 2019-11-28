@@ -59,19 +59,19 @@ void biorbd::muscles::WrappingSphere::DeepCopy(const biorbd::muscles::WrappingSp
 }
 
 const biorbd::utils::RotoTrans& biorbd::muscles::WrappingSphere::RT(
-        biorbd::rigidbody::Joints &model,
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        bool updateKin)
+        biorbd::rigidbody::Joints &,
+        const biorbd::rigidbody::GeneralizedCoordinates &,
+        bool)
 {
     return *m_RT;
 }
 
-double biorbd::muscles::WrappingSphere::size() const
-{
-    return *m_dia;
-}
-
-void biorbd::muscles::WrappingSphere::setSize(double val)
+void biorbd::muscles::WrappingSphere::setDiameter(double val)
 {
     *m_dia = val;
+}
+
+double biorbd::muscles::WrappingSphere::diameter() const
+{
+    return *m_dia;
 }

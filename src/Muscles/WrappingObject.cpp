@@ -41,7 +41,7 @@ biorbd::muscles::WrappingObject::WrappingObject(const biorbd::utils::Vector3d &o
 }
 
 biorbd::muscles::WrappingObject::WrappingObject(
-        const Eigen::Vector3d &other,
+        const biorbd::utils::Vector3d &other,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName) :
     biorbd::utils::Vector3d (other, name, parentName)

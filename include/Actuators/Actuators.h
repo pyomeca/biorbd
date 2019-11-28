@@ -61,8 +61,8 @@ public:
 
     ///
     /// \brief Return two vectors of max torque (it is impossible to know if eccentric or concentric is required, therefore both are returned)
-    /// \param Q The position variables of the actuators
-    /// \param Qdot The velocity variables of the actuators
+    /// \param Q The generalized coordinates of the actuators
+    /// \param Qdot The generalized velocities of the actuators
     /// \return Two vectors of maximal torque
     ///
     std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque> torqueMax(
@@ -72,8 +72,8 @@ public:
     ///
     /// \brief Return the maximal generalized torque
     /// \param activation The level of activation of the torque. A positive value is interpreted as concentric contraction and negative as eccentric contraction
-    /// \param Q The position variables of the actuators
-    /// \param Qdot The velocity variables of the actuators
+    /// \param Q The generalized coordinates of the actuators
+    /// \param Qdot The generalized velocities of the actuators
     /// \return The maximal generalized torque
     ///
     biorbd::rigidbody::GeneralizedTorque torqueMax(
@@ -84,8 +84,8 @@ public:
     ///
     /// \brief Return the generalized torque
     /// \param activation The level of activation of the torque. A positive value is interpreted as concentric contraction and negative as eccentric contraction
-    /// \param Q The position variables of the actuators
-    /// \param Qdot The velocity variables of the actuators
+    /// \param Q The generalized coordinates of the actuators
+    /// \param Qdot The generalized velocities of the actuators
     /// \return The maximal generalized torque
     ///
     biorbd::rigidbody::GeneralizedTorque torque(

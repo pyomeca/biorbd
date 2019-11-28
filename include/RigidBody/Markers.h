@@ -103,7 +103,7 @@ public:
 
     ///
     /// \brief Return a marker
-    /// \param Q The position variables 
+    /// \param Q The generalized coordinates 
     /// \param node The node on which the marker is
     /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
     /// \param updateKin If the kinematics should be updated (default: True)
@@ -117,7 +117,7 @@ public:
 
     ///
     /// \brief Return a marker
-    /// \param Q The position variables 
+    /// \param Q The generalized coordinates 
     /// \param idx The marker identification
     /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
     /// \param updateKin If the kinematics should be updated (default: True)
@@ -141,7 +141,7 @@ public:
 
     ///
     /// \brief Return all the markers
-    /// \param Q The position variables of the model
+    /// \param Q The generalized coordinates of the model
     /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
     /// \param updateKin If the kinematics should be updated (default: True)
     /// \return A vector of all the markers
@@ -161,8 +161,8 @@ public:
 
     ///
     /// \brief Return the velocity of a marker
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param idx The marker identification
     /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
     /// \param updateKin If the kinematics should be updated (default: True)
@@ -178,8 +178,8 @@ public:
 
     ///
     /// \brief Return the velocity of all markers
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
     /// \param updateKin If the kinematics should be updated (default: True)
     /// \return A vector of the velocity of all markers
@@ -192,7 +192,7 @@ public:
 
     ///
     /// \brief Return the technical markers
-    /// \param Q The position variables of the model
+    /// \param Q The generalized coordinates of the model
     /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
     /// \param updateKin If the kinematics should be updated (default: True)
     /// \return A vector of all the technical markers
@@ -211,7 +211,7 @@ public:
 
     ///
     /// \brief Return the anatomical markers
-    /// \param Q The position variables of the model
+    /// \param Q The generalized coordinates of the model
     /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
     /// \param updateKin If the kinematics should be updated (default: True)
     /// \return A vector of all the anatomical markers
@@ -232,7 +232,7 @@ public:
 
     ///
     /// \brief Return the markers of segment i
-    /// \param Q The position variables
+    /// \param Q The generalized coordinates
     /// \param idx The segment identification
     /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
     /// \param updateKin If the kinematics should be updated (default: True)
@@ -279,7 +279,7 @@ public:
 
     ///
     /// \brief Return the Jacobian of the markers
-    /// \param Q The position variables of the model
+    /// \param Q The generalized coordinates of the model
     /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
     /// \param updateKin If the kinematics should be updated (default: True)
     /// \return The Jacobian of the markers
@@ -303,7 +303,7 @@ public:
 
     ///
     /// \brief Return the Jacobian of a chosen marker
-    /// \param Q The position variables of the model
+    /// \param Q The generalized coordinates of the model
     /// \param parentName The marker's parent name
     /// \param p  The position of the point in body-local data
     /// \param  updateKin If the kinematics should be updated
@@ -318,7 +318,7 @@ public:
 protected:
     ///
     /// \brief Return the Jacobian of the markers
-    /// \param Q The position variables of the model
+    /// \param Q The generalized coordinates of the model
     /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the kinematics should be updated
     /// \param lookForTechnical Check if there are technical markers

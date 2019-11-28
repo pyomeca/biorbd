@@ -52,8 +52,8 @@ public:
     /// \brief Reconstruct the kinematics
     /// \param model The model
     /// \param IMUobs Observed inertial measurement unit (IMU) data
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param Qddot The acceleration variables of the model
     ///
     virtual void reconstructFrame(
@@ -67,8 +67,8 @@ public:
     /// \brief Reconstruct the kinematics 
     /// \param model The model
     /// \param IMUobs Observed inertial measurement unit (IMU) data in one large vector
-    /// \param Q The position variables of the model
-    /// \param Qdot The velocity variables of the model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
     /// \param Qddot The acceleration variables of the model
     ///
     virtual void reconstructFrame(

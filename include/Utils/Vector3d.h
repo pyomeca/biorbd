@@ -20,21 +20,24 @@ class BIORBD_API Vector3d : public Eigen::Vector3d, public biorbd::utils::Node
     /// \brief Construct 3D vector
     /// 
     Vector3d();
+
     ///
     /// \brief Construct 3D vector
-    /// \param x Position on the x axis
-    /// \param y Position on the y axis
-    /// \param z Position on the z axis
+    /// \param X-Component of the vector
+    /// \param Y-Component of the vector
+    /// \param Z-Component of the vector
     ///
     Vector3d(
             double x,
             double y,
             double z);
+
     ///
     /// \brief Construct a 3D vector from an eigen 4D vector
     /// \param v The Eigen 4D vector
     ///
-    Vector3d(const Eigen::Vector4d& v);
+    Vector3d(
+            const Eigen::Vector4d& v);
 
     ///
     /// \brief Construct a 3D vector

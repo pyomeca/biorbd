@@ -117,8 +117,8 @@ public:
 
     ///
     /// \brief Return the maximal torque at a given Q and Qdot
-    /// \param Q The position variables of the actuator
-    /// \param Qdot The velocity variables of the actuator
+    /// \param Q The generalized coordinates of the actuator
+    /// \param Qdot The generalized velocities of the actuator
     /// \return The maximal torque
     ///
     virtual double torqueMax(

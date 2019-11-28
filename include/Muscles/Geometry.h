@@ -280,7 +280,7 @@ protected:
 
     ///
     /// \brief Update the kinematics, compute and return the muscle velocity assuming not via points nor wrapping objects
-    /// \param Qdot The velocity variables
+    /// \param Qdot The generalized velocities
     /// \return The muscle velocity
     ///
     double velocity(

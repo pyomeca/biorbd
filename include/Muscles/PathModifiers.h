@@ -27,55 +27,59 @@ public:
     /// \return A deep copy of path changers
     ///
     biorbd::muscles::PathModifiers DeepCopy() const;
+
     /// 
     /// \brief Deep copy of path changers from another path changers
     /// \param other THe path changers to copy
     ///    
-    void DeepCopy(const biorbd::muscles::PathModifiers& other);
+    void DeepCopy(
+            const biorbd::muscles::PathModifiers& other);
 
     ///
-    /// \brief Add a wrapping or a via point
+    /// \brief Add a wrapping or a via point to the set of path modifiers
     /// \param point The wrapping or via point to add
     ///
-    void addPathChanger(biorbd::utils::Vector3d&point); 
+    void addPathChanger(
+            biorbd::utils::Vector3d& object);
 
     // Set and get
     ///
-    /// \brief Return the total number of wrapping objects
+    /// \brief Return the total number of wrapping objects in the set
     /// \return The total number of wrapping objects
     ///
     unsigned int nbWraps() const;
 
     ///
-    /// \brief Return the total number of via points
+    /// \brief Return the total number of via points in the set
     /// \return The total number of via points
     ///
     unsigned int nbVia() const;
 
     ///
-    /// \brief Return the total number of objects
-    /// \return The total number of objects
+    /// \brief Return the total number of path modifier objects in the set
+    /// \return The total number of path modifier objects
     ///
     unsigned int nbObjects() const;
 
     ///
-    /// \brief Return an object at a specific index
+    /// \brief Return the object at a specific index in the set
     /// \param idx Index of the object
     /// \return The object at a specific index
     ///
     biorbd::utils::Vector3d& object(unsigned int  idx);
+
     ///
-    /// \brief Return an object at a specific index
+    /// \brief Return the object at a specific index in the set
     /// \param idx Index of the object
     /// \return The object at a specific index
     ///
     const biorbd::utils::Vector3d& object(unsigned int  idx) const; 
 
 protected:
-    std::shared_ptr<std::vector<biorbd::utils::Vector3d>> m_obj; ///<Tbale of pointers on the objects
-    std::shared_ptr<unsigned int> m_nbWraps; ///< Number of wraps
-    std::shared_ptr<unsigned int> m_nbVia; ///< TODO: ?
-    std::shared_ptr<unsigned int> m_totalObjects; ///< Total objects
+    std::shared_ptr<std::vector<biorbd::utils::Vector3d>> m_obj; ///< set of objects
+    std::shared_ptr<unsigned int> m_nbWraps; ///< Number of wrapping object in the set
+    std::shared_ptr<unsigned int> m_nbVia; ///< Number of via points in the set
+    std::shared_ptr<unsigned int> m_totalObjects; ///< Number of total objects in the set
 
 };
 
