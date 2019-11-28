@@ -6,6 +6,9 @@
 #include "biorbdConfig.h"
 
 namespace biorbd {
+namespace utils {
+class Vector;
+}
 
 namespace rigidbody {
 class GeneralizedCoordinates;
@@ -15,7 +18,7 @@ class GeneralizedTorque;
 namespace actuator {
 class Actuator;
 /// 
-/// \brief Class Actuators
+/// \brief Class holder for a set of actuators
 ///
 class BIORBD_API Actuators
 {
@@ -26,7 +29,7 @@ public:
     Actuators();
 
     ///
-    /// \brief Construct actuators from other actuators
+    /// \brief Construct actuators from another set of actuators
     /// \param other The other actuators
     ///
     Actuators(
@@ -38,30 +41,29 @@ public:
     virtual ~Actuators();
 
     ///
-    /// \brief Deep copy of the actuators from other actuators
+    /// \brief Deep copy of the actuator holder from other actuator holder
     /// \param other The other actuators
     ///
-    void DeepCopy(const biorbd::actuator::Actuators& other);
+    void DeepCopy(
+            const biorbd::actuator::Actuators& other);
 
     /// 
-    /// \brief Add an actuator to all the actuators
+    /// \brief Add an actuator to the set of actuators
     /// \param a The actuator to add
     ///
     void addActuator(
             const biorbd::actuator::Actuator &a);
 
     ///
-    /// \brief To close the actuator loop? TODO
+    /// \brief Indicate to biorbd to are done adding actuators, sanity checks are performed
     /// 
     void closeActuator();
 
-
-
     ///
-    /// \brief Return two vectors of max torque (we're missing the power entry to know if it's positive or negative at each joint; therefore both are returned)
+    /// \brief Return two vectors of max torque (it is impossible to know if eccentric or concentric is required, therefore both are returned)
     /// \param Q The position variables of the actuators
     /// \param Qdot The velocity variables of the actuators
-    /// \return Two vectors of max torque
+    /// \return Two vectors of maximal torque
     ///
     std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque> torqueMax(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
@@ -69,43 +71,44 @@ public:
 
     ///
     /// \brief Return the maximal generalized torque
-    /// \param a TODO?
+    /// \param activation The level of activation of the torque. A positive value is interpreted as concentric contraction and negative as eccentric contraction
     /// \param Q The position variables of the actuators
     /// \param Qdot The velocity variables of the actuators
     /// \return The maximal generalized torque
     ///
     biorbd::rigidbody::GeneralizedTorque torqueMax(
-            const biorbd::rigidbody::GeneralizedCoordinates& a,
+            const biorbd::utils::Vector &activation,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot);
 
     ///
     /// \brief Return the generalized torque
-    /// \param a TODO?
+    /// \param activation The level of activation of the torque. A positive value is interpreted as concentric contraction and negative as eccentric contraction
     /// \param Q The position variables of the actuators
     /// \param Qdot The velocity variables of the actuators
     /// \return The maximal generalized torque
     ///
     biorbd::rigidbody::GeneralizedTorque torque(
-            const biorbd::rigidbody::GeneralizedCoordinates& a,
+            const biorbd::utils::Vector &activation,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedCoordinates &Qdot);
 
     // Get and set
     ///
-    /// \brief Return a specific actuator
+    /// \brief Return a specific concentric/eccentric actuator
     /// \param dof Index of the DoF associated with actuator
-    /// \return A specific actuator
+    /// \return The actuator
     ///
-    const std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>>& actuator(unsigned int dof);
+    const std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>>&
+    actuator(unsigned int dof);
     
     ///
     /// \brief Return a specific actuator
     /// \param dof Index of the DoF associated with actuator
-    /// \param idx Index of actuator (0 or 1)
-    /// \return A specific actuator
+    /// \param concentric If the return value is the concentric (true) or eccentric (false) value
+    /// \return The actuator
     ///
-    const biorbd::actuator::Actuator& actuator(unsigned int dof, unsigned int idx);
+    const biorbd::actuator::Actuator& actuator(unsigned int dof, bool concentric);
 
     ///
     /// \brief Return the toal number of actuators
@@ -115,8 +118,8 @@ public:
 
 protected:
     std::shared_ptr<std::vector<std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>>>> m_all; ///<All the actuators reunited /pair (+ or -)
-    std::shared_ptr<std::vector<bool>> m_isDofSet;///< If DoF is set? TODO
-    std::shared_ptr<bool> m_isClose; ///< If loop is closed? TODO
+    std::shared_ptr<std::vector<bool>> m_isDofSet;///< If DoF all dof are set
+    std::shared_ptr<bool> m_isClose; ///< If the set is ready
 
 };
 

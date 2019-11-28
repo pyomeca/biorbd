@@ -11,27 +11,27 @@ class GeneralizedCoordinates;
 
 namespace actuator {
 ///
-/// \brief Class ActuatorGauss6p that holds the Actuator class
+/// \brief Class ActuatorGauss6p is a joint actuator type which maximum is bimodal 6 parameter gaussian (Gauss6p)
 ///
 class BIORBD_API ActuatorGauss6p : public Actuator
 {
 public:
 
     ///
-    /// \brief Construct Gauss 6p actuator
+    /// \brief Construct Gauss6p actuator
     ///
     ActuatorGauss6p();
 
     ///
-    /// \brief Construct Gauss 6p actuator from another Gauss 6p actuator
-    /// \param other The other Gauss 6p actuator to copy
+    /// \brief Construct Gauss6p actuator from another Gauss6p actuator
+    /// \param other The other Gauss6p actuator to copy
     ///
     ActuatorGauss6p(
             const biorbd::actuator::ActuatorGauss6p& other);
 
     ///
-    /// \brief Construct Gauss 6p actuator 
-    /// \param direction The direction of the Gauss 6p actuator
+    /// \brief Construct Gauss6p actuator
+    /// \param direction The direction of the Gauss6p actuator (+1 or -1)
     /// \param Tmax The maximal torque in the eccentric phase
     /// \param T0 The maxaiml torque isometric
     /// \param wmax Maximum angular velocity above which torque cannot be produced
@@ -39,11 +39,11 @@ public:
     /// \param amin Low plateau level
     /// \param wr 1/10 of the distance amax/amin
     /// \param w1 Mid point plateau
-    /// \param r Width of the gaussian curve
-    /// \param qopt Optimal position
+    /// \param r Width of the 1st gaussian curve
+    /// \param qopt 1st Optimal position
     /// \param facteur Factor of the 6p
-    /// \param r2 Width of the gaussian curve2
-    /// \param qopt2 Optimal position 2
+    /// \param r2 Width of the 2nd gaussian curve2
+    /// \param qopt2 2nd Optimal position
     /// \param dofIdx Index of the DoF associated with actuator
     ///
     ActuatorGauss6p(
@@ -63,8 +63,8 @@ public:
             unsigned int dofIdx);
 
     ///
-    /// \brief Construct Gauss 6p actuator 
-    /// \param direction The direction of the Gauss 6p actuator
+    /// \brief Construct Gauss6p actuator
+    /// \param direction The direction of the Gauss6p actuator (+1 or -1)
     /// \param Tmax The maximal torque in the eccentric phase
     /// \param T0 The maxaiml torque isometric
     /// \param wmax Maximum angular velocity above which torque cannot be produced
@@ -72,11 +72,11 @@ public:
     /// \param amin Low plateau level
     /// \param wr 1/10 of the distance amax/amin
     /// \param w1 Mid point plateau
-    /// \param r Width of the gaussian curve
-    /// \param qopt Optimal position
+    /// \param r Width of the 1st gaussian curve
+    /// \param qopt 1st Optimal position
     /// \param facteur Factor of the 6p
-    /// \param r2 Width of the gaussian curve2
-    /// \param qopt2 Optimal position 2
+    /// \param r2 Width of the 2nd gaussian curve
+    /// \param qopt2 2nd Optimal position 2
     /// \param dofIdx Index of the DoF associated with actuator
     /// \param jointName The name of the parent joint
     ///
@@ -103,19 +103,20 @@ public:
     virtual ~ActuatorGauss6p();
 
     ///
-    /// \brief Deep copy of the Gauss 6p actuator
-    /// \return A deep copy of the Gauss 6p actuator
+    /// \brief Deep copy of the Gauss6p actuator
+    /// \return A deep copy of the Gauss6p actuator
     ///
     biorbd::actuator::ActuatorGauss6p DeepCopy() const;
 
     /// 
-    /// \brief Deep copy of the Gauss 3p actuator from another Gauss 6p actuator
-    /// \param other The Gauss 6p actuator to copy
+    /// \brief Deep copy of the Gauss 3p actuator from another Gauss6p actuator
+    /// \param other The Gauss6p actuator to copy
     ///
-    void DeepCopy(const biorbd::actuator::ActuatorGauss6p& other);
+    void DeepCopy(
+            const biorbd::actuator::ActuatorGauss6p& other);
 
     ///
-    /// \brief Return the maximal torque
+    /// \brief Return the maximal torque at a given Q and Qdot
     /// \param Q The position variables of the actuator
     /// \param Qdot The velocity variables of the actuator
     /// \return The maximal torque
@@ -145,11 +146,11 @@ protected:
     std::shared_ptr<double> m_w1;        ///< Mid point plateau
 
     // Torque/angle relationship
-    std::shared_ptr<double> m_r;         ///< width of the gaussian curve
-    std::shared_ptr<double> m_qopt;      ///< Optimal position
+    std::shared_ptr<double> m_r;         ///< width of the 1st gaussian curve
+    std::shared_ptr<double> m_qopt;      ///< 1st Optimal position
     std::shared_ptr<double> m_facteur;   ///< Factor of the 6p
-    std::shared_ptr<double> m_r2;        ///< width of the gaussian curve2
-    std::shared_ptr<double> m_qopt2;     ///< Optimal position 2
+    std::shared_ptr<double> m_r2;        ///< width of the 2nd gaussian curve
+    std::shared_ptr<double> m_qopt2;     ///< 2nd Optimal position
 
 };
 

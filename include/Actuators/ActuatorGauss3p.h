@@ -11,27 +11,27 @@ class GeneralizedCoordinates;
 
 namespace actuator {
 
-    ///
-    /// \brief Class ActuatorGauss3p that holds class Actuator
-    ///
+///
+/// \brief Class ActuatorGauss3p is a joint actuator type which maximum is 3 parameter gaussian (Gauss3p)
+///
 class BIORBD_API ActuatorGauss3p : public Actuator
 {
 public:
     ///
-    /// \brief Construct Gauss 3p actuator
+    /// \brief Construct Gauss3p actuator
     ///
     ActuatorGauss3p();
 
     ///
-    /// \brief Construct Gauss 3p actuator from another Gauss 3p actuator
-    /// \param other The other Gauss 3p actuator to copy
+    /// \brief Construct Gauss3p actuator from another Gauss3p actuator
+    /// \param other The other Gauss3p actuator to copy
     ///
     ActuatorGauss3p(
             const biorbd::actuator::ActuatorGauss3p& other);
 
     ///
-    /// \brief Construct Gauss 3p actuator 
-    /// \param direction The direction of the Gauss 3p actuator
+    /// \brief Construct Gauss3p actuator
+    /// \param direction The direction of the Gauss3p actuator (+1 or -1)
     /// \param Tmax The maximal torque in the eccentric phase
     /// \param T0 The maximal torque isometric
     /// \param wmax Maximum angular velocity above which torque cannot be produced
@@ -57,8 +57,8 @@ public:
             unsigned int dofIdx);
 
     ///
-    /// \brief Construct Gauss 3p actuator 
-    /// \param direction The direction of the Gauss 3p actuator
+    /// \brief Construct Gauss3p actuator
+    /// \param direction The direction of the Gauss3p actuator
     /// \param Tmax The maximal torque in the eccentric phase
     /// \param T0 The maximal torque isometric
     /// \param wmax Maximum angular velocity above which torque cannot be produced
@@ -91,19 +91,20 @@ public:
     virtual ~ActuatorGauss3p();
 
     ///
-    /// \brief Deep copy of the Gauss 3p actuator
-    /// \return A deep copy of the Gauss 3p actuator
+    /// \brief Deep copy of the Gauss3p actuator
+    /// \return A deep copy of the Gauss3p actuator
     ///
     biorbd::actuator::ActuatorGauss3p DeepCopy() const;
 
     /// 
-    /// \brief Deep copy of the Gauss 3p actuator from another Gauss 3p actuator
-    /// \param other The Gauss 3p actuator to copy
+    /// \brief Deep copy of the Gauss3p actuator from another Gauss3p actuator
+    /// \param other The Gauss3p actuator to copy
     ///
-    void DeepCopy(const biorbd::actuator::ActuatorGauss3p& other);
+    void DeepCopy(
+            const biorbd::actuator::ActuatorGauss3p& other);
 
     ///
-    /// \brief Return the maximal torque
+    /// \brief Return the maximal torque at a given Q and Qdot
     /// \param Q The position variables of the actuator
     /// \param Qdot The velocity variables of the actuator
     /// \return The maximal torque

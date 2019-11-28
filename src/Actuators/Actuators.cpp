@@ -160,17 +160,21 @@ void biorbd::actuator::Actuators::closeActuator()
     *m_isClose = true;
 }
 
-const std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>>& biorbd::actuator::Actuators::actuator(unsigned int dof)
+const std::pair<std::shared_ptr<biorbd::actuator::Actuator>,
+std::shared_ptr<biorbd::actuator::Actuator>>&
+biorbd::actuator::Actuators::actuator(unsigned int dof)
 {
     biorbd::utils::Error::check(dof<nbActuators(), "Idx asked is higher than number of actuator");
     return (*m_all)[dof];
 }
-const biorbd::actuator::Actuator& biorbd::actuator::Actuators::actuator(unsigned int dof, unsigned int idx)
+const biorbd::actuator::Actuator& biorbd::actuator::Actuators::actuator(
+        unsigned int dof,
+        bool concentric)
 {
-    const std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>>& tp(actuator(dof));
+    const std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>>&
+            tp(actuator(dof));
 
-    biorbd::utils::Error::check(idx == 0 || idx == 1, "Index of actuator should be 0 or 1");
-    if (idx == 0)
+    if (concentric)
         return *tp.first;
     else
         return *tp.second;
@@ -182,23 +186,22 @@ unsigned int biorbd::actuator::Actuators::nbActuators() const
 }
 
 biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
-        const biorbd::rigidbody::GeneralizedCoordinates& a,
+        const biorbd::utils::Vector& activation,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
 {
     // Set qdot to be positive if concentric and negative is excentric
-    // Set qdot to be positive if concentric and negative is excentric
     biorbd::rigidbody::GeneralizedCoordinates QdotResigned(Qdot);
     for (unsigned int i=0; i<Qdot.size(); ++i)
-        if (a(i)<0)
+        if (activation(i)<0)
             QdotResigned(i) = -Qdot(i);
 
     // Calculate the maximal torques
-    biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(torqueMax(a,Q,QdotResigned));
+    biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(torqueMax(activation,Q,QdotResigned));
 
     // Put the signs
     for (unsigned int i=0; i<GeneralizedTorque.size(); ++i)
-        GeneralizedTorque(i) *= a(i);
+        GeneralizedTorque(i) *= activation(i);
 
     return GeneralizedTorque;
 }
@@ -249,7 +252,7 @@ std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTo
 
 
 biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torqueMax(
-        const biorbd::rigidbody::GeneralizedCoordinates& a,
+        const utils::Vector &activation,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
 {
@@ -263,7 +266,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torqueMax(
 
     for (unsigned int i=0; i<model.nbDof(); ++i){
         std::shared_ptr<Actuator> GeneralizedTorque_tp;
-        if (a[i]>=0) // First
+        if (activation[i] >= 0) // First
             GeneralizedTorque_tp = actuator(i).first;
         else
             GeneralizedTorque_tp = actuator(i).second;

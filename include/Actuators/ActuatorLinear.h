@@ -12,7 +12,7 @@ class GeneralizedCoordinates;
 namespace actuator {
 
 ///
-/// \brief Class ActuatorLinear that holds class Actuator
+/// \brief Class ActuatorLinear is a joint actuator type that linearly evolves
 ///
 class BIORBD_API ActuatorLinear : public Actuator
 {
@@ -32,7 +32,7 @@ public:
     ///
     /// \brief Construct a linear actuator
     /// \param direction The direction of the actuator (+1 or -1)
-    /// \param T0  The maximal torque isometric
+    /// \param T0 The maximal torque isometric
     /// \param slope The slope
     /// \param dofIdx Index of the DoF associated with actuator
     ///
@@ -73,14 +73,16 @@ public:
     /// \brief Deep copy of the linear actuator from another linear actuator
     /// \param other The linear actuator to copy
     ///
-    void DeepCopy(const biorbd::actuator::ActuatorLinear& other);
+    void DeepCopy(
+            const biorbd::actuator::ActuatorLinear& other);
 
     ///
-    /// \brief Return the maximal torque
+    /// \brief Return the maximal torque at a given Q
     /// \param Q The position variables of the actuator
     /// \return The maximal torque
     ///
-    virtual double torqueMax(const biorbd::rigidbody::GeneralizedCoordinates &Q) const;
+    virtual double torqueMax(
+            const biorbd::rigidbody::GeneralizedCoordinates &Q) const;
 
 protected:
 
@@ -90,7 +92,7 @@ protected:
     virtual void setType();            
 
     // mx+b
-    std::shared_ptr<double> m_m;      ///< Slope
+    std::shared_ptr<double> m_m; ///< Slope
     std::shared_ptr<double> m_b; ///< Torque at zero
 
 };

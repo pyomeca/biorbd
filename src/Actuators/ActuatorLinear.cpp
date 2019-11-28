@@ -69,11 +69,6 @@ void biorbd::actuator::ActuatorLinear::DeepCopy(const biorbd::actuator::Actuator
 
 
 double biorbd::actuator::ActuatorLinear::torqueMax(const biorbd::rigidbody::GeneralizedCoordinates &Q) const {
-//    std::cout << "Q[" << m_dofIdx << "] = " << Q[m_dofIdx] << std::endl;
-//    std::cout << "M = " << m_m << std::endl;
-//    std::cout << "B = " << m_b << std::endl;
-//    std::cout << "Torque = " << (Q[m_dofIdx]*180/PI)*m_m+m_b << std::endl << std::endl;
-
     return (Q[*m_dofIdx]*180/M_PI) * *m_m + *m_b;
 }
 

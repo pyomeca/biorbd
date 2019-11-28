@@ -28,7 +28,8 @@ public:
     /// \brief Construct actuator from another actuator
     /// \param other The other actuator
     ///
-    Actuator(const biorbd::actuator::Actuator& other);
+    Actuator(
+            const biorbd::actuator::Actuator& other);
 
     ///
     /// \brief Construct actuator
@@ -59,7 +60,8 @@ public:
     /// \brief Deep copy of actuator 
     /// \param other The actuator to copy
     ///
-    void DeepCopy(const biorbd::actuator::Actuator& other);
+    void DeepCopy(
+            const biorbd::actuator::Actuator& other);
 
     ///
     /// \brief Return the index of the DoF associated with actuator

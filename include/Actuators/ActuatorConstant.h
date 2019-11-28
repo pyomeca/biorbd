@@ -8,7 +8,7 @@ namespace biorbd {
 namespace actuator {
 
 ///
-/// \brief Class ActuatorConstant that holds the Actuator class
+/// \brief Class ActuatorConstant is a joint actuator type which maximum is contant
 ///
 class BIORBD_API ActuatorConstant : public Actuator
 {
@@ -22,7 +22,8 @@ public:
     /// \brief Construct a constant actuator from another actuator
     /// \param other The other constant actuator
     ///
-    ActuatorConstant(const biorbd::actuator::ActuatorConstant& other);
+    ActuatorConstant(
+            const biorbd::actuator::ActuatorConstant& other);
 
     ///
     /// \brief Construct a constant actuator
@@ -58,7 +59,8 @@ public:
     /// \brief Deep copy of the constant actuator to another constant actuator
     /// \param other The constant actuator to copy
     ///
-    void DeepCopy(const biorbd::actuator::ActuatorConstant& other);
+    void DeepCopy(
+            const biorbd::actuator::ActuatorConstant& other);
 
     ///
     /// \brief Return the maximal torque
