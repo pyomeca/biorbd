@@ -54,7 +54,10 @@ public:
     RotoTrans(
             const Eigen::Matrix3d& rot,
             const biorbd::utils::Vector3d& trans = biorbd::utils::Vector3d::Zero());
-
+    ///
+    /// \brief Contruct Rototrans
+    /// \param st Spatial Transform
+    ///
     RotoTrans(
             const RigidBodyDynamics::Math::SpatialTransform& st);
 

@@ -21,7 +21,7 @@ public:
     Node();
     ///
     /// \brief Construct Node from another node
-    /// \param other node
+    /// \param node Node
     ///
     Node(
             const biorbd::utils::Node& node);
@@ -47,7 +47,7 @@ public:
 
     ///
     /// \brief Deep copy of the node in another node
-    /// \param The node to copy
+    /// \param other The node to copy
     ///
     void DeepCopy(const biorbd::utils::Node& other);
 
@@ -68,7 +68,7 @@ public:
     const biorbd::utils::String &parent() const;
     ///
     /// \brief Set the parent name of the node
-    /// \param name Parent name to set
+    /// \param parentName Parent name to set
     ///  
     void setParent(const biorbd::utils::String &parentName);
 

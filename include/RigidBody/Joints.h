@@ -382,16 +382,11 @@ public:
 
     ///
     /// \brief Return the Jacobian matrix of the projected markers from points corresponding to markers from the model
-    /// \param Q
-    /// \param p 
-    /// \param updateKin
+    /// \param Q Generalized coordinates
+    /// \param n Node segment
+    /// \param updateKin Update kinamatics
     /// \return 
     ///
-    biorbd::utils::Matrix projectPointJacobian(
-            const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            biorbd::rigidbody::NodeSegment p,
-            bool updateKin);
-
 
     biorbd::rigidbody::NodeSegment projectPoint(
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
@@ -399,11 +394,23 @@ public:
         bool updateKin);
     ///
     /// \brief Return the Jacobian matrix of the projected markers from points corresponding to markers from the model
-    /// \param Q
-    /// \param v
+    /// \param Q Generalized coordinates
+    /// \param p Node segment
+    /// \param updateKin Update kinematics
+    /// \return Jacobian matrix of the projected markers from points corresponding to markers from the model
+    ///
+    biorbd::utils::Matrix projectPointJacobian(
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            biorbd::rigidbody::NodeSegment p,
+            bool updateKin);
+
+    ///
+    /// \brief Return the Jacobian matrix of the projected markers from points corresponding to markers from the model
+    /// \param Q Generalized coordinates
+    /// \param v 3d vector
     /// \param SegmentIdx The identification of the Segment
     /// \param axesToRemove
-    /// \param updateKin
+    /// \param updateKin Update kinematics
     /// \return
     ///
     biorbd::utils::Matrix projectPointJacobian(
@@ -415,9 +422,9 @@ public:
 
     ///
     /// \brief Return the Jacobian matrix of the projected markers from points corresponding to markers from the model (The vector must be equal to the number of markers and the order given by Markers and in global coordinates)
-    /// \param Q
-    /// \param v
-    /// \param updateKin
+    /// \param Q Generalized coordinates   
+    /// \param v Node segment
+    /// \param updateKin Update kinematics
     /// \return 
     ///
     std::vector<biorbd::utils::Matrix> projectPointJacobian(
@@ -715,7 +722,7 @@ public:
     /// \brief Return the derivate of Q in function of Qdot (if not Quaternion, Qdot is directly returned)
     /// \param Q The position variables of the model
     /// \param QDot The velocity variables of the model
-    /// \param QDotOut The output vector
+    /// \param k_stab 
     /// \return The derivate of Q in function of Qdot
     ///
 	

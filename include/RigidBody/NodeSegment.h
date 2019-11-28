@@ -13,7 +13,7 @@ class String;
 namespace rigidbody {
 
 ///
-/// \brief Class NodeBone
+/// \brief Class NodeSegment
 ///
 class BIORBD_API NodeSegment : public biorbd::utils::Vector3d
 { 
