@@ -15,7 +15,7 @@ class Vector3d;
 }
 
 ///
-/// \brief Namespace rigidbody that holds the segment caracteristics and mesh
+/// \brief Namespace rigidbody that holds the segment characteristics and mesh
 ///
 namespace rigidbody {
 class Mesh;

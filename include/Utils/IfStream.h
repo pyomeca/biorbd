@@ -47,14 +47,14 @@ public:
 
     /// 
     /// \brief Read text
-    /// \param The text to read
+    /// \param text The text to read
     /// \return True (text read) or False
     ///
     bool read(biorbd::utils::String& text);
 
     /// 
     /// \brief Read text without the commented lines
-    /// \param The text to read
+    /// \param text The text to read
     /// \return True (text read) or False
     ///
     bool readIgnoreCommentedLine(biorbd::utils::String&text);

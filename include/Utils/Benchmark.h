@@ -67,14 +67,14 @@ public:
     /// \brief Start a counter to count or add to it
     /// \param s Counter to add
     ///
-    void addToCounter(const biorbd::utils::String&);
+    void addToCounter(const biorbd::utils::String&s);
 
     ///
     /// \brief Get the number of counts
     /// \param s The count to get
     /// \return The number of counts
     ///
-    int getCount(const biorbd::utils::String&); 
+    int getCount(const biorbd::utils::String&s); 
 
 protected:
     std::map<biorbd::utils::String, biorbd::utils::Timer> m_timers;///< Timers

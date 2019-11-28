@@ -7,13 +7,15 @@
 namespace biorbd {
 namespace utils {
 class String;
-
+///
+/// \brief Class Error
+///
 class BIORBD_API Error
 {
 public:
     /// 
     /// \brief Throw a error message
-    /// \param The error message to display
+    /// \param message The error message to display
     ///
     [[noreturn]] static void raise(
             const biorbd::utils::String &message);
@@ -29,7 +31,7 @@ public:
     ///
     /// \brief Display a warning message if condition is false
     /// \param cond The condition (true of false)
-    /// \message The warning message to display
+    /// \param message The warning message to display
     ///
         static void warning(
             bool cond,
