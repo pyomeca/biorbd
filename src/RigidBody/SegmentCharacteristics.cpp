@@ -48,14 +48,9 @@ void biorbd::rigidbody::SegmentCharacteristics::DeepCopy(const SegmentCharacteri
     *m_mesh = other.m_mesh->DeepCopy();
 }
 
-const biorbd::rigidbody::Mesh &biorbd::rigidbody::SegmentCharacteristics::mesh() const
+void biorbd::rigidbody::SegmentCharacteristics::setLength(double val)
 {
-    return *m_mesh;
-}
-
-const Eigen::Matrix3d &biorbd::rigidbody::SegmentCharacteristics::inertia() const
-{
-    return mInertia;
+    *m_length = val;
 }
 
 double biorbd::rigidbody::SegmentCharacteristics::length() const
@@ -68,7 +63,12 @@ double biorbd::rigidbody::SegmentCharacteristics::mass() const
     return mMass;
 }
 
-void biorbd::rigidbody::SegmentCharacteristics::setLength(double val)
+const biorbd::rigidbody::Mesh &biorbd::rigidbody::SegmentCharacteristics::mesh() const
 {
-    *m_length = val;
+    return *m_mesh;
+}
+
+const Eigen::Matrix3d &biorbd::rigidbody::SegmentCharacteristics::inertia() const
+{
+    return mInertia;
 }

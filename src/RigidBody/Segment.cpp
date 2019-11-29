@@ -202,8 +202,8 @@ unsigned int biorbd::rigidbody::Segment::nbQddot() const{
 }
 
 // Add platform
-void biorbd::rigidbody::Segment::setPF(int PF){
-    *m_idxPF = PF;
+void biorbd::rigidbody::Segment::setPF(int idx){
+    *m_idxPF = idx;
 }
 
 const biorbd::utils::String &biorbd::rigidbody::Segment::nameDof(const unsigned int i) const {
@@ -331,7 +331,7 @@ void biorbd::rigidbody::Segment::fillSequence(){
             (*m_dofPosition)[i+*m_nbDofTrans] = (*m_sequenceRot)[i]; // Place the rotation following the translations in the requested order
 }
 
-void biorbd::rigidbody::Segment::setDofCharacteristicsOnLastSegment(){
+void biorbd::rigidbody::Segment::setDofCharacteristicsOnLastBody(){
     m_dofCharacteristics->clear();
 
     if (*m_nbDof!=0){
@@ -375,7 +375,7 @@ void biorbd::rigidbody::Segment::setJointAxis(){
 }
 
 void biorbd::rigidbody::Segment::setJoints(biorbd::rigidbody::Joints& model){
-    setDofCharacteristicsOnLastSegment(); // Apply the segment caracteristics only to the last segment
+    setDofCharacteristicsOnLastBody(); // Apply the segment caracteristics only to the last segment
     setJointAxis(); // Choose the axis order in relation to the selected sequence
 
 
