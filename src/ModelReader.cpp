@@ -2,6 +2,8 @@
 #include "ModelReader.h"
 
 #include <limits.h>
+#include <boost/lexical_cast.hpp>
+
 #include "BiorbdModel.h"
 #include "Utils/Error.h"
 #include "Utils/IfStream.h"
@@ -202,6 +204,8 @@ void biorbd::Reader::readModelFile(
                             Mesh = readMeshFileBiorbdSegments(path.folder() + filePath.relativePath());
                         else if (!filePath.extension().compare("ply"))
                             Mesh = readMeshFilePly(path.folder() + filePath.relativePath());
+                        else if (!filePath.extension().compare("obj"))
+                            Mesh = readMeshFileObj(path.folder() + filePath.relativePath());
 #ifdef MODULE_VTP_FILES_READER
                         else if (!filePath.extension().compare("vtp"))
                             Mesh = readMeshFileVtp(path.folder() + filePath.relativePath());
@@ -1495,6 +1499,68 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFilePly(
             file.read(dump);
         mesh.addPatch(patchTp);
     }
+    return mesh;
+}
+
+biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileObj(
+        const biorbd::utils::Path &path)
+{
+    // Read a bone file
+
+    // Open file
+    // std::cout << "Loading marker file: " << path << std::endl;
+#ifdef _WIN32
+    biorbd::utils::IfStream file(
+                biorbd::utils::Path::toWindowsFormat(
+                    path.absolutePath()).c_str(), std::ios::in);
+#else
+    biorbd::utils::IfStream file(
+                path.absolutePath().c_str(), std::ios::in);
+#endif
+
+    // Read file
+    biorbd::utils::String tp;
+
+    biorbd::rigidbody::Mesh mesh;
+    mesh.setPath(path);
+
+    // Get all the points
+    biorbd::utils::Vector3d vertex;
+    biorbd::rigidbody::Patch patch;
+    biorbd::utils::String text;
+    while (true) {
+        // If we get to the end of file, exit loop
+        if (file.eof())
+            break;
+
+        // Read the first element of the line
+        file.read(text);
+
+        if (!text.compare("v")) {
+            // If first element is a v, then a vertex is found
+            for (unsigned int i=0; i<3; ++i)
+                file.read(vertex(i));
+            mesh.addPoint(vertex);
+        }
+        else if (!text.compare("f")) {
+            // If first element is a f, then a face is found
+            // Face is ignore for now
+            for (int i=0; i<3; ++i) {
+                file.read(text);
+                size_t idxSlash = text.find("/");
+                biorbd::utils::String tata3(text.substr (0,idxSlash));
+                patch(i) = (boost::lexical_cast<int>(text.substr (0,idxSlash)) - 1);
+            }
+            file.getline(text); // Ignore last element if it is a 4 vertex based
+            mesh.addPatch(patch.DeepCopy());
+        }
+        else {
+            // Ignore the line
+            file.getline(text);
+        }
+
+    }
+
     return mesh;
 }
 

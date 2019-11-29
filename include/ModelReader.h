@@ -133,6 +133,14 @@ public:
     /// \return Returns the mesh
     ///
     static biorbd::rigidbody::Mesh readMeshFilePly(const biorbd::utils::Path& path);
+
+    ///
+    /// \brief Read a OBJ segment mesh file in ASCII format
+    /// \param path The path of the file
+    /// \return Returns the mesh
+    ///
+    static biorbd::rigidbody::Mesh readMeshFileObj(const biorbd::utils::Path& path);
+
 #ifdef MODULE_VTP_FILES_READER
     ///
     /// \brief Read a Vtp segment mesh file
