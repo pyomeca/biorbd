@@ -139,5 +139,5 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
 
 void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame()
 {
-    biorbd::utils::Error::raise("Implémentation impossible");
+    biorbd::utils::Error::raise("Reconstructing kinematics for IMU needs measurements");
 }

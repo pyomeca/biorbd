@@ -57,17 +57,17 @@ void biorbd::rigidbody::Markers::addMarker(
 }
 
 const biorbd::rigidbody::NodeSegment &biorbd::rigidbody::Markers::marker(
-        unsigned int i) const
+        unsigned int idx) const
 {
-    return (*m_marks)[i];
+    return (*m_marks)[idx];
 }
 
 std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::marker(
-        const biorbd::utils::String& segmentName) const
+        const biorbd::utils::String& name) const
 {
     std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i) // Go through all the markers and select the right ones
-        if (!marker(i).parent().compare(segmentName))
+        if (!marker(i).parent().compare(name))
             pos.push_back(marker(i));
 
     return pos;
@@ -288,7 +288,7 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::markersJacobian(
     return markersJacobian(Q, removeAxis, updateKin, false);
 }
 
-std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::TechnicalMarkersJacobian(
+std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::technicalMarkersJacobian(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool removeAxis,
         bool updateKin)

@@ -10,7 +10,7 @@
 #include "RigidBody/Contacts.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/KalmanReconsMarkers.h"
-#include "RigidBody/Patch.h"
+#include "RigidBody/MeshFace.h"
 %}
 
 
@@ -22,8 +22,8 @@ namespace std {
 
 %template(VecBiorbdNodeSegment) std::vector<biorbd::rigidbody::NodeSegment>;
 %template(MatBiorbdNodeSegment) std::vector<std::vector<biorbd::rigidbody::NodeSegment>>;
-%template(VecBiorbdPatch) std::vector<biorbd::rigidbody::Patch>;
-%template(MatBiorbdPatch) std::vector<std::vector<biorbd::rigidbody::Patch>>;
+%template(VecBiorbdMeshFace) std::vector<biorbd::rigidbody::MeshFace>;
+%template(MatBiorbdMeshFace) std::vector<std::vector<biorbd::rigidbody::MeshFace>>;
 }
 
 // Exposing some useful functions
@@ -84,7 +84,7 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/NodeSegment.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Contacts.h"
 @SWIG_KALMAN_INCLUDE_COMMAND@
-%include "@CMAKE_SOURCE_DIR@/include/RigidBody/Patch.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/MeshFace.h"
 //%include "RigidBody/Segment.h"
 //%include "RigidBody/SegmentCharacteristics.h"
 //%include "RigidBody/Mesh.h"

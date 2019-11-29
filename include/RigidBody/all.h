@@ -15,7 +15,7 @@
 #include "RigidBody/Joints.h"
 #include "RigidBody/Markers.h"
 #include "RigidBody/NodeSegment.h"
-#include "RigidBody/Patch.h"
+#include "RigidBody/MeshFace.h"
 #include "RigidBody/RigidBodyEnums.h"
 #ifndef SKIP_KALMAN
 #include "RigidBody/KalmanRecons.h"

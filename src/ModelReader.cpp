@@ -15,7 +15,7 @@
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
 #include "RigidBody/IMU.h"
-#include "RigidBody/Patch.h"
+#include "RigidBody/MeshFace.h"
 #include "RigidBody/NodeSegment.h"
 
 #ifdef MODULE_ACTUATORS
@@ -187,10 +187,10 @@ void biorbd::Reader::readModelFile(
                             segmentByFile = 0;
                         else if (segmentByFile == 1)
                             biorbd::utils::Error::raise("You must not mix file and mesh in segment");
-                        biorbd::rigidbody::Patch tp;
+                        biorbd::rigidbody::MeshFace tp;
                         for (int i=0; i<3; ++i)
                             file.read(tp(i));
-                        Mesh.addPatch(tp);
+                        Mesh.addFace(tp);
                     }
                     else if (!property_tag.tolower().compare("meshfile")){
                         if (segmentByFile==-1)
@@ -1422,14 +1422,14 @@ biorbd::Reader::readMeshFileBiorbdSegments(
     }
 
     for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints){
-        biorbd::rigidbody::Patch patchTp;
+        biorbd::rigidbody::MeshFace patchTp;
         int nVertices;
         file.read(nVertices);
         if (nVertices != 3)
             biorbd::utils::Error::raise("Patches must be 3 vertices!");
         for (int i=0; i<nVertices; ++i)
             file.read(patchTp(i));
-        mesh.addPatch(patchTp);
+        mesh.addFace(patchTp);
     }
     return mesh;
 }
@@ -1486,7 +1486,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFilePly(
     }
 
     for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints){
-        biorbd::rigidbody::Patch patchTp;
+        biorbd::rigidbody::MeshFace patchTp;
         int nVertices;
         file.read(nVertices);
         if (nVertices != 3)
@@ -1497,7 +1497,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFilePly(
         // Remove if there are too many columns
         for (int i=0; i<nFacesProperties-1; ++i)
             file.read(dump);
-        mesh.addPatch(patchTp);
+        mesh.addFace(patchTp);
     }
     return mesh;
 }
@@ -1526,7 +1526,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileObj(
 
     // Get all the points
     biorbd::utils::Vector3d vertex;
-    biorbd::rigidbody::Patch patch;
+    biorbd::rigidbody::MeshFace patch;
     biorbd::utils::String text;
     while (true) {
         // If we get to the end of file, exit loop
@@ -1552,7 +1552,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileObj(
                 patch(i) = (boost::lexical_cast<int>(text.substr (0,idxSlash)) - 1);
             }
             file.getline(text); // Ignore last element if it is a 4 vertex based
-            mesh.addPatch(patch.DeepCopy());
+            mesh.addFace(patch.DeepCopy());
         }
         else {
             // Ignore the line
@@ -1645,7 +1645,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileVtp(
                 std::stringstream fs( field );
                 fs >> vertex3;
             }
-            mesh.addPatch(Eigen::Vector3i(vertex1, vertex2, vertex3));
+            mesh.addFace(Eigen::Vector3i(vertex1, vertex2, vertex3));
         }
     }
 

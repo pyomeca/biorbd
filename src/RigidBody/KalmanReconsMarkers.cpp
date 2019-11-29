@@ -137,7 +137,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     // Projected markers
     const std::vector<biorbd::rigidbody::NodeSegment>& zest_tp(model.technicalMarkers(Q_tp, removeAxes, false));
     // Jacobian
-   const  std::vector<biorbd::utils::Matrix>& J_tp(model.TechnicalMarkersJacobian(Q_tp, removeAxes, false));
+   const  std::vector<biorbd::utils::Matrix>& J_tp(model.technicalMarkersJacobian(Q_tp, removeAxes, false));
     // Create only one matrix for zest and Jacobian
     biorbd::utils::Matrix H(biorbd::utils::Matrix::Zero(*m_nMeasure, *m_nbDof*3)); // 3*nMarkers => X,Y,Z ; 3*nbDof => Q, Qdot, Qddot
     biorbd::utils::Vector zest(biorbd::utils::Vector::Zero(*m_nMeasure));

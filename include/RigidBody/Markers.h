@@ -16,24 +16,27 @@ class GeneralizedCoordinates;
 class NodeSegment;
 
 ///
-/// \brief Class Markers
+/// \brief Holder for the marker set
 ///
 class BIORBD_API Markers
 {
 public:
     ///
-    /// \brief Construct markers
+    /// \brief Construct a marker set
     ///
     Markers();
+
     ///
-    /// \brief Construct markers from other markers
-    /// \param other The other markers 
+    /// \brief Construct markers from another marker set
+    /// \param other The other marker set
     ///
     Markers(const biorbd::rigidbody::Markers& other);
+
     ///
     /// \brief Destroy class properly
     ///
     virtual ~Markers();
+
     ///
     /// \brief Deep copy of the markers
     /// \return Deep copy of the markers
@@ -46,17 +49,15 @@ public:
     /// 
     void DeepCopy(const biorbd::rigidbody::Markers& other);
 
-    // Set and get
-
     /// 
-    /// \brief Add a marker
+    /// \brief Add a marker to the set
     /// \param pos The position of the marker
     /// \param name The name of the marker
-    /// \param parentName The name of the marker's parent
+    /// \param parentName The name of the segment the marker is attached on
     /// \param technical If the marker is technical
     /// \param anatomical If the marker is anatomical
-    /// \param axesToRemove Axes to remove
-    /// \param id The marker identification (default: -1)
+    /// \param axesToRemove Axes to remove while projecting the marker
+    /// \param id The index of the parent segment
     ///
     void addMarker(
             const biorbd::rigidbody::NodeSegment &pos,
@@ -69,45 +70,46 @@ public:
         );
 
     ///
-    /// \brief Return marker i
-    /// \param i The marker we want to return
+    /// \brief Return the marker of index idx
+    /// \param idx The marker we want to return
     /// \return The marker
     ///
     const biorbd::rigidbody::NodeSegment& marker(
-            unsigned int i) const;
+            unsigned int idx) const;
 
     ///
-    /// \brief Return the markers on a segment i
-    /// \param segmentName Name of the segment i
-    /// \return The markers on segment i
+    /// \brief Return the markers on a segment
+    /// \param name Name of the segment
+    /// \return The markers on the segment
     ///
     std::vector<biorbd::rigidbody::NodeSegment> marker(
-            const biorbd::utils::String &segmentName) const;
+            const biorbd::utils::String &name) const;
+
     ///
-    /// \brief Return the names of the markers
+    /// \brief Return the names of all the markers
     /// \return The names of the markers
     ///
     std::vector<biorbd::utils::String> markerNames() const;
     
     ///
-    /// \brief Return the names of the technical markers
+    /// \brief Return the names of all the technical markers
     /// \return The names of the technical markers
     ///
     std::vector<biorbd::utils::String> technicalMarkerNames() const;
 
     ///
-    /// \brief Return the names of the anatomical markers
+    /// \brief Return the names of all the anatomical markers
     /// \return The names of the anatomical markers
     ///
     std::vector<biorbd::utils::String> anatomicalMarkerNames() const;
 
     ///
-    /// \brief Return a marker
+    /// \brief Compute and return the position of a marker at given Q in the global reference frame
     /// \param Q The generalized coordinates 
-    /// \param node The node on which the marker is
-    /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
-    /// \param updateKin If the kinematics should be updated (default: True)
-    /// \return A marker
+    /// \param node The position of the marker in its parent reference frame
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param updateKin If the model should be updated
+    /// \return The marker in the global reference frame
     ///
     biorbd::rigidbody::NodeSegment marker(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
@@ -116,12 +118,12 @@ public:
             bool updateKin = true);
 
     ///
-    /// \brief Return a marker
-    /// \param Q The generalized coordinates 
-    /// \param idx The marker identification
-    /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
-    /// \param updateKin If the kinematics should be updated (default: True)
-    /// \return A marker
+    /// \brief Compute and return the position of the marker of index idx at given Q in the global reference frame
+    /// \param Q The generalized coordinates
+    /// \param idx The index of the marker in the marker set
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param updateKin If the model should be updated
+    /// \return The marker idx in the global reference frame
     ///
     biorbd::rigidbody::NodeSegment marker(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
@@ -130,21 +132,21 @@ public:
             bool updateKin = true); 
 
     ///
-    /// \brief Return a marker
-    /// \param idx The marker identification
-    /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
-    /// \return A marker
+    /// \brief Return a marker of index idx in the marker set
+    /// \param idx The index of the marker
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \return The marker of index idx
     ///
     biorbd::rigidbody::NodeSegment marker(
             unsigned int  idx,
             bool removeAxis);
 
     ///
-    /// \brief Return all the markers
-    /// \param Q The generalized coordinates of the model
-    /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
-    /// \param updateKin If the kinematics should be updated (default: True)
-    /// \return A vector of all the markers
+    /// \brief Return all the markers at a given Q in the global reference frame
+    /// \param Q The generalized coordinates
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param updateKin If the model should be updated
+    /// \return All the markers in the global reference frame
     ///
     std::vector<biorbd::rigidbody::NodeSegment> markers(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
@@ -152,20 +154,20 @@ public:
             bool updateKin = true); 
 
     ///
-    /// \brief Return all the markers
-    /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
-    /// \return A vector of all the markers
+    /// \brief Return all the markers in their respective parent reference frame
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \return All the markers
     ///
     std::vector<biorbd::rigidbody::NodeSegment> markers(
             bool removeAxis=true); 
 
     ///
     /// \brief Return the velocity of a marker
-    /// \param Q The generalized coordinates of the model
-    /// \param Qdot The generalized velocities of the model
-    /// \param idx The marker identification
-    /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
-    /// \param updateKin If the kinematics should be updated (default: True)
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param idx The index of the marker in the marker set
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param updateKin If the model should be updated
     /// \return The velocity of a marker
     ///
     biorbd::rigidbody::NodeSegment markerVelocity(
@@ -177,12 +179,12 @@ public:
 
 
     ///
-    /// \brief Return the velocity of all markers
-    /// \param Q The generalized coordinates of the model
-    /// \param Qdot The generalized velocities of the model
-    /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
-    /// \param updateKin If the kinematics should be updated (default: True)
-    /// \return A vector of the velocity of all markers
+    /// \brief Return the velocity of all the markers
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param updateKin If the model should be updated
+    /// \return The velocity of all the markers
     ///
     std::vector<biorbd::rigidbody::NodeSegment> markersVelocity(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
@@ -191,29 +193,30 @@ public:
             bool updateKin = true); 
 
     ///
-    /// \brief Return the technical markers
-    /// \param Q The generalized coordinates of the model
-    /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
-    /// \param updateKin If the kinematics should be updated (default: True)
+    /// \brief Return all the technical markers at a given Q in the global reference frame
+    /// \param Q The generalized coordinates
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param updateKin If the model should be updated
     /// \return A vector of all the technical markers
     ///
     std::vector<biorbd::rigidbody::NodeSegment> technicalMarkers(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxis=true,
             bool updateKin = true); 
+
     ///
-    /// \brief Return the technical markers
-    /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
-    /// \return A vector of all the technical markers
+    /// \brief Return the technical markers in their respective parent reference frame
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \return A vector of all the technical markers in their parent reference frame
     ///
     std::vector<biorbd::rigidbody::NodeSegment> technicalMarkers(
             bool removeAxis=true);
 
     ///
-    /// \brief Return the anatomical markers
-    /// \param Q The generalized coordinates of the model
-    /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
-    /// \param updateKin If the kinematics should be updated (default: True)
+    /// \brief Return all the anatomical markers at a given Q in the global reference frame
+    /// \param Q The generalized coordinates
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param updateKin If the model should be updated
     /// \return A vector of all the anatomical markers
     ///
     std::vector<biorbd::rigidbody::NodeSegment> anatomicalMarkers(
@@ -222,28 +225,26 @@ public:
             bool updateKin = true); 
 
     ///
-    /// \brief Return the anatomical markers
-    /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
-    /// \return A vector of all the technical markers
+    /// \brief Return the anatomical markers in their respective parent reference frame
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \return A vector of all the anatomical markers in their parent reference frame
     ///
     std::vector<biorbd::rigidbody::NodeSegment> anatomicalMarkers(
             bool removeAxis=true); 
 
-
     ///
-    /// \brief Return the markers of segment i
+    /// \brief Return all the markers of the segment idx at a given Q in the global reference frame
     /// \param Q The generalized coordinates
-    /// \param idx The segment identification
-    /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
-    /// \param updateKin If the kinematics should be updated (default: True)
-    /// \return A vector of the markers of segment i
+    /// \param idx The index of the segment
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param updateKin If the model should be updated
+    /// \return All the markers of the segment idx
     ///
     std::vector<biorbd::rigidbody::NodeSegment> segmentMarkers(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             unsigned int  idx,
             bool removeAxis=true,
             bool updateKin = true); 
-
 
     /// 
     /// \brief Return the number of markers
@@ -252,11 +253,12 @@ public:
     unsigned int nbMarkers() const;
 
     ///
-    /// \brief Return the number of markers of segment i. If no segment input, then it returns the total number of markers
-    /// \param idxSegment The segment identification
-    /// \return The number of markers of segment i
+    /// \brief Return the number of markers on the segment idxSegment
+    /// \param idxSegment The index of the segment
+    /// \return The number of markers of segment idxSegment
     ///
-    unsigned int nbMarkers(unsigned int idxSegment) const; 
+    unsigned int nbMarkers(
+            unsigned int idxSegment) const;
 
     /// 
     /// \brief Return the number of technical markers
@@ -264,10 +266,10 @@ public:
     ///
     unsigned int nbTechnicalMarkers();
 
-    /// 
-    /// \brief Return the number of technical markers of segment i
-    /// \param idxSegment The segment identification
-    /// \return The number of technical markers of segment i
+    ///
+    /// \brief Return the number of technical markers on the segment idxSegment
+    /// \param idxSegment The index of the segment
+    /// \return The number of technical markers of segment idxSegment
     ///
     unsigned int nbTechnicalMarkers(unsigned int idxSegment); 
 
@@ -278,36 +280,36 @@ public:
     unsigned int nbAnatomicalMarkers(); 
 
     ///
-    /// \brief Return the Jacobian of the markers
-    /// \param Q The generalized coordinates of the model
-    /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
-    /// \param updateKin If the kinematics should be updated (default: True)
-    /// \return The Jacobian of the markers
+    /// \brief Return the jacobian of the markers
+    /// \param Q The generalized coordinates
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param updateKin If the model should be updated
+    /// \return The jacobian of the markers
     ///
     std::vector<biorbd::utils::Matrix> markersJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxis=true,
             bool updateKin = true);
 
-    /// 
-    /// \brief Return the Jacobian of the technical markers
-    /// \param Q The position variable of the model
-    /// \param removeAxis If there are axis to remove from the position variables (default: True) TODO
-    /// \param updateKin If the kinematics should be updated (default: True)
-    /// \return The Jacobian of the technical markers
     ///
-    std::vector<biorbd::utils::Matrix> TechnicalMarkersJacobian(
+    /// \brief Return the jacobian of the technical markers
+    /// \param Q The generalized coordinates
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param updateKin If the model should be updated
+    /// \return The jacobian of the technical markers
+    ///
+    std::vector<biorbd::utils::Matrix> technicalMarkersJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxis=true,
             bool updateKin = true);
 
     ///
-    /// \brief Return the Jacobian of a chosen marker
+    /// \brief Return the jacobian of a chosen marker
     /// \param Q The generalized coordinates of the model
-    /// \param parentName The marker's parent name
-    /// \param p  The position of the point in body-local data
-    /// \param  updateKin If the kinematics should be updated
-    /// \return The Jacobian of a chosen marker
+    /// \param parentName The name of the segment the marker lies on
+    /// \param p The position of the point in the parent reference frame
+    /// \param updateKin If the model should be updated
+    /// \return The jacobian of the chosen marker
     ///
     biorbd::utils::Matrix markersJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
@@ -317,12 +319,12 @@ public:
 
 protected:
     ///
-    /// \brief Return the Jacobian of the markers
-    /// \param Q The generalized coordinates of the model
+    /// \brief Compute the jacobian of the markers
+    /// \param Q The generalized coordinates
     /// \param removeAxis If there are axis to remove from the position variables
-    /// \param updateKin If the kinematics should be updated
-    /// \param lookForTechnical Check if there are technical markers
-    /// \return The Jacobian of the markers
+    /// \param updateKin If the model should be updated
+    /// \param lookForTechnical Check if only technical markers are to be computed
+    /// \return The jacobian of the markers
     ///
     std::vector<biorbd::utils::Matrix> markersJacobian(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,

@@ -20,14 +20,13 @@ biorbd::rigidbody::KalmanRecons::KalmanRecons() :
 
 }
 
-biorbd::rigidbody::KalmanRecons::KalmanRecons(
-        biorbd::Model &model,
-        unsigned int nMeasure,
+biorbd::rigidbody::KalmanRecons::KalmanRecons(biorbd::Model &model,
+        unsigned int nbMeasure,
         KalmanParam params) :
     m_params(std::make_shared<KalmanParam>(params)),
     m_Te(std::make_shared<double>(1.0/(m_params->acquisitionFrequency()))),
     m_nbDof(std::make_shared<unsigned int>(model.dof_count)),
-    m_nMeasure(std::make_shared<unsigned int>(nMeasure)),
+    m_nMeasure(std::make_shared<unsigned int>(nbMeasure)),
     m_xp(std::make_shared<biorbd::utils::Vector>()),
     m_A(std::make_shared<biorbd::utils::Matrix>()),
     m_Q(std::make_shared<biorbd::utils::Matrix>()),
@@ -126,7 +125,7 @@ biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::evolutionMatrix(
 }
 
 biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::processNoiseMatrix(
-        const unsigned int nQ,
+        const unsigned int nbQ,
         double Te){
 
     // Find the coefficients values
@@ -138,17 +137,17 @@ biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::processNoiseMatrix(
     double c6 = Te;
 
     // Ouput matrix
-    biorbd::utils::Matrix Q(biorbd::utils::Matrix::Zero(3*nQ,3*nQ));
-    for (unsigned int j=0; j<nQ; ++j){
+    biorbd::utils::Matrix Q(biorbd::utils::Matrix::Zero(3*nbQ,3*nbQ));
+    for (unsigned int j=0; j<nbQ; ++j){
         Q(     j,      j) = c1;
-        Q(     j,   nQ+j) = c2;
-        Q(     j, 2*nQ+j) = c3;
-        Q(  nQ+j,      j) = c2;
-        Q(  nQ+j,   nQ+j) = c4;
-        Q(  nQ+j, 2*nQ+j) = c5;
-        Q(2*nQ+j,      j) = c3;
-        Q(2*nQ+j,   nQ+j) = c5;
-        Q(2*nQ+j, 2*nQ+j) = c6;
+        Q(     j,   nbQ+j) = c2;
+        Q(     j, 2*nbQ+j) = c3;
+        Q(  nbQ+j,      j) = c2;
+        Q(  nbQ+j,   nbQ+j) = c4;
+        Q(  nbQ+j, 2*nbQ+j) = c5;
+        Q(2*nbQ+j,      j) = c3;
+        Q(2*nbQ+j,   nbQ+j) = c5;
+        Q(2*nbQ+j, 2*nbQ+j) = c6;
     }
 
     return Q;
@@ -175,16 +174,17 @@ void biorbd::rigidbody::KalmanRecons::initialize(){
 
 
 biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::measurementNoiseMatrix(
-        const unsigned int nMeasure,
-        double MN){
-    biorbd::utils::Matrix R(biorbd::utils::Matrix::Zero(nMeasure, nMeasure));
-    for (unsigned int i=0; i<nMeasure; ++i)
-        R(i,i) = MN;
+        const unsigned int nbT,
+        double val){
+    biorbd::utils::Matrix R(biorbd::utils::Matrix::Zero(nbT, nbT));
+    for (unsigned int i=0; i<nbT; ++i)
+        R(i,i) = val;
     return R;
 }
 
-biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::KalmanRecons::initState(const unsigned int nQ){
-    return biorbd::rigidbody::GeneralizedCoordinates(biorbd::utils::Vector::Zero(3*nQ)); // Q, Qdot, Qddot
+biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::KalmanRecons::initState(
+        const unsigned int nbQ){
+    return biorbd::rigidbody::GeneralizedCoordinates(biorbd::utils::Vector::Zero(3*nbQ)); // Q, Qdot, Qddot
 }
 
 void biorbd::rigidbody::KalmanRecons::setInitState(
@@ -202,12 +202,11 @@ void biorbd::rigidbody::KalmanRecons::setInitState(
 }
 
 
-biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::initCovariance(
-        const unsigned int nQ,
-        double csnt){
-    biorbd::utils::Matrix Pp(biorbd::utils::Matrix::Zero(3*nQ, 3*nQ));
-    for (unsigned int i=0; i<3*nQ; ++i)
-        Pp(i,i) = csnt;
+biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::initCovariance(const unsigned int nbQ,
+        double val){
+    biorbd::utils::Matrix Pp(biorbd::utils::Matrix::Zero(3*nbQ, 3*nbQ));
+    for (unsigned int i=0; i<3*nbQ; ++i)
+        Pp(i,i) = val;
     return Pp;
 }
 

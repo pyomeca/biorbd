@@ -11,7 +11,7 @@ class Markers;
 class NodeSegment;
 
 ///
-/// \brief Class KalmanReconsMarkers that includes class KalmanRecons
+/// \brief Class Kinematic reconstruction algorithm using an Extended Kalman Filter using skin markers
 ///
 class BIORBD_API KalmanReconsMarkers : public biorbd::rigidbody::KalmanRecons
 {
@@ -26,7 +26,7 @@ public:
 
     /// 
     /// \brief Initialize the Kalman filter and Kalman reconstruction for Markers data
-    /// \param model The model
+    /// \param model The joint model
     /// \param params The Kalman filter parameters
     ///
     KalmanReconsMarkers(
@@ -45,15 +45,14 @@ public:
     ///
     void DeepCopy(const biorbd::rigidbody::KalmanReconsMarkers& other);
 
- 
     ///
     /// \brief Reconstruct the kinematics from markers data
-    /// \param model The model
+    /// \param model The joint model
     /// \param Tobs The observed markers
-    /// \param Q The generalized coordinates of the model
-    /// \param Qdot The generalized velocities of the model
-    /// \param Qddot The acceleration variables of the model
-    /// \param removeAxes (default=True)
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param Qddot The generalized accelerations
+    /// \param removeAxes If the algo should ignore or not the removeAxis defined in the bioMod file
     ///
     virtual void reconstructFrame(
             biorbd::Model &model,
@@ -65,12 +64,12 @@ public:
 
     ///
     /// \brief Reconstruct the kinematics from markers data
-    /// \param model The model
+    /// \param model The joint model
     /// \param Tobs The observed markers
-    /// \param Q The generalized coordinates of the model
-    /// \param Qdot The generalized velocities of the model
-    /// \param Qddot The acceleration variables of the model
-    /// \param removeAxes (default=True)
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param Qddot The generalized accelerations
+    /// \param removeAxes If the algo should ignore or not the removeAxis defined in the bioMod file
     ///
     virtual void reconstructFrame(
             biorbd::Model &model,
@@ -82,12 +81,12 @@ public:
 
     ///
     /// \brief Reconstruct the kinematics from markers data
-    /// \param model The model
-    /// \param Tobs The observed markers (all already in a big vector)
-    /// \param Q The generalized coordinates of the model
-    /// \param Qdot The generalized velocities of the model
-    /// \param Qddot The acceleration variables of the model
-    /// \param removeAxes (default=True)
+    /// \param model The joint model
+    /// \param Tobs The observed markers in a column-major vector
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param Qddot The generalized accelerations
+    /// \param removeAxes If the algo should ignore or not the removeAxis defined in the bioMod file
     ///
     virtual void reconstructFrame(
             biorbd::Model &model,
@@ -98,35 +97,35 @@ public:
             bool removeAxes=true);
 
     /// 
-    /// \brief Error message if no input in function
+    /// \brief This function cannot be used to reconstruct frames
     ///
     virtual void reconstructFrame();
 
     ///
-    /// \brief To know if the first iteration was done
-    /// \return True or False
+    /// \brief Return if the first iteration was done
+    /// \return If the first iteration was done
     ///
     bool first();
 
 protected:
     ///
-    /// \brief To initialize the Kalman filter
+    /// \brief Initialization of the filter
     ///
     virtual void initialize();
-
 
     ///
     /// \brief Manage the occlusion during the iteration
     /// \param InvTp The inverse of the Tp matrix
-    /// \param measure The measure
-    /// \param occlusion The occlusion TODO
+    /// \param measure The vector actual measurement to track
+    /// \param occlusion The vector where occlusions occurs
     ///
     virtual void manageOcclusionDuringIteration(
             biorbd::utils::Matrix& InvTp,
             biorbd::utils::Vector &measure,
             const std::vector<unsigned int> &occlusion);
-    std::shared_ptr<biorbd::utils::Matrix> m_PpInitial; ///< Initial Pp matrix
-    std::shared_ptr<bool> m_firstIteration; ///< To know if first iteration was done (True or False)
+
+    std::shared_ptr<biorbd::utils::Matrix> m_PpInitial; ///< Initial covariance matrix
+    std::shared_ptr<bool> m_firstIteration; ///< If first iteration was done
 };
 
 }}

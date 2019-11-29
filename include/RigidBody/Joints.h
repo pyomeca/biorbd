@@ -18,7 +18,7 @@ namespace rigidbody {
 class GeneralizedCoordinates;
 class GeneralizedTorque;
 class NodeSegment;
-class Patch;
+class MeshFace;
 class Segment;
 class SegmentCharacteristics;
 class Mesh;
@@ -616,31 +616,31 @@ public:
             );
 
     ///
-    /// \brief Return the mesh patch for all the segments
-    /// \return The mesh patch for all the segments
+    /// \brief Return the mesh faces for all the segments
+    /// \return The mesh faces for all the segments
     ///
-    std::vector<std::vector<Patch> > meshPatch() const;
+    std::vector<std::vector<MeshFace> > meshFaces() const;
 
     ///
-    /// \brief Return the mesh patch for segment idx
+    /// \brief Return the mesh faces for segment idx
     /// \param idx The index of the segment
-    /// \return The mesh patch for segment idx
+    /// \return The mesh face for segment idx
     ///
-    const std::vector<biorbd::rigidbody::Patch> &meshPatch(
+    const std::vector<biorbd::rigidbody::MeshFace> &meshFaces(
             unsigned int idx) const;
 
     ///
     /// \brief Return the segment mesh
     /// \return The segment mesh
     ///
-    std::vector<biorbd::rigidbody::Mesh> Mesh() const;
+    std::vector<biorbd::rigidbody::Mesh> mesh() const;
     
     ///
     /// \brief Return the segment mesh for segment idx
     /// \param idx The index of the segment
     /// \return The Segment mesh for segment idx
     ///
-    const biorbd::rigidbody::Mesh& Mesh(
+    const biorbd::rigidbody::Mesh& mesh(
             unsigned int  idx) const;
     // ----------------------- //
 

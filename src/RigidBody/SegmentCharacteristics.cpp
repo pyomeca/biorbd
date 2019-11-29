@@ -2,7 +2,7 @@
 #include "RigidBody/SegmentCharacteristics.h"
 
 #include "Utils/Vector3d.h"
-#include "RigidBody/Patch.h"
+#include "RigidBody/MeshFace.h"
 #include "RigidBody/Mesh.h"
 
 biorbd::rigidbody::SegmentCharacteristics::SegmentCharacteristics() :

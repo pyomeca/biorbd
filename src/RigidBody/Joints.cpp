@@ -16,7 +16,7 @@
 #include "RigidBody/Segment.h"
 #include "RigidBody/Markers.h"
 #include "RigidBody/NodeSegment.h"
-#include "RigidBody/Patch.h"
+#include "RigidBody/MeshFace.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
 
@@ -708,9 +708,9 @@ biorbd::rigidbody::Joints::meshPointsInMatrix(
 
     std::vector<biorbd::utils::Matrix> all_points;
     for (unsigned int i=0; i<m_segments->size(); ++i) {
-        biorbd::utils::Matrix mat(3, Mesh(i).size());
-        for (unsigned int j=0; j<Mesh(i).size(); ++j){
-            biorbd::utils::Vector3d tp (Mesh(i).point(j));
+        biorbd::utils::Matrix mat(3, mesh(i).nbVertex());
+        for (unsigned int j=0; j<mesh(i).nbVertex(); ++j){
+            biorbd::utils::Vector3d tp (mesh(i).point(j));
             tp.applyRT(RT[i]);
             mat.block(0, j, 3, 1) = tp;
         }
@@ -724,35 +724,35 @@ std::vector<biorbd::utils::Vector3d> biorbd::rigidbody::Joints::meshPoints(
 
     // Gather the position of the meshings
     std::vector<biorbd::utils::Vector3d> v;
-    for (unsigned int j=0; j<Mesh(i).size(); ++j){
-        biorbd::utils::Vector3d tp (Mesh(i).point(j));
+    for (unsigned int j=0; j<mesh(i).nbVertex(); ++j){
+        biorbd::utils::Vector3d tp (mesh(i).point(j));
         tp.applyRT(RT[i]);
         v.push_back(tp);
     }
 
     return v;
 }
-std::vector<std::vector<biorbd::rigidbody::Patch>> biorbd::rigidbody::Joints::meshPatch() const{
+std::vector<std::vector<biorbd::rigidbody::MeshFace>> biorbd::rigidbody::Joints::meshFaces() const{
     // Gather the position of the meshings for all the segments
-    std::vector<std::vector<biorbd::rigidbody::Patch>> v_all;
+    std::vector<std::vector<biorbd::rigidbody::MeshFace>> v_all;
     for (unsigned int j=0; j<nbSegment(); ++j)
-        v_all.push_back(meshPatch(j));
+        v_all.push_back(meshFaces(j));
     return v_all;
 }
-const std::vector<biorbd::rigidbody::Patch> &biorbd::rigidbody::Joints::meshPatch(unsigned int idx) const{
+const std::vector<biorbd::rigidbody::MeshFace> &biorbd::rigidbody::Joints::meshFaces(unsigned int idx) const{
     // Find the position of the meshings for a segment i
-    return Mesh(idx).patch();
+    return mesh(idx).faces();
 }
 
-std::vector<biorbd::rigidbody::Mesh> biorbd::rigidbody::Joints::Mesh() const
+std::vector<biorbd::rigidbody::Mesh> biorbd::rigidbody::Joints::mesh() const
 {
     std::vector<biorbd::rigidbody::Mesh> segmentOut;
     for (unsigned int i=0; i<nbSegment(); ++i)
-        segmentOut.push_back(Mesh(i));
+        segmentOut.push_back(mesh(i));
     return segmentOut;
 }
 
-const biorbd::rigidbody::Mesh &biorbd::rigidbody::Joints::Mesh(unsigned int idx) const
+const biorbd::rigidbody::Mesh &biorbd::rigidbody::Joints::mesh(unsigned int idx) const
 {
     return segment(idx).characteristics().mesh();
 }

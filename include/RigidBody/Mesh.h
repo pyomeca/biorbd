@@ -13,10 +13,10 @@ class Path;
 }
 
 namespace rigidbody {
-class Patch;
+class MeshFace;
 
 ///
-/// \brief Class Mesh
+/// \brief A class that holds the geometry of a segment
 ///
 class BIORBD_API Mesh
 {
@@ -27,20 +27,20 @@ public:
     Mesh();
 
     ///
-    /// \brief Construct mesh
-    /// \brief mesh 3D vector
+    /// \brief Construct mesh from another mesh
+    /// \brief other The other mesh
     ///
     Mesh(
-            const std::vector<biorbd::utils::Vector3d>& mesh);
+            const std::vector<biorbd::utils::Vector3d>& other);
 
     ///
     /// \brief Construct mesh
-    /// \param mesh 3D vector
-    /// \param v Patch
+    /// \param vertex The vertex of the geometry
+    /// \param faces The faces of the geometry
     ///
    Mesh(
-            const std::vector<biorbd::utils::Vector3d>& mesh,
-            const std::vector<biorbd::rigidbody::Patch>&v);
+            const std::vector<biorbd::utils::Vector3d>& vertex,
+            const std::vector<biorbd::rigidbody::MeshFace>& faces);
 
     ///
     /// \brief Deep copy of the mesh
@@ -52,68 +52,69 @@ public:
     /// \brief Deep copy of the mesh
     /// \param other The mesh to copy
     ///
-    void DeepCopy(const biorbd::rigidbody::Mesh& other);
-
-    // Related to the mesh points
+    void DeepCopy(
+            const biorbd::rigidbody::Mesh& other);
 
     ///
     /// \brief Add a point to the mesh
     /// \param node The point to add
     ///
-    void addPoint(const biorbd::utils::Vector3d & node);
+    void addPoint(
+            const biorbd::utils::Vector3d& node);
 
     ///
-    /// \brief Return a point at a specific position
-    /// \param i Position
-    /// \return A point at position i
+    /// \brief Return the point of a specific index
+    /// \param idx The index of the point
+    /// \return The point of a specific index
     ///
-    const biorbd::utils::Vector3d& point(unsigned int i) const;
+    const biorbd::utils::Vector3d& point(
+            unsigned int idx) const;
 
     ///
-    /// \brief Returns the size of the mesh
-    /// \return The size of the mesh
+    /// \brief Returns the number of vertex
+    /// \return The number of vertex
     ///
-    unsigned int size() const;
-
-    // Related to the patches
+    unsigned int nbVertex() const;
 
     ///
-    /// \brief Add a patch to the mesh
-    /// \param v The patch to add
+    /// \brief Add a face patch to the mesh
+    /// \param face The face patch to add
     ///
-    void addPatch(const biorbd::rigidbody::Patch &v);
+    void addFace(
+            const biorbd::rigidbody::MeshFace& face);
 
     ///
-    /// \brief Add a patch to the mesh
-    /// \param v The patch to add (format Eigen vector)
+    /// \brief Add a face patch to the mesh
+    /// \param face The face patch to add
     ///
-    void addPatch(const Eigen::Vector3i &v);
+    void addFace(const Eigen::Vector3i &face);
 
     ///
-    /// \brief Return the patches of the mesh
-    /// \return The patches of the mesh
+    /// \brief Return the faces of the mesh
+    /// \return The faces of the mesh
     ///
-    const std::vector<biorbd::rigidbody::Patch>& patch() const;
+    const std::vector<biorbd::rigidbody::MeshFace>& faces() const;
 
     ///
-    /// \brief Return the patch of the mesh at a specified position
-    /// \param i Position
-    /// \return The patch at position i
+    /// \brief Return the face of the mesh of a specified idx
+    /// \param idx Position
+    /// \return The face of the mesh of a specified idx
     ///
-    const biorbd::rigidbody::Patch& patch(unsigned int i) const;
+    const biorbd::rigidbody::MeshFace& face(
+            unsigned int idx) const;
 
     ///
-    /// \brief Return the size of the patch
-    /// \return The size of the patch
+    /// \brief Return the number of faces
+    /// \return The number of faces
     ///
-    unsigned int nbPatch();
+    unsigned int nbFaces();
 
-    
     ///
     /// \brief Set the path of the underlying mesh file
     /// \param path Path for the mesh file
     ///
-    void setPath(const biorbd::utils::Path& path);
+    void setPath(
+            const biorbd::utils::Path& path);
 
     ///
     /// \brief Return the path of the mesh file
@@ -123,7 +124,7 @@ public:
 
 protected:
     std::shared_ptr<std::vector<biorbd::utils::Vector3d>> m_vertex; ///< The vertex
-    std::shared_ptr<std::vector<biorbd::rigidbody::Patch>> m_patch; ///< The patch
+    std::shared_ptr<std::vector<biorbd::rigidbody::MeshFace>> m_faces; ///< The faces
     std::shared_ptr<biorbd::utils::Path> m_pathFile; ///< The path to the mesh file
 };
 
