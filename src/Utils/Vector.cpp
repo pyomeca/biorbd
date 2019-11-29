@@ -9,8 +9,9 @@ biorbd::utils::Vector::Vector() :
 {
 
 }
-biorbd::utils::Vector::Vector(unsigned int i) :
-    Eigen::VectorXd(i)
+biorbd::utils::Vector::Vector(
+        unsigned int size) :
+    Eigen::VectorXd(size)
 {
 
 }

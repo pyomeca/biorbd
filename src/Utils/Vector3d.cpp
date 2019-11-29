@@ -18,8 +18,9 @@ biorbd::utils::Vector3d::Vector3d(double x, double y, double z) :
     setType();
 }
 
-biorbd::utils::Vector3d::Vector3d(const Eigen::Vector4d &v) :
-    Eigen::Vector3d(v[0], v[1], v[2]), biorbd::utils::Node ()
+biorbd::utils::Vector3d::Vector3d(
+        const Eigen::Vector4d &other) :
+    Eigen::Vector3d(other[0], other[1], other[2]), biorbd::utils::Node ()
 {
     setType();
 }

@@ -315,6 +315,34 @@ biorbd::utils::Matrix biorbd::rigidbody::Markers::markersJacobian(
     return G;
 }
 
+bool biorbd::rigidbody::Markers::inverseKinematics(
+        const std::vector<biorbd::rigidbody::NodeSegment> &markers,
+        const biorbd::rigidbody::GeneralizedCoordinates &Qinit,
+        biorbd::rigidbody::GeneralizedCoordinates &Q,
+        bool removeAxes)
+{
+    // Find the technical markers only (body_point)
+    std::vector<biorbd::rigidbody::NodeSegment> body_point(
+                technicalMarkers(removeAxes));
+    std::vector<RigidBodyDynamics::Math::Vector3d> body_pointEigen;
+    for (unsigned int i=0; i<body_point.size(); ++i)
+        body_pointEigen.push_back(body_point[i]);
+
+    std::vector<RigidBodyDynamics::Math::Vector3d> markersInRbdl;
+    for (unsigned int i = 0; i<markers.size(); ++i)
+        markersInRbdl.push_back(markers[i]);
+
+    // Associate the body number to each technical marker (body_id)
+    std::vector<unsigned int> body_id;
+    for (unsigned int i=0; i<body_point.size(); ++i)
+        body_id.push_back( static_cast<unsigned int>((*(body_point.begin()+i)).parentId()) );
+
+    // Call the base function
+    return RigidBodyDynamics::InverseKinematics(
+                dynamic_cast<biorbd::rigidbody::Joints &>(*this),
+                Qinit, body_id, body_pointEigen, markersInRbdl, Q);
+}
+
 // Get the Jacobian of the technical markers
 std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::markersJacobian(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,

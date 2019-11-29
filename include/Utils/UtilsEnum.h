@@ -4,6 +4,9 @@
 namespace biorbd {
 namespace utils {
 
+///
+/// \brief The available node type
+///
 enum NODE_TYPE {
     VECTOR3D,
     BONE_POINT,
@@ -15,7 +18,14 @@ enum NODE_TYPE {
     VIA_POINT,
     NO_NODE_TYPE
 };
-inline const char* NODE_TYPE_toStr(biorbd::utils::NODE_TYPE type)
+
+///
+/// \brief NODE_TYPE_toStr returns the type name in a string format
+/// \param type The type to convert to string
+/// \return The name of the type
+///
+inline const char* NODE_TYPE_toStr(
+        biorbd::utils::NODE_TYPE type)
 {
     switch (type)
     {

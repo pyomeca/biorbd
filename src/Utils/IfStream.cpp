@@ -61,7 +61,10 @@ bool biorbd::utils::IfStream::reachSpecificTag(const biorbd::utils::String& tag)
 
     biorbd::utils::String outMessage(tag + " parameter could not be found in Data file..");
     biorbd::utils::Error::raise(outMessage);
-    return false; // It is impossible to get here, but it's better to have a return for the compiler
+#ifdef _WIN32
+    // It is impossible to get here, but it's better to have a return for the compiler
+    return false;
+#endif
 }
 
 int biorbd::utils::IfStream::countTagsInAConsecutiveLines(const biorbd::utils::String &tag)
@@ -97,7 +100,7 @@ bool biorbd::utils::IfStream::read(biorbd::utils::String& text){
         read(text);
     }
     else if (!text(0,1).compare("/*")){ // If it's a comment by / *
-        while (readIgnoreCommentedLine(text)){
+        while (readAWord(text)){
             if (!text(0,1).compare("*/") || (text.length()>=2 && !text(static_cast<unsigned int>(text.length()-2),static_cast<unsigned int>(text.length()-1)).compare("*/")))
                 break;
         }
@@ -105,41 +108,47 @@ bool biorbd::utils::IfStream::read(biorbd::utils::String& text){
     }
     return out;
 }
-bool biorbd::utils::IfStream::readIgnoreCommentedLine(biorbd::utils::String& text){
+bool biorbd::utils::IfStream::readAWord(biorbd::utils::String& text){
     bool out(*m_ifs >> text);
     return out;
 }
-bool biorbd::utils::IfStream::read(double& d){
+bool biorbd::utils::IfStream::read(
+        double& val){
     std::map<biorbd::utils::Equation, double> dumb;
-    return read(d, dumb);
+    return read(val, dumb);
 }
-bool biorbd::utils::IfStream::read(double& d, const std::map<biorbd::utils::Equation, double> &variables){
+bool biorbd::utils::IfStream::read(
+        double& result,
+        const std::map<biorbd::utils::Equation, double> &variables){
     biorbd::utils::Equation tp;
     bool out(read(tp));
     // Manage in case of an equation
     try {
-        d = biorbd::utils::Equation::resolveEquation(tp, variables);
+        result = biorbd::utils::Equation::evaluateEquation(tp, variables);
     } catch (boost::bad_lexical_cast) {
         biorbd::utils::Error::raise("The following expression cannot be parsed properly: \"" + tp + "\"");
     }
     return out;
 }
-bool biorbd::utils::IfStream::read(int& i){
+bool biorbd::utils::IfStream::read(
+        int& val){
     biorbd::utils::String tp;
     bool out(read(tp));
-    i = boost::lexical_cast<int>(tp);
+    val = boost::lexical_cast<int>(tp);
     return out;
 }
-bool biorbd::utils::IfStream::read(unsigned int& i){
+bool biorbd::utils::IfStream::read(
+        unsigned int& val){
     biorbd::utils::String tp;
     bool out(read(tp));
-    i = boost::lexical_cast<unsigned int>(tp);
+    val = boost::lexical_cast<unsigned int>(tp);
     return out;
 }
-bool biorbd::utils::IfStream::read(bool& i){
+bool biorbd::utils::IfStream::read(
+        bool& val){
     biorbd::utils::String tp;
     bool out(read(tp));
-    i = boost::lexical_cast<bool>(tp);
+    val = boost::lexical_cast<bool>(tp);
     return out;
 }
 // Read the entire line

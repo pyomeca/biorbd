@@ -11,7 +11,7 @@ namespace utils {
 class RotoTrans;
 class String;
 ///
-/// \brief Class Vector3d
+/// \brief Wrapper around Eigen Vector3d and attach it to a parent
 ///
 class BIORBD_API Vector3d : public Eigen::Vector3d, public biorbd::utils::Node
 {
@@ -33,18 +33,21 @@ class BIORBD_API Vector3d : public Eigen::Vector3d, public biorbd::utils::Node
             double z);
 
     ///
-    /// \brief Construct a 3D vector from an eigen 4D vector
-    /// \param v The Eigen 4D vector
+    /// \brief Construct a 3D vector from an eigen 4D vector (drop the trailling 1)
+    /// \param other The Eigen 4D vector
     ///
     Vector3d(
-            const Eigen::Vector4d& v);
+            const Eigen::Vector4d& other);
 
     ///
     /// \brief Construct a 3D vector
-    /// \param other Position of the node (eigen matrix)
+    /// \param other The other vector
     ///
-    template<typename OtherDerived> Vector3d(const Eigen::MatrixBase<OtherDerived>& other) :
-        Eigen::Vector3d(other), biorbd::utils::Node () {}
+    template<typename OtherDerived> Vector3d(
+            const Eigen::MatrixBase<OtherDerived>& other) :
+        Eigen::Vector3d(other), biorbd::utils::Node () {
+
+    }
 
     ///
     /// \brief Construct a 3D vector
@@ -56,13 +59,15 @@ class BIORBD_API Vector3d : public Eigen::Vector3d, public biorbd::utils::Node
             const Eigen::MatrixBase<OtherDerived>& other, 
             const biorbd::utils::String &name,  
             const biorbd::utils::String &parentName) :
-        Eigen::Vector3d(other), biorbd::utils::Node (name, parentName) {}
+        Eigen::Vector3d(other), biorbd::utils::Node (name, parentName) {
+
+    }
 
     ///
     /// \brief Construct a 3D vector
-    /// \param x Component on the x axis
-    /// \param y Component on the y axis
-    /// \param z Component on the z axis
+    /// \param X-Component of the vector
+    /// \param Y-Component of the vector
+    /// \param Z-Component of the vector
     /// \param name Name of the vector
     /// \param parentName Name of the parent segment
     ///
@@ -85,26 +90,29 @@ class BIORBD_API Vector3d : public Eigen::Vector3d, public biorbd::utils::Node
     ///
     void DeepCopy(const biorbd::utils::Vector3d& other);
 
-    // Get and Set
     ///
-    /// \brief Apply RT to 3D vector
+    /// \brief Apply a RotoTrans to the 3D vector
     /// \param rt RotoTrans to apply
-    /// \return The 3D vector
+    /// \return The transformed vector
     //
-    biorbd::utils::Vector3d applyRT(const RotoTrans&rt) const;
-    ///
-    /// \brief Apply RT to 3D vector
-    /// \param rt Rototrans to apply
-    ///
-    void applyRT(const RotoTrans&rt);
+    biorbd::utils::Vector3d applyRT(
+            const RotoTrans& rt) const;
 
     ///
-    /// \brief To use operator "=" on 3D vector with eigen 4D vector
+    /// \brief Apply a RotoTrans to the 3D vector
+    /// \param rt RotoTrans to apply
+    ///
+    void applyRT(
+            const RotoTrans& rt);
+
+    ///
+    /// \brief To use operator= on 3D vector with eigen 4D vector (drop the trailling 1)
     /// \param other The eigen 4D vector
     ///
     biorbd::utils::Vector3d& operator=(const Eigen::Vector4d& other);
+
     ///
-    /// \brief To use operator "=" on 3D vector with eigen matrix
+    /// \brief To use operator= on 3D vector with any eigen vector
     /// \param other The eigen matrix
     ///
     template<typename OtherDerived>

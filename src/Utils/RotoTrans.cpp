@@ -7,8 +7,9 @@
 #include "Utils/String.h"
 #include "Utils/Vector.h"
 
-biorbd::utils::RotoTrans::RotoTrans(const Eigen::Matrix4d& m) :
-    Eigen::Matrix4d(m)
+biorbd::utils::RotoTrans::RotoTrans(
+        const Eigen::Matrix4d& matrix) :
+    Eigen::Matrix4d(matrix)
 {
 
 }

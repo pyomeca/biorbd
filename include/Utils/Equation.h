@@ -8,96 +8,119 @@
 
 namespace biorbd {
 namespace utils {
-#define PI 3.141592653589793
+
 ///
-/// \brief Equation
+/// \brief Strings that are to be interpreted as equation that can be evaluated
 ///
 class BIORBD_API Equation : public biorbd::utils::String
 {
 public:
     ///
-    /// \brief Construct equation
+    /// \brief Construct Equation
     ///
     Equation();
+
     ///
-    /// \brief Construct equation 
-    /// \param string Name of the equation TODO:
+    /// \brief Construct Equation
+    /// \param string The equation in a char format
     ///
     Equation(const char *string);
+
     ///
-    /// \brief Construct equation 
-    /// \param string Name of the equation TODO:
+    /// \brief Construct Equation
+    /// \param string The equation in a string format
     ///
     Equation(const biorbd::utils::String &string);
+
     ///
-    /// \brief Construct equation 
-    /// \param string Name of the equation TODO:
+    /// \brief Construct Equation
+    /// \param string The equation in a list of char format
     ///
     Equation(const std::basic_string<char> &string);
 
     ///
-    /// \brief Split equation into smaller parts in a vector (string)
-    /// \param wholeEq Whole equation to split
-    /// \param variables The variables in the equation
-    /// \return The equation
+    /// \brief Split equation into smaller parts, down to number or math symbols
+    /// \param wholeEq The whole equation to split
+    /// \param variables The set of variables in the equation
+    /// \return The split equation
     ///
     static std::vector<biorbd::utils::Equation> splitIntoEquation(
             biorbd::utils::Equation wholeEq,
             const std::map<biorbd::utils::Equation, double>& variables);
 
     ///
-    /// \brief Return the resolve equation
-    /// \param wholeEq Whole equation to split
-    /// \return The resolved equation
+    /// \brief Evaluate and return an equation
+    /// \param wholeEq The already split equation to evaluate
+    /// \return The evaluated equation
     ///
-    static double resolveEquation(
+    static double evaluateEquation(
             std::vector<biorbd::utils::Equation> wholeEq);
 
     ///
-    /// \brief Return the resolve equation
-    /// \param wholeEq Whole equation to split
-    /// \return The resolved equation
+    /// \brief Evaluate and return an equation
+    /// \param wholeEq The whole equation to evaluate
+    /// \return The evaluated equation
     ///
-    static double resolveEquation(
+    static double evaluateEquation(
             biorbd::utils::Equation wholeEq);
+
     ///
-    /// \brief Return the resolve equation
-    /// \param wholeEq Whole equation to split
+    /// \brief Evaluate and return an equation
+    /// \param wholeEq The whole equation to evaluate
     /// \param variables The variables in the equation
-    /// \return The resolved equation
+    /// \return The evaluated equation
     ///
-    static double resolveEquation(
+    static double evaluateEquation(
             biorbd::utils::Equation wholeEq,
             const std::map<biorbd::utils::Equation, double>& variables);
 
     ///
-    /// \brief Replace the constants by a number
-    /// \param eq The equation
+    /// \brief Replace constants in the split equation by a number
+    /// \param eq The split equation
+    ///
+    /// The supported constants are:
+    ///
+    /// \begin{itemize}
+    /// \item pi -- that evaluates to M_PI, that is $3.14159265358979323846$ on UNIX
+    /// \end{itemize}
     ///
     static void replaceCste(
             std::vector<biorbd::utils::Equation> &eq);
 
     ///
-    /// \brief Replace variable 
-    /// \param eq The equation
-    /// \param variables The variables to replace? TODO:
+    /// \brief Replace the varirables in the equation by their values
+    /// \param eq The equation to replace the variables
+    /// \param variables The variable set
     ///
     static void replaceVar(
-            Equation &eq,
+            biorbd::utils::Equation &eq,
             const std::map<biorbd::utils::Equation, double>& variables);
 
 protected:
     ///
     /// \brief Resolve the equation
     /// \param eq The equation to resolve
-    /// \param math TODO:
+    /// \param math The mathematical symbol that is being evaluated now
     /// 
-    static double resolveEquation(
+    static double evaluateEquation(
             std::vector<biorbd::utils::Equation> eq,
             unsigned int math);
+
     ///
     /// \brief Prepare the mathematical symbols
-    /// \return The math symbols
+    /// \return The math symbols in an order that respect the order of operation
+    ///
+    /// The supported symbols are:
+    ///
+    /// \begin{itemize}
+    /// \item "(" -- Open a parenthese
+    /// \item ")" -- Close a parenthese
+    /// \item "e" -- value of the format 1e2 (i.e. 1x10^2)
+    /// \item "/" -- Division
+    /// \item "*" -- Multiplication
+    /// \item "+" -- Addition
+    /// \item "-" -- Subtraction, or negative number if it starts the equation
+    /// \end{itemize}
     ///
     static std::vector<biorbd::utils::Equation> prepareMathSymbols();
 };

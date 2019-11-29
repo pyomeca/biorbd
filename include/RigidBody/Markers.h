@@ -317,6 +317,20 @@ public:
             const biorbd::rigidbody::NodeSegment& p,
             bool updateKin); 
 
+
+    ///
+    /// \brief Performs an inverse kinematics
+    /// \param markers The markers to track
+    /// \param Qinit The initial guess for the generalized coordinates
+    /// \param Q The generalized coordinates that tracks the markers
+    /// \param removeAxes If the markers should be projected on the axes
+    ///
+    bool inverseKinematics(
+            const std::vector<biorbd::rigidbody::NodeSegment>& markers,
+            const biorbd::rigidbody::GeneralizedCoordinates& Qinit,
+            biorbd::rigidbody::GeneralizedCoordinates &Q,
+            bool removeAxes=true);
+
 protected:
     ///
     /// \brief Compute the jacobian of the markers

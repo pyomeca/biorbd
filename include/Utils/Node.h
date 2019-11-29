@@ -10,7 +10,7 @@ namespace utils {
 class String;
 
 ///
-/// \brief Class Node
+/// \brief A node is an abstract element which is assigned to a parent
 ///
 class BIORBD_API Node
 {
@@ -19,18 +19,21 @@ public:
     /// \brief Construct Node
     ///
     Node();
+
     ///
     /// \brief Construct Node from another node
-    /// \param node Node
+    /// \param othe The other node
     ///
     Node(
-            const biorbd::utils::Node& node);
+            const biorbd::utils::Node& other);
+
     ///
     /// \brief Construct Node 
     /// \param name Name of the node
     ///
     Node(
             const biorbd::utils::String &name);
+
     ///
     /// \brief Construct Node 
     /// \param name Name of the node
@@ -52,25 +55,27 @@ public:
     void DeepCopy(const biorbd::utils::Node& other);
 
     ///
-    /// \brief Return the name of the node
-    ///
-    const biorbd::utils::String& name() const;
-    
-    ///
     /// \brief Set the name of the node
     /// \param name Name to set
-    ///   
+    ///
     void setName(const biorbd::utils::String &name);
 
     ///
-    /// \brief Return the parent of the node
+    /// \brief Return the name of the node
     ///
-    const biorbd::utils::String &parent() const;
+    const biorbd::utils::String& name() const;
+
+    ///
+    /// \brief Return the parent name of the node
+    ///
+    const biorbd::utils::String& parent() const;
+
     ///
     /// \brief Set the parent name of the node
-    /// \param parentName Parent name to set
+    /// \param name The name of the parent
     ///  
-    void setParent(const biorbd::utils::String &parentName);
+    void setParent(
+            const biorbd::utils::String &name);
 
     ///
     /// \brief Return the type of node
@@ -82,6 +87,7 @@ protected:
     /// \brief To set the type
     ///
     virtual void setType() = 0;
+
     std::shared_ptr<biorbd::utils::String> m_name; ///< The name of the node
     std::shared_ptr<biorbd::utils::String> m_parentName; ///< The parent name of the node
     std::shared_ptr<biorbd::utils::NODE_TYPE> m_typeOfNode;///< The type of the node

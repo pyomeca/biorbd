@@ -1230,10 +1230,9 @@ std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::Reader:
 }
 
 std::vector<std::vector<biorbd::utils::Vector3d>>
-biorbd::Reader::readViconMarkerFile(
-    const biorbd::utils::Path& path,
+biorbd::Reader::readViconMarkerFile(const biorbd::utils::Path& path,
     std::vector<biorbd::utils::String>& markOrder,
-    int nNodes) {
+    int nFramesToGet) {
     // Read file
 #ifdef _WIN32
     biorbd::utils::IfStream file(
@@ -1303,7 +1302,7 @@ biorbd::Reader::readViconMarkerFile(
     // Find the total number of frames
     unsigned int jumps(1);
     unsigned int nbFrames(0);
-    if (nNodes != -1){ // If it's all of them, the jumps are 1
+    if (nFramesToGet != -1){ // If it's all of them, the jumps are 1
         while(!file.eof()){
             file.read(t); // Get a line
             nbFrames++;
@@ -1320,11 +1319,11 @@ biorbd::Reader::readViconMarkerFile(
         // Skip the header
         for (unsigned int i=0; i<7; ++i)
             file.read(t);
-        biorbd::utils::Error::check(nNodes!=0 && nNodes!=1
-                && static_cast<unsigned int>(nNodes)<=nbFrames,
+        biorbd::utils::Error::check(nFramesToGet!=0 && nFramesToGet!=1
+                && static_cast<unsigned int>(nFramesToGet)<=nbFrames,
                                     "nNode should not be 0, 1 or greater "
                                     "than number of frame");
-        jumps = nbFrames/static_cast<unsigned int>(nNodes)+1;
+        jumps = nbFrames/static_cast<unsigned int>(nFramesToGet)+1;
     }
 
 
@@ -1655,9 +1654,8 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileVtp(
 
 
 std::vector<std::vector<biorbd::utils::Vector3d>>
-biorbd::Reader::readViconMarkerFile(
-        const biorbd::utils::Path &path,
-        int nNodes){
+biorbd::Reader::readViconMarkerFile(const biorbd::utils::Path &path,
+        int nFramesToGet){
     // Read file
 #ifdef _WIN32
     biorbd::utils::IfStream file(
@@ -1697,5 +1695,5 @@ biorbd::Reader::readViconMarkerFile(
     // Close file
     file.close();
 
-    return readViconMarkerFile(path, MarkersInFile, nNodes);
+    return readViconMarkerFile(path, MarkersInFile, nFramesToGet);
 }

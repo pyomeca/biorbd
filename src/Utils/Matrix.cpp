@@ -9,8 +9,10 @@ biorbd::utils::Matrix::Matrix() :
 
 }
 
-biorbd::utils::Matrix::Matrix(unsigned int i, unsigned int j) :
-    Eigen::MatrixXd(i, j)
+biorbd::utils::Matrix::Matrix(
+        unsigned int nbRows,
+        unsigned int nbCols) :
+    Eigen::MatrixXd(nbRows, nbCols)
 {
 
 }

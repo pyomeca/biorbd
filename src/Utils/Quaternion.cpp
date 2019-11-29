@@ -92,17 +92,17 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
-        double s) const
+        double scalar) const
 {
     return biorbd::utils::Quaternion (
-                this->Eigen::Vector4d::operator*(s), this->m_Kstab);
+                this->Eigen::Vector4d::operator*(scalar), this->m_Kstab);
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
-        float s) const
+        float scalar) const
 {
     return biorbd::utils::Quaternion (
-                this->Eigen::Vector4d::operator*(s), this->m_Kstab);
+                this->Eigen::Vector4d::operator*(scalar), this->m_Kstab);
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator+(
@@ -131,21 +131,21 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::fromGLRotate(
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromAxisAngle(
-        double angle_rad,
+        double angle,
         const biorbd::utils::Vector3d &axis,
         double kStab) {
     double d = axis.norm();
-    double s2 = std::sin (angle_rad * 0.5) / d;
+    double s2 = std::sin (angle * 0.5) / d;
     return biorbd::utils::Quaternion (
-                std::cos(angle_rad * 0.5),
+                std::cos(angle * 0.5),
                 axis[0] * s2, axis[1] * s2, axis[2] * s2, kStab
             );
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromMatrix(
-        const biorbd::utils::RotoTrans &mat,
+        const biorbd::utils::RotoTrans &rt,
         double kStab) {
-    return fromMatrix(mat.rot(), kStab);
+    return fromMatrix(rt.rot(), kStab);
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromMatrix(

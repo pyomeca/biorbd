@@ -94,7 +94,7 @@ std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(
                     // Resolve now the parenthese to apply the minus after
                     size_t idx = wholeEq.find_first_of(")");
                     biorbd::utils::Equation newWholeEq(wholeEq.substr(2, idx-2));
-                    double res(-1*resolveEquation(splitIntoEquation(newWholeEq, variables)));
+                    double res(-1*evaluateEquation(splitIntoEquation(newWholeEq, variables)));
                     wholeEq = std::to_string(res) + wholeEq.substr(idx+1);
                 } else {
                     tp[0] = "-" + tp[0];
@@ -135,7 +135,7 @@ void biorbd::utils::Equation::replaceCste(
 {
     for (unsigned int i=0; i<eq.size(); ++i)
         if (!eq[i].tolower().compare("pi"))
-            eq[i] = boost::lexical_cast< std::string>(PI);
+            eq[i] = boost::lexical_cast< std::string>(M_PI);
 }
 
 void biorbd::utils::Equation::replaceVar(
@@ -153,13 +153,13 @@ void biorbd::utils::Equation::replaceVar(
 }
 
 
-double biorbd::utils::Equation::resolveEquation(
+double biorbd::utils::Equation::evaluateEquation(
         std::vector<biorbd::utils::Equation> wholeEq)
 {
-    return resolveEquation(wholeEq,0);
+    return evaluateEquation(wholeEq,0);
 }
 
-double biorbd::utils::Equation::resolveEquation(
+double biorbd::utils::Equation::evaluateEquation(
         std::vector<biorbd::utils::Equation> eq,
         unsigned int math)
 {
@@ -205,7 +205,7 @@ double biorbd::utils::Equation::resolveEquation(
                     }
                     biorbd::utils::Error::check(foundIdx, "You must close brackets!");
 
-                    eq2.push_back(boost::lexical_cast<std::string>(boost::lexical_cast<std::string>(resolveEquation(eq_tp))));
+                    eq2.push_back(boost::lexical_cast<std::string>(boost::lexical_cast<std::string>(evaluateEquation(eq_tp))));
                     j+=static_cast<unsigned int>(cmpValues);
                 }
                 else if (!symbols[math].compare("/"))
@@ -239,20 +239,20 @@ double biorbd::utils::Equation::resolveEquation(
     }
 
     if (continuer)
-        return resolveEquation(eq2, ++math);
+        return evaluateEquation(eq2, ++math);
     else
-        return resolveEquation(eq2, math);
+        return evaluateEquation(eq2, math);
 }
 
-double biorbd::utils::Equation::resolveEquation(
+double biorbd::utils::Equation::evaluateEquation(
         biorbd::utils::Equation wholeEq,
         const std::map<biorbd::utils::Equation, double>& variables)
 {
-    return resolveEquation(splitIntoEquation(wholeEq, variables));
+    return evaluateEquation(splitIntoEquation(wholeEq, variables));
 }
-double biorbd::utils::Equation::resolveEquation(
+double biorbd::utils::Equation::evaluateEquation(
         biorbd::utils::Equation wholeEq)
 {
     std::map<biorbd::utils::Equation, double> dumb;
-    return resolveEquation(splitIntoEquation(wholeEq, dumb));
+    return evaluateEquation(splitIntoEquation(wholeEq, dumb));
 }

@@ -9,72 +9,80 @@ namespace biorbd {
 namespace utils {
 class String;
 class Timer;
+
 ///
-/// \brief Class benchmark
+/// \brief Collection of method to supercifically benchmark the code
+///
+/// Benchmark can run multiple timers at the same time. One must simply gives
+/// different names
 ///
 class BIORBD_API Benchmark
 {
 public:
     ///
-    /// \brief Construct benchmark
+    /// \brief Construct a benchmark analysis
     ///
     Benchmark();
 
-    // Timers
     /// 
-    /// \brief Start a timer related to name
-    /// \param s The name to associate with timer
-    /// \param force If it is a force (default: false)
+    /// \brief Start the timer of a specified name
+    /// \param name The name to associate with timer
+    /// \param force If force is true, the timer starts even though it is already started
     ///
     void startTimer(
-            const biorbd::utils::String&s,
-            bool force=false);
+            const biorbd::utils::String& name,
+            bool force = false);
 
     /// 
-    /// \brief Pause a timer
-    /// \param s Name of the timer to pause
+    /// \brief Pause a timer of a specified name
+    /// \param name Name of the timer to pause
     ///
-    void pauseTimer(const biorbd::utils::String&s);
+    void pauseTimer(
+            const biorbd::utils::String& name);
 
     /// 
-    /// \brief Resume a timer
-    /// \param s Name of the timer to pause
+    /// \brief Resume a timer of a specified name
+    /// \param name Name of the timer to resume
     ///
-    void resumeTimer(const biorbd::utils::String&s); 
+    void resumeTimer(
+            const biorbd::utils::String& name);
 
     ///
-    /// \brief Get lap
-    /// \param s Name of the timer
-    /// \return The lap
+    /// \brief Get lap time of a specified timer
+    /// \param name Name of the timer
+    /// \return The lap time of a specified timer
     ///
-    double getLap(const biorbd::utils::String&s);
+    double getLap(
+            const biorbd::utils::String& name);
 
     ///
-    /// \brief Stop the timer and get lap
-    /// \param s Name of the timer
-    /// \return The lap
+    /// \brief Stop the timer of a specified name and get lap time
+    /// \param name Name of the timer
+    /// \return The lap time of a specified timer
     ///
-    double stopTimer(const biorbd::utils::String&s);
+    double stopTimer(
+            const biorbd::utils::String& name);
 
     ///
-    /// \brief To waste time (Wait for seconds ask doing dummy stuff)
-    /// \param timeInSec Time in seconds
+    /// \brief To waste time (similar to a sleep function)
+    /// \param timeInSec Time in seconds to wait
     ///
     static void wasteTime(double timeInSec);
 
-    // Counters
     ///
-    /// \brief Start a counter to count or add to it
-    /// \param s Counter to add
+    /// \brief Add a new timer to the timer set
+    /// \param name The name of the timer to add
     ///
-    void addToCounter(const biorbd::utils::String&s);
+    void addTimer(
+            const biorbd::utils::String& name);
 
     ///
-    /// \brief Get the number of counts
-    /// \param s The count to get
-    /// \return The number of counts
+    /// \brief Get the index of the specified timer
+    /// \param name The name of the timer
+    /// \return The index of the specified timer
     ///
-    int getCount(const biorbd::utils::String&s); 
+    int getTimerIdx(
+            const biorbd::utils::String& name);
 
 protected:
     std::map<biorbd::utils::String, biorbd::utils::Timer> m_timers;///< Timers

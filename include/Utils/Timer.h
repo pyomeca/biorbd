@@ -7,59 +7,70 @@
 
 namespace biorbd {
 namespace utils {
+
 ///
-/// \brief Class timer
+/// \brief Wrapper around timer function in C++
 ///
 class BIORBD_API Timer
 {
 public:
     ///
     /// \brief Construct timer
-    /// \param startNow To start now (default: false)
+    /// \param startNow If the timer should start now
     ///
-    Timer(bool startNow = false);
+    Timer(
+            bool startNow = false);
+
     ///
-    /// \brief Start a timer
+    /// \brief Start the timer
     ///
     void start();
+
     ///
-    /// \brief If timer is started
+    /// \brief Return if the timer is started
+    /// \return If the timer is started
     ///
     bool isStarted();
+
     ///
-    /// \brief Pause timer (use resume to restart)
+    /// \brief Return if the timer is paused
+    /// \return If the timer is paused
     ///
     void pause();
+
     ///
-    /// \brief Restart a timer
+    /// \brief Resume the timer. If it is paused, it adds a lap
     ///
     void resume();
+
     ///
-    /// \brief Get Lap
-    /// \return A lap
+    /// \brief Get the lap time of a running timer. Return 0 if the timer is not running
+    /// \return The lap time
     ///
     double getLap();
+
     ///
-    /// \brief Stop timer
+    /// \brief Stop the timer and return the lap time
     ///
     double stop();
 
 protected:
     ///
-    /// \brief To add pause time
+    /// \brief Add a pause to the timer time (total time being execution time - pause time)
     ///
     void addPauseTime();
+
     /// 
-    /// \brief To get the time
-    /// \param timer Timer to get the time from
+    /// \brief Get the time spent until start
+    /// \param timer The timer to get the time from
     /// \return The time
     ///
-    double getTime(const std::clock_t&timer);
+    double getTime(const std::clock_t& timer);
 
-    bool m_isStarted; ///< If timer is started
-    bool m_isPaused; ///< If time is paused
+    bool m_isStarted; ///< If the timer is started
+    bool m_isPaused; ///< If the timer is paused
     std::clock_t m_start; ///< The start time
-    std::clock_t m_pauseTime; ///<The pause time
+    std::clock_t m_pauseTime; ///< The pause time
     double m_totalPauseTime; ///< The total pause time
 
 };
