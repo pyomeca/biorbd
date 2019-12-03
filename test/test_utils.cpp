@@ -5,6 +5,7 @@
 #include "BiorbdModel.h"
 #include "Utils/String.h"
 #include "Utils/Path.h"
+#include "Utils/Matrix.h"
 #include "Utils/Vector3d.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/RotoTransNode.h"
@@ -300,6 +301,91 @@ TEST(Matrix, Copy){
     EXPECT_NEAR(ShallowCopy(2, 2), 0, requiredPrecision);
     EXPECT_NEAR(DeepCopyNow(2, 2), 10, requiredPrecision);
     EXPECT_NEAR(DeepCopyLater(2, 2), 10, requiredPrecision);
+}
+
+TEST(Matrix, unitTest){
+    biorbd::utils::Matrix mat1(3, 4);
+
+    mat1 << 4.1, 5.1, 6.1, 7.1,
+            8.1, 9.1, 10.1, 11.1,
+            12.1, 13.1, 14.1, 15.1;
+    {
+        biorbd::utils::Matrix mat2(3, 4);
+        mat2 << 4.1, 5.1, 6.1, 7.1,
+                8.1, 9.1, 10.1, 11.1,
+                12.1, 13.1, 14.1, 15.1;
+
+        biorbd::utils::Matrix sum(mat1 + mat2);
+        Eigen::MatrixXd expectedSum(3, 4);
+        expectedSum << 4.1*2, 5.1*2, 6.1*2, 7.1*2,
+                8.1*2, 9.1*2, 10.1*2, 11.1*2,
+                12.1*2, 13.1*2, 14.1*2, 15.1*2;
+
+        EXPECT_EQ(sum.rows(), 3);
+        EXPECT_EQ(sum.cols(), 4);
+        for (unsigned int i=0; i<sum.rows(); ++i) {
+            for (unsigned int j=0; j<sum.cols(); ++j) {
+                EXPECT_NEAR(sum(i, j), expectedSum(i, j), requiredPrecision);
+            }
+        }
+    }
+
+    {
+        biorbd::utils::Matrix mat2(4, 2);
+        mat2 << 4.1, 5.1,
+                6.1, 7.1,
+                8.1, 9.1,
+                10.1, 11.1;
+
+        biorbd::utils::Matrix mult(mat1 * mat2);
+        Eigen::MatrixXd expectedMult(3, 2);
+        expectedMult << 169.04,  191.44,
+                        282.64,  321.04,
+                        396.24,  450.64;
+        EXPECT_EQ(mult.rows(), 3);
+        EXPECT_EQ(mult.cols(), 2);
+        for (unsigned int i=0; i<mult.rows(); ++i) {
+            for (unsigned int j=0; j<mult.cols(); ++j) {
+                EXPECT_NEAR(mult(i, j), expectedMult(i, j), requiredPrecision);
+            }
+        }
+    }
+
+    {
+        biorbd::utils::Vector vec(4);
+        vec << 4.1, 5.1, 6.1, 7.1;
+        biorbd::utils::Vector mult(mat1 * vec);
+
+        Eigen::VectorXd expectedMult(3);
+        expectedMult << 130.44, 220.04, 309.64;
+
+        EXPECT_EQ(mult.rows(), 3);
+        EXPECT_EQ(mult.cols(), 1);
+        for (unsigned int i=0; i<mult.rows(); ++i) {
+            EXPECT_NEAR(mult(i), expectedMult(i), requiredPrecision);
+        }
+    }
+}
+
+TEST(Rotation, unitTest){
+    biorbd::utils::Rotation rot1(
+                biorbd::utils::Vector3d(M_PI/3, M_PI/3, -M_PI/3), "xyz");
+    biorbd::utils::Rotation rot2(
+                biorbd::utils::Vector3d(M_PI/3, M_PI/3, M_PI/3), "xyz");
+
+    {
+        biorbd::utils::Rotation mult(rot1 * rot2);
+        Eigen::Matrix3d expectedMult;
+        expectedMult <<
+                0.87439881604791125, 0.4185095264191645, 0.24551270189221938,
+                0.48131011839520887, -0.68413452641916439, -0.54799682452694543,
+                -0.06137817547305488, 0.59733552217964769, -0.79963928962874664;
+        for (unsigned int i=0; i<3; ++i) {
+            for (unsigned int j=0; j<3; ++j) {
+                EXPECT_NEAR(mult(i, j), expectedMult(i, j), requiredPrecision);
+            }
+        }
+    }
 }
 
 TEST(RotoTrans, unitTest){
