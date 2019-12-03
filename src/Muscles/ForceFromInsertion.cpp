@@ -2,7 +2,7 @@
 #include "Muscles/ForceFromInsertion.h"
 
 #include <vector>
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 #include "Muscles/Geometry.h"
 
 biorbd::muscles::ForceFromInsertion::ForceFromInsertion(double x, double y, double z) :
@@ -35,7 +35,7 @@ void biorbd::muscles::ForceFromInsertion::setForceFromMuscleGeometry(
         double vectorNorm)
 {
     // Trouver le vecteur directeur
-    const std::vector<biorbd::utils::Node3d>& tp_via = geo.musclesPointsInGlobal();
+    const std::vector<biorbd::utils::Vector3d>& tp_via = geo.musclesPointsInGlobal();
     *this = tp_via[tp_via.size()-2] - tp_via[tp_via.size()-1];
     *this /= this->norm();
     *this *= vectorNorm;

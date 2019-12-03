@@ -5,10 +5,10 @@ namespace biorbd {
 namespace utils {
 
 enum NODE_TYPE {
-    NODE3D,
+    VECTOR3D,
     BONE_POINT,
     ROTOTRANS,
-    BONE,
+    SEGMENT,
     WRAPPING_OBJECT,
     WRAPPING_CYLINDER,
     WRAPPING_SPHERE,
@@ -19,10 +19,10 @@ inline const char* NODE_TYPE_toStr(biorbd::utils::NODE_TYPE type)
 {
     switch (type)
     {
-    case NODE3D: return "Node3d";
+    case VECTOR3D: return "Vector3d";
     case BONE_POINT: return "NodeBone";
     case ROTOTRANS: return "RotoTrans";
-    case BONE: return "Bone";
+    case SEGMENT: return "Segment";
     case WRAPPING_OBJECT: return "WrappingObject";
     case WRAPPING_CYLINDER: return "WrappingCylinder";
     case WRAPPING_SPHERE: return "WrappinSphere";

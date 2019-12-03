@@ -86,7 +86,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
         const biorbd::rigidbody::GeneralizedCoordinates* Q,
         const biorbd::rigidbody::GeneralizedCoordinates* QDot)
 {
-    // Update de la position musculaire
+    // Update the muscular position
     if (updateKin)
         updateMuscles(*Q,*QDot,updateKin);
 
@@ -117,15 +117,15 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
         const biorbd::rigidbody::GeneralizedCoordinates* QDot)
 {
 
-    // Update de la position musculaire
+    // Update the muscular position
     if (updateKin)
         updateMuscles(*Q,*QDot,updateKin);
 
-    // Récupérer la matrice jacobienne et
-    // récupérer les forces de chaque muscles
+    // Get the Jacobian matrix and get the forces of each muscle
+
     const biorbd::utils::Matrix& jaco(musclesLengthJacobian());
 
-    // Calcul de la réaction des forces sur les corps
+    // Compute the reaction of the forces on the bodies
     return biorbd::rigidbody::GeneralizedTorque( -jaco.transpose() * F );
 }
 
@@ -135,19 +135,19 @@ std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> biorbd::muscle
         const biorbd::rigidbody::GeneralizedCoordinates* Q,
         const biorbd::rigidbody::GeneralizedCoordinates* QDot)
 {
-    // Update de la position musculaire
+    // Update the muscular position
     if (updateKin)
         updateMuscles(*Q,*QDot,updateKin);
 
-    // Variable de sortie
-    std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> forces; // Tous les muscles/Deux pointeurs par muscles (origine/insertion)
+    // Output variable
+    std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> forces; // All the muscles/two pointers per muscleTous les muscles (origine/insertion)
 
     unsigned int cmpMus(0);
-    for (unsigned int i=0; i<m_mus->size(); ++i) // groupe musculaire
+    for (unsigned int i=0; i<m_mus->size(); ++i) // muscle group
         for (unsigned int j=0; j<(*m_mus)[i].nbMuscles(); ++j)
             forces.push_back((*m_mus)[i].muscle(j).force(*state[cmpMus++]));
 
-    // Les forces
+    // The forces
     return forces;
 }
 
@@ -173,7 +173,7 @@ biorbd::utils::Matrix biorbd::muscles::Muscles::musclesLengthJacobian()
 biorbd::utils::Matrix biorbd::muscles::Muscles::musclesLengthJacobian(
         const biorbd::rigidbody::GeneralizedCoordinates &Q)
 {
-    // Update de la position musculaire
+    // Update the muscular position
     updateMuscles(Q, true);
     return musclesLengthJacobian();
 }
@@ -181,7 +181,7 @@ biorbd::utils::Matrix biorbd::muscles::Muscles::musclesLengthJacobian(
 
 unsigned int biorbd::muscles::Muscles::nbMuscleTotal() const{
     unsigned int total(0);
-    for (unsigned int grp=0; grp<m_mus->size(); ++grp) // groupe musculaire
+    for (unsigned int grp=0; grp<m_mus->size(); ++grp) // muscular group
         total += (*m_mus)[grp].nbMuscles();
     return total;
 }
@@ -194,14 +194,14 @@ void biorbd::muscles::Muscles::updateMuscles(
     // Assuming that this is also a Joints type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
-    // Updater tous les muscles
+    // Update all the muscles
     int updateKinTP;
     if (updateKin)
         updateKinTP = 2;
     else
         updateKinTP = 0;
 
-    for (auto group : *m_mus) // groupe musculaire
+    for (auto group : *m_mus) // muscle group
         for (unsigned int j=0; j<group.nbMuscles(); ++j){
             group.muscle(j).updateOrientations(model, Q, QDot, updateKinTP);
             updateKinTP=1;
@@ -214,39 +214,39 @@ void biorbd::muscles::Muscles::updateMuscles(
     // Assuming that this is also a Joints type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
-    // Updater tous les muscles
+    // Update all the muscles
     int updateKinTP;
     if (updateKin)
         updateKinTP = 2;
     else
         updateKinTP = 0;
 
-    // Updater tous les muscles
-    for (auto group : *m_mus) // groupe musculaire
+    // Update all the muscles
+    for (auto group : *m_mus) // muscle group
         for (unsigned int j=0; j<group.nbMuscles(); ++j){
             group.muscle(j).updateOrientations(model, Q,updateKinTP);
             updateKinTP=1;
         }
 }
 void biorbd::muscles::Muscles::updateMuscles(
-        std::vector<std::vector<biorbd::utils::Node3d>>& musclePointsInGlobal,
+        std::vector<std::vector<biorbd::utils::Vector3d>>& musclePointsInGlobal,
         std::vector<biorbd::utils::Matrix> &jacoPointsInGlobal,
         const biorbd::rigidbody::GeneralizedCoordinates& QDot)
 {
     unsigned int cmpMuscle = 0;
-    for (auto group : *m_mus) // groupe musculaire
+    for (auto group : *m_mus) // muscle  group
         for (unsigned int j=0; j<group.nbMuscles(); ++j){
             group.muscle(j).updateOrientations(musclePointsInGlobal[cmpMuscle], jacoPointsInGlobal[cmpMuscle], QDot);
             ++cmpMuscle;
         }
 }
 void biorbd::muscles::Muscles::updateMuscles(
-        std::vector<std::vector<biorbd::utils::Node3d>>& musclePointsInGlobal,
+        std::vector<std::vector<biorbd::utils::Vector3d>>& musclePointsInGlobal,
         std::vector<biorbd::utils::Matrix> &jacoPointsInGlobal)
 {
-    // Updater tous les muscles
+    // Updater all the muscles
     unsigned int cmpMuscle = 0;
-    for (auto group : *m_mus) // groupe musculaire
+    for (auto group : *m_mus) // muscle group
         for (unsigned int j=0; j<group.nbMuscles(); ++j){
             group.muscle(j).updateOrientations(musclePointsInGlobal[cmpMuscle], jacoPointsInGlobal[cmpMuscle]);
             ++cmpMuscle;

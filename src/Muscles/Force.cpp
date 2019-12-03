@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/Force.h"
 
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 #include "Muscles/Geometry.h"
 
 biorbd::muscles::Force::Force() :
@@ -26,7 +26,7 @@ biorbd::muscles::Force::Force(const biorbd::muscles::Force &force) :
 
 }
 
-biorbd::muscles::Force::Force(const biorbd::utils::Node3d &force) :
+biorbd::muscles::Force::Force(const biorbd::utils::Vector3d& force) :
     Eigen::Vector3d (force)
 {
 

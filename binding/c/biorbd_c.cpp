@@ -9,10 +9,10 @@
 #include "Utils/RotoTransNode.h"
 #include "Utils/Vector.h"
 #include "Utils/Matrix.h"
-#include "RigidBody/Bone.h"
+#include "RigidBody/Segment.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
-#include "RigidBody/NodeBone.h"
+#include "RigidBody/NodeSegment.h"
 #ifndef SKIP_KALMAN
 #include "RigidBody/KalmanReconsIMU.h"
 #endif
@@ -43,7 +43,7 @@ void c_boneRotationSequence(
         char* seq)
 {
     // Memory for seq must be already allocated
-    biorbd::utils::String sequence(m->bone(segName).seqR());
+    biorbd::utils::String sequence(m->Segment(segName).seqR());
     snprintf(seq, sequence.length() + 1, "%s", sequence.c_str());
 }
 void c_localJCS(
@@ -51,7 +51,7 @@ void c_localJCS(
         int i,
         double* rt_out)
 {
-    biorbd::utils::RotoTrans RT(m->bone(static_cast<unsigned int>(i)).localJCS());
+    biorbd::utils::RotoTrans RT(m->Segment(static_cast<unsigned int>(i)).localJCS());
     dispatchRToutput(RT, rt_out);
 }
 void c_globalJCS(
@@ -131,7 +131,7 @@ int c_nGeneralizedTorque(
 int c_nMarkers(
         biorbd::Model* model)
 {
-    return static_cast<int>(model->nMarkers());
+    return static_cast<int>(model->nbMarkers());
 }
 void c_markersInLocal(
         biorbd::Model* model,
@@ -151,7 +151,7 @@ void c_markers(
     biorbd::rigidbody::GeneralizedCoordinates eQ(dispatchQinput(model, Q));
 
     // Call the main function
-    std::vector<biorbd::rigidbody::NodeBone> pos(model->markers(eQ, removeAxis, updateKin));
+    std::vector<biorbd::rigidbody::NodeSegment> pos(model->markers(eQ, removeAxis, updateKin));
 
     // Prepare output
     dispatchMarkersOutput(pos, markPos);
@@ -166,7 +166,7 @@ void c_addMarker(
         const char* axesToRemove)
 {
     int parent_int = static_cast<int>(model->GetBodyId(parentName));
-    biorbd::utils::Node3d pos(dispatchMarkersInput(markPos)); // Position du marker dans le repère local
+    biorbd::utils::Vector3d pos(dispatchMarkersInput(markPos)); // Position du marker dans le repère local
     model->addMarker(pos, name, parentName, technical, anatomical, axesToRemove, parent_int);
 }
 
@@ -175,7 +175,7 @@ void c_addMarker(
 int c_nIMUs(
         biorbd::Model* model)
 {
-    return static_cast<int>(model->nIMUs());
+    return static_cast<int>(model->nbIMUs());
 }
 void c_addIMU(
         biorbd::Model *model,
@@ -225,8 +225,8 @@ void c_BiorbdKalmanReconsIMUstep(
         double* QDDot)
 {
     // Copier les valeurs des matrices de rotation des IMUs dans un stl Vector
-    biorbd::utils::Vector T(3*3*model->nIMUs()); // Matrice 3*3 * nIMU
-    for (unsigned int i=0; i<model->nIMUs(); ++i)
+    biorbd::utils::Vector T(3*3*model->nbIMUs()); // Matrice 3*3 * nIMU
+    for (unsigned int i=0; i<model->nbIMUs(); ++i)
         for (unsigned int j=0; j<9; ++j){ // matrice 3*3
             T[9*i+j] = imu[9*i+j];
         }
@@ -317,13 +317,13 @@ void c_solveLinearSystem (
 
 
 // Fonctions de dispatch des données d'entré ou de sortie
-biorbd::utils::Node3d dispatchMarkersInput(
+biorbd::utils::Vector3d dispatchMarkersInput(
         const double * pos)
 {
-    return biorbd::utils::Node3d(pos[0], pos[1], pos[2]);
+    return biorbd::utils::Vector3d(pos[0], pos[1], pos[2]);
 }
 void dispatchMarkersOutput(
-        const std::vector<biorbd::rigidbody::NodeBone> &allMarkers,
+        const std::vector<biorbd::rigidbody::NodeSegment> &allMarkers,
         double* markers)
 {
     // Warning markers must already be allocated!

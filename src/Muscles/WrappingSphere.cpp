@@ -37,7 +37,7 @@ biorbd::muscles::WrappingSphere::WrappingSphere(
 }
 
 biorbd::muscles::WrappingSphere::WrappingSphere(
-        const biorbd::utils::Node3d &v,
+        const biorbd::utils::Vector3d &v,
         double diameter) :
     biorbd::muscles::WrappingObject(v),
     m_dia(std::make_shared<double>(diameter))
@@ -59,9 +59,9 @@ void biorbd::muscles::WrappingSphere::DeepCopy(const biorbd::muscles::WrappingSp
 }
 
 const biorbd::utils::RotoTrans& biorbd::muscles::WrappingSphere::RT(
-        biorbd::rigidbody::Joints &,
-        const biorbd::rigidbody::GeneralizedCoordinates &,
-        bool )
+        biorbd::rigidbody::Joints &model,
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        bool updateKin)
 {
     return *m_RT;
 }

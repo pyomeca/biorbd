@@ -16,6 +16,9 @@
 
 namespace biorbd {
 
+///
+/// \brief class Model
+///
 class BIORBD_API Model :
         public biorbd::rigidbody::Joints
         ,public biorbd::rigidbody::Markers
@@ -29,12 +32,31 @@ class BIORBD_API Model :
         #endif
 {
 public:
+    ///
+    /// \brief Construct a model
+    ///
     Model();
-    virtual ~Model();
-    Model(const biorbd::utils::Path&);
 
+    ///
+    /// \brief Destroy the class properly
+    ///
+    virtual ~Model();
+
+    ///
+    /// \brief Construct a model from a bioMod file
+    /// \param path The path of the file
+    ///
+    Model(const biorbd::utils::Path& path);
+
+    ///
+    /// \brief Applies inverse kinematics
+    /// \param markers Markers
+    /// \param Qinit Initial guess for the state
+    /// \param Q State vector of the internal joints
+    /// \param removeAxes
+    /// 
     bool InverseKinematics(
-            const std::vector<biorbd::rigidbody::NodeBone>& Mark,
+            const std::vector<biorbd::rigidbody::NodeSegment>& markers,
             const biorbd::rigidbody::GeneralizedCoordinates& Qinit,
             biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxes=true);

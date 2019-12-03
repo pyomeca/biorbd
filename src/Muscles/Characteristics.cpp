@@ -115,7 +115,7 @@ double biorbd::muscles::Characteristics::minActivation() const
 {
     return *m_minActivation;
 }
-void biorbd::muscles::Characteristics::GeneralizedTorqueActivation(double val)
+void biorbd::muscles::Characteristics::setGeneralizedTorqueActivation(double val)
 {
     *m_GeneralizedTorqueActivation = val;
 }
@@ -123,7 +123,7 @@ double biorbd::muscles::Characteristics::GeneralizedTorqueActivation() const
 {
     return *m_GeneralizedTorqueActivation;
 }
-void biorbd::muscles::Characteristics::GeneralizedTorqueDeactivation(double val)
+void biorbd::muscles::Characteristics::setGeneralizedTorqueDeactivation(double val)
 {
     *m_GeneralizedTorqueDeactivation = val;
 }
@@ -141,7 +141,7 @@ void biorbd::muscles::Characteristics::setForceIsoMax(double val)
 {
     *m_fIsoMax = val;
 }
-void biorbd::muscles::Characteristics::PCSA(double val)
+void biorbd::muscles::Characteristics::setPCSA(double val)
 {
     *m_PCSA = val;
 }

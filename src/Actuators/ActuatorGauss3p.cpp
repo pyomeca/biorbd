@@ -136,15 +136,15 @@ double biorbd::actuator::ActuatorGauss3p::torqueMax(
 
     // Tetanic torque max
     double Tc = *m_T0 * *m_wc / *m_wmax;
-    double C = Tc * (*m_wmax + *m_wc); // en concentrique
+    double C = Tc * (*m_wmax + *m_wc); // concentric
     double we = ( (*m_Tmax - *m_T0) * *m_wmax * *m_wc )   /    ( *m_k * *m_T0 * (*m_wmax + *m_wc) );
-    double E = -( *m_Tmax - *m_T0 ) * we; // en excentrique
+    double E = -( *m_Tmax - *m_T0 ) * we; // excentric
 
-    double Tw; // Initiation d'une variable
+    double Tw; // Initiation of a variable
     if (speed >= 0)
-        Tw = C / ( *m_wc + speed )  - Tc; // Pour le concentrique
+        Tw = C / ( *m_wc + speed )  - Tc; // For the concentric
     else
-        Tw = E / ( we - speed ) + *m_Tmax; // Pour l'excentrique
+        Tw = E / ( we - speed ) + *m_Tmax; // For the excentric
 
 
     // Differential activation
@@ -153,7 +153,7 @@ double biorbd::actuator::ActuatorGauss3p::torqueMax(
     // Torque angle
     double Ta = exp( -(*m_qopt - pos) * (*m_qopt - pos)   /   (2 * *m_r * *m_r)   );
 
-    // Calcul du couple max
+    // Calculation of the max torque
     return Tw * A * Ta;
 
 }

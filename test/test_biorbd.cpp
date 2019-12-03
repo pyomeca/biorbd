@@ -22,7 +22,6 @@ static std::string modelPathWithVtp("models/thoraxWithVtp.bioMod");
 #endif
 
 TEST(FileIO, OpenModel){
-    biorbd::Model model(modelPathForGeneralTesting);
     EXPECT_NO_THROW(biorbd::Model model(modelPathForGeneralTesting));
 }
 

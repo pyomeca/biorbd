@@ -6,9 +6,9 @@
 
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
-#include "RigidBody/NodeBone.h"
+#include "RigidBody/NodeSegment.h"
 #include "RigidBody/Contacts.h"
-#include "RigidBody/BoneMesh.h"
+#include "RigidBody/Mesh.h"
 #include "RigidBody/KalmanReconsMarkers.h"
 #include "RigidBody/Patch.h"
 %}
@@ -20,8 +20,8 @@ namespace std {
 %template(VecBiorbdGeneralizedCoordinates) std::vector<biorbd::rigidbody::GeneralizedCoordinates>;
 %template(MatBiorbdGeneralizedCoordinates) std::vector<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>;
 
-%template(VecBiorbdNodeBone) std::vector<biorbd::rigidbody::NodeBone>;
-%template(MatBiorbdNodeBone) std::vector<std::vector<biorbd::rigidbody::NodeBone>>;
+%template(VecBiorbdNodeSegment) std::vector<biorbd::rigidbody::NodeSegment>;
+%template(MatBiorbdNodeSegment) std::vector<std::vector<biorbd::rigidbody::NodeSegment>>;
 %template(VecBiorbdPatch) std::vector<biorbd::rigidbody::Patch>;
 %template(MatBiorbdPatch) std::vector<std::vector<biorbd::rigidbody::Patch>>;
 }
@@ -81,13 +81,13 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/GeneralizedCoordinates.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/GeneralizedTorque.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Markers.h"
-%include "@CMAKE_SOURCE_DIR@/include/RigidBody/NodeBone.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/NodeSegment.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Contacts.h"
 @SWIG_KALMAN_INCLUDE_COMMAND@
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Patch.h"
-//%include "RigidBody/Bone.h"
-//%include "RigidBody/BoneCharacteristics.h"
-//%include "RigidBody/BoneMesh.h"
+//%include "RigidBody/Segment.h"
+//%include "RigidBody/SegmentCharacteristics.h"
+//%include "RigidBody/Mesh.h"
 //%include "RigidBody/IMU.h"
 //%include "RigidBody/IMUs.h"
 //%include "RigidBody/KalmanRecons.h"

@@ -8,17 +8,53 @@ namespace biorbd {
 namespace rigidbody {
 class Joints;
 
+///
+/// \brief Class GeneralizedCoordinates 
+///
 class BIORBD_API GeneralizedCoordinates : public biorbd::utils::Vector
 {
 public:
+
+    ///
+    /// \brief Construct generalized coordinates
+    /// 
     GeneralizedCoordinates();
+
+    ///
+    /// \brief Construct generalized coordinates
+    /// \param Q State vector of the internal joints
+    ///
     GeneralizedCoordinates(const biorbd::rigidbody::GeneralizedCoordinates& Q);
+
+    ///
+    /// \brief Construct generalized coordinates
+    /// \param other Eigen matrix
+    ///
+
     template<typename OtherDerived> GeneralizedCoordinates(const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::Vector(other){}
+
+    ///
+    /// \brief Create generalized coordinates of a vector at a specific position
+    /// \param i Vector position
+    ///
     GeneralizedCoordinates(unsigned int i);
+
+    ///
+    /// \brief Create generalized coordinates of specific joint
+    /// \param j The joint
+    ///
     GeneralizedCoordinates(const biorbd::rigidbody::Joints& j);
+
+    ///
+    /// \brief Destroy the class properly
+    ///
     virtual ~GeneralizedCoordinates();
 
+    ///
+    /// \brief TODO:
+    /// \param other
+    /// \return A template
     template<typename OtherDerived>
         biorbd::rigidbody::GeneralizedCoordinates& operator=(const Eigen::MatrixBase <OtherDerived>& other){
             this->biorbd::utils::Vector::operator=(other);

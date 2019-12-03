@@ -7,32 +7,75 @@
 
 namespace biorbd {
 namespace utils {
-class Node3d;
+class Vector3d;
 }
 
 namespace muscles {
-
+    ///
+    /// \brief Class Path Changers
+    ///
 class BIORBD_API PathChangers
 {
 public:
+    ///
+    /// \brief Construct path changers
+    /// 
     PathChangers();
+    
+    /// 
+    /// \brief Deep copy of path changers
+    /// \return A deep copy of path changers
+    ///
     biorbd::muscles::PathChangers DeepCopy() const;
+    /// 
+    /// \brief Deep copy of path changers from another path changers
+    /// \param other THe path changers to copy
+    ///    
     void DeepCopy(const biorbd::muscles::PathChangers& other);
 
-    void addPathChanger(biorbd::utils::Node3d&); // Ajouter un wrapping ou un via point
+    ///
+    /// \brief Add a wrapping or a via point
+    /// \param point The wrapping or via point to add
+    ///
+    void addPathChanger(biorbd::utils::Vector3d&point); 
 
     // Set and get
-    unsigned int nbWraps() const; // retourne le nombre total de wrapping objects
-    unsigned int nbVia() const; // retourne le nombre total de via points
-    unsigned int nbObjects() const; // Retourne le nombre total d'objects
-    biorbd::utils::Node3d& object(unsigned int  idx); // Get sur un wrapping
-    const biorbd::utils::Node3d& object(unsigned int  idx) const; // Get sur un wrapping
+    ///
+    /// \brief Return the total number of wrapping objects
+    /// \return The total number of wrapping objects
+    ///
+    unsigned int nbWraps() const;
+
+    ///
+    /// \brief Return the total number of via points
+    /// \return The total number of via points
+    ///
+    unsigned int nbVia() const;
+
+    ///
+    /// \brief Return the total number of objects
+    /// \return The total number of objects
+    ///
+    unsigned int nbObjects() const;
+
+    ///
+    /// \brief Return an object at a specific index
+    /// \param idx Index of the object
+    /// \return The object at a specific index
+    ///
+    biorbd::utils::Vector3d& object(unsigned int  idx);
+    ///
+    /// \brief Return an object at a specific index
+    /// \param idx Index of the object
+    /// \return The object at a specific index
+    ///
+    const biorbd::utils::Vector3d& object(unsigned int  idx) const; 
 
 protected:
-    std::shared_ptr<std::vector<biorbd::utils::Node3d>> m_obj; // Tableau de pointeur sur les objects
-    std::shared_ptr<unsigned int> m_nbWraps;
-    std::shared_ptr<unsigned int> m_nbVia;
-    std::shared_ptr<unsigned int> m_totalObjects;
+    std::shared_ptr<std::vector<biorbd::utils::Vector3d>> m_obj; ///<Tbale of pointers on the objects
+    std::shared_ptr<unsigned int> m_nbWraps; ///< Number of wraps
+    std::shared_ptr<unsigned int> m_nbVia; ///< TODO: ?
+    std::shared_ptr<unsigned int> m_totalObjects; ///< Total objects
 
 };
 

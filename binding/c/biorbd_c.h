@@ -141,10 +141,10 @@ extern "C" {
 }
 
 // Fonctions de dispatch pour les données d'entré et de sortie
-biorbd::utils::Node3d dispatchMarkersInput(
+biorbd::utils::Vector3d dispatchMarkersInput(
         const double * pos);
 void dispatchMarkersOutput(
-        const std::vector<biorbd::rigidbody::NodeBone> &allMarkers,
+        const std::vector<biorbd::rigidbody::NodeSegment> &allMarkers,
         double* markers);
 biorbd::rigidbody::GeneralizedCoordinates dispatchQinput(
         biorbd::Model* model,

@@ -3,9 +3,9 @@
 
 #include "biorbdConfig.h"
 
-#include "RigidBody/Bone.h"
-#include "RigidBody/BoneCharacteristics.h"
-#include "RigidBody/BoneMesh.h"
+#include "RigidBody/Segment.h"
+#include "RigidBody/SegmentCharacteristics.h"
+#include "RigidBody/Mesh.h"
 #include "RigidBody/Contacts.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
@@ -14,7 +14,7 @@
 #include "RigidBody/Integrator.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/Markers.h"
-#include "RigidBody/NodeBone.h"
+#include "RigidBody/NodeSegment.h"
 #include "RigidBody/Patch.h"
 #include "RigidBody/RigidBodyEnums.h"
 #ifndef SKIP_KALMAN

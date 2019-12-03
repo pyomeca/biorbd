@@ -187,13 +187,13 @@ void biorbd::muscles::HillType::DeepCopy(const biorbd::muscles::HillType &other)
 
 const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::HillType::force(
         const biorbd::muscles::StateDynamics& emg){
-    // Calculer chacune les forces dans chaque éléments
+    // Compute the forces of each element
     computeFvCE();
     computeFlCE(emg);
     computeFlPE();
     computeDamping();
 
-    // Combiner les forces
+    // Combine the forces
     computeForce(emg);
     return *m_force;
 }
@@ -205,7 +205,7 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::Hi
         const biorbd::muscles::StateDynamics &emg,
         int updateKin)
 {
-    // Update de la configuration
+    // Update the configuration
     if (updateKin == 1)
         updateOrientations(model,Q,Qdot,false);
     else if (updateKin == 2)
@@ -213,7 +213,7 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::Hi
     else
         biorbd::utils::Error::check(updateKin == 0, "Wrong level of update in force function");
 
-    // Calculs
+    // Computation
     return force(emg);
 }
 
@@ -268,7 +268,7 @@ void biorbd::muscles::HillType::computeFlCE(const biorbd::muscles::StateDynamics
 }
 
 void biorbd::muscles::HillType::computeFvCE(){
-    // La relation est différente si la vitesse < 0  ou > 0
+    // The relation is different if velocity< 0  or > 0
     double v = m_position->velocity();
     if (v<=0)
         *m_FvCE = (1-abs(v) / *m_cste_vitesseRaccourMax) /

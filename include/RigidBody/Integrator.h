@@ -13,59 +13,134 @@ namespace biorbd {
 namespace utils {
 class Vector;
 }
-
+///
+/// \brief Namespace rigidbody containing the class Joints and GeneralizedCoordinates
 namespace rigidbody {
 class Joints;
 class GeneralizedCoordinates;
 
+///
+/// \brief Class Integrator
+///
 class BIORBD_API Integrator
 {
 public:
+
+    ///
+    /// \brief Construct integrator
+    ///
     Integrator(biorbd::rigidbody::Joints &model);
+    ///
+    /// \brief Deep copy of integrator
+    /// \return Copy of integrator
+    ///
     biorbd::rigidbody::Integrator DeepCopy() const;
+
+    ///
+    /// \brief Deep copy of integrator in another object
+    /// \param other Integrator to copy
+    ///
     void DeepCopy(const biorbd::rigidbody::Integrator& other);
 
+    ///
+    /// \brief Perform integration
+    /// \param Q_Qdot Vector containing position and velocity
+    /// \param u Effectors
+    /// \param t0 The initial time
+    /// \param tend The final integration time
+    /// \param timeStep Time step for the integration
+    ///
     void integrate(
             const biorbd::utils::Vector& Q_Qdot,
             const biorbd::utils::Vector& u,
             double t0,
             double tend,
             double timeStep);
+    ///
+    /// \brief Get Qdot and Qddot
+    /// \param x The position variables
+    /// \param dxdt The velocity variables
+    /// \param t The time
+    ///
     virtual void operator() (
             const state_type &x,
             state_type &dxdt,
             double t );
 
+    ///
+    /// \brief Return the Q for a given step
+    /// \param idx Index of the step
+    /// \return Q for a given step
+    ///
+
     biorbd::utils::Vector getX(
-            unsigned int idx); // Return the Q for a given step
-    double time(unsigned int idx); // Return the time a step idx
-    void showAll(); // Show every steps with every dof
+            unsigned int idx);
+
+    ///
+    /// \brief Return the time at step index
+    /// \param idx The step index
+    /// \return The time at step index
+    ///
+    double time(unsigned int idx); 
+
+    ///
+    /// \brief Show every steps with every DoF
+    /// 
+    void showAll();
+
+    ///
+    /// \brief Return the number of steps
+    /// \return The number of steps
+    ///
     unsigned int steps() const;
+
 protected:
-    std::shared_ptr<unsigned int> m_steps; // Nombre de step pour l'intégration
-    biorbd::rigidbody::Joints* m_model; // Model dans lequel il faut appeler forwardDynamics
-    std::shared_ptr<unsigned int> m_nQ;
-    std::shared_ptr<unsigned int> m_nQdot;
+    std::shared_ptr<unsigned int> m_steps; ///< Number of steps in the integration
+    biorbd::rigidbody::Joints* m_model; ///< Model in which Model we have to call forwardDynamics
+    std::shared_ptr<unsigned int> m_nQ; ///< Number of position variables
+    std::shared_ptr<unsigned int> m_nQdot;///< Number of velocity variables
 
-    // Déclarer un observeur
-    std::shared_ptr<std::vector<state_type>> m_x_vec;
-    std::shared_ptr<std::vector<double>> m_times;
-    std::shared_ptr<biorbd::utils::Vector> m_u; // Effecteurs
+    // Declare an observer
+    std::shared_ptr<std::vector<state_type>> m_x_vec; ///< Vector of x
+    std::shared_ptr<std::vector<double>> m_times; ///< Vector of time
+    std::shared_ptr<biorbd::utils::Vector> m_u; ///< Effectors
 
+    ///
+    /// \brief Launch integration
+    /// \param x Start state
+    /// \param t0 Start time
+    /// \param tend End time
+    /// \param timeStep Time step (dt)
+    ///
     virtual void launchIntegrate(
             state_type& x,
             double t0,
             double tend,
             double timeStep);
 
-    // Structure permettant de conserver les valeurs
+
+    ///
+    /// \brief Structure containing the states and time
+    ///
     struct push_back_state_and_time{
-        std::vector< state_type >& m_states;
-        std::vector< double >& m_times;
+        std::vector< state_type >& m_states; ///< The states
+        std::vector< double >& m_times; ///< The times
+
+        ///
+        /// \brief Store the states and times
+        /// \param states A vector containing the states
+        /// \param times A vector containing the times
+        ///
         push_back_state_and_time(
                 std::vector< state_type > &states ,
                 std::vector< double > &times )
         : m_states( states ) , m_times( times ) { }
+
+        ///
+        /// \brief TODO:
+        /// \param x
+        /// \param t
+        ///
         void operator()(
                 const state_type &x ,
                 double t ){

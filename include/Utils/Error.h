@@ -7,16 +7,33 @@
 namespace biorbd {
 namespace utils {
 class String;
-
+///
+/// \brief Class Error
+///
 class BIORBD_API Error
 {
 public:
+    /// 
+    /// \brief Throw a error message
+    /// \param message The error message to display
+    ///
     [[noreturn]] static void raise(
             const biorbd::utils::String &message);
+    ///
+    /// \brief Check condition, if false, throw an error message
+    /// \param cond The condition (true or false)
+    /// \param message The message to display
+    ///
     static void check(
             bool cond,
             const biorbd::utils::String &message);
-    static void warning(
+
+    ///
+    /// \brief Display a warning message if condition is false
+    /// \param cond The condition (true of false)
+    /// \param message The warning message to display
+    ///
+        static void warning(
             bool cond,
             const biorbd::utils::String &message);
 };

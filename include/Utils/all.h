@@ -7,7 +7,7 @@
 #include "Utils/IfStream.h"
 #include "Utils/Matrix.h"
 #include "Utils/Node.h"
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 #include "Utils/Path.h"
 #include "Utils/Quaternion.h"
 #include "Utils/RotoTrans.h"

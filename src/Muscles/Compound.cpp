@@ -2,7 +2,7 @@
 #include "Muscles/Compound.h"
 
 #include "Utils/String.h"
-#include "Utils/Node3d.h"
+#include "Utils/Vector3d.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "Muscles/Force.h"
 #include "Muscles/Characteristics.h"
@@ -105,7 +105,7 @@ const biorbd::muscles::PathChangers &biorbd::muscles::Compound::pathChanger() {
     return *m_pathChanger;
 }
 
-void biorbd::muscles::Compound::addPathObject(biorbd::utils::Node3d &w)  {
+void biorbd::muscles::Compound::addPathObject(biorbd::utils::Vector3d &w)  {
     m_pathChanger->addPathChanger(w);
 }
 

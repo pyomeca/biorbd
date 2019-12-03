@@ -12,7 +12,7 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/Path.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Matrix.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Node.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Node3d.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Vector3d.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/RotoTransNode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Quaternion.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/String.cpp
