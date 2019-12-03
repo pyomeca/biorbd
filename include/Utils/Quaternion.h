@@ -11,6 +11,7 @@ namespace utils {
 class Vector3d;
 class Vector;
 class RotoTrans;
+class Rotation;
 class String;
 
 ///
@@ -198,7 +199,7 @@ public:
     /// \param kStabilizer The value of the kstabilizer
     ///
     static biorbd::utils::Quaternion fromMatrix (
-            const Eigen::Matrix3d& mat,
+            const biorbd::utils::Rotation &mat,
             double kStab = 1);
 
     ///
@@ -230,9 +231,9 @@ public:
 
     ///
     /// \brief Convert the quaternion to a RotoTrans
-    /// \return The rototrans matrix
+    /// \return The rotation matrix
     ///
-    biorbd::utils::RotoTrans toMatrix() const;
+    biorbd::utils::Rotation toMatrix() const;
 
     ///
     /// \brief Interpolation of the quaternion between to position

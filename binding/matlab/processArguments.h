@@ -3,6 +3,7 @@
 #include <mex.h>
 #include "Utils/String.h"
 #include "Utils/Matrix.h"
+#include "Utils/Rotation.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/Segment.h"
@@ -138,8 +139,8 @@ std::vector<std::vector<biorbd::rigidbody::IMU>> getParameterAllIMUs(const mxArr
     for (unsigned int i=0; i<nFrames; ++i){
         std::vector<biorbd::rigidbody::IMU> imus_tp; // IMUs a un temps i
         for (unsigned int j=0; j<nIMUs; ++j){
-            Eigen::Matrix3d rot;
-            Eigen::Vector3d trans;
+            biorbd::utils::Rotation rot;
+            biorbd::utils::Vector3d trans;
             if (n==4){
                 rot <<  imus[i*16*nIMUs+j*16+0], imus[i*16*nIMUs+j*16+4], imus[i*16*nIMUs+j*16+8],
                         imus[i*16*nIMUs+j*16+1], imus[i*16*nIMUs+j*16+5], imus[i*16*nIMUs+j*16+9],

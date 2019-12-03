@@ -11,6 +11,7 @@
 #include "Utils/Equation.h"
 #include "Utils/Vector.h"
 #include "Utils/Vector3d.h"
+#include "Utils/Rotation.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
@@ -102,10 +103,10 @@ void biorbd::Reader::readModelFile(
                 bool isRTset(false);
                 double mass = 0.00000001;
                 Eigen::Matrix3d inertia(Eigen::Matrix3d::Identity(3,3));
-                RigidBodyDynamics::Math::Matrix3d RT_R(Eigen::Matrix3d::Identity(3,3));
+                biorbd::utils::Rotation RT_R(Eigen::Matrix3d::Identity(3,3));
                 RigidBodyDynamics::Math::Vector3d RT_T(0,0,0);
                 biorbd::utils::Vector3d com(0,0,0);
-                biorbd::rigidbody::Mesh Mesh;
+                biorbd::rigidbody::Mesh mesh;
                 int segmentByFile(-1); // -1 non setté, 0 pas par file, 1 par file
                 int PF = -1;
                 while(file.read(property_tag) && property_tag.tolower().compare("endsegment")){
@@ -180,7 +181,7 @@ void biorbd::Reader::readModelFile(
                         biorbd::utils::Vector3d tp(0, 0, 0);
                         for (unsigned int i=0; i<3; ++i)
                             file.read(tp(i), variable);
-                        Mesh.addPoint(tp);
+                        mesh.addPoint(tp);
                     }
                     else if (!property_tag.tolower().compare("patch")){
                         if (segmentByFile==-1)
@@ -190,7 +191,7 @@ void biorbd::Reader::readModelFile(
                         biorbd::rigidbody::MeshFace tp;
                         for (int i=0; i<3; ++i)
                             file.read(tp(i));
-                        Mesh.addFace(tp);
+                        mesh.addFace(tp);
                     }
                     else if (!property_tag.tolower().compare("meshfile")){
                         if (segmentByFile==-1)
@@ -201,21 +202,21 @@ void biorbd::Reader::readModelFile(
                         file.read(filePathInString);
                         biorbd::utils::Path filePath(filePathInString);
                         if (!filePath.extension().compare("bioMesh"))
-                            Mesh = readMeshFileBiorbdSegments(path.folder() + filePath.relativePath());
+                            mesh = readMeshFileBiorbdSegments(path.folder() + filePath.relativePath());
                         else if (!filePath.extension().compare("ply"))
-                            Mesh = readMeshFilePly(path.folder() + filePath.relativePath());
+                            mesh = readMeshFilePly(path.folder() + filePath.relativePath());
                         else if (!filePath.extension().compare("obj"))
-                            Mesh = readMeshFileObj(path.folder() + filePath.relativePath());
+                            mesh = readMeshFileObj(path.folder() + filePath.relativePath());
 #ifdef MODULE_VTP_FILES_READER
                         else if (!filePath.extension().compare("vtp"))
-                            Mesh = readMeshFileVtp(path.folder() + filePath.relativePath());
+                            mesh = readMeshFileVtp(path.folder() + filePath.relativePath());
 #endif
                         else
                             biorbd::utils::Error::raise(filePath.extension() + " is an unrecognized mesh file");
                     }
                 }
                 RigidBodyDynamics::Math::SpatialTransform RT(RT_R, RT_T);
-                biorbd::rigidbody::SegmentCharacteristics characteristics(mass,com,inertia,Mesh);
+                biorbd::rigidbody::SegmentCharacteristics characteristics(mass,com,inertia,mesh);
                 model->AddSegment(name, parent_str, trans, rot, characteristics, RT, PF);
             }
             else if (!main_tag.tolower().compare("root_actuated")){

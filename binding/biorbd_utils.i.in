@@ -6,6 +6,7 @@
 #include "Utils/Quaternion.h"
 #include "Utils/Node.h"
 #include "Utils/RotoTrans.h"
+#include "Utils/Rotation.h"
 %}
 
 // Instantiate templates
@@ -16,6 +17,8 @@ namespace std {
 %template(MatBiorbdMatrix) std::vector<biorbd::utils::Matrix>;
 %template(VecBiorbdRotoTrans) std::vector<biorbd::utils::RotoTrans>;
 %template(MatBiorbdRotoTrans) std::vector<std::vector<biorbd::utils::RotoTrans>>;
+%template(VecBiorbdRototation) std::vector<biorbd::utils::Rotation>;
+%template(MatBiorbdRototation) std::vector<std::vector<biorbd::utils::Rotation>>;
 %template(VecBiorbdNode) std::vector<biorbd::utils::Vector3d>;
 %template(MatBiorbdNode) std::vector<std::vector<biorbd::utils::Vector3d>>;
 }
@@ -36,6 +39,7 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Node.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Vector3d.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/RotoTrans.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Rotation.h"
 
 //%include "@CMAKE_SOURCE_DIR@/include/Utils/RotoTransNode.h"
 //%include "@CMAKE_SOURCE_DIR@/include/Utils/Time.h"

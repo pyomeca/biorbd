@@ -6,6 +6,7 @@
 #include "class_handle.h"
 #include "processArguments.h"
 #include "Utils/Vector.h"
+#include "RigidBody/SegmentCharacteristics.h"
 
 void Matlab_segmentsInertia( int, mxArray *plhs[],
                                 int nrhs, const mxArray*prhs[] ){

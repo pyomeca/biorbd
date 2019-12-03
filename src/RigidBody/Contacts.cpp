@@ -7,6 +7,7 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "Utils/Vector3d.h"
 #include "Utils/RotoTrans.h"
+#include "Utils/Rotation.h"
 #include "RigidBody/Joints.h"
 
 biorbd::rigidbody::Contacts::Contacts() :

@@ -6,6 +6,7 @@
 #include "BiorbdModel.h"
 #include "Utils/Error.h"
 #include "Utils/Matrix.h"
+#include "Utils/Rotation.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/IMU.h"
 
@@ -123,7 +124,7 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
             sum += IMUobs(i*9+j)*IMUobs(i*9+j);
         if (sum != 0.0 && sum == sum){ // If there is an IMU (no zero or NaN)
             H.block(i*9,0,9,*m_nbDof) = J_tp[i];
-            const Eigen::Matrix3d& rot = zest_tp[i].rot();
+            const biorbd::utils::Rotation& rot = zest_tp[i].rot();
             for (unsigned int j = 0; j < 3; ++j)
                 zest.block(i*9+j*3, 0, 3, 1) = rot.block(0, j, 3, 1);
         }

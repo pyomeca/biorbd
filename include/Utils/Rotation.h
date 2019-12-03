@@ -4,7 +4,6 @@
 #include <vector>
 #include <memory>
 #include <Eigen/Dense>
-#include "Utils/Node3d.h"
 
 namespace RigidBodyDynamics { namespace Math {
 struct SpatialTransform;
@@ -17,52 +16,113 @@ namespace utils {
 class String;
 class Vector;
 
-
+///
+/// \brief Rotation matrix
+///
 class BIORBD_API Rotation : public Eigen::Matrix3d
 {
 public:
-    Rotation(const Eigen::Matrix3d& = Eigen::Matrix3d::Identity());
-    template<typename OtherDerived> Rotation(const Eigen::MatrixBase<OtherDerived>& other) :
+    ///
+    /// \brief Construct Rotation matrix
+    /// \param matrix 3D identity matrix
+    ///
+    Rotation(
+            const Eigen::Matrix3d& = Eigen::Matrix3d::Identity());
+
+    ///
+    /// \brief Construct a Rotation matrix from another Rotation
+    /// \param other The other Rotation
+    ///
+    template<typename OtherDerived> Rotation(
+            const Eigen::MatrixBase<OtherDerived>& other) :
         Eigen::Matrix3d(other){}
+
+    ///
+    /// \brief Contruct a Rotation matrix
+    /// \param rotation The Euler angles vector
+    /// \param rotationSequence The rotation sequence
+    ///
+    /// The number of rotation must match the number of axes in the rotation
+    /// sequence
+    ///
     Rotation(
             const biorbd::utils::Vector& rotation,
-            //const biorbd::utils::Node3d& translation,
-            const biorbd::utils::String &rotationSequence);
+            const biorbd::utils::String& rotationSequence);
+
+    ///
+    /// \brief Contruct Rototrans
+    /// \param st Spatial Transform vector
+    ///
     Rotation(
-        const Eigen::Matrix3d& rot);
-            ///const biorbd::utils::Node3d& trans = Eigen::Vector3d::Zero());
-    Rotation(const RigidBodyDynamics::Math::SpatialTransform&);
+            const RigidBodyDynamics::Math::SpatialTransform& st);
 
-    biorbd::utils::Vector axe(int); // Aller récupérer un axe en particulier
+    ///
+    /// \brief Get a particular axis of the Rotation matrix
+    /// \param idx The index of axis (x = 0, y = 1 and z = 2)
+    /// \return The axis
+    ///
+    biorbd::utils::Vector axe(
+            int idx);
 
-    biorbd::utils::Rotation transpose() const;
-    Eigen::Matrix3d rot() const;
+    ///
+    /// \brief set the Rotation from a spatial transform
+    /// \param st The spatial transform
+    /// \return The matrix of Rotation
+    ///
+    static biorbd::utils::Rotation fromSpatialTransform(
+            const RigidBodyDynamics::Math::SpatialTransform& st);
 
-   // biorbd::utils::Rotation& SpatialTransform2RotoTrans(const RigidBodyDynamics::Math::SpatialTransform& st);
-
-
-    biorbd::utils::RotoTrans& transformCardanToMatrix(
+    ///
+    /// \brief Create a Rotation from Euler angles
+    /// \param rot The Euler angles vector
+    /// \param seq The rotation sequence
+    ///
+    /// The number of rotation must match the number of axes in the rotation
+    /// sequence
+    ///
+    biorbd::utils::Rotation& fromEulerAngles(
             const Eigen::VectorXd& rot,
-           /// const Eigen::Vector3d& trans,
             const biorbd::utils::String& seq);
-    static  biorbd::utils::Vector transformMatrixToCardan(
+
+    ///
+    /// \brief Return extracted angles from the rotation matrix into Euler angles using the provided sequence
+    /// \param rt The Rotation matrix to extract angles from
+    /// \param seq The angle sequence
+    /// \return The angles (the length of the vector will match the length of sequence)
+    ///
+    /// The rotation sequence can be any combination of x, y and z
+    ///
+    static  biorbd::utils::Vector toEulerAngles(
             const biorbd::utils::Rotation& rt,
-            const biorbd::utils::String &seq);
+            const biorbd::utils::String& seq);
 
-    static biorbd::utils::Rotation mean(const std::vector<biorbd::utils::Rotation>&); // Moyenne des matrices 3x3
+    ///
+    /// \brief Get the mean of the Rotation matrices
+    /// \param mToMean The Rotation matrices to mean
+    /// \return The mean Rotation matrix
+    ///
+    static biorbd::utils::Rotation mean(
+            const std::vector<biorbd::utils::Rotation>& mToMean);
 
+    ///
+    /// \brief Allow the use of operator=
+    /// \param other The other Rotation matrix
+    ///
     template<typename OtherDerived>
-        biorbd::utils::Rotation& operator=(const Eigen::MatrixBase <OtherDerived>& other){
+        biorbd::utils::Rotation& operator=(
+                const Eigen::MatrixBase <OtherDerived>& other){
             Eigen::Matrix3d::operator=(other);
             return *this;
         }
-protected:
-    //Do we need it?
-   // Eigen::Vector4d expand3dTo4d(const Eigen::Vector3d&);
 };
 
 }}
 
+///
+/// \brief To use operator<< to use std::cout
+/// \param os osstream
+/// \param rt The Rotation matrix
+///
 std::ostream& operator<<(std::ostream& os, const biorbd::utils::Rotation &rt);
 
 #endif // BIORBD_UTILS_ROTO_TRANS_H
