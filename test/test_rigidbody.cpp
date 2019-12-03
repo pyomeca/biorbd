@@ -8,10 +8,10 @@
 #include "Utils/String.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
-#include "RigidBody/BoneMesh.h"
-#include "RigidBody/BoneCharacteristics.h"
-#include "RigidBody/NodeBone.h"
-#include "RigidBody/Bone.h"
+#include "RigidBody/Mesh.h"
+#include "RigidBody/SegmentCharacteristics.h"
+#include "RigidBody/NodeSegment.h"
+#include "RigidBody/Segment.h"
 #include "RigidBody/IMU.h"
 #ifndef SKIP_KALMAN
 #include "RigidBody/KalmanReconsMarkers.h"
@@ -23,13 +23,13 @@ static double requiredPrecision(1e-10);
 
 #ifdef MODULE_ACTUATORS
 static std::string modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");
-static std::string modelPathForImuTesting("models/pyomecaman_withIMUs.bioMod");
 #else // MODULE_ACTUATORS
 static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
 #endif // MODULE_ACTUATORS
 static std::string modelPathMeshEqualsMarker("models/meshsEqualMarkers.bioMod");
 static std::string modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
 static std::string modelNoRoot("models/pyomecaman_freeFall.bioMod");
+static std::string modelPathForImuTesting("models/pyomecaman_withIMUs.bioMod");
 
 TEST(DegreesOfFreedom, count)
 {
@@ -66,16 +66,16 @@ TEST(CoM, kinematics)
         Qddot[i] = QtestPyomecaman[i]*100;
     }
 
-    biorbd::utils::Node3d expectedCom, expectedComDot, expectedComDdot;
+    biorbd::utils::Vector3d expectedCom, expectedComDot, expectedComDdot;
     expectedCom
             << -0.0034679564024098523, 0.15680579877453169, 0.07808112642459612;
     expectedComDot
             << -0.05018973433722229, 1.4166208451420528, 1.4301750486035787;
     expectedComDdot
             << -0.7606169667295027, 11.508107073695976, 16.58853835505851;
-    biorbd::utils::Node3d com(model.CoM(Q));
-    biorbd::utils::Node3d comDot(model.CoMdot(Q, Qdot));
-    biorbd::utils::Node3d comDdot(model.CoMddot(Q, Qdot, Qddot));
+    biorbd::utils::Vector3d com(model.CoM(Q));
+    biorbd::utils::Vector3d comDot(model.CoMdot(Q, Qdot));
+    biorbd::utils::Vector3d comDdot(model.CoMddot(Q, Qdot, Qddot));
     for (unsigned int i=0; i<3; ++i)
         EXPECT_NEAR(com[i], expectedCom[i], requiredPrecision);
     for (unsigned int i=0; i<3; ++i)
@@ -84,34 +84,34 @@ TEST(CoM, kinematics)
         EXPECT_NEAR(comDdot[i], expectedComDdot[i], requiredPrecision);
 }
 
-TEST(Bone, copy)
+TEST(Segment, copy)
 {
     biorbd::Model model(modelPathForGeneralTesting);
-    biorbd::rigidbody::BoneCharacteristics characteristics(10, biorbd::utils::Node3d(0.5, 0.5, 0.5), RigidBodyDynamics::Math::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
-    biorbd::rigidbody::Bone MasterBone(model, "MasterBone", "NoParent", "zyx", "yzx", characteristics, RigidBodyDynamics::Math::SpatialTransform());
-    biorbd::rigidbody::Bone ShallowCopy(MasterBone);
-    biorbd::rigidbody::Bone DeepCopyNow(MasterBone.DeepCopy());
-    biorbd::rigidbody::Bone DeepCopyLater;
-    DeepCopyLater.DeepCopy(MasterBone);
+    biorbd::rigidbody::SegmentCharacteristics characteristics(10, biorbd::utils::Vector3d(0.5, 0.5, 0.5), RigidBodyDynamics::Math::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
+    biorbd::rigidbody::Segment MasterSegment(model, "MasterSegment", "NoParent", "zyx", "yzx", characteristics, RigidBodyDynamics::Math::SpatialTransform());
+    biorbd::rigidbody::Segment ShallowCopy(MasterSegment);
+    biorbd::rigidbody::Segment DeepCopyNow(MasterSegment.DeepCopy());
+    biorbd::rigidbody::Segment DeepCopyLater;
+    DeepCopyLater.DeepCopy(MasterSegment);
 
-    EXPECT_STREQ(MasterBone.parent().c_str(), "NoParent");
+    EXPECT_STREQ(MasterSegment.parent().c_str(), "NoParent");
     EXPECT_STREQ(ShallowCopy.parent().c_str(), "NoParent");
     EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
     EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
     ShallowCopy.setParent("MyLovelyParent");
-    EXPECT_STREQ(MasterBone.parent().c_str(), "MyLovelyParent");
+    EXPECT_STREQ(MasterSegment.parent().c_str(), "MyLovelyParent");
     EXPECT_STREQ(ShallowCopy.parent().c_str(), "MyLovelyParent");
     EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
     EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
 }
 
-TEST(BoneMesh, copy)
+TEST(Mesh, copy)
 {
-    biorbd::rigidbody::BoneMesh MasterMesh;
+    biorbd::rigidbody::Mesh MasterMesh;
     MasterMesh.setPath("./MyFile.bioMesh");
-    biorbd::rigidbody::BoneMesh ShallowCopy(MasterMesh);
-    biorbd::rigidbody::BoneMesh DeepCopyNow(MasterMesh.DeepCopy());
-    biorbd::rigidbody::BoneMesh DeepCopyLater;
+    biorbd::rigidbody::Mesh ShallowCopy(MasterMesh);
+    biorbd::rigidbody::Mesh DeepCopyNow(MasterMesh.DeepCopy());
+    biorbd::rigidbody::Mesh DeepCopyLater;
     DeepCopyLater.DeepCopy(MasterMesh);
 
     EXPECT_STREQ(MasterMesh.path().relativePath().c_str(), "./MyFile.bioMesh");
@@ -135,15 +135,15 @@ TEST(Markers, allPositions)
 {
     biorbd::Model model(modelPathMeshEqualsMarker);
     EXPECT_EQ(model.nbQ(), 6);
-    EXPECT_EQ(model.nMarkers(), 4);
+    EXPECT_EQ(model.nbMarkers(), 4);
 
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
     for (unsigned int i=0; i<model.nbQ(); ++i)
         Q[i] = QtestEqualsMarker[i];
 
     // All markers at once
-    std::vector<biorbd::rigidbody::NodeBone> markers(model.markers(Q, true, true));
-    for (unsigned int i=0; i<model.nMarkers(); ++i)
+    std::vector<biorbd::rigidbody::NodeSegment> markers(model.markers(Q, true, true));
+    for (unsigned int i=0; i<model.nbMarkers(); ++i)
         for (unsigned int j=0; j<3; ++j)
             EXPECT_NEAR(markers[i][j], expectedMarkers[i][j], requiredPrecision);
 }
@@ -151,15 +151,15 @@ TEST(Markers, individualPositions)
 {
     biorbd::Model model(modelPathMeshEqualsMarker);
     EXPECT_EQ(model.nbQ(), 6);
-    EXPECT_EQ(model.nMarkers(), 4);
+    EXPECT_EQ(model.nbMarkers(), 4);
 
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
     for (unsigned int i=0; i<model.nbQ(); ++i)
         Q[i] = QtestEqualsMarker[i];
 
     // One marker at a time, only update Q once
-    for (unsigned int i=0; i<model.nMarkers(); ++i){
-        biorbd::rigidbody::NodeBone marker;
+    for (unsigned int i=0; i<model.nbMarkers(); ++i){
+        biorbd::rigidbody::NodeSegment marker;
         if (i==0)
             marker = model.marker(Q, i, true, true);
         else
@@ -177,8 +177,8 @@ TEST(Markers, individualPositions)
         Eigen::Vector3d(1.2905320401699185, 1.2989551971389397, 1.310413178608594)
     };
     // One marker at a time, only update Q once
-    for (unsigned int i=0; i<model.nMarkers(); ++i){
-        biorbd::rigidbody::NodeBone marker;
+    for (unsigned int i=0; i<model.nbMarkers(); ++i){
+        biorbd::rigidbody::NodeSegment marker;
         if (i==0)
             marker = model.marker(Q, i, true, true);
         else
@@ -188,23 +188,23 @@ TEST(Markers, individualPositions)
     }
 }
 
-TEST(BoneMesh, position)
+TEST(Mesh, position)
 {
     biorbd::Model model(modelPathMeshEqualsMarker);
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
     for (unsigned int q=0; q<model.nbQ(); ++q){
         Q.setZero();
         Q[q] = 1;
-        std::vector<std::vector<biorbd::utils::Node3d>> mesh(model.meshPoints(Q));
-        std::vector<biorbd::rigidbody::NodeBone> markers(model.markers(Q));
+        std::vector<std::vector<biorbd::utils::Vector3d>> mesh(model.meshPoints(Q));
+        std::vector<biorbd::rigidbody::NodeSegment> markers(model.markers(Q));
         for (unsigned int idx=0; idx<markers.size(); ++idx)
             for (unsigned int xyz =0; xyz<3; ++xyz)
                 EXPECT_NEAR(mesh[0][idx][xyz], markers[idx][xyz], requiredPrecision);
     }
     {
         Q.setOnes();
-        std::vector<std::vector<biorbd::utils::Node3d>> mesh(model.meshPoints(Q));
-        std::vector<biorbd::rigidbody::NodeBone> markers(model.markers(Q));
+        std::vector<std::vector<biorbd::utils::Vector3d>> mesh(model.meshPoints(Q));
+        std::vector<biorbd::rigidbody::NodeSegment> markers(model.markers(Q));
         for (unsigned int idx=0; idx<markers.size(); ++idx)
             for (unsigned int xyz =0; xyz<3; ++xyz)
                 EXPECT_NEAR(mesh[0][idx][xyz], markers[idx][xyz], requiredPrecision);
@@ -249,7 +249,7 @@ TEST(Dynamics, ForwardAccelerationConstraint){
     biorbd::Model model(modelPathForGeneralTesting);
     biorbd::rigidbody::GeneralizedCoordinates Q(model), QDot(model), QDDot_constrained(model), QDDot_expected(model);
     biorbd::rigidbody::GeneralizedTorque Tau(model);
-    Eigen::VectorXd forces_expected(model.nContacts());
+    Eigen::VectorXd forces_expected(model.nbContacts());
     Q.setOnes()/10;
     QDot.setOnes()/10;
     QDDot_expected << 1.9402069774422919,  -9.1992692111538243,  2.9930159570454702,
@@ -313,7 +313,7 @@ TEST(Kalman, markers)
     // Compute reference
     biorbd::rigidbody::GeneralizedCoordinates Qref(model);
     Qref = Qref.setOnes()*0.2;
-    std::vector<biorbd::rigidbody::NodeBone> targetMarkers(model.markers(Qref));
+    std::vector<biorbd::rigidbody::NodeSegment> targetMarkers(model.markers(Qref));
 
     biorbd::rigidbody::GeneralizedCoordinates Q(model), Qdot(model), Qddot(model);
     kalman.reconstructFrame(model, targetMarkers, &Q, &Qdot, &Qddot);

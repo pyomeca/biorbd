@@ -6,57 +6,126 @@
 
 namespace biorbd {
 namespace muscles {
-
+///
+/// \brief Sphere object that makes the muscle to wrap around
+///
 class BIORBD_API WrappingSphere : public biorbd::muscles::WrappingObject
 {
 public:
-    WrappingSphere();
-    WrappingSphere(
-            double x,
-            double y,
-            double z,
-            double diameter);
-    WrappingSphere(
-            double x,
-            double y,
-            double z,
-            double diameter, // Diametre de la sphere
-            const biorbd::utils::String &name, // Nom du noeud
-            const biorbd::utils::String &parentName);
-    WrappingSphere(
-            const biorbd::utils::Node3d &v, // Position du noeud
-            double diameter);
-    biorbd::muscles::WrappingSphere DeepCopy() const;
-    void DeepCopy(const biorbd::muscles::WrappingSphere& other);
 
-    const biorbd::utils::RotoTrans& RT(
-            biorbd::rigidbody::Joints &,
-            const biorbd::rigidbody::GeneralizedCoordinates& ,
-            bool  = true);
+    ///
+    /// \brief Construct a wrapping sphere
+    ///
+    WrappingSphere();
+
+    ///
+    /// \brief Construct a wrapping sphere
+    /// \param X-Component of the sphere
+    /// \param Y-Component of the sphere
+    /// \param Z-Component of the sphere
+    /// \param diameter Diameter of the sphere
+    ///
+    WrappingSphere(
+            double x,
+            double y,
+            double z,
+            double diameter);
+
+    ///
+    /// \brief Construct a wrapping sphere
+    /// \param X-Component of the sphere
+    /// \param Y-Component of the sphere
+    /// \param Z-Component of the sphere
+    /// \param diameter Diameter of the sphere
+    /// \param name Name of the sphere
+    /// \param parentName Name of the parent segment
+    ///
+    WrappingSphere(
+            double x,
+            double y,
+            double z,
+            double diameter, 
+            const biorbd::utils::String &name, 
+            const biorbd::utils::String &parentName);
+
+    ///
+    /// \brief Construct a wrapping sphere
+    /// \param v Position of the center of the sphere
+    /// \param diameter Diameter of the sphere
+    ///
+    WrappingSphere(
+            const biorbd::utils::Vector3d &v, 
+            double diameter);
+
+    ///
+    /// \brief Deep copy of the wrapping sphere
+    /// \return A deep copy of the wrapping sphere
+    ///
+    biorbd::muscles::WrappingSphere DeepCopy() const;
+
+    ///
+    /// \brief Deep copy of the wrapping sphere in another wrapping sphere
+    /// \param other The wrapping sphere to copy
+    ///
+    void DeepCopy(
+            const biorbd::muscles::WrappingSphere& other);
+
+    ///
+    /// \brief Not yet implemented
+    ///
     virtual void wrapPoints(
             const biorbd::utils::RotoTrans&,
-            const biorbd::utils::Node3d&,
-            const biorbd::utils::Node3d&,
-            biorbd::utils::Node3d&,
-            biorbd::utils::Node3d&, double* = nullptr) {} // Premier et dernier points musculaire
+            const biorbd::utils::Vector3d&,
+            const biorbd::utils::Vector3d&,
+            biorbd::utils::Vector3d&,
+            biorbd::utils::Vector3d&, double* = nullptr) {}
+
+    ///
+    /// \brief Not yet implemented
+    ///
     virtual void wrapPoints(
             biorbd::rigidbody::Joints&,
             const biorbd::rigidbody::GeneralizedCoordinates&,
-            const biorbd::utils::Node3d&,
-            const biorbd::utils::Node3d&,
-            biorbd::utils::Node3d&,
-            biorbd::utils::Node3d&,
-            double* = nullptr) {} // Premier et dernier points musculaire
-    virtual void wrapPoints(
-            biorbd::utils::Node3d&,
-            biorbd::utils::Node3d&,
-            double* = nullptr) {} // Premier et dernier points musculaire
+            const biorbd::utils::Vector3d&,
+            const biorbd::utils::Vector3d&,
+            biorbd::utils::Vector3d&,
+            biorbd::utils::Vector3d&,
+            double* = nullptr) {}
 
-    // Get and set
-    double size() const;
-    void setSize(double val);
+    ///
+    /// \brief Not yet implemented
+    ///
+    virtual void wrapPoints(
+            biorbd::utils::Vector3d&,
+            biorbd::utils::Vector3d&,
+            double* = nullptr) {}
+
+    ///
+    /// \brief Return the RotoTrans matrix of the sphere
+    /// \param model The joint model
+    /// \param Q The generalized coordinates
+    /// \param updateKin If the kinematics should be computed
+    /// \return The RotoTrans matrix of the sphere
+    ///
+    const biorbd::utils::RotoTrans& RT(
+            biorbd::rigidbody::Joints &model,
+            const biorbd::rigidbody::GeneralizedCoordinates&Q ,
+            bool updateKin  = true);
+
+    ///
+    /// \brief Set the diameter of the wrappping sphere
+    /// \param val Value of the diameter
+    ///
+    void setDiameter(double val);
+
+    ///
+    /// \brief Return the diameter of the wrapping sphere
+    /// \return The diameter of the wrapping sphere
+    ///
+    double diameter() const;
+
 protected:
-    std::shared_ptr<double> m_dia;
+    std::shared_ptr<double> m_dia; ///< Diameter of the wrapping sphere
 
 };
 

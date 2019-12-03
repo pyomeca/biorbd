@@ -56,7 +56,7 @@ void Matlab_segmentAngularMomentum( int, mxArray *plhs[],
     // Préparer la sortie conditionnelle (tous si idx==-1, seulement celui demandé sinon)
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrame; ++i){
-        std::vector<biorbd::utils::Node3d> am_all(model->CalcSegmentsAngularMomentum (*model, *(Q.begin()+i), *(QDot.begin()+i), true));
+        std::vector<biorbd::utils::Vector3d> am_all(model->CalcSegmentsAngularMomentum (*model, *(Q.begin()+i), *(QDot.begin()+i), true));
         if (idx==-1){
             // Remplir le output
             for (auto am : am_all){

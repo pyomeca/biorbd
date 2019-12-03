@@ -26,10 +26,10 @@ biorbd::actuator::ActuatorLinear::ActuatorLinear(
 biorbd::actuator::ActuatorLinear::ActuatorLinear(
         int direction,
         double T0,
-        double pente,
+        double slope,
         unsigned int dofIdx) :
     Actuator(direction, dofIdx),
-    m_m(std::make_shared<double>(pente)),
+    m_m(std::make_shared<double>(slope)),
     m_b(std::make_shared<double>(T0))
 {
     setType();
@@ -38,11 +38,11 @@ biorbd::actuator::ActuatorLinear::ActuatorLinear(
 biorbd::actuator::ActuatorLinear::ActuatorLinear(
         int direction,
         double T0,
-        double pente,
+        double slope,
         unsigned int dofIdx,
         const biorbd::utils::String &jointName) :
     Actuator(direction, dofIdx, jointName),
-    m_m(std::make_shared<double>(pente)),
+    m_m(std::make_shared<double>(slope)),
     m_b(std::make_shared<double>(T0))
 {
     setType();
@@ -69,11 +69,6 @@ void biorbd::actuator::ActuatorLinear::DeepCopy(const biorbd::actuator::Actuator
 
 
 double biorbd::actuator::ActuatorLinear::torqueMax(const biorbd::rigidbody::GeneralizedCoordinates &Q) const {
-//    std::cout << "Q[" << m_dofIdx << "] = " << Q[m_dofIdx] << std::endl;
-//    std::cout << "M = " << m_m << std::endl;
-//    std::cout << "B = " << m_b << std::endl;
-//    std::cout << "Torque = " << (Q[m_dofIdx]*180/PI)*m_m+m_b << std::endl << std::endl;
-
     return (Q[*m_dofIdx]*180/M_PI) * *m_m + *m_b;
 }
 

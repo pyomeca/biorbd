@@ -5,9 +5,10 @@
 #include <rbdl/Kinematics.h>
 #include "Utils/String.h"
 #include "Utils/Matrix.h"
+#include "Utils/Rotation.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/Joints.h"
-#include "RigidBody/Bone.h"
+#include "RigidBody/Segment.h"
 #include "RigidBody/IMU.h"
 
 biorbd::rigidbody::IMUs::IMUs() :
@@ -47,7 +48,7 @@ void biorbd::rigidbody::IMUs::addIMU(
     m_IMUs->push_back(biorbd::rigidbody::IMU(technical, anatomical));
 }
 
-// Ajouter un nouveau marker au pool de markers
+// Add a new marker to the existing pool of markers
 void biorbd::rigidbody::IMUs::addIMU(
         const biorbd::utils::RotoTransNode &RotoTrans,
         bool technical,
@@ -56,13 +57,13 @@ void biorbd::rigidbody::IMUs::addIMU(
     m_IMUs->push_back(biorbd::rigidbody::IMU(RotoTrans, technical, anatomical));
 }
 
-unsigned int biorbd::rigidbody::IMUs::nIMUs() const
+unsigned int biorbd::rigidbody::IMUs::nbIMUs() const
 {
     return static_cast<unsigned int>(m_IMUs->size());
 }
 
 
-// Se faire renvoyer les markers dans le repère local
+// Get the markers in the global reference
 const std::vector<biorbd::rigidbody::IMU>& biorbd::rigidbody::IMUs::IMU() const
 {
     return *m_IMUs;
@@ -71,24 +72,24 @@ const std::vector<biorbd::rigidbody::IMU>& biorbd::rigidbody::IMUs::IMU() const
 std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::IMU(const biorbd::utils::String& segmentName)
 {
     std::vector<biorbd::rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nIMUs(); ++i) // passer tous les markers et sélectionner les bons
+    for (unsigned int i=0; i<nbIMUs(); ++i) // Scan through all the markers and select the good ones
         if (!IMU(i).parent().compare(segmentName))
             pos.push_back(IMU(i));
     return pos;
 }
 
-const biorbd::rigidbody::IMU& biorbd::rigidbody::IMUs::IMU(unsigned int i)
+const biorbd::rigidbody::IMU& biorbd::rigidbody::IMUs::IMU(unsigned int idx)
 {
-    return (*m_IMUs)[i];
+    return (*m_IMUs)[idx];
 }
 
-// Se faire renvoyer les IMUs à la position donnée par Q
+// Get the IMUs at the position given by Q
 std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::IMU(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {
     std::vector<biorbd::rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nIMUs(); ++i)
+    for (unsigned int i=0; i<nbIMUs(); ++i)
         if (i==0)
             pos.push_back(IMU(Q, i, updateKin));// Forward kinematics
         else
@@ -97,7 +98,7 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::IMU(
     return pos;
 }
 
-// Se faire renvoyer un IMU à la position donnée par Q
+// Get an IMU at the position given by Q
 biorbd::rigidbody::IMU biorbd::rigidbody::IMUs::IMU(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         unsigned int idx,
@@ -115,47 +116,47 @@ biorbd::rigidbody::IMU biorbd::rigidbody::IMUs::IMU(
     return model.globalJCS(id) * node;
 }
 
-// Se faire renvoyer les IMUs techniques
+// Get the technical IMUs
 std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::technicalIMU(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {
     std::vector<biorbd::rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nIMUs(); ++i)
+    for (unsigned int i=0; i<nbIMUs(); ++i)
         if ( IMU(i).isTechnical() ){
             pos.push_back(IMU(Q, i, updateKin));// Forward kinematics
             updateKin = false;
         }
     return pos;
 }
-// Se faire renvoyer les IMUs techniques dans le repère local
+// Get the technical IMUs in the local reference
 std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::technicalIMU()
 {
     std::vector<biorbd::rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nIMUs(); ++i)
+    for (unsigned int i=0; i<nbIMUs(); ++i)
         if ( IMU(i).isTechnical() )
             pos.push_back(IMU(i));// Forward kinematics
     return pos;
 }
 
-// Se faire renvoyer les IMUs anatomiques
+// Get all the anatomical IMUs
 std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::anatomicalIMU(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {
     std::vector<biorbd::rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nIMUs(); ++i)
+    for (unsigned int i=0; i<nbIMUs(); ++i)
         if ( IMU(i).isAnatomical() ){
             pos.push_back(IMU(Q, i, updateKin));// Forward kinematics
             updateKin = false;
         }
     return pos;
 }
-// Se faire renvoyer les IMUs anatomiques dans le repère local
+// Get the anatomical IMUs in the local reference
 std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::anatomicalIMU()
 {
     std::vector<biorbd::rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nIMUs(); ++i)
+    for (unsigned int i=0; i<nbIMUs(); ++i)
         if ( IMU(i).isAnatomical() )
             pos.push_back(IMU(i));// Forward kinematics
     return pos;
@@ -169,22 +170,22 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::segmentIMU(
     // Assuming that this is also a Joints type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
-    // Update de la cinématique
+    // Update the kinematic
     if (updateKin)
         model.UpdateKinematicsCustom(&Q,nullptr, nullptr);
 
-    // Nom du segment a trouver
-    biorbd::utils::String name(model.bone(idx).name());
+    // Segment name to find
+    biorbd::utils::String name(model.segment(idx).name());
 
     std::vector<biorbd::rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nIMUs(); ++i) // passer tous les markers et sélectionner les bons
+    for (unsigned int i=0; i<nbIMUs(); ++i) // scan all the markers and select the right ones
         if (!((*m_IMUs)[i]).parent().compare(name))
             pos.push_back(IMU(Q,i,false));
 
     return pos;
 }
 
-// Se faire renvoyer la jacobienne des markers
+// Get the Jacobian of the markers
 std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::IMUJacobian(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
@@ -192,7 +193,7 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::IMUJacobian(
     return IMUJacobian(Q, updateKin, false);
 }
 
-// Se faire renvoyer la jacobienne des marker techniques
+// Get the Jacobian of the technical markers
 std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::TechnicalIMUJacobian(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
@@ -213,8 +214,8 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::IMUJacobian(
     std::vector<biorbd::utils::Matrix> G;
 
     bool first(true);
-    for (unsigned int idx=0; idx<nIMUs(); ++idx){
-        // Marqueur actuel
+    for (unsigned int idx=0; idx<nbIMUs(); ++idx){
+        // Actual marker
         biorbd::rigidbody::IMU node = IMU(idx);
         if (lookForTechnical && !node.isTechnical())
             continue;
@@ -222,7 +223,7 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::IMUJacobian(
         unsigned int id = model.GetBodyId(node.parent().c_str());
         biorbd::utils::Matrix G_tp(biorbd::utils::Matrix::Zero(9,model.dof_count));
 
-        // Calcul de la jacobienne de ce Tag
+        // Calculate the Jacobian of this Tag
         if (first)
             model.CalcMatRotJacobian(Q, id, node.rot(), G_tp, updateKin);
         else
@@ -235,42 +236,42 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::IMUJacobian(
     return G;
 }
 
-unsigned int biorbd::rigidbody::IMUs::nTechIMUs()
+unsigned int biorbd::rigidbody::IMUs::nbTechIMUs()
 {
-    unsigned int nTech = 0;
-    if (nTech == 0) // Si la fonction n'a jamais été appelée encore
+    unsigned int nbTech = 0;
+    if (nbTech == 0) // If the function has never been called before
         for (biorbd::rigidbody::IMU imu : *m_IMUs)
             if (imu.isTechnical())
-                ++nTech;
+                ++nbTech;
 
-    return nTech;
+    return nbTech;
 }
 
-unsigned int biorbd::rigidbody::IMUs::nAnatIMUs()
+unsigned int biorbd::rigidbody::IMUs::nbAnatIMUs()
 {
-    unsigned int nAnat = 0;
-    if (nAnat == 0) // Si la fonction n'a jamais été appelée encore
+    unsigned int nbAnat = 0;
+    if (nbAnat == 0) // If the function has never been called before
         for (biorbd::rigidbody::IMU imu : *m_IMUs)
             if (imu.isAnatomical())
-                ++nAnat;
+                ++nbAnat;
 
-    return nAnat;
+    return nbAnat;
 }
 
 std::vector<biorbd::utils::String> biorbd::rigidbody::IMUs::IMUsNames()
 {
-    // Extrait le nom de tous les markers d'un modele
+    // Extract the name of all the markers of a model
     std::vector<biorbd::utils::String> names;
-    for (unsigned int i=0; i<nIMUs(); ++i)
+    for (unsigned int i=0; i<nbIMUs(); ++i)
         names.push_back(IMU(i).name());
     return names;
 }
 
 std::vector<biorbd::utils::String> biorbd::rigidbody::IMUs::technicalIMUsNames()
 {
-    // Extrait le nom de tous les markers d'un modele
+    // Extract the names of all the technical markers of a model
     std::vector<biorbd::utils::String> names;
-    for (unsigned int i=0; i<nIMUs(); ++i)
+    for (unsigned int i=0; i<nbIMUs(); ++i)
         if (IMU(i).isTechnical())
             names.push_back(IMU(i).name());
 
@@ -279,9 +280,9 @@ std::vector<biorbd::utils::String> biorbd::rigidbody::IMUs::technicalIMUsNames()
 
 std::vector<biorbd::utils::String> biorbd::rigidbody::IMUs::anatomicalIMUsNames()
 {
-    // Extrait le nom de tous les markers d'un modele
+    // Extract the names of all the anatomical markers of a model
     std::vector<biorbd::utils::String> names;
-    for (unsigned int i=0; i<nIMUs(); ++i)
+    for (unsigned int i=0; i<nbIMUs(); ++i)
         if (IMU(i).isAnatomical())
             names.push_back(IMU(i).name());
 

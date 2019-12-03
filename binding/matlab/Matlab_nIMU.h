@@ -18,7 +18,7 @@ void Matlab_nIMU( int, mxArray *plhs[],
     double *nIMU = mxGetPr(plhs[0]);
 
     // Get nombre de marqueurs
-    *nIMU = model->nIMUs();
+    *nIMU = model->nbIMUs();
 
     return;
 }

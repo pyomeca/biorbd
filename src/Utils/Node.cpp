@@ -11,12 +11,13 @@ biorbd::utils::Node::Node() :
 
 }
 
-biorbd::utils::Node::Node(const biorbd::utils::Node &node)
+biorbd::utils::Node::Node(
+        const biorbd::utils::Node &other)
 {
     // Shallow copy
-    m_name = node.m_name;
-    m_parentName = node.m_parentName;
-    m_typeOfNode = node.m_typeOfNode;
+    m_name = other.m_name;
+    m_parentName = other.m_parentName;
+    m_typeOfNode = other.m_typeOfNode;
 }
 
 biorbd::utils::Node::Node(const biorbd::utils::String &name) :
@@ -50,14 +51,14 @@ void biorbd::utils::Node::DeepCopy(
     *m_typeOfNode = *other.m_typeOfNode;
 }
 
-const biorbd::utils::String &biorbd::utils::Node::name() const
-{
-    return *m_name;
-}
-
 void biorbd::utils::Node::setName(const biorbd::utils::String &name)
 {
     *m_name = name;
+}
+
+const biorbd::utils::String &biorbd::utils::Node::name() const
+{
+    return *m_name;
 }
 
 const biorbd::utils::String& biorbd::utils::Node::parent() const
@@ -65,9 +66,10 @@ const biorbd::utils::String& biorbd::utils::Node::parent() const
     return *m_parentName;
 }
 
-void biorbd::utils::Node::setParent(const biorbd::utils::String &parentName)
+void biorbd::utils::Node::setParent(
+        const biorbd::utils::String &name)
 {
-    *m_parentName = parentName;
+    *m_parentName = name;
 }
 
 biorbd::utils::NODE_TYPE biorbd::utils::Node::typeOfNode() const

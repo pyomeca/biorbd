@@ -16,7 +16,8 @@ void Matlab_inverseKinematics( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir la matrice des markers
-    std::vector<std::vector<biorbd::rigidbody::NodeBone>> markersOverTime = getParameterAllMarkers(prhs,2,static_cast<int>(model->nTechnicalMarkers()));
+    std::vector<std::vector<biorbd::rigidbody::NodeSegment>> markersOverTime =
+            getParameterAllMarkers(prhs,2,static_cast<int>(model->nbTechnicalMarkers()));
 
     // Recevoir Qinit
     biorbd::rigidbody::GeneralizedCoordinates Qinit = *getParameterQ(prhs, 3, nQ).begin();
@@ -35,7 +36,7 @@ void Matlab_inverseKinematics( int, mxArray *plhs[],
         Q.setZero();
 
         // Faire la cinématique inverse
-        model->InverseKinematics(*(markersOverTime.begin()+i), Qinit, Q);
+        model->inverseKinematics(*(markersOverTime.begin()+i), Qinit, Q);
 
         // Remplir la variable de sortie
         for (unsigned int j=0; j<nQ; ++j)

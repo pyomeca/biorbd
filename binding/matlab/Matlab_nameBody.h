@@ -22,22 +22,22 @@ void Matlab_nameBody( int, mxArray *plhs[],
             msg << "Segment index must be 1 or higher.";
             mexErrMsgIdAndTxt( "MATLAB:findnz:invalidInputType",msg.str().c_str());
         }
-        else if  (idx>model->nbBone()){
+        else if  (idx>model->nbSegment()){
             std::ostringstream msg;
             msg << "Segment index must not be higher than number of segment.";
             mexErrMsgIdAndTxt( "MATLAB:findnz:invalidInputType",msg.str().c_str());
         }
 
         // Sortie du nom
-        plhs[0] = mxCreateString (model->bone(idx-1).name().c_str()); // Recueillir le nom
+        plhs[0] = mxCreateString (model->segment(idx-1).name().c_str()); // Recueillir le nom
     }
     else {
         // Sortie des noms
-        plhs[0] = mxCreateCellMatrix(model->nbBone(), 1); // Stockage des noms de groupe
+        plhs[0] = mxCreateCellMatrix(model->nbSegment(), 1); // Stockage des noms de groupe
 
         // Stocker chaque valeur
-        for (unsigned int i=0; i<model->nbBone(); ++i){
-            mxArray *nomBone = mxCreateString (model->bone(i).name().c_str()); // Recueillir le nom
+        for (unsigned int i=0; i<model->nbSegment(); ++i){
+            mxArray *nomBone = mxCreateString (model->segment(i).name().c_str()); // Recueillir le nom
             mxSetCell(plhs[0],i,nomBone); // Mettre les noms dans la variable de sortie
         }
     }

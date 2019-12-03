@@ -24,14 +24,14 @@ void Matlab_parent( int, mxArray *plhs[],
         msg << "Segment index must be 1 or higher.";
         mexErrMsgIdAndTxt( "MATLAB:findnz:invalidInputType",msg.str().c_str());
     }
-    else if (idx>model->nbBone()){
+    else if (idx>model->nbSegment()){
         std::ostringstream msg;
         msg << "Segment index must not be higher than number of segment.";
         mexErrMsgIdAndTxt( "MATLAB:findnz:invalidInputType",msg.str().c_str());
     }
 
     // Sortie du nom du segment parent
-    plhs[0] = mxCreateString ( model->bone(idx-1).name().c_str()); // Recueillir le nom
+    plhs[0] = mxCreateString ( model->segment(idx-1).name().c_str()); // Recueillir le nom
 
     return;
 }

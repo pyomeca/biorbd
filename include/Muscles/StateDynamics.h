@@ -7,47 +7,117 @@
 namespace biorbd {
 namespace muscles {
 class Characteristics;
-
+///
+/// \brief EMG with the capability to compute the time derivative
+///
 class BIORBD_API StateDynamics : public biorbd::muscles::State
 {
 public:
+    ///
+    /// \brief Construct the state dynamics
+    /// \param excitation The muscle excitation
+    /// \param activation The muscle activation
+    ///
     StateDynamics(
             double excitation = 0,
             double activation = 0);
-    StateDynamics(const biorbd::muscles::StateDynamics& other);
+
+    ///
+    /// \brief Construct a state dynamics from another state dynamics
+    /// \param other The other state dynamics
+    ///
+    StateDynamics(
+            const biorbd::muscles::StateDynamics& other);
+
+    ///
+    /// \brief Destroy class properly
+    ///
     virtual ~StateDynamics();
+
+    ///
+    /// \brief Deep copy of state dynamics
+    /// \return A deep copy of state dynamics
+    ///
     biorbd::muscles::StateDynamics DeepCopy() const;
-    void DeepCopy(const biorbd::muscles::StateDynamics& other);
 
+    ///
+    /// \brief Deep copy of state dynamics into another state dynamics
+    /// \param other The state dynamics to copy
+    ///
+    void DeepCopy(
+            const biorbd::muscles::StateDynamics& other);
+
+    ///
+    /// \brief Set the muscle excitation
+    /// \param val The value of the muscle excitation
+    ///
     virtual void setExcitation(double val);
-    virtual void setActivation(double val);
 
-    double excitationNorm(const State &max);
-    double excitationNorm() const; // Retourne la derniere excitation normalisee
-    void setExcitationNorm(double val); // Retourne la derniere excitation normalisee
-    double previousActivation() const;
+    ///
+    /// \brief Return the previous activation
+    /// \return The previous activation
+    ///
     double previousExcitation() const;
 
+    ///
+    /// \brief Set the muscle activation
+    /// \param val The value of the muscle activation
+    ///
+    virtual void setActivation(double val);
+
+    ///
+    /// \brief Return the previous activation
+    /// \return The previous activation
+    ///
+    double previousActivation() const;
+
+    ///
+    /// \brief Compute and return the activation time derivative from the excitation and activation
+    /// \param excitation The muscle excitation
+    /// \param activation The muscle activation
+    /// \param characteristics The muscle characteristics
+    /// \param alreadyNormalized If already normalized
+    /// \return The activation time derivative
+    ///
     virtual double timeDerivativeActivation(
             double excitation,
             double activation,
             const Characteristics& characteristics,
-            bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
+            bool alreadyNormalized = false); 
+
+    ///
+    /// \brief Compute and return the activation time derivative
+    /// \param emg The emg
+    /// \param characteristics The muscle characteristics
+    /// \param alreadyNormalized If already normalized
+    /// \return The activation time derivative
+    ///
     virtual double timeDerivativeActivation(
-            const StateDynamics& state,
+            const StateDynamics& emg,
             const Characteristics& characteristics,
-            bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
+            bool alreadyNormalized = false); 
+
+    ///
+    /// \brief Compute and return the activation time derivative
+    /// \param characteristics The muscle characteristics
+    /// \param alreadyNormalized If already normalized
+    /// \return The activation time derivative
+    ///
     virtual double timeDerivativeActivation(
             const Characteristics& characteristics,
-            bool alreadyNormalized = false); // Fonction de calcul de la vitesse d'activation en fonction de l'excitation et de l'activation
-    virtual double timeDerivativeActivation(); // Retourne la derniere valeur
+            bool alreadyNormalized = false);
+
+    ///
+    /// \brief Return the previously computed activation time derivative
+    /// \return The activation time derivative
+    ///   
+    virtual double timeDerivativeActivation();
 
 protected:
     virtual void setType();
-    std::shared_ptr<double> m_excitationNorm;
-    std::shared_ptr<double> m_previousExcitation;
-    std::shared_ptr<double> m_previousActivation;
-    std::shared_ptr<double> m_activationDot;
+    std::shared_ptr<double> m_previousExcitation; ///< The previous excitation
+    std::shared_ptr<double> m_previousActivation; ///<The previous activation
+    std::shared_ptr<double> m_activationDot;///< The activation velocity
 
 };
 

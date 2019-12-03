@@ -12,39 +12,48 @@ biorbd::utils::Benchmark::Benchmark() :
 }
 
 
-void biorbd::utils::Benchmark::startTimer(const biorbd::utils::String& s, bool force){
+void biorbd::utils::Benchmark::startTimer(
+        const biorbd::utils::String& name,
+        bool force){
     if (force)
-        m_timers[s].start();
+        m_timers[name].start();
     else
-        if (!m_timers[s].isStarted())
-            m_timers[s].start();
+        if (!m_timers[name].isStarted())
+            m_timers[name].start();
 }
 
-double biorbd::utils::Benchmark::getLap(const biorbd::utils::String& s){
-    return m_timers[s].getLap();
+double biorbd::utils::Benchmark::getLap(
+        const biorbd::utils::String& name){
+    return m_timers[name].getLap();
 }
 
-double biorbd::utils::Benchmark::stopTimer(const biorbd::utils::String& s){
-    return m_timers[s].stop();
+double biorbd::utils::Benchmark::stopTimer(
+        const biorbd::utils::String& name){
+    return m_timers[name].stop();
 }
 
-void biorbd::utils::Benchmark::pauseTimer(const biorbd::utils::String& s){
-    m_timers[s].pause();
+void biorbd::utils::Benchmark::pauseTimer(
+        const biorbd::utils::String& name){
+    m_timers[name].pause();
 }
 
-void biorbd::utils::Benchmark::resumeTimer(const biorbd::utils::String& s){
-    m_timers[s].resume();
+void biorbd::utils::Benchmark::resumeTimer(
+        const biorbd::utils::String& name){
+    m_timers[name].resume();
 }
 
-void biorbd::utils::Benchmark::addToCounter(const biorbd::utils::String& s){
-    ++(m_counts[s]);
+void biorbd::utils::Benchmark::addTimer(
+        const biorbd::utils::String& name){
+    ++(m_counts[name]);
 }
 
-int biorbd::utils::Benchmark::getCount(const biorbd::utils::String& s){
-    return m_counts[s];
+int biorbd::utils::Benchmark::getTimerIdx(
+        const biorbd::utils::String& name){
+    return m_counts[name];
 }
 
-void biorbd::utils::Benchmark::wasteTime(double seconds){
+void biorbd::utils::Benchmark::wasteTime(
+        double seconds) {
     // Wait for seconds ask doing dummy stuff
 
     std::clock_t start(std::clock());

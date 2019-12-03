@@ -21,9 +21,9 @@ void Matlab_nameDof( int, mxArray *plhs[],
 
     // Stocker chaque valeur
     unsigned int cmp(0);
-    for (unsigned int i=0; i<model->nbBone(); ++i){
-        for (unsigned int j=0; j<model->bone(i).nDof(); ++j){
-            mxArray *nomDof = mxCreateString ((model->bone(i).name() + "_" + model->bone(i).nameDof(j)).c_str()); // Recueillir le nom
+    for (unsigned int i=0; i<model->nbSegment(); ++i){
+        for (unsigned int j=0; j<model->segment(i).nbDof(); ++j){
+            mxArray *nomDof = mxCreateString ((model->segment(i).name() + "_" + model->segment(i).nameDof(j)).c_str()); // Recueillir le nom
             mxSetCell(plhs[0],cmp,nomDof); // Mettre les noms dans la variable de sortie
             ++cmp;
         }

@@ -292,7 +292,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
 
 
 // --- Node --- //
-%typemap(typecheck, precedence=2010) biorbd::utils::Node3d &{
+%typemap(typecheck, precedence=2010) biorbd::utils::Vector3d &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Node,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__Node already exists
@@ -304,11 +304,11 @@ biorbd::rigidbody::GeneralizedCoordinates & {
         $1 = false;
     }
 }
-%typemap(in) biorbd::utils::Node3d &{
+%typemap(in) biorbd::utils::Vector3d &{
     void * argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Node,  0  | 0)) && argp1) {
         // Recast the pointer
-        $1 = reinterpret_cast< biorbd::utils::Node3d * >(argp1);
+        $1 = reinterpret_cast< biorbd::utils::Vector3d * >(argp1);
     } else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
@@ -323,7 +323,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
 
         // Copy the actual data
-        $1 = new biorbd::utils::Node3d(0, 0, 0);
+        $1 = new biorbd::utils::Vector3d(0, 0, 0);
         for (unsigned int i=0; i<3; ++i)
             (*$1)[i] = *(double*)PyArray_GETPTR1(data, i);
 
@@ -332,7 +332,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
         SWIG_fail;
     }
 };
-%extend biorbd::utils::Node3d{
+%extend biorbd::utils::Vector3d{
     PyObject* get_array(){
         int nArraySize(1);
         npy_intp * arraySizes = new npy_intp[nArraySize];
@@ -387,6 +387,25 @@ biorbd::rigidbody::GeneralizedCoordinates & {
         for (unsigned int i=0; i<4; ++i){
             for (unsigned int j=0; j<4; ++j){
                 values[i*4+j] = (*$self)(j*4+i);
+            }
+        }
+        PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, values);
+        PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+        return output;
+    }
+};
+
+%extend biorbd::utils::Rotation{
+    PyObject* get_array(){
+        int nArraySize(2);
+        npy_intp * arraySizes = new npy_intp[nArraySize];
+        arraySizes[0] = 3;
+        arraySizes[1] = 3;
+
+        double * values = new double[3*3];
+        for (unsigned int i=0; i<3; ++i){
+            for (unsigned int j=0; j<3; ++j){
+                values[i*3+j] = (*$self)(j*3+i);
             }
         }
         PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, values);

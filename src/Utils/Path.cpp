@@ -26,8 +26,8 @@ biorbd::utils::Path::Path() :
 }
 
 biorbd::utils::Path::Path(
-        const char *c) :
-    m_originalPath(std::make_shared<biorbd::utils::String>(c)),
+        const char *path) :
+    m_originalPath(std::make_shared<biorbd::utils::String>(path)),
     m_folder(std::make_shared<biorbd::utils::String>()),
     m_isFolderAbsolute(std::make_shared<bool>()),
     m_filename(std::make_shared<biorbd::utils::String>()),
@@ -38,8 +38,8 @@ biorbd::utils::Path::Path(
 }
 
 biorbd::utils::Path::Path(
-        const biorbd::utils::String &s) :
-    m_originalPath(std::make_shared<biorbd::utils::String>(s)),
+        const biorbd::utils::String &path) :
+    m_originalPath(std::make_shared<biorbd::utils::String>(path)),
     m_folder(std::make_shared<biorbd::utils::String>()),
     m_isFolderAbsolute(std::make_shared<bool>()),
     m_filename(std::make_shared<biorbd::utils::String>()),
@@ -50,8 +50,8 @@ biorbd::utils::Path::Path(
 }
 
 biorbd::utils::Path::Path(
-        const std::basic_string<char> &c) :
-    m_originalPath(std::make_shared<biorbd::utils::String>(c)),
+        const std::basic_string<char> &path) :
+    m_originalPath(std::make_shared<biorbd::utils::String>(path)),
     m_folder(std::make_shared<biorbd::utils::String>()),
     m_isFolderAbsolute(std::make_shared<bool>()),
     m_filename(std::make_shared<biorbd::utils::String>()),
@@ -346,6 +346,11 @@ void biorbd::utils::Path::setExtension(
     *m_extension = ext;
 }
 
+const biorbd::utils::String& biorbd::utils::Path::extension() const
+{
+    return *m_extension;
+}
+
 void biorbd::utils::Path::setIsFolderAbsolute()
 {
 #ifdef _WIN32
@@ -358,11 +363,6 @@ void biorbd::utils::Path::setIsFolderAbsolute()
         *m_isFolderAbsolute = true;
     else
         *m_isFolderAbsolute = false;
-}
-
-const biorbd::utils::String& biorbd::utils::Path::extension() const
-{
-    return *m_extension;
 }
 
 biorbd::utils::String biorbd::utils::Path::currentDir()

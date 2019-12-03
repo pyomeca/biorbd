@@ -17,12 +17,12 @@ static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
 #endif // MODULE_ACTUATORS
 static std::string modelFreeFall("models/pyomecaman_freeFall.bioMod");
 
+static std::string modelPathWithObj("models/violin.bioMod");
 #ifdef MODULE_VTP_FILES_READER
 static std::string modelPathWithVtp("models/thoraxWithVtp.bioMod");
 #endif
 
 TEST(FileIO, OpenModel){
-    biorbd::Model model(modelPathForGeneralTesting);
     EXPECT_NO_THROW(biorbd::Model model(modelPathForGeneralTesting));
 }
 
@@ -34,6 +34,11 @@ TEST(GenericTests, mass){
 TEST(MeshFile, FileIO){
     EXPECT_NO_THROW(biorbd::Model model(modelPathWithMeshFile));
     biorbd::Model model(modelPathWithMeshFile);
+}
+
+TEST(MeshFile, FileIoObj) {
+    EXPECT_NO_THROW(biorbd::Model model(modelPathWithObj));
+    biorbd::Model model(modelPathWithObj);
 }
 
 #ifdef MODULE_VTP_FILES_READER

@@ -40,6 +40,17 @@ TEST(MuscleForce, force)
         EXPECT_NEAR(F(i), ExpectedForce(i), requiredPrecision);
 }
 
+TEST(MuscleForce, unitTest)
+{
+	EXPECT_NO_THROW(biorbd::muscles::Force());
+	{
+		biorbd::muscles::Force force(1,2,3);
+		for (unsigned int i=0; i<3; ++i){
+			EXPECT_NEAR(force[i], i + 1, requiredPrecision);
+		}
+	}
+}
+
 TEST(MuscleForce, torqueFromMuscles)
 {
     biorbd::Model model(modelPathForMuscleForce);
@@ -73,7 +84,7 @@ TEST(MuscleJacobian, jacobian){
     EXPECT_THROW(muscle.position().jacobian(), std::runtime_error);
     model.updateMuscles(Q, true);
 
-    unsigned int nRows(3 * (muscle.pathChanger().nbObjects() + 2));
+    unsigned int nRows(3 * (muscle.pathModifier().nbObjects() + 2));
     biorbd::utils::Matrix jacoRef(nRows, model.nbQ());
     // Here we provide emperical values that we have confidence in
     jacoRef(0, 0) = 0.13689690274955996;    jacoRef(0, 1) = 0;
@@ -234,7 +245,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
 
         // Apply the derivative
         biorbd::muscles::StateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
-        muscle.fatigueState(currentActiveFibersForXiaDerivativeTest,
+        muscle.setFatigueState(currentActiveFibersForXiaDerivativeTest,
                              currentFatiguedFibersForXiaDerivativeTest,
                              currentRestingFibersForXiaDerivativeTest);
         muscle.computeTimeDerivativeState(emg);

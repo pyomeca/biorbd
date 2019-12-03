@@ -9,47 +9,152 @@
 namespace biorbd {
 namespace utils {
 class Equation;
-
+///
+/// \brief Wrapper for the an std::ifstream with increased capacities
+///
 class BIORBD_API IfStream
 {
 public:
+    /// 
+    /// \brief Construct IfStream
+    ///
     IfStream();
+
+    /// 
+    /// \brief Construct IfStream
+    /// \param path The file path to open
+    /// \param mode The open mode of "std::ios_base" base
+    ///
     IfStream(
             const biorbd::utils::Path& path,
             std::ios_base::openmode mode );
+
+    /// 
+    /// \brief Construct IfStream
+    /// \param path The file path to open
+    /// \param mode The open mode of "std::ios_base" base
+    ///
     IfStream(
             const char* path,
             std::ios_base::openmode mode );
 
+    /// 
+    /// \brief Open the file
+    /// \param path The file path to open
+    /// \param mode The open mode of "std::ios_base" base
+    /// \return True on success
+    ///
     bool open(
             const biorbd::utils::Path& path,
             std::ios_base::openmode mode );
 
-    bool read(biorbd::utils::String&);
-    bool readIgnoreCommentedLine(biorbd::utils::String&);
-    bool read(int&);
-    bool read(bool&);
-    bool read(unsigned int&);
-    bool read(double&);
+    /// 
+    /// \brief Read a word in the file skipping the word if it is c-like commented
+    /// \param text The text read (output)
+    /// \return True on success
+    ///
     bool read(
-            double&,
-            const std::map<biorbd::utils::Equation, double> &);
+            biorbd::utils::String& text);
+
+    /// 
+    /// \brief Read a word in the file
+    /// \param text The text read (output)
+    /// \return True on success
+    ///
+    bool readAWord(
+            biorbd::utils::String& text);
+
+    ///
+    /// \brief Read an integer in the file
+    /// \param val The number read (output)
+    /// \return True on success
+    ///
+    bool read(
+            int& val);
+
+    ///
+    /// \brief Read an boolean in the file
+    /// \param val The value read (output)
+    /// \return True on success
+    ///
+    bool read(
+            bool& val);
+
+    ///
+    /// \brief Read an unsigned integer in the file
+    /// \param val The number read (output)
+    /// \return True on success
+    ///
+    bool read(
+            unsigned int& val);
+
+    ///
+    /// \brief Read an double in the file
+    /// \param val The number read (output)
+    /// \return True on success
+    ///
+    bool read(double& val);
+
+    ///
+    /// \brief Read and evaluate an equation
+    /// \param val The number read (output)
+    /// \param variables The variable set
+    /// \return True on success
+    ///
+    bool read(
+            double& result,
+            const std::map<biorbd::utils::Equation, double> &variables);
+
+    ///
+    /// \brief Advance in the file to a specific tag
+    /// \param tag The tag to reach
+    /// \param text The text that follows a tag
+    /// \return True on success
+    ///
     bool readSpecificTag(
-            const biorbd::utils::String&,
-            biorbd::utils::String&);
-    bool reachSpecificTag(const biorbd::utils::String&); // Se déplace dans un fichier jusqu'à un tag donné, retourne le nombre de lignes sautées
-    int countTagsInAConsecutiveLines(const biorbd::utils::String&); // Compte le nombre de ligne commençant par le même tag puis ramène le flux à l'endroit du début
-    void getline(biorbd::utils::String&);
+            const biorbd::utils::String& tag,
+            biorbd::utils::String& text);
+
+    ///
+    /// \brief Advance in the file to a specific tag
+    /// \param tag The tag to reach
+    /// \return True on success
+    ///
+    bool reachSpecificTag(
+            const biorbd::utils::String& tag);
+
+    ///
+    /// \brief Counts the number of consecutive lines starting with the same tag and then brings it back to the initial position
+    /// \param tag The tag to count
+    /// \return The number of consecutive lines starting with the same tag
+    ///
+    int countTagsInAConsecutiveLines(
+            const biorbd::utils::String& tag);
+
+    ///
+    /// \brief Read a whole line
+    /// \param text The text read (output)
+    ///
+    void getline(
+            biorbd::utils::String& text);
+
+    ///
+    /// \brief Close the file
+    ///
     bool close();
 
+    ///
+    /// \brief Return if the file is at the end
+    /// \return If the file is at the end
+    ///
     bool eof();
 
 protected:
-    std::shared_ptr<bool> m_isOpen;
+    std::shared_ptr<bool> m_isOpen;///< If file is open
 
 private:
-    std::shared_ptr<std::ifstream> m_ifs;
-    std::shared_ptr<biorbd::utils::Path> m_path;
+    std::shared_ptr<std::ifstream> m_ifs;///< the ifstream
+    std::shared_ptr<biorbd::utils::Path> m_path;///< The path of the file
 };
 
 }}

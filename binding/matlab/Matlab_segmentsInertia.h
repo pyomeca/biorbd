@@ -6,6 +6,7 @@
 #include "class_handle.h"
 #include "processArguments.h"
 #include "Utils/Vector.h"
+#include "RigidBody/SegmentCharacteristics.h"
 
 void Matlab_segmentsInertia( int, mxArray *plhs[],
                                 int nrhs, const mxArray*prhs[] ){
@@ -46,7 +47,7 @@ void Matlab_segmentsInertiaLocal( int, mxArray *plhs[],
 
     // Recevoir le model
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
-    unsigned int nBones = model->nbBone(); // Get the number of DoF
+    unsigned int nBones = model->nbSegment(); // Get the number of DoF
 
 
 
@@ -70,7 +71,7 @@ void Matlab_segmentsInertiaLocal( int, mxArray *plhs[],
         double *ia = mxGetPr(plhs[0]);
 
         // Remplir l'output
-        Eigen::Matrix3d Im =  model->bone(idx-1).characteristics().inertia(); // Mettre les masses dans la variable de sortie
+        Eigen::Matrix3d Im =  model->segment(idx-1).characteristics().inertia(); // Mettre les masses dans la variable de sortie
         unsigned int cmp(0);
         for (unsigned int i = 0; i<3; ++i)
             for (unsigned int j = 0; j<3; ++j){
@@ -87,7 +88,7 @@ void Matlab_segmentsInertiaLocal( int, mxArray *plhs[],
         // Remplir l'output
         unsigned int cmp (0);
         for (unsigned int idx=0; idx<nBones; ++idx){
-            Eigen::Matrix3d Im =  model->bone(idx).characteristics().inertia(); // Mettre les masses dans la variable de sortie
+            Eigen::Matrix3d Im =  model->segment(idx).characteristics().inertia(); // Mettre les masses dans la variable de sortie
             unsigned int cmp2(0);
             for (unsigned int i = 0; i<3; ++i)
                 for (unsigned int j = 0; j<3; ++j){

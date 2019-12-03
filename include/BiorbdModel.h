@@ -16,6 +16,9 @@
 
 namespace biorbd {
 
+///
+/// \brief The actual musculoskeletal model that holds everything in biorbd
+///
 class BIORBD_API Model :
         public biorbd::rigidbody::Joints
         ,public biorbd::rigidbody::Markers
@@ -29,15 +32,22 @@ class BIORBD_API Model :
         #endif
 {
 public:
+    ///
+    /// \brief Construct an empty model that can be manually filled
+    ///
     Model();
-    virtual ~Model();
-    Model(const biorbd::utils::Path&);
 
-    bool InverseKinematics(
-            const std::vector<biorbd::rigidbody::NodeBone>& Mark,
-            const biorbd::rigidbody::GeneralizedCoordinates& Qinit,
-            biorbd::rigidbody::GeneralizedCoordinates &Q,
-            bool removeAxes=true);
+    ///
+    /// \brief Destroy the class properly
+    ///
+    virtual ~Model();
+
+    ///
+    /// \brief Construct a model from a bioMod file
+    /// \param path The path of the file
+    ///
+    Model(
+            const biorbd::utils::Path& path);
 
 };
 

@@ -20,7 +20,7 @@ void Matlab_ContactJacobian( int, mxArray *plhs[],
     biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
 
     // Trouver la matrice jacobienne de tous les contacts
-    unsigned int nContacts = model->nContacts();
+    unsigned int nContacts = model->nbContacts();
     Eigen::MatrixXd G_tp(Eigen::MatrixXd::Zero(nContacts,model->nbQ()));
     RigidBodyDynamics::CalcConstraintsJacobian(*model, Q, model->getConstraints(), G_tp, true);
 

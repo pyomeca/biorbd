@@ -18,7 +18,7 @@ void Matlab_localJCS( int, mxArray *plhs[],
     std::vector<biorbd::utils::RotoTrans> JSC_vec(model->localJCS());
 
     // Create a matrix for the return argument
-    const mwSize dims[3]={4,4,mwSize(model->nbBone())};
+    const mwSize dims[3]={4,4,mwSize(model->nbSegment())};
     plhs[0] = mxCreateNumericArray(3, dims, mxDOUBLE_CLASS, mxREAL);
     double *JCS = mxGetPr(plhs[0]);
 

@@ -7,29 +7,73 @@
 namespace biorbd {
 namespace actuator {
 
+///
+/// \brief Class ActuatorConstant is a joint actuator type which maximum is contant
+///
 class BIORBD_API ActuatorConstant : public Actuator
 {
 public:
+    ///
+    /// \brief Construct a constant actuator
+    ///
     ActuatorConstant();
-    ActuatorConstant(const biorbd::actuator::ActuatorConstant& other);
+
+    ///
+    /// \brief Construct a constant actuator from another actuator
+    /// \param other The other constant actuator
+    ///
+    ActuatorConstant(
+            const biorbd::actuator::ActuatorConstant& other);
+
+    ///
+    /// \brief Construct a constant actuator
+    /// \param direction The direction of the actuator (+1 or -1)
+    /// \param Tmax The maximum torque that can be done
+    /// \param dofIdx Index of the DoF associated with actuator
+    ///
     ActuatorConstant(
             int direction,
             double Tmax,
             unsigned int dofIdx);
+
+    ///
+    /// \brief Construct a constant actuator
+    /// \param direction The direction of the actuator (+1 or -1)
+    /// \param Tmax The maximum torque that can be done
+    /// \param dofIdx Index of the DoF associated with actuator
+    /// \param jointName The name of the parent joint
+    ///
     ActuatorConstant(
             int direction,
             double Tmax,
             unsigned int dofIdx,
             const biorbd::utils::String &jointName);
-    biorbd::actuator::ActuatorConstant DeepCopy() const;
-    void DeepCopy(const biorbd::actuator::ActuatorConstant& other);
 
+    ///
+    /// \brief Deep copy of the constant actuator
+    /// \return A copy of the constant actuator
+    ///
+    biorbd::actuator::ActuatorConstant DeepCopy() const;
+
+    ///
+    /// \brief Deep copy of the constant actuator to another constant actuator
+    /// \param other The constant actuator to copy
+    ///
+    void DeepCopy(
+            const biorbd::actuator::ActuatorConstant& other);
+
+    ///
+    /// \brief Return the maximal torque
+    /// \return The maximal torque
+    ///
     virtual double torqueMax();
 
 protected:
-
-    virtual void setType();             // Quel type d'actuator
-    std::shared_ptr<double> m_Tmax;      // Maximum torque that can be done
+    ///
+    /// \brief Set the type of the constant actuator
+    ///
+    virtual void setType();         
+    std::shared_ptr<double> m_Tmax; ///< Maximal torque that can be done      
 
 };
 

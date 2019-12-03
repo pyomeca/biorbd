@@ -6,7 +6,7 @@
 
 biorbd::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable() :
     biorbd::muscles::HillThelenType(),
-    biorbd::muscles::Fatigable (biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE)
+    biorbd::muscles::FatigueModel (biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE)
 {
     setType();
 }
@@ -17,7 +17,7 @@ biorbd::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
         const biorbd::muscles::Characteristics &characteristics,
         biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
     biorbd::muscles::HillThelenType(name, geometry, characteristics),
-    biorbd::muscles::Fatigable (dynamicFatigueType)
+    biorbd::muscles::FatigueModel (dynamicFatigueType)
 {
     setType();
 }
@@ -29,7 +29,7 @@ biorbd::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
         const biorbd::muscles::StateDynamics &dynamicState,
         biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
     biorbd::muscles::HillThelenType(name, geometry, characteristics, dynamicState),
-    biorbd::muscles::Fatigable (dynamicFatigueType)
+    biorbd::muscles::FatigueModel (dynamicFatigueType)
 {
     setType();
 }
@@ -38,39 +38,36 @@ biorbd::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
         const biorbd::utils::String &name,
         const biorbd::muscles::Geometry &geometry,
         const biorbd::muscles::Characteristics &characteristics,
-        const biorbd::muscles::PathChangers &pathChangers,
+        const biorbd::muscles::PathModifiers &pathModifiers,
         biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
-    biorbd::muscles::HillThelenType(name, geometry, characteristics, pathChangers),
-    biorbd::muscles::Fatigable (dynamicFatigueType)
+    biorbd::muscles::HillThelenType(name, geometry, characteristics, pathModifiers),
+    biorbd::muscles::FatigueModel (dynamicFatigueType)
 {
     setType();
 }
 
-biorbd::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
-        const biorbd::utils::String& name,
+biorbd::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(const biorbd::utils::String& name,
         const biorbd::muscles::Geometry& geometry,
         const biorbd::muscles::Characteristics& characteristics,
-        const biorbd::muscles::PathChangers& pathChangers,
+        const biorbd::muscles::PathModifiers& pathModifiers,
         const biorbd::muscles::StateDynamics& dynamicState,
         biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
-    biorbd::muscles::HillThelenType(name, geometry, characteristics, pathChangers, dynamicState),
-    biorbd::muscles::Fatigable (dynamicFatigueType)
+    biorbd::muscles::HillThelenType(name, geometry, characteristics, pathModifiers, dynamicState),
+    biorbd::muscles::FatigueModel (dynamicFatigueType)
 {
     setType();
 }
 
-biorbd::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
-        const biorbd::muscles::Muscle &muscle) :
-    biorbd::muscles::HillThelenType (muscle),
-    biorbd::muscles::Fatigable (dynamic_cast<const biorbd::muscles::Fatigable&>(muscle))
+biorbd::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(const biorbd::muscles::Muscle &other) :
+    biorbd::muscles::HillThelenType (other),
+    biorbd::muscles::FatigueModel (dynamic_cast<const biorbd::muscles::FatigueModel&>(other))
 {
 
 }
 
-biorbd::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
-        const std::shared_ptr<biorbd::muscles::Muscle> muscle) :
-    biorbd::muscles::HillThelenType (muscle),
-    biorbd::muscles::Fatigable (std::dynamic_pointer_cast<biorbd::muscles::Fatigable>(muscle))
+biorbd::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(const std::shared_ptr<biorbd::muscles::Muscle> other) :
+    biorbd::muscles::HillThelenType (other),
+    biorbd::muscles::FatigueModel (std::dynamic_pointer_cast<biorbd::muscles::FatigueModel>(other))
 {
 
 }
@@ -85,7 +82,7 @@ biorbd::muscles::HillThelenTypeFatigable biorbd::muscles::HillThelenTypeFatigabl
 void biorbd::muscles::HillThelenTypeFatigable::DeepCopy(const biorbd::muscles::HillThelenTypeFatigable &other)
 {
     biorbd::muscles::HillThelenType::DeepCopy(other);
-    biorbd::muscles::Fatigable::DeepCopy(other);
+    biorbd::muscles::FatigueModel::DeepCopy(other);
 }
 
 void biorbd::muscles::HillThelenTypeFatigable::computeFlCE(const biorbd::muscles::StateDynamics &EMG)

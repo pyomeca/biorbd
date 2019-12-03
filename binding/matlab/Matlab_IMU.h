@@ -24,17 +24,17 @@ void Matlab_IMU( int, mxArray *plhs[],
     if (nrhs == 4){
         biorbd::utils::String type(getString(prhs,3));
         if (!type.tolower().compare("all")){
-            nIMUs = model->nIMUs();
+            nIMUs = model->nbIMUs();
             for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
                  IMU_tp.push_back(model->IMU(*Q_it));
         }
         else if (!type.tolower().compare("anatomical")){
-            nIMUs = model->nAnatIMUs();
+            nIMUs = model->nbAnatIMUs();
             for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
                  IMU_tp.push_back(model->anatomicalIMU(*Q_it));
         }
         else if (!type.tolower().compare("technical")){
-            nIMUs = model->nTechIMUs();
+            nIMUs = model->nbTechIMUs();
             for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
                  IMU_tp.push_back(model->technicalIMU(*Q_it));
         }
@@ -46,7 +46,7 @@ void Matlab_IMU( int, mxArray *plhs[],
 
     }
     else {
-        nIMUs = model->nIMUs();
+        nIMUs = model->nbIMUs();
         for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it = Q.begin(); Q_it!=Q.end(); ++Q_it)
              IMU_tp.push_back(model->IMU(*Q_it));
     }

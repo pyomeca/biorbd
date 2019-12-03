@@ -4,9 +4,9 @@ set(RIGIDBODY_MODULE_NAME ${MASTER_PROJECT_NAME}_rigidbody PARENT_SCOPE)
 
 # Add the relevant files
 set(SRC_LIST_MODULE
-    ${CMAKE_CURRENT_SOURCE_DIR}/Bone.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/BoneCharacteristics.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/BoneMesh.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Segment.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/SegmentCharacteristics.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Mesh.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Contacts.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedCoordinates.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedTorque.cpp
@@ -14,8 +14,8 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/IMUs.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Joints.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Markers.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/NodeBone.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Patch.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/NodeSegment.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/MeshFace.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Integrator.cpp
 )
 if (NOT SKIP_KALMAN)

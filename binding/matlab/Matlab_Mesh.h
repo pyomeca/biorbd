@@ -26,7 +26,7 @@ void Matlab_Mesh( int, mxArray *plhs[],
     // Output
     if ( idx==-1){ // Si on a demande tous les segments
         // Trouver ou sont les marqueurs
-        std::vector<std::vector<biorbd::utils::Node3d>> allMesh(model->meshPoints(Q));
+        std::vector<std::vector<biorbd::utils::Vector3d>> allMesh(model->meshPoints(Q));
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateCellMatrix( allMesh.size(), 1);
@@ -46,7 +46,7 @@ void Matlab_Mesh( int, mxArray *plhs[],
 
     }
     else{ // Si on a demande un segment precis
-        std::vector<biorbd::utils::Node3d> Mesh_tp(model->meshPoints(Q,static_cast<unsigned int>(idx)));
+        std::vector<biorbd::utils::Vector3d> Mesh_tp(model->meshPoints(Q,static_cast<unsigned int>(idx)));
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix(3, Mesh_tp.size(), mxREAL);

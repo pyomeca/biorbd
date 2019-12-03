@@ -6,7 +6,7 @@ set(MUSCLE_MODULE_NAME ${MASTER_PROJECT_NAME}_muscles PARENT_SCOPE)
 set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/Characteristics.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Compound.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Fatigable.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/FatigueModel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/FatigueDynamicState.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/FatigueDynamicStateXia.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/FatigueParameters.cpp
@@ -22,7 +22,7 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/Muscle.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MuscleGroup.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Muscles.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/PathChangers.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/PathModifiers.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/State.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/StateDynamics.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/StateDynamicsBuchanan.cpp

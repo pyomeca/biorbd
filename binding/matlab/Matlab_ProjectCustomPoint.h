@@ -19,7 +19,7 @@ void Matlab_ProjectCustomPoint( int, mxArray *plhs[],
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Qall = getParameterQ(prhs, 2, nQ);
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
-    std::vector<std::vector<biorbd::rigidbody::NodeBone>> markersOverTime = getParameterAllMarkers(prhs,3);
+    std::vector<std::vector<biorbd::rigidbody::NodeSegment>> markersOverTime = getParameterAllMarkers(prhs,3);
 
     // Body index
     int bodyIdx(getInteger(prhs,4)-1);
@@ -45,7 +45,7 @@ void Matlab_ProjectCustomPoint( int, mxArray *plhs[],
     for (unsigned int i=0; i<nFrames; ++i){
         biorbd::rigidbody::GeneralizedCoordinates Q(*(Qall.begin()+i));
         for (unsigned int j=0; j<static_cast<unsigned int>(nMarker); ++j){
-            biorbd::rigidbody::NodeBone tp;
+            biorbd::rigidbody::NodeSegment tp;
             if (j==1)
                 tp = model->projectPoint(Q, markersOverTime[i][j], bodyIdx, axesToRemove, true);
             else

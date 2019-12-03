@@ -57,7 +57,7 @@ void Matlab_forwardDynamics( int, mxArray *plhs[],
     double *force = nullptr;
     if (contact){
         // Create a matrix for the return argument 2
-        plhs[1] = mxCreateDoubleMatrix( model->nContacts(), nFrame, mxREAL);
+        plhs[1] = mxCreateDoubleMatrix( model->nbContacts(), nFrame, mxREAL);
         force = mxGetPr(plhs[1]); // Force sur les points de contacts
     }
 
@@ -89,7 +89,7 @@ void Matlab_forwardDynamics( int, mxArray *plhs[],
             ++cmp;
         }
         if (contact){
-            for (unsigned int i=0; i<model->nContacts(); i++){
+            for (unsigned int i=0; i<model->nbContacts(); i++){
                 force[cmpForce] = model->getConstraints().force(i);
                 ++cmpForce;
             }

@@ -24,7 +24,7 @@ void Matlab_IMUJacobian( int, mxArray *plhs[],
     std::vector<biorbd::utils::Matrix>::iterator it=Jac_tp.begin();
 
     // Create a matrix for the return argument
-    unsigned int nIMUs = model->nIMUs();
+    unsigned int nIMUs = model->nbIMUs();
     plhs[0] = mxCreateDoubleMatrix( 9*nIMUs, nQ, mxREAL);
     double *Jac = mxGetPr(plhs[0]);
     int cmp(0);

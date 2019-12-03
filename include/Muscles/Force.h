@@ -2,49 +2,111 @@
 #define BIORBD_MUSCLES_FORCE_H
 
 #include <memory>
-#include <Eigen/Dense>
 #include "biorbdConfig.h"
 
+#include "Utils/Vector3d.h"
+
 namespace biorbd {
-namespace utils {
-class Node3d;
-}
 
 namespace muscles {
 class Geometry;
-
-class BIORBD_API Force : public Eigen::Vector3d
+///
+/// \brief Class Force 
+///
+class BIORBD_API Force : public biorbd::utils::Vector3d
 {
 public:
+    ///
+    /// \brief Construct force
+    ///
     Force();
+
+    ///
+    /// \brief Construct force
+    /// \param x X-component of the force
+    /// \param y Y-component of the force
+    /// \param z Z-component of the force
+    /// 
     Force(
             double x,
             double y,
             double z);
+
+    ///
+    /// \brief Construct force from another force
+    /// \param other The other force
+    ///
     Force(
-            const biorbd::muscles::Force& force);
-    template<typename OtherDerived> Force(const Eigen::MatrixBase<OtherDerived>& other) :
+            const biorbd::muscles::Force& other);
+
+    ///
+    /// \brief Construct force from another force
+    /// \param other The other force in vector form
+    ///
+    template<typename OtherDerived> Force(
+            const Eigen::MatrixBase<OtherDerived>& other) :
         Eigen::Vector3d(other){}
+
+    ///
+    /// \brief Construct force from another force
+    /// \param other Force in Vector3d format
+    ///
     Force(
-            const biorbd::utils::Node3d& force);
+            const biorbd::utils::Vector3d& other);
+
+    ///
+    /// \brief Construct force
+    /// \param geo The geometry of the muscle
+    /// \param norm The norm of the force
+    ///
     Force(
             const biorbd::muscles::Geometry& geo,
-            double vectorNorm);
+            double norm);
+
+    ///
+    /// \brief Destroy class properly
+    ///
     virtual ~Force();
+
+    ///
+    /// \brief Deep copy of a force
+    /// \return A deep copy of the force
+    ///
     biorbd::muscles::Force DeepCopy() const;
+
+    ///
+    /// \brief Deep copy of a force
+    /// \param other The force to copy
+    ///
     void DeepCopy(const biorbd::muscles::Force& other);
 
-    // Get et set
+    ///
+    /// \brief Set the force from the muscle geometry
+    /// \param geo The muscle geometry
+    /// \param norm The norm of the force
+    ///
     virtual void setForceFromMuscleGeometry(
             const biorbd::muscles::Geometry& geo,
-            double vectorNorm);
+            double norm);
 
+    ///
+    /// \brief Equal operator to be used with another force
+    /// \param other The eigen matrix of force
+    /// \return The force
+    ///
     template<typename OtherDerived>
         biorbd::muscles::Force& operator=(const Eigen::MatrixBase <OtherDerived>& other){
             this->Eigen::Vector3d::operator=(other);
             return *this;
         }
-    biorbd::muscles::Force& operator=(const biorbd::muscles::Force& other);
+
+    ///
+    /// \brief Equal operator to be used with another force
+    /// \param other Other force to copy
+    /// \return The new force
+    ///
+    biorbd::muscles::Force& operator=(
+            const biorbd::muscles::Force& other);
 };
 
 }}

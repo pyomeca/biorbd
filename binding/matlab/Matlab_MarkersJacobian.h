@@ -31,12 +31,12 @@ void Matlab_MarkersJacobian( int, mxArray *plhs[],
     std::vector<biorbd::utils::Matrix> Jac_tp;
     unsigned int nMarkers;
     if (technicalMarkersOnly){
-        Jac_tp = model->TechnicalMarkersJacobian(Q, removeAxes); // Retourne la jacobienne des markers techniques
-        nMarkers = model->nTechnicalMarkers();
+        Jac_tp = model->technicalMarkersJacobian(Q, removeAxes); // Retourne la jacobienne des markers techniques
+        nMarkers = model->nbTechnicalMarkers();
     }
     else {
         Jac_tp = model->markersJacobian(Q, removeAxes); // Retourne la jacobienne des markers
-        nMarkers = model->nMarkers();
+        nMarkers = model->nbMarkers();
     }
     std::vector<biorbd::utils::Matrix>::iterator it=Jac_tp.begin();
 
