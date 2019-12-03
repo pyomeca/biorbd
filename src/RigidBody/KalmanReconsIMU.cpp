@@ -88,7 +88,7 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
 
 void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         biorbd::Model &model,
-        const utils::Vector &IMUobs,
+        const biorbd::utils::Vector &IMUobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
         biorbd::rigidbody::GeneralizedCoordinates *Qdot,
         biorbd::rigidbody::GeneralizedCoordinates *Qddot)
@@ -105,7 +105,7 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         }
         // Reset Pp to initial (we don't need the velocity to get to the initial position)
         m_Pp = m_PpInitial;
-        m_xp->block(*m_nbDof, 0, *m_nbDof*2, 1) = Eigen::VectorXd::Zero(*m_nbDof*2); // Set the velocity and acceleration to 0
+        m_xp->block(*m_nbDof, 0, *m_nbDof*2, 1) = biorbd::utils::Vector::Zero(*m_nbDof*2); // Set the velocity and acceleration to 0
     }
 
     // Projected state
