@@ -96,16 +96,14 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
     // An iteration of the Kalman filter
     if (*m_firstIteration){
         *m_firstIteration = false;
-        for (unsigned int i=0; i<500; ++i){
+        for (unsigned int i=0; i<300; ++i){
             // The first time, call in a recursive manner to have a decent initial position
             reconstructFrame(model, IMUobs, nullptr, nullptr, nullptr);
 
-            // Slow down the velocity and acceleration in the case it starts from very far
-            m_xp->block(*m_nbDof, 0, *m_nbDof*2, 1) = m_xp->block(*m_nbDof, 0, *m_nbDof*2, 1) / 100;
+            // we don't need the velocity to get to the initial position
+            // Otherwise, there are risks of overshooting
+            m_xp->block(*m_nbDof, 0, *m_nbDof*2, 1) = biorbd::utils::Vector::Zero(*m_nbDof*2);
         }
-        // Reset Pp to initial (we don't need the velocity to get to the initial position)
-        m_Pp = m_PpInitial;
-        m_xp->block(*m_nbDof, 0, *m_nbDof*2, 1) = biorbd::utils::Vector::Zero(*m_nbDof*2); // Set the velocity and acceleration to 0
     }
 
     // Projected state

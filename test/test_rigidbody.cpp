@@ -23,13 +23,13 @@ static double requiredPrecision(1e-10);
 
 #ifdef MODULE_ACTUATORS
 static std::string modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");
-static std::string modelPathForImuTesting("models/pyomecaman_withIMUs.bioMod");
 #else // MODULE_ACTUATORS
 static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
 #endif // MODULE_ACTUATORS
 static std::string modelPathMeshEqualsMarker("models/meshsEqualMarkers.bioMod");
 static std::string modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
 static std::string modelNoRoot("models/pyomecaman_freeFall.bioMod");
+static std::string modelPathForImuTesting("models/pyomecaman_withIMUs.bioMod");
 
 TEST(DegreesOfFreedom, count)
 {

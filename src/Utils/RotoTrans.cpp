@@ -95,7 +95,7 @@ biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::fromEulerAngles(
     rot_mat.fromEulerAngles(rot, seq);
     block(0,0,3,3) = rot_mat;
     block(0,3,3,1) = trans;
-    (*this)(3, 3) = 1;
+    block(3,0,1,4) << 0,0,0,1;
     return *this;
 }
 
