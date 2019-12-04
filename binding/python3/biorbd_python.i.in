@@ -43,7 +43,7 @@
 
 // --- Quaternion --- //
 %extend biorbd::utils::Quaternion{
-    PyObject* get_array(){
+    PyObject* to_array(){
         int nRows(1);
         int nCols(4);
         int nArraySize(2);
@@ -67,7 +67,7 @@
 
 // --- Matrix --- //
 %extend biorbd::utils::Matrix{
-    PyObject* get_array(){
+    PyObject* to_array(){
         int nRows($self->rows());
         int nCols($self->cols());
         int nArraySize(2);
@@ -91,7 +91,7 @@
 
 // --- Vector --- //
 %extend biorbd::utils::Vector{
-    PyObject* get_array(){
+    PyObject* to_array(){
         int nElements($self->size());
         int nArraySize(1);
         npy_intp * arraySizes = new npy_intp[nArraySize];
@@ -333,7 +333,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
     }
 };
 %extend biorbd::utils::Vector3d{
-    PyObject* get_array(){
+    PyObject* to_array(){
         int nArraySize(1);
         npy_intp * arraySizes = new npy_intp[nArraySize];
         arraySizes[0] = 3;
@@ -350,7 +350,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
 
 
 // --- Path --- //
-%typemap(typecheck, precedence=2000) biorbd::utils::Path &{
+%typemap(typecheck, precedence=2010) biorbd::utils::Path &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Path,  0  | 0)) && argp1) {
         // Test if it is a pointer to Path already exists
@@ -377,7 +377,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
 };
 
 %extend biorbd::utils::RotoTrans{
-    PyObject* get_array(){
+    PyObject* to_array(){
         int nArraySize(2);
         npy_intp * arraySizes = new npy_intp[nArraySize];
         arraySizes[0] = 4;
@@ -396,7 +396,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
 };
 
 %extend biorbd::utils::Rotation{
-    PyObject* get_array(){
+    PyObject* to_array(){
         int nArraySize(2);
         npy_intp * arraySizes = new npy_intp[nArraySize];
         arraySizes[0] = 3;
