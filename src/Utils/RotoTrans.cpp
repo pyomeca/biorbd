@@ -12,14 +12,16 @@ biorbd::utils::RotoTrans::RotoTrans(
         const Eigen::Matrix4d& matrix) :
     Eigen::Matrix4d(matrix)
 {
-
 }
 
 biorbd::utils::RotoTrans::RotoTrans(
         const biorbd::utils::Rotation& rot) :
     Eigen::Matrix4d(combineRotAndTrans(rot, Eigen::Vector3d::Zero()))
 {
-
+#ifndef SKIP_ASSERT
+    biorbd::utils::Error::check(this->squaredNorm() == 1.,
+                                "The RotoTrans norm is not equal to one");
+#endif
 }
 
 biorbd::utils::RotoTrans::RotoTrans(
@@ -27,7 +29,10 @@ biorbd::utils::RotoTrans::RotoTrans(
         const biorbd::utils::Vector3d& trans) :
     Eigen::Matrix4d(combineRotAndTrans(rot,trans))
 {
-
+#ifndef SKIP_ASSERT
+    biorbd::utils::Error::check(this->squaredNorm() == 1.,
+                                "The RotoTrans norm is not equal to one");
+#endif
 }
 
 biorbd::utils::RotoTrans::RotoTrans(
@@ -36,13 +41,19 @@ biorbd::utils::RotoTrans::RotoTrans(
         const biorbd::utils::String& rotationSequence) :
     Eigen::Matrix4d(fromEulerAngles(rotation, translation, rotationSequence))
 {
-
+#ifndef SKIP_ASSERT
+    biorbd::utils::Error::check(this->squaredNorm() == 1.,
+                                "The RotoTrans norm is not equal to one");
+#endif
 }
 
 biorbd::utils::RotoTrans::RotoTrans(const RigidBodyDynamics::Math::SpatialTransform& st) :
     Eigen::Matrix4d(fromSpatialTransform(st))
 {
-
+#ifndef SKIP_ASSERT
+    biorbd::utils::Error::check(this->squaredNorm() == 1.,
+                                "The RotoTrans norm is not equal to one");
+#endif
 }
 
 biorbd::utils::Vector3d biorbd::utils::RotoTrans::axe(int idx)
@@ -132,6 +143,18 @@ Eigen::Vector4d biorbd::utils::RotoTrans::expand3dTo4d(const biorbd::utils::Vect
     v2.block(0,0,3,1) = v1;
     v2(3) = 1;
     return v2;
+}
+
+void biorbd::utils::RotoTrans::checkUnitary()
+{
+#ifndef SKIP_ASSERT
+    biorbd::utils::Error::check(this->rot().squaredNorm() == 1.,
+                                "The RotoTrans norm is not equal to one");
+    biorbd::utils::Error::check(this->block(3, 0, 1, 4).sum() == 1.,
+                                "Last row of the RotoTrans should be (0,0,0,1");
+    biorbd::utils::Error::check((*this)(3, 3) == 1.,
+                                "Last row of the RotoTrans should be (0,0,0,1");
+#endif
 }
 
 std::ostream &operator<<(std::ostream &os, const biorbd::utils::RotoTrans &a)

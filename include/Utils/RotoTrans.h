@@ -172,6 +172,12 @@ protected:
     ///
     Eigen::Vector4d expand3dTo4d(const biorbd::utils::Vector3d& v1);
 
+    ///
+    /// \brief Check if the RotoTrans has a unitary matrix of rotation and the last row is (0, 0, 0, 1)
+    ///
+    /// That function throws a runtime_error if the check fails
+    ///
+    void checkUnitary();
 };
 
 }}
