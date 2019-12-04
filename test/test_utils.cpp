@@ -267,40 +267,19 @@ TEST(Vector3d, Copy){
 TEST(Matrix, Copy){
     Eigen::Matrix4d tp;
     tp << 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15;
-    biorbd::utils::RotoTransNode MainRotoTransNode(tp, "NoName", "NoParent");
-    biorbd::utils::RotoTransNode ShallowCopy(MainRotoTransNode);
-    biorbd::utils::RotoTransNode DeepCopyNow(MainRotoTransNode.DeepCopy());
-    biorbd::utils::RotoTransNode DeepCopyLater;
-    DeepCopyLater.DeepCopy(MainRotoTransNode);
-
-    EXPECT_STREQ(MainRotoTransNode.parent().c_str(), "NoParent");
-    EXPECT_STREQ(ShallowCopy.parent().c_str(), "NoParent");
-    EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
-    EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
-
-    // Test for the names
-    // Give a parent to the ShallowCopy
-    ShallowCopy.setParent("NewParent");
-
-    // Parent of MainNode should also change, but not of the DeepCopy
-    EXPECT_STREQ(MainRotoTransNode.parent().c_str(), "NewParent");
-    EXPECT_STREQ(ShallowCopy.parent().c_str(), "NewParent");
-    EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
-    EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
+    biorbd::utils::Matrix MainMatrix(tp);
+    biorbd::utils::Matrix DeepCopy(MainMatrix);
 
     // Test for the values
-    EXPECT_NEAR(MainRotoTransNode(2, 2), 10, requiredPrecision);
-    EXPECT_NEAR(ShallowCopy(2, 2), 10, requiredPrecision);
-    EXPECT_NEAR(DeepCopyNow(2, 2), 10, requiredPrecision);
-    EXPECT_NEAR(DeepCopyLater(2, 2), 10, requiredPrecision);
-    // Change the values of ShallowCopy
-    ShallowCopy.setZero();
+    EXPECT_NEAR(MainMatrix(2, 2), 10, requiredPrecision);
+    EXPECT_NEAR(DeepCopy(2, 2), 10, requiredPrecision);
+
+    // Change the values of Copy
+    DeepCopy.setZero();
 
     // Data are NOT shallow copy, therefore the parent should keep its values
-    EXPECT_NEAR(MainRotoTransNode(2, 2), 10, requiredPrecision);
-    EXPECT_NEAR(ShallowCopy(2, 2), 0, requiredPrecision);
-    EXPECT_NEAR(DeepCopyNow(2, 2), 10, requiredPrecision);
-    EXPECT_NEAR(DeepCopyLater(2, 2), 10, requiredPrecision);
+    EXPECT_NEAR(MainMatrix(2, 2), 10, requiredPrecision);
+    EXPECT_NEAR(DeepCopy(2, 2), 0, requiredPrecision);
 }
 
 TEST(Matrix, unitTest){
@@ -424,8 +403,10 @@ TEST(RotoTrans, unitTest){
 }
 
 TEST(RotoTransNode, Copy){
-    Eigen::Matrix4d tp;
-    tp << 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15;
+    biorbd::utils::RotoTrans tp(
+                biorbd::utils::Vector3d(1, 2, 3),
+                biorbd::utils::Vector3d(1, 2, 3), "xyz");
+
     biorbd::utils::RotoTransNode MainRotoTransNode(tp, "NoName", "NoParent");
     biorbd::utils::RotoTransNode ShallowCopy(MainRotoTransNode);
     biorbd::utils::RotoTransNode DeepCopyNow(MainRotoTransNode.DeepCopy());
@@ -448,18 +429,19 @@ TEST(RotoTransNode, Copy){
     EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
 
     // Test for the values
-    EXPECT_NEAR(MainRotoTransNode(2, 2), 10, requiredPrecision);
-    EXPECT_NEAR(ShallowCopy(2, 2), 10, requiredPrecision);
-    EXPECT_NEAR(DeepCopyNow(2, 2), 10, requiredPrecision);
-    EXPECT_NEAR(DeepCopyLater(2, 2), 10, requiredPrecision);
+    EXPECT_NEAR(MainRotoTransNode(2, 2), -0.22484509536615291, requiredPrecision);
+    EXPECT_NEAR(ShallowCopy(2, 2), -0.22484509536615291, requiredPrecision);
+    EXPECT_NEAR(DeepCopyNow(2, 2), -0.22484509536615291, requiredPrecision);
+    EXPECT_NEAR(DeepCopyLater(2, 2), -0.22484509536615291, requiredPrecision);
     // Change the values of ShallowCopy
-    ShallowCopy.setZero();
+    ShallowCopy.setIdentity();
 
     // Data are NOT shallow copy, therefore the parent should keep its values
-    EXPECT_NEAR(MainRotoTransNode(2, 2), 10, requiredPrecision);
-    EXPECT_NEAR(ShallowCopy(2, 2), 0, requiredPrecision);
-    EXPECT_NEAR(DeepCopyNow(2, 2), 10, requiredPrecision);
-    EXPECT_NEAR(DeepCopyLater(2, 2), 10, requiredPrecision);
+    EXPECT_NEAR(MainRotoTransNode(2, 2), -0.22484509536615291, requiredPrecision);
+    EXPECT_NEAR(ShallowCopy(2, 2), 1, requiredPrecision);
+    EXPECT_NEAR(DeepCopyNow(2, 2), -0.22484509536615291, requiredPrecision);
+    EXPECT_NEAR(DeepCopyLater(2, 2), -0.22484509536615291, requiredPrecision);
+
 }
 
 TEST(ModelReading, equations)

@@ -37,7 +37,9 @@ public:
     ///
     template<typename OtherDerived> RotoTrans(
             const Eigen::MatrixBase<OtherDerived>& other) :
-        Eigen::Matrix4d(other){}
+        Eigen::Matrix4d(other){
+        checkUnitary();
+    }
 
     ///
     /// \brief Contruct Rototrans

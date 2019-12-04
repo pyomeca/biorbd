@@ -265,28 +265,28 @@ biorbd::utils::Vector3d  biorbd::utils::Quaternion::eulerDotToOmega(
             const biorbd::utils::Vector3d &euler, 
             const biorbd::utils::String& seq) {
     
-                biorbd::utils::Vector3d w;
-                double dph, dth, dps, ph, th, ps;
-                dph = eulerDot[0]; dth = eulerDot[1]; dps = eulerDot[2];
-                ph = euler[0]; th = euler[1]; ps = euler[2]; 
-                if (!seq.compare("xyz")) {          // xyz
-                    w[0] = dph*std::cos(th)*std::cos(ps) + dth*std::sin(ps);           
-                    w[1] = dth*std::cos(ps) - dph*std::cos(th)*std::sin(ps);         
-                    w[2] = dph*std::sin(th) + dps;     
-                } else {
-                    biorbd::utils::Error::raise("Angle sequence is either nor implemented or not recognized");
-                }
-                return w;
+    biorbd::utils::Vector3d w;
+    double dph, dth, dps, ph, th, ps;
+    dph = eulerDot[0]; dth = eulerDot[1]; dps = eulerDot[2];
+    ph = euler[0]; th = euler[1]; ps = euler[2];
+    if (!seq.compare("xyz")) {          // xyz
+        w[0] = dph*std::cos(th)*std::cos(ps) + dth*std::sin(ps);
+        w[1] = dth*std::cos(ps) - dph*std::cos(th)*std::sin(ps);
+        w[2] = dph*std::sin(th) + dps;
+    } else {
+        biorbd::utils::Error::raise("Angle sequence is either nor implemented or not recognized");
+    }
+    return w;
 }
 
 void biorbd::utils::Quaternion::derivate(
         const biorbd::utils::Vector &w)
 {
     // Création du quaternion de "préproduit vectoriel"
-    double qw = (*this)(0);
-    double qx = (*this)(1);
-    double qy = (*this)(2);
-    double qz = (*this)(3);
+    double& qw = (*this)(0);
+    double& qx = (*this)(1);
+    double& qy = (*this)(2);
+    double& qz = (*this)(3);
     Eigen::Matrix4d Q;
     Q <<    qw, -qx, -qy, -qz,
             qx,  qw, -qz,  qy,
@@ -295,12 +295,17 @@ void biorbd::utils::Quaternion::derivate(
 
     // Ajout du paramètre de stabilisation
     Eigen::Vector4d w_tp (m_Kstab*w.norm()*(1-this->norm()), w(0), w(1), w(2));
-    double kStab = this->m_Kstab;
-    *this = 0.5 * Q * w_tp; // Since it passes through a Mat*vec, it looses stab
-    this->m_Kstab = kStab;
+    Eigen::Vector4d newQuat(0.5 * Q * w_tp);
+
+    // Assigning is slightly faster than create a new Quaternion
+    qw = newQuat[0];
+    qx = newQuat[1];
+    qy = newQuat[2];
+    qz = newQuat[3];
+
 }
 
 void biorbd::utils::Quaternion::normalize()
 {
-    *this = *this / this->norm(); 
+    *this = *this / this->norm();
 }
