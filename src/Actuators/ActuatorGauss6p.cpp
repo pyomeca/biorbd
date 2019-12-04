@@ -1,9 +1,6 @@
 #define BIORBD_API_EXPORTS
 #include "Actuators/ActuatorGauss6p.h"
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
 #include "RigidBody/GeneralizedCoordinates.h"
 
 biorbd::actuator::ActuatorGauss6p::ActuatorGauss6p() :
