@@ -414,5 +414,36 @@ biorbd::rigidbody::GeneralizedCoordinates & {
     }
 };
 
+// -- STRING --//
+%typemap(typecheck, precedence=2000) biorbd::utils::String &{
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__String,  0  | 0)) && argp1) {
+        std::cout << "coucou1" << std::endl;
+        // Test if it is a pointer to Path already exists
+        $1 = true;
+    } else if( PyUnicode_Check($input) ) {
+        std::cout << "coucou2" << std::endl;
+        // test if it is a string (python3 has unicode)
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+};
+%typemap(in) biorbd::utils::String &{
+    void * argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__String,  0  | 0)) && argp1) {
+        std::cout << "coucou3" << std::endl;
+        // Recast the pointer
+        $1 = reinterpret_cast< biorbd::utils::String * >(argp1);
+    } else if( PyUnicode_Check($input) ) {
+        std::cout << "coucou4" << std::endl;
+        // Interpret the string
+        $1 = new biorbd::utils::String(PyUnicode_AsUTF8($input));
+    } else {
+        PyErr_SetString(PyExc_ValueError, "String must be a biorbd::utils::String or string");
+        SWIG_fail;
+    }
+};
+
 // Import the main swig interface
 %include @CMAKE_CURRENT_BINARY_DIR@/../biorbd.i
