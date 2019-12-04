@@ -25,7 +25,7 @@ namespace std {
 
 %include <std_string.i>
 %extend biorbd::utils::String{
-    std::string get_string(){
+    std::string to_string(){
         return *$self;
     }
 }

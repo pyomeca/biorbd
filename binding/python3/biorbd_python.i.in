@@ -19,7 +19,7 @@
 
 
 // --- biorbd::rigidbody::Joints --- //
-%typemap(typecheck, precedence=2005) biorbd::rigidbody::Joints &{
+%typemap(typecheck, precedence=2000) biorbd::rigidbody::Joints &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__Joints,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_biorbd__rigidbody__Joints already exists
@@ -43,7 +43,7 @@
 
 // --- Quaternion --- //
 %extend biorbd::utils::Quaternion{
-    PyObject* get_array(){
+    PyObject* to_array(){
         int nRows(1);
         int nCols(4);
         int nArraySize(2);
@@ -67,7 +67,7 @@
 
 // --- Matrix --- //
 %extend biorbd::utils::Matrix{
-    PyObject* get_array(){
+    PyObject* to_array(){
         int nRows($self->rows());
         int nCols($self->cols());
         int nArraySize(2);
@@ -91,7 +91,7 @@
 
 // --- Vector --- //
 %extend biorbd::utils::Vector{
-    PyObject* get_array(){
+    PyObject* to_array(){
         int nElements($self->size());
         int nArraySize(1);
         npy_intp * arraySizes = new npy_intp[nArraySize];
@@ -107,7 +107,7 @@
     };
 
 }
-%typemap(typecheck, precedence=2000) biorbd::utils::Vector & {
+%typemap(typecheck, precedence=2150) biorbd::utils::Vector & {
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Vector,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__Vector already exists
@@ -155,7 +155,7 @@
 };
 
 // --- GeneralizedCoordinates --- //
-%typemap(typecheck, precedence=2010)
+%typemap(typecheck, precedence=2100)
 biorbd::rigidbody::GeneralizedCoordinates & {
     void *argp1 = 0;
     if (SWIG_IsOK(
@@ -219,7 +219,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
 };
 
 // --- GeneralizedTorque --- //
-%typemap(typecheck, precedence=2010) biorbd::rigidbody::GeneralizedTorque &{
+%typemap(typecheck, precedence=2110) biorbd::rigidbody::GeneralizedTorque &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedTorque,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_biorbd__rigidbody__GeneralizedTorque already exists
@@ -268,7 +268,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
 
 
 // --- biorbd::rigidbody::Markers --- //
-%typemap(typecheck, precedence=2010) biorbd::rigidbody::Markers &{
+%typemap(typecheck, precedence=2200) biorbd::rigidbody::Markers &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__Markers,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_biorbd__rigidbody__Markers already exists
@@ -292,7 +292,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
 
 
 // --- Node --- //
-%typemap(typecheck, precedence=2010) biorbd::utils::Vector3d &{
+%typemap(typecheck, precedence=2130) biorbd::utils::Vector3d &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Node,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__Node already exists
@@ -333,7 +333,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
     }
 };
 %extend biorbd::utils::Vector3d{
-    PyObject* get_array(){
+    PyObject* to_array(){
         int nArraySize(1);
         npy_intp * arraySizes = new npy_intp[nArraySize];
         arraySizes[0] = 3;
@@ -350,7 +350,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
 
 
 // --- Path --- //
-%typemap(typecheck, precedence=2000) biorbd::utils::Path &{
+%typemap(typecheck, precedence=2310) biorbd::utils::Path &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Path,  0  | 0)) && argp1) {
         // Test if it is a pointer to Path already exists
@@ -377,7 +377,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
 };
 
 %extend biorbd::utils::RotoTrans{
-    PyObject* get_array(){
+    PyObject* to_array(){
         int nArraySize(2);
         npy_intp * arraySizes = new npy_intp[nArraySize];
         arraySizes[0] = 4;
@@ -396,7 +396,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
 };
 
 %extend biorbd::utils::Rotation{
-    PyObject* get_array(){
+    PyObject* to_array(){
         int nArraySize(2);
         npy_intp * arraySizes = new npy_intp[nArraySize];
         arraySizes[0] = 3;
@@ -411,6 +411,33 @@ biorbd::rigidbody::GeneralizedCoordinates & {
         PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, values);
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
         return output;
+    }
+};
+
+// -- STRING --//
+%typemap(typecheck, precedence=2300) biorbd::utils::String &{
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__String,  0  | 0)) && argp1) {
+        // Test if it is a pointer to String already exists
+        $1 = true;
+    } else if( PyUnicode_Check($input) ) {
+        // test if it is a string (python3 has unicode)
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+};
+%typemap(in) biorbd::utils::String &{
+    void * argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__String,  0  | 0)) && argp1) {
+        // Recast the pointer
+        $1 = reinterpret_cast< biorbd::utils::String * >(argp1);
+    } else if( PyUnicode_Check($input) ) {
+        // Interpret the string
+        $1 = new biorbd::utils::String(PyUnicode_AsUTF8($input));
+    } else {
+        PyErr_SetString(PyExc_ValueError, "String must be a biorbd::utils::String or string");
+        SWIG_fail;
     }
 };
 
