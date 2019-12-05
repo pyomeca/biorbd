@@ -16,6 +16,8 @@ class Vector3d;
 
 namespace rigidbody {
 class GeneralizedCoordinates;
+class GeneralizedVelocity;
+class GeneralizedAcceleration;
 class GeneralizedTorque;
 class NodeSegment;
 class MeshFace;
@@ -172,19 +174,6 @@ public:
     unsigned int nbQuat() const;
 
     ///
-    /// \brief Set if the root segment is to be actuated or not
-    /// \param isActuated If the root segment is to be actuated or not
-    ///
-    void setIsRootActuated(
-            bool isActuated);
-
-    ///
-    /// \brief Return if the root segment is to be actuated or not
-    /// \return If the root segment is to be actuated or not
-    ///
-    bool isRootActuated() const;
-
-    ///
     /// \brief Set if the model to include external forces or not
     /// \param hasExternalForces If the model to include external forces or not
     ///
@@ -245,8 +234,8 @@ public:
     /// 
     void UpdateKinematicsCustom(
             const biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
-            const biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,
-            const biorbd::rigidbody::GeneralizedCoordinates *Qddot = nullptr);
+            const biorbd::rigidbody::GeneralizedVelocity *Qdot = nullptr,
+            const biorbd::rigidbody::GeneralizedAcceleration *Qddot = nullptr);
 
     ///
     /// \brief Evaluate the integration of the kinematics using a RK4 algorithm
@@ -259,7 +248,7 @@ public:
     ///
     void integrateKinematics(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::rigidbody::GeneralizedCoordinates& QDot,
+            const biorbd::rigidbody::GeneralizedVelocity& QDot,
             const biorbd::rigidbody::GeneralizedTorque& torque,
             double t0,
             double tend,
@@ -274,7 +263,7 @@ public:
     void getIntegratedKinematics(
             unsigned int step,
             biorbd::rigidbody::GeneralizedCoordinates& Q,
-            biorbd::rigidbody::GeneralizedCoordinates& QDot);
+            biorbd::rigidbody::GeneralizedVelocity& QDot);
 
     ///
     /// \brief Return the number of iteration steps
@@ -501,7 +490,7 @@ public:
     ///
     biorbd::utils::Vector3d CoMdot(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot); 
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot);
 
     ///
     /// \brief Return the acceleration of the center of mass 
@@ -512,8 +501,8 @@ public:
     ///
     biorbd::utils::Vector3d CoMddot(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qddot); 
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+            const biorbd::rigidbody::GeneralizedAcceleration &Qddot);
 
     /// 
     /// \brief Return the velocity of the center of mass of each segment
@@ -524,7 +513,7 @@ public:
     ///
     std::vector<biorbd::utils::Vector3d> CoMdotBySegment(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
             bool updateKin=true); 
 
     ///
@@ -537,7 +526,7 @@ public:
     ///
     biorbd::utils::Vector3d CoMdotBySegment(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
             const unsigned int idx,
             bool updateKin=true);
 
@@ -551,8 +540,8 @@ public:
     ///
     std::vector<biorbd::utils::Vector3d> CoMddotBySegment(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+            const biorbd::rigidbody::GeneralizedAcceleration &Qddot,
             bool updateKin=true);
 
     ///
@@ -566,8 +555,8 @@ public:
     ///
     biorbd::utils::Vector3d CoMddotBySegment(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+            const biorbd::rigidbody::GeneralizedAcceleration &Qddot,
             const unsigned int idx,
             bool updateKin=true);
 
@@ -655,7 +644,7 @@ public:
     ///
     biorbd::utils::Vector3d angularMomentum(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
             bool updateKin = true); // Wrapper pour le moment angulaire
    
     ///
@@ -667,7 +656,7 @@ public:
     ///
     biorbd::utils::Vector3d CalcAngularMomentum (
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
             bool updateKin);
 
     ///
@@ -680,8 +669,8 @@ public:
     ///
     biorbd::utils::Vector3d CalcAngularMomentum (
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+            const biorbd::rigidbody::GeneralizedAcceleration &Qddot,
             bool updateKin);
 
     ///
@@ -693,7 +682,7 @@ public:
     ///
     std::vector<biorbd::utils::Vector3d> CalcSegmentsAngularMomentum (
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
             bool updateKin);
 
     ///
@@ -706,8 +695,8 @@ public:
     ///
     std::vector<biorbd::utils::Vector3d> CalcSegmentsAngularMomentum (
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qddot,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+            const biorbd::rigidbody::GeneralizedAcceleration &Qddot,
             bool updateKin);
     // -------------------------------- //
 
@@ -738,7 +727,7 @@ public:
     /// 
     void ForwardDynamicsContactsLagrangian (
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &QDot,
+            const biorbd::rigidbody::GeneralizedVelocity &QDot,
             const RigidBodyDynamics::Math::VectorNd &torque,
             RigidBodyDynamics::ConstraintSet &CS,
             RigidBodyDynamics::Math::VectorNd &QDDot);
@@ -765,7 +754,6 @@ protected:
     std::shared_ptr<unsigned int> m_nbQdot; ///< The total number of Qdot
     std::shared_ptr<unsigned int> m_nbQddot; ///< The total number of Qddot
     std::shared_ptr<unsigned int> m_nRotAQuat; ///< The number of segments per quaternion
-    std::shared_ptr<bool> m_isRootActuated; ///< If the root segment is controled or not
     std::shared_ptr<bool> m_hasExternalForces; ///< If the model includes external force
     std::shared_ptr<bool> m_isKinematicsComputed; ///< If the kinematics are computed
     std::shared_ptr<double> m_totalMass; ///< Mass of all the bodies combined
@@ -802,16 +790,19 @@ protected:
             const std::vector<biorbd::utils::RotoTrans> &RT,
             unsigned int idx) const;
 
+public:
     ///
-    /// \brief Check for the Generalized coordinates, velocities and acceleration dimensions
+    /// \brief Check for the Generalized coordinates, velocities, acceleration and torque dimensions
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param Qddot The generalized accelerations
+    /// \param torque The generalized torques
     ///
-    void checkCoordinatesDimensions(
+    void checkGeneralizedDimensions(
             const biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
-            const biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,
-            const biorbd::rigidbody::GeneralizedCoordinates *Qddot = nullptr);
+            const biorbd::rigidbody::GeneralizedVelocity *Qdot = nullptr,
+            const biorbd::rigidbody::GeneralizedAcceleration *Qddot = nullptr,
+            const biorbd::rigidbody::GeneralizedTorque *torque = nullptr);
 };
 
 }}

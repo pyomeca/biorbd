@@ -15,6 +15,7 @@ class Vector;
 
 namespace rigidbody {
 class GeneralizedCoordinates;
+class GeneralizedVelocity;
 class GeneralizedTorque;
 }
 
@@ -48,7 +49,7 @@ public:
     StaticOptimization(
             biorbd::Model& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity& Qdot,
             const biorbd::rigidbody::GeneralizedTorque& torqueTarget,
             const biorbd::utils::Vector& initialActivationGuess,
             unsigned int pNormFactor = 2,
@@ -69,7 +70,7 @@ public:
     StaticOptimization(
             biorbd::Model& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity& Qdot,
             const biorbd::rigidbody::GeneralizedTorque& torqueTarget,
             const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess = std::vector<biorbd::muscles::StateDynamics>(),
             unsigned int pNormFactor = 2,
@@ -90,7 +91,7 @@ public:
     StaticOptimization(
             biorbd::Model& model,
             const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
-            const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQdot,
+            const std::vector<biorbd::rigidbody::GeneralizedVelocity>& allQdot,
             const std::vector<biorbd::rigidbody::GeneralizedTorque>& allGeneralizedTorqueTarget,
             const biorbd::utils::Vector& initialActivationGuess,
             unsigned int pNormFactor = 2,
@@ -111,7 +112,7 @@ public:
     StaticOptimization(
             biorbd::Model& model,
             const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
-            const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQdot,
+            const std::vector<biorbd::rigidbody::GeneralizedVelocity>& allQdot,
             const std::vector<biorbd::rigidbody::GeneralizedTorque>& allGeneralizedTorqueTarget,
             const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess = std::vector<biorbd::muscles::StateDynamics>(),
             unsigned int pNormFactor = 2,
@@ -146,7 +147,7 @@ protected:
     biorbd::Model& m_model; ///< A reference to the model
     std::shared_ptr<bool> m_useResidualTorque; ///< To use residual torque
     std::shared_ptr<std::vector<biorbd::rigidbody::GeneralizedCoordinates>> m_allQ; ///< All the generalized coordinates
-    std::shared_ptr<std::vector<biorbd::rigidbody::GeneralizedCoordinates>> m_allQdot; ///< All the generalized velocities
+    std::shared_ptr<std::vector<biorbd::rigidbody::GeneralizedVelocity>> m_allQdot; ///< All the generalized velocities
     std::shared_ptr<std::vector<biorbd::rigidbody::GeneralizedTorque>> m_allTorqueTarget; ///< All the torque targets
     std::shared_ptr<biorbd::utils::Vector> m_initialActivationGuess; ///< Initial activation guess 
     std::shared_ptr<unsigned int> m_pNormFactor; ///< The p-norm factor

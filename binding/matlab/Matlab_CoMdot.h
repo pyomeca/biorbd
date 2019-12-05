@@ -20,7 +20,7 @@ void Matlab_CoMdot( int, mxArray *plhs[],
     // Recevoir Q
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(prhs, 3, nQdot);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));
@@ -37,7 +37,7 @@ void Matlab_CoMdot( int, mxArray *plhs[],
 
     // Trouver la vitesse du CoM
     for (unsigned int i=0; i<Q.size(); ++i){
-        RigidBodyDynamics::Math::Vector3d COMDot = model->CoMdot(*(Q.begin()+i),*(QDot.begin()+i));
+        RigidBodyDynamics::Math::Vector3d COMDot = model->CoMdot(Q[i], QDot[i]);
         for (unsigned int j=0; j<3; ++j)
             com_dot[3*i+j] = COMDot(j);
     }

@@ -126,7 +126,7 @@ public:
     virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity& Qdot,
             const biorbd::muscles::StateDynamics& emg,
             int updateKin = 2);
 

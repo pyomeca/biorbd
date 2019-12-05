@@ -8,6 +8,8 @@
 #include "Utils/Error.h"
 #include "Utils/String.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
+#include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/Joints.h"
 
 biorbd::rigidbody::Integrator::Integrator(biorbd::rigidbody::Joints &model) :
@@ -51,8 +53,8 @@ void biorbd::rigidbody::Integrator::operator() (
 
     // Équation différentielle : x/xdot => xdot/xddot
     biorbd::rigidbody::GeneralizedCoordinates Q(*m_model);
-    biorbd::rigidbody::GeneralizedCoordinates QDot(*m_model);
-    biorbd::rigidbody::GeneralizedCoordinates QDDot(*m_model);
+    biorbd::rigidbody::GeneralizedVelocity QDot(*m_model);
+    biorbd::rigidbody::GeneralizedAcceleration QDDot(*m_model);
     QDDot.setZero();
     for (unsigned int i=0; i<*m_nQ; i++){
         Q(i) = x[i];

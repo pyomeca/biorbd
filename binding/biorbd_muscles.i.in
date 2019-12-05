@@ -32,7 +32,7 @@ namespace std {
     biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
                 const std::vector<biorbd::muscles::StateDynamics> &state,
                 const biorbd::rigidbody::GeneralizedCoordinates &Q,
-                const biorbd::rigidbody::GeneralizedCoordinates &QDot)
+                const biorbd::rigidbody::GeneralizedVelocity &QDot)
     {
         std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> state_ptr(state.size());
         for (unsigned int i=0; i<state.size(); ++i)

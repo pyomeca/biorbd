@@ -16,8 +16,8 @@ biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
 }
 
 biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
-        unsigned int nbDof) :
-    biorbd::utils::Vector(nbDof)
+        unsigned int nbQ) :
+    biorbd::utils::Vector(nbQ)
 {
 
 }

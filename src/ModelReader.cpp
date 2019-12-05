@@ -219,11 +219,6 @@ void biorbd::Reader::readModelFile(
                 biorbd::rigidbody::SegmentCharacteristics characteristics(mass,com,inertia,mesh);
                 model->AddSegment(name, parent_str, trans, rot, characteristics, RT, PF);
             }
-            else if (!main_tag.tolower().compare("root_actuated")){
-                bool rootActuated = true;
-                file.read(rootActuated);
-                model->setIsRootActuated(rootActuated);
-            }
             else if (!main_tag.tolower().compare("external_forces")){
                 bool externalF = false;
                 file.read(externalF);

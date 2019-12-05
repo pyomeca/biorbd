@@ -6,6 +6,7 @@
 #include "Utils/String.h"
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
@@ -155,7 +156,7 @@ std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::markers(
 // Get a marker's velocity
 biorbd::rigidbody::NodeSegment biorbd::rigidbody::Markers::markerVelocity(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
         unsigned int idx,
         bool removeAxis,
         bool updateKin)
@@ -180,7 +181,7 @@ biorbd::rigidbody::NodeSegment biorbd::rigidbody::Markers::markerVelocity(
 // Get the makers'velocities
 std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::markersVelocity(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
         bool removeAxis,
         bool updateKin)
 {

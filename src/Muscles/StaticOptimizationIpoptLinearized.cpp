@@ -9,7 +9,7 @@
 biorbd::muscles::StaticOptimizationIpoptLinearized::StaticOptimizationIpoptLinearized(
         biorbd::Model &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
         const biorbd::rigidbody::GeneralizedTorque &torqueTarget,
         const biorbd::utils::Vector &activationInit,
         bool useResidual,

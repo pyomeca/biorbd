@@ -8,6 +8,8 @@
 #include "Utils/Matrix.h"
 #include "Utils/Rotation.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
+#include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/IMU.h"
 
 biorbd::rigidbody::KalmanReconsIMU::KalmanReconsIMU() :
@@ -72,8 +74,8 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         biorbd::Model &m,
         const std::vector<biorbd::rigidbody::IMU> &IMUobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
-        biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-        biorbd::rigidbody::GeneralizedCoordinates *Qddot)
+        biorbd::rigidbody::GeneralizedVelocity *Qdot,
+        biorbd::rigidbody::GeneralizedAcceleration *Qddot)
 {
     // Separate the IMUobs in a big vector
     biorbd::utils::Vector T(static_cast<unsigned int>(3*3*IMUobs.size())); // Matrix 3*3 * nbIMU
@@ -90,8 +92,8 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         biorbd::Model &model,
         const biorbd::utils::Vector &IMUobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
-        biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-        biorbd::rigidbody::GeneralizedCoordinates *Qddot)
+        biorbd::rigidbody::GeneralizedVelocity *Qdot,
+        biorbd::rigidbody::GeneralizedAcceleration *Qddot)
 {
     // An iteration of the Kalman filter
     if (*m_firstIteration){

@@ -283,7 +283,8 @@ public:
     /// Converts a 3d angular velocity vector into a 4d derivative of
     /// the components of the quaternion
     ///
-    biorbd::utils::Quaternion omegaToQDot(const biorbd::utils::Vector3d& omega) const;
+    biorbd::utils::Quaternion omegaToQDot(
+            const biorbd::utils::Vector3d& omega) const;
 
     ///
     /// \brief Converts a 3d angular velocity vector

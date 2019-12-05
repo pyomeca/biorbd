@@ -19,7 +19,7 @@ void Matlab_CoMangularMomentum( int, mxArray *plhs[],
     // Recevoir Q
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(prhs, 3, nQdot);
 
     // S'assurer que Q et Qdot font la même dimension
     if (Q.size()!=QDot.size()){
@@ -31,7 +31,7 @@ void Matlab_CoMangularMomentum( int, mxArray *plhs[],
     // Récupérer le moment angulaire
     std::vector<RigidBodyDynamics::Math::Vector3d> AM;
     for (unsigned int i=0; i<Q.size(); ++i)
-        AM.push_back(model->angularMomentum(*(Q.begin()+i), *(QDot.begin()+i)));
+        AM.push_back(model->angularMomentum(Q[i], QDot[i]));
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( 3, AM.size(), mxREAL);

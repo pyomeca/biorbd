@@ -140,7 +140,7 @@ public:
     double velocity(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity& Qdot,
             bool updateKin = true);
 
     ///
@@ -164,7 +164,7 @@ public:
     void updateOrientations(
             biorbd::rigidbody::Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
             int updateKin = 2);
 
     ///
@@ -185,7 +185,7 @@ public:
     void updateOrientations(
             std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
             biorbd::utils::Matrix& jacoPointsInGlobal,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot); 
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot);
 
     ///
     /// \brief Set the position of all the points attached to the muscle (0 being the origin)

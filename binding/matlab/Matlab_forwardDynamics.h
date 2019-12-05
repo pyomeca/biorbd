@@ -33,14 +33,13 @@ void Matlab_forwardDynamics( int, mxArray *plhs[],
     unsigned int nQdot = model->nbQdot();
     unsigned int nQddot = model->nbQddot();
     unsigned int nTau = model->nbGeneralizedTorque();
-    unsigned int nRoot = model->nbRoot();
 
     // Recevoir Q
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(prhs, 3, nQdot);
     // Recevoir Tau
-    std::vector<biorbd::rigidbody::GeneralizedTorque> Tau = getParameterGeneralizedTorque(prhs, 4, nTau, nRoot);
+    std::vector<biorbd::rigidbody::GeneralizedTorque> Tau = getParameterGeneralizedTorque(prhs, 4, nTau);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));

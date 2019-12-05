@@ -21,7 +21,7 @@ void Matlab_muscleForcesNorm( int, mxArray *plhs[],
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
 
     // Recevoir QDot
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(prhs, 3, nQdot);
 
     // Recevoir les états musculaires
     std::vector<std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>> state = getParameterMuscleStateActivation(prhs, 4, model->nbMuscleTotal());

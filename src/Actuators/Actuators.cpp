@@ -5,6 +5,7 @@
 #include "Utils/Error.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/Joints.h"
 #include "Actuators/Actuator.h"
 #include "Actuators/ActuatorGauss3p.h"
@@ -197,10 +198,10 @@ unsigned int biorbd::actuator::Actuators::nbActuators() const
 biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
         const biorbd::utils::Vector& activation,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot)
 {
     // Set qdot to be positive if concentric and negative is excentric
-    biorbd::rigidbody::GeneralizedCoordinates QdotResigned(Qdot);
+    biorbd::rigidbody::GeneralizedVelocity QdotResigned(Qdot);
     for (unsigned int i=0; i<Qdot.size(); ++i)
         if (activation(i)<0)
             QdotResigned(i) = -Qdot(i);
@@ -220,7 +221,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
 std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque>
 biorbd::actuator::Actuators::torqueMax(
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedCoordinates& Qdot)
+        const biorbd::rigidbody::GeneralizedVelocity& Qdot)
 {
     biorbd::utils::Error::check(*m_isClose, "Close the actuator model before calling torqueMax");
 
@@ -265,7 +266,7 @@ biorbd::actuator::Actuators::torqueMax(
 biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torqueMax(
         const utils::Vector &activation,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot)
 {
     biorbd::utils::Error::check(*m_isClose, "Close the actuator model before calling torqueMax");
 

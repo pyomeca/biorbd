@@ -16,13 +16,12 @@ void Matlab_muscleJointTorqueFromMuscleForce( int, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
     unsigned int nGeneralizedTorque = model->nbGeneralizedTorque(); // Get the number of DoF
-    unsigned int nRoot = model->nbRoot(); // Get the number of DoF
     unsigned int nMuscleTotal = model->nbMuscleTotal();
 
     // Recevoir Q
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(prhs, 3, nQdot);
     // Recevoir muscleStates
     std::vector<Eigen::VectorXd> Fm = getParameterMuscleForceNorm(prhs,4,nMuscleTotal);
 
@@ -57,7 +56,7 @@ void Matlab_muscleJointTorqueFromMuscleForce( int, mxArray *plhs[],
 
         // distribuer les GeneralizedTorque
         for (unsigned int j=0; j<nGeneralizedTorque; ++j){
-            GeneralizedTorque[i*nGeneralizedTorque+j] = muscleTorque(j+nRoot);
+            GeneralizedTorque[i*nGeneralizedTorque+j] = muscleTorque(j);
         }
 
     }

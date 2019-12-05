@@ -19,7 +19,7 @@ void Matlab_segmentCOMdot( int, mxArray *plhs[],
     // Recevoir Q
     biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
     // Recevoir Qdot
-    biorbd::rigidbody::GeneralizedCoordinates QDot = *getParameterQdot(prhs, 3, nQdot).begin();
+    biorbd::rigidbody::GeneralizedVelocity QDot = *getParameterQdot(prhs, 3, nQdot).begin();
     // Recevoir le numéro du segment (optionnel)
     int i(0);
     if (nrhs==5)

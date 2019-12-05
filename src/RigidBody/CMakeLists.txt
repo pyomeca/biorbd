@@ -9,6 +9,8 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/Mesh.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Contacts.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedCoordinates.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedVelocity.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedAcceleration.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedTorque.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/IMU.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/IMUs.cpp

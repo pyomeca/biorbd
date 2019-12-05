@@ -5,6 +5,7 @@
 #include "Utils/Matrix.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "Muscles/Muscle.h"
 #include "Muscles/Geometry.h"
@@ -84,7 +85,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
         biorbd::utils::Vector &F,
         bool updateKin,
         const biorbd::rigidbody::GeneralizedCoordinates* Q,
-        const biorbd::rigidbody::GeneralizedCoordinates* QDot)
+        const biorbd::rigidbody::GeneralizedVelocity* QDot)
 {
     // Update the muscular position
     if (updateKin) {
@@ -104,7 +105,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
         const std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>& emg,
         bool updateKin,
         const biorbd::rigidbody::GeneralizedCoordinates* Q,
-        const biorbd::rigidbody::GeneralizedCoordinates* QDot)
+        const biorbd::rigidbody::GeneralizedVelocity* QDot)
 {
     biorbd::rigidbody::GeneralizedCoordinates dummy;
     return muscularJointTorque(emg, dummy, updateKin, Q, QDot);
@@ -115,7 +116,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
         const biorbd::utils::Vector &F,
         bool updateKin,
         const biorbd::rigidbody::GeneralizedCoordinates* Q,
-        const biorbd::rigidbody::GeneralizedCoordinates* QDot)
+        const biorbd::rigidbody::GeneralizedVelocity* QDot)
 {
 
     // Update the muscular position
@@ -135,7 +136,7 @@ std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> biorbd::muscle
         const std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> &emg,
         bool updateKin,
         const biorbd::rigidbody::GeneralizedCoordinates* Q,
-        const biorbd::rigidbody::GeneralizedCoordinates* QDot)
+        const biorbd::rigidbody::GeneralizedVelocity* QDot)
 {
     // Update the muscular position
     if (updateKin) {
@@ -191,7 +192,7 @@ unsigned int biorbd::muscles::Muscles::nbMuscleTotal() const{
 
 void biorbd::muscles::Muscles::updateMuscles(
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedCoordinates& QDot,
+        const biorbd::rigidbody::GeneralizedVelocity& QDot,
         bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
@@ -238,7 +239,7 @@ void biorbd::muscles::Muscles::updateMuscles(
 void biorbd::muscles::Muscles::updateMuscles(
         std::vector<std::vector<biorbd::utils::Vector3d>>& musclePointsInGlobal,
         std::vector<biorbd::utils::Matrix> &jacoPointsInGlobal,
-        const biorbd::rigidbody::GeneralizedCoordinates& QDot)
+        const biorbd::rigidbody::GeneralizedVelocity& QDot)
 {
     unsigned int cmpMuscle = 0;
     for (auto group : *m_mus) // muscle  group

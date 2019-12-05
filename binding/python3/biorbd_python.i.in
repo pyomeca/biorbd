@@ -9,6 +9,8 @@
 #include "BiorbdModel.h"
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
+#include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
 %}
 
@@ -214,6 +216,134 @@ biorbd::rigidbody::GeneralizedCoordinates & {
                     PyExc_ValueError,
                     "GeneralizedCoordinates must be a "
                     "GeneralizedCoordinates or numpy vector");
+        SWIG_fail;
+    }
+};
+
+// --- GeneralizedVelocity --- //
+%typemap(typecheck, precedence=2101)
+biorbd::rigidbody::GeneralizedVelocity & {
+    void *argp1 = 0;
+    if (SWIG_IsOK(
+                SWIG_ConvertPtr(
+                    $input, &argp1,
+                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity,
+                    0  | 0))
+            && argp1) {
+        // Test if it is a pointer to
+        // SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity already exists
+        $1 = true;
+    }
+    else if( PyArray_Check($input) ) {
+        // test if it is a numpy array
+        $1 = true;
+    }
+    else {
+        $1 = false;
+    }
+}
+%typemap(in) biorbd::rigidbody::GeneralizedVelocity & {
+    void * argp1 = 0;
+    if (SWIG_IsOK(
+                SWIG_ConvertPtr(
+                    $input, &argp1,
+                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity,
+                    0  | 0))
+            && argp1) {
+        // Recast the pointer
+        $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedVelocity * >(argp1);
+    }
+    else if( PyArray_Check($input) ) {
+        // Get dimensions of the data
+        int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
+        npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
+
+        // Dimension controls
+        if (ndim != 1 ){
+            PyErr_SetString(PyExc_ValueError,
+                            "GeneralizedVelocity must be a one dimension "
+                            "vector when using a numpy array");
+            SWIG_fail;
+        }
+
+        // Cast the vector
+        PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
+        // Copy the actual data
+        unsigned int nQdot(dims[0]);
+        $1 = new biorbd::rigidbody::GeneralizedVelocity(nQdot);
+        for (unsigned int qdot=0; qdot<nQdot; ++qdot){
+            (*$1)[qdot] = *(double*)PyArray_GETPTR1(data, qdot);
+        }
+    }
+    else {
+        PyErr_SetString(
+                    PyExc_ValueError,
+                    "GeneralizedVelocity must be a "
+                    "GeneralizedVelocity or numpy vector");
+        SWIG_fail;
+    }
+};
+
+// --- GeneralizedAcceleration --- //
+%typemap(typecheck, precedence=2102)
+biorbd::rigidbody::GeneralizedAcceleration & {
+    void *argp1 = 0;
+    if (SWIG_IsOK(
+                SWIG_ConvertPtr(
+                    $input, &argp1,
+                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedAcceleration,
+                    0  | 0))
+            && argp1) {
+        // Test if it is a pointer to
+        // SWIGTYPE_p_biorbd__rigidbody__GeneralizedAcceleration already exists
+        $1 = true;
+    }
+    else if( PyArray_Check($input) ) {
+        // test if it is a numpy array
+        $1 = true;
+    }
+    else {
+        $1 = false;
+    }
+}
+%typemap(in) biorbd::rigidbody::GeneralizedAcceleration & {
+    void * argp1 = 0;
+    if (SWIG_IsOK(
+                SWIG_ConvertPtr(
+                    $input, &argp1,
+                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedAcceleration,
+                    0  | 0))
+            && argp1) {
+        // Recast the pointer
+        $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedAcceleration * >(argp1);
+    }
+    else if( PyArray_Check($input) ) {
+        // Get dimensions of the data
+        int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
+        npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
+
+        // Dimension controls
+        if (ndim != 1 ){
+            PyErr_SetString(PyExc_ValueError,
+                            "GeneralizedAcceleration must be a one dimension "
+                            "vector when using a numpy array");
+            SWIG_fail;
+        }
+
+        // Cast the vector
+        PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
+        // Copy the actual data
+        unsigned int nQddot(dims[0]);
+        $1 = new biorbd::rigidbody::GeneralizedAcceleration(nQddot);
+        for (unsigned int qddot=0; qddot<nQddot; ++qddot){
+            (*$1)[qddot] = *(double*)PyArray_GETPTR1(data, qddot);
+        }
+    }
+    else {
+        PyErr_SetString(
+                    PyExc_ValueError,
+                    "GeneralizedAcceleration must be a "
+                    "GeneralizedAcceleration or numpy vector");
         SWIG_fail;
     }
 };

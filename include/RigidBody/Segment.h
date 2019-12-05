@@ -150,7 +150,7 @@ public:
     /// \brief Return the number of generalized torque
     /// \return The number of generalized torque
     ///
-    /// This value is equal to $\text{nbQddot} - \text{nbRoot}$
+    /// This value is equal to $\text{nbQddot}$
     ///
     unsigned int nbGeneralizedTorque() const;
 

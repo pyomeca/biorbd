@@ -16,6 +16,8 @@ class Vector;
 
 namespace rigidbody {
 class GeneralizedCoordinates;
+class GeneralizedVelocity;
+class GeneralizedAcceleration;
 
 ///
 /// \brief Class Kinematic reconstruction algorithm using an Extended Kalman Filter
@@ -98,8 +100,8 @@ public:
     ///
     void getState(
             biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
-            biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,
-            biorbd::rigidbody::GeneralizedCoordinates *Qddot = nullptr);
+            biorbd::rigidbody::GeneralizedVelocity *Qdot = nullptr,
+            biorbd::rigidbody::GeneralizedAcceleration *Qddot = nullptr);
 
     ///
     /// \brief Set the initial guess of the reconstruction
@@ -109,8 +111,8 @@ public:
     ///
     void setInitState(
             const biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
-            const biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,
-            const biorbd::rigidbody::GeneralizedCoordinates *Qddot = nullptr);
+            const biorbd::rigidbody::GeneralizedVelocity *Qdot = nullptr,
+            const biorbd::rigidbody::GeneralizedAcceleration *Qddot = nullptr);
 
     ///
     /// \brief Proceed to one iteration of the Kalman filter

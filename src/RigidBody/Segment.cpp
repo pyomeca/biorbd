@@ -180,7 +180,7 @@ int biorbd::rigidbody::Segment::platformIdx() const{
     return *m_idxPF;
 }
 unsigned int biorbd::rigidbody::Segment::nbGeneralizedTorque() const{
-    return *m_nbDof;
+    return nbQddot();
 }
 unsigned int biorbd::rigidbody::Segment::nbDof() const{
     return *m_nbDofTrueOutside;

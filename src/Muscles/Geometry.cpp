@@ -8,6 +8,7 @@
 #include "Utils/RotoTrans.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
 #include "Muscles/WrappingObject.h"
 #include "Muscles/PathModifiers.h"
 #include "Muscles/Characteristics.h"
@@ -91,7 +92,7 @@ void biorbd::muscles::Geometry::DeepCopy(const biorbd::muscles::Geometry &other)
 void biorbd::muscles::Geometry::updateKinematics(
         biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates *Q,
-        const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+        const biorbd::rigidbody::GeneralizedVelocity *Qdot,
         int updateKin)
 {
     if (*m_posAndJacoWereForced){
@@ -120,7 +121,7 @@ void biorbd::muscles::Geometry::updateKinematics(biorbd::rigidbody::Joints &mode
         const biorbd::muscles::Characteristics& characteristics,
         biorbd::muscles::PathModifiers &pathModifiers,
         const biorbd::rigidbody::GeneralizedCoordinates *Q,
-        const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+        const biorbd::rigidbody::GeneralizedVelocity *Qdot,
         int updateKin)
 {
     if (*m_posAndJacoWereForced){
@@ -148,7 +149,7 @@ void biorbd::muscles::Geometry::updateKinematics(biorbd::rigidbody::Joints &mode
 void biorbd::muscles::Geometry::updateKinematics(
         std::vector<utils::Vector3d> &musclePointsInGlobal,
         biorbd::utils::Matrix &jacoPointsInGlobal,
-        const biorbd::rigidbody::GeneralizedCoordinates *Qdot)
+        const biorbd::rigidbody::GeneralizedVelocity *Qdot)
 {
     *m_posAndJacoWereForced = true;
 
@@ -166,7 +167,7 @@ void biorbd::muscles::Geometry::updateKinematics(
         std::vector<utils::Vector3d> &musclePointsInGlobal,
         biorbd::utils::Matrix &jacoPointsInGlobal,
         const biorbd::muscles::Characteristics &c,
-        const biorbd::rigidbody::GeneralizedCoordinates *Qdot)
+        const biorbd::rigidbody::GeneralizedVelocity *Qdot)
 {
     *m_posAndJacoWereForced = true;
 
@@ -266,7 +267,7 @@ const biorbd::utils::Matrix &biorbd::muscles::Geometry::jacobianLength() const
 // --------------------------------------- //
 
 void biorbd::muscles::Geometry::_updateKinematics(
-        const biorbd::rigidbody::GeneralizedCoordinates* Qdot,
+        const biorbd::rigidbody::GeneralizedVelocity* Qdot,
         const biorbd::muscles::Characteristics* characteristics,
         biorbd::muscles::PathModifiers *pathModifiers)
 {
@@ -415,7 +416,8 @@ double biorbd::muscles::Geometry::length(
     return *m_length;
 }
 
-double biorbd::muscles::Geometry::velocity(const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
+double biorbd::muscles::Geometry::velocity(
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot)
 {
     // Compute the velocity of the muscular elongation
     *m_velocity = (jacobianLength()*Qdot)[0];

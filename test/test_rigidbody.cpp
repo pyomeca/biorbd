@@ -7,6 +7,8 @@
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
+#include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
@@ -39,14 +41,14 @@ TEST(DegreesOfFreedom, count)
         EXPECT_EQ(model.nbQdot(), 13);
         EXPECT_EQ(model.nbQddot(), 13);
         EXPECT_EQ(model.nbGeneralizedTorque(), 13);
-        EXPECT_EQ(model.nbRoot(), 0);
+        EXPECT_EQ(model.nbRoot(), 3);
     }
     {
         biorbd::Model model(modelNoRoot);
         EXPECT_EQ(model.nbQ(), 13);
         EXPECT_EQ(model.nbQdot(), 13);
         EXPECT_EQ(model.nbQddot(), 13);
-        EXPECT_EQ(model.nbGeneralizedTorque(), 13 - 3);
+        EXPECT_EQ(model.nbGeneralizedTorque(), 13);
         EXPECT_EQ(model.nbRoot(), 3);
     }
 }
@@ -58,8 +60,9 @@ static std::vector<double> QtestEqualsMarker = {0.1, 0.1, 0.1, 0.3, 0.3, 0.3};
 TEST(CoM, kinematics)
 {
     biorbd::Model model(modelPathForGeneralTesting);
-    biorbd::rigidbody::GeneralizedCoordinates
-            Q(model), Qdot(model), Qddot(model);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
+    biorbd::rigidbody::GeneralizedAcceleration Qddot(model);
     for (unsigned int i=0; i<model.nbQ(); ++i){
         Q[i] = QtestPyomecaman[i];
         Qdot[i] = QtestPyomecaman[i]*10;
@@ -214,7 +217,9 @@ TEST(Mesh, position)
 TEST(Dynamics, Forward)
 {
     biorbd::Model model(modelPathForGeneralTesting);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model), QDot(model), QDDot(model), QDDot_expected(model);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity QDot(model);
+    biorbd::rigidbody::GeneralizedAcceleration QDDot(model), QDDot_expected(model);
     biorbd::rigidbody::GeneralizedTorque Tau(model);
     Q.setZero();
     QDot.setZero();
@@ -229,7 +234,9 @@ TEST(Dynamics, Forward)
 
 TEST(Dynamics, ForwardLoopConstraint){
     biorbd::Model model(modelPathForLoopConstraintTesting);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model), QDot(model), QDDot_constrained(model), QDDot_expected(model);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity QDot(model);
+    biorbd::rigidbody::GeneralizedAcceleration QDDot_constrained(model), QDDot_expected(model);
     biorbd::rigidbody::GeneralizedTorque Tau(model);
     Q.setZero();
     QDot.setZero();
@@ -247,7 +254,9 @@ TEST(Dynamics, ForwardLoopConstraint){
 // TODO: confirm these tests
 TEST(Dynamics, ForwardAccelerationConstraint){
     biorbd::Model model(modelPathForGeneralTesting);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model), QDot(model), QDDot_constrained(model), QDDot_expected(model);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity QDot(model);
+    biorbd::rigidbody::GeneralizedAcceleration QDDot_constrained(model), QDDot_expected(model);
     biorbd::rigidbody::GeneralizedTorque Tau(model);
     Eigen::VectorXd forces_expected(model.nbContacts());
     Q.setOnes()/10;
@@ -272,8 +281,7 @@ TEST(Dynamics, ForwardAccelerationConstraint){
 TEST(Kinematics, computeQdot)
 {
     biorbd::Model m("models/simple_quat.bioMod");
-    biorbd::rigidbody::GeneralizedCoordinates
-            QDot(m.nbQdot()), QDot_quat_expected(m.nbQ());
+    biorbd::rigidbody::GeneralizedVelocity QDot(m), QDot_quat_expected(m.nbQ());
     QDot << 1,2,3;
     {
         biorbd::rigidbody::GeneralizedCoordinates Q_quat(m.nbQ());
@@ -315,7 +323,9 @@ TEST(Kalman, markers)
     Qref = Qref.setOnes()*0.2;
     std::vector<biorbd::rigidbody::NodeSegment> targetMarkers(model.markers(Qref));
 
-    biorbd::rigidbody::GeneralizedCoordinates Q(model), Qdot(model), Qddot(model);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
+    biorbd::rigidbody::GeneralizedAcceleration Qddot(model);
     kalman.reconstructFrame(model, targetMarkers, &Q, &Qdot, &Qddot);
 
     // Compare results (since the initialization of the filter is done 50X, it is expected to have converged)
@@ -360,7 +370,9 @@ TEST(Kalman, imu)
     Qref = Qref.setOnes()*0.2;
     std::vector<biorbd::rigidbody::IMU> targetImus(model.IMU(Qref));
 
-    biorbd::rigidbody::GeneralizedCoordinates Q(model), Qdot(model), Qddot(model);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
+    biorbd::rigidbody::GeneralizedAcceleration Qddot(model);
     kalman.reconstructFrame(model, targetImus, &Q, &Qdot, &Qddot);
 
     // Compare results (since the initialization of the filter is done 50X, it is expected to have converged)

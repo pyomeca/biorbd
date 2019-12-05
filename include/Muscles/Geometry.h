@@ -15,6 +15,7 @@ class Vector3d;
 namespace rigidbody {
 class Joints;
 class GeneralizedCoordinates;
+class GeneralizedVelocity;
 }
 
 namespace muscles {
@@ -66,7 +67,7 @@ public:
     void updateKinematics(
             biorbd::rigidbody::Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
-            const biorbd::rigidbody::GeneralizedCoordinates* Qdot = nullptr,
+            const biorbd::rigidbody::GeneralizedVelocity* Qdot = nullptr,
             int updateKin = 2);
 
     ///
@@ -85,7 +86,7 @@ public:
             const biorbd::muscles::Characteristics& characteristics,
             biorbd::muscles::PathModifiers& pathModifiers,
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
-            const biorbd::rigidbody::GeneralizedCoordinates* Qdot = nullptr,
+            const biorbd::rigidbody::GeneralizedVelocity* Qdot = nullptr,
             int updateKin = 2);
 
     ///
@@ -99,7 +100,7 @@ public:
     void updateKinematics(
             std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
             biorbd::utils::Matrix& jacoPointsInGlobal,
-            const biorbd::rigidbody::GeneralizedCoordinates* Qdot = nullptr);
+            const biorbd::rigidbody::GeneralizedVelocity* Qdot = nullptr);
 
     ///
     /// \brief Updates the position and dynamic elements of the muscles by hand.
@@ -114,7 +115,7 @@ public:
             std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
             biorbd::utils::Matrix& jacoPointsInGlobal,
             const biorbd::muscles::Characteristics& characteristics,
-            const biorbd::rigidbody::GeneralizedCoordinates* Qdot = nullptr);
+            const biorbd::rigidbody::GeneralizedVelocity* Qdot = nullptr);
 
     ///
     /// \brief Set the origin position in the local reference frame of the muscle
@@ -225,7 +226,7 @@ protected:
     /// \param pathModifiers The set of path modifiers
     ///
     void _updateKinematics(
-            const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity *Qdot,
             const biorbd::muscles::Characteristics* characteristics = nullptr,
             biorbd::muscles::PathModifiers* pathModifiers = nullptr);
 
@@ -284,7 +285,7 @@ protected:
     /// \return The muscle velocity
     ///
     double velocity(
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot); 
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot);
 
     ///
     /// \brief Set the jacobian dimensions

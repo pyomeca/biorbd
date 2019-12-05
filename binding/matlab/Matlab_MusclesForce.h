@@ -21,7 +21,7 @@ void Matlab_MusclesForce( int, mxArray *plhs[],
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
 
     // Recevoir Q
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Qdot = getParameterQ(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedVelocity> Qdot = getParameterQdot(prhs, 3, nQdot);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));

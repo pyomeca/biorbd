@@ -33,7 +33,6 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
     // General information
     biorbdModelFile << std::endl;
     biorbdModelFile << com << " General informations" << std::endl;
-    biorbdModelFile << "root_actuated" << sep << model.isRootActuated() << std::endl;
     biorbdModelFile << "external_forces" << sep << model.hasExternalForces() << std::endl;
     biorbdModelFile << std::endl;
 
