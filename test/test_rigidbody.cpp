@@ -273,7 +273,7 @@ TEST(Kinematics, computeQdot)
 {
     biorbd::Model m("models/simple_quat.bioMod");
     biorbd::rigidbody::GeneralizedCoordinates
-            QDot(m), QDot_quat_expected(m.nbQ());
+            QDot(m.nbQdot()), QDot_quat_expected(m.nbQ());
     QDot << 1,2,3;
     {
         biorbd::rigidbody::GeneralizedCoordinates Q_quat(m.nbQ());
