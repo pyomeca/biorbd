@@ -206,7 +206,8 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
             QdotResigned(i) = -Qdot(i);
 
     // Calculate the maximal torques
-    biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(torqueMax(activation,Q,QdotResigned));
+    biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(
+                torqueMax(activation,Q,QdotResigned));
 
     // Put the signs
     for (unsigned int i=0; i<GeneralizedTorque.size(); ++i)
@@ -216,9 +217,10 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
 }
 
 
-std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque> biorbd::actuator::Actuators::torqueMax(
+std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque>
+biorbd::actuator::Actuators::torqueMax(
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
+        const biorbd::rigidbody::GeneralizedCoordinates& Qdot)
 {
     biorbd::utils::Error::check(*m_isClose, "Close the actuator model before calling torqueMax");
 

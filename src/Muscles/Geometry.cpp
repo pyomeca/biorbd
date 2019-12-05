@@ -131,8 +131,9 @@ void biorbd::muscles::Geometry::updateKinematics(biorbd::rigidbody::Joints &mode
     }
 
     // Ensure the model is in the right configuration
-    if (updateKin > 1)
-        model.UpdateKinematicsCustom(Q, Qdot, nullptr);
+    if (updateKin > 1) {
+        model.UpdateKinematicsCustom(Q, Qdot);
+    }
 
     // Position of the points in space
     setMusclesPointsInGlobal(model, *Q, &pathModifiers);

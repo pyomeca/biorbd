@@ -149,8 +149,10 @@ double biorbd::muscles::Muscle::length(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         int updateKin)
 {
-    if (updateKin != 0)
-        m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
+    if (updateKin != 0) {
+        m_position->updateKinematics(
+                    model,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
+    }
 
     return position().length();
 }
@@ -160,8 +162,10 @@ double biorbd::muscles::Muscle::musculoTendonLength(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         int updateKin)
 {
-    if (updateKin != 0)
-        m_position->updateKinematics(m,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
+    if (updateKin != 0) {
+        m_position->updateKinematics(
+                    m,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
+    }
 
     return m_position->musculoTendonLength();
 }
@@ -172,8 +176,10 @@ double biorbd::muscles::Muscle::velocity(
         const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
         bool updateKin)
 {
-    if (updateKin)
-        m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,&Qdot);
+    if (updateKin) {
+        m_position->updateKinematics(
+                    model,*m_characteristics,*m_pathChanger,&Q,&Qdot);
+    }
 
     return m_position->velocity();
 }

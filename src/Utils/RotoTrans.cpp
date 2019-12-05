@@ -39,7 +39,8 @@ biorbd::utils::RotoTrans::RotoTrans(
 
 }
 
-biorbd::utils::RotoTrans::RotoTrans(const RigidBodyDynamics::Math::SpatialTransform& st) :
+biorbd::utils::RotoTrans::RotoTrans(
+        const RigidBodyDynamics::Math::SpatialTransform& st) :
     Eigen::Matrix4d(fromSpatialTransform(st))
 {
 

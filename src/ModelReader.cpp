@@ -104,7 +104,7 @@ void biorbd::Reader::readModelFile(
                 double mass = 0.00000001;
                 Eigen::Matrix3d inertia(Eigen::Matrix3d::Identity(3,3));
                 biorbd::utils::Rotation RT_R(Eigen::Matrix3d::Identity(3,3));
-                RigidBodyDynamics::Math::Vector3d RT_T(0,0,0);
+                biorbd::utils::Vector3d RT_T(0,0,0);
                 biorbd::utils::Vector3d com(0,0,0);
                 biorbd::rigidbody::Mesh mesh;
                 int segmentByFile(-1); // -1 non setté, 0 pas par file, 1 par file
@@ -1207,7 +1207,8 @@ void biorbd::Reader::readViconForceFile(
     }
 }
 
-std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> biorbd::Reader::readViconForceFile(const biorbd::utils::String &path){
+std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>>
+biorbd::Reader::readViconForceFile(const biorbd::utils::String &path){
     // Read file
     std::vector<std::vector<unsigned int>> frame;
     std::vector<unsigned int> frequency;// Acquisition frequency

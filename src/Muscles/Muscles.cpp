@@ -87,8 +87,9 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
         const biorbd::rigidbody::GeneralizedCoordinates* QDot)
 {
     // Update the muscular position
-    if (updateKin)
+    if (updateKin) {
         updateMuscles(*Q,*QDot,updateKin);
+    }
 
     const std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>>& force_tp = musclesForces(emg, false);
     F = biorbd::utils::Vector(static_cast<unsigned int>(force_tp.size()));
@@ -118,8 +119,9 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
 {
 
     // Update the muscular position
-    if (updateKin)
+    if (updateKin) {
         updateMuscles(*Q,*QDot,updateKin);
+    }
 
     // Get the Jacobian matrix and get the forces of each muscle
 
@@ -136,8 +138,9 @@ std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> biorbd::muscle
         const biorbd::rigidbody::GeneralizedCoordinates* QDot)
 {
     // Update the muscular position
-    if (updateKin)
+    if (updateKin) {
         updateMuscles(*Q,*QDot,updateKin);
+    }
 
     // Output variable
     std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> forces; // All the muscles/two pointers per muscleTous les muscles (origine/insertion)
@@ -196,10 +199,12 @@ void biorbd::muscles::Muscles::updateMuscles(
 
     // Update all the muscles
     int updateKinTP;
-    if (updateKin)
+    if (updateKin) {
         updateKinTP = 2;
-    else
+    }
+    else {
         updateKinTP = 0;
+    }
 
     for (auto group : *m_mus) // muscle group
         for (unsigned int j=0; j<group.nbMuscles(); ++j){
@@ -216,10 +221,12 @@ void biorbd::muscles::Muscles::updateMuscles(
 
     // Update all the muscles
     int updateKinTP;
-    if (updateKin)
+    if (updateKin) {
         updateKinTP = 2;
-    else
+    }
+    else {
         updateKinTP = 0;
+    }
 
     // Update all the muscles
     for (auto group : *m_mus) // muscle group

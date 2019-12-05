@@ -720,7 +720,7 @@ public:
     /// \param updateKin If the kinematics of the model should be computed
     ///
     void CalcMatRotJacobian (
-            const RigidBodyDynamics::Math::VectorNd &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
             unsigned int segmentIdx,
             const RigidBodyDynamics::Math::Matrix3d &rotation,
             RigidBodyDynamics::Math::MatrixNd &G,
@@ -737,8 +737,8 @@ public:
     /// The forces that compensates for the contacts are stored in the constraint set variable
     /// 
     void ForwardDynamicsContactsLagrangian (
-            const RigidBodyDynamics::Math::VectorNd &Q,
-            const RigidBodyDynamics::Math::VectorNd &QDot,
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedCoordinates &QDot,
             const RigidBodyDynamics::Math::VectorNd &torque,
             RigidBodyDynamics::ConstraintSet &CS,
             RigidBodyDynamics::Math::VectorNd &QDDot);
@@ -802,6 +802,16 @@ protected:
             const std::vector<biorbd::utils::RotoTrans> &RT,
             unsigned int idx) const;
 
+    ///
+    /// \brief Check for the Generalized coordinates, velocities and acceleration dimensions
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param Qddot The generalized accelerations
+    ///
+    void checkCoordinatesDimensions(
+            const biorbd::rigidbody::GeneralizedCoordinates *Q,
+            const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+            const biorbd::rigidbody::GeneralizedCoordinates *Qddot);
 };
 
 }}

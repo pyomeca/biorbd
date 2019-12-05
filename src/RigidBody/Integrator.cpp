@@ -114,6 +114,12 @@ void biorbd::rigidbody::Integrator::integrate(
     m_nQ = std::make_shared<unsigned int>(m_model->nbQ());
     m_nQdot = std::make_shared<unsigned int>(m_model->nbQdot());
 
+#ifndef SKIP_ASSERT
+    biorbd::utils::Error::check(
+                Q_Qdot.size() == *m_nQ + *m_nQdot,
+                "Wrong size for Q and Qdot");
+#endif
+
     // Assume constant torque over the whole integration
     *m_u = u;
 

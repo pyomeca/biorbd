@@ -349,28 +349,34 @@ void biorbd::rigidbody::Segment::setDofCharacteristicsOnLastBody(){
 
 void biorbd::rigidbody::Segment::setJointAxis(){
         // Definition of the rotation axis
-    RigidBodyDynamics::Math::Vector3d axis[3];
-    axis[0]  = RigidBodyDynamics::Math::Vector3d(1,0,0); // axe x
-    axis[1]  = RigidBodyDynamics::Math::Vector3d(0,1,0); // axe y
-    axis[2]  = RigidBodyDynamics::Math::Vector3d(0,0,1); // axe z
+    biorbd::utils::Vector3d axis[3];
+    axis[0]  = biorbd::utils::Vector3d(1,0,0); // axe x
+    axis[1]  = biorbd::utils::Vector3d(0,1,0); // axe y
+    axis[2]  = biorbd::utils::Vector3d(0,0,1); // axe z
 
     // Declaration of DoFs in translation
     m_dof->clear();
     if (*m_nbDof != 0){
         m_dof->resize(*m_nbDof);
         for (unsigned int i=0; i<*m_nbDofTrans; i++)
-            (*m_dof)[i] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypePrismatic, axis[(*m_dofPosition)[i]]);
+            (*m_dof)[i] = RigidBodyDynamics::Joint(
+                    RigidBodyDynamics::JointTypePrismatic,
+                    axis[(*m_dofPosition)[i]]);
 
         // Declaration of the DoFs in rotation
         if (*m_isQuaternion)
-            (*m_dof)[*m_nbDofTrans] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypeSpherical); // Put a DoF in spherical
+            (*m_dof)[*m_nbDofTrans] = RigidBodyDynamics::Joint(
+                    RigidBodyDynamics::JointTypeSpherical);
         else
             for (unsigned int i=*m_nbDofTrans; i<*m_nbDofRot+*m_nbDofTrans; i++)
-                (*m_dof)[i] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypeRevolute, axis[(*m_dofPosition)[i]]); // Put the rotation axis in the right order
+                (*m_dof)[i] = RigidBodyDynamics::Joint(
+                        RigidBodyDynamics::JointTypeRevolute,
+                        axis[(*m_dofPosition)[i]]);
     }
     else{
         m_dof->resize(1);
-        (*m_dof)[0] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypeFixed); // A random axe, p
+        (*m_dof)[0] = RigidBodyDynamics::Joint
+                (RigidBodyDynamics::JointTypeFixed);
     }
 }
 
