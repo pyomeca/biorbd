@@ -809,9 +809,9 @@ protected:
     /// \param Qddot The generalized accelerations
     ///
     void checkCoordinatesDimensions(
-            const biorbd::rigidbody::GeneralizedCoordinates *Q,
-            const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-            const biorbd::rigidbody::GeneralizedCoordinates *Qddot);
+            const biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
+            const biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,
+            const biorbd::rigidbody::GeneralizedCoordinates *Qddot = nullptr);
 };
 
 }}
