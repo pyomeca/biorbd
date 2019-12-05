@@ -44,9 +44,17 @@ void biorbd::muscles::State::DeepCopy(const biorbd::muscles::State &other)
     *m_activation = *other.m_activation;
 }
 
-void biorbd::muscles::State::setExcitation(double val) {
-    if (*m_excitation<=0)
+void biorbd::muscles::State::setExcitation(
+        double val,
+        bool turnOffWarnings) {
+
+    if (val<0){
+        if (!turnOffWarnings) {
+            biorbd::utils::Error::warning(
+                        0, "Excitation can't be lower than 0, 0 is used then");
+        }
         *m_excitation = 0;
+    }
     else
         *m_excitation = val;
 }
@@ -57,8 +65,14 @@ double biorbd::muscles::State::excitation() const
 }
 
 double biorbd::muscles::State::normalizeExcitation(
-        const biorbd::muscles::State &emgMax) {
-    biorbd::utils::Error::warning(*m_excitation<emgMax.excitation(), "Excitation is higher than maximal excitation.");
+        const biorbd::muscles::State &emgMax,
+        bool turnOffWarnings) {
+
+    if (!turnOffWarnings) {
+        biorbd::utils::Error::warning(
+                    *m_excitation < emgMax.excitation(),
+                    "Excitation is higher than maximal excitation.");
+    }
     *m_excitationNorm = *m_excitation / emgMax.excitation();
 
     return *m_excitationNorm;
@@ -74,13 +88,27 @@ double biorbd::muscles::State::excitationNorm() const
     return *m_excitationNorm;
 }
 
-void biorbd::muscles::State::setActivation(double val){
-    if (*m_activation<=0)
+void biorbd::muscles::State::setActivation(
+        double val,
+        bool turnOffWarnings){
+
+    if (val <= 0) {
+        if (!turnOffWarnings){
+            biorbd::utils::Error::warning(
+                        0, "Activation can't be lower than 0, 0 is used then");
+        }
         *m_activation = 0;
-    else if (*m_activation>=1)
+    }
+    else if (val >= 1) {
+        if (!turnOffWarnings){
+            biorbd::utils::Error::warning(
+                        0, "Activation can't be higher than 1, 1 is used then");
+        }
         *m_activation = 1;
-    else
+    }
+    else {
         *m_activation = val;
+    }
 }
 
 double biorbd::muscles::State::activation() const

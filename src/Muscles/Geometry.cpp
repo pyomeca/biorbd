@@ -95,7 +95,10 @@ void biorbd::muscles::Geometry::updateKinematics(
         int updateKin)
 {
     if (*m_posAndJacoWereForced){
-        biorbd::utils::Error::warning(false, "Warning, using updateKinematics overrides the previously sent position and jacobian");
+        biorbd::utils::Error::warning(
+                    false,
+                    "Warning, using updateKinematics overrides the"
+                    " previously sent position and jacobian");
         *m_posAndJacoWereForced = false;
     }
 
@@ -121,7 +124,9 @@ void biorbd::muscles::Geometry::updateKinematics(biorbd::rigidbody::Joints &mode
         int updateKin)
 {
     if (*m_posAndJacoWereForced){
-        biorbd::utils::Error::warning(false, "Warning, using updateKinematics overrides the previously sent position and jacobian");
+        biorbd::utils::Error::warning(
+                    false, "Warning, using updateKinematics overrides the"
+                           " previously sent position and jacobian");
         *m_posAndJacoWereForced = false;
     }
 
@@ -332,7 +337,8 @@ void biorbd::muscles::Geometry::setMusclesPointsInGlobal(
         w.wrapPoints(RT,po_mus,pi_mus,po_wrap, pi_wrap);
 
         // Store the points in local
-        biorbd::utils::Error::warning(0, "Attention le push_back de m_pointsInLocal n'a pas été validé");
+        biorbd::utils::Error::check(0, "That part of the function is not validated, "
+                                       "please contact pariterre@hotmail.com");
         m_pointsInLocal->push_back(originInLocal());
         m_pointsInLocal->push_back(
                     biorbd::utils::Vector3d(RigidBodyDynamics::CalcBodyToBaseCoordinates(

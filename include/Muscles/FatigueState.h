@@ -66,7 +66,8 @@ public:
     virtual void setState(
             double active,
             double fatigued,
-            double resting);
+            double resting,
+            bool turnOffWarnings = false);
 
     ///
     /// \brief Return the propotion of active muscle fibers

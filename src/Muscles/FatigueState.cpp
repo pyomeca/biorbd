@@ -66,7 +66,11 @@ void biorbd::muscles::FatigueState::DeepCopy(const biorbd::muscles::FatigueState
     *m_type = *other.m_type;
 }
 
-void biorbd::muscles::FatigueState::setState(double active, double fatigued, double resting)
+void biorbd::muscles::FatigueState::setState(
+        double active,
+        double fatigued,
+        double resting,
+        bool turnOffWarnings)
 {
     // Sanity check for active fibers
     //
@@ -76,15 +80,24 @@ void biorbd::muscles::FatigueState::setState(double active, double fatigued, dou
     // into resting fibers quantity.
     //
     if (active < 0){
+        if (!turnOffWarnings) {
+            biorbd::utils::Error::warning(0,
+            "Active Fibers Quantity can't be lower than 0, 0 is used then\n"
+            "Previous Active Fibers Quantity before set to 0:"
+                                          + std::to_string(active));
+        }
         resting += active;
-        biorbd::utils::Error::warning(0, "Active Fibers Quantity can't be lower than 0, 0 is used then\n"
-                                "Previous Active Fibers Quantity before set to 0:"+std::to_string(active));
         active = 0;
     }
     else if (active > 1){
+        if (!turnOffWarnings) {
+            biorbd::utils::Error::warning(0,
+            "Active Fibers Quantity can't be higher than 1, 1 is used then\n"
+            "Previous Active Fibers Quantity before set to 1: "
+                                          + std::to_string(active));
+        }
         resting += active - 1;
-        biorbd::utils::Error::warning(0, "Active Fibers Quantity can't be higher than 1, 1 is used then\n"
-                                "Previous Active Fibers Quantity before set to 1: "+std::to_string(active));
+
         active = 1;
     }
 
@@ -104,13 +117,18 @@ void biorbd::muscles::FatigueState::setState(double active, double fatigued, dou
     // into active fibers quantity.
     //
     if (resting < 0){
+        if (!turnOffWarnings) {
+            biorbd::utils::Error::warning(0,
+            "Resting Fibers Quantity can't be lower than 0, 0 is used then\n"
+            "Previous Resting Fibers Quantity before set to 0: "
+                                          + std::to_string(resting));
+        }
         active += resting;
-        biorbd::utils::Error::warning(0, "Resting Fibers Quantity can't be lower than 0, 0 is used then\n"
-                                "Previous Resting Fibers Quantity before set to 0: "+std::to_string(resting));
         resting = 0;
     }
     else if (resting > 1){
-        biorbd::utils::Error::raise("Resting Fibers Quantity can't be higher than 1");
+        biorbd::utils::Error::raise(
+                    "Resting Fibers Quantity can't be higher than 1");
 
     }
 

@@ -231,9 +231,16 @@ public:
 
     ///
     /// \brief Convert the quaternion to a RotoTrans
+    /// \param skipAsserts Check if the norm of the quaternion is approximately 1
     /// \return The rotation matrix
     ///
-    biorbd::utils::Rotation toMatrix() const;
+    /// The function throws a runtime_error if the skipAsserts is false and the
+    /// norm of the quaternion is not almost one. In order to accelerate the
+    /// computation of the norm, the norm-squared is evaluated. The threshold is
+    /// 1e-10 for the norm-squared
+    ///
+    biorbd::utils::Rotation toMatrix(
+            bool skipAsserts = false) const;
 
     ///
     /// \brief Interpolation of the quaternion between to position

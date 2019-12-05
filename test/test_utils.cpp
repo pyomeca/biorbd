@@ -643,8 +643,8 @@ TEST(Quaternion, conversion) {
     }
     {
         biorbd::utils::Quaternion q(2, 3, 4, 5, 6);
-        biorbd::utils::RotoTrans rt(q.toMatrix());
-        biorbd::utils::Rotation mat(rt.rot());
+        EXPECT_THROW(q.toMatrix(), std::runtime_error);
+        biorbd::utils::Rotation mat(q.toMatrix(true));
 
         EXPECT_NEAR(mat(0, 0), -81, requiredPrecision);
         EXPECT_NEAR(mat(0, 1), 4, requiredPrecision);

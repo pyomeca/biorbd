@@ -184,7 +184,14 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::fromXYZAngles(
             * fromAxisAngle (xyz_angles[2], biorbd::utils::Vector3d (0., 0., 1.), kStab);
 }
 
-biorbd::utils::Rotation biorbd::utils::Quaternion::toMatrix() const {
+biorbd::utils::Rotation biorbd::utils::Quaternion::toMatrix(
+        bool skipAsserts) const {
+    if (!skipAsserts) {
+        biorbd::utils::Error::check(fabs(this->squaredNorm() - 1.) < 1e-10,
+                                    "The Quaternion norm is not equal to one");
+    }
+
+
     double w = (*this)[0];
     double x = (*this)[1];
     double y = (*this)[2];
