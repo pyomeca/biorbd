@@ -7,6 +7,8 @@
 #include "Utils/Vector.h"
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
+#include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
 #include "RigidBody/IMU.h"
@@ -161,7 +163,9 @@ TEST(BinderC, kalmanImu)
         rt.fromEulerAngles(Eigen::Vector3d(0.1*i, 0.1*i, 0.1*i), Eigen::Vector3d(0.1*i, 0.1*i, 0.1*i), "xyz");
         targetImus.push_back(rt);
     }
-    biorbd::rigidbody::GeneralizedCoordinates Q(*model), Qdot(*model), Qddot(*model);
+    biorbd::rigidbody::GeneralizedCoordinates Q(*model);
+    biorbd::rigidbody::GeneralizedVelocity Qdot(*model);
+    biorbd::rigidbody::GeneralizedAcceleration Qddot(*model);
     kalman.reconstructFrame(*model, targetImus, &Q, &Qdot, &Qddot);
 
     // Compute from C-interface
