@@ -67,7 +67,7 @@ public:
 
     ///
     /// \brief Compute and return the normalized excitation
-    /// \param max The maximal emg
+    /// \param emgMax The maximal emg
     /// \param turnOffWarnings If the warning when excitation is higher than 1 should be off or on
     /// \return The normalized excitation
     ///

@@ -20,9 +20,9 @@ public:
 
     ///
     /// \brief Construct a wrapping sphere
-    /// \param X-Component of the sphere
-    /// \param Y-Component of the sphere
-    /// \param Z-Component of the sphere
+    /// \param x X-Component of the sphere
+    /// \param y Y-Component of the sphere
+    /// \param z Z-Component of the sphere
     /// \param diameter Diameter of the sphere
     ///
     WrappingSphere(
@@ -33,9 +33,9 @@ public:
 
     ///
     /// \brief Construct a wrapping sphere
-    /// \param X-Component of the sphere
-    /// \param Y-Component of the sphere
-    /// \param Z-Component of the sphere
+    /// \param x X-Component of the sphere
+    /// \param y Y-Component of the sphere
+    /// \param z Z-Component of the sphere
     /// \param diameter Diameter of the sphere
     /// \param name Name of the sphere
     /// \param parentName Name of the parent segment

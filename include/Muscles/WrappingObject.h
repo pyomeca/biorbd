@@ -28,9 +28,9 @@ public:
 
     ///
     /// \brief Construct a wrapping object
-    /// \param X-Component of the wrapping object
-    /// \param Y-Component of the wrapping object
-    /// \param Z-Component of the wrapping object
+    /// \param x X-Component of the wrapping object
+    /// \param y Y-Component of the wrapping object
+    /// \param z Z-Component of the wrapping object
     ///
     WrappingObject(
             double x,
@@ -38,9 +38,9 @@ public:
             double z);
     ///
     /// \brief Construct a wrapping object
-    /// \param X-Component of the wrapping object
-    /// \param Y-Component of the wrapping object
-    /// \param Z-Component of the wrapping object
+    /// \param x X-Component of the wrapping object
+    /// \param y Y-Component of the wrapping object
+    /// \param z Z-Component of the wrapping object
     /// \param name Name of the wrapping object
     /// \param parentName Name of the parent segment
     ///
@@ -83,7 +83,7 @@ public:
     /// \param p2_bone 2n position of the muscle node
     /// \param p1 The 1st position on the wrapping object the muscle leave
     /// \param p2 The 2nd position on the wrapping object the muscle leave
-    /// \param length Length of the muscle (ignored if no value is provided)
+    /// \param muscleLength Length of the muscle (ignored if no value is provided)
     ///
     virtual void wrapPoints(
             const biorbd::utils::RotoTrans& rt,
@@ -101,7 +101,7 @@ public:
     /// \param p2_bone 2n position of the muscle node
     /// \param p1 The 1st position on the wrapping object the muscle leave
     /// \param p2 The 2nd position on the wrapping object the muscle leave
-    /// \param length Length of the muscle (ignored if no value is provided)
+    /// \param muscleLength Length of the muscle (ignored if no value is provided)
     ///
     virtual void wrapPoints(
             biorbd::rigidbody::Joints& model,
@@ -116,7 +116,7 @@ public:
     /// \brief Returns the previously computed 2 locations where the muscle leaves the wrapping object
     /// \param p1 The 1st position on the wrapping object the muscle leave
     /// \param p2 The 2nd position on the wrapping object the muscle leave
-    /// \param length Length of the muscle (ignored if no value is provided)
+    /// \param muscleLength Length of the muscle (ignored if no value is provided)
     ///
     virtual void wrapPoints(
             biorbd::utils::Vector3d& p1,

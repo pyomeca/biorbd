@@ -106,7 +106,7 @@ public:
     /// \return The k stabilizer
     ///
     /// The k statilizer value is used during several operation to make the
-    /// quaternion tending toward a norm of $1$
+    /// quaternion tending toward a norm of \f$1\f$
     ///
     double kStab() const;
 
@@ -164,7 +164,7 @@ public:
     /// \param x The X-Component of quaternion
     /// \param y The Y-Component of quaternion
     /// \param z The Z-Component of quaternion
-    /// \param kStabilizer The value of the kstabilizer
+    /// \param kStab The value of the kstabilizer
     ///
     static biorbd::utils::Quaternion fromGLRotate (
             double angle,
@@ -175,9 +175,9 @@ public:
 
     ///
     /// \brief Construct Quaternion from an axis angle
-    /// \param angle_rad The angle in radians
+    /// \param angle The angle in radians
     /// \param axis The 3d vector of the axis
-    /// \param kStabilizer The value of the kstabilizer
+    /// \param kStab The value of the kstabilizer
     ///
     static biorbd::utils::Quaternion fromAxisAngle (
             double angle,
@@ -187,7 +187,7 @@ public:
     ///
     /// \brief Construct Quaternion from a RotoTrans matrix
     /// \param rt RotoTrans matrix
-    /// \param kStabilizer The value of the kstabilizer
+    /// \param kStab The value of the kstabilizer
     ///
     static biorbd::utils::Quaternion fromMatrix (
             const biorbd::utils::RotoTrans& rt,
@@ -196,7 +196,7 @@ public:
     ///
     /// \brief Construct Quaternion from a Rotation matrix
     /// \param mat The rotation matrix
-    /// \param kStabilizer The value of the kstabilizer
+    /// \param kStab The value of the kstabilizer
     ///
     static biorbd::utils::Quaternion fromMatrix (
             const biorbd::utils::Rotation &mat,
@@ -205,7 +205,7 @@ public:
     ///
     /// \brief Construct Quaternion from Euler angles (sequece ZYX)
     /// \param zyx_angles The Euler angles in a sequence where the first element is the Z-component
-    /// \param kStabilizer The value of the kstabilizer
+    /// \param kStab The value of the kstabilizer
     ///
     static biorbd::utils::Quaternion fromZYXAngles (
             const biorbd::utils::Vector3d &zyx_angles,
@@ -213,8 +213,8 @@ public:
 
     ///
     /// \brief Construct Quaternion from Euler angles (sequece YXZ)
-    /// \param zyx_angles The Euler angles in a sequence where the first element is the Y-component
-    /// \param kStabilizer The value of the kstabilizer
+    /// \param yxz_angles The Euler angles in a sequence where the first element is the Y-component
+    /// \param kStab The value of the kstabilizer
     ///
     static biorbd::utils::Quaternion fromYXZAngles (
             const biorbd::utils::Vector3d &yxz_angles,
@@ -222,8 +222,8 @@ public:
 
     ///
     /// \brief Construct Quaternion from Euler angles (sequece XYZ)
-    /// \param zyx_angles The Euler angles in a sequence where the first element is the X-component
-    /// \param kStabilizer The value of the kstabilizer
+    /// \param xyz_angles The Euler angles in a sequence where the first element is the X-component
+    /// \param kStab The value of the kstabilizer
     ///
     static biorbd::utils::Quaternion fromXYZAngles (
             const biorbd::utils::Vector3d &xyz_angles,

@@ -44,7 +44,6 @@ public:
     ///
     /// \brief Contruct Rototrans
     /// \param rot The rotation matrix
-    /// \param trans Translation vector
     ///
     RotoTrans(
             const biorbd::utils::Rotation& rot);

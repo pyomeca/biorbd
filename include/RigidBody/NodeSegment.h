@@ -25,9 +25,9 @@ public:
     
     ///
     /// \brief Construct a segment node
-    /// \param X-Component of the node
-    /// \param Y-Component of the node
-    /// \param Z-Component of the node
+    /// \param x X-Component of the node
+    /// \param y Y-Component of the node
+    /// \param z Z-Component of the node
     ///
     NodeSegment(
             double x,
@@ -43,9 +43,9 @@ public:
     
     ///
     /// \brief Construct a segment node
-    /// \param X-Component of the node
-    /// \param Y-Component of the node
-    /// \param Z-Component of the node
+    /// \param x X-Component of the node
+    /// \param y Y-Component of the node
+    /// \param z Z-Component of the node
     /// \param name The name of the node
     /// \param parentName The name of the parent
     /// \param isTechnical If the node is technical

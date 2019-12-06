@@ -9,16 +9,17 @@ namespace muscles {
 
 ///
 /// \brief Base class for all HillType muscles
+///
 /// Values for the constants are as follow:
-/// FlCE_1 = 0.15
-/// FlCE_2 = 0.45
-/// FvCE_1 = 1
-/// FvCE_2 = -.33/2 * FvCE_1/(1+FvCE_1)
-/// FlPE_1 = 10.0
-/// FlPE_2 = 5.0
-/// eccentricForceMultiplier = 1.8
-/// damping = 0.1
-/// maxShorteningSpeed = 10.0
+/// - \f$FlCE_1 = 0.15\f$
+/// - \f$FlCE_2 = 0.45\f$
+/// - \f$FvCE_1 = 1\f$
+/// - \f$FvCE_2 = -\frac{0.33}{2} \frac{FvCE_1}{1+FvCE_1}\f$
+/// - \f$FlPE_1 = 10.0\f$
+/// - \f$FlPE_2 = 5.0\f$
+/// - \f$eccentricForceMultiplier = 1.8\f$
+/// - \f$damping = 0.1\f$
+/// - \f$maxShorteningSpeed = 10.0\f$
 ///
 class BIORBD_API HillType : public biorbd::muscles::Muscle
 {

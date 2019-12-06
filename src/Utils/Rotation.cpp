@@ -7,8 +7,9 @@
 #include "Utils/String.h"
 #include "Utils/Vector.h"
 
-biorbd::utils::Rotation::Rotation(const Eigen::Matrix3d& m) :
-    Eigen::Matrix3d(m)
+biorbd::utils::Rotation::Rotation(
+        const Eigen::Matrix3d& matrix) :
+    Eigen::Matrix3d(matrix)
 {
     checkUnitary();
 }

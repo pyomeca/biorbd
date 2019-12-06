@@ -343,7 +343,7 @@ variables
     $myLastVariableIsPi pi
 endvariables
 ```
-As you may have noticed, the constant $\pi$ is defined as $3.141592653589793$.
+As you may have noticed, the constant PI is defined as $3.141592653589793$.
 
 ### Definition of the model
 A BIORBD model consists of a chain of segment, linked by joints with up to six DoF (3 translations, 3 rotations). It is imperative when attaching something to a segment of the model that particular segment must have been previously defined. For instance, if the `thorax` is attached to the `pelvis`, then the latter must be defined before the former in the file. 

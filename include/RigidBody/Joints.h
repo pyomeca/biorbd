@@ -718,7 +718,7 @@ public:
     ///
     /// \brief Compute the forward dynamics using the contact lagrangian algorithm
     /// \param Q The generalized coordinates
-    /// \param Qdot The generalized velocities
+    /// \param QDot The generalized velocities
     /// \param torque The generalized torque
     /// \param CS The constraint set (output)
     /// \param QDDot The generalized acceleration (output)
@@ -735,7 +735,7 @@ public:
     ///
     /// \brief Return the derivate of Q in function of Qdot (if not Quaternion, Qdot is directly returned)
     /// \param Q The generalized coordinates
-    /// \param Qdot The generalized velocities
+    /// \param QDot The generalized velocities
     /// \param k_stab 
     /// \return The derivate of Q in function of Qdot
     ///

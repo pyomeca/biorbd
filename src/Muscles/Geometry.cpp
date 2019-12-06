@@ -147,9 +147,9 @@ void biorbd::muscles::Geometry::updateKinematics(biorbd::rigidbody::Joints &mode
 }
 
 void biorbd::muscles::Geometry::updateKinematics(
-        std::vector<utils::Vector3d> &musclePointsInGlobal,
-        biorbd::utils::Matrix &jacoPointsInGlobal,
-        const biorbd::rigidbody::GeneralizedVelocity *Qdot)
+        std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
+        biorbd::utils::Matrix& jacoPointsInGlobal,
+        const biorbd::rigidbody::GeneralizedVelocity* Qdot)
 {
     *m_posAndJacoWereForced = true;
 
@@ -164,10 +164,10 @@ void biorbd::muscles::Geometry::updateKinematics(
 }
 
 void biorbd::muscles::Geometry::updateKinematics(
-        std::vector<utils::Vector3d> &musclePointsInGlobal,
-        biorbd::utils::Matrix &jacoPointsInGlobal,
-        const biorbd::muscles::Characteristics &c,
-        const biorbd::rigidbody::GeneralizedVelocity *Qdot)
+        std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
+        biorbd::utils::Matrix& jacoPointsInGlobal,
+        const biorbd::muscles::Characteristics& c,
+        const biorbd::rigidbody::GeneralizedVelocity* Qdot)
 {
     *m_posAndJacoWereForced = true;
 
@@ -303,7 +303,8 @@ const biorbd::utils::Vector3d &biorbd::muscles::Geometry::insertionInGlobal(
     return *m_insertionInGlobal;
 }
 
-void biorbd::muscles::Geometry::setMusclesPointsInGlobal(std::vector<utils::Vector3d> &ptsInGlobal)
+void biorbd::muscles::Geometry::setMusclesPointsInGlobal(
+        std::vector<biorbd::utils::Vector3d> &ptsInGlobal)
 {
     biorbd::utils::Error::check(ptsInGlobal.size() >= 2, "ptsInGlobal must at least have an origin and an insertion");
     m_pointsInLocal->clear(); // In this mode, we don't need the local, because the Jacobian of the points has to be given as well

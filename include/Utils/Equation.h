@@ -80,9 +80,8 @@ public:
     ///
     /// The supported constants are:
     ///
-    /// \begin{itemize}
-    /// \item pi -- that evaluates to M_PI, that is $3.14159265358979323846$ on UNIX
-    /// \end{itemize}
+    ///   - pi -- that evaluates to M_PI, that is \f$3.14159265358979323846\f$ on UNIX
+    ///
     ///
     static void replaceCste(
             std::vector<biorbd::utils::Equation> &eq);
@@ -112,15 +111,13 @@ protected:
     ///
     /// The supported symbols are:
     ///
-    /// \begin{itemize}
-    /// \item "(" -- Open a parenthese
-    /// \item ")" -- Close a parenthese
-    /// \item "e" -- value of the format 1e2 (i.e. 1x10^2)
-    /// \item "/" -- Division
-    /// \item "*" -- Multiplication
-    /// \item "+" -- Addition
-    /// \item "-" -- Subtraction, or negative number if it starts the equation
-    /// \end{itemize}
+    ///   - "(" -- Open a parenthese
+    ///   - ")" -- Close a parenthese
+    ///   - "e" -- value of the format 1e2 (i.e. 1x10^2)
+    ///   - "/" -- Division
+    ///   - "*" -- Multiplication
+    ///   - "+" -- Addition
+    ///   - "-" -- Subtraction, or negative number if it starts the equation
     ///
     static std::vector<biorbd::utils::Equation> prepareMathSymbols();
 };

@@ -150,7 +150,7 @@ public:
     /// \brief Return the number of generalized torque
     /// \return The number of generalized torque
     ///
-    /// This value is equal to $\text{nbQddot}$
+    /// This value is equal to nbQddot
     ///
     unsigned int nbGeneralizedTorque() const;
 
