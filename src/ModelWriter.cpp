@@ -52,6 +52,7 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
             biorbdModelFile << sep << sep << "translations" << sep << model.segment(i).seqT() << std::endl;
         if (model.segment(i).nbDofRot() > 0)
             biorbdModelFile << sep << sep << "rotations" << sep << model.segment(i).seqR() << std::endl;
+            biorbdModelFile << sep << sep << "inertia" << std::endl << sep << sep << sep << model.segment(i).characteristics().inertia() << std::endl;
         if (model.segment(i).characteristics().mesh().path().filename().compare("")) // Si ce n'est pas vide
             biorbdModelFile << sep << sep << "meshfile" << sep << model.segment(i).characteristics().mesh().path().originalPath() << std::endl;
         biorbdModelFile << sep << "endsegment" << sep << std::endl;
