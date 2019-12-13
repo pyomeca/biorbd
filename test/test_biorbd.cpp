@@ -3,7 +3,7 @@
 #include <rbdl/Dynamics.h>
 
 #include "BiorbdModel.h"
-#include "biorbd/ModelWriter.h"
+#include "ModelWriter.h"
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 #include "RigidBody/GeneralizedCoordinates.h"
