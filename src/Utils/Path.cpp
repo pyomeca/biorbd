@@ -264,7 +264,7 @@ biorbd::utils::String biorbd::utils::Path::absoluteFolder(
     std::smatch matches;
 
     if (std::regex_search(current, matches, std::regex("^([A-Z]):[\\/].*$"))) {
-        base = matches[0].str() + ":/";
+        base = matches[1].str() + ":/";
     }
     else {
         biorbd::utils::Error::raise("I could not find the current drive to estimate the path");
@@ -369,7 +369,7 @@ void biorbd::utils::Path::setIsFolderAbsolute()
     std::smatch matches;
 
     if (std::regex_search(current, matches, std::regex("^([A-Z]):[\\/].*$"))) {
-        base = matches[0].str() + ":/";
+        base = matches[1].str() + ":/";
     }
     else {
         biorbd::utils::Error::raise("I could not find the current drive to estimate the path");
