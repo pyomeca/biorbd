@@ -3,7 +3,9 @@
 #include <rbdl/Dynamics.h>
 
 #include "BiorbdModel.h"
+#include "ModelWriter.h"
 #include "biorbdConfig.h"
+#include "Utils/String.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedTorque.h"
 
@@ -24,6 +26,14 @@ static std::string modelPathWithVtp("models/thoraxWithVtp.bioMod");
 
 TEST(FileIO, OpenModel){
     EXPECT_NO_THROW(biorbd::Model model(modelPathForGeneralTesting));
+}
+
+TEST(FileIO, WriteModel){
+    biorbd::Model model(modelPathForGeneralTesting);
+    biorbd::utils::String savePath("temporary.bioMod");
+    biorbd::Writer::writeModel(model, savePath);
+    biorbd::Model modelCopy(savePath);
+    remove(savePath.c_str());
 }
 
 TEST(GenericTests, mass){
