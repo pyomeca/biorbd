@@ -180,7 +180,7 @@ int biorbd::rigidbody::Segment::platformIdx() const{
     return *m_idxPF;
 }
 unsigned int biorbd::rigidbody::Segment::nbGeneralizedTorque() const{
-    return *m_nbDof;
+    return nbQddot();
 }
 unsigned int biorbd::rigidbody::Segment::nbDof() const{
     return *m_nbDofTrueOutside;
@@ -349,37 +349,46 @@ void biorbd::rigidbody::Segment::setDofCharacteristicsOnLastBody(){
 
 void biorbd::rigidbody::Segment::setJointAxis(){
         // Definition of the rotation axis
-    RigidBodyDynamics::Math::Vector3d axis[3];
-    axis[0]  = RigidBodyDynamics::Math::Vector3d(1,0,0); // axe x
-    axis[1]  = RigidBodyDynamics::Math::Vector3d(0,1,0); // axe y
-    axis[2]  = RigidBodyDynamics::Math::Vector3d(0,0,1); // axe z
+    biorbd::utils::Vector3d axis[3];
+    axis[0]  = biorbd::utils::Vector3d(1,0,0); // axe x
+    axis[1]  = biorbd::utils::Vector3d(0,1,0); // axe y
+    axis[2]  = biorbd::utils::Vector3d(0,0,1); // axe z
 
     // Declaration of DoFs in translation
     m_dof->clear();
     if (*m_nbDof != 0){
         m_dof->resize(*m_nbDof);
         for (unsigned int i=0; i<*m_nbDofTrans; i++)
-            (*m_dof)[i] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypePrismatic, axis[(*m_dofPosition)[i]]);
+            (*m_dof)[i] = RigidBodyDynamics::Joint(
+                    RigidBodyDynamics::JointTypePrismatic,
+                    axis[(*m_dofPosition)[i]]);
 
         // Declaration of the DoFs in rotation
         if (*m_isQuaternion)
-            (*m_dof)[*m_nbDofTrans] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypeSpherical); // Put a DoF in spherical
+            (*m_dof)[*m_nbDofTrans] = RigidBodyDynamics::Joint(
+                    RigidBodyDynamics::JointTypeSpherical);
         else
             for (unsigned int i=*m_nbDofTrans; i<*m_nbDofRot+*m_nbDofTrans; i++)
-                (*m_dof)[i] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypeRevolute, axis[(*m_dofPosition)[i]]); // Put the rotation axis in the right order
+                (*m_dof)[i] = RigidBodyDynamics::Joint(
+                        RigidBodyDynamics::JointTypeRevolute,
+                        axis[(*m_dofPosition)[i]]);
     }
     else{
         m_dof->resize(1);
-        (*m_dof)[0] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypeFixed); // A random axe, p
+        (*m_dof)[0] = RigidBodyDynamics::Joint
+                (RigidBodyDynamics::JointTypeFixed);
     }
 }
 
-void biorbd::rigidbody::Segment::setJoints(biorbd::rigidbody::Joints& model){
+void biorbd::rigidbody::Segment::setJoints(
+        biorbd::rigidbody::Joints& model) {
     setDofCharacteristicsOnLastBody(); // Apply the segment caracteristics only to the last segment
     setJointAxis(); // Choose the axis order in relation to the selected sequence
 
 
-    RigidBodyDynamics::Math::SpatialTransform zero (RigidBodyDynamics::Math::Matrix3dIdentity, RigidBodyDynamics::Math::Vector3d(0,0,0));
+    RigidBodyDynamics::Math::SpatialTransform zero (
+                RigidBodyDynamics::Math::Matrix3dIdentity,
+                RigidBodyDynamics::Math::Vector3d(0,0,0));
     // Create the articulations (intra segment)
     m_idxDof->clear();
 
@@ -392,21 +401,32 @@ void biorbd::rigidbody::Segment::setJoints(biorbd::rigidbody::Joints& model){
     if (parent_id == std::numeric_limits<unsigned int>::max())
         parent_id = 0;
     if (*m_nbDof==0)
-        (*m_idxDof)[0] = model.AddBody(parent_id, *m_cor, (*m_dof)[0], (*m_dofCharacteristics)[0], name());
+        (*m_idxDof)[0] = model.AddBody(
+                parent_id, *m_cor, (*m_dof)[0],
+                (*m_dofCharacteristics)[0], name());
     else if (*m_nbDof == 1)
-        (*m_idxDof)[0] = model.AddBody(parent_id, *m_cor, (*m_dof)[0], (*m_dofCharacteristics)[0], name());
+        (*m_idxDof)[0] = model.AddBody(
+                parent_id, *m_cor, (*m_dof)[0],
+                (*m_dofCharacteristics)[0], name());
     else{
-        (*m_idxDof)[0] = model.AddBody(parent_id, *m_cor, (*m_dof)[0], (*m_dofCharacteristics)[0]);
+        (*m_idxDof)[0] = model.AddBody(
+                    parent_id, *m_cor, (*m_dof)[0],
+                    (*m_dofCharacteristics)[0]);
         for (unsigned int i=1; i<*m_nbDof; i++)
             if (i!=*m_nbDof-1)
-                (*m_idxDof)[i] = model.AddBody((*m_idxDof)[i-1], zero, (*m_dof)[i], (*m_dofCharacteristics)[i]);
+                (*m_idxDof)[i] = model.AddBody(
+                        (*m_idxDof)[i-1], zero,
+                        (*m_dof)[i], (*m_dofCharacteristics)[i]);
             else
-                (*m_idxDof)[i] = model.AddBody((*m_idxDof)[i-1], zero, (*m_dof)[i], (*m_dofCharacteristics)[i], name());
+                (*m_idxDof)[i] = model.AddBody(
+                        (*m_idxDof)[i-1], zero, (*m_dof)[i],
+                        (*m_dofCharacteristics)[i], name());
     }
 
 }
 
-unsigned int biorbd::rigidbody::Segment::getDofIdx(const biorbd::utils::String &dofName) const{
+unsigned int biorbd::rigidbody::Segment::getDofIdx(
+        const biorbd::utils::String &dofName) const{
 
     unsigned int idx(INT_MAX);
     bool found = false;
@@ -419,7 +439,11 @@ unsigned int biorbd::rigidbody::Segment::getDofIdx(const biorbd::utils::String &
     }
 
 
-    biorbd::utils::Error::check(found, "Type should be \"Rot\" or \"Trans\" and axis should be \"X\", \"Y\" or \"Z\", e.g. \"RotY\" for Rotation around y or \"TransX\" for Translation on x");
+    biorbd::utils::Error::check(found,
+                                "Type should be \"Rot\" or \"Trans\" and axis "
+                                "should be \"X\", \"Y\" or \"Z\", e.g. "
+                                "\"RotY\" for Rotation around y or \"TransX\" "
+                                "for Translation on x");
 
     return idx;
 

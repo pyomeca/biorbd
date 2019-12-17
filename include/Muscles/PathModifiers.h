@@ -37,7 +37,7 @@ public:
 
     ///
     /// \brief Add a wrapping or a via point to the set of path modifiers
-    /// \param point The wrapping or via point to add
+    /// \param object The wrapping or via point to add
     ///
     void addPathChanger(
             biorbd::utils::Vector3d& object);

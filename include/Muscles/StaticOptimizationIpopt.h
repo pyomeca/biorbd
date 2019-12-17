@@ -15,6 +15,7 @@ class Vector;
 
 namespace rigidbody {
 class GeneralizedCoordinates;
+class GeneralizedVelocity;
 class GeneralizedTorque;
 }
 
@@ -41,7 +42,7 @@ public:
     StaticOptimizationIpopt(
             biorbd::Model &model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
             const biorbd::rigidbody::GeneralizedTorque &torqueTarget,
             const biorbd::utils::Vector &activationInit,
             bool  useResidual = true,
@@ -229,7 +230,7 @@ protected:
     std::shared_ptr<double> m_eps; ///< Precision of the finite differentiate
     std::shared_ptr<biorbd::utils::Vector> m_activations; ///< The activations
     std::shared_ptr<biorbd::rigidbody::GeneralizedCoordinates> m_Q; ///< The generalized coordinates
-    std::shared_ptr<biorbd::rigidbody::GeneralizedCoordinates> m_Qdot; ///< The generalized velocities
+    std::shared_ptr<biorbd::rigidbody::GeneralizedVelocity> m_Qdot; ///< The generalized velocities
     std::shared_ptr<biorbd::rigidbody::GeneralizedTorque> m_torqueTarget; ///< The torque to match
     std::shared_ptr<biorbd::utils::Vector> m_torqueResidual; ///< The torque residual
     std::shared_ptr<double> m_torquePonderation; ///< The torque ponderation

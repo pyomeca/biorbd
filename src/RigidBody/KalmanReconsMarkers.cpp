@@ -7,6 +7,8 @@
 #include "Utils/Error.h"
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
+#include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/NodeSegment.h"
 
 biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers() :
@@ -72,8 +74,8 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         biorbd::Model &model,
         const biorbd::rigidbody::Markers &Tobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
-        biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-        biorbd::rigidbody::GeneralizedCoordinates *Qddot,
+        biorbd::rigidbody::GeneralizedVelocity *Qdot,
+        biorbd::rigidbody::GeneralizedAcceleration *Qddot,
         bool removeAxes){
     // Separate the tobs in a big vector
     biorbd::utils::Vector T(3*Tobs.nbMarkers());
@@ -88,8 +90,8 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         biorbd::Model &model,
         const std::vector<biorbd::rigidbody::NodeSegment> &Tobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
-        biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-        biorbd::rigidbody::GeneralizedCoordinates *Qddot,
+        biorbd::rigidbody::GeneralizedVelocity *Qdot,
+        biorbd::rigidbody::GeneralizedAcceleration *Qddot,
         bool removeAxes){
     // Separate the tobs in a big vector
     biorbd::utils::Vector T(static_cast<unsigned int>(3*Tobs.size()));
@@ -105,8 +107,8 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         biorbd::Model &model,
         const utils::Vector &Tobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
-        biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-        biorbd::rigidbody::GeneralizedCoordinates *Qddot,
+        biorbd::rigidbody::GeneralizedVelocity *Qdot,
+        biorbd::rigidbody::GeneralizedAcceleration *Qddot,
         bool removeAxes){
     // An iteration of the Kalman filter
     if (*m_firstIteration){

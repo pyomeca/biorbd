@@ -31,7 +31,7 @@ public:
     ///
     KalmanReconsMarkers(
             biorbd::Model& model,
-            biorbd::rigidbody::KalmanRecons::KalmanRecons::KalmanParam params = biorbd::rigidbody::KalmanRecons::KalmanRecons::KalmanParam());
+            biorbd::rigidbody::KalmanRecons::KalmanParam params = biorbd::rigidbody::KalmanRecons::KalmanParam());
 
     /// 
     /// \brief Deep copy of the Kalman reconstruction
@@ -58,8 +58,8 @@ public:
             biorbd::Model &model,
             const biorbd::rigidbody::Markers &Tobs,
             biorbd::rigidbody::GeneralizedCoordinates *Q,
-            biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-            biorbd::rigidbody::GeneralizedCoordinates *Qddot,
+            biorbd::rigidbody::GeneralizedVelocity *Qdot,
+            biorbd::rigidbody::GeneralizedAcceleration *Qddot,
             bool removeAxes=true);
 
     ///
@@ -75,8 +75,8 @@ public:
             biorbd::Model &model,
             const std::vector<biorbd::rigidbody::NodeSegment> &Tobs,
             biorbd::rigidbody::GeneralizedCoordinates *Q,
-            biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-            biorbd::rigidbody::GeneralizedCoordinates *Qddot,
+            biorbd::rigidbody::GeneralizedVelocity *Qdot,
+            biorbd::rigidbody::GeneralizedAcceleration *Qddot,
             bool removeAxes=true);
 
     ///
@@ -92,8 +92,8 @@ public:
             biorbd::Model &model,
             const biorbd::utils::Vector &Tobs,
             biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
-            biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,
-            biorbd::rigidbody::GeneralizedCoordinates *Qddot = nullptr,
+            biorbd::rigidbody::GeneralizedVelocity *Qdot = nullptr,
+            biorbd::rigidbody::GeneralizedAcceleration *Qddot = nullptr,
             bool removeAxes=true);
 
     /// 

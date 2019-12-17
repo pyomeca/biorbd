@@ -107,14 +107,11 @@ double biorbd::muscles::StateDynamics::timeDerivativeActivation()
     return *m_activationDot;
 }
 
-void biorbd::muscles::StateDynamics::setExcitation(double val) {
+void biorbd::muscles::StateDynamics::setExcitation(
+        double val,
+        bool turnOffWarnings) {
     *m_previousExcitation = *m_excitation;
-    if (val<0){
-        biorbd::utils::Error::warning(0, "Excitation can't be lower than 0, 0 is used then");
-        *m_excitation = 0;
-    }
-    else
-        *m_excitation = val;
+    biorbd::muscles::State::setExcitation(val, turnOffWarnings);
 }
 
 double biorbd::muscles::StateDynamics::previousExcitation() const
@@ -122,15 +119,11 @@ double biorbd::muscles::StateDynamics::previousExcitation() const
     return *m_previousExcitation;
 }
 
-void biorbd::muscles::StateDynamics::setActivation(double val) {
+void biorbd::muscles::StateDynamics::setActivation(
+        double val,
+        bool turnOffWarnings) {
     *m_previousActivation = *m_activation;
-
-    if (val<0){
-        biorbd::utils::Error::warning(0, "Activation can't be lower than 0, 0 is used then");
-        *m_activation = 0;
-    }
-    else
-        *m_activation = val;
+    biorbd::muscles::State::setActivation(val, turnOffWarnings);
 }
 
 double biorbd::muscles::StateDynamics::previousActivation() const

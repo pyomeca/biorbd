@@ -12,6 +12,7 @@ class Vector;
 
 namespace rigidbody {
 class GeneralizedCoordinates;
+class GeneralizedVelocity;
 class GeneralizedTorque;
 }
 
@@ -67,7 +68,7 @@ public:
     ///
     std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque> torqueMax(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::rigidbody::GeneralizedCoordinates& Qdot);
+            const biorbd::rigidbody::GeneralizedVelocity& Qdot);
 
     ///
     /// \brief Return the maximal generalized torque
@@ -79,7 +80,7 @@ public:
     biorbd::rigidbody::GeneralizedTorque torqueMax(
             const biorbd::utils::Vector &activation,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot);
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot);
 
     ///
     /// \brief Return the generalized torque
@@ -91,7 +92,7 @@ public:
     biorbd::rigidbody::GeneralizedTorque torque(
             const biorbd::utils::Vector &activation,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot);
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot);
 
     // Get and set
     ///

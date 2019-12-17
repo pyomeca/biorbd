@@ -22,7 +22,7 @@ public:
 
     ///
     /// \brief Construct Node from another node
-    /// \param othe The other node
+    /// \param other The other node
     ///
     Node(
             const biorbd::utils::Node& other);

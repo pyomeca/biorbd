@@ -3,6 +3,7 @@
 
 #include "Utils/Error.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
 #include "Muscles/ForceFromOrigin.h"
 #include "Muscles/ForceFromInsertion.h"
 #include "Muscles/Characteristics.h"
@@ -200,7 +201,7 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::Hi
 const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::HillType::force(
         biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
         const biorbd::muscles::StateDynamics &emg,
         int updateKin)
 {

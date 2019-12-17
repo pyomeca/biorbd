@@ -133,7 +133,7 @@ public:
 
     ///
     /// \brief To add a muscle to the group
-    /// \param val The muscle to add
+    /// \param muscle The muscle to add
     ///
     virtual void addMuscle(
             const biorbd::muscles::Muscle &muscle);

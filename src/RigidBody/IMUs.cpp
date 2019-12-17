@@ -88,12 +88,15 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::IMU(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {
+    // Assuming that this is also a Joints type (via BiorbdModel)
+    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+    if (updateKin) {
+        model.UpdateKinematicsCustom (&Q);
+    }
+
     std::vector<biorbd::rigidbody::IMU> pos;
     for (unsigned int i=0; i<nbIMUs(); ++i)
-        if (i==0)
-            pos.push_back(IMU(Q, i, updateKin));// Forward kinematics
-        else
-            pos.push_back(IMU(Q, i, false));// Forward kinematics
+        pos.push_back(IMU(Q, i, false));
 
     return pos;
 }
@@ -106,9 +109,9 @@ biorbd::rigidbody::IMU biorbd::rigidbody::IMUs::IMU(
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-
-    if (updateKin)
-        model.UpdateKinematicsCustom (&Q, nullptr, nullptr);
+    if (updateKin) {
+        model.UpdateKinematicsCustom (&Q);
+    }
 
     biorbd::rigidbody::IMU node = IMU(idx);
     unsigned int id = static_cast<unsigned int>(model.GetBodyBiorbdId(node.parent()));
@@ -121,11 +124,16 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::technicalIMU(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {
+    // Assuming that this is also a Joints type (via BiorbdModel)
+    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+    if (updateKin) {
+        model.UpdateKinematicsCustom (&Q);
+    }
+
     std::vector<biorbd::rigidbody::IMU> pos;
     for (unsigned int i=0; i<nbIMUs(); ++i)
         if ( IMU(i).isTechnical() ){
-            pos.push_back(IMU(Q, i, updateKin));// Forward kinematics
-            updateKin = false;
+            pos.push_back(IMU(Q, i, updateKin));
         }
     return pos;
 }
@@ -144,11 +152,16 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::anatomicalIMU(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {
+    // Assuming that this is also a Joints type (via BiorbdModel)
+    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+    if (updateKin) {
+        model.UpdateKinematicsCustom (&Q);
+    }
+
     std::vector<biorbd::rigidbody::IMU> pos;
     for (unsigned int i=0; i<nbIMUs(); ++i)
         if ( IMU(i).isAnatomical() ){
-            pos.push_back(IMU(Q, i, updateKin));// Forward kinematics
-            updateKin = false;
+            pos.push_back(IMU(Q, i, updateKin));
         }
     return pos;
 }
@@ -169,10 +182,9 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::segmentIMU(
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-
-    // Update the kinematic
-    if (updateKin)
-        model.UpdateKinematicsCustom(&Q,nullptr, nullptr);
+    if (updateKin) {
+        model.UpdateKinematicsCustom (&Q);
+    }
 
     // Segment name to find
     biorbd::utils::String name(model.segment(idx).name());
@@ -210,10 +222,12 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::IMUJacobian(
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+    if (updateKin) {
+        model.UpdateKinematicsCustom (&Q);
+    }
 
     std::vector<biorbd::utils::Matrix> G;
 
-    bool first(true);
     for (unsigned int idx=0; idx<nbIMUs(); ++idx){
         // Actual marker
         biorbd::rigidbody::IMU node = IMU(idx);
@@ -224,13 +238,9 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::IMUJacobian(
         biorbd::utils::Matrix G_tp(biorbd::utils::Matrix::Zero(9,model.dof_count));
 
         // Calculate the Jacobian of this Tag
-        if (first)
-            model.CalcMatRotJacobian(Q, id, node.rot(), G_tp, updateKin);
-        else
-            model.CalcMatRotJacobian(Q, id, node.rot(), G_tp, false); // False for speed
+        model.CalcMatRotJacobian(Q, id, node.rot(), G_tp, false); // False for speed
 
         G.push_back(G_tp);
-        first = false;
     }
 
     return G;

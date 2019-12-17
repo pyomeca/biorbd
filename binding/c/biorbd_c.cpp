@@ -11,6 +11,8 @@
 #include "Utils/Matrix.h"
 #include "RigidBody/Segment.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
+#include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/NodeSegment.h"
 #ifndef SKIP_KALMAN
@@ -76,9 +78,9 @@ void c_inverseDynamics(
         double *tau) {
     biorbd::rigidbody::GeneralizedCoordinates Q(
                 dispatchQinput(model, q));
-    biorbd::rigidbody::GeneralizedCoordinates Qdot(
+    biorbd::rigidbody::GeneralizedVelocity Qdot(
                 dispatchQinput(model, qdot));
-    biorbd::rigidbody::GeneralizedCoordinates Qddot(
+    biorbd::rigidbody::GeneralizedAcceleration Qddot(
                 dispatchQinput(model, qddot));
 
     biorbd::rigidbody::GeneralizedTorque Tau(*model);
@@ -231,7 +233,9 @@ void c_BiorbdKalmanReconsIMUstep(
             T[9*i+j] = imu[9*i+j];
         }
     // Se faire des entrés sur Q, QDot et QDDot
-    biorbd::rigidbody::GeneralizedCoordinates e_Q(*model), e_QDot(*model), e_QDDot(*model);
+    biorbd::rigidbody::GeneralizedCoordinates e_Q(*model);
+    biorbd::rigidbody::GeneralizedVelocity e_QDot(*model);
+    biorbd::rigidbody::GeneralizedAcceleration e_QDDot(*model);
 
     // Faire le filtre
     kalman->reconstructFrame(*model, T, &e_Q, &e_QDot, &e_QDDot);

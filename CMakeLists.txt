@@ -31,6 +31,14 @@ find_package(TinyXML)
 # Manage options
 option(SKIP_KALMAN "If Kalman filter should be compiled" OFF)
 
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+    option(SKIP_ASSERT "Some checks slow the code down at run-time, but provide more robust code.
+        By default, it is ON when compiling in debug, but OFF in release." ON)
+else()
+    option(SKIP_ASSERT "Some checks slow the code down at run-time, but provide more robust code.
+        By default, it is ON when compiling in debug, but OFF in release." OFF)
+endif()
+
 if (IPOPT_FOUND)
     option(SKIP_STATIC_OPTIM "If Static optimization should be compiled" OFF)
 else()

@@ -85,7 +85,7 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::Id
 const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::IdealizedActuator::force(
         biorbd::rigidbody::Joints &,
         const biorbd::rigidbody::GeneralizedCoordinates &,
-        const biorbd::rigidbody::GeneralizedCoordinates &,
+        const biorbd::rigidbody::GeneralizedVelocity &,
         const biorbd::muscles::StateDynamics &emg,
         int)
 {

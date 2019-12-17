@@ -62,11 +62,13 @@ public:
     /// \param active Proportion of the activated fibers in the muscle
     /// \param fatigued Proportion of the fatigued fibers in the muscle
     /// \param resting Proportion of the resting fibers in the muscle
+    /// \param turnOffWarnings If the warnings should be OFF or ON.
     ///
     virtual void setState(
             double active,
             double fatigued,
-            double resting);
+            double resting,
+            bool turnOffWarnings = false);
 
     ///
     /// \brief Return the propotion of active muscle fibers

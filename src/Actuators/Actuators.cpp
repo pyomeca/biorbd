@@ -5,6 +5,7 @@
 #include "Utils/Error.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/Joints.h"
 #include "Actuators/Actuator.h"
 #include "Actuators/ActuatorGauss3p.h"
@@ -80,18 +81,23 @@ void biorbd::actuator::Actuators::DeepCopy(const biorbd::actuator::Actuators &ot
 
 void biorbd::actuator::Actuators::addActuator(const biorbd::actuator::Actuator &act)
 {
-    biorbd::utils::Error::check(!*m_isClose, "You can't add actuator after closing the model");
+    biorbd::utils::Error::check(
+                !*m_isClose, "You can't add actuator after closing the model");
 
     // Assuming that this is also a Joints type (via BiorbdModel)
     const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
-    // Verify that the target dof is associated to a dof that already exists in the model
-    biorbd::utils::Error::check(act.index()<model.nbDof(), "Sent index is out of dof range");
+    // Verify that the target dof is associated to a dof that
+    // already exists in the model
+    biorbd::utils::Error::check(
+                act.index()<model.nbDof(), "Sent index is out of dof range");
 
-    // For speed purposes and coherence with the Q, set the actuator to the same index as its associated dof
+    // For speed purposes and coherence with the Q,
+    // set the actuator to the same index as its associated dof
     unsigned int idx(act.index());
 
-    // If there are less actuators declared than dof, the vector must be enlarged
+    // If there are less actuators declared than dof,
+    // the vector must be enlarged
     if (idx >= m_all->size()){
         m_all->resize(idx+1);
         m_isDofSet->resize((idx+1)*2, false);
@@ -152,10 +158,14 @@ void biorbd::actuator::Actuators::closeActuator()
     // Assuming that this is also a Joints type (via BiorbdModel)
     const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
-    biorbd::utils::Error::check(model.nbDof()==m_all->size(), "All dof must have their actuators set");
+    biorbd::utils::Error::check(
+                model.nbDof()==m_all->size(),
+                "All dof must have their actuators set");
 
     for (unsigned int i=0; i<m_all->size()*2; ++i)
-        biorbd::utils::Error::check((*m_isDofSet)[i], "All DoF must have their actuators set before closing the model");
+        biorbd::utils::Error::check((*m_isDofSet)[i],
+                                    "All DoF must have their actuators set "
+                                    "before closing the model");
 
     *m_isClose = true;
 }
@@ -188,16 +198,17 @@ unsigned int biorbd::actuator::Actuators::nbActuators() const
 biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
         const biorbd::utils::Vector& activation,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot)
 {
     // Set qdot to be positive if concentric and negative is excentric
-    biorbd::rigidbody::GeneralizedCoordinates QdotResigned(Qdot);
+    biorbd::rigidbody::GeneralizedVelocity QdotResigned(Qdot);
     for (unsigned int i=0; i<Qdot.size(); ++i)
         if (activation(i)<0)
             QdotResigned(i) = -Qdot(i);
 
     // Calculate the maximal torques
-    biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(torqueMax(activation,Q,QdotResigned));
+    biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(
+                torqueMax(activation,Q,QdotResigned));
 
     // Put the signs
     for (unsigned int i=0; i<GeneralizedTorque.size(); ++i)
@@ -207,9 +218,10 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
 }
 
 
-std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque> biorbd::actuator::Actuators::torqueMax(
+std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque>
+biorbd::actuator::Actuators::torqueMax(
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
+        const biorbd::rigidbody::GeneralizedVelocity& Qdot)
 {
     biorbd::utils::Error::check(*m_isClose, "Close the actuator model before calling torqueMax");
 
@@ -254,7 +266,7 @@ std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTo
 biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torqueMax(
         const utils::Vector &activation,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot)
 {
     biorbd::utils::Error::check(*m_isClose, "Close the actuator model before calling torqueMax");
 

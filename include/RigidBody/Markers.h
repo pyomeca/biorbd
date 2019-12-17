@@ -13,6 +13,7 @@ class Matrix;
 
 namespace rigidbody {
 class GeneralizedCoordinates;
+class GeneralizedVelocity;
 class NodeSegment;
 
 ///
@@ -172,7 +173,7 @@ public:
     ///
     biorbd::rigidbody::NodeSegment markerVelocity(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
             unsigned int  idx,
             bool removeAxis=true,
             bool updateKin = true);
@@ -188,7 +189,7 @@ public:
     ///
     std::vector<biorbd::rigidbody::NodeSegment> markersVelocity(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
             bool removeAxis=true,
             bool updateKin = true); 
 

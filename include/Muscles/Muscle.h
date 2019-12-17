@@ -140,7 +140,7 @@ public:
     double velocity(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::rigidbody::GeneralizedCoordinates& Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity& Qdot,
             bool updateKin = true);
 
     ///
@@ -164,7 +164,7 @@ public:
     void updateOrientations(
             biorbd::rigidbody::Joints &model,
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
             int updateKin = 2);
 
     ///
@@ -185,11 +185,11 @@ public:
     void updateOrientations(
             std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
             biorbd::utils::Matrix& jacoPointsInGlobal,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot); 
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot);
 
     ///
     /// \brief Set the position of all the points attached to the muscle (0 being the origin)
-    /// \param val New value of the position
+    /// \param positions New value of the position
     ///
     void setPosition(
             const biorbd::muscles::Geometry &positions);
@@ -202,7 +202,7 @@ public:
 
     ///
     /// \brief Set the muscle characteristics
-    /// \param val New value of the muscle characteristics
+    /// \param characteristics New value of the muscle characteristics
     ///
     void setCharacteristics(
             const biorbd::muscles::Characteristics &characteristics);
@@ -215,7 +215,7 @@ public:
 
     ///
     /// \brief Return the muscle points in global reference frame
-    /// \param j The joint model
+    /// \param model The joint model
     /// \param Q The generalized coordinates
     /// \return The muscle points in global reference frame
     ///
@@ -257,7 +257,7 @@ public:
 
     ///
     /// \brief Return the activation time derivative
-    /// \param s The dynamic state
+    /// \param state The dynamic state
     /// \param alreadyNormalized If the emg is already normalized
     /// \return The activation time derivative
     ///

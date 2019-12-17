@@ -16,6 +16,7 @@ class Vector3d;
 
 namespace rigidbody {
 class GeneralizedCoordinates;
+class GeneralizedVelocity;
 class GeneralizedTorque;
 }
 
@@ -119,7 +120,7 @@ public:
     ///
     void updateMuscles(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::rigidbody::GeneralizedCoordinates& QDot,
+            const biorbd::rigidbody::GeneralizedVelocity& QDot,
             bool updateKin); 
 
     ///
@@ -140,7 +141,7 @@ public:
     void updateMuscles(
             std::vector<std::vector<biorbd::utils::Vector3d>>& musclePointsInGlobal,
             std::vector<biorbd::utils::Matrix>& jacoPointsInGlobal,
-            const biorbd::rigidbody::GeneralizedCoordinates& QDot);
+            const biorbd::rigidbody::GeneralizedVelocity& QDot);
 
     ///
     /// \brief Compute the muscular joint torque
@@ -151,15 +152,15 @@ public:
     ///
     /// The computation for the muscular joint torque is done from virtual power:
     ///
-    /// i.e. $\text{-J} \times \text{F}$
+    /// i.e. \f$-J \times F\f$
     ///
-    /// where $J$ is the muscle lengths jacobian and $F$ is the force vector of all the muscles
+    /// where \f$J\f$ is the muscle lengths jacobian and \f$F\f$ is the force vector of all the muscles
     /// 
     biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
             const biorbd::utils::Vector& F,
             bool updateKin = true,
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
-            const biorbd::rigidbody::GeneralizedCoordinates* QDot = nullptr);
+            const biorbd::rigidbody::GeneralizedVelocity* QDot = nullptr);
 
     ///
     /// \brief Compute the muscular joint torque
@@ -171,16 +172,16 @@ public:
     ///
     /// The computation for the muscular joint torque is done from virtual power:
     ///
-    /// i.e. $\text{-J} \times \text{F}$
+    /// i.e. \f$-J \times F\f$
     ///
-    /// where $J$ is the muscle lengths jacobian and $F$ is the force vector of all the muscles
+    /// where \f$J\f$ is the muscle lengths jacobian and \f$F\f$ is the force vector of all the muscles
     ///
     biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
-            const std::vector<std::shared_ptr<StateDynamics>> &emg,
+            const std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> &emg,
             biorbd::utils::Vector& F,
             bool updateKin = true,
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
-            const biorbd::rigidbody::GeneralizedCoordinates* QDot = nullptr);
+            const biorbd::rigidbody::GeneralizedVelocity* QDot = nullptr);
 
     ///
     /// \brief Compute the muscular joint torque
@@ -191,15 +192,15 @@ public:
     ///
     /// The computation for the muscular joint torque is done from virtual power:
     ///
-    /// i.e. $\text{-J} \times \text{F}$
+    /// i.e. \f$-J \times F\f$
     ///
-    /// where $J$ is the muscle lengths jacobian and $F$ is the force vector of all the muscles
+    /// where \f$J\f$ is the muscle lengths jacobian and \f$F\f$ is the force vector of all the muscles
     ///
     biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
-            const std::vector<std::shared_ptr<StateDynamics>> &emg,
+            const std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>& emg,
             bool updateKin = true,
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
-            const biorbd::rigidbody::GeneralizedCoordinates* QDot = nullptr);
+            const biorbd::rigidbody::GeneralizedVelocity* QDot = nullptr);
 
     ///
     /// \brief Return the previously computed muscle length jacobian
@@ -227,7 +228,7 @@ public:
             const std::vector<std::shared_ptr<StateDynamics>> &emg,
             bool updateKin = true,
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
-            const biorbd::rigidbody::GeneralizedCoordinates* QDot = nullptr);
+            const biorbd::rigidbody::GeneralizedVelocity* QDot = nullptr);
 
     ///
     /// \brief Return the total number of muscle groups

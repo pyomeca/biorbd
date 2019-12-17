@@ -7,10 +7,11 @@
 #include "Utils/String.h"
 #include "Utils/Vector.h"
 
-biorbd::utils::Rotation::Rotation(const Eigen::Matrix3d& m) :
-    Eigen::Matrix3d(m)
+biorbd::utils::Rotation::Rotation(
+        const Eigen::Matrix3d& matrix) :
+    Eigen::Matrix3d(matrix)
 {
-
+    checkUnitary();
 }
 
 biorbd::utils::Rotation::Rotation(
@@ -193,6 +194,14 @@ biorbd::utils::Rotation biorbd::utils::Rotation::mean(
     biorbd::utils::Rotation m_out(svd.matrixU() * svd.matrixV().transpose());
 
     return m_out;
+}
+
+void biorbd::utils::Rotation::checkUnitary()
+{
+#ifndef SKIP_ASSERT
+    biorbd::utils::Error::check(fabs(this->squaredNorm() - 3.) < 1e-10,
+                                "The Rotation matrix norm is not equal to one");
+#endif
 }
 
 std::ostream &operator<<(std::ostream &os, const biorbd::utils::Rotation &a)

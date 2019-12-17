@@ -24,7 +24,7 @@ void Matlab_muscleUpdate( int, mxArray *[],
     // Recevoir Q
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(prhs, 3, nQdot);
 
     // S'assurer qu'il n'y a qu'un seul frame
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));

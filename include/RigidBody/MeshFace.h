@@ -52,7 +52,7 @@ public:
 
     ///
     /// \brief Copy the face from another MeshFace
-    /// \param v The other MeshFace
+    /// \param other The other MeshFace
     ///
     void setFace(
             const biorbd::rigidbody::MeshFace& other);

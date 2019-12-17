@@ -12,7 +12,7 @@ biorbd::utils::RotoTrans::RotoTrans(
         const Eigen::Matrix4d& matrix) :
     Eigen::Matrix4d(matrix)
 {
-
+    checkUnitary();
 }
 
 biorbd::utils::RotoTrans::RotoTrans(
@@ -39,7 +39,8 @@ biorbd::utils::RotoTrans::RotoTrans(
 
 }
 
-biorbd::utils::RotoTrans::RotoTrans(const RigidBodyDynamics::Math::SpatialTransform& st) :
+biorbd::utils::RotoTrans::RotoTrans(
+        const RigidBodyDynamics::Math::SpatialTransform& st) :
     Eigen::Matrix4d(fromSpatialTransform(st))
 {
 
@@ -132,6 +133,17 @@ Eigen::Vector4d biorbd::utils::RotoTrans::expand3dTo4d(const biorbd::utils::Vect
     v2.block(0,0,3,1) = v1;
     v2(3) = 1;
     return v2;
+}
+
+void biorbd::utils::RotoTrans::checkUnitary()
+{
+#ifndef SKIP_ASSERT
+    this->rot(); // Automatically cast the test for the rotation part
+    biorbd::utils::Error::check(this->block(3, 0, 1, 4).sum() == 1.,
+                                "Last row of the RotoTrans should be (0,0,0,1");
+    biorbd::utils::Error::check((*this)(3, 3) == 1.,
+                                "Last row of the RotoTrans should be (0,0,0,1");
+#endif
 }
 
 std::ostream &operator<<(std::ostream &os, const biorbd::utils::RotoTrans &a)

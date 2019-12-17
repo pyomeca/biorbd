@@ -8,6 +8,7 @@
 #include "Utils/RotoTrans.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
 #include "Muscles/WrappingObject.h"
 #include "Muscles/PathModifiers.h"
 #include "Muscles/Characteristics.h"
@@ -91,11 +92,14 @@ void biorbd::muscles::Geometry::DeepCopy(const biorbd::muscles::Geometry &other)
 void biorbd::muscles::Geometry::updateKinematics(
         biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates *Q,
-        const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+        const biorbd::rigidbody::GeneralizedVelocity *Qdot,
         int updateKin)
 {
     if (*m_posAndJacoWereForced){
-        biorbd::utils::Error::warning(false, "Warning, using updateKinematics overrides the previously sent position and jacobian");
+        biorbd::utils::Error::warning(
+                    false,
+                    "Warning, using updateKinematics overrides the"
+                    " previously sent position and jacobian");
         *m_posAndJacoWereForced = false;
     }
 
@@ -117,17 +121,20 @@ void biorbd::muscles::Geometry::updateKinematics(biorbd::rigidbody::Joints &mode
         const biorbd::muscles::Characteristics& characteristics,
         biorbd::muscles::PathModifiers &pathModifiers,
         const biorbd::rigidbody::GeneralizedCoordinates *Q,
-        const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
+        const biorbd::rigidbody::GeneralizedVelocity *Qdot,
         int updateKin)
 {
     if (*m_posAndJacoWereForced){
-        biorbd::utils::Error::warning(false, "Warning, using updateKinematics overrides the previously sent position and jacobian");
+        biorbd::utils::Error::warning(
+                    false, "Warning, using updateKinematics overrides the"
+                           " previously sent position and jacobian");
         *m_posAndJacoWereForced = false;
     }
 
     // Ensure the model is in the right configuration
-    if (updateKin > 1)
-        model.UpdateKinematicsCustom(Q, Qdot, nullptr);
+    if (updateKin > 1) {
+        model.UpdateKinematicsCustom(Q, Qdot);
+    }
 
     // Position of the points in space
     setMusclesPointsInGlobal(model, *Q, &pathModifiers);
@@ -140,9 +147,9 @@ void biorbd::muscles::Geometry::updateKinematics(biorbd::rigidbody::Joints &mode
 }
 
 void biorbd::muscles::Geometry::updateKinematics(
-        std::vector<utils::Vector3d> &musclePointsInGlobal,
-        biorbd::utils::Matrix &jacoPointsInGlobal,
-        const biorbd::rigidbody::GeneralizedCoordinates *Qdot)
+        std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
+        biorbd::utils::Matrix& jacoPointsInGlobal,
+        const biorbd::rigidbody::GeneralizedVelocity* Qdot)
 {
     *m_posAndJacoWereForced = true;
 
@@ -157,10 +164,10 @@ void biorbd::muscles::Geometry::updateKinematics(
 }
 
 void biorbd::muscles::Geometry::updateKinematics(
-        std::vector<utils::Vector3d> &musclePointsInGlobal,
-        biorbd::utils::Matrix &jacoPointsInGlobal,
-        const biorbd::muscles::Characteristics &c,
-        const biorbd::rigidbody::GeneralizedCoordinates *Qdot)
+        std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
+        biorbd::utils::Matrix& jacoPointsInGlobal,
+        const biorbd::muscles::Characteristics& c,
+        const biorbd::rigidbody::GeneralizedVelocity* Qdot)
 {
     *m_posAndJacoWereForced = true;
 
@@ -260,7 +267,7 @@ const biorbd::utils::Matrix &biorbd::muscles::Geometry::jacobianLength() const
 // --------------------------------------- //
 
 void biorbd::muscles::Geometry::_updateKinematics(
-        const biorbd::rigidbody::GeneralizedCoordinates* Qdot,
+        const biorbd::rigidbody::GeneralizedVelocity* Qdot,
         const biorbd::muscles::Characteristics* characteristics,
         biorbd::muscles::PathModifiers *pathModifiers)
 {
@@ -296,7 +303,8 @@ const biorbd::utils::Vector3d &biorbd::muscles::Geometry::insertionInGlobal(
     return *m_insertionInGlobal;
 }
 
-void biorbd::muscles::Geometry::setMusclesPointsInGlobal(std::vector<utils::Vector3d> &ptsInGlobal)
+void biorbd::muscles::Geometry::setMusclesPointsInGlobal(
+        std::vector<biorbd::utils::Vector3d> &ptsInGlobal)
 {
     biorbd::utils::Error::check(ptsInGlobal.size() >= 2, "ptsInGlobal must at least have an origin and an insertion");
     m_pointsInLocal->clear(); // In this mode, we don't need the local, because the Jacobian of the points has to be given as well
@@ -332,7 +340,8 @@ void biorbd::muscles::Geometry::setMusclesPointsInGlobal(
         w.wrapPoints(RT,po_mus,pi_mus,po_wrap, pi_wrap);
 
         // Store the points in local
-        biorbd::utils::Error::warning(0, "Attention le push_back de m_pointsInLocal n'a pas été validé");
+        biorbd::utils::Error::check(0, "That part of the function is not validated, "
+                                       "please contact pariterre@hotmail.com");
         m_pointsInLocal->push_back(originInLocal());
         m_pointsInLocal->push_back(
                     biorbd::utils::Vector3d(RigidBodyDynamics::CalcBodyToBaseCoordinates(
@@ -408,7 +417,8 @@ double biorbd::muscles::Geometry::length(
     return *m_length;
 }
 
-double biorbd::muscles::Geometry::velocity(const biorbd::rigidbody::GeneralizedCoordinates &Qdot)
+double biorbd::muscles::Geometry::velocity(
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot)
 {
     // Compute the velocity of the muscular elongation
     *m_velocity = (jacobianLength()*Qdot)[0];

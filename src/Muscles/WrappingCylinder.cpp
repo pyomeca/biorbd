@@ -146,8 +146,9 @@ const biorbd::utils::RotoTrans& biorbd::muscles::WrappingCylinder::RT(
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         bool updateKin)
 {
-    if (updateKin)
+    if (updateKin) {
         model.UpdateKinematicsCustom(&Q);
+    }
 
     // Get the RotoTrans matrix of the cylinder in space
     *m_RT = model.globalJCS(*m_parentName) * *m_RTtoParent;

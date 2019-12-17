@@ -5,6 +5,8 @@
 #include "Utils/Matrix.h"
 #include "Utils/Vector.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
+#include "RigidBody/GeneralizedAcceleration.h"
 
 biorbd::rigidbody::KalmanRecons::KalmanRecons() :
     m_params(std::make_shared<KalmanParam>()),
@@ -87,8 +89,8 @@ void biorbd::rigidbody::KalmanRecons::manageOcclusionDuringIteration(
 
 void biorbd::rigidbody::KalmanRecons::getState(
         biorbd::rigidbody::GeneralizedCoordinates *Q,
-        biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-        biorbd::rigidbody::GeneralizedCoordinates *Qddot){
+        biorbd::rigidbody::GeneralizedVelocity *Qdot,
+        biorbd::rigidbody::GeneralizedAcceleration *Qddot){
     if (Q != nullptr)
         *Q = m_xp->block(0, 0, *m_nbDof, 1);
 
@@ -189,8 +191,8 @@ biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::KalmanRecons::initS
 
 void biorbd::rigidbody::KalmanRecons::setInitState(
         const biorbd::rigidbody::GeneralizedCoordinates *Q,
-        const biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-        const biorbd::rigidbody::GeneralizedCoordinates *Qddot){
+        const biorbd::rigidbody::GeneralizedVelocity *Qdot,
+        const biorbd::rigidbody::GeneralizedAcceleration *Qddot){
     if (Q != nullptr)
         m_xp->block(0, 0, *m_nbDof, 1) = *Q;
 

@@ -6,6 +6,8 @@
 #include "biorbdConfig.h"
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
+#include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
 #ifdef MODULE_MUSCLES
 #include "Muscles/all.h"
@@ -20,7 +22,8 @@ static unsigned int muscleForMuscleJacobian(1);
 TEST(MuscleForce, force)
 {
     biorbd::Model model(modelPathForMuscleForce);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model), QDot(model);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity QDot(model);
     Q.setOnes()/10;
     QDot.setOnes()/10;
     std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> states;
@@ -54,7 +57,9 @@ TEST(MuscleForce, unitTest)
 TEST(MuscleForce, torqueFromMuscles)
 {
     biorbd::Model model(modelPathForMuscleForce);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model), QDot(model), QDDot(model), QDDotExpected(model);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity QDot(model);
+    biorbd::rigidbody::GeneralizedAcceleration QDDot(model), QDDotExpected(model);
     Q.setOnes()/10;
     QDot.setOnes()/10;
     std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> states;
@@ -190,7 +195,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
     // Prepare the model
     biorbd::Model model(modelPathForXiaDerivativeTest);
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedCoordinates QDot(model);
+    biorbd::rigidbody::GeneralizedVelocity QDot(model);
     Q.setZero();
     QDot.setZero();
     model.updateMuscles(Q, QDot, true);
@@ -235,7 +240,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface){
     // Prepare the model
     biorbd::Model model(modelPathForXiaDerivativeTest);
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedCoordinates QDot(model);
+    biorbd::rigidbody::GeneralizedVelocity QDot(model);
     Q.setZero();
     QDot.setZero();
     model.updateMuscles(Q, QDot, true);
@@ -268,7 +273,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeShallowViaCopy){
     // Prepare the model
     biorbd::Model model(modelPathForXiaDerivativeTest);
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedCoordinates QDot(model);
+    biorbd::rigidbody::GeneralizedVelocity QDot(model);
     Q.setZero();
     QDot.setZero();
     model.updateMuscles(Q, QDot, true);

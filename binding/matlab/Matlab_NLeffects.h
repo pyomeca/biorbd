@@ -15,12 +15,12 @@ void Matlab_NLeffects( int, mxArray *plhs[],
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
-    unsigned int nTau = model->nbGeneralizedTorque() + model->nbRoot(); // Nombre de GeneralizedTorque
+    unsigned int nTau = model->nbGeneralizedTorque(); // Nombre de GeneralizedTorque
 
     // Recevoir Q
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(prhs, 3, nQdot);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));
@@ -36,7 +36,7 @@ void Matlab_NLeffects( int, mxArray *plhs[],
     biorbd::rigidbody::GeneralizedTorque Tau(nTau);
     for (unsigned int j=0; j<Q.size(); ++j){
         Tau.setZero();
-        RigidBodyDynamics::NonlinearEffects(*model, Q[j], QDot[j], Tau);// Inverse Dynamics
+        RigidBodyDynamics::NonlinearEffects(*model, Q[j], QDot[j], Tau);
 
         // Remplir l'output
         for (unsigned int i=0; i<nTau; i++){

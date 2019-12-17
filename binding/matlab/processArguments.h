@@ -5,6 +5,8 @@
 #include "Utils/Matrix.h"
 #include "Utils/Rotation.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
+#include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/Segment.h"
 #include "RigidBody/IMU.h"
@@ -243,23 +245,85 @@ std::vector<biorbd::rigidbody::GeneralizedCoordinates> getParameterQ(const mxArr
 
     return Q;
 }
-std::vector<biorbd::rigidbody::GeneralizedCoordinates> getParameterQddot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
-    return getParameterQ(prhs, idx, nDof, "qddot");
+std::vector<biorbd::rigidbody::GeneralizedAcceleration> getParameterQddot(
+        const mxArray*prhs[], unsigned int idx, unsigned int nbQddot, std::string type = "qddot"){
+
+    // Check data type of input argument
+    if (!(mxIsDouble(prhs[idx]))) {
+        std::ostringstream msg;
+        msg << "Argument " << idx+1 << " must be of type double.";
+        mexErrMsgIdAndTxt( "MATLAB:findnz:invalidInputType",msg.str().c_str());
+    }
+
+    mwSize m=mxGetM(prhs[idx]); // line
+    // Get the number of elements in the input argument
+    if (m!=nbQddot){
+        std::ostringstream msg;
+        msg << "Wrong size! (Input " << type << "), should be " << nbQddot;
+        mexErrMsgTxt(msg.str().c_str());
+    }
+
+    // Get the number of frames in the input argument
+    mwSize nFrames=mxGetN(prhs[idx]); // line
+
+    double *q=mxGetPr(prhs[idx]); //matrice de position
+
+    // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
+    std::vector<biorbd::rigidbody::GeneralizedAcceleration> Qddot;
+    for (unsigned int j=0; j<nFrames; ++j){
+        biorbd::rigidbody::GeneralizedAcceleration Qddot_tp(nbQddot);
+        for (unsigned int i=0; i<nbQddot; i++)
+            Qddot_tp[i] = q[j*nbQddot+i];
+
+        Qddot.push_back(Qddot_tp);
+    }
+
+    return Qddot;
 }
-std::vector<biorbd::rigidbody::GeneralizedCoordinates> getParameterQdot(const mxArray*prhs[], unsigned int idx, unsigned int nDof){
-    return getParameterQ(prhs, idx, nDof, "qdot");
+std::vector<biorbd::rigidbody::GeneralizedVelocity> getParameterQdot(
+        const mxArray*prhs[], unsigned int idx, unsigned int nbQdot, std::string type = "qdot"){
+
+    // Check data type of input argument
+    if (!(mxIsDouble(prhs[idx]))) {
+        std::ostringstream msg;
+        msg << "Argument " << idx+1 << " must be of type double.";
+        mexErrMsgIdAndTxt( "MATLAB:findnz:invalidInputType",msg.str().c_str());
+    }
+
+    mwSize m=mxGetM(prhs[idx]); // line
+    // Get the number of elements in the input argument
+    if (m!=nbQdot){
+        std::ostringstream msg;
+        msg << "Wrong size! (Input " << type << "), should be " << nbQdot;
+        mexErrMsgTxt(msg.str().c_str());
+    }
+
+    // Get the number of frames in the input argument
+    mwSize nFrames=mxGetN(prhs[idx]); // line
+
+    double *q=mxGetPr(prhs[idx]); //matrice de position
+
+    // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
+    std::vector<biorbd::rigidbody::GeneralizedVelocity> Qdot;
+    for (unsigned int j=0; j<nFrames; ++j){
+        biorbd::rigidbody::GeneralizedVelocity Qdot_tp(nbQdot);
+        for (unsigned int i=0; i<nbQdot; i++)
+            Qdot_tp[i] = q[j*nbQdot+i];
+
+        Qdot.push_back(Qdot_tp);
+    }
+
+    return Qdot;
 }
-std::vector<biorbd::rigidbody::GeneralizedTorque> getParameterGeneralizedTorque(const mxArray*prhs[], unsigned int idx, unsigned int nControl, unsigned int nRoot){
+std::vector<biorbd::rigidbody::GeneralizedTorque> getParameterGeneralizedTorque(const mxArray*prhs[], unsigned int idx, unsigned int nControl){
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> AllGeneralizedTorque_tp = getParameterQ(prhs, idx, nControl, "GeneralizedTorque");
     std::vector<biorbd::rigidbody::GeneralizedTorque> AllGeneralizedTorque;
 
     for (unsigned int j=0; j<AllGeneralizedTorque_tp.size(); ++j){
-        biorbd::rigidbody::GeneralizedTorque GeneralizedTorque_tp(nControl+nRoot);
+        biorbd::rigidbody::GeneralizedTorque GeneralizedTorque_tp(nControl);
 
-        for (unsigned int i=0; i<nRoot; ++i) // Root segment
-            GeneralizedTorque_tp(i) =  0;
-        for (unsigned int i=nRoot; i < nControl+nRoot; ++i) // Everything else
-            GeneralizedTorque_tp(i) = (*(AllGeneralizedTorque_tp.begin()+j))[i-nRoot];
+        for (unsigned int i=0; i < nControl; ++i) // Everything else
+            GeneralizedTorque_tp(i) = (*(AllGeneralizedTorque_tp.begin()+j))[i];
 
         AllGeneralizedTorque.push_back(GeneralizedTorque_tp);
     }

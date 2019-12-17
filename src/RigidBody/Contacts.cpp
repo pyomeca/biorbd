@@ -128,9 +128,9 @@ std::vector<biorbd::utils::Vector3d> biorbd::rigidbody::Contacts::constraintsInG
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-
-    if (updateKin)
-        model.UpdateKinematicsCustom(&Q, nullptr, nullptr);
+    if (updateKin) {
+        model.UpdateKinematicsCustom (&Q);
+    }
 
     // Output variable
     std::vector<biorbd::utils::Vector3d> tp;
@@ -138,7 +138,8 @@ std::vector<biorbd::utils::Vector3d> biorbd::rigidbody::Contacts::constraintsInG
 
     // On each control, apply the rotation and save the position
     for (unsigned int i=0; i<size(); ++i)
-        tp.push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, body[i], point[i], false));
+        tp.push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(
+                         model, Q, body[i], point[i], false));
 
     return tp;
 }

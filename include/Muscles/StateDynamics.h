@@ -50,8 +50,14 @@ public:
     ///
     /// \brief Set the muscle excitation
     /// \param val The value of the muscle excitation
+    /// \param turnOffWarnings If the warnings should be OFF or ON.
     ///
-    virtual void setExcitation(double val);
+    /// Even if the warning on the excitation being lower than 0 is set to OFF
+    /// it changes it to 0 anyway, but doesn't send a warning saying it.
+    ///
+    virtual void setExcitation(
+            double val,
+            bool turnOffWarnings = false);
 
     ///
     /// \brief Return the previous activation
@@ -62,8 +68,17 @@ public:
     ///
     /// \brief Set the muscle activation
     /// \param val The value of the muscle activation
+    /// \param turnOffWarnings If the warnings should be OFF or ON.
     ///
-    virtual void setActivation(double val);
+    /// Even if the warning on the activation being lower than 0 is set to OFF
+    /// it changes it to 0 anyway, but doesn't send a warning saying it.
+    ///
+    /// Even if the warning on the activation being higher than 1 is set to OFF
+    /// it changes it to 1 anyway, but doesn't send a warning saying it.
+    ///
+    virtual void setActivation(
+            double val,
+            bool turnOffWarnings = false);
 
     ///
     /// \brief Return the previous activation

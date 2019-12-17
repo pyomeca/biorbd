@@ -8,13 +8,14 @@
 #include "Utils/Matrix.h"
 #include "Utils/Vector.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "Muscles/StateDynamics.h"
 
 biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
         biorbd::Model &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
         const biorbd::rigidbody::GeneralizedTorque &torqueTarget,
         const biorbd::utils::Vector &activationInit,
         bool useResidual,
@@ -31,7 +32,7 @@ biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     m_eps(std::make_shared<double>(eps)),
     m_activations(std::make_shared<biorbd::utils::Vector>(activationInit)),
     m_Q(std::make_shared<biorbd::rigidbody::GeneralizedCoordinates>(Q)),
-    m_Qdot(std::make_shared<biorbd::rigidbody::GeneralizedCoordinates>(Qdot)),
+    m_Qdot(std::make_shared<biorbd::rigidbody::GeneralizedVelocity>(Qdot)),
     m_torqueTarget(std::make_shared<biorbd::rigidbody::GeneralizedTorque>(torqueTarget)),
     m_torqueResidual(std::make_shared<biorbd::utils::Vector>(biorbd::utils::Vector::Zero(*m_nbTorque))),
     m_torquePonderation(std::make_shared<double>(1000)),
@@ -195,9 +196,9 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_g(
     if (new_x)
         dispatch(x);
 
-    const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueMusc(m_model.muscularJointTorque(*m_states, false, m_Q.get(), m_Qdot.get()));
+    const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueMusc(
+                m_model.muscularJointTorque(*m_states, false, m_Q.get(), m_Qdot.get()));
 
-    // TODO : adjust dimensions for when "root_actuated" is set to false in bioMod file
     for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ )
          g[i] = GeneralizedTorqueMusc[i] + (*m_torqueResidual)[i] - (*m_torqueTarget)[i];
 

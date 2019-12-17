@@ -93,11 +93,12 @@ public:
     /// \param val The number read (output)
     /// \return True on success
     ///
-    bool read(double& val);
+    bool read(
+            double& val);
 
     ///
     /// \brief Read and evaluate an equation
-    /// \param val The number read (output)
+    /// \param result The number read (output)
     /// \param variables The variable set
     /// \return True on success
     ///

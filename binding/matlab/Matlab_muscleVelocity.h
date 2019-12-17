@@ -22,7 +22,7 @@ void Matlab_muscleVelocity( int, mxArray *plhs[],
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
 
     // Recevoir Qdot
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Qdot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedVelocity> Qdot = getParameterQdot(prhs, 3, nQdot);
 
     // S'assurer que le même nombre d'instants a été envoyé
     if (Q.size() != Qdot.size()) {

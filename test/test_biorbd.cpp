@@ -7,6 +7,7 @@
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedTorque.h"
 
 static double requiredPrecision(1e-10);
@@ -60,9 +61,8 @@ TEST(MeshFile, FileIoVtp) {
 
 TEST(Integrate, freefall) {
     biorbd::Model model(modelFreeFall);
-    biorbd::rigidbody::GeneralizedCoordinates
-            Q(model), Qdot(model),
-            QIntegrated(model), QdotIntegrated(model);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model), QIntegrated(model);
+    biorbd::rigidbody::GeneralizedVelocity Qdot(model), QdotIntegrated(model);
     biorbd::rigidbody::GeneralizedTorque Tau(model.nbQ());
     Q.setZero();
     Qdot.setZero();

@@ -7,6 +7,7 @@
 namespace biorbd {
 namespace rigidbody {
 class GeneralizedCoordinates;
+class GeneralizedVelocity;
 }
 
 namespace actuator {
@@ -123,7 +124,7 @@ public:
     ///
     virtual double torqueMax(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedCoordinates &Qdot);
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot);
 
 protected:
     ///

@@ -16,6 +16,8 @@ class Vector;
 
 namespace rigidbody {
 class GeneralizedCoordinates;
+class GeneralizedVelocity;
+class GeneralizedAcceleration;
 
 ///
 /// \brief Class Kinematic reconstruction algorithm using an Extended Kalman Filter
@@ -98,8 +100,8 @@ public:
     ///
     void getState(
             biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
-            biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,
-            biorbd::rigidbody::GeneralizedCoordinates *Qddot = nullptr);
+            biorbd::rigidbody::GeneralizedVelocity *Qdot = nullptr,
+            biorbd::rigidbody::GeneralizedAcceleration *Qddot = nullptr);
 
     ///
     /// \brief Set the initial guess of the reconstruction
@@ -109,8 +111,8 @@ public:
     ///
     void setInitState(
             const biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
-            const biorbd::rigidbody::GeneralizedCoordinates *Qdot = nullptr,
-            const biorbd::rigidbody::GeneralizedCoordinates *Qddot = nullptr);
+            const biorbd::rigidbody::GeneralizedVelocity *Qdot = nullptr,
+            const biorbd::rigidbody::GeneralizedAcceleration *Qddot = nullptr);
 
     ///
     /// \brief Proceed to one iteration of the Kalman filter
@@ -127,7 +129,7 @@ protected:
     /// \brief Create the evolution matrix
     /// \param m The number of degrees of freedom
     /// \param n The order of the Taylor development
-    /// \param Te Is equal to $\frac{1}{\textAcquisition frequency}$
+    /// \param Te Is equal to \f$\frac{1}{\text{Acquisition frequency}}\f$
     /// \return The evolution matrix assuming constant frame rate
     ///
     biorbd::utils::Matrix evolutionMatrix(
@@ -138,7 +140,7 @@ protected:
     ///
     /// \brief Process the noise matrix
     /// \param nbQ The number of degrees-of-freedom
-    /// \param Te Is equal to $\frac{1}{\textAcquisition frequency}$
+    /// \param Te Is equal to \f$\frac{1}{\text{Acquisition frequency}}\f$
     /// \return The noise matrix
     ///
     biorbd::utils::Matrix processNoiseMatrix(
@@ -147,7 +149,7 @@ protected:
 
     ///
     /// \brief Matrix of the noise on the measurements
-    /// \param nT The number of measurements
+    /// \param nbT The number of measurements
     /// \param val The noise level
     /// \return The matrix of the noise on the measurements
     ///

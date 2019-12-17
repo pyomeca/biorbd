@@ -12,6 +12,7 @@ biorbd::rigidbody::IMU::IMU(
 {
 
 }
+
 biorbd::rigidbody::IMU::IMU(
         const biorbd::utils::RotoTransNode &RotoTrans,
         bool isTechnical,

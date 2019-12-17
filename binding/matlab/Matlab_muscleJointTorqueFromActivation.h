@@ -18,7 +18,6 @@ void Matlab_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
     unsigned int nTau = model->nbGeneralizedTorque(); // Get the number of DoF
-    unsigned int nRoot = model->nbRoot(); // Get the number of DoF
     unsigned int nMuscleTotal = model->nbMuscleTotal();
 
     // Recevoir muscleStates
@@ -36,7 +35,8 @@ void Matlab_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
     }
 
     // Recueillir la cinématique
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q, QDot;
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q;
+    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot;
     if (updateKin){ // Si on update pas la cinématique Q et Qdot ne sont pas nécessaire
         // Recevoir Q
         Q = getParameterQ(prhs, 3, nQ);
@@ -87,7 +87,7 @@ void Matlab_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
 
         // distribuer les Tau
         for (unsigned int j=0; j<nTau; ++j){
-            tau[i*nTau+j] = muscleTorque(j+nRoot);
+            tau[i*nTau+j] = muscleTorque(j);
         }
 
         // Distribuer les forces

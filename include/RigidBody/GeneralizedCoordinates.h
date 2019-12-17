@@ -37,17 +37,18 @@ public:
         biorbd::utils::Vector(other){}
 
     ///
-    /// \brief Create generalized coordinates of dimension nbDof
-    /// \param nbDof number of degrees-of-freedom
+    /// \brief Create generalized coordinates of dimension nbQ
+    /// \param nbQ number of degrees-of-freedom
     ///
     GeneralizedCoordinates(
-            unsigned int nbDof);
+            unsigned int nbQ);
 
     ///
     /// \brief Create generalized coordinates from a joint Model
     /// \param j The joint model
     ///
-    GeneralizedCoordinates(const biorbd::rigidbody::Joints& j);
+    GeneralizedCoordinates(
+            const biorbd::rigidbody::Joints& j);
 
     ///
     /// \brief Destroy the class properly
@@ -60,7 +61,8 @@ public:
     /// \return The current Generalized Coordinate
     ///
     template<typename OtherDerived>
-        biorbd::rigidbody::GeneralizedCoordinates& operator=(const Eigen::MatrixBase <OtherDerived>& other){
+        biorbd::rigidbody::GeneralizedCoordinates& operator=(
+                const Eigen::MatrixBase <OtherDerived>& other){
             this->biorbd::utils::Vector::operator=(other);
             return *this;
         }

@@ -60,8 +60,8 @@ public:
             biorbd::Model &model,
             const std::vector<biorbd::rigidbody::IMU> &IMUobs,
             biorbd::rigidbody::GeneralizedCoordinates *Q,
-            biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-            biorbd::rigidbody::GeneralizedCoordinates *Qddot);
+            biorbd::rigidbody::GeneralizedVelocity *Qdot,
+            biorbd::rigidbody::GeneralizedAcceleration *Qddot);
 
     ///
     /// \brief Reconstruct the kinematics 
@@ -75,8 +75,8 @@ public:
             biorbd::Model &model,
             const biorbd::utils::Vector &IMUobs,
             biorbd::rigidbody::GeneralizedCoordinates *Q,
-            biorbd::rigidbody::GeneralizedCoordinates *Qdot,
-            biorbd::rigidbody::GeneralizedCoordinates *Qddot);
+            biorbd::rigidbody::GeneralizedVelocity *Qdot,
+            biorbd::rigidbody::GeneralizedAcceleration *Qddot);
 
     ///
     /// \brief This function cannot be used to reconstruct frames

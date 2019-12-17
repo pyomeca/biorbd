@@ -2,6 +2,7 @@
 #include "Actuators/ActuatorGauss6p.h"
 
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
 
 biorbd::actuator::ActuatorGauss6p::ActuatorGauss6p() :
     biorbd::actuator::Actuator(),
@@ -147,7 +148,7 @@ void biorbd::actuator::ActuatorGauss6p::DeepCopy(
 
 double biorbd::actuator::ActuatorGauss6p::torqueMax(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot){
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot){
     double pos(Q[*m_dofIdx] * 180/M_PI);
     double speed(Qdot[*m_dofIdx] * 180/M_PI);
 

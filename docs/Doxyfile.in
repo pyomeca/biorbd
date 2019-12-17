@@ -1,6 +1,15 @@
 OUTPUT_DIRECTORY       = @CMAKE_CURRENT_BINARY_DIR@/
 INPUT                  += @CMAKE_SOURCE_DIR@/include/ 
+INPUT                  += @CMAKE_SOURCE_DIR@/include/ 
+INPUT                  += @CMAKE_SOURCE_DIR@/include/Utils
+INPUT                  += @CMAKE_SOURCE_DIR@/include/RigidBody
+INPUT                  += @CMAKE_SOURCE_DIR@/include/Muscles
+INPUT                  += @CMAKE_SOURCE_DIR@/include/Actuators
 INPUT                  += @CMAKE_SOURCE_DIR@/src/ 
+INPUT                  += @CMAKE_SOURCE_DIR@/src/Utils
+INPUT                  += @CMAKE_SOURCE_DIR@/src/RigidBody
+INPUT                  += @CMAKE_SOURCE_DIR@/src/Muscles
+INPUT                  += @CMAKE_SOURCE_DIR@/src/Actuators
 INPUT                  += @CMAKE_SOURCE_DIR@/docs
 
 # Remove dll_export that confuses Doxygen
@@ -13,6 +22,9 @@ PREDEFINED             = BIORBD_API=
 PROJECT_NAME           = Biorbd
 FULL_PATH_NAMES        = NO
 SOURCE_BROWSER         = YES
+
+# Latex package
+EXTRA_PACKAGES         = amsmath
 
 # Add the Readme file
 INPUT                  += @CMAKE_SOURCE_DIR@/README.md

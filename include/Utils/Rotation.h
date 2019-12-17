@@ -27,7 +27,7 @@ public:
     /// \param matrix 3D identity matrix
     ///
     Rotation(
-            const Eigen::Matrix3d& = Eigen::Matrix3d::Identity());
+            const Eigen::Matrix3d& matrix = Eigen::Matrix3d::Identity());
 
     ///
     /// \brief Construct a Rotation matrix from another Rotation
@@ -35,7 +35,9 @@ public:
     ///
     template<typename OtherDerived> Rotation(
             const Eigen::MatrixBase<OtherDerived>& other) :
-        Eigen::Matrix3d(other){}
+        Eigen::Matrix3d(other){
+        checkUnitary();
+    }
 
     ///
     /// \brief Contruct a Rotation matrix
@@ -114,6 +116,14 @@ public:
             Eigen::Matrix3d::operator=(other);
             return *this;
         }
+
+protected:
+    ///
+    /// \brief Check if the Rotation is a unitary matrix of rotation
+    ///
+    /// That function throws a runtime_error if the check fails
+    ///
+    void checkUnitary();
 };
 
 }}

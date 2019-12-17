@@ -2,6 +2,7 @@
 #include "Utils/Path.h"
 
 #include <fstream>
+#include <regex>
 
 #include "Utils/String.h"
 #include "Utils/Error.h"
@@ -257,10 +258,19 @@ biorbd::utils::String biorbd::utils::Path::relativePath(
 biorbd::utils::String biorbd::utils::Path::absoluteFolder(
         const biorbd::utils::Path &path)
 {
+    biorbd::utils::String base;
 #ifdef _WIN32
-    const biorbd::utils::String& base("C:/");
+    biorbd::utils::String current(currentDir());
+    std::smatch matches;
+
+    if (std::regex_search(current, matches, std::regex("^([A-Z]):[\\/].*$"))) {
+        base = matches[1].str() + ":/";
+    }
+    else {
+        biorbd::utils::Error::raise("I could not find the current drive to estimate the path");
+    }
 #else
-    const biorbd::utils::String& base("/");
+    base = "/";
 #endif
     return base + relativePath(path, base);
 }
@@ -353,11 +363,21 @@ const biorbd::utils::String& biorbd::utils::Path::extension() const
 
 void biorbd::utils::Path::setIsFolderAbsolute()
 {
+    biorbd::utils::String base;
 #ifdef _WIN32
-    const biorbd::utils::String& base("C:/");
+    biorbd::utils::String current(currentDir());
+    std::smatch matches;
+
+    if (std::regex_search(current, matches, std::regex("^([A-Z]):[\\/].*$"))) {
+        base = matches[1].str() + ":/";
+    }
+    else {
+        biorbd::utils::Error::raise("I could not find the current drive to estimate the path");
+    }
 #else
-    const biorbd::utils::String& base("/");
+    base = "/";
 #endif
+
     size_t pos(m_folder->find(base.c_str()));
     if (pos == 0)
         *m_isFolderAbsolute = true;

@@ -15,14 +15,14 @@ void Matlab_torqueActivation( int, mxArray *plhs[],
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
-    unsigned int nGeneralizedTorque = model->nbGeneralizedTorque() + model->nbRoot(); // Nombre de GeneralizedTorque
+    unsigned int nGeneralizedTorque = model->nbGeneralizedTorque(); // Nombre de GeneralizedTorque
 
     // Recevoir Q
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> QDot = getParameterQdot(prhs, 3, nQdot);
+    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(prhs, 3, nQdot);
     // Recevoir Qddot
-    std::vector<biorbd::rigidbody::GeneralizedTorque> act = getParameterGeneralizedTorque(prhs, 4, model->nbGeneralizedTorque(), model->nbRoot());
+    std::vector<biorbd::rigidbody::GeneralizedTorque> act = getParameterGeneralizedTorque(prhs, 4, model->nbGeneralizedTorque());
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));
@@ -42,7 +42,7 @@ void Matlab_torqueActivation( int, mxArray *plhs[],
         Eigen::VectorXd Tau(model->torque(act[j], Q[j], QDot[j]));
 
         // Remplir l'output
-        for (unsigned int i=model->nbRoot(); i<nGeneralizedTorque; i++){
+        for (unsigned int i=0; i<nGeneralizedTorque; i++){
             GeneralizedTorque[cmp] = Tau(i);
             ++cmp;
         }

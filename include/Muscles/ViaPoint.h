@@ -22,9 +22,9 @@ public:
 
     ///
     /// \brief Construct ViaPoint
-    /// \param X-Component of the ViaPoint
-    /// \param Y-Component of the ViaPoint
-    /// \param Z-Component of the ViaPoint
+    /// \param x X-Component of the ViaPoint
+    /// \param y Y-Component of the ViaPoint
+    /// \param z Z-Component of the ViaPoint
     ///
     ViaPoint(
             double x,
@@ -33,9 +33,9 @@ public:
 
     ///
     /// \brief Construct ViaPoint
-    /// \param X-Component of the ViaPoint
-    /// \param Y-Component of the ViaPoint
-    /// \param Z-Component of the ViaPoint
+    /// \param x X-Component of the ViaPoint
+    /// \param y Y-Component of the ViaPoint
+    /// \param z Z-Component of the ViaPoint
     /// \param name The name of the via point
     /// \param parentName The name of the parent segment
     ///

@@ -89,8 +89,8 @@ void Matlab_inverseKinematicsEKF_IMUstep( int , mxArray *plhs[],
 
     // Faire la cinématique inverse a chaque instant
     biorbd::rigidbody::GeneralizedCoordinates Q(nQ);
-    biorbd::rigidbody::GeneralizedCoordinates QDot(nQdot);
-    biorbd::rigidbody::GeneralizedCoordinates QDDot(nQddot);
+    biorbd::rigidbody::GeneralizedVelocity QDot(nQdot);
+    biorbd::rigidbody::GeneralizedAcceleration QDDot(nQddot);
 
     // Faire la cinématique inverse
     kalman->reconstructFrame(*model, imus, &Q, &QDot, &QDDot);
@@ -154,8 +154,8 @@ void Matlab_inverseKinematicsEKF_IMUallInOneCall( int, mxArray *plhs[],
     for (unsigned int i=0; i<nFrames; ++i){
         // Faire la cinématique inverse a chaque instant
         biorbd::rigidbody::GeneralizedCoordinates Q(nQ);
-        biorbd::rigidbody::GeneralizedCoordinates QDot(nQdot);
-        biorbd::rigidbody::GeneralizedCoordinates QDDot(nQddot);
+        biorbd::rigidbody::GeneralizedVelocity QDot(nQdot);
+        biorbd::rigidbody::GeneralizedAcceleration QDDot(nQddot);
 
         // Faire la cinématique inverse
         kalman.reconstructFrame(*model, *(imusOverTime.begin()+i), &Q, &QDot, &QDDot);

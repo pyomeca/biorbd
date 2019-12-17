@@ -23,9 +23,9 @@ class BIORBD_API Vector3d : public Eigen::Vector3d, public biorbd::utils::Node
 
     ///
     /// \brief Construct 3D vector
-    /// \param X-Component of the vector
-    /// \param Y-Component of the vector
-    /// \param Z-Component of the vector
+    /// \param x X-Component of the vector
+    /// \param y Y-Component of the vector
+    /// \param z Z-Component of the vector
     ///
     Vector3d(
             double x,
@@ -65,9 +65,9 @@ class BIORBD_API Vector3d : public Eigen::Vector3d, public biorbd::utils::Node
 
     ///
     /// \brief Construct a 3D vector
-    /// \param X-Component of the vector
-    /// \param Y-Component of the vector
-    /// \param Z-Component of the vector
+    /// \param x X-Component of the vector
+    /// \param y Y-Component of the vector
+    /// \param z Z-Component of the vector
     /// \param name Name of the vector
     /// \param parentName Name of the parent segment
     ///

@@ -20,7 +20,7 @@ void Matlab_segmentsVelocities( int, mxArray *plhs[],
     // Recevoir Q
     biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2, nQ).begin();
     // Recevoir Qdot
-    biorbd::rigidbody::GeneralizedCoordinates QDot = *getParameterQdot(prhs, 3, nQdot).begin();
+    biorbd::rigidbody::GeneralizedVelocity QDot = *getParameterQdot(prhs, 3, nQdot).begin();
 
     // Update sur la cinématique
     model->UpdateKinematicsCustom(&Q, &QDot, nullptr);

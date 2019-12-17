@@ -6,6 +6,7 @@
 #include "Utils/Error.h"
 #include "Utils/Vector.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "Muscles/StateDynamics.h"
 #include "Muscles/StaticOptimizationIpoptLinearized.h"
@@ -14,7 +15,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(biorbd::Model &model) :
     m_model(model),
     m_useResidualTorque(std::make_shared<bool>()),
     m_allQ(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>()),
-    m_allQdot(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>()),
+    m_allQdot(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedVelocity>>()),
     m_allTorqueTarget(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedTorque>>()),
     m_initialActivationGuess(std::make_shared<biorbd::utils::Vector>()),
     m_pNormFactor(std::make_shared<unsigned int>()),
@@ -28,7 +29,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(biorbd::Model &model) :
 biorbd::muscles::StaticOptimization::StaticOptimization(
         biorbd::Model& model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
         const biorbd::rigidbody::GeneralizedTorque &torqueTarget,
         const biorbd::utils::Vector &initialActivationGuess,
         unsigned int pNormFactor,
@@ -37,7 +38,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_model(model),
     m_useResidualTorque(std::make_shared<bool>(useResidualTorque)),
     m_allQ(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>()),
-    m_allQdot(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>()),
+    m_allQdot(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedVelocity>>()),
     m_allTorqueTarget(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedTorque>>()),
     m_initialActivationGuess(std::make_shared<biorbd::utils::Vector>()),
     m_pNormFactor(std::make_shared<unsigned int>(pNormFactor)),
@@ -61,7 +62,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
 biorbd::muscles::StaticOptimization::StaticOptimization(
         biorbd::Model& model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedCoordinates &Qdot,
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
         const biorbd::rigidbody::GeneralizedTorque &torqueTarget,
         const std::vector<biorbd::muscles::StateDynamics> &initialActivationGuess,
         unsigned int pNormFactor,
@@ -71,7 +72,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_model(model),
     m_useResidualTorque(std::make_shared<bool>(useResidualTorque)),
     m_allQ(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>()),
-    m_allQdot(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>()),
+    m_allQdot(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedVelocity>>()),
     m_allTorqueTarget(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedTorque>>()),
     m_initialActivationGuess(std::make_shared<biorbd::utils::Vector>()),
     m_pNormFactor(std::make_shared<unsigned int>(pNormFactor)),
@@ -96,8 +97,8 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
 biorbd::muscles::StaticOptimization::StaticOptimization(
         biorbd::Model &model,
         const std::vector<biorbd::rigidbody::GeneralizedCoordinates> &allQ,
-        const std::vector<biorbd::rigidbody::GeneralizedCoordinates> &allQdot,
-        const std::vector<biorbd::rigidbody::GeneralizedTorque> &allGeneralizedTorqueTarget,
+        const std::vector<biorbd::rigidbody::GeneralizedVelocity> &allQdot,
+        const std::vector<biorbd::rigidbody::GeneralizedTorque> &allTorqueTarget,
         const biorbd::utils::Vector &initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
@@ -105,8 +106,8 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_model(model),
     m_useResidualTorque(std::make_shared<bool>(useResidualTorque)),
     m_allQ(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>(allQ)),
-    m_allQdot(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>(allQdot)),
-    m_allTorqueTarget(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedTorque>>(allGeneralizedTorqueTarget)),
+    m_allQdot(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedVelocity>>(allQdot)),
+    m_allTorqueTarget(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedTorque>>(allTorqueTarget)),
     m_initialActivationGuess(std::make_shared<biorbd::utils::Vector>()),
     m_pNormFactor(std::make_shared<unsigned int>(pNormFactor)),
     m_verbose(std::make_shared<int>(verbose)),
@@ -125,8 +126,8 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
 biorbd::muscles::StaticOptimization::StaticOptimization(
         biorbd::Model& model,
         const std::vector<biorbd::rigidbody::GeneralizedCoordinates> &allQ,
-        const std::vector<biorbd::rigidbody::GeneralizedCoordinates> &allQdot,
-        const std::vector<biorbd::rigidbody::GeneralizedTorque> &allGeneralizedTorqueTarget,
+        const std::vector<biorbd::rigidbody::GeneralizedVelocity> &allQdot,
+        const std::vector<biorbd::rigidbody::GeneralizedTorque> &allTorqueTarget,
         const std::vector<biorbd::muscles::StateDynamics> &initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
@@ -134,8 +135,8 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_model(model),
     m_useResidualTorque(std::make_shared<bool>(useResidualTorque)),
     m_allQ(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>(allQ)),
-    m_allQdot(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>(allQdot)),
-    m_allTorqueTarget(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedTorque>>(allGeneralizedTorqueTarget)),
+    m_allQdot(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedVelocity>>(allQdot)),
+    m_allTorqueTarget(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedTorque>>(allTorqueTarget)),
     m_initialActivationGuess(std::make_shared<biorbd::utils::Vector>()),
     m_pNormFactor(std::make_shared<unsigned int>(pNormFactor)),
     m_verbose(std::make_shared<int>(verbose)),
