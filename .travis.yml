@@ -100,6 +100,8 @@ script:
         cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON -Python3_EXECUTABLE=$ToolsDir/miniconda3/bin/$TRAVIS_PYTHON_VERSION ..;
         make install;
       fi
+    - echo $TRAVIS_PYTHON_VERSION
+    - echo $ToolsDir
     - python -c "import biorbd"    
 
     # Only do the coverage on Linux, but run the test anyway to get a nice output
