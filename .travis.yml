@@ -101,7 +101,7 @@ script:
         make install;
       fi
     - echo $TRAVIS_PYTHON_VERSION
-    - echo $ToolsDir
+    - echo $HOME
     - python -c "import biorbd"    
 
     # Only do the coverage on Linux, but run the test anyway to get a nice output
