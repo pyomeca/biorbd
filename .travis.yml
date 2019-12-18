@@ -50,6 +50,7 @@ install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
         conda install lcov -c conda-forge;
       fi
+    - which python
       
 script:
     ############################################################################
@@ -97,7 +98,7 @@ script:
         cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=$ToolsDir/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
         cmake --build ./ --config Release --target install;
       else
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON -DPython3_EXECUTABLE=$HOME/miniconda3/bin/python ..;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON -DPython3_EXECUTABLE=`which python` ..;
         make install;
       fi
     - python -c "import biorbd"    
