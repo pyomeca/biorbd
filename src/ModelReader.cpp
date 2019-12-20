@@ -634,7 +634,7 @@ void biorbd::Reader::readModelFile(
                         file.read(tp_type);
                         if (!tp_type.tolower().compare("idealizedactuator"))
                             type = biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR;
-                        else if (!tp_type.tolower().compare("hil"))
+                        else if (!tp_type.tolower().compare("hill"))
                             type = biorbd::muscles::MUSCLE_TYPE::HILL;
                         else if (!tp_type.tolower().compare("hillthelen") || !tp_type.tolower().compare("thelen"))
                             type = biorbd::muscles::MUSCLE_TYPE::HILL_THELEN;
