@@ -90,6 +90,86 @@
         return output;
     };
 }
+%typemap(typecheck, precedence=2155) Eigen::Matrix3d & {
+    if( PyArray_Check($input) ) {
+        // test if it is a numpy array
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+}
+%typemap(in) Eigen::Matrix3d & {
+    if( PyArray_Check($input) ) {
+        // Get dimensions of the data::
+        int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
+        npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
+
+        // Dimension controls
+        if (ndim != 2 ){
+            PyErr_SetString(PyExc_ValueError, "Eigen::Matrix3d must be a 3x3 matrix");
+            SWIG_fail;
+        }
+        if (dims[0] != 3 || dims[1] != 3){
+            PyErr_SetString(PyExc_ValueError, "Eigen::Matrix3d must be a 3x3 matrix");
+            SWIG_fail;
+        }
+
+        // Cast the vector
+        PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
+        // Copy the actual data
+        $1 = new Eigen::Matrix3d();
+        for (unsigned int i=0; i<3; ++i){
+            for (unsigned int j=0; j<3; ++j){
+                (*$1)(i, j) = *(double*)PyArray_GETPTR2(data, i, j);
+            }
+        }
+    } else {
+        PyErr_SetString(PyExc_ValueError,
+                        "Eigen::Matrix3d must be a 3x3 matrix "
+                        "when using a numpy array");
+        SWIG_fail;
+    }
+};
+%typemap(typecheck, precedence=2155) Eigen::Matrix4d & {
+    if( PyArray_Check($input) ) {
+        // test if it is a numpy array
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+}
+%typemap(in) Eigen::Matrix4d & {
+    if( PyArray_Check($input) ) {
+        // Get dimensions of the data::
+        int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
+        npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
+
+        // Dimension controls
+        if (ndim != 2 ){
+            PyErr_SetString(PyExc_ValueError, "Eigen::Matrix4d must be a 4x4 matrix");
+            SWIG_fail;
+        }
+        if (dims[0] != 4 || dims[1] != 4){
+            PyErr_SetString(PyExc_ValueError, "Eigen::Matrix4d must be a 4x4 matrix");
+            SWIG_fail;
+        }
+
+        // Cast the vector
+        PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_IN_ARRAY);
+        // Copy the actual data
+        $1 = new Eigen::Matrix4d();
+        for (unsigned int i=0; i<4; ++i){
+            for (unsigned int j=0; j<4; ++j){
+                (*$1)(i, j) = *(double*)PyArray_GETPTR2(data, i, j);
+            }
+        }
+    } else {
+        PyErr_SetString(PyExc_ValueError,
+                        "Eigen::Matrix4d must be a 4x4 matrix "
+                        "when using a numpy array");
+        SWIG_fail;
+    }
+};
 
 // --- Vector --- //
 %extend biorbd::utils::Vector{

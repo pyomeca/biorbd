@@ -83,7 +83,7 @@ public:
     /// sequence
     ///
     biorbd::utils::Rotation& fromEulerAngles(
-            const Eigen::VectorXd& rot,
+            const biorbd::utils::Vector& rot,
             const biorbd::utils::String& seq);
 
     ///
