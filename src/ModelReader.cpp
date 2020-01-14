@@ -13,6 +13,7 @@
 #include "Utils/Vector3d.h"
 #include "Utils/Rotation.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedCoordinateRange.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
 #include "RigidBody/IMU.h"
@@ -109,6 +110,8 @@ void biorbd::Reader::readModelFile(
                 biorbd::rigidbody::Mesh mesh;
                 int segmentByFile(-1); // -1 non setté, 0 pas par file, 1 par file
                 int PF = -1;
+                std::vector<biorbd::rigidbody::GeneralizedCoordinateRange> dofRanges;
+                bool isRangeSet(false); // Ranges must be done only after translation AND rotations tags
                 while(file.read(property_tag) && property_tag.tolower().compare("endsegment")){
                     if (!property_tag.tolower().compare("parent")){
                         // Dynamically find the parent number
@@ -116,10 +119,31 @@ void biorbd::Reader::readModelFile(
                         if (parent_str.tolower().compare("root"))
                             biorbd::utils::Error::check(model->GetBodyId(parent_str.c_str()), "Wrong name in a segment");
                     }
-                    else if (!property_tag.tolower().compare("translations"))
+                    else if (!property_tag.tolower().compare("translations")){
+                        biorbd::utils::Error::check(
+                                    !isRangeSet, "Translations must appear before the range tag");
                         file.read(trans);
-                    else if (!property_tag.tolower().compare("rotations"))
+                    }
+                    else if (!property_tag.tolower().compare("rotations")){
+                        biorbd::utils::Error::check(
+                                    !isRangeSet, "Rotations must appear before the range tag");
                         file.read(rot);
+                    }
+                    else if (!property_tag.tolower().compare("ranges")){
+                        double min, max;
+                        size_t rotLength(0);
+                        if (rot.compare("q")){
+                            // If not a quaternion
+                            rotLength = rot.length();
+                        }
+                        for (size_t i=0; i<trans.length() + rotLength; ++i){
+                            file.read(min);
+                            file.read(max);
+                            dofRanges.push_back(
+                                        biorbd::rigidbody::GeneralizedCoordinateRange (min, max));
+                        }
+                        isRangeSet = true;
+                    }
                     else if (!property_tag.tolower().compare("mass"))
                          file.read(mass, variable);
                     else if (!property_tag.tolower().compare("inertia")){
@@ -215,9 +239,20 @@ void biorbd::Reader::readModelFile(
                             biorbd::utils::Error::raise(filePath.extension() + " is an unrecognized mesh file");
                     }
                 }
+                if (!isRangeSet){
+                    size_t rotLength(0);
+                    if (rot.compare("q")){
+                        // If not a quaternion
+                        rotLength = rot.length();
+                    }
+                    for (size_t i=0; i<trans.length() + rotLength; ++i){
+                        dofRanges.push_back(
+                                    biorbd::rigidbody::GeneralizedCoordinateRange ());
+                    }
+                }
                 RigidBodyDynamics::Math::SpatialTransform RT(RT_R, RT_T);
                 biorbd::rigidbody::SegmentCharacteristics characteristics(mass,com,inertia,mesh);
-                model->AddSegment(name, parent_str, trans, rot, characteristics, RT, PF);
+                model->AddSegment(name, parent_str, trans, rot, dofRanges, characteristics, RT, PF);
             }
             else if (!main_tag.tolower().compare("external_forces")){
                 bool externalF = false;

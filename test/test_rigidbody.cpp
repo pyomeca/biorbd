@@ -7,6 +7,7 @@
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedCoordinateRange.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
@@ -53,6 +54,64 @@ TEST(DegreesOfFreedom, count)
     }
 }
 
+TEST(DegressOfFreedom, ranges) {
+    biorbd::Model model(modelPathForGeneralTesting);
+    std::vector<biorbd::rigidbody::GeneralizedCoordinateRange> ranges;
+
+    // Pelvis
+    ranges = model.segment(0).ranges();
+    EXPECT_EQ(ranges[0].min(), -10);
+    EXPECT_EQ(ranges[0].max(), 10);
+    EXPECT_EQ(ranges[1].min(), -10);
+    EXPECT_EQ(ranges[1].max(), 10);
+    EXPECT_EQ(ranges[2].min(), -M_PI);
+    EXPECT_EQ(ranges[2].max(), M_PI);
+
+    // BrasD
+    ranges = model.segment(3).ranges();
+    EXPECT_EQ(ranges[0].min(), -M_PI);
+    EXPECT_EQ(ranges[0].max(), M_PI);
+    EXPECT_EQ(ranges[1].min(), 0);
+    EXPECT_EQ(ranges[1].max(), M_PI);
+
+    // BrasG
+    ranges = model.segment(4).ranges();
+    EXPECT_EQ(ranges[0].min(), -M_PI);
+    EXPECT_EQ(ranges[0].max(), M_PI);
+    EXPECT_EQ(ranges[1].min(), 0);
+    EXPECT_EQ(ranges[1].max(), M_PI);
+
+    // CuisseD
+    ranges = model.segment(5).ranges();
+    EXPECT_EQ(ranges[0].min(), -M_PI/12);
+    EXPECT_EQ(ranges[0].max(), M_PI/2+M_PI/3);
+
+    // JambeD
+    ranges = model.segment(6).ranges();
+    EXPECT_EQ(ranges[0].min(), -M_PI/2-M_PI/6);
+    EXPECT_EQ(ranges[0].max(), 0);
+
+    // PiedD
+    ranges = model.segment(7).ranges();
+    EXPECT_EQ(ranges[0].min(), -M_PI/2);
+    EXPECT_EQ(ranges[0].max(), M_PI/2);
+
+    // CuisseG
+    ranges = model.segment(8).ranges();
+    EXPECT_EQ(ranges[0].min(), -M_PI/12);
+    EXPECT_EQ(ranges[0].max(), M_PI/2+M_PI/3);
+
+    // JambeG
+    ranges = model.segment(9).ranges();
+    EXPECT_EQ(ranges[0].min(), -M_PI/2-M_PI/6);
+    EXPECT_EQ(ranges[0].max(), 0);
+
+    // PiedG
+    ranges = model.segment(10).ranges();
+    EXPECT_EQ(ranges[0].min(), -M_PI/2);
+    EXPECT_EQ(ranges[0].max(), M_PI/2);
+}
+
 static std::vector<double> QtestPyomecaman = {0.1, 0.1, 0.1, 0.3, 0.3, 0.3,
                                              0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3};
 static std::vector<double> QtestEqualsMarker = {0.1, 0.1, 0.1, 0.3, 0.3, 0.3};
@@ -90,8 +149,13 @@ TEST(CoM, kinematics)
 TEST(Segment, copy)
 {
     biorbd::Model model(modelPathForGeneralTesting);
-    biorbd::rigidbody::SegmentCharacteristics characteristics(10, biorbd::utils::Vector3d(0.5, 0.5, 0.5), RigidBodyDynamics::Math::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
-    biorbd::rigidbody::Segment MasterSegment(model, "MasterSegment", "NoParent", "zyx", "yzx", characteristics, RigidBodyDynamics::Math::SpatialTransform());
+    biorbd::rigidbody::SegmentCharacteristics characteristics(
+                10, biorbd::utils::Vector3d(0.5, 0.5, 0.5),
+                RigidBodyDynamics::Math::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
+    std::vector<biorbd::rigidbody::GeneralizedCoordinateRange> ranges(6);
+    biorbd::rigidbody::Segment MasterSegment(
+                model, "MasterSegment", "NoParent", "zyx", "yzx", ranges,
+                characteristics, RigidBodyDynamics::Math::SpatialTransform());
     biorbd::rigidbody::Segment ShallowCopy(MasterSegment);
     biorbd::rigidbody::Segment DeepCopyNow(MasterSegment.DeepCopy());
     biorbd::rigidbody::Segment DeepCopyLater;

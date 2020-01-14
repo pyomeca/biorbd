@@ -8,6 +8,7 @@
 #include "RigidBody/Mesh.h"
 #include "RigidBody/Contacts.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedCoordinateRange.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"

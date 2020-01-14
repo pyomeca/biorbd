@@ -171,15 +171,19 @@ unsigned int biorbd::rigidbody::Joints::nbInterationStep() const
 
 
 unsigned int biorbd::rigidbody::Joints::AddSegment(
-        const biorbd::utils::String &segmentName, // Name of the segment
-        const biorbd::utils::String &parentName, // Name of the segment's parent
-        const biorbd::utils::String &translationSequence, // Translation sequence
-        const biorbd::utils::String &rotationSequence, // Cardan sequence to classify the DoF in rotation
-        const biorbd::rigidbody::SegmentCharacteristics& characteristics, // Mass, center of mass of the segment, inertia of segment, etc. 
-        const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, // Transofrmation from parent to child
-        int forcePlates)// Number of the force platform attached to the segment
+        const biorbd::utils::String &segmentName,
+        const biorbd::utils::String &parentName,
+        const biorbd::utils::String &translationSequence,
+        const biorbd::utils::String &rotationSequence,
+        const std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>& dofRanges,
+        const biorbd::rigidbody::SegmentCharacteristics& characteristics,
+        const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation,
+        int forcePlates)
 { 
-    biorbd::rigidbody::Segment tp(*this, segmentName, parentName, translationSequence, rotationSequence, characteristics, centreOfRotation, forcePlates);
+    biorbd::rigidbody::Segment tp(
+                *this, segmentName, parentName, translationSequence,
+                rotationSequence, dofRanges, characteristics,
+                centreOfRotation, forcePlates);
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max())
         *m_nbRoot += tp.nbDof(); // If the segment name is "Root", add the number of DoF of root
     *m_nbDof += tp.nbDof();
@@ -198,11 +202,14 @@ unsigned int biorbd::rigidbody::Joints::AddSegment(
         const biorbd::utils::String &segmentName, // Segment name
         const biorbd::utils::String &parentName, // Segment's parent name
         const biorbd::utils::String &seqR, // Cardan sequence to classify the DoF in rotation
+        const std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>& dofRanges,
         const biorbd::rigidbody::SegmentCharacteristics& characteristics, // Mass, center of mass of segment, inertia of segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation from parent to child
         int forcePlates)// Number of the force platforme attached to the segment
 { 
-    biorbd::rigidbody::Segment tp(*this, segmentName, parentName, seqR, characteristics, cor, forcePlates);
+    biorbd::rigidbody::Segment tp(
+                *this, segmentName, parentName, seqR, dofRanges,
+                characteristics, cor, forcePlates);
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max())
         *m_nbRoot += tp.nbDof(); //  If the name of the segment is "Root", add the number of DoF of root
     *m_nbDof += tp.nbDof();
