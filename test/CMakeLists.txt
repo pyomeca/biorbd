@@ -86,6 +86,12 @@ if (BINDER_C)
     list(APPEND ALL_TESTS ${ALL_TESTS} ${C_BINDER_TESTS_NAME})
 endif()
 
+if (BINDER_PYTHON3)
+    file(GLOB BIORBD_PYTHON3_TEST_FILES ${CMAKE_SOURCE_DIR}/test/binding/Python3/*.py)
+    file(COPY ${BIORBD_PYTHON3_TEST_FILES}
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/binding/Python3)
+endif()
+
 # This is so you can do 'make test' to see all your tests run, instead of
 # manually running the executable runUnitTests to see those specific tests.
 add_test(UnitTests ${ALL_TESTS})

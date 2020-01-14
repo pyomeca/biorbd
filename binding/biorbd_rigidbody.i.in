@@ -4,7 +4,9 @@
 #include <rbdl/Kinematics.h>
 #include <rbdl/Dynamics.h>
 
+#include "RigidBody/Segment.h"
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedCoordinateRange.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
@@ -21,6 +23,8 @@ namespace std {
 %template(MatBiorbdGeneralizedTorque) std::vector<std::vector<biorbd::rigidbody::GeneralizedTorque>>;
 %template(VecBiorbdGeneralizedCoordinates) std::vector<biorbd::rigidbody::GeneralizedCoordinates>;
 %template(MatBiorbdGeneralizedCoordinates) std::vector<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>;
+%template(VecBiorbdGeneralizedCoordinateRange) std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>;
+%template(MatBiorbdGeneralizedCoordinateRange) std::vector<std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>>;
 
 %template(VecBiorbdNodeSegment) std::vector<biorbd::rigidbody::NodeSegment>;
 %template(MatBiorbdNodeSegment) std::vector<std::vector<biorbd::rigidbody::NodeSegment>>;
@@ -90,7 +94,9 @@ namespace std {
 
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/RigidBodyEnums.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Joints.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/Segment.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/GeneralizedCoordinates.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/GeneralizedCoordinateRange.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/GeneralizedVelocity.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/GeneralizedAcceleration.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/GeneralizedTorque.h"
@@ -99,7 +105,6 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Contacts.h"
 @SWIG_KALMAN_INCLUDE_COMMAND@
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/MeshFace.h"
-//%include "RigidBody/Segment.h"
 //%include "RigidBody/SegmentCharacteristics.h"
 //%include "RigidBody/Mesh.h"
 //%include "RigidBody/IMU.h"
