@@ -2,7 +2,6 @@
 #include "ModelReader.h"
 
 #include <limits.h>
-#include <boost/lexical_cast.hpp>
 
 #include "BiorbdModel.h"
 #include "Utils/Error.h"
@@ -1580,7 +1579,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileObj(
                 file.read(text);
                 size_t idxSlash = text.find("/");
                 biorbd::utils::String tata3(text.substr (0,idxSlash));
-                patch(i) = (boost::lexical_cast<int>(text.substr (0,idxSlash)) - 1);
+                patch(i) = (std::stoi(text.substr (0,idxSlash)) - 1);
             }
             file.getline(text); // Ignore last element if it is a 4 vertex based
             mesh.addFace(patch.DeepCopy());

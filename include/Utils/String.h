@@ -120,6 +120,33 @@ public:
     ///
     biorbd::utils::String toupper() const;
 
+    ///
+    /// \brief Overload of the to_string C++11 function to allow for X-digits precision
+    /// \param val The double to convert
+    /// \return The double converter to string
+    ///
+    static biorbd::utils::String to_string(
+            double val);
+
+    ///
+    /// \brief Overload of the to_string C++11 function to allow for X-digits precision
+    /// \param val The float to convert
+    /// \return The float converter to string
+    ///
+    static biorbd::utils::String to_string(
+            float val);
+
+    ///
+    /// \brief The trailing tags of a string
+    /// \param origin The string to remove the trailing tags from
+    /// \param trailTag The tag to remove
+    /// \return The string without the trailing tag
+    ///
+    /// Example : The string "2.82823000" will return "2.82823" for the tag "0"
+    ///
+    static biorbd::utils::String removeTrailing(
+            const biorbd::utils::String& origin,
+            const biorbd::utils::String& trailTag);
 };
 
 }}

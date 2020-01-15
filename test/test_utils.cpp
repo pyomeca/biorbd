@@ -39,6 +39,12 @@ TEST(ShallowCopy, DeepCopy){
     EXPECT_STREQ(NewNode.name().c_str(), "MyName");
 }
 
+TEST(String, conversions){
+    biorbd::utils::String str(biorbd::utils::String::to_string(M_PI));
+    double pi = std::stod(str);
+    EXPECT_EQ(pi, M_PI);
+}
+
 TEST(Path, Create){
     {
         biorbd::utils::Path emptyPath;
