@@ -22,8 +22,8 @@ namespace std {
 %template(MatBiorbdRototation) std::vector<std::vector<biorbd::utils::Rotation>>;
 %template(VecBiorbdNode) std::vector<biorbd::utils::Vector3d>;
 %template(MatBiorbdNode) std::vector<std::vector<biorbd::utils::Vector3d>>;
-%template(VecBiorbdRange) std::vector<biorbd::rigidbody::Range>;
-%template(MatBiorbdRange) std::vector<std::vector<biorbd::rigidbody::Range>>;
+%template(VecBiorbdRange) std::vector<biorbd::utils::Range>;
+%template(MatBiorbdRange) std::vector<std::vector<biorbd::utils::Range>>;
 }
 
 %include <std_string.i>
