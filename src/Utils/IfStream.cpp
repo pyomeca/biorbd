@@ -1,6 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/IfStream.h"
 
+#include <clocale>
 #include <fstream>
 #include "Utils/Error.h"
 #include "Utils/Equation.h"
@@ -11,7 +12,7 @@ biorbd::utils::IfStream::IfStream() :
     m_ifs(std::make_shared<std::ifstream>()),
     m_path(std::make_shared<biorbd::utils::Path>())
 {
-
+    setlocale(LC_ALL, "C");
 }
 biorbd::utils::IfStream::IfStream(
         const biorbd::utils::Path& path,
@@ -21,6 +22,7 @@ biorbd::utils::IfStream::IfStream(
     m_path(std::make_shared<biorbd::utils::Path>(path))
 {
     open(m_path->absolutePath().c_str(), mode);
+    setlocale(LC_ALL, "C");
 }
 biorbd::utils::IfStream::IfStream(
         const char* path,
@@ -30,6 +32,7 @@ biorbd::utils::IfStream::IfStream(
     m_path(std::make_shared<biorbd::utils::Path>(path))
 {
     open(m_path->absolutePath().c_str(), mode);
+    setlocale(LC_ALL, "C");
 }
 
 
