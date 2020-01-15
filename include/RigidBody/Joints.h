@@ -12,11 +12,11 @@ class String;
 class RotoTrans;
 class Matrix;
 class Vector3d;
+class Range;
 }
 
 namespace rigidbody {
 class GeneralizedCoordinates;
-class GeneralizedCoordinateRange;
 class GeneralizedVelocity;
 class GeneralizedAcceleration;
 class GeneralizedTorque;
@@ -80,7 +80,7 @@ public:
             const biorbd::utils::String &parentName,
             const biorbd::utils::String &translationSequence,
             const biorbd::utils::String &rotationSequence,
-            const std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>& dofRanges,
+            const std::vector<biorbd::utils::Range>& dofRanges,
             const biorbd::rigidbody::SegmentCharacteristics& characteristics,
             const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation,
             int forcePlates=-1);
@@ -99,7 +99,7 @@ public:
             const biorbd::utils::String &segmentName, 
             const biorbd::utils::String &parentName, 
             const biorbd::utils::String &translationSequence,
-            const std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>& dofRanges,
+            const std::vector<biorbd::utils::Range>& dofRanges,
             const biorbd::rigidbody::SegmentCharacteristics& characteristics,
             const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, 
             int forcePlates=-1); 

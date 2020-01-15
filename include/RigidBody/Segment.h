@@ -11,12 +11,12 @@
 namespace biorbd {
 namespace utils {
 class RotoTrans;
+class Range;
 }
 
 namespace rigidbody {
 class Joints;
 class SegmentCharacteristics;
-class GeneralizedCoordinateRange;
 
 ///
 /// \brief Description of a segment
@@ -47,7 +47,7 @@ public:
             const biorbd::utils::String &parentName, 
             const biorbd::utils::String &seqT,
             const biorbd::utils::String &seqR,
-            const std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>& dofRanges,
+            const std::vector<biorbd::utils::Range>& dofRanges,
             const biorbd::rigidbody::SegmentCharacteristics& characteristics,
             const RigidBodyDynamics::Math::SpatialTransform& cor,
             int PF = -1);  
@@ -68,7 +68,7 @@ public:
             const biorbd::utils::String &name, 
             const biorbd::utils::String &parentName, 
             const biorbd::utils::String &seqR, 
-            const std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>& dofRanges,
+            const std::vector<biorbd::utils::Range>& dofRanges,
             const biorbd::rigidbody::SegmentCharacteristics& characteristics, 
             const RigidBodyDynamics::Math::SpatialTransform& cor, 
             int PF = -1); 
@@ -119,7 +119,7 @@ public:
     /// \brief Return the ranges for all the dof, translations and rotations respectively
     /// \return The ranges for all the dof, translations and rotations respectively
     ///
-    const std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>&
+    const std::vector<biorbd::utils::Range>&
     ranges() const;
 
     ///
@@ -225,7 +225,7 @@ protected:
             biorbd::rigidbody::Joints& model,
             const biorbd::utils::String &seqT,
             const biorbd::utils::String &seqR,
-            const std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>& dofRanges);
+            const std::vector<biorbd::utils::Range>& dofRanges);
 
     ///
     /// \brief Set the total number of DoF
@@ -238,7 +238,7 @@ protected:
 
     std::shared_ptr<biorbd::utils::String> m_seqT;  ///< Translation sequence
     std::shared_ptr<biorbd::utils::String> m_seqR;  ///< Euler rotation sequence
-    std::shared_ptr<std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>> m_dofRanges;  ///< Minimum and maximum values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedCoordinates
+    std::shared_ptr<std::vector<biorbd::utils::Range>> m_dofRanges;  ///< Minimum and maximum values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedCoordinates
     std::shared_ptr<unsigned int> m_nbDof;   ///< Number of degrees of freedom 
     std::shared_ptr<unsigned int> m_nbQdot;  ///< Number of generalized velocities
     std::shared_ptr<unsigned int> m_nbQddot;  ///< Number of generalized accelerations

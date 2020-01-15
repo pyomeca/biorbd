@@ -175,7 +175,7 @@ unsigned int biorbd::rigidbody::Joints::AddSegment(
         const biorbd::utils::String &parentName,
         const biorbd::utils::String &translationSequence,
         const biorbd::utils::String &rotationSequence,
-        const std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>& dofRanges,
+        const std::vector<biorbd::utils::Range>& dofRanges,
         const biorbd::rigidbody::SegmentCharacteristics& characteristics,
         const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation,
         int forcePlates)
@@ -202,7 +202,7 @@ unsigned int biorbd::rigidbody::Joints::AddSegment(
         const biorbd::utils::String &segmentName, // Segment name
         const biorbd::utils::String &parentName, // Segment's parent name
         const biorbd::utils::String &seqR, // Cardan sequence to classify the DoF in rotation
-        const std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>& dofRanges,
+        const std::vector<biorbd::utils::Range>& dofRanges,
         const biorbd::rigidbody::SegmentCharacteristics& characteristics, // Mass, center of mass of segment, inertia of segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation from parent to child
         int forcePlates)// Number of the force platforme attached to the segment

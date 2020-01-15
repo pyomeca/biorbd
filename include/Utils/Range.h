@@ -1,38 +1,38 @@
-#ifndef BIORBD_UTILS_GENERALIZED_COORDINATE_RANGE_H
-#define BIORBD_UTILS_GENERALIZED_COORDINATE_RANGE_H
+#ifndef BIORBD_UTILS_RANGE_H
+#define BIORBD_UTILS_RANGE_H
 
 #include "biorbdConfig.h"
 
 #include <memory>
 
 namespace biorbd {
-namespace rigidbody {
+namespace utils {
 
 ///
-/// \brief Class GeneralizedCoordinateRange
+/// \brief Class Range
 ///
-class BIORBD_API GeneralizedCoordinateRange
+class BIORBD_API Range
 {
 public:
 
     ///
     /// \brief Construct generalized coordinates range
     /// 
-    GeneralizedCoordinateRange(
+    Range(
             double min = -M_PI,
             double max = M_PI);
 
     ///
-    /// \brief Deep copy of the GeneralizedCoordinateRange
-    /// \return Deep copy of the GeneralizedCoordinateRange
+    /// \brief Deep copy of the Range
+    /// \return Deep copy of the Range
     ///
-    biorbd::rigidbody::GeneralizedCoordinateRange DeepCopy() const;
+    biorbd::utils::Range DeepCopy() const;
 
     ///
-    /// \brief Deep copy of GeneralizedCoordinateRange
-    /// \param other The GeneralizedCoordinateRange to copy
+    /// \brief Deep copy of Range
+    /// \param other The Range to copy
     ///
-    void DeepCopy(const biorbd::rigidbody::GeneralizedCoordinateRange& other);
+    void DeepCopy(const biorbd::utils::Range& other);
 
     ///
     /// \brief Set a new value for the minimum
@@ -65,4 +65,4 @@ protected:
 
 }}
 
-#endif // BIORBD_UTILS_GENERALIZED_COORDINATE_RANGE_H
+#endif // BIORBD_UTILS_RANGE_H

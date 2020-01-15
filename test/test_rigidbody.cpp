@@ -6,8 +6,8 @@
 #include "BiorbdModel.h"
 #include "biorbdConfig.h"
 #include "Utils/String.h"
+#include "Utils/Range.h"
 #include "RigidBody/GeneralizedCoordinates.h"
-#include "RigidBody/GeneralizedCoordinateRange.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
@@ -56,7 +56,9 @@ TEST(DegreesOfFreedom, count)
 
 TEST(DegressOfFreedom, ranges) {
     biorbd::Model model(modelPathForGeneralTesting);
-    std::vector<biorbd::rigidbody::GeneralizedCoordinateRange> ranges;
+    std::vector<biorbd::utils::Range> ranges;
+
+    auto a = model.meshPoints(biorbd::rigidbody::GeneralizedCoordinates(model));
 
     // Pelvis
     ranges = model.segment(0).ranges();
@@ -152,7 +154,7 @@ TEST(Segment, copy)
     biorbd::rigidbody::SegmentCharacteristics characteristics(
                 10, biorbd::utils::Vector3d(0.5, 0.5, 0.5),
                 RigidBodyDynamics::Math::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
-    std::vector<biorbd::rigidbody::GeneralizedCoordinateRange> ranges(6);
+    std::vector<biorbd::utils::Range> ranges(6);
     biorbd::rigidbody::Segment MasterSegment(
                 model, "MasterSegment", "NoParent", "zyx", "yzx", ranges,
                 characteristics, RigidBodyDynamics::Math::SpatialTransform());

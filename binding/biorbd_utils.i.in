@@ -7,6 +7,7 @@
 #include "Utils/Node.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/Rotation.h"
+#include "Utils/Range.h"
 %}
 
 // Instantiate templates
@@ -21,6 +22,8 @@ namespace std {
 %template(MatBiorbdRototation) std::vector<std::vector<biorbd::utils::Rotation>>;
 %template(VecBiorbdNode) std::vector<biorbd::utils::Vector3d>;
 %template(MatBiorbdNode) std::vector<std::vector<biorbd::utils::Vector3d>>;
+%template(VecBiorbdRange) std::vector<biorbd::rigidbody::Range>;
+%template(MatBiorbdRange) std::vector<std::vector<biorbd::rigidbody::Range>>;
 }
 
 %include <std_string.i>
@@ -40,6 +43,7 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Vector3d.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/RotoTrans.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Rotation.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/Range.h"
 
 //%include "@CMAKE_SOURCE_DIR@/include/Utils/RotoTransNode.h"
 //%include "@CMAKE_SOURCE_DIR@/include/Utils/Time.h"

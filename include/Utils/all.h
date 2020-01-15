@@ -10,6 +10,7 @@
 #include "Utils/Vector3d.h"
 #include "Utils/Path.h"
 #include "Utils/Quaternion.h"
+#include "Utils/Range.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/RotoTransNode.h"
 #include "Utils/String.h"

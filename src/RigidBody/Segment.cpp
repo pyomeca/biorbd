@@ -9,7 +9,7 @@
 #include "RigidBody/Joints.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
-#include "RigidBody/GeneralizedCoordinateRange.h"
+#include "Utils/Range.h"
 
 biorbd::rigidbody::Segment::Segment() :
     biorbd::utils::Node(),
@@ -17,7 +17,7 @@ biorbd::rigidbody::Segment::Segment() :
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>()),
     m_seqT(std::make_shared<biorbd::utils::String>()),
     m_seqR(std::make_shared<biorbd::utils::String>()),
-    m_dofRanges(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>>()),
+    m_dofRanges(std::make_shared<std::vector<biorbd::utils::Range>>()),
     m_nbDof(std::make_shared<unsigned int>(0)),
     m_nbQdot(std::make_shared<unsigned int>(0)),
     m_nbQddot(std::make_shared<unsigned int>(0)),
@@ -45,7 +45,7 @@ biorbd::rigidbody::Segment::Segment(
         const biorbd::utils::String &parentName, 
         const biorbd::utils::String &seqT,
         const biorbd::utils::String &seqR,
-        const std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>& dofRanges,
+        const std::vector<biorbd::utils::Range>& dofRanges,
         const biorbd::rigidbody::SegmentCharacteristics& characteristics,
         const RigidBodyDynamics::Math::SpatialTransform& cor,
         int PF) :
@@ -55,7 +55,7 @@ biorbd::rigidbody::Segment::Segment(
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(cor)),
     m_seqT(std::make_shared<biorbd::utils::String>(seqT)),
     m_seqR(std::make_shared<biorbd::utils::String>(seqR)),
-    m_dofRanges(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>>()),
+    m_dofRanges(std::make_shared<std::vector<biorbd::utils::Range>>()),
     m_nbDof(std::make_shared<unsigned int>(0)),
     m_nbQdot(std::make_shared<unsigned int>(0)),
     m_nbQddot(std::make_shared<unsigned int>(0)),
@@ -85,7 +85,7 @@ biorbd::rigidbody::Segment::Segment(
         const biorbd::utils::String &name, // Name of segment
         const biorbd::utils::String &parentName, // Name of segment
         const biorbd::utils::String &seqR, // Cardan sequence to classify the rotation DoF
-        const std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>& dofRanges,
+        const std::vector<biorbd::utils::Range>& dofRanges,
         const biorbd::rigidbody::SegmentCharacteristics& characteristics, // Mass, Center of mass of segment, Inertia of segment, etc.
         const RigidBodyDynamics::Math::SpatialTransform& cor, //  Transformation from parent to child
         int PF): // Force platform number
@@ -96,7 +96,7 @@ biorbd::rigidbody::Segment::Segment(
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(cor)),
     m_seqT(std::make_shared<biorbd::utils::String>()),
     m_seqR(std::make_shared<biorbd::utils::String>(seqR)),
-    m_dofRanges(std::make_shared<std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>>()),
+    m_dofRanges(std::make_shared<std::vector<biorbd::utils::Range>>()),
     m_nbDof(std::make_shared<unsigned int>(0)),
     m_nbQdot(std::make_shared<unsigned int>(0)),
     m_nbQddot(std::make_shared<unsigned int>(0)),
@@ -228,7 +228,7 @@ const biorbd::utils::String& biorbd::rigidbody::Segment::seqR() const
     return *m_seqR;
 }
 
-const std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>&
+const std::vector<biorbd::utils::Range>&
 biorbd::rigidbody::Segment::ranges() const
 {
     return *m_dofRanges;
@@ -245,7 +245,7 @@ void biorbd::rigidbody::Segment::setDofs(
         biorbd::rigidbody::Joints& model,
         const biorbd::utils::String &seqT,
         const biorbd::utils::String &seqR,
-        const std::vector<biorbd::rigidbody::GeneralizedCoordinateRange>& dofRanges)
+        const std::vector<biorbd::utils::Range>& dofRanges)
 {
     determineIfRotIsQuaternion(seqR);
     setSequence(seqT, seqR);

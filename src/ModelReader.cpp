@@ -11,8 +11,8 @@
 #include "Utils/Vector.h"
 #include "Utils/Vector3d.h"
 #include "Utils/Rotation.h"
+#include "Utils/Range.h"
 #include "RigidBody/GeneralizedCoordinates.h"
-#include "RigidBody/GeneralizedCoordinateRange.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
 #include "RigidBody/IMU.h"
@@ -109,7 +109,7 @@ void biorbd::Reader::readModelFile(
                 biorbd::rigidbody::Mesh mesh;
                 int segmentByFile(-1); // -1 non setté, 0 pas par file, 1 par file
                 int PF = -1;
-                std::vector<biorbd::rigidbody::GeneralizedCoordinateRange> dofRanges;
+                std::vector<biorbd::utils::Range> dofRanges;
                 bool isRangeSet(false); // Ranges must be done only after translation AND rotations tags
                 while(file.read(property_tag) && property_tag.tolower().compare("endsegment")){
                     if (!property_tag.tolower().compare("parent")){
@@ -139,7 +139,7 @@ void biorbd::Reader::readModelFile(
                             file.read(min);
                             file.read(max);
                             dofRanges.push_back(
-                                        biorbd::rigidbody::GeneralizedCoordinateRange (min, max));
+                                        biorbd::utils::Range (min, max));
                         }
                         isRangeSet = true;
                     }
@@ -246,7 +246,7 @@ void biorbd::Reader::readModelFile(
                     }
                     for (size_t i=0; i<trans.length() + rotLength; ++i){
                         dofRanges.push_back(
-                                    biorbd::rigidbody::GeneralizedCoordinateRange ());
+                                    biorbd::utils::Range ());
                     }
                 }
                 RigidBodyDynamics::Math::SpatialTransform RT(RT_R, RT_T);
