@@ -135,7 +135,7 @@ void biorbd::utils::Equation::replaceCste(
 {
     for (unsigned int i=0; i<eq.size(); ++i)
         if (!eq[i].tolower().compare("pi")){
-            eq[i] = biorbd::utils::String::to_string(M_PI);
+            eq[i] = to_string(M_PI);
         }
 }
 
@@ -166,7 +166,7 @@ double biorbd::utils::Equation::evaluateEquation(
 {
     // If everything was done
     if (eq.size() == 1)
-        return std::stod(eq[0]);
+        return stod(eq[0]);
 
     // Declaration of the arithmetic markers
     const std::vector<biorbd::utils::Equation>& symbols(prepareMathSymbols());
@@ -178,9 +178,9 @@ double biorbd::utils::Equation::evaluateEquation(
             if (j==0 && (!symbols[math].compare("+") || !symbols[math].compare("-"))){
                 // Crush the previous value
                 if (!symbols[math].compare("+"))
-                    eq2[j-1] = biorbd::utils::String::to_string(0.0 + std::stod(eq[j+1]));
+                    eq2[j-1] = to_string(0.0 + stod(eq[j+1]));
                 else if (!symbols[math].compare("-"))
-                    eq2[j-1] = biorbd::utils::String::to_string(0.0 - std::stod(eq[j+1]));
+                    eq2[j-1] = to_string(0.0 - stod(eq[j+1]));
             }
             else{
                 // Crush the previous value
@@ -206,28 +206,28 @@ double biorbd::utils::Equation::evaluateEquation(
                     }
                     biorbd::utils::Error::check(foundIdx, "You must close brackets!");
 
-                    eq2.push_back(biorbd::utils::String::to_string(evaluateEquation(eq_tp)));
+                    eq2.push_back(to_string(evaluateEquation(eq_tp)));
                     j+=static_cast<unsigned int>(cmpValues);
                 }
                 else if (!symbols[math].compare("/"))
-                    eq2[j-1] = biorbd::utils::String::to_string(std::stod(eq[j-1]) / std::stod(eq[j+1]));
+                    eq2[j-1] = to_string(stod(eq[j-1]) / stod(eq[j+1]));
                 else if (!symbols[math].compare("*"))
-                    eq2[j-1] = biorbd::utils::String::to_string(std::stod(eq[j-1]) * std::stod(eq[j+1]));
+                    eq2[j-1] = to_string(stod(eq[j-1]) * stod(eq[j+1]));
                 else if (!symbols[math].compare("+"))
-                    eq2[j-1] = biorbd::utils::String::to_string(std::stod(eq[j-1]) + std::stod(eq[j+1]));
+                    eq2[j-1] = to_string(stod(eq[j-1]) + stod(eq[j+1]));
                 else if (!symbols[math].compare("-"))
-                    eq2[j-1] = biorbd::utils::String::to_string(std::stod(eq[j-1]) - std::stod(eq[j+1]));
+                    eq2[j-1] = to_string(stod(eq[j-1]) - stod(eq[j+1]));
                 else if (!symbols[math].compare("e")){
                     if (!eq[j+1].compare("-")){
-                        eq2[j-1] = biorbd::utils::String::to_string(std::stod(eq[j-1]) * pow(10,-1*std::stod(eq[j+2])));
+                        eq2[j-1] = to_string(stod(eq[j-1]) * pow(10,-1*stod(eq[j+2])));
                         ++j;
                     }
                     else if (!eq[j+1].compare("+")){
-                        eq2[j-1] = biorbd::utils::String::to_string(std::stod(eq[j-1]) * pow(10,std::stod(eq[j+2])));
+                        eq2[j-1] = to_string(stod(eq[j-1]) * pow(10,stod(eq[j+2])));
                         ++j;
                     }
                     else
-                        eq2[j-1] = biorbd::utils::String::to_string(std::stod(eq[j-1]) * pow(10,std::stod(eq[j+1])));
+                        eq2[j-1] = to_string(stod(eq[j-1]) * pow(10,stod(eq[j+1])));
 
                 }
             }
