@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/IfStream.h"
 
-#include <boost/lexical_cast.hpp>
+#include <clocale>
 #include <fstream>
 #include "Utils/Error.h"
 #include "Utils/Equation.h"
@@ -12,7 +12,7 @@ biorbd::utils::IfStream::IfStream() :
     m_ifs(std::make_shared<std::ifstream>()),
     m_path(std::make_shared<biorbd::utils::Path>())
 {
-
+    setlocale(LC_ALL, "C");
 }
 biorbd::utils::IfStream::IfStream(
         const biorbd::utils::Path& path,
@@ -22,6 +22,7 @@ biorbd::utils::IfStream::IfStream(
     m_path(std::make_shared<biorbd::utils::Path>(path))
 {
     open(m_path->absolutePath().c_str(), mode);
+    setlocale(LC_ALL, "C");
 }
 biorbd::utils::IfStream::IfStream(
         const char* path,
@@ -31,6 +32,7 @@ biorbd::utils::IfStream::IfStream(
     m_path(std::make_shared<biorbd::utils::Path>(path))
 {
     open(m_path->absolutePath().c_str(), mode);
+    setlocale(LC_ALL, "C");
 }
 
 
@@ -125,7 +127,7 @@ bool biorbd::utils::IfStream::read(
     // Manage in case of an equation
     try {
         result = biorbd::utils::Equation::evaluateEquation(tp, variables);
-    } catch (boost::bad_lexical_cast) {
+    } catch (std::runtime_error) {
         biorbd::utils::Error::raise("The following expression cannot be parsed properly: \"" + tp + "\"");
     }
     return out;
@@ -134,21 +136,21 @@ bool biorbd::utils::IfStream::read(
         int& val){
     biorbd::utils::String tp;
     bool out(read(tp));
-    val = boost::lexical_cast<int>(tp);
+    val = std::stoi(tp);
     return out;
 }
 bool biorbd::utils::IfStream::read(
         unsigned int& val){
     biorbd::utils::String tp;
     bool out(read(tp));
-    val = boost::lexical_cast<unsigned int>(tp);
+    val = static_cast<unsigned int>(std::stoul(tp));
     return out;
 }
 bool biorbd::utils::IfStream::read(
         bool& val){
     biorbd::utils::String tp;
     bool out(read(tp));
-    val = boost::lexical_cast<bool>(tp);
+    val = std::stoi(tp) != 0;
     return out;
 }
 // Read the entire line

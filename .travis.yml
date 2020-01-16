@@ -101,7 +101,13 @@ script:
         cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON -DPython3_EXECUTABLE=`which python` ..;
         make install;
       fi
-    - python -c "import biorbd"    
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+        cd test\\binding\\Python3;
+      else
+        cd test/binding/Python3;
+      fi
+    - pytest test_binder_python_rigidbody.py
+    - cd ../../..
 
     # Only do the coverage on Linux, but run the test anyway to get a nice output
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
