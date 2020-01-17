@@ -11,6 +11,7 @@
 namespace biorbd {
 namespace utils {
 class RotoTrans;
+class Range;
 }
 
 namespace rigidbody {
@@ -35,6 +36,7 @@ public:
     /// \param parentName The name of the parent segment
     /// \param seqT Sequence of the translations
     /// \param seqR Angle sequence of the Euler rotations
+    /// \param dofRanges Ranges of the translations and rotations dof. The length of dofRanges must be equal to length of translations and rotations
     /// \param characteristics of the segment (mass, center of mass, inertia, etc.)
     /// \param cor Transformation in parent reference frame
     /// \param PF Platform index attached to the body (-1 means no force platform acts on the body)
@@ -45,6 +47,7 @@ public:
             const biorbd::utils::String &parentName, 
             const biorbd::utils::String &seqT,
             const biorbd::utils::String &seqR,
+            const std::vector<biorbd::utils::Range>& dofRanges,
             const biorbd::rigidbody::SegmentCharacteristics& characteristics,
             const RigidBodyDynamics::Math::SpatialTransform& cor,
             int PF = -1);  
@@ -55,6 +58,7 @@ public:
     /// \param name The name of the segment
     /// \param parentName The name of the parent segment
     /// \param seqR Angle sequence of the Euler rotations
+    /// \param dofRanges Ranges of the translations and rotations dof. The length of dofRanges must be equal to length of translations and rotations
     /// \param characteristics of the segment (mass, center of mass, inertia, etc.)
     /// \param cor Transformation in parent reference frame
     /// \param PF Platform index attached to the body (-1 means no force platform acts on the body)
@@ -64,6 +68,7 @@ public:
             const biorbd::utils::String &name, 
             const biorbd::utils::String &parentName, 
             const biorbd::utils::String &seqR, 
+            const std::vector<biorbd::utils::Range>& dofRanges,
             const biorbd::rigidbody::SegmentCharacteristics& characteristics, 
             const RigidBodyDynamics::Math::SpatialTransform& cor, 
             int PF = -1); 
@@ -109,6 +114,13 @@ public:
     /// \return The angle sequence in text
     ///
     const biorbd::utils::String& seqR() const; 
+
+    ///
+    /// \brief Return the ranges for all the dof, translations and rotations respectively
+    /// \return The ranges for all the dof, translations and rotations respectively
+    ///
+    const std::vector<biorbd::utils::Range>&
+    ranges() const;
 
     ///
     /// \brief Return the number of DoF of the segment
@@ -207,11 +219,13 @@ protected:
     /// \param model The joint model
     /// \param seqT Sequence of the translations
     /// \param seqR Angle sequence of the Euler rotations
+    /// \param dofRanges Ranges of the translations and rotations dof. The length of dofRanges must be equal to length of translations and rotations
     ///
     void setDofs(
             biorbd::rigidbody::Joints& model,
             const biorbd::utils::String &seqT,
-            const biorbd::utils::String &seqR); 
+            const biorbd::utils::String &seqR,
+            const std::vector<biorbd::utils::Range>& dofRanges);
 
     ///
     /// \brief Set the total number of DoF
@@ -224,6 +238,7 @@ protected:
 
     std::shared_ptr<biorbd::utils::String> m_seqT;  ///< Translation sequence
     std::shared_ptr<biorbd::utils::String> m_seqR;  ///< Euler rotation sequence
+    std::shared_ptr<std::vector<biorbd::utils::Range>> m_dofRanges;  ///< Minimum and maximum values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedCoordinates
     std::shared_ptr<unsigned int> m_nbDof;   ///< Number of degrees of freedom 
     std::shared_ptr<unsigned int> m_nbQdot;  ///< Number of generalized velocities
     std::shared_ptr<unsigned int> m_nbQddot;  ///< Number of generalized accelerations

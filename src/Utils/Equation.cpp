@@ -1,7 +1,14 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Equation.h"
 
+#ifdef _WIN32
 #include <boost/lexical_cast.hpp>
+double stod(const char* s) {
+    return boost::lexical_cast<double>(s);
+}
+#endif
+
+#include <math.h>
 #include "Utils/Error.h"
 
 std::vector<biorbd::utils::Equation> biorbd::utils::Equation::prepareMathSymbols(){
@@ -95,7 +102,7 @@ std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(
                     size_t idx = wholeEq.find_first_of(")");
                     biorbd::utils::Equation newWholeEq(wholeEq.substr(2, idx-2));
                     double res(-1*evaluateEquation(splitIntoEquation(newWholeEq, variables)));
-                    wholeEq = std::to_string(res) + wholeEq.substr(idx+1);
+                    wholeEq = to_string(res) + wholeEq.substr(idx+1);
                 } else {
                     tp[0] = "-" + tp[0];
                     eq.insert(eq.end(), tp.begin(), tp.end());
@@ -134,8 +141,9 @@ void biorbd::utils::Equation::replaceCste(
         std::vector<biorbd::utils::Equation> &eq)
 {
     for (unsigned int i=0; i<eq.size(); ++i)
-        if (!eq[i].tolower().compare("pi"))
-            eq[i] = boost::lexical_cast< std::string>(M_PI);
+        if (!eq[i].tolower().compare("pi")){
+            eq[i] = to_string(M_PI);
+        }
 }
 
 void biorbd::utils::Equation::replaceVar(
@@ -147,7 +155,7 @@ void biorbd::utils::Equation::replaceVar(
             size_t pos(eq.find(var.first));
             size_t length(var.first.length());
             eq = eq.substr(0, pos) + "(" +
-                    std::to_string(var.second) + ")" +
+                    to_string(var.second) + ")" +
                     eq.substr(pos + length);
         }
 }
@@ -165,7 +173,7 @@ double biorbd::utils::Equation::evaluateEquation(
 {
     // If everything was done
     if (eq.size() == 1)
-        return boost::lexical_cast<double>(eq[0]);
+        return stod(eq[0]);
 
     // Declaration of the arithmetic markers
     const std::vector<biorbd::utils::Equation>& symbols(prepareMathSymbols());
@@ -177,9 +185,9 @@ double biorbd::utils::Equation::evaluateEquation(
             if (j==0 && (!symbols[math].compare("+") || !symbols[math].compare("-"))){
                 // Crush the previous value
                 if (!symbols[math].compare("+"))
-                    eq2[j-1] = boost::lexical_cast<std::string>(0.0 + boost::lexical_cast<double>(eq[j+1]));
+                    eq2[j-1] = to_string(0.0 + stod(eq[j+1]));
                 else if (!symbols[math].compare("-"))
-                    eq2[j-1] = boost::lexical_cast<std::string>(0.0 - boost::lexical_cast<double>(eq[j+1]));
+                    eq2[j-1] = to_string(0.0 - stod(eq[j+1]));
             }
             else{
                 // Crush the previous value
@@ -205,28 +213,28 @@ double biorbd::utils::Equation::evaluateEquation(
                     }
                     biorbd::utils::Error::check(foundIdx, "You must close brackets!");
 
-                    eq2.push_back(boost::lexical_cast<std::string>(boost::lexical_cast<std::string>(evaluateEquation(eq_tp))));
+                    eq2.push_back(to_string(evaluateEquation(eq_tp)));
                     j+=static_cast<unsigned int>(cmpValues);
                 }
                 else if (!symbols[math].compare("/"))
-                    eq2[j-1] = boost::lexical_cast<std::string>(boost::lexical_cast<double>(eq[j-1]) / boost::lexical_cast<double>(eq[j+1]));
+                    eq2[j-1] = to_string(stod(eq[j-1]) / stod(eq[j+1]));
                 else if (!symbols[math].compare("*"))
-                    eq2[j-1] = boost::lexical_cast<std::string>(boost::lexical_cast<double>(eq[j-1]) * boost::lexical_cast<double>(eq[j+1]));
+                    eq2[j-1] = to_string(stod(eq[j-1]) * stod(eq[j+1]));
                 else if (!symbols[math].compare("+"))
-                    eq2[j-1] = boost::lexical_cast<std::string>(boost::lexical_cast<double>(eq[j-1]) + boost::lexical_cast<double>(eq[j+1]));
+                    eq2[j-1] = to_string(stod(eq[j-1]) + stod(eq[j+1]));
                 else if (!symbols[math].compare("-"))
-                    eq2[j-1] = boost::lexical_cast<std::string>(boost::lexical_cast<double>(eq[j-1]) - boost::lexical_cast<double>(eq[j+1]));
+                    eq2[j-1] = to_string(stod(eq[j-1]) - stod(eq[j+1]));
                 else if (!symbols[math].compare("e")){
                     if (!eq[j+1].compare("-")){
-                        eq2[j-1] = boost::lexical_cast<std::string>(boost::lexical_cast<double>(eq[j-1]) * pow(10,-1*boost::lexical_cast<double>(eq[j+2])));
+                        eq2[j-1] = to_string(stod(eq[j-1]) * pow(10,-1*stod(eq[j+2])));
                         ++j;
                     }
                     else if (!eq[j+1].compare("+")){
-                        eq2[j-1] = boost::lexical_cast<std::string>(boost::lexical_cast<double>(eq[j-1]) * pow(10,boost::lexical_cast<double>(eq[j+2])));
+                        eq2[j-1] = to_string(stod(eq[j-1]) * pow(10,stod(eq[j+2])));
                         ++j;
                     }
                     else
-                        eq2[j-1] = boost::lexical_cast<std::string>(boost::lexical_cast<double>(eq[j-1]) * pow(10,boost::lexical_cast<double>(eq[j+1])));
+                        eq2[j-1] = to_string(stod(eq[j-1]) * pow(10,stod(eq[j+1])));
 
                 }
             }

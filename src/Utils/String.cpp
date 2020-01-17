@@ -1,10 +1,10 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/String.h"
 
+#include <sstream>
 #include <map>
 #include <algorithm>
 #include <vector>
-#include <boost/lexical_cast.hpp>
 #include "Utils/Error.h"
 
 biorbd::utils::String::String()
@@ -53,17 +53,17 @@ biorbd::utils::String biorbd::utils::String::operator+(
 
 biorbd::utils::String biorbd::utils::String::operator+(
         double val){
-    return *this + boost::lexical_cast<std::string>(val);
+    return *this + to_string(val);
 }
 
 biorbd::utils::String biorbd::utils::String::operator+(
         unsigned int val){
-    return *this + boost::lexical_cast<std::string>(val);
+    return *this + std::to_string(val);
 }
 
 biorbd::utils::String biorbd::utils::String::operator+(
         int val){
-    return *this + boost::lexical_cast<std::string>(val);
+    return *this + std::to_string(val);
 }
 
 biorbd::utils::String biorbd::utils::String::operator()(
@@ -114,6 +114,36 @@ biorbd::utils::String biorbd::utils::String::toupper() const{
     return toupper(*this);
 }
 
+biorbd::utils::String biorbd::utils::String::to_string(
+        double val)
+{
+    std::ostringstream out;
+    out.precision(20);
+    out << std::fixed << val;
+    return removeTrailing(out.str(), "0");
+}
+
+biorbd::utils::String biorbd::utils::String::to_string(
+        float val)
+{
+    std::ostringstream out;
+    out.precision(20);
+    out << std::fixed << val;
+    return removeTrailing(out.str(), "0");
+}
+
+biorbd::utils::String biorbd::utils::String::removeTrailing(
+        const biorbd::utils::String &origin,
+        const biorbd::utils::String &trailTag)
+{
+    biorbd::utils::Error::check(trailTag.length() == 1, "Tag should be of length 1");
+    biorbd::utils::String out(origin);
+
+    while(out.length() > 0 && out.back() == trailTag[0]){
+        out.pop_back();
+    }
+    return out;
+}
 
 std::ostream &operator<<(std::ostream &os, const biorbd::utils::String &a)
 {
