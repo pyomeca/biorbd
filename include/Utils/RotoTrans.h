@@ -12,6 +12,10 @@ struct SpatialTransform;
 #include "biorbdConfig.h"
 
 namespace biorbd {
+namespace rigidbody {
+class NodeSegment;
+}
+
 namespace utils {
 class String;
 class Vector;
@@ -77,6 +81,22 @@ public:
     ///
     RotoTrans(
             const RigidBodyDynamics::Math::SpatialTransform& st);
+
+    ///
+    /// \brief fromMarkers Creates a system of axes from two axes and an origin defined by markers
+    /// \param origin The position of the origin
+    /// \param axis1markers The beginning and ending of the vector of the first axis
+    /// \param axis2markers The beginning and ending of the vector of the second axis
+    /// \param axesNames The names ("x", "y" or "z") of the axes
+    /// \param axisToRecalculate The axis to recalculate to ensure orthonormal system of axes
+    /// \return The system of axes
+    ///
+    static biorbd::utils::RotoTrans fromMarkers(
+            const biorbd::rigidbody::NodeSegment& origin,
+            const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>& axis1markers,
+            const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>& axis2markers,
+            const std::pair<biorbd::utils::String, biorbd::utils::String> &axesNames,
+            const biorbd::utils::String& axisToRecalculate);
 
     ///
     /// \brief Get a particular axis of the rotation matrix

@@ -10,9 +10,10 @@
 #include "Utils/RotoTrans.h"
 #include "Utils/RotoTransNode.h"
 #include "Utils/Rotation.h"
-#include "RigidBody/GeneralizedCoordinates.h"
 #include "Utils/Quaternion.h"
 
+#include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/NodeSegment.h"
 static double requiredPrecision(1e-10);
 
 TEST(ShallowCopy, DeepCopy){
@@ -374,38 +375,165 @@ TEST(Rotation, unitTest){
 }
 
 TEST(RotoTrans, unitTest){
-    biorbd::utils::RotoTrans rt(
-                biorbd::utils::Vector3d(1, 1, 1), biorbd::utils::Vector3d(1, 1, 1), "xyz");
-    Eigen::Matrix4d rtExpected;
-    rtExpected <<
-            0.29192658172642888, -0.45464871341284091,  0.84147098480789650, 1,
-            0.83722241402998721, -0.30389665486452672, -0.45464871341284091, 1,
-            0.46242567005663016,  0.83722241402998732,  0.29192658172642888, 1,
-            0, 0, 0, 1;
-    for (unsigned int i = 0; i<4; ++i){
-        for (unsigned int j = 0; j<4; ++j){
-            EXPECT_NEAR(rt(i, j), rtExpected(i,j), requiredPrecision);
+    {
+        biorbd::utils::RotoTrans rt(
+                    biorbd::utils::Vector3d(1, 1, 1), biorbd::utils::Vector3d(1, 1, 1), "xyz");
+        Eigen::Matrix4d rtExpected;
+        rtExpected <<
+                      0.29192658172642888, -0.45464871341284091,  0.84147098480789650, 1,
+                0.83722241402998721, -0.30389665486452672, -0.45464871341284091, 1,
+                0.46242567005663016,  0.83722241402998732,  0.29192658172642888, 1,
+                0, 0, 0, 1;
+        for (unsigned int i = 0; i<4; ++i){
+            for (unsigned int j = 0; j<4; ++j){
+                EXPECT_NEAR(rt(i, j), rtExpected(i,j), requiredPrecision);
+            }
         }
+
+        biorbd::utils::RotoTrans rt_t(rt.transpose());
+        Eigen::Matrix4d rtTransposedExpected;
+        rtTransposedExpected <<
+                                0.29192658172642888,  0.83722241402998721, 0.46242567005663016, -1.5915746658130461,
+                -0.45464871341284091, -0.30389665486452672, 0.83722241402998732, -0.07867704575261969,
+                0.84147098480789650, -0.45464871341284091, 0.29192658172642888, -0.67874885312148447,
+                0, 0, 0, 1;
+        for (unsigned int i = 0; i<4; ++i){
+            for (unsigned int j = 0; j<4; ++j){
+                EXPECT_NEAR(rt_t(i, j), rtTransposedExpected(i,j),
+                            requiredPrecision);
+            }
+        }
+
+        biorbd::utils::Vector3d marker(1, 1, 1);
+        marker.applyRT(rt_t);
+        for (unsigned int i=0; i<3; ++i)
+            EXPECT_NEAR(marker[i], 0, requiredPrecision);
     }
 
-    biorbd::utils::RotoTrans rt_t(rt.transpose());
-    Eigen::Matrix4d rtTransposedExpected;
-    rtTransposedExpected <<
-            0.29192658172642888,  0.83722241402998721, 0.46242567005663016, -1.5915746658130461,
-           -0.45464871341284091, -0.30389665486452672, 0.83722241402998732, -0.07867704575261969,
-            0.84147098480789650, -0.45464871341284091, 0.29192658172642888, -0.67874885312148447,
-            0, 0, 0, 1;
-    for (unsigned int i = 0; i<4; ++i){
-        for (unsigned int j = 0; j<4; ++j){
-            EXPECT_NEAR(rt_t(i, j), rtTransposedExpected(i,j),
-                        requiredPrecision);
+    {
+        biorbd::rigidbody::NodeSegment origin(1, 2, 3);
+        biorbd::rigidbody::NodeSegment axis1(4, 2, 5);
+        biorbd::rigidbody::NodeSegment axis2(3, -2, 1);
+        {
+            biorbd::utils::RotoTrans rt(
+                        biorbd::utils::RotoTrans::fromMarkers(
+                            origin, {origin, axis1}, {origin, axis2}, {"x", "y"}, "x"));
+            biorbd::utils::RotoTrans rt2(
+                        biorbd::utils::RotoTrans::fromMarkers(
+                            origin,  {origin, axis2}, {origin, axis1},{"y", "x"}, "x"));
+            Eigen::Matrix4d rtExpected;
+            rtExpected <<   0.79091157883870022, 0.4082482904638631, 0.4558423058385518, 1,
+                            0.09304842103984709, -0.8164965809277261, 0.5698028822981898, 2,
+                            0.6048147367590061, -0.4082482904638631, -0.6837634587578276, 3,
+                            0, 0, 0, 1;
+            for (unsigned int i = 0; i<4; ++i){
+                for (unsigned int j = 0; j<4; ++j){
+                    EXPECT_NEAR(rt(i, j), rtExpected(i,j), requiredPrecision);
+                    EXPECT_NEAR(rt2(i, j), rtExpected(i,j), requiredPrecision);
+                }
+            }
+        }
+
+        {
+            biorbd::utils::RotoTrans rt(
+                        biorbd::utils::RotoTrans::fromMarkers(
+                            origin, {origin, axis1}, {origin, axis2}, {"x", "y"}, "y"));
+            biorbd::utils::RotoTrans rt2(
+                        biorbd::utils::RotoTrans::fromMarkers(
+                            origin, {origin, axis2}, {origin, axis1}, {"y", "x"}, "y"));
+            Eigen::Matrix4d rtExpected;
+            rtExpected <<   0.8320502943378437, 0.31606977062050695, 0.4558423058385518, 1,
+                            0,                  -0.8217814036133181, 0.5698028822981898, 2,
+                            0.5547001962252291, -0.47410465593076045, -0.6837634587578276, 3,
+                            0, 0, 0, 1;
+            for (unsigned int i = 0; i<4; ++i){
+                for (unsigned int j = 0; j<4; ++j){
+                    EXPECT_NEAR(rt(i, j), rtExpected(i,j), requiredPrecision);
+                    EXPECT_NEAR(rt2(i, j), rtExpected(i,j), requiredPrecision);
+                }
+            }
+        }
+
+        {
+            biorbd::utils::RotoTrans rt(
+                        biorbd::utils::RotoTrans::fromMarkers(
+                            origin, {origin, axis1}, {origin, axis2}, {"x", "z"}, "x"));
+            biorbd::utils::RotoTrans rt2(
+                        biorbd::utils::RotoTrans::fromMarkers(
+                            origin, {origin, axis2}, {origin, axis1}, {"z", "x"}, "x"));
+            Eigen::Matrix4d rtExpected;
+            rtExpected <<   0.7909115788387002, -0.4558423058385518, 0.4082482904638631, 1,
+                            0.09304842103984709, -0.5698028822981898, -0.8164965809277261, 2,
+                            0.6048147367590061, 0.6837634587578276, -0.4082482904638631, 3,
+                            0, 0, 0, 1;
+            for (unsigned int i = 0; i<4; ++i){
+                for (unsigned int j = 0; j<4; ++j){
+                    EXPECT_NEAR(rt(i, j), rtExpected(i,j), requiredPrecision);
+                    EXPECT_NEAR(rt2(i, j), rtExpected(i,j), requiredPrecision);
+                }
+            }
+        }
+
+        {
+            biorbd::utils::RotoTrans rt(
+                        biorbd::utils::RotoTrans::fromMarkers(
+                            origin, {origin, axis1}, {origin, axis2}, {"x", "z"}, "z"));
+            biorbd::utils::RotoTrans rt2(
+                        biorbd::utils::RotoTrans::fromMarkers(
+                            origin, {origin, axis2}, {origin, axis1}, {"z", "x"}, "z"));
+            Eigen::Matrix4d rtExpected;
+            rtExpected <<   0.8320502943378437, -0.4558423058385518, 0.31606977062050695, 1,
+                            0.0,                -0.5698028822981898, -0.8217814036133181, 2,
+                            0.5547001962252291, 0.6837634587578276, -0.47410465593076045, 3,
+                            0, 0, 0, 1;
+            for (unsigned int i = 0; i<4; ++i){
+                for (unsigned int j = 0; j<4; ++j){
+                    EXPECT_NEAR(rt(i, j), rtExpected(i,j), requiredPrecision);
+                    EXPECT_NEAR(rt2(i, j), rtExpected(i,j), requiredPrecision);
+                }
+            }
+        }
+
+        {
+            biorbd::utils::RotoTrans rt(
+                        biorbd::utils::RotoTrans::fromMarkers(
+                            origin, {origin, axis1}, {origin, axis2}, {"y", "z"}, "y"));
+            biorbd::utils::RotoTrans rt2(
+                        biorbd::utils::RotoTrans::fromMarkers(
+                            origin, {origin, axis2}, {origin, axis1}, {"z", "y"}, "y"));
+            Eigen::Matrix4d rtExpected;
+            rtExpected <<   0.4558423058385518, 0.7909115788387002, 0.4082482904638631, 1,
+                            0.5698028822981898, 0.09304842103984709, -0.8164965809277261, 2,
+                            -0.6837634587578276, 0.6048147367590061, -0.4082482904638631, 3,
+                            0, 0, 0, 1;
+            for (unsigned int i = 0; i<4; ++i){
+                for (unsigned int j = 0; j<4; ++j){
+                    EXPECT_NEAR(rt(i, j), rtExpected(i,j), requiredPrecision);
+                    EXPECT_NEAR(rt2(i, j), rtExpected(i,j), requiredPrecision);
+                }
+            }
+        }
+
+        {
+            biorbd::utils::RotoTrans rt(
+                        biorbd::utils::RotoTrans::fromMarkers(
+                            origin, {origin, axis1}, {origin, axis2}, {"y", "z"}, "z"));
+            biorbd::utils::RotoTrans rt2(
+                        biorbd::utils::RotoTrans::fromMarkers(
+                            origin, {origin, axis2}, {origin, axis1}, {"z", "y"}, "z"));
+            Eigen::Matrix4d rtExpected;
+            rtExpected <<   0.4558423058385518, 0.8320502943378437, 0.31606977062050695, 1,
+                            0.5698028822981898, 0.0,                -0.8217814036133181, 2,
+                            -0.6837634587578276, 0.5547001962252291, -0.47410465593076045, 3,
+                            0, 0, 0, 1;
+            for (unsigned int i = 0; i<4; ++i){
+                for (unsigned int j = 0; j<4; ++j){
+                    EXPECT_NEAR(rt(i, j), rtExpected(i,j), requiredPrecision);
+                    EXPECT_NEAR(rt2(i, j), rtExpected(i,j), requiredPrecision);
+                }
+            }
         }
     }
-
-    biorbd::utils::Vector3d marker(1, 1, 1);
-    marker.applyRT(rt_t);
-    for (unsigned int i=0; i<3; ++i)
-        EXPECT_NEAR(marker[i], 0, requiredPrecision);
 }
 
 TEST(RotoTransNode, Copy){
