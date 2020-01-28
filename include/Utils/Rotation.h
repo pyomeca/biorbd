@@ -12,6 +12,10 @@ struct SpatialTransform;
 #include "biorbdConfig.h"
 
 namespace biorbd {
+namespace rigidbody {
+class NodeSegment;
+}
+
 namespace utils {
 class String;
 class Vector;
@@ -87,15 +91,29 @@ public:
             const biorbd::utils::String& seq);
 
     ///
+    /// \brief fromMarkers Creates a system of axes from two axes defined by markers
+    /// \param axis1markers The beginning and ending of the vector of the first axis
+    /// \param axis2markers The beginning and ending of the vector of the second axis
+    /// \param axesNames The names ("x", "y" or "z") of the axes
+    /// \param axisToRecalculate The axis to recalculate to ensure orthonormal system of axes
+    /// \return The system of axes
+    ///
+    static biorbd::utils::Rotation fromMarkers(
+            const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>& axis1markers,
+            const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>& axis2markers,
+            const std::pair<biorbd::utils::String, biorbd::utils::String> &axesNames,
+            const biorbd::utils::String& axisToRecalculate);
+
+    ///
     /// \brief Return extracted angles from the rotation matrix into Euler angles using the provided sequence
-    /// \param rt The Rotation matrix to extract angles from
+    /// \param r The Rotation matrix to extract angles from
     /// \param seq The angle sequence
     /// \return The angles (the length of the vector will match the length of sequence)
     ///
     /// The rotation sequence can be any combination of x, y and z
     ///
     static  biorbd::utils::Vector toEulerAngles(
-            const biorbd::utils::Rotation& rt,
+            const biorbd::utils::Rotation& r,
             const biorbd::utils::String& seq);
 
     ///

@@ -10,7 +10,7 @@ INPUT                  += @CMAKE_SOURCE_DIR@/src/Utils
 INPUT                  += @CMAKE_SOURCE_DIR@/src/RigidBody
 INPUT                  += @CMAKE_SOURCE_DIR@/src/Muscles
 INPUT                  += @CMAKE_SOURCE_DIR@/src/Actuators
-INPUT                  += @CMAKE_SOURCE_DIR@/docs
+INPUT                  += @CMAKE_SOURCE_DIR@/doc
 
 # Remove dll_export that confuses Doxygen
 ENABLE_PREPROCESSING   = YES

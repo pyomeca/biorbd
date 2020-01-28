@@ -1,5 +1,5 @@
 #ifndef BIORBD_MATLAB_NAME_MARKERS_H
-#define BIORBD_MATLAB_N_MARKERS_H
+#define BIORBD_MATLAB_NAME_MARKERS_H
 
 #include <mex.h>
 #include "BiorbdModel.h"
@@ -69,4 +69,4 @@ void Matlab_nameAnatomicalMarkers( int, mxArray *plhs[],
     return;
 }
 
-#endif // BIORBD_MATLAB_N_MARKERS_H
+#endif // BIORBD_MATLAB_NAME_MARKERS_H

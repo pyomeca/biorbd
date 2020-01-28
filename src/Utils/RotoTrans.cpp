@@ -8,6 +8,8 @@
 #include "Utils/Vector.h"
 #include "Utils/Rotation.h"
 
+#include "RigidBody/NodeSegment.h"
+
 biorbd::utils::RotoTrans::RotoTrans(
         const Eigen::Matrix4d& matrix) :
     Eigen::Matrix4d(matrix)
@@ -44,6 +46,19 @@ biorbd::utils::RotoTrans::RotoTrans(
     Eigen::Matrix4d(fromSpatialTransform(st))
 {
 
+}
+
+biorbd::utils::RotoTrans biorbd::utils::RotoTrans::fromMarkers(
+        const biorbd::rigidbody::NodeSegment& origin,
+        const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment> &axis1markers,
+        const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment> &axis2markers,
+        const std::pair<biorbd::utils::String, biorbd::utils::String>& axesNames,
+        const biorbd::utils::String &axisToRecalculate)
+{
+    RotoTrans rt_out;
+    rt_out.block(0, 0, 3, 3) = Rotation::fromMarkers(axis1markers, axis2markers, axesNames, axisToRecalculate);
+    rt_out.block(0, 3, 3, 1) = origin;
+    return rt_out;
 }
 
 biorbd::utils::Vector3d biorbd::utils::RotoTrans::axe(int idx)
