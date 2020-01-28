@@ -48,7 +48,7 @@ public:
 
     ///
     /// \brief Set a new value for the maximal
-    /// \param min The value to set to
+    /// \param max The value to set to
     ///
     void setMax(double max);
 
@@ -59,8 +59,8 @@ public:
     double max() const;
 
 protected:
-    std::shared_ptr<double> m_min;
-    std::shared_ptr<double> m_max;
+    std::shared_ptr<double> m_min; ///< The minimal value allowed by the range
+    std::shared_ptr<double> m_max; ///< The maximal value allowed by the range
 };
 
 }}

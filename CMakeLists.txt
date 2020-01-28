@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(biorbd VERSION 1.1.2)
+project(biorbd VERSION 1.1.3)
 set (CMAKE_CXX_STANDARD 11)
 
 # Set some variables
@@ -166,7 +166,7 @@ endif()
 # Doc
 option(BUILD_DOC "Build documentation" OFF)
 if (BUILD_DOC)
-    add_subdirectory(docs)
+    add_subdirectory(doc)
 endif (BUILD_DOC)
 
 # Testing

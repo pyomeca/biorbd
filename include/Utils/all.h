@@ -11,6 +11,7 @@
 #include "Utils/Path.h"
 #include "Utils/Quaternion.h"
 #include "Utils/Range.h"
+#include "Utils/Rotation.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/RotoTransNode.h"
 #include "Utils/String.h"
