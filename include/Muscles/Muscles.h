@@ -80,6 +80,25 @@ public:
             const biorbd::utils::String &name) const;
 
     ///
+    /// \brief muscleNames Return the names for all the muscle ordered by their
+    /// respective group name
+    /// \return All the muscle names
+    ///
+    std::vector<biorbd::utils::String> muscleNames() const;
+
+    ///
+    /// \brief Return the muscle groups
+    /// \return The muscle groups
+    ///
+    std::vector<biorbd::muscles::MuscleGroup>& muscleGroups();
+
+    ///
+    /// \brief Return the muscle groups
+    /// \return The muscle groups
+    ///
+    const std::vector<biorbd::muscles::MuscleGroup>& muscleGroups() const;
+
+    ///
     /// \brief Return the muscle group of specific index
     /// \param idx The index of the muscle group to return
     /// \return A muscle group
