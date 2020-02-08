@@ -19,11 +19,22 @@ IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   SET_PROPERTY(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 ENDIF()
 
+# Choose the math's library backend to use
+set(MATH_LIBRARY_BACKEND Eigen3 CACHE STRING "Choose the backend library for the linear algebra.")
+# Set the possible values of build type for cmake-gui
+set_property(CACHE MATH_LIBRARY_BACKEND PROPERTY STRINGS "Eigen3" "Casadi")
+
 # Prepare linkings
 find_package(RBDL REQUIRED)
 set(BOOST_ROOT ${CMAKE_INSTALL_PREFIX})
 find_package(Boost REQUIRED)
-find_package(Eigen3 REQUIRED)
+if(${MATH_LIBRARY_BACKEND} STREQUAL "Eigen3")
+  find_package(Eigen3 REQUIRED)
+  set(MATH_BACKEND_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
+elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
+  find_package(Casadi REQUIRED)
+  set(MATH_BACKEND_INCLUDE_DIR ${Casadi_INCLUDE_DIR} ${Casadi_INCLUDE_DIR}/..)
+endif()
 find_package(Dlib REQUIRED)
 find_package(IPOPT)
 find_package(TinyXML)
@@ -73,16 +84,19 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_debug")
 configure_file(${CMAKE_SOURCE_DIR}/include/biorbdConfig.h.in ${CMAKE_BINARY_DIR}/include/biorbdConfig.h)
 
 # Add headers
+set(ALL_INCLUDE_DIR 
+  ${RBDL_INCLUDE_DIR}
+  ${RBDL_INCLUDE_DIR}/..
+  ${Boost_INCLUDE_DIRS}
+  ${MATH_BACKEND_INCLUDE_DIR}
+  ${DLIB_INCLUDE_DIR}
+  ${IPOPT_INCLUDE_DIR}
+  ${TinyXML_INCLUDE_DIR}
+  ${CMAKE_SOURCE_DIR}/include
+  ${CMAKE_BINARY_DIR}/include
+)
 target_include_directories(${PROJECT_NAME} PUBLIC
-    ${RBDL_INCLUDE_DIR}
-    ${RBDL_INCLUDE_DIR}/..
-    ${Boost_INCLUDE_DIRS}
-    ${EIGEN3_INCLUDE_DIR}
-    ${DLIB_INCLUDE_DIR}
-    ${IPOPT_INCLUDE_DIR}
-    ${TinyXML_INCLUDE_DIR}
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_BINARY_DIR}/include
+    ${ALL_INCLUDE_DIR}
 )
 
 # Installation directories
