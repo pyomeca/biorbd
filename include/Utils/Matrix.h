@@ -1,8 +1,8 @@
 #ifndef BIORBD_UTILS_MATRIX_H
 #define BIORBD_UTILS_MATRIX_H
 
-#include <Eigen/Dense>
 #include "biorbdConfig.h"
+#include "rbdl_math.h"
 
 namespace biorbd {
 namespace rigidbody {
@@ -13,7 +13,7 @@ namespace utils {
 ///
 /// \brief A wrapper for the Eigen::MatrixXd
 ///
-class BIORBD_API Matrix : public Eigen::MatrixXd
+class BIORBD_API Matrix : public RigidBodyDynamics::Math::MatrixNd
 {
 public:
     ///
@@ -21,12 +21,14 @@ public:
     ///
     Matrix();
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Construct matrix from another Eigen matrix
     /// \param other The other Eigen matrix
     ///
     template<typename OtherDerived> Matrix(const Eigen::MatrixBase<OtherDerived>& other) :
         Eigen::MatrixXd(other){}
+#endif
 
     ///
     /// \brief Construct matrix of size nbRows,nbCols
@@ -37,6 +39,7 @@ public:
             unsigned int nbRows,
             unsigned int nbCols);
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief To use operator= with matrix
     /// \param other The other Eigen matrix
@@ -46,7 +49,7 @@ public:
             this->Eigen::MatrixXd::operator=(other);
             return *this;
         }
-
+#endif
 };
 
 }}

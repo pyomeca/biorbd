@@ -11,15 +11,15 @@
 #include "RigidBody/NodeSegment.h"
 
 biorbd::utils::RotoTrans::RotoTrans(
-        const Eigen::Matrix4d& matrix) :
-    Eigen::Matrix4d(matrix)
+        const RigidBodyDynamics::Math::Matrix4d& matrix) :
+    RigidBodyDynamics::Math::Matrix4d(matrix)
 {
     checkUnitary();
 }
 
 biorbd::utils::RotoTrans::RotoTrans(
         const biorbd::utils::Rotation& rot) :
-    Eigen::Matrix4d(combineRotAndTrans(rot, Eigen::Vector3d::Zero()))
+    RigidBodyDynamics::Math::Matrix4d(combineRotAndTrans(rot, biorbd::utils::Vector3d::Zero()))
 {
 
 }
@@ -27,7 +27,7 @@ biorbd::utils::RotoTrans::RotoTrans(
 biorbd::utils::RotoTrans::RotoTrans(
         const biorbd::utils::Rotation& rot,
         const biorbd::utils::Vector3d& trans) :
-    Eigen::Matrix4d(combineRotAndTrans(rot,trans))
+    RigidBodyDynamics::Math::Matrix4d(combineRotAndTrans(rot,trans))
 {
 
 }
@@ -36,14 +36,14 @@ biorbd::utils::RotoTrans::RotoTrans(
         const biorbd::utils::Vector& rotation,
         const biorbd::utils::Vector3d& translation,
         const biorbd::utils::String& rotationSequence) :
-    Eigen::Matrix4d(fromEulerAngles(rotation, translation, rotationSequence))
+    RigidBodyDynamics::Math::Matrix4d(fromEulerAngles(rotation, translation, rotationSequence))
 {
 
 }
 
 biorbd::utils::RotoTrans::RotoTrans(
         const RigidBodyDynamics::Math::SpatialTransform& st) :
-    Eigen::Matrix4d(fromSpatialTransform(st))
+    RigidBodyDynamics::Math::Matrix4d(fromSpatialTransform(st))
 {
 
 }
@@ -56,16 +56,16 @@ biorbd::utils::RotoTrans biorbd::utils::RotoTrans::fromMarkers(
         const biorbd::utils::String &axisToRecalculate)
 {
     RotoTrans rt_out;
-    rt_out.block(0, 0, 3, 3) = Rotation::fromMarkers(axis1markers, axis2markers, axesNames, axisToRecalculate);
-    rt_out.block(0, 3, 3, 1) = origin;
+    rt_out.block<3, 3>(0, 0) = Rotation::fromMarkers(axis1markers, axis2markers, axesNames, axisToRecalculate);
+    rt_out.block<3, 1>(0, 3) = origin;
     return rt_out;
 }
 
-biorbd::utils::Vector3d biorbd::utils::RotoTrans::axe(int idx)
+biorbd::utils::Vector3d biorbd::utils::RotoTrans::axe(unsigned int idx) const
 {
     biorbd::utils::Error::check(
-                idx>=0 && idx<=2, "Axis must be between 0 and 2 included");
-    return rot().block(0,idx,3,1);
+                idx<=2, "Axis must be between 0 and 2 included");
+    return static_cast<RigidBodyDynamics::Math::VectorNd>(rot().block(0,idx,3,1));
 }
 
 biorbd::utils::RotoTrans biorbd::utils::RotoTrans::transpose() const
@@ -73,18 +73,18 @@ biorbd::utils::RotoTrans biorbd::utils::RotoTrans::transpose() const
     biorbd::utils::RotoTrans tp;
     tp.block(0, 0, 3, 3) = block(0, 0, 3, 3).transpose();
     tp.block(0, 3, 3, 1) = -tp.block(0, 0, 3, 3) * block(0, 3, 3, 1);
-    tp.block(3, 0, 1, 4) << 0, 0, 0, 1;
+    tp.block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1);
     return tp;
 }
 
 biorbd::utils::Vector3d biorbd::utils::RotoTrans::trans() const
 {
-    return this->block(0,3,3,1);
+    return this->block<3, 1>(0,3);
 }
 
 biorbd::utils::Rotation biorbd::utils::RotoTrans::rot() const
 {
-    return this->block(0,0,3,3);
+    return this->block<3, 3>(0,0);
 }
 
 biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::combineRotAndTrans(
@@ -92,7 +92,7 @@ biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::combineRotAndTrans(
         const biorbd::utils::Vector3d& trans){
     block(0,0,3,3) = rot;
     block(0,3,3,1) = trans;
-    block(3,0,1,4) << 0,0,0,1;
+    block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1);
     return *this;
 }
 
@@ -111,7 +111,7 @@ biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::fromEulerAngles(
     rot_mat.fromEulerAngles(rot, seq);
     block(0,0,3,3) = rot_mat;
     block(0,3,3,1) = trans;
-    block(3,0,1,4) << 0,0,0,1;
+    block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1);
     return *this;
 }
 
@@ -119,13 +119,14 @@ biorbd::utils::Vector biorbd::utils::RotoTrans::toEulerAngles(
         const biorbd::utils::RotoTrans& rt,
         const biorbd::utils::String &seq)
 {
-    return biorbd::utils::Rotation::toEulerAngles(rt.block(0, 0, 3, 3), seq);
+    return biorbd::utils::Rotation::toEulerAngles(rt.block<3, 3>(0, 0), seq);
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
 biorbd::utils::RotoTrans biorbd::utils::RotoTrans::mean(const std::vector<RotoTrans> & mToMean)
 {
     // The translation part is just the actual mean
-    Eigen::Vector3d v_tp;
+    RigidBodyDynamics::Math::Vector3d v_tp;
     v_tp.setZero();
     for (unsigned int i = 0; i<mToMean.size(); ++i){
         v_tp += mToMean[i].trans();
@@ -135,16 +136,17 @@ biorbd::utils::RotoTrans biorbd::utils::RotoTrans::mean(const std::vector<RotoTr
     // The rotation part should call the proper way implemented in Rotation
     std::vector<biorbd::utils::Rotation> rotations;
     for (unsigned int i=0; i<mToMean.size(); ++i){
-        rotations.push_back(mToMean[i].block(0, 0, 3, 3));
+        rotations.push_back(mToMean[i].block<3, 3>(0, 0));
     }
     biorbd::utils::RotoTrans m_out(
                 biorbd::utils::Rotation::mean(rotations), v_tp);
     return m_out;
 }
+#endif
 
-Eigen::Vector4d biorbd::utils::RotoTrans::expand3dTo4d(const biorbd::utils::Vector3d &v1)
+RigidBodyDynamics::Math::Vector4d biorbd::utils::RotoTrans::expand3dTo4d(const biorbd::utils::Vector3d &v1)
 {
-    Eigen::Vector4d v2;
+    RigidBodyDynamics::Math::Vector4d v2;
     v2.block(0,0,3,1) = v1;
     v2(3) = 1;
     return v2;
@@ -152,12 +154,14 @@ Eigen::Vector4d biorbd::utils::RotoTrans::expand3dTo4d(const biorbd::utils::Vect
 
 void biorbd::utils::RotoTrans::checkUnitary()
 {
+#ifndef BIORBD_USE_CASADI_MATH
 #ifndef SKIP_ASSERT
     this->rot(); // Automatically cast the test for the rotation part
     biorbd::utils::Error::check(this->block(3, 0, 1, 4).sum() == 1.,
                                 "Last row of the RotoTrans should be (0,0,0,1");
     biorbd::utils::Error::check((*this)(3, 3) == 1.,
                                 "Last row of the RotoTrans should be (0,0,0,1");
+#endif
 #endif
 }
 

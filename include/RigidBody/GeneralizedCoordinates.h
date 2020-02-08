@@ -27,14 +27,15 @@ public:
     GeneralizedCoordinates(
             const biorbd::rigidbody::GeneralizedCoordinates& Q);
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Construct generalized coordinates from another vector
     /// \param other Eigen matrix
     ///
-
     template<typename OtherDerived> GeneralizedCoordinates(
             const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::Vector(other){}
+#endif
 
     ///
     /// \brief Create generalized coordinates of dimension nbQ
@@ -55,6 +56,7 @@ public:
     ///
     virtual ~GeneralizedCoordinates();
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allows for operator= to be used
     /// \param other
@@ -66,6 +68,7 @@ public:
             this->biorbd::utils::Vector::operator=(other);
             return *this;
         }
+#endif
 };
 
 }}

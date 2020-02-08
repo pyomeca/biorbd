@@ -2,7 +2,7 @@
 #define BIORBD_UTILS_QUATERNION_H
 
 #include <memory>
-#include <Eigen/Dense>
+#include "rbdl_math.h"
 #include "Utils/Vector3d.h"
 
 #include "biorbdConfig.h"
@@ -20,7 +20,7 @@ class String;
 /// The definition for conversions are taken from
 /// https://www.euclideanspace.com/maths/geometry/rotations/conversions/index.htm
 ///
-class BIORBD_API Quaternion : public Eigen::Vector4d
+class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Vector4d
 {
 public:
     ///
@@ -39,6 +39,15 @@ public:
 
     ///
     /// \brief Construct Quaternion
+    /// \param vec4 The vector describing the quaternion
+    /// \param kStabilizer The value of the kstabilizer
+    ///
+    Quaternion (
+        const RigidBodyDynamics::Math::Vector4d &vec4,
+        double kStabilizer = 1);
+
+    ///
+    /// \brief Construct Quaternion
     /// \param w The W-Component of quaternion
     /// \param x The X-Component of quaternion
     /// \param y The Y-Component of quaternion
@@ -46,10 +55,10 @@ public:
     /// \param kStabilizer The value of the kstabilizer
     ///
     Quaternion (
-            double w,
-            double x,
-            double y,
-            double z,
+            RigidBodyDynamics::Math::Scalar w,
+            RigidBodyDynamics::Math::Scalar x,
+            RigidBodyDynamics::Math::Scalar y,
+            RigidBodyDynamics::Math::Scalar z,
             double kStabilizer = 1);
     
     ///
@@ -75,25 +84,25 @@ public:
     /// \brief Return the real part (w) the Quaternion
     /// \return The real part of the Quaternion
     ///
-    double w() const;
+    RigidBodyDynamics::Math::Scalar w() const;
 
     ///
     /// \brief Return the X-Component of the imaginary part of the Quaternion
     /// \return The X-Component of the imaginary part of the Quaternion
     ///
-    double x() const;
+    RigidBodyDynamics::Math::Scalar x() const;
 
     ///
     /// \brief Return the Y-Component of the imaginary part of the Quaternion
     /// \return The Y-Component of the imaginary part of the Quaternion
     ///
-    double y() const;
+    RigidBodyDynamics::Math::Scalar y() const;
 
     ///
     /// \brief Return the Z-Component of the imaginary part of the Quaternion
     /// \return The Z-Component of the imaginary part of the Quaternion
     ///
-    double z() const;
+    RigidBodyDynamics::Math::Scalar z() const;
 
     ///
     /// \brief Set the k stabilizer
@@ -110,6 +119,7 @@ public:
     ///
     double kStab() const;
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allows for the operation= assignation
     /// \param other The other quaternion
@@ -122,6 +132,7 @@ public:
         this->m_Kstab = static_cast<biorbd::utils::Quaternion>(other).m_Kstab;
         return *this;
     }
+#endif
 
     ///
     /// \brief Quaternion multiplication
@@ -135,7 +146,7 @@ public:
     /// \param scalar The scalar to multiply with
     ///
     biorbd::utils::Quaternion operator*(
-            double scalar) const;
+            RigidBodyDynamics::Math::Scalar scalar) const;
 
     ///
     /// \brief Multiply the quaternion with a scalar
@@ -180,7 +191,7 @@ public:
     /// \param kStab The value of the kstabilizer
     ///
     static biorbd::utils::Quaternion fromAxisAngle (
-            double angle,
+            RigidBodyDynamics::Math::Scalar angle,
             const biorbd::utils::Vector3d &axis,
             double kStab = 1);
 

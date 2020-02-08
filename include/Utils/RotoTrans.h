@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <memory>
-#include <Eigen/Dense>
+#include "rbdl_math.h"
 
 namespace RigidBodyDynamics { namespace Math {
 struct SpatialTransform;
@@ -25,7 +25,7 @@ class Vector3d;
 ///
 /// \brief Homogenous matrix to describe translations and rotations simultaneously
 ///
-class BIORBD_API RotoTrans : public Eigen::Matrix4d
+class BIORBD_API RotoTrans : public RigidBodyDynamics::Math::Matrix4d
 {
 public:
     ///
@@ -33,8 +33,9 @@ public:
     /// \param matrix 4D identity matrix
     ///
     RotoTrans(
-            const Eigen::Matrix4d& matrix = Eigen::Matrix4d::Identity());
+            const RigidBodyDynamics::Math::Matrix4d& matrix = RigidBodyDynamics::Math::Matrix4d::Identity());
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Construct a RotoTrans matrix from another RotoTrans
     /// \param other The other RotoTrans
@@ -44,6 +45,7 @@ public:
         Eigen::Matrix4d(other){
         checkUnitary();
     }
+#endif
 
     ///
     /// \brief Contruct Rototrans
@@ -104,7 +106,7 @@ public:
     /// \return The axis
     ///
     biorbd::utils::Vector3d axe(
-            int idx); // Aller récupérer un axe en particulier
+            unsigned int idx) const ;
 
     ///
     /// \brief Return the tranposed matrix
@@ -168,6 +170,7 @@ public:
             const biorbd::utils::RotoTrans& rt,
             const biorbd::utils::String &seq);
 
+#ifndef BIORBD_USE_CASADI_MATH
     ///
     /// \brief Get the mean of the 4x4 matrices
     /// \param rt The RotoTrans matrices to mean
@@ -175,7 +178,9 @@ public:
     ///
     static biorbd::utils::RotoTrans mean(
             const std::vector<biorbd::utils::RotoTrans>&rt);
+#endif
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allow the use of operator=
     /// \param other The other rotoTrans matrix
@@ -185,13 +190,14 @@ public:
             Eigen::Matrix4d::operator=(other);
             return *this;
         }
+#endif
 
 protected:
     ///
     /// \brief Expand 3D vector to 4D (padding with an extra 1)
     /// \param v1 Vector to expand
     ///
-    Eigen::Vector4d expand3dTo4d(const biorbd::utils::Vector3d& v1);
+    RigidBodyDynamics::Math::Vector4d expand3dTo4d(const biorbd::utils::Vector3d& v1);
 
     ///
     /// \brief Check if the RotoTrans has a unitary matrix of rotation and the last row is (0, 0, 0, 1)

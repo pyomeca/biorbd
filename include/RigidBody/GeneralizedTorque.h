@@ -27,6 +27,7 @@ public:
     GeneralizedTorque(
             const biorbd::rigidbody::GeneralizedTorque& other);
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Construct generalized torque
     /// \param other The other generalized torque
@@ -34,6 +35,7 @@ public:
     template<typename OtherDerived> GeneralizedTorque(
             const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::Vector(other){}
+#endif
 
     ///
     /// \brief Construct generalized torque of dimension nTorque
@@ -48,6 +50,7 @@ public:
     ///
     GeneralizedTorque(const biorbd::rigidbody::Joints& j);
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allows for operator= to be used
     /// \param other
@@ -58,6 +61,7 @@ public:
             this->biorbd::utils::Vector::operator=(other);
             return *this;
         }
+#endif
 };
 
 }}

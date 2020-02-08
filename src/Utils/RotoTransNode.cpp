@@ -1,7 +1,6 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/RotoTransNode.h"
 
-#include <Eigen/Dense>
 #include "Utils/String.h"
 
 biorbd::utils::RotoTransNode::RotoTransNode() :
@@ -30,7 +29,7 @@ biorbd::utils::RotoTransNode biorbd::utils::RotoTransNode::DeepCopy() const
 
 void biorbd::utils::RotoTransNode::DeepCopy(const RotoTransNode &other)
 {
-    *this = static_cast<Eigen::Matrix4d>(other);
+    *this = other;
     biorbd::utils::Node::DeepCopy(other);
 }
 

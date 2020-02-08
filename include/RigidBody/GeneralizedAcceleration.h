@@ -27,14 +27,15 @@ public:
     GeneralizedAcceleration(
             const biorbd::rigidbody::GeneralizedAcceleration& Q);
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Construct generalized acceleration vector from another vector
     /// \param other Eigen matrix
     ///
-
     template<typename OtherDerived> GeneralizedAcceleration(
             const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::Vector(other){}
+#endif
 
     ///
     /// \brief Create generalized acceleration vector of dimension nQddot
@@ -54,6 +55,7 @@ public:
     ///
     virtual ~GeneralizedAcceleration();
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allows for operator= to be used
     /// \param other
@@ -65,6 +67,7 @@ public:
             this->biorbd::utils::Vector::operator=(other);
             return *this;
         }
+#endif
 };
 
 }}

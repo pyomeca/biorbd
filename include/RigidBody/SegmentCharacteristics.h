@@ -89,7 +89,7 @@ public:
     /// \brief Returns the segment inertia matrix
     /// \return The segment inertia matrix
     ///
-    const Eigen::Matrix3d& inertia() const;
+    const RigidBodyDynamics::Math::Matrix3d& inertia() const;
 
 protected:
     std::shared_ptr<double> m_length; ///< Length of the segment

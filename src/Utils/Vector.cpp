@@ -3,33 +3,61 @@
 
 #include "Utils/Error.h"
 #include "Utils/String.h"
+#include "Utils/Vector3d.h"
 
 biorbd::utils::Vector::Vector() :
-    Eigen::VectorXd()
+    RigidBodyDynamics::Math::VectorNd()
 {
 
 }
+
+#ifdef BIORBD_USE_CASADI_MATH
+
+biorbd::utils::Vector::Vector(
+        const biorbd::utils::Vector& v) :
+    RigidBodyDynamics::Math::VectorNd (v)
+{
+
+}
+
+biorbd::utils::Vector::Vector(
+        const MX_Xd_SubMatrix &m) :
+    RigidBodyDynamics::Math::VectorNd (m)
+{
+
+}
+
+biorbd::utils::Vector::Vector(
+        const biorbd::utils::Vector3d& v) :
+    RigidBodyDynamics::Math::VectorNd (v)
+{
+
+}
+
+
+#endif
+
 biorbd::utils::Vector::Vector(
         unsigned int size) :
-    Eigen::VectorXd(size)
+    RigidBodyDynamics::Math::VectorNd(size)
 {
 
 }
 
-double biorbd::utils::Vector::norm(
+RigidBodyDynamics::Math::Scalar biorbd::utils::Vector::norm(
         unsigned int p,
         bool skipRoot) const 
 {
     biorbd::utils::Error::check(p >= 2, "p must be superior or equal to 2");
 
     if (p == 2){
-        double n = dot(*this);
+        RigidBodyDynamics::Math::Scalar n = dot(*this);
         if (skipRoot)
             return n;
         else
             return std::sqrt(n);
     } else {
-        double res(0);
+        RigidBodyDynamics::Math::Scalar res(0);
         for(unsigned int i=0; i < size(); ++i)
             res += std::pow(fabs((*this)[i]), p);
         if (skipRoot)

@@ -1,16 +1,17 @@
 #ifndef BIORBD_UTILS_VECTOR_H
 #define BIORBD_UTILS_VECTOR_H
 
-#include <Eigen/Dense>
 #include "biorbdConfig.h"
+#include "rbdl_math.h"
 
 namespace biorbd {
 namespace utils {
+class Vector3d;
 
 ///
 /// \brief Wrapper of the Eigen VectorXd
 ///
-class BIORBD_API Vector : public Eigen::VectorXd
+class BIORBD_API Vector : public RigidBodyDynamics::Math::VectorNd
 {
 public:
     ///
@@ -18,12 +19,36 @@ public:
     ///
     Vector();
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Construct vector from Eigen matrix
     /// \param other Eigen matrix
     ///
     template<typename OtherDerived> Vector(const Eigen::MatrixBase<OtherDerived>& other) :
         Eigen::VectorXd(other){}
+#endif
+#ifdef BIORBD_USE_CASADI_MATH
+    ///
+    /// \brief Construct vector from Casadi vector
+    /// \param v The vector to copy
+    ///
+    Vector(
+            const biorbd::utils::Vector& v);
+
+    ///
+    /// \brief Construct vector from Casadi matrix
+    /// \param m The vector to copy
+    ///
+    Vector(
+            const MX_Xd_SubMatrix& m);
+
+    ///
+    /// \brief Construct vector from Casadi matrix
+    /// \param v The vector to copy
+    ///
+    Vector(
+            const biorbd::utils::Vector3d& v);
+#endif
 
     ///
     /// \brief Construct vector of dimension size
@@ -38,7 +63,7 @@ public:
     /// \param skipRoot To perform or not the sqrt_p()
     /// \return The norm of the vector
     ///
-    double norm(
+    RigidBodyDynamics::Math::Scalar norm(
             unsigned int p = 2,
             bool skipRoot = false) const;
 
@@ -52,6 +77,7 @@ public:
             unsigned int p = 2,
             bool skipRoot = false);
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     /// 
     /// \brief Allow the use operator= on vector
     /// \param other The other matrix
@@ -61,6 +87,7 @@ public:
             this->Eigen::VectorXd::operator=(other);
             return *this;
         }
+#endif
 };
 
 }}

@@ -4,7 +4,7 @@
 #include "Utils/Vector.h"
 
 biorbd::utils::Matrix::Matrix() :
-    Eigen::MatrixXd()
+    RigidBodyDynamics::Math::MatrixNd()
 {
 
 }
@@ -12,7 +12,7 @@ biorbd::utils::Matrix::Matrix() :
 biorbd::utils::Matrix::Matrix(
         unsigned int nbRows,
         unsigned int nbCols) :
-    Eigen::MatrixXd(nbRows, nbCols)
+    RigidBodyDynamics::Math::MatrixNd(nbRows, nbCols)
 {
 
 }

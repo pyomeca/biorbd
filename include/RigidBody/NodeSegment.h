@@ -169,6 +169,7 @@ public:
     ///
     int nbAxesToRemove() const; 
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allows for operator= with other Vector3d
     /// \param other The other vector
@@ -178,6 +179,7 @@ public:
             this->biorbd::utils::Vector3d::operator=(other);
             return *this;
         }
+#endif
 
 protected:
     ///

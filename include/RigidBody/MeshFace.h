@@ -2,7 +2,7 @@
 #define BIORBD_RIGIDBODY_MESH_FACE_H
 
 #include <memory>
-#include <Eigen/Dense>
+#include <vector>
 #include "biorbdConfig.h"
 
 namespace biorbd {
@@ -23,7 +23,7 @@ public:
     /// \param vertex The vertex to connect to form a face
     ///
     MeshFace(
-            const Eigen::Vector3i& vertex= Eigen::Vector3i());
+            const std::vector<int>& vertex= std::vector<int>());
 
     ///
     /// \brief Deep copy of a MeshFace
@@ -42,13 +42,13 @@ public:
     /// \brief Allows to assign/get using ()
     /// \param idx The index in the vector
     ///
-    int &operator() (int idx);
+    int &operator() (unsigned int idx);
 
     ///
     /// \brief set the MeshFace from a new point
     /// \param pts The new point to copy
     ///
-    void setFace(const Eigen::Vector3i& pts);
+    void setFace(const std::vector<int>& pts);
 
     ///
     /// \brief Copy the face from another MeshFace
@@ -64,7 +64,7 @@ public:
     biorbd::utils::Vector3d faceAsDouble();
 
 protected:
-    std::shared_ptr<Eigen::Vector3i> m_face; ///< The face
+    std::shared_ptr<std::vector<int>> m_face; ///< The face
 
 };
 

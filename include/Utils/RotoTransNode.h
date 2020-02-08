@@ -20,6 +20,7 @@ public:
     ///
     RotoTransNode();
     
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Construct RotoTransNode from an Eigen matrix
     /// \param other The eigen matrix
@@ -27,6 +28,7 @@ public:
     template<typename OtherDerived> RotoTransNode(
             const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::RotoTrans(other){}
+#endif
 
     ///
     /// \brief Construct a RotoTransNode
@@ -51,6 +53,7 @@ public:
     ///
     void DeepCopy(const biorbd::utils::RotoTransNode& other);
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allow to use the operator=
     /// \param other The Eigen matrix 
@@ -60,6 +63,7 @@ public:
             this->biorbd::utils::RotoTrans::operator=(other);
             return *this;
         }
+#endif
 
 protected:
     ///
