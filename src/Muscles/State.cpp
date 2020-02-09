@@ -95,14 +95,14 @@ void biorbd::muscles::State::setActivation(
     if (val <= 0) {
         if (!turnOffWarnings){
             biorbd::utils::Error::warning(
-                        0, "Activation can't be lower than 0, 0 is used then");
+                        0, "Activation is " + biorbd::utils::String::to_string(val) + " but can't be lower than 0, 0 is used then");
         }
         *m_activation = 0;
     }
     else if (val >= 1) {
         if (!turnOffWarnings){
             biorbd::utils::Error::warning(
-                        0, "Activation can't be higher than 1, 1 is used then");
+                        0, "Activation " + biorbd::utils::String::to_string(val) + " but can't be higher than 1, 1 is used then");
         }
         *m_activation = 1;
     }

@@ -145,6 +145,18 @@ public:
     unsigned int nbMuscles() const;
 
     ///
+    /// \brief Return the muscles in the group
+    /// \return The muscles
+    ///
+    std::vector<std::shared_ptr<biorbd::muscles::Muscle>>& muscles();
+
+    ///
+    /// \brief Return the muscles in the group
+    /// \return The muscles
+    ///
+    const std::vector<std::shared_ptr<biorbd::muscles::Muscle>>& muscles() const;
+
+    ///
     /// \brief Return the muscle of a specific index in the group
     /// \param idx The muscle index
     /// \return The muscle of a specific index

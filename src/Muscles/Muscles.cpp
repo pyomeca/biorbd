@@ -63,6 +63,27 @@ int biorbd::muscles::Muscles::getGroupId(const biorbd::utils::String &name) cons
     return -1;
 }
 
+std::vector<biorbd::utils::String> biorbd::muscles::Muscles::muscleNames() const
+{
+    std::vector<biorbd::utils::String> names;
+    for (auto group : muscleGroups()){
+        for (auto muscle : group.muscles()){
+            names.push_back(muscle->name());
+        }
+    }
+    return names;
+}
+
+std::vector<biorbd::muscles::MuscleGroup>& biorbd::muscles::Muscles::muscleGroups()
+{
+    return *m_mus;
+}
+
+const std::vector<biorbd::muscles::MuscleGroup>& biorbd::muscles::Muscles::muscleGroups() const
+{
+    return *m_mus;
+}
+
 biorbd::muscles::MuscleGroup &biorbd::muscles::Muscles::muscleGroup(unsigned int idx)
 {
     biorbd::utils::Error::check(idx<nbMuscleGroups(), "Idx asked is higher than number of muscle groups");

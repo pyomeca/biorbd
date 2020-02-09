@@ -222,6 +222,15 @@ unsigned int biorbd::muscles::MuscleGroup::nbMuscles() const {
     return static_cast<unsigned int>(m_mus->size());
 }
 
+std::vector<std::shared_ptr<biorbd::muscles::Muscle>>& biorbd::muscles::MuscleGroup::muscles()
+{
+    return *m_mus;
+}
+
+const std::vector<std::shared_ptr<biorbd::muscles::Muscle>>& biorbd::muscles::MuscleGroup::muscles() const
+{
+    return *m_mus;
+}
 
 int biorbd::muscles::MuscleGroup::muscleID(const biorbd::utils::String& nameToFind){
     for (unsigned int i=0; i<m_mus->size(); ++i){
