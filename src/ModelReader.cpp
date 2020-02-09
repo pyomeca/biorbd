@@ -147,9 +147,11 @@ void biorbd::Reader::readModelFile(
                          file.read(mass, variable);
                     else if (!property_tag.tolower().compare("inertia")){
                         RigidBodyDynamics::Math::Matrix3d inertia_tp(RigidBodyDynamics::Math::Matrix3d::Identity());
-                        for (unsigned int i=0; i<9;++i)
-                            file.read(inertia_tp(i), variable);
-                        inertia = inertia_tp.transpose();
+                        for (unsigned int i=0; i<3;++i){
+                            for (unsigned int j=0; j<3; ++j){
+                                file.read(inertia_tp(i,j), variable);
+                            }
+                        }
                     }
                     else if (!property_tag.tolower().compare("rtinmatrix")){
                         biorbd::utils::Error::check(isRTset==false, "RT should not appear before RTinMatrix");
@@ -158,16 +160,13 @@ void biorbd::Reader::readModelFile(
                     else if (!property_tag.tolower().compare("rt")){
                         if (RTinMatrix){ // Matrix 4x4
                             // Counter for classification (Compteur pour classification)
-                            unsigned int cmp_M = 0;
-                            unsigned int cmp_T = 0;
-                            for (unsigned int i=0; i<12;++i){
-                                if ((i+1)%4){
-                                    file.read(RT_R(cmp_M), variable);
-                                    ++cmp_M;
-                                }
-                                else{
-                                    file.read(RT_T(cmp_T), variable);
-                                    ++cmp_T;
+                            for (unsigned int i=0; i<3;++i){ // ignore the last line
+                                for (unsigned int j=0; j<4; ++j){
+                                    if (j!=3){
+                                        file.read(RT_R(i, j), variable);
+                                    } else {
+                                        file.read(RT_T(i), variable);
+                                    }
                                 }
                              }
                         }
