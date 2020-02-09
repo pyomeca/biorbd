@@ -102,8 +102,8 @@ void biorbd::Reader::readModelFile(
                     RTinMatrix = false;
                 bool isRTset(false);
                 double mass = 0.00000001;
-                Eigen::Matrix3d inertia(Eigen::Matrix3d::Identity(3,3));
-                biorbd::utils::Rotation RT_R(Eigen::Matrix3d::Identity(3,3));
+                RigidBodyDynamics::Math::Matrix3d inertia(RigidBodyDynamics::Math::Matrix3d::Identity());
+                biorbd::utils::Rotation RT_R(RigidBodyDynamics::Math::Matrix3d::Identity());
                 biorbd::utils::Vector3d RT_T(0,0,0);
                 biorbd::utils::Vector3d com(0,0,0);
                 biorbd::rigidbody::Mesh mesh;
@@ -146,7 +146,7 @@ void biorbd::Reader::readModelFile(
                     else if (!property_tag.tolower().compare("mass"))
                          file.read(mass, variable);
                     else if (!property_tag.tolower().compare("inertia")){
-                        Eigen::Matrix3d inertia_tp(Eigen::Matrix3d::Identity(3,3));
+                        RigidBodyDynamics::Math::Matrix3d inertia_tp(RigidBodyDynamics::Math::Matrix3d::Identity());
                         for (unsigned int i=0; i<9;++i)
                             file.read(inertia_tp(i), variable);
                         inertia = inertia_tp.transpose();
@@ -212,7 +212,7 @@ void biorbd::Reader::readModelFile(
                         else if (segmentByFile == 1)
                             biorbd::utils::Error::raise("You must not mix file and mesh in segment");
                         biorbd::rigidbody::MeshFace tp;
-                        for (int i=0; i<3; ++i)
+                        for (unsigned int i=0; i<3; ++i)
                             file.read(tp(i));
                         mesh.addFace(tp);
                     }
@@ -390,7 +390,9 @@ void biorbd::Reader::readModelFile(
                             file.read(acc, variable);
                 }
                 if (version == 1){
+#ifndef BIORBD_USE_CASADI_MATH
                     biorbd::utils::Error::check(norm.norm() == 1.0, "Normal of the contact must be provided" );
+#endif
                     model->AddConstraint(parent_int, pos, norm, name, acc);
                 }
                 else if (version >= 2){
@@ -1362,7 +1364,10 @@ biorbd::Reader::readViconMarkerFile(const biorbd::utils::Path& path,
     // now we'll use a stringstream to separate the fields out of the line (comma separated)
     unsigned int cmpFrames(1);
     while(!file.eof()){
-        biorbd::utils::Vector data_tp = biorbd::utils::Vector(static_cast<unsigned int>(3*markOrder.size())).setZero();
+        biorbd::utils::Vector data_tp = biorbd::utils::Vector(
+                    static_cast<unsigned int>(3*markOrder.size()));
+        data_tp.setZero();
+
         std::stringstream ss( t );
         biorbd::utils::String field;
         unsigned int cmp = 0;
@@ -1453,11 +1458,11 @@ biorbd::Reader::readMeshFileBiorbdSegments(
 
     for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints){
         biorbd::rigidbody::MeshFace patchTp;
-        int nVertices;
+        unsigned int nVertices;
         file.read(nVertices);
         if (nVertices != 3)
             biorbd::utils::Error::raise("Patches must be 3 vertices!");
-        for (int i=0; i<nVertices; ++i)
+        for (unsigned int i=0; i<nVertices; ++i)
             file.read(patchTp(i));
         mesh.addFace(patchTp);
     }
@@ -1517,11 +1522,11 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFilePly(
 
     for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints){
         biorbd::rigidbody::MeshFace patchTp;
-        int nVertices;
+        unsigned int nVertices;
         file.read(nVertices);
         if (nVertices != 3)
             biorbd::utils::Error::raise("Patches must be 3 vertices!");
-        for (int i=0; i<nVertices; ++i)
+        for (unsigned int i=0; i<nVertices; ++i)
             file.read(patchTp(i));
         int dump;
         // Remove if there are too many columns
@@ -1575,7 +1580,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileObj(
         else if (!text.compare("f")) {
             // If first element is a f, then a face is found
             // Face is ignore for now
-            for (int i=0; i<3; ++i) {
+            for (unsigned int i=0; i<3; ++i) {
                 file.read(text);
                 size_t idxSlash = text.find("/");
                 biorbd::utils::String tata3(text.substr (0,idxSlash));

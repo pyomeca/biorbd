@@ -4,6 +4,7 @@
 #include <memory>
 #include "biorbdConfig.h"
 #include "Actuators/ActuatorEnums.h"
+#include "Utils/Scalar.h"
 
 namespace biorbd {
 namespace utils {
@@ -80,6 +81,12 @@ public:
     /// \return The type of the actuator
     ///
     biorbd::actuator::TYPE type() const;
+
+    ///
+    /// \brief Return the maximal torque
+    /// \return The maximal torque
+    ///
+    virtual biorbd::utils::Scalar torqueMax() = 0;
 
 protected:
     ///

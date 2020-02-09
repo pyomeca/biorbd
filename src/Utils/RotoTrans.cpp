@@ -1,7 +1,6 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/RotoTrans.h"
 
-#include <rbdl/rbdl_math.h>
 #include "Utils/Error.h"
 #include "Utils/Vector3d.h"
 #include "Utils/String.h"
@@ -16,6 +15,18 @@ biorbd::utils::RotoTrans::RotoTrans(
 {
     checkUnitary();
 }
+
+#ifdef BIORBD_USE_CASADI_MATH
+biorbd::utils::RotoTrans::RotoTrans(
+        biorbd::utils::Scalar v00, biorbd::utils::Scalar v01, biorbd::utils::Scalar v02, biorbd::utils::Scalar v03,
+        biorbd::utils::Scalar v10, biorbd::utils::Scalar v11, biorbd::utils::Scalar v12, biorbd::utils::Scalar v13,
+        biorbd::utils::Scalar v20, biorbd::utils::Scalar v21, biorbd::utils::Scalar v22, biorbd::utils::Scalar v23,
+        biorbd::utils::Scalar v30, biorbd::utils::Scalar v31, biorbd::utils::Scalar v32, biorbd::utils::Scalar v33) :
+    RigidBodyDynamics::Math::Matrix4d (v00, v01, v02, v03, v10, v11, v12, v13, v20, v21, v22, v23, v30, v31, v32, v33)
+{
+
+}
+#endif
 
 biorbd::utils::RotoTrans::RotoTrans(
         const biorbd::utils::Rotation& rot) :

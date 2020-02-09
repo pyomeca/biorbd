@@ -10,6 +10,18 @@ biorbd::muscles::ForceFromInsertion::ForceFromInsertion(double x, double y, doub
 {
 
 }
+
+#ifdef BIORBD_USE_CASADI_MATH
+
+biorbd::muscles::ForceFromInsertion::ForceFromInsertion(
+        const RigidBodyDynamics::Math::Vector3d &v) :
+    biorbd::muscles::Force (v)
+{
+
+}
+
+#endif
+
 biorbd::muscles::ForceFromInsertion::ForceFromInsertion(
         const biorbd::muscles::Geometry& geo,
         double vectorNorm) :
@@ -32,7 +44,7 @@ void biorbd::muscles::ForceFromInsertion::DeepCopy(const biorbd::muscles::ForceF
 
 void biorbd::muscles::ForceFromInsertion::setForceFromMuscleGeometry(
         const biorbd::muscles::Geometry& geo,
-        double norm)
+        biorbd::utils::Scalar norm)
 {
     // Trouver le vecteur directeur
     const std::vector<biorbd::utils::Vector3d>& tp_via = geo.musclesPointsInGlobal();

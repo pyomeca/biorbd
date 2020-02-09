@@ -6,7 +6,7 @@
 
 biorbd::actuator::ActuatorConstant::ActuatorConstant() :
     Actuator(),
-    m_Tmax(std::make_shared<double>(0))
+    m_Tmax(std::make_shared<biorbd::utils::Scalar>(0))
 {
     setType();
 }
@@ -24,7 +24,7 @@ biorbd::actuator::ActuatorConstant::ActuatorConstant(
         double Tmax,
         unsigned int dofIdx) :
     Actuator(direction, dofIdx),
-    m_Tmax(std::make_shared<double>(Tmax))
+    m_Tmax(std::make_shared<biorbd::utils::Scalar>(Tmax))
 {
     setType();
 }
@@ -35,7 +35,7 @@ biorbd::actuator::ActuatorConstant::ActuatorConstant(
         unsigned int dofIdx,
         const biorbd::utils::String &jointName) :
     Actuator(direction, dofIdx, jointName),
-    m_Tmax(std::make_shared<double>(Tmax))
+    m_Tmax(std::make_shared<biorbd::utils::Scalar>(Tmax))
 {
     setType();
 }
@@ -53,7 +53,7 @@ void biorbd::actuator::ActuatorConstant::DeepCopy(const biorbd::actuator::Actuat
     *m_Tmax = *other.m_Tmax;
 }
 
-double biorbd::actuator::ActuatorConstant::torqueMax(){
+biorbd::utils::Scalar biorbd::actuator::ActuatorConstant::torqueMax(){
     return *m_Tmax;
 }
 

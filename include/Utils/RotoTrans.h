@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include "rbdl_math.h"
+#include "Utils/Scalar.h"
 
 namespace RigidBodyDynamics { namespace Math {
 struct SpatialTransform;
@@ -45,6 +46,15 @@ public:
         Eigen::Matrix4d(other){
         checkUnitary();
     }
+#endif
+#ifdef BIORBD_USE_CASADI_MATH
+
+    RotoTrans(
+            biorbd::utils::Scalar v00, biorbd::utils::Scalar v01, biorbd::utils::Scalar v02, biorbd::utils::Scalar v03,
+            biorbd::utils::Scalar v10, biorbd::utils::Scalar v11, biorbd::utils::Scalar v12, biorbd::utils::Scalar v13,
+            biorbd::utils::Scalar v20, biorbd::utils::Scalar v21, biorbd::utils::Scalar v22, biorbd::utils::Scalar v23,
+            biorbd::utils::Scalar v30, biorbd::utils::Scalar v31, biorbd::utils::Scalar v32, biorbd::utils::Scalar v33);
+
 #endif
 
     ///

@@ -48,6 +48,13 @@ public:
             const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::RotoTransNode(other){}
 #endif
+#ifdef BIORBD_USE_CASADI_MATH
+    IMU(
+            const biorbd::rigidbody::IMU& imu);
+
+    biorbd::rigidbody::IMU operator*(const biorbd::rigidbody::IMU& other) const;
+#endif
+
 
     ///
     /// \brief Deep copy of the IMU data

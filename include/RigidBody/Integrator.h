@@ -5,9 +5,10 @@
 #include <vector>
 #include <rbdl/Model.h>
 #include "biorbdConfig.h"
+#include "Utils/Scalar.h"
 
 // The type of container used to hold the state vector
-typedef std::vector< double > state_type;
+typedef std::vector< biorbd::utils::Scalar > state_type;
 
 namespace biorbd {
 namespace utils {

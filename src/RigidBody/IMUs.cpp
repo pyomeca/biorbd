@@ -273,7 +273,7 @@ std::vector<biorbd::utils::String> biorbd::rigidbody::IMUs::IMUsNames()
     // Extract the name of all the markers of a model
     std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nbIMUs(); ++i)
-        names.push_back(IMU(i).name());
+        names.push_back(IMU(i).biorbd::utils::Node::name());
     return names;
 }
 
@@ -283,7 +283,7 @@ std::vector<biorbd::utils::String> biorbd::rigidbody::IMUs::technicalIMUsNames()
     std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nbIMUs(); ++i)
         if (IMU(i).isTechnical())
-            names.push_back(IMU(i).name());
+            names.push_back(IMU(i).biorbd::utils::Node::name());
 
     return names;
 }
@@ -294,7 +294,7 @@ std::vector<biorbd::utils::String> biorbd::rigidbody::IMUs::anatomicalIMUsNames(
     std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nbIMUs(); ++i)
         if (IMU(i).isAnatomical())
-            names.push_back(IMU(i).name());
+            names.push_back(IMU(i).biorbd::utils::Node::name());
 
     return names;
 }

@@ -29,6 +29,30 @@ public:
     template<typename OtherDerived> Matrix(const Eigen::MatrixBase<OtherDerived>& other) :
         Eigen::MatrixXd(other){}
 #endif
+#ifdef BIORBD_USE_CASADI_MATH
+
+    ///
+    /// \brief Construct matrix from Casadi matrix
+    /// \param other The matrix to copy
+    ///
+    Matrix(
+            const biorbd::utils::Matrix& other);
+
+    ///
+    /// \brief Construct matrix from Casadi matrix
+    /// \param other The matrix to copy
+    ///
+    Matrix(
+            const RigidBodyDynamics::Math::MatrixNd& other);
+
+    ///
+    /// \brief Construct matrix from Casadi matrix
+    /// \param other The matrix to copy
+    ///
+    Matrix(
+            const MX_Xd_SubMatrix& other);
+
+#endif
 
     ///
     /// \brief Construct matrix of size nbRows,nbCols
@@ -49,6 +73,23 @@ public:
             this->Eigen::MatrixXd::operator=(other);
             return *this;
         }
+#endif
+#ifdef BIORBD_USE_CASADI_MATH
+
+    ///
+    /// \brief operator= For submatrices
+    /// \param other The matrix to copy
+    ///
+    void operator=(
+            const biorbd::utils::Matrix& other);
+
+    ///
+    /// \brief operator= For submatrices
+    /// \param other The matrix to copy
+    ///
+    void operator=(
+            const MX_Xd_SubMatrix& other);
+
 #endif
 };
 

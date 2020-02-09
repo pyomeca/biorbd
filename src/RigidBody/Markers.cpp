@@ -343,6 +343,7 @@ biorbd::utils::Matrix biorbd::rigidbody::Markers::markersJacobian(
     return G;
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
 bool biorbd::rigidbody::Markers::inverseKinematics(
         const std::vector<biorbd::rigidbody::NodeSegment> &markers,
         const biorbd::rigidbody::GeneralizedCoordinates &Qinit,
@@ -373,6 +374,7 @@ bool biorbd::rigidbody::Markers::inverseKinematics(
                 dynamic_cast<biorbd::rigidbody::Joints &>(*this),
                 Qinit, body_id, body_pointEigen, markersInRbdl, Q);
 }
+#endif
 
 // Get the Jacobian of the technical markers
 std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::markersJacobian(
@@ -453,7 +455,7 @@ std::vector<biorbd::utils::String> biorbd::rigidbody::Markers::markerNames() con
     // Extract the name of all the markers of a model
     std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nbMarkers(); ++i)
-        names.push_back(marker(i).name());
+        names.push_back(marker(i).biorbd::utils::Node::name());
 
     return names;
 }
@@ -463,7 +465,7 @@ std::vector<biorbd::utils::String> biorbd::rigidbody::Markers::technicalMarkerNa
     std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nbMarkers(); ++i)
         if (marker(i).isTechnical())
-            names.push_back(marker(i).name());
+            names.push_back(marker(i).biorbd::utils::Node::name());
 
     return names;
 }
@@ -473,7 +475,7 @@ std::vector<biorbd::utils::String> biorbd::rigidbody::Markers::anatomicalMarkerN
     std::vector<biorbd::utils::String> names;
     for (unsigned int i=0; i<nbMarkers(); ++i)
         if (marker(i).isAnatomical())
-            names.push_back(marker(i).name());
+            names.push_back(marker(i).biorbd::utils::Node::name());
 
     return names;
 }

@@ -5,6 +5,7 @@
 #include "biorbdConfig.h"
 #include "Utils/Path.h"
 #include <iostream>
+#include "rbdl_math.h"
 
 namespace biorbd {
 namespace utils {
@@ -95,6 +96,15 @@ public:
     ///
     bool read(
             double& val);
+#ifdef BIORBD_USE_CASADI_MATH
+    ///
+    /// \brief Read an double in the file
+    /// \param val The number read (output)
+    /// \return True on success
+    ///
+    bool read(
+            MX_Xd_SubMatrix val);
+#endif
 
     ///
     /// \brief Read and evaluate an equation
@@ -105,6 +115,17 @@ public:
     bool read(
             double& result,
             const std::map<biorbd::utils::Equation, double> &variables);
+#ifdef BIORBD_USE_CASADI_MATH
+    ///
+    /// \brief Read and evaluate an equation
+    /// \param result The number read (output)
+    /// \param variables The variable set
+    /// \return True on success
+    ///
+    bool read(
+            MX_Xd_SubMatrix result,
+            const std::map<biorbd::utils::Equation, double> &variables);
+#endif
 
     ///
     /// \brief Advance in the file to a specific tag

@@ -36,6 +36,16 @@ public:
             const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::Vector(other){}
 #endif
+#ifdef BIORBD_USE_CASADI_MATH
+
+    ///
+    /// \brief Construct vector from Casadi vector
+    /// \param v The vector to copy
+    ///
+    GeneralizedAcceleration(
+            const RigidBodyDynamics::Math::VectorNd& v);
+
+#endif
 
     ///
     /// \brief Create generalized acceleration vector of dimension nQddot
@@ -67,6 +77,23 @@ public:
             this->biorbd::utils::Vector::operator=(other);
             return *this;
         }
+#endif
+#ifdef BIORBD_USE_CASADI_MATH
+
+    ///
+    /// \brief operator= For submatrices
+    /// \param The vector to copy
+    ///
+    void operator=(
+            const biorbd::utils::Vector& other);
+
+    ///
+    /// \brief operator= For submatrices
+    /// \param The vector to copy
+    ///
+    void operator=(
+            const MX_Xd_SubMatrix& other);
+
 #endif
 };
 

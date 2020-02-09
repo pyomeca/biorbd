@@ -120,7 +120,25 @@ bool biorbd::utils::IfStream::read(
     return read(val, dumb);
 }
 bool biorbd::utils::IfStream::read(
+        MX_Xd_SubMatrix val){
+    std::map<biorbd::utils::Equation, double> dumb;
+    return read(val, dumb);
+}
+bool biorbd::utils::IfStream::read(
         double& result,
+        const std::map<biorbd::utils::Equation, double> &variables){
+    biorbd::utils::Equation tp;
+    bool out(read(tp));
+    // Manage in case of an equation
+    try {
+        result = biorbd::utils::Equation::evaluateEquation(tp, variables);
+    } catch (std::runtime_error) {
+        biorbd::utils::Error::raise("The following expression cannot be parsed properly: \"" + tp + "\"");
+    }
+    return out;
+}
+bool biorbd::utils::IfStream::read(
+        MX_Xd_SubMatrix result,
         const std::map<biorbd::utils::Equation, double> &variables){
     biorbd::utils::Equation tp;
     bool out(read(tp));

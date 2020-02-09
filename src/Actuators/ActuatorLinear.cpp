@@ -1,6 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Actuators/ActuatorLinear.h"
 
+#include "Utils/Error.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 
 biorbd::actuator::ActuatorLinear::ActuatorLinear() :
@@ -64,8 +65,13 @@ void biorbd::actuator::ActuatorLinear::DeepCopy(const biorbd::actuator::Actuator
     *m_b = *other.m_b;
 }
 
+biorbd::utils::Scalar biorbd::actuator::ActuatorLinear::torqueMax()
+{
+    biorbd::utils::Error::raise("torqueMax for ActuatorLinear must be called with Q and Qdot");
+}
 
-double biorbd::actuator::ActuatorLinear::torqueMax(const biorbd::rigidbody::GeneralizedCoordinates &Q) const {
+
+biorbd::utils::Scalar biorbd::actuator::ActuatorLinear::torqueMax(const biorbd::rigidbody::GeneralizedCoordinates &Q) const {
     return (Q[*m_dofIdx]*180/M_PI) * *m_m + *m_b;
 }
 

@@ -138,7 +138,7 @@ protected:
     /// \brief Function allowing modification of the way the multiplication is done in computeForce(EMG)
     /// \param emg The EMG data
     /// \return The force from activation
-    virtual double getForceFromActivation(
+    virtual biorbd::utils::Scalar getForceFromActivation(
             const biorbd::muscles::State &emg);
 
     ///

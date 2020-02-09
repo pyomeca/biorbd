@@ -12,9 +12,9 @@ biorbd::utils::Vector3d::Vector3d() :
 }
 
 biorbd::utils::Vector3d::Vector3d(
-        RigidBodyDynamics::Math::Scalar x,
-        RigidBodyDynamics::Math::Scalar y,
-        RigidBodyDynamics::Math::Scalar z) :
+        biorbd::utils::Scalar x,
+        biorbd::utils::Scalar y,
+        biorbd::utils::Scalar z) :
     RigidBodyDynamics::Math::Vector3d (x, y, z),
     biorbd::utils::Node ()
 {
@@ -37,10 +37,33 @@ biorbd::utils::Vector3d::Vector3d(
 }
 
 biorbd::utils::Vector3d::Vector3d(
+        const biorbd::utils::Vector3d vec,
+        const biorbd::utils::String &name,
+        const biorbd::utils::String &parentName) :
+    RigidBodyDynamics::Math::Vector3d (vec),
+    Node(name, parentName)
+{
+
+}
+
+biorbd::utils::Vector3d::Vector3d(
         const RigidBodyDynamics::Math::VectorNd &other) :
-    RigidBodyDynamics::Math::Vector3d(other[0], other[1], other[2]), biorbd::utils::Node ()
+    RigidBodyDynamics::Math::Vector3d(other[0], other[1], other[2]),
+    biorbd::utils::Node ()
 {
     setType();
+}
+
+biorbd::utils::Vector3d::Vector3d(const MX_Xd_SubMatrix &other) :
+    RigidBodyDynamics::Math::Vector3d(other),
+    biorbd::utils::Node ()
+{
+    setType();
+}
+
+void biorbd::utils::Vector3d::operator=(const MX_Xd_SubMatrix &other)
+{
+    *this = biorbd::utils::Vector3d(other);
 }
 #endif
 

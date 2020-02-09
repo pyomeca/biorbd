@@ -3,6 +3,7 @@
 
 #include "biorbdConfig.h"
 #include "rbdl_math.h"
+#include "Utils/Scalar.h"
 
 namespace biorbd {
 namespace utils {
@@ -28,16 +29,24 @@ public:
         Eigen::VectorXd(other){}
 #endif
 #ifdef BIORBD_USE_CASADI_MATH
+
     ///
     /// \brief Construct vector from Casadi vector
-    /// \param v The vector to copy
+    /// \param other The vector to copy
     ///
     Vector(
             const biorbd::utils::Vector& v);
 
     ///
+    /// \brief Construct vector from Casadi vector
+    /// \param other The vector to copy
+    ///
+    Vector(
+            const RigidBodyDynamics::Math::VectorNd& v);
+
+    ///
     /// \brief Construct vector from Casadi matrix
-    /// \param m The vector to copy
+    /// \param other The vector to copy
     ///
     Vector(
             const MX_Xd_SubMatrix& m);
@@ -48,6 +57,7 @@ public:
     ///
     Vector(
             const biorbd::utils::Vector3d& v);
+
 #endif
 
     ///
@@ -63,7 +73,7 @@ public:
     /// \param skipRoot To perform or not the sqrt_p()
     /// \return The norm of the vector
     ///
-    RigidBodyDynamics::Math::Scalar norm(
+    biorbd::utils::Scalar norm(
             unsigned int p = 2,
             bool skipRoot = false) const;
 
@@ -87,6 +97,23 @@ public:
             this->Eigen::VectorXd::operator=(other);
             return *this;
         }
+#endif
+#ifdef BIORBD_USE_CASADI_MATH
+
+    ///
+    /// \brief operator= For submatrices
+    /// \param other The vector to copy
+    ///
+    void operator=(
+            const biorbd::utils::Vector& other);
+
+    ///
+    /// \brief operator= For submatrices
+    /// \param other The vector to copy
+    ///
+    void operator=(
+            const MX_Xd_SubMatrix& other);
+
 #endif
 };
 

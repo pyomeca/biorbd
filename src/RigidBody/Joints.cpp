@@ -1,7 +1,6 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/Joints.h"
 
-#include <rbdl/rbdl_math.h>
 #include <rbdl/rbdl_utils.h>
 #include <rbdl/Kinematics.h>
 #include <rbdl/Dynamics.h>
@@ -146,7 +145,8 @@ void biorbd::rigidbody::Joints::integrateKinematics(
         double timeStep)
 {
     biorbd::utils::Vector v(static_cast<unsigned int>(Q.rows()+QDot.rows()));
-    v << Q,QDot;
+    v.block(0, 0, Q.rows(), 1) = Q;
+    v.block(Q.rows(), 0, QDot.rows(), 1) = QDot;
     m_integrator->integrate(v, torque, t0, tend, timeStep); // vecteur, t0, tend, pas, effecteurs
     *m_isKinematicsComputed = true;
 }
@@ -418,7 +418,7 @@ biorbd::utils::Matrix biorbd::rigidbody::Joints::projectPointJacobian(
         node.applyRT(globalJCS(node.parent()).transpose());
         biorbd::utils::Matrix G_tp(marks.markersJacobian(Q, node.parent(), biorbd::utils::Vector3d(0,0,0), false));
         biorbd::utils::Matrix JCor(biorbd::utils::Matrix::Zero(9,nbQ()));
-        CalcMatRotJacobian(Q, GetBodyId(node.parent().c_str()), Eigen::Matrix3d::Identity(3,3), JCor, false);
+        CalcMatRotJacobian(Q, GetBodyId(node.parent().c_str()), RigidBodyDynamics::Math::Matrix3d::Identity(), JCor, false);
         for (unsigned int n=0; n<3; ++n)
             if (node.isAxisKept(n))
                 G_tp += JCor.block(n*3,0,3,nbQ()) * node(n);
@@ -557,7 +557,7 @@ biorbd::utils::Vector3d biorbd::rigidbody::Joints::CoMddot(
         const biorbd::rigidbody::GeneralizedVelocity &Qdot,
         const biorbd::rigidbody::GeneralizedAcceleration &Qddot)
 {
-    double mass;
+    biorbd::utils::Scalar mass;
     RigidBodyDynamics::Math::Vector3d com, com_ddot;
     RigidBodyDynamics::Utils::CalcCenterOfMass(
                 *this, Q, Qdot, &Qddot, mass, com, nullptr, &com_ddot,
@@ -792,7 +792,7 @@ biorbd::utils::Vector3d biorbd::rigidbody::Joints::CalcAngularMomentum (
         bool updateKin)
 {
     RigidBodyDynamics::Math::Vector3d com,  angular_momentum;
-    double mass;
+    biorbd::utils::Scalar mass;
     
     // Calculate the angular momentum with the function of the
     // position of the center of mass
@@ -812,7 +812,7 @@ biorbd::utils::Vector3d biorbd::rigidbody::Joints::CalcAngularMomentum (
 {
     // Definition of the variables
     RigidBodyDynamics::Math::Vector3d com,  angular_momentum;
-    double mass;
+    biorbd::utils::Scalar mass;
 
     // Calculate the angular momentum with the function of the
     // position of the center of mass
@@ -834,7 +834,7 @@ std::vector<biorbd::utils::Vector3d> biorbd::rigidbody::Joints::CalcSegmentsAngu
         UpdateKinematicsCustom (&Q, &Qdot);
     }
         
-    double mass;
+    biorbd::utils::Scalar mass;
     RigidBodyDynamics::Math::Vector3d com;
     RigidBodyDynamics::Utils::CalcCenterOfMass (
                 *this, Q, Qdot, nullptr, mass, com, nullptr,
@@ -871,7 +871,7 @@ std::vector<biorbd::utils::Vector3d> biorbd::rigidbody::Joints::CalcSegmentsAngu
         UpdateKinematicsCustom (&Q, &Qdot, &Qddot);
     }
         
-    double mass;
+    biorbd::utils::Scalar mass;
     RigidBodyDynamics::Math::Vector3d com;
     RigidBodyDynamics::Utils::CalcCenterOfMass (*this, Q, Qdot, &Qddot, mass, com, nullptr, nullptr, nullptr, nullptr, false);
     RigidBodyDynamics::Math::SpatialTransform X_to_COM (RigidBodyDynamics::Math::Xtrans(com));
@@ -1057,10 +1057,10 @@ biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Joints::computeQdot
         const biorbd::rigidbody::Segment& segment_i = segment(i);
         if (segment_i.isRotationAQuaternion()){
             // Extraire le quaternion
-            biorbd::utils::Quaternion quat_tp(
+            biorbd::utils::Quaternion quat_tp(biorbd::utils::Quaternion::fromAxisAngle(
                         Q(Q.size()-*m_nRotAQuat+cmpQuat),
                         Q.block(cmpDof+segment_i.nbDofTrans(), 0, 3, 1),
-                        k_stab);
+                        k_stab));
 
             // QDot for translation is actual QDot
             QDotOut.block(cmpDof, 0, segment_i.nbDofTrans(), 1)
@@ -1164,10 +1164,14 @@ void biorbd::rigidbody::Joints::CalcMatRotJacobian(
         while (j != 0) {
             unsigned int q_index = this->mJoints[j].q_index;
             // If it's not a DoF in translation (3 4 5 in this->S)
+#ifdef BIORBD_USE_CASADI_MATH
+            if (this->S[j].is_zero() && this->S[j](4).is_zero() && this->S[j](5).is_zero())
+#else
             if (this->S[j](3)!=1.0 && this->S[j](4)!=1.0 && this->S[j](5)!=1.0)
+#endif
             {
                 RigidBodyDynamics::Math::SpatialTransform X_base = this->X_base[j];
-                X_base.r << 0,0,0; // Remove all concept of translation (only keep the rotation matrix)
+                X_base.r = biorbd::utils::Vector3d(0,0,0); // Remove all concept of translation (only keep the rotation matrix)
 
                 if (this->mJoints[j].mDoFCount == 3) {
                     G.block(iAxes*3, q_index, 3, 3) = ((point_trans * X_base.inverse()).toMatrix() * this->multdof3_S[j]).block(3,0,3,3);

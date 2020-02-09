@@ -21,6 +21,13 @@ biorbd::utils::Vector::Vector(
 }
 
 biorbd::utils::Vector::Vector(
+        const RigidBodyDynamics::Math::VectorNd &v) :
+    RigidBodyDynamics::Math::VectorNd (v)
+{
+
+}
+
+biorbd::utils::Vector::Vector(
         const MX_Xd_SubMatrix &m) :
     RigidBodyDynamics::Math::VectorNd (m)
 {
@@ -34,7 +41,17 @@ biorbd::utils::Vector::Vector(
 
 }
 
+void biorbd::utils::Vector::operator=(
+        const biorbd::utils::Vector &other)
+{
+    this->MX_Xd_dynamic::operator=(other);
+}
 
+void biorbd::utils::Vector::operator=(
+        const MX_Xd_SubMatrix& other)
+{
+    this->MX_Xd_dynamic::operator=(other);
+}
 #endif
 
 biorbd::utils::Vector::Vector(
@@ -44,20 +61,20 @@ biorbd::utils::Vector::Vector(
 
 }
 
-RigidBodyDynamics::Math::Scalar biorbd::utils::Vector::norm(
+biorbd::utils::Scalar biorbd::utils::Vector::norm(
         unsigned int p,
         bool skipRoot) const 
 {
     biorbd::utils::Error::check(p >= 2, "p must be superior or equal to 2");
 
     if (p == 2){
-        RigidBodyDynamics::Math::Scalar n = dot(*this);
+        biorbd::utils::Scalar n = dot(*this);
         if (skipRoot)
             return n;
         else
             return std::sqrt(n);
     } else {
-        RigidBodyDynamics::Math::Scalar res(0);
+        biorbd::utils::Scalar res(0);
         for(unsigned int i=0; i < size(); ++i)
             res += std::pow(fabs((*this)[i]), p);
         if (skipRoot)

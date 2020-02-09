@@ -31,11 +31,13 @@ find_package(Boost REQUIRED)
 if(${MATH_LIBRARY_BACKEND} STREQUAL "Eigen3")
   find_package(Eigen3 REQUIRED)
   set(MATH_BACKEND_INCLUDE_DIR ${EIGEN3_INCLUDE_DIR})
+  set(MATH_BACKEND_LIBRARIES "")
   set(BIORBD_USE_EIGEN3_MATH true)
   set(BIORBD_USE_CASADI_MATH false)
 elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
   find_package(Casadi REQUIRED)
   set(MATH_BACKEND_INCLUDE_DIR ${Casadi_INCLUDE_DIR} ${Casadi_INCLUDE_DIR}/..)
+  set(MATH_BACKEND_LIBRARIES ${Casadi_LIBRARY})
   set(BIORBD_USE_EIGEN3_MATH false)
   set(BIORBD_USE_CASADI_MATH true)
 endif()
@@ -56,6 +58,9 @@ endif()
 
 if (IPOPT_FOUND)
     option(SKIP_STATIC_OPTIM "If Static optimization should be compiled" OFF)
+    if (BIORBD_USE_CASADI_MATH)
+        set(SKIP_STATIC_OPTIM ON CACHE BOOL "Static optimization can't be compiled along with Casadi" FORCE)
+    endif()
 else()
     set(IPOPT_INCLUDE_DIR "")
     set(IPOPT_LIBRARY "")
@@ -145,6 +150,7 @@ endif()
 # Add linker
 target_link_libraries(${PROJECT_NAME}
     ${BIORBD_MODULE_NAMES}
+    ${MATH_BACKEND_LIBRARIES}
     ${RBDL_LIBRARY}
     ${DLIB_LIBRARY}
     ${IPOPT_LIBRARY}

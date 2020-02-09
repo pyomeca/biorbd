@@ -202,9 +202,17 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
 {
     // Set qdot to be positive if concentric and negative is excentric
     biorbd::rigidbody::GeneralizedVelocity QdotResigned(Qdot);
-    for (unsigned int i=0; i<Qdot.size(); ++i)
-        if (activation(i)<0)
+    for (unsigned int i=0; i<Qdot.size(); ++i){
+#ifdef BIORBD_USE_CASADI_MATH
+        QdotResigned(i) = casadi::MX::if_else(
+                    casadi::MX::lt(activation(i), 0),
+                    -Qdot(i), Qdot(i));
+#else
+        if (activation(i)<0){
             QdotResigned(i) = -Qdot(i);
+        }
+#endif
+    }
 
     // Calculate the maximal torques
     biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(
@@ -278,10 +286,22 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torqueMax(
 
     for (unsigned int i=0; i<model.nbDof(); ++i){
         std::shared_ptr<Actuator> GeneralizedTorque_tp;
+
+#ifdef BIORBD_USE_CASADI_MATH
+        casadi::MX useFirst = casadi::MX::if_else(
+                    casadi::MX::ge(activation[i], 0),
+                    1, 0);
+        if (!useFirst.is_zero()){
+            GeneralizedTorque_tp = actuator(i).first;
+        } else {
+            GeneralizedTorque_tp = actuator(i).second;
+        }
+#else
         if (activation[i] >= 0) // First
             GeneralizedTorque_tp = actuator(i).first;
         else
             GeneralizedTorque_tp = actuator(i).second;
+#endif
 
         if (std::dynamic_pointer_cast<ActuatorGauss3p> (GeneralizedTorque_tp))
             maxGeneralizedTorque_all[i] = std::static_pointer_cast<ActuatorGauss3p> (GeneralizedTorque_tp)->torqueMax(Q, Qdot);

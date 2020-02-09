@@ -26,6 +26,17 @@ biorbd::muscles::Force::Force(
 
 }
 
+#ifdef BIORBD_USE_CASADI_MATH
+
+biorbd::muscles::Force::Force(
+        const RigidBodyDynamics::Math::Vector3d &v) :
+    biorbd::utils::Vector3d (v)
+{
+
+}
+
+#endif
+
 biorbd::muscles::Force::Force(
         const biorbd::utils::Vector3d& other) :
     biorbd::utils::Vector3d (other)
@@ -58,7 +69,7 @@ void biorbd::muscles::Force::DeepCopy(const biorbd::muscles::Force &other)
 
 void biorbd::muscles::Force::setForceFromMuscleGeometry(
         const biorbd::muscles::Geometry& geo,
-        double norm)
+        biorbd::utils::Scalar norm)
 {
     *this = geo.insertionInGlobal() - geo.originInGlobal();
     *this /= this->norm() * norm;
@@ -69,6 +80,6 @@ biorbd::muscles::Force &biorbd::muscles::Force::operator=(const biorbd::muscles:
     if (this == &other)
         return *this;
 
-    this->Eigen::Vector3d::operator=(other);
+    this->biorbd::utils::Vector3d::operator=(other);
     return *this;
 }

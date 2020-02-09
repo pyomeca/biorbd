@@ -1,7 +1,6 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Rotation.h"
 
-#include <rbdl/rbdl_math.h>
 #include "Utils/Error.h"
 #include "Utils/Vector3d.h"
 #include "Utils/String.h"
@@ -26,9 +25,9 @@ biorbd::utils::Rotation::Rotation(const RigidBodyDynamics::Math::MatrixNd &m) :
 #endif
 
 biorbd::utils::Rotation::Rotation(
-        RigidBodyDynamics::Math::Scalar v00, RigidBodyDynamics::Math::Scalar v01, RigidBodyDynamics::Math::Scalar v02,
-        RigidBodyDynamics::Math::Scalar v10, RigidBodyDynamics::Math::Scalar v11, RigidBodyDynamics::Math::Scalar v12,
-        RigidBodyDynamics::Math::Scalar v20, RigidBodyDynamics::Math::Scalar v21, RigidBodyDynamics::Math::Scalar v22) :
+        biorbd::utils::Scalar v00, biorbd::utils::Scalar v01, biorbd::utils::Scalar v02,
+        biorbd::utils::Scalar v10, biorbd::utils::Scalar v11, biorbd::utils::Scalar v12,
+        biorbd::utils::Scalar v20, biorbd::utils::Scalar v21, biorbd::utils::Scalar v22) :
     RigidBodyDynamics::Math::Matrix3d (v00, v01, v02, v10, v11, v12, v20, v21, v22)
 {
 

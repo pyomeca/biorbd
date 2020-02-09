@@ -24,6 +24,7 @@ public:
             double y = 0,
             double z = 0);
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Construct force from insertion from Eiggen matrix
     /// \param other The Eigen force matrix
@@ -31,6 +32,17 @@ public:
     template<typename OtherDerived> ForceFromInsertion(
             const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::muscles::Force(other){}
+#endif
+#ifdef BIORBD_USE_CASADI_MATH
+
+    ///
+    /// \brief Construct vector from Casadi vector
+    /// \param v The vector to copy
+    ///
+    ForceFromInsertion(
+            const RigidBodyDynamics::Math::Vector3d& v);
+
+#endif
 
     ///
     /// \brief Construct force from insertion
@@ -62,8 +74,9 @@ public:
     ///
     virtual void setForceFromMuscleGeometry(
             const biorbd::muscles::Geometry& geo,
-            double norm);
+            biorbd::utils::Scalar norm);
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Equal operator to be used with an Eigen matrix to construct force from insertion
     /// \param other The eigen matrix of force from insertion
@@ -75,6 +88,7 @@ public:
         this->biorbd::muscles::Force::operator=(other);
         return *this;
     }
+#endif
 };
 
 }}

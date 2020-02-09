@@ -78,7 +78,8 @@ public:
             const biorbd::utils::Vector3d&,
             const biorbd::utils::Vector3d&,
             biorbd::utils::Vector3d&,
-            biorbd::utils::Vector3d&, double* = nullptr) {}
+            biorbd::utils::Vector3d&,
+            biorbd::utils::Scalar* = nullptr) {}
 
     ///
     /// \brief Not yet implemented
@@ -90,7 +91,7 @@ public:
             const biorbd::utils::Vector3d&,
             biorbd::utils::Vector3d&,
             biorbd::utils::Vector3d&,
-            double* = nullptr) {}
+            biorbd::utils::Scalar* = nullptr) {}
 
     ///
     /// \brief Not yet implemented
@@ -98,7 +99,7 @@ public:
     virtual void wrapPoints(
             biorbd::utils::Vector3d&,
             biorbd::utils::Vector3d&,
-            double* = nullptr) {}
+            biorbd::utils::Scalar* = nullptr) {}
 
     ///
     /// \brief Return the RotoTrans matrix of the sphere

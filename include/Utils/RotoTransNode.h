@@ -29,6 +29,23 @@ public:
             const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::RotoTrans(other){}
 #endif
+#ifdef BIORBD_USE_CASADI_MATH
+
+    ///
+    /// \brief operator* Matrix multiplication
+    /// \return Rotated matrix
+    ///
+    biorbd::utils::RotoTrans operator*(
+            const biorbd::utils::RotoTransNode& other) const;
+
+    ///
+    /// \brief operator* Matrix multiplication
+    /// \return Rotated matrix
+    ///
+    void operator=(
+            const biorbd::utils::RotoTrans& other);
+
+#endif
 
     ///
     /// \brief Construct a RotoTransNode
@@ -37,7 +54,7 @@ public:
     /// \param parentName The name of the parent segment
     ///
     RotoTransNode(
-            const RotoTrans& rt,
+            const biorbd::utils::RotoTrans& rt,
             const biorbd::utils::String &name,
             const biorbd::utils::String &parentName);
 
@@ -72,6 +89,15 @@ protected:
     void setType();
 
 };
+
+///
+/// \brief operator* Matrix multiplication
+/// \return Rotated matrix
+///
+biorbd::utils::RotoTransNode operator*(
+        const biorbd::utils::RotoTrans& other,
+        const biorbd::utils::RotoTransNode& me);
+
 
 }}
 

@@ -318,7 +318,7 @@ public:
             const biorbd::rigidbody::NodeSegment& p,
             bool updateKin); 
 
-
+#ifndef BIORBD_USE_CASADI_MATH
     ///
     /// \brief Performs an inverse kinematics
     /// \param markers The markers to track
@@ -331,6 +331,7 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates& Qinit,
             biorbd::rigidbody::GeneralizedCoordinates &Q,
             bool removeAxes=true);
+#endif
 
 protected:
     ///

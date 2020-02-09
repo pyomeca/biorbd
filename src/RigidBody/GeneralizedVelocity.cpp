@@ -15,6 +15,17 @@ biorbd::rigidbody::GeneralizedVelocity::GeneralizedVelocity(
 
 }
 
+#ifdef BIORBD_USE_CASADI_MATH
+
+biorbd::rigidbody::GeneralizedVelocity::GeneralizedVelocity(
+        const RigidBodyDynamics::Math::VectorNd &v) :
+    biorbd::utils::Vector (v)
+{
+
+}
+
+#endif
+
 biorbd::rigidbody::GeneralizedVelocity::GeneralizedVelocity(
         unsigned int nbQdot) :
     biorbd::utils::Vector(nbQdot)
@@ -32,3 +43,19 @@ biorbd::rigidbody::GeneralizedVelocity::~GeneralizedVelocity()
 {
 
 }
+
+#ifdef BIORBD_USE_CASADI_MATH
+
+void biorbd::rigidbody::GeneralizedVelocity::operator=(
+        const biorbd::utils::Vector &other)
+{
+    this->biorbd::utils::Vector::operator=(other);
+}
+
+void biorbd::rigidbody::GeneralizedVelocity::operator=(
+        const MX_Xd_SubMatrix &other)
+{
+    this->biorbd::utils::Vector::operator=(other);
+}
+
+#endif

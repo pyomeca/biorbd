@@ -1,15 +1,17 @@
-#ifndef BIORBD_UTILS_Vector3d_H
-#define BIORBD_UTILS_Vector3d_H
+#ifndef BIORBD_UTILS_VECTOR3D_H
+#define BIORBD_UTILS_VECTOR3D_H
 
 #include <memory>
 #include "biorbdConfig.h"
 #include "rbdl_math.h"
 #include "Utils/Node.h"
+#include "Utils/Scalar.h"
 
 namespace biorbd {
 namespace utils {
 class RotoTrans;
 class String;
+
 ///
 /// \brief Wrapper around Eigen Vector3d and attach it to a parent
 ///
@@ -28,9 +30,9 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
     /// \param z Z-Component of the vector
     ///
     Vector3d(
-            RigidBodyDynamics::Math::Scalar x,
-            RigidBodyDynamics::Math::Scalar y,
-            RigidBodyDynamics::Math::Scalar z);
+            biorbd::utils::Scalar x,
+            biorbd::utils::Scalar y,
+            biorbd::utils::Scalar z);
 
     ///
     /// \brief Construct a 3D vector from an eigen 4D vector (drop the trailling 1)
@@ -83,11 +85,36 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
     }
 
     ///
+    /// \brief Construct a 3D vector
+    /// \param vec The vector to copy
+    /// \param name Name of the vector
+    /// \param parentName Name of the parent segment
+    ///
+    Vector3d(
+            const biorbd::utils::Vector3d vec,
+            const biorbd::utils::String &name,
+            const biorbd::utils::String &parentName);
+
+    ///
     /// \brief Construct a 3D vector from a Casadi ND vector (drop the trailling 1)
     /// \param other The Casadi ND vector
     ///
     Vector3d(
             const RigidBodyDynamics::Math::VectorNd& other);
+
+    ///
+    /// \brief Construct a 3D vector from a Casadi ND vector (drop the trailling 1)
+    /// \param other The Casadi ND vector
+    ///
+    Vector3d(
+            const MX_Xd_SubMatrix& other);
+
+    ///
+    /// \brief operator= To copy a submatrix
+    /// \param other The matrix to copy
+    ///
+    void operator=(
+            const MX_Xd_SubMatrix& other);
 #endif
 
     ///

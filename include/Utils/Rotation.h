@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include "rbdl_math.h"
+#include "Utils/Scalar.h"
 
 namespace RigidBodyDynamics { namespace Math {
 struct SpatialTransform;
@@ -54,9 +55,9 @@ public:
             const RigidBodyDynamics::Math::MatrixNd& m);
 #endif
 
-    Rotation(RigidBodyDynamics::Math::Scalar v00, RigidBodyDynamics::Math::Scalar v01, RigidBodyDynamics::Math::Scalar v02,
-             RigidBodyDynamics::Math::Scalar v10, RigidBodyDynamics::Math::Scalar v11, RigidBodyDynamics::Math::Scalar v12,
-             RigidBodyDynamics::Math::Scalar v20, RigidBodyDynamics::Math::Scalar v21, RigidBodyDynamics::Math::Scalar v22);
+    Rotation(biorbd::utils::Scalar v00, biorbd::utils::Scalar v01, biorbd::utils::Scalar v02,
+             biorbd::utils::Scalar v10, biorbd::utils::Scalar v11, biorbd::utils::Scalar v12,
+             biorbd::utils::Scalar v20, biorbd::utils::Scalar v21, biorbd::utils::Scalar v22);
 
     ///
     /// \brief Contruct a Rotation matrix

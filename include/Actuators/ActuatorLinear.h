@@ -77,11 +77,18 @@ public:
             const biorbd::actuator::ActuatorLinear& other);
 
     ///
+    /// \brief Return the maximal torque (invalid)
+    /// \return The maximal torque
+    /// torqueMax for ActuatorLinear must be called with Q
+    ///
+    virtual biorbd::utils::Scalar torqueMax();
+
+    ///
     /// \brief Return the maximal torque at a given Q
     /// \param Q The generalized coordinates of the actuator
     /// \return The maximal torque
     ///
-    virtual double torqueMax(
+    virtual biorbd::utils::Scalar torqueMax(
             const biorbd::rigidbody::GeneralizedCoordinates &Q) const;
 
 protected:

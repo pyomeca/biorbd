@@ -1,7 +1,6 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Quaternion.h"
 
-#include <rbdl/rbdl_math.h>
 #include "Utils/Vector3d.h"
 #include "Utils/Vector.h"
 #include "Utils/RotoTrans.h"
@@ -31,10 +30,10 @@ biorbd::utils::Quaternion::Quaternion(
 }
 
 biorbd::utils::Quaternion::Quaternion (
-        RigidBodyDynamics::Math::Scalar w,
-        RigidBodyDynamics::Math::Scalar x,
-        RigidBodyDynamics::Math::Scalar y,
-        RigidBodyDynamics::Math::Scalar z,
+        biorbd::utils::Scalar w,
+        biorbd::utils::Scalar x,
+        biorbd::utils::Scalar y,
+        biorbd::utils::Scalar z,
         double kStabilizer) :
     RigidBodyDynamics::Math::Vector4d(w, x, y, z),
     m_Kstab(kStabilizer) {
@@ -50,27 +49,19 @@ biorbd::utils::Quaternion::Quaternion (
 
 }
 
-biorbd::utils::Quaternion::Quaternion(
-        const biorbd::utils::Vector &vec,
-        double kStabilizer):
-    RigidBodyDynamics::Math::Vector4d (vec),
-    m_Kstab(kStabilizer) {
-
-}
-
-RigidBodyDynamics::Math::Scalar biorbd::utils::Quaternion::w() const
+biorbd::utils::Scalar biorbd::utils::Quaternion::w() const
 {
     return (*this)(0);
 }
-RigidBodyDynamics::Math::Scalar biorbd::utils::Quaternion::x() const
+biorbd::utils::Scalar biorbd::utils::Quaternion::x() const
 {
     return (*this)(1);
 }
-RigidBodyDynamics::Math::Scalar biorbd::utils::Quaternion::y() const
+biorbd::utils::Scalar biorbd::utils::Quaternion::y() const
 {
     return (*this)(2);
 }
-RigidBodyDynamics::Math::Scalar biorbd::utils::Quaternion::z() const
+biorbd::utils::Scalar biorbd::utils::Quaternion::z() const
 {
     return (*this)(3);
 }
@@ -97,7 +88,7 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
-        RigidBodyDynamics::Math::Scalar scalar) const
+        biorbd::utils::Scalar scalar) const
 {
     return biorbd::utils::Quaternion (
                 this->RigidBodyDynamics::Math::Vector4d::operator*(scalar), this->m_Kstab);
@@ -137,11 +128,11 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::fromGLRotate(
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromAxisAngle(
-        RigidBodyDynamics::Math::Scalar angle,
+        biorbd::utils::Scalar angle,
         const biorbd::utils::Vector3d &axis,
         double kStab) {
-    RigidBodyDynamics::Math::Scalar d = axis.norm();
-    RigidBodyDynamics::Math::Scalar s2 = std::sin (angle * 0.5) / d;
+    biorbd::utils::Scalar d = axis.norm();
+    biorbd::utils::Scalar s2 = std::sin (angle * 0.5) / d;
     return biorbd::utils::Quaternion (
                 std::cos(angle * 0.5),
                 axis[0] * s2, axis[1] * s2, axis[2] * s2, kStab
@@ -157,7 +148,7 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::fromMatrix(
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromMatrix(
         const biorbd::utils::Rotation &mat,
         double kStab) {
-    RigidBodyDynamics::Math::Scalar w = std::sqrt (1. + mat(0,0) + mat(1,1) + mat(2,2)) * 0.5;
+    biorbd::utils::Scalar w = std::sqrt (1. + mat(0,0) + mat(1,1) + mat(2,2)) * 0.5;
     return Quaternion (
                 w,
                 (mat(2,1) - mat(1,2)) / (w * 4.),
@@ -199,10 +190,10 @@ biorbd::utils::Rotation biorbd::utils::Quaternion::toMatrix(
 #endif
 
 
-    RigidBodyDynamics::Math::Scalar w = (*this)[0];
-    RigidBodyDynamics::Math::Scalar x = (*this)[1];
-    RigidBodyDynamics::Math::Scalar y = (*this)[2];
-    RigidBodyDynamics::Math::Scalar z = (*this)[3];
+    biorbd::utils::Scalar w = (*this)[0];
+    biorbd::utils::Scalar x = (*this)[1];
+    biorbd::utils::Scalar y = (*this)[2];
+    biorbd::utils::Scalar z = (*this)[3];
     biorbd::utils::Rotation out = biorbd::utils::Rotation(
         1 - 2*y*y - 2*z*z,  2*x*y - 2*w*z,      2*x*z + 2*w*y,
         2*x*y + 2*w*z,      1 - 2*x*x - 2*z*z,  2*y*z - 2*w*x,
@@ -214,7 +205,7 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::slerp(
         double alpha,
         const biorbd::utils::Quaternion &quat) const {
     // check whether one of the two has 0 length
-    RigidBodyDynamics::Math::Scalar s = std::sqrt (squaredNorm() * quat.squaredNorm());
+    biorbd::utils::Scalar s = std::sqrt (squaredNorm() * quat.squaredNorm());
 
     // division by 0.f is unhealthy!
 #ifdef BIORBD_USE_CASADI_MATH
@@ -223,7 +214,7 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::slerp(
     assert (s != 0.);
 #endif
 
-    RigidBodyDynamics::Math::Scalar angle = acos (dot(quat) / s);
+    biorbd::utils::Scalar angle = acos (dot(quat) / s);
 #ifdef BIORBD_USE_CASADI_MATH
     if (angle.is_zero() || std::isnan(angle)) {
 #else
@@ -232,9 +223,9 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::slerp(
         return *this;
     }
 
-    RigidBodyDynamics::Math::Scalar d = 1. / std::sin (angle);
-    RigidBodyDynamics::Math::Scalar p0 = std::sin ((1. - alpha) * angle);
-    RigidBodyDynamics::Math::Scalar p1 = std::sin (alpha * angle);
+    biorbd::utils::Scalar d = 1. / std::sin (angle);
+    biorbd::utils::Scalar p0 = std::sin ((1. - alpha) * angle);
+    biorbd::utils::Scalar p1 = std::sin (alpha * angle);
 
 #ifdef BIORBD_USE_CASADI_MATH
     return Quaternion(casadi::MX::if_else(
@@ -263,7 +254,7 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::conjugate() const {
 biorbd::utils::Quaternion biorbd::utils::Quaternion::timeStep(
         const biorbd::utils::Vector3d &omega,
         double dt) {
-    RigidBodyDynamics::Math::Scalar omega_norm = omega.norm();
+    biorbd::utils::Scalar omega_norm = omega.norm();
     return fromAxisAngle (
                 dt * omega_norm, omega / omega_norm, this->m_Kstab) * (*this);
 }
@@ -286,6 +277,7 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::omegaToQDot(
     m(1, 0) =  (*this)[0];   m(1, 1) = -(*this)[3];   m(1, 2) =  (*this)[2];
     m(2, 0) =  (*this)[3];   m(2, 1) =  (*this)[0];   m(2, 2) = -(*this)[1];
     m(3, 0) = -(*this)[2];   m(3, 1) =  (*this)[1];   m(3, 2) =  (*this)[0];
+
     return biorbd::utils::Quaternion(0.5 * m * omega, this->m_Kstab);
 }
 
@@ -295,7 +287,7 @@ biorbd::utils::Vector3d  biorbd::utils::Quaternion::eulerDotToOmega(
             const biorbd::utils::String& seq) {
     
     biorbd::utils::Vector3d w;
-    RigidBodyDynamics::Math::Scalar dph, dth, dps, ph, th, ps;
+    biorbd::utils::Scalar dph, dth, dps, ph, th, ps;
     dph = eulerDot[0]; dth = eulerDot[1]; dps = eulerDot[2];
     ph = euler[0]; th = euler[1]; ps = euler[2];
     if (!seq.compare("xyz")) {          // xyz
@@ -312,10 +304,10 @@ void biorbd::utils::Quaternion::derivate(
         const biorbd::utils::Vector &w)
 {
     // Création du quaternion de "préproduit vectoriel"
-    RigidBodyDynamics::Math::Scalar qw = (*this)(0);
-    RigidBodyDynamics::Math::Scalar qx = (*this)(1);
-    RigidBodyDynamics::Math::Scalar qy = (*this)(2);
-    RigidBodyDynamics::Math::Scalar qz = (*this)(3);
+    biorbd::utils::Scalar qw = (*this)(0);
+    biorbd::utils::Scalar qx = (*this)(1);
+    biorbd::utils::Scalar qy = (*this)(2);
+    biorbd::utils::Scalar qz = (*this)(3);
     RigidBodyDynamics::Math::Matrix4d Q =
         RigidBodyDynamics::Math::Matrix4d(
                 qw, -qx, -qy, -qz,
