@@ -146,10 +146,9 @@ void biorbd::Reader::readModelFile(
                     else if (!property_tag.tolower().compare("mass"))
                          file.read(mass, variable);
                     else if (!property_tag.tolower().compare("inertia")){
-                        RigidBodyDynamics::Math::Matrix3d inertia_tp(RigidBodyDynamics::Math::Matrix3d::Identity());
                         for (unsigned int i=0; i<3;++i){
                             for (unsigned int j=0; j<3; ++j){
-                                file.read(inertia_tp(i,j), variable);
+                                file.read(inertia(i,j), variable);
                             }
                         }
                     }
