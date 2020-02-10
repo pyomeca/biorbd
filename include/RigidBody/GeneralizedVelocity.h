@@ -45,6 +45,13 @@ public:
     GeneralizedVelocity(
             const RigidBodyDynamics::Math::VectorNd& v);
 
+    ///
+    /// \brief Construct vector from Casadi vector
+    /// \param v The vector to copy
+    ///
+    GeneralizedVelocity(
+            const casadi::MX& v);
+
 #endif
 
     ///
@@ -93,6 +100,13 @@ public:
     ///
     void operator=(
             const MX_Xd_SubMatrix& other);
+
+    ///
+    /// \brief operator= For casadi
+    /// \param The vector to copy
+    ///
+    void operator=(
+            const casadi::MX& other);
 
 #endif
 };

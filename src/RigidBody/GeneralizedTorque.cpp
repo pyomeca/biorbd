@@ -22,6 +22,13 @@ biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque(
 
 }
 
+biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque(
+        const casadi::MX &v) :
+    biorbd::utils::Vector(v)
+{
+
+}
+
 #endif
 
 biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque(
@@ -46,6 +53,12 @@ void biorbd::rigidbody::GeneralizedTorque::operator=(
 
 void biorbd::rigidbody::GeneralizedTorque::operator=(
         const MX_Xd_SubMatrix &other)
+{
+    this->biorbd::utils::Vector::operator=(other);
+}
+
+void biorbd::rigidbody::GeneralizedTorque::operator=(
+        const casadi::MX &other)
 {
     this->biorbd::utils::Vector::operator=(other);
 }

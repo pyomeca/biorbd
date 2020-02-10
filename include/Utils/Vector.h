@@ -114,6 +114,13 @@ public:
     void operator=(
             const MX_Xd_SubMatrix& other);
 
+    ///
+    /// \brief operator= For submatrices
+    /// \param other The vector to copy
+    ///
+    void operator=(
+            const casadi::MX& other);
+
 #endif
 };
 

@@ -52,6 +52,13 @@ void biorbd::utils::Vector::operator=(
 {
     this->MX_Xd_dynamic::operator=(other);
 }
+
+void biorbd::utils::Vector::operator=(
+        const casadi::MX &other)
+{
+    this->MX_Xd_dynamic::operator=(other);
+}
+
 #endif
 
 biorbd::utils::Vector::Vector(

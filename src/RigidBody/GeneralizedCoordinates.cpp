@@ -24,6 +24,13 @@ biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
 
 }
 
+biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
+        const casadi::MX &v) :
+    biorbd::utils::Vector(v)
+{
+
+}
+
 #endif
 
 biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
@@ -54,6 +61,12 @@ void biorbd::rigidbody::GeneralizedCoordinates::operator=(
 
 void biorbd::rigidbody::GeneralizedCoordinates::operator=(
         const MX_Xd_SubMatrix &other)
+{
+    this->biorbd::utils::Vector::operator=(other);
+}
+
+void biorbd::rigidbody::GeneralizedCoordinates::operator=(
+        const casadi::MX &other)
 {
     this->biorbd::utils::Vector::operator=(other);
 }

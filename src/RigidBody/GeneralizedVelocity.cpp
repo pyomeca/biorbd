@@ -24,6 +24,13 @@ biorbd::rigidbody::GeneralizedVelocity::GeneralizedVelocity(
 
 }
 
+biorbd::rigidbody::GeneralizedVelocity::GeneralizedVelocity(
+        const casadi::MX &v) :
+    biorbd::utils::Vector(v)
+{
+
+}
+
 #endif
 
 biorbd::rigidbody::GeneralizedVelocity::GeneralizedVelocity(
@@ -54,6 +61,12 @@ void biorbd::rigidbody::GeneralizedVelocity::operator=(
 
 void biorbd::rigidbody::GeneralizedVelocity::operator=(
         const MX_Xd_SubMatrix &other)
+{
+    this->biorbd::utils::Vector::operator=(other);
+}
+
+void biorbd::rigidbody::GeneralizedVelocity::operator=(
+        const casadi::MX &other)
 {
     this->biorbd::utils::Vector::operator=(other);
 }
