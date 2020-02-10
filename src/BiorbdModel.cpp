@@ -12,11 +12,6 @@ biorbd::Model::Model()
 
 }
 
-biorbd::Model::~Model()
-{
-
-}
-
 biorbd::Model::Model(const biorbd::utils::Path &path)
 {
     biorbd::Reader::readModelFile(path, this);
