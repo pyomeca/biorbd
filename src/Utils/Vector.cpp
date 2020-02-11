@@ -27,6 +27,12 @@ biorbd::utils::Vector::Vector(
 
 }
 
+biorbd::utils::Vector::Vector(const casadi::MX &v) :
+    RigidBodyDynamics::Math::VectorNd(v)
+{
+
+}
+
 biorbd::utils::Vector::Vector(
         const MX_Xd_SubMatrix &m) :
     RigidBodyDynamics::Math::VectorNd (m)

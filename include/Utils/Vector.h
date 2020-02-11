@@ -45,6 +45,13 @@ public:
             const RigidBodyDynamics::Math::VectorNd& v);
 
     ///
+    /// \brief Construct vector from Casadi vector
+    /// \param v The vector to copy
+    ///
+    Vector(
+            const casadi::MX& v);
+
+    ///
     /// \brief Construct vector from Casadi matrix
     /// \param other The vector to copy
     ///
