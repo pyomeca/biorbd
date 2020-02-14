@@ -15,8 +15,12 @@ namespace rigidbody {
 ///
 /// \brief Class IMU
 ///
+#ifdef SWIG
+class BIORBD_API IMU
+#else
 class BIORBD_API IMU : public biorbd::utils::RotoTransNode
-{ 
+#endif
+{
 public:
 
     ///

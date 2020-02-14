@@ -87,6 +87,7 @@ public:
 #endif
 #ifdef BIORBD_USE_CASADI_MATH
 
+#ifndef SWIG
     ///
     /// \brief operator= For submatrices
     /// \param The vector to copy
@@ -107,6 +108,7 @@ public:
     ///
     void operator=(
             const casadi::MX& other);
+#endif
 
 #endif
 };

@@ -14,6 +14,12 @@
 #include "Muscles/FatigueDynamicState.h"
 #include "Muscles/FatigueDynamicStateXia.h"
 #include "Muscles/Force.h"
+#include "Muscles/ForceFromInsertion.h"
+#include "Muscles/ForceFromOrigin.h"
+#include "Muscles/PathModifiers.h"
+#include "Muscles/State.h"
+#include "Muscles/StateDynamics.h"
+#include "Muscles/StateDynamicsBuchanan.h"
 #ifndef SKIP_STATIC_OPTIM
 #include "Muscles/StaticOptimization.h"
 #endif
@@ -110,14 +116,13 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueState.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueDynamicState.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueDynamicStateXia.h"
-//%include "Muscles/Force.h"
-//%include "Muscles/ForceFromInsertion.h"
-//%include "Muscles/ForceFromOrigin.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/Force.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/ForceFromInsertion.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/ForceFromOrigin.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Geometry.h"
-//%include "Muscles/Mesh.h"
-//%include "Muscles/PathModifiers.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/PathModifiers.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/State.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/StateDynamics.h"
-//%include "Muscles/StateDynamicsBuchanan.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/StateDynamicsBuchanan.h"
 @SWIG_STATIC_OPTIMIZATION_INCLUDE_COMMAND@
 

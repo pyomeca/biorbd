@@ -17,7 +17,11 @@ class Mesh;
 /// \brief Characteristics of a segment, namely the mass, the center of mass,
 /// the inertia, the length and its mesh geometry
 ///
+#ifdef SWIG
+class BIORBD_API SegmentCharacteristics
+#else
 class BIORBD_API SegmentCharacteristics : public RigidBodyDynamics::Body
+#endif
 {
 public:
     ///

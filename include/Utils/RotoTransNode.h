@@ -38,12 +38,14 @@ public:
     biorbd::utils::RotoTrans operator*(
             const biorbd::utils::RotoTransNode& other) const;
 
+#ifndef SWIG
     ///
     /// \brief operator* Matrix multiplication
     /// \return Rotated matrix
     ///
     void operator=(
             const biorbd::utils::RotoTrans& other);
+#endif
 
 #endif
 

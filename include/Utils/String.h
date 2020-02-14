@@ -9,7 +9,11 @@ namespace utils {
 ///
 /// \brief Wrapper around the std::string class with augmented functionality
 ///
+#ifdef SWIG
+class BIORBD_API String
+#else
 class BIORBD_API String : public std::string
+#endif
 {
 public:
     ///
@@ -38,12 +42,14 @@ public:
     String(
             const std::basic_string<char>& text);
 
+#ifndef SWIG
     ///
     /// \brief Allow to use operator=
     /// \param other The other string
     ///
     String& operator=(
             const biorbd::utils::String& other);
+#endif
 
     ///
     /// \brief Append an unsigned int to the string
@@ -150,11 +156,13 @@ public:
 };
 
 }}
+#ifndef SWIG
 ///
 /// \brief To use operator<<
 /// \param os The ostream
 /// \param a The string to operate on
 ///
 std::ostream& operator<<(std::ostream& os, const biorbd::utils::String &a);
+#endif
 
 #endif // BIORBD_UTILS_STRING_H

@@ -13,7 +13,11 @@ namespace utils {
 ///
 /// \brief A wrapper for the Eigen::MatrixXd
 ///
+#ifdef SWIG
+class BIORBD_API Matrix
+#else
 class BIORBD_API Matrix : public RigidBodyDynamics::Math::MatrixNd
+#endif
 {
 public:
     ///
@@ -76,6 +80,7 @@ public:
 #endif
 #ifdef BIORBD_USE_CASADI_MATH
 
+#ifndef SWIG
     ///
     /// \brief operator= For submatrices
     /// \param other The matrix to copy
@@ -89,6 +94,7 @@ public:
     ///
     void operator=(
             const MX_Xd_SubMatrix& other);
+#endif
 
 #endif
 };

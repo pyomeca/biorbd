@@ -30,7 +30,11 @@ class Integrator;
 ///
 /// \brief This is the core of the musculoskeletal model in biorbd
 ///
+#ifdef SWIG
+class BIORBD_API Joints
+#else
 class BIORBD_API Joints : public RigidBodyDynamics::Model
+#endif
 {
 public:
 

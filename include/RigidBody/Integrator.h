@@ -124,6 +124,7 @@ protected:
             double tend,
             double timeStep);
 
+#ifndef SWIG
     ///
     /// \brief Structure containing the states and time
     ///
@@ -153,6 +154,7 @@ protected:
             m_times.push_back( t );
         }
     };
+#endif
 
 };
 

@@ -10,10 +10,18 @@
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/NodeSegment.h"
+#include "RigidBody/SegmentCharacteristics.h"
 #include "RigidBody/Contacts.h"
 #include "RigidBody/Mesh.h"
+#ifndef SKIP_KALMAN
+#include "RigidBody/KalmanRecons.h"
 #include "RigidBody/KalmanReconsMarkers.h"
+#include "RigidBody/KalmanReconsIMU.h"
+#endif
 #include "RigidBody/MeshFace.h"
+#include "RigidBody/IMU.h"
+#include "RigidBody/IMUs.h"
+#include "RigidBody/Integrator.h"
 %}
 
 
@@ -100,13 +108,9 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/NodeSegment.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Contacts.h"
 @SWIG_KALMAN_INCLUDE_COMMAND@
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/Mesh.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/MeshFace.h"
-//%include "RigidBody/SegmentCharacteristics.h"
-//%include "RigidBody/Mesh.h"
-//%include "RigidBody/IMU.h"
-//%include "RigidBody/IMUs.h"
-//%include "RigidBody/KalmanRecons.h"
-//%include "RigidBody/KalmanReconsIMU.h"
-
-
-
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/IMU.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/IMUs.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/SegmentCharacteristics.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/Integrator.h"

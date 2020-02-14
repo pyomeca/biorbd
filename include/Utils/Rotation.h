@@ -25,7 +25,11 @@ class Vector3d;
 ///
 /// \brief Rotation matrix
 ///
+#ifdef SWIG
+class BIORBD_API Rotation
+#else
 class BIORBD_API Rotation : public RigidBodyDynamics::Math::Matrix3d
+#endif
 {
 public:
     ///
@@ -166,11 +170,13 @@ protected:
 
 }}
 
+#ifndef SWIG
 ///
 /// \brief To use operator<< to use std::cout
 /// \param os osstream
 /// \param rt The Rotation matrix
 ///
 std::ostream& operator<<(std::ostream& os, const biorbd::utils::Rotation &rt);
+#endif
 
 #endif // BIORBD_UTILS_ROTO_TRANS_H

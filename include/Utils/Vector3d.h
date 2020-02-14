@@ -15,7 +15,11 @@ class String;
 ///
 /// \brief Wrapper around Eigen Vector3d and attach it to a parent
 ///
+#ifdef SWIG
+class BIORBD_API Vector3d
+#else
 class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public biorbd::utils::Node
+#endif
 {
     public:
     ///
@@ -74,6 +78,8 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
     Vector3d(
             const RigidBodyDynamics::Math::Vector3d& other);
 
+#ifndef SWIG
+
     ///
     /// \brief Construct a 3D vector from a Casadi 4D vector (drop the trailling 1)
     /// \param other The Casadi 4D vector
@@ -83,6 +89,21 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
             const MX_Xd_static<i, j>& other){
         this->block<3, 1>(0, 0) = other;
     }
+
+    ///
+    /// \brief operator= To copy a submatrix
+    /// \param other The matrix to copy
+    ///
+    void operator=(
+            const MX_Xd_SubMatrix& other);
+
+    ///
+    /// \brief operator= To copy a submatrix
+    /// \param other The matrix to copy
+    ///
+    void operator=(
+            const MX_Xd_SubMatrix& other);
+#endif
 
     ///
     /// \brief Construct a 3D vector
@@ -109,12 +130,6 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
     Vector3d(
             const MX_Xd_SubMatrix& other);
 
-    ///
-    /// \brief operator= To copy a submatrix
-    /// \param other The matrix to copy
-    ///
-    void operator=(
-            const MX_Xd_SubMatrix& other);
 #endif
 
     ///
@@ -158,12 +173,6 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
     ///
     void applyRT(
             const RotoTrans& rt);
-
-    ///
-    /// \brief To use operator= on 3D vector with eigen 4D vector (drop the trailling 1)
-    /// \param other The eigen 4D vector
-    ///
-    biorbd::utils::Vector3d& operator=(const RigidBodyDynamics::Math::Vector4d& other);
 
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///

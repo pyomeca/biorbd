@@ -26,7 +26,11 @@ class Vector3d;
 ///
 /// \brief Homogenous matrix to describe translations and rotations simultaneously
 ///
+#ifdef SWIG
+class BIORBD_API RotoTrans
+#else
 class BIORBD_API RotoTrans : public RigidBodyDynamics::Math::Matrix4d
+#endif
 {
 public:
     ///
@@ -219,11 +223,13 @@ protected:
 
 }}
 
+#ifndef SWIG
 ///
 /// \brief To use operator<< to use std::cout
 /// \param os osstream
 /// \param rt The RotoTrans matrix
 ///
 std::ostream& operator<<(std::ostream& os, const biorbd::utils::RotoTrans &rt);
+#endif
 
 #endif // BIORBD_UTILS_ROTO_TRANS_H

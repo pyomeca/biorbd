@@ -114,6 +114,7 @@ public:
         }
 #endif
 
+#ifndef SWIG
     ///
     /// \brief Equal operator to be used with another force
     /// \param other Other force to copy
@@ -121,6 +122,8 @@ public:
     ///
     biorbd::muscles::Force& operator=(
             const biorbd::muscles::Force& other);
+#endif
+
 };
 
 }}

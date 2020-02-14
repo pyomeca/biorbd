@@ -20,7 +20,11 @@ class String;
 /// The definition for conversions are taken from
 /// https://www.euclideanspace.com/maths/geometry/rotations/conversions/index.htm
 ///
+#ifdef SWIG
+class BIORBD_API Quaternion
+#else
 class BIORBD_API Quaternion : public RigidBodyDynamics::Math::Vector4d
+#endif
 {
 public:
     ///

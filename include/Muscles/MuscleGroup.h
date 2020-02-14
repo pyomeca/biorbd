@@ -63,6 +63,7 @@ public:
     void DeepCopy(
             const biorbd::muscles::MuscleGroup& other);
 
+#ifndef SWIG
     ///
     /// \brief To add a muscle to the group
     /// \param name The name of the muscle
@@ -130,6 +131,7 @@ public:
             const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::PathModifiers& pathModifiers,
             biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType);
+#endif
 
     ///
     /// \brief To add a muscle to the group
