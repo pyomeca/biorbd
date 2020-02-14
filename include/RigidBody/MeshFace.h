@@ -23,7 +23,7 @@ public:
     /// \param vertex The vertex to connect to form a face
     ///
     MeshFace(
-            const std::vector<int>& vertex= std::vector<int>());
+            const std::vector<int>& vertex= std::vector<int>(3));
 
     ///
     /// \brief Deep copy of a MeshFace
