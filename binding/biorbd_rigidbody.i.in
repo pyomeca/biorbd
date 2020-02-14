@@ -61,6 +61,17 @@ namespace std {
         return QDDot;
     }
 
+#ifdef BIORBD_USE_CASADI_MATH
+    casadi::MX ForwardDynamics(
+                const casadi::MX &Q,
+                const casadi::MX &QDot,
+                const casadi::MX &Tau){
+        biorbd::rigidbody::GeneralizedCoordinates QDDot(*self);
+        RigidBodyDynamics::ForwardDynamics(*self, Q, QDot, Tau, QDDot);
+        return QDDot;
+    }
+#endif
+
     biorbd::rigidbody::GeneralizedCoordinates ForwardDynamicsLagrangian(
                 const biorbd::rigidbody::GeneralizedCoordinates &Q,
                 const biorbd::rigidbody::GeneralizedVelocity &QDot,
@@ -95,6 +106,20 @@ namespace std {
         RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
         return QDDot;
     }
+
+#ifdef BIORBD_USE_CASADI_MATH
+    casadi::MX markers(
+                const casadi::MX &Q){
+        std::vector<biorbd::rigidbody::NodeSegment> allMarkers(self->biorbd::rigidbody::Markers::markers(Q));
+        casadi::MX out(3, allMarkers.size());
+        for (unsigned int i=0; i<allMarkers.size(); ++i){
+            for (unsigned int j=0; j<3; ++j){
+                out(j, i) = allMarkers[i](j);
+            }
+        }
+        return out;
+    }
+#endif
 }
 
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/RigidBodyEnums.h"
