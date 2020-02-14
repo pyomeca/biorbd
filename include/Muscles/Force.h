@@ -39,25 +39,12 @@ public:
     Force(
             const biorbd::muscles::Force& other);
 
-#ifdef BIORBD_USE_EIGEN3_MATH
-    ///
-    /// \brief Construct force from another force
-    /// \param other The other force in vector form
-    ///
-    template<typename OtherDerived> Force(
-            const Eigen::MatrixBase<OtherDerived>& other) :
-        Eigen::Vector3d(other){}
-#endif
-#ifdef BIORBD_USE_CASADI_MATH
-
     ///
     /// \brief Construct vector from Casadi vector
     /// \param v The vector to copy
     ///
     Force(
             const RigidBodyDynamics::Math::Vector3d& v);
-
-#endif
 
     ///
     /// \brief Construct force from another force
@@ -75,6 +62,16 @@ public:
             const biorbd::muscles::Geometry& geo,
             double norm);
 
+#ifdef BIORBD_USE_EIGEN3_MATH
+    ///
+    /// \brief Construct force from another force
+    /// \param other The other force in vector form
+    ///
+    template<typename OtherDerived> Force(
+            const Eigen::MatrixBase<OtherDerived>& other) :
+        Eigen::Vector3d(other){}
+#endif
+
     ///
     /// \brief Destroy class properly
     ///
@@ -90,7 +87,8 @@ public:
     /// \brief Deep copy of a force
     /// \param other The force to copy
     ///
-    void DeepCopy(const biorbd::muscles::Force& other);
+    void DeepCopy(
+            const biorbd::muscles::Force& other);
 
     ///
     /// \brief Set the force from the muscle geometry
@@ -102,6 +100,7 @@ public:
             biorbd::utils::Scalar norm);
 
 #ifdef BIORBD_USE_EIGEN3_MATH
+
     ///
     /// \brief Equal operator to be used with another force
     /// \param other The eigen matrix of force
@@ -112,6 +111,7 @@ public:
             this->Eigen::Vector3d::operator=(other);
             return *this;
         }
+
 #endif
 
 #ifndef SWIG

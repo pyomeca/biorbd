@@ -14,7 +14,8 @@ biorbd::utils::Quaternion::Quaternion (
 
 }
 
-biorbd::utils::Quaternion::Quaternion(const biorbd::utils::Quaternion &other) :
+biorbd::utils::Quaternion::Quaternion(
+        const biorbd::utils::Quaternion &other) :
     RigidBodyDynamics::Math::Vector4d (other),
     m_Kstab(other.m_Kstab) {
 
@@ -41,7 +42,7 @@ biorbd::utils::Quaternion::Quaternion (
 }
 
 biorbd::utils::Quaternion::Quaternion (
-        double w,
+        biorbd::utils::Scalar w,
         const biorbd::utils::Vector3d &vec3,
         double kStabilizer) :
     RigidBodyDynamics::Math::Vector4d(w, vec3[0], vec3[1], vec3[2]),
@@ -174,7 +175,8 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::fromYXZAngles(
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromXYZAngles(
-        const biorbd::utils::Vector3d &xyz_angles, double kStab) {
+        const biorbd::utils::Vector3d &xyz_angles,
+        double kStab) {
     return fromAxisAngle (xyz_angles[0], biorbd::utils::Vector3d (1., 0., 0.), kStab)
             * fromAxisAngle (xyz_angles[1], biorbd::utils::Vector3d (0., 1., 0.), kStab)
             * fromAxisAngle (xyz_angles[2], biorbd::utils::Vector3d (0., 0., 1.), kStab);

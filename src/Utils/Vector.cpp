@@ -11,7 +11,12 @@ biorbd::utils::Vector::Vector() :
 
 }
 
-#ifdef BIORBD_USE_CASADI_MATH
+biorbd::utils::Vector::Vector(
+        unsigned int size) :
+    RigidBodyDynamics::Math::VectorNd(size)
+{
+
+}
 
 biorbd::utils::Vector::Vector(
         const biorbd::utils::Vector& v) :
@@ -27,6 +32,15 @@ biorbd::utils::Vector::Vector(
 
 }
 
+biorbd::utils::Vector::Vector(
+        const biorbd::utils::Vector3d& v) :
+    RigidBodyDynamics::Math::VectorNd (v)
+{
+
+}
+
+#ifdef BIORBD_USE_CASADI_MATH
+
 biorbd::utils::Vector::Vector(const casadi::MX &v) :
     RigidBodyDynamics::Math::VectorNd(v)
 {
@@ -40,39 +54,7 @@ biorbd::utils::Vector::Vector(
 
 }
 
-biorbd::utils::Vector::Vector(
-        const biorbd::utils::Vector3d& v) :
-    RigidBodyDynamics::Math::VectorNd (v)
-{
-
-}
-
-void biorbd::utils::Vector::operator=(
-        const biorbd::utils::Vector &other)
-{
-    this->MX_Xd_dynamic::operator=(other);
-}
-
-void biorbd::utils::Vector::operator=(
-        const MX_Xd_SubMatrix& other)
-{
-    this->MX_Xd_dynamic::operator=(other);
-}
-
-void biorbd::utils::Vector::operator=(
-        const casadi::MX &other)
-{
-    this->MX_Xd_dynamic::operator=(other);
-}
-
 #endif
-
-biorbd::utils::Vector::Vector(
-        unsigned int size) :
-    RigidBodyDynamics::Math::VectorNd(size)
-{
-
-}
 
 biorbd::utils::Scalar biorbd::utils::Vector::norm(
         unsigned int p,
@@ -119,3 +101,25 @@ biorbd::utils::Vector biorbd::utils::Vector::normGradient(
         return res;
     }
 }
+
+void biorbd::utils::Vector::operator=(
+        const biorbd::utils::Vector &other)
+{
+    this->RigidBodyDynamics::Math::VectorNd::operator=(other);
+}
+
+#ifdef BIORBD_USE_CASADI_MATH
+
+void biorbd::utils::Vector::operator=(
+        const MX_Xd_SubMatrix& other)
+{
+    this->MX_Xd_dynamic::operator=(other);
+}
+
+void biorbd::utils::Vector::operator=(
+        const casadi::MX &other)
+{
+    this->MX_Xd_dynamic::operator=(other);
+}
+
+#endif

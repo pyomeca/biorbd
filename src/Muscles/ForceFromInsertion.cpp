@@ -5,13 +5,14 @@
 #include "Utils/Vector3d.h"
 #include "Muscles/Geometry.h"
 
-biorbd::muscles::ForceFromInsertion::ForceFromInsertion(double x, double y, double z) :
+biorbd::muscles::ForceFromInsertion::ForceFromInsertion(
+        double x,
+        double y,
+        double z) :
     biorbd::muscles::Force(x,y,z)
 {
 
 }
-
-#ifdef BIORBD_USE_CASADI_MATH
 
 biorbd::muscles::ForceFromInsertion::ForceFromInsertion(
         const RigidBodyDynamics::Math::Vector3d &v) :
@@ -19,8 +20,6 @@ biorbd::muscles::ForceFromInsertion::ForceFromInsertion(
 {
 
 }
-
-#endif
 
 biorbd::muscles::ForceFromInsertion::ForceFromInsertion(
         const biorbd::muscles::Geometry& geo,
@@ -37,7 +36,8 @@ biorbd::muscles::ForceFromInsertion biorbd::muscles::ForceFromInsertion::DeepCop
     return copy;
 }
 
-void biorbd::muscles::ForceFromInsertion::DeepCopy(const biorbd::muscles::ForceFromInsertion &other)
+void biorbd::muscles::ForceFromInsertion::DeepCopy(
+        const biorbd::muscles::ForceFromInsertion &other)
 {
     biorbd::muscles::Force::DeepCopy(other);
 }

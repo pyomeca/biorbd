@@ -100,6 +100,7 @@ public:
     ///
     virtual ~String();
 
+#ifndef SWIG
     ///
     /// \brief Convert a string to a lower case string
     /// \param str The string to convert
@@ -125,6 +126,7 @@ public:
     /// \return The upper case string
     ///
     biorbd::utils::String toupper() const;
+#endif
 
     ///
     /// \brief Overload of the to_string C++11 function to allow for X-digits precision

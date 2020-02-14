@@ -72,7 +72,7 @@ public:
     /// \param kStabilizer The value of the kstabilizer
     ///
     Quaternion (
-        double w,
+        biorbd::utils::Scalar w,
         const biorbd::utils::Vector3d &vec3, 
         double kStabilizer = 1);
 
@@ -115,7 +115,10 @@ public:
     ///
     double kStab() const;
 
+#ifndef SWIG
+
 #ifdef BIORBD_USE_EIGEN3_MATH
+
     ///
     /// \brief Allows for the operation= assignation
     /// \param other The other quaternion
@@ -128,6 +131,9 @@ public:
         this->m_Kstab = static_cast<biorbd::utils::Quaternion>(other).m_Kstab;
         return *this;
     }
+
+#endif
+
 #endif
 
     ///

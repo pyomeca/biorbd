@@ -19,35 +19,6 @@ public:
     /// \brief Construct a RotoTransNode
     ///
     RotoTransNode();
-    
-#ifdef BIORBD_USE_EIGEN3_MATH
-    ///
-    /// \brief Construct RotoTransNode from an Eigen matrix
-    /// \param other The eigen matrix
-    ///
-    template<typename OtherDerived> RotoTransNode(
-            const Eigen::MatrixBase<OtherDerived>& other) :
-        biorbd::utils::RotoTrans(other){}
-#endif
-#ifdef BIORBD_USE_CASADI_MATH
-
-    ///
-    /// \brief operator* Matrix multiplication
-    /// \return Rotated matrix
-    ///
-    biorbd::utils::RotoTrans operator*(
-            const biorbd::utils::RotoTransNode& other) const;
-
-#ifndef SWIG
-    ///
-    /// \brief operator* Matrix multiplication
-    /// \return Rotated matrix
-    ///
-    void operator=(
-            const biorbd::utils::RotoTrans& other);
-#endif
-
-#endif
 
     ///
     /// \brief Construct a RotoTransNode
@@ -59,6 +30,16 @@ public:
             const biorbd::utils::RotoTrans& rt,
             const biorbd::utils::String &name,
             const biorbd::utils::String &parentName);
+
+#ifdef BIORBD_USE_EIGEN3_MATH
+    ///
+    /// \brief Construct RotoTransNode from an Eigen matrix
+    /// \param other The eigen matrix
+    ///
+    template<typename OtherDerived> RotoTransNode(
+            const Eigen::MatrixBase<OtherDerived>& other) :
+        biorbd::utils::RotoTrans(other){}
+#endif
 
     ///
     /// \brief Deep copy of a RotoTransNode
@@ -72,6 +53,22 @@ public:
     ///
     void DeepCopy(const biorbd::utils::RotoTransNode& other);
 
+    ///
+    /// \brief operator= Matrix multiplication
+    /// \return Rotated matrix
+    ///
+    void operator=(
+            const biorbd::utils::RotoTrans& other);
+
+    ///
+    /// \brief operator* Matrix multiplication
+    /// \return Rotated matrix
+    ///
+    biorbd::utils::RotoTrans operator*(
+            const biorbd::utils::RotoTransNode& other) const;
+
+#ifndef SWIG
+
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allow to use the operator=
@@ -82,6 +79,8 @@ public:
             this->biorbd::utils::RotoTrans::operator=(other);
             return *this;
         }
+#endif
+
 #endif
 
 protected:

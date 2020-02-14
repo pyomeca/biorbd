@@ -16,17 +16,18 @@ biorbd::utils::RotoTrans::RotoTrans(
     checkUnitary();
 }
 
-#ifdef BIORBD_USE_CASADI_MATH
 biorbd::utils::RotoTrans::RotoTrans(
         biorbd::utils::Scalar v00, biorbd::utils::Scalar v01, biorbd::utils::Scalar v02, biorbd::utils::Scalar v03,
         biorbd::utils::Scalar v10, biorbd::utils::Scalar v11, biorbd::utils::Scalar v12, biorbd::utils::Scalar v13,
         biorbd::utils::Scalar v20, biorbd::utils::Scalar v21, biorbd::utils::Scalar v22, biorbd::utils::Scalar v23,
         biorbd::utils::Scalar v30, biorbd::utils::Scalar v31, biorbd::utils::Scalar v32, biorbd::utils::Scalar v33) :
-    RigidBodyDynamics::Math::Matrix4d (v00, v01, v02, v03, v10, v11, v12, v13, v20, v21, v22, v23, v30, v31, v32, v33)
+    RigidBodyDynamics::Math::Matrix4d (v00, v01, v02, v03,
+                                       v10, v11, v12, v13,
+                                       v20, v21, v22, v23,
+                                       v30, v31, v32, v33)
 {
-
+    checkUnitary();
 }
-#endif
 
 biorbd::utils::RotoTrans::RotoTrans(
         const biorbd::utils::Rotation& rot) :
@@ -84,7 +85,7 @@ biorbd::utils::RotoTrans biorbd::utils::RotoTrans::transpose() const
     biorbd::utils::RotoTrans tp;
     tp.block(0, 0, 3, 3) = block(0, 0, 3, 3).transpose();
     tp.block(0, 3, 3, 1) = -tp.block(0, 0, 3, 3) * block(0, 3, 3, 1);
-    tp.block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1);
+    tp.block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1).transpose();
     return tp;
 }
 
@@ -103,7 +104,7 @@ biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::combineRotAndTrans(
         const biorbd::utils::Vector3d& trans){
     block(0,0,3,3) = rot;
     block(0,3,3,1) = trans;
-    block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1);
+    block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1).transpose();
     return *this;
 }
 
@@ -122,7 +123,7 @@ biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::fromEulerAngles(
     rot_mat.fromEulerAngles(rot, seq);
     block(0,0,3,3) = rot_mat;
     block(0,3,3,1) = trans;
-    block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1);
+    block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1).transpose();
     return *this;
 }
 

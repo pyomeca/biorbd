@@ -21,40 +21,6 @@ public:
     GeneralizedAcceleration();
 
     ///
-    /// \brief Construct generalized acceleration vector
-    /// \param Q State vector of the internal joints
-    ///
-    GeneralizedAcceleration(
-            const biorbd::rigidbody::GeneralizedAcceleration& Q);
-
-#ifdef BIORBD_USE_EIGEN3_MATH
-    ///
-    /// \brief Construct generalized acceleration vector from another vector
-    /// \param other Eigen matrix
-    ///
-    template<typename OtherDerived> GeneralizedAcceleration(
-            const Eigen::MatrixBase<OtherDerived>& other) :
-        biorbd::utils::Vector(other){}
-#endif
-#ifdef BIORBD_USE_CASADI_MATH
-
-    ///
-    /// \brief Construct vector from Casadi vector
-    /// \param v The vector to copy
-    ///
-    GeneralizedAcceleration(
-            const RigidBodyDynamics::Math::VectorNd& v);
-
-    ///
-    /// \brief Construct vector from Casadi vector
-    /// \param v The vector to copy
-    ///
-    GeneralizedAcceleration(
-            const casadi::MX& v);
-
-#endif
-
-    ///
     /// \brief Create generalized acceleration vector of dimension nQddot
     /// \param nQddot number of degrees-of-freedom
     ///
@@ -68,11 +34,53 @@ public:
     GeneralizedAcceleration(const biorbd::rigidbody::Joints& j);
 
     ///
+    /// \brief Construct generalized acceleration vector
+    /// \param Q State vector of the internal joints
+    ///
+    GeneralizedAcceleration(
+            const biorbd::rigidbody::GeneralizedAcceleration& Q);
+
+    ///
+    /// \brief Construct vector from Casadi vector
+    /// \param v The vector to copy
+    ///
+    GeneralizedAcceleration(
+            const RigidBodyDynamics::Math::VectorNd& v);
+
+
+#ifdef BIORBD_USE_EIGEN3_MATH
+
+    ///
+    /// \brief Construct generalized acceleration vector from another vector
+    /// \param other Eigen matrix
+    ///
+    template<typename OtherDerived> GeneralizedAcceleration(
+            const Eigen::MatrixBase<OtherDerived>& other) :
+        biorbd::utils::Vector(other){}
+
+#endif
+
+#ifdef BIORBD_USE_CASADI_MATH
+
+    ///
+    /// \brief Construct vector from Casadi vector
+    /// \param v The vector to copy
+    ///
+    GeneralizedAcceleration(
+            const casadi::MX& v);
+
+#endif
+
+
+    ///
     /// \brief Destroy the class properly
     ///
     virtual ~GeneralizedAcceleration();
 
+#ifndef SWIG
+
 #ifdef BIORBD_USE_EIGEN3_MATH
+
     ///
     /// \brief Allows for operator= to be used
     /// \param other
@@ -84,16 +92,16 @@ public:
             this->biorbd::utils::Vector::operator=(other);
             return *this;
         }
-#endif
-#ifdef BIORBD_USE_CASADI_MATH
 
-#ifndef SWIG
+#endif
+
     ///
     /// \brief operator= For submatrices
     /// \param The vector to copy
     ///
     void operator=(
             const biorbd::utils::Vector& other);
+#ifdef BIORBD_USE_CASADI_MATH
 
     ///
     /// \brief operator= For submatrices

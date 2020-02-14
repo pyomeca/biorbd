@@ -21,40 +21,6 @@ public:
     GeneralizedCoordinates();
 
     ///
-    /// \brief Construct generalized coordinates
-    /// \param Q State vector of the internal joints
-    ///
-    GeneralizedCoordinates(
-            const biorbd::rigidbody::GeneralizedCoordinates& Q);
-
-#ifdef BIORBD_USE_EIGEN3_MATH
-    ///
-    /// \brief Construct generalized coordinates from another vector
-    /// \param other Eigen matrix
-    ///
-    template<typename OtherDerived> GeneralizedCoordinates(
-            const Eigen::MatrixBase<OtherDerived>& other) :
-        biorbd::utils::Vector(other){}
-#endif
-#ifdef BIORBD_USE_CASADI_MATH
-
-    ///
-    /// \brief Construct vector from Casadi vector
-    /// \param v The vector to copy
-    ///
-    GeneralizedCoordinates(
-            const RigidBodyDynamics::Math::VectorNd& v);
-
-    ///
-    /// \brief Construct vector from Casadi vector
-    /// \param v The vector to copy
-    ///
-    GeneralizedCoordinates(
-            const casadi::MX& v);
-
-#endif
-
-    ///
     /// \brief Create generalized coordinates of dimension nbQ
     /// \param nbQ number of degrees-of-freedom
     ///
@@ -69,11 +35,52 @@ public:
             const biorbd::rigidbody::Joints& j);
 
     ///
+    /// \brief Construct generalized coordinates
+    /// \param Q State vector of the internal joints
+    ///
+    GeneralizedCoordinates(
+            const biorbd::rigidbody::GeneralizedCoordinates& Q);
+
+    ///
+    /// \brief Construct vector from Casadi vector
+    /// \param v The vector to copy
+    ///
+    GeneralizedCoordinates(
+            const RigidBodyDynamics::Math::VectorNd& v);
+
+#ifdef BIORBD_USE_EIGEN3_MATH
+
+    ///
+    /// \brief Construct generalized coordinates from another vector
+    /// \param other Eigen matrix
+    ///
+    template<typename OtherDerived> GeneralizedCoordinates(
+            const Eigen::MatrixBase<OtherDerived>& other) :
+        biorbd::utils::Vector(other){}
+
+#endif
+
+#ifdef BIORBD_USE_CASADI_MATH
+
+    ///
+    /// \brief Construct vector from Casadi vector
+    /// \param v The vector to copy
+    ///
+    GeneralizedCoordinates(
+            const casadi::MX& v);
+
+#endif
+
+
+    ///
     /// \brief Destroy the class properly
     ///
     virtual ~GeneralizedCoordinates();
 
+#ifndef SWIG
+
 #ifdef BIORBD_USE_EIGEN3_MATH
+
     ///
     /// \brief Allows for operator= to be used
     /// \param other
@@ -85,16 +92,17 @@ public:
             this->biorbd::utils::Vector::operator=(other);
             return *this;
         }
-#endif
-#ifdef BIORBD_USE_CASADI_MATH
 
-#ifndef SWIG
-    ///
-    /// \brief operator= For submatrices
-    /// \param The vector to copy
-    ///
-    void operator=(
-            const biorbd::utils::Vector& other);
+#endif
+
+        ///
+        /// \brief operator= For submatrices
+        /// \param The vector to copy
+        ///
+        void operator=(
+                const biorbd::utils::Vector& other);
+
+#ifdef BIORBD_USE_CASADI_MATH
 
     ///
     /// \brief operator= For submatrices

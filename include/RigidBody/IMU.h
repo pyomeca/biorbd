@@ -84,6 +84,7 @@ public:
     ///
     bool isAnatomical() const;
 
+#ifndef SWIG
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allows for operator= to be used
@@ -95,6 +96,7 @@ public:
             this->biorbd::utils::RotoTransNode::operator=(other);
             return *this;
         }
+#endif
 #endif
 
 protected:

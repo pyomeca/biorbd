@@ -40,26 +40,15 @@ public:
     RotoTrans(
             const RigidBodyDynamics::Math::Matrix4d& matrix = RigidBodyDynamics::Math::Matrix4d::Identity());
 
-#ifdef BIORBD_USE_EIGEN3_MATH
     ///
-    /// \brief Construct a RotoTrans matrix from another RotoTrans
-    /// \param other The other RotoTrans
+    /// \brief Construct RotoTrans matrix
+    /// \param matrix 4D identity matrix
     ///
-    template<typename OtherDerived> RotoTrans(
-            const Eigen::MatrixBase<OtherDerived>& other) :
-        Eigen::Matrix4d(other){
-        checkUnitary();
-    }
-#endif
-#ifdef BIORBD_USE_CASADI_MATH
-
     RotoTrans(
             biorbd::utils::Scalar v00, biorbd::utils::Scalar v01, biorbd::utils::Scalar v02, biorbd::utils::Scalar v03,
             biorbd::utils::Scalar v10, biorbd::utils::Scalar v11, biorbd::utils::Scalar v12, biorbd::utils::Scalar v13,
             biorbd::utils::Scalar v20, biorbd::utils::Scalar v21, biorbd::utils::Scalar v22, biorbd::utils::Scalar v23,
             biorbd::utils::Scalar v30, biorbd::utils::Scalar v31, biorbd::utils::Scalar v32, biorbd::utils::Scalar v33);
-
-#endif
 
     ///
     /// \brief Contruct Rototrans
@@ -97,6 +86,20 @@ public:
     ///
     RotoTrans(
             const RigidBodyDynamics::Math::SpatialTransform& st);
+
+#ifdef BIORBD_USE_EIGEN3_MATH
+
+    ///
+    /// \brief Construct a RotoTrans matrix from another RotoTrans
+    /// \param other The other RotoTrans
+    ///
+    template<typename OtherDerived> RotoTrans(
+            const Eigen::MatrixBase<OtherDerived>& other) :
+        RigidBodyDynamics::Math::Matrix4d(other){
+        checkUnitary();
+    }
+
+#endif
 
     ///
     /// \brief fromMarkers Creates a system of axes from two axes and an origin defined by markers
@@ -194,6 +197,7 @@ public:
             const std::vector<biorbd::utils::RotoTrans>&rt);
 #endif
 
+#ifndef SWIG
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allow the use of operator=
@@ -204,6 +208,7 @@ public:
             Eigen::Matrix4d::operator=(other);
             return *this;
         }
+#endif
 #endif
 
 protected:

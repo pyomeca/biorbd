@@ -169,6 +169,7 @@ public:
     ///
     int nbAxesToRemove() const; 
 
+#ifndef SWIG
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allows for operator= with other Vector3d
@@ -179,6 +180,7 @@ public:
             this->biorbd::utils::Vector3d::operator=(other);
             return *this;
         }
+#endif
 #endif
 
 protected:

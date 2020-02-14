@@ -24,15 +24,12 @@ public:
     ///
     Vector();
 
-#ifdef BIORBD_USE_EIGEN3_MATH
     ///
-    /// \brief Construct vector from Eigen matrix
-    /// \param other Eigen matrix
+    /// \brief Construct vector of dimension size
+    /// \param size The length of the vector
     ///
-    template<typename OtherDerived> Vector(const Eigen::MatrixBase<OtherDerived>& other) :
-        Eigen::VectorXd(other){}
-#endif
-#ifdef BIORBD_USE_CASADI_MATH
+    Vector(
+            unsigned int size);
 
     ///
     /// \brief Construct vector from Casadi vector
@@ -48,6 +45,24 @@ public:
     Vector(
             const RigidBodyDynamics::Math::VectorNd& v);
 
+
+    ///
+    /// \brief Construct vector from Casadi matrix
+    /// \param v The vector to copy
+    ///
+    Vector(
+            const biorbd::utils::Vector3d& v);
+
+#ifdef BIORBD_USE_EIGEN3_MATH
+    ///
+    /// \brief Construct vector from Eigen matrix
+    /// \param other Eigen matrix
+    ///
+    template<typename OtherDerived> Vector(const Eigen::MatrixBase<OtherDerived>& other) :
+        Eigen::VectorXd(other){}
+#endif
+
+#ifdef BIORBD_USE_CASADI_MATH
     ///
     /// \brief Construct vector from Casadi vector
     /// \param v The vector to copy
@@ -61,22 +76,7 @@ public:
     ///
     Vector(
             const MX_Xd_SubMatrix& m);
-
-    ///
-    /// \brief Construct vector from Casadi matrix
-    /// \param v The vector to copy
-    ///
-    Vector(
-            const biorbd::utils::Vector3d& v);
-
 #endif
-
-    ///
-    /// \brief Construct vector of dimension size
-    /// \param size The length of the vector
-    ///
-    Vector(
-            unsigned int size);
 
     ///
     /// \brief Return the Euclidian p-norm of the vector
@@ -98,6 +98,13 @@ public:
             unsigned int p = 2,
             bool skipRoot = false);
 
+#ifndef SWIG
+    ///
+    /// \brief operator= For submatrices
+    /// \param other The vector to copy
+    ///
+    void operator=(
+            const biorbd::utils::Vector& other);
 #ifdef BIORBD_USE_EIGEN3_MATH
     /// 
     /// \brief Allow the use operator= on vector
@@ -110,15 +117,6 @@ public:
         }
 #endif
 #ifdef BIORBD_USE_CASADI_MATH
-
-#ifndef SWIG
-    ///
-    /// \brief operator= For submatrices
-    /// \param other The vector to copy
-    ///
-    void operator=(
-            const biorbd::utils::Vector& other);
-
     ///
     /// \brief operator= For submatrices
     /// \param other The vector to copy

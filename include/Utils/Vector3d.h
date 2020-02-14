@@ -11,6 +11,7 @@ namespace biorbd {
 namespace utils {
 class RotoTrans;
 class String;
+class Vector;
 
 ///
 /// \brief Wrapper around Eigen Vector3d and attach it to a parent
@@ -39,71 +40,19 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
             biorbd::utils::Scalar z);
 
     ///
-    /// \brief Construct a 3D vector from an eigen 4D vector (drop the trailling 1)
-    /// \param other The Eigen 4D vector
-    ///
-    Vector3d(
-            const RigidBodyDynamics::Math::Vector4d& other);
-
-#ifdef BIORBD_USE_EIGEN3_MATH
-    ///
     /// \brief Construct a 3D vector
-    /// \param other The other vector
-    ///
-    template<typename OtherDerived> Vector3d(
-            const Eigen::MatrixBase<OtherDerived>& other) :
-        Eigen::Vector3d(other), biorbd::utils::Node () {
-    }
-
-    ///
-    /// \brief Construct a 3D vector
-    /// \param other Position of the vector (eigen matrix)
+    /// \param x X-Component of the vector
+    /// \param y Y-Component of the vector
+    /// \param z Z-Component of the vector
     /// \param name Name of the vector
-    /// \param parentName The name of the parent segment
-    /// 
-    template<typename OtherDerived> Vector3d(
-            const Eigen::MatrixBase<OtherDerived>& other, 
-            const biorbd::utils::String &name,  
-            const biorbd::utils::String &parentName) :
-        Eigen::Vector3d(other), biorbd::utils::Node (name, parentName) {
-
-    }
-#endif
-#ifdef BIORBD_USE_CASADI_MATH
-
-    ///
-    /// \brief Construct a 3D vector from a Casadi 3D vector (drop the trailling 1)
-    /// \param other The Casadi 3D vector
+    /// \param parentName Name of the parent segment
     ///
     Vector3d(
-            const RigidBodyDynamics::Math::Vector3d& other);
-
-#ifndef SWIG
-
-    ///
-    /// \brief Construct a 3D vector from a Casadi 4D vector (drop the trailling 1)
-    /// \param other The Casadi 4D vector
-    ///
-    template<unsigned int i, unsigned int j>
-    void operator=(
-            const MX_Xd_static<i, j>& other){
-        this->block<3, 1>(0, 0) = other;
-    }
-
-    ///
-    /// \brief operator= To copy a submatrix
-    /// \param other The matrix to copy
-    ///
-    void operator=(
-            const MX_Xd_SubMatrix& other);
-
-    ///
-    /// \brief operator= To copy a submatrix
-    /// \param other The matrix to copy
-    ///
-    void operator=(
-            const MX_Xd_SubMatrix& other);
-#endif
+            biorbd::utils::Scalar x,
+            biorbd::utils::Scalar y,
+            biorbd::utils::Scalar z,
+            const biorbd::utils::String &name,
+            const biorbd::utils::String &parentName);
 
     ///
     /// \brief Construct a 3D vector
@@ -117,11 +66,51 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
             const biorbd::utils::String &parentName);
 
     ///
+    /// \brief Construct a 3D vector from a Casadi 3D vector (drop the trailling 1)
+    /// \param other The Casadi 3D vector
+    ///
+    Vector3d(
+            const RigidBodyDynamics::Math::Vector3d& other);
+
+    ///
     /// \brief Construct a 3D vector from a Casadi ND vector (drop the trailling 1)
     /// \param other The Casadi ND vector
     ///
     Vector3d(
             const RigidBodyDynamics::Math::VectorNd& other);
+
+    ///
+    /// \brief Construct a 3D vector from an eigen 4D vector (drop the trailling 1)
+    /// \param other The Eigen 4D vector
+    ///
+    Vector3d(
+            const RigidBodyDynamics::Math::Vector4d& other);
+
+#ifdef BIORBD_USE_EIGEN3_MATH
+    ///
+    /// \brief Construct a 3D vector
+    /// \param other The other vector
+    ///
+    template<typename OtherDerived> Vector3d(
+            const Eigen::MatrixBase<OtherDerived>& other) :
+        RigidBodyDynamics::Math::Vector3d(other), biorbd::utils::Node () {
+    }
+
+    ///
+    /// \brief Construct a 3D vector
+    /// \param other Position of the vector (eigen matrix)
+    /// \param name Name of the vector
+    /// \param parentName The name of the parent segment
+    /// 
+    template<typename OtherDerived> Vector3d(
+            const Eigen::MatrixBase<OtherDerived>& other, 
+            const biorbd::utils::String &name,  
+            const biorbd::utils::String &parentName) :
+        RigidBodyDynamics::Math::Vector3d(other), biorbd::utils::Node (name, parentName) {
+
+    }
+#endif
+#ifdef BIORBD_USE_CASADI_MATH
 
     ///
     /// \brief Construct a 3D vector from a Casadi ND vector (drop the trailling 1)
@@ -131,21 +120,6 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
             const MX_Xd_SubMatrix& other);
 
 #endif
-
-    ///
-    /// \brief Construct a 3D vector
-    /// \param x X-Component of the vector
-    /// \param y Y-Component of the vector
-    /// \param z Z-Component of the vector
-    /// \param name Name of the vector
-    /// \param parentName Name of the parent segment
-    ///
-    Vector3d(
-            double x,
-            double y,
-            double z, 
-            const biorbd::utils::String &name, 
-            const biorbd::utils::String &parentName);
 
     ///
     /// \brief Deep copy of a 3D vector
@@ -174,6 +148,8 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
     void applyRT(
             const RotoTrans& rt);
 
+#ifndef SWIG
+
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief To use operator= on 3D vector with any eigen vector
@@ -184,6 +160,29 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
             this->Eigen::Vector3d::operator=(other);
             return *this;
         }
+#endif
+
+#ifdef BIORBD_USE_CASADI_MATH
+
+    ///
+    /// \brief Construct a 3D vector from a Casadi 4D vector (drop the trailling 1)
+    /// \param other The Casadi 4D vector
+    ///
+    template<unsigned int i, unsigned int j>
+    void operator=(
+            const MX_Xd_static<i, j>& other){
+        this->block<3, 1>(0, 0) = other;
+    }
+
+    ///
+    /// \brief operator= To copy a submatrix
+    /// \param other The matrix to copy
+    ///
+    void operator=(
+            const MX_Xd_SubMatrix& other);
+
+#endif
+
 #endif
 
 protected:

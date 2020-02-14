@@ -46,7 +46,7 @@ public:
     ///
     template<typename OtherDerived> Rotation(
             const Eigen::MatrixBase<OtherDerived>& other) :
-        Eigen::Matrix3d(other){
+        RigidBodyDynamics::Math::Matrix3d(other){
         checkUnitary();
     }
 #endif
@@ -146,6 +146,7 @@ public:
             const std::vector<biorbd::utils::Rotation>& mToMean);
 #endif
 
+#ifndef SWIG
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allow the use of operator=
@@ -157,6 +158,7 @@ public:
             Eigen::Matrix3d::operator=(other);
             return *this;
         }
+#endif
 #endif
 
 protected:

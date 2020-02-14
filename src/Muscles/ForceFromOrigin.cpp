@@ -5,13 +5,14 @@
 #include "Utils/Vector3d.h"
 #include "Muscles/Geometry.h"
 
-biorbd::muscles::ForceFromOrigin::ForceFromOrigin(double x, double y, double z) :
+biorbd::muscles::ForceFromOrigin::ForceFromOrigin(
+        double x,
+        double y,
+        double z) :
     biorbd::muscles::Force(x,y,z)
 {
 
 }
-
-#ifdef BIORBD_USE_CASADI_MATH
 
 biorbd::muscles::ForceFromOrigin::ForceFromOrigin(
         const RigidBodyDynamics::Math::Vector3d &v) :
@@ -19,8 +20,6 @@ biorbd::muscles::ForceFromOrigin::ForceFromOrigin(
 {
 
 }
-
-#endif
 
 biorbd::muscles::ForceFromOrigin::ForceFromOrigin(
         const biorbd::muscles::Geometry& geo,
@@ -37,7 +36,8 @@ biorbd::muscles::ForceFromOrigin biorbd::muscles::ForceFromOrigin::DeepCopy() co
     return copy;
 }
 
-void biorbd::muscles::ForceFromOrigin::DeepCopy(const biorbd::muscles::ForceFromOrigin &other)
+void biorbd::muscles::ForceFromOrigin::DeepCopy(
+        const biorbd::muscles::ForceFromOrigin &other)
 {
     biorbd::muscles::Force::DeepCopy(other);
 }

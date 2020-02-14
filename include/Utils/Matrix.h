@@ -67,6 +67,8 @@ public:
             unsigned int nbRows,
             unsigned int nbCols);
 
+#ifndef SWIG
+
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief To use operator= with matrix
@@ -80,7 +82,6 @@ public:
 #endif
 #ifdef BIORBD_USE_CASADI_MATH
 
-#ifndef SWIG
     ///
     /// \brief operator= For submatrices
     /// \param other The matrix to copy

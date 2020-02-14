@@ -71,7 +71,7 @@ void biorbd::rigidbody::KalmanRecons::iteration(
     const biorbd::utils::Matrix& K(Pkm*Hessian.transpose() * InvTp); // Gain
 
     *m_xp = xkm+K*(measure-projectedMeasure); // New estimated state
-    const RigidBodyDynamics::Math::MatrixNd& temp(biorbd::utils::Matrix::Identity(3* *m_nbDof) - K*Hessian);
+    const RigidBodyDynamics::Math::MatrixNd& temp(biorbd::utils::Matrix::Identity(3* *m_nbDof, 3* *m_nbDof) - K*Hessian);
     *m_Pp =  temp * Pkm * temp.transpose() + K* *m_R*K.transpose();
 
 }
@@ -112,7 +112,7 @@ biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::evolutionMatrix(
     // Te : 1 / (acquisition frequency)
 
     n += 1;
-    biorbd::utils::Matrix A(biorbd::utils::Matrix::Identity(nQ*n));
+    biorbd::utils::Matrix A(biorbd::utils::Matrix::Identity(nQ*n, nQ*n));
     double c = 1;
     for (unsigned int i=2; i<n+1; ++i){
 

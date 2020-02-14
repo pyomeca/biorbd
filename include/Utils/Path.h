@@ -68,6 +68,7 @@ public:
             biorbd::utils::String& filename,
             biorbd::utils::String& ext);
 
+#ifndef SWIG
     /// 
     /// \brief Test if file exist on the computer
     /// \return If file exist on the computer
@@ -81,6 +82,7 @@ public:
     ///
     static bool isFileExist(
             const biorbd::utils::Path& path);
+#endif
 
     ///
     /// \brief Test if file exist on the computer
@@ -96,6 +98,7 @@ public:
     ///
     bool isFileReadable() const;
 
+#ifndef SWIG
     ///
     /// \brief Test if folder exists on the computer
     /// \return If folder exists
@@ -109,6 +112,7 @@ public:
     ///
     static bool isFolderExist(
             const biorbd::utils::Path& path);
+#endif
 
     ///
     /// \brief Test if folder exists on the computer
@@ -135,6 +139,7 @@ public:
     ///
     biorbd::utils::String relativePath() const;
 
+#ifndef SWIG
     ///
     /// \brief Return relative path to the specified folder
     /// \param relativeTo Relative to that path
@@ -169,6 +174,8 @@ public:
     /// \return The absolute folder relative to root
     ///
     biorbd::utils::String absoluteFolder() const;
+
+#endif
 
     ///
     /// \brief Return the absolute path relative to root
