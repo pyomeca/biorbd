@@ -53,12 +53,16 @@ public:
     ///
     void DeepCopy(const biorbd::utils::RotoTransNode& other);
 
+#ifndef SWIG
+
     ///
     /// \brief operator= Matrix multiplication
     /// \return Rotated matrix
     ///
     void operator=(
             const biorbd::utils::RotoTrans& other);
+
+#endif
 
     ///
     /// \brief operator* Matrix multiplication

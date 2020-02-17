@@ -99,6 +99,8 @@ public:
             const biorbd::muscles::Geometry& geo,
             biorbd::utils::Scalar norm);
 
+#ifndef SWIG
+
 #ifdef BIORBD_USE_EIGEN3_MATH
 
     ///
@@ -114,7 +116,6 @@ public:
 
 #endif
 
-#ifndef SWIG
     ///
     /// \brief Equal operator to be used with another force
     /// \param other Other force to copy

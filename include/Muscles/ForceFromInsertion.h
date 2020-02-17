@@ -75,6 +75,8 @@ public:
             const biorbd::muscles::Geometry& geo,
             biorbd::utils::Scalar norm);
 
+#ifndef SWIG
+
 #ifdef BIORBD_USE_EIGEN3_MATH
 
     ///
@@ -88,6 +90,8 @@ public:
         this->biorbd::muscles::Force::operator=(other);
         return *this;
     }
+
+#endif
 
 #endif
 
