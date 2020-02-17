@@ -87,7 +87,7 @@ biorbd::utils::Vector3d biorbd::utils::Vector3d::DeepCopy() const
 
 void biorbd::utils::Vector3d::DeepCopy(const Vector3d &other)
 {
-    *this = other;
+    this->RigidBodyDynamics::Math::Vector3d::operator=(other);
     biorbd::utils::Node::DeepCopy(other);
 }
 
