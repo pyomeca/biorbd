@@ -37,8 +37,6 @@ namespace std {
     }
 }
 
-%import "/home/pariterre/Programmation/rbdl-casadi/include/rbdl/rbdl_math.h"
-
 %include "@CMAKE_SOURCE_DIR@/include/Utils/UtilsEnum.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/String.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Path.h"
