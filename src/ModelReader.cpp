@@ -1678,7 +1678,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileVtp(
                 std::stringstream fs( field );
                 fs >> vertex3;
             }
-            mesh.addFace(Eigen::Vector3i(vertex1, vertex2, vertex3));
+            mesh.addFace({vertex1, vertex2, vertex3});
         }
     }
 
