@@ -162,7 +162,7 @@ void biorbd::Reader::readModelFile(
                             for (unsigned int i=0; i<3;++i){ // ignore the last line
                                 for (unsigned int j=0; j<4; ++j){
                                     if (j!=3){
-                                        file.read(RT_R(i, j), variable);
+                                        file.read(RT_R(j, i), variable);
                                     } else {
                                         file.read(RT_T(i), variable);
                                     }

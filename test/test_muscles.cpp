@@ -19,13 +19,22 @@ static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
 static unsigned int muscleGroupForMuscleJacobian(1);
 static unsigned int muscleForMuscleJacobian(1);
 
+
+
+TEST(MuscleForce, position)
+{
+    // TODO
+    // Position of origin, insertion, and path in local
+    // Position of origin, insertion, and path in global
+}
+
 TEST(MuscleForce, force)
 {
     biorbd::Model model(modelPathForMuscleForce);
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
     biorbd::rigidbody::GeneralizedVelocity QDot(model);
-    Q.setOnes()/10;
-    QDot.setOnes()/10;
+    Q.setOnes();
+    QDot.setOnes();
     std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> states;
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i)
         states.push_back(std::make_shared<biorbd::muscles::StateDynamics>(0, 0.2));

@@ -29,7 +29,7 @@ biorbd::utils::RotoTransNode biorbd::utils::RotoTransNode::DeepCopy() const
 
 void biorbd::utils::RotoTransNode::DeepCopy(const RotoTransNode &other)
 {
-    *this = other;
+    this->biorbd::utils::RotoTrans::operator=(other);
     biorbd::utils::Node::DeepCopy(other);
 }
 
