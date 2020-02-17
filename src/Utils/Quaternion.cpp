@@ -306,10 +306,17 @@ void biorbd::utils::Quaternion::derivate(
         const biorbd::utils::Vector &w)
 {
     // Création du quaternion de "préproduit vectoriel"
+#ifdef BIORBD_USE_CASADI_MATH
+    biorbd::utils::Scalar qw = (*this)(0);
+    biorbd::utils::Scalar qx = (*this)(1);
+    biorbd::utils::Scalar qy = (*this)(2);
+    biorbd::utils::Scalar qz = (*this)(3);
+#else
     biorbd::utils::Scalar& qw = (*this)(0);
     biorbd::utils::Scalar& qx = (*this)(1);
     biorbd::utils::Scalar& qy = (*this)(2);
     biorbd::utils::Scalar& qz = (*this)(3);
+#endif
     RigidBodyDynamics::Math::Matrix4d Q =
         RigidBodyDynamics::Math::Matrix4d(
                 qw, -qx, -qy, -qz,
@@ -326,7 +333,9 @@ void biorbd::utils::Quaternion::derivate(
     qx = newQuat[1];
     qy = newQuat[2];
     qz = newQuat[3];
-
+#ifdef BIORBD_USE_CASADI_MATH
+    *this = biorbd::utils::Quaternion(qw, qx, qy, qz, m_Kstab);
+#endif
 }
 
 void biorbd::utils::Quaternion::normalize()

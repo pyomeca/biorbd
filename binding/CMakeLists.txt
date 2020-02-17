@@ -2,7 +2,22 @@
 option(BINDER_C "Build C module" OFF)
 option(BINDER_PYTHON3 "Build Python SWIG module" OFF)
 option(BINDER_MATLAB "Build Matlab module" OFF)
- 
+
+if (BIORBD_USE_CASADI_MATH)
+    if(BINDER_C)
+        message("Casadi option is not compatible with BINDER_C")
+        set(BINDER_C OFF)
+    endif(BINDER_C OFF)
+    if(BINDER_PYTHON3)
+        message("Casadi option is not compatible with BINDER_PYTHON3")
+        set(BINDER_PYTHON3 OFF)
+    endif(BINDER_PYTHON3 OFF)
+    if(BINDER_MATLAB)
+        message("Casadi option is not compatible with BINDER_MATLAB")
+        set(BINDER_MATLAB OFF)
+    endif(BINDER_MATLAB OFF)
+endif(BIORBD_USE_CASADI_MATH)
+
 # Common to all swig interface
 if (BINDER_PYTHON3)
     # Set up swig

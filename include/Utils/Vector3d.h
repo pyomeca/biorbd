@@ -181,6 +181,13 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
     void operator=(
             const MX_Xd_SubMatrix& other);
 
+    ///
+    /// \brief operator= To copy a vector
+    /// \param other The vector to copy
+    ///
+    void operator=(
+            const RigidBodyDynamics::Math::Vector4d& other);
+
 #endif
 
 #endif
