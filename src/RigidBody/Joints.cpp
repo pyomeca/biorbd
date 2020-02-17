@@ -919,10 +919,10 @@ biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Joints::computeQdot
         const biorbd::rigidbody::Segment& segment_i = segment(i);
         if (segment_i.isRotationAQuaternion()){
             // Extraire le quaternion
-            biorbd::utils::Quaternion quat_tp(biorbd::utils::Quaternion::fromAxisAngle(
+            biorbd::utils::Quaternion quat_tp(
                         Q(Q.size()-*m_nRotAQuat+cmpQuat),
                         Q.block(cmpDof+segment_i.nbDofTrans(), 0, 3, 1),
-                        k_stab));
+                        k_stab);
 
             // QDot for translation is actual QDot
             QDotOut.block(cmpDof, 0, segment_i.nbDofTrans(), 1)
