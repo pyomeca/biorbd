@@ -913,3 +913,40 @@ TEST(Quaternion, normalization) {
     }
 
 }
+
+TEST(Vector, operation) {
+
+    {
+        biorbd::utils::Vector v(4);
+        v[0] = 1.1;
+        v[1] = 1.2;
+        v[2] = 1.3;
+        v[3] = 1.4;
+        biorbd::utils::Scalar s(5);
+        biorbd::utils::Vector multVectAndScalar(v * s);
+
+        biorbd::utils::Vector expectedMultVectAndScalar(4);
+        expectedMultVectAndScalar << 6.1, 6.2, 6.3, 6.4;
+
+        for (unsigned int i = 0; i < 4; ++i) {
+            EXPECT_NEAR(multVectAndScalar[i], expectedMultVectAndScalar[i], requiredPrecision);
+        }
+    }
+
+    {
+        biorbd::utils::Vector v(4);
+        v[0] = 1.1;
+        v[1] = 1.2;
+        v[2] = 1.3;
+        v[3] = 1.4;
+        biorbd::utils::Scalar s(5);
+        biorbd::utils::Vector multVectAndScalar(s * v);
+
+        biorbd::utils::Vector expectedMultVectAndScalar(4);
+        expectedMultVectAndScalar << 6.1, 6.2, 6.3, 6.4;
+
+        for (unsigned int i = 0; i < 4; ++i) {
+            EXPECT_NEAR(multVectAndScalar[i], expectedMultVectAndScalar[i], requiredPrecision);
+        }
+    }
+}
