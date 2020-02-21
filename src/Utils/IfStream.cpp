@@ -121,7 +121,7 @@ bool biorbd::utils::IfStream::read(
 }
 #ifdef BIORBD_USE_CASADI_MATH
 bool biorbd::utils::IfStream::read(
-        MX_Xd_SubMatrix val){
+        RBDLCasadiMath::MX_Xd_SubMatrix val){
     std::map<biorbd::utils::Equation, double> dumb;
     return read(val, dumb);
 }
@@ -141,7 +141,7 @@ bool biorbd::utils::IfStream::read(
 }
 #ifdef BIORBD_USE_CASADI_MATH
 bool biorbd::utils::IfStream::read(
-        MX_Xd_SubMatrix result,
+        RBDLCasadiMath::MX_Xd_SubMatrix result,
         const std::map<biorbd::utils::Equation, double> &variables){
     biorbd::utils::Equation tp;
     bool out(read(tp));

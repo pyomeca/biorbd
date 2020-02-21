@@ -76,8 +76,8 @@ biorbd::utils::Rotation biorbd::utils::Rotation::fromEulerAngles(
     // Set the actual rotation matrix to this
     RigidBodyDynamics::Math::Matrix3d tp;
     for (unsigned int i=0; i<seq.length(); ++i){
-        double cosVi(std::cos(rot[i]));
-        double sinVi(std::sin(rot[i]));
+        biorbd::utils::Scalar cosVi(std::cos(rot[i]));
+        biorbd::utils::Scalar sinVi(std::sin(rot[i]));
         if (seq.tolower()[i] == 'x')
             tp = RigidBodyDynamics::Math::Matrix3d(1,     0,      0,
                     0, cosVi, -sinVi,

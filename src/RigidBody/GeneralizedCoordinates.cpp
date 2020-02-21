@@ -60,7 +60,7 @@ void biorbd::rigidbody::GeneralizedCoordinates::operator=(
 #ifdef BIORBD_USE_CASADI_MATH
 
 void biorbd::rigidbody::GeneralizedCoordinates::operator=(
-        const MX_Xd_SubMatrix &other)
+        const RBDLCasadiMath::MX_Xd_SubMatrix &other)
 {
     this->biorbd::utils::Vector::operator=(other);
 }

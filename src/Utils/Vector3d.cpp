@@ -68,7 +68,8 @@ biorbd::utils::Vector3d::Vector3d(
 
 #ifdef BIORBD_USE_CASADI_MATH
 
-biorbd::utils::Vector3d::Vector3d(const MX_Xd_SubMatrix &other) :
+biorbd::utils::Vector3d::Vector3d(
+        const RBDLCasadiMath::MX_Xd_SubMatrix &other) :
     RigidBodyDynamics::Math::Vector3d(other),
     biorbd::utils::Node ()
 {
@@ -112,7 +113,8 @@ void biorbd::utils::Vector3d::setType()
 }
 
 #ifdef BIORBD_USE_CASADI_MATH
-void biorbd::utils::Vector3d::operator=(const MX_Xd_SubMatrix &other)
+void biorbd::utils::Vector3d::operator=(
+        const RBDLCasadiMath::MX_Xd_SubMatrix &other)
 {
     *this = biorbd::utils::Vector3d(other);
 }

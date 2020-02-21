@@ -103,7 +103,7 @@ public:
     /// \return True on success
     ///
     bool read(
-            MX_Xd_SubMatrix val);
+            RBDLCasadiMath::MX_Xd_SubMatrix val);
 #endif
 
     ///
@@ -123,7 +123,7 @@ public:
     /// \return True on success
     ///
     bool read(
-            MX_Xd_SubMatrix result,
+            RBDLCasadiMath::MX_Xd_SubMatrix result,
             const std::map<biorbd::utils::Equation, double> &variables);
 #endif
 

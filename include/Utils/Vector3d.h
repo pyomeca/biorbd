@@ -117,7 +117,7 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
     /// \param other The Casadi ND vector
     ///
     Vector3d(
-            const MX_Xd_SubMatrix& other);
+            const RBDLCasadiMath::MX_Xd_SubMatrix& other);
 
 #endif
 
@@ -179,7 +179,7 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
     /// \param other The matrix to copy
     ///
     void operator=(
-            const MX_Xd_SubMatrix& other);
+            const RBDLCasadiMath::MX_Xd_SubMatrix& other);
 
     ///
     /// \brief operator= To copy a vector

@@ -108,7 +108,7 @@ public:
     /// \param The vector to copy
     ///
     void operator=(
-            const MX_Xd_SubMatrix& other);
+            const RBDLCasadiMath::MX_Xd_SubMatrix& other);
 
     ///
     /// \brief operator= For casadi
