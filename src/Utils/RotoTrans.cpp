@@ -114,17 +114,21 @@ biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::fromSpatialTransform(
     return combineRotAndTrans(st.E,st.r);
 }
 
-biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::fromEulerAngles(
+biorbd::utils::RotoTrans biorbd::utils::RotoTrans::fromEulerAngles(
         const biorbd::utils::Vector& rot,
         const biorbd::utils::Vector3d& trans,
         const biorbd::utils::String& seq)
 {
+
     biorbd::utils::Rotation rot_mat;
     rot_mat.fromEulerAngles(rot, seq);
-    block(0,0,3,3) = rot_mat;
-    block(0,3,3,1) = trans;
-    block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1).transpose();
-    return *this;
+    biorbd::utils::RotoTrans coucou;
+
+    biorbd::utils::RotoTrans out;
+    out.block(0,0,3,3) = rot_mat;
+    out.block(0,3,3,1) = trans;
+    out.block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1).transpose();
+    return out;
 }
 
 biorbd::utils::Vector biorbd::utils::RotoTrans::toEulerAngles(

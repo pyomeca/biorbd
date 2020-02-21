@@ -106,7 +106,7 @@ public:
     /// The number of rotation must match the number of axes in the rotation
     /// sequence
     ///
-    biorbd::utils::Rotation& fromEulerAngles(
+    static biorbd::utils::Rotation fromEulerAngles(
             const biorbd::utils::Vector& rot,
             const biorbd::utils::String& seq);
 
