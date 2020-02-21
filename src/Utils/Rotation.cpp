@@ -16,7 +16,9 @@ biorbd::utils::Rotation::Rotation(
 }
 
 #ifdef BIORBD_USE_CASADI_MATH
-biorbd::utils::Rotation::Rotation(const RigidBodyDynamics::Math::MatrixNd &m) :
+
+biorbd::utils::Rotation::Rotation(
+        const RigidBodyDynamics::Math::MatrixNd &m) :
     RigidBodyDynamics::Math::Matrix3d(m)
 {
 
@@ -60,7 +62,7 @@ biorbd::utils::Rotation biorbd::utils::Rotation::fromSpatialTransform(
     return st.E;
 }
 
-biorbd::utils::Rotation& biorbd::utils::Rotation::fromEulerAngles(
+biorbd::utils::Rotation biorbd::utils::Rotation::fromEulerAngles(
         const biorbd::utils::Vector &rot,
         const biorbd::utils::String& seq)
 {
@@ -69,7 +71,8 @@ biorbd::utils::Rotation& biorbd::utils::Rotation::fromEulerAngles(
                 seq.length() == static_cast<unsigned int>(rot.rows()),
                 "Rotation and sequence of rotation must be the same length");
 
-    setIdentity();
+    biorbd::utils::Rotation out;
+    out.setIdentity();
     // Set the actual rotation matrix to this
     RigidBodyDynamics::Math::Matrix3d tp;
     for (unsigned int i=0; i<seq.length(); ++i){
@@ -92,9 +95,9 @@ biorbd::utils::Rotation& biorbd::utils::Rotation::fromEulerAngles(
         else
             biorbd::utils::Error::raise("Rotation sequence not recognized");
 
-        block(0,0,3,3) *= tp;
+        out.block(0,0,3,3) *= tp;
     }
-    return *this;
+    return out;
 }
 
 biorbd::utils::Rotation biorbd::utils::Rotation::fromMarkers(

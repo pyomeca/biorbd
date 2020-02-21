@@ -167,10 +167,10 @@ public:
     /// \param trans The translation vector
     /// \param seq The rotation sequence
     ///
-    /// The number of rotation must match the number of axes in the rotation
+    /// The number of rotation umust match the number of axes in the rotation
     /// sequence
     ///
-    biorbd::utils::RotoTrans& fromEulerAngles(
+    static biorbd::utils::RotoTrans fromEulerAngles(
             const biorbd::utils::Vector &rot,
             const biorbd::utils::Vector3d& trans,
             const biorbd::utils::String& seq);
