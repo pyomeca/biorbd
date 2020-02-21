@@ -95,7 +95,7 @@ biorbd::utils::Rotation biorbd::utils::Rotation::fromEulerAngles(
         else
             biorbd::utils::Error::raise("Rotation sequence not recognized");
 
-        out.block(0,0,3,3) *= tp;
+        out.block(0,0,3,3) = out.block(0,0,3,3) * tp;
     }
     return out;
 }
