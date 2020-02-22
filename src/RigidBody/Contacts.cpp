@@ -146,5 +146,5 @@ std::vector<biorbd::utils::Vector3d> biorbd::rigidbody::Contacts::constraintsInG
 
 biorbd::utils::Vector biorbd::rigidbody::Contacts::getForce() const
 {
-    return this->force;
+    return static_cast<biorbd::utils::Vector>(this->force);
 }

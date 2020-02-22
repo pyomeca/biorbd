@@ -5,11 +5,22 @@
 #include "Utils/Vector3d.h"
 #include "Muscles/Geometry.h"
 
-biorbd::muscles::ForceFromOrigin::ForceFromOrigin(double x, double y, double z) :
+biorbd::muscles::ForceFromOrigin::ForceFromOrigin(
+        double x,
+        double y,
+        double z) :
     biorbd::muscles::Force(x,y,z)
 {
 
 }
+
+biorbd::muscles::ForceFromOrigin::ForceFromOrigin(
+        const RigidBodyDynamics::Math::Vector3d &v) :
+    biorbd::muscles::Force (v)
+{
+
+}
+
 biorbd::muscles::ForceFromOrigin::ForceFromOrigin(
         const biorbd::muscles::Geometry& geo,
         double norm) :
@@ -25,7 +36,8 @@ biorbd::muscles::ForceFromOrigin biorbd::muscles::ForceFromOrigin::DeepCopy() co
     return copy;
 }
 
-void biorbd::muscles::ForceFromOrigin::DeepCopy(const biorbd::muscles::ForceFromOrigin &other)
+void biorbd::muscles::ForceFromOrigin::DeepCopy(
+        const biorbd::muscles::ForceFromOrigin &other)
 {
     biorbd::muscles::Force::DeepCopy(other);
 }
@@ -33,7 +45,7 @@ void biorbd::muscles::ForceFromOrigin::DeepCopy(const biorbd::muscles::ForceFrom
 
 void biorbd::muscles::ForceFromOrigin::setForceFromMuscleGeometry(
         const biorbd::muscles::Geometry& geo,
-        double norm)
+        biorbd::utils::Scalar norm)
 {
     //Find the direction vector
     const std::vector<biorbd::utils::Vector3d>& tp_via = geo.musclesPointsInGlobal();

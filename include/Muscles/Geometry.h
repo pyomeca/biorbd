@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include "biorbdConfig.h"
+#include "Utils/Scalar.h"
 
 namespace biorbd {
 namespace utils {
@@ -171,19 +172,19 @@ public:
     /// \brief Return the previously computed muscle length
     /// \return The muscle lengh
     ///
-    double length() const;
+    biorbd::utils::Scalar length() const;
 
     ///
     /// \brief Return the previously computed muscle-tendon length
     /// \return The muscle-tendon length
     ///
-    double musculoTendonLength() const;
+    biorbd::utils::Scalar musculoTendonLength() const;
 
     ///
     /// \brief Return the previously computed velocity
     /// \return The computed velocity
     ///
-    double velocity() const;
+    biorbd::utils::Scalar velocity() const;
 
     ///
     /// \brief Return the previously computed muscle jacobian
@@ -275,7 +276,7 @@ protected:
     /// \param pathModifiers The set of path modifiers
     /// \return The muscle length
     ///
-    double length(
+    biorbd::utils::Scalar length(
             const biorbd::muscles::Characteristics* characteristics = nullptr,
             biorbd::muscles::PathModifiers* pathModifiers = nullptr);
 
@@ -284,7 +285,7 @@ protected:
     /// \param Qdot The generalized velocities
     /// \return The muscle velocity
     ///
-    double velocity(
+    biorbd::utils::Scalar velocity(
             const biorbd::rigidbody::GeneralizedVelocity &Qdot);
 
     ///
@@ -327,9 +328,9 @@ protected:
     std::shared_ptr<biorbd::utils::Matrix> m_G; ///< Internal matrix of the jacobian dimension to speed up calculation
     std::shared_ptr<biorbd::utils::Matrix> m_jacobianLength; ///< The muscle length jacobian
 
-    std::shared_ptr<double> m_length; ///< Muscle length
-    std::shared_ptr<double> m_muscleTendonLength; ///< Muscle tendon length
-    std::shared_ptr<double> m_velocity; ///< Velocity of the muscular elongation
+    std::shared_ptr<biorbd::utils::Scalar> m_length; ///< Muscle length
+    std::shared_ptr<biorbd::utils::Scalar> m_muscleTendonLength; ///< Muscle tendon length
+    std::shared_ptr<biorbd::utils::Scalar> m_velocity; ///< Velocity of the muscular elongation
 
     std::shared_ptr<bool> m_isGeometryComputed; ///< To know if the geometry was computed at least once
     std::shared_ptr<bool> m_isVelocityComputed; ///< To know if the velocity was computed in the last update

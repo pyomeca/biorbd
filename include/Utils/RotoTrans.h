@@ -3,7 +3,8 @@
 
 #include <vector>
 #include <memory>
-#include <Eigen/Dense>
+#include "rbdl_math.h"
+#include "Utils/Scalar.h"
 
 namespace RigidBodyDynamics { namespace Math {
 struct SpatialTransform;
@@ -25,7 +26,11 @@ class Vector3d;
 ///
 /// \brief Homogenous matrix to describe translations and rotations simultaneously
 ///
-class BIORBD_API RotoTrans : public Eigen::Matrix4d
+#ifdef SWIG
+class BIORBD_API RotoTrans
+#else
+class BIORBD_API RotoTrans : public RigidBodyDynamics::Math::Matrix4d
+#endif
 {
 public:
     ///
@@ -33,17 +38,17 @@ public:
     /// \param matrix 4D identity matrix
     ///
     RotoTrans(
-            const Eigen::Matrix4d& matrix = Eigen::Matrix4d::Identity());
+            const RigidBodyDynamics::Math::Matrix4d& matrix = RigidBodyDynamics::Math::Matrix4d::Identity());
 
     ///
-    /// \brief Construct a RotoTrans matrix from another RotoTrans
-    /// \param other The other RotoTrans
+    /// \brief Construct RotoTrans matrix
+    /// \param matrix 4D identity matrix
     ///
-    template<typename OtherDerived> RotoTrans(
-            const Eigen::MatrixBase<OtherDerived>& other) :
-        Eigen::Matrix4d(other){
-        checkUnitary();
-    }
+    RotoTrans(
+            biorbd::utils::Scalar v00, biorbd::utils::Scalar v01, biorbd::utils::Scalar v02, biorbd::utils::Scalar v03,
+            biorbd::utils::Scalar v10, biorbd::utils::Scalar v11, biorbd::utils::Scalar v12, biorbd::utils::Scalar v13,
+            biorbd::utils::Scalar v20, biorbd::utils::Scalar v21, biorbd::utils::Scalar v22, biorbd::utils::Scalar v23,
+            biorbd::utils::Scalar v30, biorbd::utils::Scalar v31, biorbd::utils::Scalar v32, biorbd::utils::Scalar v33);
 
     ///
     /// \brief Contruct Rototrans
@@ -82,6 +87,20 @@ public:
     RotoTrans(
             const RigidBodyDynamics::Math::SpatialTransform& st);
 
+#ifdef BIORBD_USE_EIGEN3_MATH
+
+    ///
+    /// \brief Construct a RotoTrans matrix from another RotoTrans
+    /// \param other The other RotoTrans
+    ///
+    template<typename OtherDerived> RotoTrans(
+            const Eigen::MatrixBase<OtherDerived>& other) :
+        RigidBodyDynamics::Math::Matrix4d(other){
+        checkUnitary();
+    }
+
+#endif
+
     ///
     /// \brief fromMarkers Creates a system of axes from two axes and an origin defined by markers
     /// \param origin The position of the origin
@@ -104,7 +123,7 @@ public:
     /// \return The axis
     ///
     biorbd::utils::Vector3d axe(
-            int idx); // Aller récupérer un axe en particulier
+            unsigned int idx) const ;
 
     ///
     /// \brief Return the tranposed matrix
@@ -130,7 +149,7 @@ public:
     /// \param trans The vector of translation
     /// \return The matrix of RotoTrans
     ///
-    biorbd::utils::RotoTrans& combineRotAndTrans(
+    static biorbd::utils::RotoTrans combineRotAndTrans(
             const biorbd::utils::Rotation& rot,
             const biorbd::utils::Vector3d& trans);
 
@@ -139,7 +158,7 @@ public:
     /// \param st The spatial transform
     /// \return The matrix of RotoTrans
     ///
-    biorbd::utils::RotoTrans& fromSpatialTransform(
+    static biorbd::utils::RotoTrans fromSpatialTransform(
             const RigidBodyDynamics::Math::SpatialTransform& st);
 
     ///
@@ -148,10 +167,10 @@ public:
     /// \param trans The translation vector
     /// \param seq The rotation sequence
     ///
-    /// The number of rotation must match the number of axes in the rotation
+    /// The number of rotation umust match the number of axes in the rotation
     /// sequence
     ///
-    biorbd::utils::RotoTrans& fromEulerAngles(
+    static biorbd::utils::RotoTrans fromEulerAngles(
             const biorbd::utils::Vector &rot,
             const biorbd::utils::Vector3d& trans,
             const biorbd::utils::String& seq);
@@ -168,6 +187,7 @@ public:
             const biorbd::utils::RotoTrans& rt,
             const biorbd::utils::String &seq);
 
+#ifndef BIORBD_USE_CASADI_MATH
     ///
     /// \brief Get the mean of the 4x4 matrices
     /// \param rt The RotoTrans matrices to mean
@@ -175,7 +195,10 @@ public:
     ///
     static biorbd::utils::RotoTrans mean(
             const std::vector<biorbd::utils::RotoTrans>&rt);
+#endif
 
+#ifndef SWIG
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allow the use of operator=
     /// \param other The other rotoTrans matrix
@@ -185,13 +208,15 @@ public:
             Eigen::Matrix4d::operator=(other);
             return *this;
         }
+#endif
+#endif
 
 protected:
     ///
     /// \brief Expand 3D vector to 4D (padding with an extra 1)
     /// \param v1 Vector to expand
     ///
-    Eigen::Vector4d expand3dTo4d(const biorbd::utils::Vector3d& v1);
+    RigidBodyDynamics::Math::Vector4d expand3dTo4d(const biorbd::utils::Vector3d& v1);
 
     ///
     /// \brief Check if the RotoTrans has a unitary matrix of rotation and the last row is (0, 0, 0, 1)
@@ -203,11 +228,13 @@ protected:
 
 }}
 
+#ifndef SWIG
 ///
 /// \brief To use operator<< to use std::cout
 /// \param os osstream
 /// \param rt The RotoTrans matrix
 ///
 std::ostream& operator<<(std::ostream& os, const biorbd::utils::RotoTrans &rt);
+#endif
 
 #endif // BIORBD_UTILS_ROTO_TRANS_H

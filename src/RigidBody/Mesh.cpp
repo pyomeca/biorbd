@@ -69,7 +69,7 @@ void biorbd::rigidbody::Mesh::addFace(const biorbd::rigidbody::MeshFace& face)
 {
     m_faces->push_back(face);
 }
-void biorbd::rigidbody::Mesh::addFace(const Eigen::Vector3i & face)
+void biorbd::rigidbody::Mesh::addFace(const std::vector<int> & face)
 {
     addFace(biorbd::rigidbody::MeshFace(face));
 }

@@ -3,6 +3,7 @@
 
 #include "biorbdConfig.h"
 #include "Muscles/Muscle.h"
+#include "Utils/Scalar.h"
 
 namespace biorbd {
 namespace muscles {
@@ -149,25 +150,25 @@ public:
     /// \brief Return the Force-Length of the contractile element
     /// \return The Force-Length of the contractile element
     ///
-    double FlCE(const biorbd::muscles::StateDynamics& EMG);
+    biorbd::utils::Scalar FlCE(const biorbd::muscles::StateDynamics& EMG);
 
     ///
     /// \brief Return the Force-Length of the passive element
     /// \return The Force-Length of the passive element
     ///
-    double FlPE();
+    biorbd::utils::Scalar FlPE();
 
     ///
     /// \brief Return the Force-Velocity of the contractile element
     /// \return The Force-Velocity of the contractile element
     ///
-    double FvCE();
+    biorbd::utils::Scalar FvCE();
 
     ///
     /// \brief Return the muscle damping (spring force)
     /// \return The muscle damping
     ///
-    double damping();
+    biorbd::utils::Scalar damping();
 
 protected:
     ///
@@ -199,7 +200,7 @@ protected:
     /// \brief Function allowing modification of the way the multiplication is done in computeForce(EMG)
     /// \param emg The EMG data
     /// \return The force from activation
-    virtual double getForceFromActivation(const biorbd::muscles::State &emg); 
+    virtual biorbd::utils::Scalar getForceFromActivation(const biorbd::muscles::State &emg);
 
     ///
     /// \brief Normalize the EMG data
@@ -208,10 +209,10 @@ protected:
     virtual biorbd::muscles::StateDynamics normalizeEMG(const biorbd::muscles::StateDynamics& emg);
 
     // Attributs intermédiaires lors du calcul de la force
-    std::shared_ptr<double> m_damping; ///< Muscle damping (spring force)
-    std::shared_ptr<double> m_FlCE; ///<Force-Length of the contractile element
-    std::shared_ptr<double> m_FlPE; ///< Force-Length of the passive element
-    std::shared_ptr<double> m_FvCE; ///<Force-Velocity of the contractile element
+    std::shared_ptr<biorbd::utils::Scalar> m_damping; ///< Muscle damping (spring force)
+    std::shared_ptr<biorbd::utils::Scalar> m_FlCE; ///<Force-Length of the contractile element
+    std::shared_ptr<biorbd::utils::Scalar> m_FlPE; ///< Force-Length of the passive element
+    std::shared_ptr<biorbd::utils::Scalar> m_FvCE; ///<Force-Velocity of the contractile element
 
     // Declaration of multiple constants
     std::shared_ptr<double> m_cste_FlCE_1; ///< constant 1 used in the FlCE

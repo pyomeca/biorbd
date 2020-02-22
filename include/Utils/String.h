@@ -9,7 +9,11 @@ namespace utils {
 ///
 /// \brief Wrapper around the std::string class with augmented functionality
 ///
+#ifdef SWIG
+class BIORBD_API String
+#else
 class BIORBD_API String : public std::string
+#endif
 {
 public:
     ///
@@ -38,12 +42,14 @@ public:
     String(
             const std::basic_string<char>& text);
 
+#ifndef SWIG
     ///
     /// \brief Allow to use operator=
     /// \param other The other string
     ///
     String& operator=(
             const biorbd::utils::String& other);
+#endif
 
     ///
     /// \brief Append an unsigned int to the string
@@ -94,12 +100,13 @@ public:
     ///
     virtual ~String();
 
+#ifndef SWIG
     ///
     /// \brief Convert a string to a lower case string
     /// \param str The string to convert
     /// \return The new string
     ///
-    static biorbd::utils::String tolower(const biorbd::utils::String &str); 
+    static biorbd::utils::String tolower(const biorbd::utils::String &str);
 
     ///
     /// \brief Return a lower case string
@@ -112,13 +119,14 @@ public:
     /// \param str The string to convert
     /// \return The new string
     ///
-    static biorbd::utils::String toupper(const biorbd::utils::String &str); 
+    static biorbd::utils::String toupper(const biorbd::utils::String &str);
 
     ///
     /// \brief Return an upper case string
     /// \return The upper case string
     ///
     biorbd::utils::String toupper() const;
+#endif
 
     ///
     /// \brief Overload of the to_string C++11 function to allow for X-digits precision
@@ -150,11 +158,13 @@ public:
 };
 
 }}
+#ifndef SWIG
 ///
 /// \brief To use operator<<
 /// \param os The ostream
 /// \param a The string to operate on
 ///
 std::ostream& operator<<(std::ostream& os, const biorbd::utils::String &a);
+#endif
 
 #endif // BIORBD_UTILS_STRING_H

@@ -76,11 +76,6 @@ public:
     Model();
 
     ///
-    /// \brief Destroy the class properly
-    ///
-    virtual ~Model();
-
-    ///
     /// \brief Construct a model from a bioMod file
     /// \param path The path of the file
     ///

@@ -103,7 +103,7 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force>> &biorbd::muscles::Ide
     return *m_force;
 }
 
-double biorbd::muscles::IdealizedActuator::getForceFromActivation(
+biorbd::utils::Scalar biorbd::muscles::IdealizedActuator::getForceFromActivation(
         const biorbd::muscles::State &emg)
 {
     return characteristics().forceIsoMax() * (emg.activation());

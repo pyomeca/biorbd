@@ -1,8 +1,6 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Quaternion.h"
 
-#include <rbdl/rbdl_math.h>
-#include <Eigen/Dense>
 #include "Utils/Vector3d.h"
 #include "Utils/Vector.h"
 #include "Utils/RotoTrans.h"
@@ -11,58 +9,60 @@
 
 biorbd::utils::Quaternion::Quaternion (
         double kStabilizer) :
-    Eigen::Vector4d (1, 0, 0, 0),
-    m_Kstab(kStabilizer) {
-
-}
-
-biorbd::utils::Quaternion::Quaternion(const biorbd::utils::Quaternion &other) :
-    Eigen::Vector4d (other),
-    m_Kstab(other.m_Kstab) {
-
-}
-
-biorbd::utils::Quaternion::Quaternion (
-        double w,
-        double x,
-        double y,
-        double z,
-        double kStabilizer) :
-    Eigen::Vector4d(w, x, y, z),
-    m_Kstab(kStabilizer) {
-
-}
-
-biorbd::utils::Quaternion::Quaternion (
-        double w,
-        const biorbd::utils::Vector3d &vec3,
-        double kStabilizer) :
-    Eigen::Vector4d(w, vec3[0], vec3[1], vec3[2]),
+    RigidBodyDynamics::Math::Vector4d (1, 0, 0, 0),
     m_Kstab(kStabilizer) {
 
 }
 
 biorbd::utils::Quaternion::Quaternion(
-        const biorbd::utils::Vector &vec,
-        double kStabilizer):
-    Eigen::Vector4d (vec),
+        const biorbd::utils::Quaternion &other) :
+    RigidBodyDynamics::Math::Vector4d (other),
+    m_Kstab(other.m_Kstab) {
+
+}
+
+biorbd::utils::Quaternion::Quaternion(
+        const RigidBodyDynamics::Math::Vector4d &vec4,
+        double kStabilizer) :
+    RigidBodyDynamics::Math::Vector4d (vec4),
+    m_Kstab(kStabilizer)
+{
+
+}
+
+biorbd::utils::Quaternion::Quaternion (
+        biorbd::utils::Scalar w,
+        biorbd::utils::Scalar x,
+        biorbd::utils::Scalar y,
+        biorbd::utils::Scalar z,
+        double kStabilizer) :
+    RigidBodyDynamics::Math::Vector4d(w, x, y, z),
     m_Kstab(kStabilizer) {
 
 }
 
-double biorbd::utils::Quaternion::w() const
+biorbd::utils::Quaternion::Quaternion (
+        biorbd::utils::Scalar w,
+        const biorbd::utils::Vector3d &vec3,
+        double kStabilizer) :
+    RigidBodyDynamics::Math::Vector4d(w, vec3[0], vec3[1], vec3[2]),
+    m_Kstab(kStabilizer) {
+
+}
+
+biorbd::utils::Scalar biorbd::utils::Quaternion::w() const
 {
     return (*this)(0);
 }
-double biorbd::utils::Quaternion::x() const
+biorbd::utils::Scalar biorbd::utils::Quaternion::x() const
 {
     return (*this)(1);
 }
-double biorbd::utils::Quaternion::y() const
+biorbd::utils::Scalar biorbd::utils::Quaternion::y() const
 {
     return (*this)(2);
 }
-double biorbd::utils::Quaternion::z() const
+biorbd::utils::Scalar biorbd::utils::Quaternion::z() const
 {
     return (*this)(3);
 }
@@ -89,30 +89,31 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
-        double scalar) const
+        biorbd::utils::Scalar scalar) const
 {
     return biorbd::utils::Quaternion (
-                this->Eigen::Vector4d::operator*(scalar), this->m_Kstab);
+                this->RigidBodyDynamics::Math::Vector4d::operator*(scalar), this->m_Kstab);
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
         float scalar) const
 {
     return biorbd::utils::Quaternion (
-                this->Eigen::Vector4d::operator*(scalar), this->m_Kstab);
+                this->RigidBodyDynamics::Math::Vector4d::operator*(
+                    static_cast<double>(scalar)), this->m_Kstab);
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator+(
         const biorbd::utils::Quaternion& other) const
 {
-    return biorbd::utils::Quaternion(this->Eigen::Vector4d::operator+(other),
+    return biorbd::utils::Quaternion(this->RigidBodyDynamics::Math::Vector4d::operator+(other),
                                      (this->m_Kstab + other.m_Kstab) / 2);
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator-(
         const biorbd::utils::Quaternion& other) const
 {
-    return biorbd::utils::Quaternion(this->Eigen::Vector4d::operator-(other),
+    return biorbd::utils::Quaternion(this->RigidBodyDynamics::Math::Vector4d::operator-(other),
                                      (this->m_Kstab + other.m_Kstab) / 2);
 }
 
@@ -128,11 +129,11 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::fromGLRotate(
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromAxisAngle(
-        double angle,
+        biorbd::utils::Scalar angle,
         const biorbd::utils::Vector3d &axis,
         double kStab) {
-    double d = axis.norm();
-    double s2 = std::sin (angle * 0.5) / d;
+    biorbd::utils::Scalar d = axis.norm();
+    biorbd::utils::Scalar s2 = std::sin (angle * 0.5) / d;
     return biorbd::utils::Quaternion (
                 std::cos(angle * 0.5),
                 axis[0] * s2, axis[1] * s2, axis[2] * s2, kStab
@@ -148,7 +149,7 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::fromMatrix(
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromMatrix(
         const biorbd::utils::Rotation &mat,
         double kStab) {
-    double w = std::sqrt (1. + mat(0,0) + mat(1,1) + mat(2,2)) * 0.5;
+    biorbd::utils::Scalar w = std::sqrt (1. + mat(0,0) + mat(1,1) + mat(2,2)) * 0.5;
     return Quaternion (
                 w,
                 (mat(2,1) - mat(1,2)) / (w * 4.),
@@ -174,7 +175,8 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::fromYXZAngles(
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromXYZAngles(
-        const biorbd::utils::Vector3d &xyz_angles, double kStab) {
+        const biorbd::utils::Vector3d &xyz_angles,
+        double kStab) {
     return fromAxisAngle (xyz_angles[0], biorbd::utils::Vector3d (1., 0., 0.), kStab)
             * fromAxisAngle (xyz_angles[1], biorbd::utils::Vector3d (0., 1., 0.), kStab)
             * fromAxisAngle (xyz_angles[2], biorbd::utils::Vector3d (0., 0., 1.), kStab);
@@ -182,21 +184,22 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::fromXYZAngles(
 
 biorbd::utils::Rotation biorbd::utils::Quaternion::toMatrix(
         bool skipAsserts) const {
+#ifndef BIORBD_USE_CASADI_MATH
     if (!skipAsserts) {
         biorbd::utils::Error::check(fabs(this->squaredNorm() - 1.) < 1e-10,
                                     "The Quaternion norm is not equal to one");
     }
+#endif
 
 
-    double w = (*this)[0];
-    double x = (*this)[1];
-    double y = (*this)[2];
-    double z = (*this)[3];
-    biorbd::utils::Rotation out;
-    out <<
+    biorbd::utils::Scalar w = (*this)[0];
+    biorbd::utils::Scalar x = (*this)[1];
+    biorbd::utils::Scalar y = (*this)[2];
+    biorbd::utils::Scalar z = (*this)[3];
+    biorbd::utils::Rotation out = biorbd::utils::Rotation(
         1 - 2*y*y - 2*z*z,  2*x*y - 2*w*z,      2*x*z + 2*w*y,
         2*x*y + 2*w*z,      1 - 2*x*x - 2*z*z,  2*y*z - 2*w*x,
-        2*x*z - 2*w*y,      2*y*z + 2*w*x,      1 - 2*x*x - 2*y*y;
+        2*x*z - 2*w*y,      2*y*z + 2*w*x,      1 - 2*x*x - 2*y*y);
     return out;
 }
 
@@ -204,26 +207,42 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::slerp(
         double alpha,
         const biorbd::utils::Quaternion &quat) const {
     // check whether one of the two has 0 length
-    double s = std::sqrt (squaredNorm() * quat.squaredNorm());
+    biorbd::utils::Scalar s = std::sqrt (squaredNorm() * quat.squaredNorm());
 
     // division by 0.f is unhealthy!
+#ifdef BIORBD_USE_CASADI_MATH
+    assert (!s.is_zero());
+#else
     assert (s != 0.);
+#endif
 
-    double angle = acos (dot(quat) / s);
+    biorbd::utils::Scalar angle = acos (dot(quat) / s);
+#ifdef BIORBD_USE_CASADI_MATH
+    if (angle.is_zero() || std::isnan(angle)) {
+#else
     if (angle == 0. || std::isnan(angle)) {
+#endif
         return *this;
     }
-    assert(!std::isnan(angle));
 
-    double d = 1. / std::sin (angle);
-    double p0 = std::sin ((1. - alpha) * angle);
-    double p1 = std::sin (alpha * angle);
+    biorbd::utils::Scalar d = 1. / std::sin (angle);
+    biorbd::utils::Scalar p0 = std::sin ((1. - alpha) * angle);
+    biorbd::utils::Scalar p1 = std::sin (alpha * angle);
 
+#ifdef BIORBD_USE_CASADI_MATH
+    return Quaternion(casadi::MX::if_else(
+                   casadi::MX::lt(dot (quat), 0.),
+                    RigidBodyDynamics::Math::Vector4d( ((*this) * p0 - quat * p1) * d),
+                    RigidBodyDynamics::Math::Vector4d( ((*this) * p0 + quat * p1) * d)),
+               (this->m_Kstab + quat.m_Kstab) / 2);
+
+#else
     if (dot (quat) < 0.) {
         return Quaternion( ((*this) * p0 - quat * p1) * d, this->m_Kstab);
     }
     return Quaternion( ((*this) * p0 + quat * p1) * d,
                        (this->m_Kstab + quat.m_Kstab) / 2);
+#endif
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::conjugate() const {
@@ -237,7 +256,7 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::conjugate() const {
 biorbd::utils::Quaternion biorbd::utils::Quaternion::timeStep(
         const biorbd::utils::Vector3d &omega,
         double dt) {
-    double omega_norm = omega.norm();
+    biorbd::utils::Scalar omega_norm = omega.norm();
     return fromAxisAngle (
                 dt * omega_norm, omega / omega_norm, this->m_Kstab) * (*this);
 }
@@ -255,11 +274,12 @@ biorbd::utils::Vector3d biorbd::utils::Quaternion::rotate(
 #include <iostream>
 biorbd::utils::Quaternion biorbd::utils::Quaternion::omegaToQDot(
         const biorbd::utils::Vector3d &omega) const {
-    Eigen::MatrixXd m(4, 3);
+    RigidBodyDynamics::Math::MatrixNd m(4, 3);
     m(0, 0) = -(*this)[1];   m(0, 1) = -(*this)[2];   m(0, 2) = -(*this)[3];
     m(1, 0) =  (*this)[0];   m(1, 1) = -(*this)[3];   m(1, 2) =  (*this)[2];
     m(2, 0) =  (*this)[3];   m(2, 1) =  (*this)[0];   m(2, 2) = -(*this)[1];
     m(3, 0) = -(*this)[2];   m(3, 1) =  (*this)[1];   m(3, 2) =  (*this)[0];
+
     return biorbd::utils::Quaternion(0.5 * m * omega, this->m_Kstab);
 }
 
@@ -269,7 +289,7 @@ biorbd::utils::Vector3d  biorbd::utils::Quaternion::eulerDotToOmega(
             const biorbd::utils::String& seq) {
     
     biorbd::utils::Vector3d w;
-    double dph, dth, dps, ph, th, ps;
+    biorbd::utils::Scalar dph, dth, dps, ph, th, ps;
     dph = eulerDot[0]; dth = eulerDot[1]; dps = eulerDot[2];
     ph = euler[0]; th = euler[1]; ps = euler[2];
     if (!seq.compare("xyz")) {          // xyz
@@ -286,26 +306,36 @@ void biorbd::utils::Quaternion::derivate(
         const biorbd::utils::Vector &w)
 {
     // Création du quaternion de "préproduit vectoriel"
-    double& qw = (*this)(0);
-    double& qx = (*this)(1);
-    double& qy = (*this)(2);
-    double& qz = (*this)(3);
-    Eigen::Matrix4d Q;
-    Q <<    qw, -qx, -qy, -qz,
-            qx,  qw, -qz,  qy,
-            qy,  qz,  qw, -qx,
-            qz, -qy,  qx,  qw;
+#ifdef BIORBD_USE_CASADI_MATH
+    biorbd::utils::Scalar qw = (*this)(0);
+    biorbd::utils::Scalar qx = (*this)(1);
+    biorbd::utils::Scalar qy = (*this)(2);
+    biorbd::utils::Scalar qz = (*this)(3);
+#else
+    biorbd::utils::Scalar& qw = (*this)(0);
+    biorbd::utils::Scalar& qx = (*this)(1);
+    biorbd::utils::Scalar& qy = (*this)(2);
+    biorbd::utils::Scalar& qz = (*this)(3);
+#endif
+    RigidBodyDynamics::Math::Matrix4d Q =
+        RigidBodyDynamics::Math::Matrix4d(
+                qw, -qx, -qy, -qz,
+                qx,  qw, -qz,  qy,
+                qy,  qz,  qw, -qx,
+                qz, -qy,  qx,  qw);
 
     // Ajout du paramètre de stabilisation
-    Eigen::Vector4d w_tp (m_Kstab*w.norm()*(1-this->norm()), w(0), w(1), w(2));
-    Eigen::Vector4d newQuat(0.5 * Q * w_tp);
+    RigidBodyDynamics::Math::Vector4d w_tp (m_Kstab*w.norm()*(1-this->norm()), w(0), w(1), w(2));
+    RigidBodyDynamics::Math::Vector4d newQuat(0.5 * Q * w_tp);
 
     // Assigning is slightly faster than create a new Quaternion
     qw = newQuat[0];
     qx = newQuat[1];
     qy = newQuat[2];
     qz = newQuat[3];
-
+#ifdef BIORBD_USE_CASADI_MATH
+    *this = biorbd::utils::Quaternion(qw, qx, qy, qz, m_Kstab);
+#endif
 }
 
 void biorbd::utils::Quaternion::normalize()

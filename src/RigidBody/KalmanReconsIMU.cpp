@@ -122,10 +122,14 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
     biorbd::utils::Vector zest(biorbd::utils::Vector::Zero(*m_nMeasure));
     std::vector<unsigned int> occlusionIdx;
     for (unsigned int i=0; i<*m_nMeasure/9; ++i){
-        double sum = 0;
+        biorbd::utils::Scalar sum = 0;
         for (unsigned int j = 0; j < 9; ++j) // Calculate the norm for the 9 components
             sum += IMUobs(i*9+j)*IMUobs(i*9+j);
-        if (sum != 0.0 && sum == sum){ // If there is an IMU (no zero or NaN)
+#ifdef BIORBD_USE_CASADI_MATH
+        if (!sum.is_zero() && !std::isnan(sum)){ // If there is an IMU (no zero or NaN)
+#else
+        if (sum != 0.0 && !std::isnan(sum)){ // If there is an IMU (no zero or NaN)
+#endif
             H.block(i*9,0,9,*m_nbDof) = J_tp[i];
             const biorbd::utils::Rotation& rot = zest_tp[i].rot();
             for (unsigned int j = 0; j < 3; ++j)

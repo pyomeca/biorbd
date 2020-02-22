@@ -17,7 +17,11 @@ class Mesh;
 /// \brief Characteristics of a segment, namely the mass, the center of mass,
 /// the inertia, the length and its mesh geometry
 ///
+#ifdef SWIG
+class BIORBD_API SegmentCharacteristics
+#else
 class BIORBD_API SegmentCharacteristics : public RigidBodyDynamics::Body
+#endif
 {
 public:
     ///
@@ -89,7 +93,7 @@ public:
     /// \brief Returns the segment inertia matrix
     /// \return The segment inertia matrix
     ///
-    const Eigen::Matrix3d& inertia() const;
+    const RigidBodyDynamics::Math::Matrix3d& inertia() const;
 
 protected:
     std::shared_ptr<double> m_length; ///< Length of the segment

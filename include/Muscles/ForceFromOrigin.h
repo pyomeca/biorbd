@@ -25,12 +25,11 @@ public:
             double z = 0);
 
     ///
-    /// \brief Construct a force from origin from an Eigen matrix of force
-    /// \param other The eigen matrix of force
+    /// \brief Construct vector from Casadi vector
+    /// \param v The vector to copy
     ///
-    template<typename OtherDerived> ForceFromOrigin(
-            const Eigen::MatrixBase<OtherDerived>& other) :
-        biorbd::muscles::Force(other){}
+    ForceFromOrigin(
+            const RigidBodyDynamics::Math::Vector3d& v);
 
     ///
     /// \brief Construct a force from origin
@@ -40,6 +39,18 @@ public:
     ForceFromOrigin(
             const biorbd::muscles::Geometry& geo,
             double norm);
+
+#ifdef BIORBD_USE_EIGEN3_MATH
+
+    ///
+    /// \brief Construct a force from origin from an Eigen matrix of force
+    /// \param other The eigen matrix of force
+    ///
+    template<typename OtherDerived> ForceFromOrigin(
+            const Eigen::MatrixBase<OtherDerived>& other) :
+        biorbd::muscles::Force(other){}
+
+#endif
 
     ///
     /// \brief Deep copy of the force from origin
@@ -60,7 +71,12 @@ public:
     ///
     virtual void setForceFromMuscleGeometry(
             const biorbd::muscles::Geometry& geo,
-            double norm);
+            biorbd::utils::Scalar norm);
+
+#ifndef SWIG
+
+#ifdef BIORBD_USE_EIGEN3_MATH
+
     ///
     /// \brief Equal operator to be used with an Eigen matrix to construct force from origin
     /// \param other The eigen matrix of force from origin
@@ -72,6 +88,11 @@ public:
         this->biorbd::muscles::Force::operator=(other);
         return *this;
     }
+
+#endif
+
+#endif
+
 };
 
 }}

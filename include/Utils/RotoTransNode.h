@@ -19,14 +19,6 @@ public:
     /// \brief Construct a RotoTransNode
     ///
     RotoTransNode();
-    
-    ///
-    /// \brief Construct RotoTransNode from an Eigen matrix
-    /// \param other The eigen matrix
-    ///
-    template<typename OtherDerived> RotoTransNode(
-            const Eigen::MatrixBase<OtherDerived>& other) :
-        biorbd::utils::RotoTrans(other){}
 
     ///
     /// \brief Construct a RotoTransNode
@@ -35,9 +27,19 @@ public:
     /// \param parentName The name of the parent segment
     ///
     RotoTransNode(
-            const RotoTrans& rt,
+            const biorbd::utils::RotoTrans& rt,
             const biorbd::utils::String &name,
             const biorbd::utils::String &parentName);
+
+#ifdef BIORBD_USE_EIGEN3_MATH
+    ///
+    /// \brief Construct RotoTransNode from an Eigen matrix
+    /// \param other The eigen matrix
+    ///
+    template<typename OtherDerived> RotoTransNode(
+            const Eigen::MatrixBase<OtherDerived>& other) :
+        biorbd::utils::RotoTrans(other){}
+#endif
 
     ///
     /// \brief Deep copy of a RotoTransNode
@@ -51,6 +53,27 @@ public:
     ///
     void DeepCopy(const biorbd::utils::RotoTransNode& other);
 
+#ifndef SWIG
+
+    ///
+    /// \brief operator= Matrix multiplication
+    /// \return Rotated matrix
+    ///
+    void operator=(
+            const biorbd::utils::RotoTrans& other);
+
+#endif
+
+    ///
+    /// \brief operator* Matrix multiplication
+    /// \return Rotated matrix
+    ///
+    biorbd::utils::RotoTrans operator*(
+            const biorbd::utils::RotoTransNode& other) const;
+
+#ifndef SWIG
+
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allow to use the operator=
     /// \param other The Eigen matrix 
@@ -60,6 +83,9 @@ public:
             this->biorbd::utils::RotoTrans::operator=(other);
             return *this;
         }
+#endif
+
+#endif
 
 protected:
     ///
@@ -68,6 +94,15 @@ protected:
     void setType();
 
 };
+
+///
+/// \brief operator* Matrix multiplication
+/// \return Rotated matrix
+///
+biorbd::utils::RotoTransNode operator*(
+        const biorbd::utils::RotoTrans& other,
+        const biorbd::utils::RotoTransNode& me);
+
 
 }}
 

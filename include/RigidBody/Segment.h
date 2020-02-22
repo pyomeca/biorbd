@@ -4,7 +4,6 @@
 #include <vector>
 #include <rbdl/Model.h>
 #include <rbdl/Joint.h>
-#include <rbdl/rbdl_math.h>
 #include "biorbdConfig.h"
 #include "Utils/Node.h"
 

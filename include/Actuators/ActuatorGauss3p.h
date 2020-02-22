@@ -105,12 +105,19 @@ public:
             const biorbd::actuator::ActuatorGauss3p& other);
 
     ///
+    /// \brief Return the maximal torque (invalid)
+    /// \return The maximal torque
+    /// torqueMax for ActuatorGauss3p must be called with Q and Qdot
+    ///
+    virtual biorbd::utils::Scalar torqueMax();
+
+    ///
     /// \brief Return the maximal torque at a given Q and Qdot
     /// \param Q The generalized coordinates of the actuator
     /// \param Qdot The generalized velocities of the actuator
     /// \return The maximal torque
     ///
-    virtual double torqueMax(
+    virtual biorbd::utils::Scalar torqueMax(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedVelocity &Qdot);
 

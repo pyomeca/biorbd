@@ -2,6 +2,7 @@
 #define BIORBD_MUSCLES_WRAPPING_OBJECT_H
 
 #include "biorbdConfig.h"
+#include "Utils/Scalar.h"
 #include "Utils/Vector3d.h"
 
 namespace biorbd {
@@ -91,7 +92,7 @@ public:
             const biorbd::utils::Vector3d& p2_bone,
             biorbd::utils::Vector3d& p1,
             biorbd::utils::Vector3d& p2,
-            double* muscleLength = nullptr) = 0 ; // Premier et dernier points musculaire
+            biorbd::utils::Scalar* muscleLength = nullptr) = 0 ; // Premier et dernier points musculaire
 
     ///
     /// \brief From the position of the wrapping object, return the 2 locations where the muscle leaves the wrapping object
@@ -110,7 +111,7 @@ public:
             const biorbd::utils::Vector3d& p2_bone,
             biorbd::utils::Vector3d& p1,
             biorbd::utils::Vector3d& p2,
-            double* muscleLength = nullptr) = 0; // Premier et dernier points musculaire
+            biorbd::utils::Scalar* muscleLength = nullptr) = 0; // Premier et dernier points musculaire
 
     ///
     /// \brief Returns the previously computed 2 locations where the muscle leaves the wrapping object
@@ -121,7 +122,7 @@ public:
     virtual void wrapPoints(
             biorbd::utils::Vector3d& p1,
             biorbd::utils::Vector3d& p2,
-            double* muscleLength = nullptr) = 0; // Assume un appel déja faits
+            biorbd::utils::Scalar* muscleLength = nullptr) = 0; // Assume un appel déja faits
 
     ///
     /// \brief Return the RotoTrans matrix of the wrapping object

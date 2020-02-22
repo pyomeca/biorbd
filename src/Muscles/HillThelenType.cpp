@@ -76,12 +76,21 @@ void biorbd::muscles::HillThelenType::DeepCopy(const biorbd::muscles::HillThelen
 }
 
 void biorbd::muscles::HillThelenType::computeFlPE(){
+#ifdef BIORBD_USE_CASADI_MATH
+    *m_FlPE = casadi::MX::if_else(
+                casadi::MX::gt(position().length(), characteristics().tendonSlackLength()),
+                (exp( *m_cste_FlPE_1 * (position().length()/characteristics().optimalLength()-1)) -1)
+                            /
+                            (exp( *m_cste_FlPE_2 )-1),
+                0);
+#else
     if (position().length() > characteristics().tendonSlackLength())
         *m_FlPE = (exp( *m_cste_FlPE_1 * (position().length()/characteristics().optimalLength()-1)) -1)
             /
             (exp( *m_cste_FlPE_2 )-1);
     else
         *m_FlPE = 0;
+#endif
 }
 
 void biorbd::muscles::HillThelenType::computeFlCE(const biorbd::muscles::StateDynamics&){

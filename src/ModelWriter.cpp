@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+
 #include "BiorbdModel.h"
 #include "Utils/String.h"
 #include "Utils/Path.h"
@@ -64,7 +65,7 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
         if (markers.size() > 0){
             biorbdModelFile << sep << com << " Markers" << std::endl;
             for (size_t j = 0; j< markers.size(); ++j){
-                biorbdModelFile << sep << "marker" << sep << markers[j].name() << std::endl;
+                biorbdModelFile << sep << "marker" << sep << markers[j].biorbd::utils::Node::name() << std::endl;
                 biorbdModelFile << sep << sep << "parent" << sep << markers[j].parent() << std::endl;
                 biorbdModelFile << sep << sep << "position" << sep << markers[j].transpose() << std::endl;
                 biorbdModelFile << sep << sep << "technical" << sep << markers[j].isTechnical() << std::endl;
@@ -81,7 +82,7 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
         if (imus.size() > 0){
             biorbdModelFile << sep << com << " Inertial Magnetic Unit" << std::endl;
             for (size_t j = 0; j< imus.size(); ++j){
-                biorbdModelFile << sep << "imu" << sep << imus[j].name() << std::endl;
+                biorbdModelFile << sep << "imu" << sep << imus[j].biorbd::utils::Node::name() << std::endl;
                 biorbdModelFile << sep << sep << "parent" << sep << imus[j].parent() << std::endl;
                 biorbdModelFile << sep << sep << "RTinMatrix" << sep << true << std::endl;
                 biorbdModelFile << sep << sep << "RT" << std::endl;

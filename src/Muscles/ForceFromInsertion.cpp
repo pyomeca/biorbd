@@ -5,11 +5,22 @@
 #include "Utils/Vector3d.h"
 #include "Muscles/Geometry.h"
 
-biorbd::muscles::ForceFromInsertion::ForceFromInsertion(double x, double y, double z) :
+biorbd::muscles::ForceFromInsertion::ForceFromInsertion(
+        double x,
+        double y,
+        double z) :
     biorbd::muscles::Force(x,y,z)
 {
 
 }
+
+biorbd::muscles::ForceFromInsertion::ForceFromInsertion(
+        const RigidBodyDynamics::Math::Vector3d &v) :
+    biorbd::muscles::Force (v)
+{
+
+}
+
 biorbd::muscles::ForceFromInsertion::ForceFromInsertion(
         const biorbd::muscles::Geometry& geo,
         double vectorNorm) :
@@ -25,14 +36,15 @@ biorbd::muscles::ForceFromInsertion biorbd::muscles::ForceFromInsertion::DeepCop
     return copy;
 }
 
-void biorbd::muscles::ForceFromInsertion::DeepCopy(const biorbd::muscles::ForceFromInsertion &other)
+void biorbd::muscles::ForceFromInsertion::DeepCopy(
+        const biorbd::muscles::ForceFromInsertion &other)
 {
     biorbd::muscles::Force::DeepCopy(other);
 }
 
 void biorbd::muscles::ForceFromInsertion::setForceFromMuscleGeometry(
         const biorbd::muscles::Geometry& geo,
-        double norm)
+        biorbd::utils::Scalar norm)
 {
     // Trouver le vecteur directeur
     const std::vector<biorbd::utils::Vector3d>& tp_via = geo.musclesPointsInGlobal();

@@ -27,6 +27,13 @@ biorbd::muscles::Force::Force(
 }
 
 biorbd::muscles::Force::Force(
+        const RigidBodyDynamics::Math::Vector3d &v) :
+    biorbd::utils::Vector3d (v)
+{
+
+}
+
+biorbd::muscles::Force::Force(
         const biorbd::utils::Vector3d& other) :
     biorbd::utils::Vector3d (other)
 {
@@ -51,24 +58,26 @@ biorbd::muscles::Force biorbd::muscles::Force::DeepCopy() const
     return *this;
 }
 
-void biorbd::muscles::Force::DeepCopy(const biorbd::muscles::Force &other)
+void biorbd::muscles::Force::DeepCopy(
+        const biorbd::muscles::Force &other)
 {
     *this = other;
 }
 
 void biorbd::muscles::Force::setForceFromMuscleGeometry(
         const biorbd::muscles::Geometry& geo,
-        double norm)
+        biorbd::utils::Scalar norm)
 {
     *this = geo.insertionInGlobal() - geo.originInGlobal();
     *this /= this->norm() * norm;
 }
 
-biorbd::muscles::Force &biorbd::muscles::Force::operator=(const biorbd::muscles::Force &other)
+biorbd::muscles::Force &biorbd::muscles::Force::operator=(
+        const biorbd::muscles::Force &other)
 {
     if (this == &other)
         return *this;
 
-    this->Eigen::Vector3d::operator=(other);
+    this->biorbd::utils::Vector3d::operator=(other);
     return *this;
 }

@@ -115,7 +115,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
         *m_firstIteration = false;
         biorbd::utils::Vector TobsTP(Tobs);
         TobsTP.block(3*model.nbTechnicalMarkers(0), 0, 3*model.nbTechnicalMarkers()-3*model.nbTechnicalMarkers(0), 1) =
-                Eigen::VectorXd::Zero(3*model.nbTechnicalMarkers()-3*model.nbTechnicalMarkers(0)); // Only keep the markers of the root
+                biorbd::utils::Vector::Zero(3*model.nbTechnicalMarkers()-3*model.nbTechnicalMarkers(0)); // Only keep the markers of the root
         for (unsigned int j = 0; j < 2; ++j){ // Do the root and then the rest of the body
             if (j != 0)
                 TobsTP = Tobs; // Re-take all the markers
@@ -126,7 +126,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
 
                 // Reset Pp to initial (we are not interested in the velocity to get to the initial position)
                 m_Pp = m_PpInitial;
-                m_xp->block(*m_nbDof, 0, *m_nbDof*2, 1) = Eigen::VectorXd::Zero(*m_nbDof*2); // Set velocity and acceleration to zero
+                m_xp->block(*m_nbDof, 0, *m_nbDof*2, 1) = biorbd::utils::Vector::Zero(*m_nbDof*2); // Set velocity and acceleration to zero
             }
         }
     }
@@ -145,7 +145,12 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     biorbd::utils::Vector zest(biorbd::utils::Vector::Zero(*m_nMeasure));
     std::vector<unsigned int> occlusionIdx;
     for (unsigned int i=0; i<*m_nMeasure/3; ++i) // Divided by 3 because we are integrate once xyz
-        if (Tobs(i*3)*Tobs(i*3) + Tobs(i*3+1)*Tobs(i*3+1) + Tobs(i*3+2)*Tobs(i*3+2) != 0.0){ // If there is a marker
+#ifdef BIORBD_USE_CASADI_MATH
+        // If there is a marker
+        if (!Tobs(i*3).is_zero() && !Tobs(i*3+1).is_zero() && !Tobs(i*3+2).is_zero()){
+#else
+        if (Tobs(i*3)*Tobs(i*3) + Tobs(i*3+1)*Tobs(i*3+1) + Tobs(i*3+2)*Tobs(i*3+2) != 0.0){
+#endif
             H.block(i*3,0,3,*m_nbDof) = J_tp[i];
             zest.block(i*3, 0, 3, 1) = zest_tp[i];
         }

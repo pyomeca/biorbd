@@ -2,8 +2,8 @@
 #define BIORBD_UTILS_READ_H
 
 #include <vector>
-#include <rbdl/rbdl_math.h>
 #include "biorbdConfig.h"
+#include "rbdl_math.h"
 
 namespace biorbd {
 class Model;

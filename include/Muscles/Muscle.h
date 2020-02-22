@@ -3,6 +3,7 @@
 
 #include "biorbdConfig.h"
 #include "Muscles/Compound.h"
+#include "Utils/Scalar.h"
 
 namespace biorbd {
 namespace utils {
@@ -112,7 +113,7 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     /// \return The length of the muscle
     ///
-    double length(
+    biorbd::utils::Scalar length(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             int updateKin = 2);
@@ -124,7 +125,7 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     /// \return The musculo tendon length
     ///
-    double musculoTendonLength(
+    biorbd::utils::Scalar musculoTendonLength(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             int updateKin = 2);
@@ -137,7 +138,7 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     //// \return The velocity of the muscle
     ///
-    double velocity(
+    biorbd::utils::Scalar velocity(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedVelocity& Qdot,
@@ -277,7 +278,7 @@ protected:
     /// \param emg The EMG data
     /// \return The force from activation
     ///
-    virtual double getForceFromActivation(const biorbd::muscles::State &emg) = 0;
+    virtual biorbd::utils::Scalar getForceFromActivation(const biorbd::muscles::State &emg) = 0;
 
     std::shared_ptr<biorbd::muscles::Geometry> m_position; ///< The position of all the nodes of the muscle (0 being the origin and last being insertion
     std::shared_ptr<biorbd::muscles::Characteristics> m_characteristics; ///< The muscle characteristics

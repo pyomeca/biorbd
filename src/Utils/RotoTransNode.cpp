@@ -1,7 +1,6 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/RotoTransNode.h"
 
-#include <Eigen/Dense>
 #include "Utils/String.h"
 
 biorbd::utils::RotoTransNode::RotoTransNode() :
@@ -30,7 +29,7 @@ biorbd::utils::RotoTransNode biorbd::utils::RotoTransNode::DeepCopy() const
 
 void biorbd::utils::RotoTransNode::DeepCopy(const RotoTransNode &other)
 {
-    *this = static_cast<Eigen::Matrix4d>(other);
+    this->biorbd::utils::RotoTrans::operator=(other);
     biorbd::utils::Node::DeepCopy(other);
 }
 
@@ -39,3 +38,24 @@ void biorbd::utils::RotoTransNode::setType()
     *m_typeOfNode = biorbd::utils::NODE_TYPE::ROTOTRANS;
 }
 
+void biorbd::utils::RotoTransNode::operator=(
+        const biorbd::utils::RotoTrans &other)
+{
+    *this = RotoTransNode(other, "", "");
+}
+
+biorbd::utils::RotoTrans biorbd::utils::RotoTransNode::operator*(
+                    const biorbd::utils::RotoTransNode& other) const
+{
+    return this->biorbd::utils::RotoTrans::operator*(other);
+}
+
+biorbd::utils::RotoTransNode biorbd::utils::operator*(
+        const biorbd::utils::RotoTrans &other,
+        const biorbd::utils::RotoTransNode &me)
+{
+    return biorbd::utils::RotoTransNode(
+                other.operator*(me),
+                me.biorbd::utils::Node::name(),
+                me.parent());
+}

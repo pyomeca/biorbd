@@ -3,7 +3,8 @@
 
 #include <vector>
 #include <memory>
-#include <Eigen/Dense>
+#include "rbdl_math.h"
+#include "Utils/Scalar.h"
 
 namespace RigidBodyDynamics { namespace Math {
 struct SpatialTransform;
@@ -19,11 +20,16 @@ class NodeSegment;
 namespace utils {
 class String;
 class Vector;
+class Vector3d;
 
 ///
 /// \brief Rotation matrix
 ///
-class BIORBD_API Rotation : public Eigen::Matrix3d
+#ifdef SWIG
+class BIORBD_API Rotation
+#else
+class BIORBD_API Rotation : public RigidBodyDynamics::Math::Matrix3d
+#endif
 {
 public:
     ///
@@ -31,17 +37,31 @@ public:
     /// \param matrix 3D identity matrix
     ///
     Rotation(
-            const Eigen::Matrix3d& matrix = Eigen::Matrix3d::Identity());
+            const RigidBodyDynamics::Math::Matrix3d& matrix = RigidBodyDynamics::Math::Matrix3d::Identity());
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Construct a Rotation matrix from another Rotation
     /// \param other The other Rotation
     ///
     template<typename OtherDerived> Rotation(
             const Eigen::MatrixBase<OtherDerived>& other) :
-        Eigen::Matrix3d(other){
+        RigidBodyDynamics::Math::Matrix3d(other){
         checkUnitary();
     }
+#endif
+#ifdef BIORBD_USE_CASADI_MATH
+    ///
+    /// \brief Construct Rotation matrix
+    /// \param matrix 3D identity matrix
+    ///
+    Rotation(
+            const RigidBodyDynamics::Math::MatrixNd& m);
+#endif
+
+    Rotation(biorbd::utils::Scalar v00, biorbd::utils::Scalar v01, biorbd::utils::Scalar v02,
+             biorbd::utils::Scalar v10, biorbd::utils::Scalar v11, biorbd::utils::Scalar v12,
+             biorbd::utils::Scalar v20, biorbd::utils::Scalar v21, biorbd::utils::Scalar v22);
 
     ///
     /// \brief Contruct a Rotation matrix
@@ -67,8 +87,8 @@ public:
     /// \param idx The index of axis (x = 0, y = 1 and z = 2)
     /// \return The axis
     ///
-    biorbd::utils::Vector axe(
-            int idx);
+    biorbd::utils::Vector3d axe(
+            unsigned int idx) const;
 
     ///
     /// \brief set the Rotation from a spatial transform
@@ -86,7 +106,7 @@ public:
     /// The number of rotation must match the number of axes in the rotation
     /// sequence
     ///
-    biorbd::utils::Rotation& fromEulerAngles(
+    static biorbd::utils::Rotation fromEulerAngles(
             const biorbd::utils::Vector& rot,
             const biorbd::utils::String& seq);
 
@@ -116,6 +136,7 @@ public:
             const biorbd::utils::Rotation& r,
             const biorbd::utils::String& seq);
 
+#ifndef BIORBD_USE_CASADI_MATH
     ///
     /// \brief Get the mean of the Rotation matrices
     /// \param mToMean The Rotation matrices to mean
@@ -123,7 +144,10 @@ public:
     ///
     static biorbd::utils::Rotation mean(
             const std::vector<biorbd::utils::Rotation>& mToMean);
+#endif
 
+#ifndef SWIG
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allow the use of operator=
     /// \param other The other Rotation matrix
@@ -134,6 +158,8 @@ public:
             Eigen::Matrix3d::operator=(other);
             return *this;
         }
+#endif
+#endif
 
 protected:
     ///
@@ -146,11 +172,13 @@ protected:
 
 }}
 
+#ifndef SWIG
 ///
 /// \brief To use operator<< to use std::cout
 /// \param os osstream
 /// \param rt The Rotation matrix
 ///
 std::ostream& operator<<(std::ostream& os, const biorbd::utils::Rotation &rt);
+#endif
 
 #endif // BIORBD_UTILS_ROTO_TRANS_H
