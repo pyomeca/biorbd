@@ -258,7 +258,7 @@ void c_matrixMultiplication(
     biorbd::utils::RotoTrans mM2(dispatchRTinput(M2));
 
     // Projeter et préparer les données de sortie
-    dispatchRToutput(mM1 * mM2, Mout);
+    dispatchRToutput(mM1.operator*(mM2), Mout);
 }
 void c_meanRT(
         const double *imuRT,
@@ -287,7 +287,7 @@ void c_projectJCSinParentBaseCoordinate(
     biorbd::utils::RotoTrans aJcs(dispatchRTinput(jcs));
 
     // Projeter et préparer les données de sortie
-    dispatchRToutput(aParent.transpose() * aJcs, out);
+    dispatchRToutput(aParent.transpose().operator*(aJcs), out);
 }
 void c_transformMatrixToCardan(
         const double *M,

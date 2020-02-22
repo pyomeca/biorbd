@@ -121,9 +121,7 @@ biorbd::utils::RotoTrans biorbd::utils::RotoTrans::fromEulerAngles(
         const biorbd::utils::String& seq)
 {
 
-    biorbd::utils::Rotation rot_mat;
-    rot_mat.fromEulerAngles(rot, seq);
-    biorbd::utils::RotoTrans coucou;
+    biorbd::utils::Rotation rot_mat(biorbd::utils::Rotation::fromEulerAngles(rot, seq));
 
     biorbd::utils::RotoTrans out;
     out.block(0,0,3,3) = rot_mat;
