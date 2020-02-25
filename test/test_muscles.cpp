@@ -33,8 +33,8 @@ TEST(MuscleForce, force)
     biorbd::Model model(modelPathForMuscleForce);
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
     biorbd::rigidbody::GeneralizedVelocity QDot(model);
-    Q.setOnes();
-    QDot.setOnes();
+    Q = Q.setOnes()/10;
+    QDot = QDot.setOnes()/10;
     std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> states;
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i)
         states.push_back(std::make_shared<biorbd::muscles::StateDynamics>(0, 0.2));
@@ -46,8 +46,8 @@ TEST(MuscleForce, force)
         F(i) = (force_tp[i])[0]->norm();
 
     Eigen::VectorXd ExpectedForce(model.nbMuscleTotal());
-    ExpectedForce << 647.25276356553593, 119.55997461719004, 85.85568070134883,
-            118.01635424513141, 113.18455892403414, 189.84361438713745;
+    ExpectedForce << 164.3110575502927, 106.89637709077938, 84.340201458493794,
+            92.212055754969938, 85.0882802083116, 198.6356130736217;
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i)
         EXPECT_NEAR(F(i), ExpectedForce(i), requiredPrecision);
 }
@@ -389,4 +389,5 @@ TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
 
     }
 }
+
 #endif // MODULE_MUSCLES
