@@ -75,7 +75,7 @@ public:
     /// \param other The vector to copy
     ///
     Vector(
-            const MX_Xd_SubMatrix& m);
+            const RBDLCasadiMath::MX_Xd_SubMatrix& m);
 #endif
 
     ///
@@ -122,7 +122,7 @@ public:
     /// \param other The vector to copy
     ///
     void operator=(
-            const MX_Xd_SubMatrix& other);
+            const RBDLCasadiMath::MX_Xd_SubMatrix& other);
 
     ///
     /// \brief operator= For submatrices

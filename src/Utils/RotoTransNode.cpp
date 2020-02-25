@@ -51,11 +51,11 @@ biorbd::utils::RotoTrans biorbd::utils::RotoTransNode::operator*(
 }
 
 biorbd::utils::RotoTransNode biorbd::utils::operator*(
-        const biorbd::utils::RotoTrans &rt,
-        const biorbd::utils::RotoTransNode &imu)
+        const biorbd::utils::RotoTrans &other,
+        const biorbd::utils::RotoTransNode &me)
 {
     return biorbd::utils::RotoTransNode(
-                rt.operator*(imu),
-                imu.biorbd::utils::Node::name(),
-                imu.parent());
+                other.operator*(me),
+                me.biorbd::utils::Node::name(),
+                me.parent());
 }

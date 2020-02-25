@@ -128,8 +128,10 @@ TEST(BinderC, imu)
     biorbd::Model* model(c_biorbdModel(modelPathForIMUTesting.c_str()));
     EXPECT_EQ(c_nIMUs(model), model->nbIMUs());
 
-    biorbd::utils::RotoTrans RT;
-    RT.fromEulerAngles(Eigen::Vector3d(0.1, 0.1, 0.1), Eigen::Vector3d(0.1, 0.1, 0.1), "xyz");
+    biorbd::utils::RotoTrans RT(
+                biorbd::utils::RotoTrans::fromEulerAngles(
+                    Eigen::Vector3d(0.1, 0.1, 0.1),
+                    Eigen::Vector3d(0.1, 0.1, 0.1), "xyz"));
     double rt[16];
     for (unsigned int i=0; i<4; ++i)
         for (unsigned int j=0; j<4; ++j)
@@ -159,8 +161,10 @@ TEST(BinderC, kalmanImu)
     // Compute reference
     std::vector<biorbd::rigidbody::IMU> targetImus;
     for (unsigned int i=0; i<model->nbIMUs(); ++i){
-        biorbd::utils::RotoTrans rt;
-        rt.fromEulerAngles(Eigen::Vector3d(0.1*i, 0.1*i, 0.1*i), Eigen::Vector3d(0.1*i, 0.1*i, 0.1*i), "xyz");
+        biorbd::utils::RotoTrans rt(
+                    biorbd::utils::RotoTrans::fromEulerAngles(
+                        Eigen::Vector3d(0.1*i, 0.1*i, 0.1*i),
+                        Eigen::Vector3d(0.1*i, 0.1*i, 0.1*i), "xyz"));
         targetImus.push_back(rt);
     }
     biorbd::rigidbody::GeneralizedCoordinates Q(*model);
@@ -199,9 +203,9 @@ TEST(BinderC, math)
     // Simple matrix multiplaction (RT3 = RT1 * RT2)
     {
         biorbd::utils::RotoTrans RT1, RT2, RT3;
-        RT1.fromEulerAngles(Eigen::Vector3d(0.1, 0.1, 0.1), Eigen::Vector3d(0.1, 0.1, 0.1), "xyz");
-        RT2.fromEulerAngles(Eigen::Vector3d(0.3, 0.3, 0.3), Eigen::Vector3d(0.2, 0.2, 0.2), "xyz");
-        RT3 = RT1 * RT2;
+        RT1 = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.1, 0.1, 0.1), Eigen::Vector3d(0.1, 0.1, 0.1), "xyz");
+        RT2 = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.3, 0.3, 0.3), Eigen::Vector3d(0.2, 0.2, 0.2), "xyz");
+        RT3 = RT1.operator*(RT2);
 
         double rt1[16], rt2[16], rt3[16];
         for (unsigned int i=0; i<4; ++i) {
@@ -223,9 +227,9 @@ TEST(BinderC, math)
     {
         std::vector<biorbd::utils::RotoTrans> allRT(3);
         biorbd::utils::RotoTrans meanRT;
-        allRT[0].fromEulerAngles(Eigen::Vector3d(0.1, 0.1, 0.1), Eigen::Vector3d(0.1, 0.1, 0.1), "xyz");
-        allRT[1].fromEulerAngles(Eigen::Vector3d(0.2, 0.2, 0.2), Eigen::Vector3d(0.2, 0.2, 0.2), "xyz");
-        allRT[2].fromEulerAngles(Eigen::Vector3d(0.3, 0.3, 0.3), Eigen::Vector3d(0.3, 0.3, 0.3), "xyz");
+        allRT[0] = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.1, 0.1, 0.1), Eigen::Vector3d(0.1, 0.1, 0.1), "xyz");
+        allRT[1] = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.2, 0.2, 0.2), Eigen::Vector3d(0.2, 0.2, 0.2), "xyz");
+        allRT[2] = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.3, 0.3, 0.3), Eigen::Vector3d(0.3, 0.3, 0.3), "xyz");
         meanRT = biorbd::utils::RotoTrans::mean(allRT);
 
         double* rt = new double[meanRT.size()*16];
@@ -250,9 +254,9 @@ TEST(BinderC, math)
     // Project jcs onto another (RT3 = RT1.tranpose() * RT2)
     {
         biorbd::utils::RotoTrans RT1, RT2, RT3;
-        RT1.fromEulerAngles(Eigen::Vector3d(0.1, 0.1, 0.1), Eigen::Vector3d(0.1, 0.1, 0.1), "xyz");
-        RT2.fromEulerAngles(Eigen::Vector3d(0.3, 0.3, 0.3), Eigen::Vector3d(0.2, 0.2, 0.2), "xyz");
-        RT3 = RT1.transpose() * RT2;
+        RT1 = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.1, 0.1, 0.1), Eigen::Vector3d(0.1, 0.1, 0.1), "xyz");
+        RT2 = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.3, 0.3, 0.3), Eigen::Vector3d(0.2, 0.2, 0.2), "xyz");
+        RT3 = RT1.transpose().operator*(RT2);
 
         double rt1[16], rt2[16], rt3[16];
         for (unsigned int i=0; i<4; ++i) {
@@ -273,7 +277,7 @@ TEST(BinderC, math)
     // Get the cardan angles from a matrix
     {
         biorbd::utils::RotoTrans RT;
-        RT.fromEulerAngles(Eigen::Vector3d(0.1, 0.1, 0.1), Eigen::Vector3d(0.1, 0.1, 0.1), "xyz");
+        RT = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.1, 0.1, 0.1), Eigen::Vector3d(0.1, 0.1, 0.1), "xyz");
         biorbd::utils::Vector realCardan(biorbd::utils::RotoTrans::toEulerAngles(RT, "xyz"));
 
         double rt[16];

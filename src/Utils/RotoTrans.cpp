@@ -99,32 +99,35 @@ biorbd::utils::Rotation biorbd::utils::RotoTrans::rot() const
     return this->block<3, 3>(0,0);
 }
 
-biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::combineRotAndTrans(
+biorbd::utils::RotoTrans biorbd::utils::RotoTrans::combineRotAndTrans(
         const biorbd::utils::Rotation& rot,
         const biorbd::utils::Vector3d& trans){
-    block(0,0,3,3) = rot;
-    block(0,3,3,1) = trans;
-    block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1).transpose();
-    return *this;
+    biorbd::utils::RotoTrans out;
+    out.block(0,0,3,3) = rot;
+    out.block(0,3,3,1) = trans;
+    out.block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1).transpose();
+    return out;
 }
 
-biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::fromSpatialTransform(
+biorbd::utils::RotoTrans biorbd::utils::RotoTrans::fromSpatialTransform(
         const RigidBodyDynamics::Math::SpatialTransform& st)
 {
     return combineRotAndTrans(st.E,st.r);
 }
 
-biorbd::utils::RotoTrans& biorbd::utils::RotoTrans::fromEulerAngles(
+biorbd::utils::RotoTrans biorbd::utils::RotoTrans::fromEulerAngles(
         const biorbd::utils::Vector& rot,
         const biorbd::utils::Vector3d& trans,
         const biorbd::utils::String& seq)
 {
-    biorbd::utils::Rotation rot_mat;
-    rot_mat.fromEulerAngles(rot, seq);
-    block(0,0,3,3) = rot_mat;
-    block(0,3,3,1) = trans;
-    block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1).transpose();
-    return *this;
+
+    biorbd::utils::Rotation rot_mat(biorbd::utils::Rotation::fromEulerAngles(rot, seq));
+
+    biorbd::utils::RotoTrans out;
+    out.block(0,0,3,3) = rot_mat;
+    out.block(0,3,3,1) = trans;
+    out.block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1).transpose();
+    return out;
 }
 
 biorbd::utils::Vector biorbd::utils::RotoTrans::toEulerAngles(

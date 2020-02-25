@@ -106,7 +106,7 @@ public:
     /// \param str The string to convert
     /// \return The new string
     ///
-    static biorbd::utils::String tolower(const biorbd::utils::String &str); 
+    static biorbd::utils::String tolower(const biorbd::utils::String &str);
 
     ///
     /// \brief Return a lower case string
@@ -119,7 +119,7 @@ public:
     /// \param str The string to convert
     /// \return The new string
     ///
-    static biorbd::utils::String toupper(const biorbd::utils::String &str); 
+    static biorbd::utils::String toupper(const biorbd::utils::String &str);
 
     ///
     /// \brief Return an upper case string

@@ -220,7 +220,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
 
     // Put the signs
     for (unsigned int i=0; i<GeneralizedTorque.size(); ++i)
-        GeneralizedTorque(i) *= activation(i);
+        GeneralizedTorque(i) = GeneralizedTorque(i) * activation(i);
 
     return GeneralizedTorque;
 }

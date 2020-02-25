@@ -54,7 +54,7 @@ public:
     /// \param other The matrix to copy
     ///
     Matrix(
-            const MX_Xd_SubMatrix& other);
+            const RBDLCasadiMath::MX_Xd_SubMatrix& other);
 
 #endif
 
@@ -94,7 +94,7 @@ public:
     /// \param other The matrix to copy
     ///
     void operator=(
-            const MX_Xd_SubMatrix& other);
+            const RBDLCasadiMath::MX_Xd_SubMatrix& other);
 #endif
 
 #endif

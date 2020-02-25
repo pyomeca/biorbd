@@ -171,7 +171,7 @@ biorbd::rigidbody::NodeSegment biorbd::rigidbody::Markers::markerVelocity(
     const biorbd::rigidbody::NodeSegment& node(marker(idx));
     unsigned int id(model.GetBodyId(node.parent().c_str()));
 
-    // Retrieve the position of the marker in the local reference 
+    // Retrieve the position of the marker in the local reference
     const biorbd::rigidbody::NodeSegment& pos(marker(idx, removeAxis));
 
     // Calculate the velocity of the point

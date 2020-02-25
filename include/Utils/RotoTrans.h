@@ -149,7 +149,7 @@ public:
     /// \param trans The vector of translation
     /// \return The matrix of RotoTrans
     ///
-    biorbd::utils::RotoTrans& combineRotAndTrans(
+    static biorbd::utils::RotoTrans combineRotAndTrans(
             const biorbd::utils::Rotation& rot,
             const biorbd::utils::Vector3d& trans);
 
@@ -158,7 +158,7 @@ public:
     /// \param st The spatial transform
     /// \return The matrix of RotoTrans
     ///
-    biorbd::utils::RotoTrans& fromSpatialTransform(
+    static biorbd::utils::RotoTrans fromSpatialTransform(
             const RigidBodyDynamics::Math::SpatialTransform& st);
 
     ///
@@ -167,10 +167,10 @@ public:
     /// \param trans The translation vector
     /// \param seq The rotation sequence
     ///
-    /// The number of rotation must match the number of axes in the rotation
+    /// The number of rotation umust match the number of axes in the rotation
     /// sequence
     ///
-    biorbd::utils::RotoTrans& fromEulerAngles(
+    static biorbd::utils::RotoTrans fromEulerAngles(
             const biorbd::utils::Vector &rot,
             const biorbd::utils::Vector3d& trans,
             const biorbd::utils::String& seq);
