@@ -916,22 +916,23 @@ TEST(Quaternion, normalization) {
 
 TEST(Vector, operation) {
 
-    {
-        biorbd::utils::Vector v(4);
-        v[0] = 1.1;
-        v[1] = 1.2;
-        v[2] = 1.3;
-        v[3] = 1.4;
-        biorbd::utils::Scalar s(5);
-        biorbd::utils::Vector multVectAndScalar(v * s);
+    //TODO: Addition Scalar + Vector is undefined
+    //{
+    //    biorbd::utils::Vector v(4);
+    //    v[0] = 1.1;
+    //    v[1] = 1.2;
+    //    v[2] = 1.3;
+    //    v[3] = 1.4;
+    //    biorbd::utils::Scalar s(5);
+    //    biorbd::utils::Vector multVectAndScalar(v + s);
 
-        biorbd::utils::Vector expectedMultVectAndScalar(4);
-        expectedMultVectAndScalar << 6.1, 6.2, 6.3, 6.4;
+    //    biorbd::utils::Vector expectedMultVectAndScalar(4);
+    //    expectedMultVectAndScalar << 6.1, 6.2, 6.3, 6.4;
 
-        for (unsigned int i = 0; i < 4; ++i) {
-            EXPECT_NEAR(multVectAndScalar[i], expectedMultVectAndScalar[i], requiredPrecision);
-        }
-    }
+    //    for (unsigned int i = 0; i < 4; ++i) {
+    //        EXPECT_NEAR(multVectAndScalar[i], expectedMultVectAndScalar[i], requiredPrecision);
+    //    }
+    //}
 
     {
         biorbd::utils::Vector v(4);
@@ -943,10 +944,35 @@ TEST(Vector, operation) {
         biorbd::utils::Vector multVectAndScalar(s * v);
 
         biorbd::utils::Vector expectedMultVectAndScalar(4);
-        expectedMultVectAndScalar << 6.1, 6.2, 6.3, 6.4;
+        expectedMultVectAndScalar << 5.5, 6.0, 6.5, 7.0;
 
         for (unsigned int i = 0; i < 4; ++i) {
             EXPECT_NEAR(multVectAndScalar[i], expectedMultVectAndScalar[i], requiredPrecision);
+        }
+    }
+}
+
+TEST(Vector, norm) {
+    {
+        biorbd::utils::Vector v(4);
+        v << 1.1, 1.2, 1.3, 1.4;
+
+        EXPECT_NEAR(v.norm(2, false), 2.5099800796022267, requiredPrecision);
+        EXPECT_NEAR(v.norm(2, true), 6.2999999999999998, requiredPrecision);
+    }
+}
+
+TEST(Vector, normGradient) {
+    {
+        biorbd::utils::Vector v(4);
+        v << 1.1, 1.2, 1.3, 1.4;
+
+        biorbd::utils::Vector nG(v.normGradient(2, false));
+        biorbd::utils::Vector expectednG(4);
+        expectednG << 0.43825049008927769, 0.47809144373375745, 0.51793239737823726, 0.55777335102271697;
+        
+        for (unsigned int i = 0; i < 4; ++i) {
+            EXPECT_NEAR(nG[i], expectednG[i], requiredPrecision);
         }
     }
 }

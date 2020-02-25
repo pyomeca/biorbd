@@ -159,17 +159,20 @@ TEST(Segment, copy)
                 model, "MasterSegment", "NoParent", "zyx", "yzx", ranges,
                 characteristics, RigidBodyDynamics::Math::SpatialTransform());
     biorbd::rigidbody::Segment ShallowCopy(MasterSegment);
+    biorbd::rigidbody::Segment ShallowCopyEqual = MasterSegment;
     biorbd::rigidbody::Segment DeepCopyNow(MasterSegment.DeepCopy());
     biorbd::rigidbody::Segment DeepCopyLater;
     DeepCopyLater.DeepCopy(MasterSegment);
 
     EXPECT_STREQ(MasterSegment.parent().c_str(), "NoParent");
     EXPECT_STREQ(ShallowCopy.parent().c_str(), "NoParent");
+    EXPECT_STREQ(ShallowCopyEqual.parent().c_str(), "NoParent");
     EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
     EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
     ShallowCopy.setParent("MyLovelyParent");
     EXPECT_STREQ(MasterSegment.parent().c_str(), "MyLovelyParent");
     EXPECT_STREQ(ShallowCopy.parent().c_str(), "MyLovelyParent");
+    EXPECT_STREQ(ShallowCopyEqual.parent().c_str(), "MyLovelyParent");
     EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
     EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
 }
