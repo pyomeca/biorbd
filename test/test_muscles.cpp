@@ -390,4 +390,21 @@ TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
     }
 }
 
+TEST(States, DynamicBuchanan){
+    {
+        biorbd::muscles::StateDynamicsBuchanan state;
+        EXPECT_NEAR(state.excitation(), 0, requiredPrecision);
+        state.setExcitation(10);
+        EXPECT_NEAR(state.excitation(), 1, requiredPrecision);
+    }
+    {
+        biorbd::muscles::StateDynamicsBuchanan state(0.5);
+        EXPECT_NEAR(state.excitation(), 0.5, requiredPrecision);
+    }
+    {
+        biorbd::muscles::StateDynamicsBuchanan state(0, 10);
+        EXPECT_NEAR(state.excitation(), 1, requiredPrecision);
+    }
+}
+
 #endif // MODULE_MUSCLES
