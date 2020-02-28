@@ -88,6 +88,24 @@ TEST(MuscleForce, torqueFromMuscles)
 
 }
 
+TEST(MuscleCharacterics, unittest){
+    {
+        biorbd::muscles::Characteristics charact;
+        EXPECT_NEAR(charact.optimalLength(), 0, requiredPrecision);
+        double newOptimalLength(3.4);
+        charact.setOptimalLength(newOptimalLength);
+        EXPECT_NEAR(charact.optimalLength(), newOptimalLength, requiredPrecision);
+    }
+
+    {
+        biorbd::muscles::Characteristics charact;
+        EXPECT_NEAR(charact.forceIsoMax(), 0, requiredPrecision);
+        double newForceMax(156.9);
+        charact.setForceIsoMax(newForceMax);
+        EXPECT_NEAR(charact.forceIsoMax(), newForceMax, requiredPrecision);
+    }
+}
+
 TEST(MuscleJacobian, jacobian){
     biorbd::Model model(modelPathForMuscleJacobian);
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
