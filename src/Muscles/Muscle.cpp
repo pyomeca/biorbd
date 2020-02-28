@@ -10,7 +10,6 @@
 #include "Muscles/StateDynamicsBuchanan.h"
 #include "Muscles/Characteristics.h"
 #include "Muscles/Geometry.h"
-#include "Muscles/Force.h"
 
 biorbd::muscles::Muscle::Muscle() :
     biorbd::muscles::Compound(),
@@ -193,9 +192,7 @@ biorbd::utils::Scalar biorbd::muscles::Muscle::activationDot(
 
 void biorbd::muscles::Muscle::computeForce(const biorbd::muscles::State &emg)
 {
-    biorbd::utils::Scalar force = getForceFromActivation(emg);
-    (*m_force)[0]->setForceFromMuscleGeometry(*m_position, force); // origine vers le deuxieme point
-    (*m_force)[1]->setForceFromMuscleGeometry(*m_position, force); // insertion vers l'avant-dernier point
+    *m_force = getForceFromActivation(emg);
 }
 
 const std::vector<biorbd::utils::Vector3d>& biorbd::muscles::Muscle::musclesPointsInGlobal(

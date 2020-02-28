@@ -5,6 +5,7 @@
 #include <vector>
 #include "biorbdConfig.h"
 #include "Muscles/MusclesEnums.h"
+#include "Utils/Scalar.h"
 
 namespace biorbd {
 namespace utils {
@@ -108,21 +109,21 @@ public:
     void addPathObject(biorbd::utils::Vector3d& wrap);
 
     ///
-    /// \brief Return the last computed muscle force
-    /// \return The last computed muscle force
+    /// \brief Return the last computed muscle force norm
+    /// \return The last computed muscle force norm
     ///
-    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force();
+    virtual const biorbd::utils::Scalar& force();
 
     ///
-    /// \brief Computes and returns the forces from the EMG
+    /// \brief Computes and returns the forces norm from the EMG
     /// \param emg EMG data
     /// \return The computed forces from the EMG
     ///
-    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
+    virtual const biorbd::utils::Scalar& force(
             const biorbd::muscles::StateDynamics& emg) = 0;
 
     ///
-    /// \brief Return the computed force from EMG
+    /// \brief Return the computed force norm from EMG
     /// \param model The joints model
     /// \param Q The generalized coordinates of the model
     /// \param Qdot The generalized velocities of the model
@@ -130,7 +131,7 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     /// \return The computed force from EMG
     ///
-    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
+    virtual const biorbd::utils::Scalar& force(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedVelocity& Qdot,
@@ -138,14 +139,14 @@ public:
             int updateKin = 2) = 0;
 
     ///
-    /// \brief Return the computed force from EMG
+    /// \brief Return the computed force norm from EMG
     /// \param model The joints model
     /// \param Q The generalized coordinates of the model
     /// \param emg EMG data
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     /// \return The computed force from EMG
     ///
-    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
+    virtual const biorbd::utils::Scalar& force(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::muscles::StateDynamics& emg,
@@ -155,7 +156,7 @@ protected:
     std::shared_ptr<biorbd::utils::String> m_name; ///< The name of the muscle
     std::shared_ptr<biorbd::muscles::MUSCLE_TYPE> m_type; ///< The type of muscle
     std::shared_ptr<biorbd::muscles::PathModifiers> m_pathChanger; ///< The set of path modifiers
-    std::shared_ptr<std::vector<std::shared_ptr<biorbd::muscles::Force>>> m_force; ///< The last computed force
+    std::shared_ptr<biorbd::utils::Scalar> m_force; ///< The last computed force
 
     ///
     /// \brief Set the type of muscle

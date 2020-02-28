@@ -4,8 +4,6 @@
 #include "Utils/Error.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
-#include "Muscles/ForceFromOrigin.h"
-#include "Muscles/ForceFromInsertion.h"
 #include "Muscles/Characteristics.h"
 #include "Muscles/Geometry.h"
 #include "Muscles/StateDynamics.h"
@@ -185,7 +183,7 @@ void biorbd::muscles::HillType::DeepCopy(const biorbd::muscles::HillType &other)
     *m_cste_maxShorteningSpeed = *other.m_cste_maxShorteningSpeed;
 }
 
-const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::HillType::force(
+const biorbd::utils::Scalar &biorbd::muscles::HillType::force(
         const biorbd::muscles::StateDynamics& emg){
     // Compute the forces of each element
     computeFvCE();
@@ -198,7 +196,7 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::Hi
     return *m_force;
 }
 
-const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::HillType::force(
+const biorbd::utils::Scalar &biorbd::muscles::HillType::force(
         biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedVelocity &Qdot,
@@ -217,7 +215,7 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::Hi
     return force(emg);
 }
 
-const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::HillType::force(
+const biorbd::utils::Scalar &biorbd::muscles::HillType::force(
         biorbd::rigidbody::Joints &,
         const biorbd::rigidbody::GeneralizedCoordinates &,
         const biorbd::muscles::StateDynamics &,
@@ -295,10 +293,9 @@ void biorbd::muscles::HillType::computeFvCE(){
 void biorbd::muscles::HillType::computeFlPE(){
 
 #ifdef BIORBD_USE_CASADI_MATH
-    *m_FlPE = casadi::MX::if_else(
+    *m_FlPE = casadi::MX::if_else_zero(
                 casadi::MX::gt(position().length(), characteristics().tendonSlackLength()),
-                exp(*m_cste_FlPE_1*(position().length()/characteristics().optimalLength()-1) - *m_cste_FlPE_2),
-                0);
+                exp(*m_cste_FlPE_1*(position().length()/characteristics().optimalLength()-1) - *m_cste_FlPE_2));
 #else
     if (position().length() > characteristics().tendonSlackLength())
         *m_FlPE = exp(*m_cste_FlPE_1*(position().length()/characteristics().optimalLength()-1) - *m_cste_FlPE_2);
