@@ -4,8 +4,10 @@
 #include <memory>
 #include "biorbdConfig.h"
 #include "Muscles/MusclesEnums.h"
+#include "Utils/Scalar.h"
 
 namespace biorbd {
+
 namespace muscles {
     ///
     /// \brief EMG holder to interact with the muscle
@@ -19,8 +21,8 @@ public:
     /// \param activation The muscle activation
     ///
     State(
-            double excitation = 0,
-            double activation = 0);
+            biorbd::utils::Scalar excitation = 0,
+            biorbd::utils::Scalar activation = 0);
 
     ///
     /// \brief Construct a muscle state from another state
@@ -56,14 +58,14 @@ public:
     /// it changes it to 0 anyway, but doesn't send a warning saying it.
     ///
     virtual void setExcitation(
-            double val,
+            biorbd::utils::Scalar val,
             bool turnOffWarnings);
 
     ///
     /// \brief Return the muscle excitation
     /// \return The muscle excitation
     ///
-    double excitation() const;
+    biorbd::utils::Scalar excitation() const;
 
     ///
     /// \brief Compute and return the normalized excitation
@@ -73,7 +75,7 @@ public:
     ///
     /// Even when the warning is ON, the computation is performed anyway
     ///
-    double normalizeExcitation(
+    biorbd::utils::Scalar normalizeExcitation(
             const biorbd::muscles::State &emgMax,
             bool turnOffWarnings = false);
 
@@ -82,13 +84,13 @@ public:
     /// \param val Value of the normalized excitation to set
     ///
     void setExcitationNorm(
-            double val);
+            biorbd::utils::Scalar val);
 
     ///
     /// \brief Return the previously normalized excitation
     /// \return The normalized excitation
     ///
-    double excitationNorm() const;
+    biorbd::utils::Scalar excitationNorm() const;
 
     ///
     /// \brief Set the muscle activation
@@ -102,14 +104,14 @@ public:
     /// it changes it to 1 anyway, but doesn't send a warning saying it.
     ///
     virtual void setActivation(
-            double val,
+            biorbd::utils::Scalar val,
             bool turnOffWarnings = false);
 
     ///
     /// \brief Return the muscle activation
     /// \return The muscle activation
     ///
-    double activation() const;
+    biorbd::utils::Scalar activation() const;
 
     ///
     /// \brief Return the state type
@@ -123,9 +125,9 @@ protected:
     virtual void setType();
 
     std::shared_ptr<biorbd::muscles::STATE_TYPE> m_stateType;///< The state type
-    std::shared_ptr<double> m_excitation;///< The muscle excitation
-    std::shared_ptr<double> m_excitationNorm; ///< The normalized excitation
-    std::shared_ptr<double> m_activation;///< The muscle activation
+    std::shared_ptr<biorbd::utils::Scalar> m_excitation;///< The muscle excitation
+    std::shared_ptr<biorbd::utils::Scalar> m_excitationNorm; ///< The normalized excitation
+    std::shared_ptr<biorbd::utils::Scalar> m_activation;///< The muscle activation
 
 };
 

@@ -10,7 +10,7 @@ biorbd::muscles::Characteristics::Characteristics() :
     m_PCSA(std::make_shared<double>(0)),
     m_tendonSlackLength(std::make_shared<double>(0)),
     m_pennationAngle(std::make_shared<double>(0)),
-    m_stateMax(std::make_shared<biorbd::muscles::State>(biorbd::muscles::State())),
+    m_stateMax(std::make_shared<biorbd::muscles::State>(biorbd::muscles::State(1, 1))),
     m_minActivation(std::make_shared<double>(0.01)),
     m_torqueActivation(std::make_shared<double>(0.01)),
     m_torqueDeactivation(std::make_shared<double>(0.04)),
@@ -137,7 +137,7 @@ void biorbd::muscles::Characteristics::setMinActivation(double val)
 {
     *m_minActivation = val;
 }
-double biorbd::muscles::Characteristics::minActivation() const
+biorbd::utils::Scalar biorbd::muscles::Characteristics::minActivation() const
 {
     return *m_minActivation;
 }
