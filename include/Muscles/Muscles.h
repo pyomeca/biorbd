@@ -23,7 +23,6 @@ class GeneralizedTorque;
 namespace muscles {
 class MuscleGroup;
 class StateDynamics;
-class Force;
 
 ///
 /// \brief Muscle group holder

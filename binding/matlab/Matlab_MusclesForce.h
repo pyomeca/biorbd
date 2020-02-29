@@ -3,7 +3,6 @@
 
 #include <mex.h>
 #include "BiorbdModel.h"
-#include "Muscles/Force.h"
 #include "class_handle.h"
 #include "processArguments.h"
 
@@ -16,6 +15,7 @@ void Matlab_MusclesForce( int, mxArray *plhs[],
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
+    unsigned int nMus = model->nbMuscleTotal();
 
     // Recevoir Q
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs, 2, nQ);
@@ -39,32 +39,21 @@ void Matlab_MusclesForce( int, mxArray *plhs[],
     }
 
     // Cellules de sortie
-    mwSize dims[4];
-    dims[0] = 3;
-    dims[1] = 2;
-    dims[2] = model->nbMuscleTotal();
-    dims[3] = nFrame;
-    plhs[0] = mxCreateNumericArray(4, dims, mxDOUBLE_CLASS, mxREAL);
+    mwSize dims[2];
+    dims[0] = nMus;
+    dims[1] = nFrame;
+    plhs[0] = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
     double *muscleForce = mxGetPr(plhs[0]);
 
     // Aller chercher les valeurs
-    unsigned int cmp(0);
     for (unsigned int iF=0; iF<nFrame; ++iF){
-        std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> Force;
+        biorbd::utils::Vector Force;
         if (updateKin)
             Force = model->musclesForces(state[iF], updateKin, &Q[iF], &Qdot[iF]);
         else
             Force = model->musclesForces(state[iF], updateKin);
-        for (unsigned int i=0; i<Force.size(); ++i){
-            const biorbd::muscles::Force& ori = *(Force[i][0]);
-            const biorbd::muscles::Force& ins = *(Force[i][1]);
-            muscleForce[6*cmp+0] = ori[0];
-            muscleForce[6*cmp+1] = ori[1];
-            muscleForce[6*cmp+2] = ori[2];
-            muscleForce[6*cmp+3] = ins[0];
-            muscleForce[6*cmp+4] = ins[1];
-            muscleForce[6*cmp+5] = ins[2];
-            ++cmp;
+        for (unsigned int i=0; i<nMus; ++i){
+            muscleForce[nFrame*nMus + i] = Force[i];
         }
     }
 

@@ -20,7 +20,6 @@ class GeneralizedVelocity;
 }
 
 namespace muscles {
-class Force;
 class Characteristics;
 class PathModifiers;
 class StateDynamics;

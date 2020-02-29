@@ -79,7 +79,6 @@
 #include "Matlab_muscleJointTorqueFromMuscleForce.h"
 #include "Matlab_MusclesForce.h"
 #include "Matlab_MusclesForceMax.h"
-#include "Matlab_muscleForcesNorm.h"
 #include "Matlab_MusclesActivationDot.h"
 #include "Matlab_MusclesExcitationDotBuchanan.h"
 #include "Matlab_ChangeShapeFactors.h"
@@ -594,7 +593,7 @@ void functionHub( int nlhs, mxArray *plhs[],
     }
 
 
-    if(!toLower(cmd).compare("muscleforce")){
+    if(!toLower(cmd).compare("muscleforce") || !toLower(cmd).compare("muscleforcenorm")){
         Matlab_MusclesForce(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -603,12 +602,6 @@ void functionHub( int nlhs, mxArray *plhs[],
         Matlab_MusclesForceMax(nlhs, plhs, nrhs, prhs);
         return;
     }
-
-    if(!toLower(cmd).compare("muscleforcenorm")){
-        Matlab_muscleForcesNorm(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-
 
     if(!toLower(cmd).compare("musclejacobian")){
         Matlab_MusclesJacobian(nlhs, plhs, nrhs, prhs);
