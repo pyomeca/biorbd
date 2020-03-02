@@ -90,6 +90,14 @@ TEST(MuscleCharacterics, unittest){
         charact.setForceIsoMax(newForceMax);
         EXPECT_NEAR(charact.forceIsoMax(), newForceMax, requiredPrecision);
     }
+
+    {
+        biorbd::muscles::Characteristics charact;
+        EXPECT_NEAR(charact.tendonSlackLength(), 0, requiredPrecision);
+        double newTendonSlakLength(5.3);
+        charact.setTendonSlackLength(newTendonSlakLength);
+        EXPECT_NEAR(charact.tendonSlackLength(), newTendonSlakLength, requiredPrecision);
+    }
 }
 
 TEST(MuscleJacobian, jacobian){
