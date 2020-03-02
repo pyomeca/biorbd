@@ -23,7 +23,6 @@ class GeneralizedTorque;
 namespace muscles {
 class MuscleGroup;
 class StateDynamics;
-class Force;
 
 ///
 /// \brief Muscle group holder
@@ -243,7 +242,7 @@ public:
     /// \param QDot The generalized velocities
     /// \return The muscle forces
     ///
-    std::vector<std::vector<std::shared_ptr<Force>>> musclesForces(
+    biorbd::utils::Vector musclesForces(
             const std::vector<std::shared_ptr<StateDynamics>> &emg,
             bool updateKin = true,
             const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
