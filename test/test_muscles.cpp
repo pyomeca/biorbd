@@ -11,6 +11,7 @@
 #include "RigidBody/GeneralizedTorque.h"
 #ifdef MODULE_MUSCLES
 #include "Muscles/all.h"
+#include "Utils/String.h"
 
 static double requiredPrecision(1e-10);
 
@@ -19,7 +20,43 @@ static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
 static unsigned int muscleGroupForMuscleJacobian(1);
 static unsigned int muscleForMuscleJacobian(1);
 
+static unsigned int muscleGroupForIdealizedActuator(1);
+static unsigned int muscleForIdealizedActuator(1);
 
+TEST(IdealizedActuator, length)
+{
+    biorbd::Model model(modelPathForMuscleForce);
+    biorbd::muscles::IdealizedActuator idealizedActuator(model.muscleGroup(muscleGroupForIdealizedActuator).muscle(muscleForIdealizedActuator));
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    Q = Q.setOnes() / 10;
+
+    EXPECT_NEAR(idealizedActuator.length(model, Q, 2), 0.066381977535807504, requiredPrecision);
+    EXPECT_NEAR(idealizedActuator.musculoTendonLength(model, Q, 2), 0.1563647052655904, requiredPrecision);
+}
+
+TEST(IdealizedActuator, name)
+{
+    biorbd::Model model(modelPathForMuscleForce);
+    biorbd::muscles::IdealizedActuator idealizedActuator(model.muscleGroup(muscleGroupForIdealizedActuator).muscle(muscleForIdealizedActuator));
+    idealizedActuator.setName("nom");
+
+    EXPECT_STREQ(idealizedActuator.name().c_str(), "nom");
+}
+
+
+TEST(IdealizedActuator, velocity)
+{
+    biorbd::Model model(modelPathForMuscleForce);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity QDot(model);
+    Q = Q.setOnes() / 10;
+    QDot = QDot.setOnes() / 10;
+    biorbd::muscles::IdealizedActuator idealizedActuator(model.muscleGroup(muscleGroupForIdealizedActuator).muscle(muscleGroupForIdealizedActuator));
+
+    EXPECT_NEAR(idealizedActuator.velocity(model, Q, QDot, true), 0.0022230374109936529, requiredPrecision);
+    EXPECT_NEAR(idealizedActuator.velocity(model, Q, QDot, false), 0.0022230374109936529, requiredPrecision);
+
+}
 
 TEST(MuscleForce, position)
 {
