@@ -40,27 +40,13 @@ TEST(MuscleForce, force)
         states.push_back(std::make_shared<biorbd::muscles::StateDynamics>(0, 0.2));
     model.updateMuscles(Q, QDot, true);
 
-    const std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>>& force_tp = model.musclesForces(states, false);
-    Eigen::VectorXd F = biorbd::utils::Vector(static_cast<unsigned int>(force_tp.size()));
-    for (unsigned int i=0; i<force_tp.size(); ++i)
-        F(i) = (force_tp[i])[0]->norm();
+    const biorbd::utils::Vector& F = model.musclesForces(states, false);
 
     Eigen::VectorXd ExpectedForce(model.nbMuscleTotal());
     ExpectedForce << 164.3110575502927, 106.89637709077938, 84.340201458493794,
             92.212055754969938, 85.0882802083116, 198.6356130736217;
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i)
         EXPECT_NEAR(F(i), ExpectedForce(i), requiredPrecision);
-}
-
-TEST(MuscleForce, unitTest)
-{
-	EXPECT_NO_THROW(biorbd::muscles::Force());
-	{
-		biorbd::muscles::Force force(1,2,3);
-		for (unsigned int i=0; i<3; ++i){
-			EXPECT_NEAR(force[i], i + 1, requiredPrecision);
-		}
-	}
 }
 
 TEST(MuscleForce, torqueFromMuscles)

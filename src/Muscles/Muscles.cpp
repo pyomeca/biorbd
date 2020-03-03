@@ -11,7 +11,6 @@
 #include "Muscles/Geometry.h"
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/StateDynamics.h"
-#include "Muscles/Force.h"
 
 biorbd::muscles::Muscles::Muscles() :
     m_mus(std::make_shared<std::vector<biorbd::muscles::MuscleGroup>>())
@@ -113,11 +112,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
         updateMuscles(*Q,*QDot,updateKin);
     }
 
-    const std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>>& force_tp = musclesForces(emg, false);
-    F = biorbd::utils::Vector(static_cast<unsigned int>(force_tp.size()));
-    for (unsigned int i=0; i<force_tp.size(); ++i)
-        F(i) = (force_tp[i])[0]->norm();
-
+    F = musclesForces(emg, false);
     return muscularJointTorque(F, false, Q, QDot);
 }
 
@@ -153,7 +148,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
     return biorbd::rigidbody::GeneralizedTorque( -jaco.transpose() * F );
 }
 
-std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> biorbd::muscles::Muscles::musclesForces(
+biorbd::utils::Vector biorbd::muscles::Muscles::musclesForces(
         const std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> &emg,
         bool updateKin,
         const biorbd::rigidbody::GeneralizedCoordinates* Q,
@@ -165,12 +160,15 @@ std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> biorbd::muscle
     }
 
     // Output variable
-    std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>> forces; // All the muscles/two pointers per muscleTous les muscles (origine/insertion)
+    biorbd::utils::Vector forces(nbMuscleTotal()); // All the muscles/two pointers per muscleTous les muscles (origine/insertion)
 
     unsigned int cmpMus(0);
-    for (unsigned int i=0; i<m_mus->size(); ++i) // muscle group
-        for (unsigned int j=0; j<(*m_mus)[i].nbMuscles(); ++j)
-            forces.push_back((*m_mus)[i].muscle(j).force(*emg[cmpMus++]));
+    for (unsigned int i=0; i<m_mus->size(); ++i){ // muscle group
+        for (unsigned int j=0; j<(*m_mus)[i].nbMuscles(); ++j){
+            forces(cmpMus, 0) = ((*m_mus)[i].muscle(j).force(*emg[cmpMus]));
+            ++cmpMus;
+        }
+    }
 
     // The forces
     return forces;

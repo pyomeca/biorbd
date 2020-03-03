@@ -4,12 +4,12 @@
 #include "Utils/Error.h"
 
 biorbd::muscles::State::State(
-        double excitation,
-        double activation) :
+        biorbd::utils::Scalar excitation,
+        biorbd::utils::Scalar activation) :
     m_stateType(std::make_shared<biorbd::muscles::STATE_TYPE>()),
-    m_excitation(std::make_shared<double>(excitation)),
-    m_excitationNorm(std::make_shared<double>(0)),
-    m_activation(std::make_shared<double>(activation))
+    m_excitation(std::make_shared<biorbd::utils::Scalar>(excitation)),
+    m_excitationNorm(std::make_shared<biorbd::utils::Scalar>(0)),
+    m_activation(std::make_shared<biorbd::utils::Scalar>(activation))
 {
     setType();
 }
@@ -18,7 +18,7 @@ biorbd::muscles::State::State(
         const biorbd::muscles::State &other) :
     m_stateType(other.m_stateType),
     m_excitation(other.m_excitation),
-    m_excitationNorm(std::make_shared<double>(0)),
+    m_excitationNorm(std::make_shared<biorbd::utils::Scalar>(0)),
     m_activation(other.m_activation)
 {
 
@@ -45,9 +45,12 @@ void biorbd::muscles::State::DeepCopy(const biorbd::muscles::State &other)
 }
 
 void biorbd::muscles::State::setExcitation(
-        double val,
+        biorbd::utils::Scalar val,
         bool turnOffWarnings) {
 
+#ifdef BIORBD_USE_CASADI_MATH
+    *m_excitation = casadi::MX::if_else_zero(casadi::MX::gt(val, 0), val);
+#else
     if (val<0){
         if (!turnOffWarnings) {
             biorbd::utils::Error::warning(
@@ -57,41 +60,48 @@ void biorbd::muscles::State::setExcitation(
     }
     else
         *m_excitation = val;
+#endif
 }
 
-double biorbd::muscles::State::excitation() const
+biorbd::utils::Scalar biorbd::muscles::State::excitation() const
 {
     return *m_excitation;
 }
 
-double biorbd::muscles::State::normalizeExcitation(
+biorbd::utils::Scalar biorbd::muscles::State::normalizeExcitation(
         const biorbd::muscles::State &emgMax,
         bool turnOffWarnings) {
 
+#ifndef BIORBD_USE_CASADI_MATH
     if (!turnOffWarnings) {
         biorbd::utils::Error::warning(
                     *m_excitation < emgMax.excitation(),
                     "Excitation is higher than maximal excitation.");
     }
+#endif
     *m_excitationNorm = *m_excitation / emgMax.excitation();
 
     return *m_excitationNorm;
 }
 
-void biorbd::muscles::State::setExcitationNorm(double val)
+void biorbd::muscles::State::setExcitationNorm(biorbd::utils::Scalar val)
 {
     *m_excitationNorm = val;
 }
 
-double biorbd::muscles::State::excitationNorm() const
+biorbd::utils::Scalar biorbd::muscles::State::excitationNorm() const
 {
     return *m_excitationNorm;
 }
 
 void biorbd::muscles::State::setActivation(
-        double val,
+        biorbd::utils::Scalar val,
         bool turnOffWarnings){
 
+#ifdef BIORBD_USE_CASADI_MATH
+    *m_activation = casadi::MX::if_else_zero(casadi::MX::gt(val, 0), val);
+    *m_activation = casadi::MX::if_else(casadi::MX::lt(val, 1), val, 1);
+#else
     if (val <= 0) {
         if (!turnOffWarnings){
             biorbd::utils::Error::warning(
@@ -109,9 +119,10 @@ void biorbd::muscles::State::setActivation(
     else {
         *m_activation = val;
     }
+#endif
 }
 
-double biorbd::muscles::State::activation() const
+biorbd::utils::Scalar biorbd::muscles::State::activation() const
 {
     return *m_activation;
 }

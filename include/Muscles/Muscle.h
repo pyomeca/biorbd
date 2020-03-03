@@ -262,7 +262,7 @@ public:
     /// \param alreadyNormalized If the emg is already normalized
     /// \return The activation time derivative
     ///
-    double activationDot(
+    biorbd::utils::Scalar activationDot(
             const biorbd::muscles::StateDynamics &state,
             bool alreadyNormalized = false);
 protected:
