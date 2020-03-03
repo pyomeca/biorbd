@@ -96,7 +96,15 @@ TEST(MuscleCharacterics, unittest){
         EXPECT_NEAR(charact.tendonSlackLength(), 0, requiredPrecision);
         double newTendonSlakLength(5.3);
         charact.setTendonSlackLength(newTendonSlakLength);
-        EXPECT_NEAR(charact.tendonSlackLength(), newTendonSlakLength, requiredPrecision);
+        EXPECT_NEAR(charact.tendonSlackLength(), newTendonSlakLength, requiredPrecision); 
+    }
+
+    {
+        biorbd::muscles::Characteristics charact;
+        EXPECT_NEAR(charact.pennationAngle(), 0, requiredPrecision);
+        double newPennationAngle(1.09);
+        charact.setPennationAngle(newPennationAngle);
+        EXPECT_NEAR(charact.pennationAngle(), newPennationAngle, requiredPrecision);
     }
 }
 
