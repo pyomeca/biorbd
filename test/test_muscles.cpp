@@ -106,6 +106,14 @@ TEST(MuscleCharacterics, unittest){
         charact.setPennationAngle(newPennationAngle);
         EXPECT_NEAR(charact.pennationAngle(), newPennationAngle, requiredPrecision);
     }
+
+    {
+        biorbd::muscles::Characteristics charact;
+        EXPECT_NEAR(charact.PCSA(), 0, requiredPrecision);
+        double newPCSA(2.4);
+        charact.setPCSA(newPCSA);
+        EXPECT_NEAR(charact.PCSA(), newPCSA, requiredPrecision);
+    }
 }
 
 TEST(MuscleJacobian, jacobian){
