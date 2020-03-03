@@ -5,6 +5,7 @@
 #include "Utils/Vector3d.h"
 #include "Utils/String.h"
 #include "Utils/Vector.h"
+#include "Utils/Matrix.h"
 
 #include "RigidBody/NodeSegment.h"
 
@@ -100,7 +101,7 @@ biorbd::utils::Rotation biorbd::utils::Rotation::fromEulerAngles(
     return out;
 }
 
-biorbd::utils::Rotation biorbd::utils::Rotation::fromMarkers(
+biorbd::utils::Matrix biorbd::utils::Rotation::fromMarkersNonNormalized(
         const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment> &axis1markers,
         const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment> &axis2markers,
         const std::pair<biorbd::utils::String, biorbd::utils::String>& axesNames,
@@ -167,12 +168,27 @@ biorbd::utils::Rotation biorbd::utils::Rotation::fromMarkers(
         axes[2] = axes[0].cross(axes[1]);
     }
 
+    // Organize them in a non-normalized matrix
+    biorbd::utils::Matrix r_out(3, 3);
+    for (unsigned int i=0; i<3; ++i){
+        r_out.block(0, i, 3, 1) = axes[i];
+    }
+    return r_out;
+}
+
+biorbd::utils::Rotation biorbd::utils::Rotation::fromMarkers(
+        const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment> &axis1markers,
+        const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment> &axis2markers,
+        const std::pair<biorbd::utils::String, biorbd::utils::String>& axesNames,
+        const biorbd::utils::String &axisToRecalculate)
+{
+    biorbd::utils::Matrix r_out(
+                fromMarkersNonNormalized(axis1markers, axis2markers, axesNames, axisToRecalculate));
+
     // Organize them in a normalized matrix
-    biorbd::utils::Rotation r_out;
     for (unsigned int i=0; i<3; ++i){
         // Normalize axes
-        axes[i].normalize();
-        r_out.block(0, i, 3, 1) = axes[i];
+        r_out.block<3, 1>(0, i).normalize();
     }
 
     return r_out;
