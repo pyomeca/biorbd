@@ -27,6 +27,8 @@ namespace std {
 %template(MatBiorbdNodeSegment) std::vector<std::vector<biorbd::rigidbody::NodeSegment>>;
 %template(VecBiorbdMeshFace) std::vector<biorbd::rigidbody::MeshFace>;
 %template(MatBiorbdMeshFace) std::vector<std::vector<biorbd::rigidbody::MeshFace>>;
+
+%template(PairBiorbdNodeSegment) std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>;
 }
 
 // Exposing some useful functions
