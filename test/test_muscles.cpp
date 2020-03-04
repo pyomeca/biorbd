@@ -11,6 +11,7 @@
 #include "RigidBody/GeneralizedTorque.h"
 #ifdef MODULE_MUSCLES
 #include "Muscles/all.h"
+#include "Utils/String.h"
 
 static double requiredPrecision(1e-10);
 
@@ -19,6 +20,8 @@ static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
 static unsigned int muscleGroupForMuscleJacobian(1);
 static unsigned int muscleForMuscleJacobian(1);
 
+static unsigned int muscleGroupForIdealizedActuator(1);
+static unsigned int muscleForIdealizedActuator(1);
 
 TEST(IdealizedActuator, unitTest){
 {
