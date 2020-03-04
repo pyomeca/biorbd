@@ -20,6 +20,43 @@ static unsigned int muscleGroupForMuscleJacobian(1);
 static unsigned int muscleForMuscleJacobian(1);
 
 
+TEST(IdealizedActuator, unitTest){
+{
+    biorbd::Model model(modelPathForMuscleForce);
+    biorbd::muscles::IdealizedActuator idealizedActuator(model.
+        muscleGroup(muscleGroupForIdealizedActuator).
+        muscle(muscleForIdealizedActuator));
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    Q = Q.setOnes() / 10;
+    EXPECT_NEAR(idealizedActuator.length(model, Q, 2), 0.066381977535807504, requiredPrecision);
+    EXPECT_NEAR(idealizedActuator.musculoTendonLength(model, Q, 2), 0.1563647052655904, requiredPrecision);
+}
+
+
+{
+    biorbd::Model model(modelPathForMuscleForce);
+    biorbd::muscles::IdealizedActuator idealizedActuator(model.
+        muscleGroup(muscleGroupForIdealizedActuator).
+        muscle(muscleForIdealizedActuator));
+    idealizedActuator.setName("nom");
+    EXPECT_STREQ(idealizedActuator.name().c_str(), "nom");
+}
+
+
+{
+    biorbd::Model model(modelPathForMuscleForce);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity QDot(model);
+    Q = Q.setOnes() / 10;
+    QDot = QDot.setOnes() / 10;
+    biorbd::muscles::IdealizedActuator idealizedActuator(model.
+        muscleGroup(muscleGroupForIdealizedActuator).
+        muscle(muscleGroupForIdealizedActuator));
+    EXPECT_NEAR(idealizedActuator.velocity(model, Q, QDot, true), 0.0022230374109936529, requiredPrecision);
+    EXPECT_NEAR(idealizedActuator.velocity(model, Q, QDot, false), 0.0022230374109936529, requiredPrecision);
+
+}
+}
 
 TEST(MuscleForce, position)
 {
