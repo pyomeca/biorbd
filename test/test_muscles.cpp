@@ -62,8 +62,10 @@ TEST(IdealizedActuator, unitTest){
 }
 
 TEST(IdealizedActuator, copy)
-
 {
+
+    {      
+
     biorbd::Model model(modelPathForMuscleForce);
     biorbd::muscles::IdealizedActuator idealizedActuator(
         model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
@@ -85,10 +87,9 @@ TEST(IdealizedActuator, copy)
     EXPECT_STREQ(shallowcopy.name().c_str(), "name");
     EXPECT_STREQ(deepcopynow.name().c_str(), "name");
     EXPECT_STREQ(deepcopylater.name().c_str(), "name");
-}
 
-TEST(idealizedActuator, copyCharacteristics)
-{
+    }
+
     {
         biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::IdealizedActuator idealizedActuator(
