@@ -66,27 +66,27 @@ TEST(IdealizedActuator, copy)
 
     {      
 
-    biorbd::Model model(modelPathForMuscleForce);
-    biorbd::muscles::IdealizedActuator idealizedActuator(
-        model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
-            muscleGroupForIdealizedActuator));
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    Q = Q.setOnes() / 10;
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::IdealizedActuator idealizedActuator(
+            model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
+                muscleGroupForIdealizedActuator));
+        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        Q = Q.setOnes() / 10;
 
-    biorbd::muscles::IdealizedActuator shallowcopy(idealizedActuator);
-    biorbd::muscles::IdealizedActuator deepcopynow(idealizedActuator.DeepCopy());
-    biorbd::muscles::IdealizedActuator deepcopylater;
-    deepcopylater.DeepCopy(idealizedActuator);
+        biorbd::muscles::IdealizedActuator shallowcopy(idealizedActuator);
+        biorbd::muscles::IdealizedActuator deepcopynow(idealizedActuator.DeepCopy());
+        biorbd::muscles::IdealizedActuator deepcopylater;
+        deepcopylater.DeepCopy(idealizedActuator);
 
-    EXPECT_STREQ(shallowcopy.name().c_str(), idealizedActuator.name().c_str());
-    EXPECT_STREQ(deepcopynow.name().c_str(), idealizedActuator.name().c_str());
-    EXPECT_STREQ(deepcopylater.name().c_str(), idealizedActuator.name().c_str());
+        EXPECT_STREQ(shallowcopy.name().c_str(), idealizedActuator.name().c_str());
+        EXPECT_STREQ(deepcopynow.name().c_str(), idealizedActuator.name().c_str());
+        EXPECT_STREQ(deepcopylater.name().c_str(), idealizedActuator.name().c_str());
 
-    idealizedActuator.setName("name");
-    EXPECT_STREQ(idealizedActuator.name().c_str(), "name");
-    EXPECT_STREQ(shallowcopy.name().c_str(), "name");
-    EXPECT_STREQ(deepcopynow.name().c_str(), "name");
-    EXPECT_STREQ(deepcopylater.name().c_str(), "name");
+        idealizedActuator.setName("myNewMuscleName");
+        EXPECT_STREQ(idealizedActuator.name().c_str(), "myNewMuscleName");
+        EXPECT_STREQ(shallowcopy.name().c_str(), "myNewMuscleName");
+        EXPECT_STREQ(deepcopynow.name().c_str(), "myNewMuscleName");
+        EXPECT_STREQ(deepcopylater.name().c_str(), "myNewMuscleName");
 
     }
 
@@ -103,6 +103,12 @@ TEST(IdealizedActuator, copy)
 
         double pennationAngleOriginal(idealizedActuator.characteristics().pennationAngle());
         EXPECT_EQ(pennationAngleOriginal, shallowcopy.characteristics().pennationAngle());
+
+        biorbd::muscles::Characteristics charac(idealizedActuator.characteristics());
+        double newPennationAngle(25.0);
+        charac.setPennationAngle(newPennationAngle);
+        EXPECT_EQ(newPennationAngle, idealizedActuator.characteristics().pennationAngle());
+        EXPECT_EQ(newPennationAngle, shallowcopy.characteristics().pennationAngle());
         EXPECT_EQ(pennationAngleOriginal, deepcopynow.characteristics().pennationAngle());
         EXPECT_EQ(pennationAngleOriginal, deepcopylater.characteristics().pennationAngle());
 
