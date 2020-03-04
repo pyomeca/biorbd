@@ -21,6 +21,7 @@ namespace utils {
 class String;
 class Vector;
 class Vector3d;
+class Matrix;
 
 ///
 /// \brief Rotation matrix
@@ -109,6 +110,20 @@ public:
     static biorbd::utils::Rotation fromEulerAngles(
             const biorbd::utils::Vector& rot,
             const biorbd::utils::String& seq);
+
+    ///
+    /// \brief fromMarkers Creates a system of axes from two axes defined by markers
+    /// \param axis1markers The beginning and ending of the vector of the first axis
+    /// \param axis2markers The beginning and ending of the vector of the second axis
+    /// \param axesNames The names ("x", "y" or "z") of the axes
+    /// \param axisToRecalculate The axis to recalculate to ensure orthonormal system of axes
+    /// \return The system of axes
+    ///
+    static biorbd::utils::Matrix fromMarkersNonNormalized(
+            const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>& axis1markers,
+            const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>& axis2markers,
+            const std::pair<biorbd::utils::String, biorbd::utils::String> &axesNames,
+            const biorbd::utils::String& axisToRecalculate);
 
     ///
     /// \brief fromMarkers Creates a system of axes from two axes defined by markers

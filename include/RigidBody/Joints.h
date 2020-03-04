@@ -657,6 +657,16 @@ public:
             bool updateKin = true); // Wrapper pour le moment angulaire
    
     ///
+    /// \brief Get the mass matrix at a given position Q
+    /// \param Q The generalized coordinates
+    /// \param updateKin If the kinematics should be updated
+    /// \return The mass matrix
+    ///
+    biorbd::utils::Matrix massMatrix(
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            bool updateKin = true);
+
+    ///
     /// \brief Calculate the angular momentum of the center of mass
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
