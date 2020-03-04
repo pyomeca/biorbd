@@ -61,6 +61,74 @@ TEST(IdealizedActuator, unitTest){
 }
 }
 
+TEST(IdealizedActuator, copy)
+
+{
+    biorbd::Model model(modelPathForMuscleForce);
+    biorbd::muscles::IdealizedActuator idealizedActuator(
+        model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
+            muscleGroupForIdealizedActuator));
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    Q = Q.setOnes() / 10;
+
+    biorbd::muscles::IdealizedActuator shallowcopy(idealizedActuator);
+    biorbd::muscles::IdealizedActuator deepcopynow(idealizedActuator.DeepCopy());
+    biorbd::muscles::IdealizedActuator deepcopylater;
+    deepcopylater.DeepCopy(idealizedActuator);
+
+    EXPECT_STREQ(shallowcopy.name().c_str(), idealizedActuator.name().c_str());
+    EXPECT_STREQ(deepcopynow.name().c_str(), idealizedActuator.name().c_str());
+    EXPECT_STREQ(deepcopylater.name().c_str(), idealizedActuator.name().c_str());
+
+    idealizedActuator.setName("name");
+    EXPECT_STREQ(idealizedActuator.name().c_str(), "name");
+    EXPECT_STREQ(shallowcopy.name().c_str(), "name");
+    EXPECT_STREQ(deepcopynow.name().c_str(), "name");
+    EXPECT_STREQ(deepcopylater.name().c_str(), "name");
+}
+
+TEST(idealizedActuator, copyCharacteristics)
+{
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::IdealizedActuator idealizedActuator(
+            model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
+                muscleGroupForIdealizedActuator));
+
+        biorbd::muscles::IdealizedActuator shallowcopy(idealizedActuator);
+        biorbd::muscles::IdealizedActuator deepcopynow(idealizedActuator.DeepCopy());
+        biorbd::muscles::IdealizedActuator deepcopylater;
+        deepcopylater.DeepCopy(idealizedActuator);
+
+        double pennationAngleOriginal(idealizedActuator.characteristics().pennationAngle());
+        EXPECT_EQ(pennationAngleOriginal, shallowcopy.characteristics().pennationAngle());
+        EXPECT_EQ(pennationAngleOriginal, deepcopynow.characteristics().pennationAngle());
+        EXPECT_EQ(pennationAngleOriginal, deepcopylater.characteristics().pennationAngle());
+
+    }
+
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::IdealizedActuator idealizedActuator(
+            model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
+                muscleGroupForIdealizedActuator));
+        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        Q = Q.setOnes() / 10;
+        idealizedActuator.updateOrientations(model, Q);
+
+        biorbd::muscles::IdealizedActuator shallowcopy(idealizedActuator);
+        biorbd::muscles::IdealizedActuator deepcopynow(idealizedActuator.DeepCopy());
+        biorbd::muscles::IdealizedActuator deepcopylater;
+        deepcopylater.DeepCopy(idealizedActuator);
+
+        EXPECT_EQ(idealizedActuator.position().length(), shallowcopy.position().length());
+        EXPECT_EQ(idealizedActuator.position().length(), deepcopynow.position().length());
+        EXPECT_EQ(idealizedActuator.position().length(), deepcopylater.position().length());
+
+    }
+
+}
+
 TEST(MuscleForce, position)
 {
     // TODO
