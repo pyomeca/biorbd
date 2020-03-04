@@ -526,6 +526,15 @@ biorbd::utils::Vector3d biorbd::rigidbody::Joints::angularMomentum(
     return CalcAngularMomentum(Q, Qdot, updateKin);
 }
 
+biorbd::utils::Matrix biorbd::rigidbody::Joints::massMatrix (
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        bool updateKin)
+{
+    RigidBodyDynamics::Math::MatrixNd massMatrix(nbQ(), nbQ());
+    massMatrix.setZero();
+    RigidBodyDynamics::CompositeRigidBodyAlgorithm(*this, Q, massMatrix, updateKin);
+    return massMatrix;
+}
 
 biorbd::utils::Vector3d biorbd::rigidbody::Joints::CoMdot(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
