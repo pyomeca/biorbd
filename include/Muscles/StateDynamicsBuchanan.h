@@ -58,8 +58,11 @@ public:
     ///
     /// \brief Set the muscle excitation
     /// \param val Value of the muscle excitation
+    /// \param turnOffWarnings If the warnings should be OFF or ON.
     ///
-    virtual void setExcitation(double val);
+    virtual void setExcitation(
+            double val,
+            bool turnOffWarnings = false);
 
     ///
     /// \brief Set the neural command

@@ -7,10 +7,12 @@ biorbd::muscles::State::State(
         double excitation,
         double activation) :
     m_stateType(std::make_shared<biorbd::muscles::STATE_TYPE>()),
-    m_excitation(std::make_shared<double>(excitation)),
+    m_excitation(std::make_shared<double>(0)),
     m_excitationNorm(std::make_shared<double>(0)),
-    m_activation(std::make_shared<double>(activation))
+    m_activation(std::make_shared<double>(0))
 {
+    setExcitation(excitation, true);
+    setActivation(activation, true);
     setType();
 }
 
@@ -48,15 +50,23 @@ void biorbd::muscles::State::setExcitation(
         double val,
         bool turnOffWarnings) {
 
-    if (val<0){
+    if (val < 0){
         if (!turnOffWarnings) {
             biorbd::utils::Error::warning(
                         0, "Excitation can't be lower than 0, 0 is used then");
         }
         *m_excitation = 0;
     }
-    else
+    else if (val > 1) {
+        if (!turnOffWarnings) {
+            biorbd::utils::Error::warning(
+                        0, "Excitation can't be higher than 1, 1 is used then");
+        }
+        *m_excitation = 1;
+    }
+    else {
         *m_excitation = val;
+    }
 }
 
 double biorbd::muscles::State::excitation() const

@@ -338,7 +338,8 @@ TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
         // Set values under 0
         fatigueModel.setState(negativeFibersQuantityForFatigueXiaSetStateLimitsTest,
                               positiveFibersQuantityForFatigueXiaSetStateLimitsTest,
-                              positiveFibersQuantityForFatigueXiaSetStateLimitsTest);
+                              positiveFibersQuantityForFatigueXiaSetStateLimitsTest,
+                              true);
 
 
         // Check the values
@@ -349,7 +350,8 @@ TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
         // Set values over 1
         fatigueModel.setState(excessiveFibersQuantityForFatigueXiaSetStateLimitsTest,
                               0,
-                              positiveFibersQuantityForFatigueXiaSetStateLimitsTest-excessiveFibersQuantityForFatigueXiaSetStateLimitsTest);
+                              positiveFibersQuantityForFatigueXiaSetStateLimitsTest-excessiveFibersQuantityForFatigueXiaSetStateLimitsTest,
+                              true);
 
 
         // Check the values
@@ -364,7 +366,8 @@ TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
         // Set values to be corrected
         fatigueModel.setState(positiveFibersQuantityForFatigueXiaSetStateLimitsTest,
                               positiveFibersQuantityForFatigueXiaSetStateLimitsTest,
-                              negativeFibersQuantityForFatigueXiaSetStateLimitsTest);
+                              negativeFibersQuantityForFatigueXiaSetStateLimitsTest,
+                              true);
 
         // Check the values
         EXPECT_NEAR(fatigueModel.activeFibers(), positiveFibersQuantityForFatigueXiaSetStateLimitsTest+negativeFibersQuantityForFatigueXiaSetStateLimitsTest, requiredPrecision);
@@ -394,11 +397,11 @@ TEST(States, DynamicBuchanan){
     {
         biorbd::muscles::StateDynamicsBuchanan state;
         EXPECT_NEAR(state.excitation(), 0, requiredPrecision);
-        state.setExcitation(10);
+        state.setExcitation(10, true);
         EXPECT_NEAR(state.excitation(), 1, requiredPrecision);
     }
     {
-        biorbd::muscles::StateDynamicsBuchanan state(0.5);
+        biorbd::muscles::StateDynamicsBuchanan state(0, 0.5);
         EXPECT_NEAR(state.excitation(), 0.5, requiredPrecision);
     }
     {

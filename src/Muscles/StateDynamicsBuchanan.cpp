@@ -80,9 +80,11 @@ double biorbd::muscles::StateDynamicsBuchanan::timeDerivativeExcitation(
     return *m_excitationDot;
 }
 
-void biorbd::muscles::StateDynamicsBuchanan::setExcitation(double val)
+void biorbd::muscles::StateDynamicsBuchanan::setExcitation(
+        double val,
+        bool turnOffWarnings)
 {
-     biorbd::muscles::StateDynamics::setExcitation(val);
+     biorbd::muscles::StateDynamics::setExcitation(val, turnOffWarnings);
 
      // Update activation
      setActivation(0);
