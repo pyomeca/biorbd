@@ -649,8 +649,8 @@ void biorbd::Reader::readModelFile(
                 double maxForce(0);
                 double tendonSlackLength(0);
                 double pennAngle(0);
-                double maxExcitation(0);
-                double maxActivation(0);
+                double maxExcitation(1);
+                double maxActivation(1);
                 double PCSA(1);
                 biorbd::muscles::FatigueParameters fatigueParameters;
 
