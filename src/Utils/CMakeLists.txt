@@ -17,6 +17,7 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/Range.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Rotation.cpp    
     ${CMAKE_CURRENT_SOURCE_DIR}/RotoTransNode.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/RotoTransNodes.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Quaternion.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/String.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Timer.cpp

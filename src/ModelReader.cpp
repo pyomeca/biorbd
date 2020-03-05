@@ -305,7 +305,7 @@ void biorbd::Reader::readModelFile(
             else if (!main_tag.tolower().compare("mimu") && version >= 4){
                 biorbd::utils::Error::raise("MIMU is no more the right tag, change it to IMU!");
             }
-            else if (!main_tag.tolower().compare("imu") || !main_tag.tolower().compare("mimu")){
+            else if (!main_tag.tolower().compare("imu") || !main_tag.tolower().compare("mimu") || !main_tag.tolower().compare("customrt")){
                 biorbd::utils::String name;
                 file.read(name);
                 biorbd::utils::String parent_str("root");
@@ -440,7 +440,12 @@ void biorbd::Reader::readModelFile(
                 }
                 RT.setName(name);
                 RT.setParent(parent_str);
-                model->addIMU(RT, technical, anatomical);
+                if (!main_tag.tolower().compare("customrt")){
+                    model->addRT(RT);
+                }
+                else {
+                    model->addIMU(RT, technical, anatomical);
+                }
             }
             else if (!main_tag.tolower().compare("contact")){
                 biorbd::utils::String name;
