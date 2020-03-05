@@ -22,6 +22,8 @@ static unsigned int muscleForMuscleJacobian(1);
 
 static unsigned int muscleGroupForIdealizedActuator(1);
 static unsigned int muscleForIdealizedActuator(1);
+static unsigned int muscleGroupForHillType(1);
+static unsigned int muscleForHillType(1);
 
 TEST(IdealizedActuator, unitTest){
 {
@@ -54,7 +56,7 @@ TEST(IdealizedActuator, unitTest){
     QDot = QDot.setOnes() / 10;
     biorbd::muscles::IdealizedActuator idealizedActuator(model.
         muscleGroup(muscleGroupForIdealizedActuator).
-        muscle(muscleGroupForIdealizedActuator));
+        muscle(muscleForIdealizedActuator));
     EXPECT_NEAR(idealizedActuator.velocity(model, Q, QDot, true), 0.0022230374109936529, requiredPrecision);
     EXPECT_NEAR(idealizedActuator.velocity(model, Q, QDot, false), 0.0022230374109936529, requiredPrecision);
 
@@ -63,13 +65,11 @@ TEST(IdealizedActuator, unitTest){
 
 TEST(IdealizedActuator, copy)
 {
-
     {      
-
         biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::IdealizedActuator idealizedActuator(
             model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
-                muscleGroupForIdealizedActuator));
+                muscleForIdealizedActuator));
         biorbd::rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
 
@@ -87,14 +87,13 @@ TEST(IdealizedActuator, copy)
         EXPECT_STREQ(shallowcopy.name().c_str(), "myNewMuscleName");
         EXPECT_STREQ(deepcopynow.name().c_str(), "myNewMuscleName");
         EXPECT_STREQ(deepcopylater.name().c_str(), "myNewMuscleName");
-
     }
 
     {
         biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::IdealizedActuator idealizedActuator(
             model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
-                muscleGroupForIdealizedActuator));
+                muscleForIdealizedActuator));
 
         biorbd::muscles::IdealizedActuator shallowcopy(idealizedActuator);
         biorbd::muscles::IdealizedActuator deepcopynow(idealizedActuator.DeepCopy());
@@ -111,16 +110,17 @@ TEST(IdealizedActuator, copy)
         EXPECT_EQ(newPennationAngle, shallowcopy.characteristics().pennationAngle());
         EXPECT_EQ(pennationAngleOriginal, deepcopynow.characteristics().pennationAngle());
         EXPECT_EQ(pennationAngleOriginal, deepcopylater.characteristics().pennationAngle());
-
     }
 
     {
         biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::IdealizedActuator idealizedActuator(
             model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
-                muscleGroupForIdealizedActuator));
+                muscleForIdealizedActuator));
         biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        biorbd::rigidbody::GeneralizedVelocity QDot(model);
         Q = Q.setOnes() / 10;
+        QDot = QDot.setOnes() / 10;
         idealizedActuator.updateOrientations(model, Q);
 
         biorbd::muscles::IdealizedActuator shallowcopy(idealizedActuator);
@@ -132,9 +132,42 @@ TEST(IdealizedActuator, copy)
         EXPECT_EQ(idealizedActuator.position().length(), deepcopynow.position().length());
         EXPECT_EQ(idealizedActuator.position().length(), deepcopylater.position().length());
 
+        biorbd::muscles::Geometry geometry(idealizedActuator.position());
+        geometry.setInsertionInLocal(biorbd::utils::Vector3d(0.5, 0.6, 0.7));
+        
+        //Can't freakin update the orientations!!! TODO
+        //idealizedActuator.updateOrientations(model, Q, QDot, 2);
     }
-
 }
+
+TEST(HillType, unitTest)
+{
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillType hillType(
+            model.muscleGroup(muscleGroupForHillType).muscle(
+                muscleForHillType));
+        hillType.setName("newName");
+        EXPECT_STREQ(hillType.name().c_str(), "newName");
+
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillType hillType(
+            model.muscleGroup(muscleGroupForHillType).muscle(
+                muscleForHillType));
+        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        Q = Q.setOnes() / 10;
+        hillType.updateOrientations(model, Q);
+        static double activationEmgForHillTypeTest(1.0);
+        biorbd::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+
+        EXPECT_EQ(hillType.FlCE(emg), 0.9928132);
+
+
+    }
+}
+
 
 TEST(MuscleForce, position)
 {
