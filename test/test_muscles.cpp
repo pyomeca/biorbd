@@ -73,20 +73,22 @@ TEST(IdealizedActuator, copy)
         biorbd::rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
 
-        biorbd::muscles::IdealizedActuator shallowcopy(idealizedActuator);
-        biorbd::muscles::IdealizedActuator deepcopynow(idealizedActuator.DeepCopy());
-        biorbd::muscles::IdealizedActuator deepcopylater;
-        deepcopylater.DeepCopy(idealizedActuator);
+        biorbd::muscles::IdealizedActuator shallowCopy(idealizedActuator);
+        biorbd::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
+        biorbd::muscles::IdealizedActuator deepCopyLater;
+        deepCopyLater.DeepCopy(idealizedActuator);
 
-        EXPECT_STREQ(shallowcopy.name().c_str(), idealizedActuator.name().c_str());
-        EXPECT_STREQ(deepcopynow.name().c_str(), idealizedActuator.name().c_str());
-        EXPECT_STREQ(deepcopylater.name().c_str(), idealizedActuator.name().c_str());
+        biorbd::utils::String originalName(idealizedActuator.name());
+        EXPECT_STREQ(shallowCopy.name().c_str(), originalName.c_str());
+        EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
+        EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
 
-        idealizedActuator.setName("myNewMuscleName");
-        EXPECT_STREQ(idealizedActuator.name().c_str(), "myNewMuscleName");
-        EXPECT_STREQ(shallowcopy.name().c_str(), "myNewMuscleName");
-        EXPECT_STREQ(deepcopynow.name().c_str(), "myNewMuscleName");
-        EXPECT_STREQ(deepcopylater.name().c_str(), "myNewMuscleName");
+        biorbd::utils::String newName("MyNewMuscleName");
+        idealizedActuator.setName(newName);
+        EXPECT_STREQ(idealizedActuator.name().c_str(), newName.c_str());
+        EXPECT_STREQ(shallowCopy.name().c_str(), newName.c_str());
+        EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
+        EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
     }
 
     {
@@ -134,7 +136,7 @@ TEST(IdealizedActuator, copy)
 
         biorbd::muscles::Geometry geometry(idealizedActuator.position());
         geometry.setInsertionInLocal(biorbd::utils::Vector3d(0.5, 0.6, 0.7));
-        
+
         //Can't freakin update the orientations!!! TODO
         //idealizedActuator.updateOrientations(model, Q, QDot, 2);
     }
@@ -157,15 +159,22 @@ TEST(HillType, unitTest)
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
         biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        biorbd::rigidbody::GeneralizedVelocity QDot(model);
         Q = Q.setOnes() / 10;
-        hillType.updateOrientations(model, Q);
+        QDot = QDot.setOnes() / 10;
+        model.updateMuscles(Q, 2);
+        hillType.updateOrientations(model, Q, QDot);
         static double activationEmgForHillTypeTest(1.0);
         biorbd::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
-        EXPECT_EQ(hillType.FlCE(emg), 0.9928132);
-
-
+        EXPECT_NEAR(hillType.FlCE(emg), 0.67988981401208015, requiredPrecision);
+        EXPECT_NEAR(hillType.FlPE(), 0, requiredPrecision);
+        EXPECT_NEAR(hillType.FvCE(), 1.000886825333013, requiredPrecision);
+        EXPECT_NEAR(hillType.damping(), 0.00019534599393617336, requiredPrecision);
+        EXPECT_NEAR(hillType.force(emg), 424.95358302550062, requiredPrecision); //Fonctionne dans biorbd_new mais pas biorbd_ref?
     }
+
+
 }
 
 
