@@ -102,8 +102,8 @@ void biorbd::Reader::readModelFile(
                     RTinMatrix = false;
                 bool isRTset(false);
                 double mass = 0.00000001;
-                Eigen::Matrix3d inertia(Eigen::Matrix3d::Identity(3,3));
-                biorbd::utils::Rotation RT_R(Eigen::Matrix3d::Identity(3,3));
+                RigidBodyDynamics::Math::Matrix3d inertia(RigidBodyDynamics::Math::Matrix3d::Identity());
+                biorbd::utils::Rotation RT_R(RigidBodyDynamics::Math::Matrix3d::Identity());
                 biorbd::utils::Vector3d RT_T(0,0,0);
                 biorbd::utils::Vector3d com(0,0,0);
                 biorbd::rigidbody::Mesh mesh;
@@ -146,10 +146,11 @@ void biorbd::Reader::readModelFile(
                     else if (!property_tag.tolower().compare("mass"))
                          file.read(mass, variable);
                     else if (!property_tag.tolower().compare("inertia")){
-                        Eigen::Matrix3d inertia_tp(Eigen::Matrix3d::Identity(3,3));
-                        for (unsigned int i=0; i<9;++i)
-                            file.read(inertia_tp(i), variable);
-                        inertia = inertia_tp.transpose();
+                        for (unsigned int i=0; i<3;++i){
+                            for (unsigned int j=0; j<3; ++j){
+                                file.read(inertia(i,j), variable);
+                            }
+                        }
                     }
                     else if (!property_tag.tolower().compare("rtinmatrix")){
                         biorbd::utils::Error::check(isRTset==false, "RT should not appear before RTinMatrix");
@@ -158,16 +159,13 @@ void biorbd::Reader::readModelFile(
                     else if (!property_tag.tolower().compare("rt")){
                         if (RTinMatrix){ // Matrix 4x4
                             // Counter for classification (Compteur pour classification)
-                            unsigned int cmp_M = 0;
-                            unsigned int cmp_T = 0;
-                            for (unsigned int i=0; i<12;++i){
-                                if ((i+1)%4){
-                                    file.read(RT_R(cmp_M), variable);
-                                    ++cmp_M;
-                                }
-                                else{
-                                    file.read(RT_T(cmp_T), variable);
-                                    ++cmp_T;
+                            for (unsigned int i=0; i<3;++i){ // ignore the last line
+                                for (unsigned int j=0; j<4; ++j){
+                                    if (j!=3){
+                                        file.read(RT_R(j, i), variable);
+                                    } else {
+                                        file.read(RT_T(i), variable);
+                                    }
                                 }
                              }
                         }
@@ -212,7 +210,7 @@ void biorbd::Reader::readModelFile(
                         else if (segmentByFile == 1)
                             biorbd::utils::Error::raise("You must not mix file and mesh in segment");
                         biorbd::rigidbody::MeshFace tp;
-                        for (int i=0; i<3; ++i)
+                        for (unsigned int i=0; i<3; ++i)
                             file.read(tp(i));
                         mesh.addFace(tp);
                     }
@@ -307,57 +305,146 @@ void biorbd::Reader::readModelFile(
             else if (!main_tag.tolower().compare("mimu") && version >= 4){
                 biorbd::utils::Error::raise("MIMU is no more the right tag, change it to IMU!");
             }
-            else if (!main_tag.tolower().compare("imu") || !main_tag.tolower().compare("mimu")){
+            else if (!main_tag.tolower().compare("imu") || !main_tag.tolower().compare("mimu") || !main_tag.tolower().compare("customrt")){
                 biorbd::utils::String name;
                 file.read(name);
                 biorbd::utils::String parent_str("root");
                 biorbd::utils::RotoTransNode RT;
                 bool RTinMatrix(true);
-                if (version == 3) // By default for version 3 (not in matrix)
+                if (version >= 3) // By default for version 3 (not in matrix)
                     RTinMatrix = false;
                 bool isRTset(false);
                 bool technical = true;
                 bool anatomical = false;
+                bool firstTag = true;
+                bool fromMarkers(false);
+                biorbd::utils::String originMarkerName("");
+                biorbd::utils::String firstAxis("");
+                std::vector<biorbd::utils::String> firstAxisMarkerNames(2);
+                biorbd::utils::String secondAxis("");
+                std::vector<biorbd::utils::String> secondAxisMarkerNames(2);
+                biorbd::utils::String axisToRecalculate("");
                 while(file.read(property_tag) && !(!property_tag.tolower().compare("endimu")
-                                                   || !property_tag.tolower().compare("endmimu"))){
+                                                   || !property_tag.tolower().compare("endmimu")
+                                                   || !property_tag.tolower().compare("endcustomrt"))){
                     if (!property_tag.tolower().compare("parent")){
                         // Dynamically find the parent number
                         file.read(parent_str);
                         // If parent_int still equals zero, no name has concurred
                         biorbd::utils::Error::check(model->IsBodyId(model->GetBodyId(parent_str.c_str())), "Wrong name in a segment");
                     }
-                    else if (!property_tag.tolower().compare("rtinmatrix")){
-                        biorbd::utils::Error::check(isRTset==false, "RT should not appear before RTinMatrix");
-                        file.read(RTinMatrix);
-                    }
-                    else if (!property_tag.tolower().compare("rt")){
-                        if (RTinMatrix){ // Matrix 4x4
-                            for (unsigned int i=0; i<4;++i)
-                                for (unsigned int j=0; j<4;++j)
-                                        file.read(RT(i,j), variable);
+                    else if (!property_tag.tolower().compare("frommarkers")){
+                        if (!firstTag){
+                            biorbd::utils::Error::raise("The tag 'fromMarkers' should appear first in the IMU " + name);
                         }
                         else {
-                            biorbd::utils::String seq("xyz");
-                            biorbd::utils::Vector3d rot(0, 0, 0);
-                            biorbd::utils::Vector3d trans(0, 0, 0);
-                            // Transcribe the rotations
-                            for (unsigned int i=0; i<3; ++i)
-                                file.read(rot(i));
-                            // Transcribe the angle sequence for the rotations
-                            file.read(seq);
-                            // Transcribe the translations
-                            for (unsigned int i=0; i<3; ++i)
-                                file.read(trans(i));
-                            RT = biorbd::utils::RotoTrans(rot, trans, seq);
+                            fromMarkers = true;
                         }
-                        isRTset = true;
                     }
                     else if (!property_tag.tolower().compare("technical"))
                         file.read(technical);
                     else if (!property_tag.tolower().compare("anatomical"))
                         file.read(anatomical);
-                    RT.setName(name);
-                    RT.setParent(parent_str);
+
+                    if (fromMarkers){
+                        if (!property_tag.tolower().compare("originmarkername")){
+                            file.read(originMarkerName);
+                        }
+                        else if (!property_tag.tolower().compare("firstaxis")){
+                            file.read(firstAxis);
+                        }
+                        else if (!property_tag.tolower().compare("firstaxismarkernames")){
+                            for (unsigned int i = 0; i<2; ++i){
+                                file.read(firstAxisMarkerNames[i]);
+                            }
+                        }
+                        else if (!property_tag.tolower().compare("secondaxis")){
+                            file.read(secondAxis);
+                        }
+                        else if (!property_tag.tolower().compare("secondaxismarkernames")){
+                            for (unsigned int i = 0; i<2; ++i){
+                                file.read(secondAxisMarkerNames[i]);
+                            }
+                        }
+                        else if (!property_tag.tolower().compare("recalculate")){
+                            file.read(axisToRecalculate);
+                        }
+                    }
+                    else {
+                        if (!property_tag.tolower().compare("rtinmatrix")){
+                            biorbd::utils::Error::check(isRTset==false, "RT should not appear before RTinMatrix");
+                            file.read(RTinMatrix);
+                        }
+                        else if (!property_tag.tolower().compare("rt")){
+                            if (RTinMatrix){ // Matrix 4x4
+                                for (unsigned int i=0; i<4;++i)
+                                    for (unsigned int j=0; j<4;++j)
+                                            file.read(RT(i,j), variable);
+                            }
+                            else {
+                                biorbd::utils::String seq("xyz");
+                                biorbd::utils::Vector3d rot(0, 0, 0);
+                                biorbd::utils::Vector3d trans(0, 0, 0);
+                                // Transcribe the rotations
+                                for (unsigned int i=0; i<3; ++i)
+                                    file.read(rot(i));
+                                // Transcribe the angle sequence for the rotations
+                                file.read(seq);
+                                // Transcribe the translations
+                                for (unsigned int i=0; i<3; ++i)
+                                    file.read(trans(i));
+                                RT = biorbd::utils::RotoTrans(rot, trans, seq);
+                            }
+                            isRTset = true;
+                        }
+                    }
+                }
+                if (fromMarkers){
+                    std::vector<biorbd::rigidbody::NodeSegment> allMarkerOnSegment(model->marker(parent_str));
+                    biorbd::rigidbody::NodeSegment origin, axis1Beg, axis1End, axis2Beg, axis2End;
+                    bool isOrigin(false), isAxis1Beg(false), isAxis1End(false), isAxis2Beg(false), isAxis2End(false);
+                    for (auto mark : allMarkerOnSegment){
+                        if (!mark.biorbd::utils::Node::name().compare(originMarkerName)){
+                            origin = mark;
+                            isOrigin = true;
+                        }
+                        if (!mark.biorbd::utils::Node::name().compare(firstAxisMarkerNames[0])){
+                            axis1Beg = mark;
+                            isAxis1Beg = true;
+                        }
+                        if (!mark.biorbd::utils::Node::name().compare(firstAxisMarkerNames[1])){
+                            axis1End = mark;
+                            isAxis1End = true;
+                        }
+                        if (!mark.biorbd::utils::Node::name().compare(secondAxisMarkerNames[0])){
+                            axis2Beg = mark;
+                            isAxis2Beg = true;
+                        }
+                        if (!mark.biorbd::utils::Node::name().compare(secondAxisMarkerNames[1])){
+                            axis2End = mark;
+                            isAxis2End = true;
+                        }
+                    }
+                    if (! (isAxis1Beg && isAxis1End && isAxis2Beg && isAxis2End)){
+                        biorbd::utils::Error::raise("All the axes name and origin for the IMU " + name + " must be set and correspond to marker names previously defined on the same parent");
+                    }
+                    if (!(!axisToRecalculate.tolower().compare("firstaxis") || !axisToRecalculate.tolower().compare("secondaxis"))){
+                        biorbd::utils::Error::raise("The 'recalculate' option for IMU " + name + " must be 'firstaxis' or 'secondaxis'");
+                    }
+                    axisToRecalculate = !axisToRecalculate.tolower().compare("firstaxis") ? firstAxis : secondAxis;
+
+                    RT = biorbd::utils::RotoTrans::fromMarkers(
+                                origin,
+                                {axis1Beg, axis1End},
+                                {axis2Beg, axis2End},
+                                {firstAxis, secondAxis}, axisToRecalculate);
+                }
+                RT.setName(name);
+                RT.setParent(parent_str);
+                if (!main_tag.tolower().compare("customrt")){
+                    model->addRT(RT);
+                }
+                else {
                     model->addIMU(RT, technical, anatomical);
                 }
             }
@@ -390,7 +477,9 @@ void biorbd::Reader::readModelFile(
                             file.read(acc, variable);
                 }
                 if (version == 1){
+#ifndef BIORBD_USE_CASADI_MATH
                     biorbd::utils::Error::check(norm.norm() == 1.0, "Normal of the contact must be provided" );
+#endif
                     model->AddConstraint(parent_int, pos, norm, name, acc);
                 }
                 else if (version >= 2){
@@ -649,8 +738,8 @@ void biorbd::Reader::readModelFile(
                 double maxForce(0);
                 double tendonSlackLength(0);
                 double pennAngle(0);
-                double maxExcitation(0);
-                double maxActivation(0);
+                double maxExcitation(1);
+                double maxActivation(1);
                 double PCSA(1);
                 biorbd::muscles::FatigueParameters fatigueParameters;
 
@@ -1362,7 +1451,10 @@ biorbd::Reader::readViconMarkerFile(const biorbd::utils::Path& path,
     // now we'll use a stringstream to separate the fields out of the line (comma separated)
     unsigned int cmpFrames(1);
     while(!file.eof()){
-        biorbd::utils::Vector data_tp = biorbd::utils::Vector(static_cast<unsigned int>(3*markOrder.size())).setZero();
+        biorbd::utils::Vector data_tp = biorbd::utils::Vector(
+                    static_cast<unsigned int>(3*markOrder.size()));
+        data_tp.setZero();
+
         std::stringstream ss( t );
         biorbd::utils::String field;
         unsigned int cmp = 0;
@@ -1453,11 +1545,11 @@ biorbd::Reader::readMeshFileBiorbdSegments(
 
     for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints){
         biorbd::rigidbody::MeshFace patchTp;
-        int nVertices;
+        unsigned int nVertices;
         file.read(nVertices);
         if (nVertices != 3)
             biorbd::utils::Error::raise("Patches must be 3 vertices!");
-        for (int i=0; i<nVertices; ++i)
+        for (unsigned int i=0; i<nVertices; ++i)
             file.read(patchTp(i));
         mesh.addFace(patchTp);
     }
@@ -1517,11 +1609,11 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFilePly(
 
     for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints){
         biorbd::rigidbody::MeshFace patchTp;
-        int nVertices;
+        unsigned int nVertices;
         file.read(nVertices);
         if (nVertices != 3)
             biorbd::utils::Error::raise("Patches must be 3 vertices!");
-        for (int i=0; i<nVertices; ++i)
+        for (unsigned int i=0; i<nVertices; ++i)
             file.read(patchTp(i));
         int dump;
         // Remove if there are too many columns
@@ -1575,7 +1667,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileObj(
         else if (!text.compare("f")) {
             // If first element is a f, then a face is found
             // Face is ignore for now
-            for (int i=0; i<3; ++i) {
+            for (unsigned int i=0; i<3; ++i) {
                 file.read(text);
                 size_t idxSlash = text.find("/");
                 biorbd::utils::String tata3(text.substr (0,idxSlash));
@@ -1675,7 +1767,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileVtp(
                 std::stringstream fs( field );
                 fs >> vertex3;
             }
-            mesh.addFace(Eigen::Vector3i(vertex1, vertex2, vertex3));
+            mesh.addFace({vertex1, vertex2, vertex3});
         }
     }
 

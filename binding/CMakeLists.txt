@@ -2,7 +2,18 @@
 option(BINDER_C "Build C module" OFF)
 option(BINDER_PYTHON3 "Build Python SWIG module" OFF)
 option(BINDER_MATLAB "Build Matlab module" OFF)
- 
+
+if (BIORBD_USE_CASADI_MATH)
+    if(BINDER_C)
+        message("Casadi option is not compatible with BINDER_C")
+        set(BINDER_C OFF)
+    endif(BINDER_C)
+    if(BINDER_MATLAB)
+        message("Casadi option is not compatible with BINDER_MATLAB")
+        set(BINDER_MATLAB OFF)
+    endif(BINDER_MATLAB)
+endif(BIORBD_USE_CASADI_MATH)
+
 # Common to all swig interface
 if (BINDER_PYTHON3)
     # Set up swig
@@ -14,7 +25,7 @@ if (BINDER_PYTHON3)
 
     SET(SWIG_MODULE_RIGIDBODY_INCLUDE_COMMAND "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_rigidbody.i\"")
     if (NOT SKIP_KALMAN)
-        SET(SWIG_KALMAN_INCLUDE_COMMAND "%include \"${CMAKE_CURRENT_SOURCE_DIR}/../include/RigidBody/KalmanReconsMarkers.h\"")
+        SET(SWIG_KALMAN_INCLUDE_COMMAND "%include \"${CMAKE_SOURCE_DIR}/include/RigidBody/KalmanRecons.h\"\n%include \"${CMAKE_SOURCE_DIR}/include/RigidBody/KalmanReconsMarkers.h\"\n%include \"${CMAKE_SOURCE_DIR}/include/RigidBody/KalmanReconsIMU.h\"")
     endif()
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_rigidbody.i.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_rigidbody.i @ONLY)
 

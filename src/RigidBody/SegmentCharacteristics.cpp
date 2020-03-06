@@ -68,7 +68,7 @@ const biorbd::rigidbody::Mesh &biorbd::rigidbody::SegmentCharacteristics::mesh()
     return *m_mesh;
 }
 
-const Eigen::Matrix3d &biorbd::rigidbody::SegmentCharacteristics::inertia() const
+const RigidBodyDynamics::Math::Matrix3d &biorbd::rigidbody::SegmentCharacteristics::inertia() const
 {
     return mInertia;
 }

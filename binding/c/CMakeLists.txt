@@ -17,14 +17,8 @@ endif()
     
 # Add headers
 target_include_directories(${PROJECT_NAME} PUBLIC
-    ${RBDL_INCLUDE_DIR}
-    ${RBDL_INCLUDE_DIR}/..
-    ${Boost_INCLUDE_DIRS}
-    ${EIGEN3_INCLUDE_DIR}
-    ${DLIB_INCLUDE_DIR}
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_BINARY_DIR}/include
-    ${C_BINDING_PATH}
+  ${ALL_INCLUDE_DIR}
+  ${C_BINDING_PATH}
 )
 
 # Set runtime path for linux

@@ -30,7 +30,11 @@ class Integrator;
 ///
 /// \brief This is the core of the musculoskeletal model in biorbd
 ///
+#ifdef SWIG
+class BIORBD_API Joints
+#else
 class BIORBD_API Joints : public RigidBodyDynamics::Model
+#endif
 {
 public:
 
@@ -729,23 +733,6 @@ public:
             const RigidBodyDynamics::Math::Matrix3d &rotation,
             RigidBodyDynamics::Math::MatrixNd &G,
             bool updateKin);
-
-    ///
-    /// \brief Compute the forward dynamics using the contact lagrangian algorithm
-    /// \param Q The generalized coordinates
-    /// \param QDot The generalized velocities
-    /// \param torque The generalized torque
-    /// \param CS The constraint set (output)
-    /// \param QDDot The generalized acceleration (output)
-    ///
-    /// The forces that compensates for the contacts are stored in the constraint set variable
-    /// 
-    void ForwardDynamicsContactsLagrangian (
-            const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedVelocity &QDot,
-            const RigidBodyDynamics::Math::VectorNd &torque,
-            RigidBodyDynamics::ConstraintSet &CS,
-            RigidBodyDynamics::Math::VectorNd &QDDot);
 
     ///
     /// \brief Return the derivate of Q in function of Qdot (if not Quaternion, Qdot is directly returned)

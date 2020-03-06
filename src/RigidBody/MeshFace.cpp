@@ -3,8 +3,8 @@
 
 #include "Utils/Vector3d.h"
 
-biorbd::rigidbody::MeshFace::MeshFace(const Eigen::Vector3i& vertex) :
-    m_face(std::make_shared<Eigen::Vector3i>(vertex))
+biorbd::rigidbody::MeshFace::MeshFace(const std::vector<int>& vertex) :
+    m_face(std::make_shared<std::vector<int>>(vertex))
 {
 
 }
@@ -21,19 +21,19 @@ void biorbd::rigidbody::MeshFace::DeepCopy(const biorbd::rigidbody::MeshFace &ot
     *m_face = *other.m_face;
 }
 
-int &biorbd::rigidbody::MeshFace::operator()(int idx)
+int &biorbd::rigidbody::MeshFace::operator()(unsigned int idx)
 {
     return (*m_face)[idx];
 }
 
 biorbd::utils::Vector3d biorbd::rigidbody::MeshFace::faceAsDouble()
 {
-    return biorbd::utils::Vector3d(static_cast<double>(m_face->x()),
-        static_cast<double>(m_face->y()),
-        static_cast<double>(m_face->z()));
+    return biorbd::utils::Vector3d(static_cast<double>((*m_face)[0]),
+        static_cast<double>((*m_face)[1]),
+        static_cast<double>((*m_face)[2]));
 }
 
-void biorbd::rigidbody::MeshFace::setFace(const Eigen::Vector3i & pts)
+void biorbd::rigidbody::MeshFace::setFace(const std::vector<int> & pts)
 {
     *m_face = pts;
 }

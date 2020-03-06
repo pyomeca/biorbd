@@ -25,14 +25,8 @@ foreach(CPP_FILE ${CPP_FILES})
 
     # Add headers
     target_include_directories(${MATLAB_PROJECT_NAME} PUBLIC
-        ${Matlab_INCLUDE_DIRS}
-        ${RBDL_INCLUDE_DIR}
-        ${RBDL_INCLUDE_DIR}/..
-        ${Boost_INCLUDE_DIRS}
-        ${EIGEN3_INCLUDE_DIR}
-        ${DLIB_INCLUDE_DIR}
-        ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_BINARY_DIR}/include
+      ${ALL_INCLUDE_DIR}
+      ${Matlab_INCLUDE_DIRS}
     )
 
     # Set the name of the library

@@ -75,14 +75,14 @@ void biorbd::muscles::IdealizedActuator::DeepCopy(const biorbd::muscles::Idealiz
     biorbd::muscles::Muscle::DeepCopy(other);
 }
 
-const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::IdealizedActuator::force(
+const biorbd::utils::Scalar &biorbd::muscles::IdealizedActuator::force(
         const biorbd::muscles::StateDynamics &emg)
 {
     computeForce(emg);
     return *m_force;
 }
 
-const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::IdealizedActuator::force(
+const biorbd::utils::Scalar &biorbd::muscles::IdealizedActuator::force(
         biorbd::rigidbody::Joints &,
         const biorbd::rigidbody::GeneralizedCoordinates &,
         const biorbd::rigidbody::GeneralizedVelocity &,
@@ -93,7 +93,7 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force> > &biorbd::muscles::Id
     return *m_force;
 }
 
-const std::vector<std::shared_ptr<biorbd::muscles::Force>> &biorbd::muscles::IdealizedActuator::force(
+const biorbd::utils::Scalar &biorbd::muscles::IdealizedActuator::force(
         biorbd::rigidbody::Joints &,
         const biorbd::rigidbody::GeneralizedCoordinates &,
         const biorbd::muscles::StateDynamics &emg,
@@ -103,7 +103,7 @@ const std::vector<std::shared_ptr<biorbd::muscles::Force>> &biorbd::muscles::Ide
     return *m_force;
 }
 
-double biorbd::muscles::IdealizedActuator::getForceFromActivation(
+biorbd::utils::Scalar biorbd::muscles::IdealizedActuator::getForceFromActivation(
         const biorbd::muscles::State &emg)
 {
     return characteristics().forceIsoMax() * (emg.activation());

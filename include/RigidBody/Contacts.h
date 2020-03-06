@@ -21,7 +21,11 @@ class GeneralizedCoordinates;
 ///
 /// \brief Class Contacts
 ///
+#ifdef SWIG
+class BIORBD_API Contacts
+#else
 class BIORBD_API Contacts : public RigidBodyDynamics::ConstraintSet
+#endif
 {
 public:
     ///

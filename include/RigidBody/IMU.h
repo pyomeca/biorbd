@@ -15,8 +15,12 @@ namespace rigidbody {
 ///
 /// \brief Class IMU
 ///
+#ifdef SWIG
+class BIORBD_API IMU
+#else
 class BIORBD_API IMU : public biorbd::utils::RotoTransNode
-{ 
+#endif
+{
 public:
 
     ///
@@ -39,6 +43,7 @@ public:
             bool isTechnical = true, 
             bool isAnatomical = true); 
 
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Construct inertial measurement unit data from a Matrix4d
     /// \param other The other matrix
@@ -46,6 +51,14 @@ public:
     template<typename OtherDerived> IMU(
             const Eigen::MatrixBase<OtherDerived>& other) :
         biorbd::utils::RotoTransNode(other){}
+#endif
+#ifdef BIORBD_USE_CASADI_MATH
+    IMU(
+            const biorbd::rigidbody::IMU& imu);
+
+    biorbd::rigidbody::IMU operator*(const biorbd::rigidbody::IMU& other) const;
+#endif
+
 
     ///
     /// \brief Deep copy of the IMU data
@@ -71,6 +84,8 @@ public:
     ///
     bool isAnatomical() const;
 
+#ifndef SWIG
+#ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allows for operator= to be used
     /// \param other
@@ -81,6 +96,8 @@ public:
             this->biorbd::utils::RotoTransNode::operator=(other);
             return *this;
         }
+#endif
+#endif
 
 protected:
     std::shared_ptr<bool> m_technical; ///< If a IMU is a technical IMU

@@ -793,7 +793,7 @@ TEST(Quaternion, conversion) {
     {
         biorbd::utils::Vector3d rot (0.2, 0.3, 0.4);
         biorbd::utils::RotoTrans rt_from_euler;
-        rt_from_euler.fromEulerAngles(rot, biorbd::utils::Vector3d(), "xyz");
+        rt_from_euler = biorbd::utils::RotoTrans::fromEulerAngles(rot, biorbd::utils::Vector3d(), "xyz");
         
         biorbd::utils::Quaternion q(
                     biorbd::utils::Quaternion::fromXYZAngles(rot, 5));

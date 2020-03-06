@@ -10,7 +10,6 @@
 #include "Muscles/StateDynamicsBuchanan.h"
 #include "Muscles/Characteristics.h"
 #include "Muscles/Geometry.h"
-#include "Muscles/Force.h"
 
 biorbd::muscles::Muscle::Muscle() :
     biorbd::muscles::Compound(),
@@ -145,7 +144,7 @@ const biorbd::muscles::Geometry &biorbd::muscles::Muscle::position() const {
     return *m_position;
 }
 
-double biorbd::muscles::Muscle::length(
+biorbd::utils::Scalar biorbd::muscles::Muscle::length(
         biorbd::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         int updateKin)
@@ -158,7 +157,7 @@ double biorbd::muscles::Muscle::length(
     return position().length();
 }
 
-double biorbd::muscles::Muscle::musculoTendonLength(
+biorbd::utils::Scalar biorbd::muscles::Muscle::musculoTendonLength(
         biorbd::rigidbody::Joints &m,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         int updateKin)
@@ -171,7 +170,7 @@ double biorbd::muscles::Muscle::musculoTendonLength(
     return m_position->musculoTendonLength();
 }
 
-double biorbd::muscles::Muscle::velocity(
+biorbd::utils::Scalar biorbd::muscles::Muscle::velocity(
         biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedVelocity &Qdot,
@@ -185,7 +184,7 @@ double biorbd::muscles::Muscle::velocity(
     return m_position->velocity();
 }
 
-double biorbd::muscles::Muscle::activationDot(
+biorbd::utils::Scalar biorbd::muscles::Muscle::activationDot(
         const biorbd::muscles::StateDynamics &state, bool alreadyNormalized)
 {
     return m_state->timeDerivativeActivation(state, characteristics(), alreadyNormalized);
@@ -193,9 +192,7 @@ double biorbd::muscles::Muscle::activationDot(
 
 void biorbd::muscles::Muscle::computeForce(const biorbd::muscles::State &emg)
 {
-    double force = getForceFromActivation(emg);
-    (*m_force)[0]->setForceFromMuscleGeometry(*m_position, force); // origine vers le deuxieme point
-    (*m_force)[1]->setForceFromMuscleGeometry(*m_position, force); // insertion vers l'avant-dernier point
+    *m_force = getForceFromActivation(emg);
 }
 
 const std::vector<biorbd::utils::Vector3d>& biorbd::muscles::Muscle::musclesPointsInGlobal(

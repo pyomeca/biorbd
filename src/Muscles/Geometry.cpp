@@ -25,9 +25,9 @@ biorbd::muscles::Geometry::Geometry() :
     m_jacobian(std::make_shared<biorbd::utils::Matrix>()),
     m_G(std::make_shared<biorbd::utils::Matrix>()),
     m_jacobianLength(std::make_shared<biorbd::utils::Matrix>()),
-    m_length(std::make_shared<double>(0)),
-    m_muscleTendonLength(std::make_shared<double>(0)),
-    m_velocity(std::make_shared<double>(0)),
+    m_length(std::make_shared<biorbd::utils::Scalar>(0)),
+    m_muscleTendonLength(std::make_shared<biorbd::utils::Scalar>(0)),
+    m_velocity(std::make_shared<biorbd::utils::Scalar>(0)),
     m_isGeometryComputed(std::make_shared<bool>(false)),
     m_isVelocityComputed(std::make_shared<bool>(false)),
     m_posAndJacoWereForced(std::make_shared<bool>(false))
@@ -47,9 +47,9 @@ biorbd::muscles::Geometry::Geometry(
     m_jacobian(std::make_shared<biorbd::utils::Matrix>()),
     m_G(std::make_shared<biorbd::utils::Matrix>()),
     m_jacobianLength(std::make_shared<biorbd::utils::Matrix>()),
-    m_length(std::make_shared<double>(0)),
-    m_muscleTendonLength(std::make_shared<double>(0)),
-    m_velocity(std::make_shared<double>(0)),
+    m_length(std::make_shared<biorbd::utils::Scalar>(0)),
+    m_muscleTendonLength(std::make_shared<biorbd::utils::Scalar>(0)),
+    m_velocity(std::make_shared<biorbd::utils::Scalar>(0)),
     m_isGeometryComputed(std::make_shared<bool>(false)),
     m_isVelocityComputed(std::make_shared<bool>(false)),
     m_posAndJacoWereForced(std::make_shared<bool>(false))
@@ -220,17 +220,17 @@ const std::vector<biorbd::utils::Vector3d> &biorbd::muscles::Geometry::musclesPo
 }
 
 // Return the length and muscular velocity
-double biorbd::muscles::Geometry::length() const
+biorbd::utils::Scalar biorbd::muscles::Geometry::length() const
 {
     biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed at least before calling length()");
     return *m_length;
 }
-double biorbd::muscles::Geometry::musculoTendonLength() const
+biorbd::utils::Scalar biorbd::muscles::Geometry::musculoTendonLength() const
 {
     biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed at least before calling length()");
     return *m_muscleTendonLength;
 }
-double biorbd::muscles::Geometry::velocity() const
+biorbd::utils::Scalar biorbd::muscles::Geometry::velocity() const
 {
     biorbd::utils::Error::check(*m_isVelocityComputed, "Geometry must be computed before calling velocity()");
     return *m_velocity;
@@ -386,7 +386,7 @@ void biorbd::muscles::Geometry::setMusclesPointsInGlobal(
     setJacobianDimension(model);
 }
 
-double biorbd::muscles::Geometry::length(
+biorbd::utils::Scalar biorbd::muscles::Geometry::length(
         const biorbd::muscles::Characteristics *characteristics,
         biorbd::muscles::PathModifiers *pathModifiers)
 {
@@ -400,8 +400,11 @@ double biorbd::muscles::Geometry::length(
 
         biorbd::utils::Vector3d pi_wrap(0, 0, 0); // point on the wrapping related to insertion
         biorbd::utils::Vector3d po_wrap(0, 0, 0); // point on the wrapping related to origin
-        double lengthWrap(0);
-        static_cast<biorbd::muscles::WrappingObject&>(pathModifiers->object(0)).wrapPoints(po_wrap, pi_wrap, &lengthWrap);
+        biorbd::utils::Scalar lengthWrap(0);
+        static_cast<biorbd::muscles::WrappingObject&>(pathModifiers->object(0)).wrapPoints(
+                    po_wrap,
+                    pi_wrap,
+                    &lengthWrap);
         *m_muscleTendonLength = ((*m_pointsInGlobal)[0] - pi_wrap).norm()   + // length before the wrap
                     lengthWrap                 + // length on the wrap
                     (*m_pointsInGlobal->end() - po_wrap).norm();   // length after the wrap
@@ -412,12 +415,14 @@ double biorbd::muscles::Geometry::length(
             *m_muscleTendonLength += ((*m_pointsInGlobal)[i+1] - (*m_pointsInGlobal)[i]).norm();
     }
 
-    *m_length = (*m_muscleTendonLength - characteristics->tendonSlackLength())/cos(characteristics->pennationAngle());
+    *m_length = (*m_muscleTendonLength - characteristics->tendonSlackLength())
+                    /
+                    std::cos(characteristics->pennationAngle());
 
     return *m_length;
 }
 
-double biorbd::muscles::Geometry::velocity(
+biorbd::utils::Scalar biorbd::muscles::Geometry::velocity(
         const biorbd::rigidbody::GeneralizedVelocity &Qdot)
 {
     // Compute the velocity of the muscular elongation

@@ -11,9 +11,6 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/FatigueDynamicStateXia.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/FatigueParameters.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/FatigueState.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Force.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ForceFromInsertion.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ForceFromOrigin.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Geometry.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/HillType.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/IdealizedActuator.cpp
@@ -58,14 +55,7 @@ add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME}_utils ${MASTER_PROJECT_N
 
 # Add the include
 target_include_directories(${PROJECT_NAME} PUBLIC
-    ${RBDL_INCLUDE_DIR}
-    ${RBDL_INCLUDE_DIR}/..
-    ${Boost_INCLUDE_DIRS}
-    ${EIGEN3_INCLUDE_DIR}
-    ${DLIB_INCLUDE_DIR}
-    ${IPOPT_INCLUDE_DIR}
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_BINARY_DIR}/include
+  ${ALL_INCLUDE_DIR}
 )
 
 # Installation

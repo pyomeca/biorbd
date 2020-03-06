@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <vector>
-#include "Eigen/Dense"
 #include "biorbdConfig.h"
 
 namespace biorbd {
@@ -87,7 +86,7 @@ public:
     /// \brief Add a face patch to the mesh
     /// \param face The face patch to add
     ///
-    void addFace(const Eigen::Vector3i &face);
+    void addFace(const std::vector<int> &face);
 
     ///
     /// \brief Return the faces of the mesh

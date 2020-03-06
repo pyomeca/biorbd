@@ -101,7 +101,7 @@ public:
     /// \param emg EMG data
     /// \return The force
     ///
-    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
+    virtual const biorbd::utils::Scalar& force(
             const biorbd::muscles::StateDynamics& emg);
 
     ///
@@ -113,7 +113,7 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     /// \return The force vector at origin and insertion
     ///
-    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
+    virtual const biorbd::utils::Scalar& force(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedVelocity& Qdot,
@@ -128,7 +128,7 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     /// \return The force vector at origin and insertion
     ///
-    virtual const std::vector<std::shared_ptr<biorbd::muscles::Force>>& force(
+    virtual const biorbd::utils::Scalar& force(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::muscles::StateDynamics& emg,
@@ -138,7 +138,7 @@ protected:
     /// \brief Function allowing modification of the way the multiplication is done in computeForce(EMG)
     /// \param emg The EMG data
     /// \return The force from activation
-    virtual double getForceFromActivation(
+    virtual biorbd::utils::Scalar getForceFromActivation(
             const biorbd::muscles::State &emg);
 
     ///

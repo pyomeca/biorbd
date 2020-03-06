@@ -19,39 +19,34 @@ static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
 static unsigned int muscleGroupForMuscleJacobian(1);
 static unsigned int muscleForMuscleJacobian(1);
 
+
+
+TEST(MuscleForce, position)
+{
+    // TODO
+    // Position of origin, insertion, and path in local
+    // Position of origin, insertion, and path in global
+}
+
 TEST(MuscleForce, force)
 {
     biorbd::Model model(modelPathForMuscleForce);
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
     biorbd::rigidbody::GeneralizedVelocity QDot(model);
-    Q.setOnes()/10;
-    QDot.setOnes()/10;
+    Q.setOnes();
+    QDot.setOnes();
     std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> states;
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i)
         states.push_back(std::make_shared<biorbd::muscles::StateDynamics>(0, 0.2));
     model.updateMuscles(Q, QDot, true);
 
-    const std::vector<std::vector<std::shared_ptr<biorbd::muscles::Force>>>& force_tp = model.musclesForces(states, false);
-    Eigen::VectorXd F = biorbd::utils::Vector(static_cast<unsigned int>(force_tp.size()));
-    for (unsigned int i=0; i<force_tp.size(); ++i)
-        F(i) = (force_tp[i])[0]->norm();
+    const biorbd::utils::Vector& F = model.musclesForces(states, false);
 
     Eigen::VectorXd ExpectedForce(model.nbMuscleTotal());
     ExpectedForce << 647.25276356553593, 119.55997461719004, 85.85568070134883,
             118.01635424513141, 113.18455892403414, 189.84361438713745;
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i)
         EXPECT_NEAR(F(i), ExpectedForce(i), requiredPrecision);
-}
-
-TEST(MuscleForce, unitTest)
-{
-	EXPECT_NO_THROW(biorbd::muscles::Force());
-	{
-		biorbd::muscles::Force force(1,2,3);
-		for (unsigned int i=0; i<3; ++i){
-			EXPECT_NEAR(force[i], i + 1, requiredPrecision);
-		}
-	}
 }
 
 TEST(MuscleForce, torqueFromMuscles)

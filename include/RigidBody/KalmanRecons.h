@@ -25,6 +25,7 @@ class GeneralizedAcceleration;
 class BIORBD_API KalmanRecons
 {
 public:
+#ifndef SWIG
     ///
     /// \brief Parameters of the reconstruction
     ///
@@ -61,6 +62,7 @@ public:
             double m_noiseFactor; ///< The noise factor
             double m_errorFactor; ///< The error factor
     };
+#endif
 
     // Constructor 
 

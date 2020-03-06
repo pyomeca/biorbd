@@ -13,7 +13,7 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder() :
     m_RTtoParent(std::make_shared<biorbd::utils::RotoTrans>()),
     m_p1Wrap(std::make_shared<biorbd::utils::Vector3d>()),
     m_p2Wrap(std::make_shared<biorbd::utils::Vector3d>()),
-    m_lengthAroundWrap(std::make_shared<double>(0))
+    m_lengthAroundWrap(std::make_shared<biorbd::utils::Scalar>(0))
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_CYLINDER;
 }
@@ -30,7 +30,7 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder(
     m_RTtoParent(std::make_shared<biorbd::utils::RotoTrans>(rt)),
     m_p1Wrap(std::make_shared<biorbd::utils::Vector3d>()),
     m_p2Wrap(std::make_shared<biorbd::utils::Vector3d>()),
-    m_lengthAroundWrap(std::make_shared<double>(0))
+    m_lengthAroundWrap(std::make_shared<biorbd::utils::Scalar>(0))
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_CYLINDER;
 }
@@ -49,7 +49,7 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder(
     m_RTtoParent(std::make_shared<biorbd::utils::RotoTrans>(rt)),
     m_p1Wrap(std::make_shared<biorbd::utils::Vector3d>()),
     m_p2Wrap(std::make_shared<biorbd::utils::Vector3d>()),
-    m_lengthAroundWrap(std::make_shared<double>(0))
+    m_lengthAroundWrap(std::make_shared<biorbd::utils::Scalar>(0))
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_CYLINDER;
 }
@@ -79,7 +79,7 @@ void biorbd::muscles::WrappingCylinder::wrapPoints(
         const biorbd::utils::Vector3d& p2_bone,
         biorbd::utils::Vector3d& p1,
         biorbd::utils::Vector3d& p2,
-        double *length)
+        biorbd::utils::Scalar *length)
 {
     // This function takes the position of the wrapping and finds the location where muscle 1 and 2 leave the wrapping object
 
@@ -125,7 +125,7 @@ void biorbd::muscles::WrappingCylinder::wrapPoints(
         const biorbd::utils::Vector3d& p2_bone,
         biorbd::utils::Vector3d& p1,
         biorbd::utils::Vector3d& p2,
-        double *length) {
+        biorbd::utils::Scalar *length) {
     // This function takes a model and a position of the model and returns the location where muscle 1 et 2 leave the wrapping object
 
     wrapPoints(RT(model,Q), p1_bone, p2_bone, p1, p2, length);
@@ -134,7 +134,7 @@ void biorbd::muscles::WrappingCylinder::wrapPoints(
 void biorbd::muscles::WrappingCylinder::wrapPoints(
         biorbd::utils::Vector3d& p1,
         biorbd::utils::Vector3d& p2,
-        double *length){
+        biorbd::utils::Scalar *length){
     p1 = *m_p1Wrap;
     p2 = *m_p2Wrap;
     if (length != nullptr)
@@ -183,13 +183,15 @@ double biorbd::muscles::WrappingCylinder::length() const
 void biorbd::muscles::WrappingCylinder::findTangentToCircle(
         const biorbd::utils::Vector3d& p,
         biorbd::utils::Vector3d& p_tan) const {
-    double p_dot = p.block(0,0,2,1).dot(p.block(0,0,2,1));
-    const Eigen::Vector2d& Q0(radius()*radius()/p_dot*p.block(0,0,2,1));
-    Eigen::Matrix2d tp;
-    tp << 0, -1,
-          1, 0;
+    biorbd::utils::Scalar p_dot = p.block(0,0,2,1).dot(p.block(0,0,2,1));
 
-    const Eigen::Vector2d& T(radius()/p_dot*std::sqrt(p_dot-radius()*radius()) * tp * p.block(0,0,2,1));
+    const RigidBodyDynamics::Math::Vector2d& Q0(radius()*radius()/p_dot*p.block(0,0,2,1));
+    RigidBodyDynamics::Math::Matrix2d tp(RigidBodyDynamics::Math::Matrix2d::Zero());
+    tp(0, 1) = -1;
+    tp(1, 0) = 1;
+
+    const RigidBodyDynamics::Math::Vector2d& T(
+                radius()/p_dot*std::sqrt(p_dot-radius()*radius()) * tp * p.block(0,0,2,1));
 
     // GEt the tangent on both sides
     NodeMusclePair m(p,p);
@@ -204,22 +206,38 @@ void biorbd::muscles::WrappingCylinder::selectTangents(
         const NodeMusclePair &p1,
         biorbd::utils::Vector3d &p_tan) const {
     if (m_isCylinderPositiveSign){
+#ifdef BIORBD_USE_CASADI_MATH
+        p_tan = casadi::MX::if_else(
+                    casadi::MX::ge((*p1.m_p2)(0), (*p1.m_p1)(0)),
+                    *p1.m_p2, *p1.m_p1);
+#else
         if ((*p1.m_p2)(0) >= (*p1.m_p1)(0))
             p_tan = *p1.m_p2;
         else
             p_tan = *p1.m_p1;
+#endif
     } else {
+#ifdef BIORBD_USE_CASADI_MATH
+        p_tan = casadi::MX::if_else(
+                    casadi::MX::lt((*p1.m_p2)(0), (*p1.m_p1)(0)),
+                    *p1.m_p2, *p1.m_p1);
+#else
         if ( (*p1.m_p2)(0) < (*p1.m_p1)(0))
             p_tan = *p1.m_p2;
         else
             p_tan = *p1.m_p1;
+#endif
     }
 
 }
 bool biorbd::muscles::WrappingCylinder::findVerticalNode(const NodeMusclePair &pointsInGlobal,
         NodeMusclePair &pointsToWrap) const {
     // Before eerything, make sure the point wrap
+#ifdef BIORBD_USE_CASADI_MATH
+    if (checkIfWraps(pointsInGlobal, pointsToWrap).is_zero()){ // If it doesn't pass by the wrap, put NaN and stop
+#else
     if (!checkIfWraps(pointsInGlobal, pointsToWrap)){ // If it doesn't pass by the wrap, put NaN and stop
+#endif
         for (unsigned int i=0; i<3; ++i){
             (*pointsToWrap.m_p1)(i) = static_cast<double>(NAN);
             (*pointsToWrap.m_p2)(i) = static_cast<double>(NAN);
@@ -248,11 +266,10 @@ bool biorbd::muscles::WrappingCylinder::findVerticalNode(const NodeMusclePair &p
     Y = Y/Y.norm();
     Z = Z/Z.norm();
     // Concatenate to get the rotation matrix
-    biorbd::utils::RotoTrans R;
-    R << X(0), X(1), X(2), 0,
-         Y(0), Y(1), Y(2), 0,
-         Z(0), Z(1), Z(2), 0,
-         0,    0,    0,    1;
+    biorbd::utils::RotoTrans R(X(0), X(1), X(2), 0,
+                               Y(0), Y(1), Y(2), 0,
+                               Z(0), Z(1), Z(2), 0,
+                               0,    0,    0,    1);
 
     // Turn the points in the R reference
     biorbd::utils::Vector3d globA(*pointsInGlobal.m_p1);
@@ -265,15 +282,36 @@ bool biorbd::muscles::WrappingCylinder::findVerticalNode(const NodeMusclePair &p
     wrapB.applyRT(R);
 
     // The height depends on the relative distance
-    (*pointsToWrap.m_p1)(2) = (wrapA(0)-globB(0)) / (globA(0)-globB(0)) * ((*pointsInGlobal.m_p1)(2)-(*pointsInGlobal.m_p2)(2)) + (*pointsInGlobal.m_p2)(2);
-    (*pointsToWrap.m_p2)(2) = (wrapB(0)-globB(0)) / (globA(0)-globB(0)) * ((*pointsInGlobal.m_p1)(2)-(*pointsInGlobal.m_p2)(2)) + (*pointsInGlobal.m_p2)(2);
+    (*pointsToWrap.m_p1)(2) = biorbd::utils::Scalar(wrapA(0)-globB(0)) /
+            biorbd::utils::Scalar(globA(0)-globB(0)) *
+            ((*pointsInGlobal.m_p1)(2)-(*pointsInGlobal.m_p2)(2)) + (*pointsInGlobal.m_p2)(2);
+    (*pointsToWrap.m_p2)(2) = biorbd::utils::Scalar(wrapB(0)-globB(0)) /
+            biorbd::utils::Scalar(globA(0)-globB(0)) *
+            ((*pointsInGlobal.m_p1)(2)-(*pointsInGlobal.m_p2)(2)) + (*pointsInGlobal.m_p2)(2);
 
     return true;
 }
+#ifdef BIORBD_USE_CASADI_MATH
+biorbd::utils::Scalar biorbd::muscles::WrappingCylinder::checkIfWraps(
+        const NodeMusclePair &pointsInGlobal,
+        NodeMusclePair &pointsToWrap) const {
+    biorbd::utils::Scalar isWrap = 1;
+
+    // If the straight line between the two points go through the cylinder,there is a wrap
+    return casadi::MX::if_else(
+                (casadi::MX::lt((*pointsToWrap.m_p1)(0), (*pointsToWrap.m_p2)(0)) &&
+                    casadi::MX::gt((*pointsInGlobal.m_p1)(0), (*pointsInGlobal.m_p2)(0))) ||
+                (casadi::MX::gt((*pointsToWrap.m_p1)(0), (*pointsToWrap.m_p2)(0)) &&
+                                    casadi::MX::lt((*pointsInGlobal.m_p1)(0), (*pointsInGlobal.m_p2)(0))),
+                0, 1);
+}
+#else
 bool biorbd::muscles::WrappingCylinder::checkIfWraps(
         const NodeMusclePair &pointsInGlobal,
         NodeMusclePair &pointsToWrap) const {
-    bool isWrap = true;
+    bool isWrap = 1;
+    // It seems that all this function is ignored up to the last check... Once
+    // it is checked, validate the Casadi implementation
 
     // First quick tests
     // if both points are on the left and we have to go left
@@ -295,7 +333,7 @@ bool biorbd::muscles::WrappingCylinder::checkIfWraps(
 
     // If we have a height* smaller than the radius, there is a numerical aberation
     // * en haut lorsque vue de dessus avec l'axe y pointant vers le haut...
-    if ( abs( (*pointsInGlobal.m_p1)(1)) < radius() || abs( (*pointsInGlobal.m_p2)(1)) < radius() )
+    if ( fabs( (*pointsInGlobal.m_p1)(1)) < radius() || fabs( (*pointsInGlobal.m_p2)(1)) < radius() )
         isWrap = false;
 
     // If we have reached this stage, one test is left
@@ -309,8 +347,9 @@ bool biorbd::muscles::WrappingCylinder::checkIfWraps(
     // Return the answer
     return isWrap;
 }
-double biorbd::muscles::WrappingCylinder::computeLength(const NodeMusclePair &p) const {
-    double arc = std::acos(    ( (*p.m_p1)(0) * (*p.m_p2)(0) + (*p.m_p1)(1) * (*p.m_p2)(1))
+#endif
+biorbd::utils::Scalar biorbd::muscles::WrappingCylinder::computeLength(const NodeMusclePair &p) const {
+    biorbd::utils::Scalar arc = std::acos(    ( (*p.m_p1)(0) * (*p.m_p2)(0) + (*p.m_p1)(1) * (*p.m_p2)(1))
                                             /
              std::sqrt( ((*p.m_p1)(0) * (*p.m_p1)(0) + (*p.m_p1)(1) * (*p.m_p1)(1)) *
                         ( (*p.m_p2)(0) * (*p.m_p2)(0) + (*p.m_p2)(1) * (*p.m_p2)(1))   )

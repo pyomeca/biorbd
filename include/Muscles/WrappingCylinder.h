@@ -75,7 +75,7 @@ public:
             const biorbd::utils::Vector3d& p2_bone,
             biorbd::utils::Vector3d& p1,
             biorbd::utils::Vector3d& p2,
-            double* length = nullptr); 
+            biorbd::utils::Scalar* length = nullptr);
 
     ///
     /// \brief From the position of the cylinder, return the 2 locations where the muscle leaves the wrapping object
@@ -94,7 +94,7 @@ public:
             const biorbd::utils::Vector3d& p2_bone,
             biorbd::utils::Vector3d& p1,
             biorbd::utils::Vector3d& p2,
-            double* length = nullptr) ; 
+            biorbd::utils::Scalar* length = nullptr) ;
 
     ///
     /// \brief Returns the previously computed 2 locations where the muscle leaves the wrapping object
@@ -105,7 +105,7 @@ public:
     void wrapPoints(
             biorbd::utils::Vector3d& p1,
             biorbd::utils::Vector3d& p2,
-            double* length = nullptr); 
+            biorbd::utils::Scalar* length = nullptr);
 
     ///
     /// \brief Return the RotoTrans matrix of the cylinder
@@ -205,7 +205,11 @@ protected:
     /// \param pointsToWrap The points to wrap
     /// \return If the wrapper has to be done
     ///
+#ifdef BIORBD_USE_CASADI_MATH
+    biorbd::utils::Scalar checkIfWraps(
+#else
     bool checkIfWraps(
+#endif
             const NodeMusclePair &pointsInGlobal,
             NodeMusclePair &pointsToWrap) const;
 
@@ -214,7 +218,7 @@ protected:
     /// \param p the muscle node pair
     /// \return The muscle lengh on the cylinder
     ///
-    double computeLength(
+    biorbd::utils::Scalar computeLength(
             const NodeMusclePair &p) const;
 
     std::shared_ptr<double> m_dia; ///< Diameter of the cylinder diametre du cylindre
@@ -224,7 +228,7 @@ protected:
 
     std::shared_ptr<biorbd::utils::Vector3d> m_p1Wrap; ///< First point of contact with the wrap
     std::shared_ptr<biorbd::utils::Vector3d> m_p2Wrap; ///< Second point of contact with the wrap
-    std::shared_ptr<double> m_lengthAroundWrap ; ///< Length between p1 and p2
+    std::shared_ptr<biorbd::utils::Scalar> m_lengthAroundWrap ; ///< Length between p1 and p2
 
 };
 

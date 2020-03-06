@@ -17,6 +17,18 @@
 #define _ENABLE_EXTENDED_ALIGNED_STORAGE
 #endif
 
+// Choice of linear algebra backend
+#cmakedefine BIORBD_USE_EIGEN3_MATH
+#cmakedefine BIORBD_USE_CASADI_MATH
+
+// Make sure rbdl was compile according to the requested linear algebra library
+#include "rbdl_config.h"
+#ifdef BIORBD_USE_CASADI_MATH
+#ifndef RBDL_USE_CASADI_MATH
+
+#endif
+#endif
+
 // Choice of modules
 #cmakedefine MODULE_ACTUATORS
 #cmakedefine MODULE_MUSCLES

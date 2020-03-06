@@ -1,6 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Actuators/ActuatorGauss3p.h"
 
+#include "Utils/Error.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 
@@ -125,8 +126,12 @@ void biorbd::actuator::ActuatorGauss3p::DeepCopy(
     *m_qopt = *other.m_qopt;
 }
 
+biorbd::utils::Scalar biorbd::actuator::ActuatorGauss3p::torqueMax()
+{
+    biorbd::utils::Error::raise("torqueMax for ActuatorGauss3p must be called with Q and Qdot");
+}
 
-double biorbd::actuator::ActuatorGauss3p::torqueMax(
+biorbd::utils::Scalar biorbd::actuator::ActuatorGauss3p::torqueMax(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedVelocity &Qdot){
     double pos(Q[*m_dofIdx] * 180/M_PI);

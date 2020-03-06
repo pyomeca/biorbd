@@ -4,6 +4,7 @@
 %{
 #define SWIG_FILE_WITH_INIT
 #include "Python.h"
+
 #include "numpy/arrayobject.h"
 
 #include "BiorbdModel.h"
@@ -19,6 +20,61 @@
     import_array();
 %}
 
+%include "@CMAKE_BINARY_DIR@/include/biorbdConfig.h"
+
+// -- STRING --//
+%typemap(typecheck, precedence=2300) biorbd::utils::String &{
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__String,  0  | 0)) && argp1) {
+        // Test if it is a pointer to String already exists
+        $1 = true;
+    } else if( PyUnicode_Check($input) ) {
+        // test if it is a string (python3 has unicode)
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+};
+%typemap(in) biorbd::utils::String &{
+    void * argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__String,  0  | 0)) && argp1) {
+        // Recast the pointer
+        $1 = reinterpret_cast< biorbd::utils::String * >(argp1);
+    } else if( PyUnicode_Check($input) ) {
+        // Interpret the string
+        $1 = new biorbd::utils::String(PyUnicode_AsUTF8($input));
+    } else {
+        PyErr_SetString(PyExc_ValueError, "String must be a biorbd::utils::String or string");
+        SWIG_fail;
+    }
+};
+
+// --- Path --- //
+%typemap(typecheck, precedence=2310) biorbd::utils::Path &{
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Path,  0  | 0)) && argp1) {
+        // Test if it is a pointer to Path already exists
+        $1 = true;
+    } else if( PyUnicode_Check($input) ) {
+        // test if it is a string (python3 has unicode)
+        $1 = true;
+    } else {
+        $1 = false;
+    }
+};
+%typemap(in) biorbd::utils::Path &{
+    void * argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Path,  0  | 0)) && argp1) {
+        // Recast the pointer
+        $1 = reinterpret_cast< biorbd::utils::Path * >(argp1);
+    } else if( PyUnicode_Check($input) ) {
+        // Interpret the string
+        $1 = new biorbd::utils::Path(PyUnicode_AsUTF8($input));
+    } else {
+        PyErr_SetString(PyExc_ValueError, "Path must be a Path or string");
+        SWIG_fail;
+    }
+};
 
 // --- biorbd::rigidbody::Joints --- //
 %typemap(typecheck, precedence=2000) biorbd::rigidbody::Joints &{
@@ -43,6 +99,7 @@
     }
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
 // --- Quaternion --- //
 %extend biorbd::utils::Quaternion{
     PyObject* to_array(){
@@ -90,6 +147,7 @@
         return output;
     };
 }
+
 %typemap(typecheck, precedence=2155) Eigen::Matrix3d & {
     if( PyArray_Check($input) ) {
         // test if it is a numpy array
@@ -558,34 +616,6 @@ biorbd::rigidbody::GeneralizedAcceleration & {
     }
 };
 
-
-// --- Path --- //
-%typemap(typecheck, precedence=2310) biorbd::utils::Path &{
-    void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Path,  0  | 0)) && argp1) {
-        // Test if it is a pointer to Path already exists
-        $1 = true;
-    } else if( PyUnicode_Check($input) ) {
-        // test if it is a string (python3 has unicode)
-        $1 = true;
-    } else {
-        $1 = false;
-    }
-};
-%typemap(in) biorbd::utils::Path &{
-    void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Path,  0  | 0)) && argp1) {
-        // Recast the pointer
-        $1 = reinterpret_cast< biorbd::utils::Path * >(argp1);
-    } else if( PyUnicode_Check($input) ) {
-        // Interpret the string
-        $1 = new biorbd::utils::Path(PyUnicode_AsUTF8($input));
-    } else {
-        PyErr_SetString(PyExc_ValueError, "Path must be a Path or string");
-        SWIG_fail;
-    }
-};
-
 %extend biorbd::utils::RotoTrans{
     PyObject* to_array(){
         int nArraySize(2);
@@ -623,33 +653,7 @@ biorbd::rigidbody::GeneralizedAcceleration & {
         return output;
     }
 };
-
-// -- STRING --//
-%typemap(typecheck, precedence=2300) biorbd::utils::String &{
-    void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__String,  0  | 0)) && argp1) {
-        // Test if it is a pointer to String already exists
-        $1 = true;
-    } else if( PyUnicode_Check($input) ) {
-        // test if it is a string (python3 has unicode)
-        $1 = true;
-    } else {
-        $1 = false;
-    }
-};
-%typemap(in) biorbd::utils::String &{
-    void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__String,  0  | 0)) && argp1) {
-        // Recast the pointer
-        $1 = reinterpret_cast< biorbd::utils::String * >(argp1);
-    } else if( PyUnicode_Check($input) ) {
-        // Interpret the string
-        $1 = new biorbd::utils::String(PyUnicode_AsUTF8($input));
-    } else {
-        PyErr_SetString(PyExc_ValueError, "String must be a biorbd::utils::String or string");
-        SWIG_fail;
-    }
-};
+#endif
 
 // Import the main swig interface
 %include @CMAKE_CURRENT_BINARY_DIR@/../biorbd.i

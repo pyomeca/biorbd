@@ -3,33 +3,73 @@
 
 #include "Utils/Error.h"
 #include "Utils/String.h"
+#include "Utils/Vector3d.h"
 
 biorbd::utils::Vector::Vector() :
-    Eigen::VectorXd()
+    RigidBodyDynamics::Math::VectorNd()
 {
 
 }
+
 biorbd::utils::Vector::Vector(
         unsigned int size) :
-    Eigen::VectorXd(size)
+    RigidBodyDynamics::Math::VectorNd(size)
 {
 
 }
 
-double biorbd::utils::Vector::norm(
+biorbd::utils::Vector::Vector(
+        const biorbd::utils::Vector& v) :
+    RigidBodyDynamics::Math::VectorNd (v)
+{
+
+}
+
+biorbd::utils::Vector::Vector(
+        const RigidBodyDynamics::Math::VectorNd &v) :
+    RigidBodyDynamics::Math::VectorNd (v)
+{
+
+}
+
+biorbd::utils::Vector::Vector(
+        const biorbd::utils::Vector3d& v) :
+    RigidBodyDynamics::Math::VectorNd (v)
+{
+
+}
+
+#ifdef BIORBD_USE_CASADI_MATH
+
+biorbd::utils::Vector::Vector(const casadi::MX &v) :
+    RigidBodyDynamics::Math::VectorNd(v)
+{
+
+}
+
+biorbd::utils::Vector::Vector(
+        const RBDLCasadiMath::MX_Xd_SubMatrix &m) :
+    RigidBodyDynamics::Math::VectorNd (m)
+{
+
+}
+
+#endif
+
+biorbd::utils::Scalar biorbd::utils::Vector::norm(
         unsigned int p,
         bool skipRoot) const 
 {
     biorbd::utils::Error::check(p >= 2, "p must be superior or equal to 2");
 
     if (p == 2){
-        double n = dot(*this);
+        biorbd::utils::Scalar n = dot(*this);
         if (skipRoot)
             return n;
         else
             return std::sqrt(n);
     } else {
-        double res(0);
+        biorbd::utils::Scalar res(0);
         for(unsigned int i=0; i < size(); ++i)
             res += std::pow(fabs((*this)[i]), p);
         if (skipRoot)
@@ -61,3 +101,25 @@ biorbd::utils::Vector biorbd::utils::Vector::normGradient(
         return res;
     }
 }
+
+void biorbd::utils::Vector::operator=(
+        const biorbd::utils::Vector &other)
+{
+    this->RigidBodyDynamics::Math::VectorNd::operator=(other);
+}
+
+#ifdef BIORBD_USE_CASADI_MATH
+
+void biorbd::utils::Vector::operator=(
+        const RBDLCasadiMath::MX_Xd_SubMatrix& other)
+{
+    this->MX_Xd_dynamic::operator=(other);
+}
+
+void biorbd::utils::Vector::operator=(
+        const casadi::MX &other)
+{
+    this->MX_Xd_dynamic::operator=(other);
+}
+
+#endif

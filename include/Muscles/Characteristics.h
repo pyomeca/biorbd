@@ -4,6 +4,7 @@
 #include <memory>
 #include <cstddef>
 #include "biorbdConfig.h"
+#include "Utils/Scalar.h"
 
 namespace biorbd {
 namespace  muscles {
@@ -139,7 +140,7 @@ public:
     /// \brief Return the minimal activation of the muscle
     /// \return The minimal activation of the muscle
     ///
-    double minActivation() const;
+    biorbd::utils::Scalar minActivation() const;
 
     ///
     /// \brief Set the time activation constant

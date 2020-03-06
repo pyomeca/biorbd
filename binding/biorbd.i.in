@@ -12,6 +12,7 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 #include "BiorbdModel.h"
 #include "biorbdConfig.h"
 #include "ModelReader.h"
+#include "ModelWriter.h"
 %}
 %include exception.i
 %include <std_shared_ptr.i>
@@ -46,6 +47,7 @@ namespace std {
 @SWIG_MODULE_MUSCLES_INCLUDE_COMMAND@
 
 %include "@CMAKE_SOURCE_DIR@/include/BiorbdModel.h"
-//%include "@CMAKE_SOURCE_DIR@/include/ModelWriter.h"
+%include "@CMAKE_SOURCE_DIR@/include/ModelReader.h"
+%include "@CMAKE_SOURCE_DIR@/include/ModelWriter.h"
 
 

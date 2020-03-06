@@ -22,15 +22,9 @@ swig_link_libraries(${PROJECT_NAME} ${PROJECT_NAME} ${PYTHON_LIBRARIES} ${NUMPY_
 
 # Add headers
 target_include_directories(_${PROJECT_NAME} PUBLIC
-    ${RBDL_INCLUDE_DIR}
-    ${Boost_INCLUDE_DIRS}
-    ${EIGEN3_INCLUDE_DIR}
-    ${DLIB_INCLUDE_DIR}
-    ${NUMPY_INCLUDES}
-    ${IPOPT_INCLUDE_DIR}
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_BINARY_DIR}/include
+    ${ALL_INCLUDE_DIR}
     ${PYTHON_INCLUDE_DIRS}
+    ${NUMPY_INCLUDES}
 )
 
 if(APPLE)

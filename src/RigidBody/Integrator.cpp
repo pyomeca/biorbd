@@ -1,7 +1,6 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/Integrator.h"
 
-#include <Eigen/Dense>
 #include <boost/numeric/odeint.hpp>
 #include <rbdl/Dynamics.h>
 
