@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "Utils/RotoTransNodes.h"
+#include "RigidBody/RotoTransNodes.h"
 
 #include <rbdl/Model.h>
 #include <rbdl/Kinematics.h>
@@ -11,61 +11,61 @@
 #include "RigidBody/Joints.h"
 #include "RigidBody/Segment.h"
 
-biorbd::utils::RotoTransNodes::RotoTransNodes() :
+biorbd::rigidbody::RotoTransNodes::RotoTransNodes() :
     m_RTs(std::make_shared<std::vector<biorbd::utils::RotoTransNode>>())
 {
     //ctor
 }
 
-biorbd::utils::RotoTransNodes::RotoTransNodes(const biorbd::utils::RotoTransNodes &other)
+biorbd::rigidbody::RotoTransNodes::RotoTransNodes(const biorbd::rigidbody::RotoTransNodes &other)
 {
     m_RTs = other.m_RTs;
 }
 
-biorbd::utils::RotoTransNodes::~RotoTransNodes()
+biorbd::rigidbody::RotoTransNodes::~RotoTransNodes()
 {
 
 }
 
-biorbd::utils::RotoTransNodes biorbd::utils::RotoTransNodes::DeepCopy() const
+biorbd::rigidbody::RotoTransNodes biorbd::rigidbody::RotoTransNodes::DeepCopy() const
 {
-    biorbd::utils::RotoTransNodes copy;
+    biorbd::rigidbody::RotoTransNodes copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void biorbd::utils::RotoTransNodes::DeepCopy(const biorbd::utils::RotoTransNodes &other)
+void biorbd::rigidbody::RotoTransNodes::DeepCopy(const biorbd::rigidbody::RotoTransNodes &other)
 {
     m_RTs->resize(other.m_RTs->size());
     for (unsigned int i=0; i<other.m_RTs->size(); ++i)
         (*m_RTs)[i] = (*other.m_RTs)[i].DeepCopy();
 }
 
-void biorbd::utils::RotoTransNodes::addRT()
+void biorbd::rigidbody::RotoTransNodes::addRT()
 {
     m_RTs->push_back(biorbd::utils::RotoTransNode());
 }
 
 // Add a new marker to the existing pool of markers
-void biorbd::utils::RotoTransNodes::addRT(
+void biorbd::rigidbody::RotoTransNodes::addRT(
         const biorbd::utils::RotoTransNode &RotoTrans)
 {
     m_RTs->push_back(biorbd::utils::RotoTransNode(RotoTrans));
 }
 
-unsigned int biorbd::utils::RotoTransNodes::nbRTs() const
+unsigned int biorbd::rigidbody::RotoTransNodes::nbRTs() const
 {
     return static_cast<unsigned int>(m_RTs->size());
 }
 
 
 // Get the markers in the global reference
-const std::vector<biorbd::utils::RotoTransNode>& biorbd::utils::RotoTransNodes::RTs() const
+const std::vector<biorbd::utils::RotoTransNode>& biorbd::rigidbody::RotoTransNodes::RTs() const
 {
     return *m_RTs;
 }
 
-std::vector<biorbd::utils::RotoTransNode> biorbd::utils::RotoTransNodes::RTs(
+std::vector<biorbd::utils::RotoTransNode> biorbd::rigidbody::RotoTransNodes::RTs(
         const biorbd::utils::String& segmentName)
 {
     std::vector<biorbd::utils::RotoTransNode> pos;
@@ -75,14 +75,14 @@ std::vector<biorbd::utils::RotoTransNode> biorbd::utils::RotoTransNodes::RTs(
     return pos;
 }
 
-const biorbd::utils::RotoTransNode& biorbd::utils::RotoTransNodes::RT(
+const biorbd::utils::RotoTransNode& biorbd::rigidbody::RotoTransNodes::RT(
         unsigned int idx)
 {
     return (*m_RTs)[idx];
 }
 
 // Get the RotoTransNodes at the position given by Q
-std::vector<biorbd::utils::RotoTransNode> biorbd::utils::RotoTransNodes::RTs(
+std::vector<biorbd::utils::RotoTransNode> biorbd::rigidbody::RotoTransNodes::RTs(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {
@@ -100,7 +100,7 @@ std::vector<biorbd::utils::RotoTransNode> biorbd::utils::RotoTransNodes::RTs(
 }
 
 // Get an IMU at the position given by Q
-biorbd::utils::RotoTransNode biorbd::utils::RotoTransNodes::RT(
+biorbd::utils::RotoTransNode biorbd::rigidbody::RotoTransNodes::RT(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         unsigned int idx,
         bool updateKin)
@@ -117,7 +117,7 @@ biorbd::utils::RotoTransNode biorbd::utils::RotoTransNodes::RT(
     return model.globalJCS(id) * node;
 }
 
-std::vector<biorbd::utils::RotoTransNode> biorbd::utils::RotoTransNodes::segmentRTs(
+std::vector<biorbd::utils::RotoTransNode> biorbd::rigidbody::RotoTransNodes::segmentRTs(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         unsigned int idx,
         bool updateKin)
@@ -140,7 +140,7 @@ std::vector<biorbd::utils::RotoTransNode> biorbd::utils::RotoTransNodes::segment
 }
 
 // Get the Jacobian of the markers
-std::vector<biorbd::utils::Matrix> biorbd::utils::RotoTransNodes::RTsJacobian(
+std::vector<biorbd::utils::Matrix> biorbd::rigidbody::RotoTransNodes::RTsJacobian(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {
@@ -168,7 +168,7 @@ std::vector<biorbd::utils::Matrix> biorbd::utils::RotoTransNodes::RTsJacobian(
     return G;
 }
 
-std::vector<biorbd::utils::String> biorbd::utils::RotoTransNodes::RTsNames()
+std::vector<biorbd::utils::String> biorbd::rigidbody::RotoTransNodes::RTsNames()
 {
     // Extract the name of all the markers of a model
     std::vector<biorbd::utils::String> names;

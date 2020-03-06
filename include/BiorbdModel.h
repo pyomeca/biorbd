@@ -3,7 +3,7 @@
 
 #include "biorbdConfig.h"
 #include "Utils/Path.h"
-#include "Utils/RotoTransNodes.h"
+#include "RigidBody/RotoTransNodes.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/Markers.h"
 #include "RigidBody/Contacts.h"
@@ -62,7 +62,7 @@ class BIORBD_API Model :
         public biorbd::rigidbody::Joints
         ,public biorbd::rigidbody::Markers
         ,public biorbd::rigidbody::IMUs
-        ,public biorbd::utils::RotoTransNodes
+        ,public biorbd::rigidbody::RotoTransNodes
         ,public biorbd::rigidbody::Contacts
         #ifdef MODULE_ACTUATORS
         ,public biorbd::actuator::Actuators

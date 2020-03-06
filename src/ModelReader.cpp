@@ -325,7 +325,8 @@ void biorbd::Reader::readModelFile(
                 std::vector<biorbd::utils::String> secondAxisMarkerNames(2);
                 biorbd::utils::String axisToRecalculate("");
                 while(file.read(property_tag) && !(!property_tag.tolower().compare("endimu")
-                                                   || !property_tag.tolower().compare("endmimu"))){
+                                                   || !property_tag.tolower().compare("endmimu")
+                                                   || !property_tag.tolower().compare("endcustomrt"))){
                     if (!property_tag.tolower().compare("parent")){
                         // Dynamically find the parent number
                         file.read(parent_str);

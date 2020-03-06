@@ -6,14 +6,15 @@
 #include "biorbdConfig.h"
 
 namespace biorbd {
-namespace rigidbody {
-class GeneralizedCoordinates;
-}
 
 namespace utils {
 class String;
 class Matrix;
 class RotoTransNode;
+}
+
+namespace rigidbody {
+class GeneralizedCoordinates;
 
 ///
 /// \brief Hold a set of RotoTransNodes
@@ -31,7 +32,7 @@ public:
     /// \param other The other RTs set
     ///
     RotoTransNodes(
-            const biorbd::utils::RotoTransNodes& other);
+            const biorbd::rigidbody::RotoTransNodes& other);
     
     ///
     /// \brief Destroy the class properly
@@ -42,14 +43,14 @@ public:
     /// \brief Deep copy of the RTs data
     /// \return A copy of the RTs data
     ///
-    biorbd::utils::RotoTransNodes DeepCopy() const;
+    biorbd::rigidbody::RotoTransNodes DeepCopy() const;
 
     ///
     /// \brief Deep copy the RTs data
     /// \param other The RT data to copy
     ///
     void DeepCopy(
-            const biorbd::utils::RotoTransNodes& other);
+            const biorbd::rigidbody::RotoTransNodes& other);
 
     ///
     /// \brief Add a new RT to the set
