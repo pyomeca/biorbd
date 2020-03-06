@@ -305,57 +305,146 @@ void biorbd::Reader::readModelFile(
             else if (!main_tag.tolower().compare("mimu") && version >= 4){
                 biorbd::utils::Error::raise("MIMU is no more the right tag, change it to IMU!");
             }
-            else if (!main_tag.tolower().compare("imu") || !main_tag.tolower().compare("mimu")){
+            else if (!main_tag.tolower().compare("imu") || !main_tag.tolower().compare("mimu") || !main_tag.tolower().compare("customrt")){
                 biorbd::utils::String name;
                 file.read(name);
                 biorbd::utils::String parent_str("root");
                 biorbd::utils::RotoTransNode RT;
                 bool RTinMatrix(true);
-                if (version == 3) // By default for version 3 (not in matrix)
+                if (version >= 3) // By default for version 3 (not in matrix)
                     RTinMatrix = false;
                 bool isRTset(false);
                 bool technical = true;
                 bool anatomical = false;
+                bool firstTag = true;
+                bool fromMarkers(false);
+                biorbd::utils::String originMarkerName("");
+                biorbd::utils::String firstAxis("");
+                std::vector<biorbd::utils::String> firstAxisMarkerNames(2);
+                biorbd::utils::String secondAxis("");
+                std::vector<biorbd::utils::String> secondAxisMarkerNames(2);
+                biorbd::utils::String axisToRecalculate("");
                 while(file.read(property_tag) && !(!property_tag.tolower().compare("endimu")
-                                                   || !property_tag.tolower().compare("endmimu"))){
+                                                   || !property_tag.tolower().compare("endmimu")
+                                                   || !property_tag.tolower().compare("endcustomrt"))){
                     if (!property_tag.tolower().compare("parent")){
                         // Dynamically find the parent number
                         file.read(parent_str);
                         // If parent_int still equals zero, no name has concurred
                         biorbd::utils::Error::check(model->IsBodyId(model->GetBodyId(parent_str.c_str())), "Wrong name in a segment");
                     }
-                    else if (!property_tag.tolower().compare("rtinmatrix")){
-                        biorbd::utils::Error::check(isRTset==false, "RT should not appear before RTinMatrix");
-                        file.read(RTinMatrix);
-                    }
-                    else if (!property_tag.tolower().compare("rt")){
-                        if (RTinMatrix){ // Matrix 4x4
-                            for (unsigned int i=0; i<4;++i)
-                                for (unsigned int j=0; j<4;++j)
-                                        file.read(RT(i,j), variable);
+                    else if (!property_tag.tolower().compare("frommarkers")){
+                        if (!firstTag){
+                            biorbd::utils::Error::raise("The tag 'fromMarkers' should appear first in the IMU " + name);
                         }
                         else {
-                            biorbd::utils::String seq("xyz");
-                            biorbd::utils::Vector3d rot(0, 0, 0);
-                            biorbd::utils::Vector3d trans(0, 0, 0);
-                            // Transcribe the rotations
-                            for (unsigned int i=0; i<3; ++i)
-                                file.read(rot(i));
-                            // Transcribe the angle sequence for the rotations
-                            file.read(seq);
-                            // Transcribe the translations
-                            for (unsigned int i=0; i<3; ++i)
-                                file.read(trans(i));
-                            RT = biorbd::utils::RotoTrans(rot, trans, seq);
+                            fromMarkers = true;
                         }
-                        isRTset = true;
                     }
                     else if (!property_tag.tolower().compare("technical"))
                         file.read(technical);
                     else if (!property_tag.tolower().compare("anatomical"))
                         file.read(anatomical);
-                    RT.setName(name);
-                    RT.setParent(parent_str);
+
+                    if (fromMarkers){
+                        if (!property_tag.tolower().compare("originmarkername")){
+                            file.read(originMarkerName);
+                        }
+                        else if (!property_tag.tolower().compare("firstaxis")){
+                            file.read(firstAxis);
+                        }
+                        else if (!property_tag.tolower().compare("firstaxismarkernames")){
+                            for (unsigned int i = 0; i<2; ++i){
+                                file.read(firstAxisMarkerNames[i]);
+                            }
+                        }
+                        else if (!property_tag.tolower().compare("secondaxis")){
+                            file.read(secondAxis);
+                        }
+                        else if (!property_tag.tolower().compare("secondaxismarkernames")){
+                            for (unsigned int i = 0; i<2; ++i){
+                                file.read(secondAxisMarkerNames[i]);
+                            }
+                        }
+                        else if (!property_tag.tolower().compare("recalculate")){
+                            file.read(axisToRecalculate);
+                        }
+                    }
+                    else {
+                        if (!property_tag.tolower().compare("rtinmatrix")){
+                            biorbd::utils::Error::check(isRTset==false, "RT should not appear before RTinMatrix");
+                            file.read(RTinMatrix);
+                        }
+                        else if (!property_tag.tolower().compare("rt")){
+                            if (RTinMatrix){ // Matrix 4x4
+                                for (unsigned int i=0; i<4;++i)
+                                    for (unsigned int j=0; j<4;++j)
+                                            file.read(RT(i,j), variable);
+                            }
+                            else {
+                                biorbd::utils::String seq("xyz");
+                                biorbd::utils::Vector3d rot(0, 0, 0);
+                                biorbd::utils::Vector3d trans(0, 0, 0);
+                                // Transcribe the rotations
+                                for (unsigned int i=0; i<3; ++i)
+                                    file.read(rot(i));
+                                // Transcribe the angle sequence for the rotations
+                                file.read(seq);
+                                // Transcribe the translations
+                                for (unsigned int i=0; i<3; ++i)
+                                    file.read(trans(i));
+                                RT = biorbd::utils::RotoTrans(rot, trans, seq);
+                            }
+                            isRTset = true;
+                        }
+                    }
+                }
+                if (fromMarkers){
+                    std::vector<biorbd::rigidbody::NodeSegment> allMarkerOnSegment(model->marker(parent_str));
+                    biorbd::rigidbody::NodeSegment origin, axis1Beg, axis1End, axis2Beg, axis2End;
+                    bool isOrigin(false), isAxis1Beg(false), isAxis1End(false), isAxis2Beg(false), isAxis2End(false);
+                    for (auto mark : allMarkerOnSegment){
+                        if (!mark.biorbd::utils::Node::name().compare(originMarkerName)){
+                            origin = mark;
+                            isOrigin = true;
+                        }
+                        if (!mark.biorbd::utils::Node::name().compare(firstAxisMarkerNames[0])){
+                            axis1Beg = mark;
+                            isAxis1Beg = true;
+                        }
+                        if (!mark.biorbd::utils::Node::name().compare(firstAxisMarkerNames[1])){
+                            axis1End = mark;
+                            isAxis1End = true;
+                        }
+                        if (!mark.biorbd::utils::Node::name().compare(secondAxisMarkerNames[0])){
+                            axis2Beg = mark;
+                            isAxis2Beg = true;
+                        }
+                        if (!mark.biorbd::utils::Node::name().compare(secondAxisMarkerNames[1])){
+                            axis2End = mark;
+                            isAxis2End = true;
+                        }
+                    }
+                    if (! (isAxis1Beg && isAxis1End && isAxis2Beg && isAxis2End)){
+                        biorbd::utils::Error::raise("All the axes name and origin for the IMU " + name + " must be set and correspond to marker names previously defined on the same parent");
+                    }
+                    if (!(!axisToRecalculate.tolower().compare("firstaxis") || !axisToRecalculate.tolower().compare("secondaxis"))){
+                        biorbd::utils::Error::raise("The 'recalculate' option for IMU " + name + " must be 'firstaxis' or 'secondaxis'");
+                    }
+                    axisToRecalculate = !axisToRecalculate.tolower().compare("firstaxis") ? firstAxis : secondAxis;
+
+                    RT = biorbd::utils::RotoTrans::fromMarkers(
+                                origin,
+                                {axis1Beg, axis1End},
+                                {axis2Beg, axis2End},
+                                {firstAxis, secondAxis}, axisToRecalculate);
+                }
+                RT.setName(name);
+                RT.setParent(parent_str);
+                if (!main_tag.tolower().compare("customrt")){
+                    model->addRT(RT);
+                }
+                else {
                     model->addIMU(RT, technical, anatomical);
                 }
             }

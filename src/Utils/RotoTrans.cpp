@@ -68,8 +68,8 @@ biorbd::utils::RotoTrans biorbd::utils::RotoTrans::fromMarkers(
         const biorbd::utils::String &axisToRecalculate)
 {
     RotoTrans rt_out;
-    rt_out.block<3, 3>(0, 0) = Rotation::fromMarkers(axis1markers, axis2markers, axesNames, axisToRecalculate);
-    rt_out.block<3, 1>(0, 3) = origin;
+    rt_out.block(0, 0, 3, 3) = Rotation::fromMarkers(axis1markers, axis2markers, axesNames, axisToRecalculate);
+    rt_out.block(0, 3, 3, 1) = origin;
     return rt_out;
 }
 
@@ -124,9 +124,8 @@ biorbd::utils::RotoTrans biorbd::utils::RotoTrans::fromEulerAngles(
     biorbd::utils::Rotation rot_mat(biorbd::utils::Rotation::fromEulerAngles(rot, seq));
 
     biorbd::utils::RotoTrans out;
-    out.block(0,0,3,3) = rot_mat;
-    out.block(0,3,3,1) = trans;
-    out.block(3, 0, 1, 4) = RigidBodyDynamics::Math::Vector4d(0, 0, 0, 1).transpose();
+    out.block(0, 0, 3, 3) = rot_mat;
+    out.block(0, 3, 3, 1) = trans;
     return out;
 }
 

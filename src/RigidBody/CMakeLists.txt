@@ -17,6 +17,7 @@ set(SRC_LIST_MODULE
     ${CMAKE_CURRENT_SOURCE_DIR}/Joints.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Markers.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/NodeSegment.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/RotoTransNodes.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MeshFace.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Integrator.cpp
 )
