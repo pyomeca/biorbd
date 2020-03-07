@@ -125,20 +125,30 @@ TEST(IdealizedActuator, copy)
         QDot = QDot.setOnes() / 10;
         idealizedActuator.updateOrientations(model, Q);
 
-        biorbd::muscles::IdealizedActuator shallowcopy(idealizedActuator);
-        biorbd::muscles::IdealizedActuator deepcopynow(idealizedActuator.DeepCopy());
-        biorbd::muscles::IdealizedActuator deepcopylater;
-        deepcopylater.DeepCopy(idealizedActuator);
+        biorbd::muscles::IdealizedActuator shallowCopy(idealizedActuator);
+        biorbd::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
+        biorbd::muscles::IdealizedActuator deepCopyLater;
+        deepCopyLater.DeepCopy(idealizedActuator);
 
-        EXPECT_EQ(idealizedActuator.position().length(), shallowcopy.position().length());
-        EXPECT_EQ(idealizedActuator.position().length(), deepcopynow.position().length());
-        EXPECT_EQ(idealizedActuator.position().length(), deepcopylater.position().length());
+        EXPECT_EQ(idealizedActuator.position().length(), shallowCopy.position().length());
+        EXPECT_EQ(idealizedActuator.position().length(), deepCopyNow.position().length());
+        EXPECT_EQ(idealizedActuator.position().length(), deepCopyLater.position().length());
 
-        biorbd::muscles::Geometry geometry(idealizedActuator.position());
-        geometry.setInsertionInLocal(biorbd::utils::Vector3d(0.5, 0.6, 0.7));
+        // Change the position of the insertion and compare again
+        biorbd::utils::Vector3d insertion(idealizedActuator.position().insertionInLocal());
+        insertion.set(0.5, 0.6, 0.7);
+        biorbd::utils::String oldName(insertion.name());
+        biorbd::utils::String newName("MyNewName");
+        insertion.setName(newName);
+        idealizedActuator.updateOrientations(model, Q, QDot, 2);
 
-        //Can't freakin update the orientations!!! TODO
-        //idealizedActuator.updateOrientations(model, Q, QDot, 2);
+        EXPECT_EQ(idealizedActuator.position().length(), shallowCopy.position().length());
+        EXPECT_EQ(idealizedActuator.position().length(), deepCopyNow.position().length());
+        EXPECT_EQ(idealizedActuator.position().length(), deepCopyLater.position().length());
+        EXPECT_EQ(idealizedActuator.position().insertionInLocal().name(), newName);
+        EXPECT_EQ(shallowCopy.position().insertionInLocal().name(), newName);
+        EXPECT_EQ(deepCopyNow.position().insertionInLocal().name(), oldName);
+        EXPECT_EQ(deepCopyLater.position().insertionInLocal().name(), oldName);
     }
 }
 
@@ -173,8 +183,6 @@ TEST(HillType, unitTest)
         EXPECT_NEAR(hillType.damping(), 0.00019534599393617336, requiredPrecision);
         EXPECT_NEAR(hillType.force(emg), 424.95358302550062, requiredPrecision); //Fonctionne dans biorbd_new mais pas biorbd_ref?
     }
-
-
 }
 
 
