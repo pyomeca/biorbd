@@ -163,6 +163,14 @@ TEST(IdealizedActuator, copy)
         EXPECT_NEAR(idealizedActuator.state().excitation(), shallowCopy.state().excitation(), requiredPrecision);
         EXPECT_NEAR(idealizedActuator.state().excitation(), deepCopyNow.state().excitation(), requiredPrecision);
         EXPECT_NEAR(idealizedActuator.state().excitation(), deepCopyLater.state().excitation(), requiredPrecision);
+
+        biorbd::utils::Scalar originalExcitation(idealizedActuator.state().excitation());
+        idealizedActuator.state().setExcitation(biorbd::utils::Scalar(5));
+
+        EXPECT_NEAR(idealizedActuator.state().excitation(), 5, requiredPrecision);
+        EXPECT_NEAR(idealizedActuator.state().excitation(), shallowCopy.state().excitation(), requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.state().excitation(), originalExcitation, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.state().excitation(), originalExcitation, requiredPrecision);
     }
 }
 
@@ -303,6 +311,14 @@ TEST(hillType, copy)
         EXPECT_NEAR(hillType.state().excitation(), shallowCopy.state().excitation(), requiredPrecision);
         EXPECT_NEAR(hillType.state().excitation(), deepCopyNow.state().excitation(), requiredPrecision);
         EXPECT_NEAR(hillType.state().excitation(), deepCopyLater.state().excitation(), requiredPrecision);
+
+        biorbd::utils::Scalar originalExcitation(hillType.state().excitation());
+        hillType.state().setExcitation(biorbd::utils::Scalar(5));
+
+        EXPECT_NEAR(hillType.state().excitation(), 5, requiredPrecision);
+        EXPECT_NEAR(hillType.state().excitation(), shallowCopy.state().excitation(), requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.state().excitation(), originalExcitation, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.state().excitation(), originalExcitation, requiredPrecision);
     }
 }
 
@@ -318,7 +334,6 @@ TEST(hillThelenType, unitTest)
                 muscleForHillThelenType));
         hillThelenType.setName("newName");
         EXPECT_STREQ(hillThelenType.name().c_str(), "newName");
-
     }
     {
         biorbd::Model model(modelPathForMuscleForce);
@@ -442,6 +457,14 @@ TEST(hillThelenType, copy)
         EXPECT_NEAR(hillThelenType.state().excitation(), shallowCopy.state().excitation(), requiredPrecision);
         EXPECT_NEAR(hillThelenType.state().excitation(), deepCopyNow.state().excitation(), requiredPrecision);
         EXPECT_NEAR(hillThelenType.state().excitation(), deepCopyLater.state().excitation(), requiredPrecision);
+
+        biorbd::utils::Scalar originalExcitation(hillThelenType.state().excitation());
+        hillThelenType.state().setExcitation(biorbd::utils::Scalar(5));
+
+        EXPECT_NEAR(hillThelenType.state().excitation(), 5, requiredPrecision);
+        EXPECT_NEAR(hillThelenType.state().excitation(), shallowCopy.state().excitation(), requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.state().excitation(), originalExcitation, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.state().excitation(), originalExcitation, requiredPrecision);
     }
 }
 
