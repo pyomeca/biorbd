@@ -22,8 +22,7 @@ static unsigned int muscleForMuscleJacobian(1);
 
 static unsigned int muscleGroupForIdealizedActuator(1);
 static unsigned int muscleForIdealizedActuator(1);
-static unsigned int muscleGroupForHillType(1);
-static unsigned int muscleForHillType(1);
+
 
 TEST(IdealizedActuator, unitTest){
 {
@@ -167,6 +166,9 @@ TEST(IdealizedActuator, copy)
     }
 }
 
+static unsigned int muscleGroupForHillType(1);
+static unsigned int muscleForHillType(1);
+
 TEST(hillType, unitTest)
 {
     {
@@ -304,6 +306,144 @@ TEST(hillType, copy)
     }
 }
 
+static unsigned int muscleGroupForHillThelenType(1);
+static unsigned int muscleForHillThelenType(1);
+
+TEST(hillThelenType, unitTest)
+{
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillThelenType hillThelenType(
+            model.muscleGroup(muscleGroupForHillThelenType).muscle(
+                muscleForHillThelenType));
+        hillThelenType.setName("newName");
+        EXPECT_STREQ(hillThelenType.name().c_str(), "newName");
+
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillThelenType hillThelenType(
+            model.muscleGroup(muscleGroupForHillThelenType).muscle(
+                muscleForHillThelenType));
+        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        biorbd::rigidbody::GeneralizedVelocity qDot(model);
+        Q = Q.setOnes() / 10;
+        qDot = qDot.setOnes() / 10;
+        model.updateMuscles(Q, 2);
+        hillThelenType.updateOrientations(model, Q, qDot);
+        static double activationEmgForHillTypeTest(1.0);
+        biorbd::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+
+        EXPECT_NEAR(hillThelenType.FlCE(emg), 0.67988981401208015, requiredPrecision);
+        EXPECT_NEAR(hillThelenType.FlPE(), 0, requiredPrecision);
+        EXPECT_NEAR(hillThelenType.FvCE(), 1.000886825333013, requiredPrecision);
+        EXPECT_NEAR(hillThelenType.damping(), 0.00019534599393617336, requiredPrecision);
+        EXPECT_NEAR(hillThelenType.force(emg), 424.95358302550062, requiredPrecision);
+    }
+}
+
+TEST(hillThelenType, copy)
+{
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillThelenType hillThelenType(
+            model.muscleGroup(muscleGroupForHillThelenType).muscle(
+                muscleForHillThelenType));
+        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        Q = Q.setOnes() / 10;
+
+        biorbd::muscles::HillThelenType shallowCopy(hillThelenType);
+        biorbd::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
+        biorbd::muscles::HillThelenType deepCopyLater;
+        deepCopyLater.DeepCopy(hillThelenType);
+
+        biorbd::utils::String originalName(hillThelenType.name());
+        EXPECT_STREQ(shallowCopy.name().c_str(), originalName.c_str());
+        EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
+        EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
+
+        biorbd::utils::String newName("MyNewMuscleName");
+        hillThelenType.setName(newName);
+        EXPECT_STREQ(hillThelenType.name().c_str(), newName.c_str());
+        EXPECT_STREQ(shallowCopy.name().c_str(), newName.c_str());
+        EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
+        EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillThelenType hillThelenType(
+            model.muscleGroup(muscleGroupForHillThelenType).muscle(
+                muscleForHillThelenType));
+
+        biorbd::muscles::HillThelenType shallowCopy(hillThelenType);
+        biorbd::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
+        biorbd::muscles::HillThelenType deepCopyLater;
+        deepCopyLater.DeepCopy(hillThelenType);
+
+        double pennationAngleOriginal(hillThelenType.characteristics().pennationAngle());
+        EXPECT_EQ(pennationAngleOriginal, shallowCopy.characteristics().pennationAngle());
+
+        biorbd::muscles::Characteristics charac(hillThelenType.characteristics());
+        double newPennationAngle(25.0);
+        charac.setPennationAngle(newPennationAngle);
+        EXPECT_EQ(newPennationAngle, hillThelenType.characteristics().pennationAngle());
+        EXPECT_EQ(newPennationAngle, shallowCopy.characteristics().pennationAngle());
+        EXPECT_EQ(pennationAngleOriginal, deepCopyNow.characteristics().pennationAngle());
+        EXPECT_EQ(pennationAngleOriginal, deepCopyLater.characteristics().pennationAngle());
+    }
+
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillThelenType hillThelenType(
+            model.muscleGroup(muscleGroupForHillThelenType).muscle(
+                muscleForHillThelenType));
+        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        biorbd::rigidbody::GeneralizedVelocity qDot(model);
+        Q = Q.setOnes() / 10;
+        qDot = qDot.setOnes() / 10;
+        hillThelenType.updateOrientations(model, Q);
+
+        biorbd::muscles::HillThelenType shallowCopy(hillThelenType);
+        biorbd::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
+        biorbd::muscles::HillThelenType deepCopyLater;
+        deepCopyLater.DeepCopy(hillThelenType);
+
+        EXPECT_NEAR(hillThelenType.position().length(), shallowCopy.position().length(), requiredPrecision);
+        EXPECT_EQ(hillThelenType.position().length(), deepCopyNow.position().length());
+        EXPECT_EQ(hillThelenType.position().length(), deepCopyLater.position().length());
+
+        // Change the position of the insertion and compare again
+        biorbd::utils::Vector3d insertion(hillThelenType.position().insertionInLocal());
+        insertion.set(0.5, 0.6, 0.7);
+        biorbd::utils::String oldName(insertion.name());
+        biorbd::utils::String newName("MyNewName");
+        insertion.setName(newName);
+        hillThelenType.updateOrientations(model, Q, qDot, 2);
+
+        EXPECT_EQ(hillThelenType.position().length(), shallowCopy.position().length());
+        EXPECT_EQ(hillThelenType.position().length(), deepCopyNow.position().length());
+        EXPECT_EQ(hillThelenType.position().length(), deepCopyLater.position().length());
+        EXPECT_EQ(hillThelenType.position().insertionInLocal().name(), newName);
+        EXPECT_EQ(shallowCopy.position().insertionInLocal().name(), newName);
+        EXPECT_EQ(deepCopyNow.position().insertionInLocal().name(), oldName);
+        EXPECT_EQ(deepCopyLater.position().insertionInLocal().name(), oldName);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillThelenType hillThelenType(
+            model.muscleGroup(muscleGroupForHillThelenType).muscle(
+                muscleForHillThelenType));
+
+        biorbd::muscles::HillThelenType shallowCopy(hillThelenType);
+        biorbd::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
+        biorbd::muscles::HillThelenType deepCopyLater;
+        deepCopyLater.DeepCopy(hillThelenType);
+
+        EXPECT_NEAR(hillThelenType.state().excitation(), shallowCopy.state().excitation(), requiredPrecision);
+        EXPECT_NEAR(hillThelenType.state().excitation(), deepCopyNow.state().excitation(), requiredPrecision);
+        EXPECT_NEAR(hillThelenType.state().excitation(), deepCopyLater.state().excitation(), requiredPrecision);
+    }
+}
 
 TEST(MuscleForce, position)
 {
