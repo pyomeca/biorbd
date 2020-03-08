@@ -152,7 +152,7 @@ TEST(IdealizedActuator, copy)
     }
 }
 
-TEST(HillType, unitTest)
+TEST(hillType, unitTest)
 {
     {
         biorbd::Model model(modelPathForMuscleForce);
@@ -169,11 +169,11 @@ TEST(HillType, unitTest)
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
         biorbd::rigidbody::GeneralizedCoordinates Q(model);
-        biorbd::rigidbody::GeneralizedVelocity QDot(model);
+        biorbd::rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
-        QDot = QDot.setOnes() / 10;
+        qDot = qDot.setOnes() / 10;
         model.updateMuscles(Q, 2);
-        hillType.updateOrientations(model, Q, QDot);
+        hillType.updateOrientations(model, Q, qDot);
         static double activationEmgForHillTypeTest(1.0);
         biorbd::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
@@ -181,7 +181,96 @@ TEST(HillType, unitTest)
         EXPECT_NEAR(hillType.FlPE(), 0, requiredPrecision);
         EXPECT_NEAR(hillType.FvCE(), 1.000886825333013, requiredPrecision);
         EXPECT_NEAR(hillType.damping(), 0.00019534599393617336, requiredPrecision);
-        EXPECT_NEAR(hillType.force(emg), 424.95358302550062, requiredPrecision); //Fonctionne dans biorbd_new mais pas biorbd_ref?
+        EXPECT_NEAR(hillType.force(emg), 424.95358302550062, requiredPrecision);
+    }
+}
+
+TEST(hillType, copy)
+{
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillType hillType(
+            model.muscleGroup(muscleGroupForHillType).muscle(
+                muscleForHillType));
+        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        Q = Q.setOnes() / 10;
+
+        biorbd::muscles::HillType shallowCopy(hillType);
+        biorbd::muscles::HillType deepCopyNow(hillType.DeepCopy());
+        biorbd::muscles::HillType deepCopyLater;
+        deepCopyLater.DeepCopy(hillType);
+
+        biorbd::utils::String originalName(hillType.name());
+        EXPECT_STREQ(shallowCopy.name().c_str(), originalName.c_str());
+        EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
+        EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
+
+        biorbd::utils::String newName("MyNewMuscleName");
+        hillType.setName(newName);
+        EXPECT_STREQ(hillType.name().c_str(), newName.c_str());
+        EXPECT_STREQ(shallowCopy.name().c_str(), newName.c_str());
+        EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
+        EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillType hillType(
+            model.muscleGroup(muscleGroupForHillType).muscle(
+                muscleForHillType));
+
+        //copies of the Hill Type muscle
+        biorbd::muscles::HillType shallowCopy(hillType);
+        biorbd::muscles::HillType deepCopyNow(hillType.DeepCopy());
+        biorbd::muscles::HillType deepCopyLater;
+        deepCopyLater.DeepCopy(hillType);
+
+        double pennationAngleOriginal(hillType.characteristics().pennationAngle());
+        EXPECT_EQ(pennationAngleOriginal, shallowCopy.characteristics().pennationAngle());
+
+        biorbd::muscles::Characteristics charac(hillType.characteristics());
+        double newPennationAngle(25.0);
+        charac.setPennationAngle(newPennationAngle);
+        EXPECT_EQ(newPennationAngle, hillType.characteristics().pennationAngle());
+        EXPECT_EQ(newPennationAngle, shallowCopy.characteristics().pennationAngle());
+        EXPECT_EQ(pennationAngleOriginal, deepCopyNow.characteristics().pennationAngle());
+        EXPECT_EQ(pennationAngleOriginal, deepCopyLater.characteristics().pennationAngle());
+    }
+
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillType hillType(
+            model.muscleGroup(muscleGroupForHillType).muscle(
+                muscleForHillType));
+        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        biorbd::rigidbody::GeneralizedVelocity qDot(model);
+        Q = Q.setOnes() / 10;
+        qDot = qDot.setOnes() / 10;
+        hillType.updateOrientations(model, Q);
+
+        biorbd::muscles::HillType shallowCopy(hillType);
+        biorbd::muscles::HillType deepCopyNow(hillType.DeepCopy());
+        biorbd::muscles::HillType deepCopyLater;
+        deepCopyLater.DeepCopy(hillType);
+
+        EXPECT_NEAR(hillType.position().length(), shallowCopy.position().length(), requiredPrecision);
+        EXPECT_EQ(hillType.position().length(), deepCopyNow.position().length());
+        EXPECT_EQ(hillType.position().length(), deepCopyLater.position().length());
+
+        // Change the position of the insertion and compare again
+        biorbd::utils::Vector3d insertion(hillType.position().insertionInLocal());
+        insertion.set(0.5, 0.6, 0.7);
+        biorbd::utils::String oldName(insertion.name());
+        biorbd::utils::String newName("MyNewName");
+        insertion.setName(newName);
+        hillType.updateOrientations(model, Q, qDot, 2);
+
+        EXPECT_EQ(hillType.position().length(), shallowCopy.position().length());
+        EXPECT_EQ(hillType.position().length(), deepCopyNow.position().length());
+        EXPECT_EQ(hillType.position().length(), deepCopyLater.position().length());
+        EXPECT_EQ(hillType.position().insertionInLocal().name(), newName);
+        EXPECT_EQ(shallowCopy.position().insertionInLocal().name(), newName);
+        EXPECT_EQ(deepCopyNow.position().insertionInLocal().name(), oldName);
+        EXPECT_EQ(deepCopyLater.position().insertionInLocal().name(), oldName);
     }
 }
 
