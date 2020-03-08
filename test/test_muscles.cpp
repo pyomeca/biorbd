@@ -120,9 +120,9 @@ TEST(IdealizedActuator, copy)
             model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
                 muscleForIdealizedActuator));
         biorbd::rigidbody::GeneralizedCoordinates Q(model);
-        biorbd::rigidbody::GeneralizedVelocity QDot(model);
+        biorbd::rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
-        QDot = QDot.setOnes() / 10;
+        qDot = qDot.setOnes() / 10;
         idealizedActuator.updateOrientations(model, Q);
 
         biorbd::muscles::IdealizedActuator shallowCopy(idealizedActuator);
@@ -140,7 +140,7 @@ TEST(IdealizedActuator, copy)
         biorbd::utils::String oldName(insertion.name());
         biorbd::utils::String newName("MyNewName");
         insertion.setName(newName);
-        idealizedActuator.updateOrientations(model, Q, QDot, 2);
+        idealizedActuator.updateOrientations(model, Q, qDot, 2);
 
         EXPECT_EQ(idealizedActuator.position().length(), shallowCopy.position().length());
         EXPECT_EQ(idealizedActuator.position().length(), deepCopyNow.position().length());
@@ -149,6 +149,21 @@ TEST(IdealizedActuator, copy)
         EXPECT_EQ(shallowCopy.position().insertionInLocal().name(), newName);
         EXPECT_EQ(deepCopyNow.position().insertionInLocal().name(), oldName);
         EXPECT_EQ(deepCopyLater.position().insertionInLocal().name(), oldName);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::IdealizedActuator idealizedActuator(
+            model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
+                muscleForIdealizedActuator));
+
+        biorbd::muscles::IdealizedActuator shallowCopy(idealizedActuator);
+        biorbd::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
+        biorbd::muscles::IdealizedActuator deepCopyLater;
+        deepCopyLater.DeepCopy(idealizedActuator);
+
+        EXPECT_NEAR(idealizedActuator.state().excitation(), shallowCopy.state().excitation(), requiredPrecision);
+        EXPECT_NEAR(idealizedActuator.state().excitation(), deepCopyNow.state().excitation(), requiredPrecision);
+        EXPECT_NEAR(idealizedActuator.state().excitation(), deepCopyLater.state().excitation(), requiredPrecision);
     }
 }
 
@@ -271,6 +286,21 @@ TEST(hillType, copy)
         EXPECT_EQ(shallowCopy.position().insertionInLocal().name(), newName);
         EXPECT_EQ(deepCopyNow.position().insertionInLocal().name(), oldName);
         EXPECT_EQ(deepCopyLater.position().insertionInLocal().name(), oldName);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillType hillType(
+            model.muscleGroup(muscleGroupForHillType).muscle(
+                muscleForHillType));
+
+        biorbd::muscles::HillType shallowCopy(hillType);
+        biorbd::muscles::HillType deepCopyNow(hillType.DeepCopy());
+        biorbd::muscles::HillType deepCopyLater;
+        deepCopyLater.DeepCopy(hillType);
+
+        EXPECT_NEAR(hillType.state().excitation(), shallowCopy.state().excitation(), requiredPrecision);
+        EXPECT_NEAR(hillType.state().excitation(), deepCopyNow.state().excitation(), requiredPrecision);
+        EXPECT_NEAR(hillType.state().excitation(), deepCopyLater.state().excitation(), requiredPrecision);
     }
 }
 
