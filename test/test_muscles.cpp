@@ -512,38 +512,54 @@ TEST(FatigueState, copy)
     biorbd::muscles::FatigueState deepCopyLater;
     deepCopyLater.DeepCopy(fatigueState);
 
-    EXPECT_EQ(fatigueState.activeFibers(), 1.0);
-    EXPECT_EQ(shallowCopy.activeFibers(), 1.0);
-    EXPECT_EQ(deepCopyNow.activeFibers(), 1.0);
-    EXPECT_EQ(deepCopyLater.activeFibers(), 1.0);
 
     EXPECT_EQ(fatigueState.fatiguedFibers(), 0.0);
     EXPECT_EQ(shallowCopy.fatiguedFibers(), 0.0);
     EXPECT_EQ(deepCopyNow.fatiguedFibers(), 0.0);
     EXPECT_EQ(deepCopyLater.fatiguedFibers(), 0.0);
 
-    EXPECT_EQ(fatigueState.restingFibers(), 0.0);
-    EXPECT_EQ(shallowCopy.restingFibers(), 0.0);
-    EXPECT_EQ(deepCopyNow.restingFibers(), 0.0);
-    EXPECT_EQ(deepCopyLater.restingFibers(), 0.0); 
-
     //change state
     fatigueState.setState(0.0, 1.0, 0.0);
-    EXPECT_EQ(fatigueState.activeFibers(), 0.0);
-    EXPECT_EQ(shallowCopy.activeFibers(), 0.0);
-    EXPECT_EQ(deepCopyNow.activeFibers(), 1.0);
-    EXPECT_EQ(deepCopyLater.activeFibers(), 1.0);
-
     EXPECT_EQ(fatigueState.fatiguedFibers(), 1.0);
     EXPECT_EQ(shallowCopy.fatiguedFibers(), 1.0);
     EXPECT_EQ(deepCopyNow.fatiguedFibers(), 0.0);
-    EXPECT_EQ(deepCopyLater.fatiguedFibers(), 0.0); 
+    EXPECT_EQ(deepCopyLater.fatiguedFibers(), 0.0);
+}
 
-    EXPECT_EQ(fatigueState.restingFibers(), 0.0);
-    EXPECT_EQ(shallowCopy.restingFibers(), 0.0);
-    EXPECT_EQ(deepCopyNow.restingFibers(), 0.0);
-    EXPECT_EQ(deepCopyLater.restingFibers(), 0.0);
+TEST(FatigueParameters, unitTest)
+{
+    biorbd::muscles::FatigueParameters fatigueParameters;
+    fatigueParameters.setFatigueRate(25.0);
+    EXPECT_EQ(fatigueParameters.fatigueRate(), 25.0);
+
+    fatigueParameters.setRecoveryRate(10.0);
+    EXPECT_EQ(fatigueParameters.recoveryRate(), 10.0);
+
+    fatigueParameters.setDevelopFactor(3.0);
+    EXPECT_EQ(fatigueParameters.developFactor(), 3.0);
+
+    fatigueParameters.setRecoveryFactor(2.0);
+    EXPECT_EQ(fatigueParameters.recoveryFactor(), 2.0);
+}
+
+TEST(FatigueParemeters, copy)
+{
+    biorbd::muscles::FatigueParameters fatigueParameters(1.0, 2.0, 3.0, 4.0);
+    biorbd::muscles::FatigueParameters shallowCopy(fatigueParameters);
+    biorbd::muscles::FatigueParameters deepCopyNow(fatigueParameters.DeepCopy());
+    biorbd::muscles::FatigueParameters deepCopyLater;
+    deepCopyLater.DeepCopy(fatigueParameters);
     
+    EXPECT_EQ(fatigueParameters.recoveryRate(), 2.0);
+    EXPECT_EQ(shallowCopy.recoveryRate(), 2.0);
+    EXPECT_EQ(deepCopyNow.recoveryRate(), 2.0);
+    EXPECT_EQ(deepCopyLater.recoveryRate(), 2.0);
+
+    fatigueParameters.setRecoveryRate(5.0);
+    EXPECT_EQ(fatigueParameters.recoveryRate(), 5.0);
+    EXPECT_EQ(shallowCopy.recoveryRate(), 5.0);
+    EXPECT_EQ(deepCopyNow.recoveryRate(), 2.0);
+    EXPECT_EQ(deepCopyLater.recoveryRate(), 2.0);
 }
 
 TEST(MuscleForce, position)
