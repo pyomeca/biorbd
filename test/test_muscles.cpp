@@ -96,21 +96,21 @@ TEST(IdealizedActuator, copy)
             model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
                 muscleForIdealizedActuator));
 
-        biorbd::muscles::IdealizedActuator shallowcopy(idealizedActuator);
-        biorbd::muscles::IdealizedActuator deepcopynow(idealizedActuator.DeepCopy());
-        biorbd::muscles::IdealizedActuator deepcopylater;
-        deepcopylater.DeepCopy(idealizedActuator);
+        biorbd::muscles::IdealizedActuator shallowCopy(idealizedActuator);
+        biorbd::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
+        biorbd::muscles::IdealizedActuator deepCopyLater;
+        deepCopyLater.DeepCopy(idealizedActuator);
 
-        double pennationAngleOriginal(idealizedActuator.characteristics().pennationAngle());
-        EXPECT_EQ(pennationAngleOriginal, shallowcopy.characteristics().pennationAngle());
+        EXPECT_NEAR(idealizedActuator.characteristics().pennationAngle(), 0.15707963, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.characteristics().pennationAngle(), 0.15707963, requiredPrecision);
 
         biorbd::muscles::Characteristics charac(idealizedActuator.characteristics());
-        double newPennationAngle(25.0);
-        charac.setPennationAngle(newPennationAngle);
-        EXPECT_EQ(newPennationAngle, idealizedActuator.characteristics().pennationAngle());
-        EXPECT_EQ(newPennationAngle, shallowcopy.characteristics().pennationAngle());
-        EXPECT_EQ(pennationAngleOriginal, deepcopynow.characteristics().pennationAngle());
-        EXPECT_EQ(pennationAngleOriginal, deepcopylater.characteristics().pennationAngle());
+        charac.setPennationAngle(0.523599);
+
+        EXPECT_NEAR(idealizedActuator.characteristics().pennationAngle(), 0.523599, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.characteristics().pennationAngle(), 0.523599, requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.characteristics().pennationAngle(), 0.15707963, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.characteristics().pennationAngle(), 0.15707963, requiredPrecision);
     }
 
     {
@@ -129,21 +129,23 @@ TEST(IdealizedActuator, copy)
         biorbd::muscles::IdealizedActuator deepCopyLater;
         deepCopyLater.DeepCopy(idealizedActuator);
 
-        EXPECT_EQ(idealizedActuator.position().length(), shallowCopy.position().length());
-        EXPECT_EQ(idealizedActuator.position().length(), deepCopyNow.position().length());
-        EXPECT_EQ(idealizedActuator.position().length(), deepCopyLater.position().length());
+        EXPECT_NEAR(idealizedActuator.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.position().length(), 0.066381977535807504, requiredPrecision);
 
         // Change the position of the insertion and compare again
         biorbd::utils::Vector3d insertion(idealizedActuator.position().insertionInLocal());
-        insertion.set(0.5, 0.6, 0.7);
+        insertion.set(0.2, 0.2, 0.2);
         biorbd::utils::String oldName(insertion.name());
         biorbd::utils::String newName("MyNewName");
         insertion.setName(newName);
         idealizedActuator.updateOrientations(model, Q, qDot, 2);
-
-        EXPECT_EQ(idealizedActuator.position().length(), shallowCopy.position().length());
-        EXPECT_EQ(idealizedActuator.position().length(), deepCopyNow.position().length());
-        EXPECT_EQ(idealizedActuator.position().length(), deepCopyLater.position().length());
+        
+        EXPECT_NEAR(idealizedActuator.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.position().length(), 0.066381977535807504, requiredPrecision);
         EXPECT_EQ(idealizedActuator.position().insertionInLocal().name(), newName);
         EXPECT_EQ(shallowCopy.position().insertionInLocal().name(), newName);
         EXPECT_EQ(deepCopyNow.position().insertionInLocal().name(), oldName);
@@ -160,17 +162,17 @@ TEST(IdealizedActuator, copy)
         biorbd::muscles::IdealizedActuator deepCopyLater;
         deepCopyLater.DeepCopy(idealizedActuator);
 
-        EXPECT_NEAR(idealizedActuator.state().excitation(), shallowCopy.state().excitation(), requiredPrecision);
-        EXPECT_NEAR(idealizedActuator.state().excitation(), deepCopyNow.state().excitation(), requiredPrecision);
-        EXPECT_NEAR(idealizedActuator.state().excitation(), deepCopyLater.state().excitation(), requiredPrecision);
+        EXPECT_NEAR(idealizedActuator.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(shallowCopy.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.state().excitation(), 0., requiredPrecision);
 
-        biorbd::utils::Scalar originalExcitation(idealizedActuator.state().excitation());
-        idealizedActuator.state().setExcitation(biorbd::utils::Scalar(5));
+        idealizedActuator.state().setExcitation(biorbd::utils::Scalar(5.));
 
-        EXPECT_NEAR(idealizedActuator.state().excitation(), 5, requiredPrecision);
-        EXPECT_NEAR(idealizedActuator.state().excitation(), shallowCopy.state().excitation(), requiredPrecision);
-        EXPECT_NEAR(deepCopyNow.state().excitation(), originalExcitation, requiredPrecision);
-        EXPECT_NEAR(deepCopyLater.state().excitation(), originalExcitation, requiredPrecision);
+        EXPECT_NEAR(idealizedActuator.state().excitation(), 5., requiredPrecision);
+        EXPECT_NEAR(shallowCopy.state().excitation(), 5., requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.state().excitation(), 0., requiredPrecision);
     }
 }
 
@@ -203,7 +205,7 @@ TEST(hillType, unitTest)
         biorbd::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         EXPECT_NEAR(hillType.FlCE(emg), 0.67988981401208015, requiredPrecision);
-        EXPECT_NEAR(hillType.FlPE(), 0, requiredPrecision);
+        EXPECT_NEAR(hillType.FlPE(), 0., requiredPrecision);
         EXPECT_NEAR(hillType.FvCE(), 1.000886825333013, requiredPrecision);
         EXPECT_NEAR(hillType.damping(), 0.00019534599393617336, requiredPrecision);
         EXPECT_NEAR(hillType.force(emg), 424.95358302550062, requiredPrecision);
@@ -249,16 +251,16 @@ TEST(hillType, copy)
         biorbd::muscles::HillType deepCopyLater;
         deepCopyLater.DeepCopy(hillType);
 
-        double pennationAngleOriginal(hillType.characteristics().pennationAngle());
-        EXPECT_EQ(pennationAngleOriginal, shallowCopy.characteristics().pennationAngle());
+        EXPECT_NEAR(hillType.characteristics().pennationAngle(), 0.15707963, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.characteristics().pennationAngle(), 0.15707963, requiredPrecision);
 
         biorbd::muscles::Characteristics charac(hillType.characteristics());
-        double newPennationAngle(25.0);
-        charac.setPennationAngle(newPennationAngle);
-        EXPECT_EQ(newPennationAngle, hillType.characteristics().pennationAngle());
-        EXPECT_EQ(newPennationAngle, shallowCopy.characteristics().pennationAngle());
-        EXPECT_EQ(pennationAngleOriginal, deepCopyNow.characteristics().pennationAngle());
-        EXPECT_EQ(pennationAngleOriginal, deepCopyLater.characteristics().pennationAngle());
+        charac.setPennationAngle(0.523599);
+
+        EXPECT_NEAR(hillType.characteristics().pennationAngle(), 0.523599, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.characteristics().pennationAngle(), 0.523599, requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.characteristics().pennationAngle(), 0.15707963, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.characteristics().pennationAngle(), 0.15707963, requiredPrecision);
     }
 
     {
@@ -277,9 +279,10 @@ TEST(hillType, copy)
         biorbd::muscles::HillType deepCopyLater;
         deepCopyLater.DeepCopy(hillType);
 
-        EXPECT_NEAR(hillType.position().length(), shallowCopy.position().length(), requiredPrecision);
-        EXPECT_EQ(hillType.position().length(), deepCopyNow.position().length());
-        EXPECT_EQ(hillType.position().length(), deepCopyLater.position().length());
+        EXPECT_NEAR(hillType.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.position().length(), 0.066381977535807504, requiredPrecision);
 
         // Change the position of the insertion and compare again
         biorbd::utils::Vector3d insertion(hillType.position().insertionInLocal());
@@ -289,9 +292,10 @@ TEST(hillType, copy)
         insertion.setName(newName);
         hillType.updateOrientations(model, Q, qDot, 2);
 
-        EXPECT_EQ(hillType.position().length(), shallowCopy.position().length());
-        EXPECT_EQ(hillType.position().length(), deepCopyNow.position().length());
-        EXPECT_EQ(hillType.position().length(), deepCopyLater.position().length());
+        EXPECT_NEAR(hillType.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.position().length(), 0.066381977535807504, requiredPrecision);
         EXPECT_EQ(hillType.position().insertionInLocal().name(), newName);
         EXPECT_EQ(shallowCopy.position().insertionInLocal().name(), newName);
         EXPECT_EQ(deepCopyNow.position().insertionInLocal().name(), oldName);
@@ -308,17 +312,17 @@ TEST(hillType, copy)
         biorbd::muscles::HillType deepCopyLater;
         deepCopyLater.DeepCopy(hillType);
 
-        EXPECT_NEAR(hillType.state().excitation(), shallowCopy.state().excitation(), requiredPrecision);
-        EXPECT_NEAR(hillType.state().excitation(), deepCopyNow.state().excitation(), requiredPrecision);
-        EXPECT_NEAR(hillType.state().excitation(), deepCopyLater.state().excitation(), requiredPrecision);
+        EXPECT_NEAR(hillType.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(shallowCopy.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.state().excitation(), 0., requiredPrecision);
 
-        biorbd::utils::Scalar originalExcitation(hillType.state().excitation());
-        hillType.state().setExcitation(biorbd::utils::Scalar(5));
+        hillType.state().setExcitation(biorbd::utils::Scalar(5.));
 
-        EXPECT_NEAR(hillType.state().excitation(), 5, requiredPrecision);
-        EXPECT_NEAR(hillType.state().excitation(), shallowCopy.state().excitation(), requiredPrecision);
-        EXPECT_NEAR(deepCopyNow.state().excitation(), originalExcitation, requiredPrecision);
-        EXPECT_NEAR(deepCopyLater.state().excitation(), originalExcitation, requiredPrecision);
+        EXPECT_NEAR(hillType.state().excitation(), 5., requiredPrecision);
+        EXPECT_NEAR(shallowCopy.state().excitation(), 5., requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.state().excitation(), 0., requiredPrecision);
     }
 }
 
@@ -395,16 +399,16 @@ TEST(hillThelenType, copy)
         biorbd::muscles::HillThelenType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
-        double pennationAngleOriginal(hillThelenType.characteristics().pennationAngle());
-        EXPECT_EQ(pennationAngleOriginal, shallowCopy.characteristics().pennationAngle());
+        EXPECT_NEAR(hillThelenType.characteristics().pennationAngle(), 0.15707963, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.characteristics().pennationAngle(), 0.15707963, requiredPrecision);
 
         biorbd::muscles::Characteristics charac(hillThelenType.characteristics());
-        double newPennationAngle(25.0);
-        charac.setPennationAngle(newPennationAngle);
-        EXPECT_EQ(newPennationAngle, hillThelenType.characteristics().pennationAngle());
-        EXPECT_EQ(newPennationAngle, shallowCopy.characteristics().pennationAngle());
-        EXPECT_EQ(pennationAngleOriginal, deepCopyNow.characteristics().pennationAngle());
-        EXPECT_EQ(pennationAngleOriginal, deepCopyLater.characteristics().pennationAngle());
+        charac.setPennationAngle(0.523599);
+
+        EXPECT_NEAR(hillThelenType.characteristics().pennationAngle(), 0.523599, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.characteristics().pennationAngle(), 0.523599, requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.characteristics().pennationAngle(), 0.15707963, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.characteristics().pennationAngle(), 0.15707963, requiredPrecision);
     }
 
     {
@@ -423,9 +427,10 @@ TEST(hillThelenType, copy)
         biorbd::muscles::HillThelenType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
-        EXPECT_NEAR(hillThelenType.position().length(), shallowCopy.position().length(), requiredPrecision);
-        EXPECT_EQ(hillThelenType.position().length(), deepCopyNow.position().length());
-        EXPECT_EQ(hillThelenType.position().length(), deepCopyLater.position().length());
+        EXPECT_NEAR(hillThelenType.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.position().length(), 0.066381977535807504, requiredPrecision);
 
         // Change the position of the insertion and compare again
         biorbd::utils::Vector3d insertion(hillThelenType.position().insertionInLocal());
@@ -435,9 +440,10 @@ TEST(hillThelenType, copy)
         insertion.setName(newName);
         hillThelenType.updateOrientations(model, Q, qDot, 2);
 
-        EXPECT_EQ(hillThelenType.position().length(), shallowCopy.position().length());
-        EXPECT_EQ(hillThelenType.position().length(), deepCopyNow.position().length());
-        EXPECT_EQ(hillThelenType.position().length(), deepCopyLater.position().length());
+        EXPECT_NEAR(hillThelenType.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.position().length(), 0.066381977535807504, requiredPrecision);
         EXPECT_EQ(hillThelenType.position().insertionInLocal().name(), newName);
         EXPECT_EQ(shallowCopy.position().insertionInLocal().name(), newName);
         EXPECT_EQ(deepCopyNow.position().insertionInLocal().name(), oldName);
@@ -454,17 +460,17 @@ TEST(hillThelenType, copy)
         biorbd::muscles::HillThelenType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
-        EXPECT_NEAR(hillThelenType.state().excitation(), shallowCopy.state().excitation(), requiredPrecision);
-        EXPECT_NEAR(hillThelenType.state().excitation(), deepCopyNow.state().excitation(), requiredPrecision);
-        EXPECT_NEAR(hillThelenType.state().excitation(), deepCopyLater.state().excitation(), requiredPrecision);
+        EXPECT_NEAR(hillThelenType.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(shallowCopy.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.state().excitation(), 0., requiredPrecision);
 
-        biorbd::utils::Scalar originalExcitation(hillThelenType.state().excitation());
         hillThelenType.state().setExcitation(biorbd::utils::Scalar(5.));
 
         EXPECT_NEAR(hillThelenType.state().excitation(), 5., requiredPrecision);
-        EXPECT_NEAR(hillThelenType.state().excitation(), shallowCopy.state().excitation(), requiredPrecision);
-        EXPECT_NEAR(deepCopyNow.state().excitation(), originalExcitation, requiredPrecision);
-        EXPECT_NEAR(deepCopyLater.state().excitation(), originalExcitation, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.state().excitation(), 5., requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.state().excitation(), 0., requiredPrecision);
     }
 }
 
