@@ -135,7 +135,7 @@ biorbd::utils::Scalar biorbd::muscles::StateDynamics::previousExcitation() const
 }
 
 void biorbd::muscles::StateDynamics::setActivation(
-        biorbd::utils::Scalar val,
+        const biorbd::utils::Scalar &val,
         bool turnOffWarnings) {
     *m_previousActivation = *m_activation;
     biorbd::muscles::State::setActivation(val, turnOffWarnings);

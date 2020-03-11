@@ -89,7 +89,7 @@ public:
     /// \param notUsed the activation is computed from the neuralCommand and excitation
     ///
     void setActivation(
-            biorbd::utils::Scalar notUsed,
+            const biorbd::utils::Scalar& notUsed,
             bool turnOffWarnings = false);
 
 protected:
