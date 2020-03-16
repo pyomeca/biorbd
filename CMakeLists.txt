@@ -141,7 +141,19 @@ install(TARGETS ${PROJECT_NAME}
         )
 install(DIRECTORY include/ DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER})
 install(FILES ${CMAKE_BINARY_DIR}/include/biorbdConfig.h DESTINATION ${${PROJECT_NAME}_INCLUDE_FOLDER})
-        
+
+# Prepare share
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+  share/${PROJECT_NAME}Config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+  INSTALL_DESTINATION ${PROJECT_NAME}_LIB_FOLDER/cmake
+)
+install(FILES 
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+  DESTINATION ${${PROJECT_NAME}_LIB_FOLDER}/cmake
+)
+
 # uninstall target
 if(NOT TARGET uninstall)
     configure_file(
