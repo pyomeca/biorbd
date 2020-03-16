@@ -74,6 +74,48 @@ TEST(MuscleForce, torqueFromMuscles)
 
 }
 
+TEST(MuscleCharacterics, unittest){
+    {
+        biorbd::muscles::Characteristics charact;
+        EXPECT_NEAR(charact.optimalLength(), 0, requiredPrecision);
+        double newOptimalLength(3.4);
+        charact.setOptimalLength(newOptimalLength);
+        EXPECT_NEAR(charact.optimalLength(), newOptimalLength, requiredPrecision);
+    }
+
+    {
+        biorbd::muscles::Characteristics charact;
+        EXPECT_NEAR(charact.forceIsoMax(), 0, requiredPrecision);
+        double newForceMax(156.9);
+        charact.setForceIsoMax(newForceMax);
+        EXPECT_NEAR(charact.forceIsoMax(), newForceMax, requiredPrecision);
+    }
+
+    {
+        biorbd::muscles::Characteristics charact;
+        EXPECT_NEAR(charact.tendonSlackLength(), 0, requiredPrecision);
+        double newTendonSlakLength(5.3);
+        charact.setTendonSlackLength(newTendonSlakLength);
+        EXPECT_NEAR(charact.tendonSlackLength(), newTendonSlakLength, requiredPrecision); 
+    }
+
+    {
+        biorbd::muscles::Characteristics charact;
+        EXPECT_NEAR(charact.pennationAngle(), 0, requiredPrecision);
+        double newPennationAngle(1.09);
+        charact.setPennationAngle(newPennationAngle);
+        EXPECT_NEAR(charact.pennationAngle(), newPennationAngle, requiredPrecision);
+    }
+
+    {
+        biorbd::muscles::Characteristics charact;
+        EXPECT_NEAR(charact.PCSA(), 0, requiredPrecision);
+        double newPCSA(2.4);
+        charact.setPCSA(newPCSA);
+        EXPECT_NEAR(charact.PCSA(), newPCSA, requiredPrecision);
+    }
+}
+
 TEST(MuscleJacobian, jacobian){
     biorbd::Model model(modelPathForMuscleJacobian);
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
