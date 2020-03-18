@@ -56,6 +56,24 @@ TEST(IdealizedActuator, unitTest){
         EXPECT_NEAR(idealizedActuator.velocity(model, Q, qDot, true), 0.0022230374109936529, requiredPrecision);
         EXPECT_NEAR(idealizedActuator.velocity(model, Q, qDot, false), 0.0022230374109936529, requiredPrecision);
     }
+
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::IdealizedActuator idealizedActuator(model.
+            muscleGroup(muscleGroupForIdealizedActuator).
+            muscle(muscleForIdealizedActuator));
+        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        biorbd::rigidbody::GeneralizedVelocity qDot(model);
+        Q = Q.setOnes() / 10;
+        qDot = qDot.setOnes() / 10;
+        static double activationEmgForHillTypeTest(1);
+        biorbd::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+
+        EXPECT_NEAR(idealizedActuator.force(emg), 624.29999999999995, requiredPrecision);
+        EXPECT_NEAR(idealizedActuator.force(model, Q, emg), 624.29999999999995, requiredPrecision);
+        EXPECT_NEAR(idealizedActuator.force(model, Q, qDot, emg), 624.29999999999995, requiredPrecision);
+    }
+
 }
 
 TEST(IdealizedActuator, copy)
