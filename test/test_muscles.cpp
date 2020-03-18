@@ -23,8 +23,6 @@ static unsigned int muscleForMuscleJacobian(1);
 static unsigned int muscleGroupForIdealizedActuator(1);
 static unsigned int muscleForIdealizedActuator(1);
 
-
-
 TEST(IdealizedActuator, unitTest){
     {
         biorbd::Model model(modelPathForMuscleForce);
@@ -57,7 +55,6 @@ TEST(IdealizedActuator, unitTest){
             muscle(muscleForIdealizedActuator));
         EXPECT_NEAR(idealizedActuator.velocity(model, Q, qDot, true), 0.0022230374109936529, requiredPrecision);
         EXPECT_NEAR(idealizedActuator.velocity(model, Q, qDot, false), 0.0022230374109936529, requiredPrecision);
-
     }
 }
 
@@ -121,28 +118,33 @@ TEST(IdealizedActuator, copy)
         biorbd::rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
-        idealizedActuator.updateOrientations(model, Q);
+        idealizedActuator.updateOrientations(model, Q, qDot);
+ 
 
         biorbd::muscles::IdealizedActuator shallowCopy(idealizedActuator);
         biorbd::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
         biorbd::muscles::IdealizedActuator deepCopyLater;
         deepCopyLater.DeepCopy(idealizedActuator);
 
+
+
         EXPECT_NEAR(idealizedActuator.position().length(), 0.066381977535807504, requiredPrecision);
         EXPECT_NEAR(shallowCopy.position().length(), 0.066381977535807504, requiredPrecision);
         EXPECT_NEAR(deepCopyNow.position().length(), 0.066381977535807504, requiredPrecision);
         EXPECT_NEAR(deepCopyLater.position().length(), 0.066381977535807504, requiredPrecision);
 
-        // Change the position of the insertion and compare again
+        // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
+        biorbd::muscles::Characteristics charac(idealizedActuator.characteristics());
+        charac.setPennationAngle(0.523599);
         biorbd::utils::Vector3d insertion(idealizedActuator.position().insertionInLocal());
         insertion.set(0.2, 0.2, 0.2);
         biorbd::utils::String oldName(insertion.name());
         biorbd::utils::String newName("MyNewName");
         insertion.setName(newName);
         idealizedActuator.updateOrientations(model, Q, qDot, 2);
-        
-        EXPECT_NEAR(idealizedActuator.position().length(), 0.066381977535807504, requiredPrecision);
-        EXPECT_NEAR(shallowCopy.position().length(), 0.066381977535807504, requiredPrecision);
+
+        EXPECT_NEAR(idealizedActuator.position().length(), 0.07570761027741163, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.position().length(), 0.07570761027741163, requiredPrecision);
         EXPECT_NEAR(deepCopyNow.position().length(), 0.066381977535807504, requiredPrecision);
         EXPECT_NEAR(deepCopyLater.position().length(), 0.066381977535807504, requiredPrecision);
         EXPECT_EQ(idealizedActuator.position().insertionInLocal().name(), newName);
@@ -150,6 +152,8 @@ TEST(IdealizedActuator, copy)
         EXPECT_EQ(deepCopyNow.position().insertionInLocal().name(), oldName);
         EXPECT_EQ(deepCopyLater.position().insertionInLocal().name(), oldName);
     }
+
+
     {
         biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::IdealizedActuator idealizedActuator(
@@ -283,7 +287,9 @@ TEST(hillType, copy)
         EXPECT_NEAR(deepCopyNow.position().length(), 0.066381977535807504, requiredPrecision);
         EXPECT_NEAR(deepCopyLater.position().length(), 0.066381977535807504, requiredPrecision);
 
-        // Change the position of the insertion and compare again
+        // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
+        biorbd::muscles::Characteristics charac(hillType.characteristics());
+        charac.setPennationAngle(0.523599);
         biorbd::utils::Vector3d insertion(hillType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
         biorbd::utils::String oldName(insertion.name());
@@ -291,8 +297,8 @@ TEST(hillType, copy)
         insertion.setName(newName);
         hillType.updateOrientations(model, Q, qDot, 2);
 
-        EXPECT_NEAR(hillType.position().length(), 0.066381977535807504, requiredPrecision);
-        EXPECT_NEAR(shallowCopy.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(hillType.position().length(), 0.07570761027741163, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.position().length(), 0.07570761027741163, requiredPrecision);
         EXPECT_NEAR(deepCopyNow.position().length(), 0.066381977535807504, requiredPrecision);
         EXPECT_NEAR(deepCopyLater.position().length(), 0.066381977535807504, requiredPrecision);
         EXPECT_EQ(hillType.position().insertionInLocal().name(), newName);
@@ -431,7 +437,9 @@ TEST(hillThelenType, copy)
         EXPECT_NEAR(deepCopyNow.position().length(), 0.066381977535807504, requiredPrecision);
         EXPECT_NEAR(deepCopyLater.position().length(), 0.066381977535807504, requiredPrecision);
 
-        // Change the position of the insertion and compare again
+        // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
+        biorbd::muscles::Characteristics charac(hillThelenType.characteristics());
+        charac.setPennationAngle(0.523599);
         biorbd::utils::Vector3d insertion(hillThelenType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
         biorbd::utils::String oldName(insertion.name());
@@ -439,8 +447,8 @@ TEST(hillThelenType, copy)
         insertion.setName(newName);
         hillThelenType.updateOrientations(model, Q, qDot, 2);
 
-        EXPECT_NEAR(hillThelenType.position().length(), 0.066381977535807504, requiredPrecision);
-        EXPECT_NEAR(shallowCopy.position().length(), 0.066381977535807504, requiredPrecision);
+        EXPECT_NEAR(hillThelenType.position().length(), 0.07570761027741163, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.position().length(), 0.07570761027741163, requiredPrecision);
         EXPECT_NEAR(deepCopyNow.position().length(), 0.066381977535807504, requiredPrecision);
         EXPECT_NEAR(deepCopyLater.position().length(), 0.066381977535807504, requiredPrecision);
         EXPECT_EQ(hillThelenType.position().insertionInLocal().name(), newName);
