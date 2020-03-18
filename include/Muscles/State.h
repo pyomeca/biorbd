@@ -104,7 +104,7 @@ public:
     /// it changes it to 1 anyway, but doesn't send a warning saying it.
     ///
     virtual void setActivation(
-            biorbd::utils::Scalar val,
+            const biorbd::utils::Scalar& val,
             bool turnOffWarnings = false);
 
     ///

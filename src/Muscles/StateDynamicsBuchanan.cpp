@@ -97,7 +97,7 @@ void biorbd::muscles::StateDynamicsBuchanan::setNeuralCommand(
 }
 
 void biorbd::muscles::StateDynamicsBuchanan::setActivation(
-        biorbd::utils::Scalar,
+        const biorbd::utils::Scalar&,
         bool)
 {
     biorbd::utils::Scalar expShapeFactor(exp(*m_shapeFactor));

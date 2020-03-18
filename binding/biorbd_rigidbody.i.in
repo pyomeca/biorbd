@@ -63,17 +63,6 @@ namespace std {
         return QDDot;
     }
 
-#ifdef BIORBD_USE_CASADI_MATH
-    casadi::MX ForwardDynamics(
-                const casadi::MX &Q,
-                const casadi::MX &QDot,
-                const casadi::MX &Tau){
-        biorbd::rigidbody::GeneralizedCoordinates QDDot(*self);
-        RigidBodyDynamics::ForwardDynamics(*self, Q, QDot, Tau, QDDot);
-        return QDDot;
-    }
-#endif
-
     biorbd::rigidbody::GeneralizedCoordinates ForwardDynamicsLagrangian(
                 const biorbd::rigidbody::GeneralizedCoordinates &Q,
                 const biorbd::rigidbody::GeneralizedVelocity &QDot,
@@ -139,5 +128,6 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/MeshFace.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/IMU.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/IMUs.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/RotoTransNodes.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/SegmentCharacteristics.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Integrator.h"
