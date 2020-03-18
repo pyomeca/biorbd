@@ -74,6 +74,82 @@ TEST(IdealizedActuator, unitTest){
         EXPECT_NEAR(idealizedActuator.force(model, Q, qDot, emg), 624.29999999999995, requiredPrecision);
     }
 
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::IdealizedActuator idealizedActuatorOrigin(model.
+            muscleGroup(muscleGroupForIdealizedActuator).
+            muscle(muscleForIdealizedActuator));
+
+        biorbd::muscles::IdealizedActuator idealizedActuatorNew(
+            "newName",
+            idealizedActuatorOrigin.position(),
+            idealizedActuatorOrigin.characteristics());
+
+        EXPECT_STREQ(idealizedActuatorNew.name().c_str(), "newName");
+        EXPECT_EQ(idealizedActuatorNew.type(), biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::IdealizedActuator idealizedActuatorOrigin(model.
+            muscleGroup(muscleGroupForIdealizedActuator).
+            muscle(muscleForIdealizedActuator));
+
+        biorbd::muscles::IdealizedActuator idealizedActuatorNew(
+            "newName",
+            idealizedActuatorOrigin.position(),
+            idealizedActuatorOrigin.characteristics(),
+            idealizedActuatorOrigin.state());
+
+        EXPECT_STREQ(idealizedActuatorNew.name().c_str(), "newName");
+        EXPECT_EQ(idealizedActuatorNew.type(), biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::IdealizedActuator idealizedActuatorOrigin(model.
+            muscleGroup(muscleGroupForIdealizedActuator).
+            muscle(muscleForIdealizedActuator));
+
+        biorbd::muscles::IdealizedActuator idealizedActuatorNew(
+            "newName",
+            idealizedActuatorOrigin.position(),
+            idealizedActuatorOrigin.characteristics());
+
+        EXPECT_STREQ(idealizedActuatorNew.name().c_str(), "newName");
+        EXPECT_EQ(idealizedActuatorNew.type(), biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::IdealizedActuator idealizedActuatorOrigin(model.
+            muscleGroup(muscleGroupForIdealizedActuator).
+            muscle(muscleForIdealizedActuator));
+
+        biorbd::muscles::IdealizedActuator idealizedActuatorNew(
+            "newName",
+            idealizedActuatorOrigin.position(),
+            idealizedActuatorOrigin.characteristics(),
+            idealizedActuatorOrigin.pathModifier());
+
+        EXPECT_STREQ(idealizedActuatorNew.name().c_str(), "newName");
+        EXPECT_EQ(idealizedActuatorNew.type(), biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::IdealizedActuator idealizedActuatorOrigin(model.
+            muscleGroup(muscleGroupForIdealizedActuator).
+            muscle(muscleForIdealizedActuator));
+
+        biorbd::muscles::IdealizedActuator idealizedActuatorNew(
+            "newName",
+            idealizedActuatorOrigin.position(),
+            idealizedActuatorOrigin.characteristics(),
+            idealizedActuatorOrigin.pathModifier(),
+            idealizedActuatorOrigin.state());
+
+        EXPECT_STREQ(idealizedActuatorNew.name().c_str(), "newName");
+        EXPECT_EQ(idealizedActuatorNew.type(), biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
+
+    }
+
 }
 
 TEST(IdealizedActuator, copy)
