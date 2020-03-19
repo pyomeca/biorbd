@@ -307,7 +307,67 @@ TEST(hillType, unitTest)
         EXPECT_NEAR(hillType.damping(), 0.00019534599393617336, requiredPrecision);
         EXPECT_NEAR(hillType.force(emg), 424.95358302550062, requiredPrecision);
     }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillType originalHillType(
+            model.muscleGroup(muscleGroupForHillType).muscle(
+                muscleForHillType));
+
+        biorbd::muscles::HillType newHillType(
+            "newName",
+            originalHillType.position(),
+            originalHillType.characteristics());
+
+        EXPECT_STREQ(newHillType.name().c_str(), "newName");
+        EXPECT_EQ(newHillType.type(), biorbd::muscles::MUSCLE_TYPE::HILL);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillType originalHillType(
+            model.muscleGroup(muscleGroupForHillType).muscle(
+                muscleForHillType));
+
+        biorbd::muscles::HillType newHillType(
+            "newName",
+            originalHillType.position(),
+            originalHillType.characteristics(),
+            originalHillType.state());
+
+        EXPECT_STREQ(newHillType.name().c_str(), "newName");
+        EXPECT_EQ(newHillType.type(), biorbd::muscles::MUSCLE_TYPE::HILL);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillType originalHillType(
+            model.muscleGroup(muscleGroupForHillType).muscle(
+                muscleForHillType));
+
+        biorbd::muscles::HillType newHillType(
+            "newName",
+            originalHillType.position(),
+            originalHillType.characteristics(),
+            originalHillType.pathModifier());
+
+        EXPECT_STREQ(newHillType.name().c_str(), "newName");
+        EXPECT_EQ(newHillType.type(), biorbd::muscles::MUSCLE_TYPE::HILL);
+
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillType hillType(
+            model.muscleGroup(muscleGroupForHillType).muscle(
+                muscleForHillType));
+        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        biorbd::rigidbody::GeneralizedVelocity qDot(model);
+        Q = Q.setOnes() / 10;
+        qDot = qDot.setOnes() / 10;
+        static double activationEmgForHillTypeTest(1);
+        biorbd::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+
+        EXPECT_NEAR(hillType.force(model, Q, qDot, emg, 2), 2765168686.2271094, requiredPrecision);
+    }
 }
+
 
 TEST(hillType, copy)
 {
