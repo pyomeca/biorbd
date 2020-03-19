@@ -23,7 +23,8 @@ static unsigned int muscleForMuscleJacobian(1);
 static unsigned int muscleGroupForIdealizedActuator(1);
 static unsigned int muscleForIdealizedActuator(1);
 
-TEST(IdealizedActuator, unitTest){
+TEST(IdealizedActuator, unitTest)
+{
     {
         biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::IdealizedActuator idealizedActuator(model.
@@ -149,7 +150,6 @@ TEST(IdealizedActuator, unitTest){
         EXPECT_EQ(idealizedActuatorNew.type(), biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
 
     }
-
 }
 
 TEST(IdealizedActuator, copy)
@@ -246,7 +246,6 @@ TEST(IdealizedActuator, copy)
         EXPECT_EQ(deepCopyNow.position().insertionInLocal().name(), oldName);
         EXPECT_EQ(deepCopyLater.position().insertionInLocal().name(), oldName);
     }
-
 
     {
         biorbd::Model model(modelPathForMuscleForce);
@@ -367,7 +366,6 @@ TEST(hillType, unitTest)
         EXPECT_NEAR(hillType.force(model, Q, qDot, emg, 2), 2765168686.2271094, requiredPrecision);
     }
 }
-
 
 TEST(hillType, copy)
 {
@@ -843,6 +841,72 @@ TEST(FatigueState, copy)
     EXPECT_EQ(deepCopyLater.fatiguedFibers(), 0.0);
 }
 
+static std::string modelPathForXiaDerivativeTest("models/arm26.bioMod");
+static unsigned int muscleGroupForXiaDerivativeTest(0);
+static unsigned int muscleForXiaDerivativeTest(0);
+static double activationEmgForXiaDerivativeTest(1.0);
+static double currentActiveFibersForXiaDerivativeTest(0.9);
+static double currentFatiguedFibersForXiaDerivativeTest(0.0);
+static double currentRestingFibersForXiaDerivativeTest(0.1);
+static double expectedActivationDotForXiaDerivativeTest(0.991);
+static double expectedFatiguedDotForXiaDerivativeTest(0.009);
+static double expectedRestingDotForXiaDerivativeTest(-1.0);
+static double positiveFibersQuantityForFatigueXiaSetStateLimitsTest(1.0);
+static double negativeFibersQuantityForFatigueXiaSetStateLimitsTest(-1.0);
+static double excessiveFibersQuantityForFatigueXiaSetStateLimitsTest(1.5);
+
+TEST(FatigueDynamiqueState, DeepCopy) {
+    // Prepare the model
+    biorbd::Model model(modelPathForXiaDerivativeTest);
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity QDot(model);
+    Q.setZero();
+    QDot.setZero();
+    model.updateMuscles(Q, QDot, true);
+
+    {
+        biorbd::muscles::HillThelenTypeFatigable muscle(model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest));
+        biorbd::muscles::FatigueDynamicStateXia fatigueDynamicStateXia;
+        // Sanity check for the fatigue model
+        EXPECT_EQ(fatigueDynamicStateXia.getType(), biorbd::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
+
+        // Initial value sanity check
+        EXPECT_NEAR(fatigueDynamicStateXia.activeFibersDot(), 0, requiredPrecision);
+
+        // Apply the derivative
+        biorbd::muscles::StateDynamics emg(0, activationEmgForXiaDerivativeTest); // Set target
+        fatigueDynamicStateXia.setState(currentActiveFibersForXiaDerivativeTest,
+            currentFatiguedFibersForXiaDerivativeTest,
+            currentRestingFibersForXiaDerivativeTest);
+        fatigueDynamicStateXia.timeDerivativeState(emg, model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest).characteristics());
+
+        // Check the values
+        EXPECT_NEAR(fatigueDynamicStateXia.activeFibersDot(), expectedActivationDotForXiaDerivativeTest, requiredPrecision);
+
+        // Make copies
+        biorbd::muscles::FatigueDynamicStateXia shallowCopy(fatigueDynamicStateXia);
+        biorbd::muscles::FatigueDynamicStateXia deepCopyNow(fatigueDynamicStateXia.DeepCopy());
+        biorbd::muscles::FatigueDynamicStateXia deepCopyLater;
+        deepCopyLater.DeepCopy(fatigueDynamicStateXia);
+
+        // Check the values
+        EXPECT_NEAR(shallowCopy.activeFibersDot(), expectedActivationDotForXiaDerivativeTest, requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.activeFibersDot(), expectedActivationDotForXiaDerivativeTest, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.activeFibersDot(), expectedActivationDotForXiaDerivativeTest, requiredPrecision);
+
+        // Change state to change Fibers Dots
+        fatigueDynamicStateXia.setState(0.5, 0.5, 0.0);
+        fatigueDynamicStateXia.timeDerivativeState(emg, model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest).characteristics());
+        
+        // Check the new values
+        EXPECT_NEAR(fatigueDynamicStateXia.activeFibersDot(), -0.0050000000000000001, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.activeFibersDot(), -0.0050000000000000001, requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.activeFibersDot(), expectedActivationDotForXiaDerivativeTest, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.activeFibersDot(), expectedActivationDotForXiaDerivativeTest, requiredPrecision);
+
+    }
+}
+
 TEST(FatigueParameters, unitTest)
 {
     biorbd::muscles::FatigueParameters fatigueParameters;
@@ -1073,19 +1137,7 @@ TEST(MuscleJacobian, jacobianLength){
                 EXPECT_NEAR(jaco(i, j), jacoRef(i, j), requiredPrecision);
 }
 
-static std::string modelPathForXiaDerivativeTest("models/arm26.bioMod");
-static unsigned int muscleGroupForXiaDerivativeTest(0);
-static unsigned int muscleForXiaDerivativeTest(0);
-static double activationEmgForXiaDerivativeTest(1.0);
-static double currentActiveFibersForXiaDerivativeTest(0.9);
-static double currentFatiguedFibersForXiaDerivativeTest(0.0);
-static double currentRestingFibersForXiaDerivativeTest(0.1);
-static double expectedActivationDotForXiaDerivativeTest(0.991);
-static double expectedFatiguedDotForXiaDerivativeTest(0.009);
-static double expectedRestingDotForXiaDerivativeTest(-1.0);
-static double positiveFibersQuantityForFatigueXiaSetStateLimitsTest(1.0);
-static double negativeFibersQuantityForFatigueXiaSetStateLimitsTest(-1.0);
-static double excessiveFibersQuantityForFatigueXiaSetStateLimitsTest(1.5);
+
 TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers){
     // Prepare the model
     biorbd::Model model(modelPathForXiaDerivativeTest);
