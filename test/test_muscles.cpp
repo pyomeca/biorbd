@@ -518,6 +518,50 @@ TEST(hillThelenType, unitTest)
         EXPECT_NEAR(hillThelenType.damping(), 0.00019534599393617336, requiredPrecision);
         EXPECT_NEAR(hillThelenType.force(emg), 424.95358302550062, requiredPrecision);
     }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillThelenType hillThelenType(
+            model.muscleGroup(muscleGroupForHillThelenType).muscle(
+                muscleForHillThelenType));
+
+        biorbd::muscles::HillThelenType hillThelenTypeNew(
+            "newName",
+            hillThelenType.position(),
+            hillThelenType.characteristics());
+
+        EXPECT_STREQ(hillThelenTypeNew.name().c_str(), "newName");
+        EXPECT_EQ(hillThelenTypeNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillThelenType hillThelenType(
+            model.muscleGroup(muscleGroupForHillThelenType).muscle(
+                muscleForHillThelenType));
+
+        biorbd::muscles::HillThelenType hillThelenTypeNew(
+            "newName",
+            hillThelenType.position(),
+            hillThelenType.characteristics(),
+            hillThelenType.state());
+
+        EXPECT_STREQ(hillThelenTypeNew.name().c_str(), "newName");
+        EXPECT_EQ(hillThelenTypeNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillThelenType hillThelenType(
+            model.muscleGroup(muscleGroupForHillThelenType).muscle(
+                muscleForHillThelenType));
+
+        biorbd::muscles::HillThelenType hillThelenTypeNew(
+            "newName",
+            hillThelenType.position(),
+            hillThelenType.characteristics(),
+            hillThelenType.pathModifier());
+
+        EXPECT_STREQ(hillThelenTypeNew.name().c_str(), "newName");
+        EXPECT_EQ(hillThelenTypeNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN);
+    }
 }
 
 TEST(hillThelenType, copy)
