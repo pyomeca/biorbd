@@ -696,6 +696,117 @@ TEST(hillThelenTypeFatigable, unitTest)
             model.muscleGroup(muscleGroupForHillThelenTypeFatigable).muscle(
                 muscleForHillThelenTypeFatigable)), std::bad_cast);
     }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+            "newName",
+            hillThelenTypeFatigable.position(),
+            hillThelenTypeFatigable.characteristics(),
+            biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+
+        EXPECT_STREQ(hillThelenTypeFatigableNew.name().c_str(), "newName");
+        EXPECT_EQ(hillThelenTypeFatigableNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+    }
+
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+            "newName",
+            hillThelenTypeFatigable.position(),
+            hillThelenTypeFatigable.characteristics(),
+            hillThelenTypeFatigable.state());
+
+        EXPECT_STREQ(hillThelenTypeFatigableNew.name().c_str(), "newName");
+        EXPECT_EQ(hillThelenTypeFatigableNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+            "newName",
+            hillThelenTypeFatigable.position(),
+            hillThelenTypeFatigable.characteristics(),
+            hillThelenTypeFatigable.pathModifier(),
+            biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+
+        EXPECT_STREQ(hillThelenTypeFatigableNew.name().c_str(), "newName");
+        EXPECT_EQ(hillThelenTypeFatigableNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+    }
+}
+
+TEST(hillThelenTypeFatigable, copy)
+{
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+
+        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        Q = Q.setOnes() / 10;
+
+        biorbd::muscles::HillThelenTypeFatigable shallowCopy(hillThelenTypeFatigable);
+        biorbd::muscles::HillThelenTypeFatigable deepCopyNow(hillThelenTypeFatigable.DeepCopy());
+        biorbd::muscles::HillThelenTypeFatigable deepCopyLater;
+        deepCopyLater.DeepCopy(hillThelenTypeFatigable);
+
+        biorbd::utils::String originalName(hillThelenTypeFatigable.name());
+        EXPECT_STREQ(shallowCopy.name().c_str(), originalName.c_str());
+        EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
+        EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
+
+        biorbd::utils::String newName("MyNewMuscleName");
+        hillThelenTypeFatigable.setName(newName);
+        EXPECT_STREQ(hillThelenTypeFatigable.name().c_str(), newName.c_str());
+        EXPECT_STREQ(shallowCopy.name().c_str(), newName.c_str());
+        EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
+        EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+
+        biorbd::muscles::HillThelenTypeFatigable shallowCopy(hillThelenTypeFatigable);
+        biorbd::muscles::HillThelenTypeFatigable deepCopyNow(hillThelenTypeFatigable.DeepCopy());
+        biorbd::muscles::HillThelenTypeFatigable deepCopyLater;
+        deepCopyLater.DeepCopy(hillThelenTypeFatigable);
+
+        EXPECT_NEAR(hillThelenTypeFatigable.characteristics().pennationAngle(), 0., requiredPrecision);
+        EXPECT_NEAR(shallowCopy.characteristics().pennationAngle(), 0., requiredPrecision);
+
+        biorbd::muscles::Characteristics charac(hillThelenTypeFatigable.characteristics());
+        charac.setPennationAngle(0.523599);
+
+        EXPECT_NEAR(hillThelenTypeFatigable.characteristics().pennationAngle(), 0.523599, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.characteristics().pennationAngle(), 0.523599, requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.characteristics().pennationAngle(), 0., requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.characteristics().pennationAngle(), 0., requiredPrecision);
+    }
+
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+
+        biorbd::muscles::HillThelenTypeFatigable shallowCopy(hillThelenTypeFatigable);
+        biorbd::muscles::HillThelenTypeFatigable deepCopyNow(hillThelenTypeFatigable.DeepCopy());
+        biorbd::muscles::HillThelenTypeFatigable deepCopyLater;
+        deepCopyLater.DeepCopy(hillThelenTypeFatigable);
+
+        EXPECT_NEAR(hillThelenTypeFatigable.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(shallowCopy.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.state().excitation(), 0., requiredPrecision);
+
+        hillThelenTypeFatigable.state().setExcitation(biorbd::utils::Scalar(5.));
+
+        EXPECT_NEAR(hillThelenTypeFatigable.state().excitation(), 5., requiredPrecision);
+        EXPECT_NEAR(shallowCopy.state().excitation(), 5., requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.state().excitation(), 0., requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.state().excitation(), 0., requiredPrecision);
+    }
 }
 
 TEST(FatigueState, unitTest)
