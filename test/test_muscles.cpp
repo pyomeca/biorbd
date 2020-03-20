@@ -1002,7 +1002,23 @@ TEST(MuscleGroup, unitTest)
         EXPECT_STREQ(muscleGroup.muscle(3).name().c_str(), "newMuscleName");
     }
 }
+
+TEST(MuscleGroup, DeepCopy)
+{
+    biorbd::Model model(modelPathForMuscleForce);
+    biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+
+    biorbd::muscles::MuscleGroup shallowCopy(muscleGroup);
+    biorbd::muscles::MuscleGroup deepCopyNow(muscleGroup.DeepCopy());
+    biorbd::muscles::MuscleGroup deepCopyLater;
+    deepCopyLater.DeepCopy(muscleGroup);
+
+    EXPECT_STREQ(muscleGroup.name().c_str(), "base_to_r_ulna_radius_hand");
+    EXPECT_STREQ(shallowCopy.name().c_str(), "base_to_r_ulna_radius_hand");
+    EXPECT_STREQ(deepCopyNow.name().c_str(), "base_to_r_ulna_radius_hand");
+    EXPECT_STREQ(deepCopyLater.name().c_str(), "base_to_r_ulna_radius_hand");
 }
+
 TEST(MuscleForce, position)
 {
     // TODO
