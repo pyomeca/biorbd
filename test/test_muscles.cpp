@@ -966,10 +966,27 @@ TEST(MuscleGroup, unitTest)
         muscleGroup.setInsertion("newInsertionName");
         EXPECT_STREQ(muscleGroup.insertion().c_str(), "newInsertionName");
     }
+
     {
         biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
+        muscleGroup.addMuscle("newMuscleName",
+            biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
+            model.muscleGroup(0).muscle(0).position(),
+            model.muscleGroup(0).muscle(0).characteristics(),
+            biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+
+        // Check the id of the last muscle added
+        int idNewMuscle(muscleGroup.muscleID("newMuscleName"));
+        EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
+
+        // Fetch new muscle from muscle
+        EXPECT_STREQ(muscleGroup.muscle(3).name().c_str(), "newMuscleName");
+
+        EXPECT_THROW(muscleGroup.muscle(4), std::runtime_error);
+    }
+}
         EXPECT_NEAR(muscleGroup.nbMuscles(), 3, requiredPrecision);
 
         // Add muscle to muscle group
