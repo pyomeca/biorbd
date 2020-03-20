@@ -1039,7 +1039,9 @@ TEST(MuscleGroup, AddMuscle)
 
         // Check the number of muscles again
         EXPECT_NEAR(muscleGroup.nbMuscles(), 7, requiredPrecision);
+    }
 }
+
 
 TEST(MuscleGroup, DeepCopy)
 {
@@ -1091,6 +1093,46 @@ TEST(MuscleGroup, DeepCopy)
         EXPECT_STREQ(deepCopyNow.name().c_str(), "base_to_r_ulna_radius_hand");
         EXPECT_STREQ(deepCopyLater.name().c_str(), "base_to_r_ulna_radius_hand");
     }
+}
+
+TEST(MuscleGroup, errors)
+{
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        EXPECT_THROW(muscleGroup.addMuscle("noTypeMuscle",
+            biorbd::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE,
+            model.muscleGroup(0).muscle(0).position(),
+            model.muscleGroup(0).muscle(0).characteristics(),
+            biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        EXPECT_THROW(muscleGroup.muscle(3), std::runtime_error);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        EXPECT_THROW(muscleGroup.addMuscle("noTypeMuscle",
+            biorbd::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE,
+            model.muscleGroup(0).muscle(0).position(),
+            model.muscleGroup(0).muscle(0).characteristics(),
+            biorbd::muscles::STATE_TYPE::SIMPLE_STATE,
+            biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        EXPECT_THROW(muscleGroup.addMuscle("noTypeMuscle",
+            biorbd::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE,
+            model.muscleGroup(0).muscle(0).position(),
+            model.muscleGroup(0).muscle(0).characteristics(),
+            model.muscleGroup(0).muscle(0).pathModifier(),
+            biorbd::muscles::STATE_TYPE::SIMPLE_STATE,
+            biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
+    }
+
 }
 
 TEST(MuscleForce, position)
