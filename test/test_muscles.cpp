@@ -966,6 +966,23 @@ TEST(MuscleGroup, unitTest)
         muscleGroup.setInsertion("newInsertionName");
         EXPECT_STREQ(muscleGroup.insertion().c_str(), "newInsertionName");
     }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+
+        EXPECT_EQ(muscleGroup.nbMuscles(), 3, requiredPrecision);
+
+        // Add muscle to muscle group
+        muscleGroup.addMuscle("newMuscleName",
+            biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
+            model.muscleGroup(0).muscle(0).position(),
+            model.muscleGroup(0).muscle(0).characteristics(),
+            biorbd::muscles::STATE_TYPE::SIMPLE_STATE,
+            biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+
+        // Check the number of muscles again
+        EXPECT_EQ(muscleGroup.nbMuscles(), 4, requiredPrecision);
+    }
 
 }
 TEST(MuscleForce, position)
