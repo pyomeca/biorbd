@@ -943,6 +943,31 @@ TEST(FatigueParemeters, copy)
     EXPECT_EQ(deepCopyLater.recoveryRate(), 2.0);
 }
 
+TEST(MuscleGroup, unitTest)
+{
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+
+        muscleGroup.setName("newName");
+        EXPECT_STREQ(muscleGroup.name().c_str(), "newName");
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+
+        muscleGroup.setOrigin("newOriginName");
+        EXPECT_STREQ(muscleGroup.origin().c_str(), "newOriginName");
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+
+        muscleGroup.setInsertion("newInsertionName");
+        EXPECT_STREQ(muscleGroup.insertion().c_str(), "newInsertionName");
+    }
+
+}
 TEST(MuscleForce, position)
 {
     // TODO
