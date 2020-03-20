@@ -1049,6 +1049,24 @@ TEST(MuscleGroup, AddMuscle)
         // Check the number of muscles again
         EXPECT_NEAR(muscleGroup.nbMuscles(), 7, requiredPrecision);
     }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+
+        //Check number of muscle 
+        EXPECT_NEAR(muscleGroup.nbMuscles(), 3, requiredPrecision);
+
+        // Add muscle to muscle group
+        muscleGroup.addMuscle("newMuscleName",
+            biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
+            model.muscleGroup(0).muscle(0).position(),
+            model.muscleGroup(0).muscle(0).characteristics(),
+            model.muscleGroup(0).muscle(0).pathModifier(),
+            biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+
+        // Check the number of muscles again
+        EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
+    }
 }
 
 
