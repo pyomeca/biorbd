@@ -1017,6 +1017,15 @@ TEST(MuscleGroup, DeepCopy)
     EXPECT_STREQ(shallowCopy.name().c_str(), "base_to_r_ulna_radius_hand");
     EXPECT_STREQ(deepCopyNow.name().c_str(), "base_to_r_ulna_radius_hand");
     EXPECT_STREQ(deepCopyLater.name().c_str(), "base_to_r_ulna_radius_hand");
+
+    // Set new name
+    muscleGroup.setName("newMuscleGroupName");
+
+    EXPECT_STREQ(muscleGroup.name().c_str(), "newMuscleGroupName");
+    EXPECT_STREQ(shallowCopy.name().c_str(), "newMuscleGroupName");
+    EXPECT_STREQ(deepCopyNow.name().c_str(), "base_to_r_ulna_radius_hand");
+    EXPECT_STREQ(deepCopyLater.name().c_str(), "base_to_r_ulna_radius_hand");
+
 }
 
 TEST(MuscleForce, position)
