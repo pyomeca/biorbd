@@ -970,7 +970,7 @@ TEST(MuscleGroup, unitTest)
         biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
-        EXPECT_EQ(muscleGroup.nbMuscles(), 3, requiredPrecision);
+        EXPECT_NEAR(muscleGroup.nbMuscles(), 3, requiredPrecision);
 
         // Add muscle to muscle group
         muscleGroup.addMuscle("newMuscleName",
@@ -981,7 +981,7 @@ TEST(MuscleGroup, unitTest)
             biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
-        EXPECT_EQ(muscleGroup.nbMuscles(), 4, requiredPrecision);
+        EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
     }
 
     {
@@ -996,7 +996,7 @@ TEST(MuscleGroup, unitTest)
 
         // Check the id of the last muscle added
         int idNewMuscle(muscleGroup.muscleID("newMuscleName"));
-        EXPECT_EQ(muscleGroup.nbMuscles(), 4, requiredPrecision);
+        EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
 
         // Fetch new muscle from muscle
         EXPECT_STREQ(muscleGroup.muscle(3).name().c_str(), "newMuscleName");
@@ -1025,7 +1025,6 @@ TEST(MuscleGroup, DeepCopy)
     EXPECT_STREQ(shallowCopy.name().c_str(), "newMuscleGroupName");
     EXPECT_STREQ(deepCopyNow.name().c_str(), "base_to_r_ulna_radius_hand");
     EXPECT_STREQ(deepCopyLater.name().c_str(), "base_to_r_ulna_radius_hand");
-
 }
 
 TEST(MuscleForce, position)
