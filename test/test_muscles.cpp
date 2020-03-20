@@ -983,13 +983,22 @@ TEST(MuscleGroup, unitTest)
 
         // Fetch new muscle from muscle
         EXPECT_STREQ(muscleGroup.muscle(3).name().c_str(), "newMuscleName");
-
-        EXPECT_THROW(muscleGroup.muscle(4), std::runtime_error);
     }
 }
 
 TEST(MuscleGroup, AddMuscle)
 {
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+
+        biorbd::muscles::IdealizedActuator muscleToAdd;
+        muscleGroup.addMuscle(muscleToAdd);
+
+        //Check number of muscle 
+        EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
+    }
+    {
         biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
