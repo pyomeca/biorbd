@@ -987,6 +987,13 @@ TEST(MuscleGroup, unitTest)
         EXPECT_THROW(muscleGroup.muscle(4), std::runtime_error);
     }
 }
+
+TEST(MuscleGroup, AddMuscle)
+{
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+
+        //Check number of muscle 
         EXPECT_NEAR(muscleGroup.nbMuscles(), 3, requiredPrecision);
 
         // Add muscle to muscle group
@@ -999,49 +1006,91 @@ TEST(MuscleGroup, unitTest)
 
         // Check the number of muscles again
         EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
-    }
 
+        // Add HILL muscle to muscle group
+        muscleGroup.addMuscle("newHillMuscle",
+            biorbd::muscles::MUSCLE_TYPE::HILL,
+            model.muscleGroup(0).muscle(0).position(),
+            model.muscleGroup(0).muscle(0).characteristics(),
+            biorbd::muscles::STATE_TYPE::DYNAMIC,
+            biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+
+        // Check the number of muscles again
+        EXPECT_NEAR(muscleGroup.nbMuscles(), 5, requiredPrecision);
+
+        // Add HILL THELEN muscle to muscle group
+        muscleGroup.addMuscle("newHillThelenMuscle",
+            biorbd::muscles::MUSCLE_TYPE::HILL_THELEN,
+            model.muscleGroup(0).muscle(0).position(),
+            model.muscleGroup(0).muscle(0).characteristics(),
+            biorbd::muscles::STATE_TYPE::BUCHANAN,
+            biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+
+        // Check the number of muscles again
+        EXPECT_NEAR(muscleGroup.nbMuscles(), 6, requiredPrecision);
+
+        // Add muscle to muscle group
+        muscleGroup.addMuscle("newHillThelenFatigable",
+            biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE,
+            model.muscleGroup(0).muscle(0).position(),
+            model.muscleGroup(0).muscle(0).characteristics(),
+            biorbd::muscles::STATE_TYPE::SIMPLE_STATE,
+            biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+
+        // Check the number of muscles again
+        EXPECT_NEAR(muscleGroup.nbMuscles(), 7, requiredPrecision);
+}
+
+TEST(MuscleGroup, DeepCopy)
+{
     {
         biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
-        muscleGroup.addMuscle("newMuscleName",
+        biorbd::muscles::MuscleGroup shallowCopy(muscleGroup);
+        biorbd::muscles::MuscleGroup deepCopyNow(muscleGroup.DeepCopy());
+        biorbd::muscles::MuscleGroup deepCopyLater;
+        deepCopyLater.DeepCopy(muscleGroup);
+
+        EXPECT_STREQ(muscleGroup.name().c_str(), "base_to_r_ulna_radius_hand");
+        EXPECT_STREQ(shallowCopy.name().c_str(), "base_to_r_ulna_radius_hand");
+        EXPECT_STREQ(deepCopyNow.name().c_str(), "base_to_r_ulna_radius_hand");
+        EXPECT_STREQ(deepCopyLater.name().c_str(), "base_to_r_ulna_radius_hand");
+
+        // Set new name
+        muscleGroup.setName("newMuscleGroupName");
+
+        EXPECT_STREQ(muscleGroup.name().c_str(), "newMuscleGroupName");
+        EXPECT_STREQ(shallowCopy.name().c_str(), "newMuscleGroupName");
+        EXPECT_STREQ(deepCopyNow.name().c_str(), "base_to_r_ulna_radius_hand");
+        EXPECT_STREQ(deepCopyLater.name().c_str(), "base_to_r_ulna_radius_hand");
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+
+        muscleGroup.addMuscle("newIdealizedActuator",
             biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
             model.muscleGroup(0).muscle(0).position(),
             model.muscleGroup(0).muscle(0).characteristics(),
             biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
-        // Check the id of the last muscle added
-        int idNewMuscle(muscleGroup.muscleID("newMuscleName"));
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
+        muscleGroup.addMuscle("newHillActuator",
+            biorbd::muscles::MUSCLE_TYPE::HILL,
+            model.muscleGroup(0).muscle(0).position(),
+            model.muscleGroup(0).muscle(0).characteristics(),
+            biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
-        // Fetch new muscle from muscle
-        EXPECT_STREQ(muscleGroup.muscle(3).name().c_str(), "newMuscleName");
+        biorbd::muscles::MuscleGroup shallowCopy(muscleGroup);
+        biorbd::muscles::MuscleGroup deepCopyNow(muscleGroup.DeepCopy());
+        biorbd::muscles::MuscleGroup deepCopyLater;
+        deepCopyLater.DeepCopy(muscleGroup);
+
+        EXPECT_STREQ(muscleGroup.muscle(4).name().c_str(), "newHillActuator");
+        EXPECT_STREQ(shallowCopy.muscle(4).name().c_str(), "newHillActuator");
+        EXPECT_STREQ(deepCopyNow.name().c_str(), "base_to_r_ulna_radius_hand");
+        EXPECT_STREQ(deepCopyLater.name().c_str(), "base_to_r_ulna_radius_hand");
     }
-}
-
-TEST(MuscleGroup, DeepCopy)
-{
-    biorbd::Model model(modelPathForMuscleForce);
-    biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
-
-    biorbd::muscles::MuscleGroup shallowCopy(muscleGroup);
-    biorbd::muscles::MuscleGroup deepCopyNow(muscleGroup.DeepCopy());
-    biorbd::muscles::MuscleGroup deepCopyLater;
-    deepCopyLater.DeepCopy(muscleGroup);
-
-    EXPECT_STREQ(muscleGroup.name().c_str(), "base_to_r_ulna_radius_hand");
-    EXPECT_STREQ(shallowCopy.name().c_str(), "base_to_r_ulna_radius_hand");
-    EXPECT_STREQ(deepCopyNow.name().c_str(), "base_to_r_ulna_radius_hand");
-    EXPECT_STREQ(deepCopyLater.name().c_str(), "base_to_r_ulna_radius_hand");
-
-    // Set new name
-    muscleGroup.setName("newMuscleGroupName");
-
-    EXPECT_STREQ(muscleGroup.name().c_str(), "newMuscleGroupName");
-    EXPECT_STREQ(shallowCopy.name().c_str(), "newMuscleGroupName");
-    EXPECT_STREQ(deepCopyNow.name().c_str(), "base_to_r_ulna_radius_hand");
-    EXPECT_STREQ(deepCopyLater.name().c_str(), "base_to_r_ulna_radius_hand");
 }
 
 TEST(MuscleForce, position)
