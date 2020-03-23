@@ -1169,20 +1169,31 @@ TEST(Muscles, unitTest)
         muscles.addMuscleGroup("muscleGroupName", "originName", "insertionName");
 
         EXPECT_STREQ(muscles.muscleGroup(0).name().c_str(), "muscleGroupName");
+        EXPECT_STREQ(muscles.muscleGroups()[0].name().c_str(), "muscleGroupName");
         EXPECT_STREQ(muscles.muscleGroup("muscleGroupName").origin().c_str(), "originName");
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::Muscles muscles;
+        muscles.addMuscleGroup("muscleGroupName", "originName", "insertionName");
+        muscles.muscleGroup(0).addMuscle("newIdealizedActuator",
+            biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
+            model.muscleGroup(0).muscle(0).position(),
+            model.muscleGroup(0).muscle(0).characteristics(),
+            biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+
+        EXPECT_NEAR(muscles.muscleNames().size(), 1, requiredPrecision);
     }
 }
 
 TEST(Muscles, errors)
 {
-    {
         biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::Muscles muscles;
         muscles.addMuscleGroup("muscleGroupName", "originName", "insertionName");
 
         EXPECT_THROW(muscles.muscleGroup(1), std::runtime_error);
         EXPECT_THROW(muscles.muscleGroup("nameNoExists"), std::runtime_error);
-    }
 }
 
 TEST(Muscles, deepCopy)
