@@ -1221,11 +1221,28 @@ TEST(WrappingCylinder, unitTest)
         biorbd::utils::RotoTrans rt(
             biorbd::utils::Vector3d(1, 1, 1), biorbd::utils::Vector3d(1, 1, 1), "xyz");
 
+        biorbd::muscles::WrappingCylinder wrappingCylinder;
+        
+        wrappingCylinder.setLength(2.0);
+        EXPECT_NEAR(wrappingCylinder.length(), 2.0, requiredPrecision);
+
+        wrappingCylinder.setDiameter(1.5);
+        EXPECT_NEAR(wrappingCylinder.diameter(), 1.5, requiredPrecision);
+
+        wrappingCylinder.setName("wrappingCylinderName");
+        EXPECT_STREQ(wrappingCylinder.name().c_str(), "wrappingCylinderName");
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::utils::RotoTrans rt(
+            biorbd::utils::Vector3d(1, 1, 1), biorbd::utils::Vector3d(1, 1, 1), "xyz");
+
         biorbd::muscles::WrappingCylinder wrappingCylinder(rt, 0.5, 1.5, true);
         EXPECT_NEAR(wrappingCylinder.length(), 1.5, requiredPrecision);
         EXPECT_NEAR(wrappingCylinder.diameter(), 0.5, requiredPrecision);
         EXPECT_NEAR(wrappingCylinder.radius(), 0.25, requiredPrecision);
     }
+
 }
 
 TEST(WrappingCylinder, deepCopy)
