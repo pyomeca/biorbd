@@ -735,6 +735,29 @@ TEST(hillThelenTypeFatigable, unitTest)
         EXPECT_STREQ(hillThelenTypeFatigableNew.name().c_str(), "newName");
         EXPECT_EQ(hillThelenTypeFatigableNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
     }
+    {
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+            "nameMuscle",
+            hillThelenTypeFatigable.position(),
+            hillThelenTypeFatigable.characteristics(),
+            biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+
+        EXPECT_EQ(hillThelenTypeFatigableNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+    }
+    {
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+            "nameMuscle",
+            hillThelenTypeFatigable.position(),
+            hillThelenTypeFatigable.characteristics(),
+            hillThelenTypeFatigable.pathModifier(),
+            biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+
+        EXPECT_EQ(hillThelenTypeFatigableNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+    }
 }
 
 TEST(hillThelenTypeFatigable, copy)
