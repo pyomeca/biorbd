@@ -1117,8 +1117,8 @@ TEST(MuscleGroup, DeepCopy)
 
         EXPECT_STREQ(muscleGroup.muscle(4).name().c_str(), "newHillActuator");
         EXPECT_STREQ(shallowCopy.muscle(4).name().c_str(), "newHillActuator");
-        EXPECT_STREQ(deepCopyNow.name().c_str(), "base_to_r_ulna_radius_hand");
-        EXPECT_STREQ(deepCopyLater.name().c_str(), "base_to_r_ulna_radius_hand");
+        EXPECT_STREQ(deepCopyNow.muscle(4).name().c_str(), "newHillActuator");
+        EXPECT_STREQ(deepCopyLater.muscle(4).name().c_str(), "newHillActuator");
     }
 }
 
@@ -1159,9 +1159,34 @@ TEST(MuscleGroup, errors)
             biorbd::muscles::STATE_TYPE::SIMPLE_STATE,
             biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
     }
+}
+
+TEST(Muscles, unitTest)
+{
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::Muscles muscles;
+        muscles.addMuscleGroup("muscleGroupName", "originName", "insertionName");
+
+        EXPECT_STREQ(muscles.muscleGroup(0).name().c_str(), "muscleGroupName");
+        EXPECT_STREQ(muscles.muscleGroup("muscleGroupName").origin().c_str(), "originName");
+    }
+}
+
+TEST(Muscles, errors)
+{
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::Muscles muscles;
+        muscles.addMuscleGroup("muscleGroupName", "originName", "insertionName");
+
+        EXPECT_THROW(muscles.muscleGroup(1), std::runtime_error);
+        EXPECT_THROW(muscles.muscleGroup("nameNoExists"), std::runtime_error);
+    }
 
 }
 
+}
 TEST(MuscleForce, position)
 {
     // TODO
