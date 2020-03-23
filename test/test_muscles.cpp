@@ -1200,6 +1200,15 @@ TEST(Muscles, deepCopy)
     EXPECT_STREQ(shallowCopy.muscleGroup(0).name().c_str(), "muscleGroupName");
     EXPECT_STREQ(deepCopyNow.muscleGroup(0).name().c_str(), "muscleGroupName");
     EXPECT_STREQ(deepCopyLater.muscleGroup(0).name().c_str(), "muscleGroupName");
+
+    // Set new name
+    muscles.muscleGroup(0).setName("newMuscleGroupName");
+
+    //Check if copies changed names
+    EXPECT_STREQ(muscles.muscleGroup(0).name().c_str(), "newMuscleGroupName");
+    EXPECT_STREQ(shallowCopy.muscleGroup(0).name().c_str(), "newMuscleGroupName");
+    EXPECT_STREQ(deepCopyNow.muscleGroup(0).name().c_str(), "newMuscleGroupName"); 
+    EXPECT_STREQ(deepCopyLater.muscleGroup(0).name().c_str(), "newMuscleGroupName"); 
 }
 TEST(MuscleForce, position)
 {
