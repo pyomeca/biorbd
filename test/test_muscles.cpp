@@ -1182,7 +1182,7 @@ TEST(Muscles, unitTest)
             model.muscleGroup(0).muscle(0).characteristics(),
             biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
-        EXPECT_NEAR(muscles.muscleNames().size(), 1, requiredPrecision);
+        EXPECT_NEAR(muscles.muscleNames().size(), 1., requiredPrecision);
     }
 }
 
@@ -1222,15 +1222,15 @@ TEST(Muscles, deepCopy)
     EXPECT_STREQ(deepCopyLater.muscleGroup(0).name().c_str(), "newMuscleGroupName"); 
 }
 
+#include"Utils/Matrix.h"
 #include "Utils/Vector3d.h"
 #include "Utils/RotoTrans.h"
 
 TEST(WrappingCylinder, unitTest)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
         biorbd::utils::RotoTrans rt(
-            biorbd::utils::Vector3d(1, 1, 1), biorbd::utils::Vector3d(1, 1, 1), "xyz");
+            biorbd::utils::Vector3d(1., 1., 1.), biorbd::utils::Vector3d(1., 1., 1.), "xyz");
 
         biorbd::muscles::WrappingCylinder wrappingCylinder;
         
@@ -1239,25 +1239,45 @@ TEST(WrappingCylinder, unitTest)
 
         wrappingCylinder.setDiameter(1.5);
         EXPECT_NEAR(wrappingCylinder.diameter(), 1.5, requiredPrecision);
+        EXPECT_NEAR(wrappingCylinder.radius(), 0.75, requiredPrecision);
 
         wrappingCylinder.setName("wrappingCylinderName");
         EXPECT_STREQ(wrappingCylinder.name().c_str(), "wrappingCylinderName");
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
         biorbd::utils::RotoTrans rt(
-            biorbd::utils::Vector3d(1, 1, 1), biorbd::utils::Vector3d(1, 1, 1), "xyz");
+            biorbd::utils::Vector3d(1., 1., 1.), biorbd::utils::Vector3d(1., 1., 1.), "xyz");
 
         biorbd::muscles::WrappingCylinder wrappingCylinder(rt, 0.5, 1.5, true);
         EXPECT_NEAR(wrappingCylinder.length(), 1.5, requiredPrecision);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
         biorbd::utils::RotoTrans rt(
-            biorbd::utils::Vector3d(1, 1, 1), biorbd::utils::Vector3d(1, 1, 1), "xyz");
+            biorbd::utils::Vector3d(1., 1., 1.), biorbd::utils::Vector3d(1., 1., 1.), "xyz");
 
         biorbd::muscles::WrappingCylinder wrappingCylinder(rt, 0.5, 1.5, true, "name", "parentName");
         EXPECT_STREQ(wrappingCylinder.parent().c_str(), "parentName");
+    }
+    {
+        biorbd::muscles::WrappingCylinder wrappingCylinder;
+        biorbd::utils::RotoTrans rt(
+            biorbd::utils::Vector3d(1., 1., 1.), biorbd::utils::Vector3d(1., 1., 1.), "xyz");
+        biorbd::utils::Vector3d p1(1., 1., 1.);
+        biorbd::utils::Vector3d p2(2., 2., 2.);
+
+       
+        wrappingCylinder.wrapPoints(
+            rt,
+            biorbd::utils::Vector3d(0.5, 1., 1.5),
+            biorbd::utils::Vector3d(4., 5., 6.),
+            p1, p2);
+
+        EXPECT_NEAR(p1[0], 0.71229470845913756, requiredPrecision);
+        EXPECT_NEAR(p1[1], 1.1554478324299933, requiredPrecision);
+        EXPECT_NEAR(p1[2], 0.90018809463370408, requiredPrecision);
+        EXPECT_NEAR(p2[0], 0.71229470845913756, requiredPrecision);
+        EXPECT_NEAR(p2[1], 1.1554478324299933, requiredPrecision);
+        EXPECT_NEAR(p2[2], 0.90018809463370408, requiredPrecision);
     }
 }
 
