@@ -1183,9 +1183,23 @@ TEST(Muscles, errors)
         EXPECT_THROW(muscles.muscleGroup(1), std::runtime_error);
         EXPECT_THROW(muscles.muscleGroup("nameNoExists"), std::runtime_error);
     }
-
 }
 
+TEST(Muscles, deepCopy)
+{
+    biorbd::Model model(modelPathForMuscleForce);
+    biorbd::muscles::Muscles muscles;
+    muscles.addMuscleGroup("muscleGroupName", "originName", "insertionName");
+
+    biorbd::muscles::Muscles shallowCopy(muscles);
+    biorbd::muscles::Muscles deepCopyNow(muscles.DeepCopy());
+    biorbd::muscles::Muscles deepCopyLater;
+    deepCopyLater.DeepCopy(muscles);
+
+    EXPECT_STREQ(muscles.muscleGroup(0).name().c_str(), "muscleGroupName");
+    EXPECT_STREQ(shallowCopy.muscleGroup(0).name().c_str(), "muscleGroupName");
+    EXPECT_STREQ(deepCopyNow.muscleGroup(0).name().c_str(), "muscleGroupName");
+    EXPECT_STREQ(deepCopyLater.muscleGroup(0).name().c_str(), "muscleGroupName");
 }
 TEST(MuscleForce, position)
 {
