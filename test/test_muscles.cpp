@@ -1210,6 +1210,24 @@ TEST(Muscles, deepCopy)
     EXPECT_STREQ(deepCopyNow.muscleGroup(0).name().c_str(), "newMuscleGroupName"); 
     EXPECT_STREQ(deepCopyLater.muscleGroup(0).name().c_str(), "newMuscleGroupName"); 
 }
+
+#include "Utils/Vector3d.h"
+#include "Utils/RotoTrans.h"
+
+TEST(WrappingCylinder, unitTest)
+{
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::utils::RotoTrans rt(
+            biorbd::utils::Vector3d(1, 1, 1), biorbd::utils::Vector3d(1, 1, 1), "xyz");
+
+        biorbd::muscles::WrappingCylinder wrappingCylinder(rt, 0.5, 1.5, true);
+        EXPECT_NEAR(wrappingCylinder.length(), 1.5, requiredPrecision);
+        EXPECT_NEAR(wrappingCylinder.diameter(), 0.5, requiredPrecision);
+        EXPECT_NEAR(wrappingCylinder.radius(), 0.25, requiredPrecision);
+    }
+}
+
 TEST(MuscleForce, position)
 {
     // TODO
