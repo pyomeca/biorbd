@@ -1228,6 +1228,33 @@ TEST(WrappingCylinder, unitTest)
     }
 }
 
+TEST(WrappingCylinder, deepCopy)
+{
+    biorbd::Model model(modelPathForMuscleForce);
+    biorbd::utils::RotoTrans rt(
+        biorbd::utils::Vector3d(1, 1, 1), biorbd::utils::Vector3d(1, 1, 1), "xyz");
+
+    biorbd::muscles::WrappingCylinder wrappingCylinder(rt, 0.5, 1.5, true);
+
+    biorbd::muscles::WrappingCylinder shallowCopy(wrappingCylinder);
+    biorbd::muscles::WrappingCylinder deepCopyNow(wrappingCylinder.DeepCopy());
+    biorbd::muscles::WrappingCylinder deepCopyLater;
+    deepCopyLater.DeepCopy(wrappingCylinder);
+
+    EXPECT_NEAR(wrappingCylinder.length(), 1.5, requiredPrecision);
+    EXPECT_NEAR(shallowCopy.length(), 1.5, requiredPrecision);
+    EXPECT_NEAR(deepCopyNow.length(), 1.5, requiredPrecision);
+    EXPECT_NEAR(deepCopyLater.length(), 1.5, requiredPrecision);
+
+    // Set new length
+    wrappingCylinder.setLength(2.0);
+
+    // Check values
+    EXPECT_NEAR(wrappingCylinder.length(), 2.0, requiredPrecision);
+    EXPECT_NEAR(shallowCopy.length(), 2.0, requiredPrecision);
+    EXPECT_NEAR(deepCopyNow.length(), 1.5, requiredPrecision);
+    EXPECT_NEAR(deepCopyLater.length(), 1.5, requiredPrecision);
+}
 TEST(MuscleForce, position)
 {
     // TODO
