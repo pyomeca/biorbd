@@ -8,7 +8,7 @@ biorbd::muscles::Characteristics::Characteristics() :
     m_optimalLength(std::make_shared<biorbd::utils::Scalar>(0)),
     m_fIsoMax(std::make_shared<biorbd::utils::Scalar>(0)),
     m_PCSA(std::make_shared<biorbd::utils::Scalar>(0)),
-    m_tendonSlackLength(std::make_shared<double>(0)),
+    m_tendonSlackLength(std::make_shared<biorbd::utils::Scalar>(0)),
     m_pennationAngle(std::make_shared<double>(0)),
     m_stateMax(std::make_shared<biorbd::muscles::State>(biorbd::muscles::State(1, 1))),
     m_minActivation(std::make_shared<double>(0.01)),
@@ -39,7 +39,7 @@ biorbd::muscles::Characteristics::Characteristics(
         biorbd::utils::Scalar optLength,
         biorbd::utils::Scalar fmax,
         biorbd::utils::Scalar PCSA,
-        double tendonSlackLength,
+        biorbd::utils::Scalar tendonSlackLength,
         double pennAngle,
         const biorbd::muscles::State &emgMax,
         const biorbd::muscles::FatigueParameters &fatigueParameters,
@@ -49,7 +49,7 @@ biorbd::muscles::Characteristics::Characteristics(
     m_optimalLength(std::make_shared<biorbd::utils::Scalar>(optLength)),
     m_fIsoMax(std::make_shared<biorbd::utils::Scalar>(fmax)),
     m_PCSA(std::make_shared<biorbd::utils::Scalar>(PCSA)),
-    m_tendonSlackLength(std::make_shared<double>(tendonSlackLength)),
+    m_tendonSlackLength(std::make_shared<biorbd::utils::Scalar>(tendonSlackLength)),
     m_pennationAngle(std::make_shared<double>(pennAngle)),
     m_stateMax(std::make_shared<biorbd::muscles::State>(emgMax)),
     m_minActivation(std::make_shared<double>(minAct)),
@@ -106,11 +106,11 @@ biorbd::utils::Scalar biorbd::muscles::Characteristics::forceIsoMax() const
     return *m_fIsoMax;
 }
 
-void biorbd::muscles::Characteristics::setTendonSlackLength(double val)
+void biorbd::muscles::Characteristics::setTendonSlackLength(biorbd::utils::Scalar val)
 {
     *m_tendonSlackLength = val;
 }
-double biorbd::muscles::Characteristics::tendonSlackLength() const
+biorbd::utils::Scalar biorbd::muscles::Characteristics::tendonSlackLength() const
 {
     return *m_tendonSlackLength;
 }
