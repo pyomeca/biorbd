@@ -68,6 +68,36 @@ TEST(Contacts, unitTest)
     }
 }
 
+TEST(Contacts, DeepCopy)
+{
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::Contacts contacts(model);
+
+        biorbd::rigidbody::Contacts shallowCopy(contacts);
+        biorbd::rigidbody::Contacts deepCopyNow(contacts.DeepCopy());
+        biorbd::rigidbody::Contacts deepCopyLater;
+        deepCopyLater.DeepCopy(contacts);
+
+        EXPECT_NEAR(contacts.nbContacts(), 6., requiredPrecision);
+        EXPECT_NEAR(shallowCopy.nbContacts(), 6., requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.nbContacts(), 6., requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.nbContacts(), 6., requiredPrecision);
+
+        contacts.AddConstraint(
+            7,
+            biorbd::utils::Vector3d(0, 0, 0),
+            biorbd::utils::Vector3d(1, 1, 1),
+            "constraintName",
+            2.0);
+
+        EXPECT_NEAR(contacts.nbContacts(), 7., requiredPrecision);
+        EXPECT_NEAR(shallowCopy.nbContacts(), 7., requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.nbContacts(), 6., requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.nbContacts(), 6., requiredPrecision);
+    }
+}
+
 TEST(DegreesOfFreedom, count)
 {
     {
