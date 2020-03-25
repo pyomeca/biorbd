@@ -51,6 +51,23 @@ TEST(Contacts, unitTest)
 
         EXPECT_THROW(contacts.name(7), std::runtime_error);
     }
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::Contacts contacts(model);
+
+        EXPECT_NEAR(contacts.nbContacts(), 6., requiredPrecision);
+
+        contacts.AddConstraint(
+            7,
+            biorbd::utils::Vector3d(0, 0, 0),
+            biorbd::utils::Vector3d(1, 1, 1),
+            "constraintName",
+            2.0);
+
+        EXPECT_NEAR(contacts.nbContacts(), 7., requiredPrecision);
+    }
+}
+
 TEST(DegreesOfFreedom, count)
 {
     {
