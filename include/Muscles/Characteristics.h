@@ -42,7 +42,7 @@ public:
     /// \param minAct Minimal activation (default: 0.01)
     ///
     Characteristics(
-            double optLength,
+            biorbd::utils::Scalar optLength,
             biorbd::utils::Scalar fmax,
             double PCSA,
             double tendonSlackLength,
@@ -76,13 +76,13 @@ public:
     /// \brief Set the length without tension
     /// \param val Value of the length without tension
     ///
-    void setOptimalLength(double val);
+    void setOptimalLength(biorbd::utils::Scalar val);
 
     ///
     /// \brief Return the optimal length at which maximal force occurs
     /// \return The length without tension
     ///
-    virtual double optimalLength() const;
+    virtual biorbd::utils::Scalar optimalLength() const;
 
     ///
     /// \brief Set the maximal isometric force
@@ -192,7 +192,7 @@ public:
     const biorbd::muscles::FatigueParameters& fatigueParameters() const;
 
 protected:
-    std::shared_ptr<double> m_optimalLength; ///< Length without tension
+    std::shared_ptr<biorbd::utils::Scalar> m_optimalLength; ///< Length without tension
     std::shared_ptr<biorbd::utils::Scalar> m_fIsoMax;       ///< Maximal isometric force Force maximale isométrique
     std::shared_ptr<double> m_PCSA;          ///< Physiological cross-sectional area of the muscle
     std::shared_ptr<double> m_tendonSlackLength; ///< Tendon slack length

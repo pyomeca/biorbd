@@ -5,7 +5,7 @@
 #include "Muscles/FatigueParameters.h"
 
 biorbd::muscles::Characteristics::Characteristics() :
-    m_optimalLength(std::make_shared<double>(0)),
+    m_optimalLength(std::make_shared<biorbd::utils::Scalar>(0)),
     m_fIsoMax(std::make_shared<biorbd::utils::Scalar>(0)),
     m_PCSA(std::make_shared<double>(0)),
     m_tendonSlackLength(std::make_shared<double>(0)),
@@ -36,7 +36,7 @@ biorbd::muscles::Characteristics::Characteristics(
 }
 
 biorbd::muscles::Characteristics::Characteristics(
-        double optLength,
+        biorbd::utils::Scalar optLength,
         biorbd::utils::Scalar fmax,
         double PCSA,
         double tendonSlackLength,
@@ -46,7 +46,7 @@ biorbd::muscles::Characteristics::Characteristics(
         double torqueAct,
         double torqueDeact,
         double minAct):
-    m_optimalLength(std::make_shared<double>(optLength)),
+    m_optimalLength(std::make_shared<biorbd::utils::Scalar>(optLength)),
     m_fIsoMax(std::make_shared<biorbd::utils::Scalar>(fmax)),
     m_PCSA(std::make_shared<double>(PCSA)),
     m_tendonSlackLength(std::make_shared<double>(tendonSlackLength)),
@@ -88,11 +88,11 @@ void biorbd::muscles::Characteristics::DeepCopy(
 }
 
 // Get et Set
-void biorbd::muscles::Characteristics::setOptimalLength(double val)
+void biorbd::muscles::Characteristics::setOptimalLength(biorbd::utils::Scalar val)
 {
     *m_optimalLength = val;
 }
-double biorbd::muscles::Characteristics::optimalLength() const
+biorbd::utils::Scalar biorbd::muscles::Characteristics::optimalLength() const
 {
     return *m_optimalLength;
 }
