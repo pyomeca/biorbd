@@ -209,7 +209,7 @@ const std::vector<biorbd::utils::Vector3d> &biorbd::muscles::Muscle::musclesPoin
     return m_position->musclesPointsInGlobal();
 }
 
-void biorbd::muscles::Muscle::setForceIsoMax(double forceMax)
+void biorbd::muscles::Muscle::setForceIsoMax(biorbd::utils::Scalar forceMax)
 {
     m_characteristics->setForceIsoMax(forceMax);
 }

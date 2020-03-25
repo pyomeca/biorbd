@@ -235,7 +235,7 @@ public:
     /// \param forceMax The force to set
     ///
     void setForceIsoMax(
-            double forceMax);
+            biorbd::utils::Scalar forceMax);
 
     ///
     /// \brief Set the dynamic state
