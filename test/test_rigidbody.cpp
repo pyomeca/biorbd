@@ -45,8 +45,12 @@ TEST(Contacts, unitTest)
         EXPECT_EQ(contacts.hasContacts(), true);
         EXPECT_NEAR(contacts.getForce()[1], 0., requiredPrecision);
     }
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::Contacts contacts(model);
 
-}
+        EXPECT_THROW(contacts.name(7), std::runtime_error);
+    }
 TEST(DegreesOfFreedom, count)
 {
     {
