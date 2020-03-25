@@ -43,7 +43,7 @@ public:
     ///
     Characteristics(
             double optLength,
-            double fmax,
+            biorbd::utils::Scalar fmax,
             double PCSA,
             double tendonSlackLength,
             double pennAngle,
@@ -88,13 +88,13 @@ public:
     /// \brief Set the maximal isometric force
     /// \param val Value of the maximal isometric force
     ///
-    virtual void setForceIsoMax(double val);
+    virtual void setForceIsoMax(biorbd::utils::Scalar val);
 
     ///
     /// \brief Return the maximal isometric force at optimal length
     /// \return The maximal isometric force
     ///    
-    double forceIsoMax() const;
+    biorbd::utils::Scalar forceIsoMax() const;
 
     ///
     /// \brief Set the tendon slack length
@@ -193,7 +193,7 @@ public:
 
 protected:
     std::shared_ptr<double> m_optimalLength; ///< Length without tension
-    std::shared_ptr<double> m_fIsoMax;       ///< Maximal isometric force Force maximale isométrique
+    std::shared_ptr<biorbd::utils::Scalar> m_fIsoMax;       ///< Maximal isometric force Force maximale isométrique
     std::shared_ptr<double> m_PCSA;          ///< Physiological cross-sectional area of the muscle
     std::shared_ptr<double> m_tendonSlackLength; ///< Tendon slack length
     std::shared_ptr<double> m_pennationAngle; ///< Angle of pennation

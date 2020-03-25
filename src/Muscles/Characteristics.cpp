@@ -6,7 +6,7 @@
 
 biorbd::muscles::Characteristics::Characteristics() :
     m_optimalLength(std::make_shared<double>(0)),
-    m_fIsoMax(std::make_shared<double>(0)),
+    m_fIsoMax(std::make_shared<biorbd::utils::Scalar>(0)),
     m_PCSA(std::make_shared<double>(0)),
     m_tendonSlackLength(std::make_shared<double>(0)),
     m_pennationAngle(std::make_shared<double>(0)),
@@ -37,7 +37,7 @@ biorbd::muscles::Characteristics::Characteristics(
 
 biorbd::muscles::Characteristics::Characteristics(
         double optLength,
-        double fmax,
+        biorbd::utils::Scalar fmax,
         double PCSA,
         double tendonSlackLength,
         double pennAngle,
@@ -47,7 +47,7 @@ biorbd::muscles::Characteristics::Characteristics(
         double torqueDeact,
         double minAct):
     m_optimalLength(std::make_shared<double>(optLength)),
-    m_fIsoMax(std::make_shared<double>(fmax)),
+    m_fIsoMax(std::make_shared<biorbd::utils::Scalar>(fmax)),
     m_PCSA(std::make_shared<double>(PCSA)),
     m_tendonSlackLength(std::make_shared<double>(tendonSlackLength)),
     m_pennationAngle(std::make_shared<double>(pennAngle)),
@@ -97,11 +97,11 @@ double biorbd::muscles::Characteristics::optimalLength() const
     return *m_optimalLength;
 }
 
-void biorbd::muscles::Characteristics::setForceIsoMax(double val)
+void biorbd::muscles::Characteristics::setForceIsoMax(biorbd::utils::Scalar val)
 {
     *m_fIsoMax = val;
 }
-double biorbd::muscles::Characteristics::forceIsoMax() const
+biorbd::utils::Scalar biorbd::muscles::Characteristics::forceIsoMax() const
 {
     return *m_fIsoMax;
 }
