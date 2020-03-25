@@ -44,7 +44,7 @@ public:
     Characteristics(
             biorbd::utils::Scalar optLength,
             biorbd::utils::Scalar fmax,
-            double PCSA,
+            biorbd::utils::Scalar PCSA,
             double tendonSlackLength,
             double pennAngle,
             const biorbd::muscles::State& emgMax,
@@ -122,13 +122,13 @@ public:
     /// \brief Set the physiological cross-sectional area of the muscle
     /// \param val Value of the physiological cross-sectional area of the muscle
     ///
-    void setPCSA(double val);
+    void setPCSA(biorbd::utils::Scalar val);
 
     ///
     /// \brief Return the physiological cross-sectional area of the muscle 
     /// \return The physiological cross-sectional area of the muscle 
     ///
-    double PCSA() const;
+    biorbd::utils::Scalar PCSA() const;
 
     ///
     /// \brief Set the minimal activation of the muscle
@@ -194,7 +194,7 @@ public:
 protected:
     std::shared_ptr<biorbd::utils::Scalar> m_optimalLength; ///< Length without tension
     std::shared_ptr<biorbd::utils::Scalar> m_fIsoMax;       ///< Maximal isometric force Force maximale isométrique
-    std::shared_ptr<double> m_PCSA;          ///< Physiological cross-sectional area of the muscle
+    std::shared_ptr<biorbd::utils::Scalar> m_PCSA;          ///< Physiological cross-sectional area of the muscle
     std::shared_ptr<double> m_tendonSlackLength; ///< Tendon slack length
     std::shared_ptr<double> m_pennationAngle; ///< Angle of pennation
     std::shared_ptr<biorbd::muscles::State> m_stateMax; ///< Maximal excitation et activation of the muscle
