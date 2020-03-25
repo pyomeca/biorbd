@@ -9,7 +9,7 @@ biorbd::muscles::Characteristics::Characteristics() :
     m_fIsoMax(std::make_shared<biorbd::utils::Scalar>(0)),
     m_PCSA(std::make_shared<biorbd::utils::Scalar>(0)),
     m_tendonSlackLength(std::make_shared<biorbd::utils::Scalar>(0)),
-    m_pennationAngle(std::make_shared<double>(0)),
+    m_pennationAngle(std::make_shared<biorbd::utils::Scalar>(0)),
     m_stateMax(std::make_shared<biorbd::muscles::State>(biorbd::muscles::State(1, 1))),
     m_minActivation(std::make_shared<double>(0.01)),
     m_torqueActivation(std::make_shared<double>(0.01)),
@@ -40,7 +40,7 @@ biorbd::muscles::Characteristics::Characteristics(
         biorbd::utils::Scalar fmax,
         biorbd::utils::Scalar PCSA,
         biorbd::utils::Scalar tendonSlackLength,
-        double pennAngle,
+        biorbd::utils::Scalar pennAngle,
         const biorbd::muscles::State &emgMax,
         const biorbd::muscles::FatigueParameters &fatigueParameters,
         double torqueAct,
@@ -50,7 +50,7 @@ biorbd::muscles::Characteristics::Characteristics(
     m_fIsoMax(std::make_shared<biorbd::utils::Scalar>(fmax)),
     m_PCSA(std::make_shared<biorbd::utils::Scalar>(PCSA)),
     m_tendonSlackLength(std::make_shared<biorbd::utils::Scalar>(tendonSlackLength)),
-    m_pennationAngle(std::make_shared<double>(pennAngle)),
+    m_pennationAngle(std::make_shared<biorbd::utils::Scalar>(pennAngle)),
     m_stateMax(std::make_shared<biorbd::muscles::State>(emgMax)),
     m_minActivation(std::make_shared<double>(minAct)),
     m_torqueActivation(std::make_shared<double>(torqueAct)),
@@ -115,11 +115,11 @@ biorbd::utils::Scalar biorbd::muscles::Characteristics::tendonSlackLength() cons
     return *m_tendonSlackLength;
 }
 
-void biorbd::muscles::Characteristics::setPennationAngle(double val)
+void biorbd::muscles::Characteristics::setPennationAngle(biorbd::utils::Scalar val)
 {
     *m_pennationAngle = val;
 }
-double biorbd::muscles::Characteristics::pennationAngle() const
+biorbd::utils::Scalar biorbd::muscles::Characteristics::pennationAngle() const
 {
     return *m_pennationAngle;
 }

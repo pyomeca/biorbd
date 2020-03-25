@@ -46,7 +46,7 @@ public:
             biorbd::utils::Scalar fmax,
             biorbd::utils::Scalar PCSA,
             biorbd::utils::Scalar tendonSlackLength,
-            double pennAngle,
+            biorbd::utils::Scalar pennAngle,
             const biorbd::muscles::State& emgMax,
             const biorbd::muscles::FatigueParameters& fatigueParameters,
             double torqueAct = 0.01,
@@ -111,12 +111,12 @@ public:
     /// \brief Set the angle of pennation
     /// \param val Value of the angle of pennation
     ///
-    void setPennationAngle(double val);
+    void setPennationAngle(biorbd::utils::Scalar val);
     ///
     /// \brief Return the angle of pennation
     /// \return The angle of pennation
     /// 
-    double pennationAngle() const;
+    biorbd::utils::Scalar pennationAngle() const;
 
     ///
     /// \brief Set the physiological cross-sectional area of the muscle
@@ -196,7 +196,7 @@ protected:
     std::shared_ptr<biorbd::utils::Scalar> m_fIsoMax;       ///< Maximal isometric force Force maximale isométrique
     std::shared_ptr<biorbd::utils::Scalar> m_PCSA;          ///< Physiological cross-sectional area of the muscle
     std::shared_ptr<biorbd::utils::Scalar> m_tendonSlackLength; ///< Tendon slack length
-    std::shared_ptr<double> m_pennationAngle; ///< Angle of pennation
+    std::shared_ptr<biorbd::utils::Scalar> m_pennationAngle; ///< Angle of pennation
     std::shared_ptr<biorbd::muscles::State> m_stateMax; ///< Maximal excitation et activation of the muscle
 
     // Parametre d'activation
