@@ -34,6 +34,19 @@ static std::string modelPathForLoopConstraintTesting("models/loopConstrainedMode
 static std::string modelNoRoot("models/pyomecaman_freeFall.bioMod");
 static std::string modelPathForImuTesting("models/pyomecaman_withIMUs.bioMod");
 
+TEST(Contacts, unitTest)
+{
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::Contacts contacts(model);
+
+        EXPECT_NEAR(contacts.nbContacts(), 6., requiredPrecision);
+        EXPECT_STREQ(contacts.name(1).c_str(), "PiedG_1_Z");
+        EXPECT_EQ(contacts.hasContacts(), true);
+        EXPECT_NEAR(contacts.getForce()[1], 0., requiredPrecision);
+    }
+
+}
 TEST(DegreesOfFreedom, count)
 {
     {
