@@ -151,6 +151,27 @@ TEST(GeneralizedVelocity, unitTest)
         }
     }
 }
+
+TEST(GeneralizedAcceleration, unitTest)
+{
+    {
+        biorbd::rigidbody::GeneralizedAcceleration Qddot;
+        EXPECT_NEAR(Qddot.size(), 0., requiredPrecision);
+    }
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::GeneralizedAcceleration Qddot(model);
+        for (unsigned int i = 0; i < model.nbQ(); ++i){
+            Qddot[i] = Qtest[i] * 100;
+        }
+
+        biorbd::rigidbody::GeneralizedAcceleration newQddot(Qddot);
+
+        for (unsigned int i = 0; i < model.nbQ(); ++i) {
+            EXPECT_NEAR(newQddot[i], Qtest[i] * 100, requiredPrecision);
+        }
+    }
+}
 TEST(DegreesOfFreedom, count)
 {
     {
