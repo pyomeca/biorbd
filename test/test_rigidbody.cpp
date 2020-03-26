@@ -126,11 +126,36 @@ TEST(GeneralizedCoordinates, unitTest)
 
         biorbd::rigidbody::GeneralizedCoordinates newQ;
         newQ = Q;
+        newQ[3] = 0.6;
 
         EXPECT_NEAR(newQ[2], 0.1, requiredPrecision);
+        EXPECT_NEAR(newQ[3], 0.6, requiredPrecision);
     }
 }
 
+TEST(GeneralizedVelocity, unitTest)
+{
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::GeneralizedVelocity Qdot(model);
+
+        for (unsigned int i = 0; i < model.nbQ(); ++i) {
+            Qdot[i] = Qtest[i] * 10;
+        }
+
+        biorbd::rigidbody::GeneralizedVelocity newQdot(Qdot);
+
+        EXPECT_NEAR(newQdot[1], 1., requiredPrecision);
+    }
+    {
+        biorbd::rigidbody::GeneralizedVelocity Qdot;
+    }
+    {
+        biorbd::rigidbody::GeneralizedVelocity Qdot(Eigen::Vector3d(1., 2., 3.));
+
+        EXPECT_NEAR(Qdot[1], 2., requiredPrecision);
+    }
+}
 TEST(DegreesOfFreedom, count)
 {
     {
