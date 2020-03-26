@@ -114,22 +114,9 @@ TEST(GeneralizedCoordinates, unitTest)
 
         biorbd::rigidbody::GeneralizedCoordinates newQ(Q);
         
-        EXPECT_NEAR(Q[2], 0.1, requiredPrecision);
-        EXPECT_NEAR(newQ[2], 0.1, requiredPrecision);
-    }
-    {
-        biorbd::Model model(modelPathForGeneralTesting);
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
         for (unsigned int i = 0; i < model.nbQ(); ++i) {
-            Q[i] = Qtest[i];
+            EXPECT_NEAR(newQ[i], Qtest[i], requiredPrecision);
         }
-
-        biorbd::rigidbody::GeneralizedCoordinates newQ;
-        newQ = Q;
-        newQ[3] = 0.6;
-
-        EXPECT_NEAR(newQ[2], 0.1, requiredPrecision);
-        EXPECT_NEAR(newQ[3], 0.6, requiredPrecision);
     }
 }
 
@@ -145,15 +132,23 @@ TEST(GeneralizedVelocity, unitTest)
 
         biorbd::rigidbody::GeneralizedVelocity newQdot(Qdot);
 
-        EXPECT_NEAR(newQdot[1], 1., requiredPrecision);
+        for (unsigned int i = 0; i < model.nbQ(); ++i) {
+            EXPECT_NEAR(newQdot[i], Qtest[i] * 10, requiredPrecision);
+        }
     }
     {
         biorbd::rigidbody::GeneralizedVelocity Qdot;
+        EXPECT_NEAR(Qdot.size(), 0., requiredPrecision);
     }
     {
-        biorbd::rigidbody::GeneralizedVelocity Qdot(Eigen::Vector3d(1., 2., 3.));
+        biorbd::Model model("models/simple_quat.bioMod");
+        biorbd::rigidbody::GeneralizedVelocity Qdot(model.nbQdot());
+        Qdot << 0, 0, 0, 1;
+        std::vector<double> Qdot_expected = { 0, 0, 0, 1 };
 
-        EXPECT_NEAR(Qdot[1], 2., requiredPrecision);
+        for (unsigned int i = 0; i < model.nbQdot(); ++i) {
+            EXPECT_NEAR(Qdot[i], Qdot_expected[i], requiredPrecision);
+        }
     }
 }
 TEST(DegreesOfFreedom, count)
