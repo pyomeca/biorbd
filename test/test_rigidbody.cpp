@@ -98,6 +98,35 @@ TEST(Contacts, DeepCopy)
     }
 }
 
+static std::vector<double> Qtest = { 0.1, 0.1, 0.1, 0.3, 0.3, 0.3,
+                                     0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };
+TEST(GeneralizedCoordinates, unitTest)
+{
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        for (unsigned int i = 0; i < model.nbQ(); ++i) {
+            Q[i] = Qtest[i];}
+
+        biorbd::rigidbody::GeneralizedCoordinates newQ(Q);
+        
+        EXPECT_NEAR(Q[2], 0.1, requiredPrecision);
+        EXPECT_NEAR(newQ[2], 0.1, requiredPrecision);
+    }
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        for (unsigned int i = 0; i < model.nbQ(); ++i) {
+            Q[i] = Qtest[i];
+        }
+
+        biorbd::rigidbody::GeneralizedCoordinates newQ;
+        newQ = Q;
+
+        EXPECT_NEAR(newQ[2], 0.1, requiredPrecision);
+    }
+}
+
 TEST(DegreesOfFreedom, count)
 {
     {
