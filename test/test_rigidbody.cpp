@@ -159,6 +159,13 @@ TEST(GeneralizedAcceleration, unitTest)
         EXPECT_NEAR(Qddot.size(), 0., requiredPrecision);
     }
     {
+        biorbd::rigidbody::GeneralizedAcceleration Qddot(4);
+        Qddot << 2., 2., 2., 2.;
+        for (unsigned int i = 0; i < 3; ++i) {
+            EXPECT_NEAR(Qddot[i], 2., requiredPrecision);
+        }
+    }
+    {
         biorbd::Model model(modelPathForGeneralTesting);
         biorbd::rigidbody::GeneralizedAcceleration Qddot(model);
         for (unsigned int i = 0; i < model.nbQ(); ++i){
