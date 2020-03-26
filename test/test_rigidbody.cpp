@@ -46,6 +46,10 @@ TEST(Contacts, unitTest)
         EXPECT_NEAR(contacts.getForce()[1], 0., requiredPrecision);
     }
     {
+        biorbd::rigidbody::Contacts contacts;
+        EXPECT_EQ(contacts.hasContacts(), false);
+    }
+    {
         biorbd::Model model(modelPathForGeneralTesting);
         biorbd::rigidbody::Contacts contacts(model);
 
