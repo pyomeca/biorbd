@@ -175,6 +175,31 @@ TEST(GeneralizedAcceleration, unitTest)
     }
 }
 
+TEST(GeneralizedTorque, unitTest)
+{
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::GeneralizedTorque Tau(model);
+        Tau << 0.1, 0.1, 0.1, 0.3, 0.3, 0.3,
+            0.3, 0.3, 0.3, 0.3, 0.3, 0.4, 0.3; 
+
+        std::vector<double> Tau_expected = { 0.1, 0.1, 0.1, 0.3, 0.3, 0.3,
+            0.3, 0.3, 0.3, 0.3, 0.3, 0.4, 0.3 };
+
+        for (unsigned int i = 0; i < 12; ++i) {
+            EXPECT_NEAR(Tau[i], Tau_expected[i], requiredPrecision);
+        }
+
+        biorbd::rigidbody::GeneralizedTorque newTau(Tau);
+        for (unsigned int i = 0; i < 12; ++i) {
+            EXPECT_NEAR(newTau[i], Tau_expected[i], requiredPrecision);
+        }
+
+        biorbd::rigidbody::GeneralizedTorque tauWithNoArgument;
+        EXPECT_NEAR(tauWithNoArgument.norm(), 0., requiredPrecision);
+    }
+}
+
 TEST(DegreesOfFreedom, count)
 {
     {
