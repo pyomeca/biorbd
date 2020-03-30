@@ -151,51 +151,30 @@ TEST(GeneralizedVelocity, unitTest)
     }
 }
 
-//TEST(GeneralizedAcceleration, unitTest)
-//{
-//    {
-//        biorbd::rigidbody::GeneralizedAcceleration Qddot;
-//        EXPECT_NEAR(Qddot.size(), 0., requiredPrecision);
-//    }
-//    {
-//        biorbd::rigidbody::GeneralizedAcceleration Qddot(4);
-//        Qddot << 2., 2., 2., 2.;
-//        for (unsigned int i = 0; i < 3; ++i) {
-//            EXPECT_NEAR(Qddot[i], 2., requiredPrecision);
-//        }
-//    }
-//    {
-//        biorbd::Model model(modelPathForGeneralTesting);
-//        biorbd::rigidbody::GeneralizedAcceleration Qddot(model);
-//        for (unsigned int i = 0; i < model.nbQ(); ++i){
-//            Qddot[i] = Qtest[i] * 100;
-//        }
-//
-//        biorbd::rigidbody::GeneralizedAcceleration newQddot(Qddot);
-//
-//        for (unsigned int i = 0; i < model.nbQ(); ++i) {
-//            EXPECT_NEAR(newQddot[i], Qtest[i] * 100, requiredPrecision);
-//        }
-//    }
-//}
-//
-//TEST(GeneralizedTorque, unitTest)
-//{
-//    {
-//        biorbd::rigidbody::GeneralizedTorque Tau;
-//        EXPECT_NEAR(Tau.size(), 0., requiredPrecision);
-//    }
-//    {
-//        biorbd::Model model(modelPathForGeneralTesting);
-//        biorbd::rigidbody::GeneralizedTorque Tau(model);
-//
-//        for (unsigned int i = 0; i < 12; i++) {
-//            EXPECT_NEAR(Tau[i], 1.3848527567369521e-311, requiredPrecision);
-//        }
-//
-//        
-//    }
-//}
+TEST(GeneralizedAcceleration, unitTest)
+{
+    {
+        biorbd::rigidbody::GeneralizedAcceleration Qddot;
+        EXPECT_NEAR(Qddot.norm(), 0., requiredPrecision);
+    }
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::GeneralizedAcceleration Qddot(model);
+        for (unsigned int i = 0; i < model.nbQ(); ++i){
+            Qddot[i] = Qtest[i] * 100;
+        }
+
+        std::vector<double> Qddot_expected = { 10., 10., 10., 30., 30., 30.,
+                             30., 30., 30., 30., 30., 40., 30. };
+
+        biorbd::rigidbody::GeneralizedAcceleration newQddot(Qddot);
+
+        for (unsigned int i = 0; i < model.nbQ(); ++i) {
+            EXPECT_NEAR(newQddot[i], Qddot_expected[i], requiredPrecision);
+        }
+    }
+}
+
 TEST(DegreesOfFreedom, count)
 {
     {
