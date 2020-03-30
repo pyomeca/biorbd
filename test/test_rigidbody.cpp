@@ -206,6 +206,20 @@ TEST(IMU, unitTest)
     EXPECT_EQ(imu.isTechnical(), true);
     EXPECT_EQ(imu.isAnatomical(), false);
 }
+
+TEST(IMU, DeepCopy)
+{
+    biorbd::rigidbody::IMU imu(false, true);
+
+    biorbd::rigidbody::IMU shallowCopy(imu);
+    biorbd::rigidbody::IMU deepCopyNow(imu.DeepCopy());
+    biorbd::rigidbody::IMU deepCopyLater;
+    deepCopyLater.DeepCopy(imu);
+
+    EXPECT_EQ(shallowCopy.isTechnical(), false);
+    EXPECT_EQ(deepCopyNow.isTechnical(), false);
+    EXPECT_EQ(deepCopyLater.isTechnical(), false);
+}
 TEST(DegreesOfFreedom, count)
 {
     {
