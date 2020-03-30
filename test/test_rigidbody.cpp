@@ -223,10 +223,22 @@ TEST(IMU, DeepCopy)
 
 TEST(IMUs, unitTest)
 {
-    biorbd::rigidbody::IMUs imus;
-    imus.addIMU(true, true);
+    {
+        biorbd::rigidbody::IMUs imus;
+        imus.addIMU(true, true);
 
-    EXPECT_NEAR(imus.nbIMUs(), 1., requiredPrecision);
+        EXPECT_NEAR(imus.nbIMUs(), 1., requiredPrecision);
+        EXPECT_EQ(imus.IMU(0).isTechnical(), true);
+    }
+    {
+        biorbd::rigidbody::IMUs imus;
+        biorbd::rigidbody::IMU imu(true, false);
+        imu.setName("imuName");
+        imus.addIMU(imu);
+
+        EXPECT_STREQ(imus.technicalIMU()[0].name().c_str(), "imuName");
+    }
+
 }
 
 TEST(IMUs, deepCopy)
@@ -249,6 +261,7 @@ TEST(IMUs, deepCopy)
     EXPECT_NEAR(deepCopyNow.nbIMUs(), 1., requiredPrecision);
     EXPECT_NEAR(deepCopyLater.nbIMUs(), 1., requiredPrecision);
 }
+
 TEST(DegreesOfFreedom, count)
 {
     {
