@@ -220,6 +220,35 @@ TEST(IMU, DeepCopy)
     EXPECT_EQ(deepCopyNow.isTechnical(), false);
     EXPECT_EQ(deepCopyLater.isTechnical(), false);
 }
+
+TEST(IMUs, unitTest)
+{
+    biorbd::rigidbody::IMUs imus;
+    imus.addIMU(true, true);
+
+    EXPECT_NEAR(imus.nbIMUs(), 1., requiredPrecision);
+}
+
+TEST(IMUs, deepCopy)
+{
+    biorbd::rigidbody::IMUs imus;
+    imus.addIMU(true, true);
+
+    biorbd::rigidbody::IMUs shallowCopy(imus);
+    biorbd::rigidbody::IMUs deepCopyNow(imus.DeepCopy());
+    biorbd::rigidbody::IMUs deepCopyLater;
+    deepCopyLater.DeepCopy(imus);
+
+    EXPECT_NEAR(shallowCopy.nbIMUs(), 1., requiredPrecision);
+    EXPECT_NEAR(deepCopyNow.nbIMUs(), 1., requiredPrecision);
+    EXPECT_NEAR(deepCopyLater.nbIMUs(), 1., requiredPrecision);
+
+    imus.addIMU(true, true);
+    EXPECT_NEAR(imus.nbIMUs(), 2., requiredPrecision);
+    EXPECT_NEAR(shallowCopy.nbIMUs(), 2., requiredPrecision);
+    EXPECT_NEAR(deepCopyNow.nbIMUs(), 1., requiredPrecision);
+    EXPECT_NEAR(deepCopyLater.nbIMUs(), 1., requiredPrecision);
+}
 TEST(DegreesOfFreedom, count)
 {
     {
