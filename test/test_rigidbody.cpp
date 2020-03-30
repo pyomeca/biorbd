@@ -200,6 +200,12 @@ TEST(GeneralizedTorque, unitTest)
     }
 }
 
+TEST(IMU, unitTest)
+{
+    biorbd::rigidbody::IMU imu(true, false);
+    EXPECT_EQ(imu.isTechnical(), true);
+    EXPECT_EQ(imu.isAnatomical(), false);
+}
 TEST(DegreesOfFreedom, count)
 {
     {
