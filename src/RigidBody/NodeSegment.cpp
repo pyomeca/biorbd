@@ -14,7 +14,10 @@ biorbd::rigidbody::NodeSegment::NodeSegment() :
     setType();
 }
 
-biorbd::rigidbody::NodeSegment::NodeSegment(double x, double y, double z) :
+biorbd::rigidbody::NodeSegment::NodeSegment(
+        const biorbd::utils::Scalar& x,
+        const biorbd::utils::Scalar& y,
+        const biorbd::utils::Scalar& z) :
     biorbd::utils::Vector3d(x, y, z),
     m_axesRemoved(std::make_shared<std::vector<bool>>(3)),
     m_nbAxesToRemove(std::make_shared<int>(0)),
@@ -37,9 +40,9 @@ biorbd::rigidbody::NodeSegment::NodeSegment(const biorbd::utils::Vector3d &other
 }
 
 biorbd::rigidbody::NodeSegment::NodeSegment(
-        double x,
-        double y,
-        double z,
+        const biorbd::utils::Scalar& x,
+        const biorbd::utils::Scalar& y,
+        const biorbd::utils::Scalar& z,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName,
         bool isTechnical,

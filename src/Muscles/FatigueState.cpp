@@ -17,12 +17,12 @@ template < typename T > std::string to_string( const T& n )
 #endif
 
 biorbd::muscles::FatigueState::FatigueState(
-        double active,
-        double fatigued,
-        double resting) :
-    m_activeFibers(std::make_shared<double>(active)),
-    m_fatiguedFibers(std::make_shared<double>(fatigued)),
-    m_restingFibers(std::make_shared<double>(resting)),
+        const biorbd::utils::Scalar& active,
+        const biorbd::utils::Scalar& fatigued,
+        const biorbd::utils::Scalar& resting) :
+    m_activeFibers(std::make_shared<biorbd::utils::Scalar>(active)),
+    m_fatiguedFibers(std::make_shared<biorbd::utils::Scalar>(fatigued)),
+    m_restingFibers(std::make_shared<biorbd::utils::Scalar>(resting)),
     m_type(std::make_shared<biorbd::muscles::STATE_FATIGUE_TYPE>())
 {
     setType();
@@ -67,11 +67,14 @@ void biorbd::muscles::FatigueState::DeepCopy(const biorbd::muscles::FatigueState
 }
 
 void biorbd::muscles::FatigueState::setState(
-        double active,
-        double fatigued,
-        double resting,
+        const biorbd::utils::Scalar& active,
+        const biorbd::utils::Scalar& fatigued,
+        const biorbd::utils::Scalar& resting,
         bool turnOffWarnings)
 {
+#ifdef BIORBD_USE_CASADI_MATH
+    biorbd::utils::Error::raise("setState for casadi is not implemented yet");
+#else
     // Sanity check for active fibers
     //
     // In order to get the quantity of active fibers to 0 or 1, it has to come from the input command.
@@ -139,19 +142,20 @@ void biorbd::muscles::FatigueState::setState(
     *m_activeFibers = active;
     *m_fatiguedFibers = fatigued;
     *m_restingFibers = resting;
+#endif
 }
 
-double biorbd::muscles::FatigueState::activeFibers() const
+const biorbd::utils::Scalar& biorbd::muscles::FatigueState::activeFibers() const
 {
     return *m_activeFibers;
 }
 
-double biorbd::muscles::FatigueState::fatiguedFibers() const
+const biorbd::utils::Scalar& biorbd::muscles::FatigueState::fatiguedFibers() const
 {
     return *m_fatiguedFibers;
 }
 
-double biorbd::muscles::FatigueState::restingFibers() const
+const biorbd::utils::Scalar& biorbd::muscles::FatigueState::restingFibers() const
 {
     return *m_restingFibers;
 }

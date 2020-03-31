@@ -26,10 +26,10 @@ public:
     /// \param diameter Diameter of the sphere
     ///
     WrappingSphere(
-            double x,
-            double y,
-            double z,
-            double diameter);
+            const biorbd::utils::Scalar& x,
+            const biorbd::utils::Scalar& y,
+            const biorbd::utils::Scalar& z,
+            const biorbd::utils::Scalar& diameter);
 
     ///
     /// \brief Construct a wrapping sphere
@@ -41,10 +41,10 @@ public:
     /// \param parentName Name of the parent segment
     ///
     WrappingSphere(
-            double x,
-            double y,
-            double z,
-            double diameter, 
+            const biorbd::utils::Scalar& x,
+            const biorbd::utils::Scalar& y,
+            const biorbd::utils::Scalar& z,
+            const biorbd::utils::Scalar& diameter,
             const biorbd::utils::String &name, 
             const biorbd::utils::String &parentName);
 
@@ -55,7 +55,7 @@ public:
     ///
     WrappingSphere(
             const biorbd::utils::Vector3d &v, 
-            double diameter);
+            const biorbd::utils::Scalar& diameter);
 
     ///
     /// \brief Deep copy of the wrapping sphere
@@ -117,16 +117,17 @@ public:
     /// \brief Set the diameter of the wrappping sphere
     /// \param val Value of the diameter
     ///
-    void setDiameter(double val);
+    void setDiameter(
+            const biorbd::utils::Scalar& val);
 
     ///
     /// \brief Return the diameter of the wrapping sphere
     /// \return The diameter of the wrapping sphere
     ///
-    double diameter() const;
+    const biorbd::utils::Scalar& diameter() const;
 
 protected:
-    std::shared_ptr<double> m_dia; ///< Diameter of the wrapping sphere
+    std::shared_ptr<biorbd::utils::Scalar> m_dia; ///< Diameter of the wrapping sphere
 
 };
 

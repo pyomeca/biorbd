@@ -75,14 +75,14 @@ void biorbd::muscles::IdealizedActuator::DeepCopy(const biorbd::muscles::Idealiz
     biorbd::muscles::Muscle::DeepCopy(other);
 }
 
-const biorbd::utils::Scalar &biorbd::muscles::IdealizedActuator::force(
+const biorbd::utils::Scalar& biorbd::muscles::IdealizedActuator::force(
         const biorbd::muscles::StateDynamics &emg)
 {
     computeForce(emg);
     return *m_force;
 }
 
-const biorbd::utils::Scalar &biorbd::muscles::IdealizedActuator::force(
+const biorbd::utils::Scalar& biorbd::muscles::IdealizedActuator::force(
         biorbd::rigidbody::Joints &,
         const biorbd::rigidbody::GeneralizedCoordinates &,
         const biorbd::rigidbody::GeneralizedVelocity &,
@@ -93,7 +93,7 @@ const biorbd::utils::Scalar &biorbd::muscles::IdealizedActuator::force(
     return *m_force;
 }
 
-const biorbd::utils::Scalar &biorbd::muscles::IdealizedActuator::force(
+const biorbd::utils::Scalar& biorbd::muscles::IdealizedActuator::force(
         biorbd::rigidbody::Joints &,
         const biorbd::rigidbody::GeneralizedCoordinates &,
         const biorbd::muscles::StateDynamics &emg,

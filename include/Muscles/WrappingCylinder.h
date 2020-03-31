@@ -26,8 +26,8 @@ public:
     ///
     WrappingCylinder(
             const biorbd::utils::RotoTrans& rt,
-            double diameter,
-            double length,
+            const biorbd::utils::Scalar& diameter,
+            const biorbd::utils::Scalar& length,
             bool isCylinderPositiveSign);
 
     ///
@@ -41,8 +41,8 @@ public:
     ///
     WrappingCylinder(
             const biorbd::utils::RotoTrans& rt,
-            double diameter,
-            double length,
+            const biorbd::utils::Scalar& diameter,
+            const biorbd::utils::Scalar& length,
             bool isCylinderPositiveSign,
             const biorbd::utils::String& name,
             const biorbd::utils::String& parentName);
@@ -123,31 +123,33 @@ public:
     /// \brief Set the diameter of the wrapping cylinder
     /// \param val Value of the diameter to set
     ///
-    void setDiameter(double val);
+    void setDiameter(
+            const biorbd::utils::Scalar& val);
 
     ///
     /// \brief Return the diameter of the cylinder
     /// \return The diameter of the cylinder
     ///
-    double diameter() const;
+    const biorbd::utils::Scalar& diameter() const;
 
     ///
     /// \brief Return the radius of the cylinder
     /// \return The radius of the cylinder
     ///
-    double radius() const;
+    biorbd::utils::Scalar radius() const;
 
     ///
     /// \brief Set the length of the cylinder
     /// \param val Value of the to set
     ///
-    void setLength(double val);
+    void setLength(
+            const biorbd::utils::Scalar& val);
 
     ///
     /// \brief Return the length of the cylinder
     /// \return The length of the cylinder
     ///
-    double length() const;
+    const biorbd::utils::Scalar& length() const;
 
 protected:
     ///
@@ -221,8 +223,8 @@ protected:
     biorbd::utils::Scalar computeLength(
             const NodeMusclePair &p) const;
 
-    std::shared_ptr<double> m_dia; ///< Diameter of the cylinder diametre du cylindre
-    std::shared_ptr<double> m_length; ///< Length of the cylinder
+    std::shared_ptr<biorbd::utils::Scalar> m_dia; ///< Diameter of the cylinder diametre du cylindre
+    std::shared_ptr<biorbd::utils::Scalar> m_length; ///< Length of the cylinder
     std::shared_ptr<bool> m_isCylinderPositiveSign; ///<orientation of the muscle passing
     std::shared_ptr<biorbd::utils::RotoTrans> m_RTtoParent; ///<RotoTrans matrix with the parent
 
