@@ -243,23 +243,23 @@ TEST(IMUs, unitTest)
 
 TEST(IMUs, deepCopy)
 {
-    biorbd::rigidbody::IMUs imus;
-    imus.addIMU(true, true);
+    biorbd::Model model(modelPathForImuTesting);
+    biorbd::rigidbody::IMUs imus(model);
 
     biorbd::rigidbody::IMUs shallowCopy(imus);
     biorbd::rigidbody::IMUs deepCopyNow(imus.DeepCopy());
     biorbd::rigidbody::IMUs deepCopyLater;
     deepCopyLater.DeepCopy(imus);
 
-    EXPECT_NEAR(shallowCopy.nbIMUs(), 1., requiredPrecision);
-    EXPECT_NEAR(deepCopyNow.nbIMUs(), 1., requiredPrecision);
-    EXPECT_NEAR(deepCopyLater.nbIMUs(), 1., requiredPrecision);
+    EXPECT_NEAR(shallowCopy.nbIMUs(), 4., requiredPrecision);
+    EXPECT_NEAR(deepCopyNow.nbIMUs(), 4., requiredPrecision);
+    EXPECT_NEAR(deepCopyLater.nbIMUs(), 4., requiredPrecision);
 
     imus.addIMU(true, true);
-    EXPECT_NEAR(imus.nbIMUs(), 2., requiredPrecision);
-    EXPECT_NEAR(shallowCopy.nbIMUs(), 2., requiredPrecision);
-    EXPECT_NEAR(deepCopyNow.nbIMUs(), 1., requiredPrecision);
-    EXPECT_NEAR(deepCopyLater.nbIMUs(), 1., requiredPrecision);
+    EXPECT_NEAR(imus.nbIMUs(), 5., requiredPrecision);
+    EXPECT_NEAR(shallowCopy.nbIMUs(), 5., requiredPrecision);
+    EXPECT_NEAR(deepCopyNow.nbIMUs(), 4., requiredPrecision);
+    EXPECT_NEAR(deepCopyLater.nbIMUs(), 4., requiredPrecision);
 }
 
 TEST(DegreesOfFreedom, count)
