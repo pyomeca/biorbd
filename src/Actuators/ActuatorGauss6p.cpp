@@ -178,11 +178,11 @@ biorbd::utils::Scalar biorbd::actuator::ActuatorGauss6p::torqueMax(
     // Differential activation
     biorbd::utils::Scalar A =
             *m_amin + ( *m_amax - *m_amin )
-            / ( 1 + RBDLCasadiMath::MX_Xd_scalar(exp( -(speed - *m_w1) / *m_wr   )) );
+            / ( 1 + biorbd::utils::Scalar(exp( -(speed - *m_w1) / *m_wr   )) );
 
     // Torque angle
-    biorbd::utils::Scalar Ta = RBDLCasadiMath::MX_Xd_scalar(exp( -(*m_qopt - pos) * (*m_qopt - pos)  /  (2* *m_r * *m_r )   ))
-            + *m_facteur * RBDLCasadiMath::MX_Xd_scalar(exp( -(*m_qopt2 - pos) * (*m_qopt2 - pos)  /  (2 * *m_r2 * *m_r2)   ));
+    biorbd::utils::Scalar Ta = biorbd::utils::Scalar(exp( -(*m_qopt - pos) * (*m_qopt - pos)  /  (2* *m_r * *m_r )   ))
+            + *m_facteur * biorbd::utils::Scalar(exp( -(*m_qopt2 - pos) * (*m_qopt2 - pos)  /  (2 * *m_r2 * *m_r2)   ));
 
     // Calculation of the max torque
     return Tw * A * Ta;

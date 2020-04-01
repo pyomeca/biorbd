@@ -67,9 +67,9 @@ void biorbd::muscles::FatigueState::DeepCopy(const biorbd::muscles::FatigueState
 }
 
 void biorbd::muscles::FatigueState::setState(
-        const biorbd::utils::Scalar& active,
-        const biorbd::utils::Scalar& fatigued,
-        const biorbd::utils::Scalar& resting,
+        biorbd::utils::Scalar active,
+        biorbd::utils::Scalar fatigued,
+        biorbd::utils::Scalar resting,
         bool turnOffWarnings)
 {
 #ifdef BIORBD_USE_CASADI_MATH

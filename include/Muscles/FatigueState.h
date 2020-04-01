@@ -66,9 +66,9 @@ public:
     /// \param turnOffWarnings If the warnings should be OFF or ON.
     ///
     virtual void setState(
-            const biorbd::utils::Scalar& active,
-            const biorbd::utils::Scalar& fatigued,
-            const biorbd::utils::Scalar& resting,
+            biorbd::utils::Scalar active,
+            biorbd::utils::Scalar fatigued,
+            biorbd::utils::Scalar resting,
             bool turnOffWarnings = false);
 
     ///
