@@ -35,9 +35,9 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
     /// \param z Z-Component of the vector
     ///
     Vector3d(
-            biorbd::utils::Scalar x,
-            biorbd::utils::Scalar y,
-            biorbd::utils::Scalar z);
+            const biorbd::utils::Scalar& x,
+            const biorbd::utils::Scalar& y,
+            const biorbd::utils::Scalar& z);
 
     ///
     /// \brief Construct a 3D vector
@@ -48,9 +48,9 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
     /// \param parentName Name of the parent segment
     ///
     Vector3d(
-            biorbd::utils::Scalar x,
-            biorbd::utils::Scalar y,
-            biorbd::utils::Scalar z,
+            const biorbd::utils::Scalar& x,
+            const biorbd::utils::Scalar& y,
+            const biorbd::utils::Scalar& z,
             const biorbd::utils::String &name,
             const biorbd::utils::String &parentName);
 

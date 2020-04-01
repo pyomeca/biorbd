@@ -38,8 +38,8 @@ public:
     ///
     ActuatorLinear(
             int direction,
-            double T0,
-            double slope,
+            const biorbd::utils::Scalar& T0,
+            const biorbd::utils::Scalar& slope,
             unsigned int dofIdx);
 
     ///
@@ -53,8 +53,8 @@ public:
 
     ActuatorLinear(
             int direction,
-            double T0,
-            double slope,
+            const biorbd::utils::Scalar& T0,
+            const biorbd::utils::Scalar& slope,
             unsigned int dofIdx,
             const biorbd::utils::String &jointName);
 
@@ -99,8 +99,8 @@ protected:
     virtual void setType();            
 
     // mx+b
-    std::shared_ptr<double> m_m; ///< Slope
-    std::shared_ptr<double> m_b; ///< Torque at zero
+    std::shared_ptr<biorbd::utils::Scalar> m_m; ///< Slope
+    std::shared_ptr<biorbd::utils::Scalar> m_b; ///< Torque at zero
 
 };
 

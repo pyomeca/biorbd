@@ -60,9 +60,9 @@ public:
             const RigidBodyDynamics::Math::MatrixNd& m);
 #endif
 
-    Rotation(biorbd::utils::Scalar v00, biorbd::utils::Scalar v01, biorbd::utils::Scalar v02,
-             biorbd::utils::Scalar v10, biorbd::utils::Scalar v11, biorbd::utils::Scalar v12,
-             biorbd::utils::Scalar v20, biorbd::utils::Scalar v21, biorbd::utils::Scalar v22);
+    Rotation(const biorbd::utils::Scalar& v00, const biorbd::utils::Scalar& v01, const biorbd::utils::Scalar& v02,
+             const biorbd::utils::Scalar& v10, const biorbd::utils::Scalar& v11, const biorbd::utils::Scalar& v12,
+             const biorbd::utils::Scalar& v20, const biorbd::utils::Scalar& v21, const biorbd::utils::Scalar& v22);
 
     ///
     /// \brief Contruct a Rotation matrix

@@ -4,6 +4,7 @@
 #include <memory>
 #include "biorbdConfig.h"
 #include "MusclesEnums.h"
+#include "Utils/Scalar.h"
 
 namespace biorbd {
 namespace muscles {
@@ -21,9 +22,9 @@ public:
     /// \param resting Resting muscle
     ///
     FatigueState(
-            double active = 1,
-            double fatigued = 0,
-            double resting = 0);
+            const biorbd::utils::Scalar& active = 1,
+            const biorbd::utils::Scalar& fatigued = 0,
+            const biorbd::utils::Scalar& resting = 0);
 
     ///
     /// \brief Construct fatigue state from another fatigue state
@@ -65,28 +66,28 @@ public:
     /// \param turnOffWarnings If the warnings should be OFF or ON.
     ///
     virtual void setState(
-            double active,
-            double fatigued,
-            double resting,
+            biorbd::utils::Scalar active,
+            biorbd::utils::Scalar fatigued,
+            biorbd::utils::Scalar resting,
             bool turnOffWarnings = false);
 
     ///
     /// \brief Return the propotion of active muscle fibers
     /// \return The propotion of active muscle fibers
     ///
-    double activeFibers() const;
+    const biorbd::utils::Scalar& activeFibers() const;
 
     ///
     /// \brief Return the propotion of fatigued muscle fibers
     /// \return The propotion of fatigued muscle fibers
     ///
-    double fatiguedFibers() const;
+    const biorbd::utils::Scalar& fatiguedFibers() const;
 
     ///
     /// \brief Return the propotion of resting muscle fibers
     /// \return The propotion of resting muscle fibers
     ///
-    double restingFibers() const;
+    const biorbd::utils::Scalar& restingFibers() const;
 
     ///
     /// \brief Return the type of muscle fatigue model
@@ -95,9 +96,9 @@ public:
     biorbd::muscles::STATE_FATIGUE_TYPE getType() const;
 
 protected:
-    std::shared_ptr<double> m_activeFibers; ///< Proportion of active muscle fibers
-    std::shared_ptr<double> m_fatiguedFibers;///< Proportion of fatigued muscle fibers
-    std::shared_ptr<double> m_restingFibers;///< Proportion of resting muscle fibers
+    std::shared_ptr<biorbd::utils::Scalar> m_activeFibers; ///< Proportion of active muscle fibers
+    std::shared_ptr<biorbd::utils::Scalar> m_fatiguedFibers;///< Proportion of fatigued muscle fibers
+    std::shared_ptr<biorbd::utils::Scalar> m_restingFibers;///< Proportion of resting muscle fibers
 
     ///
     /// \brief Set the type

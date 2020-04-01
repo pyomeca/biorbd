@@ -6,41 +6,41 @@
 
 biorbd::muscles::WrappingSphere::WrappingSphere() :
     biorbd::muscles::WrappingObject (),
-    m_dia(std::make_shared<double>(0))
+    m_dia(std::make_shared<biorbd::utils::Scalar>(0))
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_SPHERE;
 }
 
 biorbd::muscles::WrappingSphere::WrappingSphere(
-        double x,
-        double y,
-        double z,
-        double diameter) :
+        const biorbd::utils::Scalar& x,
+        const biorbd::utils::Scalar& y,
+        const biorbd::utils::Scalar& z,
+        const biorbd::utils::Scalar& diameter) :
     biorbd::muscles::WrappingObject (x, y, z),
-    m_dia(std::make_shared<double>(diameter))
+    m_dia(std::make_shared<biorbd::utils::Scalar>(diameter))
 
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_SPHERE;
 }
 
 biorbd::muscles::WrappingSphere::WrappingSphere(
-        double x,
-        double y,
-        double z,
-        double diameter,
+        const biorbd::utils::Scalar& x,
+        const biorbd::utils::Scalar& y,
+        const biorbd::utils::Scalar& z,
+        const biorbd::utils::Scalar& diameter,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName) :
     biorbd::muscles::WrappingObject (x, y, z, name, parentName),
-    m_dia(std::make_shared<double>(diameter))
+    m_dia(std::make_shared<biorbd::utils::Scalar>(diameter))
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_SPHERE;
 }
 
 biorbd::muscles::WrappingSphere::WrappingSphere(
         const biorbd::utils::Vector3d &v,
-        double diameter) :
+        const biorbd::utils::Scalar& diameter) :
     biorbd::muscles::WrappingObject(v),
-    m_dia(std::make_shared<double>(diameter))
+    m_dia(std::make_shared<biorbd::utils::Scalar>(diameter))
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_SPHERE;
 }
@@ -66,12 +66,13 @@ const biorbd::utils::RotoTrans& biorbd::muscles::WrappingSphere::RT(
     return *m_RT;
 }
 
-void biorbd::muscles::WrappingSphere::setDiameter(double val)
+void biorbd::muscles::WrappingSphere::setDiameter(
+        const biorbd::utils::Scalar& val)
 {
     *m_dia = val;
 }
 
-double biorbd::muscles::WrappingSphere::diameter() const
+const biorbd::utils::Scalar& biorbd::muscles::WrappingSphere::diameter() const
 {
     return *m_dia;
 }

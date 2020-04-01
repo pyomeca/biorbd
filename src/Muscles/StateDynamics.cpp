@@ -6,8 +6,8 @@
 #include "Muscles/Characteristics.h"
 
 biorbd::muscles::StateDynamics::StateDynamics(
-        biorbd::utils::Scalar excitation,
-        biorbd::utils::Scalar activation) :
+        const biorbd::utils::Scalar& excitation,
+        const biorbd::utils::Scalar& activation) :
     biorbd::muscles::State(excitation,activation),
     m_previousExcitation(std::make_shared<biorbd::utils::Scalar>(0)),
     m_previousActivation(std::make_shared<biorbd::utils::Scalar>(0)),
@@ -48,7 +48,7 @@ void biorbd::muscles::StateDynamics::DeepCopy(const biorbd::muscles::StateDynami
 }
 
 
-biorbd::utils::Scalar biorbd::muscles::StateDynamics::timeDerivativeActivation(
+const biorbd::utils::Scalar& biorbd::muscles::StateDynamics::timeDerivativeActivation(
         const biorbd::muscles::StateDynamics& emg,
         const biorbd::muscles::Characteristics& characteristics,
         bool alreadyNormalized){
@@ -56,9 +56,9 @@ biorbd::utils::Scalar biorbd::muscles::StateDynamics::timeDerivativeActivation(
 }
 
 
-biorbd::utils::Scalar biorbd::muscles::StateDynamics::timeDerivativeActivation(
-        biorbd::utils::Scalar excitation,
-        biorbd::utils::Scalar activation,
+const biorbd::utils::Scalar& biorbd::muscles::StateDynamics::timeDerivativeActivation(
+        const biorbd::utils::Scalar& excitation,
+        const biorbd::utils::Scalar& activation,
         const biorbd::muscles::Characteristics &characteristics,
         bool alreadyNormalized){
     setExcitation(excitation);
@@ -66,7 +66,7 @@ biorbd::utils::Scalar biorbd::muscles::StateDynamics::timeDerivativeActivation(
     return timeDerivativeActivation(characteristics, alreadyNormalized);
 }
 
-biorbd::utils::Scalar biorbd::muscles::StateDynamics::timeDerivativeActivation(
+const biorbd::utils::Scalar& biorbd::muscles::StateDynamics::timeDerivativeActivation(
         const biorbd::muscles::Characteristics &characteristics,
         bool alreadyNormalized){
     // Implémentation de la fonction da/dt = (u-a)/GeneralizedTorque(u,a)
@@ -117,31 +117,31 @@ biorbd::utils::Scalar biorbd::muscles::StateDynamics::timeDerivativeActivation(
     return *m_activationDot;
 }
 
-biorbd::utils::Scalar biorbd::muscles::StateDynamics::timeDerivativeActivation()
+const biorbd::utils::Scalar& biorbd::muscles::StateDynamics::timeDerivativeActivation()
 {
     return *m_activationDot;
 }
 
 void biorbd::muscles::StateDynamics::setExcitation(
-        biorbd::utils::Scalar val,
+        const biorbd::utils::Scalar& val,
         bool turnOffWarnings) {
     *m_previousExcitation = *m_excitation;
     biorbd::muscles::State::setExcitation(val, turnOffWarnings);
 }
 
-biorbd::utils::Scalar biorbd::muscles::StateDynamics::previousExcitation() const
+const biorbd::utils::Scalar& biorbd::muscles::StateDynamics::previousExcitation() const
 {
     return *m_previousExcitation;
 }
 
 void biorbd::muscles::StateDynamics::setActivation(
-        const biorbd::utils::Scalar &val,
+        const biorbd::utils::Scalar& val,
         bool turnOffWarnings) {
     *m_previousActivation = *m_activation;
     biorbd::muscles::State::setActivation(val, turnOffWarnings);
 }
 
-biorbd::utils::Scalar biorbd::muscles::StateDynamics::previousActivation() const
+const biorbd::utils::Scalar& biorbd::muscles::StateDynamics::previousActivation() const
 {
     return *m_previousActivation;
 }

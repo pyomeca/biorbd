@@ -21,8 +21,8 @@ public:
     /// \param activation The muscle activation
     ///
     State(
-            biorbd::utils::Scalar excitation = 0,
-            biorbd::utils::Scalar activation = 0);
+            const biorbd::utils::Scalar& excitation = 0,
+            const biorbd::utils::Scalar& activation = 0);
 
     ///
     /// \brief Construct a muscle state from another state
@@ -58,14 +58,14 @@ public:
     /// it changes it to 0 anyway, but doesn't send a warning saying it.
     ///
     virtual void setExcitation(
-            biorbd::utils::Scalar val,
+            const biorbd::utils::Scalar& val,
             bool turnOffWarnings);
 
     ///
     /// \brief Return the muscle excitation
     /// \return The muscle excitation
     ///
-    biorbd::utils::Scalar excitation() const;
+    const biorbd::utils::Scalar& excitation() const;
 
     ///
     /// \brief Compute and return the normalized excitation
@@ -75,7 +75,7 @@ public:
     ///
     /// Even when the warning is ON, the computation is performed anyway
     ///
-    biorbd::utils::Scalar normalizeExcitation(
+    const biorbd::utils::Scalar& normalizeExcitation(
             const biorbd::muscles::State &emgMax,
             bool turnOffWarnings = false);
 
@@ -84,13 +84,13 @@ public:
     /// \param val Value of the normalized excitation to set
     ///
     void setExcitationNorm(
-            biorbd::utils::Scalar val);
+            const biorbd::utils::Scalar& val);
 
     ///
     /// \brief Return the previously normalized excitation
     /// \return The normalized excitation
     ///
-    biorbd::utils::Scalar excitationNorm() const;
+    const biorbd::utils::Scalar& excitationNorm() const;
 
     ///
     /// \brief Set the muscle activation
@@ -111,7 +111,7 @@ public:
     /// \brief Return the muscle activation
     /// \return The muscle activation
     ///
-    biorbd::utils::Scalar activation() const;
+    const biorbd::utils::Scalar& activation() const;
 
     ///
     /// \brief Return the state type

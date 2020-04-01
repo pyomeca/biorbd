@@ -4,6 +4,8 @@
 #include <memory>
 #include "biorbdConfig.h"
 
+#include "Utils/Scalar.h"
+
 namespace biorbd {
 namespace muscles {
 
@@ -22,10 +24,10 @@ public:
     /// \param recoveryFactor The recovery factor
     ///
     FatigueParameters(
-            double fatigueRate = 0,
-            double recoveryRate = 0,
-            double developFactor = 0,
-            double recoveryFactor = 0);
+            const biorbd::utils::Scalar& fatigueRate = 0,
+            const biorbd::utils::Scalar& recoveryRate = 0,
+            const biorbd::utils::Scalar& developFactor = 0,
+            const biorbd::utils::Scalar& recoveryFactor = 0);
 
     ///
     /// \brief Deep copy of the fatigue parameters
@@ -44,56 +46,60 @@ public:
     /// \brief Set the fatigue rate
     /// \param fatigueRate The fatigue rate
     ///
-    void setFatigueRate(double fatigueRate);
+    void setFatigueRate(
+            const biorbd::utils::Scalar& fatigueRate);
 
     // Get and Set
     ///
     /// \brief Return the fatigue rate
     /// \return The fatigue rate
     ///
-    double fatigueRate() const;
+    const biorbd::utils::Scalar& fatigueRate() const;
 
     ///
     /// \brief Set the recovery rate
     /// \param recoveryRate The recovery rate
     ///
-    void setRecoveryRate(double recoveryRate);
+    void setRecoveryRate(
+            const biorbd::utils::Scalar& recoveryRate);
 
     ///
     /// \brief Return the recovery rate
     /// \return The recovery rate
     ///
-    double recoveryRate() const;
+    const biorbd::utils::Scalar& recoveryRate() const;
 
     ///
     /// \brief Set the develop factor
     /// \param developFactor The develop factor
     ///
-    void setDevelopFactor(double developFactor);
+    void setDevelopFactor(
+            const biorbd::utils::Scalar& developFactor);
 
     ///
     /// \brief Return the develop factor
     /// \return The develop factor
     ///
-    double developFactor() const;
+    const biorbd::utils::Scalar& developFactor() const;
 
     ///
     /// \brief Set the recovery factor
     /// \param recoveryFactor The recovery factor
     ///
-    void setRecoveryFactor(double recoveryFactor);
+    void setRecoveryFactor(
+            const biorbd::utils::Scalar& recoveryFactor);
 
     ///
     /// \brief Return the recovery factor
     /// \return The recovery factor
     ///
-    double recoveryFactor() const;
+    const biorbd::utils::Scalar& recoveryFactor() const;
 
 protected:
-    std::shared_ptr<double> m_fatigueRate; ///< The fatigue rate
-    std::shared_ptr<double> m_recoveryRate;///< The recovery rate
-    std::shared_ptr<double> m_developFactor; ///<The develop factor
-    std::shared_ptr<double> m_recoveryFactor; ///<The recovery factor
+    std::shared_ptr<biorbd::utils::Scalar> m_fatigueRate; ///< The fatigue rate
+    std::shared_ptr<biorbd::utils::Scalar> m_recoveryRate;///< The recovery rate
+    std::shared_ptr<biorbd::utils::Scalar> m_developFactor; ///<The develop factor
+    std::shared_ptr<biorbd::utils::Scalar> m_recoveryFactor; ///<The recovery factor
 
 };
 
