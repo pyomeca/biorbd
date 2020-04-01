@@ -238,7 +238,13 @@ TEST(IMUs, unitTest)
 
         EXPECT_STREQ(imus.technicalIMU()[0].name().c_str(), "imuName");
     }
+    {
+        biorbd::Model model(modelPathForImuTesting);
+        biorbd::rigidbody::IMUs imus(model);
 
+        EXPECT_NEAR(imus.anatomicalIMU().size(), 2., requiredPrecision);
+        EXPECT_NEAR(imus.technicalIMU().size(), 4., requiredPrecision);
+    }
 }
 
 TEST(IMUs, deepCopy)
@@ -262,6 +268,25 @@ TEST(IMUs, deepCopy)
     EXPECT_NEAR(deepCopyLater.nbIMUs(), 4., requiredPrecision);
 }
 
+TEST(Joints, copy)
+{
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::Joints joints(model);
+
+        biorbd::rigidbody::Joints shallowCopy(joints);
+        biorbd::rigidbody::Joints deepCopyNow(joints.DeepCopy());
+        biorbd::rigidbody::Joints deepCopyLater;
+        deepCopyLater.DeepCopy(joints);
+
+        EXPECT_NEAR(shallowCopy.mass(), 52.412120000000002, requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.mass(), 52.412120000000002, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.mass(), 52.412120000000002, requiredPrecision);
+
+        biorbd::rigidbody::Segment segment(model.segment(2));
+    }
+
+}
 TEST(DegreesOfFreedom, count)
 {
     {
