@@ -660,9 +660,10 @@ biorbd::rigidbody::GeneralizedAcceleration & {
         SWIG_fail;
     }
 }
-
+#endif
 
 // --- Node --- //
+#ifndef BIORBD_USE_CASADI_MATH
 %typemap(typecheck, precedence=2130) biorbd::utils::Vector3d &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Node,  0  | 0)) && argp1) {
@@ -703,7 +704,13 @@ biorbd::rigidbody::GeneralizedAcceleration & {
         SWIG_fail;
     }
 };
+#endif
 %extend biorbd::utils::Vector3d{
+#ifdef BIORBD_USE_CASADI_MATH
+    casadi::MX to_mx(){
+        return *dynamic_cast<casadi::MX*>($self);
+    };
+#else
     PyObject* to_array(){
         int nArraySize(1);
         npy_intp * arraySizes = new npy_intp[nArraySize];
@@ -717,8 +724,10 @@ biorbd::rigidbody::GeneralizedAcceleration & {
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
         return output;
     }
+#endif
 };
 
+#ifndef BIORBD_USE_CASADI_MATH
 %extend biorbd::utils::RotoTrans{
     PyObject* to_array(){
         int nArraySize(2);
