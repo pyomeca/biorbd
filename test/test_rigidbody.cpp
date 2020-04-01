@@ -316,6 +316,13 @@ TEST(Joints, unitTest)
             EXPECT_STREQ(names[i].c_str(), expectedNames[i].c_str());
         }
     }
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::Joints joints(model);
+        biorbd::rigidbody::Segment segmentToTest(joints.segment("Tronc"));
+
+        EXPECT_EQ(segmentToTest.id(), 2147483647);
+    }
 }
 TEST(DegreesOfFreedom, count)
 {
