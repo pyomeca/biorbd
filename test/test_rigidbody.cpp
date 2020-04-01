@@ -227,7 +227,7 @@ TEST(IMUs, unitTest)
         biorbd::rigidbody::IMUs imus;
         imus.addIMU(true, true);
 
-        EXPECT_NEAR(imus.nbIMUs(), 1., requiredPrecision);
+        EXPECT_EQ(imus.nbIMUs(), 1);
         EXPECT_EQ(imus.IMU(0).isTechnical(), true);
     }
     {
@@ -257,15 +257,15 @@ TEST(IMUs, deepCopy)
     biorbd::rigidbody::IMUs deepCopyLater;
     deepCopyLater.DeepCopy(imus);
 
-    EXPECT_NEAR(shallowCopy.nbIMUs(), 4., requiredPrecision);
-    EXPECT_NEAR(deepCopyNow.nbIMUs(), 4., requiredPrecision);
-    EXPECT_NEAR(deepCopyLater.nbIMUs(), 4., requiredPrecision);
+    EXPECT_EQ(shallowCopy.nbIMUs(), 4);
+    EXPECT_EQ(deepCopyNow.nbIMUs(), 4);
+    EXPECT_EQ(deepCopyLater.nbIMUs(), 4);
 
     imus.addIMU(true, true);
-    EXPECT_NEAR(imus.nbIMUs(), 5., requiredPrecision);
-    EXPECT_NEAR(shallowCopy.nbIMUs(), 5., requiredPrecision);
-    EXPECT_NEAR(deepCopyNow.nbIMUs(), 4., requiredPrecision);
-    EXPECT_NEAR(deepCopyLater.nbIMUs(), 4., requiredPrecision);
+    EXPECT_EQ(imus.nbIMUs(), 5);
+    EXPECT_EQ(shallowCopy.nbIMUs(), 5);
+    EXPECT_EQ(deepCopyNow.nbIMUs(), 4);
+    EXPECT_EQ(deepCopyLater.nbIMUs(), 4);
 }
 
 TEST(Joints, copy)
