@@ -283,7 +283,18 @@ TEST(Joints, copy)
         EXPECT_NEAR(deepCopyNow.mass(), 52.412120000000002, requiredPrecision);
         EXPECT_NEAR(deepCopyLater.mass(), 52.412120000000002, requiredPrecision);
 
-        biorbd::rigidbody::Segment segment(model.segment(2));
+        biorbd::rigidbody::SegmentCharacteristics characteristics(
+            10, biorbd::utils::Vector3d(0.5, 0.5, 0.5),
+            RigidBodyDynamics::Math::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
+        std::vector<biorbd::utils::Range> ranges(6);
+   
+        joints.AddSegment("segmentName", "parentName", "zyx", "yzx", ranges,
+            characteristics, RigidBodyDynamics::Math::SpatialTransform());
+
+        EXPECT_NEAR(joints.mass(), 62.412120000000002, requiredPrecision);
+        EXPECT_NEAR(shallowCopy.mass(), 62.412120000000002, requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.mass(), 52.412120000000002, requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.mass(), 52.412120000000002, requiredPrecision);
     }
 
 }
