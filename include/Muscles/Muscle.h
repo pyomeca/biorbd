@@ -113,7 +113,7 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     /// \return The length of the muscle
     ///
-    biorbd::utils::Scalar length(
+    const biorbd::utils::Scalar& length(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             int updateKin = 2);
@@ -125,7 +125,7 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     /// \return The musculo tendon length
     ///
-    biorbd::utils::Scalar musculoTendonLength(
+    const biorbd::utils::Scalar& musculoTendonLength(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             int updateKin = 2);
@@ -138,7 +138,7 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     //// \return The velocity of the muscle
     ///
-    biorbd::utils::Scalar velocity(
+    const biorbd::utils::Scalar& velocity(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedVelocity& Qdot,
@@ -235,7 +235,7 @@ public:
     /// \param forceMax The force to set
     ///
     void setForceIsoMax(
-            double forceMax);
+            const biorbd::utils::Scalar& forceMax);
 
     ///
     /// \brief Set the dynamic state
@@ -262,7 +262,7 @@ public:
     /// \param alreadyNormalized If the emg is already normalized
     /// \return The activation time derivative
     ///
-    biorbd::utils::Scalar activationDot(
+    const biorbd::utils::Scalar& activationDot(
             const biorbd::muscles::StateDynamics &state,
             bool alreadyNormalized = false);
 protected:

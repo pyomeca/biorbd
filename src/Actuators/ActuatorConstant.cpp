@@ -21,7 +21,7 @@ biorbd::actuator::ActuatorConstant::ActuatorConstant(
 
 biorbd::actuator::ActuatorConstant::ActuatorConstant(
         int direction,
-        double Tmax,
+        const biorbd::utils::Scalar& Tmax,
         unsigned int dofIdx) :
     Actuator(direction, dofIdx),
     m_Tmax(std::make_shared<biorbd::utils::Scalar>(Tmax))
@@ -31,7 +31,7 @@ biorbd::actuator::ActuatorConstant::ActuatorConstant(
 
 biorbd::actuator::ActuatorConstant::ActuatorConstant(
         int direction,
-        double Tmax,
+        const biorbd::utils::Scalar& Tmax,
         unsigned int dofIdx,
         const biorbd::utils::String &jointName) :
     Actuator(direction, dofIdx, jointName),

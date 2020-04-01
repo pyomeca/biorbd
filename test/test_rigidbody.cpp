@@ -34,6 +34,234 @@ static std::string modelPathForLoopConstraintTesting("models/loopConstrainedMode
 static std::string modelNoRoot("models/pyomecaman_freeFall.bioMod");
 static std::string modelPathForImuTesting("models/pyomecaman_withIMUs.bioMod");
 
+TEST(Contacts, unitTest)
+{
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::Contacts contacts(model);
+
+        EXPECT_NEAR(contacts.nbContacts(), 6., requiredPrecision);
+        EXPECT_STREQ(contacts.name(1).c_str(), "PiedG_1_Z");
+        EXPECT_EQ(contacts.hasContacts(), true);
+        EXPECT_NEAR(contacts.getForce()[1], 0., requiredPrecision);
+    }
+    {
+        biorbd::rigidbody::Contacts contacts;
+        EXPECT_EQ(contacts.hasContacts(), false);
+    }
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::Contacts contacts(model);
+
+        EXPECT_THROW(contacts.name(7), std::runtime_error);
+    }
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::Contacts contacts(model);
+
+        EXPECT_NEAR(contacts.nbContacts(), 6., requiredPrecision);
+
+        contacts.AddConstraint(
+            7,
+            biorbd::utils::Vector3d(0, 0, 0),
+            biorbd::utils::Vector3d(1, 1, 1),
+            "constraintName",
+            2.0);
+
+        EXPECT_NEAR(contacts.nbContacts(), 7., requiredPrecision);
+    }
+}
+
+TEST(Contacts, DeepCopy)
+{
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::Contacts contacts(model);
+
+        biorbd::rigidbody::Contacts shallowCopy(contacts);
+        biorbd::rigidbody::Contacts deepCopyNow(contacts.DeepCopy());
+        biorbd::rigidbody::Contacts deepCopyLater;
+        deepCopyLater.DeepCopy(contacts);
+
+        EXPECT_NEAR(contacts.nbContacts(), 6., requiredPrecision);
+        EXPECT_NEAR(shallowCopy.nbContacts(), 6., requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.nbContacts(), 6., requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.nbContacts(), 6., requiredPrecision);
+
+        contacts.AddConstraint(
+            7,
+            biorbd::utils::Vector3d(0, 0, 0),
+            biorbd::utils::Vector3d(1, 1, 1),
+            "constraintName",
+            2.0);
+
+        EXPECT_NEAR(contacts.nbContacts(), 7., requiredPrecision);
+        EXPECT_NEAR(shallowCopy.nbContacts(), 7., requiredPrecision);
+        EXPECT_NEAR(deepCopyNow.nbContacts(), 6., requiredPrecision);
+        EXPECT_NEAR(deepCopyLater.nbContacts(), 6., requiredPrecision);
+    }
+}
+
+static std::vector<double> Qtest = { 0.1, 0.1, 0.1, 0.3, 0.3, 0.3,
+                                     0.3, 0.3, 0.3, 0.3, 0.3, 0.4, 0.3 };
+TEST(GeneralizedCoordinates, unitTest)
+{
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        for (unsigned int i = 0; i < model.nbQ(); ++i) {
+            Q[i] = Qtest[i];
+        }
+
+        biorbd::rigidbody::GeneralizedCoordinates newQ(Q);
+
+        std::vector<double> Q_expected = { 0.1, 0.1, 0.1, 0.3, 0.3, 0.3,
+                                     0.3, 0.3, 0.3, 0.3, 0.3, 0.4, 0.3 };
+
+        for (unsigned int i = 0; i < model.nbQ(); ++i) {
+            EXPECT_NEAR(newQ[i], Q_expected[i], requiredPrecision);
+        }
+    }
+}
+
+TEST(GeneralizedVelocity, unitTest)
+{
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::GeneralizedVelocity Qdot(model);
+        for (unsigned int i = 0; i < model.nbQdot(); ++i) {
+            Qdot[i] = Qtest[i] * 10;
+        }
+
+        std::vector<double> Qdot_expected = { 1., 1., 1., 3., 3., 3.,
+                                     3., 3., 3., 3., 3., 4., 3.};
+
+        biorbd::rigidbody::GeneralizedVelocity newQdot(Qdot);
+
+        for (unsigned int i = 0; i < model.nbQdot(); ++i) {
+            EXPECT_NEAR(newQdot[i], Qdot_expected[i], requiredPrecision);
+        }
+    }
+    {
+        biorbd::rigidbody::GeneralizedVelocity Qdot;
+        EXPECT_NEAR(Qdot.norm(), 0., requiredPrecision);
+   
+        biorbd::rigidbody::GeneralizedVelocity newQdot(Qdot);
+        EXPECT_NEAR(newQdot.norm(), 0., requiredPrecision);
+    }
+}
+
+TEST(GeneralizedAcceleration, unitTest)
+{
+    {
+        biorbd::rigidbody::GeneralizedAcceleration Qddot;
+        EXPECT_NEAR(Qddot.norm(), 0., requiredPrecision);
+    }
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::GeneralizedAcceleration Qddot(model);
+        for (unsigned int i = 0; i < model.nbQ(); ++i){
+            Qddot[i] = Qtest[i] * 100;
+        }
+
+        std::vector<double> Qddot_expected = { 10., 10., 10., 30., 30., 30.,
+                             30., 30., 30., 30., 30., 40., 30. };
+
+        biorbd::rigidbody::GeneralizedAcceleration newQddot(Qddot);
+
+        for (unsigned int i = 0; i < model.nbQ(); ++i) {
+            EXPECT_NEAR(newQddot[i], Qddot_expected[i], requiredPrecision);
+        }
+    }
+}
+
+TEST(GeneralizedTorque, unitTest)
+{
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::GeneralizedTorque Tau(model);
+        Tau << 0.1, 0.1, 0.1, 0.3, 0.3, 0.3,
+            0.3, 0.3, 0.3, 0.3, 0.3, 0.4, 0.3; 
+
+        std::vector<double> Tau_expected = { 0.1, 0.1, 0.1, 0.3, 0.3, 0.3,
+            0.3, 0.3, 0.3, 0.3, 0.3, 0.4, 0.3 };
+
+        for (unsigned int i = 0; i < 12; ++i) {
+            EXPECT_NEAR(Tau[i], Tau_expected[i], requiredPrecision);
+        }
+
+        biorbd::rigidbody::GeneralizedTorque newTau(Tau);
+        for (unsigned int i = 0; i < 12; ++i) {
+            EXPECT_NEAR(newTau[i], Tau_expected[i], requiredPrecision);
+        }
+
+        biorbd::rigidbody::GeneralizedTorque tauWithNoArgument;
+        EXPECT_NEAR(tauWithNoArgument.norm(), 0., requiredPrecision);
+    }
+}
+
+TEST(IMU, unitTest)
+{
+    biorbd::rigidbody::IMU imu(true, false);
+    EXPECT_EQ(imu.isTechnical(), true);
+    EXPECT_EQ(imu.isAnatomical(), false);
+}
+
+TEST(IMU, DeepCopy)
+{
+    biorbd::rigidbody::IMU imu(false, true);
+
+    biorbd::rigidbody::IMU shallowCopy(imu);
+    biorbd::rigidbody::IMU deepCopyNow(imu.DeepCopy());
+    biorbd::rigidbody::IMU deepCopyLater;
+    deepCopyLater.DeepCopy(imu);
+
+    EXPECT_EQ(shallowCopy.isTechnical(), false);
+    EXPECT_EQ(deepCopyNow.isTechnical(), false);
+    EXPECT_EQ(deepCopyLater.isTechnical(), false);
+}
+
+TEST(IMUs, unitTest)
+{
+    {
+        biorbd::rigidbody::IMUs imus;
+        imus.addIMU(true, true);
+
+        EXPECT_NEAR(imus.nbIMUs(), 1., requiredPrecision);
+        EXPECT_EQ(imus.IMU(0).isTechnical(), true);
+    }
+    {
+        biorbd::rigidbody::IMUs imus;
+        biorbd::rigidbody::IMU imu(true, false);
+        imu.setName("imuName");
+        imus.addIMU(imu);
+
+        EXPECT_STREQ(imus.technicalIMU()[0].name().c_str(), "imuName");
+    }
+
+}
+
+TEST(IMUs, deepCopy)
+{
+    biorbd::rigidbody::IMUs imus;
+    imus.addIMU(true, true);
+
+    biorbd::rigidbody::IMUs shallowCopy(imus);
+    biorbd::rigidbody::IMUs deepCopyNow(imus.DeepCopy());
+    biorbd::rigidbody::IMUs deepCopyLater;
+    deepCopyLater.DeepCopy(imus);
+
+    EXPECT_NEAR(shallowCopy.nbIMUs(), 1., requiredPrecision);
+    EXPECT_NEAR(deepCopyNow.nbIMUs(), 1., requiredPrecision);
+    EXPECT_NEAR(deepCopyLater.nbIMUs(), 1., requiredPrecision);
+
+    imus.addIMU(true, true);
+    EXPECT_NEAR(imus.nbIMUs(), 2., requiredPrecision);
+    EXPECT_NEAR(shallowCopy.nbIMUs(), 2., requiredPrecision);
+    EXPECT_NEAR(deepCopyNow.nbIMUs(), 1., requiredPrecision);
+    EXPECT_NEAR(deepCopyLater.nbIMUs(), 1., requiredPrecision);
+}
+
 TEST(DegreesOfFreedom, count)
 {
     {
@@ -159,17 +387,20 @@ TEST(Segment, copy)
                 model, "MasterSegment", "NoParent", "zyx", "yzx", ranges,
                 characteristics, RigidBodyDynamics::Math::SpatialTransform());
     biorbd::rigidbody::Segment ShallowCopy(MasterSegment);
+    biorbd::rigidbody::Segment ShallowCopyEqual = MasterSegment;
     biorbd::rigidbody::Segment DeepCopyNow(MasterSegment.DeepCopy());
     biorbd::rigidbody::Segment DeepCopyLater;
     DeepCopyLater.DeepCopy(MasterSegment);
 
     EXPECT_STREQ(MasterSegment.parent().c_str(), "NoParent");
     EXPECT_STREQ(ShallowCopy.parent().c_str(), "NoParent");
+    EXPECT_STREQ(ShallowCopyEqual.parent().c_str(), "NoParent");
     EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
     EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
     ShallowCopy.setParent("MyLovelyParent");
     EXPECT_STREQ(MasterSegment.parent().c_str(), "MyLovelyParent");
     EXPECT_STREQ(ShallowCopy.parent().c_str(), "MyLovelyParent");
+    EXPECT_STREQ(ShallowCopyEqual.parent().c_str(), "MyLovelyParent");
     EXPECT_STREQ(DeepCopyNow.parent().c_str(), "NoParent");
     EXPECT_STREQ(DeepCopyLater.parent().c_str(), "NoParent");
 }

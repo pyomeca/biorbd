@@ -22,9 +22,9 @@ public:
     /// \param resting Muscle resting
     ///
     FatigueDynamicState(
-            double active = 0,
-            double fatigued = 0,
-            double resting = 1);
+            const biorbd::utils::Scalar& active = 0,
+            const biorbd::utils::Scalar& fatigued = 0,
+            const biorbd::utils::Scalar& resting = 1);
 
     ///
     /// \brief Construct the fatigue dynamic state from other state
@@ -44,19 +44,19 @@ public:
     /// \brief Return the active fibers derivative
     /// \return The active fibers derivative
     ///
-    double activeFibersDot() const;
+    const biorbd::utils::Scalar& activeFibersDot() const;
 
     ///
     /// \brief Return the fatigued fibers derivative
     /// \return The fatigued fibers derivative
     ///
-    double fatiguedFibersDot() const;
+    const biorbd::utils::Scalar& fatiguedFibersDot() const;
 
     ///
     /// \brief Return the resting fibers derivative
     /// \return The resting fibers derivative
     ///
-    double restingFibersDot() const;
+    const biorbd::utils::Scalar& restingFibersDot() const;
 
     ///
     /// \brief Compute the derivative of the current state
@@ -69,9 +69,9 @@ public:
      ) = 0;
 
 protected:
-    std::shared_ptr<double> m_activeFibersDot; ///< The active fibers derivative
-    std::shared_ptr<double> m_fatiguedFibersDot; ///< The fatigued fibers derivative
-    std::shared_ptr<double> m_restingFibersDot; ///< The resting fibers derivative
+    std::shared_ptr<biorbd::utils::Scalar> m_activeFibersDot; ///< The active fibers derivative
+    std::shared_ptr<biorbd::utils::Scalar> m_fatiguedFibersDot; ///< The fatigued fibers derivative
+    std::shared_ptr<biorbd::utils::Scalar> m_restingFibersDot; ///< The resting fibers derivative
 
 };
 

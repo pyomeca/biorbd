@@ -4,6 +4,7 @@
 #include <memory>
 #include "biorbdConfig.h"
 #include "MusclesEnums.h"
+#include "Utils/Scalar.h"
 
 namespace biorbd {
 namespace utils {
@@ -66,7 +67,10 @@ public:
     /// \param active
     /// \param fatigued
     /// \param resting
-    virtual void setFatigueState(double active, double fatigued, double resting);
+    virtual void setFatigueState(
+            const biorbd::utils::Scalar& active,
+            const biorbd::utils::Scalar& fatigued,
+            const biorbd::utils::Scalar& resting);
 
     ///
     /// \brief Return the fatigue state

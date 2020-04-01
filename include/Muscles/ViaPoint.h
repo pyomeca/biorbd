@@ -27,9 +27,9 @@ public:
     /// \param z Z-Component of the ViaPoint
     ///
     ViaPoint(
-            double x,
-            double y,
-            double z);
+            const biorbd::utils::Scalar& x,
+            const biorbd::utils::Scalar& y,
+            const biorbd::utils::Scalar& z);
 
     ///
     /// \brief Construct ViaPoint
@@ -40,9 +40,9 @@ public:
     /// \param parentName The name of the parent segment
     ///
     ViaPoint(
-            double x,
-            double y,
-            double z,
+            const biorbd::utils::Scalar& x,
+            const biorbd::utils::Scalar& y,
+            const biorbd::utils::Scalar& z,
             const biorbd::utils::String &name,  
             const biorbd::utils::String &parentName);
 

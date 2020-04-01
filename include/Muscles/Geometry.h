@@ -172,19 +172,19 @@ public:
     /// \brief Return the previously computed muscle length
     /// \return The muscle lengh
     ///
-    biorbd::utils::Scalar length() const;
+    const biorbd::utils::Scalar& length() const;
 
     ///
     /// \brief Return the previously computed muscle-tendon length
     /// \return The muscle-tendon length
     ///
-    biorbd::utils::Scalar musculoTendonLength() const;
+    const biorbd::utils::Scalar& musculoTendonLength() const;
 
     ///
     /// \brief Return the previously computed velocity
     /// \return The computed velocity
     ///
-    biorbd::utils::Scalar velocity() const;
+    const biorbd::utils::Scalar& velocity() const;
 
     ///
     /// \brief Return the previously computed muscle jacobian
@@ -276,7 +276,7 @@ protected:
     /// \param pathModifiers The set of path modifiers
     /// \return The muscle length
     ///
-    biorbd::utils::Scalar length(
+    const biorbd::utils::Scalar& length(
             const biorbd::muscles::Characteristics* characteristics = nullptr,
             biorbd::muscles::PathModifiers* pathModifiers = nullptr);
 
@@ -285,7 +285,7 @@ protected:
     /// \param Qdot The generalized velocities
     /// \return The muscle velocity
     ///
-    biorbd::utils::Scalar velocity(
+    const biorbd::utils::Scalar& velocity(
             const biorbd::rigidbody::GeneralizedVelocity &Qdot);
 
     ///

@@ -10,18 +10,18 @@ biorbd::muscles::ViaPoint::ViaPoint() :
 }
 
 biorbd::muscles::ViaPoint::ViaPoint(
-        double x,
-        double y,
-        double z) :
+        const biorbd::utils::Scalar& x,
+        const biorbd::utils::Scalar& y,
+        const biorbd::utils::Scalar& z) :
     biorbd::utils::Vector3d(x, y, z)
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::VIA_POINT;
 }
 
 biorbd::muscles::ViaPoint::ViaPoint(
-        double x,
-        double y,
-        double z,
+        const biorbd::utils::Scalar& x,
+        const biorbd::utils::Scalar& y,
+        const biorbd::utils::Scalar& z,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName) :
     biorbd::utils::Vector3d(x, y, z, name, parentName)

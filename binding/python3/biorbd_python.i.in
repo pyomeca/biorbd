@@ -101,7 +101,7 @@
 
 #ifdef BIORBD_USE_CASADI_MATH
 // --- Allows for calling MX as scalar --- //
-%typemap(typecheck, precedence=2400) biorbd::utils::Scalar &{
+%typemap(typecheck, precedence=2400) biorbd::utils::Scalar& {
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
         // Test if it is a pointer an MX
@@ -122,20 +122,30 @@
         $1 = false;
     }
 };
-%typemap(in) biorbd::utils::Scalar &{
+%typemap(in) biorbd::utils::Scalar& {
     void * argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
         // Recast the pointer
-        $1 = new biorbd::utils::Scalar(*reinterpret_cast<casadi::MX*>(argp1));
+        try{
+            $1 = new biorbd::utils::Scalar(*reinterpret_cast<casadi::MX*>(argp1));
+        } catch (...){
+            PyErr_SetString(PyExc_ValueError, "Scalar must be an MX(1, 1)");
+            SWIG_fail;
+        }
     } else if (PyFloat_Check($input)) {
         $1 = new biorbd::utils::Scalar(PyFloat_AS_DOUBLE($input));
     } else if (PyLong_Check($input)) {
         $1 = new biorbd::utils::Scalar(static_cast<double>(PyLong_AS_LONG($input)));
     } else {
-        PyErr_SetString(PyExc_ValueError, "Scalar must be an MX");
+        PyErr_SetString(PyExc_ValueError, "Scalar must be an MX(1, 1)");
         SWIG_fail;
     }
 };
+%extend biorbd::utils::Scalar{
+    casadi::MX to_mx(){
+        return *dynamic_cast<casadi::MX*>($self);
+    };
+}
 #endif
 
 #ifndef BIORBD_USE_CASADI_MATH

@@ -8,7 +8,7 @@
 #include "Utils/Scalar.h"
 
 // The type of container used to hold the state vector
-typedef std::vector< biorbd::utils::Scalar > state_type;
+typedef std::vector<biorbd::utils::Scalar> state_type;
 
 namespace biorbd {
 namespace utils {

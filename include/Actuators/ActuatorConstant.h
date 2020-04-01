@@ -33,7 +33,7 @@ public:
     ///
     ActuatorConstant(
             int direction,
-            double Tmax,
+            const biorbd::utils::Scalar& Tmax,
             unsigned int dofIdx);
 
     ///
@@ -45,7 +45,7 @@ public:
     ///
     ActuatorConstant(
             int direction,
-            double Tmax,
+            const biorbd::utils::Scalar& Tmax,
             unsigned int dofIdx,
             const biorbd::utils::String &jointName);
 

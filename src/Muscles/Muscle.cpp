@@ -98,6 +98,7 @@ biorbd::muscles::Muscle::~Muscle()
 
 void biorbd::muscles::Muscle::DeepCopy(const biorbd::muscles::Muscle &other)
 {
+    this->biorbd::muscles::Compound::DeepCopy(other);
     *m_position = other.m_position->DeepCopy();
     *m_characteristics = other.m_characteristics->DeepCopy();
     *m_state = other.m_state->DeepCopy();
@@ -144,7 +145,7 @@ const biorbd::muscles::Geometry &biorbd::muscles::Muscle::position() const {
     return *m_position;
 }
 
-biorbd::utils::Scalar biorbd::muscles::Muscle::length(
+const biorbd::utils::Scalar& biorbd::muscles::Muscle::length(
         biorbd::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         int updateKin)
@@ -157,7 +158,7 @@ biorbd::utils::Scalar biorbd::muscles::Muscle::length(
     return position().length();
 }
 
-biorbd::utils::Scalar biorbd::muscles::Muscle::musculoTendonLength(
+const biorbd::utils::Scalar& biorbd::muscles::Muscle::musculoTendonLength(
         biorbd::rigidbody::Joints &m,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         int updateKin)
@@ -170,7 +171,7 @@ biorbd::utils::Scalar biorbd::muscles::Muscle::musculoTendonLength(
     return m_position->musculoTendonLength();
 }
 
-biorbd::utils::Scalar biorbd::muscles::Muscle::velocity(
+const biorbd::utils::Scalar& biorbd::muscles::Muscle::velocity(
         biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedVelocity &Qdot,
@@ -184,7 +185,7 @@ biorbd::utils::Scalar biorbd::muscles::Muscle::velocity(
     return m_position->velocity();
 }
 
-biorbd::utils::Scalar biorbd::muscles::Muscle::activationDot(
+const biorbd::utils::Scalar& biorbd::muscles::Muscle::activationDot(
         const biorbd::muscles::StateDynamics &state, bool alreadyNormalized)
 {
     return m_state->timeDerivativeActivation(state, characteristics(), alreadyNormalized);
@@ -209,7 +210,8 @@ const std::vector<biorbd::utils::Vector3d> &biorbd::muscles::Muscle::musclesPoin
     return m_position->musclesPointsInGlobal();
 }
 
-void biorbd::muscles::Muscle::setForceIsoMax(double forceMax)
+void biorbd::muscles::Muscle::setForceIsoMax(
+        const biorbd::utils::Scalar& forceMax)
 {
     m_characteristics->setForceIsoMax(forceMax);
 }

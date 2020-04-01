@@ -2,14 +2,14 @@
 #include "Muscles/FatigueParameters.h"
 
 biorbd::muscles::FatigueParameters::FatigueParameters(
-        double _fatigueRate,
-        double _recoveryRate,
-        double _developFactor,
-        double recoveryFactor):
-    m_fatigueRate(std::make_shared<double>(_fatigueRate)),
-    m_recoveryRate(std::make_shared<double>(_recoveryRate)),
-    m_developFactor(std::make_shared<double>(_developFactor)),
-    m_recoveryFactor(std::make_shared<double>(recoveryFactor))
+        const biorbd::utils::Scalar& _fatigueRate,
+        const biorbd::utils::Scalar& _recoveryRate,
+        const biorbd::utils::Scalar& _developFactor,
+        const biorbd::utils::Scalar& recoveryFactor):
+    m_fatigueRate(std::make_shared<biorbd::utils::Scalar>(_fatigueRate)),
+    m_recoveryRate(std::make_shared<biorbd::utils::Scalar>(_recoveryRate)),
+    m_developFactor(std::make_shared<biorbd::utils::Scalar>(_developFactor)),
+    m_recoveryFactor(std::make_shared<biorbd::utils::Scalar>(recoveryFactor))
 {
 
 }
@@ -29,38 +29,42 @@ void biorbd::muscles::FatigueParameters::DeepCopy(const biorbd::muscles::Fatigue
     *m_recoveryFactor = *other.m_recoveryFactor;
 }
 
-void biorbd::muscles::FatigueParameters::setFatigueRate(double fatigueRate)
+void biorbd::muscles::FatigueParameters::setFatigueRate(
+        const biorbd::utils::Scalar& fatigueRate)
 {
     *m_fatigueRate = fatigueRate;
 }
-double biorbd::muscles::FatigueParameters::fatigueRate() const
+const biorbd::utils::Scalar& biorbd::muscles::FatigueParameters::fatigueRate() const
 {
     return *m_fatigueRate;
 }
 
-void biorbd::muscles::FatigueParameters::setRecoveryRate(double recoveryRate)
+void biorbd::muscles::FatigueParameters::setRecoveryRate(
+        const biorbd::utils::Scalar& recoveryRate)
 {
     *m_recoveryRate = recoveryRate;
 }
-double biorbd::muscles::FatigueParameters::recoveryRate() const
+const biorbd::utils::Scalar& biorbd::muscles::FatigueParameters::recoveryRate() const
 {
     return *m_recoveryRate;
 }
 
-void biorbd::muscles::FatigueParameters::setDevelopFactor(double developFactor)
+void biorbd::muscles::FatigueParameters::setDevelopFactor(
+        const biorbd::utils::Scalar& developFactor)
 {
     *m_developFactor = developFactor;
 }
-double biorbd::muscles::FatigueParameters::developFactor() const
+const biorbd::utils::Scalar& biorbd::muscles::FatigueParameters::developFactor() const
 {
     return *m_developFactor;
 }
 
-void biorbd::muscles::FatigueParameters::setRecoveryFactor(double recoveryFactor)
+void biorbd::muscles::FatigueParameters::setRecoveryFactor(
+        const biorbd::utils::Scalar& recoveryFactor)
 {
     *m_recoveryFactor = recoveryFactor;
 }
-double biorbd::muscles::FatigueParameters::recoveryFactor() const
+const biorbd::utils::Scalar& biorbd::muscles::FatigueParameters::recoveryFactor() const
 {
     return *m_recoveryFactor;
 }
