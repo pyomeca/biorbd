@@ -337,6 +337,34 @@ TEST(Joints, unitTest)
         }
     }
 }
+
+TEST(Markers, copy)
+{
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::Markers markers(model);
+
+        biorbd::rigidbody::Markers shallowCopy(markers);
+        biorbd::rigidbody::Markers deepCopyNow(markers.DeepCopy());
+        biorbd::rigidbody::Markers deepCopyLater;
+        deepCopyLater.DeepCopy(markers);
+
+        EXPECT_EQ(markers.nbMarkers(), 97);
+        EXPECT_EQ(shallowCopy.nbMarkers(), 97);
+        EXPECT_EQ(deepCopyNow.nbMarkers(), 97);
+        EXPECT_EQ(deepCopyLater.nbMarkers(), 97);
+
+
+        biorbd::rigidbody::NodeSegment nodeSegment;
+        markers.addMarker(nodeSegment,
+            "markerName", "parentName", true, true, "x", 98);
+
+        EXPECT_EQ(markers.nbMarkers(), 98);
+        EXPECT_EQ(shallowCopy.nbMarkers(), 98);
+        EXPECT_EQ(deepCopyNow.nbMarkers(), 97);
+        EXPECT_EQ(deepCopyLater.nbMarkers(), 97);
+    }
+}
 TEST(DegreesOfFreedom, count)
 {
     {
