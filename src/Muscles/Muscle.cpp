@@ -98,6 +98,7 @@ biorbd::muscles::Muscle::~Muscle()
 
 void biorbd::muscles::Muscle::DeepCopy(const biorbd::muscles::Muscle &other)
 {
+    this->biorbd::muscles::Compound::DeepCopy(other);
     *m_position = other.m_position->DeepCopy();
     *m_characteristics = other.m_characteristics->DeepCopy();
     *m_state = other.m_state->DeepCopy();
