@@ -323,6 +323,19 @@ TEST(Joints, unitTest)
 
         EXPECT_EQ(segmentToTest.id(), 2147483647);
     }
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::Joints joints(model);
+        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        biorbd::rigidbody::GeneralizedVelocity Qdot(model);
+
+        biorbd::utils::Vector3d angularMomentum(joints.angularMomentum(Q, Qdot));
+        biorbd::utils::Vector3d expectedAngularMomentum(0., 0., 0.5);
+
+        for (int i = 0; i < 2; ++i) {
+            EXPECT_NEAR(angularMomentum[i], expectedAngularMomentum[i], requiredPrecision);
+        }
+    }
 }
 TEST(DegreesOfFreedom, count)
 {
