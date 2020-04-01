@@ -296,7 +296,26 @@ TEST(Joints, copy)
         EXPECT_NEAR(deepCopyNow.mass(), 52.412120000000002, requiredPrecision);
         EXPECT_NEAR(deepCopyLater.mass(), 52.412120000000002, requiredPrecision);
     }
+}
 
+TEST(Joints, unitTest)
+{
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        biorbd::rigidbody::Joints joints(model);
+        std::vector <biorbd::utils::String> names(joints.nameDof());
+
+        std::vector<biorbd::utils::String> expectedNames(joints.nbDof());
+        expectedNames = { "Pelvis_TransY", "Pelvis_TransZ", "Pelvis_RotX",
+            "BrasD_RotZ", "BrasD_RotX", "BrasG_RotZ", "BrasG_RotX",
+            "CuisseD_RotX", "JambeD_RotX", "PiedD_RotX", "CuisseG_RotX",
+            "JambeG_RotX", "PiedG_RotX" };
+
+
+        for (int i = 0; i < joints.nbDof(); ++i) {
+            EXPECT_STREQ(names[i].c_str(), expectedNames[i].c_str());
+        }
+    }
 }
 TEST(DegreesOfFreedom, count)
 {
