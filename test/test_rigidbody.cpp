@@ -451,7 +451,6 @@ TEST(NodeSegment, unitTests)
     {
         biorbd::rigidbody::NodeSegment nodeSegment(biorbd::utils::Vector3d(2, 3, 4),
             "nodeSegmentName", "parentName", true, true, "z", 8);
-        EXPECT_THROW(nodeSegment.addAxesToRemove(4), std::runtime_error);
         std::vector<biorbd::utils::String> vector = { "x", "y" };
         nodeSegment.addAxesToRemove(vector);
         EXPECT_STREQ(nodeSegment.axesToRemove().c_str(), "xyz");
@@ -463,7 +462,15 @@ TEST(NodeSegment, unitTests)
         nodeSegment.addAxesToRemove(vector);
         EXPECT_STREQ(nodeSegment.axesToRemove().c_str(), "xyz");
     }
+    {
+        biorbd::rigidbody::NodeSegment nodeSegment(biorbd::utils::Vector3d(2, 3, 4),
+            "nodeSegmentName", "parentName", true, true, "z", 8);
+        EXPECT_THROW(nodeSegment.addAxesToRemove(4), std::runtime_error);
+        biorbd::utils::String string("m");
+        EXPECT_THROW(nodeSegment.addAxesToRemove(string), std::runtime_error);
+    }
 }
+
 
 TEST(NodeSegment, copy)
 {
