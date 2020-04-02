@@ -365,6 +365,14 @@ TEST(Markers, copy)
         EXPECT_EQ(deepCopyLater.nbMarkers(), 97);
     }
 }
+
+TEST(SegmentCharacteristics, length)
+{
+    biorbd::rigidbody::SegmentCharacteristics segmentCharac;
+    EXPECT_NEAR(segmentCharac.length(), 0., requiredPrecision);
+    segmentCharac.setLength(2.);
+    EXPECT_NEAR(segmentCharac.length(), 2., requiredPrecision);
+}
 TEST(DegreesOfFreedom, count)
 {
     {
