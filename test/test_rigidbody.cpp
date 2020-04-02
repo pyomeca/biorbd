@@ -429,6 +429,21 @@ TEST(RotoTransNode, unitTest)
         EXPECT_STREQ(rtNode.RTsNames()[0].c_str(), "nameSet");
     }
 }
+
+TEST(NodeSegment, unitTests)
+{
+    {
+        biorbd::rigidbody::NodeSegment nodeSegment(1., 2., 3.);
+        EXPECT_NEAR(nodeSegment.z(), 3., requiredPrecision);
+    }
+    {
+        biorbd::utils::Vector3d node(1, 1, 1);
+        biorbd::rigidbody::NodeSegment nodeSegment(biorbd::utils::Vector3d(2, 3, 4),
+            "nodeSegmentName", "parentName", true, true, "z", 8);
+        EXPECT_STREQ(nodeSegment.parent().c_str(), "parentName");
+    }
+
+}
 TEST(DegreesOfFreedom, count)
 {
     {
