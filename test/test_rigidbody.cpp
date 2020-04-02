@@ -437,12 +437,24 @@ TEST(NodeSegment, unitTests)
         EXPECT_NEAR(nodeSegment.z(), 3., requiredPrecision);
     }
     {
-        biorbd::utils::Vector3d node(1, 1, 1);
         biorbd::rigidbody::NodeSegment nodeSegment(biorbd::utils::Vector3d(2, 3, 4),
             "nodeSegmentName", "parentName", true, true, "z", 8);
         EXPECT_STREQ(nodeSegment.parent().c_str(), "parentName");
     }
+}
 
+TEST(NodeSegment, copy)
+{
+    biorbd::rigidbody::NodeSegment nodeSegment(biorbd::utils::Vector3d(2, 3, 4),
+        "nodeSegmentName", "parentName", true, true, "z", 8);
+
+    biorbd::rigidbody::NodeSegment deepCopyNow(nodeSegment.DeepCopy());
+    biorbd::rigidbody::NodeSegment deepCopyLater;
+    deepCopyLater.DeepCopy(nodeSegment);
+
+    EXPECT_EQ(nodeSegment.nbAxesToRemove(), 1);
+    EXPECT_EQ(deepCopyNow.nbAxesToRemove(), 1);
+    EXPECT_EQ(deepCopyLater.nbAxesToRemove(), 1);
 }
 TEST(DegreesOfFreedom, count)
 {
