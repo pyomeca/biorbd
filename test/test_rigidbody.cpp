@@ -456,6 +456,13 @@ TEST(NodeSegment, unitTests)
         nodeSegment.addAxesToRemove(vector);
         EXPECT_STREQ(nodeSegment.axesToRemove().c_str(), "xyz");
     }
+    {
+        biorbd::rigidbody::NodeSegment nodeSegment(biorbd::utils::Vector3d(2, 3, 4),
+            "nodeSegmentName", "parentName", true, true, "z", 8);
+        std::vector<unsigned int> vector = {0, 1};
+        nodeSegment.addAxesToRemove(vector);
+        EXPECT_STREQ(nodeSegment.axesToRemove().c_str(), "xyz");
+    }
 }
 
 TEST(NodeSegment, copy)
