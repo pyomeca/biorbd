@@ -380,6 +380,30 @@ TEST(Segment, nameDof)
     EXPECT_THROW(model.segment(128), std::runtime_error);
 }
 
+TEST(RotoTransNode, copy)
+{
+    biorbd::Model model(modelPathForGeneralTesting);
+    biorbd::rigidbody::RotoTransNodes rtNode(model);
+    biorbd::utils::RotoTrans rt(
+        biorbd::utils::Vector3d(2, 3, 4), biorbd::utils::Vector3d(), "xyz");
+    rtNode.addRT(rt);
+
+    biorbd::rigidbody::RotoTransNodes shallowCopy(rtNode);
+    biorbd::rigidbody::RotoTransNodes deepCopyNow(rtNode.DeepCopy());
+    biorbd::rigidbody::RotoTransNodes deepCopyLater;
+    deepCopyLater.DeepCopy(rtNode);
+
+    EXPECT_EQ(shallowCopy.nbRTs(), 1);
+    EXPECT_EQ(deepCopyNow.nbRTs(), 1);
+    EXPECT_EQ(deepCopyLater.nbRTs(), 1);
+
+    rtNode.addRT(rt);
+    EXPECT_EQ(rtNode.nbRTs(), 2);
+    EXPECT_EQ(shallowCopy.nbRTs(), 2);
+    EXPECT_EQ(deepCopyNow.nbRTs(), 1);
+    EXPECT_EQ(deepCopyLater.nbRTs(), 1);
+}
+
 TEST(DegreesOfFreedom, count)
 {
     {
