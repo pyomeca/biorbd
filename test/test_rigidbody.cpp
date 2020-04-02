@@ -414,6 +414,7 @@ TEST(RotoTransNode, unitTest)
         auto rt_vector(rtNode.RTs());
 
         EXPECT_NEAR(rt_vector[0].norm(), 1.9999999999999998, requiredPrecision);
+        EXPECT_NEAR(rtNode.RT(0).norm(), 1.9999999999999998, requiredPrecision);
     }
     {
         biorbd::rigidbody::RotoTransNodes rtNode;
@@ -425,6 +426,7 @@ TEST(RotoTransNode, unitTest)
         rt_vector[0].setName("nameSet");
 
         EXPECT_STREQ(rtNode.RTs("parentName")[0].name().c_str(), "nameSet");
+        EXPECT_STREQ(rtNode.RTsNames()[0].c_str(), "nameSet");
     }
 }
 TEST(DegreesOfFreedom, count)
