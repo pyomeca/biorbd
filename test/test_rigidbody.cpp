@@ -373,6 +373,13 @@ TEST(SegmentCharacteristics, length)
     segmentCharac.setLength(2.);
     EXPECT_NEAR(segmentCharac.length(), 2., requiredPrecision);
 }
+
+TEST(Segment, nameDof)
+{
+    biorbd::Model model(modelPathForGeneralTesting);
+    EXPECT_THROW(model.segment(128), std::runtime_error);
+}
+
 TEST(DegreesOfFreedom, count)
 {
     {
