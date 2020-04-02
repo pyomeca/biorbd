@@ -404,6 +404,29 @@ TEST(RotoTransNode, copy)
     EXPECT_EQ(deepCopyLater.nbRTs(), 1);
 }
 
+TEST(RotoTransNode, unitTest)
+{
+    {
+        biorbd::rigidbody::RotoTransNodes rtNode;
+        biorbd::utils::RotoTrans rt(
+            biorbd::utils::Vector3d(2, 3, 4), biorbd::utils::Vector3d(), "xyz");
+        rtNode.addRT(rt);
+        auto rt_vector(rtNode.RTs());
+
+        EXPECT_NEAR(rt_vector[0].norm(), 1.9999999999999998, requiredPrecision);
+    }
+    {
+        biorbd::rigidbody::RotoTransNodes rtNode;
+        biorbd::utils::RotoTrans rt(
+            biorbd::utils::Vector3d(2, 3, 4), biorbd::utils::Vector3d(), "xyz");
+        rtNode.addRT(rt);
+        auto rt_vector(rtNode.RTs());
+        rt_vector[0].setParent("parentName");
+        rt_vector[0].setName("nameSet");
+
+        EXPECT_STREQ(rtNode.RTs("parentName")[0].name().c_str(), "nameSet");
+    }
+}
 TEST(DegreesOfFreedom, count)
 {
     {
