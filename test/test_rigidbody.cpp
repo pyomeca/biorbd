@@ -393,15 +393,15 @@ TEST(RotoTransNode, copy)
     biorbd::rigidbody::RotoTransNodes deepCopyLater;
     deepCopyLater.DeepCopy(rtNode);
 
-    EXPECT_EQ(shallowCopy.nbRTs(), 1);
-    EXPECT_EQ(deepCopyNow.nbRTs(), 1);
-    EXPECT_EQ(deepCopyLater.nbRTs(), 1);
+    EXPECT_EQ(shallowCopy.RTs().size(), 1);
+    EXPECT_EQ(deepCopyNow.RTs().size(), 1);
+    EXPECT_EQ(deepCopyLater.RTs().size(), 1);
 
     rtNode.addRT(rt);
-    EXPECT_EQ(rtNode.nbRTs(), 2);
-    EXPECT_EQ(shallowCopy.nbRTs(), 2);
-    EXPECT_EQ(deepCopyNow.nbRTs(), 1);
-    EXPECT_EQ(deepCopyLater.nbRTs(), 1);
+    EXPECT_EQ(rtNode.RTs().size(), 2);
+    EXPECT_EQ(shallowCopy.RTs().size(), 2);
+    EXPECT_EQ(deepCopyNow.RTs().size(), 1);
+    EXPECT_EQ(deepCopyLater.RTs().size(), 1);
 }
 
 TEST(RotoTransNode, unitTest)
@@ -485,6 +485,7 @@ TEST(NodeSegment, copy)
     EXPECT_EQ(deepCopyNow.nbAxesToRemove(), 1);
     EXPECT_EQ(deepCopyLater.nbAxesToRemove(), 1);
 }
+
 TEST(DegreesOfFreedom, count)
 {
     {
