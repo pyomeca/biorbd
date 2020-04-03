@@ -683,7 +683,6 @@ static unsigned int muscleForHillThelenTypeFatigable(1);
 TEST(hillThelenTypeFatigable, unitTest) 
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
         hillThelenTypeFatigable.setName("newName");
         EXPECT_STREQ(hillThelenTypeFatigable.name().c_str(), "newName");
@@ -695,7 +694,6 @@ TEST(hillThelenTypeFatigable, unitTest)
                 muscleForHillThelenTypeFatigable)), std::bad_cast);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
         biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
@@ -709,7 +707,6 @@ TEST(hillThelenTypeFatigable, unitTest)
     }
 
     {
-        biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
         biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
@@ -722,7 +719,6 @@ TEST(hillThelenTypeFatigable, unitTest)
         EXPECT_EQ(hillThelenTypeFatigableNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
         biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
@@ -733,6 +729,29 @@ TEST(hillThelenTypeFatigable, unitTest)
             biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
 
         EXPECT_STREQ(hillThelenTypeFatigableNew.name().c_str(), "newName");
+        EXPECT_EQ(hillThelenTypeFatigableNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+    }
+    {
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+            "nameMuscle",
+            hillThelenTypeFatigable.position(),
+            hillThelenTypeFatigable.characteristics(),
+            biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+
+        EXPECT_EQ(hillThelenTypeFatigableNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+    }
+    {
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+
+        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+            "nameMuscle",
+            hillThelenTypeFatigable.position(),
+            hillThelenTypeFatigable.characteristics(),
+            hillThelenTypeFatigable.pathModifier(),
+            biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+
         EXPECT_EQ(hillThelenTypeFatigableNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
     }
 }
