@@ -428,6 +428,11 @@ TEST(RotoTransNode, unitTest)
         EXPECT_STREQ(rtNode.RTs("parentName")[0].name().c_str(), "nameSet");
         EXPECT_STREQ(rtNode.RTsNames()[0].c_str(), "nameSet");
     }
+    {
+        biorbd::rigidbody::RotoTransNodes rtNode;
+        rtNode.addRT();
+        EXPECT_EQ(rtNode.nbRTs(), 1);
+    }
 }
 
 TEST(NodeSegment, unitTests)
