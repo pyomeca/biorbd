@@ -421,17 +421,21 @@ TEST(RotoTransNode, unitTest)
         biorbd::utils::RotoTrans rt(
             biorbd::utils::Vector3d(2, 3, 4), biorbd::utils::Vector3d(), "xyz");
         rtNode.addRT(rt);
-        auto rt_vector(rtNode.RTs());
+        std::vector<biorbd::utils::RotoTransNode> rt_vector(rtNode.RTs());
         rt_vector[0].setParent("parentName");
         rt_vector[0].setName("nameSet");
-
-        EXPECT_STREQ(rtNode.RTs("parentName")[0].name().c_str(), "nameSet");
-        EXPECT_STREQ(rtNode.RTsNames()[0].c_str(), "nameSet");
+        std::vector<biorbd::utils::String> expectedNames = { "nameSet" };
+        for (int i = 0; i < rt_vector.size(); ++i)
+        {
+            EXPECT_STREQ(rtNode.RTs("parentName")[i].name().c_str(), expectedNames[i].c_str());
+            EXPECT_STREQ(rtNode.RTsNames()[i].c_str(), expectedNames[i].c_str());
+        }
     }
     {
         biorbd::rigidbody::RotoTransNodes rtNode;
         rtNode.addRT();
-        EXPECT_EQ(rtNode.nbRTs(), 1);
+        unsigned int numberOfRTs(rtNode.nbRTs());
+        EXPECT_EQ(numberOfRTs, 1);
     }
 }
 
