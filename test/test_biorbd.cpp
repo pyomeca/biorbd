@@ -9,7 +9,7 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedTorque.h"
-
+#ifndef BIORBD_USE_CASADI_MATH
 static double requiredPrecision(1e-10);
 
 static std::string modelPathWithMeshFile("models/simpleWithMeshFile.bioMod");
@@ -85,3 +85,4 @@ TEST(Integrate, freefall) {
         }
     }
 }
+#endif

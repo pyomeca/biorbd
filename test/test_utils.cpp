@@ -15,7 +15,7 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/NodeSegment.h"
 static double requiredPrecision(1e-10);
-
+#ifndef BIORBD_USE_CASADI_MATH
 TEST(ShallowCopy, DeepCopy){
     // DeepCopying a shallow copy, should also change the reference
     // Warning that may be surprising because one may be tend to DeepCopy
@@ -976,3 +976,4 @@ TEST(Vector, normGradient) {
         }
     }
 }
+#endif

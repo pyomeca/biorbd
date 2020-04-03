@@ -22,7 +22,7 @@ static unsigned int muscleForMuscleJacobian(1);
 
 static unsigned int muscleGroupForIdealizedActuator(1);
 static unsigned int muscleForIdealizedActuator(1);
-
+#ifndef BIORBD_USE_CASADI_MATH
 TEST(IdealizedActuator, unitTest)
 {
     {
@@ -1694,3 +1694,4 @@ TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
 }
 
 #endif // MODULE_MUSCLES
+#endif
