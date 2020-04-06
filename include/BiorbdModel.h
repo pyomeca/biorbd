@@ -54,7 +54,6 @@
 ///
 
 namespace biorbd {
-
 ///
 /// \brief The actual musculoskeletal model that holds everything in biorbd
 ///

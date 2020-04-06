@@ -99,10 +99,10 @@
     }
 }
 
-#ifdef BIORBD_USE_CASADI_MATH
 // --- Allows for calling MX as scalar --- //
 %typemap(typecheck, precedence=2400) biorbd::utils::Scalar& {
     void *argp1 = 0;
+#ifdef BIORBD_USE_CASADI_MATH
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
         // Test if it is a pointer an MX
         casadi::MX *mx = reinterpret_cast<casadi::MX*>(argp1);
@@ -112,7 +112,9 @@
         else {
             $1 = false;
         }
-    } else if (PyFloat_Check($input)) {
+    } else
+#endif
+    if (PyFloat_Check($input)) {
         // Test if it is a double pointer
         $1 = true;
     } else if (PyLong_Check($input)) {
@@ -124,6 +126,7 @@
 };
 %typemap(in) biorbd::utils::Scalar& {
     void * argp1 = 0;
+#ifdef BIORBD_USE_CASADI_MATH
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
         // Recast the pointer
         try{
@@ -132,7 +135,9 @@
             PyErr_SetString(PyExc_ValueError, "Scalar must be an MX(1, 1)");
             SWIG_fail;
         }
-    } else if (PyFloat_Check($input)) {
+    } else
+#endif
+    if (PyFloat_Check($input)) {
         $1 = new biorbd::utils::Scalar(PyFloat_AS_DOUBLE($input));
     } else if (PyLong_Check($input)) {
         $1 = new biorbd::utils::Scalar(static_cast<double>(PyLong_AS_LONG($input)));
@@ -141,6 +146,8 @@
         SWIG_fail;
     }
 };
+
+#ifdef BIORBD_USE_CASADI_MATH
 %extend biorbd::utils::Scalar{
     casadi::MX to_mx(){
         return *dynamic_cast<casadi::MX*>($self);
@@ -148,9 +155,13 @@
 }
 #endif
 
-#ifndef BIORBD_USE_CASADI_MATH
 // --- Quaternion --- //
 %extend biorbd::utils::Quaternion{
+#ifdef BIORBD_USE_CASADI_MATH
+    casadi::MX to_mx(){
+        return *dynamic_cast<casadi::MX*>($self);
+    };
+#else
     PyObject* to_array(){
         int nRows(1);
         int nCols(4);
@@ -171,10 +182,16 @@
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
         return output;
     };
+#endif
 }
 
 // --- Matrix --- //
 %extend biorbd::utils::Matrix{
+#ifdef BIORBD_USE_CASADI_MATH
+    casadi::MX to_mx(){
+        return *dynamic_cast<casadi::MX*>($self);
+    };
+#else
     PyObject* to_array(){
         int nRows($self->rows());
         int nCols($self->cols());
@@ -195,8 +212,10 @@
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
         return output;
     };
+#endif
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
 %typemap(typecheck, precedence=2155) Eigen::Matrix3d & {
     if( PyArray_Check($input) ) {
         // test if it is a numpy array
@@ -727,8 +746,12 @@ biorbd::rigidbody::GeneralizedAcceleration & {
 #endif
 };
 
-#ifndef BIORBD_USE_CASADI_MATH
 %extend biorbd::utils::RotoTrans{
+#ifdef BIORBD_USE_CASADI_MATH
+    casadi::MX to_mx(){
+        return *dynamic_cast<casadi::MX*>($self);
+    };
+#else
     PyObject* to_array(){
         int nArraySize(2);
         npy_intp * arraySizes = new npy_intp[nArraySize];
@@ -745,9 +768,15 @@ biorbd::rigidbody::GeneralizedAcceleration & {
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
         return output;
     }
+#endif
 };
 
 %extend biorbd::utils::Rotation{
+#ifdef BIORBD_USE_CASADI_MATH
+    casadi::MX to_mx(){
+        return *dynamic_cast<casadi::MX*>($self);
+    };
+#else
     PyObject* to_array(){
         int nArraySize(2);
         npy_intp * arraySizes = new npy_intp[nArraySize];
@@ -764,8 +793,8 @@ biorbd::rigidbody::GeneralizedAcceleration & {
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
         return output;
     }
-};
 #endif
+};
 
 // Import the main swig interface
 %include @CMAKE_CURRENT_BINARY_DIR@/../biorbd.i

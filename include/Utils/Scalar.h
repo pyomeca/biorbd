@@ -42,7 +42,12 @@ public:
 };
 
 #else
+
+#ifdef SWIG
+typedef double Scalar;
+#else
 typedef RigidBodyDynamics::Math::Scalar Scalar;
+#endif
 
 #endif
 
