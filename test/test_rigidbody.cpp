@@ -321,7 +321,7 @@ TEST(Joints, unitTest)
         biorbd::rigidbody::Joints joints(model);
         biorbd::rigidbody::Segment segmentToTest(joints.segment("Tronc"));
 
-        EXPECT_EQ(segmentToTest.id(), 2147483647);
+        EXPECT_EQ(segmentToTest.id(), 2147483647); //TODO: Verify ID value
     }
     {
         biorbd::Model model(modelPathForGeneralTesting);
@@ -332,7 +332,7 @@ TEST(Joints, unitTest)
         biorbd::utils::Vector3d angularMomentum(joints.angularMomentum(Q, Qdot));
         biorbd::utils::Vector3d expectedAngularMomentum(0., 0., 0.5);
 
-        for (int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 3; ++i) {
             EXPECT_NEAR(angularMomentum[i], expectedAngularMomentum[i], requiredPrecision);
         }
     }
