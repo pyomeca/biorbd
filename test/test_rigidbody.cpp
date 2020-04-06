@@ -330,7 +330,7 @@ TEST(Joints, unitTest)
         biorbd::rigidbody::GeneralizedVelocity Qdot(model);
 
         biorbd::utils::Vector3d angularMomentum(joints.angularMomentum(Q, Qdot));
-        biorbd::utils::Vector3d expectedAngularMomentum(0., 0., 0.5);
+        biorbd::utils::Vector3d expectedAngularMomentum(0., 0., 0.0);
 
         for (int i = 0; i < 3; ++i) {
             EXPECT_NEAR(angularMomentum[i], expectedAngularMomentum[i], requiredPrecision);
