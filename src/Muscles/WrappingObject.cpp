@@ -12,9 +12,9 @@ biorbd::muscles::WrappingObject::WrappingObject() :
 }
 
 biorbd::muscles::WrappingObject::WrappingObject(
-        double x,
-        double y,
-        double z) :
+        const biorbd::utils::Scalar& x,
+        const biorbd::utils::Scalar& y,
+        const biorbd::utils::Scalar& z) :
     biorbd::utils::Vector3d(x, y, z),
     m_RT(std::make_shared<biorbd::utils::RotoTrans>())
 {
@@ -22,9 +22,9 @@ biorbd::muscles::WrappingObject::WrappingObject(
 }
 
 biorbd::muscles::WrappingObject::WrappingObject(
-        double x,
-        double y,
-        double z,
+        const biorbd::utils::Scalar& x,
+        const biorbd::utils::Scalar& y,
+        const biorbd::utils::Scalar& z,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName) :
     biorbd::utils::Vector3d(x, y, z, name, parentName),

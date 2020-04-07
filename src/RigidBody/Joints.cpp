@@ -806,7 +806,7 @@ biorbd::utils::Vector3d biorbd::rigidbody::Joints::CalcAngularMomentum (
     // Calculate the angular momentum with the function of the
     // position of the center of mass
     if (updateKin) {
-        UpdateKinematicsCustom (&Q);
+        UpdateKinematicsCustom (&Q, &Qdot);
     }
     RigidBodyDynamics::Utils::CalcCenterOfMass(
                 *this, Q, Qdot, nullptr, mass, com, nullptr, nullptr,

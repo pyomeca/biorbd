@@ -4,8 +4,8 @@
 #include <math.h>
 
 biorbd::muscles::StateDynamicsBuchanan::StateDynamicsBuchanan(
-        biorbd::utils::Scalar neuralCommand,
-        biorbd::utils::Scalar excitation) :
+        const biorbd::utils::Scalar& neuralCommand,
+        const biorbd::utils::Scalar& excitation) :
     biorbd::muscles::StateDynamics(excitation,0),
     m_neuralCommand(std::make_shared<biorbd::utils::Scalar>(neuralCommand)),
     m_shapeFactor(std::make_shared<biorbd::utils::Scalar>(-3)),
@@ -48,7 +48,7 @@ void biorbd::muscles::StateDynamicsBuchanan::DeepCopy(
 }
 
 void biorbd::muscles::StateDynamicsBuchanan::shapeFactor(
-        biorbd::utils::Scalar shape_factor)
+        const biorbd::utils::Scalar& shape_factor)
 {
     *m_shapeFactor = shape_factor;
 
@@ -56,12 +56,12 @@ void biorbd::muscles::StateDynamicsBuchanan::shapeFactor(
     setActivation(0);
 }
 
-biorbd::utils::Scalar biorbd::muscles::StateDynamicsBuchanan::shapeFactor() const
+const biorbd::utils::Scalar& biorbd::muscles::StateDynamicsBuchanan::shapeFactor() const
 {
     return *m_shapeFactor;
 }
 
-biorbd::utils::Scalar biorbd::muscles::StateDynamicsBuchanan::timeDerivativeExcitation(
+const biorbd::utils::Scalar& biorbd::muscles::StateDynamicsBuchanan::timeDerivativeExcitation(
         const biorbd::muscles::Characteristics &characteristics,
         bool alreadyNormalized){
     // Move excitation to activation to use properly biorbd::muscles::StateDynamics::timeDerivativeActivation
@@ -81,7 +81,7 @@ biorbd::utils::Scalar biorbd::muscles::StateDynamicsBuchanan::timeDerivativeExci
 }
 
 void biorbd::muscles::StateDynamicsBuchanan::setExcitation(
-        biorbd::utils::Scalar val,
+        const biorbd::utils::Scalar& val,
         bool)
 {
      biorbd::muscles::StateDynamics::setExcitation(val);
@@ -91,13 +91,13 @@ void biorbd::muscles::StateDynamicsBuchanan::setExcitation(
 }
 
 void biorbd::muscles::StateDynamicsBuchanan::setNeuralCommand(
-        biorbd::utils::Scalar val)
+        const biorbd::utils::Scalar& val)
 {
      *m_neuralCommand = val;
 }
 
 void biorbd::muscles::StateDynamicsBuchanan::setActivation(
-        biorbd::utils::Scalar,
+        const biorbd::utils::Scalar&,
         bool)
 {
     biorbd::utils::Scalar expShapeFactor(exp(*m_shapeFactor));

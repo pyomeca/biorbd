@@ -4,13 +4,13 @@
 #include "Utils/Error.h"
 
 biorbd::muscles::FatigueDynamicState::FatigueDynamicState(
-        double active,
-        double fatigued,
-        double resting) :
+        const biorbd::utils::Scalar& active,
+        const biorbd::utils::Scalar& fatigued,
+        const biorbd::utils::Scalar& resting) :
     biorbd::muscles::FatigueState(active,fatigued,resting),
-    m_activeFibersDot(std::make_shared<double>(0)),
-    m_fatiguedFibersDot(std::make_shared<double>(0)),
-    m_restingFibersDot(std::make_shared<double>(0))
+    m_activeFibersDot(std::make_shared<biorbd::utils::Scalar>(0)),
+    m_fatiguedFibersDot(std::make_shared<biorbd::utils::Scalar>(0)),
+    m_restingFibersDot(std::make_shared<biorbd::utils::Scalar>(0))
 {
     setType();
 }
@@ -35,17 +35,17 @@ void biorbd::muscles::FatigueDynamicState::DeepCopy(const biorbd::muscles::Fatig
     *m_restingFibersDot = *other.m_restingFibersDot;
 }
 
-double biorbd::muscles::FatigueDynamicState::activeFibersDot() const
+const biorbd::utils::Scalar& biorbd::muscles::FatigueDynamicState::activeFibersDot() const
 {
     return *m_activeFibersDot;
 }
 
-double biorbd::muscles::FatigueDynamicState::fatiguedFibersDot() const
+const biorbd::utils::Scalar& biorbd::muscles::FatigueDynamicState::fatiguedFibersDot() const
 {
     return *m_fatiguedFibersDot;
 }
 
-double biorbd::muscles::FatigueDynamicState::restingFibersDot() const
+const biorbd::utils::Scalar& biorbd::muscles::FatigueDynamicState::restingFibersDot() const
 {
     return *m_restingFibersDot;
 }

@@ -34,9 +34,9 @@ public:
     /// \param z Z-Component of the wrapping object
     ///
     WrappingObject(
-            double x,
-            double y,
-            double z);
+            const biorbd::utils::Scalar& x,
+            const biorbd::utils::Scalar& y,
+            const biorbd::utils::Scalar& z);
     ///
     /// \brief Construct a wrapping object
     /// \param x X-Component of the wrapping object
@@ -46,9 +46,9 @@ public:
     /// \param parentName Name of the parent segment
     ///
     WrappingObject(
-            double x,
-            double y,
-            double z,
+            const biorbd::utils::Scalar& x,
+            const biorbd::utils::Scalar& y,
+            const biorbd::utils::Scalar& z,
             const biorbd::utils::String &name,  
             const biorbd::utils::String &parentName);
 

@@ -14,15 +14,15 @@ biorbd::muscles::HillType::HillType() :
     m_FlCE(std::make_shared<biorbd::utils::Scalar>()),
     m_FlPE(std::make_shared<biorbd::utils::Scalar>()),
     m_FvCE(std::make_shared<biorbd::utils::Scalar>()),
-    m_cste_FlCE_1(std::make_shared<double>(0.15)),
-    m_cste_FlCE_2(std::make_shared<double>(0.45)),
-    m_cste_FvCE_1(std::make_shared<double>(1)),
-    m_cste_FvCE_2(std::make_shared<double>(-.33/2 * *m_cste_FvCE_1/(1+*m_cste_FvCE_1))),
-    m_cste_FlPE_1(std::make_shared<double>(10.0)),
-    m_cste_FlPE_2(std::make_shared<double>(5.0)),
-    m_cste_eccentricForceMultiplier(std::make_shared<double>(1.8)),
-    m_cste_damping(std::make_shared<double>(0.1)),
-    m_cste_maxShorteningSpeed(std::make_shared<double>(10.0))
+    m_cste_FlCE_1(std::make_shared<biorbd::utils::Scalar>(0.15)),
+    m_cste_FlCE_2(std::make_shared<biorbd::utils::Scalar>(0.45)),
+    m_cste_FvCE_1(std::make_shared<biorbd::utils::Scalar>(1)),
+    m_cste_FvCE_2(std::make_shared<biorbd::utils::Scalar>(-.33/2 * *m_cste_FvCE_1/(1+*m_cste_FvCE_1))),
+    m_cste_FlPE_1(std::make_shared<biorbd::utils::Scalar>(10.0)),
+    m_cste_FlPE_2(std::make_shared<biorbd::utils::Scalar>(5.0)),
+    m_cste_eccentricForceMultiplier(std::make_shared<biorbd::utils::Scalar>(1.8)),
+    m_cste_damping(std::make_shared<biorbd::utils::Scalar>(0.1)),
+    m_cste_maxShorteningSpeed(std::make_shared<biorbd::utils::Scalar>(10.0))
 {
     setType();
 }
@@ -36,15 +36,15 @@ biorbd::muscles::HillType::HillType(
     m_FlCE(std::make_shared<biorbd::utils::Scalar>()),
     m_FlPE(std::make_shared<biorbd::utils::Scalar>()),
     m_FvCE(std::make_shared<biorbd::utils::Scalar>()),
-    m_cste_FlCE_1(std::make_shared<double>(0.15)),
-    m_cste_FlCE_2(std::make_shared<double>(0.45)),
-    m_cste_FvCE_1(std::make_shared<double>(1)),
-    m_cste_FvCE_2(std::make_shared<double>(-.33/2 * *m_cste_FvCE_1/(1+*m_cste_FvCE_1))),
-    m_cste_FlPE_1(std::make_shared<double>(10.0)),
-    m_cste_FlPE_2(std::make_shared<double>(5.0)),
-    m_cste_eccentricForceMultiplier(std::make_shared<double>(1.8)),
-    m_cste_damping(std::make_shared<double>(0.1)),
-    m_cste_maxShorteningSpeed(std::make_shared<double>(10.0))
+    m_cste_FlCE_1(std::make_shared<biorbd::utils::Scalar>(0.15)),
+    m_cste_FlCE_2(std::make_shared<biorbd::utils::Scalar>(0.45)),
+    m_cste_FvCE_1(std::make_shared<biorbd::utils::Scalar>(1)),
+    m_cste_FvCE_2(std::make_shared<biorbd::utils::Scalar>(-.33/2 * *m_cste_FvCE_1/(1+*m_cste_FvCE_1))),
+    m_cste_FlPE_1(std::make_shared<biorbd::utils::Scalar>(10.0)),
+    m_cste_FlPE_2(std::make_shared<biorbd::utils::Scalar>(5.0)),
+    m_cste_eccentricForceMultiplier(std::make_shared<biorbd::utils::Scalar>(1.8)),
+    m_cste_damping(std::make_shared<biorbd::utils::Scalar>(0.1)),
+    m_cste_maxShorteningSpeed(std::make_shared<biorbd::utils::Scalar>(10.0))
 {
     setType();
 }
@@ -59,15 +59,15 @@ biorbd::muscles::HillType::HillType(
     m_FlCE(std::make_shared<biorbd::utils::Scalar>()),
     m_FlPE(std::make_shared<biorbd::utils::Scalar>()),
     m_FvCE(std::make_shared<biorbd::utils::Scalar>()),
-    m_cste_FlCE_1(std::make_shared<double>(0.15)),
-    m_cste_FlCE_2(std::make_shared<double>(0.45)),
-    m_cste_FvCE_1(std::make_shared<double>(1)),
-    m_cste_FvCE_2(std::make_shared<double>(-.33/2 * *m_cste_FvCE_1/(1+*m_cste_FvCE_1))),
-    m_cste_FlPE_1(std::make_shared<double>(10.0)),
-    m_cste_FlPE_2(std::make_shared<double>(5.0)),
-    m_cste_eccentricForceMultiplier(std::make_shared<double>(1.8)),
-    m_cste_damping(std::make_shared<double>(0.1)),
-    m_cste_maxShorteningSpeed(std::make_shared<double>(10.0))
+    m_cste_FlCE_1(std::make_shared<biorbd::utils::Scalar>(0.15)),
+    m_cste_FlCE_2(std::make_shared<biorbd::utils::Scalar>(0.45)),
+    m_cste_FvCE_1(std::make_shared<biorbd::utils::Scalar>(1)),
+    m_cste_FvCE_2(std::make_shared<biorbd::utils::Scalar>(-.33/2 * *m_cste_FvCE_1/(1+*m_cste_FvCE_1))),
+    m_cste_FlPE_1(std::make_shared<biorbd::utils::Scalar>(10.0)),
+    m_cste_FlPE_2(std::make_shared<biorbd::utils::Scalar>(5.0)),
+    m_cste_eccentricForceMultiplier(std::make_shared<biorbd::utils::Scalar>(1.8)),
+    m_cste_damping(std::make_shared<biorbd::utils::Scalar>(0.1)),
+    m_cste_maxShorteningSpeed(std::make_shared<biorbd::utils::Scalar>(10.0))
 {
     setType();
 }
@@ -82,15 +82,15 @@ biorbd::muscles::HillType::HillType(
     m_FlCE(std::make_shared<biorbd::utils::Scalar>()),
     m_FlPE(std::make_shared<biorbd::utils::Scalar>()),
     m_FvCE(std::make_shared<biorbd::utils::Scalar>()),
-    m_cste_FlCE_1(std::make_shared<double>(0.15)),
-    m_cste_FlCE_2(std::make_shared<double>(0.45)),
-    m_cste_FvCE_1(std::make_shared<double>(1)),
-    m_cste_FvCE_2(std::make_shared<double>(-.33/2 * *m_cste_FvCE_1/(1+*m_cste_FvCE_1))),
-    m_cste_FlPE_1(std::make_shared<double>(10.0)),
-    m_cste_FlPE_2(std::make_shared<double>(5.0)),
-    m_cste_eccentricForceMultiplier(std::make_shared<double>(1.8)),
-    m_cste_damping(std::make_shared<double>(0.1)),
-    m_cste_maxShorteningSpeed(std::make_shared<double>(10.0))
+    m_cste_FlCE_1(std::make_shared<biorbd::utils::Scalar>(0.15)),
+    m_cste_FlCE_2(std::make_shared<biorbd::utils::Scalar>(0.45)),
+    m_cste_FvCE_1(std::make_shared<biorbd::utils::Scalar>(1)),
+    m_cste_FvCE_2(std::make_shared<biorbd::utils::Scalar>(-.33/2 * *m_cste_FvCE_1/(1+*m_cste_FvCE_1))),
+    m_cste_FlPE_1(std::make_shared<biorbd::utils::Scalar>(10.0)),
+    m_cste_FlPE_2(std::make_shared<biorbd::utils::Scalar>(5.0)),
+    m_cste_eccentricForceMultiplier(std::make_shared<biorbd::utils::Scalar>(1.8)),
+    m_cste_damping(std::make_shared<biorbd::utils::Scalar>(0.1)),
+    m_cste_maxShorteningSpeed(std::make_shared<biorbd::utils::Scalar>(10.0))
 {
     setType();
 }
@@ -105,15 +105,15 @@ biorbd::muscles::HillType::HillType(
     m_FlCE(std::make_shared<biorbd::utils::Scalar>()),
     m_FlPE(std::make_shared<biorbd::utils::Scalar>()),
     m_FvCE(std::make_shared<biorbd::utils::Scalar>()),
-    m_cste_FlCE_1(std::make_shared<double>(0.15)),
-    m_cste_FlCE_2(std::make_shared<double>(0.45)),
-    m_cste_FvCE_1(std::make_shared<double>(1)),
-    m_cste_FvCE_2(std::make_shared<double>(-.33/2 * *m_cste_FvCE_1/(1+*m_cste_FvCE_1))),
-    m_cste_FlPE_1(std::make_shared<double>(10.0)),
-    m_cste_FlPE_2(std::make_shared<double>(5.0)),
-    m_cste_eccentricForceMultiplier(std::make_shared<double>(1.8)),
-    m_cste_damping(std::make_shared<double>(0.1)),
-    m_cste_maxShorteningSpeed(std::make_shared<double>(10.0))
+    m_cste_FlCE_1(std::make_shared<biorbd::utils::Scalar>(0.15)),
+    m_cste_FlCE_2(std::make_shared<biorbd::utils::Scalar>(0.45)),
+    m_cste_FvCE_1(std::make_shared<biorbd::utils::Scalar>(1)),
+    m_cste_FvCE_2(std::make_shared<biorbd::utils::Scalar>(-.33/2 * *m_cste_FvCE_1/(1+*m_cste_FvCE_1))),
+    m_cste_FlPE_1(std::make_shared<biorbd::utils::Scalar>(10.0)),
+    m_cste_FlPE_2(std::make_shared<biorbd::utils::Scalar>(5.0)),
+    m_cste_eccentricForceMultiplier(std::make_shared<biorbd::utils::Scalar>(1.8)),
+    m_cste_damping(std::make_shared<biorbd::utils::Scalar>(0.1)),
+    m_cste_maxShorteningSpeed(std::make_shared<biorbd::utils::Scalar>(10.0))
 {
     setType();
 }
@@ -183,7 +183,7 @@ void biorbd::muscles::HillType::DeepCopy(const biorbd::muscles::HillType &other)
     *m_cste_maxShorteningSpeed = *other.m_cste_maxShorteningSpeed;
 }
 
-const biorbd::utils::Scalar &biorbd::muscles::HillType::force(
+const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
         const biorbd::muscles::StateDynamics& emg){
     // Compute the forces of each element
     computeFvCE();
@@ -196,7 +196,7 @@ const biorbd::utils::Scalar &biorbd::muscles::HillType::force(
     return *m_force;
 }
 
-const biorbd::utils::Scalar &biorbd::muscles::HillType::force(
+const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
         biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedVelocity &Qdot,
@@ -215,7 +215,7 @@ const biorbd::utils::Scalar &biorbd::muscles::HillType::force(
     return force(emg);
 }
 
-const biorbd::utils::Scalar &biorbd::muscles::HillType::force(
+const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
         biorbd::rigidbody::Joints &,
         const biorbd::rigidbody::GeneralizedCoordinates &,
         const biorbd::muscles::StateDynamics &,
@@ -227,26 +227,26 @@ const biorbd::utils::Scalar &biorbd::muscles::HillType::force(
 #endif
 }
 
-biorbd::utils::Scalar biorbd::muscles::HillType::FlCE(
+const biorbd::utils::Scalar& biorbd::muscles::HillType::FlCE(
         const biorbd::muscles::StateDynamics &EMG)
 {
     computeFlCE(EMG);
     return *m_FlCE;
 }
 
-biorbd::utils::Scalar biorbd::muscles::HillType::FlPE()
+const biorbd::utils::Scalar& biorbd::muscles::HillType::FlPE()
 {
     computeFlPE();
     return *m_FlPE;
 }
 
-biorbd::utils::Scalar biorbd::muscles::HillType::FvCE()
+const biorbd::utils::Scalar& biorbd::muscles::HillType::FvCE()
 {
     computeFvCE();
     return *m_FvCE;
 }
 
-biorbd::utils::Scalar biorbd::muscles::HillType::damping()
+const biorbd::utils::Scalar& biorbd::muscles::HillType::damping()
 {
     computeDamping();
     return *m_damping;

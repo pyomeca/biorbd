@@ -4,8 +4,8 @@
 #include "Utils/Error.h"
 
 biorbd::muscles::State::State(
-        biorbd::utils::Scalar excitation,
-        biorbd::utils::Scalar activation) :
+        const biorbd::utils::Scalar& excitation,
+        const biorbd::utils::Scalar& activation) :
     m_stateType(std::make_shared<biorbd::muscles::STATE_TYPE>()),
     m_excitation(std::make_shared<biorbd::utils::Scalar>(excitation)),
     m_excitationNorm(std::make_shared<biorbd::utils::Scalar>(0)),
@@ -45,7 +45,7 @@ void biorbd::muscles::State::DeepCopy(const biorbd::muscles::State &other)
 }
 
 void biorbd::muscles::State::setExcitation(
-        biorbd::utils::Scalar val,
+        const biorbd::utils::Scalar& val,
         bool turnOffWarnings) {
 
 #ifdef BIORBD_USE_CASADI_MATH
@@ -63,12 +63,12 @@ void biorbd::muscles::State::setExcitation(
 #endif
 }
 
-biorbd::utils::Scalar biorbd::muscles::State::excitation() const
+const biorbd::utils::Scalar& biorbd::muscles::State::excitation() const
 {
     return *m_excitation;
 }
 
-biorbd::utils::Scalar biorbd::muscles::State::normalizeExcitation(
+const biorbd::utils::Scalar& biorbd::muscles::State::normalizeExcitation(
         const biorbd::muscles::State &emgMax,
         bool turnOffWarnings) {
 
@@ -84,23 +84,25 @@ biorbd::utils::Scalar biorbd::muscles::State::normalizeExcitation(
     return *m_excitationNorm;
 }
 
-void biorbd::muscles::State::setExcitationNorm(biorbd::utils::Scalar val)
+void biorbd::muscles::State::setExcitationNorm(
+        const biorbd::utils::Scalar& val)
 {
     *m_excitationNorm = val;
 }
 
-biorbd::utils::Scalar biorbd::muscles::State::excitationNorm() const
+const biorbd::utils::Scalar& biorbd::muscles::State::excitationNorm() const
 {
     return *m_excitationNorm;
 }
 
 void biorbd::muscles::State::setActivation(
-        biorbd::utils::Scalar val,
+        const biorbd::utils::Scalar& val,
         bool turnOffWarnings){
 
 #ifdef BIORBD_USE_CASADI_MATH
     *m_activation = casadi::MX::if_else_zero(casadi::MX::gt(val, 0), val);
     *m_activation = casadi::MX::if_else(casadi::MX::lt(val, 1), val, 1);
+//    *m_activation = val;
 #else
     if (val <= 0) {
         if (!turnOffWarnings){
@@ -122,7 +124,7 @@ void biorbd::muscles::State::setActivation(
 #endif
 }
 
-biorbd::utils::Scalar biorbd::muscles::State::activation() const
+const biorbd::utils::Scalar& biorbd::muscles::State::activation() const
 {
     return *m_activation;
 }

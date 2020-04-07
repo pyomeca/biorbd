@@ -7,8 +7,8 @@
 
 biorbd::muscles::WrappingCylinder::WrappingCylinder() :
     biorbd::muscles::WrappingObject (),
-    m_dia(std::make_shared<double>(0)),
-    m_length(std::make_shared<double>(0)),
+    m_dia(std::make_shared<biorbd::utils::Scalar>(0)),
+    m_length(std::make_shared<biorbd::utils::Scalar>(0)),
     m_isCylinderPositiveSign(std::make_shared<bool>(true)),
     m_RTtoParent(std::make_shared<biorbd::utils::RotoTrans>()),
     m_p1Wrap(std::make_shared<biorbd::utils::Vector3d>()),
@@ -20,12 +20,12 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder() :
 
 biorbd::muscles::WrappingCylinder::WrappingCylinder(
         const biorbd::utils::RotoTrans &rt,
-        double diameter,
-        double length,
+        const biorbd::utils::Scalar& diameter,
+        const biorbd::utils::Scalar& length,
         bool isCylinderPositiveSign) :
     biorbd::muscles::WrappingObject (rt.trans()),
-    m_dia(std::make_shared<double>(diameter)),
-    m_length(std::make_shared<double>(length)),
+    m_dia(std::make_shared<biorbd::utils::Scalar>(diameter)),
+    m_length(std::make_shared<biorbd::utils::Scalar>(length)),
     m_isCylinderPositiveSign(std::make_shared<bool>(isCylinderPositiveSign)),
     m_RTtoParent(std::make_shared<biorbd::utils::RotoTrans>(rt)),
     m_p1Wrap(std::make_shared<biorbd::utils::Vector3d>()),
@@ -37,14 +37,14 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder(
 
 biorbd::muscles::WrappingCylinder::WrappingCylinder(
         const biorbd::utils::RotoTrans &rt,
-        double diameter,
-        double length,
+        const biorbd::utils::Scalar& diameter,
+        const biorbd::utils::Scalar& length,
         bool isCylinderPositiveSign,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName) :
     biorbd::muscles::WrappingObject (rt.trans(), name, parentName),
-    m_dia(std::make_shared<double>(diameter)),
-    m_length(std::make_shared<double>(length)),
+    m_dia(std::make_shared<biorbd::utils::Scalar>(diameter)),
+    m_length(std::make_shared<biorbd::utils::Scalar>(length)),
     m_isCylinderPositiveSign(std::make_shared<bool>(isCylinderPositiveSign)),
     m_RTtoParent(std::make_shared<biorbd::utils::RotoTrans>(rt)),
     m_p1Wrap(std::make_shared<biorbd::utils::Vector3d>()),
@@ -155,27 +155,29 @@ const biorbd::utils::RotoTrans& biorbd::muscles::WrappingCylinder::RT(
     return *m_RT;
 }
 
-void biorbd::muscles::WrappingCylinder::setDiameter(double val)
+void biorbd::muscles::WrappingCylinder::setDiameter(
+        const biorbd::utils::Scalar& val)
 {
     *m_dia = val;
 }
 
-double biorbd::muscles::WrappingCylinder::diameter() const
+const biorbd::utils::Scalar& biorbd::muscles::WrappingCylinder::diameter() const
 {
     return *m_dia;
 }
 
-double biorbd::muscles::WrappingCylinder::radius() const
+biorbd::utils::Scalar biorbd::muscles::WrappingCylinder::radius() const
 {
     return *m_dia/2;
 }
 
-void biorbd::muscles::WrappingCylinder::setLength(double val)
+void biorbd::muscles::WrappingCylinder::setLength(
+        const biorbd::utils::Scalar& val)
 {
     *m_length = val;
 }
 
-double biorbd::muscles::WrappingCylinder::length() const
+const biorbd::utils::Scalar& biorbd::muscles::WrappingCylinder::length() const
 {
     return *m_length;
 }
@@ -239,8 +241,8 @@ bool biorbd::muscles::WrappingCylinder::findVerticalNode(const NodeMusclePair &p
     if (!checkIfWraps(pointsInGlobal, pointsToWrap)){ // If it doesn't pass by the wrap, put NaN and stop
 #endif
         for (unsigned int i=0; i<3; ++i){
-            (*pointsToWrap.m_p1)(i) = static_cast<double>(NAN);
-            (*pointsToWrap.m_p2)(i) = static_cast<double>(NAN);
+            (*pointsToWrap.m_p1)(i) = static_cast<biorbd::utils::Scalar>(static_cast<double>(NAN));
+            (*pointsToWrap.m_p2)(i) = static_cast<biorbd::utils::Scalar>(static_cast<double>(NAN));
         }
         return false;
     }

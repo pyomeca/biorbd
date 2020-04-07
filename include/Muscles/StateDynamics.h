@@ -19,8 +19,8 @@ public:
     /// \param activation The muscle activation
     ///
     StateDynamics(
-            biorbd::utils::Scalar excitation = 0,
-            biorbd::utils::Scalar activation = 0);
+            const biorbd::utils::Scalar& excitation = 0,
+            const biorbd::utils::Scalar& activation = 0);
 
     ///
     /// \brief Construct a state dynamics from another state dynamics
@@ -56,14 +56,14 @@ public:
     /// it changes it to 0 anyway, but doesn't send a warning saying it.
     ///
     virtual void setExcitation(
-            biorbd::utils::Scalar val,
+            const biorbd::utils::Scalar& val,
             bool turnOffWarnings = false);
 
     ///
     /// \brief Return the previous activation
     /// \return The previous activation
     ///
-    biorbd::utils::Scalar previousExcitation() const;
+    const biorbd::utils::Scalar& previousExcitation() const;
 
     ///
     /// \brief Set the muscle activation
@@ -77,14 +77,14 @@ public:
     /// it changes it to 1 anyway, but doesn't send a warning saying it.
     ///
     virtual void setActivation(
-            biorbd::utils::Scalar val,
+            const biorbd::utils::Scalar& val,
             bool turnOffWarnings = false);
 
     ///
     /// \brief Return the previous activation
     /// \return The previous activation
     ///
-    biorbd::utils::Scalar previousActivation() const;
+    const biorbd::utils::Scalar& previousActivation() const;
 
     ///
     /// \brief Compute and return the activation time derivative from the excitation and activation
@@ -94,9 +94,9 @@ public:
     /// \param alreadyNormalized If already normalized
     /// \return The activation time derivative
     ///
-    virtual biorbd::utils::Scalar timeDerivativeActivation(
-            biorbd::utils::Scalar excitation,
-            biorbd::utils::Scalar activation,
+    virtual const biorbd::utils::Scalar& timeDerivativeActivation(
+            const biorbd::utils::Scalar& excitation,
+            const biorbd::utils::Scalar& activation,
             const Characteristics& characteristics,
             bool alreadyNormalized = false); 
 
@@ -107,7 +107,7 @@ public:
     /// \param alreadyNormalized If already normalized
     /// \return The activation time derivative
     ///
-    virtual biorbd::utils::Scalar timeDerivativeActivation(
+    virtual const biorbd::utils::Scalar& timeDerivativeActivation(
             const StateDynamics& emg,
             const Characteristics& characteristics,
             bool alreadyNormalized = false); 
@@ -118,7 +118,7 @@ public:
     /// \param alreadyNormalized If already normalized
     /// \return The activation time derivative
     ///
-    virtual biorbd::utils::Scalar timeDerivativeActivation(
+    virtual const biorbd::utils::Scalar& timeDerivativeActivation(
             const Characteristics& characteristics,
             bool alreadyNormalized = false);
 
@@ -126,7 +126,7 @@ public:
     /// \brief Return the previously computed activation time derivative
     /// \return The activation time derivative
     ///   
-    virtual biorbd::utils::Scalar timeDerivativeActivation();
+    virtual const biorbd::utils::Scalar& timeDerivativeActivation();
 
 protected:
     virtual void setType();

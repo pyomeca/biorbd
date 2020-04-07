@@ -220,17 +220,17 @@ const std::vector<biorbd::utils::Vector3d> &biorbd::muscles::Geometry::musclesPo
 }
 
 // Return the length and muscular velocity
-biorbd::utils::Scalar biorbd::muscles::Geometry::length() const
+const biorbd::utils::Scalar& biorbd::muscles::Geometry::length() const
 {
     biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed at least before calling length()");
     return *m_length;
 }
-biorbd::utils::Scalar biorbd::muscles::Geometry::musculoTendonLength() const
+const biorbd::utils::Scalar& biorbd::muscles::Geometry::musculoTendonLength() const
 {
     biorbd::utils::Error::check(*m_isGeometryComputed, "Geometry must be computed at least before calling length()");
     return *m_muscleTendonLength;
 }
-biorbd::utils::Scalar biorbd::muscles::Geometry::velocity() const
+const biorbd::utils::Scalar& biorbd::muscles::Geometry::velocity() const
 {
     biorbd::utils::Error::check(*m_isVelocityComputed, "Geometry must be computed before calling velocity()");
     return *m_velocity;
@@ -386,7 +386,7 @@ void biorbd::muscles::Geometry::setMusclesPointsInGlobal(
     setJacobianDimension(model);
 }
 
-biorbd::utils::Scalar biorbd::muscles::Geometry::length(
+const biorbd::utils::Scalar& biorbd::muscles::Geometry::length(
         const biorbd::muscles::Characteristics *characteristics,
         biorbd::muscles::PathModifiers *pathModifiers)
 {
@@ -422,7 +422,7 @@ biorbd::utils::Scalar biorbd::muscles::Geometry::length(
     return *m_length;
 }
 
-biorbd::utils::Scalar biorbd::muscles::Geometry::velocity(
+const biorbd::utils::Scalar& biorbd::muscles::Geometry::velocity(
         const biorbd::rigidbody::GeneralizedVelocity &Qdot)
 {
     // Compute the velocity of the muscular elongation

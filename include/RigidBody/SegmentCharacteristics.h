@@ -5,6 +5,8 @@
 #include <rbdl/Body.h>
 #include "biorbdConfig.h"
 
+#include "Utils/Scalar.h"
+
 namespace biorbd {
 namespace utils {
 class Vector3d;
@@ -36,7 +38,7 @@ public:
     /// \param inertia The inertia matrix
     ///
     SegmentCharacteristics(
-            double mass, 
+            double mass,
             const biorbd::utils::Vector3d &com, 
             const RigidBodyDynamics::Math::Matrix3d &inertia); 
 
@@ -48,7 +50,7 @@ public:
     /// \param mesh The mesh geometry of the segment
     ///
     SegmentCharacteristics(
-            double mass, 
+            double mass,
             const biorbd::utils::Vector3d &com, 
             const RigidBodyDynamics::Math::Matrix3d &inertia, 
             const biorbd::rigidbody::Mesh &mesh); 
@@ -69,13 +71,14 @@ public:
     /// \brief Set the segment length
     /// \param val Value of the new length
     ///
-    void setLength(double val);
+    void setLength(
+            const biorbd::utils::Scalar& val);
 
     ///
     /// \brief Returns the segment length
     /// \return The segment length
     ///
-    double length() const;
+    const biorbd::utils::Scalar& length() const;
 
     ///
     /// \brief Returns the segment mass
@@ -96,7 +99,7 @@ public:
     const RigidBodyDynamics::Math::Matrix3d& inertia() const;
 
 protected:
-    std::shared_ptr<double> m_length; ///< Length of the segment
+    std::shared_ptr<biorbd::utils::Scalar> m_length; ///< Length of the segment
     std::shared_ptr<biorbd::rigidbody::Mesh> m_mesh; ///< Mesh of the segment
 };
 

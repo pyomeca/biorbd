@@ -40,7 +40,10 @@ void biorbd::muscles::FatigueModel::DeepCopy(const biorbd::muscles::FatigueModel
     *m_fatigueState = other.m_fatigueState->DeepCopy();
 }
 
-void biorbd::muscles::FatigueModel::setFatigueState(double active, double fatigued, double resting)
+void biorbd::muscles::FatigueModel::setFatigueState(
+        const biorbd::utils::Scalar& active,
+        const biorbd::utils::Scalar& fatigued,
+        const biorbd::utils::Scalar& resting)
 {
     m_fatigueState->setState(active, fatigued, resting);
 }

@@ -59,10 +59,10 @@ public:
     /// \param kStabilizer The value of the kstabilizer
     ///
     Quaternion (
-            biorbd::utils::Scalar w,
-            biorbd::utils::Scalar x,
-            biorbd::utils::Scalar y,
-            biorbd::utils::Scalar z,
+            const biorbd::utils::Scalar& w,
+            const biorbd::utils::Scalar& x,
+            const biorbd::utils::Scalar& y,
+            const biorbd::utils::Scalar& z,
             double kStabilizer = 1);
     
     ///
@@ -72,7 +72,7 @@ public:
     /// \param kStabilizer The value of the kstabilizer
     ///
     Quaternion (
-        biorbd::utils::Scalar w,
+        const biorbd::utils::Scalar& w,
         const biorbd::utils::Vector3d &vec3, 
         double kStabilizer = 1);
 
@@ -148,7 +148,7 @@ public:
     /// \param scalar The scalar to multiply with
     ///
     biorbd::utils::Quaternion operator*(
-            biorbd::utils::Scalar scalar) const;
+            const biorbd::utils::Scalar& scalar) const;
 
     ///
     /// \brief Multiply the quaternion with a scalar
@@ -180,10 +180,10 @@ public:
     /// \param kStab The value of the kstabilizer
     ///
     static biorbd::utils::Quaternion fromGLRotate (
-            double angle,
-            double x,
-            double y,
-            double z,
+            const biorbd::utils::Scalar& angle,
+            const biorbd::utils::Scalar& x,
+            const biorbd::utils::Scalar& y,
+            const biorbd::utils::Scalar& z,
             double kStab = 1);
 
     ///
@@ -193,7 +193,7 @@ public:
     /// \param kStab The value of the kstabilizer
     ///
     static biorbd::utils::Quaternion fromAxisAngle (
-            biorbd::utils::Scalar angle,
+            const biorbd::utils::Scalar& angle,
             const biorbd::utils::Vector3d &axis,
             double kStab = 1);
 

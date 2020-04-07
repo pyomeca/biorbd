@@ -8,9 +8,9 @@
 #include "Muscles/StateDynamics.h"
 
 biorbd::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(
-        double active,
-        double fatigued,
-        double resting) :
+        const biorbd::utils::Scalar& active,
+        const biorbd::utils::Scalar& fatigued,
+        const biorbd::utils::Scalar& resting) :
     biorbd::muscles::FatigueDynamicState(active,fatigued,resting)
 {
     setType();
@@ -38,9 +38,13 @@ void biorbd::muscles::FatigueDynamicStateXia::DeepCopy(const biorbd::muscles::Fa
 void biorbd::muscles::FatigueDynamicStateXia::timeDerivativeState(
         const biorbd::muscles::StateDynamics &emg,
         const biorbd::muscles::Characteristics &characteristics){
+#ifdef BIORBD_USE_CASADI_MATH
+    biorbd::utils::Error::raise("timeDerivativeState for FatigueDynamicStateXia"
+                                " is not implemented yet");
+#else
     // Getting the command
-    double targetCommand(emg.activation());
-    double command(0);
+    biorbd::utils::Scalar targetCommand(emg.activation());
+    biorbd::utils::Scalar command(0);
     if (*m_activeFibers < targetCommand){
         if (*m_restingFibers > targetCommand - *m_activeFibers){
             command = characteristics.fatigueParameters().developFactor()*(targetCommand - *m_activeFibers);
@@ -59,6 +63,7 @@ void biorbd::muscles::FatigueDynamicStateXia::timeDerivativeState(
     biorbd::utils::Error::check(
                 fabs(*m_activeFibersDot + *m_restingFibersDot + *m_fatiguedFibersDot) <= 1e-7,
                 "Sum of time derivates of fatigue states must be equal to 0");
+#endif
 }
 
 void biorbd::muscles::FatigueDynamicStateXia::setType()

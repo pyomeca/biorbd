@@ -17,10 +17,10 @@ biorbd::utils::RotoTrans::RotoTrans(
 }
 
 biorbd::utils::RotoTrans::RotoTrans(
-        biorbd::utils::Scalar v00, biorbd::utils::Scalar v01, biorbd::utils::Scalar v02, biorbd::utils::Scalar v03,
-        biorbd::utils::Scalar v10, biorbd::utils::Scalar v11, biorbd::utils::Scalar v12, biorbd::utils::Scalar v13,
-        biorbd::utils::Scalar v20, biorbd::utils::Scalar v21, biorbd::utils::Scalar v22, biorbd::utils::Scalar v23,
-        biorbd::utils::Scalar v30, biorbd::utils::Scalar v31, biorbd::utils::Scalar v32, biorbd::utils::Scalar v33) :
+        const biorbd::utils::Scalar& v00, const biorbd::utils::Scalar& v01, const biorbd::utils::Scalar& v02, const biorbd::utils::Scalar& v03,
+        const biorbd::utils::Scalar& v10, const biorbd::utils::Scalar& v11, const biorbd::utils::Scalar& v12, const biorbd::utils::Scalar& v13,
+        const biorbd::utils::Scalar& v20, const biorbd::utils::Scalar& v21, const biorbd::utils::Scalar& v22, const biorbd::utils::Scalar& v23,
+        const biorbd::utils::Scalar& v30, const biorbd::utils::Scalar& v31, const biorbd::utils::Scalar& v32, const biorbd::utils::Scalar& v33) :
     RigidBodyDynamics::Math::Matrix4d (v00, v01, v02, v03,
                                        v10, v11, v12, v13,
                                        v20, v21, v22, v23,
