@@ -328,9 +328,13 @@ TEST(Joints, unitTest)
         biorbd::rigidbody::Joints joints(model);
         biorbd::rigidbody::GeneralizedCoordinates Q(model);
         biorbd::rigidbody::GeneralizedVelocity Qdot(model);
+        for (size_t i=0; i<model.nbQ(); ++i){
+            Q[i] = static_cast<double>(i) * 0.2;
+            Qdot[i] = static_cast<double>(i) * 1.2;
+        }
 
         biorbd::utils::Vector3d angularMomentum(joints.angularMomentum(Q, Qdot));
-        biorbd::utils::Vector3d expectedAngularMomentum(0., 0., 0.0);
+        biorbd::utils::Vector3d expectedAngularMomentum(15.957205552043206, -2.399856350425782, 2.0751269909741334);
 
         for (int i = 0; i < 3; ++i) {
             EXPECT_NEAR(angularMomentum[i], expectedAngularMomentum[i], requiredPrecision);
