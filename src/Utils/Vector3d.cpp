@@ -12,9 +12,9 @@ biorbd::utils::Vector3d::Vector3d() :
 }
 
 biorbd::utils::Vector3d::Vector3d(
-        biorbd::utils::Scalar x,
-        biorbd::utils::Scalar y,
-        biorbd::utils::Scalar z) :
+        const biorbd::utils::Scalar& x,
+        const biorbd::utils::Scalar& y,
+        const biorbd::utils::Scalar& z) :
     RigidBodyDynamics::Math::Vector3d (x, y, z),
     biorbd::utils::Node ()
 {
@@ -22,9 +22,9 @@ biorbd::utils::Vector3d::Vector3d(
 }
 
 biorbd::utils::Vector3d::Vector3d(
-        biorbd::utils::Scalar x,
-        biorbd::utils::Scalar y,
-        biorbd::utils::Scalar z,
+        const biorbd::utils::Scalar& x,
+        const biorbd::utils::Scalar& y,
+        const biorbd::utils::Scalar& z,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName) :
     RigidBodyDynamics::Math::Vector3d (x, y, z),

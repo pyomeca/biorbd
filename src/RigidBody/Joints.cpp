@@ -175,14 +175,16 @@ unsigned int biorbd::rigidbody::Joints::AddSegment(
         const biorbd::utils::String &parentName,
         const biorbd::utils::String &translationSequence,
         const biorbd::utils::String &rotationSequence,
-        const std::vector<biorbd::utils::Range>& dofRanges,
+        const std::vector<biorbd::utils::Range>& QRanges,
+        const std::vector<biorbd::utils::Range>& QDotRanges,
+        const std::vector<biorbd::utils::Range>& QDDotRanges,
         const biorbd::rigidbody::SegmentCharacteristics& characteristics,
         const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation,
         int forcePlates)
 { 
     biorbd::rigidbody::Segment tp(
                 *this, segmentName, parentName, translationSequence,
-                rotationSequence, dofRanges, characteristics,
+                rotationSequence, QRanges, QDotRanges, QDDotRanges, characteristics,
                 centreOfRotation, forcePlates);
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max())
         *m_nbRoot += tp.nbDof(); // If the segment name is "Root", add the number of DoF of root
@@ -199,16 +201,18 @@ unsigned int biorbd::rigidbody::Joints::AddSegment(
     return 0;
 }
 unsigned int biorbd::rigidbody::Joints::AddSegment(
-        const biorbd::utils::String &segmentName, // Segment name
-        const biorbd::utils::String &parentName, // Segment's parent name
-        const biorbd::utils::String &seqR, // Cardan sequence to classify the DoF in rotation
-        const std::vector<biorbd::utils::Range>& dofRanges,
-        const biorbd::rigidbody::SegmentCharacteristics& characteristics, // Mass, center of mass of segment, inertia of segment, etc.
-        const RigidBodyDynamics::Math::SpatialTransform& cor, // Transformation from parent to child
-        int forcePlates)// Number of the force platforme attached to the segment
+        const biorbd::utils::String &segmentName,
+        const biorbd::utils::String &parentName,
+        const biorbd::utils::String &seqR,
+        const std::vector<biorbd::utils::Range>& QRanges,
+        const std::vector<biorbd::utils::Range>& QDotRanges,
+        const std::vector<biorbd::utils::Range>& QDDotRanges,
+        const biorbd::rigidbody::SegmentCharacteristics& characteristics,
+        const RigidBodyDynamics::Math::SpatialTransform& cor,
+        int forcePlates)
 { 
     biorbd::rigidbody::Segment tp(
-                *this, segmentName, parentName, seqR, dofRanges,
+                *this, segmentName, parentName, seqR, QRanges, QDotRanges, QDDotRanges,
                 characteristics, cor, forcePlates);
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max())
         *m_nbRoot += tp.nbDof(); //  If the name of the segment is "Root", add the number of DoF of root
@@ -806,7 +810,7 @@ biorbd::utils::Vector3d biorbd::rigidbody::Joints::CalcAngularMomentum (
     // Calculate the angular momentum with the function of the
     // position of the center of mass
     if (updateKin) {
-        UpdateKinematicsCustom (&Q);
+        UpdateKinematicsCustom (&Q, &Qdot);
     }
     RigidBodyDynamics::Utils::CalcCenterOfMass(
                 *this, Q, Qdot, nullptr, mass, com, nullptr, nullptr,

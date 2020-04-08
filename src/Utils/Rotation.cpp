@@ -28,9 +28,9 @@ biorbd::utils::Rotation::Rotation(
 #endif
 
 biorbd::utils::Rotation::Rotation(
-        biorbd::utils::Scalar v00, biorbd::utils::Scalar v01, biorbd::utils::Scalar v02,
-        biorbd::utils::Scalar v10, biorbd::utils::Scalar v11, biorbd::utils::Scalar v12,
-        biorbd::utils::Scalar v20, biorbd::utils::Scalar v21, biorbd::utils::Scalar v22) :
+        const biorbd::utils::Scalar& v00, const biorbd::utils::Scalar& v01, const biorbd::utils::Scalar& v02,
+        const biorbd::utils::Scalar& v10, const biorbd::utils::Scalar& v11, const biorbd::utils::Scalar& v12,
+        const biorbd::utils::Scalar& v20, const biorbd::utils::Scalar& v21, const biorbd::utils::Scalar& v22) :
     RigidBodyDynamics::Math::Matrix3d (v00, v01, v02, v10, v11, v12, v20, v21, v22)
 {
 

@@ -14,9 +14,10 @@ const int DLIB_VERSION_MISMATCH_CHECK__EXPECTED_VERSION_19_10_0 = 0;
 #include "ModelReader.h"
 #include "ModelWriter.h"
 %}
-%include exception.i
+
 %include <std_shared_ptr.i>
 
+%include exception.i
 %exception {
     try {
         $action

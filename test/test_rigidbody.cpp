@@ -287,7 +287,7 @@ TEST(Joints, copy)
             RigidBodyDynamics::Math::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
         std::vector<biorbd::utils::Range> ranges(6);
    
-        joints.AddSegment("segmentName", "parentName", "zyx", "yzx", ranges,
+        joints.AddSegment("segmentName", "parentName", "zyx", "yzx", ranges, ranges, ranges,
             characteristics, RigidBodyDynamics::Math::SpatialTransform());
 
         EXPECT_NEAR(joints.mass(), 62.412120000000002, requiredPrecision);
@@ -311,7 +311,7 @@ TEST(Joints, unitTest)
             "JambeG_RotX", "PiedG_RotX" };
 
 
-        for (int i = 0; i < joints.nbDof(); ++i) {
+        for (unsigned int i = 0; i < joints.nbDof(); ++i) {
             EXPECT_STREQ(names[i].c_str(), expectedNames[i].c_str());
         }
     }
@@ -320,18 +320,22 @@ TEST(Joints, unitTest)
         biorbd::rigidbody::Joints joints(model);
         biorbd::rigidbody::Segment segmentToTest(joints.segment("Tronc"));
 
-        EXPECT_EQ(segmentToTest.id(), 2147483647);
+        EXPECT_EQ(segmentToTest.id(), 2147483647); //TODO: Verify ID value
     }
     {
         biorbd::Model model(modelPathForGeneralTesting);
         biorbd::rigidbody::Joints joints(model);
         biorbd::rigidbody::GeneralizedCoordinates Q(model);
         biorbd::rigidbody::GeneralizedVelocity Qdot(model);
+        for (size_t i=0; i<model.nbQ(); ++i){
+            Q[i] = static_cast<double>(i) * 0.2;
+            Qdot[i] = static_cast<double>(i) * 1.2;
+        }
 
         biorbd::utils::Vector3d angularMomentum(joints.angularMomentum(Q, Qdot));
-        biorbd::utils::Vector3d expectedAngularMomentum(0., 0., 0.5);
+        biorbd::utils::Vector3d expectedAngularMomentum(15.957205552043206, -2.399856350425782, 2.0751269909741334);
 
-        for (int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 3; ++i) {
             EXPECT_NEAR(angularMomentum[i], expectedAngularMomentum[i], requiredPrecision);
         }
     }
@@ -424,7 +428,7 @@ TEST(RotoTransNode, unitTest)
         rt_vector[0].setParent("parentName");
         rt_vector[0].setName("nameSet");
         std::vector<biorbd::utils::String> expectedNames = { "nameSet" };
-        for (int i = 0; i < rt_vector.size(); ++i)
+        for (unsigned int i = 0; i < rt_vector.size(); ++i)
         {
             EXPECT_STREQ(rtNode.RTs("parentName")[i].name().c_str(), expectedNames[i].c_str());
             EXPECT_STREQ(rtNode.RTsNames()[i].c_str(), expectedNames[i].c_str());
@@ -516,62 +520,92 @@ TEST(DegreesOfFreedom, count)
 
 TEST(DegressOfFreedom, ranges) {
     biorbd::Model model(modelPathForGeneralTesting);
-    std::vector<biorbd::utils::Range> ranges;
+    std::vector<biorbd::utils::Range> QRanges;
+    std::vector<biorbd::utils::Range> QDotRanges;
+    std::vector<biorbd::utils::Range> QDDotRanges;
 
     auto a = model.meshPoints(biorbd::rigidbody::GeneralizedCoordinates(model));
 
     // Pelvis
-    ranges = model.segment(0).ranges();
-    EXPECT_EQ(ranges[0].min(), -10);
-    EXPECT_EQ(ranges[0].max(), 10);
-    EXPECT_EQ(ranges[1].min(), -10);
-    EXPECT_EQ(ranges[1].max(), 10);
-    EXPECT_EQ(ranges[2].min(), -M_PI);
-    EXPECT_EQ(ranges[2].max(), M_PI);
+    QRanges = model.segment(0).QRanges();
+    EXPECT_EQ(QRanges[0].min(), -15);
+    EXPECT_EQ(QRanges[0].max(), 15);
+    EXPECT_EQ(QRanges[1].min(), -15);
+    EXPECT_EQ(QRanges[1].max(), 15);
+    EXPECT_EQ(QRanges[2].min(), -M_PI+1);
+    EXPECT_EQ(QRanges[2].max(), M_PI+1);
+
+    QDotRanges = model.segment(0).QDotRanges();
+    EXPECT_EQ(QDotRanges[0].min(), -150);
+    EXPECT_EQ(QDotRanges[0].max(), 150);
+    EXPECT_EQ(QDotRanges[1].min(), -150);
+    EXPECT_EQ(QDotRanges[1].max(), 150);
+    EXPECT_EQ(QDotRanges[2].min(), -(M_PI+1)*10);
+    EXPECT_EQ(QDotRanges[2].max(), (M_PI+1)*10);
+
+    QDDotRanges = model.segment(0).QDDotRanges();
+    EXPECT_EQ(QDDotRanges[0].min(), -1500);
+    EXPECT_EQ(QDDotRanges[0].max(), 1500);
+    EXPECT_EQ(QDDotRanges[1].min(), -1500);
+    EXPECT_EQ(QDDotRanges[1].max(), 1500);
+    EXPECT_EQ(QDDotRanges[2].min(), -(M_PI+1)*100);
+    EXPECT_EQ(QDDotRanges[2].max(), (M_PI+1)*100);
 
     // BrasD
-    ranges = model.segment(3).ranges();
-    EXPECT_EQ(ranges[0].min(), -M_PI);
-    EXPECT_EQ(ranges[0].max(), M_PI);
-    EXPECT_EQ(ranges[1].min(), 0);
-    EXPECT_EQ(ranges[1].max(), M_PI);
+    QRanges = model.segment(3).QRanges();
+    EXPECT_EQ(QRanges[0].min(), -M_PI);
+    EXPECT_EQ(QRanges[0].max(), M_PI);
+    EXPECT_EQ(QRanges[1].min(), 0);
+    EXPECT_EQ(QRanges[1].max(), M_PI);
+
+    QDotRanges = model.segment(3).QDotRanges();
+    EXPECT_EQ(QDotRanges[0].min(), -M_PI*10);
+    EXPECT_EQ(QDotRanges[0].max(), M_PI*10);
+    EXPECT_EQ(QDotRanges[1].min(), -M_PI*10);
+    EXPECT_EQ(QDotRanges[1].max(), M_PI*10);
+
+    QDDotRanges = model.segment(3).QDDotRanges();
+    EXPECT_EQ(QDDotRanges[0].min(), -M_PI*100);
+    EXPECT_EQ(QDDotRanges[0].max(), M_PI*100);
+    EXPECT_EQ(QDDotRanges[1].min(), -M_PI*100);
+    EXPECT_EQ(QDDotRanges[1].max(), M_PI*100);
 
     // BrasG
-    ranges = model.segment(4).ranges();
-    EXPECT_EQ(ranges[0].min(), -M_PI);
-    EXPECT_EQ(ranges[0].max(), M_PI);
-    EXPECT_EQ(ranges[1].min(), 0);
-    EXPECT_EQ(ranges[1].max(), M_PI);
+    QRanges = model.segment(4).QRanges();
+    EXPECT_EQ(QRanges[0].min(), -M_PI);
+    EXPECT_EQ(QRanges[0].max(), M_PI);
+    EXPECT_EQ(QRanges[1].min(), 0);
+    EXPECT_EQ(QRanges[1].max(), M_PI);
 
     // CuisseD
-    ranges = model.segment(5).ranges();
-    EXPECT_EQ(ranges[0].min(), -M_PI/12);
-    EXPECT_EQ(ranges[0].max(), M_PI/2+M_PI/3);
+    QRanges = model.segment(5).QRanges();
+    EXPECT_EQ(QRanges[0].min(), -M_PI/12);
+    EXPECT_EQ(QRanges[0].max(), M_PI/2+M_PI/3);
 
     // JambeD
-    ranges = model.segment(6).ranges();
-    EXPECT_EQ(ranges[0].min(), -M_PI/2-M_PI/6);
-    EXPECT_EQ(ranges[0].max(), 0);
+    QRanges = model.segment(6).QRanges();
+    EXPECT_EQ(QRanges[0].min(), -M_PI/2-M_PI/6);
+    EXPECT_EQ(QRanges[0].max(), 0);
 
     // PiedD
-    ranges = model.segment(7).ranges();
-    EXPECT_EQ(ranges[0].min(), -M_PI/2);
-    EXPECT_EQ(ranges[0].max(), M_PI/2);
+    QRanges = model.segment(7).QRanges();
+    EXPECT_EQ(QRanges[0].min(), -M_PI/2);
+    EXPECT_EQ(QRanges[0].max(), M_PI/2);
 
     // CuisseG
-    ranges = model.segment(8).ranges();
-    EXPECT_EQ(ranges[0].min(), -M_PI/12);
-    EXPECT_EQ(ranges[0].max(), M_PI/2+M_PI/3);
+    QRanges = model.segment(8).QRanges();
+    EXPECT_EQ(QRanges[0].min(), -M_PI/12);
+    EXPECT_EQ(QRanges[0].max(), M_PI/2+M_PI/3);
 
     // JambeG
-    ranges = model.segment(9).ranges();
-    EXPECT_EQ(ranges[0].min(), -M_PI/2-M_PI/6);
-    EXPECT_EQ(ranges[0].max(), 0);
+    QRanges = model.segment(9).QRanges();
+    EXPECT_EQ(QRanges[0].min(), -M_PI/2-M_PI/6);
+    EXPECT_EQ(QRanges[0].max(), 0);
 
     // PiedG
-    ranges = model.segment(10).ranges();
-    EXPECT_EQ(ranges[0].min(), -M_PI/2);
-    EXPECT_EQ(ranges[0].max(), M_PI/2);
+    QRanges = model.segment(10).QRanges();
+    EXPECT_EQ(QRanges[0].min(), -M_PI/2);
+    EXPECT_EQ(QRanges[0].max(), M_PI/2);
 }
 
 static std::vector<double> QtestPyomecaman = {0.1, 0.1, 0.1, 0.3, 0.3, 0.3,
@@ -635,7 +669,7 @@ TEST(Segment, copy)
                 RigidBodyDynamics::Math::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
     std::vector<biorbd::utils::Range> ranges(6);
     biorbd::rigidbody::Segment MasterSegment(
-                model, "MasterSegment", "NoParent", "zyx", "yzx", ranges,
+                model, "MasterSegment", "NoParent", "zyx", "yzx", ranges, ranges, ranges,
                 characteristics, RigidBodyDynamics::Math::SpatialTransform());
     biorbd::rigidbody::Segment ShallowCopy(MasterSegment);
     biorbd::rigidbody::Segment ShallowCopyEqual = MasterSegment;

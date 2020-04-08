@@ -109,8 +109,12 @@ void biorbd::Reader::readModelFile(
                 biorbd::rigidbody::Mesh mesh;
                 int segmentByFile(-1); // -1 non setté, 0 pas par file, 1 par file
                 int PF = -1;
-                std::vector<biorbd::utils::Range> dofRanges;
-                bool isRangeSet(false); // Ranges must be done only after translation AND rotations tags
+                std::vector<biorbd::utils::Range> QRanges;
+                std::vector<biorbd::utils::Range> QDotRanges;
+                std::vector<biorbd::utils::Range> QDDotRanges;
+                bool isRangeQSet(false); // Ranges must be done only after translation AND rotations tags
+                bool isRangeQDotSet(false); // Ranges must be done only after translation AND rotations tags
+                bool isRangeQDDotSet(false); // Ranges must be done only after translation AND rotations tags
                 while(file.read(property_tag) && property_tag.tolower().compare("endsegment")){
                     if (!property_tag.tolower().compare("parent")){
                         // Dynamically find the parent number
@@ -120,15 +124,24 @@ void biorbd::Reader::readModelFile(
                     }
                     else if (!property_tag.tolower().compare("translations")){
                         biorbd::utils::Error::check(
-                                    !isRangeSet, "Translations must appear before the range tag");
+                                    !isRangeQSet, "Translations must appear before the rangesq tag");
+                        biorbd::utils::Error::check(
+                                    !isRangeQDotSet, "Translations must appear before the rangesqdot tag");
+                        biorbd::utils::Error::check(
+                                    !isRangeQDDotSet, "Translations must appear before the rangesqddot tag");
                         file.read(trans);
                     }
                     else if (!property_tag.tolower().compare("rotations")){
                         biorbd::utils::Error::check(
-                                    !isRangeSet, "Rotations must appear before the range tag");
+                                    !isRangeQSet, "Rotations must appear before the rangesq tag");
+                        biorbd::utils::Error::check(
+                                    !isRangeQDotSet, "Rotations must appear before the rangesqdot tag");
+                        biorbd::utils::Error::check(
+                                    !isRangeQDDotSet, "Rotations must appear before the rangesqddot tag");
                         file.read(rot);
                     }
-                    else if (!property_tag.tolower().compare("ranges")){
+                    else if (!property_tag.tolower().compare("ranges") ||
+                             !property_tag.tolower().compare("rangesq")){
                         double min, max;
                         size_t rotLength(0);
                         if (rot.compare("q")){
@@ -138,10 +151,40 @@ void biorbd::Reader::readModelFile(
                         for (size_t i=0; i<trans.length() + rotLength; ++i){
                             file.read(min);
                             file.read(max);
-                            dofRanges.push_back(
+                            QRanges.push_back(
                                         biorbd::utils::Range (min, max));
                         }
-                        isRangeSet = true;
+                        isRangeQSet = true;
+                    }
+                    else if (!property_tag.tolower().compare("rangesqdot")){
+                        double min, max;
+                        size_t rotLength(0);
+                        if (rot.compare("q")){
+                            // If not a quaternion
+                            rotLength = rot.length();
+                        }
+                        for (size_t i=0; i<trans.length() + rotLength; ++i){
+                            file.read(min);
+                            file.read(max);
+                            QDotRanges.push_back(
+                                        biorbd::utils::Range (min, max));
+                        }
+                        isRangeQDotSet = true;
+                    }
+                    else if (!property_tag.tolower().compare("rangesqddot")){
+                        double min, max;
+                        size_t rotLength(0);
+                        if (rot.compare("q")){
+                            // If not a quaternion
+                            rotLength = rot.length();
+                        }
+                        for (size_t i=0; i<trans.length() + rotLength; ++i){
+                            file.read(min);
+                            file.read(max);
+                            QDDotRanges.push_back(
+                                        biorbd::utils::Range (min, max));
+                        }
+                        isRangeQDDotSet = true;
                     }
                     else if (!property_tag.tolower().compare("mass"))
                          file.read(mass, variable);
@@ -236,20 +279,42 @@ void biorbd::Reader::readModelFile(
                             biorbd::utils::Error::raise(filePath.extension() + " is an unrecognized mesh file");
                     }
                 }
-                if (!isRangeSet){
+                if (!isRangeQSet){
                     size_t rotLength(0);
                     if (rot.compare("q")){
                         // If not a quaternion
                         rotLength = rot.length();
                     }
                     for (size_t i=0; i<trans.length() + rotLength; ++i){
-                        dofRanges.push_back(
+                        QRanges.push_back(
                                     biorbd::utils::Range ());
+                    }
+                }
+                if (!isRangeQDotSet){
+                    size_t rotLength(0);
+                    if (rot.compare("q")){
+                        // If not a quaternion
+                        rotLength = rot.length();
+                    }
+                    for (size_t i=0; i<trans.length() + rotLength; ++i){
+                        QDotRanges.push_back(
+                                    biorbd::utils::Range (-M_PI*10, M_PI*10));
+                    }
+                }
+                if (!isRangeQDDotSet){
+                    size_t rotLength(0);
+                    if (rot.compare("q")){
+                        // If not a quaternion
+                        rotLength = rot.length();
+                    }
+                    for (size_t i=0; i<trans.length() + rotLength; ++i){
+                        QDDotRanges.push_back(
+                                    biorbd::utils::Range (-M_PI*100, M_PI*100));
                     }
                 }
                 RigidBodyDynamics::Math::SpatialTransform RT(RT_R, RT_T);
                 biorbd::rigidbody::SegmentCharacteristics characteristics(mass,com,inertia,mesh);
-                model->AddSegment(name, parent_str, trans, rot, dofRanges, characteristics, RT, PF);
+                model->AddSegment(name, parent_str, trans, rot, QRanges, QDotRanges, QDDotRanges, characteristics, RT, PF);
             }
             else if (!main_tag.tolower().compare("external_forces")){
                 bool externalF = false;

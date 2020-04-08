@@ -150,25 +150,25 @@ public:
     /// \brief Return the Force-Length of the contractile element
     /// \return The Force-Length of the contractile element
     ///
-    biorbd::utils::Scalar FlCE(const biorbd::muscles::StateDynamics& EMG);
+    const biorbd::utils::Scalar& FlCE(const biorbd::muscles::StateDynamics& EMG);
 
     ///
     /// \brief Return the Force-Length of the passive element
     /// \return The Force-Length of the passive element
     ///
-    biorbd::utils::Scalar FlPE();
+    const biorbd::utils::Scalar& FlPE();
 
     ///
     /// \brief Return the Force-Velocity of the contractile element
     /// \return The Force-Velocity of the contractile element
     ///
-    biorbd::utils::Scalar FvCE();
+    const biorbd::utils::Scalar& FvCE();
 
     ///
     /// \brief Return the muscle damping (spring force)
     /// \return The muscle damping
     ///
-    biorbd::utils::Scalar damping();
+    const biorbd::utils::Scalar& damping();
 
 protected:
     ///
@@ -215,15 +215,15 @@ protected:
     std::shared_ptr<biorbd::utils::Scalar> m_FvCE; ///<Force-Velocity of the contractile element
 
     // Declaration of multiple constants
-    std::shared_ptr<double> m_cste_FlCE_1; ///< constant 1 used in the FlCE
-    std::shared_ptr<double> m_cste_FlCE_2; ///< constant 2 used in the FlCE
-    std::shared_ptr<double> m_cste_FvCE_1; ///< constant 1 used in the FvCE
-    std::shared_ptr<double> m_cste_FvCE_2; ///< constant 2 used in the FvCE
-    std::shared_ptr<double> m_cste_FlPE_1; ///< constant 1 used in the FlPE
-    std::shared_ptr<double> m_cste_FlPE_2; ///< constant 2 used in the FlPE
-    std::shared_ptr<double> m_cste_eccentricForceMultiplier; ///< Constant used for ForceVelocity
-    std::shared_ptr<double> m_cste_damping; ///< parameters used in damping
-    std::shared_ptr<double> m_cste_maxShorteningSpeed; ///< Maximal velocity of shortening
+    std::shared_ptr<biorbd::utils::Scalar> m_cste_FlCE_1; ///< constant 1 used in the FlCE
+    std::shared_ptr<biorbd::utils::Scalar> m_cste_FlCE_2; ///< constant 2 used in the FlCE
+    std::shared_ptr<biorbd::utils::Scalar> m_cste_FvCE_1; ///< constant 1 used in the FvCE
+    std::shared_ptr<biorbd::utils::Scalar> m_cste_FvCE_2; ///< constant 2 used in the FvCE
+    std::shared_ptr<biorbd::utils::Scalar> m_cste_FlPE_1; ///< constant 1 used in the FlPE
+    std::shared_ptr<biorbd::utils::Scalar> m_cste_FlPE_2; ///< constant 2 used in the FlPE
+    std::shared_ptr<biorbd::utils::Scalar> m_cste_eccentricForceMultiplier; ///< Constant used for ForceVelocity
+    std::shared_ptr<biorbd::utils::Scalar> m_cste_damping; ///< parameters used in damping
+    std::shared_ptr<biorbd::utils::Scalar> m_cste_maxShorteningSpeed; ///< Maximal velocity of shortening
 
 };
 

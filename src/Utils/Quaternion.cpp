@@ -31,10 +31,10 @@ biorbd::utils::Quaternion::Quaternion(
 }
 
 biorbd::utils::Quaternion::Quaternion (
-        biorbd::utils::Scalar w,
-        biorbd::utils::Scalar x,
-        biorbd::utils::Scalar y,
-        biorbd::utils::Scalar z,
+        const biorbd::utils::Scalar& w,
+        const biorbd::utils::Scalar& x,
+        const biorbd::utils::Scalar& y,
+        const biorbd::utils::Scalar& z,
         double kStabilizer) :
     RigidBodyDynamics::Math::Vector4d(w, x, y, z),
     m_Kstab(kStabilizer) {
@@ -42,7 +42,7 @@ biorbd::utils::Quaternion::Quaternion (
 }
 
 biorbd::utils::Quaternion::Quaternion (
-        biorbd::utils::Scalar w,
+        const biorbd::utils::Scalar& w,
         const biorbd::utils::Vector3d &vec3,
         double kStabilizer) :
     RigidBodyDynamics::Math::Vector4d(w, vec3[0], vec3[1], vec3[2]),
@@ -89,7 +89,7 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
-        biorbd::utils::Scalar scalar) const
+        const biorbd::utils::Scalar& scalar) const
 {
     return biorbd::utils::Quaternion (
                 this->RigidBodyDynamics::Math::Vector4d::operator*(scalar), this->m_Kstab);
@@ -118,24 +118,26 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::operator-(
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromGLRotate(
-        double angle,
-        double x,
-        double y,
-        double z,
+        const biorbd::utils::Scalar& angle,
+        const biorbd::utils::Scalar& x,
+        const biorbd::utils::Scalar& y,
+        const biorbd::utils::Scalar& z,
         double kStab) {
-    double st = std::sin (angle * M_PI / 360.);
+    biorbd::utils::Scalar angle_copy(angle);
+    biorbd::utils::Scalar st = std::sin (angle_copy * M_PI / 360.);
     return biorbd::utils::Quaternion (
-                std::cos (angle * M_PI / 360.), st * x, st * y, st * z, kStab);
+                std::cos (angle_copy * M_PI / 360.), st * x, st * y, st * z, kStab);
 }
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::fromAxisAngle(
-        biorbd::utils::Scalar angle,
+        const biorbd::utils::Scalar& angle,
         const biorbd::utils::Vector3d &axis,
         double kStab) {
+    biorbd::utils::Scalar angle_copy(angle);
     biorbd::utils::Scalar d = axis.norm();
-    biorbd::utils::Scalar s2 = std::sin (angle * 0.5) / d;
+    biorbd::utils::Scalar s2 = std::sin (angle_copy * 0.5) / d;
     return biorbd::utils::Quaternion (
-                std::cos(angle * 0.5),
+                std::cos(angle_copy * 0.5),
                 axis[0] * s2, axis[1] * s2, axis[2] * s2, kStab
             );
 }

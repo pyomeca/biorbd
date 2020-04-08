@@ -7,17 +7,17 @@
 
 biorbd::rigidbody::SegmentCharacteristics::SegmentCharacteristics() :
     Body(),
-    m_length(std::make_shared<double>(0)),
+    m_length(std::make_shared<biorbd::utils::Scalar>(0)),
     m_mesh(std::make_shared<biorbd::rigidbody::Mesh>())
 {
 
 }
 biorbd::rigidbody::SegmentCharacteristics::SegmentCharacteristics(
-        double mass,
+        double  mass,
         const biorbd::utils::Vector3d &com,
         const RigidBodyDynamics::Math::Matrix3d &inertia) :
     Body(mass, com, inertia),
-    m_length(std::make_shared<double>(0)),
+    m_length(std::make_shared<biorbd::utils::Scalar>(0)),
     m_mesh(std::make_shared<biorbd::rigidbody::Mesh>())
 {
 
@@ -28,7 +28,7 @@ biorbd::rigidbody::SegmentCharacteristics::SegmentCharacteristics(
         const RigidBodyDynamics::Math::Matrix3d &inertia,
         const biorbd::rigidbody::Mesh &mesh) :
     Body(mass, com, inertia),
-    m_length(std::make_shared<double>(0)),
+    m_length(std::make_shared<biorbd::utils::Scalar>(0)),
     m_mesh(std::make_shared<biorbd::rigidbody::Mesh>(mesh))
 {
 
@@ -48,12 +48,13 @@ void biorbd::rigidbody::SegmentCharacteristics::DeepCopy(const SegmentCharacteri
     *m_mesh = other.m_mesh->DeepCopy();
 }
 
-void biorbd::rigidbody::SegmentCharacteristics::setLength(double val)
+void biorbd::rigidbody::SegmentCharacteristics::setLength(
+        const biorbd::utils::Scalar& val)
 {
     *m_length = val;
 }
 
-double biorbd::rigidbody::SegmentCharacteristics::length() const
+const biorbd::utils::Scalar& biorbd::rigidbody::SegmentCharacteristics::length() const
 {
     return *m_length;
 }

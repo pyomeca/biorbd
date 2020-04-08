@@ -18,54 +18,54 @@ def test_dof_ranges():
     pi = 3.14159265358979323846
 
     # Pelvis
-    ranges = m.segment(0).ranges()
-    assert(ranges[0].min() == -10)
-    assert(ranges[0].max() == 10)
-    assert(ranges[1].min() == -10)
-    assert(ranges[1].max() == 10)
-    assert(ranges[2].min() == -pi)
-    assert(ranges[2].max() == pi)
+    QRanges = m.segment(0).QRanges()
+    assert(QRanges[0].min() == -10)
+    assert(QRanges[0].max() == 10)
+    assert(QRanges[1].min() == -10)
+    assert(QRanges[1].max() == 10)
+    assert(QRanges[2].min() == -pi)
+    assert(QRanges[2].max() == pi)
 
     # BrasD
-    ranges = m.segment(3).ranges()
-    assert(ranges[0].min() == -pi)
-    assert(ranges[0].max() == pi)
-    assert(ranges[1].min() == 0)
-    assert(ranges[1].max() == pi)
+    QRanges = m.segment(3).QRanges()
+    assert(QRanges[0].min() == -pi)
+    assert(QRanges[0].max() == pi)
+    assert(QRanges[1].min() == 0)
+    assert(QRanges[1].max() == pi)
 
     # BrasG
-    ranges = m.segment(4).ranges()
-    assert(ranges[0].min() == -pi)
-    assert(ranges[0].max() == pi)
-    assert(ranges[1].min() == 0)
-    assert(ranges[1].max() == pi)
+    QRanges = m.segment(4).QRanges()
+    assert(QRanges[0].min() == -pi)
+    assert(QRanges[0].max() == pi)
+    assert(QRanges[1].min() == 0)
+    assert(QRanges[1].max() == pi)
 
     # CuisseD
-    ranges = m.segment(5).ranges()
-    assert(ranges[0].min() == -pi / 12)
-    assert(ranges[0].max() == pi / 2 + pi / 3)
+    QRanges = m.segment(5).QRanges()
+    assert(QRanges[0].min() == -pi / 12)
+    assert(QRanges[0].max() == pi / 2 + pi / 3)
 
     # JambeD
-    ranges = m.segment(6).ranges()
-    assert(ranges[0].min() == -pi / 2 - pi / 6)
-    assert(ranges[0].max() == 0)
+    QRanges = m.segment(6).QRanges()
+    assert(QRanges[0].min() == -pi / 2 - pi / 6)
+    assert(QRanges[0].max() == 0)
 
     # PiedD
-    ranges = m.segment(7).ranges()
-    assert(ranges[0].min() == -pi / 2)
-    assert(ranges[0].max() == pi / 2)
+    QRanges = m.segment(7).QRanges()
+    assert(QRanges[0].min() == -pi / 2)
+    assert(QRanges[0].max() == pi / 2)
 
     # CuisseG
-    ranges = m.segment(8).ranges()
-    assert(ranges[0].min() == -pi / 12)
-    assert(ranges[0].max() == pi / 2 + pi / 3)
+    QRanges = m.segment(8).QRanges()
+    assert(QRanges[0].min() == -pi / 12)
+    assert(QRanges[0].max() == pi / 2 + pi / 3)
 
     # JambeG
-    ranges = m.segment(9).ranges()
-    assert(ranges[0].min() == -pi / 2 - pi / 6)
-    assert(ranges[0].max() == 0)
+    QRanges = m.segment(9).QRanges()
+    assert(QRanges[0].min() == -pi / 2 - pi / 6)
+    assert(QRanges[0].max() == 0)
 
     # PiedG
-    ranges = m.segment(10).ranges()
-    assert(ranges[0].min() == -pi / 2)
-    assert(ranges[0].max() == pi / 2)
+    QRanges = m.segment(10).QRanges()
+    assert(QRanges[0].min() == -pi / 2)
+    assert(QRanges[0].max() == pi / 2)

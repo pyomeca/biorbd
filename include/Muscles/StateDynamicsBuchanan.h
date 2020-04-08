@@ -18,8 +18,8 @@ public:
     /// \param excitation The muscle excitation
     ///
     StateDynamicsBuchanan(
-            biorbd::utils::Scalar neuralCommand = 0,
-            biorbd::utils::Scalar excitation = 0);
+            const biorbd::utils::Scalar& neuralCommand = 0,
+            const biorbd::utils::Scalar& excitation = 0);
 
     ///
     /// \brief Construct a state dynamics Buchanan from another state dynamics Buchanan
@@ -52,7 +52,7 @@ public:
     /// \param alreadyNormalized If already normalized
     /// \return The excitation time derivative
     ///
-    virtual biorbd::utils::Scalar timeDerivativeExcitation(
+    virtual const biorbd::utils::Scalar& timeDerivativeExcitation(
             const Characteristics &characteristics,
             bool alreadyNormalized);
 
@@ -61,7 +61,7 @@ public:
     /// \param val Value of the muscle excitation
     ///
     virtual void setExcitation(
-            biorbd::utils::Scalar val,
+            const biorbd::utils::Scalar& val,
             bool turnOffWarnings = false);
 
     ///
@@ -69,20 +69,20 @@ public:
     /// \param val Value of the neural command
     ///
     virtual void setNeuralCommand(
-            biorbd::utils::Scalar val);
+            const biorbd::utils::Scalar& val);
 
    ///
    /// \brief Set the shape factor
    /// \param shape_factor Value of the shape factor
    ///
     void shapeFactor(
-            biorbd::utils::Scalar shape_factor);
+            const biorbd::utils::Scalar& shape_factor);
 
     ///
     /// \brief Return the shape factor
     /// \return The shape factor
     ///
-    biorbd::utils::Scalar shapeFactor() const;
+    const biorbd::utils::Scalar& shapeFactor() const;
 
     ///
     /// \brief Set the muscle activation

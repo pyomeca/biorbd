@@ -20,9 +20,9 @@ public:
     /// \param resting Resting muscle
     ///
     FatigueDynamicStateXia(
-            double active = 1,
-            double fatigued = 0,
-            double resting = 0);
+            const biorbd::utils::Scalar& active = 1,
+            const biorbd::utils::Scalar& fatigued = 0,
+            const biorbd::utils::Scalar& resting = 0);
 
     ///
     /// \brief Contruct FatigueDynamicsStateXia from another fatigue state

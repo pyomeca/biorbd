@@ -21,6 +21,23 @@
 #cmakedefine BIORBD_USE_EIGEN3_MATH
 #cmakedefine BIORBD_USE_CASADI_MATH
 
+namespace biorbd {
+
+enum LINEAR_ALGEBRA_BACKEND{
+    EIGEN3,
+    CASADI
+};
+
+inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
+#ifdef BIORBD_USE_CASADI_MATH
+    return LINEAR_ALGEBRA_BACKEND::CASADI;
+#else
+    return LINEAR_ALGEBRA_BACKEND::EIGEN3;
+#endif
+}
+
+}
+
 // Make sure rbdl was compile according to the requested linear algebra library
 #include "rbdl_config.h"
 #ifdef BIORBD_USE_CASADI_MATH

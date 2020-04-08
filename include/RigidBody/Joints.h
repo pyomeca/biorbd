@@ -74,7 +74,9 @@ public:
     /// \param parentName Name of the segment parent
     /// \param translationSequence The translation sequence
     /// \param rotationSequence Euler sequence of rotations
-    /// \param dofRanges Ranges of the translations and rotations dof. The length of dofRanges must be equal to length of translations and rotations
+    /// \param QRanges Ranges of the translations and rotations dof. The length of QRanges must be equal to length of translations and rotations
+    /// \param QDotRanges Ranges of the translations and rotations dof velocity. The length of QDotRanges must be equal to length of translations and rotations
+    /// \param QDDotRanges Ranges of the translations and rotations dof acceleration. The length of QDDotRanges must be equal to length of translations and rotations
     /// \param characteristics The characteristics of the semgent (mass, center of mass, inertia of the segment, etc)
     /// \param centreOfRotation Transformation of the parent to child
     /// \param forcePlates The number of the force platform attached to the Segment (if -1 no force platform is attached)
@@ -84,7 +86,9 @@ public:
             const biorbd::utils::String &parentName,
             const biorbd::utils::String &translationSequence,
             const biorbd::utils::String &rotationSequence,
-            const std::vector<biorbd::utils::Range>& dofRanges,
+            const std::vector<biorbd::utils::Range>& QRanges,
+            const std::vector<biorbd::utils::Range>& QDotRanges,
+            const std::vector<biorbd::utils::Range>& QDDotRanges,
             const biorbd::rigidbody::SegmentCharacteristics& characteristics,
             const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation,
             int forcePlates=-1);
@@ -94,7 +98,9 @@ public:
     /// \param segmentName Name of the segment
     /// \param parentName Name of the segment parent
     /// \param translationSequence The translation sequence
-    /// \param dofRanges Ranges of the translations and rotations dof. The length of dofRanges must be equal to length of translations and rotations
+    /// \param QRanges Ranges of the translations and rotations dof. The length of QRanges must be equal to length of translations and rotations
+    /// \param QDotRanges Ranges of the translations and rotations dof velocity. The length of QDotRanges must be equal to length of translations and rotations
+    /// \param QDDotRanges Ranges of the translations and rotations dof acceleration. The length of QDDotRanges must be equal to length of translations and rotations
     /// \param characteristics The characteristics of the semgent (mass, center of mass, inertia of the segment, etc)
     /// \param centreOfRotation Transformation of the parent to child
     /// \param forcePlates The number of the force platform attached to the Segment (if -1 no force platform is attached)
@@ -103,7 +109,9 @@ public:
             const biorbd::utils::String &segmentName, 
             const biorbd::utils::String &parentName, 
             const biorbd::utils::String &translationSequence,
-            const std::vector<biorbd::utils::Range>& dofRanges,
+            const std::vector<biorbd::utils::Range>& QRanges,
+            const std::vector<biorbd::utils::Range>& QDotRanges,
+            const std::vector<biorbd::utils::Range>& QDDotRanges,
             const biorbd::rigidbody::SegmentCharacteristics& characteristics,
             const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, 
             int forcePlates=-1); 
