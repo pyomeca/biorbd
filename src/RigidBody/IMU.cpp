@@ -29,8 +29,8 @@ biorbd::rigidbody::IMU::IMU(
 biorbd::rigidbody::IMU::IMU(
         const biorbd::rigidbody::IMU &imu) :
     biorbd::utils::RotoTransNode (imu),
-    m_technical(std::make_shared<bool>(imu.m_technical)),
-    m_anatomical(std::make_shared<bool>(imu.m_anatomical))
+    m_technical(std::make_shared<bool>(*imu.m_technical)),
+    m_anatomical(std::make_shared<bool>(*imu.m_anatomical))
 {
 
 }
