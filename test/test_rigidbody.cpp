@@ -870,73 +870,76 @@ TEST(Dynamics, ForwardLoopConstraint){
     // Set to random values
     std::vector<double> val(model.nbQ());
     for (size_t i=0; i<val.size(); ++i){
-        val[i] = static_cast<double>(i) * 0;
+        val[i] = static_cast<double>(i) * 1.1;
     }
     FILL_VECTOR(Q, val);
     FILL_VECTOR(QDot, val);
     FILL_VECTOR(Tau, val);
 
     std::vector<double> QDDot_expected =
-    {0.35935119225397999,  -10.110263945851218, 0, -27.780105329642453,
-     31.783042765424835, 44.636461505611521, 0.67809701484785911, 0, 0,
-     15.822263679783546, 0, 0};
+    {4357.563983223662,  -1980.272417081602, -4132.170113875329, 34854.96630091612,
+     -5939.1875609623385, 20005.793234188295, -33019.84433234081, 5044.593964065896,
+     76960.9024224599, 13949749.797541305, 29056.19402773685, 13957133.384121455};
 
-    biorbd::rigidbody::Contacts cs;;
-    CALL_BIORBD_FUNCTION_3ARGS1PARAM(QDDot, model, ForwardDynamicsConstraintsDirect, Q, QDot, Tau, cs);
+    CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamicsConstraintsDirect, Q, QDot, Tau);
     for (unsigned int i = 0; i<model.nbQddot(); ++i){
-        EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], 1e-2);
     }
 }
 
 TEST(Dynamics, ForwardAccelerationConstraint){
-    biorbd::Model model(modelPathForLoopConstraintTesting);
+    biorbd::Model model(modelPathForGeneralTesting);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
     DECLARE_GENERALIZED_ACCELERATION(QDDot_constrained, model);
-    DECLARE_GENERALIZED_ACCELERATION(QDDot_expected, model);
     DECLARE_GENERALIZED_TORQUE(Tau, model);
 
-//    biorbd::Model model(modelPathForGeneralTesting);
-//    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-//    biorbd::rigidbody::GeneralizedVelocity QDot(model);
-//    biorbd::rigidbody::GeneralizedAcceleration QDDot_constrained(model), QDDot_expected(model);
-//    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    std::vector<double> val(model.nbQ());
+    for (size_t i=0; i<val.size(); ++i){
+        val[i] = 1.0;
+    }
+    FILL_VECTOR(Q, val);
+    FILL_VECTOR(QDot, val);
+    FILL_VECTOR(Tau, val);
 
-    Eigen::VectorXd forces_expected(model.nbContacts());
-    Q.setOnes()/10;
-    QDot.setOnes()/10;
-    QDDot_expected << 1.9402069774422919,  -9.1992692111538243,  2.9930159570454702,
+    std::vector<double> QDDot_expected = {1.9402069774422919,  -9.1992692111538243,  2.9930159570454702,
             5.2738378853554133, 8.9387539396273699, 6.0938738229550751, 9.9560407885164217,
             38.6297746304162, -52.159023390563554, 36.702385054876714, 38.629774630416208, -52.159023390563561,
-            36.70238505487675;
-    Tau.setOnes()/10;
-    forces_expected << -16.344680827308579, -30.485214214095951, 112.8234134576031, -16.344680827308611,
-            -30.485214214095965, 112.82341345760311;
+            36.70238505487675};
+    std::vector<double> forces_expected = {-16.344680827308579, -30.485214214095951, 112.8234134576031, -16.344680827308611,
+            -30.485214214095965, 112.82341345760311};
 
-    biorbd::rigidbody::Contacts& cs(model.getConstraints());
-    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(model, Q, QDot, Tau, cs, QDDot_constrained);
-    for (unsigned int i = 0; i<model.nbQddot(); ++i)
-        EXPECT_NEAR(QDDot_constrained[i], QDDot_expected[i], requiredPrecision);
+    biorbd::rigidbody::Contacts cs;
+    CALL_BIORBD_FUNCTION_3ARGS1PARAM(QDDot, model, ForwardDynamicsConstraintsDirect, Q, QDot, Tau, cs);
+    for (unsigned int i = 0; i<model.nbQddot(); ++i){
+        EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);
+    }
 
-    for (unsigned int i=0; i<cs.force.size(); ++i)
-        EXPECT_NEAR(cs.force[i], forces_expected[i], requiredPrecision);
+
+    EXPECT_EQ(cs.nbContacts(), forces_expected.size());
+    for (unsigned int i=0; i<cs.force.size(); ++i){
+#ifdef BIORBD_USE_CASADI_MATH
+    std::cout << "Contact forces are not tested yet for ForwardDynamicsConstraintDirect with Casadi" << std::endl;
+#else
+        SCALAR_TO_DOUBLE(f, cs.force[i]);
+        EXPECT_NEAR(f, forces_expected[i], requiredPrecision);
+#endif
+    }
 }
 
-#ifndef BIORBD_USE_CASADI_MATH
 TEST(Kinematics, computeQdot)
 {
     biorbd::Model m("models/simple_quat.bioMod");
-    biorbd::rigidbody::GeneralizedVelocity QDot(m), QDot_quat_expected(m.nbQ());
-    QDot << 1,2,3;
+    DECLARE_GENERALIZED_VELOCITY(QDot, m);
+    FILL_VECTOR(QDot, std::vector<double>({1, 2, 3}));
     {
-        biorbd::rigidbody::GeneralizedCoordinates Q_quat(m.nbQ());
-        Q_quat << 0, 0, 0, 1;
-        QDot_quat_expected << 0.5, 1, 1.5, 0;
+        DECLARE_GENERALIZED_COORDINATES(Q_quat, m);
+        FILL_VECTOR(Q_quat, std::vector<double>({0, 0, 0, 1}));
+        std::vector<double> QDot_quat_expected = {0.5, 1, 1.5, 0};
 
-        biorbd::rigidbody::GeneralizedCoordinates QDot_quat(
-                    m.computeQdot(Q_quat, QDot));
+        CALL_BIORBD_FUNCTION_2ARGS(QDot_quat, m, computeQdot, Q_quat, QDot);
         for (unsigned int i=0; i<m.nbQ(); ++i) {
-            EXPECT_NEAR(QDot_quat[i],QDot_quat_expected[i], requiredPrecision);
+            EXPECT_NEAR(static_cast<double>(QDot_quat(i, 0)), QDot_quat_expected[i], requiredPrecision);
         }
     }
     {
@@ -944,18 +947,18 @@ TEST(Kinematics, computeQdot)
         double x(0.7035975447302919);
         double y(0.7035975447302919);
         double z(0.07035975447302918);
-        biorbd::rigidbody::GeneralizedCoordinates Q_quat(m.nbQ());
-        Q_quat << x, y, z, w;
-        QDot_quat_expected << 1.0202164398589233, -0.9498566853858941,
-                0.45733840407468973,-1.1609359488049815;
-        biorbd::rigidbody::GeneralizedCoordinates QDot_quat(
-                    m.computeQdot(Q_quat,QDot));
+        DECLARE_GENERALIZED_COORDINATES(Q_quat, m);
+        FILL_VECTOR(Q_quat, std::vector<double>({x, y, z, w}));
+        std::vector<double> QDot_quat_expected = {1.0202164398589233, -0.9498566853858941,
+                0.45733840407468973,-1.1609359488049815};
+        CALL_BIORBD_FUNCTION_2ARGS(QDot_quat, m, computeQdot, Q_quat, QDot);
 
         for (unsigned int i=0; i<m.nbQ(); ++i)
-            EXPECT_NEAR(QDot_quat[i], QDot_quat_expected[i], requiredPrecision);
+            EXPECT_NEAR(static_cast<double>(QDot_quat(i, 0)), QDot_quat_expected[i], requiredPrecision);
     }
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
 #ifndef SKIP_KALMAN
 #ifndef SKIP_LONG_TESTS
 TEST(Kalman, markers)
