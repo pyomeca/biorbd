@@ -21,6 +21,7 @@
 #include "RigidBody/MeshFace.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
+#include "RigidBody/Contacts.h"
 
 biorbd::rigidbody::Joints::Joints() :
     RigidBodyDynamics::Model(),
@@ -956,6 +957,31 @@ biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Joints::computeQdot
         cmpDof += segment_i.nbDof();
     }
     return QDotOut;
+}
+
+biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDynamics(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedVelocity &QDot,
+        const biorbd::rigidbody::GeneralizedTorque &Tau,
+        std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext)
+{
+    biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
+    RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, f_ext);
+    return QDDot;
+}
+
+biorbd::rigidbody::GeneralizedAcceleration
+biorbd::rigidbody::Joints::ForwardDynamicsConstraintsDirect(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedVelocity &QDot,
+        const biorbd::rigidbody::GeneralizedTorque &Tau,
+        biorbd::rigidbody::Contacts &CS,
+        std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext)
+{
+    biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
+    CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
+    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, f_ext);
+    return QDDot;
 }
 
 

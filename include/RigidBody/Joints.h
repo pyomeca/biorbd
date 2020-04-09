@@ -26,6 +26,7 @@ class Segment;
 class SegmentCharacteristics;
 class Mesh;
 class Integrator;
+class Contacts;
 
 ///
 /// \brief This is the core of the musculoskeletal model in biorbd
@@ -753,6 +754,37 @@ public:
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &QDot,
         const double k_stab = 1);
+
+    // ---- DYNAMIC INTERFACE ---- //
+    ///
+    /// \brief Interface for the forward dynamics of RBDL
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \param Tau The Generalized Torques
+    /// \param f_ext External force acting on the system if there are any
+    /// \return The The Generalized Accelerations
+    ///
+    biorbd::rigidbody::GeneralizedAcceleration ForwardDynamics(
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedVelocity& QDot,
+            const biorbd::rigidbody::GeneralizedTorque& Tau,
+            std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext = nullptr);
+
+    ///
+    /// \brief Interface for the forward dynamics with contact of RBDL
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \param Tau The Generalized Torques
+    /// \param CS The Constraint set that will be filled
+    /// \param f_ext External force acting on the system if there are any
+    /// \return The The Generalized Accelerations
+    ///
+    biorbd::rigidbody::GeneralizedAcceleration ForwardDynamicsConstraintsDirect(
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedVelocity& QDot,
+            const biorbd::rigidbody::GeneralizedTorque& Tau,
+            biorbd::rigidbody::Contacts& CS,
+            std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext = nullptr);
 
 protected:
     std::shared_ptr<std::vector<biorbd::rigidbody::Segment>> m_segments; ///< All the articulations
