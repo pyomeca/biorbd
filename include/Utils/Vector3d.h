@@ -165,6 +165,24 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
 #ifdef BIORBD_USE_CASADI_MATH
 
     ///
+    /// \brief Accessor for the first element
+    /// \return The first element
+    ///
+    biorbd::utils::Scalar x() const;
+
+    ///
+    /// \brief Accessor for the second element
+    /// \return The second element
+    ///
+    biorbd::utils::Scalar y() const;
+
+    ///
+    /// \brief Accessor for the third element
+    /// \return The third element
+    ///
+    biorbd::utils::Scalar z() const;
+
+    ///
     /// \brief Construct a 3D vector from a Casadi 4D vector (drop the trailling 1)
     /// \param other The Casadi 4D vector
     ///
