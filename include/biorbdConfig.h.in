@@ -68,4 +68,64 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 #endif // NAN
 #endif // _WIN32
 
+// Interface for using biorbd independently that EIGEN or CasADi is used
+#ifndef SWIG
+
+#ifdef BIORBD_USE_CASADI_MATH
+#define DECLARE_GENERALIZED_COORDINATES(varname, model) \
+    casadi::DM varname(model.nbQ(), 1);\
+    biorbd::rigidbody::GeneralizedCoordinates varname##_sym(casadi::MX::sym(#varname, model.nbQ(), 1));
+#define DECLARE_GENERALIZED_VELOCITY(varname, model) \
+    casadi::DM varname(model.nbQdot(), 1);\
+    biorbd::rigidbody::GeneralizedVelocity varname##_sym(casadi::MX::sym(#varname, model.nbQdot(), 1));
+#define DECLARE_GENERALIZED_ACCELERATION(varname, model) \
+    casadi::DM varname(model.nbQddot(), 1);\
+    biorbd::rigidbody::GeneralizedAcceleration varname##_sym(casadi::MX::sym(#varname, model.nbQddot(), 1));
+
+#define CALL_BIORBD_FUNCTION_1ARG(varname, model, funcname, arg1) \
+    casadi::Function func_##funcname(#funcname, {arg1##_sym}, {model.funcname(arg1##_sym)}, {#arg1}, {#funcname});\
+    auto varname = func_##funcname(casadi::DMDict{ {#arg1, arg1} }).at(#funcname);
+#define CALL_BIORBD_FUNCTION_2ARGS(varname, model, funcname, arg1, arg2) \
+    casadi::Function func_##funcname(#funcname, {arg1##_sym, arg2##_sym}, {model.funcname(arg1##_sym, arg2##_sym)}, {#arg1, #arg2}, {#funcname});\
+    auto varname = func_##funcname(casadi::DMDict{ {#arg1, arg1}, {#arg2, arg2} }).at(#funcname);
+#define CALL_BIORBD_FUNCTION_3ARGS(varname, model, funcname, arg1, arg2, arg3) \
+    casadi::Function func_##funcname(#funcname, {arg1##_sym, arg2##_sym, arg3##_sym}, {model.funcname(arg1##_sym, arg2##_sym, arg3##_sym)}, {#arg1, #arg2, #arg3}, {#funcname});\
+    auto varname = func_##funcname(casadi::DMDict{ {#arg1, arg1}, {#arg2, arg2}, {#arg3, arg3} }).at(#funcname);
+
+#define SCALAR_TO_DOUBLE(varname, scalar) \
+    double varname; \
+    { \
+    casadi::Function func_hopefully_not_defined_else_where("scalar", {}, {scalar}, {}, {"ouputName"});\
+    double varname_weirdly_named(func_hopefully_not_defined_else_where(casadi::DMDict{ }).at("ouputName")(0, 0)); \
+    varname = varname_weirdly_named;\
+    }
+
+#else
+#define DECLARE_GENERALIZED_COORDINATES(varname, model) \
+    biorbd::rigidbody::GeneralizedCoordinates varname(model);
+#define DECLARE_GENERALIZED_VELOCITY(varname, model) \
+    biorbd::rigidbody::GeneralizedVelocity varname(model);
+#define DECLARE_GENERALIZED_ACCELERATION(varname, model) \
+    biorbd::rigidbody::GeneralizedAcceleration varname(model);
+
+#define CALL_BIORBD_FUNCTION_1ARG(varname, model, funcname, arg1) \
+    auto varname = model.funcname(arg1);
+#define CALL_BIORBD_FUNCTION_2ARGS(varname, model, funcname, arg1, arg2) \
+    auto varname = model.funcname(arg1, arg2);
+#define CALL_BIORBD_FUNCTION_3ARGS(varname, model, funcname, arg1, arg2, arg3) \
+    auto varname = model.funcname(arg1, arg2, arg3);
+
+#define SCALAR_TO_DOUBLE(varname, scalar) \
+    double varname(scalar);
+
+#endif
+
+#define FILL_VECTOR(varname, filler) \
+    for (unsigned int i=0; i<varname.rows(); ++i){\
+        varname(i, 0) = filler[i];\
+    }
+
+
+#endif
+
 #endif // BIORBD_CONFIG_H
