@@ -834,50 +834,74 @@ TEST(Mesh, position)
 
 TEST(Dynamics, Forward)
 {
-//    biorbd::Model model(modelPathForGeneralTesting);
-//    DECLARE_GENERALIZED(Coordinates, Q, model.nbQ());
-//    DECLARE_GENERALIZED(Velocity, Qdot, model.nbQdot());
-//    DECLARE_GENERALIZED(Acceleration, Qddot, model.nbQddot());
-//    DECLARE_GENERALIZED(Acceleration, QDDot_expected, model.nbQddot());
-//    biorbd::rigidbody::GeneralizedTorque Tau(model);
-//    Q.setZero();
-//    QDot.setZero();
-//    QDDot.setZero();
-//    QDDot_expected << 0, -9.81, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
-//    Tau.setZero();
+    biorbd::Model model(modelPathForGeneralTesting);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
+    DECLARE_GENERALIZED_TORQUE(Tau, model);
 
-//    RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot);
-//    for (unsigned int i = 0; i<model.nbQddot(); ++i)
-//        EXPECT_NEAR(QDDot[i], QDDot_expected[i], requiredPrecision);
+    // Set to random values
+    std::vector<double> val(model.nbQ());
+    for (size_t i=0; i<val.size(); ++i){
+        val[i] = static_cast<double>(i) * 1.1;
+    }
+    FILL_VECTOR(Q, val);
+    FILL_VECTOR(QDot, val);
+    FILL_VECTOR(Tau, val);
+
+    std::vector<double> QDDot_expected =
+    {20.554883896960259, -22.317642013324736, -77.406439058256126, 17.382961188212313,
+     -63.426361095191858, 93.816468824985876, 106.46105024484631, 95.116641811710167,
+     -268.1961283528546, 2680.3632159799949, -183.4582596257801, 755.89411812405604,
+     163.60239754283589};
+
+    CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamics, Q, QDot, Tau);
+
+    for (unsigned int i = 0; i<model.nbQddot(); ++i){
+        EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);
+    }
 }
 
-#ifndef BIORBD_USE_CASADI_MATH
 TEST(Dynamics, ForwardLoopConstraint){
     biorbd::Model model(modelPathForLoopConstraintTesting);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity QDot(model);
-    biorbd::rigidbody::GeneralizedAcceleration QDDot_constrained(model), QDDot_expected(model);
-    biorbd::rigidbody::GeneralizedTorque Tau(model);
-    Q.setZero();
-    QDot.setZero();
-    QDDot_constrained.setZero();
-    QDDot_expected << 0.35935119225397999,  -10.110263945851218,  0, -27.780105329642453, 31.783042765424835,
-            44.636461505611521, 0.67809701484785911, 0, 0, 15.822263679783546, 0, 0;
-    Tau.setZero();
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
+    DECLARE_GENERALIZED_TORQUE(Tau, model);
 
-    biorbd::rigidbody::Contacts& cs(model.getConstraints());
-    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(model, Q, QDot, Tau, cs, QDDot_constrained);
-    for (unsigned int i = 0; i<model.nbQddot(); ++i)
-        EXPECT_NEAR(QDDot_constrained[i], QDDot_expected[i], requiredPrecision);
+    // Set to random values
+    std::vector<double> val(model.nbQ());
+    for (size_t i=0; i<val.size(); ++i){
+        val[i] = static_cast<double>(i) * 0;
+    }
+    FILL_VECTOR(Q, val);
+    FILL_VECTOR(QDot, val);
+    FILL_VECTOR(Tau, val);
+
+    std::vector<double> QDDot_expected =
+    {0.35935119225397999,  -10.110263945851218, 0, -27.780105329642453,
+     31.783042765424835, 44.636461505611521, 0.67809701484785911, 0, 0,
+     15.822263679783546, 0, 0};
+
+    biorbd::rigidbody::Contacts cs;;
+    CALL_BIORBD_FUNCTION_3ARGS1PARAM(QDDot, model, ForwardDynamicsConstraintsDirect, Q, QDot, Tau, cs);
+    for (unsigned int i = 0; i<model.nbQddot(); ++i){
+        EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);
+    }
 }
 
-// TODO: confirm these tests
 TEST(Dynamics, ForwardAccelerationConstraint){
-    biorbd::Model model(modelPathForGeneralTesting);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity QDot(model);
-    biorbd::rigidbody::GeneralizedAcceleration QDDot_constrained(model), QDDot_expected(model);
-    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    biorbd::Model model(modelPathForLoopConstraintTesting);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
+    DECLARE_GENERALIZED_ACCELERATION(QDDot_constrained, model);
+    DECLARE_GENERALIZED_ACCELERATION(QDDot_expected, model);
+    DECLARE_GENERALIZED_TORQUE(Tau, model);
+
+//    biorbd::Model model(modelPathForGeneralTesting);
+//    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+//    biorbd::rigidbody::GeneralizedVelocity QDot(model);
+//    biorbd::rigidbody::GeneralizedAcceleration QDDot_constrained(model), QDDot_expected(model);
+//    biorbd::rigidbody::GeneralizedTorque Tau(model);
+
     Eigen::VectorXd forces_expected(model.nbContacts());
     Q.setOnes()/10;
     QDot.setOnes()/10;
@@ -898,6 +922,7 @@ TEST(Dynamics, ForwardAccelerationConstraint){
         EXPECT_NEAR(cs.force[i], forces_expected[i], requiredPrecision);
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
 TEST(Kinematics, computeQdot)
 {
     biorbd::Model m("models/simple_quat.bioMod");

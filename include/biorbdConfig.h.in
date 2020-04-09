@@ -81,6 +81,9 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 #define DECLARE_GENERALIZED_ACCELERATION(varname, model) \
     casadi::DM varname(model.nbQddot(), 1);\
     biorbd::rigidbody::GeneralizedAcceleration varname##_sym(casadi::MX::sym(#varname, model.nbQddot(), 1));
+#define DECLARE_GENERALIZED_TORQUE(varname, model) \
+    casadi::DM varname(model.nbGeneralizedTorque(), 1);\
+    biorbd::rigidbody::GeneralizedTorque varname##_sym(casadi::MX::sym(#varname, model.nbGeneralizedTorque(), 1));
 
 #define CALL_BIORBD_FUNCTION_1ARG(varname, model, funcname, arg1) \
     casadi::Function func_##funcname(#funcname, {arg1##_sym}, {model.funcname(arg1##_sym)}, {#arg1}, {#funcname});\
@@ -90,6 +93,10 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
     auto varname = func_##funcname(casadi::DMDict{ {#arg1, arg1}, {#arg2, arg2} }).at(#funcname);
 #define CALL_BIORBD_FUNCTION_3ARGS(varname, model, funcname, arg1, arg2, arg3) \
     casadi::Function func_##funcname(#funcname, {arg1##_sym, arg2##_sym, arg3##_sym}, {model.funcname(arg1##_sym, arg2##_sym, arg3##_sym)}, {#arg1, #arg2, #arg3}, {#funcname});\
+    auto varname = func_##funcname(casadi::DMDict{ {#arg1, arg1}, {#arg2, arg2}, {#arg3, arg3} }).at(#funcname);
+
+#define CALL_BIORBD_FUNCTION_3ARGS1PARAM(varname, model, funcname, arg1, arg2, arg3, param1) \
+    casadi::Function func_##funcname(#funcname, {arg1##_sym, arg2##_sym, arg3##_sym}, {model.funcname(arg1##_sym, arg2##_sym, arg3##_sym, param1)}, {#arg1, #arg2, #arg3}, {#funcname});\
     auto varname = func_##funcname(casadi::DMDict{ {#arg1, arg1}, {#arg2, arg2}, {#arg3, arg3} }).at(#funcname);
 
 #define SCALAR_TO_DOUBLE(varname, scalar) \
@@ -107,6 +114,8 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
     biorbd::rigidbody::GeneralizedVelocity varname(model);
 #define DECLARE_GENERALIZED_ACCELERATION(varname, model) \
     biorbd::rigidbody::GeneralizedAcceleration varname(model);
+#define DECLARE_GENERALIZED_TORQUE(varname, model) \
+    biorbd::rigidbody::GeneralizedTorque varname(model);
 
 #define CALL_BIORBD_FUNCTION_1ARG(varname, model, funcname, arg1) \
     auto varname = model.funcname(arg1);
@@ -114,6 +123,9 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
     auto varname = model.funcname(arg1, arg2);
 #define CALL_BIORBD_FUNCTION_3ARGS(varname, model, funcname, arg1, arg2, arg3) \
     auto varname = model.funcname(arg1, arg2, arg3);
+
+#define CALL_BIORBD_FUNCTION_3ARGS1PARAM(varname, model, funcname, arg1, arg2, arg3, param1) \
+    auto varname = model.funcname(arg1, arg2, arg3, param1);
 
 #define SCALAR_TO_DOUBLE(varname, scalar) \
     double varname(scalar);
