@@ -36,9 +36,11 @@ The building status for the current BIORBD branches is as follow
 ### Dependencies
 BIORBD relies on several libraries (namely Boost (https://www.boost.org/), eigen (http://eigen.tuxfamily.org), dlib (http://dlib.net/), rbdl (https://rbdl.bitbucket.io/) and Ipopt (https://github.com/coin-or/Ipopt)) that one must install prior to compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda. Therefore the following command will install everything you need to compile BIORBD:
 ```bash
-conda install -c conda-forge boost eigen dlib-cpp rbdl ipopt
+conda install -c conda-forge {rbdl rbdl-casadi} boost-cpp dlib-cpp [tinyxml] [ipopt]
 ```
-Please note that ```ipopt``` is optional, but is required for the *Static optimization* module. 
+Please note you have to choose between ```rbdl``` or ```rbdl-casadi``` depending on the backend you want to use;
+that ```tinyxml``` is optional, but is required for reading VTP files;
+and  ```ipopt``` is optional, but is required for the *Static optimization* module. 
 
 Additionnally, for the Python3 interface requires *numpy* (https://numpy.org/) and *SWIG* (http://www.swig.org/). Again, one can easily install these dependencies from Anaconda using the following command:
 ```bash
