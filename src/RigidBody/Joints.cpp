@@ -915,18 +915,17 @@ unsigned int biorbd::rigidbody::Joints::nbQuat() const{
     return *m_nRotAQuat;
 }
 
-biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Joints::computeQdot(
+biorbd::rigidbody::GeneralizedVelocity biorbd::rigidbody::Joints::computeQdot(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &QDot,
         const double k_stab)
 {
-    biorbd::rigidbody::GeneralizedCoordinates QDotOut;
+    biorbd::rigidbody::GeneralizedVelocity QDotOut(Q.size());
     // Verify if there are quaternions, if not the derivate is directly QDot
     if (!m_nRotAQuat){
         QDotOut = QDot;
         return QDotOut;
     }
-    QDotOut.resize(Q.size()); // Create an empty vector of the final dimension
     unsigned int cmpQuat(0);
     unsigned int cmpDof(0);
     for (unsigned int i=0; i<nbSegment(); ++i){
@@ -980,6 +979,18 @@ biorbd::rigidbody::Joints::ForwardDynamicsConstraintsDirect(
 {
     biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
     CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
+    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, f_ext);
+    return QDDot;
+}
+
+biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDynamicsConstraintsDirect(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedVelocity &QDot,
+        const biorbd::rigidbody::GeneralizedTorque &Tau,
+        std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext)
+{
+    biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
+    biorbd::rigidbody::Contacts CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
     RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, f_ext);
     return QDDot;
 }
