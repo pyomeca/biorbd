@@ -103,6 +103,7 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
                     static_cast<double>(scalar)), this->m_Kstab);
 }
 
+#ifdef BIORBD_USE_CASADI_MATH
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
         double scalar) const
 {
@@ -110,6 +111,7 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
                 this->RigidBodyDynamics::Math::Vector4d::operator*(scalar),
                 this->m_Kstab);
 }
+#endif
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator+(
         const biorbd::utils::Quaternion& other) const

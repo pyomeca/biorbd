@@ -61,13 +61,9 @@ TEST(MeshFile, FileIoVtp) {
 }
 #endif
 
+#ifdef SKIP_LONG_TESTS
 TEST(Integrate, freefall) {
     biorbd::Model model(modelFreeFall);
-#ifdef BIORBD_USE_CASADI_MATH
-    unsigned int nbQtoDo(1);
-#else
-    unsigned int nbQtoDo(Q.size());
-#endif
 
     biorbd::rigidbody::GeneralizedCoordinates Q(model), QIntegrated(model);
     biorbd::rigidbody::GeneralizedVelocity Qdot(model), QdotIntegrated(model);
@@ -82,6 +78,11 @@ TEST(Integrate, freefall) {
     // Just test the last position
     model.getIntegratedKinematics(model.nbInterationStep()-1,
                                   QIntegrated, QdotIntegrated);
+#ifdef BIORBD_USE_CASADI_MATH
+    unsigned int nbQtoDo(1);
+#else
+    unsigned int nbQtoDo(Q.size());
+#endif
 
     for (unsigned int i=0; i<nbQtoDo; ++i) {
         if (i == 1) {
@@ -98,3 +99,4 @@ TEST(Integrate, freefall) {
         }
     }
 }
+#endif

@@ -157,12 +157,14 @@ public:
     biorbd::utils::Quaternion operator*(
             float scalar) const;
 
+#ifdef BIORBD_USE_CASADI_MATH
     ///
     /// \brief Multiply the quaternion with a scalar
     /// \param scalar The scalar to multiply with
     ///
     biorbd::utils::Quaternion operator*(
             double scalar) const;
+#endif
 
     ///
     /// \brief Add the quaternion to another

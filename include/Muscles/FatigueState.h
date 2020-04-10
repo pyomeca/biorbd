@@ -58,6 +58,7 @@ public:
     void DeepCopy(
             const biorbd::muscles::FatigueState& other);
 
+#ifndef BIORBD_USE_CASADI_MATH
     ///
     /// \brief Safe set of the state (ensure that sum of all activation is 1)
     /// \param active Proportion of the activated fibers in the muscle
@@ -70,6 +71,7 @@ public:
             biorbd::utils::Scalar fatigued,
             biorbd::utils::Scalar resting,
             bool turnOffWarnings = false);
+#endif
 
     ///
     /// \brief Return the propotion of active muscle fibers
