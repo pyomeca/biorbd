@@ -136,7 +136,15 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
     for (unsigned int i=0; i<varname.rows(); ++i){\
         varname(i, 0) = filler[i];\
     }
-
+#define FILL_MATRIX(varname, filler) \
+    { \
+        int cmpWithAWeirdName(0); \
+        for (unsigned int i=0; i<varname.rows(); ++i){\
+            for (unsigned int j=0; j<varname.cols(); ++j){\
+                varname(i, j) = filler[cmpWithAWeirdName++];\
+            }\
+        } \
+    }
 
 #endif
 

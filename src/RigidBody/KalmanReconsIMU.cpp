@@ -126,7 +126,7 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
         for (unsigned int j = 0; j < 9; ++j) // Calculate the norm for the 9 components
             sum += IMUobs(i*9+j)*IMUobs(i*9+j);
 #ifdef BIORBD_USE_CASADI_MATH
-        if (!sum.is_zero() && !std::isnan(sum)){ // If there is an IMU (no zero or NaN)
+        if (true){ // If there is an IMU (no zero or NaN)
 #else
         if (sum != 0.0 && !std::isnan(sum)){ // If there is an IMU (no zero or NaN)
 #endif
