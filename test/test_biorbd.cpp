@@ -9,7 +9,7 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedTorque.h"
-#ifndef BIORBD_USE_CASADI_MATH
+
 static double requiredPrecision(1e-10);
 
 static std::string modelPathWithMeshFile("models/simpleWithMeshFile.bioMod");
@@ -29,6 +29,7 @@ TEST(FileIO, OpenModel){
     EXPECT_NO_THROW(biorbd::Model model(modelPathForGeneralTesting));
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
 TEST(FileIO, WriteModel){
     biorbd::Model model(modelPathForGeneralTesting);
     biorbd::utils::String savePath("temporary.bioMod");
@@ -36,6 +37,7 @@ TEST(FileIO, WriteModel){
     biorbd::Model modelCopy(savePath);
     remove(savePath.c_str());
 }
+#endif
 
 TEST(GenericTests, mass){
     biorbd::Model model(modelPathForGeneralTesting);
@@ -61,6 +63,12 @@ TEST(MeshFile, FileIoVtp) {
 
 TEST(Integrate, freefall) {
     biorbd::Model model(modelFreeFall);
+#ifdef BIORBD_USE_CASADI_MATH
+    unsigned int nbQtoDo(1);
+#else
+    unsigned int nbQtoDo(Q.size());
+#endif
+
     biorbd::rigidbody::GeneralizedCoordinates Q(model), QIntegrated(model);
     biorbd::rigidbody::GeneralizedVelocity Qdot(model), QdotIntegrated(model);
     biorbd::rigidbody::GeneralizedTorque Tau(model.nbQ());
@@ -74,15 +82,19 @@ TEST(Integrate, freefall) {
     // Just test the last position
     model.getIntegratedKinematics(model.nbInterationStep()-1,
                                   QIntegrated, QdotIntegrated);
-    for (unsigned int i=0; i<Q.size(); ++i) {
+
+    for (unsigned int i=0; i<nbQtoDo; ++i) {
         if (i == 1) {
-            EXPECT_NEAR(QIntegrated(i), -4.905, requiredPrecision);
-            EXPECT_NEAR(QdotIntegrated(i), -9.81, requiredPrecision);
+            SCALAR_TO_DOUBLE(q, QIntegrated(i));
+            SCALAR_TO_DOUBLE(qdot, QdotIntegrated(i));
+            EXPECT_NEAR(q, -4.905, requiredPrecision);
+            EXPECT_NEAR(qdot, -9.81, requiredPrecision);
         }
         else {
-            EXPECT_NEAR(QIntegrated(i), 0, requiredPrecision);
-            EXPECT_NEAR(QdotIntegrated(i), 0, requiredPrecision);
+            SCALAR_TO_DOUBLE(q, QIntegrated(i));
+            SCALAR_TO_DOUBLE(qdot, QdotIntegrated(i));
+            EXPECT_NEAR(q, 0, requiredPrecision);
+            EXPECT_NEAR(qdot, 0, requiredPrecision);
         }
     }
 }
-#endif
