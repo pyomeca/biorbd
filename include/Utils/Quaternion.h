@@ -158,6 +158,13 @@ public:
             float scalar) const;
 
     ///
+    /// \brief Multiply the quaternion with a scalar
+    /// \param scalar The scalar to multiply with
+    ///
+    biorbd::utils::Quaternion operator*(
+            double scalar) const;
+
+    ///
     /// \brief Add the quaternion to another
     /// \param other The other quaternion to add
     ///
@@ -255,6 +262,7 @@ public:
     biorbd::utils::Rotation toMatrix(
             bool skipAsserts = false) const;
 
+#ifndef BIORBD_USE_CASADI_MATH
     ///
     /// \brief Interpolation of the quaternion between to position
     /// \param alpha The proportion of the rotation
@@ -263,6 +271,7 @@ public:
     biorbd::utils::Quaternion slerp (
             double alpha,
             const Quaternion &quat) const;
+#endif
 
     /// 
     /// \brief Return the conjugate of the quaternion
