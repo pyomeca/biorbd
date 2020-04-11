@@ -25,7 +25,6 @@ class MeshFace;
 class Segment;
 class SegmentCharacteristics;
 class Mesh;
-class Integrator;
 
 ///
 /// \brief This is the core of the musculoskeletal model in biorbd
@@ -242,52 +241,16 @@ public:
     // ---------------------------- //
 
 
-    // -- INTEGRATOR INTERFACE -- //
     ///
     /// \brief Update the kinematic variables such as body velocities and accelerations in the model to reflect the variables passed to this function
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param Qddot The generalized accelerations
-    /// 
+    ///
     void UpdateKinematicsCustom(
             const biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
             const biorbd::rigidbody::GeneralizedVelocity *Qdot = nullptr,
             const biorbd::rigidbody::GeneralizedAcceleration *Qddot = nullptr);
-
-    ///
-    /// \brief Evaluate the integration of the kinematics using a RK4 algorithm
-    /// \param Q The generalized coordinates
-    /// \param QDot The generalized velocities
-    /// \param torque The effectors assumed to be constant during the integration
-    /// \param t0 Start time
-    /// \param tend End time
-    /// \param timeStep The time step (dt)
-    ///
-    void integrateKinematics(
-            const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::rigidbody::GeneralizedVelocity& QDot,
-            const biorbd::rigidbody::GeneralizedTorque& torque,
-            double t0,
-            double tend,
-            double timeStep);
-
-    ///
-    /// \brief Get the integrated kinematics after having computed it
-    /// \param step The step index
-    /// \param Q The generalized coordinates (output)
-    /// \param QDot The generalized velocities (output)
-    ///  
-    void getIntegratedKinematics(
-            unsigned int step,
-            biorbd::rigidbody::GeneralizedCoordinates& Q,
-            biorbd::rigidbody::GeneralizedVelocity& QDot);
-
-    ///
-    /// \brief Return the number of iteration steps
-    /// \return The number of iteration steps
-    ///
-    unsigned int nbInterationStep() const;
-    // -------------------------- //
 
 
     // -- POSITION INTERFACE OF THE MODEL -- //
@@ -757,7 +720,6 @@ public:
 protected:
     std::shared_ptr<std::vector<biorbd::rigidbody::Segment>> m_segments; ///< All the articulations
 
-    std::shared_ptr<biorbd::rigidbody::Integrator> m_integrator; ///< The integrator
     std::shared_ptr<unsigned int> m_nbRoot; ///< The number of DoF on the root segment
     std::shared_ptr<unsigned int> m_nbDof; ///< The total number of degrees of freedom  
     std::shared_ptr<unsigned int> m_nbQ; ///< The total number of Q
