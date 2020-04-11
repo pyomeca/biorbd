@@ -1,4 +1,6 @@
-cmake_policy(SET CMP0078 NEW)
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
+    cmake_policy(SET CMP0078 NEW)
+endif()
 
 option(BINDER_C "Build C module" OFF)
 option(BINDER_PYTHON3 "Build Python SWIG module" OFF)
