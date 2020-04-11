@@ -71,16 +71,16 @@ foreach(CPP_FILE ${CPP_FILES})
     endif(WIN32)
 
     # Set runtime path for linux
-    SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
+    set_target_properties(${PROJECT_NAME} PROPERTIES
         INSTALL_RPATH "${${BIORBD_NAME}_BIN_FOLDER}"
         INSTALL_RPATH_USE_LINK_PATH TRUE
     )
 
     # Linker and instalation
     target_link_libraries(${PROJECT_NAME}
-        ${BIORBD_NAME}
-        ${Matlab_MX_LIBRARY}
-        ${Matlab_MEX_LIBRARY}
+        "${BIORBD_NAME}"
+        "${Matlab_MX_LIBRARY}"
+        "${Matlab_MEX_LIBRARY}"
     )
 
     # install target
