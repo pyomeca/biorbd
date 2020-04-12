@@ -1,4 +1,9 @@
-project(_${BIORBD_NAME})
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
+    project(_${BIORBD_NAME})
+else()
+    project(${BIORBD_NAME})
+endif()
+
 # Include python
 find_package(PYTHON3 REQUIRED)
 include_directories("${Python3_INCLUDE_DIRS}")
@@ -30,8 +35,14 @@ swig_link_libraries(${PROJECT_NAME}
     "${NUMPY_LIBRARIES}"
 )
 
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
+    set(PYTHON_PROJECT_NAME ${PROJECT_NAME})
+else()
+    set(PYTHON_PROJECT_NAME _${PROJECT_NAME})
+endif()
+
 # Add headers
-target_include_directories(${PROJECT_NAME} PRIVATE
+target_include_directories(${PYTHON_PROJECT_NAME} PRIVATE
     "${CMAKE_SOURCE_DIR}/include"
     "${BIORBD_BINARY_DIR}/include"
     "${RBDL_INCLUDE_DIR}"
@@ -43,13 +54,13 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 if(APPLE)
-    set_target_properties(${PROJECT_NAME} PROPERTIES
+    set_target_properties(${PYTHON_PROJECT_NAME} PROPERTIES
         SUFFIX ".so"
         INSTALL_RPATH ${${BIORBD_NAME}_BIN_FOLDER})
-    set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY
+    set_property(TARGET ${PYTHON_PROJECT_NAME} APPEND PROPERTY
         LINK_FLAGS "-flat_namespace -undefined suppress")
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES
+set_target_properties(${PYTHON_PROJECT_NAME} PROPERTIES
     PREFIX ""
     INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${${BIORBD_NAME}_BIN_FOLDER}"
     INSTALL_RPATH_USE_LINK_PATH TRUE
@@ -80,7 +91,7 @@ else()
 endif()
 
 # Install the library
-INSTALL(TARGETS ${PROJECT_NAME}
+INSTALL(TARGETS ${PYTHON_PROJECT_NAME}
     DESTINATION "${PYTHON_INSTALL_DESTINATION}"
     RENAME coucou
 )
