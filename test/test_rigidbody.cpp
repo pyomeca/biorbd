@@ -1006,10 +1006,6 @@ TEST(Kalman, markers)
         SCALAR_TO_DOUBLE(qdot, Qdot[i]);
         SCALAR_TO_DOUBLE(qddot, Qddot[i]);
         SCALAR_TO_DOUBLE(qref, Qref[i]);
-        std::cout << q << std::endl;
-        std::cout << qref << std::endl;
-        std::cout << qdot << std::endl;
-        std::cout << qddot << std::endl;
         EXPECT_GT(fabs(q - qref), 1e-4);
         EXPECT_GT(fabs(qdot), 5);
         EXPECT_GT(fabs(qddot), 100);
@@ -1025,10 +1021,6 @@ TEST(Kalman, markers)
         SCALAR_TO_DOUBLE(qdot, Qdot[i]);
         SCALAR_TO_DOUBLE(qddot, Qddot[i]);
         SCALAR_TO_DOUBLE(qref, Qref[i]);
-        std::cout << q << std::endl;
-        std::cout << qref << std::endl;
-        std::cout << qdot << std::endl;
-        std::cout << qddot << std::endl;
         EXPECT_NEAR(q, qref, 1e-6);
         EXPECT_NEAR(qdot, 0, 1e-6);
         EXPECT_NEAR(qddot, 0, 1e-6);
