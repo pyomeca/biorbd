@@ -4,6 +4,13 @@ else()
     project(${BIORBD_NAME})
 endif()
 
+# Windows needs a bigobj option
+if(WIN32)
+    set(COMPILE_FLAGS "/bigobj")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMPILE_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS}")
+endif()
+
 # Include python
 find_package(PYTHON3 REQUIRED)
 include_directories("${Python3_INCLUDE_DIRS}")
