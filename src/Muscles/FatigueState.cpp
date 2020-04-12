@@ -66,15 +66,13 @@ void biorbd::muscles::FatigueState::DeepCopy(const biorbd::muscles::FatigueState
     *m_type = *other.m_type;
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
 void biorbd::muscles::FatigueState::setState(
         biorbd::utils::Scalar active,
         biorbd::utils::Scalar fatigued,
         biorbd::utils::Scalar resting,
         bool turnOffWarnings)
 {
-#ifdef BIORBD_USE_CASADI_MATH
-    biorbd::utils::Error::raise("setState for casadi is not implemented yet");
-#else
     // Sanity check for active fibers
     //
     // In order to get the quantity of active fibers to 0 or 1, it has to come from the input command.
@@ -142,8 +140,8 @@ void biorbd::muscles::FatigueState::setState(
     *m_activeFibers = active;
     *m_fatiguedFibers = fatigued;
     *m_restingFibers = resting;
-#endif
 }
+#endif
 
 const biorbd::utils::Scalar& biorbd::muscles::FatigueState::activeFibers() const
 {

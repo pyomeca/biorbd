@@ -2,10 +2,7 @@
 #include "Utils/Equation.h"
 
 #ifdef _WIN32
-#include <boost/lexical_cast.hpp>
-double stod(const char* s) {
-    return boost::lexical_cast<double>(s);
-}
+#include <string>
 #endif
 
 #include <math.h>

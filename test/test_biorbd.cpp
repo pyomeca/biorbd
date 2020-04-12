@@ -29,6 +29,7 @@ TEST(FileIO, OpenModel){
     EXPECT_NO_THROW(biorbd::Model model(modelPathForGeneralTesting));
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
 TEST(FileIO, WriteModel){
     biorbd::Model model(modelPathForGeneralTesting);
     biorbd::utils::String savePath("temporary.bioMod");
@@ -36,6 +37,7 @@ TEST(FileIO, WriteModel){
     biorbd::Model modelCopy(savePath);
     remove(savePath.c_str());
 }
+#endif
 
 TEST(GenericTests, mass){
     biorbd::Model model(modelPathForGeneralTesting);
@@ -58,30 +60,3 @@ TEST(MeshFile, FileIoVtp) {
     biorbd::Model model(modelPathWithVtp);
 }
 #endif
-
-TEST(Integrate, freefall) {
-    biorbd::Model model(modelFreeFall);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model), QIntegrated(model);
-    biorbd::rigidbody::GeneralizedVelocity Qdot(model), QdotIntegrated(model);
-    biorbd::rigidbody::GeneralizedTorque Tau(model.nbQ());
-    Q.setZero();
-    Qdot.setZero();
-    Tau.setZero();
-    model.integrateKinematics(Q, Qdot, Tau, 0, 1, 0.01);
-
-    EXPECT_EQ(model.nbInterationStep(), 101);
-
-    // Just test the last position
-    model.getIntegratedKinematics(model.nbInterationStep()-1,
-                                  QIntegrated, QdotIntegrated);
-    for (unsigned int i=0; i<Q.size(); ++i) {
-        if (i == 1) {
-            EXPECT_NEAR(QIntegrated(i), -4.905, requiredPrecision);
-            EXPECT_NEAR(QdotIntegrated(i), -9.81, requiredPrecision);
-        }
-        else {
-            EXPECT_NEAR(QIntegrated(i), 0, requiredPrecision);
-            EXPECT_NEAR(QdotIntegrated(i), 0, requiredPrecision);
-        }
-    }
-}

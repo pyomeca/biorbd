@@ -21,7 +21,6 @@
 #include "RigidBody/MeshFace.h"
 #include "RigidBody/IMU.h"
 #include "RigidBody/IMUs.h"
-#include "RigidBody/Integrator.h"
 %}
 
 
@@ -130,4 +129,3 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/IMUs.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/RotoTransNodes.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/SegmentCharacteristics.h"
-%include "@CMAKE_SOURCE_DIR@/include/RigidBody/Integrator.h"

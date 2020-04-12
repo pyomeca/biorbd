@@ -103,6 +103,16 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
                     static_cast<double>(scalar)), this->m_Kstab);
 }
 
+#ifdef BIORBD_USE_CASADI_MATH
+biorbd::utils::Quaternion biorbd::utils::Quaternion::operator*(
+        double scalar) const
+{
+    return biorbd::utils::Quaternion (
+                this->RigidBodyDynamics::Math::Vector4d::operator*(scalar),
+                this->m_Kstab);
+}
+#endif
+
 biorbd::utils::Quaternion biorbd::utils::Quaternion::operator+(
         const biorbd::utils::Quaternion& other) const
 {
@@ -205,6 +215,7 @@ biorbd::utils::Rotation biorbd::utils::Quaternion::toMatrix(
     return out;
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
 biorbd::utils::Quaternion biorbd::utils::Quaternion::slerp(
         double alpha,
         const biorbd::utils::Quaternion &quat) const {
@@ -212,15 +223,13 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::slerp(
     biorbd::utils::Scalar s = std::sqrt (squaredNorm() * quat.squaredNorm());
 
     // division by 0.f is unhealthy!
-#ifdef BIORBD_USE_CASADI_MATH
-    assert (!s.is_zero());
-#else
+#ifndef BIORBD_USE_CASADI_MATH
     assert (s != 0.);
 #endif
 
     biorbd::utils::Scalar angle = acos (dot(quat) / s);
 #ifdef BIORBD_USE_CASADI_MATH
-    if (angle.is_zero() || std::isnan(angle)) {
+    if (true) {
 #else
     if (angle == 0. || std::isnan(angle)) {
 #endif
@@ -246,6 +255,7 @@ biorbd::utils::Quaternion biorbd::utils::Quaternion::slerp(
                        (this->m_Kstab + quat.m_Kstab) / 2);
 #endif
 }
+#endif
 
 biorbd::utils::Quaternion biorbd::utils::Quaternion::conjugate() const {
     return biorbd::utils::Quaternion (

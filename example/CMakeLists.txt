@@ -1,29 +1,35 @@
-set(MASTER_PROJECT_NAME ${PROJECT_NAME})
-project(${MASTER_PROJECT_NAME}_example)
+project(${BIORBD_NAME}_example)
 add_executable(${PROJECT_NAME} "main.cpp")
-add_dependencies(${PROJECT_NAME} ${MASTER_PROJECT_NAME})
+add_dependencies(${PROJECT_NAME} ${BIORBD_NAME})
 
 # Headers
-target_include_directories(${PROJECT_NAME} PUBLIC
-  ${ALL_INCLUDE_DIR}
+target_include_directories(${PROJECT_NAME} PRIVATE
+    "${CMAKE_SOURCE_DIR}/include"
+    "${BIORBD_BINARY_DIR}/include"
+    "${RBDL_INCLUDE_DIR}"
+    "${RBDL_INCLUDE_DIR}/.."
+    "${MATH_BACKEND_INCLUDE_DIR}"
+    "${IPOPT_INCLUDE_DIR}"
 )
 
 # Libraries linker
-get_target_property(DEBUG_POSTFIX ${MASTER_PROJECT_NAME} DEBUG_POSTFIX)
+get_target_property(DEBUG_POSTFIX ${BIORBD_NAME} DEBUG_POSTFIX)
 IF(CMAKE_BUILD_TYPE MATCHES "Debug")
-    SET(${MASTER_PROJECT_NAME}_LIB_NAME ${MASTER_PROJECT_NAME}${DEBUG_POSTFIX})
+    SET(${BIORBD_NAME}_LIB_NAME ${BIORBD_NAME}${DEBUG_POSTFIX})
 else()
-    SET(${MASTER_PROJECT_NAME}_LIB_NAME ${MASTER_PROJECT_NAME})
+    SET(${BIORBD_NAME}_LIB_NAME ${BIORBD_NAME})
 endif()
 if (APPLE)
-    string(CONCAT ${MASTER_PROJECT_NAME}_LIB_NAME "lib" ${${MASTER_PROJECT_NAME}_LIB_NAME} ".dylib")
+    string(CONCAT ${BIORBD_NAME}_LIB_NAME "lib" ${${BIORBD_NAME}_LIB_NAME} ".dylib")
 elseif (UNIX)
-    string(CONCAT ${MASTER_PROJECT_NAME}_LIB_NAME "lib" ${${MASTER_PROJECT_NAME}_LIB_NAME} ".so")
+    string(CONCAT ${BIORBD_NAME}_LIB_NAME "lib" ${${BIORBD_NAME}_LIB_NAME} ".so")
 elseif(_WIN32)
-    string(CONCAT ${MASTER_PROJECT_NAME}_LIB_NAME ${${MASTER_PROJECT_NAME}_LIB_NAME} ".dll")
+    string(CONCAT ${BIORBD_NAME}_LIB_NAME ${${BIORBD_NAME}_LIB_NAME} ".dll")
 endif()
-set(${MASTER_PROJECT_NAME}_LIBRARY ${CMAKE_BINARY_DIR}/${${MASTER_PROJECT_NAME}_LIB_NAME})
-target_link_libraries(${PROJECT_NAME} ${MASTER_PROJECT_NAME})
+set(${BIORBD_NAME}_LIBRARY ${CMAKE_BINARY_DIR}/${${BIORBD_NAME}_LIB_NAME})
+target_link_libraries(${PROJECT_NAME}
+    ${BIORBD_NAME}
+)
 
 # Copy the c3d of the example
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/pyomecaman.bioMod

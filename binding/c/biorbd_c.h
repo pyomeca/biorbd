@@ -2,8 +2,8 @@
 #ifndef BIORBD_C_BINDER
 #define BIORBD_C_BINDER
 
-#include "BiorbdModel.h"
 #include "biorbdConfig.h"
+#include "BiorbdModel.h"
 #ifdef _WIN32
     #define BIORBD_API_C __declspec(dllexport)
 #else

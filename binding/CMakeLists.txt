@@ -1,3 +1,6 @@
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
+    cmake_policy(SET CMP0078 NEW)
+endif()
 
 option(BINDER_C "Build C module" OFF)
 option(BINDER_PYTHON3 "Build Python SWIG module" OFF)
@@ -20,29 +23,44 @@ if (BINDER_PYTHON3)
     find_package(SWIG REQUIRED)
 
     # Create the .i file
-    SET(SWIG_MODULE_UTILS_INCLUDE_COMMAND "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_utils.i\"")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_utils.i.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_utils.i @ONLY)
+    SET(SWIG_MODULE_UTILS_INCLUDE_COMMAND
+        "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_utils.i\"")
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_utils.i.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_utils.i" @ONLY)
 
-    SET(SWIG_MODULE_RIGIDBODY_INCLUDE_COMMAND "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_rigidbody.i\"")
+    SET(SWIG_MODULE_RIGIDBODY_INCLUDE_COMMAND
+        "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_rigidbody.i\"")
     if (NOT SKIP_KALMAN)
-        SET(SWIG_KALMAN_INCLUDE_COMMAND "%include \"${CMAKE_SOURCE_DIR}/include/RigidBody/KalmanRecons.h\"\n%include \"${CMAKE_SOURCE_DIR}/include/RigidBody/KalmanReconsMarkers.h\"\n%include \"${CMAKE_SOURCE_DIR}/include/RigidBody/KalmanReconsIMU.h\"")
+        SET(SWIG_KALMAN_INCLUDE_COMMAND
+            "%include \"${CMAKE_SOURCE_DIR}/include/RigidBody/KalmanRecons.h\"\n
+            %include \"${CMAKE_SOURCE_DIR}/include/RigidBody/KalmanReconsMarkers.h\"
+            \n%include \"${CMAKE_SOURCE_DIR}/include/RigidBody/KalmanReconsIMU.h\""
+        )
     endif()
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_rigidbody.i.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_rigidbody.i @ONLY)
+    configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_rigidbody.i.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_rigidbody.i" @ONLY)
 
     if (MODULE_MUSCLES)
-        SET(SWIG_MODULE_MUSCLES_INCLUDE_COMMAND "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_muscles.i\"")
+        SET(SWIG_MODULE_MUSCLES_INCLUDE_COMMAND
+            "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_muscles.i\"")
         if (NOT SKIP_STATIC_OPTIM)
-            SET(SWIG_STATIC_OPTIMIZATION_INCLUDE_COMMAND "%include \"${CMAKE_SOURCE_DIR}/include/Muscles/StaticOptimization.h\"")
+            SET(SWIG_STATIC_OPTIMIZATION_INCLUDE_COMMAND
+                "%include \"${CMAKE_SOURCE_DIR}/include/Muscles/StaticOptimization.h\"")
         endif()
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_muscles.i.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_muscles.i @ONLY)
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_muscles.i.in"
+            "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_muscles.i" @ONLY)
     endif()
 
     if (MODULE_ACTUATORS)
-        SET(SWIG_MODULE_ACTUATORS_INCLUDE_COMMAND "%import \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_actuators.i\"")
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_actuators.i.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_actuators.i @ONLY)
+        SET(SWIG_MODULE_ACTUATORS_INCLUDE_COMMAND
+            "%import \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_actuators.i\"")
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_actuators.i.in"
+            "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_actuators.i" @ONLY)
     endif()
 
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.i.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.i @ONLY)
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.i.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.i" @ONLY)
 
     include(${SWIG_USE_FILE})
 endif()

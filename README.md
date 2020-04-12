@@ -34,11 +34,11 @@ The building status for the current BIORBD branches is as follow
 | master | [![Build Status](https://travis-ci.org/pyomeca/biorbd.svg?branch=master)](https://travis-ci.org/pyomeca/biorbd) |
 
 ### Dependencies
-BIORBD relies on several libraries (namely Boost (https://www.boost.org/), eigen (http://eigen.tuxfamily.org), dlib (http://dlib.net/), rbdl (https://rbdl.bitbucket.io/) and Ipopt (https://github.com/coin-or/Ipopt)) that one must install prior to compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda. Therefore the following command will install everything you need to compile BIORBD:
+BIORBD relies on several libraries (namely eigen ([http://eigen.tuxfamily.org]) or CasADi ([https://web.casadi.org/]), rbdl-casadi (https://github.com/pyomeca/rbdl-casadi), tinyxml(http://www.grinninglizard.com/tinyxmldocs/index.html) and Ipopt (https://github.com/coin-or/Ipopt)) that one must install prior to compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda. Therefore the following command will install everything you need to compile BIORBD:
 ```bash
-conda install -c conda-forge {rbdl rbdl-casadi} boost-cpp dlib-cpp [tinyxml] [ipopt]
+conda install -c conda-forge {rbdl rbdl-casadi} [tinyxml] [ipopt]
 ```
-Please note you have to choose between ```rbdl``` or ```rbdl-casadi``` depending on the backend you want to use;
+Please note you have to choose between ```rbdl``` or ```rbdl-casadi``` depending on the backend you want to use (eigen for the former, casadi for the latter);
 that ```tinyxml``` is optional, but is required for reading VTP files;
 and  ```ipopt``` is optional, but is required for the *Static optimization* module. 
 

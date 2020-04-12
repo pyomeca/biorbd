@@ -13,7 +13,6 @@
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/IMU.h"
 #include "RigidBody/IMUs.h"
-#include "RigidBody/Integrator.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/Markers.h"
 #include "RigidBody/NodeSegment.h"

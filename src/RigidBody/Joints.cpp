@@ -14,13 +14,13 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
-#include "RigidBody/Integrator.h"
 #include "RigidBody/Segment.h"
 #include "RigidBody/Markers.h"
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/MeshFace.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
+#include "RigidBody/Contacts.h"
 
 biorbd::rigidbody::Joints::Joints() :
     RigidBodyDynamics::Model(),
@@ -35,14 +35,12 @@ biorbd::rigidbody::Joints::Joints() :
     m_isKinematicsComputed(std::make_shared<bool>(false)),
     m_totalMass(std::make_shared<double>(0))
 {
-    m_integrator = std::make_shared<biorbd::rigidbody::Integrator>(*this);
     this->gravity = biorbd::utils::Vector3d (0, 0, -9.81);  // Redéfinition de la gravité pour qu'elle soit en z
 }
 
 biorbd::rigidbody::Joints::Joints(const biorbd::rigidbody::Joints &other) :
     RigidBodyDynamics::Model(other),
     m_segments(other.m_segments),
-    m_integrator(other.m_integrator),
     m_nbRoot(other.m_nbRoot),
     m_nbDof(other.m_nbDof),
     m_nbQ(other.m_nbQ),
@@ -74,7 +72,6 @@ void biorbd::rigidbody::Joints::DeepCopy(const biorbd::rigidbody::Joints &other)
     m_segments->resize(other.m_segments->size());
     for (unsigned int i=0; i<other.m_segments->size(); ++i)
         (*m_segments)[i] = (*other.m_segments)[i].DeepCopy();
-    *m_integrator = other.m_integrator->DeepCopy();
     *m_nbRoot = *other.m_nbRoot;
     *m_nbDof = *other.m_nbDof;
     *m_nbQ = *other.m_nbQ;
@@ -132,43 +129,6 @@ bool biorbd::rigidbody::Joints::hasExternalForces() const {
 double biorbd::rigidbody::Joints::mass() const {
     return *m_totalMass;
 }
-
-
-
-
-void biorbd::rigidbody::Joints::integrateKinematics(
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedVelocity& QDot,
-        const biorbd::rigidbody::GeneralizedTorque& torque,
-        double t0,
-        double tend,
-        double timeStep)
-{
-    biorbd::utils::Vector v(static_cast<unsigned int>(Q.rows()+QDot.rows()));
-    v.block(0, 0, Q.rows(), 1) = Q;
-    v.block(Q.rows(), 0, QDot.rows(), 1) = QDot;
-    m_integrator->integrate(v, torque, t0, tend, timeStep); // vecteur, t0, tend, pas, effecteurs
-    *m_isKinematicsComputed = true;
-}
-void biorbd::rigidbody::Joints::getIntegratedKinematics(
-        unsigned int step,
-        biorbd::rigidbody::GeneralizedCoordinates &Q,
-        biorbd::rigidbody::GeneralizedVelocity &QDot)
-{
-    // If the cinematic has not been updated
-    biorbd::utils::Error::check(*m_isKinematicsComputed, "ComputeKinematics must be call before calling updateKinematics");
-
-    const biorbd::utils::Vector& tp(m_integrator->getX(step));
-    for (unsigned int i=0; i< static_cast<unsigned int>(tp.rows()/2); i++){
-        Q(i) = tp(i);
-        QDot(i) = tp(i+tp.rows()/2);
-    }
-}
-unsigned int biorbd::rigidbody::Joints::nbInterationStep() const
-{
-    return m_integrator->steps();
-}
-
 
 unsigned int biorbd::rigidbody::Joints::AddSegment(
         const biorbd::utils::String &segmentName,
@@ -914,18 +874,17 @@ unsigned int biorbd::rigidbody::Joints::nbQuat() const{
     return *m_nRotAQuat;
 }
 
-biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Joints::computeQdot(
+biorbd::rigidbody::GeneralizedVelocity biorbd::rigidbody::Joints::computeQdot(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedCoordinates &QDot,
         const double k_stab)
 {
-    biorbd::rigidbody::GeneralizedCoordinates QDotOut;
+    biorbd::rigidbody::GeneralizedVelocity QDotOut(Q.size());
     // Verify if there are quaternions, if not the derivate is directly QDot
     if (!m_nRotAQuat){
         QDotOut = QDot;
         return QDotOut;
     }
-    QDotOut.resize(Q.size()); // Create an empty vector of the final dimension
     unsigned int cmpQuat(0);
     unsigned int cmpDof(0);
     for (unsigned int i=0; i<nbSegment(); ++i){
@@ -956,6 +915,43 @@ biorbd::rigidbody::GeneralizedCoordinates biorbd::rigidbody::Joints::computeQdot
         cmpDof += segment_i.nbDof();
     }
     return QDotOut;
+}
+
+biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDynamics(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedVelocity &QDot,
+        const biorbd::rigidbody::GeneralizedTorque &Tau,
+        std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext)
+{
+    biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
+    RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, f_ext);
+    return QDDot;
+}
+
+biorbd::rigidbody::GeneralizedAcceleration
+biorbd::rigidbody::Joints::ForwardDynamicsConstraintsDirect(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedVelocity &QDot,
+        const biorbd::rigidbody::GeneralizedTorque &Tau,
+        biorbd::rigidbody::Contacts &CS,
+        std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext)
+{
+    biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
+    CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
+    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, f_ext);
+    return QDDot;
+}
+
+biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDynamicsConstraintsDirect(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedVelocity &QDot,
+        const biorbd::rigidbody::GeneralizedTorque &Tau,
+        std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext)
+{
+    biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
+    biorbd::rigidbody::Contacts CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
+    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, f_ext);
+    return QDDot;
 }
 
 

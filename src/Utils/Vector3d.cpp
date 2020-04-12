@@ -113,6 +113,21 @@ void biorbd::utils::Vector3d::setType()
 }
 
 #ifdef BIORBD_USE_CASADI_MATH
+biorbd::utils::Scalar biorbd::utils::Vector3d::x() const
+{
+    return (*this)[0];
+}
+
+biorbd::utils::Scalar biorbd::utils::Vector3d::y() const
+{
+    return (*this)[1];
+}
+
+biorbd::utils::Scalar biorbd::utils::Vector3d::z() const
+{
+    return (*this)[2];
+}
+
 void biorbd::utils::Vector3d::operator=(
         const RBDLCasadiMath::MX_Xd_SubMatrix &other)
 {

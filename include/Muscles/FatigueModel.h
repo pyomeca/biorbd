@@ -62,6 +62,7 @@ public:
     virtual void computeTimeDerivativeState(
             const biorbd::muscles::StateDynamics& emg);
 
+#ifndef BIORBD_USE_CASADI_MATH
     ///
     /// \brief Set the fatigue state
     /// \param active
@@ -71,6 +72,7 @@ public:
             const biorbd::utils::Scalar& active,
             const biorbd::utils::Scalar& fatigued,
             const biorbd::utils::Scalar& resting);
+#endif
 
     ///
     /// \brief Return the fatigue state

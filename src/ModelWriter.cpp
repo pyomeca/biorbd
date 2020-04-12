@@ -13,6 +13,7 @@
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
 
+#ifndef BIORBD_USE_CASADI_MATH
 void biorbd::Writer::writeModel(biorbd::Model & model,
         const biorbd::utils::Path& pathToWrite){
     biorbd::utils::String sep("\t"); // separator in the file
@@ -111,3 +112,4 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
     biorbdModelFile.close();
 
 }
+#endif

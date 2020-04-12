@@ -15,6 +15,7 @@ class Path;
 class BIORBD_API Writer
 {
 public:
+#ifndef BIORBD_USE_CASADI_MATH
     ///
     /// \brief Writes the model on the computer
     /// \param model The model to write
@@ -23,7 +24,7 @@ public:
     static void writeModel(
             biorbd::Model &model,
             const biorbd::utils::Path& pathToWrite);
-
+#endif
 };
 
 }
