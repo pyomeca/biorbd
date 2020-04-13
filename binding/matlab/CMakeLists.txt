@@ -72,7 +72,7 @@ foreach(CPP_FILE ${CPP_FILES})
 
     # Set runtime path for linux
     set_target_properties(${PROJECT_NAME} PROPERTIES
-        INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${${BIORBD_NAME}_BIN_FOLDER}"
+        INSTALL_RPATH "${${BIORBD_NAME}_BIN_FOLDER}"
         INSTALL_RPATH_USE_LINK_PATH TRUE
     )
 

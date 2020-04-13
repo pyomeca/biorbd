@@ -135,7 +135,7 @@ if(WIN32)
     set(${BIORBD_NAME}_INCLUDE_FOLDER "include/${BIORBD_NAME}")
 else()
     set(${BIORBD_NAME}_LIB_FOLDER "lib/${BIORBD_NAME}")
-    set(${BIORBD_NAME}_BIN_FOLDER "lib/${BIORBD_NAME}")
+    set(${BIORBD_NAME}_BIN_FOLDER "${CMAKE_INSTALL_PREFIX}/lib/${BIORBD_NAME}")
     set(${BIORBD_NAME}_INCLUDE_FOLDER "include/${BIORBD_NAME}")
 endif()
 set_target_properties(${BIORBD_NAME} PROPERTIES
