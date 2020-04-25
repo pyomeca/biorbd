@@ -127,6 +127,23 @@ biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorq
     return muscularJointTorque(emg, dummy, updateKin, Q, QDot);
 }
 
+biorbd::utils::Vector biorbd::muscles::Muscles::activationDot(
+        const std::vector<biorbd::muscles::StateDynamics> &states,
+        bool areadyNormalized)
+{
+    biorbd::utils::Vector activationDot(nbMuscleTotal());
+
+    unsigned int cmp(0);
+    for (unsigned int i=0; i<nbMuscleGroups(); ++i)
+        for (unsigned int j=0; j<muscleGroup(i).nbMuscles(); ++j){
+             // Recueillir dérivées d'activtion
+            activationDot(cmp) = muscleGroup(i).muscle(j).activationDot(states[cmp], areadyNormalized);
+            ++cmp;
+        }
+
+    return activationDot;
+}
+
 // From Muscular Force
 biorbd::rigidbody::GeneralizedTorque biorbd::muscles::Muscles::muscularJointTorque(
         const biorbd::utils::Vector &F,

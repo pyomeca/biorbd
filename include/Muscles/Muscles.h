@@ -221,6 +221,16 @@ public:
             const biorbd::rigidbody::GeneralizedVelocity* QDot = nullptr);
 
     ///
+    /// \brief Interface that returns in a vector all the activations dot
+    /// \param states The state of the muscle
+    /// \param areadyNormalized If the states are already normalized
+    /// \return All the activations dot
+    ///
+    biorbd::utils::Vector activationDot(
+            const std::vector<biorbd::muscles::StateDynamics>& states,
+            bool areadyNormalized = true);
+
+    ///
     /// \brief Return the previously computed muscle length jacobian
     /// \return The muscle length jacobian
     ///
