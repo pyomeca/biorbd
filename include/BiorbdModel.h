@@ -89,6 +89,14 @@ public:
     Model(
             const biorbd::utils::Path& path);
 
+private:
+    std::shared_ptr<biorbd::utils::Path> m_path;
+public:
+    ///
+    /// \brief Returns the path of .bioMod file used to load the model. If no file was used, it remains empty
+    /// \return The path of .bioMod file used to load the model
+    ///
+    biorbd::utils::Path path() const;
 };
 
 }
