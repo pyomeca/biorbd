@@ -6,6 +6,11 @@
 #include "ModelReader.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/NodeSegment.h"
+#include "Utils/String.h"
+
+biorbd::utils::String getVersion(){
+    return BIORBD_VERSION;
+}
 
 biorbd::Model::Model()
 {

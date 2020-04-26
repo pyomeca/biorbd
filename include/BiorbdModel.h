@@ -53,6 +53,12 @@
 /// Enjoy biorbding!
 ///
 
+///
+/// \brief Returns the current version of biorbd
+/// \return The current version of biorbd
+///
+biorbd::utils::String getVersion();
+
 namespace biorbd {
 ///
 /// \brief The actual musculoskeletal model that holds everything in biorbd

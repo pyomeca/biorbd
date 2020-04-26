@@ -82,10 +82,8 @@ INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/${BIORBD_NAME}.py"
 INSTALL(FILES "${CMAKE_CURRENT_SOURCE_DIR}/__init__.py"
     DESTINATION "${Python3_SITELIB}/${BIORBD_NAME}")
 
-# Create the version file
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/_version.py.i"
-    "${CMAKE_CURRENT_BINARY_DIR}/_version.py")
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/_version.py"
+# Install the version file
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/_version.py"
     DESTINATION "${Python3_SITELIB}/${BIORBD_NAME}")
 
 # Check if swig has its version 3 or 4, to choose the right place to put the library
