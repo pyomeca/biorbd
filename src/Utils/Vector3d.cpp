@@ -5,7 +5,7 @@
 #include "Utils/Vector.h"
 
 biorbd::utils::Vector3d::Vector3d() :
-    RigidBodyDynamics::Math::Vector3d (),
+    RigidBodyDynamics::Math::Vector3d (RigidBodyDynamics::Math::Vector3d::Zero()),
     biorbd::utils::Node ()
 {
     setType();
