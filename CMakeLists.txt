@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(biorbd VERSION 1.1.3)
+project(biorbd VERSION 1.2.3)
 set (CMAKE_CXX_STANDARD 11)
 set (BIORBD_NAME ${PROJECT_NAME})
 

@@ -53,6 +53,12 @@
 /// Enjoy biorbding!
 ///
 
+///
+/// \brief Returns the current version of biorbd
+/// \return The current version of biorbd
+///
+biorbd::utils::String getVersion();
+
 namespace biorbd {
 ///
 /// \brief The actual musculoskeletal model that holds everything in biorbd
@@ -83,6 +89,14 @@ public:
     Model(
             const biorbd::utils::Path& path);
 
+private:
+    std::shared_ptr<biorbd::utils::Path> m_path;
+public:
+    ///
+    /// \brief Returns the path of .bioMod file used to load the model. If no file was used, it remains empty
+    /// \return The path of .bioMod file used to load the model
+    ///
+    biorbd::utils::Path path() const;
 };
 
 }
