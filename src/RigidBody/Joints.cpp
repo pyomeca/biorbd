@@ -584,6 +584,18 @@ std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Joints::CoMbySegm
     return out;
 }
 
+biorbd::utils::Matrix biorbd::rigidbody::Joints::CoMbySegmentInMatrix(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        bool updateKin)
+{
+    std::vector<biorbd::rigidbody::NodeSegment> allCoM(CoMbySegment(Q, updateKin));
+    biorbd::utils::Matrix CoMs(3, allCoM.size());
+    for (unsigned int i=0; i<allCoM.size(); ++i){
+        CoMs.block(0, i, 3, 1) = allCoM[i];
+    }
+    return CoMs;
+}
+
 
 biorbd::utils::Vector3d biorbd::rigidbody::Joints::CoMbySegment(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
