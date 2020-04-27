@@ -30,7 +30,12 @@ biorbd::utils::Vector3d biorbd::rigidbody::MeshFace::faceAsDouble()
 {
     return biorbd::utils::Vector3d(static_cast<double>((*m_face)[0]),
         static_cast<double>((*m_face)[1]),
-        static_cast<double>((*m_face)[2]));
+            static_cast<double>((*m_face)[2]));
+}
+
+std::vector<int> biorbd::rigidbody::MeshFace::face()
+{
+    return *m_face;
 }
 
 void biorbd::rigidbody::MeshFace::setFace(const std::vector<int> & pts)

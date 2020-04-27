@@ -63,6 +63,12 @@ public:
     ///
     biorbd::utils::Vector3d faceAsDouble();
 
+    ///
+    /// \brief Returns the face
+    /// \return The face
+    ///
+    std::vector<int> face();
+
 protected:
     std::shared_ptr<std::vector<int>> m_face; ///< The face
 

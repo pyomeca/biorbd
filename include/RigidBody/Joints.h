@@ -452,6 +452,16 @@ public:
             bool updateKin=true);
 
     ///
+    /// \brief Return the position of the center of mass of each segment in a matrix
+    /// \param Q The generalized coordinates
+    /// \param updateKin If the kinematics of the model should be computed
+    /// \return The position of the center of mass of each segment
+    ///
+    biorbd::utils::Matrix CoMbySegmentInMatrix(
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            bool updateKin=true);
+
+    ///
     /// \brief Return the position of the center of mass of segment idx
     /// \param Q The generalized coordinates
     /// \param idx The index of the segment
