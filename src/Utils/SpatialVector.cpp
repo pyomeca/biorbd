@@ -19,8 +19,8 @@ biorbd::utils::SpatialVector::SpatialVector(
 }
 
 biorbd::utils::SpatialVector::SpatialVector(
-        double v1, double v2, double v3,
-        double v4, double v5, double v6) :
+        Scalar v1, Scalar v2, Scalar v3,
+        Scalar v4, Scalar v5, Scalar v6) :
     RigidBodyDynamics::Math::SpatialVector (v1, v2, v3, v4, v5, v6)
 {
 
@@ -55,13 +55,13 @@ void biorbd::utils::SpatialVector::operator=(
 void biorbd::utils::SpatialVector::operator=(
         const RBDLCasadiMath::MX_Xd_SubMatrix& other)
 {
-    this->MX_Xd_dynamic::operator=(other);
+    this->RigidBodyDynamics::Math::SpatialVector::operator=(other);
 }
 
 void biorbd::utils::SpatialVector::operator=(
         const casadi::MX &other)
 {
-    this->MX_Xd_dynamic::operator=(other);
+    this->RigidBodyDynamics::Math::SpatialVector::operator=(other);
 }
 
 #endif

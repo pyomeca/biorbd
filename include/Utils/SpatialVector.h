@@ -40,8 +40,8 @@ public:
     /// \param v6 Sixth element
     ///
     SpatialVector(
-            double v1, double v2, double v3,
-            double v4, double v5, double v6);
+            biorbd::utils::Scalar v1, biorbd::utils::Scalar v2, biorbd::utils::Scalar v3,
+            biorbd::utils::Scalar v4, biorbd::utils::Scalar v5, biorbd::utils::Scalar v6);
 
 #ifdef BIORBD_USE_CASADI_MATH
     ///

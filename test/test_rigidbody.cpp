@@ -872,7 +872,7 @@ TEST(Dynamics, ForwardDynAndExternalForces)
     for (size_t i=0; i<2; ++i){
         double di = static_cast<double>(i);
         f_ext.push_back(biorbd::utils::SpatialVector(
-                            di*11.1, di*22.2, di*33.3, di*44.4, di*55.5, di*66.6));
+                            (di+1)*11.1, (di+1)*22.2, (di+1)*33.3, (di+1)*44.4, (di+1)*55.5, (di+1)*66.6));
     }
 
     // Set to random values
@@ -885,13 +885,12 @@ TEST(Dynamics, ForwardDynAndExternalForces)
     FILL_VECTOR(Tau, val);
 
     std::vector<double> QDDot_expected =
-    {22.138232885332471, -22.236945606535354, -79.535279003238784, 17.222933296327572,
-     -68.512726117895099, 97.666225283938488, 110.4045202552975, 100.65522227906702,
-     -273.70607969687029, 2674.0514315206074, -184.11129206716885, 756.81803841836597,
-     175.63722469035127};
+    {8.8871711208009998, -13.647827029817943, -33.606145294752132, 16.922669487341341,
+     -21.882821189868423, 41.15364990805439, 68.892537246574463, -324.59756885799197,
+     -447.99217990207387, 18884.241415786601, -331.24622725851572, 1364.7620674666462,
+     3948.4748602722384};
 
-//    CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamics, Q, QDot, Tau);
-    auto QDDot = model.ForwardDynamics(Q, QDot, Tau, &f_ext);
+    CALL_BIORBD_FUNCTION_3ARGS1PARAM(QDDot, model, ForwardDynamics, Q, QDot, Tau, &f_ext);
 
     for (unsigned int i = 0; i<model.nbQddot(); ++i){
         EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);

@@ -216,7 +216,7 @@ public:
     /// \param frame The frame to dispatch
     /// \return A spatial vector with the forces
     ///
-    std::vector<biorbd::utils::SpatialVector> dispatchedForce(
+    std::vector<RigidBodyDynamics::Math::SpatialVector> dispatchedForce(
             std::vector<std::vector<biorbd::utils::SpatialVector>> &spatialVector,
             unsigned int frame) const;
 
@@ -225,7 +225,7 @@ public:
     /// \param sv One spatial vector per force platform
     /// \return A spatial vector with the forces
     ///
-    std::vector<biorbd::utils::SpatialVector> dispatchedForce(
+    std::vector<RigidBodyDynamics::Math::SpatialVector> dispatchedForce(
             std::vector<biorbd::utils::SpatialVector> &sv) const;
     // ---------------------------- //
 

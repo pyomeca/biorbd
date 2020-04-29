@@ -190,7 +190,7 @@ unsigned int biorbd::rigidbody::Joints::nbSegment() const
      return static_cast<unsigned int>(m_segments->size());
 }
 
-std::vector<biorbd::utils::SpatialVector> biorbd::rigidbody::Joints::dispatchedForce(
+std::vector<RigidBodyDynamics::Math::SpatialVector> biorbd::rigidbody::Joints::dispatchedForce(
         std::vector<std::vector<biorbd::utils::SpatialVector>> &spatialVector,
         unsigned int frame) const
 {
@@ -203,13 +203,13 @@ std::vector<biorbd::utils::SpatialVector> biorbd::rigidbody::Joints::dispatchedF
     return dispatchedForce(sv2);
 }
 
-std::vector<biorbd::utils::SpatialVector> biorbd::rigidbody::Joints::dispatchedForce(
+std::vector<RigidBodyDynamics::Math::SpatialVector> biorbd::rigidbody::Joints::dispatchedForce(
         std::vector<biorbd::utils::SpatialVector> &sv) const{ // a spatialVector per platform
     // Output table
-    std::vector<biorbd::utils::SpatialVector> sv_out;
+    std::vector<RigidBodyDynamics::Math::SpatialVector> sv_out;
 
     // Null Spatial vector nul to fill the final table
-    biorbd::utils::SpatialVector sv_zero(0,0,0,0,0,0);
+    biorbd::utils::SpatialVector sv_zero(0.,0.,0.,0.,0.,0.);
     sv_out.push_back(sv_zero); // The first one is associated with the universe
 
     // Dispatch the forces
@@ -946,15 +946,13 @@ biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDyn
         std::vector<biorbd::utils::SpatialVector>* f_ext)
 {
     biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = nullptr;
     if (f_ext){
-        f_ext_rbdl = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
-        for (unsigned int i=0; i<f_ext->size(); ++i){
-            f_ext_rbdl->push_back( (*f_ext)[i] );
-        }
+        std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(*f_ext));
+        RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, &f_ext_rbdl);
     }
-    RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, f_ext_rbdl);
-    delete f_ext_rbdl;
+    else {
+        RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot);
+    }
     return QDDot;
 }
 
@@ -968,15 +966,13 @@ biorbd::rigidbody::Joints::ForwardDynamicsConstraintsDirect(
 {
     biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
     CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = nullptr;
     if (f_ext){
-        f_ext_rbdl = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
-        for (unsigned int i=0; i<f_ext->size(); ++i){
-            f_ext_rbdl->push_back( (*f_ext)[i] );
-        }
+        std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(*f_ext));
+        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, &f_ext_rbdl);
     }
-    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, f_ext_rbdl);
-    delete f_ext_rbdl;
+    else {
+        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot);
+    }
     return QDDot;
 }
 
@@ -988,15 +984,14 @@ biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDyn
 {
     biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
     biorbd::rigidbody::Contacts CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = nullptr;
+    CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
     if (f_ext){
-        f_ext_rbdl = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
-        for (unsigned int i=0; i<f_ext->size(); ++i){
-            f_ext_rbdl->push_back( (*f_ext)[i] );
-        }
+        std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(*f_ext));
+        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, &f_ext_rbdl);
     }
-    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, f_ext_rbdl);
-    delete f_ext_rbdl;
+    else {
+        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot);
+    }
     return QDDot;
 }
 
