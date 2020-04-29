@@ -11,6 +11,7 @@ class RotoTrans;
 class Vector3d;
 class Vector;
 class String;
+class SpatialVector;
 }}
 
 namespace biorbd {
@@ -93,7 +94,7 @@ public:
             unsigned int body_id_successor,
             const biorbd::utils::RotoTrans& X_predecessor,
             const biorbd::utils::RotoTrans& X_successor,
-            const biorbd::utils::Vector& axis,
+            const biorbd::utils::SpatialVector& axis,
             const biorbd::utils::String& name,
             bool enableStabilization = false,
             double stabilizationParam = 0.1);

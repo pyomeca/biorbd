@@ -3,6 +3,7 @@
 #include "Utils/String.h"
 #include "Utils/Scalar.h"
 #include "Utils/Vector.h"
+#include "Utils/SpatialVector.h"
 #include "Utils/Matrix.h"
 #include "Utils/Quaternion.h"
 #include "Utils/Node.h"
@@ -21,6 +22,7 @@ namespace std {
 
 %template(VecBiorbdVector) std::vector<biorbd::utils::Vector>;
 %template(MatBiorbdVector) std::vector<std::vector<biorbd::utils::Vector>>;
+%template(VecBiorbdSpatialVector) std::vector<biorbd::utils::SpatialVector>;
 %template(MatBiorbdMatrix) std::vector<biorbd::utils::Matrix>;
 %template(VecBiorbdRotoTrans) std::vector<biorbd::utils::RotoTrans>;
 %template(MatBiorbdRotoTrans) std::vector<std::vector<biorbd::utils::RotoTrans>>;
@@ -59,6 +61,7 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Quaternion.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Node.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Vector3d.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/SpatialVector.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/RotoTrans.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Rotation.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Range.h"

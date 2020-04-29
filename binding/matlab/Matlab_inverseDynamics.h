@@ -35,7 +35,7 @@ void Matlab_inverseDynamics( int, mxArray *plhs[],
     if (QDDot.size() != nFrame)
         mexErrMsgIdAndTxt( "MATLAB:dim:WrongDimension", "QDDot must have the same number of frames than Q");
 
-    std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> f_tp;
+    std::vector<std::vector<biorbd::utils::SpatialVector>> f_tp;
     if (externalForces){
         f_tp = getForcePlate(prhs, 5);
         if (f_tp.size() != nFrame)
@@ -53,8 +53,12 @@ void Matlab_inverseDynamics( int, mxArray *plhs[],
         Tau.setZero();
         if (externalForces){
             // Recevoir les plates-formes
-            std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext = model->dispatchedForce(f_tp[j]);
-            RigidBodyDynamics::InverseDynamics(*model, Q[j], QDot[j], QDDot[j], Tau, &f_ext);// Inverse Dynamics
+            std::vector<biorbd::utils::SpatialVector> f_ext = model->dispatchedForce(f_tp[j]);
+            std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = nullptr;
+            for (unsigned int i=0; i<f_ext.size(); ++i){
+                (*f_ext_rbdl).push_back( f_ext[i] );
+            }
+            RigidBodyDynamics::InverseDynamics(*model, Q[j], QDot[j], QDDot[j], Tau, f_ext_rbdl);// Inverse Dynamics
         }
         else
             RigidBodyDynamics::InverseDynamics(*model, Q[j], QDot[j], QDDot[j], Tau);// Inverse Dynamics

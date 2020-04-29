@@ -13,6 +13,7 @@ class RotoTrans;
 class Matrix;
 class Vector3d;
 class Range;
+class SpatialVector;
 }
 
 namespace rigidbody {
@@ -228,8 +229,8 @@ public:
     /// \param frame The frame to dispatch
     /// \return A spatial vector with the forces
     ///
-    std::vector<RigidBodyDynamics::Math::SpatialVector> dispatchedForce(
-            std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> &spatialVector,
+    std::vector<biorbd::utils::SpatialVector> dispatchedForce(
+            std::vector<std::vector<biorbd::utils::SpatialVector>> &spatialVector,
             unsigned int frame) const;
 
     ///
@@ -237,8 +238,8 @@ public:
     /// \param sv One spatial vector per force platform
     /// \return A spatial vector with the forces
     ///
-    std::vector<RigidBodyDynamics::Math::SpatialVector> dispatchedForce(
-            std::vector<RigidBodyDynamics::Math::SpatialVector> &sv) const;
+    std::vector<biorbd::utils::SpatialVector> dispatchedForce(
+            std::vector<biorbd::utils::SpatialVector> &sv) const;
     // ---------------------------- //
 
 
@@ -730,18 +731,32 @@ public:
 
     // ---- DYNAMIC INTERFACE ---- //
     ///
+    /// \brief Interface for the inverse dynamics of RBDL
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \param QDDot The Generalzed Acceleration
+    /// \param f_ext External force acting on the system if there are any
+    /// \return The Generalized Torques
+    ///
+    biorbd::rigidbody::GeneralizedTorque InverseDynamics(
+                const biorbd::rigidbody::GeneralizedCoordinates &Q,
+                const biorbd::rigidbody::GeneralizedVelocity &QDot,
+                const biorbd::rigidbody::GeneralizedAcceleration &QDDot,
+                std::vector<biorbd::utils::SpatialVector>* f_ext);
+
+    ///
     /// \brief Interface for the forward dynamics of RBDL
     /// \param Q The Generalized Coordinates
     /// \param QDot The Generalized Velocities
     /// \param Tau The Generalized Torques
     /// \param f_ext External force acting on the system if there are any
-    /// \return The The Generalized Accelerations
+    /// \return The Generalized Accelerations
     ///
     biorbd::rigidbody::GeneralizedAcceleration ForwardDynamics(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedVelocity& QDot,
             const biorbd::rigidbody::GeneralizedTorque& Tau,
-            std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext = nullptr);
+            std::vector<biorbd::utils::SpatialVector>* f_ext = nullptr);
 
     ///
     /// \brief Interface for the forward dynamics with contact of RBDL
@@ -750,14 +765,14 @@ public:
     /// \param Tau The Generalized Torques
     /// \param CS The Constraint set that will be filled
     /// \param f_ext External force acting on the system if there are any
-    /// \return The The Generalized Accelerations
+    /// \return The Generalized Accelerations
     ///
     biorbd::rigidbody::GeneralizedAcceleration ForwardDynamicsConstraintsDirect(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedVelocity& QDot,
             const biorbd::rigidbody::GeneralizedTorque& Tau,
             biorbd::rigidbody::Contacts& CS,
-            std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext = nullptr);
+            std::vector<biorbd::utils::SpatialVector>* f_ext = nullptr);
 
     ///
     /// \brief Interface for the forward dynamics with contact of RBDL
@@ -765,13 +780,13 @@ public:
     /// \param QDot The Generalized Velocities
     /// \param Tau The Generalized Torques
     /// \param f_ext External force acting on the system if there are any
-    /// \return The The Generalized Accelerations
+    /// \return The Generalized Accelerations
     ///
     biorbd::rigidbody::GeneralizedAcceleration ForwardDynamicsConstraintsDirect(
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedVelocity& QDot,
             const biorbd::rigidbody::GeneralizedTorque& Tau,
-            std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext = nullptr);
+            std::vector<biorbd::utils::SpatialVector>* f_ext = nullptr);
 
 protected:
     std::shared_ptr<std::vector<biorbd::rigidbody::Segment>> m_segments; ///< All the articulations
@@ -782,7 +797,6 @@ protected:
     std::shared_ptr<unsigned int> m_nbQdot; ///< The total number of Qdot
     std::shared_ptr<unsigned int> m_nbQddot; ///< The total number of Qddot
     std::shared_ptr<unsigned int> m_nRotAQuat; ///< The number of segments per quaternion
-    std::shared_ptr<bool> m_hasExternalForces; ///< If the model includes external force
     std::shared_ptr<bool> m_isKinematicsComputed; ///< If the kinematics are computed
     std::shared_ptr<double> m_totalMass; ///< Mass of all the bodies combined
 

@@ -12,6 +12,7 @@
 #include "Utils/Vector3d.h"
 #include "Utils/Rotation.h"
 #include "Utils/Range.h"
+#include "Utils/SpatialVector.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
@@ -98,7 +99,7 @@ void biorbd::Reader::readModelFile(
                 biorbd::utils::String trans = "";
                 biorbd::utils::String rot = "";
                 bool RTinMatrix(true);
-                if (version == 3) // By default for version 3 (not in matrix)
+                if (version >= 3) // By default for version 3 (not in matrix)
                     RTinMatrix = false;
                 bool isRTset(false);
                 double mass = 0.00000001;
@@ -560,7 +561,7 @@ void biorbd::Reader::readModelFile(
                 biorbd::utils::String successor_str("root");
                 biorbd::utils::RotoTrans X_predecessor;
                 biorbd::utils::RotoTrans X_successor;
-                biorbd::utils::Vector axis(6);
+                biorbd::utils::SpatialVector axis;
                 bool enableStabilization(false);
                 double stabilizationParam(-1);
                 while(file.read(property_tag) && property_tag.tolower().compare("endloopconstraint")){
@@ -1390,7 +1391,7 @@ void biorbd::Reader::readViconForceFile(
     }
 }
 
-std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>>
+std::vector<std::vector<biorbd::utils::SpatialVector>>
 biorbd::Reader::readViconForceFile(const biorbd::utils::String &path){
     // Read file
     std::vector<std::vector<unsigned int>> frame;
@@ -1401,13 +1402,13 @@ biorbd::Reader::readViconForceFile(const biorbd::utils::String &path){
     readViconForceFile(path, frame, frequency, force, moment, cop);
 
     // Redispatch the values in a vector of SpatialTransform
-    std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> st; // nb of platform per time
+    std::vector<std::vector<biorbd::utils::SpatialVector>> st; // nb of platform per time
     for (unsigned int j=0; j<force.size(); ++j){// nb platform
-        std::vector<RigidBodyDynamics::Math::SpatialVector> tp;
+        std::vector<biorbd::utils::SpatialVector> tp;
         for (unsigned int i=0; i<force[j].size(); ++i){ // timestamp
             const biorbd::utils::Vector3d& f = force[j][i];  // Linear forces (x,y,z)
             const biorbd::utils::Vector3d& m = moment[j][i]; // Moments (x,y,z)
-            tp.push_back(RigidBodyDynamics::Math::SpatialVector(m[0], m[1], m[2], f[0], f[1], f[2]));
+            tp.push_back(biorbd::utils::SpatialVector(m[0], m[1], m[2], f[0], f[1], f[2]));
         }
         st.push_back(tp);
     }
