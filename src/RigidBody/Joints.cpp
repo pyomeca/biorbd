@@ -929,11 +929,13 @@ biorbd::rigidbody::GeneralizedTorque biorbd::rigidbody::Joints::InverseDynamics(
     biorbd::rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = nullptr;
     if (f_ext){
+        f_ext_rbdl = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
         for (unsigned int i=0; i<f_ext->size(); ++i){
-            (*f_ext_rbdl).push_back( (*f_ext)[i] );
+            f_ext_rbdl->push_back( (*f_ext)[i] );
         }
     }
     RigidBodyDynamics::InverseDynamics(*this, Q, QDot, QDDot, Tau, f_ext_rbdl);
+    delete f_ext_rbdl;
     return Tau;
 }
 
@@ -946,11 +948,13 @@ biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDyn
     biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = nullptr;
     if (f_ext){
+        f_ext_rbdl = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
         for (unsigned int i=0; i<f_ext->size(); ++i){
-            (*f_ext_rbdl).push_back( (*f_ext)[i] );
+            f_ext_rbdl->push_back( (*f_ext)[i] );
         }
     }
     RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, f_ext_rbdl);
+    delete f_ext_rbdl;
     return QDDot;
 }
 
@@ -966,11 +970,13 @@ biorbd::rigidbody::Joints::ForwardDynamicsConstraintsDirect(
     CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = nullptr;
     if (f_ext){
+        f_ext_rbdl = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
         for (unsigned int i=0; i<f_ext->size(); ++i){
-            (*f_ext_rbdl).push_back( (*f_ext)[i] );
+            f_ext_rbdl->push_back( (*f_ext)[i] );
         }
     }
     RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, f_ext_rbdl);
+    delete f_ext_rbdl;
     return QDDot;
 }
 
@@ -984,11 +990,13 @@ biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDyn
     biorbd::rigidbody::Contacts CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = nullptr;
     if (f_ext){
+        f_ext_rbdl = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
         for (unsigned int i=0; i<f_ext->size(); ++i){
-            (*f_ext_rbdl).push_back( (*f_ext)[i] );
+            f_ext_rbdl->push_back( (*f_ext)[i] );
         }
     }
     RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, f_ext_rbdl);
+    delete f_ext_rbdl;
     return QDDot;
 }
 
