@@ -235,7 +235,7 @@ void biorbd::Reader::readModelFile(
                     else if (!property_tag.tolower().compare("com"))
                         for (unsigned int i=0; i<3; ++i)
                             file.read(com(i), variable);
-                    else if (!property_tag.tolower().compare("forceplate"))
+                    else if (!property_tag.tolower().compare("forceplate") || !property_tag.tolower().compare("externalforceindex"))
                         file.read(PF);
                     else if (!property_tag.tolower().compare("mesh")){
                         if (segmentByFile==-1)

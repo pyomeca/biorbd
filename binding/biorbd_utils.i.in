@@ -39,6 +39,17 @@ namespace std {
     }
 }
 
+%extend biorbd::utils::Rotation{
+    biorbd::utils::Rotation transpose(){
+        return $self->RigidBodyDynamics::Math::Matrix3d::transpose();
+    }
+
+    biorbd::utils::Rotation operator*(
+                const biorbd::utils::Rotation& other){
+        return $self->RigidBodyDynamics::Math::Matrix3d::operator*(other);
+    }
+}
+
 %include "@CMAKE_SOURCE_DIR@/include/Utils/UtilsEnum.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/String.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Path.h"
