@@ -192,19 +192,6 @@ public:
     unsigned int nbQuat() const;
 
     ///
-    /// \brief Set if the model to include external forces or not
-    /// \param hasExternalForces If the model to include external forces or not
-    ///
-    void setHasExternalForces(
-            bool hasExternalForces);
-
-    ///
-    /// \brief Return if the model to include external forces or not
-    /// \return If the model to include external forces or not
-    ///
-    bool hasExternalForces() const;
-
-    ///
     /// \brief Get a segment of index idx
     /// \param idx Index of the segment
     /// \return The segment

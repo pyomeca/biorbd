@@ -317,11 +317,6 @@ void biorbd::Reader::readModelFile(
                 biorbd::rigidbody::SegmentCharacteristics characteristics(mass,com,inertia,mesh);
                 model->AddSegment(name, parent_str, trans, rot, QRanges, QDotRanges, QDDotRanges, characteristics, RT, PF);
             }
-            else if (!main_tag.tolower().compare("external_forces")){
-                bool externalF = false;
-                file.read(externalF);
-                model->setHasExternalForces(externalF);
-            }
             else if (!main_tag.tolower().compare("gravity")){
                 biorbd::utils::Vector3d gravity(0,0,0);
                 for (unsigned int i=0; i<3; ++i)

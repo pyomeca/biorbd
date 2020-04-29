@@ -32,7 +32,6 @@ biorbd::rigidbody::Joints::Joints() :
     m_nbQdot(std::make_shared<unsigned int>(0)),
     m_nbQddot(std::make_shared<unsigned int>(0)),
     m_nRotAQuat(std::make_shared<unsigned int>(0)),
-    m_hasExternalForces(std::make_shared<bool>(false)),
     m_isKinematicsComputed(std::make_shared<bool>(false)),
     m_totalMass(std::make_shared<double>(0))
 {
@@ -48,7 +47,6 @@ biorbd::rigidbody::Joints::Joints(const biorbd::rigidbody::Joints &other) :
     m_nbQdot(other.m_nbQdot),
     m_nbQddot(other.m_nbQddot),
     m_nRotAQuat(other.m_nRotAQuat),
-    m_hasExternalForces(other.m_hasExternalForces),
     m_isKinematicsComputed(other.m_isKinematicsComputed),
     m_totalMass(other.m_totalMass)
 {
@@ -79,7 +77,6 @@ void biorbd::rigidbody::Joints::DeepCopy(const biorbd::rigidbody::Joints &other)
     *m_nbQdot = *other.m_nbQdot;
     *m_nbQddot = *other.m_nbQddot;
     *m_nRotAQuat = *other.m_nRotAQuat;
-    *m_hasExternalForces = *other.m_hasExternalForces;
     *m_isKinematicsComputed = *other.m_isKinematicsComputed;
     *m_totalMass = *other.m_totalMass;
 }
@@ -121,12 +118,6 @@ unsigned int biorbd::rigidbody::Joints::nbRoot() const {
     return *m_nbRoot;
 }
 
-void biorbd::rigidbody::Joints::setHasExternalForces(bool hasExternalForces) {
-    *m_hasExternalForces = hasExternalForces;
-}
-bool biorbd::rigidbody::Joints::hasExternalForces() const {
-    return *m_hasExternalForces;
-}
 double biorbd::rigidbody::Joints::mass() const {
     return *m_totalMass;
 }
