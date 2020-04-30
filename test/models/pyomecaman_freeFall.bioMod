@@ -1,10 +1,4 @@
-version    3
-
-// General informations
-root_actuated 0
-external_forces 0
-
-
+version    4
 
 // Informations about Pelvis segment
     // Segment

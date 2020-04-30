@@ -3,7 +3,6 @@
 
 #include <vector>
 #include "biorbdConfig.h"
-#include "rbdl_math.h"
 
 namespace biorbd {
 class Model;
@@ -18,6 +17,7 @@ class Path;
 class String;
 class Vector3d;
 class Vector;
+class SpatialVector;
 }
 
 ///
@@ -105,7 +105,7 @@ public:
     /// \param path The path of the file
     /// \return Returns all the data in a spatial transform format
     ///
-    static std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>>
+    static std::vector<std::vector<biorbd::utils::SpatialVector>>
     readViconForceFile(
             const biorbd::utils::String &path);
 

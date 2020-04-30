@@ -13,6 +13,7 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/Node.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Scalar.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Vector3d.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/SpatialVector.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Range.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Rotation.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/RotoTransNode.cpp"
