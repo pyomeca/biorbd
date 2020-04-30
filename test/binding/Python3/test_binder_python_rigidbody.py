@@ -69,3 +69,59 @@ def test_dof_ranges():
     QRanges = m.segment(10).QRanges()
     assert(QRanges[0].min() == -pi / 2)
     assert(QRanges[0].max() == pi / 2)
+
+def test_CoM():
+    m = biorbd.Model('../../models/pyomecaman.bioMod')
+    q_test_pyomecaman = [0.1, 0.1, 0.1, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3]
+    q = q_test_pyomecaman
+    q_dot = [0]*m.nbQ()
+    q_ddot = [0]*m.nbQ()
+    for i in range(m.nbQ()):
+        q_dot[i] = q_test_pyomecaman[i] * 10
+        q_ddot[i] = q_test_pyomecaman[i] * 100
+
+    if biorbd.currentLinearAlgebraBackend() == 1:
+        # If CasADi backend is used
+        from casadi import Function, MX
+
+        q_sym = MX.sym("q", m.nbQ(), 1)
+        q_dot_sym = MX.sym("q_dot", m.nbQdot(), 1)
+        q_ddot_sym = MX.sym("q_ddot", m.nbQddot(), 1)
+
+        CoM_func = Function(
+            "Compute_CoM",
+            [q_sym],
+            [m.CoM(q_sym).to_mx()],
+            ["q"],
+            ["CoM"],
+        ).expand()
+
+        CoM_dot_func = Function(
+            "Compute_CoM_dot",
+            [q_sym, q_dot_sym],
+            [m.CoMdot(q_sym, q_dot_sym).to_mx()],
+            ["q", "q_dot"],
+            ["CoM_dot"],
+        ).expand()
+
+        CoM_ddot_func = Function(
+            "Compute_CoM_ddot",
+            [q_sym, q_dot_sym, q_ddot_sym],
+            [m.CoMddot(q_sym, q_dot_sym, q_ddot_sym).to_mx()],
+            ["q", "q_dot", "q_ddot"],
+            ["CoM_ddot"],
+        ).expand()
+
+        CoM = CoM_func(q)
+        CoM_dot =  CoM_dot_func(q, q_dot)
+        CoM_ddot = CoM_ddot_func(q, q_dot, q_ddot)
+
+    elif not biorbd.currentLinearAlgebraBackend():
+        # If Eigen backend is used
+        CoM = m.CoM(q)
+        CoM_dot = m.CoMdot(q, q_dot)
+        CoM_ddot = m.CoMddot(q, q_dot, q_ddot)
+
+    return CoM, CoM_dot, CoM_ddot
+
+
