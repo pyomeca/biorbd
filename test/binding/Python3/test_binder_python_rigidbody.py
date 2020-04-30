@@ -70,7 +70,7 @@ def test_dof_ranges():
     assert(QRanges[0].min() == -pi / 2)
     assert(QRanges[0].max() == pi / 2)
     
-def test_forward_dynamics:
+def test_forward_dynamics():
     m = biorbd.Model("../../models/pyomecaman_withActuators.bioMod")
 
     q = np.array([i*1.1 for i in range(m.nbQ())])
