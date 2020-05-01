@@ -69,16 +69,56 @@ def test_dof_ranges():
     QRanges = m.segment(10).QRanges()
     assert(QRanges[0].min() == -pi / 2)
     assert(QRanges[0].max() == pi / 2)
+    
+def test_forward_dynamics():
+    m = biorbd.Model("../../models/pyomecaman_withActuators.bioMod")
+
+    q = np.array([i*1.1 for i in range(m.nbQ())])
+    qdot = np.array([i*1.1 for i in range(m.nbQ())])
+    tau = np.array([i*1.1 for i in range(m.nbQ())])
+    
+    qddot = m.ForwardDynamics(q, qdot, tau).to_array()
+    qddot_expected = np.array(
+        [
+            20.554883896960259, -22.317642013324736, -77.406439058256126, 
+            17.382961188212313, -63.426361095191858, 93.816468824985876, 
+            106.46105024484631, 95.116641811710167, -268.1961283528546, 
+            2680.3632159799949, -183.4582596257801, 755.89411812405604,
+            163.60239754283589
+        ]
+    )
+    np.testing.assert_almost_equal(qddot, qddot_expected)
+    
+    # With external forces
+    f_ext = biorbd.VecBiorbdSpatialVector(
+        [
+            biorbd.SpatialVector(11.1, 22.2, 33.3, 44.4, 55.5, 66.6), 
+            biorbd.SpatialVector(11.1*2, 22.2*2, 33.3*2, 44.4*2, 55.5*2, 66.6*2)
+        ]
+    )
+
+    qddot = m.ForwardDynamics(q, qdot, tau, f_ext).to_array()
+    qddot_expected = np.array(
+        [
+            8.8871711208009998, -13.647827029817943, -33.606145294752132, 
+            16.922669487341341, -21.882821189868423, 41.15364990805439, 
+            68.892537246574463, -324.59756885799197, -447.99217990207387, 
+            18884.241415786601, -331.24622725851572, 1364.7620674666462,
+            3948.4748602722384
+        ]
+    )
+    np.testing.assert_almost_equal(qddot, qddot_expected)
 
 def test_CoM():
     m = biorbd.Model('../../models/pyomecaman.bioMod')
-    q_test_pyomecaman = [0.1, 0.1, 0.1, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3]
-    q = q_test_pyomecaman
-    q_dot = [0]*m.nbQ()
-    q_ddot = [0]*m.nbQ()
-    for i in range(m.nbQ()):
-        q_dot[i] = q_test_pyomecaman[i] * 10
-        q_ddot[i] = q_test_pyomecaman[i] * 100
+
+    q = np.array([0.1, 0.1, 0.1, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3])
+    q_dot = np.array([1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3])
+    q_ddot = np.array([10, 10, 10, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30])
+
+    expected_CoM = np.array([[-0.0034679564024098523], [0.15680579877453169], [0.07808112642459612]])
+    expected_CoM_dot = np.array([[-0.05018973433722229], [1.4166208451420528], [1.4301750486035787]])
+    expected_CoM_ddot = np.array([[-0.7606169667295027], [11.508107073695976], [16.58853835505851]])
 
     if biorbd.currentLinearAlgebraBackend() == 1:
         # If CasADi backend is used
@@ -122,6 +162,9 @@ def test_CoM():
         CoM_dot = m.CoMdot(q, q_dot)
         CoM_ddot = m.CoMddot(q, q_dot, q_ddot)
 
-    return CoM, CoM_dot, CoM_ddot
-
-
+    # print(q)
+    # print(np.array(CoM))
+    # print(expected_CoM)
+    np.testing.assert_almost_equal(np.array(CoM), expected_CoM)
+    np.testing.assert_almost_equal(CoM_dot, expected_CoM_dot)
+    np.testing.assert_almost_equal(CoM_ddot, expected_CoM_ddot)

@@ -4,6 +4,7 @@
 #include "Utils/String.h"
 #include "Utils/Matrix.h"
 #include "Utils/Rotation.h"
+#include "Utils/SpatialVector.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
@@ -330,7 +331,7 @@ std::vector<biorbd::rigidbody::GeneralizedTorque> getParameterGeneralizedTorque(
     return AllGeneralizedTorque;
 }
 
-std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> getForcePlate(const mxArray*prhs[], unsigned int idx){
+std::vector<std::vector<biorbd::utils::SpatialVector>> getForcePlate(const mxArray*prhs[], unsigned int idx){
     if (!(mxIsDouble(prhs[idx]))) {
         mexErrMsgIdAndTxt( "MATLAB:findnz:invalidInputType",
                            "Argument 6 must be of type double.");
@@ -354,12 +355,12 @@ std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> getForcePlate(c
     double *pf = mxGetPr(prhs[idx]); // Matrice des plateforme de force
 
     // stockage des plateformes
-    std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> PF;
+    std::vector<std::vector<biorbd::utils::SpatialVector>> PF;
     unsigned int cmp(0);
     for (unsigned int j=0; j<timeStamp; ++j){
-        std::vector<RigidBodyDynamics::Math::SpatialVector> PF_tp;
+        std::vector<biorbd::utils::SpatialVector> PF_tp;
         for (unsigned int i=0; i<nPF; ++i){ // pour chaque plateforme
-            RigidBodyDynamics::Math::SpatialVector tp(pf[0+cmp*6], pf[1+cmp*6], pf[2+cmp*6], pf[3+cmp*6], pf[4+cmp*6], pf[5+cmp*6]);
+            biorbd::utils::SpatialVector tp(pf[0+cmp*6], pf[1+cmp*6], pf[2+cmp*6], pf[3+cmp*6], pf[4+cmp*6], pf[5+cmp*6]);
             PF_tp.push_back(tp);
             cmp++;
         }

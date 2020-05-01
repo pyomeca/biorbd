@@ -40,63 +40,6 @@ namespace std {
 
 // Exposing some useful functions
 %extend biorbd::Model{
-    biorbd::rigidbody::GeneralizedTorque InverseDynamics(
-                const biorbd::rigidbody::GeneralizedCoordinates &Q,
-                const biorbd::rigidbody::GeneralizedVelocity &QDot,
-                const biorbd::rigidbody::GeneralizedAcceleration &QDDot) {
-        self->checkGeneralizedDimensions(&Q, &QDot, &QDDot);
-
-        biorbd::rigidbody::GeneralizedTorque Tau(self->nbGeneralizedTorque());
-        RigidBodyDynamics::InverseDynamics(*self, Q, QDot, QDDot, Tau);
-        return Tau;
-    }
-
-    biorbd::rigidbody::GeneralizedCoordinates ForwardDynamics(
-                const biorbd::rigidbody::GeneralizedCoordinates &Q,
-                const biorbd::rigidbody::GeneralizedVelocity &QDot,
-                const biorbd::rigidbody::GeneralizedTorque &Tau) {
-        self->checkGeneralizedDimensions(&Q, &QDot, nullptr, &Tau);
-
-        biorbd::rigidbody::GeneralizedCoordinates QDDot(*self);
-        RigidBodyDynamics::ForwardDynamics(*self, Q, QDot, Tau, QDDot);
-        return QDDot;
-    }
-
-    biorbd::rigidbody::GeneralizedCoordinates ForwardDynamicsLagrangian(
-                const biorbd::rigidbody::GeneralizedCoordinates &Q,
-                const biorbd::rigidbody::GeneralizedVelocity &QDot,
-                const biorbd::rigidbody::GeneralizedTorque &Tau) {
-        self->checkGeneralizedDimensions(&Q, &QDot, nullptr, &Tau);
-
-        biorbd::rigidbody::GeneralizedCoordinates QDDot(*self);
-        RigidBodyDynamics::ForwardDynamicsLagrangian(*self, Q, QDot, Tau, QDDot);
-        return QDDot;
-    }
-
-    biorbd::rigidbody::GeneralizedCoordinates ForwardDynamicsConstraintsDirect(
-                const biorbd::rigidbody::GeneralizedCoordinates &Q,
-                const biorbd::rigidbody::GeneralizedVelocity &QDot,
-                const biorbd::rigidbody::GeneralizedTorque &Tau,
-                biorbd::rigidbody::Contacts& CS) {
-        self->checkGeneralizedDimensions(&Q, &QDot, nullptr, &Tau);
-
-        biorbd::rigidbody::GeneralizedCoordinates QDDot(*self);
-        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
-        return QDDot;
-    }
-
-    biorbd::rigidbody::GeneralizedCoordinates ForwardDynamicsConstraintsDirect(
-                const biorbd::rigidbody::GeneralizedCoordinates &Q,
-                const biorbd::rigidbody::GeneralizedVelocity &QDot,
-                const biorbd::rigidbody::GeneralizedTorque &Tau) {
-        self->checkGeneralizedDimensions(&Q, &QDot, nullptr, &Tau);
-
-        biorbd::rigidbody::GeneralizedCoordinates QDDot(*self);
-        biorbd::rigidbody::Contacts& CS = self->getConstraints();
-        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*self, Q, QDot, Tau, CS, QDDot);
-        return QDDot;
-    }
-
 #ifdef BIORBD_USE_CASADI_MATH
     casadi::MX markers(
                 const casadi::MX &Q){

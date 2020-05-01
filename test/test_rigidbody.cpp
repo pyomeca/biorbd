@@ -7,6 +7,7 @@
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 #include "Utils/Range.h"
+#include "Utils/SpatialVector.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
@@ -860,6 +861,42 @@ TEST(Dynamics, Forward)
         EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);
     }
 }
+
+TEST(Dynamics, ForwardDynAndExternalForces)
+{
+    biorbd::Model model(modelPathForGeneralTesting);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
+    DECLARE_GENERALIZED_TORQUE(Tau, model);
+    std::vector<biorbd::utils::SpatialVector> f_ext;
+    for (size_t i=0; i<2; ++i){
+        double di = static_cast<double>(i);
+        f_ext.push_back(biorbd::utils::SpatialVector(
+                            (di+1)*11.1, (di+1)*22.2, (di+1)*33.3, (di+1)*44.4, (di+1)*55.5, (di+1)*66.6));
+    }
+
+    // Set to random values
+    std::vector<double> val(model.nbQ());
+    for (size_t i=0; i<val.size(); ++i){
+        val[i] = static_cast<double>(i) * 1.1;
+    }
+    FILL_VECTOR(Q, val);
+    FILL_VECTOR(QDot, val);
+    FILL_VECTOR(Tau, val);
+
+    std::vector<double> QDDot_expected =
+    {8.8871711208009998, -13.647827029817943, -33.606145294752132, 16.922669487341341,
+     -21.882821189868423, 41.15364990805439, 68.892537246574463, -324.59756885799197,
+     -447.99217990207387, 18884.241415786601, -331.24622725851572, 1364.7620674666462,
+     3948.4748602722384};
+
+    CALL_BIORBD_FUNCTION_3ARGS1PARAM(QDDot, model, ForwardDynamics, Q, QDot, Tau, &f_ext);
+
+    for (unsigned int i = 0; i<model.nbQddot(); ++i){
+        EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);
+    }
+}
+
 
 TEST(Dynamics, ForwardLoopConstraint){
     biorbd::Model model(modelPathForLoopConstraintTesting);

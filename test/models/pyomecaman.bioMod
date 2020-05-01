@@ -1,10 +1,4 @@
-version    3
-
-// General informations
-root_actuated 1
-external_forces 0
-
-
+version    4
 
 // Informations about Pelvis segment
     // Segment
@@ -655,6 +649,7 @@ external_forces 0
         mesh    -0.04091    -0.01479    -0.03150
         mesh    0.01175    -0.03816    -0.02629
         mesh    0.06379    0.09487    -0.01280
+        forceplate 0
     endsegment
     
     // Markers
@@ -859,6 +854,7 @@ external_forces 0
         mesh    0.04091    -0.01479    -0.03150
         mesh    -0.01175    -0.03816    -0.02629
         mesh    -0.06379    0.09487    -0.01280
+        forceplate 1
     endsegment
 
     // Markers

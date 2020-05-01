@@ -10,6 +10,7 @@
 #include "Utils/Error.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/Rotation.h"
+#include "Utils/SpatialVector.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
@@ -31,7 +32,6 @@ biorbd::rigidbody::Joints::Joints() :
     m_nbQdot(std::make_shared<unsigned int>(0)),
     m_nbQddot(std::make_shared<unsigned int>(0)),
     m_nRotAQuat(std::make_shared<unsigned int>(0)),
-    m_hasExternalForces(std::make_shared<bool>(false)),
     m_isKinematicsComputed(std::make_shared<bool>(false)),
     m_totalMass(std::make_shared<double>(0))
 {
@@ -47,7 +47,6 @@ biorbd::rigidbody::Joints::Joints(const biorbd::rigidbody::Joints &other) :
     m_nbQdot(other.m_nbQdot),
     m_nbQddot(other.m_nbQddot),
     m_nRotAQuat(other.m_nRotAQuat),
-    m_hasExternalForces(other.m_hasExternalForces),
     m_isKinematicsComputed(other.m_isKinematicsComputed),
     m_totalMass(other.m_totalMass)
 {
@@ -78,7 +77,6 @@ void biorbd::rigidbody::Joints::DeepCopy(const biorbd::rigidbody::Joints &other)
     *m_nbQdot = *other.m_nbQdot;
     *m_nbQddot = *other.m_nbQddot;
     *m_nRotAQuat = *other.m_nRotAQuat;
-    *m_hasExternalForces = *other.m_hasExternalForces;
     *m_isKinematicsComputed = *other.m_isKinematicsComputed;
     *m_totalMass = *other.m_totalMass;
 }
@@ -120,12 +118,6 @@ unsigned int biorbd::rigidbody::Joints::nbRoot() const {
     return *m_nbRoot;
 }
 
-void biorbd::rigidbody::Joints::setHasExternalForces(bool hasExternalForces) {
-    *m_hasExternalForces = hasExternalForces;
-}
-bool biorbd::rigidbody::Joints::hasExternalForces() const {
-    return *m_hasExternalForces;
-}
 double biorbd::rigidbody::Joints::mass() const {
     return *m_totalMass;
 }
@@ -199,11 +191,11 @@ unsigned int biorbd::rigidbody::Joints::nbSegment() const
 }
 
 std::vector<RigidBodyDynamics::Math::SpatialVector> biorbd::rigidbody::Joints::dispatchedForce(
-        std::vector<std::vector<RigidBodyDynamics::Math::SpatialVector>> &spatialVector,
+        std::vector<std::vector<biorbd::utils::SpatialVector>> &spatialVector,
         unsigned int frame) const
 {
     // Iterator on the force table
-    std::vector<RigidBodyDynamics::Math::SpatialVector> sv2; // Gather in the same table the values at the same instant of different platforms
+    std::vector<biorbd::utils::SpatialVector> sv2; // Gather in the same table the values at the same instant of different platforms
     for (auto vec : spatialVector)
         sv2.push_back(vec[frame]);
 
@@ -212,12 +204,12 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> biorbd::rigidbody::Joints::d
 }
 
 std::vector<RigidBodyDynamics::Math::SpatialVector> biorbd::rigidbody::Joints::dispatchedForce(
-        std::vector<RigidBodyDynamics::Math::SpatialVector> &sv) const{ // a spatialVector per platform
+        std::vector<biorbd::utils::SpatialVector> &sv) const{ // a spatialVector per platform
     // Output table
     std::vector<RigidBodyDynamics::Math::SpatialVector> sv_out;
 
     // Null Spatial vector nul to fill the final table
-    RigidBodyDynamics::Math::SpatialVector sv_zero(0,0,0,0,0,0);
+    biorbd::utils::SpatialVector sv_zero(0.,0.,0.,0.,0.,0.);
     sv_out.push_back(sv_zero); // The first one is associated with the universe
 
     // Dispatch the forces
@@ -929,14 +921,38 @@ biorbd::rigidbody::GeneralizedVelocity biorbd::rigidbody::Joints::computeQdot(
     return QDotOut;
 }
 
+biorbd::rigidbody::GeneralizedTorque biorbd::rigidbody::Joints::InverseDynamics(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedVelocity &QDot,
+        const biorbd::rigidbody::GeneralizedAcceleration &QDDot,
+        std::vector<biorbd::utils::SpatialVector>* f_ext) {
+    biorbd::rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
+    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = nullptr;
+    if (f_ext){
+        f_ext_rbdl = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
+        for (unsigned int i=0; i<f_ext->size(); ++i){
+            f_ext_rbdl->push_back( (*f_ext)[i] );
+        }
+    }
+    RigidBodyDynamics::InverseDynamics(*this, Q, QDot, QDDot, Tau, f_ext_rbdl);
+    delete f_ext_rbdl;
+    return Tau;
+}
+
 biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDynamics(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedVelocity &QDot,
         const biorbd::rigidbody::GeneralizedTorque &Tau,
-        std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext)
+        std::vector<biorbd::utils::SpatialVector>* f_ext)
 {
     biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
-    RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, f_ext);
+    if (f_ext){
+        std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(*f_ext));
+        RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, &f_ext_rbdl);
+    }
+    else {
+        RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot);
+    }
     return QDDot;
 }
 
@@ -946,11 +962,17 @@ biorbd::rigidbody::Joints::ForwardDynamicsConstraintsDirect(
         const biorbd::rigidbody::GeneralizedVelocity &QDot,
         const biorbd::rigidbody::GeneralizedTorque &Tau,
         biorbd::rigidbody::Contacts &CS,
-        std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext)
+        std::vector<biorbd::utils::SpatialVector> *f_ext)
 {
     biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
     CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
-    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, f_ext);
+    if (f_ext){
+        std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(*f_ext));
+        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, &f_ext_rbdl);
+    }
+    else {
+        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot);
+    }
     return QDDot;
 }
 
@@ -958,11 +980,18 @@ biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDyn
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedVelocity &QDot,
         const biorbd::rigidbody::GeneralizedTorque &Tau,
-        std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext)
+        std::vector<biorbd::utils::SpatialVector> *f_ext)
 {
     biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
     biorbd::rigidbody::Contacts CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
-    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, f_ext);
+    CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
+    if (f_ext){
+        std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(*f_ext));
+        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, &f_ext_rbdl);
+    }
+    else {
+        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot);
+    }
     return QDDot;
 }
 

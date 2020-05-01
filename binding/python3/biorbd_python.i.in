@@ -747,6 +747,29 @@ biorbd::rigidbody::GeneralizedAcceleration & {
 #endif
 };
 
+// --- Spatial Vector --- //
+%extend biorbd::utils::SpatialVector{
+#ifdef BIORBD_USE_CASADI_MATH
+    casadi::MX to_mx(){
+        return *dynamic_cast<casadi::MX*>($self);
+    };
+#else
+    PyObject* to_array(){
+        int nArraySize(1);
+        npy_intp * arraySizes = new npy_intp[nArraySize];
+        arraySizes[0] = 6;
+
+        double * node = new double[6];
+        for (unsigned int i=0; i<6; ++i){
+            node[i] = (*$self)(i);
+        }
+        PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, node);
+        PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+        return output;
+    }
+#endif
+};
+
 %extend biorbd::utils::RotoTrans{
 #ifdef BIORBD_USE_CASADI_MATH
     casadi::MX to_mx(){

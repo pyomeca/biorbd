@@ -8,6 +8,7 @@
 #include "Utils/Vector3d.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/Rotation.h"
+#include "Utils/SpatialVector.h"
 #include "RigidBody/Joints.h"
 
 biorbd::rigidbody::Contacts::Contacts() :
@@ -72,7 +73,7 @@ unsigned int biorbd::rigidbody::Contacts::AddLoopConstraint(
         unsigned int body_id_successor,
         const biorbd::utils::RotoTrans &X_predecessor,
         const biorbd::utils::RotoTrans &X_successor,
-        const biorbd::utils::Vector &axis,
+        const biorbd::utils::SpatialVector &axis,
         const biorbd::utils::String &name,
         bool enableStabilization,
         double stabilizationParam)
@@ -82,7 +83,7 @@ unsigned int biorbd::rigidbody::Contacts::AddLoopConstraint(
                 body_id_predecessor, body_id_successor,
                 RigidBodyDynamics::Math::SpatialTransform(X_predecessor.rot(), X_predecessor.trans()),
                 RigidBodyDynamics::Math::SpatialTransform(X_successor.rot(), X_successor.trans()),
-                RigidBodyDynamics::Math::SpatialVector(axis),
+                biorbd::utils::SpatialVector(axis),
                 enableStabilization, stabilizationParam, name.c_str());
 }
 
