@@ -116,10 +116,6 @@ def test_CoM():
     q_dot = np.array([1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3])
     q_ddot = np.array([10, 10, 10, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30])
 
-    expected_CoM = np.array([[-0.0034679564024098523], [0.15680579877453169], [0.07808112642459612]])
-    expected_CoM_dot = np.array([[-0.05018973433722229], [1.4166208451420528], [1.4301750486035787]])
-    expected_CoM_ddot = np.array([[-0.7606169667295027], [11.508107073695976], [16.58853835505851]])
-
     if biorbd.currentLinearAlgebraBackend() == 1:
         # If CasADi backend is used
         from casadi import Function, MX
@@ -152,19 +148,26 @@ def test_CoM():
             ["CoM_ddot"],
         ).expand()
 
-        CoM = CoM_func(q)
-        CoM_dot =  CoM_dot_func(q, q_dot)
-        CoM_ddot = CoM_ddot_func(q, q_dot, q_ddot)
+        CoM = np.array(CoM_func(q))
+        CoM_dot = np.array(CoM_dot_func(q, q_dot))
+        CoM_ddot = np.array(CoM_ddot_func(q, q_dot, q_ddot))
+
+        expected_CoM = np.array([[-0.0034679564024098523], [0.15680579877453169], [0.07808112642459612]])
+        expected_CoM_dot = np.array([[-0.05018973433722229], [1.4166208451420528], [1.4301750486035787]])
+        expected_CoM_ddot = np.array([[-0.7606169667295027], [11.508107073695976], [16.58853835505851]])
 
     elif not biorbd.currentLinearAlgebraBackend():
         # If Eigen backend is used
-        CoM = m.CoM(q)
-        CoM_dot = m.CoMdot(q, q_dot)
-        CoM_ddot = m.CoMddot(q, q_dot, q_ddot)
+        CoM = m.CoM(q).to_array()
+        CoM_dot = m.CoMdot(q, q_dot).to_array()
+        CoM_ddot = m.CoMddot(q, q_dot, q_ddot).to_array()
 
-    # print(q)
-    # print(np.array(CoM))
-    # print(expected_CoM)
-    np.testing.assert_almost_equal(np.array(CoM), expected_CoM)
+        expected_CoM = np.array([-0.0034679564024098523, 0.15680579877453169, 0.07808112642459612])
+        expected_CoM_dot = np.array([-0.05018973433722229, 1.4166208451420528, 1.4301750486035787])
+        expected_CoM_ddot = np.array([-0.7606169667295027, 11.508107073695976, 16.58853835505851])
+
+    np.testing.assert_almost_equal(CoM, expected_CoM)
     np.testing.assert_almost_equal(CoM_dot, expected_CoM_dot)
     np.testing.assert_almost_equal(CoM_ddot, expected_CoM_ddot)
+
+
