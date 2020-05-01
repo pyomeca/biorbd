@@ -1,5 +1,5 @@
 ---
-title: 'biorbd: A Python package for galactic dynamics'
+title: 'biorbd: A C++, Python and MATLAB library to analyze and simulate the human body'
 tags:
   - Python
 authors:
