@@ -108,3 +108,62 @@ def test_forward_dynamics():
         ]
     )
     np.testing.assert_almost_equal(qddot, qddot_expected)
+
+def test_CoM():
+    m = biorbd.Model('../../models/pyomecaman.bioMod')
+
+    q = np.array([0.1, 0.1, 0.1, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3])
+    q_dot = np.array([1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3])
+    q_ddot = np.array([10, 10, 10, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30])
+
+    expected_CoM = np.array([-0.0034679564024098523, 0.15680579877453169, 0.07808112642459612])
+    expected_CoM_dot = np.array([-0.05018973433722229, 1.4166208451420528, 1.4301750486035787])
+    expected_CoM_ddot = np.array([-0.7606169667295027, 11.508107073695976, 16.58853835505851])
+
+    if biorbd.currentLinearAlgebraBackend() == 1:
+        # If CasADi backend is used
+        from casadi import Function, MX
+
+        q_sym = MX.sym("q", m.nbQ(), 1)
+        q_dot_sym = MX.sym("q_dot", m.nbQdot(), 1)
+        q_ddot_sym = MX.sym("q_ddot", m.nbQddot(), 1)
+
+        CoM_func = Function(
+            "Compute_CoM",
+            [q_sym],
+            [m.CoM(q_sym).to_mx()],
+            ["q"],
+            ["CoM"],
+        ).expand()
+
+        CoM_dot_func = Function(
+            "Compute_CoM_dot",
+            [q_sym, q_dot_sym],
+            [m.CoMdot(q_sym, q_dot_sym).to_mx()],
+            ["q", "q_dot"],
+            ["CoM_dot"],
+        ).expand()
+
+        CoM_ddot_func = Function(
+            "Compute_CoM_ddot",
+            [q_sym, q_dot_sym, q_ddot_sym],
+            [m.CoMddot(q_sym, q_dot_sym, q_ddot_sym).to_mx()],
+            ["q", "q_dot", "q_ddot"],
+            ["CoM_ddot"],
+        ).expand()
+
+        CoM = np.array(CoM_func(q))
+        CoM_dot = np.array(CoM_dot_func(q, q_dot))
+        CoM_ddot = np.array(CoM_ddot_func(q, q_dot, q_ddot))
+
+    elif not biorbd.currentLinearAlgebraBackend():
+        # If Eigen backend is used
+        CoM = m.CoM(q).to_array()
+        CoM_dot = m.CoMdot(q, q_dot).to_array()
+        CoM_ddot = m.CoMddot(q, q_dot, q_ddot).to_array()
+
+    np.testing.assert_almost_equal(CoM.squeeze(), expected_CoM)
+    np.testing.assert_almost_equal(CoM_dot.squeeze(), expected_CoM_dot)
+    np.testing.assert_almost_equal(CoM_ddot.squeeze(), expected_CoM_ddot)
+
+
