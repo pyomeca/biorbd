@@ -20,7 +20,7 @@ bibliography: paper.bib
 Biomechanics is at the interface of several fields of science, such as robotics, mathematics, physics and human physiology.
 Although this creates an environment where ideas can emerge, one can quickly be overwhelmed by the numerous types of data to analyze simultaneously. 
 Indeed, it is not uncommun for biochanical data set to be composed of skin markers data, forces data, electromyographic data, inertial measurement units data, etc., which by nature are not straightforward to combine.
-That said, their most obvious meeting point is their respective relation to the movement of the body: some are the consequence of the movement (e.g. the skin markers displacement) and some are its cause (e.g. muscle excitations).
+That said, their most obvious meeting point is their respective relation to the movement of the human body: some are its cause (e.g. muscle excitations) and some are its consequence (e.g. the skin markers displacement).
 This is where `biorbd` steps in. 
 
 `biorbd` is a biomechanics library that targets to analyze the biochanical data in a comprehensive and accessible manner with the idea that the meeting point of all these data being the movement of the body.
