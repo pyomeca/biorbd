@@ -1,17 +1,18 @@
 ---
-title: 'Gala: A Python package for galactic dynamics'
+title: 'biorbd: A Python package for galactic dynamics'
 tags:
   - Python
 authors:
   - name: Benjamin Michaud
     orcid: 0000-0002-5031-1048
     affiliation: 1
-  - name: Mickael Begon
+  - name: Mickaël Begon
+    orcid: 0000-0002-4107-9160
     affiliation: 1
 affiliations:
- - name: Ecole de kinesiologie, Universite de Montreal
+ - name: École de Kinesiologie et de Sciences de l'Activité Physique, Universite de Montreal
    index: 1
-date: 13 August 2017
+date: May 1st, 2020
 bibliography: paper.bib
 ---
 
@@ -21,12 +22,8 @@ Coucou
 # Citations
 Don't cite me please
 
-# Figures
-No figures
-
 # Acknowledgements
 
-We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.
+A huge thanks to Ariane Dang for its patience and contibution over testing implementation!
 
 # References
