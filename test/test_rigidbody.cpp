@@ -41,7 +41,8 @@ TEST(Contacts, unitTest)
         biorbd::rigidbody::Contacts contacts(model);
 
         EXPECT_NEAR(contacts.nbContacts(), 6., requiredPrecision);
-        EXPECT_STREQ(contacts.name(1).c_str(), "PiedG_1_Z");
+        EXPECT_STREQ(contacts.contactName(1).c_str(), "PiedG_1_Z");
+        EXPECT_STREQ(contacts.contactNames()[1].c_str(), "PiedG_1_Z");
         EXPECT_EQ(contacts.hasContacts(), true);
         SCALAR_TO_DOUBLE(fy, contacts.getForce()[1]);
         EXPECT_NEAR(fy, 0., requiredPrecision);
@@ -54,7 +55,7 @@ TEST(Contacts, unitTest)
         biorbd::Model model(modelPathForGeneralTesting);
         biorbd::rigidbody::Contacts contacts(model);
 
-        EXPECT_THROW(contacts.name(7), std::runtime_error);
+        EXPECT_THROW(contacts.contactName(7), std::runtime_error);
     }
     {
         biorbd::Model model(modelPathForGeneralTesting);
