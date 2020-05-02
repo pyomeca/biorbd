@@ -23,12 +23,13 @@ Indeed, it is not uncommun for biochanical data set to be composed of skin marke
 That said, their most obvious meeting point is their respective relation to the movement of the human body: some are its cause (e.g. muscle excitations) and some are its consequence (e.g. the skin markers displacement).
 This is where `biorbd` steps in. 
 
-`biorbd` is a biomechanics library that targets to analyze the biochanical data in a comprehensive and accessible manner with the idea that the meeting point of all these data being the movement of the body.
+`biorbd` is a biomechanics library that targets to analyze the biochanical data in a comprehensive and accessible manner with the idea that the meeting point of all the biomechanical data are the movement of the body.
 Therefore, `bio` stands for biomechanics and `rbd` stands for `rigid body dynamics`. 
-TO BE CONTINUED
+For a given musculoskelettal model, it implements all the functions for inverse---that is from skin markers measurements up to muscle excitations--- and direct---that is from the muscle excitations up to skin markers---flows.
+
 C++, Python, MATLAB
 
-# On what does `biorbd` is built on
+# On what is it built on
 `biorbd` takes advantage of several highly efficient backends, namely `RBDL`, `eigen` and `CasADi`. 
 The first, and probably the most important, is the `RBDL` library by Martin Feliz (CITE) that implements the Featherstone's equations of spatial geometry (CITE). 
 In brief, `RBDL` is an efficient library that provides all the computation needed by `biorbd` to model the interactions between the body segments. 
@@ -41,12 +42,11 @@ Although this backend is useful to quickly compute most of the required computat
 Therefore, the algorithmic differentiation library `CasADi` was added as an alternative linear algebra backend.
 This allows to have for free the derivative of almost all the function of `RBDL`. 
 This is particularly useful when using `biorbd` in an optimization.
-Speaking of which, the reader is welcome to have a look at the optimal control module `BiorbdOptim`.
+Speaking of which, the reader is welcomed to have a look at the optimal control module `BiorbdOptim` (CITE).
 
-The linear algebra backend of `RBDL` was extended to 
-
+# What does it do 
 
 # Acknowledgements
-A huge thanks to Ariane Dang for its patience and contibution over testing implementation!
+A huge thanks to Ariane Dang for her patience and contribution on writting the tests for the library!
 
 # References
