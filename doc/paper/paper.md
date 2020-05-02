@@ -25,7 +25,7 @@ This is where `biorbd` steps in.
 
 `biorbd` a is feature-based development biomechanics library that targets to analyze the biochanical data in a comprehensive and accessible manner with the idea that the meeting point of all the biomechanical data are the movement of the body.
 Therefore, `bio` stands for biomechanics and `rbd` stands for `rigid body dynamics`. 
-For a given musculoskelettal model, it implements all the functions for inverse---that is from skin markers measurements up to muscle excitations---and direct flows---that is from the muscle excitations up to skin markers.
+For a given musculoskelettal model, it implements all the functions for inverse flow---that is from skin markers measurements up to muscle excitations---and direct flow---that is from the muscle excitations up to skin markers.
 
 Biomechanics can be computationnaly expensive and, depending on the goal, may required to be performed real-time. 
 This is why the choice was made to write the `biorbd` core in C++. 
