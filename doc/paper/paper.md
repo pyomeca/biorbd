@@ -23,11 +23,21 @@ Indeed, it is not uncommun for biochanical data set to be composed of skin marke
 That said, their most obvious meeting point is their respective relation to the movement of the human body: some are its cause (e.g. muscle excitations) and some are its consequence (e.g. the skin markers displacement).
 This is where `biorbd` steps in. 
 
-`biorbd` is a biomechanics library that targets to analyze the biochanical data in a comprehensive and accessible manner with the idea that the meeting point of all the biomechanical data are the movement of the body.
+`biorbd` a is feature-based development biomechanics library that targets to analyze the biochanical data in a comprehensive and accessible manner with the idea that the meeting point of all the biomechanical data are the movement of the body.
 Therefore, `bio` stands for biomechanics and `rbd` stands for `rigid body dynamics`. 
-For a given musculoskelettal model, it implements all the functions for inverse---that is from skin markers measurements up to muscle excitations--- and direct---that is from the muscle excitations up to skin markers---flows.
+For a given musculoskelettal model, it implements all the functions for inverse---that is from skin markers measurements up to muscle excitations---and direct flows---that is from the muscle excitations up to skin markers.
 
-C++, Python, MATLAB
+Biomechanics can be computationnaly expensive and, depending on the goal, may required to be performed real-time. 
+This is why the choice was made to write the `biorbd` core in C++. 
+Although C++ provides rapidity of computation, it drastically lacts of the flexibility given by higher level languages.
+Because of that, C++ is not so much used in the biomechanical community. 
+In order to align with the community needs, Python and MATLAB binders are also provided.
+This allows `biorbd` to be elegantly incorporated in the usual workflow of researcher without compromising the speed of computations. 
+
+By nature, biomechanical data are multidimensional and time dependent.
+Because of that visualizing the results may be a challenge. 
+In order to help the user to comprehend the results of its simulations, the Python visualizer `BiorbdViz` is provided. 
+This visualizer allows to move the avatar as desired or to load preexisting movements, to record videos, and for the model with muscles to look at the effect of the movement on different muscular outputs, such as maximal force. 
 
 # On what is it built on
 `biorbd` takes advantage of several highly efficient backends, namely `RBDL`, `eigen` and `CasADi`. 
@@ -44,7 +54,16 @@ This allows to have for free the derivative of almost all the function of `RBDL`
 This is particularly useful when using `biorbd` in an optimization.
 Speaking of which, the reader is welcomed to have a look at the optimal control module `BiorbdOptim` (CITE).
 
-# What does it do 
+# What does it do specifically
+Image? 
+
+Inverse flow
+
+Direct
+
+# What about preexisting solutions
+`OpenSim` and `Anybody`
+
 
 # Acknowledgements
 A huge thanks to Ariane Dang for her patience and contribution on writting the tests for the library!
