@@ -29,11 +29,19 @@ TO BE CONTINUED
 C++, Python, MATLAB
 
 # On what does `biorbd` is built on
-`biorbd` takes advantage of several highly efficient backends. 
-Firstly, and probably the most important, is the `RBDL` library by Martin Feliz (CITE) that implements the Featherstone's equations of spatial geometry (CITE). 
-`RBDL` is an efficient library that provides all the computation needed by `biorbd` to model the interactions between the body segments. 
+`biorbd` takes advantage of several highly efficient backends, namely `RBDL`, `eigen` and `CasADi`. 
+The first, and probably the most important, is the `RBDL` library by Martin Feliz (CITE) that implements the Featherstone's equations of spatial geometry (CITE). 
+In brief, `RBDL` is an efficient library that provides all the computation needed by `biorbd` to model the interactions between the body segments. 
 This library was previously used in the field of robotics (CITE, CITE).
-The used of `eigen` 
+`biorbd` extends the capacities of `RBDL` by giving more common biomechanics nomenclature, adding relevant computations and algorithms and by adding a muscle module that to analyze the interactions between muscles and rigid bodies.
+
+`RBDL` uses `eigen` for its linear algebra backends. 
+This library is a highly efficient linear algebra C++ library. 
+Although this backend is useful to quickly compute most of the required computation, it lacks the capability to provides fast and accurate derivative --- apart from those analytically determined. 
+Therefore, the algorithmic differentiation library `CasADi` was added as an alternative linear algebra backend.
+This allows to have for free the derivative of almost all the function of `RBDL`. 
+This is particularly useful when using `biorbd` in an optimization.
+Speaking of which, the reader is welcome to have a look at the optimal control module `BiorbdOptim`.
 
 The linear algebra backend of `RBDL` was extended to 
 
