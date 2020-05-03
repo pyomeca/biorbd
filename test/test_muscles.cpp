@@ -828,14 +828,16 @@ TEST(DynamicState, Normal)
         biorbd::muscles::StateDynamics state(0.8, 0.5);
 
         const biorbd::muscles::Muscle& m(model.muscle(0));
-        EXPECT_NEAR(m.activationDot(state), 24.0, requiredPrecision);
+        SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
+        EXPECT_NEAR(actDot, 24.0, requiredPrecision);
     }
     {
         biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::StateDynamics state(0.3, 0.5);
 
         const biorbd::muscles::Muscle& m(model.muscle(0));
-        EXPECT_NEAR(m.activationDot(state), -6.25, requiredPrecision);
+        SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
+        EXPECT_NEAR(actDot, -6.25, requiredPrecision);
     }
 }
 
@@ -845,17 +847,19 @@ TEST(DynamicState, Buchanan)
         biorbd::Model model(modelPathForBuchananDynamics);
         biorbd::muscles::StateDynamics state(0.8, 0.5);
 
+        const biorbd::muscles::Muscle& m(model.muscle(0));
+        SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
         // TODO: Adjust the following test when real values are known
-//        const biorbd::muscles::Muscle& m(model.muscle(0));
-//        EXPECT_NEAR(m.activationDot(state), 9.375, requiredPrecision);
+        // EXPECT_NEAR(actDot, 9.375, requiredPrecision);
     }
     {
         biorbd::Model model(modelPathForBuchananDynamics);
         biorbd::muscles::StateDynamics state(0.3, 0.5);
 
+        const biorbd::muscles::Muscle& m(model.muscle(0));
+        SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
         // TODO: Adjust the following test when real values are known
-//        const biorbd::muscles::Muscle& m(model.muscle(0));
-//        EXPECT_NEAR(m.activationDot(state), -6.25, requiredPrecision);
+        // EXPECT_NEAR(m.activationDot(state), -6.25, requiredPrecision);
     }
 }
 
