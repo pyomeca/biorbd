@@ -828,7 +828,7 @@ TEST(DynamicState, Normal)
         biorbd::muscles::StateDynamics state(0.8, 0.5);
 
         const biorbd::muscles::Muscle& m(model.muscle(0));
-        EXPECT_NEAR(m.activationDot(state), 9.375, requiredPrecision);
+        EXPECT_NEAR(m.activationDot(state), 24.0, requiredPrecision);
     }
     {
         biorbd::Model model(modelPathForMuscleForce);
