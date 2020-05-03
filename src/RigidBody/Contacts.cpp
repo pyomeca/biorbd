@@ -116,9 +116,18 @@ unsigned int biorbd::rigidbody::Contacts::nbContacts() const
     return *m_nbreConstraint;
 }
 
-biorbd::utils::String biorbd::rigidbody::Contacts::name(unsigned int i)
+std::vector<biorbd::utils::String> biorbd::rigidbody::Contacts::contactNames()
 {
-    biorbd::utils::Error::check(i<*m_nbreConstraint, "Idx for name is too high..");
+    std::vector<biorbd::utils::String> names;
+    for (auto name : RigidBodyDynamics::ConstraintSet::name){
+        names.push_back(name);
+    }
+    return names;
+}
+
+biorbd::utils::String biorbd::rigidbody::Contacts::contactName(unsigned int i)
+{
+    biorbd::utils::Error::check(i<*m_nbreConstraint, "Idx for contact names is too high..");
     return RigidBodyDynamics::ConstraintSet::name[i];
 }
 

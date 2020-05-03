@@ -15,6 +15,7 @@ namespace muscles {
 class Geometry;
 class Characteristics;
 class State;
+
 ///
 /// \brief Base class of all muscle
 ///
@@ -264,7 +265,7 @@ public:
     ///
     const biorbd::utils::Scalar& activationDot(
             const biorbd::muscles::StateDynamics &state,
-            bool alreadyNormalized = false);
+            bool alreadyNormalized = false) const;
 protected:
     ///
     /// \brief Computer the forces from a specific emg

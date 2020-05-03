@@ -186,7 +186,8 @@ const biorbd::utils::Scalar& biorbd::muscles::Muscle::velocity(
 }
 
 const biorbd::utils::Scalar& biorbd::muscles::Muscle::activationDot(
-        const biorbd::muscles::StateDynamics &state, bool alreadyNormalized)
+        const biorbd::muscles::StateDynamics &state,
+        bool alreadyNormalized) const
 {
     return m_state->timeDerivativeActivation(state, characteristics(), alreadyNormalized);
 }
