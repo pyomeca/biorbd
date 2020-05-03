@@ -23,6 +23,7 @@ class GeneralizedTorque;
 namespace muscles {
 class MuscleGroup;
 class StateDynamics;
+class Muscle;
 
 ///
 /// \brief Muscle group holder
@@ -77,6 +78,21 @@ public:
     ///
     int getGroupId(
             const biorbd::utils::String &name) const;
+
+
+    ///
+    /// \brief Returns all the muscles. It sorts the muscles by group
+    /// \return All the muscle
+    ///
+    const std::vector<std::shared_ptr<biorbd::muscles::Muscle>> muscles() const;
+
+    ///
+    /// \brief Returns a specific muscle sorted by muscles()
+    /// \param idx The muscle index
+    /// \return The muscle
+    ///
+    const biorbd::muscles::Muscle& muscle(
+            unsigned int idx) const;
 
     ///
     /// \brief muscleNames Return the names for all the muscle ordered by their
@@ -269,6 +285,13 @@ public:
     /// \return The total number of muscles
     ///
     unsigned int nbMuscleTotal() const; 
+
+    ///
+    /// \brief Return the total number of muscle
+    /// \return The total number of muscles
+    ///
+    unsigned int nbMuscles() const;
+
 protected:
     std::shared_ptr<std::vector<biorbd::muscles::MuscleGroup>> m_mus; ///< Holder for muscle groups
 

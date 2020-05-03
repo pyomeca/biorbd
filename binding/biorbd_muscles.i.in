@@ -24,7 +24,9 @@
 
 // Instantiate templates
 namespace std {
+%template(VecBiorbdMuscleGroup) std::vector<biorbd::muscles::MuscleGroup>;
 %template(SharedBiorbdMuscle) std::shared_ptr<biorbd::muscles::Muscle>;
+%template(VecSharedBiorbdMuscle) std::vector<std::shared_ptr<biorbd::muscles::Muscle>>;
 %template(VecBiorbdMuscleStateDynamics) std::vector<biorbd::muscles::StateDynamics>;
 %template(MatBiorbdMuscleStateDynamics) std::vector<std::vector<biorbd::muscles::StateDynamics>>;
 %template(SharedBiorbdMuscleFatigueState) std::shared_ptr<biorbd::muscles::FatigueState>;

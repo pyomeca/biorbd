@@ -62,6 +62,31 @@ int biorbd::muscles::Muscles::getGroupId(const biorbd::utils::String &name) cons
     return -1;
 }
 
+const std::vector<std::shared_ptr<biorbd::muscles::Muscle>>
+biorbd::muscles::Muscles::muscles() const
+{
+    std::vector<std::shared_ptr<biorbd::muscles::Muscle>> m;
+    for (auto group : muscleGroups()){
+        for (auto muscle : group.muscles()){
+            m.push_back(muscle);
+        }
+    }
+    return m;
+}
+
+const biorbd::muscles::Muscle &biorbd::muscles::Muscles::muscle(
+        unsigned int idx) const
+{
+    for (auto g : muscleGroups()){
+        if (idx >= g.nbMuscles()){
+            idx -= g.nbMuscles();
+        } else {
+            return g.muscle(idx);
+        }
+    }
+    biorbd::utils::Error::raise("idx is higher than the number of muscles");
+}
+
 std::vector<biorbd::utils::String> biorbd::muscles::Muscles::muscleNames() const
 {
     std::vector<biorbd::utils::String> names;
@@ -220,6 +245,11 @@ biorbd::utils::Matrix biorbd::muscles::Muscles::musclesLengthJacobian(
 
 
 unsigned int biorbd::muscles::Muscles::nbMuscleTotal() const{
+    return nbMuscles();
+}
+
+unsigned int biorbd::muscles::Muscles::nbMuscles() const
+{
     unsigned int total(0);
     for (unsigned int grp=0; grp<m_mus->size(); ++grp) // muscular group
         total += (*m_mus)[grp].nbMuscles();

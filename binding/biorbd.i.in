@@ -7,8 +7,6 @@
 #include "ModelWriter.h"
 %}
 
-%include <std_shared_ptr.i>
-
 %include exception.i
 %exception {
     try {
@@ -24,6 +22,7 @@
 // typemaps.i is a built-in swig interface that lets us map c++ types to other
 // types in our language of choice. We'll use it to map Eigen matrices to
 // Numpy arrays.
+%include <std_shared_ptr.i>
 %include <typemaps.i>
 %include <std_string.i>
 %include <std_vector.i>
