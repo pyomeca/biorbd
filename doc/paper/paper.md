@@ -34,10 +34,15 @@ Because of that, C++ is not so much used in the biomechanical community.
 In order to align with the community needs, Python and MATLAB binders are also provided.
 This allows `biorbd` to be elegantly incorporated in the usual workflow of researcher without compromising the speed of computations. 
 
-By nature, biomechanical data are multidimensional and time dependent.
+By nature, biomechanical data are multidimensional and almost always time dependent.
 Because of that visualizing the results may be a challenge. 
 In order to help the user to comprehend the results of its simulations, the Python visualizer `BiorbdViz` is provided. 
-This visualizer allows to move the avatar as desired or to load preexisting movements, to record videos, and for the model with muscles to look at the effect of the movement on different muscular outputs, such as maximal force. 
+This visualizer allows to move the avatar as desired or to load preexisting movements, to record videos, and for the model with muscles to look at the interaction between the movement and different muscular outputs, such as maximal force. 
+
+# What does it do specifically
+Biomechanical analyses are usually based on one of the two (or a mixture) of the following flows: inverse and direct. 
+The former takes the results from a movement (e.g. the skin markers) and computes the causes of this particular movement.
+Conversely, the latter assumes a command (e.g. muscle excitations) and computes the effects of this particular command.
 
 # On what is it built on
 `biorbd` takes advantage of several highly efficient backends, namely `RBDL`, `eigen` and `CasADi`. 
@@ -53,13 +58,6 @@ Therefore, the algorithmic differentiation library `CasADi` was added as an alte
 This allows to have for free the derivative of almost all the function of `RBDL`. 
 This is particularly useful when using `biorbd` in an optimization.
 Speaking of which, the reader is welcomed to have a look at the optimal control module `BiorbdOptim` (CITE).
-
-# What does it do specifically
-Image? 
-
-Inverse flow
-
-Direct
 
 # What about preexisting solutions
 `OpenSim` and `Anybody`
