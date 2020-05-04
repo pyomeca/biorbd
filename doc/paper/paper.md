@@ -83,7 +83,7 @@ In any case, its purpose is to model the calcium release in the muscle that will
 *Muscular joint torque*: Determine the generalized forces ($\tau_{mus}$) from a muscle activations set ($\alpha$). 
 To compute this, the muscle length jacobian ($J_{mus}(q)$) is constructed and multiplied by the muscle forces ($F_{mus}(q, \dot{q}, \alpha)$):
 $$
-\tau_{mus} = J_{mus}(q) F_{mus}(q, \dot{q}, \alpha)
+\tau_{mus} = J_{mus}(q)^T F_{mus}(q, \dot{q}, \alpha)
 $$
 
 *Forward dynamics*: Determine the generalized accelerations ($\ddot{q}$) produced by a given generalized forces set ($\tau$). 
@@ -112,20 +112,25 @@ This is particularly useful when using `biorbd` in an optimization.
 Speaking of which, the reader is welcomed to have a look at the optimal control module `BiorbdOptim` (CITE).
 
 # What about preexisting solutions
-`OpenSim` and `Anybody` are two state-of-the-art solutions that provides similar analysis flows.
+`OpenSim` and `Anybody` are two state-of-the-art softwares that provide similar analysis flows.
 `Anybody` is a closed and proprietary software.
-For this software, from an open source point-of-view the main reason to create another similar library is therefore self-explanatory.
+For this one, from an open source point-of-view, the main reason to create another similar library is therefore self-explanatory.
 Conversely, `OpenSim` is open-source and very well established in the biomechanical community. 
-There are some reasons that explain the need for `biorbd`.
+There are two main reasons that explain the need for `biorbd`.
 
-First, the implementation of the dynamics is based on different philosophy.
-`biorbd` is ultimately based on the spatial geometry described by Featherstone (CITE), while `OpenSim` 
+First, `biorbd` is made to be more lightweight and flexible than `OpenSim`. 
+The target audience of `OpenSim` are those who wants to analyze movements from the GUI or by using macros to call the API. 
+Great care is therefore taken to the frontend API. 
+The backend is however more hermetic as it targets efficiency more than flexibility, at least from the point of view of a new programmer. 
+The use of the multibody physics of `Simbody` adds a level of complexity since this library is generic enough to be used for "internal coordinate and coarse grained molecule modeling, large scale mechanical models like skeletons, and anything else that can be modeled as bodies interconnected by joints, acted upon by forces, and restricted by constraints." (CITE https://simtk.org/projects/simbody/). 
+Implementing an automatic differentiation backend is therefore harder to do and has a huge impact on a lot of other software that simbody depends on. 
+`biorbd` compared to `OpenSim` is more straightforward in its approach and targets more a programmer audience as only an external module is provided as GUI. 
 
-Different philosophy 
-the simbody is much more dense and hard to modify (use of CasADi)
-don't put all eggs in the same basket
-
-
+A second reason is as a community, it is important to implement similar but slightly tools so they can be cross-valided. 
+Papers (CITE, CITE) recently compared `Anybody` and `OpenSim` outputs and came to the conclusion that they were different. 
+Unfortunately, due to the close source nature of `Anybody`, the authors have to conjecture on these differences instead of comparing the actual code that produced these differences. 
+Therefore, `biorbd` doesn't compete with `OpenSim` but it completes it. 
+It provides a different mean to get to similar end. 
 
 # Acknowledgements
 A huge thanks to Ariane Dang for her patience and contribution on writting the tests for the library!
