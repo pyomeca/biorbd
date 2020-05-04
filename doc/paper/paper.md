@@ -65,7 +65,7 @@ In equation, it reads as follow:
 $$
 \begin{aligned}
     & \underset{\alpha \in \mathbb{R}^m}{\text{minimize}}
-    & & \norm{\alpha}_p \\
+    & & ||\left\alpha||\right_p \\
     & \text{subject to}
     & & \tau_{mus_i}(\alpha ,q, \dot{q}) - \tau_{kin_i}(q, \dot{q}, \ddot{q}) = 0, &\; i=1,\ldots,n \\
     & & &  0 \leq \alpha_{t_j} \leq 1, &\; j=1,\ldots,m
