@@ -44,6 +44,37 @@ Biomechanical analyses are usually based on one of the two (or a mixture) of the
 The former takes the results from a movement (e.g. the skin markers) and computes the causes of this particular movement.
 Conversely, the latter assumes a command (e.g. muscle excitations) and computes the effects of this particular command.
 
+## Inverse flow
+The following tools are available for the inverse flow.
+
+*Inverse kinematics*: Determine the kinematics of the system (generalized coordinates) from body measurements (skin markers or inertial measurement units). 
+The algorithm implemented to perform this calculation is the Extended Kalman Filter. 
+The main advantage of this algorithm is its capability to deal with missing data and its capability to merge different data type elegantly. 
+
+*Inverse dynamics*: Determine the generalized force set ($\tau$) that produced a given kinematics (generalized accelerations). 
+That is solving the following equation for $\tau$:
+$$
+\tau = M(q)\ddot{q} + N(q, \dot{q})
+$$
+where $q$, $\dot{q}$ and $\ddot{q}$ are the generalized coordinates, velocities and accelerations, respectively, $M(q)$ is the mass matrix and $N(q, \dot{q})$ is the bias effect. 
+All the inverse dynamics algorithms implemented in `RBDL` are available (including with contact)
+
+*Static optimization*: Determine the muscle activations ($\apha$) set that produced a given force set ($\tau$). 
+In brief, using a non-linear optimization, it minimizes the muscle activations *p*-norm that matches the $\tau$. 
+In equation, it reads as follow:
+\begin{aligned}
+    & \underset{\alpha \in \mathbb{R}^m}{\text{minimize}}
+    & & \norm{\alpha}_p \\
+    & \text{subject to}
+    & & \tau_{mus_i}(\alpha ,q, \dot{q}) - \tau_{kin_i}(q, \dot{q}, \ddot{q}) = 0, &\; i=1,\ldots,n \\
+    & & &  0 \leq \alpha_{t_j} \leq 1, &\; j=1,\ldots,m
+\end{aligned}
+where $\tau_{mus_i}(\alpha ,q, \dot{q})$ is the generalized forces computed from the muscle activations ($\alpha$) and $\tau_{kin_i}(q, \dot{q}, \ddot{q})$ is the generalized forces computed from inverse dynamics.
+Static optimization is not the sole way to infer the muscle activations from a given $\tau_{kin_i}$, but it is definitely the most used in the community. 
+
+## Direct flow
+The direct flow 
+
 # On what is it built on
 `biorbd` takes advantage of several highly efficient backends, namely `RBDL`, `eigen` and `CasADi`. 
 The first, and probably the most important, is the `RBDL` library by Martin Feliz (CITE) that implements the Featherstone's equations of spatial geometry (CITE). 
