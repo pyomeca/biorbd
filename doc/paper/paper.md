@@ -60,7 +60,7 @@ where $q$, $\dot{q}$ and $\ddot{q}$ are the generalized coordinates, velocities 
 All the inverse dynamics algorithms implemented in `RBDL` are available.
 
 *Static optimization*: Determine the muscle activations ($\alpha$) set that produced a given force set ($\tau$). 
-In brief, using a non-linear optimization, it minimizes the muscle activations *p*-norm (with $p=2$ most of the time) that matches the $\tau$. 
+In brief, using a non-linear optimization (Ipopt (CITE)), it minimizes the muscle activations *p*-norm (with $p=2$ most of the time) that matches the $\tau$. 
 In equation, it reads as follow:
 $$
 \begin{aligned}
