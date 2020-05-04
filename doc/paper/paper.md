@@ -59,7 +59,7 @@ $$
 where $q$, $\dot{q}$ and $\ddot{q}$ are the generalized coordinates, velocities and accelerations, respectively, $M(q)$ is the mass matrix and $N(q, \dot{q})$ is the bias effect. 
 All the inverse dynamics algorithms implemented in `RBDL` are available.
 
-*Static optimization*: Determine the muscle activations ($\apha$) set that produced a given force set ($\tau$). 
+*Static optimization*: Determine the muscle activations ($\alpha$) set that produced a given force set ($\tau$). 
 In brief, using a non-linear optimization, it minimizes the muscle activations *p*-norm that matches the $\tau$. 
 In equation, it reads as follow:
 \begin{aligned}
