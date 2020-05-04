@@ -62,6 +62,7 @@ All the inverse dynamics algorithms implemented in `RBDL` are available.
 *Static optimization*: Determine the muscle activations ($\alpha$) set that produced a given force set ($\tau$). 
 In brief, using a non-linear optimization, it minimizes the muscle activations *p*-norm that matches the $\tau$. 
 In equation, it reads as follow:
+$$
 \begin{aligned}
     & \underset{\alpha \in \mathbb{R}^m}{\text{minimize}}
     & & \norm{\alpha}_p \\
@@ -69,6 +70,7 @@ In equation, it reads as follow:
     & & \tau_{mus_i}(\alpha ,q, \dot{q}) - \tau_{kin_i}(q, \dot{q}, \ddot{q}) = 0, &\; i=1,\ldots,n \\
     & & &  0 \leq \alpha_{t_j} \leq 1, &\; j=1,\ldots,m
 \end{aligned}
+$$
 where $\tau_{mus_i}(\alpha ,q, \dot{q})$ is the generalized forces computed from the muscle activations ($\alpha$) and $\tau_{kin_i}(q, \dot{q}, \ddot{q})$ is the generalized forces computed from inverse dynamics.
 Static optimization is not the sole way to infer the muscle activations from a given $\tau_{kin_i}$, but it is definitely the most used in the community. 
 
