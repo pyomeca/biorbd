@@ -57,7 +57,7 @@ $$
 \tau = M(q)\ddot{q} + N(q, \dot{q})
 $$
 where $q$, $\dot{q}$ and $\ddot{q}$ are the generalized coordinates, velocities and accelerations, respectively, $M(q)$ is the mass matrix and $N(q, \dot{q})$ is the bias effect. 
-All the inverse dynamics algorithms implemented in `RBDL` are available (including with contact)
+All the inverse dynamics algorithms implemented in `RBDL` are available.
 
 *Static optimization*: Determine the muscle activations ($\apha$) set that produced a given force set ($\tau$). 
 In brief, using a non-linear optimization, it minimizes the muscle activations *p*-norm that matches the $\tau$. 
@@ -73,7 +73,27 @@ where $\tau_{mus_i}(\alpha ,q, \dot{q})$ is the generalized forces computed from
 Static optimization is not the sole way to infer the muscle activations from a given $\tau_{kin_i}$, but it is definitely the most used in the community. 
 
 ## Direct flow
-The direct flow 
+The following tools are available for the direct flow.
+
+*Muscle dynamics*: Determine the muscle activations derivative from the muscle excitations. 
+The actual equation implemented depends on the muscle model used. 
+In any case, its purpose is to model the calcium release in the muscle that will trigger the muscle contraction. 
+
+*Muscular joint torque*: Determine the generalized forces ($\tau_{mus}$) from a muscle activations set ($\alpha$). 
+To compute this, the muscle length jacobian ($J_{mus}(q)$) is constructed and multiplied by the muscle forces ($F_{mus}(q, \dot{q}, \alpha)$):
+$$
+\tau_{mus} = J_{mus}(q) F_{mus}(q, \dot{q}, \alpha)
+$$
+
+*Forward dynamics*: Determine the generalized accelerations ($\ddot{q}$) produced by a given generalized forces set ($\tau$). 
+That is solving the following equation for $\ddot{q}$:
+$$
+\ddot{q} = M(q)^{-1}\tau - N(q, \dot{q})
+$$
+where $q$ and $\dot{q}$ are the generalized coordinates and velocities, respectively, $M(q)$ is the mass matrix and $N(q, \dot{q})$ is the bias effect. 
+All the forward dynamics algorithms implemented in `RBDL` are available (including those with contact constraints).
+
+*Forward kinematics*: Determine the model outputs (e.g. skin markers or inertial measurement units orientations) from a given generalized coordinates. 
 
 # On what is it built on
 `biorbd` takes advantage of several highly efficient backends, namely `RBDL`, `eigen` and `CasADi`. 
