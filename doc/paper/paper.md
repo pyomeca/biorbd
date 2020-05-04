@@ -123,14 +123,17 @@ The target audience of `OpenSim` are those who wants to analyze movements from t
 Great care is therefore taken to the frontend API. 
 The backend is however more hermetic as it targets efficiency more than flexibility, at least from the point of view of a new programmer. 
 The use of the multibody physics of `Simbody` adds a level of complexity since this library is generic enough to be used for "internal coordinate and coarse grained molecule modeling, large scale mechanical models like skeletons, and anything else that can be modeled as bodies interconnected by joints, acted upon by forces, and restricted by constraints." (CITE https://simtk.org/projects/simbody/). 
-Implementing an automatic differentiation backend is therefore harder to do and has a huge impact on a lot of other software that simbody depends on. 
-`biorbd` compared to `OpenSim` is more straightforward in its approach and targets more a programmer audience as only an external module is provided as GUI. 
+Implementing an automatic differentiation backend as it was done for `biorbd` is therefore harder to do and has a huge impact on a lot of other software that simbody depends on. 
+It is for instance unlikely that such a fundamental modification would be integrated in the stable branch of `Simbody` any time soon. 
+`biorbd` is more straightforward, especially by being less compact---by using explicit code instead of templating---and by being less generic---that is being limitted to musculoskettal modelling.
+Although it has its drawbacks, this type of code is much easier to modify and test by the community. 
 
-A second reason is as a community, it is important to implement similar but slightly tools so they can be cross-valided. 
-Papers (CITE, CITE) recently compared `Anybody` and `OpenSim` outputs and came to the conclusion that they were different. 
-Unfortunately, due to the close source nature of `Anybody`, the authors have to conjecture on these differences instead of comparing the actual code that produced these differences. 
-Therefore, `biorbd` doesn't compete with `OpenSim` but it completes it. 
-It provides a different mean to get to similar end. 
+A second reason is as a community, it is important to implement similar but slightly different tools so they can be cross-valided. 
+Two papers (CITE, CITE) recently compared the outputs of `Anybody` and `OpenSim` for different functions, and came to the generic conclusion that they were different.
+Due to the closed source nature of `Anybody`, direct comparison between the actual codes that produced these differences is impossible.
+Although, the authors provide plausible explanations for these differences, they have to assume that the implementation of the algorithms are without mistakes for both of the softwares. 
+Having multiple open source softwares that produce similar ends by different means, as `biorbd` and `OpenSim` do, is an insurance for high quality for the users: "do not put all eggs in the same basket", they say. 
+Therefore, in our view, `biorbd` doesn't compete with `OpenSim` more than they complete each others. 
 
 # Acknowledgements
 A huge thanks to Ariane Dang for her patience and contribution on writting the tests for the library!
