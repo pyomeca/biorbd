@@ -23,7 +23,7 @@ It is not uncommun for biochanical data set to be composed of skin markers (SM) 
 That said, their most obvious meeting point is their respective relation to the movement of the human body: some are its cause (e.g. EMG) and some are its consequence (e.g. the SM displacement).
 This is where `biorbd` steps in. 
 
-`biorbd` a is *feature-based development* biomechanics library that targets to analyze the biochanical data in a comprehensive and accessible manner with the meeting point of the data being the movement of the body.
+`biorbd` a is *feature-based development* library for biomechanics that targets to analyze the biochanical data in a comprehensive and accessible manner with the meeting point of the data being the movement of the body.
 Therefore, `bio` stands for biomechanics and `rbd` stands for `rigid body dynamics`. 
 For a given musculoskelettal model, it therefore provides all the functions for inverse flow---that is from SM measurements up to EMG---and direct flow---that is from EMG to SM.
 
