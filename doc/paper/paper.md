@@ -17,26 +17,24 @@ bibliography: paper.bib
 ---
 
 # Summary
-Biomechanics is at the interface of several fields of science, such as robotics, mathematics, physics and human physiology.
-Although this creates an environment where ideas can emerge, one can quickly be overwhelmed by the numerous types of data to analyze simultaneously. 
-Indeed, it is not uncommun for biochanical data set to be composed of skin markers data, forces data, electromyographic data, inertial measurement units data, etc., which by nature are not straightforward to combine.
-That said, their most obvious meeting point is their respective relation to the movement of the human body: some are its cause (e.g. muscle excitations) and some are its consequence (e.g. the skin markers displacement).
+Biomechanics is at the interface of several fields of science, such as robotics, physics and human physiology.
+Although this encourages the emergence of innovative ideas, one can quickly be overwhelmed by the numerous types of data to analyze simultaneously. 
+It is not uncommun for biochanical data set to be composed of skin markers (SM) data, forces data, electromyographic (EMG) data, inertial measurement units (IMU) data, etc., which by nature are not straightforward to combine.
+That said, their most obvious meeting point is their respective relation to the movement of the human body: some are its cause (e.g. EMG) and some are its consequence (e.g. the SM displacement).
 This is where `biorbd` steps in. 
 
-`biorbd` a is feature-based development biomechanics library that targets to analyze the biochanical data in a comprehensive and accessible manner with the idea that the meeting point of all the biomechanical data are the movement of the body.
+`biorbd` a is *feature-based development* biomechanics library that targets to analyze the biochanical data in a comprehensive and accessible manner with the meeting point of the data being the movement of the body.
 Therefore, `bio` stands for biomechanics and `rbd` stands for `rigid body dynamics`. 
-Hence, for a given musculoskelettal model, it provides all the functions for inverse flow---that is from skin markers measurements up to muscle excitations---and direct flow---that is from the muscle excitations up to skin markers.
+For a given musculoskelettal model, it therefore provides all the functions for inverse flow---that is from SM measurements up to EMG---and direct flow---that is from EMG to SM.
 
-Biomechanics can be computationnaly expensive, and, depending on the goal, may required to be performed real-time computation. 
-This is why the choice was made to write the core of `biorbd` in C++. 
-Although C++ provides rapidity of computation, it drastically lacts of the flexibility given by higher level languages that is well apprecitated in the biomechanical community. 
-In order to align with the community needs, Python and MATLAB binders are also provided with `biorbd`.
-This allows `biorbd` to be elegantly incorporated in the usual workflow of researcher without compromising the speed of computations. 
+Biomechanics can be computationnaly expensive, and may require real-time computation, which explains that the core of `biorbd` is written in C++. 
+Although C++ provides fast computation, it lacks of the flexibility of higher level languages well apprecitated by biomechanical community. 
+In order to align with the community needs, Python and MATLAB binders are provided with `biorbd`.
+This allows `biorbd` to be elegantly incorporated in the usual workflow of researchers without compromising the speed of computations. 
 
-As stated before, by nature, biomechanical data are multidimensional and almost always time dependent.
-Another challenge related to that is the visualization of the data and results. 
-In order to help the user to better comprehend the results of its simulations, the Python visualizer `BiorbdViz` is provided (CITE). 
-This visualizer allows to move the avatar as desired or to load preexisting movements, to record videos, and for the model with muscles to look at the interaction between the movement and different muscular outputs, such as maximal force. 
+Finally, biomechanical data are often multidimensional and almost always time dependent which challenges the visualization of the results. 
+The Python visualizer `BiorbdViz` (CITE) can be used to help with that. 
+This visualizer allows to move the model by hand or by results, to record videos, and, if the model includes muscles, to vizualize the interactions between the movement and muscular outputs (e.g. maximal force). 
 
 # What does it do specifically
 Biomechanical analyses are usually based on one of the two (or a mixture) of the following flows: inverse and direct. 
