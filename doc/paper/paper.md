@@ -36,29 +36,24 @@ Finally, biomechanical data are often multidimensional and almost always time de
 The Python visualizer `BiorbdViz` (CITE) can be used to help with that. 
 This visualizer allows to move the model by hand or by results, to record videos, and, if the model includes muscles, to vizualize the interactions between the movement and muscular outputs (e.g. maximal force). 
 
-# What does it do specifically
+# Inverse and direct flow overlook
 Biomechanical analyses are usually based on one of the two (or a mixture) of the following flows: inverse and direct. 
-The former takes the results from a movement (e.g. the skin markers) and infer the cause of this particular movement.
-Conversely, the latter assumes a command (e.g. muscle excitations) and computes the effect of this particular command.
+The former takes measurement from a movement (e.g. the SM) and infers its cause.
+Conversely, the latter assumes a command (e.g. EMG) and estimates the resulting movement.
 
 ## Inverse flow
-The following tools are available for the inverse flow.
+*Inverse kinematics*: Estimates the generalized coordinates ($q$)---that is the kinematics---from body measurements (e.g. SM, IMU, etc.). 
+The algorithm implemented is the Extended Kalman Filter, which has the main advantage to elegantly dealing with missing data and to merging multiple data source.
 
-*Inverse kinematics*: Determine the kinematics of the system (generalized coordinates) from body measurements (skin markers or inertial measurement units). 
-The algorithm implemented to perform this calculation is the Extended Kalman Filter. 
-The main advantage of this algorithm is its capability to deal with missing data and its capability to merge different data type elegantly. 
-
-*Inverse dynamics*: Determine the generalized force set ($\tau$) that produced a given kinematics (generalized accelerations). 
+*Inverse dynamics*: Estimates the generalized forces ($\tau$) that produced a given generalized accelerations ($\ddot{q}$) obtained from the second deritave of $q$. 
 That is solving the following equation for $\tau$:
 $$
 \tau = M(q)\ddot{q} + N(q, \dot{q})
 $$
-where $q$, $\dot{q}$ and $\ddot{q}$ are the generalized coordinates, velocities and accelerations, respectively, $M(q)$ is the mass matrix and $N(q, \dot{q})$ is the bias effect. 
-All the inverse dynamics algorithms implemented in `RBDL` are available.
+where $\dot{q}$ is the generalized velocities, $M(q)$ is the mass matrix and $N(q, \dot{q})$ are the bias effect. 
 
-*Static optimization*: Determine the muscle activations ($\alpha$) set that produced a given force set ($\tau$). 
-In brief, using a non-linear optimization (Ipopt (CITE)), it minimizes the muscle activations *p*-norm (with $p=2$ most of the time) that matches the $\tau$. 
-In equation, it reads as follow:
+*Static optimization*: Estimates the muscle activations ($\alpha$) that produced a given $\tau$. 
+In brief, using a non-linear optimization (Ipopt (CITE)), it minimizes the muscle activations *p*-norm (with $p$ usually being $2$) that matches a give $\tau$. 
 $$
 \begin{aligned}
     & \underset{\alpha \in \mathbb{R}^m}{\text{minimize}}
@@ -68,31 +63,28 @@ $$
     & & &  0 \leq \alpha_{t_j} \leq 1, &\; j=1,\ldots,m
 \end{aligned}
 $$
-where $\tau_{mus_i}(\alpha ,q, \dot{q})$ is the generalized forces computed from the muscle activations ($\alpha$) and $\tau_{kin_i}(q, \dot{q}, \ddot{q})$ is the generalized forces computed from inverse dynamics.
+where $\tau_{mus_i}(\alpha ,q, \dot{q})$ is the $\tau$ computed from the $\alpha$ and $\tau_{kin_i}(q, \dot{q}, \ddot{q})$ being the output of the inverse dynamics.
 Static optimization is not the sole way to infer the muscle activations from a given $\tau_{kin_i}$, but it is definitely the most used in the community. 
 
 ## Direct flow
-The following tools are available for the direct flow.
+*Muscle acitvation dynamics*: Estimates the muscle activations derivative ($\dot{\alpha}$) from the muscle excitations. 
+It models the calcium release in the muscle that triggers the muscle contraction. 
+Multiple activation dynamics are implemented (e.g. (CITE), Buchanan (CITE)).
 
-*Muscle dynamics*: Determine the muscle activations derivative from the muscle excitations. 
-The actual equation implemented depends on the muscle model used. 
-In any case, its purpose is to model the calcium release in the muscle that will trigger the muscle contraction. 
-
-*Muscular joint torque*: Determine the generalized forces ($\tau_{mus}$) from a muscle activations set ($\alpha$). 
+*Muscular joint torque*: Estimates the muscles generalized forces ($\tau_{mus}$) from muscle activations ($\alpha$). 
 To compute this, the muscle length jacobian ($J_{mus}(q)$) is constructed and multiplied by the muscle forces ($F_{mus}(q, \dot{q}, \alpha)$):
 $$
 \tau_{mus} = J_{mus}(q)^T F_{mus}(q, \dot{q}, \alpha)
 $$
 
-*Forward dynamics*: Determine the generalized accelerations ($\ddot{q}$) produced by a given generalized forces set ($\tau$). 
+*Forward dynamics*: Estimates the generalized accelerations ($\ddot{q}$) from a given $\tau$. 
 That is solving the following equation for $\ddot{q}$:
 $$
 \ddot{q} = M(q)^{-1}\tau - N(q, \dot{q})
 $$
-where $q$ and $\dot{q}$ are the generalized coordinates and velocities, respectively, $M(q)$ is the mass matrix and $N(q, \dot{q})$ is the bias effect. 
-All the forward dynamics algorithms implemented in `RBDL` are available (including those with contact constraints).
+All the forward dynamics implemented in `RBDL` are available.
 
-*Forward kinematics*: Determine the model outputs (e.g. skin markers, inertial measurement units orientations) from a given generalized coordinates ($q$). 
+*Forward kinematics*: Estimates the model outputs (e.g. SM, IMU, etc.) from a given $q$. 
 
 # On what is it built on
 `biorbd` takes advantage of several highly efficient backends, namely `RBDL`, `eigen` and `CasADi`. 
