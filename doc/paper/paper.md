@@ -86,20 +86,20 @@ All the forward dynamics implemented in `RBDL` are available.
 
 *Forward kinematics*: Estimates the model outputs (e.g. SM, IMU, etc.) from a given $q$. 
 
-# On what is it built on
-`biorbd` takes advantage of several highly efficient backends, namely `RBDL`, `eigen` and `CasADi`. 
-The first, and probably the most important, is the `RBDL` library by Martin Feliz (CITE) that implements the Featherstone's equations of spatial geometry (CITE). 
-In brief, `RBDL` is an efficient library that provides all the computation needed by `biorbd` to model the interactions between the body segments. 
+# The dependencies
+`biorbd` takes advantage of efficient backends, namely `RBDL`, `eigen` and `CasADi`. 
+The first is the `RBDL` library by Martin Feliz (CITE) that implements the Featherstone's equations of spatial geometry (CITE). 
+In brief, `RBDL` is a library that provides all the computations to model the interactions between the body segments. 
 This library was previously used in the field of robotics (CITE, CITE).
-`biorbd` extends the capacities of `RBDL` by giving more common biomechanics nomenclature, adding relevant computations and algorithms and by adding a muscle module that to analyze the interactions between muscles and rigid bodies.
+Amongst others, `biorbd` extends `RBDL` by giving common biomechanics nomenclature, by adding relevant algorithms and by adding a muscle module to model the interactions between muscles and rigid bodies.
 
-`RBDL` uses `eigen` for its linear algebra backends. 
-This library is a highly efficient linear algebra C++ library. 
-Although this backend is useful to quickly compute most of the required computation, it lacks the capability to provides fast and accurate derivative --- apart from those analytically determined. 
-Therefore, the algorithmic differentiation library `CasADi` was added as an alternative linear algebra backend.
-This allows to have for free the derivative of almost all the function of `RBDL`. 
-This is particularly useful when using `biorbd` in an optimization.
-Speaking of which, the reader is welcomed to have a look at the optimal control module `BiorbdOptim` (CITE).
+`RBDL` is based on the highly efficient C++ linear algebra library `eigen` (CITE). 
+Although `eigen` provides flexibility and fast computation useful for most of the common usage, real-time and prototyping, 
+it lacks the capability to provides fast and accurate derivatives---apart from those analytically provided by the user. 
+Therefore, `RBDL` was augmented with the algorithmic differentiation library `CasADi`.
+This allows to precompute at low computation cost the derivatives of almost all the function of `RBDL`. 
+This is particularly useful when using `biorbd` in an optimization setting.
+NOTE À MICKAËL: Je pense que je ne mentionnerais pas BiorbdOptim maintenant, question de me laisser la place pour publier BiorbdOptim à part. Sinon, je peux aussi simplement mentionner que ça existe avec simplement un : "(BiorbdOptim CITE)" avant le ".".
 
 # What about preexisting solutions
 `OpenSim` and `Anybody` are two state-of-the-art softwares that provide similar analysis flows.
