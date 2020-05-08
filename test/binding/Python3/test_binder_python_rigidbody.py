@@ -166,4 +166,54 @@ def test_CoM():
     np.testing.assert_almost_equal(CoM_dot.squeeze(), expected_CoM_dot)
     np.testing.assert_almost_equal(CoM_ddot.squeeze(), expected_CoM_ddot)
 
+def test_forward_dynamics_constraints_direct():
+    m = biorbd.Model("../../models/pyomecaman.bioMod")
 
+    q = np.array([1.0 for i in range(m.nbQ())])
+    qdot = np.array([1.0 for i in range(m.nbQ())])
+    tau = np.array([1.0 for i in range(m.nbQ())])
+    cs = m.getConstraints()
+
+    qddot_expected = np.array(
+        [
+            1.9402069774422919, -9.1992692111538243, 2.9930159570454702,
+            5.2738378853554133, 8.9387539396273699, 6.0938738229550751, 9.9560407885164217,
+            38.6297746304162, -52.159023390563554, 36.702385054876714, 38.629774630416208, -52.159023390563561,
+            36.70238505487675
+        ]
+    )
+    contact_forces_expected = np.array(
+        [
+            -16.344680827308579, -30.485214214095951, 112.8234134576031, -16.344680827308611,
+            -30.485214214095965, 112.82341345760311
+        ]
+    )
+
+    np.testing.assert_almost_equal(cs.nbContacts(), contact_forces_expected.size)
+
+    if biorbd.currentLinearAlgebraBackend() == 1:
+        # If CasADi backend is used
+        from casadi import Function, MX
+
+        q_sym = MX.sym("q", m.nbQ(), 1)
+        qdot_sym = MX.sym("qdot", m.nbQdot(), 1)
+
+        dyn_func = Function(
+            "Compute_qddot_with_dyn",
+            [q_sym, qdot_sym],
+            [m.ForwardDynamicsConstraintsDirect(q, qdot, tau, cs).to_mx(), cs.getForce().to_mx()],
+            ["q", "qdot_sym"],
+            ["qddot", "cs_forces"],
+        ).expand()
+
+        qddot, cs_forces = dyn_func(q,qdot)
+        qddot = np.array(qddot)
+        cs_forces = np.array(cs_forces)
+
+    elif biorbd.currentLinearAlgebraBackend() == 0:
+        # if Eigen backend is used
+        qddot = m.ForwardDynamicsConstraintsDirect(q, qdot, tau, cs).to_array()
+        cs_forces = cs.getForce().to_array()
+
+    np.testing.assert_almost_equal(qddot.squeeze(), qddot_expected)
+    np.testing.assert_almost_equal(cs_forces.squeeze(), contact_forces_expected)
