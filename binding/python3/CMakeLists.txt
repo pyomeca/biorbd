@@ -12,12 +12,12 @@ if(WIN32)
 endif()
 
 # Include python
-find_package(PYTHON3 REQUIRED)
+find_package(Python3 REQUIRED
+    COMPONENTS Interpreter Development NumPy
+)
 include_directories("${Python3_INCLUDE_DIRS}")
 
-find_package(Numpy REQUIRED)
-
-include_directories(${NUMPY_INCLUDES})
+include_directories("${Python3_NumPy_INCLUDE_DIRS}")
 if(WIN32)
     link_directories("${Python3_RUNTIME_LIBRARY_DIRS}/libs")
 endif()
@@ -30,7 +30,9 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${BIORBD_NAME}_python.i.in"
 set(CMAKE_SWIG_FLAGS "")
 set(I_SOURCE_FILE "${CMAKE_CURRENT_BINARY_DIR}/${BIORBD_NAME}_python.i")
 
-set_property(SOURCE "${I_SOURCE_FILE}" PROPERTY CPLUSPLUS ON)
+set_property(SOURCE "${I_SOURCE_FILE}"
+    PROPERTY CPLUSPLUS ON
+)
 SWIG_ADD_LIBRARY(${PROJECT_NAME}
     TYPE MODULE
     LANGUAGE "python"
@@ -38,8 +40,7 @@ SWIG_ADD_LIBRARY(${PROJECT_NAME}
 )
 swig_link_libraries(${PROJECT_NAME}
     "${BIORBD_NAME}"
-    "${PYTHON_LIBRARIES}"
-    "${NUMPY_LIBRARIES}"
+    "${Python3_LIBRARIES}"
 )
 
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
@@ -56,8 +57,8 @@ target_include_directories(${PYTHON_PROJECT_NAME} PRIVATE
     "${RBDL_INCLUDE_DIR}/.."
     "${MATH_BACKEND_INCLUDE_DIR}"
     "${IPOPT_INCLUDE_DIR}"
-    "${PYTHON_INCLUDE_DIRS}"
-    "${NUMPY_INCLUDES}"
+    "${Python3_INCLUDE_DIRS}"
+    "${Python3_NumPy_INCLUDE_DIRS}"
 )
 
 if(APPLE)
@@ -73,18 +74,19 @@ set_target_properties(${PYTHON_PROJECT_NAME} PROPERTIES
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 
-
-
 # Install to the proper directories
 INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/${BIORBD_NAME}.py"
-    DESTINATION "${Python3_SITELIB}/${BIORBD_NAME}")
+    DESTINATION "${Python3_SITELIB}/${BIORBD_NAME}"
+)
 
 INSTALL(FILES "${CMAKE_CURRENT_SOURCE_DIR}/__init__.py"
-    DESTINATION "${Python3_SITELIB}/${BIORBD_NAME}")
+    DESTINATION "${Python3_SITELIB}/${BIORBD_NAME}"
+)
 
 # Install the version file
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/_version.py"
-    DESTINATION "${Python3_SITELIB}/${BIORBD_NAME}")
+    DESTINATION "${Python3_SITELIB}/${BIORBD_NAME}"
+)
 
 # Check if swig has its version 3 or 4, to choose the right place to put the library
 if(${SWIG_VERSION} MATCHES "^3(\.[0-9]*)*$")
@@ -98,5 +100,4 @@ endif()
 # Install the library
 INSTALL(TARGETS ${PYTHON_PROJECT_NAME}
     DESTINATION "${PYTHON_INSTALL_DESTINATION}"
-    RENAME coucou
 )
