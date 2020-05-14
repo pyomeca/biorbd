@@ -61,11 +61,11 @@ script:
     - cd build
     # Perform tests on all platform, but only perform code coverage on Linux
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
-        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON -DBINDER_C=ON ..;
-        cmake --build ./ --config Release;
+        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=$ToolsDir/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..;
+        cmake --build ./ --config Release --target install;
       else
         cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..;
-        make;
+        make install;
       fi
       
     # Move and copy mandatory files and run the tests for all platforms
