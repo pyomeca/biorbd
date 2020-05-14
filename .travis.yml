@@ -64,7 +64,7 @@ script:
         cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON -DBINDER_C=ON ..;
         cmake --build ./ --config Release;
       else
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=ON ..;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..;
         make;
       fi
       
@@ -94,13 +94,6 @@ script:
       fi
       
       # Test if biorbd can be compile on the python binder
-    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
-        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=$ToolsDir/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
-        cmake --build ./ --config Release --target install;
-      else
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
-        make install;
-      fi
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         cd test\\binding\\Python3;
       else
