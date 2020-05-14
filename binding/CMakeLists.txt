@@ -57,7 +57,7 @@ if (BINDER_PYTHON3)
 
     if (MODULE_ACTUATORS)
         SET(SWIG_MODULE_ACTUATORS_INCLUDE_COMMAND
-            "%import \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_actuators.i\"")
+            "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_actuators.i\"")
         configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_actuators.i.in"
             "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_actuators.i" @ONLY)
     endif()
