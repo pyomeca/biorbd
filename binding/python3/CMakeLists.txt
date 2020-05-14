@@ -13,7 +13,7 @@ endif()
 
 # Include python
 find_package(Python3 REQUIRED
-    COMPONENTS Interpreter Development
+    COMPONENTS Interpreter Development NumPy
 )
 include_directories("${Python3_INCLUDE_DIRS}")
 
