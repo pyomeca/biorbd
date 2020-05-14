@@ -53,11 +53,11 @@ void Matlab_inverseDynamics( int, mxArray *plhs[],
         Tau.setZero();
         if (externalForces){
             // Recevoir les plates-formes
-            std::vector<biorbd::utils::SpatialVector> f_ext = model->dispatchedForce(f_tp[j]);
+            std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext = model->dispatchedForce(f_tp[j]);
             std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl
                     = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
             for (unsigned int i=0; i<f_ext.size(); ++i){
-                f_ext_rbdl->.push_back( f_ext[i] );
+                f_ext_rbdl->push_back( f_ext[i] );
             }
             RigidBodyDynamics::InverseDynamics(*model, Q[j], QDot[j], QDDot[j], Tau, f_ext_rbdl);// Inverse Dynamics
             delete f_ext_rbdl;
