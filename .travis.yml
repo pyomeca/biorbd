@@ -45,7 +45,7 @@ before_install:
 install:
     - conda create -n biorbd
     - conda activate biorbd
-    - conda install rbdl tinyxml lapack numpy pytest swig -c conda-forge
+    - conda install rbdl tinyxml lapack numpy pytest swig pkgconfig -c conda-forge
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
         conda install ipopt -c conda-forge;
       fi
