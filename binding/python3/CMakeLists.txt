@@ -13,9 +13,12 @@ if(WIN32)
 endif()
 
 # Include python
+set(Python3_FIND_VIRTUALENV FIRST)
+set(Python3_FIND_STRATEGY LOCATION)
 find_package(Python3 REQUIRED
     COMPONENTS Interpreter Development NumPy
 )
+
 include_directories("${Python3_INCLUDE_DIRS}")
 
 include_directories("${Python3_NumPy_INCLUDE_DIRS}")
