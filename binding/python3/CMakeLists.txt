@@ -13,8 +13,12 @@ if(WIN32)
 endif()
 
 # Include python
-set(Python3_FIND_VIRTUALENV FIRST)
-set(Python3_FIND_STRATEGY LOCATION)
+# The next two lines should be preferred to find PythonInterp, but works less...
+# set(Python3_FIND_VIRTUALENV FIRST)
+# set(Python3_FIND_STRATEGY LOCATION)
+# Force the use of current Python (especially when using conda env)
+find_package(PythonInterp REQUIRED)
+set(Python3_EXECUTABLE ${PYTHON_EXECUTABLE})
 find_package(Python3 REQUIRED
     COMPONENTS Interpreter Development NumPy
 )
