@@ -324,10 +324,8 @@
 }
 %typemap(typecheck, precedence=2150) biorbd::utils::Vector & {
     void *argp1 = 0;
-    std::cout << "typemap check Vector" << std::endl;
 #ifdef BIORBD_USE_CASADI_MATH
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        std::cout << "SWIGTYPE_p_casadi__MX" << std::endl;
 #else
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Vector,  0  | 0)) && argp1) {
 #endif
@@ -344,10 +342,8 @@
 }
 %typemap(in) biorbd::utils::Vector & {
     void * argp1 = 0;
-    std::cout << "typemap in Vector" << std::endl;
 #ifdef BIORBD_USE_CASADI_MATH
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        std::cout << "SWIGTYPE_p_casadi__MX" << std::endl;
         $1 = new biorbd::utils::Vector(*reinterpret_cast<casadi::MX*>(argp1));
 #else
     if (SWIG_IsOK(

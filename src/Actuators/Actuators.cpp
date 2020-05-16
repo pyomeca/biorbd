@@ -281,8 +281,7 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torqueMax(
     // Assuming that this is also a Joints type (via BiorbdModel)
     const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
-    biorbd::rigidbody::GeneralizedTorque maxGeneralizedTorque_all;
-    maxGeneralizedTorque_all.resize(model.nbDof());
+    biorbd::rigidbody::GeneralizedTorque maxGeneralizedTorque_all(model);
 
     for (unsigned int i=0; i<model.nbDof(); ++i){
         std::shared_ptr<Actuator> GeneralizedTorque_tp;
