@@ -118,6 +118,20 @@ public:
             int forcePlates=-1); 
 
 
+    // -- GENERAL MODELLING -- //
+    ///
+    /// \brief Get the current gravity
+    /// \return The current gravity
+    ///
+    biorbd::utils::Vector3d getGravity() const;
+
+    ///
+    /// \brief Set the gravity
+    /// \param newGravity The new gravity vector
+    ///
+    void setGravity(
+            const biorbd::utils::Vector3d& newGravity);
+
     // -- INFORMATION ON THE MODEL -- //
     ///
     /// \brief Return the biorbd body identification

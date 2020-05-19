@@ -175,6 +175,17 @@ unsigned int biorbd::rigidbody::Joints::AddSegment(
     return 0;
 }
 
+biorbd::utils::Vector3d biorbd::rigidbody::Joints::getGravity() const
+{
+    return gravity;
+}
+
+void biorbd::rigidbody::Joints::setGravity(
+        const biorbd::utils::Vector3d &newGravity)
+{
+    gravity = newGravity;
+}
+
 const biorbd::rigidbody::Segment& biorbd::rigidbody::Joints::segment(unsigned int idx) const {
     biorbd::utils::Error::check(idx < m_segments->size(), "Asked for a wrong segment (out of range)");
     return (*m_segments)[idx];
