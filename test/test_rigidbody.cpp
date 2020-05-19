@@ -34,6 +34,38 @@ static std::string modelPathForLoopConstraintTesting("models/loopConstrainedMode
 static std::string modelNoRoot("models/pyomecaman_freeFall.bioMod");
 static std::string modelPathForImuTesting("models/pyomecaman_withIMUs.bioMod");
 
+TEST(Gravity, change)
+{
+    biorbd::Model model(modelPathForGeneralTesting);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
+    DECLARE_GENERALIZED_TORQUE(Tau, model);
+    // Set to random values
+    std::vector<double> val(model.nbQ());
+    FILL_VECTOR(Q, val);
+    FILL_VECTOR(QDot, val);
+    FILL_VECTOR(Tau, val);
+    {
+        CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamics, Q, QDot, Tau);
+
+        std::vector<double> QDDot_expected(13);
+        QDDot_expected[1] = -9.81;
+        for (unsigned int i = 0; i<model.nbQddot(); ++i){
+            EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);
+        }
+    }
+
+    model.setGravity(biorbd::utils::Vector3d(0, -2.2, 0));
+    {
+        CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamics, Q, QDot, Tau);
+        std::vector<double> QDDot_expected(13);
+        QDDot_expected[0] = -2.2;
+        for (unsigned int i = 0; i<model.nbQddot(); ++i){
+            EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);
+        }
+    }
+}
+
 TEST(Contacts, unitTest)
 {
     {
