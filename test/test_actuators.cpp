@@ -15,12 +15,15 @@
 #include "Actuators/ActuatorLinear.h"
 
 static std::string modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");
-static std::string modelWithMissingActuator("models/withMissingActuator.bioMod");
+static std::string modelPathWithMissingActuator("models/withMissingActuator.bioMod");
+static std::string modelPathWithoutActuator("models/pyomecaman.bioMod");
+
 static double requiredPrecision(1e-10);
 
 TEST(FileIO, openModelWithActuators){
     EXPECT_NO_THROW(biorbd::Model model(modelPathForGeneralTesting));
-//    EXPECT_THROW(biorbd::Model model(modelWithMissingActuator), std::runtime_error);
+    EXPECT_NO_THROW(biorbd::Model model(modelPathWithoutActuator));
+    EXPECT_THROW(biorbd::Model model(modelPathWithMissingActuator), std::runtime_error);
 }
 
 TEST(ActuatorConstant, torqueMax){
@@ -84,6 +87,19 @@ TEST(ActuatorLinear, torqueMax){
     biorbd::actuator::ActuatorLinear linear_torque_act(1, 25, 1, 0);
     CALL_BIORBD_FUNCTION_1ARG(torqueMaxVal, linear_torque_act, torqueMax, Q);
     EXPECT_NEAR(torqueMaxVal, torque_max_expected, requiredPrecision);
+}
+
+TEST(Actuators, NbActuators){
+    {
+        biorbd::Model model(modelPathForGeneralTesting);
+        size_t val(model.nbActuators());
+        EXPECT_NEAR(val, 13, requiredPrecision);
+    }
+    {
+        biorbd::Model model(modelPathWithoutActuator);
+        size_t val(model.nbActuators());
+        EXPECT_NEAR(val, 0, requiredPrecision);
+    }
 }
 
 TEST(Actuators, jointTorqueFromActuators){
