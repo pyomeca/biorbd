@@ -28,7 +28,7 @@ TEST(FileIO, openModelWithActuators){
 
 TEST(ActuatorConstant, torqueMax){
     biorbd::actuator::ActuatorConstant const_torque_act(1, 150, 0);
-    CALL_BIORBD_FUNCTION_1ARG(torqueMaxVal, const_torque_act, torqueMax, Q);
+    SCALAR_TO_DOUBLE(torqueMaxVal, const_torque_act.torqueMax())
     EXPECT_NEAR(torqueMaxVal, 150, requiredPrecision);
 }
 
