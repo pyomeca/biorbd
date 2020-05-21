@@ -115,12 +115,13 @@ endsegment
             dof    RotX
             direction    positive
             T0    10.000000
-	    Slope 5
+	          slope 5
         endactuator
         actuator    Seg1
             type    Linear
             dof    RotX
             direction    negative
             T0    10.000000
-	    Slope 5
-	endactuator
+	          slope 5
+      	endactuator
+
