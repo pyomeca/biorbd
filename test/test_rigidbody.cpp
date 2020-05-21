@@ -979,21 +979,16 @@ TEST(Dynamics, ForwardAccelerationConstraint){
     std::vector<double> forces_expected = {-16.344680827308579, -30.485214214095951, 112.8234134576031, -16.344680827308611,
             -30.485214214095965, 112.82341345760311};
 
-    biorbd::rigidbody::Contacts cs;
+    biorbd::rigidbody::Contacts cs(model.getConstraints());
     CALL_BIORBD_FUNCTION_3ARGS1PARAM(QDDot, model, ForwardDynamicsConstraintsDirect, Q, QDot, Tau, cs);
     for (unsigned int i = 0; i<model.nbQddot(); ++i){
         EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);
     }
-
-
     EXPECT_EQ(cs.nbContacts(), forces_expected.size());
-    for (unsigned int i=0; i<cs.force.size(); ++i){
-#ifdef BIORBD_USE_CASADI_MATH
-    std::cout << "Contact forces are not tested yet for ForwardDynamicsConstraintDirect with Casadi" << std::endl;
-#else
-        SCALAR_TO_DOUBLE(f, cs.force[i]);
-        EXPECT_NEAR(f, forces_expected[i], requiredPrecision);
-#endif
+
+    CALL_BIORBD_FUNCTION_3ARGS(forces, model, ContactForcesFromForwardDynamicsConstraintsDirect, Q, QDot, Tau);
+    for (unsigned int i=0; i<forces_expected.size(); ++i){
+        EXPECT_NEAR(static_cast<double>(forces(i, 0)), forces_expected[i], requiredPrecision);
     }
 }
 
