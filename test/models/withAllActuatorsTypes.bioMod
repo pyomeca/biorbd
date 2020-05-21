@@ -38,7 +38,7 @@ endsegment
             qopt	14.193982
             r	    65.925096
         endactuator
-        actuator    Pelvis
+        actuator    Seg0
             type    Gauss6p
             dof    RotX
             direction    positive
@@ -55,14 +55,14 @@ endsegment
             r2      73.500000
             qopt2   73.500000
         endactuator
-        actuator    Pelvis
+        actuator    Seg0
             type    Constant
             dof    TransY
             direction    negative
             Tmax    10.000000
         endactuator
-        actuator    Pelvis
-            type    Constant
+        actuator    Seg0
+            type    Gauss3p
             dof    TransZ
             direction   negative
             Tmax	232.135218
@@ -75,7 +75,7 @@ endsegment
             qopt	14.193982
             r	    65.925096
         endactuator
-        actuator    Pelvis
+        actuator    Seg0
             type    Gauss6p
             dof    RotX
             direction    negative
@@ -115,12 +115,13 @@ endsegment
             dof    RotX
             direction    positive
             T0    10.000000
-	    Slope 5
+	          slope 5
         endactuator
         actuator    Seg1
             type    Linear
             dof    RotX
             direction    negative
             T0    10.000000
-	    Slope 5
-        endactuator
+	          slope 5
+      	endactuator
+
