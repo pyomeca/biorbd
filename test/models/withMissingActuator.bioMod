@@ -62,7 +62,7 @@ version   4
     
 
     // Actuator
-        // MISSING ACTUATORS HERE
+        // MISSING VERSIONS WITH THE POSITIVE DIRECTIONS OF THE 3 FOLLOWING ACTUATORS
         actuator    Pelvis
             type    Constant
             dof    TransY
