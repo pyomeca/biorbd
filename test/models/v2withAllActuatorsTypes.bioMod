@@ -1,4 +1,4 @@
-version 0
+version 4
 
 // Seg0
 segment Seg0
@@ -111,14 +111,16 @@ endsegment
 
 // Actuators Seg1
         actuator    Seg1
-            type    Constant
+            type    Linear
             dof    RotX
             direction    positive
-            Tmax    10.000000
+            T0    10.000000
+	    Slope 5
         endactuator
-        actuator    Seg0
-            type    Constant
+        actuator    Seg1
+            type    Linear
             dof    RotX
             direction    negative
-            Tmax    10.000000
-        endactuator
+            T0    10.000000
+	    Slope 5
+	endactuator
