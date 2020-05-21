@@ -987,6 +987,17 @@ biorbd::rigidbody::Joints::ForwardDynamicsConstraintsDirect(
     return QDDot;
 }
 
+biorbd::utils::Vector biorbd::rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedVelocity &QDot,
+        const biorbd::rigidbody::GeneralizedTorque &Tau,
+        std::vector<biorbd::utils::SpatialVector> *f_ext)
+{
+    biorbd::rigidbody::Contacts CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
+    this->ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, f_ext);
+    return CS.getForce();
+}
+
 biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDynamicsConstraintsDirect(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedVelocity &QDot,
