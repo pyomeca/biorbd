@@ -17,7 +17,8 @@
 static std::string modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");
 static std::string modelPathWithMissingActuator("models/withMissingActuator.bioMod");
 static std::string modelPathWithoutActuator("models/pyomecaman.bioMod");
-static std::string modelPathWithAllActuators("models/withAllActuatorsTypes.bioMod");
+static std::string modelPathWithAllActuators("models/v2withAllActuatorsTypes.bioMod");
+
 
 static double requiredPrecision(1e-10);
 
@@ -105,6 +106,7 @@ TEST(Actuators, NbActuators){
     }
 }
 
+/*
 TEST(Actuators, jointTorqueFromActuators){
     biorbd::Model model(modelPathForGeneralTesting);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
@@ -139,6 +141,7 @@ TEST(Actuators, jointTorqueFromActuators){
          EXPECT_NEAR(torqueMax(i, 0), 150, requiredPrecision);
     }
 }
+*/
 
 TEST(Actuators, jointTorqueFromAllTypesOfActuators){
     biorbd::Model model(modelPathWithAllActuators);
