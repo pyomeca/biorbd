@@ -17,7 +17,7 @@
 static std::string modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");
 static std::string modelPathWithMissingActuator("models/withMissingActuator.bioMod");
 static std::string modelPathWithoutActuator("models/pyomecaman.bioMod");
-static std::string modelPathWithAllActuators("models/v2withAllActuatorsTypes.bioMod");
+static std::string modelPathWithAllActuators("models/withAllActuatorsTypes.bioMod");
 
 
 static double requiredPrecision(1e-10);
@@ -27,7 +27,6 @@ TEST(FileIO, openModelWithActuators){
     EXPECT_NO_THROW(biorbd::Model model(modelPathWithoutActuator));
     EXPECT_THROW(biorbd::Model model(modelPathWithMissingActuator), std::runtime_error);
     EXPECT_NO_THROW(biorbd::Model model(modelPathWithAllActuators));
-
 }
 
 TEST(ActuatorConstant, torqueMax){
@@ -106,43 +105,6 @@ TEST(Actuators, NbActuators){
     }
 }
 
-/*
-TEST(Actuators, jointTorqueFromActuators){
-    biorbd::Model model(modelPathForGeneralTesting);
-    DECLARE_GENERALIZED_COORDINATES(Q, model);
-    DECLARE_GENERALIZED_VELOCITY(QDot, model);
-    DECLARE_VECTOR(actuatorActivations, model.nbGeneralizedTorque());
-
-    std::vector<double> Q_val(model.nbQ());
-    for (size_t i=0; i<Q_val.size(); ++i){
-        Q_val[i] = 1.1;
-    }
-    std::vector<double> QDot_val(model.nbQdot());
-    for (size_t i=0; i<QDot_val.size(); ++i){
-        QDot_val[i] = 1.1;
-    }
-    std::vector<double> act_val(model.nbGeneralizedTorque());
-    for (size_t i=0; i<act_val.size(); ++i){
-        act_val[i] = 0.5;
-    }
-
-    FILL_VECTOR(Q, Q_val);
-    FILL_VECTOR(QDot, QDot_val);
-    FILL_VECTOR(actuatorActivations, act_val);
-
-    CALL_BIORBD_FUNCTION_3ARGS(tau, model, torque, actuatorActivations, Q, QDot);
-    EXPECT_NEAR(tau.size(), 13, requiredPrecision);
-    for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
-         EXPECT_NEAR(tau(i, 0), 150, requiredPrecision);
-    }
-    CALL_BIORBD_FUNCTION_3ARGS(torqueMax, model, torqueMax, actuatorActivations, Q, QDot);
-    EXPECT_NEAR(torqueMax.size(), 13, requiredPrecision);
-    for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
-         EXPECT_NEAR(torqueMax(i, 0), 150, requiredPrecision);
-    }
-}
-*/
-
 TEST(Actuators, jointTorqueFromAllTypesOfActuators){
     biorbd::Model model(modelPathWithAllActuators);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
@@ -167,16 +129,16 @@ TEST(Actuators, jointTorqueFromAllTypesOfActuators){
             }
             FILL_VECTOR(actuatorActivations, act_val);
 
-            std::vector<double> tauExpected = {150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150};
-            std::vector<double> torqueMaxExpected = {150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150};
+            std::vector<double> tauExpected = {5, 45.35073139870569, 24.688715372701648, 162.56339366097643};
+            std::vector<double> torqueMaxExpected = {10, 90.701462797411381, 49.377430745403295, 325.12678732195286};
 
             CALL_BIORBD_FUNCTION_3ARGS(tau, model, torque, actuatorActivations, Q, QDot);
-            EXPECT_NEAR(tau.size(), 13, requiredPrecision);
+            EXPECT_NEAR(tau.size(), 4, requiredPrecision);
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
                  EXPECT_NEAR(tau(i, 0), tauExpected[i], requiredPrecision);
             }
             CALL_BIORBD_FUNCTION_3ARGS(torqueMax, model, torqueMax, actuatorActivations, Q, QDot);
-            EXPECT_NEAR(torqueMax.size(), 13, requiredPrecision);
+            EXPECT_NEAR(torqueMax.size(), 4, requiredPrecision);
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
                  EXPECT_NEAR(torqueMax(i, 0), torqueMaxExpected[i], requiredPrecision);
             }
@@ -189,16 +151,16 @@ TEST(Actuators, jointTorqueFromAllTypesOfActuators){
 
             FILL_VECTOR(actuatorActivations, act_val);
 
-            std::vector<double> tauExpected = {150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150};
-            std::vector<double> torqueMaxExpected = {150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150};
+            std::vector<double> tauExpected = {-5, -85.742784548430208, -30.545039941111146, -162.56339366097643};
+            std::vector<double> torqueMaxExpected = {10, 90.701462797411381, 49.377430745403295, 325.12678732195286};
 
             CALL_BIORBD_FUNCTION_3ARGS(tau, model, torque, actuatorActivations, Q, QDot);
-            EXPECT_NEAR(tau.size(), 13, requiredPrecision);
+            EXPECT_NEAR(tau.size(), 4, requiredPrecision);
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
                  EXPECT_NEAR(tau(i, 0), tauExpected[i], requiredPrecision);
             }
             CALL_BIORBD_FUNCTION_3ARGS(torqueMax, model, torqueMax, actuatorActivations, Q, QDot);
-            EXPECT_NEAR(torqueMax.size(), 13, requiredPrecision);
+            EXPECT_NEAR(torqueMax.size(), 4, requiredPrecision);
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
                  EXPECT_NEAR(torqueMax(i, 0), torqueMaxExpected[i], requiredPrecision);
             }
@@ -219,16 +181,16 @@ TEST(Actuators, jointTorqueFromAllTypesOfActuators){
 
             FILL_VECTOR(actuatorActivations, act_val);
 
-            std::vector<double> tauExpected = {150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150};
-            std::vector<double> torqueMaxExpected = {150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150};
+            std::vector<double> tauExpected = {5, 85.742784548430208, 30.545039941111146, 162.56339366097643};
+            std::vector<double> torqueMaxExpected = {10, 171.48556909686042, 61.090079882222291, 325.12678732195286};
 
             CALL_BIORBD_FUNCTION_3ARGS(tau, model, torque, actuatorActivations, Q, QDot);
-            EXPECT_NEAR(tau.size(), 13, requiredPrecision);
+            EXPECT_NEAR(tau.size(), 4, requiredPrecision);
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
                  EXPECT_NEAR(tau(i, 0), tauExpected[i], requiredPrecision);
             }
             CALL_BIORBD_FUNCTION_3ARGS(torqueMax, model, torqueMax, actuatorActivations, Q, QDot);
-            EXPECT_NEAR(torqueMax.size(), 13, requiredPrecision);
+            EXPECT_NEAR(torqueMax.size(), 4, requiredPrecision);
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
                  EXPECT_NEAR(torqueMax(i, 0), torqueMaxExpected[i], requiredPrecision);
             }
@@ -240,16 +202,16 @@ TEST(Actuators, jointTorqueFromAllTypesOfActuators){
             }
             FILL_VECTOR(actuatorActivations, act_val);
 
-            std::vector<double> tauExpected = {150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150};
-            std::vector<double> torqueMaxExpected = {150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150};
+            std::vector<double> tauExpected = {-5, -45.35073139870569, -24.688715372701648, -162.56339366097643};
+            std::vector<double> torqueMaxExpected = {10, 171.48556909686042, 61.090079882222291, 325.12678732195286};
 
             CALL_BIORBD_FUNCTION_3ARGS(tau, model, torque, actuatorActivations, Q, QDot);
-            EXPECT_NEAR(tau.size(), 13, requiredPrecision);
+            EXPECT_NEAR(tau.size(), 4, requiredPrecision);
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
                  EXPECT_NEAR(tau(i, 0), tauExpected[i], requiredPrecision);
             }
             CALL_BIORBD_FUNCTION_3ARGS(torqueMax, model, torqueMax, actuatorActivations, Q, QDot);
-            EXPECT_NEAR(torqueMax.size(), 13, requiredPrecision);
+            EXPECT_NEAR(torqueMax.size(), 4, requiredPrecision);
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
                  EXPECT_NEAR(torqueMax(i, 0), torqueMaxExpected[i], requiredPrecision);
             }
