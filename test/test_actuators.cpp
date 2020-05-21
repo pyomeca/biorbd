@@ -39,19 +39,19 @@ TEST(ActuatorGauss3p, torqueMax){
     biorbd::actuator::ActuatorGauss3p gauss3p_torque_act(1, 150, 25, 800, 324, 0.5, 28, 90, 29, 133, 0);
     size_t size(5);
     biorbd::rigidbody::GeneralizedCoordinates Q(size);
-    std::vector<double> Q_val = {1.0, 1.0, 1.0, 1.0, 1.0};
+    std::vector<double> Q_val = {1.1, 1.1, 1.1, 1.1, 1.1};
     FILL_VECTOR(Q, Q_val);
     biorbd::rigidbody::GeneralizedVelocity QDot(size);
     {
         std::vector<double> QDot_val = {10, 10, 10, 10, 10};
-        double torqueMaxExpected(0.084907296057452161);
+        double torqueMaxExpected(0.13946332238760348);
         FILL_VECTOR(QDot, QDot_val);
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss3p_torque_act, torqueMax, Q, QDot);
         EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
     }
     {
         std::vector<double> QDot_val = {-10, -10, -10, -10, -10};
-        double torqueMaxExpected(1.8246053174014869);
+        double torqueMaxExpected(2.9969806062215922);
         FILL_VECTOR(QDot, QDot_val);
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss3p_torque_act, torqueMax, Q, QDot);
         EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
@@ -62,19 +62,19 @@ TEST(ActuatorGauss6p, torqueMax){
     biorbd::actuator::ActuatorGauss6p gauss6p_torque_act(1, 150, 25, 800, 324, 0.5, 28, 90, 29, 133, 4, 73, 73, 0);
     size_t size(5);
     biorbd::rigidbody::GeneralizedCoordinates Q(size);
-    std::vector<double> Q_val = {1.0, 1.0, 1.0, 1.0, 1.0};
+    std::vector<double> Q_val = {1.1, 1.1, 1.1, 1.1, 1.1};
     FILL_VECTOR(Q, Q_val);
     biorbd::rigidbody::GeneralizedVelocity QDot(size);
     {
         std::vector<double> QDot_val = {10, 10, 10, 10, 10};
-        double torqueMaxExpected(10.101964984626497);
+        double torqueMaxExpected(10.295760991374534);
         FILL_VECTOR(QDot, QDot_val);
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss6p_torque_act, torqueMax, Q, QDot);
         EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
     }
     {
         std::vector<double> QDot_val = {-10, -10, -10, -10, -10};
-        double torqueMaxExpected(217.0849842477746);
+        double torqueMaxExpected(221.2495406619181);
         FILL_VECTOR(QDot, QDot_val);
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss6p_torque_act, torqueMax, Q, QDot);
         EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
@@ -84,9 +84,9 @@ TEST(ActuatorGauss6p, torqueMax){
 TEST(ActuatorLinear, torqueMax){
     unsigned int size(1);
     biorbd::rigidbody::GeneralizedCoordinates Q(size);
-    std::vector<double> val = {1};
+    std::vector<double> val = {1.1};
     FILL_VECTOR(Q, val);
-    double torqueMaxExpected(82.295779513082323);
+    double torqueMaxExpected(88.025357464390567);
     biorbd::actuator::ActuatorLinear linear_torque_act(1, 25, 1, 0);
     CALL_BIORBD_FUNCTION_1ARG(torqueMaxVal, linear_torque_act, torqueMax, Q);
     EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
