@@ -24,6 +24,12 @@ endsegment
             direction    positive
             Tmax    10.000000
         endactuator
+	actuator    Seg0
+            type    Constant
+            dof    TransY
+            direction    negative
+            Tmax    5.000000
+        endactuator
         actuator    Seg0
             type    Gauss3p
             dof    TransZ
@@ -37,6 +43,20 @@ endsegment
             w1	    -90.000000
             qopt	14.193982
             r	    65.925096
+        endactuator
+	actuator    Seg0
+            type    Gauss3p
+            dof    TransZ
+            direction    negative
+            Tmax	592.619244
+            T0	    467.857298
+            wmax	562.500000
+            wc	    225.000000
+            amin	0.500000
+            wr	    40.000000
+            w1	    -78.046135
+            qopt	85.510899
+            r	    -67.744985
         endactuator
         actuator    Seg0
             type    Gauss6p
@@ -56,41 +76,20 @@ endsegment
             qopt2   73.500000
         endactuator
         actuator    Seg0
-            type    Constant
-            dof    TransY
-            direction    negative
-            Tmax    10.000000
-        endactuator
-        actuator    Seg0
-            type    Gauss3p
-            dof    TransZ
-            direction   negative
-            Tmax	232.135218
-            T0	    183.264629
-            wmax	475.000000
-            wc	    190.000000
-            amin	0.990000
-            wr	    40.000000
-            w1	    -90.000000
-            qopt	14.193982
-            r	    65.925096
-        endactuator
-        actuator    Seg0
             type    Gauss6p
             dof    RotX
-            direction    negative
-            Tmax    32.655002
-            T0      25.780265
-            wmax    812.499995
-            wc      324.999996
-            amin    0.500000
-            wr      28.424707
-            w1      90.000000
-            r       28.832873
-            qopt    133.000000
-            facteur 3.862687
-            r2      73.500000
-            qopt2   73.500000
+            Tmax    41.779398
+            T0      32.853388
+            wmax    1000.000000
+            wc      400.000000
+            amin    0.602364
+            wr      10.177422
+            w1      47.600548
+            r       74.100000
+            qopt    132.416627
+            facteur 2.080254
+            r2      60.375000
+            qopt2   24.694161
         endactuator
 
 // Seg1
@@ -121,7 +120,7 @@ endsegment
             type    Linear
             dof    RotX
             direction    negative
-            T0    10.000000
+            T0    5.000000
 	          slope 5
       	endactuator
 
