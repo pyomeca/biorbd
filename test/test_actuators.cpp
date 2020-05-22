@@ -36,60 +36,86 @@ TEST(ActuatorConstant, torqueMax){
 }
 
 TEST(ActuatorGauss3p, torqueMax){
+    // A model is loaded so Q can be > 0 in size, it is not used otherwise
+    biorbd::Model model(modelPathForGeneralTesting);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
+
     biorbd::actuator::ActuatorGauss3p gauss3p_torque_act(1, 150, 25, 800, 324, 0.5, 28, 90, 29, 133, 0);
-    size_t size(5);
-    biorbd::rigidbody::GeneralizedCoordinates Q(size);
     std::vector<double> Q_val = {1.1, 1.1, 1.1, 1.1, 1.1};
     FILL_VECTOR(Q, Q_val);
-    biorbd::rigidbody::GeneralizedVelocity QDot(size);
     {
         std::vector<double> QDot_val = {10, 10, 10, 10, 10};
         double torqueMaxExpected(0.13946332238760348);
         FILL_VECTOR(QDot, QDot_val);
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss3p_torque_act, torqueMax, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected, requiredPrecision);
+#else
         EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
+#endif
     }
     {
         std::vector<double> QDot_val = {-10, -10, -10, -10, -10};
         double torqueMaxExpected(2.9969806062215922);
         FILL_VECTOR(QDot, QDot_val);
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss3p_torque_act, torqueMax, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected, requiredPrecision);
+#else
         EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
+#endif
     }
 }
 
 TEST(ActuatorGauss6p, torqueMax){
+    // A model is loaded so Q can be > 0 in size, it is not used otherwise
+    biorbd::Model model(modelPathForGeneralTesting);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
+
     biorbd::actuator::ActuatorGauss6p gauss6p_torque_act(1, 150, 25, 800, 324, 0.5, 28, 90, 29, 133, 4, 73, 73, 0);
-    size_t size(5);
-    biorbd::rigidbody::GeneralizedCoordinates Q(size);
     std::vector<double> Q_val = {1.1, 1.1, 1.1, 1.1, 1.1};
     FILL_VECTOR(Q, Q_val);
-    biorbd::rigidbody::GeneralizedVelocity QDot(size);
     {
         std::vector<double> QDot_val = {10, 10, 10, 10, 10};
         double torqueMaxExpected(10.295760991374534);
         FILL_VECTOR(QDot, QDot_val);
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss6p_torque_act, torqueMax, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected, requiredPrecision);
+#else
         EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
+#endif
     }
     {
         std::vector<double> QDot_val = {-10, -10, -10, -10, -10};
         double torqueMaxExpected(221.2495406619181);
         FILL_VECTOR(QDot, QDot_val);
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss6p_torque_act, torqueMax, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected, requiredPrecision);
+#else
         EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
+#endif
     }
-} 
+}
 
 TEST(ActuatorLinear, torqueMax){
-    unsigned int size(1);
-    biorbd::rigidbody::GeneralizedCoordinates Q(size);
+    // A model is loaded so Q can be > 0 in size, it is not used otherwise
+    biorbd::Model model(modelPathForGeneralTesting);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+
     std::vector<double> val = {1.1};
     FILL_VECTOR(Q, val);
     double torqueMaxExpected(88.025357464390567);
     biorbd::actuator::ActuatorLinear linear_torque_act(1, 25, 1, 0);
     CALL_BIORBD_FUNCTION_1ARG(torqueMaxVal, linear_torque_act, torqueMax, Q);
-    EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
+#ifdef BIORBD_USE_CASADI_MATH
+        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected, requiredPrecision);
+#else
+        EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
+#endif
 }
 
 TEST(Actuators, NbActuators){
@@ -133,14 +159,22 @@ TEST(Actuators, jointTorqueFromAllTypesOfActuators){
             std::vector<double> torqueMaxExpected = {10, 90.701462797411381, 49.377430745403295, 325.12678732195286};
 
             CALL_BIORBD_FUNCTION_3ARGS(tau, model, torque, actuatorActivations, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+            EXPECT_NEAR(tau.size().first, 4, requiredPrecision);
+#else
             EXPECT_NEAR(tau.size(), 4, requiredPrecision);
+#endif
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
-                 EXPECT_NEAR(tau(i, 0), tauExpected[i], requiredPrecision);
+                 EXPECT_NEAR(static_cast<double>(tau(i, 0)), tauExpected[i], requiredPrecision);
             }
             CALL_BIORBD_FUNCTION_3ARGS(torqueMax, model, torqueMax, actuatorActivations, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+            EXPECT_NEAR(torqueMax.size().first, 4, requiredPrecision);
+#else
             EXPECT_NEAR(torqueMax.size(), 4, requiredPrecision);
+#endif
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
-                 EXPECT_NEAR(torqueMax(i, 0), torqueMaxExpected[i], requiredPrecision);
+                 EXPECT_NEAR(static_cast<double>(torqueMax(i, 0)), torqueMaxExpected[i], requiredPrecision);
             }
         }
         {
@@ -155,14 +189,22 @@ TEST(Actuators, jointTorqueFromAllTypesOfActuators){
             std::vector<double> torqueMaxExpected = {10, 90.701462797411381, 49.377430745403295, 325.12678732195286};
 
             CALL_BIORBD_FUNCTION_3ARGS(tau, model, torque, actuatorActivations, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+            EXPECT_NEAR(tau.size().first, 4, requiredPrecision);
+#else
             EXPECT_NEAR(tau.size(), 4, requiredPrecision);
+#endif
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
-                 EXPECT_NEAR(tau(i, 0), tauExpected[i], requiredPrecision);
+                 EXPECT_NEAR(static_cast<double>(tau(i, 0)), tauExpected[i], requiredPrecision);
             }
             CALL_BIORBD_FUNCTION_3ARGS(torqueMax, model, torqueMax, actuatorActivations, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+            EXPECT_NEAR(torqueMax.size().first, 4, requiredPrecision);
+#else
             EXPECT_NEAR(torqueMax.size(), 4, requiredPrecision);
+#endif
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
-                 EXPECT_NEAR(torqueMax(i, 0), torqueMaxExpected[i], requiredPrecision);
+                 EXPECT_NEAR(static_cast<double>(torqueMax(i, 0)), torqueMaxExpected[i], requiredPrecision);
             }
         }
 
@@ -185,14 +227,22 @@ TEST(Actuators, jointTorqueFromAllTypesOfActuators){
             std::vector<double> torqueMaxExpected = {10, 171.48556909686042, 61.090079882222291, 325.12678732195286};
 
             CALL_BIORBD_FUNCTION_3ARGS(tau, model, torque, actuatorActivations, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+            EXPECT_NEAR(tau.size().first, 4, requiredPrecision);
+#else
             EXPECT_NEAR(tau.size(), 4, requiredPrecision);
+#endif
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
-                 EXPECT_NEAR(tau(i, 0), tauExpected[i], requiredPrecision);
+                 EXPECT_NEAR(static_cast<double>(tau(i, 0)), tauExpected[i], requiredPrecision);
             }
             CALL_BIORBD_FUNCTION_3ARGS(torqueMax, model, torqueMax, actuatorActivations, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+            EXPECT_NEAR(torqueMax.size().first, 4, requiredPrecision);
+#else
             EXPECT_NEAR(torqueMax.size(), 4, requiredPrecision);
+#endif
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
-                 EXPECT_NEAR(torqueMax(i, 0), torqueMaxExpected[i], requiredPrecision);
+                 EXPECT_NEAR(static_cast<double>(torqueMax(i, 0)), torqueMaxExpected[i], requiredPrecision);
             }
         }
         {
@@ -206,14 +256,22 @@ TEST(Actuators, jointTorqueFromAllTypesOfActuators){
             std::vector<double> torqueMaxExpected = {10, 171.48556909686042, 61.090079882222291, 325.12678732195286};
 
             CALL_BIORBD_FUNCTION_3ARGS(tau, model, torque, actuatorActivations, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+            EXPECT_NEAR(tau.size().first, 4, requiredPrecision);
+#else
             EXPECT_NEAR(tau.size(), 4, requiredPrecision);
+#endif
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
-                 EXPECT_NEAR(tau(i, 0), tauExpected[i], requiredPrecision);
+                 EXPECT_NEAR(static_cast<double>(tau(i, 0)), tauExpected[i], requiredPrecision);
             }
             CALL_BIORBD_FUNCTION_3ARGS(torqueMax, model, torqueMax, actuatorActivations, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+            EXPECT_NEAR(torqueMax.size().first, 4, requiredPrecision);
+#else
             EXPECT_NEAR(torqueMax.size(), 4, requiredPrecision);
+#endif
             for (size_t i=0; i<model.nbGeneralizedTorque(); ++i){
-                 EXPECT_NEAR(torqueMax(i, 0), torqueMaxExpected[i], requiredPrecision);
+                 EXPECT_NEAR(static_cast<double>(torqueMax(i, 0)), torqueMaxExpected[i], requiredPrecision);
             }
         }
     }
