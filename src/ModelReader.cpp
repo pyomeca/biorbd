@@ -628,7 +628,7 @@ void biorbd::Reader::readModelFile(
                 int int_direction = 0;
                 double Tmax(-1);            bool isTmaxSet  = false;
                 double T0(-1);              bool isT0Set    = false;
-                double pente(-1);           bool isPenteSet = false;
+                double slope(-1);           bool isSlopeSet = false;
                 double wmax(-1);            bool iswmaxSet  = false;
                 double wc(-1);              bool iswcSet    = false;
                 double amin(-1);            bool isaminSet  = false;
@@ -671,9 +671,9 @@ void biorbd::Reader::readModelFile(
                         file.read(T0, variable);
                         isT0Set = true;
                     }
-                    else if (!property_tag.tolower().compare("pente")){
-                        file.read(pente, variable);
-                        isPenteSet = true;
+                    else if (!property_tag.tolower().compare("pente") || !property_tag.tolower().compare("slope")){
+                        file.read(slope, variable);
+                        isSlopeSet = true;
                     }
                     else if (!property_tag.tolower().compare("wmax")){
                         file.read(wmax, variable);
@@ -732,9 +732,9 @@ void biorbd::Reader::readModelFile(
                     actuator = new biorbd::actuator::ActuatorConstant(int_direction,Tmax,dofIdx,name);
                 }
                 else if (!type.tolower().compare("linear")){
-                    biorbd::utils::Error::check(isDofSet && isDirectionSet && isPenteSet && isT0Set,
+                    biorbd::utils::Error::check(isDofSet && isDirectionSet && isSlopeSet && isT0Set,
                                         "Make sure all parameters are defined");
-                    actuator = new biorbd::actuator::ActuatorLinear(int_direction,T0,pente,dofIdx,name);
+                    actuator = new biorbd::actuator::ActuatorLinear(int_direction,T0,slope,dofIdx,name);
                 }
                 else if (!type.tolower().compare("gauss6p")){
                     biorbd::utils::Error::check(isDofSet && isDirectionSet && isTmaxSet && isT0Set && iswmaxSet && iswcSet && isaminSet &&
