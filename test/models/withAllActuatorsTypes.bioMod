@@ -78,6 +78,7 @@ endsegment
         actuator    Seg0
             type    Gauss6p
             dof    RotX
+            direction    negative
             Tmax    41.779398
             T0      32.853388
             wmax    1000.000000
