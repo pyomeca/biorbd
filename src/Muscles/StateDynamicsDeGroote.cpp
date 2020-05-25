@@ -45,12 +45,9 @@ const biorbd::utils::Scalar& biorbd::muscles::StateDynamicsDeGroote::timeDerivat
 
     diff = *m_excitation - *m_activation;
     f = 0.5 * tanh(0.1*diff);
-    
-    biorbd::utils::Scalar denom_activation;   // dénominateur for activation
-    biorbd::utils::Scalar denom_deactivation; // dénominateur for deactivation
 
-    denom_activation = characteristics.torqueActivation()   * (0.5+1.5* *m_activation);
-    denom_deactivation = characteristics.torqueDeactivation() / (0.5+1.5* *m_activation);
+    biorbd::utils::Scalar denom_activation = characteristics.torqueActivation()   * (0.5+1.5* *m_activation);
+    biorbd::utils::Scalar denom_deactivation = characteristics.torqueDeactivation() / (0.5+1.5* *m_activation);
 
     *m_activationDot = (((f+0.5)/denom_activation)+((-f + 0.5)/denom_deactivation))*diff;
     return *m_activationDot;
