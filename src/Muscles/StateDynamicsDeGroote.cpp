@@ -1,6 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/StateDynamicsDeGroote.h"
 
+#include <math.h>
 #include "Utils/Error.h"
 #include "Utils/String.h"
 #include "Muscles/Characteristics.h"
@@ -8,27 +9,16 @@
 biorbd::muscles::StateDynamicsDeGroote::StateDynamicsDeGroote(
         const biorbd::utils::Scalar& excitation,
         const biorbd::utils::Scalar& activation) :
-    biorbd::muscles::State(excitation,activation),
-    m_previousExcitation(std::make_shared<biorbd::utils::Scalar>(0)),
-    m_previousActivation(std::make_shared<biorbd::utils::Scalar>(0)),
-    m_activationDot(std::make_shared<biorbd::utils::Scalar>(0))
+    biorbd::muscles::StateDynamics(excitation,activation)
 {
     setType();
 }
 
 biorbd::muscles::StateDynamicsDeGroote::StateDynamicsDeGroote(
         const biorbd::muscles::StateDynamicsDeGroote &other) :
-    biorbd::muscles::State(other),
-    m_previousExcitation(other.m_previousExcitation),
-    m_previousActivation(other.m_previousActivation),
-    m_activationDot(other.m_activationDot)
+    biorbd::muscles::StateDynamics(other)
 {
 
-}
-
-biorbd::muscles::StateDynamicsDeGroote::~StateDynamicsDeGroote()
-{
-    //dtor
 }
 
 biorbd::muscles::StateDynamicsDeGroote biorbd::muscles::StateDynamicsDeGroote::DeepCopy() const
@@ -40,52 +30,21 @@ biorbd::muscles::StateDynamicsDeGroote biorbd::muscles::StateDynamicsDeGroote::D
 
 void biorbd::muscles::StateDynamicsDeGroote::DeepCopy(const biorbd::muscles::StateDynamicsDeGroote &other)
 {
-    biorbd::muscles::State::DeepCopy(other);
-    *m_excitationNorm = *other.m_excitationNorm;
-    *m_previousExcitation = *other.m_previousExcitation;
-    *m_previousActivation = *other.m_previousActivation;
-    *m_activationDot = *other.m_activationDot;
-}
-
-
-const biorbd::utils::Scalar& biorbd::muscles::StateDynamicsDeGroote::timeDerivativeActivation(
-        const biorbd::muscles::StateDynamicsDeGroote& emg,
-        const biorbd::muscles::Characteristics& characteristics,
-        bool alreadyNormalized){
-    return timeDerivativeActivation(emg.excitation(), emg.activation(), characteristics, alreadyNormalized);
-}
-
-
-const biorbd::utils::Scalar& biorbd::muscles::StateDynamicsDeGroote::timeDerivativeActivation(
-        const biorbd::utils::Scalar& excitation,
-        const biorbd::utils::Scalar& activation,
-        const biorbd::muscles::Characteristics &characteristics,
-        bool alreadyNormalized){
-    setExcitation(excitation);
-    setActivation(activation);
-    return timeDerivativeActivation(characteristics, alreadyNormalized);
+    biorbd::muscles::StateDynamics::DeepCopy(other);
 }
 
 const biorbd::utils::Scalar& biorbd::muscles::StateDynamicsDeGroote::timeDerivativeActivation(
         const biorbd::muscles::Characteristics &characteristics,
         bool alreadyNormalized){
-    // Implémentation de la fonction DeGroote https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5043004/
+    // From DeGroote https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5043004/
 
     // Get activation and excitation
-#ifdef BIORBD_USE_CASADI_MATH
-    *m_activation = casadi::MX::if_else(
-                casadi::MX::lt(*m_activation, characteristics.minActivation()),
-                characteristics.minActivation(), *m_activation);
-    *m_excitation = casadi::MX::if_else(
-                casadi::MX::lt(*m_excitation, characteristics.minActivation()),
-                characteristics.minActivation(), *m_excitation);
-#else
     if (*m_activation < characteristics.minActivation())
         *m_activation = characteristics.minActivation();
 
     if (*m_excitation < characteristics.minActivation())
         *m_excitation = characteristics.minActivation();
-#endif
+
 
     biorbd::utils::Scalar diff; //(e - a)
     biorbd::utils::Scalar f;    //activation dynamics
@@ -107,37 +66,7 @@ const biorbd::utils::Scalar& biorbd::muscles::StateDynamicsDeGroote::timeDerivat
     return *m_activationDot;
 }
 
-
-const biorbd::utils::Scalar& biorbd::muscles::StateDynamicsDeGroote::timeDerivativeActivation()
-{
-    return *m_activationDot;
-}
-
-void biorbd::muscles::StateDynamicsDeGroote::setExcitation(
-        const biorbd::utils::Scalar& val,
-        bool turnOffWarnings) {
-    *m_previousExcitation = *m_excitation;
-    biorbd::muscles::State::setExcitation(val, turnOffWarnings);
-}
-
-const biorbd::utils::Scalar& biorbd::muscles::StateDynamicsDeGroote::previousExcitation() const
-{
-    return *m_previousExcitation;
-}
-
-void biorbd::muscles::StateDynamicsDeGroote::setActivation(
-        const biorbd::utils::Scalar& val,
-        bool turnOffWarnings) {
-    *m_previousActivation = *m_activation;
-    biorbd::muscles::State::setActivation(val, turnOffWarnings);
-}
-
-const biorbd::utils::Scalar& biorbd::muscles::StateDynamicsDeGroote::previousActivation() const
-{
-    return *m_previousActivation;
-}
-
 void biorbd::muscles::StateDynamicsDeGroote::setType()
 {
-    *m_stateType = biorbd::muscles::STATE_TYPE::DYNAMIC;
+    *m_stateType = biorbd::muscles::STATE_TYPE::DE_GROOTE;
 }
