@@ -175,6 +175,17 @@ unsigned int biorbd::rigidbody::Joints::AddSegment(
     return 0;
 }
 
+biorbd::utils::Vector3d biorbd::rigidbody::Joints::getGravity() const
+{
+    return gravity;
+}
+
+void biorbd::rigidbody::Joints::setGravity(
+        const biorbd::utils::Vector3d &newGravity)
+{
+    gravity = newGravity;
+}
+
 const biorbd::rigidbody::Segment& biorbd::rigidbody::Joints::segment(unsigned int idx) const {
     biorbd::utils::Error::check(idx < m_segments->size(), "Asked for a wrong segment (out of range)");
     return (*m_segments)[idx];
@@ -974,6 +985,17 @@ biorbd::rigidbody::Joints::ForwardDynamicsConstraintsDirect(
         RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot);
     }
     return QDDot;
+}
+
+biorbd::utils::Vector biorbd::rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedVelocity &QDot,
+        const biorbd::rigidbody::GeneralizedTorque &Tau,
+        std::vector<biorbd::utils::SpatialVector> *f_ext)
+{
+    biorbd::rigidbody::Contacts CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
+    this->ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, f_ext);
+    return CS.getForce();
 }
 
 biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDynamicsConstraintsDirect(

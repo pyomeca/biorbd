@@ -11,6 +11,7 @@ namespace utils {
 class String;
 class RotoTrans;
 class Matrix;
+class Vector;
 class Vector3d;
 class Range;
 class SpatialVector;
@@ -117,6 +118,20 @@ public:
             const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, 
             int forcePlates=-1); 
 
+
+    // -- GENERAL MODELLING -- //
+    ///
+    /// \brief Get the current gravity
+    /// \return The current gravity
+    ///
+    biorbd::utils::Vector3d getGravity() const;
+
+    ///
+    /// \brief Set the gravity
+    /// \param newGravity The new gravity vector
+    ///
+    void setGravity(
+            const biorbd::utils::Vector3d& newGravity);
 
     // -- INFORMATION ON THE MODEL -- //
     ///
@@ -759,6 +774,20 @@ public:
             const biorbd::rigidbody::GeneralizedVelocity& QDot,
             const biorbd::rigidbody::GeneralizedTorque& Tau,
             biorbd::rigidbody::Contacts& CS,
+            std::vector<biorbd::utils::SpatialVector>* f_ext = nullptr);
+
+    ///
+    /// \brief Interface for contacts of the forward dynamics with contact of RBDL
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \param Tau The Generalized Torques
+    /// \param f_ext External force acting on the system if there are any
+    /// \return The Contraint set
+    ///
+    biorbd::utils::Vector ContactForcesFromForwardDynamicsConstraintsDirect(
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedVelocity& QDot,
+            const biorbd::rigidbody::GeneralizedTorque& Tau,
             std::vector<biorbd::utils::SpatialVector>* f_ext = nullptr);
 
     ///
