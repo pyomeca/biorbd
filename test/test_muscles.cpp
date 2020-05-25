@@ -18,6 +18,7 @@ static double requiredPrecision(1e-10);
 
 static std::string modelPathForMuscleForce("models/arm26.bioMod");
 static std::string modelPathForBuchananDynamics("models/arm26_buchanan.bioMod");
+static std::string modelPathForDeGrooteDynamics("models/arm26_degroote.bioMod");
 static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
 static unsigned int muscleGroupForMuscleJacobian(1);
 static unsigned int muscleForMuscleJacobian(1);
@@ -858,6 +859,26 @@ TEST(DynamicState, Buchanan)
         const biorbd::muscles::Muscle& m(model.muscle(0));
         SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
         EXPECT_NEAR(m.activationDot(state), -11.656766195499843, requiredPrecision);
+    }
+}
+
+TEST(DynamicState, DeGroote)
+{
+    {
+        biorbd::Model model(modelPathForDeGrooteDynamics);
+        biorbd::muscles::StateDynamics state(0.8, 0.5);
+
+        const biorbd::muscles::Muscle& m(model.muscle(0));
+        SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
+        EXPECT_NEAR(actDot, 16.906809211183873, requiredPrecision);
+    }
+    {
+        biorbd::Model model(modelPathForDeGrooteDynamics);
+        biorbd::muscles::StateDynamics state(0.3, 0.5);
+
+        const biorbd::muscles::Muscle& m(model.muscle(0));
+        SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
+        EXPECT_NEAR(m.activationDot(state), -11.027512997920336, requiredPrecision);
     }
 }
 
