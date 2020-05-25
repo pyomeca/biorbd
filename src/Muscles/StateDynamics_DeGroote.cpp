@@ -87,12 +87,6 @@ const biorbd::utils::Scalar& biorbd::muscles::StateDynamics_DeGroote::timeDeriva
         *m_excitation = characteristics.minActivation();
 #endif
 
-// see doi:10.1016/j.humov.2011.08.006
-// see doi:10.1016/S0021-9290(03)00010-1
-
-
-// http://simtk-confluence.stanford.edu:8080/display/OpenSim/First-Order+Activation+Dynamics
-
     biorbd::utils::Scalar diff; //(e - a)
     biorbd::utils::Scalar f;    //activation dynamics
 
@@ -107,18 +101,6 @@ const biorbd::utils::Scalar& biorbd::muscles::StateDynamics_DeGroote::timeDeriva
 
     denom_activation = characteristics.torqueActivation()   * (0.5+1.5* *m_activation);
     denom_deactivation = characteristics.torqueDeactivation() / (0.5+1.5* *m_activation);
-
-//#ifdef BIORBD_USE_CASADI_MATH
-//    denom = casadi::MX::if_else(
-//                casadi::MX::gt(num, 0),
-//                characteristics.torqueActivation()   * (0.5+1.5* *m_activation),
-//                characteristics.torqueDeactivation() / (0.5+1.5* *m_activation));
-//#else
-//    if (num>0)
-//        denom = characteristics.torqueActivation()   * (0.5+1.5* *m_activation);
-//    else
-//        denom = characteristics.torqueDeactivation() / (0.5+1.5* *m_activation);
-//#endif
 
     *m_activationDot = (((f+0.5)/denom_activation)+((-f + 0.5)/denom_deactivation))*diff;
 
