@@ -858,7 +858,7 @@ TEST(DynamicState, Buchanan)
 
         const biorbd::muscles::Muscle& m(model.muscle(0));
         SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
-        EXPECT_NEAR(m.activationDot(state), -11.656766195499843, requiredPrecision);
+        EXPECT_NEAR(actDot, -11.656766195499843, requiredPrecision);
     }
 }
 
@@ -878,7 +878,7 @@ TEST(DynamicState, DeGroote)
 
         const biorbd::muscles::Muscle& m(model.muscle(0));
         SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
-        EXPECT_NEAR(m.activationDot(state), -11.027512997920336, requiredPrecision);
+        EXPECT_NEAR(actDot, -11.027512997920336, requiredPrecision);
     }
 }
 
