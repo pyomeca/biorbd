@@ -65,6 +65,22 @@ script:
     ############################################################################
     # Build main and tests
     ############################################################################
+
+    # Test the casadi backend
+    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
+        conda deactivate;
+        conda activate biorbd_casadi
+        cd ..;
+        mkdir build_casadi;
+        cd build_casadi;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_casadi/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON ..;
+        make install;
+        cd test;
+        ./biorbd_tests;
+        cd ../../;
+        conda deactivate;
+      fi
+
     # Download, compile and test core
     - conda activate biorbd_eigen
     - mkdir -p build_eigen
@@ -120,18 +136,6 @@ script:
         make biorbd_coverage;
       fi
     - ctest
-    
-    # Test the casadi backend
-    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
-        cd ..;
-        mkdir build_casadi;
-        cd build_casadi;
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_casadi/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON ..;
-        make install;
-        cd test;
-        ./biorbd_tests;
-        cd ../../build_eigen;
-      fi
     
 after_success:
     # Uploading report to CodeCov
