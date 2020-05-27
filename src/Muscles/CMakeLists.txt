@@ -21,6 +21,7 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/PathModifiers.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/State.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/StateDynamics.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/StateDynamicsDeGroote.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/StateDynamicsBuchanan.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/ViaPoint.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/WrappingCylinder.cpp"

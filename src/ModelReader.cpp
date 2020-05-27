@@ -832,6 +832,8 @@ void biorbd::Reader::readModelFile(
                         file.read(tp_state);
                         if (!tp_state.tolower().compare("buchanan"))
                             stateType = biorbd::muscles::STATE_TYPE::BUCHANAN;
+                        else if (!tp_state.tolower().compare("degroot"))
+                            stateType = biorbd::muscles::STATE_TYPE::DE_GROOTE;
                         else
                             biorbd::utils::Error::raise(property_tag + " is not a valid muscle state type");
                     }
