@@ -1017,7 +1017,17 @@ biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDyn
     return QDDot;
 }
 
-
+biorbd::rigidbody::GeneralizedVelocity biorbd::rigidbody::Joints::ComputeConstraintImpulsesDirect(
+        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+        const biorbd::rigidbody::GeneralizedVelocity& QDotPre
+        )
+{
+    biorbd::rigidbody::Contacts CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
+    CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
+    biorbd::rigidbody::GeneralizedVelocity QDotPost;
+    RigidBodyDynamics::ComputeConstraintImpulsesDirect(*this, Q, QDotPre, CS, QDotPost);
+    return QDotPost;
+}
 
 unsigned int biorbd::rigidbody::Joints::getDofIndex(
         const biorbd::utils::String& segmentName,
