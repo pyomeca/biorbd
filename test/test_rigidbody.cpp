@@ -931,6 +931,33 @@ TEST(Dynamics, ForwardDynAndExternalForces)
 }
 
 
+TEST(QDot, ComputeConstraintImpulsesDirect)
+{
+    biorbd::Model model(modelPathForGeneralTesting);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
+
+    // Set to random values
+    std::vector<double> val(model.nbQ());
+    for (size_t i=0; i<val.size(); ++i){
+        val[i] = static_cast<double>(i) * 1.1;
+    }
+    FILL_VECTOR(Q, val);
+    FILL_VECTOR(QDot, val);
+
+    CALL_BIORBD_FUNCTION_2ARGS(QDotPost, model, ComputeConstraintImpulsesDirect, Q, QDot);
+
+    std::vector<double> QDotPost_expected =
+    {0.92034698076739008, 0.4542331948818259, -1.1747551666658667, 3.3396871279100031,
+     1.1143307751232683, 9.5534681791265204, 9.5313390358865036, 2.5590424787426884,
+     -3.0502066043856577, 1.6659192923088271, 1.3562999563073794, -3.4457346325708458,
+     3.2641898429292815};
+    for (unsigned int i = 0; i<model.nbQdot(); ++i){
+        EXPECT_NEAR(static_cast<double>(QDotPost(i, 0)), QDotPost_expected[i], requiredPrecision);
+    }
+}
+
+
 TEST(Dynamics, ForwardLoopConstraint){
     biorbd::Model model(modelPathForLoopConstraintTesting);
     DECLARE_GENERALIZED_COORDINATES(Q, model);

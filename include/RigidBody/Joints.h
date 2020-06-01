@@ -804,6 +804,16 @@ public:
             const biorbd::rigidbody::GeneralizedTorque& Tau,
             std::vector<biorbd::utils::SpatialVector>* f_ext = nullptr);
 
+    ///
+    /// \brief Compute the QDot post from an impact
+    /// \param Q The Generalized Coordinates
+    /// \param QDotPre The Generalized Velocities before impact
+    /// \return The Generalized Velocities post acceleration
+    ///
+    biorbd::rigidbody::GeneralizedVelocity ComputeConstraintImpulsesDirect(
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedVelocity& QDotPre);
+
 protected:
     std::shared_ptr<std::vector<biorbd::rigidbody::Segment>> m_segments; ///< All the articulations
 
