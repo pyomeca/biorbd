@@ -1024,7 +1024,7 @@ biorbd::rigidbody::GeneralizedVelocity biorbd::rigidbody::Joints::ComputeConstra
 {
     biorbd::rigidbody::Contacts CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
     CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
-    biorbd::rigidbody::GeneralizedVelocity QDotPost;
+    biorbd::rigidbody::GeneralizedVelocity QDotPost(*this);
     RigidBodyDynamics::ComputeConstraintImpulsesDirect(*this, Q, QDotPre, CS, QDotPost);
     return QDotPost;
 }
