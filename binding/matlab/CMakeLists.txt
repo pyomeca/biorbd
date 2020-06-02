@@ -41,33 +41,39 @@ foreach(CPP_FILE ${CPP_FILES})
 
     # Set the name of the library
     if(WIN32)
-      if (CMAKE_CL_64)
-          SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
-              SUFFIX ".mexw64")
-      else(CMAKE_CL_64)
-          SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
-              SUFFIX ".mexw32")
-      endif(CMAKE_CL_64)
+        if (CMAKE_CL_64)
+            set_target_properties(${PROJECT_NAME} PROPERTIES
+                SUFFIX ".mexw64"
+            )
+        else(CMAKE_CL_64)
+            set_target_properties(${PROJECT_NAME} PROPERTIES
+                SUFFIX ".mexw32"
+            )
+        endif(CMAKE_CL_64)
     elseif(APPLE)
-      if (CMAKE_SIZEOF_VOID_P MATCHES "8")
-          SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
-              SUFFIX ".mexmaci64"
-              PREFIX "")
-      else(CMAKE_SIZEOF_VOID_P MATCHES "8")
-          SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
-              SUFFIX ".mexmaci64"
-              PREFIX "")
-      endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
+        if (CMAKE_SIZEOF_VOID_P MATCHES "8")
+            set_target_properties(${PROJECT_NAME} PROPERTIES
+                SUFFIX ".mexmaci64"
+                PREFIX ""
+            )
+        else(CMAKE_SIZEOF_VOID_P MATCHES "8")
+            set_target_properties(${PROJECT_NAME} PROPERTIES
+                SUFFIX ".mexmaci64"
+                PREFIX ""
+            )
+        endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
     else()
-      if (CMAKE_SIZEOF_VOID_P MATCHES "8")
-          SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
-              SUFFIX ".mexa64"
-              PREFIX "")
-      else(CMAKE_SIZEOF_VOID_P MATCHES "8")
-          SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
-              SUFFIX ".mexglx"
-              PREFIX "")
-      endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
+        if (CMAKE_SIZEOF_VOID_P MATCHES "8")
+            set_target_properties(${PROJECT_NAME} PROPERTIES
+                SUFFIX ".mexa64"
+                PREFIX ""
+            )
+        else(CMAKE_SIZEOF_VOID_P MATCHES "8")
+            set_target_properties(${PROJECT_NAME} PROPERTIES
+                SUFFIX ".mexglx"
+                PREFIX ""
+            )
+        endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
     endif(WIN32)
 
     # Set runtime path for linux
