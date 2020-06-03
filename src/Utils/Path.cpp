@@ -258,6 +258,10 @@ biorbd::utils::String biorbd::utils::Path::relativePath(
 biorbd::utils::String biorbd::utils::Path::absoluteFolder(
         const biorbd::utils::Path &path)
 {
+    if (*path.m_isFolderAbsolute) {
+        return path.folder();
+    }
+
     biorbd::utils::String base;
 #ifdef _WIN32
     biorbd::utils::String current(currentDir());
@@ -272,7 +276,7 @@ biorbd::utils::String biorbd::utils::Path::absoluteFolder(
 #else
     base = "/";
 #endif
-    return base + relativePath(path, base);
+	return base + relativePath(path, base);
 }
 
 biorbd::utils::String biorbd::utils::Path::absoluteFolder() const
@@ -365,24 +369,23 @@ void biorbd::utils::Path::setIsFolderAbsolute()
 {
     biorbd::utils::String base;
 #ifdef _WIN32
-    biorbd::utils::String current(currentDir());
+    biorbd::utils::String current(*m_folder);
     std::smatch matches;
 
     if (std::regex_search(current, matches, std::regex("^([A-Z]):[\\/].*$"))) {
-        base = matches[1].str() + ":/";
+        *m_isFolderAbsolute = true;
     }
     else {
-        biorbd::utils::Error::raise("I could not find the current drive to estimate the path");
+        *m_isFolderAbsolute = false;
     }
 #else
     base = "/";
-#endif
-
     size_t pos(m_folder->find(base.c_str()));
     if (pos == 0)
         *m_isFolderAbsolute = true;
     else
         *m_isFolderAbsolute = false;
+#endif
 }
 
 biorbd::utils::String biorbd::utils::Path::currentDir()
