@@ -51,6 +51,8 @@ TEST(Path, Create){
         biorbd::utils::Path emptyPath;
         EXPECT_STREQ(emptyPath.absolutePath().c_str(),
                      biorbd::utils::Path::currentDir().c_str());
+        EXPECT_STREQ(emptyPath.absoluteFolder().c_str(),
+                     biorbd::utils::Path::currentDir().c_str());
         EXPECT_STREQ(emptyPath.filename().c_str(), "");
         EXPECT_STREQ(emptyPath.extension().c_str(), "");
         EXPECT_STREQ(emptyPath.originalPath().c_str(), "");
@@ -87,15 +89,18 @@ TEST(Path, Create){
                     "C:\\MyLovely\\AbsolutePath\\ToMyLovelyFile.biorbd");
         biorbd::utils::String unixPath(
                     "C:/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
+        biorbd::utils::String absoluteUnixFolder("C:/MyLovely/AbsolutePath/");
 #else
         biorbd::utils::String path(
                     "/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
         biorbd::utils::String unixPath(
                     "/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
+        biorbd::utils::String absoluteUnixFolder("/MyLovely/AbsolutePath/");
 #endif
 
         biorbd::utils::Path absolutePath(path);
         EXPECT_STREQ(absolutePath.absolutePath().c_str(), unixPath.c_str());
+        EXPECT_STREQ(absolutePath.absoluteFolder().c_str(), absoluteUnixFolder.c_str());
         EXPECT_STREQ(absolutePath.filename().c_str(), "ToMyLovelyFile");
         EXPECT_STREQ(absolutePath.extension().c_str(), "biorbd");
         EXPECT_STREQ(absolutePath.originalPath().c_str(), path.c_str());
@@ -104,6 +109,7 @@ TEST(Path, Create){
     {
         biorbd::utils::Path relativePath("MyLovely/RelativePath/ToMyLovelyFile.biorbd");
         EXPECT_STREQ(relativePath.absolutePath().c_str(), (biorbd::utils::Path::currentDir() + "MyLovely/RelativePath/ToMyLovelyFile.biorbd").c_str());
+        EXPECT_STREQ(relativePath.absoluteFolder().c_str(), (biorbd::utils::Path::currentDir() + "MyLovely/RelativePath/").c_str());
         EXPECT_STREQ(relativePath.filename().c_str(), "ToMyLovelyFile");
         EXPECT_STREQ(relativePath.extension().c_str(), "biorbd");
         EXPECT_STREQ(relativePath.relativePath().c_str(), "./MyLovely/RelativePath/ToMyLovelyFile.biorbd");
@@ -113,6 +119,7 @@ TEST(Path, Create){
     {
         biorbd::utils::Path weirdRelativePath("./MyLovely/RelativePath/ToMyLovelyFile.biorbd");
         EXPECT_STREQ(weirdRelativePath.absolutePath().c_str(), (biorbd::utils::Path::currentDir() + "MyLovely/RelativePath/ToMyLovelyFile.biorbd").c_str());
+        EXPECT_STREQ(weirdRelativePath.absoluteFolder().c_str(), (biorbd::utils::Path::currentDir() + "MyLovely/RelativePath/").c_str());
         EXPECT_STREQ(weirdRelativePath.filename().c_str(), "ToMyLovelyFile");
         EXPECT_STREQ(weirdRelativePath.extension().c_str(), "biorbd");
         EXPECT_STREQ(weirdRelativePath.relativePath().c_str(), "./MyLovely/RelativePath/ToMyLovelyFile.biorbd");
@@ -122,6 +129,7 @@ TEST(Path, Create){
     {
         biorbd::utils::Path parentRelativePath("../MyLovely/ParentPath/ToMyLovelyFile.biorbd");
         EXPECT_STREQ(parentRelativePath.absolutePath().c_str(), (biorbd::utils::Path::currentDir() + "../MyLovely/ParentPath/ToMyLovelyFile.biorbd").c_str());
+        EXPECT_STREQ(parentRelativePath.absoluteFolder().c_str(), (biorbd::utils::Path::currentDir() + "../MyLovely/ParentPath/").c_str());
         EXPECT_STREQ(parentRelativePath.filename().c_str(), "ToMyLovelyFile");
         EXPECT_STREQ(parentRelativePath.extension().c_str(), "biorbd");
         EXPECT_STREQ(parentRelativePath.relativePath().c_str(), "../MyLovely/ParentPath/ToMyLovelyFile.biorbd");
@@ -131,6 +139,7 @@ TEST(Path, Create){
     {
         biorbd::utils::Path noPath("MyLonelyFile.biorbd");
         EXPECT_STREQ(noPath.absolutePath().c_str(), (biorbd::utils::Path::currentDir() + "MyLonelyFile.biorbd").c_str());
+        EXPECT_STREQ(noPath.absoluteFolder().c_str(), biorbd::utils::Path::currentDir().c_str());
         EXPECT_STREQ(noPath.filename().c_str(), "MyLonelyFile");
         EXPECT_STREQ(noPath.extension().c_str(), "biorbd");
         EXPECT_STREQ(noPath.relativePath().c_str(), "./MyLonelyFile.biorbd");
@@ -140,6 +149,7 @@ TEST(Path, Create){
     {
         biorbd::utils::Path almostNoPath("./MyKinbDofLonelyFile.biorbd");
         EXPECT_STREQ(almostNoPath.absolutePath().c_str(), (biorbd::utils::Path::currentDir() + "MyKinbDofLonelyFile.biorbd").c_str());
+        EXPECT_STREQ(almostNoPath.absoluteFolder().c_str(), biorbd::utils::Path::currentDir().c_str());
         EXPECT_STREQ(almostNoPath.filename().c_str(), "MyKinbDofLonelyFile");
         EXPECT_STREQ(almostNoPath.extension().c_str(), "biorbd");
         EXPECT_STREQ(almostNoPath.relativePath().c_str(), "./MyKinbDofLonelyFile.biorbd");
