@@ -32,20 +32,6 @@ namespace std {
 %template(SharedBiorbdMuscleFatigueState) std::shared_ptr<biorbd::muscles::FatigueState>;
 }
 
-// Exposing some useful functions
-%extend biorbd::Model{
-    biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
-                const std::vector<biorbd::muscles::StateDynamics> &state,
-                const biorbd::rigidbody::GeneralizedCoordinates &Q,
-                const biorbd::rigidbody::GeneralizedVelocity &QDot)
-    {
-        std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> state_ptr(state.size());
-        for (unsigned int i=0; i<state.size(); ++i)
-            state_ptr[i] = std::make_shared<biorbd::muscles::StateDynamics>(state[i]);
-        return self->muscularJointTorque(state_ptr, true, &Q, &QDot);
-    }
-}
-
 // extension of muscle casting
 %extend biorbd::muscles::IdealizedActuator{
     static biorbd::muscles::IdealizedActuator DeepCopy(const biorbd::muscles::Muscle& other)
