@@ -444,8 +444,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
         }
     }
 };
-%typemap(typecheck, precedence=2101)
-biorbd::rigidbody::GeneralizedCoordinates * {
+%typemap(typecheck, precedence=2101) biorbd::rigidbody::GeneralizedCoordinates * {
     void *argp1 = 0;
 #ifdef BIORBD_USE_CASADI_MATH
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
@@ -465,7 +464,10 @@ biorbd::rigidbody::GeneralizedCoordinates * {
         // test if it is a numpy array
         $1 = true;
     }
-    else {
+    else if ($input == Py_None){
+        $1 = true;
+    }
+    else{
         $1 = false;
     }
 }
@@ -505,6 +507,9 @@ biorbd::rigidbody::GeneralizedCoordinates * {
         for (unsigned int q=0; q<nQ; ++q){
             (*$1)[q] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, q);
         }
+    }
+    else if ($input == Py_None) {
+        $1 = nullptr;
     }
 };
 
@@ -594,6 +599,9 @@ biorbd::rigidbody::GeneralizedVelocity * {
         // test if it is a numpy array
         $1 = true;
     }
+    else if ($input == Py_None){
+        $1 = true;
+    }
     else {
         $1 = false;
     }
@@ -634,6 +642,9 @@ biorbd::rigidbody::GeneralizedVelocity * {
         for (unsigned int qdot=0; qdot<nQdot; ++qdot){
             (*$1)[qdot] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, qdot);
         }
+    }
+    else if ($input == Py_None){
+        $1 = nullptr;
     }
 };
 
@@ -723,6 +734,9 @@ biorbd::rigidbody::GeneralizedAcceleration * {
         // test if it is a numpy array
         $1 = true;
     }
+    else if ($input == Py_None){
+        $1 = true;
+    }
     else {
         $1 = false;
     }
@@ -763,6 +777,9 @@ biorbd::rigidbody::GeneralizedAcceleration * {
         for (unsigned int qddot=0; qddot<nQddot; ++qddot){
             (*$1)[qddot] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, qddot);
         }
+    }
+    else if ($input == Py_None){
+        $1 = nullptr;
     }
 };
 
