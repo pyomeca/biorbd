@@ -87,6 +87,18 @@ public:
     double mass() const;
 
     ///
+    /// \brief CoM Returns the position of the center of mass in the local reference frame
+    /// \return The position of the center of mass in the local reference frame
+    ///
+    biorbd::utils::Vector3d CoM() const;
+
+    ///
+    /// \brief setCoM Change the position of the center of mass
+    /// \param com The new position for the CoM
+    ///
+    void setCoM(const biorbd::utils::Vector3d& com);
+
+    ///
     /// \brief Returns the segment mesh
     /// \return The segment mesh
     ///
