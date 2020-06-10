@@ -42,7 +42,7 @@ bool biorbd::utils::IfStream::open(
         std::ios_base::openmode mode = std::ios_base::in )
 {
     biorbd::utils::Error::check(path.isFileExist(), path.absolutePath() + " could not be loaded");
-    *m_ifs = std::ifstream(path.relativePath().c_str(), mode);
+    *m_ifs = std::ifstream(path.absolutePath().c_str(), mode);
     *m_isOpen = true;
     return *m_isOpen;
 }

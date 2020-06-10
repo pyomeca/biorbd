@@ -17,12 +17,38 @@
 static double requiredPrecision(1e-10);
 
 static std::string modelPathForMuscleForce("models/arm26.bioMod");
+static std::string modelPathForBuchananDynamics("models/arm26_buchanan.bioMod");
+static std::string modelPathForDeGrooteDynamics("models/arm26_degroote.bioMod");
 static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
 static unsigned int muscleGroupForMuscleJacobian(1);
 static unsigned int muscleForMuscleJacobian(1);
 
 static unsigned int muscleGroupForIdealizedActuator(1);
 static unsigned int muscleForIdealizedActuator(1);
+
+TEST(Muscles, size){
+    biorbd::Model model(modelPathForMuscleForce);
+    unsigned int nbMus(model.nbMuscles());
+    EXPECT_EQ(nbMus, 6);
+    EXPECT_EQ(nbMus, model.nbMuscleTotal());
+    EXPECT_EQ(model.muscles().size(), nbMus);
+    int cmp(0);
+    for (auto g : model.muscleGroups()){
+        cmp += g.nbMuscles();
+    }
+    EXPECT_EQ(nbMus, cmp);
+
+    cmp = 0;
+    for (auto g : model.muscleGroups()){
+        for (auto m : g.muscles()){
+            EXPECT_STREQ(m->name().c_str(), model.muscle(cmp).name().c_str());
+            EXPECT_STREQ(m->name().c_str(), model.muscles()[cmp]->name().c_str());
+            cmp++;
+        }
+    }
+
+    EXPECT_THROW(model.muscle(cmp).name().c_str(), std::runtime_error);
+}
 
 TEST(IdealizedActuator, unitTest)
 {
@@ -793,6 +819,66 @@ TEST(hillThelenType, copy)
             EXPECT_NEAR(deepCopyNowExcitation, 0., requiredPrecision);
             EXPECT_NEAR(deepCopyLaterExcitation, 0., requiredPrecision);
         }
+    }
+}
+
+TEST(DynamicState, Normal)
+{
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::StateDynamics state(0.8, 0.5);
+
+        const biorbd::muscles::Muscle& m(model.muscle(0));
+        SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
+        EXPECT_NEAR(actDot, 24.0, requiredPrecision);
+    }
+    {
+        biorbd::Model model(modelPathForMuscleForce);
+        biorbd::muscles::StateDynamics state(0.3, 0.5);
+
+        const biorbd::muscles::Muscle& m(model.muscle(0));
+        SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
+        EXPECT_NEAR(actDot, -6.25, requiredPrecision);
+    }
+}
+
+TEST(DynamicState, Buchanan)
+{
+    {
+        biorbd::Model model(modelPathForBuchananDynamics);
+        biorbd::muscles::StateDynamics state(0.8, 0.5);
+
+        const biorbd::muscles::Muscle& m(model.muscle(0));
+        SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
+        EXPECT_NEAR(actDot, -7.592740648890816, requiredPrecision);
+    }
+    {
+        biorbd::Model model(modelPathForBuchananDynamics);
+        biorbd::muscles::StateDynamics state(0.3, 0.5);
+
+        const biorbd::muscles::Muscle& m(model.muscle(0));
+        SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
+        EXPECT_NEAR(actDot, -11.656766195499843, requiredPrecision);
+    }
+}
+
+TEST(DynamicState, DeGroote)
+{
+    {
+        biorbd::Model model(modelPathForDeGrooteDynamics);
+        biorbd::muscles::StateDynamics state(0.8, 0.5);
+
+        const biorbd::muscles::Muscle& m(model.muscle(0));
+        SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
+        EXPECT_NEAR(actDot, 16.906809211183873, requiredPrecision);
+    }
+    {
+        biorbd::Model model(modelPathForDeGrooteDynamics);
+        biorbd::muscles::StateDynamics state(0.3, 0.5);
+
+        const biorbd::muscles::Muscle& m(model.muscle(0));
+        SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
+        EXPECT_NEAR(actDot, -11.027512997920336, requiredPrecision);
     }
 }
 

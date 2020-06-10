@@ -1,0 +1,83 @@
+version   4
+
+// Informations about Pelvis segment
+    // Segment
+    segment    Pelvis
+        translations yz
+        rotations    x
+        rangesQ      -15 15
+                     -15 15
+                     -pi+1 pi+1
+        rangesQdot   -150 150
+                     -150 150
+                     -(pi+1)*10 (pi+1)*10
+        rangesQddot  -1500 1500
+                     -1500 1500
+                     -(pi+1)*100 (pi+1)*100
+        mass    9.03529
+        inertia
+            0.04664    0.00000    0.00000
+            0.00000    0.07178    0.00000
+            0.00000    0.00000    0.06989
+        com     0         0    0.0885
+        mesh   -0.1038    0.0821         0
+        mesh    0.1038    0.0850         0
+        mesh    0.1435    0.0072    0.0351
+        mesh    0.0514   -0.0833   -0.0020
+        mesh   -0.0514   -0.0838    0.0020
+        mesh   -0.1432   -0.0024    0.0344
+        mesh   -0.1038    0.0821         0
+    endsegment
+    
+    // Markers
+        marker  pelv1
+            parent  Pelvis
+            position    -0.1038    0.0821         0
+        endmarker
+        
+        marker  pelv2
+            parent  Pelvis
+            position    0.1038    0.0850         0
+        endmarker
+        
+        marker  pelv3
+            parent  Pelvis
+            position    0.1435    0.0072    0.0351
+        endmarker
+        
+        marker  pelv4
+            parent  Pelvis
+            position    0.0514   -0.0833   -0.0020
+        endmarker
+        
+        marker  pelv5
+            parent  Pelvis
+            position    -0.0514   -0.0838    0.0020
+        endmarker
+        
+        marker  pelv6
+            parent  Pelvis
+            position    -0.1432   -0.0024    0.0344
+        endmarker
+    
+
+    // Actuator
+        // MISSING VERSIONS WITH THE POSITIVE DIRECTIONS OF THE 3 FOLLOWING ACTUATORS
+        actuator    Pelvis
+            type    Constant
+            dof    TransY
+            direction    negative
+            Tmax    0.000000
+        endactuator
+        actuator    Pelvis
+            type    Constant
+            dof    TransZ
+            direction    negative
+            Tmax    0.000000
+        endactuator
+        actuator    Pelvis
+            type    Constant
+            dof    RotX
+            direction    negative
+            Tmax    0.000000
+        endactuator

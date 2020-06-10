@@ -281,40 +281,39 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torqueMax(
     // Assuming that this is also a Joints type (via BiorbdModel)
     const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
-    biorbd::rigidbody::GeneralizedTorque maxGeneralizedTorque_all;
-    maxGeneralizedTorque_all.resize(model.nbDof());
+    biorbd::rigidbody::GeneralizedTorque maxGeneralizedTorque_all(model);
 
     for (unsigned int i=0; i<model.nbDof(); ++i){
-        std::shared_ptr<Actuator> GeneralizedTorque_tp;
-
 #ifdef BIORBD_USE_CASADI_MATH
-        casadi::MX useFirst = casadi::MX::if_else(
-                    casadi::MX::ge(activation[i], 0),
-                    1, 0);
-        if (!useFirst.is_zero()){
-            GeneralizedTorque_tp = actuator(i).first;
-        } else {
-            GeneralizedTorque_tp = actuator(i).second;
-        }
+        maxGeneralizedTorque_all[i] = casadi::MX::if_else(
+                    casadi::MX::ge(activation(i, 0), 0),
+                    getTorqueMaxDirection(actuator(i).first, Q, Qdot),
+                    getTorqueMaxDirection(actuator(i).second, Q, Qdot));
 #else
         if (activation[i] >= 0) // First
-            GeneralizedTorque_tp = actuator(i).first;
+            maxGeneralizedTorque_all[i] = getTorqueMaxDirection(actuator(i).first, Q, Qdot);
         else
-            GeneralizedTorque_tp = actuator(i).second;
+            maxGeneralizedTorque_all[i] = getTorqueMaxDirection(actuator(i).second, Q, Qdot);
 #endif
-
-        if (std::dynamic_pointer_cast<ActuatorGauss3p> (GeneralizedTorque_tp))
-            maxGeneralizedTorque_all[i] = std::static_pointer_cast<ActuatorGauss3p> (GeneralizedTorque_tp)->torqueMax(Q, Qdot);
-        else if (std::dynamic_pointer_cast<ActuatorConstant> (GeneralizedTorque_tp))
-            maxGeneralizedTorque_all[i] = std::static_pointer_cast<ActuatorConstant> (GeneralizedTorque_tp)->torqueMax();
-        else if (std::dynamic_pointer_cast<ActuatorLinear> (GeneralizedTorque_tp))
-            maxGeneralizedTorque_all[i] = std::static_pointer_cast<ActuatorLinear> (GeneralizedTorque_tp)->torqueMax(Q);
-        else if (std::dynamic_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp))
-            maxGeneralizedTorque_all[i] = std::static_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp)->torqueMax(Q, Qdot);
-        else
-            biorbd::utils::Error::raise("Wrong type (should never get here because of previous safety)");
-
     }
 
     return maxGeneralizedTorque_all;
+}
+
+biorbd::utils::Scalar biorbd::actuator::Actuators::getTorqueMaxDirection(
+        const std::shared_ptr<biorbd::actuator::Actuator> actuator,
+        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+        const biorbd::rigidbody::GeneralizedVelocity& Qdot) const
+{
+    if (std::dynamic_pointer_cast<ActuatorGauss3p> (actuator))
+        return std::static_pointer_cast<ActuatorGauss3p> (actuator)->torqueMax(Q, Qdot);
+    else if (std::dynamic_pointer_cast<ActuatorConstant> (actuator))
+        return std::static_pointer_cast<ActuatorConstant> (actuator)->torqueMax();
+    else if (std::dynamic_pointer_cast<ActuatorLinear> (actuator))
+        return std::static_pointer_cast<ActuatorLinear> (actuator)->torqueMax(Q);
+    else if (std::dynamic_pointer_cast<ActuatorGauss6p> (actuator))
+        return std::static_pointer_cast<ActuatorGauss6p> (actuator)->torqueMax(Q, Qdot);
+    else
+        biorbd::utils::Error::raise("Wrong type (should never get here because of previous safety)");
+
 }

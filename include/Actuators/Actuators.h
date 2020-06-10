@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include "biorbdConfig.h"
+#include "Utils/Scalar.h"
 
 namespace biorbd {
 namespace utils {
@@ -121,6 +122,18 @@ protected:
     std::shared_ptr<std::vector<std::pair<std::shared_ptr<biorbd::actuator::Actuator>, std::shared_ptr<biorbd::actuator::Actuator>>>> m_all; ///<All the actuators reunited /pair (+ or -)
     std::shared_ptr<std::vector<bool>> m_isDofSet;///< If DoF all dof are set
     std::shared_ptr<bool> m_isClose; ///< If the set is ready
+
+    ///
+    /// \brief getTorqueMaxDirection Get the max torque of a specific actuator (interface necessary because of CasADi)
+    /// \param actuator The actuator to gather from
+    /// \param Q The Generalized coordinates
+    /// \param Qdot The Generalized velocity
+    /// \return The torque max
+    ///
+    biorbd::utils::Scalar getTorqueMaxDirection(
+            const std::shared_ptr<Actuator> actuator,
+            const rigidbody::GeneralizedCoordinates &Q,
+            const rigidbody::GeneralizedVelocity &Qdot) const;
 
 };
 

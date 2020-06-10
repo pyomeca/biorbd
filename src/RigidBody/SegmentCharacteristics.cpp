@@ -64,6 +64,17 @@ double biorbd::rigidbody::SegmentCharacteristics::mass() const
     return mMass;
 }
 
+biorbd::utils::Vector3d biorbd::rigidbody::SegmentCharacteristics::CoM() const
+{
+    return mCenterOfMass;
+}
+
+void biorbd::rigidbody::SegmentCharacteristics::setCoM(
+        const biorbd::utils::Vector3d &com)
+{
+    mCenterOfMass = com;
+}
+
 const biorbd::rigidbody::Mesh &biorbd::rigidbody::SegmentCharacteristics::mesh() const
 {
     return *m_mesh;

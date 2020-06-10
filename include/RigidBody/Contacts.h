@@ -123,11 +123,17 @@ public:
     unsigned int nbContacts() const;
 
     ///
+    /// \brief Return the name of the all contacts
+    /// \return The name of the contacts
+    ///
+    std::vector<biorbd::utils::String> contactNames();
+
+    ///
     /// \brief Return the name of the contact of a specified axis
     /// \param i The axis
     /// \return The name of the contact of a specified axis
     ///
-    biorbd::utils::String name(unsigned int i);
+    biorbd::utils::String contactName(unsigned int i);
 
     ///
     /// \brief Return the contraints position in the global reference

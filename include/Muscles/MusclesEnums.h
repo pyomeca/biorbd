@@ -39,6 +39,7 @@ enum STATE_TYPE {
     SIMPLE_STATE,
     DYNAMIC,
     BUCHANAN,
+    DE_GROOTE,
     NO_STATE_TYPE
 };
 

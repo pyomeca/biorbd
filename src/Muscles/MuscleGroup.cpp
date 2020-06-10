@@ -7,6 +7,7 @@
 #include "Muscles/HillThelenType.h"
 #include "Muscles/HillThelenTypeFatigable.h"
 #include "Muscles/StateDynamicsBuchanan.h"
+#include "Muscles/StateDynamicsDeGroote.h"
 
 biorbd::muscles::MuscleGroup::MuscleGroup() :
     m_mus(std::make_shared<std::vector<std::shared_ptr<biorbd::muscles::Muscle>>>()),
@@ -88,6 +89,8 @@ void biorbd::muscles::MuscleGroup::addMuscle(
         state = std::make_shared<biorbd::muscles::StateDynamics>();
     else if (stateType == biorbd::muscles::STATE_TYPE::BUCHANAN)
         state = std::make_shared<biorbd::muscles::StateDynamicsBuchanan>();
+    else if (stateType == biorbd::muscles::STATE_TYPE::DE_GROOTE)
+        state = std::make_shared<biorbd::muscles::StateDynamicsDeGroote>();
     else
         state = std::make_shared<biorbd::muscles::StateDynamics>();
 
@@ -142,6 +145,8 @@ void biorbd::muscles::MuscleGroup::addMuscle(
         state = std::make_shared<biorbd::muscles::StateDynamics>();
     else if (stateType == biorbd::muscles::STATE_TYPE::BUCHANAN)
         state = std::make_shared<biorbd::muscles::StateDynamicsBuchanan>();
+    else if (stateType == biorbd::muscles::STATE_TYPE::DE_GROOTE)
+        state = std::make_shared<biorbd::muscles::StateDynamicsDeGroote>();
     else {
         state = std::make_shared<biorbd::muscles::StateDynamics>();
     }

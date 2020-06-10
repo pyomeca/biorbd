@@ -8,6 +8,7 @@
 #include "Muscles/PathModifiers.h"
 #include "Muscles/StateDynamics.h"
 #include "Muscles/StateDynamicsBuchanan.h"
+#include "Muscles/StateDynamicsDeGroote.h"
 #include "Muscles/Characteristics.h"
 #include "Muscles/Geometry.h"
 
@@ -186,7 +187,8 @@ const biorbd::utils::Scalar& biorbd::muscles::Muscle::velocity(
 }
 
 const biorbd::utils::Scalar& biorbd::muscles::Muscle::activationDot(
-        const biorbd::muscles::StateDynamics &state, bool alreadyNormalized)
+        const biorbd::muscles::StateDynamics &state,
+        bool alreadyNormalized) const
 {
     return m_state->timeDerivativeActivation(state, characteristics(), alreadyNormalized);
 }
@@ -232,6 +234,9 @@ void biorbd::muscles::Muscle::setState(
 {
     if (emg.type() == biorbd::muscles::STATE_TYPE::BUCHANAN){
         m_state = std::make_shared<biorbd::muscles::StateDynamicsBuchanan>(biorbd::muscles::StateDynamicsBuchanan());
+    }
+    else if (emg.type() == biorbd::muscles::STATE_TYPE::DE_GROOTE){
+        m_state = std::make_shared<biorbd::muscles::StateDynamicsDeGroote>(biorbd::muscles::StateDynamicsDeGroote());
     }
     else if (emg.type() == biorbd::muscles::STATE_TYPE::DYNAMIC){
         m_state = std::make_shared<biorbd::muscles::StateDynamics>(biorbd::muscles::StateDynamics());

@@ -43,29 +43,55 @@ before_install:
       fi
 
 install:
-    - conda install rbdl tinyxml lapack numpy pytest swig -c conda-forge
+    - conda create -n biorbd_eigen
+    - conda activate biorbd_eigen
+    - conda install rbdl tinyxml numpy pytest swig pkgconfig -c conda-forge
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
         conda install ipopt -c conda-forge;
       fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        conda install lcov -c conda-forge;
+        conda install lcov cmake -c conda-forge;
       fi
-    - which python
+    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
+        conda create -n biorbd_casadi;
+        conda deactivate;
+        conda activate biorbd_casadi;
+        conda install rbdl=*=*casadi* tinyxml pkgconfig ipopt -c conda-forge;
+        conda deactivate;
+      fi
+        
       
 script:
     ############################################################################
     # Build main and tests
     ############################################################################
+
+    # Test the casadi backend
+    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
+        conda deactivate;
+        conda activate biorbd_casadi
+        cd ..;
+        mkdir build_casadi;
+        cd build_casadi;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_casadi/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON ..;
+        make install;
+        cd test;
+        ./biorbd_tests;
+        cd ../../;
+        conda deactivate;
+      fi
+
     # Download, compile and test core
-    - mkdir -p build
-    - cd build
+    - conda activate biorbd_eigen
+    - mkdir -p build_eigen
+    - cd build_eigen
     # Perform tests on all platform, but only perform code coverage on Linux
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
-        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON -DBINDER_C=ON ..;
-        cmake --build ./ --config Release;
+        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/envs/biorbd_eigen/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..;
+        cmake --build ./ --config Release --target install;
       else
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=ON ..;
-        make;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_eigen/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..;
+        make install;
       fi
       
     # Move and copy mandatory files and run the tests for all platforms
@@ -93,14 +119,7 @@ script:
         cd ../../..;
       fi
       
-      # Test if biorbd can be compile on the python binder
-    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
-        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=$ToolsDir/miniconda3/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON ..;
-        cmake --build ./ --config Release --target install;
-      else
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DBINDER_PYTHON3=ON -DPython3_EXECUTABLE=`which python` ..;
-        make install;
-      fi
+    # Test if biorbd can be compile on the python binder
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         cd test\\binding\\Python3;
       else
@@ -111,7 +130,7 @@ script:
 
     # Only do the coverage on Linux, but run the test anyway to get a nice output
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=OFF ..;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_eigen/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=OFF ..;
         make;
         cp -r test/models/ .;
         make biorbd_coverage;
