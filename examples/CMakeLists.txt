@@ -1,8 +1,9 @@
 project(${BIORBD_NAME}_example)
 
 set(EXAMPLE_FILES
-    "markerPositionsExample.cpp"
+    "inverseKinematicsKalmanExample.cpp"
     "inverseDynamicsExample.cpp"
+    "markerPositionsExample.cpp"
 )
 if(NOT SKIP_STATIC_OPTIM)
     list(APPEND EXAMPLE_FILES "staticOptimizationExample.cpp")
