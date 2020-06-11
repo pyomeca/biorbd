@@ -45,6 +45,11 @@ biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     if (*m_eps < 1e-12){
         biorbd::utils::Error::raise("epsilon for partial derivates approximation is too small ! \nLimit for epsilon is 1e-12");
     }
+
+    for (auto& s : *m_states){
+        s = std::make_shared<biorbd::muscles::StateDynamics>();
+    }
+
     m_model.updateMuscles(*m_Q, *m_Qdot, true);
     if (!useResidual){
         m_torqueResidual->setZero();

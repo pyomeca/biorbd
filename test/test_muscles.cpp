@@ -2070,4 +2070,119 @@ TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
 }
 #endif
 
+#ifndef SKIP_STATIC_OPTIM
+
+TEST(StaticOptim, OneFrameNoActivations){
+#ifdef BIORBD_USE_CASADI_MATH
+    std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+    biorbd::Model model(modelPathForMuscleForce);
+
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
+    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    for (unsigned int i=0; i<Q.size(); ++i){
+        Q[i] = static_cast<double>(i) * 1.1;
+        Qdot[i] = static_cast<double>(i) * 1.1;
+        Tau[i] = static_cast<double>(i) * 1.1;
+    }
+
+    // Proceed with the static optimization
+    auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau);
+    optim.run();
+    auto muscleActivations = optim.finalSolution()[0];
+
+    std::vector<double> expectedActivations = {
+        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
+        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281};
+    for (size_t i=0; i<expectedActivations.size(); ++i){
+        EXPECT_NEAR(muscleActivations(i), expectedActivations[i], requiredPrecision);
+    }
+
+#endif
+}
+
+TEST(StaticOptim, OneFrameOneActivation){
+#ifdef BIORBD_USE_CASADI_MATH
+    std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+    biorbd::Model model(modelPathForMuscleForce);
+
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
+    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    for (unsigned int i=0; i<Q.size(); ++i){
+        Q[i] = static_cast<double>(i) * 1.1;
+        Qdot[i] = static_cast<double>(i) * 1.1;
+        Tau[i] = static_cast<double>(i) * 1.1;
+    }
+
+    // Proceed with the static optimization
+    double initialActivationGuess = 0.5;
+    auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau, initialActivationGuess);
+    optim.run();
+    auto muscleActivations = optim.finalSolution()[0];
+
+    std::vector<double> expectedActivations = {
+        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
+        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281};
+    for (size_t i=0; i<expectedActivations.size(); ++i){
+        EXPECT_NEAR(muscleActivations(i), expectedActivations[i], requiredPrecision);
+    }
+
+#endif
+}
+
+TEST(StaticOptim, MultiFrameConstructor){
+#ifdef BIORBD_USE_CASADI_MATH
+    std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+    biorbd::Model model(modelPathForMuscleForce);
+
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
+    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    for (unsigned int i=0; i<Q.size(); ++i){
+        Q[i] = static_cast<double>(i) * 1.1;
+        Qdot[i] = static_cast<double>(i) * 1.1;
+        Tau[i] = static_cast<double>(i) * 1.1;
+    }
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allQ;
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allQdot;
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allTau;
+    allQ.push_back(Q);
+    allQ.push_back(Q);
+    allQ.push_back(Q);
+    allQdot.push_back(Qdot);
+    allQdot.push_back(Qdot);
+    allQdot.push_back(Qdot);
+    allTau.push_back(Tau);
+    allTau.push_back(Tau);
+    allTau.push_back(Tau);
+
+    // Proceed with the static optimization
+    auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau);
+    optim.run();
+    auto allMuscleActivations = optim.finalSolution();
+
+    std::vector<double> expectedActivations = {
+        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
+        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281};
+    for (auto muscleActivations : allMuscleActivations){
+        for (size_t i=0; i<expectedActivations.size(); ++i){
+            EXPECT_NEAR(muscleActivations(i), expectedActivations[i], requiredPrecision);
+        }
+    }
+
+#endif
+}
+
+
+
+
+#endif
+
 #endif // MODULE_MUSCLES

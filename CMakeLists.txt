@@ -236,7 +236,7 @@ add_subdirectory("binding")
 # Add the example if asked
 option(BUILD_EXAMPLE "Build a C++ example" ON)
 if (BUILD_EXAMPLE)
-    add_subdirectory("example")
+    add_subdirectory("examples")
 endif()
 
 # Doc
