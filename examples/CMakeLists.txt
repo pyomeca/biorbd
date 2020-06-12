@@ -4,6 +4,8 @@ set(EXAMPLE_FILES
     "inverseKinematicsKalmanExample.cpp"
     "inverseDynamicsExample.cpp"
     "markerPositionsExample.cpp"
+    "forwardDynamicsExample.cpp"
+    "forwardDynamicsFromMusclesExample.cpp"
 )
 if(NOT SKIP_STATIC_OPTIM)
     list(APPEND EXAMPLE_FILES "staticOptimizationExample.cpp")
