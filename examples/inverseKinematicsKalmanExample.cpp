@@ -21,7 +21,7 @@ int main()
 
     // Generate random data (3 frames)
     biorbd::rigidbody::GeneralizedCoordinates targetQ(model);
-    targetQ.setRandom();
+    targetQ.setZero();
     std::cout << "Target Q = " << targetQ.transpose() << std::endl;
     std::vector<biorbd::rigidbody::NodeSegment> targetMarkers = model.markers(targetQ);
     std::vector< std::vector<biorbd::rigidbody::NodeSegment> > markersOverFrames;
