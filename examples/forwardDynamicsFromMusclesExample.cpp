@@ -18,7 +18,7 @@ int main()
     // Load a predefined model
     biorbd::Model model("arm26.bioMod");
 
-    // Choose a position/velocity/acceleration to compute dynamics from
+    // Choose a position/velocity to compute dynamics from
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
     biorbd::rigidbody::GeneralizedVelocity Qdot(model);
     Q.setZero();

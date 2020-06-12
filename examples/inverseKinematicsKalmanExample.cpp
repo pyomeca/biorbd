@@ -20,17 +20,19 @@ int main()
     biorbd::Model model("pyomecaman.bioMod");
 
     // Generate random data (3 frames)
-    biorbd::rigidbody::GeneralizedCoordinates Q_simulated(model);
-    Q_simulated.setRandom();
-    std::cout << "Target Q = " << Q_simulated.transpose() << std::endl;
-    std::vector<biorbd::rigidbody::NodeSegment> bodyMarkers = model.markers(Q_simulated);
+    biorbd::rigidbody::GeneralizedCoordinates targetQ(model);
+    targetQ.setRandom();
+    std::cout << "Target Q = " << targetQ.transpose() << std::endl;
+    std::vector<biorbd::rigidbody::NodeSegment> targetMarkers = model.markers(targetQ);
     std::vector< std::vector<biorbd::rigidbody::NodeSegment> > markersOverFrames;
-    markersOverFrames.push_back(bodyMarkers);
-    markersOverFrames.push_back(bodyMarkers);
-    markersOverFrames.push_back(bodyMarkers);
+    markersOverFrames.push_back(targetMarkers);
+    markersOverFrames.push_back(targetMarkers);
+    markersOverFrames.push_back(targetMarkers);
 
     // Create a Kalman filter
-    biorbd::rigidbody::KalmanReconsMarkers kalman(model);
+    double freq = 100; // 100 Hz
+    biorbd::rigidbody::KalmanReconsMarkers::KalmanParam params(freq);
+    biorbd::rigidbody::KalmanReconsMarkers kalman(model, params);
 
     // Perform the kalman filter for each frame (the first frame is much longer than the next)
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
