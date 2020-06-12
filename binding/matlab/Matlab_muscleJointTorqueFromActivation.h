@@ -12,16 +12,17 @@ void Matlab_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
     // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 3, 5, "3 arguments are required (+2 optional) where the 2nd is the handler on the model, "
                                            "3rd is the muscles states and optional 4th and 5th are the Q and QDot, respectively."
-                                           "WARNING: if the function is called without Q and Qdot, the user MUST update by himself before calling this function (using updateMuscle).");
+                                           "WARNING: if the function is called without Q and Qdot, the user MUST update by himself "
+                                           "before calling this function (using updateMuscle).");
     // Recevoir le model
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
     unsigned int nTau = model->nbGeneralizedTorque(); // Get the number of DoF
-    unsigned int nMuscleTotal = model->nbMuscleTotal();
+    unsigned int nMuscleTotal = model->nbMuscles();
 
     // Recevoir muscleStates
-    std::vector<std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>> s = getParameterMuscleStateActivation(prhs,2,nMuscleTotal);
+    std::vector<std::vector<std::shared_ptr<biorbd::muscles::State>>> s = getParameterMuscleStateActivation(prhs,2,nMuscleTotal);
     unsigned int nFrame(static_cast<unsigned int>(s.size()));
 
     bool updateKin(false); // Par défaut c'est false, mais ce comportement est celui le moins attendu
@@ -69,21 +70,13 @@ void Matlab_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
 
     // Remplir le output
     biorbd::rigidbody::GeneralizedTorque muscleTorque;
-    biorbd::utils::Vector force;
+    biorbd::utils::Vector muscleForces;
     for (unsigned int i=0; i<nFrame; ++i){
-        force.setZero();
-        if (nlhs >= 2) // Si on doit récupérer les forces
-            if (updateKin)
-                muscleTorque = model->muscularJointTorque(s[i], force, updateKin, &Q[i], &QDot[i]);
-            else
-                muscleTorque = model->muscularJointTorque(s[i], force, updateKin);
-
-        else // Si non
-            if (updateKin)
-                muscleTorque = model->muscularJointTorque(s[i], updateKin, &Q[i], &QDot[i]);
-            else
-                muscleTorque = model->muscularJointTorque(s[i], updateKin);
-
+        if (updateKin)
+            muscleForces = model->muscleForces(s[i], Q[i], QDot[i]);
+        else
+            muscleForces = model->muscleForces(s[i]);
+        muscleTorque = model->muscularJointTorque(muscleForces);
 
         // distribuer les Tau
         for (unsigned int j=0; j<nTau; ++j){
@@ -91,9 +84,11 @@ void Matlab_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
         }
 
         // Distribuer les forces
-        if (nlhs >= 2) // Si on doit récupérer les forces
-            for (unsigned int j=0; j<nMuscleTotal; ++j)
-                Mus[i*nMuscleTotal+j] = force(j);
+        if (nlhs >= 2){ // Si on doit récupérer les forces
+            for (unsigned int j=0; j<nMuscleTotal; ++j){
+                Mus[i*nMuscleTotal+j] = muscleForces(j);
+            }
+        }
     }
 
     return;

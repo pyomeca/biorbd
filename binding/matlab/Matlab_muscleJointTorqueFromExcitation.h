@@ -12,7 +12,10 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
-    checkNombreInputParametres(nrhs, 5, 6, "5 arguments are required where the 2nd is the handler on the model, 3rd is the Q, 4th is QDot, 5th is the muscles excitation states and optional 6th is if update [true] must be done. Note that if update is set to [false], the user MUST update it by himself before calling this function");
+    checkNombreInputParametres(nrhs, 5, 6, "5 arguments are required where the 2nd is the handler on the model, "
+                                           "3rd is the Q, 4th is QDot, 5th is the muscles excitation states and optional "
+                                           "6th is if update [true] must be done. Note that if update is set to [false], "
+                                           "the user MUST update it by himself before calling this function");
     // Recevoir le model
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
@@ -25,7 +28,7 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
     // Recevoir Qdot
     std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(prhs, 3, nQdot);
     // Recevoir muscleStates
-    std::vector<std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>> s = getParameterMuscleStateExcitation(prhs,4,model->nbMuscleTotal());
+    std::vector<std::vector<std::shared_ptr<biorbd::muscles::State>>> s = getParameterMuscleStateExcitation(prhs,4,model->nbMuscleTotal());
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));
@@ -59,26 +62,22 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
     }
 
     // Remplir le output
+    biorbd::rigidbody::GeneralizedTorque muscleTorque;
+    biorbd::utils::Vector muscleForces;
     for (unsigned int i=0; i<nFrame; ++i){
         unsigned int iMus = 0;
         for (unsigned int k=0; k<model->nbMuscleGroups(); ++k)
             for (unsigned int j=0; j<model->muscleGroup(k).nbMuscles(); ++j){
-                s[i][iMus]->timeDerivativeActivation(model->muscleGroup(k).muscle(j).characteristics(),true);
+                std::dynamic_pointer_cast<biorbd::muscles::StateDynamics>(s[i][iMus])
+                        ->timeDerivativeActivation(model->muscleGroup(k).muscle(j).characteristics(),true);
                 ++iMus;
             }
 
-        biorbd::rigidbody::GeneralizedTorque muscleTorque;
-        biorbd::utils::Vector force;
-        if (nlhs >= 2) // Si on doit récupérer les forces
-            if (updateKin)
-                muscleTorque = model->muscularJointTorque(s[i], force, updateKin, &Q[i], &QDot[i]);
-            else
-                muscleTorque = model->muscularJointTorque(s[i], force, updateKin);
-        else // Si non
-            if (updateKin)
-                muscleTorque = model->muscularJointTorque(s[i], updateKin, &Q[i], &QDot[i]);
-            else
-                muscleTorque = model->muscularJointTorque(s[i], updateKin);
+        if (updateKin)
+            muscleForces = model->muscleForces(s[i], Q[i], QDot[i]);
+        else
+            muscleForces = model->muscleForces(s[i]);
+        muscleTorque = model->muscularJointTorque(muscleForces);
 
         // distribuer les GeneralizedTorque
         for (unsigned int j=0; j<nGeneralizedTorque; ++j){
@@ -88,7 +87,7 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
         // Distribuer les forces
         if (nlhs >= 2) // Si on doit récupérer les forces
             for (unsigned int j=0; j<nMuscleTotal; ++j)
-                Mus[i*nMuscleTotal+j] = force(j);
+                Mus[i*nMuscleTotal+j] = muscleForces(j);
     }
 
     return;

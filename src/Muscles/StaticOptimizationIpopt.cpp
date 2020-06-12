@@ -36,7 +36,7 @@ biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     m_torqueTarget(std::make_shared<biorbd::rigidbody::GeneralizedTorque>(torqueTarget)),
     m_torqueResidual(std::make_shared<biorbd::utils::Vector>(biorbd::utils::Vector::Zero(*m_nbTorque))),
     m_torquePonderation(std::make_shared<double>(1000)),
-    m_states(std::make_shared<std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>>(*m_nbMus)),
+    m_states(std::make_shared<std::vector<std::shared_ptr<biorbd::muscles::State>>>(*m_nbMus)),
     m_pNormFactor(std::make_shared<unsigned int>(pNormFactor)),
     m_verbose(std::make_shared<int>(verbose)),
     m_finalSolution(std::make_shared<biorbd::utils::Vector>(biorbd::utils::Vector(*m_nbMus))),
@@ -47,7 +47,7 @@ biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     }
 
     for (auto& s : *m_states){
-        s = std::make_shared<biorbd::muscles::StateDynamics>();
+        s = std::make_shared<biorbd::muscles::State>();
     }
 
     m_model.updateMuscles(*m_Q, *m_Qdot, true);
@@ -202,7 +202,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_g(
         dispatch(x);
 
     const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueMusc(
-                m_model.muscularJointTorque(*m_states, false, m_Q.get(), m_Qdot.get()));
+                m_model.muscularJointTorque(*m_states));
 
     for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ )
          g[i] = GeneralizedTorqueMusc[i] + (*m_torqueResidual)[i] - (*m_torqueTarget)[i];
@@ -240,17 +240,21 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
     } else {
         if (new_x)
             dispatch(x);
-        const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueMusc(m_model.muscularJointTorque(*m_states, false, m_Q.get(), m_Qdot.get()));
+        const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueMusc(
+                    m_model.muscularJointTorque(*m_states));
         unsigned int k(0);
         for( unsigned int j = 0; j < *m_nbMus; ++j ){
-            std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> stateEpsilon;
+            std::vector<std::shared_ptr<biorbd::muscles::State>> stateEpsilon;
             for (unsigned int i = 0; i < *m_nbMus; ++i){
                 unsigned int delta(0);
                 if (i == j)
                     delta = 1;
-                stateEpsilon.push_back(std::make_shared<biorbd::muscles::StateDynamics>(biorbd::muscles::StateDynamics(0, (*m_activations)[i]+delta* *m_eps)));
+                stateEpsilon.push_back(
+                            std::make_shared<biorbd::muscles::State>(
+                                biorbd::muscles::State(0, (*m_activations)[i]+delta* *m_eps)));
             }
-            const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueCalculEpsilon(m_model.muscularJointTorque(stateEpsilon, false, m_Q.get(), m_Qdot.get()));
+            const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueCalculEpsilon(
+                        m_model.muscularJointTorque(stateEpsilon));
             for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ ){
                 values[k++] = (GeneralizedTorqueCalculEpsilon[i]-GeneralizedTorqueMusc[i])/ *m_eps;
                 if (*m_verbose >= 3){
@@ -305,7 +309,7 @@ void biorbd::muscles::StaticOptimizationIpopt::finalize_solution(
         std::cout << std::endl << "Final results" << std::endl;
         std::cout << "f(x*) = " << obj_value << std::endl;
         std::cout << "Activations = " << m_activations->transpose() << std::endl;
-        std::cout << "Muscular torques = " << m_model.muscularJointTorque(*m_states, false, m_Q.get(), m_Qdot.get()).transpose() << std::endl;
+        std::cout << "Muscular torques = " << m_model.muscularJointTorque(*m_states).transpose() << std::endl;
         std::cout << "GeneralizedTorque target = " << m_torqueTarget->transpose() << std::endl;
         if (*m_nbTorqueResidual){
             std::cout << "Residual torques= " << m_torqueResidual->transpose() << std::endl;
