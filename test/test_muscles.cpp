@@ -1626,13 +1626,13 @@ TEST(MuscleForce, force)
     biorbd::rigidbody::GeneralizedVelocity QDot(model);
     Q = Q.setOnes()/10;
     QDot = QDot.setOnes()/10;
-    std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> states;
+    std::vector<std::shared_ptr<biorbd::muscles::State>> states;
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i){
         states.push_back(std::make_shared<biorbd::muscles::StateDynamics>(0, 0.2));
     }
     model.updateMuscles(Q, QDot, true);
 
-    const biorbd::utils::Vector& F = model.musclesForces(states, false);
+    const biorbd::utils::Vector& F = model.muscleForces(states);
 
     std::vector<double> ExpectedForce({
             164.3110575502927, 106.89637709077938, 84.340201458493794,
@@ -1651,13 +1651,13 @@ TEST(MuscleForce, torqueFromMuscles)
     biorbd::rigidbody::GeneralizedAcceleration QDDot(model);
     Q.setOnes()/10;
     QDot.setOnes()/10;
-    std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> states;
+    std::vector<std::shared_ptr<biorbd::muscles::State>> states;
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i)
         states.push_back(std::make_shared<biorbd::muscles::StateDynamics>(0, 0.2));
 
     biorbd::rigidbody::GeneralizedTorque Tau(model);
     std::vector<double> TauExpected({-18.271389285751727, -7.820566757538376});
-    Tau = model.muscularJointTorque(states, true, &Q, &QDot);
+    Tau = model.muscularJointTorque(states, Q, QDot);
     for (unsigned int i=0; i<QDDot.size(); ++i){
         SCALAR_TO_DOUBLE(val, Tau(i));
         EXPECT_NEAR(val, TauExpected[i], requiredPrecision);

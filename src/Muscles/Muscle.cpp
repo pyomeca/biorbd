@@ -16,7 +16,7 @@ biorbd::muscles::Muscle::Muscle() :
     biorbd::muscles::Compound(),
     m_position(std::make_shared<biorbd::muscles::Geometry>()),
     m_characteristics(std::make_shared<biorbd::muscles::Characteristics>()),
-    m_state(std::make_shared<biorbd::muscles::StateDynamics>())
+    m_state(std::make_shared<biorbd::muscles::State>())
 {
 
 }
@@ -28,7 +28,7 @@ biorbd::muscles::Muscle::Muscle(
     biorbd::muscles::Compound (name),
     m_position(std::make_shared<biorbd::muscles::Geometry>(position)),
     m_characteristics(std::make_shared<biorbd::muscles::Characteristics>(characteristics)),
-    m_state(std::make_shared<biorbd::muscles::StateDynamics>())
+    m_state(std::make_shared<biorbd::muscles::State>())
 {
 
 }
@@ -37,11 +37,11 @@ biorbd::muscles::Muscle::Muscle(
         const biorbd::utils::String &name,
         const biorbd::muscles::Geometry &position,
         const biorbd::muscles::Characteristics &characteristics,
-        const biorbd::muscles::StateDynamics &dynamicState) :
+        const biorbd::muscles::State &dynamicState) :
     biorbd::muscles::Compound (name),
     m_position(std::make_shared<biorbd::muscles::Geometry>(position)),
     m_characteristics(std::make_shared<biorbd::muscles::Characteristics>(characteristics)),
-    m_state(std::make_shared<biorbd::muscles::StateDynamics>(dynamicState))
+    m_state(std::make_shared<biorbd::muscles::State>(dynamicState))
 {
 
 }
@@ -54,7 +54,7 @@ biorbd::muscles::Muscle::Muscle(
     biorbd::muscles::Compound (name, pathModifiers),
     m_position(std::make_shared<biorbd::muscles::Geometry>(position)),
     m_characteristics(std::make_shared<biorbd::muscles::Characteristics>(characteristics)),
-    m_state(std::make_shared<biorbd::muscles::StateDynamics>())
+    m_state(std::make_shared<biorbd::muscles::State>())
 {
 
 }
@@ -81,11 +81,11 @@ biorbd::muscles::Muscle::Muscle(const biorbd::utils::String& name,
         const biorbd::muscles::Geometry& g,
         const biorbd::muscles::Characteristics& c,
         const biorbd::muscles::PathModifiers &pathModifiers,
-        const biorbd::muscles::StateDynamics& s) :
+        const biorbd::muscles::State& s) :
     biorbd::muscles::Compound(name,pathModifiers),
     m_position(std::make_shared<biorbd::muscles::Geometry>(g)),
     m_characteristics(std::make_shared<biorbd::muscles::Characteristics>(c)),
-    m_state(std::make_shared<biorbd::muscles::StateDynamics>())
+    m_state(std::make_shared<biorbd::muscles::State>())
 {
     setState(s);
 
@@ -187,10 +187,16 @@ const biorbd::utils::Scalar& biorbd::muscles::Muscle::velocity(
 }
 
 const biorbd::utils::Scalar& biorbd::muscles::Muscle::activationDot(
-        const biorbd::muscles::StateDynamics &state,
+        const biorbd::muscles::State& state,
         bool alreadyNormalized) const
 {
-    return m_state->timeDerivativeActivation(state, characteristics(), alreadyNormalized);
+    std::shared_ptr<biorbd::muscles::StateDynamics> state_copy =
+            std::dynamic_pointer_cast<biorbd::muscles::StateDynamics>(m_state);
+    biorbd::utils::Error::check(
+                state_copy != nullptr,
+                "The muscle " + name() + " is not a dynamic muscle");
+    return state_copy->timeDerivativeActivation(
+                state, characteristics(), alreadyNormalized);
 }
 
 void biorbd::muscles::Muscle::computeForce(const biorbd::muscles::State &emg)
@@ -230,7 +236,7 @@ const biorbd::muscles::Characteristics& biorbd::muscles::Muscle::characteristics
 
 // Get and set
 void biorbd::muscles::Muscle::setState(
-        const biorbd::muscles::StateDynamics &emg)
+        const biorbd::muscles::State &emg)
 {
     if (emg.type() == biorbd::muscles::STATE_TYPE::BUCHANAN){
         m_state = std::make_shared<biorbd::muscles::StateDynamicsBuchanan>(biorbd::muscles::StateDynamicsBuchanan());
@@ -245,11 +251,11 @@ void biorbd::muscles::Muscle::setState(
         biorbd::utils::Error::raise(biorbd::utils::String(biorbd::muscles::STATE_TYPE_toStr(emg.type())) + " is not a valid type for setState");
     *m_state = emg;
 }
-const biorbd::muscles::StateDynamics& biorbd::muscles::Muscle::state() const
+const biorbd::muscles::State& biorbd::muscles::Muscle::state() const
 {
     return *m_state;
 }
-biorbd::muscles::StateDynamics& biorbd::muscles::Muscle::state()
+biorbd::muscles::State& biorbd::muscles::Muscle::state()
 {
     return *m_state;
 }

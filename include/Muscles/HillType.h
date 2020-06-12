@@ -46,13 +46,13 @@ public:
     /// \param name The muscle name
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
-    /// \param dynamicState The muscle dynamic state
+    /// \param emg The muscle dynamic state
     ///
     HillType(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
             const biorbd::muscles::Characteristics& characteristics,
-            const biorbd::muscles::StateDynamics& dynamicState);
+            const biorbd::muscles::State& emg);
 
     ///
     /// \brief Construct a Hill-type muscle
@@ -73,14 +73,14 @@ public:
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
     /// \param pathModifiers The set of path modifiers
-    /// \param dynamicState The dynamic state
+    /// \param emg The dynamic state
     ///
     HillType(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
             const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::PathModifiers& pathModifiers,
-            const biorbd::muscles::StateDynamics& dynamicState);
+            const biorbd::muscles::State& emg);
 
     ///
     /// \brief Construct a Hill-type muscle from another muscle
@@ -106,7 +106,8 @@ public:
     /// \brief Deep copy of a Hill-type muscle in a new Hill-type muscle
     /// \param other The Hill-type to copy
     ///
-    void DeepCopy(const biorbd::muscles::HillType& other);
+    void DeepCopy(
+            const biorbd::muscles::HillType& other);
 
     ///
     /// \brief Return the muscle force vector at origin and insertion
@@ -114,7 +115,7 @@ public:
     /// \return The force vector at origin and insertion
     ///
     virtual const biorbd::utils::Scalar& force(
-            const biorbd::muscles::StateDynamics& emg);
+            const biorbd::muscles::State& emg);
 
     ///
     /// \brief Return the muscle force vector at origin and insertion
@@ -129,7 +130,7 @@ public:
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedVelocity& Qdot,
-            const biorbd::muscles::StateDynamics& emg,
+            const biorbd::muscles::State& emg,
             int updateKin = 2);
 
     ///
@@ -143,14 +144,15 @@ public:
     virtual const biorbd::utils::Scalar& force(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::muscles::StateDynamics& emg,
+            const biorbd::muscles::State& emg,
             int updateKin = 2);
 
     ///
     /// \brief Return the Force-Length of the contractile element
     /// \return The Force-Length of the contractile element
     ///
-    const biorbd::utils::Scalar& FlCE(const biorbd::muscles::StateDynamics& EMG);
+    const biorbd::utils::Scalar& FlCE(
+            const biorbd::muscles::State& emg);
 
     ///
     /// \brief Return the Force-Length of the passive element
@@ -184,7 +186,8 @@ protected:
     ///
     /// \brief Compute the Force-length of the contractile element
     ///
-    virtual void computeFlCE(const biorbd::muscles::StateDynamics &EMG); 
+    virtual void computeFlCE(
+            const biorbd::muscles::State &emg);
 
     ///
     /// \brief Compute the Force-Velocity of the contractile element
@@ -200,13 +203,15 @@ protected:
     /// \brief Function allowing modification of the way the multiplication is done in computeForce(EMG)
     /// \param emg The EMG data
     /// \return The force from activation
-    virtual biorbd::utils::Scalar getForceFromActivation(const biorbd::muscles::State &emg);
+    virtual biorbd::utils::Scalar getForceFromActivation(
+            const biorbd::muscles::State &emg);
 
     ///
     /// \brief Normalize the EMG data
     /// \param emg EMG data
     ///
-    virtual biorbd::muscles::StateDynamics normalizeEMG(const biorbd::muscles::StateDynamics& emg);
+    virtual void normalizeEmg(
+            biorbd::muscles::State& emg);
 
     // Attributs intermédiaires lors du calcul de la force
     std::shared_ptr<biorbd::utils::Scalar> m_damping; ///< Muscle damping (spring force)
