@@ -31,14 +31,14 @@ int main()
 
     // Create a Kalman filter
     double freq = 100; // 100 Hz
-    biorbd::rigidbody::KalmanReconsMarkers::KalmanParam params(freq);
+    biorbd::rigidbody::KalmanParam params(freq);
     biorbd::rigidbody::KalmanReconsMarkers kalman(model, params);
 
     // Perform the kalman filter for each frame (the first frame is much longer than the next)
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
     biorbd::rigidbody::GeneralizedVelocity Qdot(model);
     biorbd::rigidbody::GeneralizedAcceleration Qddot(model);
-    for (std::vector<biorbd::rigidbody::NodeSegment> targetMarkers : markersOverFrames){
+    for (auto targetMarkers : markersOverFrames){
         kalman.reconstructFrame(model, targetMarkers, &Q, &Qdot, &Qddot);
 
         // Print the kinematics to the console

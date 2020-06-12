@@ -1004,11 +1004,11 @@ biorbd::rigidbody::GeneralizedAcceleration * {
 };
 
 %typemap(typecheck, precedence=3000)
-std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> &
+std::vector<std::shared_ptr<biorbd::muscles::State>> &
 {
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,
-            SWIGTYPE_p_std__vectorT_biorbd__muscles__StateDynamics_std__allocatorT_biorbd__muscles__StateDynamics_t_t,  0  | 0)) && argp1) {
+            SWIGTYPE_p_std__vectorT_biorbd__muscles__State_std__allocatorT_biorbd__muscles__State_t_t,  0  | 0)) && argp1) {
       // Test if it is a pointer to String already exists
       $1 = true;
     } else {
@@ -1016,18 +1016,18 @@ std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> &
     }
 
 }
-%typemap(in) std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> &{
+%typemap(in) std::vector<std::shared_ptr<biorbd::muscles::State>> &{
     void * argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,
-            SWIGTYPE_p_std__vectorT_biorbd__muscles__StateDynamics_std__allocatorT_biorbd__muscles__StateDynamics_t_t,  0  | 0)) && argp1) {
+            SWIGTYPE_p_std__vectorT_biorbd__muscles__State_std__allocatorT_biorbd__muscles__State_t_t,  0  | 0)) && argp1) {
 
-        std::vector<biorbd::muscles::StateDynamics>* tp = reinterpret_cast<std::vector<biorbd::muscles::StateDynamics>*>(argp1);
-        $1 = new std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>;
+        std::vector<biorbd::muscles::State>* tp = reinterpret_cast<std::vector<biorbd::muscles::State>*>(argp1);
+        $1 = new std::vector<std::shared_ptr<biorbd::muscles::State>>;
         for (unsigned int i=0; i<tp->size(); ++i)
-            (*$1).push_back(std::make_shared<biorbd::muscles::StateDynamics>((*tp)[i]));
+            (*$1).push_back(std::make_shared<biorbd::muscles::State>((*tp)[i]));
 
     } else {
-        PyErr_SetString(PyExc_ValueError, "Unknown error when casting StateDynamics");
+        PyErr_SetString(PyExc_ValueError, "Unknown error when casting State");
         SWIG_fail;
     }
 }

@@ -29,7 +29,7 @@ void Matlab_setEKF(int nlhs, mxArray *plhs[],
         noiseF = getDouble(prhs,3,"Noise Factor");
     if (nrhs >= 3)
         freq = getDouble(prhs,2,"Acquisition Frequency");
-    biorbd::rigidbody::KalmanRecons::KalmanParam kParams(freq, noiseF, errorF);
+    biorbd::rigidbody::KalmanParam kParams(freq, noiseF, errorF);
 
     // Créer un filtre de Kalman
     try{
@@ -144,7 +144,7 @@ void Matlab_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
         freq = getDouble(prhs,4,"Acquisition Frequency");
 
     // Créer un filtre de Kalman
-    biorbd::rigidbody::KalmanReconsMarkers kalman(*model, biorbd::rigidbody::KalmanReconsMarkers::KalmanParam(freq, noiseF, errorF));
+    biorbd::rigidbody::KalmanReconsMarkers kalman(*model, biorbd::rigidbody::KalmanParam(freq, noiseF, errorF));
 
     bool removeAxes(true);
     if (nrhs >= 8)
