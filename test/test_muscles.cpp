@@ -2097,7 +2097,7 @@ TEST(StaticOptim, OneFrameNoActivations){
         0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
         0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281};
     for (size_t i=0; i<expectedActivations.size(); ++i){
-        EXPECT_NEAR(muscleActivations(i), expectedActivations[i], requiredPrecision);
+        EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
     }
 
 #endif
@@ -2129,7 +2129,7 @@ TEST(StaticOptim, OneFrameOneActivation){
         0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
         0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281};
     for (size_t i=0; i<expectedActivations.size(); ++i){
-        EXPECT_NEAR(muscleActivations(i), expectedActivations[i], requiredPrecision);
+        EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
     }
 
 #endif
@@ -2173,7 +2173,7 @@ TEST(StaticOptim, MultiFrameConstructor){
         0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281};
     for (auto muscleActivations : allMuscleActivations){
         for (size_t i=0; i<expectedActivations.size(); ++i){
-            EXPECT_NEAR(muscleActivations(i), expectedActivations[i], requiredPrecision);
+            EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
         }
     }
 
