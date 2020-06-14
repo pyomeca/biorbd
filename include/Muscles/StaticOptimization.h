@@ -5,6 +5,7 @@
 #include <memory>
 #include <IpTNLP.hpp>
 #include "biorbdConfig.h"
+#include "Utils/Vector.h"
 
 namespace biorbd {
 class Model;
@@ -118,12 +119,6 @@ public:
             unsigned int pNormFactor = 2,
             bool useResidualTorque = true,
             int verbose = 0);
-            
-    ///
-    /// \brief Deep copy of the static optimization
-    /// \return A deep copy of the static optimization
-    ///
-    biorbd::muscles::StaticOptimization DeepCopy() const;
 
     ///
     /// \brief Run the static optimization
@@ -145,15 +140,15 @@ public:
 
 protected:
     biorbd::Model& m_model; ///< A reference to the model
-    std::shared_ptr<bool> m_useResidualTorque; ///< To use residual torque
-    std::shared_ptr<std::vector<biorbd::rigidbody::GeneralizedCoordinates>> m_allQ; ///< All the generalized coordinates
-    std::shared_ptr<std::vector<biorbd::rigidbody::GeneralizedVelocity>> m_allQdot; ///< All the generalized velocities
-    std::shared_ptr<std::vector<biorbd::rigidbody::GeneralizedTorque>> m_allTorqueTarget; ///< All the torque targets
-    std::shared_ptr<biorbd::utils::Vector> m_initialActivationGuess; ///< Initial activation guess 
-    std::shared_ptr<unsigned int> m_pNormFactor; ///< The p-norm factor
-    std::shared_ptr<int> m_verbose; ///<Verbose level
-    std::shared_ptr<std::vector<Ipopt::SmartPtr<Ipopt::TNLP>>> m_staticOptimProblem; ///<The static optimization problem
-    std::shared_ptr<bool> m_alreadyRun; ///< If already ran the static optimization
+    bool m_useResidualTorque; ///< To use residual torque
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> m_allQ; ///< All the generalized coordinates
+    std::vector<biorbd::rigidbody::GeneralizedVelocity> m_allQdot; ///< All the generalized velocities
+    std::vector<biorbd::rigidbody::GeneralizedTorque> m_allTorqueTarget; ///< All the torque targets
+    biorbd::utils::Vector m_initialActivationGuess; ///< Initial activation guess
+    unsigned int m_pNormFactor; ///< The p-norm factor
+    int m_verbose; ///<Verbose level
+    std::vector<Ipopt::SmartPtr<Ipopt::TNLP>> m_staticOptimProblem; ///<The static optimization problem
+    bool m_alreadyRun; ///< If already ran the static optimization
 
 };
 
