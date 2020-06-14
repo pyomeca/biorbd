@@ -2170,7 +2170,7 @@ TEST(StaticOptim, OneFrameOneActivationVector){
 #endif
 }
 
-TEST(StaticOptim, MultiFrameConstructor){
+TEST(StaticOptim, MultiFrameNoActivation){
 #ifdef BIORBD_USE_CASADI_MATH
     std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
 
@@ -2200,6 +2200,101 @@ TEST(StaticOptim, MultiFrameConstructor){
 
     // Proceed with the static optimization
     auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau);
+    optim.run();
+    auto allMuscleActivations = optim.finalSolution();
+
+    std::vector<double> expectedActivations = {
+        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
+        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281};
+    for (auto muscleActivations : allMuscleActivations){
+        for (size_t i=0; i<expectedActivations.size(); ++i){
+            EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
+        }
+    }
+
+#endif
+}
+
+TEST(StaticOptim, MultiFrameActivationDouble){
+#ifdef BIORBD_USE_CASADI_MATH
+    std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+    biorbd::Model model(modelPathForMuscleForce);
+
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
+    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    for (unsigned int i=0; i<Q.size(); ++i){
+        Q[i] = static_cast<double>(i) * 1.1;
+        Qdot[i] = static_cast<double>(i) * 1.1;
+        Tau[i] = static_cast<double>(i) * 1.1;
+    }
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allQ;
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allQdot;
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allTau;
+    allQ.push_back(Q);
+    allQ.push_back(Q);
+    allQ.push_back(Q);
+    allQdot.push_back(Qdot);
+    allQdot.push_back(Qdot);
+    allQdot.push_back(Qdot);
+    allTau.push_back(Tau);
+    allTau.push_back(Tau);
+    allTau.push_back(Tau);
+
+    // Proceed with the static optimization
+    double initialActivationGuess = 0.5;
+    auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau, initialActivationGuess);
+    optim.run();
+    auto allMuscleActivations = optim.finalSolution();
+
+    std::vector<double> expectedActivations = {
+        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
+        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281};
+    for (auto muscleActivations : allMuscleActivations){
+        for (size_t i=0; i<expectedActivations.size(); ++i){
+            EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
+        }
+    }
+
+#endif
+}
+
+TEST(StaticOptim, MultiFrameNoActivationVector){
+#ifdef BIORBD_USE_CASADI_MATH
+    std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+    biorbd::Model model(modelPathForMuscleForce);
+
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
+    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    for (unsigned int i=0; i<Q.size(); ++i){
+        Q[i] = static_cast<double>(i) * 1.1;
+        Qdot[i] = static_cast<double>(i) * 1.1;
+        Tau[i] = static_cast<double>(i) * 1.1;
+    }
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allQ;
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allQdot;
+    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allTau;
+    allQ.push_back(Q);
+    allQ.push_back(Q);
+    allQ.push_back(Q);
+    allQdot.push_back(Qdot);
+    allQdot.push_back(Qdot);
+    allQdot.push_back(Qdot);
+    allTau.push_back(Tau);
+    allTau.push_back(Tau);
+    allTau.push_back(Tau);
+
+    // Proceed with the static optimization
+    biorbd::utils::Vector initialActivationGuess(model.nbMuscles());
+    for (unsigned int i=0; i<model.nbMuscles(); ++i){
+        initialActivationGuess[i] = 0.5;
+    }
+    auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau, initialActivationGuess);
     optim.run();
     auto allMuscleActivations = optim.finalSolution();
 

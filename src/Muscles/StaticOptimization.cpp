@@ -11,13 +11,6 @@
 #include "Muscles/StateDynamics.h"
 #include "Muscles/StaticOptimizationIpoptLinearized.h"
 
-biorbd::muscles::StaticOptimization::StaticOptimization(biorbd::Model &model) :
-    m_model(model),
-    m_alreadyRun(false)
-{
-
-}
-
 biorbd::muscles::StaticOptimization::StaticOptimization(
         biorbd::Model& model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,

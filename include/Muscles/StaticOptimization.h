@@ -32,13 +32,6 @@ public:
     ///
     /// \brief Construct static optimization
     /// \param model The musculoskeletal Model
-    ///
-    StaticOptimization(
-            biorbd::Model& model);
-
-    ///
-    /// \brief Construct static optimization
-    /// \param model The musculoskeletal Model
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param torqueTarget The generalized torque target to match during the optimization
