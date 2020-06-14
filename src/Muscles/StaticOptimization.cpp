@@ -28,7 +28,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
         bool useResidualTorque,
         int verbose) :
     m_model(model),
-    m_useResidualTorque(std::make_shared<bool>(useResidualTorque)),
+    m_useResidualTorque(useResidualTorque),
     m_pNormFactor(pNormFactor),
     m_verbose(verbose),
     m_staticOptimProblem(),
@@ -41,7 +41,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     if (initialActivationGuess.size() == 1){
         m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
         for (unsigned int i=0; i<m_model.nbMuscles(); ++i)
-            (m_initialActivationGuess)[i] = initialActivationGuess[0];
+            m_initialActivationGuess[i] = initialActivationGuess[0];
     }
     else if (m_initialActivationGuess.size() == m_model.nbMuscles()){
         m_initialActivationGuess = initialActivationGuess;
@@ -64,21 +64,21 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
         int verbose
         ) :
     m_model(model),
-    m_useResidualTorque(std::make_shared<bool>(useResidualTorque)),
+    m_useResidualTorque(useResidualTorque),
     m_pNormFactor(pNormFactor),
     m_verbose(verbose),
-    m_alreadyRun(std::make_shared<bool>(false))
+    m_alreadyRun(false)
 {
     m_allQ.push_back(Q);
     m_allQdot.push_back(Qdot);
     m_allTorqueTarget.push_back(torqueTarget);
 
-    m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscleTotal());
+    m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
     if (initialActivationGuess.size() == 0){
-        for (unsigned int i=0; i<m_model.nbMuscleTotal(); ++i)
+        for (unsigned int i=0; i<m_model.nbMuscles(); ++i)
             m_initialActivationGuess[i] = 0.01;
     } else {
-        for (unsigned int i = 0; i<m_model.nbMuscleTotal(); i++)
+        for (unsigned int i = 0; i<m_model.nbMuscles(); i++)
             m_initialActivationGuess[i] = initialActivationGuess[i].activation();
     }
 }
@@ -93,7 +93,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
         bool useResidualTorque,
         int verbose) :
     m_model(model),
-    m_useResidualTorque(std::make_shared<bool>(useResidualTorque)),
+    m_useResidualTorque(useResidualTorque),
     m_allQ(allQ),
     m_allQdot(allQdot),
     m_allTorqueTarget(allTorqueTarget),
@@ -102,8 +102,8 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_alreadyRun(false)
 {
     if (initialActivationGuess.size() == 0){
-        m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscleTotal());
-        for (unsigned int i=0; i<m_model.nbMuscleTotal(); ++i)
+        m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
+        for (unsigned int i=0; i<m_model.nbMuscles(); ++i)
             m_initialActivationGuess[i] = 0.01;
     }
     else
@@ -120,7 +120,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
         bool useResidualTorque,
         int verbose):
     m_model(model),
-    m_useResidualTorque(std::make_shared<bool>(useResidualTorque)),
+    m_useResidualTorque(useResidualTorque),
     m_allQ(allQ),
     m_allQdot(allQdot),
     m_allTorqueTarget(allTorqueTarget),
@@ -128,13 +128,13 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_verbose(verbose),
     m_alreadyRun(false)
 {
-    m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscleTotal());
+    m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
     if (initialActivationGuess.size() == 0){
-        m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscleTotal());
-        for (unsigned int i=0; i<m_model.nbMuscleTotal(); ++i)
+        m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
+        for (unsigned int i=0; i<m_model.nbMuscles(); ++i)
             m_initialActivationGuess[i] = 0.01;
     } else {
-        for (unsigned int i = 0; i<m_model.nbMuscleTotal(); i++)
+        for (unsigned int i = 0; i<m_model.nbMuscles(); i++)
             m_initialActivationGuess[i] = initialActivationGuess[i].activation();
     }
 
