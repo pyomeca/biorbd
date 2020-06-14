@@ -55,7 +55,6 @@ biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
         m_torqueResidual->setZero();
         *m_nbTorqueResidual = 0;
         *m_torquePonderation = 0;
-
     }
 }
 
@@ -301,8 +300,8 @@ void biorbd::muscles::StaticOptimizationIpopt::finalize_solution(
 {
     // Storing to solution
     dispatch(x);
-    m_finalSolution = m_activations;
-    m_finalResidual = m_torqueResidual;
+    *m_finalSolution = *m_activations;
+    *m_finalResidual = *m_torqueResidual;
 
     // Plot it, if it makes sense
     if (*m_verbose >= 1){
