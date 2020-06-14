@@ -3,7 +3,6 @@
 
 #include "biorbdConfig.h"
 #include "Muscles/StaticOptimizationIpopt.h"
-#include "Utils/Matrix.h"
 
 namespace biorbd {
 namespace utils {
@@ -88,7 +87,7 @@ public:
        Ipopt::Number* values);
 
 protected:
-    biorbd::utils::Matrix m_jacobian; ///< The constraints jacobian
+    std::shared_ptr<biorbd::utils::Matrix> m_jacobian; ///< The constraints jacobian
     void prepareJacobian(); ///< Setup the constant constraints jacobian
 
 };

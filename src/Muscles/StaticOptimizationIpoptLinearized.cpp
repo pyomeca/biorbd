@@ -20,7 +20,7 @@ biorbd::muscles::StaticOptimizationIpoptLinearized::StaticOptimizationIpoptLinea
     biorbd::muscles::StaticOptimizationIpopt(
         model, Q, Qdot, torqueTarget, activationInit, useResidual,
         pNormFactor, verbose, eps),
-    m_jacobian(biorbd::utils::Matrix(*m_nbDof, *m_nbMus))
+    m_jacobian(std::make_shared<biorbd::utils::Matrix>(*m_nbDof, *m_nbMus))
 {
     prepareJacobian();
 }
@@ -55,7 +55,7 @@ void biorbd::muscles::StaticOptimizationIpoptLinearized::prepareJacobian()
                     m_model.muscularJointTorque(
                         state, *m_Q.get(), *m_Qdot.get()));
         for (unsigned int j = 0; j<*m_nbTorque; ++j){
-            m_jacobian(j, i) =
+            (*m_jacobian)(j, i) =
                     GeneralizedTorque(j) - GeneralizedTorque_zero(j);
         }
     }
@@ -82,7 +82,7 @@ bool biorbd::muscles::StaticOptimizationIpoptLinearized::eval_g(
     // TODO Optimization using Eigen?
     for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ ){  
         for (unsigned int j = 0; j<*m_nbMus; j++)
-            res[i] += m_jacobian(i,j)*x[j];
+            res[i] += (*m_jacobian)(i,j)*x[j];
         g[i] = res[i] + (*m_torqueResidual)[i];
     }
     if (*m_verbose >= 2){
@@ -124,7 +124,7 @@ bool biorbd::muscles::StaticOptimizationIpoptLinearized::eval_jac_g(
         unsigned int k(0);
         for (unsigned int j = 0; j <* m_nbMus; j++ )
             for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++)
-                values[k++] = m_jacobian(i,j);
+                values[k++] = (*m_jacobian)(i,j);
         for (unsigned int j = 0; j < *m_nbTorqueResidual; j++)
             values[k++] = 1;
     }

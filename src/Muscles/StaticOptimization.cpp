@@ -22,6 +22,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
         int verbose) :
     m_model(model),
     m_useResidualTorque(useResidualTorque),
+    m_initialActivationGuess(std::make_shared<biorbd::utils::Vector>(m_model.nbMuscles())),
     m_pNormFactor(pNormFactor),
     m_verbose(verbose),
     m_staticOptimProblem(),
@@ -30,10 +31,8 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_allQ.push_back(Q);
     m_allQdot.push_back(Qdot);
     m_allTorqueTarget.push_back(torqueTarget);
-
-    m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
     for (unsigned int i=0; i<m_model.nbMuscles(); ++i)
-        m_initialActivationGuess[i] = initialActivationGuess;
+        (*m_initialActivationGuess)[i] = initialActivationGuess;
 }
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
@@ -47,6 +46,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
         int verbose) :
     m_model(model),
     m_useResidualTorque(useResidualTorque),
+    m_initialActivationGuess(std::make_shared<biorbd::utils::Vector>(m_model.nbMuscles())),
     m_pNormFactor(pNormFactor),
     m_verbose(verbose),
     m_staticOptimProblem(),
@@ -61,7 +61,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
                     "Initial guess must either be a single value or a vector "
                     "of dimension nbMuscles");
     }
-    m_initialActivationGuess = initialActivationGuess;
+    *m_initialActivationGuess = initialActivationGuess;
 }
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
@@ -76,6 +76,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
         ) :
     m_model(model),
     m_useResidualTorque(useResidualTorque),
+    m_initialActivationGuess(std::make_shared<biorbd::utils::Vector>(m_model.nbMuscles())),
     m_pNormFactor(pNormFactor),
     m_verbose(verbose),
     m_alreadyRun(false)
@@ -90,10 +91,9 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
                     "of dimension nbMuscles");
     }
 
-    m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
     if (initialActivationGuess.size() == 0){
         for (unsigned int i = 0; i<m_model.nbMuscles(); i++){
-            m_initialActivationGuess[i] = initialActivationGuess[i].activation();
+            (*m_initialActivationGuess)[i] = initialActivationGuess[i].activation();
         }
     }
 }
@@ -112,13 +112,13 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_allQ(allQ),
     m_allQdot(allQdot),
     m_allTorqueTarget(allTorqueTarget),
+    m_initialActivationGuess(std::make_shared<biorbd::utils::Vector>(m_model.nbMuscles())),
     m_pNormFactor(pNormFactor),
     m_verbose(verbose),
     m_alreadyRun(false)
 {
-    m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
     for (unsigned int i=0; i<m_model.nbMuscles(); ++i)
-        m_initialActivationGuess[i] = initialActivationGuess;
+        (*m_initialActivationGuess)[i] = initialActivationGuess;
 }
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
@@ -135,6 +135,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_allQ(allQ),
     m_allQdot(allQdot),
     m_allTorqueTarget(allTorqueTarget),
+    m_initialActivationGuess(std::make_shared<biorbd::utils::Vector>(m_model.nbMuscles())),
     m_pNormFactor(pNormFactor),
     m_verbose(verbose),
     m_alreadyRun(false)
@@ -144,7 +145,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
                     "Initial guess must either be a single value or a vector "
                     "of dimension nbMuscles");
     }
-    m_initialActivationGuess = initialActivationGuess;
+    *m_initialActivationGuess = initialActivationGuess;
 }
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
@@ -161,6 +162,7 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_allQ(allQ),
     m_allQdot(allQdot),
     m_allTorqueTarget(allTorqueTarget),
+    m_initialActivationGuess(std::make_shared<biorbd::utils::Vector>(m_model.nbMuscles())),
     m_pNormFactor(pNormFactor),
     m_verbose(verbose),
     m_alreadyRun(false)
@@ -171,10 +173,9 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
                     "of dimension nbMuscles");
     }
 
-    m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
     if (initialActivationGuess.size() == 0){
         for (unsigned int i = 0; i<m_model.nbMuscles(); i++){
-            m_initialActivationGuess[i] = initialActivationGuess[i].activation();
+            (*m_initialActivationGuess)[i] = initialActivationGuess[i].activation();
         }
     }
 }
@@ -200,14 +201,14 @@ void biorbd::muscles::StaticOptimization::run(
         if (useLinearizedState)
             m_staticOptimProblem.push_back(
                         new biorbd::muscles::StaticOptimizationIpoptLinearized(
-                            m_model, m_allQ[i], m_allQdot[i], m_allTorqueTarget[i], m_initialActivationGuess,
+                            m_model, m_allQ[i], m_allQdot[i], m_allTorqueTarget[i], *m_initialActivationGuess,
                             m_useResidualTorque, m_pNormFactor, m_verbose
                             )
                         );
         else
             m_staticOptimProblem.push_back(
                         new biorbd::muscles::StaticOptimizationIpopt(
-                            m_model, m_allQ[i], m_allQdot[i], m_allTorqueTarget[i], m_initialActivationGuess,
+                            m_model, m_allQ[i], m_allQdot[i], m_allTorqueTarget[i], *m_initialActivationGuess,
                             m_useResidualTorque, m_pNormFactor, m_verbose
                             )
                         );
@@ -215,7 +216,7 @@ void biorbd::muscles::StaticOptimization::run(
         status = app->OptimizeTNLP(m_staticOptimProblem[i]);
 
         // Take the solution of the previous optimization as the solution for the next optimization
-        m_initialActivationGuess = static_cast<biorbd::muscles::StaticOptimizationIpopt*>(
+        *m_initialActivationGuess = static_cast<biorbd::muscles::StaticOptimizationIpopt*>(
                     Ipopt::GetRawPtr(m_staticOptimProblem[i]))->finalSolution();
     }
     m_alreadyRun = true;

@@ -5,7 +5,6 @@
 #include <memory>
 #include <IpTNLP.hpp>
 #include "biorbdConfig.h"
-#include "Utils/Vector.h"
 
 namespace biorbd {
 class Model;
@@ -179,7 +178,7 @@ protected:
     std::vector<biorbd::rigidbody::GeneralizedCoordinates> m_allQ; ///< All the generalized coordinates
     std::vector<biorbd::rigidbody::GeneralizedVelocity> m_allQdot; ///< All the generalized velocities
     std::vector<biorbd::rigidbody::GeneralizedTorque> m_allTorqueTarget; ///< All the torque targets
-    biorbd::utils::Vector m_initialActivationGuess; ///< Initial activation guess
+    std::shared_ptr<biorbd::utils::Vector> m_initialActivationGuess; ///< Initial activation guess
     unsigned int m_pNormFactor; ///< The p-norm factor
     int m_verbose; ///<Verbose level
     std::vector<Ipopt::SmartPtr<Ipopt::TNLP>> m_staticOptimProblem; ///<The static optimization problem
