@@ -78,10 +78,6 @@ bool biorbd::muscles::StaticOptimizationIpoptLinearized::eval_g(
     if (new_x)
         dispatch(x);
 
-    // Compute the torques from muscles
-    biorbd::rigidbody::GeneralizedTorque GeneralizedTorque_calcul(
-                m_model.muscularJointTorque(*m_states));
-
     biorbd::utils::Vector res(static_cast<unsigned int>(m));
     // TODO Optimization using Eigen?
     for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ ){  
