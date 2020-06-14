@@ -35,7 +35,28 @@ public:
     ///
     StaticOptimization(
             biorbd::Model& model);
-            
+
+    ///
+    /// \brief Construct static optimization
+    /// \param model The musculoskeletal Model
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param torqueTarget The generalized torque target to match during the optimization
+    /// \param initialActivationGuess The initial activation guess
+    /// \param pNormFactor The p-norm to perform
+    /// \param useResidualTorque If use residual torque, if set to false, the optimization will fail if the model is not strong enough
+    /// \param verbose Level of IPOPT verbose you want
+    ///
+    StaticOptimization(
+            biorbd::Model& model,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedVelocity& Qdot,
+            const biorbd::rigidbody::GeneralizedTorque& torqueTarget,
+            double initialActivationGues= 0.01,
+            unsigned int pNormFactor = 2,
+            bool useResidualTorque = true,
+            int verbose = 0);
+
     ///
     /// \brief Construct static optimization
     /// \param model The musculoskeletal Model
@@ -73,7 +94,28 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedVelocity& Qdot,
             const biorbd::rigidbody::GeneralizedTorque& torqueTarget,
-            const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess = std::vector<biorbd::muscles::StateDynamics>(),
+            const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess,
+            unsigned int pNormFactor = 2,
+            bool useResidualTorque = true,
+            int verbose = 0);
+
+    ///
+    /// \brief Construct static optimization for multiple frames
+    /// \param model The musculoskeletal Model
+    /// \param allQ The generalized coordinates
+    /// \param allQdot The generalized velocities
+    /// \param allTorqueTarget The generalized torque target to match during the optimization
+    /// \param initialActivationGuess The initial activation guess
+    /// \param pNormFactor The p-norm to perform
+    /// \param useResidualTorque If use residual torque, if set to false, the optimization will fail if the model is not strong enough
+    /// \param verbose Level of IPOPT verbose you want
+    ///
+    StaticOptimization(
+            biorbd::Model& model,
+            const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
+            const std::vector<biorbd::rigidbody::GeneralizedVelocity>& allQdot,
+            const std::vector<biorbd::rigidbody::GeneralizedTorque>& allTorqueTarget,
+            double initialActivationGuess = 0.01,
             unsigned int pNormFactor = 2,
             bool useResidualTorque = true,
             int verbose = 0);
@@ -115,7 +157,7 @@ public:
             const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
             const std::vector<biorbd::rigidbody::GeneralizedVelocity>& allQdot,
             const std::vector<biorbd::rigidbody::GeneralizedTorque>& allTorqueTarget,
-            const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess = std::vector<biorbd::muscles::StateDynamics>(),
+            const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess,
             unsigned int pNormFactor = 2,
             bool useResidualTorque = true,
             int verbose = 0);

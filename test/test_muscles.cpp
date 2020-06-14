@@ -2103,7 +2103,7 @@ TEST(StaticOptim, OneFrameNoActivations){
 #endif
 }
 
-TEST(StaticOptim, OneFrameOneActivation){
+TEST(StaticOptim, OneFrameOneActivationDouble){
 #ifdef BIORBD_USE_CASADI_MATH
     std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
 
@@ -2120,8 +2120,42 @@ TEST(StaticOptim, OneFrameOneActivation){
     }
 
     // Proceed with the static optimization
-    biorbd::utils::Vector initialActivationGuess(1);
-    initialActivationGuess[0] = 0.5;
+    double initialActivationGuess = 0.5;
+    auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau, initialActivationGuess);
+    optim.run();
+    auto muscleActivations = optim.finalSolution()[0];
+
+    std::vector<double> expectedActivations = {
+        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
+        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281};
+    for (size_t i=0; i<expectedActivations.size(); ++i){
+        EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
+    }
+
+#endif
+}
+
+TEST(StaticOptim, OneFrameOneActivationVector){
+#ifdef BIORBD_USE_CASADI_MATH
+    std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
+
+#else
+    biorbd::Model model(modelPathForMuscleForce);
+
+    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
+    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    for (unsigned int i=0; i<Q.size(); ++i){
+        Q[i] = static_cast<double>(i) * 1.1;
+        Qdot[i] = static_cast<double>(i) * 1.1;
+        Tau[i] = static_cast<double>(i) * 1.1;
+    }
+
+    // Proceed with the static optimization
+    biorbd::utils::Vector initialActivationGuess(model.nbMuscles());
+    for (unsigned int i=0; i<model.nbMuscles(); ++i){
+        initialActivationGuess[i] = 0.5;
+    }
     auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau, initialActivationGuess);
     optim.run();
     auto muscleActivations = optim.finalSolution()[0];

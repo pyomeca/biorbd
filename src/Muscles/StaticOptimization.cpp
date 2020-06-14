@@ -20,9 +20,34 @@ biorbd::muscles::StaticOptimization::StaticOptimization(biorbd::Model &model) :
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
         biorbd::Model& model,
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
-        const biorbd::rigidbody::GeneralizedTorque &torqueTarget,
+        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+        const biorbd::rigidbody::GeneralizedVelocity& Qdot,
+        const biorbd::rigidbody::GeneralizedTorque& torqueTarget,
+        double initialActivationGuess,
+        unsigned int pNormFactor,
+        bool useResidualTorque,
+        int verbose) :
+    m_model(model),
+    m_useResidualTorque(useResidualTorque),
+    m_pNormFactor(pNormFactor),
+    m_verbose(verbose),
+    m_staticOptimProblem(),
+    m_alreadyRun(false)
+{
+    m_allQ.push_back(Q);
+    m_allQdot.push_back(Qdot);
+    m_allTorqueTarget.push_back(torqueTarget);
+
+    m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
+    for (unsigned int i=0; i<m_model.nbMuscles(); ++i)
+        m_initialActivationGuess[i] = initialActivationGuess;
+}
+
+biorbd::muscles::StaticOptimization::StaticOptimization(
+        biorbd::Model& model,
+        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+        const biorbd::rigidbody::GeneralizedVelocity& Qdot,
+        const biorbd::rigidbody::GeneralizedTorque& torqueTarget,
         const biorbd::utils::Vector &initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
@@ -38,26 +63,19 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_allQdot.push_back(Qdot);
     m_allTorqueTarget.push_back(torqueTarget);
 
-    if (initialActivationGuess.size() == 1){
-        m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
-        for (unsigned int i=0; i<m_model.nbMuscles(); ++i)
-            m_initialActivationGuess[i] = initialActivationGuess[0];
-    }
-    else if (m_initialActivationGuess.size() == m_model.nbMuscles()){
-        m_initialActivationGuess = initialActivationGuess;
-    }
-    else {
+    if (initialActivationGuess.size() != m_model.nbMuscles()){
         biorbd::utils::Error::raise(
                     "Initial guess must either be a single value or a vector "
                     "of dimension nbMuscles");
     }
+    m_initialActivationGuess = initialActivationGuess;
 }
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
         biorbd::Model& model,
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
-        const biorbd::rigidbody::GeneralizedTorque &torqueTarget,
+        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+        const biorbd::rigidbody::GeneralizedVelocity& Qdot,
+        const biorbd::rigidbody::GeneralizedTorque& torqueTarget,
         const std::vector<biorbd::muscles::StateDynamics> &initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
@@ -73,21 +91,48 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_allQdot.push_back(Qdot);
     m_allTorqueTarget.push_back(torqueTarget);
 
+    if (initialActivationGuess.size() != m_model.nbMuscles()){
+        biorbd::utils::Error::raise(
+                    "Initial guess must either be a single value or a vector "
+                    "of dimension nbMuscles");
+    }
+
     m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
     if (initialActivationGuess.size() == 0){
-        for (unsigned int i=0; i<m_model.nbMuscles(); ++i)
-            m_initialActivationGuess[i] = 0.01;
-    } else {
-        for (unsigned int i = 0; i<m_model.nbMuscles(); i++)
+        for (unsigned int i = 0; i<m_model.nbMuscles(); i++){
             m_initialActivationGuess[i] = initialActivationGuess[i].activation();
+        }
     }
 }
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
+        biorbd::Model& model,
+        const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
+        const std::vector<biorbd::rigidbody::GeneralizedVelocity>& allQdot,
+        const std::vector<biorbd::rigidbody::GeneralizedTorque>& allTorqueTarget,
+        double initialActivationGuess,
+        unsigned int pNormFactor,
+        bool useResidualTorque,
+        int verbose) :
+    m_model(model),
+    m_useResidualTorque(useResidualTorque),
+    m_allQ(allQ),
+    m_allQdot(allQdot),
+    m_allTorqueTarget(allTorqueTarget),
+    m_pNormFactor(pNormFactor),
+    m_verbose(verbose),
+    m_alreadyRun(false)
+{
+    m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
+    for (unsigned int i=0; i<m_model.nbMuscles(); ++i)
+        m_initialActivationGuess[i] = initialActivationGuess;
+}
+
+biorbd::muscles::StaticOptimization::StaticOptimization(
         biorbd::Model &model,
-        const std::vector<biorbd::rigidbody::GeneralizedCoordinates> &allQ,
-        const std::vector<biorbd::rigidbody::GeneralizedVelocity> &allQdot,
-        const std::vector<biorbd::rigidbody::GeneralizedTorque> &allTorqueTarget,
+        const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
+        const std::vector<biorbd::rigidbody::GeneralizedVelocity>& allQdot,
+        const std::vector<biorbd::rigidbody::GeneralizedTorque>& allTorqueTarget,
         const biorbd::utils::Vector &initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
@@ -101,21 +146,20 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_verbose(verbose),
     m_alreadyRun(false)
 {
-    if (initialActivationGuess.size() == 0){
-        m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
-        for (unsigned int i=0; i<m_model.nbMuscles(); ++i)
-            m_initialActivationGuess[i] = 0.01;
+    if (initialActivationGuess.size() != m_model.nbMuscles()){
+        biorbd::utils::Error::raise(
+                    "Initial guess must either be a single value or a vector "
+                    "of dimension nbMuscles");
     }
-    else
-        m_initialActivationGuess = initialActivationGuess;
+    m_initialActivationGuess = initialActivationGuess;
 }
 
 biorbd::muscles::StaticOptimization::StaticOptimization(
         biorbd::Model& model,
-        const std::vector<biorbd::rigidbody::GeneralizedCoordinates> &allQ,
-        const std::vector<biorbd::rigidbody::GeneralizedVelocity> &allQdot,
-        const std::vector<biorbd::rigidbody::GeneralizedTorque> &allTorqueTarget,
-        const std::vector<biorbd::muscles::StateDynamics> &initialActivationGuess,
+        const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
+        const std::vector<biorbd::rigidbody::GeneralizedVelocity>& allQdot,
+        const std::vector<biorbd::rigidbody::GeneralizedTorque>& allTorqueTarget,
+        const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess,
         unsigned int pNormFactor,
         bool useResidualTorque,
         int verbose):
@@ -128,16 +172,18 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_verbose(verbose),
     m_alreadyRun(false)
 {
-    m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
-    if (initialActivationGuess.size() == 0){
-        m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
-        for (unsigned int i=0; i<m_model.nbMuscles(); ++i)
-            m_initialActivationGuess[i] = 0.01;
-    } else {
-        for (unsigned int i = 0; i<m_model.nbMuscles(); i++)
-            m_initialActivationGuess[i] = initialActivationGuess[i].activation();
+    if (initialActivationGuess.size() != m_model.nbMuscles()){
+        biorbd::utils::Error::raise(
+                    "Initial guess must either be a single value or a vector "
+                    "of dimension nbMuscles");
     }
 
+    m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
+    if (initialActivationGuess.size() == 0){
+        for (unsigned int i = 0; i<m_model.nbMuscles(); i++){
+            m_initialActivationGuess[i] = initialActivationGuess[i].activation();
+        }
+    }
 }
 
 void biorbd::muscles::StaticOptimization::run(
