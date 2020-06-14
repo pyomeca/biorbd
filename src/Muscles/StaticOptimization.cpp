@@ -38,13 +38,19 @@ biorbd::muscles::StaticOptimization::StaticOptimization(
     m_allQdot.push_back(Qdot);
     m_allTorqueTarget.push_back(torqueTarget);
 
-    if (initialActivationGuess.size() == 0){
-        m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscleTotal());
-        for (unsigned int i=0; i<m_model.nbMuscleTotal(); ++i)
-            (m_initialActivationGuess)[i] = 0.01;
+    if (initialActivationGuess.size() == 1){
+        m_initialActivationGuess = biorbd::utils::Vector(m_model.nbMuscles());
+        for (unsigned int i=0; i<m_model.nbMuscles(); ++i)
+            (m_initialActivationGuess)[i] = initialActivationGuess[0];
     }
-    else
+    else if (m_initialActivationGuess.size() == m_model.nbMuscles()){
         m_initialActivationGuess = initialActivationGuess;
+    }
+    else {
+        biorbd::utils::Error::raise(
+                    "Initial guess must either be a single value or a vector "
+                    "of dimension nbMuscles");
+    }
 }
 
 biorbd::muscles::StaticOptimization::StaticOptimization(

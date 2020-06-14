@@ -2120,7 +2120,8 @@ TEST(StaticOptim, OneFrameOneActivation){
     }
 
     // Proceed with the static optimization
-    double initialActivationGuess = 0.5;
+    biorbd::utils::Vector initialActivationGuess(1);
+    initialActivationGuess[0] = 0.5;
     auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau, initialActivationGuess);
     optim.run();
     auto muscleActivations = optim.finalSolution()[0];
