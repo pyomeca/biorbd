@@ -79,6 +79,7 @@ bool biorbd::muscles::StaticOptimizationIpoptLinearized::eval_g(
         dispatch(x);
 
     biorbd::utils::Vector res(static_cast<unsigned int>(m));
+    res.setZero();
     // TODO Optimization using Eigen?
     for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ ){  
         for (unsigned int j = 0; j<*m_nbMus; j++)
