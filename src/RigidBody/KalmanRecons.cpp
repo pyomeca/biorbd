@@ -217,7 +217,7 @@ biorbd::utils::Matrix biorbd::rigidbody::KalmanRecons::initCovariance(const unsi
 
 
 
-biorbd::rigidbody::KalmanRecons::KalmanParam::KalmanParam(
+biorbd::rigidbody::KalmanParam::KalmanParam(
         double frequency,
         double noiseFactor,
         double errorFactor):
@@ -225,16 +225,16 @@ biorbd::rigidbody::KalmanRecons::KalmanParam::KalmanParam(
     m_noiseFactor(noiseFactor),
     m_errorFactor(errorFactor){}
 
-double biorbd::rigidbody::KalmanRecons::KalmanParam::acquisitionFrequency() const{
+double biorbd::rigidbody::KalmanParam::acquisitionFrequency() const{
     return m_acquisitionFrequency;
 }
 
-double biorbd::rigidbody::KalmanRecons::KalmanParam::noiseFactor() const
+double biorbd::rigidbody::KalmanParam::noiseFactor() const
 {
     return m_noiseFactor;
 }
 
-double biorbd::rigidbody::KalmanRecons::KalmanParam::errorFactor() const
+double biorbd::rigidbody::KalmanParam::errorFactor() const
 {
     return m_errorFactor;
 }

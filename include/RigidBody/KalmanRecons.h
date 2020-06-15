@@ -20,49 +20,48 @@ class GeneralizedVelocity;
 class GeneralizedAcceleration;
 
 ///
+/// \brief Parameters of the reconstruction
+///
+class KalmanParam{
+public:
+    ///
+    /// \brief Set the Kalman filter parameters
+    /// \param frequency The acquisition frequency express in Hertz
+    /// \param noiseFactor The noise factor (on measurement matrix)
+    /// \param errorFactor The error factor (on prediction matrix
+    ///
+    KalmanParam(
+            double frequency = 100,
+            double noiseFactor = 1e-10,
+            double errorFactor = 1e-5);
+
+    ///
+    /// \brief Return the acquisition frequency
+    ///
+    double acquisitionFrequency() const;
+
+    ///
+    /// \brief Return the noise factor
+    ///
+    double noiseFactor() const;
+
+    ///
+    /// \brief Return the error factor
+    ///
+    double errorFactor() const;
+
+private:
+        double m_acquisitionFrequency; ///< The acquisition frequency
+        double m_noiseFactor; ///< The noise factor
+        double m_errorFactor; ///< The error factor
+};
+
+///
 /// \brief Class Kinematic reconstruction algorithm using an Extended Kalman Filter
 ///
 class BIORBD_API KalmanRecons
 {
 public:
-#ifndef SWIG
-    ///
-    /// \brief Parameters of the reconstruction
-    ///
-    class KalmanParam{
-    public:
-        /// 
-        /// \brief Set the Kalman filter parameters
-        /// \param frequency The acquisition frequency express in Hertz
-        /// \param noiseFactor The noise factor (on measurement matrix)
-        /// \param errorFactor The error factor (on prediction matrix
-        /// 
-        KalmanParam(
-                double frequency = 100,
-                double noiseFactor = 1e-10,
-                double errorFactor = 1e-5);
-
-        ///
-        /// \brief Return the acquisition frequency
-        /// 
-        double acquisitionFrequency() const;
-
-        ///
-        /// \brief Return the noise factor
-        ///
-        double noiseFactor() const;
-
-        ///
-        /// \brief Return the error factor
-        ///
-        double errorFactor() const;
-
-    private:
-            double m_acquisitionFrequency; ///< The acquisition frequency
-            double m_noiseFactor; ///< The noise factor
-            double m_errorFactor; ///< The error factor
-    };
-#endif
 
     // Constructor 
 

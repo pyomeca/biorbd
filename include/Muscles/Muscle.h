@@ -43,13 +43,13 @@ public:
     /// \param name Name of the muscle
     /// \param position Position of the origin/insertion
     /// \param characteristics Muscle characteristics from an initial state
-    /// \param dynamicState Dynamic state
+    /// \param emg Dynamic state
     ///  
     Muscle(
             const biorbd::utils::String& name, 
             const biorbd::muscles::Geometry& position, 
             const biorbd::muscles::Characteristics& characteristics,
-            const biorbd::muscles::StateDynamics& dynamicState);
+            const biorbd::muscles::State& emg);
 
     ///
     /// \brief Construct a muscle
@@ -70,14 +70,14 @@ public:
     /// \param position Position of the origin/insertion
     /// \param characteristics Muscle characteristics from an initial state
     /// \param pathModifiers The path modifier
-    /// \param dynamicState The dynamic state
+    /// \param emg The dynamic state
     ///  
     Muscle(
             const biorbd::utils::String& name, 
             const biorbd::muscles::Geometry& position,
             const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::PathModifiers& pathModifiers,
-            const biorbd::muscles::StateDynamics &dynamicState);
+            const biorbd::muscles::State &emgState);
 
     ///
     /// \brief Construct a muscle from another muscle
@@ -243,19 +243,19 @@ public:
     /// \param emg The dynamic state value
     ///
     void setState(
-            const biorbd::muscles::StateDynamics &emg);
+            const biorbd::muscles::State &emg);
 
     ///
     /// \brief Return the dynamic state
     /// \return The dynamic state
     ///
-    const biorbd::muscles::StateDynamics& state() const;
+    const biorbd::muscles::State& state() const;
 
     ///
     /// \brief Return the dynamic state
     /// \return The dynamic state
     ///
-    biorbd::muscles::StateDynamics& state();
+    biorbd::muscles::State& state();
 
     ///
     /// \brief Return the activation time derivative
@@ -264,7 +264,7 @@ public:
     /// \return The activation time derivative
     ///
     const biorbd::utils::Scalar& activationDot(
-            const biorbd::muscles::StateDynamics &state,
+            const biorbd::muscles::State& state,
             bool alreadyNormalized = false) const;
 protected:
     ///
@@ -283,7 +283,7 @@ protected:
 
     std::shared_ptr<biorbd::muscles::Geometry> m_position; ///< The position of all the nodes of the muscle (0 being the origin and last being insertion
     std::shared_ptr<biorbd::muscles::Characteristics> m_characteristics; ///< The muscle characteristics
-    std::shared_ptr<biorbd::muscles::StateDynamics> m_state; ///< The dynamic state
+    std::shared_ptr<biorbd::muscles::State> m_state; ///< The dynamic state
 
 };
 

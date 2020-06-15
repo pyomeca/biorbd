@@ -744,7 +744,7 @@ public:
                 const biorbd::rigidbody::GeneralizedCoordinates &Q,
                 const biorbd::rigidbody::GeneralizedVelocity &QDot,
                 const biorbd::rigidbody::GeneralizedAcceleration &QDDot,
-                std::vector<biorbd::utils::SpatialVector>* f_ext);
+                std::vector<biorbd::utils::SpatialVector>* f_ext = nullptr);
 
     ///
     /// \brief Interface for the forward dynamics of RBDL

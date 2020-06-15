@@ -203,7 +203,7 @@ biorbd::rigidbody::KalmanReconsIMU* c_BiorbdKalmanReconsIMU(
 {
     // Créer un pointeur sur un filtre de kalman
     biorbd::rigidbody::KalmanReconsIMU* kalman = new biorbd::rigidbody::KalmanReconsIMU(
-                *model, biorbd::rigidbody::KalmanReconsIMU::KalmanParam(freq, noiseF, errorF));
+                *model, biorbd::rigidbody::KalmanParam(freq, noiseF, errorF));
 
     // Mettre le initial guess
     biorbd::rigidbody::GeneralizedCoordinates e_QinitialGuess(*model);

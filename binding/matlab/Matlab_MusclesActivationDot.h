@@ -12,12 +12,15 @@ void Matlab_MusclesActivationDot( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
-    checkNombreInputParametres(nrhs, 5, 5, "4 arguments are required [+1 optional] where the 2nd is the handler on the model, 3rd is the excitation, 4th is the activation and 5th is a bool to express if excitation is already normalized");
+    checkNombreInputParametres(nrhs, 5, 5, "4 arguments are required [+1 optional] where the 2nd is the handler on the model, "
+                                           "3rd is the excitation, 4th is the activation and 5th is a bool to express if "
+                                           "excitation is already normalized");
     // Recevoir le model
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
 
     // Recevoir les états musculaires
-    std::vector<std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>> state = getParameterMuscleState(prhs, 2, 3, model->nbMuscleTotal());
+    std::vector<std::vector<std::shared_ptr<biorbd::muscles::State>>> state
+            = getParameterMuscleState(prhs, 2, 3, model->nbMuscleTotal());
 
     // Already normalized
     bool areadyNormalized(false);

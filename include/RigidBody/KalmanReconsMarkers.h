@@ -31,7 +31,7 @@ public:
     ///
     KalmanReconsMarkers(
             biorbd::Model& model,
-            biorbd::rigidbody::KalmanRecons::KalmanParam params = biorbd::rigidbody::KalmanRecons::KalmanParam());
+            biorbd::rigidbody::KalmanParam params = biorbd::rigidbody::KalmanParam());
 
     /// 
     /// \brief Deep copy of the Kalman reconstruction

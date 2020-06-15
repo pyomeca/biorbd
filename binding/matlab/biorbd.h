@@ -145,15 +145,8 @@ void functionHub( int nlhs, mxArray *plhs[],
         return;
     }
 
-    // Nombre de controls (GeneralizedTorque)
-    if (!toLower(cmd).compare("ncontrol")){
-        biorbd::utils::Error::warning(0, "La fonction \"nControl\" est obsolete. Remplacer par \"nGeneralizedTorque\". Elle sera retirée prochainement");
-        Matlab_nGeneralizedTorque(nlhs, plhs, nrhs, prhs);
-        return;
-    }
-
     // Nombre de GeneralizedTorque
-    if (!toLower(cmd).compare("nGeneralizedTorque")){
+    if (!toLower(cmd).compare("ngeneralizedtorque") || !toLower(cmd).compare("ntau")){
         Matlab_nGeneralizedTorque(nlhs, plhs, nrhs, prhs);
         return;
     }
@@ -586,7 +579,9 @@ void functionHub( int nlhs, mxArray *plhs[],
     }
 
 
-    if(!toLower(cmd).compare("muscleforce") || !toLower(cmd).compare("muscleforcenorm")){
+    if(!toLower(cmd).compare("muscleforce")
+            || !toLower(cmd).compare("muscleforces")
+            || !toLower(cmd).compare("muscleforcenorm")){
         Matlab_MusclesForce(nlhs, plhs, nrhs, prhs);
         return;
     }
