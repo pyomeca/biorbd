@@ -90,7 +90,7 @@ public:
 
     ///
     /// \brief operator= For submatrices
-    /// \param The vector to copy
+    /// \param other The vector to copy
     ///
     void operator=(
             const biorbd::utils::Vector& other);
