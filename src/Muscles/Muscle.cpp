@@ -81,13 +81,13 @@ biorbd::muscles::Muscle::Muscle(const biorbd::utils::String& name,
         const biorbd::muscles::Geometry& g,
         const biorbd::muscles::Characteristics& c,
         const biorbd::muscles::PathModifiers &pathModifiers,
-        const biorbd::muscles::State& s) :
+        const biorbd::muscles::State& emg) :
     biorbd::muscles::Compound(name,pathModifiers),
     m_position(std::make_shared<biorbd::muscles::Geometry>(g)),
     m_characteristics(std::make_shared<biorbd::muscles::Characteristics>(c)),
     m_state(std::make_shared<biorbd::muscles::State>())
 {
-    setState(s);
+    setState(emg);
 
     biorbd::utils::Error::check(pathModifiers.nbWraps() <= 1, "Multiple wrapping objects is not implemented yet");
 }

@@ -28,7 +28,7 @@ public:
     /// \param other The SpatialVector to copy
     ///
     SpatialVector(
-            const biorbd::utils::SpatialVector& v);
+            const biorbd::utils::SpatialVector& other);
 
     ///
     /// \brief Construct SpatialVector by its values

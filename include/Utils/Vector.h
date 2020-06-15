@@ -36,22 +36,22 @@ public:
     /// \param other The vector to copy
     ///
     Vector(
-            const biorbd::utils::Vector& v);
+            const biorbd::utils::Vector& other);
 
     ///
     /// \brief Construct vector from Casadi vector
     /// \param other The vector to copy
     ///
     Vector(
-            const RigidBodyDynamics::Math::VectorNd& v);
+            const RigidBodyDynamics::Math::VectorNd& other);
 
 
     ///
     /// \brief Construct vector from Casadi matrix
-    /// \param v The vector to copy
+    /// \param other The vector to copy
     ///
     Vector(
-            const biorbd::utils::Vector3d& v);
+            const biorbd::utils::Vector3d& other);
 
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///
@@ -65,17 +65,17 @@ public:
 #ifdef BIORBD_USE_CASADI_MATH
     ///
     /// \brief Construct vector from Casadi vector
-    /// \param v The vector to copy
+    /// \param other The vector to copy
     ///
     Vector(
-            const casadi::MX& v);
+            const casadi::MX& other);
 
     ///
     /// \brief Construct vector from Casadi matrix
     /// \param other The vector to copy
     ///
     Vector(
-            const RBDLCasadiMath::MX_Xd_SubMatrix& m);
+            const RBDLCasadiMath::MX_Xd_SubMatrix& other);
 #endif
 
     ///

@@ -41,8 +41,23 @@ public:
             const RigidBodyDynamics::Math::Matrix4d& matrix = RigidBodyDynamics::Math::Matrix4d::Identity());
 
     ///
-    /// \brief Construct RotoTrans matrix
-    /// \param matrix 4D identity matrix
+    /// \brief RotoTrans Construct a RotoTrans matrix by elements
+    /// \param v00 Row 0, Col 0
+    /// \param v01 Row 0, Col 1
+    /// \param v02 Row 0, Col 2
+    /// \param v03 Row 0, Col 3
+    /// \param v10 Row 1, Col 0
+    /// \param v11 Row 1, Col 1
+    /// \param v12 Row 1, Col 2
+    /// \param v13 Row 1, Col 3
+    /// \param v20 Row 2, Col 0
+    /// \param v21 Row 2, Col 1
+    /// \param v22 Row 2, Col 2
+    /// \param v23 Row 2, Col 3
+    /// \param v30 Row 3, Col 0
+    /// \param v31 Row 3, Col 1
+    /// \param v32 Row 3, Col 2
+    /// \param v33 Row 3, Col 3
     ///
     RotoTrans(
             const biorbd::utils::Scalar& v00, const biorbd::utils::Scalar& v01, const biorbd::utils::Scalar& v02, const biorbd::utils::Scalar& v03,

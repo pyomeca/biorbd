@@ -77,7 +77,7 @@ public:
             const biorbd::muscles::Geometry& position,
             const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::PathModifiers& pathModifiers,
-            const biorbd::muscles::State &emgState);
+            const biorbd::muscles::State& emg);
 
     ///
     /// \brief Construct a muscle from another muscle
