@@ -8,6 +8,7 @@
 
 namespace biorbd {
 namespace utils {
+class Scalar;
 class String;
 class RotoTrans;
 class Matrix;
@@ -432,7 +433,7 @@ public:
     /// \brief Return the total mass of the model
     /// \return The toal mass of the model
     ///
-    double mass() const; 
+    const biorbd::utils::Scalar &mass() const; 
 
     ///
     /// \brief Return the position of the center of mass
@@ -824,7 +825,7 @@ protected:
     std::shared_ptr<unsigned int> m_nbQddot; ///< The total number of Qddot
     std::shared_ptr<unsigned int> m_nRotAQuat; ///< The number of segments per quaternion
     std::shared_ptr<bool> m_isKinematicsComputed; ///< If the kinematics are computed
-    std::shared_ptr<double> m_totalMass; ///< Mass of all the bodies combined
+    std::shared_ptr<biorbd::utils::Scalar> m_totalMass; ///< Mass of all the bodies combined
 
     ///
     /// \brief Calculate the joint coordinate system (JCS) in global reference frame of a specified segment
