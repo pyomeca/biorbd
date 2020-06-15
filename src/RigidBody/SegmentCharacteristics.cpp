@@ -1,6 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/SegmentCharacteristics.h"
 
+#include "Utils/Scalar.h"
 #include "Utils/Vector3d.h"
 #include "RigidBody/MeshFace.h"
 #include "RigidBody/Mesh.h"
@@ -13,7 +14,7 @@ biorbd::rigidbody::SegmentCharacteristics::SegmentCharacteristics() :
 
 }
 biorbd::rigidbody::SegmentCharacteristics::SegmentCharacteristics(
-        double  mass,
+        const biorbd::utils::Scalar &mass,
         const biorbd::utils::Vector3d &com,
         const RigidBodyDynamics::Math::Matrix3d &inertia) :
     Body(mass, com, inertia),
@@ -23,7 +24,7 @@ biorbd::rigidbody::SegmentCharacteristics::SegmentCharacteristics(
 
 }
 biorbd::rigidbody::SegmentCharacteristics::SegmentCharacteristics(
-        double mass,
+        const biorbd::utils::Scalar &mass,
         const biorbd::utils::Vector3d &com,
         const RigidBodyDynamics::Math::Matrix3d &inertia,
         const biorbd::rigidbody::Mesh &mesh) :
@@ -59,7 +60,7 @@ const biorbd::utils::Scalar& biorbd::rigidbody::SegmentCharacteristics::length()
     return *m_length;
 }
 
-double biorbd::rigidbody::SegmentCharacteristics::mass() const
+const biorbd::utils::Scalar& biorbd::rigidbody::SegmentCharacteristics::mass() const
 {
     return mMass;
 }

@@ -38,7 +38,7 @@ public:
     /// \param inertia The inertia matrix
     ///
     SegmentCharacteristics(
-            double mass,
+            const biorbd::utils::Scalar& mass,
             const biorbd::utils::Vector3d &com, 
             const RigidBodyDynamics::Math::Matrix3d &inertia); 
 
@@ -50,7 +50,7 @@ public:
     /// \param mesh The mesh geometry of the segment
     ///
     SegmentCharacteristics(
-            double mass,
+            const biorbd::utils::Scalar& mass,
             const biorbd::utils::Vector3d &com, 
             const RigidBodyDynamics::Math::Matrix3d &inertia, 
             const biorbd::rigidbody::Mesh &mesh); 
@@ -84,7 +84,7 @@ public:
     /// \brief Returns the segment mass
     /// \return The segment mass
     ///
-    double mass() const;
+    const biorbd::utils::Scalar& mass() const;
 
     ///
     /// \brief CoM Returns the position of the center of mass in the local reference frame
