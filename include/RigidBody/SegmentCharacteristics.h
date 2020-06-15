@@ -78,7 +78,7 @@ public:
     /// \brief Returns the segment length
     /// \return The segment length
     ///
-    const biorbd::utils::Scalar& length() const;
+    biorbd::utils::Scalar length() const;
 
     ///
     /// \brief Returns the segment mass

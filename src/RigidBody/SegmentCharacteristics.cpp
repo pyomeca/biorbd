@@ -55,7 +55,7 @@ void biorbd::rigidbody::SegmentCharacteristics::setLength(
     *m_length = val;
 }
 
-const biorbd::utils::Scalar& biorbd::rigidbody::SegmentCharacteristics::length() const
+biorbd::utils::Scalar biorbd::rigidbody::SegmentCharacteristics::length() const
 {
     return *m_length;
 }
