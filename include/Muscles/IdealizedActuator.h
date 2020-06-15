@@ -34,13 +34,13 @@ public:
     /// \param name The name of the muscle
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
-    /// \param dynamicState The muscle dynamic state
+    /// \param emg The muscle dynamic state
     ///
     IdealizedActuator(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
             const biorbd::muscles::Characteristics& characteristics,
-            const biorbd::muscles::StateDynamics& dynamicState);
+            const biorbd::muscles::State& emg);
 
     ///
     /// \brief Construct an idealized actuator
@@ -61,14 +61,14 @@ public:
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
     /// \param pathModifiers The set of path modifiers
-    /// \param dynamicState The dynamic state
+    /// \param emg The dynamic state
     ///
     IdealizedActuator(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
             const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::PathModifiers& pathModifiers,
-            const biorbd::muscles::StateDynamics& dynamicState);
+            const biorbd::muscles::State& emg);
 
     ///
     /// \brief Construct an idealized actuator from another muscle
@@ -102,7 +102,7 @@ public:
     /// \return The force
     ///
     virtual const biorbd::utils::Scalar& force(
-            const biorbd::muscles::StateDynamics& emg);
+            const biorbd::muscles::State& emg);
 
     ///
     /// \brief Return the muscle force vector at origin and insertion
@@ -117,7 +117,7 @@ public:
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedVelocity& Qdot,
-            const biorbd::muscles::StateDynamics& emg,
+            const biorbd::muscles::State& emg,
             int updateKin = 2);
 
     ///
@@ -131,7 +131,7 @@ public:
     virtual const biorbd::utils::Scalar& force(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::muscles::StateDynamics& emg,
+            const biorbd::muscles::State& emg,
             int updateKin = 2);
 protected:
     ///

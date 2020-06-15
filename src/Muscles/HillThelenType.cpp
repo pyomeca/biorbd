@@ -24,8 +24,8 @@ biorbd::muscles::HillThelenType::HillThelenType(
         const biorbd::utils::String &name,
         const biorbd::muscles::Geometry &geometry,
         const biorbd::muscles::Characteristics &characteristics,
-        const biorbd::muscles::StateDynamics &dynamicState) :
-    biorbd::muscles::HillType (name, geometry, characteristics, dynamicState)
+        const biorbd::muscles::State &emg) :
+    biorbd::muscles::HillType (name, geometry, characteristics, emg)
 {
     setType();
 }
@@ -45,8 +45,8 @@ biorbd::muscles::HillThelenType::HillThelenType(
         const biorbd::muscles::Geometry& geometry,
         const biorbd::muscles::Characteristics& characteristics,
         const biorbd::muscles::PathModifiers &pathModifiers,
-        const biorbd::muscles::StateDynamics & state) :
-    biorbd::muscles::HillType (name, geometry, characteristics, pathModifiers, state)
+        const biorbd::muscles::State& emg) :
+    biorbd::muscles::HillType (name, geometry, characteristics, pathModifiers, emg)
 {
     setType();
 }
@@ -93,7 +93,8 @@ void biorbd::muscles::HillThelenType::computeFlPE(){
 #endif
 }
 
-void biorbd::muscles::HillThelenType::computeFlCE(const biorbd::muscles::StateDynamics&){
+void biorbd::muscles::HillThelenType::computeFlCE(
+        const biorbd::muscles::State&){
     *m_FlCE = exp( -pow(((position().length() / characteristics().optimalLength())-1), 2 ) /  *m_cste_FlCE_2 );
 }
 

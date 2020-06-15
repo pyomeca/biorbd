@@ -33,13 +33,13 @@ public:
     /// \param name The muscle name
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
-    /// \param dynamicState The muscle dynamic state
+    /// \param emg The muscle dynamic state
     ///
     HillThelenType(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
             const biorbd::muscles::Characteristics& characteristics,
-            const biorbd::muscles::StateDynamics& dynamicState);
+            const biorbd::muscles::State& emg);
 
     ///
     /// \brief Construct a Hill-Thelen-type muscle
@@ -60,14 +60,14 @@ public:
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
     /// \param pathModifiers The set of path modifiers
-    /// \param dynamicState The dynamic state
+    /// \param emg The dynamic state
     ///
     HillThelenType(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
             const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::PathModifiers& pathModifiers,
-            const biorbd::muscles::StateDynamics& dynamicState);
+            const biorbd::muscles::State& emg);
 
     ///
     /// \brief Construct a Hill-Thelen-type muscle from another muscle
@@ -104,7 +104,7 @@ public:
     /// \brief Compute the Force-Length of the passive element
     /// \param emg EMG data
     ///
-    virtual void computeFlCE(const biorbd::muscles::StateDynamics &emg);
+    virtual void computeFlCE(const biorbd::muscles::State &emg);
 
 protected:
     ///

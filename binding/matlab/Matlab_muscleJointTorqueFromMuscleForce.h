@@ -10,7 +10,10 @@ void Matlab_muscleJointTorqueFromMuscleForce( int, mxArray *plhs[],
                   int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
-    checkNombreInputParametres(nrhs, 5, 6, "5 arguments are required where the 2nd is the handler on the model, 3rd is the Q, 4th is QDot, 5th is the muscles force norm vector and optional 6th is if update [true] must be done. Note that if update is set to [false], the user MUST update it by himself before calling this function");
+    checkNombreInputParametres(nrhs, 5, 6, "5 arguments are required where the 2nd is the handler on the model, "
+                                           "3rd is the Q, 4th is QDot, 5th is the muscles force norm vector and optional "
+                                           "6th is if update [true] must be done. Note that if update is set to [false], "
+                                           "the user MUST update it by himself before calling this function");
     // Recevoir le model
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
@@ -47,12 +50,12 @@ void Matlab_muscleJointTorqueFromMuscleForce( int, mxArray *plhs[],
     double *GeneralizedTorque = mxGetPr(plhs[0]);
 
     // Remplir le output
+    biorbd::rigidbody::GeneralizedTorque muscleTorque;
     for (unsigned int i=0; i<nFrame; ++i){
-        biorbd::rigidbody::GeneralizedTorque muscleTorque;
         if (updateKin)
-            muscleTorque = model->muscularJointTorque(*(Fm.begin()+i), updateKin, &(*(Q.begin()+i)), &(*(QDot.begin()+i)));
+            muscleTorque = model->muscularJointTorque(Fm[i], Q[i], QDot[i]);
         else
-            muscleTorque = model->muscularJointTorque(*(Fm.begin()+i), updateKin);
+            muscleTorque = model->muscularJointTorque(Fm[i]);
 
         // distribuer les GeneralizedTorque
         for (unsigned int j=0; j<nGeneralizedTorque; ++j){

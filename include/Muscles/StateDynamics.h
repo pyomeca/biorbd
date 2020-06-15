@@ -108,9 +108,9 @@ public:
     /// \return The activation time derivative
     ///
     virtual const biorbd::utils::Scalar& timeDerivativeActivation(
-            const StateDynamics& emg,
-            const Characteristics& characteristics,
-            bool alreadyNormalized = false); 
+            const biorbd::muscles::State& emg,
+            const biorbd::muscles::Characteristics& characteristics,
+            bool alreadyNormalized = false);
 
     ///
     /// \brief Compute and return the activation time derivative
@@ -119,7 +119,7 @@ public:
     /// \return The activation time derivative
     ///
     virtual const biorbd::utils::Scalar& timeDerivativeActivation(
-            const Characteristics& characteristics,
+            const biorbd::muscles::Characteristics& characteristics,
             bool alreadyNormalized = false);
 
     ///

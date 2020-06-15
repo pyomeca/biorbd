@@ -59,7 +59,7 @@ public:
     ///
     virtual void setExcitation(
             const biorbd::utils::Scalar& val,
-            bool turnOffWarnings);
+            bool turnOffWarnings = false);
 
     ///
     /// \brief Return the muscle excitation

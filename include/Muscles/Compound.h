@@ -22,7 +22,7 @@ class GeneralizedVelocity;
 namespace muscles {
 class Characteristics;
 class PathModifiers;
-class StateDynamics;
+class State;
 ///
 /// \brief Class compound is a very generic definition of what a muscle is. It should be the base class of every muscles
 ///
@@ -119,7 +119,7 @@ public:
     /// \return The computed forces from the EMG
     ///
     virtual const biorbd::utils::Scalar& force(
-            const biorbd::muscles::StateDynamics& emg) = 0;
+            const biorbd::muscles::State& emg) = 0;
 
     ///
     /// \brief Return the computed force norm from EMG
@@ -134,7 +134,7 @@ public:
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedVelocity& Qdot,
-            const biorbd::muscles::StateDynamics& emg,
+            const biorbd::muscles::State& emg,
             int updateKin = 2) = 0;
 
     ///
@@ -148,7 +148,7 @@ public:
     virtual const biorbd::utils::Scalar& force(
             biorbd::rigidbody::Joints& model,
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
-            const biorbd::muscles::StateDynamics& emg,
+            const biorbd::muscles::State& emg,
             int updateKin = 2) = 0;
 
 protected:

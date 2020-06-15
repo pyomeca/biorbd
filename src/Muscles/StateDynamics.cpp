@@ -49,7 +49,7 @@ void biorbd::muscles::StateDynamics::DeepCopy(const biorbd::muscles::StateDynami
 
 
 const biorbd::utils::Scalar& biorbd::muscles::StateDynamics::timeDerivativeActivation(
-        const biorbd::muscles::StateDynamics& emg,
+        const biorbd::muscles::State& emg,
         const biorbd::muscles::Characteristics& characteristics,
         bool alreadyNormalized){
     return timeDerivativeActivation(emg.excitation(), emg.activation(), characteristics, alreadyNormalized);
