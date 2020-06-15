@@ -60,7 +60,7 @@ const biorbd::utils::Scalar& biorbd::rigidbody::SegmentCharacteristics::length()
     return *m_length;
 }
 
-const biorbd::utils::Scalar& biorbd::rigidbody::SegmentCharacteristics::mass() const
+biorbd::utils::Scalar biorbd::rigidbody::SegmentCharacteristics::mass() const
 {
     return mMass;
 }

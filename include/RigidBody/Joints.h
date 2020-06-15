@@ -433,7 +433,7 @@ public:
     /// \brief Return the total mass of the model
     /// \return The toal mass of the model
     ///
-    const biorbd::utils::Scalar &mass() const; 
+    biorbd::utils::Scalar mass() const; 
 
     ///
     /// \brief Return the position of the center of mass
