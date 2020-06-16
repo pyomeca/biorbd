@@ -12,8 +12,8 @@ biorbd::utils::SpatialVector::SpatialVector() :
 }
 
 biorbd::utils::SpatialVector::SpatialVector(
-        const biorbd::utils::SpatialVector& v) :
-    RigidBodyDynamics::Math::SpatialVector (v)
+        const biorbd::utils::SpatialVector& other) :
+    RigidBodyDynamics::Math::SpatialVector (other)
 {
 
 }

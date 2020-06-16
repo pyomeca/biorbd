@@ -118,7 +118,7 @@ public:
 
     ///
     /// \brief Compute the Force-Length of the contractile element
-    /// \param EMG EMG data
+    /// \param emg EMG data
     ///
     virtual void computeFlCE(const biorbd::muscles::State &emg);
 

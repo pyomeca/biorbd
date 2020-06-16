@@ -44,7 +44,7 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates& Q,
             const biorbd::rigidbody::GeneralizedVelocity& Qdot,
             const biorbd::rigidbody::GeneralizedTorque& torqueTarget,
-            double initialActivationGues= 0.01,
+            double initialActivationGuess = 0.01,
             unsigned int pNormFactor = 2,
             bool useResidualTorque = true,
             int verbose = 0);
