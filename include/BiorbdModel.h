@@ -33,8 +33,8 @@
 /// high-level and easy to use Python and MATLAB interfaces of an
 /// efficient C++ implementation.
 ///
-/// This documentation was automatically generated for the "DocumentMePlease"
-/// Release 1.1.3 on the 28th of January, 2020.
+/// This documentation was automatically generated for the "ShowMeWhatYouveGot"
+/// Release 1.3.3 on the 15th of June, 2020.
 ///
 /// \section install_sec Installation
 ///

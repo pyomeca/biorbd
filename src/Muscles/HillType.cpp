@@ -6,7 +6,7 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "Muscles/Characteristics.h"
 #include "Muscles/Geometry.h"
-#include "Muscles/StateDynamics.h"
+#include "Muscles/State.h"
 
 biorbd::muscles::HillType::HillType() :
     biorbd::muscles::Muscle(),
@@ -53,8 +53,8 @@ biorbd::muscles::HillType::HillType(
         const biorbd::utils::String &name,
         const biorbd::muscles::Geometry &geometry,
         const biorbd::muscles::Characteristics &characteristics,
-        const biorbd::muscles::StateDynamics &dynamicState) :
-    biorbd::muscles::Muscle(name,geometry,characteristics, dynamicState),
+        const biorbd::muscles::State& emg) :
+    biorbd::muscles::Muscle(name,geometry,characteristics, emg),
     m_damping(std::make_shared<biorbd::utils::Scalar>()),
     m_FlCE(std::make_shared<biorbd::utils::Scalar>()),
     m_FlPE(std::make_shared<biorbd::utils::Scalar>()),
@@ -99,7 +99,7 @@ biorbd::muscles::HillType::HillType(
         const biorbd::muscles::Geometry& geometry,
         const biorbd::muscles::Characteristics& characteristics,
         const biorbd::muscles::PathModifiers &pathModifiers,
-        const biorbd::muscles::StateDynamics & state) :
+        const biorbd::muscles::State& state) :
     biorbd::muscles::Muscle(name,geometry,characteristics,pathModifiers,state),
     m_damping(std::make_shared<biorbd::utils::Scalar>()),
     m_FlCE(std::make_shared<biorbd::utils::Scalar>()),
@@ -184,7 +184,7 @@ void biorbd::muscles::HillType::DeepCopy(const biorbd::muscles::HillType &other)
 }
 
 const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
-        const biorbd::muscles::StateDynamics& emg){
+        const biorbd::muscles::State& emg){
     // Compute the forces of each element
     computeFvCE();
     computeFlCE(emg);
@@ -200,7 +200,7 @@ const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
         biorbd::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedVelocity &Qdot,
-        const biorbd::muscles::StateDynamics &emg,
+        const biorbd::muscles::State &emg,
         int updateKin)
 {
     // Update the configuration
@@ -218,7 +218,7 @@ const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
 const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
         biorbd::rigidbody::Joints &,
         const biorbd::rigidbody::GeneralizedCoordinates &,
-        const biorbd::muscles::StateDynamics &,
+        const biorbd::muscles::State &,
         int)
 {
     biorbd::utils::Error::raise("Hill type needs velocity");
@@ -228,7 +228,7 @@ const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
 }
 
 const biorbd::utils::Scalar& biorbd::muscles::HillType::FlCE(
-        const biorbd::muscles::StateDynamics &EMG)
+        const biorbd::muscles::State &EMG)
 {
     computeFlCE(EMG);
     return *m_FlCE;
@@ -263,7 +263,7 @@ void biorbd::muscles::HillType::computeDamping(){
             (*m_cste_maxShorteningSpeed * m_characteristics->optimalLength()) * *m_cste_damping;
 }
 
-void biorbd::muscles::HillType::computeFlCE(const biorbd::muscles::StateDynamics &emg){
+void biorbd::muscles::HillType::computeFlCE(const biorbd::muscles::State& emg){
     *m_FlCE = exp( -pow(( position().length() / m_characteristics->optimalLength() / (*m_cste_FlCE_1*(1-emg.activation())+1) -1 ), 2)
                   /
                   *m_cste_FlCE_2   );
@@ -311,8 +311,7 @@ biorbd::utils::Scalar biorbd::muscles::HillType::getForceFromActivation(
     return characteristics().forceIsoMax() * (emg.activation() * *m_FlCE * *m_FvCE + *m_FlPE + *m_damping);
 }
 
-biorbd::muscles::StateDynamics biorbd::muscles::HillType::normalizeEMG(const biorbd::muscles::StateDynamics &emg){
-    biorbd::muscles::StateDynamics emg_out(emg);
-    emg_out.normalizeExcitation(characteristics().stateMax());
-    return emg_out;
+void biorbd::muscles::HillType::normalizeEmg(
+        biorbd::muscles::State& emg){
+    emg.normalizeExcitation(characteristics().stateMax());
 }

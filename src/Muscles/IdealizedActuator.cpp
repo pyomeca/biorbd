@@ -3,7 +3,7 @@
 
 #include "Utils/String.h"
 #include "Muscles/Characteristics.h"
-#include "Muscles/StateDynamics.h"
+#include "Muscles/State.h"
 
 biorbd::muscles::IdealizedActuator::IdealizedActuator() :
     biorbd::muscles::Muscle()
@@ -24,8 +24,8 @@ biorbd::muscles::IdealizedActuator::IdealizedActuator(
         const biorbd::utils::String &name,
         const biorbd::muscles::Geometry &geometry,
         const biorbd::muscles::Characteristics &characteristics,
-        const biorbd::muscles::StateDynamics &dynamicState) :
-    biorbd::muscles::Muscle(name,geometry,characteristics,dynamicState)
+        const biorbd::muscles::State &emg) :
+    biorbd::muscles::Muscle(name,geometry,characteristics,emg)
 {
     setType();
 }
@@ -45,8 +45,8 @@ biorbd::muscles::IdealizedActuator::IdealizedActuator(
         const biorbd::muscles::Geometry& geometry,
         const biorbd::muscles::Characteristics& characteristics,
         const biorbd::muscles::PathModifiers &pathModifiers,
-        const biorbd::muscles::StateDynamics& dynamicState) :
-    biorbd::muscles::Muscle(name,geometry,characteristics,pathModifiers,dynamicState)
+        const biorbd::muscles::State& emg) :
+    biorbd::muscles::Muscle(name,geometry,characteristics,pathModifiers,emg)
 {
     setType();
 }
@@ -76,7 +76,7 @@ void biorbd::muscles::IdealizedActuator::DeepCopy(const biorbd::muscles::Idealiz
 }
 
 const biorbd::utils::Scalar& biorbd::muscles::IdealizedActuator::force(
-        const biorbd::muscles::StateDynamics &emg)
+        const biorbd::muscles::State &emg)
 {
     computeForce(emg);
     return *m_force;
@@ -86,7 +86,7 @@ const biorbd::utils::Scalar& biorbd::muscles::IdealizedActuator::force(
         biorbd::rigidbody::Joints &,
         const biorbd::rigidbody::GeneralizedCoordinates &,
         const biorbd::rigidbody::GeneralizedVelocity &,
-        const biorbd::muscles::StateDynamics &emg,
+        const biorbd::muscles::State &emg,
         int)
 {
     computeForce(emg);
@@ -96,7 +96,7 @@ const biorbd::utils::Scalar& biorbd::muscles::IdealizedActuator::force(
 const biorbd::utils::Scalar& biorbd::muscles::IdealizedActuator::force(
         biorbd::rigidbody::Joints &,
         const biorbd::rigidbody::GeneralizedCoordinates &,
-        const biorbd::muscles::StateDynamics &emg,
+        const biorbd::muscles::State &emg,
         int)
 {
     computeForce(emg);

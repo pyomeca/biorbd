@@ -3,7 +3,7 @@ if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.0")
     cmake_policy(SET CMP0042 NEW)
 endif()
 
-project(biorbd VERSION 1.3.0)
+project(biorbd VERSION 1.3.1)
 set (CMAKE_CXX_STANDARD 11)
 set (BIORBD_NAME ${PROJECT_NAME})
 
@@ -236,7 +236,7 @@ add_subdirectory("binding")
 # Add the example if asked
 option(BUILD_EXAMPLE "Build a C++ example" ON)
 if (BUILD_EXAMPLE)
-    add_subdirectory("example")
+    add_subdirectory("examples")
 endif()
 
 # Doc

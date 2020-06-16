@@ -29,7 +29,7 @@ void Matlab_setEKF(int nlhs, mxArray *plhs[],
         noiseF = getDouble(prhs,3,"Noise Factor");
     if (nrhs >= 3)
         freq = getDouble(prhs,2,"Acquisition Frequency");
-    biorbd::rigidbody::KalmanRecons::KalmanParam kParams(freq, noiseF, errorF);
+    biorbd::rigidbody::KalmanParam kParams(freq, noiseF, errorF);
 
     // Créer un filtre de Kalman
     try{
@@ -121,7 +121,12 @@ void Matlab_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
                 int nrhs, const mxArray*prhs[] ){
 
     // Verifier les arguments d'entrée
-    checkNombreInputParametres(nrhs, 3, 8, "4 arguments are required (+5 optional) where the 2nd is the handler on the model, 3th is the 3xNxT marker positions hypermatrix, the optional 4th is the initial guess for Q [default 0], 5th is acquisition frequency [default 100Hz], 6th is noise factor [default 1e-10] and 7th is error factor [default 1e-5] and 7th if you want to remove axes as specified in the model file [default = true]");
+    checkNombreInputParametres(nrhs, 3, 8, "4 arguments are required (+5 optional) where the 2nd is the handler on the model, "
+                                           "3th is the 3xNxT marker positions hypermatrix, "
+                                           "the optional 4th is the initial guess for Q [default 0], "
+                                           "5th is acquisition frequency [default 100Hz], "
+                                           "6th is noise factor [default 1e-10] and "
+                                           "7th is error factor [default 1e-5] and 7th if you want to remove axes as specified in the model file [default = true]");
 
     // Recevoir le model
     biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
@@ -139,7 +144,7 @@ void Matlab_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
         freq = getDouble(prhs,4,"Acquisition Frequency");
 
     // Créer un filtre de Kalman
-    biorbd::rigidbody::KalmanReconsMarkers kalman(*model, biorbd::rigidbody::KalmanReconsMarkers::KalmanParam(freq, noiseF, errorF));
+    biorbd::rigidbody::KalmanReconsMarkers kalman(*model, biorbd::rigidbody::KalmanParam(freq, noiseF, errorF));
 
     bool removeAxes(true);
     if (nrhs >= 8)
@@ -153,7 +158,7 @@ void Matlab_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
 
     // Recevoir Qinit
     if (kalman.first() && nrhs >= 4){
-        biorbd::rigidbody::GeneralizedCoordinates Qinit(*getParameterQ(prhs, 3, nQ).begin());
+        biorbd::rigidbody::GeneralizedCoordinates Qinit(getParameterQ(prhs, 3, nQ)[0]);
         kalman.setInitState(&Qinit);
     }
 
@@ -173,7 +178,7 @@ void Matlab_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
         biorbd::rigidbody::GeneralizedAcceleration QDDot(nQddot);
 
         // Faire la cinématique inverse
-        kalman.reconstructFrame(*model, *(markersOverTime.begin()+i), &Q, &QDot, &QDDot, removeAxes);
+        kalman.reconstructFrame(*model, markersOverTime[i], &Q, &QDot, &QDDot, removeAxes);
 
         // Remplir la variable de sortie
         for (unsigned int j=0; j<nQ; ++j){

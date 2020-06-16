@@ -19,37 +19,37 @@ biorbd::utils::Vector::Vector(
 }
 
 biorbd::utils::Vector::Vector(
-        const biorbd::utils::Vector& v) :
-    RigidBodyDynamics::Math::VectorNd (v)
+        const biorbd::utils::Vector& other) :
+    RigidBodyDynamics::Math::VectorNd (other)
 {
 
 }
 
 biorbd::utils::Vector::Vector(
-        const RigidBodyDynamics::Math::VectorNd &v) :
-    RigidBodyDynamics::Math::VectorNd (v)
+        const RigidBodyDynamics::Math::VectorNd &other) :
+    RigidBodyDynamics::Math::VectorNd (other)
 {
 
 }
 
 biorbd::utils::Vector::Vector(
-        const biorbd::utils::Vector3d& v) :
-    RigidBodyDynamics::Math::VectorNd (v)
+        const biorbd::utils::Vector3d& other) :
+    RigidBodyDynamics::Math::VectorNd (other)
 {
 
 }
 
 #ifdef BIORBD_USE_CASADI_MATH
 
-biorbd::utils::Vector::Vector(const casadi::MX &v) :
-    RigidBodyDynamics::Math::VectorNd(v)
+biorbd::utils::Vector::Vector(const casadi::MX &other) :
+    RigidBodyDynamics::Math::VectorNd(other)
 {
 
 }
 
 biorbd::utils::Vector::Vector(
-        const RBDLCasadiMath::MX_Xd_SubMatrix &m) :
-    RigidBodyDynamics::Math::VectorNd (m)
+        const RBDLCasadiMath::MX_Xd_SubMatrix &other) :
+    RigidBodyDynamics::Math::VectorNd (other)
 {
 
 }

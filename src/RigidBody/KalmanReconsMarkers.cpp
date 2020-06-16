@@ -21,7 +21,7 @@ biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers() :
 
 biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers(
         biorbd::Model &model,
-        biorbd::rigidbody::KalmanRecons::KalmanParam params) :
+        biorbd::rigidbody::KalmanParam params) :
     biorbd::rigidbody::KalmanRecons(model, model.nbTechnicalMarkers()*3, params),
     m_PpInitial(std::make_shared<biorbd::utils::Matrix>()),
     m_firstIteration(std::make_shared<bool>(true))

@@ -59,6 +59,7 @@ public:
     ///
     /// \brief Set the muscle excitation
     /// \param val Value of the muscle excitation
+    /// \param turnOffWarnings If the warning should be silenced
     ///
     virtual void setExcitation(
             const biorbd::utils::Scalar& val,

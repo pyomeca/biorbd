@@ -32,7 +32,7 @@ public:
     ///
     KalmanReconsIMU(
             biorbd::Model& model,
-            biorbd::rigidbody::KalmanRecons::KalmanParam params = biorbd::rigidbody::KalmanRecons::KalmanParam(100, 0.005, 1e-10));
+            biorbd::rigidbody::KalmanParam params = biorbd::rigidbody::KalmanParam(100, 0.005, 1e-10));
 
     ///
     /// \brief Deep copy of the Kalman reconstruction from inertial measurement units (IMU) data

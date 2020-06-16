@@ -28,7 +28,7 @@ void Matlab_setEKF_IMU(int nlhs, mxArray *plhs[],
         noiseF = getDouble(prhs,3,"Noise Factor");
     if (nrhs >= 3)
         freq = getDouble(prhs,2,"Acquisition Frequency");
-    biorbd::rigidbody::KalmanRecons::KalmanParam kParams(freq, noiseF, errorF);
+    biorbd::rigidbody::KalmanParam kParams(freq, noiseF, errorF);
 
     // Créer un filtre de Kalman
     try{
@@ -130,7 +130,7 @@ void Matlab_inverseKinematicsEKF_IMUallInOneCall( int, mxArray *plhs[],
         freq = getDouble(prhs,4,"Acquisition Frequency");
 
     // Créer un filtre de Kalman
-    biorbd::rigidbody::KalmanReconsIMU kalman(*model, biorbd::rigidbody::KalmanRecons::KalmanParam(freq, noiseF, errorF));
+    biorbd::rigidbody::KalmanReconsIMU kalman(*model, biorbd::rigidbody::KalmanParam(freq, noiseF, errorF));
 
     // Recevoir la matrice des imus
     std::vector<std::vector<biorbd::rigidbody::IMU>> imusOverTime = getParameterAllIMUs(prhs,2);

@@ -5,6 +5,7 @@
 #include <rbdl/Model.h>
 #include <rbdl/Constraints.h>
 #include "biorbdConfig.h"
+#include "Utils/Scalar.h"
 
 namespace biorbd {
 namespace utils {
@@ -432,7 +433,7 @@ public:
     /// \brief Return the total mass of the model
     /// \return The toal mass of the model
     ///
-    double mass() const; 
+    biorbd::utils::Scalar mass() const; 
 
     ///
     /// \brief Return the position of the center of mass
@@ -744,7 +745,7 @@ public:
                 const biorbd::rigidbody::GeneralizedCoordinates &Q,
                 const biorbd::rigidbody::GeneralizedVelocity &QDot,
                 const biorbd::rigidbody::GeneralizedAcceleration &QDDot,
-                std::vector<biorbd::utils::SpatialVector>* f_ext);
+                std::vector<biorbd::utils::SpatialVector>* f_ext = nullptr);
 
     ///
     /// \brief Interface for the forward dynamics of RBDL
@@ -824,7 +825,7 @@ protected:
     std::shared_ptr<unsigned int> m_nbQddot; ///< The total number of Qddot
     std::shared_ptr<unsigned int> m_nRotAQuat; ///< The number of segments per quaternion
     std::shared_ptr<bool> m_isKinematicsComputed; ///< If the kinematics are computed
-    std::shared_ptr<double> m_totalMass; ///< Mass of all the bodies combined
+    std::shared_ptr<biorbd::utils::Scalar> m_totalMass; ///< Mass of all the bodies combined
 
     ///
     /// \brief Calculate the joint coordinate system (JCS) in global reference frame of a specified segment

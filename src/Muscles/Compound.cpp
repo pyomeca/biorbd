@@ -6,7 +6,7 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "Muscles/Characteristics.h"
 #include "Muscles/PathModifiers.h"
-#include "Muscles/StateDynamics.h"
+#include "Muscles/State.h"
 
 biorbd::muscles::Compound::Compound() :
     m_name(std::make_shared<biorbd::utils::String>("")),

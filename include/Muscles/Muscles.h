@@ -22,7 +22,7 @@ class GeneralizedTorque;
 
 namespace muscles {
 class MuscleGroup;
-class StateDynamics;
+class State;
 class Muscle;
 
 ///
@@ -180,27 +180,57 @@ public:
     ///
     /// \brief Compute the muscular joint torque
     /// \param F The force vector of all the muscles
-    /// \param updateKin If the kinematics should be update or not
-    /// \param Q The generalized coordinates (not needed if updateKin is false)
-    /// \param QDot The generalized velocities (not needed if updateKin is false)
     ///
     /// The computation for the muscular joint torque is done from virtual power:
     ///
     /// i.e. \f$-J \times F\f$
     ///
     /// where \f$J\f$ is the muscle lengths jacobian and \f$F\f$ is the force vector of all the muscles
-    /// 
+    ///
+    /// Warning: This function assumes that muscles are already updated (via `updateMuscles`)
+    ///
+    biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
+            const biorbd::utils::Vector& F);
+
+    ///
+    /// \brief Compute the muscular joint torque
+    /// \param F The force vector of all the muscles
+    /// \param Q The generalized coordinates
+    /// \param QDot The generalized velocities
+    ///
+    /// This function updates the muscles and then performs the computation for
+    /// the muscular joint torque is done from virtual power:
+    ///
+    /// i.e. \f$-J \times F\f$
+    ///
+    /// where \f$J\f$ is the muscle lengths jacobian and \f$F\f$ is the force vector of all the muscles
+    ///
+    /// Warning: This function assumes that muscles are already updated (via `updateMuscles`)
+    ///
     biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
             const biorbd::utils::Vector& F,
-            bool updateKin = true,
-            const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
-            const biorbd::rigidbody::GeneralizedVelocity* QDot = nullptr);
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedVelocity& QDot);
 
     ///
     /// \brief Compute the muscular joint torque
     /// \param emg The dynamic state to compute the force vector
-    /// \param F The force vector of all the muscles (output)
-    /// \param updateKin If the kinematics should be update or not
+    ///
+    /// This functions converts muscle activations into muscle forces and then performs
+    /// the computation for the muscular joint torque is done from virtual power:
+    ///
+    /// i.e. \f$-J \times F\f$
+    ///
+    /// where \f$J\f$ is the muscle lengths jacobian and \f$F\f$ is the force vector of all the muscles
+    ///
+    /// Warning: This function assumes that muscles are already updated (via `updateMuscles`)
+    ///
+    biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
+            const std::vector<std::shared_ptr<biorbd::muscles::State>>& emg);
+
+    ///
+    /// \brief Compute the muscular joint torque
+    /// \param emg The dynamic state to compute the force vector
     /// \param Q The generalized coordinates (not needed if updateKin is false)
     /// \param QDot The generalized velocities (not needed if updateKin is false)
     ///
@@ -211,30 +241,9 @@ public:
     /// where \f$J\f$ is the muscle lengths jacobian and \f$F\f$ is the force vector of all the muscles
     ///
     biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
-            const std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>> &emg,
-            biorbd::utils::Vector& F,
-            bool updateKin = true,
-            const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
-            const biorbd::rigidbody::GeneralizedVelocity* QDot = nullptr);
-
-    ///
-    /// \brief Compute the muscular joint torque
-    /// \param emg The dynamic state to compute the force vector
-    /// \param updateKin If the kinematics should be update or not
-    /// \param Q The generalized coordinates (not needed if updateKin is false)
-    /// \param QDot The generalized velocities (not needed if updateKin is false)
-    ///
-    /// The computation for the muscular joint torque is done from virtual power:
-    ///
-    /// i.e. \f$-J \times F\f$
-    ///
-    /// where \f$J\f$ is the muscle lengths jacobian and \f$F\f$ is the force vector of all the muscles
-    ///
-    biorbd::rigidbody::GeneralizedTorque muscularJointTorque(
-            const std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>& emg,
-            bool updateKin = true,
-            const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
-            const biorbd::rigidbody::GeneralizedVelocity* QDot = nullptr);
+            const std::vector<std::shared_ptr<biorbd::muscles::State>>& emg,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedVelocity& QDot);
 
     ///
     /// \brief Interface that returns in a vector all the activations dot
@@ -243,7 +252,7 @@ public:
     /// \return All the activations dot
     ///
     biorbd::utils::Vector activationDot(
-            const std::vector<biorbd::muscles::StateDynamics>& states,
+            const std::vector<std::shared_ptr<biorbd::muscles::State>>& states,
             bool areadyNormalized = true);
 
     ///
@@ -263,16 +272,24 @@ public:
     ///
     /// \brief Compute and return the muscle forces
     /// \param emg The dynamic state
-    /// \param updateKin If the kinematics should be update or not
+    /// \return The muscle forces
+    ///
+    /// Warning: This function assumes that muscles are already updated (via `updateMuscles`)
+    ///
+    biorbd::utils::Vector muscleForces(
+            const std::vector<std::shared_ptr<biorbd::muscles::State>>& emg);
+
+    ///
+    /// \brief Compute and return the muscle forces
+    /// \param emg The dynamic state
     /// \param Q The generalized coordinates
     /// \param QDot The generalized velocities
     /// \return The muscle forces
     ///
-    biorbd::utils::Vector musclesForces(
-            const std::vector<std::shared_ptr<StateDynamics>> &emg,
-            bool updateKin = true,
-            const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
-            const biorbd::rigidbody::GeneralizedVelocity* QDot = nullptr);
+    biorbd::utils::Vector muscleForces(
+            const std::vector<std::shared_ptr<biorbd::muscles::State>>& emg,
+            const biorbd::rigidbody::GeneralizedCoordinates& Q,
+            const biorbd::rigidbody::GeneralizedVelocity& QDot);
 
     ///
     /// \brief Return the total number of muscle groups

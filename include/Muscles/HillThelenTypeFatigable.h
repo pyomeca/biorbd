@@ -47,14 +47,14 @@ public:
     /// \param name The muscle name
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
-    /// \param dynamicState The muscle dynamic state
+    /// \param emg The muscle dynamic state
     /// \param dynamicFatigueType The muscle dynamic fatigue model
     ///
     HillThelenTypeFatigable(
             const biorbd::utils::String& name,
             const biorbd::muscles::Geometry& geometry,
             const biorbd::muscles::Characteristics& characteristics,
-            const biorbd::muscles::StateDynamics& dynamicState,
+            const biorbd::muscles::State& emg,
             biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
     ///
@@ -78,7 +78,7 @@ public:
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
     /// \param pathModifiers The set of path modifiers
-    /// \param dynamicState The muscle dynamic state
+    /// \param emg The muscle dynamic state
     /// \param dynamicFatigueType The muscle dynamic fatigue model
     ///
     HillThelenTypeFatigable(
@@ -86,7 +86,7 @@ public:
             const biorbd::muscles::Geometry& geometry,
             const biorbd::muscles::Characteristics& characteristics,
             const biorbd::muscles::PathModifiers& pathModifiers,
-            const biorbd::muscles::StateDynamics& dynamicState,
+            const biorbd::muscles::State& emg,
             biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
     ///
@@ -118,9 +118,9 @@ public:
 
     ///
     /// \brief Compute the Force-Length of the contractile element
-    /// \param EMG EMG data
+    /// \param emg EMG data
     ///
-    virtual void computeFlCE(const biorbd::muscles::StateDynamics &EMG);
+    virtual void computeFlCE(const biorbd::muscles::State &emg);
 
 protected:
     ///

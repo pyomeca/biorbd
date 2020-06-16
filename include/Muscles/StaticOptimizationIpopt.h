@@ -20,7 +20,7 @@ class GeneralizedTorque;
 }
 
 namespace muscles {
-class StateDynamics;
+class State;
 ///
 /// \brief The actual implementation of the Static Optimization problem
 ///
@@ -234,7 +234,7 @@ protected:
     std::shared_ptr<biorbd::rigidbody::GeneralizedTorque> m_torqueTarget; ///< The torque to match
     std::shared_ptr<biorbd::utils::Vector> m_torqueResidual; ///< The torque residual
     std::shared_ptr<double> m_torquePonderation; ///< The torque ponderation
-    std::shared_ptr<std::vector<std::shared_ptr<biorbd::muscles::StateDynamics>>> m_states; ///< The muscle states
+    std::shared_ptr<std::vector<std::shared_ptr<biorbd::muscles::State>>> m_states; ///< The muscle states
     std::shared_ptr<unsigned int> m_pNormFactor; ///< The p-norm factor
     std::shared_ptr<int> m_verbose; ///< Verbose level of IPOPT
     std::shared_ptr<biorbd::utils::Vector> m_finalSolution; ///< The final solution

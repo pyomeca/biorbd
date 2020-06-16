@@ -4,6 +4,7 @@
 #include <rbdl/rbdl_utils.h>
 #include <rbdl/Kinematics.h>
 #include <rbdl/Dynamics.h>
+#include "Utils/Scalar.h"
 #include "Utils/String.h"
 #include "Utils/Quaternion.h"
 #include "Utils/Matrix.h"
@@ -33,7 +34,7 @@ biorbd::rigidbody::Joints::Joints() :
     m_nbQddot(std::make_shared<unsigned int>(0)),
     m_nRotAQuat(std::make_shared<unsigned int>(0)),
     m_isKinematicsComputed(std::make_shared<bool>(false)),
-    m_totalMass(std::make_shared<double>(0))
+    m_totalMass(std::make_shared<biorbd::utils::Scalar>(0))
 {
     this->gravity = biorbd::utils::Vector3d (0, 0, -9.81);  // Redéfinition de la gravité pour qu'elle soit en z
 }
@@ -118,7 +119,7 @@ unsigned int biorbd::rigidbody::Joints::nbRoot() const {
     return *m_nbRoot;
 }
 
-double biorbd::rigidbody::Joints::mass() const {
+biorbd::utils::Scalar biorbd::rigidbody::Joints::mass() const {
     return *m_totalMass;
 }
 

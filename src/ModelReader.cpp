@@ -148,6 +148,8 @@ void biorbd::Reader::readModelFile(
                         if (rot.compare("q")){
                             // If not a quaternion
                             rotLength = rot.length();
+                        } else {
+                            rotLength = 4;
                         }
                         for (size_t i=0; i<trans.length() + rotLength; ++i){
                             file.read(min);
@@ -163,6 +165,8 @@ void biorbd::Reader::readModelFile(
                         if (rot.compare("q")){
                             // If not a quaternion
                             rotLength = rot.length();
+                        } else {
+                            rotLength = 3;
                         }
                         for (size_t i=0; i<trans.length() + rotLength; ++i){
                             file.read(min);
@@ -178,6 +182,8 @@ void biorbd::Reader::readModelFile(
                         if (rot.compare("q")){
                             // If not a quaternion
                             rotLength = rot.length();
+                        } else {
+                            rotLength = 3;
                         }
                         for (size_t i=0; i<trans.length() + rotLength; ++i){
                             file.read(min);
@@ -285,10 +291,17 @@ void biorbd::Reader::readModelFile(
                     if (rot.compare("q")){
                         // If not a quaternion
                         rotLength = rot.length();
+                    } else {
+                        rotLength = 4;
                     }
                     for (size_t i=0; i<trans.length() + rotLength; ++i){
-                        QRanges.push_back(
-                                    biorbd::utils::Range ());
+                        if (!rot.compare("q") && i>=trans.length()){
+                            QRanges.push_back(
+                                        biorbd::utils::Range (-1, 1));
+                        } else {
+                            QRanges.push_back(
+                                        biorbd::utils::Range ());
+                        }
                     }
                 }
                 if (!isRangeQDotSet){
@@ -296,6 +309,8 @@ void biorbd::Reader::readModelFile(
                     if (rot.compare("q")){
                         // If not a quaternion
                         rotLength = rot.length();
+                    } else {
+                        rotLength = 3;
                     }
                     for (size_t i=0; i<trans.length() + rotLength; ++i){
                         QDotRanges.push_back(
@@ -307,6 +322,8 @@ void biorbd::Reader::readModelFile(
                     if (rot.compare("q")){
                         // If not a quaternion
                         rotLength = rot.length();
+                    } else {
+                        rotLength = 3;
                     }
                     for (size_t i=0; i<trans.length() + rotLength; ++i){
                         QDDotRanges.push_back(

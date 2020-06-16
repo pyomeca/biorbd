@@ -283,19 +283,22 @@ void biorbd::rigidbody::Segment::setDofs(
     }
     biorbd::utils::Error::check(
                 QRanges.size() == 0 ||
-                QRanges.size() == seqT.length() + nRot,
+                QRanges.size() == seqT.length() + nRot ||
+                (QRanges.size() == 4 && m_isQuaternion),
                 "QRanges and number of dof must be equal");
     *m_QRanges = QRanges;
 
     biorbd::utils::Error::check(
                 QDotRanges.size() == 0 ||
-                QDotRanges.size() == seqT.length() + nRot,
+                QDotRanges.size() == seqT.length() + nRot ||
+                (QDotRanges.size() == 3 && m_isQuaternion),
                 "QDotRanges and number of dof must be equal");
     *m_QDotRanges = QDotRanges;
 
     biorbd::utils::Error::check(
                 QDDotRanges.size() == 0 ||
-                QDDotRanges.size() == seqT.length() + nRot,
+                QDDotRanges.size() == seqT.length() + nRot ||
+                (QDDotRanges.size() == 3 && m_isQuaternion),
                 "QDDotRanges and number of dof must be equal");
     *m_QDDotRanges = QDDotRanges;
     setJoints(model);
