@@ -41,7 +41,8 @@ TEST(FileIO, WriteModel){
 
 TEST(GenericTests, mass){
     biorbd::Model model(modelPathForGeneralTesting);
-    EXPECT_NEAR(model.mass(), 52.41212, requiredPrecision);
+    SCALAR_TO_DOUBLE(mass, model.mass());
+    EXPECT_NEAR(mass, 52.41212, requiredPrecision);
 }
 
 TEST(MeshFile, FileIO){
