@@ -339,10 +339,14 @@ TEST(Joints, copy)
         biorbd::rigidbody::Joints deepCopyNow(joints.DeepCopy());
         biorbd::rigidbody::Joints deepCopyLater;
         deepCopyLater.DeepCopy(joints);
-
-        EXPECT_NEAR(shallowCopy.mass(), 52.412120000000002, requiredPrecision);
-        EXPECT_NEAR(deepCopyNow.mass(), 52.412120000000002, requiredPrecision);
-        EXPECT_NEAR(deepCopyLater.mass(), 52.412120000000002, requiredPrecision);
+        {
+            SCALAR_TO_DOUBLE(shallowCopyMass, shallowCopy.mass());
+            SCALAR_TO_DOUBLE(deepCopyNowMass, deepCopyNow.mass());
+            SCALAR_TO_DOUBLE(deepCopyLaterMass, deepCopyLater.mass());
+            EXPECT_NEAR(shallowCopyMass, 52.412120000000002, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowMass, 52.412120000000002, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterMass, 52.412120000000002, requiredPrecision);
+        }
 
         biorbd::rigidbody::SegmentCharacteristics characteristics(
             10, biorbd::utils::Vector3d(0.5, 0.5, 0.5),
@@ -352,10 +356,16 @@ TEST(Joints, copy)
         joints.AddSegment("segmentName", "parentName", "zyx", "yzx", ranges, ranges, ranges,
             characteristics, RigidBodyDynamics::Math::SpatialTransform());
 
-        EXPECT_NEAR(joints.mass(), 62.412120000000002, requiredPrecision);
-        EXPECT_NEAR(shallowCopy.mass(), 62.412120000000002, requiredPrecision);
-        EXPECT_NEAR(deepCopyNow.mass(), 52.412120000000002, requiredPrecision);
-        EXPECT_NEAR(deepCopyLater.mass(), 52.412120000000002, requiredPrecision);
+        {
+            SCALAR_TO_DOUBLE(jointsMass, joints.mass());
+            SCALAR_TO_DOUBLE(shallowCopyMass, shallowCopy.mass());
+            SCALAR_TO_DOUBLE(deepCopyNowMass, deepCopyNow.mass());
+            SCALAR_TO_DOUBLE(deepCopyLaterMass, deepCopyLater.mass());
+            EXPECT_NEAR(jointsMass, 62.412120000000002, requiredPrecision);
+            EXPECT_NEAR(shallowCopyMass, 62.412120000000002, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowMass, 52.412120000000002, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterMass, 52.412120000000002, requiredPrecision);
+        }
     }
 }
 
