@@ -5,10 +5,10 @@
 #include <rbdl/Model.h>
 #include <rbdl/Constraints.h>
 #include "biorbdConfig.h"
+#include "Utils/Scalar.h"
 
 namespace biorbd {
 namespace utils {
-class Scalar;
 class String;
 class RotoTrans;
 class Matrix;
