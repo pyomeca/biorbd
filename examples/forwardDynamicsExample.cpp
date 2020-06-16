@@ -15,7 +15,7 @@
 int main()
 {
     // Load a predefined model
-    biorbd::Model model("pyomecaman.bioMod");
+    biorbd::Model model("/home/pariterre/Programmation/sandbox/biorbd-dev/ModeleBaton_1bras_EpaulesQuat.bioMod");
 
     // Choose a position/velocity/torque to compute dynamics from
     biorbd::rigidbody::GeneralizedCoordinates Q(model);
