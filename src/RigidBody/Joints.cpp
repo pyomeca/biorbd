@@ -187,7 +187,16 @@ void biorbd::rigidbody::Joints::setGravity(
     gravity = newGravity;
 }
 
-const biorbd::rigidbody::Segment& biorbd::rigidbody::Joints::segment(unsigned int idx) const {
+void biorbd::rigidbody::Joints::updateSegmentCharacteristics(
+        unsigned int idx,
+        const biorbd::rigidbody::SegmentCharacteristics& characteristics)
+{
+    biorbd::utils::Error::check(idx < m_segments->size(), "Asked for a wrong segment (out of range)");
+    (*m_segments)[idx].updateCharacteristics(*this, characteristics);
+}
+
+const biorbd::rigidbody::Segment& biorbd::rigidbody::Joints::segment(
+        unsigned int idx) const {
     biorbd::utils::Error::check(idx < m_segments->size(), "Asked for a wrong segment (out of range)");
     return (*m_segments)[idx];
 }
