@@ -13,7 +13,7 @@
 #include "RigidBody/SegmentCharacteristics.h"
 #include "RigidBody/Contacts.h"
 #include "RigidBody/Mesh.h"
-#ifndef SKIP_KALMAN
+#ifdef MODULE_KALMAN
 #include "RigidBody/KalmanRecons.h"
 #include "RigidBody/KalmanReconsMarkers.h"
 #include "RigidBody/KalmanReconsIMU.h"
