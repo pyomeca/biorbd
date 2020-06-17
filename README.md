@@ -37,9 +37,9 @@ The building status for the current BIORBD branches is as follow
 ### Dependencies
 BIORBD relies on several libraries (namely eigen ([http://eigen.tuxfamily.org]) or CasADi ([https://web.casadi.org/]), rbdl-casadi (https://github.com/pyomeca/rbdl-casadi), tinyxml(http://www.grinninglizard.com/tinyxmldocs/index.html) and Ipopt (https://github.com/coin-or/Ipopt)) that one must install prior to compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda. Therefore the following command will install everything you need to compile BIORBD:
 ```bash
-conda install -c conda-forge {rbdl rbdl-casadi} [tinyxml] [ipopt]
+conda install -c conda-forge {rbdl rbdl=*=*casadi*} [tinyxml] [ipopt]
 ```
-Please note you have to choose between ```rbdl``` or ```rbdl-casadi``` depending on the backend you want to use (eigen for the former, casadi for the latter);
+Please note you have to choose between ```rbdl``` or ```rbdl=*=*casadi*``` depending on the backend you want to use (eigen for the former [default], casadi for the latter);
 that ```tinyxml``` is optional, but is required for reading VTP files;
 and  ```ipopt``` is optional, but is required for the *Static optimization* module. 
 
@@ -61,23 +61,40 @@ BIORBD comes with a CMake (https://cmake.org/) project. If you don't know how to
 >
 > `CMAKE_BUILD_TYPE` Which type of build you want. Options are `Debug`, `RelWithDebInfo`, `MinSizeRel` or `Release`. This is relevant only for the build done using the `make` command. Please note that you will experience a slow BIORBD library if you compile it without any optimization (i.e. `Debug`), especially for all functions that requires linear algebra. 
 >
+> `MATH_LIBRARY_BACKEND` Choose between the two linear algebra backends, either `Eigen3` or `Casadi`. Default is `Eigen3`.
+>
 > `BUILD_EXAMPLE` If you want (`TRUE`) or not (`FALSE`) to build the C++ example. Default is `TRUE`.
 >
 > `BUILD_TESTS` If you want (`ON`) or not (`OFF`) to build the tests of the project. Please note that this will automatically download gtest (https://github.com/google/googletest). Default is `OFF`.
 >
 > `BUILD_DOC` If you want (`ON`) or not (`OFF`) to build the documentation of the project. Default is `OFF`.
 >
+> `BINDER_C` If you want (`ON`) or not (`OFF`) to build the low level C binder. Default is `OFF`. Please note that this binder is very light and will not contain most of BIORBD features.
+>
 > `BINDER_PYTHON3` If you want (`ON`) or not (`OFF`) to build the Python binder. Default is `OFF`.
 >
-> `Python3_EXECUTABLE`  If `BINDER_PYTHON3` is set to `ON` then this variable should point to the Python executable. This python should have *SWIG* and *Numpy* installed with it. This variable should be found automatically, but Anaconda finds the base prior to the actual environment, so one should gives attention to that particular variable.
+> `SWIG_EXECUTABLE`  If `BINDER_PYTHON3` is set to `ON` then this variable should point to the SWIG executable. This variable should be found automatically.
 >
-> `SWIG_EXECUTABLE`  If `BINDER_PYTHON3` is set to `ON` then this variable should point to the SWIG executable. This variable will be found automatically if `Python3_EXECUTABLE` is properly set.
+> `BINDER_MATLAB` If you want (`ON`) or not (`OFF`) to build the MATLAB binder. Default is `OFF`. Pleaes note that `BINDER_MATLAB` can't be set to `ON` alonside to `CasADi` backend.
 >
-> `BINDER_MATLAB` If you want (`ON`) or not (`OFF`) to build the MATLAB binder. Default is `OFF`.
+> `Matlab_ROOT_DIR` If `BINDER_MATLAB` is set to `ON` then this variable should point to the root path of MATLAB directory. Please note that the MATLAB binder is based on MATLAB R2018a API and won't compile on earlier versions. This variable should be found automatically, except on Mac where the value should manually be set to the MATLAB in the App folder. 
 >
-> `MATLAB_ROOT_DIR` If `BINDER_MATLAB` is set to `ON` then this variable should point to the root path of MATLAB directory. Please note that the MATLAB binder is based on MATLAB R2018a API and won't compile on earlier versions. This variable should be found automatically, except on Mac where the value should manually be set to the MATLAB in the App folder.
+> `Matlab_biorbd_INSTALL_DIR` If `BINDER_MATLAB` is set to `ON` then this variable should point to the path where you want to install BIORBD. Typically, this is `{MY DOCUMENTS}/MATLAB`. The default value is the toolbox folder of MATLAB. Please note that if you leave the default value, you will probably need to grant administrator rights to the installer. 
 >
-> `MATLAB_biorbd_INSTALL_DIR` If `BINDER_MATLAB` is set to `ON` then this variable should point to the path where you want to install BIORBD. Typically, this is `{MY DOCUMENTS}/MATLAB`. The default value is the toolbox folder of MATLAB. Please note that if you leave the default value, you will probably need to grant administrator rights to the installer. 
+> `MODULE_ACTUATORS` If you want (`ON`) or not (`OFF`) to build with the actuators module. Default is `ON`. This allows to use exotic joint torques. 
+>
+> `MODULE_KALMAN` If you want (`ON`) or not (`OFF`) to build the Kalman filter module. Default is `ON`. The main reason to skip Kalman is that in `Debug` mode `Eigen3` will perform this very slowly and `CasADi` will always perform this slowly. 
+>
+> `MODULE_MUSCLES` If you want (`ON`) or not (`OFF`) to build with the muscle module. Default is `ON`. This allows to read and interact with models that include muscles.
+>
+> `MODULE_STATIC_OPTIM` If you want (`ON`) or not (`OFF`) to build the Static optimization module. Default is `ON` (if `ipopt` is found).
+>
+> `MODULE_VTP_FILES_READER` If you want (`ON`) or not (`OFF`) to build with the vtp files reader module. Default is `ON` (if `tinyxml` is found). This allows to read mesh files produced by `OpenSim`.
+> 
+> `SKIP_ASSERT` If you want (`ON`) or not (`OFF`) to skip the asserts in the functions (e.g. checks for sizes). Default is `OFF`. Putting this to `OFF` reduces the risks of Segmentation Faults, it will however slow down the code when using `Eigen3` backend.
+>
+> `SKIP_LONG_TESTS` If you want (`ON`) or not (`OFF`) to skip the tests that are long to perform. Default is `OFF`. This is useful when debugging. 
+
 
 # How to use
 BIORBD provides as much as possible explicit names for the filter so one can intuitively find what he wants from the library. Still, this is a C++ library and it can be sometimes hard to find what you need. Due to the varity of functions implemented in the library, minimal examples are shown here. One is encourage to have a look at the `example` and `test` folders to get a better overview of the possibility of the API. For an in-depth detail of the API, the Doxygen documentation (to come) is the way to go.
@@ -319,20 +336,6 @@ The `gravity` tag is used to reorient and/or change the magnitude of the gravity
 gravity 0 0 -9.81
 ```
 
-#### root_actuated
-The `root_actuated` tag allows to change the number of non-zero degrees-of-freedom on the first segment. Typically, if the whole body is modeled, this is set to false, otherwise to true. Please note, that even if this tag is false, the *GeneralizedTorque* vector sent to `RigidBodyDynamic` must be of the same size as *qddot*. The default value is true ($1$). This tags waits for $1$ value. 
-```c
-// Restate the default value
-root_actuated 1
-```
-
-#### external_forces
-The `external_forces` tag allows to inform BIORBD that external forces exists in the model. So far, this tag has no effect. The default value is false ($0$) This tags waits for $1$ value. 
-```c
-// Restate the default value
-external_forces 0
-```
-
 #### variables / endvariables
 The `variables / endvariables` tag pair allows to declare variables that can be used within the file. This allows for example to template the *bioMod* file by only changing the values in the variables. Please note that contrary to the rest of the file, the actual variables are case dependent. 
 
@@ -397,7 +400,7 @@ The $3$ values position of the `center of mass` relative to the local reference 
 ##### inertia
 The `inertia` tag allows to specify the matrix of inertia of the segment. It waits for $9$ values. The default values are the `identity matrix`
 
-##### foreceplate
+##### foreceplate or externalforceindex
 When calculating the inverse dynamics, if force plates are used, this tag dispatch the force plates, the first force plate being $0$. If no force plate is acting on this segment, the value is $-1$. 
 
 ##### meshfile or ply
@@ -503,8 +506,6 @@ The second way is to open issues to report bugs or to ask for new features. I am
 For now, there is no GUI for the C++ interface and the MATLAB one is so poor I decided not to release it. However, there is a Python interface that worths to have a look at. Installation procedure and documentation can be found at the GitHub repository (https://github.com/pyomeca/biorbd-viz).
 
 # Documentation
-The documentation is not ready yet, but will come soon, when it is ready the next paragraph applies.
-
 The documentation is automatically generated using Doxygen (http://www.doxygen.org/). You can compile it yourself if you want (by setting `BUILD_DOC` to `ON`). Otherwise, you can access a copy of it that I try to keep up-to-date in the Documentation project of pyomeca (https://pyomeca.github.io/Documentation/) by selecting `biorbd`. 
 
 # Troubleshoots
