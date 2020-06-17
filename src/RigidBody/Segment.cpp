@@ -13,6 +13,7 @@
 
 biorbd::rigidbody::Segment::Segment() :
     biorbd::utils::Node(),
+    m_idxInModel(std::make_shared<int>(-1)),
     m_idxPF (std::make_shared<int>(-1)),
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>()),
     m_seqT(std::make_shared<biorbd::utils::String>()),
@@ -55,6 +56,7 @@ biorbd::rigidbody::Segment::Segment(
         int PF) :
 
     biorbd::utils::Node(name, parentName),
+    m_idxInModel(std::make_shared<int>(-1)),
     m_idxPF (std::make_shared<int>(PF)),
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(cor)),
     m_seqT(std::make_shared<biorbd::utils::String>(seqT)),
@@ -100,6 +102,7 @@ biorbd::rigidbody::Segment::Segment(
 
 
     biorbd::utils::Node(name, parentName),
+    m_idxInModel(std::make_shared<int>(-1)),
     m_idxPF (std::make_shared<int>(PF)),
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(cor)),
     m_seqT(std::make_shared<biorbd::utils::String>()),
@@ -142,6 +145,7 @@ biorbd::rigidbody::Segment biorbd::rigidbody::Segment::DeepCopy() const
 void biorbd::rigidbody::Segment::DeepCopy(const biorbd::rigidbody::Segment&other)
 {
     biorbd::utils::Node::DeepCopy(other);
+    *m_idxInModel = *other.m_idxInModel;
     *m_idxPF = *other.m_idxPF;
     *m_cor = *other.m_cor;
     *m_seqT = *other.m_seqT;
@@ -261,7 +265,24 @@ biorbd::rigidbody::Segment::QDDotRanges() const
 biorbd::utils::RotoTrans biorbd::rigidbody::Segment::localJCS() const {
     return *m_cor;
 }
-const biorbd::rigidbody::SegmentCharacteristics &biorbd::rigidbody::Segment::characteristics() const {
+
+void biorbd::rigidbody::Segment::updateCharacteristics(
+        biorbd::rigidbody::Joints& model,
+        const biorbd::rigidbody::SegmentCharacteristics& characteristics){
+
+    *m_characteristics = characteristics.DeepCopy();
+    RigidBodyDynamics::Math::SpatialRigidBodyInertia rbi =
+            RigidBodyDynamics::Math::SpatialRigidBodyInertia::createFromMassComInertiaC (
+                m_characteristics->mMass,
+                m_characteristics->mCenterOfMass,
+                m_characteristics->mInertia);
+
+    model.Ic[*m_idxInModel] = rbi;
+    model.I[*m_idxInModel] = rbi;
+}
+
+const biorbd::rigidbody::SegmentCharacteristics&
+biorbd::rigidbody::Segment::characteristics() const {
     return *m_characteristics;
 }
 
@@ -462,6 +483,7 @@ void biorbd::rigidbody::Segment::setJoints(
         m_idxDof->resize(*m_nbDof);
 
     unsigned int parent_id(model.GetBodyId(parent().c_str()));
+
     if (parent_id == std::numeric_limits<unsigned int>::max())
         parent_id = 0;
     if (*m_nbDof==0)
@@ -486,7 +508,7 @@ void biorbd::rigidbody::Segment::setJoints(
                         (*m_idxDof)[i-1], zero, (*m_dof)[i],
                         (*m_dofCharacteristics)[i], name());
     }
-
+    *m_idxInModel = model.I.size() - 1;
 }
 
 unsigned int biorbd::rigidbody::Segment::getDofIdx(

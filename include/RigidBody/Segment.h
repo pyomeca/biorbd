@@ -208,10 +208,19 @@ public:
     biorbd::utils::RotoTrans localJCS() const; 
 
     ///
+    /// \brief updateCharacteristics Change the inertia characteristics of the segment
+    /// \param model The underlying model to update
+    /// \param characteristics The new characteristics
+    ///
+    void updateCharacteristics(
+            biorbd::rigidbody::Joints& model,
+            const biorbd::rigidbody::SegmentCharacteristics& characteristics);
+
+    ///
     /// \brief Return the segment characteristics
     /// \return The segment characteristics
     ///
-    const biorbd::rigidbody::SegmentCharacteristics& characteristics() const; 
+    const biorbd::rigidbody::SegmentCharacteristics& characteristics() const;
 
     ///
     /// \brief Return if the rotation DoF of this segment is a quaternion
@@ -220,6 +229,8 @@ public:
     bool isRotationAQuaternion() const;
 
 protected:
+    std::shared_ptr<int> m_idxInModel; ///< Index in RBDL model
+
     ///
     /// \brief Set the type of the segment
     ///

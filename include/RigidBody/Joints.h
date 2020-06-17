@@ -207,6 +207,17 @@ public:
     ///
     unsigned int nbQuat() const;
 
+
+    ///
+    /// \brief updateSegmentCharacteristics Change the inertia characteristics of the segment idx
+    /// \param idx The index of the segment to change
+    /// \param characteristics The new characteristics
+    ///
+    void updateSegmentCharacteristics(
+            unsigned int idx,
+            const biorbd::rigidbody::SegmentCharacteristics& characteristics);
+
+
     ///
     /// \brief Get a segment of index idx
     /// \param idx Index of the segment

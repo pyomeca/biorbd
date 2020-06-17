@@ -81,6 +81,12 @@ public:
     biorbd::utils::Scalar length() const;
 
     ///
+    /// \brief Set the new mass
+    /// \param newMass The new mass
+    ///
+    void setMass(const biorbd::utils::Scalar& newMass);
+
+    ///
     /// \brief Returns the segment mass
     /// \return The segment mass
     ///
