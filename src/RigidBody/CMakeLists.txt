@@ -19,7 +19,7 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/RotoTransNodes.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/MeshFace.cpp"
 )
-if (NOT SKIP_KALMAN)
+if (MODULE_KALMAN)
     list(APPEND SRC_LIST_MODULE
         "${CMAKE_CURRENT_SOURCE_DIR}/KalmanRecons.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/KalmanReconsIMU.cpp"

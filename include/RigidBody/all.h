@@ -19,7 +19,7 @@
 #include "RigidBody/RotoTransNodes.h"
 #include "RigidBody/MeshFace.h"
 #include "RigidBody/RigidBodyEnums.h"
-#ifndef SKIP_KALMAN
+#ifdef MODULE_KALMAN
 #include "RigidBody/KalmanRecons.h"
 #include "RigidBody/KalmanReconsIMU.h"
 #include "RigidBody/KalmanReconsMarkers.h"

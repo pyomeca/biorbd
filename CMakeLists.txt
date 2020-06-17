@@ -55,7 +55,7 @@ find_package(IPOPT)
 find_package(TinyXML)
 
 # Manage options
-option(SKIP_KALMAN "If Kalman filter should be compiled" OFF)
+option(MODULE_KALMAN "If Kalman filter should be compiled" ON)
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     option(SKIP_ASSERT
@@ -72,15 +72,15 @@ else()
 endif()
 
 if (IPOPT_FOUND)
-    option(SKIP_STATIC_OPTIM "If Static optimization should be compiled" OFF)
+    option(MODULE_STATIC_OPTIM "If Static optimization should be compiled" ON)
     if (BIORBD_USE_CASADI_MATH)
-        set(SKIP_STATIC_OPTIM ON CACHE BOOL
+        set(MODULE_STATIC_OPTIM OFF CACHE BOOL
             "Static optimization can't be compiled along with Casadi" FORCE)
     endif()
 else()
     set(IPOPT_INCLUDE_DIR "")
     set(IPOPT_LIBRARY "")
-    set(SKIP_STATIC_OPTIM ON CACHE BOOL
+    set(MODULE_STATIC_OPTIM OFF CACHE BOOL
         "Static optimization can't be compiled since Ipopt was not found" FORCE)
 endif()
 

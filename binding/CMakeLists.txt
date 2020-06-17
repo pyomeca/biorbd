@@ -33,7 +33,7 @@ if (BINDER_PYTHON3)
 
     SET(SWIG_MODULE_RIGIDBODY_INCLUDE_COMMAND
         "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_rigidbody.i\"")
-    if (NOT SKIP_KALMAN)
+    if (MODULE_KALMAN)
         SET(SWIG_KALMAN_INCLUDE_COMMAND
             "%include \"${CMAKE_SOURCE_DIR}/include/RigidBody/KalmanRecons.h\"\n
             %include \"${CMAKE_SOURCE_DIR}/include/RigidBody/KalmanReconsMarkers.h\"
@@ -47,7 +47,7 @@ if (BINDER_PYTHON3)
     if (MODULE_MUSCLES)
         SET(SWIG_MODULE_MUSCLES_INCLUDE_COMMAND
             "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_muscles.i\"")
-        if (NOT SKIP_STATIC_OPTIM)
+        if (MODULE_STATIC_OPTIM)
             SET(SWIG_STATIC_OPTIMIZATION_INCLUDE_COMMAND
                 "%include \"${CMAKE_SOURCE_DIR}/include/Muscles/StaticOptimization.h\"")
         endif()

@@ -17,7 +17,7 @@
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
 #include "RigidBody/IMU.h"
-#ifndef SKIP_KALMAN
+#ifdef MODULE_KALMAN
 #include "RigidBody/KalmanReconsMarkers.h"
 #include "RigidBody/KalmanReconsIMU.h"
 #endif
@@ -1060,7 +1060,7 @@ TEST(Kinematics, computeQdot)
     }
 }
 
-#ifndef SKIP_KALMAN
+#ifdef MODULE_KALMAN
 #ifndef SKIP_LONG_TESTS
 TEST(Kalman, markers)
 {

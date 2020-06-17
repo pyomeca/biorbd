@@ -7,7 +7,7 @@ set(EXAMPLE_FILES
     "inverseKinematicsKalmanExample.cpp"
     "inverseDynamicsExample.cpp"
 )
-if(NOT SKIP_STATIC_OPTIM)
+if(MODULE_STATIC_OPTIM)
     list(APPEND EXAMPLE_FILES "staticOptimizationExample.cpp")
 endif()
 
