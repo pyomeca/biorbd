@@ -2070,7 +2070,7 @@ TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest){
 }
 #endif
 
-#ifndef SKIP_STATIC_OPTIM
+#ifdef MODULE_STATIC_OPTIM
 
 TEST(StaticOptim, OneFrameNoActivations){
 #ifdef BIORBD_USE_CASADI_MATH

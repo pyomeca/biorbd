@@ -5,6 +5,7 @@
 #include <rbdl/Model.h>
 #include <rbdl/Constraints.h>
 #include "biorbdConfig.h"
+#include "Utils/Scalar.h"
 
 namespace biorbd {
 namespace utils {
@@ -205,6 +206,25 @@ public:
     /// \return The number number of segments
     ///
     unsigned int nbQuat() const;
+
+
+    ///
+    /// \brief updateSegmentCharacteristics Change the inertia characteristics of the segment idx
+    /// \param idx The index of the segment to change
+    /// \param characteristics The new characteristics
+    ///
+    /// Warning: This function may behave surpringly due to the core of RBDL. The
+    /// new characteristic values will replace everything which is attach in a fixed manner
+    /// (that is no degrees-of-freedom). So if your model has 3 segments, but only the first
+    /// one has dof (and the rest is rigidly attached to the first), then it doesn't matter
+    /// if idx is 0, 1 or 2, because RBDL considers that all these segment are 1 segment.
+    /// It is therefore expected that characteristics is the combination of mass and
+    /// inertia for these 3 segments as well.
+    ///
+    void updateSegmentCharacteristics(
+            unsigned int idx,
+            const biorbd::rigidbody::SegmentCharacteristics& characteristics);
+
 
     ///
     /// \brief Get a segment of index idx
@@ -432,7 +452,7 @@ public:
     /// \brief Return the total mass of the model
     /// \return The toal mass of the model
     ///
-    double mass() const; 
+    biorbd::utils::Scalar mass() const; 
 
     ///
     /// \brief Return the position of the center of mass
@@ -824,7 +844,7 @@ protected:
     std::shared_ptr<unsigned int> m_nbQddot; ///< The total number of Qddot
     std::shared_ptr<unsigned int> m_nRotAQuat; ///< The number of segments per quaternion
     std::shared_ptr<bool> m_isKinematicsComputed; ///< If the kinematics are computed
-    std::shared_ptr<double> m_totalMass; ///< Mass of all the bodies combined
+    std::shared_ptr<biorbd::utils::Scalar> m_totalMass; ///< Mass of all the bodies combined
 
     ///
     /// \brief Calculate the joint coordinate system (JCS) in global reference frame of a specified segment

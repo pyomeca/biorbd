@@ -29,7 +29,7 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/WrappingSphere.cpp"
 )
 
-if (NOT SKIP_STATIC_OPTIM)
+if (MODULE_STATIC_OPTIM)
     list(APPEND SRC_LIST_MODULE
         "${CMAKE_CURRENT_SOURCE_DIR}/StaticOptimization.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/StaticOptimizationIpopt.cpp"

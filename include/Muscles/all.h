@@ -28,7 +28,7 @@
 #include "Muscles/WrappingObject.h"
 #include "Muscles/WrappingSphere.h"
 
-#ifndef SKIP_STATIC_OPTIM
+#ifdef MODULE_STATIC_OPTIM
 #include "Muscles/StaticOptimization.h"
 #include "Muscles/StaticOptimizationIpopt.h"
 #include "Muscles/StaticOptimizationIpoptLinearized.h"

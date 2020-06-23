@@ -208,10 +208,27 @@ public:
     biorbd::utils::RotoTrans localJCS() const; 
 
     ///
+    /// \brief updateCharacteristics Change the inertia characteristics of the segment
+    /// \param model The underlying model to update
+    /// \param characteristics The new characteristics
+    ///
+    /// Warning: This function may behave surpringly due to the core of RBDL. The
+    /// new characteristic values will replace everything which is attach in a fixed manner
+    /// (that is no degrees-of-freedom). So if your model has 3 segments, but only the first
+    /// one has dof (and the rest is rigidly attached to the first), then it doesn't matter
+    /// if idx is 0, 1 or 2, because RBDL considers that all these segment are 1 segment.
+    /// It is therefore expected that characteristics is the combination of mass and
+    /// inertia for these 3 segments as well.
+    ///
+    void updateCharacteristics(
+            biorbd::rigidbody::Joints& model,
+            const biorbd::rigidbody::SegmentCharacteristics& characteristics);
+
+    ///
     /// \brief Return the segment characteristics
     /// \return The segment characteristics
     ///
-    const biorbd::rigidbody::SegmentCharacteristics& characteristics() const; 
+    const biorbd::rigidbody::SegmentCharacteristics& characteristics() const;
 
     ///
     /// \brief Return if the rotation DoF of this segment is a quaternion
@@ -220,6 +237,8 @@ public:
     bool isRotationAQuaternion() const;
 
 protected:
+    std::shared_ptr<int> m_idxInModel; ///< Index in RBDL model
+
     ///
     /// \brief Set the type of the segment
     ///

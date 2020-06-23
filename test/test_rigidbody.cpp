@@ -17,7 +17,7 @@
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
 #include "RigidBody/IMU.h"
-#ifndef SKIP_KALMAN
+#ifdef MODULE_KALMAN
 #include "RigidBody/KalmanReconsMarkers.h"
 #include "RigidBody/KalmanReconsIMU.h"
 #endif
@@ -33,6 +33,7 @@ static std::string modelPathMeshEqualsMarker("models/meshsEqualMarkers.bioMod");
 static std::string modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
 static std::string modelNoRoot("models/pyomecaman_freeFall.bioMod");
 static std::string modelPathForImuTesting("models/pyomecaman_withIMUs.bioMod");
+static std::string modelSimple("models/cube.bioMod");
 
 TEST(Gravity, change)
 {
@@ -339,10 +340,14 @@ TEST(Joints, copy)
         biorbd::rigidbody::Joints deepCopyNow(joints.DeepCopy());
         biorbd::rigidbody::Joints deepCopyLater;
         deepCopyLater.DeepCopy(joints);
-
-        EXPECT_NEAR(shallowCopy.mass(), 52.412120000000002, requiredPrecision);
-        EXPECT_NEAR(deepCopyNow.mass(), 52.412120000000002, requiredPrecision);
-        EXPECT_NEAR(deepCopyLater.mass(), 52.412120000000002, requiredPrecision);
+        {
+            SCALAR_TO_DOUBLE(shallowCopyMass, shallowCopy.mass());
+            SCALAR_TO_DOUBLE(deepCopyNowMass, deepCopyNow.mass());
+            SCALAR_TO_DOUBLE(deepCopyLaterMass, deepCopyLater.mass());
+            EXPECT_NEAR(shallowCopyMass, 52.412120000000002, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowMass, 52.412120000000002, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterMass, 52.412120000000002, requiredPrecision);
+        }
 
         biorbd::rigidbody::SegmentCharacteristics characteristics(
             10, biorbd::utils::Vector3d(0.5, 0.5, 0.5),
@@ -352,10 +357,16 @@ TEST(Joints, copy)
         joints.AddSegment("segmentName", "parentName", "zyx", "yzx", ranges, ranges, ranges,
             characteristics, RigidBodyDynamics::Math::SpatialTransform());
 
-        EXPECT_NEAR(joints.mass(), 62.412120000000002, requiredPrecision);
-        EXPECT_NEAR(shallowCopy.mass(), 62.412120000000002, requiredPrecision);
-        EXPECT_NEAR(deepCopyNow.mass(), 52.412120000000002, requiredPrecision);
-        EXPECT_NEAR(deepCopyLater.mass(), 52.412120000000002, requiredPrecision);
+        {
+            SCALAR_TO_DOUBLE(jointsMass, joints.mass());
+            SCALAR_TO_DOUBLE(shallowCopyMass, shallowCopy.mass());
+            SCALAR_TO_DOUBLE(deepCopyNowMass, deepCopyNow.mass());
+            SCALAR_TO_DOUBLE(deepCopyLaterMass, deepCopyLater.mass());
+            EXPECT_NEAR(jointsMass, 62.412120000000002, requiredPrecision);
+            EXPECT_NEAR(shallowCopyMass, 62.412120000000002, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowMass, 52.412120000000002, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterMass, 52.412120000000002, requiredPrecision);
+        }
     }
 }
 
@@ -895,6 +906,37 @@ TEST(Dynamics, Forward)
     }
 }
 
+TEST(Dynamics, ForwardChangingMass)
+{
+    biorbd::Model model(modelSimple);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
+    DECLARE_GENERALIZED_TORQUE(Tau, model);
+
+    // Set to random values
+    std::vector<double> val(model.nbQ());
+    for (size_t i=0; i<val.size(); ++i){
+        val[i] = static_cast<double>(i) * 1.1;
+    }
+    FILL_VECTOR(Q, val);
+    FILL_VECTOR(QDot, val);
+    FILL_VECTOR(Tau, val);
+
+    biorbd::rigidbody::SegmentCharacteristics c(model.segment(0).characteristics());
+    c.setMass(10);
+    model.updateSegmentCharacteristics(0, c);
+
+    std::vector<double> QDDot_expected = {0.0, -9.7, 2.2};
+
+    CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamics, Q, QDot, Tau);
+
+    for (unsigned int i = 0; i<model.nbQddot(); ++i){
+        EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);
+    }
+
+
+}
+
 TEST(Dynamics, ForwardDynAndExternalForces)
 {
     biorbd::Model model(modelPathForGeneralTesting);
@@ -1050,7 +1092,7 @@ TEST(Kinematics, computeQdot)
     }
 }
 
-#ifndef SKIP_KALMAN
+#ifdef MODULE_KALMAN
 #ifndef SKIP_LONG_TESTS
 TEST(Kalman, markers)
 {

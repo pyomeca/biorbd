@@ -17,7 +17,7 @@
 #include "Muscles/State.h"
 #include "Muscles/StateDynamics.h"
 #include "Muscles/StateDynamicsBuchanan.h"
-#ifndef SKIP_STATIC_OPTIM
+#ifdef MODULE_STATIC_OPTIM
 #include "Muscles/StaticOptimization.h"
 #endif
 %}
