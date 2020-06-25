@@ -83,7 +83,7 @@ void biorbd::rigidbody::Joints::DeepCopy(const biorbd::rigidbody::Joints &other)
 }
 
 unsigned int biorbd::rigidbody::Joints::nbGeneralizedTorque() const {
-    return nbQ();
+    return nbQddot();
 }
 unsigned int biorbd::rigidbody::Joints::nbDof() const {
     return *m_nbDof;

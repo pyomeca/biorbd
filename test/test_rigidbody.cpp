@@ -1061,6 +1061,15 @@ TEST(Dynamics, ForwardAccelerationConstraint){
     }
 }
 
+TEST(QuaternionInModel, sizes)
+{
+    biorbd::Model m("models/simple_quat.bioMod");
+    EXPECT_EQ(m.nbQ(), 4);
+    EXPECT_EQ(m.nbQdot(), 3);
+    EXPECT_EQ(m.nbQddot(), 3);
+    EXPECT_EQ(m.nbGeneralizedTorque(), 3);
+}
+
 TEST(Kinematics, computeQdot)
 {
     biorbd::Model m("models/simple_quat.bioMod");
