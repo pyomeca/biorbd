@@ -1,5 +1,11 @@
 import numpy as np
 import biorbd
+try:
+    import BiorbdViz
+    biorbd_viz_found = True
+except ModuleNotFoundError:
+    biorbd_viz_found = False
+
 
 #
 # This examples shows how to
@@ -17,30 +23,43 @@ import biorbd
 # Load a predefined model
 model = biorbd.Model("../pyomecaman.bioMod")
 nq = model.nbQ()
-# nqdot = model.nbQdot()
-# nqddot = model.nbQddot()
-n_frames = 3
+nb_mus = model.nbMuscles()
+n_frames = 20
 
-# Generate random data (3 frames)
-targetQ = np.random.random((nq,))
-targetMarkers = model.markers(targetQ)
+# Generate clapping gesture data
+qinit = np.array([0, 0, -.3, 0.35, 1.15, -0.35, 1.15, 0, 0, 0, 0, 0, 0])
+qmid = np.array([0, 0, -.3, 0.5, 1.15, -0.5, 1.15, 0, 0, 0, 0, 0, 0])
+qfinal = np.array([0, 0, -.3, 0.35, 1.15, -0.35, 1.15, 0, 0, 0, 0, 0, 0])
+target_q = np.concatenate((np.linspace(qinit, qmid, n_frames).T, np.linspace(qmid, qfinal, n_frames).T), axis=1)
+markers = np.ndarray((3, model.nbMarkers(), 2*n_frames))
+for i, q in enumerate(target_q.T):
+    markers[:, :, i] = np.array([mark.to_array() for mark in model.markers(q)]).T
 
+# Dispatch markers in biorbd structure so EKF can use it
 markersOverFrames = []
-for i in range(n_frames):
-    markersOverFrames.append(targetMarkers)
+for i in range(markers.shape[2]):
+    markersOverFrames.append([biorbd.NodeSegment(m) for m in markers[:, :, i].T])
 
-# Create a Kalman filter
-freq = 100  # 100 Hz
+# Create a Kalman filter structure
+freq = 100  # Hz
 params = biorbd.KalmanParam(freq)
 kalman = biorbd.KalmanReconsMarkers(model, params)
 
 # Perform the kalman filter for each frame (the first frame is much longer than the next)
-print(f"Target Q = {targetQ}")
 Q = biorbd.GeneralizedCoordinates(model)
 Qdot = biorbd.GeneralizedVelocity(model)
 Qddot = biorbd.GeneralizedAcceleration(model)
-for targetMarkers in markersOverFrames:
+q_recons = np.ndarray((model.nbQ(), len(markersOverFrames)))
+for i, targetMarkers in enumerate(markersOverFrames):
     kalman.reconstructFrame(model, targetMarkers, Q, Qdot, Qddot)
+    q_recons[:, i] = Q.to_array()
 
     # Print the kinematics to the console
-    print(Q.to_array())
+    print(f"Frame {i}\nExpected Q = {target_q[:, i]}\nCurrent Q = {q_recons[:, i]}\n")
+
+# Animate the results if biorbd viz is installed
+if biorbd_viz_found:
+    b = BiorbdViz.BiorbdViz(loaded_model=model)
+    b.load_movement(q_recons)
+    b.exec()
+
