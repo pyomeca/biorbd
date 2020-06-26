@@ -35,6 +35,11 @@ markers = np.ndarray((3, model.nbMarkers(), 2*n_frames))
 for i, q in enumerate(target_q.T):
     markers[:, :, i] = np.array([mark.to_array() for mark in model.markers(q)]).T
 
+# If ones was using c3d data opened using ezc3d 
+# import ezc3d
+# c3d = ezc3d.c3d(data_filename)
+# markers = c3d['data']['points'][:3, :, :]  # XYZ1 x markers x time_frame
+
 # Dispatch markers in biorbd structure so EKF can use it
 markersOverFrames = []
 for i in range(markers.shape[2]):
