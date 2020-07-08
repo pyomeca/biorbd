@@ -846,6 +846,28 @@ TEST(DynamicState, Buchanan)
 {
     {
         biorbd::Model model(modelPathForBuchananDynamics);
+        static_cast<biorbd::muscles::StateDynamicsBuchanan&>(
+            model.muscles()[2]->state()).shapeFactor(5.5);
+
+        // Test shape factor changes
+        biorbd::utils::Scalar shapeFactor0 =
+                static_cast<biorbd::muscles::StateDynamicsBuchanan&>(
+                    model.muscles()[0]->state()).shapeFactor();
+        SCALAR_TO_DOUBLE(shapeFactor0_double, shapeFactor0);
+        EXPECT_NEAR(shapeFactor0_double, -3, requiredPrecision);
+
+        biorbd::utils::Scalar shapeFactor1 =
+                static_cast<biorbd::muscles::StateDynamicsBuchanan&>(
+                    model.muscles()[1]->state()).shapeFactor();
+        SCALAR_TO_DOUBLE(shapeFactor1_double, shapeFactor1);
+        EXPECT_NEAR(shapeFactor1_double, 10, requiredPrecision);
+
+        biorbd::utils::Scalar shapeFactor2 =
+                static_cast<biorbd::muscles::StateDynamicsBuchanan&>(
+                    model.muscles()[2]->state()).shapeFactor();
+        SCALAR_TO_DOUBLE(shapeFactor2_double, shapeFactor2);
+        EXPECT_NEAR(shapeFactor2_double, 5.5, requiredPrecision);
+
         biorbd::muscles::StateDynamics state(0.8, 0.5);
 
         const biorbd::muscles::Muscle& m(model.muscle(0));
