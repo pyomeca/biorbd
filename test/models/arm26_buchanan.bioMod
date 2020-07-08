@@ -234,6 +234,7 @@ endmusclegroup
         tendonSlackLength    0.27229999999999999
         pennationAngle    0
         maxVelocity    10
+        shapeFactor 10
     endmuscle
 
         viapoint    BIClong-P2

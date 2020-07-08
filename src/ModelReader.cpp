@@ -38,6 +38,7 @@
 #include "Muscles/Characteristics.h"
 #include "Muscles/ViaPoint.h"
 #include "Muscles/PathModifiers.h"
+#include "Muscles/StateDynamicsBuchanan.h"
 #endif // MODULE_MUSCLES
 
 // ------ Public methods ------ //
@@ -819,6 +820,7 @@ void biorbd::Reader::readModelFile(
                 double maxExcitation(1);
                 double maxActivation(1);
                 double PCSA(1);
+                double shapeFactor(0);
                 biorbd::muscles::FatigueParameters fatigueParameters;
 
                 // Read file
@@ -897,6 +899,9 @@ void biorbd::Reader::readModelFile(
                             }
                         }
                     }
+                    else if (!property_tag.tolower().compare("shapefactor")) {
+                        file.read(shapeFactor);
+                    }
                 }
                 biorbd::utils::Error::check(idxGroup!=-1, "No muscle group was provided!");
                 biorbd::muscles::Geometry geo(
@@ -905,6 +910,12 @@ void biorbd::Reader::readModelFile(
                 biorbd::muscles::State stateMax(maxExcitation, maxActivation);
                 biorbd::muscles::Characteristics characteristics(optimalLength, maxForce, PCSA, tendonSlackLength, pennAngle, stateMax, fatigueParameters);
                 model->muscleGroup(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,characteristics,biorbd::muscles::PathModifiers(),stateType,dynamicFatigueType);
+                if (stateType == biorbd::muscles::STATE_TYPE::BUCHANAN && shapeFactor != 0){
+                    auto& muscleGroup = model->muscleGroup(idxGroup);
+                    size_t nMuscInGroup(muscleGroup.nbMuscles()-1);
+                    auto& state = muscleGroup.muscle(nMuscInGroup).state();
+                    static_cast<biorbd::muscles::StateDynamicsBuchanan&>(state).shapeFactor(shapeFactor);
+                }
     #else // MODULE_MUSCLES
             biorbd::utils::Error::raise("Biorbd was build without the module Muscles but the model defines a muscle");
     #endif // MODULE_MUSCLES
