@@ -27,7 +27,7 @@ public:
     /// \param other The other state dynamics
     ///
     StateDynamics(
-            const biorbd::muscles::StateDynamics& other);
+            const biorbd::muscles::State& other);
 
     ///
     /// \brief Destroy class properly
