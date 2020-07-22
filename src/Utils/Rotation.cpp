@@ -235,7 +235,7 @@ biorbd::utils::Vector biorbd::utils::Rotation::toEulerAngles(
     }
     else if (!seq.compare("zy")) {
         v[0] = -std::asin(r(0,1));           // z
-        v[1] = -std::asin(r(2,0));           // y
+        v[1] = std::acos(r(2,2));           // y
     }
     else if (!seq.compare("xyz")) {
         v[0] = std::atan2(-r(1,2), r(2,2));  // x
