@@ -403,6 +403,8 @@ The `inertia` tag allows to specify the matrix of inertia of the segment. It wai
 ##### foreceplate or externalforceindex
 When calculating the inverse dynamics, if force plates are used, this tag dispatch the force plates, the first force plate being $0$. If no force plate is acting on this segment, the value is $-1$. 
 
+Warning: this tag MUST be added to a segment that has a translation and/or a rotation (i.e. that possesses at least one degree of freedom). Otherwise, it will simply be ignored
+
 ##### meshfile or ply
 The path of the meshing `.bioBone` or `.ply` file respectively. It can be relative to the current running folder or absolute (relative being preferred) and UNIX or Windows formatted (`/` vs `\\`, UNIX being preferred).
 
