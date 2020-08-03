@@ -11,7 +11,7 @@
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/NodeSegment.h"
 
-#include <math.h> // isnan
+#include <math.h>
 
 biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers() :
     biorbd::rigidbody::KalmanRecons(),
