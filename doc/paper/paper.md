@@ -40,7 +40,7 @@ Briefly, the former uses measurements from a movement (e.g., markers) and infers
 
 ## Inverse flow
 *Inverse kinematics*: Estimates the generalized coordinates ($q$)—i.e., the body kinematics—from body sensor measurements (e.g., markers, IMU, etc.).
-The main algorithm implemented is the Extended Kalman Filter [@fohannoEstimation3DKinematics2010] which by design facilitates the merging of multiple data sources and takes care of missing data.
+The main algorithm implemented is the Extended Kalman Filter [@fohannoEstimation3DKinematics2010b] which by design facilitates the merging of multiple data sources and takes care of missing data.
 
 *Inverse dynamics*: Estimates the generalized forces ($\tau$) producing a given generalized acceleration ($\ddot{q}$) (the second time derivative of $q$):
 $$
@@ -86,7 +86,7 @@ All the forward dynamics implemented in `RBDL` [@felisRBDLEfficientRigidbody2017
 `biorbd` extends `RBDL` by giving commonly used biomechanics nomenclature, and by adding biomechanical modules, amongst others. 
 `RBDL` is based on the highly efficient C++ linear algebra library `Eigen` [@eigenweb].
 Although `Eigen` is flexible and fast enough for most of the common usage, it cannot automatically provide derivatives of functions.
-Therefore, `RBDL` was also augmented with the algorithmic differentiation library `CasADi` [@Andersson2018].
+Therefore, `RBDL` was also augmented with the algorithmic differentiation library `CasADi` [@anderssonCasADiSoftwareFramework2019a].
 `CasADi` allows computing at low cost the derivatives of almost all the functions in `RBDL` and `biorbd`.
 This is particularly useful when using `biorbd` in a gradient-based optimization setting.
 
