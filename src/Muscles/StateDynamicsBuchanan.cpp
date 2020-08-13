@@ -17,13 +17,13 @@ biorbd::muscles::StateDynamicsBuchanan::StateDynamicsBuchanan(
 }
 
 biorbd::muscles::StateDynamicsBuchanan::StateDynamicsBuchanan(
-        const biorbd::muscles::StateDynamicsBuchanan &other) :
-    biorbd::muscles::StateDynamics(other),
-    m_neuralCommand(other.m_neuralCommand),
-    m_shapeFactor(other.m_shapeFactor),
-    m_excitationDot(other.m_excitationDot)
+        const biorbd::muscles::State &other) :
+    biorbd::muscles::StateDynamics(other)
 {
-
+    const auto& buchanan = dynamic_cast<const biorbd::muscles::StateDynamicsBuchanan&>(other);
+    m_neuralCommand = buchanan.m_neuralCommand;
+    m_shapeFactor = buchanan.m_shapeFactor;
+    m_excitationDot = buchanan.m_excitationDot;
 }
 
 biorbd::muscles::StateDynamicsBuchanan::~StateDynamicsBuchanan()

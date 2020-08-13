@@ -17,13 +17,13 @@ biorbd::muscles::StateDynamics::StateDynamics(
 }
 
 biorbd::muscles::StateDynamics::StateDynamics(
-        const biorbd::muscles::StateDynamics &other) :
-    biorbd::muscles::State(other),
-    m_previousExcitation(other.m_previousExcitation),
-    m_previousActivation(other.m_previousActivation),
-    m_activationDot(other.m_activationDot)
+        const biorbd::muscles::State &other) :
+    biorbd::muscles::State(other)
 {
-
+    const auto& state = dynamic_cast<const biorbd::muscles::StateDynamics&>(other);
+    m_previousExcitation = state.m_previousExcitation;
+    m_previousActivation = state.m_previousActivation;
+    m_activationDot = state.m_activationDot;
 }
 
 biorbd::muscles::StateDynamics::~StateDynamics()
