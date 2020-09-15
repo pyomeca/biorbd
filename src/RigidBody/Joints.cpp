@@ -948,15 +948,12 @@ biorbd::rigidbody::GeneralizedTorque biorbd::rigidbody::Joints::InverseDynamics(
         const biorbd::rigidbody::GeneralizedAcceleration &QDDot,
         std::vector<biorbd::utils::SpatialVector>* f_ext) {
     biorbd::rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = nullptr;
     if (f_ext){
-        f_ext_rbdl = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
-        for (unsigned int i=0; i<f_ext->size(); ++i){
-            f_ext_rbdl->push_back( (*f_ext)[i] );
-        }
+        std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(*f_ext));
+        RigidBodyDynamics::InverseDynamics(*this, Q, QDot, QDDot, Tau, &f_ext_rbdl);
+    } else {
+        RigidBodyDynamics::InverseDynamics(*this, Q, QDot, QDDot, Tau);
     }
-    RigidBodyDynamics::InverseDynamics(*this, Q, QDot, QDDot, Tau, f_ext_rbdl);
-    delete f_ext_rbdl;
     return Tau;
 }
 
