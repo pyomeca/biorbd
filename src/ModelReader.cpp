@@ -962,7 +962,7 @@ void biorbd::Reader::readModelFile(
             biorbd::utils::Error::raise("Biorbd was build without the module Muscles but the model defines a viapoint");
     #endif // MODULE_MUSCLES
             }
-            else if (!main_tag.tolower().compare("wrap")){
+            else if (!main_tag.tolower().compare("wrap") || !main_tag.tolower().compare("wrapping")){
     #ifdef MODULE_MUSCLES
                 biorbd::utils::String name;
                 file.read(name); // Name of the wrapping
@@ -970,6 +970,7 @@ void biorbd::Reader::readModelFile(
                 // Declaration of the variables
                 biorbd::utils::String muscle("");
                 biorbd::utils::String musclegroup("");
+                biorbd::utils::String wrapType("");
                 int iMuscleGroup(-1);
                 int iMuscle(-1);
                 biorbd::utils::String parent("");
@@ -992,6 +993,8 @@ void biorbd::Reader::readModelFile(
                             for (unsigned int j=0; j<4; ++j)
                                 file.read(RT(i,j), variable);
                     }
+                    else if (!property_tag.tolower().compare("type"))
+                        file.read(wrapType);
                     else if (!property_tag.tolower().compare("muscle"))
                         file.read(muscle);
                     else if (!property_tag.tolower().compare("musclegroup"))
@@ -1003,16 +1006,21 @@ void biorbd::Reader::readModelFile(
                     else if (!property_tag.tolower().compare("wrappingside"))
                         file.read(side);
                 }
-                biorbd::utils::Error::check(dia != 0.0, "Diameter was not defined");
-                biorbd::utils::Error::check(length != 0.0, "Length was not defined");
-                biorbd::utils::Error::check(length < 0.0, "Side was not properly defined");
                 biorbd::utils::Error::check(parent != "", "Parent was not defined");
                 iMuscleGroup = model->getGroupId(musclegroup);
                 biorbd::utils::Error::check(iMuscleGroup!=-1, "No muscle group was provided!");
                 iMuscle = model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscleID(muscle);
                 biorbd::utils::Error::check(iMuscle!=-1, "No muscle was provided!");
-                biorbd::muscles::WrappingCylinder cylinder(RT,dia,length,side,name,parent);
-                model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle)).addPathObject(cylinder);
+
+                if (!wrapType.tolower().compare("cylinder")){
+                    biorbd::utils::Error::check(dia != 0.0, "Diameter was not defined");
+                    biorbd::utils::Error::check(length != 0.0, "Length was not defined");
+                    biorbd::utils::Error::check(length < 0.0, "Side was not properly defined");
+                    biorbd::muscles::WrappingCylinder cylinder(RT,dia,length,side,name,parent);
+                    model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle)).addPathObject(cylinder);
+                } else {
+                    biorbd::utils::Error::raise("Wrapping type must be defined (choices: 'cylinder')");
+                }
     #else // MODULE_MUSCLES
             biorbd::utils::Error::raise("Biorbd was build without the module Muscles but the model defines a wrapping object");
     #endif // MODULE_MUSCLES
