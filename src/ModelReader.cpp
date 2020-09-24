@@ -1014,9 +1014,7 @@ void biorbd::Reader::readModelFile(
 
                 if (!wrapType.tolower().compare("cylinder")){
                     biorbd::utils::Error::check(dia != 0.0, "Diameter was not defined");
-                    biorbd::utils::Error::check(length != 0.0, "Length was not defined");
-                    biorbd::utils::Error::check(length < 0.0, "Side was not properly defined");
-                    biorbd::muscles::WrappingCylinder cylinder(RT,dia,length,side,name,parent);
+                    biorbd::muscles::WrappingCylinder cylinder(RT,dia,side,name,parent);
                     model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscle(static_cast<unsigned int>(iMuscle)).addPathObject(cylinder);
                 } else {
                     biorbd::utils::Error::raise("Wrapping type must be defined (choices: 'cylinder')");
