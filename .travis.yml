@@ -69,7 +69,7 @@ script:
     # Test the casadi backend
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
         conda deactivate;
-        conda activate biorbd_casadi
+        conda activate biorbd_casadi;
         cd ..;
         mkdir build_casadi;
         cd build_casadi;
