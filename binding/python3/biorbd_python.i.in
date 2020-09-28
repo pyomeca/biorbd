@@ -384,20 +384,16 @@
 %typemap(typecheck, precedence=2100)
 biorbd::rigidbody::GeneralizedCoordinates & {
     void *argp1 = 0;
+    if(SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates,  0  | 0)) && argp1){
+            $1 = true;
+        }
 #ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-#else
-    if (SWIG_IsOK(
-                SWIG_ConvertPtr(
-                    $input, &argp1,
-                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates,
-                    0  | 0))
-            && argp1) {
-#endif
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
         // Test if it is a pointer to
         // SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates already exists
         $1 = true;
     }
+#endif
     else if( PyArray_Check($input) ) {
         // test if it is a numpy array
         $1 = true;
@@ -408,19 +404,14 @@ biorbd::rigidbody::GeneralizedCoordinates & {
 }
 %typemap(in) biorbd::rigidbody::GeneralizedCoordinates & {
     void * argp1 = 0;
-#ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        $1 = new biorbd::rigidbody::GeneralizedCoordinates(*reinterpret_cast<casadi::MX*>(argp1));
-#else
-    if (SWIG_IsOK(
-                SWIG_ConvertPtr(
-                    $input, &argp1,
-                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates,
-                    0  | 0))
-            && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates, 0  | 0)) && argp1) {
         $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedCoordinates * >(argp1);
-#endif
     }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        $1 = new biorbd::rigidbody::GeneralizedCoordinates(*reinterpret_cast<casadi::MX*>(argp1));
+    }
+#endif
     else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
@@ -446,20 +437,14 @@ biorbd::rigidbody::GeneralizedCoordinates & {
 };
 %typemap(typecheck, precedence=2101) biorbd::rigidbody::GeneralizedCoordinates * {
     void *argp1 = 0;
-#ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-#else
-    if (SWIG_IsOK(
-                SWIG_ConvertPtr(
-                    $input, &argp1,
-                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates,
-                    0  | 0))
-            && argp1) {
-#endif
-        // Test if it is a pointer to
-        // SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates, 0  | 0)) && argp1) {
         $1 = true;
     }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+            $1 = true;
+    }
+#endif
     else if( PyArray_Check($input) ) {
         // test if it is a numpy array
         $1 = true;
@@ -473,19 +458,15 @@ biorbd::rigidbody::GeneralizedCoordinates & {
 }
 %typemap(in) biorbd::rigidbody::GeneralizedCoordinates * {
     void * argp1 = 0;
-#ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        $1 = new biorbd::rigidbody::GeneralizedCoordinates(*reinterpret_cast<casadi::MX*>(argp1));
-#else
-    if (SWIG_IsOK(
-                SWIG_ConvertPtr(
-                    $input, &argp1,
-                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates,
-                    0  | 0))
-            && argp1) {
+
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates, 0  | 0)) && argp1) {
         $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedCoordinates * >(argp1);
-#endif
     }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        $1 = new biorbd::rigidbody::GeneralizedCoordinates(*reinterpret_cast<casadi::MX*>(argp1));
+    }
+#endif
     else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
@@ -517,18 +498,15 @@ biorbd::rigidbody::GeneralizedCoordinates & {
 %typemap(typecheck, precedence=2102)
 biorbd::rigidbody::GeneralizedVelocity & {
     void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity, 0  | 0)) && argp1) {
+        $1 = true;
+    }
 #ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-#else
-    if (SWIG_IsOK(
-                SWIG_ConvertPtr(
-                    $input, &argp1,
-                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity,
-                    0  | 0))
-            && argp1) {
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        $1 = true;
+    }
 #endif
-        // Test if it is a pointer to
-        // SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity already exists
+    else if(SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity,  0  | 0)) && argp1){
         $1 = true;
     }
     else if( PyArray_Check($input) ) {
@@ -541,19 +519,15 @@ biorbd::rigidbody::GeneralizedVelocity & {
 }
 %typemap(in) biorbd::rigidbody::GeneralizedVelocity & {
     void * argp1 = 0;
-#ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        $1 = new biorbd::rigidbody::GeneralizedVelocity(*reinterpret_cast<casadi::MX*>(argp1));
-#else
-    if (SWIG_IsOK(
-                SWIG_ConvertPtr(
-                    $input, &argp1,
-                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity,
-                    0  | 0))
-            && argp1) {
+
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity, 0  | 0)) && argp1) {
         $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedVelocity * >(argp1);
-#endif
     }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        $1 = new biorbd::rigidbody::GeneralizedVelocity(*reinterpret_cast<casadi::MX*>(argp1));
+    }
+#endif
     else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
@@ -581,20 +555,14 @@ biorbd::rigidbody::GeneralizedVelocity & {
 %typemap(typecheck, precedence=2103)
 biorbd::rigidbody::GeneralizedVelocity * {
     void *argp1 = 0;
-#ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-#else
-    if (SWIG_IsOK(
-                SWIG_ConvertPtr(
-                    $input, &argp1,
-                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity,
-                    0  | 0))
-            && argp1) {
-#endif
-        // Test if it is a pointer to
-        // SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity, 0  | 0)) && argp1) {
         $1 = true;
     }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        $1 = true;
+    }
+#endif
     else if( PyArray_Check($input) ) {
         // test if it is a numpy array
         $1 = true;
@@ -608,19 +576,14 @@ biorbd::rigidbody::GeneralizedVelocity * {
 }
 %typemap(in) biorbd::rigidbody::GeneralizedVelocity * {
     void * argp1 = 0;
-#ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        $1 = new biorbd::rigidbody::GeneralizedVelocity(*reinterpret_cast<casadi::MX*>(argp1));
-#else
-    if (SWIG_IsOK(
-                SWIG_ConvertPtr(
-                    $input, &argp1,
-                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity,
-                    0  | 0))
-            && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity, 0  | 0)) && argp1) {
         $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedVelocity * >(argp1);
-#endif
     }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        $1 = new biorbd::rigidbody::GeneralizedVelocity(*reinterpret_cast<casadi::MX*>(argp1));
+    }
+#endif
     else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
@@ -652,20 +615,14 @@ biorbd::rigidbody::GeneralizedVelocity * {
 %typemap(typecheck, precedence=2106)
 biorbd::rigidbody::GeneralizedAcceleration & {
     void *argp1 = 0;
-#ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-#else
-    if (SWIG_IsOK(
-                SWIG_ConvertPtr(
-                    $input, &argp1,
-                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedAcceleration,
-                    0  | 0))
-            && argp1) {
-#endif
-        // Test if it is a pointer to
-        // SWIGTYPE_p_biorbd__rigidbody__GeneralizedAcceleration already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedAcceleration, 0  | 0)) && argp1) {
         $1 = true;
     }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        $1 = true;
+    }
+#endif
     else if( PyArray_Check($input) ) {
         // test if it is a numpy array
         $1 = true;
@@ -676,19 +633,14 @@ biorbd::rigidbody::GeneralizedAcceleration & {
 }
 %typemap(in) biorbd::rigidbody::GeneralizedAcceleration & {
     void * argp1 = 0;
-#ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        $1 = new biorbd::rigidbody::GeneralizedAcceleration(*reinterpret_cast<casadi::MX*>(argp1));
-#else
-    if (SWIG_IsOK(
-                SWIG_ConvertPtr(
-                    $input, &argp1,
-                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedAcceleration,
-                    0  | 0))
-            && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedAcceleration, 0  | 0)) && argp1) {
         $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedAcceleration * >(argp1);
-#endif
     }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        $1 = new biorbd::rigidbody::GeneralizedAcceleration(*reinterpret_cast<casadi::MX*>(argp1));
+    }
+#endif
     else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
@@ -716,20 +668,14 @@ biorbd::rigidbody::GeneralizedAcceleration & {
 %typemap(typecheck, precedence=2105)
 biorbd::rigidbody::GeneralizedAcceleration * {
     void *argp1 = 0;
-#ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-#else
-    if (SWIG_IsOK(
-                SWIG_ConvertPtr(
-                    $input, &argp1,
-                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedAcceleration,
-                    0  | 0))
-            && argp1) {
-#endif
-        // Test if it is a pointer to
-        // SWIGTYPE_p_biorbd__rigidbody__GeneralizedAcceleration already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedAcceleration, 0  | 0)) && argp1) {
         $1 = true;
     }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        $1 = true;
+    }
+#endif
     else if( PyArray_Check($input) ) {
         // test if it is a numpy array
         $1 = true;
@@ -743,19 +689,14 @@ biorbd::rigidbody::GeneralizedAcceleration * {
 }
 %typemap(in) biorbd::rigidbody::GeneralizedAcceleration * {
     void * argp1 = 0;
-#ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        $1 = new biorbd::rigidbody::GeneralizedAcceleration(*reinterpret_cast<casadi::MX*>(argp1));
-#else
-    if (SWIG_IsOK(
-                SWIG_ConvertPtr(
-                    $input, &argp1,
-                    SWIGTYPE_p_biorbd__rigidbody__GeneralizedAcceleration,
-                    0  | 0))
-            && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIGTYPE_p_biorbd__rigidbody__GeneralizedAcceleration, 0  | 0)) && argp1) {
         $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedAcceleration * >(argp1);
-#endif
     }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        $1 = new biorbd::rigidbody::GeneralizedAcceleration(*reinterpret_cast<casadi::MX*>(argp1));
+    }
+#endif
     else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
@@ -786,31 +727,33 @@ biorbd::rigidbody::GeneralizedAcceleration * {
 // --- GeneralizedTorque --- //
 %typemap(typecheck, precedence=2110) biorbd::rigidbody::GeneralizedTorque &{
     void *argp1 = 0;
-#ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-#else
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedTorque,  0  | 0)) && argp1) {
-#endif
-        // Test if it is a pointer to SWIGTYPE_p_biorbd__rigidbody__GeneralizedTorque already exists
         $1 = true;
-    } else if( PyArray_Check($input) ) {
+    }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        $1 = true;
+    }
+#endif
+    else if( PyArray_Check($input) ) {
         // test if it is a numpy array
         $1 = true;
-    } else {
+    }
+    else {
         $1 = false;
     }
 }
 %typemap(in) biorbd::rigidbody::GeneralizedTorque &{
     void * argp1 = 0;
-#ifdef BIORBD_USE_CASADI_MATH
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        $1 = new biorbd::rigidbody::GeneralizedTorque(*reinterpret_cast<casadi::MX*>(argp1));
-#else
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedTorque,  0  | 0)) && argp1) {
-        // If it is the right type, recast-it the pointer
         $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedTorque * >(argp1);
+    }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        $1 = new biorbd::rigidbody::GeneralizedTorque(*reinterpret_cast<casadi::MX*>(argp1));
+    }
 #endif
-    } else if( PyArray_Check($input) ) {
+    else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
         npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
@@ -832,7 +775,8 @@ biorbd::rigidbody::GeneralizedAcceleration * {
         for (unsigned int GeneralizedTorque=0; GeneralizedTorque<nGeneralizedTorque; ++GeneralizedTorque)
             (*$1)[GeneralizedTorque] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, GeneralizedTorque);
 
-    } else {
+    }
+    else {
         PyErr_SetString(PyExc_ValueError,
                         "GeneralizedTorque must be a "
                         "GeneralizedTorque or numpy vector");

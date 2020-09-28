@@ -45,7 +45,7 @@ before_install:
 install:
     - conda create -n biorbd_eigen
     - conda activate biorbd_eigen
-    - conda install rbdl tinyxml numpy pytest swig pkgconfig -c conda-forge
+    - conda install rbdl tinyxml ipopt numpy pytest swig pkgconfig -c conda-forge
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
         conda install ipopt -c conda-forge;
       fi
@@ -56,7 +56,7 @@ install:
         conda create -n biorbd_casadi;
         conda deactivate;
         conda activate biorbd_casadi;
-        conda install rbdl=*=*casadi* tinyxml pkgconfig ipopt -c conda-forge;
+        conda install rbdl=*=*casadi* tinyxml ipopt numpy pytest swig pkgconfig -c conda-forge;
         conda deactivate;
       fi
         
@@ -73,13 +73,16 @@ script:
         cd ..;
         mkdir build_casadi;
         cd build_casadi;
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_casadi/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON ..;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_casadi/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..;
         make install;
         cd test;
         ./biorbd_tests;
-        cd ../../;
+        cd ./binding/Python3;
+        pytest .;
+        cd ../../../..
         conda deactivate;
       fi
+    
 
     # Download, compile and test core
     - conda activate biorbd_eigen
@@ -125,7 +128,7 @@ script:
       else
         cd test/binding/Python3;
       fi
-    - pytest test_binder_python_rigidbody.py
+    - pytest .
     - cd ../../..
 
     # Only do the coverage on Linux, but run the test anyway to get a nice output
