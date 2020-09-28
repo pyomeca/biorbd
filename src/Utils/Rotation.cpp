@@ -317,7 +317,7 @@ void biorbd::utils::Rotation::checkUnitary()
 {
 #ifndef BIORBD_USE_CASADI_MATH
 #ifndef SKIP_ASSERT
-    biorbd::utils::Error::check(fabs(this->squaredNorm() - 3.) < 1e-10,
+    biorbd::utils::Error::check(fabs(this->squaredNorm() - 3.) < 1e-6,
                                 "The Rotation matrix norm is not equal to one");
 #endif
 #endif
