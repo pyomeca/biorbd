@@ -79,7 +79,7 @@ script:
         ./biorbd_tests;
         cd ./binding/Python3;
         pytest .;
-        cd ../../../..
+        cd ../../../..;
         conda deactivate;
       fi
     
