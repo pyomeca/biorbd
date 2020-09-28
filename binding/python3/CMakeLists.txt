@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.12)
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
     project(_${BIORBD_NAME})
 else()
