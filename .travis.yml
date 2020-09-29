@@ -68,9 +68,9 @@ script:
 
     # Test the casadi backend
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
+    	pwd;
         conda deactivate;
         conda activate biorbd_casadi;
-        cd ..;
         mkdir build_casadi;
         cd build_casadi;
         cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_casadi/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON ..;
