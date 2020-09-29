@@ -896,6 +896,67 @@ biorbd::rigidbody::GeneralizedAcceleration * {
     }
 #endif
 };
+%typemap(typecheck, precedence=2010) biorbd::utils::SpatialVector &{
+    void *argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__SpatialVector,  0  | 0)) && argp1) {
+        $1 = true;
+    }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        $1 = true;
+    }
+#endif
+    else if( PyArray_Check($input) ) {
+        // test if it is a numpy array
+        $1 = true;
+    }
+    else {
+        $1 = false;
+    }
+}
+%typemap(in) biorbd::utils::SpatialVector &{
+    void * argp1 = 0;
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__SpatialVector,  0  | 0)) && argp1) {
+        $1 = reinterpret_cast< biorbd::utils::SpatialVector * >(argp1);
+    }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        $1 = new biorbd::utils::SpatialVector(*reinterpret_cast<casadi::MX*>(argp1));
+    }
+#endif
+    else if( PyArray_Check($input) ) {
+        // Get dimensions of the data
+        int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
+        npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
+
+        // Dimension controls (has to be a vector)
+        if (ndim != 1 ){
+            PyErr_SetString(PyExc_ValueError,
+                            "SpatialVector must be a (6,) vector when using a numpy array");
+            SWIG_fail;
+        }
+
+        // Cast the vector
+        PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
+
+        // Copy the actual data
+        unsigned int nSpatialVector(dims[0]);
+        if (nSpatialVector != 6 ){
+            PyErr_SetString(PyExc_ValueError,
+                            "SpatialVector must be a (6,) vector when using a numpy array");
+            SWIG_fail;
+        }
+        $1 = new biorbd::utils::SpatialVector();
+        for (unsigned int sv=0; sv<nSpatialVector; ++sv)
+            (*$1)[sv] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, sv);
+
+    }
+    else {
+        PyErr_SetString(PyExc_ValueError,
+                        "SpatialVector must be a SpatialVector or numpy vector");
+        SWIG_fail;
+    }
+};
 
 %extend biorbd::utils::RotoTrans{
 #ifdef BIORBD_USE_CASADI_MATH

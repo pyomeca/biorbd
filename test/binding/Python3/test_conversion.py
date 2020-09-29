@@ -15,7 +15,7 @@ def test_np_mx_to_generalized():
     
     q = biorbd.GeneralizedCoordinates(biorbd_model)
     qdot = biorbd.GeneralizedVelocity((biorbd_model.nbQdot()))
-    qddot = biorbd.GeneralizedVelocity((biorbd_model.nbQddot()))
+    qddot = biorbd.GeneralizedAcceleration((biorbd_model.nbQddot()))
     tau = biorbd_model.InverseDynamics(q, qdot, qddot)
     biorbd_model.ForwardDynamics(q, qdot, tau)
     
