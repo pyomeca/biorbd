@@ -45,7 +45,7 @@ before_install:
 install:
     - conda create -n biorbd_eigen
     - conda activate biorbd_eigen
-    - conda install rbdl tinyxml ipopt numpy pytest swig pkgconfig -c conda-forge
+    - conda install rbdl tinyxml numpy pytest swig pkgconfig -c conda-forge
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
         conda install ipopt -c conda-forge;
       fi
@@ -56,7 +56,7 @@ install:
         conda create -n biorbd_casadi;
         conda deactivate;
         conda activate biorbd_casadi;
-        conda install rbdl=*=*casadi* tinyxml ipopt numpy pytest swig pkgconfig -c conda-forge;
+        conda install rbdl=*=*casadi* tinyxml ipopt numpy pytest swig pkgconfig cmake -c conda-forge;
         conda deactivate;
       fi
         
@@ -82,6 +82,7 @@ script:
       fi
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
         cd binding/Python3;
+        pytest .;
       fi
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
         cd ../../;
