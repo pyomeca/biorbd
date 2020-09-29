@@ -114,7 +114,7 @@ endif()
 if (BINDER_PYTHON3)
     file(GLOB BIORBD_PYTHON3_TEST_FILES
         "${CMAKE_SOURCE_DIR}/test/binding/Python3/*.py")
-    file(COPY "${BIORBD_PYTHON3_TEST_FILES}"
+    file(COPY ${BIORBD_PYTHON3_TEST_FILES}
         DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/binding/Python3")
 endif()
 
