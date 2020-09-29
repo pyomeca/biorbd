@@ -85,7 +85,7 @@ script:
         pytest .;
       fi
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
-        cd ../../;
+        cd ../../../..;
         conda deactivate;
       fi
     
