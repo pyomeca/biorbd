@@ -78,7 +78,30 @@ def test_forward_dynamics():
     qdot = np.array([i * 1.1 for i in range(m.nbQ())])
     tau = np.array([i * 1.1 for i in range(m.nbQ())])
 
-    qddot = m.ForwardDynamics(q, qdot, tau).to_array()
+
+    if biorbd.currentLinearAlgebraBackend() == 1:
+        # If CasADi backend is used
+        from casadi import Function, MX
+
+        q_sym = MX.sym("q", m.nbQ(), 1)
+        qdot_sym = MX.sym("qdot", m.nbQdot(), 1)
+        tau_sym = MX.sym("tau", m.nbGeneralizedTorque(), 1)
+
+        ForwardDynamics = Function(
+            "ForwardDynamics",
+            [q_sym, qdot_sym, tau_sym],
+            [m.ForwardDynamics(q_sym, qdot_sym, tau_sym).to_mx()],
+            ["q_sym", "qdot_sym", "tau_sym"],
+            ["qddot"],
+        ).expand()
+
+        qddot = ForwardDynamics(q, qdot, tau)
+        qddot = np.array(qddot)[:, 0]
+
+    elif biorbd.currentLinearAlgebraBackend() == 0:
+        # if Eigen backend is used
+        qddot = m.ForwardDynamics(q, qdot, tau).to_array()
+
     qddot_expected = np.array(
         [
             20.554883896960259,
@@ -98,15 +121,51 @@ def test_forward_dynamics():
     )
     np.testing.assert_almost_equal(qddot, qddot_expected)
 
+
+def test_forward_dynamics_with_external_forces():
+    m = biorbd.Model("../../models/pyomecaman_withActuators.bioMod")
+
+    q = np.array([i * 1.1 for i in range(m.nbQ())])
+    qdot = np.array([i * 1.1 for i in range(m.nbQ())])
+    tau = np.array([i * 1.1 for i in range(m.nbQ())])
+
+
     # With external forces
+    if biorbd.currentLinearAlgebraBackend() == 1:
+        from casadi import Function, MX
+        sv1 = MX((11.1, 22.2, 33.3, 44.4, 55.5, 66.6))
+        sv2 = MX((11.1 * 2, 22.2 * 2, 33.3 * 2, 44.4 * 2, 55.5 * 2, 66.6 * 2))
+    else:
+        sv1 = np.array((11.1, 22.2, 33.3, 44.4, 55.5, 66.6))
+        sv2 = np.array((11.1 * 2, 22.2 * 2, 33.3 * 2, 44.4 * 2, 55.5 * 2, 66.6 * 2))
+    
     f_ext = biorbd.VecBiorbdSpatialVector(
         [
-            biorbd.SpatialVector(11.1, 22.2, 33.3, 44.4, 55.5, 66.6),
-            biorbd.SpatialVector(11.1 * 2, 22.2 * 2, 33.3 * 2, 44.4 * 2, 55.5 * 2, 66.6 * 2),
+            biorbd.SpatialVector(sv1),
+            biorbd.SpatialVector(sv2),
         ]
     )
 
-    qddot = m.ForwardDynamics(q, qdot, tau, f_ext).to_array()
+    if biorbd.currentLinearAlgebraBackend() == 1:
+        q_sym = MX.sym("q", m.nbQ(), 1)
+        qdot_sym = MX.sym("qdot", m.nbQdot(), 1)
+        tau_sym = MX.sym("tau", m.nbGeneralizedTorque(), 1)
+
+        ForwardDynamics = Function(
+            "ForwardDynamics",
+            [q_sym, qdot_sym, tau_sym],
+            [m.ForwardDynamics(q_sym, qdot_sym, tau_sym, f_ext).to_mx()],
+            ["q_sym", "qdot_sym", "tau_sym"],
+            ["qddot"],
+        ).expand()
+
+        qddot = ForwardDynamics(q, qdot, tau)
+        qddot = np.array(qddot)[:, 0]
+
+    elif biorbd.currentLinearAlgebraBackend() == 0:
+        # if Eigen backend is used
+        qddot = m.ForwardDynamics(q, qdot, tau, f_ext).to_array()
+
     qddot_expected = np.array(
         [
             8.8871711208009998,

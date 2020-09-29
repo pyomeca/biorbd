@@ -56,7 +56,7 @@ install:
         conda create -n biorbd_casadi;
         conda deactivate;
         conda activate biorbd_casadi;
-        conda install rbdl=*=*casadi* tinyxml pkgconfig ipopt -c conda-forge;
+        conda install rbdl=*=*casadi* tinyxml ipopt numpy pytest swig pkgconfig cmake -c conda-forge;
         conda deactivate;
       fi
         
@@ -68,18 +68,27 @@ script:
 
     # Test the casadi backend
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
+        pwd;
         conda deactivate;
-        conda activate biorbd_casadi
-        cd ..;
+        conda activate biorbd_casadi;
         mkdir build_casadi;
         cd build_casadi;
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_casadi/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON ..;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_casadi/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..;
         make install;
+      fi
+    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
         cd test;
         ./biorbd_tests;
-        cd ../../;
+      fi
+    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
+        cd binding/Python3;
+        pytest .;
+      fi
+    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
+        cd ../../../..;
         conda deactivate;
       fi
+    
 
     # Download, compile and test core
     - conda activate biorbd_eigen
@@ -125,7 +134,7 @@ script:
       else
         cd test/binding/Python3;
       fi
-    - pytest test_binder_python_rigidbody.py
+    - pytest .
     - cd ../../..
 
     # Only do the coverage on Linux, but run the test anyway to get a nice output
