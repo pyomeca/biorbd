@@ -137,10 +137,12 @@ if(WIN32)
     set(${BIORBD_NAME}_LIB_FOLDER "Lib")
     set(${BIORBD_NAME}_BIN_FOLDER "bin")
     set(${BIORBD_NAME}_INCLUDE_FOLDER "include/${BIORBD_NAME}")
+	set(${BIORBD_NAME}_CMAKECONFIG_DIR ${${BIORBD_NAME}_LIB_FOLDER}/${BIORBD_NAME}/cmake/)
 else()
     set(${BIORBD_NAME}_LIB_FOLDER "lib/${BIORBD_NAME}")
     set(${BIORBD_NAME}_BIN_FOLDER "${CMAKE_INSTALL_PREFIX}/lib/${BIORBD_NAME}")
     set(${BIORBD_NAME}_INCLUDE_FOLDER "include/${BIORBD_NAME}")
+	set(${BIORBD_NAME}_CMAKECONFIG_DIR ${${BIORBD_NAME}_LIB_FOLDER}/cmake/)
 endif()
 set_target_properties(${BIORBD_NAME} PROPERTIES
     INSTALL_RPATH "${${BIORBD_NAME}_BIN_FOLDER}"
@@ -208,11 +210,11 @@ include(CMakePackageConfigHelpers)
 configure_package_config_file(
     "share/${BIORBD_NAME}Config.cmake.in"
     "${BIORBD_BINARY_DIR}/${BIORBD_NAME}Config.cmake"
-    INSTALL_DESTINATION "${BIORBD_NAME}_LIB_FOLDER/cmake"
+    INSTALL_DESTINATION "${${BIORBD_NAME}_CMAKECONFIG_DIR}"
 )
 install(FILES 
     "${BIORBD_BINARY_DIR}/${BIORBD_NAME}Config.cmake"
-    DESTINATION "${${BIORBD_NAME}_LIB_FOLDER}/cmake"
+    DESTINATION "${${BIORBD_NAME}_CMAKECONFIG_DIR}"
 )
 
 # uninstall target
