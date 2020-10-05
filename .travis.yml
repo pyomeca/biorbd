@@ -144,7 +144,26 @@ script:
         cp -r test/models/ .;
         make biorbd_coverage;
       fi
+    - cd ..
     - ctest
+    
+    # Compile the C++ example from installed biorbd
+    - cd examples/cpp_installed
+    - mkdir build
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/envs/biorbd_eigen/ ..;
+        cmake --build ./ --config Release;
+      else
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_eigen/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Release ..;
+        make;
+      fi
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+        xcopy Release\\*.exe;
+        forwardDynamicsExample.exe
+      else
+        ./forwardDynamicsExample
+      fi
+    - cd ../..
     
 after_success:
     # Uploading report to CodeCov
