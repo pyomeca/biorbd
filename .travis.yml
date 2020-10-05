@@ -66,6 +66,30 @@ script:
     # Build main and tests
     ############################################################################    
 
+    # Test the casadi backend
+    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
+        pwd;
+        conda deactivate;
+        conda activate biorbd_casadi;
+        mkdir build_casadi;
+        cd build_casadi;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_casadi/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..;
+        make install;
+      fi
+    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
+        cd test;
+        ./biorbd_tests;
+      fi
+    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
+        cd binding/Python3;
+        pytest .;
+      fi
+    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
+        cd ../../../..;
+        conda deactivate;
+      fi
+
+
     # Download, compile and test core
     - conda activate biorbd_eigen
     - mkdir -p build_eigen
@@ -85,14 +109,18 @@ script:
         xcopy ..\\models .\\models\\;
         xcopy ..\\models\\meshFiles .\\models\\meshFiles\\;
         xcopy ..\\models\\meshFiles\\vtp .\\models\\meshFiles\\vtp\\;
+        ./biorbd_tests.exe;
       else
         cd test;
+        ./biorbd_tests;
       fi
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         xcopy ..\\binding\\c\\Release\\biorbd_tests_binding_c.exe;
         xcopy ..\\..\\binding\\c\\Release\\*.dll;
+        ./biorbd_tests_binding_c.exe;
       else
         cd binding/c;
+        ./biorbd_tests_binding_c;
       fi
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         cd ../..;
@@ -110,6 +138,13 @@ script:
     - cd ../../..
 
     # Only do the coverage on Linux, but run the test anyway to get a nice output
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_eigen/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=OFF ..;
+        make;
+        cp -r test/models/ .;
+        make biorbd_coverage;
+      fi
+    - ctest
     - cd ..
     
     # Compile the C++ example from installed biorbd
