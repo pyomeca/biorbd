@@ -18,6 +18,8 @@ conda install -c conda-forge biorbd
 ```
 The binaries and includes of the core of BIORBD will be installed in `bin` and `include` folders of the environment respectively. Moreover, the Python3 binder will also be installed in the environment.
 
+Please note that because of the way `Ipopt` is compiled on conda-forge, it was not possible to link it with `biorbd`. Therefore, the `MODULE_STATIC_OPTIM` was set to `OFF` for this particular OS.
+
 The current building status for Anaconda release is as follow.
 
 | Name | Downloads | Version | Platforms |
@@ -79,7 +81,7 @@ BIORBD comes with a CMake (https://cmake.org/) project. If you don't know how to
 >
 > `Matlab_ROOT_DIR` If `BINDER_MATLAB` is set to `ON` then this variable should point to the root path of MATLAB directory. Please note that the MATLAB binder is based on MATLAB R2018a API and won't compile on earlier versions. This variable should be found automatically, except on Mac where the value should manually be set to the MATLAB in the App folder. 
 >
-> `Matlab_biorbd_INSTALL_DIR` If `BINDER_MATLAB` is set to `ON` then this variable should point to the path where you want to install BIORBD. Typically, this is `{MY DOCUMENTS}/MATLAB`. The default value is the toolbox folder of MATLAB. Please note that if you leave the default value, you will probably need to grant administrator rights to the installer. 
+> `Matlab_biorbd_INSTALL_DIR` If `BINDER_MATLAB` is set to `ON` then this variable should point to the path where you want to install BIORBD. Typically, this is `{MY DOCUMENTS}/MATLAB`. The default value is the toolbox folder of MATLAB. Please note that if you leave the default value, you will probably need to grant administrator rights to the installer. In all cases, after the installation, you will have to add the path to the MATLAB search path by typing the following command in the MATLAB's prompt (or to add it to the `startup.m`) `addpath(genpath($Matlab_biorbd_INSTALL_DIR))`, and replacing `Matlab_biorbd_INSTALL_DIR` by your own path.
 >
 > `MODULE_ACTUATORS` If you want (`ON`) or not (`OFF`) to build with the actuators module. Default is `ON`. This allows to use exotic joint torques. 
 >
