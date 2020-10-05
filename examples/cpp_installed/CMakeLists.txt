@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 set(FILE "forwardDynamicsExample.cpp")
 get_filename_component(FILE_NAME ${FILE} NAME_WE)
 project(${FILE_NAME})
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 
 
 find_package(biorbd REQUIRED)
@@ -26,4 +26,7 @@ target_link_libraries(${PROJECT_NAME}
     ${biorbd_LIBRARIES}
     ${RBDL_LIBRARY}
 )
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/pyomecaman.bioMod 
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
