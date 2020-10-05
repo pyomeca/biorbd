@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.8)
+set (CMAKE_CXX_STANDARD 11)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
+
 set(FILE "forwardDynamicsExample.cpp")
 get_filename_component(FILE_NAME ${FILE} NAME_WE)
 project(${FILE_NAME})
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 
 
 find_package(biorbd REQUIRED)

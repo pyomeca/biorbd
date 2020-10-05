@@ -64,30 +64,7 @@ install:
 script:
     ############################################################################
     # Build main and tests
-    ############################################################################
-
-    # Test the casadi backend
-    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
-        pwd;
-        conda deactivate;
-        conda activate biorbd_casadi;
-        mkdir build_casadi;
-        cd build_casadi;
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_casadi/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..;
-        make install;
-      fi
-    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
-        cd test;
-      fi
-    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
-        cd binding/Python3;
-        pytest .;
-      fi
-    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
-        cd ../../../..;
-        conda deactivate;
-      fi
-    
+    ############################################################################    
 
     # Download, compile and test core
     - conda activate biorbd_eigen
@@ -133,13 +110,7 @@ script:
     - cd ../../..
 
     # Only do the coverage on Linux, but run the test anyway to get a nice output
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_eigen/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=OFF ..;
-        make;
-        cp -r test/models/ .;
-      fi
     - cd ..
-    - ctest
     
     # Compile the C++ example from installed biorbd
     - cd examples/cpp_installed
@@ -154,9 +125,9 @@ script:
       fi
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         xcopy Release\\*.exe;
-        ./forwardDynamicsExample.exe
+        ./forwardDynamicsExample.exe;
       else
-        ./forwardDynamicsExample
+        ./forwardDynamicsExample;
       fi
     - cd ../..
     
