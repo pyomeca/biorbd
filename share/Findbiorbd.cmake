@@ -10,7 +10,7 @@ if (biorbd_INCLUDE_DIR)
   set (biorbd_FIND_QUIETLY TRUE)
 endif (biorbd_INCLUDE_DIR)
 
-find_path (biorbd_INCLUDE_DIR "biorbdModel.h" PATHS ${CMAKE_INSTALL_PREFIX}/include/biorbd)
+find_path (biorbd_INCLUDE_DIR "BiorbdModel.h" PATHS ${CMAKE_INSTALL_PREFIX}/include/biorbd)
 find_library (biorbd_LIBRARY NAMES biorbd biorbd_debug PATHS ${CMAKE_INSTALL_PREFIX}/lib/biorbd)
 
 get_filename_component(biorbd_LIB_PATH ${biorbd_LIBRARY} DIRECTORY)
@@ -30,7 +30,7 @@ set(biorbd_LIBRARIES
     ${biorbd_LIB_PATH}/${biorbd_LIB_NAME}_actuators${debug_flag}${biorbd_LIB_EXTENSION}
 )
 
-# handle the QUIETLY and REQUIRED arguments and set DLIB_FOUND to TRUE if 
+# handle the QUIETLY and REQUIRED arguments and set biorbd_FOUND to TRUE if 
 # all listed variables are TRUE
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args (biorbd DEFAULT_MSG 
