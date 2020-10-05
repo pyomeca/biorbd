@@ -78,7 +78,6 @@ script:
       fi
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
         cd test;
-        ./biorbd_tests;
       fi
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
         cd binding/Python3;
@@ -109,18 +108,14 @@ script:
         xcopy ..\\models .\\models\\;
         xcopy ..\\models\\meshFiles .\\models\\meshFiles\\;
         xcopy ..\\models\\meshFiles\\vtp .\\models\\meshFiles\\vtp\\;
-        # ./biorbd_tests.exe;
       else
         cd test;
-        # ./biorbd_tests;
       fi
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         xcopy ..\\binding\\c\\Release\\biorbd_tests_binding_c.exe;
         xcopy ..\\..\\binding\\c\\Release\\*.dll;
-        # ./biorbd_tests_binding_c.exe;
       else
         cd binding/c;
-        # ./biorbd_tests_binding_c;
       fi
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         cd ../..;
@@ -142,7 +137,6 @@ script:
         cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_eigen/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=OFF ..;
         make;
         cp -r test/models/ .;
-        # make biorbd_coverage;
       fi
     - cd ..
     - ctest
