@@ -18,6 +18,8 @@ conda install -c conda-forge biorbd
 ```
 The binaries and includes of the core of BIORBD will be installed in `bin` and `include` folders of the environment respectively. Moreover, the Python3 binder will also be installed in the environment.
 
+Please note that because of the way `Ipopt` is compiled on conda-forge, it was not possible to link it with `biorbd`. Therefore, the `MODULE_STATIC_OPTIM` was set to `OFF` for this particular OS.
+
 The current building status for Anaconda release is as follow.
 
 | Name | Downloads | Version | Platforms |
