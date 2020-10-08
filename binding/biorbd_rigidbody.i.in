@@ -27,6 +27,7 @@
 namespace std {
 %template(VecBiorbdGeneralizedTorque) std::vector<biorbd::rigidbody::GeneralizedTorque>;
 %template(MatBiorbdGeneralizedTorque) std::vector<std::vector<biorbd::rigidbody::GeneralizedTorque>>;
+%template(PairBiorbdGeneralizedTorque) std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque>;
 %template(VecBiorbdGeneralizedCoordinates) std::vector<biorbd::rigidbody::GeneralizedCoordinates>;
 %template(MatBiorbdGeneralizedCoordinates) std::vector<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>;
 %template(VecBiorbdGeneralizedVelocity) std::vector<biorbd::rigidbody::GeneralizedVelocity>;
