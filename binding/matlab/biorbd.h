@@ -18,6 +18,7 @@
 #include "Matlab_nQ.h"
 #include "Matlab_nQdot.h"
 #include "Matlab_nQddot.h"
+#include "Matlab_rangeQ.h"
 #include "Matlab_nameDof.h"
 #include "Matlab_nRoot.h"
 #include "Matlab_nMarkers.h"
@@ -179,6 +180,10 @@ void functionHub( int nlhs, mxArray *plhs[],
     // Nombre de dof
     if (!toLower(cmd).compare("nq")){
         Matlab_nQ(nlhs, plhs, nrhs, prhs);
+        return;
+    }
+    if (!toLower(cmd).compare("rangeq")){
+        Matlab_rangeQ(nlhs, plhs, nrhs, prhs);
         return;
     }
 
