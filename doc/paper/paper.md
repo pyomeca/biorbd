@@ -104,7 +104,7 @@ To the best of our knowledge, there is no other open-source software that provid
 Therefore, in our opinion, `biorbd` and `OpenSim` are complementary.
 
 # Previous usage of `biorbd`
-`biorbd` was used in most of the project of the *Laboratoire de Simulation et Modélisation du Mouvement* (S2M); particularly in analysis settings [jacksonImprovementsMeasuringShoulder2012a; @desmyttereFootOrthosisAddon2019; @verdugoEffectsTrunkMotion2020] and simulation settings [@belaiseEMGmarkerTrackingOptimisation2018a, @moissenetOptimizationMethodTracking2019a] for a wide variety of movements (walking, piano playing, upper limb maximal exertions, etc.)
+`biorbd` was used in most of the project of the *Laboratoire de Simulation et Modélisation du Mouvement* (S2M); particularly in analysis settings [jacksonImprovementsMeasuringShoulder2012a; @desmyttereEffect3DPrinted2020; @verdugoEffectsTrunkMotion2020] and simulation settings [@belaiseEMGmarkerTrackingOptimisation2018a, @moissenetOptimizationMethodTracking2019a] for a wide variety of movements (walking, piano playing, upper limb maximal exertions, etc.)
 More recently, an optimal control framework for biomechanics (`biorbd-optim` [@Michaud2018biorbdoptim]) based on Ipopt [@wachterImplementationInteriorpointFilter2006a] and ACADOS [@Verschueren2019] was developed around `biorbd`.
 
 # Acknowledgements
