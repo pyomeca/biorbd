@@ -31,7 +31,7 @@ To meet the needs of the biomechanics community, Python and MATLAB binders are p
 As a result, `biorbd` can elegantly be implemented to common workflows of researchers without compromising the required speed.
 
 Finally, biomechanical data are often multidimensional and almost always time-dependent which can be challenging to visualize.
-To help with that, `biorbd-viz` [@Michaud2018biorbdViz], a Python visualizer, was purposely designed.
+To help with that, `biorbd-viz` [@Michaud2018biorviz], a Python visualizer, was purposely designed.
 This visualizer allows animating the model, record videos, and, for models that include muscles, plot muscular outputs against various features of the movement.
 
 # A `biorbd` overview, the inverse and direct flow
@@ -105,7 +105,7 @@ Therefore, in our opinion, `biorbd` and `OpenSim` are complementary.
 
 # Previous usage of `biorbd`
 `biorbd` was used in most of the project of the *Laboratoire de Simulation et Modélisation du Mouvement* (S2M); particularly in analysis settings [jacksonImprovementsMeasuringShoulder2012a; @desmyttereEffect3DPrinted2020; @verdugoEffectsTrunkMotion2020] and simulation settings [@belaiseEMGmarkerTrackingOptimisation2018a, @moissenetOptimizationMethodTracking2019a] for a wide variety of movements (walking, piano playing, upper limb maximal exertions, etc.)
-More recently, an optimal control framework for biomechanics (`biorbd-optim` [@Michaud2018biorbdoptim]) based on Ipopt [@wachterImplementationInteriorpointFilter2006a] and ACADOS [@Verschueren2019] was developed around `biorbd`.
+More recently, an optimal control framework for biomechanics (`biorbd-optim` [@Michaud2018bioptim]) based on Ipopt [@wachterImplementationInteriorpointFilter2006a] and ACADOS [@Verschueren2019] was developed around `biorbd`.
 
 # Acknowledgements
 A huge thanks to Ariane Dang for her patience and contribution to writing the tests for `biorbd`!
