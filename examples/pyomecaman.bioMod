@@ -1,16 +1,19 @@
-version    3
-
-// General informations
-root_actuated 0
-external_forces 0
-
-
+version   4
 
 // Informations about Pelvis segment
     // Segment
     segment    Pelvis
         translations yz
         rotations    x
+        rangesQ      -15 15
+                     -15 15
+                     -pi+1 pi+1
+        rangesQdot   -150 150
+                     -150 150
+                     -(pi+1)*10 (pi+1)*10
+        rangesQddot  -1500 1500
+                     -1500 1500
+                     -(pi+1)*100 (pi+1)*100
         mass    9.03529
         inertia
             0.04664    0.00000    0.00000
@@ -213,7 +216,7 @@ external_forces 0
         endmarker
 
     // Actuator
-        // No acturator for this segment
+        // No actuator for this segment
 
 
 
@@ -275,7 +278,7 @@ external_forces 0
         endmarker
 
     // Actuator
-        // No acturator for this segment
+        // No actuator for this segment
 
 
 
@@ -290,6 +293,8 @@ external_forces 0
             0.00000    0.00000    1.00000    0.30485
             0.00000    0.00000    0.00000    1.00000
         rotations    zx
+        ranges  -pi pi
+                0 pi
         mass    2.39085
         inertia
             0.06873    0.00000    0.00000
@@ -422,38 +427,32 @@ external_forces 0
             Tmax    15
         endactuator
         actuator    BrasD
-            type    Gauss6p
+            type    Gauss3p
             dof     RotX
             direction    positive
-            Tmax    32.655002
-            T0      25.780265
-            wmax    812.499995
-            wc      324.999996
-            amin    0.500000
-            wr      28.424707
-            w1      90.000000
-            r       28.832873
-            qopt    133.000000
-            facteur 3.862687
-            r2      73.500000
-            qopt2   73.500000
+            Tmax    112.8107
+            T0      89.0611
+            wmax    1000.0000
+            wc      400.0000
+            amin    0.8780
+            wr      40.0000
+            w1      -6.2750
+            r       109.6679
+            qopt    -41.0307
         endactuator
         actuator    BrasD
-            type    Gauss6p
+            type    Gauss3p
             dof     RotX
             direction    negative
-            Tmax    41.779398
-            T0      32.853388
-            wmax    1000.000000
-            wc      400.000000
-            amin    0.602364
-            wr      10.177422
-            w1      47.600548
-            r       74.100000
-            qopt    132.416627
-            facteur 2.080254
-            r2      60.375000
-            qopt2   24.694161
+            Tmax    162.7655
+            T0      128.4991
+            wmax    812.5000
+            wc      325.0000
+            amin    0.9678
+            wr      40.0000
+            w1      -90.0000
+            r       103.9095
+            qopt    -101.6627
         endactuator
         
 
@@ -470,6 +469,8 @@ external_forces 0
             0.00000    0.00000    1.00000    0.30485
             0.00000    0.00000    0.00000    1.00000
         rotations    zx
+        ranges  -pi pi
+                0 pi
         mass    2.39085
         inertia
             0.06873    0.00000    0.00000
@@ -601,42 +602,36 @@ external_forces 0
             direction       negative
             Tmax    15
         endactuator
-        actuator   BrasG
-            type   Gauss6p
-            dof    RotX
+        actuator    BrasG
+            type    Gauss3p
+            dof     RotX
             direction    positive
-            Tmax    32.655002
-            T0      25.780265
-            wmax    812.499995
-            wc      324.999996
-            amin    0.500000
-            wr      28.424707
-            w1      90.000000
-            r       28.832873
-            qopt    133.000000
-            facteur 3.862687
-            r2      73.500000
-            qopt2   73.500000
+            Tmax    112.8107
+            T0      89.0611
+            wmax    1000.0000
+            wc      400.0000
+            amin    0.8780
+            wr      40.0000
+            w1      -6.2750
+            r       109.6679
+            qopt    -41.0307
         endactuator
         actuator    BrasG
-            type    Gauss6p
-            dof    RotX
+            type    Gauss3p
+            dof     RotX
             direction    negative
-            Tmax     41.779398
-            T0       32.853388
-            wmax     1000.000000
-            wc       400.000000
-            amin     0.602364
-            wr       10.177422
-            w1       47.600548
-            r        74.100000
-            qopt     132.416627
-            facteur  2.080254
-            r2       60.375000
-            qopt2    24.694161
+            Tmax    162.7655
+            T0      128.4991
+            wmax    812.5000
+            wc      325.0000
+            amin    0.9678
+            wr      40.0000
+            w1      -90.0000
+            r       103.9095
+            qopt    -101.6627
         endactuator
-        
-        
+
+
 // Informations about CuisseD segment
     // Segment
     segment    CuisseD
@@ -648,6 +643,7 @@ external_forces 0
             0.00000    0.00000    1.00000    -0.09895
             0.00000    0.00000    0.00000    1.00000
         rotations    x
+        ranges  -pi/12  pi/2+pi/3
         mass    6.62882
         inertia
             0.07790    0.00000    0.00000
@@ -702,29 +698,29 @@ external_forces 0
             type    Gauss3p
             dof     RotX
             direction   positive
-            Tmax	232.135218
-            T0	    183.264629
-            wmax	475.000000
-            wc	    190.000000
-            amin	0.990000
-            wr	    40.000000
-            w1	    -90.000000
-            qopt	14.193982
-            r	    65.925096
+            Tmax    220.3831
+            T0      157.4165
+            wmax    475.0000
+            wc      190.0000
+            amin    0.9900
+            wr      40.0000
+            w1      -90.0000
+            r       56.4021
+            qopt    25.6939
         endactuator
         actuator    CuisseD
             type    Gauss3p
             dof     RotX
             direction    negative
-            Tmax	592.619244
-            T0	    467.857298
-            wmax	562.500000
-            wc	    225.000000
-            amin	0.500000
-            wr	    40.000000
-            w1	    -78.046135
-            qopt	85.510899
-            r	    -67.744985
+            Tmax    490.5938
+            T0      387.3109
+            wmax    562.5000
+            wc      225.0000
+            amin    0.9692
+            wr      40.0000
+            w1      -90.0000
+            r       48.6999
+            qopt    72.5836
         endactuator
 
 
@@ -740,6 +736,7 @@ external_forces 0
             0.00000    0.00000    1.00000    -0.38304
             0.00000    0.00000    0.00000    1.00000
         rotations    x
+        ranges  -pi/2-pi/6 0
         mass    3.40206
         inertia
             0.04318    0.00000    0.00000
@@ -797,29 +794,29 @@ external_forces 0
             type    Gauss3p
             dof     RotX
             direction    positive
-            Tmax	385.101300
-            T0	    275.072368
-            wmax	1437.500000
-            wc	    575.000000
-            amin	0.990000
-            wr	    40.000000
-            w1	    -89.999999
-            qopt	-63.850357
-            r	    -31.721902
+            Tmax    367.6643
+            T0      275.0726
+            wmax    1437.5000
+            wc      575.0000
+            amin    0.9900
+            wr      40.0000
+            w1      -90.0000
+            r       31.7218
+            qopt    -61.7303
         endactuator
         actuator    JambeD
             type    Gauss3p
             dof     RotX
             direction    negative
-            Tmax	177.638132
-            T0	    126.884380
-            wmax	950.000000
-            wc	    380.000000
-            amin	0.990000
-            wr	    40.000000
-            w1	    -90.000000
-            qopt	-35.508215
-            r	    54.590448
+            Tmax    177.9694
+            T0      127.1210
+            wmax    950.0000
+            wc      380.0000
+            amin    0.9900
+            wr      40.0000
+            w1      -89.9997
+            r       57.0370
+            qopt    -33.2908
         endactuator
 
 
@@ -834,6 +831,7 @@ external_forces 0
             0.00000    0.00000    1.00000    -0.33859
             0.00000    0.00000    0.00000    1.00000
         rotations    x
+        ranges  -pi/2 pi/2
         mass    0.77311
         inertia
             0.00194    0.00000    0.00000
@@ -856,7 +854,7 @@ external_forces 0
         mesh    0.01175    -0.03816    -0.02629
         mesh    0.06379    0.09487    -0.01280
     endsegment
-    
+
     // Markers
         marker    piedd1
             parent    PiedD
@@ -906,29 +904,29 @@ external_forces 0
             type    Gauss3p
             dof     RotX
             direction    positive
-            Tmax	53.822999
-            T0	    38.331862
-            wmax	2375.000000
-            wc	    375.000000
-            amin	0.910290
-            wr	    40.000000
-            w1	    -90.000000
-            qopt	0.744576
-            r	    58.983760
+            Tmax    53.8230
+            T0      37.2448
+            wmax    2375.0000
+            wc      375.0000
+            amin    0.9263
+            wr      40.0000
+            w1      -90.0000
+            r       58.9832
+            qopt    0.7442
         endactuator
         actuator    PiedD
             type    Gauss3p
             dof     RotX
             direction    negative
-            Tmax	257.854740
-            T0	    168.214981
-            wmax	2000.000000
-            wc	    800.000000
-            amin	0.782747
-            wr	    90.000000
-            w1	    -53.230301
-            qopt	30.550320
-            r	    34.514038
+            Tmax    171.9903
+            T0      122.8502
+            wmax    2000.0000
+            wc      800.0000
+            amin    0.9900
+            wr      40.0000
+            w1      -90.0000
+            r       21.8717
+            qopt    12.6824
         endactuator
 
 
@@ -944,6 +942,7 @@ external_forces 0
             0.00000    0.00000    1.00000    -0.09895
             0.00000    0.00000    0.00000    1.00000
         rotations    x
+        ranges  -pi/12  pi/2+pi/3
         mass    6.62882
         inertia
             0.07790    0.00000    0.00000
@@ -995,29 +994,29 @@ external_forces 0
             type    Gauss3p
             dof     RotX
             direction   positive
-            Tmax	232.135218
-            T0	    183.264629
-            wmax	475.000000
-            wc	    190.000000
-            amin	0.990000
-            wr	    40.000000
-            w1	    -90.000000
-            qopt	14.193982
-            r	    65.925096
+            Tmax    220.3831
+            T0      157.4165
+            wmax    475.0000
+            wc      190.0000
+            amin    0.9900
+            wr      40.0000
+            w1      -90.0000
+            r       56.4021
+            qopt    25.6939
         endactuator
         actuator    CuisseG
             type    Gauss3p
             dof     RotX
             direction    negative
-            Tmax	592.619244
-            T0	    467.857298
-            wmax	562.500000
-            wc	    225.000000
-            amin	0.500000
-            wr	    40.000000
-            w1	    -78.046135
-            qopt	85.510899
-            r	    -67.744985
+            Tmax    490.5938
+            T0      387.3109
+            wmax    562.5000
+            wc      225.0000
+            amin    0.9692
+            wr      40.0000
+            w1      -90.0000
+            r       48.6999
+            qopt    72.5836
         endactuator
     
     
@@ -1034,6 +1033,7 @@ external_forces 0
             0.00000    0.00000    1.00000    -0.38304
             0.00000    0.00000    0.00000    1.00000
         rotations    x
+        ranges  -pi/2-pi/6 0
         mass    3.40206
         inertia
             0.04318    0.00000    0.00000
@@ -1091,29 +1091,29 @@ external_forces 0
             type    Gauss3p
             dof     RotX
             direction    positive
-            Tmax	385.101300
-            T0	    275.072368
-            wmax	1437.500000
-            wc	    575.000000
-            amin	0.990000
-            wr	    40.000000
-            w1	    -89.999999
-            qopt	-63.850357
-            r	    -31.721902
+            Tmax    367.6643
+            T0      275.0726
+            wmax    1437.5000
+            wc      575.0000
+            amin    0.9900
+            wr      40.0000
+            w1      -90.0000
+            r       31.7218
+            qopt    -61.7303
         endactuator
         actuator    JambeG
             type    Gauss3p
             dof     RotX
             direction    negative
-            Tmax	177.638132
-            T0	    126.884380
-            wmax	950.000000
-            wc	    380.000000
-            amin	0.990000
-            wr	    40.000000
-            w1	    -90.000000
-            qopt	-35.508215
-            r	    54.590448
+            Tmax    177.9694
+            T0      127.1210
+            wmax    950.0000
+            wc      380.0000
+            amin    0.9900
+            wr      40.0000
+            w1      -89.9997
+            r       57.0370
+            qopt    -33.2908
         endactuator
 
 
@@ -1130,6 +1130,7 @@ external_forces 0
             0.00000    0.00000    1.00000    -0.33859
             0.00000    0.00000    0.00000    1.00000
         rotations    x
+        ranges  -pi/2 pi/2
         mass    0.77311
         inertia
             0.00194    0.00000    0.00000
@@ -1202,30 +1203,28 @@ external_forces 0
             type    Gauss3p
             dof     RotX
             direction    positive
-            Tmax	53.822999
-            T0	    38.331862
-            wmax	2375.000000
-            wc	    375.000000
-            amin	0.910290
-            wr	    40.000000
-            w1	    -90.000000
-            qopt	0.744576
-            r	    58.983760
+            Tmax    53.8230
+            T0      37.2448
+            wmax    2375.0000
+            wc      375.0000
+            amin    0.9263
+            wr      40.0000
+            w1      -90.0000
+            r       58.9832
+            qopt    0.7442
         endactuator
         actuator    PiedG
             type    Gauss3p
             dof     RotX
             direction    negative
-            Tmax	257.854740
-            T0	    168.214981
-            wmax	2000.000000
-            wc	    800.000000
-            amin	0.782747
-            wr	    90.000000
-            w1	    -53.230301
-            qopt	30.550320
-            r	    34.514038
+            Tmax    171.9903
+            T0      122.8502
+            wmax    2000.0000
+            wc      800.0000
+            amin    0.9900
+            wr      40.0000
+            w1      -90.0000
+            r       21.8717
+            qopt    12.6824
         endactuator
-
-
 

@@ -55,8 +55,8 @@ endsegment
             amin	0.500000
             wr	    40.000000
             w1	    -78.046135
-            qopt	85.510899
-            r	    -67.744985
+            qopt	-67.744985
+            r	    85.510899
         endactuator
         actuator    Seg0
             type    Gauss6p

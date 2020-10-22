@@ -1,9 +1,10 @@
 from .biorbd import *
 from ._version import __version__
-
+from .surface_max_torque_actuator import surface_max_torque_actuator
 
 if biorbd.currentLinearAlgebraBackend() == 1:
     from casadi import Function, MX
+
     def to_casadi_func(name, func, *all_param):
         mx_param = []
         for p in all_param:
@@ -14,4 +15,3 @@ if biorbd.currentLinearAlgebraBackend() == 1:
         if not isinstance(func_evaluated, MX):
             func_evaluated = func_evaluated.to_mx()
         return Function(name, mx_param, [func_evaluated]).expand()
-
