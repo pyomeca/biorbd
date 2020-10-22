@@ -2,7 +2,7 @@ language: cpp
 matrix:
   include:
   - os: linux
-    dist: bionic
+    dist: focal
     compiler: gcc
     env:
       - COMPILER=gcc
