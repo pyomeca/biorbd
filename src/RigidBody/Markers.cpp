@@ -5,6 +5,7 @@
 #include <rbdl/Kinematics.h>
 #include "Utils/String.h"
 #include "Utils/Matrix.h"
+#include "Utils/Error.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/Joints.h"
@@ -63,15 +64,13 @@ const biorbd::rigidbody::NodeSegment &biorbd::rigidbody::Markers::marker(
     return (*m_marks)[idx];
 }
 
-std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::marker(
+const biorbd::rigidbody::NodeSegment& biorbd::rigidbody::Markers::marker(
         const biorbd::utils::String& name) const
 {
-    std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i) // Go through all the markers and select the right ones
         if (!marker(i).parent().compare(name))
-            pos.push_back(marker(i));
-
-    return pos;
+            return marker(i);
+    biorbd::utils::Error::raise("Marker " + name + " not found");
 }
 
 // Return a marker

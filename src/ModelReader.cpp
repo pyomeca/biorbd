@@ -479,31 +479,31 @@ void biorbd::Reader::readModelFile(
                     }
                 }
                 if (fromMarkers){
-                    std::vector<biorbd::rigidbody::NodeSegment> allMarkerOnSegment(model->marker(parent_str));
+                    const biorbd::rigidbody::NodeSegment& mark(model->marker(parent_str));
                     biorbd::rigidbody::NodeSegment origin, axis1Beg, axis1End, axis2Beg, axis2End;
                     bool isOrigin(false), isAxis1Beg(false), isAxis1End(false), isAxis2Beg(false), isAxis2End(false);
-                    for (auto mark : allMarkerOnSegment){
-                        if (!mark.biorbd::utils::Node::name().compare(originMarkerName)){
-                            origin = mark;
-                            isOrigin = true;
-                        }
-                        if (!mark.biorbd::utils::Node::name().compare(firstAxisMarkerNames[0])){
-                            axis1Beg = mark;
-                            isAxis1Beg = true;
-                        }
-                        if (!mark.biorbd::utils::Node::name().compare(firstAxisMarkerNames[1])){
-                            axis1End = mark;
-                            isAxis1End = true;
-                        }
-                        if (!mark.biorbd::utils::Node::name().compare(secondAxisMarkerNames[0])){
-                            axis2Beg = mark;
-                            isAxis2Beg = true;
-                        }
-                        if (!mark.biorbd::utils::Node::name().compare(secondAxisMarkerNames[1])){
-                            axis2End = mark;
-                            isAxis2End = true;
-                        }
+
+                    if (!mark.biorbd::utils::Node::name().compare(originMarkerName)){
+                        origin = mark;
+                        isOrigin = true;
                     }
+                    if (!mark.biorbd::utils::Node::name().compare(firstAxisMarkerNames[0])){
+                        axis1Beg = mark;
+                        isAxis1Beg = true;
+                    }
+                    if (!mark.biorbd::utils::Node::name().compare(firstAxisMarkerNames[1])){
+                        axis1End = mark;
+                        isAxis1End = true;
+                    }
+                    if (!mark.biorbd::utils::Node::name().compare(secondAxisMarkerNames[0])){
+                        axis2Beg = mark;
+                        isAxis2Beg = true;
+                    }
+                    if (!mark.biorbd::utils::Node::name().compare(secondAxisMarkerNames[1])){
+                        axis2End = mark;
+                        isAxis2End = true;
+                    }
+
                     if (! (isAxis1Beg && isAxis1End && isAxis2Beg && isAxis2End)){
                         biorbd::utils::Error::raise("All the axes name and origin for the IMU " + name + " must be set and correspond to marker names previously defined on the same parent");
                     }
