@@ -148,6 +148,13 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
     void applyRT(
             const RotoTrans& rt);
 
+    ///
+    /// \brief Set a new position
+    /// \param v The new position
+    ///
+    void setPosition(
+            const biorbd::utils::Vector3d& v);
+
 #ifndef SWIG
 
 #ifdef BIORBD_USE_EIGEN3_MATH
