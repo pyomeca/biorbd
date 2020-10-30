@@ -32,7 +32,6 @@ static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
 static std::string modelPathMeshEqualsMarker("models/meshsEqualMarkers.bioMod");
 static std::string modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
 static std::string modelNoRoot("models/pyomecaman_freeFall.bioMod");
-static std::string modelPathForImuTesting("models/pyomecaman_withIMUs.bioMod");
 static std::string modelSimple("models/cube.bioMod");
 
 TEST(Gravity, change)
@@ -283,6 +282,7 @@ TEST(IMU, DeepCopy)
     EXPECT_EQ(deepCopyLater.isTechnical(), false);
 }
 
+static std::string modelPathForPyomecaman_withIMUs("models/IMUandCustomRT/pyomecaman_withIMUs.bioMod");
 TEST(IMUs, unitTest)
 {
     {
@@ -301,7 +301,7 @@ TEST(IMUs, unitTest)
         EXPECT_STREQ(imus.technicalIMU()[0].biorbd::utils::Node::name().c_str(), "imuName");
     }
     {
-        biorbd::Model model(modelPathForImuTesting);
+        biorbd::Model model(modelPathForPyomecaman_withIMUs);
         biorbd::rigidbody::IMUs imus(model);
 
         EXPECT_NEAR(imus.anatomicalIMU().size(), 2., requiredPrecision);
@@ -311,7 +311,7 @@ TEST(IMUs, unitTest)
 
 TEST(IMUs, deepCopy)
 {
-    biorbd::Model model(modelPathForImuTesting);
+    biorbd::Model model(modelPathForPyomecaman_withIMUs);
     biorbd::rigidbody::IMUs imus(model);
 
     biorbd::rigidbody::IMUs shallowCopy(imus);
@@ -1174,7 +1174,7 @@ TEST(Kalman, markers)
 #ifndef SKIP_LONG_TESTS
 TEST(Kalman, imu)
 {
-    biorbd::Model model(modelPathForImuTesting);
+    biorbd::Model model(modelPathForPyomecaman_withIMUs);
     biorbd::rigidbody::KalmanReconsIMU kalman(model);
 #ifdef BIORBD_USE_CASADI_MATH
     // Because the evaluation functions are not sym, it takes a LOOOONG time
