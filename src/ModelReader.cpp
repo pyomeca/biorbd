@@ -505,7 +505,7 @@ void biorbd::Reader::readModelFile(
                             isAxis2End = true;
                         }
                     }
-                    if (! (isAxis1Beg && isAxis1End && isAxis2Beg && isAxis2End)){
+                    if (! (isAxis1Beg && isAxis1End && isAxis2Beg && isAxis2End && isOrigin)){
                         biorbd::utils::Error::raise("All the axes name and origin for the " + rtType + "(" + name + ") must be set and correspond to marker names previously defined on the same parent");
                     }
                     if (!(!axisToRecalculate.tolower().compare("firstaxis") || !axisToRecalculate.tolower().compare("secondaxis"))){

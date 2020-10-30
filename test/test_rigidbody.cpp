@@ -304,8 +304,8 @@ TEST(IMUs, unitTest)
         biorbd::Model model(modelPathForPyomecaman_withIMUs);
         biorbd::rigidbody::IMUs imus(model);
 
-        EXPECT_NEAR(imus.anatomicalIMU().size(), 2., requiredPrecision);
-        EXPECT_NEAR(imus.technicalIMU().size(), 4., requiredPrecision);
+        EXPECT_EQ(imus.anatomicalIMU().size(), 2);
+        EXPECT_EQ(imus.technicalIMU().size(), 4);
     }
 }
 
@@ -457,6 +457,32 @@ TEST(Segment, nameDof)
 {
     biorbd::Model model(modelPathForGeneralTesting);
     EXPECT_THROW(model.segment(128), std::runtime_error);
+}
+
+static std::string modelPathForRTsane("models/IMUandCustomRT/RT_sane.bioMod");
+static std::string modelPathForRTwrong1("models/IMUandCustomRT/RT_wrong1.bioMod");
+static std::string modelPathForRTwrong2("models/IMUandCustomRT/RT_wrong2.bioMod");
+static std::string modelPathForRTwrong3("models/IMUandCustomRT/RT_wrong3.bioMod");
+static std::string modelPathForRTwrong4("models/IMUandCustomRT/RT_wrong4.bioMod");
+static std::string modelPathForRTwrong5("models/IMUandCustomRT/RT_wrong5.bioMod");
+static std::string modelPathForRTwrong6("models/IMUandCustomRT/RT_wrong6.bioMod");
+TEST(RotoTransNode, Read)
+{
+    {
+        biorbd::Model model(modelPathForRTsane);
+        biorbd::rigidbody::RotoTransNodes rt(model);
+
+        EXPECT_EQ(rt.size(), 3);
+    }
+
+    {
+        EXPECT_THROW(biorbd::Model model(modelPathForRTwrong1), std::runtime_error);
+        EXPECT_THROW(biorbd::Model model(modelPathForRTwrong2), std::runtime_error);
+        EXPECT_THROW(biorbd::Model model(modelPathForRTwrong3), std::runtime_error);
+        EXPECT_THROW(biorbd::Model model(modelPathForRTwrong4), std::runtime_error);
+        EXPECT_THROW(biorbd::Model model(modelPathForRTwrong5), std::runtime_error);
+        EXPECT_THROW(biorbd::Model model(modelPathForRTwrong6), std::runtime_error);
+    }
 }
 
 TEST(RotoTransNode, copy)

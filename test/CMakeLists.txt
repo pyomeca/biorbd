@@ -88,22 +88,8 @@ if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
 endif() #CMAKE_BUILD_TYPE STREQUAL "Coverage"
 
 # Copy the necessary file for the tests
-file(GLOB BIORBD_TEST_FILES
-    "${CMAKE_SOURCE_DIR}/test/models/*.bioMod")
-file(COPY ${BIORBD_TEST_FILES}
-     DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/models/")
-file(GLOB BIORBD_TEST_FILES
-    "${CMAKE_SOURCE_DIR}/test/models/meshFiles/*.bioMesh")
-file(COPY ${BIORBD_TEST_FILES}
-  DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/models/meshFiles/")
-file(GLOB BIORBD_TEST_FILES
-    "${CMAKE_SOURCE_DIR}/test/models/meshFiles/vtp/*.vtp")
-file(COPY ${BIORBD_TEST_FILES}
-  DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/models/meshFiles/vtp/")
-file(GLOB BIORBD_TEST_FILES
-    "${CMAKE_SOURCE_DIR}/test/models/meshFiles/*.obj")
-file(COPY ${BIORBD_TEST_FILES}
-  DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/models/meshFiles/")
+file(COPY "${CMAKE_SOURCE_DIR}/test/models/"
+  DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/models/")
 
 set(ALL_TESTS "${PROJECT_NAME}")
 if (BINDER_C)

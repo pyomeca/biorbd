@@ -58,6 +58,10 @@ unsigned int biorbd::rigidbody::RotoTransNodes::nbRTs() const
     return static_cast<unsigned int>(m_RTs->size());
 }
 
+unsigned int biorbd::rigidbody::RotoTransNodes::size() const
+{
+    return static_cast<unsigned int>(m_RTs->size());
+}
 
 // Get the markers in the global reference
 const std::vector<biorbd::utils::RotoTransNode>& biorbd::rigidbody::RotoTransNodes::RTs() const
