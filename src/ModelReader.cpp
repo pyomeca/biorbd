@@ -385,6 +385,7 @@ void biorbd::Reader::readModelFile(
                 biorbd::utils::Error::raise("MIMU is no more the right tag, change it to IMU!");
             }
             else if (!main_tag.tolower().compare("imu") || !main_tag.tolower().compare("mimu") || !main_tag.tolower().compare("customrt")){
+                biorbd::utils::String rtType(main_tag.tolower());
                 biorbd::utils::String name;
                 file.read(name);
                 biorbd::utils::String parent_str("root");
@@ -479,36 +480,36 @@ void biorbd::Reader::readModelFile(
                     }
                 }
                 if (fromMarkers){
-                    const biorbd::rigidbody::NodeSegment& mark(model->marker(parent_str));
+                    std::vector<biorbd::rigidbody::NodeSegment> allMarkerOnSegment(model->marker(parent_str));
                     biorbd::rigidbody::NodeSegment origin, axis1Beg, axis1End, axis2Beg, axis2End;
                     bool isOrigin(false), isAxis1Beg(false), isAxis1End(false), isAxis2Beg(false), isAxis2End(false);
-
-                    if (!mark.biorbd::utils::Node::name().compare(originMarkerName)){
-                        origin = mark;
-                        isOrigin = true;
+                    for (auto mark : allMarkerOnSegment){
+                        if (!mark.biorbd::utils::Node::name().compare(originMarkerName)){
+                            origin = mark;
+                            isOrigin = true;
+                        }
+                        if (!mark.biorbd::utils::Node::name().compare(firstAxisMarkerNames[0])){
+                            axis1Beg = mark;
+                            isAxis1Beg = true;
+                        }
+                        if (!mark.biorbd::utils::Node::name().compare(firstAxisMarkerNames[1])){
+                            axis1End = mark;
+                            isAxis1End = true;
+                        }
+                        if (!mark.biorbd::utils::Node::name().compare(secondAxisMarkerNames[0])){
+                            axis2Beg = mark;
+                            isAxis2Beg = true;
+                        }
+                        if (!mark.biorbd::utils::Node::name().compare(secondAxisMarkerNames[1])){
+                            axis2End = mark;
+                            isAxis2End = true;
+                        }
                     }
-                    if (!mark.biorbd::utils::Node::name().compare(firstAxisMarkerNames[0])){
-                        axis1Beg = mark;
-                        isAxis1Beg = true;
-                    }
-                    if (!mark.biorbd::utils::Node::name().compare(firstAxisMarkerNames[1])){
-                        axis1End = mark;
-                        isAxis1End = true;
-                    }
-                    if (!mark.biorbd::utils::Node::name().compare(secondAxisMarkerNames[0])){
-                        axis2Beg = mark;
-                        isAxis2Beg = true;
-                    }
-                    if (!mark.biorbd::utils::Node::name().compare(secondAxisMarkerNames[1])){
-                        axis2End = mark;
-                        isAxis2End = true;
-                    }
-
                     if (! (isAxis1Beg && isAxis1End && isAxis2Beg && isAxis2End)){
-                        biorbd::utils::Error::raise("All the axes name and origin for the IMU " + name + " must be set and correspond to marker names previously defined on the same parent");
+                        biorbd::utils::Error::raise("All the axes name and origin for the " + rtType + "(" + name + ") must be set and correspond to marker names previously defined on the same parent");
                     }
                     if (!(!axisToRecalculate.tolower().compare("firstaxis") || !axisToRecalculate.tolower().compare("secondaxis"))){
-                        biorbd::utils::Error::raise("The 'recalculate' option for IMU " + name + " must be 'firstaxis' or 'secondaxis'");
+                        biorbd::utils::Error::raise("The 'recalculate' option for " + rtType + "(" + name + ") must be 'firstaxis' or 'secondaxis'");
                     }
                     axisToRecalculate = !axisToRecalculate.tolower().compare("firstaxis") ? firstAxis : secondAxis;
 

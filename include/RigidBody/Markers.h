@@ -83,7 +83,7 @@ public:
     /// \param name Name of the segment
     /// \return The markers on the segment
     ///
-    const biorbd::rigidbody::NodeSegment& marker(
+    std::vector<biorbd::rigidbody::NodeSegment> marker(
             const biorbd::utils::String &name) const;
 
     ///
