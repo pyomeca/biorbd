@@ -19,7 +19,7 @@
 static double requiredPrecision(1e-10);
 
 static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
-static std::string modelPathForIMUTesting("models/pyomecaman_withIMUs.bioMod");
+static std::string modelPathForIMUTesting("models/IMUandCustomRT/pyomecaman_withIMUs.bioMod");
 
 TEST(BinderC, OpenCloseModel)
 {

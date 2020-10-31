@@ -23,7 +23,5 @@ target_link_libraries(${PROJECT_NAME} "gtest_main")
 target_link_libraries(${PROJECT_NAME} "${BIORBD_NAME}_c")
 
 # Copy the necessary file for the tests
-file(GLOB BIORBD_TEST_FILES
-    "${CMAKE_SOURCE_DIR}/test/models/*.bioMod")
-file(COPY ${BIORBD_TEST_FILES}
-     DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/models/")
+file(COPY "${CMAKE_SOURCE_DIR}/test/models/"
+  DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/models/")
