@@ -107,7 +107,7 @@ script:
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         cd test\\Release;
         xcopy ..\\models .\\models\\;
-        xcopy ..\\models .\\models\\IMUandCustomRT;
+        xcopy ..\\models\\IMUandCustomRT .\\models\\IMUandCustomRT\\;
         xcopy ..\\models\\meshFiles .\\models\\meshFiles\\;
         xcopy ..\\models\\meshFiles\\vtp .\\models\\meshFiles\\vtp\\;
         ./biorbd_tests.exe;
