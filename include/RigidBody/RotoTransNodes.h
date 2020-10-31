@@ -71,6 +71,12 @@ public:
     unsigned int nbRTs() const;
 
     ///
+    /// \brief Return the number of RTs in the set
+    /// \return The number of RTs
+    ///
+    unsigned int size() const;
+
+    ///
     /// \brief Return the names of the RTs
     /// \return The names of the RTs
     ///

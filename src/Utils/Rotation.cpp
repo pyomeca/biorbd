@@ -107,6 +107,10 @@ biorbd::utils::Matrix biorbd::utils::Rotation::fromMarkersNonNormalized(
         const std::pair<biorbd::utils::String, biorbd::utils::String>& axesNames,
         const biorbd::utils::String &axisToRecalculate)
 {
+    if (!axesNames.first.compare("") || !axesNames.second.compare("")){
+        biorbd::utils::Error::raise("axesNames must be defined with a pair of \"x\", \"y\" or \"z\"");
+    }
+
     // Figure out where to put the axes
     std::vector<unsigned int> map(3);
     std::vector<unsigned int> toMultiply(2);

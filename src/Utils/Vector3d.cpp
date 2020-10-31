@@ -100,11 +100,24 @@ biorbd::utils::Vector3d biorbd::utils::Vector3d::applyRT(const biorbd::utils::Ro
     return static_cast<RigidBodyDynamics::Math::VectorNd>((rt * v).block(0, 0, 3, 1));
 }
 
-void biorbd::utils::Vector3d::applyRT(const biorbd::utils::RotoTrans &rt){
+void biorbd::utils::Vector3d::applyRT(
+        const biorbd::utils::RotoTrans &rt){
     RigidBodyDynamics::Math::Vector4d v;
     v.block(0, 0, 3, 1) = *this;
     v[3] = 1;
-    *this = (rt * v).block(0, 0, 3, 1);
+    setPosition((rt * v).block(0, 0, 3, 1));
+}
+
+void biorbd::utils::Vector3d::setPosition(
+        const biorbd::utils::Vector3d& v)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    (*this)(0) = v(0);
+    (*this)(1) = v(1);
+    (*this)(2) = v(2);
+#else
+    *this = v;
+#endif
 }
 
 void biorbd::utils::Vector3d::setType()

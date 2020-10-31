@@ -385,6 +385,7 @@ void biorbd::Reader::readModelFile(
                 biorbd::utils::Error::raise("MIMU is no more the right tag, change it to IMU!");
             }
             else if (!main_tag.tolower().compare("imu") || !main_tag.tolower().compare("mimu") || !main_tag.tolower().compare("customrt")){
+                biorbd::utils::String rtType(main_tag.tolower());
                 biorbd::utils::String name;
                 file.read(name);
                 biorbd::utils::String parent_str("root");
@@ -504,11 +505,11 @@ void biorbd::Reader::readModelFile(
                             isAxis2End = true;
                         }
                     }
-                    if (! (isAxis1Beg && isAxis1End && isAxis2Beg && isAxis2End)){
-                        biorbd::utils::Error::raise("All the axes name and origin for the IMU " + name + " must be set and correspond to marker names previously defined on the same parent");
+                    if (! (isAxis1Beg && isAxis1End && isAxis2Beg && isAxis2End && isOrigin)){
+                        biorbd::utils::Error::raise("All the axes name and origin for the " + rtType + "(" + name + ") must be set and correspond to marker names previously defined on the same parent");
                     }
                     if (!(!axisToRecalculate.tolower().compare("firstaxis") || !axisToRecalculate.tolower().compare("secondaxis"))){
-                        biorbd::utils::Error::raise("The 'recalculate' option for IMU " + name + " must be 'firstaxis' or 'secondaxis'");
+                        biorbd::utils::Error::raise("The 'recalculate' option for " + rtType + "(" + name + ") must be 'firstaxis' or 'secondaxis'");
                     }
                     axisToRecalculate = !axisToRecalculate.tolower().compare("firstaxis") ? firstAxis : secondAxis;
 
