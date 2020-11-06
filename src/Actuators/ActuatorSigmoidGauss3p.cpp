@@ -100,38 +100,7 @@ biorbd::utils::Scalar biorbd::actuator::ActuatorSigmoidGauss3p::torqueMax(
     biorbd::utils::Scalar pos(Q[*m_dofIdx] * 180/M_PI);
     biorbd::utils::Scalar speed(Qdot[*m_dofIdx] * 180/M_PI);
 
-    // Tetanic torque max
-    biorbd::utils::Scalar Tc = *m_T0 * *m_wc / *m_wmax;
-    biorbd::utils::Scalar C = Tc * (*m_wmax + *m_wc); // concentric
-    biorbd::utils::Scalar we =
-            ( (*m_Tmax - *m_T0) * *m_wmax * *m_wc )
-            / ( *m_k * *m_T0 * (*m_wmax + *m_wc) );
-    biorbd::utils::Scalar E = -( *m_Tmax - *m_T0 ) * we; // excentric
-
-    biorbd::utils::Scalar Tw;
-#ifdef BIORBD_USE_CASADI_MATH
-    Tw = casadi::MX::if_else(casadi::MX::ge(speed, 0),
-                             C / ( *m_wc + speed )  - Tc,
-                             E / ( we - speed ) + *m_Tmax);
-#else
-    if (speed >= 0)
-        Tw = C / ( *m_wc + speed )  - Tc; // For the concentric
-    else
-        Tw = E / ( we - speed ) + *m_Tmax; // For the excentric
-#endif
-
-
-    // Differential activation
-    biorbd::utils::Scalar A =
-            *m_amin + ( *m_amax - *m_amin )
-            / ( 1 + biorbd::utils::Scalar(exp( -(speed - *m_w1) / *m_wr   )) );
-
-    // Torque angle
-    biorbd::utils::Scalar Ta = exp( -(*m_qopt - pos) * (*m_qopt - pos)   /   (2 * *m_r * *m_r)   );
-
-    // Calculation of the max torque
-    return Tw * A * Ta;
-
+    return (m_theta / (1 + exp(lamda * m_speed)) + m_offset) * exp(-(m_qopt * pos) * (m_qopt * pos) / (2 * m_r * m_r));
 }
 
 void biorbd::actuator::ActuatorSigmoidGauss3p::setType(){
