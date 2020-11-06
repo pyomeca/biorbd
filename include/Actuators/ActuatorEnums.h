@@ -12,7 +12,8 @@ enum TYPE {
     LINEAR,
     GAUSS3P,
     GAUSS6P,
-    NO_TYPE
+    NO_TYPE,
+    SIGMOIDGAUSS3P
 };
 
 ///
@@ -28,6 +29,7 @@ inline const char* TYPE_toStr(biorbd::actuator::TYPE type)
     case LINEAR: return "Linear";
     case GAUSS3P: return "Gauss3p";
     case GAUSS6P: return "Gauss6p";
+    case SIGMOIDGAUSS3P: return "SigmoidGauss3p";
     default: return "NoType";
     }
 }
