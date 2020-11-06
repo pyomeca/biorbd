@@ -306,7 +306,7 @@ TEST(ActuatorSigmoidGauss3p, torqueMax){
 #endif
     }
     {
-        std::vector<double> QDot_val(model.nbQdot);
+        std::vector<double> QDot_val(model.nbQdot());
         for (size_t i=0; i<QDot_val.size(); ++i){
             QDot_val[i] = -10;
         }
