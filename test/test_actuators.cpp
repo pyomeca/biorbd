@@ -13,6 +13,7 @@
 #include "Actuators/ActuatorGauss3p.h"
 #include "Actuators/ActuatorGauss6p.h"
 #include "Actuators/ActuatorLinear.h"
+#include "Actuators/ActuatorSigmoidGauss3p.h"
 
 static std::string modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");
 static std::string modelPathWithMissingActuator("models/withMissingActuator.bioMod");
@@ -277,3 +278,46 @@ TEST(Actuators, jointTorqueFromAllTypesOfActuators){
     }
 }
 
+TEST(ActuatorSigmoidGauss3p, torqueMax){
+    // A model is loaded so Q can be > 0 in size, it is not used otherwise
+    biorbd::Model model(modelPathWithAllActuators);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
+
+    biorbd::actuator::ActuatorSigmoidGauss3p sigmoid_gauss3p_torque_act(312.0781, 0.01, 3.2703, 56.4021, -25.6939);
+    std::vector<double> Q_val(model.nbQ());
+    for (size_t i=0; i<Q_val.size(); ++i){
+        Q_val[i] = 1.1;
+    }
+    FILL_VECTOR(Q, Q_val);
+    {
+        std::vector<double> QDot_val(model.nbQdot);
+        for (size_t i=0; i<QDot_val.size(); ++i){
+            QDot_val[i] = 10;
+        }
+
+        double torqueMaxExpected(135.3358);
+        FILL_VECTOR(QDot, QDot_val);
+        CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, sigmoid_gauss3p_torque_act, torqueMax, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected, requiredPrecision);
+#else
+        EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
+#endif
+    }
+    {
+        std::vector<double> QDot_val(model.nbQdot);
+        for (size_t i=0; i<QDot_val.size(); ++i){
+            QDot_val[i] = -10;
+        }
+
+        double torqueMaxExpected(149.2850);
+        FILL_VECTOR(QDot, QDot_val);
+        CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss3p_torque_act, torqueMax, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+        EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected, requiredPrecision);
+#else
+        EXPECT_NEAR(torqueMaxVal, torqueMaxExpected, requiredPrecision);
+#endif
+    }
+}
