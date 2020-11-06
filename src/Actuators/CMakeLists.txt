@@ -8,6 +8,7 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/ActuatorGauss3p.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/ActuatorGauss6p.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/ActuatorLinear.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ActuatorSigmoidGauss3p.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Actuators.cpp"
 )
 

@@ -10,6 +10,7 @@
 #include "Actuators/Actuator.h"
 #include "Actuators/ActuatorGauss3p.h"
 #include "Actuators/ActuatorGauss6p.h"
+#include "Actuators/ActuatorSigmoidGauss3p.h"
 #include "Actuators/ActuatorConstant.h"
 #include "Actuators/ActuatorLinear.h"
 
@@ -52,6 +53,9 @@ void biorbd::actuator::Actuators::DeepCopy(const biorbd::actuator::Actuators &ot
         else if ((*other.m_all)[i].first->type() == biorbd::actuator::TYPE::GAUSS6P)
             (*m_all)[i].first = std::make_shared<biorbd::actuator::ActuatorGauss6p>(
                     static_cast<const biorbd::actuator::ActuatorGauss6p&>( *(*other.m_all)[i].first) );
+        else if ((*other.m_all)[i].first->type() == biorbd::actuator::TYPE::SIGMOIDGAUSS3P)
+            (*m_all)[i].first = std::make_shared<biorbd::actuator::ActuatorSigmoidGauss3p>(
+                    static_cast<const biorbd::actuator::ActuatorSigmoidGauss3p&>( *(*other.m_all)[i].first) );
         else
             biorbd::utils::Error::raise("Actuator " + biorbd::utils::String(
                                             biorbd::actuator::TYPE_toStr((*other.m_all)[i].first->type()))
@@ -68,6 +72,9 @@ void biorbd::actuator::Actuators::DeepCopy(const biorbd::actuator::Actuators &ot
         else if ((*other.m_all)[i].second->type() == biorbd::actuator::TYPE::GAUSS6P)
             (*m_all)[i].second = std::make_shared<biorbd::actuator::ActuatorGauss6p>(
                     static_cast<const biorbd::actuator::ActuatorGauss6p&>( *(*other.m_all)[i].second) );
+        else if ((*other.m_all)[i].second->type() == biorbd::actuator::TYPE::SIGMOIDGAUSS3P)
+            (*m_all)[i].second = std::make_shared<biorbd::actuator::ActuatorSigmoidGauss3p>(
+                    static_cast<const biorbd::actuator::ActuatorSigmoidGauss3p&>( *(*other.m_all)[i].second) );
         else
             biorbd::utils::Error::raise("Actuator " + biorbd::utils::String(
                                             biorbd::actuator::TYPE_toStr((*other.m_all)[i].second->type()))
@@ -144,6 +151,17 @@ void biorbd::actuator::Actuators::addActuator(const biorbd::actuator::Actuator &
         }
         else{
             (*m_all)[idx].second = std::make_shared<biorbd::actuator::ActuatorGauss6p>(static_cast<const biorbd::actuator::ActuatorGauss6p&>(act));
+            (*m_isDofSet)[idx*2+1] = true;
+        }
+        return;
+    }
+    else if (act.type() == biorbd::actuator::TYPE::SIGMOIDGAUSS3P){
+        if (act.direction() == 1){
+            (*m_all)[idx].first = std::make_shared<biorbd::actuator::ActuatorSigmoidGauss3p>(static_cast<const biorbd::actuator::ActuatorSigmoidGauss3p&>(act));
+            (*m_isDofSet)[idx*2] = true;
+        }
+        else {
+            (*m_all)[idx].second = std::make_shared<biorbd::actuator::ActuatorSigmoidGauss3p>(static_cast<const biorbd::actuator::ActuatorSigmoidGauss3p&>(act));
             (*m_isDofSet)[idx*2+1] = true;
         }
         return;
@@ -251,6 +269,8 @@ biorbd::actuator::Actuators::torqueMax(
                     maxGeneralizedTorque_all.first[i] = std::static_pointer_cast<ActuatorLinear> (GeneralizedTorque_tp.first)->torqueMax(Q);
                 else if (std::dynamic_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp.first))
                     maxGeneralizedTorque_all.first[i] = std::static_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp.first)->torqueMax(Q, Qdot);
+                else if (std::dynamic_pointer_cast<ActuatorSigmoidGauss3p> (GeneralizedTorque_tp.first))
+                   maxGeneralizedTorque_all.first[i] = std::static_pointer_cast<ActuatorSigmoidGauss3p> (GeneralizedTorque_tp.first)->torqueMax(Q, Qdot);
                 else
                     biorbd::utils::Error::raise("Wrong type (should never get here because of previous safety)");
             else // Second
@@ -262,6 +282,8 @@ biorbd::actuator::Actuators::torqueMax(
                     maxGeneralizedTorque_all.second[i] = std::static_pointer_cast<ActuatorLinear> (GeneralizedTorque_tp.second)->torqueMax(Q);
                 else if (std::dynamic_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp.second))
                     maxGeneralizedTorque_all.second[i] = std::static_pointer_cast<ActuatorGauss6p> (GeneralizedTorque_tp.second)->torqueMax(Q, Qdot);
+                else if (std::dynamic_pointer_cast<ActuatorSigmoidGauss3p> (GeneralizedTorque_tp.second))
+                    maxGeneralizedTorque_all.second[i] = std::static_pointer_cast<ActuatorSigmoidGauss3p> (GeneralizedTorque_tp.second)->torqueMax(Q, Qdot);
                 else
                     biorbd::utils::Error::raise("Wrong type (should never get here because of previous safety)");
         }
@@ -313,6 +335,8 @@ biorbd::utils::Scalar biorbd::actuator::Actuators::getTorqueMaxDirection(
         return std::static_pointer_cast<ActuatorLinear> (actuator)->torqueMax(Q);
     else if (std::dynamic_pointer_cast<ActuatorGauss6p> (actuator))
         return std::static_pointer_cast<ActuatorGauss6p> (actuator)->torqueMax(Q, Qdot);
+    else if (std::dynamic_pointer_cast<ActuatorSigmoidGauss3p> (actuator))
+        return std::static_pointer_cast<ActuatorSigmoidGauss3p> (actuator)->torqueMax(Q, Qdot);
     else
         biorbd::utils::Error::raise("Wrong type (should never get here because of previous safety)");
 
