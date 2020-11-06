@@ -20,27 +20,23 @@ class BIORBD_API ActuatorSigmoidGauss3p : public Actuator
 {
 public:
     ///
-    /// \brief Construct Gauss3p actuator
+    /// \brief Construct SigmoidGauss3p actuator
     ///
     ActuatorSigmoidGauss3p();
 
     ///
-    /// \brief Construct Gauss3p actuator from another Gauss3p actuator
-    /// \param other The other Gauss3p actuator to copy
+    /// \brief Construct SigmoidGauss3p actuator from another SigmoidGauss3p actuator
+    /// \param other The other SigmoidGauss3p actuator to copy
     ///
     ActuatorSigmoidGauss3p(
             const biorbd::actuator::ActuatorSigmoidGauss3p& other);
 
     ///
-    /// \brief Construct Gauss3p actuator
-    /// \param direction The direction of the Gauss3p actuator (+1 or -1)
-    /// \param Tmax The maximal torque in the eccentric phase
-    /// \param T0 The maximal torque isometric
-    /// \param wmax Maximum angular velocity above which torque cannot be produced
-    /// \param wc Angluar velocity of the vertical asymptote of the concentric hyperbola
-    /// \param amin Low plateau level
-    /// \param wr 1/10 of the distance amax/amin
-    /// \param w1 Mid point plateau
+    /// \brief Construct SigmoidGauss3p actuator
+    /// \param direction The direction of the SigmoidGauss3p actuator (+1 or -1)
+    /// \param theta Amplitude of the sigmoid
+    /// \param lambda Tilt factor of the sigmoid
+    /// \param offset Height of the sigmoid
     /// \param r width of the gaussian curve
     /// \param qopt Optimal position
     /// \param dofIdx Index of the DoF associated with actuator
@@ -57,13 +53,9 @@ public:
     ///
     /// \brief Construct Gauss3p actuator
     /// \param direction The direction of the Gauss3p actuator
-    /// \param Tmax The maximal torque in the eccentric phase
-    /// \param T0 The maximal torque isometric
-    /// \param wmax Maximum angular velocity above which torque cannot be produced
-    /// \param wc Angluar velocity of the vertical asymptote of the concentric hyperbola
-    /// \param amin Low plateau level
-    /// \param wr 1/10 of the distance amax/amin
-    /// \param w1 Mid point plateau
+    /// \param theta Amplitude of the sigmoid
+    /// \param lambda Tilt factor of the sigmoid
+    /// \param offset Height of the sigmoid
     /// \param r width of the gaussian curve
     /// \param qopt Optimal position
     /// \param dofIdx Index of the DoF associated with actuator
@@ -85,14 +77,14 @@ public:
     virtual ~ActuatorSigmoidGauss3p();
 
     ///
-    /// \brief Deep copy of the Gauss3p actuator
-    /// \return A deep copy of the Gauss3p actuator
+    /// \brief Deep copy of the SigmoidGauss3p actuator
+    /// \return A deep copy of the SigmoidGauss3p actuator
     ///
     biorbd::actuator::ActuatorSigmoidGauss3p DeepCopy() const;
 
     /// 
-    /// \brief Deep copy of the Gauss3p actuator from another Gauss3p actuator
-    /// \param other The Gauss3p actuator to copy
+    /// \brief Deep copy of the SigmoidGauss3p actuator from another SigmoidGauss3p actuator
+    /// \param other The SigmoidGauss3p actuator to copy
     ///
     void DeepCopy(
             const biorbd::actuator::ActuatorSigmoidGauss3p& other);
@@ -120,9 +112,8 @@ protected:
     ///
     virtual void setType();             
 
-    // Coefficients needed for the Gauss3p
-    // For informations on these parameters, see Monique Iris Jackson's these from page 54
-    // Torque/angle relationship
+    // Coefficients needed for the SigmoidGauss3p
+    // Torque/angle relationship for the Gauss3p
     std::shared_ptr<biorbd::utils::Scalar> m_r;         ///< Width of the gaussian curve
     std::shared_ptr<biorbd::utils::Scalar> m_qopt;      ///< Optimal position
 
@@ -134,4 +125,4 @@ protected:
 
 }}
 
-#endif // BIORBD_ACTUATORS_ACTUATOR_GAUSS_3P_H
+#endif // BIORBD_ACTUATORS_ACTUATOR_SIGMOID_GAUSS_3P_H
