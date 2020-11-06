@@ -101,7 +101,7 @@ biorbd::utils::Scalar biorbd::actuator::ActuatorSigmoidGauss3p::torqueMax(
     biorbd::utils::Scalar speed(Qdot[*m_dofIdx] * 180/M_PI);
 
     // Getting Tmax of Guass3p from Sigmoid
-    biorbd::utils::Scalar Tmax(*m_theta / (1 + exp(*m_lamda * speed)) + *m_offset);
+    biorbd::utils::Scalar Tmax(*m_theta / (1 + exp(*m_lambda * speed)) + *m_offset);
 
     // Calculation of the max torque
     return Tmax * exp(-(*m_qopt * pos) * (*m_qopt * pos) / (2 * *m_r * *m_r));
