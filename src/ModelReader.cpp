@@ -780,7 +780,7 @@ void biorbd::Reader::readModelFile(
                 else if (!type.tolower().compare("sigmoidgauss3p")){
                     biorbd::utils::Error::check(isDofSet && isThetaSet && isLambdaSet && isOffsetSet && isrSet && isqoptSet,
                                         "Make sure all parameters are defined");
-                    actuator = new biorbd::actuator::ActuatorSigmoidGauss3p(int_direction, theta, lamba, offset, r, qopt, dofIdx, name);
+                    actuator = new biorbd::actuator::ActuatorSigmoidGauss3p(int_direction, theta, lambda, offset, r, qopt, dofIdx, name);
                 }
                 else {
                     biorbd::utils::Error::raise("Actuator do not correspond to an implemented one");
