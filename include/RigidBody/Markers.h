@@ -151,7 +151,7 @@ public:
     ///
     std::vector<biorbd::rigidbody::NodeSegment> markers(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            bool removeAxis=true,
+            bool removeAxis = true,
             bool updateKin = true); 
 
     ///
@@ -160,7 +160,7 @@ public:
     /// \return All the markers
     ///
     std::vector<biorbd::rigidbody::NodeSegment> markers(
-            bool removeAxis=true); 
+            bool removeAxis = true);
 
     ///
     /// \brief Return the velocity of a marker
@@ -175,7 +175,7 @@ public:
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedVelocity &Qdot,
             unsigned int  idx,
-            bool removeAxis=true,
+            bool removeAxis = true,
             bool updateKin = true);
 
 

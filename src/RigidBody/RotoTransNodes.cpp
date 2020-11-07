@@ -90,15 +90,11 @@ std::vector<biorbd::utils::RotoTransNode> biorbd::rigidbody::RotoTransNodes::RTs
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {
-    // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin) {
-        model.UpdateKinematicsCustom (&Q);
-    }
-
     std::vector<biorbd::utils::RotoTransNode> pos;
-    for (unsigned int i=0; i<nbRTs(); ++i)
-        pos.push_back(RT(Q, i, false));
+    for (unsigned int i=0; i<nbRTs(); ++i){
+        pos.push_back(RT(Q, i, updateKin));
+        updateKin = false;
+    }
 
     return pos;
 }
@@ -111,6 +107,9 @@ biorbd::utils::RotoTransNode biorbd::rigidbody::RotoTransNodes::RT(
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
     if (updateKin) {
         model.UpdateKinematicsCustom (&Q);
     }
@@ -128,17 +127,16 @@ std::vector<biorbd::utils::RotoTransNode> biorbd::rigidbody::RotoTransNodes::seg
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin) {
-        model.UpdateKinematicsCustom (&Q);
-    }
 
     // Segment name to find
     biorbd::utils::String name(model.segment(idx).name());
 
     std::vector<biorbd::utils::RotoTransNode> pos;
     for (unsigned int i=0; i<nbRTs(); ++i) // scan all the markers and select the right ones
-        if (!((*m_RTs)[i]).parent().compare(name))
-            pos.push_back(RT(Q,i,false));
+        if (!((*m_RTs)[i]).parent().compare(name)){
+            pos.push_back(RT(Q,i,updateKin));
+            updateKin = false;
+        }
 
     return pos;
 }
@@ -150,10 +148,9 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::RotoTransNodes::RTsJacobia
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin) {
-        model.UpdateKinematicsCustom (&Q);
-    }
-
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
     std::vector<biorbd::utils::Matrix> G;
 
     for (unsigned int idx=0; idx<nbRTs(); ++idx){
@@ -164,7 +161,10 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::RotoTransNodes::RTsJacobia
         biorbd::utils::Matrix G_tp(biorbd::utils::Matrix::Zero(9,model.dof_count));
 
         // Calculate the Jacobian of this Tag
-        model.CalcMatRotJacobian(Q, id, node.rot(), G_tp, false); // False for speed
+        model.CalcMatRotJacobian(Q, id, node.rot(), G_tp, updateKin); // False for speed
+#ifndef BIORBD_USE_CASADI_MATH
+    updateKin = false;
+#endif
 
         G.push_back(G_tp);
     }

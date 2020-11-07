@@ -138,18 +138,22 @@ std::vector<biorbd::utils::Vector3d> biorbd::rigidbody::Contacts::constraintsInG
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin) {
-        model.UpdateKinematicsCustom (&Q);
-    }
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
 
     // Output variable
     std::vector<biorbd::utils::Vector3d> tp;
 
 
     // On each control, apply the rotation and save the position
-    for (unsigned int i=0; i<size(); ++i)
+    for (unsigned int i=0; i<size(); ++i){
         tp.push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(
-                         model, Q, body[i], point[i], false));
+                         model, Q, body[i], point[i], updateKin));
+#ifndef BIORBD_USE_CASADI_MATH
+        updateKin = false;
+#endif
+    }
 
     return tp;
 }
