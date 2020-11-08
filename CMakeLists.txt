@@ -74,14 +74,14 @@ endif()
 if (IPOPT_FOUND)
     option(MODULE_STATIC_OPTIM "If Static optimization should be compiled" ON)
     if (BIORBD_USE_CASADI_MATH)
-        set(MODULE_STATIC_OPTIM OFF CACHE BOOL
-            "Static optimization can't be compiled along with Casadi" FORCE)
+        message(WARNING "Static optimization can't be compiled along with Casadi")
+        set(MODULE_STATIC_OPTIM OFF CACHE BOOL "" FORCE)
     endif()
 else()
     set(IPOPT_INCLUDE_DIR "")
     set(IPOPT_LIBRARY "")
-    set(MODULE_STATIC_OPTIM OFF CACHE BOOL
-        "Static optimization can't be compiled since Ipopt was not found" FORCE)
+    message(WARNING "Static optimization can't be compiled since Ipopt was not found")
+    set(MODULE_STATIC_OPTIM OFF CACHE BOOL "" FORCE)
 endif()
 
 if (TinyXML_FOUND)
@@ -90,8 +90,8 @@ if (TinyXML_FOUND)
 else()
     set(TinyXML_INCLUDE_DIR "")
     set(TinyXML_LIBRARY "")
-    set(MODULE_VTP_FILES_READER OFF CACHE BOOL
-        "VTP cannot be used since TinyXML was not found" FORCE)
+    message(WARNING "VTP cannot be used since TinyXML was not found")
+    set(MODULE_VTP_FILES_READER OFF CACHE BOOL "" FORCE)
 endif()
 
 
