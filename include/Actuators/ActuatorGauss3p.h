@@ -15,6 +15,7 @@ namespace actuator {
 ///
 /// \brief Class ActuatorGauss3p is a joint actuator type which maximum
 /// is 3 parameter gaussian (Gauss3p)
+/// Please note that all parameters are given in degrees
 ///
 class BIORBD_API ActuatorGauss3p : public Actuator
 {
