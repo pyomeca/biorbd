@@ -235,8 +235,8 @@ def test_markers():
 
     elif not biorbd.currentLinearAlgebraBackend():
         # If Eigen backend is used
-        markers = m.markers(q).to_array()
-        markers_dot = m.markersVelocity(q, q_dot).to_array()
+        markers = np.array([mark.to_array() for mark in m.markers(q)]).T
+        markers_dot = np.array([mark.to_array() for mark in m.markersVelocity(q, q_dot)]).T
 
     else:
         raise NotImplementedError("Backend not implemented in test")
