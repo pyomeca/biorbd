@@ -200,23 +200,9 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torque(
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::rigidbody::GeneralizedVelocity &Qdot)
 {
-    // Set qdot to be positive if concentric and negative is excentric
-    biorbd::rigidbody::GeneralizedVelocity QdotResigned(Qdot);
-    for (unsigned int i=0; i<Qdot.size(); ++i){
-#ifdef BIORBD_USE_CASADI_MATH
-        QdotResigned(i) = casadi::MX::if_else(
-                    casadi::MX::lt(activation(i), 0),
-                    -Qdot(i), Qdot(i));
-#else
-        if (activation(i)<0){
-            QdotResigned(i) = -Qdot(i);
-        }
-#endif
-    }
-
     // Calculate the maximal torques
     biorbd::rigidbody::GeneralizedTorque GeneralizedTorque(
-                torqueMax(activation,Q,QdotResigned));
+                torqueMax(activation,Q,Qdot));
 
     // Put the signs
     for (unsigned int i=0; i<GeneralizedTorque.size(); ++i)
@@ -281,19 +267,33 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torqueMax(
     // Assuming that this is also a Joints type (via BiorbdModel)
     const biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
 
+    // Set qdot to be positive if concentric and negative if excentric
+    biorbd::rigidbody::GeneralizedVelocity QdotResigned(Qdot);
+    for (unsigned int i=0; i<Qdot.size(); ++i){
+#ifdef BIORBD_USE_CASADI_MATH
+        QdotResigned(i) = casadi::MX::if_else(
+                    casadi::MX::lt(activation(i), 0),
+                    -Qdot(i), Qdot(i));
+#else
+        if (activation(i)<0){
+            QdotResigned(i) = -Qdot(i);
+        }
+#endif
+    }
+
     biorbd::rigidbody::GeneralizedTorque maxGeneralizedTorque_all(model);
 
     for (unsigned int i=0; i<model.nbDof(); ++i){
 #ifdef BIORBD_USE_CASADI_MATH
         maxGeneralizedTorque_all[i] = casadi::MX::if_else(
                     casadi::MX::ge(activation(i, 0), 0),
-                    getTorqueMaxDirection(actuator(i).first, Q, Qdot),
-                    getTorqueMaxDirection(actuator(i).second, Q, Qdot));
+                    getTorqueMaxDirection(actuator(i).first, Q, QdotResigned),
+                    getTorqueMaxDirection(actuator(i).second, Q, QdotResigned));
 #else
         if (activation[i] >= 0) // First
-            maxGeneralizedTorque_all[i] = getTorqueMaxDirection(actuator(i).first, Q, Qdot);
+            maxGeneralizedTorque_all[i] = getTorqueMaxDirection(actuator(i).first, Q, QdotResigned);
         else
-            maxGeneralizedTorque_all[i] = getTorqueMaxDirection(actuator(i).second, Q, Qdot);
+            maxGeneralizedTorque_all[i] = getTorqueMaxDirection(actuator(i).second, Q, QdotResigned);
 #endif
     }
 
