@@ -187,7 +187,7 @@ TEST(Actuators, jointTorqueFromAllTypesOfActuators){
             FILL_VECTOR(actuatorActivations, act_val);
 
             std::vector<double> tauExpected = {-2.5, -71.180973314287982, -28.111094840325926, -160.06339366097643, -30.025156051078717};
-            std::vector<double> torqueMaxExpected = {5, 99.349637237541288, 57.907864248091514, 320.12678732195286, 32.41793721294637};
+            std::vector<double> torqueMaxExpected = {5, 99.349637237541288, 57.907864248091514, 320.12678732195286, 60.050312102157434};
 
             CALL_BIORBD_FUNCTION_3ARGS(tau, model, torque, actuatorActivations, Q, QDot);
 #ifdef BIORBD_USE_CASADI_MATH
@@ -254,7 +254,7 @@ TEST(Actuators, jointTorqueFromAllTypesOfActuators){
             FILL_VECTOR(actuatorActivations, act_val);
 
             std::vector<double> tauExpected = {-2.5, -49.674818618770644, -28.953932124045757, -160.06339366097643, -16.208968606473185};
-            std::vector<double> torqueMaxExpected = {5, 142.36194662857596, 56.22218968065185, 320.12678732195286, 60.050312102157434};
+            std::vector<double> torqueMaxExpected = {5, 142.36194662857596, 56.22218968065185, 320.12678732195286, 60.050312102157434, 32.41793721294637};
 
             CALL_BIORBD_FUNCTION_3ARGS(tau, model, torque, actuatorActivations, Q, QDot);
 #ifdef BIORBD_USE_CASADI_MATH
