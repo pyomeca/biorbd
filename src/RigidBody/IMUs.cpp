@@ -88,15 +88,11 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::IMU(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {
-    // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin) {
-        model.UpdateKinematicsCustom (&Q);
-    }
-
     std::vector<biorbd::rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nbIMUs(); ++i)
-        pos.push_back(IMU(Q, i, false));
+    for (unsigned int i=0; i<nbIMUs(); ++i){
+        pos.push_back(IMU(Q, i, updateKin));
+        updateKin = false;
+    }
 
     return pos;
 }
@@ -109,6 +105,9 @@ biorbd::rigidbody::IMU biorbd::rigidbody::IMUs::IMU(
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
     if (updateKin) {
         model.UpdateKinematicsCustom (&Q);
     }
@@ -124,16 +123,11 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::technicalIMU(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {
-    // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin) {
-        model.UpdateKinematicsCustom (&Q);
-    }
-
     std::vector<biorbd::rigidbody::IMU> pos;
     for (unsigned int i=0; i<nbIMUs(); ++i)
         if ( IMU(i).isTechnical() ){
             pos.push_back(IMU(Q, i, updateKin));
+            updateKin = false;
         }
     return pos;
 }
@@ -152,16 +146,11 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::anatomicalIMU(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {
-    // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin) {
-        model.UpdateKinematicsCustom (&Q);
-    }
-
     std::vector<biorbd::rigidbody::IMU> pos;
     for (unsigned int i=0; i<nbIMUs(); ++i)
         if ( IMU(i).isAnatomical() ){
             pos.push_back(IMU(Q, i, updateKin));
+            updateKin = false;
         }
     return pos;
 }
@@ -182,17 +171,16 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::segmentIMU(
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin) {
-        model.UpdateKinematicsCustom (&Q);
-    }
 
     // Segment name to find
     biorbd::utils::String name(model.segment(idx).name());
 
     std::vector<biorbd::rigidbody::IMU> pos;
     for (unsigned int i=0; i<nbIMUs(); ++i) // scan all the markers and select the right ones
-        if (!((*m_IMUs)[i]).parent().compare(name))
-            pos.push_back(IMU(Q,i,false));
+        if (!((*m_IMUs)[i]).parent().compare(name)){
+            pos.push_back(IMU(Q,i,updateKin));
+            updateKin = false;
+        }
 
     return pos;
 }
@@ -222,9 +210,6 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::IMUJacobian(
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin) {
-        model.UpdateKinematicsCustom (&Q);
-    }
 
     std::vector<biorbd::utils::Matrix> G;
 
@@ -238,7 +223,7 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::IMUs::IMUJacobian(
         biorbd::utils::Matrix G_tp(biorbd::utils::Matrix::Zero(9,model.dof_count));
 
         // Calculate the Jacobian of this Tag
-        model.CalcMatRotJacobian(Q, id, node.rot(), G_tp, false); // False for speed
+        model.CalcMatRotJacobian(Q, id, node.rot(), G_tp, updateKin); // False for speed
 
         G.push_back(G_tp);
     }

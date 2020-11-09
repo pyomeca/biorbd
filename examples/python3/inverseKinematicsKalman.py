@@ -1,7 +1,9 @@
 import numpy as np
 import biorbd
+
 try:
     import BiorbdViz
+
     biorbd_viz_found = True
 except ModuleNotFoundError:
     biorbd_viz_found = False
@@ -27,15 +29,15 @@ nb_mus = model.nbMuscles()
 n_frames = 20
 
 # Generate clapping gesture data
-qinit = np.array([0, 0, -.3, 0.35, 1.15, -0.35, 1.15, 0, 0, 0, 0, 0, 0])
-qmid = np.array([0, 0, -.3, 0.5, 1.15, -0.5, 1.15, 0, 0, 0, 0, 0, 0])
-qfinal = np.array([0, 0, -.3, 0.35, 1.15, -0.35, 1.15, 0, 0, 0, 0, 0, 0])
+qinit = np.array([0, 0, -0.3, 0.35, 1.15, -0.35, 1.15, 0, 0, 0, 0, 0, 0])
+qmid = np.array([0, 0, -0.3, 0.5, 1.15, -0.5, 1.15, 0, 0, 0, 0, 0, 0])
+qfinal = np.array([0, 0, -0.3, 0.35, 1.15, -0.35, 1.15, 0, 0, 0, 0, 0, 0])
 target_q = np.concatenate((np.linspace(qinit, qmid, n_frames).T, np.linspace(qmid, qfinal, n_frames).T), axis=1)
-markers = np.ndarray((3, model.nbMarkers(), 2*n_frames))
+markers = np.ndarray((3, model.nbMarkers(), 2 * n_frames))
 for i, q in enumerate(target_q.T):
     markers[:, :, i] = np.array([mark.to_array() for mark in model.markers(q)]).T
 
-# If ones was using c3d data opened using ezc3d 
+# If ones was using c3d data opened using ezc3d
 # import ezc3d
 # c3d = ezc3d.c3d(data_filename)
 # markers = c3d['data']['points'][:3, :, :]  # XYZ1 x markers x time_frame
@@ -67,4 +69,3 @@ if biorbd_viz_found:
     b = BiorbdViz.BiorbdViz(loaded_model=model)
     b.load_movement(q_recons)
     b.exec()
-

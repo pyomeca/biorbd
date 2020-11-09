@@ -203,11 +203,14 @@ const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
         const biorbd::muscles::State &emg,
         int updateKin)
 {
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = 2;
+#endif
     // Update the configuration
     if (updateKin == 1)
         updateOrientations(model,Q,Qdot,false);
     else if (updateKin == 2)
-        updateOrientations(model,Q,Qdot,true);
+        updateOrientations(model,Q,Qdot,2);
     else
         biorbd::utils::Error::check(updateKin == 0, "Wrong level of update in force function");
 

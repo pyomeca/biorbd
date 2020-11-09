@@ -146,6 +146,9 @@ const biorbd::utils::RotoTrans& biorbd::muscles::WrappingCylinder::RT(
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         bool updateKin)
 {
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
     if (updateKin) {
         model.UpdateKinematicsCustom(&Q);
     }

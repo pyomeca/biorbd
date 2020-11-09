@@ -4,11 +4,13 @@ set(EXAMPLE_FILES
     "forwardKinematicsExample.cpp"
     "forwardDynamicsExample.cpp"
     "forwardDynamicsFromMusclesExample.cpp"
-    "inverseKinematicsKalmanExample.cpp"
     "inverseDynamicsExample.cpp"
 )
-if(MODULE_STATIC_OPTIM)
+if (MODULE_STATIC_OPTIM)
     list(APPEND EXAMPLE_FILES "staticOptimizationExample.cpp")
+endif()
+if (MODULE_KALMAN)
+    list(APPEND EXAMPLE_FILES "inverseKinematicsKalmanExample.cpp")
 endif()
 
 foreach(FILE ${EXAMPLE_FILES})

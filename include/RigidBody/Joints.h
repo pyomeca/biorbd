@@ -500,23 +500,27 @@ public:
     /// \brief Return the velocity of the center of mass 
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
+    /// \param updateKin If the kinematics of the model should be computed
     /// \return The velocity of the center of mass
     ///
     biorbd::utils::Vector3d CoMdot(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
-            const biorbd::rigidbody::GeneralizedVelocity &Qdot);
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+            bool updateKin=true);
 
     ///
     /// \brief Return the acceleration of the center of mass 
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param Qddot The acceleration variables
+    /// \param updateKin If the kinematics of the model should be computed
     /// \return The acceleration of the center of mass
     ///
     biorbd::utils::Vector3d CoMddot(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedVelocity &Qdot,
-            const biorbd::rigidbody::GeneralizedAcceleration &Qddot);
+            const biorbd::rigidbody::GeneralizedAcceleration &Qddot,
+            bool updateKin=true);
 
     /// 
     /// \brief Return the velocity of the center of mass of each segment
@@ -572,15 +576,17 @@ public:
             const biorbd::rigidbody::GeneralizedVelocity &Qdot,
             const biorbd::rigidbody::GeneralizedAcceleration &Qddot,
             const unsigned int idx,
-            bool updateKin=true);
+            bool updateKin = true);
 
     /// 
     /// \brief Return the jacobian matrix of the center of mass
     /// \param Q The generalized coordinates
+    /// \param updateKin If the kinematics of the model should be computed
     /// \return The jacobian matrix of the center of mass
     ///
     biorbd::utils::Matrix CoMJacobian(
-            const biorbd::rigidbody::GeneralizedCoordinates &Q); 
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            bool updateKin = true);
     // ------------------------ //
 
 

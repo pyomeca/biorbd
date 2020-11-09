@@ -7,6 +7,7 @@
 #include "Actuators/ActuatorLinear.h"
 #include "Actuators/ActuatorGauss3p.h"
 #include "Actuators/ActuatorGauss6p.h"
+#include "Actuators/ActuatorSigmoidGauss3p.h"
 %}
 
 
@@ -18,4 +19,5 @@
 %include "@CMAKE_SOURCE_DIR@/include/Actuators/ActuatorLinear.h"
 %include "@CMAKE_SOURCE_DIR@/include/Actuators/ActuatorGauss3p.h"
 %include "@CMAKE_SOURCE_DIR@/include/Actuators/ActuatorGauss6p.h"
+%include "@CMAKE_SOURCE_DIR@/include/Actuators/ActuatorSigmoidGauss3p.h"
 

@@ -13,6 +13,7 @@ class GeneralizedVelocity;
 namespace actuator {
 ///
 /// \brief Class ActuatorGauss6p is a joint actuator type which maximum is bimodal 6 parameter gaussian (Gauss6p)
+/// Please note that all parameters are given in degrees
 ///
 class BIORBD_API ActuatorGauss6p : public Actuator
 {

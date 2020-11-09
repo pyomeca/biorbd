@@ -25,6 +25,7 @@
 #include "Actuators/ActuatorLinear.h"
 #include "Actuators/ActuatorGauss3p.h"
 #include "Actuators/ActuatorGauss6p.h"
+#include "Actuators/ActuatorSigmoidGauss3p.h"
 #endif // MODULE_ACTUATORS
 
 #ifdef MODULE_MUSCLES
@@ -658,6 +659,9 @@ void biorbd::Reader::readModelFile(
                 double facteur6p(-1);       bool isFacteur6pSet = false;
                 double r2(-1);              bool isr2Set     = false;
                 double qopt2(-1);           bool isqopt2Set  = false;
+                double theta(-1);           bool isThetaSet  = false;
+                double lambda(-1);           bool isLambdaSet  = false;
+                double offset(-1);           bool isOffsetSet  = false;
 
 
                 while(file.read(property_tag) && property_tag.tolower().compare("endactuator")){
@@ -734,6 +738,18 @@ void biorbd::Reader::readModelFile(
                         file.read(qopt2, variable);
                         isqopt2Set = true;
                     }
+                    else if (!property_tag.tolower().compare("theta")){
+                        file.read(theta, variable);
+                        isThetaSet = true;
+                    }
+                    else if (!property_tag.tolower().compare("lambda")){
+                        file.read(lambda, variable);
+                        isLambdaSet = true;
+                    }
+                    else if (!property_tag.tolower().compare("offset")){
+                        file.read(offset, variable);
+                        isOffsetSet = true;
+                    }
                 }
                 // Verify that everything is there
                 biorbd::utils::Error::check(isTypeSet!=0, "Actuator type must be defined");
@@ -760,6 +776,11 @@ void biorbd::Reader::readModelFile(
                                         iswrSet && isw1Set && isrSet && isqoptSet && isFacteur6pSet && isr2Set && isqopt2Set,
                                         "Make sure all parameters are defined");
                     actuator = new biorbd::actuator::ActuatorGauss6p(int_direction,Tmax,T0,wmax,wc,amin,wr,w1,r,qopt,facteur6p, r2, qopt2, dofIdx,name);
+                }
+                else if (!type.tolower().compare("sigmoidgauss3p")){
+                    biorbd::utils::Error::check(isDofSet && isThetaSet && isLambdaSet && isOffsetSet && isrSet && isqoptSet,
+                                        "Make sure all parameters are defined");
+                    actuator = new biorbd::actuator::ActuatorSigmoidGauss3p(int_direction, theta, lambda, offset, r, qopt, dofIdx, name);
                 }
                 else {
                     biorbd::utils::Error::raise("Actuator do not correspond to an implemented one");

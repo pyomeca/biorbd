@@ -104,6 +104,9 @@ void biorbd::muscles::Geometry::updateKinematics(
     }
 
     // Make sure the model is in the right configuration
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = 2;
+#endif
     if (updateKin > 1)
         model.UpdateKinematicsCustom(Q, Qdot, nullptr);
 
@@ -130,6 +133,9 @@ void biorbd::muscles::Geometry::updateKinematics(biorbd::rigidbody::Joints &mode
                            " previously sent position and jacobian");
         *m_posAndJacoWereForced = false;
     }
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = 2;
+#endif
 
     // Ensure the model is in the right configuration
     if (updateKin > 1) {
