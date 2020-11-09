@@ -83,14 +83,15 @@ biorbd::rigidbody::NodeSegment biorbd::rigidbody::Markers::marker(
 {
     // Assuming that this is also a joint type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin)
-        model.UpdateKinematicsCustom(&Q);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
 
     unsigned int id = model.GetBodyId(n.parent().c_str());
     if (removeAxis)
-        return biorbd::rigidbody::NodeSegment(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, n.removeAxes(), false));
+        return biorbd::rigidbody::NodeSegment(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, n.removeAxes(), updateKin));
     else
-        return biorbd::rigidbody::NodeSegment(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, n, false));
+        return biorbd::rigidbody::NodeSegment(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, n, updateKin));
 }
 
 // Get a marker
@@ -102,8 +103,9 @@ biorbd::rigidbody::NodeSegment biorbd::rigidbody::Markers::marker(
 {
     // Assuming that this is also a joint type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin)
-        model.UpdateKinematicsCustom(&Q);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
 
     const biorbd::rigidbody::NodeSegment& node(marker(idx));
     unsigned int id = model.GetBodyId(node.parent().c_str());
@@ -111,8 +113,9 @@ biorbd::rigidbody::NodeSegment biorbd::rigidbody::Markers::marker(
     // Retrieve the position of the marker in the local reference
     const biorbd::rigidbody::NodeSegment& pos = marker(idx, removeAxis);
 
-    return biorbd::rigidbody::NodeSegment(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, pos, false));
+    return biorbd::rigidbody::NodeSegment(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, pos, updateKin));
 }
+
 // Get a marker
 biorbd::rigidbody::NodeSegment biorbd::rigidbody::Markers::marker(
         unsigned int idx,
@@ -131,14 +134,11 @@ std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::markers(
         bool removeAxis,
         bool updateKin)
 {
-    // Assuming that this is also a joint type (via BiorbdModel)
-    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin)
-        model.UpdateKinematicsCustom(&Q);
-
     std::vector<biorbd::rigidbody::NodeSegment> pos;
-    for (unsigned int i=0; i<nbMarkers(); ++i)
-        pos.push_back(marker(Q, i, removeAxis, false));
+    for (unsigned int i=0; i<nbMarkers(); ++i){
+        pos.push_back(marker(Q, i, removeAxis, updateKin));
+        updateKin = false;
+    }
 
     return pos;
 }
@@ -163,10 +163,9 @@ biorbd::rigidbody::NodeSegment biorbd::rigidbody::Markers::markerVelocity(
 {
     // Assuming that this is also a joint type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin) {
-        model.UpdateKinematicsCustom(&Q, &Qdot);
-    }
-
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
 
     const biorbd::rigidbody::NodeSegment& node(marker(idx));
     unsigned int id(model.GetBodyId(node.parent().c_str()));
@@ -175,7 +174,7 @@ biorbd::rigidbody::NodeSegment biorbd::rigidbody::Markers::markerVelocity(
     const biorbd::rigidbody::NodeSegment& pos(marker(idx, removeAxis));
 
     // Calculate the velocity of the point
-    return biorbd::rigidbody::NodeSegment(RigidBodyDynamics::CalcPointVelocity(model, Q, Qdot, id, pos, false));
+    return biorbd::rigidbody::NodeSegment(RigidBodyDynamics::CalcPointVelocity(model, Q, Qdot, id, pos, updateKin));
 }
 
 // Get the makers'velocities
@@ -185,15 +184,11 @@ std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::markersV
         bool removeAxis,
         bool updateKin)
 {
-    // Assuming that this is also a joint type (via BiorbdModel)
-    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin) {
-        model.UpdateKinematicsCustom(&Q);
-    }
-
     std::vector<biorbd::rigidbody::NodeSegment> pos;
-    for (unsigned int i=0; i<nbMarkers(); ++i)
-        pos.push_back(markerVelocity(Q, Qdot, i, removeAxis, false));
+    for (unsigned int i=0; i<nbMarkers(); ++i){
+        pos.push_back(markerVelocity(Q, Qdot, i, removeAxis, updateKin));
+        updateKin = false;
+    }
 
     return pos;
 }
@@ -204,16 +199,11 @@ std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::technica
         bool removeAxis,
         bool updateKin)
 {
-    // Assuming that this is also a joint type (via BiorbdModel)
-    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin) {
-        model.UpdateKinematicsCustom(&Q);
-    }
-
     std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i) {
         if ( marker(i).isTechnical() ) {
-            pos.push_back(marker(Q, i, removeAxis, false));
+            pos.push_back(marker(Q, i, removeAxis, updateKin));
+            updateKin = false;
         }
     }
     return pos;
@@ -224,8 +214,9 @@ std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::technica
 {
     std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i)
-        if ( marker(i).isTechnical() )
+        if ( marker(i).isTechnical() ) {
             pos.push_back(marker(i, removeAxis));// Forward kinematics
+        }
     return pos;
 }
 // Get the anatomical markers
@@ -234,22 +225,18 @@ std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::anatomic
         bool removeAxis,
         bool updateKin)
 {
-    // Assuming that this is also a joint type (via BiorbdModel)
-    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin) {
-        model.UpdateKinematicsCustom(&Q);
-    }
-
     std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i) {
         if ( marker(i).isAnatomical() ) {
-            pos.push_back(marker(Q, i, removeAxis, false));
+            pos.push_back(marker(Q, i, removeAxis, updateKin));
+            updateKin = false;
         }
     }
     return pos;
 }
 // Get the anatomical markers in a local reference
-std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::anatomicalMarkers(bool removeAxis)
+std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::anatomicalMarkers(
+        bool removeAxis)
 {
     std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i)
@@ -268,16 +255,16 @@ std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::segmentM
 {
     // Assuming that this is also a joint type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin)
-        model.UpdateKinematicsCustom(&Q, nullptr, nullptr);
 
     // Name of the segment to find
     const biorbd::utils::String& name(model.segment(idx).name());
 
     std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i) // Go through all the markers and select the right ones
-        if ((*m_marks)[i].parent().compare(name))
-            pos.push_back(marker(Q,i,removeAxis,false));
+        if ((*m_marks)[i].parent().compare(name)){
+            pos.push_back(marker(Q,i,removeAxis,updateKin));
+            updateKin = false;
+        }
 
     return pos;
 }
@@ -330,15 +317,14 @@ biorbd::utils::Matrix biorbd::rigidbody::Markers::markersJacobian(
 {
     // Assuming that this is also a joint type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin) {
-        model.UpdateKinematicsCustom(&Q);
-    }
-
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
     biorbd::utils::Matrix G(biorbd::utils::Matrix::Zero(3, model.nbQ()));;
 
     // Calculate the Jacobien of this Tag
     unsigned int id = model.GetBodyId(parentName.c_str());
-    RigidBodyDynamics::CalcPointJacobian(model, Q, id, p, G, false);
+    RigidBodyDynamics::CalcPointJacobian(model, Q, id, p, G, updateKin);
 
     return G;
 }
@@ -385,9 +371,9 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::markersJacobian(
 {
     // Assuming that this is also a joint type (via BiorbdModel)
     biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
-    if (updateKin) {
-        model.UpdateKinematicsCustom(&Q);
-    }
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
 
     std::vector<biorbd::utils::Matrix> G;
 
@@ -402,7 +388,10 @@ std::vector<biorbd::utils::Matrix> biorbd::rigidbody::Markers::markersJacobian(
         biorbd::utils::Matrix G_tp(biorbd::utils::Matrix::Zero(3,model.nbQ()));
 
         // Calculate the Jacobian of this Tag
-        RigidBodyDynamics::CalcPointJacobian(model, Q, id, pos, G_tp, false);
+        RigidBodyDynamics::CalcPointJacobian(model, Q, id, pos, G_tp, updateKin);
+#ifndef BIORBD_USE_CASADI_MATH
+        updateKin = false;
+#endif
 
         G.push_back(G_tp);
     }

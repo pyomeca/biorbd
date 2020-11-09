@@ -151,6 +151,9 @@ const biorbd::utils::Scalar& biorbd::muscles::Muscle::length(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         int updateKin)
 {
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = 2;
+#endif
     if (updateKin != 0) {
         m_position->updateKinematics(
                     model,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
@@ -164,6 +167,9 @@ const biorbd::utils::Scalar& biorbd::muscles::Muscle::musculoTendonLength(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         int updateKin)
 {
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = 2;
+#endif
     if (updateKin != 0) {
         m_position->updateKinematics(
                     m,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
@@ -178,6 +184,9 @@ const biorbd::utils::Scalar& biorbd::muscles::Muscle::velocity(
         const biorbd::rigidbody::GeneralizedVelocity &Qdot,
         bool updateKin)
 {
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
     if (updateKin) {
         m_position->updateKinematics(
                     model,*m_characteristics,*m_pathChanger,&Q,&Qdot);

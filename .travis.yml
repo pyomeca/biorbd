@@ -73,7 +73,7 @@ script:
         conda activate biorbd_casadi;
         mkdir build_casadi;
         cd build_casadi;
-        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_casadi/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..;
+        cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_casadi/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=OFF -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..;
         make install;
       fi
     - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then

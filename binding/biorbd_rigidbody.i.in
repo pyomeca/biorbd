@@ -43,23 +43,6 @@ namespace std {
 %template(PairBiorbdNodeSegment) std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>;
 }
 
-// Exposing some useful functions
-%extend biorbd::Model{
-#ifdef BIORBD_USE_CASADI_MATH
-    casadi::MX markers(
-                const casadi::MX &Q){
-        std::vector<biorbd::rigidbody::NodeSegment> allMarkers(self->biorbd::rigidbody::Markers::markers(Q));
-        casadi::MX out(3, allMarkers.size());
-        for (unsigned int i=0; i<allMarkers.size(); ++i){
-            for (unsigned int j=0; j<3; ++j){
-                out(j, i) = allMarkers[i](j);
-            }
-        }
-        return out;
-    }
-#endif
-}
-
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/RigidBodyEnums.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Joints.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Segment.h"
