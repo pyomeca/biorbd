@@ -6,11 +6,11 @@ import biorbd
 
 
 def test_load_model():
-    biorbd.Model("pyomecaman.bioMod")
+    biorbd.Model("../../models/pyomecaman.bioMod")
 
 
 def test_dof_ranges():
-    m = biorbd.Model("pyomecaman.bioMod")
+    m = biorbd.Model("../../models/pyomecaman.bioMod")
     pi = 3.14159265358979323846
 
     # Pelvis
@@ -68,7 +68,7 @@ def test_dof_ranges():
 
 
 def test_forward_dynamics():
-    m = biorbd.Model("pyomecaman_withActuators.bioMod")
+    m = biorbd.Model("../../models/pyomecaman_withActuators.bioMod")
 
     q = np.array([i * 1.1 for i in range(m.nbQ())])
     qdot = np.array([i * 1.1 for i in range(m.nbQ())])
@@ -113,7 +113,7 @@ def test_forward_dynamics():
 
 
 def test_forward_dynamics_with_external_forces():
-    m = biorbd.Model("pyomecaman_withActuators.bioMod")
+    m = biorbd.Model("../../models/pyomecaman_withActuators.bioMod")
 
     q = np.array([i * 1.1 for i in range(m.nbQ())])
     qdot = np.array([i * 1.1 for i in range(m.nbQ())])
@@ -172,7 +172,7 @@ def test_forward_dynamics_with_external_forces():
 
 
 def test_CoM():
-    m = biorbd.Model("pyomecaman.bioMod")
+    m = biorbd.Model("../../models/pyomecaman.bioMod")
 
     q = np.array([0.1, 0.1, 0.1, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3])
     q_dot = np.array([1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3])
@@ -212,7 +212,7 @@ def test_CoM():
 
 
 def test_markers():
-    m = biorbd.Model("pyomecaman.bioMod")
+    m = biorbd.Model("../../models/pyomecaman.bioMod")
 
     q = np.array([0.1, 0.1, 0.1, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3])
     q_dot = np.array([1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3])
@@ -246,7 +246,7 @@ def test_markers():
 
 
 def test_forward_dynamics_constraints_direct():
-    m = biorbd.Model("pyomecaman.bioMod")
+    m = biorbd.Model("../../models/pyomecaman.bioMod")
 
     q = np.array([1.0 for i in range(m.nbQ())])
     qdot = np.array([1.0 for i in range(m.nbQ())])
