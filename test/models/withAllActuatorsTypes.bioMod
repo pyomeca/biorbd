@@ -24,7 +24,7 @@ endsegment
             direction    positive
             Tmax    10.000000
         endactuator
-	actuator    Seg0
+        actuator    Seg0
             type    Constant
             dof    TransY
             direction    negative
@@ -44,7 +44,7 @@ endsegment
             qopt	14.193982
             r	    65.925096
         endactuator
-	actuator    Seg0
+        actuator    Seg0
             type    Gauss3p
             dof    TransZ
             direction    negative
@@ -92,6 +92,26 @@ endsegment
             r2      60.375000
             qopt2   24.694161
         endactuator
+        actuator    Seg0
+            type    SigmoidGauss3p
+            dof     RotX
+            direction   positive
+            theta   312.0781
+            lambda  0.01
+            offset  3.2703
+            r       56.4021
+            qopt    -25.6939
+        endactuator
+        actuator    Seg0
+            type    SigmoidGauss3p
+            dof     RotX
+            direction   negative
+            theta   312.0781
+            lambda  0.01
+            offset  3.2703
+            r       56.4021
+            qopt    -25.6939
+        endactuator
 
 // Seg1
 segment Seg1
@@ -123,5 +143,5 @@ endsegment
             direction    negative
             T0    5.000000
 	          slope 5
-      	endactuator
+      	endactuato  
 
