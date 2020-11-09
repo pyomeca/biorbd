@@ -361,7 +361,6 @@ TEST(hillType, unitTest)
         biorbd::rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
-        model.updateMuscles(Q, 2);
         hillType.updateOrientations(model, Q, qDot);
         static double activationEmgForHillTypeTest(1);
         biorbd::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
@@ -435,7 +434,7 @@ TEST(hillType, unitTest)
         biorbd::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(force, hillType.force(model, Q, qDot, emg, 2));
-        EXPECT_NEAR(force, 2765168686.2271094, requiredPrecision);
+        EXPECT_NEAR(force, 424.95358302550062, requiredPrecision);
     }
 }
 
