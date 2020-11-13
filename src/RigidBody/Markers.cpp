@@ -177,7 +177,7 @@ biorbd::rigidbody::NodeSegment biorbd::rigidbody::Markers::markerVelocity(
     return biorbd::rigidbody::NodeSegment(RigidBodyDynamics::CalcPointVelocity(model, Q, Qdot, id, pos, updateKin));
 }
 
-// Get the makers'velocities
+// Get the makers' velocities
 std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::markersVelocity(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedVelocity &Qdot,
