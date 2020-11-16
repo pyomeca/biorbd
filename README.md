@@ -1,4 +1,5 @@
 # BIORBD
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-success" alt="License"/></a>
 
 BIORBD is a library to analyze biomechanical data. It provides several useful functions for the direct and inverse flow including rigid body (based on *Feathestone* equations implemented in RBDL) and muscle elements.
 
