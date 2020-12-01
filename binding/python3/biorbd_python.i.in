@@ -14,6 +14,7 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
+#include "RigidBody/IMU.h"
 %}
 
 %include "@CMAKE_CURRENT_SOURCE_DIR@/numpy.i"
@@ -959,6 +960,30 @@ biorbd::rigidbody::GeneralizedAcceleration * {
 };
 
 %extend biorbd::utils::RotoTrans{
+#ifdef BIORBD_USE_CASADI_MATH
+    casadi::MX to_mx(){
+        return *dynamic_cast<casadi::MX*>($self);
+    };
+#else
+    PyObject* to_array(){
+        int nArraySize(2);
+        npy_intp * arraySizes = new npy_intp[nArraySize];
+        arraySizes[0] = 4;
+        arraySizes[1] = 4;
+
+        double * values = new double[4*4];
+        for (unsigned int i=0; i<4; ++i){
+            for (unsigned int j=0; j<4; ++j){
+                values[i*4+j] = (*$self)(j*4+i);
+            }
+        }
+        PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, values);
+        PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+        return output;
+    }
+#endif
+};
+%extend biorbd::rigidbody::IMU{
 #ifdef BIORBD_USE_CASADI_MATH
     casadi::MX to_mx(){
         return *dynamic_cast<casadi::MX*>($self);

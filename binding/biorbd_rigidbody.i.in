@@ -41,6 +41,8 @@ namespace std {
 %template(MatBiorbdMeshFace) std::vector<std::vector<biorbd::rigidbody::MeshFace>>;
 
 %template(PairBiorbdNodeSegment) std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>;
+%template(VecBiorbdIMU) std::vector<biorbd::rigidbody::IMU>;
+%template(MatBiorbdIMU) std::vector<std::vector<biorbd::rigidbody::IMU>>;
 }
 
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/RigidBodyEnums.h"
