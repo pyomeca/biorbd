@@ -7,6 +7,7 @@
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
+#include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
@@ -187,6 +188,46 @@ std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::markersV
     std::vector<biorbd::rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i){
         pos.push_back(markerVelocity(Q, Qdot, i, removeAxis, updateKin));
+        updateKin = false;
+    }
+
+    return pos;
+}
+
+biorbd::rigidbody::NodeSegment biorbd::rigidbody::Markers::markerAcceleration(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+        const biorbd::rigidbody::GeneralizedAcceleration &Qddot,
+        unsigned int idx,
+        bool removeAxis,
+        bool updateKin)
+{
+    // Assuming that this is also a joint type (via BiorbdModel)
+    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+
+    const biorbd::rigidbody::NodeSegment& node(marker(idx));
+    unsigned int id(model.GetBodyId(node.parent().c_str()));
+
+    // Retrieve the position of the marker in the local reference
+    const biorbd::rigidbody::NodeSegment& pos(marker(idx, removeAxis));
+
+    // Calculate the acceleration of the point
+    return biorbd::rigidbody::NodeSegment(RigidBodyDynamics::CalcPointAcceleration(model, Q, Qdot, Qddot, id, pos, updateKin));
+}
+
+std::vector<biorbd::rigidbody::NodeSegment> biorbd::rigidbody::Markers::markerAcceleration(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+        const biorbd::rigidbody::GeneralizedAcceleration &Qddot,
+        bool removeAxis,
+        bool updateKin)
+{
+    std::vector<biorbd::rigidbody::NodeSegment> pos;
+    for (unsigned int i=0; i<nbMarkers(); ++i){
+        pos.push_back(markerAcceleration(Q, Qdot, Qddot, i, removeAxis, updateKin));
         updateKin = false;
     }
 

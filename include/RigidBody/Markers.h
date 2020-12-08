@@ -14,6 +14,7 @@ class Matrix;
 namespace rigidbody {
 class GeneralizedCoordinates;
 class GeneralizedVelocity;
+class GeneralizedAcceleration;
 class NodeSegment;
 
 ///
@@ -174,7 +175,7 @@ public:
     biorbd::rigidbody::NodeSegment markerVelocity(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedVelocity &Qdot,
-            unsigned int  idx,
+            unsigned int idx,
             bool removeAxis = true,
             bool updateKin = true);
 
@@ -192,6 +193,41 @@ public:
             const biorbd::rigidbody::GeneralizedVelocity &Qdot,
             bool removeAxis=true,
             bool updateKin = true); 
+
+    ///
+    /// \brief Return the acceleration of a marker
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param Qddot The generalized accelerations
+    /// \param idx The index of the marker in the marker set
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param updateKin If the model should be updated
+    /// \return The acceleration of a marker
+    ///
+    biorbd::rigidbody::NodeSegment markerAcceleration(
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+            const biorbd::rigidbody::GeneralizedAcceleration &Qddot,
+            unsigned int idx,
+            bool removeAxis = true,
+            bool updateKin = true);
+
+
+    ///
+    /// \brief Return the acceleration of all the markers
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param Qddot The generalized velocities
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param updateKin If the model should be updated
+    /// \return The acceleration of all the markers
+    ///
+    std::vector<biorbd::rigidbody::NodeSegment> markerAcceleration(
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+            const biorbd::rigidbody::GeneralizedAcceleration &dQdot,
+            bool removeAxis=true,
+            bool updateKin = true);
 
     ///
     /// \brief Return all the technical markers at a given Q in the global reference frame
