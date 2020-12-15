@@ -12,11 +12,14 @@ if currentLinearAlgebraBackend() == 1:
     from casadi import Function, MX
 
 
-def surface_max_torque_actuator(model, dof, resolution=40):
+def surface_max_torque_actuator(model, dof, resolution=40, convert_to_degree=False):
     if not matplotlib_found:
         raise ModuleNotFoundError("matplotlib must be installed to use biorbd.surface_max_torque_actuator")
 
-    d2r = np.pi / 180
+    if convert_to_degree:
+        d2r = np.pi / 180
+    else:
+        d2r = 1
     min_bound_q = -200 * d2r
     max_bound_q = 200 * d2r
     min_bound_qdot = -500 * d2r
