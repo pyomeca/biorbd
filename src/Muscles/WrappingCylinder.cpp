@@ -8,6 +8,7 @@
 biorbd::muscles::WrappingCylinder::WrappingCylinder() :
     biorbd::muscles::WrappingObject (),
     m_dia(std::make_shared<biorbd::utils::Scalar>(0)),
+    m_length(std::make_shared<biorbd::utils::Scalar>(0)),
     m_isCylinderPositiveSign(std::make_shared<bool>(true)),
     m_RTtoParent(std::make_shared<biorbd::utils::RotoTrans>()),
     m_p1Wrap(std::make_shared<biorbd::utils::Vector3d>()),
@@ -20,9 +21,11 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder() :
 biorbd::muscles::WrappingCylinder::WrappingCylinder(
         const biorbd::utils::RotoTrans &rt,
         const biorbd::utils::Scalar& diameter,
+        const biorbd::utils::Scalar& length,
         bool isCylinderPositiveSign) :
     biorbd::muscles::WrappingObject (rt.trans()),
     m_dia(std::make_shared<biorbd::utils::Scalar>(diameter)),
+    m_length(std::make_shared<biorbd::utils::Scalar>(length)),
     m_isCylinderPositiveSign(std::make_shared<bool>(isCylinderPositiveSign)),
     m_RTtoParent(std::make_shared<biorbd::utils::RotoTrans>(rt)),
     m_p1Wrap(std::make_shared<biorbd::utils::Vector3d>()),
@@ -35,11 +38,13 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder(
 biorbd::muscles::WrappingCylinder::WrappingCylinder(
         const biorbd::utils::RotoTrans &rt,
         const biorbd::utils::Scalar& diameter,
+        const biorbd::utils::Scalar& length,
         bool isCylinderPositiveSign,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName) :
     biorbd::muscles::WrappingObject (rt.trans(), name, parentName),
     m_dia(std::make_shared<biorbd::utils::Scalar>(diameter)),
+    m_length(std::make_shared<biorbd::utils::Scalar>(length)),
     m_isCylinderPositiveSign(std::make_shared<bool>(isCylinderPositiveSign)),
     m_RTtoParent(std::make_shared<biorbd::utils::RotoTrans>(rt)),
     m_p1Wrap(std::make_shared<biorbd::utils::Vector3d>()),
@@ -60,6 +65,7 @@ void biorbd::muscles::WrappingCylinder::DeepCopy(const biorbd::muscles::Wrapping
 {
     biorbd::muscles::WrappingObject::DeepCopy(other);
     *m_dia = *other.m_dia;
+    *m_length = *other.m_length;
     *m_isCylinderPositiveSign = *other.m_isCylinderPositiveSign;
     *m_RTtoParent = *other.m_RTtoParent;
     *m_p1Wrap = other.m_p1Wrap->DeepCopy();
@@ -166,6 +172,17 @@ const biorbd::utils::Scalar& biorbd::muscles::WrappingCylinder::diameter() const
 biorbd::utils::Scalar biorbd::muscles::WrappingCylinder::radius() const
 {
     return *m_dia/2;
+}
+
+void biorbd::muscles::WrappingCylinder::setLength(
+        const biorbd::utils::Scalar& val)
+{
+    *m_length = val;
+}
+
+const biorbd::utils::Scalar& biorbd::muscles::WrappingCylinder::length() const
+{
+    return *m_length;
 }
 
 void biorbd::muscles::WrappingCylinder::findTangentToCircle(

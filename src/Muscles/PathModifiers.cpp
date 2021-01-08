@@ -26,8 +26,10 @@ biorbd::muscles::PathModifiers biorbd::muscles::PathModifiers::DeepCopy() const
 void biorbd::muscles::PathModifiers::DeepCopy(const biorbd::muscles::PathModifiers &other)
 {
     m_obj->resize(other.m_obj->size());
-    for (unsigned int i=0; i<other.m_obj->size(); ++i)
+    for (unsigned int i=0; i<other.m_obj->size(); ++i){
+        (*m_obj)[i] = std::make_shared<biorbd::utils::Vector3d>();
         *(*m_obj)[i] = (*other.m_obj)[i]->DeepCopy();
+    }
     *m_nbWraps = *other.m_nbWraps;
     *m_nbVia = *other.m_nbVia;
     *m_totalObjects = *other.m_totalObjects;

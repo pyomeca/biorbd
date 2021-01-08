@@ -55,13 +55,14 @@ endmusclegroup
 		maxVelocity 		10
 	endmuscle
 
-		wrappingobject cyl1
+		wrapping cyl1
 			parent Seg0
+			type cylinder
             RT pi/10 pi/8 pi/6 xyz 0.1 0.2 0.3
 			muscle line
 			musclegroup 		Seg02seg1
 			diameter 0.1
 			length 2
 			wrappingside 1
-		endwrappingobject
+		endwrapping
 		
