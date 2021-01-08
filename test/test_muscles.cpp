@@ -1535,10 +1535,6 @@ TEST(WrappingCylinder, unitTest)
             biorbd::utils::Vector3d(1., 1., 1.), biorbd::utils::Vector3d(1., 1., 1.), "xyz");
 
         biorbd::muscles::WrappingCylinder wrappingCylinder;
-        
-        wrappingCylinder.setLength(2.0);
-        SCALAR_TO_DOUBLE(length, wrappingCylinder.length());
-        EXPECT_NEAR(length, 2.0, requiredPrecision);
 
         wrappingCylinder.setDiameter(1.5);
         SCALAR_TO_DOUBLE(diameter, wrappingCylinder.diameter());
@@ -1553,15 +1549,15 @@ TEST(WrappingCylinder, unitTest)
         biorbd::utils::RotoTrans rt(
             biorbd::utils::Vector3d(1., 1., 1.), biorbd::utils::Vector3d(1., 1., 1.), "xyz");
 
-        biorbd::muscles::WrappingCylinder wrappingCylinder(rt, 0.5, 1.5, true);
-        SCALAR_TO_DOUBLE(length, wrappingCylinder.length());
-        EXPECT_NEAR(length, 1.5, requiredPrecision);
+        biorbd::muscles::WrappingCylinder wrappingCylinder(rt, 0.5, true);
+        SCALAR_TO_DOUBLE(diameter, wrappingCylinder.diameter());
+        EXPECT_NEAR(diameter, 0.5, requiredPrecision);
     }
     {
         biorbd::utils::RotoTrans rt(
             biorbd::utils::Vector3d(1., 1., 1.), biorbd::utils::Vector3d(1., 1., 1.), "xyz");
 
-        biorbd::muscles::WrappingCylinder wrappingCylinder(rt, 0.5, 1.5, true, "name", "parentName");
+        biorbd::muscles::WrappingCylinder wrappingCylinder(rt, 0.5, true, "name", "parentName");
         EXPECT_STREQ(wrappingCylinder.parent().c_str(), "parentName");
     }
     {
@@ -1599,7 +1595,7 @@ TEST(WrappingCylinder, deepCopy)
     biorbd::utils::RotoTrans rt(
         biorbd::utils::Vector3d(1, 1, 1), biorbd::utils::Vector3d(1, 1, 1), "xyz");
 
-    biorbd::muscles::WrappingCylinder wrappingCylinder(rt, 0.5, 1.5, true);
+    biorbd::muscles::WrappingCylinder wrappingCylinder(rt, 0.5, true);
 
     biorbd::muscles::WrappingCylinder shallowCopy(wrappingCylinder);
     biorbd::muscles::WrappingCylinder deepCopyNow(wrappingCylinder.DeepCopy());
@@ -1607,29 +1603,29 @@ TEST(WrappingCylinder, deepCopy)
     deepCopyLater.DeepCopy(wrappingCylinder);
 
     {
-        SCALAR_TO_DOUBLE(length, wrappingCylinder.length());
-        SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.length());
-        SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.length());
-        SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.length());
-        EXPECT_NEAR(length, 1.5, requiredPrecision);
-        EXPECT_NEAR(shallowCopyLength, 1.5, requiredPrecision);
-        EXPECT_NEAR(deepCopyNowLength, 1.5, requiredPrecision);
-        EXPECT_NEAR(deepCopyLaterLength, 1.5, requiredPrecision);
+        SCALAR_TO_DOUBLE(diameter, wrappingCylinder.diameter());
+        SCALAR_TO_DOUBLE(shallowCopyDiameter, shallowCopy.diameter());
+        SCALAR_TO_DOUBLE(deepCopyNowDiameter, deepCopyNow.diameter());
+        SCALAR_TO_DOUBLE(deepCopyLaterDiameter, deepCopyLater.diameter());
+        EXPECT_NEAR(diameter, 0.5, requiredPrecision);
+        EXPECT_NEAR(shallowCopyDiameter, 0.5, requiredPrecision);
+        EXPECT_NEAR(deepCopyNowDiameter, 0.5, requiredPrecision);
+        EXPECT_NEAR(deepCopyLaterDiameter, 0.5, requiredPrecision);
     }
 
-    // Set new length
-    wrappingCylinder.setLength(2.0);
+    // Set new diameter
+    wrappingCylinder.setDiameter(2.0);
 
     // Check values
     {
-        SCALAR_TO_DOUBLE(length, wrappingCylinder.length());
-        SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.length());
-        SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.length());
-        SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.length());
-        EXPECT_NEAR(length, 2., requiredPrecision);
-        EXPECT_NEAR(shallowCopyLength, 2., requiredPrecision);
-        EXPECT_NEAR(deepCopyNowLength, 1.5, requiredPrecision);
-        EXPECT_NEAR(deepCopyLaterLength, 1.5, requiredPrecision);
+        SCALAR_TO_DOUBLE(diameter, wrappingCylinder.diameter());
+        SCALAR_TO_DOUBLE(shallowCopyDiameter, shallowCopy.diameter());
+        SCALAR_TO_DOUBLE(deepCopyNowDiameter, deepCopyNow.diameter());
+        SCALAR_TO_DOUBLE(deepCopyLaterDiameter, deepCopyLater.diameter());
+        EXPECT_NEAR(diameter, 2., requiredPrecision);
+        EXPECT_NEAR(shallowCopyDiameter, 2., requiredPrecision);
+        EXPECT_NEAR(deepCopyNowDiameter, 1.5, requiredPrecision);
+        EXPECT_NEAR(deepCopyLaterDiameter, 1.5, requiredPrecision);
     }
 }
 
