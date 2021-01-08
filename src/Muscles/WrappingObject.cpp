@@ -44,12 +44,14 @@ biorbd::muscles::WrappingObject::WrappingObject(
         const biorbd::utils::Vector3d &other,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName) :
-    biorbd::utils::Vector3d (other, name, parentName)
+    biorbd::utils::Vector3d (other, name, parentName),
+    m_RT(std::make_shared<biorbd::utils::RotoTrans>())
 {
     *m_typeOfNode = biorbd::utils::NODE_TYPE::WRAPPING_OBJECT;
 }
 
-void biorbd::muscles::WrappingObject::DeepCopy(const biorbd::muscles::WrappingObject &other)
+void biorbd::muscles::WrappingObject::DeepCopy(
+        const biorbd::muscles::WrappingObject &other)
 {
     biorbd::utils::Vector3d::DeepCopy(other);
     *m_RT = *other.m_RT;
