@@ -984,7 +984,7 @@ void biorbd::Reader::readModelFile(
             biorbd::utils::Error::raise("Biorbd was build without the module Muscles but the model defines a viapoint");
     #endif // MODULE_MUSCLES
             }
-            else if (!main_tag.tolower().compare("wrap")){
+            else if (!main_tag.tolower().compare("wrappingobject")){
     #ifdef MODULE_MUSCLES
                 biorbd::utils::String name;
                 file.read(name); // Name of the wrapping
@@ -996,12 +996,14 @@ void biorbd::Reader::readModelFile(
                 int iMuscle(-1);
                 biorbd::utils::String parent("");
                 biorbd::utils::RotoTrans RT;
+                bool isRTset(false);
+                bool RTinMatrix(false);
                 double dia(0);
                 double length(0);
                 int side(1);
 
                 // Read file
-                while(file.read(property_tag) && property_tag.tolower().compare("endwrapping")){
+                while(file.read(property_tag) && property_tag.tolower().compare("endwrappingobject")){
                     if (!property_tag.tolower().compare("parent")){
                         // Dynamically find the parent number
                         file.read(parent);
@@ -1009,10 +1011,31 @@ void biorbd::Reader::readModelFile(
                         // If parent_int still equals zero, no name has concurred
                         biorbd::utils::Error::check(model->IsBodyId(idx), "Wrong origin parent name for a muscle");
                     }
+                    else if (!property_tag.tolower().compare("rtinmatrix")){
+                        biorbd::utils::Error::check(isRTset==false, "RT should not appear before RTinMatrix");
+                        file.read(RTinMatrix);
+                    }
                     else if (!property_tag.tolower().compare("rt")){
-                        for (unsigned int i=0; i<4;++i)
-                            for (unsigned int j=0; j<4; ++j)
-                                file.read(RT(i,j), variable);
+                        if (RTinMatrix){ // Matrix 4x4
+                            for (unsigned int i=0; i<4;++i)
+                                for (unsigned int j=0; j<4;++j)
+                                        file.read(RT(i,j), variable);
+                        }
+                        else {
+                            biorbd::utils::String seq("xyz");
+                            biorbd::utils::Vector3d rot(0, 0, 0);
+                            biorbd::utils::Vector3d trans(0, 0, 0);
+                            // Transcribe the rotations
+                            for (unsigned int i=0; i<3; ++i)
+                                file.read(rot(i));
+                            // Transcribe the angle sequence for the rotations
+                            file.read(seq);
+                            // Transcribe the translations
+                            for (unsigned int i=0; i<3; ++i)
+                                file.read(trans(i));
+                            RT = biorbd::utils::RotoTrans(rot, trans, seq);
+                        }
+                        isRTset = true;
                     }
                     else if (!property_tag.tolower().compare("muscle"))
                         file.read(muscle);
@@ -1027,7 +1050,7 @@ void biorbd::Reader::readModelFile(
                 }
                 biorbd::utils::Error::check(dia != 0.0, "Diameter was not defined");
                 biorbd::utils::Error::check(length != 0.0, "Length was not defined");
-                biorbd::utils::Error::check(length < 0.0, "Side was not properly defined");
+                biorbd::utils::Error::check(length > 0.0, "Length was must be positive");
                 biorbd::utils::Error::check(parent != "", "Parent was not defined");
                 iMuscleGroup = model->getGroupId(musclegroup);
                 biorbd::utils::Error::check(iMuscleGroup!=-1, "No muscle group was provided!");
