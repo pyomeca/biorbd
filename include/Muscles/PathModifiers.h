@@ -76,7 +76,7 @@ public:
     const biorbd::utils::Vector3d& object(unsigned int  idx) const; 
 
 protected:
-    std::shared_ptr<std::vector<biorbd::utils::Vector3d>> m_obj; ///< set of objects
+    std::shared_ptr<std::vector<std::shared_ptr<biorbd::utils::Vector3d>>> m_obj; ///< set of objects
     std::shared_ptr<unsigned int> m_nbWraps; ///< Number of wrapping object in the set
     std::shared_ptr<unsigned int> m_nbVia; ///< Number of via points in the set
     std::shared_ptr<unsigned int> m_totalObjects; ///< Number of total objects in the set
