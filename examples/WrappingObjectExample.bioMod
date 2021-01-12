@@ -46,8 +46,8 @@ endmusclegroup
 	muscle	line
 		Type 			hill
 		musclegroup 		Seg02seg1
-		OriginPosition		0 -0.1 0.1
-		InsertionPosition	0 0.2 0.1
+		OriginPosition		0.02 -0.1 0.2
+		InsertionPosition	0.08 0.2 0.1
 		optimalLength		0.8
 		maximalForce		3
 		tendonSlackLength 	0.2
