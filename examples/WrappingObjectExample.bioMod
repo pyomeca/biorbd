@@ -1,6 +1,7 @@
 version 4
 segment Seg0
     rt pi/10 pi/8 pi/6 xyz 0.1 0.2 0.3
+    rotations xyz
     mass 40
     inertia
         1 0 0
@@ -45,8 +46,8 @@ endmusclegroup
 	muscle	line
 		Type 			hill
 		musclegroup 		Seg02seg1
-		OriginPosition		-0.025 -0.1 0.8
-		InsertionPosition	0.025 0.2 0.4
+		OriginPosition		0 -0.1 0.1
+		InsertionPosition	0 0.2 0.1
 		optimalLength		0.8
 		maximalForce		3
 		tendonSlackLength 	0.2
@@ -58,9 +59,9 @@ endmusclegroup
 		wrapping cyl1
 			parent Seg0
 			type cylinder
-            RT pi/10 pi/8 pi/6 xyz 0.1 0.2 0.3
+           		RT pi/10 pi/8 pi/6 xyz 0.1 0.2 0.3
 			muscle line
-			musclegroup 		Seg02seg1
+			musclegroup Seg02seg1
 			diameter 0.1
 			length 2
 			wrappingside 1
