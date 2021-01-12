@@ -20,6 +20,18 @@ public:
 
     ///
     /// \brief Construct a wrapping cylinder
+    ///
+    WrappingCylinder(
+            const biorbd::utils::Vector3d& other);
+
+    ///
+    /// \brief Construct a wrapping cylinder
+    ///
+    WrappingCylinder(
+            const biorbd::utils::Vector3d* other);
+
+    ///
+    /// \brief Construct a wrapping cylinder
     /// \param rt RotoTrans matrix of the origin of the cylinder
     /// \param diameter Diameter of the cylinder
     /// \param length Length of the cylinder
@@ -153,6 +165,7 @@ public:
     const biorbd::utils::Scalar& length() const;
 
 protected:
+#ifndef SWIG
     ///
     /// \brief Pair of 2 muscles points
     ///
@@ -172,7 +185,7 @@ protected:
         std::shared_ptr<biorbd::utils::Vector3d> m_p1; ///< Point 1
         std::shared_ptr<biorbd::utils::Vector3d> m_p2; ///< Point 2
     };
-
+#endif
  
     ///
     /// \brief Find the two tangents of a point with a circle

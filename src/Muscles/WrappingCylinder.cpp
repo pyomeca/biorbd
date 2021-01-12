@@ -19,6 +19,38 @@ biorbd::muscles::WrappingCylinder::WrappingCylinder() :
 }
 
 biorbd::muscles::WrappingCylinder::WrappingCylinder(
+        const biorbd::utils::Vector3d &other):
+    biorbd::muscles::WrappingObject(other)
+{
+    biorbd::muscles::WrappingCylinder& otherWrap(
+                const_cast<biorbd::muscles::WrappingCylinder&>(
+                    dynamic_cast<const biorbd::muscles::WrappingCylinder&>(other)));
+    m_dia = otherWrap.m_dia;
+    m_length = otherWrap.m_length;
+    m_isCylinderPositiveSign = otherWrap.m_isCylinderPositiveSign;
+    m_RTtoParent = otherWrap.m_RTtoParent;
+    m_p1Wrap = otherWrap.m_p1Wrap;
+    m_p2Wrap = otherWrap.m_p2Wrap;
+    m_lengthAroundWrap = otherWrap.m_lengthAroundWrap;
+}
+
+biorbd::muscles::WrappingCylinder::WrappingCylinder(
+        const biorbd::utils::Vector3d *other):
+    biorbd::muscles::WrappingObject(*other)
+{
+    biorbd::muscles::WrappingCylinder* otherWrap(
+                const_cast<biorbd::muscles::WrappingCylinder*>(
+                    dynamic_cast<const biorbd::muscles::WrappingCylinder*>(other)));
+    m_dia = otherWrap->m_dia;
+    m_length = otherWrap->m_length;
+    m_isCylinderPositiveSign = otherWrap->m_isCylinderPositiveSign;
+    m_RTtoParent = otherWrap->m_RTtoParent;
+    m_p1Wrap = otherWrap->m_p1Wrap;
+    m_p2Wrap = otherWrap->m_p2Wrap;
+    m_lengthAroundWrap = otherWrap->m_lengthAroundWrap;
+}
+
+biorbd::muscles::WrappingCylinder::WrappingCylinder(
         const biorbd::utils::RotoTrans &rt,
         const biorbd::utils::Scalar& diameter,
         const biorbd::utils::Scalar& length,
