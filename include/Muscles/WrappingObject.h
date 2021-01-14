@@ -53,8 +53,8 @@ public:
             const biorbd::utils::String &parentName);
 
     ///
-    /// \brief Construct a wrapping object from 3d Vector
-    /// \param other The 3d vector
+    /// \brief Construct a wrapping object
+    /// \param other Eigen vector
     ///
     WrappingObject(
             const biorbd::utils::Vector3d& other);
@@ -142,6 +142,7 @@ public:
     ///
     const biorbd::utils::RotoTrans& RT() const;
 
+#ifndef SWIG
     ///
     /// \brief To be able to use the equal "=" operator to define wrapping object 
     /// \param other The 3d node to define the wrapping object
@@ -149,6 +150,7 @@ public:
         this->biorbd::utils::Vector3d::operator=(other);
         return *this;
     }
+#endif
 protected:
     std::shared_ptr<biorbd::utils::RotoTrans> m_RT; ///< RotoTrans matrix of the wrapping object
 };
