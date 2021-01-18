@@ -84,7 +84,7 @@ All the forward dynamics implemented in `RBDL` [@felisRBDLEfficientRigidbody2017
 `RBDL`, written by Martin Feliz [@felisRBDLEfficientRigidbody2017], implements Featherstone equations of spatial geometry [@featherstoneRobotDynamicsEquations2000], successfully used in the field of robotics [@macchiettoMomentumControlBalance2009; @diehlFastDirectMultiple2006; @kurfessRoboticsAutomationHandbook2018]. 
 `RBDL` provides the computational core for body dynamics.
 `biorbd` extends `RBDL` by giving commonly used biomechanics nomenclature, and by adding biomechanical modules, amongst others. 
-`RBDL` is based on the highly efficient C++ linear algebra library `Eigen` [@eigenweb].
+`RBDL` is based on the highly efficient C++ linear algebra library `Eigen` [@guennebaud2010eigen].
 Although `Eigen` is flexible and fast enough for most of the common usage, it cannot automatically provide derivatives of functions.
 Therefore, `RBDL` was also augmented with the algorithmic differentiation library `CasADi` [@anderssonCasADiSoftwareFramework2019].
 `CasADi` allows computing at low cost the derivatives of almost all the functions in `RBDL` and `biorbd`.
