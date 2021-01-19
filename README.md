@@ -521,7 +521,7 @@ If you experience a slow BIORBD, you are probably using a non optimized version,
 If you actually are using a released level of optimization, you may actually experiencing a bug. You are therefore welcomed to provide me with a minimal example of your slow code and I'll see how to improve the speed!
 
 # Cite
-Status of publication: [![DOI](https://joss.theoj.org/papers/10.21105/joss.02562/status.svg)](https://doi.org/10.21105/joss.02562)
+Paper: [![DOI](https://joss.theoj.org/papers/10.21105/joss.02562/status.svg)](https://doi.org/10.21105/joss.02562)
 
 If you use BIORBD, we would be grateful if you could cite it as follows:
 
