@@ -521,14 +521,25 @@ If you experience a slow BIORBD, you are probably using a non optimized version,
 If you actually are using a released level of optimization, you may actually experiencing a bug. You are therefore welcomed to provide me with a minimal example of your slow code and I'll see how to improve the speed!
 
 # Cite
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.02562/status.svg)](https://doi.org/10.21105/joss.02562)
 If you use BIORBD, we would be grateful if you could cite it as follows:
 
 ```
-@misc{Michaud2018biorbd,
-    author = {Michaud, Benjamin and Begon, Mickael},
-    title = {BIORBD: Toolbox for biomechanical analyses},
-    howpublished={Web page},
-    url = {https://github.com/pyomeca/biorbd},
-    year = {2018}
+
+@article{michaudBiorbd2021,
+  title = {Biorbd: {{A C}}++, {{Python}} and {{MATLAB}} Library to Analyze and Simulate the Human Body Biomechanics},
+  shorttitle = {Biorbd},
+  author = {Michaud, Benjamin and Begon, Mickaël},
+  date = {2021-01-19},
+  journaltitle = {Journal of Open Source Software},
+  volume = {6},
+  pages = {2562},
+  issn = {2475-9066},
+  doi = {10.21105/joss.02562},
+  url = {https://joss.theoj.org/papers/10.21105/joss.02562},
+  urldate = {2021-01-19},
+  abstract = {Michaud et al., (2021). biorbd: A C++, Python and MATLAB library to analyze and simulate the human body biomechanics. Journal of Open Source Software, 6(57), 2562, https://doi.org/10.21105/joss.02562},
+  langid = {english},
+  number = {57}
 }
 ```
