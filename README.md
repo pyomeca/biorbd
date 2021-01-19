@@ -6,6 +6,8 @@ Biomechanical data are often analyzed using similar flow, that is inverse or dir
 
 So, without further ado, let's begin our investigation of BIORBD!
 
+You can get the online version of the paper for BIORBD here: [![DOI](https://joss.theoj.org/papers/10.21105/joss.02562/status.svg)](https://doi.org/10.21105/joss.02562)
+
 # How to install
 There are two main ways to install BIORBD on your computer: installing the binaries from Anaconda (easiest, but limited to C++ and Python3) or compiling the source code yourself (more versatile and up to date; for C++, Python3 and MATLAB).
 
@@ -521,8 +523,6 @@ If you experience a slow BIORBD, you are probably using a non optimized version,
 If you actually are using a released level of optimization, you may actually experiencing a bug. You are therefore welcomed to provide me with a minimal example of your slow code and I'll see how to improve the speed!
 
 # Cite
-Paper: [![DOI](https://joss.theoj.org/papers/10.21105/joss.02562/status.svg)](https://doi.org/10.21105/joss.02562)
-
 If you use BIORBD, we would be grateful if you could cite it as follows:
 
 ```
