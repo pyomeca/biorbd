@@ -49,7 +49,7 @@ $$
 where $\dot{q}$ is the generalized velocities, $M(q)$ is the mass matrix and $N(q, \dot{q})$ are the nonlinear effects.
 
 *Static optimization*: Estimates the muscle activations ($\alpha$) producing a given $\tau$ [@andersonStaticDynamicOptimization2001].
-It minimizes the muscle activation *p*-norm ($p$ usually being $2$) that matches a given $\tau$ using nonlinear optimization (Ipopt [@wachterImplementationInteriorpointFilter2006]).
+It minimizes the muscle activation *p*-norm ($p$ usually being $2$) that matches a given $\tau$ using nonlinear optimization [Ipopt, @wachterImplementationInteriorpointFilter2006].
 $$
 \begin{aligned}
     & \underset{\alpha \in \mathbb{R}^m}{\text{minimize}}
@@ -63,9 +63,9 @@ where $\tau_{mus_i}(\alpha ,q, \dot{q})$ and $\tau_{kin_i}(q, \dot{q}, \ddot{q})
 
 ## Direct flow
 *Muscle activation dynamics*: Estimates the muscle activation derivative ($\dot{\alpha}$) from the muscle excitation---that is the calcium release in the muscle that triggers the muscle contraction.
-Multiple activation/excitation dynamics are implemented (e.g., @thelenAdjustmentMuscleMechanics2003 and @manalOneparameterNeuralActivation2003).
+Multiple activation/excitation dynamics are implemented [e.g., @manalOneparameterNeuralActivation2003;@thelenAdjustmentMuscleMechanics2003].
 
-*Muscular joint torque*: Estimates the $\tau_{mus}$ from muscle forces ($F_{mus}(q, \dot{q}, \alpha)$) [@shermanHowComputeMuscle2010], estimated from $\alpha$ using a muscle model (e.g.,  @hillHeatShorteningDynamic1938, @thelenAdjustmentMuscleMechanics2003):
+*Muscular joint torque*: Estimates the $\tau_{mus}$ from muscle forces ($F_{mus}(q, \dot{q}, \alpha)$) [@shermanHowComputeMuscle2010], estimated from $\alpha$ using a muscle model [e.g., @hillHeatShorteningDynamic1938; @thelenAdjustmentMuscleMechanics2003]:
 $$
 \tau_{mus} = J_{mus}(q)^T F_{mus}(q, \dot{q}, \alpha)
 $$
@@ -96,7 +96,7 @@ This is particularly useful when using `biorbd` in a gradient-based optimization
 Conversely, `OpenSim` is open-source and well established in the biomechanics community.
 
 Nevertheless, in line with the idea that simulation software in biomechanics should be validated in multiple ways [@hicksMyModelGood2015], providing similar tools but different in their approach allows the community to cross-validate the different implementation of the algorithms.
-For instance, two papers (@kimSimilaritiesDifferencesMusculoskeletal2018; @trinlerMuscleForceEstimation2019a) recently compared the outputs of `Anybody` and `OpenSim` and came to different results.
+For instance, two papers [@kimSimilaritiesDifferencesMusculoskeletal2018; @trinlerMuscleForceEstimation2019a] recently compared the outputs of `Anybody` and `OpenSim` and came to different results.
 Although the authors provided plausible explanations for these differences, due to the closed-source nature of `Anybody`, they had to assume that the implementation of the algorithms are flawless in both software.
 However, since a direct comparison between the actual codes is impossible, this is not verifiable.
 Having multiple open source software that produces similar ends by different means is a quality assurance for the end users: "Do not put all your eggs in one basket.”
@@ -104,8 +104,8 @@ To the best of our knowledge, there is no other open-source software that provid
 Therefore, in our opinion, `biorbd` and `OpenSim` are complementary.
 
 # Previous usage of `biorbd`
-`biorbd` was used in most of the project of the *Laboratoire de Simulation et Modélisation du Mouvement* (S2M); particularly in analysis settings [jacksonImprovementsMeasuringShoulder2012; @desmyttereEffect3DPrinted2020; @verdugoEffectsTrunkMotion2020] and simulation settings [@belaiseEMGmarkerTrackingOptimisation2018; @moissenetOptimizationMethodTracking2019] for a wide variety of movements (walking, piano playing, upper limb maximal exertions, etc.)
-More recently, an optimal control framework for biomechanics (`bioptim` [@Michaud2018bioptim]) based on Ipopt [@wachterImplementationInteriorpointFilter2006] and ACADOS [@Verschueren2019] was developed around `biorbd`.
+`biorbd` was used in most of the project of the *Laboratoire de Simulation et Modélisation du Mouvement* (S2M); particularly in analysis settings [@jacksonImprovementsMeasuringShoulder2012; @desmyttereEffect3DPrinted2020; @verdugoEffectsTrunkMotion2020] and simulation settings [@belaiseEMGmarkerTrackingOptimisation2018; @moissenetOptimizationMethodTracking2019] for a wide variety of movements (walking, piano playing, upper limb maximal exertions, etc.)
+More recently, an optimal control framework for biomechanics [`bioptim`, @Michaud2018bioptim] based on Ipopt [@wachterImplementationInteriorpointFilter2006] and ACADOS [@Verschueren2019] was developed around `biorbd`.
 
 # Acknowledgements
 A huge thanks to Ariane Dang for her patience and contribution to writing the tests for `biorbd`!
