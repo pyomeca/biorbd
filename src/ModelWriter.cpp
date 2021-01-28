@@ -46,8 +46,9 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
         biorbdModelFile << sep << sep << "parent" << sep << model.segment(i).parent() << std::endl;
         biorbdModelFile << sep << sep << "RTinMatrix" << sep << true << std::endl;
         biorbdModelFile << sep << sep << "RT" << std::endl;
-        for (unsigned int j=0; j<4; ++j)
+        for (unsigned int j=0; j<4; ++j){
             biorbdModelFile << sep << sep << sep << localJCS[i].block(j,0,1,4) << std::endl;
+        }
         if (model.segment(i).nbDofTrans() > 0)
             biorbdModelFile << sep << sep << "translations" << sep << model.segment(i).seqT() << std::endl;
         if (model.segment(i).nbDofRot() > 0)
@@ -91,6 +92,22 @@ void biorbd::Writer::writeModel(biorbd::Model & model,
                 biorbdModelFile << sep << sep << "technical" << sep << imus[j].isTechnical() << std::endl;
                 biorbdModelFile << sep << sep << "anatomical" << sep << imus[j].isAnatomical() << std::endl;
                 biorbdModelFile << sep << "endimu" << sep << std::endl;
+            }
+        }
+
+
+        // Write the custom RT
+        std::vector<biorbd::utils::RotoTransNode> rts(model.RTs(model.segment(i).name()));
+        if (rts.size() > 0){
+            biorbdModelFile << sep << com << " Custom RT" << std::endl;
+            for (size_t j = 0; j< rts.size(); ++j){
+                biorbdModelFile << sep << "customRT" << sep << rts[j].biorbd::utils::Node::name() << std::endl;
+                biorbdModelFile << sep << sep << "parent" << sep << rts[j].parent() << std::endl;
+                biorbdModelFile << sep << sep << "RTinMatrix" << sep << true << std::endl;
+                biorbdModelFile << sep << sep << "RT" << std::endl;
+                for (unsigned int k=0; k<4; ++k)
+                    biorbdModelFile << sep << sep << sep << rts[j].block(k,0,1,4) << std::endl;
+                biorbdModelFile << sep << "endcustomrt" << sep << std::endl;
             }
         }
         biorbdModelFile << std::endl;

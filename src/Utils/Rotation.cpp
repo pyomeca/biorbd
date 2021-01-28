@@ -322,7 +322,7 @@ void biorbd::utils::Rotation::checkUnitary()
 #ifndef BIORBD_USE_CASADI_MATH
 #ifndef SKIP_ASSERT
     double sqrtNorm = static_cast<double>(this->squaredNorm());
-    biorbd::utils::Error::check(fabs(sqrtNorm - 3.) < 1e-6,
+    biorbd::utils::Error::check(fabs(sqrtNorm - 3.) < 1e-4,
                                 biorbd::utils::String("The Rotation matrix square norm is equal to ")
                                 + sqrtNorm + ", but should be equal to 3");
 #endif
