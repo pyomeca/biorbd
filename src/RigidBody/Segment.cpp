@@ -263,7 +263,7 @@ biorbd::rigidbody::Segment::QDDotRanges() const
 }
 
 biorbd::utils::RotoTrans biorbd::rigidbody::Segment::localJCS() const {
-    return *m_cor;
+    return RigidBodyDynamics::Math::SpatialTransform(m_cor->E.transpose(), m_cor->r);
 }
 
 void biorbd::rigidbody::Segment::updateCharacteristics(

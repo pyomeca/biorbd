@@ -3,9 +3,15 @@
 #include <rbdl/Dynamics.h>
 
 #include "BiorbdModel.h"
+#include "RigidBody/Joints.h"
 #include "ModelWriter.h"
 #include "biorbdConfig.h"
 #include "Utils/String.h"
+#include "Utils/RotoTrans.h"
+#include "Utils/RotoTransNode.h"
+#include "RigidBody/Segment.h"
+#include "RigidBody/NodeSegment.h"
+#include "RigidBody/IMU.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedTorque.h"
@@ -31,10 +37,47 @@ TEST(FileIO, OpenModel){
 
 #ifndef BIORBD_USE_CASADI_MATH
 TEST(FileIO, WriteModel){
-    biorbd::Model model(modelPathForGeneralTesting);
+    biorbd::Model model("models/two_segments.bioMod");
     biorbd::utils::String savePath("temporary.bioMod");
     biorbd::Writer::writeModel(model, savePath);
     biorbd::Model modelCopy(savePath);
+
+    // Test if the model is properly written
+    biorbd::rigidbody::GeneralizedCoordinates Q(modelCopy);
+    Q.setOnes();
+
+    for (unsigned int k=0; k<model.nbSegment(); ++k){
+        for (unsigned int i=0; i<4; ++i){
+            for (unsigned int j=0; j<4; ++j){
+                EXPECT_NEAR(model.globalJCS(Q, k)(i, j), modelCopy.globalJCS(Q, k)(i, j), 1e-5);
+            }
+        }
+    }
+
+    EXPECT_EQ(modelCopy.nbMarkers(), 1);
+    for (unsigned int k=0; k<modelCopy.nbMarkers(); ++k){
+        for (unsigned int i=0; i<3; ++i){
+            EXPECT_NEAR(model.marker(Q, k)[i], modelCopy.marker(Q, k)[i], 1e-5);
+        }
+    }
+
+    EXPECT_EQ(modelCopy.nbRTs(), 1);
+    for (unsigned int k=0; k<modelCopy.nbRTs(); ++k){
+        for (unsigned int i=0; i<4; ++i){
+            for (unsigned int j=0; j<4; ++j){
+                EXPECT_NEAR(model.RT(Q, k)(i, j), modelCopy.RT(Q, k)(i, j), 1e-5);
+            }
+        }
+    }
+
+    EXPECT_EQ(modelCopy.nbIMUs(), 1);
+    for (unsigned int k=0; k<modelCopy.nbIMUs(); ++k){
+        for (unsigned int i=0; i<4; ++i){
+            for (unsigned int j=0; j<4; ++j){
+                EXPECT_NEAR(model.IMU(Q)[k](i, j), modelCopy.IMU(Q)[k](i, j), 1e-5);
+            }
+        }
+    }
     remove(savePath.c_str());
 }
 #endif

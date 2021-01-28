@@ -69,7 +69,8 @@ const std::vector<biorbd::rigidbody::IMU>& biorbd::rigidbody::IMUs::IMU() const
     return *m_IMUs;
 }
 
-std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::IMU(const biorbd::utils::String& segmentName)
+std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::IMU(
+        const biorbd::utils::String& segmentName)
 {
     std::vector<biorbd::rigidbody::IMU> pos;
     for (unsigned int i=0; i<nbIMUs(); ++i) // Scan through all the markers and select the good ones
@@ -78,7 +79,8 @@ std::vector<biorbd::rigidbody::IMU> biorbd::rigidbody::IMUs::IMU(const biorbd::u
     return pos;
 }
 
-const biorbd::rigidbody::IMU& biorbd::rigidbody::IMUs::IMU(unsigned int idx)
+const biorbd::rigidbody::IMU& biorbd::rigidbody::IMUs::IMU(
+        unsigned int idx)
 {
     return (*m_IMUs)[idx];
 }
