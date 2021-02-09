@@ -127,7 +127,7 @@ script:
         xcopy ..\\..\\binding\\c\\Release\\*.dll;
         ./biorbd_tests_binding_c.exe;
       else
-        cd ${BIORBD_EIGEN_BUILD_FOLDER}/binding/c;
+        cd ${BIORBD_EIGEN_BUILD_FOLDER}/test/binding/c;
         ./biorbd_tests_binding_c;
       fi
     - cd ${BIORBD_EIGEN_BUILD_FOLDER}
