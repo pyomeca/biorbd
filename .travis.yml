@@ -43,22 +43,20 @@ before_install:
       fi
 
 install:
+    # Prepare Eigen
     - conda create -n biorbd_eigen
     - conda activate biorbd_eigen
-    - conda install rbdl tinyxml numpy pytest swig pkgconfig -c conda-forge
-    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
-        conda install ipopt -c conda-forge;
-      fi
+    - conda install rbdl tinyxml ipopt numpy pytest swig pkgconfig cmake -c conda-forge
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-        conda install lcov cmake -c conda-forge;
+        conda install lcov -c conda-forge;
       fi
-    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
-        conda create -n biorbd_casadi;
-        conda deactivate;
-        conda activate biorbd_casadi;
-        conda install rbdl=*=*casadi* tinyxml ipopt numpy pytest swig pkgconfig cmake -c conda-forge;
-        conda deactivate;
-      fi
+    - conda deactivate
+    
+    # Prepare Casadi
+    - conda create -n biorbd_casadi
+    - conda activate biorbd_casadi
+    - conda install rbdl=*=*casadi* tinyxml ipopt numpy pytest swig pkgconfig cmake -c conda-forge
+    - conda deactivate
         
       
 script:
@@ -66,34 +64,43 @@ script:
     # Build main and tests
     ############################################################################    
 
+    - BIORBD_FOLDER=`pwd`
+    
     # Test the casadi backend
-    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
-        pwd;
-        conda deactivate;
-        conda activate biorbd_casadi;
-        mkdir build_casadi;
-        cd build_casadi;
+    - conda activate biorbd_casadi
+    - mkdir -p build_casadi
+    - cd build_casadi
+    - BIORBD_CASADI_BUILD_FOLDER=`pwd`
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+        cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/envs/biorbd_casadi/ -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=OFF -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..;
+        cmake --build ./ --config Release --target install;
+      else
         cmake ${CMAKE_OPTIONS} -DCMAKE_INSTALL_PREFIX=$HOME/miniconda/envs/biorbd_casadi/ -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=OFF -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..;
         make install;
       fi
-    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
-        cd test;
+    # Move and copy mandatory files and run the tests for all platforms
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
+        cd ${BIORBD_CASADI_BUILD_FOLDER}/test/Release;
+        xcopy ..\\models .\\models\\;
+        xcopy ..\\models\\IMUandCustomRT .\\models\\IMUandCustomRT\\;
+        xcopy ..\\models\\meshFiles .\\models\\meshFiles\\;
+        xcopy ..\\models\\meshFiles\\vtp .\\models\\meshFiles\\vtp\\;
+        ./biorbd_tests.exe;
+      else
+        cd ${BIORBD_CASADI_BUILD_FOLDER}/test;
         ./biorbd_tests;
       fi
-    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
-        cd binding/Python3;
-        pytest .;
-      fi
-    - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then
-        cd ../../../..;
-        conda deactivate;
-      fi
-
-
-    # Download, compile and test core
+    # Test if biorbd can be compile on the python binder
+    - cd ${BIORBD_FOLDER}/test/binding/Python3
+    - pytest .
+    - cd ${BIORBD_FOLDER}
+    - conda deactivate
+  
+    # Test the Eigen backend (and codecov on Linux)
     - conda activate biorbd_eigen
     - mkdir -p build_eigen
     - cd build_eigen
+    - BIORBD_EIGEN_BUILD_FOLDER=`pwd`
     # Perform tests on all platform, but only perform code coverage on Linux
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
         cmake -G"Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=/c/tools/miniconda3/envs/biorbd_eigen/ -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DBUILD_EXAMPLE=ON -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..;
@@ -105,14 +112,14 @@ script:
       
     # Move and copy mandatory files and run the tests for all platforms
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
-        cd test\\Release;
+        cd ${BIORBD_EIGEN_BUILD_FOLDER}/test/Release;
         xcopy ..\\models .\\models\\;
         xcopy ..\\models\\IMUandCustomRT .\\models\\IMUandCustomRT\\;
         xcopy ..\\models\\meshFiles .\\models\\meshFiles\\;
         xcopy ..\\models\\meshFiles\\vtp .\\models\\meshFiles\\vtp\\;
         ./biorbd_tests.exe;
       else
-        cd test;
+        cd ${BIORBD_EIGEN_BUILD_FOLDER}/test;
         ./biorbd_tests;
       fi
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
@@ -120,23 +127,15 @@ script:
         xcopy ..\\..\\binding\\c\\Release\\*.dll;
         ./biorbd_tests_binding_c.exe;
       else
-        cd binding/c;
+        cd ${BIORBD_EIGEN_BUILD_FOLDER}/test/binding/c;
         ./biorbd_tests_binding_c;
       fi
-    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
-        cd ../..;
-      else
-        cd ../../..;
-      fi
+    - cd ${BIORBD_EIGEN_BUILD_FOLDER}
       
     # Test if biorbd can be compile on the python binder
-    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
-        cd test\\binding\\Python3;
-      else
-        cd test/binding/Python3;
-      fi
+    - cd ${BIORBD_FOLDER}/test/binding/Python3
     - pytest .
-    - cd ../../..
+    - cd ${BIORBD_EIGEN_BUILD_FOLDER}
 
     # Only do the coverage on Linux, but run the test anyway to get a nice output
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
@@ -146,10 +145,10 @@ script:
         make biorbd_coverage;
       fi
     - ctest
-    - cd ..
+    - cd ${BIORBD_FOLDER}
     
     # Compile the C++ example from installed biorbd
-    - cd examples/cpp_installed
+    - cd ${BIORBD_FOLDER}/examples/cpp_installed
     - mkdir build
     - cd build
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
@@ -165,7 +164,7 @@ script:
       else
         ./forwardDynamicsExample;
       fi
-    - cd ../..
+    - cd ${BIORBD_FOLDER}
     
 after_success:
     # Uploading report to CodeCov
