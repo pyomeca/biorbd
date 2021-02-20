@@ -37,6 +37,7 @@ The building status for the current BIORBD branches is as follow
 | --- | --- |
 | master | [![Build Status](https://travis-ci.org/pyomeca/biorbd.svg?branch=master)](https://travis-ci.org/pyomeca/biorbd) |
 | Code coverage | [![codecov](https://codecov.io/gh/pyomeca/biorbd/branch/master/graph/badge.svg)](https://codecov.io/gh/pyomeca/biorbd) |
+| DOI | [![DOI](https://zenodo.org/badge/124423173.svg)](https://zenodo.org/badge/latestdoi/124423173) |
 
 ### Dependencies
 BIORBD relies on several libraries (namely eigen ([http://eigen.tuxfamily.org]) or CasADi ([https://web.casadi.org/]), rbdl-casadi (https://github.com/pyomeca/rbdl-casadi), tinyxml(http://www.grinninglizard.com/tinyxmldocs/index.html) and Ipopt (https://github.com/coin-or/Ipopt)) that one must install prior to compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda. Therefore the following command will install everything you need to compile BIORBD:
