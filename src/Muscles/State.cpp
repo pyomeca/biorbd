@@ -49,7 +49,7 @@ void biorbd::muscles::State::setExcitation(
         bool turnOffWarnings) {
 
 #ifdef BIORBD_USE_CASADI_MATH
-    *m_excitation = casadi::MX::if_else_zero(casadi::MX::gt(val, 0), val);
+    *m_excitation = val;
 #else
     if (val<0){
         if (!turnOffWarnings) {
@@ -100,9 +100,7 @@ void biorbd::muscles::State::setActivation(
         bool turnOffWarnings){
 
 #ifdef BIORBD_USE_CASADI_MATH
-    *m_activation = casadi::MX::if_else_zero(casadi::MX::gt(val, 0), val);
-    *m_activation = casadi::MX::if_else(casadi::MX::lt(val, 1), val, 1);
-//    *m_activation = val;
+    *m_activation = val;
 #else
     if (val <= 0) {
         if (!turnOffWarnings){
