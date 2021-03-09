@@ -98,7 +98,6 @@ const biorbd::utils::Scalar& biorbd::muscles::State::excitationNorm() const
 void biorbd::muscles::State::setActivation(
         const biorbd::utils::Scalar& val,
         bool turnOffWarnings){
-
 #ifdef BIORBD_USE_CASADI_MATH
     *m_activation = val;
 #else

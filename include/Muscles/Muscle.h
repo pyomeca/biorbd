@@ -15,12 +15,15 @@ namespace muscles {
 class Geometry;
 class Characteristics;
 class State;
+class Muscles;
 
 ///
 /// \brief Base class of all muscle
 ///
 class BIORBD_API Muscle : public biorbd::muscles::Compound
 {
+friend Muscles;
+
 public:
     /// 
     /// \brief Construct a muscle

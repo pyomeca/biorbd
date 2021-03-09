@@ -186,7 +186,7 @@ biorbd::utils::Vector biorbd::muscles::Muscles::muscleForces(
         const std::vector<std::shared_ptr<biorbd::muscles::State>>& emg)
 {
     // Output variable
-    biorbd::utils::Vector forces(nbMuscleTotal()); // All the muscles/two pointers per muscleTous les muscles (origine/insertion)
+    biorbd::utils::Vector forces(nbMuscleTotal());
 
     unsigned int cmpMus(0);
     for (unsigned int i=0; i<m_mus->size(); ++i){ // muscle group
@@ -309,6 +309,17 @@ void biorbd::muscles::Muscles::updateMuscles(
             ++cmpMuscle;
         }
 }
+
+std::vector<std::shared_ptr<biorbd::muscles::State>>
+biorbd::muscles::Muscles::stateSet()
+{
+    std::vector<std::shared_ptr<biorbd::muscles::State>> out;
+    for (unsigned int i=0; i<nbMuscles(); ++i){
+        out.push_back(muscle(i).m_state);
+    }
+    return out;
+}
+
 void biorbd::muscles::Muscles::updateMuscles(
         std::vector<std::vector<biorbd::utils::Vector3d>>& musclePointsInGlobal,
         std::vector<biorbd::utils::Matrix> &jacoPointsInGlobal)

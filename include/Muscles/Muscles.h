@@ -178,6 +178,15 @@ public:
             const biorbd::rigidbody::GeneralizedVelocity& QDot);
 
     ///
+    /// \brief Get the vector of state that must be used to update states
+    /// \return The vector of state
+    ///
+    /// Note: creating your own vector of state is possible. However, it
+    /// will override the state type that is associated with the muscle
+    ///
+    std::vector<std::shared_ptr<biorbd::muscles::State>> stateSet();
+
+    ///
     /// \brief Compute the muscular joint torque
     /// \param F The force vector of all the muscles
     ///

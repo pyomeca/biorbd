@@ -56,6 +56,10 @@ find_package(TinyXML)
 
 # Manage options
 option(MODULE_KALMAN "If Kalman filter should be compiled" ON)
+if (BIORBD_USE_CASADI_MATH AND MODULE_KALMAN)
+    message(WARNING "Casadi and Kalman cannot be used alongside, MODULE_KALMAN is automatically set to OFF")
+    set(MODULE_KALMAN OFF CACHE BOOL "" FORCE)
+endif()
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     option(SKIP_ASSERT
