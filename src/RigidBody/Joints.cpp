@@ -132,13 +132,14 @@ unsigned int biorbd::rigidbody::Joints::AddSegment(
         const std::vector<biorbd::utils::Range>& QDotRanges,
         const std::vector<biorbd::utils::Range>& QDDotRanges,
         const biorbd::rigidbody::SegmentCharacteristics& characteristics,
-        const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation,
+        const biorbd::utils::RotoTrans& referenceFrame,
         int forcePlates)
 { 
     biorbd::rigidbody::Segment tp(
                 *this, segmentName, parentName, translationSequence,
                 rotationSequence, QRanges, QDotRanges, QDDotRanges, characteristics,
-                centreOfRotation, forcePlates);
+                RigidBodyDynamics::Math::SpatialTransform(referenceFrame.rot().transpose(), referenceFrame.trans()),
+                forcePlates);
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max())
         *m_nbRoot += tp.nbDof(); // If the segment name is "Root", add the number of DoF of root
     *m_nbDof += tp.nbDof();
@@ -161,12 +162,13 @@ unsigned int biorbd::rigidbody::Joints::AddSegment(
         const std::vector<biorbd::utils::Range>& QDotRanges,
         const std::vector<biorbd::utils::Range>& QDDotRanges,
         const biorbd::rigidbody::SegmentCharacteristics& characteristics,
-        const RigidBodyDynamics::Math::SpatialTransform& cor,
+        const biorbd::utils::RotoTrans& referenceFrame,
         int forcePlates)
 { 
     biorbd::rigidbody::Segment tp(
                 *this, segmentName, parentName, seqR, QRanges, QDotRanges, QDDotRanges,
-                characteristics, cor, forcePlates);
+                characteristics, RigidBodyDynamics::Math::SpatialTransform(referenceFrame.rot().transpose(), referenceFrame.trans()),
+                forcePlates);
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max())
         *m_nbRoot += tp.nbDof(); //  If the name of the segment is "Root", add the number of DoF of root
     *m_nbDof += tp.nbDof();
