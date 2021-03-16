@@ -794,6 +794,8 @@ void biorbd::Reader::readModelFile(
                             type = biorbd::muscles::MUSCLE_TYPE::HILL;
                         else if (!tp_type.tolower().compare("hillthelen") || !tp_type.tolower().compare("thelen"))
                             type = biorbd::muscles::MUSCLE_TYPE::HILL_THELEN;
+                        else if (!tp_type.tolower().compare("hillthelenactive") || !tp_type.tolower().compare("thelenactive"))
+                            type = biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE;
                         else if (!tp_type.tolower().compare("hillthelenfatigable") || !tp_type.tolower().compare("thelenfatigable"))
                             type = biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE;
                         else
