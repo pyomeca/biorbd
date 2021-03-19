@@ -164,6 +164,12 @@ public:
     ///
     const biorbd::utils::Scalar& length() const;
 
+    ///
+    /// \brief Get the sign of the cylinder (1 positive, -1 negative)
+    /// \return The sign ofthe cylinder
+    ///
+    int sign() const;
+
 protected:
 #ifndef SWIG
     ///

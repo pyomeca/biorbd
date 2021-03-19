@@ -384,6 +384,15 @@ bool biorbd::muscles::WrappingCylinder::checkIfWraps(
     // Return the answer
     return isWrap;
 }
+
+int biorbd::muscles::WrappingCylinder::sign() const
+{
+    if (*m_isCylinderPositiveSign)
+        return 1;
+    else
+        return -1;
+}
+
 #endif
 biorbd::utils::Scalar biorbd::muscles::WrappingCylinder::computeLength(const NodeMusclePair &p) const {
     biorbd::utils::Scalar arc = std::acos(    ( (*p.m_p1)(0) * (*p.m_p2)(0) + (*p.m_p1)(1) * (*p.m_p2)(1))

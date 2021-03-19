@@ -7,7 +7,8 @@
 namespace biorbd {
 namespace muscles {
 ///
-/// \brief Muscle of Hill type augmented by Thelen (https://simtk-confluence.stanford.edu/display/OpenSim/Thelen+2003+Muscle+Model)
+/// \brief Muscle of Hill type augmented by Thelen
+/// https://simtk-confluence.stanford.edu/display/OpenSim/Thelen+2003+Muscle+Model
 ///
 class BIORBD_API HillThelenType : public biorbd::muscles::HillType
 {
