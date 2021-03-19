@@ -81,7 +81,7 @@ public:
     /// \param QDotRanges Ranges of the translations and rotations dof velocity. The length of QDotRanges must be equal to length of translations and rotations
     /// \param QDDotRanges Ranges of the translations and rotations dof acceleration. The length of QDDotRanges must be equal to length of translations and rotations
     /// \param characteristics The characteristics of the semgent (mass, center of mass, inertia of the segment, etc)
-    /// \param centreOfRotation Transformation of the parent to child
+    /// \param referenceFrame Transformation of the parent to child
     /// \param forcePlates The number of the force platform attached to the Segment (if -1 no force platform is attached)
     ///
     unsigned int AddSegment(
@@ -93,7 +93,7 @@ public:
             const std::vector<biorbd::utils::Range>& QDotRanges,
             const std::vector<biorbd::utils::Range>& QDDotRanges,
             const biorbd::rigidbody::SegmentCharacteristics& characteristics,
-            const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation,
+            const biorbd::utils::RotoTrans& referenceFrame,
             int forcePlates=-1);
 
     ///
@@ -105,7 +105,7 @@ public:
     /// \param QDotRanges Ranges of the translations and rotations dof velocity. The length of QDotRanges must be equal to length of translations and rotations
     /// \param QDDotRanges Ranges of the translations and rotations dof acceleration. The length of QDDotRanges must be equal to length of translations and rotations
     /// \param characteristics The characteristics of the semgent (mass, center of mass, inertia of the segment, etc)
-    /// \param centreOfRotation Transformation of the parent to child
+    /// \param referenceFrame Transformation of the parent to child
     /// \param forcePlates The number of the force platform attached to the Segment (if -1 no force platform is attached)
     ///
     unsigned int AddSegment(
@@ -116,7 +116,7 @@ public:
             const std::vector<biorbd::utils::Range>& QDotRanges,
             const std::vector<biorbd::utils::Range>& QDDotRanges,
             const biorbd::rigidbody::SegmentCharacteristics& characteristics,
-            const RigidBodyDynamics::Math::SpatialTransform& centreOfRotation, 
+            const biorbd::utils::RotoTrans& referenceFrame,
             int forcePlates=-1); 
 
 

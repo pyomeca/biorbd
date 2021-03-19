@@ -2,7 +2,9 @@
 #define BIORBD_UTILS_READ_H
 
 #include <vector>
+#include <map>
 #include "biorbdConfig.h"
+#include "rbdl_math.h"
 
 namespace biorbd {
 class Model;
@@ -18,6 +20,9 @@ class String;
 class Vector3d;
 class Vector;
 class SpatialVector;
+class RotoTrans;
+class IfStream;
+class Equation;
 }
 
 ///
@@ -176,6 +181,42 @@ public:
             const biorbd::utils::Path& path);
 #endif
 
+protected:
+    ///
+    /// \brief Read a Vector 3d
+    /// \param file A reference to the current file being read pointing to the RT
+    /// \param variable The variable set
+    /// \param vector The vector to fill
+    ///
+    static void readVector3d(
+            biorbd::utils::IfStream& file,
+            const std::map<biorbd::utils::Equation, double>& variable,
+            biorbd::utils::Vector3d &vector);
+
+    ///
+    /// \brief Read a Matrix 3x3
+    /// \param file A reference to the current file being read pointing to the RT
+    /// \param variable The variable set
+    /// \param matrix The matrix to fill
+    ///
+    static void readMatrix33(
+            biorbd::utils::IfStream& file,
+            const std::map<biorbd::utils::Equation, double>& variable,
+            RigidBodyDynamics::Math::Matrix3d &matrix);
+
+    ///
+    /// \brief Read a RT matrix either in 4x4 format or Rot1233 seq Trans123 format
+    /// \param file A reference to the current file being read pointing to the RT
+    /// \param variable The variable set
+    /// \param RTinMatrix If the RT is in matrix or in Euler format
+    /// \param RT_R The Rotation part to fill
+    /// \param RT_T The translation part to fill
+    ///
+    static void readRtMatrix(
+            biorbd::utils::IfStream& file,
+            const std::map<biorbd::utils::Equation, double>& variable,
+            bool RTinMatrix,
+            biorbd::utils::RotoTrans &RT);
 };
 
 }

@@ -5,6 +5,7 @@
 #include "Muscles/IdealizedActuator.h"
 #include "Muscles/HillType.h"
 #include "Muscles/HillThelenType.h"
+#include "Muscles/HillThelenActiveOnlyType.h"
 #include "Muscles/HillThelenTypeFatigable.h"
 #include "Muscles/StateDynamicsBuchanan.h"
 #include "Muscles/StateDynamicsDeGroote.h"
@@ -60,6 +61,8 @@ void biorbd::muscles::MuscleGroup::DeepCopy(const biorbd::muscles::MuscleGroup &
             (*m_mus)[i] = std::make_shared<biorbd::muscles::HillType>((*other.m_mus)[i]);
         else if ((*other.m_mus)[i]->type() == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN)
             (*m_mus)[i] = std::make_shared<biorbd::muscles::HillThelenType>((*other.m_mus)[i]);
+        else if ((*other.m_mus)[i]->type() == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE)
+            (*m_mus)[i] = std::make_shared<biorbd::muscles::HillThelenActiveOnlyType>((*other.m_mus)[i]);
         else if ((*other.m_mus)[i]->type() == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE)
             (*m_mus)[i] = std::make_shared<biorbd::muscles::HillThelenTypeFatigable>((*other.m_mus)[i]);
         else
@@ -100,6 +103,8 @@ void biorbd::muscles::MuscleGroup::addMuscle(
         muscle = std::make_shared<biorbd::muscles::HillType>(name,geometry,characteristics, *state);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN)
         muscle = std::make_shared<biorbd::muscles::HillThelenType>(name,geometry,characteristics, *state);
+    else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE)
+        muscle = std::make_shared<biorbd::muscles::HillThelenActiveOnlyType>(name,geometry,characteristics, *state);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE)
         muscle = std::make_shared<biorbd::muscles::HillThelenTypeFatigable>(name,geometry,characteristics, *state, dynamicFatigueType);
     else
@@ -121,6 +126,8 @@ void biorbd::muscles::MuscleGroup::addMuscle(
         muscle = std::make_shared<biorbd::muscles::HillType>(name,geometry,characteristics);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN)
         muscle = std::make_shared<biorbd::muscles::HillThelenType>(name,geometry,characteristics);
+    else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE)
+        muscle = std::make_shared<biorbd::muscles::HillThelenActiveOnlyType>(name,geometry,characteristics);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE)
         muscle = std::make_shared<biorbd::muscles::HillThelenTypeFatigable>(name,geometry,characteristics, dynamicFatigueType);
     else
@@ -161,6 +168,9 @@ void biorbd::muscles::MuscleGroup::addMuscle(
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN)
         muscle = std::make_shared<biorbd::muscles::HillThelenType>
                 (name,geometry,characteristics,pathModifiers,*state);
+    else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE)
+        muscle = std::make_shared<biorbd::muscles::HillThelenActiveOnlyType>
+                (name,geometry,characteristics,pathModifiers,*state);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE)
         muscle = std::make_shared<biorbd::muscles::HillThelenTypeFatigable>(
                     name,geometry,characteristics,pathModifiers,*state,dynamicFatigueType);
@@ -185,6 +195,8 @@ void biorbd::muscles::MuscleGroup::addMuscle(
         muscle = std::make_shared<biorbd::muscles::HillType>(name,geometry,characteristics,pathModifiers);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN)
         muscle = std::make_shared<biorbd::muscles::HillThelenType>(name,geometry,characteristics,pathModifiers);
+    else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE)
+        muscle = std::make_shared<biorbd::muscles::HillThelenActiveOnlyType>(name,geometry,characteristics,pathModifiers);
     else if (type == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE)
         muscle = std::make_shared<biorbd::muscles::HillThelenTypeFatigable>(name,geometry,characteristics,pathModifiers,dynamicFatigueType);
     else
@@ -204,6 +216,8 @@ void biorbd::muscles::MuscleGroup::addMuscle(
         m_mus->push_back(std::make_shared<biorbd::muscles::HillThelenTypeFatigable>(muscle));
     else if (muscle.type() == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN)
         m_mus->push_back(std::make_shared<biorbd::muscles::HillThelenType>(muscle));
+    else if (muscle.type() == biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE)
+        m_mus->push_back(std::make_shared<biorbd::muscles::HillThelenActiveOnlyType>(muscle));
     else if (muscle.type() == biorbd::muscles::MUSCLE_TYPE::HILL)
         m_mus->push_back(std::make_shared<biorbd::muscles::HillType>(muscle));
     else
