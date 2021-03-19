@@ -11,6 +11,7 @@ enum MUSCLE_TYPE {
     IDEALIZED_ACTUATOR,
     HILL,
     HILL_THELEN,
+    HILL_THELEN_ACTIVE,
     HILL_THELEN_FATIGABLE,
     NO_MUSCLE_TYPE
 };
@@ -27,6 +28,7 @@ inline const char* MUSCLE_TYPE_toStr(biorbd::muscles::MUSCLE_TYPE type)
     case IDEALIZED_ACTUATOR: return "IdealizedActuator";
     case HILL: return "Hill";
     case HILL_THELEN: return "Thelen";
+    case HILL_THELEN_ACTIVE: return "ThelenActive";
     case HILL_THELEN_FATIGABLE: return "ThelenFatigable";
     default: return "NoType";
     }

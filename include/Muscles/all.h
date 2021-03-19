@@ -11,6 +11,7 @@
 #include "Muscles/FatigueParameters.h"
 #include "Muscles/FatigueState.h"
 #include "Muscles/Geometry.h"
+#include "Muscles/HillThelenActiveOnlyType.h"
 #include "Muscles/HillThelenType.h"
 #include "Muscles/HillThelenTypeFatigable.h"
 #include "Muscles/HillType.h"
