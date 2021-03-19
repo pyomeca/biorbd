@@ -24,11 +24,13 @@ public:
     WrappingHalfCylinder(
             const biorbd::utils::Vector3d& other);
 
+#ifndef SWIG
     ///
     /// \brief Construct a wrapping half cylinder
     ///
     WrappingHalfCylinder(
             const biorbd::utils::Vector3d* other);
+#endif
 
     ///
     /// \brief Construct a wrapping half cylinder
