@@ -17,6 +17,8 @@
 #include "Muscles/State.h"
 #include "Muscles/StateDynamics.h"
 #include "Muscles/StateDynamicsBuchanan.h"
+#include "Muscles/WrappingObject.h"
+#include "Muscles/WrappingHalfCylinder.h"
 #ifdef MODULE_STATIC_OPTIM
 #include "Muscles/StaticOptimization.h"
 #endif
@@ -107,5 +109,7 @@
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/State.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/StateDynamics.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/StateDynamicsBuchanan.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/WrappingObject.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/WrappingHalfCylinder.h"
 @SWIG_STATIC_OPTIMIZATION_INCLUDE_COMMAND@
 

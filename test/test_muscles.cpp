@@ -188,7 +188,7 @@ TEST(IdealizedActuator, unitTest)
 
 TEST(IdealizedActuator, copy)
 {
-    {      
+    {
         biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::IdealizedActuator idealizedActuator(
             model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
@@ -256,7 +256,7 @@ TEST(IdealizedActuator, copy)
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
         idealizedActuator.updateOrientations(model, Q, qDot);
- 
+
 
         biorbd::muscles::IdealizedActuator shallowCopy(idealizedActuator);
         biorbd::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
@@ -1136,7 +1136,7 @@ TEST(DynamicState, DeGroote)
 static unsigned int muscleGroupForHillThelenTypeFatigable(1);
 static unsigned int muscleForHillThelenTypeFatigable(1);
 
-TEST(hillThelenTypeFatigable, unitTest) 
+TEST(hillThelenTypeFatigable, unitTest)
 {
     {
         biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
@@ -1416,7 +1416,7 @@ TEST(FatigueDynamiqueState, DeepCopy) {
         // Change state to change Fibers Dots
         fatigueDynamicStateXia.setState(0.5, 0.5, 0.0);
         fatigueDynamicStateXia.timeDerivativeState(emg, model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(muscleForXiaDerivativeTest).characteristics());
-        
+
         // Check the new values
         EXPECT_NEAR(fatigueDynamicStateXia.activeFibersDot(), -0.0050000000000000001, requiredPrecision);
         EXPECT_NEAR(shallowCopy.activeFibersDot(), -0.0050000000000000001, requiredPrecision);
@@ -1532,14 +1532,14 @@ TEST(MuscleGroup, AddMuscle)
         biorbd::muscles::IdealizedActuator muscleToAdd;
         muscleGroup.addMuscle(muscleToAdd);
 
-        //Check number of muscle 
+        //Check number of muscle
         EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
     }
     {
         biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
-        //Check number of muscle 
+        //Check number of muscle
         EXPECT_NEAR(muscleGroup.nbMuscles(), 3, requiredPrecision);
 
         // Add muscle to muscle group
@@ -1590,7 +1590,7 @@ TEST(MuscleGroup, AddMuscle)
         biorbd::Model model(modelPathForMuscleForce);
         biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
-        //Check number of muscle 
+        //Check number of muscle
         EXPECT_NEAR(muscleGroup.nbMuscles(), 3, requiredPrecision);
 
         // Add muscle to muscle group
@@ -1754,55 +1754,53 @@ TEST(Muscles, deepCopy)
     //Check if copies changed names
     EXPECT_STREQ(muscles.muscleGroup(0).name().c_str(), "newMuscleGroupName");
     EXPECT_STREQ(shallowCopy.muscleGroup(0).name().c_str(), "newMuscleGroupName");
-    EXPECT_STREQ(deepCopyNow.muscleGroup(0).name().c_str(), "newMuscleGroupName"); 
-    EXPECT_STREQ(deepCopyLater.muscleGroup(0).name().c_str(), "newMuscleGroupName"); 
+    EXPECT_STREQ(deepCopyNow.muscleGroup(0).name().c_str(), "newMuscleGroupName");
+    EXPECT_STREQ(deepCopyLater.muscleGroup(0).name().c_str(), "newMuscleGroupName");
 }
 
-TEST(WrappingCylinder, unitTest)
+TEST(WrappingHalfCylinder, unitTest)
 {
     {
         biorbd::utils::RotoTrans rt(
             biorbd::utils::Vector3d(1., 1., 1.), biorbd::utils::Vector3d(1., 1., 1.), "xyz");
 
-        biorbd::muscles::WrappingCylinder wrappingCylinder;
-        
-        wrappingCylinder.setLength(2.0);
-        SCALAR_TO_DOUBLE(length, wrappingCylinder.length());
-        EXPECT_NEAR(length, 2.0, requiredPrecision);
+        biorbd::muscles::WrappingHalfCylinder wrappingHalfCylinder;
 
-        wrappingCylinder.setDiameter(1.5);
-        SCALAR_TO_DOUBLE(diameter, wrappingCylinder.diameter());
-        SCALAR_TO_DOUBLE(radius, wrappingCylinder.radius());
+        wrappingHalfCylinder.setRadius(0.75);
+        SCALAR_TO_DOUBLE(diameter, wrappingHalfCylinder.diameter());
+        SCALAR_TO_DOUBLE(radius, wrappingHalfCylinder.radius());
         EXPECT_NEAR(diameter, 1.5, requiredPrecision);
         EXPECT_NEAR(radius, 0.75, requiredPrecision);
 
-        wrappingCylinder.setName("wrappingCylinderName");
-        EXPECT_STREQ(wrappingCylinder.biorbd::utils::Node::name().c_str(), "wrappingCylinderName");
+        wrappingHalfCylinder.setName("wrappingHalfCylinderName");
+        EXPECT_STREQ(wrappingHalfCylinder.biorbd::utils::Node::name().c_str(), "wrappingHalfCylinderName");
     }
     {
         biorbd::utils::RotoTrans rt(
             biorbd::utils::Vector3d(1., 1., 1.), biorbd::utils::Vector3d(1., 1., 1.), "xyz");
 
-        biorbd::muscles::WrappingCylinder wrappingCylinder(rt, 0.5, 1.5, true);
-        SCALAR_TO_DOUBLE(length, wrappingCylinder.length());
-        EXPECT_NEAR(length, 1.5, requiredPrecision);
+        biorbd::muscles::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.25, 1.);
+        SCALAR_TO_DOUBLE(diameter, wrappingHalfCylinder.diameter());
+        EXPECT_NEAR(diameter, 0.5, requiredPrecision);
+        SCALAR_TO_DOUBLE(length, wrappingHalfCylinder.length());
+        EXPECT_NEAR(length, 1., requiredPrecision);
     }
     {
         biorbd::utils::RotoTrans rt(
             biorbd::utils::Vector3d(1., 1., 1.), biorbd::utils::Vector3d(1., 1., 1.), "xyz");
 
-        biorbd::muscles::WrappingCylinder wrappingCylinder(rt, 0.5, 1.5, true, "name", "parentName");
-        EXPECT_STREQ(wrappingCylinder.parent().c_str(), "parentName");
+        biorbd::muscles::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.5, 1., "name", "parentName");
+        EXPECT_STREQ(wrappingHalfCylinder.parent().c_str(), "parentName");
     }
     {
-        biorbd::muscles::WrappingCylinder wrappingCylinder;
+        biorbd::muscles::WrappingHalfCylinder wrappingHalfCylinder;
         biorbd::utils::RotoTrans rt(
             biorbd::utils::Vector3d(1., 1., 1.), biorbd::utils::Vector3d(1., 1., 1.), "xyz");
         biorbd::utils::Vector3d p1(1., 1., 1.);
         biorbd::utils::Vector3d p2(2., 2., 2.);
 
-       
-        wrappingCylinder.wrapPoints(
+
+        wrappingHalfCylinder.wrapPoints(
             rt,
             biorbd::utils::Vector3d(0.5, 1., 1.5),
             biorbd::utils::Vector3d(4., 5., 6.),
@@ -1823,43 +1821,62 @@ TEST(WrappingCylinder, unitTest)
     }
 }
 
-TEST(WrappingCylinder, deepCopy)
+TEST(WrappingHalfCylinder, deepCopy)
 {
     biorbd::Model model(modelPathForMuscleForce);
     biorbd::utils::RotoTrans rt(
         biorbd::utils::Vector3d(1, 1, 1), biorbd::utils::Vector3d(1, 1, 1), "xyz");
 
-    biorbd::muscles::WrappingCylinder wrappingCylinder(rt, 0.5, 1.5, true);
+    biorbd::muscles::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.25, 1.);
 
-    biorbd::muscles::WrappingCylinder shallowCopy(wrappingCylinder);
-    biorbd::muscles::WrappingCylinder deepCopyNow(wrappingCylinder.DeepCopy());
-    biorbd::muscles::WrappingCylinder deepCopyLater;
-    deepCopyLater.DeepCopy(wrappingCylinder);
+    biorbd::muscles::WrappingHalfCylinder shallowCopy(wrappingHalfCylinder);
+    biorbd::muscles::WrappingHalfCylinder deepCopyNow(wrappingHalfCylinder.DeepCopy());
+    biorbd::muscles::WrappingHalfCylinder deepCopyLater;
+    deepCopyLater.DeepCopy(wrappingHalfCylinder);
 
     {
-        SCALAR_TO_DOUBLE(length, wrappingCylinder.length());
+        SCALAR_TO_DOUBLE(diameter, wrappingHalfCylinder.diameter());
+        SCALAR_TO_DOUBLE(shallowCopyDiameter, shallowCopy.diameter());
+        SCALAR_TO_DOUBLE(deepCopyNowDiameter, deepCopyNow.diameter());
+        SCALAR_TO_DOUBLE(deepCopyLaterDiameter, deepCopyLater.diameter());
+        EXPECT_NEAR(diameter, 0.5, requiredPrecision);
+        EXPECT_NEAR(shallowCopyDiameter, 0.5, requiredPrecision);
+        EXPECT_NEAR(deepCopyNowDiameter, 0.5, requiredPrecision);
+        EXPECT_NEAR(deepCopyLaterDiameter, 0.5, requiredPrecision);
+
+        SCALAR_TO_DOUBLE(length, wrappingHalfCylinder.length());
         SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.length());
         SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.length());
-        SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.length());
-        EXPECT_NEAR(length, 1.5, requiredPrecision);
-        EXPECT_NEAR(shallowCopyLength, 1.5, requiredPrecision);
-        EXPECT_NEAR(deepCopyNowLength, 1.5, requiredPrecision);
-        EXPECT_NEAR(deepCopyLaterLength, 1.5, requiredPrecision);
+        SCALAR_TO_DOUBLE(deepCopyLaterlength, deepCopyLater.length());
+        EXPECT_NEAR(length, 1.0, requiredPrecision);
+        EXPECT_NEAR(shallowCopyLength, 1.0, requiredPrecision);
+        EXPECT_NEAR(deepCopyNowLength, 1.0, requiredPrecision);
+        EXPECT_NEAR(deepCopyLaterlength, 1.0, requiredPrecision);
     }
 
-    // Set new length
-    wrappingCylinder.setLength(2.0);
+    // Set new diameter
+    wrappingHalfCylinder.setRadius(1.0);
+    wrappingHalfCylinder.setLength(2.5);
 
     // Check values
     {
-        SCALAR_TO_DOUBLE(length, wrappingCylinder.length());
+        SCALAR_TO_DOUBLE(diameter, wrappingHalfCylinder.diameter());
+        SCALAR_TO_DOUBLE(shallowCopyDiameter, shallowCopy.diameter());
+        SCALAR_TO_DOUBLE(deepCopyNowDiameter, deepCopyNow.diameter());
+        SCALAR_TO_DOUBLE(deepCopyLaterDiameter, deepCopyLater.diameter());
+        EXPECT_NEAR(diameter, 2., requiredPrecision);
+        EXPECT_NEAR(shallowCopyDiameter, 2., requiredPrecision);
+        EXPECT_NEAR(deepCopyNowDiameter, 0.5, requiredPrecision);
+        EXPECT_NEAR(deepCopyLaterDiameter, 0.5, requiredPrecision);
+
+        SCALAR_TO_DOUBLE(length, wrappingHalfCylinder.length());
         SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.length());
         SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.length());
-        SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.length());
-        EXPECT_NEAR(length, 2., requiredPrecision);
-        EXPECT_NEAR(shallowCopyLength, 2., requiredPrecision);
-        EXPECT_NEAR(deepCopyNowLength, 1.5, requiredPrecision);
-        EXPECT_NEAR(deepCopyLaterLength, 1.5, requiredPrecision);
+        SCALAR_TO_DOUBLE(deepCopyLaterlength, deepCopyLater.length());
+        EXPECT_NEAR(length, 2.5, requiredPrecision);
+        EXPECT_NEAR(shallowCopyLength, 2.5, requiredPrecision);
+        EXPECT_NEAR(deepCopyNowLength, 1.0, requiredPrecision);
+        EXPECT_NEAR(deepCopyLaterlength, 1.0, requiredPrecision);
     }
 }
 

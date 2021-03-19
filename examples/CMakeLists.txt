@@ -14,6 +14,9 @@ endif()
 if (MODULE_KALMAN)
     list(APPEND EXAMPLE_FILES "inverseKinematicsKalmanExample.cpp")
 endif()
+if (MODULE_MUSCLES)
+    list(APPEND EXAMPLE_FILES "WrappingObjectsExample.cpp")
+endif()
 
 foreach(FILE ${EXAMPLE_FILES})
     # Get the name of the current file
@@ -43,5 +46,6 @@ endforeach()
 file(COPY
     ${CMAKE_CURRENT_SOURCE_DIR}/pyomecaman.bioMod
     ${CMAKE_CURRENT_SOURCE_DIR}/arm26.bioMod
+    ${CMAKE_CURRENT_SOURCE_DIR}/WrappingObjectExample.bioMod
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
 )

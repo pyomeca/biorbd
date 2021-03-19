@@ -51,13 +51,15 @@ biorbd::muscles::HillThelenType::HillThelenType(
     setType();
 }
 
-biorbd::muscles::HillThelenType::HillThelenType(const biorbd::muscles::Muscle &other) :
+biorbd::muscles::HillThelenType::HillThelenType(
+        const biorbd::muscles::Muscle &other) :
     biorbd::muscles::HillType (other)
 {
 
 }
 
-biorbd::muscles::HillThelenType::HillThelenType(const std::shared_ptr<biorbd::muscles::Muscle> other) :
+biorbd::muscles::HillThelenType::HillThelenType(
+        const std::shared_ptr<biorbd::muscles::Muscle> other) :
     biorbd::muscles::HillType(other)
 {
 
@@ -70,7 +72,8 @@ biorbd::muscles::HillThelenType biorbd::muscles::HillThelenType::DeepCopy() cons
     return copy;
 }
 
-void biorbd::muscles::HillThelenType::DeepCopy(const biorbd::muscles::HillThelenType &other)
+void biorbd::muscles::HillThelenType::DeepCopy(
+        const biorbd::muscles::HillThelenType &other)
 {
     biorbd::muscles::HillType::DeepCopy(other);
 }

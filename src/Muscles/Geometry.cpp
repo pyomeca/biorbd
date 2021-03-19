@@ -343,11 +343,10 @@ void biorbd::muscles::Geometry::setMusclesPointsInGlobal(
         biorbd::utils::Vector3d pi_wrap(0, 0, 0); // point on the wrapping related to insertion
         biorbd::utils::Vector3d po_wrap(0, 0, 0); // point on the wrapping related to origin
 
-        w.wrapPoints(RT,po_mus,pi_mus,po_wrap, pi_wrap);
+        biorbd::utils::Scalar a; // Force the computation of the length
+        w.wrapPoints(RT,po_mus,pi_mus,po_wrap, pi_wrap, &a);
 
         // Store the points in local
-        biorbd::utils::Error::check(0, "That part of the function is not validated, "
-                                       "please contact pariterre@hotmail.com");
         m_pointsInLocal->push_back(originInLocal());
         m_pointsInLocal->push_back(
                     biorbd::utils::Vector3d(RigidBodyDynamics::CalcBodyToBaseCoordinates(
@@ -360,10 +359,10 @@ void biorbd::muscles::Geometry::setMusclesPointsInGlobal(
         m_pointsInLocal->push_back(insertionInLocal());
 
         // Store the points in global
-        m_pointsInGlobal->push_back(originInGlobal());
+        m_pointsInGlobal->push_back(po_mus);
         m_pointsInGlobal->push_back(po_wrap);
         m_pointsInGlobal->push_back(pi_wrap);
-        m_pointsInGlobal->push_back(insertionInGlobal());
+        m_pointsInGlobal->push_back(pi_mus);
 
     }
 
@@ -400,20 +399,17 @@ const biorbd::utils::Scalar& biorbd::muscles::Geometry::length(
 
     // because we can't combine, test the first (0) will let us know all the types if more than one
     if (pathModifiers != nullptr && pathModifiers->nbWraps()!=0){
-        // CHECK TO MODIFY BEFORE GOING FORWARD WITH PROJECTS
         biorbd::utils::Error::check(pathModifiers->nbVia() == 0, "Cannot mix wrapping and via points yet" ) ;
         biorbd::utils::Error::check(pathModifiers->nbWraps() < 2, "Cannot compute more than one wrapping yet");
 
         biorbd::utils::Vector3d pi_wrap(0, 0, 0); // point on the wrapping related to insertion
         biorbd::utils::Vector3d po_wrap(0, 0, 0); // point on the wrapping related to origin
         biorbd::utils::Scalar lengthWrap(0);
-        static_cast<biorbd::muscles::WrappingObject&>(pathModifiers->object(0)).wrapPoints(
-                    po_wrap,
-                    pi_wrap,
-                    &lengthWrap);
-        *m_muscleTendonLength = ((*m_pointsInGlobal)[0] - pi_wrap).norm()   + // length before the wrap
+        static_cast<biorbd::muscles::WrappingObject&>(
+                    pathModifiers->object(0)).wrapPoints(po_wrap, pi_wrap, &lengthWrap);
+        *m_muscleTendonLength = ((*m_pointsInGlobal)[0] - po_wrap).norm()   + // length before the wrap
                     lengthWrap                 + // length on the wrap
-                    (*m_pointsInGlobal->end() - po_wrap).norm();   // length after the wrap
+                    ((*m_pointsInGlobal)[3] - pi_wrap).norm();   // length after the wrap
 
     }
     else{
@@ -462,6 +458,8 @@ void biorbd::muscles::Geometry::jacobian(
 void biorbd::muscles::Geometry::computeJacobianLength()
 {
     *m_jacobianLength = biorbd::utils::Matrix::Zero(1, m_jacobian->cols());
+
+    // jacobian approximates as if there were no wrapping object
     const std::vector<biorbd::utils::Vector3d>& p = *m_pointsInGlobal;
     for (unsigned int i=0; i<p.size()-1 ; ++i){
         *m_jacobianLength += (( p[i+1] - p[i] ).transpose() * (jacobian(i+1) - jacobian(i)))

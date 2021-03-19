@@ -1,0 +1,69 @@
+version 4
+segment Seg0
+    rt pi/10 pi/8 pi/6 xyz 0.1 0.2 0.3
+    rotations xyz
+    mass 40
+    inertia
+        1 0 0
+        0 1 0
+        0 0 1
+    com 0.05 0.1 0.15
+    mesh 0 0 0
+    mesh 0.1 0.2 0.3
+endsegment
+
+// Marker 0
+    marker marker_0
+        parent Seg0
+        position 0.1 0.2 0.3
+    endmarker
+    
+// Seg1
+segment Seg1
+    parent Seg0
+    rt pi/10 pi/8 pi/6 xyz 0.1 0.2 0.3
+    rotations   xyz
+    mass 1
+    inertia
+        1 0 0
+        0 1 0
+        0 0 0.1
+    com 0.05 0.1 0.15
+    mesh 0 0 0
+    mesh 0.1 0.2 0.3
+
+endsegment
+// Marker 1
+    marker marker_1
+        parent Seg1
+        position 0.1 0.2 0.3
+    endmarker
+
+musclegroup Seg02seg1
+	OriginParent		Seg0
+	InsertionParent		Seg1
+endmusclegroup 
+	muscle	line
+		Type 			hill
+		musclegroup 		Seg02seg1
+		OriginPosition		0.02 -0.1 0.2
+		InsertionPosition	0.08 0.2 0.1
+		optimalLength		0.8
+		maximalForce		3
+		tendonSlackLength 	0.2
+		pennationAngle		0.43633
+		PCSA			3.7
+		maxVelocity 		10
+	endmuscle
+
+		wrapping cyl1
+			parent Seg0
+			type cylinder
+           		RT pi/10 pi/8 pi/6 xyz 0.1 0.2 0.3
+			muscle line
+			musclegroup Seg02seg1
+			diameter 0.1
+			length 2
+			wrappingside 1
+		endwrapping
+		
