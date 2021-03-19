@@ -6,6 +6,8 @@ Biomechanical data are often analyzed using similar flow, that is inverse or dir
 
 So, without further ado, let's begin our investigation of BIORBD!
 
+You can get the online version of the paper for BIORBD here: [![DOI](https://joss.theoj.org/papers/10.21105/joss.02562/status.svg)](https://doi.org/10.21105/joss.02562)
+
 # How to install
 There are two main ways to install BIORBD on your computer: installing the binaries from Anaconda (easiest, but limited to C++ and Python3) or compiling the source code yourself (more versatile and up to date; for C++, Python3 and MATLAB).
 
@@ -35,6 +37,7 @@ The building status for the current BIORBD branches is as follow
 | --- | --- |
 | master | [![Build Status](https://travis-ci.org/pyomeca/biorbd.svg?branch=master)](https://travis-ci.org/pyomeca/biorbd) |
 | Code coverage | [![codecov](https://codecov.io/gh/pyomeca/biorbd/branch/master/graph/badge.svg)](https://codecov.io/gh/pyomeca/biorbd) |
+| DOI | [![DOI](https://zenodo.org/badge/124423173.svg)](https://zenodo.org/badge/latestdoi/124423173) |
 
 ### Dependencies
 BIORBD relies on several libraries (namely eigen ([http://eigen.tuxfamily.org]) or CasADi ([https://web.casadi.org/]), rbdl-casadi (https://github.com/pyomeca/rbdl-casadi), tinyxml(http://www.grinninglizard.com/tinyxmldocs/index.html) and Ipopt (https://github.com/coin-or/Ipopt)) that one must install prior to compiling. Fortunately, all these dependencies are also hosted on the *conda-forge* channel of Anaconda. Therefore the following command will install everything you need to compile BIORBD:
@@ -524,11 +527,21 @@ If you actually are using a released level of optimization, you may actually exp
 If you use BIORBD, we would be grateful if you could cite it as follows:
 
 ```
-@misc{Michaud2018biorbd,
-    author = {Michaud, Benjamin and Begon, Mickael},
-    title = {BIORBD: Toolbox for biomechanical analyses},
-    howpublished={Web page},
-    url = {https://github.com/pyomeca/biorbd},
-    year = {2018}
+
+@article{michaudBiorbd2021,
+  title = {Biorbd: {{A C}}++, {{Python}} and {{MATLAB}} Library to Analyze and Simulate the Human Body Biomechanics},
+  shorttitle = {Biorbd},
+  author = {Michaud, Benjamin and Begon, Mickaël},
+  date = {2021-01-19},
+  journaltitle = {Journal of Open Source Software},
+  volume = {6},
+  pages = {2562},
+  issn = {2475-9066},
+  doi = {10.21105/joss.02562},
+  url = {https://joss.theoj.org/papers/10.21105/joss.02562},
+  urldate = {2021-01-19},
+  abstract = {Michaud et al., (2021). biorbd: A C++, Python and MATLAB library to analyze and simulate the human body biomechanics. Journal of Open Source Software, 6(57), 2562, https://doi.org/10.21105/joss.02562},
+  langid = {english},
+  number = {57}
 }
 ```

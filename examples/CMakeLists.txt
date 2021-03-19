@@ -3,9 +3,11 @@ project(${BIORBD_NAME}_example)
 set(EXAMPLE_FILES
     "forwardKinematicsExample.cpp"
     "forwardDynamicsExample.cpp"
-    "forwardDynamicsFromMusclesExample.cpp"
     "inverseDynamicsExample.cpp"
 )
+if (MODULE_MUSCLES)
+    list(APPEND EXAMPLE_FILES "forwardDynamicsFromMusclesExample.cpp")
+endif()
 if (MODULE_STATIC_OPTIM)
     list(APPEND EXAMPLE_FILES "staticOptimizationExample.cpp")
 endif()

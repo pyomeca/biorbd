@@ -25,14 +25,15 @@
 %}
 
 // Instantiate templates
-namespace std {
 %template(VecBiorbdMuscleGroup) std::vector<biorbd::muscles::MuscleGroup>;
 %template(SharedBiorbdMuscle) std::shared_ptr<biorbd::muscles::Muscle>;
 %template(VecSharedBiorbdMuscle) std::vector<std::shared_ptr<biorbd::muscles::Muscle>>;
-%template(VecBiorbdMuscleState) std::vector<biorbd::muscles::State>;
-%template(MatBiorbdMuscleState) std::vector<std::vector<biorbd::muscles::State>>;
+%shared_ptr(biorbd::muscles::State);
+%shared_ptr(biorbd::muscles::StateDynamics);
+%shared_ptr(biorbd::muscles::StateDynamicsBuchanan);
+%template(VecBiorbdMuscleState) std::vector<std::shared_ptr<biorbd::muscles::State>>;
+%template(MatBiorbdMuscleState) std::vector<std::vector<std::shared_ptr<biorbd::muscles::State>>>;
 %template(SharedBiorbdMuscleFatigueState) std::shared_ptr<biorbd::muscles::FatigueState>;
-}
 
 // extension of muscle casting
 %extend biorbd::muscles::IdealizedActuator{

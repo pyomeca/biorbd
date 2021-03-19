@@ -1,0 +1,30 @@
+version    4
+
+segment segment1
+    rt 0.1 0.2 0.3 xyz 1 2 3
+    translations    xy
+    rotations	z
+endsegment
+
+segment segment2
+    parent segment1
+    rt 0.1 0.2 0.3 xyz 1 2 3
+    rotations	z
+endsegment
+
+    marker mark_seg2
+        parent segment2
+        position 0.1 0.2 0.3
+    endmarker
+    
+    customrt rt_seg2
+        parent segment2
+        rt 0.1 0.2 0.3 xyz 1 2 3
+    endcustomrt
+
+    imu imu_seg2
+        parent segment2
+        rt 0.1 0.2 0.3 xyz 1 2 3
+        technical 0
+        anatomical 0
+    endimu

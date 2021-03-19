@@ -3,7 +3,7 @@ if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.0")
     cmake_policy(SET CMP0042 NEW)
 endif()
 
-project(biorbd VERSION 1.4.0)
+project(biorbd VERSION 1.4.4)
 set (CMAKE_CXX_STANDARD 11)
 set (BIORBD_NAME ${PROJECT_NAME})
 
@@ -56,6 +56,10 @@ find_package(TinyXML)
 
 # Manage options
 option(MODULE_KALMAN "If Kalman filter should be compiled" ON)
+if (BIORBD_USE_CASADI_MATH AND MODULE_KALMAN)
+    message(WARNING "Casadi and Kalman cannot be used alongside, MODULE_KALMAN is automatically set to OFF")
+    set(MODULE_KALMAN OFF CACHE BOOL "" FORCE)
+endif()
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     option(SKIP_ASSERT

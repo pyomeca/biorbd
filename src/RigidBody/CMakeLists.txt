@@ -19,10 +19,7 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/RotoTransNodes.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/MeshFace.cpp"
 )
-if (BIORBD_USE_CASADI_MATH AND MODULE_KALMAN)
-    message(WARNING "Casadi and Kalman cannot be used alongside, MODULE_KALMAN is automatically set to OFF")
-    set(MODULE_KALMAN OFF CACHE BOOL "" FORCE)
-endif()
+
 if (MODULE_KALMAN)
     list(APPEND SRC_LIST_MODULE
         "${CMAKE_CURRENT_SOURCE_DIR}/KalmanRecons.cpp"

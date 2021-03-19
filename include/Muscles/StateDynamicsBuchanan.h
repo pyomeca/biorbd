@@ -89,7 +89,7 @@ public:
     /// \brief Set the muscle activation
     /// \param notUsed the activation is computed from the neuralCommand and excitation
     ///
-    void setActivation(
+    virtual void setActivation(
             const biorbd::utils::Scalar& notUsed,
             bool turnOffWarnings = false);
 
