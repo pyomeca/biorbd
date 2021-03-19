@@ -25,7 +25,7 @@
 #include "Muscles/StateDynamics.h"
 #include "Muscles/StateDynamicsBuchanan.h"
 #include "Muscles/ViaPoint.h"
-#include "Muscles/WrappingCylinder.h"
+#include "Muscles/WrappingHalfCylinder.h"
 #include "Muscles/WrappingObject.h"
 #include "Muscles/WrappingSphere.h"
 

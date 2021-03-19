@@ -13,7 +13,7 @@ enum NODE_TYPE {
     ROTOTRANS,
     SEGMENT,
     WRAPPING_OBJECT,
-    WRAPPING_CYLINDER,
+    WRAPPING_HALF_CYLINDER,
     WRAPPING_SPHERE,
     VIA_POINT,
     NO_NODE_TYPE
@@ -34,7 +34,7 @@ inline const char* NODE_TYPE_toStr(
     case ROTOTRANS: return "RotoTrans";
     case SEGMENT: return "Segment";
     case WRAPPING_OBJECT: return "WrappingObject";
-    case WRAPPING_CYLINDER: return "WrappingCylinder";
+    case WRAPPING_HALF_CYLINDER: return "WrappingHalfCylinder";
     case WRAPPING_SPHERE: return "WrappinSphere";
     case VIA_POINT: return "ViaPoint";
     default: return "NoType";

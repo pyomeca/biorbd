@@ -25,7 +25,7 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/StateDynamicsDeGroote.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/StateDynamicsBuchanan.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/ViaPoint.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/WrappingCylinder.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/WrappingHalfCylinder.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/WrappingObject.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/WrappingSphere.cpp"
 )

@@ -1,5 +1,5 @@
-#ifndef BIORBD_MUSCLES_WRAPPING_CYLINDER_H
-#define BIORBD_MUSCLES_WRAPPING_CYLINDER_H
+#ifndef BIORBD_MUSCLES_WRAPPING_HALF_CYLINDER_H
+#define BIORBD_MUSCLES_WRAPPING_HALF_CYLINDER_H
 
 #include "biorbdConfig.h"
 #include "Muscles/WrappingObject.h"
@@ -7,79 +7,75 @@
 namespace biorbd {
 namespace muscles {
 ///
-/// \brief Cylinder of infinite length (the length only affect the graphical
+/// \brief Half cylinder of infinite length (the length only affect the graphical
 /// representation) object that makes the muscle to wrap around
 ///
-class BIORBD_API WrappingCylinder : public biorbd::muscles::WrappingObject
+class BIORBD_API WrappingHalfCylinder : public biorbd::muscles::WrappingObject
 {
 public:
     ///
-    /// \brief Construct a wrapping cylinder
+    /// \brief Construct a wrapping half cylinder
     ///
-    WrappingCylinder();
+    WrappingHalfCylinder();
 
     ///
-    /// \brief Construct a wrapping cylinder
+    /// \brief Construct a wrapping half cylinder
     ///
-    WrappingCylinder(
+    WrappingHalfCylinder(
             const biorbd::utils::Vector3d& other);
 
     ///
-    /// \brief Construct a wrapping cylinder
+    /// \brief Construct a wrapping half cylinder
     ///
-    WrappingCylinder(
+    WrappingHalfCylinder(
             const biorbd::utils::Vector3d* other);
 
     ///
-    /// \brief Construct a wrapping cylinder
-    /// \param rt RotoTrans matrix of the origin of the cylinder
-    /// \param diameter Diameter of the cylinder
-    /// \param length Length of the cylinder
-    /// \param isCylinderPositiveSign If cylinder is of positive sign
+    /// \brief Construct a wrapping half cylinder
+    /// \param rt RotoTrans matrix of the origin of the half cylinder
+    /// \param radius The radius of the half cylinder
+    /// \param length The Length of the half cylinder
     ///
-    WrappingCylinder(
+    WrappingHalfCylinder(
             const biorbd::utils::RotoTrans& rt,
-            const biorbd::utils::Scalar& diameter,
-            const biorbd::utils::Scalar& length,
-            bool isCylinderPositiveSign);
+            const biorbd::utils::Scalar& radius,
+            const biorbd::utils::Scalar& length);
 
     ///
-    /// \brief Construct a wrapping cylinder
+    /// \brief Construct a wrapping half cylinder
     /// \param rt RotoTrans matrix
-    /// \param diameter Diameter of the cylinder
-    /// \param length Length of the cylinder
-    /// \param isCylinderPositiveSign If cylinder is of positive sign
-    /// \param name The name of the cylinder
+    /// \param radius The radius of the half cylinder
+    /// \param length The length of the half cylinder
+    /// \param name The name of the half cylinder
     /// \param parentName The parent name segment
     ///
-    WrappingCylinder(
+    WrappingHalfCylinder(
             const biorbd::utils::RotoTrans& rt,
-            const biorbd::utils::Scalar& diameter,
+            const biorbd::utils::Scalar& radius,
             const biorbd::utils::Scalar& length,
-            bool isCylinderPositiveSign,
             const biorbd::utils::String& name,
             const biorbd::utils::String& parentName);
 
     ///
-    /// \brief Deep copy of the wrapping cylinder
-    /// \return A deep copy of the wrapping cylinder
+    /// \brief Deep copy of the wrapping half cylinder
+    /// \return A deep copy of the wrapping half cylinder
     ///
-    biorbd::muscles::WrappingCylinder DeepCopy() const;
+    biorbd::muscles::WrappingHalfCylinder DeepCopy() const;
 
     ///
-    /// \brief Deep copy of the wrapping cylinder in another wrapping cylinder
-    /// \param other The wrapping cylinder to copy
+    /// \brief Deep copy of the wrapping half cylinder in another wrapping half cylinder
+    /// \param other The wrapping half cylinder to copy
     ///
     void DeepCopy(
-            const biorbd::muscles::WrappingCylinder& other);
+            const biorbd::muscles::WrappingHalfCylinder& other);
 
     ///
-    /// \brief From the position of the cylinder, return the 2 locations where the muscle leaves the wrapping object
-    /// \param rt RotoTrans matrix of the cylinder
+    /// \brief From the position of the half cylinder, return the 2 locations where the muscle leaves the wrapping object
+    /// \param rt RotoTrans matrix of the half cylinder
     /// \param p1_bone 1st position of the muscle node
     /// \param p2_bone 2n position of the muscle node
-    /// \param p1 The 1st position on the cylinder the muscle leave
-    /// \param p2 The 2nd position on the cylinder the muscle leave
+    /// \param p1 The 1st position on the half cylinder the muscle leave
+    /// \param p2 The 2nd position on the half cylinder the muscle leave
     /// \param length Length of the muscle (ignored if no value is provided)
     ///
     void wrapPoints(
@@ -91,13 +87,13 @@ public:
             biorbd::utils::Scalar* length = nullptr);
 
     ///
-    /// \brief From the position of the cylinder, return the 2 locations where the muscle leaves the wrapping object
+    /// \brief From the position of the half cylinder, return the 2 locations where the muscle leaves the wrapping object
     /// \param model The joint model
     /// \param Q The generalized coordinates
     /// \param p1_bone 1st position of the muscle node
     /// \param p2_bone 2n position of the muscle node
-    /// \param p1 The 1st position on the cylinder the muscle leave
-    /// \param p2 The 2nd position on the cylinder the muscle leave
+    /// \param p1 The 1st position on the half cylinder the muscle leave
+    /// \param p2 The 2nd position on the half cylinder the muscle leave
     /// \param length Length of the muscle (ignored if no value is provided)
     ///
     void wrapPoints(
@@ -111,8 +107,8 @@ public:
 
     ///
     /// \brief Returns the previously computed 2 locations where the muscle leaves the wrapping object
-    /// \param p1 The 1st position on the cylinder the muscle leave
-    /// \param p2 The 2nd position on the cylinder the muscle leave
+    /// \param p1 The 1st position on the half cylinder the muscle leave
+    /// \param p2 The 2nd position on the half cylinder the muscle leave
     /// \param length Length of the muscle (ignored if no value is provided)
     ///
     void wrapPoints(
@@ -121,11 +117,11 @@ public:
             biorbd::utils::Scalar* length = nullptr);
 
     ///
-    /// \brief Return the RotoTrans matrix of the cylinder
+    /// \brief Return the RotoTrans matrix of the half cylinder
     /// \param model The joint model
     /// \param Q The generalized coordinates
     /// \param updateKin If the kinematics should be computed
-    /// \return The RotoTrans matrix of the cylinder
+    /// \return The RotoTrans matrix of the half cylinder
     ///
     virtual const biorbd::utils::RotoTrans& RT(
             biorbd::rigidbody::Joints &model,
@@ -133,42 +129,36 @@ public:
             bool updateKin = true);
 
     ///
-    /// \brief Set the diameter of the wrapping cylinder
+    /// \brief Set the diameter of the wrapping half cylinder
     /// \param val Value of the diameter to set
     ///
-    void setDiameter(
+    void setRadius(
             const biorbd::utils::Scalar& val);
 
     ///
-    /// \brief Return the diameter of the cylinder
-    /// \return The diameter of the cylinder
-    ///
-    const biorbd::utils::Scalar& diameter() const;
-
-    ///
-    /// \brief Return the radius of the cylinder
-    /// \return The radius of the cylinder
+    /// \brief Return the radius of the half cylinder
+    /// \return The radius of the half cylinder
     ///
     biorbd::utils::Scalar radius() const;
 
     ///
-    /// \brief Set the length of the cylinder
+    /// \brief Return the diamter of the half cylinder
+    /// \return The diamter of the half cylinder
+    ///
+    biorbd::utils::Scalar diameter() const;
+
+    ///
+    /// \brief Set the length of the half cylinder
     /// \param val Value of the to set
     ///
     void setLength(
             const biorbd::utils::Scalar& val);
 
     ///
-    /// \brief Return the length of the cylinder
-    /// \return The length of the cylinder
+    /// \brief Return the length of the half cylinder
+    /// \return The length of the half cylinder
     ///
     const biorbd::utils::Scalar& length() const;
-
-    ///
-    /// \brief Get the sign of the cylinder (1 positive, -1 negative)
-    /// \return The sign ofthe cylinder
-    ///
-    int sign() const;
 
 protected:
 #ifndef SWIG
@@ -221,31 +211,28 @@ protected:
             const NodeMusclePair& pointsInGlobal,
             NodeMusclePair& pointsToWrap) const;
 
+#ifndef BIORBD_USE_CASADI_MATH
     ///
     /// \brief Check if a wrapper has to be done
     /// \param pointsInGlobal The position of the muscle pair in global reference frame
     /// \param pointsToWrap The points to wrap
     /// \return If the wrapper has to be done
     ///
-#ifdef BIORBD_USE_CASADI_MATH
-    biorbd::utils::Scalar checkIfWraps(
-#else
     bool checkIfWraps(
-#endif
             const NodeMusclePair &pointsInGlobal,
             NodeMusclePair &pointsToWrap) const;
+#endif
 
     ///
-    /// \brief Compute the muscle length on the cylinder
+    /// \brief Compute the muscle length on the half cylinder
     /// \param p the muscle node pair
-    /// \return The muscle lengh on the cylinder
+    /// \return The muscle lengh on the half cylinder
     ///
     biorbd::utils::Scalar computeLength(
             const NodeMusclePair &p) const;
 
-    std::shared_ptr<biorbd::utils::Scalar> m_dia; ///< Diameter of the cylinder diametre du cylindre
-    std::shared_ptr<biorbd::utils::Scalar> m_length; ///< Length of the cylinder
-    std::shared_ptr<bool> m_isCylinderPositiveSign; ///<orientation of the muscle passing
+    std::shared_ptr<biorbd::utils::Scalar> m_radius; ///< Diameter of the half cylinder diametre du cylindre
+    std::shared_ptr<biorbd::utils::Scalar> m_length; ///< Length of the half cylinder
     std::shared_ptr<biorbd::utils::RotoTrans> m_RTtoParent; ///<RotoTrans matrix with the parent
 
     std::shared_ptr<biorbd::utils::Vector3d> m_p1Wrap; ///< First point of contact with the wrap
@@ -256,5 +243,5 @@ protected:
 
 }}
 
-#endif // BIORBD_MUSCLES_WRAPPING_CYLINDER_H
+#endif // BIORBD_MUSCLES_WRAPPING_HALF_CYLINDER_H
 

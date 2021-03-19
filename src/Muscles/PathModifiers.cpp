@@ -5,7 +5,7 @@
 #include "Utils/Vector3d.h"
 #include "Muscles/ViaPoint.h"
 #include "Muscles/WrappingSphere.h"
-#include "Muscles/WrappingCylinder.h"
+#include "Muscles/WrappingHalfCylinder.h"
 
 biorbd::muscles::PathModifiers::PathModifiers() :
     m_obj(std::make_shared<std::vector<std::shared_ptr<biorbd::utils::Vector3d>>>()),
@@ -46,10 +46,10 @@ void biorbd::muscles::PathModifiers::addPathChanger(
                              static_cast<biorbd::muscles::WrappingSphere&> (object)));
         ++*m_nbWraps;
     }
-    else if (object.typeOfNode() == biorbd::utils::NODE_TYPE::WRAPPING_CYLINDER){
+    else if (object.typeOfNode() == biorbd::utils::NODE_TYPE::WRAPPING_HALF_CYLINDER){
         biorbd::utils::Error::check(*m_nbVia == 0, "Cannot mix via points and wrapping objects yet");
-        m_obj->push_back(std::make_shared<biorbd::muscles::WrappingCylinder>(
-                             dynamic_cast <biorbd::muscles::WrappingCylinder&> (object)));
+        m_obj->push_back(std::make_shared<biorbd::muscles::WrappingHalfCylinder>(
+                             dynamic_cast <biorbd::muscles::WrappingHalfCylinder&> (object)));
         ++*m_nbWraps;
     }
     else if (object.typeOfNode() == biorbd::utils::NODE_TYPE::VIA_POINT){
