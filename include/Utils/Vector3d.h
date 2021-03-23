@@ -65,7 +65,6 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
             const biorbd::utils::String &name,
             const biorbd::utils::String &parentName);
 
-#ifndef SWIG
     ///
     /// \brief Construct a 3D vector from a Casadi 3D vector (drop the trailling 1)
     /// \param other The Casadi 3D vector
@@ -86,7 +85,6 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
     ///
     Vector3d(
             const RigidBodyDynamics::Math::Vector4d& other);
-#endif
 
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///

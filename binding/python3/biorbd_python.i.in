@@ -10,11 +10,11 @@
 
 #include "BiorbdModel.h"
 #include "Utils/Matrix.h"
+#include "Utils/Vector3d.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
-#include "Utils/Vector3d.h"
 #include "RigidBody/IMU.h"
 %}
 
@@ -842,7 +842,7 @@ biorbd::utils::Vector3d &{
      }
 #ifdef BIORBD_USE_CASADI_MATH
     else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        $1 = new biorbd::utils::Vector3d(*reinterpret_cast<casadi::MX*>(argp1));
+        $1 = new biorbd::utils::Vector3d(biorbd::utils::Vector(*reinterpret_cast<casadi::MX*>(argp1)));
     }
 #endif
     else if( PyArray_Check($input) ) {

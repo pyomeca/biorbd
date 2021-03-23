@@ -50,7 +50,6 @@ biorbd::utils::Vector3d::Vector3d(
     setType();
 }
 
-
 biorbd::utils::Vector3d::Vector3d(
         const RigidBodyDynamics::Math::VectorNd &other) :
     RigidBodyDynamics::Math::Vector3d(other[0], other[1], other[2]),
@@ -61,7 +60,8 @@ biorbd::utils::Vector3d::Vector3d(
 
 biorbd::utils::Vector3d::Vector3d(
         const RigidBodyDynamics::Math::Vector4d &other) :
-    RigidBodyDynamics::Math::Vector3d(other[0], other[1], other[2]), biorbd::utils::Node ()
+    RigidBodyDynamics::Math::Vector3d(other[0], other[1], other[2]),
+    biorbd::utils::Node ()
 {
     setType();
 }
@@ -97,7 +97,7 @@ biorbd::utils::Vector3d biorbd::utils::Vector3d::applyRT(const biorbd::utils::Ro
     RigidBodyDynamics::Math::Vector4d v;
     v.block(0, 0, 3, 1) = *this;
     v[3] = 1;
-    return static_cast<RigidBodyDynamics::Math::VectorNd>((rt * v).block(0, 0, 3, 1));
+    return (rt * v).block(0, 0, 3, 1);
 }
 
 void biorbd::utils::Vector3d::applyRT(
