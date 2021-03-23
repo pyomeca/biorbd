@@ -14,6 +14,7 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
+#include "Utils/Vector3d.h"
 #include "RigidBody/IMU.h"
 %}
 
@@ -810,15 +811,24 @@ biorbd::rigidbody::GeneralizedAcceleration * {
 }
 #endif
 
-// --- Node --- //
-#ifndef BIORBD_USE_CASADI_MATH
-%typemap(typecheck, precedence=2130) biorbd::utils::Vector3d &{
+// --- Vector3d --- //
+%typemap(typecheck, precedence=2130) 
+biorbd::utils::Vector3d &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Node,  0  | 0)) && argp1) {
         // Test if it is a pointer to SWIGTYPE_p_biorbd__utils__Node already exists
         $1 = true;
-    } else if( PyArray_Check($input) ) {
+     }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        // Test if it is a pointer to
+        // SWIGTYPE_p_biorbd__utils__Vector3d already exists
+        $1 = true;
+    }
+#endif
+    else if( PyArray_Check($input) ) {
         // test if it is a numpy array
+        
         $1 = true;
     } else {
         $1 = false;
@@ -829,7 +839,13 @@ biorbd::rigidbody::GeneralizedAcceleration * {
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Node,  0  | 0)) && argp1) {
         // Recast the pointer
         $1 = reinterpret_cast< biorbd::utils::Vector3d * >(argp1);
-    } else if( PyArray_Check($input) ) {
+     }
+#ifdef BIORBD_USE_CASADI_MATH
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
+        $1 = new biorbd::utils::Vector3d(*reinterpret_cast<casadi::MX*>(argp1));
+    }
+#endif
+    else if( PyArray_Check($input) ) {
         // Get dimensions of the data
         int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
         npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
@@ -852,7 +868,7 @@ biorbd::rigidbody::GeneralizedAcceleration * {
         SWIG_fail;
     }
 };
-#endif
+
 %extend biorbd::utils::Vector3d{
 #ifdef BIORBD_USE_CASADI_MATH
     casadi::MX to_mx(){
