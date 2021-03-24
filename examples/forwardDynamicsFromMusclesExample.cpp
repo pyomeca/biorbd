@@ -25,9 +25,10 @@ int main()
     Qdot.setZero();
 
     // Set all muscles to half of their maximal activation
-    std::vector<std::shared_ptr<biorbd::muscles::State>> states;
+    std::vector<std::shared_ptr<biorbd::muscles::State>> states = model.stateSet();
     for (unsigned int i=0; i<model.nbMuscles(); ++i){
-        states.push_back(std::make_shared<biorbd::muscles::State>(0, 0.5));
+        states[i]->setExcitation(0);
+        states[i]->setActivation(0.5);
     }
 
     // Proceed with the computation of joint torque from the muscles

@@ -9,6 +9,7 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
+#include "RigidBody/NodeSegment.h"
 #ifdef MODULE_MUSCLES
 #include "Muscles/all.h"
 #include "Utils/String.h"
@@ -275,29 +276,56 @@ TEST(IdealizedActuator, copy)
             EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
         }
 
-        // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
-        biorbd::muscles::Characteristics charac(idealizedActuator.characteristics());
-        charac.setPennationAngle(0.523599);
-        biorbd::utils::Vector3d insertion(idealizedActuator.position().insertionInLocal());
-        insertion.set(0.2, 0.2, 0.2);
-        biorbd::utils::String oldName(insertion.biorbd::utils::Node::name());
-        biorbd::utils::String newName("MyNewName");
-        insertion.setName(newName);
-        idealizedActuator.updateOrientations(model, Q, qDot, 2);
+        {
+            // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
+            biorbd::muscles::Characteristics charac(idealizedActuator.characteristics());
+            charac.setPennationAngle(0.523599);
+            biorbd::utils::Vector3d insertion(idealizedActuator.position().insertionInLocal());
+            insertion.set(0.2, 0.2, 0.2);
+            biorbd::utils::String oldName(insertion.biorbd::utils::Node::name());
+            biorbd::utils::String newName("MyNewName");
+            insertion.setName(newName);
+            idealizedActuator.updateOrientations(model, Q, qDot, 2);
+
+            {
+                SCALAR_TO_DOUBLE(length, idealizedActuator.position().length());
+                SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
+                SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
+                SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
+                EXPECT_NEAR(length, 0.07570761027741163, requiredPrecision);
+                EXPECT_NEAR(shallowCopyLength, 0.07570761027741163, requiredPrecision);
+                EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
+                EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
+                EXPECT_EQ(idealizedActuator.position().insertionInLocal().biorbd::utils::Node::name(), newName);
+                EXPECT_EQ(shallowCopy.position().insertionInLocal().biorbd::utils::Node::name(), newName);
+                EXPECT_EQ(deepCopyNow.position().insertionInLocal().biorbd::utils::Node::name(), oldName);
+                EXPECT_EQ(deepCopyLater.position().insertionInLocal().biorbd::utils::Node::name(), oldName);
+            }
+
+        }
 
         {
-            SCALAR_TO_DOUBLE(length, idealizedActuator.position().length());
-            SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
-            SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
-            SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_EQ(idealizedActuator.position().insertionInLocal().biorbd::utils::Node::name(), newName);
-            EXPECT_EQ(shallowCopy.position().insertionInLocal().biorbd::utils::Node::name(), newName);
-            EXPECT_EQ(deepCopyNow.position().insertionInLocal().biorbd::utils::Node::name(), oldName);
-            EXPECT_EQ(deepCopyLater.position().insertionInLocal().biorbd::utils::Node::name(), oldName);
+            // Change the position giving an actual vector
+            biorbd::utils::Vector3d newPosition(1, 2, 3);
+            biorbd::utils::String oldName("MyNewName");
+            biorbd::utils::String newName("MyNewNewName");
+            biorbd::rigidbody::NodeSegment newNode(newPosition, newName, "", true, true, "", 0);
+            {
+                const_cast<biorbd::muscles::Geometry&>(idealizedActuator.position()).setOrigin(newPosition);
+                const_cast<biorbd::muscles::Geometry&>(idealizedActuator.position()).setInsertionInLocal(newPosition);
+                const biorbd::utils::Vector3d& origin = idealizedActuator.position().originInLocal();
+                const biorbd::utils::Vector3d& insertion = idealizedActuator.position().insertionInLocal();
+                EXPECT_STREQ(origin.biorbd::utils::Node::name().c_str(), "TRImed_origin");
+                EXPECT_STREQ(insertion.biorbd::utils::Node::name().c_str(), oldName.c_str());
+            }
+            {
+                const_cast<biorbd::muscles::Geometry&>(idealizedActuator.position()).setOrigin(newNode);
+                const_cast<biorbd::muscles::Geometry&>(idealizedActuator.position()).setInsertionInLocal(newNode);
+                const biorbd::utils::Vector3d& origin = idealizedActuator.position().originInLocal();
+                const biorbd::utils::Vector3d& insertion = idealizedActuator.position().insertionInLocal();
+                EXPECT_STREQ(origin.biorbd::utils::Node::name().c_str(), newName.c_str());
+                EXPECT_STREQ(insertion.biorbd::utils::Node::name().c_str(), newName.c_str());
+            }
         }
     }
 
