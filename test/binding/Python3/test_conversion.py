@@ -28,7 +28,7 @@ def test_np_mx_to_generalized():
 
 
 # --- Options --- #
-def imu_to_array():
+def test_imu_to_array():
     m = biorbd.Model("../../models/IMUandCustomRT/pyomecaman_withIMUs.bioMod")
     q = np.zeros( (m.nbQ(), ) )
 
