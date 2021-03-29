@@ -47,3 +47,12 @@ def test_imu_to_array():
         [-0.08887169, 0.10925158, 0.99003329, -0.20946],
         [0., 0., 0., 1.]]))
 
+def test_vector3d():
+    if biorbd.currentLinearAlgebraBackend() == 1:
+        from casadi import MX
+        vec = MX.zeros(3, 1)
+        biorbd.Vector3d(vec[0], vec[1], vec[2])
+
+    else:
+        vec = np.random.rand(3,)
+        biorbd.Vector3d(vec[0], vec[1], vec[2])
