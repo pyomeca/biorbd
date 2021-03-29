@@ -118,7 +118,6 @@ class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d, public bio
     ///
     Vector3d(
             const RBDLCasadiMath::MX_Xd_SubMatrix& other);
-
 #endif
 
     ///

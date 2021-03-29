@@ -6,6 +6,7 @@
 #include "Utils/Error.h"
 #include "Utils/Matrix.h"
 #include "Utils/RotoTrans.h"
+#include "RigidBody/NodeSegment.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
@@ -191,7 +192,12 @@ void biorbd::muscles::Geometry::updateKinematics(
 void biorbd::muscles::Geometry::setOrigin(
         const utils::Vector3d &position)
 {
-    *m_origin = position;
+    if (dynamic_cast<const biorbd::rigidbody::NodeSegment*>(&position)){
+        *m_origin = position;
+    } else {
+        // Preserve the Node information
+        m_origin->RigidBodyDynamics::Math::Vector3d::operator=(position);
+    }
 }
 const biorbd::utils::Vector3d& biorbd::muscles::Geometry::originInLocal() const
 {
@@ -201,7 +207,12 @@ const biorbd::utils::Vector3d& biorbd::muscles::Geometry::originInLocal() const
 void biorbd::muscles::Geometry::setInsertionInLocal(
         const utils::Vector3d &position)
 {
-    *m_insertion = position;
+    if (dynamic_cast<const biorbd::rigidbody::NodeSegment*>(&position)){
+        *m_insertion = position;
+    } else {
+        // Preserve the Node information
+        m_insertion->RigidBodyDynamics::Math::Vector3d::operator=(position);
+    }
 }
 const biorbd::utils::Vector3d &biorbd::muscles::Geometry::insertionInLocal() const
 {

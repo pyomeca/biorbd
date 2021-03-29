@@ -77,7 +77,7 @@ biorbd::utils::Vector3d biorbd::utils::RotoTrans::axe(unsigned int idx) const
 {
     biorbd::utils::Error::check(
                 idx<=2, "Axis must be between 0 and 2 included");
-    return static_cast<RigidBodyDynamics::Math::VectorNd>(rot().block(0,idx,3,1));
+    return rot().block(0,idx,3,1);
 }
 
 biorbd::utils::RotoTrans biorbd::utils::RotoTrans::transpose() const
