@@ -117,7 +117,11 @@
         }
     } else
 #endif
-    if (PyFloat_Check($input)) {
+    if ( PyArray_Check($input) ) {
+        // test if it is a numpy array
+        $1 = true;
+    }
+    else if (PyFloat_Check($input)) {
         // Test if it is a double pointer
         $1 = true;
     } else if (PyLong_Check($input)) {
@@ -135,17 +139,55 @@
         try{
             $1 = new biorbd::utils::Scalar(*reinterpret_cast<casadi::MX*>(argp1));
         } catch (...){
-            PyErr_SetString(PyExc_ValueError, "Scalar must be an MX(1, 1)");
+            PyErr_SetString(PyExc_ValueError, "Scalar must be a 1x1 array or a float");
             SWIG_fail;
         }
     } else
 #endif
-    if (PyFloat_Check($input)) {
+    if( PyArray_Check($input) ) {
+        // Get dimensions of the data
+        int        ndim     = PyArray_NDIM    ((PyArrayObject*)$input);
+        npy_intp*  dims     = PyArray_DIMS    ((PyArrayObject*)$input);
+
+        // Cast the vector
+        PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
+        if (ndim == 1 ) {
+            unsigned int scalar_dim0 = dims[0];
+            if (scalar_dim0 != 1){
+                PyErr_SetString(PyExc_ValueError,
+                                "Scalar must be a 1x1 array or a float");
+                SWIG_fail;
+            }
+
+            // Copy the actual data
+            $1 = new biorbd::utils::Scalar(*(double*)PyArray_GETPTR1((PyArrayObject*)data, 0));
+        }
+        else if (ndim == 2) {
+            unsigned int scalar_dim0(dims[0]);
+            unsigned int scalar_dim1(dims[1]);
+            if (scalar_dim0 != 1 && scalar_dim1 != 1){
+                PyErr_SetString(PyExc_ValueError,
+                                "Scalar must be a 1x1 array or a float");
+                SWIG_fail;
+            }
+
+            // Copy the actual data
+            $1 = new biorbd::utils::Scalar(*(double*)PyArray_GETPTR2((PyArrayObject*)data, 0, 0));
+        }
+        else {
+            PyErr_SetString(PyExc_ValueError,
+                            "Scalar must be a 1x1 array or a float");
+            SWIG_fail;
+        }
+    }
+    else if (PyFloat_Check($input)) {
         $1 = new biorbd::utils::Scalar(PyFloat_AS_DOUBLE($input));
-    } else if (PyLong_Check($input)) {
+    }
+    else if (PyLong_Check($input)) {
         $1 = new biorbd::utils::Scalar(static_cast<double>(PyLong_AS_LONG($input)));
-    } else {
-        PyErr_SetString(PyExc_ValueError, "Scalar must be an MX(1, 1)");
+    }
+    else {
+        PyErr_SetString(PyExc_ValueError, "Scalar must be a 1x1 array or a float");
         SWIG_fail;
     }
 };
