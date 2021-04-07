@@ -1,5 +1,12 @@
 # BIORBD
 
+<p align="center">
+    <img
+      src="https://github.com/pyomeca/biorbd_design/blob/main/logo_png/biorbd_full.png"
+      alt="logo"
+    />
+</p>
+
 BIORBD is a library to analyze biomechanical data. It provides several useful functions for the direct and inverse flow including rigid body (based on *Feathestone* equations implemented in RBDL) and muscle elements.
 
 Biomechanical data are often analyzed using similar flow, that is inverse or direct. BIORBD implements these common analyses providing high-level and easy to use Python and MATLAB interfaces of an efficient C++ implementation. 
