@@ -1,6 +1,8 @@
 """
 Test for file IO
 """
+import pytest
+
 import numpy as np
 import biorbd
 
@@ -209,6 +211,50 @@ def test_CoM():
     np.testing.assert_almost_equal(CoM.squeeze(), expected_CoM)
     np.testing.assert_almost_equal(CoM_dot.squeeze(), expected_CoM_dot)
     np.testing.assert_almost_equal(CoM_ddot.squeeze(), expected_CoM_ddot)
+
+
+def test_set_vector3d():
+    m = biorbd.Model("../../models/pyomecaman.bioMod")
+    m.setGravity(np.array((0, 0, -2)))
+    if biorbd.currentLinearAlgebraBackend() == 1:
+        from casadi import MX
+        get_gravity = biorbd.to_casadi_func("Compute_Markers", m.getGravity)()["o0"]
+    else:
+        get_gravity = m.getGravity().to_array()
+    assert get_gravity[2] == -2
+
+
+def test_set_scalar():
+    def check_value(target):
+        if biorbd.currentLinearAlgebraBackend() == 1:
+            assert m.segment(0).characteristics().mass().to_mx() == target
+        else:
+            assert m.segment(0).characteristics().mass() == target
+
+    m = biorbd.Model("../../models/pyomecaman.bioMod")
+
+    m.segment(0).characteristics().setMass(10)
+    check_value(10)
+
+    m.segment(0).characteristics().setMass(11.0)
+    check_value(11.0)
+    
+    with pytest.raises(ValueError, match="Scalar must be a 1x1 array or a float"):
+        m.segment(0).characteristics().setMass(np.array([]))
+    
+    m.segment(0).characteristics().setMass(np.array((12,)))
+    check_value(12.0)
+    
+    m.segment(0).characteristics().setMass(np.array([[13]]))
+    check_value(13.0)
+    
+    with pytest.raises(ValueError, match="Scalar must be a 1x1 array or a float"):
+        m.segment(0).characteristics().setMass(np.array([[[14]]]))
+    
+    if biorbd.currentLinearAlgebraBackend() == 1:
+        from casadi import MX
+        m.segment(0).characteristics().setMass(MX(15))
+        check_value(15.0)
 
 
 def test_markers():
