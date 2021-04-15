@@ -980,6 +980,21 @@ biorbd::rigidbody::GeneralizedTorque biorbd::rigidbody::Joints::InverseDynamics(
     return Tau;
 }
 
+biorbd::rigidbody::GeneralizedTorque biorbd::rigidbody::Joints::NonLinearEffect(
+        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const biorbd::rigidbody::GeneralizedVelocity &QDot,
+        std::vector<biorbd::utils::SpatialVector>* f_ext){
+    biorbd::rigidbody::GeneralizedTorque Tau(*this);
+    if (f_ext){
+        std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(*f_ext));
+        RigidBodyDynamics::NonlinearEffects(*this, Q, QDot, Tau, &f_ext_rbdl);
+    }
+    else {
+        RigidBodyDynamics::NonlinearEffects(*this, Q, QDot, Tau);
+    }
+    return Tau;
+}
+
 biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDynamics(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedVelocity &QDot,

@@ -773,6 +773,18 @@ public:
                 std::vector<biorbd::utils::SpatialVector>* f_ext = nullptr);
 
     ///
+    /// \brief Interface to NonLinearEffect
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \param f_ext External force acting on the system if there are any
+    /// \return The Generalized Torques of the bias effects
+    ///
+    biorbd::rigidbody::GeneralizedTorque NonLinearEffect(
+            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const biorbd::rigidbody::GeneralizedVelocity &QDot,
+            std::vector<biorbd::utils::SpatialVector>* f_ext);
+
+    ///
     /// \brief Interface for the forward dynamics of RBDL
     /// \param Q The Generalized Coordinates
     /// \param QDot The Generalized Velocities
