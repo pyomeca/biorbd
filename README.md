@@ -285,7 +285,7 @@ markers = model.markers(Q)
 
 # Print the results
 for marker in markers:
-    print(marker.get_array())
+    print(marker.to_array())
 
 ```
 
@@ -311,7 +311,7 @@ joint_torque = model.muscularJointTorque(states, Q, Qdot)
 Qddot = model.ForwardDynamics(Q, Qdot, joint_torque)
 
 # Print the results
-print(Qddot.get_array())
+print(Qddot.to_array())
 
 ```
 # Model files
