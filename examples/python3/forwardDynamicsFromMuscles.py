@@ -23,10 +23,10 @@ nmus = model.nbMuscles()
 Q = np.zeros((nq,))
 Qdot = np.zeros((nqdot,))
 
-# Set all muscles to half of their maximal activation
-emg = biorbd.VecBiorbdMuscleState()
-for i in range(nmus):
-    emg.append(biorbd.State(0, 0.5))
+# Set all muscles to half of their half-maximal activation
+emg = model.stateSet()
+for e in emg:
+    e.setActivation(0.5)  # Set muscles activations
 
 # Proceed with the computation of joint torque from the muscles
 Tau = model.muscularJointTorque(emg, Q, Qdot)
