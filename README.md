@@ -300,7 +300,7 @@ model = biorbd.Model('path/to/model.bioMod')
 # Prepare the model
 Q = np.ones(model.nbQ())/10  # Set the model position
 Qdot = np.ones(model.nbQ())/10  # Set the model velocity
-states = biorbd.VecBiorbdMuscleStateDynamics(model.nbMuscleTotal())
+states = model.stateSet()
 for state in states:
     state.setActivation(0.5)  # Set muscles activations
 
