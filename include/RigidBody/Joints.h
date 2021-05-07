@@ -782,7 +782,7 @@ public:
     biorbd::rigidbody::GeneralizedTorque NonLinearEffect(
             const biorbd::rigidbody::GeneralizedCoordinates &Q,
             const biorbd::rigidbody::GeneralizedVelocity &QDot,
-            std::vector<biorbd::utils::SpatialVector>* f_ext);
+            std::vector<biorbd::utils::SpatialVector>* f_ext = nullptr);
 
     ///
     /// \brief Interface for the forward dynamics of RBDL
