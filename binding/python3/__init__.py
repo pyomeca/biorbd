@@ -1,6 +1,7 @@
 from .biorbd import *
 from ._version import __version__
-from .surface_max_torque_actuator import surface_max_torque_actuator
+from .surface_max_torque_actuator import *
+from .rigid_body import *
 
 if biorbd.currentLinearAlgebraBackend() == 1:
     from casadi import Function, MX, horzcat

@@ -218,6 +218,7 @@ def test_set_vector3d():
     m.setGravity(np.array((0, 0, -2)))
     if biorbd.currentLinearAlgebraBackend() == 1:
         from casadi import MX
+
         get_gravity = biorbd.to_casadi_func("Compute_Markers", m.getGravity)()["o0"]
     else:
         get_gravity = m.getGravity().to_array()
@@ -238,21 +239,22 @@ def test_set_scalar():
 
     m.segment(0).characteristics().setMass(11.0)
     check_value(11.0)
-    
+
     with pytest.raises(ValueError, match="Scalar must be a 1x1 array or a float"):
         m.segment(0).characteristics().setMass(np.array([]))
-    
+
     m.segment(0).characteristics().setMass(np.array((12,)))
     check_value(12.0)
-    
+
     m.segment(0).characteristics().setMass(np.array([[13]]))
     check_value(13.0)
-    
+
     with pytest.raises(ValueError, match="Scalar must be a 1x1 array or a float"):
         m.segment(0).characteristics().setMass(np.array([[[14]]]))
-    
+
     if biorbd.currentLinearAlgebraBackend() == 1:
         from casadi import MX
+
         m.segment(0).characteristics().setMass(MX(15))
         check_value(15.0)
 
@@ -358,3 +360,19 @@ def test_forward_dynamics_constraints_direct():
 
     np.testing.assert_almost_equal(qddot.squeeze(), qddot_expected)
     np.testing.assert_almost_equal(cs_forces.squeeze(), contact_forces_expected)
+
+
+def test_name_to_index():
+    m = biorbd.Model("../../models/pyomecaman.bioMod")
+
+    # Index of a segment
+    np.testing.assert_equal(biorbd.segment_index(m, "Pelvis"), 0)
+    np.testing.assert_equal(biorbd.segment_index(m, "PiedG"), 10)
+    with pytest.raises(ValueError, match="dummy is not in the biorbd model"):
+        biorbd.segment_index(m, "dummy")
+
+    # Index of a marker
+    np.testing.assert_equal(biorbd.marker_index(m, "pelv1"), 0)
+    np.testing.assert_equal(biorbd.marker_index(m, "piedg6"), 96)
+    with pytest.raises(ValueError, match="dummy is not in the biorbd model"):
+        biorbd.marker_index(m, "dummy")
