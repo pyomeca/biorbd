@@ -51,6 +51,10 @@ extern "C" {
             biorbd::Model* model,
             const double* q,
             double* massMatrix);
+    BIORBD_API_C void c_CoM(
+            biorbd::Model* model,
+            const double* q,
+            double *com);
 
 
     // dof functions
