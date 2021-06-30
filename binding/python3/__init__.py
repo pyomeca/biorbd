@@ -12,13 +12,13 @@ if biorbd.currentLinearAlgebraBackend() == 1:
             if isinstance(p, (MX, SX)):
                 cx_param.append(p)
 
-        if callable(func):
+        if isinstance(func, (MX, SX, Function)):
+            func_evaluated = func
+        else:
             func_evaluated = func(*all_param)
             if isinstance(func_evaluated, (list, tuple)):
                 func_evaluated = horzcat(*[val if isinstance(val, MX) else val.to_mx() for val in func_evaluated])
             elif not isinstance(func_evaluated, MX):
                 func_evaluated = func_evaluated.to_mx()
-        else:
-            func_evaluated = func
         return Function(name, cx_param, [func_evaluated]).expand()
 
