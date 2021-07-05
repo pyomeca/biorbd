@@ -6,7 +6,7 @@ from .rigid_body import *
 if biorbd.currentLinearAlgebraBackend() == 1:
     from casadi import Function, MX, SX, horzcat
 
-    def to_casadi_func(name, func, *all_param):
+    def to_casadi_func(name, func, *all_param, expand=True):
         cx_param = []
         for p in all_param:
             if isinstance(p, (MX, SX)):
@@ -20,5 +20,6 @@ if biorbd.currentLinearAlgebraBackend() == 1:
                 func_evaluated = horzcat(*[val if isinstance(val, MX) else val.to_mx() for val in func_evaluated])
             elif not isinstance(func_evaluated, MX):
                 func_evaluated = func_evaluated.to_mx()
-        return Function(name, cx_param, [func_evaluated]).expand()
+        func = Function(name, cx_param, [func_evaluated])
+        return func.expand() if expand else func
 
