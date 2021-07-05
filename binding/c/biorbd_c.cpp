@@ -104,6 +104,16 @@ void c_massMatrix(
     for (unsigned int i=0; i<nQ*nQ; ++i)
         massMatrix[i] = Mass(i);
 }
+void c_CoM(
+        biorbd::Model* model,
+        const double* q,
+        double *com) {
+    biorbd::rigidbody::GeneralizedCoordinates Q(dispatchQinput(model, q));
+
+    biorbd::utils::Vector3d CoM(model->CoM(Q));
+
+    dispatchVectorOutput(CoM, com);
+}
 
 
 // dof functions

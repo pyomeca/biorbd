@@ -7,7 +7,7 @@
 #include "class_handle.h"
 #include "processArguments.h"
 #include "Utils/Vector3d.h"
-#include "Muscles/WrappingCylinder.h"
+#include "Muscles/WrappingHalfCylinder.h"
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/Muscle.h"
 #include "Muscles/PathModifiers.h"
@@ -56,8 +56,8 @@ void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
                     wrap_RT.push_back(wrappingObject.RT());
 
                     // Quel est sa dimension
-                    if (type == biorbd::utils::NODE_TYPE::WRAPPING_CYLINDER){
-                        const biorbd::muscles::WrappingCylinder& cylinder(dynamic_cast<const biorbd::muscles::WrappingCylinder&>(wrappingObject));
+                    if (type == biorbd::utils::NODE_TYPE::WRAPPING_HALF_CYLINDER){
+                        const biorbd::muscles::WrappingHalfCylinder& cylinder(dynamic_cast<const biorbd::muscles::WrappingHalfCylinder&>(wrappingObject));
                         wrap_dim1.push_back(cylinder.radius());
                         wrap_dim2.push_back(cylinder.length());
                     }
