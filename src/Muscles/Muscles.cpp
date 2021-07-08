@@ -50,12 +50,12 @@ void biorbd::muscles::Muscles::addMuscleGroup(
         const biorbd::utils::String &insertionName)
 {
     if (m_mus->size() > 0)
-        biorbd::utils::Error::check(getGroupId(name)==-1, "Muscle group already defined");
+        biorbd::utils::Error::check(getMuscleGroupId(name)==-1, "Muscle group already defined");
 
     m_mus->push_back(biorbd::muscles::MuscleGroup(name, originName, insertionName));
 }
 
-int biorbd::muscles::Muscles::getGroupId(const biorbd::utils::String &name) const{
+int biorbd::muscles::Muscles::getMuscleGroupId(const biorbd::utils::String &name) const{
     for (unsigned int i=0; i<m_mus->size(); ++i)
         if (!name.compare((*m_mus)[i].name()))
             return static_cast<int>(i);
@@ -119,7 +119,7 @@ const biorbd::muscles::MuscleGroup &biorbd::muscles::Muscles::muscleGroup(unsign
     return (*m_mus)[idx];
 }
 const biorbd::muscles::MuscleGroup &biorbd::muscles::Muscles::muscleGroup(const biorbd::utils::String& name) const{
-    int idx = getGroupId(name);
+    int idx = getMuscleGroupId(name);
     biorbd::utils::Error::check(idx!=-1, "Group name could not be found");
     return muscleGroup(static_cast<unsigned int>(idx));
 }

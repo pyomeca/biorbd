@@ -76,7 +76,7 @@ public:
     /// \param name The name of the muscle group
     /// \return The group ID (returns -1 if not found)
     ///
-    int getGroupId(
+    int getMuscleGroupId(
             const biorbd::utils::String &name) const;
 
 
