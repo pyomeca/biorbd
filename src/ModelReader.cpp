@@ -781,7 +781,7 @@ void biorbd::Reader::readModelFile(
                     if (!property_tag.tolower().compare("musclegroup")){
                         // Dynamically find the parent number
                         file.read(muscleGroup);
-                        idxGroup = model->getGroupId(muscleGroup);
+                        idxGroup = model->getMuscleGroupId(muscleGroup);
                         // If parent_int is still equal to zero, no name has concurred
                         biorbd::utils::Error::check(idxGroup!=-1, "Could not find muscle group");
                     }
@@ -902,7 +902,7 @@ void biorbd::Reader::readModelFile(
                     else if (!property_tag.tolower().compare("position"))
                         readVector3d(file, variable, position);
                 }
-                iMuscleGroup = model->getGroupId(musclegroup);
+                iMuscleGroup = model->getMuscleGroupId(musclegroup);
                 biorbd::utils::Error::check(iMuscleGroup!=-1, "No muscle group was provided!");
                 iMuscle = model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscleID(muscle);
                 biorbd::utils::Error::check(iMuscle!=-1, "No muscle was provided!");
@@ -961,7 +961,7 @@ void biorbd::Reader::readModelFile(
                         file.read(length, variable);
                 }
                 biorbd::utils::Error::check(parent != "", "Parent was not defined");
-                iMuscleGroup = model->getGroupId(musclegroup);
+                iMuscleGroup = model->getMuscleGroupId(musclegroup);
                 biorbd::utils::Error::check(iMuscleGroup!=-1, "No muscle group was provided!");
                 iMuscle = model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscleID(muscle);
                 biorbd::utils::Error::check(iMuscle!=-1, "No muscle was provided!");
