@@ -1001,6 +1001,10 @@ biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDyn
         const biorbd::rigidbody::GeneralizedTorque &Tau,
         std::vector<biorbd::utils::SpatialVector>* f_ext)
 {
+#ifdef BIORBD_USE_CASADI_MATH
+    UpdateKinematicsCustom(&Q, &QDot);
+#endif
+
     biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
     if (f_ext){
         std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(*f_ext));
@@ -1020,8 +1024,11 @@ biorbd::rigidbody::Joints::ForwardDynamicsConstraintsDirect(
         biorbd::rigidbody::Contacts &CS,
         std::vector<biorbd::utils::SpatialVector> *f_ext)
 {
+#ifdef BIORBD_USE_CASADI_MATH
+    UpdateKinematicsCustom(&Q, &QDot);
+#endif
+
     biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
-    CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
     if (f_ext){
         std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(*f_ext));
         RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, &f_ext_rbdl);
@@ -1049,17 +1056,9 @@ biorbd::rigidbody::GeneralizedAcceleration biorbd::rigidbody::Joints::ForwardDyn
         const biorbd::rigidbody::GeneralizedTorque &Tau,
         std::vector<biorbd::utils::SpatialVector> *f_ext)
 {
-    biorbd::rigidbody::GeneralizedAcceleration QDDot(*this);
+
     biorbd::rigidbody::Contacts CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
-    CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
-    if (f_ext){
-        std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(*f_ext));
-        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, &f_ext_rbdl);
-    }
-    else {
-        RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot);
-    }
-    return QDDot;
+    return this->ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, f_ext);
 }
 
 biorbd::rigidbody::GeneralizedVelocity biorbd::rigidbody::Joints::ComputeConstraintImpulsesDirect(
