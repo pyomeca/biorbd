@@ -147,13 +147,15 @@ std::vector<biorbd::utils::Vector3d> biorbd::rigidbody::Contacts::constraintsInG
 
 
     // On each control, apply the rotation and save the position
-    for (unsigned int i=0; i<size(); ++i){
-        tp.push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(
-                         model, Q, contactConstraints[i]->getBodyIds()[0],
-                         contactConstraints[i]->getBodyFrames()[0].r, updateKin));
-#ifndef BIORBD_USE_CASADI_MATH
-        updateKin = false;
-#endif
+    for (unsigned int i=0; i<contactConstraints.size(); ++i){
+        for (unsigned int j=0; j<contactConstraints[i]->getConstraintSize(); ++j){
+            tp.push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(
+                             model, Q, contactConstraints[i]->getBodyIds()[0],
+                             contactConstraints[i]->getBodyFrames()[0].r, updateKin));
+    #ifndef BIORBD_USE_CASADI_MATH
+            updateKin = false;
+    #endif
+        }
     }
 
     return tp;
