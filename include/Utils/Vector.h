@@ -2,7 +2,7 @@
 #define BIORBD_UTILS_VECTOR_H
 
 #include "biorbdConfig.h"
-#include "rbdl_math.h"
+#include "rbdl/rbdl_math.h"
 #include "Utils/Scalar.h"
 
 namespace biorbd

@@ -3,7 +3,7 @@
 
 #include <memory>
 #include "biorbdConfig.h"
-#include "rbdl_math.h"
+#include "rbdl/rbdl_math.h"
 #include "Utils/Node.h"
 #include "Utils/Scalar.h"
 

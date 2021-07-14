@@ -4,8 +4,8 @@ if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.0")
 endif()
 
 project(biorbd VERSION 1.6.0)
+set (BIORBD_NAME_NO_SUFFIX ${PROJECT_NAME})
 set (CMAKE_CXX_STANDARD 11)
-set (BIORBD_NAME ${PROJECT_NAME})
 
 # Set some variables
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
@@ -34,22 +34,32 @@ set(MATH_LIBRARY_BACKEND Eigen3 CACHE STRING
 set_property(CACHE MATH_LIBRARY_BACKEND PROPERTY STRINGS "Eigen3" "Casadi")
 
 # Prepare linkings
-find_package(RBDL REQUIRED)
+if(${MATH_LIBRARY_BACKEND} STREQUAL "Eigen3")
+    set(BIORBD_USE_EIGEN3_MATH true)
+    set(BIORBD_USE_CASADI_MATH false)
+    set(BIORBD_LIB_SUFFIX "eigen")
+elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
+    set(MATH_BACKEND_LIBRARIES "${Casadi_LIBRARY}")
+    set(BIORBD_USE_EIGEN3_MATH false)
+    set(BIORBD_USE_CASADI_MATH true)
+    set(BIORBD_LIB_SUFFIX "casadi")
+endif()
+set (BIORBD_NAME ${PROJECT_NAME}_${BIORBD_LIB_SUFFIX})
+
 if(${MATH_LIBRARY_BACKEND} STREQUAL "Eigen3")
     find_package(Eigen3 REQUIRED)
     set(MATH_BACKEND_INCLUDE_DIR "${EIGEN3_INCLUDE_DIR}")
     set(MATH_BACKEND_LIBRARIES "")
-    set(BIORBD_USE_EIGEN3_MATH true)
-    set(BIORBD_USE_CASADI_MATH false)
+    find_package(RBDL REQUIRED)
 elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     find_package(Casadi REQUIRED)
     set(MATH_BACKEND_INCLUDE_DIR
         "${Casadi_INCLUDE_DIR}"
         "${Casadi_INCLUDE_DIR}/.."
     )
-    set(MATH_BACKEND_LIBRARIES "${Casadi_LIBRARY}")
-    set(BIORBD_USE_EIGEN3_MATH false)
-    set(BIORBD_USE_CASADI_MATH true)
+    find_package(RBDLCasadi REQUIRED)
+    set(RBDL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR})
+    set(RBDL_LIBRARY ${RBDLCasadi_LIBRARY})
 endif()
 find_package(IPOPT)
 find_package(TinyXML)
@@ -133,7 +143,7 @@ target_include_directories(${BIORBD_NAME} PRIVATE
     "${TinyXML_INCLUDE_DIR}"
 )
 # Include directories when other targets in this project use this library:
-target_include_directories(${PROJECT_NAME} INTERFACE
+target_include_directories(${BIORBD_NAME} INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${BIORBD_BINARY_DIR}/include>
 )

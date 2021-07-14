@@ -5,7 +5,7 @@
 #include "biorbdConfig.h"
 #include "Utils/Path.h"
 #include <iostream>
-#include "rbdl_math.h"
+#include "rbdl/rbdl_math.h"
 
 namespace biorbd
 {

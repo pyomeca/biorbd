@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <memory>
-#include "rbdl_math.h"
+#include "rbdl/rbdl_math.h"
 #include "Utils/Scalar.h"
 
 namespace RigidBodyDynamics

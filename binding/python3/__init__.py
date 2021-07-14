@@ -1,3 +1,4 @@
+from . import biorbd
 from .biorbd import *
 from ._version import __version__
 from .surface_max_torque_actuator import *
