@@ -64,7 +64,7 @@ test_script:
   - sh: ./biorbd_tests
   
   # WINDOWS
-  - cmd: mkdir -p %BIORBD_CASADI_BUILD_FOLDER%
+  - cmd: mkdir %BIORBD_CASADI_BUILD_FOLDER%
   - cmd: cd %BIORBD_CASADI_BUILD_FOLDER%
   - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH%/biorbd/ -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=OFF -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..
   - cmd: cmake --build ./ --config Release --target install
@@ -99,7 +99,7 @@ test_script:
   - sh: ./biorbd_tests
   
   # WINDOWS
-  - cmd: mkdir -p %BIORBD_EIGEN_BUILD_FOLDER%
+  - cmd: mkdir %BIORBD_EIGEN_BUILD_FOLDER%
   - cmd: cd %BIORBD_EIGEN_BUILD_FOLDER%
   - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH%/biorbd/ -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
   - cmd: cmake --build ./ --config Release --target install
@@ -133,7 +133,7 @@ test_script:
   - sh: if [[ $CI_LINUX == true ]]; cd $BIORBD_FOLDER; mkdir $BIORBD_COVERAGE_BUILD_FOLDER; cd $BIORBD_COVERAGE_BUILD_FOLDER; fi
   - sh: if [[ $CI_LINUX == true ]]; then cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH/biorbd/ -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DMODULE_KALMAN=ON ..; make; fi
   - sh: if [[ $CI_LINUX == true ]]; then cp -r test/models/ .; make biorbd_coverage; fi
-  - ctest
+  - sh: if [[ $CI_LINUX == true ]]; then ctest; fi
   - sh: if [[ $CI_LINUX == true ]]; then cd $BIORBD_EIGEN_BUILD_FOLDER; fi
   
   ############################################################################

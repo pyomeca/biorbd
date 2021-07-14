@@ -16,7 +16,7 @@ if((NOT GTEST_INCLUDE_DIR) OR (NOT EXISTS "${GTEST_INCLUDE_DIR}"))
 
     # we have a submodule setup for gtest, assume it is under external/gtest
     # now we need to clone this submodule
-    execute_process(COMMAND "git submodule update --init -- external/googletest"
+    execute_process(COMMAND "git submodule update --init -- ${BIORBD_ROOT_FOLDER}/external/googletest"
                     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 
     find_path(GTEST_INCLUDE_DIR "gtest.h" HINTS
