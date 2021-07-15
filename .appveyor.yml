@@ -39,9 +39,9 @@ install:
   - sh: if [[ $CI_LINUX == true ]]; then export CC=/usr/bin/gcc; fi
   - sh: if [[ $CI_LINUX == true ]]; then export CXX=/usr/bin/g++; fi
   - cmd: SET BIORBD_FOLDER=%cd%
-  - cmd: SET BIORBD_CASADI_BUILD_FOLDER=%BIORBD_FOLDER%/build_casadi
-  - cmd: SET BIORBD_EIGEN_BUILD_FOLDER=%BIORBD_FOLDER%/build_eigen
-  - cmd: SET CONDA_ENV_PATH=%MINICONDA_PATH%/envs
+  - cmd: SET BIORBD_CASADI_BUILD_FOLDER=%BIORBD_FOLDER%\\build_casadi
+  - cmd: SET BIORBD_EIGEN_BUILD_FOLDER=%BIORBD_FOLDER%\\build_eigen
+  - cmd: SET CONDA_ENV_PATH=%MINICONDA_PATH%\\envs
 
   # Setup the conda environment
   - conda install git rbdl tinyxml ipopt numpy pytest swig pkgconfig cmake -c conda-forge
@@ -67,7 +67,7 @@ test_script:
   - cmd: mkdir %BIORBD_CASADI_BUILD_FOLDER%
   - cmd: cd %BIORBD_CASADI_BUILD_FOLDER%
   - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH%/biorbd/ -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=OFF -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..
-  - cmd: cmake --build ./ --config Release --target install
+  - cmd: cmake --build . --config Release --target install
   
   # Run the tests
   - cd test
@@ -77,7 +77,7 @@ test_script:
   
   # Test the python binder
   - sh: cd $BIORBD_FOLDER/test/binding/Python3
-  - cmd: cd %BIORBD_FOLDER%/test/binding/Python3
+  - cmd: cd %BIORBD_FOLDER%\\test\\binding\\Python3
   - pytest .
   - sh: cd $BIORBD_CASADI_BUILD_FOLDER
   - cmd: cd %BIORBD_CASADI_BUILD_FOLDER%
@@ -97,8 +97,8 @@ test_script:
   # WINDOWS
   - cmd: mkdir %BIORBD_EIGEN_BUILD_FOLDER%
   - cmd: cd %BIORBD_EIGEN_BUILD_FOLDER%
-  - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH%/biorbd/ -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
-  - cmd: cmake --build ./ --config Release --target install
+  - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH%\\biorbd -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
+  - cmd: cmake --build . --config Release --target install
 
   # Run the tests
   - cd test
@@ -115,7 +115,7 @@ test_script:
   
   # Test the python binder
   - sh: cd $BIORBD_FOLDER/test/binding/Python3
-  - cmd: cd %BIORBD_FOLDER%/test/binding/Python3
+  - cmd: cd %BIORBD_FOLDER%\\test\\binding\\Python3
   - pytest .
   - sh: cd $BIORBD_BIORBD_BUILD_FOLDER
   - cmd: cd %BIORBD_BIORBD_BUILD_FOLDER%
@@ -133,7 +133,7 @@ test_script:
   # Test installation (cpp_installed folder)
   ############################################################################  
   - sh: cd $BIORBD_FOLDER/examples/cpp_installed
-  - cmd: cd %BIORBD_FOLDER%/examples/cpp_installed
+  - cmd: cd %BIORBD_FOLDER%\\examples\\cpp_installed
   - mkdir build
   - cd build
   
@@ -147,7 +147,7 @@ test_script:
   - cmd: cmake --build ./ --config Release
   - cmd: ./forwardDynamicsExample.exe
   
-  - sh: cd $BIORBD_FOLDER/
+  - sh: cd $BIORBD_FOLDER
   - cmd: cd %BIORBD_FOLDER%
   
   
