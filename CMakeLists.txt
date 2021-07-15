@@ -223,15 +223,20 @@ install(FILES "${BIORBD_BINARY_DIR}/include/biorbdConfig.h"
 )
 
 # Prepare share
+if(WIN32 AND NOT CYGWIN)
+  set(CMAKE_SHARE_DIR CMake/${BIORBD_NAME})
+else()
+  set(CMAKE_SHARE_DIR lib/cmake/${BIORBD_NAME})
+endif()
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
     "share/${BIORBD_NAME}Config.cmake.in"
     "${BIORBD_BINARY_DIR}/${BIORBD_NAME}Config.cmake"
-    INSTALL_DESTINATION "${${BIORBD_NAME}_CMAKECONFIG_DIR}"
+    INSTALL_DESTINATION "${CMAKE_SHARE_DIR}"
 )
 install(FILES 
     "${BIORBD_BINARY_DIR}/${BIORBD_NAME}Config.cmake"
-    DESTINATION "${${BIORBD_NAME}_CMAKECONFIG_DIR}"
+    DESTINATION "${CMAKE_SHARE_DIR}"
 )
 
 # uninstall target
