@@ -75,6 +75,11 @@ test_script:
   - cmd: biorbd_casadi_tests.exe
   - cd ..
   
+  # Test for the python binder
+  - cd test/binding/Python3
+  - pytest .
+  - cd ../../..
+    
     
   ############################################################################
   # Test the Eigen3 backend
@@ -107,12 +112,11 @@ test_script:
   - cmd: biorbd_eigen_tests_binding_c.exe
   - cd ../../..
   
-  ############################################################################
-  # Test Python binder for both Casadi and Eigen
-  ############################################################################
+  # Test for the python binder
   - cd test/binding/Python3
   - pytest .
-  - ../../..
+  - cd ../../..
+  
   
   ############################################################################
   # Code coverage  (on Linux)
@@ -122,6 +126,7 @@ test_script:
   - sh: if [[ $CI_LINUX == true ]]; then cp -r test/models/ .; fi
   - sh: if [[ $CI_LINUX == true ]]; then make biorbd_coverage; fi
   - sh: if [[ $CI_LINUX == true ]]; then cd $BIORBD_EIGEN_BUILD_FOLDER; fi
+  
   
   ############################################################################
   # Test installation (cpp_installed folder)

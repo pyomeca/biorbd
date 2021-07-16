@@ -107,6 +107,25 @@ if (BINDER_C)
 endif()
 
 if (BINDER_PYTHON3)
+    if(${MATH_LIBRARY_BACKEND} STREQUAL Casadi)
+        set(PYTHON_TEST_IMPORT_BIORBD "import biorbd_casadi as biorbd")
+    else()
+        set(PYTHON_TEST_IMPORT_BIORBD "import biorbd")
+    endif()
+
+
+    file(GLOB BIORBD_PYTHON3_TEST_CONFIG_FILES
+        "${CMAKE_SOURCE_DIR}/test/binding/Python3/*.py.in")
+    foreach(PYTHON_CONFIG_FILE ${BIORBD_PYTHON3_TEST_CONFIG_FILES})
+        get_filename_component(
+            PYTHON_CONFIG_FILE_NAME ${PYTHON_CONFIG_FILE}
+            NAME_WE
+        )
+        configure_file("${PYTHON_CONFIG_FILE}"
+            "${CMAKE_CURRENT_BINARY_DIR}/binding/Python3/${PYTHON_CONFIG_FILE_NAME}.py" @ONLY)
+
+    endforeach()
+
     file(GLOB BIORBD_PYTHON3_TEST_FILES
         "${CMAKE_SOURCE_DIR}/test/binding/Python3/*.py")
     file(COPY ${BIORBD_PYTHON3_TEST_FILES}
