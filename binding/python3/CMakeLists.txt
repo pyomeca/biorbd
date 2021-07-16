@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.14)
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
-    project(_${BIORBD_NAME_NO_SUFFIX})
+    project(_${BIORBD_NAME})
 else()
-    project(${BIORBD_NAME_NO_SUFFIX})
+    project(${BIORBD_NAME})
 endif()
 
 # Windows needs a bigobj option
-if(WIN32)
+if(MSVC)
     set(COMPILE_FLAGS "/bigobj")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMPILE_FLAGS}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS}")
