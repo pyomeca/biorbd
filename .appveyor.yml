@@ -72,7 +72,7 @@ test_script:
   # Run the tests
   - cd test
   - sh: ./biorbd_casadi_tests
-  - cmd: ./biorbd_casadi_tests.exe
+  - cmd: biorbd_casadi_tests.exe
   - cd ..
   
     
@@ -97,20 +97,20 @@ test_script:
   # Run the tests
   - cd test
   - sh: ./biorbd_eigen_tests
-  - cmd: ./biorbd_eigen_tests.exe
+  - cmd: biorbd_eigen_tests.exe
   - cd ..
   
   # Test the c binder
   - cd test/binding/c
   - sh: ./biorbd_eigen_tests_binding_c
   - cmd: xcopy ..\..\binding\c\*.dll
-  - cmd: .\\biorbd_eigen_tests_binding_c.exe
+  - cmd: biorbd_eigen_tests_binding_c.exe
   - cd ../../..
   
   ############################################################################
   # Test Python binder for both Casadi and Eigen
   ############################################################################
-  - cd $test/binding/Python3
+  - cd test/binding/Python3
   - pytest .
   - ../../..
   
