@@ -71,8 +71,8 @@ test_script:
   
   # Run the tests
   - cd test
-  - sh: ./biorbd_tests
-  - cmd: ./biorbd_tests.exe
+  - sh: ./biorbd_casadi_tests
+  - cmd: ./biorbd_casadi_tests.exe
   - cd ..
   
   # Test the python binder
@@ -102,15 +102,15 @@ test_script:
 
   # Run the tests
   - cd test
-  - sh: ./biorbd_tests
-  - cmd: ./biorbd_tests.exe
+  - sh: ./biorbd_eigen_tests
+  - cmd: ./biorbd_eigen_tests.exe
   - cd ..
   
   # Test the c binder
   - cd test/binding/c
-  - sh: ./biorbd_tests_binding_c
+  - sh: ./biorbd_eigen_tests_binding_c
   - cmd: xcopy ..\..\binding\c\*.dll
-  - cmd: .\\biorbd_tests_binding_c.exe
+  - cmd: .\\biorbd_eigen_tests_binding_c.exe
   - cd ../../..
   
   # Test the python binder
