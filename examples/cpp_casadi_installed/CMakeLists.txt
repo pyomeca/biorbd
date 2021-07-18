@@ -7,19 +7,21 @@ get_filename_component(FILE_NAME ${FILE} NAME_WE)
 project(${FILE_NAME})
 
 
-find_package(biorbd REQUIRED)
-find_package(RBDL REQUIRED)
+find_package(biorbd_casadi REQUIRED)
+find_package(RBDLCasadi REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(TinyXML REQUIRED)
+find_package(Casadi REQUIRED)
 
 add_executable(${PROJECT_NAME} ${FILE})
 
 # Headers
 target_include_directories(${PROJECT_NAME} PUBLIC 
-    ${biorbd_INCLUDE_DIR}
-    ${RBDL_INCLUDE_DIR}
-    ${RBDL_INCLUDE_DIR}/..
-    ${EIGEN3_INCLUDE_DIR}
+    ${biorbd_casadi_INCLUDE_DIR}
+    ${RBDLCasadi_INCLUDE_DIR}
+    ${RBDLCasadi_INCLUDE_DIR}/..
+    ${Casadi_INCLUDE_DIR}
+    ${Casadi_INCLUDE_DIR}/..
 	${TinyXML_INCLUDE_DIR}
 )
 if(NOT WIN32)
@@ -31,8 +33,9 @@ endif()
 
 # Linker and instalation
 target_link_libraries(${PROJECT_NAME} 
-    ${biorbd_LIBRARIES}
+    ${biorbd_casadi_LIBRARIES}
     ${RBDL_LIBRARY}
+    ${Casadi_LIBRARY}
 	${TinyXML_LIBRARY}
 )
 

@@ -124,15 +124,37 @@ test_script:
   - sh: if [[ $CI_LINUX == true ]]; then cd $BIORBD_FOLDER; mkdir $BIORBD_COVERAGE_BUILD_FOLDER; cd $BIORBD_COVERAGE_BUILD_FOLDER; fi
   - sh: if [[ $CI_LINUX == true ]]; then cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH/biorbd/ -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DMODULE_KALMAN=ON ..; fi
   - sh: if [[ $CI_LINUX == true ]]; then cp -r test/models/ .; fi
-  - sh: if [[ $CI_LINUX == true ]]; then make biorbd_coverage; fi
+  - sh: if [[ $CI_LINUX == true ]]; then make biorbd_eigen_coverage; fi
   - sh: if [[ $CI_LINUX == true ]]; then cd $BIORBD_EIGEN_BUILD_FOLDER; fi
   
   
   ############################################################################
-  # Test installation (cpp_installed folder)
+  # Test installation (cpp_casadi_installed folder)
   ############################################################################  
-  - sh: cd $BIORBD_FOLDER/examples/cpp_installed
-  - cmd: cd %BIORBD_FOLDER%\\examples\\cpp_installed
+  - sh: cd $BIORBD_FOLDER/examples/cpp_casadi_installed
+  - cmd: cd %BIORBD_FOLDER%\\examples\\cpp_casadi_installed
+  - mkdir build
+  - cd build
+  
+  # LINUX and Mac
+  - sh: cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH/biorbd/ -DCMAKE_BUILD_TYPE=Release ..
+  - sh: make
+  - sh: ./forwardDynamicsExample
+  
+  # WINDOWS
+  - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH%/biorbd/ ..
+  - cmd: cmake --build ./ --config Release
+  - cmd: ./forwardDynamicsExample.exe
+  
+  - sh: cd $BIORBD_FOLDER
+  - cmd: cd %BIORBD_FOLDER%
+  
+  
+  ############################################################################
+  # Test installation (cpp_eigen_installed folder)
+  ############################################################################  
+  - sh: cd $BIORBD_FOLDER/examples/cpp_eigen_installed
+  - cmd: cd %BIORBD_FOLDER%\\examples\\cpp_eigen_installed
   - mkdir build
   - cd build
   
