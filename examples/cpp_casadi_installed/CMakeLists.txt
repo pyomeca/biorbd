@@ -34,7 +34,7 @@ endif()
 # Linker and instalation
 target_link_libraries(${PROJECT_NAME} 
     ${biorbd_casadi_LIBRARIES}
-    ${RBDL_LIBRARY}
+    ${RBDLCasadi_LIBRARY}
     ${Casadi_LIBRARY}
 	${TinyXML_LIBRARY}
 )
