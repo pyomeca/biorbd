@@ -108,7 +108,6 @@ test_script:
   # Test the c binder
   - cd test/binding/c
   - sh: ./biorbd_eigen_tests_binding_c
-  - cmd: xcopy ..\..\binding\c\*.dll
   - cmd: biorbd_eigen_tests_binding_c.exe
   - cd ../../..
   
@@ -142,9 +141,9 @@ test_script:
   - sh: ./forwardDynamicsExample
   
   # WINDOWS
-  - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH%/biorbd/ ..
-  - cmd: cmake --build ./ --config Release
-  - cmd: ./forwardDynamicsExample.exe
+  - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH%\\biorbd -DCMAKE_BUILD_TYPE=Release ..
+  - cmd: cmake --build . --config Release
+  - cmd: forwardDynamicsExample.exe
   
   - sh: cd $BIORBD_FOLDER
   - cmd: cd %BIORBD_FOLDER%
@@ -164,9 +163,9 @@ test_script:
   - sh: ./forwardDynamicsExample
   
   # WINDOWS
-  - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH%/biorbd/ ..
-  - cmd: cmake --build ./ --config Release
-  - cmd: ./forwardDynamicsExample.exe
+  - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH%\\biorbd -DCMAKE_BUILD_TYPE=Release ..
+  - cmd: cmake --build . --config Release
+  - cmd: forwardDynamicsExample.exe
   
   - sh: cd $BIORBD_FOLDER
   - cmd: cd %BIORBD_FOLDER%
