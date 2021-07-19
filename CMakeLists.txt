@@ -224,7 +224,7 @@ install(FILES "${BIORBD_BINARY_DIR}/include/biorbdConfig.h"
 
 # Prepare share
 if(WIN32 AND NOT CYGWIN)
-  set(CMAKE_SHARE_DIR CMake/${BIORBD_NAME})
+  set(CMAKE_SHARE_DIR cmake)
 else()
   set(CMAKE_SHARE_DIR lib/cmake/${BIORBD_NAME})
 endif()
