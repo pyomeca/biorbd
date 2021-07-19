@@ -7,7 +7,7 @@ get_filename_component(FILE_NAME ${FILE} NAME_WE)
 project(${FILE_NAME})
 
 
-find_package(biorbd REQUIRED)
+find_package(biorbd_eigen REQUIRED)
 find_package(RBDL REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(TinyXML REQUIRED)
@@ -16,7 +16,7 @@ add_executable(${PROJECT_NAME} ${FILE})
 
 # Headers
 target_include_directories(${PROJECT_NAME} PUBLIC 
-    ${biorbd_INCLUDE_DIR}
+    ${biorbd_eigen_INCLUDE_DIR}
     ${RBDL_INCLUDE_DIR}
     ${RBDL_INCLUDE_DIR}/..
     ${EIGEN3_INCLUDE_DIR}
@@ -31,7 +31,7 @@ endif()
 
 # Linker and instalation
 target_link_libraries(${PROJECT_NAME} 
-    ${biorbd_LIBRARIES}
+    ${biorbd_eigen_LIBRARIES}
     ${RBDL_LIBRARY}
 	${TinyXML_LIBRARY}
 )

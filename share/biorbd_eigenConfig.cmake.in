@@ -1,0 +1,39 @@
+set(@CMAKE_PROJECT_NAME@_VERSION @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@)
+
+if (biorbd_eigen_INCLUDE_DIR)
+  # Already in cache, be silent
+  set (biorbd_eigen_FIND_QUIETLY TRUE)
+endif (biorbd_eigen_INCLUDE_DIR)
+
+find_path (biorbd_eigen_INCLUDE_DIR "BiorbdModel.h"
+    PATHS @CMAKE_INSTALL_PREFIX@/@biorbd_eigen_INCLUDE_FOLDER@
+)
+find_library (biorbd_eigen_LIBRARY
+    NAMES biorbd_eigen biorbd_eigen_debug
+    PATHS @CMAKE_INSTALL_PREFIX@/@biorbd_eigen_LIB_FOLDER@
+)
+
+get_filename_component(biorbd_eigen_LIB_PATH ${biorbd_eigen_LIBRARY} DIRECTORY)
+get_filename_component(biorbd_eigen_LIB_NAME ${biorbd_eigen_LIBRARY} NAME_WE)
+get_filename_component(biorbd_eigen_LIB_EXTENSION ${biorbd_eigen_LIBRARY} EXT)
+
+string(REGEX MATCH "_debug" debug_flag ${biorbd_eigen_LIB_NAME})
+if (debug_flag)
+    string(REGEX REPLACE ${debug_flag} "" biorbd_eigen_LIB_NAME ${biorbd_eigen_LIB_NAME})
+endif()
+
+set(biorbd_eigen_LIBRARIES
+    ${biorbd_eigen_LIB_PATH}/${biorbd_eigen_LIB_NAME}${debug_flag}${biorbd_eigen_LIB_EXTENSION}
+    ${biorbd_eigen_LIB_PATH}/${biorbd_eigen_LIB_NAME}_utils${debug_flag}${biorbd_eigen_LIB_EXTENSION}
+    ${biorbd_eigen_LIB_PATH}/${biorbd_eigen_LIB_NAME}_rigidbody${debug_flag}${biorbd_eigen_LIB_EXTENSION}
+    ${biorbd_eigen_LIB_PATH}/${biorbd_eigen_LIB_NAME}_muscles${debug_flag}${biorbd_eigen_LIB_EXTENSION}
+    ${biorbd_eigen_LIB_PATH}/${biorbd_eigen_LIB_NAME}_actuators${debug_flag}${biorbd_eigen_LIB_EXTENSION}
+)
+
+# handle the QUIETLY and REQUIRED arguments and set biorbd_eigen_FOUND to TRUE if
+# all listed variables are TRUE
+include (FindPackageHandleStandardArgs)
+find_package_handle_standard_args (biorbd_eigen DEFAULT_MSG
+  biorbd_eigen_LIBRARIES
+  biorbd_eigen_INCLUDE_DIR
+)
