@@ -16,11 +16,17 @@ class Matrix;
 class Vector;
 }
 
+namespace BIORBD_MATH_NAMESPACE {
+namespace rigidbody
+{
+class GeneralizedAcceleration;
+}
+}
+
 namespace rigidbody
 {
 class GeneralizedCoordinates;
 class GeneralizedVelocity;
-class GeneralizedAcceleration;
 
 ///
 /// \brief Parameters of the reconstruction
@@ -106,7 +112,7 @@ public:
     void getState(
         biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
         biorbd::rigidbody::GeneralizedVelocity *Qdot = nullptr,
-        biorbd::rigidbody::GeneralizedAcceleration *Qddot = nullptr);
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot = nullptr);
 
     ///
     /// \brief Set the initial guess of the reconstruction
@@ -117,7 +123,7 @@ public:
     void setInitState(
         const biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
         const biorbd::rigidbody::GeneralizedVelocity *Qdot = nullptr,
-        const biorbd::rigidbody::GeneralizedAcceleration *Qddot = nullptr);
+        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot = nullptr);
 
     ///
     /// \brief Proceed to one iteration of the Kalman filter

@@ -45,7 +45,7 @@ biorbd::rigidbody::Segment::Segment() :
 }
 
 biorbd::rigidbody::Segment::Segment(
-    biorbd::rigidbody::Joints& model,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
     const biorbd::utils::String &name,
     const biorbd::utils::String &parentName,
     const biorbd::utils::String &seqT,
@@ -93,7 +93,7 @@ biorbd::rigidbody::Segment::Segment(
     setPF(PF);
 }
 biorbd::rigidbody::Segment::Segment(
-    biorbd::rigidbody::Joints& model,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
     const biorbd::utils::String &name, // Name of segment
     const biorbd::utils::String &parentName, // Name of segment
     const biorbd::utils::String
@@ -298,7 +298,7 @@ biorbd::utils::RotoTrans biorbd::rigidbody::Segment::localJCS() const
 }
 
 void biorbd::rigidbody::Segment::updateCharacteristics(
-    biorbd::rigidbody::Joints& model,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
     const biorbd::rigidbody::SegmentCharacteristics& characteristics)
 {
 
@@ -320,7 +320,7 @@ biorbd::rigidbody::Segment::characteristics() const
 }
 
 void biorbd::rigidbody::Segment::setDofs(
-    biorbd::rigidbody::Joints& model,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
     const biorbd::utils::String &seqT,
     const biorbd::utils::String &seqR,
     const std::vector<biorbd::utils::Range>& QRanges,
@@ -520,7 +520,7 @@ void biorbd::rigidbody::Segment::setJointAxis()
 }
 
 void biorbd::rigidbody::Segment::setJoints(
-    biorbd::rigidbody::Joints& model)
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model)
 {
     setDofCharacteristicsOnLastBody(); // Apply the segment caracteristics only to the last segment
     setJointAxis(); // Choose the axis order in relation to the selected sequence

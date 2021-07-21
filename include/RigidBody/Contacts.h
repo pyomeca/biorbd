@@ -22,7 +22,6 @@ namespace biorbd
 {
 namespace rigidbody
 {
-class Joints;
 class GeneralizedCoordinates;
 
 ///

@@ -16,7 +16,7 @@ biorbd::rigidbody::GeneralizedVelocity::GeneralizedVelocity(
 }
 
 biorbd::rigidbody::GeneralizedVelocity::GeneralizedVelocity(
-    const biorbd::rigidbody::Joints &j) :
+    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &j) :
     biorbd::utils::Vector(j.nbQdot())
 {
 

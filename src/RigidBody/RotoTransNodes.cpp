@@ -115,7 +115,7 @@ biorbd::utils::RotoTransNode biorbd::rigidbody::RotoTransNodes::RT(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
                                        (*this);
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
@@ -138,7 +138,7 @@ biorbd::rigidbody::RotoTransNodes::segmentRTs(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
                                        (*this);
 
     // Segment name to find
@@ -162,7 +162,7 @@ biorbd::rigidbody::RotoTransNodes::RTsJacobian(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
                                        (*this);
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;

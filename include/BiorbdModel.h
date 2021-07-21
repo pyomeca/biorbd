@@ -65,7 +65,7 @@ namespace biorbd
 /// \brief The actual musculoskeletal model that holds everything in biorbd
 ///
 class BIORBD_API Model :
-    public biorbd::rigidbody::Joints
+    public biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints
     ,public biorbd::rigidbody::Markers
     ,public biorbd::rigidbody::IMUs
     ,public biorbd::rigidbody::RotoTransNodes

@@ -61,7 +61,7 @@ void biorbd::muscles::WrappingSphere::DeepCopy(const
 }
 
 const biorbd::utils::RotoTrans& biorbd::muscles::WrappingSphere::RT(
-    biorbd::rigidbody::Joints &,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &,
     const biorbd::rigidbody::GeneralizedCoordinates &,
     bool)
 {

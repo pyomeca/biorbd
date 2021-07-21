@@ -96,7 +96,7 @@ void biorbd::rigidbody::KalmanRecons::manageOcclusionDuringIteration(
 void biorbd::rigidbody::KalmanRecons::getState(
     biorbd::rigidbody::GeneralizedCoordinates *Q,
     biorbd::rigidbody::GeneralizedVelocity *Qdot,
-    biorbd::rigidbody::GeneralizedAcceleration *Qddot)
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot)
 {
 
     if (Q != nullptr) {
@@ -212,7 +212,7 @@ biorbd::rigidbody::KalmanRecons::initState(
 void biorbd::rigidbody::KalmanRecons::setInitState(
     const biorbd::rigidbody::GeneralizedCoordinates *Q,
     const biorbd::rigidbody::GeneralizedVelocity *Qdot,
-    const biorbd::rigidbody::GeneralizedAcceleration *Qddot)
+    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot)
 {
     if (Q != nullptr) {
         m_xp->block(0, 0, *m_nbDof, 1) = *Q;

@@ -238,8 +238,8 @@ unsigned int biorbd::muscles::Muscles::nbMuscleGroups() const
 biorbd::utils::Matrix biorbd::muscles::Muscles::musclesLengthJacobian()
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    const biorbd::rigidbody::Joints &model =
-        dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model =
+        dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>(*this);
 
     biorbd::utils::Matrix tp(nbMuscleTotal(), model.nbDof());
     unsigned int cmpMus(0);
@@ -282,7 +282,7 @@ void biorbd::muscles::Muscles::updateMuscles(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
                                        (*this);
 
     // Update all the muscles
@@ -304,7 +304,7 @@ void biorbd::muscles::Muscles::updateMuscles(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
                                        (*this);
 
     // Update all the muscles

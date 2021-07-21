@@ -87,7 +87,7 @@ public:
     /// \brief Not yet implemented
     ///
     virtual void wrapPoints(
-        biorbd::rigidbody::Joints&,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints&,
         const biorbd::rigidbody::GeneralizedCoordinates&,
         const biorbd::utils::Vector3d&,
         const biorbd::utils::Vector3d&,
@@ -111,7 +111,7 @@ public:
     /// \return The RotoTrans matrix of the sphere
     ///
     const biorbd::utils::RotoTrans& RT(
-        biorbd::rigidbody::Joints &model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates&Q ,
         bool updateKin  = true);
 

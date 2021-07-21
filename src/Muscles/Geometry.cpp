@@ -97,7 +97,7 @@ void biorbd::muscles::Geometry::DeepCopy(const biorbd::muscles::Geometry &other)
 
 // ------ PUBLIC FUNCTIONS ------ //
 void biorbd::muscles::Geometry::updateKinematics(
-    biorbd::rigidbody::Joints &model,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
     const biorbd::rigidbody::GeneralizedCoordinates *Q,
     const biorbd::rigidbody::GeneralizedVelocity *Qdot,
     int updateKin)
@@ -128,7 +128,7 @@ void biorbd::muscles::Geometry::updateKinematics(
     _updateKinematics(Qdot);
 }
 
-void biorbd::muscles::Geometry::updateKinematics(biorbd::rigidbody::Joints
+void biorbd::muscles::Geometry::updateKinematics(biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints
         &model,
         const biorbd::muscles::Characteristics& characteristics,
         biorbd::muscles::PathModifiers &pathModifiers,
@@ -327,7 +327,7 @@ void biorbd::muscles::Geometry::_updateKinematics(
 }
 
 const biorbd::utils::Vector3d &biorbd::muscles::Geometry::originInGlobal(
-    biorbd::rigidbody::Joints &model,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
     const biorbd::rigidbody::GeneralizedCoordinates &Q)
 {
     // Return the position of the marker in function of the given position
@@ -338,7 +338,7 @@ const biorbd::utils::Vector3d &biorbd::muscles::Geometry::originInGlobal(
 }
 
 const biorbd::utils::Vector3d &biorbd::muscles::Geometry::insertionInGlobal(
-    biorbd::rigidbody::Joints &model,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
     const biorbd::rigidbody::GeneralizedCoordinates &Q)
 {
     // Return the position of the marker in function of the given position
@@ -358,7 +358,7 @@ void biorbd::muscles::Geometry::setMusclesPointsInGlobal(
 }
 
 void biorbd::muscles::Geometry::setMusclesPointsInGlobal(
-    biorbd::rigidbody::Joints &model,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
     const biorbd::rigidbody::GeneralizedCoordinates &Q,
     biorbd::muscles::PathModifiers *pathModifiers)
 {
@@ -489,7 +489,7 @@ const biorbd::utils::Scalar& biorbd::muscles::Geometry::velocity(
     return *m_velocity;
 }
 
-void biorbd::muscles::Geometry::setJacobianDimension(biorbd::rigidbody::Joints
+void biorbd::muscles::Geometry::setJacobianDimension(biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints
         &model)
 {
     *m_jacobian = biorbd::utils::Matrix::Zero(static_cast<unsigned int>
@@ -505,7 +505,7 @@ void biorbd::muscles::Geometry::jacobian(const biorbd::utils::Matrix &jaco)
 }
 
 void biorbd::muscles::Geometry::jacobian(
-    biorbd::rigidbody::Joints &model,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
     const biorbd::rigidbody::GeneralizedCoordinates &Q)
 {
     for (unsigned int i=0; i<m_pointsInLocal->size(); ++i) {

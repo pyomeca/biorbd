@@ -205,7 +205,7 @@ const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
 }
 
 const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
-    biorbd::rigidbody::Joints &model,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
     const biorbd::rigidbody::GeneralizedCoordinates &Q,
     const biorbd::rigidbody::GeneralizedVelocity &Qdot,
     const biorbd::muscles::State &emg,
@@ -229,7 +229,7 @@ const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
 }
 
 const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
-    biorbd::rigidbody::Joints &,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &,
     const biorbd::rigidbody::GeneralizedCoordinates &,
     const biorbd::muscles::State &,
     int)

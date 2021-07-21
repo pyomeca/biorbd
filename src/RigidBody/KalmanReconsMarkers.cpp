@@ -81,7 +81,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     const biorbd::rigidbody::Markers &Tobs,
     biorbd::rigidbody::GeneralizedCoordinates *Q,
     biorbd::rigidbody::GeneralizedVelocity *Qdot,
-    biorbd::rigidbody::GeneralizedAcceleration *Qddot,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot,
     bool removeAxes)
 {
     // Separate the tobs in a big vector
@@ -99,7 +99,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     const std::vector<biorbd::rigidbody::NodeSegment> &Tobs,
     biorbd::rigidbody::GeneralizedCoordinates *Q,
     biorbd::rigidbody::GeneralizedVelocity *Qdot,
-    biorbd::rigidbody::GeneralizedAcceleration *Qddot,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot,
     bool removeAxes)
 {
     // Separate the tobs in a big vector
@@ -118,7 +118,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     const utils::Vector &Tobs,
     biorbd::rigidbody::GeneralizedCoordinates *Q,
     biorbd::rigidbody::GeneralizedVelocity *Qdot,
-    biorbd::rigidbody::GeneralizedAcceleration *Qddot,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot,
     bool removeAxes)
 {
     // An iteration of the Kalman filter

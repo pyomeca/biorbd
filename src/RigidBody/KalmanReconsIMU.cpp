@@ -78,7 +78,7 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
     const std::vector<biorbd::rigidbody::IMU> &IMUobs,
     biorbd::rigidbody::GeneralizedCoordinates *Q,
     biorbd::rigidbody::GeneralizedVelocity *Qdot,
-    biorbd::rigidbody::GeneralizedAcceleration *Qddot)
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot)
 {
     // Separate the IMUobs in a big vector
     biorbd::utils::Vector T(static_cast<unsigned int>
@@ -98,7 +98,7 @@ void biorbd::rigidbody::KalmanReconsIMU::reconstructFrame(
     const biorbd::utils::Vector &IMUobs,
     biorbd::rigidbody::GeneralizedCoordinates *Q,
     biorbd::rigidbody::GeneralizedVelocity *Qdot,
-    biorbd::rigidbody::GeneralizedAcceleration *Qddot)
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot)
 {
     // An iteration of the Kalman filter
     if (*m_firstIteration) {

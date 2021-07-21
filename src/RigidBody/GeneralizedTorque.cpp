@@ -16,7 +16,7 @@ biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque(
 }
 
 biorbd::rigidbody::GeneralizedTorque::GeneralizedTorque(
-    const biorbd::rigidbody::Joints &j) :
+    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &j) :
     biorbd::utils::Vector(j.nbGeneralizedTorque())
 {
 

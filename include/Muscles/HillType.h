@@ -129,7 +129,7 @@ public:
     /// \return The force vector at origin and insertion
     ///
     virtual const biorbd::utils::Scalar& force(
-        biorbd::rigidbody::Joints& model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::rigidbody::GeneralizedVelocity& Qdot,
         const biorbd::muscles::State& emg,
@@ -144,7 +144,7 @@ public:
     /// \return The force vector at origin and insertion
     ///
     virtual const biorbd::utils::Scalar& force(
-        biorbd::rigidbody::Joints& model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::muscles::State& emg,
         int updateKin = 2);

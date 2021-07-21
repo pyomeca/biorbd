@@ -6,9 +6,16 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 class Joints;
+}
+}
+
+namespace rigidbody
+{
 
 ///
 /// \brief Class GeneralizedVelocity
@@ -33,7 +40,7 @@ public:
     /// \brief Create generalized velocity vector from a joint Model
     /// \param j The joint model
     ///
-    GeneralizedVelocity(const biorbd::rigidbody::Joints& j);
+    GeneralizedVelocity(const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& j);
 
     ///
     /// \brief Construct generalized velocity vector

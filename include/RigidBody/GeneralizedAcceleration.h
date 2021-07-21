@@ -6,6 +6,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 class Joints;
@@ -33,14 +35,14 @@ public:
     /// \brief Create generalized acceleration vector from a joint Model
     /// \param j The joint model
     ///
-    GeneralizedAcceleration(const biorbd::rigidbody::Joints& j);
+    GeneralizedAcceleration(const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& j);
 
     ///
     /// \brief Construct generalized acceleration vector
     /// \param Q State vector of the internal joints
     ///
     GeneralizedAcceleration(
-        const biorbd::rigidbody::GeneralizedAcceleration& Q);
+        const GeneralizedAcceleration& Q);
 
     ///
     /// \brief Construct vector from Casadi vector
@@ -89,7 +91,7 @@ public:
     /// \return The current Generalized Coordinate
     ///
     template<typename OtherDerived>
-    biorbd::rigidbody::GeneralizedAcceleration& operator=(
+    GeneralizedAcceleration& operator=(
         const Eigen::MatrixBase <OtherDerived>& other)
     {
         this->biorbd::utils::Vector::operator=(other);
@@ -124,6 +126,7 @@ public:
 #endif
 };
 
+}
 }
 }
 

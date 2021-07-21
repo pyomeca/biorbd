@@ -15,9 +15,15 @@ class Vector;
 class Vector3d;
 }
 
+namespace BIORBD_MATH_NAMESPACE {
 namespace rigidbody
 {
 class Joints;
+}
+}
+
+namespace rigidbody
+{
 class GeneralizedCoordinates;
 class GeneralizedVelocity;
 }
@@ -70,7 +76,7 @@ public:
     /// updateKinematics MUST be called before retreiving data that are dependent on Q and/or Qdot
     ///
     void updateKinematics(
-        biorbd::rigidbody::Joints &model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
         const biorbd::rigidbody::GeneralizedVelocity* Qdot = nullptr,
         int updateKin = 2);
@@ -87,7 +93,7 @@ public:
     /// updateKinematics MUST be called before retreiving data that are dependent on Q and/or Qdot
     ///
     void updateKinematics(
-        biorbd::rigidbody::Joints &model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
         const biorbd::muscles::Characteristics& characteristics,
         biorbd::muscles::PathModifiers& pathModifiers,
         const biorbd::rigidbody::GeneralizedCoordinates* Q = nullptr,
@@ -242,7 +248,7 @@ protected:
     /// \return The origin position in the global reference
     ///
     const biorbd::utils::Vector3d& originInGlobal(
-        biorbd::rigidbody::Joints &model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q);
 
     ///
@@ -252,7 +258,7 @@ protected:
     /// \return The origin position in the global reference
     ///
     const biorbd::utils::Vector3d& insertionInGlobal(
-        biorbd::rigidbody::Joints &model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q);
 
     ///
@@ -269,7 +275,7 @@ protected:
     /// \param pathModifiers The set of path modifiers
     ///
     void setMusclesPointsInGlobal(
-        biorbd::rigidbody::Joints& model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         biorbd::muscles::PathModifiers* pathModifiers = nullptr);
 
@@ -297,7 +303,7 @@ protected:
     /// \param model The joint model
     ///
     void setJacobianDimension(
-        biorbd::rigidbody::Joints &model);
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model);
 
     ///
     /// \brief Force a jacobian computed from the user
@@ -312,7 +318,7 @@ protected:
     /// \param Q The generalize coordinates
     ///
     void jacobian(
-        biorbd::rigidbody::Joints &model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q);
 
     ///

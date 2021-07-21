@@ -12,9 +12,15 @@ namespace utils
 class String;
 }
 
+namespace BIORBD_MATH_NAMESPACE {
 namespace rigidbody
 {
 class Joints;
+}
+}
+
+namespace rigidbody
+{
 class GeneralizedCoordinates;
 }
 
@@ -110,7 +116,7 @@ public:
     /// \param muscleLength Length of the muscle (ignored if no value is provided)
     ///
     virtual void wrapPoints(
-        biorbd::rigidbody::Joints& model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::utils::Vector3d& p1_bone,
         const biorbd::utils::Vector3d& p2_bone,
@@ -139,7 +145,7 @@ public:
     /// \return The RotoTrans matrix of the wrapping object
     ///
     virtual const biorbd::utils::RotoTrans& RT(
-        biorbd::rigidbody::Joints &model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         bool updateKin = true) = 0;
 

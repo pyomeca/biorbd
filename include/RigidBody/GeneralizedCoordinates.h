@@ -6,9 +6,15 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE {
 namespace rigidbody
 {
 class Joints;
+}
+}
+
+namespace rigidbody
+{
 
 ///
 /// \brief Class GeneralizedCoordinates
@@ -34,7 +40,7 @@ public:
     /// \param j The joint model
     ///
     GeneralizedCoordinates(
-        const biorbd::rigidbody::Joints& j);
+        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& j);
 
     ///
     /// \brief Construct generalized coordinates

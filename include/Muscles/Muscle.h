@@ -121,7 +121,7 @@ public:
     /// \return The length of the muscle
     ///
     const biorbd::utils::Scalar& length(
-        biorbd::rigidbody::Joints& model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         int updateKin = 2);
 
@@ -133,7 +133,7 @@ public:
     /// \return The musculo tendon length
     ///
     const biorbd::utils::Scalar& musculoTendonLength(
-        biorbd::rigidbody::Joints& model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         int updateKin = 2);
 
@@ -146,7 +146,7 @@ public:
     //// \return The velocity of the muscle
     ///
     const biorbd::utils::Scalar& velocity(
-        biorbd::rigidbody::Joints& model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::rigidbody::GeneralizedVelocity& Qdot,
         bool updateKin = true);
@@ -158,7 +158,7 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     ///
     void updateOrientations(
-        biorbd::rigidbody::Joints &model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         int updateKin = 2);
 
@@ -170,7 +170,7 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     ///
     void updateOrientations(
-        biorbd::rigidbody::Joints &model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedVelocity &Qdot,
         int updateKin = 2);
@@ -228,7 +228,7 @@ public:
     /// \return The muscle points in global reference frame
     ///
     const std::vector<biorbd::utils::Vector3d>& musclesPointsInGlobal(
-        biorbd::rigidbody::Joints &model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates &Q);
 
     ///

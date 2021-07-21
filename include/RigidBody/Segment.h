@@ -15,9 +15,15 @@ class RotoTrans;
 class Range;
 }
 
+namespace BIORBD_MATH_NAMESPACE {
 namespace rigidbody
 {
 class Joints;
+}
+}
+
+namespace rigidbody
+{
 class SegmentCharacteristics;
 
 ///
@@ -46,7 +52,7 @@ public:
     /// \param PF Platform index attached to the body (-1 means no force platform acts on the body)
     ///
     Segment(
-        biorbd::rigidbody::Joints& model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName,
         const biorbd::utils::String &seqT,
@@ -72,7 +78,7 @@ public:
     /// \param PF Platform index attached to the body (-1 means no force platform acts on the body)
     ///
     Segment(
-        biorbd::rigidbody::Joints& model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
         const biorbd::utils::String &name,
         const biorbd::utils::String &parentName,
         const biorbd::utils::String &seqR,
@@ -224,7 +230,7 @@ public:
     /// inertia for these 3 segments as well.
     ///
     void updateCharacteristics(
-        biorbd::rigidbody::Joints& model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
         const biorbd::rigidbody::SegmentCharacteristics& characteristics);
 
     ///
@@ -268,7 +274,7 @@ protected:
     /// \param QDDotRanges Ranges of the translations and rotations dof acceleration. The length of QDDotRanges must be equal to length of translations and rotations
     ///
     void setDofs(
-        biorbd::rigidbody::Joints& model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
         const biorbd::utils::String &seqT,
         const biorbd::utils::String &seqR,
         const std::vector<biorbd::utils::Range>& QRanges,
@@ -367,7 +373,8 @@ protected:
     /// \brief Function that adds the segment to the RBDL body set
     /// \param model The joint model
     ///
-    virtual void setJoints(biorbd::rigidbody::Joints& model);
+    virtual void setJoints(
+            biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model);
 
     ///
     /// \brief Determine the rotation axis in relation to the requested sequence

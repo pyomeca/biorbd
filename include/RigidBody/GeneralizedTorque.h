@@ -6,9 +6,15 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE {
 namespace rigidbody
 {
 class Joints;
+}
+}
+
+namespace rigidbody
+{
 
 ///
 /// \brief Class GeneralizedTorque
@@ -33,7 +39,7 @@ public:
     /// \brief Construct generalized torque from a joint model
     /// \param j The joint model
     ///
-    GeneralizedTorque(const biorbd::rigidbody::Joints& j);
+    GeneralizedTorque(const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& j);
 
     ///
     /// \brief Construct generalized torque from anoter Generalized torque

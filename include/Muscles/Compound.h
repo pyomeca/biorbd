@@ -15,9 +15,15 @@ class String;
 class Vector3d;
 }
 
+namespace BIORBD_MATH_NAMESPACE {
 namespace rigidbody
 {
 class Joints;
+}
+}
+
+namespace rigidbody
+{
 class GeneralizedCoordinates;
 class GeneralizedVelocity;
 }
@@ -135,7 +141,7 @@ public:
     /// \return The computed force from EMG
     ///
     virtual const biorbd::utils::Scalar& force(
-        biorbd::rigidbody::Joints& model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::rigidbody::GeneralizedVelocity& Qdot,
         const biorbd::muscles::State& emg,
@@ -150,7 +156,7 @@ public:
     /// \return The computed force from EMG
     ///
     virtual const biorbd::utils::Scalar& force(
-        biorbd::rigidbody::Joints& model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::muscles::State& emg,
         int updateKin = 2) = 0;

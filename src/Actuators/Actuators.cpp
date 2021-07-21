@@ -107,8 +107,8 @@ void biorbd::actuator::Actuators::addActuator(const biorbd::actuator::Actuator
         !*m_isClose, "You can't add actuator after closing the model");
 
     // Assuming that this is also a Joints type (via BiorbdModel)
-    const biorbd::rigidbody::Joints &model =
-        dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model =
+        dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>(*this);
 
     // Verify that the target dof is associated to a dof that
     // already exists in the model
@@ -192,8 +192,8 @@ void biorbd::actuator::Actuators::addActuator(const biorbd::actuator::Actuator
 void biorbd::actuator::Actuators::closeActuator()
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    const biorbd::rigidbody::Joints &model =
-        dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model =
+        dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>(*this);
 
     biorbd::utils::Error::check(
         model.nbDof()==m_all->size(),
@@ -261,8 +261,8 @@ biorbd::actuator::Actuators::torqueMax(
                                 "Close the actuator model before calling torqueMax");
 
     // Assuming that this is also a Joints type (via BiorbdModel)
-    const biorbd::rigidbody::Joints &model =
-        dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model =
+        dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>(*this);
 
     std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque>
     maxGeneralizedTorque_all =
@@ -343,8 +343,8 @@ biorbd::rigidbody::GeneralizedTorque biorbd::actuator::Actuators::torqueMax(
                                 "Close the actuator model before calling torqueMax");
 
     // Assuming that this is also a Joints type (via BiorbdModel)
-    const biorbd::rigidbody::Joints &model =
-        dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model =
+        dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>(*this);
 
     // Set qdot to be positive if concentric and negative if excentric
     biorbd::rigidbody::GeneralizedVelocity QdotResigned(Qdot);

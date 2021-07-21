@@ -22,6 +22,7 @@
 // Choice of linear algebra backend
 #cmakedefine BIORBD_USE_EIGEN3_MATH
 #cmakedefine BIORBD_USE_CASADI_MATH
+#define BIORBD_MATH_NAMESPACE Math@MATH_LIBRARY_BACKEND@
 
 namespace biorbd {
 

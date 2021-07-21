@@ -101,7 +101,7 @@ public:
     /// \param length Length of the muscle (ignored if no value is provided)
     ///
     void wrapPoints(
-        biorbd::rigidbody::Joints& model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         const biorbd::utils::Vector3d& p1_bone,
         const biorbd::utils::Vector3d& p2_bone,
@@ -128,7 +128,7 @@ public:
     /// \return The RotoTrans matrix of the half cylinder
     ///
     virtual const biorbd::utils::RotoTrans& RT(
-        biorbd::rigidbody::Joints &model,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
         const biorbd::rigidbody::GeneralizedCoordinates& Q,
         bool updateKin = true);
 

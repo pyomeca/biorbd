@@ -13,11 +13,17 @@ class String;
 class Matrix;
 }
 
+namespace BIORBD_MATH_NAMESPACE {
+namespace rigidbody
+{
+class GeneralizedAcceleration;
+}
+}
+
 namespace rigidbody
 {
 class GeneralizedCoordinates;
 class GeneralizedVelocity;
-class GeneralizedAcceleration;
 class NodeSegment;
 
 ///
@@ -210,7 +216,7 @@ public:
     biorbd::rigidbody::NodeSegment markerAcceleration(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedVelocity &Qdot,
-        const biorbd::rigidbody::GeneralizedAcceleration &Qddot,
+        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
         unsigned int idx,
         bool removeAxis = true,
         bool updateKin = true);
@@ -228,7 +234,7 @@ public:
     std::vector<biorbd::rigidbody::NodeSegment> markerAcceleration(
         const biorbd::rigidbody::GeneralizedCoordinates &Q,
         const biorbd::rigidbody::GeneralizedVelocity &Qdot,
-        const biorbd::rigidbody::GeneralizedAcceleration &dQdot,
+        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &dQdot,
         bool removeAxis=true,
         bool updateKin = true);
 

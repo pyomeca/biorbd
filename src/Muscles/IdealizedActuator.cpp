@@ -87,7 +87,7 @@ const biorbd::utils::Scalar& biorbd::muscles::IdealizedActuator::force(
 }
 
 const biorbd::utils::Scalar& biorbd::muscles::IdealizedActuator::force(
-    biorbd::rigidbody::Joints &,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &,
     const biorbd::rigidbody::GeneralizedCoordinates &,
     const biorbd::rigidbody::GeneralizedVelocity &,
     const biorbd::muscles::State &emg,
@@ -98,7 +98,7 @@ const biorbd::utils::Scalar& biorbd::muscles::IdealizedActuator::force(
 }
 
 const biorbd::utils::Scalar& biorbd::muscles::IdealizedActuator::force(
-    biorbd::rigidbody::Joints &,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &,
     const biorbd::rigidbody::GeneralizedCoordinates &,
     const biorbd::muscles::State &emg,
     int)

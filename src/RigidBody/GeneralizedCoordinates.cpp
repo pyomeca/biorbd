@@ -16,7 +16,7 @@ biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
 }
 
 biorbd::rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
-    const biorbd::rigidbody::Joints &j) :
+    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &j) :
     biorbd::utils::Vector(j.nbQ())
 {
 

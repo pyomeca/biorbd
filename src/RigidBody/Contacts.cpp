@@ -105,8 +105,8 @@ biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints()
 {
     if (!*m_isBinded) {
         // Assuming that this is also a Joints type (via BiorbdModel)
-        const biorbd::rigidbody::Joints &model =
-            dynamic_cast<biorbd::rigidbody::Joints &>(*this);
+        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model =
+            dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>(*this);
         Bind(model);
         *m_isBinded = true;
     }
@@ -150,7 +150,7 @@ biorbd::rigidbody::Contacts::constraintsInGlobal(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::rigidbody::Joints &model = dynamic_cast<biorbd::rigidbody::Joints &>
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
                                        (*this);
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;

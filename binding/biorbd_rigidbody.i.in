@@ -32,8 +32,8 @@ namespace std {
 %template(MatBiorbdGeneralizedCoordinates) std::vector<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>;
 %template(VecBiorbdGeneralizedVelocity) std::vector<biorbd::rigidbody::GeneralizedVelocity>;
 %template(MatBiorbdGeneralizedVelocity) std::vector<std::vector<biorbd::rigidbody::GeneralizedVelocity>>;
-%template(VecBiorbdGeneralizedAcceleration) std::vector<biorbd::rigidbody::GeneralizedAcceleration>;
-%template(MatBiorbdGeneralizedAcceleration) std::vector<std::vector<biorbd::rigidbody::GeneralizedAcceleration>>;
+%template(VecBiorbdGeneralizedAcceleration) std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration>;
+%template(MatBiorbdGeneralizedAcceleration) std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration>>;
 
 %template(VecBiorbdNodeSegment) std::vector<biorbd::rigidbody::NodeSegment>;
 %template(MatBiorbdNodeSegment) std::vector<std::vector<biorbd::rigidbody::NodeSegment>>;

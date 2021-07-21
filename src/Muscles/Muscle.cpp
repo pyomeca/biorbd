@@ -111,7 +111,7 @@ void biorbd::muscles::Muscle::DeepCopy(const biorbd::muscles::Muscle &other)
 }
 
 void biorbd::muscles::Muscle::updateOrientations(
-    biorbd::rigidbody::Joints& model,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
     const biorbd::rigidbody::GeneralizedCoordinates &Q,
     int updateKin)
 {
@@ -120,7 +120,7 @@ void biorbd::muscles::Muscle::updateOrientations(
                                  updateKin);
 }
 void biorbd::muscles::Muscle::updateOrientations(
-    biorbd::rigidbody::Joints& model,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
     const biorbd::rigidbody::GeneralizedCoordinates &Q,
     const biorbd::rigidbody::GeneralizedVelocity &Qdot,
     int updateKin)
@@ -158,7 +158,7 @@ const biorbd::muscles::Geometry &biorbd::muscles::Muscle::position() const
 }
 
 const biorbd::utils::Scalar& biorbd::muscles::Muscle::length(
-    biorbd::rigidbody::Joints& model,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
     const biorbd::rigidbody::GeneralizedCoordinates &Q,
     int updateKin)
 {
@@ -174,7 +174,7 @@ const biorbd::utils::Scalar& biorbd::muscles::Muscle::length(
 }
 
 const biorbd::utils::Scalar& biorbd::muscles::Muscle::musculoTendonLength(
-    biorbd::rigidbody::Joints &m,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &m,
     const biorbd::rigidbody::GeneralizedCoordinates &Q,
     int updateKin)
 {
@@ -190,7 +190,7 @@ const biorbd::utils::Scalar& biorbd::muscles::Muscle::musculoTendonLength(
 }
 
 const biorbd::utils::Scalar& biorbd::muscles::Muscle::velocity(
-    biorbd::rigidbody::Joints &model,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
     const biorbd::rigidbody::GeneralizedCoordinates &Q,
     const biorbd::rigidbody::GeneralizedVelocity &Qdot,
     bool updateKin)
@@ -226,7 +226,7 @@ void biorbd::muscles::Muscle::computeForce(const biorbd::muscles::State &emg)
 
 const std::vector<biorbd::utils::Vector3d>&
 biorbd::muscles::Muscle::musclesPointsInGlobal(
-    biorbd::rigidbody::Joints &model,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
     const biorbd::rigidbody::GeneralizedCoordinates &Q)
 {
     m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,

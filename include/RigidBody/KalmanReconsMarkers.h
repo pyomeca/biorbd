@@ -61,7 +61,7 @@ public:
         const biorbd::rigidbody::Markers &Tobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
         biorbd::rigidbody::GeneralizedVelocity *Qdot,
-        biorbd::rigidbody::GeneralizedAcceleration *Qddot,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot,
         bool removeAxes=true);
 
     ///
@@ -78,7 +78,7 @@ public:
         const std::vector<biorbd::rigidbody::NodeSegment> &Tobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q,
         biorbd::rigidbody::GeneralizedVelocity *Qdot,
-        biorbd::rigidbody::GeneralizedAcceleration *Qddot,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot,
         bool removeAxes=true);
 
     ///
@@ -95,7 +95,7 @@ public:
         const biorbd::utils::Vector &Tobs,
         biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
         biorbd::rigidbody::GeneralizedVelocity *Qdot = nullptr,
-        biorbd::rigidbody::GeneralizedAcceleration *Qddot = nullptr,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot = nullptr,
         bool removeAxes=true);
 
     ///
