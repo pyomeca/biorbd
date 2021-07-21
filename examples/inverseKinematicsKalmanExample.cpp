@@ -14,31 +14,34 @@
 /// Please note that this example will work only with the Eigen backend.
 /// Please also note that kalman will be VERY slow if compiled in debug
 ///
+
+using namespace biorbd::BIORBD_MATH_NAMESPACE;
+
 int main()
 {
     // Load a predefined model
-    biorbd::Model model("pyomecaman.bioMod");
+    Model model("pyomecaman.bioMod");
 
     // Generate random data (3 frames)
-    biorbd::rigidbody::GeneralizedCoordinates targetQ(model);
+    rigidbody::GeneralizedCoordinates targetQ(model);
     targetQ.setZero();
     std::cout << "Target Q = " << targetQ.transpose() << std::endl;
-    std::vector<biorbd::rigidbody::NodeSegment> targetMarkers = model.markers(
+    std::vector<rigidbody::NodeSegment> targetMarkers = model.markers(
                 targetQ);
-    std::vector< std::vector<biorbd::rigidbody::NodeSegment> > markersOverFrames;
+    std::vector< std::vector<rigidbody::NodeSegment> > markersOverFrames;
     markersOverFrames.push_back(targetMarkers);
     markersOverFrames.push_back(targetMarkers);
     markersOverFrames.push_back(targetMarkers);
 
     // Create a Kalman filter
     double freq = 100; // 100 Hz
-    biorbd::rigidbody::KalmanParam params(freq);
-    biorbd::rigidbody::KalmanReconsMarkers kalman(model, params);
+    rigidbody::KalmanParam params(freq);
+    rigidbody::KalmanReconsMarkers kalman(model, params);
 
     // Perform the kalman filter for each frame (the first frame is much longer than the next)
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
-    biorbd::rigidbody::GeneralizedAcceleration Qddot(model);
+    rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
+    rigidbody::GeneralizedAcceleration Qddot(model);
     for (auto targetMarkers : markersOverFrames) {
         kalman.reconstructFrame(model, targetMarkers, &Q, &Qdot, &Qddot);
 

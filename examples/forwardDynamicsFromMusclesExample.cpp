@@ -13,19 +13,22 @@
 ///
 /// Please note that this example will work only with the Eigen backend
 ///
+
+using namespace biorbd::BIORBD_MATH_NAMESPACE;
+
 int main()
 {
     // Load a predefined model
-    biorbd::Model model("arm26.bioMod");
+    Model model("arm26.bioMod");
 
     // Choose a position/velocity to compute dynamics from
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
+    rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
     Q.setZero();
     Qdot.setZero();
 
     // Set all muscles to half of their maximal activation
-    std::vector<std::shared_ptr<biorbd::muscles::State>> states = model.stateSet();
+    std::vector<std::shared_ptr<muscles::State>> states = model.stateSet();
     for (unsigned int i=0; i<model.nbMuscles(); ++i) {
         states[i]->setExcitation(0);
         states[i]->setActivation(0.5);
