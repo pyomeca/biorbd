@@ -6,7 +6,8 @@
 
 namespace biorbd
 {
-namespace BIORBD_MATH_NAMESPACE {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 class Joints;
@@ -14,7 +15,7 @@ class Joints;
 ///
 /// \brief Class GeneralizedTorque
 ///
-class BIORBD_API GeneralizedTorque : public biorbd::utils::Vector
+class BIORBD_API GeneralizedTorque : public utils::Vector
 {
 public:
 
@@ -58,7 +59,7 @@ public:
     ///
     template<typename OtherDerived> GeneralizedTorque(
         const Eigen::MatrixBase<OtherDerived>& other) :
-        biorbd::utils::Vector(other) {}
+        utils::Vector(other) {}
 
 #endif
 
@@ -87,7 +88,7 @@ public:
     GeneralizedTorque& operator=(const Eigen::MatrixBase
             <OtherDerived>& other)
     {
-        this->biorbd::utils::Vector::operator=(other);
+        this->utils::Vector::operator=(other);
         return *this;
     }
 
@@ -98,7 +99,7 @@ public:
     /// \param other The vector to copy
     ///
     void operator=(
-        const biorbd::utils::Vector& other);
+        const utils::Vector& other);
 #ifdef BIORBD_USE_CASADI_MATH
 
     ///

@@ -12,28 +12,28 @@ rigidbody::GeneralizedCoordinates::GeneralizedCoordinates()
 
 rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
     unsigned int nbQ) :
-    biorbd::utils::Vector(nbQ)
+    utils::Vector(nbQ)
 {
 
 }
 
 rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
     const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &j) :
-    biorbd::utils::Vector(j.nbQ())
+    utils::Vector(j.nbQ())
 {
 
 }
 
 rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
     const rigidbody::GeneralizedCoordinates &Q) :
-    biorbd::utils::Vector(Q)
+    utils::Vector(Q)
 {
 
 }
 
 rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
     const RigidBodyDynamics::Math::VectorNd &v) :
-    biorbd::utils::Vector (v)
+    utils::Vector (v)
 {
 
 }
@@ -42,7 +42,7 @@ rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
 
 rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
     const casadi::MX &v) :
-    biorbd::utils::Vector(v)
+    utils::Vector(v)
 {
 
 }
@@ -55,9 +55,9 @@ rigidbody::GeneralizedCoordinates::~GeneralizedCoordinates()
 }
 
 void rigidbody::GeneralizedCoordinates::operator=(
-    const biorbd::utils::Vector &other)
+    const utils::Vector &other)
 {
-    this->biorbd::utils::Vector::operator=(other);
+    this->utils::Vector::operator=(other);
 }
 
 #ifdef BIORBD_USE_CASADI_MATH
@@ -65,13 +65,13 @@ void rigidbody::GeneralizedCoordinates::operator=(
 void rigidbody::GeneralizedCoordinates::operator=(
     const RBDLCasadiMath::MX_Xd_SubMatrix &other)
 {
-    this->biorbd::utils::Vector::operator=(other);
+    this->utils::Vector::operator=(other);
 }
 
 void rigidbody::GeneralizedCoordinates::operator=(
     const casadi::MX &other)
 {
-    this->biorbd::utils::Vector::operator=(other);
+    this->utils::Vector::operator=(other);
 }
 
 #endif

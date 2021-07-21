@@ -9,13 +9,13 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 class Vector3d;
 }
 
-namespace BIORBD_MATH_NAMESPACE
-{
 namespace rigidbody
 {
 class Mesh;
@@ -43,8 +43,8 @@ public:
     /// \param inertia The inertia matrix
     ///
     SegmentCharacteristics(
-        const biorbd::utils::Scalar& mass,
-        const biorbd::utils::Vector3d &com,
+        const utils::Scalar& mass,
+        const utils::Vector3d &com,
         const RigidBodyDynamics::Math::Matrix3d &inertia);
 
     ///
@@ -55,8 +55,8 @@ public:
     /// \param mesh The mesh geometry of the segment
     ///
     SegmentCharacteristics(
-        const biorbd::utils::Scalar &mass,
-        const biorbd::utils::Vector3d &com,
+        const utils::Scalar &mass,
+        const utils::Vector3d &com,
         const RigidBodyDynamics::Math::Matrix3d &inertia,
         const Mesh &mesh);
 
@@ -77,37 +77,37 @@ public:
     /// \param val Value of the new length
     ///
     void setLength(
-        const biorbd::utils::Scalar& val);
+        const utils::Scalar& val);
 
     ///
     /// \brief Returns the segment length
     /// \return The segment length
     ///
-    biorbd::utils::Scalar length() const;
+    utils::Scalar length() const;
 
     ///
     /// \brief Set the new mass
     /// \param newMass The new mass
     ///
-    void setMass(const biorbd::utils::Scalar& newMass);
+    void setMass(const utils::Scalar& newMass);
 
     ///
     /// \brief Returns the segment mass
     /// \return The segment mass
     ///
-    biorbd::utils::Scalar mass() const;
+    utils::Scalar mass() const;
 
     ///
     /// \brief CoM Returns the position of the center of mass in the local reference frame
     /// \return The position of the center of mass in the local reference frame
     ///
-    biorbd::utils::Vector3d CoM() const;
+    utils::Vector3d CoM() const;
 
     ///
     /// \brief setCoM Change the position of the center of mass
     /// \param com The new position for the CoM
     ///
-    void setCoM(const biorbd::utils::Vector3d& com);
+    void setCoM(const utils::Vector3d& com);
 
     ///
     /// \brief Returns the segment mesh
@@ -122,7 +122,7 @@ public:
     const RigidBodyDynamics::Math::Matrix3d& inertia() const;
 
 protected:
-    std::shared_ptr<biorbd::utils::Scalar> m_length; ///< Length of the segment
+    std::shared_ptr<utils::Scalar> m_length; ///< Length of the segment
     std::shared_ptr<Mesh> m_mesh; ///< Mesh of the segment
 };
 

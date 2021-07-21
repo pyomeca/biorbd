@@ -42,45 +42,47 @@
     #include "Muscles/StateDynamicsBuchanan.h"
 #endif // MODULE_MUSCLES
 
+using namespace biorbd::BIORBD_MATH_NAMESPACE;
+
 // ------ Public methods ------ //
-biorbd::Model biorbd::Reader::readModelFile(const biorbd::utils::Path &path)
+Model Reader::readModelFile(const utils::Path &path)
 {
     // Add the elements that have been entered
-    biorbd::Model model;
-    readModelFile(path, &model);
+    Model model;
+    Reader::readModelFile(path, &model);
     return model;
 }
 
-void biorbd::Reader::readModelFile(
-    const biorbd::utils::Path &path,
-    biorbd::Model *model)
+void Reader::readModelFile(
+    const utils::Path &path,
+    Model *model)
 {
     // Open file
     if (!path.isFileReadable())
-        biorbd::utils::Error::raise("File " + path.absolutePath()
+        utils::Error::raise("File " + path.absolutePath()
                                     + " could not be open");
 
 #ifdef _WIN32
-    biorbd::utils::IfStream file(
-        biorbd::utils::Path::toWindowsFormat(
+    utils::IfStream file(
+        utils::Path::toWindowsFormat(
             path.absolutePath()).c_str(), std::ios::in);
 #else
-    biorbd::utils::IfStream file(
+    utils::IfStream file(
         path.absolutePath().c_str(), std::ios::in);
 #endif
 
     // Read file
-    biorbd::utils::String main_tag;
-    biorbd::utils::String property_tag;
-    biorbd::utils::String subproperty_tag;
+    utils::String main_tag;
+    utils::String property_tag;
+    utils::String subproperty_tag;
 
     // Variable used to replace doubles
-    std::map<biorbd::utils::Equation, double> variable;
+    std::map<utils::Equation, double> variable;
 
     // Determine the file version
     file.readSpecificTag("version", main_tag);
     unsigned int version(static_cast<unsigned int>(atoi(main_tag.c_str())));
-    biorbd::utils::Error::check((version == 1 || version == 2 || version == 3
+    utils::Error::check((version == 1 || version == 2 || version == 3
                                  || version == 4),
                                 "Version " + main_tag + " is not implemented yet");
 
@@ -88,7 +90,7 @@ void biorbd::Reader::readModelFile(
     bool hasActuators = false;
 #endif // MODULE_ACTUATORS
 
-    biorbd::utils::String name;
+    utils::String name;
     try {
         while(file.read(
                     main_tag)) { // Attempt read into main_tag, return false if it fails
@@ -100,9 +102,9 @@ void biorbd::Reader::readModelFile(
             // If it is a segment
             if (!main_tag.tolower().compare("segment")) {
                 file.read(name);
-                biorbd::utils::String parent_str("root");
-                biorbd::utils::String trans = "";
-                biorbd::utils::String rot = "";
+                utils::String parent_str("root");
+                utils::String trans = "";
+                utils::String rot = "";
                 bool RTinMatrix(true);
                 if (version >= 3) { // By default for version 3 (not in matrix)
                     RTinMatrix = false;
@@ -111,14 +113,14 @@ void biorbd::Reader::readModelFile(
                 double mass = 0.00000001;
                 RigidBodyDynamics::Math::Matrix3d inertia(
                     RigidBodyDynamics::Math::Matrix3d::Identity());
-                biorbd::utils::RotoTrans RT(RigidBodyDynamics::Math::Matrix4d::Identity());
-                biorbd::utils::Vector3d com(0,0,0);
-                biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh mesh;
+                utils::RotoTrans RT(RigidBodyDynamics::Math::Matrix4d::Identity());
+                utils::Vector3d com(0,0,0);
+                rigidbody::Mesh mesh;
                 int segmentByFile(-1); // -1 non setté, 0 pas par file, 1 par file
                 int PF = -1;
-                std::vector<biorbd::utils::Range> QRanges;
-                std::vector<biorbd::utils::Range> QDotRanges;
-                std::vector<biorbd::utils::Range> QDDotRanges;
+                std::vector<utils::Range> QRanges;
+                std::vector<utils::Range> QDotRanges;
+                std::vector<utils::Range> QDDotRanges;
                 bool isRangeQSet(
                     false); // Ranges must be done only after translation AND rotations tags
                 bool isRangeQDotSet(
@@ -130,23 +132,23 @@ void biorbd::Reader::readModelFile(
                         // Dynamically find the parent number
                         file.read(parent_str);
                         if (parent_str.tolower().compare("root")) {
-                            biorbd::utils::Error::check(model->GetBodyId(parent_str.c_str()),
+                            utils::Error::check(model->GetBodyId(parent_str.c_str()),
                                                         "Wrong name in a segment");
                         }
                     } else if (!property_tag.tolower().compare("translations")) {
-                        biorbd::utils::Error::check(!isRangeQSet,
+                        utils::Error::check(!isRangeQSet,
                                                     "Translations must appear before the rangesq tag");
-                        biorbd::utils::Error::check(!isRangeQDotSet,
+                        utils::Error::check(!isRangeQDotSet,
                                                     "Translations must appear before the rangesqdot tag");
-                        biorbd::utils::Error::check(!isRangeQDDotSet,
+                        utils::Error::check(!isRangeQDDotSet,
                                                     "Translations must appear before the rangesqddot tag");
                         file.read(trans);
                     } else if (!property_tag.tolower().compare("rotations")) {
-                        biorbd::utils::Error::check(!isRangeQSet,
+                        utils::Error::check(!isRangeQSet,
                                                     "Rotations must appear before the rangesq tag");
-                        biorbd::utils::Error::check(!isRangeQDotSet,
+                        utils::Error::check(!isRangeQDotSet,
                                                     "Rotations must appear before the rangesqdot tag");
-                        biorbd::utils::Error::check(!isRangeQDDotSet,
+                        utils::Error::check(!isRangeQDDotSet,
                                                     "Rotations must appear before the rangesqddot tag");
                         file.read(rot);
                     } else if (!property_tag.tolower().compare("ranges") ||
@@ -163,7 +165,7 @@ void biorbd::Reader::readModelFile(
                             file.read(min);
                             file.read(max);
                             QRanges.push_back(
-                                biorbd::utils::Range (min, max));
+                                utils::Range (min, max));
                         }
                         isRangeQSet = true;
                     } else if (!property_tag.tolower().compare("rangesqdot")) {
@@ -179,7 +181,7 @@ void biorbd::Reader::readModelFile(
                             file.read(min);
                             file.read(max);
                             QDotRanges.push_back(
-                                biorbd::utils::Range (min, max));
+                                utils::Range (min, max));
                         }
                         isRangeQDotSet = true;
                     } else if (!property_tag.tolower().compare("rangesqddot")) {
@@ -195,7 +197,7 @@ void biorbd::Reader::readModelFile(
                             file.read(min);
                             file.read(max);
                             QDDotRanges.push_back(
-                                biorbd::utils::Range (min, max));
+                                utils::Range (min, max));
                         }
                         isRangeQDDotSet = true;
                     } else if (!property_tag.tolower().compare("mass")) {
@@ -203,7 +205,7 @@ void biorbd::Reader::readModelFile(
                     } else if (!property_tag.tolower().compare("inertia")) {
                         readMatrix33(file, variable, inertia);
                     } else if (!property_tag.tolower().compare("rtinmatrix")) {
-                        biorbd::utils::Error::check(isRTset==false,
+                        utils::Error::check(isRTset==false,
                                                     "RT should not appear before RTinMatrix");
                         file.read(RTinMatrix);
                     } else if (!property_tag.tolower().compare("rt")) {
@@ -218,18 +220,18 @@ void biorbd::Reader::readModelFile(
                         if (segmentByFile==-1) {
                             segmentByFile = 0;
                         } else if (segmentByFile == 1) {
-                            biorbd::utils::Error::raise("You must not mix file and mesh in segment");
+                            utils::Error::raise("You must not mix file and mesh in segment");
                         }
-                        biorbd::utils::Vector3d tp(0, 0, 0);
+                        utils::Vector3d tp(0, 0, 0);
                         readVector3d(file, variable, tp);
                         mesh.addPoint(tp);
                     } else if (!property_tag.tolower().compare("patch")) {
                         if (segmentByFile==-1) {
                             segmentByFile = 0;
                         } else if (segmentByFile == 1) {
-                            biorbd::utils::Error::raise("You must not mix file and mesh in segment");
+                            utils::Error::raise("You must not mix file and mesh in segment");
                         }
-                        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::MeshFace tp;
+                        rigidbody::MeshFace tp;
                         for (unsigned int i=0; i<3; ++i) {
                             file.read(tp(i));
                         }
@@ -238,11 +240,11 @@ void biorbd::Reader::readModelFile(
                         if (segmentByFile==-1) {
                             segmentByFile = 1;
                         } else if (segmentByFile == 0) {
-                            biorbd::utils::Error::raise("You must not mix file and mesh in segment");
+                            utils::Error::raise("You must not mix file and mesh in segment");
                         }
-                        biorbd::utils::String filePathInString;
+                        utils::String filePathInString;
                         file.read(filePathInString);
-                        biorbd::utils::Path filePath(filePathInString);
+                        utils::Path filePath(filePathInString);
                         if (!filePath.extension().compare("bioMesh")) {
                             mesh = readMeshFileBiorbdSegments(path.folder() + filePath.relativePath());
                         } else if (!filePath.extension().compare("ply")) {
@@ -256,7 +258,7 @@ void biorbd::Reader::readModelFile(
                         }
 #endif
                         else {
-                            biorbd::utils::Error::raise(filePath.extension() +
+                            utils::Error::raise(filePath.extension() +
                                                         " is an unrecognized mesh file");
                         }
                     }
@@ -272,10 +274,10 @@ void biorbd::Reader::readModelFile(
                     for (size_t i=0; i<trans.length() + rotLength; ++i) {
                         if (!rot.compare("q") && i>=trans.length()) {
                             QRanges.push_back(
-                                biorbd::utils::Range (-1, 1));
+                                utils::Range (-1, 1));
                         } else {
                             QRanges.push_back(
-                                biorbd::utils::Range ());
+                                utils::Range ());
                         }
                     }
                 }
@@ -289,7 +291,7 @@ void biorbd::Reader::readModelFile(
                     }
                     for (size_t i=0; i<trans.length() + rotLength; ++i) {
                         QDotRanges.push_back(
-                            biorbd::utils::Range (-M_PI*10, M_PI*10));
+                            utils::Range (-M_PI*10, M_PI*10));
                     }
                 }
                 if (!isRangeQDDotSet) {
@@ -302,44 +304,44 @@ void biorbd::Reader::readModelFile(
                     }
                     for (size_t i=0; i<trans.length() + rotLength; ++i) {
                         QDDotRanges.push_back(
-                            biorbd::utils::Range (-M_PI*100, M_PI*100));
+                            utils::Range (-M_PI*100, M_PI*100));
                     }
                 }
-                biorbd::BIORBD_MATH_NAMESPACE::rigidbody::SegmentCharacteristics characteristics(mass,com,inertia,
+                rigidbody::SegmentCharacteristics characteristics(mass,com,inertia,
                         mesh);
                 model->AddSegment(name, parent_str, trans, rot, QRanges, QDotRanges,
                                   QDDotRanges, characteristics, RT, PF);
             } else if (!main_tag.tolower().compare("gravity")) {
-                biorbd::utils::Vector3d gravity(0,0,0);
+                utils::Vector3d gravity(0,0,0);
                 readVector3d(file, variable, gravity);
                 model->gravity = gravity;
             } else if (!main_tag.tolower().compare("variables")) {
-                biorbd::utils::String var;
+                utils::String var;
                 while(file.read(var) && var.tolower().compare("endvariables")) {
                     if (!var(0).compare("$")) {
                         double value;
                         file.read(value);
-                        biorbd::utils::Error::check(variable.find(var) == variable.end(),
+                        utils::Error::check(variable.find(var) == variable.end(),
                                                     "Variable already defined");
                         variable[var] = value;
                     }
                 }
             } else if (!main_tag.tolower().compare("marker")) {
-                biorbd::utils::String name;
+                utils::String name;
                 file.read(name);
                 unsigned int parent_int = 0;
-                biorbd::utils::String parent_str("root");
-                biorbd::utils::Vector3d pos(0,0,0);
+                utils::String parent_str("root");
+                utils::Vector3d pos(0,0,0);
                 bool technical = true;
                 bool anatomical = false;
-                biorbd::utils::String axesToRemove;
+                utils::String axesToRemove;
                 while(file.read(property_tag) && property_tag.tolower().compare("endmarker"))
                     if (!property_tag.tolower().compare("parent")) {
                         // Dynamically find the parent number
                         file.read(parent_str);
                         parent_int = model->GetBodyId(parent_str.c_str());
                         // if parent_int still equals zero, no name has concurred
-                        biorbd::utils::Error::check(model->IsBodyId(parent_int),
+                        utils::Error::check(model->IsBodyId(parent_int),
                                                     "Wrong name in a segment");
                     } else if (!property_tag.tolower().compare("position")) {
                         readVector3d(file, variable, pos);
@@ -354,15 +356,15 @@ void biorbd::Reader::readModelFile(
                 model->addMarker(pos, name, parent_str, technical, anatomical, axesToRemove,
                                  static_cast<int>(parent_int));
             } else if (!main_tag.tolower().compare("mimu") && version >= 4) {
-                biorbd::utils::Error::raise("MIMU is no more the right tag, change it to IMU!");
+                utils::Error::raise("MIMU is no more the right tag, change it to IMU!");
             } else if (!main_tag.tolower().compare("imu")
                        || !main_tag.tolower().compare("mimu")
                        || !main_tag.tolower().compare("customrt")) {
-                biorbd::utils::String rtType(main_tag.tolower());
-                biorbd::utils::String name;
+                utils::String rtType(main_tag.tolower());
+                utils::String name;
                 file.read(name);
-                biorbd::utils::String parent_str("root");
-                biorbd::utils::RotoTransNode RT;
+                utils::String parent_str("root");
+                utils::RotoTransNode RT;
                 bool RTinMatrix(true);
                 if (version >= 3) { // By default for version 3 (not in matrix)
                     RTinMatrix = false;
@@ -372,12 +374,12 @@ void biorbd::Reader::readModelFile(
                 bool anatomical = false;
                 bool firstTag = true;
                 bool fromMarkers(false);
-                biorbd::utils::String originMarkerName("");
-                biorbd::utils::String firstAxis("");
-                std::vector<biorbd::utils::String> firstAxisMarkerNames(2);
-                biorbd::utils::String secondAxis("");
-                std::vector<biorbd::utils::String> secondAxisMarkerNames(2);
-                biorbd::utils::String axisToRecalculate("");
+                utils::String originMarkerName("");
+                utils::String firstAxis("");
+                std::vector<utils::String> firstAxisMarkerNames(2);
+                utils::String secondAxis("");
+                std::vector<utils::String> secondAxisMarkerNames(2);
+                utils::String axisToRecalculate("");
                 while(file.read(property_tag) && !(!property_tag.tolower().compare("endimu")
                                                    || !property_tag.tolower().compare("endmimu")
                                                    || !property_tag.tolower().compare("endcustomrt"))) {
@@ -385,11 +387,11 @@ void biorbd::Reader::readModelFile(
                         // Dynamically find the parent number
                         file.read(parent_str);
                         // If parent_int still equals zero, no name has concurred
-                        biorbd::utils::Error::check(model->IsBodyId(model->GetBodyId(
+                        utils::Error::check(model->IsBodyId(model->GetBodyId(
                                                         parent_str.c_str())), "Wrong name in a segment");
                     } else if (!property_tag.tolower().compare("frommarkers")) {
                         if (!firstTag) {
-                            biorbd::utils::Error::raise("The tag 'fromMarkers' should appear first in the IMU "
+                            utils::Error::raise("The tag 'fromMarkers' should appear first in the IMU "
                                                         + name);
                         } else {
                             fromMarkers = true;
@@ -420,7 +422,7 @@ void biorbd::Reader::readModelFile(
                         }
                     } else {
                         if (!property_tag.tolower().compare("rtinmatrix")) {
-                            biorbd::utils::Error::check(isRTset==false,
+                            utils::Error::check(isRTset==false,
                                                         "RT should not appear before RTinMatrix");
                             file.read(RTinMatrix);
                         } else if (!property_tag.tolower().compare("rt")) {
@@ -430,48 +432,48 @@ void biorbd::Reader::readModelFile(
                     }
                 }
                 if (fromMarkers) {
-                    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment> allMarkerOnSegment(model->marker(
+                    std::vector<rigidbody::NodeSegment> allMarkerOnSegment(model->marker(
                                 parent_str));
-                    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment origin, axis1Beg, axis1End, axis2Beg, axis2End;
+                    rigidbody::NodeSegment origin, axis1Beg, axis1End, axis2Beg, axis2End;
                     bool isOrigin(false), isAxis1Beg(false), isAxis1End(false), isAxis2Beg(false),
                          isAxis2End(false);
                     for (auto mark : allMarkerOnSegment) {
-                        if (!mark.biorbd::utils::Node::name().compare(originMarkerName)) {
+                        if (!mark.utils::Node::name().compare(originMarkerName)) {
                             origin = mark;
                             isOrigin = true;
                         }
-                        if (!mark.biorbd::utils::Node::name().compare(firstAxisMarkerNames[0])) {
+                        if (!mark.utils::Node::name().compare(firstAxisMarkerNames[0])) {
                             axis1Beg = mark;
                             isAxis1Beg = true;
                         }
-                        if (!mark.biorbd::utils::Node::name().compare(firstAxisMarkerNames[1])) {
+                        if (!mark.utils::Node::name().compare(firstAxisMarkerNames[1])) {
                             axis1End = mark;
                             isAxis1End = true;
                         }
-                        if (!mark.biorbd::utils::Node::name().compare(secondAxisMarkerNames[0])) {
+                        if (!mark.utils::Node::name().compare(secondAxisMarkerNames[0])) {
                             axis2Beg = mark;
                             isAxis2Beg = true;
                         }
-                        if (!mark.biorbd::utils::Node::name().compare(secondAxisMarkerNames[1])) {
+                        if (!mark.utils::Node::name().compare(secondAxisMarkerNames[1])) {
                             axis2End = mark;
                             isAxis2End = true;
                         }
                     }
                     if (! (isAxis1Beg && isAxis1End && isAxis2Beg && isAxis2End && isOrigin)) {
-                        biorbd::utils::Error::raise("All the axes name and origin for the " + rtType +
+                        utils::Error::raise("All the axes name and origin for the " + rtType +
                                                     "(" + name +
                                                     ") must be set and correspond to marker names previously defined on the same parent");
                     }
                     if (!(!axisToRecalculate.tolower().compare("firstaxis")
                             || !axisToRecalculate.tolower().compare("secondaxis"))) {
-                        biorbd::utils::Error::raise("The 'recalculate' option for " + rtType + "(" +
+                        utils::Error::raise("The 'recalculate' option for " + rtType + "(" +
                                                     name +
                                                     ") must be 'firstaxis' or 'secondaxis'");
                     }
                     axisToRecalculate = !axisToRecalculate.tolower().compare("firstaxis") ?
                                         firstAxis : secondAxis;
 
-                    RT = biorbd::utils::RotoTrans::fromMarkers(
+                    RT = utils::RotoTrans::fromMarkers(
                              origin,
                     {axis1Beg, axis1End},
                     {axis2Beg, axis2End},
@@ -485,13 +487,13 @@ void biorbd::Reader::readModelFile(
                     model->addIMU(RT, technical, anatomical);
                 }
             } else if (!main_tag.tolower().compare("contact")) {
-                biorbd::utils::String name;
+                utils::String name;
                 file.read(name);
                 unsigned int parent_int = 0;
-                biorbd::utils::String parent_str("root");
-                biorbd::utils::Vector3d pos(0,0,0);
-                biorbd::utils::Vector3d norm(0,0,0);
-                biorbd::utils::String axis("");
+                utils::String parent_str("root");
+                utils::Vector3d pos(0,0,0);
+                utils::Vector3d norm(0,0,0);
+                utils::String axis("");
                 double acc = 0;
                 while(file.read(property_tag) && property_tag.tolower().compare("endcontact")) {
                     if (!property_tag.tolower().compare("parent")) {
@@ -499,7 +501,7 @@ void biorbd::Reader::readModelFile(
                         file.read(parent_str);
                         parent_int = model->GetBodyId(parent_str.c_str());
                         // If parent_int equals zero, no name has concurred
-                        biorbd::utils::Error::check(model->IsBodyId(parent_int),
+                        utils::Error::check(model->IsBodyId(parent_int),
                                                     "Wrong name in a segment");
                     } else if (!property_tag.tolower().compare("position")) {
                         readVector3d(file, variable, pos);
@@ -513,23 +515,23 @@ void biorbd::Reader::readModelFile(
                 }
                 if (version == 1) {
 #ifndef BIORBD_USE_CASADI_MATH
-                    biorbd::utils::Error::check(norm.norm() == 1.0,
+                    utils::Error::check(norm.norm() == 1.0,
                                                 "Normal of the contact must be provided" );
 #endif
                     model->AddConstraint(parent_int, pos, norm, name, acc);
                 } else if (version >= 2) {
-                    biorbd::utils::Error::check(axis.compare(""), "Axis must be provided");
+                    utils::Error::check(axis.compare(""), "Axis must be provided");
                     model->AddConstraint(parent_int, pos, axis, name, acc);
                 }
             } else if (!main_tag.tolower().compare("loopconstraint")) {
-                biorbd::utils::String name;
+                utils::String name;
                 unsigned int id_predecessor = 0;
                 unsigned int id_successor = 0;
-                biorbd::utils::String predecessor_str("root");
-                biorbd::utils::String successor_str("root");
-                biorbd::utils::RotoTrans X_predecessor;
-                biorbd::utils::RotoTrans X_successor;
-                biorbd::utils::SpatialVector axis;
+                utils::String predecessor_str("root");
+                utils::String successor_str("root");
+                utils::RotoTrans X_predecessor;
+                utils::RotoTrans X_successor;
+                utils::SpatialVector axis;
                 bool enableStabilization(false);
                 double stabilizationParam(-1);
                 while(file.read(property_tag)
@@ -539,7 +541,7 @@ void biorbd::Reader::readModelFile(
                         file.read(predecessor_str);
                         id_predecessor = model->GetBodyId(predecessor_str.c_str());
                         // If parent_int equals zero, no name has concurred
-                        biorbd::utils::Error::check(model->IsBodyId(id_predecessor),
+                        utils::Error::check(model->IsBodyId(id_predecessor),
                                                     "Wrong name in a segment");
                     }
                     if (!property_tag.tolower().compare("successor")) {
@@ -547,30 +549,30 @@ void biorbd::Reader::readModelFile(
                         file.read(successor_str);
                         id_successor = model->GetBodyId(successor_str.c_str());
                         // If parent_int equals zero, no name has concurred
-                        biorbd::utils::Error::check(model->IsBodyId(id_successor),
+                        utils::Error::check(model->IsBodyId(id_successor),
                                                     "Wrong name in a segment");
                     } else if (!property_tag.tolower().compare("rtpredecessor")) {
-                        biorbd::utils::String seq("xyz");
-                        biorbd::utils::Vector3d rot(0, 0, 0);
-                        biorbd::utils::Vector3d trans(0, 0, 0);
+                        utils::String seq("xyz");
+                        utils::Vector3d rot(0, 0, 0);
+                        utils::Vector3d trans(0, 0, 0);
                         // Transcribe the rotations
                         readVector3d(file, variable, rot);
                         // Transcribe the angle sequence for the rotations
                         file.read(seq);
                         // Transcribe the translations
                         readVector3d(file, variable, trans);
-                        X_predecessor = biorbd::utils::RotoTrans(rot, trans, seq);
+                        X_predecessor = utils::RotoTrans(rot, trans, seq);
                     } else if (!property_tag.tolower().compare("rtsuccessor")) {
-                        biorbd::utils::String seq("xyz");
-                        biorbd::utils::Vector3d rot(0, 0, 0);
-                        biorbd::utils::Vector3d trans(0, 0, 0);
+                        utils::String seq("xyz");
+                        utils::Vector3d rot(0, 0, 0);
+                        utils::Vector3d trans(0, 0, 0);
                         // Transcribe the rotations
                         readVector3d(file, variable, rot);
                         // Transcribe the angle sequence for the roations
                         file.read(seq);
                         // Transcribe the translations
                         readVector3d(file, variable, trans);
-                        X_successor = biorbd::utils::RotoTrans(rot, trans, seq);
+                        X_successor = utils::RotoTrans(rot, trans, seq);
                     } else if (!property_tag.tolower().compare("axis"))
                         for (unsigned int i=0; i<axis.size(); ++i) {
                             file.read(axis(i), variable);
@@ -590,19 +592,19 @@ void biorbd::Reader::readModelFile(
 #ifdef MODULE_ACTUATORS
                 hasActuators = true;
                 // The name of the actuator must correspond to the segment number to which it is attached
-                biorbd::utils::String name;
+                utils::String name;
                 file.read(name);
                 unsigned int parent_int = model->GetBodyId(name.c_str());
                 // If parent_int equals zero, no name has concurred
-                biorbd::utils::Error::check(model->IsBodyId(parent_int),
+                utils::Error::check(model->IsBodyId(parent_int),
                                             "Wrong name in a segment");
 
                 // Declaration of all the parameters for all types
-                biorbd::utils::String type;
+                utils::String type;
                 bool isTypeSet  = false;
                 unsigned int dofIdx(INT_MAX);
                 bool isDofSet   = false;
-                biorbd::utils::String str_direction;
+                utils::String str_direction;
                 bool isDirectionSet = false;
                 int int_direction = 0;
                 double Tmax(-1);
@@ -645,13 +647,13 @@ void biorbd::Reader::readModelFile(
                         file.read(type);
                         isTypeSet = true;
                     } else if (!property_tag.tolower().compare("dof")) {
-                        biorbd::utils::String dofName;
+                        utils::String dofName;
                         file.read(dofName);
                         dofIdx = model->getDofIndex(name, dofName);
                         isDofSet = true;
                     } else if (!property_tag.tolower().compare("direction")) {
                         file.read(str_direction);
-                        biorbd::utils::Error::check(!str_direction.tolower().compare("positive") ||
+                        utils::Error::check(!str_direction.tolower().compare("positive") ||
                                                     !str_direction.tolower().compare("negative"),
                                                     "Direction should be \"positive\" or \"negative\"");
                         if (!str_direction.tolower().compare("positive")) {
@@ -712,28 +714,28 @@ void biorbd::Reader::readModelFile(
                     }
                 }
                 // Verify that everything is there
-                biorbd::utils::Error::check(isTypeSet!=0, "Actuator type must be defined");
+                utils::Error::check(isTypeSet!=0, "Actuator type must be defined");
                 biorbd::actuator::Actuator* actuator;
 
                 if (!type.tolower().compare("gauss3p")) {
-                    biorbd::utils::Error::check(isDofSet && isDirectionSet && isTmaxSet && isT0Set
+                    utils::Error::check(isDofSet && isDirectionSet && isTmaxSet && isT0Set
                                                 && iswmaxSet && iswcSet && isaminSet &&
                                                 iswrSet && isw1Set && isrSet && isqoptSet,
                                                 "Make sure all parameters are defined");
                     actuator = new biorbd::actuator::ActuatorGauss3p(int_direction,Tmax,T0,wmax,wc,
                             amin,wr,w1,r,qopt,dofIdx,name);
                 } else if (!type.tolower().compare("constant")) {
-                    biorbd::utils::Error::check(isDofSet && isDirectionSet && isTmaxSet,
+                    utils::Error::check(isDofSet && isDirectionSet && isTmaxSet,
                                                 "Make sure all parameters are defined");
                     actuator = new biorbd::actuator::ActuatorConstant(int_direction,Tmax,dofIdx,
                             name);
                 } else if (!type.tolower().compare("linear")) {
-                    biorbd::utils::Error::check(isDofSet && isDirectionSet && isSlopeSet && isT0Set,
+                    utils::Error::check(isDofSet && isDirectionSet && isSlopeSet && isT0Set,
                                                 "Make sure all parameters are defined");
                     actuator = new biorbd::actuator::ActuatorLinear(int_direction,T0,slope,dofIdx,
                             name);
                 } else if (!type.tolower().compare("gauss6p")) {
-                    biorbd::utils::Error::check(isDofSet && isDirectionSet && isTmaxSet && isT0Set
+                    utils::Error::check(isDofSet && isDirectionSet && isTmaxSet && isT0Set
                                                 && iswmaxSet && iswcSet && isaminSet &&
                                                 iswrSet && isw1Set && isrSet && isqoptSet && isFacteur6pSet && isr2Set
                                                 && isqopt2Set,
@@ -742,13 +744,13 @@ void biorbd::Reader::readModelFile(
                             amin,wr,w1,r,qopt,facteur6p, r2, qopt2,
                             dofIdx,name);
                 } else if (!type.tolower().compare("sigmoidgauss3p")) {
-                    biorbd::utils::Error::check(isDofSet && isThetaSet && isLambdaSet
+                    utils::Error::check(isDofSet && isThetaSet && isLambdaSet
                                                 && isOffsetSet && isrSet && isqoptSet,
                                                 "Make sure all parameters are defined");
                     actuator = new biorbd::actuator::ActuatorSigmoidGauss3p(int_direction, theta,
                             lambda, offset, r, qopt, dofIdx, name);
                 } else {
-                    biorbd::utils::Error::raise("Actuator do not correspond to an implemented one");
+                    utils::Error::raise("Actuator do not correspond to an implemented one");
 #ifdef _WIN32
                     actuator = new biorbd::actuator::ActuatorConstant(int_direction, Tmax, dofIdx,
                             name); // Échec de compilation sinon
@@ -758,15 +760,15 @@ void biorbd::Reader::readModelFile(
                 model->addActuator(*actuator);
                 delete actuator;
 #else // MODULE_ACTUATORS
-                biorbd::utils::Error::raise("Biorbd was build without the module Actuators but the model defines ones");
+                utils::Error::raise("Biorbd was build without the module Actuators but the model defines ones");
 #endif // MODULE_ACTUATORS
             } else if (!main_tag.tolower().compare("musclegroup")) {
 #ifdef MODULE_MUSCLES
-                biorbd::utils::String name;
+                utils::String name;
                 file.read(name); // Name of the muscular group
                 // Declaration of the variables
-                biorbd::utils::String origin_parent_str("root");
-                biorbd::utils::String insert_parent_str("root");
+                utils::String origin_parent_str("root");
+                utils::String insert_parent_str("root");
                 // Read the file
                 while(file.read(property_tag)
                         && property_tag.tolower().compare("endmusclegroup")) {
@@ -775,24 +777,24 @@ void biorbd::Reader::readModelFile(
                         file.read(origin_parent_str);
                         unsigned int idx = model->GetBodyId(origin_parent_str.c_str());
                         // If parent_int still equals zero, no name has concurred
-                        biorbd::utils::Error::check(model->IsBodyId(idx),
+                        utils::Error::check(model->IsBodyId(idx),
                                                     "Wrong origin parent name for a muscle");
                     } else if (!property_tag.tolower().compare("insertionparent")) {
                         // Dynamically find the parent number
                         file.read(insert_parent_str);
                         unsigned int idx = model->GetBodyId(insert_parent_str.c_str());
                         // If parent_int still equals zero, no name has concurred
-                        biorbd::utils::Error::check(model->IsBodyId(idx),
+                        utils::Error::check(model->IsBodyId(idx),
                                                     "Wrong insertion parent name for a muscle");
                     }
                 }
                 model->addMuscleGroup(name, origin_parent_str, insert_parent_str);
 #else // MODULE_MUSCLES
-                biorbd::utils::Error::raise("Biorbd was build without the module Muscles but the model defines a muscle group");
+                utils::Error::raise("Biorbd was build without the module Muscles but the model defines a muscle group");
 #endif // MODULE_MUSCLES
             } else if (!main_tag.tolower().compare("muscle")) {
 #ifdef MODULE_MUSCLES
-                biorbd::utils::String name;
+                utils::String name;
                 file.read(name); // Name of the muscle
                 // Declaration of the variables
                 biorbd::muscles::MUSCLE_TYPE type(biorbd::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE);
@@ -800,10 +802,10 @@ void biorbd::Reader::readModelFile(
                     biorbd::muscles::STATE_TYPE::NO_STATE_TYPE);
                 biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType(
                     biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
-                biorbd::utils::String muscleGroup("");
+                utils::String muscleGroup("");
                 int idxGroup(-1);
-                biorbd::utils::Vector3d origin_pos(0,0,0);
-                biorbd::utils::Vector3d insert_pos(0,0,0);
+                utils::Vector3d origin_pos(0,0,0);
+                utils::Vector3d insert_pos(0,0,0);
                 double optimalLength(0);
                 double maxForce(0);
                 double tendonSlackLength(0);
@@ -821,9 +823,9 @@ void biorbd::Reader::readModelFile(
                         file.read(muscleGroup);
                         idxGroup = model->getMuscleGroupId(muscleGroup);
                         // If parent_int is still equal to zero, no name has concurred
-                        biorbd::utils::Error::check(idxGroup!=-1, "Could not find muscle group");
+                        utils::Error::check(idxGroup!=-1, "Could not find muscle group");
                     } else if (!property_tag.tolower().compare("type")) {
-                        biorbd::utils::String tp_type;
+                        utils::String tp_type;
                         file.read(tp_type);
                         if (!tp_type.tolower().compare("idealizedactuator")) {
                             type = biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR;
@@ -839,17 +841,17 @@ void biorbd::Reader::readModelFile(
                                    || !tp_type.tolower().compare("thelenfatigable")) {
                             type = biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE;
                         } else {
-                            biorbd::utils::Error::raise(property_tag + " is not a valid muscle type");
+                            utils::Error::raise(property_tag + " is not a valid muscle type");
                         }
                     } else if (!property_tag.tolower().compare("statetype")) {
-                        biorbd::utils::String tp_state;
+                        utils::String tp_state;
                         file.read(tp_state);
                         if (!tp_state.tolower().compare("buchanan")) {
                             stateType = biorbd::muscles::STATE_TYPE::BUCHANAN;
                         } else if (!tp_state.tolower().compare("degroote")) {
                             stateType = biorbd::muscles::STATE_TYPE::DE_GROOTE;
                         } else {
-                            biorbd::utils::Error::raise(property_tag + " is not a valid muscle state type");
+                            utils::Error::raise(property_tag + " is not a valid muscle state type");
                         }
                     } else if (!property_tag.tolower().compare("originposition")) {
                         readVector3d(file, variable, origin_pos);
@@ -871,14 +873,14 @@ void biorbd::Reader::readModelFile(
                         while(file.read(subproperty_tag)
                                 && subproperty_tag.tolower().compare("endfatigueparameters")) {
                             if (!subproperty_tag.tolower().compare("type")) {
-                                biorbd::utils::String tp_fatigue_type;
+                                utils::String tp_fatigue_type;
                                 file.read(tp_fatigue_type);
                                 if (!tp_fatigue_type.tolower().compare("simple")) {
                                     dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE;
                                 } else if (!tp_fatigue_type.tolower().compare("xia")) {
                                     dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA;
                                 } else {
-                                    biorbd::utils::Error::raise(tp_fatigue_type +
+                                    utils::Error::raise(tp_fatigue_type +
                                                                 " is not a value fatigue parameter type");
                                 }
                             } else {
@@ -899,11 +901,11 @@ void biorbd::Reader::readModelFile(
                         file.read(shapeFactor);
                     }
                 }
-                biorbd::utils::Error::check(idxGroup!=-1, "No muscle group was provided!");
+                utils::Error::check(idxGroup!=-1, "No muscle group was provided!");
                 biorbd::muscles::Geometry geo(
-                    biorbd::utils::Vector3d(origin_pos, name + "_origin",
+                    utils::Vector3d(origin_pos, name + "_origin",
                                             model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
-                    biorbd::utils::Vector3d(insert_pos, name + "_insertion",
+                    utils::Vector3d(insert_pos, name + "_insertion",
                                             model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
                 biorbd::muscles::State stateMax(maxExcitation, maxActivation);
                 biorbd::muscles::Characteristics characteristics(optimalLength, maxForce, PCSA,
@@ -920,17 +922,17 @@ void biorbd::Reader::readModelFile(
                         shapeFactor);
                 }
 #else // MODULE_MUSCLES
-                biorbd::utils::Error::raise("Biorbd was build without the module Muscles but the model defines a muscle");
+                utils::Error::raise("Biorbd was build without the module Muscles but the model defines a muscle");
 #endif // MODULE_MUSCLES
             } else if (!main_tag.tolower().compare("viapoint")) {
 #ifdef MODULE_MUSCLES
-                biorbd::utils::String name;
+                utils::String name;
                 file.read(name); // Name of muscle... Eventually add the muscle group
 
                 // Declaration of the variables
-                biorbd::utils::String parent("");
-                biorbd::utils::String muscle("");
-                biorbd::utils::String musclegroup("");
+                utils::String parent("");
+                utils::String muscle("");
+                utils::String musclegroup("");
                 int iMuscleGroup(-1);
                 int iMuscle(-1);
                 biorbd::muscles::ViaPoint position(0,0,0);
@@ -943,7 +945,7 @@ void biorbd::Reader::readModelFile(
                         file.read(parent);
                         unsigned int idx = model->GetBodyId(parent.c_str());
                         // If parent_int still equals zero, no name has concurred
-                        biorbd::utils::Error::check(model->IsBodyId(idx),
+                        utils::Error::check(model->IsBodyId(idx),
                                                     "Wrong origin parent name for a muscle");
                     } else if (!property_tag.tolower().compare("muscle")) {
                         file.read(muscle);
@@ -954,30 +956,30 @@ void biorbd::Reader::readModelFile(
                     }
                 }
                 iMuscleGroup = model->getMuscleGroupId(musclegroup);
-                biorbd::utils::Error::check(iMuscleGroup!=-1, "No muscle group was provided!");
+                utils::Error::check(iMuscleGroup!=-1, "No muscle group was provided!");
                 iMuscle = model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscleID(
                               muscle);
-                biorbd::utils::Error::check(iMuscle!=-1, "No muscle was provided!");
+                utils::Error::check(iMuscle!=-1, "No muscle was provided!");
                 position.setName(name);
                 position.setParent(parent);
                 model->muscleGroup(static_cast<unsigned int>(iMuscleGroup))
                 .muscle(static_cast<unsigned int>(iMuscle)).addPathObject(position);
 #else // MODULE_MUSCLES
-                biorbd::utils::Error::raise("Biorbd was build without the module Muscles but the model defines a viapoint");
+                utils::Error::raise("Biorbd was build without the module Muscles but the model defines a viapoint");
 #endif // MODULE_MUSCLES
             } else if (!main_tag.tolower().compare("wrapping")) {
 #ifdef MODULE_MUSCLES
-                biorbd::utils::String name;
+                utils::String name;
                 file.read(name); // Name of the wrapping
 
                 // Declaration of the variables
-                biorbd::utils::String muscle("");
-                biorbd::utils::String musclegroup("");
-                biorbd::utils::String wrapType("");
+                utils::String muscle("");
+                utils::String musclegroup("");
+                utils::String wrapType("");
                 int iMuscleGroup(-1);
                 int iMuscle(-1);
-                biorbd::utils::String parent("");
-                biorbd::utils::RotoTrans RT;
+                utils::String parent("");
+                utils::RotoTrans RT;
                 bool isRTset(false);
                 bool RTinMatrix(false);
                 double radius(0);
@@ -991,10 +993,10 @@ void biorbd::Reader::readModelFile(
                         file.read(parent);
                         unsigned int idx = model->GetBodyId(parent.c_str());
                         // If parent_int still equals zero, no name has concurred
-                        biorbd::utils::Error::check(model->IsBodyId(idx),
+                        utils::Error::check(model->IsBodyId(idx),
                                                     "Wrong origin parent name for a muscle");
                     } else if (!property_tag.tolower().compare("rtinmatrix")) {
-                        biorbd::utils::Error::check(isRTset==false,
+                        utils::Error::check(isRTset==false,
                                                     "RT should not appear before RTinMatrix");
                         file.read(RTinMatrix);
                     } else if (!property_tag.tolower().compare("rt")) {
@@ -1012,34 +1014,34 @@ void biorbd::Reader::readModelFile(
                         file.read(length, variable);
                     }
                 }
-                biorbd::utils::Error::check(parent != "", "Parent was not defined");
+                utils::Error::check(parent != "", "Parent was not defined");
                 iMuscleGroup = model->getMuscleGroupId(musclegroup);
-                biorbd::utils::Error::check(iMuscleGroup!=-1, "No muscle group was provided!");
+                utils::Error::check(iMuscleGroup!=-1, "No muscle group was provided!");
                 iMuscle = model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscleID(
                               muscle);
-                biorbd::utils::Error::check(iMuscle!=-1, "No muscle was provided!");
+                utils::Error::check(iMuscle!=-1, "No muscle was provided!");
 
                 if (!wrapType.tolower().compare("halfcylinder")) {
-                    biorbd::utils::Error::check(radius > 0.0,
+                    utils::Error::check(radius > 0.0,
                                                 "Radius must be defined and positive");
-                    biorbd::utils::Error::check(length >= 0.0, "Length was must be positive");
+                    utils::Error::check(length >= 0.0, "Length was must be positive");
                     biorbd::muscles::WrappingHalfCylinder cylinder(RT,radius,length,name,parent);
                     model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscle(
                         static_cast<unsigned int>(iMuscle)).addPathObject(
                             cylinder);
                 } else {
-                    biorbd::utils::Error::raise("Wrapping type must be defined (choices: 'cylinder')");
+                    utils::Error::raise("Wrapping type must be defined (choices: 'cylinder')");
                 }
 #else // MODULE_MUSCLES
-                biorbd::utils::Error::raise("Biorbd was build without the module Muscles but the model defines a wrapping object");
+                utils::Error::raise("Biorbd was build without the module Muscles but the model defines a wrapping object");
 #endif // MODULE_MUSCLES
             }
         }
     } catch (std::runtime_error message) {
-        biorbd::utils::String error_message("Reading of file \"" + path.filename() + "."
+        utils::String error_message("Reading of file \"" + path.filename() + "."
                                             + path.extension() +
                                             "\" failed with the following error:");
-        error_message += "\n" + biorbd::utils::String(message.what()) + "\n";
+        error_message += "\n" + utils::String(message.what()) + "\n";
         if (name.compare("")) {
             error_message += "Element: " + main_tag + ", named: " + name + "\n";
         }
@@ -1050,7 +1052,7 @@ void biorbd::Reader::readModelFile(
             error_message += "Subproperty: " + subproperty_tag + "\n";
         }
 
-        biorbd::utils::Error::raise(error_message);
+        utils::Error::raise(error_message);
     }
 #ifdef MODULE_ACTUATORS
     if (hasActuators) {
@@ -1061,28 +1063,28 @@ void biorbd::Reader::readModelFile(
     // std::cout << "Model file successfully loaded" << std::endl;
     file.close();
 }
-std::vector<std::vector<biorbd::utils::Vector3d>>
-        biorbd::Reader::readMarkerDataFile(
-            const biorbd::utils::Path &path)
+std::vector<std::vector<utils::Vector3d>>
+        Reader::readMarkerDataFile(
+            const utils::Path &path)
 {
     // Open file
     // std::cout << "Loading marker file: " << path << std::endl;
 #ifdef _WIN32
-    biorbd::utils::IfStream file(
-        biorbd::utils::Path::toWindowsFormat(
+    utils::IfStream file(
+        utils::Path::toWindowsFormat(
             path.absolutePath()).c_str(), std::ios::in);
 #else
-    biorbd::utils::IfStream file(
+    utils::IfStream file(
         path.absolutePath().c_str(), std::ios::in);
 #endif
 
     // Read file
-    biorbd::utils::String tp;
+    utils::String tp;
 
     // Determine the version of the file
     file.readSpecificTag("version", tp);
     unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
-    biorbd::utils::Error::check(version == 1, "Version not implemented yet");
+    utils::Error::check(version == 1, "Version not implemented yet");
 
     // Determine the number of markers
     file.readSpecificTag("nbmark", tp);
@@ -1092,13 +1094,13 @@ std::vector<std::vector<biorbd::utils::Vector3d>>
     file.readSpecificTag("nbintervals", tp);
     unsigned int nbIntervals(static_cast<unsigned int>(atoi(tp.c_str())));
 
-    std::vector<std::vector<biorbd::utils::Vector3d>> markers;
-    std::vector<biorbd::utils::Vector3d> position;
+    std::vector<std::vector<utils::Vector3d>> markers;
+    std::vector<utils::Vector3d> position;
     // Scroll down until the definition of a marker
     for (unsigned int j=0; j<nbMark; j++) {
         while (tp.compare("Marker")) {
             bool check = file.read(tp);
-            biorbd::utils::Error::check(check,
+            utils::Error::check(check,
                                         "Marker file error, wrong size of marker or intervals?");
         }
 
@@ -1106,8 +1108,8 @@ std::vector<std::vector<biorbd::utils::Vector3d>>
         file.read(noMarker);
         for (unsigned int i=0; i<=nbIntervals;
                 i++) { // <= because there is nbIntervals+1 values
-            biorbd::utils::Vector3d mark(0, 0, 0);
-            readVector3d(file, std::map<biorbd::utils::Equation, double>(), mark);
+            utils::Vector3d mark(0, 0, 0);
+            readVector3d(file, std::map<utils::Equation, double>(), mark);
             position.push_back(mark);
         }
         markers.push_back(position);
@@ -1122,28 +1124,28 @@ std::vector<std::vector<biorbd::utils::Vector3d>>
     return markers;
 }
 
-std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates>
-biorbd::Reader::readQDataFile(
+std::vector<rigidbody::GeneralizedCoordinates>
+Reader::readQDataFile(
     const utils::Path &path)
 {
     // Open file
     // std::cout << "Loading kin file: " << path << std::endl;
 #ifdef _WIN32
-    biorbd::utils::IfStream file(
-        biorbd::utils::Path::toWindowsFormat(
+    utils::IfStream file(
+        utils::Path::toWindowsFormat(
             path.absolutePath()).c_str(), std::ios::in);
 #else
-    biorbd::utils::IfStream file(
+    utils::IfStream file(
         path.absolutePath().c_str(), std::ios::in);
 #endif
 
     // Read file
-    biorbd::utils::String tp;
+    utils::String tp;
 
     // Determine the file version
     file.readSpecificTag("version", tp);
     unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
-    biorbd::utils::Error::check(version == 1, "Version not implemented yet");
+    utils::Error::check(version == 1, "Version not implemented yet");
 
     // Determine the number of markers
     file.readSpecificTag("nddl", tp);
@@ -1153,18 +1155,18 @@ biorbd::Reader::readQDataFile(
     file.readSpecificTag("nbintervals", tp);
     unsigned int nbIntervals(static_cast<unsigned int>(atoi(tp.c_str())));
 
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> kinematics;
+    std::vector<rigidbody::GeneralizedCoordinates> kinematics;
     // Scroll down until the definition of a marker
     for (unsigned int j=0; j<nbIntervals+1; j++) {
         while (tp.compare("T")) {
             bool check = file.read(tp);
-            biorbd::utils::Error::check(check,
+            utils::Error::check(check,
                                         "Kin file error, wrong size of NDDL or intervals?");
         }
 
         double time;
         file.read(time);
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates position(NDDL);
+        rigidbody::GeneralizedCoordinates position(NDDL);
         for (unsigned int i=0; i<NDDL; i++) {
             file.read(position(i));
         }
@@ -1180,28 +1182,28 @@ biorbd::Reader::readQDataFile(
     return kinematics;
 }
 
-std::vector<biorbd::utils::Vector>
-biorbd::Reader::readActivationDataFile(
+std::vector<utils::Vector>
+Reader::readActivationDataFile(
     const utils::Path &path)
 {
     // Open file
     // std::cout << "Loading kin file: " << path << std::endl;
 #ifdef _WIN32
-    biorbd::utils::IfStream file(
-        biorbd::utils::Path::toWindowsFormat(
+    utils::IfStream file(
+        utils::Path::toWindowsFormat(
             path.absolutePath()).c_str(), std::ios::in);
 #else
-    biorbd::utils::IfStream file(
+    utils::IfStream file(
         path.absolutePath().c_str(), std::ios::in);
 #endif
 
     // Read file
-    biorbd::utils::String tp;
+    utils::String tp;
 
     // Determine the file version
     file.readSpecificTag("version", tp);
     unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
-    biorbd::utils::Error::check(version == 1, "Version not implemented yet");
+    utils::Error::check(version == 1, "Version not implemented yet");
 
     // Determine the number of markers
     file.readSpecificTag("nbmuscles", tp);
@@ -1211,18 +1213,18 @@ biorbd::Reader::readActivationDataFile(
     file.readSpecificTag("nbintervals", tp);
     unsigned int nbIntervals(static_cast<unsigned int>(atoi(tp.c_str())));
 
-    std::vector<biorbd::utils::Vector> activations;
+    std::vector<utils::Vector> activations;
     // Scroll down until the definition of a marker
     for (unsigned int j=0; j<nbIntervals+1; j++) {
         while (tp.compare("T")) {
             bool check = file.read(tp);
-            biorbd::utils::Error::check(check,
+            utils::Error::check(check,
                                         "Kin file error, wrong size of number of muscles or intervals?");
         }
 
         double time;
         file.read(time);
-        biorbd::utils::Vector activation_tp(nMus);
+        utils::Vector activation_tp(nMus);
         for (unsigned int i=0; i<nMus; i++) {
             file.read(activation_tp(i));
         }
@@ -1238,28 +1240,28 @@ biorbd::Reader::readActivationDataFile(
     return activations;
 }
 
-std::vector<biorbd::utils::Vector>
-biorbd::Reader::readTorqueDataFile(
+std::vector<utils::Vector>
+Reader::readTorqueDataFile(
     const utils::Path &path)
 {
     // Open file
     // std::cout << "Loading kin file: " << path << std::endl;
 #ifdef _WIN32
-    biorbd::utils::IfStream file(
-        biorbd::utils::Path::toWindowsFormat(
+    utils::IfStream file(
+        utils::Path::toWindowsFormat(
             path.absolutePath()).c_str(), std::ios::in);
 #else
-    biorbd::utils::IfStream file(
+    utils::IfStream file(
         path.absolutePath().c_str(), std::ios::in);
 #endif
 
     //Read file
-    biorbd::utils::String tp;
+    utils::String tp;
 
     // Determine the file version
     file.readSpecificTag("version", tp);
     unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
-    biorbd::utils::Error::check(version == 1, "Version not implemented yet");
+    utils::Error::check(version == 1, "Version not implemented yet");
 
     // Determine the number of GeneralizedTorque
     file.readSpecificTag("nGeneralizedTorque", tp); //
@@ -1269,12 +1271,12 @@ biorbd::Reader::readTorqueDataFile(
     file.readSpecificTag("nbintervals", tp);
     unsigned int nbIntervals(static_cast<unsigned int>(atoi(tp.c_str())));
 
-    std::vector<biorbd::utils::Vector> torque;
+    std::vector<utils::Vector> torque;
     // Scroll down until the definition of a torque
     for (unsigned int j=0; j<nbIntervals+1; j++) {
         while (tp.compare("T")) {
             bool check = file.read(tp);
-            biorbd::utils::Error::check(check,
+            utils::Error::check(check,
                                         "Kin file error, wrong size of NGeneralizedTorque or intervals?"); //
         }
 
@@ -1283,7 +1285,7 @@ biorbd::Reader::readTorqueDataFile(
         file.read(time);
 
         // Read the vector of GeneralizedTorque associated to the timestamp
-        biorbd::utils::Vector torque_tp(nGeneralizedTorque);
+        utils::Vector torque_tp(nGeneralizedTorque);
         for (unsigned int i=0; i<nGeneralizedTorque; i++) {
             file.read(torque_tp(i));
         }
@@ -1299,28 +1301,28 @@ biorbd::Reader::readTorqueDataFile(
 
 }
 
-std::vector<biorbd::utils::Vector>
-biorbd::Reader::readGroundReactionForceDataFile(
+std::vector<utils::Vector>
+Reader::readGroundReactionForceDataFile(
     const utils::Path &path)
 {
     // Open file
     // std::cout << "Loading ground reaction force file: " << path << std::endl;
 #ifdef _WIN32
-    biorbd::utils::IfStream file(
-        biorbd::utils::Path::toWindowsFormat(
+    utils::IfStream file(
+        utils::Path::toWindowsFormat(
             path.absolutePath()).c_str(), std::ios::in);
 #else
-    biorbd::utils::IfStream file(
+    utils::IfStream file(
         path.absolutePath().c_str(), std::ios::in);
 #endif
 
     // Read file
-    biorbd::utils::String tp;
+    utils::String tp;
 
     // Determine the file version
     file.readSpecificTag("version", tp);
     unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
-    biorbd::utils::Error::check(version == 1, "Version not implemented yet");
+    utils::Error::check(version == 1, "Version not implemented yet");
 
     // Determine the number of grf (ground reaction force)
     file.readSpecificTag("ngrf", tp); //
@@ -1330,12 +1332,12 @@ biorbd::Reader::readGroundReactionForceDataFile(
     file.readSpecificTag("nbintervals", tp);
     unsigned int nbIntervals(static_cast<unsigned int>(atoi(tp.c_str())));
 
-    std::vector<biorbd::utils::Vector> grf;
+    std::vector<utils::Vector> grf;
     // Scroll down until the definition of a torque
     for (unsigned int j=0; j<nbIntervals+1; j++) {
         while (tp.compare("T")) {
             bool check = file.read(tp);
-            biorbd::utils::Error::check(check,
+            utils::Error::check(check,
                                         "Grf file error, wrong size of NR or intervals?"); //
         }
 
@@ -1344,7 +1346,7 @@ biorbd::Reader::readGroundReactionForceDataFile(
         file.read(time);
 
         // Read the vector of GeneralizedTorque associated to the timestamp
-        biorbd::utils::Vector grf_tp(NGRF);
+        utils::Vector grf_tp(NGRF);
         for (unsigned int i=0; i<NGRF; i++) {
             file.read(grf_tp(i));
         }
@@ -1360,25 +1362,25 @@ biorbd::Reader::readGroundReactionForceDataFile(
 
 }
 
-void biorbd::Reader::readViconForceFile(
-    const biorbd::utils::Path& path, // Path to the file
+void Reader::readViconForceFile(
+    const utils::Path& path, // Path to the file
     std::vector<std::vector<unsigned int>>&
     frame, // Frame vector (time is frame/frequency)
     std::vector<unsigned int>& frequency,// Acquisition frequency
-    std::vector<std::vector<biorbd::utils::Vector3d>>&
+    std::vector<std::vector<utils::Vector3d>>&
     force, // Linear forces (x,y,z)
-    std::vector<std::vector<biorbd::utils::Vector3d>>& moment, // Moments (x,y,z)
-    std::vector<std::vector<biorbd::utils::Vector3d>>&
+    std::vector<std::vector<utils::Vector3d>>& moment, // Moments (x,y,z)
+    std::vector<std::vector<utils::Vector3d>>&
     cop)  // Center of pressure (x,y,z) * number of pf
 {
     // Open file
     // std::cout << "Loading force file: " << path << std::endl;
 #ifdef _WIN32
-    biorbd::utils::IfStream file(
-        biorbd::utils::Path::toWindowsFormat(
+    utils::IfStream file(
+        utils::Path::toWindowsFormat(
             path.absolutePath()).c_str(), std::ios::in);
 #else
-    biorbd::utils::IfStream file(
+    utils::IfStream file(
         path.absolutePath().c_str(), std::ios::in);
 #endif
 
@@ -1388,15 +1390,15 @@ void biorbd::Reader::readViconForceFile(
     cop.clear();
 
     // Read file
-    biorbd::utils::String tp;
+    utils::String tp;
 
 
     while(!file.eof()) {
         // Put everything in temporary per platform (Mettre tout en temporaire par plate-forme)
         std::vector<unsigned int> frame1pf;
-        std::vector<biorbd::utils::Vector3d> force1fp;
-        std::vector<biorbd::utils::Vector3d> moment1fp;
-        std::vector<biorbd::utils::Vector3d> cop1fp;
+        std::vector<utils::Vector3d> force1fp;
+        std::vector<utils::Vector3d> moment1fp;
+        std::vector<utils::Vector3d> cop1fp;
 
         // Get the acquisition frequency
         file.readSpecificTag("devices", tp);
@@ -1418,7 +1420,7 @@ void biorbd::Reader::readViconForceFile(
             // Otherwise, we save the line
             // now we'll use a stringstream to separate the fields out of the line (comma separated)
             std::stringstream ss( tp );
-            biorbd::utils::String field;
+            utils::String field;
             std::vector<double> data;
             data.clear();
             while (getline( ss, field, ',' )) {
@@ -1432,15 +1434,15 @@ void biorbd::Reader::readViconForceFile(
                 data.push_back( f );
             }
             // Make sure that the line has the right number of elements(2 times, 3 cop, 3 forces, 3 moments)
-            biorbd::utils::Error::check(data.size()==11,
+            utils::Error::check(data.size()==11,
                                         "Wrong number of element in a line in the force file");
 
             // Fill in the fields
             frame1pf.push_back(static_cast<unsigned int>(data[0]));  // Frame stamp
             //        unsigned int subFrame = static_cast<unsigned int>(data[1]); // Subframes (not interesting)
-            biorbd::utils::Vector3d cop_tp(0, 0, 0); // Center of pressure
-            biorbd::utils::Vector3d for_tp(0, 0, 0); // Force
-            biorbd::utils::Vector3d M_tp(0, 0, 0);   // Moment
+            utils::Vector3d cop_tp(0, 0, 0); // Center of pressure
+            utils::Vector3d for_tp(0, 0, 0); // Force
+            utils::Vector3d M_tp(0, 0, 0);   // Moment
             for (unsigned int i=0; i<3; ++i) {
                 cop_tp[i] = data[i+2]/1000; // from mm to m
                 for_tp[i] = data[i+5];
@@ -1459,49 +1461,49 @@ void biorbd::Reader::readViconForceFile(
     }
 }
 
-std::vector<std::vector<biorbd::utils::SpatialVector>>
-        biorbd::Reader::readViconForceFile(const biorbd::utils::String &path)
+std::vector<std::vector<utils::SpatialVector>>
+        Reader::readViconForceFile(const utils::String &path)
 {
     // Read file
     std::vector<std::vector<unsigned int>> frame;
     std::vector<unsigned int> frequency;// Acquisition frequency
-    std::vector<std::vector<biorbd::utils::Vector3d>>
+    std::vector<std::vector<utils::Vector3d>>
             force; // Linear forces (x,y,z)
-    std::vector<std::vector<biorbd::utils::Vector3d>> moment; // Moments (x,y,z)
-    std::vector<std::vector<biorbd::utils::Vector3d>>
+    std::vector<std::vector<utils::Vector3d>> moment; // Moments (x,y,z)
+    std::vector<std::vector<utils::Vector3d>>
             cop; // Center of pressure (x,y,z)
     readViconForceFile(path, frame, frequency, force, moment, cop);
 
     // Redispatch the values in a vector of SpatialTransform
-    std::vector<std::vector<biorbd::utils::SpatialVector>>
+    std::vector<std::vector<utils::SpatialVector>>
             st; // nb of platform per time
     for (unsigned int j=0; j<force.size(); ++j) { // nb platform
-        std::vector<biorbd::utils::SpatialVector> tp;
+        std::vector<utils::SpatialVector> tp;
         for (unsigned int i=0; i<force[j].size(); ++i) { // timestamp
-            const biorbd::utils::Vector3d& f = force[j][i];  // Linear forces (x,y,z)
-            const biorbd::utils::Vector3d& m = moment[j][i]; // Moments (x,y,z)
-            tp.push_back(biorbd::utils::SpatialVector(m[0], m[1], m[2], f[0], f[1], f[2]));
+            const utils::Vector3d& f = force[j][i];  // Linear forces (x,y,z)
+            const utils::Vector3d& m = moment[j][i]; // Moments (x,y,z)
+            tp.push_back(utils::SpatialVector(m[0], m[1], m[2], f[0], f[1], f[2]));
         }
         st.push_back(tp);
     }
     return st;
 }
 
-std::vector<std::vector<biorbd::utils::Vector3d>>
-        biorbd::Reader::readViconMarkerFile(const biorbd::utils::Path& path,
-                std::vector<biorbd::utils::String>& markOrder,
+std::vector<std::vector<utils::Vector3d>>
+        Reader::readViconMarkerFile(const utils::Path& path,
+                std::vector<utils::String>& markOrder,
                 int nFramesToGet)
 {
     // Read file
 #ifdef _WIN32
-    biorbd::utils::IfStream file(
-        biorbd::utils::Path::toWindowsFormat(
+    utils::IfStream file(
+        utils::Path::toWindowsFormat(
             path.absolutePath()).c_str(), std::ios::in);
 #else
-    biorbd::utils::IfStream file(
+    utils::IfStream file(
         path.absolutePath().c_str(), std::ios::in);
 #endif
-    biorbd::utils::String t;
+    utils::String t;
 
 
     // Get the acquisition frequency
@@ -1521,9 +1523,9 @@ std::vector<std::vector<biorbd::utils::Vector3d>>
         idx_end.push_back(static_cast<unsigned int>(t.find(",", idx_tp+1)));
     }
     // Keep the names between the separators
-    std::vector<biorbd::utils::String> MarkersInFile;
+    std::vector<utils::String> MarkersInFile;
     for (unsigned int i=0; i<idx_init.size()-1; ++i) {
-        biorbd::utils::String tp;
+        utils::String tp;
         for (unsigned int j=*(idx_init.begin()+i)+1; j<*(idx_end.begin()+i); ++j) {
             tp.push_back(t.at(j));
         }
@@ -1539,9 +1541,9 @@ std::vector<std::vector<biorbd::utils::Vector3d>>
     }
     for (int i=0; i<static_cast<int>(markOrder.size()); ++i) {
         unsigned int cmp=0;
-        biorbd::utils::String m1 = (*(markOrder.begin()+i));
+        utils::String m1 = (*(markOrder.begin()+i));
         while (1) {
-            biorbd::utils::String m2 = (*(MarkersInFile.begin()+cmp));
+            utils::String m2 = (*(MarkersInFile.begin()+cmp));
             if (!m1.compare(m2)) {
                 ordre[3*cmp] = 3*i;
                 ordre[3*cmp+1] = 3*i+1;
@@ -1550,7 +1552,7 @@ std::vector<std::vector<biorbd::utils::Vector3d>>
             } else {
                 ++cmp;
             }
-//            biorbd::utils::Error::check(cmp<MarkersInFile.size(), "The requested marker was not found in the file!");
+//            utils::Error::check(cmp<MarkersInFile.size(), "The requested marker was not found in the file!");
             // Le marqueur demandé n'a pas été trouvé dans le fichier!
             if (cmp>=MarkersInFile.size()) {
                 break;
@@ -1573,18 +1575,18 @@ std::vector<std::vector<biorbd::utils::Vector3d>>
         }
         file.close();
 #ifdef _WIN32
-        biorbd::utils::IfStream file(
-            biorbd::utils::Path::toWindowsFormat(
+        utils::IfStream file(
+            utils::Path::toWindowsFormat(
                 path.absolutePath()).c_str(), std::ios::in);
 #else
-        biorbd::utils::IfStream file(
+        utils::IfStream file(
             path.absolutePath().c_str(), std::ios::in);
 #endif
         // Skip the header
         for (unsigned int i=0; i<7; ++i) {
             file.read(t);
         }
-        biorbd::utils::Error::check(nFramesToGet!=0 && nFramesToGet!=1
+        utils::Error::check(nFramesToGet!=0 && nFramesToGet!=1
                                     && static_cast<unsigned int>(nFramesToGet)<=nbFrames,
                                     "nNode should not be 0, 1 or greater "
                                     "than number of frame");
@@ -1592,16 +1594,16 @@ std::vector<std::vector<biorbd::utils::Vector3d>>
     }
 
 
-    std::vector<std::vector<biorbd::utils::Vector3d>> data;
+    std::vector<std::vector<utils::Vector3d>> data;
     // now we'll use a stringstream to separate the fields out of the line (comma separated)
     unsigned int cmpFrames(1);
     while(!file.eof()) {
-        biorbd::utils::Vector data_tp = biorbd::utils::Vector(
+        utils::Vector data_tp = utils::Vector(
                                             static_cast<unsigned int>(3*markOrder.size()));
         data_tp.setZero();
 
         std::stringstream ss( t );
-        biorbd::utils::String field;
+        utils::String field;
         unsigned int cmp = 0;
         while (getline( ss, field, ',' )) {
             // for each field we wish to convert it to a double
@@ -1619,9 +1621,9 @@ std::vector<std::vector<biorbd::utils::Vector3d>>
             ++cmp;
         }
         // Once the markers are in order, separate them
-        std::vector<biorbd::utils::Vector3d> data_tp2;
+        std::vector<utils::Vector3d> data_tp2;
         for (unsigned int i=0; i<static_cast<unsigned int>(data_tp.size())/3; ++i) {
-            biorbd::utils::Vector3d node(data_tp.block(3*i, 0, 3, 1)/1000);
+            utils::Vector3d node(data_tp.block(3*i, 0, 3, 1)/1000);
             data_tp2.push_back(node);
         }
         // Stock the marker vector a that time t
@@ -1643,30 +1645,30 @@ std::vector<std::vector<biorbd::utils::Vector3d>>
     return data;
 }
 
-biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh
-biorbd::Reader::readMeshFileBiorbdSegments(
-    const biorbd::utils::Path &path)
+rigidbody::Mesh
+Reader::readMeshFileBiorbdSegments(
+    const utils::Path &path)
 {
     // Read a segment file
 
     // Open file
     // std::cout << "Loading marker file: " << path << std::endl;
 #ifdef _WIN32
-    biorbd::utils::IfStream file(
-        biorbd::utils::Path::toWindowsFormat(
+    utils::IfStream file(
+        utils::Path::toWindowsFormat(
             path.absolutePath()).c_str(), std::ios::in);
 #else
-    biorbd::utils::IfStream file(
+    utils::IfStream file(
         path.absolutePath().c_str(), std::ios::in);
 #endif
 
     // Read file
-    biorbd::utils::String tp;
+    utils::String tp;
 
     // Determine the file version
     file.readSpecificTag("version", tp);
     unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
-    biorbd::utils::Error::check(version == 1
+    utils::Error::check(version == 1
                                 || version == 2, "Version not implemented yet");
 
     // Know the number of points
@@ -1675,14 +1677,14 @@ biorbd::Reader::readMeshFileBiorbdSegments(
     file.readSpecificTag("nfaces", tp);
     unsigned int nFaces(static_cast<unsigned int>(atoi(tp.c_str())));
 
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh mesh;
+    rigidbody::Mesh mesh;
     mesh.setPath(path);
     // Get all the points
-    std::map<biorbd::utils::Equation, double> variable =
-        std::map<biorbd::utils::Equation, double>();
-    biorbd::utils::Vector3d dump; // Ignore columns 4 5 6
+    std::map<utils::Equation, double> variable =
+        std::map<utils::Equation, double>();
+    utils::Vector3d dump; // Ignore columns 4 5 6
     for (unsigned int iPoints=0; iPoints < nPoints; ++iPoints) {
-        biorbd::utils::Vector3d nodeTp(0, 0, 0);
+        utils::Vector3d nodeTp(0, 0, 0);
         readVector3d(file, variable, nodeTp);
         mesh.addPoint(nodeTp);
         if (version == 2) {
@@ -1691,11 +1693,11 @@ biorbd::Reader::readMeshFileBiorbdSegments(
     }
 
     for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints) {
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::MeshFace patchTp;
+        rigidbody::MeshFace patchTp;
         unsigned int nVertices;
         file.read(nVertices);
         if (nVertices != 3) {
-            biorbd::utils::Error::raise("Patches must be 3 vertices!");
+            utils::Error::raise("Patches must be 3 vertices!");
         }
         for (unsigned int i=0; i<nVertices; ++i) {
             file.read(patchTp(i));
@@ -1706,24 +1708,24 @@ biorbd::Reader::readMeshFileBiorbdSegments(
 }
 
 
-biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh biorbd::Reader::readMeshFilePly(
-    const biorbd::utils::Path &path)
+rigidbody::Mesh Reader::readMeshFilePly(
+    const utils::Path &path)
 {
     // Read a bone file
 
     // Open file
     // std::cout << "Loading marker file: " << path << std::endl;
 #ifdef _WIN32
-    biorbd::utils::IfStream file(
-        biorbd::utils::Path::toWindowsFormat(
+    utils::IfStream file(
+        utils::Path::toWindowsFormat(
             path.absolutePath()).c_str(), std::ios::in);
 #else
-    biorbd::utils::IfStream file(
+    utils::IfStream file(
         path.absolutePath().c_str(), std::ios::in);
 #endif
 
     // Read file
-    biorbd::utils::String tp;
+    utils::String tp;
 
     // Know the number of points
     file.reachSpecificTag("element");
@@ -1741,13 +1743,13 @@ biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh biorbd::Reader::readMeshFilePly(
     // Trouver le nombre de ??
     file.reachSpecificTag("end_header");
 
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh mesh;
+    rigidbody::Mesh mesh;
     mesh.setPath(path);
-    std::map<biorbd::utils::Equation, double> variable =
-        std::map<biorbd::utils::Equation, double>();
+    std::map<utils::Equation, double> variable =
+        std::map<utils::Equation, double>();
     // Get all the points
     for (unsigned int iPoints=0; iPoints < nVertex; ++iPoints) {
-        biorbd::utils::Vector3d nodeTp(0, 0, 0);
+        utils::Vector3d nodeTp(0, 0, 0);
         readVector3d(file, variable, nodeTp);
         mesh.addPoint(nodeTp);
         // Ignore the columns post XYZ
@@ -1758,11 +1760,11 @@ biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh biorbd::Reader::readMeshFilePly(
     }
 
     for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints) {
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::MeshFace patchTp;
+        rigidbody::MeshFace patchTp;
         unsigned int nVertices;
         file.read(nVertices);
         if (nVertices != 3) {
-            biorbd::utils::Error::raise("Patches must be 3 vertices!");
+            utils::Error::raise("Patches must be 3 vertices!");
         }
         for (unsigned int i=0; i<nVertices; ++i) {
             file.read(patchTp(i));
@@ -1777,34 +1779,34 @@ biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh biorbd::Reader::readMeshFilePly(
     return mesh;
 }
 
-biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh biorbd::Reader::readMeshFileObj(
-    const biorbd::utils::Path &path)
+rigidbody::Mesh Reader::readMeshFileObj(
+    const utils::Path &path)
 {
     // Read a bone file
 
     // Open file
     // std::cout << "Loading marker file: " << path << std::endl;
 #ifdef _WIN32
-    biorbd::utils::IfStream file(
-        biorbd::utils::Path::toWindowsFormat(
+    utils::IfStream file(
+        utils::Path::toWindowsFormat(
             path.absolutePath()).c_str(), std::ios::in);
 #else
-    biorbd::utils::IfStream file(
+    utils::IfStream file(
         path.absolutePath().c_str(), std::ios::in);
 #endif
 
     // Read file
-    biorbd::utils::String tp;
+    utils::String tp;
 
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh mesh;
+    rigidbody::Mesh mesh;
     mesh.setPath(path);
 
     // Get all the points
-    biorbd::utils::Vector3d vertex;
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::MeshFace patch;
-    biorbd::utils::String text;
-    std::map<biorbd::utils::Equation, double> variable =
-        std::map<biorbd::utils::Equation, double>();
+    utils::Vector3d vertex;
+    rigidbody::MeshFace patch;
+    utils::String text;
+    std::map<utils::Equation, double> variable =
+        std::map<utils::Equation, double>();
     while (true) {
         // If we get to the end of file, exit loop
         if (file.eof()) {
@@ -1824,7 +1826,7 @@ biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh biorbd::Reader::readMeshFileObj(
             for (unsigned int i=0; i<3; ++i) {
                 file.read(text);
                 size_t idxSlash = text.find("/");
-                biorbd::utils::String tata3(text.substr (0,idxSlash));
+                utils::String tata3(text.substr (0,idxSlash));
                 patch(i) = (std::stoi(text.substr (0,idxSlash)) - 1);
             }
             file.getline(text); // Ignore last element if it is a 4 vertex based
@@ -1841,23 +1843,23 @@ biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh biorbd::Reader::readMeshFileObj(
 
 #ifdef MODULE_VTP_FILES_READER
 #include "tinyxml.h"
-biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh biorbd::Reader::readMeshFileVtp(
-    const biorbd::utils::Path &path)
+rigidbody::Mesh Reader::readMeshFileVtp(
+    const utils::Path &path)
 {
     // Read an opensim formatted mesh file
 
     // Read the file
 #ifdef _WIN32
-    biorbd::utils::String filepath( biorbd::utils::Path::toWindowsFormat(
+    utils::String filepath( utils::Path::toWindowsFormat(
                                         path.absolutePath()).c_str());
 #else
-    biorbd::utils::String filepath( path.absolutePath().c_str() );
+    utils::String filepath( path.absolutePath().c_str() );
 #endif
 
     TiXmlDocument doc(filepath);
-    biorbd::utils::Error::check(doc.LoadFile(), "Failed to load file " + filepath);
+    utils::Error::check(doc.LoadFile(), "Failed to load file " + filepath);
     TiXmlHandle hDoc(&doc);
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh mesh;
+    rigidbody::Mesh mesh;
     mesh.setPath(path);
 
     // Navigate up to VTKFile/PolyData/Piece
@@ -1869,11 +1871,11 @@ biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh biorbd::Reader::readMeshFileVtp(
     polydata.ToElement()->QueryIntAttribute("NumberOfPoints", &numberOfPoints);
     polydata.ToElement()->QueryIntAttribute("NumberOfPolys", &NumberOfPolys);
 
-    biorbd::utils::String field;
+    utils::String field;
 
     // Get the points
     {
-        biorbd::utils::String points(
+        utils::String points(
             polydata.ChildElement("Points", 0)
             .ChildElement("DataArray", 0).Element()->GetText());
         std::stringstream ss( points );
@@ -1894,13 +1896,13 @@ biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh biorbd::Reader::readMeshFileVtp(
                 std::stringstream fs( field );
                 fs >> z;
             }
-            mesh.addPoint(biorbd::utils::Vector3d(x, y, z));
+            mesh.addPoint(utils::Vector3d(x, y, z));
         }
     }
 
     // Get the patches
     {
-        biorbd::utils::String polys(
+        utils::String polys(
             polydata.ChildElement("Polys", 0)
             .ChildElement("DataArray", 0).Element()->GetText());
         std::stringstream ss( polys );
@@ -1928,19 +1930,19 @@ biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh biorbd::Reader::readMeshFileVtp(
     return mesh;
 }
 
-void biorbd::Reader::readVector3d(
-    biorbd::utils::IfStream &file,
-    const std::map<biorbd::utils::Equation, double> &variable,
-    biorbd::utils::Vector3d &vector)
+void Reader::readVector3d(
+    utils::IfStream &file,
+    const std::map<utils::Equation, double> &variable,
+    utils::Vector3d &vector)
 {
     for (unsigned int i=0; i<3; ++i) {
         file.read(vector(i), variable);
     }
 }
 
-void biorbd::Reader::readMatrix33(
-    biorbd::utils::IfStream &file,
-    const std::map<biorbd::utils::Equation, double> &variable,
+void Reader::readMatrix33(
+    utils::IfStream &file,
+    const std::map<utils::Equation, double> &variable,
     RigidBodyDynamics::Math::Matrix3d &matrix)
 {
     for (unsigned int i=0; i<3; ++i) {
@@ -1950,11 +1952,11 @@ void biorbd::Reader::readMatrix33(
     }
 }
 
-void biorbd::Reader::readRtMatrix(
-    biorbd::utils::IfStream& file,
-    const std::map<biorbd::utils::Equation, double>& variable,
+void Reader::readRtMatrix(
+    utils::IfStream& file,
+    const std::map<utils::Equation, double>& variable,
     bool RTinMatrix,
-    biorbd::utils::RotoTrans &RT)
+    utils::RotoTrans &RT)
 {
     if (RTinMatrix) { // Matrix 4x4
         // Counter for classification (Compteur pour classification)
@@ -1964,9 +1966,9 @@ void biorbd::Reader::readRtMatrix(
             }
         }
     } else {
-        biorbd::utils::String seq("xyz");
-        biorbd::utils::Vector3d rot(0, 0, 0);
-        biorbd::utils::Vector3d trans(0, 0, 0);
+        utils::String seq("xyz");
+        utils::Vector3d rot(0, 0, 0);
+        utils::Vector3d trans(0, 0, 0);
         // Transcribe the rotations
         for (unsigned int i=0; i<3; ++i) {
             file.read(rot(i));
@@ -1977,26 +1979,26 @@ void biorbd::Reader::readRtMatrix(
         for (unsigned int i=0; i<3; ++i) {
             file.read(trans(i));
         }
-        RT = biorbd::utils::RotoTrans(rot, trans, seq);
+        RT = utils::RotoTrans(rot, trans, seq);
     }
 }
 #endif  // MODULE_VTP_FILES_READER
 
 
-std::vector<std::vector<biorbd::utils::Vector3d>>
-        biorbd::Reader::readViconMarkerFile(const biorbd::utils::Path &path,
+std::vector<std::vector<utils::Vector3d>>
+        Reader::readViconMarkerFile(const utils::Path &path,
                 int nFramesToGet)
 {
     // Read file
 #ifdef _WIN32
-    biorbd::utils::IfStream file(
-        biorbd::utils::Path::toWindowsFormat(
+    utils::IfStream file(
+        utils::Path::toWindowsFormat(
             path.absolutePath()).c_str(), std::ios::in);
 #else
-    biorbd::utils::IfStream file(
+    utils::IfStream file(
         path.absolutePath().c_str(), std::ios::in);
 #endif
-    biorbd::utils::String t;
+    utils::String t;
 
 
     // Get the acquisition frequency
@@ -2016,9 +2018,9 @@ std::vector<std::vector<biorbd::utils::Vector3d>>
         idx_end.push_back(static_cast<unsigned int>(t.find(",", idx_tp+1)));
     }
     // Keep the names between the separators
-    std::vector<biorbd::utils::String> MarkersInFile;
+    std::vector<utils::String> MarkersInFile;
     for (unsigned int i=0; i<idx_init.size()-1; ++i) {
-        biorbd::utils::String tp;
+        utils::String tp;
         for (unsigned int j=*(idx_init.begin()+i)+1; j<*(idx_end.begin()+i); ++j) {
             tp.push_back(t.at(j));
         }

@@ -10,28 +10,28 @@ using namespace biorbd::BIORBD_MATH_NAMESPACE;
 
 rigidbody::SegmentCharacteristics::SegmentCharacteristics() :
     Body(),
-    m_length(std::make_shared<biorbd::utils::Scalar>(0)),
+    m_length(std::make_shared<utils::Scalar>(0)),
     m_mesh(std::make_shared<rigidbody::Mesh>())
 {
 
 }
 rigidbody::SegmentCharacteristics::SegmentCharacteristics(
-    const biorbd::utils::Scalar &mass,
-    const biorbd::utils::Vector3d &com,
+    const utils::Scalar &mass,
+    const utils::Vector3d &com,
     const RigidBodyDynamics::Math::Matrix3d &inertia) :
     Body(mass, com, inertia),
-    m_length(std::make_shared<biorbd::utils::Scalar>(0)),
+    m_length(std::make_shared<utils::Scalar>(0)),
     m_mesh(std::make_shared<rigidbody::Mesh>())
 {
 
 }
 rigidbody::SegmentCharacteristics::SegmentCharacteristics(
-    const biorbd::utils::Scalar &mass,
-    const biorbd::utils::Vector3d &com,
+    const utils::Scalar &mass,
+    const utils::Vector3d &com,
     const RigidBodyDynamics::Math::Matrix3d &inertia,
     const rigidbody::Mesh &mesh) :
     Body(mass, com, inertia),
-    m_length(std::make_shared<biorbd::utils::Scalar>(0)),
+    m_length(std::make_shared<utils::Scalar>(0)),
     m_mesh(std::make_shared<rigidbody::Mesh>(mesh))
 {
 
@@ -54,34 +54,34 @@ void rigidbody::SegmentCharacteristics::DeepCopy(
 }
 
 void rigidbody::SegmentCharacteristics::setLength(
-    const biorbd::utils::Scalar& val)
+    const utils::Scalar& val)
 {
     *m_length = val;
 }
 
-biorbd::utils::Scalar rigidbody::SegmentCharacteristics::length() const
+utils::Scalar rigidbody::SegmentCharacteristics::length() const
 {
     return *m_length;
 }
 
 void rigidbody::SegmentCharacteristics::setMass(
-    const biorbd::utils::Scalar &newMass)
+    const utils::Scalar &newMass)
 {
     mMass = newMass;
 }
 
-biorbd::utils::Scalar rigidbody::SegmentCharacteristics::mass() const
+utils::Scalar rigidbody::SegmentCharacteristics::mass() const
 {
     return mMass;
 }
 
-biorbd::utils::Vector3d rigidbody::SegmentCharacteristics::CoM() const
+utils::Vector3d rigidbody::SegmentCharacteristics::CoM() const
 {
     return mCenterOfMass;
 }
 
 void rigidbody::SegmentCharacteristics::setCoM(
-    const biorbd::utils::Vector3d &com)
+    const utils::Vector3d &com)
 {
     mCenterOfMass = com;
 }

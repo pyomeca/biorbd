@@ -3,59 +3,61 @@
 
 #include "Utils/String.h"
 
-biorbd::utils::RotoTransNode::RotoTransNode() :
-    biorbd::utils::RotoTrans(),
-    biorbd::utils::Node()
+using namespace biorbd::BIORBD_MATH_NAMESPACE;
+
+utils::RotoTransNode::RotoTransNode() :
+    utils::RotoTrans(),
+    utils::Node()
 {
     setType();
 }
 
-biorbd::utils::RotoTransNode::RotoTransNode(
+utils::RotoTransNode::RotoTransNode(
     const RotoTrans &rt,
-    const biorbd::utils::String &name,
-    const biorbd::utils::String &parentName) :
-    biorbd::utils::RotoTrans(rt),
-    biorbd::utils::Node(name, parentName)
+    const utils::String &name,
+    const utils::String &parentName) :
+    utils::RotoTrans(rt),
+    utils::Node(name, parentName)
 {
     setType();
 }
 
-biorbd::utils::RotoTransNode biorbd::utils::RotoTransNode::DeepCopy() const
+utils::RotoTransNode utils::RotoTransNode::DeepCopy() const
 {
-    biorbd::utils::RotoTransNode copy;
+    utils::RotoTransNode copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void biorbd::utils::RotoTransNode::DeepCopy(const RotoTransNode &other)
+void utils::RotoTransNode::DeepCopy(const RotoTransNode &other)
 {
-    this->biorbd::utils::RotoTrans::operator=(other);
-    biorbd::utils::Node::DeepCopy(other);
+    this->utils::RotoTrans::operator=(other);
+    utils::Node::DeepCopy(other);
 }
 
-void biorbd::utils::RotoTransNode::setType()
+void utils::RotoTransNode::setType()
 {
-    *m_typeOfNode = biorbd::utils::NODE_TYPE::ROTOTRANS;
+    *m_typeOfNode = utils::NODE_TYPE::ROTOTRANS;
 }
 
-void biorbd::utils::RotoTransNode::operator=(
-    const biorbd::utils::RotoTrans &other)
+void utils::RotoTransNode::operator=(
+    const utils::RotoTrans &other)
 {
     *this = RotoTransNode(other, "", "");
 }
 
-biorbd::utils::RotoTrans biorbd::utils::RotoTransNode::operator*(
-    const biorbd::utils::RotoTransNode& other) const
+utils::RotoTrans utils::RotoTransNode::operator*(
+    const utils::RotoTransNode& other) const
 {
-    return this->biorbd::utils::RotoTrans::operator*(other);
+    return this->utils::RotoTrans::operator*(other);
 }
 
-biorbd::utils::RotoTransNode biorbd::utils::operator*(
-    const biorbd::utils::RotoTrans &other,
-    const biorbd::utils::RotoTransNode &me)
+utils::RotoTransNode utils::operator*(
+    const utils::RotoTrans &other,
+    const utils::RotoTransNode &me)
 {
-    return biorbd::utils::RotoTransNode(
+    return utils::RotoTransNode(
                other.operator*(me),
-               me.biorbd::utils::Node::name(),
+               me.utils::Node::name(),
                me.parent());
 }

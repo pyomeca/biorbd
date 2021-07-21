@@ -7,6 +7,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 
@@ -30,7 +32,7 @@ public:
     /// \param other The SpatialVector to copy
     ///
     SpatialVector(
-        const biorbd::utils::SpatialVector& other);
+        const SpatialVector& other);
 
     ///
     /// \brief Construct SpatialVector by its values
@@ -42,8 +44,8 @@ public:
     /// \param v6 Sixth element
     ///
     SpatialVector(
-        biorbd::utils::Scalar v1, biorbd::utils::Scalar v2, biorbd::utils::Scalar v3,
-        biorbd::utils::Scalar v4, biorbd::utils::Scalar v5, biorbd::utils::Scalar v6);
+        Scalar v1, Scalar v2, Scalar v3,
+        Scalar v4, Scalar v5, Scalar v6);
 
 #ifdef BIORBD_USE_CASADI_MATH
     ///
@@ -67,14 +69,14 @@ public:
     /// \param other The SpatialVector to copy
     ///
     void operator=(
-        const biorbd::utils::SpatialVector& other);
+        const SpatialVector& other);
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allow the use operator= on SpatialVector
     /// \param other The other matrix
     ///
     template<typename OtherDerived>
-    biorbd::utils::SpatialVector& operator=(const Eigen::MatrixBase <OtherDerived>&
+    SpatialVector& operator=(const Eigen::MatrixBase <OtherDerived>&
                                             other)
     {
         this->Eigen::Matrix<double, 6, 1>::operator=(other);
@@ -100,6 +102,7 @@ public:
 #endif
 };
 
+}
 }
 }
 

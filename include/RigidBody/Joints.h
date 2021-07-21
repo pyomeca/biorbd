@@ -9,6 +9,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 class String;
@@ -19,12 +21,7 @@ class Vector3d;
 class Range;
 class SpatialVector;
 }
-}
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
-{
 namespace rigidbody
 {
 class GeneralizedCoordinates;

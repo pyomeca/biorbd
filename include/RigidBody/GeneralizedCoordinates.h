@@ -15,7 +15,7 @@ class Joints;
 ///
 /// \brief Class GeneralizedCoordinates
 ///
-class BIORBD_API GeneralizedCoordinates : public biorbd::utils::Vector
+class BIORBD_API GeneralizedCoordinates : public utils::Vector
 {
 public:
 
@@ -60,7 +60,7 @@ public:
     ///
     template<typename OtherDerived> GeneralizedCoordinates(
         const Eigen::MatrixBase<OtherDerived>& other) :
-        biorbd::utils::Vector(other) {}
+        utils::Vector(other) {}
 
 #endif
 
@@ -94,7 +94,7 @@ public:
     GeneralizedCoordinates& operator=(
         const Eigen::MatrixBase <OtherDerived>& other)
     {
-        this->biorbd::utils::Vector::operator=(other);
+        this->utils::Vector::operator=(other);
         return *this;
     }
 
@@ -105,7 +105,7 @@ public:
     /// \param other The vector to copy
     ///
     void operator=(
-        const biorbd::utils::Vector& other);
+        const utils::Vector& other);
 
 #ifdef BIORBD_USE_CASADI_MATH
 

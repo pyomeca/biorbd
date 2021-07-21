@@ -7,13 +7,13 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 class Vector3d;
 }
 
-namespace BIORBD_MATH_NAMESPACE
-{
 namespace rigidbody
 {
 
@@ -66,7 +66,7 @@ public:
     /// \brief convert the integer nature of the face to a double
     /// \return The vertex index in double format
     ///
-    biorbd::utils::Vector3d faceAsDouble();
+    utils::Vector3d faceAsDouble();
 
     ///
     /// \brief Returns the face

@@ -8,7 +8,7 @@ using namespace biorbd::BIORBD_MATH_NAMESPACE;
 rigidbody::IMU::IMU(
     bool isTechnical,
     bool isAnatomical) :
-    biorbd::utils::RotoTransNode(),
+    utils::RotoTransNode(),
     m_technical(std::make_shared<bool>(isTechnical)),
     m_anatomical(std::make_shared<bool>(isAnatomical))
 {
@@ -16,10 +16,10 @@ rigidbody::IMU::IMU(
 }
 
 rigidbody::IMU::IMU(
-    const biorbd::utils::RotoTransNode &RotoTrans,
+    const utils::RotoTransNode &RotoTrans,
     bool isTechnical,
     bool isAnatomical) :
-    biorbd::utils::RotoTransNode(RotoTrans),
+    utils::RotoTransNode(RotoTrans),
     m_technical(std::make_shared<bool>(isTechnical)),
     m_anatomical(std::make_shared<bool>(isAnatomical))
 {
@@ -30,7 +30,7 @@ rigidbody::IMU::IMU(
 
 rigidbody::IMU::IMU(
     const rigidbody::IMU &imu) :
-    biorbd::utils::RotoTransNode (imu),
+    utils::RotoTransNode (imu),
     m_technical(std::make_shared<bool>(*imu.m_technical)),
     m_anatomical(std::make_shared<bool>(*imu.m_anatomical))
 {
@@ -41,9 +41,9 @@ rigidbody::IMU rigidbody::IMU::operator*(
     const rigidbody::IMU &other) const
 {
     return rigidbody::IMU(
-               biorbd::utils::RotoTransNode(
-                   this->biorbd::utils::RotoTransNode::operator*(other),
-                   this->biorbd::utils::Node::name(),
+               utils::RotoTransNode(
+                   this->utils::RotoTransNode::operator*(other),
+                   this->utils::Node::name(),
                    this->parent()),
                this->isTechnical() && other.isTechnical(),
                this->isAnatomical() && other.isAnatomical());
@@ -60,7 +60,7 @@ rigidbody::IMU rigidbody::IMU::DeepCopy() const
 
 void rigidbody::IMU::DeepCopy(const IMU &other)
 {
-    biorbd::utils::RotoTransNode::DeepCopy(other);
+    utils::RotoTransNode::DeepCopy(other);
     *m_technical = *other.m_technical;
     *m_anatomical = *other.m_anatomical;
 }

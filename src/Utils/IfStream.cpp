@@ -6,30 +6,32 @@
 #include "Utils/Error.h"
 #include "Utils/Equation.h"
 
+using namespace biorbd::BIORBD_MATH_NAMESPACE;
+
 // Constructor
-biorbd::utils::IfStream::IfStream() :
+utils::IfStream::IfStream() :
     m_isOpen(std::make_shared<bool>(false)),
     m_ifs(std::make_shared<std::ifstream>()),
-    m_path(std::make_shared<biorbd::utils::Path>())
+    m_path(std::make_shared<utils::Path>())
 {
     setlocale(LC_ALL, "C");
 }
-biorbd::utils::IfStream::IfStream(
-    const biorbd::utils::Path& path,
+utils::IfStream::IfStream(
+    const utils::Path& path,
     std::ios_base::openmode mode = std::ios_base::in ) :
     m_isOpen(std::make_shared<bool>(false)),
     m_ifs(std::make_shared<std::ifstream>()),
-    m_path(std::make_shared<biorbd::utils::Path>(path))
+    m_path(std::make_shared<utils::Path>(path))
 {
     open(m_path->absolutePath().c_str(), mode);
     setlocale(LC_ALL, "C");
 }
-biorbd::utils::IfStream::IfStream(
+utils::IfStream::IfStream(
     const char* path,
     std::ios_base::openmode mode = std::ios_base::in ) :
     m_isOpen(std::make_shared<bool>(false)),
     m_ifs(std::make_shared<std::ifstream>()),
-    m_path(std::make_shared<biorbd::utils::Path>(path))
+    m_path(std::make_shared<utils::Path>(path))
 {
     open(m_path->absolutePath().c_str(), mode);
     setlocale(LC_ALL, "C");
@@ -37,11 +39,11 @@ biorbd::utils::IfStream::IfStream(
 
 
 // Open a file
-bool biorbd::utils::IfStream::open(
-    const biorbd::utils::Path& path,
+bool utils::IfStream::open(
+    const utils::Path& path,
     std::ios_base::openmode mode = std::ios_base::in )
 {
-    biorbd::utils::Error::check(path.isFileExist(),
+    utils::Error::check(path.isFileExist(),
                                 path.absolutePath() + " could not be loaded");
     *m_ifs = std::ifstream(path.absolutePath().c_str(), mode);
     *m_isOpen = true;
@@ -49,37 +51,37 @@ bool biorbd::utils::IfStream::open(
 }
 
 // Read a file
-bool biorbd::utils::IfStream::readSpecificTag(
-    const biorbd::utils::String& tag,
-    biorbd::utils::String& text)
+bool utils::IfStream::readSpecificTag(
+    const utils::String& tag,
+    utils::String& text)
 {
     reachSpecificTag(tag);
     read(text);
     return true;
 }
-bool biorbd::utils::IfStream::reachSpecificTag(const biorbd::utils::String& tag)
+bool utils::IfStream::reachSpecificTag(const utils::String& tag)
 {
-    biorbd::utils::String text;
+    utils::String text;
     while (read(text))
         if (!text.tolower().compare(tag)) {
             return true;
         }
 
-    biorbd::utils::String outMessage(tag +
+    utils::String outMessage(tag +
                                      " parameter could not be found in Data file..");
-    biorbd::utils::Error::raise(outMessage);
+    utils::Error::raise(outMessage);
 #ifdef _WIN32
     // It is impossible to get here, but it's better to have a return for the compiler
     return false;
 #endif
 }
 
-int biorbd::utils::IfStream::countTagsInAConsecutiveLines(
-    const biorbd::utils::String &tag)
+int utils::IfStream::countTagsInAConsecutiveLines(
+    const utils::String &tag)
 {
     // Remember where we were in the file
     std::streamoff positionInFile(m_ifs->tellg());
-    biorbd::utils::String text;
+    utils::String text;
     int nMarkers(0);
 
     // Read the first word of the line
@@ -97,7 +99,7 @@ int biorbd::utils::IfStream::countTagsInAConsecutiveLines(
     return nMarkers;
 }
 
-bool biorbd::utils::IfStream::read(biorbd::utils::String& text)
+bool utils::IfStream::read(utils::String& text)
 {
     bool out(*m_ifs >> text);
 
@@ -120,96 +122,96 @@ bool biorbd::utils::IfStream::read(biorbd::utils::String& text)
     }
     return out;
 }
-bool biorbd::utils::IfStream::readAWord(biorbd::utils::String& text)
+bool utils::IfStream::readAWord(utils::String& text)
 {
     bool out(*m_ifs >> text);
     return out;
 }
-bool biorbd::utils::IfStream::read(
+bool utils::IfStream::read(
     double& val)
 {
-    std::map<biorbd::utils::Equation, double> dumb;
+    std::map<utils::Equation, double> dumb;
     return read(val, dumb);
 }
 #ifdef BIORBD_USE_CASADI_MATH
-bool biorbd::utils::IfStream::read(
+bool utils::IfStream::read(
     RBDLCasadiMath::MX_Xd_SubMatrix val)
 {
-    std::map<biorbd::utils::Equation, double> dumb;
+    std::map<utils::Equation, double> dumb;
     return read(val, dumb);
 }
 #endif
-bool biorbd::utils::IfStream::read(
+bool utils::IfStream::read(
     double& result,
-    const std::map<biorbd::utils::Equation, double> &variables)
+    const std::map<utils::Equation, double> &variables)
 {
-    biorbd::utils::Equation tp;
+    utils::Equation tp;
     bool out(read(tp));
     // Manage in case of an equation
     try {
-        result = biorbd::utils::Equation::evaluateEquation(tp, variables);
+        result = utils::Equation::evaluateEquation(tp, variables);
     } catch (std::runtime_error) {
-        biorbd::utils::Error::raise("The following expression cannot be parsed properly: \""
+        utils::Error::raise("The following expression cannot be parsed properly: \""
                                     + tp + "\"");
     }
     return out;
 }
 #ifdef BIORBD_USE_CASADI_MATH
-bool biorbd::utils::IfStream::read(
+bool utils::IfStream::read(
     RBDLCasadiMath::MX_Xd_SubMatrix result,
-    const std::map<biorbd::utils::Equation, double> &variables)
+    const std::map<utils::Equation, double> &variables)
 {
-    biorbd::utils::Equation tp;
+    utils::Equation tp;
     bool out(read(tp));
     // Manage in case of an equation
     try {
-        result = biorbd::utils::Equation::evaluateEquation(tp, variables);
+        result = utils::Equation::evaluateEquation(tp, variables);
     } catch (std::runtime_error) {
-        biorbd::utils::Error::raise("The following expression cannot be parsed properly: \""
+        utils::Error::raise("The following expression cannot be parsed properly: \""
                                     + tp + "\"");
     }
     return out;
 }
 #endif
-bool biorbd::utils::IfStream::read(
+bool utils::IfStream::read(
     int& val)
 {
-    biorbd::utils::String tp;
+    utils::String tp;
     bool out(read(tp));
     val = std::stoi(tp);
     return out;
 }
-bool biorbd::utils::IfStream::read(
+bool utils::IfStream::read(
     unsigned int& val)
 {
-    biorbd::utils::String tp;
+    utils::String tp;
     bool out(read(tp));
     val = static_cast<unsigned int>(std::stoul(tp));
     return out;
 }
-bool biorbd::utils::IfStream::read(
+bool utils::IfStream::read(
     bool& val)
 {
-    biorbd::utils::String tp;
+    utils::String tp;
     bool out(read(tp));
     val = std::stoi(tp) != 0;
     return out;
 }
 // Read the entire line
-void biorbd::utils::IfStream::getline(biorbd::utils::String& text)
+void utils::IfStream::getline(utils::String& text)
 {
     std::getline(*m_ifs, text);
 }
 
 
 // Close the file
-bool biorbd::utils::IfStream::close()
+bool utils::IfStream::close()
 {
     m_ifs->close();
     return 1;
 }
 
-bool biorbd::utils::IfStream::eof()
+bool utils::IfStream::eof()
 {
     return m_ifs->eof();
 }

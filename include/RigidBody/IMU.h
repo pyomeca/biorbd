@@ -7,13 +7,13 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 class String;
 }
 
-namespace BIORBD_MATH_NAMESPACE
-{
 namespace rigidbody
 {
 
@@ -23,7 +23,7 @@ namespace rigidbody
 #ifdef SWIG
 class BIORBD_API IMU
 #else
-class BIORBD_API IMU : public biorbd::utils::RotoTransNode
+class BIORBD_API IMU : public utils::RotoTransNode
 #endif
 {
 public:
@@ -44,7 +44,7 @@ public:
     /// \param isAnatomical True if the IMU is an anatomical IMU
     ///
     IMU(
-        const biorbd::utils::RotoTransNode& RotoTrans,
+        const utils::RotoTransNode& RotoTrans,
         bool isTechnical = true,
         bool isAnatomical = true);
 
@@ -55,7 +55,7 @@ public:
     ///
     template<typename OtherDerived> IMU(
         const Eigen::MatrixBase<OtherDerived>& other) :
-        biorbd::utils::RotoTransNode(other) {}
+        utils::RotoTransNode(other) {}
 #endif
 #ifdef BIORBD_USE_CASADI_MATH
     IMU(
@@ -99,7 +99,7 @@ public:
     template<typename OtherDerived>
     IMU& operator=(const Eigen::MatrixBase <OtherDerived>& other)
     {
-        this->biorbd::utils::RotoTransNode::operator=(other);
+        this->utils::RotoTransNode::operator=(other);
         return *this;
     }
 #endif

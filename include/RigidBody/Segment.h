@@ -9,14 +9,14 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 class RotoTrans;
 class Range;
 }
 
-namespace BIORBD_MATH_NAMESPACE
-{
 namespace rigidbody
 {
 class Joints;
@@ -25,7 +25,7 @@ class SegmentCharacteristics;
 ///
 /// \brief Description of a segment
 ///
-class BIORBD_API Segment : public biorbd::utils::Node
+class BIORBD_API Segment : public utils::Node
 {
 public:
     ///
@@ -49,13 +49,13 @@ public:
     ///
     Segment(
         biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
-        const biorbd::utils::String &name,
-        const biorbd::utils::String &parentName,
-        const biorbd::utils::String &seqT,
-        const biorbd::utils::String &seqR,
-        const std::vector<biorbd::utils::Range>& QRanges,
-        const std::vector<biorbd::utils::Range>& QDotRanges,
-        const std::vector<biorbd::utils::Range>& QDDotRanges,
+        const utils::String &name,
+        const utils::String &parentName,
+        const utils::String &seqT,
+        const utils::String &seqR,
+        const std::vector<utils::Range>& QRanges,
+        const std::vector<utils::Range>& QDotRanges,
+        const std::vector<utils::Range>& QDDotRanges,
         const SegmentCharacteristics& characteristics,
         const RigidBodyDynamics::Math::SpatialTransform& cor,
         int PF = -1);
@@ -75,12 +75,12 @@ public:
     ///
     Segment(
         biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
-        const biorbd::utils::String &name,
-        const biorbd::utils::String &parentName,
-        const biorbd::utils::String &seqR,
-        const std::vector<biorbd::utils::Range>& QRanges,
-        const std::vector<biorbd::utils::Range>& QDotRanges,
-        const std::vector<biorbd::utils::Range>& QDDotRanges,
+        const utils::String &name,
+        const utils::String &parentName,
+        const utils::String &seqR,
+        const std::vector<utils::Range>& QRanges,
+        const std::vector<utils::Range>& QDotRanges,
+        const std::vector<utils::Range>& QDDotRanges,
         const SegmentCharacteristics& characteristics,
         const RigidBodyDynamics::Math::SpatialTransform& cor,
         int PF = -1);
@@ -119,33 +119,33 @@ public:
     /// \brief Return the translation sequence in text
     /// \return The translation sequence in text
     ///
-    const biorbd::utils::String& seqT() const;
+    const utils::String& seqT() const;
 
     ///
     /// \brief Return the angle sequence in text
     /// \return The angle sequence in text
     ///
-    const biorbd::utils::String& seqR() const;
+    const utils::String& seqR() const;
 
     ///
     /// \brief Return the ranges for all the dof, translations and rotations respectively
     /// \return The ranges for all the dof, translations and rotations respectively
     ///
-    const std::vector<biorbd::utils::Range>&
+    const std::vector<utils::Range>&
     QRanges() const;
 
     ///
     /// \brief Return the ranges for all the dof velocity, translations and rotations respectively
     /// \return The ranges for all the dof velocity, translations and rotations respectively
     ///
-    const std::vector<biorbd::utils::Range>&
+    const std::vector<utils::Range>&
     QDotRanges() const;
 
     ///
     /// \brief Return the ranges for all the dof acceleration, translations and rotations respectively
     /// \return The ranges for all the dofa acceleration, translations and rotations respectively
     ///
-    const std::vector<biorbd::utils::Range>&
+    const std::vector<utils::Range>&
     QDDotRanges() const;
 
     ///
@@ -197,20 +197,20 @@ public:
     /// \return The index of a specified DoF
     ///
     unsigned int getDofIdx(
-        const biorbd::utils::String &dofName) const;
+        const utils::String &dofName) const;
 
     ///
     /// \brief Return the name of the specified DoF
     /// \return The name of the specified DoF
     ///
-    const biorbd::utils::String& nameDof(
+    const utils::String& nameDof(
         const unsigned int i) const;
 
     ///
     /// \brief Return the joint coordinate system (JCS) in the parent reference frame
     /// \return The joint coordinate system in the parent reference frame
     ///
-    biorbd::utils::RotoTrans localJCS() const;
+    utils::RotoTrans localJCS() const;
 
     ///
     /// \brief updateCharacteristics Change the inertia characteristics of the segment
@@ -271,11 +271,11 @@ protected:
     ///
     void setDofs(
         biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
-        const biorbd::utils::String &seqT,
-        const biorbd::utils::String &seqR,
-        const std::vector<biorbd::utils::Range>& QRanges,
-        const std::vector<biorbd::utils::Range>& QDotRanges,
-        const std::vector<biorbd::utils::Range>& QDDotRanges);
+        const utils::String &seqT,
+        const utils::String &seqR,
+        const std::vector<utils::Range>& QRanges,
+        const std::vector<utils::Range>& QDotRanges,
+        const std::vector<utils::Range>& QDDotRanges);
 
     ///
     /// \brief Set the total number of DoF
@@ -286,13 +286,13 @@ protected:
         unsigned int nbTrans,
         unsigned int nbRot);
 
-    std::shared_ptr<biorbd::utils::String> m_seqT;  ///< Translation sequence
-    std::shared_ptr<biorbd::utils::String> m_seqR;  ///< Euler rotation sequence
-    std::shared_ptr<std::vector<biorbd::utils::Range>>
+    std::shared_ptr<utils::String> m_seqT;  ///< Translation sequence
+    std::shared_ptr<utils::String> m_seqR;  ///< Euler rotation sequence
+    std::shared_ptr<std::vector<utils::Range>>
             m_QRanges;  ///< Minimum and maximum coordinate values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedCoordinates
-    std::shared_ptr<std::vector<biorbd::utils::Range>>
+    std::shared_ptr<std::vector<utils::Range>>
             m_QDotRanges;  ///< Minimum and maximum velocity values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedVelocities
-    std::shared_ptr<std::vector<biorbd::utils::Range>>
+    std::shared_ptr<std::vector<utils::Range>>
             m_QDDotRanges;  ///< Minimum and maximum acceleration values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedAccelerations
     std::shared_ptr<unsigned int> m_nbDof;   ///< Number of degrees of freedom
     std::shared_ptr<unsigned int> m_nbQdot;  ///< Number of generalized velocities
@@ -317,7 +317,7 @@ protected:
     ///
     /// If seqR is equal to "q" then it is a quaternion
     ///
-    void determineIfRotIsQuaternion(const biorbd::utils::String &seqR);
+    void determineIfRotIsQuaternion(const utils::String &seqR);
 
     std::shared_ptr<std::vector<RigidBodyDynamics::Joint>>
             m_dof; ///< Actual DoF: t1, t2, t3, r1, r2, r3; where the order depends on seqT and seqR
@@ -330,8 +330,8 @@ protected:
     /// \param seqR Angle sequence of the Euler rotations
     ///
     void setSequence(
-        const biorbd::utils::String &seqT,
-        const biorbd::utils::String &seqR);
+        const utils::String &seqT,
+        const utils::String &seqR);
 
     ///
     /// \brief Fill the transation and rotation sequences
@@ -347,7 +347,7 @@ protected:
     ///
     void str2numSequence(
         std::vector<unsigned int> &sequenceInteger,
-        const biorbd::utils::String &sequenceText);
+        const utils::String &sequenceText);
 
     ///
     /// \brief Store the sequences
@@ -355,14 +355,14 @@ protected:
     /// \param seqR Angle sequence of the Euler rotations
     ///
     void str2numSequence(
-        const biorbd::utils::String &seqT,
-        const biorbd::utils::String &seqR);
+        const utils::String &seqT,
+        const utils::String &seqR);
 
     std::shared_ptr<std::vector<unsigned int>>
                                             m_sequenceTrans; ///< Translation sequence
     std::shared_ptr<std::vector<unsigned int>>
                                             m_sequenceRot; ///< Euler rotation sequence
-    std::shared_ptr<std::vector<biorbd::utils::String>>
+    std::shared_ptr<std::vector<utils::String>>
             m_nameDof; ///< To store the DoF names
 
     ///

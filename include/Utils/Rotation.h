@@ -18,11 +18,11 @@ struct SpatialTransform;
 
 namespace biorbd
 {
-namespace BIORBD_MATH_NAMESPACE {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 class NodeSegment;
-}
 }
 
 namespace utils
@@ -83,12 +83,12 @@ public:
     /// \param v21 Row 2, Col 1
     /// \param v22 Row 2, Col 2
     ///
-    Rotation(const biorbd::utils::Scalar& v00, const biorbd::utils::Scalar& v01,
-             const biorbd::utils::Scalar& v02,
-             const biorbd::utils::Scalar& v10, const biorbd::utils::Scalar& v11,
-             const biorbd::utils::Scalar& v12,
-             const biorbd::utils::Scalar& v20, const biorbd::utils::Scalar& v21,
-             const biorbd::utils::Scalar& v22);
+    Rotation(const Scalar& v00, const Scalar& v01,
+             const Scalar& v02,
+             const Scalar& v10, const Scalar& v11,
+             const Scalar& v12,
+             const Scalar& v20, const Scalar& v21,
+             const Scalar& v22);
 
     ///
     /// \brief Contruct a Rotation matrix
@@ -99,8 +99,8 @@ public:
     /// sequence
     ///
     Rotation(
-        const biorbd::utils::Vector& rotation,
-        const biorbd::utils::String& rotationSequence);
+        const Vector& rotation,
+        const String& rotationSequence);
 
     ///
     /// \brief Contruct Rototrans
@@ -114,7 +114,7 @@ public:
     /// \param idx The index of axis (x = 0, y = 1 and z = 2)
     /// \return The axis
     ///
-    biorbd::utils::Vector3d axe(
+    Vector3d axe(
         unsigned int idx) const;
 
     ///
@@ -122,7 +122,7 @@ public:
     /// \param st The spatial transform
     /// \return The matrix of Rotation
     ///
-    static biorbd::utils::Rotation fromSpatialTransform(
+    static Rotation fromSpatialTransform(
         const RigidBodyDynamics::Math::SpatialTransform& st);
 
     ///
@@ -133,9 +133,9 @@ public:
     /// The number of rotation must match the number of axes in the rotation
     /// sequence
     ///
-    static biorbd::utils::Rotation fromEulerAngles(
-        const biorbd::utils::Vector& rot,
-        const biorbd::utils::String& seq);
+    static Rotation fromEulerAngles(
+        const Vector& rot,
+        const String& seq);
 
     ///
     /// \brief fromMarkers Creates a system of axes from two axes defined by markers
@@ -145,13 +145,13 @@ public:
     /// \param axisToRecalculate The axis to recalculate to ensure orthonormal system of axes
     /// \return The system of axes
     ///
-    static biorbd::utils::Matrix fromMarkersNonNormalized(
-        const std::pair<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment, biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>&
+    static Matrix fromMarkersNonNormalized(
+        const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment>&
         axis1markers,
-        const std::pair<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment, biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>&
+        const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment>&
         axis2markers,
-        const std::pair<biorbd::utils::String, biorbd::utils::String> &axesNames,
-        const biorbd::utils::String& axisToRecalculate);
+        const std::pair<String, String> &axesNames,
+        const String& axisToRecalculate);
 
     ///
     /// \brief fromMarkers Creates a system of axes from two axes defined by markers
@@ -161,13 +161,13 @@ public:
     /// \param axisToRecalculate The axis to recalculate to ensure orthonormal system of axes
     /// \return The system of axes
     ///
-    static biorbd::utils::Rotation fromMarkers(
-        const std::pair<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment, biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>&
+    static Rotation fromMarkers(
+        const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment>&
         axis1markers,
-        const std::pair<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment, biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>&
+        const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment>&
         axis2markers,
-        const std::pair<biorbd::utils::String, biorbd::utils::String> &axesNames,
-        const biorbd::utils::String& axisToRecalculate);
+        const std::pair<String, String> &axesNames,
+        const String& axisToRecalculate);
 
     ///
     /// \brief Return extracted angles from the rotation matrix into Euler angles using the provided sequence
@@ -177,9 +177,9 @@ public:
     ///
     /// The rotation sequence can be any combination of x, y and z
     ///
-    static  biorbd::utils::Vector toEulerAngles(
-        const biorbd::utils::Rotation& r,
-        const biorbd::utils::String& seq);
+    static  Vector toEulerAngles(
+        const Rotation& r,
+        const String& seq);
 
 #ifndef BIORBD_USE_CASADI_MATH
     ///
@@ -187,8 +187,8 @@ public:
     /// \param mToMean The Rotation matrices to mean
     /// \return The mean Rotation matrix
     ///
-    static biorbd::utils::Rotation mean(
-        const std::vector<biorbd::utils::Rotation>& mToMean);
+    static Rotation mean(
+        const std::vector<Rotation>& mToMean);
 #endif
 
 #ifndef SWIG
@@ -198,7 +198,7 @@ public:
     /// \param other The other Rotation matrix
     ///
     template<typename OtherDerived>
-    biorbd::utils::Rotation& operator=(
+    Rotation& operator=(
         const Eigen::MatrixBase <OtherDerived>& other)
     {
         Eigen::Matrix3d::operator=(other);
@@ -218,6 +218,7 @@ protected:
 
 }
 }
+}
 
 #ifndef SWIG
     ///
@@ -225,7 +226,7 @@ protected:
     /// \param os osstream
     /// \param rt The Rotation matrix
     ///
-    std::ostream& operator<<(std::ostream& os, const biorbd::utils::Rotation &rt);
+    std::ostream& operator<<(std::ostream& os, const biorbd::BIORBD_MATH_NAMESPACE::utils::Rotation &rt);
 #endif
 
 #endif // BIORBD_UTILS_ROTO_TRANS_H

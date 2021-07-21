@@ -7,6 +7,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 class Vector3d;
@@ -38,7 +40,7 @@ public:
     /// \param other The vector to copy
     ///
     Vector(
-        const biorbd::utils::Vector& other);
+        const Vector& other);
 
     ///
     /// \brief Construct vector from Casadi vector
@@ -53,7 +55,7 @@ public:
     /// \param other The vector to copy
     ///
     Vector(
-        const biorbd::utils::Vector3d& other);
+        const Vector3d& other);
 
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///
@@ -87,7 +89,7 @@ public:
     /// \param skipRoot To perform or not the sqrt_p()
     /// \return The norm of the vector
     ///
-    biorbd::utils::Scalar norm(
+    Scalar norm(
         unsigned int p = 2,
         bool skipRoot = false) const;
 
@@ -97,7 +99,7 @@ public:
     /// \param skipRoot To perform or not the sqrt_p()
     /// \return The gradient of the norm
     ///
-    biorbd::utils::Vector normGradient(
+    Vector normGradient(
         unsigned int p = 2,
         bool skipRoot = false);
 
@@ -107,14 +109,14 @@ public:
     /// \param other The vector to copy
     ///
     void operator=(
-        const biorbd::utils::Vector& other);
+        const Vector& other);
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///
     /// \brief Allow the use operator= on vector
     /// \param other The other matrix
     ///
     template<typename OtherDerived>
-    biorbd::utils::Vector& operator=(const Eigen::MatrixBase <OtherDerived>& other)
+    Vector& operator=(const Eigen::MatrixBase <OtherDerived>& other)
     {
         this->Eigen::VectorXd::operator=(other);
         return *this;
@@ -139,6 +141,7 @@ public:
 #endif
 };
 
+}
 }
 }
 

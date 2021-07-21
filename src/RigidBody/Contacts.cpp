@@ -39,9 +39,9 @@ void rigidbody::Contacts::DeepCopy(const rigidbody::Contacts
 
 unsigned int rigidbody::Contacts::AddConstraint(
     unsigned int body_id,
-    const biorbd::utils::Vector3d& body_point,
-    const biorbd::utils::Vector3d& world_normal,
-    const biorbd::utils::String& name,
+    const utils::Vector3d& body_point,
+    const utils::Vector3d& world_normal,
+    const utils::String& name,
     double acc)
 {
     ++*m_nbreConstraint;
@@ -50,9 +50,9 @@ unsigned int rigidbody::Contacts::AddConstraint(
 }
 unsigned int rigidbody::Contacts::AddConstraint(
     unsigned int body_id,
-    const biorbd::utils::Vector3d& body_point,
-    const biorbd::utils::String& axis,
-    const biorbd::utils::String& name,
+    const utils::Vector3d& body_point,
+    const utils::String& axis,
+    const utils::String& name,
     double acc)
 {
     unsigned int ret(0);
@@ -60,18 +60,18 @@ unsigned int rigidbody::Contacts::AddConstraint(
         ++*m_nbreConstraint;
         if      (axis.tolower()[i] == 'x')
             ret += RigidBodyDynamics::ConstraintSet::AddContactConstraint(
-                       body_id, body_point, biorbd::utils::Vector3d(1,0,0), (name + "_X").c_str(),
+                       body_id, body_point, utils::Vector3d(1,0,0), (name + "_X").c_str(),
                        acc);
         else if (axis.tolower()[i] == 'y')
             ret += RigidBodyDynamics::ConstraintSet::AddContactConstraint(
-                       body_id, body_point, biorbd::utils::Vector3d(0,1,0), (name + "_Y").c_str(),
+                       body_id, body_point, utils::Vector3d(0,1,0), (name + "_Y").c_str(),
                        acc);
         else if (axis.tolower()[i] == 'z')
             ret += RigidBodyDynamics::ConstraintSet::AddContactConstraint(
-                       body_id, body_point, biorbd::utils::Vector3d(0,0,1), (name + "_Z").c_str(),
+                       body_id, body_point, utils::Vector3d(0,0,1), (name + "_Z").c_str(),
                        acc);
         else {
-            biorbd::utils::Error::raise("Wrong axis!");
+            utils::Error::raise("Wrong axis!");
         }
     }
     return ret;
@@ -80,10 +80,10 @@ unsigned int rigidbody::Contacts::AddConstraint(
 unsigned int rigidbody::Contacts::AddLoopConstraint(
     unsigned int body_id_predecessor,
     unsigned int body_id_successor,
-    const biorbd::utils::RotoTrans &X_predecessor,
-    const biorbd::utils::RotoTrans &X_successor,
-    const biorbd::utils::SpatialVector &axis,
-    const biorbd::utils::String &name,
+    const utils::RotoTrans &X_predecessor,
+    const utils::RotoTrans &X_successor,
+    const utils::SpatialVector &axis,
+    const utils::String &name,
     bool enableStabilization,
     double stabilizationParam)
 {
@@ -94,7 +94,7 @@ unsigned int rigidbody::Contacts::AddLoopConstraint(
                        X_predecessor.trans()),
                RigidBodyDynamics::Math::SpatialTransform(X_successor.rot(),
                        X_successor.trans()),
-               biorbd::utils::SpatialVector(axis),
+               utils::SpatialVector(axis),
                enableStabilization, stabilizationParam, name.c_str());
 }
 
@@ -129,24 +129,24 @@ unsigned int rigidbody::Contacts::nbContacts() const
     return *m_nbreConstraint;
 }
 
-std::vector<biorbd::utils::String> rigidbody::Contacts::contactNames()
+std::vector<utils::String> rigidbody::Contacts::contactNames()
 {
-    std::vector<biorbd::utils::String> names;
+    std::vector<utils::String> names;
     for (auto name : RigidBodyDynamics::ConstraintSet::name) {
         names.push_back(name);
     }
     return names;
 }
 
-biorbd::utils::String rigidbody::Contacts::contactName(unsigned int i)
+utils::String rigidbody::Contacts::contactName(unsigned int i)
 {
-    biorbd::utils::Error::check(i<*m_nbreConstraint,
+    utils::Error::check(i<*m_nbreConstraint,
                                 "Idx for contact names is too high..");
     return RigidBodyDynamics::ConstraintSet::name[i];
 }
 
 
-std::vector<biorbd::utils::Vector3d>
+std::vector<utils::Vector3d>
 rigidbody::Contacts::constraintsInGlobal(
     const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin)
@@ -159,7 +159,7 @@ rigidbody::Contacts::constraintsInGlobal(
 #endif
 
     // Output variable
-    std::vector<biorbd::utils::Vector3d> tp;
+    std::vector<utils::Vector3d> tp;
 
 
     // On each control, apply the rotation and save the position
@@ -177,7 +177,7 @@ rigidbody::Contacts::constraintsInGlobal(
     return tp;
 }
 
-biorbd::utils::Vector rigidbody::Contacts::getForce() const
+utils::Vector rigidbody::Contacts::getForce() const
 {
-    return static_cast<biorbd::utils::Vector>(this->force);
+    return static_cast<utils::Vector>(this->force);
 }

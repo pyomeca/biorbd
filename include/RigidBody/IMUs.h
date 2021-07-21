@@ -7,6 +7,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 class String;
@@ -14,8 +16,6 @@ class Matrix;
 class RotoTransNode;
 }
 
-namespace BIORBD_MATH_NAMESPACE
-{
 namespace rigidbody
 {
 class GeneralizedCoordinates;
@@ -74,7 +74,7 @@ public:
     /// \param anatomical True if the IMU is anatomical
     ///
     void addIMU(
-        const biorbd::utils::RotoTransNode &RotoTrans,
+        const utils::RotoTransNode &RotoTrans,
         bool technical = true,
         bool anatomical = true);
 
@@ -88,19 +88,19 @@ public:
     /// \brief Return the names of the inertial measurement units (IMU)
     /// \return The names of the IMU
     ///
-    std::vector<biorbd::utils::String> IMUsNames();
+    std::vector<utils::String> IMUsNames();
 
     ///
     /// \brief Return the names of the technical inertial measurement units (IMU)
     /// \return The names of the technical IMU
     ///
-    std::vector<biorbd::utils::String> technicalIMUsNames();
+    std::vector<utils::String> technicalIMUsNames();
 
     ///
     /// \brief Return the names of the anatomical inertial measurement units (IMU)
     /// \return The names of the anatomical IMU
     ///
-    std::vector<biorbd::utils::String> anatomicalIMUsNames();
+    std::vector<utils::String> anatomicalIMUsNames();
 
 
     ///
@@ -115,7 +115,7 @@ public:
     /// \return All the IMU of attached to the segment
     ///
     std::vector<rigidbody::IMU> IMU(
-        const biorbd::utils::String& segmentName);
+        const utils::String& segmentName);
 
     ///
     /// \brief Return the inertial measurement unit (IMU) of a specified index
@@ -209,7 +209,7 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The jacobien of the IMU
     ///
-    std::vector<biorbd::utils::Matrix> IMUJacobian(
+    std::vector<utils::Matrix> IMUJacobian(
         const GeneralizedCoordinates &Q,
         bool updateKin = true);
 
@@ -219,7 +219,7 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The jacobian of the technical IMU
     ///
-    std::vector<biorbd::utils::Matrix> TechnicalIMUJacobian(
+    std::vector<utils::Matrix> TechnicalIMUJacobian(
         const GeneralizedCoordinates &Q,
         bool updateKin = true);
 
@@ -231,7 +231,7 @@ protected:
     /// \param updateKin If the model should be updated
     /// \param lookForTechnical If true, only computes for the technical IMU
     ///
-    std::vector<biorbd::utils::Matrix> IMUJacobian(
+    std::vector<utils::Matrix> IMUJacobian(
         const GeneralizedCoordinates &Q,
         bool updateKin,
         bool lookForTechnical);

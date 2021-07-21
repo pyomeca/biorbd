@@ -7,14 +7,14 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 class Vector3d;
 class Path;
 }
 
-namespace BIORBD_MATH_NAMESPACE
-{
 namespace rigidbody
 {
 class MeshFace;
@@ -35,7 +35,7 @@ public:
     /// \brief other The other mesh
     ///
     Mesh(
-        const std::vector<biorbd::utils::Vector3d>& other);
+        const std::vector<utils::Vector3d>& other);
 
     ///
     /// \brief Construct mesh
@@ -43,7 +43,7 @@ public:
     /// \param faces The faces of the geometry
     ///
     Mesh(
-        const std::vector<biorbd::utils::Vector3d>& vertex,
+        const std::vector<utils::Vector3d>& vertex,
         const std::vector<MeshFace>& faces);
 
     ///
@@ -64,14 +64,14 @@ public:
     /// \param node The point to add
     ///
     void addPoint(
-        const biorbd::utils::Vector3d& node);
+        const utils::Vector3d& node);
 
     ///
     /// \brief Return the point of a specific index
     /// \param idx The index of the point
     /// \return The point of a specific index
     ///
-    const biorbd::utils::Vector3d& point(
+    const utils::Vector3d& point(
         unsigned int idx) const;
 
     ///
@@ -118,19 +118,19 @@ public:
     /// \param path Path for the mesh file
     ///
     void setPath(
-        const biorbd::utils::Path& path);
+        const utils::Path& path);
 
     ///
     /// \brief Return the path of the mesh file
     /// \return The path of the mesh file
     ///
-    const biorbd::utils::Path& path() const;
+    const utils::Path& path() const;
 
 protected:
-    std::shared_ptr<std::vector<biorbd::utils::Vector3d>> m_vertex; ///< The vertex
+    std::shared_ptr<std::vector<utils::Vector3d>> m_vertex; ///< The vertex
     std::shared_ptr<std::vector<MeshFace>>
             m_faces; ///< The faces
-    std::shared_ptr<biorbd::utils::Path> m_pathFile; ///< The path to the mesh file
+    std::shared_ptr<utils::Path> m_pathFile; ///< The path to the mesh file
 };
 
 }

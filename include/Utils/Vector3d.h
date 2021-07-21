@@ -9,6 +9,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 class RotoTrans;
@@ -22,7 +24,7 @@ class Vector;
 class BIORBD_API Vector3d
 #else
 class BIORBD_API Vector3d : public RigidBodyDynamics::Math::Vector3d,
-    public biorbd::utils::Node
+    public Node
 #endif
 {
 public:
@@ -38,9 +40,9 @@ public:
     /// \param z Z-Component of the vector
     ///
     Vector3d(
-        const biorbd::utils::Scalar& x,
-        const biorbd::utils::Scalar& y,
-        const biorbd::utils::Scalar& z);
+        const Scalar& x,
+        const Scalar& y,
+        const Scalar& z);
 
     ///
     /// \brief Construct a 3D vector
@@ -51,11 +53,11 @@ public:
     /// \param parentName Name of the parent segment
     ///
     Vector3d(
-        const biorbd::utils::Scalar& x,
-        const biorbd::utils::Scalar& y,
-        const biorbd::utils::Scalar& z,
-        const biorbd::utils::String &name,
-        const biorbd::utils::String &parentName);
+        const Scalar& x,
+        const Scalar& y,
+        const Scalar& z,
+        const String &name,
+        const String &parentName);
 
     ///
     /// \brief Construct a 3D vector
@@ -64,9 +66,9 @@ public:
     /// \param parentName Name of the parent segment
     ///
     Vector3d(
-        const biorbd::utils::Vector3d vec,
-        const biorbd::utils::String &name,
-        const biorbd::utils::String &parentName);
+        const Vector3d vec,
+        const String &name,
+        const String &parentName);
 
     ///
     /// \brief Construct a 3D vector from a Casadi 3D vector (drop the trailling 1)
@@ -96,7 +98,7 @@ public:
     ///
     template<typename OtherDerived> Vector3d(
         const Eigen::MatrixBase<OtherDerived>& other) :
-        RigidBodyDynamics::Math::Vector3d(other), biorbd::utils::Node ()
+        RigidBodyDynamics::Math::Vector3d(other), Node ()
     {
     }
 
@@ -108,9 +110,9 @@ public:
     ///
     template<typename OtherDerived> Vector3d(
         const Eigen::MatrixBase<OtherDerived>& other,
-        const biorbd::utils::String &name,
-        const biorbd::utils::String &parentName) :
-        RigidBodyDynamics::Math::Vector3d(other), biorbd::utils::Node (name, parentName)
+        const String &name,
+        const String &parentName) :
+        RigidBodyDynamics::Math::Vector3d(other), Node (name, parentName)
     {
 
     }
@@ -129,20 +131,20 @@ public:
     /// \brief Deep copy of a 3D vector
     /// \return A deep copy of a 3D vector
     ///
-    biorbd::utils::Vector3d DeepCopy() const;
+    Vector3d DeepCopy() const;
 
     ///
     /// \brief Deep copy of a 3D vector into another 3D vector
     /// \param other The 3D vector to copy
     ///
-    void DeepCopy(const biorbd::utils::Vector3d& other);
+    void DeepCopy(const Vector3d& other);
 
     ///
     /// \brief Apply a RotoTrans to the 3D vector
     /// \param rt RotoTrans to apply
     /// \return The transformed vector
     //
-    biorbd::utils::Vector3d applyRT(
+    Vector3d applyRT(
         const RotoTrans& rt) const;
 
     ///
@@ -157,7 +159,7 @@ public:
     /// \param v The new position
     ///
     void setPosition(
-        const biorbd::utils::Vector3d& v);
+        const Vector3d& v);
 
 #ifndef SWIG
 
@@ -167,7 +169,7 @@ public:
     /// \param other The eigen matrix
     ///
     template<typename OtherDerived>
-    biorbd::utils::Vector3d& operator=(const Eigen::MatrixBase <OtherDerived>&
+    Vector3d& operator=(const Eigen::MatrixBase <OtherDerived>&
                                        other)
     {
         this->Eigen::Vector3d::operator=(other);
@@ -181,19 +183,19 @@ public:
     /// \brief Accessor for the first element
     /// \return The first element
     ///
-    biorbd::utils::Scalar x() const;
+    Scalar x() const;
 
     ///
     /// \brief Accessor for the second element
     /// \return The second element
     ///
-    biorbd::utils::Scalar y() const;
+    Scalar y() const;
 
     ///
     /// \brief Accessor for the third element
     /// \return The third element
     ///
-    biorbd::utils::Scalar z() const;
+    Scalar z() const;
 
     ///
     /// \brief Construct a 3D vector from a Casadi 4D vector (drop the trailling 1)
@@ -231,6 +233,7 @@ protected:
     void setType();
 };
 
+}
 }
 }
 

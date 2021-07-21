@@ -53,7 +53,7 @@ void rigidbody::IMUs::addIMU(
 
 // Add a new marker to the existing pool of markers
 void rigidbody::IMUs::addIMU(
-    const biorbd::utils::RotoTransNode &RotoTrans,
+    const utils::RotoTransNode &RotoTrans,
     bool technical,
     bool anatomical)
 {
@@ -73,7 +73,7 @@ const std::vector<rigidbody::IMU>& rigidbody::IMUs::IMU() const
 }
 
 std::vector<rigidbody::IMU> rigidbody::IMUs::IMU(
-    const biorbd::utils::String& segmentName)
+    const utils::String& segmentName)
 {
     std::vector<rigidbody::IMU> pos;
     for (unsigned int i=0; i<nbIMUs();
@@ -185,7 +185,7 @@ std::vector<rigidbody::IMU> rigidbody::IMUs::segmentIMU(
                                        (*this);
 
     // Segment name to find
-    biorbd::utils::String name(model.segment(idx).name());
+    utils::String name(model.segment(idx).name());
 
     std::vector<rigidbody::IMU> pos;
     for (unsigned int i=0; i<nbIMUs();
@@ -199,7 +199,7 @@ std::vector<rigidbody::IMU> rigidbody::IMUs::segmentIMU(
 }
 
 // Get the Jacobian of the markers
-std::vector<biorbd::utils::Matrix> rigidbody::IMUs::IMUJacobian(
+std::vector<utils::Matrix> rigidbody::IMUs::IMUJacobian(
     const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin)
 {
@@ -207,7 +207,7 @@ std::vector<biorbd::utils::Matrix> rigidbody::IMUs::IMUJacobian(
 }
 
 // Get the Jacobian of the technical markers
-std::vector<biorbd::utils::Matrix>
+std::vector<utils::Matrix>
 rigidbody::IMUs::TechnicalIMUJacobian(
     const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin)
@@ -217,7 +217,7 @@ rigidbody::IMUs::TechnicalIMUJacobian(
 
 
 // Protected function
-std::vector<biorbd::utils::Matrix> rigidbody::IMUs::IMUJacobian(
+std::vector<utils::Matrix> rigidbody::IMUs::IMUJacobian(
     const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin,
     bool lookForTechnical)
@@ -226,7 +226,7 @@ std::vector<biorbd::utils::Matrix> rigidbody::IMUs::IMUJacobian(
     biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
                                        (*this);
 
-    std::vector<biorbd::utils::Matrix> G;
+    std::vector<utils::Matrix> G;
 
     for (unsigned int idx=0; idx<nbIMUs(); ++idx) {
         // Actual marker
@@ -236,7 +236,7 @@ std::vector<biorbd::utils::Matrix> rigidbody::IMUs::IMUJacobian(
         }
 
         unsigned int id = model.GetBodyId(node.parent().c_str());
-        biorbd::utils::Matrix G_tp(biorbd::utils::Matrix::Zero(9,model.dof_count));
+        utils::Matrix G_tp(utils::Matrix::Zero(9,model.dof_count));
 
         // Calculate the Jacobian of this Tag
         model.CalcMatRotJacobian(Q, id, node.rot(), G_tp, updateKin); // False for speed
@@ -271,36 +271,36 @@ unsigned int rigidbody::IMUs::nbAnatIMUs()
     return nbAnat;
 }
 
-std::vector<biorbd::utils::String> rigidbody::IMUs::IMUsNames()
+std::vector<utils::String> rigidbody::IMUs::IMUsNames()
 {
     // Extract the name of all the markers of a model
-    std::vector<biorbd::utils::String> names;
+    std::vector<utils::String> names;
     for (unsigned int i=0; i<nbIMUs(); ++i) {
-        names.push_back(IMU(i).biorbd::utils::Node::name());
+        names.push_back(IMU(i).utils::Node::name());
     }
     return names;
 }
 
-std::vector<biorbd::utils::String> rigidbody::IMUs::technicalIMUsNames()
+std::vector<utils::String> rigidbody::IMUs::technicalIMUsNames()
 {
     // Extract the names of all the technical markers of a model
-    std::vector<biorbd::utils::String> names;
+    std::vector<utils::String> names;
     for (unsigned int i=0; i<nbIMUs(); ++i)
         if (IMU(i).isTechnical()) {
-            names.push_back(IMU(i).biorbd::utils::Node::name());
+            names.push_back(IMU(i).utils::Node::name());
         }
 
     return names;
 }
 
-std::vector<biorbd::utils::String>
+std::vector<utils::String>
 rigidbody::IMUs::anatomicalIMUsNames()
 {
     // Extract the names of all the anatomical markers of a model
-    std::vector<biorbd::utils::String> names;
+    std::vector<utils::String> names;
     for (unsigned int i=0; i<nbIMUs(); ++i)
         if (IMU(i).isAnatomical()) {
-            names.push_back(IMU(i).biorbd::utils::Node::name());
+            names.push_back(IMU(i).utils::Node::name());
         }
 
     return names;

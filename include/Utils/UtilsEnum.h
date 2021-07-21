@@ -3,6 +3,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 
@@ -27,7 +29,7 @@ enum NODE_TYPE {
 /// \return The name of the type
 ///
 inline const char* NODE_TYPE_toStr(
-    biorbd::utils::NODE_TYPE type)
+    NODE_TYPE type)
 {
     switch (type) {
     case VECTOR3D:
@@ -51,6 +53,7 @@ inline const char* NODE_TYPE_toStr(
     }
 }
 
+}
 }
 }
 

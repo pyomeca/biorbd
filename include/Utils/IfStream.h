@@ -9,6 +9,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 class Equation;
@@ -29,7 +31,7 @@ public:
     /// \param mode The open mode of "std::ios_base" base
     ///
     IfStream(
-        const biorbd::utils::Path& path,
+        const Path& path,
         std::ios_base::openmode mode );
 
     ///
@@ -48,7 +50,7 @@ public:
     /// \return True on success
     ///
     bool open(
-        const biorbd::utils::Path& path,
+        const Path& path,
         std::ios_base::openmode mode );
 
     ///
@@ -57,7 +59,7 @@ public:
     /// \return True on success
     ///
     bool read(
-        biorbd::utils::String& text);
+        String& text);
 
     ///
     /// \brief Read a word in the file
@@ -65,7 +67,7 @@ public:
     /// \return True on success
     ///
     bool readAWord(
-        biorbd::utils::String& text);
+        String& text);
 
     ///
     /// \brief Read an integer in the file
@@ -116,7 +118,7 @@ public:
     ///
     bool read(
         double& result,
-        const std::map<biorbd::utils::Equation, double> &variables);
+        const std::map<Equation, double> &variables);
 #ifdef BIORBD_USE_CASADI_MATH
     ///
     /// \brief Read and evaluate an equation
@@ -126,7 +128,7 @@ public:
     ///
     bool read(
         RBDLCasadiMath::MX_Xd_SubMatrix result,
-        const std::map<biorbd::utils::Equation, double> &variables);
+        const std::map<Equation, double> &variables);
 #endif
 
     ///
@@ -136,8 +138,8 @@ public:
     /// \return True on success
     ///
     bool readSpecificTag(
-        const biorbd::utils::String& tag,
-        biorbd::utils::String& text);
+        const String& tag,
+        String& text);
 
     ///
     /// \brief Advance in the file to a specific tag
@@ -145,7 +147,7 @@ public:
     /// \return True on success
     ///
     bool reachSpecificTag(
-        const biorbd::utils::String& tag);
+        const String& tag);
 
     ///
     /// \brief Counts the number of consecutive lines starting with the same tag and then brings it back to the initial position
@@ -153,14 +155,14 @@ public:
     /// \return The number of consecutive lines starting with the same tag
     ///
     int countTagsInAConsecutiveLines(
-        const biorbd::utils::String& tag);
+        const String& tag);
 
     ///
     /// \brief Read a whole line
     /// \param text The text read (output)
     ///
     void getline(
-        biorbd::utils::String& text);
+        String& text);
 
     ///
     /// \brief Close the file
@@ -178,9 +180,10 @@ protected:
 
 private:
     std::shared_ptr<std::ifstream> m_ifs;///< the ifstream
-    std::shared_ptr<biorbd::utils::Path> m_path;///< The path of the file
+    std::shared_ptr<Path> m_path;///< The path of the file
 };
 
+}
 }
 }
 

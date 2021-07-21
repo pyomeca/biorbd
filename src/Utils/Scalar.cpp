@@ -4,24 +4,26 @@
 #ifdef BIORBD_USE_CASADI_MATH
 #include "Utils/Error.h"
 
-biorbd::utils::Scalar::Scalar() :
+using namespace biorbd::BIORBD_MATH_NAMESPACE;
+
+utils::Scalar::Scalar() :
     RigidBodyDynamics::Math::Scalar ()
 {
 
 }
 
-biorbd::utils::Scalar::Scalar(
+utils::Scalar::Scalar(
     double val) :
     RigidBodyDynamics::Math::Scalar (val)
 {
 
 }
 
-biorbd::utils::Scalar::Scalar(
+utils::Scalar::Scalar(
     const casadi::MX &val) :
     RigidBodyDynamics::Math::Scalar (val)
 {
-    biorbd::utils::Error::check(
+    utils::Error::check(
         val.rows() == 1 && val.columns() == 1,
         "Scalar must be a MX 1x1");
 }

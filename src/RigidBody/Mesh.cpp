@@ -8,28 +8,28 @@
 using namespace biorbd::BIORBD_MATH_NAMESPACE;
 
 rigidbody::Mesh::Mesh() :
-    m_vertex(std::make_shared<std::vector<biorbd::utils::Vector3d>>()),
+    m_vertex(std::make_shared<std::vector<utils::Vector3d>>()),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>()),
-    m_pathFile(std::make_shared<biorbd::utils::Path>())
+    m_pathFile(std::make_shared<utils::Path>())
 {
 
 }
 
-rigidbody::Mesh::Mesh(const std::vector<biorbd::utils::Vector3d> &other)
+rigidbody::Mesh::Mesh(const std::vector<utils::Vector3d> &other)
     :
-    m_vertex(std::make_shared<std::vector<biorbd::utils::Vector3d>>(other)),
+    m_vertex(std::make_shared<std::vector<utils::Vector3d>>(other)),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>()),
-    m_pathFile(std::make_shared<biorbd::utils::Path>())
+    m_pathFile(std::make_shared<utils::Path>())
 {
 
 }
 
-rigidbody::Mesh::Mesh(const std::vector<biorbd::utils::Vector3d>
+rigidbody::Mesh::Mesh(const std::vector<utils::Vector3d>
                               &vertex,
                               const std::vector<rigidbody::MeshFace> & faces) :
-    m_vertex(std::make_shared<std::vector<biorbd::utils::Vector3d>>(vertex)),
+    m_vertex(std::make_shared<std::vector<utils::Vector3d>>(vertex)),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>(faces)),
-    m_pathFile(std::make_shared<biorbd::utils::Path>())
+    m_pathFile(std::make_shared<utils::Path>())
 {
 
 }
@@ -54,11 +54,11 @@ void rigidbody::Mesh::DeepCopy(const rigidbody::Mesh &other)
     *m_pathFile = other.m_pathFile->DeepCopy();
 }
 
-void rigidbody::Mesh::addPoint(const biorbd::utils::Vector3d &node)
+void rigidbody::Mesh::addPoint(const utils::Vector3d &node)
 {
     m_vertex->push_back(node);
 }
-const biorbd::utils::Vector3d &rigidbody::Mesh::point(
+const utils::Vector3d &rigidbody::Mesh::point(
     unsigned int idx) const
 {
     return (*m_vertex)[idx];
@@ -91,12 +91,12 @@ const rigidbody::MeshFace &rigidbody::Mesh::face(
     return (*m_faces)[idx];
 }
 
-void rigidbody::Mesh::setPath(const biorbd::utils::Path& path)
+void rigidbody::Mesh::setPath(const utils::Path& path)
 {
     *m_pathFile = path;
 }
 
-const biorbd::utils::Path &rigidbody::Mesh::path() const
+const utils::Path &rigidbody::Mesh::path() const
 {
     return *m_pathFile;
 }

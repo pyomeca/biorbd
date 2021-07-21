@@ -29,9 +29,9 @@ int &rigidbody::MeshFace::operator()(unsigned int idx)
     return (*m_face)[idx];
 }
 
-biorbd::utils::Vector3d rigidbody::MeshFace::faceAsDouble()
+utils::Vector3d rigidbody::MeshFace::faceAsDouble()
 {
-    return biorbd::utils::Vector3d(static_cast<double>((*m_face)[0]),
+    return utils::Vector3d(static_cast<double>((*m_face)[0]),
                                    static_cast<double>((*m_face)[1]),
                                    static_cast<double>((*m_face)[2]));
 }

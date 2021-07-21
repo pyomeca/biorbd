@@ -6,11 +6,8 @@
 
 namespace biorbd
 {
-namespace rigidbody
+namespace BIORBD_MATH_NAMESPACE
 {
-class GeneralizedCoordinates;
-}
-
 namespace utils
 {
 ///
@@ -44,7 +41,7 @@ public:
     /// \param other The matrix to copy
     ///
     Matrix(
-        const biorbd::utils::Matrix& other);
+        const Matrix& other);
 
     ///
     /// \brief Construct matrix from Casadi matrix
@@ -79,7 +76,7 @@ public:
     /// \param other The other Eigen matrix
     ///
     template<typename OtherDerived>
-    biorbd::utils::Matrix& operator=(const Eigen::MatrixBase <OtherDerived>& other)
+    Matrix& operator=(const Eigen::MatrixBase <OtherDerived>& other)
     {
         this->Eigen::MatrixXd::operator=(other);
         return *this;
@@ -92,7 +89,7 @@ public:
     /// \param other The matrix to copy
     ///
     void operator=(
-        const biorbd::utils::Matrix& other);
+        const Matrix& other);
 
     ///
     /// \brief operator= For submatrices
@@ -105,6 +102,7 @@ public:
 #endif
 };
 
+}
 }
 }
 

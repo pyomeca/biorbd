@@ -7,13 +7,14 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 class String;
 class Matrix;
 }
 
-namespace BIORBD_MATH_NAMESPACE {
 namespace rigidbody
 {
 class GeneralizedCoordinates;
@@ -67,11 +68,11 @@ public:
     ///
     void addMarker(
         const NodeSegment &pos,
-        const biorbd::utils::String &name,
-        const biorbd::utils::String &parentName,
+        const utils::String &name,
+        const utils::String &parentName,
         bool technical,
         bool anatomical,
-        const biorbd::utils::String& axesToRemove,
+        const utils::String& axesToRemove,
         int id = -1
     );
 
@@ -89,25 +90,25 @@ public:
     /// \return The markers on the segment
     ///
     std::vector<NodeSegment> marker(
-        const biorbd::utils::String &name) const;
+        const utils::String &name) const;
 
     ///
     /// \brief Return the names of all the markers
     /// \return The names of the markers
     ///
-    std::vector<biorbd::utils::String> markerNames() const;
+    std::vector<utils::String> markerNames() const;
 
     ///
     /// \brief Return the names of all the technical markers
     /// \return The names of the technical markers
     ///
-    std::vector<biorbd::utils::String> technicalMarkerNames() const;
+    std::vector<utils::String> technicalMarkerNames() const;
 
     ///
     /// \brief Return the names of all the anatomical markers
     /// \return The names of the anatomical markers
     ///
-    std::vector<biorbd::utils::String> anatomicalMarkerNames() const;
+    std::vector<utils::String> anatomicalMarkerNames() const;
 
     ///
     /// \brief Compute and return the position of a marker at given Q in the global reference frame
@@ -327,7 +328,7 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The jacobian of the markers
     ///
-    std::vector<biorbd::utils::Matrix> markersJacobian(
+    std::vector<utils::Matrix> markersJacobian(
         const GeneralizedCoordinates &Q,
         bool removeAxis=true,
         bool updateKin = true);
@@ -339,7 +340,7 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The jacobian of the technical markers
     ///
-    std::vector<biorbd::utils::Matrix> technicalMarkersJacobian(
+    std::vector<utils::Matrix> technicalMarkersJacobian(
         const GeneralizedCoordinates &Q,
         bool removeAxis=true,
         bool updateKin = true);
@@ -352,9 +353,9 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The jacobian of the chosen marker
     ///
-    biorbd::utils::Matrix markersJacobian(
+    utils::Matrix markersJacobian(
         const GeneralizedCoordinates &Q,
-        const biorbd::utils::String& parentName,
+        const utils::String& parentName,
         const NodeSegment& p,
         bool updateKin);
 
@@ -382,7 +383,7 @@ protected:
     /// \param lookForTechnical Check if only technical markers are to be computed
     /// \return The jacobian of the markers
     ///
-    std::vector<biorbd::utils::Matrix> markersJacobian(
+    std::vector<utils::Matrix> markersJacobian(
         const GeneralizedCoordinates &Q,
         bool removeAxis,
         bool updateKin,

@@ -7,6 +7,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 
@@ -77,6 +79,7 @@ protected:
 
 };
 
+}
 }
 }
 

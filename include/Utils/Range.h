@@ -7,6 +7,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 
@@ -28,13 +30,13 @@ public:
     /// \brief Deep copy of the Range
     /// \return Deep copy of the Range
     ///
-    biorbd::utils::Range DeepCopy() const;
+    Range DeepCopy() const;
 
     ///
     /// \brief Deep copy of Range
     /// \param other The Range to copy
     ///
-    void DeepCopy(const biorbd::utils::Range& other);
+    void DeepCopy(const Range& other);
 
     ///
     /// \brief Set a new value for the minimum
@@ -65,6 +67,7 @@ protected:
     std::shared_ptr<double> m_max; ///< The maximal value allowed by the range
 };
 
+}
 }
 }
 

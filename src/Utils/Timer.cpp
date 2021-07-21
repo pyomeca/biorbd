@@ -1,7 +1,9 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Timer.h"
 
-biorbd::utils::Timer::Timer(bool startNow) :
+using namespace biorbd::BIORBD_MATH_NAMESPACE;
+
+utils::Timer::Timer(bool startNow) :
     m_isStarted(false),
     m_isPaused(false),
     m_start(),
@@ -13,7 +15,7 @@ biorbd::utils::Timer::Timer(bool startNow) :
     }
 }
 
-void biorbd::utils::Timer::start()
+void utils::Timer::start()
 {
     m_start = std::clock();
     m_totalPauseTime = 0;
@@ -21,12 +23,12 @@ void biorbd::utils::Timer::start()
     m_isStarted = true;
 } // Start a timer
 
-bool biorbd::utils::Timer::isStarted()
+bool utils::Timer::isStarted()
 {
     return m_isStarted;
 }
 
-void biorbd::utils::Timer::pause()
+void utils::Timer::pause()
 {
     if (!m_isPaused) {
         m_isPaused = true;
@@ -34,7 +36,7 @@ void biorbd::utils::Timer::pause()
     }
 }
 
-void biorbd::utils::Timer::resume()
+void utils::Timer::resume()
 {
     if (!m_isStarted) {
         start();
@@ -46,7 +48,7 @@ void biorbd::utils::Timer::resume()
     }
 }
 
-double biorbd::utils::Timer::getLap()
+double utils::Timer::getLap()
 {
     addPauseTime();
 
@@ -57,7 +59,7 @@ double biorbd::utils::Timer::getLap()
     }
 }
 
-double biorbd::utils::Timer::stop()
+double utils::Timer::stop()
 {
     if (m_isStarted) {
         m_isStarted = false;
@@ -67,7 +69,7 @@ double biorbd::utils::Timer::stop()
     }
 }
 
-void biorbd::utils::Timer::addPauseTime()
+void utils::Timer::addPauseTime()
 {
     if (m_isPaused) {
         m_totalPauseTime += getTime(m_pauseTime);
@@ -75,7 +77,7 @@ void biorbd::utils::Timer::addPauseTime()
     }
 }
 
-double biorbd::utils::Timer::getTime(const std::clock_t& timer)
+double utils::Timer::getTime(const std::clock_t& timer)
 {
     return static_cast<double>(std::clock() - timer) / CLOCKS_PER_SEC;
 }

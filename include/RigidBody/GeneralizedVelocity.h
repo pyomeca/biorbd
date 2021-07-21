@@ -15,7 +15,7 @@ class Joints;
 ///
 /// \brief Class GeneralizedVelocity
 ///
-class BIORBD_API GeneralizedVelocity : public biorbd::utils::Vector
+class BIORBD_API GeneralizedVelocity : public utils::Vector
 {
 public:
 
@@ -58,7 +58,7 @@ public:
     ///
     template<typename OtherDerived> GeneralizedVelocity(
         const Eigen::MatrixBase<OtherDerived>& other) :
-        biorbd::utils::Vector(other) {}
+        utils::Vector(other) {}
 #endif
 #ifdef BIORBD_USE_CASADI_MATH
 
@@ -89,7 +89,7 @@ public:
     GeneralizedVelocity& operator=(
         const Eigen::MatrixBase <OtherDerived>& other)
     {
-        this->biorbd::utils::Vector::operator=(other);
+        this->utils::Vector::operator=(other);
         return *this;
     }
 
@@ -100,7 +100,7 @@ public:
     /// \param other The vector to copy
     ///
     void operator=(
-        const biorbd::utils::Vector& other);
+        const utils::Vector& other);
 
 #ifdef BIORBD_USE_CASADI_MATH
 

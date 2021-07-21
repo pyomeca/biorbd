@@ -50,11 +50,11 @@ void rigidbody::Markers::DeepCopy(
 // Add a new marker to the markers pool
 void rigidbody::Markers::addMarker(
     const rigidbody::NodeSegment &pos,
-    const biorbd::utils::String &name,
-    const biorbd::utils::String &parentName,
+    const utils::String &name,
+    const utils::String &parentName,
     bool technical,
     bool anatomical,
-    const biorbd::utils::String& axesToRemove,
+    const utils::String& axesToRemove,
     int id)
 {
     rigidbody::NodeSegment tp(pos, name, parentName, technical, anatomical,
@@ -69,7 +69,7 @@ const rigidbody::NodeSegment &rigidbody::Markers::marker(
 }
 
 std::vector<rigidbody::NodeSegment> rigidbody::Markers::marker(
-    const biorbd::utils::String& name) const
+    const utils::String& name) const
 {
     std::vector<rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers();
@@ -327,7 +327,7 @@ rigidbody::Markers::segmentMarkers(
                                        (*this);
 
     // Name of the segment to find
-    const biorbd::utils::String& name(model.segment(idx).name());
+    const utils::String& name(model.segment(idx).name());
 
     std::vector<rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers();
@@ -354,7 +354,7 @@ const
         dynamic_cast<const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>(*this);
 
     // Name of the segment to find
-    const biorbd::utils::String& name(model.segment(idxSegment).name());
+    const utils::String& name(model.segment(idxSegment).name());
 
     unsigned int n = 0;
     for (unsigned int i=0; i<nbMarkers();
@@ -367,7 +367,7 @@ const
 }
 
 // Get the Jacobian of the markers
-std::vector<biorbd::utils::Matrix> rigidbody::Markers::markersJacobian(
+std::vector<utils::Matrix> rigidbody::Markers::markersJacobian(
     const rigidbody::GeneralizedCoordinates &Q,
     bool removeAxis,
     bool updateKin)
@@ -375,7 +375,7 @@ std::vector<biorbd::utils::Matrix> rigidbody::Markers::markersJacobian(
     return markersJacobian(Q, removeAxis, updateKin, false);
 }
 
-std::vector<biorbd::utils::Matrix>
+std::vector<utils::Matrix>
 rigidbody::Markers::technicalMarkersJacobian(
     const rigidbody::GeneralizedCoordinates &Q,
     bool removeAxis,
@@ -385,9 +385,9 @@ rigidbody::Markers::technicalMarkersJacobian(
 }
 
 // Get the Jacobian of the technical markers
-biorbd::utils::Matrix rigidbody::Markers::markersJacobian(
+utils::Matrix rigidbody::Markers::markersJacobian(
     const rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::utils::String& parentName,
+    const utils::String& parentName,
     const rigidbody::NodeSegment& p,
     bool updateKin)
 {
@@ -397,7 +397,7 @@ biorbd::utils::Matrix rigidbody::Markers::markersJacobian(
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #endif
-    biorbd::utils::Matrix G(biorbd::utils::Matrix::Zero(3, model.nbQ()));;
+    utils::Matrix G(utils::Matrix::Zero(3, model.nbQ()));;
 
     // Calculate the Jacobien of this Tag
     unsigned int id = model.GetBodyId(parentName.c_str());
@@ -445,7 +445,7 @@ bool rigidbody::Markers::inverseKinematics(
 #endif
 
 // Get the Jacobian of the technical markers
-std::vector<biorbd::utils::Matrix> rigidbody::Markers::markersJacobian(
+std::vector<utils::Matrix> rigidbody::Markers::markersJacobian(
     const rigidbody::GeneralizedCoordinates &Q,
     bool removeAxis,
     bool updateKin,
@@ -458,7 +458,7 @@ std::vector<biorbd::utils::Matrix> rigidbody::Markers::markersJacobian(
     updateKin = true;
 #endif
 
-    std::vector<biorbd::utils::Matrix> G;
+    std::vector<utils::Matrix> G;
 
     for (unsigned int idx=0; idx<nbMarkers(); ++idx) {
         // Actual marker
@@ -468,8 +468,8 @@ std::vector<biorbd::utils::Matrix> rigidbody::Markers::markersJacobian(
         }
 
         unsigned int id = model.GetBodyId(node.parent().c_str());
-        const biorbd::utils::Vector3d& pos(marker(idx, removeAxis));
-        biorbd::utils::Matrix G_tp(biorbd::utils::Matrix::Zero(3,model.nbQ()));
+        const utils::Vector3d& pos(marker(idx, removeAxis));
+        utils::Matrix G_tp(utils::Matrix::Zero(3,model.nbQ()));
 
         // Calculate the Jacobian of this Tag
         RigidBodyDynamics::CalcPointJacobian(model, Q, id, pos, G_tp, updateKin);
@@ -505,7 +505,7 @@ unsigned int rigidbody::Markers::nbTechnicalMarkers(
     unsigned int nTechMarkers = 0;
 
     // Name of the segment to find
-    const biorbd::utils::String& name(model.segment(idxSegment).name());
+    const utils::String& name(model.segment(idxSegment).name());
 
     if (nTechMarkers == 0) // If the function has never been called before
         for (auto mark : *m_marks)
@@ -529,39 +529,39 @@ unsigned int rigidbody::Markers::nbAnatomicalMarkers()
     return nAnatMarkers;
 }
 
-std::vector<biorbd::utils::String> rigidbody::Markers::markerNames()
+std::vector<utils::String> rigidbody::Markers::markerNames()
 const
 {
     // Extract the name of all the markers of a model
-    std::vector<biorbd::utils::String> names;
+    std::vector<utils::String> names;
     for (unsigned int i=0; i<nbMarkers(); ++i) {
-        names.push_back(marker(i).biorbd::utils::Node::name());
+        names.push_back(marker(i).utils::Node::name());
     }
 
     return names;
 }
 
-std::vector<biorbd::utils::String>
+std::vector<utils::String>
 rigidbody::Markers::technicalMarkerNames() const
 {
     // Extract the name of all the technical markers of a model
-    std::vector<biorbd::utils::String> names;
+    std::vector<utils::String> names;
     for (unsigned int i=0; i<nbMarkers(); ++i)
         if (marker(i).isTechnical()) {
-            names.push_back(marker(i).biorbd::utils::Node::name());
+            names.push_back(marker(i).utils::Node::name());
         }
 
     return names;
 }
 
-std::vector<biorbd::utils::String>
+std::vector<utils::String>
 rigidbody::Markers::anatomicalMarkerNames() const
 {
     // Extract the names of all the anatomical markers of a model
-    std::vector<biorbd::utils::String> names;
+    std::vector<utils::String> names;
     for (unsigned int i=0; i<nbMarkers(); ++i)
         if (marker(i).isAnatomical()) {
-            names.push_back(marker(i).biorbd::utils::Node::name());
+            names.push_back(marker(i).utils::Node::name());
         }
 
     return names;

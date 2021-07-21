@@ -9,6 +9,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 class String;
@@ -35,7 +37,7 @@ public:
     /// \param path The path in string format
     ///
     Path(
-        const biorbd::utils::String& path);
+        const String& path);
 
     ///
     /// \brief Construct path
@@ -48,14 +50,14 @@ public:
     /// \brief Deep copy of path
     /// \return A deep copy of path
     ///
-    biorbd::utils::Path DeepCopy() const;
+    Path DeepCopy() const;
 
     ///
     /// \brief Deep copy of path from another path
     /// \param other The path to copy
     ///
     void DeepCopy(
-        const biorbd::utils::Path& other);
+        const Path& other);
 
     ///
     /// \brief Parse a path in folder, filename and extension
@@ -65,10 +67,10 @@ public:
     /// \param ext The extension of the file
     ///
     static void parseFileName(
-        const biorbd::utils::String& path,
-        biorbd::utils::String& folder,
-        biorbd::utils::String& filename,
-        biorbd::utils::String& ext);
+        const String& path,
+        String& folder,
+        String& filename,
+        String& ext);
 
 #ifndef SWIG
     ///
@@ -83,7 +85,7 @@ public:
     /// \return If file exist on the computer
     ///
     static bool isFileExist(
-        const biorbd::utils::Path& path);
+        const Path& path);
 #endif
 
     ///
@@ -92,7 +94,7 @@ public:
     /// \return If file exist on the computer
     ///
     static bool isFileExist(
-        const biorbd::utils::String& path);
+        const String& path);
 
     ///
     /// \brief Test if file exist on the computer and is accessible
@@ -113,7 +115,7 @@ public:
     /// \return If folder exists
     ///
     static bool isFolderExist(
-        const biorbd::utils::Path& path);
+        const Path& path);
 #endif
 
     ///
@@ -122,7 +124,7 @@ public:
     /// \return If folder exists
     ///
     static bool isFolderExist(
-        const biorbd::utils::String& path);
+        const String& path);
 
     ///
     /// \brief To create folder on the computer
@@ -133,13 +135,13 @@ public:
     /// /brief Return current directory
     /// \return Teh current directory
     ///
-    static biorbd::utils::String currentDir();
+    static String currentDir();
 
     ///
     /// \brief Return relative path to current working directory
     /// \return The relative path to curent working directory
     ///
-    biorbd::utils::String relativePath() const;
+    String relativePath() const;
 
 #ifndef SWIG
     ///
@@ -147,8 +149,8 @@ public:
     /// \param relativeTo Relative to that path
     /// \return The relative path
     ///
-    biorbd::utils::String relativePath(
-        const biorbd::utils::String &relativeTo) const;
+    String relativePath(
+        const String &relativeTo) const;
 
     ///
     /// \brief Return relative path of a specified path to the specified folder
@@ -156,9 +158,9 @@ public:
     /// \param relativeTo Relative to that path
     /// \return The relative path
     ///
-    static biorbd::utils::String relativePath(
-        const biorbd::utils::Path &path,
-        const biorbd::utils::String &relativeTo);
+    static String relativePath(
+        const Path &path,
+        const String &relativeTo);
 
     ///
     /// \brief Return the absolute path relative to root
@@ -168,14 +170,14 @@ public:
     /// On Windows, the current implementation only works if the file is on the
     /// C drive.
     ///
-    static biorbd::utils::String absoluteFolder(
-        const biorbd::utils::Path &path);
+    static String absoluteFolder(
+        const Path &path);
 
     ///
     /// \brief Return the absolute folder relative to root
     /// \return The absolute folder relative to root
     ///
-    biorbd::utils::String absoluteFolder() const;
+    String absoluteFolder() const;
 
 #endif
 
@@ -183,61 +185,61 @@ public:
     /// \brief Return the absolute path relative to root
     /// \return The absolute path relative to root
     ///
-    biorbd::utils::String absolutePath() const;
+    String absolutePath() const;
 
     ///
     /// \brief Return the path to Unix format
     /// \param path The path to convert
     /// \return The path in Unix format
     ///
-    static biorbd::utils::String toUnixFormat(
-        const biorbd::utils::String& path);
+    static String toUnixFormat(
+        const String& path);
 
     ///
     /// \brief Return the path to Windows format
     /// \param path The path to convert
     /// \return The path in Windows format
     ///
-    static biorbd::utils::String toWindowsFormat(
-        const biorbd::utils::String& path);
+    static String toWindowsFormat(
+        const String& path);
 
     ///
     /// \brief Return original path as it was at constructor time
     /// \return The original path
     ///
-    const biorbd::utils::String& originalPath() const;
+    const String& originalPath() const;
 
     ///
     /// \brief Return the folder of the file
     /// \return The folder of the file
     ///
-    const biorbd::utils::String& folder() const;
+    const String& folder() const;
 
     ///
     /// \brief Set the filename
     /// \param name The filename
     ///
     void setFilename(
-        const biorbd::utils::String& name);
+        const String& name);
 
     ///
     /// \brief Return the filename
     /// \return The filename
     ///
-    const biorbd::utils::String& filename() const;
+    const String& filename() const;
 
     ///
     /// \brief Set the extension
     /// \param ext The extension
     ///
     void setExtension(
-        const biorbd::utils::String& ext);
+        const String& ext);
 
     ///
     /// \brief Return the extension of the file
     /// \return The extension of the file
     ///
-    const biorbd::utils::String& extension() const;
+    const String& extension() const;
 
 
 protected:
@@ -246,14 +248,15 @@ protected:
     ///
     void setIsFolderAbsolute();
 
-    std::shared_ptr<biorbd::utils::String>
+    std::shared_ptr<String>
     m_originalPath; ///< The original path at construction time
-    std::shared_ptr<biorbd::utils::String> m_folder; ///< The folder
+    std::shared_ptr<String> m_folder; ///< The folder
     std::shared_ptr<bool> m_isFolderAbsolute; ///< If folder is absolute
-    std::shared_ptr<biorbd::utils::String> m_filename; ///< The filename
-    std::shared_ptr<biorbd::utils::String> m_extension; ///< The extension
+    std::shared_ptr<String> m_filename; ///< The filename
+    std::shared_ptr<String> m_extension; ///< The extension
 };
 
+}
 }
 }
 

@@ -3,7 +3,9 @@
 
 #include "Utils/Vector.h"
 
-biorbd::utils::Matrix::Matrix() :
+using namespace biorbd::BIORBD_MATH_NAMESPACE;
+
+utils::Matrix::Matrix() :
     RigidBodyDynamics::Math::MatrixNd()
 {
 
@@ -12,34 +14,34 @@ biorbd::utils::Matrix::Matrix() :
 
 #ifdef BIORBD_USE_CASADI_MATH
 
-biorbd::utils::Matrix::Matrix(
-    const biorbd::utils::Matrix& v) :
+utils::Matrix::Matrix(
+    const utils::Matrix& v) :
     RigidBodyDynamics::Math::MatrixNd (v)
 {
 
 }
 
-biorbd::utils::Matrix::Matrix(
+utils::Matrix::Matrix(
     const RigidBodyDynamics::Math::MatrixNd &v) :
     RigidBodyDynamics::Math::MatrixNd (v)
 {
 
 }
 
-biorbd::utils::Matrix::Matrix(
+utils::Matrix::Matrix(
     const RBDLCasadiMath::MX_Xd_SubMatrix &m) :
     RigidBodyDynamics::Math::VectorNd (m)
 {
 
 }
 
-void biorbd::utils::Matrix::operator=(
-    const biorbd::utils::Matrix &other)
+void utils::Matrix::operator=(
+    const utils::Matrix &other)
 {
     this->MX_Xd_dynamic::operator=(other);
 }
 
-void biorbd::utils::Matrix::operator=(
+void utils::Matrix::operator=(
     const RBDLCasadiMath::MX_Xd_SubMatrix& other)
 {
     this->MX_Xd_dynamic::operator=(other);
@@ -48,7 +50,7 @@ void biorbd::utils::Matrix::operator=(
 #endif
 
 
-biorbd::utils::Matrix::Matrix(
+utils::Matrix::Matrix(
     unsigned int nbRows,
     unsigned int nbCols) :
     RigidBodyDynamics::Math::MatrixNd(nbRows, nbCols)
