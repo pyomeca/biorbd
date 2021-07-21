@@ -16,6 +16,8 @@
     #include "RigidBody/KalmanReconsIMU.h"
 #endif
 
+using namespace biorbd::BIORBD_MATH_NAMESPACE;
+
 static double requiredPrecision(1e-10);
 
 static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
@@ -24,13 +26,13 @@ modelPathForIMUTesting("models/IMUandCustomRT/pyomecaman_withIMUs.bioMod");
 
 TEST(BinderC, OpenCloseModel)
 {
-    biorbd::Model* model(c_biorbdModel(modelPathForGeneralTesting.c_str()));
+    Model* model(c_biorbdModel(modelPathForGeneralTesting.c_str()));
     c_deleteBiorbdModel(model);
 }
 
 TEST(BinderC, nDofs)
 {
-    biorbd::Model* model(c_biorbdModel(modelPathForGeneralTesting.c_str()));
+    Model* model(c_biorbdModel(modelPathForGeneralTesting.c_str()));
     EXPECT_EQ(c_nQ(model), model->nbQ());
     EXPECT_EQ(c_nQDot(model), model->nbQdot());
     EXPECT_EQ(c_nQDDot(model), model->nbQddot());
@@ -40,11 +42,11 @@ TEST(BinderC, nDofs)
 
 TEST(BinderC, markers)
 {
-    biorbd::Model* model(c_biorbdModel(modelPathForGeneralTesting.c_str()));
+    Model* model(c_biorbdModel(modelPathForGeneralTesting.c_str()));
     EXPECT_EQ(c_nMarkers(model), model->nbMarkers());
 
     // Markers in global reference frame
-    biorbd::rigidbody::GeneralizedCoordinates Q(*model);
+    rigidbody::GeneralizedCoordinates Q(*model);
     double *dQ = new double[model->nbQ()];
     for (unsigned int i=0; i<model->nbQ(); ++i) {
         Q[i] = 0.1;
@@ -52,7 +54,7 @@ TEST(BinderC, markers)
     }
     double *dMarkersInGlobal = new double[model->nbMarkers()*3];
     c_markers(model, dQ, dMarkersInGlobal);
-    std::vector<biorbd::rigidbody::NodeSegment> markersInGlobal(model->markers(Q));
+    std::vector<rigidbody::NodeSegment> markersInGlobal(model->markers(Q));
     for (unsigned int i=0; i<model->nbMarkers(); ++i)
         for (unsigned int j=0; j<3; ++j) {
             EXPECT_NEAR(dMarkersInGlobal[i*3+j], markersInGlobal[i][j], requiredPrecision);
@@ -65,7 +67,7 @@ TEST(BinderC, markers)
     c_addMarker(model, newMarkerPosition, "MyNewMarker",
                 model->segment(1).name().c_str(), false, true, "x");
     EXPECT_EQ(model->nbMarkers(), nMarkersBeforeAdding + 1);
-    biorbd::rigidbody::NodeSegment newMarker(model->marker(nMarkersBeforeAdding));
+    rigidbody::NodeSegment newMarker(model->marker(nMarkersBeforeAdding));
     EXPECT_STREQ(newMarker.name().c_str(), "MyNewMarker");
     EXPECT_STREQ(newMarker.parent().c_str(), model->segment(1).name().c_str());
     EXPECT_EQ(newMarker.isTechnical(), false);
@@ -75,7 +77,7 @@ TEST(BinderC, markers)
     // Markers in local reference frame
     double *dMarkersInLocal = new double[model->nbMarkers()*3];
     c_markersInLocal(model, dMarkersInLocal);
-    std::vector<biorbd::rigidbody::NodeSegment> markersInLocal(model->markers());
+    std::vector<rigidbody::NodeSegment> markersInLocal(model->markers());
     for (unsigned int i=0; i<model->nbMarkers(); ++i)
         for (unsigned int j=0; j<3; ++j) {
             EXPECT_NEAR(dMarkersInLocal[i*3+j], markersInLocal[i][j], requiredPrecision);
@@ -88,7 +90,7 @@ TEST(BinderC, markers)
 
 TEST(BinderC, jcs)
 {
-    biorbd::Model* model(c_biorbdModel(modelPathForGeneralTesting.c_str()));
+    Model* model(c_biorbdModel(modelPathForGeneralTesting.c_str()));
 
     // Get angle sequence of some bodies
     for (unsigned int i=0; i<model->nbSegment(); ++i) {
@@ -98,7 +100,7 @@ TEST(BinderC, jcs)
     }
 
     // JCS in global reference frame
-    biorbd::rigidbody::GeneralizedCoordinates Q(*model);
+    rigidbody::GeneralizedCoordinates Q(*model);
     double *dQ = new double[model->nbQ()];
     for (unsigned int i=0; i<model->nbQ(); ++i) {
         Q[i] = 0.1;
@@ -106,7 +108,7 @@ TEST(BinderC, jcs)
     }
     double *dRtInGlobal = new double[model->nbSegment()*4*4];
     c_globalJCS(model, dQ, dRtInGlobal);
-    std::vector<biorbd::utils::RotoTrans> jcsInGlobal(model->allGlobalJCS(Q));
+    std::vector<utils::RotoTrans> jcsInGlobal(model->allGlobalJCS(Q));
     for (unsigned int i=0; i<model->nbSegment(); ++i)
         for (unsigned int row=0; row<4; ++row)
             for (unsigned int col=0; col<4; ++col) {
@@ -118,7 +120,7 @@ TEST(BinderC, jcs)
     // JCS in local reference frame
     double *dRtInLocal = new double[model->nbSegment()*4*4];
     c_globalJCS(model, dQ, dRtInLocal);
-    std::vector<biorbd::utils::RotoTrans> jcsInLocal(model->allGlobalJCS());
+    std::vector<utils::RotoTrans> jcsInLocal(model->allGlobalJCS());
     for (unsigned int i=0; i<model->nbSegment(); ++i)
         for (unsigned int row=0; row<4; ++row)
             for (unsigned int col=0; col<4; ++col) {
@@ -133,11 +135,11 @@ TEST(BinderC, jcs)
 
 TEST(BinderC, imu)
 {
-    biorbd::Model* model(c_biorbdModel(modelPathForIMUTesting.c_str()));
+    Model* model(c_biorbdModel(modelPathForIMUTesting.c_str()));
     EXPECT_EQ(c_nIMUs(model), model->nbIMUs());
 
-    biorbd::utils::RotoTrans RT(
-        biorbd::utils::RotoTrans::fromEulerAngles(
+    utils::RotoTrans RT(
+        utils::RotoTrans::fromEulerAngles(
             Eigen::Vector3d(0.1, 0.1, 0.1),
             Eigen::Vector3d(0.1, 0.1, 0.1), "xyz"));
     double rt[16];
@@ -150,7 +152,7 @@ TEST(BinderC, imu)
     unsigned int nImuBeforeAdding(model->nbIMUs());
     c_addIMU(model, rt, "MyNewIMU", "Tete", false, true);
     EXPECT_EQ(model->nbIMUs(), nImuBeforeAdding+1);
-    biorbd::rigidbody::IMU newImu(model->IMU(nImuBeforeAdding));
+    rigidbody::IMU newImu(model->IMU(nImuBeforeAdding));
     EXPECT_STREQ(newImu.name().c_str(), "MyNewIMU");
     EXPECT_STREQ(newImu.parent().c_str(), "Tete");
     EXPECT_EQ(newImu.isTechnical(), false);
@@ -163,22 +165,22 @@ TEST(BinderC, imu)
 #ifndef SKIP_KALMAN
 TEST(BinderC, kalmanImu)
 {
-    biorbd::Model* model(c_biorbdModel(modelPathForIMUTesting.c_str()));
-    biorbd::rigidbody::KalmanReconsIMU kalman(*model);
-    biorbd::rigidbody::KalmanReconsIMU* kalman_c(c_BiorbdKalmanReconsIMU(model));
+    Model* model(c_biorbdModel(modelPathForIMUTesting.c_str()));
+    rigidbody::KalmanReconsIMU kalman(*model);
+    rigidbody::KalmanReconsIMU* kalman_c(c_BiorbdKalmanReconsIMU(model));
 
     // Compute reference
-    std::vector<biorbd::rigidbody::IMU> targetImus;
+    std::vector<rigidbody::IMU> targetImus;
     for (unsigned int i=0; i<model->nbIMUs(); ++i) {
-        biorbd::utils::RotoTrans rt(
-            biorbd::utils::RotoTrans::fromEulerAngles(
+        utils::RotoTrans rt(
+            utils::RotoTrans::fromEulerAngles(
                 Eigen::Vector3d(0.1*i, 0.1*i, 0.1*i),
                 Eigen::Vector3d(0.1*i, 0.1*i, 0.1*i), "xyz"));
         targetImus.push_back(rt);
     }
-    biorbd::rigidbody::GeneralizedCoordinates Q(*model);
-    biorbd::rigidbody::GeneralizedVelocity Qdot(*model);
-    biorbd::rigidbody::GeneralizedAcceleration Qddot(*model);
+    rigidbody::GeneralizedCoordinates Q(*model);
+    rigidbody::GeneralizedVelocity Qdot(*model);
+    rigidbody::GeneralizedAcceleration Qddot(*model);
     kalman.reconstructFrame(*model, targetImus, &Q, &Qdot, &Qddot);
 
     // Compute from C-interface
@@ -213,10 +215,10 @@ TEST(BinderC, math)
 {
     // Simple matrix multiplaction (RT3 = RT1 * RT2)
     {
-        biorbd::utils::RotoTrans RT1, RT2, RT3;
-        RT1 = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.1, 0.1, 0.1),
+        utils::RotoTrans RT1, RT2, RT3;
+        RT1 = utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.1, 0.1, 0.1),
                 Eigen::Vector3d(0.1, 0.1, 0.1), "xyz");
-        RT2 = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.3, 0.3, 0.3),
+        RT2 = utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.3, 0.3, 0.3),
                 Eigen::Vector3d(0.2, 0.2, 0.2), "xyz");
         RT3 = RT1.operator*(RT2);
 
@@ -238,18 +240,18 @@ TEST(BinderC, math)
 
     // Mean multiple matrices
     {
-        std::vector<biorbd::utils::RotoTrans> allRT(3);
-        biorbd::utils::RotoTrans meanRT;
-        allRT[0] = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.1, 0.1,
+        std::vector<utils::RotoTrans> allRT(3);
+        utils::RotoTrans meanRT;
+        allRT[0] = utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.1, 0.1,
                    0.1), Eigen::Vector3d(0.1, 0.1, 0.1),
                    "xyz");
-        allRT[1] = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.2, 0.2,
+        allRT[1] = utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.2, 0.2,
                    0.2), Eigen::Vector3d(0.2, 0.2, 0.2),
                    "xyz");
-        allRT[2] = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.3, 0.3,
+        allRT[2] = utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.3, 0.3,
                    0.3), Eigen::Vector3d(0.3, 0.3, 0.3),
                    "xyz");
-        meanRT = biorbd::utils::RotoTrans::mean(allRT);
+        meanRT = utils::RotoTrans::mean(allRT);
 
         double* rt = new double[meanRT.size()*16];
         double mean_rt[16];
@@ -272,10 +274,10 @@ TEST(BinderC, math)
 
     // Project jcs onto another (RT3 = RT1.tranpose() * RT2)
     {
-        biorbd::utils::RotoTrans RT1, RT2, RT3;
-        RT1 = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.1, 0.1, 0.1),
+        utils::RotoTrans RT1, RT2, RT3;
+        RT1 = utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.1, 0.1, 0.1),
                 Eigen::Vector3d(0.1, 0.1, 0.1), "xyz");
-        RT2 = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.3, 0.3, 0.3),
+        RT2 = utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.3, 0.3, 0.3),
                 Eigen::Vector3d(0.2, 0.2, 0.2), "xyz");
         RT3 = RT1.transpose().operator*(RT2);
 
@@ -297,10 +299,10 @@ TEST(BinderC, math)
 
     // Get the cardan angles from a matrix
     {
-        biorbd::utils::RotoTrans RT;
-        RT = biorbd::utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.1, 0.1, 0.1),
+        utils::RotoTrans RT;
+        RT = utils::RotoTrans::fromEulerAngles(Eigen::Vector3d(0.1, 0.1, 0.1),
                 Eigen::Vector3d(0.1, 0.1, 0.1), "xyz");
-        biorbd::utils::Vector realCardan(biorbd::utils::RotoTrans::toEulerAngles(RT,
+        utils::Vector realCardan(utils::RotoTrans::toEulerAngles(RT,
                                          "xyz"));
 
         double rt[16];

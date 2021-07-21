@@ -15,15 +15,15 @@ void Matlab_segmentAngularMomentum( int, mxArray *plhs[],
                                "4 arguments are required (+1 optional) where the 2nd is the handler on the model, 3rd is the Q, 4th is the Qdot and 5th is the index of body segment");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
             2, nQ);
     // Recevoir QDot
-    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
                 prhs, 3, nQdot);
 
     unsigned int nFrame(static_cast<unsigned int>(Q.size()));
@@ -61,7 +61,7 @@ void Matlab_segmentAngularMomentum( int, mxArray *plhs[],
     // Préparer la sortie conditionnelle (tous si idx==-1, seulement celui demandé sinon)
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrame; ++i) {
-        std::vector<biorbd::utils::Vector3d> am_all(model->CalcSegmentsAngularMomentum (
+        std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::Vector3d> am_all(model->CalcSegmentsAngularMomentum (
                     *model, *(Q.begin()+i),
                     *(QDot.begin()+i), true));
         if (idx==-1) {

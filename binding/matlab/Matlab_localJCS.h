@@ -14,10 +14,10 @@ void Matlab_localJCS( int, mxArray *plhs[],
                                "2 arguments are required where the 2nd is the handler on the model");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
 
     // Trouver les RT
-    std::vector<biorbd::utils::RotoTrans> JSC_vec(model->localJCS());
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::RotoTrans> JSC_vec(model->localJCS());
 
     // Create a matrix for the return argument
     const mwSize dims[3]= {4,4,mwSize(model->nbSegment())};
@@ -26,7 +26,7 @@ void Matlab_localJCS( int, mxArray *plhs[],
 
     // Remplir l'output
     unsigned int cmpJCS = 0;
-    for (std::vector<biorbd::utils::RotoTrans>::iterator JSC_it=JSC_vec.begin();
+    for (std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::RotoTrans>::iterator JSC_it=JSC_vec.begin();
             JSC_it!=JSC_vec.end(); ++JSC_it)
         for (unsigned int i=0; i<4; ++i)
             for (unsigned int j=0; j<4; ++j) {

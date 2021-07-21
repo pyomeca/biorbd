@@ -30,20 +30,20 @@ void Matlab_forwardDynamics( int, mxArray *plhs[],
     }
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot();
     unsigned int nQddot = model->nbQddot();
     unsigned int nTau = model->nbGeneralizedTorque();
 
     // Recevoir Q
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
             2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
                 prhs, 3, nQdot);
     // Recevoir Tau
-    std::vector<biorbd::rigidbody::GeneralizedTorque> Tau =
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque> Tau =
         getParameterGeneralizedTorque(prhs, 4, nTau);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
@@ -69,7 +69,7 @@ void Matlab_forwardDynamics( int, mxArray *plhs[],
         force = mxGetPr(plhs[1]); // Force sur les points de contacts
     }
 
-    biorbd::rigidbody::GeneralizedCoordinates QDDot(nQddot);
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates QDDot(nQddot);
     for (unsigned int j=0; j<nFrame; ++j) {
         model->UpdateKinematicsCustom(&Q[j], &QDot[j], nullptr);
 
@@ -82,7 +82,7 @@ void Matlab_forwardDynamics( int, mxArray *plhs[],
                     Tau[j], model->getConstraints(),
                     QDDot);// Forward dynamics
         } else if (contact == -1) { // Si on a une impulsion
-            biorbd::rigidbody::GeneralizedCoordinates QdotPost(static_cast<unsigned int>((*
+            biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates QdotPost(static_cast<unsigned int>((*
                     (Q.begin()+j)).size()));
             RigidBodyDynamics::ComputeConstraintImpulsesDirect(*model, Q[j], QDot[j],
                     model->getConstraints(), QdotPost);

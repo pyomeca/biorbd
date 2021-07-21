@@ -17,11 +17,11 @@ void Matlab_massMatrix( int, mxArray *plhs[],
                                "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
             2, nQ);
 
     // Create a matrix for the return argument

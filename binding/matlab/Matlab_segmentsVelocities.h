@@ -15,15 +15,15 @@ void Matlab_segmentsVelocities( int, mxArray *plhs[],
                                "4 arguments are required where the 2nd is the handler on the model, 3rd is the Q and 4th is QDot");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2,
             nQ).begin();
     // Recevoir Qdot
-    biorbd::rigidbody::GeneralizedVelocity QDot = *getParameterQdot(prhs, 3,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity QDot = *getParameterQdot(prhs, 3,
             nQdot).begin();
 
     // Update sur la cinématique
@@ -35,11 +35,10 @@ void Matlab_segmentsVelocities( int, mxArray *plhs[],
 
     // Remplir l'output
     unsigned int cmp = 0;
-    for (std::vector<RigidBodyDynamics::Math::SpatialVector>::iterator v_it =
-                model->v.begin(); v_it != model->v.end();
-            ++v_it) {
-        for (unsigned int i = 0; i<6; ++i) {
-            vel[i+6*cmp] = (*v_it)(i);
+    for (unsigned int i=0; i<model->RigidBodyDynamics::Model::v.size(); ++i){
+        auto& v = model->RigidBodyDynamics::Model::v[i];
+        for (unsigned int j = 0; j<6; ++j) {
+            vel[i+6*cmp] = v(j);
         }
         ++cmp;
     }

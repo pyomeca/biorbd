@@ -19,15 +19,15 @@ void Matlab_muscleUpdate( int, mxArray *[],
                                "6 arguments are required where the 2nd is the handler on the model, 3rd is the Q, 4th is QDot, 5th is all muscles points (origin, via points, insertion), 6th is the muscle point Jacobian");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
             2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
                 prhs, 3, nQdot);
 
     // S'assurer qu'il n'y a qu'un seul frame
@@ -57,7 +57,7 @@ void Matlab_muscleUpdate( int, mxArray *[],
     // Mettre le nombre nécessaire dans chaque case
     int cmpMus(0);
     for (unsigned int i = 0; i<model->nbMuscleGroups(); ++i) {
-        biorbd::muscles::MuscleGroup grMus(model->muscleGroup(i));
+        biorbd::BIORBD_MATH_NAMESPACE::muscles::MuscleGroup grMus(model->muscleGroup(i));
         for (unsigned int j = 0; j<grMus.nbMuscles(); ++j) {
             nPoints(cmpMus) = grMus.muscle(j).pathModifier().nbObjects() +
                               2; // nombre d'objet + origine + insertion
@@ -67,11 +67,11 @@ void Matlab_muscleUpdate( int, mxArray *[],
 //    }
 
     // Recueillir la matrice de points
-    std::vector<std::vector<biorbd::utils::Vector3d>> musclePosition(
+    std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::Vector3d>> musclePosition(
                 getMusclePosition(prhs, 4, nPoints));
 
     // Recueillir la matrice jacobienne
-    std::vector<biorbd::utils::Matrix> musclePointsJaco(getMusclePointsJaco(prhs, 5,
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::Matrix> musclePointsJaco(getMusclePointsJaco(prhs, 5,
             nPoints, nQ));
 
     // Appeler la fonction d'update

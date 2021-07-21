@@ -14,7 +14,7 @@ void Matlab_rangeQ(int, mxArray *plhs[],
     // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 2, 2,
                                "2 arguments are required where the 2nd is the handler on the model");
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
     unsigned int nbSegments = model->nbSegment();
 
     mwSize outSize[2] = {nbSegments, 1};

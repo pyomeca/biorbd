@@ -14,11 +14,11 @@ void Matlab_segmentCOM( int, mxArray *plhs[],
                                "3 arguments are required (+1 optional) where the 2nd is the handler on the model, 3rd is the Q and 4th is the index of body segment");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2,
             nQ).begin();
     // Recevoir le numéro du segment (optionnel)
     int i(0);
@@ -29,7 +29,7 @@ void Matlab_segmentCOM( int, mxArray *plhs[],
 
     // Trouver la position du CoM
     if (i==-1) {
-        std::vector<biorbd::rigidbody::NodeSegment> COM = model->CoMbySegment(Q,true);
+        std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment> COM = model->CoMbySegment(Q,true);
         // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix( 3, model->nbSegment(), mxREAL);
         // Remplir l'output
@@ -39,7 +39,7 @@ void Matlab_segmentCOM( int, mxArray *plhs[],
                 tp[3*j+k] = COM[j][k];    // Transférer le tout dans un tableau de sortie
             }
     } else {
-        biorbd::rigidbody::NodeSegment COM = model->CoMbySegment(Q,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment COM = model->CoMbySegment(Q,
                                              static_cast<unsigned int>(i),true);
 
         // Create a matrix for the return argument

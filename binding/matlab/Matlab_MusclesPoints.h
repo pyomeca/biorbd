@@ -20,18 +20,18 @@ void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 3, 3,
                                "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
             2, nQ);
 
     // Cellules de sortie
     plhs[0] = mxCreateCellMatrix(model->nbMuscleTotal(), Q.size());
     // Utilisable que si nlhs >= 2
-    std::vector<biorbd::utils::NODE_TYPE> wrap_type; // forme du wrapping
-    std::vector<biorbd::utils::RotoTrans> wrap_RT; // orientation du wrapping
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::NODE_TYPE> wrap_type; // forme du wrapping
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::RotoTrans> wrap_RT; // orientation du wrapping
     std::vector<double> wrap_dim1; // dimension du wrapping
     std::vector<double> wrap_dim2; // dimension deux du wrapping
 
@@ -44,26 +44,26 @@ void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
                 model->UpdateKinematicsCustom(&Q[iQ]);
 
                 // Recueillir tout le chemin musculaire
-                std::vector<biorbd::utils::Vector3d> via(model->muscleGroup(i).muscle(
+                std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::Vector3d> via(model->muscleGroup(i).muscle(
                             j).musclesPointsInGlobal());
 
                 // Si le nombre de wrap est > 0, c'est qu'il n'y a pas de viapoints et il n'y a qu'UN wrap
                 if (model->muscleGroup(i).muscle(j).pathModifier().nbWraps() > 0) {
-                    const biorbd::muscles::WrappingObject& wrappingObject(
-                        dynamic_cast<const biorbd::muscles::WrappingObject&>(
+                    const biorbd::BIORBD_MATH_NAMESPACE::muscles::WrappingObject& wrappingObject(
+                        dynamic_cast<const biorbd::BIORBD_MATH_NAMESPACE::muscles::WrappingObject&>(
                             model->muscleGroup(0).muscle(0).pathModifier().object(0)));
 
                     // De quel type
-                    biorbd::utils::NODE_TYPE type(wrappingObject.typeOfNode());
+                    biorbd::BIORBD_MATH_NAMESPACE::utils::NODE_TYPE type(wrappingObject.typeOfNode());
                     wrap_type.push_back(type);
 
                     // Dans quelle orientation
                     wrap_RT.push_back(wrappingObject.RT());
 
                     // Quel est sa dimension
-                    if (type == biorbd::utils::NODE_TYPE::WRAPPING_HALF_CYLINDER) {
-                        const biorbd::muscles::WrappingHalfCylinder& cylinder(
-                            dynamic_cast<const biorbd::muscles::WrappingHalfCylinder&>
+                    if (type == biorbd::BIORBD_MATH_NAMESPACE::utils::NODE_TYPE::WRAPPING_HALF_CYLINDER) {
+                        const biorbd::BIORBD_MATH_NAMESPACE::muscles::WrappingHalfCylinder& cylinder(
+                            dynamic_cast<const biorbd::BIORBD_MATH_NAMESPACE::muscles::WrappingHalfCylinder&>
                             (wrappingObject));
                         wrap_dim1.push_back(cylinder.radius());
                         wrap_dim2.push_back(cylinder.length());
@@ -96,7 +96,7 @@ void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
 
         for (unsigned int i=0; i<wrap_RT.size(); ++i) {
             // Transcrire les formes dans un tableau matlab
-            mxArray *tp_forme = mxCreateString( biorbd::utils::NODE_TYPE_toStr(
+            mxArray *tp_forme = mxCreateString( biorbd::BIORBD_MATH_NAMESPACE::utils::NODE_TYPE_toStr(
                                                     wrap_type[i]) );
 
             // Transcrire les valeurs RT dans un tableau matlab

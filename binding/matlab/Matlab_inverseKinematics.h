@@ -14,15 +14,15 @@ void Matlab_inverseKinematics( int, mxArray *plhs[],
                                "4 arguments are required [+1 optional] where the 2nd is the handler on the model, 3rd is the 3xNxTime marker positions matrix and 4th is the initial guess for Q and 5th if you want to remove axes as specified in the model file [default = true]");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir la matrice des markers
-    std::vector<std::vector<biorbd::rigidbody::NodeSegment>> markersOverTime =
+    std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>> markersOverTime =
                 getParameterAllMarkers(prhs,2,static_cast<int>(model->nbTechnicalMarkers()));
 
     // Recevoir Qinit
-    biorbd::rigidbody::GeneralizedCoordinates Qinit = *getParameterQ(prhs, 3,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates Qinit = *getParameterQ(prhs, 3,
             nQ).begin();
 
     bool removeAxes(true);
@@ -36,7 +36,7 @@ void Matlab_inverseKinematics( int, mxArray *plhs[],
 
     // Faire la cinématique inverse a chaque instant
     for (unsigned int i=0; i<markersOverTime.size(); ++i) {
-        biorbd::rigidbody::GeneralizedCoordinates Q(nQ);
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates Q(nQ);
         Q.setZero();
 
         // Faire la cinématique inverse

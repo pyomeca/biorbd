@@ -15,7 +15,7 @@ void Matlab_delete( int nlhs, mxArray *[],
                                "2 arguments are required where the 2nd is the handler on the model");
 
     // Destroy the C++ object
-    destroyObject<biorbd::Model>(prhs[1]);
+    destroyObject<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
     // Warn if other commands were ignored
     if (nlhs != 0 || nrhs != 2) {
         mexWarnMsgTxt("Delete: Unexpected output arguments ignored.");

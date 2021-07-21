@@ -274,7 +274,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Nombre de Markers
     if (!toLower(cmd).compare("nmimu")) {
-        biorbd::utils::Error::warning(0,
+        biorbd::BIORBD_MATH_NAMESPACE::utils::Error::warning(0,
                                       "La fonction \"nmimu\" est obsolete. Remplacer par \"nimu\". Elle sera retirée prochainement");
         Matlab_nIMU(nlhs, plhs, nrhs, prhs);
         return;
@@ -286,7 +286,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Noms des Markers
     if (!toLower(cmd).compare("namemimu")) {
-        biorbd::utils::Error::warning(0,
+        biorbd::BIORBD_MATH_NAMESPACE::utils::Error::warning(0,
                                       "La fonction \"namemimu\" est obsolete. Remplacer par \"nameimu\". Elle sera retirée prochainement");
         Matlab_nameIMU(nlhs, plhs, nrhs, prhs);
         return;
@@ -298,7 +298,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Noms des Markers techniques
     if (!toLower(cmd).compare("nametechnicalmimu")) {
-        biorbd::utils::Error::warning(0,
+        biorbd::BIORBD_MATH_NAMESPACE::utils::Error::warning(0,
                                       "La fonction \"nametechnicalmimu\" est obsolete. Remplacer par \"nametechnicalimu\". Elle sera retirée prochainement");
         Matlab_nameTechnicalIMU(nlhs, plhs, nrhs, prhs);
         return;
@@ -310,7 +310,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Noms des Markers anatomiques
     if (!toLower(cmd).compare("nameanatomicalmimu")) {
-        biorbd::utils::Error::warning(0,
+        biorbd::BIORBD_MATH_NAMESPACE::utils::Error::warning(0,
                                       "La fonction \"nameanatomicalmimu\" est obsolete. Remplacer par \"nameanatomicalimu\". Elle sera retirée prochainement");
         Matlab_nameAnatomicalIMU(nlhs, plhs, nrhs, prhs);
         return;
@@ -322,7 +322,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Fonction de cinématique directe
     if(!toLower(cmd).compare("mimu")) {
-        biorbd::utils::Error::warning(0,
+        biorbd::BIORBD_MATH_NAMESPACE::utils::Error::warning(0,
                                       "La fonction \"mimu\" est obsolete. Remplacer par \"imu\". Elle sera retirée prochainement");
         Matlab_IMU(nlhs, plhs, nrhs, prhs);
         return;
@@ -334,7 +334,7 @@ void functionHub( int nlhs, mxArray *plhs[],
 
     // Fonction de cinématique directe
     if(!toLower(cmd).compare("mimujacobian")) {
-        biorbd::utils::Error::warning(0,
+        biorbd::BIORBD_MATH_NAMESPACE::utils::Error::warning(0,
                                       "La fonction \"mimujacobian\" est obsolete. Remplacer par \"imujacobian\". Elle sera retirée prochainement");
         Matlab_IMUJacobian(nlhs, plhs, nrhs, prhs);
         return;

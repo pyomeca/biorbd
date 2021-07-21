@@ -14,21 +14,21 @@ void Matlab_ProjectPointJacobian( int, mxArray *plhs[],
                                "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q and 4th are the 3xN markers where N=nMarkers of the model");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2,
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2,
             nQ).begin();
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
-    std::vector<biorbd::rigidbody::NodeSegment> markersOverTime =
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment> markersOverTime =
         *getParameterAllMarkers(prhs,3).begin();
 
     // Trouver la matrice jacobienne de tous les marqueurs
-    std::vector<biorbd::utils::Matrix> Jac_tp = model->projectPointJacobian(Q,
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::Matrix> Jac_tp = model->projectPointJacobian(Q,
             markersOverTime, true);
-    std::vector<biorbd::utils::Matrix>::iterator it=Jac_tp.begin();
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::Matrix>::iterator it=Jac_tp.begin();
 
     // Create a matrix for the return argument
     unsigned int nMarkers = model->nbMarkers();

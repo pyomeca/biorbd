@@ -14,15 +14,15 @@ void Matlab_CoMangularMomentum( int, mxArray *plhs[],
                                "4 arguments are required where the 2nd is the handler on the model, 3rd is the Q and 4th is QDot");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
             2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
                 prhs, 3, nQdot);
 
     // S'assurer que Q et Qdot font la même dimension

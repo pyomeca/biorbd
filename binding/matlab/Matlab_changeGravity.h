@@ -13,7 +13,7 @@ void Matlab_changeGravity   ( int, mxArray *plhs[],
     // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 3, 3,
                                "3 arguments are required where the 2nd is the handler on the model and 3rd is the gravity field 3d vector");
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( 1, 1, mxREAL);

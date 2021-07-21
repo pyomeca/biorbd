@@ -19,19 +19,19 @@ void Matlab_inverseDynamics( int, mxArray *plhs[],
     }
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
     unsigned int nTau = model->nbGeneralizedTorque(); // Nombre de GeneralizedTorque
 
     // Recevoir Q
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
             2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
                 prhs, 3, nQdot);
     // Recevoir Qddot
-    std::vector<biorbd::rigidbody::GeneralizedAcceleration> QDDot =
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration> QDDot =
         getParameterQddot(prhs, 4, nQdot);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
@@ -45,7 +45,7 @@ void Matlab_inverseDynamics( int, mxArray *plhs[],
                            "QDDot must have the same number of frames than Q");
     }
 
-    std::vector<std::vector<biorbd::utils::SpatialVector>> f_tp;
+    std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::SpatialVector>> f_tp;
     if (externalForces) {
         f_tp = getForcePlate(prhs, 5);
         if (f_tp.size() != nFrame) {
@@ -60,7 +60,7 @@ void Matlab_inverseDynamics( int, mxArray *plhs[],
     unsigned int cmp(0);
 
     // Trouver la dynamique inverse a cette configuration
-    biorbd::rigidbody::GeneralizedTorque Tau(nTau);
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque Tau(nTau);
     for (unsigned int j=0; j<Q.size(); ++j) {
         Tau.setZero();
         if (externalForces) {
