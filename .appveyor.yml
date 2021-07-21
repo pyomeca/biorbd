@@ -75,10 +75,6 @@ test_script:
   - cmd: biorbd_casadi_tests.exe
   - cd ..
   
-  # Test for the python binder
-  - cd test/binding/Python3
-  - pytest .
-  - cd ../../..
     
     
   ############################################################################
@@ -111,7 +107,10 @@ test_script:
   - cmd: biorbd_eigen_tests_binding_c.exe
   - cd ../../..
   
-  # Test for the python binder
+  
+  ############################################################################
+  # Test for the python binder (both casadi and eigen)
+  ############################################################################
   - cd test/binding/Python3
   - pytest .
   - cd ../../..

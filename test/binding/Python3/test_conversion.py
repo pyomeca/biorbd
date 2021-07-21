@@ -1,22 +1,34 @@
 """
 Test for file IO
 """
+import pytest
 import numpy as np
 
-@PYTHON_TEST_IMPORT_BIORBD@
+brbd_to_test = []
+try:
+    import biorbd
+    brbd_to_test.append(biorbd)
+except:
+    pass
+try:
+    import biorbd_casadi
+    brbd_to_test.append(biorbd_casadi)
+except:
+    pass
 
 
 # --- Options --- #
-def test_np_mx_to_generalized():
-    biorbd_model = biorbd.Model("../../models/pyomecaman.bioMod")
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_np_mx_to_generalized(brbd):
+    biorbd_model = brbd.Model("../../models/pyomecaman.bioMod")
 
-    q = biorbd.GeneralizedCoordinates(biorbd_model)
-    qdot = biorbd.GeneralizedVelocity((biorbd_model.nbQdot()))
-    qddot = biorbd.GeneralizedAcceleration((biorbd_model.nbQddot()))
+    q = brbd.GeneralizedCoordinates(biorbd_model)
+    qdot = brbd.GeneralizedVelocity((biorbd_model.nbQdot()))
+    qddot = brbd.GeneralizedAcceleration((biorbd_model.nbQddot()))
     tau = biorbd_model.InverseDynamics(q, qdot, qddot)
     biorbd_model.ForwardDynamics(q, qdot, tau)
 
-    if biorbd.currentLinearAlgebraBackend() == 1:
+    if brbd.currentLinearAlgebraBackend() == 1:
         tau = biorbd_model.InverseDynamics(q.to_mx(), qdot.to_mx(), qddot.to_mx())
         biorbd_model.ForwardDynamics(q, qdot, tau.to_mx())
     else:
@@ -25,15 +37,16 @@ def test_np_mx_to_generalized():
 
 
 # --- Options --- #
-def test_imu_to_array():
-    m = biorbd.Model("../../models/IMUandCustomRT/pyomecaman_withIMUs.bioMod")
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_imu_to_array(brbd):
+    m = brbd.Model("../../models/IMUandCustomRT/pyomecaman_withIMUs.bioMod")
     q = np.zeros((m.nbQ(),))
 
-    if biorbd.currentLinearAlgebraBackend() == 1:
+    if brbd.currentLinearAlgebraBackend() == 1:
         from casadi import MX
 
         q_sym = MX.sym("q", m.nbQ(), 1)
-        imu_func = biorbd.to_casadi_func("imu", m.IMU, q_sym)
+        imu_func = brbd.to_casadi_func("imu", m.IMU, q_sym)
         imu = imu_func(q)[:, :4]
 
     else:
@@ -52,14 +65,15 @@ def test_imu_to_array():
     )
 
 
-def test_vector3d():
-    biorbd_model = biorbd.Model()
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_vector3d(brbd):
+    biorbd_model = brbd.Model()
     vec = np.random.rand(
         3,
     )
     biorbd_model.setGravity(vec)
 
-    if biorbd.currentLinearAlgebraBackend() == 1:
+    if brbd.currentLinearAlgebraBackend() == 1:
         from casadi import MX
 
         vec = MX.ones(3, 1)
