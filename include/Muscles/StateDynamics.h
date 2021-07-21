@@ -6,13 +6,15 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace muscles
 {
 class Characteristics;
 ///
 /// \brief EMG with the capability to compute the time derivative
 ///
-class BIORBD_API StateDynamics : public biorbd::muscles::State
+class BIORBD_API StateDynamics : public State
 {
 public:
     ///
@@ -21,15 +23,15 @@ public:
     /// \param activation The muscle activation
     ///
     StateDynamics(
-        const biorbd::utils::Scalar& excitation = 0,
-        const biorbd::utils::Scalar& activation = 0);
+        const utils::Scalar& excitation = 0,
+        const utils::Scalar& activation = 0);
 
     ///
     /// \brief Construct a state dynamics from another state dynamics
     /// \param other The other state dynamics
     ///
     StateDynamics(
-        const biorbd::muscles::State& other);
+        const State& other);
 
     ///
     /// \brief Destroy class properly
@@ -40,14 +42,14 @@ public:
     /// \brief Deep copy of state dynamics
     /// \return A deep copy of state dynamics
     ///
-    biorbd::muscles::StateDynamics DeepCopy() const;
+    StateDynamics DeepCopy() const;
 
     ///
     /// \brief Deep copy of state dynamics into another state dynamics
     /// \param other The state dynamics to copy
     ///
     void DeepCopy(
-        const biorbd::muscles::StateDynamics& other);
+        const StateDynamics& other);
 
     ///
     /// \brief Set the muscle excitation
@@ -58,14 +60,14 @@ public:
     /// it changes it to 0 anyway, but doesn't send a warning saying it.
     ///
     virtual void setExcitation(
-        const biorbd::utils::Scalar& val,
+        const utils::Scalar& val,
         bool turnOffWarnings = false);
 
     ///
     /// \brief Return the previous activation
     /// \return The previous activation
     ///
-    const biorbd::utils::Scalar& previousExcitation() const;
+    const utils::Scalar& previousExcitation() const;
 
     ///
     /// \brief Set the muscle activation
@@ -79,14 +81,14 @@ public:
     /// it changes it to 1 anyway, but doesn't send a warning saying it.
     ///
     virtual void setActivation(
-        const biorbd::utils::Scalar& val,
+        const utils::Scalar& val,
         bool turnOffWarnings = false);
 
     ///
     /// \brief Return the previous activation
     /// \return The previous activation
     ///
-    const biorbd::utils::Scalar& previousActivation() const;
+    const utils::Scalar& previousActivation() const;
 
     ///
     /// \brief Compute and return the activation time derivative from the excitation and activation
@@ -96,9 +98,9 @@ public:
     /// \param alreadyNormalized If already normalized
     /// \return The activation time derivative
     ///
-    virtual const biorbd::utils::Scalar& timeDerivativeActivation(
-        const biorbd::utils::Scalar& excitation,
-        const biorbd::utils::Scalar& activation,
+    virtual const utils::Scalar& timeDerivativeActivation(
+        const utils::Scalar& excitation,
+        const utils::Scalar& activation,
         const Characteristics& characteristics,
         bool alreadyNormalized = false);
 
@@ -109,9 +111,9 @@ public:
     /// \param alreadyNormalized If already normalized
     /// \return The activation time derivative
     ///
-    virtual const biorbd::utils::Scalar& timeDerivativeActivation(
-        const biorbd::muscles::State& emg,
-        const biorbd::muscles::Characteristics& characteristics,
+    virtual const utils::Scalar& timeDerivativeActivation(
+        const State& emg,
+        const Characteristics& characteristics,
         bool alreadyNormalized = false);
 
     ///
@@ -120,27 +122,28 @@ public:
     /// \param alreadyNormalized If already normalized
     /// \return The activation time derivative
     ///
-    virtual const biorbd::utils::Scalar& timeDerivativeActivation(
-        const biorbd::muscles::Characteristics& characteristics,
+    virtual const utils::Scalar& timeDerivativeActivation(
+        const Characteristics& characteristics,
         bool alreadyNormalized = false);
 
     ///
     /// \brief Return the previously computed activation time derivative
     /// \return The activation time derivative
     ///
-    virtual const biorbd::utils::Scalar& timeDerivativeActivation();
+    virtual const utils::Scalar& timeDerivativeActivation();
 
 protected:
     virtual void setType();
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_previousExcitation; ///< The previous excitation
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_previousActivation; ///<The previous activation
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_activationDot;///< The activation velocity
 
 };
 
+}
 }
 }
 

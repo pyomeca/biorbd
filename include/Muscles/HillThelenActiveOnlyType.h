@@ -6,13 +6,15 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace muscles
 {
 ///
 /// \brief Muscle of Hill type augmented by Thelen (https://simtk-confluence.stanford.edu/display/OpenSim/Thelen+2003+Muscle+Model)
 ///
 class BIORBD_API HillThelenActiveOnlyType : public
-    biorbd::muscles::HillThelenType
+    HillThelenType
 {
 public:
     ///
@@ -27,9 +29,9 @@ public:
     /// \param characteristics The muscle characteristics
     ///
     HillThelenActiveOnlyType(
-        const biorbd::utils::String& name,
-        const biorbd::muscles::Geometry& geometry,
-        const biorbd::muscles::Characteristics& characteristics);
+        const utils::String& name,
+        const Geometry& geometry,
+        const Characteristics& characteristics);
 
     ///
     /// \brief Construct a Hill-Thelen-type muscle
@@ -39,10 +41,10 @@ public:
     /// \param emg The muscle dynamic state
     ///
     HillThelenActiveOnlyType(
-        const biorbd::utils::String& name,
-        const biorbd::muscles::Geometry& geometry,
-        const biorbd::muscles::Characteristics& characteristics,
-        const biorbd::muscles::State& emg);
+        const utils::String& name,
+        const Geometry& geometry,
+        const Characteristics& characteristics,
+        const State& emg);
 
     ///
     /// \brief Construct a Hill-Thelen-type muscle
@@ -52,10 +54,10 @@ public:
     /// \param pathModifiers The set of path modifiers
     ///
     HillThelenActiveOnlyType(
-        const biorbd::utils::String& name,
-        const biorbd::muscles::Geometry& geometry,
-        const biorbd::muscles::Characteristics& characteristics,
-        const biorbd::muscles::PathModifiers& pathModifiers);
+        const utils::String& name,
+        const Geometry& geometry,
+        const Characteristics& characteristics,
+        const PathModifiers& pathModifiers);
 
     ///
     /// \brief Construct a Hill-Thelen-type muscle
@@ -66,37 +68,37 @@ public:
     /// \param emg The dynamic state
     ///
     HillThelenActiveOnlyType(
-        const biorbd::utils::String& name,
-        const biorbd::muscles::Geometry& geometry,
-        const biorbd::muscles::Characteristics& characteristics,
-        const biorbd::muscles::PathModifiers& pathModifiers,
-        const biorbd::muscles::State& emg);
+        const utils::String& name,
+        const Geometry& geometry,
+        const Characteristics& characteristics,
+        const PathModifiers& pathModifiers,
+        const State& emg);
 
     ///
     /// \brief Construct a Hill-Thelen-type muscle from another muscle
     /// \param other The other muscle
     ///
     HillThelenActiveOnlyType(
-        const biorbd::muscles::Muscle& other);
+        const Muscle& other);
 
     ///
     /// \brief Construct a Hill-Thelen-type muscle from another muscle
     /// \param other The other muscle (pointer)
     ///
     HillThelenActiveOnlyType(
-        const std::shared_ptr<biorbd::muscles::Muscle> other);
+        const std::shared_ptr<Muscle> other);
 
     ///
     /// \brief Deep copy of a Hill-Thelen-type muscle
     /// \return A deep copy of a Hill-Thelen-type muscle
     ///
-    biorbd::muscles::HillThelenActiveOnlyType DeepCopy() const;
+    HillThelenActiveOnlyType DeepCopy() const;
 
     ///
     /// \brief Deep copy of a Hill-Thelen-type muscle in a new Hill-Thelen-type muscle
     /// \param other The Hill-Thelen-type muscle to copy
     ///
-    void DeepCopy(const biorbd::muscles::HillThelenActiveOnlyType& other);
+    void DeepCopy(const HillThelenActiveOnlyType& other);
 
     ///
     /// \brief Compute the Force-Length of the passive element
@@ -116,6 +118,7 @@ protected:
 
 };
 
+}
 }
 }
 

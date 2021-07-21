@@ -7,6 +7,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace muscles
 {
 
@@ -24,7 +26,7 @@ namespace muscles
 /// - \f$damping = 0.1\f$
 /// - \f$maxShorteningSpeed = 10.0\f$
 ///
-class BIORBD_API HillType : public biorbd::muscles::Muscle
+class BIORBD_API HillType : public Muscle
 {
 public:
     ///
@@ -39,9 +41,9 @@ public:
     /// \param characteristics The muscle characteristics
     ///
     HillType(
-        const biorbd::utils::String& name,
-        const biorbd::muscles::Geometry& geometry,
-        const biorbd::muscles::Characteristics& characteristics);
+        const utils::String& name,
+        const Geometry& geometry,
+        const Characteristics& characteristics);
 
     ///
     /// \brief Construct a Hill-type muscle
@@ -51,10 +53,10 @@ public:
     /// \param emg The muscle dynamic state
     ///
     HillType(
-        const biorbd::utils::String& name,
-        const biorbd::muscles::Geometry& geometry,
-        const biorbd::muscles::Characteristics& characteristics,
-        const biorbd::muscles::State& emg);
+        const utils::String& name,
+        const Geometry& geometry,
+        const Characteristics& characteristics,
+        const State& emg);
 
     ///
     /// \brief Construct a Hill-type muscle
@@ -64,10 +66,10 @@ public:
     /// \param pathModifiers The set of path modifiers
     ///
     HillType(
-        const biorbd::utils::String& name,
-        const biorbd::muscles::Geometry& geometry,
-        const biorbd::muscles::Characteristics& characteristics,
-        const biorbd::muscles::PathModifiers& pathModifiers);
+        const utils::String& name,
+        const Geometry& geometry,
+        const Characteristics& characteristics,
+        const PathModifiers& pathModifiers);
 
     ///
     /// \brief Construct a Hill-type muscle
@@ -78,46 +80,46 @@ public:
     /// \param emg The dynamic state
     ///
     HillType(
-        const biorbd::utils::String& name,
-        const biorbd::muscles::Geometry& geometry,
-        const biorbd::muscles::Characteristics& characteristics,
-        const biorbd::muscles::PathModifiers& pathModifiers,
-        const biorbd::muscles::State& emg);
+        const utils::String& name,
+        const Geometry& geometry,
+        const Characteristics& characteristics,
+        const PathModifiers& pathModifiers,
+        const State& emg);
 
     ///
     /// \brief Construct a Hill-type muscle from another muscle
     /// \param other The other muscle
     ///
     HillType(
-        const biorbd::muscles::Muscle& other);
+        const Muscle& other);
 
     ///
     /// \brief Construct a Hill-type muscle from another muscle
     /// \param other THe other muscle
     ///
     HillType(
-        const std::shared_ptr<biorbd::muscles::Muscle> other);
+        const std::shared_ptr<Muscle> other);
 
     ///
     /// \brief Deep copy of a Hill-type muscle
     /// \return A deep copy of a Hill-type muscle
     ///
-    biorbd::muscles::HillType DeepCopy() const;
+    HillType DeepCopy() const;
 
     ///
     /// \brief Deep copy of a Hill-type muscle in a new Hill-type muscle
     /// \param other The Hill-type to copy
     ///
     void DeepCopy(
-        const biorbd::muscles::HillType& other);
+        const HillType& other);
 
     ///
     /// \brief Return the muscle force vector at origin and insertion
     /// \param emg The EMG data
     /// \return The force vector at origin and insertion
     ///
-    virtual const biorbd::utils::Scalar& force(
-        const biorbd::muscles::State& emg);
+    virtual const utils::Scalar& force(
+        const State& emg);
 
     ///
     /// \brief Return the muscle force vector at origin and insertion
@@ -128,11 +130,11 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     /// \return The force vector at origin and insertion
     ///
-    virtual const biorbd::utils::Scalar& force(
+    virtual const utils::Scalar& force(
         biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedVelocity& Qdot,
-        const biorbd::muscles::State& emg,
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& Qdot,
+        const State& emg,
         int updateKin = 2);
 
     ///
@@ -143,36 +145,36 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     /// \return The force vector at origin and insertion
     ///
-    virtual const biorbd::utils::Scalar& force(
+    virtual const utils::Scalar& force(
         biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::muscles::State& emg,
+        const rigidbody::GeneralizedCoordinates& Q,
+        const State& emg,
         int updateKin = 2);
 
     ///
     /// \brief Return the Force-Length of the contractile element
     /// \return The Force-Length of the contractile element
     ///
-    const biorbd::utils::Scalar& FlCE(
-        const biorbd::muscles::State& emg);
+    const utils::Scalar& FlCE(
+        const State& emg);
 
     ///
     /// \brief Return the Force-Length of the passive element
     /// \return The Force-Length of the passive element
     ///
-    const biorbd::utils::Scalar& FlPE();
+    const utils::Scalar& FlPE();
 
     ///
     /// \brief Return the Force-Velocity of the contractile element
     /// \return The Force-Velocity of the contractile element
     ///
-    const biorbd::utils::Scalar& FvCE();
+    const utils::Scalar& FvCE();
 
     ///
     /// \brief Return the muscle damping (spring force)
     /// \return The muscle damping
     ///
-    const biorbd::utils::Scalar& damping();
+    const utils::Scalar& damping();
 
 protected:
     ///
@@ -189,7 +191,7 @@ protected:
     /// \brief Compute the Force-length of the contractile element
     ///
     virtual void computeFlCE(
-        const biorbd::muscles::State &emg);
+        const State &emg);
 
     ///
     /// \brief Compute the Force-Velocity of the contractile element
@@ -205,48 +207,49 @@ protected:
     /// \brief Function allowing modification of the way the multiplication is done in computeForce(EMG)
     /// \param emg The EMG data
     /// \return The force from activation
-    virtual biorbd::utils::Scalar getForceFromActivation(
-        const biorbd::muscles::State &emg);
+    virtual utils::Scalar getForceFromActivation(
+        const State &emg);
 
     ///
     /// \brief Normalize the EMG data
     /// \param emg EMG data
     ///
     virtual void normalizeEmg(
-        biorbd::muscles::State& emg);
+        State& emg);
 
     // Attributs intermédiaires lors du calcul de la force
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_damping; ///< Muscle damping (spring force)
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_FlCE; ///<Force-Length of the contractile element
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_FlPE; ///< Force-Length of the passive element
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_FvCE; ///<Force-Velocity of the contractile element
 
     // Declaration of multiple constants
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_cste_FlCE_1; ///< constant 1 used in the FlCE
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_cste_FlCE_2; ///< constant 2 used in the FlCE
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_cste_FvCE_1; ///< constant 1 used in the FvCE
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_cste_FvCE_2; ///< constant 2 used in the FvCE
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_cste_FlPE_1; ///< constant 1 used in the FlPE
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_cste_FlPE_2; ///< constant 2 used in the FlPE
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_cste_eccentricForceMultiplier; ///< Constant used for ForceVelocity
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_cste_damping; ///< parameters used in damping
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_cste_maxShorteningSpeed; ///< Maximal velocity of shortening
 
 };
 
+}
 }
 }
 

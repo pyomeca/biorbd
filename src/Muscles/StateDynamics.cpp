@@ -5,43 +5,45 @@
 #include "Utils/String.h"
 #include "Muscles/Characteristics.h"
 
-biorbd::muscles::StateDynamics::StateDynamics(
-    const biorbd::utils::Scalar& excitation,
-    const biorbd::utils::Scalar& activation) :
-    biorbd::muscles::State(excitation,activation),
-    m_previousExcitation(std::make_shared<biorbd::utils::Scalar>(0)),
-    m_previousActivation(std::make_shared<biorbd::utils::Scalar>(0)),
-    m_activationDot(std::make_shared<biorbd::utils::Scalar>(0))
+using namespace biorbd::BIORBD_MATH_NAMESPACE;
+
+muscles::StateDynamics::StateDynamics(
+    const utils::Scalar& excitation,
+    const utils::Scalar& activation) :
+    muscles::State(excitation,activation),
+    m_previousExcitation(std::make_shared<utils::Scalar>(0)),
+    m_previousActivation(std::make_shared<utils::Scalar>(0)),
+    m_activationDot(std::make_shared<utils::Scalar>(0))
 {
     setType();
 }
 
-biorbd::muscles::StateDynamics::StateDynamics(
-    const biorbd::muscles::State &other) :
-    biorbd::muscles::State(other)
+muscles::StateDynamics::StateDynamics(
+    const muscles::State &other) :
+    muscles::State(other)
 {
-    const auto& state = dynamic_cast<const biorbd::muscles::StateDynamics&>(other);
+    const auto& state = dynamic_cast<const muscles::StateDynamics&>(other);
     m_previousExcitation = state.m_previousExcitation;
     m_previousActivation = state.m_previousActivation;
     m_activationDot = state.m_activationDot;
 }
 
-biorbd::muscles::StateDynamics::~StateDynamics()
+muscles::StateDynamics::~StateDynamics()
 {
     //dtor
 }
 
-biorbd::muscles::StateDynamics biorbd::muscles::StateDynamics::DeepCopy() const
+muscles::StateDynamics muscles::StateDynamics::DeepCopy() const
 {
-    biorbd::muscles::StateDynamics copy;
+    muscles::StateDynamics copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void biorbd::muscles::StateDynamics::DeepCopy(const
-        biorbd::muscles::StateDynamics &other)
+void muscles::StateDynamics::DeepCopy(const
+        muscles::StateDynamics &other)
 {
-    biorbd::muscles::State::DeepCopy(other);
+    muscles::State::DeepCopy(other);
     *m_excitationNorm = *other.m_excitationNorm;
     *m_previousExcitation = *other.m_previousExcitation;
     *m_previousActivation = *other.m_previousActivation;
@@ -49,10 +51,10 @@ void biorbd::muscles::StateDynamics::DeepCopy(const
 }
 
 
-const biorbd::utils::Scalar&
-biorbd::muscles::StateDynamics::timeDerivativeActivation(
-    const biorbd::muscles::State& emg,
-    const biorbd::muscles::Characteristics& characteristics,
+const utils::Scalar&
+muscles::StateDynamics::timeDerivativeActivation(
+    const muscles::State& emg,
+    const muscles::Characteristics& characteristics,
     bool alreadyNormalized)
 {
     return timeDerivativeActivation(emg.excitation(), emg.activation(),
@@ -60,11 +62,11 @@ biorbd::muscles::StateDynamics::timeDerivativeActivation(
 }
 
 
-const biorbd::utils::Scalar&
-biorbd::muscles::StateDynamics::timeDerivativeActivation(
-    const biorbd::utils::Scalar& excitation,
-    const biorbd::utils::Scalar& activation,
-    const biorbd::muscles::Characteristics &characteristics,
+const utils::Scalar&
+muscles::StateDynamics::timeDerivativeActivation(
+    const utils::Scalar& excitation,
+    const utils::Scalar& activation,
+    const muscles::Characteristics &characteristics,
     bool alreadyNormalized)
 {
     setExcitation(excitation);
@@ -72,9 +74,9 @@ biorbd::muscles::StateDynamics::timeDerivativeActivation(
     return timeDerivativeActivation(characteristics, alreadyNormalized);
 }
 
-const biorbd::utils::Scalar&
-biorbd::muscles::StateDynamics::timeDerivativeActivation(
-    const biorbd::muscles::Characteristics &characteristics,
+const utils::Scalar&
+muscles::StateDynamics::timeDerivativeActivation(
+    const muscles::Characteristics &characteristics,
     bool alreadyNormalized)
 {
     // Implémentation de la fonction da/dt = (u-a)/GeneralizedTorque(u,a)
@@ -104,7 +106,7 @@ biorbd::muscles::StateDynamics::timeDerivativeActivation(
 
 // http://simtk-confluence.stanford.edu:8080/display/OpenSim/First-Order+Activation+Dynamics
 
-    biorbd::utils::Scalar num;
+    utils::Scalar num;
     if (alreadyNormalized) {
         num = *m_excitation - *m_activation;    // numérateur
     } else {
@@ -112,7 +114,7 @@ biorbd::muscles::StateDynamics::timeDerivativeActivation(
               *m_activation;    // numérateur
     }
 
-    biorbd::utils::Scalar denom; // dénominateur
+    utils::Scalar denom; // dénominateur
 #ifdef BIORBD_USE_CASADI_MATH
     denom = casadi::MX::if_else(
                 casadi::MX::gt(num, 0),
@@ -130,41 +132,41 @@ biorbd::muscles::StateDynamics::timeDerivativeActivation(
     return *m_activationDot;
 }
 
-const biorbd::utils::Scalar&
-biorbd::muscles::StateDynamics::timeDerivativeActivation()
+const utils::Scalar&
+muscles::StateDynamics::timeDerivativeActivation()
 {
     return *m_activationDot;
 }
 
-void biorbd::muscles::StateDynamics::setExcitation(
-    const biorbd::utils::Scalar& val,
+void muscles::StateDynamics::setExcitation(
+    const utils::Scalar& val,
     bool turnOffWarnings)
 {
     *m_previousExcitation = *m_excitation;
-    biorbd::muscles::State::setExcitation(val, turnOffWarnings);
+    muscles::State::setExcitation(val, turnOffWarnings);
 }
 
-const biorbd::utils::Scalar&
-biorbd::muscles::StateDynamics::previousExcitation() const
+const utils::Scalar&
+muscles::StateDynamics::previousExcitation() const
 {
     return *m_previousExcitation;
 }
 
-void biorbd::muscles::StateDynamics::setActivation(
-    const biorbd::utils::Scalar& val,
+void muscles::StateDynamics::setActivation(
+    const utils::Scalar& val,
     bool turnOffWarnings)
 {
     *m_previousActivation = *m_activation;
-    biorbd::muscles::State::setActivation(val, turnOffWarnings);
+    muscles::State::setActivation(val, turnOffWarnings);
 }
 
-const biorbd::utils::Scalar&
-biorbd::muscles::StateDynamics::previousActivation() const
+const utils::Scalar&
+muscles::StateDynamics::previousActivation() const
 {
     return *m_previousActivation;
 }
 
-void biorbd::muscles::StateDynamics::setType()
+void muscles::StateDynamics::setType()
 {
-    *m_stateType = biorbd::muscles::STATE_TYPE::DYNAMIC;
+    *m_stateType = muscles::STATE_TYPE::DYNAMIC;
 }

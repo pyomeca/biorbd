@@ -76,7 +76,7 @@ class BIORBD_API Model :
     ,public actuator::Actuators
 #endif
 #ifdef MODULE_MUSCLES
-    ,public biorbd::muscles::Muscles
+    ,public muscles::Muscles
 #endif
 {
 public:

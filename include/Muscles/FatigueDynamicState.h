@@ -6,6 +6,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace muscles
 {
 class StateDynamics;
@@ -14,7 +16,7 @@ class Characteristics;
 ///
 /// \brief Class A state of fatigue that dynamically evolves over the usage of the muscle
 ///
-class BIORBD_API FatigueDynamicState : public biorbd::muscles::FatigueState
+class BIORBD_API FatigueDynamicState : public FatigueState
 {
 public:
     ///
@@ -24,41 +26,41 @@ public:
     /// \param resting Muscle resting
     ///
     FatigueDynamicState(
-        const biorbd::utils::Scalar& active = 0,
-        const biorbd::utils::Scalar& fatigued = 0,
-        const biorbd::utils::Scalar& resting = 1);
+        const utils::Scalar& active = 0,
+        const utils::Scalar& fatigued = 0,
+        const utils::Scalar& resting = 1);
 
     ///
     /// \brief Construct the fatigue dynamic state from other state
     /// \param other The other fatigue state
     ///
     FatigueDynamicState(
-        const std::shared_ptr<biorbd::muscles::FatigueState> other);
+        const std::shared_ptr<FatigueState> other);
 
     ///
     /// \brief Deep copy of a fatigue dynamic state
     /// \param other The other fatigue state
     ///
     void DeepCopy(
-        const biorbd::muscles::FatigueDynamicState& other);
+        const FatigueDynamicState& other);
 
     ///
     /// \brief Return the active fibers derivative
     /// \return The active fibers derivative
     ///
-    const biorbd::utils::Scalar& activeFibersDot() const;
+    const utils::Scalar& activeFibersDot() const;
 
     ///
     /// \brief Return the fatigued fibers derivative
     /// \return The fatigued fibers derivative
     ///
-    const biorbd::utils::Scalar& fatiguedFibersDot() const;
+    const utils::Scalar& fatiguedFibersDot() const;
 
     ///
     /// \brief Return the resting fibers derivative
     /// \return The resting fibers derivative
     ///
-    const biorbd::utils::Scalar& restingFibersDot() const;
+    const utils::Scalar& restingFibersDot() const;
 
     ///
     /// \brief Compute the derivative of the current state
@@ -66,20 +68,21 @@ public:
     /// \param characteristics The muscle characteristics
     ///
     virtual void timeDerivativeState(
-        const biorbd::muscles::StateDynamics &emg,
-        const biorbd::muscles::Characteristics &characteristics
+        const StateDynamics &emg,
+        const Characteristics &characteristics
     ) = 0;
 
 protected:
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_activeFibersDot; ///< The active fibers derivative
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_fatiguedFibersDot; ///< The fatigued fibers derivative
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_restingFibersDot; ///< The resting fibers derivative
 
 };
 
+}
 }
 }
 

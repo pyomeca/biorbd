@@ -8,6 +8,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace muscles
 {
 
@@ -24,23 +26,23 @@ public:
     /// \param resting Resting muscle
     ///
     FatigueState(
-        const biorbd::utils::Scalar& active = 1,
-        const biorbd::utils::Scalar& fatigued = 0,
-        const biorbd::utils::Scalar& resting = 0);
+        const utils::Scalar& active = 1,
+        const utils::Scalar& fatigued = 0,
+        const utils::Scalar& resting = 0);
 
     ///
     /// \brief Construct fatigue state from another fatigue state
     /// \param other The other fatigure state
     ///
     FatigueState(
-        const biorbd::muscles::FatigueState& other);
+        const FatigueState& other);
 
     ///
     /// \brief Construct fatigue state from another fatigue state
     /// \param other The other fatigure state
     ///
     FatigueState(
-        const std::shared_ptr<biorbd::muscles::FatigueState> other);
+        const std::shared_ptr<FatigueState> other);
 
     ///
     /// \brief Destroy class properly
@@ -51,14 +53,14 @@ public:
     /// \brief Deep copy of the fatigue state
     /// \return A deep copy of the fatigue state
     ///
-    biorbd::muscles::FatigueState DeepCopy() const;
+    FatigueState DeepCopy() const;
 
     ///
     /// \brief Deep copy of fatigue state in another fatigue state
     /// \param other The fatigue state to copy
     ///
     void DeepCopy(
-        const biorbd::muscles::FatigueState& other);
+        const FatigueState& other);
 
 #ifndef BIORBD_USE_CASADI_MATH
     ///
@@ -69,9 +71,9 @@ public:
     /// \param turnOffWarnings If the warnings should be OFF or ON.
     ///
     virtual void setState(
-        biorbd::utils::Scalar active,
-        biorbd::utils::Scalar fatigued,
-        biorbd::utils::Scalar resting,
+        utils::Scalar active,
+        utils::Scalar fatigued,
+        utils::Scalar resting,
         bool turnOffWarnings = false);
 #endif
 
@@ -79,43 +81,44 @@ public:
     /// \brief Return the propotion of active muscle fibers
     /// \return The propotion of active muscle fibers
     ///
-    const biorbd::utils::Scalar& activeFibers() const;
+    const utils::Scalar& activeFibers() const;
 
     ///
     /// \brief Return the propotion of fatigued muscle fibers
     /// \return The propotion of fatigued muscle fibers
     ///
-    const biorbd::utils::Scalar& fatiguedFibers() const;
+    const utils::Scalar& fatiguedFibers() const;
 
     ///
     /// \brief Return the propotion of resting muscle fibers
     /// \return The propotion of resting muscle fibers
     ///
-    const biorbd::utils::Scalar& restingFibers() const;
+    const utils::Scalar& restingFibers() const;
 
     ///
     /// \brief Return the type of muscle fatigue model
     /// \return The type of muscle fatigue model
     ///
-    biorbd::muscles::STATE_FATIGUE_TYPE getType() const;
+    STATE_FATIGUE_TYPE getType() const;
 
 protected:
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_activeFibers; ///< Proportion of active muscle fibers
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_fatiguedFibers;///< Proportion of fatigued muscle fibers
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_restingFibers;///< Proportion of resting muscle fibers
 
     ///
     /// \brief Set the type
     ///
     virtual void setType();
-    std::shared_ptr<biorbd::muscles::STATE_FATIGUE_TYPE>
+    std::shared_ptr<STATE_FATIGUE_TYPE>
     m_type; ///< Type of the muscle fatigue model
 
 };
 
+}
 }
 }
 

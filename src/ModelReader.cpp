@@ -797,11 +797,11 @@ void Reader::readModelFile(
                 utils::String name;
                 file.read(name); // Name of the muscle
                 // Declaration of the variables
-                biorbd::muscles::MUSCLE_TYPE type(biorbd::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE);
-                biorbd::muscles::STATE_TYPE stateType(
-                    biorbd::muscles::STATE_TYPE::NO_STATE_TYPE);
-                biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType(
-                    biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+                muscles::MUSCLE_TYPE type(muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE);
+                muscles::STATE_TYPE stateType(
+                    muscles::STATE_TYPE::NO_STATE_TYPE);
+                muscles::STATE_FATIGUE_TYPE dynamicFatigueType(
+                    muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
                 utils::String muscleGroup("");
                 int idxGroup(-1);
                 utils::Vector3d origin_pos(0,0,0);
@@ -814,7 +814,7 @@ void Reader::readModelFile(
                 double maxActivation(1);
                 double PCSA(0);
                 double shapeFactor(0);
-                biorbd::muscles::FatigueParameters fatigueParameters;
+                muscles::FatigueParameters fatigueParameters;
 
                 // Read file
                 while(file.read(property_tag) && property_tag.tolower().compare("endmuscle")) {
@@ -828,18 +828,18 @@ void Reader::readModelFile(
                         utils::String tp_type;
                         file.read(tp_type);
                         if (!tp_type.tolower().compare("idealizedactuator")) {
-                            type = biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR;
+                            type = muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR;
                         } else if (!tp_type.tolower().compare("hill")) {
-                            type = biorbd::muscles::MUSCLE_TYPE::HILL;
+                            type = muscles::MUSCLE_TYPE::HILL;
                         } else if (!tp_type.tolower().compare("hillthelen")
                                    || !tp_type.tolower().compare("thelen")) {
-                            type = biorbd::muscles::MUSCLE_TYPE::HILL_THELEN;
+                            type = muscles::MUSCLE_TYPE::HILL_THELEN;
                         } else if (!tp_type.tolower().compare("hillthelenactive")
                                    || !tp_type.tolower().compare("thelenactive")) {
-                            type = biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE;
+                            type = muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE;
                         } else if (!tp_type.tolower().compare("hillthelenfatigable")
                                    || !tp_type.tolower().compare("thelenfatigable")) {
-                            type = biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE;
+                            type = muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE;
                         } else {
                             utils::Error::raise(property_tag + " is not a valid muscle type");
                         }
@@ -847,9 +847,9 @@ void Reader::readModelFile(
                         utils::String tp_state;
                         file.read(tp_state);
                         if (!tp_state.tolower().compare("buchanan")) {
-                            stateType = biorbd::muscles::STATE_TYPE::BUCHANAN;
+                            stateType = muscles::STATE_TYPE::BUCHANAN;
                         } else if (!tp_state.tolower().compare("degroote")) {
-                            stateType = biorbd::muscles::STATE_TYPE::DE_GROOTE;
+                            stateType = muscles::STATE_TYPE::DE_GROOTE;
                         } else {
                             utils::Error::raise(property_tag + " is not a valid muscle state type");
                         }
@@ -876,9 +876,9 @@ void Reader::readModelFile(
                                 utils::String tp_fatigue_type;
                                 file.read(tp_fatigue_type);
                                 if (!tp_fatigue_type.tolower().compare("simple")) {
-                                    dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE;
+                                    dynamicFatigueType = muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE;
                                 } else if (!tp_fatigue_type.tolower().compare("xia")) {
-                                    dynamicFatigueType = biorbd::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA;
+                                    dynamicFatigueType = muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA;
                                 } else {
                                     utils::Error::raise(tp_fatigue_type +
                                                                 " is not a value fatigue parameter type");
@@ -902,23 +902,23 @@ void Reader::readModelFile(
                     }
                 }
                 utils::Error::check(idxGroup!=-1, "No muscle group was provided!");
-                biorbd::muscles::Geometry geo(
+                muscles::Geometry geo(
                     utils::Vector3d(origin_pos, name + "_origin",
                                             model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
                     utils::Vector3d(insert_pos, name + "_insertion",
                                             model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
-                biorbd::muscles::State stateMax(maxExcitation, maxActivation);
-                biorbd::muscles::Characteristics characteristics(optimalLength, maxForce, PCSA,
+                muscles::State stateMax(maxExcitation, maxActivation);
+                muscles::Characteristics characteristics(optimalLength, maxForce, PCSA,
                         tendonSlackLength, pennAngle, stateMax,
                         fatigueParameters);
                 model->muscleGroup(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,
                         characteristics,
-                        biorbd::muscles::PathModifiers(),stateType,dynamicFatigueType);
-                if (stateType == biorbd::muscles::STATE_TYPE::BUCHANAN && shapeFactor != 0) {
+                        muscles::PathModifiers(),stateType,dynamicFatigueType);
+                if (stateType == muscles::STATE_TYPE::BUCHANAN && shapeFactor != 0) {
                     auto& muscleGroup = model->muscleGroup(idxGroup);
                     size_t nMuscInGroup(muscleGroup.nbMuscles()-1);
                     auto& state = muscleGroup.muscle(nMuscInGroup).state();
-                    static_cast<biorbd::muscles::StateDynamicsBuchanan&>(state).shapeFactor(
+                    static_cast<muscles::StateDynamicsBuchanan&>(state).shapeFactor(
                         shapeFactor);
                 }
 #else // MODULE_MUSCLES
@@ -935,7 +935,7 @@ void Reader::readModelFile(
                 utils::String musclegroup("");
                 int iMuscleGroup(-1);
                 int iMuscle(-1);
-                biorbd::muscles::ViaPoint position(0,0,0);
+                muscles::ViaPoint position(0,0,0);
 
                 // Read file
                 while(file.read(property_tag)
@@ -1025,7 +1025,7 @@ void Reader::readModelFile(
                     utils::Error::check(radius > 0.0,
                                                 "Radius must be defined and positive");
                     utils::Error::check(length >= 0.0, "Length was must be positive");
-                    biorbd::muscles::WrappingHalfCylinder cylinder(RT,radius,length,name,parent);
+                    muscles::WrappingHalfCylinder cylinder(RT,radius,length,name,parent);
                     model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscle(
                         static_cast<unsigned int>(iMuscle)).addPathObject(
                             cylinder);

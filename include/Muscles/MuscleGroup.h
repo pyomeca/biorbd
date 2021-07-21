@@ -8,6 +8,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 class String;
@@ -35,7 +37,7 @@ public:
     /// \param other The other muscle group
     ///
     MuscleGroup(
-        const biorbd::muscles::MuscleGroup& other);
+        const MuscleGroup& other);
 
     ///
     /// \brief Construct a muscle group
@@ -44,9 +46,9 @@ public:
     /// \param insertionName The segment name where the insertion lies
     ///
     MuscleGroup(
-        const biorbd::utils::String &name,
-        const biorbd::utils::String &originName,
-        const biorbd::utils::String &insertionName);
+        const utils::String &name,
+        const utils::String &originName,
+        const utils::String &insertionName);
 
     ///
     /// \brief Destroy class properly
@@ -57,14 +59,14 @@ public:
     /// \brief Deep copy of a muscle group
     /// \return A deep copy of a muscle group
     ///
-    biorbd::muscles::MuscleGroup DeepCopy() const;
+    MuscleGroup DeepCopy() const;
 
     ///
     /// \brief Deep copy of a muscle group in new muscle group
     /// \param other The muscle group to copy
     ///
     void DeepCopy(
-        const biorbd::muscles::MuscleGroup& other);
+        const MuscleGroup& other);
 
 #ifndef SWIG
     ///
@@ -77,14 +79,14 @@ public:
     /// \param dynamicFatigueType The dynamic state fatigue type
     ///
     virtual void addMuscle(
-        const biorbd::utils::String& name,
-        biorbd::muscles::MUSCLE_TYPE type,
-        const biorbd::muscles::Geometry& geometry,
-        const biorbd::muscles::Characteristics& characteristics,
-        biorbd::muscles::STATE_TYPE stateType =
-            biorbd::muscles::STATE_TYPE::NO_STATE_TYPE,
-        biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType =
-            biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+        const utils::String& name,
+        MUSCLE_TYPE type,
+        const Geometry& geometry,
+        const Characteristics& characteristics,
+        STATE_TYPE stateType =
+            STATE_TYPE::NO_STATE_TYPE,
+        STATE_FATIGUE_TYPE dynamicFatigueType =
+            STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
     ///
     /// \brief To add a muscle to the group
@@ -95,11 +97,11 @@ public:
     /// \param dynamicFatigueType The dynamic state fatigue type
     ///
     virtual void addMuscle(
-        const biorbd::utils::String& name,
-        biorbd::muscles::MUSCLE_TYPE type,
-        const biorbd::muscles::Geometry& geometry,
-        const biorbd::muscles::Characteristics& characteristics,
-        biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType);
+        const utils::String& name,
+        MUSCLE_TYPE type,
+        const Geometry& geometry,
+        const Characteristics& characteristics,
+        STATE_FATIGUE_TYPE dynamicFatigueType);
 
     ///
     /// \brief To add a muscle to the group
@@ -112,15 +114,15 @@ public:
     /// \param dynamicFatigueType The dynamic state fatigue type
     ///
     virtual void addMuscle(
-        const biorbd::utils::String& name,
-        biorbd::muscles::MUSCLE_TYPE type,
-        const biorbd::muscles::Geometry& geometry,
-        const biorbd::muscles::Characteristics& characteristics,
-        const biorbd::muscles::PathModifiers& pathModifiers,
-        biorbd::muscles::STATE_TYPE stateType =
-            biorbd::muscles::STATE_TYPE::NO_STATE_TYPE,
-        biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType =
-            biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+        const utils::String& name,
+        MUSCLE_TYPE type,
+        const Geometry& geometry,
+        const Characteristics& characteristics,
+        const PathModifiers& pathModifiers,
+        STATE_TYPE stateType =
+            STATE_TYPE::NO_STATE_TYPE,
+        STATE_FATIGUE_TYPE dynamicFatigueType =
+            STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
     ///
     /// \brief To add a muscle to the group
@@ -132,12 +134,12 @@ public:
     /// \param dynamicFatigueType The dynamic state fatigue type
     ///
     virtual void addMuscle(
-        const biorbd::utils::String& name,
-        biorbd::muscles::MUSCLE_TYPE type,
-        const biorbd::muscles::Geometry& geometry,
-        const biorbd::muscles::Characteristics& characteristics,
-        const biorbd::muscles::PathModifiers& pathModifiers,
-        biorbd::muscles::STATE_FATIGUE_TYPE dynamicFatigueType);
+        const utils::String& name,
+        MUSCLE_TYPE type,
+        const Geometry& geometry,
+        const Characteristics& characteristics,
+        const PathModifiers& pathModifiers,
+        STATE_FATIGUE_TYPE dynamicFatigueType);
 #endif
 
     ///
@@ -145,7 +147,7 @@ public:
     /// \param muscle The muscle to add
     ///
     virtual void addMuscle(
-        const biorbd::muscles::Muscle &muscle);
+        const Muscle &muscle);
 
     ///
     /// \brief Return the number of muscles in the group
@@ -157,20 +159,20 @@ public:
     /// \brief Return the muscles in the group
     /// \return The muscles
     ///
-    std::vector<std::shared_ptr<biorbd::muscles::Muscle>>& muscles();
+    std::vector<std::shared_ptr<Muscle>>& muscles();
 
     ///
     /// \brief Return the muscles in the group
     /// \return The muscles
     ///
-    const std::vector<std::shared_ptr<biorbd::muscles::Muscle>>& muscles() const;
+    const std::vector<std::shared_ptr<Muscle>>& muscles() const;
 
     ///
     /// \brief Return the muscle of a specific index in the group
     /// \param idx The muscle index
     /// \return The muscle of a specific index
     ///
-    biorbd::muscles::Muscle& muscle(
+    Muscle& muscle(
         unsigned int idx);
 
     ///
@@ -178,7 +180,7 @@ public:
     /// \param idx The muscle index
     /// \return The muscle of a specific index
     ///
-    const biorbd::muscles::Muscle& muscle(
+    const Muscle& muscle(
         unsigned int idx) const;
 
     ///
@@ -187,56 +189,57 @@ public:
     /// \return The muscle index
     ///
     int muscleID(
-        const biorbd::utils::String& name);
+        const utils::String& name);
 
     ///
     /// \brief Set the name of the muscle group
     /// \param name The name of the muscle group
     ///
     void setName(
-        const biorbd::utils::String& name);
+        const utils::String& name);
 
     ///
     /// \brief Return the name of the muscle group
     /// \return The name of the muscle
     ///
-    const biorbd::utils::String& name() const;
+    const utils::String& name() const;
 
     ///
     /// \brief Set the origin segment name where the origin lies
     /// \param name The origin segment name where the origin lies
     ///
     void setOrigin(
-        const biorbd::utils::String& name);
+        const utils::String& name);
 
     ///
     /// \brief Return the origin segment name
     /// \return The origin segment name
     ///
-    const biorbd::utils::String& origin() const;
+    const utils::String& origin() const;
 
     ///
     /// \brief Set the insertion segment name where the origin lies
     /// \param name The insertion segment name where the origin lies
     ///
     void setInsertion(
-        const biorbd::utils::String& name);
+        const utils::String& name);
 
     ///
     /// \brief Return the insertion segment name
     /// \return The insertion segment name
     ///
-    const biorbd::utils::String& insertion() const;
+    const utils::String& insertion() const;
 
 protected:
-    std::shared_ptr<std::vector<std::shared_ptr<biorbd::muscles::Muscle>>>
+    std::shared_ptr<std::vector<std::shared_ptr<Muscle>>>
     m_mus; ///< The set of muscles
-    std::shared_ptr<biorbd::utils::String> m_name; ///< The muscle group name
-    std::shared_ptr<biorbd::utils::String> m_originName; ///<The origin name
-    std::shared_ptr<biorbd::utils::String> m_insertName; ///< The insertion name
+    std::shared_ptr<utils::String> m_name; ///< The muscle group name
+    std::shared_ptr<utils::String> m_originName; ///<The origin name
+    std::shared_ptr<utils::String> m_insertName; ///< The insertion name
 
 };
 
+}
 }
 }
 

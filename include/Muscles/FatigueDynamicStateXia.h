@@ -6,6 +6,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace muscles
 {
 
@@ -13,7 +15,7 @@ namespace muscles
 /// \brief Implementation of Xia (https://www.sciencedirect.com/science/article/pii/S0021929008003692) dynamic fatigue model
 ///
 class BIORBD_API FatigueDynamicStateXia : public
-    biorbd::muscles::FatigueDynamicState
+    FatigueDynamicState
 {
 public:
     ///
@@ -23,29 +25,29 @@ public:
     /// \param resting Resting muscle
     ///
     FatigueDynamicStateXia(
-        const biorbd::utils::Scalar& active = 1,
-        const biorbd::utils::Scalar& fatigued = 0,
-        const biorbd::utils::Scalar& resting = 0);
+        const utils::Scalar& active = 1,
+        const utils::Scalar& fatigued = 0,
+        const utils::Scalar& resting = 0);
 
     ///
     /// \brief Contruct FatigueDynamicsStateXia from another fatigue state
     /// \param other The other fatigue state
     ///
     FatigueDynamicStateXia(
-        const std::shared_ptr<biorbd::muscles::FatigueState> other);
+        const std::shared_ptr<FatigueState> other);
 
     ///
     /// \brief Deep copy of the fatigue dynamic state xia
     /// \return Deep copy of fatigue dynamic state xia
     ///
-    biorbd::muscles::FatigueDynamicStateXia DeepCopy() const;
+    FatigueDynamicStateXia DeepCopy() const;
 
     ///
     /// \brief Deep copy of a fatigue dynamic state xia
     /// \param other The fatigue dynamic state xia to copy
     ///
     void DeepCopy(
-        const biorbd::muscles::FatigueDynamicStateXia& other);
+        const FatigueDynamicStateXia& other);
 
     ///
     /// \brief Time derivative state of the current states
@@ -53,8 +55,8 @@ public:
     /// \param characteristics The muscle characteristics
     ///
     virtual void timeDerivativeState(
-        const biorbd::muscles::StateDynamics &emg,
-        const biorbd::muscles::Characteristics &characteristics
+        const StateDynamics &emg,
+        const Characteristics &characteristics
     );
 protected:
     ///
@@ -64,6 +66,7 @@ protected:
 
 };
 
+}
 }
 }
 
