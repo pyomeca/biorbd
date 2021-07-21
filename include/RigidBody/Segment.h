@@ -15,15 +15,11 @@ class RotoTrans;
 class Range;
 }
 
-namespace BIORBD_MATH_NAMESPACE {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 class Joints;
-}
-}
-
-namespace rigidbody
-{
 class SegmentCharacteristics;
 
 ///
@@ -60,7 +56,7 @@ public:
         const std::vector<biorbd::utils::Range>& QRanges,
         const std::vector<biorbd::utils::Range>& QDotRanges,
         const std::vector<biorbd::utils::Range>& QDDotRanges,
-        const biorbd::rigidbody::SegmentCharacteristics& characteristics,
+        const SegmentCharacteristics& characteristics,
         const RigidBodyDynamics::Math::SpatialTransform& cor,
         int PF = -1);
 
@@ -85,7 +81,7 @@ public:
         const std::vector<biorbd::utils::Range>& QRanges,
         const std::vector<biorbd::utils::Range>& QDotRanges,
         const std::vector<biorbd::utils::Range>& QDDotRanges,
-        const biorbd::rigidbody::SegmentCharacteristics& characteristics,
+        const SegmentCharacteristics& characteristics,
         const RigidBodyDynamics::Math::SpatialTransform& cor,
         int PF = -1);
 
@@ -93,14 +89,14 @@ public:
     /// \brief Create a deep copy of Segment
     /// \return Copy of Segment
     ///
-    biorbd::rigidbody::Segment DeepCopy() const;
+    Segment DeepCopy() const;
 
     ///
     /// \brief Deep copy of Segment
     /// \param other The Segment to copy
     ///
     void DeepCopy(
-        const biorbd::rigidbody::Segment& other);
+        const Segment& other);
 
     ///
     /// \brief Destroy the class properly
@@ -231,13 +227,13 @@ public:
     ///
     void updateCharacteristics(
         biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
-        const biorbd::rigidbody::SegmentCharacteristics& characteristics);
+        const SegmentCharacteristics& characteristics);
 
     ///
     /// \brief Return the segment characteristics
     /// \return The segment characteristics
     ///
-    const biorbd::rigidbody::SegmentCharacteristics& characteristics() const;
+    const SegmentCharacteristics& characteristics() const;
 
     ///
     /// \brief Return if the rotation DoF of this segment is a quaternion
@@ -392,14 +388,15 @@ protected:
     ///
     void setDofCharacteristicsOnLastBody();
 
-    std::shared_ptr<biorbd::rigidbody::SegmentCharacteristics>
-    m_characteristics;///< Non-used virtual segment; it allows to "save" the data and to avoid the use of multiple intermediate variables
-    std::shared_ptr<std::vector<biorbd::rigidbody::SegmentCharacteristics>>
+    std::shared_ptr<SegmentCharacteristics>
+            m_characteristics;///< Non-used virtual segment; it allows to "save" the data and to avoid the use of multiple intermediate variables
+    std::shared_ptr<std::vector<SegmentCharacteristics>>
             m_dofCharacteristics;  ///< Variable containing the inertial data and other from each segment (on a 6DoF segment, 0 to 4 should be empty and 5 filled)
 
 
 };
 
+}
 }
 }
 

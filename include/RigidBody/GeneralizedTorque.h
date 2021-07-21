@@ -10,11 +10,6 @@ namespace BIORBD_MATH_NAMESPACE {
 namespace rigidbody
 {
 class Joints;
-}
-}
-
-namespace rigidbody
-{
 
 ///
 /// \brief Class GeneralizedTorque
@@ -39,14 +34,14 @@ public:
     /// \brief Construct generalized torque from a joint model
     /// \param j The joint model
     ///
-    GeneralizedTorque(const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& j);
+    GeneralizedTorque(const Joints& j);
 
     ///
     /// \brief Construct generalized torque from anoter Generalized torque
     /// \param other The other generalized torque
     ///
     GeneralizedTorque(
-        const biorbd::rigidbody::GeneralizedTorque& other);
+        const GeneralizedTorque& other);
 
     ///
     /// \brief Construct vector from Casadi vector
@@ -89,7 +84,7 @@ public:
     /// \return The current Generalized Torque
     ///
     template<typename OtherDerived>
-    biorbd::rigidbody::GeneralizedTorque& operator=(const Eigen::MatrixBase
+    GeneralizedTorque& operator=(const Eigen::MatrixBase
             <OtherDerived>& other)
     {
         this->biorbd::utils::Vector::operator=(other);
@@ -124,6 +119,7 @@ public:
 #endif
 };
 
+}
 }
 }
 

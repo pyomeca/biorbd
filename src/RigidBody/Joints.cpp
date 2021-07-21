@@ -28,7 +28,7 @@ using namespace biorbd::BIORBD_MATH_NAMESPACE;
 
 rigidbody::Joints::Joints() :
     RigidBodyDynamics::Model(),
-    m_segments(std::make_shared<std::vector<biorbd::rigidbody::Segment>>()),
+    m_segments(std::make_shared<std::vector<rigidbody::Segment>>()),
     m_nbRoot(std::make_shared<unsigned int>(0)),
     m_nbDof(std::make_shared<unsigned int>(0)),
     m_nbQ(std::make_shared<unsigned int>(0)),
@@ -142,11 +142,11 @@ unsigned int rigidbody::Joints::AddSegment(
     const std::vector<biorbd::utils::Range>& QRanges,
     const std::vector<biorbd::utils::Range>& QDotRanges,
     const std::vector<biorbd::utils::Range>& QDDotRanges,
-    const biorbd::rigidbody::SegmentCharacteristics& characteristics,
+    const rigidbody::SegmentCharacteristics& characteristics,
     const biorbd::utils::RotoTrans& referenceFrame,
     int forcePlates)
 {
-    biorbd::rigidbody::Segment tp(
+    rigidbody::Segment tp(
         *this, segmentName, parentName, translationSequence,
         rotationSequence, QRanges, QDotRanges, QDDotRanges, characteristics,
         RigidBodyDynamics::Math::SpatialTransform(referenceFrame.rot().transpose(),
@@ -178,11 +178,11 @@ unsigned int rigidbody::Joints::AddSegment(
     const std::vector<biorbd::utils::Range>& QRanges,
     const std::vector<biorbd::utils::Range>& QDotRanges,
     const std::vector<biorbd::utils::Range>& QDDotRanges,
-    const biorbd::rigidbody::SegmentCharacteristics& characteristics,
+    const rigidbody::SegmentCharacteristics& characteristics,
     const biorbd::utils::RotoTrans& referenceFrame,
     int forcePlates)
 {
-    biorbd::rigidbody::Segment tp(
+    rigidbody::Segment tp(
         *this, segmentName, parentName, seqR, QRanges, QDotRanges, QDDotRanges,
         characteristics, RigidBodyDynamics::Math::SpatialTransform(
             referenceFrame.rot().transpose(), referenceFrame.trans()),
@@ -213,14 +213,14 @@ void rigidbody::Joints::setGravity(
 
 void rigidbody::Joints::updateSegmentCharacteristics(
     unsigned int idx,
-    const biorbd::rigidbody::SegmentCharacteristics& characteristics)
+    const rigidbody::SegmentCharacteristics& characteristics)
 {
     biorbd::utils::Error::check(idx < m_segments->size(),
                                 "Asked for a wrong segment (out of range)");
     (*m_segments)[idx].updateCharacteristics(*this, characteristics);
 }
 
-const biorbd::rigidbody::Segment& rigidbody::Joints::segment(
+const rigidbody::Segment& rigidbody::Joints::segment(
     unsigned int idx) const
 {
     biorbd::utils::Error::check(idx < m_segments->size(),
@@ -228,7 +228,7 @@ const biorbd::rigidbody::Segment& rigidbody::Joints::segment(
     return (*m_segments)[idx];
 }
 
-const biorbd::rigidbody::Segment &rigidbody::Joints::segment(
+const rigidbody::Segment &rigidbody::Joints::segment(
     const biorbd::utils::String & name) const
 {
     return segment(static_cast<unsigned int>(GetBodyBiorbdId(name.c_str())));
@@ -301,7 +301,7 @@ int rigidbody::Joints::GetBodyBiorbdId(const biorbd::utils::String
 }
 
 std::vector<biorbd::utils::RotoTrans> rigidbody::Joints::allGlobalJCS(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q)
+    const rigidbody::GeneralizedCoordinates &Q)
 {
     UpdateKinematicsCustom (&Q, nullptr, nullptr);
     return allGlobalJCS();
@@ -318,7 +318,7 @@ const
 }
 
 biorbd::utils::RotoTrans rigidbody::Joints::globalJCS(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates &Q,
     const biorbd::utils::String &name)
 {
     UpdateKinematicsCustom (&Q, nullptr, nullptr);
@@ -326,7 +326,7 @@ biorbd::utils::RotoTrans rigidbody::Joints::globalJCS(
 }
 
 biorbd::utils::RotoTrans rigidbody::Joints::globalJCS(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates &Q,
     unsigned int idx)
 {
     // update the Kinematics if necessary
@@ -369,10 +369,10 @@ biorbd::utils::RotoTrans rigidbody::Joints::localJCS(
 }
 
 
-std::vector<biorbd::rigidbody::NodeSegment>
+std::vector<rigidbody::NodeSegment>
 rigidbody::Joints::projectPoint(
-    const biorbd::rigidbody::GeneralizedCoordinates& Q,
-    const std::vector<biorbd::rigidbody::NodeSegment>& v,
+    const rigidbody::GeneralizedCoordinates& Q,
+    const std::vector<rigidbody::NodeSegment>& v,
     bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -384,16 +384,16 @@ rigidbody::Joints::projectPoint(
     updateKin = false;
 
     // Assuming that this is also a marker type (via BiorbdModel)
-    const biorbd::rigidbody::Markers& marks =
-        dynamic_cast<biorbd::rigidbody::Markers&>(*this);
+    const rigidbody::Markers& marks =
+        dynamic_cast<rigidbody::Markers&>(*this);
 
     // Sécurité
     biorbd::utils::Error::check(marks.nbMarkers() == v.size(),
                                 "Number of marker must be equal to number of Vector3d");
 
-    std::vector<biorbd::rigidbody::NodeSegment> out;
+    std::vector<rigidbody::NodeSegment> out;
     for (unsigned int i = 0; i < marks.nbMarkers(); ++i) {
-        biorbd::rigidbody::NodeSegment tp(marks.marker(i));
+        rigidbody::NodeSegment tp(marks.marker(i));
         if (tp.nbAxesToRemove() != 0) {
             tp = v[i].applyRT(globalJCS(tp.parent()).transpose());
             // Prendre la position du nouveau marker avec les infos de celui du modèle
@@ -407,8 +407,8 @@ rigidbody::Joints::projectPoint(
     return out;
 }
 
-biorbd::rigidbody::NodeSegment rigidbody::Joints::projectPoint(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
+rigidbody::NodeSegment rigidbody::Joints::projectPoint(
+    const rigidbody::GeneralizedCoordinates &Q,
     const biorbd::utils::Vector3d &v,
     int segmentIdx,
     const biorbd::utils::String& axesToRemove,
@@ -424,7 +424,7 @@ biorbd::rigidbody::NodeSegment rigidbody::Joints::projectPoint(
     // Create a marker
     const biorbd::utils::String& segmentName(segment(static_cast<unsigned int>
             (segmentIdx)).name());
-    biorbd::rigidbody::NodeSegment node( v.applyRT(globalJCS(
+    rigidbody::NodeSegment node( v.applyRT(globalJCS(
             static_cast<unsigned int>(segmentIdx)).transpose()), "tp",
                                          segmentName,
                                          true, true, axesToRemove, static_cast<int>(GetBodyId(segmentName.c_str())));
@@ -433,19 +433,19 @@ biorbd::rigidbody::NodeSegment rigidbody::Joints::projectPoint(
     return projectPoint(Q, node, false);
 }
 
-biorbd::rigidbody::NodeSegment rigidbody::Joints::projectPoint(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::NodeSegment &n,
+rigidbody::NodeSegment rigidbody::Joints::projectPoint(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::NodeSegment &n,
     bool updateKin)
 {
     // Assuming that this is also a Marker type (via BiorbdModel)
-    return dynamic_cast<biorbd::rigidbody::Markers &>(*this).marker(Q, n, true,
+    return dynamic_cast<rigidbody::Markers &>(*this).marker(Q, n, true,
             updateKin);
 }
 
 biorbd::utils::Matrix rigidbody::Joints::projectPointJacobian(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    biorbd::rigidbody::NodeSegment node,
+    const rigidbody::GeneralizedCoordinates &Q,
+    rigidbody::NodeSegment node,
     bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -457,7 +457,7 @@ biorbd::utils::Matrix rigidbody::Joints::projectPointJacobian(
     updateKin = false;
 
     // Assuming that this is also a Marker type (via BiorbdModel)
-    biorbd::rigidbody::Markers &marks = dynamic_cast<biorbd::rigidbody::Markers &>
+    rigidbody::Markers &marks = dynamic_cast<rigidbody::Markers &>
                                         (*this);
 
     // If the point has not been projected, there is no effect
@@ -482,14 +482,14 @@ biorbd::utils::Matrix rigidbody::Joints::projectPointJacobian(
 }
 
 biorbd::utils::Matrix rigidbody::Joints::projectPointJacobian(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates &Q,
     const utils::Vector3d &v,
     int segmentIdx,
     const biorbd::utils::String& axesToRemove,
     bool updateKin)
 {
     // Find the point
-    const biorbd::rigidbody::NodeSegment& p(projectPoint(Q, v, segmentIdx,
+    const rigidbody::NodeSegment& p(projectPoint(Q, v, segmentIdx,
                                             axesToRemove, updateKin));
 
     // Return the value
@@ -498,12 +498,12 @@ biorbd::utils::Matrix rigidbody::Joints::projectPointJacobian(
 
 std::vector<biorbd::utils::Matrix>
 rigidbody::Joints::projectPointJacobian(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const std::vector<biorbd::rigidbody::NodeSegment> &v,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const std::vector<rigidbody::NodeSegment> &v,
     bool updateKin)
 {
     // Gather the points
-    const std::vector<biorbd::rigidbody::NodeSegment>& tp(projectPoint(Q, v,
+    const std::vector<rigidbody::NodeSegment>& tp(projectPoint(Q, v,
             updateKin));
 
     // Calculate the Jacobian if the point is not projected
@@ -511,7 +511,7 @@ rigidbody::Joints::projectPointJacobian(
 
     for (unsigned int i=0; i<tp.size(); ++i) {
         // Actual marker
-        G.push_back(projectPointJacobian(Q, biorbd::rigidbody::NodeSegment(v[i]),
+        G.push_back(projectPointJacobian(Q, rigidbody::NodeSegment(v[i]),
                                          false));
     }
     return G;
@@ -519,7 +519,7 @@ rigidbody::Joints::projectPointJacobian(
 
 RigidBodyDynamics::Math::SpatialTransform
 rigidbody::Joints::CalcBodyWorldTransformation (
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates &Q,
     const unsigned int segmentIdx,
     bool updateKin)
 {
@@ -556,11 +556,11 @@ rigidbody::Joints::CalcBodyWorldTransformation(
 }
 
 biorbd::utils::Vector3d rigidbody::Joints::CoM(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin)
 {
     // For each segment, find the CoM (CoM = sum(segment_mass * pos_com_seg) / total mass)
-    const std::vector<biorbd::rigidbody::NodeSegment>& com_segment(CoMbySegment(Q,
+    const std::vector<rigidbody::NodeSegment>& com_segment(CoMbySegment(Q,
             updateKin));
     biorbd::utils::Vector3d com(0, 0, 0);
     for (unsigned int i=0; i<com_segment.size(); ++i) {
@@ -575,15 +575,15 @@ biorbd::utils::Vector3d rigidbody::Joints::CoM(
 }
 
 biorbd::utils::Vector3d rigidbody::Joints::angularMomentum(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
     bool updateKin)
 {
     return CalcAngularMomentum(Q, Qdot, updateKin);
 }
 
 biorbd::utils::Matrix rigidbody::Joints::massMatrix (
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -596,8 +596,8 @@ biorbd::utils::Matrix rigidbody::Joints::massMatrix (
 }
 
 biorbd::utils::Vector3d rigidbody::Joints::CoMdot(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
     bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -623,8 +623,8 @@ biorbd::utils::Vector3d rigidbody::Joints::CoMdot(
     return com_dot;
 }
 biorbd::utils::Vector3d rigidbody::Joints::CoMddot(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
     const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
     bool updateKin)
 {
@@ -643,7 +643,7 @@ biorbd::utils::Vector3d rigidbody::Joints::CoMddot(
 }
 
 biorbd::utils::Matrix rigidbody::Joints::CoMJacobian(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -672,12 +672,12 @@ biorbd::utils::Matrix rigidbody::Joints::CoMJacobian(
 }
 
 
-std::vector<biorbd::rigidbody::NodeSegment>
+std::vector<rigidbody::NodeSegment>
 rigidbody::Joints::CoMbySegment(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin)
 {
-    std::vector<biorbd::rigidbody::NodeSegment> out;
+    std::vector<rigidbody::NodeSegment> out;
     for (unsigned int i=0; i<m_segments->size(); ++i) {
         out.push_back(CoMbySegment(Q,i,updateKin));
         updateKin = false;
@@ -686,10 +686,10 @@ rigidbody::Joints::CoMbySegment(
 }
 
 biorbd::utils::Matrix rigidbody::Joints::CoMbySegmentInMatrix(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin)
 {
-    std::vector<biorbd::rigidbody::NodeSegment> allCoM(CoMbySegment(Q, updateKin));
+    std::vector<rigidbody::NodeSegment> allCoM(CoMbySegment(Q, updateKin));
     biorbd::utils::Matrix CoMs(3, allCoM.size());
     for (unsigned int i=0; i<allCoM.size(); ++i) {
         CoMs.block(0, i, 3, 1) = allCoM[i];
@@ -699,7 +699,7 @@ biorbd::utils::Matrix rigidbody::Joints::CoMbySegmentInMatrix(
 
 
 biorbd::utils::Vector3d rigidbody::Joints::CoMbySegment(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates &Q,
     const unsigned int idx,
     bool updateKin)
 {
@@ -715,8 +715,8 @@ biorbd::utils::Vector3d rigidbody::Joints::CoMbySegment(
 
 
 std::vector<biorbd::utils::Vector3d> rigidbody::Joints::CoMdotBySegment(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
     bool updateKin)
 {
     std::vector<biorbd::utils::Vector3d> out;
@@ -729,8 +729,8 @@ std::vector<biorbd::utils::Vector3d> rigidbody::Joints::CoMdotBySegment(
 
 
 biorbd::utils::Vector3d rigidbody::Joints::CoMdotBySegment(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
     const unsigned int idx,
     bool updateKin)
 {
@@ -748,8 +748,8 @@ biorbd::utils::Vector3d rigidbody::Joints::CoMdotBySegment(
 
 std::vector<biorbd::utils::Vector3d>
 rigidbody::Joints::CoMddotBySegment(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
     const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
     bool updateKin)
 {
@@ -763,8 +763,8 @@ rigidbody::Joints::CoMddotBySegment(
 
 
 biorbd::utils::Vector3d rigidbody::Joints::CoMddotBySegment(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
     const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
     const unsigned int idx,
     bool updateKin)
@@ -781,7 +781,7 @@ biorbd::utils::Vector3d rigidbody::Joints::CoMddotBySegment(
 
 std::vector<std::vector<biorbd::utils::Vector3d>>
         rigidbody::Joints::meshPoints(
-            const biorbd::rigidbody::GeneralizedCoordinates &Q,
+            const rigidbody::GeneralizedCoordinates &Q,
             bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -803,7 +803,7 @@ std::vector<std::vector<biorbd::utils::Vector3d>>
     return v;
 }
 std::vector<biorbd::utils::Vector3d> rigidbody::Joints::meshPoints(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates &Q,
     unsigned int i,
     bool updateKin)
 {
@@ -822,7 +822,7 @@ std::vector<biorbd::utils::Vector3d> rigidbody::Joints::meshPoints(
 
 std::vector<biorbd::utils::Matrix>
 rigidbody::Joints::meshPointsInMatrix(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -861,41 +861,41 @@ std::vector<biorbd::utils::Vector3d> rigidbody::Joints::meshPoints(
     return v;
 }
 
-std::vector<std::vector<biorbd::rigidbody::MeshFace>>
+std::vector<std::vector<rigidbody::MeshFace>>
         rigidbody::Joints::meshFaces() const
 {
     // Gather the position of the meshings for all the segments
-    std::vector<std::vector<biorbd::rigidbody::MeshFace>> v_all;
+    std::vector<std::vector<rigidbody::MeshFace>> v_all;
     for (unsigned int j=0; j<nbSegment(); ++j) {
         v_all.push_back(meshFaces(j));
     }
     return v_all;
 }
-const std::vector<biorbd::rigidbody::MeshFace>
+const std::vector<rigidbody::MeshFace>
 &rigidbody::Joints::meshFaces(unsigned int idx) const
 {
     // Find the position of the meshings for a segment i
     return mesh(idx).faces();
 }
 
-std::vector<biorbd::rigidbody::Mesh> rigidbody::Joints::mesh() const
+std::vector<rigidbody::Mesh> rigidbody::Joints::mesh() const
 {
-    std::vector<biorbd::rigidbody::Mesh> segmentOut;
+    std::vector<rigidbody::Mesh> segmentOut;
     for (unsigned int i=0; i<nbSegment(); ++i) {
         segmentOut.push_back(mesh(i));
     }
     return segmentOut;
 }
 
-const biorbd::rigidbody::Mesh &rigidbody::Joints::mesh(
+const rigidbody::Mesh &rigidbody::Joints::mesh(
     unsigned int idx) const
 {
     return segment(idx).characteristics().mesh();
 }
 
 biorbd::utils::Vector3d rigidbody::Joints::CalcAngularMomentum (
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
     bool updateKin)
 {
     RigidBodyDynamics::Math::Vector3d com,  angular_momentum;
@@ -913,8 +913,8 @@ biorbd::utils::Vector3d rigidbody::Joints::CalcAngularMomentum (
 }
 
 biorbd::utils::Vector3d rigidbody::Joints::CalcAngularMomentum (
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
     const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
     bool updateKin)
 {
@@ -936,8 +936,8 @@ biorbd::utils::Vector3d rigidbody::Joints::CalcAngularMomentum (
 
 std::vector<biorbd::utils::Vector3d>
 rigidbody::Joints::CalcSegmentsAngularMomentum (
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
     bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -976,8 +976,8 @@ rigidbody::Joints::CalcSegmentsAngularMomentum (
 
 std::vector<biorbd::utils::Vector3d>
 rigidbody::Joints::CalcSegmentsAngularMomentum (
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
     const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
     bool updateKin)
 {
@@ -1020,12 +1020,12 @@ unsigned int rigidbody::Joints::nbQuat() const
     return *m_nRotAQuat;
 }
 
-biorbd::rigidbody::GeneralizedVelocity rigidbody::Joints::computeQdot(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedCoordinates &QDot,
+rigidbody::GeneralizedVelocity rigidbody::Joints::computeQdot(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates &QDot,
     const double k_stab)
 {
-    biorbd::rigidbody::GeneralizedVelocity QDotOut(Q.size());
+    rigidbody::GeneralizedVelocity QDotOut(Q.size());
     // Verify if there are quaternions, if not the derivate is directly QDot
     if (!m_nRotAQuat) {
         QDotOut = QDot;
@@ -1034,7 +1034,7 @@ biorbd::rigidbody::GeneralizedVelocity rigidbody::Joints::computeQdot(
     unsigned int cmpQuat(0);
     unsigned int cmpDof(0);
     for (unsigned int i=0; i<nbSegment(); ++i) {
-        const biorbd::rigidbody::Segment& segment_i = segment(i);
+        const rigidbody::Segment& segment_i = segment(i);
         if (segment_i.isRotationAQuaternion()) {
             // Extraire le quaternion
             biorbd::utils::Quaternion quat_tp(
@@ -1064,13 +1064,13 @@ biorbd::rigidbody::GeneralizedVelocity rigidbody::Joints::computeQdot(
     return QDotOut;
 }
 
-biorbd::rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &QDot,
+rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &QDot,
     const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &QDDot,
     std::vector<biorbd::utils::SpatialVector>* f_ext)
 {
-    biorbd::rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
+    rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
     if (f_ext) {
         std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(
                     *f_ext));
@@ -1081,12 +1081,12 @@ biorbd::rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
     return Tau;
 }
 
-biorbd::rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &QDot,
+rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &QDot,
     std::vector<biorbd::utils::SpatialVector>* f_ext)
 {
-    biorbd::rigidbody::GeneralizedTorque Tau(*this);
+    rigidbody::GeneralizedTorque Tau(*this);
     if (f_ext) {
         std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(
                     *f_ext));
@@ -1099,9 +1099,9 @@ biorbd::rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
 
 biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration
 rigidbody::Joints::ForwardDynamics(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &QDot,
-    const biorbd::rigidbody::GeneralizedTorque &Tau,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &QDot,
+    const rigidbody::GeneralizedTorque &Tau,
     std::vector<biorbd::utils::SpatialVector>* f_ext)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -1121,10 +1121,10 @@ rigidbody::Joints::ForwardDynamics(
 
 biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration
 rigidbody::Joints::ForwardDynamicsConstraintsDirect(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &QDot,
-    const biorbd::rigidbody::GeneralizedTorque &Tau,
-    biorbd::rigidbody::Contacts &CS,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &QDot,
+    const rigidbody::GeneralizedTorque &Tau,
+    rigidbody::Contacts &CS,
     std::vector<biorbd::utils::SpatialVector> *f_ext)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -1146,12 +1146,12 @@ rigidbody::Joints::ForwardDynamicsConstraintsDirect(
 
 biorbd::utils::Vector
 rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &QDot,
-    const biorbd::rigidbody::GeneralizedTorque &Tau,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &QDot,
+    const rigidbody::GeneralizedTorque &Tau,
     std::vector<biorbd::utils::SpatialVector> *f_ext)
 {
-    biorbd::rigidbody::Contacts CS = dynamic_cast<biorbd::rigidbody::Contacts*>
+    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>
                                      (this)->getConstraints();
     this->ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, f_ext);
     return CS.getForce();
@@ -1159,31 +1159,31 @@ rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
 
 biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration
 rigidbody::Joints::ForwardDynamicsConstraintsDirect(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &QDot,
-    const biorbd::rigidbody::GeneralizedTorque &Tau,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &QDot,
+    const rigidbody::GeneralizedTorque &Tau,
     std::vector<biorbd::utils::SpatialVector> *f_ext)
 {
 
-    biorbd::rigidbody::Contacts CS = dynamic_cast<biorbd::rigidbody::Contacts*>
+    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>
                                      (this)->getConstraints();
     return this->ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, f_ext);
 }
 
-biorbd::rigidbody::GeneralizedVelocity
+rigidbody::GeneralizedVelocity
 rigidbody::Joints::ComputeConstraintImpulsesDirect(
-    const biorbd::rigidbody::GeneralizedCoordinates& Q,
-    const biorbd::rigidbody::GeneralizedVelocity& QDotPre
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDotPre
 )
 {
-    biorbd::rigidbody::Contacts CS = dynamic_cast<biorbd::rigidbody::Contacts*>
+    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>
                                      (this)->getConstraints();
     if (CS.nbContacts() == 0) {
         return QDotPre;
     } else {
-        CS = dynamic_cast<biorbd::rigidbody::Contacts*>(this)->getConstraints();
+        CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
 
-        biorbd::rigidbody::GeneralizedVelocity QDotPost(*this);
+        rigidbody::GeneralizedVelocity QDotPost(*this);
         RigidBodyDynamics::ComputeConstraintImpulsesDirect(*this, Q, QDotPre, CS,
                 QDotPost);
         return QDotPost;
@@ -1217,8 +1217,8 @@ unsigned int rigidbody::Joints::getDofIndex(
 }
 
 void rigidbody::Joints::UpdateKinematicsCustom(
-    const biorbd::rigidbody::GeneralizedCoordinates *Q,
-    const biorbd::rigidbody::GeneralizedVelocity *Qdot,
+    const rigidbody::GeneralizedCoordinates *Q,
+    const rigidbody::GeneralizedVelocity *Qdot,
     const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot)
 {
     checkGeneralizedDimensions(Q, Qdot, Qddot);
@@ -1226,7 +1226,7 @@ void rigidbody::Joints::UpdateKinematicsCustom(
 }
 
 void rigidbody::Joints::CalcMatRotJacobian(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates &Q,
     unsigned int segmentIdx,
     const RigidBodyDynamics::Math::Matrix3d &rotation,
     RigidBodyDynamics::Math::MatrixNd &G,
@@ -1299,10 +1299,10 @@ void rigidbody::Joints::CalcMatRotJacobian(
 }
 
 void rigidbody::Joints::checkGeneralizedDimensions(
-    const biorbd::rigidbody::GeneralizedCoordinates *Q,
-    const biorbd::rigidbody::GeneralizedVelocity *Qdot,
+    const rigidbody::GeneralizedCoordinates *Q,
+    const rigidbody::GeneralizedVelocity *Qdot,
     const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot,
-    const biorbd::rigidbody::GeneralizedTorque *torque)
+    const rigidbody::GeneralizedTorque *torque)
 {
 #ifndef SKIP_ASSERT
     if (Q) {

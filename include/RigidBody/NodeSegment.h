@@ -12,6 +12,8 @@ namespace utils
 class String;
 }
 
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 
@@ -90,13 +92,13 @@ public:
     /// \brief Deep copy of the segment node
     /// \return A deep copy of the segment node
     ///
-    biorbd::rigidbody::NodeSegment DeepCopy() const;
+    NodeSegment DeepCopy() const;
 
     ///
     /// \brief Deep copy of the segment node
     /// \param other The segment node to copy
     ///
-    void DeepCopy(const biorbd::rigidbody::NodeSegment& other);
+    void DeepCopy(const NodeSegment& other);
 
     // Get and Set
 
@@ -179,7 +181,7 @@ public:
     /// \param other The other vector
     ///
     template<typename OtherDerived>
-    biorbd::rigidbody::NodeSegment & operator=(const Eigen::MatrixBase
+    NodeSegment & operator=(const Eigen::MatrixBase
             <OtherDerived>& other)
     {
         this->biorbd::utils::Vector3d::operator=(other);
@@ -203,6 +205,7 @@ protected:
 
 };
 
+}
 }
 }
 

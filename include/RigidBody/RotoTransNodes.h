@@ -15,6 +15,8 @@ class Matrix;
 class RotoTransNode;
 }
 
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 class GeneralizedCoordinates;
@@ -35,7 +37,7 @@ public:
     /// \param other The other RTs set
     ///
     RotoTransNodes(
-        const biorbd::rigidbody::RotoTransNodes& other);
+        const RotoTransNodes& other);
 
     ///
     /// \brief Destroy the class properly
@@ -46,14 +48,14 @@ public:
     /// \brief Deep copy of the RTs data
     /// \return A copy of the RTs data
     ///
-    biorbd::rigidbody::RotoTransNodes DeepCopy() const;
+    RotoTransNodes DeepCopy() const;
 
     ///
     /// \brief Deep copy the RTs data
     /// \param other The RT data to copy
     ///
     void DeepCopy(
-        const biorbd::rigidbody::RotoTransNodes& other);
+        const RotoTransNodes& other);
 
     ///
     /// \brief Add a new RT to the set
@@ -114,7 +116,7 @@ public:
     /// \return All the RTs at the position given by Q
     ///
     std::vector<biorbd::utils::RotoTransNode> RTs(
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+        const GeneralizedCoordinates& Q,
         bool updateKin = true);
 
     ///
@@ -125,7 +127,7 @@ public:
     /// \return The RT of index idx at the position given by Q
     ///
     biorbd::utils::RotoTransNode RT(
-        const biorbd::rigidbody::GeneralizedCoordinates&Q,
+        const GeneralizedCoordinates&Q,
         unsigned int  idx,
         bool updateKin = true);
 
@@ -137,7 +139,7 @@ public:
     /// \return All the RTs on the segment of index idx
     ///
     std::vector<biorbd::utils::RotoTransNode> segmentRTs(
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+        const GeneralizedCoordinates& Q,
         unsigned int  idx,
         bool updateKin = true);
 
@@ -148,7 +150,7 @@ public:
     /// \return The jacobien of the RTs
     ///
     std::vector<biorbd::utils::Matrix> RTsJacobian(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const GeneralizedCoordinates &Q,
         bool updateKin = true);
 
 protected:
@@ -157,6 +159,7 @@ protected:
 
 };
 
+}
 }
 }
 

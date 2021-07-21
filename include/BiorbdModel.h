@@ -66,10 +66,10 @@ namespace biorbd
 ///
 class BIORBD_API Model :
     public biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints
-    ,public biorbd::rigidbody::Markers
-    ,public biorbd::rigidbody::IMUs
-    ,public biorbd::rigidbody::RotoTransNodes
-    ,public biorbd::rigidbody::Contacts
+    ,public biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Markers
+    ,public biorbd::BIORBD_MATH_NAMESPACE::rigidbody::IMUs
+    ,public biorbd::BIORBD_MATH_NAMESPACE::rigidbody::RotoTransNodes
+    ,public biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Contacts
 #ifdef MODULE_ACTUATORS
     ,public biorbd::actuator::Actuators
 #endif

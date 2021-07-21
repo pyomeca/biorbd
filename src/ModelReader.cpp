@@ -113,7 +113,7 @@ void biorbd::Reader::readModelFile(
                     RigidBodyDynamics::Math::Matrix3d::Identity());
                 biorbd::utils::RotoTrans RT(RigidBodyDynamics::Math::Matrix4d::Identity());
                 biorbd::utils::Vector3d com(0,0,0);
-                biorbd::rigidbody::Mesh mesh;
+                biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh mesh;
                 int segmentByFile(-1); // -1 non setté, 0 pas par file, 1 par file
                 int PF = -1;
                 std::vector<biorbd::utils::Range> QRanges;
@@ -229,7 +229,7 @@ void biorbd::Reader::readModelFile(
                         } else if (segmentByFile == 1) {
                             biorbd::utils::Error::raise("You must not mix file and mesh in segment");
                         }
-                        biorbd::rigidbody::MeshFace tp;
+                        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::MeshFace tp;
                         for (unsigned int i=0; i<3; ++i) {
                             file.read(tp(i));
                         }
@@ -305,7 +305,7 @@ void biorbd::Reader::readModelFile(
                             biorbd::utils::Range (-M_PI*100, M_PI*100));
                     }
                 }
-                biorbd::rigidbody::SegmentCharacteristics characteristics(mass,com,inertia,
+                biorbd::BIORBD_MATH_NAMESPACE::rigidbody::SegmentCharacteristics characteristics(mass,com,inertia,
                         mesh);
                 model->AddSegment(name, parent_str, trans, rot, QRanges, QDotRanges,
                                   QDDotRanges, characteristics, RT, PF);
@@ -430,9 +430,9 @@ void biorbd::Reader::readModelFile(
                     }
                 }
                 if (fromMarkers) {
-                    std::vector<biorbd::rigidbody::NodeSegment> allMarkerOnSegment(model->marker(
+                    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment> allMarkerOnSegment(model->marker(
                                 parent_str));
-                    biorbd::rigidbody::NodeSegment origin, axis1Beg, axis1End, axis2Beg, axis2End;
+                    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment origin, axis1Beg, axis1End, axis2Beg, axis2End;
                     bool isOrigin(false), isAxis1Beg(false), isAxis1End(false), isAxis2Beg(false),
                          isAxis2End(false);
                     for (auto mark : allMarkerOnSegment) {
@@ -1122,7 +1122,7 @@ std::vector<std::vector<biorbd::utils::Vector3d>>
     return markers;
 }
 
-std::vector<biorbd::rigidbody::GeneralizedCoordinates>
+std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates>
 biorbd::Reader::readQDataFile(
     const utils::Path &path)
 {
@@ -1153,7 +1153,7 @@ biorbd::Reader::readQDataFile(
     file.readSpecificTag("nbintervals", tp);
     unsigned int nbIntervals(static_cast<unsigned int>(atoi(tp.c_str())));
 
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> kinematics;
+    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> kinematics;
     // Scroll down until the definition of a marker
     for (unsigned int j=0; j<nbIntervals+1; j++) {
         while (tp.compare("T")) {
@@ -1164,7 +1164,7 @@ biorbd::Reader::readQDataFile(
 
         double time;
         file.read(time);
-        biorbd::rigidbody::GeneralizedCoordinates position(NDDL);
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates position(NDDL);
         for (unsigned int i=0; i<NDDL; i++) {
             file.read(position(i));
         }
@@ -1643,7 +1643,7 @@ std::vector<std::vector<biorbd::utils::Vector3d>>
     return data;
 }
 
-biorbd::rigidbody::Mesh
+biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh
 biorbd::Reader::readMeshFileBiorbdSegments(
     const biorbd::utils::Path &path)
 {
@@ -1675,7 +1675,7 @@ biorbd::Reader::readMeshFileBiorbdSegments(
     file.readSpecificTag("nfaces", tp);
     unsigned int nFaces(static_cast<unsigned int>(atoi(tp.c_str())));
 
-    biorbd::rigidbody::Mesh mesh;
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh mesh;
     mesh.setPath(path);
     // Get all the points
     std::map<biorbd::utils::Equation, double> variable =
@@ -1691,7 +1691,7 @@ biorbd::Reader::readMeshFileBiorbdSegments(
     }
 
     for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints) {
-        biorbd::rigidbody::MeshFace patchTp;
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::MeshFace patchTp;
         unsigned int nVertices;
         file.read(nVertices);
         if (nVertices != 3) {
@@ -1706,7 +1706,7 @@ biorbd::Reader::readMeshFileBiorbdSegments(
 }
 
 
-biorbd::rigidbody::Mesh biorbd::Reader::readMeshFilePly(
+biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh biorbd::Reader::readMeshFilePly(
     const biorbd::utils::Path &path)
 {
     // Read a bone file
@@ -1741,7 +1741,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFilePly(
     // Trouver le nombre de ??
     file.reachSpecificTag("end_header");
 
-    biorbd::rigidbody::Mesh mesh;
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh mesh;
     mesh.setPath(path);
     std::map<biorbd::utils::Equation, double> variable =
         std::map<biorbd::utils::Equation, double>();
@@ -1758,7 +1758,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFilePly(
     }
 
     for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints) {
-        biorbd::rigidbody::MeshFace patchTp;
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::MeshFace patchTp;
         unsigned int nVertices;
         file.read(nVertices);
         if (nVertices != 3) {
@@ -1777,7 +1777,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFilePly(
     return mesh;
 }
 
-biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileObj(
+biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh biorbd::Reader::readMeshFileObj(
     const biorbd::utils::Path &path)
 {
     // Read a bone file
@@ -1796,12 +1796,12 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileObj(
     // Read file
     biorbd::utils::String tp;
 
-    biorbd::rigidbody::Mesh mesh;
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh mesh;
     mesh.setPath(path);
 
     // Get all the points
     biorbd::utils::Vector3d vertex;
-    biorbd::rigidbody::MeshFace patch;
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::MeshFace patch;
     biorbd::utils::String text;
     std::map<biorbd::utils::Equation, double> variable =
         std::map<biorbd::utils::Equation, double>();
@@ -1841,7 +1841,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileObj(
 
 #ifdef MODULE_VTP_FILES_READER
 #include "tinyxml.h"
-biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileVtp(
+biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh biorbd::Reader::readMeshFileVtp(
     const biorbd::utils::Path &path)
 {
     // Read an opensim formatted mesh file
@@ -1857,7 +1857,7 @@ biorbd::rigidbody::Mesh biorbd::Reader::readMeshFileVtp(
     TiXmlDocument doc(filepath);
     biorbd::utils::Error::check(doc.LoadFile(), "Failed to load file " + filepath);
     TiXmlHandle hDoc(&doc);
-    biorbd::rigidbody::Mesh mesh;
+    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh mesh;
     mesh.setPath(path);
 
     // Navigate up to VTKFile/PolyData/Piece

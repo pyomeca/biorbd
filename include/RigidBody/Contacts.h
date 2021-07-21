@@ -20,6 +20,8 @@ class SpatialVector;
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 class GeneralizedCoordinates;
@@ -43,14 +45,14 @@ public:
     /// \brief Deep copy of contacts
     /// \return Copy of contacts
     ///
-    biorbd::rigidbody::Contacts DeepCopy() const;
+    Contacts DeepCopy() const;
 
     ///
     /// \brief Deep copy of contacts
     /// \param other The contacts to copy
     ///
     void DeepCopy(
-        const biorbd::rigidbody::Contacts& other);
+        const Contacts& other);
 
     ///
     /// \brief Add a constraint to the constraint set
@@ -147,7 +149,7 @@ public:
     /// \return The contraints positions in the global reference
     ///
     std::vector<biorbd::utils::Vector3d> constraintsInGlobal(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const GeneralizedCoordinates &Q,
         bool updateKin);
 
     ///
@@ -162,6 +164,7 @@ protected:
 
 };
 
+}
 }
 }
 

@@ -18,9 +18,11 @@ struct SpatialTransform;
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE {
 namespace rigidbody
 {
 class NodeSegment;
+}
 }
 
 namespace utils
@@ -143,10 +145,10 @@ public:
     /// \return The system of axes
     ///
     static biorbd::utils::RotoTrans fromMarkers(
-        const biorbd::rigidbody::NodeSegment& origin,
-        const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>&
+        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment& origin,
+        const std::pair<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment, biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>&
         axis1markers,
-        const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>&
+        const std::pair<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment, biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>&
         axis2markers,
         const std::pair<biorbd::utils::String, biorbd::utils::String> &axesNames,
         const biorbd::utils::String& axisToRecalculate);

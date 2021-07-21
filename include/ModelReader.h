@@ -10,10 +10,13 @@ namespace biorbd
 {
 class Model;
 
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 class GeneralizedCoordinates;
 class Mesh;
+}
 }
 
 namespace utils
@@ -64,7 +67,7 @@ public:
     /// \param path The path of the file
     /// \return Returns the kinematics
     ///
-    static std::vector<biorbd::rigidbody::GeneralizedCoordinates> readQDataFile(
+    static std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> readQDataFile(
         const biorbd::utils::Path &path);
 
     ///
@@ -155,7 +158,7 @@ public:
     /// \param path The path of the file
     /// \return Returns the mesh
     ///
-    static biorbd::rigidbody::Mesh readMeshFileBiorbdSegments(
+    static biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh readMeshFileBiorbdSegments(
         const biorbd::utils::Path& path);
 
     ///
@@ -163,7 +166,7 @@ public:
     /// \param path The path of the file
     /// \return Returns the mesh
     ///
-    static biorbd::rigidbody::Mesh readMeshFilePly(
+    static biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh readMeshFilePly(
         const biorbd::utils::Path& path);
 
     ///
@@ -171,7 +174,7 @@ public:
     /// \param path The path of the file
     /// \return Returns the mesh
     ///
-    static biorbd::rigidbody::Mesh readMeshFileObj(
+    static biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh readMeshFileObj(
         const biorbd::utils::Path& path);
 
 #ifdef MODULE_VTP_FILES_READER
@@ -180,7 +183,7 @@ public:
     /// \param path The path of the file
     /// \return Returns the mesh
     ///
-    static biorbd::rigidbody::Mesh readMeshFileVtp(
+    static biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh readMeshFileVtp(
         const biorbd::utils::Path& path);
 #endif
 

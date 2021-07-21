@@ -6,15 +6,11 @@
 
 namespace biorbd
 {
-namespace BIORBD_MATH_NAMESPACE {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 class Joints;
-}
-}
-
-namespace rigidbody
-{
 
 ///
 /// \brief Class GeneralizedCoordinates
@@ -40,14 +36,14 @@ public:
     /// \param j The joint model
     ///
     GeneralizedCoordinates(
-        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& j);
+        const Joints& j);
 
     ///
     /// \brief Construct generalized coordinates
     /// \param Q State vector of the internal joints
     ///
     GeneralizedCoordinates(
-        const biorbd::rigidbody::GeneralizedCoordinates& Q);
+        const GeneralizedCoordinates& Q);
 
     ///
     /// \brief Construct vector from Casadi vector
@@ -95,7 +91,7 @@ public:
     /// \return The current Generalized Coordinate
     ///
     template<typename OtherDerived>
-    biorbd::rigidbody::GeneralizedCoordinates& operator=(
+    GeneralizedCoordinates& operator=(
         const Eigen::MatrixBase <OtherDerived>& other)
     {
         this->biorbd::utils::Vector::operator=(other);
@@ -131,6 +127,7 @@ public:
 #endif
 };
 
+}
 }
 }
 

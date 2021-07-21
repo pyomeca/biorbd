@@ -71,11 +71,9 @@ biorbd::utils::RotoTrans::RotoTrans(
 }
 
 biorbd::utils::RotoTrans biorbd::utils::RotoTrans::fromMarkers(
-    const biorbd::rigidbody::NodeSegment& origin,
-    const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>
-    &axis1markers,
-    const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>
-    &axis2markers,
+    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment& origin,
+    const std::pair<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment, biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment> &axis1markers,
+    const std::pair<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment, biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment> &axis2markers,
     const std::pair<biorbd::utils::String, biorbd::utils::String>& axesNames,
     const biorbd::utils::String &axisToRecalculate)
 {

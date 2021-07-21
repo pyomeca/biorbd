@@ -13,6 +13,8 @@ class Vector3d;
 class Path;
 }
 
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 class MeshFace;
@@ -42,20 +44,20 @@ public:
     ///
     Mesh(
         const std::vector<biorbd::utils::Vector3d>& vertex,
-        const std::vector<biorbd::rigidbody::MeshFace>& faces);
+        const std::vector<MeshFace>& faces);
 
     ///
     /// \brief Deep copy of the mesh
     /// \return A copy of mesh
     ///
-    biorbd::rigidbody::Mesh DeepCopy() const;
+    Mesh DeepCopy() const;
 
     ///
     /// \brief Deep copy of the mesh
     /// \param other The mesh to copy
     ///
     void DeepCopy(
-        const biorbd::rigidbody::Mesh& other);
+        const Mesh& other);
 
     ///
     /// \brief Add a point to the mesh
@@ -83,7 +85,7 @@ public:
     /// \param face The face patch to add
     ///
     void addFace(
-        const biorbd::rigidbody::MeshFace& face);
+        const MeshFace& face);
 
     ///
     /// \brief Add a face patch to the mesh
@@ -95,14 +97,14 @@ public:
     /// \brief Return the faces of the mesh
     /// \return The faces of the mesh
     ///
-    const std::vector<biorbd::rigidbody::MeshFace>& faces() const;
+    const std::vector<MeshFace>& faces() const;
 
     ///
     /// \brief Return the face of the mesh of a specified idx
     /// \param idx Position
     /// \return The face of the mesh of a specified idx
     ///
-    const biorbd::rigidbody::MeshFace& face(
+    const MeshFace& face(
         unsigned int idx) const;
 
     ///
@@ -126,11 +128,12 @@ public:
 
 protected:
     std::shared_ptr<std::vector<biorbd::utils::Vector3d>> m_vertex; ///< The vertex
-    std::shared_ptr<std::vector<biorbd::rigidbody::MeshFace>>
+    std::shared_ptr<std::vector<MeshFace>>
             m_faces; ///< The faces
     std::shared_ptr<biorbd::utils::Path> m_pathFile; ///< The path to the mesh file
 };
 
+}
 }
 }
 

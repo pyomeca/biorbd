@@ -14,6 +14,8 @@ namespace utils
 class Vector3d;
 }
 
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 class Mesh;
@@ -56,19 +58,19 @@ public:
         const biorbd::utils::Scalar &mass,
         const biorbd::utils::Vector3d &com,
         const RigidBodyDynamics::Math::Matrix3d &inertia,
-        const biorbd::rigidbody::Mesh &mesh);
+        const Mesh &mesh);
 
     ///
     /// \brief Deep copy of the segment characteristics
     /// \return Copy of the segment characteristics
     ///
-    biorbd::rigidbody::SegmentCharacteristics DeepCopy() const;
+    SegmentCharacteristics DeepCopy() const;
 
     ///
     /// \brief Copy the segment characteristics
     /// \param other The characteristics to copy
     ///
-    void DeepCopy(const biorbd::rigidbody::SegmentCharacteristics& other);
+    void DeepCopy(const SegmentCharacteristics& other);
 
     ///
     /// \brief Set the segment length
@@ -111,7 +113,7 @@ public:
     /// \brief Returns the segment mesh
     /// \return The segment mesh
     ///
-    const biorbd::rigidbody::Mesh& mesh() const;
+    const Mesh& mesh() const;
 
     ///
     /// \brief Returns the segment inertia matrix
@@ -121,9 +123,10 @@ public:
 
 protected:
     std::shared_ptr<biorbd::utils::Scalar> m_length; ///< Length of the segment
-    std::shared_ptr<biorbd::rigidbody::Mesh> m_mesh; ///< Mesh of the segment
+    std::shared_ptr<Mesh> m_mesh; ///< Mesh of the segment
 };
 
+}
 }
 }
 

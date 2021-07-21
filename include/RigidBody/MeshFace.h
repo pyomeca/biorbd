@@ -12,6 +12,8 @@ namespace utils
 class Vector3d;
 }
 
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 
@@ -32,14 +34,14 @@ public:
     /// \brief Deep copy of a MeshFace
     /// \return A deep copy of a MeshFace
     ///
-    biorbd::rigidbody::MeshFace DeepCopy() const;
+    MeshFace DeepCopy() const;
 
     ///
     /// \brief Deep copy of a MeshFace into another one
     /// \param other The MeshFace to copy
     ///
     void DeepCopy(
-        const biorbd::rigidbody::MeshFace& other);
+        const MeshFace& other);
 
     ///
     /// \brief Allows to assign/get using ()
@@ -58,7 +60,7 @@ public:
     /// \param other The other MeshFace
     ///
     void setFace(
-        const biorbd::rigidbody::MeshFace& other);
+        const MeshFace& other);
 
     ///
     /// \brief convert the integer nature of the face to a double
@@ -77,6 +79,7 @@ protected:
 
 };
 
+}
 }
 }
 

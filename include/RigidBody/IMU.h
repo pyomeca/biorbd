@@ -12,6 +12,8 @@ namespace utils
 class String;
 }
 
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 
@@ -57,9 +59,9 @@ public:
 #endif
 #ifdef BIORBD_USE_CASADI_MATH
     IMU(
-        const biorbd::rigidbody::IMU& imu);
+        const IMU& imu);
 
-    biorbd::rigidbody::IMU operator*(const biorbd::rigidbody::IMU& other) const;
+    IMU operator*(const IMU& other) const;
 #endif
 
 
@@ -67,13 +69,13 @@ public:
     /// \brief Deep copy of the IMU data
     /// \return Copy of the IMU data
     ///
-    biorbd::rigidbody::IMU DeepCopy() const;
+    IMU DeepCopy() const;
 
     ///
     /// \brief Deep copy if the IMU data
     /// \param other The IMU to copy
     ///
-    void DeepCopy(const biorbd::rigidbody::IMU& other);
+    void DeepCopy(const IMU& other);
 
     ///
     /// \brief Return if the IMU is technical
@@ -95,7 +97,7 @@ public:
     /// \return The current IMU
     ///
     template<typename OtherDerived>
-    biorbd::rigidbody::IMU& operator=(const Eigen::MatrixBase <OtherDerived>& other)
+    IMU& operator=(const Eigen::MatrixBase <OtherDerived>& other)
     {
         this->biorbd::utils::RotoTransNode::operator=(other);
         return *this;
@@ -109,6 +111,7 @@ protected:
 
 };
 
+}
 }
 }
 

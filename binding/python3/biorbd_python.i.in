@@ -27,10 +27,18 @@
 
 #if defined(BIORBD_USE_CASADI_MATH)
 #define SWIG_RIGIDBODY_JOINTS SWIGTYPE_p_biorbd__MathCasadi__rigidbody__Joints
+#define SWIG_RIGIDBODY_GEN_COORD SWIGTYPE_p_biorbd__MathCasadi__rigidbody__GeneralizedCoordinates
+#define SWIG_RIGIDBODY_GEN_VEL SWIGTYPE_p_biorbd__MathCasadi__rigidbody__GeneralizedVelocity
 #define SWIG_RIGIDBODY_GEN_ACC SWIGTYPE_p_biorbd__MathCasadi__rigidbody__GeneralizedAcceleration
+#define SWIG_RIGIDBODY_GEN_TORQUE SWIGTYPE_p_biorbd__MathCasadi__rigidbody__GeneralizedTorque
+#define SWIG_RIGIDBODY_MARKERS SWIGTYPE_p_biorbd__MathCasadi__rigidbody__Markers
 #elif defined(BIORBD_USE_EIGEN3_MATH)
 #define SWIG_RIGIDBODY_JOINTS SWIGTYPE_p_biorbd__MathEigen3__rigidbody__Joints
+#define SWIG_RIGIDBODY_GEN_COORD SWIGTYPE_p_biorbd__MathEigen3__rigidbody__GeneralizedCoordinates
+#define SWIG_RIGIDBODY_GEN_VEL SWIGTYPE_p_biorbd__MathEigen3__rigidbody__GeneralizedVelocity
 #define SWIG_RIGIDBODY_GEN_ACC SWIGTYPE_p_biorbd__MathEigen3__rigidbody__GeneralizedAcceleration
+#define SWIG_RIGIDBODY_GEN_TORQUE SWIGTYPE_p_biorbd__MathEigen3__rigidbody__GeneralizedTorque
+#define SWIG_RIGIDBODY_MARKERS SWIGTYPE_p_biorbd__MathEigen3__rigidbody__Markers
 #endif
 
 // -- STRING --//
@@ -87,7 +95,7 @@
     }
 };
 
-// --- biorbd::rigidbody::Joints --- //
+// --- Joints --- //
 %typemap(typecheck, precedence=2000) biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_JOINTS,  0  | 0)) && argp1) {
@@ -434,15 +442,15 @@
 
 // --- GeneralizedCoordinates --- //
 %typemap(typecheck, precedence=2100)
-biorbd::rigidbody::GeneralizedCoordinates & {
+biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates & {
     void *argp1 = 0;
-    if(SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates,  0  | 0)) && argp1){
+    if(SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_COORD,  0  | 0)) && argp1){
             $1 = true;
         }
 #ifdef BIORBD_USE_CASADI_MATH
     else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
         // Test if it is a pointer to
-        // SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates already exists
+        // SWIG_RIGIDBODY_GEN_COORD already exists
         $1 = true;
     }
 #endif
@@ -454,14 +462,14 @@ biorbd::rigidbody::GeneralizedCoordinates & {
         $1 = false;
     }
 }
-%typemap(in) biorbd::rigidbody::GeneralizedCoordinates & {
+%typemap(in) biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates & {
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates, 0  | 0)) && argp1) {
-        $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedCoordinates * >(argp1);
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIG_RIGIDBODY_GEN_COORD, 0  | 0)) && argp1) {
+        $1 = reinterpret_cast< biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates * >(argp1);
     }
 #ifdef BIORBD_USE_CASADI_MATH
     else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        $1 = new biorbd::rigidbody::GeneralizedCoordinates(*reinterpret_cast<casadi::MX*>(argp1));
+        $1 = new biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates(*reinterpret_cast<casadi::MX*>(argp1));
     }
 #endif
     else if( PyArray_Check($input) ) {
@@ -481,15 +489,15 @@ biorbd::rigidbody::GeneralizedCoordinates & {
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
         // Copy the actual data
         unsigned int nQ(dims[0]);
-        $1 = new biorbd::rigidbody::GeneralizedCoordinates(nQ);
+        $1 = new biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates(nQ);
         for (unsigned int q=0; q<nQ; ++q){
             (*$1)[q] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, q);
         }
     }
 };
-%typemap(typecheck, precedence=2101) biorbd::rigidbody::GeneralizedCoordinates * {
+%typemap(typecheck, precedence=2101) biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates * {
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates, 0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIG_RIGIDBODY_GEN_COORD, 0  | 0)) && argp1) {
         $1 = true;
     }
 #ifdef BIORBD_USE_CASADI_MATH
@@ -508,15 +516,15 @@ biorbd::rigidbody::GeneralizedCoordinates & {
         $1 = false;
     }
 }
-%typemap(in) biorbd::rigidbody::GeneralizedCoordinates * {
+%typemap(in) biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates * {
     void * argp1 = 0;
 
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIGTYPE_p_biorbd__rigidbody__GeneralizedCoordinates, 0  | 0)) && argp1) {
-        $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedCoordinates * >(argp1);
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIG_RIGIDBODY_GEN_COORD, 0  | 0)) && argp1) {
+        $1 = reinterpret_cast< biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates * >(argp1);
     }
 #ifdef BIORBD_USE_CASADI_MATH
     else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        $1 = new biorbd::rigidbody::GeneralizedCoordinates(*reinterpret_cast<casadi::MX*>(argp1));
+        $1 = new biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates(*reinterpret_cast<casadi::MX*>(argp1));
     }
 #endif
     else if( PyArray_Check($input) ) {
@@ -536,7 +544,7 @@ biorbd::rigidbody::GeneralizedCoordinates & {
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
         // Copy the actual data
         unsigned int nQ(dims[0]);
-        $1 = new biorbd::rigidbody::GeneralizedCoordinates(nQ);
+        $1 = new biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates(nQ);
         for (unsigned int q=0; q<nQ; ++q){
             (*$1)[q] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, q);
         }
@@ -548,9 +556,9 @@ biorbd::rigidbody::GeneralizedCoordinates & {
 
 // --- GeneralizedVelocity --- //
 %typemap(typecheck, precedence=2102)
-biorbd::rigidbody::GeneralizedVelocity & {
+biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity & {
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity, 0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_VEL, 0  | 0)) && argp1) {
         $1 = true;
     }
 #ifdef BIORBD_USE_CASADI_MATH
@@ -558,7 +566,7 @@ biorbd::rigidbody::GeneralizedVelocity & {
         $1 = true;
     }
 #endif
-    else if(SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity,  0  | 0)) && argp1){
+    else if(SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_VEL,  0  | 0)) && argp1){
         $1 = true;
     }
     else if( PyArray_Check($input) ) {
@@ -569,15 +577,15 @@ biorbd::rigidbody::GeneralizedVelocity & {
         $1 = false;
     }
 }
-%typemap(in) biorbd::rigidbody::GeneralizedVelocity & {
+%typemap(in) biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity & {
     void * argp1 = 0;
 
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity, 0  | 0)) && argp1) {
-        $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedVelocity * >(argp1);
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_VEL, 0  | 0)) && argp1) {
+        $1 = reinterpret_cast< biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity * >(argp1);
     }
 #ifdef BIORBD_USE_CASADI_MATH
     else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        $1 = new biorbd::rigidbody::GeneralizedVelocity(*reinterpret_cast<casadi::MX*>(argp1));
+        $1 = new biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity(*reinterpret_cast<casadi::MX*>(argp1));
     }
 #endif
     else if( PyArray_Check($input) ) {
@@ -597,7 +605,7 @@ biorbd::rigidbody::GeneralizedVelocity & {
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
         // Copy the actual data
         unsigned int nQdot(dims[0]);
-        $1 = new biorbd::rigidbody::GeneralizedVelocity(nQdot);
+        $1 = new biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity(nQdot);
         for (unsigned int qdot=0; qdot<nQdot; ++qdot){
             (*$1)[qdot] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, qdot);
         }
@@ -605,9 +613,9 @@ biorbd::rigidbody::GeneralizedVelocity & {
 };
 // --- GeneralizedVelocity --- //
 %typemap(typecheck, precedence=2103)
-biorbd::rigidbody::GeneralizedVelocity * {
+biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity * {
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity, 0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1,SWIG_RIGIDBODY_GEN_VEL, 0  | 0)) && argp1) {
         $1 = true;
     }
 #ifdef BIORBD_USE_CASADI_MATH
@@ -626,14 +634,14 @@ biorbd::rigidbody::GeneralizedVelocity * {
         $1 = false;
     }
 }
-%typemap(in) biorbd::rigidbody::GeneralizedVelocity * {
+%typemap(in) biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity * {
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedVelocity, 0  | 0)) && argp1) {
-        $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedVelocity * >(argp1);
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_VEL, 0  | 0)) && argp1) {
+        $1 = reinterpret_cast< biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity * >(argp1);
     }
 #ifdef BIORBD_USE_CASADI_MATH
     else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        $1 = new biorbd::rigidbody::GeneralizedVelocity(*reinterpret_cast<casadi::MX*>(argp1));
+        $1 = new biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity(*reinterpret_cast<casadi::MX*>(argp1));
     }
 #endif
     else if( PyArray_Check($input) ) {
@@ -653,7 +661,7 @@ biorbd::rigidbody::GeneralizedVelocity * {
         PyObject *data = PyArray_FROM_OTF((PyObject*)$input, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
         // Copy the actual data
         unsigned int nQdot(dims[0]);
-        $1 = new biorbd::rigidbody::GeneralizedVelocity(nQdot);
+        $1 = new biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity(nQdot);
         for (unsigned int qdot=0; qdot<nQdot; ++qdot){
             (*$1)[qdot] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, qdot);
         }
@@ -777,9 +785,9 @@ biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration * {
 };
 
 // --- GeneralizedTorque --- //
-%typemap(typecheck, precedence=2110) biorbd::rigidbody::GeneralizedTorque &{
+%typemap(typecheck, precedence=2110) biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedTorque,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_TORQUE,  0  | 0)) && argp1) {
         $1 = true;
     }
 #ifdef BIORBD_USE_CASADI_MATH
@@ -795,14 +803,14 @@ biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration * {
         $1 = false;
     }
 }
-%typemap(in) biorbd::rigidbody::GeneralizedTorque &{
+%typemap(in) biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__GeneralizedTorque,  0  | 0)) && argp1) {
-        $1 = reinterpret_cast< biorbd::rigidbody::GeneralizedTorque * >(argp1);
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_GEN_TORQUE,  0  | 0)) && argp1) {
+        $1 = reinterpret_cast< biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque * >(argp1);
     }
 #ifdef BIORBD_USE_CASADI_MATH
     else if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_casadi__MX,  0  | 0)) && argp1) {
-        $1 = new biorbd::rigidbody::GeneralizedTorque(*reinterpret_cast<casadi::MX*>(argp1));
+        $1 = new biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque(*reinterpret_cast<casadi::MX*>(argp1));
     }
 #endif
     else if( PyArray_Check($input) ) {
@@ -823,7 +831,7 @@ biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration * {
 
         // Copy the actual data
         unsigned int nGeneralizedTorque(dims[0]);
-        $1 = new biorbd::rigidbody::GeneralizedTorque(nGeneralizedTorque);
+        $1 = new biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque(nGeneralizedTorque);
         for (unsigned int GeneralizedTorque=0; GeneralizedTorque<nGeneralizedTorque; ++GeneralizedTorque)
             (*$1)[GeneralizedTorque] = *(double*)PyArray_GETPTR1((PyArrayObject*)data, GeneralizedTorque);
 
@@ -837,32 +845,32 @@ biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration * {
 };
 
 #ifndef BIORBD_USE_CASADI_MATH
-// --- biorbd::rigidbody::Markers --- //
-%typemap(typecheck, precedence=2200) biorbd::rigidbody::Markers &{
+// --- biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Markers --- //
+%typemap(typecheck, precedence=2200) biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Markers &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__Markers,  0  | 0)) && argp1) {
-        // Test if it is a pointer to SWIGTYPE_p_biorbd__rigidbody__Markers already exists
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_MARKERS,  0  | 0)) && argp1) {
+        // Test if it is a pointer to SWIG_RIGIDBODY_MARKERS already exists
         $1 = true;
     } else {
         $1 = false;
     }
 }
-%typemap(in) biorbd::rigidbody::Markers &{
+%typemap(in) biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Markers &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__rigidbody__Markers,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_RIGIDBODY_MARKERS,  0  | 0)) && argp1) {
         // Recast the pointer
-        $1 = reinterpret_cast< biorbd::rigidbody::Markers * >(argp1);
+        $1 = reinterpret_cast< biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Markers * >(argp1);
     } else {
         PyErr_SetString(PyExc_ValueError,
-                        "biorbd::rigidbody::Markers must be "
-                        "a biorbd::rigidbody::Markers");
+                        "biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Markers must be "
+                        "a biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Markers");
         SWIG_fail;
     }
 }
 #endif
 
 // --- Vector3d --- //
-%typemap(typecheck, precedence=2130) 
+%typemap(typecheck, precedence=2130)
 biorbd::utils::Vector3d &{
     void *argp1 = 0;
     if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIGTYPE_p_biorbd__utils__Node,  0  | 0)) && argp1) {
@@ -1049,7 +1057,7 @@ biorbd::utils::Vector3d &{
     }
 #endif
 };
-%extend biorbd::rigidbody::IMU{
+%extend biorbd::BIORBD_MATH_NAMESPACE::rigidbody::IMU{
 #ifdef BIORBD_USE_CASADI_MATH
     casadi::MX to_mx(){
         return *dynamic_cast<casadi::MX*>($self);

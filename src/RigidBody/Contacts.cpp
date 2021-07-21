@@ -11,7 +11,9 @@
 #include "Utils/SpatialVector.h"
 #include "RigidBody/Joints.h"
 
-biorbd::rigidbody::Contacts::Contacts() :
+using namespace biorbd::BIORBD_MATH_NAMESPACE;
+
+rigidbody::Contacts::Contacts() :
     RigidBodyDynamics::ConstraintSet (),
     m_nbreConstraint(std::make_shared<unsigned int>(0)),
     m_isBinded(std::make_shared<bool>(false))
@@ -19,14 +21,14 @@ biorbd::rigidbody::Contacts::Contacts() :
 
 }
 
-biorbd::rigidbody::Contacts biorbd::rigidbody::Contacts::DeepCopy() const
+rigidbody::Contacts rigidbody::Contacts::DeepCopy() const
 {
-    biorbd::rigidbody::Contacts copy;
+    rigidbody::Contacts copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void biorbd::rigidbody::Contacts::DeepCopy(const biorbd::rigidbody::Contacts
+void rigidbody::Contacts::DeepCopy(const rigidbody::Contacts
         &other)
 {
     static_cast<RigidBodyDynamics::ConstraintSet&>(*this) = other;
@@ -35,7 +37,7 @@ void biorbd::rigidbody::Contacts::DeepCopy(const biorbd::rigidbody::Contacts
 
 }
 
-unsigned int biorbd::rigidbody::Contacts::AddConstraint(
+unsigned int rigidbody::Contacts::AddConstraint(
     unsigned int body_id,
     const biorbd::utils::Vector3d& body_point,
     const biorbd::utils::Vector3d& world_normal,
@@ -46,7 +48,7 @@ unsigned int biorbd::rigidbody::Contacts::AddConstraint(
     return RigidBodyDynamics::ConstraintSet::AddContactConstraint(body_id,
             body_point, world_normal, name.c_str(), acc);
 }
-unsigned int biorbd::rigidbody::Contacts::AddConstraint(
+unsigned int rigidbody::Contacts::AddConstraint(
     unsigned int body_id,
     const biorbd::utils::Vector3d& body_point,
     const biorbd::utils::String& axis,
@@ -75,7 +77,7 @@ unsigned int biorbd::rigidbody::Contacts::AddConstraint(
     return ret;
 }
 
-unsigned int biorbd::rigidbody::Contacts::AddLoopConstraint(
+unsigned int rigidbody::Contacts::AddLoopConstraint(
     unsigned int body_id_predecessor,
     unsigned int body_id_successor,
     const biorbd::utils::RotoTrans &X_predecessor,
@@ -96,24 +98,24 @@ unsigned int biorbd::rigidbody::Contacts::AddLoopConstraint(
                enableStabilization, stabilizationParam, name.c_str());
 }
 
-biorbd::rigidbody::Contacts::~Contacts()
+rigidbody::Contacts::~Contacts()
 {
 
 }
 
-biorbd::rigidbody::Contacts &biorbd::rigidbody::Contacts::getConstraints()
+rigidbody::Contacts &rigidbody::Contacts::getConstraints()
 {
     if (!*m_isBinded) {
         // Assuming that this is also a Joints type (via BiorbdModel)
-        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model =
-            dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>(*this);
+        const rigidbody::Joints &model =
+            dynamic_cast<rigidbody::Joints &>(*this);
         Bind(model);
         *m_isBinded = true;
     }
     return *this;
 }
 
-bool biorbd::rigidbody::Contacts::hasContacts() const
+bool rigidbody::Contacts::hasContacts() const
 {
     if (*m_nbreConstraint>0) return
             true;
@@ -122,12 +124,12 @@ bool biorbd::rigidbody::Contacts::hasContacts() const
     }
 }
 
-unsigned int biorbd::rigidbody::Contacts::nbContacts() const
+unsigned int rigidbody::Contacts::nbContacts() const
 {
     return *m_nbreConstraint;
 }
 
-std::vector<biorbd::utils::String> biorbd::rigidbody::Contacts::contactNames()
+std::vector<biorbd::utils::String> rigidbody::Contacts::contactNames()
 {
     std::vector<biorbd::utils::String> names;
     for (auto name : RigidBodyDynamics::ConstraintSet::name) {
@@ -136,7 +138,7 @@ std::vector<biorbd::utils::String> biorbd::rigidbody::Contacts::contactNames()
     return names;
 }
 
-biorbd::utils::String biorbd::rigidbody::Contacts::contactName(unsigned int i)
+biorbd::utils::String rigidbody::Contacts::contactName(unsigned int i)
 {
     biorbd::utils::Error::check(i<*m_nbreConstraint,
                                 "Idx for contact names is too high..");
@@ -145,12 +147,12 @@ biorbd::utils::String biorbd::rigidbody::Contacts::contactName(unsigned int i)
 
 
 std::vector<biorbd::utils::Vector3d>
-biorbd::rigidbody::Contacts::constraintsInGlobal(
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
+rigidbody::Contacts::constraintsInGlobal(
+    const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
                                        (*this);
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
@@ -175,7 +177,7 @@ biorbd::rigidbody::Contacts::constraintsInGlobal(
     return tp;
 }
 
-biorbd::utils::Vector biorbd::rigidbody::Contacts::getForce() const
+biorbd::utils::Vector rigidbody::Contacts::getForce() const
 {
     return static_cast<biorbd::utils::Vector>(this->force);
 }

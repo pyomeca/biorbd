@@ -11,11 +11,6 @@ namespace BIORBD_MATH_NAMESPACE
 namespace rigidbody
 {
 class Joints;
-}
-}
-
-namespace rigidbody
-{
 
 ///
 /// \brief Class GeneralizedVelocity
@@ -40,14 +35,14 @@ public:
     /// \brief Create generalized velocity vector from a joint Model
     /// \param j The joint model
     ///
-    GeneralizedVelocity(const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& j);
+    GeneralizedVelocity(const Joints& j);
 
     ///
     /// \brief Construct generalized velocity vector
     /// \param Q State vector of the internal joints
     ///
     GeneralizedVelocity(
-        const biorbd::rigidbody::GeneralizedVelocity& Q);
+        const GeneralizedVelocity& Q);
 
     ///
     /// \brief Construct vector from Casadi vector
@@ -91,7 +86,7 @@ public:
     /// \return The current Generalized velocity vector
     ///
     template<typename OtherDerived>
-    biorbd::rigidbody::GeneralizedVelocity& operator=(
+    GeneralizedVelocity& operator=(
         const Eigen::MatrixBase <OtherDerived>& other)
     {
         this->biorbd::utils::Vector::operator=(other);
@@ -127,6 +122,7 @@ public:
 #endif
 };
 
+}
 }
 }
 

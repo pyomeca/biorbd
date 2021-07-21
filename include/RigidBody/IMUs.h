@@ -14,6 +14,8 @@ class Matrix;
 class RotoTransNode;
 }
 
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 class GeneralizedCoordinates;
@@ -34,7 +36,7 @@ public:
     /// \param other The other IMU set
     ///
     IMUs(
-        const biorbd::rigidbody::IMUs& other);
+        const IMUs& other);
 
     ///
     /// \brief Destroy the class properly
@@ -45,14 +47,14 @@ public:
     /// \brief Deep copy of the inertial measurement units data
     /// \return A copy of the inertial measurement units data
     ///
-    biorbd::rigidbody::IMUs DeepCopy() const;
+    IMUs DeepCopy() const;
 
     ///
     /// \brief Deep copy the inertial measurement units data
     /// \param other The IMU data to copy
     ///
     void DeepCopy(
-        const biorbd::rigidbody::IMUs& other);
+        const IMUs& other);
 
     // Set and get
 
@@ -105,14 +107,14 @@ public:
     /// \brief Return all the IMU in the local reference of the segment
     /// \return All the inertial measurement units in local reference frame
     ///
-    const std::vector<biorbd::rigidbody::IMU>& IMU() const;
+    const std::vector<rigidbody::IMU>& IMU() const;
 
     ///
     /// \brief Return all the inertial measurement units (IMU) of a segment
     /// \param segmentName The name of the segment to return the IMU
     /// \return All the IMU of attached to the segment
     ///
-    std::vector<biorbd::rigidbody::IMU> IMU(
+    std::vector<rigidbody::IMU> IMU(
         const biorbd::utils::String& segmentName);
 
     ///
@@ -120,7 +122,7 @@ public:
     /// \param idx The index of the IMU in the set
     /// \return IMU of idx i
     ///
-    const biorbd::rigidbody::IMU& IMU(
+    const rigidbody::IMU& IMU(
         unsigned int idx);
 
     ///
@@ -129,8 +131,8 @@ public:
     /// \param updateKin If the model should be updated
     /// \return All the IMU at the position given by Q
     ///
-    std::vector<biorbd::rigidbody::IMU> IMU(
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+    std::vector<rigidbody::IMU> IMU(
+        const GeneralizedCoordinates& Q,
         bool updateKin = true);
 
     ///
@@ -140,8 +142,8 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The IMU of index idx at the position given by Q
     ///
-    biorbd::rigidbody::IMU IMU(
-        const biorbd::rigidbody::GeneralizedCoordinates&Q,
+    rigidbody::IMU IMU(
+        const GeneralizedCoordinates&Q,
         unsigned int  idx,
         bool updateKin = true);
 
@@ -152,8 +154,8 @@ public:
     /// \param updateKin If the model should be updated
     /// \return All the IMU on the segment of index idx
     ///
-    std::vector<biorbd::rigidbody::IMU> segmentIMU(
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+    std::vector<rigidbody::IMU> segmentIMU(
+        const GeneralizedCoordinates& Q,
         unsigned int  idx,
         bool updateKin = true);
 
@@ -175,15 +177,15 @@ public:
     /// \param updateKin If the model should be updated
     /// \return all the technical IMU
     ///
-    std::vector<biorbd::rigidbody::IMU> technicalIMU(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    std::vector<rigidbody::IMU> technicalIMU(
+        const GeneralizedCoordinates &Q,
         bool updateKin = true);
 
     ///
     /// \brief Return all the technical inertial measurement units (IMU) in their respective segment local reference frame
     /// \return All the technical IMU
     ///
-    std::vector<biorbd::rigidbody::IMU> technicalIMU();
+    std::vector<rigidbody::IMU> technicalIMU();
 
     ///
     /// \brief Return all the anatomical inertial measurement units (IMU)
@@ -191,15 +193,15 @@ public:
     /// \param updateKin If the model should be updated
     /// \return all the anatomical IMU
     ///
-    std::vector<biorbd::rigidbody::IMU> anatomicalIMU(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    std::vector<rigidbody::IMU> anatomicalIMU(
+        const GeneralizedCoordinates &Q,
         bool updateKin = true);
 
     ///
     /// \brief Return all the anatomical inertial measurement units (IMU) in their respective segment local reference frame
     /// \return All the anatomical IMU
     ///
-    std::vector<biorbd::rigidbody::IMU> anatomicalIMU();
+    std::vector<rigidbody::IMU> anatomicalIMU();
 
     ///
     /// \brief Return the jacobian of the inertial measurement units (IMU)
@@ -208,7 +210,7 @@ public:
     /// \return The jacobien of the IMU
     ///
     std::vector<biorbd::utils::Matrix> IMUJacobian(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const GeneralizedCoordinates &Q,
         bool updateKin = true);
 
     ///
@@ -218,7 +220,7 @@ public:
     /// \return The jacobian of the technical IMU
     ///
     std::vector<biorbd::utils::Matrix> TechnicalIMUJacobian(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const GeneralizedCoordinates &Q,
         bool updateKin = true);
 
 protected:
@@ -230,15 +232,16 @@ protected:
     /// \param lookForTechnical If true, only computes for the technical IMU
     ///
     std::vector<biorbd::utils::Matrix> IMUJacobian(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const GeneralizedCoordinates &Q,
         bool updateKin,
         bool lookForTechnical);
 
-    std::shared_ptr<std::vector<biorbd::rigidbody::IMU>>
+    std::shared_ptr<std::vector<rigidbody::IMU>>
             m_IMUs; ///< All the inertial Measurement Units
 
 };
 
+}
 }
 }
 
