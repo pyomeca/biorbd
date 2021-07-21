@@ -76,7 +76,7 @@
         // Interpret the string
         $1 = new biorbd::BIORBD_MATH_NAMESPACE::utils::String(PyUnicode_AsUTF8($input));
     } else {
-        PyErr_SetString(PyExc_ValueError, "String must be a biorbd::BIORBD_MATH_NAMESPACE::utils::String or string");
+        PyErr_SetString(PyExc_ValueError, "String must be a utils::String or string");
         SWIG_fail;
     }
 };
@@ -125,8 +125,7 @@
         $1 = reinterpret_cast< biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints * >(argp1);
     } else {
         PyErr_SetString(PyExc_ValueError,
-                        "biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints must be "
-                        "a biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints");
+                        "rigidbody::Joints must be a rigidbody::Joints");
         SWIG_fail;
     }
 }

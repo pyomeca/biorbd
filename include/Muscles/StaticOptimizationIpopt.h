@@ -8,6 +8,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 class Model;
 
 namespace utils
@@ -44,11 +46,11 @@ public:
     /// \param eps The precision to perform the finite diffentiation
     ///
     StaticOptimizationIpopt(
-        biorbd::Model &model,
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
-        const biorbd::rigidbody::GeneralizedTorque &torqueTarget,
-        const biorbd::utils::Vector &activationInit,
+        Model &model,
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &Qdot,
+        const rigidbody::GeneralizedTorque &torqueTarget,
+        const utils::Vector &activationInit,
         bool  useResidual = true,
         unsigned int pNormFactor = 2,
         int verbose = 0,
@@ -215,16 +217,16 @@ public:
     /// \brief Return the final solution
     /// \return The final solution
     ///
-    biorbd::utils::Vector finalSolution() const;
+    utils::Vector finalSolution() const;
 
     ///
     /// \brief Return the final residual
     /// \return The final residual
     ///
-    biorbd::utils::Vector finalResidual() const;
+    utils::Vector finalResidual() const;
 
 protected:
-    biorbd::Model& m_model; ///< The model
+    Model& m_model; ///< The model
     std::shared_ptr<unsigned int> m_nbQ; ///< The number of generalized coordinates
     std::shared_ptr<unsigned int>
     m_nbQdot; ///< The number of generalized velocities
@@ -234,22 +236,22 @@ protected:
     std::shared_ptr<unsigned int>
     m_nbTorqueResidual; ///< The number of torque residual
     std::shared_ptr<double> m_eps; ///< Precision of the finite differentiate
-    std::shared_ptr<biorbd::utils::Vector> m_activations; ///< The activations
-    std::shared_ptr<biorbd::rigidbody::GeneralizedCoordinates>
+    std::shared_ptr<utils::Vector> m_activations; ///< The activations
+    std::shared_ptr<rigidbody::GeneralizedCoordinates>
     m_Q; ///< The generalized coordinates
-    std::shared_ptr<biorbd::rigidbody::GeneralizedVelocity>
+    std::shared_ptr<rigidbody::GeneralizedVelocity>
     m_Qdot; ///< The generalized velocities
-    std::shared_ptr<biorbd::rigidbody::GeneralizedTorque>
+    std::shared_ptr<rigidbody::GeneralizedTorque>
     m_torqueTarget; ///< The torque to match
-    std::shared_ptr<biorbd::utils::Vector>
+    std::shared_ptr<utils::Vector>
     m_torqueResidual; ///< The torque residual
     std::shared_ptr<double> m_torquePonderation; ///< The torque ponderation
-    std::shared_ptr<std::vector<std::shared_ptr<biorbd::muscles::State>>>
+    std::shared_ptr<std::vector<std::shared_ptr<State>>>
     m_states; ///< The muscle states
     std::shared_ptr<unsigned int> m_pNormFactor; ///< The p-norm factor
     std::shared_ptr<int> m_verbose; ///< Verbose level of IPOPT
-    std::shared_ptr<biorbd::utils::Vector> m_finalSolution; ///< The final solution
-    std::shared_ptr<biorbd::utils::Vector> m_finalResidual; ///< The final residual
+    std::shared_ptr<utils::Vector> m_finalSolution; ///< The final solution
+    std::shared_ptr<utils::Vector> m_finalResidual; ///< The final residual
 
     ///
     /// \brief To dispatch the variables into biorbd format
@@ -259,6 +261,7 @@ protected:
 
 };
 
+}
 }
 }
 

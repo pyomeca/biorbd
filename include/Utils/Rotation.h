@@ -145,11 +145,9 @@ public:
     /// \param axisToRecalculate The axis to recalculate to ensure orthonormal system of axes
     /// \return The system of axes
     ///
-    static Matrix fromMarkersNonNormalized(
-        const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment>&
-        axis1markers,
-        const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment>&
-        axis2markers,
+    static utils::Matrix fromMarkersNonNormalized(
+        const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment>& axis1markers,
+        const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment>& axis2markers,
         const std::pair<String, String> &axesNames,
         const String& axisToRecalculate);
 
@@ -187,8 +185,8 @@ public:
     /// \param mToMean The Rotation matrices to mean
     /// \return The mean Rotation matrix
     ///
-    static Rotation mean(
-        const std::vector<Rotation>& mToMean);
+    static utils::Rotation mean(
+        const std::vector<utils::Rotation>& mToMean);
 #endif
 
 #ifndef SWIG

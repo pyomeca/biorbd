@@ -221,8 +221,8 @@ public:
     /// \param rt The RotoTrans matrices to mean
     /// \return The mean RotoTrans
     ///
-    static RotoTrans mean(
-        const std::vector<RotoTrans>&rt);
+    static utils::RotoTrans mean(
+        const std::vector<utils::RotoTrans>&rt);
 #endif
 
 #ifndef SWIG

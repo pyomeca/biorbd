@@ -6,9 +6,12 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 class Matrix;
+class Vector;
 }
 
 namespace muscles
@@ -19,8 +22,7 @@ namespace muscles
 /// This algo should be much faster than tradition but less precise (Michaud, 2020)
 ///
 ///
-class BIORBD_API StaticOptimizationIpoptLinearized : public
-    biorbd::muscles::StaticOptimizationIpopt
+class BIORBD_API StaticOptimizationIpoptLinearized : public StaticOptimizationIpopt
 {
 public:
     ///
@@ -36,11 +38,11 @@ public:
     /// \param eps The precision to perform the finite diffentiation
     ///
     StaticOptimizationIpoptLinearized(
-        biorbd::Model& model,
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedVelocity& Qdot,
-        const biorbd::rigidbody::GeneralizedTorque& torqueTarget,
-        const biorbd::utils::Vector& activationInit,
+        Model& model,
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& Qdot,
+        const rigidbody::GeneralizedTorque& torqueTarget,
+        const utils::Vector& activationInit,
         bool useResidual = true,
         unsigned int pNormFactor = 2,
         int verbose = 0,
@@ -91,11 +93,12 @@ public:
         Ipopt::Number* values);
 
 protected:
-    std::shared_ptr<biorbd::utils::Matrix> m_jacobian; ///< The constraints jacobian
+    std::shared_ptr<utils::Matrix> m_jacobian; ///< The constraints jacobian
     void prepareJacobian(); ///< Setup the constant constraints jacobian
 
 };
 
+}
 }
 }
 

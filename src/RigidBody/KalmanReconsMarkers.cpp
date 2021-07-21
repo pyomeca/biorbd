@@ -13,19 +13,21 @@
 
 #include <math.h>
 
-biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers() :
-    biorbd::rigidbody::KalmanRecons(),
-    m_PpInitial(std::make_shared<biorbd::utils::Matrix>()),
+using namespace biorbd::BIORBD_MATH_NAMESPACE;
+
+rigidbody::KalmanReconsMarkers::KalmanReconsMarkers() :
+    rigidbody::KalmanRecons(),
+    m_PpInitial(std::make_shared<utils::Matrix>()),
     m_firstIteration(std::make_shared<bool>(true))
 {
 
 }
 
-biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers(
-    biorbd::Model &model,
-    biorbd::rigidbody::KalmanParam params) :
-    biorbd::rigidbody::KalmanRecons(model, model.nbTechnicalMarkers()*3, params),
-    m_PpInitial(std::make_shared<biorbd::utils::Matrix>()),
+rigidbody::KalmanReconsMarkers::KalmanReconsMarkers(
+    Model &model,
+    rigidbody::KalmanParam params) :
+    rigidbody::KalmanRecons(model, model.nbTechnicalMarkers()*3, params),
+    m_PpInitial(std::make_shared<utils::Matrix>()),
     m_firstIteration(std::make_shared<bool>(true))
 {
 
@@ -34,32 +36,32 @@ biorbd::rigidbody::KalmanReconsMarkers::KalmanReconsMarkers(
 
 }
 
-biorbd::rigidbody::KalmanReconsMarkers
-biorbd::rigidbody::KalmanReconsMarkers::DeepCopy() const
+rigidbody::KalmanReconsMarkers
+rigidbody::KalmanReconsMarkers::DeepCopy() const
 {
-    biorbd::rigidbody::KalmanReconsMarkers copy;
+    rigidbody::KalmanReconsMarkers copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void biorbd::rigidbody::KalmanReconsMarkers::DeepCopy(const
-        biorbd::rigidbody::KalmanReconsMarkers &other)
+void rigidbody::KalmanReconsMarkers::DeepCopy(const
+        rigidbody::KalmanReconsMarkers &other)
 {
-    biorbd::rigidbody::KalmanRecons::DeepCopy(other);
+    rigidbody::KalmanRecons::DeepCopy(other);
     *m_PpInitial = *other.m_PpInitial;
     *m_firstIteration = *other.m_firstIteration;
 }
 
-void biorbd::rigidbody::KalmanReconsMarkers::initialize()
+void rigidbody::KalmanReconsMarkers::initialize()
 {
-    biorbd::rigidbody::KalmanRecons::initialize();
+    rigidbody::KalmanRecons::initialize();
 
     // Keep in mind the initial m_Pp
     m_PpInitial = m_Pp;
 }
 
-void biorbd::rigidbody::KalmanReconsMarkers::manageOcclusionDuringIteration(
-    biorbd::utils::Matrix &InvTp,
+void rigidbody::KalmanReconsMarkers::manageOcclusionDuringIteration(
+    utils::Matrix &InvTp,
     utils::Vector &measure,
     const std::vector<unsigned int> &occlusion)
 {
@@ -71,21 +73,21 @@ void biorbd::rigidbody::KalmanReconsMarkers::manageOcclusionDuringIteration(
         }
 }
 
-bool biorbd::rigidbody::KalmanReconsMarkers::first()
+bool rigidbody::KalmanReconsMarkers::first()
 {
     return *m_firstIteration;
 }
 
-void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
-    biorbd::Model &model,
-    const biorbd::rigidbody::Markers &Tobs,
-    biorbd::rigidbody::GeneralizedCoordinates *Q,
-    biorbd::rigidbody::GeneralizedVelocity *Qdot,
+void rigidbody::KalmanReconsMarkers::reconstructFrame(
+    Model &model,
+    const rigidbody::Markers &Tobs,
+    rigidbody::GeneralizedCoordinates *Q,
+    rigidbody::GeneralizedVelocity *Qdot,
     biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot,
     bool removeAxes)
 {
     // Separate the tobs in a big vector
-    biorbd::utils::Vector T(3*Tobs.nbMarkers());
+    utils::Vector T(3*Tobs.nbMarkers());
     for (unsigned int i=0; i<Tobs.nbMarkers(); ++i) {
         T.block(i*3, 0, 3, 1) = Tobs.marker(i);
     }
@@ -94,16 +96,16 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     reconstructFrame(model, T, Q, Qdot, Qddot, removeAxes);
 }
 
-void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
-    biorbd::Model &model,
-    const std::vector<biorbd::rigidbody::NodeSegment> &Tobs,
-    biorbd::rigidbody::GeneralizedCoordinates *Q,
-    biorbd::rigidbody::GeneralizedVelocity *Qdot,
+void rigidbody::KalmanReconsMarkers::reconstructFrame(
+    Model &model,
+    const std::vector<rigidbody::NodeSegment> &Tobs,
+    rigidbody::GeneralizedCoordinates *Q,
+    rigidbody::GeneralizedVelocity *Qdot,
     biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot,
     bool removeAxes)
 {
     // Separate the tobs in a big vector
-    biorbd::utils::Vector T(static_cast<unsigned int>(3*Tobs.size()));
+    utils::Vector T(static_cast<unsigned int>(3*Tobs.size()));
     for (unsigned int i=0; i<Tobs.size(); ++i) {
         T.block(i*3, 0, 3, 1) = Tobs[i];
     }
@@ -113,21 +115,21 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
 }
 
 
-void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
-    biorbd::Model &model,
+void rigidbody::KalmanReconsMarkers::reconstructFrame(
+    Model &model,
     const utils::Vector &Tobs,
-    biorbd::rigidbody::GeneralizedCoordinates *Q,
-    biorbd::rigidbody::GeneralizedVelocity *Qdot,
+    rigidbody::GeneralizedCoordinates *Q,
+    rigidbody::GeneralizedVelocity *Qdot,
     biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot,
     bool removeAxes)
 {
     // An iteration of the Kalman filter
     if (*m_firstIteration) {
         *m_firstIteration = false;
-        biorbd::utils::Vector TobsTP(Tobs);
+        utils::Vector TobsTP(Tobs);
         TobsTP.block(3*model.nbTechnicalMarkers(0), 0,
                      3*model.nbTechnicalMarkers()-3*model.nbTechnicalMarkers(0), 1) =
-                         biorbd::utils::Vector::Zero(3*model.nbTechnicalMarkers()
+                         utils::Vector::Zero(3*model.nbTechnicalMarkers()
                                  -3*model.nbTechnicalMarkers(
                                      0)); // Only keep the markers of the root
         for (unsigned int j = 0; j < 2;
@@ -143,27 +145,27 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
                 // Reset Pp to initial (we are not interested in the velocity to get to the initial position)
                 m_Pp = m_PpInitial;
                 m_xp->block(*m_nbDof, 0, *m_nbDof*2,
-                            1) = biorbd::utils::Vector::Zero(
+                            1) = utils::Vector::Zero(
                                      *m_nbDof*2); // Set velocity and acceleration to zero
             }
         }
     }
 
     // Projected state
-    const biorbd::utils::Vector& xkm(*m_A * *m_xp);
-    const biorbd::rigidbody::GeneralizedCoordinates& Q_tp(xkm.topRows(*m_nbDof));
+    const utils::Vector& xkm(*m_A * *m_xp);
+    const rigidbody::GeneralizedCoordinates& Q_tp(xkm.topRows(*m_nbDof));
     model.UpdateKinematicsCustom (&Q_tp, nullptr, nullptr);
 
     // Projected markers
-    const std::vector<biorbd::rigidbody::NodeSegment>& zest_tp(
+    const std::vector<rigidbody::NodeSegment>& zest_tp(
         model.technicalMarkers(Q_tp, removeAxes, false));
     // Jacobian
-    const  std::vector<biorbd::utils::Matrix>& J_tp(model.technicalMarkersJacobian(
+    const  std::vector<utils::Matrix>& J_tp(model.technicalMarkersJacobian(
                 Q_tp, removeAxes, false));
     // Create only one matrix for zest and Jacobian
-    biorbd::utils::Matrix H(biorbd::utils::Matrix::Zero(*m_nMeasure,
+    utils::Matrix H(utils::Matrix::Zero(*m_nMeasure,
                             *m_nbDof*3)); // 3*nMarkers => X,Y,Z ; 3*nbDof => Q, Qdot, Qddot
-    biorbd::utils::Vector zest(biorbd::utils::Vector::Zero(*m_nMeasure));
+    utils::Vector zest(utils::Vector::Zero(*m_nMeasure));
     std::vector<unsigned int> occlusionIdx;
     for (unsigned int i=0; i<*m_nMeasure/3;
             ++i) // Divided by 3 because we are integrate once xyz
@@ -188,7 +190,7 @@ void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame(
     getState(Q, Qdot, Qddot);
 }
 
-void biorbd::rigidbody::KalmanReconsMarkers::reconstructFrame()
+void rigidbody::KalmanReconsMarkers::reconstructFrame()
 {
-    biorbd::utils::Error::raise("Implémentation impossible");
+    utils::Error::raise("Implémentation impossible");
 }

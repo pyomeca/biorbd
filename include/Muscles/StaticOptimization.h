@@ -8,6 +8,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 class Model;
 
 namespace utils
@@ -44,10 +46,10 @@ public:
     /// \param verbose Level of IPOPT verbose you want
     ///
     StaticOptimization(
-        biorbd::Model& model,
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedVelocity& Qdot,
-        const biorbd::rigidbody::GeneralizedTorque& torqueTarget,
+        Model& model,
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& Qdot,
+        const rigidbody::GeneralizedTorque& torqueTarget,
         double initialActivationGuess = 0.01,
         unsigned int pNormFactor = 2,
         bool useResidualTorque = true,
@@ -65,11 +67,11 @@ public:
     /// \param verbose Level of IPOPT verbose you want
     ///
     StaticOptimization(
-        biorbd::Model& model,
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedVelocity& Qdot,
-        const biorbd::rigidbody::GeneralizedTorque& torqueTarget,
-        const biorbd::utils::Vector& initialActivationGuess,
+        Model& model,
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& Qdot,
+        const rigidbody::GeneralizedTorque& torqueTarget,
+        const utils::Vector& initialActivationGuess,
         unsigned int pNormFactor = 2,
         bool useResidualTorque = true,
         int verbose = 0);
@@ -86,11 +88,11 @@ public:
     /// \param verbose Level of IPOPT verbose you want
     ///
     StaticOptimization(
-        biorbd::Model& model,
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedVelocity& Qdot,
-        const biorbd::rigidbody::GeneralizedTorque& torqueTarget,
-        const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess,
+        Model& model,
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& Qdot,
+        const rigidbody::GeneralizedTorque& torqueTarget,
+        const std::vector<StateDynamics>& initialActivationGuess,
         unsigned int pNormFactor = 2,
         bool useResidualTorque = true,
         int verbose = 0);
@@ -107,10 +109,10 @@ public:
     /// \param verbose Level of IPOPT verbose you want
     ///
     StaticOptimization(
-        biorbd::Model& model,
-        const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
-        const std::vector<biorbd::rigidbody::GeneralizedVelocity>& allQdot,
-        const std::vector<biorbd::rigidbody::GeneralizedTorque>& allTorqueTarget,
+        Model& model,
+        const std::vector<rigidbody::GeneralizedCoordinates>& allQ,
+        const std::vector<rigidbody::GeneralizedVelocity>& allQdot,
+        const std::vector<rigidbody::GeneralizedTorque>& allTorqueTarget,
         double initialActivationGuess = 0.01,
         unsigned int pNormFactor = 2,
         bool useResidualTorque = true,
@@ -128,11 +130,11 @@ public:
     /// \param verbose Level of IPOPT verbose you want
     ///
     StaticOptimization(
-        biorbd::Model& model,
-        const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
-        const std::vector<biorbd::rigidbody::GeneralizedVelocity>& allQdot,
-        const std::vector<biorbd::rigidbody::GeneralizedTorque>& allTorqueTarget,
-        const biorbd::utils::Vector& initialActivationGuess,
+        Model& model,
+        const std::vector<rigidbody::GeneralizedCoordinates>& allQ,
+        const std::vector<rigidbody::GeneralizedVelocity>& allQdot,
+        const std::vector<rigidbody::GeneralizedTorque>& allTorqueTarget,
+        const utils::Vector& initialActivationGuess,
         unsigned int pNormFactor = 2,
         bool useResidualTorque = true,
         int verbose = 0);
@@ -149,11 +151,11 @@ public:
     /// \param verbose Level of IPOPT verbose you want
     ///
     StaticOptimization(
-        biorbd::Model& model,
-        const std::vector<biorbd::rigidbody::GeneralizedCoordinates>& allQ,
-        const std::vector<biorbd::rigidbody::GeneralizedVelocity>& allQdot,
-        const std::vector<biorbd::rigidbody::GeneralizedTorque>& allTorqueTarget,
-        const std::vector<biorbd::muscles::StateDynamics>& initialActivationGuess,
+        Model& model,
+        const std::vector<rigidbody::GeneralizedCoordinates>& allQ,
+        const std::vector<rigidbody::GeneralizedVelocity>& allQdot,
+        const std::vector<rigidbody::GeneralizedTorque>& allTorqueTarget,
+        const std::vector<StateDynamics>& initialActivationGuess,
         unsigned int pNormFactor = 2,
         bool useResidualTorque = true,
         int verbose = 0);
@@ -168,24 +170,24 @@ public:
     /// \brief Return the final solution
     /// \return The final solution
     ///
-    std::vector<biorbd::utils::Vector> finalSolution();
+    std::vector<utils::Vector> finalSolution();
 
     ///
     /// \brief Return the final solution at a specific index
     /// \return The final solution at a specific index
     ///
-    biorbd::utils::Vector finalSolution(unsigned int index);
+    utils::Vector finalSolution(unsigned int index);
 
 protected:
-    biorbd::Model& m_model; ///< A reference to the model
+    Model& m_model; ///< A reference to the model
     bool m_useResidualTorque; ///< To use residual torque
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates>
+    std::vector<rigidbody::GeneralizedCoordinates>
     m_allQ; ///< All the generalized coordinates
-    std::vector<biorbd::rigidbody::GeneralizedVelocity>
+    std::vector<rigidbody::GeneralizedVelocity>
     m_allQdot; ///< All the generalized velocities
-    std::vector<biorbd::rigidbody::GeneralizedTorque>
+    std::vector<rigidbody::GeneralizedTorque>
     m_allTorqueTarget; ///< All the torque targets
-    std::shared_ptr<biorbd::utils::Vector>
+    std::shared_ptr<utils::Vector>
     m_initialActivationGuess; ///< Initial activation guess
     unsigned int m_pNormFactor; ///< The p-norm factor
     int m_verbose; ///<Verbose level
@@ -195,6 +197,7 @@ protected:
 
 };
 
+}
 }
 }
 

@@ -4,6 +4,8 @@
 #include "biorbdConfig.h"
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 class Model;
 
 namespace utils
@@ -24,11 +26,12 @@ public:
     /// \param pathToWrite The path to write
     ///
     static void writeModel(
-        biorbd::Model &model,
-        const biorbd::utils::Path& pathToWrite);
+        Model &model,
+        const utils::Path& pathToWrite);
 #endif
 };
 
+}
 }
 
 #endif // BIORBD_UTILS_WRITER_H
