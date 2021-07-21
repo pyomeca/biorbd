@@ -16,34 +16,36 @@
 #include "RigidBody/NodeSegment.h"
 static double requiredPrecision(1e-10);
 
+using namespace biorbd::BIORBD_MATH_NAMESPACE;
+
 TEST(ShallowCopy, DeepCopy)
 {
     // DeepCopying a shallow copy, should also change the reference
     // Warning that may be surprising because one may be tend to DeepCopy
     // itself afterward, this doesn't release the shallowcopy referencing
-    biorbd::utils::Vector3d MainNode(0, 0, 0, "NoName", "NoParent");
-    biorbd::utils::Vector3d ShallowToDeep(MainNode);
-    biorbd::utils::Vector3d NewNode(0, 0, 0, "MyName", "MyParent");
-    EXPECT_STREQ(MainNode.biorbd::utils::Node::name().c_str(), "NoName");
-    EXPECT_STREQ(ShallowToDeep.biorbd::utils::Node::name().c_str(), "NoName");
-    EXPECT_STREQ(NewNode.biorbd::utils::Node::name().c_str(), "MyName");
+    utils::Vector3d MainNode(0, 0, 0, "NoName", "NoParent");
+    utils::Vector3d ShallowToDeep(MainNode);
+    utils::Vector3d NewNode(0, 0, 0, "MyName", "MyParent");
+    EXPECT_STREQ(MainNode.utils::Node::name().c_str(), "NoName");
+    EXPECT_STREQ(ShallowToDeep.utils::Node::name().c_str(), "NoName");
+    EXPECT_STREQ(NewNode.utils::Node::name().c_str(), "MyName");
     ShallowToDeep.setName("StillNoName");
-    EXPECT_STREQ(MainNode.biorbd::utils::Node::name().c_str(), "StillNoName");
-    EXPECT_STREQ(ShallowToDeep.biorbd::utils::Node::name().c_str(), "StillNoName");
-    EXPECT_STREQ(NewNode.biorbd::utils::Node::name().c_str(), "MyName");
+    EXPECT_STREQ(MainNode.utils::Node::name().c_str(), "StillNoName");
+    EXPECT_STREQ(ShallowToDeep.utils::Node::name().c_str(), "StillNoName");
+    EXPECT_STREQ(NewNode.utils::Node::name().c_str(), "MyName");
     ShallowToDeep.DeepCopy(NewNode);
-    EXPECT_STREQ(MainNode.biorbd::utils::Node::name().c_str(), "MyName");
-    EXPECT_STREQ(ShallowToDeep.biorbd::utils::Node::name().c_str(), "MyName");
-    EXPECT_STREQ(NewNode.biorbd::utils::Node::name().c_str(), "MyName");
+    EXPECT_STREQ(MainNode.utils::Node::name().c_str(), "MyName");
+    EXPECT_STREQ(ShallowToDeep.utils::Node::name().c_str(), "MyName");
+    EXPECT_STREQ(NewNode.utils::Node::name().c_str(), "MyName");
     ShallowToDeep.setName("BackToNoName");
-    EXPECT_STREQ(MainNode.biorbd::utils::Node::name().c_str(), "BackToNoName");
-    EXPECT_STREQ(ShallowToDeep.biorbd::utils::Node::name().c_str(), "BackToNoName");
-    EXPECT_STREQ(NewNode.biorbd::utils::Node::name().c_str(), "MyName");
+    EXPECT_STREQ(MainNode.utils::Node::name().c_str(), "BackToNoName");
+    EXPECT_STREQ(ShallowToDeep.utils::Node::name().c_str(), "BackToNoName");
+    EXPECT_STREQ(NewNode.utils::Node::name().c_str(), "MyName");
 }
 
 TEST(String, conversions)
 {
-    biorbd::utils::String str(biorbd::utils::String::to_string(M_PI));
+    utils::String str(utils::String::to_string(M_PI));
     double pi = std::stod(str);
     EXPECT_EQ(pi, M_PI);
 }
@@ -51,11 +53,11 @@ TEST(String, conversions)
 TEST(Path, Create)
 {
     {
-        biorbd::utils::Path emptyPath;
+        utils::Path emptyPath;
         EXPECT_STREQ(emptyPath.absolutePath().c_str(),
-                     biorbd::utils::Path::currentDir().c_str());
+                     utils::Path::currentDir().c_str());
         EXPECT_STREQ(emptyPath.absoluteFolder().c_str(),
-                     biorbd::utils::Path::currentDir().c_str());
+                     utils::Path::currentDir().c_str());
         EXPECT_STREQ(emptyPath.filename().c_str(), "");
         EXPECT_STREQ(emptyPath.extension().c_str(), "");
         EXPECT_STREQ(emptyPath.originalPath().c_str(), "");
@@ -63,22 +65,22 @@ TEST(Path, Create)
 
     {
         EXPECT_STREQ(
-            biorbd::utils::Path::toUnixFormat(
+            utils::Path::toUnixFormat(
                 "MyUgly\\\\WindowsPath\\\\ToMyFile.biorbd").c_str(),
-            biorbd::utils::String (
+            utils::String (
                 "MyUgly/WindowsPath/ToMyFile.biorbd").c_str());
 
         EXPECT_STREQ(
-            biorbd::utils::Path::toWindowsFormat(
+            utils::Path::toWindowsFormat(
                 "MyCute/UnixPath/ToMyFile.biorbd").c_str(),
-            biorbd::utils::String (
+            utils::String (
                 "MyCute\\\\UnixPath\\\\ToMyFile.biorbd").c_str());
     }
 
     {
-        biorbd::utils::String myPathInUglyWindowsStyleString(
+        utils::String myPathInUglyWindowsStyleString(
             "MyUgly\\\\WindowsPath\\\\ToMyFile.biorbd");
-        biorbd::utils::Path myPathInUglyWindowsStyle(
+        utils::Path myPathInUglyWindowsStyle(
             myPathInUglyWindowsStyleString);
         EXPECT_STREQ(myPathInUglyWindowsStyle.relativePath().c_str(),
                      "./MyUgly/WindowsPath/ToMyFile.biorbd");
@@ -88,20 +90,20 @@ TEST(Path, Create)
 
     {
 #ifdef _WIN32
-        biorbd::utils::String path(
+        utils::String path(
             "C:\\MyLovely\\AbsolutePath\\ToMyLovelyFile.biorbd");
-        biorbd::utils::String unixPath(
+        utils::String unixPath(
             "C:/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
-        biorbd::utils::String absoluteUnixFolder("C:/MyLovely/AbsolutePath/");
+        utils::String absoluteUnixFolder("C:/MyLovely/AbsolutePath/");
 #else
-        biorbd::utils::String path(
+        utils::String path(
             "/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
-        biorbd::utils::String unixPath(
+        utils::String unixPath(
             "/MyLovely/AbsolutePath/ToMyLovelyFile.biorbd");
-        biorbd::utils::String absoluteUnixFolder("/MyLovely/AbsolutePath/");
+        utils::String absoluteUnixFolder("/MyLovely/AbsolutePath/");
 #endif
 
-        biorbd::utils::Path absolutePath(path);
+        utils::Path absolutePath(path);
         EXPECT_STREQ(absolutePath.absolutePath().c_str(), unixPath.c_str());
         EXPECT_STREQ(absolutePath.absoluteFolder().c_str(), absoluteUnixFolder.c_str());
         EXPECT_STREQ(absolutePath.filename().c_str(), "ToMyLovelyFile");
@@ -110,12 +112,12 @@ TEST(Path, Create)
     }
 
     {
-        biorbd::utils::Path relativePath("MyLovely/RelativePath/ToMyLovelyFile.biorbd");
+        utils::Path relativePath("MyLovely/RelativePath/ToMyLovelyFile.biorbd");
         EXPECT_STREQ(relativePath.absolutePath().c_str(),
-                     (biorbd::utils::Path::currentDir() +
+                     (utils::Path::currentDir() +
                       "MyLovely/RelativePath/ToMyLovelyFile.biorbd").c_str());
         EXPECT_STREQ(relativePath.absoluteFolder().c_str(),
-                     (biorbd::utils::Path::currentDir() + "MyLovely/RelativePath/").c_str());
+                     (utils::Path::currentDir() + "MyLovely/RelativePath/").c_str());
         EXPECT_STREQ(relativePath.filename().c_str(), "ToMyLovelyFile");
         EXPECT_STREQ(relativePath.extension().c_str(), "biorbd");
         EXPECT_STREQ(relativePath.relativePath().c_str(),
@@ -125,13 +127,13 @@ TEST(Path, Create)
     }
 
     {
-        biorbd::utils::Path
+        utils::Path
         weirdRelativePath("./MyLovely/RelativePath/ToMyLovelyFile.biorbd");
         EXPECT_STREQ(weirdRelativePath.absolutePath().c_str(),
-                     (biorbd::utils::Path::currentDir() +
+                     (utils::Path::currentDir() +
                       "MyLovely/RelativePath/ToMyLovelyFile.biorbd").c_str());
         EXPECT_STREQ(weirdRelativePath.absoluteFolder().c_str(),
-                     (biorbd::utils::Path::currentDir() + "MyLovely/RelativePath/").c_str());
+                     (utils::Path::currentDir() + "MyLovely/RelativePath/").c_str());
         EXPECT_STREQ(weirdRelativePath.filename().c_str(), "ToMyLovelyFile");
         EXPECT_STREQ(weirdRelativePath.extension().c_str(), "biorbd");
         EXPECT_STREQ(weirdRelativePath.relativePath().c_str(),
@@ -141,13 +143,13 @@ TEST(Path, Create)
     }
 
     {
-        biorbd::utils::Path
+        utils::Path
         parentRelativePath("../MyLovely/ParentPath/ToMyLovelyFile.biorbd");
         EXPECT_STREQ(parentRelativePath.absolutePath().c_str(),
-                     (biorbd::utils::Path::currentDir() +
+                     (utils::Path::currentDir() +
                       "../MyLovely/ParentPath/ToMyLovelyFile.biorbd").c_str());
         EXPECT_STREQ(parentRelativePath.absoluteFolder().c_str(),
-                     (biorbd::utils::Path::currentDir() + "../MyLovely/ParentPath/").c_str());
+                     (utils::Path::currentDir() + "../MyLovely/ParentPath/").c_str());
         EXPECT_STREQ(parentRelativePath.filename().c_str(), "ToMyLovelyFile");
         EXPECT_STREQ(parentRelativePath.extension().c_str(), "biorbd");
         EXPECT_STREQ(parentRelativePath.relativePath().c_str(),
@@ -157,11 +159,11 @@ TEST(Path, Create)
     }
 
     {
-        biorbd::utils::Path noPath("MyLonelyFile.biorbd");
+        utils::Path noPath("MyLonelyFile.biorbd");
         EXPECT_STREQ(noPath.absolutePath().c_str(),
-                     (biorbd::utils::Path::currentDir() + "MyLonelyFile.biorbd").c_str());
+                     (utils::Path::currentDir() + "MyLonelyFile.biorbd").c_str());
         EXPECT_STREQ(noPath.absoluteFolder().c_str(),
-                     biorbd::utils::Path::currentDir().c_str());
+                     utils::Path::currentDir().c_str());
         EXPECT_STREQ(noPath.filename().c_str(), "MyLonelyFile");
         EXPECT_STREQ(noPath.extension().c_str(), "biorbd");
         EXPECT_STREQ(noPath.relativePath().c_str(), "./MyLonelyFile.biorbd");
@@ -169,11 +171,11 @@ TEST(Path, Create)
     }
 
     {
-        biorbd::utils::Path almostNoPath("./MyKinbDofLonelyFile.biorbd");
+        utils::Path almostNoPath("./MyKinbDofLonelyFile.biorbd");
         EXPECT_STREQ(almostNoPath.absolutePath().c_str(),
-                     (biorbd::utils::Path::currentDir() + "MyKinbDofLonelyFile.biorbd").c_str());
+                     (utils::Path::currentDir() + "MyKinbDofLonelyFile.biorbd").c_str());
         EXPECT_STREQ(almostNoPath.absoluteFolder().c_str(),
-                     biorbd::utils::Path::currentDir().c_str());
+                     utils::Path::currentDir().c_str());
         EXPECT_STREQ(almostNoPath.filename().c_str(), "MyKinbDofLonelyFile");
         EXPECT_STREQ(almostNoPath.extension().c_str(), "biorbd");
         EXPECT_STREQ(almostNoPath.relativePath().c_str(),
@@ -185,10 +187,10 @@ TEST(Path, Create)
 
 TEST(Path, Copy)
 {
-    biorbd::utils::Path MainPath("MyLovelyPath.biorbd");
-    biorbd::utils::Path ShallowCopy(MainPath);
-    biorbd::utils::Path DeepCopyNow(MainPath.DeepCopy());
-    biorbd::utils::Path DeepCopyLater;
+    utils::Path MainPath("MyLovelyPath.biorbd");
+    utils::Path ShallowCopy(MainPath);
+    utils::Path DeepCopyNow(MainPath.DeepCopy());
+    utils::Path DeepCopyLater;
     DeepCopyLater.DeepCopy(MainPath);
 
     EXPECT_STREQ(MainPath.relativePath().c_str(), "./MyLovelyPath.biorbd");
@@ -216,13 +218,13 @@ TEST(Path, Copy)
 
 TEST(Vector3d, rotate)
 {
-    biorbd::utils::Vector3d node(2, 3, 4);
-    biorbd::utils::Vector3d nodeXrot(node.DeepCopy());
+    utils::Vector3d node(2, 3, 4);
+    utils::Vector3d nodeXrot(node.DeepCopy());
     SCALAR_TO_DOUBLE(x, node[0]);
     SCALAR_TO_DOUBLE(y, node[1]);
     SCALAR_TO_DOUBLE(z, node[2]);
-    nodeXrot.applyRT( biorbd::utils::RotoTrans(biorbd::utils::Vector3d(M_PI, 0, 0),
-                      biorbd::utils::Vector3d(0, 0, 0),
+    nodeXrot.applyRT( utils::RotoTrans(utils::Vector3d(M_PI, 0, 0),
+                      utils::Vector3d(0, 0, 0),
                       "xyz") );
     {
         SCALAR_TO_DOUBLE(nodeX, nodeXrot[0]);
@@ -233,9 +235,9 @@ TEST(Vector3d, rotate)
         EXPECT_NEAR(nodeZ, -z, requiredPrecision);
     }
 
-    biorbd::utils::Vector3d nodeYrot(node.DeepCopy());
-    nodeYrot.applyRT( biorbd::utils::RotoTrans(biorbd::utils::Vector3d(0, M_PI, 0),
-                      biorbd::utils::Vector3d(0, 0, 0),
+    utils::Vector3d nodeYrot(node.DeepCopy());
+    nodeYrot.applyRT( utils::RotoTrans(utils::Vector3d(0, M_PI, 0),
+                      utils::Vector3d(0, 0, 0),
                       "xyz") );
     {
         SCALAR_TO_DOUBLE(nodeX, nodeYrot[0]);
@@ -246,9 +248,9 @@ TEST(Vector3d, rotate)
         EXPECT_NEAR(nodeZ, -z, requiredPrecision);
     }
 
-    biorbd::utils::Vector3d nodeZrot(node.DeepCopy());
-    nodeZrot.applyRT( biorbd::utils::RotoTrans(biorbd::utils::Vector3d(0, 0, M_PI),
-                      biorbd::utils::Vector3d(0, 0, 0),
+    utils::Vector3d nodeZrot(node.DeepCopy());
+    nodeZrot.applyRT( utils::RotoTrans(utils::Vector3d(0, 0, M_PI),
+                      utils::Vector3d(0, 0, 0),
                       "xyz") );
     {
         SCALAR_TO_DOUBLE(nodeX, nodeZrot[0]);
@@ -259,9 +261,9 @@ TEST(Vector3d, rotate)
         EXPECT_NEAR(nodeZ, z, requiredPrecision);
     }
 
-    biorbd::utils::Vector3d nodeZrot2(node.DeepCopy());
-    nodeZrot2.applyRT( biorbd::utils::RotoTrans(biorbd::utils::Vector3d(M_PI, 0, 0),
-                       biorbd::utils::Vector3d(0, 0, 0),
+    utils::Vector3d nodeZrot2(node.DeepCopy());
+    nodeZrot2.applyRT( utils::RotoTrans(utils::Vector3d(M_PI, 0, 0),
+                       utils::Vector3d(0, 0, 0),
                        "zxy") );
     {
         SCALAR_TO_DOUBLE(nodeX, nodeZrot2[0]);
@@ -273,10 +275,10 @@ TEST(Vector3d, rotate)
     }
 
     double trans(2);
-    biorbd::utils::Vector3d nodeRot(node.DeepCopy());
-    nodeRot.applyRT( biorbd::utils::RotoTrans(biorbd::utils::Vector3d(M_PI/6,
+    utils::Vector3d nodeRot(node.DeepCopy());
+    nodeRot.applyRT( utils::RotoTrans(utils::Vector3d(M_PI/6,
                      M_PI/6, M_PI/6),
-                     biorbd::utils::Vector3d(trans, trans, trans), "xyz") );
+                     utils::Vector3d(trans, trans, trans), "xyz") );
     {
         SCALAR_TO_DOUBLE(nodeX, nodeRot[0]);
         SCALAR_TO_DOUBLE(nodeY, nodeRot[1]);
@@ -286,9 +288,9 @@ TEST(Vector3d, rotate)
         EXPECT_NEAR(nodeZ, 6.698557158514987, requiredPrecision);
     }
 
-    biorbd::utils::Vector3d nodeTrans(node.DeepCopy());
-    nodeTrans.applyRT( biorbd::utils::RotoTrans(biorbd::utils::Vector3d(0, 0, 0),
-                       biorbd::utils::Vector3d(2, 2, 2), "xyz") );
+    utils::Vector3d nodeTrans(node.DeepCopy());
+    nodeTrans.applyRT( utils::RotoTrans(utils::Vector3d(0, 0, 0),
+                       utils::Vector3d(2, 2, 2), "xyz") );
     {
         SCALAR_TO_DOUBLE(nodeX, nodeTrans[0]);
         SCALAR_TO_DOUBLE(nodeY, nodeTrans[1]);
@@ -301,10 +303,10 @@ TEST(Vector3d, rotate)
 
 TEST(Vector3d, Copy)
 {
-    biorbd::utils::Vector3d MainNode(1, 2, 3, "MainNodeName", "NoParent");
-    biorbd::utils::Vector3d ShallowCopy(MainNode);
-    biorbd::utils::Vector3d DeepCopyNow(MainNode.DeepCopy());
-    biorbd::utils::Vector3d DeepCopyLater;
+    utils::Vector3d MainNode(1, 2, 3, "MainNodeName", "NoParent");
+    utils::Vector3d ShallowCopy(MainNode);
+    utils::Vector3d DeepCopyNow(MainNode.DeepCopy());
+    utils::Vector3d DeepCopyLater;
     DeepCopyLater.DeepCopy(MainNode);
 
     EXPECT_STREQ(MainNode.parent().c_str(), "NoParent");
@@ -383,13 +385,13 @@ TEST(Vector3d, Copy)
 
 TEST(Matrix, Copy)
 {
-    biorbd::utils::Matrix MainMatrix(4, 4);
+    utils::Matrix MainMatrix(4, 4);
     FILL_MATRIX(MainMatrix, std::vector<double>({0, 1, 2, 3,
                 4, 5, 6, 7,
                 8, 9, 10, 11,
                 12, 13, 14, 15
                                                 }));
-    biorbd::utils::Matrix DeepCopy(MainMatrix);
+    utils::Matrix DeepCopy(MainMatrix);
 
     // Test for the values
     {
@@ -431,20 +433,20 @@ TEST(Matrix, Copy)
 
 TEST(Matrix, unitTest)
 {
-    biorbd::utils::Matrix mat1(3, 4);
+    utils::Matrix mat1(3, 4);
     FILL_MATRIX(mat1, std::vector<double>({4.1, 5.1, 6.1, 7.1,
                                            8.1, 9.1, 10.1, 11.1,
                                            12.1, 13.1, 14.1, 15.1
                                           }));
 
     {
-        biorbd::utils::Matrix mat2(3, 4);
+        utils::Matrix mat2(3, 4);
         FILL_MATRIX(mat2, std::vector<double>({4.1, 5.1, 6.1, 7.1,
                                                8.1, 9.1, 10.1, 11.1,
                                                12.1, 13.1, 14.1, 15.1
                                               }));
 
-        biorbd::utils::Matrix sum(mat1 + mat2);
+        utils::Matrix sum(mat1 + mat2);
         std::vector<double> expectedSum = {
             4.1*2, 5.1*2, 6.1*2, 7.1*2,
             8.1*2, 9.1*2, 10.1*2, 11.1*2,
@@ -463,7 +465,7 @@ TEST(Matrix, unitTest)
     }
 
     {
-        biorbd::utils::Matrix mat2(4, 2);
+        utils::Matrix mat2(4, 2);
         FILL_MATRIX(mat2, std::vector<double>({
             4.1, 5.1,
             6.1, 7.1,
@@ -471,7 +473,7 @@ TEST(Matrix, unitTest)
             10.1, 11.1
         }));
 
-        biorbd::utils::Matrix mult(mat1 * mat2);
+        utils::Matrix mult(mat1 * mat2);
         std::vector<double> expectedMult = {
             169.04,  191.44,
             282.64,  321.04,
@@ -489,9 +491,9 @@ TEST(Matrix, unitTest)
     }
 
     {
-        biorbd::utils::Vector vec(4);
+        utils::Vector vec(4);
         FILL_VECTOR(vec, std::vector<double>({4.1, 5.1, 6.1, 7.1}));
-        biorbd::utils::Vector mult(mat1 * vec);
+        utils::Vector mult(mat1 * vec);
 
         std::vector<double> expectedMult({130.44, 220.04, 309.64});
 
@@ -507,13 +509,13 @@ TEST(Matrix, unitTest)
 
 TEST(Rotation, unitTest)
 {
-    biorbd::utils::Rotation rot1(
-        biorbd::utils::Vector3d(M_PI/3, M_PI/3, -M_PI/3), "xyz");
-    biorbd::utils::Rotation rot2(
-        biorbd::utils::Vector3d(M_PI/3, M_PI/3, M_PI/3), "xyz");
+    utils::Rotation rot1(
+        utils::Vector3d(M_PI/3, M_PI/3, -M_PI/3), "xyz");
+    utils::Rotation rot2(
+        utils::Vector3d(M_PI/3, M_PI/3, M_PI/3), "xyz");
 
     {
-        biorbd::utils::Rotation mult(rot1 * rot2);
+        utils::Rotation mult(rot1 * rot2);
         std::vector<double> expectedMult({
             0.87439881604791125, 0.4185095264191645, 0.24551270189221938,
             0.48131011839520887, -0.68413452641916439, -0.54799682452694543,
@@ -532,8 +534,8 @@ TEST(Rotation, unitTest)
 TEST(RotoTrans, unitTest)
 {
     {
-        biorbd::utils::RotoTrans rt(
-            biorbd::utils::Vector3d(1, 1, 1), biorbd::utils::Vector3d(1, 1, 1), "xyz");
+        utils::RotoTrans rt(
+            utils::Vector3d(1, 1, 1), utils::Vector3d(1, 1, 1), "xyz");
         std::vector<double> rtExpected({
             0.29192658172642888, -0.45464871341284091,  0.84147098480789650, 1,
             0.83722241402998721, -0.30389665486452672, -0.45464871341284091, 1,
@@ -548,7 +550,7 @@ TEST(RotoTrans, unitTest)
             }
         }
 
-        biorbd::utils::RotoTrans rt_t(rt.transpose());
+        utils::RotoTrans rt_t(rt.transpose());
         std::vector<double> rtTransposedExpected({
             0.29192658172642888,  0.83722241402998721, 0.46242567005663016, -1.5915746658130461,
             -0.45464871341284091, -0.30389665486452672, 0.83722241402998732, -0.07867704575261969,
@@ -564,7 +566,7 @@ TEST(RotoTrans, unitTest)
             }
         }
 
-        biorbd::utils::Vector3d marker(1, 1, 1);
+        utils::Vector3d marker(1, 1, 1);
         marker.applyRT(rt_t);
         for (unsigned int i=0; i<3; ++i) {
             SCALAR_TO_DOUBLE(val, marker(i, 0));
@@ -573,15 +575,15 @@ TEST(RotoTrans, unitTest)
     }
 
     {
-        biorbd::rigidbody::NodeSegment origin(1, 2, 3);
-        biorbd::rigidbody::NodeSegment axis1(4, 2, 5);
-        biorbd::rigidbody::NodeSegment axis2(3, -2, 1);
+        rigidbody::NodeSegment origin(1, 2, 3);
+        rigidbody::NodeSegment axis1(4, 2, 5);
+        rigidbody::NodeSegment axis2(3, -2, 1);
         {
-            biorbd::utils::RotoTrans rt(
-                biorbd::utils::RotoTrans::fromMarkers(
+            utils::RotoTrans rt(
+                utils::RotoTrans::fromMarkers(
                     origin, {origin, axis1}, {origin, axis2}, {"x", "y"}, "x"));
-            biorbd::utils::RotoTrans rt2(
-                biorbd::utils::RotoTrans::fromMarkers(
+            utils::RotoTrans rt2(
+                utils::RotoTrans::fromMarkers(
                     origin,  {origin, axis2}, {origin, axis1}, {"y", "x"}, "x"));
 
             std::vector<double> rtExpected({
@@ -602,11 +604,11 @@ TEST(RotoTrans, unitTest)
         }
 
         {
-            biorbd::utils::RotoTrans rt(
-                biorbd::utils::RotoTrans::fromMarkers(
+            utils::RotoTrans rt(
+                utils::RotoTrans::fromMarkers(
                     origin, {origin, axis1}, {origin, axis2}, {"x", "y"}, "y"));
-            biorbd::utils::RotoTrans rt2(
-                biorbd::utils::RotoTrans::fromMarkers(
+            utils::RotoTrans rt2(
+                utils::RotoTrans::fromMarkers(
                     origin, {origin, axis2}, {origin, axis1}, {"y", "x"}, "y"));
             std::vector<double> rtExpected({
                 0.8320502943378437, 0.31606977062050695, 0.4558423058385518, 1,
@@ -626,11 +628,11 @@ TEST(RotoTrans, unitTest)
         }
 
         {
-            biorbd::utils::RotoTrans rt(
-                biorbd::utils::RotoTrans::fromMarkers(
+            utils::RotoTrans rt(
+                utils::RotoTrans::fromMarkers(
                     origin, {origin, axis1}, {origin, axis2}, {"x", "z"}, "x"));
-            biorbd::utils::RotoTrans rt2(
-                biorbd::utils::RotoTrans::fromMarkers(
+            utils::RotoTrans rt2(
+                utils::RotoTrans::fromMarkers(
                     origin, {origin, axis2}, {origin, axis1}, {"z", "x"}, "x"));
             std::vector<double> rtExpected({
                 0.7909115788387002, -0.4558423058385518, 0.4082482904638631, 1,
@@ -650,11 +652,11 @@ TEST(RotoTrans, unitTest)
         }
 
         {
-            biorbd::utils::RotoTrans rt(
-                biorbd::utils::RotoTrans::fromMarkers(
+            utils::RotoTrans rt(
+                utils::RotoTrans::fromMarkers(
                     origin, {origin, axis1}, {origin, axis2}, {"x", "z"}, "z"));
-            biorbd::utils::RotoTrans rt2(
-                biorbd::utils::RotoTrans::fromMarkers(
+            utils::RotoTrans rt2(
+                utils::RotoTrans::fromMarkers(
                     origin, {origin, axis2}, {origin, axis1}, {"z", "x"}, "z"));
             std::vector<double> rtExpected({
                 0.8320502943378437, -0.4558423058385518, 0.31606977062050695, 1,
@@ -674,11 +676,11 @@ TEST(RotoTrans, unitTest)
         }
 
         {
-            biorbd::utils::RotoTrans rt(
-                biorbd::utils::RotoTrans::fromMarkers(
+            utils::RotoTrans rt(
+                utils::RotoTrans::fromMarkers(
                     origin, {origin, axis1}, {origin, axis2}, {"y", "z"}, "y"));
-            biorbd::utils::RotoTrans rt2(
-                biorbd::utils::RotoTrans::fromMarkers(
+            utils::RotoTrans rt2(
+                utils::RotoTrans::fromMarkers(
                     origin, {origin, axis2}, {origin, axis1}, {"z", "y"}, "y"));
             std::vector<double> rtExpected({
                 0.4558423058385518, 0.7909115788387002, 0.4082482904638631, 1,
@@ -698,11 +700,11 @@ TEST(RotoTrans, unitTest)
         }
 
         {
-            biorbd::utils::RotoTrans rt(
-                biorbd::utils::RotoTrans::fromMarkers(
+            utils::RotoTrans rt(
+                utils::RotoTrans::fromMarkers(
                     origin, {origin, axis1}, {origin, axis2}, {"y", "z"}, "z"));
-            biorbd::utils::RotoTrans rt2(
-                biorbd::utils::RotoTrans::fromMarkers(
+            utils::RotoTrans rt2(
+                utils::RotoTrans::fromMarkers(
                     origin, {origin, axis2}, {origin, axis1}, {"z", "y"}, "z"));
             std::vector<double> rtExpected({
                 0.4558423058385518, 0.8320502943378437, 0.31606977062050695, 1,
@@ -725,14 +727,14 @@ TEST(RotoTrans, unitTest)
 
 TEST(RotoTransNode, Copy)
 {
-    biorbd::utils::RotoTrans tp(
-        biorbd::utils::Vector3d(1, 2, 3),
-        biorbd::utils::Vector3d(1, 2, 3), "xyz");
+    utils::RotoTrans tp(
+        utils::Vector3d(1, 2, 3),
+        utils::Vector3d(1, 2, 3), "xyz");
 
-    biorbd::utils::RotoTransNode MainRotoTransNode(tp, "NoName", "NoParent");
-    biorbd::utils::RotoTransNode ShallowCopy(MainRotoTransNode);
-    biorbd::utils::RotoTransNode DeepCopyNow(MainRotoTransNode.DeepCopy());
-    biorbd::utils::RotoTransNode DeepCopyLater;
+    utils::RotoTransNode MainRotoTransNode(tp, "NoName", "NoParent");
+    utils::RotoTransNode ShallowCopy(MainRotoTransNode);
+    utils::RotoTransNode DeepCopyNow(MainRotoTransNode.DeepCopy());
+    utils::RotoTransNode DeepCopyLater;
     DeepCopyLater.DeepCopy(MainRotoTransNode);
 
     EXPECT_STREQ(MainRotoTransNode.parent().c_str(), "NoParent");
@@ -783,10 +785,10 @@ TEST(ModelReading, equations)
     // The equation model was built so the x coordinates of the meshes should
     // be evaluated to the y coordinates.
 
-    biorbd::Model m("models/equations.bioMod");
-    biorbd::rigidbody::GeneralizedCoordinates Q(m);
+    Model m("models/equations.bioMod");
+    rigidbody::GeneralizedCoordinates Q(m);
     Q.setZero();
-    std::vector<biorbd::utils::Vector3d> mesh(m.meshPoints(Q, 0, true));
+    std::vector<utils::Vector3d> mesh(m.meshPoints(Q, 0, true));
     for (auto node : mesh) {
         SCALAR_TO_DOUBLE(nodeX, node.x());
         SCALAR_TO_DOUBLE(nodeY, node.y());
@@ -797,7 +799,7 @@ TEST(ModelReading, equations)
 TEST(Quaternion, creation)
 {
     {
-        biorbd::utils::Quaternion quat;
+        utils::Quaternion quat;
         SCALAR_TO_DOUBLE(quatW, quat.w());
         SCALAR_TO_DOUBLE(quatX, quat.x());
         SCALAR_TO_DOUBLE(quatY, quat.y());
@@ -809,7 +811,7 @@ TEST(Quaternion, creation)
         EXPECT_NEAR(quat.kStab(), 1, requiredPrecision);
     }
     {
-        biorbd::utils::Quaternion quat(1,2,3,4);
+        utils::Quaternion quat(1,2,3,4);
         SCALAR_TO_DOUBLE(quatW, quat.w());
         SCALAR_TO_DOUBLE(quatX, quat.x());
         SCALAR_TO_DOUBLE(quatY, quat.y());
@@ -830,7 +832,7 @@ TEST(Quaternion, creation)
     }
     {
 #ifdef BIORBD_USE_EIGEN3_MATH
-        biorbd::utils::Quaternion quat(Eigen::Vector4d(1,2,3,4));
+        utils::Quaternion quat(Eigen::Vector4d(1,2,3,4));
         EXPECT_NEAR(quat.w(), 1, requiredPrecision);
         EXPECT_NEAR(quat.x(), 2, requiredPrecision);
         EXPECT_NEAR(quat.y(), 3, requiredPrecision);
@@ -838,7 +840,7 @@ TEST(Quaternion, creation)
 #endif
     }
     {
-        biorbd::utils::Quaternion quat(1, biorbd::utils::Vector3d(2,3,4));
+        utils::Quaternion quat(1, utils::Vector3d(2,3,4));
         SCALAR_TO_DOUBLE(quatW, quat.w());
         SCALAR_TO_DOUBLE(quatX, quat.x());
         SCALAR_TO_DOUBLE(quatY, quat.y());
@@ -849,9 +851,9 @@ TEST(Quaternion, creation)
         EXPECT_NEAR(quatZ, 4, requiredPrecision);
     }
     {
-        biorbd::utils::Quaternion quat1(1,2,3,4,5);
-        biorbd::utils::Quaternion quat2(quat1);
-        biorbd::utils::Quaternion quat3 = quat1;
+        utils::Quaternion quat1(1,2,3,4,5);
+        utils::Quaternion quat2(quat1);
+        utils::Quaternion quat3 = quat1;
 
         SCALAR_TO_DOUBLE(quat2W, quat2.w());
         SCALAR_TO_DOUBLE(quat2X, quat2.x());
@@ -876,8 +878,8 @@ TEST(Quaternion, creation)
     {
 #ifdef BIORBD_USE_EIGEN3_MATH
         Eigen::Vector4d quat1(1,2,3,4);
-        biorbd::utils::Quaternion quat2(quat1);
-        biorbd::utils::Quaternion quat3;
+        utils::Quaternion quat2(quat1);
+        utils::Quaternion quat3;
         quat3 = quat1;
 
         EXPECT_NEAR(quat2.w(), 1, requiredPrecision);
@@ -897,9 +899,9 @@ TEST(Quaternion, creation)
 
 TEST(Quaternion, addition)
 {
-    biorbd::utils::Quaternion q1(1,2,3,4,2);
-    biorbd::utils::Quaternion q2(2,3,4,5,3);
-    biorbd::utils::Quaternion q12 = q1+q2;
+    utils::Quaternion q1(1,2,3,4,2);
+    utils::Quaternion q2(2,3,4,5,3);
+    utils::Quaternion q12 = q1+q2;
 
     SCALAR_TO_DOUBLE(q12W, q12.w());
     SCALAR_TO_DOUBLE(q12X, q12.x());
@@ -914,13 +916,13 @@ TEST(Quaternion, addition)
 
 TEST(Quaternion, multiplication)
 {
-    biorbd::utils::Quaternion q1(1,2,3,4,2);
-    biorbd::utils::Quaternion q2(2,3,4,5,3);
+    utils::Quaternion q1(1,2,3,4,2);
+    utils::Quaternion q2(2,3,4,5,3);
     double d(5);
     float f(5);
 
     {
-        biorbd::utils::Quaternion q12 = q1*q2;
+        utils::Quaternion q12 = q1*q2;
         SCALAR_TO_DOUBLE(q12W, q12.w());
         SCALAR_TO_DOUBLE(q12X, q12.x());
         SCALAR_TO_DOUBLE(q12Y, q12.y());
@@ -932,7 +934,7 @@ TEST(Quaternion, multiplication)
         EXPECT_NEAR(q12.kStab(), 2.5, requiredPrecision);
     }
     {
-        biorbd::utils::Quaternion q1d = q1*d;
+        utils::Quaternion q1d = q1*d;
         SCALAR_TO_DOUBLE(q1dW, q1d.w());
         SCALAR_TO_DOUBLE(q1dX, q1d.x());
         SCALAR_TO_DOUBLE(q1dY, q1d.y());
@@ -945,7 +947,7 @@ TEST(Quaternion, multiplication)
     }
 
     {
-        biorbd::utils::Quaternion q1f = q1*f;
+        utils::Quaternion q1f = q1*f;
         SCALAR_TO_DOUBLE(q1fW, q1f.w());
         SCALAR_TO_DOUBLE(q1fX, q1f.x());
         SCALAR_TO_DOUBLE(q1fY, q1f.y());
@@ -961,8 +963,8 @@ TEST(Quaternion, multiplication)
 TEST(Quaternion, conversion)
 {
     {
-        biorbd::utils::Quaternion q(
-            biorbd::utils::Quaternion::fromGLRotate(1, 2, 3, 4, 5));
+        utils::Quaternion q(
+            utils::Quaternion::fromGLRotate(1, 2, 3, 4, 5));
         SCALAR_TO_DOUBLE(qW, q.w());
         SCALAR_TO_DOUBLE(qX, q.x());
         SCALAR_TO_DOUBLE(qY, q.y());
@@ -974,9 +976,9 @@ TEST(Quaternion, conversion)
         EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
     }
     {
-        biorbd::utils::Quaternion q(
-            biorbd::utils::Quaternion::fromAxisAngle(
-                1, biorbd::utils::Vector3d(2, 3, 4), 5));
+        utils::Quaternion q(
+            utils::Quaternion::fromAxisAngle(
+                1, utils::Vector3d(2, 3, 4), 5));
         SCALAR_TO_DOUBLE(qW, q.w());
         SCALAR_TO_DOUBLE(qX, q.x());
         SCALAR_TO_DOUBLE(qY, q.y());
@@ -987,11 +989,11 @@ TEST(Quaternion, conversion)
         EXPECT_NEAR(qZ, 0.35610835008729086, requiredPrecision);
         EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
     }
-    biorbd::utils::RotoTrans rt(
-        biorbd::utils::Vector3d(2, 3, 4), biorbd::utils::Vector3d(), "xyz");
+    utils::RotoTrans rt(
+        utils::Vector3d(2, 3, 4), utils::Vector3d(), "xyz");
     {
-        biorbd::utils::Quaternion q(
-            biorbd::utils::Quaternion::fromMatrix(rt, 5));
+        utils::Quaternion q(
+            utils::Quaternion::fromMatrix(rt, 5));
         SCALAR_TO_DOUBLE(qW, q.w());
         SCALAR_TO_DOUBLE(qX, q.x());
         SCALAR_TO_DOUBLE(qY, q.y());
@@ -1003,8 +1005,8 @@ TEST(Quaternion, conversion)
         EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
     }
     {
-        biorbd::utils::Quaternion q(
-            biorbd::utils::Quaternion::fromMatrix(rt.rot(), 5));
+        utils::Quaternion q(
+            utils::Quaternion::fromMatrix(rt.rot(), 5));
         SCALAR_TO_DOUBLE(qW, q.w());
         SCALAR_TO_DOUBLE(qX, q.x());
         SCALAR_TO_DOUBLE(qY, q.y());
@@ -1016,9 +1018,9 @@ TEST(Quaternion, conversion)
         EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
     }
     {
-        biorbd::utils::Quaternion q(
-            biorbd::utils::Quaternion::fromZYXAngles(
-                biorbd::utils::Vector3d(2, 3, 4), 5));
+        utils::Quaternion q(
+            utils::Quaternion::fromZYXAngles(
+                utils::Vector3d(2, 3, 4), 5));
         SCALAR_TO_DOUBLE(qW, q.w());
         SCALAR_TO_DOUBLE(qX, q.x());
         SCALAR_TO_DOUBLE(qY, q.y());
@@ -1030,9 +1032,9 @@ TEST(Quaternion, conversion)
         EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
     }
     {
-        biorbd::utils::Quaternion q(
-            biorbd::utils::Quaternion::fromYXZAngles(
-                biorbd::utils::Vector3d(2, 3, 4), 5));
+        utils::Quaternion q(
+            utils::Quaternion::fromYXZAngles(
+                utils::Vector3d(2, 3, 4), 5));
         SCALAR_TO_DOUBLE(qW, q.w());
         SCALAR_TO_DOUBLE(qX, q.x());
         SCALAR_TO_DOUBLE(qY, q.y());
@@ -1044,9 +1046,9 @@ TEST(Quaternion, conversion)
         EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
     }
     {
-        biorbd::utils::Quaternion q(
-            biorbd::utils::Quaternion::fromXYZAngles(
-                biorbd::utils::Vector3d(2, 3, 4), 5));
+        utils::Quaternion q(
+            utils::Quaternion::fromXYZAngles(
+                utils::Vector3d(2, 3, 4), 5));
         SCALAR_TO_DOUBLE(qW, q.w());
         SCALAR_TO_DOUBLE(qX, q.x());
         SCALAR_TO_DOUBLE(qY, q.y());
@@ -1058,11 +1060,11 @@ TEST(Quaternion, conversion)
         EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
     }
     {
-        biorbd::utils::Quaternion q(2, 3, 4, 5, 6);
+        utils::Quaternion q(2, 3, 4, 5, 6);
 #ifndef BIORBD_USE_CASADI_MATH
         EXPECT_THROW(q.toMatrix(), std::runtime_error);
 #endif
-        biorbd::utils::Rotation mat(q.toMatrix(true));
+        utils::Rotation mat(q.toMatrix(true));
 
         SCALAR_TO_DOUBLE(mat00, mat(0, 0));
         SCALAR_TO_DOUBLE(mat01, mat(0, 1));
@@ -1084,14 +1086,14 @@ TEST(Quaternion, conversion)
         EXPECT_NEAR(mat22, -49, requiredPrecision);
     }
     {
-        biorbd::utils::Vector3d rot (0.2, 0.3, 0.4);
-        biorbd::utils::RotoTrans rt_from_euler;
-        rt_from_euler = biorbd::utils::RotoTrans::fromEulerAngles(rot,
-                        biorbd::utils::Vector3d(), "xyz");
+        utils::Vector3d rot (0.2, 0.3, 0.4);
+        utils::RotoTrans rt_from_euler;
+        rt_from_euler = utils::RotoTrans::fromEulerAngles(rot,
+                        utils::Vector3d(), "xyz");
 
-        biorbd::utils::Quaternion q(
-            biorbd::utils::Quaternion::fromXYZAngles(rot, 5));
-        biorbd::utils::RotoTrans rt_from_quat(q.toMatrix());
+        utils::Quaternion q(
+            utils::Quaternion::fromXYZAngles(rot, 5));
+        utils::RotoTrans rt_from_quat(q.toMatrix());
 
         for (unsigned int i=0; i<4; ++i) {
             for (unsigned int j=0; j<4; ++j) {
@@ -1101,7 +1103,7 @@ TEST(Quaternion, conversion)
             }
         }
 
-        biorbd::utils::Quaternion qFromRt(biorbd::utils::Quaternion::fromMatrix(
+        utils::Quaternion qFromRt(utils::Quaternion::fromMatrix(
                                               rt_from_quat));
         for (unsigned int i=0; i<4; ++i) {
             SCALAR_TO_DOUBLE(valQ, q(i));
@@ -1115,9 +1117,9 @@ TEST(Quaternion, otherOperations)
 {
 #ifndef BIORBD_USE_CASADI_MATH
     {
-        biorbd::utils::Quaternion q(2, 3, 4, 5, 6);
-        biorbd::utils::Quaternion q2(3, 4, 5, 6, 8);
-        biorbd::utils::Quaternion qSlerp(q.slerp (7, q2));
+        utils::Quaternion q(2, 3, 4, 5, 6);
+        utils::Quaternion q2(3, 4, 5, 6, 8);
+        utils::Quaternion qSlerp(q.slerp (7, q2));
 
         SCALAR_TO_DOUBLE(qSlerpW, qSlerp.w());
         SCALAR_TO_DOUBLE(qSlerpX, qSlerp.x());
@@ -1131,8 +1133,8 @@ TEST(Quaternion, otherOperations)
     }
 #endif
     {
-        biorbd::utils::Quaternion q(2, 3, 4, 5, 6);
-        biorbd::utils::Quaternion qConj(q.conjugate());
+        utils::Quaternion q(2, 3, 4, 5, 6);
+        utils::Quaternion qConj(q.conjugate());
 
         SCALAR_TO_DOUBLE(qConjW, qConj.w());
         SCALAR_TO_DOUBLE(qConjX, qConj.x());
@@ -1144,9 +1146,9 @@ TEST(Quaternion, otherOperations)
         EXPECT_NEAR(qConjZ, -5, requiredPrecision);
         EXPECT_NEAR(qConj.kStab(), 6, requiredPrecision);
     } {
-        biorbd::utils::Quaternion q(2, 3, 4, 5, 6);
-        biorbd::utils::Quaternion qTime(
-            q.timeStep(biorbd::utils::Vector3d(7, 8, 9), 0.1));
+        utils::Quaternion q(2, 3, 4, 5, 6);
+        utils::Quaternion qTime(
+            q.timeStep(utils::Vector3d(7, 8, 9), 0.1));
 
         SCALAR_TO_DOUBLE(qTimeW, qTime.w());
         SCALAR_TO_DOUBLE(qTimeX, qTime.x());
@@ -1158,8 +1160,8 @@ TEST(Quaternion, otherOperations)
         EXPECT_NEAR(qTimeZ, 4.8489346122578709, requiredPrecision);
         EXPECT_NEAR(qTime.kStab(), 6, requiredPrecision);
     } {
-        biorbd::utils::Quaternion q(2, 3, 4, 5, 6);
-        biorbd::utils::Vector3d vec(q.rotate(biorbd::utils::Vector3d(7, 8, 9)));
+        utils::Quaternion q(2, 3, 4, 5, 6);
+        utils::Vector3d vec(q.rotate(utils::Vector3d(7, 8, 9)));
 
         SCALAR_TO_DOUBLE(vecX, vec.x());
         SCALAR_TO_DOUBLE(vecY, vec.y());
@@ -1168,8 +1170,8 @@ TEST(Quaternion, otherOperations)
         EXPECT_NEAR(vecY, 384, requiredPrecision);
         EXPECT_NEAR(vecZ, 582, requiredPrecision);
     } {
-        biorbd::utils::Quaternion q(2, 3, 4, 5, 6);
-        biorbd::utils::Quaternion qdot(q.omegaToQDot(biorbd::utils::Vector3d(7, 8, 9)));
+        utils::Quaternion q(2, 3, 4, 5, 6);
+        utils::Quaternion qdot(q.omegaToQDot(utils::Vector3d(7, 8, 9)));
 
         SCALAR_TO_DOUBLE(qdotW, qdot.w());
         SCALAR_TO_DOUBLE(qdotX, qdot.x());
@@ -1181,8 +1183,8 @@ TEST(Quaternion, otherOperations)
         EXPECT_NEAR(qdotZ, 7, requiredPrecision);
         EXPECT_NEAR(qdot.kStab(), 6, requiredPrecision);
     } {
-        biorbd::utils::Quaternion q1(1, 0, 0, 0, 5);
-        biorbd::utils::Vector v(3);
+        utils::Quaternion q1(1, 0, 0, 0, 5);
+        utils::Vector v(3);
         FILL_VECTOR(v, std::vector<double>({1,2,3}));
         q1.derivate(v);
         {
@@ -1200,7 +1202,7 @@ TEST(Quaternion, otherOperations)
         double x(0.7035975447302919);
         double y(0.7035975447302919);
         double z(0.07035975447302918);
-        biorbd::utils::Quaternion q2(w,x,y,z, 5);
+        utils::Quaternion q2(w,x,y,z, 5);
         q2.derivate(v);
         {
             SCALAR_TO_DOUBLE(q2W, q2.w());
@@ -1219,10 +1221,10 @@ TEST(Quaternion, otherOperations)
 TEST(Quaternion, velocities)
 {
     {
-        biorbd::utils::Vector3d e(0.1,0.2,0.3);
-        biorbd::utils::Vector3d eR(0.4,0.5,0.6);
-        biorbd::utils::Quaternion q;
-        biorbd::utils::Vector3d w(q.eulerDotToOmega(eR,e,"xyz"));
+        utils::Vector3d e(0.1,0.2,0.3);
+        utils::Vector3d eR(0.4,0.5,0.6);
+        utils::Quaternion q;
+        utils::Vector3d w(q.eulerDotToOmega(eR,e,"xyz"));
 
         SCALAR_TO_DOUBLE(w0, w[0]);
         SCALAR_TO_DOUBLE(w1, w[1]);
@@ -1237,7 +1239,7 @@ TEST(Quaternion, velocities)
 TEST(Quaternion, normalization)
 {
     {
-        biorbd::utils::Quaternion q(1,1,1,1);
+        utils::Quaternion q(1,1,1,1);
         q.normalize();
         SCALAR_TO_DOUBLE(q0, q[0]);
         SCALAR_TO_DOUBLE(q1, q[1]);
@@ -1256,15 +1258,15 @@ TEST(Vector, operation)
 
     //TODO: Addition Scalar + Vector is undefined
     //{
-    //    biorbd::utils::Vector v(4);
+    //    utils::Vector v(4);
     //    v[0] = 1.1;
     //    v[1] = 1.2;
     //    v[2] = 1.3;
     //    v[3] = 1.4;
-    //    biorbd::utils::Scalar s(5);
-    //    biorbd::utils::Vector multVectAndScalar(v + s);
+    //    utils::Scalar s(5);
+    //    utils::Vector multVectAndScalar(v + s);
 
-    //    biorbd::utils::Vector expectedMultVectAndScalar(4);
+    //    utils::Vector expectedMultVectAndScalar(4);
     //    expectedMultVectAndScalar << 6.1, 6.2, 6.3, 6.4;
 
     //    for (unsigned int i = 0; i < 4; ++i) {
@@ -1273,13 +1275,13 @@ TEST(Vector, operation)
     //}
 
     {
-        biorbd::utils::Vector v(4);
+        utils::Vector v(4);
         v[0] = 1.1;
         v[1] = 1.2;
         v[2] = 1.3;
         v[3] = 1.4;
-        biorbd::utils::Scalar s(5);
-        biorbd::utils::Vector multVectAndScalar(s * v);
+        utils::Scalar s(5);
+        utils::Vector multVectAndScalar(s * v);
 
         std::vector<double> expectedMultVectAndScalar({5.5, 6.0, 6.5, 7.0});
 
@@ -1293,7 +1295,7 @@ TEST(Vector, operation)
 TEST(Vector, norm)
 {
     {
-        biorbd::utils::Vector v(4);
+        utils::Vector v(4);
         FILL_VECTOR(v, std::vector<double>({1.1, 1.2, 1.3, 1.4}));
 
         SCALAR_TO_DOUBLE(val2false, v.norm(2, false));
@@ -1306,10 +1308,10 @@ TEST(Vector, norm)
 TEST(Vector, normGradient)
 {
     {
-        biorbd::utils::Vector v(4);
+        utils::Vector v(4);
         FILL_VECTOR(v, std::vector<double>({1.1, 1.2, 1.3, 1.4}));
 
-        biorbd::utils::Vector nG(v.normGradient(2, false));
+        utils::Vector nG(v.normGradient(2, false));
         std::vector<double> expectednG({
             0.43825049008927769, 0.47809144373375745, 0.51793239737823726, 0.55777335102271697
         });

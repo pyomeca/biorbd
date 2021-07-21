@@ -89,7 +89,7 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
     biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque varname##_sym(casadi::MX::sym(#varname, model.nbGeneralizedTorque(), 1));
 #define DECLARE_VECTOR(varname, nbElements) \
     casadi::DM varname(nbElements, 1);\
-    biorbd::utils::Vector varname##_sym(casadi::MX::sym(#varname, nbElements, 1));
+    biorbd::BIORBD_MATH_NAMESPACE::utils::Vector varname##_sym(casadi::MX::sym(#varname, nbElements, 1));
 
 #define CALL_BIORBD_FUNCTION_1ARG(varname, model, funcname, arg1) \
     casadi::Function func_##funcname(#funcname, {arg1##_sym}, {model.funcname(arg1##_sym)}, {#arg1}, {#funcname});\
@@ -123,7 +123,7 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 #define DECLARE_GENERALIZED_TORQUE(varname, model) \
     biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque varname(model);
 #define DECLARE_VECTOR(varname, nbElements) \
-    biorbd::utils::Vector varname(nbElements);
+    biorbd::BIORBD_MATH_NAMESPACE::utils::Vector varname(nbElements);
 
 #define CALL_BIORBD_FUNCTION_1ARG(varname, model, funcname, arg1) \
     auto varname = model.funcname(arg1);

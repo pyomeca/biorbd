@@ -16,6 +16,8 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedTorque.h"
 
+using namespace biorbd::BIORBD_MATH_NAMESPACE;
+
 static double requiredPrecision(1e-10);
 
 static std::string modelPathWithMeshFile("models/simpleWithMeshFile.bioMod");
@@ -34,19 +36,19 @@ static std::string modelPathWithObj("models/violin.bioMod");
 
 TEST(FileIO, OpenModel)
 {
-    EXPECT_NO_THROW(biorbd::Model model(modelPathForGeneralTesting));
+    EXPECT_NO_THROW(Model model(modelPathForGeneralTesting));
 }
 
 #ifndef BIORBD_USE_CASADI_MATH
 TEST(FileIO, WriteModel)
 {
-    biorbd::Model model("models/two_segments.bioMod");
-    biorbd::utils::String savePath("temporary.bioMod");
-    biorbd::Writer::writeModel(model, savePath);
-    biorbd::Model modelCopy(savePath);
+    Model model("models/two_segments.bioMod");
+    utils::String savePath("temporary.bioMod");
+    Writer::writeModel(model, savePath);
+    Model modelCopy(savePath);
 
     // Test if the model is properly written
-    biorbd::rigidbody::GeneralizedCoordinates Q(modelCopy);
+    rigidbody::GeneralizedCoordinates Q(modelCopy);
     Q.setOnes();
 
     for (unsigned int k=0; k<model.nbSegment(); ++k) {
@@ -87,27 +89,27 @@ TEST(FileIO, WriteModel)
 
 TEST(GenericTests, mass)
 {
-    biorbd::Model model(modelPathForGeneralTesting);
+    Model model(modelPathForGeneralTesting);
     SCALAR_TO_DOUBLE(mass, model.mass());
     EXPECT_NEAR(mass, 52.41212, requiredPrecision);
 }
 
 TEST(MeshFile, FileIO)
 {
-    EXPECT_NO_THROW(biorbd::Model model(modelPathWithMeshFile));
-    biorbd::Model model(modelPathWithMeshFile);
+    EXPECT_NO_THROW(Model model(modelPathWithMeshFile));
+    Model model(modelPathWithMeshFile);
 }
 
 TEST(MeshFile, FileIoObj)
 {
-    EXPECT_NO_THROW(biorbd::Model model(modelPathWithObj));
-    biorbd::Model model(modelPathWithObj);
+    EXPECT_NO_THROW(Model model(modelPathWithObj));
+    Model model(modelPathWithObj);
 }
 
 #ifdef MODULE_VTP_FILES_READER
 TEST(MeshFile, FileIoVtp)
 {
-    EXPECT_NO_THROW(biorbd::Model model(modelPathWithVtp));
-    biorbd::Model model(modelPathWithVtp);
+    EXPECT_NO_THROW(Model model(modelPathWithVtp));
+    Model model(modelPathWithVtp);
 }
 #endif

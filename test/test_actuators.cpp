@@ -15,6 +15,8 @@
 #include "Actuators/ActuatorLinear.h"
 #include "Actuators/ActuatorSigmoidGauss3p.h"
 
+using namespace biorbd::BIORBD_MATH_NAMESPACE;
+
 static std::string
 modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");
 static std::string
@@ -28,16 +30,16 @@ static double requiredPrecision(1e-10);
 
 TEST(FileIO, openModelWithActuators)
 {
-    EXPECT_NO_THROW(biorbd::Model model(modelPathForGeneralTesting));
-    EXPECT_NO_THROW(biorbd::Model model(modelPathWithoutActuator));
-    EXPECT_THROW(biorbd::Model model(modelPathWithMissingActuator),
+    EXPECT_NO_THROW(Model model(modelPathForGeneralTesting));
+    EXPECT_NO_THROW(Model model(modelPathWithoutActuator));
+    EXPECT_THROW(Model model(modelPathWithMissingActuator),
                  std::runtime_error);
-    EXPECT_NO_THROW(biorbd::Model model(modelPathWithAllActuators));
+    EXPECT_NO_THROW(Model model(modelPathWithAllActuators));
 }
 
 TEST(ActuatorConstant, torqueMax)
 {
-    biorbd::actuator::ActuatorConstant const_torque_act(1, 150, 0);
+    actuator::ActuatorConstant const_torque_act(1, 150, 0);
     SCALAR_TO_DOUBLE(torqueMaxVal, const_torque_act.torqueMax())
     EXPECT_NEAR(torqueMaxVal, 150, requiredPrecision);
 }
@@ -45,11 +47,11 @@ TEST(ActuatorConstant, torqueMax)
 TEST(ActuatorGauss3p, torqueMax)
 {
     // A model is loaded so Q can be > 0 in size, it is not used otherwise
-    biorbd::Model model(modelPathForGeneralTesting);
+    Model model(modelPathForGeneralTesting);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
 
-    biorbd::actuator::ActuatorGauss3p gauss3p_torque_act(1, 150, 25, 800, 324, 0.5,
+    actuator::ActuatorGauss3p gauss3p_torque_act(1, 150, 25, 800, 324, 0.5,
             28, 90, 29, 133, 0);
     std::vector<double> Q_val = {1.1, 1.1, 1.1, 1.1, 1.1};
     FILL_VECTOR(Q, Q_val);
@@ -84,11 +86,11 @@ TEST(ActuatorGauss3p, torqueMax)
 TEST(ActuatorGauss6p, torqueMax)
 {
     // A model is loaded so Q can be > 0 in size, it is not used otherwise
-    biorbd::Model model(modelPathForGeneralTesting);
+    Model model(modelPathForGeneralTesting);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
 
-    biorbd::actuator::ActuatorGauss6p gauss6p_torque_act(1, 150, 25, 800, 324, 0.5,
+    actuator::ActuatorGauss6p gauss6p_torque_act(1, 150, 25, 800, 324, 0.5,
             28, 90, 29, 133, 4, 73, 73, 0);
     std::vector<double> Q_val = {1.1, 1.1, 1.1, 1.1, 1.1};
     FILL_VECTOR(Q, Q_val);
@@ -123,13 +125,13 @@ TEST(ActuatorGauss6p, torqueMax)
 TEST(ActuatorLinear, torqueMax)
 {
     // A model is loaded so Q can be > 0 in size, it is not used otherwise
-    biorbd::Model model(modelPathForGeneralTesting);
+    Model model(modelPathForGeneralTesting);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
 
     std::vector<double> val = {1.1};
     FILL_VECTOR(Q, val);
     double torqueMaxExpected(88.025357464390567);
-    biorbd::actuator::ActuatorLinear linear_torque_act(1, 25, 1, 0);
+    actuator::ActuatorLinear linear_torque_act(1, 25, 1, 0);
     CALL_BIORBD_FUNCTION_1ARG(torqueMaxVal, linear_torque_act, torqueMax, Q);
 #ifdef BIORBD_USE_CASADI_MATH
     EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected,
@@ -142,12 +144,12 @@ TEST(ActuatorLinear, torqueMax)
 TEST(Actuators, NbActuators)
 {
     {
-        biorbd::Model model(modelPathForGeneralTesting);
+        Model model(modelPathForGeneralTesting);
         size_t val(model.nbActuators());
         EXPECT_NEAR(val, 13, requiredPrecision);
     }
     {
-        biorbd::Model model(modelPathWithoutActuator);
+        Model model(modelPathWithoutActuator);
         size_t val(model.nbActuators());
         EXPECT_NEAR(val, 0, requiredPrecision);
     }
@@ -155,7 +157,7 @@ TEST(Actuators, NbActuators)
 
 TEST(Actuators, jointTorqueFromAllTypesOfActuators)
 {
-    biorbd::Model model(modelPathWithAllActuators);
+    Model model(modelPathWithAllActuators);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
     DECLARE_VECTOR(actuatorActivations, model.nbGeneralizedTorque());
@@ -311,11 +313,11 @@ TEST(Actuators, jointTorqueFromAllTypesOfActuators)
 TEST(ActuatorSigmoidGauss3p, torqueMax)
 {
     // A model is loaded so Q can be > 0 in size, it is not used otherwise
-    biorbd::Model model(modelPathWithAllActuators);
+    Model model(modelPathWithAllActuators);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
 
-    biorbd::actuator::ActuatorSigmoidGauss3p sigmoid_gauss3p_torque_act(1,
+    actuator::ActuatorSigmoidGauss3p sigmoid_gauss3p_torque_act(1,
             312.0780851217, 0.0100157340, 3.2702903919,
             56.4021127893, -25.6939435543, 0);
     std::vector<double> Q_val(model.nbQ());
