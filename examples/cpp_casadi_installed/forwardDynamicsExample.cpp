@@ -11,11 +11,13 @@
 ///     4. Print them to the console
 ///
 /// Please note that this example will work only with the Eigen backend
-///
+
+using namespace BIORBD_NAMESPACE;
+
 int main()
 {
     // Load a predefined model
-    biorbd::Model model("pyomecaman.bioMod");
+    Model model("pyomecaman.bioMod");
 
     // Choose a position/velocity/torque to compute dynamics from
     DECLARE_GENERALIZED_COORDINATES(Q, model);
