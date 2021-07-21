@@ -12,80 +12,83 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 #ifdef MODULE_KALMAN
     class KalmanReconsIMU;
 #endif
 }
-
 }
+}
+
 extern "C" {
     // Create a pointer on a model
-    BIORBD_API_C biorbd::Model* c_biorbdModel(
+    BIORBD_API_C biorbd::BIORBD_MATH_NAMESPACE::Model* c_biorbdModel(
         const char* pathToModel);
     BIORBD_API_C void c_deleteBiorbdModel(
-        biorbd::Model*);
+        biorbd::BIORBD_MATH_NAMESPACE::Model*);
     BIORBD_API_C void c_writeBiorbdModel(
-        biorbd::Model*, const char * path);
+        biorbd::BIORBD_MATH_NAMESPACE::Model*, const char * path);
 
 
     // Joints functions
     BIORBD_API_C void
     c_boneRotationSequence( // Return the angle sequence of a bone named segName
-        biorbd::Model* m,
+        biorbd::BIORBD_MATH_NAMESPACE::Model* m,
         const char* segName,
         char* seq);
     BIORBD_API_C void
     c_localJCS( // Return the LCS for segment of index i in parent coordinate system
-        biorbd::Model* m,
+        biorbd::BIORBD_MATH_NAMESPACE::Model* m,
         int i,
         double* RtOut);
     BIORBD_API_C void c_globalJCS(
-        biorbd::Model*,
+        biorbd::BIORBD_MATH_NAMESPACE::Model*,
         const double* Q,
         double* jcs);
     BIORBD_API_C void c_inverseDynamics(
-        biorbd::Model* model,
+        biorbd::BIORBD_MATH_NAMESPACE::Model* model,
         const double* q,
         const double* qdot,
         const double* qddot,
         double* tau);
     BIORBD_API_C void c_massMatrix(
-        biorbd::Model* model,
+        biorbd::BIORBD_MATH_NAMESPACE::Model* model,
         const double* q,
         double* massMatrix);
     BIORBD_API_C void c_CoM(
-        biorbd::Model* model,
+        biorbd::BIORBD_MATH_NAMESPACE::Model* model,
         const double* q,
         double *com);
 
 
     // dof functions
     BIORBD_API_C int c_nQ(
-        biorbd::Model* model);
+        biorbd::BIORBD_MATH_NAMESPACE::Model* model);
     BIORBD_API_C int c_nQDot(
-        biorbd::Model* model);
+        biorbd::BIORBD_MATH_NAMESPACE::Model* model);
     BIORBD_API_C int c_nQDDot(
-        biorbd::Model* model);
+        biorbd::BIORBD_MATH_NAMESPACE::Model* model);
     BIORBD_API_C int c_nGeneralizedTorque(
-        biorbd::Model* model);
+        biorbd::BIORBD_MATH_NAMESPACE::Model* model);
 
 
     // Markers functions
     BIORBD_API_C int c_nMarkers(
-        biorbd::Model* model);
+        biorbd::BIORBD_MATH_NAMESPACE::Model* model);
     BIORBD_API_C void c_markersInLocal(
-        biorbd::Model* model,
+        biorbd::BIORBD_MATH_NAMESPACE::Model* model,
         double* markPos);
     BIORBD_API_C void c_markers(
-        biorbd::Model* model,
+        biorbd::BIORBD_MATH_NAMESPACE::Model* model,
         const double* Q,
         double* markPos,
         bool removeAxis = true,
         bool updateKin = true);
     BIORBD_API_C void c_addMarker(
-        biorbd::Model *model,
+        biorbd::BIORBD_MATH_NAMESPACE::Model* model,
         const double *markPos,
         const char* name = "",
         const char* parentName = "",
@@ -95,9 +98,9 @@ extern "C" {
 
     // IMUs functions
     BIORBD_API_C int c_nIMUs(
-        biorbd::Model*);
+        biorbd::BIORBD_MATH_NAMESPACE::Model*);
     BIORBD_API_C void c_addIMU(
-        biorbd::Model *model,
+        biorbd::BIORBD_MATH_NAMESPACE::Model* model,
         const double *imuRT,
         const char* name = "",
         const char* parentName = "",
@@ -106,17 +109,17 @@ extern "C" {
 
     // Kalman IMU
 #ifdef MODULE_KALMAN
-    BIORBD_API_C biorbd::rigidbody::KalmanReconsIMU* c_BiorbdKalmanReconsIMU(
-        biorbd::Model*,
+    BIORBD_API_C biorbd::BIORBD_MATH_NAMESPACE::rigidbody::KalmanReconsIMU* c_BiorbdKalmanReconsIMU(
+        biorbd::BIORBD_MATH_NAMESPACE::Model*,
         double* QinitialGuess = nullptr,
         double freq = 100,
         double noiseF = 5e-3,
         double errorF = 1e-10);
     BIORBD_API_C void c_deleteBiorbdKalmanReconsIMU(
-        biorbd::rigidbody::KalmanReconsIMU*);
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::KalmanReconsIMU*);
     BIORBD_API_C void c_BiorbdKalmanReconsIMUstep(
-        biorbd::Model*,
-        biorbd::rigidbody::KalmanReconsIMU*,
+        biorbd::BIORBD_MATH_NAMESPACE::Model*,
+        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::KalmanReconsIMU*,
         double* imu,
         double* Q = nullptr,
         double* QDot = nullptr,
@@ -149,40 +152,40 @@ extern "C" {
 }
 
 // Fonctions de dispatch pour les données d'entré et de sortie
-biorbd::utils::Vector3d dispatchMarkersInput(
+biorbd::BIORBD_MATH_NAMESPACE::utils::Vector3d dispatchMarkersInput(
     const double * pos);
 void dispatchMarkersOutput(
-    const std::vector<biorbd::rigidbody::NodeSegment> &allMarkers,
+    const std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment> &allMarkers,
     double* markers);
-biorbd::rigidbody::GeneralizedCoordinates dispatchQinput(
-    biorbd::Model* model,
+biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates dispatchQinput(
+    biorbd::BIORBD_MATH_NAMESPACE::Model* model,
     const double* Q);
 void dispatchQoutput(
-    const biorbd::rigidbody::GeneralizedCoordinates &eQ,
+    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates &eQ,
     double* Q);
 void dispatchTauOutput(
-    const biorbd::rigidbody::GeneralizedTorque &eTau,
+    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque &eTau,
     double* Tau);
 void dispatchDoubleOutput(
-    const biorbd::utils::Vector&,
+    const biorbd::BIORBD_MATH_NAMESPACE::utils::Vector&,
     double*);
-biorbd::utils::RotoTrans dispatchRTinput(
+biorbd::BIORBD_MATH_NAMESPACE::utils::RotoTrans dispatchRTinput(
     const double* rt);
 void dispatchRToutput(
-    const biorbd::utils::RotoTrans& rt_in,
+    const biorbd::BIORBD_MATH_NAMESPACE::utils::RotoTrans& rt_in,
     double* rt_out);
 void dispatchRToutput(
-    const std::vector<biorbd::utils::RotoTrans>& rt_in,
+    const std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::RotoTrans>& rt_in,
     double* rt_out);
-biorbd::utils::Matrix dispatchMatrixInput(
+biorbd::BIORBD_MATH_NAMESPACE::utils::Matrix dispatchMatrixInput(
     const double* matXd,
     int nRows,
     int nCols);
-biorbd::utils::Vector dispatchVectorInput(
+biorbd::BIORBD_MATH_NAMESPACE::utils::Vector dispatchVectorInput(
     const double* vecXd,
     int nElement);
 void dispatchVectorOutput(
-    const biorbd::utils::Vector& vect,
+    const biorbd::BIORBD_MATH_NAMESPACE::utils::Vector& vect,
     double* vect_out);
 
 //#ifdef UNITY
