@@ -4,63 +4,65 @@
 #include "Utils/String.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 
-biorbd::actuator::ActuatorConstant::ActuatorConstant() :
+using namespace BIORBD_NAMESPACE;
+
+actuator::ActuatorConstant::ActuatorConstant() :
     Actuator(),
-    m_Tmax(std::make_shared<biorbd::utils::Scalar>(0))
+    m_Tmax(std::make_shared<utils::Scalar>(0))
 {
     setType();
 }
 
-biorbd::actuator::ActuatorConstant::ActuatorConstant(
-    const biorbd::actuator::ActuatorConstant &other) :
+actuator::ActuatorConstant::ActuatorConstant(
+    const actuator::ActuatorConstant &other) :
     Actuator(other),
     m_Tmax(other.m_Tmax)
 {
 
 }
 
-biorbd::actuator::ActuatorConstant::ActuatorConstant(
+actuator::ActuatorConstant::ActuatorConstant(
     int direction,
-    const biorbd::utils::Scalar& Tmax,
+    const utils::Scalar& Tmax,
     unsigned int dofIdx) :
     Actuator(direction, dofIdx),
-    m_Tmax(std::make_shared<biorbd::utils::Scalar>(Tmax))
+    m_Tmax(std::make_shared<utils::Scalar>(Tmax))
 {
     setType();
 }
 
-biorbd::actuator::ActuatorConstant::ActuatorConstant(
+actuator::ActuatorConstant::ActuatorConstant(
     int direction,
-    const biorbd::utils::Scalar& Tmax,
+    const utils::Scalar& Tmax,
     unsigned int dofIdx,
-    const biorbd::utils::String &jointName) :
+    const utils::String &jointName) :
     Actuator(direction, dofIdx, jointName),
-    m_Tmax(std::make_shared<biorbd::utils::Scalar>(Tmax))
+    m_Tmax(std::make_shared<utils::Scalar>(Tmax))
 {
     setType();
 }
 
-biorbd::actuator::ActuatorConstant
-biorbd::actuator::ActuatorConstant::DeepCopy() const
+actuator::ActuatorConstant
+actuator::ActuatorConstant::DeepCopy() const
 {
-    biorbd::actuator::ActuatorConstant copy;
+    actuator::ActuatorConstant copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void biorbd::actuator::ActuatorConstant::DeepCopy(const
-        biorbd::actuator::ActuatorConstant &other)
+void actuator::ActuatorConstant::DeepCopy(const
+        actuator::ActuatorConstant &other)
 {
-    biorbd::actuator::Actuator::DeepCopy(other);
+    actuator::Actuator::DeepCopy(other);
     *m_Tmax = *other.m_Tmax;
 }
 
-biorbd::utils::Scalar biorbd::actuator::ActuatorConstant::torqueMax()
+utils::Scalar actuator::ActuatorConstant::torqueMax()
 {
     return *m_Tmax;
 }
 
-void biorbd::actuator::ActuatorConstant::setType()
+void actuator::ActuatorConstant::setType()
 {
-    *m_type = biorbd::actuator::TYPE::CONSTANT;
+    *m_type = actuator::TYPE::CONSTANT;
 }

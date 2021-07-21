@@ -15,6 +15,8 @@
 #include "Utils/String.h"
 #include "Utils/RotoTrans.h"
 
+using namespace BIORBD_NAMESPACE;
+
 static double requiredPrecision(1e-10);
 
 static std::string modelPathForMuscleForce("models/arm26.bioMod");
@@ -29,7 +31,7 @@ static unsigned int muscleForIdealizedActuator(1);
 
 TEST(Muscles, size)
 {
-    biorbd::Model model(modelPathForMuscleForce);
+    Model model(modelPathForMuscleForce);
     unsigned int nbMus(model.nbMuscles());
     EXPECT_EQ(nbMus, 6);
     EXPECT_EQ(nbMus, model.nbMuscleTotal());
@@ -55,11 +57,11 @@ TEST(Muscles, size)
 TEST(IdealizedActuator, unitTest)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::IdealizedActuator idealizedActuator(model.
+        Model model(modelPathForMuscleForce);
+        muscles::IdealizedActuator idealizedActuator(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
         SCALAR_TO_DOUBLE(length, idealizedActuator.length(model, Q, 2));
         SCALAR_TO_DOUBLE(musculoTendonLength,
@@ -69,8 +71,8 @@ TEST(IdealizedActuator, unitTest)
     }
 
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::IdealizedActuator idealizedActuator(model.
+        Model model(modelPathForMuscleForce);
+        muscles::IdealizedActuator idealizedActuator(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
         idealizedActuator.setName("nom");
@@ -78,12 +80,12 @@ TEST(IdealizedActuator, unitTest)
     }
 
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
-        biorbd::rigidbody::GeneralizedVelocity qDot(model);
+        Model model(modelPathForMuscleForce);
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
-        biorbd::muscles::IdealizedActuator idealizedActuator(model.
+        muscles::IdealizedActuator idealizedActuator(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
         SCALAR_TO_DOUBLE(velocityTrue, idealizedActuator.velocity(model, Q, qDot,
@@ -95,16 +97,16 @@ TEST(IdealizedActuator, unitTest)
     }
 
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::IdealizedActuator idealizedActuator(model.
+        Model model(modelPathForMuscleForce);
+        muscles::IdealizedActuator idealizedActuator(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
-        biorbd::rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
         static double activationEmgForHillTypeTest(1);
-        biorbd::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+        muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(emg1, idealizedActuator.force(emg));
         SCALAR_TO_DOUBLE(emg2, idealizedActuator.force(model, Q, emg));
@@ -115,27 +117,27 @@ TEST(IdealizedActuator, unitTest)
     }
 
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::IdealizedActuator idealizedActuatorOrigin(model.
+        Model model(modelPathForMuscleForce);
+        muscles::IdealizedActuator idealizedActuatorOrigin(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
 
-        biorbd::muscles::IdealizedActuator idealizedActuatorNew(
+        muscles::IdealizedActuator idealizedActuatorNew(
             "newName",
             idealizedActuatorOrigin.position(),
             idealizedActuatorOrigin.characteristics());
 
         EXPECT_STREQ(idealizedActuatorNew.name().c_str(), "newName");
         EXPECT_EQ(idealizedActuatorNew.type(),
-                  biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
+                  muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::IdealizedActuator idealizedActuatorOrigin(model.
+        Model model(modelPathForMuscleForce);
+        muscles::IdealizedActuator idealizedActuatorOrigin(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
 
-        biorbd::muscles::IdealizedActuator idealizedActuatorNew(
+        muscles::IdealizedActuator idealizedActuatorNew(
             "newName",
             idealizedActuatorOrigin.position(),
             idealizedActuatorOrigin.characteristics(),
@@ -143,30 +145,30 @@ TEST(IdealizedActuator, unitTest)
 
         EXPECT_STREQ(idealizedActuatorNew.name().c_str(), "newName");
         EXPECT_EQ(idealizedActuatorNew.type(),
-                  biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
+                  muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::IdealizedActuator idealizedActuatorOrigin(model.
+        Model model(modelPathForMuscleForce);
+        muscles::IdealizedActuator idealizedActuatorOrigin(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
 
-        biorbd::muscles::IdealizedActuator idealizedActuatorNew(
+        muscles::IdealizedActuator idealizedActuatorNew(
             "newName",
             idealizedActuatorOrigin.position(),
             idealizedActuatorOrigin.characteristics());
 
         EXPECT_STREQ(idealizedActuatorNew.name().c_str(), "newName");
         EXPECT_EQ(idealizedActuatorNew.type(),
-                  biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
+                  muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::IdealizedActuator idealizedActuatorOrigin(model.
+        Model model(modelPathForMuscleForce);
+        muscles::IdealizedActuator idealizedActuatorOrigin(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
 
-        biorbd::muscles::IdealizedActuator idealizedActuatorNew(
+        muscles::IdealizedActuator idealizedActuatorNew(
             "newName",
             idealizedActuatorOrigin.position(),
             idealizedActuatorOrigin.characteristics(),
@@ -174,15 +176,15 @@ TEST(IdealizedActuator, unitTest)
 
         EXPECT_STREQ(idealizedActuatorNew.name().c_str(), "newName");
         EXPECT_EQ(idealizedActuatorNew.type(),
-                  biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
+                  muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::IdealizedActuator idealizedActuatorOrigin(model.
+        Model model(modelPathForMuscleForce);
+        muscles::IdealizedActuator idealizedActuatorOrigin(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
 
-        biorbd::muscles::IdealizedActuator idealizedActuatorNew(
+        muscles::IdealizedActuator idealizedActuatorNew(
             "newName",
             idealizedActuatorOrigin.position(),
             idealizedActuatorOrigin.characteristics(),
@@ -191,7 +193,7 @@ TEST(IdealizedActuator, unitTest)
 
         EXPECT_STREQ(idealizedActuatorNew.name().c_str(), "newName");
         EXPECT_EQ(idealizedActuatorNew.type(),
-                  biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
+                  muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
 
     }
 }
@@ -199,24 +201,24 @@ TEST(IdealizedActuator, unitTest)
 TEST(IdealizedActuator, copy)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::IdealizedActuator idealizedActuator(
+        Model model(modelPathForMuscleForce);
+        muscles::IdealizedActuator idealizedActuator(
             model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
                 muscleForIdealizedActuator));
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
 
-        biorbd::muscles::IdealizedActuator shallowCopy(idealizedActuator);
-        biorbd::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
-        biorbd::muscles::IdealizedActuator deepCopyLater;
+        muscles::IdealizedActuator shallowCopy(idealizedActuator);
+        muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
+        muscles::IdealizedActuator deepCopyLater;
         deepCopyLater.DeepCopy(idealizedActuator);
 
-        biorbd::utils::String originalName(idealizedActuator.name());
+        utils::String originalName(idealizedActuator.name());
         EXPECT_STREQ(shallowCopy.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
 
-        biorbd::utils::String newName("MyNewMuscleName");
+        utils::String newName("MyNewMuscleName");
         idealizedActuator.setName(newName);
         EXPECT_STREQ(idealizedActuator.name().c_str(), newName.c_str());
         EXPECT_STREQ(shallowCopy.name().c_str(), newName.c_str());
@@ -225,14 +227,14 @@ TEST(IdealizedActuator, copy)
     }
 
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::IdealizedActuator idealizedActuator(
+        Model model(modelPathForMuscleForce);
+        muscles::IdealizedActuator idealizedActuator(
             model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
                 muscleForIdealizedActuator));
 
-        biorbd::muscles::IdealizedActuator shallowCopy(idealizedActuator);
-        biorbd::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
-        biorbd::muscles::IdealizedActuator deepCopyLater;
+        muscles::IdealizedActuator shallowCopy(idealizedActuator);
+        muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
+        muscles::IdealizedActuator deepCopyLater;
         deepCopyLater.DeepCopy(idealizedActuator);
 
         {
@@ -244,7 +246,7 @@ TEST(IdealizedActuator, copy)
             EXPECT_NEAR(shallowCopyPennationAngle, 0.15707963, requiredPrecision);
         }
 
-        biorbd::muscles::Characteristics charac(idealizedActuator.characteristics());
+        muscles::Characteristics charac(idealizedActuator.characteristics());
         charac.setPennationAngle(0.523599);
         {
             SCALAR_TO_DOUBLE(pennationAngle,
@@ -263,20 +265,20 @@ TEST(IdealizedActuator, copy)
     }
 
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::IdealizedActuator idealizedActuator(
+        Model model(modelPathForMuscleForce);
+        muscles::IdealizedActuator idealizedActuator(
             model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
                 muscleForIdealizedActuator));
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
-        biorbd::rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
         idealizedActuator.updateOrientations(model, Q, qDot);
 
 
-        biorbd::muscles::IdealizedActuator shallowCopy(idealizedActuator);
-        biorbd::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
-        biorbd::muscles::IdealizedActuator deepCopyLater;
+        muscles::IdealizedActuator shallowCopy(idealizedActuator);
+        muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
+        muscles::IdealizedActuator deepCopyLater;
         deepCopyLater.DeepCopy(idealizedActuator);
 
 
@@ -293,13 +295,13 @@ TEST(IdealizedActuator, copy)
 
         {
             // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
-            biorbd::muscles::Characteristics charac(idealizedActuator.characteristics());
+            muscles::Characteristics charac(idealizedActuator.characteristics());
             charac.setPennationAngle(0.523599);
-            biorbd::utils::Vector3d insertion(
+            utils::Vector3d insertion(
                 idealizedActuator.position().insertionInLocal());
             insertion.set(0.2, 0.2, 0.2);
-            biorbd::utils::String oldName(insertion.biorbd::utils::Node::name());
-            biorbd::utils::String newName("MyNewName");
+            utils::String oldName(insertion.utils::Node::name());
+            utils::String newName("MyNewName");
             insertion.setName(newName);
             idealizedActuator.updateOrientations(model, Q, qDot, 2);
 
@@ -313,14 +315,14 @@ TEST(IdealizedActuator, copy)
                 EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
                 EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
                 EXPECT_EQ(
-                    idealizedActuator.position().insertionInLocal().biorbd::utils::Node::name(),
+                    idealizedActuator.position().insertionInLocal().utils::Node::name(),
                     newName);
-                EXPECT_EQ(shallowCopy.position().insertionInLocal().biorbd::utils::Node::name(),
+                EXPECT_EQ(shallowCopy.position().insertionInLocal().utils::Node::name(),
                           newName);
-                EXPECT_EQ(deepCopyNow.position().insertionInLocal().biorbd::utils::Node::name(),
+                EXPECT_EQ(deepCopyNow.position().insertionInLocal().utils::Node::name(),
                           oldName);
                 EXPECT_EQ(
-                    deepCopyLater.position().insertionInLocal().biorbd::utils::Node::name(),
+                    deepCopyLater.position().insertionInLocal().utils::Node::name(),
                     oldName);
             }
 
@@ -328,47 +330,47 @@ TEST(IdealizedActuator, copy)
 
         {
             // Change the position giving an actual vector
-            biorbd::utils::Vector3d newPosition(1, 2, 3);
-            biorbd::utils::String oldName("MyNewName");
-            biorbd::utils::String newName("MyNewNewName");
-            biorbd::rigidbody::NodeSegment newNode(newPosition, newName, "", true, true, "",
+            utils::Vector3d newPosition(1, 2, 3);
+            utils::String oldName("MyNewName");
+            utils::String newName("MyNewNewName");
+            rigidbody::NodeSegment newNode(newPosition, newName, "", true, true, "",
                                                    0);
             {
-                const_cast<biorbd::muscles::Geometry&>(idealizedActuator.position()).setOrigin(
+                const_cast<muscles::Geometry&>(idealizedActuator.position()).setOrigin(
                     newPosition);
-                const_cast<biorbd::muscles::Geometry&>
+                const_cast<muscles::Geometry&>
                 (idealizedActuator.position()).setInsertionInLocal(newPosition);
-                const biorbd::utils::Vector3d& origin =
+                const utils::Vector3d& origin =
                     idealizedActuator.position().originInLocal();
-                const biorbd::utils::Vector3d& insertion =
+                const utils::Vector3d& insertion =
                     idealizedActuator.position().insertionInLocal();
-                EXPECT_STREQ(origin.biorbd::utils::Node::name().c_str(), "TRImed_origin");
-                EXPECT_STREQ(insertion.biorbd::utils::Node::name().c_str(), oldName.c_str());
+                EXPECT_STREQ(origin.utils::Node::name().c_str(), "TRImed_origin");
+                EXPECT_STREQ(insertion.utils::Node::name().c_str(), oldName.c_str());
             }
             {
-                const_cast<biorbd::muscles::Geometry&>(idealizedActuator.position()).setOrigin(
+                const_cast<muscles::Geometry&>(idealizedActuator.position()).setOrigin(
                     newNode);
-                const_cast<biorbd::muscles::Geometry&>
+                const_cast<muscles::Geometry&>
                 (idealizedActuator.position()).setInsertionInLocal(newNode);
-                const biorbd::utils::Vector3d& origin =
+                const utils::Vector3d& origin =
                     idealizedActuator.position().originInLocal();
-                const biorbd::utils::Vector3d& insertion =
+                const utils::Vector3d& insertion =
                     idealizedActuator.position().insertionInLocal();
-                EXPECT_STREQ(origin.biorbd::utils::Node::name().c_str(), newName.c_str());
-                EXPECT_STREQ(insertion.biorbd::utils::Node::name().c_str(), newName.c_str());
+                EXPECT_STREQ(origin.utils::Node::name().c_str(), newName.c_str());
+                EXPECT_STREQ(insertion.utils::Node::name().c_str(), newName.c_str());
             }
         }
     }
 
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::IdealizedActuator idealizedActuator(
+        Model model(modelPathForMuscleForce);
+        muscles::IdealizedActuator idealizedActuator(
             model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
                 muscleForIdealizedActuator));
 
-        biorbd::muscles::IdealizedActuator shallowCopy(idealizedActuator);
-        biorbd::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
-        biorbd::muscles::IdealizedActuator deepCopyLater;
+        muscles::IdealizedActuator shallowCopy(idealizedActuator);
+        muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
+        muscles::IdealizedActuator deepCopyLater;
         deepCopyLater.DeepCopy(idealizedActuator);
 
         {
@@ -382,7 +384,7 @@ TEST(IdealizedActuator, copy)
             EXPECT_NEAR(deepCopyLaterExcitation, 0., requiredPrecision);
         }
 
-        idealizedActuator.state().setExcitation(biorbd::utils::Scalar(5.));
+        idealizedActuator.state().setExcitation(utils::Scalar(5.));
 
         {
             SCALAR_TO_DOUBLE(excitation, idealizedActuator.state().excitation());
@@ -403,8 +405,8 @@ static unsigned int muscleForHillType(1);
 TEST(hillType, unitTest)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillType hillType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillType hillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
         hillType.setName("newName");
@@ -412,17 +414,17 @@ TEST(hillType, unitTest)
 
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillType hillType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillType hillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
-        biorbd::rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
         hillType.updateOrientations(model, Q, qDot);
         static double activationEmgForHillTypeTest(1);
-        biorbd::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+        muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(flce, hillType.FlCE(emg));
         SCALAR_TO_DOUBLE(flpe, hillType.FlPE());
@@ -436,61 +438,61 @@ TEST(hillType, unitTest)
         EXPECT_NEAR(force, 424.95358302550062, requiredPrecision);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillType originalHillType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillType originalHillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
 
-        biorbd::muscles::HillType newHillType(
+        muscles::HillType newHillType(
             "newName",
             originalHillType.position(),
             originalHillType.characteristics());
 
         EXPECT_STREQ(newHillType.name().c_str(), "newName");
-        EXPECT_EQ(newHillType.type(), biorbd::muscles::MUSCLE_TYPE::HILL);
+        EXPECT_EQ(newHillType.type(), muscles::MUSCLE_TYPE::HILL);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillType originalHillType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillType originalHillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
 
-        biorbd::muscles::HillType newHillType(
+        muscles::HillType newHillType(
             "newName",
             originalHillType.position(),
             originalHillType.characteristics(),
             originalHillType.state());
 
         EXPECT_STREQ(newHillType.name().c_str(), "newName");
-        EXPECT_EQ(newHillType.type(), biorbd::muscles::MUSCLE_TYPE::HILL);
+        EXPECT_EQ(newHillType.type(), muscles::MUSCLE_TYPE::HILL);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillType originalHillType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillType originalHillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
 
-        biorbd::muscles::HillType newHillType(
+        muscles::HillType newHillType(
             "newName",
             originalHillType.position(),
             originalHillType.characteristics(),
             originalHillType.pathModifier());
 
         EXPECT_STREQ(newHillType.name().c_str(), "newName");
-        EXPECT_EQ(newHillType.type(), biorbd::muscles::MUSCLE_TYPE::HILL);
+        EXPECT_EQ(newHillType.type(), muscles::MUSCLE_TYPE::HILL);
 
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillType hillType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillType hillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
-        biorbd::rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
         static double activationEmgForHillTypeTest(1);
-        biorbd::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+        muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(force, hillType.force(model, Q, qDot, emg, 2));
         EXPECT_NEAR(force, 424.95358302550062, requiredPrecision);
@@ -500,24 +502,24 @@ TEST(hillType, unitTest)
 TEST(hillType, copy)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillType hillType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillType hillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
 
-        biorbd::muscles::HillType shallowCopy(hillType);
-        biorbd::muscles::HillType deepCopyNow(hillType.DeepCopy());
-        biorbd::muscles::HillType deepCopyLater;
+        muscles::HillType shallowCopy(hillType);
+        muscles::HillType deepCopyNow(hillType.DeepCopy());
+        muscles::HillType deepCopyLater;
         deepCopyLater.DeepCopy(hillType);
 
-        biorbd::utils::String originalName(hillType.name());
+        utils::String originalName(hillType.name());
         EXPECT_STREQ(shallowCopy.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
 
-        biorbd::utils::String newName("MyNewMuscleName");
+        utils::String newName("MyNewMuscleName");
         hillType.setName(newName);
         EXPECT_STREQ(hillType.name().c_str(), newName.c_str());
         EXPECT_STREQ(shallowCopy.name().c_str(), newName.c_str());
@@ -525,15 +527,15 @@ TEST(hillType, copy)
         EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillType hillType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillType hillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
 
         //copies of the Hill Type muscle
-        biorbd::muscles::HillType shallowCopy(hillType);
-        biorbd::muscles::HillType deepCopyNow(hillType.DeepCopy());
-        biorbd::muscles::HillType deepCopyLater;
+        muscles::HillType shallowCopy(hillType);
+        muscles::HillType deepCopyNow(hillType.DeepCopy());
+        muscles::HillType deepCopyLater;
         deepCopyLater.DeepCopy(hillType);
 
         {
@@ -544,7 +546,7 @@ TEST(hillType, copy)
             EXPECT_NEAR(shallowCopyPennationAngle, 0.15707963, requiredPrecision);
         }
 
-        biorbd::muscles::Characteristics charac(hillType.characteristics());
+        muscles::Characteristics charac(hillType.characteristics());
         charac.setPennationAngle(0.523599);
         {
             SCALAR_TO_DOUBLE(pennationAngle, hillType.characteristics().pennationAngle());
@@ -562,19 +564,19 @@ TEST(hillType, copy)
     }
 
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillType hillType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillType hillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
-        biorbd::rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
         hillType.updateOrientations(model, Q);
 
-        biorbd::muscles::HillType shallowCopy(hillType);
-        biorbd::muscles::HillType deepCopyNow(hillType.DeepCopy());
-        biorbd::muscles::HillType deepCopyLater;
+        muscles::HillType shallowCopy(hillType);
+        muscles::HillType deepCopyNow(hillType.DeepCopy());
+        muscles::HillType deepCopyLater;
         deepCopyLater.DeepCopy(hillType);
 
         {
@@ -589,12 +591,12 @@ TEST(hillType, copy)
         }
 
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
-        biorbd::muscles::Characteristics charac(hillType.characteristics());
+        muscles::Characteristics charac(hillType.characteristics());
         charac.setPennationAngle(0.523599);
-        biorbd::utils::Vector3d insertion(hillType.position().insertionInLocal());
+        utils::Vector3d insertion(hillType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
-        biorbd::utils::String oldName(insertion.biorbd::utils::Node::name());
-        biorbd::utils::String newName("MyNewName");
+        utils::String oldName(insertion.utils::Node::name());
+        utils::String newName("MyNewName");
         insertion.setName(newName);
         hillType.updateOrientations(model, Q, qDot, 2);
 
@@ -608,26 +610,26 @@ TEST(hillType, copy)
             EXPECT_NEAR(shallowCopyLength, 0.07570761027741163, requiredPrecision);
             EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
             EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_EQ(hillType.position().insertionInLocal().biorbd::utils::Node::name(),
+            EXPECT_EQ(hillType.position().insertionInLocal().utils::Node::name(),
                       newName);
-            EXPECT_EQ(shallowCopy.position().insertionInLocal().biorbd::utils::Node::name(),
+            EXPECT_EQ(shallowCopy.position().insertionInLocal().utils::Node::name(),
                       newName);
-            EXPECT_EQ(deepCopyNow.position().insertionInLocal().biorbd::utils::Node::name(),
+            EXPECT_EQ(deepCopyNow.position().insertionInLocal().utils::Node::name(),
                       oldName);
             EXPECT_EQ(
-                deepCopyLater.position().insertionInLocal().biorbd::utils::Node::name(),
+                deepCopyLater.position().insertionInLocal().utils::Node::name(),
                 oldName);
         }
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillType hillType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillType hillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
 
-        biorbd::muscles::HillType shallowCopy(hillType);
-        biorbd::muscles::HillType deepCopyNow(hillType.DeepCopy());
-        biorbd::muscles::HillType deepCopyLater;
+        muscles::HillType shallowCopy(hillType);
+        muscles::HillType deepCopyNow(hillType.DeepCopy());
+        muscles::HillType deepCopyLater;
         deepCopyLater.DeepCopy(hillType);
 
         {
@@ -641,7 +643,7 @@ TEST(hillType, copy)
             EXPECT_NEAR(deepCopyLaterExcitation, 0., requiredPrecision);
         }
 
-        hillType.state().setExcitation(biorbd::utils::Scalar(5.));
+        hillType.state().setExcitation(utils::Scalar(5.));
 
         {
             SCALAR_TO_DOUBLE(excitation, hillType.state().excitation());
@@ -662,26 +664,26 @@ static unsigned int muscleForHillThelenType(1);
 TEST(hillThelenType, unitTest)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
         hillThelenType.setName("newName");
         EXPECT_STREQ(hillThelenType.name().c_str(), "newName");
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
-        biorbd::rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
         model.updateMuscles(Q, 2);
         hillThelenType.updateOrientations(model, Q, qDot);
         static double activationEmgForHillTypeTest(1.0);
-        biorbd::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+        muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(flce, hillThelenType.FlCE(emg));
         SCALAR_TO_DOUBLE(flpe, hillThelenType.FlPE());
@@ -695,72 +697,72 @@ TEST(hillThelenType, unitTest)
         EXPECT_NEAR(force, 424.95358302550062, requiredPrecision);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        biorbd::muscles::HillThelenType hillThelenTypeNew(
+        muscles::HillThelenType hillThelenTypeNew(
             "newName",
             hillThelenType.position(),
             hillThelenType.characteristics());
 
         EXPECT_STREQ(hillThelenTypeNew.name().c_str(), "newName");
-        EXPECT_EQ(hillThelenTypeNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN);
+        EXPECT_EQ(hillThelenTypeNew.type(), muscles::MUSCLE_TYPE::HILL_THELEN);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        biorbd::muscles::HillThelenType hillThelenTypeNew(
+        muscles::HillThelenType hillThelenTypeNew(
             "newName",
             hillThelenType.position(),
             hillThelenType.characteristics(),
             hillThelenType.state());
 
         EXPECT_STREQ(hillThelenTypeNew.name().c_str(), "newName");
-        EXPECT_EQ(hillThelenTypeNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN);
+        EXPECT_EQ(hillThelenTypeNew.type(), muscles::MUSCLE_TYPE::HILL_THELEN);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        biorbd::muscles::HillThelenType hillThelenTypeNew(
+        muscles::HillThelenType hillThelenTypeNew(
             "newName",
             hillThelenType.position(),
             hillThelenType.characteristics(),
             hillThelenType.pathModifier());
 
         EXPECT_STREQ(hillThelenTypeNew.name().c_str(), "newName");
-        EXPECT_EQ(hillThelenTypeNew.type(), biorbd::muscles::MUSCLE_TYPE::HILL_THELEN);
+        EXPECT_EQ(hillThelenTypeNew.type(), muscles::MUSCLE_TYPE::HILL_THELEN);
     }
 }
 
 TEST(hillThelenType, copy)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
 
-        biorbd::muscles::HillThelenType shallowCopy(hillThelenType);
-        biorbd::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
-        biorbd::muscles::HillThelenType deepCopyLater;
+        muscles::HillThelenType shallowCopy(hillThelenType);
+        muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
+        muscles::HillThelenType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
-        biorbd::utils::String originalName(hillThelenType.name());
+        utils::String originalName(hillThelenType.name());
         EXPECT_STREQ(shallowCopy.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
 
-        biorbd::utils::String newName("MyNewMuscleName");
+        utils::String newName("MyNewMuscleName");
         hillThelenType.setName(newName);
         EXPECT_STREQ(hillThelenType.name().c_str(), newName.c_str());
         EXPECT_STREQ(shallowCopy.name().c_str(), newName.c_str());
@@ -768,14 +770,14 @@ TEST(hillThelenType, copy)
         EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        biorbd::muscles::HillThelenType shallowCopy(hillThelenType);
-        biorbd::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
-        biorbd::muscles::HillThelenType deepCopyLater;
+        muscles::HillThelenType shallowCopy(hillThelenType);
+        muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
+        muscles::HillThelenType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
         {
@@ -787,7 +789,7 @@ TEST(hillThelenType, copy)
             EXPECT_NEAR(shallowCopyPennationAngle, 0.15707963, requiredPrecision);
         }
 
-        biorbd::muscles::Characteristics charac(hillThelenType.characteristics());
+        muscles::Characteristics charac(hillThelenType.characteristics());
         charac.setPennationAngle(0.523599);
 
         {
@@ -807,19 +809,19 @@ TEST(hillThelenType, copy)
     }
 
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
-        biorbd::rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
         hillThelenType.updateOrientations(model, Q);
 
-        biorbd::muscles::HillThelenType shallowCopy(hillThelenType);
-        biorbd::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
-        biorbd::muscles::HillThelenType deepCopyLater;
+        muscles::HillThelenType shallowCopy(hillThelenType);
+        muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
+        muscles::HillThelenType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
         {
@@ -834,12 +836,12 @@ TEST(hillThelenType, copy)
         }
 
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
-        biorbd::muscles::Characteristics charac(hillThelenType.characteristics());
+        muscles::Characteristics charac(hillThelenType.characteristics());
         charac.setPennationAngle(0.523599);
-        biorbd::utils::Vector3d insertion(hillThelenType.position().insertionInLocal());
+        utils::Vector3d insertion(hillThelenType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
-        biorbd::utils::String oldName(insertion.biorbd::utils::Node::name());
-        biorbd::utils::String newName("MyNewName");
+        utils::String oldName(insertion.utils::Node::name());
+        utils::String newName("MyNewName");
         insertion.setName(newName);
         hillThelenType.updateOrientations(model, Q, qDot, 2);
 
@@ -853,26 +855,26 @@ TEST(hillThelenType, copy)
             EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
             EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
             EXPECT_EQ(
-                hillThelenType.position().insertionInLocal().biorbd::utils::Node::name(),
+                hillThelenType.position().insertionInLocal().utils::Node::name(),
                 newName);
-            EXPECT_EQ(shallowCopy.position().insertionInLocal().biorbd::utils::Node::name(),
+            EXPECT_EQ(shallowCopy.position().insertionInLocal().utils::Node::name(),
                       newName);
-            EXPECT_EQ(deepCopyNow.position().insertionInLocal().biorbd::utils::Node::name(),
+            EXPECT_EQ(deepCopyNow.position().insertionInLocal().utils::Node::name(),
                       oldName);
             EXPECT_EQ(
-                deepCopyLater.position().insertionInLocal().biorbd::utils::Node::name(),
+                deepCopyLater.position().insertionInLocal().utils::Node::name(),
                 oldName);
         }
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        biorbd::muscles::HillThelenType shallowCopy(hillThelenType);
-        biorbd::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
-        biorbd::muscles::HillThelenType deepCopyLater;
+        muscles::HillThelenType shallowCopy(hillThelenType);
+        muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
+        muscles::HillThelenType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
         {
@@ -886,7 +888,7 @@ TEST(hillThelenType, copy)
             EXPECT_NEAR(deepCopyLaterExcitation, 0., requiredPrecision);
         }
 
-        hillThelenType.state().setExcitation(biorbd::utils::Scalar(5.));
+        hillThelenType.state().setExcitation(utils::Scalar(5.));
 
         {
             SCALAR_TO_DOUBLE(excitation, hillThelenType.state().excitation());
@@ -904,26 +906,26 @@ TEST(hillThelenType, copy)
 TEST(hillThelenTypeActive, unitTest)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenActiveOnlyType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
         hillThelenType.setName("newName");
         EXPECT_STREQ(hillThelenType.name().c_str(), "newName");
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenActiveOnlyType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
-        biorbd::rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
         model.updateMuscles(Q, 2);
         hillThelenType.updateOrientations(model, Q, qDot);
         static double activationEmgForHillTypeTest(1.0);
-        biorbd::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+        muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(flce, hillThelenType.FlCE(emg));
         SCALAR_TO_DOUBLE(flpe, hillThelenType.FlPE());
@@ -937,27 +939,27 @@ TEST(hillThelenTypeActive, unitTest)
         EXPECT_NEAR(force, 424.83162852148627, requiredPrecision);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenActiveOnlyType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        biorbd::muscles::HillThelenActiveOnlyType hillThelenTypeNew(
+        muscles::HillThelenActiveOnlyType hillThelenTypeNew(
             "newName",
             hillThelenType.position(),
             hillThelenType.characteristics());
 
         EXPECT_STREQ(hillThelenTypeNew.name().c_str(), "newName");
         EXPECT_EQ(hillThelenTypeNew.type(),
-                  biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE);
+                  muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenActiveOnlyType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        biorbd::muscles::HillThelenActiveOnlyType hillThelenTypeNew(
+        muscles::HillThelenActiveOnlyType hillThelenTypeNew(
             "newName",
             hillThelenType.position(),
             hillThelenType.characteristics(),
@@ -965,15 +967,15 @@ TEST(hillThelenTypeActive, unitTest)
 
         EXPECT_STREQ(hillThelenTypeNew.name().c_str(), "newName");
         EXPECT_EQ(hillThelenTypeNew.type(),
-                  biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE);
+                  muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenActiveOnlyType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        biorbd::muscles::HillThelenActiveOnlyType hillThelenTypeNew(
+        muscles::HillThelenActiveOnlyType hillThelenTypeNew(
             "newName",
             hillThelenType.position(),
             hillThelenType.characteristics(),
@@ -981,32 +983,32 @@ TEST(hillThelenTypeActive, unitTest)
 
         EXPECT_STREQ(hillThelenTypeNew.name().c_str(), "newName");
         EXPECT_EQ(hillThelenTypeNew.type(),
-                  biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE);
+                  muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE);
     }
 }
 
 TEST(hillThelenActiveType, copy)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenActiveOnlyType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
 
-        biorbd::muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
-        biorbd::muscles::HillThelenActiveOnlyType deepCopyNow(
+        muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
+        muscles::HillThelenActiveOnlyType deepCopyNow(
             hillThelenType.DeepCopy());
-        biorbd::muscles::HillThelenActiveOnlyType deepCopyLater;
+        muscles::HillThelenActiveOnlyType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
-        biorbd::utils::String originalName(hillThelenType.name());
+        utils::String originalName(hillThelenType.name());
         EXPECT_STREQ(shallowCopy.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
 
-        biorbd::utils::String newName("MyNewMuscleName");
+        utils::String newName("MyNewMuscleName");
         hillThelenType.setName(newName);
         EXPECT_STREQ(hillThelenType.name().c_str(), newName.c_str());
         EXPECT_STREQ(shallowCopy.name().c_str(), newName.c_str());
@@ -1014,15 +1016,15 @@ TEST(hillThelenActiveType, copy)
         EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenActiveOnlyType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        biorbd::muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
-        biorbd::muscles::HillThelenActiveOnlyType deepCopyNow(
+        muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
+        muscles::HillThelenActiveOnlyType deepCopyNow(
             hillThelenType.DeepCopy());
-        biorbd::muscles::HillThelenActiveOnlyType deepCopyLater;
+        muscles::HillThelenActiveOnlyType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
         {
@@ -1034,7 +1036,7 @@ TEST(hillThelenActiveType, copy)
             EXPECT_NEAR(shallowCopyPennationAngle, 0.15707963, requiredPrecision);
         }
 
-        biorbd::muscles::Characteristics charac(hillThelenType.characteristics());
+        muscles::Characteristics charac(hillThelenType.characteristics());
         charac.setPennationAngle(0.523599);
 
         {
@@ -1054,20 +1056,20 @@ TEST(hillThelenActiveType, copy)
     }
 
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenActiveOnlyType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
-        biorbd::rigidbody::GeneralizedVelocity qDot(model);
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
         hillThelenType.updateOrientations(model, Q);
 
-        biorbd::muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
-        biorbd::muscles::HillThelenActiveOnlyType deepCopyNow(
+        muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
+        muscles::HillThelenActiveOnlyType deepCopyNow(
             hillThelenType.DeepCopy());
-        biorbd::muscles::HillThelenActiveOnlyType deepCopyLater;
+        muscles::HillThelenActiveOnlyType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
         {
@@ -1082,12 +1084,12 @@ TEST(hillThelenActiveType, copy)
         }
 
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
-        biorbd::muscles::Characteristics charac(hillThelenType.characteristics());
+        muscles::Characteristics charac(hillThelenType.characteristics());
         charac.setPennationAngle(0.523599);
-        biorbd::utils::Vector3d insertion(hillThelenType.position().insertionInLocal());
+        utils::Vector3d insertion(hillThelenType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
-        biorbd::utils::String oldName(insertion.biorbd::utils::Node::name());
-        biorbd::utils::String newName("MyNewName");
+        utils::String oldName(insertion.utils::Node::name());
+        utils::String newName("MyNewName");
         insertion.setName(newName);
         hillThelenType.updateOrientations(model, Q, qDot, 2);
 
@@ -1101,27 +1103,27 @@ TEST(hillThelenActiveType, copy)
             EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
             EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
             EXPECT_EQ(
-                hillThelenType.position().insertionInLocal().biorbd::utils::Node::name(),
+                hillThelenType.position().insertionInLocal().utils::Node::name(),
                 newName);
-            EXPECT_EQ(shallowCopy.position().insertionInLocal().biorbd::utils::Node::name(),
+            EXPECT_EQ(shallowCopy.position().insertionInLocal().utils::Node::name(),
                       newName);
-            EXPECT_EQ(deepCopyNow.position().insertionInLocal().biorbd::utils::Node::name(),
+            EXPECT_EQ(deepCopyNow.position().insertionInLocal().utils::Node::name(),
                       oldName);
             EXPECT_EQ(
-                deepCopyLater.position().insertionInLocal().biorbd::utils::Node::name(),
+                deepCopyLater.position().insertionInLocal().utils::Node::name(),
                 oldName);
         }
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenActiveOnlyType hillThelenType(
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        biorbd::muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
-        biorbd::muscles::HillThelenActiveOnlyType deepCopyNow(
+        muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
+        muscles::HillThelenActiveOnlyType deepCopyNow(
             hillThelenType.DeepCopy());
-        biorbd::muscles::HillThelenActiveOnlyType deepCopyLater;
+        muscles::HillThelenActiveOnlyType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
         {
@@ -1135,7 +1137,7 @@ TEST(hillThelenActiveType, copy)
             EXPECT_NEAR(deepCopyLaterExcitation, 0., requiredPrecision);
         }
 
-        hillThelenType.state().setExcitation(biorbd::utils::Scalar(5.));
+        hillThelenType.state().setExcitation(utils::Scalar(5.));
 
         {
             SCALAR_TO_DOUBLE(excitation, hillThelenType.state().excitation());
@@ -1153,18 +1155,18 @@ TEST(hillThelenActiveType, copy)
 TEST(DynamicState, Normal)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::StateDynamics state(0.8, 0.5);
+        Model model(modelPathForMuscleForce);
+        muscles::StateDynamics state(0.8, 0.5);
 
-        const biorbd::muscles::Muscle& m(model.muscle(0));
+        const muscles::Muscle& m(model.muscle(0));
         SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
         EXPECT_NEAR(actDot, 24.0, requiredPrecision);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::StateDynamics state(0.3, 0.5);
+        Model model(modelPathForMuscleForce);
+        muscles::StateDynamics state(0.3, 0.5);
 
-        const biorbd::muscles::Muscle& m(model.muscle(0));
+        const muscles::Muscle& m(model.muscle(0));
         SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
         EXPECT_NEAR(actDot, -6.25, requiredPrecision);
     }
@@ -1173,40 +1175,40 @@ TEST(DynamicState, Normal)
 TEST(DynamicState, Buchanan)
 {
     {
-        biorbd::Model model(modelPathForBuchananDynamics);
-        static_cast<biorbd::muscles::StateDynamicsBuchanan&>(
+        Model model(modelPathForBuchananDynamics);
+        static_cast<muscles::StateDynamicsBuchanan&>(
             model.muscles()[2]->state()).shapeFactor(5.5);
 
         // Test shape factor changes
-        biorbd::utils::Scalar shapeFactor0 =
-            static_cast<biorbd::muscles::StateDynamicsBuchanan&>(
+        utils::Scalar shapeFactor0 =
+            static_cast<muscles::StateDynamicsBuchanan&>(
                 model.muscles()[0]->state()).shapeFactor();
         SCALAR_TO_DOUBLE(shapeFactor0_double, shapeFactor0);
         EXPECT_NEAR(shapeFactor0_double, -3, requiredPrecision);
 
-        biorbd::utils::Scalar shapeFactor1 =
-            static_cast<biorbd::muscles::StateDynamicsBuchanan&>(
+        utils::Scalar shapeFactor1 =
+            static_cast<muscles::StateDynamicsBuchanan&>(
                 model.muscles()[1]->state()).shapeFactor();
         SCALAR_TO_DOUBLE(shapeFactor1_double, shapeFactor1);
         EXPECT_NEAR(shapeFactor1_double, 10, requiredPrecision);
 
-        biorbd::utils::Scalar shapeFactor2 =
-            static_cast<biorbd::muscles::StateDynamicsBuchanan&>(
+        utils::Scalar shapeFactor2 =
+            static_cast<muscles::StateDynamicsBuchanan&>(
                 model.muscles()[2]->state()).shapeFactor();
         SCALAR_TO_DOUBLE(shapeFactor2_double, shapeFactor2);
         EXPECT_NEAR(shapeFactor2_double, 5.5, requiredPrecision);
 
-        biorbd::muscles::StateDynamics state(0.8, 0.5);
+        muscles::StateDynamics state(0.8, 0.5);
 
-        const biorbd::muscles::Muscle& m(model.muscle(0));
+        const muscles::Muscle& m(model.muscle(0));
         SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
         EXPECT_NEAR(actDot, -7.592740648890816, requiredPrecision);
     }
     {
-        biorbd::Model model(modelPathForBuchananDynamics);
-        biorbd::muscles::StateDynamics state(0.3, 0.5);
+        Model model(modelPathForBuchananDynamics);
+        muscles::StateDynamics state(0.3, 0.5);
 
-        const biorbd::muscles::Muscle& m(model.muscle(0));
+        const muscles::Muscle& m(model.muscle(0));
         SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
         EXPECT_NEAR(actDot, -11.656766195499843, requiredPrecision);
     }
@@ -1215,18 +1217,18 @@ TEST(DynamicState, Buchanan)
 TEST(DynamicState, DeGroote)
 {
     {
-        biorbd::Model model(modelPathForDeGrooteDynamics);
-        biorbd::muscles::StateDynamics state(0.8, 0.5);
+        Model model(modelPathForDeGrooteDynamics);
+        muscles::StateDynamics state(0.8, 0.5);
 
-        const biorbd::muscles::Muscle& m(model.muscle(0));
+        const muscles::Muscle& m(model.muscle(0));
         SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
         EXPECT_NEAR(actDot, 16.906809211183873, requiredPrecision);
     }
     {
-        biorbd::Model model(modelPathForDeGrooteDynamics);
-        biorbd::muscles::StateDynamics state(0.3, 0.5);
+        Model model(modelPathForDeGrooteDynamics);
+        muscles::StateDynamics state(0.3, 0.5);
 
-        const biorbd::muscles::Muscle& m(model.muscle(0));
+        const muscles::Muscle& m(model.muscle(0));
         SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
         EXPECT_NEAR(actDot, -11.027512997920336, requiredPrecision);
     }
@@ -1238,34 +1240,34 @@ static unsigned int muscleForHillThelenTypeFatigable(1);
 TEST(hillThelenTypeFatigable, unitTest)
 {
     {
-        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
         hillThelenTypeFatigable.setName("newName");
         EXPECT_STREQ(hillThelenTypeFatigable.name().c_str(), "newName");
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        EXPECT_THROW(biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable(
+        Model model(modelPathForMuscleForce);
+        EXPECT_THROW(muscles::HillThelenTypeFatigable hillThelenTypeFatigable(
                          model.muscleGroup(muscleGroupForHillThelenTypeFatigable).muscle(
                              muscleForHillThelenTypeFatigable)), std::bad_cast);
     }
     {
-        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
-        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+        muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
             "newName",
             hillThelenTypeFatigable.position(),
             hillThelenTypeFatigable.characteristics(),
-            biorbd::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
+            muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
         EXPECT_STREQ(hillThelenTypeFatigableNew.name().c_str(), "newName");
         EXPECT_EQ(hillThelenTypeFatigableNew.type(),
-                  biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+                  muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
     }
 
     {
-        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
-        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+        muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
             "newName",
             hillThelenTypeFatigable.position(),
             hillThelenTypeFatigable.characteristics(),
@@ -1273,70 +1275,70 @@ TEST(hillThelenTypeFatigable, unitTest)
 
         EXPECT_STREQ(hillThelenTypeFatigableNew.name().c_str(), "newName");
         EXPECT_EQ(hillThelenTypeFatigableNew.type(),
-                  biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+                  muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
     }
     {
-        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
-        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+        muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
             "newName",
             hillThelenTypeFatigable.position(),
             hillThelenTypeFatigable.characteristics(),
             hillThelenTypeFatigable.pathModifier(),
-            biorbd::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
+            muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
         EXPECT_STREQ(hillThelenTypeFatigableNew.name().c_str(), "newName");
         EXPECT_EQ(hillThelenTypeFatigableNew.type(),
-                  biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+                  muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
     }
     {
-        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
-        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+        muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
             "nameMuscle",
             hillThelenTypeFatigable.position(),
             hillThelenTypeFatigable.characteristics(),
-            biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+            muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         EXPECT_EQ(hillThelenTypeFatigableNew.type(),
-                  biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+                  muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
     }
     {
-        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
-        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+        muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
             "nameMuscle",
             hillThelenTypeFatigable.position(),
             hillThelenTypeFatigable.characteristics(),
             hillThelenTypeFatigable.pathModifier(),
-            biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+            muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         EXPECT_EQ(hillThelenTypeFatigableNew.type(),
-                  biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+                  muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
     }
 }
 
 TEST(hillThelenTypeFatigable, copy)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
-        biorbd::rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
 
-        biorbd::muscles::HillThelenTypeFatigable shallowCopy(hillThelenTypeFatigable);
-        biorbd::muscles::HillThelenTypeFatigable deepCopyNow(
+        muscles::HillThelenTypeFatigable shallowCopy(hillThelenTypeFatigable);
+        muscles::HillThelenTypeFatigable deepCopyNow(
             hillThelenTypeFatigable.DeepCopy());
-        biorbd::muscles::HillThelenTypeFatigable deepCopyLater;
+        muscles::HillThelenTypeFatigable deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenTypeFatigable);
 
-        biorbd::utils::String originalName(hillThelenTypeFatigable.name());
+        utils::String originalName(hillThelenTypeFatigable.name());
         EXPECT_STREQ(shallowCopy.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
         EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
 
-        biorbd::utils::String newName("MyNewMuscleName");
+        utils::String newName("MyNewMuscleName");
         hillThelenTypeFatigable.setName(newName);
         EXPECT_STREQ(hillThelenTypeFatigable.name().c_str(), newName.c_str());
         EXPECT_STREQ(shallowCopy.name().c_str(), newName.c_str());
@@ -1344,13 +1346,13 @@ TEST(hillThelenTypeFatigable, copy)
         EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
-        biorbd::muscles::HillThelenTypeFatigable shallowCopy(hillThelenTypeFatigable);
-        biorbd::muscles::HillThelenTypeFatigable deepCopyNow(
+        muscles::HillThelenTypeFatigable shallowCopy(hillThelenTypeFatigable);
+        muscles::HillThelenTypeFatigable deepCopyNow(
             hillThelenTypeFatigable.DeepCopy());
-        biorbd::muscles::HillThelenTypeFatigable deepCopyLater;
+        muscles::HillThelenTypeFatigable deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenTypeFatigable);
 
         {
@@ -1361,7 +1363,7 @@ TEST(hillThelenTypeFatigable, copy)
             EXPECT_NEAR(pennationAngle, 0., requiredPrecision);
             EXPECT_NEAR(shallowCopyPennationAngle, 0., requiredPrecision);
         }
-        biorbd::muscles::Characteristics charac(
+        muscles::Characteristics charac(
             hillThelenTypeFatigable.characteristics());
         charac.setPennationAngle(0.523599);
         {
@@ -1381,13 +1383,13 @@ TEST(hillThelenTypeFatigable, copy)
     }
 
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        Model model(modelPathForMuscleForce);
+        muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
-        biorbd::muscles::HillThelenTypeFatigable shallowCopy(hillThelenTypeFatigable);
-        biorbd::muscles::HillThelenTypeFatigable deepCopyNow(
+        muscles::HillThelenTypeFatigable shallowCopy(hillThelenTypeFatigable);
+        muscles::HillThelenTypeFatigable deepCopyNow(
             hillThelenTypeFatigable.DeepCopy());
-        biorbd::muscles::HillThelenTypeFatigable deepCopyLater;
+        muscles::HillThelenTypeFatigable deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenTypeFatigable);
 
         {
@@ -1401,7 +1403,7 @@ TEST(hillThelenTypeFatigable, copy)
             EXPECT_NEAR(deepCopyLaterExcitation, 0., requiredPrecision);
         }
 
-        hillThelenTypeFatigable.state().setExcitation(biorbd::utils::Scalar(5.));
+        hillThelenTypeFatigable.state().setExcitation(utils::Scalar(5.));
 
         {
             SCALAR_TO_DOUBLE(excitation, hillThelenTypeFatigable.state().excitation());
@@ -1419,7 +1421,7 @@ TEST(hillThelenTypeFatigable, copy)
 #ifndef BIORBD_USE_CASADI_MATH
 TEST(FatigueState, unitTest)
 {
-    biorbd::muscles::FatigueState fatigueState;
+    muscles::FatigueState fatigueState;
     fatigueState.setState(0.0, 1.0, 0.0);
 
     SCALAR_TO_DOUBLE(activeFibers, fatigueState.activeFibers());
@@ -1433,11 +1435,11 @@ TEST(FatigueState, unitTest)
 
 TEST(FatigueState, copy)
 {
-    biorbd::muscles::FatigueState fatigueState;
+    muscles::FatigueState fatigueState;
 
-    biorbd::muscles::FatigueState shallowCopy(fatigueState);
-    biorbd::muscles::FatigueState deepCopyNow(fatigueState.DeepCopy());
-    biorbd::muscles::FatigueState deepCopyLater;
+    muscles::FatigueState shallowCopy(fatigueState);
+    muscles::FatigueState deepCopyNow(fatigueState.DeepCopy());
+    muscles::FatigueState deepCopyLater;
     deepCopyLater.DeepCopy(fatigueState);
 
 
@@ -1487,21 +1489,21 @@ static unsigned int muscleForXiaDerivativeTest(0);
 TEST(FatigueDynamiqueState, DeepCopy)
 {
     // Prepare the model
-    biorbd::Model model(modelPathForXiaDerivativeTest);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity QDot(model);
+    Model model(modelPathForXiaDerivativeTest);
+    rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedVelocity QDot(model);
     Q.setZero();
     QDot.setZero();
     model.updateMuscles(Q, QDot, true);
 
     {
-        biorbd::muscles::HillThelenTypeFatigable muscle(model.muscleGroup(
+        muscles::HillThelenTypeFatigable muscle(model.muscleGroup(
                     muscleGroupForXiaDerivativeTest).muscle(
                     muscleForXiaDerivativeTest));
-        biorbd::muscles::FatigueDynamicStateXia fatigueDynamicStateXia;
+        muscles::FatigueDynamicStateXia fatigueDynamicStateXia;
         // Sanity check for the fatigue model
         EXPECT_EQ(fatigueDynamicStateXia.getType(),
-                  biorbd::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
+                  muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
         // Initial value sanity check
         {
@@ -1511,7 +1513,7 @@ TEST(FatigueDynamiqueState, DeepCopy)
 
 #ifndef BIORBD_USE_CASADI_MATH
         // Apply the derivative
-        biorbd::muscles::StateDynamics emg(0,
+        muscles::StateDynamics emg(0,
                                            activationEmgForXiaDerivativeTest); // Set target
         fatigueDynamicStateXia.setState(currentActiveFibersForXiaDerivativeTest,
                                         currentFatiguedFibersForXiaDerivativeTest,
@@ -1525,10 +1527,10 @@ TEST(FatigueDynamiqueState, DeepCopy)
                     expectedActivationDotForXiaDerivativeTest, requiredPrecision);
 
         // Make copies
-        biorbd::muscles::FatigueDynamicStateXia shallowCopy(fatigueDynamicStateXia);
-        biorbd::muscles::FatigueDynamicStateXia deepCopyNow(
+        muscles::FatigueDynamicStateXia shallowCopy(fatigueDynamicStateXia);
+        muscles::FatigueDynamicStateXia deepCopyNow(
             fatigueDynamicStateXia.DeepCopy());
-        biorbd::muscles::FatigueDynamicStateXia deepCopyLater;
+        muscles::FatigueDynamicStateXia deepCopyLater;
         deepCopyLater.DeepCopy(fatigueDynamicStateXia);
 
         // Check the values
@@ -1560,7 +1562,7 @@ TEST(FatigueDynamiqueState, DeepCopy)
 
 TEST(FatigueParameters, unitTest)
 {
-    biorbd::muscles::FatigueParameters fatigueParameters;
+    muscles::FatigueParameters fatigueParameters;
     fatigueParameters.setFatigueRate(25.0);
     SCALAR_TO_DOUBLE(fatigueRate, fatigueParameters.fatigueRate());
     EXPECT_EQ(fatigueRate, 25.0);
@@ -1580,10 +1582,10 @@ TEST(FatigueParameters, unitTest)
 
 TEST(FatigueParemeters, copy)
 {
-    biorbd::muscles::FatigueParameters fatigueParameters(1.0, 2.0, 3.0, 4.0);
-    biorbd::muscles::FatigueParameters shallowCopy(fatigueParameters);
-    biorbd::muscles::FatigueParameters deepCopyNow(fatigueParameters.DeepCopy());
-    biorbd::muscles::FatigueParameters deepCopyLater;
+    muscles::FatigueParameters fatigueParameters(1.0, 2.0, 3.0, 4.0);
+    muscles::FatigueParameters shallowCopy(fatigueParameters);
+    muscles::FatigueParameters deepCopyNow(fatigueParameters.DeepCopy());
+    muscles::FatigueParameters deepCopyLater;
     deepCopyLater.DeepCopy(fatigueParameters);
 
     {
@@ -1614,36 +1616,36 @@ TEST(FatigueParemeters, copy)
 TEST(MuscleGroup, unitTest)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        Model model(modelPathForMuscleForce);
+        muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         muscleGroup.setName("newName");
         EXPECT_STREQ(muscleGroup.name().c_str(), "newName");
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        Model model(modelPathForMuscleForce);
+        muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         muscleGroup.setOrigin("newOriginName");
         EXPECT_STREQ(muscleGroup.origin().c_str(), "newOriginName");
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        Model model(modelPathForMuscleForce);
+        muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         muscleGroup.setInsertion("newInsertionName");
         EXPECT_STREQ(muscleGroup.insertion().c_str(), "newInsertionName");
     }
 
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        Model model(modelPathForMuscleForce);
+        muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         muscleGroup.addMuscle("newMuscleName",
-                              biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
+                              muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
-                              biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+                              muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         // Check the id of the last muscle added
         EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
@@ -1658,80 +1660,80 @@ TEST(MuscleGroup, unitTest)
 TEST(MuscleGroup, AddMuscle)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        Model model(modelPathForMuscleForce);
+        muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
-        biorbd::muscles::IdealizedActuator muscleToAdd;
+        muscles::IdealizedActuator muscleToAdd;
         muscleGroup.addMuscle(muscleToAdd);
 
         //Check number of muscle
         EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        Model model(modelPathForMuscleForce);
+        muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         //Check number of muscle
         EXPECT_NEAR(muscleGroup.nbMuscles(), 3, requiredPrecision);
 
         // Add muscle to muscle group
         muscleGroup.addMuscle("newMuscleName",
-                              biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
+                              muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
-                              biorbd::muscles::STATE_TYPE::SIMPLE_STATE,
-                              biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+                              muscles::STATE_TYPE::SIMPLE_STATE,
+                              muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
         EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
 
         // Add HILL muscle to muscle group
         muscleGroup.addMuscle("newHillMuscle",
-                              biorbd::muscles::MUSCLE_TYPE::HILL,
+                              muscles::MUSCLE_TYPE::HILL,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
-                              biorbd::muscles::STATE_TYPE::DYNAMIC,
-                              biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+                              muscles::STATE_TYPE::DYNAMIC,
+                              muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
         EXPECT_NEAR(muscleGroup.nbMuscles(), 5, requiredPrecision);
 
         // Add HILL THELEN muscle to muscle group
         muscleGroup.addMuscle("newHillThelenMuscle",
-                              biorbd::muscles::MUSCLE_TYPE::HILL_THELEN,
+                              muscles::MUSCLE_TYPE::HILL_THELEN,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
-                              biorbd::muscles::STATE_TYPE::BUCHANAN,
-                              biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+                              muscles::STATE_TYPE::BUCHANAN,
+                              muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
         EXPECT_NEAR(muscleGroup.nbMuscles(), 6, requiredPrecision);
 
         // Add muscle to muscle group
         muscleGroup.addMuscle("newHillThelenFatigable",
-                              biorbd::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE,
+                              muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
-                              biorbd::muscles::STATE_TYPE::SIMPLE_STATE,
-                              biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+                              muscles::STATE_TYPE::SIMPLE_STATE,
+                              muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         // Check the number of muscles again
         EXPECT_NEAR(muscleGroup.nbMuscles(), 7, requiredPrecision);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        Model model(modelPathForMuscleForce);
+        muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         //Check number of muscle
         EXPECT_NEAR(muscleGroup.nbMuscles(), 3, requiredPrecision);
 
         // Add muscle to muscle group
         muscleGroup.addMuscle("newMuscleName",
-                              biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
+                              muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
                               model.muscleGroup(0).muscle(0).pathModifier(),
-                              biorbd::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+                              muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
         EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
@@ -1741,12 +1743,12 @@ TEST(MuscleGroup, AddMuscle)
 TEST(MuscleGroup, DeepCopy)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        Model model(modelPathForMuscleForce);
+        muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
-        biorbd::muscles::MuscleGroup shallowCopy(muscleGroup);
-        biorbd::muscles::MuscleGroup deepCopyNow(muscleGroup.DeepCopy());
-        biorbd::muscles::MuscleGroup deepCopyLater;
+        muscles::MuscleGroup shallowCopy(muscleGroup);
+        muscles::MuscleGroup deepCopyNow(muscleGroup.DeepCopy());
+        muscles::MuscleGroup deepCopyLater;
         deepCopyLater.DeepCopy(muscleGroup);
 
         EXPECT_STREQ(muscleGroup.name().c_str(), "base_to_r_ulna_radius_hand");
@@ -1763,24 +1765,24 @@ TEST(MuscleGroup, DeepCopy)
         EXPECT_STREQ(deepCopyLater.name().c_str(), "base_to_r_ulna_radius_hand");
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        Model model(modelPathForMuscleForce);
+        muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         muscleGroup.addMuscle("newIdealizedActuator",
-                              biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
+                              muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
-                              biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+                              muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         muscleGroup.addMuscle("newHillActuator",
-                              biorbd::muscles::MUSCLE_TYPE::HILL,
+                              muscles::MUSCLE_TYPE::HILL,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
-                              biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+                              muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
-        biorbd::muscles::MuscleGroup shallowCopy(muscleGroup);
-        biorbd::muscles::MuscleGroup deepCopyNow(muscleGroup.DeepCopy());
-        biorbd::muscles::MuscleGroup deepCopyLater;
+        muscles::MuscleGroup shallowCopy(muscleGroup);
+        muscles::MuscleGroup deepCopyNow(muscleGroup.DeepCopy());
+        muscles::MuscleGroup deepCopyLater;
         deepCopyLater.DeepCopy(muscleGroup);
 
         EXPECT_STREQ(muscleGroup.muscle(4).name().c_str(), "newHillActuator");
@@ -1793,47 +1795,47 @@ TEST(MuscleGroup, DeepCopy)
 TEST(MuscleGroup, errors)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        Model model(modelPathForMuscleForce);
+        muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
         EXPECT_THROW(muscleGroup.addMuscle("noTypeMuscle",
-                                           biorbd::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE,
+                                           muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE,
                                            model.muscleGroup(0).muscle(0).position(),
                                            model.muscleGroup(0).muscle(0).characteristics(),
-                                           biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
+                                           muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        Model model(modelPathForMuscleForce);
+        muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
         EXPECT_THROW(muscleGroup.muscle(3), std::runtime_error);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        Model model(modelPathForMuscleForce);
+        muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
         EXPECT_THROW(muscleGroup.addMuscle("noTypeMuscle",
-                                           biorbd::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE,
+                                           muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE,
                                            model.muscleGroup(0).muscle(0).position(),
                                            model.muscleGroup(0).muscle(0).characteristics(),
-                                           biorbd::muscles::STATE_TYPE::SIMPLE_STATE,
-                                           biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
+                                           muscles::STATE_TYPE::SIMPLE_STATE,
+                                           muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        Model model(modelPathForMuscleForce);
+        muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
         EXPECT_THROW(muscleGroup.addMuscle("noTypeMuscle",
-                                           biorbd::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE,
+                                           muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE,
                                            model.muscleGroup(0).muscle(0).position(),
                                            model.muscleGroup(0).muscle(0).characteristics(),
                                            model.muscleGroup(0).muscle(0).pathModifier(),
-                                           biorbd::muscles::STATE_TYPE::SIMPLE_STATE,
-                                           biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
+                                           muscles::STATE_TYPE::SIMPLE_STATE,
+                                           muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
     }
 }
 
 TEST(Muscles, unitTest)
 {
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::Muscles muscles;
+        Model model(modelPathForMuscleForce);
+        muscles::Muscles muscles;
         muscles.addMuscleGroup("muscleGroupName", "originName", "insertionName");
 
         EXPECT_STREQ(muscles.muscleGroup(0).name().c_str(), "muscleGroupName");
@@ -1842,14 +1844,14 @@ TEST(Muscles, unitTest)
                      "originName");
     }
     {
-        biorbd::Model model(modelPathForMuscleForce);
-        biorbd::muscles::Muscles muscles;
+        Model model(modelPathForMuscleForce);
+        muscles::Muscles muscles;
         muscles.addMuscleGroup("muscleGroupName", "originName", "insertionName");
         muscles.muscleGroup(0).addMuscle("newIdealizedActuator",
-                                         biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
+                                         muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
                                          model.muscleGroup(0).muscle(0).position(),
                                          model.muscleGroup(0).muscle(0).characteristics(),
-                                         biorbd::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+                                         muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         EXPECT_NEAR(muscles.muscleNames().size(), 1., requiredPrecision);
     }
@@ -1857,8 +1859,8 @@ TEST(Muscles, unitTest)
 
 TEST(Muscles, errors)
 {
-    biorbd::Model model(modelPathForMuscleForce);
-    biorbd::muscles::Muscles muscles;
+    Model model(modelPathForMuscleForce);
+    muscles::Muscles muscles;
     muscles.addMuscleGroup("muscleGroupName", "originName", "insertionName");
 
     EXPECT_THROW(muscles.muscleGroup(1), std::runtime_error);
@@ -1867,13 +1869,13 @@ TEST(Muscles, errors)
 
 TEST(Muscles, deepCopy)
 {
-    biorbd::Model model(modelPathForMuscleForce);
-    biorbd::muscles::Muscles muscles;
+    Model model(modelPathForMuscleForce);
+    muscles::Muscles muscles;
     muscles.addMuscleGroup("muscleGroupName", "originName", "insertionName");
 
-    biorbd::muscles::Muscles shallowCopy(muscles);
-    biorbd::muscles::Muscles deepCopyNow(muscles.DeepCopy());
-    biorbd::muscles::Muscles deepCopyLater;
+    muscles::Muscles shallowCopy(muscles);
+    muscles::Muscles deepCopyNow(muscles.DeepCopy());
+    muscles::Muscles deepCopyLater;
     deepCopyLater.DeepCopy(muscles);
 
     EXPECT_STREQ(muscles.muscleGroup(0).name().c_str(), "muscleGroupName");
@@ -1894,11 +1896,11 @@ TEST(Muscles, deepCopy)
 TEST(WrappingHalfCylinder, unitTest)
 {
     {
-        biorbd::utils::RotoTrans rt(
-            biorbd::utils::Vector3d(1., 1., 1.), biorbd::utils::Vector3d(1., 1., 1.),
+        utils::RotoTrans rt(
+            utils::Vector3d(1., 1., 1.), utils::Vector3d(1., 1., 1.),
             "xyz");
 
-        biorbd::muscles::WrappingHalfCylinder wrappingHalfCylinder;
+        muscles::WrappingHalfCylinder wrappingHalfCylinder;
 
         wrappingHalfCylinder.setRadius(0.75);
         SCALAR_TO_DOUBLE(diameter, wrappingHalfCylinder.diameter());
@@ -1907,42 +1909,42 @@ TEST(WrappingHalfCylinder, unitTest)
         EXPECT_NEAR(radius, 0.75, requiredPrecision);
 
         wrappingHalfCylinder.setName("wrappingHalfCylinderName");
-        EXPECT_STREQ(wrappingHalfCylinder.biorbd::utils::Node::name().c_str(),
+        EXPECT_STREQ(wrappingHalfCylinder.utils::Node::name().c_str(),
                      "wrappingHalfCylinderName");
     }
     {
-        biorbd::utils::RotoTrans rt(
-            biorbd::utils::Vector3d(1., 1., 1.), biorbd::utils::Vector3d(1., 1., 1.),
+        utils::RotoTrans rt(
+            utils::Vector3d(1., 1., 1.), utils::Vector3d(1., 1., 1.),
             "xyz");
 
-        biorbd::muscles::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.25, 1.);
+        muscles::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.25, 1.);
         SCALAR_TO_DOUBLE(diameter, wrappingHalfCylinder.diameter());
         EXPECT_NEAR(diameter, 0.5, requiredPrecision);
         SCALAR_TO_DOUBLE(length, wrappingHalfCylinder.length());
         EXPECT_NEAR(length, 1., requiredPrecision);
     }
     {
-        biorbd::utils::RotoTrans rt(
-            biorbd::utils::Vector3d(1., 1., 1.), biorbd::utils::Vector3d(1., 1., 1.),
+        utils::RotoTrans rt(
+            utils::Vector3d(1., 1., 1.), utils::Vector3d(1., 1., 1.),
             "xyz");
 
-        biorbd::muscles::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.5, 1., "name",
+        muscles::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.5, 1., "name",
                 "parentName");
         EXPECT_STREQ(wrappingHalfCylinder.parent().c_str(), "parentName");
     }
     {
-        biorbd::muscles::WrappingHalfCylinder wrappingHalfCylinder;
-        biorbd::utils::RotoTrans rt(
-            biorbd::utils::Vector3d(1., 1., 1.), biorbd::utils::Vector3d(1., 1., 1.),
+        muscles::WrappingHalfCylinder wrappingHalfCylinder;
+        utils::RotoTrans rt(
+            utils::Vector3d(1., 1., 1.), utils::Vector3d(1., 1., 1.),
             "xyz");
-        biorbd::utils::Vector3d p1(1., 1., 1.);
-        biorbd::utils::Vector3d p2(2., 2., 2.);
+        utils::Vector3d p1(1., 1., 1.);
+        utils::Vector3d p2(2., 2., 2.);
 
 
         wrappingHalfCylinder.wrapPoints(
             rt,
-            biorbd::utils::Vector3d(0.5, 1., 1.5),
-            biorbd::utils::Vector3d(4., 5., 6.),
+            utils::Vector3d(0.5, 1., 1.5),
+            utils::Vector3d(4., 5., 6.),
             p1, p2);
 
         SCALAR_TO_DOUBLE(p10, p1[0]);
@@ -1962,16 +1964,16 @@ TEST(WrappingHalfCylinder, unitTest)
 
 TEST(WrappingHalfCylinder, deepCopy)
 {
-    biorbd::Model model(modelPathForMuscleForce);
-    biorbd::utils::RotoTrans rt(
-        biorbd::utils::Vector3d(1, 1, 1), biorbd::utils::Vector3d(1, 1, 1), "xyz");
+    Model model(modelPathForMuscleForce);
+    utils::RotoTrans rt(
+        utils::Vector3d(1, 1, 1), utils::Vector3d(1, 1, 1), "xyz");
 
-    biorbd::muscles::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.25, 1.);
+    muscles::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.25, 1.);
 
-    biorbd::muscles::WrappingHalfCylinder shallowCopy(wrappingHalfCylinder);
-    biorbd::muscles::WrappingHalfCylinder deepCopyNow(
+    muscles::WrappingHalfCylinder shallowCopy(wrappingHalfCylinder);
+    muscles::WrappingHalfCylinder deepCopyNow(
         wrappingHalfCylinder.DeepCopy());
-    biorbd::muscles::WrappingHalfCylinder deepCopyLater;
+    muscles::WrappingHalfCylinder deepCopyLater;
     deepCopyLater.DeepCopy(wrappingHalfCylinder);
 
     {
@@ -2029,18 +2031,18 @@ TEST(MuscleForce, position)
 
 TEST(MuscleForce, force)
 {
-    biorbd::Model model(modelPathForMuscleForce);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity QDot(model);
+    Model model(modelPathForMuscleForce);
+    rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedVelocity QDot(model);
     Q = Q.setOnes()/10;
     QDot = QDot.setOnes()/10;
-    std::vector<std::shared_ptr<biorbd::muscles::State>> states;
+    std::vector<std::shared_ptr<muscles::State>> states;
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i) {
-        states.push_back(std::make_shared<biorbd::muscles::StateDynamics>(0, 0.2));
+        states.push_back(std::make_shared<muscles::StateDynamics>(0, 0.2));
     }
     model.updateMuscles(Q, QDot, true);
 
-    const biorbd::utils::Vector& F = model.muscleForces(states);
+    const utils::Vector& F = model.muscleForces(states);
 
     std::vector<double> ExpectedForce({
         164.3110575502927, 106.89637709077938, 84.340201458493794,
@@ -2054,18 +2056,18 @@ TEST(MuscleForce, force)
 
 TEST(MuscleForce, torqueFromMuscles)
 {
-    biorbd::Model model(modelPathForMuscleForce);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity QDot(model);
-    biorbd::rigidbody::GeneralizedAcceleration QDDot(model);
+    Model model(modelPathForMuscleForce);
+    rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedVelocity QDot(model);
+    rigidbody::GeneralizedAcceleration QDDot(model);
     Q.setOnes()/10;
     QDot.setOnes()/10;
-    std::vector<std::shared_ptr<biorbd::muscles::State>> states;
+    std::vector<std::shared_ptr<muscles::State>> states;
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i) {
-        states.push_back(std::make_shared<biorbd::muscles::StateDynamics>(0, 0.2));
+        states.push_back(std::make_shared<muscles::StateDynamics>(0, 0.2));
     }
 
-    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    rigidbody::GeneralizedTorque Tau(model);
     std::vector<double> TauExpected({-18.271389285751727, -7.820566757538376});
     Tau = model.muscularJointTorque(states, Q, QDot);
     for (unsigned int i=0; i<QDDot.size(); ++i) {
@@ -2084,7 +2086,7 @@ TEST(MuscleForce, torqueFromMuscles)
 TEST(MuscleCharacterics, unittest)
 {
     {
-        biorbd::muscles::Characteristics charact;
+        muscles::Characteristics charact;
         {
             SCALAR_TO_DOUBLE(optimalLength, charact.optimalLength());
             EXPECT_NEAR(optimalLength, 0, requiredPrecision);
@@ -2098,7 +2100,7 @@ TEST(MuscleCharacterics, unittest)
     }
 
     {
-        biorbd::muscles::Characteristics charact;
+        muscles::Characteristics charact;
         {
             SCALAR_TO_DOUBLE(forceIsoMax, charact.forceIsoMax());
             EXPECT_NEAR(forceIsoMax, 0, requiredPrecision);
@@ -2113,7 +2115,7 @@ TEST(MuscleCharacterics, unittest)
     }
 
     {
-        biorbd::muscles::Characteristics charact;
+        muscles::Characteristics charact;
         {
             SCALAR_TO_DOUBLE(tendonSlackLength, charact.tendonSlackLength());
             EXPECT_NEAR(tendonSlackLength, 0, requiredPrecision);
@@ -2128,7 +2130,7 @@ TEST(MuscleCharacterics, unittest)
     }
 
     {
-        biorbd::muscles::Characteristics charact;
+        muscles::Characteristics charact;
         {
             SCALAR_TO_DOUBLE(pennationAngle, charact.pennationAngle());
             EXPECT_NEAR(pennationAngle, 0, requiredPrecision);
@@ -2143,7 +2145,7 @@ TEST(MuscleCharacterics, unittest)
     }
 
     {
-        biorbd::muscles::Characteristics charact;
+        muscles::Characteristics charact;
         {
             SCALAR_TO_DOUBLE(PCSA, charact.PCSA());
             EXPECT_NEAR(PCSA, 0, requiredPrecision);
@@ -2159,18 +2161,18 @@ TEST(MuscleCharacterics, unittest)
 
 TEST(MuscleJacobian, jacobian)
 {
-    biorbd::Model model(modelPathForMuscleJacobian);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    Model model(modelPathForMuscleJacobian);
+    rigidbody::GeneralizedCoordinates Q(model);
     Q = Q.setOnes()/10;
 
     // Force computation of geometry
-    biorbd::muscles::Muscle& muscle(model.muscleGroup(
+    muscles::Muscle& muscle(model.muscleGroup(
                                         muscleForMuscleJacobian).muscle(muscleGroupForMuscleJacobian));
     EXPECT_THROW(muscle.position().jacobian(), std::runtime_error);
     model.updateMuscles(Q, true);
 
     unsigned int nRows(3 * (muscle.pathModifier().nbObjects() + 2));
-    biorbd::utils::Matrix jacoRef(nRows, model.nbQ());
+    utils::Matrix jacoRef(nRows, model.nbQ());
     // Here we provide emperical values that we have confidence in
     jacoRef(0, 0) = 0.13689690274955996;
     jacoRef(0, 1) = 0;
@@ -2204,7 +2206,7 @@ TEST(MuscleJacobian, jacobian)
     jacoRef(14, 1) = 0.0013801799073302687;
 
     // Compare with computed values
-    biorbd::utils::Matrix jaco(muscle.position().jacobian());
+    utils::Matrix jaco(muscle.position().jacobian());
     for (unsigned int i=0; i<jaco.rows(); ++i) {
         for (unsigned int j=0; j<jaco.cols(); ++j) {
             SCALAR_TO_DOUBLE(val, jaco(i, j));
@@ -2261,13 +2263,13 @@ TEST(MuscleJacobian, jacobian)
 
 TEST(MuscleJacobian, jacobianLength)
 {
-    biorbd::Model model(modelPathForMuscleJacobian);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    Model model(modelPathForMuscleJacobian);
+    rigidbody::GeneralizedCoordinates Q(model);
     Q = Q.setOnes()/10;
     model.updateMuscles(Q, true);
 
     unsigned int nRows(model.nbMuscleTotal());
-    biorbd::utils::Matrix jacoRef(nRows, model.nbQ());
+    utils::Matrix jacoRef(nRows, model.nbQ());
     // Here we provide emperical values that we have confidence in
     jacoRef(0, 0) = 0.037620360527045288;
     jacoRef(0, 1) = 0.022230374109936522;
@@ -2283,7 +2285,7 @@ TEST(MuscleJacobian, jacobianLength)
     jacoRef(5, 1) = 0.00064415763125857495;
 
     // Compare with computed values
-    biorbd::utils::Matrix jaco(model.musclesLengthJacobian(Q));
+    utils::Matrix jaco(model.musclesLengthJacobian(Q));
     for (unsigned int i=0; i<jaco.rows(); ++i) {
         for (unsigned int j=0; j<jaco.cols(); ++j) {
             SCALAR_TO_DOUBLE(val, jaco(i, j));
@@ -2322,23 +2324,23 @@ TEST(MuscleJacobian, jacobianLength)
 TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers)
 {
     // Prepare the model
-    biorbd::Model model(modelPathForXiaDerivativeTest);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity QDot(model);
+    Model model(modelPathForXiaDerivativeTest);
+    rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedVelocity QDot(model);
     Q.setZero();
     QDot.setZero();
     model.updateMuscles(Q, QDot, true);
 
     {
-        biorbd::muscles::HillThelenTypeFatigable muscle(model.muscleGroup(
+        muscles::HillThelenTypeFatigable muscle(model.muscleGroup(
                     muscleGroupForXiaDerivativeTest).muscle(
                     muscleForXiaDerivativeTest));
-        biorbd::muscles::FatigueDynamicState& fatigueModel(
-            dynamic_cast<biorbd::muscles::FatigueDynamicState&>
+        muscles::FatigueDynamicState& fatigueModel(
+            dynamic_cast<muscles::FatigueDynamicState&>
             (muscle.fatigueState()));
         // Sanity check for the fatigue model
         EXPECT_EQ(fatigueModel.getType(),
-                  biorbd::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
+                  muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
         // Initial value sanity check
         {
@@ -2351,7 +2353,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers)
         }
 
         // Apply the derivative
-        biorbd::muscles::StateDynamics emg(0,
+        muscles::StateDynamics emg(0,
                                            activationEmgForXiaDerivativeTest); // Set target
         fatigueModel.setState(currentActiveFibersForXiaDerivativeTest,
                               currentFatiguedFibersForXiaDerivativeTest,
@@ -2371,11 +2373,11 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers)
 
     // Values should be changed in the model itself
     {
-        biorbd::muscles::HillThelenTypeFatigable muscle(model.muscleGroup(
+        muscles::HillThelenTypeFatigable muscle(model.muscleGroup(
                     muscleGroupForXiaDerivativeTest).muscle(
                     muscleForXiaDerivativeTest));
-        biorbd::muscles::FatigueDynamicState& fatigueModel(
-            dynamic_cast<biorbd::muscles::FatigueDynamicState&>
+        muscles::FatigueDynamicState& fatigueModel(
+            dynamic_cast<muscles::FatigueDynamicState&>
             (muscle.fatigueState()));
 
         // Check the values
@@ -2393,20 +2395,20 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers)
 TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface)
 {
     // Prepare the model
-    biorbd::Model model(modelPathForXiaDerivativeTest);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity QDot(model);
+    Model model(modelPathForXiaDerivativeTest);
+    rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedVelocity QDot(model);
     Q.setZero();
     QDot.setZero();
     model.updateMuscles(Q, QDot, true);
 
     {
-        biorbd::muscles::HillThelenTypeFatigable muscle(model.muscleGroup(
+        muscles::HillThelenTypeFatigable muscle(model.muscleGroup(
                     muscleGroupForXiaDerivativeTest).muscle(
                     muscleForXiaDerivativeTest));
 
         // Apply the derivative
-        biorbd::muscles::StateDynamics emg(0,
+        muscles::StateDynamics emg(0,
                                            activationEmgForXiaDerivativeTest); // Set target
         muscle.setFatigueState(currentActiveFibersForXiaDerivativeTest,
                                currentFatiguedFibersForXiaDerivativeTest,
@@ -2417,9 +2419,9 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface)
 
     // Values should be changed in the model itself
     {
-        biorbd::muscles::HillThelenTypeFatigable muscle(model.muscleGroup(0).muscle(0));
-        biorbd::muscles::FatigueDynamicState& fatigueModel(
-            dynamic_cast<biorbd::muscles::FatigueDynamicState&>
+        muscles::HillThelenTypeFatigable muscle(model.muscleGroup(0).muscle(0));
+        muscles::FatigueDynamicState& fatigueModel(
+            dynamic_cast<muscles::FatigueDynamicState&>
             (muscle.fatigueState()));
 
         // Check the values
@@ -2437,23 +2439,23 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface)
 TEST(MuscleFatigue, FatigueXiaDerivativeShallowViaCopy)
 {
     // Prepare the model
-    biorbd::Model model(modelPathForXiaDerivativeTest);
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity QDot(model);
+    Model model(modelPathForXiaDerivativeTest);
+    rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedVelocity QDot(model);
     Q.setZero();
     QDot.setZero();
     model.updateMuscles(Q, QDot, true);
 
     {
-        biorbd::muscles::HillThelenTypeFatigable muscle(
+        muscles::HillThelenTypeFatigable muscle(
             model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(
                 muscleForXiaDerivativeTest));
-        biorbd::muscles::FatigueDynamicStateXia fatigueModel(
-            dynamic_cast<biorbd::muscles::FatigueDynamicStateXia&>
+        muscles::FatigueDynamicStateXia fatigueModel(
+            dynamic_cast<muscles::FatigueDynamicStateXia&>
             (muscle.fatigueState()));
         // Sanity check for the fatigue model
         EXPECT_EQ(fatigueModel.getType(),
-                  biorbd::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
+                  muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
         // Initial value sanity check
         {
@@ -2466,7 +2468,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeShallowViaCopy)
         }
 
         // Apply the derivative
-        biorbd::muscles::StateDynamics emg(0,
+        muscles::StateDynamics emg(0,
                                            activationEmgForXiaDerivativeTest); // Set target
         fatigueModel.setState(currentActiveFibersForXiaDerivativeTest,
                               currentFatiguedFibersForXiaDerivativeTest,
@@ -2486,11 +2488,11 @@ TEST(MuscleFatigue, FatigueXiaDerivativeShallowViaCopy)
 
     // Values should be changed in the model itself since everything is shallowcopied
     {
-        biorbd::muscles::HillThelenTypeFatigable muscle(model.muscleGroup(
+        muscles::HillThelenTypeFatigable muscle(model.muscleGroup(
                     muscleGroupForXiaDerivativeTest).muscle(
                     muscleForXiaDerivativeTest));
-        biorbd::muscles::FatigueDynamicState& fatigueModel(
-            dynamic_cast<biorbd::muscles::FatigueDynamicState&>
+        muscles::FatigueDynamicState& fatigueModel(
+            dynamic_cast<muscles::FatigueDynamicState&>
             (muscle.fatigueState()));
 
         // Check the values
@@ -2508,16 +2510,16 @@ TEST(MuscleFatigue, FatigueXiaDerivativeShallowViaCopy)
 TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest)
 {
     // Prepare the model
-    biorbd::Model model(modelPathForXiaDerivativeTest);
-    biorbd::muscles::HillThelenTypeFatigable muscle(
+    Model model(modelPathForXiaDerivativeTest);
+    muscles::HillThelenTypeFatigable muscle(
         model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(
             muscleForXiaDerivativeTest));
-    biorbd::muscles::FatigueDynamicStateXia fatigueModel(
-        dynamic_cast<biorbd::muscles::FatigueDynamicStateXia&>
+    muscles::FatigueDynamicStateXia fatigueModel(
+        dynamic_cast<muscles::FatigueDynamicStateXia&>
         (muscle.fatigueState()));
     // Sanity check for the fatigue model
     EXPECT_EQ(fatigueModel.getType(),
-              biorbd::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
+              muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
     // Teast limit active quantity
     {
@@ -2598,11 +2600,11 @@ TEST(StaticOptim, OneFrameNoActivations)
     std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
 
 #else
-    biorbd::Model model(modelPathForMuscleForce);
+    Model model(modelPathForMuscleForce);
 
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
-    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
+    rigidbody::GeneralizedTorque Tau(model);
     for (unsigned int i=0; i<Q.size(); ++i) {
         Q[i] = static_cast<double>(i) * 1.1;
         Qdot[i] = static_cast<double>(i) * 1.1;
@@ -2610,7 +2612,7 @@ TEST(StaticOptim, OneFrameNoActivations)
     }
 
     // Proceed with the static optimization
-    auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau);
+    auto optim = muscles::StaticOptimization(model, Q, Qdot, Tau);
     optim.run();
     auto muscleActivations = optim.finalSolution()[0];
 
@@ -2631,11 +2633,11 @@ TEST(StaticOptim, OneFrameOneActivationDouble)
     std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
 
 #else
-    biorbd::Model model(modelPathForMuscleForce);
+    Model model(modelPathForMuscleForce);
 
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
-    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
+    rigidbody::GeneralizedTorque Tau(model);
     for (unsigned int i=0; i<Q.size(); ++i) {
         Q[i] = static_cast<double>(i) * 1.1;
         Qdot[i] = static_cast<double>(i) * 1.1;
@@ -2644,7 +2646,7 @@ TEST(StaticOptim, OneFrameOneActivationDouble)
 
     // Proceed with the static optimization
     double initialActivationGuess = 0.5;
-    auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau,
+    auto optim = muscles::StaticOptimization(model, Q, Qdot, Tau,
                  initialActivationGuess);
     optim.run();
     auto muscleActivations = optim.finalSolution()[0];
@@ -2666,11 +2668,11 @@ TEST(StaticOptim, OneFrameOneActivationVector)
     std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
 
 #else
-    biorbd::Model model(modelPathForMuscleForce);
+    Model model(modelPathForMuscleForce);
 
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
-    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
+    rigidbody::GeneralizedTorque Tau(model);
     for (unsigned int i=0; i<Q.size(); ++i) {
         Q[i] = static_cast<double>(i) * 1.1;
         Qdot[i] = static_cast<double>(i) * 1.1;
@@ -2678,11 +2680,11 @@ TEST(StaticOptim, OneFrameOneActivationVector)
     }
 
     // Proceed with the static optimization
-    biorbd::utils::Vector initialActivationGuess(model.nbMuscles());
+    utils::Vector initialActivationGuess(model.nbMuscles());
     for (unsigned int i=0; i<model.nbMuscles(); ++i) {
         initialActivationGuess[i] = 0.5;
     }
-    auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau,
+    auto optim = muscles::StaticOptimization(model, Q, Qdot, Tau,
                  initialActivationGuess);
     optim.run();
     auto muscleActivations = optim.finalSolution()[0];
@@ -2704,19 +2706,19 @@ TEST(StaticOptim, MultiFrameNoActivation)
     std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
 
 #else
-    biorbd::Model model(modelPathForMuscleForce);
+    Model model(modelPathForMuscleForce);
 
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
-    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
+    rigidbody::GeneralizedTorque Tau(model);
     for (unsigned int i=0; i<Q.size(); ++i) {
         Q[i] = static_cast<double>(i) * 1.1;
         Qdot[i] = static_cast<double>(i) * 1.1;
         Tau[i] = static_cast<double>(i) * 1.1;
     }
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allQ;
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allQdot;
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allTau;
+    std::vector<rigidbody::GeneralizedCoordinates> allQ;
+    std::vector<rigidbody::GeneralizedCoordinates> allQdot;
+    std::vector<rigidbody::GeneralizedCoordinates> allTau;
     allQ.push_back(Q);
     allQ.push_back(Q);
     allQ.push_back(Q);
@@ -2728,7 +2730,7 @@ TEST(StaticOptim, MultiFrameNoActivation)
     allTau.push_back(Tau);
 
     // Proceed with the static optimization
-    auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau);
+    auto optim = muscles::StaticOptimization(model, Q, Qdot, Tau);
     optim.run();
     auto allMuscleActivations = optim.finalSolution();
 
@@ -2751,19 +2753,19 @@ TEST(StaticOptim, MultiFrameActivationDouble)
     std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
 
 #else
-    biorbd::Model model(modelPathForMuscleForce);
+    Model model(modelPathForMuscleForce);
 
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
-    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
+    rigidbody::GeneralizedTorque Tau(model);
     for (unsigned int i=0; i<Q.size(); ++i) {
         Q[i] = static_cast<double>(i) * 1.1;
         Qdot[i] = static_cast<double>(i) * 1.1;
         Tau[i] = static_cast<double>(i) * 1.1;
     }
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allQ;
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allQdot;
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allTau;
+    std::vector<rigidbody::GeneralizedCoordinates> allQ;
+    std::vector<rigidbody::GeneralizedCoordinates> allQdot;
+    std::vector<rigidbody::GeneralizedCoordinates> allTau;
     allQ.push_back(Q);
     allQ.push_back(Q);
     allQ.push_back(Q);
@@ -2776,7 +2778,7 @@ TEST(StaticOptim, MultiFrameActivationDouble)
 
     // Proceed with the static optimization
     double initialActivationGuess = 0.5;
-    auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau,
+    auto optim = muscles::StaticOptimization(model, Q, Qdot, Tau,
                  initialActivationGuess);
     optim.run();
     auto allMuscleActivations = optim.finalSolution();
@@ -2800,19 +2802,19 @@ TEST(StaticOptim, MultiFrameNoActivationVector)
     std::cout << "StaticOptim is not tested for CasADi backend" << std::endl;
 
 #else
-    biorbd::Model model(modelPathForMuscleForce);
+    Model model(modelPathForMuscleForce);
 
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
-    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
+    rigidbody::GeneralizedTorque Tau(model);
     for (unsigned int i=0; i<Q.size(); ++i) {
         Q[i] = static_cast<double>(i) * 1.1;
         Qdot[i] = static_cast<double>(i) * 1.1;
         Tau[i] = static_cast<double>(i) * 1.1;
     }
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allQ;
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allQdot;
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> allTau;
+    std::vector<rigidbody::GeneralizedCoordinates> allQ;
+    std::vector<rigidbody::GeneralizedCoordinates> allQdot;
+    std::vector<rigidbody::GeneralizedCoordinates> allTau;
     allQ.push_back(Q);
     allQ.push_back(Q);
     allQ.push_back(Q);
@@ -2824,11 +2826,11 @@ TEST(StaticOptim, MultiFrameNoActivationVector)
     allTau.push_back(Tau);
 
     // Proceed with the static optimization
-    biorbd::utils::Vector initialActivationGuess(model.nbMuscles());
+    utils::Vector initialActivationGuess(model.nbMuscles());
     for (unsigned int i=0; i<model.nbMuscles(); ++i) {
         initialActivationGuess[i] = 0.5;
     }
-    auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau,
+    auto optim = muscles::StaticOptimization(model, Q, Qdot, Tau,
                  initialActivationGuess);
     optim.run();
     auto allMuscleActivations = optim.finalSolution();

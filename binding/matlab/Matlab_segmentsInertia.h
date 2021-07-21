@@ -16,11 +16,11 @@ void Matlab_segmentsInertia( int, mxArray *plhs[],
                                "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2,
+    BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2,
             nQ).begin();
 
     // Update sur la cinématique (placer les segments)
@@ -53,7 +53,7 @@ void Matlab_segmentsInertiaLocal( int, mxArray *plhs[],
                                "2 arguments are required (+1 optional) where the 2nd is the handler on the model and optional third is the segment index");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nBones = model->nbSegment(); // Get the number of DoF
 
 

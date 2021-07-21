@@ -3,44 +3,46 @@
 
 #include "RigidBody/Joints.h"
 
-biorbd::rigidbody::GeneralizedAcceleration::GeneralizedAcceleration()
+using namespace BIORBD_NAMESPACE;
+
+rigidbody::GeneralizedAcceleration::GeneralizedAcceleration()
 {
 
 }
 
-biorbd::rigidbody::GeneralizedAcceleration::GeneralizedAcceleration(
+rigidbody::GeneralizedAcceleration::GeneralizedAcceleration(
     unsigned int nQddot) :
-    biorbd::utils::Vector(nQddot)
+    utils::Vector(nQddot)
 {
 
 }
 
-biorbd::rigidbody::GeneralizedAcceleration::GeneralizedAcceleration(
-    const biorbd::rigidbody::Joints &j) :
-    biorbd::utils::Vector(j.nbQ())
+rigidbody::GeneralizedAcceleration::GeneralizedAcceleration(
+    const rigidbody::Joints &j) :
+    utils::Vector(j.nbQ())
 {
 
 }
 
-biorbd::rigidbody::GeneralizedAcceleration::GeneralizedAcceleration(
-    const biorbd::rigidbody::GeneralizedAcceleration &Q) :
-    biorbd::utils::Vector(Q)
+rigidbody::GeneralizedAcceleration::GeneralizedAcceleration(
+    const rigidbody::GeneralizedAcceleration &Q) :
+    utils::Vector(Q)
 {
 
 }
 
-biorbd::rigidbody::GeneralizedAcceleration::GeneralizedAcceleration(
+rigidbody::GeneralizedAcceleration::GeneralizedAcceleration(
     const RigidBodyDynamics::Math::VectorNd &v) :
-    biorbd::utils::Vector (v)
+    utils::Vector (v)
 {
 
 }
 
 #ifdef BIORBD_USE_CASADI_MATH
 
-biorbd::rigidbody::GeneralizedAcceleration::GeneralizedAcceleration(
+rigidbody::GeneralizedAcceleration::GeneralizedAcceleration(
     const casadi::MX &v) :
-    biorbd::utils::Vector(v)
+    utils::Vector(v)
 {
 
 }
@@ -48,29 +50,29 @@ biorbd::rigidbody::GeneralizedAcceleration::GeneralizedAcceleration(
 #endif
 
 
-biorbd::rigidbody::GeneralizedAcceleration::~GeneralizedAcceleration()
+rigidbody::GeneralizedAcceleration::~GeneralizedAcceleration()
 {
 
 }
 
-void biorbd::rigidbody::GeneralizedAcceleration::operator=(
-    const biorbd::utils::Vector &other)
+void rigidbody::GeneralizedAcceleration::operator=(
+    const utils::Vector &other)
 {
-    this->biorbd::utils::Vector::operator=(other);
+    this->utils::Vector::operator=(other);
 }
 
 #ifdef BIORBD_USE_CASADI_MATH
 
-void biorbd::rigidbody::GeneralizedAcceleration::operator=(
+void rigidbody::GeneralizedAcceleration::operator=(
     const RBDLCasadiMath::MX_Xd_SubMatrix &other)
 {
-    this->biorbd::utils::Vector::operator=(other);
+    this->utils::Vector::operator=(other);
 }
 
-void biorbd::rigidbody::GeneralizedAcceleration::operator=(
+void rigidbody::GeneralizedAcceleration::operator=(
     const casadi::MX &other)
 {
-    this->biorbd::utils::Vector::operator=(other);
+    this->utils::Vector::operator=(other);
 }
 
 #endif

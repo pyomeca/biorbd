@@ -2,7 +2,7 @@
 #define BIORBD_UTILS_WRITER_H
 
 #include "biorbdConfig.h"
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 class Model;
 
@@ -24,8 +24,8 @@ public:
     /// \param pathToWrite The path to write
     ///
     static void writeModel(
-        biorbd::Model &model,
-        const biorbd::utils::Path& pathToWrite);
+        Model &model,
+        const utils::Path& pathToWrite);
 #endif
 };
 

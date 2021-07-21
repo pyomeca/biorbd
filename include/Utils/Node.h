@@ -5,7 +5,7 @@
 #include "biorbdConfig.h"
 #include "Utils/UtilsEnum.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -27,14 +27,14 @@ public:
     /// \param other The other node
     ///
     Node(
-        const biorbd::utils::Node& other);
+        const Node& other);
 
     ///
     /// \brief Construct Node
     /// \param name Name of the node
     ///
     Node(
-        const biorbd::utils::String &name);
+        const String &name);
 
     ///
     /// \brief Construct Node
@@ -42,8 +42,8 @@ public:
     /// \param parentName Name of the parent of the node
     ///
     Node(
-        const biorbd::utils::String &name,
-        const biorbd::utils::String &parentName);
+        const String &name,
+        const String &parentName);
 
     ///
     /// \brief Destroy class properly
@@ -54,35 +54,35 @@ public:
     /// \brief Deep copy of the node in another node
     /// \param other The node to copy
     ///
-    void DeepCopy(const biorbd::utils::Node& other);
+    void DeepCopy(const Node& other);
 
     ///
     /// \brief Set the name of the node
     /// \param name Name to set
     ///
-    void setName(const biorbd::utils::String &name);
+    void setName(const String &name);
 
     ///
     /// \brief Return the name of the node
     ///
-    const biorbd::utils::String& name() const;
+    const String& name() const;
 
     ///
     /// \brief Return the parent name of the node
     ///
-    const biorbd::utils::String& parent() const;
+    const String& parent() const;
 
     ///
     /// \brief Set the parent name of the node
     /// \param name The name of the parent
     ///
     void setParent(
-        const biorbd::utils::String &name);
+        const String &name);
 
     ///
     /// \brief Return the type of node
     ///
-    biorbd::utils::NODE_TYPE typeOfNode() const;
+    NODE_TYPE typeOfNode() const;
 
 protected:
     ///
@@ -90,10 +90,10 @@ protected:
     ///
     virtual void setType() = 0;
 
-    std::shared_ptr<biorbd::utils::String> m_name; ///< The name of the node
-    std::shared_ptr<biorbd::utils::String>
+    std::shared_ptr<String> m_name; ///< The name of the node
+    std::shared_ptr<String>
     m_parentName; ///< The parent name of the node
-    std::shared_ptr<biorbd::utils::NODE_TYPE> m_typeOfNode;///< The type of the node
+    std::shared_ptr<NODE_TYPE> m_typeOfNode;///< The type of the node
 
 };
 

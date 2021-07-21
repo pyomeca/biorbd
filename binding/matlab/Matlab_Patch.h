@@ -15,7 +15,7 @@ void Matlab_Patch( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 2, 3,
                                "3 arguments are required (+1 optional) where the 2nd is the handler on the model and the optional 4th is a specific segment index");
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // Recevoir l'index (si envoye)
     int idx(-1);
@@ -26,7 +26,7 @@ void Matlab_Patch( int, mxArray *plhs[],
     // Output
     if ( idx==-1) { // Si on a demande tous les segments
         // Trouver ou sont les marqueurs
-        std::vector<std::vector<biorbd::rigidbody::MeshFace>> allMesh(
+        std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::MeshFace>> allMesh(
                     model->meshFaces());
 
         // Create a matrix for the return argument
@@ -38,7 +38,7 @@ void Matlab_Patch( int, mxArray *plhs[],
             // Remplir le output
             for (unsigned int i=0; allMesh[i_bone].size(); ++i) {
                 Mesh[i*3] = allMesh[i_bone][i](0)
-                            +1; // +1 Car l'indice dans biorbd::rigidbody::s est par rapport à 0
+                            +1; // +1 Car l'indice dans BIORBD_NAMESPACE::rigidbody::s est par rapport à 0
                 Mesh[i*3+1] = allMesh[i_bone][i](1)+1;
                 Mesh[i*3+2] = allMesh[i_bone][i](2)+1;
             }
@@ -47,7 +47,7 @@ void Matlab_Patch( int, mxArray *plhs[],
         return;
 
     } else { // Si on a demande un segment precis
-        std::vector<biorbd::rigidbody::MeshFace> Mesh_tp(model->meshFaces(
+        std::vector<BIORBD_NAMESPACE::rigidbody::MeshFace> Mesh_tp(model->meshFaces(
                     static_cast<unsigned int>(idx)));
 
         // Create a matrix for the return argument
@@ -55,10 +55,10 @@ void Matlab_Patch( int, mxArray *plhs[],
         double *Mesh = mxGetPr(plhs[0]);
 
         // Remplir le output
-        std::vector<biorbd::rigidbody::MeshFace>::iterator it=Mesh_tp.begin();
+        std::vector<BIORBD_NAMESPACE::rigidbody::MeshFace>::iterator it=Mesh_tp.begin();
         for (unsigned int i=0; (it+i)!=Mesh_tp.end(); ++i) {
             Mesh[i*3] = (*(it+i))(0)
-                        +1; // +1 Car l'indice dans biorbd::rigidbody::s est par rapport à 0
+                        +1; // +1 Car l'indice dans BIORBD_NAMESPACE::rigidbody::s est par rapport à 0
             Mesh[i*3+1] = (*(it+i))(1)+1;
             Mesh[i*3+2] = (*(it+i))(2)+1;
         }

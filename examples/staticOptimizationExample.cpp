@@ -14,23 +14,26 @@
 ///
 /// Please note that this example will work only with the Eigen backend
 ///
+
+using namespace BIORBD_NAMESPACE;
+
 int main()
 {
     // Load a predefined model
-    biorbd::Model model("arm26.bioMod");
+    Model model("arm26.bioMod");
 
     // Choose a position/velocity/torque to compute muscle activations from
     // If multiple frames, one can use std::vector of corresponding Generalized
     // to run them all.
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
-    biorbd::rigidbody::GeneralizedVelocity Qdot(model);
-    biorbd::rigidbody::GeneralizedTorque Tau(model);
+    rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedVelocity Qdot(model);
+    rigidbody::GeneralizedTorque Tau(model);
     Q.setZero();
     Qdot.setZero();
     Tau.setZero();
 
     // Proceed with the static optimization
-    auto optim = biorbd::muscles::StaticOptimization(model, Q, Qdot, Tau);
+    auto optim = muscles::StaticOptimization(model, Q, Qdot, Tau);
     optim.run();
     auto muscleActivationsPerFrame = optim.finalSolution();
 

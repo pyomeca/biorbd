@@ -5,9 +5,8 @@
 #include <memory>
 #include "biorbdConfig.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
-
 namespace utils
 {
 class String;
@@ -35,7 +34,7 @@ public:
     /// \param other The other RTs set
     ///
     RotoTransNodes(
-        const biorbd::rigidbody::RotoTransNodes& other);
+        const RotoTransNodes& other);
 
     ///
     /// \brief Destroy the class properly
@@ -46,14 +45,14 @@ public:
     /// \brief Deep copy of the RTs data
     /// \return A copy of the RTs data
     ///
-    biorbd::rigidbody::RotoTransNodes DeepCopy() const;
+    RotoTransNodes DeepCopy() const;
 
     ///
     /// \brief Deep copy the RTs data
     /// \param other The RT data to copy
     ///
     void DeepCopy(
-        const biorbd::rigidbody::RotoTransNodes& other);
+        const RotoTransNodes& other);
 
     ///
     /// \brief Add a new RT to the set
@@ -65,7 +64,7 @@ public:
     /// \param RotoTrans The RotaTrans of the RT
     ///
     void addRT(
-        const biorbd::utils::RotoTransNode &RotoTrans);
+        const utils::RotoTransNode &RotoTrans);
 
     ///
     /// \brief Return the number of RTs in the set
@@ -83,28 +82,28 @@ public:
     /// \brief Return the names of the RTs
     /// \return The names of the RTs
     ///
-    std::vector<biorbd::utils::String> RTsNames();
+    std::vector<utils::String> RTsNames();
 
     ///
     /// \brief Return all the RTs in the local reference of the segment
     /// \return All the RTs in local reference frame
     ///
-    const std::vector<biorbd::utils::RotoTransNode>& RTs() const;
+    const std::vector<utils::RotoTransNode>& RTs() const;
 
     ///
     /// \brief Return all the RTs of a segment
     /// \param segmentName The name of the segment to return the RTs
     /// \return All the RTs of attached to the segment
     ///
-    std::vector<biorbd::utils::RotoTransNode> RTs(
-        const biorbd::utils::String& segmentName);
+    std::vector<utils::RotoTransNode> RTs(
+        const utils::String& segmentName);
 
     ///
     /// \brief Return the RTs of a specified index
     /// \param idx The index of the RT in the set
     /// \return RT of idx i
     ///
-    const biorbd::utils::RotoTransNode& RT(
+    const utils::RotoTransNode& RT(
         unsigned int idx);
 
     ///
@@ -113,8 +112,8 @@ public:
     /// \param updateKin If the model should be updated
     /// \return All the RTs at the position given by Q
     ///
-    std::vector<biorbd::utils::RotoTransNode> RTs(
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+    std::vector<utils::RotoTransNode> RTs(
+        const GeneralizedCoordinates& Q,
         bool updateKin = true);
 
     ///
@@ -124,8 +123,8 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The RT of index idx at the position given by Q
     ///
-    biorbd::utils::RotoTransNode RT(
-        const biorbd::rigidbody::GeneralizedCoordinates&Q,
+    utils::RotoTransNode RT(
+        const GeneralizedCoordinates&Q,
         unsigned int  idx,
         bool updateKin = true);
 
@@ -136,8 +135,8 @@ public:
     /// \param updateKin If the model should be updated
     /// \return All the RTs on the segment of index idx
     ///
-    std::vector<biorbd::utils::RotoTransNode> segmentRTs(
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+    std::vector<utils::RotoTransNode> segmentRTs(
+        const GeneralizedCoordinates& Q,
         unsigned int  idx,
         bool updateKin = true);
 
@@ -147,12 +146,12 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The jacobien of the RTs
     ///
-    std::vector<biorbd::utils::Matrix> RTsJacobian(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    std::vector<utils::Matrix> RTsJacobian(
+        const GeneralizedCoordinates &Q,
         bool updateKin = true);
 
 protected:
-    std::shared_ptr<std::vector<biorbd::utils::RotoTransNode>>
+    std::shared_ptr<std::vector<utils::RotoTransNode>>
             m_RTs; ///< All the RTs
 
 };

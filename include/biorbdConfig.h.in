@@ -22,6 +22,7 @@
 // Choice of linear algebra backend
 #cmakedefine BIORBD_USE_EIGEN3_MATH
 #cmakedefine BIORBD_USE_CASADI_MATH
+#define BIORBD_NAMESPACE Biorbd@MATH_LIBRARY_BACKEND@
 
 namespace biorbd {
 
@@ -76,19 +77,19 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 #ifdef BIORBD_USE_CASADI_MATH
 #define DECLARE_GENERALIZED_COORDINATES(varname, model) \
     casadi::DM varname(model.nbQ(), 1);\
-    biorbd::rigidbody::GeneralizedCoordinates varname##_sym(casadi::MX::sym(#varname, model.nbQ(), 1));
+    BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates varname##_sym(casadi::MX::sym(#varname, model.nbQ(), 1));
 #define DECLARE_GENERALIZED_VELOCITY(varname, model) \
     casadi::DM varname(model.nbQdot(), 1);\
-    biorbd::rigidbody::GeneralizedVelocity varname##_sym(casadi::MX::sym(#varname, model.nbQdot(), 1));
+    BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity varname##_sym(casadi::MX::sym(#varname, model.nbQdot(), 1));
 #define DECLARE_GENERALIZED_ACCELERATION(varname, model) \
     casadi::DM varname(model.nbQddot(), 1);\
-    biorbd::rigidbody::GeneralizedAcceleration varname##_sym(casadi::MX::sym(#varname, model.nbQddot(), 1));
+    BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration varname##_sym(casadi::MX::sym(#varname, model.nbQddot(), 1));
 #define DECLARE_GENERALIZED_TORQUE(varname, model) \
     casadi::DM varname(model.nbGeneralizedTorque(), 1);\
-    biorbd::rigidbody::GeneralizedTorque varname##_sym(casadi::MX::sym(#varname, model.nbGeneralizedTorque(), 1));
+    BIORBD_NAMESPACE::rigidbody::GeneralizedTorque varname##_sym(casadi::MX::sym(#varname, model.nbGeneralizedTorque(), 1));
 #define DECLARE_VECTOR(varname, nbElements) \
     casadi::DM varname(nbElements, 1);\
-    biorbd::utils::Vector varname##_sym(casadi::MX::sym(#varname, nbElements, 1));
+    BIORBD_NAMESPACE::utils::Vector varname##_sym(casadi::MX::sym(#varname, nbElements, 1));
 
 #define CALL_BIORBD_FUNCTION_1ARG(varname, model, funcname, arg1) \
     casadi::Function func_##funcname(#funcname, {arg1##_sym}, {model.funcname(arg1##_sym)}, {#arg1}, {#funcname});\
@@ -114,15 +115,15 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 
 #else
 #define DECLARE_GENERALIZED_COORDINATES(varname, model) \
-    biorbd::rigidbody::GeneralizedCoordinates varname(model);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates varname(model);
 #define DECLARE_GENERALIZED_VELOCITY(varname, model) \
-    biorbd::rigidbody::GeneralizedVelocity varname(model);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity varname(model);
 #define DECLARE_GENERALIZED_ACCELERATION(varname, model) \
-    biorbd::rigidbody::GeneralizedAcceleration varname(model);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration varname(model);
 #define DECLARE_GENERALIZED_TORQUE(varname, model) \
-    biorbd::rigidbody::GeneralizedTorque varname(model);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedTorque varname(model);
 #define DECLARE_VECTOR(varname, nbElements) \
-    biorbd::utils::Vector varname(nbElements);
+    BIORBD_NAMESPACE::utils::Vector varname(nbElements);
 
 #define CALL_BIORBD_FUNCTION_1ARG(varname, model, funcname, arg1) \
     auto varname = model.funcname(arg1);

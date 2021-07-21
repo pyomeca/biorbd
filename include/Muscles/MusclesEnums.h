@@ -1,7 +1,7 @@
 #ifndef BIORBD_MUSCLES_ENUMS_H
 #define BIORBD_MUSCLES_ENUMS_H
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace muscles
 {
@@ -23,7 +23,7 @@ enum MUSCLE_TYPE {
 /// \param type The type to convert to string
 /// \return The name of the type
 ///
-inline const char* MUSCLE_TYPE_toStr(biorbd::muscles::MUSCLE_TYPE type)
+inline const char* MUSCLE_TYPE_toStr(MUSCLE_TYPE type)
 {
     switch (type) {
     case IDEALIZED_ACTUATOR:
@@ -57,7 +57,7 @@ enum STATE_TYPE {
 /// \param type The type to convert to string
 /// \return The name of the type
 ///
-inline const char* STATE_TYPE_toStr(biorbd::muscles::STATE_TYPE type)
+inline const char* STATE_TYPE_toStr(STATE_TYPE type)
 {
     switch (type) {
     case SIMPLE_STATE:
@@ -76,7 +76,7 @@ enum STATE_FATIGUE_TYPE {
     DYNAMIC_XIA,
     NO_FATIGUE_STATE_TYPE
 };
-inline const char* STATE_FATIGUE_TYPE_toStr(biorbd::muscles::STATE_FATIGUE_TYPE
+inline const char* STATE_FATIGUE_TYPE_toStr(STATE_FATIGUE_TYPE
         type)
 {
     switch (type) {

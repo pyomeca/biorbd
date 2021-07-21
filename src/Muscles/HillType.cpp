@@ -8,126 +8,128 @@
 #include "Muscles/Geometry.h"
 #include "Muscles/State.h"
 
-biorbd::muscles::HillType::HillType() :
-    biorbd::muscles::Muscle(),
-    m_damping(std::make_shared<biorbd::utils::Scalar>()),
-    m_FlCE(std::make_shared<biorbd::utils::Scalar>()),
-    m_FlPE(std::make_shared<biorbd::utils::Scalar>()),
-    m_FvCE(std::make_shared<biorbd::utils::Scalar>()),
-    m_cste_FlCE_1(std::make_shared<biorbd::utils::Scalar>(0.15)),
-    m_cste_FlCE_2(std::make_shared<biorbd::utils::Scalar>(0.45)),
-    m_cste_FvCE_1(std::make_shared<biorbd::utils::Scalar>(1)),
-    m_cste_FvCE_2(std::make_shared<biorbd::utils::Scalar>(-.33/2 * *m_cste_FvCE_1/
+using namespace BIORBD_NAMESPACE;
+
+muscles::HillType::HillType() :
+    muscles::Muscle(),
+    m_damping(std::make_shared<utils::Scalar>()),
+    m_FlCE(std::make_shared<utils::Scalar>()),
+    m_FlPE(std::make_shared<utils::Scalar>()),
+    m_FvCE(std::make_shared<utils::Scalar>()),
+    m_cste_FlCE_1(std::make_shared<utils::Scalar>(0.15)),
+    m_cste_FlCE_2(std::make_shared<utils::Scalar>(0.45)),
+    m_cste_FvCE_1(std::make_shared<utils::Scalar>(1)),
+    m_cste_FvCE_2(std::make_shared<utils::Scalar>(-.33/2 * *m_cste_FvCE_1/
                   (1+*m_cste_FvCE_1))),
-    m_cste_FlPE_1(std::make_shared<biorbd::utils::Scalar>(10.0)),
-    m_cste_FlPE_2(std::make_shared<biorbd::utils::Scalar>(5.0)),
-    m_cste_eccentricForceMultiplier(std::make_shared<biorbd::utils::Scalar>(1.8)),
-    m_cste_damping(std::make_shared<biorbd::utils::Scalar>(0.1)),
-    m_cste_maxShorteningSpeed(std::make_shared<biorbd::utils::Scalar>(10.0))
+    m_cste_FlPE_1(std::make_shared<utils::Scalar>(10.0)),
+    m_cste_FlPE_2(std::make_shared<utils::Scalar>(5.0)),
+    m_cste_eccentricForceMultiplier(std::make_shared<utils::Scalar>(1.8)),
+    m_cste_damping(std::make_shared<utils::Scalar>(0.1)),
+    m_cste_maxShorteningSpeed(std::make_shared<utils::Scalar>(10.0))
 {
     setType();
 }
 
-biorbd::muscles::HillType::HillType(
-    const biorbd::utils::String &name,
-    const biorbd::muscles::Geometry &geometry,
-    const biorbd::muscles::Characteristics &characteristics) :
-    biorbd::muscles::Muscle(name,geometry,characteristics),
-    m_damping(std::make_shared<biorbd::utils::Scalar>()),
-    m_FlCE(std::make_shared<biorbd::utils::Scalar>()),
-    m_FlPE(std::make_shared<biorbd::utils::Scalar>()),
-    m_FvCE(std::make_shared<biorbd::utils::Scalar>()),
-    m_cste_FlCE_1(std::make_shared<biorbd::utils::Scalar>(0.15)),
-    m_cste_FlCE_2(std::make_shared<biorbd::utils::Scalar>(0.45)),
-    m_cste_FvCE_1(std::make_shared<biorbd::utils::Scalar>(1)),
-    m_cste_FvCE_2(std::make_shared<biorbd::utils::Scalar>(-.33/2 * *m_cste_FvCE_1/
+muscles::HillType::HillType(
+    const utils::String &name,
+    const muscles::Geometry &geometry,
+    const muscles::Characteristics &characteristics) :
+    muscles::Muscle(name,geometry,characteristics),
+    m_damping(std::make_shared<utils::Scalar>()),
+    m_FlCE(std::make_shared<utils::Scalar>()),
+    m_FlPE(std::make_shared<utils::Scalar>()),
+    m_FvCE(std::make_shared<utils::Scalar>()),
+    m_cste_FlCE_1(std::make_shared<utils::Scalar>(0.15)),
+    m_cste_FlCE_2(std::make_shared<utils::Scalar>(0.45)),
+    m_cste_FvCE_1(std::make_shared<utils::Scalar>(1)),
+    m_cste_FvCE_2(std::make_shared<utils::Scalar>(-.33/2 * *m_cste_FvCE_1/
                   (1+*m_cste_FvCE_1))),
-    m_cste_FlPE_1(std::make_shared<biorbd::utils::Scalar>(10.0)),
-    m_cste_FlPE_2(std::make_shared<biorbd::utils::Scalar>(5.0)),
-    m_cste_eccentricForceMultiplier(std::make_shared<biorbd::utils::Scalar>(1.8)),
-    m_cste_damping(std::make_shared<biorbd::utils::Scalar>(0.1)),
-    m_cste_maxShorteningSpeed(std::make_shared<biorbd::utils::Scalar>(10.0))
+    m_cste_FlPE_1(std::make_shared<utils::Scalar>(10.0)),
+    m_cste_FlPE_2(std::make_shared<utils::Scalar>(5.0)),
+    m_cste_eccentricForceMultiplier(std::make_shared<utils::Scalar>(1.8)),
+    m_cste_damping(std::make_shared<utils::Scalar>(0.1)),
+    m_cste_maxShorteningSpeed(std::make_shared<utils::Scalar>(10.0))
 {
     setType();
 }
 
-biorbd::muscles::HillType::HillType(
-    const biorbd::utils::String &name,
-    const biorbd::muscles::Geometry &geometry,
-    const biorbd::muscles::Characteristics &characteristics,
-    const biorbd::muscles::State& emg) :
-    biorbd::muscles::Muscle(name,geometry,characteristics, emg),
-    m_damping(std::make_shared<biorbd::utils::Scalar>()),
-    m_FlCE(std::make_shared<biorbd::utils::Scalar>()),
-    m_FlPE(std::make_shared<biorbd::utils::Scalar>()),
-    m_FvCE(std::make_shared<biorbd::utils::Scalar>()),
-    m_cste_FlCE_1(std::make_shared<biorbd::utils::Scalar>(0.15)),
-    m_cste_FlCE_2(std::make_shared<biorbd::utils::Scalar>(0.45)),
-    m_cste_FvCE_1(std::make_shared<biorbd::utils::Scalar>(1)),
-    m_cste_FvCE_2(std::make_shared<biorbd::utils::Scalar>(-.33/2 * *m_cste_FvCE_1/
+muscles::HillType::HillType(
+    const utils::String &name,
+    const muscles::Geometry &geometry,
+    const muscles::Characteristics &characteristics,
+    const muscles::State& emg) :
+    muscles::Muscle(name,geometry,characteristics, emg),
+    m_damping(std::make_shared<utils::Scalar>()),
+    m_FlCE(std::make_shared<utils::Scalar>()),
+    m_FlPE(std::make_shared<utils::Scalar>()),
+    m_FvCE(std::make_shared<utils::Scalar>()),
+    m_cste_FlCE_1(std::make_shared<utils::Scalar>(0.15)),
+    m_cste_FlCE_2(std::make_shared<utils::Scalar>(0.45)),
+    m_cste_FvCE_1(std::make_shared<utils::Scalar>(1)),
+    m_cste_FvCE_2(std::make_shared<utils::Scalar>(-.33/2 * *m_cste_FvCE_1/
                   (1+*m_cste_FvCE_1))),
-    m_cste_FlPE_1(std::make_shared<biorbd::utils::Scalar>(10.0)),
-    m_cste_FlPE_2(std::make_shared<biorbd::utils::Scalar>(5.0)),
-    m_cste_eccentricForceMultiplier(std::make_shared<biorbd::utils::Scalar>(1.8)),
-    m_cste_damping(std::make_shared<biorbd::utils::Scalar>(0.1)),
-    m_cste_maxShorteningSpeed(std::make_shared<biorbd::utils::Scalar>(10.0))
+    m_cste_FlPE_1(std::make_shared<utils::Scalar>(10.0)),
+    m_cste_FlPE_2(std::make_shared<utils::Scalar>(5.0)),
+    m_cste_eccentricForceMultiplier(std::make_shared<utils::Scalar>(1.8)),
+    m_cste_damping(std::make_shared<utils::Scalar>(0.1)),
+    m_cste_maxShorteningSpeed(std::make_shared<utils::Scalar>(10.0))
 {
     setType();
 }
 
-biorbd::muscles::HillType::HillType(
-    const biorbd::utils::String &name,
-    const biorbd::muscles::Geometry &geometry,
-    const biorbd::muscles::Characteristics &characteristics,
-    const biorbd::muscles::PathModifiers &pathModifiers) :
-    biorbd::muscles::Muscle(name,geometry,characteristics,pathModifiers),
-    m_damping(std::make_shared<biorbd::utils::Scalar>()),
-    m_FlCE(std::make_shared<biorbd::utils::Scalar>()),
-    m_FlPE(std::make_shared<biorbd::utils::Scalar>()),
-    m_FvCE(std::make_shared<biorbd::utils::Scalar>()),
-    m_cste_FlCE_1(std::make_shared<biorbd::utils::Scalar>(0.15)),
-    m_cste_FlCE_2(std::make_shared<biorbd::utils::Scalar>(0.45)),
-    m_cste_FvCE_1(std::make_shared<biorbd::utils::Scalar>(1)),
-    m_cste_FvCE_2(std::make_shared<biorbd::utils::Scalar>(-.33/2 * *m_cste_FvCE_1/
+muscles::HillType::HillType(
+    const utils::String &name,
+    const muscles::Geometry &geometry,
+    const muscles::Characteristics &characteristics,
+    const muscles::PathModifiers &pathModifiers) :
+    muscles::Muscle(name,geometry,characteristics,pathModifiers),
+    m_damping(std::make_shared<utils::Scalar>()),
+    m_FlCE(std::make_shared<utils::Scalar>()),
+    m_FlPE(std::make_shared<utils::Scalar>()),
+    m_FvCE(std::make_shared<utils::Scalar>()),
+    m_cste_FlCE_1(std::make_shared<utils::Scalar>(0.15)),
+    m_cste_FlCE_2(std::make_shared<utils::Scalar>(0.45)),
+    m_cste_FvCE_1(std::make_shared<utils::Scalar>(1)),
+    m_cste_FvCE_2(std::make_shared<utils::Scalar>(-.33/2 * *m_cste_FvCE_1/
                   (1+*m_cste_FvCE_1))),
-    m_cste_FlPE_1(std::make_shared<biorbd::utils::Scalar>(10.0)),
-    m_cste_FlPE_2(std::make_shared<biorbd::utils::Scalar>(5.0)),
-    m_cste_eccentricForceMultiplier(std::make_shared<biorbd::utils::Scalar>(1.8)),
-    m_cste_damping(std::make_shared<biorbd::utils::Scalar>(0.1)),
-    m_cste_maxShorteningSpeed(std::make_shared<biorbd::utils::Scalar>(10.0))
+    m_cste_FlPE_1(std::make_shared<utils::Scalar>(10.0)),
+    m_cste_FlPE_2(std::make_shared<utils::Scalar>(5.0)),
+    m_cste_eccentricForceMultiplier(std::make_shared<utils::Scalar>(1.8)),
+    m_cste_damping(std::make_shared<utils::Scalar>(0.1)),
+    m_cste_maxShorteningSpeed(std::make_shared<utils::Scalar>(10.0))
 {
     setType();
 }
-biorbd::muscles::HillType::HillType(
-    const biorbd::utils::String& name,
-    const biorbd::muscles::Geometry& geometry,
-    const biorbd::muscles::Characteristics& characteristics,
-    const biorbd::muscles::PathModifiers &pathModifiers,
-    const biorbd::muscles::State& state) :
-    biorbd::muscles::Muscle(name,geometry,characteristics,pathModifiers,state),
-    m_damping(std::make_shared<biorbd::utils::Scalar>()),
-    m_FlCE(std::make_shared<biorbd::utils::Scalar>()),
-    m_FlPE(std::make_shared<biorbd::utils::Scalar>()),
-    m_FvCE(std::make_shared<biorbd::utils::Scalar>()),
-    m_cste_FlCE_1(std::make_shared<biorbd::utils::Scalar>(0.15)),
-    m_cste_FlCE_2(std::make_shared<biorbd::utils::Scalar>(0.45)),
-    m_cste_FvCE_1(std::make_shared<biorbd::utils::Scalar>(1)),
-    m_cste_FvCE_2(std::make_shared<biorbd::utils::Scalar>(-.33/2 * *m_cste_FvCE_1/
+muscles::HillType::HillType(
+    const utils::String& name,
+    const muscles::Geometry& geometry,
+    const muscles::Characteristics& characteristics,
+    const muscles::PathModifiers &pathModifiers,
+    const muscles::State& state) :
+    muscles::Muscle(name,geometry,characteristics,pathModifiers,state),
+    m_damping(std::make_shared<utils::Scalar>()),
+    m_FlCE(std::make_shared<utils::Scalar>()),
+    m_FlPE(std::make_shared<utils::Scalar>()),
+    m_FvCE(std::make_shared<utils::Scalar>()),
+    m_cste_FlCE_1(std::make_shared<utils::Scalar>(0.15)),
+    m_cste_FlCE_2(std::make_shared<utils::Scalar>(0.45)),
+    m_cste_FvCE_1(std::make_shared<utils::Scalar>(1)),
+    m_cste_FvCE_2(std::make_shared<utils::Scalar>(-.33/2 * *m_cste_FvCE_1/
                   (1+*m_cste_FvCE_1))),
-    m_cste_FlPE_1(std::make_shared<biorbd::utils::Scalar>(10.0)),
-    m_cste_FlPE_2(std::make_shared<biorbd::utils::Scalar>(5.0)),
-    m_cste_eccentricForceMultiplier(std::make_shared<biorbd::utils::Scalar>(1.8)),
-    m_cste_damping(std::make_shared<biorbd::utils::Scalar>(0.1)),
-    m_cste_maxShorteningSpeed(std::make_shared<biorbd::utils::Scalar>(10.0))
+    m_cste_FlPE_1(std::make_shared<utils::Scalar>(10.0)),
+    m_cste_FlPE_2(std::make_shared<utils::Scalar>(5.0)),
+    m_cste_eccentricForceMultiplier(std::make_shared<utils::Scalar>(1.8)),
+    m_cste_damping(std::make_shared<utils::Scalar>(0.1)),
+    m_cste_maxShorteningSpeed(std::make_shared<utils::Scalar>(10.0))
 {
     setType();
 }
 
-biorbd::muscles::HillType::HillType(const biorbd::muscles::Muscle &other) :
-    biorbd::muscles::Muscle (other)
+muscles::HillType::HillType(const muscles::Muscle &other) :
+    muscles::Muscle (other)
 {
-    const biorbd::muscles::HillType & m_tp(
-        dynamic_cast<const biorbd::muscles::HillType &>(other));
+    const muscles::HillType & m_tp(
+        dynamic_cast<const muscles::HillType &>(other));
     m_damping = m_tp.m_damping;
     m_FlCE = m_tp.m_FlCE;
     m_FlPE = m_tp.m_FlPE;
@@ -143,13 +145,13 @@ biorbd::muscles::HillType::HillType(const biorbd::muscles::Muscle &other) :
     m_cste_maxShorteningSpeed = m_tp.m_cste_maxShorteningSpeed;
 }
 
-biorbd::muscles::HillType::HillType(
-    const std::shared_ptr<biorbd::muscles::Muscle> other) :
-    biorbd::muscles::Muscle (other)
+muscles::HillType::HillType(
+    const std::shared_ptr<muscles::Muscle> other) :
+    muscles::Muscle (other)
 {
-    const std::shared_ptr<biorbd::muscles::HillType> m_tp(
-        std::dynamic_pointer_cast<biorbd::muscles::HillType>(other));
-    biorbd::utils::Error::check(m_tp != nullptr, "Muscle must be of a Hill Type");
+    const std::shared_ptr<muscles::HillType> m_tp(
+        std::dynamic_pointer_cast<muscles::HillType>(other));
+    utils::Error::check(m_tp != nullptr, "Muscle must be of a Hill Type");
     m_damping = m_tp->m_damping;
     m_FlCE = m_tp->m_FlCE;
     m_FlPE = m_tp->m_FlPE;
@@ -165,16 +167,16 @@ biorbd::muscles::HillType::HillType(
     m_cste_maxShorteningSpeed = m_tp->m_cste_maxShorteningSpeed;
 }
 
-biorbd::muscles::HillType biorbd::muscles::HillType::DeepCopy() const
+muscles::HillType muscles::HillType::DeepCopy() const
 {
-    biorbd::muscles::HillType copy;
+    muscles::HillType copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void biorbd::muscles::HillType::DeepCopy(const biorbd::muscles::HillType &other)
+void muscles::HillType::DeepCopy(const muscles::HillType &other)
 {
-    biorbd::muscles::Muscle::DeepCopy(other);
+    muscles::Muscle::DeepCopy(other);
     *m_damping = *other.m_damping;
     *m_FlCE = *other.m_FlCE;
     *m_FlPE = *other.m_FlPE;
@@ -190,8 +192,8 @@ void biorbd::muscles::HillType::DeepCopy(const biorbd::muscles::HillType &other)
     *m_cste_maxShorteningSpeed = *other.m_cste_maxShorteningSpeed;
 }
 
-const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
-    const biorbd::muscles::State& emg)
+const utils::Scalar& muscles::HillType::force(
+    const muscles::State& emg)
 {
     // Compute the forces of each element
     computeFvCE();
@@ -204,11 +206,11 @@ const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
     return *m_force;
 }
 
-const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
-    biorbd::rigidbody::Joints &model,
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &Qdot,
-    const biorbd::muscles::State &emg,
+const utils::Scalar& muscles::HillType::force(
+    rigidbody::Joints &model,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    const muscles::State &emg,
     int updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -220,7 +222,7 @@ const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
     } else if (updateKin == 2) {
         updateOrientations(model,Q,Qdot,2);
     } else {
-        biorbd::utils::Error::check(updateKin == 0,
+        utils::Error::check(updateKin == 0,
                                     "Wrong level of update in force function");
     }
 
@@ -228,49 +230,49 @@ const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
     return force(emg);
 }
 
-const biorbd::utils::Scalar& biorbd::muscles::HillType::force(
-    biorbd::rigidbody::Joints &,
-    const biorbd::rigidbody::GeneralizedCoordinates &,
-    const biorbd::muscles::State &,
+const utils::Scalar& muscles::HillType::force(
+    rigidbody::Joints &,
+    const rigidbody::GeneralizedCoordinates &,
+    const muscles::State &,
     int)
 {
-    biorbd::utils::Error::raise("Hill type needs velocity");
+    utils::Error::raise("Hill type needs velocity");
 #ifdef _WIN32
     return *m_force; // Will never reach here
 #endif
 }
 
-const biorbd::utils::Scalar& biorbd::muscles::HillType::FlCE(
-    const biorbd::muscles::State &EMG)
+const utils::Scalar& muscles::HillType::FlCE(
+    const muscles::State &EMG)
 {
     computeFlCE(EMG);
     return *m_FlCE;
 }
 
-const biorbd::utils::Scalar& biorbd::muscles::HillType::FlPE()
+const utils::Scalar& muscles::HillType::FlPE()
 {
     computeFlPE();
     return *m_FlPE;
 }
 
-const biorbd::utils::Scalar& biorbd::muscles::HillType::FvCE()
+const utils::Scalar& muscles::HillType::FvCE()
 {
     computeFvCE();
     return *m_FvCE;
 }
 
-const biorbd::utils::Scalar& biorbd::muscles::HillType::damping()
+const utils::Scalar& muscles::HillType::damping()
 {
     computeDamping();
     return *m_damping;
 }
 
-void biorbd::muscles::HillType::setType()
+void muscles::HillType::setType()
 {
-    *m_type = biorbd::muscles::MUSCLE_TYPE::HILL;
+    *m_type = muscles::MUSCLE_TYPE::HILL;
 }
 
-void biorbd::muscles::HillType::computeDamping()
+void muscles::HillType::computeDamping()
 {
     *m_damping = position().velocity()
                  /
@@ -278,7 +280,7 @@ void biorbd::muscles::HillType::computeDamping()
                  *m_cste_damping;
 }
 
-void biorbd::muscles::HillType::computeFlCE(const biorbd::muscles::State& emg)
+void muscles::HillType::computeFlCE(const muscles::State& emg)
 {
     *m_FlCE = exp( -pow(( position().length() /
                           m_characteristics->optimalLength() / (*m_cste_FlCE_1*
@@ -287,10 +289,10 @@ void biorbd::muscles::HillType::computeFlCE(const biorbd::muscles::State& emg)
                    *m_cste_FlCE_2   );
 }
 
-void biorbd::muscles::HillType::computeFvCE()
+void muscles::HillType::computeFvCE()
 {
     // The relation is different if velocity< 0  or > 0
-    biorbd::utils::Scalar v = m_position->velocity();
+    utils::Scalar v = m_position->velocity();
 #ifdef BIORBD_USE_CASADI_MATH
     *m_FvCE = casadi::MX::if_else(
                   casadi::MX::le(v, 0),
@@ -309,7 +311,7 @@ void biorbd::muscles::HillType::computeFvCE()
 #endif
 }
 
-void biorbd::muscles::HillType::computeFlPE()
+void muscles::HillType::computeFlPE()
 {
 
 #ifdef BIORBD_USE_CASADI_MATH
@@ -327,16 +329,16 @@ void biorbd::muscles::HillType::computeFlPE()
 #endif
 }
 
-biorbd::utils::Scalar biorbd::muscles::HillType::getForceFromActivation(
-    const biorbd::muscles::State &emg)
+utils::Scalar muscles::HillType::getForceFromActivation(
+    const muscles::State &emg)
 {
     // Fonction qui permet de modifier la facon dont la multiplication est faite dans computeForce(EMG)
     return characteristics().forceIsoMax() * (emg.activation() * *m_FlCE * *m_FvCE +
             *m_FlPE + *m_damping);
 }
 
-void biorbd::muscles::HillType::normalizeEmg(
-    biorbd::muscles::State& emg)
+void muscles::HillType::normalizeEmg(
+    muscles::State& emg)
 {
     emg.normalizeExcitation(characteristics().stateMax());
 }

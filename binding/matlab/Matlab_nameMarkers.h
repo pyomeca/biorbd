@@ -14,10 +14,10 @@ void Matlab_nameMarkers( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 2, 2,
                                "2 arguments are required where the 2nd is the handler on the model");
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // Trouver ou sont les marqueurs
-    std::vector<biorbd::utils::String> allMarkers(model->markerNames());
+    std::vector<BIORBD_NAMESPACE::utils::String> allMarkers(model->markerNames());
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateCellMatrix( allMarkers.size(), 1);
@@ -38,10 +38,10 @@ void Matlab_nameTechnicalMarkers( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 2, 2,
                                "2 arguments are required where the 2nd is the handler on the model");
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // Trouver ou sont les marqueurs
-    std::vector<biorbd::utils::String> allMarkers(model->technicalMarkerNames());
+    std::vector<BIORBD_NAMESPACE::utils::String> allMarkers(model->technicalMarkerNames());
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateCellMatrix( allMarkers.size(), 1);
@@ -62,10 +62,10 @@ void Matlab_nameAnatomicalMarkers( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 2, 2,
                                "2 arguments are required where the 2nd is the handler on the model");
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // Trouver ou sont les marqueurs
-    std::vector<biorbd::utils::String> allMarkers(model->anatomicalMarkerNames());
+    std::vector<BIORBD_NAMESPACE::utils::String> allMarkers(model->anatomicalMarkerNames());
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateCellMatrix( allMarkers.size(), 1);

@@ -8,25 +8,27 @@
 #include "RigidBody/NodeSegment.h"
 #include "Utils/String.h"
 
-biorbd::utils::String getVersion()
+using namespace BIORBD_NAMESPACE;
+
+utils::String getVersion()
 {
     return BIORBD_VERSION;
 }
 
-biorbd::Model::Model() :
-    m_path(std::make_shared<biorbd::utils::Path>())
+Model::Model() :
+    m_path(std::make_shared<utils::Path>())
 {
 
 }
 
-biorbd::Model::Model(const biorbd::utils::Path &path) :
-    m_path(std::make_shared<biorbd::utils::Path>(path))
+Model::Model(const utils::Path &path) :
+    m_path(std::make_shared<utils::Path>(path))
 {
 
-    biorbd::Reader::readModelFile(*m_path, this);
+    Reader::readModelFile(*m_path, this);
 }
 
-biorbd::utils::Path biorbd::Model::path() const
+utils::Path Model::path() const
 {
     return *m_path;
 }

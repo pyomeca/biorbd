@@ -3,7 +3,7 @@ if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.0")
     cmake_policy(SET CMP0042 NEW)
 endif()
 
-project(biorbd VERSION 1.6.1)
+project(biorbd VERSION 1.7.0)
 set(BIORBD_ROOT_FOLDER ${PROJECT_SOURCE_DIR})
 set (BIORBD_NAME_NO_SUFFIX ${PROJECT_NAME})
 set (CMAKE_CXX_STANDARD 11)
@@ -25,7 +25,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build.")
     # Set the possible values of build type for cmake-gui
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY
-        STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+        STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo" "Coverage")
 endif()
 
 # Choose the math's library backend to use

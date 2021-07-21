@@ -6,7 +6,7 @@
 #include "Utils/RotoTrans.h"
 #include "Utils/Node.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -14,8 +14,7 @@ class String;
 ///
 /// \brief A RotoTrans which is attached to a segment
 ///
-class BIORBD_API RotoTransNode : public biorbd::utils::RotoTrans,
-    public biorbd::utils::Node
+class BIORBD_API RotoTransNode : public RotoTrans, public Node
 {
 public:
     ///
@@ -30,9 +29,9 @@ public:
     /// \param parentName The name of the parent segment
     ///
     RotoTransNode(
-        const biorbd::utils::RotoTrans& rt,
-        const biorbd::utils::String &name,
-        const biorbd::utils::String &parentName);
+        const RotoTrans& rt,
+        const String &name,
+        const String &parentName);
 
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///
@@ -41,20 +40,20 @@ public:
     ///
     template<typename OtherDerived> RotoTransNode(
         const Eigen::MatrixBase<OtherDerived>& other) :
-        biorbd::utils::RotoTrans(other) {}
+        RotoTrans(other) {}
 #endif
 
     ///
     /// \brief Deep copy of a RotoTransNode
     /// \return A deep copy of a RotoTrans node
     ///
-    biorbd::utils::RotoTransNode DeepCopy() const;
+    RotoTransNode DeepCopy() const;
 
     ///
     /// \brief Deep copy of a RotoTransNode into another RotoTransNode
     /// \param other The RotoTransNode to copy
     ///
-    void DeepCopy(const biorbd::utils::RotoTransNode& other);
+    void DeepCopy(const RotoTransNode& other);
 
 #ifndef SWIG
 
@@ -63,7 +62,7 @@ public:
     /// \return Rotated matrix
     ///
     void operator=(
-        const biorbd::utils::RotoTrans& other);
+        const RotoTrans& other);
 
 #endif
 
@@ -71,8 +70,8 @@ public:
     /// \brief operator* Matrix multiplication
     /// \return Rotated matrix
     ///
-    biorbd::utils::RotoTrans operator*(
-        const biorbd::utils::RotoTransNode& other) const;
+    RotoTrans operator*(
+        const RotoTransNode& other) const;
 
 #ifndef SWIG
 
@@ -82,10 +81,10 @@ public:
     /// \param other The Eigen matrix
     ///
     template<typename OtherDerived>
-    biorbd::utils::RotoTransNode& operator=(const Eigen::MatrixBase <OtherDerived>&
+    RotoTransNode& operator=(const Eigen::MatrixBase <OtherDerived>&
                                             other)
     {
-        this->biorbd::utils::RotoTrans::operator=(other);
+        this->RotoTrans::operator=(other);
         return *this;
     }
 #endif
@@ -104,9 +103,9 @@ protected:
 /// \brief operator* Matrix multiplication
 /// \return Rotated matrix
 ///
-biorbd::utils::RotoTransNode operator*(
-    const biorbd::utils::RotoTrans& other,
-    const biorbd::utils::RotoTransNode& me);
+RotoTransNode operator*(
+    const RotoTrans& other,
+    const RotoTransNode& me);
 
 
 }

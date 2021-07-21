@@ -3,53 +3,55 @@
 
 #include "Utils/String.h"
 
-biorbd::muscles::ViaPoint::ViaPoint() :
-    biorbd::utils::Vector3d()
+using namespace BIORBD_NAMESPACE;
+
+muscles::ViaPoint::ViaPoint() :
+    utils::Vector3d()
 {
-    *m_typeOfNode = biorbd::utils::NODE_TYPE::VIA_POINT;
+    *m_typeOfNode = utils::NODE_TYPE::VIA_POINT;
 }
 
-biorbd::muscles::ViaPoint::ViaPoint(
-    const biorbd::utils::Scalar& x,
-    const biorbd::utils::Scalar& y,
-    const biorbd::utils::Scalar& z) :
-    biorbd::utils::Vector3d(x, y, z)
+muscles::ViaPoint::ViaPoint(
+    const utils::Scalar& x,
+    const utils::Scalar& y,
+    const utils::Scalar& z) :
+    utils::Vector3d(x, y, z)
 {
-    *m_typeOfNode = biorbd::utils::NODE_TYPE::VIA_POINT;
+    *m_typeOfNode = utils::NODE_TYPE::VIA_POINT;
 }
 
-biorbd::muscles::ViaPoint::ViaPoint(
-    const biorbd::utils::Scalar& x,
-    const biorbd::utils::Scalar& y,
-    const biorbd::utils::Scalar& z,
-    const biorbd::utils::String &name,
-    const biorbd::utils::String &parentName) :
-    biorbd::utils::Vector3d(x, y, z, name, parentName)
+muscles::ViaPoint::ViaPoint(
+    const utils::Scalar& x,
+    const utils::Scalar& y,
+    const utils::Scalar& z,
+    const utils::String &name,
+    const utils::String &parentName) :
+    utils::Vector3d(x, y, z, name, parentName)
 {
-    *m_typeOfNode = biorbd::utils::NODE_TYPE::VIA_POINT;
+    *m_typeOfNode = utils::NODE_TYPE::VIA_POINT;
 }
 
-biorbd::muscles::ViaPoint::ViaPoint(
-    const biorbd::utils::Vector3d &other) :
-    biorbd::utils::Vector3d(other)
+muscles::ViaPoint::ViaPoint(
+    const utils::Vector3d &other) :
+    utils::Vector3d(other)
 {
-    *m_typeOfNode = biorbd::utils::NODE_TYPE::VIA_POINT;
+    *m_typeOfNode = utils::NODE_TYPE::VIA_POINT;
 }
 
-biorbd::muscles::ViaPoint::ViaPoint(const biorbd::muscles::ViaPoint &other) :
-    biorbd::utils::Vector3d(other)
+muscles::ViaPoint::ViaPoint(const muscles::ViaPoint &other) :
+    utils::Vector3d(other)
 {
 
 }
 
-biorbd::muscles::ViaPoint biorbd::muscles::ViaPoint::DeepCopy() const
+muscles::ViaPoint muscles::ViaPoint::DeepCopy() const
 {
-    biorbd::muscles::ViaPoint copy;
+    muscles::ViaPoint copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void biorbd::muscles::ViaPoint::DeepCopy(const biorbd::muscles::ViaPoint &other)
+void muscles::ViaPoint::DeepCopy(const muscles::ViaPoint &other)
 {
-    biorbd::utils::Vector3d::DeepCopy(other);
+    utils::Vector3d::DeepCopy(other);
 }

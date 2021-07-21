@@ -4,7 +4,7 @@
 #include "biorbdConfig.h"
 #include "RigidBody/KalmanRecons.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -18,7 +18,7 @@ class IMU;
 ///
 /// \brief Class Kinematic reconstruction algorithm using an Extended Kalman Filter for IMU
 ///
-class BIORBD_API KalmanReconsIMU : public biorbd::rigidbody::KalmanRecons
+class BIORBD_API KalmanReconsIMU : public KalmanRecons
 {
 public:
 
@@ -34,21 +34,21 @@ public:
     /// \param params The Kalman filter parameters
     ///
     KalmanReconsIMU(
-        biorbd::Model& model,
-        biorbd::rigidbody::KalmanParam params = biorbd::rigidbody::KalmanParam(100,
+        Model& model,
+        KalmanParam params = KalmanParam(100,
                 0.005, 1e-10));
 
     ///
     /// \brief Deep copy of the Kalman reconstruction from inertial measurement units (IMU) data
     /// \return Copy of the Kalman reconstruction from IMU data
     ///
-    biorbd::rigidbody::KalmanReconsIMU DeepCopy() const;
+    KalmanReconsIMU DeepCopy() const;
 
     ///
     /// \brief Deep copy of a Kalman reconstruction from inertial measurement units (IMU) data
     /// \param other The Kalman reconstruction to copy
     ///
-    void DeepCopy(const biorbd::rigidbody::KalmanReconsIMU& other);
+    void DeepCopy(const KalmanReconsIMU& other);
 
     // Reconstruction of a frame
 
@@ -61,11 +61,11 @@ public:
     /// \param Qddot The generalized accelerations
     ///
     virtual void reconstructFrame(
-        biorbd::Model &model,
-        const std::vector<biorbd::rigidbody::IMU> &IMUobs,
-        biorbd::rigidbody::GeneralizedCoordinates *Q,
-        biorbd::rigidbody::GeneralizedVelocity *Qdot,
-        biorbd::rigidbody::GeneralizedAcceleration *Qddot);
+        Model &model,
+        const std::vector<IMU> &IMUobs,
+        GeneralizedCoordinates *Q,
+        GeneralizedVelocity *Qdot,
+        GeneralizedAcceleration *Qddot);
 
     ///
     /// \brief Reconstruct the kinematics
@@ -76,11 +76,11 @@ public:
     /// \param Qddot The generalized accelerations
     ///
     virtual void reconstructFrame(
-        biorbd::Model &model,
-        const biorbd::utils::Vector &IMUobs,
-        biorbd::rigidbody::GeneralizedCoordinates *Q,
-        biorbd::rigidbody::GeneralizedVelocity *Qdot,
-        biorbd::rigidbody::GeneralizedAcceleration *Qddot);
+        Model &model,
+        const utils::Vector &IMUobs,
+        GeneralizedCoordinates *Q,
+        GeneralizedVelocity *Qdot,
+        GeneralizedAcceleration *Qddot);
 
     ///
     /// \brief This function cannot be used to reconstruct frames
@@ -106,11 +106,11 @@ protected:
     /// \param occlusion The vector where occlusions occurs
     ///
     virtual void manageOcclusionDuringIteration(
-        biorbd::utils::Matrix &InvTp,
-        biorbd::utils::Vector &measure,
+        utils::Matrix &InvTp,
+        utils::Vector &measure,
         const std::vector<unsigned int> &occlusion);
 
-    std::shared_ptr<biorbd::utils::Matrix>
+    std::shared_ptr<utils::Matrix>
     m_PpInitial; ///< Initial covariance matrix
     std::shared_ptr<bool> m_firstIteration; ///< If first iteration was done
 };

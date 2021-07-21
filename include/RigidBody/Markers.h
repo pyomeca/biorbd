@@ -5,7 +5,7 @@
 #include <vector>
 #include "biorbdConfig.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -35,7 +35,7 @@ public:
     /// \brief Construct markers from another marker set
     /// \param other The other marker set
     ///
-    Markers(const biorbd::rigidbody::Markers& other);
+    Markers(const Markers& other);
 
     ///
     /// \brief Destroy class properly
@@ -46,13 +46,13 @@ public:
     /// \brief Deep copy of the markers
     /// \return Deep copy of the markers
     ///
-    biorbd::rigidbody::Markers DeepCopy() const;
+    Markers DeepCopy() const;
 
     ///
     /// \brief Deep copy of the markers
     /// \param other The markers to copy from
     ///
-    void DeepCopy(const biorbd::rigidbody::Markers& other);
+    void DeepCopy(const Markers& other);
 
     ///
     /// \brief Add a marker to the set
@@ -65,12 +65,12 @@ public:
     /// \param id The index of the parent segment
     ///
     void addMarker(
-        const biorbd::rigidbody::NodeSegment &pos,
-        const biorbd::utils::String &name,
-        const biorbd::utils::String &parentName,
+        const NodeSegment &pos,
+        const utils::String &name,
+        const utils::String &parentName,
         bool technical,
         bool anatomical,
-        const biorbd::utils::String& axesToRemove,
+        const utils::String& axesToRemove,
         int id = -1
     );
 
@@ -79,7 +79,7 @@ public:
     /// \param idx The marker we want to return
     /// \return The marker
     ///
-    const biorbd::rigidbody::NodeSegment& marker(
+    const NodeSegment& marker(
         unsigned int idx) const;
 
     ///
@@ -87,26 +87,26 @@ public:
     /// \param name Name of the segment
     /// \return The markers on the segment
     ///
-    std::vector<biorbd::rigidbody::NodeSegment> marker(
-        const biorbd::utils::String &name) const;
+    std::vector<NodeSegment> marker(
+        const utils::String &name) const;
 
     ///
     /// \brief Return the names of all the markers
     /// \return The names of the markers
     ///
-    std::vector<biorbd::utils::String> markerNames() const;
+    std::vector<utils::String> markerNames() const;
 
     ///
     /// \brief Return the names of all the technical markers
     /// \return The names of the technical markers
     ///
-    std::vector<biorbd::utils::String> technicalMarkerNames() const;
+    std::vector<utils::String> technicalMarkerNames() const;
 
     ///
     /// \brief Return the names of all the anatomical markers
     /// \return The names of the anatomical markers
     ///
-    std::vector<biorbd::utils::String> anatomicalMarkerNames() const;
+    std::vector<utils::String> anatomicalMarkerNames() const;
 
     ///
     /// \brief Compute and return the position of a marker at given Q in the global reference frame
@@ -116,9 +116,9 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The marker in the global reference frame
     ///
-    biorbd::rigidbody::NodeSegment marker(
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::NodeSegment& node,
+    NodeSegment marker(
+        const GeneralizedCoordinates& Q,
+        const NodeSegment& node,
         bool removeAxis=true,
         bool updateKin = true);
 
@@ -130,8 +130,8 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The marker idx in the global reference frame
     ///
-    biorbd::rigidbody::NodeSegment marker(
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+    NodeSegment marker(
+        const GeneralizedCoordinates& Q,
         unsigned int  idx,
         bool removeAxis=true,
         bool updateKin = true);
@@ -142,7 +142,7 @@ public:
     /// \param removeAxis If there are axis to remove from the position variables
     /// \return The marker of index idx
     ///
-    biorbd::rigidbody::NodeSegment marker(
+    NodeSegment marker(
         unsigned int  idx,
         bool removeAxis);
 
@@ -153,8 +153,8 @@ public:
     /// \param updateKin If the model should be updated
     /// \return All the markers in the global reference frame
     ///
-    std::vector<biorbd::rigidbody::NodeSegment> markers(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    std::vector<NodeSegment> markers(
+        const GeneralizedCoordinates &Q,
         bool removeAxis = true,
         bool updateKin = true);
 
@@ -163,7 +163,7 @@ public:
     /// \param removeAxis If there are axis to remove from the position variables
     /// \return All the markers
     ///
-    std::vector<biorbd::rigidbody::NodeSegment> markers(
+    std::vector<NodeSegment> markers(
         bool removeAxis = true);
 
     ///
@@ -175,9 +175,9 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The velocity of a marker
     ///
-    biorbd::rigidbody::NodeSegment markerVelocity(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+    NodeSegment markerVelocity(
+        const GeneralizedCoordinates &Q,
+        const GeneralizedVelocity &Qdot,
         unsigned int idx,
         bool removeAxis = true,
         bool updateKin = true);
@@ -191,9 +191,9 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The velocity of all the markers
     ///
-    std::vector<biorbd::rigidbody::NodeSegment> markersVelocity(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+    std::vector<NodeSegment> markersVelocity(
+        const GeneralizedCoordinates &Q,
+        const GeneralizedVelocity &Qdot,
         bool removeAxis=true,
         bool updateKin = true);
 
@@ -207,10 +207,10 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The acceleration of a marker
     ///
-    biorbd::rigidbody::NodeSegment markerAcceleration(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
-        const biorbd::rigidbody::GeneralizedAcceleration &Qddot,
+    NodeSegment markerAcceleration(
+        const GeneralizedCoordinates &Q,
+        const GeneralizedVelocity &Qdot,
+        const rigidbody::GeneralizedAcceleration &Qddot,
         unsigned int idx,
         bool removeAxis = true,
         bool updateKin = true);
@@ -225,10 +225,10 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The acceleration of all the markers
     ///
-    std::vector<biorbd::rigidbody::NodeSegment> markerAcceleration(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
-        const biorbd::rigidbody::GeneralizedAcceleration &dQdot,
+    std::vector<NodeSegment> markerAcceleration(
+        const GeneralizedCoordinates &Q,
+        const GeneralizedVelocity &Qdot,
+        const rigidbody::GeneralizedAcceleration &dQdot,
         bool removeAxis=true,
         bool updateKin = true);
 
@@ -239,8 +239,8 @@ public:
     /// \param updateKin If the model should be updated
     /// \return A vector of all the technical markers
     ///
-    std::vector<biorbd::rigidbody::NodeSegment> technicalMarkers(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    std::vector<NodeSegment> technicalMarkers(
+        const GeneralizedCoordinates &Q,
         bool removeAxis=true,
         bool updateKin = true);
 
@@ -249,7 +249,7 @@ public:
     /// \param removeAxis If there are axis to remove from the position variables
     /// \return A vector of all the technical markers in their parent reference frame
     ///
-    std::vector<biorbd::rigidbody::NodeSegment> technicalMarkers(
+    std::vector<NodeSegment> technicalMarkers(
         bool removeAxis=true);
 
     ///
@@ -259,8 +259,8 @@ public:
     /// \param updateKin If the model should be updated
     /// \return A vector of all the anatomical markers
     ///
-    std::vector<biorbd::rigidbody::NodeSegment> anatomicalMarkers(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    std::vector<NodeSegment> anatomicalMarkers(
+        const GeneralizedCoordinates &Q,
         bool removeAxis=true,
         bool updateKin = true);
 
@@ -269,7 +269,7 @@ public:
     /// \param removeAxis If there are axis to remove from the position variables
     /// \return A vector of all the anatomical markers in their parent reference frame
     ///
-    std::vector<biorbd::rigidbody::NodeSegment> anatomicalMarkers(
+    std::vector<NodeSegment> anatomicalMarkers(
         bool removeAxis=true);
 
     ///
@@ -280,8 +280,8 @@ public:
     /// \param updateKin If the model should be updated
     /// \return All the markers of the segment idx
     ///
-    std::vector<biorbd::rigidbody::NodeSegment> segmentMarkers(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    std::vector<NodeSegment> segmentMarkers(
+        const GeneralizedCoordinates &Q,
         unsigned int  idx,
         bool removeAxis=true,
         bool updateKin = true);
@@ -326,8 +326,8 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The jacobian of the markers
     ///
-    std::vector<biorbd::utils::Matrix> markersJacobian(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    std::vector<utils::Matrix> markersJacobian(
+        const GeneralizedCoordinates &Q,
         bool removeAxis=true,
         bool updateKin = true);
 
@@ -338,8 +338,8 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The jacobian of the technical markers
     ///
-    std::vector<biorbd::utils::Matrix> technicalMarkersJacobian(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    std::vector<utils::Matrix> technicalMarkersJacobian(
+        const GeneralizedCoordinates &Q,
         bool removeAxis=true,
         bool updateKin = true);
 
@@ -351,10 +351,10 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The jacobian of the chosen marker
     ///
-    biorbd::utils::Matrix markersJacobian(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::utils::String& parentName,
-        const biorbd::rigidbody::NodeSegment& p,
+    utils::Matrix markersJacobian(
+        const GeneralizedCoordinates &Q,
+        const utils::String& parentName,
+        const NodeSegment& p,
         bool updateKin);
 
 #ifndef BIORBD_USE_CASADI_MATH
@@ -366,9 +366,9 @@ public:
     /// \param removeAxes If the markers should be projected on the axes
     ///
     bool inverseKinematics(
-        const std::vector<biorbd::rigidbody::NodeSegment>& markers,
-        const biorbd::rigidbody::GeneralizedCoordinates& Qinit,
-        biorbd::rigidbody::GeneralizedCoordinates &Q,
+        const std::vector<NodeSegment>& markers,
+        const GeneralizedCoordinates& Qinit,
+        GeneralizedCoordinates &Q,
         bool removeAxes=true);
 #endif
 
@@ -381,13 +381,13 @@ protected:
     /// \param lookForTechnical Check if only technical markers are to be computed
     /// \return The jacobian of the markers
     ///
-    std::vector<biorbd::utils::Matrix> markersJacobian(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    std::vector<utils::Matrix> markersJacobian(
+        const GeneralizedCoordinates &Q,
         bool removeAxis,
         bool updateKin,
         bool lookForTechnical); // Retourne la jacobienne des markers
 
-    std::shared_ptr<std::vector<biorbd::rigidbody::NodeSegment>>
+    std::shared_ptr<std::vector<NodeSegment>>
             m_marks; ///< The markers
 
 };

@@ -4,14 +4,14 @@
 #include "biorbdConfig.h"
 #include "Muscles/StateDynamics.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace muscles
 {
 ///
 /// \brief EMG with the capability to compute the time derivative
 ///
-class BIORBD_API StateDynamicsDeGroote : public biorbd::muscles::StateDynamics
+class BIORBD_API StateDynamicsDeGroote : public StateDynamics
 {
 public:
     ///
@@ -20,28 +20,28 @@ public:
     /// \param activation The muscle activation
     ///
     StateDynamicsDeGroote(
-        const biorbd::utils::Scalar& excitation = 0,
-        const biorbd::utils::Scalar& activation = 0);
+        const utils::Scalar& excitation = 0,
+        const utils::Scalar& activation = 0);
 
     ///
     /// \brief Construct a state dynamics from another state dynamics
     /// \param other The other state dynamics
     ///
     StateDynamicsDeGroote(
-        const biorbd::muscles::StateDynamicsDeGroote& other);
+        const StateDynamicsDeGroote& other);
 
     ///
     /// \brief Deep copy of state dynamics
     /// \return A deep copy of state dynamics
     ///
-    biorbd::muscles::StateDynamicsDeGroote DeepCopy() const;
+    StateDynamicsDeGroote DeepCopy() const;
 
     ///
     /// \brief Deep copy of state dynamics into another state dynamics
     /// \param other The state dynamics to copy
     ///
     void DeepCopy(
-        const biorbd::muscles::StateDynamicsDeGroote& other);
+        const StateDynamicsDeGroote& other);
 
     ///
     /// \brief Compute and return the activation time derivative
@@ -49,7 +49,7 @@ public:
     /// \param alreadyNormalized If already normalized
     /// \return The activation time derivative
     ///
-    virtual const biorbd::utils::Scalar& timeDerivativeActivation(
+    virtual const utils::Scalar& timeDerivativeActivation(
         const Characteristics& characteristics,
         bool alreadyNormalized = false);
 

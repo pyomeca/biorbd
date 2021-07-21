@@ -6,7 +6,7 @@
 #include "biorbdConfig.h"
 
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 class Model;
 
@@ -81,7 +81,7 @@ public:
     /// \param params The Kalman filter parameters
     ///
     KalmanRecons(
-        biorbd::Model& model,
+        Model& model,
         unsigned int nbMeasure,
         KalmanParam params = KalmanParam());
 
@@ -94,7 +94,7 @@ public:
     /// \brief Deep copy of Kalman reconstruction
     /// \param other The Kalman reconstruction to copy
     ///
-    void DeepCopy(const biorbd::rigidbody::KalmanRecons& other);
+    void DeepCopy(const KalmanRecons& other);
 
 
     ///
@@ -104,9 +104,9 @@ public:
     /// \param Qddot The generalized accelerations
     ///
     void getState(
-        biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
-        biorbd::rigidbody::GeneralizedVelocity *Qdot = nullptr,
-        biorbd::rigidbody::GeneralizedAcceleration *Qddot = nullptr);
+        GeneralizedCoordinates *Q = nullptr,
+        GeneralizedVelocity *Qdot = nullptr,
+        GeneralizedAcceleration *Qddot = nullptr);
 
     ///
     /// \brief Set the initial guess of the reconstruction
@@ -115,9 +115,9 @@ public:
     /// \param Qddot The generalized accelerations
     ///
     void setInitState(
-        const biorbd::rigidbody::GeneralizedCoordinates *Q = nullptr,
-        const biorbd::rigidbody::GeneralizedVelocity *Qdot = nullptr,
-        const biorbd::rigidbody::GeneralizedAcceleration *Qddot = nullptr);
+        const GeneralizedCoordinates *Q = nullptr,
+        const GeneralizedVelocity *Qdot = nullptr,
+        const GeneralizedAcceleration *Qddot = nullptr);
 
     ///
     /// \brief Proceed to one iteration of the Kalman filter
@@ -137,7 +137,7 @@ protected:
     /// \param Te Is equal to \f$\frac{1}{\text{Acquisition frequency}}\f$
     /// \return The evolution matrix assuming constant frame rate
     ///
-    biorbd::utils::Matrix evolutionMatrix(
+    utils::Matrix evolutionMatrix(
         const unsigned int m,
         unsigned int n,
         double Te);
@@ -148,7 +148,7 @@ protected:
     /// \param Te Is equal to \f$\frac{1}{\text{Acquisition frequency}}\f$
     /// \return The noise matrix
     ///
-    biorbd::utils::Matrix processNoiseMatrix(
+    utils::Matrix processNoiseMatrix(
         const unsigned int nbQ,
         double Te);
 
@@ -158,7 +158,7 @@ protected:
     /// \param val The noise level
     /// \return The matrix of the noise on the measurements
     ///
-    biorbd::utils::Matrix measurementNoiseMatrix(
+    utils::Matrix measurementNoiseMatrix(
         const unsigned int nbT,
         double val);
 
@@ -168,7 +168,7 @@ protected:
     /// \param val The initial value to fill the matrix with
     /// \return The initial covariance matrix
     ///
-    biorbd::utils::Matrix initCovariance(
+    utils::Matrix initCovariance(
         const unsigned int nbQ,
         double val);
 
@@ -177,7 +177,7 @@ protected:
     /// \param nbQ The number of degrees-of-freedom
     /// \return The initialized states
     ///
-    biorbd::rigidbody::GeneralizedCoordinates initState(
+    GeneralizedCoordinates initState(
         const unsigned int nbQ);
 
     ///
@@ -188,9 +188,9 @@ protected:
     /// \param occlusion The vector where occlusionsoccurs
     ///
     void iteration(
-        biorbd::utils::Vector measure,
-        const biorbd::utils::Vector &projectedMeasure,
-        const biorbd::utils::Matrix &Hessian,
+        utils::Vector measure,
+        const utils::Vector &projectedMeasure,
+        const utils::Matrix &Hessian,
         const std::vector<unsigned int> &occlusion = std::vector<unsigned int>());
 
     ///
@@ -200,8 +200,8 @@ protected:
     /// \param occlusion The vector where occlusions occurs
     ///
     virtual void manageOcclusionDuringIteration(
-        biorbd::utils::Matrix &InvTp,
-        biorbd::utils::Vector &measure,
+        utils::Matrix &InvTp,
+        utils::Vector &measure,
         const std::vector<unsigned int> &occlusion);
 
     // Variables attributes
@@ -211,12 +211,12 @@ protected:
     std::shared_ptr<unsigned int> m_nMeasure; ///< Number of measurements
 
     // Kalman filter attributes
-    std::shared_ptr<biorbd::utils::Vector> m_xp; ///< State vector
-    std::shared_ptr<biorbd::utils::Matrix> m_A; ///< Evolution matrix
-    std::shared_ptr<biorbd::utils::Matrix> m_Q; ///< Noise matrix
-    std::shared_ptr<biorbd::utils::Matrix>
+    std::shared_ptr<utils::Vector> m_xp; ///< State vector
+    std::shared_ptr<utils::Matrix> m_A; ///< Evolution matrix
+    std::shared_ptr<utils::Matrix> m_Q; ///< Noise matrix
+    std::shared_ptr<utils::Matrix>
     m_R; ///< Matrix of the noise on the measurements
-    std::shared_ptr<biorbd::utils::Matrix> m_Pp; ///< Covariance matrix
+    std::shared_ptr<utils::Matrix> m_Pp; ///< Covariance matrix
 
 };
 

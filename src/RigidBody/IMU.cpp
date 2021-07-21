@@ -3,21 +3,23 @@
 
 #include "Utils/String.h"
 
-biorbd::rigidbody::IMU::IMU(
+using namespace BIORBD_NAMESPACE;
+
+rigidbody::IMU::IMU(
     bool isTechnical,
     bool isAnatomical) :
-    biorbd::utils::RotoTransNode(),
+    utils::RotoTransNode(),
     m_technical(std::make_shared<bool>(isTechnical)),
     m_anatomical(std::make_shared<bool>(isAnatomical))
 {
 
 }
 
-biorbd::rigidbody::IMU::IMU(
-    const biorbd::utils::RotoTransNode &RotoTrans,
+rigidbody::IMU::IMU(
+    const utils::RotoTransNode &RotoTrans,
     bool isTechnical,
     bool isAnatomical) :
-    biorbd::utils::RotoTransNode(RotoTrans),
+    utils::RotoTransNode(RotoTrans),
     m_technical(std::make_shared<bool>(isTechnical)),
     m_anatomical(std::make_shared<bool>(isAnatomical))
 {
@@ -26,22 +28,22 @@ biorbd::rigidbody::IMU::IMU(
 
 #ifdef BIORBD_USE_CASADI_MATH
 
-biorbd::rigidbody::IMU::IMU(
-    const biorbd::rigidbody::IMU &imu) :
-    biorbd::utils::RotoTransNode (imu),
+rigidbody::IMU::IMU(
+    const rigidbody::IMU &imu) :
+    utils::RotoTransNode (imu),
     m_technical(std::make_shared<bool>(*imu.m_technical)),
     m_anatomical(std::make_shared<bool>(*imu.m_anatomical))
 {
 
 }
 
-biorbd::rigidbody::IMU biorbd::rigidbody::IMU::operator*(
-    const biorbd::rigidbody::IMU &other) const
+rigidbody::IMU rigidbody::IMU::operator*(
+    const rigidbody::IMU &other) const
 {
-    return biorbd::rigidbody::IMU(
-               biorbd::utils::RotoTransNode(
-                   this->biorbd::utils::RotoTransNode::operator*(other),
-                   this->biorbd::utils::Node::name(),
+    return rigidbody::IMU(
+               utils::RotoTransNode(
+                   this->utils::RotoTransNode::operator*(other),
+                   this->utils::Node::name(),
                    this->parent()),
                this->isTechnical() && other.isTechnical(),
                this->isAnatomical() && other.isAnatomical());
@@ -49,26 +51,26 @@ biorbd::rigidbody::IMU biorbd::rigidbody::IMU::operator*(
 
 #endif
 
-biorbd::rigidbody::IMU biorbd::rigidbody::IMU::DeepCopy() const
+rigidbody::IMU rigidbody::IMU::DeepCopy() const
 {
-    biorbd::rigidbody::IMU copy;
+    rigidbody::IMU copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void biorbd::rigidbody::IMU::DeepCopy(const IMU &other)
+void rigidbody::IMU::DeepCopy(const IMU &other)
 {
-    biorbd::utils::RotoTransNode::DeepCopy(other);
+    utils::RotoTransNode::DeepCopy(other);
     *m_technical = *other.m_technical;
     *m_anatomical = *other.m_anatomical;
 }
 
-bool biorbd::rigidbody::IMU::isAnatomical() const
+bool rigidbody::IMU::isAnatomical() const
 {
     return *m_anatomical;
 }
 
-bool biorbd::rigidbody::IMU::isTechnical() const
+bool rigidbody::IMU::isTechnical() const
 {
     return *m_technical;
 }

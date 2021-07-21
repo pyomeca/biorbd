@@ -17,7 +17,7 @@ void Matlab_muscleJointTorqueFromMuscleForce( int, mxArray *plhs[],
                                "6th is if update [true] must be done. Note that if update is set to [false], "
                                "the user MUST update it by himself before calling this function");
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
     unsigned int nGeneralizedTorque =
@@ -25,10 +25,10 @@ void Matlab_muscleJointTorqueFromMuscleForce( int, mxArray *plhs[],
     unsigned int nMuscleTotal = model->nbMuscleTotal();
 
     // Recevoir Q
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
             2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
                 prhs, 3, nQdot);
     // Recevoir muscleStates
     std::vector<Eigen::VectorXd> Fm = getParameterMuscleForceNorm(prhs,4,
@@ -63,7 +63,7 @@ void Matlab_muscleJointTorqueFromMuscleForce( int, mxArray *plhs[],
     double *GeneralizedTorque = mxGetPr(plhs[0]);
 
     // Remplir le output
-    biorbd::rigidbody::GeneralizedTorque muscleTorque;
+    BIORBD_NAMESPACE::rigidbody::GeneralizedTorque muscleTorque;
     for (unsigned int i=0; i<nFrame; ++i) {
         if (updateKin) {
             muscleTorque = model->muscularJointTorque(Fm[i], Q[i], QDot[i]);

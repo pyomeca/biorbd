@@ -4,7 +4,7 @@
 #include "biorbdConfig.h"
 #include "Utils/Vector.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace rigidbody
 {
@@ -13,7 +13,7 @@ class Joints;
 ///
 /// \brief Class GeneralizedTorque
 ///
-class BIORBD_API GeneralizedTorque : public biorbd::utils::Vector
+class BIORBD_API GeneralizedTorque : public utils::Vector
 {
 public:
 
@@ -33,14 +33,14 @@ public:
     /// \brief Construct generalized torque from a joint model
     /// \param j The joint model
     ///
-    GeneralizedTorque(const biorbd::rigidbody::Joints& j);
+    GeneralizedTorque(const Joints& j);
 
     ///
     /// \brief Construct generalized torque from anoter Generalized torque
     /// \param other The other generalized torque
     ///
     GeneralizedTorque(
-        const biorbd::rigidbody::GeneralizedTorque& other);
+        const GeneralizedTorque& other);
 
     ///
     /// \brief Construct vector from Casadi vector
@@ -57,7 +57,7 @@ public:
     ///
     template<typename OtherDerived> GeneralizedTorque(
         const Eigen::MatrixBase<OtherDerived>& other) :
-        biorbd::utils::Vector(other) {}
+        utils::Vector(other) {}
 
 #endif
 
@@ -83,10 +83,10 @@ public:
     /// \return The current Generalized Torque
     ///
     template<typename OtherDerived>
-    biorbd::rigidbody::GeneralizedTorque& operator=(const Eigen::MatrixBase
+    GeneralizedTorque& operator=(const Eigen::MatrixBase
             <OtherDerived>& other)
     {
-        this->biorbd::utils::Vector::operator=(other);
+        this->utils::Vector::operator=(other);
         return *this;
     }
 
@@ -97,7 +97,7 @@ public:
     /// \param other The vector to copy
     ///
     void operator=(
-        const biorbd::utils::Vector& other);
+        const utils::Vector& other);
 #ifdef BIORBD_USE_CASADI_MATH
 
     ///

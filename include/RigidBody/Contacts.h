@@ -6,7 +6,7 @@
 #include <rbdl/Constraints.h>
 #include "biorbdConfig.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -16,13 +16,9 @@ class Vector;
 class String;
 class SpatialVector;
 }
-}
 
-namespace biorbd
-{
 namespace rigidbody
 {
-class Joints;
 class GeneralizedCoordinates;
 
 ///
@@ -44,14 +40,14 @@ public:
     /// \brief Deep copy of contacts
     /// \return Copy of contacts
     ///
-    biorbd::rigidbody::Contacts DeepCopy() const;
+    Contacts DeepCopy() const;
 
     ///
     /// \brief Deep copy of contacts
     /// \param other The contacts to copy
     ///
     void DeepCopy(
-        const biorbd::rigidbody::Contacts& other);
+        const Contacts& other);
 
     ///
     /// \brief Add a constraint to the constraint set
@@ -63,9 +59,9 @@ public:
     ///
     unsigned int AddConstraint(
         unsigned int body_id,
-        const biorbd::utils::Vector3d &body_point,
-        const biorbd::utils::Vector3d &world_normal,
-        const biorbd::utils::String& name,
+        const utils::Vector3d &body_point,
+        const utils::Vector3d &world_normal,
+        const utils::String& name,
         double acc = 0);
 
     ///
@@ -79,9 +75,9 @@ public:
 
     unsigned int AddConstraint(
         unsigned int body_id,
-        const biorbd::utils::Vector3d &body_point,
-        const biorbd::utils::String& axis,
-        const biorbd::utils::String& name,
+        const utils::Vector3d &body_point,
+        const utils::String& axis,
+        const utils::String& name,
         double acc = 0);
 
     ///
@@ -98,10 +94,10 @@ public:
     unsigned int AddLoopConstraint(
         unsigned int body_id_predecessor,
         unsigned int body_id_successor,
-        const biorbd::utils::RotoTrans& X_predecessor,
-        const biorbd::utils::RotoTrans& X_successor,
-        const biorbd::utils::SpatialVector& axis,
-        const biorbd::utils::String& name,
+        const utils::RotoTrans& X_predecessor,
+        const utils::RotoTrans& X_successor,
+        const utils::SpatialVector& axis,
+        const utils::String& name,
         bool enableStabilization = false,
         double stabilizationParam = 0.1);
 
@@ -132,14 +128,14 @@ public:
     /// \brief Return the name of the all contacts
     /// \return The name of the contacts
     ///
-    std::vector<biorbd::utils::String> contactNames();
+    std::vector<utils::String> contactNames();
 
     ///
     /// \brief Return the name of the contact of a specified axis
     /// \param i The axis
     /// \return The name of the contact of a specified axis
     ///
-    biorbd::utils::String contactName(unsigned int i);
+    utils::String contactName(unsigned int i);
 
     ///
     /// \brief Return the contraints position in the global reference
@@ -147,15 +143,15 @@ public:
     /// \param updateKin Whether the kinematics of the model should be updated from Q
     /// \return The contraints positions in the global reference
     ///
-    std::vector<biorbd::utils::Vector3d> constraintsInGlobal(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+    std::vector<utils::Vector3d> constraintsInGlobal(
+        const GeneralizedCoordinates &Q,
         bool updateKin);
 
     ///
     /// \brief Return the force acting on the contraint
     /// \return The force acting on the contraint
     ///
-    biorbd::utils::Vector getForce() const;
+    utils::Vector getForce() const;
 
 protected:
     std::shared_ptr<unsigned int> m_nbreConstraint; ///< Number of constraints

@@ -15,14 +15,14 @@ void Matlab_ContactGamma( int, mxArray *plhs[],
                                "4 arguments are required where the 2nd is the handler on the model, 3rd is the Q and 4th is the Qdot");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2,
+    BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2,
             nQ).begin();
-    biorbd::rigidbody::GeneralizedVelocity QDot = *getParameterQdot(prhs, 3,
+    BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity QDot = *getParameterQdot(prhs, 3,
             nQdot).begin();
     unsigned int nContacts = model->nbContacts();
 

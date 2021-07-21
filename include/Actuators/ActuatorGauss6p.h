@@ -4,7 +4,7 @@
 #include "biorbdConfig.h"
 #include "Actuators/Actuator.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace rigidbody
 {
@@ -32,7 +32,7 @@ public:
     /// \param other The other Gauss6p actuator to copy
     ///
     ActuatorGauss6p(
-        const biorbd::actuator::ActuatorGauss6p& other);
+        const ActuatorGauss6p& other);
 
     ///
     /// \brief Construct Gauss6p actuator
@@ -53,18 +53,18 @@ public:
     ///
     ActuatorGauss6p(
         int direction,
-        const biorbd::utils::Scalar& Tmax,
-        const biorbd::utils::Scalar& T0,
-        const biorbd::utils::Scalar& wmax,
-        const biorbd::utils::Scalar& wc,
-        const biorbd::utils::Scalar& amin,
-        const biorbd::utils::Scalar& wr,
-        const biorbd::utils::Scalar& w1,
-        const biorbd::utils::Scalar& r,
-        const biorbd::utils::Scalar& qopt,
-        const biorbd::utils::Scalar& facteur,
-        const biorbd::utils::Scalar& r2,
-        const biorbd::utils::Scalar& qopt2,
+        const utils::Scalar& Tmax,
+        const utils::Scalar& T0,
+        const utils::Scalar& wmax,
+        const utils::Scalar& wc,
+        const utils::Scalar& amin,
+        const utils::Scalar& wr,
+        const utils::Scalar& w1,
+        const utils::Scalar& r,
+        const utils::Scalar& qopt,
+        const utils::Scalar& facteur,
+        const utils::Scalar& r2,
+        const utils::Scalar& qopt2,
         unsigned int dofIdx);
 
     ///
@@ -87,20 +87,20 @@ public:
     ///
     ActuatorGauss6p(
         int direction,
-        const biorbd::utils::Scalar& Tmax,
-        const biorbd::utils::Scalar& T0,
-        const biorbd::utils::Scalar& wmax,
-        const biorbd::utils::Scalar& wc,
-        const biorbd::utils::Scalar& amin,
-        const biorbd::utils::Scalar& wr,
-        const biorbd::utils::Scalar& w1,
-        const biorbd::utils::Scalar& r,
-        const biorbd::utils::Scalar& qopt,
-        const biorbd::utils::Scalar& facteur,
-        const biorbd::utils::Scalar& r2,
-        const biorbd::utils::Scalar& qopt2,
+        const utils::Scalar& Tmax,
+        const utils::Scalar& T0,
+        const utils::Scalar& wmax,
+        const utils::Scalar& wc,
+        const utils::Scalar& amin,
+        const utils::Scalar& wr,
+        const utils::Scalar& w1,
+        const utils::Scalar& r,
+        const utils::Scalar& qopt,
+        const utils::Scalar& facteur,
+        const utils::Scalar& r2,
+        const utils::Scalar& qopt2,
         unsigned int dofIdx,
-        const biorbd::utils::String &jointName);
+        const utils::String &jointName);
 
     ///
     /// \brief Destroy the class properly
@@ -111,21 +111,21 @@ public:
     /// \brief Deep copy of the Gauss6p actuator
     /// \return A deep copy of the Gauss6p actuator
     ///
-    biorbd::actuator::ActuatorGauss6p DeepCopy() const;
+    ActuatorGauss6p DeepCopy() const;
 
     ///
     /// \brief Deep copy of the Gauss 3p actuator from another Gauss6p actuator
     /// \param other The Gauss6p actuator to copy
     ///
     void DeepCopy(
-        const biorbd::actuator::ActuatorGauss6p& other);
+        const ActuatorGauss6p& other);
 
     ///
     /// \brief Return the maximal torque (invalid)
     /// \return The maximal torque
     /// torqueMax for ActuatorGauss6p must be called with Q and Qdot
     ///
-    virtual biorbd::utils::Scalar torqueMax();
+    virtual utils::Scalar torqueMax();
 
     ///
     /// \brief Return the maximal torque at a given Q and Qdot
@@ -133,9 +133,9 @@ public:
     /// \param Qdot The generalized velocities of the actuator
     /// \return The maximal torque
     ///
-    virtual biorbd::utils::Scalar torqueMax(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedVelocity &Qdot);
+    virtual utils::Scalar torqueMax(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &Qdot);
 
 protected:
     ///
@@ -145,33 +145,33 @@ protected:
 
     // For informations on these parameters, see Monique Iris Jackson's these from page 54
     // Angular/velocity relationship
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_k;         ///< Ratio of slope of the eccentric and concentric phases
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_Tmax;      ///< Maximum torque in the eccentric phase
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_T0;        ///< Maximum torque isometric
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_wmax;      ///< Maximum angular velocity above which torque cannot be produced
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_wc;        ///< Angular velocity of the vertical asymptote of the concentric hyperbola
 
     // Activation/velocity relationship
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_amax;      ///< Maximum activation level (set to 1)
-    std::shared_ptr<biorbd::utils::Scalar> m_amin;      ///< Low plateau level
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar> m_amin;      ///< Low plateau level
+    std::shared_ptr<utils::Scalar>
     m_wr;        ///< 1/10 of the distance amax/amin
-    std::shared_ptr<biorbd::utils::Scalar> m_w1;        ///< Mid point plateau
+    std::shared_ptr<utils::Scalar> m_w1;        ///< Mid point plateau
 
     // Torque/angle relationship
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_r;         ///< width of the 1st gaussian curve
-    std::shared_ptr<biorbd::utils::Scalar> m_qopt;      ///< 1st Optimal position
-    std::shared_ptr<biorbd::utils::Scalar> m_facteur;   ///< Factor of the 6p
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar> m_qopt;      ///< 1st Optimal position
+    std::shared_ptr<utils::Scalar> m_facteur;   ///< Factor of the 6p
+    std::shared_ptr<utils::Scalar>
     m_r2;        ///< width of the 2nd gaussian curve
-    std::shared_ptr<biorbd::utils::Scalar> m_qopt2;     ///< 2nd Optimal position
+    std::shared_ptr<utils::Scalar> m_qopt2;     ///< 2nd Optimal position
 
 };
 

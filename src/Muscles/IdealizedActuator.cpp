@@ -5,116 +5,118 @@
 #include "Muscles/Characteristics.h"
 #include "Muscles/State.h"
 
-biorbd::muscles::IdealizedActuator::IdealizedActuator() :
-    biorbd::muscles::Muscle()
+using namespace BIORBD_NAMESPACE;
+
+muscles::IdealizedActuator::IdealizedActuator() :
+    muscles::Muscle()
 {
     setType();
 }
 
-biorbd::muscles::IdealizedActuator::IdealizedActuator(
-    const biorbd::utils::String& name,
-    const biorbd::muscles::Geometry& geometry,
-    const biorbd::muscles::Characteristics& characteristics) :
-    biorbd::muscles::Muscle(name,geometry,characteristics)
+muscles::IdealizedActuator::IdealizedActuator(
+    const utils::String& name,
+    const muscles::Geometry& geometry,
+    const muscles::Characteristics& characteristics) :
+    muscles::Muscle(name,geometry,characteristics)
 {
     setType();
 }
 
-biorbd::muscles::IdealizedActuator::IdealizedActuator(
-    const biorbd::utils::String &name,
-    const biorbd::muscles::Geometry &geometry,
-    const biorbd::muscles::Characteristics &characteristics,
-    const biorbd::muscles::State &emg) :
-    biorbd::muscles::Muscle(name,geometry,characteristics,emg)
+muscles::IdealizedActuator::IdealizedActuator(
+    const utils::String &name,
+    const muscles::Geometry &geometry,
+    const muscles::Characteristics &characteristics,
+    const muscles::State &emg) :
+    muscles::Muscle(name,geometry,characteristics,emg)
 {
     setType();
 }
 
-biorbd::muscles::IdealizedActuator::IdealizedActuator(
-    const biorbd::utils::String &name,
-    const biorbd::muscles::Geometry &geometry,
-    const biorbd::muscles::Characteristics &characteristics,
-    const biorbd::muscles::PathModifiers &pathModifiers) :
-    biorbd::muscles::Muscle(name,geometry,characteristics, pathModifiers)
+muscles::IdealizedActuator::IdealizedActuator(
+    const utils::String &name,
+    const muscles::Geometry &geometry,
+    const muscles::Characteristics &characteristics,
+    const muscles::PathModifiers &pathModifiers) :
+    muscles::Muscle(name,geometry,characteristics, pathModifiers)
 {
     setType();
 }
 
-biorbd::muscles::IdealizedActuator::IdealizedActuator(
-    const biorbd::utils::String& name,
-    const biorbd::muscles::Geometry& geometry,
-    const biorbd::muscles::Characteristics& characteristics,
-    const biorbd::muscles::PathModifiers &pathModifiers,
-    const biorbd::muscles::State& emg) :
-    biorbd::muscles::Muscle(name,geometry,characteristics,pathModifiers,emg)
+muscles::IdealizedActuator::IdealizedActuator(
+    const utils::String& name,
+    const muscles::Geometry& geometry,
+    const muscles::Characteristics& characteristics,
+    const muscles::PathModifiers &pathModifiers,
+    const muscles::State& emg) :
+    muscles::Muscle(name,geometry,characteristics,pathModifiers,emg)
 {
     setType();
 }
 
-biorbd::muscles::IdealizedActuator::IdealizedActuator(const
-        biorbd::muscles::Muscle &other) :
-    biorbd::muscles::Muscle (other)
+muscles::IdealizedActuator::IdealizedActuator(const
+        muscles::Muscle &other) :
+    muscles::Muscle (other)
 {
 
 }
 
-biorbd::muscles::IdealizedActuator::IdealizedActuator(const
-        std::shared_ptr<biorbd::muscles::Muscle> other) :
-    biorbd::muscles::Muscle (other)
+muscles::IdealizedActuator::IdealizedActuator(const
+        std::shared_ptr<muscles::Muscle> other) :
+    muscles::Muscle (other)
 {
 
 }
 
-biorbd::muscles::IdealizedActuator
-biorbd::muscles::IdealizedActuator::DeepCopy() const
+muscles::IdealizedActuator
+muscles::IdealizedActuator::DeepCopy() const
 {
-    biorbd::muscles::IdealizedActuator copy;
+    muscles::IdealizedActuator copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void biorbd::muscles::IdealizedActuator::DeepCopy(const
-        biorbd::muscles::IdealizedActuator &other)
+void muscles::IdealizedActuator::DeepCopy(const
+        muscles::IdealizedActuator &other)
 {
-    biorbd::muscles::Muscle::DeepCopy(other);
+    muscles::Muscle::DeepCopy(other);
 }
 
-const biorbd::utils::Scalar& biorbd::muscles::IdealizedActuator::force(
-    const biorbd::muscles::State &emg)
+const utils::Scalar& muscles::IdealizedActuator::force(
+    const muscles::State &emg)
 {
     computeForce(emg);
     return *m_force;
 }
 
-const biorbd::utils::Scalar& biorbd::muscles::IdealizedActuator::force(
-    biorbd::rigidbody::Joints &,
-    const biorbd::rigidbody::GeneralizedCoordinates &,
-    const biorbd::rigidbody::GeneralizedVelocity &,
-    const biorbd::muscles::State &emg,
+const utils::Scalar& muscles::IdealizedActuator::force(
+    rigidbody::Joints &,
+    const rigidbody::GeneralizedCoordinates &,
+    const rigidbody::GeneralizedVelocity &,
+    const muscles::State &emg,
     int)
 {
     computeForce(emg);
     return *m_force;
 }
 
-const biorbd::utils::Scalar& biorbd::muscles::IdealizedActuator::force(
-    biorbd::rigidbody::Joints &,
-    const biorbd::rigidbody::GeneralizedCoordinates &,
-    const biorbd::muscles::State &emg,
+const utils::Scalar& muscles::IdealizedActuator::force(
+    rigidbody::Joints &,
+    const rigidbody::GeneralizedCoordinates &,
+    const muscles::State &emg,
     int)
 {
     computeForce(emg);
     return *m_force;
 }
 
-biorbd::utils::Scalar
-biorbd::muscles::IdealizedActuator::getForceFromActivation(
-    const biorbd::muscles::State &emg)
+utils::Scalar
+muscles::IdealizedActuator::getForceFromActivation(
+    const muscles::State &emg)
 {
     return characteristics().forceIsoMax() * (emg.activation());
 }
 
-void biorbd::muscles::IdealizedActuator::setType()
+void muscles::IdealizedActuator::setType()
 {
-    *m_type = biorbd::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR;
+    *m_type = muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR;
 }

@@ -5,7 +5,7 @@
 #include "Muscles/Compound.h"
 #include "Utils/Scalar.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -23,7 +23,7 @@ class Muscles;
 ///
 /// \brief Base class of all muscle
 ///
-class BIORBD_API Muscle : public biorbd::muscles::Compound
+class BIORBD_API Muscle : public Compound
 {
     friend Muscles;
 
@@ -40,9 +40,9 @@ public:
     /// \param characteristics Muscle characteristics from an initial state
     ///
     Muscle(
-        const biorbd::utils::String& name,
-        const biorbd::muscles::Geometry& position,
-        const biorbd::muscles::Characteristics& characteristics);
+        const utils::String& name,
+        const Geometry& position,
+        const Characteristics& characteristics);
 
     ///
     /// \brief Construct a muscle
@@ -52,10 +52,10 @@ public:
     /// \param emg Dynamic state
     ///
     Muscle(
-        const biorbd::utils::String& name,
-        const biorbd::muscles::Geometry& position,
-        const biorbd::muscles::Characteristics& characteristics,
-        const biorbd::muscles::State& emg);
+        const utils::String& name,
+        const Geometry& position,
+        const Characteristics& characteristics,
+        const State& emg);
 
     ///
     /// \brief Construct a muscle
@@ -65,10 +65,10 @@ public:
     /// \param pathModifiers The path modifiers
     ///
     Muscle(
-        const biorbd::utils::String& name,
-        const biorbd::muscles::Geometry& position,
-        const biorbd::muscles::Characteristics& characteristics,
-        const biorbd::muscles::PathModifiers& pathModifiers);
+        const utils::String& name,
+        const Geometry& position,
+        const Characteristics& characteristics,
+        const PathModifiers& pathModifiers);
 
     ///
     /// \brief Construct a muscle
@@ -79,25 +79,25 @@ public:
     /// \param emg The dynamic state
     ///
     Muscle(
-        const biorbd::utils::String& name,
-        const biorbd::muscles::Geometry& position,
-        const biorbd::muscles::Characteristics& characteristics,
-        const biorbd::muscles::PathModifiers& pathModifiers,
-        const biorbd::muscles::State& emg);
+        const utils::String& name,
+        const Geometry& position,
+        const Characteristics& characteristics,
+        const PathModifiers& pathModifiers,
+        const State& emg);
 
     ///
     /// \brief Construct a muscle from another muscle
     /// \param other The other muscle
     ///
     Muscle(
-        const biorbd::muscles::Muscle& other);
+        const Muscle& other);
 
     ///
     /// \brief Construct a muscle from another muscle
     /// \param other The other muscle
     ///
     Muscle(
-        const std::shared_ptr<biorbd::muscles::Muscle> other);
+        const std::shared_ptr<Muscle> other);
 
     ///
     /// \brief Destroy class properly
@@ -109,7 +109,7 @@ public:
     /// \param other The muscle to copy
     ///
     void DeepCopy(
-        const biorbd::muscles::Muscle& other);
+        const Muscle& other);
 
     // Get and set
 
@@ -120,9 +120,9 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     /// \return The length of the muscle
     ///
-    const biorbd::utils::Scalar& length(
-        biorbd::rigidbody::Joints& model,
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+    const utils::Scalar& length(
+        rigidbody::Joints& model,
+        const rigidbody::GeneralizedCoordinates& Q,
         int updateKin = 2);
 
     ///
@@ -132,9 +132,9 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     /// \return The musculo tendon length
     ///
-    const biorbd::utils::Scalar& musculoTendonLength(
-        biorbd::rigidbody::Joints& model,
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
+    const utils::Scalar& musculoTendonLength(
+        rigidbody::Joints& model,
+        const rigidbody::GeneralizedCoordinates& Q,
         int updateKin = 2);
 
     ///
@@ -145,10 +145,10 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     //// \return The velocity of the muscle
     ///
-    const biorbd::utils::Scalar& velocity(
-        biorbd::rigidbody::Joints& model,
-        const biorbd::rigidbody::GeneralizedCoordinates& Q,
-        const biorbd::rigidbody::GeneralizedVelocity& Qdot,
+    const utils::Scalar& velocity(
+        rigidbody::Joints& model,
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& Qdot,
         bool updateKin = true);
 
     ///
@@ -158,8 +158,8 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     ///
     void updateOrientations(
-        biorbd::rigidbody::Joints &model,
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
+        rigidbody::Joints &model,
+        const rigidbody::GeneralizedCoordinates &Q,
         int updateKin = 2);
 
     ///
@@ -170,9 +170,9 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     ///
     void updateOrientations(
-        biorbd::rigidbody::Joints &model,
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedVelocity &Qdot,
+        rigidbody::Joints &model,
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &Qdot,
         int updateKin = 2);
 
     ///
@@ -181,8 +181,8 @@ public:
     /// \param jacoPointsInGlobal The jacobian matrix
     ///
     void updateOrientations(
-        std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
-        biorbd::utils::Matrix& jacoPointsInGlobal);
+        std::vector<utils::Vector3d>& musclePointsInGlobal,
+        utils::Matrix& jacoPointsInGlobal);
 
     ///
     /// \brief Update by hand the position of the origin and insertion nodes of the muscle
@@ -191,35 +191,35 @@ public:
     /// \param Qdot The genelized velocities
     ///
     void updateOrientations(
-        std::vector<biorbd::utils::Vector3d>& musclePointsInGlobal,
-        biorbd::utils::Matrix& jacoPointsInGlobal,
-        const biorbd::rigidbody::GeneralizedVelocity &Qdot);
+        std::vector<utils::Vector3d>& musclePointsInGlobal,
+        utils::Matrix& jacoPointsInGlobal,
+        const rigidbody::GeneralizedVelocity &Qdot);
 
     ///
     /// \brief Set the position of all the points attached to the muscle (0 being the origin)
     /// \param positions New value of the position
     ///
     void setPosition(
-        const biorbd::muscles::Geometry &positions);
+        const Geometry &positions);
 
     ///
     /// \brief Return the position of all the points attached to the muscle (0 being the origin)
     /// \return The positions
     ///
-    const biorbd::muscles::Geometry& position() const;
+    const Geometry& position() const;
 
     ///
     /// \brief Set the muscle characteristics
     /// \param characteristics New value of the muscle characteristics
     ///
     void setCharacteristics(
-        const biorbd::muscles::Characteristics &characteristics);
+        const Characteristics &characteristics);
 
     ///
     /// \brief Return the muscle characteristics
     /// \return The muscle characteristics
     ///
-    const biorbd::muscles::Characteristics& characteristics() const;
+    const Characteristics& characteristics() const;
 
     ///
     /// \brief Return the muscle points in global reference frame
@@ -227,41 +227,41 @@ public:
     /// \param Q The generalized coordinates
     /// \return The muscle points in global reference frame
     ///
-    const std::vector<biorbd::utils::Vector3d>& musclesPointsInGlobal(
-        biorbd::rigidbody::Joints &model,
-        const biorbd::rigidbody::GeneralizedCoordinates &Q);
+    const std::vector<utils::Vector3d>& musclesPointsInGlobal(
+        rigidbody::Joints &model,
+        const rigidbody::GeneralizedCoordinates &Q);
 
     ///
     /// \brief Return the previously computed muscle points in global reference frame
     /// \return The muscle points in global reference frame
     ///
-    const std::vector<biorbd::utils::Vector3d>& musclesPointsInGlobal() const;
+    const std::vector<utils::Vector3d>& musclesPointsInGlobal() const;
 
     ///
     /// \brief Set the maximal isometric force
     /// \param forceMax The force to set
     ///
     void setForceIsoMax(
-        const biorbd::utils::Scalar& forceMax);
+        const utils::Scalar& forceMax);
 
     ///
     /// \brief Set the dynamic state
     /// \param emg The dynamic state value
     ///
     void setState(
-        const biorbd::muscles::State &emg);
+        const State &emg);
 
     ///
     /// \brief Return the dynamic state
     /// \return The dynamic state
     ///
-    const biorbd::muscles::State& state() const;
+    const State& state() const;
 
     ///
     /// \brief Return the dynamic state
     /// \return The dynamic state
     ///
-    biorbd::muscles::State& state();
+    State& state();
 
     ///
     /// \brief Return the activation time derivative
@@ -269,8 +269,8 @@ public:
     /// \param alreadyNormalized If the emg is already normalized
     /// \return The activation time derivative
     ///
-    const biorbd::utils::Scalar& activationDot(
-        const biorbd::muscles::State& state,
+    const utils::Scalar& activationDot(
+        const State& state,
         bool alreadyNormalized = false) const;
 protected:
     ///
@@ -278,21 +278,21 @@ protected:
     /// \param emg EMG data
     ///
     virtual void computeForce(
-        const biorbd::muscles::State &emg);
+        const State &emg);
 
     ///
     /// \brief Function allowing modification of the way the multiplication is done in computeForce(EMG)
     /// \param emg The EMG data
     /// \return The force from activation
     ///
-    virtual biorbd::utils::Scalar getForceFromActivation(const
-            biorbd::muscles::State &emg) = 0;
+    virtual utils::Scalar getForceFromActivation(const
+            State &emg) = 0;
 
-    std::shared_ptr<biorbd::muscles::Geometry>
+    std::shared_ptr<Geometry>
     m_position; ///< The position of all the nodes of the muscle (0 being the origin and last being insertion
-    std::shared_ptr<biorbd::muscles::Characteristics>
+    std::shared_ptr<Characteristics>
     m_characteristics; ///< The muscle characteristics
-    std::shared_ptr<biorbd::muscles::State> m_state; ///< The dynamic state
+    std::shared_ptr<State> m_state; ///< The dynamic state
 
 };
 

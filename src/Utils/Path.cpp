@@ -16,60 +16,62 @@
     #include <unistd.h>
 #endif
 
-biorbd::utils::Path::Path() :
-    m_originalPath(std::make_shared<biorbd::utils::String>()),
-    m_folder(std::make_shared<biorbd::utils::String>()),
+using namespace BIORBD_NAMESPACE;
+
+utils::Path::Path() :
+    m_originalPath(std::make_shared<utils::String>()),
+    m_folder(std::make_shared<utils::String>()),
     m_isFolderAbsolute(std::make_shared<bool>()),
-    m_filename(std::make_shared<biorbd::utils::String>()),
-    m_extension(std::make_shared<biorbd::utils::String>())
+    m_filename(std::make_shared<utils::String>()),
+    m_extension(std::make_shared<utils::String>())
 {
 
 }
 
-biorbd::utils::Path::Path(
+utils::Path::Path(
     const char *path) :
-    m_originalPath(std::make_shared<biorbd::utils::String>(path)),
-    m_folder(std::make_shared<biorbd::utils::String>()),
+    m_originalPath(std::make_shared<utils::String>(path)),
+    m_folder(std::make_shared<utils::String>()),
     m_isFolderAbsolute(std::make_shared<bool>()),
-    m_filename(std::make_shared<biorbd::utils::String>()),
-    m_extension(std::make_shared<biorbd::utils::String>())
+    m_filename(std::make_shared<utils::String>()),
+    m_extension(std::make_shared<utils::String>())
 {
     parseFileName(*m_originalPath, *m_folder, *m_filename, *m_extension);
     setIsFolderAbsolute();
 }
 
-biorbd::utils::Path::Path(
-    const biorbd::utils::String &path) :
-    m_originalPath(std::make_shared<biorbd::utils::String>(path)),
-    m_folder(std::make_shared<biorbd::utils::String>()),
+utils::Path::Path(
+    const utils::String &path) :
+    m_originalPath(std::make_shared<utils::String>(path)),
+    m_folder(std::make_shared<utils::String>()),
     m_isFolderAbsolute(std::make_shared<bool>()),
-    m_filename(std::make_shared<biorbd::utils::String>()),
-    m_extension(std::make_shared<biorbd::utils::String>())
+    m_filename(std::make_shared<utils::String>()),
+    m_extension(std::make_shared<utils::String>())
 {
     parseFileName(*m_originalPath, *m_folder, *m_filename, *m_extension);
     setIsFolderAbsolute();
 }
 
-biorbd::utils::Path::Path(
+utils::Path::Path(
     const std::basic_string<char> &path) :
-    m_originalPath(std::make_shared<biorbd::utils::String>(path)),
-    m_folder(std::make_shared<biorbd::utils::String>()),
+    m_originalPath(std::make_shared<utils::String>(path)),
+    m_folder(std::make_shared<utils::String>()),
     m_isFolderAbsolute(std::make_shared<bool>()),
-    m_filename(std::make_shared<biorbd::utils::String>()),
-    m_extension(std::make_shared<biorbd::utils::String>())
+    m_filename(std::make_shared<utils::String>()),
+    m_extension(std::make_shared<utils::String>())
 {
     parseFileName(*m_originalPath, *m_folder, *m_filename, *m_extension);
     setIsFolderAbsolute();
 }
 
-biorbd::utils::Path biorbd::utils::Path::DeepCopy() const
+utils::Path utils::Path::DeepCopy() const
 {
-    biorbd::utils::Path copy;
+    utils::Path copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void biorbd::utils::Path::DeepCopy(
+void utils::Path::DeepCopy(
     const Path &other)
 {
     *m_originalPath = *other.m_originalPath;
@@ -79,17 +81,17 @@ void biorbd::utils::Path::DeepCopy(
     *m_extension = *other.m_extension;
 }
 
-bool biorbd::utils::Path::isFileExist() const
+bool utils::Path::isFileExist() const
 {
     return isFileExist(absolutePath());
 }
-bool biorbd::utils::Path::isFileExist(
+bool utils::Path::isFileExist(
     const Path& path)
 {
     return isFileExist(path.absolutePath());
 }
-bool biorbd::utils::Path::isFileExist(
-    const biorbd::utils::String& path)
+bool utils::Path::isFileExist(
+    const utils::String& path)
 {
     if (FILE *file = fopen(
 #ifdef _WIN32
@@ -105,7 +107,7 @@ bool biorbd::utils::Path::isFileExist(
     }
 }
 
-bool biorbd::utils::Path::isFileReadable() const
+bool utils::Path::isFileReadable() const
 {
     std::ifstream fichier(
 #ifdef _WIN32
@@ -119,19 +121,19 @@ bool biorbd::utils::Path::isFileReadable() const
     return isOpen;
 }
 
-bool biorbd::utils::Path::isFolderExist() const
+bool utils::Path::isFolderExist() const
 {
     return isFolderExist(*this);
 }
 
-bool biorbd::utils::Path::isFolderExist(
+bool utils::Path::isFolderExist(
     const Path &path)
 {
     return isFolderExist(path.folder());
 }
 
-bool biorbd::utils::Path::isFolderExist(
-    const biorbd::utils::String & path)
+bool utils::Path::isFolderExist(
+    const utils::String & path)
 {
 #ifdef _WIN32
     if (GetFileAttributesA(toWindowsFormat(path).c_str())
@@ -156,13 +158,13 @@ bool biorbd::utils::Path::isFolderExist(
 
 }
 
-void biorbd::utils::Path::parseFileName(
-    const biorbd::utils::String &path,
-    biorbd::utils::String &folder,
-    biorbd::utils::String &filename,
-    biorbd::utils::String &extension)
+void utils::Path::parseFileName(
+    const utils::String &path,
+    utils::String &folder,
+    utils::String &filename,
+    utils::String &extension)
 {
-    biorbd::utils::String pathSep(toUnixFormat(path));
+    utils::String pathSep(toUnixFormat(path));
 
     size_t sepPos(pathSep.rfind("/"));
 
@@ -192,26 +194,26 @@ void biorbd::utils::Path::parseFileName(
     filename = pathSep.substr(sepPos+1, ext- sepPos-1);
 }
 
-biorbd::utils::String biorbd::utils::Path::relativePath()  const
+utils::String utils::Path::relativePath()  const
 {
     return relativePath(*this, currentDir());
 }
 
-biorbd::utils::String biorbd::utils::Path::relativePath(
-    const biorbd::utils::String& relativeTo) const
+utils::String utils::Path::relativePath(
+    const utils::String& relativeTo) const
 {
     return relativePath(*this, relativeTo);
 }
 
-biorbd::utils::String biorbd::utils::Path::relativePath(
-    const biorbd::utils::Path &path,
-    const biorbd::utils::String &relativeTo)
+utils::String utils::Path::relativePath(
+    const utils::Path &path,
+    const utils::String &relativeTo)
 {
-    biorbd::utils::String me(path.absolutePath());
-    biorbd::utils::String currentDir(relativeTo);
+    utils::String me(path.absolutePath());
+    utils::String currentDir(relativeTo);
 
-    biorbd::utils::String meFirstPart("");
-    biorbd::utils::String currentDirFirstPart("");
+    utils::String meFirstPart("");
+    utils::String currentDirFirstPart("");
 
     // Set the separator to the 0 position
     size_t sepMe = std::string::npos;
@@ -233,7 +235,7 @@ biorbd::utils::String biorbd::utils::Path::relativePath(
         // we still can advance to find de closest relative part
     } while(!meFirstPart.compare(currentDirFirstPart));
 
-    biorbd::utils::String outPath;
+    utils::String outPath;
     while (currentDir.compare("")) {
         // Tant que currentDir n'est pas vide, reculer
         // Trouver le prochain séparateur
@@ -262,22 +264,22 @@ biorbd::utils::String biorbd::utils::Path::relativePath(
     return outPath;
 }
 
-biorbd::utils::String biorbd::utils::Path::absoluteFolder(
-    const biorbd::utils::Path &path)
+utils::String utils::Path::absoluteFolder(
+    const utils::Path &path)
 {
     if (*path.m_isFolderAbsolute) {
         return path.folder();
     }
 
-    biorbd::utils::String base;
+    utils::String base;
 #ifdef _WIN32
-    biorbd::utils::String current(currentDir());
+    utils::String current(currentDir());
     std::smatch matches;
 
     if (std::regex_search(current, matches, std::regex("^([A-Z]):[\\/].*$"))) {
         base = matches[1].str() + ":/";
     } else {
-        biorbd::utils::Error::raise("I could not find the current drive to estimate the path");
+        utils::Error::raise("I could not find the current drive to estimate the path");
     }
 #else
     base = "/";
@@ -285,7 +287,7 @@ biorbd::utils::String biorbd::utils::Path::absoluteFolder(
     return base + relativePath(path, base);
 }
 
-biorbd::utils::String biorbd::utils::Path::absoluteFolder() const
+utils::String utils::Path::absoluteFolder() const
 {
     if (*m_isFolderAbsolute) {
         return *m_folder;
@@ -294,7 +296,7 @@ biorbd::utils::String biorbd::utils::Path::absoluteFolder() const
     }
 }
 
-biorbd::utils::String biorbd::utils::Path::absolutePath() const
+utils::String utils::Path::absolutePath() const
 {
     if (m_filename->compare("")) {
         if (m_extension->compare("")) {
@@ -307,10 +309,10 @@ biorbd::utils::String biorbd::utils::Path::absolutePath() const
     }
 }
 
-biorbd::utils::String biorbd::utils::Path::toUnixFormat(
-    const biorbd::utils::String& path)
+utils::String utils::Path::toUnixFormat(
+    const utils::String& path)
 {
-    biorbd::utils::String pathOut(path);
+    utils::String pathOut(path);
 
     // Depending on the string origin, "\\" is either the character "\"
     // escaped or the character "\" written twice. Test for both
@@ -330,10 +332,10 @@ biorbd::utils::String biorbd::utils::Path::toUnixFormat(
     return pathOut;
 }
 
-biorbd::utils::String biorbd::utils::Path::toWindowsFormat(
-    const biorbd::utils::String &path)
+utils::String utils::Path::toWindowsFormat(
+    const utils::String &path)
 {
-    biorbd::utils::String pathOut(path);
+    utils::String pathOut(path);
     size_t pos(pathOut.rfind("/"));
     while (pos != std::string::npos) {
         pathOut.replace(pos, 1, "\\\\");
@@ -342,43 +344,43 @@ biorbd::utils::String biorbd::utils::Path::toWindowsFormat(
     return pathOut;
 }
 
-const biorbd::utils::String &biorbd::utils::Path::originalPath() const
+const utils::String &utils::Path::originalPath() const
 {
     return *m_originalPath;
 }
 
-const biorbd::utils::String &biorbd::utils::Path::folder() const
+const utils::String &utils::Path::folder() const
 {
     return *m_folder;
 }
 
-void biorbd::utils::Path::setFilename(
-    const biorbd::utils::String& name)
+void utils::Path::setFilename(
+    const utils::String& name)
 {
     *m_filename = name;
 }
 
-const biorbd::utils::String& biorbd::utils::Path::filename() const
+const utils::String& utils::Path::filename() const
 {
     return *m_filename;
 }
 
-void biorbd::utils::Path::setExtension(
-    const biorbd::utils::String &ext)
+void utils::Path::setExtension(
+    const utils::String &ext)
 {
     *m_extension = ext;
 }
 
-const biorbd::utils::String& biorbd::utils::Path::extension() const
+const utils::String& utils::Path::extension() const
 {
     return *m_extension;
 }
 
-void biorbd::utils::Path::setIsFolderAbsolute()
+void utils::Path::setIsFolderAbsolute()
 {
-    biorbd::utils::String base;
+    utils::String base;
 #ifdef _WIN32
-    biorbd::utils::String current(*m_folder);
+    utils::String current(*m_folder);
     std::smatch matches;
 
     if (std::regex_search(current, matches, std::regex("^([A-Z]):[\\/].*$"))) {
@@ -397,23 +399,23 @@ void biorbd::utils::Path::setIsFolderAbsolute()
 #endif
 }
 
-biorbd::utils::String biorbd::utils::Path::currentDir()
+utils::String utils::Path::currentDir()
 {
     char buff[FILENAME_MAX];
 #ifdef _WIN32
-    biorbd::utils::Error::check(_getcwd(buff, FILENAME_MAX),
+    utils::Error::check(_getcwd(buff, FILENAME_MAX),
                                 "Could not find the current directory");
 #else
-    biorbd::utils::Error::check(getcwd(buff, FILENAME_MAX),
+    utils::Error::check(getcwd(buff, FILENAME_MAX),
                                 "Could not find the current directory");
 #endif
     return toUnixFormat(buff) + "/";
 }
 
-void biorbd::utils::Path::createFolder() const
+void utils::Path::createFolder() const
 {
-    const biorbd::utils::String& tp(folder());
-    biorbd::utils::String tp2(tp);
+    const utils::String& tp(folder());
+    utils::String tp2(tp);
 
     size_t sep = std::string::npos;
     size_t sepTrack = 0;
@@ -428,7 +430,7 @@ void biorbd::utils::Path::createFolder() const
 
             // Séparer la première et la dernière partie
             if (!isFolderExist(
-                        static_cast<biorbd::utils::String>(
+                        static_cast<utils::String>(
                             tp.substr(0, sepTrack)))) {
 #ifdef _WIN32
                 _mkdir(toWindowsFormat(tp.substr(0, sepTrack)).c_str());

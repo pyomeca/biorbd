@@ -4,7 +4,7 @@
 #include "biorbdConfig.h"
 #include "Actuators/Actuator.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace actuator
 {
@@ -25,7 +25,7 @@ public:
     /// \param other The other constant actuator
     ///
     ActuatorConstant(
-        const biorbd::actuator::ActuatorConstant& other);
+        const ActuatorConstant& other);
 
     ///
     /// \brief Construct a constant actuator
@@ -35,7 +35,7 @@ public:
     ///
     ActuatorConstant(
         int direction,
-        const biorbd::utils::Scalar& Tmax,
+        const utils::Scalar& Tmax,
         unsigned int dofIdx);
 
     ///
@@ -47,35 +47,35 @@ public:
     ///
     ActuatorConstant(
         int direction,
-        const biorbd::utils::Scalar& Tmax,
+        const utils::Scalar& Tmax,
         unsigned int dofIdx,
-        const biorbd::utils::String &jointName);
+        const utils::String &jointName);
 
     ///
     /// \brief Deep copy of the constant actuator
     /// \return A copy of the constant actuator
     ///
-    biorbd::actuator::ActuatorConstant DeepCopy() const;
+    ActuatorConstant DeepCopy() const;
 
     ///
     /// \brief Deep copy of the constant actuator to another constant actuator
     /// \param other The constant actuator to copy
     ///
     void DeepCopy(
-        const biorbd::actuator::ActuatorConstant& other);
+        const ActuatorConstant& other);
 
     ///
     /// \brief Return the maximal torque
     /// \return The maximal torque
     ///
-    virtual biorbd::utils::Scalar torqueMax();
+    virtual utils::Scalar torqueMax();
 
 protected:
     ///
     /// \brief Set the type of the constant actuator
     ///
     virtual void setType();
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_Tmax; ///< Maximal torque that can be done
 
 };

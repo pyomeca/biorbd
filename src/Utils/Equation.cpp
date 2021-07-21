@@ -8,11 +8,13 @@
 #include <math.h>
 #include "Utils/Error.h"
 
-std::vector<biorbd::utils::Equation>
-biorbd::utils::Equation::prepareMathSymbols()
+using namespace BIORBD_NAMESPACE;
+
+std::vector<utils::Equation>
+utils::Equation::prepareMathSymbols()
 {
     // Classify in the order of priority of the operations
-    std::vector<biorbd::utils::Equation> symbols;
+    std::vector<utils::Equation> symbols;
     symbols.push_back("(");
     symbols.push_back(")");
     symbols.push_back("e");
@@ -24,42 +26,42 @@ biorbd::utils::Equation::prepareMathSymbols()
     return symbols;
 }
 
-biorbd::utils::Equation::Equation() :
-    biorbd::utils::String("")
+utils::Equation::Equation() :
+    utils::String("")
 {
 
 }
 
-biorbd::utils::Equation::Equation(const char *c) :
-    biorbd::utils::String(c)
+utils::Equation::Equation(const char *c) :
+    utils::String(c)
 {
 
 }
 
-biorbd::utils::Equation::Equation(const biorbd::utils::String &s) :
-    biorbd::utils::String(s)
+utils::Equation::Equation(const utils::String &s) :
+    utils::String(s)
 {
 
 }
 
-biorbd::utils::Equation::Equation(const std::basic_string<char> &c) :
-    biorbd::utils::String(c)
+utils::Equation::Equation(const std::basic_string<char> &c) :
+    utils::String(c)
 {
 
 }
 
-std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(
-    biorbd::utils::Equation wholeEq,
-    const std::map<biorbd::utils::Equation, double>& variables)
+std::vector<utils::Equation> utils::Equation::splitIntoEquation(
+    utils::Equation wholeEq,
+    const std::map<utils::Equation, double>& variables)
 {
     // output variable
-    std::vector<biorbd::utils::Equation> eq;
+    std::vector<utils::Equation> eq;
 
     // Replace the variables by a number
     replaceVar(wholeEq, variables);
 
     // Declaration of the arithmetic markers
-    const std::vector<biorbd::utils::Equation>& symbols(prepareMathSymbols());
+    const std::vector<utils::Equation>& symbols(prepareMathSymbols());
 
     // All along the string
     while (1) {
@@ -91,7 +93,7 @@ std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(
         } else if (firstIdx == 0) {
             if (!wholeEq(0).compare("-")) {
                 // If the equation starts with "-"
-                std::vector<biorbd::utils::Equation> tp(splitIntoEquation(wholeEq.substr(1),
+                std::vector<utils::Equation> tp(splitIntoEquation(wholeEq.substr(1),
                                                         variables));
                 if (eq.size() != 0 && !eq[eq.size()-1].compare("e") ) {
                     // special case of scientific notation (1e-x)
@@ -100,7 +102,7 @@ std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(
                 } else if (!tp[0].compare("(")) {
                     // Resolve now the parenthese to apply the minus after
                     size_t idx = wholeEq.find_first_of(")");
-                    biorbd::utils::Equation newWholeEq(wholeEq.substr(2, idx-2));
+                    utils::Equation newWholeEq(wholeEq.substr(2, idx-2));
                     double res(-1*evaluateEquation(splitIntoEquation(newWholeEq, variables)));
                     wholeEq = to_string(res) + wholeEq.substr(idx+1);
                 } else {
@@ -110,7 +112,7 @@ std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(
                 }
             } else if (!wholeEq(0).compare("+")) {
                 // If the equation starts with +
-                std::vector<biorbd::utils::Equation> tp(splitIntoEquation(wholeEq.substr(1),
+                std::vector<utils::Equation> tp(splitIntoEquation(wholeEq.substr(1),
                                                         variables));
                 if (eq.size() != 0) { // If there's nothing before, it's false in all cases 1ex
                     eq.push_back("+");
@@ -138,8 +140,8 @@ std::vector<biorbd::utils::Equation> biorbd::utils::Equation::splitIntoEquation(
     return eq;
 }
 
-void biorbd::utils::Equation::replaceCste(
-    std::vector<biorbd::utils::Equation> &eq)
+void utils::Equation::replaceCste(
+    std::vector<utils::Equation> &eq)
 {
     for (unsigned int i=0; i<eq.size(); ++i)
         if (!eq[i].tolower().compare("pi")) {
@@ -147,9 +149,9 @@ void biorbd::utils::Equation::replaceCste(
         }
 }
 
-void biorbd::utils::Equation::replaceVar(
-    biorbd::utils::Equation &eq,
-    const std::map<biorbd::utils::Equation, double>& variables)
+void utils::Equation::replaceVar(
+    utils::Equation &eq,
+    const std::map<utils::Equation, double>& variables)
 {
     for (auto var : variables)
         while (eq.find(var.first) != std::string::npos) {
@@ -162,14 +164,14 @@ void biorbd::utils::Equation::replaceVar(
 }
 
 
-double biorbd::utils::Equation::evaluateEquation(
-    std::vector<biorbd::utils::Equation> wholeEq)
+double utils::Equation::evaluateEquation(
+    std::vector<utils::Equation> wholeEq)
 {
     return evaluateEquation(wholeEq,0);
 }
 
-double biorbd::utils::Equation::evaluateEquation(
-    std::vector<biorbd::utils::Equation> eq,
+double utils::Equation::evaluateEquation(
+    std::vector<utils::Equation> eq,
     unsigned int math)
 {
     // If everything was done
@@ -178,8 +180,8 @@ double biorbd::utils::Equation::evaluateEquation(
     }
 
     // Declaration of the arithmetic markers
-    const std::vector<biorbd::utils::Equation>& symbols(prepareMathSymbols());
-    std::vector<biorbd::utils::Equation> eq2;
+    const std::vector<utils::Equation>& symbols(prepareMathSymbols());
+    std::vector<utils::Equation> eq2;
     bool continuer(true);
 
     for (unsigned int j=0; j<eq.size(); ++j) {
@@ -194,7 +196,7 @@ double biorbd::utils::Equation::evaluateEquation(
             } else {
                 // Crush the previous value
                 if (!symbols[math].compare("(")) {
-                    std::vector<biorbd::utils::Equation> eq_tp;
+                    std::vector<utils::Equation> eq_tp;
                     bool foundIdx(false);
                     int cmpValues(0);
                     unsigned int cmpOpen(0);
@@ -213,7 +215,7 @@ double biorbd::utils::Equation::evaluateEquation(
                         eq_tp.push_back(eq[k]);
                         ++cmpValues;
                     }
-                    biorbd::utils::Error::check(foundIdx, "You must close brackets!");
+                    utils::Error::check(foundIdx, "You must close brackets!");
 
                     eq2.push_back(to_string(evaluateEquation(eq_tp)));
                     j+=static_cast<unsigned int>(cmpValues);
@@ -254,15 +256,15 @@ double biorbd::utils::Equation::evaluateEquation(
     }
 }
 
-double biorbd::utils::Equation::evaluateEquation(
-    biorbd::utils::Equation wholeEq,
-    const std::map<biorbd::utils::Equation, double>& variables)
+double utils::Equation::evaluateEquation(
+    utils::Equation wholeEq,
+    const std::map<utils::Equation, double>& variables)
 {
     return evaluateEquation(splitIntoEquation(wholeEq, variables));
 }
-double biorbd::utils::Equation::evaluateEquation(
-    biorbd::utils::Equation wholeEq)
+double utils::Equation::evaluateEquation(
+    utils::Equation wholeEq)
 {
-    std::map<biorbd::utils::Equation, double> dumb;
+    std::map<utils::Equation, double> dumb;
     return evaluateEquation(splitIntoEquation(wholeEq, dumb));
 }

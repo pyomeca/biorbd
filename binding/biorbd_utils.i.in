@@ -17,44 +17,44 @@
 
 // Instantiate templates
 namespace std {
-%template(VecBiorbdString) std::vector<biorbd::utils::String>;
-%template(PairBiorbdString) std::pair<biorbd::utils::String, biorbd::utils::String>;
+%template(VecBiorbdString) std::vector<BIORBD_NAMESPACE::utils::String>;
+%template(PairBiorbdString) std::pair<BIORBD_NAMESPACE::utils::String, BIORBD_NAMESPACE::utils::String>;
 
-%template(VecBiorbdVector) std::vector<biorbd::utils::Vector>;
-%template(MatBiorbdVector) std::vector<std::vector<biorbd::utils::Vector>>;
-%template(VecBiorbdSpatialVector) std::vector<biorbd::utils::SpatialVector>;
-%template(MatBiorbdMatrix) std::vector<biorbd::utils::Matrix>;
-%template(VecBiorbdRotoTrans) std::vector<biorbd::utils::RotoTrans>;
-%template(MatBiorbdRotoTrans) std::vector<std::vector<biorbd::utils::RotoTrans>>;
-%template(VecBiorbdRototation) std::vector<biorbd::utils::Rotation>;
-%template(MatBiorbdRototation) std::vector<std::vector<biorbd::utils::Rotation>>;
-%template(VecBiorbdNode) std::vector<biorbd::utils::Vector3d>;
-%template(MatBiorbdNode) std::vector<std::vector<biorbd::utils::Vector3d>>;
-%template(VecBiorbdRange) std::vector<biorbd::utils::Range>;
-%template(MatBiorbdRange) std::vector<std::vector<biorbd::utils::Range>>;
+%template(VecBiorbdVector) std::vector<BIORBD_NAMESPACE::utils::Vector>;
+%template(MatBiorbdVector) std::vector<std::vector<BIORBD_NAMESPACE::utils::Vector>>;
+%template(VecBiorbdSpatialVector) std::vector<BIORBD_NAMESPACE::utils::SpatialVector>;
+%template(MatBiorbdMatrix) std::vector<BIORBD_NAMESPACE::utils::Matrix>;
+%template(VecBiorbdRotoTrans) std::vector<BIORBD_NAMESPACE::utils::RotoTrans>;
+%template(MatBiorbdRotoTrans) std::vector<std::vector<BIORBD_NAMESPACE::utils::RotoTrans>>;
+%template(VecBiorbdRototation) std::vector<BIORBD_NAMESPACE::utils::Rotation>;
+%template(MatBiorbdRototation) std::vector<std::vector<BIORBD_NAMESPACE::utils::Rotation>>;
+%template(VecBiorbdNode) std::vector<BIORBD_NAMESPACE::utils::Vector3d>;
+%template(MatBiorbdNode) std::vector<std::vector<BIORBD_NAMESPACE::utils::Vector3d>>;
+%template(VecBiorbdRange) std::vector<BIORBD_NAMESPACE::utils::Range>;
+%template(MatBiorbdRange) std::vector<std::vector<BIORBD_NAMESPACE::utils::Range>>;
 }
 
 
-%extend biorbd::utils::String{
+%extend BIORBD_NAMESPACE::utils::String{
     std::string to_string(){
         return *$self;
     }
 }
 
-%extend biorbd::utils::Rotation{
-    biorbd::utils::Rotation transpose(){
+%extend BIORBD_NAMESPACE::utils::Rotation{
+    BIORBD_NAMESPACE::utils::Rotation transpose(){
         return $self->RigidBodyDynamics::Math::Matrix3d::transpose();
     }
 
-    biorbd::utils::Rotation operator*(
-                const biorbd::utils::Rotation& other){
+    BIORBD_NAMESPACE::utils::Rotation operator*(
+                const BIORBD_NAMESPACE::utils::Rotation& other){
         return $self->RigidBodyDynamics::Math::Matrix3d::operator*(other);
     }
 }
 
-%extend biorbd::utils::Vector3d{
-    biorbd::utils::NODE_TYPE typeOfNode() const{
-        return $self->biorbd::utils::Node::typeOfNode();
+%extend BIORBD_NAMESPACE::utils::Vector3d{
+    BIORBD_NAMESPACE::utils::NODE_TYPE typeOfNode() const{
+        return $self->BIORBD_NAMESPACE::utils::Node::typeOfNode();
     }
 }
 

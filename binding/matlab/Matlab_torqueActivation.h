@@ -14,20 +14,20 @@ void Matlab_torqueActivation( int, mxArray *plhs[],
                                "5 or 5 arguments are required where the 2nd is the handler on the model, 3rd is the Q, 4th is QDot and 5th is GeneralizedTorque");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
     unsigned int nGeneralizedTorque =
         model->nbGeneralizedTorque(); // Nombre de GeneralizedTorque
 
     // Recevoir Q
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
             2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
                 prhs, 3, nQdot);
     // Recevoir Qddot
-    std::vector<biorbd::rigidbody::GeneralizedTorque> act =
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedTorque> act =
         getParameterGeneralizedTorque(prhs, 4,
                                       model->nbGeneralizedTorque());
 

@@ -6,53 +6,55 @@
 #include "Utils/String.h"
 #include "Muscles/Characteristics.h"
 
-biorbd::muscles::StateDynamicsDeGroote::StateDynamicsDeGroote(
-    const biorbd::utils::Scalar& excitation,
-    const biorbd::utils::Scalar& activation) :
-    biorbd::muscles::StateDynamics(excitation,activation)
+using namespace BIORBD_NAMESPACE;
+
+muscles::StateDynamicsDeGroote::StateDynamicsDeGroote(
+    const utils::Scalar& excitation,
+    const utils::Scalar& activation) :
+    muscles::StateDynamics(excitation,activation)
 {
     setType();
 }
 
-biorbd::muscles::StateDynamicsDeGroote::StateDynamicsDeGroote(
-    const biorbd::muscles::StateDynamicsDeGroote &other) :
-    biorbd::muscles::StateDynamics(other)
+muscles::StateDynamicsDeGroote::StateDynamicsDeGroote(
+    const muscles::StateDynamicsDeGroote &other) :
+    muscles::StateDynamics(other)
 {
 
 }
 
-biorbd::muscles::StateDynamicsDeGroote
-biorbd::muscles::StateDynamicsDeGroote::DeepCopy() const
+muscles::StateDynamicsDeGroote
+muscles::StateDynamicsDeGroote::DeepCopy() const
 {
-    biorbd::muscles::StateDynamicsDeGroote copy;
+    muscles::StateDynamicsDeGroote copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void biorbd::muscles::StateDynamicsDeGroote::DeepCopy(const
-        biorbd::muscles::StateDynamicsDeGroote &other)
+void muscles::StateDynamicsDeGroote::DeepCopy(const
+        muscles::StateDynamicsDeGroote &other)
 {
-    biorbd::muscles::StateDynamics::DeepCopy(other);
+    muscles::StateDynamics::DeepCopy(other);
 }
 
-const biorbd::utils::Scalar&
-biorbd::muscles::StateDynamicsDeGroote::timeDerivativeActivation(
-    const biorbd::muscles::Characteristics &characteristics,
+const utils::Scalar&
+muscles::StateDynamicsDeGroote::timeDerivativeActivation(
+    const muscles::Characteristics &characteristics,
     bool alreadyNormalized)
 {
     // From DeGroote https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5043004/
 
     // Get activation and excitation and make difference
-    biorbd::utils::Scalar diff; //(e - a)
-    biorbd::utils::Scalar f;    //activation dynamics
+    utils::Scalar diff; //(e - a)
+    utils::Scalar f;    //activation dynamics
     //std::tanh;
 
     diff = *m_excitation - *m_activation;
     f = 0.5 * tanh(0.1*diff);
 
-    biorbd::utils::Scalar denom_activation = characteristics.torqueActivation()
+    utils::Scalar denom_activation = characteristics.torqueActivation()
             * (0.5+1.5* *m_activation);
-    biorbd::utils::Scalar denom_deactivation =
+    utils::Scalar denom_deactivation =
         characteristics.torqueDeactivation() / (0.5+1.5* *m_activation);
 
     *m_activationDot = (((f+0.5)/denom_activation)+((-f + 0.5)/denom_deactivation))
@@ -60,7 +62,7 @@ biorbd::muscles::StateDynamicsDeGroote::timeDerivativeActivation(
     return *m_activationDot;
 }
 
-void biorbd::muscles::StateDynamicsDeGroote::setType()
+void muscles::StateDynamicsDeGroote::setType()
 {
-    *m_stateType = biorbd::muscles::STATE_TYPE::DE_GROOTE;
+    *m_stateType = muscles::STATE_TYPE::DE_GROOTE;
 }

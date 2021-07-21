@@ -5,7 +5,7 @@
 #include "biorbdConfig.h"
 #include "Utils/RotoTransNode.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -21,7 +21,7 @@ namespace rigidbody
 #ifdef SWIG
 class BIORBD_API IMU
 #else
-class BIORBD_API IMU : public biorbd::utils::RotoTransNode
+class BIORBD_API IMU : public utils::RotoTransNode
 #endif
 {
 public:
@@ -42,7 +42,7 @@ public:
     /// \param isAnatomical True if the IMU is an anatomical IMU
     ///
     IMU(
-        const biorbd::utils::RotoTransNode& RotoTrans,
+        const utils::RotoTransNode& RotoTrans,
         bool isTechnical = true,
         bool isAnatomical = true);
 
@@ -53,13 +53,13 @@ public:
     ///
     template<typename OtherDerived> IMU(
         const Eigen::MatrixBase<OtherDerived>& other) :
-        biorbd::utils::RotoTransNode(other) {}
+        utils::RotoTransNode(other) {}
 #endif
 #ifdef BIORBD_USE_CASADI_MATH
     IMU(
-        const biorbd::rigidbody::IMU& imu);
+        const IMU& imu);
 
-    biorbd::rigidbody::IMU operator*(const biorbd::rigidbody::IMU& other) const;
+    IMU operator*(const IMU& other) const;
 #endif
 
 
@@ -67,13 +67,13 @@ public:
     /// \brief Deep copy of the IMU data
     /// \return Copy of the IMU data
     ///
-    biorbd::rigidbody::IMU DeepCopy() const;
+    IMU DeepCopy() const;
 
     ///
     /// \brief Deep copy if the IMU data
     /// \param other The IMU to copy
     ///
-    void DeepCopy(const biorbd::rigidbody::IMU& other);
+    void DeepCopy(const IMU& other);
 
     ///
     /// \brief Return if the IMU is technical
@@ -95,9 +95,9 @@ public:
     /// \return The current IMU
     ///
     template<typename OtherDerived>
-    biorbd::rigidbody::IMU& operator=(const Eigen::MatrixBase <OtherDerived>& other)
+    IMU& operator=(const Eigen::MatrixBase <OtherDerived>& other)
     {
-        this->biorbd::utils::RotoTransNode::operator=(other);
+        this->utils::RotoTransNode::operator=(other);
         return *this;
     }
 #endif

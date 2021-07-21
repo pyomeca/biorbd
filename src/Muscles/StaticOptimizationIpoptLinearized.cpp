@@ -6,39 +6,41 @@
 #include "RigidBody/GeneralizedTorque.h"
 #include "Muscles/State.h"
 
-biorbd::muscles::StaticOptimizationIpoptLinearized::StaticOptimizationIpoptLinearized(
-    biorbd::Model &model,
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &Qdot,
-    const biorbd::rigidbody::GeneralizedTorque &torqueTarget,
-    const biorbd::utils::Vector &activationInit,
+using namespace BIORBD_NAMESPACE;
+
+muscles::StaticOptimizationIpoptLinearized::StaticOptimizationIpoptLinearized(
+    Model &model,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedTorque &torqueTarget,
+    const utils::Vector &activationInit,
     bool useResidual,
     unsigned int pNormFactor,
     int verbose,
     double eps
 ) :
-    biorbd::muscles::StaticOptimizationIpopt(
+    muscles::StaticOptimizationIpopt(
         model, Q, Qdot, torqueTarget, activationInit, useResidual,
         pNormFactor, verbose, eps),
-    m_jacobian(std::make_shared<biorbd::utils::Matrix>(*m_nbDof, *m_nbMus))
+    m_jacobian(std::make_shared<utils::Matrix>(*m_nbDof, *m_nbMus))
 {
     prepareJacobian();
 }
 
 
-void biorbd::muscles::StaticOptimizationIpoptLinearized::prepareJacobian()
+void muscles::StaticOptimizationIpoptLinearized::prepareJacobian()
 {
     m_model.updateMuscles(*m_Q, *m_Qdot, true);
-    std::vector<std::shared_ptr<biorbd::muscles::State>> state_zero;
+    std::vector<std::shared_ptr<muscles::State>> state_zero;
     for (unsigned int i = 0; i<*m_nbMus; ++i) {
         state_zero.push_back(
-            std::make_shared<biorbd::muscles::State>(
-                biorbd::muscles::State(0, 0)));
+            std::make_shared<muscles::State>(
+                muscles::State(0, 0)));
     }
-    const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorque_zero(
+    const rigidbody::GeneralizedTorque& GeneralizedTorque_zero(
         m_model.muscularJointTorque(state_zero));
     for (unsigned int i = 0; i<*m_nbMus; ++i) {
-        std::vector<std::shared_ptr<biorbd::muscles::State>> state;
+        std::vector<std::shared_ptr<muscles::State>> state;
         for (unsigned int j = 0; j<*m_nbMus; ++j) {
             unsigned int delta;
             if (j == i) {
@@ -47,10 +49,10 @@ void biorbd::muscles::StaticOptimizationIpoptLinearized::prepareJacobian()
                 delta = 0;
             }
             state.push_back(
-                std::make_shared<biorbd::muscles::State>
-                (biorbd::muscles::State(0, delta*1)));
+                std::make_shared<muscles::State>
+                (muscles::State(0, delta*1)));
         }
-        const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorque(
+        const rigidbody::GeneralizedTorque& GeneralizedTorque(
             m_model.muscularJointTorque(
                 state, *m_Q.get(), *m_Qdot.get()));
         for (unsigned int j = 0; j<*m_nbTorque; ++j) {
@@ -60,12 +62,12 @@ void biorbd::muscles::StaticOptimizationIpoptLinearized::prepareJacobian()
     }
 }
 
-biorbd::muscles::StaticOptimizationIpoptLinearized::~StaticOptimizationIpoptLinearized()
+muscles::StaticOptimizationIpoptLinearized::~StaticOptimizationIpoptLinearized()
 {
 
 }
 
-bool biorbd::muscles::StaticOptimizationIpoptLinearized::eval_g(
+bool muscles::StaticOptimizationIpoptLinearized::eval_g(
     Ipopt::Index n,
     const Ipopt::Number *x,
     bool new_x,
@@ -78,7 +80,7 @@ bool biorbd::muscles::StaticOptimizationIpoptLinearized::eval_g(
         dispatch(x);
     }
 
-    biorbd::utils::Vector res(static_cast<unsigned int>(m));
+    utils::Vector res(static_cast<unsigned int>(m));
     res.setZero();
     // TODO Optimization using Eigen?
     for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ ) {
@@ -96,7 +98,7 @@ bool biorbd::muscles::StaticOptimizationIpoptLinearized::eval_g(
     return true;
 }
 
-bool biorbd::muscles::StaticOptimizationIpoptLinearized::eval_jac_g(
+bool muscles::StaticOptimizationIpoptLinearized::eval_jac_g(
     Ipopt::Index,
     const Ipopt::Number *x,
     bool new_x,

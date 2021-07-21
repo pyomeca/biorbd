@@ -23,27 +23,26 @@
 #include "RigidBody/IMUs.h"
 %}
 
-
 namespace std {
-%template(VecBiorbdGeneralizedTorque) std::vector<biorbd::rigidbody::GeneralizedTorque>;
-%template(MatBiorbdGeneralizedTorque) std::vector<std::vector<biorbd::rigidbody::GeneralizedTorque>>;
-%template(PairBiorbdGeneralizedTorque) std::pair<biorbd::rigidbody::GeneralizedTorque, biorbd::rigidbody::GeneralizedTorque>;
-%template(VecBiorbdGeneralizedCoordinates) std::vector<biorbd::rigidbody::GeneralizedCoordinates>;
-%template(MatBiorbdGeneralizedCoordinates) std::vector<std::vector<biorbd::rigidbody::GeneralizedCoordinates>>;
-%template(VecBiorbdGeneralizedVelocity) std::vector<biorbd::rigidbody::GeneralizedVelocity>;
-%template(MatBiorbdGeneralizedVelocity) std::vector<std::vector<biorbd::rigidbody::GeneralizedVelocity>>;
-%template(VecBiorbdGeneralizedAcceleration) std::vector<biorbd::rigidbody::GeneralizedAcceleration>;
-%template(MatBiorbdGeneralizedAcceleration) std::vector<std::vector<biorbd::rigidbody::GeneralizedAcceleration>>;
+%template(VecBiorbdGeneralizedTorque) std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedTorque>;
+%template(MatBiorbdGeneralizedTorque) std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedTorque>>;
+%template(PairBiorbdGeneralizedTorque) std::pair<BIORBD_NAMESPACE::rigidbody::GeneralizedTorque, BIORBD_NAMESPACE::rigidbody::GeneralizedTorque>;
+%template(VecBiorbdGeneralizedCoordinates) std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates>;
+%template(MatBiorbdGeneralizedCoordinates) std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates>>;
+%template(VecBiorbdGeneralizedVelocity) std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity>;
+%template(MatBiorbdGeneralizedVelocity) std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity>>;
+%template(VecBiorbdGeneralizedAcceleration) std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration>;
+%template(MatBiorbdGeneralizedAcceleration) std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration>>;
 
-%template(VecBiorbdNodeSegment) std::vector<biorbd::rigidbody::NodeSegment>;
-%template(MatBiorbdNodeSegment) std::vector<std::vector<biorbd::rigidbody::NodeSegment>>;
-%template(VecBiorbdMeshFace) std::vector<biorbd::rigidbody::MeshFace>;
-%template(MatBiorbdMeshFace) std::vector<std::vector<biorbd::rigidbody::MeshFace>>;
+%template(VecBiorbdNodeSegment) std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>;
+%template(MatBiorbdNodeSegment) std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>>;
+%template(VecBiorbdMeshFace) std::vector<BIORBD_NAMESPACE::rigidbody::MeshFace>;
+%template(MatBiorbdMeshFace) std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::MeshFace>>;
 
-%template(PairBiorbdNodeSegment) std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>;
+%template(PairBiorbdNodeSegment) std::pair<BIORBD_NAMESPACE::rigidbody::NodeSegment, BIORBD_NAMESPACE::rigidbody::NodeSegment>;
 
-%template(VecBiorbdIMU) std::vector<biorbd::rigidbody::IMU>;
-%template(MatBiorbdIMU) std::vector<std::vector<biorbd::rigidbody::IMU>>;
+%template(VecBiorbdIMU) std::vector<BIORBD_NAMESPACE::rigidbody::IMU>;
+%template(MatBiorbdIMU) std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::IMU>>;
 }
 
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/RigidBodyEnums.h"

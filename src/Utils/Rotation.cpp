@@ -9,7 +9,9 @@
 
 #include "RigidBody/NodeSegment.h"
 
-biorbd::utils::Rotation::Rotation(
+using namespace BIORBD_NAMESPACE;
+
+utils::Rotation::Rotation(
     const RigidBodyDynamics::Math::Matrix3d& matrix) :
     RigidBodyDynamics::Math::Matrix3d(matrix)
 {
@@ -18,7 +20,7 @@ biorbd::utils::Rotation::Rotation(
 
 #ifdef BIORBD_USE_CASADI_MATH
 
-biorbd::utils::Rotation::Rotation(
+utils::Rotation::Rotation(
     const RigidBodyDynamics::Math::MatrixNd &m) :
     RigidBodyDynamics::Math::Matrix3d(m)
 {
@@ -27,61 +29,61 @@ biorbd::utils::Rotation::Rotation(
 
 #endif
 
-biorbd::utils::Rotation::Rotation(
-    const biorbd::utils::Scalar& v00, const biorbd::utils::Scalar& v01,
-    const biorbd::utils::Scalar& v02,
-    const biorbd::utils::Scalar& v10, const biorbd::utils::Scalar& v11,
-    const biorbd::utils::Scalar& v12,
-    const biorbd::utils::Scalar& v20, const biorbd::utils::Scalar& v21,
-    const biorbd::utils::Scalar& v22) :
+utils::Rotation::Rotation(
+    const utils::Scalar& v00, const utils::Scalar& v01,
+    const utils::Scalar& v02,
+    const utils::Scalar& v10, const utils::Scalar& v11,
+    const utils::Scalar& v12,
+    const utils::Scalar& v20, const utils::Scalar& v21,
+    const utils::Scalar& v22) :
     RigidBodyDynamics::Math::Matrix3d (v00, v01, v02, v10, v11, v12, v20, v21, v22)
 {
 
 }
 
-biorbd::utils::Rotation::Rotation(
-    const biorbd::utils::Vector& rotation,
-    const biorbd::utils::String& rotationSequence) :
+utils::Rotation::Rotation(
+    const utils::Vector& rotation,
+    const utils::String& rotationSequence) :
     RigidBodyDynamics::Math::Matrix3d(fromEulerAngles(rotation, rotationSequence))
 {
 
 }
 
-biorbd::utils::Rotation::Rotation(
+utils::Rotation::Rotation(
     const RigidBodyDynamics::Math::SpatialTransform &st) :
     RigidBodyDynamics::Math::Matrix3d(st.E)
 {
 
 }
 
-biorbd::utils::Vector3d biorbd::utils::Rotation::axe(unsigned int idx) const
+utils::Vector3d utils::Rotation::axe(unsigned int idx) const
 {
-    biorbd::utils::Error::check(idx<=2, "Axis must be between 0 and 2 included");
+    utils::Error::check(idx<=2, "Axis must be between 0 and 2 included");
     return this->block(0,idx, 3, 1);
 }
 
-biorbd::utils::Rotation biorbd::utils::Rotation::fromSpatialTransform(
+utils::Rotation utils::Rotation::fromSpatialTransform(
     const RigidBodyDynamics::Math::SpatialTransform& st)
 {
     return st.E;
 }
 
-biorbd::utils::Rotation biorbd::utils::Rotation::fromEulerAngles(
-    const biorbd::utils::Vector &rot,
-    const biorbd::utils::String& seq)
+utils::Rotation utils::Rotation::fromEulerAngles(
+    const utils::Vector &rot,
+    const utils::String& seq)
 {
     // Check for size consistency
-    biorbd::utils::Error::check(
+    utils::Error::check(
         seq.length() == static_cast<unsigned int>(rot.rows()),
         "Rotation and sequence of rotation must be the same length");
 
-    biorbd::utils::Rotation out;
+    utils::Rotation out;
     out.setIdentity();
     // Set the actual rotation matrix to this
     RigidBodyDynamics::Math::Matrix3d tp;
     for (unsigned int i=0; i<seq.length(); ++i) {
-        biorbd::utils::Scalar cosVi(std::cos(rot[i]));
-        biorbd::utils::Scalar sinVi(std::sin(rot[i]));
+        utils::Scalar cosVi(std::cos(rot[i]));
+        utils::Scalar sinVi(std::sin(rot[i]));
         if (seq.tolower()[i] == 'x')
             tp = RigidBodyDynamics::Math::Matrix3d(1,     0,      0,
                                                    0, cosVi, -sinVi,
@@ -97,7 +99,7 @@ biorbd::utils::Rotation biorbd::utils::Rotation::fromEulerAngles(
                                                    sinVi,  cosVi,  0,
                                                    0,      0,  1);
         else {
-            biorbd::utils::Error::raise("Rotation sequence not recognized");
+            utils::Error::raise("Rotation sequence not recognized");
         }
 
         out.block(0,0,3,3) = out.block(0,0,3,3) * tp;
@@ -105,16 +107,14 @@ biorbd::utils::Rotation biorbd::utils::Rotation::fromEulerAngles(
     return out;
 }
 
-biorbd::utils::Matrix biorbd::utils::Rotation::fromMarkersNonNormalized(
-    const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>
-    &axis1markers,
-    const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>
-    &axis2markers,
-    const std::pair<biorbd::utils::String, biorbd::utils::String>& axesNames,
-    const biorbd::utils::String &axisToRecalculate)
+utils::Matrix utils::Rotation::fromMarkersNonNormalized(
+    const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment> &axis1markers,
+    const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment> &axis2markers,
+    const std::pair<utils::String, utils::String>& axesNames,
+    const utils::String &axisToRecalculate)
 {
     if (!axesNames.first.compare("") || !axesNames.second.compare("")) {
-        biorbd::utils::Error::raise("axesNames must be defined with a pair of \"x\", \"y\" or \"z\"");
+        utils::Error::raise("axesNames must be defined with a pair of \"x\", \"y\" or \"z\"");
     }
 
     // Figure out where to put the axes
@@ -162,7 +162,7 @@ biorbd::utils::Matrix biorbd::utils::Rotation::fromMarkersNonNormalized(
     }
 
     // Get the system of axis XYZ
-    std::vector<biorbd::utils::Vector3d> axes(3);
+    std::vector<utils::Vector3d> axes(3);
     axes[map[0]] = axis1markers.second - axis1markers.first;
     axes[map[1]] = axis2markers.second - axis2markers.first;
     axes[map[2]] = axes[toMultiply[0]].cross(axes[toMultiply[1]]);
@@ -177,22 +177,20 @@ biorbd::utils::Matrix biorbd::utils::Rotation::fromMarkersNonNormalized(
     }
 
     // Organize them in a non-normalized matrix
-    biorbd::utils::Matrix r_out(3, 3);
+    utils::Matrix r_out(3, 3);
     for (unsigned int i=0; i<3; ++i) {
         r_out.block(0, i, 3, 1) = axes[i];
     }
     return r_out;
 }
 
-biorbd::utils::Rotation biorbd::utils::Rotation::fromMarkers(
-    const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>
-    &axis1markers,
-    const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>
-    &axis2markers,
-    const std::pair<biorbd::utils::String, biorbd::utils::String>& axesNames,
-    const biorbd::utils::String &axisToRecalculate)
+utils::Rotation utils::Rotation::fromMarkers(
+    const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment> &axis1markers,
+    const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment> &axis2markers,
+    const std::pair<utils::String, utils::String>& axesNames,
+    const utils::String &axisToRecalculate)
 {
-    biorbd::utils::Matrix r_out(
+    utils::Matrix r_out(
         fromMarkersNonNormalized(axis1markers, axis2markers, axesNames,
                                  axisToRecalculate));
 
@@ -205,15 +203,15 @@ biorbd::utils::Rotation biorbd::utils::Rotation::fromMarkers(
     return r_out;
 }
 
-biorbd::utils::Vector biorbd::utils::Rotation::toEulerAngles(
-    const biorbd::utils::Rotation &r,
-    const biorbd::utils::String &seq)
+utils::Vector utils::Rotation::toEulerAngles(
+    const utils::Rotation &r,
+    const utils::String &seq)
 {
-    biorbd::utils::Vector v;
+    utils::Vector v;
     if (!seq.compare("zyzz")) {
-        v = biorbd::utils::Vector(3);
+        v = utils::Vector(3);
     } else {
-        v = biorbd::utils::Vector(static_cast<unsigned int>(seq.length()));
+        v = utils::Vector(static_cast<unsigned int>(seq.length()));
     }
 
     if (!seq.compare("x")) {
@@ -277,15 +275,15 @@ biorbd::utils::Vector biorbd::utils::Rotation::toEulerAngles(
         v[1] = std::acos(r(2,2));            // y
         v[2] = std::atan2(r(2,1), -r(2,0)) + v[0];   // z+z
     } else {
-        biorbd::utils::Error::raise("Angle sequence is not recognized");
+        utils::Error::raise("Angle sequence is not recognized");
     }
 
     return v;
 }
 
 #ifndef BIORBD_USE_CASADI_MATH
-biorbd::utils::Rotation biorbd::utils::Rotation::mean(
-    const std::vector<biorbd::utils::Rotation> & mToMean)
+utils::Rotation utils::Rotation::mean(
+    const std::vector<utils::Rotation> & mToMean)
 {
     RigidBodyDynamics::Math::Matrix3d m_tp;
     m_tp.setZero();
@@ -301,25 +299,25 @@ biorbd::utils::Rotation biorbd::utils::Rotation::mean(
         m_tp, Eigen::ComputeFullU | Eigen::ComputeFullV);
 
     // Normalize the matrix
-    biorbd::utils::Rotation m_out(svd.matrixU() * svd.matrixV().transpose());
+    utils::Rotation m_out(svd.matrixU() * svd.matrixV().transpose());
 
     return m_out;
 }
 #endif
 
-void biorbd::utils::Rotation::checkUnitary()
+void utils::Rotation::checkUnitary()
 {
 #ifndef BIORBD_USE_CASADI_MATH
 #ifndef SKIP_ASSERT
     double sqrtNorm = static_cast<double>(this->squaredNorm());
-    biorbd::utils::Error::check(fabs(sqrtNorm - 3.) < 1e-4,
-                                biorbd::utils::String("The Rotation matrix square norm is equal to ")
+    utils::Error::check(fabs(sqrtNorm - 3.) < 1e-4,
+                                utils::String("The Rotation matrix square norm is equal to ")
                                 + sqrtNorm + ", but should be equal to 3");
 #endif
 #endif
 }
 
-std::ostream &operator<<(std::ostream &os, const biorbd::utils::Rotation &a)
+std::ostream &operator<<(std::ostream &os, const utils::Rotation &a)
 {
     os << a.block(0,0,3,3);
     return os;

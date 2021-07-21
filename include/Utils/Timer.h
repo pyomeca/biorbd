@@ -5,7 +5,7 @@
 #include <ctime>
 #include "biorbdConfig.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {

@@ -17,14 +17,14 @@ void Matlab_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
                                "WARNING: if the function is called without Q and Qdot, the user MUST update by himself "
                                "before calling this function (using updateMuscle).");
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
     unsigned int nTau = model->nbGeneralizedTorque(); // Get the number of DoF
     unsigned int nMuscleTotal = model->nbMuscles();
 
     // Recevoir muscleStates
-    std::vector<std::vector<std::shared_ptr<biorbd::muscles::State>>> s =
+    std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>>> s =
         getParameterMuscleStateActivation(prhs,2,
                                           nMuscleTotal);
     unsigned int nFrame(static_cast<unsigned int>(s.size()));
@@ -45,8 +45,8 @@ void Matlab_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
     }
 
     // Recueillir la cinématique
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q;
-    std::vector<biorbd::rigidbody::GeneralizedVelocity> QDot;
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates> Q;
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity> QDot;
     if (updateKin) { // Si on update pas la cinématique Q et Qdot ne sont pas nécessaire
         // Recevoir Q
         Q = getParameterQ(prhs, 3, nQ);
@@ -82,8 +82,8 @@ void Matlab_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
     }
 
     // Remplir le output
-    biorbd::rigidbody::GeneralizedTorque muscleTorque;
-    biorbd::utils::Vector muscleForces;
+    BIORBD_NAMESPACE::rigidbody::GeneralizedTorque muscleTorque;
+    BIORBD_NAMESPACE::utils::Vector muscleForces;
     for (unsigned int i=0; i<nFrame; ++i) {
         if (updateKin) {
             muscleForces = model->muscleForces(s[i], Q[i], QDot[i]);

@@ -4,7 +4,7 @@
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -21,7 +21,7 @@ public:
     /// \param message The error message to display
     ///
     [[noreturn]] static void raise(
-        const biorbd::utils::String &message);
+        const String &message);
 
     ///
     /// \brief Assert that raises the error message if false
@@ -30,7 +30,7 @@ public:
     ///
     static void check(
         bool cond,
-        const biorbd::utils::String &message);
+        const String &message);
 
     ///
     /// \brief Non-blocking assert that displays the error message if false
@@ -39,7 +39,7 @@ public:
     ///
     static void warning(
         bool cond,
-        const biorbd::utils::String &message);
+        const String &message);
 };
 
 }

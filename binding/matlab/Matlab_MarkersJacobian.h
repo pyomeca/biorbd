@@ -14,11 +14,11 @@ void Matlab_MarkersJacobian( int, mxArray *plhs[],
                                "3 arguments are required [+1 optional] where the 2nd is the handler on the model and 3rd is the Q, an optional 4th if you only want technical marker [default = false] and 5th if you want to remove axes as specified in the model file [default = true]");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2,
+    BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2,
             nQ).begin();
 
     bool technicalMarkersOnly(false);
@@ -33,7 +33,7 @@ void Matlab_MarkersJacobian( int, mxArray *plhs[],
 
 
     // Trouver la matrice jacobienne de tous les marqueurs
-    std::vector<biorbd::utils::Matrix> Jac_tp;
+    std::vector<BIORBD_NAMESPACE::utils::Matrix> Jac_tp;
     unsigned int nMarkers;
     if (technicalMarkersOnly) {
         Jac_tp = model->technicalMarkersJacobian(Q,
@@ -44,7 +44,7 @@ void Matlab_MarkersJacobian( int, mxArray *plhs[],
                                         removeAxes); // Retourne la jacobienne des markers
         nMarkers = model->nbMarkers();
     }
-    std::vector<biorbd::utils::Matrix>::iterator it=Jac_tp.begin();
+    std::vector<BIORBD_NAMESPACE::utils::Matrix>::iterator it=Jac_tp.begin();
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( 3*nMarkers, nQ, mxREAL);

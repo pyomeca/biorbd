@@ -14,19 +14,19 @@ void Matlab_segmentCOMddot( int, mxArray *plhs[],
                                "5 arguments are required (+1 optional) where the 2nd is the handler on the model, 3rd is the Q, 4th is the Qdot, 5th is Qddot and 6th is the index of body segment");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
     unsigned int nQddot = model->nbQddot(); // Get the number of DoF
 
     // Recevoir Q
-    biorbd::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2,
+    BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates Q = *getParameterQ(prhs, 2,
             nQ).begin();
     // Recevoir Qdot
-    biorbd::rigidbody::GeneralizedVelocity QDot = *getParameterQdot(prhs, 3,
+    BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity QDot = *getParameterQdot(prhs, 3,
             nQdot).begin();
     // Recevoir Qddot
-    biorbd::rigidbody::GeneralizedAcceleration QDDot = *getParameterQddot(prhs, 4,
+    BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration QDDot = *getParameterQddot(prhs, 4,
             nQddot).begin();
     // Recevoir le numéro du segment (optionnel)
     int i(0);
@@ -37,7 +37,7 @@ void Matlab_segmentCOMddot( int, mxArray *plhs[],
 
     // Trouver la vitesse du CoM
     if (i==-1) {
-        std::vector<biorbd::utils::Vector3d> COMddot = model->CoMddotBySegment(Q,QDot,
+        std::vector<BIORBD_NAMESPACE::utils::Vector3d> COMddot = model->CoMddotBySegment(Q,QDot,
                 QDDot,true);
         // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix( 3, model->nbSegment(), mxREAL);
@@ -48,7 +48,7 @@ void Matlab_segmentCOMddot( int, mxArray *plhs[],
                 tp[3*j+k] = COMddot[j][k];    // Transférer le tout dans un tableau de sortie
             }
     } else {
-        biorbd::utils::Vector3d COMddot = model->CoMddotBySegment(Q,QDot,QDDot,
+        BIORBD_NAMESPACE::utils::Vector3d COMddot = model->CoMddotBySegment(Q,QDot,QDDot,
                                           static_cast<unsigned int>(i),true);
 
         // Create a matrix for the return argument

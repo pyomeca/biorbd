@@ -4,16 +4,18 @@
 #include "Utils/Timer.h"
 #include "Utils/String.h"
 
-biorbd::utils::Benchmark::Benchmark() :
-    m_timers(std::map<biorbd::utils::String, biorbd::utils::Timer>()),
-    m_counts(std::map<biorbd::utils::String, int>())
+using namespace BIORBD_NAMESPACE;
+
+utils::Benchmark::Benchmark() :
+    m_timers(std::map<utils::String, utils::Timer>()),
+    m_counts(std::map<utils::String, int>())
 {
 
 }
 
 
-void biorbd::utils::Benchmark::startTimer(
-    const biorbd::utils::String& name,
+void utils::Benchmark::startTimer(
+    const utils::String& name,
     bool force)
 {
     if (force) {
@@ -23,43 +25,43 @@ void biorbd::utils::Benchmark::startTimer(
     }
 }
 
-double biorbd::utils::Benchmark::getLap(
-    const biorbd::utils::String& name)
+double utils::Benchmark::getLap(
+    const utils::String& name)
 {
     return m_timers[name].getLap();
 }
 
-double biorbd::utils::Benchmark::stopTimer(
-    const biorbd::utils::String& name)
+double utils::Benchmark::stopTimer(
+    const utils::String& name)
 {
     return m_timers[name].stop();
 }
 
-void biorbd::utils::Benchmark::pauseTimer(
-    const biorbd::utils::String& name)
+void utils::Benchmark::pauseTimer(
+    const utils::String& name)
 {
     m_timers[name].pause();
 }
 
-void biorbd::utils::Benchmark::resumeTimer(
-    const biorbd::utils::String& name)
+void utils::Benchmark::resumeTimer(
+    const utils::String& name)
 {
     m_timers[name].resume();
 }
 
-void biorbd::utils::Benchmark::addTimer(
-    const biorbd::utils::String& name)
+void utils::Benchmark::addTimer(
+    const utils::String& name)
 {
     ++(m_counts[name]);
 }
 
-int biorbd::utils::Benchmark::getTimerIdx(
-    const biorbd::utils::String& name)
+int utils::Benchmark::getTimerIdx(
+    const utils::String& name)
 {
     return m_counts[name];
 }
 
-void biorbd::utils::Benchmark::wasteTime(
+void utils::Benchmark::wasteTime(
     double seconds)
 {
     // Wait for seconds ask doing dummy stuff

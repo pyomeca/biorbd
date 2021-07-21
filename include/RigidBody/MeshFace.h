@@ -5,7 +5,7 @@
 #include <vector>
 #include "biorbdConfig.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -32,14 +32,14 @@ public:
     /// \brief Deep copy of a MeshFace
     /// \return A deep copy of a MeshFace
     ///
-    biorbd::rigidbody::MeshFace DeepCopy() const;
+    MeshFace DeepCopy() const;
 
     ///
     /// \brief Deep copy of a MeshFace into another one
     /// \param other The MeshFace to copy
     ///
     void DeepCopy(
-        const biorbd::rigidbody::MeshFace& other);
+        const MeshFace& other);
 
     ///
     /// \brief Allows to assign/get using ()
@@ -58,13 +58,13 @@ public:
     /// \param other The other MeshFace
     ///
     void setFace(
-        const biorbd::rigidbody::MeshFace& other);
+        const MeshFace& other);
 
     ///
     /// \brief convert the integer nature of the face to a double
     /// \return The vertex index in double format
     ///
-    biorbd::utils::Vector3d faceAsDouble();
+    utils::Vector3d faceAsDouble();
 
     ///
     /// \brief Returns the face

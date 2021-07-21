@@ -15,7 +15,7 @@ void Matlab_setEKF_IMU(int nlhs, mxArray *plhs[],
                                "2 arguments are required (+3 optional) where the 2nd is the handler on the model, the optional 3th is acquisition frequency [default 100Hz], 4th is noise factor [default 5e-3] and 5th is error factor [default 1e-10]");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // S'assurer que la personne recueille l'acces au filtre de Kalman
     if (nlhs != 1) {
@@ -33,12 +33,12 @@ void Matlab_setEKF_IMU(int nlhs, mxArray *plhs[],
     if (nrhs >= 3) {
         freq = getDouble(prhs,2,"Acquisition Frequency");
     }
-    biorbd::rigidbody::KalmanParam kParams(freq, noiseF, errorF);
+    BIORBD_NAMESPACE::rigidbody::KalmanParam kParams(freq, noiseF, errorF);
 
     // Créer un filtre de Kalman
     try {
-        plhs[0] = convertPtr2Mat<biorbd::rigidbody::KalmanReconsIMU>
-                  (new biorbd::rigidbody::KalmanReconsIMU(*model, kParams));
+        plhs[0] = convertPtr2Mat<BIORBD_NAMESPACE::rigidbody::KalmanReconsIMU>
+                  (new BIORBD_NAMESPACE::rigidbody::KalmanReconsIMU(*model, kParams));
     } catch (std::string m) {
         mexErrMsgTxt(m.c_str());
     }
@@ -53,7 +53,7 @@ void Matlab_delEKF_IMU(int nlhs, mxArray *[],
                                "2 arguments are required where the 2nd is the handler on the kalman filter");
 
     // Destroy the C++ object
-    destroyObject<biorbd::rigidbody::KalmanReconsIMU>(prhs[1]);
+    destroyObject<BIORBD_NAMESPACE::rigidbody::KalmanReconsIMU>(prhs[1]);
     // Warn if other commands were ignored
     if (nlhs != 0 || nrhs != 2) {
         mexWarnMsgTxt("Delete: Unexpected output arguments ignored.");
@@ -70,24 +70,24 @@ void Matlab_inverseKinematicsEKF_IMUstep( int , mxArray *plhs[],
                                "4 arguments are required (+1 optional) where the 2nd is the handler on the model, 3rd is the handler on kalman filter info, 4th is the 3x3xNxT or 4x4xNxT IMU hypermatrix, the optional 5th is the initial guess for Q [default 0], 5th is acquisition frequency [default 100Hz]");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
     unsigned int nQddot = model->nbQddot(); // Get the number of DoF
 
     // Recevoir le kalman
-    biorbd::rigidbody::KalmanReconsIMU * kalman =
-        convertMat2Ptr<biorbd::rigidbody::KalmanReconsIMU>(prhs[2]);
+    BIORBD_NAMESPACE::rigidbody::KalmanReconsIMU * kalman =
+        convertMat2Ptr<BIORBD_NAMESPACE::rigidbody::KalmanReconsIMU>(prhs[2]);
 
     // Recevoir la matrice des markers (Ne traite que le premier frame)
-    std::vector<std::vector<biorbd::rigidbody::IMU>> imusOverTime =
+    std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::IMU>> imusOverTime =
                 getParameterAllIMUs(prhs,3);
-    std::vector<biorbd::rigidbody::IMU> imus = imusOverTime[0];
+    std::vector<BIORBD_NAMESPACE::rigidbody::IMU> imus = imusOverTime[0];
 
     // Si c'est le premier frame recevoir Qinit
 
     if (kalman->first() && nrhs >= 5) {
-        biorbd::rigidbody::GeneralizedCoordinates Qinit(*getParameterQ(prhs, 4,
+        BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates Qinit(*getParameterQ(prhs, 4,
                 nQ).begin());
         kalman->setInitState(&Qinit);
     }
@@ -101,9 +101,9 @@ void Matlab_inverseKinematicsEKF_IMUstep( int , mxArray *plhs[],
     double *qddot = mxGetPr(plhs[2]);
 
     // Faire la cinématique inverse a chaque instant
-    biorbd::rigidbody::GeneralizedCoordinates Q(nQ);
-    biorbd::rigidbody::GeneralizedVelocity QDot(nQdot);
-    biorbd::rigidbody::GeneralizedAcceleration QDDot(nQddot);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates Q(nQ);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity QDot(nQdot);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration QDDot(nQddot);
 
     // Faire la cinématique inverse
     kalman->reconstructFrame(*model, imus, &Q, &QDot, &QDDot);
@@ -133,7 +133,7 @@ void Matlab_inverseKinematicsEKF_IMUallInOneCall( int, mxArray *plhs[],
                                "4 arguments are required (+5 optional) where the 2nd is the handler on the model, 3th is the 3x3xNxT or 4x4xNxT IMU hypermatrix, the optional 4th is the initial guess for Q [default 0], 5th is acquisition frequency [default 100Hz], 6th is noise factor [default 5e-3] and 7th is error factor [default 1e-10]");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
     unsigned int nQddot = model->nbQddot(); // Get the number of DoF
@@ -151,17 +151,17 @@ void Matlab_inverseKinematicsEKF_IMUallInOneCall( int, mxArray *plhs[],
     }
 
     // Créer un filtre de Kalman
-    biorbd::rigidbody::KalmanReconsIMU kalman(*model,
-            biorbd::rigidbody::KalmanParam(freq, noiseF, errorF));
+    BIORBD_NAMESPACE::rigidbody::KalmanReconsIMU kalman(*model,
+            BIORBD_NAMESPACE::rigidbody::KalmanParam(freq, noiseF, errorF));
 
     // Recevoir la matrice des imus
-    std::vector<std::vector<biorbd::rigidbody::IMU>> imusOverTime =
+    std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::IMU>> imusOverTime =
                 getParameterAllIMUs(prhs,2);
     unsigned int nFrames(static_cast<unsigned int>(imusOverTime.size()));
 
     // Recevoir Qinit
     if (kalman.first() && nrhs >= 4) {
-        biorbd::rigidbody::GeneralizedCoordinates Qinit(*getParameterQ(prhs, 3,
+        BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates Qinit(*getParameterQ(prhs, 3,
                 nQ).begin());
         kalman.setInitState(&Qinit);
     }
@@ -177,9 +177,9 @@ void Matlab_inverseKinematicsEKF_IMUallInOneCall( int, mxArray *plhs[],
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrames; ++i) {
         // Faire la cinématique inverse a chaque instant
-        biorbd::rigidbody::GeneralizedCoordinates Q(nQ);
-        biorbd::rigidbody::GeneralizedVelocity QDot(nQdot);
-        biorbd::rigidbody::GeneralizedAcceleration QDDot(nQddot);
+        BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates Q(nQ);
+        BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity QDot(nQdot);
+        BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration QDDot(nQddot);
 
         // Faire la cinématique inverse
         kalman.reconstructFrame(*model, *(imusOverTime.begin()+i), &Q, &QDot, &QDDot);

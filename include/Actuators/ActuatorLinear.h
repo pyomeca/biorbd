@@ -4,7 +4,7 @@
 #include "biorbdConfig.h"
 #include "Actuators/Actuator.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace rigidbody
 {
@@ -30,7 +30,7 @@ public:
     /// \param other The other linear actuator
     ///
     ActuatorLinear(
-        const biorbd::actuator::ActuatorLinear& other);
+        const ActuatorLinear& other);
 
     ///
     /// \brief Construct a linear actuator
@@ -41,8 +41,8 @@ public:
     ///
     ActuatorLinear(
         int direction,
-        const biorbd::utils::Scalar& T0,
-        const biorbd::utils::Scalar& slope,
+        const utils::Scalar& T0,
+        const utils::Scalar& slope,
         unsigned int dofIdx);
 
     ///
@@ -56,10 +56,10 @@ public:
 
     ActuatorLinear(
         int direction,
-        const biorbd::utils::Scalar& T0,
-        const biorbd::utils::Scalar& slope,
+        const utils::Scalar& T0,
+        const utils::Scalar& slope,
         unsigned int dofIdx,
-        const biorbd::utils::String &jointName);
+        const utils::String &jointName);
 
     ///
     /// \brief Destroy the class properly
@@ -70,29 +70,29 @@ public:
     /// \brief Deep copy of the linear actuator
     /// \return A deep copy of the linear actuator
     ///
-    biorbd::actuator::ActuatorLinear DeepCopy() const;
+    ActuatorLinear DeepCopy() const;
 
     ///
     /// \brief Deep copy of the linear actuator from another linear actuator
     /// \param other The linear actuator to copy
     ///
     void DeepCopy(
-        const biorbd::actuator::ActuatorLinear& other);
+        const ActuatorLinear& other);
 
     ///
     /// \brief Return the maximal torque (invalid)
     /// \return The maximal torque
     /// torqueMax for ActuatorLinear must be called with Q
     ///
-    virtual biorbd::utils::Scalar torqueMax();
+    virtual utils::Scalar torqueMax();
 
     ///
     /// \brief Return the maximal torque at a given Q
     /// \param Q The generalized coordinates of the actuator
     /// \return The maximal torque
     ///
-    virtual biorbd::utils::Scalar torqueMax(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q) const;
+    virtual utils::Scalar torqueMax(
+        const rigidbody::GeneralizedCoordinates &Q) const;
 
 protected:
 
@@ -102,8 +102,8 @@ protected:
     virtual void setType();
 
     // mx+b
-    std::shared_ptr<biorbd::utils::Scalar> m_m; ///< Slope
-    std::shared_ptr<biorbd::utils::Scalar> m_b; ///< Torque at zero
+    std::shared_ptr<utils::Scalar> m_m; ///< Slope
+    std::shared_ptr<utils::Scalar> m_b; ///< Torque at zero
 
 };
 

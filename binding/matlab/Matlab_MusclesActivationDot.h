@@ -18,10 +18,10 @@ void Matlab_MusclesActivationDot( int, mxArray *plhs[],
                                "3rd is the excitation, 4th is the activation and 5th is a bool to express if "
                                "excitation is already normalized");
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // Recevoir les états musculaires
-    std::vector<std::vector<std::shared_ptr<biorbd::muscles::State>>> state
+    std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>>> state
         = getParameterMuscleState(prhs, 2, 3, model->nbMuscleTotal());
 
     // Already normalized

@@ -5,7 +5,7 @@
 #include <vector>
 #include "biorbdConfig.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -29,21 +29,21 @@ public:
     /// \brief Deep copy of path changers
     /// \return A deep copy of path changers
     ///
-    biorbd::muscles::PathModifiers DeepCopy() const;
+    PathModifiers DeepCopy() const;
 
     ///
     /// \brief Deep copy of path changers from another path changers
     /// \param other THe path changers to copy
     ///
     void DeepCopy(
-        const biorbd::muscles::PathModifiers& other);
+        const PathModifiers& other);
 
     ///
     /// \brief Add a wrapping or a via point to the set of path modifiers
     /// \param object The wrapping or via point to add
     ///
     void addPathChanger(
-        biorbd::utils::Vector3d& object);
+        utils::Vector3d& object);
 
     // Set and get
     ///
@@ -69,17 +69,17 @@ public:
     /// \param idx Index of the object
     /// \return The object at a specific index
     ///
-    biorbd::utils::Vector3d& object(unsigned int  idx);
+    utils::Vector3d& object(unsigned int  idx);
 
     ///
     /// \brief Return the object at a specific index in the set
     /// \param idx Index of the object
     /// \return The object at a specific index
     ///
-    const biorbd::utils::Vector3d& object(unsigned int  idx) const;
+    const utils::Vector3d& object(unsigned int  idx) const;
 
 protected:
-    std::shared_ptr<std::vector<std::shared_ptr<biorbd::utils::Vector3d>>>
+    std::shared_ptr<std::vector<std::shared_ptr<utils::Vector3d>>>
     m_obj; ///< set of objects
     std::shared_ptr<unsigned int>
     m_nbWraps; ///< Number of wrapping object in the set

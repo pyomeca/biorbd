@@ -8,40 +8,42 @@
 #include "Muscles/PathModifiers.h"
 #include "Muscles/State.h"
 
-biorbd::muscles::Compound::Compound() :
-    m_name(std::make_shared<biorbd::utils::String>("")),
-    m_type(std::make_shared<biorbd::muscles::MUSCLE_TYPE>
-           (biorbd::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
-    m_pathChanger(std::make_shared<biorbd::muscles::PathModifiers>()),
-    m_force(std::make_shared<biorbd::utils::Scalar>(0))
+using namespace BIORBD_NAMESPACE;
+
+muscles::Compound::Compound() :
+    m_name(std::make_shared<utils::String>("")),
+    m_type(std::make_shared<muscles::MUSCLE_TYPE>
+           (muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
+    m_pathChanger(std::make_shared<muscles::PathModifiers>()),
+    m_force(std::make_shared<utils::Scalar>(0))
 {
 
 }
 
-biorbd::muscles::Compound::Compound(const biorbd::utils::String &name) :
-    m_name(std::make_shared<biorbd::utils::String>(name)),
-    m_type(std::make_shared<biorbd::muscles::MUSCLE_TYPE>
-           (biorbd::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
-    m_pathChanger(std::make_shared<biorbd::muscles::PathModifiers>()),
-    m_force(std::make_shared<biorbd::utils::Scalar>(0))
+muscles::Compound::Compound(const utils::String &name) :
+    m_name(std::make_shared<utils::String>(name)),
+    m_type(std::make_shared<muscles::MUSCLE_TYPE>
+           (muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
+    m_pathChanger(std::make_shared<muscles::PathModifiers>()),
+    m_force(std::make_shared<utils::Scalar>(0))
 {
 
 }
 
-biorbd::muscles::Compound::Compound(
-    const biorbd::utils::String &name,
-    const biorbd::muscles::PathModifiers &pathModifiers) :
-    m_name(std::make_shared<biorbd::utils::String>(name)),
-    m_type(std::make_shared<biorbd::muscles::MUSCLE_TYPE>
-           (biorbd::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
-    m_pathChanger(std::make_shared<biorbd::muscles::PathModifiers>(pathModifiers)),
-    m_force(std::make_shared<biorbd::utils::Scalar>(0))
+muscles::Compound::Compound(
+    const utils::String &name,
+    const muscles::PathModifiers &pathModifiers) :
+    m_name(std::make_shared<utils::String>(name)),
+    m_type(std::make_shared<muscles::MUSCLE_TYPE>
+           (muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
+    m_pathChanger(std::make_shared<muscles::PathModifiers>(pathModifiers)),
+    m_force(std::make_shared<utils::Scalar>(0))
 {
 
 }
 
-biorbd::muscles::Compound::Compound(
-    const biorbd::muscles::Compound &other) :
+muscles::Compound::Compound(
+    const muscles::Compound &other) :
     m_name(other.m_name),
     m_type(other.m_type),
     m_pathChanger(other.m_pathChanger),
@@ -50,8 +52,8 @@ biorbd::muscles::Compound::Compound(
 
 }
 
-biorbd::muscles::Compound::Compound(
-    std::shared_ptr<biorbd::muscles::Compound> other) :
+muscles::Compound::Compound(
+    std::shared_ptr<muscles::Compound> other) :
     m_name(other->m_name),
     m_type(other->m_type),
     m_pathChanger(other->m_pathChanger),
@@ -60,12 +62,12 @@ biorbd::muscles::Compound::Compound(
 
 }
 
-biorbd::muscles::Compound::~Compound()
+muscles::Compound::~Compound()
 {
 
 }
 
-void biorbd::muscles::Compound::DeepCopy(const biorbd::muscles::Compound &other)
+void muscles::Compound::DeepCopy(const muscles::Compound &other)
 {
     *m_name = *other.m_name;
     *m_type = *other.m_type;
@@ -73,32 +75,32 @@ void biorbd::muscles::Compound::DeepCopy(const biorbd::muscles::Compound &other)
     *m_force = *other.m_force;
 }
 
-const biorbd::utils::String &biorbd::muscles::Compound::name() const
+const utils::String &muscles::Compound::name() const
 {
     return *m_name;
 }
 
-void biorbd::muscles::Compound::setName(const biorbd::utils::String &name)
+void muscles::Compound::setName(const utils::String &name)
 {
     *m_name = name;
 }
 
-biorbd::muscles::MUSCLE_TYPE biorbd::muscles::Compound::type() const
+muscles::MUSCLE_TYPE muscles::Compound::type() const
 {
     return *m_type;
 }
 
-const biorbd::muscles::PathModifiers &biorbd::muscles::Compound::pathModifier()
+const muscles::PathModifiers &muscles::Compound::pathModifier()
 {
     return *m_pathChanger;
 }
 
-void biorbd::muscles::Compound::addPathObject(biorbd::utils::Vector3d &wrap)
+void muscles::Compound::addPathObject(utils::Vector3d &wrap)
 {
     m_pathChanger->addPathChanger(wrap);
 }
 
-const biorbd::utils::Scalar& biorbd::muscles::Compound::force()
+const utils::Scalar& muscles::Compound::force()
 {
     return *m_force;
 }

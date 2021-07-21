@@ -17,7 +17,7 @@ void Matlab_MusclesNames( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 2, 2,
                                "2 arguments are required where the 2nd is the handler on the model");
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // Sortie des noms
     plhs[0] = mxCreateCellMatrix(model->nbMuscleGroups(),

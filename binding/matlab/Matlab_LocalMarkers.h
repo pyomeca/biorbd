@@ -14,10 +14,10 @@ void Matlab_LocalMarkers( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 2, 4,
                                "2 arguments are required [+2 optional] where the 2nd is the handler on the model, 3rd is the wanted markerType to be return ('all' [default], 'technical' or anatomical') and 4th if you want to remove axes as specified in the model file [default = true]");
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // Gestion du type
-    biorbd::utils::String type("all");
+    BIORBD_NAMESPACE::utils::String type("all");
     if (nrhs >= 3) {
         type = getString(prhs,2);
     }
@@ -28,17 +28,17 @@ void Matlab_LocalMarkers( int, mxArray *plhs[],
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
     unsigned int nMarkers(0); // Nombre de marqueurs
-    std::vector<biorbd::rigidbody::NodeSegment>
+    std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>
     markers_tp; // récupérer les marqueurs
     if (!type.tolower().compare("all")) {
         nMarkers = model->nbMarkers();
-        markers_tp = model->biorbd::rigidbody::Markers::markers(removeAxes);
+        markers_tp = model->BIORBD_NAMESPACE::rigidbody::Markers::markers(removeAxes);
     } else if (!type.tolower().compare("anatomical")) {
         nMarkers = model->nbAnatomicalMarkers();
-        markers_tp = model->biorbd::rigidbody::Markers::anatomicalMarkers(removeAxes);
+        markers_tp = model->BIORBD_NAMESPACE::rigidbody::Markers::anatomicalMarkers(removeAxes);
     } else if (!type.tolower().compare("technical")) {
         nMarkers = model->nbTechnicalMarkers();
-        markers_tp = model->biorbd::rigidbody::Markers::technicalMarkers(removeAxes);
+        markers_tp = model->BIORBD_NAMESPACE::rigidbody::Markers::technicalMarkers(removeAxes);
     } else {
         std::ostringstream msg;
         msg << "Wrong type for markers!";
@@ -55,7 +55,7 @@ void Matlab_LocalMarkers( int, mxArray *plhs[],
 
     // Remplir le output
     unsigned int cmp(0);
-    std::vector<biorbd::rigidbody::NodeSegment>::iterator it=markers_tp.begin();
+    std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>::iterator it=markers_tp.begin();
     for (unsigned int i=0; (it+i)!=markers_tp.end(); ++i) {
         markers[cmp+0] = (*(it+i))(0);
         markers[cmp+1] = (*(it+i))(1);

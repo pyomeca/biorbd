@@ -4,7 +4,7 @@
 #include "biorbdConfig.h"
 #include "Utils/Vector.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace rigidbody
 {
@@ -13,7 +13,7 @@ class Joints;
 ///
 /// \brief Class GeneralizedAcceleration
 ///
-class BIORBD_API GeneralizedAcceleration : public biorbd::utils::Vector
+class BIORBD_API GeneralizedAcceleration : public utils::Vector
 {
 public:
 
@@ -33,14 +33,14 @@ public:
     /// \brief Create generalized acceleration vector from a joint Model
     /// \param j The joint model
     ///
-    GeneralizedAcceleration(const biorbd::rigidbody::Joints& j);
+    GeneralizedAcceleration(const rigidbody::Joints& j);
 
     ///
     /// \brief Construct generalized acceleration vector
     /// \param Q State vector of the internal joints
     ///
     GeneralizedAcceleration(
-        const biorbd::rigidbody::GeneralizedAcceleration& Q);
+        const GeneralizedAcceleration& Q);
 
     ///
     /// \brief Construct vector from Casadi vector
@@ -58,7 +58,7 @@ public:
     ///
     template<typename OtherDerived> GeneralizedAcceleration(
         const Eigen::MatrixBase<OtherDerived>& other) :
-        biorbd::utils::Vector(other) {}
+        utils::Vector(other) {}
 
 #endif
 
@@ -89,10 +89,10 @@ public:
     /// \return The current Generalized Coordinate
     ///
     template<typename OtherDerived>
-    biorbd::rigidbody::GeneralizedAcceleration& operator=(
+    GeneralizedAcceleration& operator=(
         const Eigen::MatrixBase <OtherDerived>& other)
     {
-        this->biorbd::utils::Vector::operator=(other);
+        this->utils::Vector::operator=(other);
         return *this;
     }
 
@@ -103,7 +103,7 @@ public:
     /// \param other The vector to copy
     ///
     void operator=(
-        const biorbd::utils::Vector& other);
+        const utils::Vector& other);
 #ifdef BIORBD_USE_CASADI_MATH
 
     ///

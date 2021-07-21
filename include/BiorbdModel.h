@@ -57,24 +57,24 @@
 /// \brief Returns the current version of biorbd
 /// \return The current version of biorbd
 ///
-biorbd::utils::String getVersion();
+BIORBD_NAMESPACE::utils::String getVersion();
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 ///
 /// \brief The actual musculoskeletal model that holds everything in biorbd
 ///
 class BIORBD_API Model :
-    public biorbd::rigidbody::Joints
-    ,public biorbd::rigidbody::Markers
-    ,public biorbd::rigidbody::IMUs
-    ,public biorbd::rigidbody::RotoTransNodes
-    ,public biorbd::rigidbody::Contacts
+    public rigidbody::Joints
+    ,public rigidbody::Markers
+    ,public rigidbody::IMUs
+    ,public rigidbody::RotoTransNodes
+    ,public rigidbody::Contacts
 #ifdef MODULE_ACTUATORS
-    ,public biorbd::actuator::Actuators
+    ,public actuator::Actuators
 #endif
 #ifdef MODULE_MUSCLES
-    ,public biorbd::muscles::Muscles
+    ,public muscles::Muscles
 #endif
 {
 public:
@@ -88,16 +88,16 @@ public:
     /// \param path The path of the file
     ///
     Model(
-        const biorbd::utils::Path& path);
+        const utils::Path& path);
 
 private:
-    std::shared_ptr<biorbd::utils::Path> m_path;
+    std::shared_ptr<utils::Path> m_path;
 public:
     ///
     /// \brief Returns the path of .bioMod file used to load the model. If no file was used, it remains empty
     /// \return The path of .bioMod file used to load the model
     ///
-    biorbd::utils::Path path() const;
+    utils::Path path() const;
 };
 
 }

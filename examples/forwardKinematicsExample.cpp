@@ -12,13 +12,16 @@
 ///
 /// Please note that this example will work only with the Eigen backend
 ///
+
+using namespace BIORBD_NAMESPACE;
+
 int main()
 {
     // Load a predefined model
-    biorbd::Model model("pyomecaman.bioMod");
+    Model model("pyomecaman.bioMod");
 
     // Choose a position to get the markers from
-    biorbd::rigidbody::GeneralizedCoordinates Q(model);
+    rigidbody::GeneralizedCoordinates Q(model);
     Q.setZero();
 
     // Proceed with the forward kinematics

@@ -12,12 +12,14 @@
 #include "RigidBody/GeneralizedTorque.h"
 #include "Muscles/StateDynamics.h"
 
-biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
-    biorbd::Model &model,
-    const biorbd::rigidbody::GeneralizedCoordinates &Q,
-    const biorbd::rigidbody::GeneralizedVelocity &Qdot,
-    const biorbd::rigidbody::GeneralizedTorque &torqueTarget,
-    const biorbd::utils::Vector &activationInit,
+using namespace BIORBD_NAMESPACE;
+
+muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
+    Model &model,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedTorque &torqueTarget,
+    const utils::Vector &activationInit,
     bool useResidual,
     unsigned int pNormFactor,
     int verbose,
@@ -30,29 +32,29 @@ biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     m_nbTorque(std::make_shared<unsigned int>(model.nbGeneralizedTorque())),
     m_nbTorqueResidual(std::make_shared<unsigned int>(*m_nbQ)),
     m_eps(std::make_shared<double>(eps)),
-    m_activations(std::make_shared<biorbd::utils::Vector>(activationInit)),
-    m_Q(std::make_shared<biorbd::rigidbody::GeneralizedCoordinates>(Q)),
-    m_Qdot(std::make_shared<biorbd::rigidbody::GeneralizedVelocity>(Qdot)),
-    m_torqueTarget(std::make_shared<biorbd::rigidbody::GeneralizedTorque>
+    m_activations(std::make_shared<utils::Vector>(activationInit)),
+    m_Q(std::make_shared<rigidbody::GeneralizedCoordinates>(Q)),
+    m_Qdot(std::make_shared<rigidbody::GeneralizedVelocity>(Qdot)),
+    m_torqueTarget(std::make_shared<rigidbody::GeneralizedTorque>
                    (torqueTarget)),
-    m_torqueResidual(std::make_shared<biorbd::utils::Vector>
-                     (biorbd::utils::Vector::Zero(*m_nbTorque))),
+    m_torqueResidual(std::make_shared<utils::Vector>
+                     (utils::Vector::Zero(*m_nbTorque))),
     m_torquePonderation(std::make_shared<double>(1000)),
-    m_states(std::make_shared<std::vector<std::shared_ptr<biorbd::muscles::State>>>
+    m_states(std::make_shared<std::vector<std::shared_ptr<muscles::State>>>
              (*m_nbMus)),
     m_pNormFactor(std::make_shared<unsigned int>(pNormFactor)),
     m_verbose(std::make_shared<int>(verbose)),
-    m_finalSolution(std::make_shared<biorbd::utils::Vector>(biorbd::utils::Vector(
+    m_finalSolution(std::make_shared<utils::Vector>(utils::Vector(
                         *m_nbMus))),
-    m_finalResidual(std::make_shared<biorbd::utils::Vector>(biorbd::utils::Vector(
+    m_finalResidual(std::make_shared<utils::Vector>(utils::Vector(
                         *m_nbQ)))
 {
     if (*m_eps < 1e-12) {
-        biorbd::utils::Error::raise("epsilon for partial derivates approximation is too small ! \nLimit for epsilon is 1e-12");
+        utils::Error::raise("epsilon for partial derivates approximation is too small ! \nLimit for epsilon is 1e-12");
     }
 
     for (auto& s : *m_states) {
-        s = std::make_shared<biorbd::muscles::State>();
+        s = std::make_shared<muscles::State>();
     }
 
     m_model.updateMuscles(*m_Q, *m_Qdot, true);
@@ -63,12 +65,12 @@ biorbd::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     }
 }
 
-biorbd::muscles::StaticOptimizationIpopt::~StaticOptimizationIpopt()
+muscles::StaticOptimizationIpopt::~StaticOptimizationIpopt()
 {
 
 }
 
-bool biorbd::muscles::StaticOptimizationIpopt::get_nlp_info(
+bool muscles::StaticOptimizationIpopt::get_nlp_info(
     Ipopt::Index &n,
     Ipopt::Index &m,
     Ipopt::Index &nnz_jac_g,
@@ -96,7 +98,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::get_nlp_info(
     return true;
 }
 
-bool biorbd::muscles::StaticOptimizationIpopt::get_bounds_info(
+bool muscles::StaticOptimizationIpopt::get_bounds_info(
     Ipopt::Index n,
     Ipopt::Number *x_l,
     Ipopt::Number *x_u,
@@ -126,7 +128,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::get_bounds_info(
     return true;
 }
 
-bool biorbd::muscles::StaticOptimizationIpopt::get_starting_point(
+bool muscles::StaticOptimizationIpopt::get_starting_point(
     Ipopt::Index,
     bool init_x,
     Ipopt::Number* x,
@@ -160,7 +162,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::get_starting_point(
     return true;
 }
 
-bool biorbd::muscles::StaticOptimizationIpopt::eval_f(
+bool muscles::StaticOptimizationIpopt::eval_f(
     Ipopt::Index n,
     const Ipopt::Number *x,
     bool new_x,
@@ -179,7 +181,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_f(
     return true;
 }
 
-bool biorbd::muscles::StaticOptimizationIpopt::eval_grad_f(
+bool muscles::StaticOptimizationIpopt::eval_grad_f(
     Ipopt::Index n,
     const Ipopt::Number *x,
     bool new_x,
@@ -191,9 +193,9 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_grad_f(
         dispatch(x);
     }
 
-    biorbd::utils::Vector grad_activ(m_activations->normGradient(*m_pNormFactor,
+    utils::Vector grad_activ(m_activations->normGradient(*m_pNormFactor,
                                      true));
-    biorbd::utils::Vector grad_residual(m_torqueResidual->normGradient(2, true));
+    utils::Vector grad_residual(m_torqueResidual->normGradient(2, true));
 
     for( unsigned i = 0; i < *m_nbMus; i++ ) {
         grad_f[i] = grad_activ[i];
@@ -204,7 +206,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_grad_f(
     return true;
 }
 
-bool biorbd::muscles::StaticOptimizationIpopt::eval_g(
+bool muscles::StaticOptimizationIpopt::eval_g(
     Ipopt::Index n,
     const Ipopt::Number *x,
     bool new_x,
@@ -217,7 +219,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_g(
         dispatch(x);
     }
 
-    const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueMusc(
+    const rigidbody::GeneralizedTorque& GeneralizedTorqueMusc(
         m_model.muscularJointTorque(*m_states));
 
     for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ ) {
@@ -233,7 +235,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_g(
     return true;
 }
 
-bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
+bool muscles::StaticOptimizationIpopt::eval_jac_g(
     Ipopt::Index n,
     const Ipopt::Number *x,
     bool new_x,
@@ -261,21 +263,21 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
         if (new_x) {
             dispatch(x);
         }
-        const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueMusc(
+        const rigidbody::GeneralizedTorque& GeneralizedTorqueMusc(
             m_model.muscularJointTorque(*m_states));
         unsigned int k(0);
         for( unsigned int j = 0; j < *m_nbMus; ++j ) {
-            std::vector<std::shared_ptr<biorbd::muscles::State>> stateEpsilon;
+            std::vector<std::shared_ptr<muscles::State>> stateEpsilon;
             for (unsigned int i = 0; i < *m_nbMus; ++i) {
                 unsigned int delta(0);
                 if (i == j) {
                     delta = 1;
                 }
                 stateEpsilon.push_back(
-                    std::make_shared<biorbd::muscles::State>(
-                        biorbd::muscles::State(0, (*m_activations)[i]+delta* *m_eps)));
+                    std::make_shared<muscles::State>(
+                        muscles::State(0, (*m_activations)[i]+delta* *m_eps)));
             }
-            const biorbd::rigidbody::GeneralizedTorque& GeneralizedTorqueCalculEpsilon(
+            const rigidbody::GeneralizedTorque& GeneralizedTorqueCalculEpsilon(
                 m_model.muscularJointTorque(stateEpsilon));
             for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ ) {
                 values[k++] = (GeneralizedTorqueCalculEpsilon[i]-GeneralizedTorqueMusc[i])/
@@ -297,7 +299,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
 
         if (*m_verbose >= 2) {
             k = 0;
-            biorbd::utils::Matrix jacobian(biorbd::utils::Matrix::Zero(*m_nbTorque,
+            utils::Matrix jacobian(utils::Matrix::Zero(*m_nbTorque,
                                            static_cast<unsigned int>(n)));
             for( unsigned int j = 0; j < *m_nbMus; j++ )
                 for( unsigned int i = 0; i < static_cast<unsigned int>(m); i++ ) {
@@ -314,7 +316,7 @@ bool biorbd::muscles::StaticOptimizationIpopt::eval_jac_g(
 }
 
 
-void biorbd::muscles::StaticOptimizationIpopt::finalize_solution(
+void muscles::StaticOptimizationIpopt::finalize_solution(
     Ipopt::SolverReturn,
     Ipopt::Index,
     const Ipopt::Number *x,
@@ -351,19 +353,19 @@ void biorbd::muscles::StaticOptimizationIpopt::finalize_solution(
     }
 }
 
-biorbd::utils::Vector biorbd::muscles::StaticOptimizationIpopt::finalSolution()
+utils::Vector muscles::StaticOptimizationIpopt::finalSolution()
 const
 {
     return *m_finalSolution;
 }
 
-biorbd::utils::Vector biorbd::muscles::StaticOptimizationIpopt::finalResidual()
+utils::Vector muscles::StaticOptimizationIpopt::finalResidual()
 const
 {
     return *m_finalResidual;
 }
 
-void biorbd::muscles::StaticOptimizationIpopt::dispatch(const Ipopt::Number *x)
+void muscles::StaticOptimizationIpopt::dispatch(const Ipopt::Number *x)
 {
     for(unsigned int i = 0; i < *m_nbMus; i++ ) {
         (*m_activations)[i] = x[i];

@@ -5,7 +5,7 @@
 #include <map>
 #include "biorbdConfig.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -32,7 +32,7 @@ public:
     /// \param force If force is true, the timer starts even though it is already started
     ///
     void startTimer(
-        const biorbd::utils::String& name,
+        const String& name,
         bool force = false);
 
     ///
@@ -40,14 +40,14 @@ public:
     /// \param name Name of the timer to pause
     ///
     void pauseTimer(
-        const biorbd::utils::String& name);
+        const String& name);
 
     ///
     /// \brief Resume a timer of a specified name
     /// \param name Name of the timer to resume
     ///
     void resumeTimer(
-        const biorbd::utils::String& name);
+        const String& name);
 
     ///
     /// \brief Get lap time of a specified timer
@@ -55,7 +55,7 @@ public:
     /// \return The lap time of a specified timer
     ///
     double getLap(
-        const biorbd::utils::String& name);
+        const String& name);
 
     ///
     /// \brief Stop the timer of a specified name and get lap time
@@ -63,7 +63,7 @@ public:
     /// \return The lap time of a specified timer
     ///
     double stopTimer(
-        const biorbd::utils::String& name);
+        const String& name);
 
     ///
     /// \brief To waste time (similar to a sleep function)
@@ -76,7 +76,7 @@ public:
     /// \param name The name of the timer to add
     ///
     void addTimer(
-        const biorbd::utils::String& name);
+        const String& name);
 
     ///
     /// \brief Get the index of the specified timer
@@ -84,11 +84,11 @@ public:
     /// \return The index of the specified timer
     ///
     int getTimerIdx(
-        const biorbd::utils::String& name);
+        const String& name);
 
 protected:
-    std::map<biorbd::utils::String, biorbd::utils::Timer> m_timers;///< Timers
-    std::map<biorbd::utils::String, int> m_counts;///< Counts
+    std::map<String, Timer> m_timers;///< Timers
+    std::map<String, int> m_counts;///< Counts
 
 };
 

@@ -14,16 +14,16 @@ void Matlab_globalJCS( int, mxArray *plhs[],
                                "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
 
     // Recevoir le model
-    biorbd::Model * model = convertMat2Ptr<biorbd::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<biorbd::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
             2, nQ);
 
     // Trouver les RT
-    std::vector<std::vector<biorbd::utils::RotoTrans>> JSC_vec;
-    for (std::vector<biorbd::rigidbody::GeneralizedCoordinates>::iterator Q_it =
+    std::vector<std::vector<BIORBD_NAMESPACE::utils::RotoTrans>> JSC_vec;
+    for (std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates>::iterator Q_it =
                 Q.begin(); Q_it!=Q.end(); ++Q_it) {
         JSC_vec.push_back(model->allGlobalJCS(*Q_it));
     }
@@ -35,10 +35,10 @@ void Matlab_globalJCS( int, mxArray *plhs[],
 
     // Remplir l'output
     unsigned int cmpJCS = 0;
-    for (std::vector<std::vector<biorbd::utils::RotoTrans>>::iterator AllJCS_it =
+    for (std::vector<std::vector<BIORBD_NAMESPACE::utils::RotoTrans>>::iterator AllJCS_it =
                 JSC_vec.begin();
             AllJCS_it != JSC_vec.end(); ++AllJCS_it)
-        for (std::vector<biorbd::utils::RotoTrans>::iterator JSC_it=
+        for (std::vector<BIORBD_NAMESPACE::utils::RotoTrans>::iterator JSC_it=
                     (*AllJCS_it).begin(); JSC_it!=(*AllJCS_it).end(); ++JSC_it)
             for (unsigned int i=0; i<4; ++i)
                 for (unsigned int j=0; j<4; ++j) {

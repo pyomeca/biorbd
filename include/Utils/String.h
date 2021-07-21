@@ -4,7 +4,7 @@
 #include <iostream>
 #include "biorbdConfig.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -35,7 +35,7 @@ public:
     /// \param text The string in string format
     ///
     String(
-        const biorbd::utils::String& text);
+        const String& text);
 
     ///
     /// \brief Construct string
@@ -50,7 +50,7 @@ public:
     /// \param other The other string
     ///
     String& operator=(
-        const biorbd::utils::String& other);
+        const String& other);
 #endif
 
     ///
@@ -108,26 +108,26 @@ public:
     /// \param str The string to convert
     /// \return The new string
     ///
-    static biorbd::utils::String tolower(const biorbd::utils::String &str);
+    static String tolower(const String &str);
 
     ///
     /// \brief Return a lower case string
     /// \return The lower case string
     ///
-    biorbd::utils::String tolower() const;
+    String tolower() const;
 
     ///
     /// \brief Convert a string to a upper case string
     /// \param str The string to convert
     /// \return The new string
     ///
-    static biorbd::utils::String toupper(const biorbd::utils::String &str);
+    static String toupper(const String &str);
 
     ///
     /// \brief Return an upper case string
     /// \return The upper case string
     ///
-    biorbd::utils::String toupper() const;
+    String toupper() const;
 #endif
 
     ///
@@ -135,7 +135,7 @@ public:
     /// \param val The double to convert
     /// \return The double converter to string
     ///
-    static biorbd::utils::String to_string(
+    static String to_string(
         double val);
 
     ///
@@ -143,7 +143,7 @@ public:
     /// \param val The float to convert
     /// \return The float converter to string
     ///
-    static biorbd::utils::String to_string(
+    static String to_string(
         float val);
 
     ///
@@ -154,20 +154,21 @@ public:
     ///
     /// Example : The string "2.82823000" will return "2.82823" for the tag "0"
     ///
-    static biorbd::utils::String removeTrailing(
-        const biorbd::utils::String& origin,
-        const biorbd::utils::String& trailTag);
+    static String removeTrailing(
+        const String& origin,
+        const String& trailTag);
 };
 
 }
 }
+
 #ifndef SWIG
     ///
     /// \brief To use operator<<
     /// \param os The ostream
     /// \param a The string to operate on
     ///
-    std::ostream& operator<<(std::ostream& os, const biorbd::utils::String &a);
+    std::ostream& operator<<(std::ostream& os, const BIORBD_NAMESPACE::utils::String &a);
 #endif
 
 #endif // BIORBD_UTILS_STRING_H

@@ -6,7 +6,7 @@
 #include "Utils/Scalar.h"
 
 #include "biorbdConfig.h"
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -41,7 +41,7 @@ public:
     /// \param other Other quaternion
     ///
     Quaternion(
-        const biorbd::utils::Quaternion &other);
+        const Quaternion &other);
 
     ///
     /// \brief Construct Quaternion
@@ -61,10 +61,10 @@ public:
     /// \param kStabilizer The value of the kstabilizer
     ///
     Quaternion (
-        const biorbd::utils::Scalar& w,
-        const biorbd::utils::Scalar& x,
-        const biorbd::utils::Scalar& y,
-        const biorbd::utils::Scalar& z,
+        const Scalar& w,
+        const Scalar& x,
+        const Scalar& y,
+        const Scalar& z,
         double kStabilizer = 1);
 
     ///
@@ -74,33 +74,33 @@ public:
     /// \param kStabilizer The value of the kstabilizer
     ///
     Quaternion (
-        const biorbd::utils::Scalar& w,
-        const biorbd::utils::Vector3d &vec3,
+        const Scalar& w,
+        const Vector3d &vec3,
         double kStabilizer = 1);
 
     ///
     /// \brief Return the real part (w) the Quaternion
     /// \return The real part of the Quaternion
     ///
-    biorbd::utils::Scalar w() const;
+    Scalar w() const;
 
     ///
     /// \brief Return the X-Component of the imaginary part of the Quaternion
     /// \return The X-Component of the imaginary part of the Quaternion
     ///
-    biorbd::utils::Scalar x() const;
+    Scalar x() const;
 
     ///
     /// \brief Return the Y-Component of the imaginary part of the Quaternion
     /// \return The Y-Component of the imaginary part of the Quaternion
     ///
-    biorbd::utils::Scalar y() const;
+    Scalar y() const;
 
     ///
     /// \brief Return the Z-Component of the imaginary part of the Quaternion
     /// \return The Z-Component of the imaginary part of the Quaternion
     ///
-    biorbd::utils::Scalar z() const;
+    Scalar z() const;
 
     ///
     /// \brief Set the k stabilizer
@@ -126,12 +126,12 @@ public:
     /// \param other The other quaternion
     ///
     template<typename OtherDerived>
-    biorbd::utils::Quaternion& operator=(
+    Quaternion& operator=(
         const Eigen::MatrixBase <OtherDerived>& other)
     {
         this->Eigen::Vector4d::operator=(other);
         // I don't understand why the next line doesn't SegFault...
-        this->m_Kstab = static_cast<biorbd::utils::Quaternion>(other).m_Kstab;
+        this->m_Kstab = static_cast<Quaternion>(other).m_Kstab;
         return *this;
     }
 
@@ -143,21 +143,21 @@ public:
     /// \brief Quaternion multiplication
     /// \param other The other quaternion
     ///
-    biorbd::utils::Quaternion operator*(
-        const biorbd::utils::Quaternion& other) const;
+    Quaternion operator*(
+        const Quaternion& other) const;
 
     ///
     /// \brief Multiply the quaternion with a scalar
     /// \param scalar The scalar to multiply with
     ///
-    biorbd::utils::Quaternion operator*(
-        const biorbd::utils::Scalar& scalar) const;
+    Quaternion operator*(
+        const Scalar& scalar) const;
 
     ///
     /// \brief Multiply the quaternion with a scalar
     /// \param scalar The scalar to multiply with
     ///
-    biorbd::utils::Quaternion operator*(
+    Quaternion operator*(
         float scalar) const;
 
 #ifdef BIORBD_USE_CASADI_MATH
@@ -165,7 +165,7 @@ public:
     /// \brief Multiply the quaternion with a scalar
     /// \param scalar The scalar to multiply with
     ///
-    biorbd::utils::Quaternion operator*(
+    Quaternion operator*(
         double scalar) const;
 #endif
 
@@ -173,15 +173,15 @@ public:
     /// \brief Add the quaternion to another
     /// \param other The other quaternion to add
     ///
-    biorbd::utils::Quaternion operator+(
-        const biorbd::utils::Quaternion& other) const;
+    Quaternion operator+(
+        const Quaternion& other) const;
 
     ///
     /// \brief Subtract the quaternion to another
     /// \param other Other quaternion to substract
     ///
-    biorbd::utils::Quaternion operator-(
-        const biorbd::utils::Quaternion& other) const;
+    Quaternion operator-(
+        const Quaternion& other) const;
 
     ///
     /// \brief Construct Quaternion from a GL
@@ -191,11 +191,11 @@ public:
     /// \param z The Z-Component of quaternion
     /// \param kStab The value of the kstabilizer
     ///
-    static biorbd::utils::Quaternion fromGLRotate (
-        const biorbd::utils::Scalar& angle,
-        const biorbd::utils::Scalar& x,
-        const biorbd::utils::Scalar& y,
-        const biorbd::utils::Scalar& z,
+    static Quaternion fromGLRotate (
+        const Scalar& angle,
+        const Scalar& x,
+        const Scalar& y,
+        const Scalar& z,
         double kStab = 1);
 
     ///
@@ -204,9 +204,9 @@ public:
     /// \param axis The 3d vector of the axis
     /// \param kStab The value of the kstabilizer
     ///
-    static biorbd::utils::Quaternion fromAxisAngle (
-        const biorbd::utils::Scalar& angle,
-        const biorbd::utils::Vector3d &axis,
+    static Quaternion fromAxisAngle (
+        const Scalar& angle,
+        const Vector3d &axis,
         double kStab = 1);
 
     ///
@@ -214,8 +214,8 @@ public:
     /// \param rt RotoTrans matrix
     /// \param kStab The value of the kstabilizer
     ///
-    static biorbd::utils::Quaternion fromMatrix (
-        const biorbd::utils::RotoTrans& rt,
+    static Quaternion fromMatrix (
+        const RotoTrans& rt,
         double kStab = 1);
 
     ///
@@ -223,8 +223,8 @@ public:
     /// \param mat The rotation matrix
     /// \param kStab The value of the kstabilizer
     ///
-    static biorbd::utils::Quaternion fromMatrix (
-        const biorbd::utils::Rotation &mat,
+    static Quaternion fromMatrix (
+        const Rotation &mat,
         double kStab = 1);
 
     ///
@@ -232,8 +232,8 @@ public:
     /// \param zyx_angles The Euler angles in a sequence where the first element is the Z-component
     /// \param kStab The value of the kstabilizer
     ///
-    static biorbd::utils::Quaternion fromZYXAngles (
-        const biorbd::utils::Vector3d &zyx_angles,
+    static Quaternion fromZYXAngles (
+        const Vector3d &zyx_angles,
         double kStab = 1);
 
     ///
@@ -241,8 +241,8 @@ public:
     /// \param yxz_angles The Euler angles in a sequence where the first element is the Y-component
     /// \param kStab The value of the kstabilizer
     ///
-    static biorbd::utils::Quaternion fromYXZAngles (
-        const biorbd::utils::Vector3d &yxz_angles,
+    static Quaternion fromYXZAngles (
+        const Vector3d &yxz_angles,
         double kStab = 1);
 
     ///
@@ -250,8 +250,8 @@ public:
     /// \param xyz_angles The Euler angles in a sequence where the first element is the X-component
     /// \param kStab The value of the kstabilizer
     ///
-    static biorbd::utils::Quaternion fromXYZAngles (
-        const biorbd::utils::Vector3d &xyz_angles,
+    static Quaternion fromXYZAngles (
+        const Vector3d &xyz_angles,
         double kStab = 1);
 
     ///
@@ -264,7 +264,7 @@ public:
     /// computation of the norm, the norm-squared is evaluated. The threshold is
     /// 1e-10 for the norm-squared
     ///
-    biorbd::utils::Rotation toMatrix(
+    Rotation toMatrix(
         bool skipAsserts = false) const;
 
 #ifndef BIORBD_USE_CASADI_MATH
@@ -273,7 +273,7 @@ public:
     /// \param alpha The proportion of the rotation
     /// \param quat The quaternion to targe
     ///
-    biorbd::utils::Quaternion slerp (
+    Quaternion slerp (
         double alpha,
         const Quaternion &quat) const;
 #endif
@@ -282,7 +282,7 @@ public:
     /// \brief Return the conjugate of the quaternion
     /// \return The conjugate of the quaternion
     ///
-    biorbd::utils::Quaternion conjugate() const;
+    Quaternion conjugate() const;
 
     ///
     /// \brief Integrate the quaternion from its velocity
@@ -290,8 +290,8 @@ public:
     /// \param dt The time step to intergrate on
     /// \return The rotated quaternion
     ///
-    biorbd::utils::Quaternion timeStep (
-        const biorbd::utils::Vector3d &omega,
+    Quaternion timeStep (
+        const Vector3d &omega,
         double dt);
 
     ///
@@ -299,8 +299,8 @@ public:
     /// \param vec The vector to rotate
     /// \return The rotated vector
     ///
-    biorbd::utils::Vector3d rotate (
-        const biorbd::utils::Vector3d &vec) const;
+    Vector3d rotate (
+        const Vector3d &vec) const;
 
     ///
     /// \brief Converts a 3d angular velocity vector
@@ -310,8 +310,8 @@ public:
     /// Converts a 3d angular velocity vector into a 4d derivative of
     /// the components of the quaternion
     ///
-    biorbd::utils::Quaternion omegaToQDot(
-        const biorbd::utils::Vector3d& omega) const;
+    Quaternion omegaToQDot(
+        const Vector3d& omega) const;
 
     ///
     /// \brief Converts a 3d angular velocity vector
@@ -325,17 +325,17 @@ public:
     /// https://davidbrown3.github.io/2017-07-25/EulerAngles/
     /// for correct equations.
     ///
-    biorbd::utils::Vector3d  eulerDotToOmega(
-        const biorbd::utils::Vector3d &eulerDot,
-        const biorbd::utils::Vector3d &euler,
-        const biorbd::utils::String& seq);
+    Vector3d  eulerDotToOmega(
+        const Vector3d &eulerDot,
+        const Vector3d &euler,
+        const String& seq);
 
     ///
     /// \brief Return the time derivative of the quaterion
     /// \param w The vector of time derivative (output)
     ///
     void derivate(
-        const biorbd::utils::Vector &w);
+        const Vector &w);
 
     ///
     /// \brief Force the normalization of the quaternion

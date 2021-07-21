@@ -16,7 +16,7 @@ struct SpatialTransform;
 
 #include "biorbdConfig.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
 namespace rigidbody
 {
@@ -68,25 +68,18 @@ public:
     /// \param v33 Row 3, Col 3
     ///
     RotoTrans(
-        const biorbd::utils::Scalar& v00, const biorbd::utils::Scalar& v01,
-        const biorbd::utils::Scalar& v02,
-        const biorbd::utils::Scalar& v03,
-        const biorbd::utils::Scalar& v10, const biorbd::utils::Scalar& v11,
-        const biorbd::utils::Scalar& v12,
-        const biorbd::utils::Scalar& v13,
-        const biorbd::utils::Scalar& v20, const biorbd::utils::Scalar& v21,
-        const biorbd::utils::Scalar& v22,
-        const biorbd::utils::Scalar& v23,
-        const biorbd::utils::Scalar& v30, const biorbd::utils::Scalar& v31,
-        const biorbd::utils::Scalar& v32,
-        const biorbd::utils::Scalar& v33);
+        const Scalar& v00, const Scalar& v01, const Scalar& v02, const Scalar& v03,
+        const Scalar& v10, const Scalar& v11, const Scalar& v12, const Scalar& v13,
+        const Scalar& v20, const Scalar& v21, const Scalar& v22, const Scalar& v23,
+        const Scalar& v30, const Scalar& v31, const Scalar& v32, const Scalar& v33
+    );
 
     ///
     /// \brief Contruct Rototrans
     /// \param rot The rotation matrix
     ///
     RotoTrans(
-        const biorbd::utils::Rotation& rot);
+        const Rotation& rot);
 
     ///
     /// \brief Contruct Rototrans
@@ -94,8 +87,8 @@ public:
     /// \param trans Translation vector
     ///
     RotoTrans(
-        const biorbd::utils::Rotation& rot,
-        const biorbd::utils::Vector3d& trans);
+        const Rotation& rot,
+        const Vector3d& trans);
 
     ///
     /// \brief Contruct Rototrans
@@ -107,9 +100,9 @@ public:
     /// sequence
     ///
     RotoTrans(
-        const biorbd::utils::Vector& rotation,
-        const biorbd::utils::Vector3d& translation,
-        const biorbd::utils::String &rotationSequence);
+        const Vector& rotation,
+        const Vector3d& translation,
+        const String &rotationSequence);
 
     ///
     /// \brief Contruct Rototrans
@@ -142,40 +135,38 @@ public:
     /// \param axisToRecalculate The axis to recalculate to ensure orthonormal system of axes
     /// \return The system of axes
     ///
-    static biorbd::utils::RotoTrans fromMarkers(
-        const biorbd::rigidbody::NodeSegment& origin,
-        const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>&
-        axis1markers,
-        const std::pair<biorbd::rigidbody::NodeSegment, biorbd::rigidbody::NodeSegment>&
-        axis2markers,
-        const std::pair<biorbd::utils::String, biorbd::utils::String> &axesNames,
-        const biorbd::utils::String& axisToRecalculate);
+    static RotoTrans fromMarkers(
+        const rigidbody::NodeSegment& origin,
+        const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment>&axis1markers,
+        const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment>&axis2markers,
+        const std::pair<String, String> &axesNames,
+        const String& axisToRecalculate);
 
     ///
     /// \brief Get a particular axis of the rotation matrix
     /// \param idx The index of axis (x = 0, y = 1 and z = 2)
     /// \return The axis
     ///
-    biorbd::utils::Vector3d axe(
+    Vector3d axe(
         unsigned int idx) const ;
 
     ///
     /// \brief Return the tranposed matrix
     /// \return The transposed matrix
     ///
-    biorbd::utils::RotoTrans transpose() const;
+    RotoTrans transpose() const;
 
     ///
     /// \brief Return the translation vector
     /// \return The translation vector
     ///
-    biorbd::utils::Vector3d trans() const;
+    Vector3d trans() const;
 
     ///
     /// \brief Return the rotation matrix
     /// \return The rotation matrix
     ///
-    biorbd::utils::Rotation rot() const;
+    Rotation rot() const;
 
     ///
     /// \brief Set the RotoTrans from a rotation and a translation
@@ -183,16 +174,16 @@ public:
     /// \param trans The vector of translation
     /// \return The matrix of RotoTrans
     ///
-    static biorbd::utils::RotoTrans combineRotAndTrans(
-        const biorbd::utils::Rotation& rot,
-        const biorbd::utils::Vector3d& trans);
+    static RotoTrans combineRotAndTrans(
+        const Rotation& rot,
+        const Vector3d& trans);
 
     ///
     /// \brief set the RotoTrans from a spatial transform
     /// \param st The spatial transform
     /// \return The matrix of RotoTrans
     ///
-    static biorbd::utils::RotoTrans fromSpatialTransform(
+    static RotoTrans fromSpatialTransform(
         const RigidBodyDynamics::Math::SpatialTransform& st);
 
     ///
@@ -204,10 +195,10 @@ public:
     /// The number of rotation umust match the number of axes in the rotation
     /// sequence
     ///
-    static biorbd::utils::RotoTrans fromEulerAngles(
-        const biorbd::utils::Vector &rot,
-        const biorbd::utils::Vector3d& trans,
-        const biorbd::utils::String& seq);
+    static RotoTrans fromEulerAngles(
+        const Vector &rot,
+        const Vector3d& trans,
+        const String& seq);
 
     ///
     /// \brief Return extracted angles from the rotation matrix into Euler angles using the provided sequence
@@ -217,9 +208,9 @@ public:
     ///
     /// The rotation sequence can be any combination of x, y and z
     ///
-    static biorbd::utils::Vector toEulerAngles(
-        const biorbd::utils::RotoTrans& rt,
-        const biorbd::utils::String &seq);
+    static Vector toEulerAngles(
+        const RotoTrans& rt,
+        const String &seq);
 
 #ifndef BIORBD_USE_CASADI_MATH
     ///
@@ -227,8 +218,8 @@ public:
     /// \param rt The RotoTrans matrices to mean
     /// \return The mean RotoTrans
     ///
-    static biorbd::utils::RotoTrans mean(
-        const std::vector<biorbd::utils::RotoTrans>&rt);
+    static utils::RotoTrans mean(
+        const std::vector<utils::RotoTrans>&rt);
 #endif
 
 #ifndef SWIG
@@ -238,7 +229,7 @@ public:
     /// \param other The other rotoTrans matrix
     ///
     template<typename OtherDerived>
-    biorbd::utils::RotoTrans& operator=(const Eigen::MatrixBase <OtherDerived>&
+    RotoTrans& operator=(const Eigen::MatrixBase <OtherDerived>&
                                         other)
     {
         Eigen::Matrix4d::operator=(other);
@@ -252,7 +243,7 @@ protected:
     /// \brief Expand 3D vector to 4D (padding with an extra 1)
     /// \param v1 Vector to expand
     ///
-    RigidBodyDynamics::Math::Vector4d expand3dTo4d(const biorbd::utils::Vector3d&
+    RigidBodyDynamics::Math::Vector4d expand3dTo4d(const Vector3d&
             v1);
 
     ///
@@ -272,7 +263,7 @@ protected:
     /// \param os osstream
     /// \param rt The RotoTrans matrix
     ///
-    std::ostream& operator<<(std::ostream& os, const biorbd::utils::RotoTrans &rt);
+    std::ostream& operator<<(std::ostream& os, const BIORBD_NAMESPACE::utils::RotoTrans &rt);
 #endif
 
 #endif // BIORBD_UTILS_ROTO_TRANS_H

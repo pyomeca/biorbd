@@ -6,80 +6,82 @@
 #include "Muscles/Geometry.h"
 #include "Muscles/Characteristics.h"
 
-biorbd::muscles::HillThelenType::HillThelenType() :
-    biorbd::muscles::HillType()
-{
-    setType();
-}
-biorbd::muscles::HillThelenType::HillThelenType(
-    const biorbd::utils::String& name,
-    const biorbd::muscles::Geometry& geometry,
-    const biorbd::muscles::Characteristics& characteristics) :
-    biorbd::muscles::HillType (name, geometry, characteristics)
-{
-    setType();
-}
+using namespace BIORBD_NAMESPACE;
 
-biorbd::muscles::HillThelenType::HillThelenType(
-    const biorbd::utils::String &name,
-    const biorbd::muscles::Geometry &geometry,
-    const biorbd::muscles::Characteristics &characteristics,
-    const biorbd::muscles::State &emg) :
-    biorbd::muscles::HillType (name, geometry, characteristics, emg)
+muscles::HillThelenType::HillThelenType() :
+    muscles::HillType()
+{
+    setType();
+}
+muscles::HillThelenType::HillThelenType(
+    const utils::String& name,
+    const muscles::Geometry& geometry,
+    const muscles::Characteristics& characteristics) :
+    muscles::HillType (name, geometry, characteristics)
 {
     setType();
 }
 
-biorbd::muscles::HillThelenType::HillThelenType(
-    const biorbd::utils::String &name,
-    const biorbd::muscles::Geometry &geometry,
-    const biorbd::muscles::Characteristics &characteristics,
-    const biorbd::muscles::PathModifiers &pathModifiers) :
-    biorbd::muscles::HillType (name, geometry, characteristics, pathModifiers)
+muscles::HillThelenType::HillThelenType(
+    const utils::String &name,
+    const muscles::Geometry &geometry,
+    const muscles::Characteristics &characteristics,
+    const muscles::State &emg) :
+    muscles::HillType (name, geometry, characteristics, emg)
 {
     setType();
 }
 
-biorbd::muscles::HillThelenType::HillThelenType(
-    const biorbd::utils::String& name,
-    const biorbd::muscles::Geometry& geometry,
-    const biorbd::muscles::Characteristics& characteristics,
-    const biorbd::muscles::PathModifiers &pathModifiers,
-    const biorbd::muscles::State& emg) :
-    biorbd::muscles::HillType (name, geometry, characteristics, pathModifiers, emg)
+muscles::HillThelenType::HillThelenType(
+    const utils::String &name,
+    const muscles::Geometry &geometry,
+    const muscles::Characteristics &characteristics,
+    const muscles::PathModifiers &pathModifiers) :
+    muscles::HillType (name, geometry, characteristics, pathModifiers)
 {
     setType();
 }
 
-biorbd::muscles::HillThelenType::HillThelenType(
-    const biorbd::muscles::Muscle &other) :
-    biorbd::muscles::HillType (other)
+muscles::HillThelenType::HillThelenType(
+    const utils::String& name,
+    const muscles::Geometry& geometry,
+    const muscles::Characteristics& characteristics,
+    const muscles::PathModifiers &pathModifiers,
+    const muscles::State& emg) :
+    muscles::HillType (name, geometry, characteristics, pathModifiers, emg)
+{
+    setType();
+}
+
+muscles::HillThelenType::HillThelenType(
+    const muscles::Muscle &other) :
+    muscles::HillType (other)
 {
 
 }
 
-biorbd::muscles::HillThelenType::HillThelenType(
-    const std::shared_ptr<biorbd::muscles::Muscle> other) :
-    biorbd::muscles::HillType(other)
+muscles::HillThelenType::HillThelenType(
+    const std::shared_ptr<muscles::Muscle> other) :
+    muscles::HillType(other)
 {
 
 }
 
-biorbd::muscles::HillThelenType biorbd::muscles::HillThelenType::DeepCopy()
+muscles::HillThelenType muscles::HillThelenType::DeepCopy()
 const
 {
-    biorbd::muscles::HillThelenType copy;
+    muscles::HillThelenType copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void biorbd::muscles::HillThelenType::DeepCopy(
-    const biorbd::muscles::HillThelenType &other)
+void muscles::HillThelenType::DeepCopy(
+    const muscles::HillThelenType &other)
 {
-    biorbd::muscles::HillType::DeepCopy(other);
+    muscles::HillType::DeepCopy(other);
 }
 
-void biorbd::muscles::HillThelenType::computeFlPE()
+void muscles::HillThelenType::computeFlPE()
 {
 #ifdef BIORBD_USE_CASADI_MATH
     *m_FlPE = casadi::MX::if_else(
@@ -101,14 +103,14 @@ void biorbd::muscles::HillThelenType::computeFlPE()
 #endif
 }
 
-void biorbd::muscles::HillThelenType::computeFlCE(
-    const biorbd::muscles::State&)
+void muscles::HillThelenType::computeFlCE(
+    const muscles::State&)
 {
     *m_FlCE = exp( -pow(((position().length() / characteristics().optimalLength())
                          -1), 2 ) /  *m_cste_FlCE_2 );
 }
 
-void biorbd::muscles::HillThelenType::setType()
+void muscles::HillThelenType::setType()
 {
-    *m_type = biorbd::muscles::MUSCLE_TYPE::HILL_THELEN;
+    *m_type = muscles::MUSCLE_TYPE::HILL_THELEN;
 }
