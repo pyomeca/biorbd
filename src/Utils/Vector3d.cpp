@@ -4,7 +4,7 @@
 #include "Utils/RotoTrans.h"
 #include "Utils/Vector.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 utils::Vector3d::Vector3d() :
     RigidBodyDynamics::Math::Vector3d (RigidBodyDynamics::Math::Vector3d::Zero()),

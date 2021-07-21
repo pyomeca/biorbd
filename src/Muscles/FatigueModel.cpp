@@ -5,7 +5,7 @@
 #include "Muscles/Muscle.h"
 #include "Muscles/FatigueDynamicStateXia.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::FatigueModel::FatigueModel(
     muscles::STATE_FATIGUE_TYPE dynamicFatigueType)

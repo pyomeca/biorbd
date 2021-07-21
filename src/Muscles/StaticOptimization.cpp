@@ -11,7 +11,7 @@
 #include "Muscles/StateDynamics.h"
 #include "Muscles/StaticOptimizationIpoptLinearized.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::StaticOptimization::StaticOptimization(
     Model& model,

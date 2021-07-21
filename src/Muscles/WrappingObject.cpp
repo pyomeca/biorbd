@@ -4,7 +4,7 @@
 #include "Utils/String.h"
 #include "Utils/RotoTrans.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::WrappingObject::WrappingObject() :
     utils::Vector3d (),

@@ -6,7 +6,7 @@
 #include "Muscles/Geometry.h"
 #include "Muscles/Characteristics.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType() :
     muscles::HillThelenType()

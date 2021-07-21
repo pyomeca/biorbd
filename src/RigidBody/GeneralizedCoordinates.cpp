@@ -3,7 +3,7 @@
 
 #include "RigidBody/Joints.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 rigidbody::GeneralizedCoordinates::GeneralizedCoordinates()
 {
@@ -18,7 +18,7 @@ rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
 }
 
 rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &j) :
+    const rigidbody::Joints &j) :
     utils::Vector(j.nbQ())
 {
 

@@ -16,9 +16,8 @@ struct SpatialTransform;
 
 #include "biorbdConfig.h"
 
-namespace biorbd
+namespace BIORBD_NAMESPACE
 {
-namespace BIORBD_MATH_NAMESPACE {
 namespace rigidbody
 {
 class NodeSegment;
@@ -137,11 +136,9 @@ public:
     /// \return The system of axes
     ///
     static RotoTrans fromMarkers(
-        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment& origin,
-        const std::pair<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment, biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>&
-        axis1markers,
-        const std::pair<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment, biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>&
-        axis2markers,
+        const rigidbody::NodeSegment& origin,
+        const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment>&axis1markers,
+        const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment>&axis2markers,
         const std::pair<String, String> &axesNames,
         const String& axisToRecalculate);
 
@@ -259,7 +256,6 @@ protected:
 
 }
 }
-}
 
 #ifndef SWIG
     ///
@@ -267,7 +263,7 @@ protected:
     /// \param os osstream
     /// \param rt The RotoTrans matrix
     ///
-    std::ostream& operator<<(std::ostream& os, const biorbd::BIORBD_MATH_NAMESPACE::utils::RotoTrans &rt);
+    std::ostream& operator<<(std::ostream& os, const BIORBD_NAMESPACE::utils::RotoTrans &rt);
 #endif
 
 #endif // BIORBD_UTILS_ROTO_TRANS_H

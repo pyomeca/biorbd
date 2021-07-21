@@ -18,11 +18,11 @@ void Matlab_MusclesJacobian( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 3, 3,
                                "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
     // Recevoir le model
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
             2, nQ);
 
     // Cellules de sortie

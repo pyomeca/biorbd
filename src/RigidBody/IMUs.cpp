@@ -11,7 +11,7 @@
 #include "RigidBody/Segment.h"
 #include "RigidBody/IMU.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 rigidbody::IMUs::IMUs() :
     m_IMUs(std::make_shared<std::vector<rigidbody::IMU>>())
@@ -111,8 +111,7 @@ rigidbody::IMU rigidbody::IMUs::IMU(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
-                                       (*this);
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #endif
@@ -181,7 +180,7 @@ std::vector<rigidbody::IMU> rigidbody::IMUs::segmentIMU(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
                                        (*this);
 
     // Segment name to find
@@ -223,7 +222,7 @@ std::vector<utils::Matrix> rigidbody::IMUs::IMUJacobian(
     bool lookForTechnical)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
                                        (*this);
 
     std::vector<utils::Matrix> G;

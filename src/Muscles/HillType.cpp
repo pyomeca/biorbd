@@ -8,7 +8,7 @@
 #include "Muscles/Geometry.h"
 #include "Muscles/State.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::HillType::HillType() :
     muscles::Muscle(),
@@ -207,7 +207,7 @@ const utils::Scalar& muscles::HillType::force(
 }
 
 const utils::Scalar& muscles::HillType::force(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
+    rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
     const muscles::State &emg,
@@ -231,7 +231,7 @@ const utils::Scalar& muscles::HillType::force(
 }
 
 const utils::Scalar& muscles::HillType::force(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &,
+    rigidbody::Joints &,
     const rigidbody::GeneralizedCoordinates &,
     const muscles::State &,
     int)

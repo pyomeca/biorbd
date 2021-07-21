@@ -7,7 +7,7 @@
 #include <vector>
 #include "Utils/Error.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 utils::String::String()
     : std::string("")

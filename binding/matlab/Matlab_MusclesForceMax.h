@@ -18,7 +18,7 @@ void Matlab_MusclesForceMax( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 2, 3,
                                "2 arguments are required (+1 optional) where the 2nd is the handler on the model. If 2 arguments were sent, the function returns values for each muscles, if a 3rd is sent, the max forces are replace by the sent values.");
     // Recevoir le model
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     double *muscleForceMax = nullptr; // Pointeur pour la sortie
     Eigen::VectorXd Forces;

@@ -7,7 +7,7 @@
 #include "Utils/Error.h"
 #include "Utils/Rotation.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 utils::Quaternion::Quaternion (
     double kStabilizer) :

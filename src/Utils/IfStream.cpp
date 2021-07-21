@@ -6,7 +6,7 @@
 #include "Utils/Error.h"
 #include "Utils/Equation.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 // Constructor
 utils::IfStream::IfStream() :

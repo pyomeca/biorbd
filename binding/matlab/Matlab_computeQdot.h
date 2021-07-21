@@ -16,15 +16,15 @@ void Matlab_computeQdot( int, mxArray *plhs[],
                                "4 are required where the 2nd is the handler on the model, 3rd is the Q and 4th is QDot");
 
     // Recevoir le model
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ();
     unsigned int nQdot = model->nbQdot();
 
     // Recevoir Q
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
             2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
                 prhs, 3, nQdot);
 
     // S'assurer que Q et Qdot sont de la bonne dimension
@@ -44,7 +44,7 @@ void Matlab_computeQdot( int, mxArray *plhs[],
         model->UpdateKinematicsCustom(&Q[j], &QDot[j], nullptr);
 
         // Trouver la dynamique directe a cette configuration
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates QDotPost(
+        BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates QDotPost(
             model->computeQdot(Q[j], QDot[j]));
 
         // Remplir l'output

@@ -4,9 +4,7 @@
 #include <iostream>
 #include "biorbdConfig.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -163,7 +161,6 @@ public:
 
 }
 }
-}
 
 #ifndef SWIG
     ///
@@ -171,7 +168,7 @@ public:
     /// \param os The ostream
     /// \param a The string to operate on
     ///
-    std::ostream& operator<<(std::ostream& os, const biorbd::BIORBD_MATH_NAMESPACE::utils::String &a);
+    std::ostream& operator<<(std::ostream& os, const BIORBD_NAMESPACE::utils::String &a);
 #endif
 
 #endif // BIORBD_UTILS_STRING_H

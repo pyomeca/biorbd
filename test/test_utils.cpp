@@ -16,7 +16,7 @@
 #include "RigidBody/NodeSegment.h"
 static double requiredPrecision(1e-10);
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 TEST(ShallowCopy, DeepCopy)
 {

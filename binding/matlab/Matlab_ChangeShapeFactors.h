@@ -16,7 +16,7 @@ void Matlab_ChangeShapeFactors( int, mxArray *[],
     checkNombreInputParametres(nrhs, 3, 3,
                                "3 arguments are required where the 2nd is the handler on the model, 3rd is the shape factor for each muscle");
     // Recevoir le model
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // Recevoir les shape factors
     std::vector<double> shapeFactors = getDoubleArray(prhs, 2);
@@ -32,7 +32,7 @@ void Matlab_ChangeShapeFactors( int, mxArray *[],
     for (unsigned int i=0; i<model->nbMuscleGroups(); ++i)
         for (unsigned int j=0; j<model->muscleGroup(i).nbMuscles(); ++j) {
             // Recueillir shape factor
-            dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::muscles::StateDynamicsBuchanan&>( model->muscleGroup(
+            dynamic_cast<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan&>( model->muscleGroup(
                         i).muscle(j).state() ).shapeFactor(
                             shapeFactors[cmp]);
             ++cmp;

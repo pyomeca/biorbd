@@ -5,9 +5,7 @@
 #include "biorbdConfig.h"
 #include "Utils/Vector3d.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -205,7 +203,6 @@ protected:
 
 };
 
-}
 }
 }
 

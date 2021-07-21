@@ -4,7 +4,7 @@
 #include "Utils/Timer.h"
 #include "Utils/String.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 utils::Benchmark::Benchmark() :
     m_timers(std::map<utils::String, utils::Timer>()),

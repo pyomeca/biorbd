@@ -16,7 +16,7 @@
     #include <unistd.h>
 #endif
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 utils::Path::Path() :
     m_originalPath(std::make_shared<utils::String>()),

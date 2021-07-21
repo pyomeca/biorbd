@@ -4,9 +4,7 @@
 #include "biorbdConfig.h"
 #include "Muscles/HillType.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace muscles
 {
@@ -119,7 +117,6 @@ protected:
 
 };
 
-}
 }
 }
 

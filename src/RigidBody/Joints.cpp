@@ -24,7 +24,7 @@
 #include "RigidBody/SegmentCharacteristics.h"
 #include "RigidBody/Contacts.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 rigidbody::Joints::Joints() :
     RigidBodyDynamics::Model(),
@@ -625,7 +625,7 @@ utils::Vector3d rigidbody::Joints::CoMdot(
 utils::Vector3d rigidbody::Joints::CoMddot(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
+    const rigidbody::GeneralizedAcceleration &Qddot,
     bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -750,7 +750,7 @@ std::vector<utils::Vector3d>
 rigidbody::Joints::CoMddotBySegment(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
+    const rigidbody::GeneralizedAcceleration &Qddot,
     bool updateKin)
 {
     std::vector<utils::Vector3d> out;
@@ -765,7 +765,7 @@ rigidbody::Joints::CoMddotBySegment(
 utils::Vector3d rigidbody::Joints::CoMddotBySegment(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
+    const rigidbody::GeneralizedAcceleration &Qddot,
     const unsigned int idx,
     bool updateKin)
 {
@@ -915,7 +915,7 @@ utils::Vector3d rigidbody::Joints::CalcAngularMomentum (
 utils::Vector3d rigidbody::Joints::CalcAngularMomentum (
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
+    const rigidbody::GeneralizedAcceleration &Qddot,
     bool updateKin)
 {
     // Definition of the variables
@@ -978,7 +978,7 @@ std::vector<utils::Vector3d>
 rigidbody::Joints::CalcSegmentsAngularMomentum (
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
+    const rigidbody::GeneralizedAcceleration &Qddot,
     bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -1067,7 +1067,7 @@ rigidbody::GeneralizedVelocity rigidbody::Joints::computeQdot(
 rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &QDot,
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &QDDot,
+    const rigidbody::GeneralizedAcceleration &QDDot,
     std::vector<utils::SpatialVector>* f_ext)
 {
     rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
@@ -1097,7 +1097,7 @@ rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
     return Tau;
 }
 
-biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration
+rigidbody::GeneralizedAcceleration
 rigidbody::Joints::ForwardDynamics(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &QDot,
@@ -1108,7 +1108,7 @@ rigidbody::Joints::ForwardDynamics(
     UpdateKinematicsCustom(&Q, &QDot);
 #endif
 
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration QDDot(*this);
+    rigidbody::GeneralizedAcceleration QDDot(*this);
     if (f_ext) {
         std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(
                     *f_ext));
@@ -1119,7 +1119,7 @@ rigidbody::Joints::ForwardDynamics(
     return QDDot;
 }
 
-biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration
+rigidbody::GeneralizedAcceleration
 rigidbody::Joints::ForwardDynamicsConstraintsDirect(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &QDot,
@@ -1131,7 +1131,7 @@ rigidbody::Joints::ForwardDynamicsConstraintsDirect(
     UpdateKinematicsCustom(&Q, &QDot);
 #endif
 
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration QDDot(*this);
+    rigidbody::GeneralizedAcceleration QDDot(*this);
     if (f_ext) {
         std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(
                     *f_ext));
@@ -1157,7 +1157,7 @@ rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
     return CS.getForce();
 }
 
-biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration
+rigidbody::GeneralizedAcceleration
 rigidbody::Joints::ForwardDynamicsConstraintsDirect(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &QDot,
@@ -1219,7 +1219,7 @@ unsigned int rigidbody::Joints::getDofIndex(
 void rigidbody::Joints::UpdateKinematicsCustom(
     const rigidbody::GeneralizedCoordinates *Q,
     const rigidbody::GeneralizedVelocity *Qdot,
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot)
+    const rigidbody::GeneralizedAcceleration *Qddot)
 {
     checkGeneralizedDimensions(Q, Qdot, Qddot);
     RigidBodyDynamics::UpdateKinematicsCustom(*this, Q, Qdot, Qddot);
@@ -1301,7 +1301,7 @@ void rigidbody::Joints::CalcMatRotJacobian(
 void rigidbody::Joints::checkGeneralizedDimensions(
     const rigidbody::GeneralizedCoordinates *Q,
     const rigidbody::GeneralizedVelocity *Qdot,
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot,
+    const rigidbody::GeneralizedAcceleration *Qddot,
     const rigidbody::GeneralizedTorque *torque)
 {
 #ifndef SKIP_ASSERT

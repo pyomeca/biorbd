@@ -4,9 +4,7 @@
 #include "biorbdConfig.h"
 #include "Muscles/Muscle.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace muscles
 {
@@ -118,7 +116,7 @@ public:
     /// \return The force vector at origin and insertion
     ///
     virtual const utils::Scalar& force(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
+        rigidbody::Joints& model,
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         const State& emg,
@@ -133,7 +131,7 @@ public:
     /// \return The force vector at origin and insertion
     ///
     virtual const utils::Scalar& force(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
+        rigidbody::Joints& model,
         const rigidbody::GeneralizedCoordinates& Q,
         const State& emg,
         int updateKin = 2);
@@ -152,7 +150,6 @@ protected:
 
 };
 
-}
 }
 }
 

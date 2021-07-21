@@ -7,7 +7,7 @@
 #include "Muscles/WrappingSphere.h"
 #include "Muscles/WrappingHalfCylinder.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::PathModifiers::PathModifiers() :
     m_obj(std::make_shared<std::vector<std::shared_ptr<utils::Vector3d>>>()),

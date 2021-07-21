@@ -4,9 +4,7 @@
 #include "biorbdConfig.h"
 #include "Muscles/WrappingObject.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace muscles
 {
@@ -89,7 +87,7 @@ public:
     /// \brief Not yet implemented
     ///
     virtual void wrapPoints(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints&,
+        rigidbody::Joints&,
         const rigidbody::GeneralizedCoordinates&,
         const utils::Vector3d&,
         const utils::Vector3d&,
@@ -113,7 +111,7 @@ public:
     /// \return The RotoTrans matrix of the sphere
     ///
     const utils::RotoTrans& RT(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
+        rigidbody::Joints &model,
         const rigidbody::GeneralizedCoordinates&Q ,
         bool updateKin  = true);
 
@@ -136,7 +134,6 @@ protected:
 
 };
 
-}
 }
 }
 

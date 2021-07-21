@@ -57,11 +57,9 @@
 /// \brief Returns the current version of biorbd
 /// \return The current version of biorbd
 ///
-biorbd::BIORBD_MATH_NAMESPACE::utils::String getVersion();
+BIORBD_NAMESPACE::utils::String getVersion();
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 ///
 /// \brief The actual musculoskeletal model that holds everything in biorbd
@@ -102,7 +100,6 @@ public:
     utils::Path path() const;
 };
 
-}
 }
 
 #endif // BIORBD_MODEL_H

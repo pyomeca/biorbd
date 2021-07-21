@@ -42,7 +42,7 @@
     #include "Muscles/StateDynamicsBuchanan.h"
 #endif // MODULE_MUSCLES
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 // ------ Public methods ------ //
 Model Reader::readModelFile(const utils::Path &path)

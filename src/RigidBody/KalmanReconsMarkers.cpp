@@ -13,7 +13,7 @@
 
 #include <math.h>
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 rigidbody::KalmanReconsMarkers::KalmanReconsMarkers() :
     rigidbody::KalmanRecons(),
@@ -83,7 +83,7 @@ void rigidbody::KalmanReconsMarkers::reconstructFrame(
     const rigidbody::Markers &Tobs,
     rigidbody::GeneralizedCoordinates *Q,
     rigidbody::GeneralizedVelocity *Qdot,
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot,
+    rigidbody::GeneralizedAcceleration *Qddot,
     bool removeAxes)
 {
     // Separate the tobs in a big vector
@@ -101,7 +101,7 @@ void rigidbody::KalmanReconsMarkers::reconstructFrame(
     const std::vector<rigidbody::NodeSegment> &Tobs,
     rigidbody::GeneralizedCoordinates *Q,
     rigidbody::GeneralizedVelocity *Qdot,
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot,
+    rigidbody::GeneralizedAcceleration *Qddot,
     bool removeAxes)
 {
     // Separate the tobs in a big vector
@@ -120,7 +120,7 @@ void rigidbody::KalmanReconsMarkers::reconstructFrame(
     const utils::Vector &Tobs,
     rigidbody::GeneralizedCoordinates *Q,
     rigidbody::GeneralizedVelocity *Qdot,
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot,
+    rigidbody::GeneralizedAcceleration *Qddot,
     bool removeAxes)
 {
     // An iteration of the Kalman filter

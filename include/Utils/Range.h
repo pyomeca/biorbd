@@ -5,9 +5,7 @@
 
 #include <memory>
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -67,7 +65,6 @@ protected:
     std::shared_ptr<double> m_max; ///< The maximal value allowed by the range
 };
 
-}
 }
 }
 

@@ -5,7 +5,7 @@
 #include "Utils/RotoTrans.h"
 #include "RigidBody/Joints.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::WrappingHalfCylinder::WrappingHalfCylinder() :
     muscles::WrappingObject (),
@@ -149,7 +149,7 @@ void muscles::WrappingHalfCylinder::wrapPoints(
 }
 
 void muscles::WrappingHalfCylinder::wrapPoints(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
+    rigidbody::Joints& model,
     const rigidbody::GeneralizedCoordinates& Q,
     const utils::Vector3d& p1_bone,
     const utils::Vector3d& p2_bone,
@@ -175,7 +175,7 @@ void muscles::WrappingHalfCylinder::wrapPoints(
 }
 
 const utils::RotoTrans& muscles::WrappingHalfCylinder::RT(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
+    rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates& Q,
     bool updateKin)
 {

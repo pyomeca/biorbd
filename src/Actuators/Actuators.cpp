@@ -14,7 +14,7 @@
 #include "Actuators/ActuatorConstant.h"
 #include "Actuators/ActuatorLinear.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 actuator::Actuators::Actuators() :
     m_all(std::make_shared<std::vector<std::pair<std::shared_ptr<actuator::Actuator>, std::shared_ptr<actuator::Actuator>>>>()),
@@ -109,8 +109,7 @@ void actuator::Actuators::addActuator(const actuator::Actuator
         !*m_isClose, "You can't add actuator after closing the model");
 
     // Assuming that this is also a Joints type (via BiorbdModel)
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model =
-        dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>(*this);
+    const rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 
     // Verify that the target dof is associated to a dof that
     // already exists in the model
@@ -194,8 +193,7 @@ void actuator::Actuators::addActuator(const actuator::Actuator
 void actuator::Actuators::closeActuator()
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model =
-        dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>(*this);
+    const rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 
     utils::Error::check(
         model.nbDof()==m_all->size(),
@@ -263,8 +261,7 @@ actuator::Actuators::torqueMax(
                                 "Close the actuator model before calling torqueMax");
 
     // Assuming that this is also a Joints type (via BiorbdModel)
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model =
-        dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>(*this);
+    const rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 
     std::pair<rigidbody::GeneralizedTorque, rigidbody::GeneralizedTorque>
     maxGeneralizedTorque_all =
@@ -345,8 +342,8 @@ rigidbody::GeneralizedTorque actuator::Actuators::torqueMax(
                                 "Close the actuator model before calling torqueMax");
 
     // Assuming that this is also a Joints type (via BiorbdModel)
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model =
-        dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>(*this);
+    const rigidbody::Joints &model =
+        dynamic_cast<rigidbody::Joints &>(*this);
 
     // Set qdot to be positive if concentric and negative if excentric
     rigidbody::GeneralizedVelocity QdotResigned(Qdot);

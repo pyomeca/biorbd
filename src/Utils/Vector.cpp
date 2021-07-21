@@ -5,7 +5,7 @@
 #include "Utils/String.h"
 #include "Utils/Vector3d.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 utils::Vector::Vector() :
     RigidBodyDynamics::Math::VectorNd()

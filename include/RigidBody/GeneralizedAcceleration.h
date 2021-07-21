@@ -4,9 +4,7 @@
 #include "biorbdConfig.h"
 #include "Utils/Vector.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace rigidbody
 {
@@ -35,7 +33,7 @@ public:
     /// \brief Create generalized acceleration vector from a joint Model
     /// \param j The joint model
     ///
-    GeneralizedAcceleration(const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& j);
+    GeneralizedAcceleration(const rigidbody::Joints& j);
 
     ///
     /// \brief Construct generalized acceleration vector
@@ -126,7 +124,6 @@ public:
 #endif
 };
 
-}
 }
 }
 

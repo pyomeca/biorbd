@@ -5,9 +5,7 @@
 #include "Muscles/Compound.h"
 #include "Utils/Scalar.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -123,7 +121,7 @@ public:
     /// \return The length of the muscle
     ///
     const utils::Scalar& length(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
+        rigidbody::Joints& model,
         const rigidbody::GeneralizedCoordinates& Q,
         int updateKin = 2);
 
@@ -135,7 +133,7 @@ public:
     /// \return The musculo tendon length
     ///
     const utils::Scalar& musculoTendonLength(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
+        rigidbody::Joints& model,
         const rigidbody::GeneralizedCoordinates& Q,
         int updateKin = 2);
 
@@ -148,7 +146,7 @@ public:
     //// \return The velocity of the muscle
     ///
     const utils::Scalar& velocity(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
+        rigidbody::Joints& model,
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         bool updateKin = true);
@@ -160,7 +158,7 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     ///
     void updateOrientations(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
+        rigidbody::Joints &model,
         const rigidbody::GeneralizedCoordinates &Q,
         int updateKin = 2);
 
@@ -172,7 +170,7 @@ public:
     /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
     ///
     void updateOrientations(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
+        rigidbody::Joints &model,
         const rigidbody::GeneralizedCoordinates &Q,
         const rigidbody::GeneralizedVelocity &Qdot,
         int updateKin = 2);
@@ -230,7 +228,7 @@ public:
     /// \return The muscle points in global reference frame
     ///
     const std::vector<utils::Vector3d>& musclesPointsInGlobal(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
+        rigidbody::Joints &model,
         const rigidbody::GeneralizedCoordinates &Q);
 
     ///
@@ -298,7 +296,6 @@ protected:
 
 };
 
-}
 }
 }
 

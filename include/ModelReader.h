@@ -6,9 +6,7 @@
 #include "biorbdConfig.h"
 #include "rbdl/rbdl_math.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 class Model;
 
@@ -66,7 +64,7 @@ public:
     /// \param path The path of the file
     /// \return Returns the kinematics
     ///
-    static std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> readQDataFile(
+    static std::vector<rigidbody::GeneralizedCoordinates> readQDataFile(
         const utils::Path &path);
 
     ///
@@ -157,7 +155,7 @@ public:
     /// \param path The path of the file
     /// \return Returns the mesh
     ///
-    static biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh readMeshFileBiorbdSegments(
+    static rigidbody::Mesh readMeshFileBiorbdSegments(
         const utils::Path& path);
 
     ///
@@ -165,7 +163,7 @@ public:
     /// \param path The path of the file
     /// \return Returns the mesh
     ///
-    static biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh readMeshFilePly(
+    static rigidbody::Mesh readMeshFilePly(
         const utils::Path& path);
 
     ///
@@ -173,7 +171,7 @@ public:
     /// \param path The path of the file
     /// \return Returns the mesh
     ///
-    static biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh readMeshFileObj(
+    static rigidbody::Mesh readMeshFileObj(
         const utils::Path& path);
 
 #ifdef MODULE_VTP_FILES_READER
@@ -182,7 +180,7 @@ public:
     /// \param path The path of the file
     /// \return Returns the mesh
     ///
-    static biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Mesh readMeshFileVtp(
+    static rigidbody::Mesh readMeshFileVtp(
         const utils::Path& path);
 #endif
 
@@ -224,7 +222,6 @@ protected:
         utils::RotoTrans &RT);
 };
 
-}
 }
 
 #endif // BIORBD_UTILS_READ_H

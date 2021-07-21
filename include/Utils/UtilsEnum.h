@@ -1,9 +1,7 @@
 #ifndef BIORBD_UTILS_ENUMS_H
 #define BIORBD_UTILS_ENUMS_H
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -53,7 +51,6 @@ inline const char* NODE_TYPE_toStr(
     }
 }
 
-}
 }
 }
 

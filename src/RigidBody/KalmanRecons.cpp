@@ -8,7 +8,7 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 rigidbody::KalmanRecons::KalmanRecons() :
     m_params(std::make_shared<KalmanParam>()),
@@ -99,7 +99,7 @@ void rigidbody::KalmanRecons::manageOcclusionDuringIteration(
 void rigidbody::KalmanRecons::getState(
     rigidbody::GeneralizedCoordinates *Q,
     rigidbody::GeneralizedVelocity *Qdot,
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot)
+    rigidbody::GeneralizedAcceleration *Qddot)
 {
 
     if (Q != nullptr) {
@@ -215,7 +215,7 @@ rigidbody::KalmanRecons::initState(
 void rigidbody::KalmanRecons::setInitState(
     const rigidbody::GeneralizedCoordinates *Q,
     const rigidbody::GeneralizedVelocity *Qdot,
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot)
+    const rigidbody::GeneralizedAcceleration *Qddot)
 {
     if (Q != nullptr) {
         m_xp->block(0, 0, *m_nbDof, 1) = *Q;

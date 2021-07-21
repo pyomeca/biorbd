@@ -5,7 +5,7 @@
 #include "Utils/Vector3d.h"
 #include "RigidBody/MeshFace.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 rigidbody::Mesh::Mesh() :
     m_vertex(std::make_shared<std::vector<utils::Vector3d>>()),

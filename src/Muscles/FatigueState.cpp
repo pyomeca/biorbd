@@ -17,7 +17,7 @@ template < typename T > std::string to_string( const T& n )
 }
 #endif
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::FatigueState::FatigueState(
     const utils::Scalar& active,

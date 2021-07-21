@@ -14,10 +14,10 @@ void Matlab_nameIMU( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 2, 2,
                                "2 arguments are required where the 2nd is the handler on the model");
     // Recevoir le model
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // Trouver ou sont les marqueurs
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::String> allIMU(model->IMUsNames());
+    std::vector<BIORBD_NAMESPACE::utils::String> allIMU(model->IMUsNames());
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateCellMatrix( allIMU.size(), 1);
@@ -37,10 +37,10 @@ void Matlab_nameTechnicalIMU( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 2, 2,
                                "2 arguments are required where the 2nd is the handler on the model");
     // Recevoir le model
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // Trouver ou sont les marqueurs
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::String> allIMU(model->technicalIMUsNames());
+    std::vector<BIORBD_NAMESPACE::utils::String> allIMU(model->technicalIMUsNames());
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateCellMatrix( allIMU.size(), 1);
@@ -60,10 +60,10 @@ void Matlab_nameAnatomicalIMU( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 2, 2,
                                "2 arguments are required where the 2nd is the handler on the model");
     // Recevoir le model
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // Trouver ou sont les marqueurs
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::String> allIMU(model->anatomicalIMUsNames());
+    std::vector<BIORBD_NAMESPACE::utils::String> allIMU(model->anatomicalIMUsNames());
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateCellMatrix( allIMU.size(), 1);

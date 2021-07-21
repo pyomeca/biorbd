@@ -4,9 +4,7 @@
 #include "biorbdConfig.h"
 #include "Utils/Vector.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace rigidbody
 {
@@ -127,7 +125,6 @@ public:
 #endif
 };
 
-}
 }
 }
 

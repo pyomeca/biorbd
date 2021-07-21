@@ -5,9 +5,7 @@
 #include "RigidBody/KalmanRecons.h"
 
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace rigidbody
 {
@@ -63,7 +61,7 @@ public:
         const Markers &Tobs,
         GeneralizedCoordinates *Q,
         GeneralizedVelocity *Qdot,
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot,
+        GeneralizedAcceleration *Qddot,
         bool removeAxes=true);
 
     ///
@@ -80,7 +78,7 @@ public:
         const std::vector<NodeSegment> &Tobs,
         GeneralizedCoordinates *Q,
         GeneralizedVelocity *Qdot,
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot,
+        GeneralizedAcceleration *Qddot,
         bool removeAxes=true);
 
     ///
@@ -97,7 +95,7 @@ public:
         const utils::Vector &Tobs,
         GeneralizedCoordinates *Q = nullptr,
         GeneralizedVelocity *Qdot = nullptr,
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot = nullptr,
+        GeneralizedAcceleration *Qddot = nullptr,
         bool removeAxes=true);
 
     ///
@@ -133,7 +131,6 @@ protected:
     std::shared_ptr<bool> m_firstIteration; ///< If first iteration was done
 };
 
-}
 }
 }
 

@@ -6,9 +6,7 @@
 #include "biorbdConfig.h"
 #include "Utils/String.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -126,7 +124,6 @@ protected:
     static std::vector<Equation> prepareMathSymbols();
 };
 
-}
 }
 }
 

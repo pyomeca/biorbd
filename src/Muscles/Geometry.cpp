@@ -16,7 +16,7 @@
 #include "Muscles/ViaPoint.h"
 #include "Muscles/PathModifiers.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::Geometry::Geometry() :
     m_origin(std::make_shared<utils::Vector3d>()),
@@ -99,7 +99,7 @@ void muscles::Geometry::DeepCopy(const muscles::Geometry &other)
 
 // ------ PUBLIC FUNCTIONS ------ //
 void muscles::Geometry::updateKinematics(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
+    rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates *Q,
     const rigidbody::GeneralizedVelocity *Qdot,
     int updateKin)
@@ -130,7 +130,7 @@ void muscles::Geometry::updateKinematics(
     _updateKinematics(Qdot);
 }
 
-void muscles::Geometry::updateKinematics(biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints
+void muscles::Geometry::updateKinematics(rigidbody::Joints
         &model,
         const muscles::Characteristics& characteristics,
         muscles::PathModifiers &pathModifiers,
@@ -329,7 +329,7 @@ void muscles::Geometry::_updateKinematics(
 }
 
 const utils::Vector3d &muscles::Geometry::originInGlobal(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
+    rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
     // Return the position of the marker in function of the given position
@@ -340,7 +340,7 @@ const utils::Vector3d &muscles::Geometry::originInGlobal(
 }
 
 const utils::Vector3d &muscles::Geometry::insertionInGlobal(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
+    rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
     // Return the position of the marker in function of the given position
@@ -360,7 +360,7 @@ void muscles::Geometry::setMusclesPointsInGlobal(
 }
 
 void muscles::Geometry::setMusclesPointsInGlobal(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
+    rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q,
     muscles::PathModifiers *pathModifiers)
 {
@@ -491,7 +491,7 @@ const utils::Scalar& muscles::Geometry::velocity(
     return *m_velocity;
 }
 
-void muscles::Geometry::setJacobianDimension(biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints
+void muscles::Geometry::setJacobianDimension(rigidbody::Joints
         &model)
 {
     *m_jacobian = utils::Matrix::Zero(static_cast<unsigned int>
@@ -507,7 +507,7 @@ void muscles::Geometry::jacobian(const utils::Matrix &jaco)
 }
 
 void muscles::Geometry::jacobian(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
+    rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
     for (unsigned int i=0; i<m_pointsInLocal->size(); ++i) {

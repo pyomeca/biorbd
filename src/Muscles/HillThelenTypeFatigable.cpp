@@ -4,7 +4,7 @@
 #include "Utils/String.h"
 #include "Muscles/FatigueState.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::HillThelenTypeFatigable::HillThelenTypeFatigable() :
     muscles::HillThelenType(),

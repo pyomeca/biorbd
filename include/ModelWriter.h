@@ -2,9 +2,7 @@
 #define BIORBD_UTILS_WRITER_H
 
 #include "biorbdConfig.h"
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 class Model;
 
@@ -31,7 +29,6 @@ public:
 #endif
 };
 
-}
 }
 
 #endif // BIORBD_UTILS_WRITER_H

@@ -4,7 +4,7 @@
 #include "Utils/String.h"
 #include "Utils/RotoTrans.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::WrappingSphere::WrappingSphere() :
     muscles::WrappingObject (),
@@ -63,7 +63,7 @@ void muscles::WrappingSphere::DeepCopy(const
 }
 
 const utils::RotoTrans& muscles::WrappingSphere::RT(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &,
+    rigidbody::Joints &,
     const rigidbody::GeneralizedCoordinates &,
     bool)
 {

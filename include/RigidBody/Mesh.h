@@ -5,9 +5,7 @@
 #include <vector>
 #include "biorbdConfig.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -133,7 +131,6 @@ protected:
     std::shared_ptr<utils::Path> m_pathFile; ///< The path to the mesh file
 };
 
-}
 }
 }
 

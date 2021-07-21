@@ -13,7 +13,7 @@
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 #ifndef BIORBD_USE_CASADI_MATH
 void Writer::writeModel(Model & model,

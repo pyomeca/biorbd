@@ -4,9 +4,7 @@
 #include "biorbdConfig.h"
 #include "rbdl/rbdl_math.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -102,7 +100,6 @@ public:
 #endif
 };
 
-}
 }
 }
 

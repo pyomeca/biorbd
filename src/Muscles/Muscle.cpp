@@ -12,7 +12,7 @@
 #include "Muscles/Characteristics.h"
 #include "Muscles/Geometry.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::Muscle::Muscle() :
     muscles::Compound(),
@@ -113,7 +113,7 @@ void muscles::Muscle::DeepCopy(const muscles::Muscle &other)
 }
 
 void muscles::Muscle::updateOrientations(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
+    rigidbody::Joints& model,
     const rigidbody::GeneralizedCoordinates &Q,
     int updateKin)
 {
@@ -122,7 +122,7 @@ void muscles::Muscle::updateOrientations(
                                  updateKin);
 }
 void muscles::Muscle::updateOrientations(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
+    rigidbody::Joints& model,
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
     int updateKin)
@@ -160,7 +160,7 @@ const muscles::Geometry &muscles::Muscle::position() const
 }
 
 const utils::Scalar& muscles::Muscle::length(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
+    rigidbody::Joints& model,
     const rigidbody::GeneralizedCoordinates &Q,
     int updateKin)
 {
@@ -176,7 +176,7 @@ const utils::Scalar& muscles::Muscle::length(
 }
 
 const utils::Scalar& muscles::Muscle::musculoTendonLength(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &m,
+    rigidbody::Joints &m,
     const rigidbody::GeneralizedCoordinates &Q,
     int updateKin)
 {
@@ -192,7 +192,7 @@ const utils::Scalar& muscles::Muscle::musculoTendonLength(
 }
 
 const utils::Scalar& muscles::Muscle::velocity(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
+    rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
     bool updateKin)
@@ -228,7 +228,7 @@ void muscles::Muscle::computeForce(const muscles::State &emg)
 
 const std::vector<utils::Vector3d>&
 muscles::Muscle::musclesPointsInGlobal(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
+    rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
     m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,

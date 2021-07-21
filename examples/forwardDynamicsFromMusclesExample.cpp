@@ -14,7 +14,7 @@
 /// Please note that this example will work only with the Eigen backend
 ///
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 int main()
 {

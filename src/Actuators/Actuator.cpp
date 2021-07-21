@@ -4,7 +4,7 @@
 #include "Utils/Error.h"
 #include "Utils/String.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 actuator::Actuator::Actuator() :
     m_type(std::make_shared<actuator::TYPE>

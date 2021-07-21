@@ -1,9 +1,7 @@
 #ifndef BIORBD_ACTUATOR_ENUMS_H
 #define BIORBD_ACTUATOR_ENUMS_H
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace actuator
 {
@@ -44,7 +42,6 @@ inline const char* TYPE_toStr(TYPE type)
 }
 
 
-}
 }
 }
 

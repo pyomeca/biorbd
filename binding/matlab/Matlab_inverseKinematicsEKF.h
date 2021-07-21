@@ -16,7 +16,7 @@ void Matlab_setEKF(int nlhs, mxArray *plhs[],
                                "2 arguments are required (+3 defaults values) where the 2nd is the handler on the model, 3rd is acquisition frequency (default 100Hz), 4th is noise factor (1e-10) and 5th is error factor (1e-5)");
 
     // Recevoir le model
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // S'assurer que la personne recueille l'acces au filtre de Kalman
     if (nlhs != 1) {
@@ -34,12 +34,12 @@ void Matlab_setEKF(int nlhs, mxArray *plhs[],
     if (nrhs >= 3) {
         freq = getDouble(prhs,2,"Acquisition Frequency");
     }
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::KalmanParam kParams(freq, noiseF, errorF);
+    BIORBD_NAMESPACE::rigidbody::KalmanParam kParams(freq, noiseF, errorF);
 
     // Créer un filtre de Kalman
     try {
-        plhs[0] = convertPtr2Mat<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::KalmanReconsMarkers>
-                  (new biorbd::BIORBD_MATH_NAMESPACE::rigidbody::KalmanReconsMarkers(*model,
+        plhs[0] = convertPtr2Mat<BIORBD_NAMESPACE::rigidbody::KalmanReconsMarkers>
+                  (new BIORBD_NAMESPACE::rigidbody::KalmanReconsMarkers(*model,
                           kParams));
     } catch (std::string m) {
         mexErrMsgTxt(m.c_str());
@@ -55,7 +55,7 @@ void Matlab_delEKF(int nlhs, mxArray *[],
                                "2 arguments are required where the 2nd is the handler on the kalman filter");
 
     // Destroy the C++ object
-    destroyObject<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::KalmanReconsMarkers>(prhs[1]);
+    destroyObject<BIORBD_NAMESPACE::rigidbody::KalmanReconsMarkers>(prhs[1]);
     // Warn if other commands were ignored
     if (nlhs != 0 || nrhs != 2) {
         mexWarnMsgTxt("Delete: Unexpected output arguments ignored.");
@@ -72,14 +72,14 @@ void Matlab_inverseKinematicsEKFstep( int, mxArray *plhs[],
                                "4 arguments are required (+2 optional) where the 2nd is the handler on the model, 3rd is the handler on kalman filter info, 4th is the 3xN marker positions matrix, the optional 5th is the initial guess for Q (ignored after first iteration) and 6th if you want to remove axes as specified in the model file [default = true]");
 
     // Recevoir le model
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
     unsigned int nQddot = model->nbQddot(); // Get the number of DoF
 
     // Recevoir le kalman
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::KalmanReconsMarkers * kalman =
-        convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::KalmanReconsMarkers>(prhs[2]);
+    BIORBD_NAMESPACE::rigidbody::KalmanReconsMarkers * kalman =
+        convertMat2Ptr<BIORBD_NAMESPACE::rigidbody::KalmanReconsMarkers>(prhs[2]);
 
     bool removeAxes(true);
     if (nrhs >= 6) {
@@ -88,14 +88,14 @@ void Matlab_inverseKinematicsEKFstep( int, mxArray *plhs[],
 
 
     // Recevoir la matrice des markers (Ne traite que le premier frame)
-    std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>> markersOverTime =
+    std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>> markersOverTime =
                 getParameterAllMarkers(prhs,3,static_cast<int>(model->nbTechnicalMarkers()));
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment> markers = markersOverTime[0];
+    std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment> markers = markersOverTime[0];
 
     // Si c'est le premier frame recevoir Qinit
 
     if (kalman->first() && nrhs >= 5) {
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates Qinit(*getParameterQ(prhs, 4,
+        BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates Qinit(*getParameterQ(prhs, 4,
                 nQ).begin());
         kalman->setInitState(&Qinit);
     }
@@ -109,9 +109,9 @@ void Matlab_inverseKinematicsEKFstep( int, mxArray *plhs[],
     double *qddot = mxGetPr(plhs[2]);
 
     // Faire la cinématique inverse a chaque instant
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates Q(nQ);
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity QDot(nQdot);
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration QDDot(nQddot);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates Q(nQ);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity QDot(nQdot);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration QDDot(nQddot);
 
     // Faire la cinématique inverse
     kalman->reconstructFrame(*model, markers, &Q, &QDot, &QDDot, removeAxes);
@@ -148,7 +148,7 @@ void Matlab_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
                                "7th is error factor [default 1e-5] and 7th if you want to remove axes as specified in the model file [default = true]");
 
     // Recevoir le model
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
     unsigned int nQddot = model->nbQddot(); // Get the number of DoF
@@ -166,8 +166,8 @@ void Matlab_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
     }
 
     // Créer un filtre de Kalman
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::KalmanReconsMarkers kalman(*model,
-            biorbd::BIORBD_MATH_NAMESPACE::rigidbody::KalmanParam(freq, noiseF, errorF));
+    BIORBD_NAMESPACE::rigidbody::KalmanReconsMarkers kalman(*model,
+            BIORBD_NAMESPACE::rigidbody::KalmanParam(freq, noiseF, errorF));
 
     bool removeAxes(true);
     if (nrhs >= 8) {
@@ -176,13 +176,13 @@ void Matlab_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
 
 
     // Recevoir la matrice des markers
-    std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>> markersOverTime =
+    std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>> markersOverTime =
                 getParameterAllMarkers(prhs,2,static_cast<int>(model->nbTechnicalMarkers()));
     unsigned int nFrames(static_cast<unsigned int>(markersOverTime.size()));
 
     // Recevoir Qinit
     if (kalman.first() && nrhs >= 4) {
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates Qinit(getParameterQ(prhs, 3, nQ)[0]);
+        BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates Qinit(getParameterQ(prhs, 3, nQ)[0]);
         kalman.setInitState(&Qinit);
     }
 
@@ -197,9 +197,9 @@ void Matlab_inverseKinematicsEKFallInOneCall( int, mxArray *plhs[],
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrames; ++i) {
         // Faire la cinématique inverse a chaque instant
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates Q(nQ);
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity QDot(nQdot);
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration QDDot(nQddot);
+        BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates Q(nQ);
+        BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity QDot(nQdot);
+        BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration QDDot(nQddot);
 
         // Faire la cinématique inverse
         kalman.reconstructFrame(*model, markersOverTime[i], &Q, &QDot, &QDDot,

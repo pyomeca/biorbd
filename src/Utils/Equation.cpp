@@ -8,7 +8,7 @@
 #include <math.h>
 #include "Utils/Error.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 std::vector<utils::Equation>
 utils::Equation::prepareMathSymbols()

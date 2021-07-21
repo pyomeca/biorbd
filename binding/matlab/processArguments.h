@@ -27,7 +27,7 @@ void checkNombreInputParametres(int nrhs, int min, int max,
     }
 }
 
-std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>> getParameterAllMarkers(
+std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>> getParameterAllMarkers(
             const mxArray*prhs[], unsigned int idx,
             int nMark=-1)
 {
@@ -80,15 +80,15 @@ std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>> 
 
 
     // Créer la sortie
-    std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>> markersOverTime;
+    std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>> markersOverTime;
 
     // Stocker les valeurs dans le format de sortie
     unsigned int cmp(0);
     for (unsigned int i=0; i<nFrames; ++i) {
-        std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment> markers_tp; // Markers a un temps i
+        std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment> markers_tp; // Markers a un temps i
 
         for (int j=0; j<nMark; ++j) {
-            biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment tp(markers[m*cmp+0], // m est 3 ou 4
+            BIORBD_NAMESPACE::rigidbody::NodeSegment tp(markers[m*cmp+0], // m est 3 ou 4
                                               markers[m*cmp+1],
                                               markers[m*cmp+2]);
             markers_tp.push_back(tp);
@@ -100,7 +100,7 @@ std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>> 
     // Retourner la matrice
     return markersOverTime;
 }
-std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::IMU>> getParameterAllIMUs(
+std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::IMU>> getParameterAllIMUs(
             const mxArray*prhs[], unsigned int idx)
 {
     // Check data type of input argument
@@ -149,14 +149,14 @@ std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::IMU>> getParam
     double *imus = mxGetPr(prhs[idx]);
 
     // Créer la sortie
-    std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::IMU>> imuOverTime;
+    std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::IMU>> imuOverTime;
 
     // Stocker les valeurs dans le format de sortie
     for (unsigned int i=0; i<nFrames; ++i) {
-        std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::IMU> imus_tp; // IMUs a un temps i
+        std::vector<BIORBD_NAMESPACE::rigidbody::IMU> imus_tp; // IMUs a un temps i
         for (unsigned int j=0; j<nIMUs; ++j) {
-            biorbd::BIORBD_MATH_NAMESPACE::utils::Rotation rot;
-            biorbd::BIORBD_MATH_NAMESPACE::utils::Vector3d trans;
+            BIORBD_NAMESPACE::utils::Rotation rot;
+            BIORBD_NAMESPACE::utils::Vector3d trans;
             if (n==4) {
                 rot <<  imus[i*16*nIMUs+j*16+0], imus[i*16*nIMUs+j*16+4],
                     imus[i*16*nIMUs+j*16+8],
@@ -170,7 +170,7 @@ std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::IMU>> getParam
                     imus[i*9*nIMUs+j*9+2], imus[i*9*nIMUs+j*9+5], imus[i*9*nIMUs+j*9+8];
                 trans.setZero();
             }
-            imus_tp.push_back(biorbd::BIORBD_MATH_NAMESPACE::utils::RotoTrans(rot, trans));
+            imus_tp.push_back(BIORBD_NAMESPACE::utils::RotoTrans(rot, trans));
         }
         imuOverTime.push_back(imus_tp);
     }
@@ -180,7 +180,7 @@ std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::IMU>> getParam
 }
 
 
-biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates getVector(const mxArray*prhs[],
+BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates getVector(const mxArray*prhs[],
         unsigned int idx, std::string type = "")
 {
     // Check data type of input argument
@@ -208,7 +208,7 @@ biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates getVector(const
     double *q=mxGetPr(prhs[idx]); //matrice de position
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates vect(static_cast<unsigned int>
+    BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates vect(static_cast<unsigned int>
             (length));
     for (unsigned int i=0; i<length; i++) {
         vect(i) = q[i];
@@ -217,7 +217,7 @@ biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates getVector(const
     return vect;
 }
 
-biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates getVector(const mxArray*prhs[],
+BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates getVector(const mxArray*prhs[],
         unsigned int idx, unsigned int length,
         std::string type = "")
 {
@@ -237,7 +237,7 @@ Eigen::Vector3d getVector3d(const mxArray*prhs[], unsigned int idx)
     return getVector(prhs, idx, 3, "Vector3d");
 }
 
-std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> getParameterQ(
+std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates> getParameterQ(
     const mxArray*prhs[], unsigned int idx,
     unsigned int nDof, std::string type = "q")
 {
@@ -263,9 +263,9 @@ std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> ge
     double *q=mxGetPr(prhs[idx]); //matrice de position
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> Q;
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates> Q;
     for (unsigned int j=0; j<nFrames; ++j) {
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates Q_tp(nDof);
+        BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates Q_tp(nDof);
         for (unsigned int i=0; i<nDof; i++) {
             Q_tp[i] = q[j*nDof+i];
         }
@@ -275,7 +275,7 @@ std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> ge
 
     return Q;
 }
-std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration> getParameterQddot(
+std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration> getParameterQddot(
     const mxArray*prhs[], unsigned int idx, unsigned int nbQddot,
     std::string type = "qddot")
 {
@@ -301,9 +301,9 @@ std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration> g
     double *q=mxGetPr(prhs[idx]); //matrice de position
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration> Qddot;
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration> Qddot;
     for (unsigned int j=0; j<nFrames; ++j) {
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration Qddot_tp(nbQddot);
+        BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration Qddot_tp(nbQddot);
         for (unsigned int i=0; i<nbQddot; i++) {
             Qddot_tp[i] = q[j*nbQddot+i];
         }
@@ -313,7 +313,7 @@ std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration> g
 
     return Qddot;
 }
-std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity> getParameterQdot(
+std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity> getParameterQdot(
     const mxArray*prhs[], unsigned int idx, unsigned int nbQdot,
     std::string type = "qdot")
 {
@@ -339,9 +339,9 @@ std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity> getPa
     double *q=mxGetPr(prhs[idx]); //matrice de position
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity> Qdot;
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity> Qdot;
     for (unsigned int j=0; j<nFrames; ++j) {
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity Qdot_tp(nbQdot);
+        BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity Qdot_tp(nbQdot);
         for (unsigned int i=0; i<nbQdot; i++) {
             Qdot_tp[i] = q[j*nbQdot+i];
         }
@@ -351,17 +351,17 @@ std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity> getPa
 
     return Qdot;
 }
-std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque> getParameterGeneralizedTorque(
+std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedTorque> getParameterGeneralizedTorque(
     const mxArray*prhs[], unsigned int idx,
     unsigned int nControl)
 {
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> AllGeneralizedTorque_tp =
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates> AllGeneralizedTorque_tp =
         getParameterQ(prhs, idx, nControl,
                       "GeneralizedTorque");
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque> AllGeneralizedTorque;
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedTorque> AllGeneralizedTorque;
 
     for (unsigned int j=0; j<AllGeneralizedTorque_tp.size(); ++j) {
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque GeneralizedTorque_tp(nControl);
+        BIORBD_NAMESPACE::rigidbody::GeneralizedTorque GeneralizedTorque_tp(nControl);
 
         for (unsigned int i=0; i < nControl; ++i) { // Everything else
             GeneralizedTorque_tp(i) = (*(AllGeneralizedTorque_tp.begin()+j))[i];
@@ -372,7 +372,7 @@ std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque> getPara
     return AllGeneralizedTorque;
 }
 
-std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::SpatialVector>> getForcePlate(
+std::vector<std::vector<BIORBD_NAMESPACE::utils::SpatialVector>> getForcePlate(
             const mxArray*prhs[], unsigned int idx)
 {
     if (!(mxIsDouble(prhs[idx]))) {
@@ -401,12 +401,12 @@ std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::SpatialVector>> ge
     double *pf = mxGetPr(prhs[idx]); // Matrice des plateforme de force
 
     // stockage des plateformes
-    std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::SpatialVector>> PF;
+    std::vector<std::vector<BIORBD_NAMESPACE::utils::SpatialVector>> PF;
     unsigned int cmp(0);
     for (unsigned int j=0; j<timeStamp; ++j) {
-        std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::SpatialVector> PF_tp;
+        std::vector<BIORBD_NAMESPACE::utils::SpatialVector> PF_tp;
         for (unsigned int i=0; i<nPF; ++i) { // pour chaque plateforme
-            biorbd::BIORBD_MATH_NAMESPACE::utils::SpatialVector tp(pf[0+cmp*6], pf[1+cmp*6], pf[2+cmp*6],
+            BIORBD_NAMESPACE::utils::SpatialVector tp(pf[0+cmp*6], pf[1+cmp*6], pf[2+cmp*6],
                                             pf[3+cmp*6], pf[4+cmp*6], pf[5+cmp*6]);
             PF_tp.push_back(tp);
             cmp++;
@@ -468,7 +468,7 @@ std::vector<double> getDoubleArray(const mxArray*prhs[], unsigned int idx)
     return out;
 }
 
-biorbd::BIORBD_MATH_NAMESPACE::utils::String getString(const mxArray*prhs[], unsigned int idx)
+BIORBD_NAMESPACE::utils::String getString(const mxArray*prhs[], unsigned int idx)
 {
     // Check data type of input argument
     if (!(mxIsChar(prhs[idx]))) {
@@ -525,7 +525,7 @@ bool isStateExist(const mxArray*prhs[], unsigned int nMus, int idx,
     return isThere;
 }
 
-std::vector<std::vector<std::shared_ptr<biorbd::BIORBD_MATH_NAMESPACE::muscles::State>>>
+std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>>>
 getParameterMuscleState(
     const mxArray*prhs[],
     int idxExcitation,
@@ -571,18 +571,18 @@ getParameterMuscleState(
 
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    std::vector<std::vector<std::shared_ptr<biorbd::BIORBD_MATH_NAMESPACE::muscles::State>>> States;
+    std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>>> States;
     for (unsigned int j=0; j<nFramesTotal; ++j) {
-        std::vector<std::shared_ptr<biorbd::BIORBD_MATH_NAMESPACE::muscles::State>> States_tp;
+        std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>> States_tp;
         for (unsigned int i=0; i<nMus; i++)
             if (isThereExcitation && isThereActivation) {
-                States_tp.push_back( std::make_shared<biorbd::BIORBD_MATH_NAMESPACE::muscles::State>
+                States_tp.push_back( std::make_shared<BIORBD_NAMESPACE::muscles::State>
                                      (stateExcitation[j*nMus+i], stateActivation[j*nMus+i]));
             } else if (!isThereExcitation && isThereActivation) {
-                States_tp.push_back( std::make_shared<biorbd::BIORBD_MATH_NAMESPACE::muscles::State>(0,
+                States_tp.push_back( std::make_shared<BIORBD_NAMESPACE::muscles::State>(0,
                                      stateActivation[j*nMus+i]));
             } else if (isThereExcitation && !isThereActivation) {
-                States_tp.push_back( std::make_shared<biorbd::BIORBD_MATH_NAMESPACE::muscles::State>
+                States_tp.push_back( std::make_shared<BIORBD_NAMESPACE::muscles::State>
                                      (stateExcitation[j*nMus+i], 0));
             }
 
@@ -592,7 +592,7 @@ getParameterMuscleState(
 }
 
 
-std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::muscles::StateDynamicsBuchanan>>
+std::vector<std::vector<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan>>
         getParameterMuscleStateBuchanan(const mxArray*prhs[],
                                         int idxExcitation, int idxActivation, unsigned int nMus)
 {
@@ -635,18 +635,18 @@ std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::muscles::StateDynamicsBuc
 
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::muscles::StateDynamicsBuchanan>> States;
+    std::vector<std::vector<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan>> States;
     for (unsigned int j=0; j<nFramesTotal; ++j) {
-        std::vector<biorbd::BIORBD_MATH_NAMESPACE::muscles::StateDynamicsBuchanan> States_tp;
+        std::vector<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan> States_tp;
         for (unsigned int i=0; i<nMus; i++)
             if (isThereExcitation && isThereActivation) {
-                States_tp.push_back( biorbd::BIORBD_MATH_NAMESPACE::muscles::StateDynamicsBuchanan(
+                States_tp.push_back( BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan(
                                          stateExcitation[j*nMus+i], stateActivation[j*nMus+i]));
             } else if (!isThereExcitation && isThereActivation) {
-                States_tp.push_back( biorbd::BIORBD_MATH_NAMESPACE::muscles::StateDynamicsBuchanan(0,
+                States_tp.push_back( BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan(0,
                                      stateActivation[j*nMus+i]));
             } else if (isThereExcitation && !isThereActivation) {
-                States_tp.push_back( biorbd::BIORBD_MATH_NAMESPACE::muscles::StateDynamicsBuchanan(
+                States_tp.push_back( BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan(
                                          stateExcitation[j*nMus+i], 0));
             }
 
@@ -655,26 +655,26 @@ std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::muscles::StateDynamicsBuc
     return States;
 }
 
-std::vector<std::vector<std::shared_ptr<biorbd::BIORBD_MATH_NAMESPACE::muscles::State>>>
+std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>>>
 getParameterMuscleStateActivation(
     const mxArray*prhs[], int idxActivation, unsigned int nMus)
 {
     return getParameterMuscleState(prhs, -1, idxActivation, nMus);
 }
-std::vector<std::vector<std::shared_ptr<biorbd::BIORBD_MATH_NAMESPACE::muscles::State>>>
+std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>>>
 getParameterMuscleStateExcitation(
     const mxArray*prhs[], int idxExcitation, unsigned int nMus)
 {
     return getParameterMuscleState(prhs, idxExcitation, -1, nMus);
 }
 
-std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::muscles::StateDynamicsBuchanan>>
+std::vector<std::vector<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan>>
         getParameterMuscleStateActivationBuchanan(
             const mxArray*prhs[], int idxActivation, unsigned int nMus)
 {
     return getParameterMuscleStateBuchanan(prhs, -1, idxActivation, nMus);
 }
-std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::muscles::StateDynamicsBuchanan>>
+std::vector<std::vector<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan>>
         getParameterMuscleStateExcitationBuchanan(
             const mxArray*prhs[], int idxExcitation, unsigned int nMus)
 {
@@ -719,7 +719,7 @@ std::vector<Eigen::VectorXd> getParameterMuscleForceNorm(const mxArray*prhs[],
 }
 
 
-std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::Vector3d>> getMusclePosition(
+std::vector<std::vector<BIORBD_NAMESPACE::utils::Vector3d>> getMusclePosition(
             const mxArray*prhs[], unsigned int idx,
             Eigen::VectorXd nPointsByMuscles)
 {
@@ -755,13 +755,13 @@ std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::Vector3d>> getMusc
     double *via=mxGetPr(prhs[idx]); //matrice de position
 
     // Préparer la matrice de sortie
-    std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::Vector3d>> out;
+    std::vector<std::vector<BIORBD_NAMESPACE::utils::Vector3d>> out;
     unsigned int cmpMus(0);
     for (unsigned int i=0; i<nPointsByMuscles.rows(); ++i) {
         // Préparer les matrices intermédiaires (chaque muscle)
-        std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::Vector3d> mus;
+        std::vector<BIORBD_NAMESPACE::utils::Vector3d> mus;
         for (unsigned int j=0; j<nPointsByMuscles(i); ++j) {
-            mus.push_back(biorbd::BIORBD_MATH_NAMESPACE::utils::Vector3d(via[cmpMus*nRows+0],via[cmpMus*nRows+1],
+            mus.push_back(BIORBD_NAMESPACE::utils::Vector3d(via[cmpMus*nRows+0],via[cmpMus*nRows+1],
                                                   via[cmpMus*nRows+2]));
             ++cmpMus;
         }
@@ -772,7 +772,7 @@ std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::Vector3d>> getMusc
     return out;
 }
 
-std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::Matrix> getMusclePointsJaco(const mxArray*prhs[],
+std::vector<BIORBD_NAMESPACE::utils::Matrix> getMusclePointsJaco(const mxArray*prhs[],
         unsigned int idx,
         Eigen::VectorXd nPointsByMuscles, unsigned int nQ)
 {
@@ -807,12 +807,12 @@ std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::Matrix> getMusclePointsJaco(co
     double *jaco=mxGetPr(prhs[idx]); //matrice de position
 
     // Préparer la matrice de sortie
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::utils::Matrix> jacoOut;
+    std::vector<BIORBD_NAMESPACE::utils::Matrix> jacoOut;
     unsigned int cmpMus(0);
 
     for (unsigned int i=0; i<nPointsByMuscles.rows(); ++i) {
         // Préparer les matrices intermédiaires (chaque muscle)
-        biorbd::BIORBD_MATH_NAMESPACE::utils::Matrix mus(static_cast<unsigned int>(nPointsByMuscles(i))*3, nQ);
+        BIORBD_NAMESPACE::utils::Matrix mus(static_cast<unsigned int>(nPointsByMuscles(i))*3, nQ);
         for (unsigned int j=0; j<static_cast<unsigned int>(nPointsByMuscles(i)); ++j) {
             // Stocker
             for (unsigned int k1 = 0; k1<3; ++k1)

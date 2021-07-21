@@ -19,7 +19,7 @@
     #include "RigidBody/KalmanReconsIMU.h"
 #endif
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 Model* c_biorbdModel(
     const char* pathToModel)

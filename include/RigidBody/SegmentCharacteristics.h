@@ -7,9 +7,7 @@
 
 #include "Utils/Scalar.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -126,7 +124,6 @@ protected:
     std::shared_ptr<Mesh> m_mesh; ///< Mesh of the segment
 };
 
-}
 }
 }
 

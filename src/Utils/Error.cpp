@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Error.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 void utils::Error::raise(
     const utils::String &message)

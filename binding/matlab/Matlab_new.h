@@ -26,13 +26,13 @@ void Matlab_new( int nlhs, mxArray *plhs[],
                            "You must catch the pointer address!");
     }
     char *buf = mxArrayToString(prhs[1]);
-    biorbd::BIORBD_MATH_NAMESPACE::utils::String filepath(buf); // Copier le cstring dans un std::string
+    BIORBD_NAMESPACE::utils::String filepath(buf); // Copier le cstring dans un std::string
 
     // Loader le modèle musculosquelettique
     // Definition des variables globales du modele
     try {
-        plhs[0] = convertPtr2Mat<biorbd::BIORBD_MATH_NAMESPACE::Model>(
-                      new biorbd::BIORBD_MATH_NAMESPACE::Model(biorbd::BIORBD_MATH_NAMESPACE::Reader::readModelFile(filepath)));
+        plhs[0] = convertPtr2Mat<BIORBD_NAMESPACE::Model>(
+                      new BIORBD_NAMESPACE::Model(BIORBD_NAMESPACE::Reader::readModelFile(filepath)));
     } catch (std::string m) {
         mexErrMsgTxt(m.c_str());
     }

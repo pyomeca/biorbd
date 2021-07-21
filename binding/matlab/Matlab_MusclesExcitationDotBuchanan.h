@@ -16,10 +16,10 @@ void Matlab_MusclesExcitationDotBuchanan( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 5, 5,
                                "4 arguments are required [+1 optional] where the 2nd is the handler on the model, 3rd is the excitation, 4th is the activation and 5th is a bool to express if excitation is already normalized");
     // Recevoir le model
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // Recevoir les états musculaires
-    std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::muscles::StateDynamicsBuchanan>> state =
+    std::vector<std::vector<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan>> state =
                 getParameterMuscleStateBuchanan(prhs, 2, 3,
                         model->nbMuscleTotal());
 
@@ -45,7 +45,7 @@ void Matlab_MusclesExcitationDotBuchanan( int, mxArray *plhs[],
             for (unsigned int j=0; j<model->muscleGroup(i).nbMuscles(); ++j) {
                 // Recueillir dérivées d'excitations
                 double shapeFactor =
-                    dynamic_cast<const biorbd::BIORBD_MATH_NAMESPACE::muscles::StateDynamicsBuchanan&>( model->muscleGroup(
+                    dynamic_cast<const BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan&>( model->muscleGroup(
                                 i).muscle(
                                 j).state() ).shapeFactor();
                 (*((*(state.begin()+iTime)).begin() + cmpState)).shapeFactor(shapeFactor);

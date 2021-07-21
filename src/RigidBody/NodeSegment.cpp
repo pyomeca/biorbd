@@ -3,7 +3,7 @@
 
 #include "Utils/Error.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 rigidbody::NodeSegment::NodeSegment() :
     utils::Vector3d(0, 0, 0),

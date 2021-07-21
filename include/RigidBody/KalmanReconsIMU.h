@@ -4,9 +4,7 @@
 #include "biorbdConfig.h"
 #include "RigidBody/KalmanRecons.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -67,7 +65,7 @@ public:
         const std::vector<IMU> &IMUobs,
         GeneralizedCoordinates *Q,
         GeneralizedVelocity *Qdot,
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot);
+        GeneralizedAcceleration *Qddot);
 
     ///
     /// \brief Reconstruct the kinematics
@@ -82,7 +80,7 @@ public:
         const utils::Vector &IMUobs,
         GeneralizedCoordinates *Q,
         GeneralizedVelocity *Qdot,
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot);
+        GeneralizedAcceleration *Qddot);
 
     ///
     /// \brief This function cannot be used to reconstruct frames
@@ -117,7 +115,6 @@ protected:
     std::shared_ptr<bool> m_firstIteration; ///< If first iteration was done
 };
 
-}
 }
 }
 

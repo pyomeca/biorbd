@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Muscles/FatigueParameters.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::FatigueParameters::FatigueParameters(
     const utils::Scalar& _fatigueRate,

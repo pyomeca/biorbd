@@ -6,9 +6,7 @@
 #include "biorbdConfig.h"
 #include "Muscles/MusclesEnums.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -239,7 +237,6 @@ protected:
 
 };
 
-}
 }
 }
 

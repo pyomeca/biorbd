@@ -14,11 +14,11 @@ void Matlab_Markers( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 3, 5,
                                "3 arguments are required [+2 optional] where the 2nd is the handler on the model, 3rd is the Q and 4th is the wanted markerType to be return ('all', 'technical' or anatomical') and 5th if you want to remove axes as specified in the model file [default = true]");
     // Recevoir le model
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
 
     // Recevoir Q
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
             2, nQ);
 
     bool removeAxes(true);
@@ -28,25 +28,25 @@ void Matlab_Markers( int, mxArray *plhs[],
 
     // Récupérer les marqueurs selon que l'on veut tous ou seulement anatomiques ou techniques
     unsigned int nMarkers(0); // Nombre de marqueurs
-    std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>>
+    std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>>
             markers_tp; // récupérer les marqueurs
     if (nrhs >= 4) {
-        biorbd::BIORBD_MATH_NAMESPACE::utils::String type(getString(prhs,3));
+        BIORBD_NAMESPACE::utils::String type(getString(prhs,3));
         if (!type.tolower().compare("all")) {
             nMarkers = model->nbMarkers();
-            for (std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates>::iterator Q_it =
+            for (std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates>::iterator Q_it =
                         Q.begin(); Q_it!=Q.end(); ++Q_it) {
                 markers_tp.push_back(model->markers(*Q_it, removeAxes));
             }
         } else if (!type.tolower().compare("anatomical")) {
             nMarkers = model->nbAnatomicalMarkers();
-            for (std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates>::iterator Q_it =
+            for (std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates>::iterator Q_it =
                         Q.begin(); Q_it!=Q.end(); ++Q_it) {
                 markers_tp.push_back(model->anatomicalMarkers(*Q_it, removeAxes));
             }
         } else if (!type.tolower().compare("technical")) {
             nMarkers = model->nbTechnicalMarkers();
-            for (std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates>::iterator Q_it =
+            for (std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates>::iterator Q_it =
                         Q.begin(); Q_it!=Q.end(); ++Q_it) {
                 markers_tp.push_back(model->technicalMarkers(*Q_it, removeAxes));
             }
@@ -58,7 +58,7 @@ void Matlab_Markers( int, mxArray *plhs[],
 
     } else {
         nMarkers = model->nbMarkers();
-        for (std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates>::iterator Q_it =
+        for (std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates>::iterator Q_it =
                     Q.begin(); Q_it!=Q.end(); ++Q_it) {
             markers_tp.push_back(model->markers(*Q_it, removeAxes));
         }
@@ -75,10 +75,10 @@ void Matlab_Markers( int, mxArray *plhs[],
 
     // Remplir le output
     unsigned int cmp(0);
-    for (std::vector<std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>>::iterator
+    for (std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>>::iterator
             markers_it = markers_tp.begin();
             markers_it!=markers_tp.end(); ++markers_it) {
-        std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::NodeSegment>::iterator it=(*markers_it).begin();
+        std::vector<BIORBD_NAMESPACE::rigidbody::NodeSegment>::iterator it=(*markers_it).begin();
         for (unsigned int i=0; (it+i)!=(*markers_it).end(); ++i) {
             markers[cmp+0] = (*(it+i))(0);
             markers[cmp+1] = (*(it+i))(1);

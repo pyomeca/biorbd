@@ -12,7 +12,7 @@
 #include "Muscles/MuscleGroup.h"
 #include "Muscles/StateDynamics.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::Muscles::Muscles() :
     m_mus(std::make_shared<std::vector<muscles::MuscleGroup>>())
@@ -240,8 +240,7 @@ unsigned int muscles::Muscles::nbMuscleGroups() const
 utils::Matrix muscles::Muscles::musclesLengthJacobian()
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model =
-        dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>(*this);
+    const rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 
     utils::Matrix tp(nbMuscleTotal(), model.nbDof());
     unsigned int cmpMus(0);
@@ -284,7 +283,7 @@ void muscles::Muscles::updateMuscles(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
                                        (*this);
 
     // Update all the muscles
@@ -306,7 +305,7 @@ void muscles::Muscles::updateMuscles(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
                                        (*this);
 
     // Update all the muscles

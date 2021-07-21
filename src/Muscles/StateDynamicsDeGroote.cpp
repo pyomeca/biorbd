@@ -6,7 +6,7 @@
 #include "Utils/String.h"
 #include "Muscles/Characteristics.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::StateDynamicsDeGroote::StateDynamicsDeGroote(
     const utils::Scalar& excitation,

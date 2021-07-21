@@ -10,7 +10,7 @@
 #include "Muscles/StateDynamicsBuchanan.h"
 #include "Muscles/StateDynamicsDeGroote.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::MuscleGroup::MuscleGroup() :
     m_mus(std::make_shared<std::vector<std::shared_ptr<muscles::Muscle>>>()),

@@ -4,7 +4,7 @@
 #include "Utils/String.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 actuator::ActuatorConstant::ActuatorConstant() :
     Actuator(),

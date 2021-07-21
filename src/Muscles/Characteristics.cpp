@@ -4,7 +4,7 @@
 #include "Muscles/State.h"
 #include "Muscles/FatigueParameters.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::Characteristics::Characteristics() :
     m_optimalLength(std::make_shared<utils::Scalar>(0)),

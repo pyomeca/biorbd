@@ -5,7 +5,7 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p() :
     actuator::Actuator(),

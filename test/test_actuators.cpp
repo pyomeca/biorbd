@@ -15,7 +15,7 @@
 #include "Actuators/ActuatorLinear.h"
 #include "Actuators/ActuatorSigmoidGauss3p.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 static std::string
 modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");

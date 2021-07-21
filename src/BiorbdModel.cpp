@@ -8,7 +8,7 @@
 #include "RigidBody/NodeSegment.h"
 #include "Utils/String.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 utils::String getVersion()
 {

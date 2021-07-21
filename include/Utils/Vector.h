@@ -5,9 +5,7 @@
 #include "rbdl/rbdl_math.h"
 #include "Utils/Scalar.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -141,7 +139,6 @@ public:
 #endif
 };
 
-}
 }
 }
 

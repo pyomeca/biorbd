@@ -13,7 +13,7 @@ void Matlab_nMarkers( int, mxArray *plhs[],
     // Verifier les arguments d'entrée
     checkNombreInputParametres(nrhs, 2, 2,
                                "2 arguments are required where the 2nd is the handler on the model");
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // Create a matrix for the return argument
     plhs[0] = mxCreateDoubleMatrix( 1, 1, mxREAL);

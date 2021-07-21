@@ -6,7 +6,7 @@
 #include "RigidBody/GeneralizedTorque.h"
 #include "Muscles/State.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::StaticOptimizationIpoptLinearized::StaticOptimizationIpoptLinearized(
     Model &model,

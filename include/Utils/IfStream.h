@@ -7,9 +7,7 @@
 #include <iostream>
 #include "rbdl/rbdl_math.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -183,7 +181,6 @@ private:
     std::shared_ptr<Path> m_path;///< The path of the file
 };
 
-}
 }
 }
 

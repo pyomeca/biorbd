@@ -5,9 +5,7 @@
 #include "Utils/Scalar.h"
 #include "Utils/Vector3d.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -112,7 +110,7 @@ public:
     /// \param muscleLength Length of the muscle (ignored if no value is provided)
     ///
     virtual void wrapPoints(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
+        rigidbody::Joints& model,
         const rigidbody::GeneralizedCoordinates& Q,
         const utils::Vector3d& p1_bone,
         const utils::Vector3d& p2_bone,
@@ -141,7 +139,7 @@ public:
     /// \return The RotoTrans matrix of the wrapping object
     ///
     virtual const utils::RotoTrans& RT(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model,
+        rigidbody::Joints &model,
         const rigidbody::GeneralizedCoordinates& Q,
         bool updateKin = true) = 0;
 
@@ -166,7 +164,6 @@ protected:
     m_RT; ///< RotoTrans matrix of the wrapping object
 };
 
-}
 }
 }
 

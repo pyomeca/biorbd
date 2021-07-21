@@ -4,7 +4,7 @@
 #ifdef BIORBD_USE_CASADI_MATH
 #include "Utils/Error.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 utils::Scalar::Scalar() :
     RigidBodyDynamics::Math::Scalar ()

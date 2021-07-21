@@ -5,7 +5,7 @@
 #include "Muscles/Characteristics.h"
 #include "Muscles/State.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 muscles::IdealizedActuator::IdealizedActuator() :
     muscles::Muscle()
@@ -89,7 +89,7 @@ const utils::Scalar& muscles::IdealizedActuator::force(
 }
 
 const utils::Scalar& muscles::IdealizedActuator::force(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &,
+    rigidbody::Joints &,
     const rigidbody::GeneralizedCoordinates &,
     const rigidbody::GeneralizedVelocity &,
     const muscles::State &emg,
@@ -100,7 +100,7 @@ const utils::Scalar& muscles::IdealizedActuator::force(
 }
 
 const utils::Scalar& muscles::IdealizedActuator::force(
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &,
+    rigidbody::Joints &,
     const rigidbody::GeneralizedCoordinates &,
     const muscles::State &emg,
     int)

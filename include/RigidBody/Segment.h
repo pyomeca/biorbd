@@ -7,9 +7,7 @@
 #include "biorbdConfig.h"
 #include "Utils/Node.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -48,7 +46,7 @@ public:
     /// \param PF Platform index attached to the body (-1 means no force platform acts on the body)
     ///
     Segment(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
+        rigidbody::Joints& model,
         const utils::String &name,
         const utils::String &parentName,
         const utils::String &seqT,
@@ -74,7 +72,7 @@ public:
     /// \param PF Platform index attached to the body (-1 means no force platform acts on the body)
     ///
     Segment(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
+        rigidbody::Joints& model,
         const utils::String &name,
         const utils::String &parentName,
         const utils::String &seqR,
@@ -226,7 +224,7 @@ public:
     /// inertia for these 3 segments as well.
     ///
     void updateCharacteristics(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
+        rigidbody::Joints& model,
         const SegmentCharacteristics& characteristics);
 
     ///
@@ -270,7 +268,7 @@ protected:
     /// \param QDDotRanges Ranges of the translations and rotations dof acceleration. The length of QDDotRanges must be equal to length of translations and rotations
     ///
     void setDofs(
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model,
+        rigidbody::Joints& model,
         const utils::String &seqT,
         const utils::String &seqR,
         const std::vector<utils::Range>& QRanges,
@@ -370,7 +368,7 @@ protected:
     /// \param model The joint model
     ///
     virtual void setJoints(
-            biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints& model);
+            rigidbody::Joints& model);
 
     ///
     /// \brief Determine the rotation axis in relation to the requested sequence
@@ -396,7 +394,6 @@ protected:
 
 };
 
-}
 }
 }
 

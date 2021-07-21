@@ -1,9 +1,7 @@
 #ifndef BIORBD_MUSCLES_ENUMS_H
 #define BIORBD_MUSCLES_ENUMS_H
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace muscles
 {
@@ -91,7 +89,6 @@ inline const char* STATE_FATIGUE_TYPE_toStr(STATE_FATIGUE_TYPE
     }
 }
 
-}
 }
 }
 

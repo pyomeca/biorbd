@@ -14,16 +14,16 @@ void Matlab_NLeffects( int, mxArray *plhs[],
                                "4 arguments are required where the 2nd is the handler on the model, 3rd is the Q and 4th is QDot");
 
     // Recevoir le model
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
     unsigned int nTau = model->nbGeneralizedTorque(); // Nombre de GeneralizedTorque
 
     // Recevoir Q
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
             2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
                 prhs, 3, nQdot);
 
     // S'assurer que Q, Qdot et Qddot (et Forces s'il y a lieu) sont de la bonne dimension
@@ -39,7 +39,7 @@ void Matlab_NLeffects( int, mxArray *plhs[],
     unsigned int cmp(0);
 
     // Trouver les effets non-linéaires pour chaque configuration
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque Tau(nTau);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedTorque Tau(nTau);
     for (unsigned int j=0; j<Q.size(); ++j) {
         Tau.setZero();
         RigidBodyDynamics::NonlinearEffects(*model, Q[j], QDot[j], Tau);

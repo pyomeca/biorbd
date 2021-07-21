@@ -7,9 +7,7 @@
 #include "biorbdConfig.h"
 #include "Utils/Scalar.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -279,7 +277,7 @@ public:
     void UpdateKinematicsCustom(
         const GeneralizedCoordinates *Q = nullptr,
         const GeneralizedVelocity *Qdot = nullptr,
-        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot = nullptr);
+        const rigidbody::GeneralizedAcceleration *Qddot = nullptr);
 
 
     // -- POSITION INTERFACE OF THE MODEL -- //
@@ -524,7 +522,7 @@ public:
     utils::Vector3d CoMddot(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
-        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
+        const rigidbody::GeneralizedAcceleration &Qddot,
         bool updateKin=true);
 
     ///
@@ -564,7 +562,7 @@ public:
     std::vector<utils::Vector3d> CoMddotBySegment(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
-        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
+        const rigidbody::GeneralizedAcceleration &Qddot,
         bool updateKin=true);
 
     ///
@@ -579,7 +577,7 @@ public:
     utils::Vector3d CoMddotBySegment(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
-        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
+        const rigidbody::GeneralizedAcceleration &Qddot,
         const unsigned int idx,
         bool updateKin = true);
 
@@ -705,7 +703,7 @@ public:
     utils::Vector3d CalcAngularMomentum (
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
-        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
+        const rigidbody::GeneralizedAcceleration &Qddot,
         bool updateKin);
 
     ///
@@ -731,7 +729,7 @@ public:
     std::vector<utils::Vector3d> CalcSegmentsAngularMomentum (
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
-        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
+        const rigidbody::GeneralizedAcceleration &Qddot,
         bool updateKin);
     // -------------------------------- //
 
@@ -774,7 +772,7 @@ public:
     GeneralizedTorque InverseDynamics(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &QDot,
-        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &QDDot,
+        const rigidbody::GeneralizedAcceleration &QDDot,
         std::vector<utils::SpatialVector>* f_ext = nullptr);
 
     ///
@@ -797,7 +795,7 @@ public:
     /// \param f_ext External force acting on the system if there are any
     /// \return The Generalized Accelerations
     ///
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration ForwardDynamics(
+    rigidbody::GeneralizedAcceleration ForwardDynamics(
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
@@ -812,7 +810,7 @@ public:
     /// \param f_ext External force acting on the system if there are any
     /// \return The Generalized Accelerations
     ///
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration ForwardDynamicsConstraintsDirect(
+    rigidbody::GeneralizedAcceleration ForwardDynamicsConstraintsDirect(
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
@@ -841,7 +839,7 @@ public:
     /// \param f_ext External force acting on the system if there are any
     /// \return The Generalized Accelerations
     ///
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration ForwardDynamicsConstraintsDirect(
+    rigidbody::GeneralizedAcceleration ForwardDynamicsConstraintsDirect(
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
@@ -918,12 +916,11 @@ public:
     void checkGeneralizedDimensions(
         const GeneralizedCoordinates *Q = nullptr,
         const GeneralizedVelocity *Qdot = nullptr,
-        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot = nullptr,
+        const rigidbody::GeneralizedAcceleration *Qddot = nullptr,
         const GeneralizedTorque *torque = nullptr);
 };
 
 } // namespace rigidbody
-} // namespace BIORBD_MATH_NAMESPACE
-} // namespace biorbd
+} // namespace BIORBD_NAMESPACE
 
 #endif // BIORBD_RIGIDBODY_JOINTS_H

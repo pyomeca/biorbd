@@ -6,9 +6,7 @@
 #include "biorbdConfig.h"
 
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 class Model;
 
@@ -108,7 +106,7 @@ public:
     void getState(
         GeneralizedCoordinates *Q = nullptr,
         GeneralizedVelocity *Qdot = nullptr,
-        biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot = nullptr);
+        GeneralizedAcceleration *Qddot = nullptr);
 
     ///
     /// \brief Set the initial guess of the reconstruction
@@ -119,7 +117,7 @@ public:
     void setInitState(
         const GeneralizedCoordinates *Q = nullptr,
         const GeneralizedVelocity *Qdot = nullptr,
-        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot = nullptr);
+        const GeneralizedAcceleration *Qddot = nullptr);
 
     ///
     /// \brief Proceed to one iteration of the Kalman filter
@@ -222,7 +220,6 @@ protected:
 
 };
 
-}
 }
 }
 

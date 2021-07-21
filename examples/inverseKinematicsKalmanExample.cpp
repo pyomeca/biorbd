@@ -15,7 +15,7 @@
 /// Please also note that kalman will be VERY slow if compiled in debug
 ///
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 int main()
 {

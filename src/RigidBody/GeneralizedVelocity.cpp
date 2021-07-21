@@ -3,7 +3,7 @@
 
 #include "RigidBody/Joints.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 rigidbody::GeneralizedVelocity::GeneralizedVelocity()
 {

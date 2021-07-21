@@ -5,9 +5,7 @@
 #include <vector>
 #include "biorbdConfig.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
@@ -212,7 +210,7 @@ public:
     NodeSegment markerAcceleration(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
-        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
+        const rigidbody::GeneralizedAcceleration &Qddot,
         unsigned int idx,
         bool removeAxis = true,
         bool updateKin = true);
@@ -230,7 +228,7 @@ public:
     std::vector<NodeSegment> markerAcceleration(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
-        const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &dQdot,
+        const rigidbody::GeneralizedAcceleration &dQdot,
         bool removeAxis=true,
         bool updateKin = true);
 
@@ -394,7 +392,6 @@ protected:
 
 };
 
-}
 }
 }
 

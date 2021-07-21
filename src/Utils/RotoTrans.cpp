@@ -9,7 +9,7 @@
 
 #include "RigidBody/NodeSegment.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 utils::RotoTrans::RotoTrans(
     const RigidBodyDynamics::Math::Matrix4d& matrix) :

@@ -12,7 +12,7 @@
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 rigidbody::Markers::Markers() :
     m_marks(std::make_shared<std::vector<rigidbody::NodeSegment>>())
@@ -89,8 +89,7 @@ rigidbody::NodeSegment rigidbody::Markers::marker(
     bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
-                                       (*this);
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #endif
@@ -114,8 +113,7 @@ rigidbody::NodeSegment rigidbody::Markers::marker(
     bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
-                                       (*this);
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #endif
@@ -178,8 +176,7 @@ rigidbody::NodeSegment rigidbody::Markers::markerVelocity(
     bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
-                                       (*this);
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #endif
@@ -215,13 +212,13 @@ rigidbody::Markers::markersVelocity(
 rigidbody::NodeSegment rigidbody::Markers::markerAcceleration(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
+    const rigidbody::GeneralizedAcceleration &Qddot,
     unsigned int idx,
     bool removeAxis,
     bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
                                        (*this);
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
@@ -243,7 +240,7 @@ std::vector<rigidbody::NodeSegment>
 rigidbody::Markers::markerAcceleration(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration &Qddot,
+    const rigidbody::GeneralizedAcceleration &Qddot,
     bool removeAxis,
     bool updateKin)
 {
@@ -323,7 +320,7 @@ rigidbody::Markers::segmentMarkers(
     bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
                                        (*this);
 
     // Name of the segment to find
@@ -350,8 +347,8 @@ unsigned int rigidbody::Markers::nbMarkers(unsigned int idxSegment)
 const
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model =
-        dynamic_cast<const biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>(*this);
+    const rigidbody::Joints &model =
+        dynamic_cast<const rigidbody::Joints &>(*this);
 
     // Name of the segment to find
     const utils::String& name(model.segment(idxSegment).name());
@@ -392,7 +389,7 @@ utils::Matrix rigidbody::Markers::markersJacobian(
     bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
                                        (*this);
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
@@ -413,7 +410,7 @@ bool rigidbody::Markers::inverseKinematics(
     rigidbody::GeneralizedCoordinates &Q,
     bool removeAxes)
 {
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
                                        (*this);
     model.UpdateKinematicsCustom(&Q); // also assert for dimensions
 
@@ -439,7 +436,7 @@ bool rigidbody::Markers::inverseKinematics(
 
     // Call the base function
     return RigidBodyDynamics::InverseKinematics(
-               dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>(*this),
+               dynamic_cast<rigidbody::Joints &>(*this),
                Qinit, body_id, body_pointEigen, markersInRbdl, Q);
 }
 #endif
@@ -452,7 +449,7 @@ std::vector<utils::Matrix> rigidbody::Markers::markersJacobian(
     bool lookForTechnical)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
                                        (*this);
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
@@ -499,7 +496,7 @@ unsigned int rigidbody::Markers::nbTechnicalMarkers(
     unsigned int idxSegment)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
                                        (*this);
 
     unsigned int nTechMarkers = 0;

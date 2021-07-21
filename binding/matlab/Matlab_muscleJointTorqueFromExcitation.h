@@ -19,7 +19,7 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
                                "6th is if update [true] must be done. Note that if update is set to [false], "
                                "the user MUST update it by himself before calling this function");
     // Recevoir le model
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
     unsigned int nQdot = model->nbQdot(); // Get the number of DoF
     unsigned int nGeneralizedTorque =
@@ -27,13 +27,13 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
     unsigned int nMuscleTotal = model->nbMuscleTotal();
 
     // Recevoir Q
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates> Q = getParameterQ(prhs,
             2, nQ);
     // Recevoir Qdot
-    std::vector<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
+    std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
                 prhs, 3, nQdot);
     // Recevoir muscleStates
-    std::vector<std::vector<std::shared_ptr<biorbd::BIORBD_MATH_NAMESPACE::muscles::State>>> s =
+    std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>>> s =
         getParameterMuscleStateExcitation(prhs,4,
                                           model->nbMuscleTotal());
 
@@ -76,13 +76,13 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
     }
 
     // Remplir le output
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedTorque muscleTorque;
-    biorbd::BIORBD_MATH_NAMESPACE::utils::Vector muscleForces;
+    BIORBD_NAMESPACE::rigidbody::GeneralizedTorque muscleTorque;
+    BIORBD_NAMESPACE::utils::Vector muscleForces;
     for (unsigned int i=0; i<nFrame; ++i) {
         unsigned int iMus = 0;
         for (unsigned int k=0; k<model->nbMuscleGroups(); ++k)
             for (unsigned int j=0; j<model->muscleGroup(k).nbMuscles(); ++j) {
-                std::dynamic_pointer_cast<biorbd::BIORBD_MATH_NAMESPACE::muscles::StateDynamics>(s[i][iMus])
+                std::dynamic_pointer_cast<BIORBD_NAMESPACE::muscles::StateDynamics>(s[i][iMus])
                 ->timeDerivativeActivation(model->muscleGroup(k).muscle(j).characteristics(),
                                            true);
                 ++iMus;

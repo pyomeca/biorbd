@@ -12,7 +12,7 @@
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/IMU.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 rigidbody::KalmanReconsIMU::KalmanReconsIMU() :
     rigidbody::KalmanRecons(),
@@ -80,7 +80,7 @@ void rigidbody::KalmanReconsIMU::reconstructFrame(
     const std::vector<rigidbody::IMU> &IMUobs,
     rigidbody::GeneralizedCoordinates *Q,
     rigidbody::GeneralizedVelocity *Qdot,
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot)
+    rigidbody::GeneralizedAcceleration *Qddot)
 {
     // Separate the IMUobs in a big vector
     utils::Vector T(static_cast<unsigned int>
@@ -100,7 +100,7 @@ void rigidbody::KalmanReconsIMU::reconstructFrame(
     const utils::Vector &IMUobs,
     rigidbody::GeneralizedCoordinates *Q,
     rigidbody::GeneralizedVelocity *Qdot,
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::GeneralizedAcceleration *Qddot)
+    rigidbody::GeneralizedAcceleration *Qddot)
 {
     // An iteration of the Kalman filter
     if (*m_firstIteration) {

@@ -3,7 +3,7 @@
 
 #include "Utils/Vector3d.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 rigidbody::MeshFace::MeshFace(const std::vector<int>& vertex) :
     m_face(std::make_shared<std::vector<int>>(vertex))

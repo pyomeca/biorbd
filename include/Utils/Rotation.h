@@ -16,9 +16,7 @@ struct SpatialTransform;
 
 #include "biorbdConfig.h"
 
-namespace biorbd
-{
-namespace BIORBD_MATH_NAMESPACE
+namespace BIORBD_NAMESPACE
 {
 namespace rigidbody
 {
@@ -216,7 +214,6 @@ protected:
 
 }
 }
-}
 
 #ifndef SWIG
     ///
@@ -224,7 +221,7 @@ protected:
     /// \param os osstream
     /// \param rt The Rotation matrix
     ///
-    std::ostream& operator<<(std::ostream& os, const biorbd::BIORBD_MATH_NAMESPACE::utils::Rotation &rt);
+    std::ostream& operator<<(std::ostream& os, const BIORBD_NAMESPACE::utils::Rotation &rt);
 #endif
 
 #endif // BIORBD_UTILS_ROTO_TRANS_H

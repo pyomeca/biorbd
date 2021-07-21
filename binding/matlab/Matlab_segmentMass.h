@@ -15,7 +15,7 @@ void Matlab_segmentMass( int, mxArray *plhs[],
     checkNombreInputParametres(nrhs, 2, 3,
                                "2 arguments are required (+1 optional) where the 2nd is the handler on the model and optional third is the segment index");
     // Recevoir le model
-    biorbd::BIORBD_MATH_NAMESPACE::Model * model = convertMat2Ptr<biorbd::BIORBD_MATH_NAMESPACE::Model>(prhs[1]);
+    BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     unsigned int idx;
     if (nrhs>2) {

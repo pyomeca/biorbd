@@ -1,7 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/Range.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 utils::Range::Range(
     double min,

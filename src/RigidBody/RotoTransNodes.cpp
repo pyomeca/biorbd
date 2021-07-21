@@ -11,7 +11,7 @@
 #include "RigidBody/Joints.h"
 #include "RigidBody/Segment.h"
 
-using namespace biorbd::BIORBD_MATH_NAMESPACE;
+using namespace BIORBD_NAMESPACE;
 
 rigidbody::RotoTransNodes::RotoTransNodes() :
     m_RTs(std::make_shared<std::vector<utils::RotoTransNode>>())
@@ -117,8 +117,7 @@ utils::RotoTransNode rigidbody::RotoTransNodes::RT(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
-                                       (*this);
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #endif
@@ -140,7 +139,7 @@ rigidbody::RotoTransNodes::segmentRTs(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
                                        (*this);
 
     // Segment name to find
@@ -164,7 +163,7 @@ rigidbody::RotoTransNodes::RTsJacobian(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &model = dynamic_cast<biorbd::BIORBD_MATH_NAMESPACE::rigidbody::Joints &>
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
                                        (*this);
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
