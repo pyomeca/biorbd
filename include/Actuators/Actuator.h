@@ -8,6 +8,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace utils
 {
 class String;
@@ -33,7 +35,7 @@ public:
     /// \param other The other actuator
     ///
     Actuator(
-        const biorbd::actuator::Actuator& other);
+        const Actuator& other);
 
     ///
     /// \brief Construct actuator
@@ -53,7 +55,7 @@ public:
     Actuator(
         int direction,
         unsigned int dofIdx,
-        const biorbd::utils::String &jointName);
+        const utils::String &jointName);
 
     ///
     /// \brief Destroy class properly
@@ -65,7 +67,7 @@ public:
     /// \param other The actuator to copy
     ///
     void DeepCopy(
-        const biorbd::actuator::Actuator& other);
+        const Actuator& other);
 
     ///
     /// \brief Return the index of the DoF associated with actuator
@@ -83,13 +85,13 @@ public:
     /// \brief Return the type of the actuator
     /// \return The type of the actuator
     ///
-    biorbd::actuator::TYPE type() const;
+    TYPE type() const;
 
     ///
     /// \brief Return the maximal torque
     /// \return The maximal torque
     ///
-    virtual biorbd::utils::Scalar torqueMax() = 0;
+    virtual utils::Scalar torqueMax() = 0;
 
 protected:
     ///
@@ -97,16 +99,17 @@ protected:
     ///
     virtual void setType() = 0;
 
-    std::shared_ptr<biorbd::actuator::TYPE> m_type; ///< The type of the actuator
+    std::shared_ptr<TYPE> m_type; ///< The type of the actuator
     std::shared_ptr<int> m_direction; ///< The direction of the actuator (+1 or -1)
 
-    std::shared_ptr<biorbd::utils::String>
+    std::shared_ptr<utils::String>
     m_jointName; ///< Name of the parent joint
     std::shared_ptr<unsigned int>
     m_dofIdx;///< Index of the DoF associated with the actuator
 
 };
 
+}
 }
 }
 

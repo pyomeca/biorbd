@@ -715,24 +715,24 @@ void Reader::readModelFile(
                 }
                 // Verify that everything is there
                 utils::Error::check(isTypeSet!=0, "Actuator type must be defined");
-                biorbd::actuator::Actuator* actuator;
+                actuator::Actuator* actuator;
 
                 if (!type.tolower().compare("gauss3p")) {
                     utils::Error::check(isDofSet && isDirectionSet && isTmaxSet && isT0Set
                                                 && iswmaxSet && iswcSet && isaminSet &&
                                                 iswrSet && isw1Set && isrSet && isqoptSet,
                                                 "Make sure all parameters are defined");
-                    actuator = new biorbd::actuator::ActuatorGauss3p(int_direction,Tmax,T0,wmax,wc,
+                    actuator = new actuator::ActuatorGauss3p(int_direction,Tmax,T0,wmax,wc,
                             amin,wr,w1,r,qopt,dofIdx,name);
                 } else if (!type.tolower().compare("constant")) {
                     utils::Error::check(isDofSet && isDirectionSet && isTmaxSet,
                                                 "Make sure all parameters are defined");
-                    actuator = new biorbd::actuator::ActuatorConstant(int_direction,Tmax,dofIdx,
+                    actuator = new actuator::ActuatorConstant(int_direction,Tmax,dofIdx,
                             name);
                 } else if (!type.tolower().compare("linear")) {
                     utils::Error::check(isDofSet && isDirectionSet && isSlopeSet && isT0Set,
                                                 "Make sure all parameters are defined");
-                    actuator = new biorbd::actuator::ActuatorLinear(int_direction,T0,slope,dofIdx,
+                    actuator = new actuator::ActuatorLinear(int_direction,T0,slope,dofIdx,
                             name);
                 } else if (!type.tolower().compare("gauss6p")) {
                     utils::Error::check(isDofSet && isDirectionSet && isTmaxSet && isT0Set
@@ -740,19 +740,19 @@ void Reader::readModelFile(
                                                 iswrSet && isw1Set && isrSet && isqoptSet && isFacteur6pSet && isr2Set
                                                 && isqopt2Set,
                                                 "Make sure all parameters are defined");
-                    actuator = new biorbd::actuator::ActuatorGauss6p(int_direction,Tmax,T0,wmax,wc,
+                    actuator = new actuator::ActuatorGauss6p(int_direction,Tmax,T0,wmax,wc,
                             amin,wr,w1,r,qopt,facteur6p, r2, qopt2,
                             dofIdx,name);
                 } else if (!type.tolower().compare("sigmoidgauss3p")) {
                     utils::Error::check(isDofSet && isThetaSet && isLambdaSet
                                                 && isOffsetSet && isrSet && isqoptSet,
                                                 "Make sure all parameters are defined");
-                    actuator = new biorbd::actuator::ActuatorSigmoidGauss3p(int_direction, theta,
+                    actuator = new actuator::ActuatorSigmoidGauss3p(int_direction, theta,
                             lambda, offset, r, qopt, dofIdx, name);
                 } else {
                     utils::Error::raise("Actuator do not correspond to an implemented one");
 #ifdef _WIN32
-                    actuator = new biorbd::actuator::ActuatorConstant(int_direction, Tmax, dofIdx,
+                    actuator = new actuator::ActuatorConstant(int_direction, Tmax, dofIdx,
                             name); // Échec de compilation sinon
 #endif
                 }

@@ -6,6 +6,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace rigidbody
 {
 class GeneralizedCoordinates;
@@ -33,7 +35,7 @@ public:
     /// \param other The other SigmoidGauss3p actuator to copy
     ///
     ActuatorSigmoidGauss3p(
-        const biorbd::actuator::ActuatorSigmoidGauss3p& other);
+        const ActuatorSigmoidGauss3p& other);
 
     ///
     /// \brief Construct SigmoidGauss3p actuator
@@ -47,11 +49,11 @@ public:
     ///
     ActuatorSigmoidGauss3p(
         int direction,
-        const biorbd::utils::Scalar& theta,
-        const biorbd::utils::Scalar& lambda,
-        const biorbd::utils::Scalar& offset,
-        const biorbd::utils::Scalar& r,
-        const biorbd::utils::Scalar& qopt,
+        const utils::Scalar& theta,
+        const utils::Scalar& lambda,
+        const utils::Scalar& offset,
+        const utils::Scalar& r,
+        const utils::Scalar& qopt,
         unsigned int dofIdx);
 
     ///
@@ -67,13 +69,13 @@ public:
     ///
     ActuatorSigmoidGauss3p(
         int direction,
-        const biorbd::utils::Scalar& theta,
-        const biorbd::utils::Scalar& lambda,
-        const biorbd::utils::Scalar& offset,
-        const biorbd::utils::Scalar& r,
-        const biorbd::utils::Scalar& qopt,
+        const utils::Scalar& theta,
+        const utils::Scalar& lambda,
+        const utils::Scalar& offset,
+        const utils::Scalar& r,
+        const utils::Scalar& qopt,
         unsigned int dofIdx,
-        const biorbd::utils::String &jointName);
+        const utils::String &jointName);
 
     ///
     /// \brief Destroy the class properly
@@ -84,21 +86,21 @@ public:
     /// \brief Deep copy of the SigmoidGauss3p actuator
     /// \return A deep copy of the SigmoidGauss3p actuator
     ///
-    biorbd::actuator::ActuatorSigmoidGauss3p DeepCopy() const;
+    ActuatorSigmoidGauss3p DeepCopy() const;
 
     ///
     /// \brief Deep copy of the SigmoidGauss3p actuator from another SigmoidGauss3p actuator
     /// \param other The SigmoidGauss3p actuator to copy
     ///
     void DeepCopy(
-        const biorbd::actuator::ActuatorSigmoidGauss3p& other);
+        const ActuatorSigmoidGauss3p& other);
 
     ///
     /// \brief Return the maximal torque (invalid)
     /// \return The maximal torque
     /// torqueMax for ActuatorSigmoidGauss3p must be called with Q and Qdot
     ///
-    virtual biorbd::utils::Scalar torqueMax();
+    virtual utils::Scalar torqueMax();
 
     ///
     /// \brief Return the maximal torque at a given Q and Qdot
@@ -106,9 +108,9 @@ public:
     /// \param Qdot The generalized velocities of the actuator
     /// \return The maximal torque
     ///
-    virtual biorbd::utils::Scalar torqueMax(
-        const biorbd::rigidbody::GeneralizedCoordinates &Q,
-        const biorbd::rigidbody::GeneralizedVelocity &Qdot);
+    virtual utils::Scalar torqueMax(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &Qdot);
 
 protected:
     ///
@@ -118,18 +120,19 @@ protected:
 
     // Coefficients needed for the SigmoidGauss3p
     // Torque/angle relationship for the Gauss3p
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_r;         ///< Width of the gaussian curve
-    std::shared_ptr<biorbd::utils::Scalar> m_qopt;      ///< Optimal position
+    std::shared_ptr<utils::Scalar> m_qopt;      ///< Optimal position
 
     // Coefficients needed for the Sigmoid
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_theta;     ///< Amplitude of the Sigmoid
-    std::shared_ptr<biorbd::utils::Scalar>
+    std::shared_ptr<utils::Scalar>
     m_lambda;    ///< Tilt factor of the Sigmoid
-    std::shared_ptr<biorbd::utils::Scalar> m_offset;    ///< Height of the Sigmoid
+    std::shared_ptr<utils::Scalar> m_offset;    ///< Height of the Sigmoid
 };
 
+}
 }
 }
 

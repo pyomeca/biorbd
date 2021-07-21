@@ -3,6 +3,8 @@
 
 namespace biorbd
 {
+namespace BIORBD_MATH_NAMESPACE
+{
 namespace actuator
 {
 
@@ -23,7 +25,7 @@ enum TYPE {
 /// \param type The type to convert to string
 /// \return The name of the type
 ///
-inline const char* TYPE_toStr(biorbd::actuator::TYPE type)
+inline const char* TYPE_toStr(TYPE type)
 {
     switch (type) {
     case CONSTANT:
@@ -42,6 +44,7 @@ inline const char* TYPE_toStr(biorbd::actuator::TYPE type)
 }
 
 
+}
 }
 }
 
