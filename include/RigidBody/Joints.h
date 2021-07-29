@@ -14,6 +14,7 @@ namespace utils
 class String;
 class RotoTrans;
 class Matrix;
+class Matrix3d;
 class Vector;
 class Vector3d;
 class Range;
@@ -744,7 +745,7 @@ public:
     void CalcMatRotJacobian (
         const GeneralizedCoordinates &Q,
         unsigned int segmentIdx,
-        const RigidBodyDynamics::Math::Matrix3d &rotation,
+        const utils::Matrix3d &rotation,
         RigidBodyDynamics::Math::MatrixNd &G,
         bool updateKin);
 

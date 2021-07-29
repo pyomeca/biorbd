@@ -7,6 +7,7 @@
 #include "BiorbdModel.h"
 #include "Utils/String.h"
 #include "Utils/Path.h"
+#include "Utils/Matrix3d.h"
 #include "RigidBody/IMU.h"
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"

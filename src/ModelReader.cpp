@@ -111,8 +111,7 @@ void Reader::readModelFile(
                 }
                 bool isRTset(false);
                 double mass = 0.00000001;
-                RigidBodyDynamics::Math::Matrix3d inertia(
-                    RigidBodyDynamics::Math::Matrix3d::Identity());
+                utils::Matrix3d inertia(utils::Matrix3d::Identity() * mass);
                 utils::RotoTrans RT(RigidBodyDynamics::Math::Matrix4d::Identity());
                 utils::Vector3d com(0,0,0);
                 rigidbody::Mesh mesh;
@@ -1943,7 +1942,7 @@ void Reader::readVector3d(
 void Reader::readMatrix33(
     utils::IfStream &file,
     const std::map<utils::Equation, double> &variable,
-    RigidBodyDynamics::Math::Matrix3d &matrix)
+    utils::Matrix3d &matrix)
 {
     for (unsigned int i=0; i<3; ++i) {
         for (unsigned int j=0; j<3; ++j) {
