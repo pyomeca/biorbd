@@ -4,6 +4,7 @@
 #include <limits.h>
 #include "Utils/String.h"
 #include "Utils/Error.h"
+#include "Utils/Matrix3d.h"
 #include "Utils/Vector3d.h"
 #include "Utils/RotoTrans.h"
 #include "RigidBody/Joints.h"
@@ -529,7 +530,7 @@ void rigidbody::Segment::setJoints(
 
 
     RigidBodyDynamics::Math::SpatialTransform zero (
-        RigidBodyDynamics::Math::Matrix3dIdentity,
+        utils::Matrix3d::Identity(),
         RigidBodyDynamics::Math::Vector3d(0,0,0));
     // Create the articulations (intra segment)
     m_idxDof->clear();

@@ -5,15 +5,13 @@
 #include "Utils/Vector3d.h"
 #include "Utils/String.h"
 #include "Utils/Vector.h"
-#include "Utils/Matrix.h"
-
 #include "RigidBody/NodeSegment.h"
 
 using namespace BIORBD_NAMESPACE;
 
 utils::Rotation::Rotation(
-    const RigidBodyDynamics::Math::Matrix3d& matrix) :
-    RigidBodyDynamics::Math::Matrix3d(matrix)
+    const utils::Matrix3d& matrix) :
+    utils::Matrix3d(matrix)
 {
     checkUnitary();
 }
@@ -21,22 +19,25 @@ utils::Rotation::Rotation(
 #ifdef BIORBD_USE_CASADI_MATH
 
 utils::Rotation::Rotation(
-    const RigidBodyDynamics::Math::MatrixNd &m) :
-    RigidBodyDynamics::Math::Matrix3d(m)
+    const RBDLCasadiMath::MX_Xd_static<3, 3> &other) :
+    utils::Matrix3d(other)
 {
 
 }
 
+utils::Rotation::Rotation(
+    const RBDLCasadiMath::MX_Xd_SubMatrix& other) :
+    utils::Matrix3d(other)
+{
+
+}
 #endif
 
 utils::Rotation::Rotation(
-    const utils::Scalar& v00, const utils::Scalar& v01,
-    const utils::Scalar& v02,
-    const utils::Scalar& v10, const utils::Scalar& v11,
-    const utils::Scalar& v12,
-    const utils::Scalar& v20, const utils::Scalar& v21,
-    const utils::Scalar& v22) :
-    RigidBodyDynamics::Math::Matrix3d (v00, v01, v02, v10, v11, v12, v20, v21, v22)
+    const utils::Scalar& v00, const utils::Scalar& v01, const utils::Scalar& v02,
+    const utils::Scalar& v10, const utils::Scalar& v11, const utils::Scalar& v12,
+    const utils::Scalar& v20, const utils::Scalar& v21, const utils::Scalar& v22) :
+    utils::Matrix3d (v00, v01, v02, v10, v11, v12, v20, v21, v22)
 {
 
 }
@@ -44,14 +45,14 @@ utils::Rotation::Rotation(
 utils::Rotation::Rotation(
     const utils::Vector& rotation,
     const utils::String& rotationSequence) :
-    RigidBodyDynamics::Math::Matrix3d(fromEulerAngles(rotation, rotationSequence))
+    utils::Matrix3d(fromEulerAngles(rotation, rotationSequence))
 {
 
 }
 
 utils::Rotation::Rotation(
     const RigidBodyDynamics::Math::SpatialTransform &st) :
-    RigidBodyDynamics::Math::Matrix3d(st.E)
+    utils::Matrix3d(st.E)
 {
 
 }
@@ -80,24 +81,24 @@ utils::Rotation utils::Rotation::fromEulerAngles(
     utils::Rotation out;
     out.setIdentity();
     // Set the actual rotation matrix to this
-    RigidBodyDynamics::Math::Matrix3d tp;
+    utils::Matrix3d tp;
     for (unsigned int i=0; i<seq.length(); ++i) {
         utils::Scalar cosVi(std::cos(rot[i]));
         utils::Scalar sinVi(std::sin(rot[i]));
         if (seq.tolower()[i] == 'x')
-            tp = RigidBodyDynamics::Math::Matrix3d(1,     0,      0,
-                                                   0, cosVi, -sinVi,
-                                                   0, sinVi,  cosVi);
+            tp = utils::Matrix3d(1,     0,      0,
+                                 0, cosVi, -sinVi,
+                                 0, sinVi,  cosVi);
 
         else if (seq.tolower()[i] == 'y')
-            tp = RigidBodyDynamics::Math::Matrix3d(cosVi, 0, sinVi,
-                                                   0, 1,     0,
-                                                   -sinVi, 0, cosVi);
+            tp = utils::Matrix3d(cosVi, 0, sinVi,
+                                 0, 1,     0,
+                                 -sinVi, 0, cosVi);
 
         else if (seq.tolower()[i] == 'z')
-            tp = RigidBodyDynamics::Math::Matrix3d(cosVi, -sinVi,  0,
-                                                   sinVi,  cosVi,  0,
-                                                   0,      0,  1);
+            tp = utils::Matrix3d(cosVi, -sinVi,  0,
+                                 sinVi,  cosVi,  0,
+                                 0,      0,  1);
         else {
             utils::Error::raise("Rotation sequence not recognized");
         }
@@ -107,7 +108,7 @@ utils::Rotation utils::Rotation::fromEulerAngles(
     return out;
 }
 
-utils::Matrix utils::Rotation::fromMarkersNonNormalized(
+utils::Rotation utils::Rotation::fromMarkersNonNormalized(
     const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment> &axis1markers,
     const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment> &axis2markers,
     const std::pair<utils::String, utils::String>& axesNames,
@@ -177,7 +178,7 @@ utils::Matrix utils::Rotation::fromMarkersNonNormalized(
     }
 
     // Organize them in a non-normalized matrix
-    utils::Matrix r_out(3, 3);
+    utils::Rotation r_out;
     for (unsigned int i=0; i<3; ++i) {
         r_out.block(0, i, 3, 1) = axes[i];
     }
@@ -190,7 +191,7 @@ utils::Rotation utils::Rotation::fromMarkers(
     const std::pair<utils::String, utils::String>& axesNames,
     const utils::String &axisToRecalculate)
 {
-    utils::Matrix r_out(
+    utils::Rotation r_out(
         fromMarkersNonNormalized(axis1markers, axis2markers, axesNames,
                                  axisToRecalculate));
 
@@ -285,7 +286,7 @@ utils::Vector utils::Rotation::toEulerAngles(
 utils::Rotation utils::Rotation::mean(
     const std::vector<utils::Rotation> & mToMean)
 {
-    RigidBodyDynamics::Math::Matrix3d m_tp;
+    utils::Matrix3d m_tp;
     m_tp.setZero();
 
     // Initial guess being the actual arithmetic mean
@@ -322,3 +323,17 @@ std::ostream &operator<<(std::ostream &os, const utils::Rotation &a)
     os << a.block(0,0,3,3);
     return os;
 }
+
+#ifdef BIORBD_USE_CASADI_MATH
+void utils::Rotation::operator=(
+    const RBDLCasadiMath::MX_Xd_static<3, 3> &other)
+{
+    this->Matrix3d::operator=(other);
+}
+
+void utils::Rotation::operator=(
+    const RBDLCasadiMath::MX_Xd_SubMatrix& other)
+{
+    this->Matrix3d::operator=(other);
+}
+#endif

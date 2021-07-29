@@ -3,8 +3,7 @@
 
 #include <vector>
 #include <memory>
-#include "rbdl/rbdl_math.h"
-#include "Utils/Scalar.h"
+#include "Utils/Matrix3d.h"
 
 namespace RigidBodyDynamics
 {
@@ -28,7 +27,6 @@ namespace utils
 class String;
 class Vector;
 class Vector3d;
-class Matrix;
 
 ///
 /// \brief Rotation matrix
@@ -36,7 +34,7 @@ class Matrix;
 #ifdef SWIG
 class BIORBD_API Rotation
 #else
-class BIORBD_API Rotation : public RigidBodyDynamics::Math::Matrix3d
+class BIORBD_API Rotation : public Matrix3d
 #endif
 {
 public:
@@ -45,8 +43,7 @@ public:
     /// \param matrix 3D identity matrix
     ///
     Rotation(
-        const RigidBodyDynamics::Math::Matrix3d& matrix =
-            RigidBodyDynamics::Math::Matrix3d::Identity());
+        const Matrix3d& matrix = Matrix3d::Identity());
 
 #ifdef BIORBD_USE_EIGEN3_MATH
     ///
@@ -55,18 +52,25 @@ public:
     ///
     template<typename OtherDerived> Rotation(
         const Eigen::MatrixBase<OtherDerived>& other) :
-        RigidBodyDynamics::Math::Matrix3d(other)
+        Matrix3d(other)
     {
         checkUnitary();
     }
 #endif
 #ifdef BIORBD_USE_CASADI_MATH
     ///
-    /// \brief Construct Rotation matrix
-    /// \param matrix 3D identity matrix
+    /// \brief operator= For submatrices
+    /// \param other The matrix to copy
     ///
     Rotation(
-        const RigidBodyDynamics::Math::MatrixNd& m);
+        const RBDLCasadiMath::MX_Xd_static<3, 3>& other);
+
+    ///
+    /// \brief operator= For submatrices
+    /// \param other The matrix to copy
+    ///
+    Rotation(
+        const RBDLCasadiMath::MX_Xd_SubMatrix& other);
 #endif
 
     ///
@@ -143,7 +147,7 @@ public:
     /// \param axisToRecalculate The axis to recalculate to ensure orthonormal system of axes
     /// \return The system of axes
     ///
-    static utils::Matrix fromMarkersNonNormalized(
+    static Rotation fromMarkersNonNormalized(
         const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment>& axis1markers,
         const std::pair<rigidbody::NodeSegment, rigidbody::NodeSegment>& axis2markers,
         const std::pair<String, String> &axesNames,
@@ -200,6 +204,21 @@ public:
         Eigen::Matrix3d::operator=(other);
         return *this;
     }
+#endif
+#ifdef BIORBD_USE_CASADI_MATH
+    ///
+    /// \brief operator= For submatrices
+    /// \param other The matrix to copy
+    ///
+    void operator=(
+        const RBDLCasadiMath::MX_Xd_static<3, 3>& other);
+
+    ///
+    /// \brief operator= For submatrices
+    /// \param other The matrix to copy
+    ///
+    void operator=(
+        const RBDLCasadiMath::MX_Xd_SubMatrix& other);
 #endif
 #endif
 

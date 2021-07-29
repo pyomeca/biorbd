@@ -3,6 +3,7 @@
 
 #include "Utils/Scalar.h"
 #include "Utils/Vector3d.h"
+#include "Utils/Matrix3d.h"
 #include "RigidBody/MeshFace.h"
 #include "RigidBody/Mesh.h"
 
@@ -18,7 +19,7 @@ rigidbody::SegmentCharacteristics::SegmentCharacteristics() :
 rigidbody::SegmentCharacteristics::SegmentCharacteristics(
     const utils::Scalar &mass,
     const utils::Vector3d &com,
-    const RigidBodyDynamics::Math::Matrix3d &inertia) :
+    const utils::Matrix3d &inertia) :
     Body(mass, com, inertia),
     m_length(std::make_shared<utils::Scalar>(0)),
     m_mesh(std::make_shared<rigidbody::Mesh>())
@@ -28,7 +29,7 @@ rigidbody::SegmentCharacteristics::SegmentCharacteristics(
 rigidbody::SegmentCharacteristics::SegmentCharacteristics(
     const utils::Scalar &mass,
     const utils::Vector3d &com,
-    const RigidBodyDynamics::Math::Matrix3d &inertia,
+    const utils::Matrix3d &inertia,
     const rigidbody::Mesh &mesh) :
     Body(mass, com, inertia),
     m_length(std::make_shared<utils::Scalar>(0)),
@@ -92,8 +93,7 @@ const
     return *m_mesh;
 }
 
-const RigidBodyDynamics::Math::Matrix3d
-&rigidbody::SegmentCharacteristics::inertia() const
+const utils::Matrix3d rigidbody::SegmentCharacteristics::inertia() const
 {
     return mInertia;
 }

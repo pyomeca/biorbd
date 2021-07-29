@@ -12,6 +12,7 @@ namespace BIORBD_NAMESPACE
 namespace utils
 {
 class Vector3d;
+class Matrix3d;
 }
 
 namespace rigidbody
@@ -43,7 +44,7 @@ public:
     SegmentCharacteristics(
         const utils::Scalar& mass,
         const utils::Vector3d &com,
-        const RigidBodyDynamics::Math::Matrix3d &inertia);
+        const utils::Matrix3d &inertia);
 
     ///
     /// \brief Construct segment characteristics
@@ -55,7 +56,7 @@ public:
     SegmentCharacteristics(
         const utils::Scalar &mass,
         const utils::Vector3d &com,
-        const RigidBodyDynamics::Math::Matrix3d &inertia,
+        const utils::Matrix3d &inertia,
         const Mesh &mesh);
 
     ///
@@ -117,7 +118,7 @@ public:
     /// \brief Returns the segment inertia matrix
     /// \return The segment inertia matrix
     ///
-    const RigidBodyDynamics::Math::Matrix3d& inertia() const;
+    const utils::Matrix3d inertia() const;
 
 protected:
     std::shared_ptr<utils::Scalar> m_length; ///< Length of the segment

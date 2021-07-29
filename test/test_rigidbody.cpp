@@ -8,6 +8,7 @@
 #include "Utils/String.h"
 #include "Utils/Range.h"
 #include "Utils/SpatialVector.h"
+#include "Utils/Matrix3d.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
@@ -363,7 +364,7 @@ TEST(Joints, copy)
 
         rigidbody::SegmentCharacteristics characteristics(
             10, utils::Vector3d(0.5, 0.5, 0.5),
-            RigidBodyDynamics::Math::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
+            utils::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
         std::vector<utils::Range> ranges(6);
 
         joints.AddSegment("segmentName", "parentName", "zyx", "yzx", ranges, ranges,
@@ -781,7 +782,7 @@ TEST(Segment, copy)
     Model model(modelPathForGeneralTesting);
     rigidbody::SegmentCharacteristics characteristics(
         10, utils::Vector3d(0.5, 0.5, 0.5),
-        RigidBodyDynamics::Math::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
+        utils::Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1));
     std::vector<utils::Range> ranges(6);
     rigidbody::Segment MasterSegment(
         model, "MasterSegment", "NoParent", "zyx", "yzx", ranges, ranges, ranges,

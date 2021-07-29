@@ -2076,7 +2076,7 @@ TEST(MuscleForce, torqueFromMuscles)
     }
 
     RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot);
-    std::vector<double> QDDotExpected({-2.4941551687243537, 0.04600953825654895});
+    std::vector<double> QDDotExpected({-33.399444385252629, -53.361348240369679});
     for (unsigned int i=0; i<QDDot.size(); ++i) {
         SCALAR_TO_DOUBLE(val, QDDot(i));
         EXPECT_NEAR(val, QDDotExpected[i], requiredPrecision);

@@ -20,8 +20,9 @@ namespace utils
 {
 class Path;
 class String;
-class Vector3d;
 class Vector;
+class Vector3d;
+class Matrix3d;
 class SpatialVector;
 class RotoTrans;
 class IfStream;
@@ -205,7 +206,7 @@ protected:
     static void readMatrix33(
         utils::IfStream& file,
         const std::map<utils::Equation, double>& variable,
-        RigidBodyDynamics::Math::Matrix3d &matrix);
+        utils::Matrix3d &matrix);
 
     ///
     /// \brief Read a RT matrix either in 4x4 format or Rot1233 seq Trans123 format

@@ -8,6 +8,7 @@
 #include "Utils/String.h"
 #include "Utils/Quaternion.h"
 #include "Utils/Matrix.h"
+#include "Utils/Matrix3d.h"
 #include "Utils/Error.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/Rotation.h"
@@ -468,7 +469,7 @@ utils::Matrix rigidbody::Joints::projectPointJacobian(
                                    utils::Vector3d(0,0,0), updateKin));
         utils::Matrix JCor(utils::Matrix::Zero(9,nbQ()));
         CalcMatRotJacobian(Q, GetBodyId(node.parent().c_str()),
-                           RigidBodyDynamics::Math::Matrix3d::Identity(), JCor, updateKin);
+                           utils::Matrix3d::Identity(), JCor, updateKin);
         for (unsigned int n=0; n<3; ++n)
             if (node.isAxisKept(n)) {
                 G_tp += JCor.block(n*3,0,3,nbQ()) * node(n);
@@ -1228,7 +1229,7 @@ void rigidbody::Joints::UpdateKinematicsCustom(
 void rigidbody::Joints::CalcMatRotJacobian(
     const rigidbody::GeneralizedCoordinates &Q,
     unsigned int segmentIdx,
-    const RigidBodyDynamics::Math::Matrix3d &rotation,
+    const utils::Matrix3d &rotation,
     RigidBodyDynamics::Math::MatrixNd &G,
     bool updateKin)
 {
@@ -1251,12 +1252,12 @@ void rigidbody::Joints::CalcMatRotJacobian(
     axes.push_back(utils::Vector3d(0,1,0));
     axes.push_back(utils::Vector3d(0,0,1));
     for (unsigned int iAxes=0; iAxes<3; ++iAxes) {
-        RigidBodyDynamics::Math::Matrix3d bodyMatRot (
+        utils::Matrix3d bodyMatRot (
             RigidBodyDynamics::CalcBodyWorldOrientation (*this, Q, segmentIdx,
                     false).transpose());
         RigidBodyDynamics::Math::SpatialTransform point_trans(
             RigidBodyDynamics::Math::SpatialTransform (
-                RigidBodyDynamics::Math::Matrix3d::Identity(),
+                utils::Matrix3d::Identity(),
                 bodyMatRot * rotation * *(axes.begin()+iAxes)));
 
 
