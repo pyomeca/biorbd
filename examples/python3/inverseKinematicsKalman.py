@@ -2,7 +2,7 @@ import numpy as np
 import biorbd
 
 try:
-    import BiorbdViz
+    import bioviz
 
     biorbd_viz_found = True
 except ModuleNotFoundError:
@@ -66,6 +66,6 @@ for i, targetMarkers in enumerate(markersOverFrames):
 
 # Animate the results if biorbd viz is installed
 if biorbd_viz_found:
-    b = BiorbdViz.BiorbdViz(loaded_model=model)
+    b = bioviz.Viz(loaded_model=model)
     b.load_movement(q_recons)
     b.exec()

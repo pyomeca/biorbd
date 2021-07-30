@@ -2,7 +2,7 @@ import numpy as np
 import biorbd
 
 try:
-    from BiorbdViz.biorbd_vtk import VtkModel, VtkWindow
+    from bioviz.biorbd_vtk import VtkModel, VtkWindow
     import pyomeca
 
     biorbd_viz_found = True
