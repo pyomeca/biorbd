@@ -35,9 +35,8 @@ def roll(R, zi, zf, RT):
 
 # model
 model = biorbd.Model("WrappingObjectExample.bioMod")
-
 # wrapping RT matrix
-RTw = biorbd.WrappingCylinder(model.muscle(0).pathModifier().object(0)).RT(
+RTw = biorbd.WrappingHalfCylinder(model.muscle(0).pathModifier().object(0)).RT(
     model, np.array([0.1, 0.1, 0.1, 0.1, 0.1, 0.1])
 )
 RTw_trans = RTw.transpose()
@@ -66,7 +65,7 @@ for xb, yb, zb in zip(Xb, Yb, Zb):
 plt.show()
 
 # Compute muscle length
-r = biorbd.WrappingCylinder(model.muscle(0).pathModifier().object(0)).radius()
+r = biorbd.WrappingHalfCylinder(model.muscle(0).pathModifier().object(0)).radius()
 l_muscle_bd = model.muscle(0).musculoTendonLength(model, np.array([0.1, 0.1, 0.1, 0.1, 0.1, 0.1]))
 
 
