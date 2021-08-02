@@ -1029,7 +1029,7 @@ void Reader::readModelFile(
                         static_cast<unsigned int>(iMuscle)).addPathObject(
                             cylinder);
                 } else {
-                    utils::Error::raise("Wrapping type must be defined (choices: 'cylinder')");
+                    utils::Error::raise("Wrapping type must be defined (choices: 'halfcylinder')");
                 }
 #else // MODULE_MUSCLES
                 utils::Error::raise("Biorbd was build without the module Muscles but the model defines a wrapping object");
