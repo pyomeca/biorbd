@@ -26,12 +26,14 @@
 
 %include "@CMAKE_BINARY_DIR@/include/biorbdConfig.h"
 
+
 #if defined(BIORBD_USE_CASADI_MATH)
 #define SWIG_UTILS_STRING SWIGTYPE_p_BiorbdCasadi__utils__String
 #define SWIG_UTILS_PATH SWIGTYPE_p_BiorbdCasadi__utils__Path
 #define SWIG_UTILS_MATRIX3D SWIGTYPE_p_BiorbdCasadi__utils__Matrix3d
 #define SWIG_UTILS_VECTOR SWIGTYPE_p_BiorbdCasadi__utils__Vector
 #define SWIG_UTILS_NODE SWIGTYPE_p_BiorbdCasadi__utils__Node
+#define SWIG_UTILS_VECTOR3D SWIGTYPE_p_BiorbdCasadi__utils__Vector3d
 #define SWIG_UTILS_SPATIAL_VECTOR SWIGTYPE_p_BiorbdCasadi__utils__SpatialVector
 
 #define SWIG_RIGIDBODY_JOINTS SWIGTYPE_p_BiorbdCasadi__rigidbody__Joints
@@ -47,6 +49,7 @@
 #define SWIG_UTILS_MATRIX3D SWIGTYPE_p_BiorbdEigen3__utils__Matrix3d
 #define SWIG_UTILS_VECTOR SWIGTYPE_p_BiorbdEigen3__utils__Vector
 #define SWIG_UTILS_NODE SWIGTYPE_p_BiorbdEigen3__utils__Node
+#define SWIG_UTILS_VECTOR3D SWIGTYPE_p_BiorbdEigen3__utils__Vector3d
 #define SWIG_UTILS_SPATIAL_VECTOR SWIGTYPE_p_BiorbdEigen3__utils__SpatialVector
 
 #define SWIG_RIGIDBODY_JOINTS SWIGTYPE_p_BiorbdEigen3__rigidbody__Joints
@@ -933,7 +936,9 @@ BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration * {
 %typemap(typecheck, precedence=2130)
 BIORBD_NAMESPACE::utils::Vector3d &{
     void *argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_NODE,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_NODE,  0  | 0))
+            || SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_VECTOR3D,  0  | 0))
+            && argp1) {
         // Test if it is a pointer to SWIG_UTILS_NODE already exists
         $1 = true;
      }
@@ -954,7 +959,9 @@ BIORBD_NAMESPACE::utils::Vector3d &{
 }
 %typemap(in) BIORBD_NAMESPACE::utils::Vector3d &{
     void * argp1 = 0;
-    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_NODE,  0  | 0)) && argp1) {
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_NODE,  0  | 0))
+            || SWIG_IsOK(SWIG_ConvertPtr($input, &argp1, SWIG_UTILS_VECTOR3D,  0  | 0))
+            && argp1) {
         // Recast the pointer
         $1 = reinterpret_cast< BIORBD_NAMESPACE::utils::Vector3d * >(argp1);
      }
