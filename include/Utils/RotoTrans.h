@@ -246,6 +246,7 @@ protected:
     RigidBodyDynamics::Math::Vector4d expand3dTo4d(const Vector3d&
             v1);
 
+public:
     ///
     /// \brief Check if the RotoTrans has a unitary matrix of rotation and the last row is (0, 0, 0, 1)
     ///

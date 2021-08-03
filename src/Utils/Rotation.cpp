@@ -313,7 +313,9 @@ void utils::Rotation::checkUnitary()
     double sqrtNorm = static_cast<double>(this->squaredNorm());
     utils::Error::check(fabs(sqrtNorm - 3.) < 1e-4,
                                 utils::String("The Rotation matrix square norm is equal to ")
-                                + sqrtNorm + ", but should be equal to 3");
+                                + sqrtNorm + ", but should be equal to 3. Alternatively, you "
+                                             "can compile with SKIP_ASSERT set to ON to turn off "
+                                             "this error message");
 #endif
 #endif
 }
