@@ -1980,6 +1980,7 @@ void Reader::readRtMatrix(
         }
         RT = utils::RotoTrans(rot, trans, seq);
     }
+    RT.checkUnitary();
 }
 #endif  // MODULE_VTP_FILES_READER
 
