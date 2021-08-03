@@ -111,7 +111,7 @@ void Reader::readModelFile(
                 }
                 bool isRTset(false);
                 double mass = 0.00000001;
-                utils::Matrix3d inertia(utils::Matrix3d::Identity() * mass);
+                utils::Matrix3d inertia(utils::Matrix3d::Zero());
                 utils::RotoTrans RT(RigidBodyDynamics::Math::Matrix4d::Identity());
                 utils::Vector3d com(0,0,0);
                 rigidbody::Mesh mesh;
