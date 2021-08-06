@@ -122,9 +122,20 @@ void muscles::WrappingHalfCylinder::wrapPoints(
     findTangentToCircle(*p_glob.m_p1, p1_tan);
     findTangentToCircle(*p_glob.m_p2, p2_tan);
 
+
     // Find the vertical component
     NodeMusclePair tanPoints(p1_tan, p2_tan);
-    findVerticalNode(p_glob, tanPoints);
+
+    // if the wrap is not supposed to happen 
+    // if there is a straight line in between two points not passing throught the cylinder
+    if(!findVerticalNode(p_glob, tanPoints)){ 
+        // add the two wrapping points on that streight line
+        // each one at one third of length
+        Vector3d vec((*p_glob.m_p2 - *p_glob.m_p1)/3);
+        p1_tan = *p_glob.m_p1 + vec;
+        p2_tan = p1_tan + vec;
+        tanPoints = NodeMusclePair(p1_tan, p2_tan);
+    }
 
     // If asked, compute the distance distance traveled on the periphery of the cylinder
     // Apply pythagorus to the cercle arc
@@ -341,7 +352,7 @@ bool muscles::WrappingHalfCylinder::checkIfWraps(
     // if both points are on the left and we have to go left
     if ((*pointsInGlobal.m_p1)(0) > radius()
             && (*pointsInGlobal.m_p2)(0) > radius()) {
-        isWrap = false;
+        isWrap *= false;
     }
 
     // If we are on top of the wrap, it is impossible to determine because the wrap Si on est en haut du wrap*,
@@ -350,14 +361,14 @@ bool muscles::WrappingHalfCylinder::checkIfWraps(
     if ( ( (*pointsInGlobal.m_p1)(1) > 0 && (*pointsInGlobal.m_p2)(1) > 0)
             || ( (*pointsInGlobal.m_p1)(1) < 0
                  && (*pointsInGlobal.m_p2)(1) < 0) ) {
-        isWrap = false;
+        isWrap *= false;
     }
 
     // If we have a height* smaller than the radius, there is a numerical aberation
     // * en haut lorsque vue de dessus avec l'axe y pointant vers le haut...
     if ( fabs( (*pointsInGlobal.m_p1)(1)) < radius()
             || fabs( (*pointsInGlobal.m_p2)(1)) < radius() ) {
-        isWrap = false;
+        isWrap *= false;
     }
 
     // If we have reached this stage, one test is left
@@ -366,9 +377,9 @@ bool muscles::WrappingHalfCylinder::checkIfWraps(
               && (*pointsInGlobal.m_p1)(0) > (*pointsInGlobal.m_p2)(0)) ||
             ( (*pointsToWrap.m_p1)(0) > (*pointsToWrap.m_p2)(0)
               && (*pointsInGlobal.m_p1)(0) < (*pointsInGlobal.m_p2)(0))   ) {
-        isWrap = false;
+        isWrap *= false;
     } else {
-        isWrap = true;
+        isWrap *= true;
     }
 
     // Return the answer
