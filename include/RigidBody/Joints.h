@@ -660,7 +660,8 @@ public:
 
     // -- ANGULAR MOMENTUM FUNCTIONS -- //
     ///
-    /// \brief Calculate the angular momentum of the center of mass
+    /// \brief Calculate the angular momentum of the center of mass. This method
+    /// is an interface to CalcAngularMomemtum
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param updateKin If the kinematics of the model should be computed
@@ -845,6 +846,17 @@ public:
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
         std::vector<utils::SpatialVector>* f_ext = nullptr);
+
+    ///
+    /// \brief bodyInertia Return the matrix of inertia of the body expressed
+    /// in the global reference frame computed at the center of mass
+    /// \param Q The Generalized Coordinates
+    /// \param updateKin If the kinematics of the model should be computed
+    /// \return The total inertia of the body
+    ///
+    utils::Matrix3d bodyInertia (
+        const rigidbody::GeneralizedCoordinates &Q,
+        bool updateKin = true);
 
     ///
     /// \brief Compute the QDot post from an impact
