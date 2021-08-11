@@ -1191,6 +1191,36 @@ rigidbody::Joints::ComputeConstraintImpulsesDirect(
     }
 }
 
+utils::Matrix3d
+rigidbody::Joints::bodyInertia (
+        const rigidbody::GeneralizedCoordinates &q,
+        bool updateKin)
+{
+  if (updateKin) {
+    this->UpdateKinematicsCustom (&q);
+  }
+
+  for (size_t i = 1; i < this->mBodies.size(); i++) {
+    this->Ic[i] = this->I[i];
+  }
+
+  RigidBodyDynamics::Math::SpatialRigidBodyInertia Itot;
+
+  for (size_t i = this->mBodies.size() - 1; i > 0; i--) {
+    unsigned int lambda = this->lambda[i];
+
+    if (lambda != 0) {
+      this->Ic[lambda] = this->Ic[lambda] + this->X_lambda[i].applyTranspose (
+                           this->Ic[i]);
+    } else {
+      Itot = Itot + this->X_lambda[i].applyTranspose (this->Ic[i]);
+    }
+  }
+
+  utils::Vector3d com = Itot.h / Itot.m;
+  return RigidBodyDynamics::Math::Xtrans(-com).applyTranspose(Itot).toMatrix().block(0, 0, 3, 3);
+}
+
 unsigned int rigidbody::Joints::getDofIndex(
     const utils::String& segmentName,
     const utils::String& dofName)
