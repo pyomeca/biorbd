@@ -12,6 +12,10 @@ namespace muscles
 /// \brief Half cylinder of infinite length (the length only affect the graphical
 /// representation) object that makes the muscle to wrap around
 ///
+/// Watch out, due to high computational cost, the CasADi backend always assume
+/// contact between the muscle and cylinder. This will create discrepancies between
+/// the Eigen and the CasADi backend
+///
 class BIORBD_API WrappingHalfCylinder : public WrappingObject
 {
 public:

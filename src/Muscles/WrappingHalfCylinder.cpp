@@ -344,7 +344,6 @@ bool muscles::WrappingHalfCylinder::checkIfWraps(
     const NodeMusclePair &pointsInGlobal,
     NodeMusclePair &pointsToWrap) const
 {
-    bool isWrap = 1;
     // It seems that all this function is ignored up to the last check... Once
     // it is checked, validate the Casadi implementation
 
@@ -352,23 +351,21 @@ bool muscles::WrappingHalfCylinder::checkIfWraps(
     // if both points are on the left and we have to go left
     if ((*pointsInGlobal.m_p1)(0) > radius()
             && (*pointsInGlobal.m_p2)(0) > radius()) {
-        isWrap *= false;
+        return false;
     }
 
-    // If we are on top of the wrap, it is impossible to determine because the wrap Si on est en haut du wrap*,
+    // If we are on top of the wrap, it is impossible to determine because the wrap
     // is not a cylinder but a half-cylinder
-    // * en haut lorsque vue de dessus avec l'axe y pointant vers le haut...
     if ( ( (*pointsInGlobal.m_p1)(1) > 0 && (*pointsInGlobal.m_p2)(1) > 0)
             || ( (*pointsInGlobal.m_p1)(1) < 0
                  && (*pointsInGlobal.m_p2)(1) < 0) ) {
-        isWrap *= false;
+        return false;
     }
 
     // If we have a height* smaller than the radius, there is a numerical aberation
-    // * en haut lorsque vue de dessus avec l'axe y pointant vers le haut...
     if ( fabs( (*pointsInGlobal.m_p1)(1)) < radius()
             || fabs( (*pointsInGlobal.m_p2)(1)) < radius() ) {
-        isWrap *= false;
+        return false;
     }
 
     // If we have reached this stage, one test is left
@@ -377,13 +374,11 @@ bool muscles::WrappingHalfCylinder::checkIfWraps(
               && (*pointsInGlobal.m_p1)(0) > (*pointsInGlobal.m_p2)(0)) ||
             ( (*pointsToWrap.m_p1)(0) > (*pointsToWrap.m_p2)(0)
               && (*pointsInGlobal.m_p1)(0) < (*pointsInGlobal.m_p2)(0))   ) {
-        isWrap *= false;
-    } else {
-        isWrap *= true;
+        return false;
     }
 
     // Return the answer
-    return isWrap;
+    return true;
 }
 #endif
 
