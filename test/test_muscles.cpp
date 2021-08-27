@@ -1953,12 +1953,21 @@ TEST(WrappingHalfCylinder, unitTest)
         SCALAR_TO_DOUBLE(p20, p2[0]);
         SCALAR_TO_DOUBLE(p21, p2[1]);
         SCALAR_TO_DOUBLE(p22, p2[2]);
+#ifdef BIORBD_USE_CASADI_MATH
         EXPECT_NEAR(p10, 0.71229470845913756, requiredPrecision);
         EXPECT_NEAR(p11, 1.1554478324299933, requiredPrecision);
         EXPECT_NEAR(p12, 0.90018809463370408, requiredPrecision);
         EXPECT_NEAR(p20, 0.71229470845913756, requiredPrecision);
         EXPECT_NEAR(p21, 1.1554478324299933, requiredPrecision);
         EXPECT_NEAR(p22, 0.90018809463370408, requiredPrecision);
+#else
+        EXPECT_NEAR(p10, 1.6666666666666665, requiredPrecision);
+        EXPECT_NEAR(p11, 2.3333333333333335, requiredPrecision);
+        EXPECT_NEAR(p12, 3.0, requiredPrecision);
+        EXPECT_NEAR(p20, 2.8333333333333335, requiredPrecision);
+        EXPECT_NEAR(p21, 3.666666666666667, requiredPrecision);
+        EXPECT_NEAR(p22, 4.5, requiredPrecision);
+#endif
     }
 }
 
