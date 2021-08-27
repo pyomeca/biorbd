@@ -12,6 +12,8 @@ namespace BIORBD_NAMESPACE
 namespace utils
 {
 class Equation;
+class Vector3d;
+
 ///
 /// \brief Wrapper for the an std::ifstream with increased capacities
 ///
@@ -130,6 +132,31 @@ public:
 #endif
 
     ///
+    /// \brief Read a certain amounts of bits in binary
+    /// \param output Where the result is store
+    /// \param n_elements Number of bits to read
+    /// \return True on success
+    ///
+    bool readFromBinary(
+        char* output,
+        int n_elements);
+
+    ///
+    /// \brief Read a float in binary file
+    /// \param result The float to put the result into
+    /// \return True on success
+    ///
+    bool readFromBinary(
+        float& result);
+
+    ///
+    /// \brief Read a float in binary file
+    /// \return True on success
+    ///
+    bool readFromBinary(
+        Vector3d& result);
+
+    ///
     /// \brief Advance in the file to a specific tag
     /// \param tag The tag to reach
     /// \param text The text that follows a tag
@@ -142,10 +169,12 @@ public:
     ///
     /// \brief Advance in the file to a specific tag
     /// \param tag The tag to reach
+    /// \param maxTag The number of element to read before giving up
     /// \return True on success
     ///
     bool reachSpecificTag(
-        const String& tag);
+        const String& tag,
+        unsigned int maxTag = -1);
 
     ///
     /// \brief Counts the number of consecutive lines starting with the same tag and then brings it back to the initial position
@@ -163,6 +192,11 @@ public:
         String& text);
 
     ///
+    /// \brief Reset the file cursor to the 0 position
+    ///
+    void resetCursor();
+
+    ///
     /// \brief Close the file
     ///
     bool close();
@@ -175,6 +209,7 @@ public:
 
 protected:
     std::shared_ptr<bool> m_isOpen;///< If file is open
+    char m_floatBuffer[sizeof(float)]; ///< Buffer for reading float in binaries
 
 private:
     std::shared_ptr<std::ifstream> m_ifs;///< the ifstream

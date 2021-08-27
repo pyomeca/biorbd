@@ -33,6 +33,7 @@ static std::string modelPathWithObj("models/violin.bioMod");
 #ifdef MODULE_VTP_FILES_READER
     static std::string modelPathWithVtp("models/thoraxWithVtp.bioMod");
 #endif
+static std::string modelPathWithStl("models/pendulum.bioMod");
 
 TEST(FileIO, OpenModel)
 {
@@ -113,3 +114,10 @@ TEST(MeshFile, FileIoVtp)
     Model model(modelPathWithVtp);
 }
 #endif
+
+
+TEST(MeshFile, FileIoStl)
+{
+    EXPECT_NO_THROW(Model model(modelPathWithStl));
+    Model model(modelPathWithStl);
+}

@@ -256,6 +256,9 @@ void Reader::readModelFile(
                             mesh = readMeshFileVtp(path.folder() + filePath.relativePath());
                         }
 #endif
+                        else if (!filePath.extension().tolower().compare("stl")) {
+                            mesh = readMeshFileStl(path.folder() + filePath.relativePath());
+                        }
                         else {
                             utils::Error::raise(filePath.extension() +
                                                         " is an unrecognized mesh file");
@@ -1983,6 +1986,98 @@ void Reader::readRtMatrix(
     RT.checkUnitary();
 }
 #endif  // MODULE_VTP_FILES_READER
+
+rigidbody::Mesh Reader::readMeshFileStl(
+    const utils::Path &path)
+{
+    // Read a bone file
+
+    // Open file
+    // std::cout << "Loading marker file: " << path << std::endl;
+#ifdef _WIN32
+    utils::IfStream file(
+        utils::Path::toWindowsFormat(
+            path.absolutePath()).c_str(), std::ios::in | std::ios::binary);
+#else
+    utils::IfStream file(
+        path.absolutePath().c_str(), std::ios::in | std::ios::binary);
+#endif
+
+    // The next step test if the file is ASCII or binary
+    bool isBinary = false;
+    try {
+        file.reachSpecificTag("facet", 20);
+    }  catch (std::runtime_error) {
+        isBinary = true;
+        file.resetCursor();
+    }
+
+    rigidbody::Mesh mesh;
+    if (isBinary){
+        // Know the number of points
+        char headerChar[80] = "";
+        char nbTrianglesChar[4];
+        char dummy[2];
+        file.readFromBinary(headerChar, 80); // Skip header
+        file.readFromBinary(nbTrianglesChar, 4);
+        unsigned int nbTriangles = *((unsigned int*) nbTrianglesChar);
+
+        mesh.setPath(path);
+        utils::Vector3d normal;
+        utils::Vector3d vertex;
+        for (unsigned int i = 0; i<nbTriangles; ++i){
+            file.readFromBinary(normal);
+            for (unsigned int j = 0; j<3; ++j){
+                file.readFromBinary(vertex);
+                mesh.addPoint(vertex);
+            }
+            file.readFromBinary(dummy, 2);
+
+            rigidbody::MeshFace patchTp;
+            patchTp(0) = 3*i + 0;
+            patchTp(1) = 3*i + 1;
+            patchTp(2) = 3*i + 2;
+            mesh.addFace(patchTp);
+        }
+    } else {
+        // Due to the test, the pointer is already at the first "facet"
+
+        // Read file
+        utils::String tp;
+        unsigned int i = 0;
+        utils::Vector3d vertex;
+        while (true){
+            file.reachSpecificTag("vertex");
+            for (unsigned int k=0; k<3; ++k){
+                for (unsigned int j=0; j<3; ++j) {
+                    file.read(vertex(j));
+                }
+                mesh.addPoint(vertex);
+                file.read(tp);
+            }
+
+            rigidbody::MeshFace patchTp;
+            patchTp(0) = 3*i + 0;
+            patchTp(1) = 3*i + 1;
+            patchTp(2) = 3*i + 2;
+            mesh.addFace(patchTp);
+
+            for (unsigned int j=0; j<3; ++j) {
+                // Read 3 dummies
+                file.read(tp);
+            }
+
+            ++i;
+            if (!tp.compare("endsolid")){
+                break;
+            }
+        }
+
+
+    }
+
+    return mesh;
+}
 
 
 std::vector<std::vector<utils::Vector3d>>

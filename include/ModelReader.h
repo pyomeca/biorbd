@@ -185,6 +185,14 @@ public:
         const utils::Path& path);
 #endif
 
+    ///
+    /// \brief Read a STL file containing the meshing of a segment
+    /// \param path The path of the file
+    /// \return Returns the mesh
+    ///
+    static rigidbody::Mesh readMeshFileStl(
+        const utils::Path& path);
+
 protected:
     ///
     /// \brief Read a Vector 3d
