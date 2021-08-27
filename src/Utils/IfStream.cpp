@@ -5,6 +5,7 @@
 #include <fstream>
 #include "Utils/Error.h"
 #include "Utils/Equation.h"
+#include "Utils/Vector3d.h"
 
 using namespace BIORBD_NAMESPACE;
 
@@ -59,13 +60,19 @@ bool utils::IfStream::readSpecificTag(
     read(text);
     return true;
 }
-bool utils::IfStream::reachSpecificTag(const utils::String& tag)
+bool utils::IfStream::reachSpecificTag(
+        const utils::String& tag,
+        unsigned int maxTag)
 {
     utils::String text;
-    while (read(text))
+    unsigned int i = 0;
+    while (read(text) && i < maxTag){
         if (!text.tolower().compare(tag)) {
             return true;
         }
+        ++i;
+    }
+
 
     utils::String outMessage(tag +
                                      " parameter could not be found in Data file..");
@@ -156,6 +163,38 @@ bool utils::IfStream::read(
     }
     return out;
 }
+
+bool utils::IfStream::readFromBinary(
+        char *output,
+        int n_elements)
+{
+    m_ifs->read(output, n_elements);
+    return true;
+}
+
+bool utils::IfStream::readFromBinary(
+        float& output)
+{
+    m_ifs->read(m_floatBuffer, 4);
+    output = *((float*) m_floatBuffer);
+    return true;
+}
+
+bool utils::IfStream::readFromBinary(
+        utils::Vector3d& v)
+{
+    m_ifs->read(m_floatBuffer, 4);
+    v[0] = *((float*) m_floatBuffer);
+
+    m_ifs->read(m_floatBuffer, 4);
+    v[1] = *((float*) m_floatBuffer);
+
+    m_ifs->read(m_floatBuffer, 4);
+    v[2] = *((float*) m_floatBuffer);
+    return true;
+}
+
+
 #ifdef BIORBD_USE_CASADI_MATH
 bool utils::IfStream::read(
     RBDLCasadiMath::MX_Xd_SubMatrix result,
@@ -201,6 +240,12 @@ bool utils::IfStream::read(
 void utils::IfStream::getline(utils::String& text)
 {
     std::getline(*m_ifs, text);
+}
+
+void utils::IfStream::resetCursor()
+{
+    m_ifs->clear();
+    m_ifs->seekg(0);
 }
 
 
