@@ -24,6 +24,11 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/Vector.cpp"
 )
 
+if(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
+    list(APPEND SRC_LIST_MODULE "${CMAKE_CURRENT_SOURCE_DIR}/CasadiExpand.cpp")
+    option(USE_SMOOTH_IF_ELSE "If biorbd should be compiled with branching if_else (from CasADi) or using the tanh approximation" OFF)
+endif()
+
 # Create the library
 if (WIN32)
     add_library(${PROJECT_NAME} STATIC "${SRC_LIST_MODULE}")

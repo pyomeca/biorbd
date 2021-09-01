@@ -7,6 +7,10 @@
 #include "Utils/Error.h"
 #include "Utils/Rotation.h"
 
+#ifdef USE_SMOOTH_IF_ELSE
+#include "Utils/CasadiExpand.h"
+#endif
+
 using namespace BIORBD_NAMESPACE;
 
 utils::Quaternion::Quaternion (
@@ -261,8 +265,8 @@ utils::Quaternion utils::Quaternion::slerp(
     utils::Scalar p1 = std::sin (alpha * angle);
 
 #ifdef BIORBD_USE_CASADI_MATH
-    return Quaternion(casadi::MX::if_else(
-                          casadi::MX::lt(dot (quat), 0.),
+    return Quaternion(IF_ELSE_NAMESPACE::if_else(
+                          IF_ELSE_NAMESPACE::lt(dot (quat), 0.),
                           RigidBodyDynamics::Math::Vector4d( ((*this) * p0 - quat * p1) * d),
                           RigidBodyDynamics::Math::Vector4d( ((*this) * p0 + quat * p1) * d)),
                       (this->m_Kstab + quat.m_Kstab) / 2);

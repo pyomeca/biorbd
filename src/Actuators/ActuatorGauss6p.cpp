@@ -5,6 +5,10 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 
+#ifdef USE_SMOOTH_IF_ELSE
+#include "Utils/CasadiExpand.h"
+#endif
+
 using namespace BIORBD_NAMESPACE;
 
 actuator::ActuatorGauss6p::ActuatorGauss6p() :
@@ -170,7 +174,7 @@ utils::Scalar actuator::ActuatorGauss6p::torqueMax(
 
     utils::Scalar Tw;
 #ifdef BIORBD_USE_CASADI_MATH
-    Tw = casadi::MX::if_else(casadi::MX::ge(speed, 0),
+    Tw = IF_ELSE_NAMESPACE::if_else(IF_ELSE_NAMESPACE::ge(speed, 0),
                              C / ( *m_wc + speed )  - Tc,
                              E / ( we - speed ) + *m_Tmax);
 #else

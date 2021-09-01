@@ -5,6 +5,10 @@
 #include "Utils/String.h"
 #include "Muscles/Characteristics.h"
 
+#ifdef USE_SMOOTH_IF_ELSE
+#include "Utils/CasadiExpand.h"
+#endif
+
 using namespace BIORBD_NAMESPACE;
 
 muscles::StateDynamics::StateDynamics(
@@ -82,11 +86,11 @@ muscles::StateDynamics::timeDerivativeActivation(
     // Implémentation de la fonction da/dt = (u-a)/GeneralizedTorque(u,a)
     // ou GeneralizedTorque(u,a) = t_act(0.5+1.5*a) is u>a et GeneralizedTorque(u,a)=t_deact(0.5+1.5*a) sinon
 #ifdef BIORBD_USE_CASADI_MATH
-    *m_activation = casadi::MX::if_else(
-                        casadi::MX::lt(*m_activation, characteristics.minActivation()),
+    *m_activation = IF_ELSE_NAMESPACE::if_else(
+                        IF_ELSE_NAMESPACE::lt(*m_activation, characteristics.minActivation()),
                         characteristics.minActivation(), *m_activation);
-    *m_excitation = casadi::MX::if_else(
-                        casadi::MX::lt(*m_excitation, characteristics.minActivation()),
+    *m_excitation = IF_ELSE_NAMESPACE::if_else(
+                        IF_ELSE_NAMESPACE::lt(*m_excitation, characteristics.minActivation()),
                         characteristics.minActivation(), *m_excitation);
 #else
     if (*m_activation < characteristics.minActivation()) {
@@ -116,8 +120,8 @@ muscles::StateDynamics::timeDerivativeActivation(
 
     utils::Scalar denom; // dénominateur
 #ifdef BIORBD_USE_CASADI_MATH
-    denom = casadi::MX::if_else(
-                casadi::MX::gt(num, 0),
+    denom = IF_ELSE_NAMESPACE::if_else(
+                IF_ELSE_NAMESPACE::gt(num, 0),
                 characteristics.torqueActivation()   * (0.5+1.5* *m_activation),
                 characteristics.torqueDeactivation() / (0.5+1.5* *m_activation));
 #else

@@ -6,6 +6,10 @@
 #include "Muscles/Geometry.h"
 #include "Muscles/Characteristics.h"
 
+#ifdef USE_SMOOTH_IF_ELSE
+#include "Utils/CasadiExpand.h"
+#endif
+
 using namespace BIORBD_NAMESPACE;
 
 muscles::HillThelenType::HillThelenType() :
@@ -84,8 +88,8 @@ void muscles::HillThelenType::DeepCopy(
 void muscles::HillThelenType::computeFlPE()
 {
 #ifdef BIORBD_USE_CASADI_MATH
-    *m_FlPE = casadi::MX::if_else(
-                  casadi::MX::gt(position().length(), characteristics().tendonSlackLength()),
+    *m_FlPE = IF_ELSE_NAMESPACE::if_else(
+                  IF_ELSE_NAMESPACE::gt(position().length(), characteristics().tendonSlackLength()),
                   (exp( *m_cste_FlPE_1 * (position().length()/characteristics().optimalLength()
                                           -1)) -1)
                   /
