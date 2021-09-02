@@ -238,7 +238,12 @@ void muscles::WrappingHalfCylinder::findTangentToCircle(
     const utils::Vector3d& p,
     utils::Vector3d& p_tan) const
 {
+    // This function ignores the Z axis of the vector p to create the circle
+#ifdef BIORBD_USE_EIGEN3_MATH
+    utils::Scalar p_dot = static_cast<Eigen::Vector2d>(p.block(0,0,2,1)).dot(static_cast<Eigen::Vector2d>(p.block(0,0,2,1)));
+#else
     utils::Scalar p_dot = p.block(0,0,2,1).dot(p.block(0,0,2,1));
+#endif
 
     const RigidBodyDynamics::Math::Vector2d& Q0(radius()*radius()/p_dot*p.block(0,0,
             2,1));
