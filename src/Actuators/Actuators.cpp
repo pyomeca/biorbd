@@ -14,6 +14,10 @@
 #include "Actuators/ActuatorConstant.h"
 #include "Actuators/ActuatorLinear.h"
 
+#ifdef USE_SMOOTH_IF_ELSE
+#include "Utils/CasadiExpand.h"
+#endif
+
 using namespace BIORBD_NAMESPACE;
 
 actuator::Actuators::Actuators() :
@@ -349,8 +353,8 @@ rigidbody::GeneralizedTorque actuator::Actuators::torqueMax(
     rigidbody::GeneralizedVelocity QdotResigned(Qdot);
     for (unsigned int i=0; i<Qdot.size(); ++i) {
 #ifdef BIORBD_USE_CASADI_MATH
-        QdotResigned(i) = casadi::MX::if_else(
-                              casadi::MX::lt(activation(i), 0),
+        QdotResigned(i) = IF_ELSE_NAMESPACE::if_else(
+                              IF_ELSE_NAMESPACE::lt(activation(i), 0),
                               -Qdot(i), Qdot(i));
 #else
         if (activation(i)<0) {
@@ -363,8 +367,8 @@ rigidbody::GeneralizedTorque actuator::Actuators::torqueMax(
 
     for (unsigned int i=0; i<model.nbDof(); ++i) {
 #ifdef BIORBD_USE_CASADI_MATH
-        maxGeneralizedTorque_all[i] = casadi::MX::if_else(
-                                          casadi::MX::ge(activation(i, 0), 0),
+        maxGeneralizedTorque_all[i] = IF_ELSE_NAMESPACE::if_else(
+                                          IF_ELSE_NAMESPACE::ge(activation(i, 0), 0),
                                           getTorqueMaxDirection(actuator(i).first, Q, QdotResigned),
                                           getTorqueMaxDirection(actuator(i).second, Q, QdotResigned));
 #else

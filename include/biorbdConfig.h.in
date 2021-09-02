@@ -56,6 +56,16 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 #cmakedefine MODULE_STATIC_OPTIM
 #cmakedefine MODULE_VTP_FILES_READER
 
+
+#ifdef BIORBD_USE_CASADI_MATH
+#cmakedefine USE_SMOOTH_IF_ELSE
+#ifdef USE_SMOOTH_IF_ELSE
+#define IF_ELSE_NAMESPACE utils
+#else
+#define IF_ELSE_NAMESPACE casadi::MX
+#endif
+#endif
+
 // Define some skip if ones doesn't want to compile them
 #cmakedefine SKIP_ASSERT
 #cmakedefine SKIP_LONG_TESTS

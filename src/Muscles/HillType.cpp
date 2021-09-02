@@ -8,6 +8,10 @@
 #include "Muscles/Geometry.h"
 #include "Muscles/State.h"
 
+#ifdef USE_SMOOTH_IF_ELSE
+#include "Utils/CasadiExpand.h"
+#endif
+
 using namespace BIORBD_NAMESPACE;
 
 muscles::HillType::HillType() :
@@ -294,8 +298,8 @@ void muscles::HillType::computeFvCE()
     // The relation is different if velocity< 0  or > 0
     utils::Scalar v = m_position->velocity();
 #ifdef BIORBD_USE_CASADI_MATH
-    *m_FvCE = casadi::MX::if_else(
-                  casadi::MX::le(v, 0),
+    *m_FvCE = IF_ELSE_NAMESPACE::if_else(
+                  IF_ELSE_NAMESPACE::le(v, 0),
                   (1.0-std::fabs(v) / *m_cste_maxShorteningSpeed) /
                   (1.0+std::fabs(v) / *m_cste_maxShorteningSpeed / *m_cste_FvCE_1),
                   (1.0-1.33*v / *m_cste_maxShorteningSpeed / *m_cste_FvCE_2) /
@@ -315,8 +319,8 @@ void muscles::HillType::computeFlPE()
 {
 
 #ifdef BIORBD_USE_CASADI_MATH
-    *m_FlPE = casadi::MX::if_else_zero(
-                  casadi::MX::gt(position().length(), characteristics().tendonSlackLength()),
+    *m_FlPE = IF_ELSE_NAMESPACE::if_else_zero(
+                  IF_ELSE_NAMESPACE::gt(position().length(), characteristics().tendonSlackLength()),
                   exp(*m_cste_FlPE_1*(position().length()/characteristics().optimalLength()-1) -
                       *m_cste_FlPE_2));
 #else

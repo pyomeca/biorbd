@@ -17,5 +17,9 @@
     #include "Actuators/all.h"
 #endif
 
+#ifdef BIORBD_USE_CASADI_MATH
+#include "Utils/CasadiExpand.h"
+#endif
+
 #endif // BIORBD_ALL_H
 

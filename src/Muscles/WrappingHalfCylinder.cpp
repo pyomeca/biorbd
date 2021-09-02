@@ -5,6 +5,10 @@
 #include "Utils/RotoTrans.h"
 #include "RigidBody/Joints.h"
 
+#ifdef USE_SMOOTH_IF_ELSE
+#include "Utils/CasadiExpand.h"
+#endif
+
 using namespace BIORBD_NAMESPACE;
 
 muscles::WrappingHalfCylinder::WrappingHalfCylinder() :
@@ -234,7 +238,12 @@ void muscles::WrappingHalfCylinder::findTangentToCircle(
     const utils::Vector3d& p,
     utils::Vector3d& p_tan) const
 {
+    // This function ignores the Z axis of the vector p to create the circle
+#ifdef BIORBD_USE_EIGEN3_MATH
+    utils::Scalar p_dot = static_cast<Eigen::Vector2d>(p.block(0,0,2,1)).dot(static_cast<Eigen::Vector2d>(p.block(0,0,2,1)));
+#else
     utils::Scalar p_dot = p.block(0,0,2,1).dot(p.block(0,0,2,1));
+#endif
 
     const RigidBodyDynamics::Math::Vector2d& Q0(radius()*radius()/p_dot*p.block(0,0,
             2,1));
@@ -259,8 +268,8 @@ void muscles::WrappingHalfCylinder::selectTangents(
     utils::Vector3d &p_tan) const
 {
 #ifdef BIORBD_USE_CASADI_MATH
-    p_tan = casadi::MX::if_else(
-                casadi::MX::ge((*p1.m_p2)(0), (*p1.m_p1)(0)),
+    p_tan = IF_ELSE_NAMESPACE::if_else(
+                IF_ELSE_NAMESPACE::ge((*p1.m_p2)(0), (*p1.m_p1)(0)),
                 *p1.m_p2, *p1.m_p1);
 #else
     if ((*p1.m_p2)(0) >= (*p1.m_p1)(0)) {
