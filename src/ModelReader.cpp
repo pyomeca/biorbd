@@ -1931,6 +1931,7 @@ rigidbody::Mesh Reader::readMeshFileVtp(
 
     return mesh;
 }
+#endif  // MODULE_VTP_FILES_READER
 
 void Reader::readVector3d(
     utils::IfStream &file,
@@ -1985,7 +1986,6 @@ void Reader::readRtMatrix(
     }
     RT.checkUnitary();
 }
-#endif  // MODULE_VTP_FILES_READER
 
 rigidbody::Mesh Reader::readMeshFileStl(
     const utils::Path &path)
