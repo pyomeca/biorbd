@@ -898,6 +898,39 @@ TEST(Mesh, scale)
     }
 }
 
+TEST(Mesh, color){
+    rigidbody::Mesh mesh;
+    utils::Vector3d color(mesh.color());
+    {
+        SCALAR_TO_DOUBLE(val, color[0]);
+        EXPECT_FLOAT_EQ(val, 0.89);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, color[1]);
+        EXPECT_FLOAT_EQ(val, 0.855);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, color[2]);
+        EXPECT_FLOAT_EQ(val, 0.788);
+    }
+
+    mesh.setColor(utils::Vector3d(0.1, 0.2, 0.3));
+    color = mesh.color();
+    {
+        SCALAR_TO_DOUBLE(val, color[0]);
+        EXPECT_FLOAT_EQ(val, 0.1);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, color[1]);
+        EXPECT_FLOAT_EQ(val, 0.2);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, color[2]);
+        EXPECT_FLOAT_EQ(val, 0.3);
+    }
+
+}
+
 TEST(Markers, allPositions)
 {
     Model model(modelPathMeshEqualsMarker);

@@ -276,6 +276,10 @@ void Reader::readModelFile(
                         utils::Vector3d scaler;
                         readVector3d(file, variable, scaler);
                         mesh.scale(scaler);
+                    } else if (!property_tag.tolower().compare("meshcolor")){
+                        utils::Vector3d meshColor;
+                        readVector3d(file, variable, meshColor);
+                        mesh.setColor(meshColor);
                     }
                 }
                 if (!isRangeQSet) {

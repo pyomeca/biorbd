@@ -11,7 +11,8 @@ using namespace BIORBD_NAMESPACE;
 rigidbody::Mesh::Mesh() :
     m_vertex(std::make_shared<std::vector<utils::Vector3d>>()),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>()),
-    m_pathFile(std::make_shared<utils::Path>())
+    m_pathFile(std::make_shared<utils::Path>()),
+    m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788))
 {
 
 }
@@ -20,7 +21,8 @@ rigidbody::Mesh::Mesh(
         const std::vector<utils::Vector3d> &other):
     m_vertex(std::make_shared<std::vector<utils::Vector3d>>(other)),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>()),
-    m_pathFile(std::make_shared<utils::Path>())
+    m_pathFile(std::make_shared<utils::Path>()),
+    m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788))
 {
 
 }
@@ -30,7 +32,8 @@ rigidbody::Mesh::Mesh(const std::vector<utils::Vector3d>
                               const std::vector<rigidbody::MeshFace> & faces) :
     m_vertex(std::make_shared<std::vector<utils::Vector3d>>(vertex)),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>(faces)),
-    m_pathFile(std::make_shared<utils::Path>())
+    m_pathFile(std::make_shared<utils::Path>()),
+    m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788))
 {
 
 }
@@ -53,6 +56,17 @@ void rigidbody::Mesh::DeepCopy(const rigidbody::Mesh &other)
         (*m_faces)[i] = (*other.m_faces)[i].DeepCopy();
     }
     *m_pathFile = other.m_pathFile->DeepCopy();
+}
+
+void rigidbody::Mesh::setColor(
+        const utils::Vector3d &color)
+{
+    *m_patchColor = color;
+}
+
+utils::Vector3d &rigidbody::Mesh::color() const
+{
+    return *m_patchColor;
 }
 
 void rigidbody::Mesh::addPoint(const utils::Vector3d &node)
