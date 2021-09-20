@@ -10,6 +10,7 @@ namespace BIORBD_NAMESPACE
 namespace utils
 {
 class Vector3d;
+class RotoTrans;
 class Path;
 }
 
@@ -77,6 +78,22 @@ public:
     /// \return The number of vertex
     ///
     unsigned int nbVertex() const;
+
+    ///
+    /// \brief rotateVertex Apply the RT to the vertex
+    /// \param rt The Transformation to apply to the mesh wrt the parent
+    ///
+    void rotate(
+            const utils::RotoTrans& rt);
+
+    ///
+    /// \brief Scale the vertex wrt to 0, 0, 0. Warnign, this function is
+    /// applied when called, meaning that if it is called after rotate, it will
+    /// results in surprising results!
+    /// \param scaler The x, y, z values to scale
+    ///
+    void scale(
+            const utils::Vector3d& scaler);
 
     ///
     /// \brief Add a face patch to the mesh

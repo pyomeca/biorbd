@@ -3,6 +3,7 @@
 
 #include "Utils/Path.h"
 #include "Utils/Vector3d.h"
+#include "Utils/RotoTrans.h"
 #include "RigidBody/MeshFace.h"
 
 using namespace BIORBD_NAMESPACE;
@@ -15,8 +16,8 @@ rigidbody::Mesh::Mesh() :
 
 }
 
-rigidbody::Mesh::Mesh(const std::vector<utils::Vector3d> &other)
-    :
+rigidbody::Mesh::Mesh(
+        const std::vector<utils::Vector3d> &other):
     m_vertex(std::make_shared<std::vector<utils::Vector3d>>(other)),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>()),
     m_pathFile(std::make_shared<utils::Path>())
@@ -66,6 +67,24 @@ const utils::Vector3d &rigidbody::Mesh::point(
 unsigned int rigidbody::Mesh::nbVertex() const
 {
     return static_cast<unsigned int>(m_vertex->size());
+}
+
+void rigidbody::Mesh::rotate(
+        const utils::RotoTrans &rt)
+{
+    for (auto& v : *m_vertex){
+        v.applyRT(rt);
+    }
+}
+
+void rigidbody::Mesh::scale(
+        const utils::Vector3d &scaler)
+{
+    for (auto& v: *m_vertex){
+        v(0) *= scaler(0);
+        v(1) *= scaler(1);
+        v(2) *= scaler(2);
+    }
 }
 
 unsigned int rigidbody::Mesh::nbFaces()

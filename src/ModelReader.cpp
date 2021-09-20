@@ -115,6 +115,7 @@ void Reader::readModelFile(
                 utils::RotoTrans RT(RigidBodyDynamics::Math::Matrix4d::Identity());
                 utils::Vector3d com(0,0,0);
                 rigidbody::Mesh mesh;
+                bool isMeshSet(false);
                 int segmentByFile(-1); // -1 non setté, 0 pas par file, 1 par file
                 int PF = -1;
                 std::vector<utils::Range> QRanges;
@@ -224,6 +225,7 @@ void Reader::readModelFile(
                         utils::Vector3d tp(0, 0, 0);
                         readVector3d(file, variable, tp);
                         mesh.addPoint(tp);
+                        isMeshSet = true;
                     } else if (!property_tag.tolower().compare("patch")) {
                         if (segmentByFile==-1) {
                             segmentByFile = 0;
@@ -263,6 +265,17 @@ void Reader::readModelFile(
                             utils::Error::raise(filePath.extension() +
                                                         " is an unrecognized mesh file");
                         }
+                        isMeshSet = true;
+                    } else if (!property_tag.tolower().compare("meshrt")) {
+                        utils::Error::check(isMeshSet, "mesh(es) or meshfile should be declared before meshrt");
+                        utils::RotoTrans meshRT(RigidBodyDynamics::Math::Matrix4d::Identity());
+                        readRtMatrix(file, variable, false, meshRT);
+                        mesh.rotate(meshRT);
+                    } else if (!property_tag.tolower().compare("meshscale")) {
+                        utils::Error::check(isMeshSet, "mesh(es) or meshfile should be declared before meshscale");
+                        utils::Vector3d scaler;
+                        readVector3d(file, variable, scaler);
+                        mesh.scale(scaler);
                     }
                 }
                 if (!isRangeQSet) {
