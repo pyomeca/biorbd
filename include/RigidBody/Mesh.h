@@ -59,7 +59,7 @@ public:
         const Mesh& other);
 
     ///
-    /// \brief Set the patch of color
+    /// \brief Set the patch color
     /// \param color The color
     ///
     void setColor(
