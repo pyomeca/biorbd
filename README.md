@@ -418,10 +418,20 @@ When calculating the inverse dynamics, if force plates are used, this tag dispat
 Warning: this tag MUST be added to a segment that has a translation and/or a rotation (i.e. that possesses at least one degree of freedom). Otherwise, it will simply be ignored
 
 ##### meshfile or ply
-The path of the meshing `.bioBone` or `.ply` file respectively. It can be relative to the current running folder or absolute (relative being preferred) and UNIX or Windows formatted (`/` vs `\\`, UNIX being preferred).
+The path of the meshing `.bioBone`, `.ply`, `.stl` file respectively. It can be relative to the current running folder or absolute (relative being preferred) and UNIX or Windows formatted (`/` vs `\\`, UNIX being preferred).
 
 ##### mesh
 If the mesh is not written in a file, it can be written directly in the segment. If so, the `mesh` tag stands for the vertex. Therefore, there are as many `mesh` tags as vertex. It waits for $3$ values being the position relative to reference of the segment. 
+
+##### meshcolor
+The color of the segment mesh given in RGV values `[0, 1]`. Default is `0.89, 0.855, 0.788`, that is bone color-ish.
+
+##### meshscale
+The scaling to apply to the provided mesh, given in `X Y Z` values. Default is `1 1 1`.
+
+##### meshrt
+The RT to apply to the provided mesh, given in `RX RY RZ seq TX TY TZ` as for RT. The default value is `0 0 0 xyz 0 0 0`. 
+
 
 ##### patch
 The patches to define the orientation of the patches of the mesh. It waits for $3$ values being the $0-based$ of the index of the vertex defined by the `mesh`.
