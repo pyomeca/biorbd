@@ -709,7 +709,7 @@ public:
         bool updateKin);
 
     ///
-    /// \brief Calculate the segment center of mass angular momentum
+    /// \brief Calculate the segment center of mass angular momentum with respect to the global center of mass
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param updateKin If the kinematics of the model should be computed
@@ -721,7 +721,7 @@ public:
         bool updateKin);
 
     ///
-    /// \brief Calculate the segment center of mass angular momentum
+    /// \brief Calculate the segment center of mass angular momentum with respect to the global center of mass
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param Qddot The generalized accelerations

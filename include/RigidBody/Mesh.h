@@ -10,6 +10,7 @@ namespace BIORBD_NAMESPACE
 namespace utils
 {
 class Vector3d;
+class RotoTrans;
 class Path;
 }
 
@@ -58,6 +59,19 @@ public:
         const Mesh& other);
 
     ///
+    /// \brief Set the patch color
+    /// \param color The color
+    ///
+    void setColor(
+            const utils::Vector3d& color);
+
+    ///
+    /// \brief Get the patch color
+    /// \return The patch color
+    ///
+    utils::Vector3d& color() const;
+
+    ///
     /// \brief Add a point to the mesh
     /// \param node The point to add
     ///
@@ -77,6 +91,22 @@ public:
     /// \return The number of vertex
     ///
     unsigned int nbVertex() const;
+
+    ///
+    /// \brief rotateVertex Apply the RT to the vertex
+    /// \param rt The Transformation to apply to the mesh wrt the parent
+    ///
+    void rotate(
+            const utils::RotoTrans& rt);
+
+    ///
+    /// \brief Scale the vertex wrt to 0, 0, 0. Warnign, this function is
+    /// applied when called, meaning that if it is called after rotate, it will
+    /// results in surprising results!
+    /// \param scaler The x, y, z values to scale
+    ///
+    void scale(
+            const utils::Vector3d& scaler);
 
     ///
     /// \brief Add a face patch to the mesh
@@ -129,6 +159,7 @@ protected:
     std::shared_ptr<std::vector<MeshFace>>
             m_faces; ///< The faces
     std::shared_ptr<utils::Path> m_pathFile; ///< The path to the mesh file
+    std::shared_ptr<utils::Vector3d> m_patchColor; ///< The color of faces
 };
 
 }

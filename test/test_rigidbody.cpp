@@ -832,6 +832,105 @@ static std::vector<std::vector<double>> expectedMarkers = {
     std::vector<double>({0.39552020666133958, -0.18232123669751762,   1.0126678074548392}),
     std::vector<double>({1.0258667774186612, 1.0702910100794407, 1.1960410878390473})
 };
+
+TEST(Mesh, scale)
+{
+    rigidbody::Mesh mesh;
+    mesh.addPoint(utils::Vector3d(2, 3, 4));
+    mesh.addPoint(utils::Vector3d(5, 6, 7));
+
+    mesh.scale(utils::Vector3d(2, 3, 4));
+
+    {
+        SCALAR_TO_DOUBLE(val, mesh.point(0)[0]);
+        EXPECT_FLOAT_EQ(val, 4);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, mesh.point(0)[1]);
+        EXPECT_FLOAT_EQ(val, 9);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, mesh.point(0)[2]);
+        EXPECT_FLOAT_EQ(val, 16);
+    }
+
+    {
+        SCALAR_TO_DOUBLE(val, mesh.point(1)[0]);
+        EXPECT_FLOAT_EQ(val, 10);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, mesh.point(1)[1]);
+        EXPECT_FLOAT_EQ(val, 18);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, mesh.point(1)[2]);
+        EXPECT_FLOAT_EQ(val, 28);
+    }
+
+    mesh.rotate(utils::RotoTrans(
+                    utils::Vector3d(0.2, 0.3, 0.4),
+                    utils::Vector3d(2, 3, 4),
+                    "xyz"));
+    {
+        SCALAR_TO_DOUBLE(val, mesh.point(0)[0]);
+        EXPECT_FLOAT_EQ(val, 6.899786);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, mesh.point(0)[1]);
+        EXPECT_FLOAT_EQ(val, 9.6247339);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, mesh.point(0)[2]);
+        EXPECT_FLOAT_EQ(val, 20.885052);
+    }
+
+    {
+        SCALAR_TO_DOUBLE(val, mesh.point(1)[0]);
+        EXPECT_FLOAT_EQ(val, 12.377337);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, mesh.point(1)[1]);
+        EXPECT_FLOAT_EQ(val, 17.880116);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, mesh.point(1)[2]);
+        EXPECT_FLOAT_EQ(val, 33.64613);
+    }
+}
+
+TEST(Mesh, color){
+    rigidbody::Mesh mesh;
+    utils::Vector3d color(mesh.color());
+    {
+        SCALAR_TO_DOUBLE(val, color[0]);
+        EXPECT_FLOAT_EQ(val, 0.89);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, color[1]);
+        EXPECT_FLOAT_EQ(val, 0.855);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, color[2]);
+        EXPECT_FLOAT_EQ(val, 0.788);
+    }
+
+    mesh.setColor(utils::Vector3d(0.1, 0.2, 0.3));
+    color = mesh.color();
+    {
+        SCALAR_TO_DOUBLE(val, color[0]);
+        EXPECT_FLOAT_EQ(val, 0.1);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, color[1]);
+        EXPECT_FLOAT_EQ(val, 0.2);
+    }
+    {
+        SCALAR_TO_DOUBLE(val, color[2]);
+        EXPECT_FLOAT_EQ(val, 0.3);
+    }
+
+}
+
 TEST(Markers, allPositions)
 {
     Model model(modelPathMeshEqualsMarker);

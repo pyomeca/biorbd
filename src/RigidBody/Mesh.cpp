@@ -3,6 +3,7 @@
 
 #include "Utils/Path.h"
 #include "Utils/Vector3d.h"
+#include "Utils/RotoTrans.h"
 #include "RigidBody/MeshFace.h"
 
 using namespace BIORBD_NAMESPACE;
@@ -10,16 +11,18 @@ using namespace BIORBD_NAMESPACE;
 rigidbody::Mesh::Mesh() :
     m_vertex(std::make_shared<std::vector<utils::Vector3d>>()),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>()),
-    m_pathFile(std::make_shared<utils::Path>())
+    m_pathFile(std::make_shared<utils::Path>()),
+    m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788))
 {
 
 }
 
-rigidbody::Mesh::Mesh(const std::vector<utils::Vector3d> &other)
-    :
+rigidbody::Mesh::Mesh(
+        const std::vector<utils::Vector3d> &other):
     m_vertex(std::make_shared<std::vector<utils::Vector3d>>(other)),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>()),
-    m_pathFile(std::make_shared<utils::Path>())
+    m_pathFile(std::make_shared<utils::Path>()),
+    m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788))
 {
 
 }
@@ -29,7 +32,8 @@ rigidbody::Mesh::Mesh(const std::vector<utils::Vector3d>
                               const std::vector<rigidbody::MeshFace> & faces) :
     m_vertex(std::make_shared<std::vector<utils::Vector3d>>(vertex)),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>(faces)),
-    m_pathFile(std::make_shared<utils::Path>())
+    m_pathFile(std::make_shared<utils::Path>()),
+    m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788))
 {
 
 }
@@ -54,6 +58,17 @@ void rigidbody::Mesh::DeepCopy(const rigidbody::Mesh &other)
     *m_pathFile = other.m_pathFile->DeepCopy();
 }
 
+void rigidbody::Mesh::setColor(
+        const utils::Vector3d &color)
+{
+    *m_patchColor = color;
+}
+
+utils::Vector3d &rigidbody::Mesh::color() const
+{
+    return *m_patchColor;
+}
+
 void rigidbody::Mesh::addPoint(const utils::Vector3d &node)
 {
     m_vertex->push_back(node);
@@ -66,6 +81,24 @@ const utils::Vector3d &rigidbody::Mesh::point(
 unsigned int rigidbody::Mesh::nbVertex() const
 {
     return static_cast<unsigned int>(m_vertex->size());
+}
+
+void rigidbody::Mesh::rotate(
+        const utils::RotoTrans &rt)
+{
+    for (auto& v : *m_vertex){
+        v.applyRT(rt);
+    }
+}
+
+void rigidbody::Mesh::scale(
+        const utils::Vector3d &scaler)
+{
+    for (auto& v: *m_vertex){
+        v(0) *= scaler(0);
+        v(1) *= scaler(1);
+        v(2) *= scaler(2);
+    }
 }
 
 unsigned int rigidbody::Mesh::nbFaces()
