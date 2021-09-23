@@ -316,6 +316,7 @@ void utils::Rotation::checkUnitary()
                                 + sqrtNorm + ", but should be equal to 3. Alternatively, you "
                                              "can compile with SKIP_ASSERT set to ON to turn off "
                                              "this error message");
+	 //Ajout du ckeck ici :)
 #endif
 #endif
 }
