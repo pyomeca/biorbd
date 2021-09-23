@@ -311,12 +311,18 @@ void utils::Rotation::checkUnitary()
 #ifndef BIORBD_USE_CASADI_MATH
 #ifndef SKIP_ASSERT
     double sqrtNorm = static_cast<double>(this->squaredNorm());
-    utils::Error::check(fabs(sqrtNorm - 3.) < 1e-4,
+    bool checkUnit(fabs(sqrtNorm - 3.) < 1e-4);
+    if (!checkUnit){
+        // Make calulation here
+        utils::Matrix3d mat;
+
+        utils::Error::check(false,
                                 utils::String("The Rotation matrix square norm is equal to ")
-                                + sqrtNorm + ", but should be equal to 3. Alternatively, you "
+                                + sqrtNorm + ", but should be equal to 3. " + mat(0, 0) + "Alternatively, you "
                                              "can compile with SKIP_ASSERT set to ON to turn off "
                                              "this error message");
-	 //Ajout du ckeck ici :)
+    }
+
 #endif
 #endif
 }
