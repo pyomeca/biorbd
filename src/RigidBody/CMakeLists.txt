@@ -7,6 +7,8 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/SegmentCharacteristics.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Mesh.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Contacts.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/SoftContacts.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/SoftContactNode.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedCoordinates.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedVelocity.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedAcceleration.cpp"
