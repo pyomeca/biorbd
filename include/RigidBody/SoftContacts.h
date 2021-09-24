@@ -7,14 +7,16 @@
 
 namespace BIORBD_NAMESPACE
 {
-
 namespace utils {
-class NodeSegment;
-
+class String;
 }
 
 namespace rigidbody
 {
+class GeneralizedCoordinates;
+class GeneralizedVelocity;
+class SoftContactNode;
+class NodeSegment;
 
 ///
 /// \brief Holder for the biorbd contact set
@@ -26,6 +28,11 @@ public:
     /// \brief Construct a contact biorbd set
     ///
     SoftContacts();
+
+    ///
+    /// \brief Virtual destructor
+    ///
+    virtual ~SoftContacts(){}
 
     ///
     /// \brief Deep copy of the contacts
@@ -40,36 +47,55 @@ public:
     void DeepCopy(const SoftContacts& other);
 
     ///
+    /// \brief Return the name of the soft contact
+    /// \param i The index of the contact
+    /// \return The name of the soft contact
+    ///
+    utils::String softContactName(unsigned int i);
+
+    ///
+    /// \brief Return the names of the soft contact
+    /// \param i The index of the contact
+    /// \return The names of the soft contact
+    ///
+    std::vector<utils::String> softContactNames();
+
+    ///
     /// \brief Add a new contact to the contact set
     /// \param contact The contact to add
     ///
-    void addContact(
-        const ContactNode& contact);
+    void addSoftContact(
+        const SoftContactNode& contact);
 
     ///
     /// \brief Return a specified contact
     /// \param idx The index of the marker
     /// \return The contact of index idx
     ///
-    NodeSegment SoftContacts(
+    SoftContactNode& softContact(
         unsigned int  idx);
 
     ///
-    /// \brief Return all the contacts at a given position Q
+    /// \brief Return a specified contact at a given position Q
     /// \param Q The generalized coordinates
+    /// \param idx The index of the marker
     /// \param updateKin If the model should be updated
-    /// \return All the contacts in the global reference frame
+    /// \return The contact of index idx
     ///
-    std::vector<NodeSegment> SoftContacts(
+    NodeSegment softContact(
         const GeneralizedCoordinates &Q,
-        bool removeAxis = true,
-        bool updateKin = true);
+        unsigned int  idx,
+        bool updateKin);
 
     ///
-    /// \brief Return all the contacts in their respective parent reference frame
-    /// \return All the contacts
+    /// \brief Return a the contacts at a given position Q
+    /// \param Q The generalized coordinates
+    /// \param updateKin If the model should be updated
+    /// \return The contacts
     ///
-    std::vector<NodeSegment> SoftContacts();
+    std::vector<NodeSegment> softContacts(
+        const GeneralizedCoordinates &Q,
+        bool updateKin);
 
     ///
     /// \brief Return the velocity of a contact
@@ -79,7 +105,7 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The velocity of the contact
     ///
-    NodeSegment contactVelocity(
+    NodeSegment softContactVelocity(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
         unsigned int idx,
@@ -93,7 +119,7 @@ public:
     /// \param updateKin If the model should be updated
     /// \return The velocity of all the contacts
     ///
-    std::vector<NodeSegment> contactsVelocity(
+    std::vector<NodeSegment> softContactsVelocity(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
         bool updateKin = true);
@@ -104,9 +130,20 @@ public:
     ///
     unsigned int nbSoftContacts() const;
 
+    ///
+    /// \brief Return all the soft contacts of a segment
+    /// \param Q The generalized coordinates
+    /// \param idx The index of the segment
+    /// \param updateKin If the model should be updated
+    /// \return All the soft contacts of a segment
+    ///
+    std::vector<NodeSegment> segmentSoftContact(
+            const GeneralizedCoordinates &Q,
+            unsigned int  idx,
+            bool updateKin = true);
+
 protected:
-    std::shared_ptr<std::vector<NodeSegment>>
-            m_contacts; ///< The contacts
+    std::shared_ptr<std::vector<std::shared_ptr<SoftContactNode>>> m_softContacts; ///< The contacts
 
 };
 

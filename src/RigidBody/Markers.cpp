@@ -329,7 +329,7 @@ rigidbody::Markers::segmentMarkers(
     std::vector<rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers();
             ++i) // Go through all the markers and select the right ones
-        if ((*m_marks)[i].parent().compare(name)) {
+        if (!(*m_marks)[i].parent().compare(name)) {
             pos.push_back(marker(Q,i,removeAxis,updateKin));
             updateKin = false;
         }

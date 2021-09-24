@@ -12,6 +12,9 @@
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/SegmentCharacteristics.h"
 #include "RigidBody/Contacts.h"
+#include "RigidBody/SoftContacts.h"
+#include "RigidBody/SoftContactNode.h"
+#include "RigidBody/SoftContactSphere.h"
 #include "RigidBody/Mesh.h"
 #ifdef MODULE_KALMAN
 #include "RigidBody/KalmanRecons.h"
@@ -55,6 +58,9 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Markers.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/NodeSegment.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Contacts.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/SoftContacts.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/SoftContactNode.h"
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/SoftContactSphere.h"
 @SWIG_KALMAN_INCLUDE_COMMAND@
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Mesh.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/MeshFace.h"

@@ -1,7 +1,6 @@
 #ifndef BIORBD_RIGIDBODY_SOFT_CONTACT_NODE_H
 #define BIORBD_RIGIDBODY_SOFT_CONTACT_NODE_H
 
-#include <vector>
 #include "biorbdConfig.h"
 #include "RigidBody/NodeSegment.h"
 
@@ -81,14 +80,6 @@ public:
     /// \param other The contact node to copy
     ///
     void DeepCopy(const SoftContactNode& other);
-
-    // Get and Set
-
-    ///
-    /// \brief Return the parent index
-    /// \return The parent index
-    ///
-    int parentId() const;
 
 protected:
     ///

@@ -34,7 +34,7 @@ rigidbody::SoftContactNode::SoftContactNode(
         const utils::String &name,
         const utils::String &parentName,
         int parentID) :
-    rigidbody::NodeSegment(x, y, z, name, parentName, parentID)
+    rigidbody::NodeSegment(x, y, z, name, parentName, true, true, "", parentID)
 {
 
 }
@@ -44,28 +44,25 @@ rigidbody::SoftContactNode::SoftContactNode(
         const utils::String &name,
         const utils::String &parentName,
         int parentID) :
-    rigidbody::NodeSegment(node, name, parentName, parentID)
+    rigidbody::NodeSegment(node, name, parentName, true, true, "", parentID)
 {
 
 }
 
 rigidbody::SoftContactNode rigidbody::SoftContactNode::DeepCopy() const
 {
-
+    rigidbody::SoftContactNode copy;
+    copy.DeepCopy(*this);
+    return copy;
 }
 
 void rigidbody::SoftContactNode::DeepCopy(
         const rigidbody::SoftContactNode &other)
 {
-
-}
-
-int rigidbody::SoftContactNode::parentId() const
-{
-
+    rigidbody::NodeSegment::DeepCopy(other);
 }
 
 void rigidbody::SoftContactNode::setType()
 {
-
+    *m_typeOfNode = utils::NODE_TYPE::SOFT_CONTACT;
 }

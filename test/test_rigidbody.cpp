@@ -13,6 +13,7 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
+#include "RigidBody/SoftContactSphere.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
 #include "RigidBody/NodeSegment.h"
@@ -37,6 +38,8 @@ static std::string
 modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
 static std::string modelNoRoot("models/pyomecaman_freeFall.bioMod");
 static std::string modelSimple("models/cube.bioMod");
+
+static std::string modelWithSoftContact("models/cube.bioMod");
 
 TEST(Gravity, change)
 {
@@ -140,6 +143,117 @@ TEST(Contacts, DeepCopy)
         EXPECT_NEAR(deepCopyNow.nbContacts(), 6., requiredPrecision);
         EXPECT_NEAR(deepCopyLater.nbContacts(), 6., requiredPrecision);
     }
+}
+
+#ifdef MODULE_ACTUATORS
+TEST(SoftContacts, unitTest){
+    {
+        Model model(modelWithSoftContact);
+        rigidbody::SoftContacts contacts(model);
+
+        EXPECT_EQ(contacts.nbSoftContacts(), 2);
+        EXPECT_STREQ(contacts.softContactName(1).c_str(), "Contact2");
+        EXPECT_STREQ(contacts.softContactNames()[1].c_str(), "Contact2");
+
+        const rigidbody::SoftContactNode& contact(contacts.softContact(0));
+        const rigidbody::SoftContactSphere &sphere(dynamic_cast<const rigidbody::SoftContactSphere&>(contact));
+
+        {
+            SCALAR_TO_DOUBLE(radius, sphere.radius());
+            EXPECT_NEAR(radius, 5, requiredPrecision);
+        }
+        {
+            SCALAR_TO_DOUBLE(stiffness, sphere.stiffness());
+            EXPECT_NEAR(stiffness, 6, requiredPrecision);
+        }
+        {
+            SCALAR_TO_DOUBLE(damping, sphere.damping());
+            EXPECT_NEAR(damping, 7, requiredPrecision);
+        }
+    }
+}
+#endif
+
+TEST(SoftContacts, DeepCopy){
+    {
+        Model model(modelWithSoftContact);
+        rigidbody::SoftContactNode& contact(model.softContact(0));
+        rigidbody::SoftContactSphere &sphere(dynamic_cast<rigidbody::SoftContactSphere&>(contact));
+
+        rigidbody::SoftContactSphere shallowCopy(sphere);
+        rigidbody::SoftContactSphere deepCopyNow(sphere.DeepCopy());
+        rigidbody::SoftContactSphere deepCopyLater;
+        deepCopyLater.DeepCopy(sphere);
+
+        {
+            SCALAR_TO_DOUBLE(radiusTrue, sphere.radius());
+            SCALAR_TO_DOUBLE(radiusShallow, shallowCopy.radius());
+            SCALAR_TO_DOUBLE(radiusNow, deepCopyNow.radius());
+            SCALAR_TO_DOUBLE(radiusLater, deepCopyLater.radius());
+
+            SCALAR_TO_DOUBLE(stiffnessTrue, sphere.stiffness());
+            SCALAR_TO_DOUBLE(stiffnessShallow, shallowCopy.stiffness());
+            SCALAR_TO_DOUBLE(stiffnessNow, deepCopyNow.stiffness());
+            SCALAR_TO_DOUBLE(stiffnessLater, deepCopyLater.stiffness());
+
+            SCALAR_TO_DOUBLE(dampingTrue, sphere.damping());
+            SCALAR_TO_DOUBLE(dampingShallow, shallowCopy.damping());
+            SCALAR_TO_DOUBLE(dampingNow, deepCopyNow.damping());
+            SCALAR_TO_DOUBLE(dampingLater, deepCopyLater.damping());
+
+            EXPECT_NEAR(radiusTrue, 5., requiredPrecision);
+            EXPECT_NEAR(radiusShallow, 5., requiredPrecision);
+            EXPECT_NEAR(radiusNow, 5., requiredPrecision);
+            EXPECT_NEAR(radiusLater, 5., requiredPrecision);
+
+            EXPECT_NEAR(stiffnessTrue, 6., requiredPrecision);
+            EXPECT_NEAR(stiffnessShallow, 6., requiredPrecision);
+            EXPECT_NEAR(stiffnessNow, 6., requiredPrecision);
+            EXPECT_NEAR(stiffnessLater, 6., requiredPrecision);
+
+            EXPECT_NEAR(dampingTrue, 7., requiredPrecision);
+            EXPECT_NEAR(dampingShallow, 7., requiredPrecision);
+            EXPECT_NEAR(dampingNow, 7., requiredPrecision);
+            EXPECT_NEAR(dampingLater, 7., requiredPrecision);
+        }
+
+        sphere.setRadius(100);
+        sphere.setStiffness(101);
+        sphere.setDamping(102);
+
+        {
+            SCALAR_TO_DOUBLE(radiusTrue, sphere.radius());
+            SCALAR_TO_DOUBLE(radiusShallow, shallowCopy.radius());
+            SCALAR_TO_DOUBLE(radiusNow, deepCopyNow.radius());
+            SCALAR_TO_DOUBLE(radiusLater, deepCopyLater.radius());
+
+            SCALAR_TO_DOUBLE(stiffnessTrue, sphere.stiffness());
+            SCALAR_TO_DOUBLE(stiffnessShallow, shallowCopy.stiffness());
+            SCALAR_TO_DOUBLE(stiffnessNow, deepCopyNow.stiffness());
+            SCALAR_TO_DOUBLE(stiffnessLater, deepCopyLater.stiffness());
+
+            SCALAR_TO_DOUBLE(dampingTrue, sphere.damping());
+            SCALAR_TO_DOUBLE(dampingShallow, shallowCopy.damping());
+            SCALAR_TO_DOUBLE(dampingNow, deepCopyNow.damping());
+            SCALAR_TO_DOUBLE(dampingLater, deepCopyLater.damping());
+
+            EXPECT_NEAR(radiusTrue, 100., requiredPrecision);
+            EXPECT_NEAR(radiusShallow, 100., requiredPrecision);
+            EXPECT_NEAR(radiusNow, 5., requiredPrecision);
+            EXPECT_NEAR(radiusLater, 5., requiredPrecision);
+
+            EXPECT_NEAR(stiffnessTrue, 101., requiredPrecision);
+            EXPECT_NEAR(stiffnessShallow, 101., requiredPrecision);
+            EXPECT_NEAR(stiffnessNow, 6., requiredPrecision);
+            EXPECT_NEAR(stiffnessLater, 6., requiredPrecision);
+
+            EXPECT_NEAR(dampingTrue, 102., requiredPrecision);
+            EXPECT_NEAR(dampingShallow, 102., requiredPrecision);
+            EXPECT_NEAR(dampingNow, 7., requiredPrecision);
+            EXPECT_NEAR(dampingLater, 7., requiredPrecision);
+        }
+    }
+
 }
 
 static std::vector<double> Qtest = { 0.1, 0.1, 0.1, 0.3, 0.3, 0.3,
@@ -658,8 +772,6 @@ TEST(DegressOfFreedom, ranges)
     std::vector<utils::Range> QDotRanges;
     std::vector<utils::Range> QDDotRanges;
 
-    auto a = model.meshPoints(rigidbody::GeneralizedCoordinates(model));
-
     // Pelvis
     QRanges = model.segment(0).QRanges();
     EXPECT_EQ(QRanges[0].min(), -15);
@@ -1063,6 +1175,7 @@ TEST(Dynamics, Forward)
     }
 }
 
+#ifdef MODULE_ACTUATORS
 TEST(Dynamics, ForwardChangingMass)
 {
     Model model(modelSimple);
@@ -1094,6 +1207,8 @@ TEST(Dynamics, ForwardChangingMass)
 
 
 }
+#endif
+
 
 TEST(Dynamics, ForwardDynAndExternalForces)
 {

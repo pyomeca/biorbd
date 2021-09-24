@@ -8,6 +8,7 @@
 #include "RigidBody/Markers.h"
 #include "RigidBody/Contacts.h"
 #include "RigidBody/IMUs.h"
+#include "RigidBody/SoftContacts.h"
 #ifdef MODULE_ACTUATORS
     #include "Actuators/Actuators.h"
 #endif
@@ -76,6 +77,7 @@ class BIORBD_API Model :
 #ifdef MODULE_MUSCLES
     ,public muscles::Muscles
 #endif
+    ,public rigidbody::SoftContacts
 {
 public:
     ///
