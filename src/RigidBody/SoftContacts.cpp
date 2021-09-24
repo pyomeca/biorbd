@@ -40,14 +40,14 @@ void rigidbody::SoftContacts::DeepCopy(
 utils::String rigidbody::SoftContacts::softContactName(
         unsigned int i)
 {
-    return (*m_softContacts)[i]->name();
+    return (*m_softContacts)[i]->utils::Node::name();
 }
 
 std::vector<utils::String> rigidbody::SoftContacts::softContactNames()
 {
     std::vector<utils::String> out;
     for (auto& c : *m_softContacts){
-        out.push_back(c->name());
+        out.push_back(c->utils::Node::name());
     }
     return out;
 }
