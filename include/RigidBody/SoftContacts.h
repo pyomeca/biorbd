@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include "biorbdConfig.h"
+#include "rbdl/rbdl_math.h"
 
 namespace BIORBD_NAMESPACE
 {
@@ -47,6 +48,22 @@ public:
     void DeepCopy(const SoftContacts& other);
 
     ///
+    /// \brief Get the soft contacts in a list of spatial vector of dimension 6xNdof
+    /// \param
+    /// \return The soft contacts
+    ///
+    std::vector<RigidBodyDynamics::Math::SpatialVector>* softContactToSpatialVector(
+            const GeneralizedCoordinates& Q,
+            const GeneralizedVelocity& QDot) const;
+
+    ///
+    /// \brief Combine the current forces to an external force vector
+    /// \param externalForces The external forces to combine to
+    ///
+    void combineToExternalForce(
+            std::vector<RigidBodyDynamics::Math::SpatialVector>* externalForces = nullptr) const;
+
+    ///
     /// \brief Return the name of the soft contact
     /// \param i The index of the contact
     /// \return The name of the soft contact
@@ -85,7 +102,7 @@ public:
     NodeSegment softContact(
         const GeneralizedCoordinates &Q,
         unsigned int  idx,
-        bool updateKin);
+        bool updateKin = true);
 
     ///
     /// \brief Return a the contacts at a given position Q
@@ -95,7 +112,7 @@ public:
     ///
     std::vector<NodeSegment> softContacts(
         const GeneralizedCoordinates &Q,
-        bool updateKin);
+        bool updateKin = true);
 
     ///
     /// \brief Return the velocity of a contact
@@ -131,16 +148,12 @@ public:
     unsigned int nbSoftContacts() const;
 
     ///
-    /// \brief Return all the soft contacts of a segment
-    /// \param Q The generalized coordinates
+    /// \brief Return all the soft contacts indices of a segment
     /// \param idx The index of the segment
-    /// \param updateKin If the model should be updated
     /// \return All the soft contacts of a segment
     ///
-    std::vector<NodeSegment> segmentSoftContact(
-            const GeneralizedCoordinates &Q,
-            unsigned int  idx,
-            bool updateKin = true);
+    std::vector<size_t> segmentSoftContactIdx(
+            unsigned int  idx) const;
 
 protected:
     std::shared_ptr<std::vector<std::shared_ptr<SoftContactNode>>> m_softContacts; ///< The contacts

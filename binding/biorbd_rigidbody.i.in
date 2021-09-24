@@ -27,6 +27,8 @@
 %}
 
 namespace std {
+%template(VecSegment) std::vector<BIORBD_NAMESPACE::rigidbody::Segment>;
+
 %template(VecBiorbdGeneralizedTorque) std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedTorque>;
 %template(MatBiorbdGeneralizedTorque) std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedTorque>>;
 %template(PairBiorbdGeneralizedTorque) std::pair<BIORBD_NAMESPACE::rigidbody::GeneralizedTorque, BIORBD_NAMESPACE::rigidbody::GeneralizedTorque>;

@@ -37,6 +37,45 @@ void rigidbody::SoftContacts::DeepCopy(
     }
 }
 
+std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::SoftContacts::softContactToSpatialVector(
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& QDot) const
+{
+    if (nbSoftContacts() == 0){
+        return nullptr;
+    }
+
+    // Assuming that this is also a joint type (via BiorbdModel)
+    const rigidbody::Joints& model = dynamic_cast<const rigidbody::Joints&>(*this);
+    RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
+
+    std::vector<RigidBodyDynamics::Math::SpatialVector>* out = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
+    for (size_t i = 0; i < model.nbSegment(); ++i){
+        if (model.nbDof() == 0){
+            continue;
+        }
+
+        std::vector<size_t> idx(segmentSoftContactIdx(i));
+        RigidBodyDynamics::Math::SpatialVector tp(0.,0.,0.,0.,0.,0.);
+        for (auto j : idx){
+            tp += (*m_softContacts)[j]->computeForce(Q, QDot);
+        }
+
+        // Put all the force on the last dof of the segment
+        for (size_t j; j < model.segment(i).nbDof() - 1; ++j){
+            out->push_back(sp_zero);
+        }
+        out->push_back(tp);
+    }
+    return out;
+}
+
+void rigidbody::SoftContacts::combineToExternalForce(
+        std::vector<RigidBodyDynamics::Math::SpatialVector> *externalForces) const
+{
+
+}
+
 utils::String rigidbody::SoftContacts::softContactName(
         unsigned int i)
 {
@@ -137,24 +176,21 @@ unsigned int rigidbody::SoftContacts::nbSoftContacts() const
     return m_softContacts->size();
 }
 
-std::vector<rigidbody::NodeSegment> rigidbody::SoftContacts::segmentSoftContact(
-        const GeneralizedCoordinates &Q,
-        unsigned int idx,
-        bool updateKin)
+std::vector<size_t> rigidbody::SoftContacts::segmentSoftContactIdx(
+        unsigned int idx) const
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
+    const rigidbody::Joints &model = dynamic_cast<const rigidbody::Joints &>(*this);
 
     // Name of the segment to find
     const utils::String& name(model.segment(idx).name());
 
-    std::vector<rigidbody::NodeSegment> pos;
-    for (unsigned int i=0; i<nbSoftContacts(); ++i) // Go through all the markers and select the right ones
+    std::vector<size_t> indices;
+    for (size_t i=0; i<nbSoftContacts(); ++i) // Go through all the markers and select the right ones
         if (!(*m_softContacts)[i]->parent().compare(name)) {
-            pos.push_back(softContact(Q,i,updateKin));
-            updateKin = false;
+            indices.push_back(i);
         }
 
-    return pos;
+    return indices;
 }
 

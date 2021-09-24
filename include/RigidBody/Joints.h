@@ -245,6 +245,12 @@ public:
     ///
     const Segment& segment(
         const utils::String& name) const;
+
+    ///
+    /// \brief Get all the segments
+    /// \return  All the segments
+    ///
+    const std::vector<Segment>& segments() const;
     // ------------------------------ //
 
 
@@ -264,10 +270,23 @@ public:
     /// \param sv One spatial vector per force platform
     /// \return A spatial vector with the forces
     ///
-    std::vector<RigidBodyDynamics::Math::SpatialVector> dispatchedForce(
-        std::vector<utils::SpatialVector> &sv) const;
-    // ---------------------------- //
+    std::vector<RigidBodyDynamics::Math::SpatialVector> * dispatchedForce(
+        std::vector<utils::SpatialVector> *sv) const;
 
+protected:
+    ///
+    /// \brief Interface to combine to vectors of RigidBodyDynamics::Math::SpatialVector
+    /// \param f_ext The external forces (it can be a nullptr)
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    ///
+    std::vector<RigidBodyDynamics::Math::SpatialVector> * combineExtForceAndSoftContact(
+            std::vector<utils::SpatialVector> *f_ext,
+            const rigidbody::GeneralizedCoordinates& Q,
+            const rigidbody::GeneralizedVelocity& QDot) const;
+
+    // ---------------------------- //
+public:
 
     ///
     /// \brief Update the kinematic variables such as body velocities and accelerations in the model to reflect the variables passed to this function

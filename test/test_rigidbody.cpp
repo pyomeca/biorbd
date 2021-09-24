@@ -39,7 +39,7 @@ modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
 static std::string modelNoRoot("models/pyomecaman_freeFall.bioMod");
 static std::string modelSimple("models/cube.bioMod");
 
-static std::string modelWithSoftContact("models/cube.bioMod");
+static std::string modelWithSoftContact("models/cubeWithSoftContacts.bioMod");
 
 TEST(Gravity, change)
 {
@@ -1334,8 +1334,7 @@ TEST(Dynamics, ForwardAccelerationConstraint)
                                           };
 
     rigidbody::Contacts cs(model.getConstraints());
-    CALL_BIORBD_FUNCTION_3ARGS1PARAM(QDDot, model, ForwardDynamicsConstraintsDirect,
-                                     Q, QDot, Tau, cs);
+    CALL_BIORBD_FUNCTION_3ARGS1PARAM(QDDot, model, ForwardDynamicsConstraintsDirect, Q, QDot, Tau, cs);
     for (unsigned int i = 0; i<model.nbQddot(); ++i) {
         EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i],
                     requiredPrecision);

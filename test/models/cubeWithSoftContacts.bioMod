@@ -112,4 +112,22 @@ endsegment
         direction    negative
         Tmax    5.000000
     endactuator
-
+    
+// Soft contacts
+    softcontact Contact1
+        parent Seg1
+        type sphere
+        position 2 3 4
+        radius 5
+        stiffness 6
+        damping 7
+    endsoftcontact
+    
+    softcontact Contact2
+        parent Seg1
+        type sphere
+        position 8 9 10
+        radius 11
+        stiffness 12
+        damping 13
+    endsoftcontact

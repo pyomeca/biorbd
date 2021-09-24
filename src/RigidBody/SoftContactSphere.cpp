@@ -1,6 +1,9 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/SoftContactSphere.h"
 
+#include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
+
 using namespace BIORBD_NAMESPACE;
 
 rigidbody::SoftContactSphere::SoftContactSphere():
@@ -133,6 +136,18 @@ void rigidbody::SoftContactSphere::setDamping(
 utils::Scalar rigidbody::SoftContactSphere::damping() const
 {
     return *m_damping;
+}
+
+RigidBodyDynamics::Math::SpatialVector rigidbody::SoftContactSphere::computeForce(
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& QDot) const
+{
+    RigidBodyDynamics::Math::SpatialVector out(0, 0, 0, 0, 0, 0);
+
+    // out[0] = *m_damping + *m_stiffness * QDot.cross(QDot).dot(QDot) * QDot(0);
+    // FILL THIS WITH ACTUAL COMPUTATION
+
+    return out;
 }
 
 void rigidbody::SoftContactSphere::setType()

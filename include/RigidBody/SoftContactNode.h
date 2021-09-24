@@ -3,12 +3,15 @@
 
 #include "biorbdConfig.h"
 #include "RigidBody/NodeSegment.h"
+#include "rbdl/rbdl_math.h"
 
 namespace BIORBD_NAMESPACE
 {
 
 namespace rigidbody
 {
+class GeneralizedCoordinates;
+class GeneralizedVelocity;
 
 ///
 /// \brief A point attached to a contact node, generally speaking a skin marker
@@ -71,15 +74,19 @@ public:
 
     ///
     /// \brief Deep copy of the contact node
-    /// \return A deep copy of the contact node
-    ///
-    SoftContactNode DeepCopy() const;
-
-    ///
-    /// \brief Deep copy of the contact node
     /// \param other The contact node to copy
     ///
     void DeepCopy(const SoftContactNode& other);
+
+    ///
+    /// \brief Get the force in a spatial vector
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized velocities
+    /// \return The Spatial vector
+    ///
+    virtual RigidBodyDynamics::Math::SpatialVector computeForce(
+            const GeneralizedCoordinates& Q,
+            const GeneralizedVelocity& QDot) const = 0;
 
 protected:
     ///

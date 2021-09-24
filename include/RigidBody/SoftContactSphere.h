@@ -146,7 +146,13 @@ public:
     ///
     utils::Scalar damping() const;
 
-
+    ///
+    /// \brief Get the force in a spatial vector
+    /// \return
+    ///
+    virtual RigidBodyDynamics::Math::SpatialVector computeForce(
+            const GeneralizedCoordinates& Q,
+            const GeneralizedVelocity& QDot) const;
 protected:
     ///
     /// \brief Set the type of the contact node
