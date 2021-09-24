@@ -24,6 +24,7 @@
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
 #include "RigidBody/Contacts.h"
+#include "RigidBody/SoftContacts.h"
 
 using namespace BIORBD_NAMESPACE;
 
@@ -1108,14 +1109,19 @@ rigidbody::Joints::ForwardDynamics(
 #ifdef BIORBD_USE_CASADI_MATH
     UpdateKinematicsCustom(&Q, &QDot);
 #endif
+    std::vector<RigidBodyDynamics::Math::SpatialVector> contact;
+    rigidbody::SoftContacts* modelContact = dynamic_cast<rigidbody::SoftContact*>(*this);
+    if (modelContact->nbSoftContacts() > 0){
+        contact = ;
+    }
 
     rigidbody::GeneralizedAcceleration QDDot(*this);
     if (f_ext) {
         std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext_rbdl(dispatchedForce(
                     *f_ext));
-        RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, &f_ext_rbdl);
+        RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, &f_ext_rbdl + contact);
     } else {
-        RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot);
+        RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, contact);
     }
     return QDDot;
 }
