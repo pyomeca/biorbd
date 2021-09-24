@@ -49,13 +49,6 @@ rigidbody::SoftContactNode::SoftContactNode(
 
 }
 
-rigidbody::SoftContactNode rigidbody::SoftContactNode::DeepCopy() const
-{
-    rigidbody::SoftContactNode copy;
-    copy.DeepCopy(*this);
-    return copy;
-}
-
 void rigidbody::SoftContactNode::DeepCopy(
         const rigidbody::SoftContactNode &other)
 {

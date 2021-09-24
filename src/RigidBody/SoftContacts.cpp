@@ -9,6 +9,7 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/Segment.h"
 
+#include "Utils/UtilsEnum.h"
 #include "Utils/String.h"
 #include "Utils/Error.h"
 
@@ -32,8 +33,12 @@ void rigidbody::SoftContacts::DeepCopy(
 {
     m_softContacts->resize(other.m_softContacts->size());
     for (unsigned int i=0; i<other.m_softContacts->size(); ++i) {
-        (*m_softContacts)[i] = std::make_shared<rigidbody::SoftContactNode>();
-        *(*m_softContacts)[i] = (*other.m_softContacts)[i]->DeepCopy();
+        if ((*other.m_softContacts)[i]->typeOfNode() == utils::NODE_TYPE::SOFT_CONTACT_SPHERE){
+            (*m_softContacts)[i] = std::make_shared<rigidbody::SoftContactSphere>();
+        } else {
+            utils::Error::raise("DeepCopy failed");
+        }
+        (*m_softContacts)[i]->DeepCopy(*((*other.m_softContacts)[i]));
     }
 }
 
