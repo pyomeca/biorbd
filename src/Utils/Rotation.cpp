@@ -368,14 +368,14 @@ void utils::Rotation::checkUnitary()
 
             if( det <= 1e-6 )
             {
-                utils::Error::warning("Warning determinant <= 1e-6 encountered in polar decomposition");
+                utils::Error::warning(false, utils::String("Warning determinant <= 1e-6 encountered in polar decomposition"));
                 use_svd = true;
                 break;
             }
 
             if (det == 0.0)
             {
-                utils::Error::warning("Warning zero determinant encountered in polar decomposition");
+                utils::Error::warning(false, utils::String("Warning zero determinant encountered in polar decomposition"));
                 break;
             }
 
