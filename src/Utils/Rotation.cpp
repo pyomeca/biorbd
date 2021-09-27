@@ -368,13 +368,14 @@ void utils::Rotation::checkUnitary()
 
             if( det <= 1e-6 )
             {
+                utils::Error::warning("Warning determinant <= 1e-6 encountered in polar decomposition");
                 use_svd = true;
                 break;
             }
 
-            utils::Error::check(det == 0.0, "Warning zero determinant encountered in polar decomposition");
             if (det == 0.0)
             {
+                utils::Error::warning("Warning zero determinant encountered in polar decomposition");
                 break;
             }
 
@@ -401,15 +402,9 @@ void utils::Rotation::checkUnitary()
             utils::Scalar g1 = gamma * 0.5f;
             utils::Scalar g2 = 0.5f / (gamma * det);
 
-            for(size_t i = 0; i < 3; ++i)
-            {
-                for(size_t j = 0; i < 3; ++j)
-                    {
-                        Ek(i, j) = Mk(i, j);
-                        Mk(i, j) = g1 * Mk(i, j) + g2 * M_adj_Tk(i, j);
-                        Ek(i, j) -= Mk(i, j);
-                    }
-            }
+            Ek = Mk;
+            Mk = g1 * Mk + g2 * M_adj_Tk;
+            Ek -= Mk;
 
             //Ek one-norm
             utils::Scalar E_one_norm = 0.0f;
@@ -460,11 +455,7 @@ void utils::Rotation::checkUnitary()
             int n = 3;
 
             utils::Vector3d e;
-            for (size_t i = 0; i < n; ++i) {
-                for (size_t j = 0; j < n; ++j) {
-                    V(i, j) = normalEq(i, j);
-                }
-            }
+            V = normalEq;
 
 
             // Symmetric Householder reduction to tridiagonal form. (tred2)
@@ -721,31 +712,17 @@ void utils::Rotation::checkUnitary()
             // U = F * V * diag(SigmaInverse)
             Um = Mm * Vm;
 
-            utils::Matrix3d result;
+            Um(0,0) *= lambda_inverse(0);
+            Um(1,0) *= lambda_inverse(0);
+            Um(2,0) *= lambda_inverse(0);
 
-            for (size_t i = 0; i < n; ++i) {
-                for (size_t j = 0; j < n; ++j) {
-                    result(i, j) = Um(i, j);
-                }
-            }
+            Um(0,1) *= lambda_inverse(1);
+            Um(1,1) *= lambda_inverse(1);
+            Um(2,1) *= lambda_inverse(1);
 
-            result(0,0) *= lambda_inverse(0);
-            result(1,0) *= lambda_inverse(0);
-            result(2,0) *= lambda_inverse(0);
-
-            result(0,1) *= lambda_inverse(1);
-            result(1,1) *= lambda_inverse(1);
-            result(2,1) *= lambda_inverse(1);
-
-            result(0,2) *= lambda_inverse(2);
-            result(1,2) *= lambda_inverse(2);
-            result(2,2) *= lambda_inverse(2);
-
-            for (size_t i = 0; i < n; ++i) {
-                for (size_t j = 0; j < n; ++j) {
-                    Um(i, j) = result(i, j);
-                }
-            }
+            Um(0,2) *= lambda_inverse(2);
+            Um(1,2) *= lambda_inverse(2);
+            Um(2,2) *= lambda_inverse(2);
 
             // In theory, U is now orthonormal, U^T U = U U^T = I ..
             // it may be a rotation or a reflection, depending on F.
@@ -889,13 +866,9 @@ void utils::Rotation::checkUnitary()
             R = Mk.transpose();
         }
 
-
-        std::cout << "On s'est rendu, youpi!\n";
-
         // utils::Matrix3d mat;
 
-        utils::Error::check(false,
-                        utils::String("The Rotation matrix square norm is equal to ")
+        utils::Error::raise(utils::String("The Rotation matrix square norm is equal to ")
                         + sqrtNorm + ", but should be equal to 3. Consider replacing the RT matrix by this closest orthonormal matrix \n[" 
                         + R(0, 0) + ", " + R(0, 1) + ", " + R(0, 2) + "\n" 
                         + R(1, 0) + ", " + R(1, 1) + ", " + R(1, 2) + "\n" 
