@@ -320,13 +320,13 @@ void utils::Rotation::checkUnitary()
         // Placer inf_norm and one norm in a function
         // créer fonction polar_decomposition et déplacer dans Matrix3d
 
-        float tolerance = 1e-6;
+        utils::Scalar tolerance = 1e-6;
         utils::Matrix3d M = this->block(0, 0, 3, 3);
         utils::Matrix3d R;
         utils::Matrix3d S;
         utils::Matrix3d Mk;
         utils::Matrix3d Ek;
-        float det, E_one_norm;
+        utils::Scalar det, E_one_norm;
         bool use_svd = false;
 
         
@@ -334,19 +334,19 @@ void utils::Rotation::checkUnitary()
         Mk = M.transpose();
         
         //M one-norm
-        float M_one_norm = 0.0f;
+        utils::Scalar M_one_norm = 0.0f;
         for (int i = 0; i < 3; i++)
         {
-            float col_abs_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
+            utils::Scalar col_abs_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
             if (col_abs_sum > M_one_norm)
                 M_one_norm = col_abs_sum;
         }
 
         //M infinity-norm
-        float M_inf_norm = 0.0;
+        utils::Scalar M_inf_norm = 0.0;
         for (int i = 0; i < 3; i++)
         {
-            float row_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
+            utils::Scalar row_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
             if (row_sum > M_inf_norm)
                 M_inf_norm = row_sum;
         }
@@ -380,27 +380,27 @@ void utils::Rotation::checkUnitary()
             }
 
             //mat_adj_T one-norm
-            float MadjT_one_norm = 0.0f;
+            utils::Scalar MadjT_one_norm = 0.0f;
             for (int i = 0; i < 3; i++)
             {
-                float col_abs_sum = fabs(M_adj_Tk(i, 0)) + fabs(M_adj_Tk(i, 1)) + fabs(M_adj_Tk(i, 2));
+                utils::Scalar col_abs_sum = fabs(M_adj_Tk(i, 0)) + fabs(M_adj_Tk(i, 1)) + fabs(M_adj_Tk(i, 2));
                 if (col_abs_sum > MadjT_one_norm)
                     MadjT_one_norm = col_abs_sum;
             }
 
             //mat infinity-norm
-            float MadjT_inf_norm = 0.0;
+            utils::Scalar MadjT_inf_norm = 0.0;
             for (int i = 0; i < 3; i++)
             {
-                float row_sum = fabs(M_adj_Tk(i, 0)) + fabs(M_adj_Tk(i, 1)) + fabs(M_adj_Tk(i, 2));
+                utils::Scalar row_sum = fabs(M_adj_Tk(i, 0)) + fabs(M_adj_Tk(i, 1)) + fabs(M_adj_Tk(i, 2));
                 if (row_sum > M_inf_norm)
                     M_inf_norm = row_sum;
             }
 
             
-            float gamma = sqrtf(sqrtf((MadjT_one_norm * MadjT_inf_norm) / (M_one_norm * M_inf_norm * det * det)));
-            float g1 = gamma * 0.5f;
-            float g2 = 0.5f / (gamma * det);
+            utils::Scalar gamma = sqrtf(sqrtf((MadjT_one_norm * MadjT_inf_norm) / (M_one_norm * M_inf_norm * det * det)));
+            utils::Scalar g1 = gamma * 0.5f;
+            utils::Scalar g2 = 0.5f / (gamma * det);
 
             for(int i = 0; i < 3; i++)
             {
@@ -413,28 +413,28 @@ void utils::Rotation::checkUnitary()
             }
 
             //Ek one-norm
-            float E_one_norm = 0.0f;
+            utils::Scalar E_one_norm = 0.0f;
             for (int i = 0; i < 3; i++)
             {
-                float col_abs_sum = fabs(Ek(i, 0)) + fabs(Ek(i, 1)) + fabs(Ek(i, 2));
+                utils::Scalar col_abs_sum = fabs(Ek(i, 0)) + fabs(Ek(i, 1)) + fabs(Ek(i, 2));
                 if (col_abs_sum > E_one_norm)
                     E_one_norm = col_abs_sum;
             }
 
             //M one-norm
-            float M_one_norm = 0.0f;
+            utils::Scalar M_one_norm = 0.0f;
             for (int i = 0; i < 3; i++)
             {
-                float col_abs_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
+                utils::Scalar col_abs_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
                 if (col_abs_sum > M_one_norm)
                     M_one_norm = col_abs_sum;
             }
 
             //M infinity-norm
-            float M_inf_norm = 0.0;
+            utils::Scalar M_inf_norm = 0.0;
             for (int i = 0; i < 3; i++)
             {
-                float row_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
+                utils::Scalar row_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
                 if (row_sum > M_inf_norm)
                     M_inf_norm = row_sum;
             }
@@ -455,10 +455,6 @@ void utils::Rotation::checkUnitary()
             utils::Matrix3d normalEq = Mm.transpose() * Mm;
             utils::Vector3d eigen_vals;
             utils::Matrix3d eigen_vecs;
-
-            /////////////////////
-            //eigen_sym(normalEq, eigen_vals, eigen_vecs);
-
             utils::Matrix3d V;
             utils::Vector3d d;
 
@@ -483,8 +479,8 @@ void utils::Rotation::checkUnitary()
 
                 // Scale to avoid under/overflow.
 
-                float scale = 0.0;
-                float h = 0.0;
+                utils::Scalar scale = 0.0;
+                utils::Scalar h = 0.0;
                 for (int k = 0; k < i; k++) {
                     scale = scale + fabs(d(k));
                 }
@@ -502,8 +498,8 @@ void utils::Rotation::checkUnitary()
                         d(k) /= scale;
                         h += d(k) * d(k);
                     }
-                    float f = d[i-1];
-                    float g = sqrtf(h);
+                    utils::Scalar f = d[i-1];
+                    utils::Scalar g = sqrtf(h);
                     if (f > 0) {
                         g = -g;
                     }
@@ -530,7 +526,7 @@ void utils::Rotation::checkUnitary()
                         e(j) /= h;
                         f += e(j) * d(j);
                     }
-                    float hh = f / (h + h);
+                    utils::Scalar hh = f / (h + h);
                     for (int j = 0; j < i; j++) {
                         e[j] -= hh * d(j);
                     }
@@ -551,13 +547,13 @@ void utils::Rotation::checkUnitary()
             for (int i = 0; i < n-1; i++) {
                 V(n-1, i) = V(i, i);
                 V(i, i) = 1.0;
-                float h = d(i+1);
+                utils::Scalar h = d(i+1);
                 if (h != 0.0) {
                     for (int k = 0; k <= i; k++) {
                         d(k) = V(k, i+1) / h;
                     }
                     for (int j = 0; j <= i; j++) {
-                        float g = 0.0;
+                        utils::Scalar g = 0.0;
                         for (int k = 0; k <= i; k++) {
                             g += V(k, i+1) * V(k, j);
                         }
@@ -584,9 +580,9 @@ void utils::Rotation::checkUnitary()
             }
             e(n-1) = 0.0;
 
-            float f = 0.0f;
-            float tst1 = 0.0f;
-            float eps = 1e-16;
+            utils::Scalar f = 0.0f;
+            utils::Scalar tst1 = 0.0f;
+            utils::Scalar eps = 1e-16;
             for (int l = 0; l < n; l++) {
 
                 // Find small subdiagonal element
@@ -607,17 +603,17 @@ void utils::Rotation::checkUnitary()
                         iter = iter + 1;  // (Could check iteration count here.)
 
                         // Compute implicit shift
-                        float g = d(l);
-                        float p = (d(l+1) - g) / (2.0f * e(l));
+                        utils::Scalar g = d(l);
+                        utils::Scalar p = (d(l+1) - g) / (2.0f * e(l));
 
-                        float r = sqrtf(p*p+1.0f*1.0f);
+                        utils::Scalar r = sqrtf(p*p+1.0f*1.0f);
                         if (p < 0) {
                             r = -r;
                         }
                         d(l) = e(l) / (p + r);
                         d(l+1) = e(l) * (p + r);
-                        float dl1 = d(l+1);
-                        float h = g - d(l);
+                        utils::Scalar dl1 = d(l+1);
+                        utils::Scalar h = g - d(l);
                         for (int i = l+2; i < n; i++) {
                             d(i) -= h;
                         }
@@ -625,12 +621,12 @@ void utils::Rotation::checkUnitary()
 
                         // Implicit QL transformation.
                         p = d(m);
-                        float c = 1.0;
-                        float c2 = c;
-                        float c3 = c;
-                        float el1 = e(l+1);
-                        float s = 0.0;
-                        float s2 = 0.0;
+                        utils::Scalar c = 1.0;
+                        utils::Scalar c2 = c;
+                        utils::Scalar c3 = c;
+                        utils::Scalar el1 = e(l+1);
+                        utils::Scalar s = 0.0;
+                        utils::Scalar s2 = 0.0;
                         for (int i = m-1; i >= l; i--) {
                             c3 = c2;
                             c2 = c;
@@ -666,7 +662,7 @@ void utils::Rotation::checkUnitary()
             // Sort eigenvalues and corresponding vectors.
             for (int i = 0; i < n-1; i++) {
                 int k = i;
-                float p = d(i);
+                utils::Scalar p = d(i);
                 for (int j = i+1; j < n; j++) {
                     if (d(j) < p) {
                         k = j;
@@ -866,7 +862,7 @@ void utils::Rotation::checkUnitary()
                     //    - If yes, then negate the minimal element of Sigma
                     //      and the corresponding column of U
 
-                    float det_U = Um.determinant();
+                    utils::Scalar det_U = Um.determinant();
                     if (det_U < 0.0)
                     {
                         // negative determinant
