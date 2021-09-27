@@ -369,13 +369,12 @@ void utils::Rotation::checkUnitary()
             if( det <= 1e-6 )
             {
                 use_svd = true;
-                std::cout << "Oups, SVD serait utile!\n";
                 break;
             }
 
-            if( det == 0.0 )
+            utils::Error::check(det == 0.0, "Warning zero determinant encountered in polar decomposition");
+            if (det == 0.0)
             {
-                printf("Warning (polarDecomposition) : zero determinant encountered.\n");
                 break;
             }
 
