@@ -333,20 +333,20 @@ void utils::Rotation::checkUnitary()
         // Mk = mat^T
         Mk = M.transpose();
         
-        //M one-norm
+        //M one-norm (column)
         utils::Scalar M_one_norm = 0.0f;
         for (int i = 0; i < 3; i++)
         {
-            utils::Scalar col_abs_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
+            utils::Scalar col_abs_sum = sum(fabs(M.block(i, 0, 1, 3)));
             if (col_abs_sum > M_one_norm)
                 M_one_norm = col_abs_sum;
         }
 
-        //M infinity-norm
+        //M infinity-norm (row)
         utils::Scalar M_inf_norm = 0.0;
         for (int i = 0; i < 3; i++)
         {
-            utils::Scalar row_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
+            utils::Scalar row_sum = sum(fabs(M.block(0, i, 3, 1)));
             if (row_sum > M_inf_norm)
                 M_inf_norm = row_sum;
         }
@@ -383,7 +383,7 @@ void utils::Rotation::checkUnitary()
             utils::Scalar MadjT_one_norm = 0.0f;
             for (int i = 0; i < 3; i++)
             {
-                utils::Scalar col_abs_sum = fabs(M_adj_Tk(i, 0)) + fabs(M_adj_Tk(i, 1)) + fabs(M_adj_Tk(i, 2));
+                utils::Scalar col_abs_sum = sum(fabs(M_adj_Tk.block(0, i, 3, 1)));
                 if (col_abs_sum > MadjT_one_norm)
                     MadjT_one_norm = col_abs_sum;
             }
@@ -392,7 +392,7 @@ void utils::Rotation::checkUnitary()
             utils::Scalar MadjT_inf_norm = 0.0;
             for (int i = 0; i < 3; i++)
             {
-                utils::Scalar row_sum = fabs(M_adj_Tk(i, 0)) + fabs(M_adj_Tk(i, 1)) + fabs(M_adj_Tk(i, 2));
+                utils::Scalar row_sum = fabs(M_adj_Tk.block(i, 0, 1, 3)));
                 if (row_sum > M_inf_norm)
                     M_inf_norm = row_sum;
             }
@@ -416,7 +416,7 @@ void utils::Rotation::checkUnitary()
             utils::Scalar E_one_norm = 0.0f;
             for (int i = 0; i < 3; i++)
             {
-                utils::Scalar col_abs_sum = fabs(Ek(i, 0)) + fabs(Ek(i, 1)) + fabs(Ek(i, 2));
+                utils::Scalar col_abs_sum = fabs(Ek.block(0, i, 3, 1)));
                 if (col_abs_sum > E_one_norm)
                     E_one_norm = col_abs_sum;
             }
@@ -425,7 +425,7 @@ void utils::Rotation::checkUnitary()
             utils::Scalar M_one_norm = 0.0f;
             for (int i = 0; i < 3; i++)
             {
-                utils::Scalar col_abs_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
+                utils::Scalar col_abs_sum = fabs(M.block(0, i, 3, 1)));
                 if (col_abs_sum > M_one_norm)
                     M_one_norm = col_abs_sum;
             }
@@ -434,7 +434,7 @@ void utils::Rotation::checkUnitary()
             utils::Scalar M_inf_norm = 0.0;
             for (int i = 0; i < 3; i++)
             {
-                utils::Scalar row_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
+                utils::Scalar row_sum = fabs(M.block(i, 0, 1, 3)));
                 if (row_sum > M_inf_norm)
                     M_inf_norm = row_sum;
             }
