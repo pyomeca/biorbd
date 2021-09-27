@@ -722,23 +722,25 @@ void utils::Rotation::checkUnitary()
             // U = F * V * diag(SigmaInverse)
             Um = Mm * Vm;
 
+            utils::Matrix3d result;
+
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
                     result(i, j) = Um(i, j);
                 }
             }
 
-            result(0,0) *= sigma_inverse(0);
-            result(1,0) *= sigma_inverse(0);
-            result(2,0) *= sigma_inverse(0);
+            result(0,0) *= lambda_inverse(0);
+            result(1,0) *= lambda_inverse(0);
+            result(2,0) *= lambda_inverse(0);
 
-            result(0,1) *= sigma_inverse(1);
-            result(1,1) *= sigma_inverse(1);
-            result(2,1) *= sigma_inverse(1);
+            result(0,1) *= lambda_inverse(1);
+            result(1,1) *= lambda_inverse(1);
+            result(2,1) *= lambda_inverse(1);
 
-            result(0,2) *= sigma_inverse(2);
-            result(1,2) *= sigma_inverse(2);
-            result(2,2) *= sigma_inverse(2);
+            result(0,2) *= lambda_inverse(2);
+            result(1,2) *= lambda_inverse(2);
+            result(2,2) *= lambda_inverse(2);
 
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
@@ -799,7 +801,7 @@ void utils::Rotation::checkUnitary()
                         axis(smallest_idx) = 1.0;
 
                         // this cross-product will be non-zero (as long as v is not zero)
-                        Vec2 = (Vec1.cross(axis)).normalized();
+                        vec2 = (vec1.cross(axis)).normalized();
 
                         utils::Vector3d vec3 = (vec1.cross(vec2)).normalized();
                         Um(0, dim_b) = vec2(0);
