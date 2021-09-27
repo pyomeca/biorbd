@@ -335,7 +335,7 @@ void utils::Rotation::checkUnitary()
         
         //M one-norm (column)
         utils::Scalar M_one_norm = 0.0f;
-        for (int i = 0; i < 3; i++)
+        for (size_t i = 0; i < 3; ++i)
         {
             utils::Scalar col_abs_sum = sum(fabs(M.block(i, 0, 1, 3)));
             if (col_abs_sum > M_one_norm)
@@ -344,7 +344,7 @@ void utils::Rotation::checkUnitary()
 
         //M infinity-norm (row)
         utils::Scalar M_inf_norm = 0.0;
-        for (int i = 0; i < 3; i++)
+        for (size_t i = 0; i < 3; ++i)
         {
             utils::Scalar row_sum = sum(fabs(M.block(0, i, 3, 1)));
             if (row_sum > M_inf_norm)
@@ -381,7 +381,7 @@ void utils::Rotation::checkUnitary()
 
             //mat_adj_T one-norm
             utils::Scalar MadjT_one_norm = 0.0f;
-            for (int i = 0; i < 3; i++)
+            for (size_t i = 0; i < 3; ++i)
             {
                 utils::Scalar col_abs_sum = sum(fabs(M_adj_Tk.block(0, i, 3, 1)));
                 if (col_abs_sum > MadjT_one_norm)
@@ -390,7 +390,7 @@ void utils::Rotation::checkUnitary()
 
             //mat infinity-norm
             utils::Scalar MadjT_inf_norm = 0.0;
-            for (int i = 0; i < 3; i++)
+            for (size_t i = 0; i < 3; ++i)
             {
                 utils::Scalar row_sum = fabs(M_adj_Tk.block(i, 0, 1, 3)));
                 if (row_sum > M_inf_norm)
@@ -402,9 +402,9 @@ void utils::Rotation::checkUnitary()
             utils::Scalar g1 = gamma * 0.5f;
             utils::Scalar g2 = 0.5f / (gamma * det);
 
-            for(int i = 0; i < 3; i++)
+            for(size_t i = 0; i < 3; ++i)
             {
-                for(int j = 0; i < 3; j++)
+                for(size_t j = 0; i < 3; ++j)
                     {
                         Ek(i, j) = Mk(i, j);
                         Mk(i, j) = g1 * Mk(i, j) + g2 * M_adj_Tk(i, j);
@@ -414,7 +414,7 @@ void utils::Rotation::checkUnitary()
 
             //Ek one-norm
             utils::Scalar E_one_norm = 0.0f;
-            for (int i = 0; i < 3; i++)
+            for (size_t i = 0; i < 3; ++i)
             {
                 utils::Scalar col_abs_sum = fabs(Ek.block(0, i, 3, 1)));
                 if (col_abs_sum > E_one_norm)
@@ -423,7 +423,7 @@ void utils::Rotation::checkUnitary()
 
             //M one-norm
             utils::Scalar M_one_norm = 0.0f;
-            for (int i = 0; i < 3; i++)
+            for (size_t i = 0; i < 3; ++i)
             {
                 utils::Scalar col_abs_sum = fabs(M.block(0, i, 3, 1)));
                 if (col_abs_sum > M_one_norm)
@@ -432,7 +432,7 @@ void utils::Rotation::checkUnitary()
 
             //M infinity-norm
             utils::Scalar M_inf_norm = 0.0;
-            for (int i = 0; i < 3; i++)
+            for (size_t i = 0; i < 3; ++i)
             {
                 utils::Scalar row_sum = fabs(M.block(i, 0, 1, 3)));
                 if (row_sum > M_inf_norm)
@@ -461,32 +461,32 @@ void utils::Rotation::checkUnitary()
             int n = 3;
 
             utils::Vector3d e;
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
+            for (size_t i = 0; i < n; ++i) {
+                for (size_t j = 0; j < n; ++j) {
                     V(i, j) = normalEq(i, j);
                 }
             }
 
 
             // Symmetric Householder reduction to tridiagonal form. (tred2)
-            for (int j = 0; j < n; j++) {
+            for (size_t j = 0; j < n; ++j) {
                 d(j) = V(n-1, j);
             }
 
             // Householder reduction to tridiagonal form.
 
-            for (int i = n-1; i > 0; i--) {
+            for (size_t = n-1; i > 0; --i) {
 
                 // Scale to avoid under/overflow.
 
                 utils::Scalar scale = 0.0;
                 utils::Scalar h = 0.0;
-                for (int k = 0; k < i; k++) {
+                for (size_t k = 0; k < i; ++k) {
                     scale = scale + fabs(d(k));
                 }
                 if (scale == 0.0) {
                     e(i) = d(i-1);
-                    for (int j = 0; j < i; j++) {
+                    for (size_t j = 0; j < i; ++j) {
                         d(j) = V(i-1, j);
                         V(i, j) = 0.0;
                         V(j, i) = 0.0;
@@ -494,7 +494,7 @@ void utils::Rotation::checkUnitary()
                 } else {
 
                     // Generate Householder vector.
-                    for (int k = 0; k < i; k++) {
+                    for (size_t k = 0; k < i; ++k) {
                         d(k) /= scale;
                         h += d(k) * d(k);
                     }
@@ -506,34 +506,34 @@ void utils::Rotation::checkUnitary()
                     e(i) = scale * g;
                     h = h - f * g;
                     d(i-1) = f - g;
-                    for (int j = 0; j < i; j++) {
+                    for (size_t j = 0; j < i; ++j) {
                         e(j) = 0.0;
                     }
 
                     // Apply similarity transformation to remaining columns.
-                    for (int j = 0; j < i; j++) {
+                    for (size_t j = 0; j < i; ++j) {
                         f = d(j);
                         V(j, i) = f;
                         g = e(j) + V(j, j) * f;
-                        for (int k = j+1; k <= i-1; k++) {
+                        for (size_t k = j+1; k <= i-1; ++k) {
                             g += V(k, j) * d(k);
                             e(k) += V(k, j) * f;
                         }
                         e(j) = g;
                     }
                     f = 0.0;
-                    for (int j = 0; j < i; j++) {
+                    for (size_t j = 0; j < i; ++j) {
                         e(j) /= h;
                         f += e(j) * d(j);
                     }
                     utils::Scalar hh = f / (h + h);
-                    for (int j = 0; j < i; j++) {
+                    for (size_t j = 0; j < i; ++j) {
                         e[j] -= hh * d(j);
                     }
-                    for (int j = 0; j < i; j++) {
+                    for (size_t j = 0; j < i; ++j) {
                         f = d(j);
                         g = e(j);
-                        for (int k = j; k <= i-1; k++) {
+                        for (size_t k = j; k <= i-1; ++k) {
                             V(k, j) -= (f * e(k) + g * d(k));
                         }
                         d(j) = V(i-1, j);
@@ -544,29 +544,29 @@ void utils::Rotation::checkUnitary()
             }
 
             // Accumulate transformations
-            for (int i = 0; i < n-1; i++) {
+            for (size_t i = 0; i < n-1; ++i) {
                 V(n-1, i) = V(i, i);
                 V(i, i) = 1.0;
                 utils::Scalar h = d(i+1);
                 if (h != 0.0) {
-                    for (int k = 0; k <= i; k++) {
+                    for (size_t k = 0; k <= i; ++k) {
                         d(k) = V(k, i+1) / h;
                     }
-                    for (int j = 0; j <= i; j++) {
+                    for (size_t j = 0; j <= i; ++j) {
                         utils::Scalar g = 0.0;
-                        for (int k = 0; k <= i; k++) {
+                        for (size_t k = 0; k <= i; ++k) {
                             g += V(k, i+1) * V(k, j);
                         }
-                        for (int k = 0; k <= i; k++) {
+                        for (size_t k = 0; k <= i; ++k) {
                             V(k, j) -= g * d(k);
                         }
                     }
                 }
-                for (int k = 0; k <= i; k++) {
+                for (size_t k = 0; k <= i; ++k) {
                     V(k, i+1) = 0.0;
                 }
             }
-            for (int j = 0; j < n; j++) {
+            for (size_t j = 0; j < n; ++j) {
                 d(j) = V(-1, j);
                 V(n-1, j) = 0.0;
             }
@@ -575,7 +575,7 @@ void utils::Rotation::checkUnitary()
 
 
             // Symmetric tridiagonal QL algorithm. (td12)
-            for (int i = 1; i < n; i++) {
+            for (size_t i = 1; i < n; ++i) {
                 e(i-1) = e(i);
             }
             e(n-1) = 0.0;
@@ -583,7 +583,7 @@ void utils::Rotation::checkUnitary()
             utils::Scalar f = 0.0f;
             utils::Scalar tst1 = 0.0f;
             utils::Scalar eps = 1e-16;
-            for (int l = 0; l < n; l++) {
+            for (size_t l = 0; l < n; ++l) {
 
                 // Find small subdiagonal element
                 tst1 = fmax(tst1, fabs(d(l)) + fabs(e(l)));
@@ -614,7 +614,7 @@ void utils::Rotation::checkUnitary()
                         d(l+1) = e(l) * (p + r);
                         utils::Scalar dl1 = d(l+1);
                         utils::Scalar h = g - d(l);
-                        for (int i = l+2; i < n; i++) {
+                        for (size_t i = l+2; i < n; ++i) {
                             d(i) -= h;
                         }
                         f = f + h;
@@ -627,7 +627,7 @@ void utils::Rotation::checkUnitary()
                         utils::Scalar el1 = e(l+1);
                         utils::Scalar s = 0.0;
                         utils::Scalar s2 = 0.0;
-                        for (int i = m-1; i >= l; i--) {
+                        for (size_t i = m-1; i >= l; --i) {
                             c3 = c2;
                             c2 = c;
                             s2 = s;
@@ -641,7 +641,7 @@ void utils::Rotation::checkUnitary()
                             d(i+1) = h + s * (c * g + s * d(i));
 
                             // Accumulate transformation.
-                            for (int k = 0; k < n; k++) {
+                            for (size_t k = 0; k < n; ++k) {
                                 h = V(k, i+1);
                                 V(k, i+1) = s * V(k, i) + c * h;
                                 V(k, i) = c * V(k, i) - s * h;
@@ -660,10 +660,10 @@ void utils::Rotation::checkUnitary()
             }
 
             // Sort eigenvalues and corresponding vectors.
-            for (int i = 0; i < n-1; i++) {
+            for (size_t i = 0; i < n-1; ++i) {
                 int k = i;
                 utils::Scalar p = d(i);
-                for (int j = i+1; j < n; j++) {
+                for (size_t j = i+1; j < n; ++j) {
                     if (d(j) < p) {
                         k = j;
                         p = d(j);
@@ -672,7 +672,7 @@ void utils::Rotation::checkUnitary()
                 if (k != i) {
                     d(k) = d(i);
                     d(i) = p;
-                    for (int j = 0; j < n; j++) {
+                    for (size_t j = 0; j < n; ++j) {
                         p = V(j, i);
                         V(j, i) = V(j, k);
                         V(j, k) = p;
@@ -724,8 +724,8 @@ void utils::Rotation::checkUnitary()
 
             utils::Matrix3d result;
 
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
+            for (size_t i = 0; i < n; ++i) {
+                for (size_t j = 0; j < n; ++j) {
                     result(i, j) = Um(i, j);
                 }
             }
@@ -742,8 +742,8 @@ void utils::Rotation::checkUnitary()
             result(1,2) *= lambda_inverse(2);
             result(2,2) *= lambda_inverse(2);
 
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
+            for (size_t i = 0; i < n; ++i) {
+                for (size_t j = 0; j < n; ++j) {
                     Um(i, j) = result(i, j);
                 }
             }
@@ -779,7 +779,7 @@ void utils::Rotation::checkUnitary()
                 // two (arbitrary) vectors orthogonal to the eigenvector
                 // for the large singular value
                 int done = 0;
-                for(int dim = 0; dim < 3; dim++)
+                for(size_t dim = 0; dim < 3; ++dim)
                 {
                     int dim_a = dim;
                     int dim_b = (dim + 1) % 3;
@@ -793,7 +793,7 @@ void utils::Rotation::checkUnitary()
 
                         // find smallest abs component of v
                         int smallest_idx = 0;
-                        for(int dim = 1; dim < 3; dim++)
+                        for(size_t dim = 1; dim < 3; ++dim)
                             if (fabs(vec1(dim)) < fabs(vec1(smallest_idx)))
                                 smallest_idx = dim;
 
@@ -827,7 +827,7 @@ void utils::Rotation::checkUnitary()
                 // for the two large singular values
                 if(!done)
                 {
-                    for(int dim = 0; dim < 3; dim++)
+                    for(size_t dim = 0; dim < 3; ++dim)
                     {
                         int dim_a = dim;
                         int dim_b = (dim + 1) % 3;
@@ -870,7 +870,7 @@ void utils::Rotation::checkUnitary()
                         // negative determinant
                         // find the smallest singular value (they are all non-negative)
                         int smallest_singular_value_idx = 0;
-                        for(int dim=1; dim<3; dim++)
+                        for(size_t dim=1; dim<3; ++dim)
                             if (lambda(dim) < lambda(smallest_singular_value_idx))
                                 smallest_singular_value_idx = dim;
 
