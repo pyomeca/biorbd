@@ -792,8 +792,19 @@ void utils::Rotation::checkUnitary()
                         // columns dimB and dimC correspond to tiny singular values
                         utils::Vector3d vec1(Um(0,dim_a), Um(1,dim_a), Um(2,dim_a)); // column dimA
                         utils::Vector3d vec2;
-                        ///////////////////////
-                        //vec2 = details::find_orthonormal_vec(vec1);
+
+                        // find smallest abs component of v
+                        int smallest_idx = 0;
+                        for(int dim = 1; dim < 3; dim++)
+                            if (fabs(vec1(dim)) < fabs(vec1(smallest_idx)))
+                                smallest_idx = dim;
+
+                        utils::Vector3d axis;
+                        axis(smallest_idx) = 1.0;
+
+                        // this cross-product will be non-zero (as long as v is not zero)
+                        Vec2 = (Vec1.cross(axis)).normalized();
+
                         utils::Vector3d vec3 = (vec1.cross(vec2)).normalized();
                         Um(0, dim_b) = vec2(0);
                         Um(1, dim_b) = vec2(1);
