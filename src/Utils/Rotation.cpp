@@ -337,7 +337,7 @@ void utils::Rotation::checkUnitary()
         utils::Scalar M_one_norm = 0.0f;
         for (size_t i = 0; i < 3; ++i)
         {
-            utils::Scalar col_abs_sum = sum(fabs(M.block(i, 0, 1, 3)));
+            utils::Scalar col_abs_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
             if (col_abs_sum > M_one_norm)
                 M_one_norm = col_abs_sum;
         }
@@ -346,7 +346,7 @@ void utils::Rotation::checkUnitary()
         utils::Scalar M_inf_norm = 0.0;
         for (size_t i = 0; i < 3; ++i)
         {
-            utils::Scalar row_sum = sum(fabs(M.block(0, i, 3, 1)));
+            utils::Scalar row_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
             if (row_sum > M_inf_norm)
                 M_inf_norm = row_sum;
         }
@@ -383,7 +383,7 @@ void utils::Rotation::checkUnitary()
             utils::Scalar MadjT_one_norm = 0.0f;
             for (size_t i = 0; i < 3; ++i)
             {
-                utils::Scalar col_abs_sum = sum(fabs(M_adj_Tk.block(0, i, 3, 1)));
+                utils::Scalar col_abs_sum = fabs(M_adj_Tk(i, 0)) + fabs(M_adj_Tk(i, 1)) + fabs(M_adj_Tk(i, 2));
                 if (col_abs_sum > MadjT_one_norm)
                     MadjT_one_norm = col_abs_sum;
             }
@@ -392,7 +392,7 @@ void utils::Rotation::checkUnitary()
             utils::Scalar MadjT_inf_norm = 0.0;
             for (size_t i = 0; i < 3; ++i)
             {
-                utils::Scalar row_sum = fabs(M_adj_Tk.block(i, 0, 1, 3)));
+                utils::Scalar row_sum = fabs(M_adj_Tk(i, 0)) + fabs(M_adj_Tk(i, 1)) + fabs(M_adj_Tk(i, 2));
                 if (row_sum > M_inf_norm)
                     M_inf_norm = row_sum;
             }
@@ -410,7 +410,7 @@ void utils::Rotation::checkUnitary()
             utils::Scalar E_one_norm = 0.0f;
             for (size_t i = 0; i < 3; ++i)
             {
-                utils::Scalar col_abs_sum = fabs(Ek.block(0, i, 3, 1)));
+                utils::Scalar col_abs_sum =  fabs(Ek(i, 0)) + fabs(Ek(i, 1)) + fabs(Ek(i, 2));
                 if (col_abs_sum > E_one_norm)
                     E_one_norm = col_abs_sum;
             }
@@ -419,7 +419,7 @@ void utils::Rotation::checkUnitary()
             utils::Scalar M_one_norm = 0.0f;
             for (size_t i = 0; i < 3; ++i)
             {
-                utils::Scalar col_abs_sum = fabs(M.block(0, i, 3, 1)));
+                utils::Scalar col_abs_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
                 if (col_abs_sum > M_one_norm)
                     M_one_norm = col_abs_sum;
             }
@@ -428,7 +428,7 @@ void utils::Rotation::checkUnitary()
             utils::Scalar M_inf_norm = 0.0;
             for (size_t i = 0; i < 3; ++i)
             {
-                utils::Scalar row_sum = fabs(M.block(i, 0, 1, 3)));
+                utils::Scalar row_sum =  fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
                 if (row_sum > M_inf_norm)
                     M_inf_norm = row_sum;
             }
@@ -459,13 +459,10 @@ void utils::Rotation::checkUnitary()
 
 
             // Symmetric Householder reduction to tridiagonal form. (tred2)
-            for (size_t j = 0; j < n; ++j) {
-                d(j) = V(n-1, j);
-            }
+            V.block(n-1, 0, 1, 3);
 
             // Householder reduction to tridiagonal form.
-
-            for (size_t = n-1; i > 0; --i) {
+            for (size_t i = n-1; i > 0; --i) {
 
                 // Scale to avoid under/overflow.
 
@@ -561,14 +558,12 @@ void utils::Rotation::checkUnitary()
                 V(n-1, j) = 0.0;
             }
             V(n-1, n-1) = 1.0;
-            e(0) = 0.0;
 
 
             // Symmetric tridiagonal QL algorithm. (td12)
-            for (size_t i = 1; i < n; ++i) {
-                e(i-1) = e(i);
-            }
-            e(n-1) = 0.0;
+            e(0) = e(1);
+            e(1) = e(2);
+            e(2) = 0.0;
 
             utils::Scalar f = 0.0f;
             utils::Scalar tst1 = 0.0f;
