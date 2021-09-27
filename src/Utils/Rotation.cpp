@@ -725,8 +725,30 @@ void utils::Rotation::checkUnitary()
             // compute U using the formula:
             // U = F * V * diag(SigmaInverse)
             Um = Mm * Vm;
-            /////////////////////////////////
-            //Um = details::multiply_diag_right(Um, sigma_inverse);
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    result(i, j) = Um(i, j);
+                }
+            }
+
+            result(0,0) *= sigma_inverse(0);
+            result(1,0) *= sigma_inverse(0);
+            result(2,0) *= sigma_inverse(0);
+
+            result(0,1) *= sigma_inverse(1);
+            result(1,1) *= sigma_inverse(1);
+            result(2,1) *= sigma_inverse(1);
+
+            result(0,2) *= sigma_inverse(2);
+            result(1,2) *= sigma_inverse(2);
+            result(2,2) *= sigma_inverse(2);
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    Um(i, j) = result(i, j);
+                }
+            }
 
             // In theory, U is now orthonormal, U^T U = U U^T = I ..
             // it may be a rotation or a reflection, depending on F.
