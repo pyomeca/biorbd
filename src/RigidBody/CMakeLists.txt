@@ -48,7 +48,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     "${CMAKE_SOURCE_DIR}/include"
     "${BIORBD_BINARY_DIR}/include"
     "${RBDL_INCLUDE_DIR}"
-    "${RBDL_INCLUDE_DIR}/.."
     "${MATH_BACKEND_INCLUDE_DIR}"
 )
 

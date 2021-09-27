@@ -51,6 +51,7 @@ if(${MATH_LIBRARY_BACKEND} STREQUAL "Eigen3")
     set(MATH_BACKEND_INCLUDE_DIR "${EIGEN3_INCLUDE_DIR}")
     set(MATH_BACKEND_LIBRARIES "")
     find_package(RBDL REQUIRED)
+    set(RBDL_INCLUDE_DIR ${RBDL_INCLUDE_DIR}/..)
 elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     find_package(Casadi REQUIRED)
     set(MATH_BACKEND_INCLUDE_DIR
@@ -139,7 +140,6 @@ target_include_directories(${BIORBD_NAME} PRIVATE
     "${CMAKE_SOURCE_DIR}/include"
     "${BIORBD_BINARY_DIR}/include"
     "${RBDL_INCLUDE_DIR}"
-    "${RBDL_INCLUDE_DIR}/.."
     "${MATH_BACKEND_INCLUDE_DIR}"
     "${TinyXML_INCLUDE_DIR}"
 )

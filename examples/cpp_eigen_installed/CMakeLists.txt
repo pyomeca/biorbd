@@ -26,7 +26,6 @@ add_executable(${PROJECT_NAME} ${FILE})
 target_include_directories(${PROJECT_NAME} PUBLIC 
     ${biorbd_eigen_INCLUDE_DIR}
     ${RBDL_INCLUDE_DIR}
-    ${RBDL_INCLUDE_DIR}/..
     ${EIGEN3_INCLUDE_DIR}
 	${TinyXML_INCLUDE_DIR}
 )

@@ -62,7 +62,6 @@ target_include_directories(${PYTHON_PROJECT_NAME} PRIVATE
     "${CMAKE_SOURCE_DIR}/include"
     "${BIORBD_BINARY_DIR}/include"
     "${RBDL_INCLUDE_DIR}"
-    "${RBDL_INCLUDE_DIR}/.."
     "${MATH_BACKEND_INCLUDE_DIR}"
     "${IPOPT_INCLUDE_DIR}"
     "${Python3_INCLUDE_DIRS}"
