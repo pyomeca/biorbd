@@ -312,15 +312,335 @@ void utils::Rotation::checkUnitary()
 #ifndef SKIP_ASSERT
     double sqrtNorm = static_cast<double>(this->squaredNorm());
     bool checkUnit(fabs(sqrtNorm - 3.) < 1e-4);
-    if (!checkUnit){
-        // Make calulation here
-        utils::Matrix3d mat;
+    if (!checkUnit)
+    {
+
+        // Code addapted from https://github.com/brainexcerpts/3x3_polar_decomposition/blob/master/src/polar_decomposition_3x3.inl
+
+        // Placer inf_norm and one norm in a function
+        // créer fonction polar_decomposition et déplacer dans Matrix3d
+
+        float tolerance = 1e-6;
+        utils::Matrix3d M = this->block(0, 0, 3, 3);
+        utils::Matrix3d R;
+        utils::Matrix3d S;
+        utils::Matrix3d Mk;
+        utils::Matrix3d Ek;
+        float det, E_one_norm;
+        bool use_svd = false;
+
+        
+        // Mk = mat^T
+        Mk = M.transpose();
+        
+        //M one-norm
+        float M_one_norm = 0.0f;
+        for (int i = 0; i < 3; i++)
+        {
+            float col_abs_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
+            if (col_abs_sum > M_one_norm)
+                M_one_norm = col_abs_sum;
+        }
+
+        //M infinity-norm
+        float M_inf_norm = 0.0;
+        for (int i = 0; i < 3; i++)
+        {
+            float row_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
+            if (row_sum > M_inf_norm)
+                M_inf_norm = row_sum;
+        }
+
+        do
+        {
+            utils::Matrix3d M_adj_Tk;
+
+            /*
+            // row 2 x row 3
+            cross(&(Mk[3]), &(Mk[6]), &M_adj_Tk(0, 0)));
+            // row 3 x row 1
+            cross_product(&(Mk[6]), &(Mk[0]), &(M_adj_Tk[3]));
+            // row 1 x row 2
+            cross_product(&(Mk[0]), &(Mk[3]), &(M_adj_Tk[6]));
+            */
+
+            det = Mk(0, 0) * M_adj_Tk(0, 0) + Mk(0, 1) * M_adj_Tk(0, 1) + Mk(0, 2) * M_adj_Tk(0, 2);
+
+            if( det <= 1e-6 )
+            {
+                use_svd = true;
+                std::cout << "Oups, SVD serait utile!\n";
+                break;
+            }
+
+            if( det == 0.0 )
+            {
+                printf("Warning (polarDecomposition) : zero determinant encountered.\n");
+                break;
+            }
+
+            //mat_adj_T one-norm
+            float MadjT_one_norm = 0.0f;
+            for (int i = 0; i < 3; i++)
+            {
+                float col_abs_sum = fabs(M_adj_Tk(i, 0)) + fabs(M_adj_Tk(i, 1)) + fabs(M_adj_Tk(i, 2));
+                if (col_abs_sum > MadjT_one_norm)
+                    MadjT_one_norm = col_abs_sum;
+            }
+
+            //mat infinity-norm
+            float MadjT_inf_norm = 0.0;
+            for (int i = 0; i < 3; i++)
+            {
+                float row_sum = fabs(M_adj_Tk(i, 0)) + fabs(M_adj_Tk(i, 1)) + fabs(M_adj_Tk(i, 2));
+                if (row_sum > M_inf_norm)
+                    M_inf_norm = row_sum;
+            }
+
+            
+            float gamma = sqrtf(sqrtf((MadjT_one_norm * MadjT_inf_norm) / (M_one_norm * M_inf_norm * det * det)));
+            float g1 = gamma * 0.5f;
+            float g2 = 0.5f / (gamma * det);
+
+            for(int i = 0; i < 3; i++)
+            {
+                for(int j = 0; i < 3; j++)
+                    {
+                        Ek(i, j) = Mk(i, j);
+                        Mk(i, j) = g1 * Mk(i, j) + g2 * M_adj_Tk(i, j);
+                        Ek(i, j) -= Mk(i, j);
+                    }
+            }
+
+            //Ek one-norm
+            float E_one_norm = 0.0f;
+            for (int i = 0; i < 3; i++)
+            {
+                float col_abs_sum = fabs(Ek(i, 0)) + fabs(Ek(i, 1)) + fabs(Ek(i, 2));
+                if (col_abs_sum > E_one_norm)
+                    E_one_norm = col_abs_sum;
+            }
+
+            //M one-norm
+            float M_one_norm = 0.0f;
+            for (int i = 0; i < 3; i++)
+            {
+                float col_abs_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
+                if (col_abs_sum > M_one_norm)
+                    M_one_norm = col_abs_sum;
+            }
+
+            //M infinity-norm
+            float M_inf_norm = 0.0;
+            for (int i = 0; i < 3; i++)
+            {
+                float row_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
+                if (row_sum > M_inf_norm)
+                    M_inf_norm = row_sum;
+            }
+
+        } while ( E_one_norm > M_one_norm * tolerance );
+
+        
+        if(use_svd) // && force_rotation
+        {
+            // use the SVD algorithm to compute R
+            utils::Matrix3d Mm = M;
+            utils::Matrix3d Um, Vm;
+            utils::Vector3d lambda;
+            utils::Vector3d lambda_inverse;
+            int modified_SVD = 1;
+
+
+            //SVD_3x3(Mm, Um, lambda, Vm, tolerance, modified_SVD);
+
+            // F = Mm
+            // U = Um
+            // sigma = lambda
+            // V = Vm
+            // eps = tolerance
+
+            // form F^T F and do eigendecomposition
+            utils::Matrix3d normalEq = Mm.transpose() * Mm;
+            utils::Vector3d eigen_vals;
+            utils::Matrix3d eigen_vecs;
+
+            /////////////////////
+            //eigen_sym(normalEq, eigen_vals, eigen_vecs);
+
+            Vm = eigen_vecs.transpose();
+
+            // Handle situation:
+            // det(Vm) == -1
+            //    - multiply the first column of V by -1
+            if (Vm.determinant() < 0.0)
+            {
+                // convert V into a rotation (multiply column 1 by -1)
+                Vm(0,0) *= -1.0;
+                Vm(1,0) *= -1.0;
+                Vm(2,0) *= -1.0;
+            }
+
+            lambda(0) = (eigen_vals(0) > 0.0f) ? sqrtf(eigen_vals(0)) : 0.0f;
+            lambda(1) = (eigen_vals(1) > 0.0f) ? sqrtf(eigen_vals(1)) : 0.0f;
+            lambda(2) = (eigen_vals(2) > 0.0f) ? sqrtf(eigen_vals(2)) : 0.0f;
+
+            // compute inverse of singular values
+            // also check if singular values are close to zero
+            lambda_inverse(0) = (lambda(0) > tolerance) ? (1.0f / lambda(0)) : 0.0f;
+            lambda_inverse(1) = (lambda(1) > tolerance) ? (1.0f / lambda(1)) : 0.0f;
+            lambda_inverse(2) = (lambda(2) > tolerance) ? (1.0f / lambda(2)) : 0.0f;
+
+            // compute U using the formula:
+            // U = F * V * diag(SigmaInverse)
+            Um = Mm * Vm;
+            /////////////////////////////////
+            //Um = details::multiply_diag_right(Um, sigma_inverse);
+
+            // In theory, U is now orthonormal, U^T U = U U^T = I ..
+            // it may be a rotation or a reflection, depending on F.
+            // But in practice, if singular values are small or zero,
+            // it may not be orthonormal, so we need to fix it.
+            // Handle situation:
+            // 2. An entry of Sigma is near zero
+            // ---------------------------------------------------------
+
+            if ((lambda(0) < tolerance) && (lambda(1) < tolerance) && (lambda(2) < tolerance))
+            {
+                // extreme case, all singular values are small,
+                // material has collapsed almost to a point
+                // see [Irving 04], p. 4
+                Um(0, 0) = 1.0;
+                Um(0, 1) = 0.0;
+                Um(0, 2) = 0.0;
+                Um(1, 0) = 0.0;
+                Um(1, 1) = 1.0;
+                Um(1, 2) = 0.0;
+                Um(2, 0) = 0.0;
+                Um(2, 1) = 0.0;
+                Um(2, 2) = 1.0;
+
+            }
+            else
+            {
+                // handle the case where two singular values are small,
+                // but the third one is not handle it by computing
+                // two (arbitrary) vectors orthogonal to the eigenvector
+                // for the large singular value
+                int done = 0;
+                for(int dim = 0; dim < 3; dim++)
+                {
+                    int dim_a = dim;
+                    int dim_b = (dim + 1) % 3;
+                    int dim_c = (dim + 2) % 3;
+                    if ((lambda(dim_b) < tolerance) && (lambda(dim_c) < tolerance))
+                    {
+                        // only the column dimA can be trusted,
+                        // columns dimB and dimC correspond to tiny singular values
+                        utils::Vector3d vec1(Um(0,dim_a), Um(1,dim_a), Um(2,dim_a)); // column dimA
+                        utils::Vector3d vec2;
+                        ///////////////////////
+                        //vec2 = details::find_orthonormal_vec(vec1);
+                        utils::Vector3d vec3 = (vec1.cross(vec2)).normalized();
+                        Um(0, dim_b) = vec2(0);
+                        Um(1, dim_b) = vec2(1);
+                        Um(2, dim_b) = vec2(2);
+                        Um(0, dim_c) = vec3(0);
+                        Um(1, dim_c) = vec3(1);
+                        Um(2, dim_c) = vec3(2);
+                        if (Um.determinant() < 0.0)
+                        {
+                            Um(0, dim_b) *= -1.0;
+                            Um(1, dim_b) *= -1.0;
+                            Um(2, dim_b) *= -1.0;
+                        }
+                        done = 1;
+                        break; // out of for
+                    }
+                }
+
+                // handle the case where one singular value is small,
+                // but the other two are not
+                // handle it by computing the cross product of the two eigenvectors
+                // for the two large singular values
+                if(!done)
+                {
+                    for(int dim = 0; dim < 3; dim++)
+                    {
+                        int dim_a = dim;
+                        int dim_b = (dim + 1) % 3;
+                        int dim_c = (dim + 2) % 3;
+
+                        if(lambda(dim_a) < tolerance)
+                        {
+                            // columns dimB and dimC are both good,
+                            // but column dimA corresponds to a tiny singular value
+
+                            utils::Vector3d vec1(Um(0,dim_b), Um(1,dim_b), Um(2,dim_b)); // column dimB
+                            utils::Vector3d vec2(Um(0,dim_c), Um(1,dim_c), Um(2,dim_c)); // column dimC
+                            utils::Vector3d vec3 = (vec1.cross(vec2)).normalized();
+                            Um(0, dim_a) = vec3(0);
+                            Um(1, dim_a) = vec3(1);
+                            Um(2, dim_a) = vec3(2);
+                            if(Um.determinant() < 0.0)
+                            {
+                                Um(0, dim_a) *= -1.0;
+                                Um(1, dim_a) *= -1.0;
+                                Um(2, dim_a) *= -1.0;
+                            }
+                            done = 1;
+                            break; // out of for
+                        }
+                    }
+                }
+
+                if ((!done) && (modified_SVD == 1))
+                {
+                    // Handle situation:
+                    // negative determinant (Tet is inverted in solid mechanics)
+                    //    - check if det(U) == -1
+                    //    - If yes, then negate the minimal element of Sigma
+                    //      and the corresponding column of U
+
+                    float det_U = Um.determinant();
+                    if (det_U < 0.0)
+                    {
+                        // negative determinant
+                        // find the smallest singular value (they are all non-negative)
+                        int smallest_singular_value_idx = 0;
+                        for(int dim=1; dim<3; dim++)
+                            if (lambda(dim) < lambda(smallest_singular_value_idx))
+                                smallest_singular_value_idx = dim;
+
+                        // negate the smallest singular value
+                        lambda(smallest_singular_value_idx) *= -1.0;
+                        Um(0, smallest_singular_value_idx) *= -1.0;
+                        Um(1, smallest_singular_value_idx) *= -1.0;
+                        Um(2, smallest_singular_value_idx) *= -1.0;
+                    }
+                }
+            }
+            R = Um * Vm.transpose();
+        }
+        else
+        {
+            // R = Mk^T
+            R = Mk.transpose();
+        }
+
+
+        std::cout << "On s'est rendu, youpi!\n";
+
+        // utils::Matrix3d mat;
 
         utils::Error::check(false,
-                                utils::String("The Rotation matrix square norm is equal to ")
-                                + sqrtNorm + ", but should be equal to 3. " + mat(0, 0) + "Alternatively, you "
-                                             "can compile with SKIP_ASSERT set to ON to turn off "
-                                             "this error message");
+                        utils::String("The Rotation matrix square norm is equal to ")
+                        + sqrtNorm + ", but should be equal to 3. Consider replacing the RT matrix by this closest orthonormal matrix \n[" 
+                        + R(0, 0) + ", " + R(0, 1) + ", " + R(0, 2) + "\n" 
+                        + R(1, 0) + ", " + R(1, 1) + ", " + R(1, 2) + "\n" 
+                        + R(2, 0) + ", " + R(2, 1) + ", " + R(2, 2) + "]\n" 
+                        + "Alternatively, you can compile with SKIP_ASSERT set to ON to turn off this error message");
+
     }
 
 #endif
