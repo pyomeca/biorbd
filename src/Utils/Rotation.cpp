@@ -334,7 +334,7 @@ void utils::Rotation::checkUnitary()
         Mk = M.transpose();
         
         //M one-norm (column)
-        utils::Scalar M_one_norm = 0.0f;
+        utils::Scalar M_one_norm = 0.0;
         for (size_t i = 0; i < 3; ++i)
         {
             utils::Scalar col_abs_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
@@ -351,7 +351,7 @@ void utils::Rotation::checkUnitary()
                 M_inf_norm = row_sum;
         }
 
-        do
+        do //for 
         {
             utils::Matrix3d M_adj_Tk;
 
@@ -365,6 +365,7 @@ void utils::Rotation::checkUnitary()
             */
 
             det = Mk(0, 0) * M_adj_Tk(0, 0) + Mk(0, 1) * M_adj_Tk(0, 1) + Mk(0, 2) * M_adj_Tk(0, 2);
+            utils::Error::error(det != 0.0, utils::String("Warning zero determinant encountered in polar decomposition"));
 
             if( det <= 1e-6 )
             {
@@ -373,14 +374,8 @@ void utils::Rotation::checkUnitary()
                 break;
             }
 
-            if (det == 0.0)
-            {
-                utils::Error::warning(false, utils::String("Warning zero determinant encountered in polar decomposition"));
-                break;
-            }
-
             //mat_adj_T one-norm
-            utils::Scalar MadjT_one_norm = 0.0f;
+            utils::Scalar MadjT_one_norm = 0.0;
             for (size_t i = 0; i < 3; ++i)
             {
                 utils::Scalar col_abs_sum = fabs(M_adj_Tk(i, 0)) + fabs(M_adj_Tk(i, 1)) + fabs(M_adj_Tk(i, 2));
@@ -399,7 +394,7 @@ void utils::Rotation::checkUnitary()
 
             
             utils::Scalar gamma = sqrtf(sqrtf((MadjT_one_norm * MadjT_inf_norm) / (M_one_norm * M_inf_norm * det * det)));
-            utils::Scalar g1 = gamma * 0.5f;
+            utils::Scalar g1 = gamma * 0.5;
             utils::Scalar g2 = 0.5f / (gamma * det);
 
             Ek = Mk;
@@ -407,7 +402,7 @@ void utils::Rotation::checkUnitary()
             Ek -= Mk;
 
             //Ek one-norm
-            utils::Scalar E_one_norm = 0.0f;
+            utils::Scalar E_one_norm = 0.0;
             for (size_t i = 0; i < 3; ++i)
             {
                 utils::Scalar col_abs_sum =  fabs(Ek(i, 0)) + fabs(Ek(i, 1)) + fabs(Ek(i, 2));
@@ -416,7 +411,7 @@ void utils::Rotation::checkUnitary()
             }
 
             //M one-norm
-            utils::Scalar M_one_norm = 0.0f;
+            utils::Scalar M_one_norm = 0.0;
             for (size_t i = 0; i < 3; ++i)
             {
                 utils::Scalar col_abs_sum = fabs(M(i, 0)) + fabs(M(i, 1)) + fabs(M(i, 2));
@@ -565,8 +560,8 @@ void utils::Rotation::checkUnitary()
             e(1) = e(2);
             e(2) = 0.0;
 
-            utils::Scalar f = 0.0f;
-            utils::Scalar tst1 = 0.0f;
+            utils::Scalar f = 0.0;
+            utils::Scalar tst1 = 0.0;
             utils::Scalar eps = 1e-16;
             for (size_t l = 0; l < n; ++l) {
 
@@ -693,15 +688,15 @@ void utils::Rotation::checkUnitary()
                 Vm(2,0) *= -1.0;
             }
 
-            lambda(0) = (eigen_vals(0) > 0.0f) ? sqrtf(eigen_vals(0)) : 0.0f;
-            lambda(1) = (eigen_vals(1) > 0.0f) ? sqrtf(eigen_vals(1)) : 0.0f;
-            lambda(2) = (eigen_vals(2) > 0.0f) ? sqrtf(eigen_vals(2)) : 0.0f;
+            lambda(0) = (eigen_vals(0) > 0.0) ? sqrtf(eigen_vals(0)) : 0.0;
+            lambda(1) = (eigen_vals(1) > 0.0) ? sqrtf(eigen_vals(1)) : 0.0;
+            lambda(2) = (eigen_vals(2) > 0.0) ? sqrtf(eigen_vals(2)) : 0.0;
 
             // compute inverse of singular values
             // also check if singular values are close to zero
-            lambda_inverse(0) = (lambda(0) > tolerance) ? (1.0f / lambda(0)) : 0.0f;
-            lambda_inverse(1) = (lambda(1) > tolerance) ? (1.0f / lambda(1)) : 0.0f;
-            lambda_inverse(2) = (lambda(2) > tolerance) ? (1.0f / lambda(2)) : 0.0f;
+            lambda_inverse(0) = (lambda(0) > tolerance) ? (1.0f / lambda(0)) : 0.0;
+            lambda_inverse(1) = (lambda(1) > tolerance) ? (1.0f / lambda(1)) : 0.0;
+            lambda_inverse(2) = (lambda(2) > tolerance) ? (1.0f / lambda(2)) : 0.0;
 
             // compute U using the formula:
             // U = F * V * diag(SigmaInverse)
@@ -860,8 +855,6 @@ void utils::Rotation::checkUnitary()
             // R = Mk^T
             R = Mk.transpose();
         }
-
-        // utils::Matrix3d mat;
 
         utils::Error::raise(utils::String("The Rotation matrix square norm is equal to ")
                         + sqrtNorm + ", but should be equal to 3. Consider replacing the RT matrix by this closest orthonormal matrix \n[" 
