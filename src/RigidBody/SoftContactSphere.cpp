@@ -1,8 +1,7 @@
 #define BIORBD_API_EXPORTS
 #include "RigidBody/SoftContactSphere.h"
 
-#include "RigidBody/GeneralizedCoordinates.h"
-#include "RigidBody/GeneralizedVelocity.h"
+#include "Utils/String.h"
 
 using namespace BIORBD_NAMESPACE;
 
@@ -10,7 +9,10 @@ rigidbody::SoftContactSphere::SoftContactSphere():
     rigidbody::SoftContactNode(),
     m_radius(std::make_shared<utils::Scalar>(-1)),
     m_stiffness(std::make_shared<utils::Scalar>(-1)),
-    m_damping(std::make_shared<utils::Scalar>(-1))
+    m_damping(std::make_shared<utils::Scalar>(-1)),
+    m_muStatic(std::make_shared<utils::Scalar>(0.8)),
+    m_muDynamic(std::make_shared<utils::Scalar>(0.7)),
+    m_muViscous(std::make_shared<utils::Scalar>(0.5))
 {
     setType();
 }
@@ -19,7 +21,10 @@ rigidbody::SoftContactSphere::SoftContactSphere(const SoftContactNode & other):
     rigidbody::SoftContactNode(other),
     m_radius(std::make_shared<utils::Scalar>(-1)),
     m_stiffness(std::make_shared<utils::Scalar>(-1)),
-    m_damping(std::make_shared<utils::Scalar>(-1))
+    m_damping(std::make_shared<utils::Scalar>(-1)),
+    m_muStatic(std::make_shared<utils::Scalar>(0.8)),
+    m_muDynamic(std::make_shared<utils::Scalar>(0.7)),
+    m_muViscous(std::make_shared<utils::Scalar>(0.5))
 {
     const rigidbody::SoftContactSphere& tp = dynamic_cast<const SoftContactSphere&>(other);
     *m_radius = *tp.m_radius;
@@ -38,7 +43,10 @@ rigidbody::SoftContactSphere::SoftContactSphere(
     rigidbody::SoftContactNode(x, y, z),
     m_radius(std::make_shared<utils::Scalar>(radius)),
     m_stiffness(std::make_shared<utils::Scalar>(stiffness)),
-    m_damping(std::make_shared<utils::Scalar>(damping))
+    m_damping(std::make_shared<utils::Scalar>(damping)),
+    m_muStatic(std::make_shared<utils::Scalar>(0.8)),
+    m_muDynamic(std::make_shared<utils::Scalar>(0.7)),
+    m_muViscous(std::make_shared<utils::Scalar>(0.5))
 {
     setType();
 }
@@ -51,7 +59,10 @@ rigidbody::SoftContactSphere::SoftContactSphere(
     rigidbody::SoftContactNode(other),
     m_radius(std::make_shared<utils::Scalar>(radius)),
     m_stiffness(std::make_shared<utils::Scalar>(stiffness)),
-    m_damping(std::make_shared<utils::Scalar>(damping))
+    m_damping(std::make_shared<utils::Scalar>(damping)),
+    m_muStatic(std::make_shared<utils::Scalar>(0.8)),
+    m_muDynamic(std::make_shared<utils::Scalar>(0.7)),
+    m_muViscous(std::make_shared<utils::Scalar>(0.5))
 {
     setType();
 }
@@ -69,7 +80,10 @@ rigidbody::SoftContactSphere::SoftContactSphere(
     rigidbody::SoftContactNode(x, y, z, name, parentName, parentID),
     m_radius(std::make_shared<utils::Scalar>(radius)),
     m_stiffness(std::make_shared<utils::Scalar>(stiffness)),
-    m_damping(std::make_shared<utils::Scalar>(damping))
+    m_damping(std::make_shared<utils::Scalar>(damping)),
+    m_muStatic(std::make_shared<utils::Scalar>(0.8)),
+    m_muDynamic(std::make_shared<utils::Scalar>(0.7)),
+    m_muViscous(std::make_shared<utils::Scalar>(0.5))
 {
     setType();
 }
@@ -85,7 +99,10 @@ rigidbody::SoftContactSphere::SoftContactSphere(
     rigidbody::SoftContactNode(node, name, parentName, parentID),
     m_radius(std::make_shared<utils::Scalar>(radius)),
     m_stiffness(std::make_shared<utils::Scalar>(stiffness)),
-    m_damping(std::make_shared<utils::Scalar>(damping))
+    m_damping(std::make_shared<utils::Scalar>(damping)),
+    m_muStatic(std::make_shared<utils::Scalar>(0.8)),
+    m_muDynamic(std::make_shared<utils::Scalar>(0.7)),
+    m_muViscous(std::make_shared<utils::Scalar>(0.5))
 {
     setType();
 }
@@ -103,6 +120,9 @@ void rigidbody::SoftContactSphere::DeepCopy(const SoftContactSphere &other)
     *m_radius = *other.m_radius;
     *m_stiffness = *other.m_stiffness;
     *m_damping = *other.m_damping;
+    *m_muStatic = *other.m_muStatic;
+    *m_muDynamic = *other.m_muDynamic;
+    *m_muViscous = *other.m_muViscous;
 }
 
 void rigidbody::SoftContactSphere::setRadius(
@@ -138,68 +158,61 @@ utils::Scalar rigidbody::SoftContactSphere::damping() const
     return *m_damping;
 }
 
-RigidBodyDynamics::Math::SpatialVector rigidbody::SoftContactSphere::computeForce(
-        const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& QDot) const
+utils::Vector3d rigidbody::SoftContactSphere::computeForce(
+        const utils::Vector3d& x,
+        const utils::Vector3d& dx) const
 {
-    RigidBodyDynamics::Math::SpatialVector f(0, 0, 0, 0, 0, 0);
-
-    // Contact Position and velocity
-    x = rigidbody::SoftContacts::softContact(Q)
-    dx = rigidbody::SoftContacts::softContactVelocity(Q, QDot)
 
     // Indentation detection with the ground
-    RigidBodyDynamics::Math::Vector3d grd(0,0,0);
-    RigidBodyDynamics::Math::Vector3d n_vec(0,0,1); // normal
+    const utils::Vector3d& plane(m_contactPlane->first);
+    const utils::Vector3d& normal(m_contactPlane->second);
 
-    // Decomposition des vitesses
-    vn = dx.dot(n_vec)
-    vt = dx - vn * n_vec
+    // Decomposition into normal and tangent velocities
+    utils::Scalar normalVelocity = dx.dot(normal);
+    utils::Vector3d tangentVelocity = dx - normalVelocity * normal;
 
-    // Indentation
-    delta = - ((x - grd).dot(n_vec) - rigidbody::SoftContactSphere::radius())
-    deltadot = vn
+    // Penetration of the sphere in the plane
+    utils::Scalar delta = -((x - plane).dot(normal) - *m_radius);
+    utils::Scalar deltaDot = -normalVelocity;
 
-    // location of the normal force
-    p = (x - grd) - delta * n_vec
+    // Compute the smoothing factor
+    utils::Scalar eps(1e-16);
+    utils::Scalar bv(50);
+    utils::Scalar bd(300);
+    utils::Scalar fslope = (1 / 2 + 1 / 2 * tanh(bd * delta) + eps)
+            * (1 / 2 + 1 / 2 * tanh(bv * (deltaDot + 2 / 3 / *m_damping ) + eps));
 
-    // Smoothed contact
-    eps = 1e-16
-    bv = 50
-    bd = 300
-    fslope = (1 / 2 + 1 / 2 * tanh(bd * delta) + eps) * (
-                1 / 2 + 1 / 2 * tanh(bv * (deltadot + 2 / 3 / rigidbody::SoftContacts::SoftContactSphere::damping() ) + eps))
+    // Force factor on normal from Hertz's model
+    // sqrt and **2 to get positive values in case of negative penetration
+    utils::Scalar deltaSquaredRooted(sqrtf(delta * delta));
+    utils::Scalar forceFactor = 4 / 3 * *m_stiffness
+            * sqrtf(*m_radius) * sqrtf(deltaSquaredRooted * deltaSquaredRooted * deltaSquaredRooted);
 
-    // Normal force
-    // Hertz
-    fHz = 4 / 3 * rigidbody::SoftContacts::SoftContactSphere::stiffness() * sqrt(rigidbody::SoftContacts::SoftContactSphere::radius()) * sqrt(delta ** 2) ** (3 / 2)  # // sqrt and **2 to get positive values in case of negative indentation
-    // Hunt-Crossley
-    fHC = fHz * (1 + 3 / 2 * rigidbody::SoftContacts::SoftContactSphere::damping() * deltadot)
-    fn = fHc * fslope
+    // Hunt-Crossley' model
+    utils::Scalar fHC = forceFactor * (1 + 3 / 2 * *m_damping * deltaDot);
+    utils::Scalar normalForce = fHC * fslope;
 
-    // Friction
-    mu_s = 0.8
-    mu_d = 0.7
-    mu_v = 0.5
-    vtrans = 0.1 // from 0.01 to 0.13
+    utils::Scalar tangentVelocityNorm(sqrtf(tangentVelocity.squaredNorm() + 1e-5));
+    utils::Scalar frictionVelocity = tangentVelocityNorm / *m_transitionVelocity;
 
-    vt_norm = sqrt((vt[0]**2+vt[1]**2+vt[2]**2 + 1e-5))
-    vrel = vt_norm / vtrans
-
-    f_fric = fn * mu_d * tanh(4 * vrel) + fn * (mu_s - mu_d) * vrel / (1 / 4 * vrel ** 2 + 3 / 4) ** 2 + fn * mu_v * vt_norm  // from Peter Brown 2017
+    // from Peter Brown 2017
+    utils::Scalar forceFriction = normalForce * *m_muDynamic * tanh(4 * frictionVelocity)
+            + normalForce * (*m_muStatic - *m_muDynamic) * frictionVelocity
+                   / ((1 / 4 * frictionVelocity * frictionVelocity + 3 / 4) * (1 / 4 * frictionVelocity * frictionVelocity + 3 / 4))
+            + normalForce * *m_muViscous * tangentVelocityNorm;
 
     // Total Force
-    f(3:5) = fn * n_vec + f_fric * -vt / vt_norm
+    return normalForce * normal + forceFriction * -tangentVelocity / tangentVelocityNorm;
+}
 
-    // Location of the center of mass
-    // parent segment idx
-    // CoM = center of mass location
+utils::Vector3d rigidbody::SoftContactSphere::applicationPoint(
+        const Vector3d &x) const
+{
+    const utils::Vector3d& plane(m_contactPlane->first);
+    const utils::Vector3d& normal(m_contactPlane->second);
+    utils::Scalar delta = -((x - plane).dot(normal) - *m_radius);
 
-    // Bour's formula to the CoM of the segment
-    fCoM = f // force
-    fp[0:3] = f[0:3] + cross(f[3:], CoM - p) // torques
-
-    return f;
+    return (x - plane) - delta * normal;
 }
 
 void rigidbody::SoftContactSphere::setType()

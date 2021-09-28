@@ -49,12 +49,15 @@ public:
 
     ///
     /// \brief Get the soft contacts in a list of spatial vector of dimension 6xNdof
-    /// \param
+    /// \param Q The Generalized coordinates
+    /// \param QDot The Generalized velocities
+    /// \param updateKin If the kinematics should be updated
     /// \return The soft contacts
     ///
     std::vector<RigidBodyDynamics::Math::SpatialVector>* softContactToSpatialVector(
             const GeneralizedCoordinates& Q,
-            const GeneralizedVelocity& QDot) const;
+            const GeneralizedVelocity& QDot,
+            bool updateKin = true);
 
     ///
     /// \brief Combine the current forces to an external force vector

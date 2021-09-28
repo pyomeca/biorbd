@@ -44,14 +44,15 @@ void rigidbody::SoftContacts::DeepCopy(
 
 std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::SoftContacts::softContactToSpatialVector(
         const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& QDot) const
+        const rigidbody::GeneralizedVelocity& QDot,
+        bool updateKin)
 {
     if (nbSoftContacts() == 0){
         return nullptr;
     }
 
     // Assuming that this is also a joint type (via BiorbdModel)
-    const rigidbody::Joints& model = dynamic_cast<const rigidbody::Joints&>(*this);
+    rigidbody::Joints& model = dynamic_cast<rigidbody::Joints&>(*this);
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
 
     std::vector<RigidBodyDynamics::Math::SpatialVector>* out = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
@@ -63,7 +64,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::SoftContacts::so
         std::vector<size_t> idx(segmentSoftContactIdx(i));
         RigidBodyDynamics::Math::SpatialVector tp(0.,0.,0.,0.,0.,0.);
         for (auto j : idx){
-            tp += (*m_softContacts)[j]->computeForce(Q, QDot);
+            tp += (*m_softContacts)[j]->computeForceAtCom(model, Q, QDot, updateKin);
         }
 
         // Put all the force on the last dof of the segment

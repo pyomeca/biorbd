@@ -147,12 +147,23 @@ public:
     utils::Scalar damping() const;
 
     ///
-    /// \brief Get the force in a spatial vector
-    /// \return
+    /// \brief Get the force in a spatial vector at the center of mass of the underlying segment
+    /// \param x The position of the contact in global reference frame
+    /// \param dx The velocity of the contact in global reference frame
+    /// \return The Spatial vector
     ///
-    virtual RigidBodyDynamics::Math::SpatialVector computeForce(
-            const GeneralizedCoordinates& Q,
-            const GeneralizedVelocity& QDot) const;
+    virtual utils::Vector3d computeForce(
+            const utils::Vector3d& x,
+            const utils::Vector3d& dx) const;
+
+    ///
+    /// \brief Get the application point relative to the plane
+    /// \param x The position of the contact in global reference frame
+    /// \return The application point
+    ///
+    virtual utils::Vector3d applicationPoint(
+            const utils::Vector3d& x) const;
+
 protected:
     ///
     /// \brief Set the type of the contact node
@@ -163,6 +174,10 @@ protected:
     std::shared_ptr<utils::Scalar> m_stiffness; ///< The stiffness of the contact sphere
     std::shared_ptr<utils::Scalar> m_damping; ///< The damping factor of the contact sphere
 
+    std::shared_ptr<utils::Scalar> m_muStatic; ///< Static coefficient of friction (mu)
+    std::shared_ptr<utils::Scalar> m_muDynamic; ///< Dynamic coefficient of friction (mu)
+    std::shared_ptr<utils::Scalar> m_muViscous; ///< Vicous coefficient of friction (mu)
+    std::shared_ptr<utils::Scalar> m_transitionVelocity; ///< Transition velocity factor of Hunt-Crossley's model
 };
 
 }

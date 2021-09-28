@@ -283,7 +283,7 @@ protected:
     std::vector<RigidBodyDynamics::Math::SpatialVector> * combineExtForceAndSoftContact(
             std::vector<utils::SpatialVector> *f_ext,
             const rigidbody::GeneralizedCoordinates& Q,
-            const rigidbody::GeneralizedVelocity& QDot) const;
+            const rigidbody::GeneralizedVelocity& QDot);
 
     // ---------------------------- //
 public:

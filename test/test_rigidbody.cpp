@@ -146,7 +146,7 @@ TEST(Contacts, DeepCopy)
 }
 
 #ifdef MODULE_ACTUATORS
-TEST(SoftContacts, unitTest){
+TEST(SoftContacts, creation){
     {
         Model model(modelWithSoftContact);
         rigidbody::SoftContacts contacts(model);
@@ -172,7 +172,6 @@ TEST(SoftContacts, unitTest){
         }
     }
 }
-#endif
 
 TEST(SoftContacts, DeepCopy){
     {
@@ -255,6 +254,20 @@ TEST(SoftContacts, DeepCopy){
     }
 
 }
+#endif
+
+TEST(SoftContacts, unitTest){
+    rigidbody::SoftContactSphere contacts(1, 2, 3, 4, 5, 6);
+    utils::Vector3d force = contacts.computeForce(utils::Vector3d(1, 2, 3), utils::Vector3d(4, 5, 6));
+
+    std::vector<double> forceExpected = {4, 5, 6};
+
+    for (unsigned int i = 0; i < 3; ++i) {
+        SCALAR_TO_DOUBLE(f, force(i));
+        EXPECT_NEAR(f, forceExpected[i], requiredPrecision);
+    }
+}
+
 
 static std::vector<double> Qtest = { 0.1, 0.1, 0.1, 0.3, 0.3, 0.3,
                                      0.3, 0.3, 0.3, 0.3, 0.3, 0.4, 0.3

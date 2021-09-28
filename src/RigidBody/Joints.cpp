@@ -309,9 +309,9 @@ const  // a spatialVector per platform
 std::vector<RigidBodyDynamics::Math::SpatialVector> * rigidbody::Joints::combineExtForceAndSoftContact(
         std::vector<utils::SpatialVector> *f_ext,
         const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& QDot) const
+        const rigidbody::GeneralizedVelocity& QDot)
 {
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* softContacts = dynamic_cast<const rigidbody::SoftContacts*>(this)->softContactToSpatialVector(Q, QDot);
+    std::vector<RigidBodyDynamics::Math::SpatialVector>* softContacts = dynamic_cast<rigidbody::SoftContacts*>(this)->softContactToSpatialVector(Q, QDot);
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = dispatchedForce(f_ext);
 
 
