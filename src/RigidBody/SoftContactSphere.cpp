@@ -230,24 +230,24 @@ utils::Vector3d rigidbody::SoftContactSphere::computeForce(
     utils::Scalar eps(1e-16);
     utils::Scalar bv(50);
     utils::Scalar bd(300);
-    utils::Scalar fslope = (0.5 + 0.5 * tanh(bd * delta) + eps)
-            * (0.5 + 0.5 * tanh(bv * (deltaDot + 2. / 3. / *m_damping ) + eps));
+    utils::Scalar fslope = (0.5 + 0.5 * std::tanh(bd * delta) + eps)
+            * (0.5 + 0.5 * std::tanh(bv * (deltaDot + 2. / 3. / *m_damping ) + eps));
 
     // Force factor on normal from Hertz's model
     // sqrt and **2 to get positive values in case of negative penetration
-    utils::Scalar deltaSquaredRooted(sqrtf(delta * delta));
-    utils::Scalar forceFactor = 4. / 3. * *m_stiffness * sqrtf(*m_radius)
-            * sqrtf(deltaSquaredRooted * deltaSquaredRooted * deltaSquaredRooted);
+    utils::Scalar deltaSquaredRooted(std::sqrt(delta * delta));
+    utils::Scalar forceFactor = 4. / 3. * *m_stiffness * std::sqrt(*m_radius)
+            * std::sqrt(deltaSquaredRooted * deltaSquaredRooted * deltaSquaredRooted);
 
     // Hunt-Crossley' model
     utils::Scalar fHC = forceFactor * (1. + 1.5 * *m_damping * deltaDot);
     utils::Scalar normalForce = fHC * fslope;
 
-    utils::Scalar tangentVelocityNorm(sqrtf(tangentVelocity.squaredNorm() + 1e-5));
+    utils::Scalar tangentVelocityNorm(std::sqrt(tangentVelocity.squaredNorm() + 1e-5));
     utils::Scalar frictionVelocity = tangentVelocityNorm / *m_transitionVelocity;
 
     // from Peter Brown 2017
-    utils::Scalar forceFriction = normalForce * *m_muDynamic * tanh(4. * frictionVelocity)
+    utils::Scalar forceFriction = normalForce * *m_muDynamic * std::tanh(4. * frictionVelocity)
             + normalForce * (*m_muStatic - *m_muDynamic) * frictionVelocity
                    / ((0.25 * frictionVelocity * frictionVelocity + 0.75) * (0.25 * frictionVelocity * frictionVelocity + 0.75))
             + normalForce * *m_muViscous * tangentVelocityNorm;

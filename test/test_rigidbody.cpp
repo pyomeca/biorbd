@@ -376,7 +376,7 @@ TEST(SoftContacts, unitTest){
 
         utils::Vector3d force = sphere.computeForce(x, dx);
 
-        std::vector<double> forceExpected = {-0.11760935159024823, 0., 0.15327642244493531};
+        std::vector<double> forceExpected = {-0.11760935061746022, 0., 0.15327642466721322};
         for (unsigned int i = 0; i < 3; ++i) {
             SCALAR_TO_DOUBLE(f, force(i));
             EXPECT_NEAR(f, forceExpected[i], requiredPrecision);
@@ -389,7 +389,7 @@ TEST(SoftContacts, unitTest){
 
         utils::Vector3d force = sphere.computeForce(x, dx);
 
-        std::vector<double> forceExpected = {-3.5460073384786153, -3.5460073384786153, 6.452544444433527};
+        std::vector<double> forceExpected = {-3.5460071631036567, -3.5460071631036567, 6.4525442574502909};
         for (unsigned int i = 0; i < 3; ++i) {
             SCALAR_TO_DOUBLE(f, force(i));
             EXPECT_NEAR(f, forceExpected[i], requiredPrecision);
@@ -409,11 +409,11 @@ TEST(SoftContacts, ForceAtCoM){
 
         RigidBodyDynamics::Math::SpatialVector force = sphere.computeForceAtCom(model, Q, QDot);
 
-        std::vector<double> forceExpected = {847.905063, -529.16649, 694.87975,
-                                             -275.745932, -55.149186, 294.472922};
+        std::vector<double> forceExpected = {847.90514495586694, -529.16654948198982, 694.87983562160457,
+                                             -275.74596651650978, -55.149193303301956, 294.47295042042418};
         for (unsigned int i = 0; i < 6; ++i) {
             SCALAR_TO_DOUBLE(f, force(i));
-            EXPECT_NEAR(f, forceExpected[i], 1e-5);
+            EXPECT_NEAR(f, forceExpected[i], requiredPrecision);
         }
     }
 }
