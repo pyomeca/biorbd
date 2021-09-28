@@ -507,6 +507,7 @@ TEST(Matrix, unitTest)
     }
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
 TEST(matrix3d, unitTest){
     utils::Matrix3d R(1, 2, 3,
                       4, 5, 6,
@@ -538,6 +539,7 @@ TEST(matrix3d, unitTest){
     }
 
 }
+#endif
 
 TEST(Rotation, unitTest)
 {

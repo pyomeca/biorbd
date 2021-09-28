@@ -20,6 +20,7 @@ utils::Matrix3d::Matrix3d(
 
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
 utils::Scalar utils::Matrix3d::normOne() const
 {
     utils::Scalar value = 0.0;
@@ -44,7 +45,6 @@ utils::Scalar utils::Matrix3d::normInf() const
     return value;
 }
 
-#ifndef BIORBD_USE_CASADI_MATH
 utils::Matrix3d utils::Matrix3d::orthoNormalize() const
 {
 #ifdef BIORBD_USE_EIGEN3_MATH

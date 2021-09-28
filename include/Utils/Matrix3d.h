@@ -51,6 +51,7 @@ public:
         RigidBodyDynamics::Math::Matrix3d(other) {}
 #endif
 
+#ifndef BIORBD_USE_CASADI_MATH
     ///
     /// \brief Return the 1-norm of the matrix
     /// \return The 1-norm of the matrix
@@ -63,7 +64,6 @@ public:
     ///
     utils::Scalar normInf() const;
 
-#ifndef BIORBD_USE_CASADI_MATH
     ///
     /// \brief Produce an orthonormal matrix from the current matrix
     /// \return The othonormal matrix
