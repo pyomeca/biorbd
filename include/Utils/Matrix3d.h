@@ -50,6 +50,29 @@ public:
                                            other) :
         RigidBodyDynamics::Math::Matrix3d(other) {}
 #endif
+
+    ///
+    /// \brief Return the 1-norm of the matrix
+    /// \return The 1-norm of the matrix
+    ///
+    utils::Scalar normOne() const;
+
+    ///
+    /// \brief Return the inf-norm of the matrix
+    /// \return The inf-norm of the matrix
+    ///
+    utils::Scalar normInf() const;
+
+#ifndef BIORBD_USE_CASADI_MATH
+    ///
+    /// \brief Produce an orthonormal matrix from the current matrix
+    /// \return The othonormal matrix
+    ///
+    /// Code adapted from https://github.com/brainexcerpts/3x3_polar_decomposition/blob/master/src/polar_decomposition_3x3.inl
+    ///
+    utils::Matrix3d orthoNormalize() const;
+#endif
+
 #ifdef BIORBD_USE_CASADI_MATH
 
     ///

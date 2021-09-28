@@ -20,6 +20,41 @@ utils::Matrix3d::Matrix3d(
 
 }
 
+utils::Scalar utils::Matrix3d::normOne() const
+{
+    utils::Scalar value = 0.0;
+    for (size_t i = 0; i < 3; ++i)
+    {
+        utils::Scalar col_sum = fabs((*this)(0, i)) + fabs((*this)(1, i)) + fabs((*this)(2, i));
+        if (col_sum > value)
+            value = col_sum;
+    }
+    return value;
+}
+
+utils::Scalar utils::Matrix3d::normInf() const
+{
+    utils::Scalar value = 0.0;
+    for (size_t i = 0; i < 3; ++i)
+    {
+        utils::Scalar row_sum = fabs((*this)(i, 0)) + fabs((*this)(i, 1)) + fabs((*this)(i, 2));
+        if (row_sum > value)
+            value = row_sum;
+    }
+    return value;
+}
+
+#ifndef BIORBD_USE_CASADI_MATH
+utils::Matrix3d utils::Matrix3d::orthoNormalize() const
+{
+#ifdef BIORBD_USE_EIGEN3_MATH
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd(*this, Eigen::ComputeFullU | Eigen::ComputeFullV);
+    return svd.matrixU() * svd.matrixV().transpose();
+#else
+#error "SVD decomposition not implemented for non-eigen3 backend"
+#endif
+}
+#endif
 
 #ifdef BIORBD_USE_CASADI_MATH
 
