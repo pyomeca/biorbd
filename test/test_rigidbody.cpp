@@ -145,7 +145,6 @@ TEST(Contacts, DeepCopy)
     }
 }
 
-#ifdef MODULE_ACTUATORS
 TEST(SoftContacts, creation){
     {
         Model model(modelWithSoftContact);
@@ -169,6 +168,23 @@ TEST(SoftContacts, creation){
         {
             SCALAR_TO_DOUBLE(damping, sphere.damping());
             EXPECT_NEAR(damping, 7, requiredPrecision);
+        }
+
+        {
+            SCALAR_TO_DOUBLE(muStatic, sphere.muStatic());
+            EXPECT_NEAR(muStatic, 0.8, requiredPrecision);
+        }
+        {
+            SCALAR_TO_DOUBLE(muDynamic, sphere.muDynamic());
+            EXPECT_NEAR(muDynamic, 0.7, requiredPrecision);
+        }
+        {
+            SCALAR_TO_DOUBLE(muViscous, sphere.muViscous());
+            EXPECT_NEAR(muViscous, 0.5, requiredPrecision);
+        }
+        {
+            SCALAR_TO_DOUBLE(transitionVelocity, sphere.transitionVelocity());
+            EXPECT_NEAR(transitionVelocity, 0.01, requiredPrecision);
         }
     }
 }
@@ -200,6 +216,26 @@ TEST(SoftContacts, DeepCopy){
             SCALAR_TO_DOUBLE(dampingNow, deepCopyNow.damping());
             SCALAR_TO_DOUBLE(dampingLater, deepCopyLater.damping());
 
+            SCALAR_TO_DOUBLE(muStaticTrue, sphere.muStatic());
+            SCALAR_TO_DOUBLE(muStaticShallow, shallowCopy.muStatic());
+            SCALAR_TO_DOUBLE(muStaticNow, deepCopyNow.muStatic());
+            SCALAR_TO_DOUBLE(muStaticLater, deepCopyLater.muStatic());
+
+            SCALAR_TO_DOUBLE(muDynamicTrue, sphere.muDynamic());
+            SCALAR_TO_DOUBLE(muDynamicShallow, shallowCopy.muDynamic());
+            SCALAR_TO_DOUBLE(muDynamicNow, deepCopyNow.muDynamic());
+            SCALAR_TO_DOUBLE(muDynamicLater, deepCopyLater.muDynamic());
+
+            SCALAR_TO_DOUBLE(muViscousTrue, sphere.muViscous());
+            SCALAR_TO_DOUBLE(muViscousShallow, shallowCopy.muViscous());
+            SCALAR_TO_DOUBLE(muViscousNow, deepCopyNow.muViscous());
+            SCALAR_TO_DOUBLE(muViscousLater, deepCopyLater.muViscous());
+
+            SCALAR_TO_DOUBLE(transitionVelocityTrue, sphere.transitionVelocity());
+            SCALAR_TO_DOUBLE(transitionVelocityShallow, shallowCopy.transitionVelocity());
+            SCALAR_TO_DOUBLE(transitionVelocityNow, deepCopyNow.transitionVelocity());
+            SCALAR_TO_DOUBLE(transitionVelocityLater, deepCopyLater.transitionVelocity());
+
             EXPECT_NEAR(radiusTrue, 5., requiredPrecision);
             EXPECT_NEAR(radiusShallow, 5., requiredPrecision);
             EXPECT_NEAR(radiusNow, 5., requiredPrecision);
@@ -214,11 +250,35 @@ TEST(SoftContacts, DeepCopy){
             EXPECT_NEAR(dampingShallow, 7., requiredPrecision);
             EXPECT_NEAR(dampingNow, 7., requiredPrecision);
             EXPECT_NEAR(dampingLater, 7., requiredPrecision);
+
+            EXPECT_NEAR(muStaticTrue, 0.8, requiredPrecision);
+            EXPECT_NEAR(muStaticShallow, 0.8, requiredPrecision);
+            EXPECT_NEAR(muStaticNow, 0.8, requiredPrecision);
+            EXPECT_NEAR(muStaticLater, 0.8, requiredPrecision);
+
+            EXPECT_NEAR(muDynamicTrue, 0.7, requiredPrecision);
+            EXPECT_NEAR(muDynamicShallow, 0.7, requiredPrecision);
+            EXPECT_NEAR(muDynamicNow, 0.7, requiredPrecision);
+            EXPECT_NEAR(muDynamicLater, 0.7, requiredPrecision);
+
+            EXPECT_NEAR(muViscousTrue, 0.5, requiredPrecision);
+            EXPECT_NEAR(muViscousShallow, 0.5, requiredPrecision);
+            EXPECT_NEAR(muViscousNow, 0.5, requiredPrecision);
+            EXPECT_NEAR(muViscousLater, 0.5, requiredPrecision);
+
+            EXPECT_NEAR(transitionVelocityTrue, 0.01, requiredPrecision);
+            EXPECT_NEAR(transitionVelocityShallow, 0.01, requiredPrecision);
+            EXPECT_NEAR(transitionVelocityNow, 0.01, requiredPrecision);
+            EXPECT_NEAR(transitionVelocityLater, 0.01, requiredPrecision);
         }
 
         sphere.setRadius(100);
         sphere.setStiffness(101);
         sphere.setDamping(102);
+        sphere.setMuStatic(103);
+        sphere.setMuDynamic(104);
+        sphere.setMuViscous(105);
+        sphere.setTransitionVelocity(106);
 
         {
             SCALAR_TO_DOUBLE(radiusTrue, sphere.radius());
@@ -236,6 +296,26 @@ TEST(SoftContacts, DeepCopy){
             SCALAR_TO_DOUBLE(dampingNow, deepCopyNow.damping());
             SCALAR_TO_DOUBLE(dampingLater, deepCopyLater.damping());
 
+            SCALAR_TO_DOUBLE(muStaticTrue, sphere.muStatic());
+            SCALAR_TO_DOUBLE(muStaticShallow, shallowCopy.muStatic());
+            SCALAR_TO_DOUBLE(muStaticNow, deepCopyNow.muStatic());
+            SCALAR_TO_DOUBLE(muStaticLater, deepCopyLater.muStatic());
+
+            SCALAR_TO_DOUBLE(muDynamicTrue, sphere.muDynamic());
+            SCALAR_TO_DOUBLE(muDynamicShallow, shallowCopy.muDynamic());
+            SCALAR_TO_DOUBLE(muDynamicNow, deepCopyNow.muDynamic());
+            SCALAR_TO_DOUBLE(muDynamicLater, deepCopyLater.muDynamic());
+
+            SCALAR_TO_DOUBLE(muViscousTrue, sphere.muViscous());
+            SCALAR_TO_DOUBLE(muViscousShallow, shallowCopy.muViscous());
+            SCALAR_TO_DOUBLE(muViscousNow, deepCopyNow.muViscous());
+            SCALAR_TO_DOUBLE(muViscousLater, deepCopyLater.muViscous());
+
+            SCALAR_TO_DOUBLE(transitionVelocityTrue, sphere.transitionVelocity());
+            SCALAR_TO_DOUBLE(transitionVelocityShallow, shallowCopy.transitionVelocity());
+            SCALAR_TO_DOUBLE(transitionVelocityNow, deepCopyNow.transitionVelocity());
+            SCALAR_TO_DOUBLE(transitionVelocityLater, deepCopyLater.transitionVelocity());
+
             EXPECT_NEAR(radiusTrue, 100., requiredPrecision);
             EXPECT_NEAR(radiusShallow, 100., requiredPrecision);
             EXPECT_NEAR(radiusNow, 5., requiredPrecision);
@@ -250,24 +330,93 @@ TEST(SoftContacts, DeepCopy){
             EXPECT_NEAR(dampingShallow, 102., requiredPrecision);
             EXPECT_NEAR(dampingNow, 7., requiredPrecision);
             EXPECT_NEAR(dampingLater, 7., requiredPrecision);
+
+            EXPECT_NEAR(muStaticTrue, 103, requiredPrecision);
+            EXPECT_NEAR(muStaticShallow, 103, requiredPrecision);
+            EXPECT_NEAR(muStaticNow, 0.8, requiredPrecision);
+            EXPECT_NEAR(muStaticLater, 0.8, requiredPrecision);
+
+            EXPECT_NEAR(muDynamicTrue, 104, requiredPrecision);
+            EXPECT_NEAR(muDynamicShallow, 104, requiredPrecision);
+            EXPECT_NEAR(muDynamicNow, 0.7, requiredPrecision);
+            EXPECT_NEAR(muDynamicLater, 0.7, requiredPrecision);
+
+            EXPECT_NEAR(muViscousTrue, 105, requiredPrecision);
+            EXPECT_NEAR(muViscousShallow, 105, requiredPrecision);
+            EXPECT_NEAR(muViscousNow, 0.5, requiredPrecision);
+            EXPECT_NEAR(muViscousLater, 0.5, requiredPrecision);
+
+            EXPECT_NEAR(transitionVelocityTrue, 106, requiredPrecision);
+            EXPECT_NEAR(transitionVelocityShallow, 106, requiredPrecision);
+            EXPECT_NEAR(transitionVelocityNow, 0.01, requiredPrecision);
+            EXPECT_NEAR(transitionVelocityLater, 0.01, requiredPrecision);
         }
     }
 
 }
-#endif
 
 TEST(SoftContacts, unitTest){
-    rigidbody::SoftContactSphere contacts(1, 2, 3, 4, 5, 6);
-    utils::Vector3d force = contacts.computeForce(utils::Vector3d(1, 2, 3), utils::Vector3d(4, 5, 6));
+    rigidbody::SoftContactSphere sphere(0, 0, 0, 0.05, 1e6, 4);
+    {
+        utils::Vector3d x(0.01, 0, 0.1);
+        utils::Vector3d dx(0.01, 0, -0.01);
 
-    std::vector<double> forceExpected = {4, 5, 6};
+        utils::Vector3d force = sphere.computeForce(x, dx);
 
-    for (unsigned int i = 0; i < 3; ++i) {
-        SCALAR_TO_DOUBLE(f, force(i));
-        EXPECT_NEAR(f, forceExpected[i], requiredPrecision);
+        std::vector<double> forceExpected = {-2.54011091e-10, 0.0, 3.31044356e-10};
+        for (unsigned int i = 0; i < 3; ++i) {
+            SCALAR_TO_DOUBLE(f, force(i));
+            EXPECT_NEAR(f, forceExpected[i], requiredPrecision);
+        }
+    }
+
+    {
+        utils::Vector3d x(0.01, 0, 0.0501);
+        utils::Vector3d dx(0.01, 0, -0.01);
+
+        utils::Vector3d force = sphere.computeForce(x, dx);
+
+        std::vector<double> forceExpected = {-0.11760935159024823, 0., 0.15327642244493531};
+        for (unsigned int i = 0; i < 3; ++i) {
+            SCALAR_TO_DOUBLE(f, force(i));
+            EXPECT_NEAR(f, forceExpected[i], requiredPrecision);
+        }
+    }
+
+    {
+        utils::Vector3d x(0.01, 0, 0.049);
+        utils::Vector3d dx(0.01, 0.01, -0.01);
+
+        utils::Vector3d force = sphere.computeForce(x, dx);
+
+        std::vector<double> forceExpected = {-3.5460073384786153, -3.5460073384786153, 6.452544444433527};
+        for (unsigned int i = 0; i < 3; ++i) {
+            SCALAR_TO_DOUBLE(f, force(i));
+            EXPECT_NEAR(f, forceExpected[i], requiredPrecision);
+        }
     }
 }
 
+TEST(SoftContacts, ForceAtCoM){
+    Model model(modelWithSoftContact);
+    rigidbody::SoftContactSphere sphere(model.softContact(0));
+
+    {
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity QDot(model);
+        FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.}));
+        FILL_VECTOR(QDot, std::vector<double>({0.1, 0.1, 0.1, 0.1}));
+
+        RigidBodyDynamics::Math::SpatialVector force = sphere.computeForceAtCom(model, Q, QDot);
+
+        std::vector<double> forceExpected = {847.905063, -529.16649, 694.87975,
+                                             -275.745932, -55.149186, 294.472922};
+        for (unsigned int i = 0; i < 6; ++i) {
+            SCALAR_TO_DOUBLE(f, force(i));
+            EXPECT_NEAR(f, forceExpected[i], 1e-5);
+        }
+    }
+}
 
 static std::vector<double> Qtest = { 0.1, 0.1, 0.1, 0.3, 0.3, 0.3,
                                      0.3, 0.3, 0.3, 0.3, 0.3, 0.4, 0.3

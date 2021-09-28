@@ -97,7 +97,6 @@ RigidBodyDynamics::Math::SpatialVector rigidbody::SoftContactNode::computeForceA
     out.block(0, 0, 3, 1) = force.cross(CoMinGlobal - applicationPoint(x));
     out.block(3, 0, 3, 1) = force;
     return out;
-
 }
 
 void rigidbody::SoftContactNode::setType()

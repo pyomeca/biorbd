@@ -147,6 +147,54 @@ public:
     utils::Scalar damping() const;
 
     ///
+    /// \brief Set a new value for the muStatic
+    /// \param muStatic The new value for the muStatic
+    ///
+    void setMuStatic(const utils::Scalar& muStatic);
+
+    ///
+    /// \brief Return the value of the muStatic
+    /// \return The value of the muStatic
+    ///
+    utils::Scalar muStatic() const;
+
+    ///
+    /// \brief Set a new value for the muDynamic
+    /// \param muDynamic The new value for the muDynamic
+    ///
+    void setMuDynamic(const utils::Scalar& muDynamic);
+
+    ///
+    /// \brief Return the value of the muDynamic
+    /// \return The value of the muDynamic
+    ///
+    utils::Scalar muDynamic() const;
+
+    ///
+    /// \brief Set a new value for the muViscous
+    /// \param muViscous The new value for the muViscous
+    ///
+    void setMuViscous(const utils::Scalar& muViscous);
+
+    ///
+    /// \brief Return the value of the muViscous
+    /// \return The value of the muViscous
+    ///
+    utils::Scalar muViscous() const;
+
+    ///
+    /// \brief Set a new value for the transitionVelocity
+    /// \param transitionVelocity The new value for the transitionVelocity
+    ///
+    void setTransitionVelocity(const utils::Scalar& transitionVelocity);
+
+    ///
+    /// \brief Return the value of the transitionVelocity
+    /// \return The value of the transitionVelocity
+    ///
+    utils::Scalar transitionVelocity() const;
+
+    ///
     /// \brief Get the force in a spatial vector at the center of mass of the underlying segment
     /// \param x The position of the contact in global reference frame
     /// \param dx The velocity of the contact in global reference frame
