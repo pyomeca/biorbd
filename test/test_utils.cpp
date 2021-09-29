@@ -507,6 +507,40 @@ TEST(Matrix, unitTest)
     }
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
+TEST(matrix3d, unitTest){
+    utils::Matrix3d R(1, 2, 3,
+                      4, 5, 6,
+                      7, 8, 9);
+    {
+        SCALAR_TO_DOUBLE(one, R.normOne());
+        EXPECT_NEAR(one, 18, requiredPrecision);
+    }
+
+    {
+        SCALAR_TO_DOUBLE(inf, R.normInf());
+        EXPECT_NEAR(inf, 24, requiredPrecision);
+    }
+
+    {
+        utils::Matrix3d orthoNorm = R.orthoNormalize();
+        std::vector<double> expectedMult({
+                                             -0.419386184128578,  -0.2775187761147384,  0.8643486318991006,
+                                             -0.2775187761147384,  0.9457394527596399,  0.16899768163401963,
+                                              0.8643486318991006,  0.16899768163401974, 0.47364673136893787
+                                         });
+        int cmp(0);
+        for (unsigned int i=0; i<3; ++i) {
+            for (unsigned int j=0; j<3; ++j) {
+                SCALAR_TO_DOUBLE(m, orthoNorm(i, j));
+                EXPECT_NEAR(m, expectedMult[cmp++], requiredPrecision);
+            }
+        }
+    }
+
+}
+#endif
+
 TEST(Rotation, unitTest)
 {
     utils::Rotation rot1(

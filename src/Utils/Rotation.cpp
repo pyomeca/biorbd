@@ -311,11 +311,19 @@ void utils::Rotation::checkUnitary()
 #ifndef BIORBD_USE_CASADI_MATH
 #ifndef SKIP_ASSERT
     double sqrtNorm = static_cast<double>(this->squaredNorm());
-    utils::Error::check(fabs(sqrtNorm - 3.) < 1e-4,
-                                utils::String("The Rotation matrix square norm is equal to ")
-                                + sqrtNorm + ", but should be equal to 3. Alternatively, you "
-                                             "can compile with SKIP_ASSERT set to ON to turn off "
-                                             "this error message");
+    bool checkUnit(fabs(sqrtNorm - 3.) < 1e-4);
+    if (!checkUnit)
+    {
+        utils::Matrix3d R(orthoNormalize());
+        utils::Error::raise(utils::String("The Rotation matrix square norm is equal to ")
+                        + sqrtNorm + ", but should be equal to 3. Consider replacing the RT matrix by this closest orthonormal matrix \n[" 
+                        + R(0, 0) + ", " + R(0, 1) + ", " + R(0, 2) + "\n" 
+                        + R(1, 0) + ", " + R(1, 1) + ", " + R(1, 2) + "\n" 
+                        + R(2, 0) + ", " + R(2, 1) + ", " + R(2, 2) + "]\n" 
+                        + "Alternatively, you can compile with SKIP_ASSERT set to ON to turn off this error message");
+
+    }
+
 #endif
 #endif
 }
