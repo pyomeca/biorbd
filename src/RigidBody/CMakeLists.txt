@@ -7,6 +7,9 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/SegmentCharacteristics.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Mesh.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Contacts.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/SoftContacts.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/SoftContactNode.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/SoftContactSphere.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedCoordinates.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedVelocity.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/GeneralizedAcceleration.cpp"
@@ -45,7 +48,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     "${CMAKE_SOURCE_DIR}/include"
     "${BIORBD_BINARY_DIR}/include"
     "${RBDL_INCLUDE_DIR}"
-    "${RBDL_INCLUDE_DIR}/.."
     "${MATH_BACKEND_INCLUDE_DIR}"
 )
 

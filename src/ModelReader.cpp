@@ -19,6 +19,7 @@
 #include "RigidBody/IMU.h"
 #include "RigidBody/MeshFace.h"
 #include "RigidBody/NodeSegment.h"
+#include "RigidBody/SoftContactSphere.h"
 
 #ifdef MODULE_ACTUATORS
     #include "Actuators/ActuatorConstant.h"
@@ -607,6 +608,45 @@ void Reader::readModelFile(
                 model->AddLoopConstraint(id_predecessor, id_successor, X_predecessor,
                                          X_successor,
                                          axis, name, enableStabilization, stabilizationParam);
+            } else if (!main_tag.tolower().compare("softcontact")) {
+                utils::String name;
+                file.read(name);
+                unsigned int parent_int = 0;
+                utils::String parent_str("root");
+                utils::String contactType("");
+                utils::Vector3d pos(0,0,0);
+                double radius(-1);
+                double stiffness(-1);
+                double damping(-1);
+
+                while(file.read(property_tag)
+                        && property_tag.tolower().compare("endsoftcontact")) {
+                    if (!property_tag.tolower().compare("parent")) {
+                        // Dynamically find the parent number
+                        file.read(parent_str);
+                        parent_int = model->GetBodyId(parent_str.c_str());
+                        // If parent_int equals zero, no name has concurred
+                        utils::Error::check(model->IsBodyId(parent_int),
+                                                    "Wrong name in a segment");
+                    } else if (!property_tag.tolower().compare("type")) {
+                        file.read(contactType);
+                    } else if (!property_tag.tolower().compare("position")) {
+                        readVector3d(file, variable, pos);
+                    } else if (!property_tag.tolower().compare("radius")) {
+                        file.read(radius, variable);
+                    } else if (!property_tag.tolower().compare("stiffness")) {
+                        file.read(stiffness, variable);
+                    } else if (!property_tag.tolower().compare("damping")) {
+                        file.read(damping, variable);
+                    }
+                }
+
+                if (!contactType.tolower().compare("sphere")){
+                    model->addSoftContact(rigidbody::SoftContactSphere(pos, radius, stiffness, damping, name, parent_str, parent_int));
+                } else {
+                    utils::Error::raise("The 'type' should be 'sphere'.");
+                }
+
             } else if (!main_tag.tolower().compare("actuator")) {
 #ifdef MODULE_ACTUATORS
                 hasActuators = true;

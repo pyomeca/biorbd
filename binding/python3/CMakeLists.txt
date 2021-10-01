@@ -23,9 +23,6 @@ find_package(Python3 REQUIRED
     COMPONENTS Interpreter Development NumPy
 )
 
-include_directories("${Python3_INCLUDE_DIRS}")
-
-include_directories("${Python3_NumPy_INCLUDE_DIRS}")
 if(WIN32)
     link_directories("${Python3_RUNTIME_LIBRARY_DIRS}/libs")
 endif()
@@ -59,10 +56,9 @@ endif()
 
 # Add headers
 target_include_directories(${PYTHON_PROJECT_NAME} PRIVATE
+    "${RBDL_INCLUDE_DIR}"
     "${CMAKE_SOURCE_DIR}/include"
     "${BIORBD_BINARY_DIR}/include"
-    "${RBDL_INCLUDE_DIR}"
-    "${RBDL_INCLUDE_DIR}/.."
     "${MATH_BACKEND_INCLUDE_DIR}"
     "${IPOPT_INCLUDE_DIR}"
     "${Python3_INCLUDE_DIRS}"
