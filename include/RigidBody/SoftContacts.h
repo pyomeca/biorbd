@@ -60,13 +60,6 @@ public:
             bool updateKin = true);
 
     ///
-    /// \brief Combine the current forces to an external force vector
-    /// \param externalForces The external forces to combine to
-    ///
-    void combineToExternalForce(
-            std::vector<RigidBodyDynamics::Math::SpatialVector>* externalForces = nullptr) const;
-
-    ///
     /// \brief Return the name of the soft contact
     /// \param i The index of the contact
     /// \return The name of the soft contact

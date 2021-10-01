@@ -68,18 +68,12 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::SoftContacts::so
         }
 
         // Put all the force on the last dof of the segment
-        for (size_t j; j < model.segment(i).nbDof() - 1; ++j){
+        for (size_t j = 0; j < model.segment(i).nbDof() - 1; ++j){
             out->push_back(sp_zero);
         }
         out->push_back(tp);
     }
     return out;
-}
-
-void rigidbody::SoftContacts::combineToExternalForce(
-        std::vector<RigidBodyDynamics::Math::SpatialVector> *externalForces) const
-{
-
 }
 
 utils::String rigidbody::SoftContacts::softContactName(
