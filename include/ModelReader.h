@@ -4,7 +4,6 @@
 #include <vector>
 #include <map>
 #include "biorbdConfig.h"
-#include "rbdl/rbdl_math.h"
 
 namespace BIORBD_NAMESPACE
 {
