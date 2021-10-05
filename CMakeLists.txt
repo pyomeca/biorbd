@@ -59,7 +59,7 @@ elseif(${MATH_LIBRARY_BACKEND} STREQUAL "Casadi")
     )
     set(MATH_BACKEND_LIBRARIES "${Casadi_LIBRARY}")
     find_package(RBDLCasadi REQUIRED)
-    set(RBDL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR})
+    set(RBDL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR} ${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi)
     set(RBDL_LIBRARY ${RBDLCasadi_LIBRARY})
 endif()
 find_package(IPOPT)
@@ -153,7 +153,7 @@ if(WIN32)
     set(${BIORBD_NAME}_LIB_FOLDER "Lib")
     set(${BIORBD_NAME}_BIN_FOLDER "bin")
     set(${BIORBD_NAME}_INCLUDE_FOLDER "include/${BIORBD_NAME}")
-        set(${BIORBD_NAME}_CMAKECONFIG_DIR "Lib/cmake/${BIORBD_NAME}")
+    set(${BIORBD_NAME}_CMAKECONFIG_DIR "Lib/cmake/${BIORBD_NAME}")
 else()
     set(${BIORBD_NAME}_LIB_FOLDER "lib/${BIORBD_NAME}")
     set(${BIORBD_NAME}_BIN_FOLDER "${CMAKE_INSTALL_PREFIX}/lib/${BIORBD_NAME}")
@@ -233,7 +233,7 @@ configure_package_config_file(
     "${BIORBD_BINARY_DIR}/${BIORBD_NAME}Config.cmake"
     INSTALL_DESTINATION "${CMAKE_SHARE_DIR}"
 )
-install(FILES 
+install(FILES
     "${BIORBD_BINARY_DIR}/${BIORBD_NAME}Config.cmake"
     DESTINATION "${CMAKE_SHARE_DIR}"
 )
@@ -252,7 +252,7 @@ if(NOT TARGET uninstall)
     )
 endif()
 
-        
+
 # Add binding subdirectory
 add_subdirectory("binding")
 
