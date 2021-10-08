@@ -56,8 +56,9 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::SoftContacts::so
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
 
     std::vector<RigidBodyDynamics::Math::SpatialVector>* out = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
+    out->push_back(sp_zero);
     for (size_t i = 0; i < model.nbSegment(); ++i){
-        if (model.nbDof() == 0){
+        if (model.segment(i).nbDof() == 0){
             continue;
         }
 
@@ -68,7 +69,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::SoftContacts::so
         }
 
         // Put all the force on the last dof of the segment
-        for (size_t j = 0; j < model.segment(i).nbDof() - 1; ++j){
+        for (int j = 0; j < static_cast<int>(model.segment(i).nbDof()) - 1; ++j){
             out->push_back(sp_zero);
         }
         out->push_back(tp);
