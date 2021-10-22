@@ -409,7 +409,7 @@ TEST(SoftContacts, ForceAtCoM){
 
         RigidBodyDynamics::Math::SpatialVector force = sphere.computeForceAtCom(model, Q, QDot);
 
-        std::vector<double> forceExpected = {847.90514495586694, -529.16654948198982, 694.87983562160457,
+        std::vector<double> forceExpected = {-169.49529328017607, 835.69754838406357, -2.2059677321320312,
                                              -275.74596651650978, -55.149193303301956, 294.47295042042418};
         for (unsigned int i = 0; i < 6; ++i) {
             SCALAR_TO_DOUBLE(f, force(i));

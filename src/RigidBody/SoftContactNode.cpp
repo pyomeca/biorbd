@@ -94,7 +94,7 @@ RigidBodyDynamics::Math::SpatialVector rigidbody::SoftContactNode::computeForceA
 
     // Find the application point of the force
     RigidBodyDynamics::Math::SpatialVector out(0, 0, 0, 0, 0, 0);
-    out.block(0, 0, 3, 1) = force.cross(CoMinGlobal - applicationPoint(x));
+    out.block(0, 0, 3, 1) = force.cross(- applicationPoint(x));
     out.block(3, 0, 3, 1) = force;
     return out;
 }
