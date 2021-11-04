@@ -356,7 +356,7 @@ TEST(SoftContacts, DeepCopy){
 }
 
 TEST(SoftContacts, unitTest){
-    rigidbody::SoftContactSphere sphere(0, 0, 0, 0.05, 1e6, 4);
+    rigidbody::SoftContactSphere sphere(0, 0, 0, 0.05, 1e6, 4, 0.8, 0.7, 0.5);
     {
         utils::Vector3d x(0.01, 0, 0.1);
         utils::Vector3d dx(0.01, 0, -0.01);

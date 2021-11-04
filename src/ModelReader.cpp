@@ -618,6 +618,9 @@ void Reader::readModelFile(
                 double radius(-1);
                 double stiffness(-1);
                 double damping(-1);
+                double muStatic(-1);
+                double muDynamic(-1);
+                double muViscous(-1);
 
                 while(file.read(property_tag)
                         && property_tag.tolower().compare("endsoftcontact")) {
@@ -638,11 +641,17 @@ void Reader::readModelFile(
                         file.read(stiffness, variable);
                     } else if (!property_tag.tolower().compare("damping")) {
                         file.read(damping, variable);
+                    } else if (!property_tag.tolower().compare("muStatic")) {
+                        file.read(damping, variable);
+                    } else if (!property_tag.tolower().compare("muDynamic")) {
+                        file.read(damping, variable);
+                    } else if (!property_tag.tolower().compare("muViscous")) {
+                        file.read(damping, variable);
                     }
                 }
 
                 if (!contactType.tolower().compare("sphere")){
-                    model->addSoftContact(rigidbody::SoftContactSphere(pos, radius, stiffness, damping, name, parent_str, parent_int));
+                    model->addSoftContact(rigidbody::SoftContactSphere(pos, radius, stiffness, damping, muStatic, muDynamic, muViscous, name, parent_str, parent_int));
                 } else {
                     utils::Error::raise("The 'type' should be 'sphere'.");
                 }
