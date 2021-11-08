@@ -192,6 +192,32 @@ rigidbody::NodeSegment rigidbody::Markers::markerVelocity(
             model, Q, Qdot, id, pos, updateKin));
 }
 
+// Get a marker's velocity
+rigidbody::NodeSegment rigidbody::Markers::markerAngularVelocity(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    unsigned int idx,
+    bool removeAxis,
+    bool updateKin)
+{
+    // Assuming that this is also a joint type (via BiorbdModel)
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+
+    const rigidbody::NodeSegment& node(marker(idx));
+    unsigned int id(model.GetBodyId(node.parent().c_str()));
+
+    // Retrieve the position of the marker in the local reference
+    const rigidbody::NodeSegment& pos(marker(idx, removeAxis));
+
+    // Calculate the velocity of the point
+    return rigidbody::NodeSegment(
+                RigidBodyDynamics::CalcPointVelocity6D(model, Q, Qdot, id, pos, updateKin).block(0, 0, 3, 1)
+            );
+}
+
 // Get the makers' velocities
 std::vector<rigidbody::NodeSegment>
 rigidbody::Markers::markersVelocity(
@@ -203,6 +229,23 @@ rigidbody::Markers::markersVelocity(
     std::vector<rigidbody::NodeSegment> pos;
     for (unsigned int i=0; i<nbMarkers(); ++i) {
         pos.push_back(markerVelocity(Q, Qdot, i, removeAxis, updateKin));
+        updateKin = false;
+    }
+
+    return pos;
+}
+
+// Get the makers' velocities
+std::vector<rigidbody::NodeSegment>
+rigidbody::Markers::markersAngularVelocity(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    bool removeAxis,
+    bool updateKin)
+{
+    std::vector<rigidbody::NodeSegment> pos;
+    for (unsigned int i=0; i<nbMarkers(); ++i) {
+        pos.push_back(markerAngularVelocity(Q, Qdot, i, removeAxis, updateKin));
         updateKin = false;
     }
 

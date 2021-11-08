@@ -642,11 +642,11 @@ void Reader::readModelFile(
                     } else if (!property_tag.tolower().compare("damping")) {
                         file.read(damping, variable);
                     } else if (!property_tag.tolower().compare("muStatic")) {
-                        file.read(damping, variable);
+                        file.read(muStatic, variable);
                     } else if (!property_tag.tolower().compare("muDynamic")) {
-                        file.read(damping, variable);
+                        file.read(muDynamic, variable);
                     } else if (!property_tag.tolower().compare("muViscous")) {
-                        file.read(damping, variable);
+                        file.read(muViscous, variable);
                     }
                 }
 
