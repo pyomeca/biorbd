@@ -65,7 +65,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::SoftContacts::so
         std::vector<size_t> idx(segmentSoftContactIdx(i));
         RigidBodyDynamics::Math::SpatialVector tp(0.,0.,0.,0.,0.,0.);
         for (auto j : idx){
-            tp += (*m_softContacts)[j]->computeForceAtCom(model, Q, QDot, updateKin);
+            tp += (*m_softContacts)[j]->computeForceAtOrigin(model, Q, QDot, updateKin);
         }
 
         // Put all the force on the last dof of the segment
@@ -154,7 +154,7 @@ rigidbody::NodeSegment rigidbody::SoftContacts::softContactVelocity(
     unsigned int id(model.GetBodyId(sc.parent().c_str()));
 
     // Calculate the velocity of the point
-    return rigidbody::NodeSegment(RigidBodyDynamics::CalcPointVelocity(
+    return rigidbody::NodeSegment(RigidBodyDynamics::CalcPointVelocity6D(
             model, Q, Qdot, id, sc, updateKin));
 }
 

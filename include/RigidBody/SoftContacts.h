@@ -111,12 +111,12 @@ public:
         bool updateKin = true);
 
     ///
-    /// \brief Return the velocity of a contact
+    /// \brief Return the  angular and linear velocity of a contact
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param idx The index of the marker in the contact set
     /// \param updateKin If the model should be updated
-    /// \return The velocity of the contact
+    /// \return The angular and linear velocity of the contact in a 6D vector
     ///
     NodeSegment softContactVelocity(
         const GeneralizedCoordinates &Q,

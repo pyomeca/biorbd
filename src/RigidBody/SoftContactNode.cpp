@@ -66,7 +66,7 @@ void rigidbody::SoftContactNode::DeepCopy(
     *m_contactPlane = *other.m_contactPlane;
 }
 
-RigidBodyDynamics::Math::SpatialVector rigidbody::SoftContactNode::computeForceAtCom(
+RigidBodyDynamics::Math::SpatialVector rigidbody::SoftContactNode::computeForceAtOrigin(
         Joints &model,
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &QDot,
