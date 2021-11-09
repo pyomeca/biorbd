@@ -358,13 +358,13 @@ TEST(SoftContacts, DeepCopy){
 TEST(SoftContacts, unitTest){
     rigidbody::SoftContactSphere sphere(0, 0, 0, 0.05, 1e6, 4, 0.8, 0.7, 0.5);
     {
-        utils::Vector3d x(0.01, 0, 0.1);
+        utils::Vector3d x(0.01, 0, 0.07);
         utils::Vector3d dx(0.01, 0, -0.01);
         utils::Vector3d angularVelocity(1, 2, 3);
 
         utils::Vector3d force = sphere.computeForce(x, dx, angularVelocity);
 
-        std::vector<double> forceExpected = {2.1777139192934809e-10, -1.209841066274156e-10, 3.3104435641178533e-10};
+        std::vector<double> forceExpected = {0.003612873666450995, -0.0020071520369172192, 0.0054920962166388866};
         for (unsigned int i = 0; i < 3; ++i) {
             SCALAR_TO_DOUBLE(f, force(i));
             EXPECT_NEAR(f, forceExpected[i], requiredPrecision);
