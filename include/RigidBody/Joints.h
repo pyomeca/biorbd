@@ -785,16 +785,13 @@ public:
     /// \brief Return the angular velocity of the segment
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
-    /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
     /// \return The angular velocity of the segment
     ///
-
-    utils::Vector3d  AngularVelocity(
+    utils::Vector3d segmentAngularVelocity(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
         unsigned int idx,
-        bool removeAxis = true,
         bool updateKin = true);
 
     // ---- DYNAMIC INTERFACE ---- //

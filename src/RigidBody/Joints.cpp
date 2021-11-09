@@ -605,30 +605,23 @@ rigidbody::Joints::CalcBodyWorldTransformation(
 
 
 // Get a segment's angular velocity
-utils::Vector3d rigidbody::Joints::AngularVelocity(
+utils::Vector3d rigidbody::Joints::segmentAngularVelocity(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
     unsigned int idx,
-    bool removeAxis,
     bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #endif
 
-    const utils::String& segmentName(segment(static_cast<unsigned int>
-            (idx)).name());
-    unsigned int id(model.GetBodyId(segmentName.c_str()));
-
-    // Retrieve the position of the origin of the segment in its local frame
-    const rigidbody::NodeSegment& pos(utils::Vector3d(0, 0, 0));
+    const utils::String& segmentName(segment(idx).name());
+    unsigned int id(this->GetBodyId(segmentName.c_str()));
 
     // Calculate the velocity of the point
-    return rigidbody::NodeSegment(
-                RigidBodyDynamics::CalcPointVelocity6D(model, Q, Qdot, id, pos, updateKin).block(0, 0, 3, 1)
-            );
+    return RigidBodyDynamics::CalcPointVelocity6D(
+                *this, Q, Qdot, id, utils::Vector3d(0, 0, 0), updateKin).block(0, 0, 3, 1);
 }
 
 utils::Vector3d rigidbody::Joints::CoM(
