@@ -360,11 +360,11 @@ TEST(SoftContacts, unitTest){
     {
         utils::Vector3d x(0.01, 0, 0.1);
         utils::Vector3d dx(0.01, 0, -0.01);
-        utils::Vector3d angularVelocity(0, 0, 0);
+        utils::Vector3d angularVelocity(1, 2, 3);
 
         utils::Vector3d force = sphere.computeForce(x, dx, angularVelocity);
 
-        std::vector<double> forceExpected = {-2.54011091e-10, 0.0, 3.31044356e-10};
+        std::vector<double> forceExpected = {2.1777139192934809e-10, -1.209841066274156e-10, 3.3104435641178533e-10};
         for (unsigned int i = 0; i < 3; ++i) {
             SCALAR_TO_DOUBLE(f, force(i));
             EXPECT_NEAR(f, forceExpected[i], requiredPrecision);
@@ -412,8 +412,8 @@ TEST(SoftContacts, ForceAtOrigin){
 
         RigidBodyDynamics::Math::SpatialVector force = sphere.computeForceAtOrigin(model, Q, QDot);
 
-        std::vector<double> forceExpected = {-169.49529328017607, 835.69754838406357, -2.2059677321320312,
-                                             -275.74596651650978, -55.149193303301956, 294.47295042042418};
+        std::vector<double> forceExpected = {-670.95355043718416, 2.944729504204179, 2.2119497381886286,
+                                             0, -221.1949738188676, 294.47295042042418};
         for (unsigned int i = 0; i < 6; ++i) {
             SCALAR_TO_DOUBLE(f, force(i));
             EXPECT_NEAR(f, forceExpected[i], requiredPrecision);
