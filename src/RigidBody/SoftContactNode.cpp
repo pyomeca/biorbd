@@ -85,8 +85,9 @@ RigidBodyDynamics::Math::SpatialVector rigidbody::SoftContactNode::computeForceA
     unsigned int id = model.GetBodyId(parent().c_str());
     utils::Vector3d x(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, *this, updateKin));
     utils::Vector3d dx(rigidbody::NodeSegment(RigidBodyDynamics::CalcPointVelocity(model, Q, QDot, id, *this, updateKin)));
+    utils::Vector3d AngularVelocity(RigidBodyDynamics::CalcPointVelocity6D(model, Q, QDot, id, utils::Vector3d(0, 0, 0), updateKin).block(0, 0, 3, 1));
 
-    utils::Vector3d force(computeForce(x, dx));
+    utils::Vector3d force(computeForce(x, dx, AngularVelocity));
 
     // Transport to CoM (Bour's formula)
     const utils::Vector3d& CoM(model.segment(parent()).characteristics().CoM());

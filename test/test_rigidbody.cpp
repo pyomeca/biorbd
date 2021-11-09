@@ -360,8 +360,9 @@ TEST(SoftContacts, unitTest){
     {
         utils::Vector3d x(0.01, 0, 0.1);
         utils::Vector3d dx(0.01, 0, -0.01);
+        utils::Vector3d angularVelocity(0, 0, 0);
 
-        utils::Vector3d force = sphere.computeForce(x, dx);
+        utils::Vector3d force = sphere.computeForce(x, dx, angularVelocity);
 
         std::vector<double> forceExpected = {-2.54011091e-10, 0.0, 3.31044356e-10};
         for (unsigned int i = 0; i < 3; ++i) {
@@ -373,8 +374,9 @@ TEST(SoftContacts, unitTest){
     {
         utils::Vector3d x(0.01, 0, 0.0501);
         utils::Vector3d dx(0.01, 0, -0.01);
+        utils::Vector3d angularVelocity(0, 0, 0);
 
-        utils::Vector3d force = sphere.computeForce(x, dx);
+        utils::Vector3d force = sphere.computeForce(x, dx, angularVelocity);
 
         std::vector<double> forceExpected = {-0.11760935061746022, 0., 0.15327642466721322};
         for (unsigned int i = 0; i < 3; ++i) {
@@ -386,8 +388,9 @@ TEST(SoftContacts, unitTest){
     {
         utils::Vector3d x(0.01, 0, 0.049);
         utils::Vector3d dx(0.01, 0.01, -0.01);
+        utils::Vector3d angularVelocity(0, 0, 0);
 
-        utils::Vector3d force = sphere.computeForce(x, dx);
+        utils::Vector3d force = sphere.computeForce(x, dx, angularVelocity);
 
         std::vector<double> forceExpected = {-3.5460071631036567, -3.5460071631036567, 6.4525442574502909};
         for (unsigned int i = 0; i < 3; ++i) {

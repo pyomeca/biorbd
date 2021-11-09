@@ -101,7 +101,8 @@ public:
     ///
     virtual utils::Vector3d computeForce(
             const utils::Vector3d& x,
-            const utils::Vector3d& dx) const = 0;
+            const utils::Vector3d& dx,
+            const utils::Vector3d& angularVelocity) const = 0;
 
     ///
     /// \brief Get the application point relative to the plane

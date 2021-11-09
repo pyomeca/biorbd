@@ -223,7 +223,8 @@ utils::Scalar rigidbody::SoftContactSphere::transitionVelocity() const
 
 utils::Vector3d rigidbody::SoftContactSphere::computeForce(
         const utils::Vector3d& x,
-        const utils::Vector3d& dx) const
+        const utils::Vector3d& dx,
+        const utils::Vector3d& angularVelocity) const
 {
 
     // Indentation detection with the ground
@@ -232,7 +233,7 @@ utils::Vector3d rigidbody::SoftContactSphere::computeForce(
 
     // Decomposition into normal and tangent velocities
     utils::Scalar normalVelocity = dx.dot(normal);
-    utils::Vector3d tangentVelocity = dx - normalVelocity * normal;
+    utils::Vector3d tangentVelocity = dx - normalVelocity * normal + (*m_radius * normal).cross(angularVelocity);
 
     // Penetration of the sphere in the plane
     utils::Scalar delta = -((x - plane).dot(normal) - *m_radius);
