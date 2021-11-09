@@ -66,7 +66,7 @@ void Matlab_inverseDynamics( int, mxArray *plhs[],
         if (externalForces) {
             // Recevoir les plates-formes
             std::vector<RigidBodyDynamics::Math::SpatialVector> f_ext =
-                model->dispatchedForce(f_tp[j]);
+                model->dispatchedForce(f_tp, j);
             std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl
                 = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
             for (unsigned int i=0; i<f_ext.size(); ++i) {
