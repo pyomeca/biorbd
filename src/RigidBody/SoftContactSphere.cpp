@@ -41,14 +41,17 @@ rigidbody::SoftContactSphere::SoftContactSphere(
         const utils::Scalar &z,
         const utils::Scalar &radius,
         const utils::Scalar &stiffness,
-        const utils::Scalar &damping):
+        const utils::Scalar &damping,
+        const utils::Scalar &m_muStatic,
+        const utils::Scalar &m_muDynamic,
+        const utils::Scalar &m_muViscous):
     rigidbody::SoftContactNode(x, y, z),
     m_radius(std::make_shared<utils::Scalar>(radius)),
     m_stiffness(std::make_shared<utils::Scalar>(stiffness)),
     m_damping(std::make_shared<utils::Scalar>(damping)),
-    m_muStatic(std::make_shared<utils::Scalar>(0.8)),
-    m_muDynamic(std::make_shared<utils::Scalar>(0.7)),
-    m_muViscous(std::make_shared<utils::Scalar>(0.5)),
+    m_muStatic(std::make_shared<utils::Scalar>(m_muStatic)),
+    m_muDynamic(std::make_shared<utils::Scalar>(m_muDynamic)),
+    m_muViscous(std::make_shared<utils::Scalar>(m_muViscous)),
     m_transitionVelocity(std::make_shared<utils::Scalar>(0.01))
 {
     setType();
@@ -58,14 +61,17 @@ rigidbody::SoftContactSphere::SoftContactSphere(
         const Vector3d &other,
         const utils::Scalar &radius,
         const utils::Scalar &stiffness,
-        const utils::Scalar &damping):
+        const utils::Scalar &damping,
+        const utils::Scalar &m_muStatic,
+        const utils::Scalar &m_muDynamic,
+        const utils::Scalar &m_muViscous):
     rigidbody::SoftContactNode(other),
     m_radius(std::make_shared<utils::Scalar>(radius)),
     m_stiffness(std::make_shared<utils::Scalar>(stiffness)),
     m_damping(std::make_shared<utils::Scalar>(damping)),
-    m_muStatic(std::make_shared<utils::Scalar>(0.8)),
-    m_muDynamic(std::make_shared<utils::Scalar>(0.7)),
-    m_muViscous(std::make_shared<utils::Scalar>(0.5)),
+    m_muStatic(std::make_shared<utils::Scalar>(m_muStatic)),
+    m_muDynamic(std::make_shared<utils::Scalar>(m_muDynamic)),
+    m_muViscous(std::make_shared<utils::Scalar>(m_muViscous)),
     m_transitionVelocity(std::make_shared<utils::Scalar>(0.01))
 {
     setType();
@@ -78,6 +84,9 @@ rigidbody::SoftContactSphere::SoftContactSphere(
         const utils::Scalar &radius,
         const utils::Scalar &stiffness,
         const utils::Scalar &damping,
+        const utils::Scalar &m_muStatic,
+        const utils::Scalar &m_muDynamic,
+        const utils::Scalar &m_muViscous,
         const utils::String &name,
         const utils::String &parentName,
         int parentID):
@@ -85,9 +94,9 @@ rigidbody::SoftContactSphere::SoftContactSphere(
     m_radius(std::make_shared<utils::Scalar>(radius)),
     m_stiffness(std::make_shared<utils::Scalar>(stiffness)),
     m_damping(std::make_shared<utils::Scalar>(damping)),
-    m_muStatic(std::make_shared<utils::Scalar>(0.8)),
-    m_muDynamic(std::make_shared<utils::Scalar>(0.7)),
-    m_muViscous(std::make_shared<utils::Scalar>(0.5)),
+    m_muStatic(std::make_shared<utils::Scalar>(m_muStatic)),
+    m_muDynamic(std::make_shared<utils::Scalar>(m_muDynamic)),
+    m_muViscous(std::make_shared<utils::Scalar>(m_muViscous)),
     m_transitionVelocity(std::make_shared<utils::Scalar>(0.01))
 {
     setType();
@@ -98,6 +107,9 @@ rigidbody::SoftContactSphere::SoftContactSphere(
         const utils::Scalar &radius,
         const utils::Scalar &stiffness,
         const utils::Scalar &damping,
+        const utils::Scalar &m_muStatic,
+        const utils::Scalar &m_muDynamic,
+        const utils::Scalar &m_muViscous,
         const utils::String &name,
         const utils::String &parentName,
         int parentID):
@@ -105,9 +117,9 @@ rigidbody::SoftContactSphere::SoftContactSphere(
     m_radius(std::make_shared<utils::Scalar>(radius)),
     m_stiffness(std::make_shared<utils::Scalar>(stiffness)),
     m_damping(std::make_shared<utils::Scalar>(damping)),
-    m_muStatic(std::make_shared<utils::Scalar>(0.8)),
-    m_muDynamic(std::make_shared<utils::Scalar>(0.7)),
-    m_muViscous(std::make_shared<utils::Scalar>(0.5)),
+    m_muStatic(std::make_shared<utils::Scalar>(m_muStatic)),
+    m_muDynamic(std::make_shared<utils::Scalar>(m_muDynamic)),
+    m_muViscous(std::make_shared<utils::Scalar>(m_muViscous)),
     m_transitionVelocity(std::make_shared<utils::Scalar>(0.01))
 {
     setType();
@@ -211,7 +223,8 @@ utils::Scalar rigidbody::SoftContactSphere::transitionVelocity() const
 
 utils::Vector3d rigidbody::SoftContactSphere::computeForce(
         const utils::Vector3d& x,
-        const utils::Vector3d& dx) const
+        const utils::Vector3d& dx,
+        const utils::Vector3d& angularVelocity) const
 {
 
     // Indentation detection with the ground
@@ -220,7 +233,7 @@ utils::Vector3d rigidbody::SoftContactSphere::computeForce(
 
     // Decomposition into normal and tangent velocities
     utils::Scalar normalVelocity = dx.dot(normal);
-    utils::Vector3d tangentVelocity = dx - normalVelocity * normal;
+    utils::Vector3d tangentVelocity = dx - normalVelocity * normal + (*m_radius * normal).cross(angularVelocity);
 
     // Penetration of the sphere in the plane
     utils::Scalar delta = -((x - plane).dot(normal) - *m_radius);

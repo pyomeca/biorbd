@@ -34,6 +34,9 @@ public:
     /// \param radius The radius of the sphere
     /// \param stiffness The stiffness of the contact sphere
     /// \param damping The damping factor of the contact sphere
+    /// \param muStatic Static friction coefficient
+    /// \param muDynamic Dynamic friction coefficient
+    /// \param muViscous Viscous friction coefficient
     ///
     SoftContactSphere(
         const utils::Scalar& x,
@@ -41,7 +44,11 @@ public:
         const utils::Scalar& z,
         const utils::Scalar& radius,
         const utils::Scalar& stiffness,
-        const utils::Scalar& damping);
+        const utils::Scalar& damping,
+        const utils::Scalar& muStatic,
+        const utils::Scalar& muDynamic,
+        const utils::Scalar& muViscous);
+
 
     ///
     /// \brief Construct a contact node from another node
@@ -49,12 +56,18 @@ public:
     /// \param radius The radius of the sphere
     /// \param stiffness The stiffness of the contact sphere
     /// \param damping The damping factor of the contact sphere
+    /// \param muStatic Static friction coefficient
+    /// \param muDynamic Dynamic friction coefficient
+    /// \param muViscous Viscous friction coefficient
     ///
     SoftContactSphere(
         const utils::Vector3d& other,
         const utils::Scalar& radius,
         const utils::Scalar& stiffness,
-        const utils::Scalar& damping);
+        const utils::Scalar& damping,
+        const utils::Scalar& muStatic,
+        const utils::Scalar& muDynamic,
+        const utils::Scalar& muViscous);
 
     ///
     /// \brief Construct a contact node
@@ -75,6 +88,9 @@ public:
         const utils::Scalar& radius,
         const utils::Scalar& stiffness,
         const utils::Scalar& damping,
+        const utils::Scalar& muStatic,
+        const utils::Scalar& muDynamic,
+        const utils::Scalar& muViscous,
         const utils::String& name,
         const utils::String& parentName,
         int parentID);
@@ -85,6 +101,9 @@ public:
     /// \param radius The radius of the sphere
     /// \param stiffness The stiffness of the contact sphere
     /// \param damping The damping factor of the contact sphere
+    /// \param muStatic Static friction coefficient
+    /// \param muDynamic Dynamic friction coefficient
+    /// \param muViscous Viscous friction coefficient
     /// \param name The name of the node
     /// \param parentName The name of the parent
     /// \param parentID The index of the parent contact
@@ -94,6 +113,9 @@ public:
         const utils::Scalar& radius,
         const utils::Scalar& stiffness,
         const utils::Scalar& damping,
+        const utils::Scalar& muStatic,
+        const utils::Scalar& muDynamic,
+        const utils::Scalar& muViscous,
         const utils::String& name,
         const utils::String& parentName,
         int parentID);
@@ -198,11 +220,13 @@ public:
     /// \brief Get the force in a spatial vector at the center of mass of the underlying segment
     /// \param x The position of the contact in global reference frame
     /// \param dx The velocity of the contact in global reference frame
+    /// \param angularVelocity The angular velocity of the segment in global reference frame with respect to the global frame.
     /// \return The Spatial vector
     ///
     virtual utils::Vector3d computeForce(
             const utils::Vector3d& x,
-            const utils::Vector3d& dx) const;
+            const utils::Vector3d& dx,
+            const utils::Vector3d& angularVelocity) const;
 
     ///
     /// \brief Get the application point relative to the plane

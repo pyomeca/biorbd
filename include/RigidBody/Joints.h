@@ -781,6 +781,19 @@ public:
         const GeneralizedCoordinates &QDot,
         const double k_stab = 1);
 
+    ///
+    /// \brief Return the angular velocity of the segment
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param updateKin If the model should be updated
+    /// \return The angular velocity of the segment
+    ///
+    utils::Vector3d segmentAngularVelocity(
+        const GeneralizedCoordinates &Q,
+        const GeneralizedVelocity &Qdot,
+        unsigned int idx,
+        bool updateKin = true);
+
     // ---- DYNAMIC INTERFACE ---- //
     ///
     /// \brief Interface for the inverse dynamics of RBDL

@@ -111,12 +111,12 @@ public:
         bool updateKin = true);
 
     ///
-    /// \brief Return the velocity of a contact
+    /// \brief Return the  linear velocity of a contact
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param idx The index of the marker in the contact set
     /// \param updateKin If the model should be updated
-    /// \return The velocity of the contact
+    /// \return The linear velocity of the contact
     ///
     NodeSegment softContactVelocity(
         const GeneralizedCoordinates &Q,
@@ -124,6 +124,19 @@ public:
         unsigned int idx,
         bool updateKin = true);
 
+    ///
+    /// \brief Return the  angular velocity of a contact
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param idx The index of the marker in the contact set
+    /// \param updateKin If the model should be updated
+    /// \return The angular velocity of the contact
+    ///
+    NodeSegment softContactAngularVelocity(
+        const GeneralizedCoordinates &Q,
+        const GeneralizedVelocity &Qdot,
+        unsigned int idx,
+        bool updateKin = true);
 
     ///
     /// \brief Return the velocity of all the contacts
@@ -133,6 +146,18 @@ public:
     /// \return The velocity of all the contacts
     ///
     std::vector<NodeSegment> softContactsVelocity(
+        const GeneralizedCoordinates &Q,
+        const GeneralizedVelocity &Qdot,
+        bool updateKin = true);
+
+    ///
+    /// \brief Return the angular velocity of all the contacts
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param updateKin If the model should be updated
+    /// \return The angular velocity of all the contacts
+    ///
+    std::vector<NodeSegment> softContactsAngularVelocity(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
         bool updateKin = true);

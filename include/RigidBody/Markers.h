@@ -167,13 +167,13 @@ public:
         bool removeAxis = true);
 
     ///
-    /// \brief Return the velocity of a marker
+    /// \brief Return the linear velocity of a marker
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param idx The index of the marker in the marker set
     /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
-    /// \return The velocity of a marker
+    /// \return The linear velocity of a marker
     ///
     NodeSegment markerVelocity(
         const GeneralizedCoordinates &Q,
@@ -182,16 +182,45 @@ public:
         bool removeAxis = true,
         bool updateKin = true);
 
+    ///
+    /// \brief Return the angular velocity of a marker
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param idx The index of the marker in the marker set
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param updateKin If the model should be updated
+    /// \return The angular velocity of a marker
+    ///
+    NodeSegment markerAngularVelocity(
+        const GeneralizedCoordinates &Q,
+        const GeneralizedVelocity &Qdot,
+        unsigned int idx,
+        bool removeAxis = true,
+        bool updateKin = true);
 
     ///
-    /// \brief Return the velocity of all the markers
+    /// \brief Return the linear velocity of all the markers
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param removeAxis If there are axis to remove from the position variables
     /// \param updateKin If the model should be updated
-    /// \return The velocity of all the markers
+    /// \return The linear velocity of all the markers
     ///
     std::vector<NodeSegment> markersVelocity(
+        const GeneralizedCoordinates &Q,
+        const GeneralizedVelocity &Qdot,
+        bool removeAxis=true,
+        bool updateKin = true);
+
+    ///
+    /// \brief Return the angular velocity of all the markers
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param updateKin If the model should be updated
+    /// \return The angular velocity of all the markers
+    ///
+    std::vector<NodeSegment> markersAngularVelocity(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
         bool removeAxis=true,
