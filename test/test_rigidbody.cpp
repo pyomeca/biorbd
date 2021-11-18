@@ -410,7 +410,7 @@ TEST(SoftContacts, ForceAtOrigin){
         FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.}));
         FILL_VECTOR(QDot, std::vector<double>({0.1, 0.1, 0.1, 0.1}));
 
-        RigidBodyDynamics::Math::SpatialVector force = sphere.computeForceAtOrigin(model, Q, QDot);
+        utils::SpatialVector force = sphere.computeForceAtOrigin(model, Q, QDot);
 
         std::vector<double> forceExpected = {-670.95355043718416, 2.944729504204179, 2.2119497381886286,
                                              0, -221.1949738188676, 294.47295042042418};
