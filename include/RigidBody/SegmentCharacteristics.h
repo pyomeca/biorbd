@@ -120,6 +120,12 @@ public:
     ///
     const utils::Matrix3d inertia() const;
 
+    ///
+    /// \brief Set the matrix of inertia
+    /// \param inertia The new matrix of inertia
+    ///
+    void setInertia(const utils::Matrix3d& inertia);
+
 protected:
     std::shared_ptr<utils::Scalar> m_length; ///< Length of the segment
     std::shared_ptr<Mesh> m_mesh; ///< Mesh of the segment

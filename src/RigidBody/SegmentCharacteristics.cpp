@@ -97,3 +97,9 @@ const utils::Matrix3d rigidbody::SegmentCharacteristics::inertia() const
 {
     return mInertia;
 }
+
+void rigidbody::SegmentCharacteristics::setInertia(
+        const utils::Matrix3d &inertia)
+{
+    mInertia = inertia;
+}
