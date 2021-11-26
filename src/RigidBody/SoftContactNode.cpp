@@ -2,6 +2,8 @@
 #include "RigidBody/SoftContactNode.h"
 
 #include "Utils/Error.h"
+#include "Utils/SpatialVector.h"
+
 #include "RigidBody/Joints.h"
 #include "RigidBody/Segment.h"
 #include "RigidBody/SegmentCharacteristics.h"
@@ -66,7 +68,7 @@ void rigidbody::SoftContactNode::DeepCopy(
     *m_contactPlane = *other.m_contactPlane;
 }
 
-RigidBodyDynamics::Math::SpatialVector rigidbody::SoftContactNode::computeForceAtOrigin(
+utils::SpatialVector rigidbody::SoftContactNode::computeForceAtOrigin(
         Joints &model,
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &QDot,
@@ -94,7 +96,7 @@ RigidBodyDynamics::Math::SpatialVector rigidbody::SoftContactNode::computeForceA
     utils::Vector3d CoMinGlobal(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, CoM, updateKin));
 
     // Find the application point of the force
-    RigidBodyDynamics::Math::SpatialVector out(0, 0, 0, 0, 0, 0);
+    utils::SpatialVector out(0., 0., 0., 0., 0., 0.);
     out.block(0, 0, 3, 1) = force.cross(- applicationPoint(x));
     out.block(3, 0, 3, 1) = force;
     return out;

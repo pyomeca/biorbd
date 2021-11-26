@@ -8,6 +8,11 @@
 namespace BIORBD_NAMESPACE
 {
 
+namespace utils
+{
+class SpatialVector;
+}
+
 namespace rigidbody
 {
 class Joints;
@@ -87,7 +92,7 @@ public:
     /// \param updateKin If the kinematics should be updated
     /// \return The Spatial vector
     ///
-    virtual RigidBodyDynamics::Math::SpatialVector computeForceAtOrigin(
+    virtual utils::SpatialVector computeForceAtOrigin(
             Joints& model,
             const GeneralizedCoordinates& Q,
             const GeneralizedVelocity& QDot,
