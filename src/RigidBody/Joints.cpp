@@ -338,14 +338,21 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> * rigidbody::Joints::combine
     return f_ext_rbdl;
 }
 
-int rigidbody::Joints::GetBodyBiorbdId(const utils::String
-        &segmentName) const
+int rigidbody::Joints::GetBodyBiorbdId(
+        const utils::String &segmentName) const
 {
     for (int i=0; i<static_cast<int>(m_segments->size()); ++i)
         if (!(*m_segments)[static_cast<unsigned int>(i)].name().compare(segmentName)) {
             return i;
         }
     return -1;
+}
+
+
+int rigidbody::Joints::GetBodyRbdlId(
+        const utils::String &segmentName) const
+{
+    return GetBodyId(segmentName.c_str());
 }
 
 std::vector<utils::RotoTrans> rigidbody::Joints::allGlobalJCS(
