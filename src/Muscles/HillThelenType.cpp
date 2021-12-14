@@ -96,7 +96,7 @@ void muscles::HillThelenType::computeFlPE()
                   (exp( *m_cste_FlPE_2 )-1),
                   0);
 #else
-    if (position().length() > characteristics().tendonSlackLength())
+    if (position().length() > 0)
         *m_FlPE = (exp( *m_cste_FlPE_1 *
                         (position().length()/characteristics().optimalLength()-1)) -1)
                   /

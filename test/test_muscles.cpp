@@ -432,10 +432,10 @@ TEST(hillType, unitTest)
         SCALAR_TO_DOUBLE(damping, hillType.damping());
         SCALAR_TO_DOUBLE(force, hillType.force(emg));
         EXPECT_NEAR(flce, 0.67988981401208015, requiredPrecision);
-        EXPECT_NEAR(flpe, 0., requiredPrecision);
+        EXPECT_NEAR(flpe, 0.00010445169885884543, requiredPrecision);
         EXPECT_NEAR(fvce, 1.000886825333013, requiredPrecision);
         EXPECT_NEAR(damping, 0.00019534599393617336, requiredPrecision);
-        EXPECT_NEAR(force, 424.95358302550062, requiredPrecision);
+        EXPECT_NEAR(force, 425.01879222109824, requiredPrecision);
     }
     {
         Model model(modelPathForMuscleForce);
@@ -495,7 +495,7 @@ TEST(hillType, unitTest)
         muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(force, hillType.force(model, Q, qDot, emg, 2));
-        EXPECT_NEAR(force, 424.95358302550062, requiredPrecision);
+        EXPECT_NEAR(force, 425.01879222109824, requiredPrecision);
     }
 }
 
@@ -691,10 +691,10 @@ TEST(hillThelenType, unitTest)
         SCALAR_TO_DOUBLE(damping, hillThelenType.damping());
         SCALAR_TO_DOUBLE(force, hillThelenType.force(emg));
         EXPECT_NEAR(flce, 0.67988981401208015, requiredPrecision);
-        EXPECT_NEAR(flpe, 0., requiredPrecision);
+        EXPECT_NEAR(flpe, -0.0066784946431659503, requiredPrecision);
         EXPECT_NEAR(fvce, 1.000886825333013, requiredPrecision);
         EXPECT_NEAR(damping, 0.00019534599393617336, requiredPrecision);
-        EXPECT_NEAR(force, 424.95358302550062, requiredPrecision);
+        EXPECT_NEAR(force, 420.78419881977214, requiredPrecision);
     }
     {
         Model model(modelPathForMuscleForce);
@@ -2054,8 +2054,8 @@ TEST(MuscleForce, force)
     const utils::Vector& F = model.muscleForces(states);
 
     std::vector<double> ExpectedForce({
-        164.3110575502927, 106.89637709077938, 84.340201458493794,
-        92.212055754969938, 85.0882802083116, 198.6356130736217
+        164.3110575502927, 161.17939113106524, 91.100465471478159,
+        88.081033990706132, 80.918896002583097, 198.6356130736217
     });
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i) {
         SCALAR_TO_DOUBLE(val, F(i));
@@ -2077,7 +2077,7 @@ TEST(MuscleForce, torqueFromMuscles)
     }
 
     rigidbody::GeneralizedTorque Tau(model);
-    std::vector<double> TauExpected({-18.271389285751727, -7.820566757538376});
+    std::vector<double> TauExpected({-18.388187416167106, -7.631137475560136});
     Tau = model.muscularJointTorque(states, Q, QDot);
     for (unsigned int i=0; i<QDDot.size(); ++i) {
         SCALAR_TO_DOUBLE(val, Tau(i));
@@ -2085,7 +2085,7 @@ TEST(MuscleForce, torqueFromMuscles)
     }
 
     RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot);
-    std::vector<double> QDDotExpected({-33.399442816118814, -53.361387611204343});
+    std::vector<double> QDDotExpected({-35.781646267505906, -46.813878560550371});
     for (unsigned int i=0; i<QDDot.size(); ++i) {
         SCALAR_TO_DOUBLE(val, QDDot(i));
         EXPECT_NEAR(val, QDDotExpected[i], requiredPrecision);
