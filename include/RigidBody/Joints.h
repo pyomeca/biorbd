@@ -148,6 +148,14 @@ public:
         const utils::String &segmentName) const;
 
     ///
+    /// \brief Return the rbdl body identification
+    /// \param segmentName The name of the segment
+    /// \return The rbdl body identification
+    ///
+    int GetBodyRbdlId(
+        const utils::String &segmentName) const;
+
+    ///
     /// \brief Return the number of generalized torque
     /// \return The number of generalized torque
     ///
