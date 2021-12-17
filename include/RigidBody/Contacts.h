@@ -20,6 +20,9 @@ class SpatialVector;
 namespace rigidbody
 {
 class GeneralizedCoordinates;
+class GeneralizedVelocity;
+class GeneralizedAcceleration;
+class NodeSegment;
 
 ///
 /// \brief Class Contacts
@@ -153,9 +156,50 @@ public:
     ///
     utils::Vector getForce() const;
 
+    ///
+    /// \brief Returns all the rigid contacts as declared in the model
+    /// \return All the rigid contacts as declared in the model
+    ///
+    const std::vector<NodeSegment>& rigidContacts() const;
+
+    ///
+    /// \brief Returns the rigid contact idx as declared in the model
+    /// \param idx The index of the contact
+    /// \return All the rigid contacts as declared in the model
+    ///
+    const NodeSegment& rigidContact(unsigned int idx) const;
+
+    ///
+    /// \brief Return the contraints position in the global reference
+    /// \param Q The generalized coordinates of the joints
+    /// \param updateKin Whether the kinematics of the model should be updated from Q
+    /// \return The contraints positions in the global reference
+    ///
+    std::vector<utils::Vector3d> rigidContacts(
+        const GeneralizedCoordinates &Q,
+        bool updateKin);
+
+    ///
+    /// \brief Return the acceleration of all the contact
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param Qddot The generalized velocities
+    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param updateKin If the model should be updated
+    /// \return The acceleration of all the markers
+    ///
+    utils::Vector3d rigidContactAcceleration(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &Qdot,
+        const rigidbody::GeneralizedAcceleration &dQdot,
+        unsigned int idx,
+        bool updateKin = true);
+
+
 protected:
     std::shared_ptr<unsigned int> m_nbreConstraint; ///< Number of constraints
     std::shared_ptr<bool> m_isBinded; ///< If the model is ready
+    std::shared_ptr<std::vector<rigidbody::NodeSegment>> m_rigidContacts; ///< The rigid contacts declared in the model (copy of RBDL information)
 
 };
 

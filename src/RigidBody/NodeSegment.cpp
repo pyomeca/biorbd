@@ -81,6 +81,24 @@ rigidbody::NodeSegment::NodeSegment(
     //ctor
 }
 
+rigidbody::NodeSegment::NodeSegment(
+        const utils::Vector3d &node,
+        const utils::String &name,
+        const utils::String &parentName,
+        bool isTechnical,
+        bool isAnatomical,
+        const std::vector<bool> &axesToRemove,
+        int parentID) :
+    utils::Vector3d(node, name, parentName),
+    m_axesRemoved(std::make_shared<std::vector<bool>>(axesToRemove)),
+    m_nbAxesToRemove(std::make_shared<int>(0)),
+    m_technical(std::make_shared<bool>(isTechnical)),
+    m_anatomical(std::make_shared<bool>(isAnatomical)),
+    m_id(std::make_shared<int>(parentID))
+{
+
+}
+
 rigidbody::NodeSegment rigidbody::NodeSegment::DeepCopy() const
 {
     rigidbody::NodeSegment copy;
@@ -116,6 +134,11 @@ bool rigidbody::NodeSegment::isTechnical() const
 int rigidbody::NodeSegment::parentId() const
 {
     return *m_id;
+}
+
+const std::vector<bool> &rigidbody::NodeSegment::axes() const
+{
+    return *m_axesRemoved;
 }
 
 rigidbody::NodeSegment rigidbody::NodeSegment::removeAxes()
