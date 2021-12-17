@@ -192,6 +192,32 @@ public:
         bool updateKin);
 
     ///
+    /// \brief Return the velocity of the chosen contact
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param idx The index of the contact
+    /// \param updateKin If the model should be updated
+    /// \return The velocity of the chosen contact
+    ///
+    utils::Vector3d rigidContactVelocity(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &Qdot,
+        unsigned int idx,
+        bool updateKin = true);
+
+    ///
+    /// \brief Return the velocities of all the contacts
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param Qddot The generalized velocities
+    /// \return The velocities of all the contacts
+    ///
+    std::vector<utils::Vector3d> rigidContactsVelocity(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &Qdot,
+        bool updateKin = true);
+
+    ///
     /// \brief Return the acceleration of the chosen contact
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
