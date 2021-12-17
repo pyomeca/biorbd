@@ -199,6 +199,24 @@ rigidbody::Contacts::constraintsInGlobal(
     return tp;
 }
 
+utils::Vector3d rigidbody::Contacts::rigidContact(
+    const rigidbody::GeneralizedCoordinates &Q,
+    unsigned int idx,
+    bool updateKin)
+{
+    // Assuming that this is also a joint type (via BiorbdModel)
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
+                                       (*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+
+    const rigidbody::NodeSegment& c = rigidContact(idx);
+
+    // Calculate the acceleration of the contact
+    return RigidBodyDynamics::CalcBodyToBaseCoordinates(
+            model, Q, c.parentId(), c, updateKin);
+}
 
 std::vector<utils::Vector3d>
 rigidbody::Contacts::rigidContacts(

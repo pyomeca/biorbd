@@ -170,10 +170,22 @@ public:
     const NodeSegment& rigidContact(unsigned int idx) const;
 
     ///
-    /// \brief Return the contraints position in the global reference
+    /// \brief Return the rigidContact position in the global reference
+    /// \param Q The generalized coordinates of the joints
+    /// \param idx The index of the contact
+    /// \param updateKin Whether the kinematics of the model should be updated from Q
+    /// \return The rigidContact position in the global reference
+    ///
+    utils::Vector3d rigidContact(
+        const GeneralizedCoordinates &Q,
+        unsigned int idx,
+        bool updateKin);
+
+    ///
+    /// \brief Return all the rigidContacts position in the global reference
     /// \param Q The generalized coordinates of the joints
     /// \param updateKin Whether the kinematics of the model should be updated from Q
-    /// \return The contraints positions in the global reference
+    /// \return All the rigidContacts positions in the global reference
     ///
     std::vector<utils::Vector3d> rigidContacts(
         const GeneralizedCoordinates &Q,
