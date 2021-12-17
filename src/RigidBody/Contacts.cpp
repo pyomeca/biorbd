@@ -248,6 +248,35 @@ utils::Vector3d rigidbody::Contacts::rigidContactAcceleration(
             model, Q, Qdot, Qddot, c.parentId(), c, updateKin);
 }
 
+std::vector<utils::Vector3d> rigidbody::Contacts::rigidContactsAcceleration(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedAcceleration &Qddot,
+    bool updateKin)
+{
+    // Assuming that this is also a joint type (via BiorbdModel)
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
+                                       (*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+
+    // Output variable
+    std::vector<utils::Vector3d> tp;
+
+    // On each control, apply the Q, Qdot, Qddot and save the acceleration
+    for (const rigidbody::NodeSegment& c : *m_rigidContacts) {
+        tp.push_back(RigidBodyDynamics::CalcPointAcceleration(
+            model, Q, Qdot, Qddot, c.parentId(), c, updateKin)
+        );
+#ifndef BIORBD_USE_CASADI_MATH
+    updateKin = false;
+#endif
+    }
+
+    return tp;
+}
+
 
 utils::Vector rigidbody::Contacts::getForce() const
 {

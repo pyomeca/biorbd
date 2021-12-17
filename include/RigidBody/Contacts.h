@@ -180,13 +180,13 @@ public:
         bool updateKin);
 
     ///
-    /// \brief Return the acceleration of all the contact
+    /// \brief Return the acceleration of the chosen contact
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
     /// \param Qddot The generalized velocities
-    /// \param removeAxis If there are axis to remove from the position variables
+    /// \param idx The index of the contact
     /// \param updateKin If the model should be updated
-    /// \return The acceleration of all the markers
+    /// \return The acceleration of the chosen contact
     ///
     utils::Vector3d rigidContactAcceleration(
         const rigidbody::GeneralizedCoordinates &Q,
@@ -195,6 +195,18 @@ public:
         unsigned int idx,
         bool updateKin = true);
 
+    ///
+    /// \brief Return the acceleration of all the contacts
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param Qddot The generalized velocities
+    /// \return The acceleration of all the contacts
+    ///
+    std::vector<utils::Vector3d> rigidContactsAcceleration(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &Qdot,
+        const rigidbody::GeneralizedAcceleration &dQdot,
+        bool updateKin = true);
 
 protected:
     std::shared_ptr<unsigned int> m_nbreConstraint; ///< Number of constraints
