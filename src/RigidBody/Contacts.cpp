@@ -51,9 +51,16 @@ unsigned int rigidbody::Contacts::AddConstraint(
     ++*m_nbreConstraint;
 
     // Check world_normal points to what axis
-    // TODO
     utils::String axis = "";
+    if      (world_normal[0] == 1){
     axis += "x";
+    }
+    if      (world_normal[1] == 1){
+    axis += "y";
+    }
+    if      (world_normal[2] == 1){
+    axis += "z";
+    }
 
     m_rigidContacts->push_back(NodeSegment(body_point, name, "",true,false, axis.c_str(),body_id));
     return RigidBodyDynamics::ConstraintSet::AddContactConstraint(body_id,
