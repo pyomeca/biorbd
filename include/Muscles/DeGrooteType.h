@@ -1,5 +1,5 @@
-#ifndef BIORBD_MUSCLES_HILL_THELEN_TYPE_H
-#define BIORBD_MUSCLES_HILL_THELEN_TYPE_H
+#ifndef BIORBD_MUSCLES_DE_GROOTE_TYPE_H
+#define BIORBD_MUSCLES_DE_GROOTE_TYPE_H
 
 #include "biorbdConfig.h"
 #include "Muscles/HillType.h"
@@ -9,63 +9,63 @@ namespace BIORBD_NAMESPACE
 namespace muscles
 {
 ///
-/// \brief Muscle of Hill type augmented by Thelen
-/// https://simtk-confluence.stanford.edu/display/OpenSim/Thelen+2003+Muscle+Model
+/// \brief Muscle based on DeGroote 2016
+/// https://link.springer.com/article/10.1007%2Fs10439-016-1591-9
 ///
-class BIORBD_API HillThelenType : public HillType
+class BIORBD_API DeGrooteType : public HillType
 {
 public:
     ///
-    /// \brief Contruct a Hill-Thelen-type muscle
+    /// \brief Contruct a DeGroote-type muscle
     ///
-    HillThelenType();
+    DeGrooteType();
 
     ///
-    /// \brief Construct a Hill-Thelen-type muscle
+    /// \brief Construct a DeGroote-type muscle
     /// \param name The muscle name
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
     ///
-    HillThelenType(
+    DeGrooteType(
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics);
 
     ///
-    /// \brief Construct a Hill-Thelen-type muscle
+    /// \brief Construct a DeGroote-type muscle
     /// \param name The muscle name
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
     /// \param emg The muscle dynamic state
     ///
-    HillThelenType(
+    DeGrooteType(
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
         const State& emg);
 
     ///
-    /// \brief Construct a Hill-Thelen-type muscle
+    /// \brief Construct a DeGroote-type muscle
     /// \param name The muscle name
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
     /// \param pathModifiers The set of path modifiers
     ///
-    HillThelenType(
+    DeGrooteType(
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
         const PathModifiers& pathModifiers);
 
     ///
-    /// \brief Construct a Hill-Thelen-type muscle
+    /// \brief Construct a DeGroote-type muscle
     /// \param name The muscle name
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
     /// \param pathModifiers The set of path modifiers
     /// \param emg The dynamic state
     ///
-    HillThelenType(
+    DeGrooteType(
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
@@ -73,39 +73,36 @@ public:
         const State& emg);
 
     ///
-    /// \brief Construct a Hill-Thelen-type muscle from another muscle
+    /// \brief Construct a DeGroote-type muscle from another muscle
     /// \param other The other muscle
     ///
-    HillThelenType(
+    DeGrooteType(
         const Muscle& other);
 
     ///
-    /// \brief Construct a Hill-Thelen-type muscle from another muscle
+    /// \brief Construct a DeGroote-type muscle from another muscle
     /// \param other The other muscle (pointer)
     ///
-    HillThelenType(
+    DeGrooteType(
         const std::shared_ptr<Muscle> other);
 
     ///
-    /// \brief Deep copy of a Hill-Thelen-type muscle
-    /// \return A deep copy of a Hill-Thelen-type muscle
+    /// \brief Deep copy of a DeGroote-type muscle
+    /// \return A deep copy of a DeGroote-type muscle
     ///
-    HillThelenType DeepCopy() const;
+    DeGrooteType DeepCopy() const;
 
     ///
-    /// \brief Deep copy of a Hill-Thelen-type muscle in a new Hill-Thelen-type muscle
-    /// \param other The Hill-Thelen-type muscle to copy
+    /// \brief Deep copy of a DeGroote-type muscle in a new DeGroote-type muscle
+    /// \param other The DeGroote-type muscle to copy
     ///
-    void DeepCopy(const HillThelenType& other);
+    void DeepCopy(const DeGrooteType& other);
 
     ///
     /// \brief Compute the Force-Length of the passive element
     ///
     virtual void computeFlPE();
     
-    ///
-    /// \brief Compute the Force-Velocity of the passive element
-    ///
     virtual void computeFvCE();
 
     ///
@@ -116,7 +113,7 @@ public:
 
 protected:
     ///
-    /// \brief Set type to Hill_Thelen
+    /// \brief Set type to De_Groote
     ///
     virtual void setType();
 
@@ -125,4 +122,4 @@ protected:
 }
 }
 
-#endif // BIORBD_MUSCLES_HILL_THELEN_TYPE_H
+#endif // BIORBD_MUSCLES_DE_GROOTE_TYPE_H

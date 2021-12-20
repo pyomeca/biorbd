@@ -64,5 +64,5 @@ muscles::StateDynamicsDeGroote::timeDerivativeActivation(
 
 void muscles::StateDynamicsDeGroote::setType()
 {
-    *m_stateType = muscles::STATE_TYPE::DE_GROOTE;
+    *m_stateType = muscles::STATE_TYPE::DE_GROOTE_STATE;
 }
