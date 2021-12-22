@@ -157,6 +157,12 @@ public:
     utils::Vector getForce() const;
 
     ///
+    /// \brief Returns the number of rigid contacts (ignoring the loop constraints)
+    /// \return The number of rigid contacts (ignoring the loop constraints)
+    ///
+    int nbRigidContacts() const;
+
+    ///
     /// \brief Returns all the rigid contacts as declared in the model
     /// \return All the rigid contacts as declared in the model
     ///

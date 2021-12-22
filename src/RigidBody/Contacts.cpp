@@ -352,6 +352,11 @@ utils::Vector rigidbody::Contacts::getForce() const
     return static_cast<utils::Vector>(this->force);
 }
 
+int rigidbody::Contacts::nbRigidContacts() const
+{
+    return m_rigidContacts->size();
+}
+
 const std::vector<rigidbody::NodeSegment> &rigidbody::Contacts::rigidContacts() const
 {
     return *m_rigidContacts;
