@@ -20,6 +20,9 @@ class SpatialVector;
 namespace rigidbody
 {
 class GeneralizedCoordinates;
+class GeneralizedVelocity;
+class GeneralizedAcceleration;
+class NodeSegment;
 
 ///
 /// \brief Class Contacts
@@ -153,9 +156,106 @@ public:
     ///
     utils::Vector getForce() const;
 
+    ///
+    /// \brief Returns the number of rigid contacts (ignoring the loop constraints)
+    /// \return The number of rigid contacts (ignoring the loop constraints)
+    ///
+    int nbRigidContacts() const;
+
+    ///
+    /// \brief Returns all the rigid contacts as declared in the model
+    /// \return All the rigid contacts as declared in the model
+    ///
+    const std::vector<NodeSegment>& rigidContacts() const;
+
+    ///
+    /// \brief Returns the rigid contact idx as declared in the model
+    /// \param idx The index of the contact
+    /// \return All the rigid contacts as declared in the model
+    ///
+    const NodeSegment& rigidContact(unsigned int idx) const;
+
+    ///
+    /// \brief Return the rigidContact position in the global reference
+    /// \param Q The generalized coordinates of the joints
+    /// \param idx The index of the contact
+    /// \param updateKin Whether the kinematics of the model should be updated from Q
+    /// \return The rigidContact position in the global reference
+    ///
+    utils::Vector3d rigidContact(
+        const GeneralizedCoordinates &Q,
+        unsigned int idx,
+        bool updateKin);
+
+    ///
+    /// \brief Return all the rigidContacts position in the global reference
+    /// \param Q The generalized coordinates of the joints
+    /// \param updateKin Whether the kinematics of the model should be updated from Q
+    /// \return All the rigidContacts positions in the global reference
+    ///
+    std::vector<utils::Vector3d> rigidContacts(
+        const GeneralizedCoordinates &Q,
+        bool updateKin);
+
+    ///
+    /// \brief Return the velocity of the chosen contact
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param idx The index of the contact
+    /// \param updateKin If the model should be updated
+    /// \return The velocity of the chosen contact
+    ///
+    utils::Vector3d rigidContactVelocity(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &Qdot,
+        unsigned int idx,
+        bool updateKin = true);
+
+    ///
+    /// \brief Return the velocities of all the contacts
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param Qddot The generalized velocities
+    /// \return The velocities of all the contacts
+    ///
+    std::vector<utils::Vector3d> rigidContactsVelocity(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &Qdot,
+        bool updateKin = true);
+
+    ///
+    /// \brief Return the acceleration of the chosen contact
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param Qddot The generalized velocities
+    /// \param idx The index of the contact
+    /// \param updateKin If the model should be updated
+    /// \return The acceleration of the chosen contact
+    ///
+    utils::Vector3d rigidContactAcceleration(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &Qdot,
+        const rigidbody::GeneralizedAcceleration &dQdot,
+        unsigned int idx,
+        bool updateKin = true);
+
+    ///
+    /// \brief Return the acceleration of all the contacts
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param Qddot The generalized velocities
+    /// \return The acceleration of all the contacts
+    ///
+    std::vector<utils::Vector3d> rigidContactsAcceleration(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &Qdot,
+        const rigidbody::GeneralizedAcceleration &dQdot,
+        bool updateKin = true);
+
 protected:
     std::shared_ptr<unsigned int> m_nbreConstraint; ///< Number of constraints
     std::shared_ptr<bool> m_isBinded; ///< If the model is ready
+    std::shared_ptr<std::vector<rigidbody::NodeSegment>> m_rigidContacts; ///< The rigid contacts declared in the model (copy of RBDL information)
 
 };
 

@@ -4,19 +4,23 @@
 #include <rbdl/Kinematics.h>
 #include "Utils/String.h"
 #include "Utils/Error.h"
-#include "RigidBody/GeneralizedCoordinates.h"
 #include "Utils/Vector3d.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/Rotation.h"
 #include "Utils/SpatialVector.h"
 #include "RigidBody/Joints.h"
+#include "RigidBody/NodeSegment.h"
+#include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
+#include "RigidBody/GeneralizedAcceleration.h"
 
 using namespace BIORBD_NAMESPACE;
 
 rigidbody::Contacts::Contacts() :
     RigidBodyDynamics::ConstraintSet (),
     m_nbreConstraint(std::make_shared<unsigned int>(0)),
-    m_isBinded(std::make_shared<bool>(false))
+    m_isBinded(std::make_shared<bool>(false)),
+    m_rigidContacts(std::make_shared<std::vector<rigidbody::NodeSegment>>())
 {
 
 }
@@ -34,7 +38,7 @@ void rigidbody::Contacts::DeepCopy(const rigidbody::Contacts
     static_cast<RigidBodyDynamics::ConstraintSet&>(*this) = other;
     *m_nbreConstraint = *other.m_nbreConstraint;
     *m_isBinded = *other.m_isBinded;
-
+    *m_rigidContacts = *other.m_rigidContacts;
 }
 
 unsigned int rigidbody::Contacts::AddConstraint(
@@ -45,6 +49,23 @@ unsigned int rigidbody::Contacts::AddConstraint(
     double acc)
 {
     ++*m_nbreConstraint;
+
+    // Check world_normal points to what axis
+    utils::String axis = "";
+    SCALAR_TO_DOUBLE(has_x, world_normal[0]);
+    SCALAR_TO_DOUBLE(has_y, world_normal[1]);
+    SCALAR_TO_DOUBLE(has_z, world_normal[2]);
+    if (has_x != 0){
+        axis += "x";
+    }
+    if (has_y != 0){
+        axis += "y";
+    }
+    if (has_z != 0){
+        axis += "z";
+    }
+
+    m_rigidContacts->push_back(NodeSegment(body_point, name, "",true,false, axis.c_str(),body_id));
     return RigidBodyDynamics::ConstraintSet::AddContactConstraint(body_id,
             body_point, world_normal, name.c_str(), acc);
 }
@@ -58,22 +79,26 @@ unsigned int rigidbody::Contacts::AddConstraint(
     unsigned int ret(0);
     for (unsigned int i=0; i<axis.length(); ++i) {
         ++*m_nbreConstraint;
-        if      (axis.tolower()[i] == 'x')
+        if      (axis.tolower()[i] == 'x'){
             ret += RigidBodyDynamics::ConstraintSet::AddContactConstraint(
                        body_id, body_point, utils::Vector3d(1,0,0), (name + "_X").c_str(),
                        acc);
-        else if (axis.tolower()[i] == 'y')
+        }
+        else if (axis.tolower()[i] == 'y'){
             ret += RigidBodyDynamics::ConstraintSet::AddContactConstraint(
                        body_id, body_point, utils::Vector3d(0,1,0), (name + "_Y").c_str(),
                        acc);
-        else if (axis.tolower()[i] == 'z')
+        }
+        else if (axis.tolower()[i] == 'z'){
             ret += RigidBodyDynamics::ConstraintSet::AddContactConstraint(
                        body_id, body_point, utils::Vector3d(0,0,1), (name + "_Z").c_str(),
                        acc);
+        }
         else {
             utils::Error::raise("Wrong axis!");
         }
     }
+    m_rigidContacts->push_back(NodeSegment(body_point, name, "",true,false, axis,body_id));
     return ret;
 }
 
@@ -177,7 +202,167 @@ rigidbody::Contacts::constraintsInGlobal(
     return tp;
 }
 
+utils::Vector3d rigidbody::Contacts::rigidContact(
+    const rigidbody::GeneralizedCoordinates &Q,
+    unsigned int idx,
+    bool updateKin)
+{
+    // Assuming that this is also a joint type (via BiorbdModel)
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
+                                       (*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+
+    const rigidbody::NodeSegment& c = rigidContact(idx);
+
+    // Calculate the acceleration of the contact
+    return RigidBodyDynamics::CalcBodyToBaseCoordinates(
+            model, Q, c.parentId(), c, updateKin);
+}
+
+std::vector<utils::Vector3d>
+rigidbody::Contacts::rigidContacts(
+    const rigidbody::GeneralizedCoordinates &Q,
+    bool updateKin)
+{
+    // Assuming that this is also a Joints type (via BiorbdModel)
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+
+    // Output variable
+    std::vector<utils::Vector3d> tp;
+
+    // On each control, apply the rotation and save the position
+    for (const rigidbody::NodeSegment& c : *m_rigidContacts) {
+        tp.push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(
+            model, Q, c.parentId(), c, updateKin)
+        );
+#ifndef BIORBD_USE_CASADI_MATH
+        updateKin = false;
+#endif
+    }
+
+    return tp;
+}
+
+utils::Vector3d rigidbody::Contacts::rigidContactVelocity(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    unsigned int idx,
+    bool updateKin)
+{
+    // Assuming that this is also a joint type (via BiorbdModel)
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
+                                       (*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+
+    const rigidbody::NodeSegment& c = rigidContact(idx);
+
+    // Calculate the acceleration of the contact
+    return RigidBodyDynamics::CalcPointVelocity(
+            model, Q, Qdot, c.parentId(), c, updateKin);
+}
+
+std::vector<utils::Vector3d> rigidbody::Contacts::rigidContactsVelocity(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    bool updateKin)
+{
+    // Assuming that this is also a joint type (via BiorbdModel)
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
+                                       (*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+
+    // Output variable
+    std::vector<utils::Vector3d> tp;
+
+    // On each control, apply the Q, Qdot, Qddot and save the acceleration
+    for (const rigidbody::NodeSegment& c : *m_rigidContacts) {
+        tp.push_back(RigidBodyDynamics::CalcPointVelocity(
+            model, Q, Qdot, c.parentId(), c, updateKin)
+        );
+#ifndef BIORBD_USE_CASADI_MATH
+    updateKin = false;
+#endif
+    }
+
+    return tp;
+}
+
+utils::Vector3d rigidbody::Contacts::rigidContactAcceleration(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedAcceleration &Qddot,
+    unsigned int idx,
+    bool updateKin)
+{
+    // Assuming that this is also a joint type (via BiorbdModel)
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
+                                       (*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+
+    const rigidbody::NodeSegment& c = rigidContact(idx);
+
+    // Calculate the acceleration of the contact
+    return RigidBodyDynamics::CalcPointAcceleration(
+            model, Q, Qdot, Qddot, c.parentId(), c, updateKin);
+}
+
+std::vector<utils::Vector3d> rigidbody::Contacts::rigidContactsAcceleration(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedAcceleration &Qddot,
+    bool updateKin)
+{
+    // Assuming that this is also a joint type (via BiorbdModel)
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
+                                       (*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+
+    // Output variable
+    std::vector<utils::Vector3d> tp;
+
+    // On each control, apply the Q, Qdot, Qddot and save the acceleration
+    for (const rigidbody::NodeSegment& c : *m_rigidContacts) {
+        tp.push_back(RigidBodyDynamics::CalcPointAcceleration(
+            model, Q, Qdot, Qddot, c.parentId(), c, updateKin)
+        );
+#ifndef BIORBD_USE_CASADI_MATH
+    updateKin = false;
+#endif
+    }
+
+    return tp;
+}
+
+
 utils::Vector rigidbody::Contacts::getForce() const
 {
     return static_cast<utils::Vector>(this->force);
+}
+
+int rigidbody::Contacts::nbRigidContacts() const
+{
+    return m_rigidContacts->size();
+}
+
+const std::vector<rigidbody::NodeSegment> &rigidbody::Contacts::rigidContacts() const
+{
+    return *m_rigidContacts;
+}
+
+const rigidbody::NodeSegment &rigidbody::Contacts::rigidContact(unsigned int idx) const
+{
+    return (*m_rigidContacts)[idx];
 }

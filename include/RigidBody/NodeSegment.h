@@ -87,6 +87,25 @@ public:
         int parentID);
 
     ///
+    /// \brief Construct a segment node
+    /// \param node The position of the node
+    /// \param name The name of the node
+    /// \param parentName The name of the parent
+    /// \param isTechnical If the node is technical
+    /// \param isAnatomical If the node is anatomical
+    /// \param axesToRemove The axis to remove
+    /// \param parentID The index of the parent segment
+    ///
+    NodeSegment(
+        const utils::Vector3d& node,
+        const utils::String& name,
+        const utils::String& parentName,
+        bool isTechnical,
+        bool isAnatomical,
+        const std::vector<bool>& axesToRemove,
+        int parentID);
+
+    ///
     /// \brief Deep copy of the segment node
     /// \return A deep copy of the segment node
     ///
@@ -117,6 +136,12 @@ public:
     /// \return The parent index
     ///
     int parentId() const;
+
+    ///
+    /// \brief Accessor to axes to remove
+    /// \return The axes to remove
+    ///
+    const std::vector<bool>& axes() const;
 
     ///
     /// \brief To remove axis
