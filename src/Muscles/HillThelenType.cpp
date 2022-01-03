@@ -87,19 +87,19 @@ void muscles::HillThelenType::DeepCopy(
 
 void muscles::HillThelenType::computeFlPE()
 {
-	utils::Scalar norm_len = position().length()/characteristics().optimalLength();
+        utils::Scalar normLength = position().length()  / characteristics().optimalLength();
         double kpe = 5.0;
 	double e0 = 0.6;
 #ifdef BIORBD_USE_CASADI_MATH
     *m_FlPE = IF_ELSE_NAMESPACE::if_else(
-                  IF_ELSE_NAMESPACE::gt(norm_len, 1),
-                  ((exp( kpe * (norm_len - 1) / e0 ) -1)
+                  IF_ELSE_NAMESPACE::gt(normLength, 1),
+                  ((exp( kpe * (normLength - 1) / e0 ) -1)
                   /
                   (exp( kpe)-1)),
                   0);
 #else
-    if (norm_len > 1)
-        *m_FlPE = (exp( kpe * (norm_len - 1) / e0) -1)
+    if (normLength > 1)
+        *m_FlPE = (exp( kpe * (normLength - 1) / e0) -1)
                   /
                   (exp( kpe )-1);
     else
@@ -111,8 +111,8 @@ void muscles::HillThelenType::computeFlPE()
 void muscles::HillThelenType::computeFlCE(
     const muscles::State&)
 {
-    utils::Scalar norm_len = position().length()/characteristics().optimalLength();
-    *m_FlCE = exp( -((norm_len - 1) * (norm_len - 1)) /  0.45 );
+    utils::Scalar normLength = position().length() / characteristics().optimalLength();
+    *m_FlCE = exp( -((normLength - 1) * (normLength - 1)) /  0.45 );
 }
 
 void muscles::HillThelenType::computeFvCE()

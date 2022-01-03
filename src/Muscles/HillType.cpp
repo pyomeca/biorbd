@@ -348,12 +348,9 @@ void muscles::HillType::computeFlPE()
 utils::Scalar muscles::HillType::getForceFromActivation(
     const muscles::State &emg)
 {
-    utils::Scalar penAngle = characteristics().pennationAngle();
+    utils::Scalar cosAngle = cos(characteristics().pennationAngle());
     // Fonction qui permet de modifier la facon dont la multiplication est faite dans computeForce(EMG)
-    return characteristics().forceIsoMax() * (emg.activation() * *m_FlCE * *m_FvCE +
-            *m_FlPE + *m_damping)
-            * cos(penAngle)
-            ;
+    return characteristics().forceIsoMax() * (emg.activation() * *m_FlCE * *m_FvCE + *m_FlPE + *m_damping) * cosAngle;
 }
 
 void muscles::HillType::normalizeEmg(

@@ -89,18 +89,18 @@ void muscles::DeGrooteType::computeFlPE()
 {
     double kpe = 4;
     double e0 = 0.6;
-    utils::Scalar norm_length = position().length()/characteristics().optimalLength();
+    utils::Scalar normLength = position().length() / characteristics().optimalLength();
 
 #ifdef BIORBD_USE_CASADI_MATH
     *m_FlPE = IF_ELSE_NAMESPACE::if_else_zero(
-                  IF_ELSE_NAMESPACE::gt(norm_length, 1),
-                (exp( (kpe * (norm_length-1)) / e0) -1)
+                  IF_ELSE_NAMESPACE::gt(normLength, 1),
+                (exp( (kpe * (normLength-1)) / e0) -1)
                                       /
                                   (exp( kpe ) - 1));
 #else
 
-    if (norm_length > 1) {
-        *m_FlPE = (exp( (kpe * (norm_length-1)) / e0) -1)
+    if (normLength > 1) {
+        *m_FlPE = (exp( (kpe * (normLength-1)) / e0) -1)
                       /
                   (exp( kpe ) - 1);
     } else {
@@ -116,7 +116,7 @@ void muscles::DeGrooteType::computeFvCE()
     double d2 = -8.149;
     double d3 = -0.374;
     double d4 = 0.886;
-    utils::Scalar norm_v = m_position->velocity() / (*m_cste_maxShorteningSpeed * characteristics().optimalLength());
+    utils::Scalar norm_v = m_position->velocity() / *m_cste_maxShorteningSpeed;
 
     *m_FvCE = d1 * log((d2 * norm_v + d3) +
                              sqrt(( d2 * norm_v + d3)*( d2 * norm_v + d3) + 1))
@@ -138,19 +138,19 @@ void muscles::DeGrooteType::computeFlCE(
     double b23 = 1.000;
     double b33 = 0.354;
     double b43 = 0.0;
-    utils::Scalar norm_length = position().length()/characteristics().optimalLength();
+    utils::Scalar normLength = position().length() / characteristics().optimalLength();;
 
-    *m_FlCE = b11 * exp((-0.5*((norm_length-b21)*(norm_length-b21)))
+    *m_FlCE = b11 * exp((-0.5*((normLength-b21)*(normLength-b21)))
                        /
-                       ((b31 + b41*norm_length)*(b31 + b41*norm_length)))
+                       ((b31 + b41*normLength)*(b31 + b41*normLength)))
             +
-            b12 * exp((-0.5*((norm_length-b22)*(norm_length-b22)))
+            b12 * exp((-0.5*((normLength-b22)*(normLength-b22)))
                         /
-                        ((b32 + b42*norm_length)*(b32 + b42*norm_length)))
+                        ((b32 + b42*normLength)*(b32 + b42*normLength)))
             +
-            b13 * exp((-0.5*((norm_length-b23)*(norm_length-b23)))
+            b13 * exp((-0.5*((normLength-b23)*(normLength-b23)))
                         /
-                        ((b33 + b43*norm_length)*(b33 + b43*norm_length)));
+                        ((b33 + b43*normLength)*(b33 + b43*normLength)));
 }
 
 void muscles::DeGrooteType::setType()
