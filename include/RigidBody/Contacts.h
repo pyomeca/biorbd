@@ -145,7 +145,7 @@ public:
     /// \param i The axis
     /// \return The name of the contact normal of a specified axis
     ///
-    utils::String contactNormal(unsigned int i);
+    std::vector<bool> rigidContactNormal(unsigned int i);
 
     ///
     /// \brief Return the constraints position in the global reference
