@@ -355,6 +355,16 @@ int rigidbody::Joints::GetBodyRbdlId(
     return GetBodyId(segmentName.c_str());
 }
 
+int rigidbody::Joints::GetBodyRbdlId2BiorbdId(
+        const int idx) const
+{
+    // Assuming that this is also a joint type (via BiorbdModel)
+    const rigidbody::Joints &model = dynamic_cast<const rigidbody::Joints &>(*this);
+    std::string bodyName = model.GetBodyName(idx);
+    return model.GetBodyBiorbdId(bodyName);
+}
+
+
 std::vector<utils::RotoTrans> rigidbody::Joints::allGlobalJCS(
     const rigidbody::GeneralizedCoordinates &Q)
 {

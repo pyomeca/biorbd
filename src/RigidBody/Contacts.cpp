@@ -376,16 +376,11 @@ unsigned int rigidbody::Contacts::contactSegmentRbdlId(
 int rigidbody::Contacts::contactSegmentBiorbdId(
         unsigned int idx) const
 {
-    //   const rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
-    // const rigidbody::NodeSegment& rc((*m_rigidContacts)[idx]);
-    // unsigned int id = model.GetBodyId(rc.parent().c_str());
-    // return id;
     // Assuming that this is also a joint type (via BiorbdModel)
-     const rigidbody::Joints &model = dynamic_cast<const rigidbody::Joints &>(*this);
+    const rigidbody::Joints &model = dynamic_cast<const rigidbody::Joints &>(*this);
 
     const rigidbody::NodeSegment& c = rigidContact(idx);
-    std::string bodyName = model.GetBodyName(c.parentId());
 
-    return model.GetBodyBiorbdId(bodyName);
+    return model.GetBodyRbdlId2BiorbdId(c.parentId());
 
 }

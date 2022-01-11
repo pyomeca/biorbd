@@ -156,6 +156,14 @@ public:
         const utils::String &segmentName) const;
 
     ///
+    /// \brief Return the Biorbd body identification from rbdl
+    /// \param idx The Rbdl body Id
+    /// \return The Biorbd body identification
+    ///
+    int GetBodyRbdlId2BiorbdId(
+        const int idx) const;
+
+    ///
     /// \brief Return the number of generalized torque
     /// \return The number of generalized torque
     ///
