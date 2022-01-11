@@ -141,18 +141,25 @@ public:
     utils::String contactName(unsigned int i);
 
     ///
-    /// \brief Return the contraints position in the global reference
+    /// \brief Return the normal of the contact of a specified axis
+    /// \param i The axis
+    /// \return The name of the contact normal of a specified axis
+    ///
+    utils::String contactNormal(unsigned int i);
+
+    ///
+    /// \brief Return the constraints position in the global reference
     /// \param Q The generalized coordinates of the joints
     /// \param updateKin Whether the kinematics of the model should be updated from Q
-    /// \return The contraints positions in the global reference
+    /// \return The constraints positions in the global reference
     ///
     std::vector<utils::Vector3d> constraintsInGlobal(
         const GeneralizedCoordinates &Q,
         bool updateKin);
 
     ///
-    /// \brief Return the force acting on the contraint
-    /// \return The force acting on the contraint
+    /// \brief Return the force acting on the constraint
+    /// \return The force acting on the constraint
     ///
     utils::Vector getForce() const;
 

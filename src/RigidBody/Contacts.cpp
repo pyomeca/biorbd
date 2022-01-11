@@ -170,6 +170,10 @@ utils::String rigidbody::Contacts::contactName(unsigned int i)
     return RigidBodyDynamics::ConstraintSet::name[i];
 }
 
+utils::String rigidbody::Contacts::contactNormal(unsigned int i)
+{
+    return (*m_rigidContacts)[i]->axis;
+}
 
 std::vector<utils::Vector3d>
 rigidbody::Contacts::constraintsInGlobal(
