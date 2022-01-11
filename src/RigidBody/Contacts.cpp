@@ -374,17 +374,43 @@ int rigidbody::Contacts::nbRigidContacts() const
 unsigned int rigidbody::Contacts::contactSegmentRbdlId(
         unsigned int idx) const
 {
+    utils::Error::check(idx<nbRigidContacts(),
+                                "Idx for rigid contact Segment Id is too high..");
+
     return contactConstraints[idx]->getBodyIds()[0];
 }
 
 int rigidbody::Contacts::contactSegmentBiorbdId(
         unsigned int idx) const
 {
+    utils::Error::check(idx<nbRigidContacts(),
+                                "Idx for rigid contact Segment Id is too high..");
+
     // Assuming that this is also a joint type (via BiorbdModel)
     const rigidbody::Joints &model = dynamic_cast<const rigidbody::Joints &>(*this);
 
     const rigidbody::NodeSegment& c = rigidContact(idx);
 
     return model.GetBodyRbdlId2BiorbdId(c.parentId());
+}
 
+std::vector<size_t> rigidbody::Contacts::segmentRigidContactIdx(
+        unsigned int segment_idx) const
+{
+    // Output variable
+    std::vector<size_t> indices;
+
+    // On each rigidcontact, verify if it belongs to the segment specified
+    for (size_t i=0; i<nbRigidContacts(); ++i)
+        {
+        std::cout << "contactSegmentBiorbdId";
+        std::cout << contactSegmentBiorbdId(i);
+        std::cout << "segment_idx";
+        std::cout << segment_idx;
+        if (contactSegmentBiorbdId(i) == segment_idx) {
+            indices.push_back(i);
+        }
+    }
+
+    return indices;
 }

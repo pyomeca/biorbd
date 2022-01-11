@@ -180,6 +180,14 @@ public:
             unsigned int  idx) const;
 
     ///
+    /// \brief Return the index of rigid contacts for a specified segment index
+    /// \param idx The index of the segment
+    /// \return the index of rigid contacts for the specified segment idx
+    ///
+    std::vector<size_t> segmentRigidContactIdx(
+            unsigned int segment_idx) const;
+
+    ///
     /// \brief Returns the number of rigid contacts (ignoring the loop constraints)
     /// \return The number of rigid contacts (ignoring the loop constraints)
     ///
