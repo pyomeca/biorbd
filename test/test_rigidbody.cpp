@@ -113,6 +113,19 @@ TEST(Contacts, unitTest)
 
         EXPECT_NEAR(contacts.nbContacts(), 7., requiredPrecision);
     }
+    {
+        Model model(modelPathForGeneralTesting);
+
+        EXPECT_EQ(model.isAxesNormal(0)[0], false);
+        EXPECT_EQ(model.isAxesNormal(0)[1], true);
+        EXPECT_EQ(model.isAxesNormal(0)[2], true);
+    }
+    {
+        Model model(modelPathForGeneralTesting);
+
+        EXPECT_EQ(model.contactSegmentBiorbdId(0), 7);
+        EXPECT_EQ(model.contactSegmentRbdlId(0), 10);
+    }
 }
 
 TEST(Contacts, DeepCopy)
@@ -819,6 +832,11 @@ TEST(Joints, unitTest)
             EXPECT_NEAR(momentum, expectedAngularMomentum[i], requiredPrecision);
         }
     }
+    {
+        Model model(modelPathForGeneralTesting);
+        EXPECT_EQ(model.GetBodyRbdlIdToBiorbdId(4),1);
+    }
+
 }
 
 TEST(Markers, copy)
