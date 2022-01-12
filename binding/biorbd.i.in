@@ -29,6 +29,7 @@
 %include <std_pair.i>
 namespace std {
 %template(VecStdString) std::vector<std::string>;
+%template(VecStdBool) std::vector<bool>;
 }
 
 // Includes all neceressary files from the API
