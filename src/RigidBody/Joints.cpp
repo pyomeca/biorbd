@@ -325,25 +325,54 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> * rigidbody::Joints::combine
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = dispatchedForce(f_ext);
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_contacts_rbdl = dynamic_cast<rigidbody::Contacts*>(this)->rigidContactToSpatialVector(Q, f_contacts, updateKin);
 
-    if (!f_ext_rbdl && !softContacts){
+    if (!f_ext_rbdl && !softContacts && !f_contacts_rbdl){
         // Return a nullptr
         return nullptr;
     }
 
-    if (!f_ext_rbdl){
+    if (!f_ext_rbdl && !f_contacts_rbdl){
         // Return the softContacts (and nullptr if softContacts is nullptr)
         return softContacts;
     }
 
-    if (!softContacts){
+    if (!softContacts && !f_contacts_rbdl){
         // Return the External forces
         return f_ext_rbdl;
     }
 
+    if (!f_ext_rbdl && !softContacts){
+        // Return the contact forces
+        return f_contacts_rbdl;
+    }
+
+    if (!f_contacts_rbdl)
+    {
     for (size_t i=0; i<softContacts->size(); ++i){
         // Combine the external forces with the soft contacts
         (*f_ext_rbdl)[i] += (*softContacts)[i];
     }
+    }
+    if (!softContacts)
+    {
+    for (size_t i=0; i<f_contacts_rbdl->size(); ++i){
+        // Combine the external forces with the soft contacts
+        (*f_ext_rbdl)[i] += (*f_contacts_rbdl)[i];
+    }
+    }
+    if (!f_ext_rbdl)
+    {
+    for (size_t i=0; i<f_contacts_rbdl->size(); ++i){
+        // Combine the external forces with the soft contacts
+        (*softContacts)[i] += (*f_contacts_rbdl)[i];
+    }
+    return softContacts;
+    }
+    for (size_t i=0; i<f_contacts_rbdl->size(); ++i){
+        // Combine the external forces with the soft contacts
+        (*f_ext_rbdl)[i] += (*softContacts)[i];
+        (*f_ext_rbdl)[i] += (*f_contacts_rbdl)[i];
+    }
+
     delete softContacts;
     delete f_contacts_rbdl;
     return f_ext_rbdl;
