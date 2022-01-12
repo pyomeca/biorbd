@@ -295,11 +295,15 @@ protected:
     /// \param f_ext The external forces (it can be a nullptr)
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
+    /// \param f_contacts The forces applied to the rigid contacts
+    /// \param updateKin If the kinematics of the model should be computed
     ///
     std::vector<RigidBodyDynamics::Math::SpatialVector> * combineExtForceAndSoftContact(
             std::vector<utils::SpatialVector> *f_ext,
             const rigidbody::GeneralizedCoordinates& Q,
-            const rigidbody::GeneralizedVelocity& QDot);
+            const rigidbody::GeneralizedVelocity& QDot,
+            std::vector<utils::Vector3d> *f_contacts = nullptr,
+            bool updateKin = false);
 
     // ---------------------------- //
 public:
@@ -817,13 +821,14 @@ public:
     /// \param QDot The Generalized Velocities
     /// \param QDDot The Generalzed Acceleration
     /// \param f_ext External force acting on the system if there are any
+    /// \param f_contacts The forces applied to the rigid contacts if there are any
     /// \return The Generalized Torques
     ///
-    GeneralizedTorque InverseDynamics(
-        const GeneralizedCoordinates &Q,
+    GeneralizedTorque InverseDynamics(const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &QDot,
         const rigidbody::GeneralizedAcceleration &QDDot,
-        std::vector<utils::SpatialVector>* f_ext = nullptr);
+        std::vector<utils::SpatialVector>* f_ext = nullptr,
+        std::vector<utils::Vector3d> *f_contacts = nullptr);
 
     ///
     /// \brief Interface to NonLinearEffect

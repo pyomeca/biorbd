@@ -10,6 +10,7 @@
 #include "Utils/SpatialVector.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/NodeSegment.h"
+#include "RigidBody/Segment.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
@@ -409,4 +410,79 @@ std::vector<size_t> rigidbody::Contacts::segmentRigidContactIdx(
     }
 
     return indices;
+}
+
+std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::Contacts::rigidContactToSpatialVector(
+        const GeneralizedCoordinates& Q,
+        std::vector<utils::Vector3d> *f_contacts,
+        bool updateKin)
+{
+    if (nbRigidContacts() == 0){
+        return nullptr;
+    }
+
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+
+    // Assuming that this is also a joint type (via BiorbdModel)
+    rigidbody::Joints& model = dynamic_cast<rigidbody::Joints&>(*this);
+    RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
+
+    std::vector<RigidBodyDynamics::Math::SpatialVector>* out = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
+    out->push_back(sp_zero);
+    for (size_t i = 0; i < model.nbSegment(); ++i){
+
+        unsigned int nbRigidContactSegment = segmentRigidContactIdx(i).size();
+        RigidBodyDynamics::Math::SpatialVector tp(0.,0.,0.,0.,0.,0.);
+
+        for (size_t j = 0; j < nbRigidContactSegment; ++j)
+        {
+            // Index of rigid contact
+            unsigned int contact_index = segmentRigidContactIdx(i)[j];
+            // Find the application point of the force
+            utils::Vector3d x = rigidContact(Q, contact_index, updateKin);
+            // Find the normal enabled for this rigid contact
+            std::vector<bool> rcn = isAxesNormal(contact_index);
+            // Add the contribution of the force of this point
+            tp += computeForceAtOrigin(x, rcn, f_contacts->at(contact_index));
+        }
+
+        // Put all the force at zero before the last dof of the segment
+        for (int j = 0; j < static_cast<int>(model.segment(i).nbDof()) - 1; ++j){
+            out->push_back(sp_zero);
+        }
+        // Put all the force on the last dof of the segment
+        out->push_back(tp);
+    }
+#ifndef BIORBD_USE_CASADI_MATH
+        updateKin = false;
+#endif
+    return out;
+}
+
+utils::SpatialVector rigidbody::Contacts::computeForceAtOrigin(
+        utils::Vector3d applicationPoint,
+        std::vector<bool> isAxesNormal,
+        utils::Vector3d f_contact)
+{
+
+    utils::Vector3d force(0., 0., 0.);
+
+    for  (size_t j = 0; j < 2; ++j)
+    {
+        // Fill only if contact normal is enabled in .bioMod
+        // in x, y, z order
+        if (isAxesNormal[j]){
+            force.block(3+j,0,1,1) = f_contact.block(j, 0, 1, 1);
+        // Do we raise a warning// error if the value is not zero in the input
+        // to warn the user the component won't be taken into account?
+        }
+    }
+
+    utils::SpatialVector out(0., 0., 0., 0., 0., 0.);
+    out.block(0, 0, 3, 1) = force.cross(- applicationPoint); // Transport to Origin (Bour's formula)
+    out.block(3, 0, 3, 1) = force;
+
+    return out;
 }

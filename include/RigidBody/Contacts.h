@@ -190,12 +190,25 @@ public:
     ///
     /// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof
     /// \param Q The Generalized coordinates
-    /// \param f_contacts the forces applied the contact point
+    /// \param f_contacts the forces applied at the contact points
     /// \return The rigid contacts
     ///
     std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidContactToSpatialVector(
             const GeneralizedCoordinates& Q,
-            std::vector<utils::SpatialVector> *f_contacts);
+            std::vector<utils::Vector3d> *f_contacts,
+            bool updateKin);
+
+    ///
+    /// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof
+    /// \param applicationPoint the position where the force is applied in base coordinate
+    /// \param isAxesNormal world normals enabled for this rigid contact, True if enabled
+    /// \param f_contact the forces applied at the contact point
+    /// \return The rigid contacts
+    ///
+    utils::SpatialVector computeForceAtOrigin(
+            utils::Vector3d applicationPoint,
+            std::vector<bool> isAxesNormal,
+            utils::Vector3d f_contact);
 
     ///
     /// \brief Returns the number of rigid contacts (ignoring the loop constraints)
