@@ -160,7 +160,7 @@ public:
     /// \param idx The Rbdl body Id
     /// \return The Biorbd body identification
     ///
-    int GetBodyRbdlId2BiorbdId(
+    int GetBodyRbdlIdToBiorbdId(
         const int idx) const;
 
     ///
