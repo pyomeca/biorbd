@@ -170,9 +170,9 @@ utils::String rigidbody::Contacts::contactName(unsigned int i)
     return RigidBodyDynamics::ConstraintSet::name[i];
 }
 
-std::vector<bool> rigidbody::Contacts::rigidContactNormal(unsigned int i)
+std::vector<bool> rigidbody::Contacts::isAxesNormal(unsigned int contact_idx)
 {
-    return rigidContact(i).axes();
+    return rigidContact(contact_idx).axes();
 }
 
 std::vector<utils::Vector3d>
@@ -391,7 +391,7 @@ int rigidbody::Contacts::contactSegmentBiorbdId(
 
     const rigidbody::NodeSegment& c = rigidContact(idx);
 
-    return model.GetBodyRbdlId2BiorbdId(c.parentId());
+    return model.GetBodyRbdlIdToBiorbdId(c.parentId());
 }
 
 std::vector<size_t> rigidbody::Contacts::segmentRigidContactIdx(
@@ -403,10 +403,6 @@ std::vector<size_t> rigidbody::Contacts::segmentRigidContactIdx(
     // On each rigidcontact, verify if it belongs to the segment specified
     for (size_t i=0; i<nbRigidContacts(); ++i)
         {
-        std::cout << "contactSegmentBiorbdId";
-        std::cout << contactSegmentBiorbdId(i);
-        std::cout << "segment_idx";
-        std::cout << segment_idx;
         if (contactSegmentBiorbdId(i) == segment_idx) {
             indices.push_back(i);
         }

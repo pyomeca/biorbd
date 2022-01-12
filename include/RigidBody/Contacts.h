@@ -141,11 +141,11 @@ public:
     utils::String contactName(unsigned int i);
 
     ///
-    /// \brief Return the normal of the contact of a specified axis
-    /// \param i The axis
-    /// \return The name of the contact normal of a specified axis
+    /// \brief Return a vector of boolean of True if the axis is a normal
+    /// \param i the index of the rigid contact
+    /// \return A vector of boolean of True if the axis is a normal
     ///
-    std::vector<bool> rigidContactNormal(unsigned int i);
+    std::vector<bool> isAxesNormal(unsigned int contact_idx);
 
     ///
     /// \brief Return the constraints position in the global reference
@@ -186,6 +186,16 @@ public:
     ///
     std::vector<size_t> segmentRigidContactIdx(
             unsigned int segment_idx) const;
+
+    ///
+    /// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof
+    /// \param Q The Generalized coordinates
+    /// \param f_contacts the forces applied the contact point
+    /// \return The rigid contacts
+    ///
+    std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidContactToSpatialVector(
+            const GeneralizedCoordinates& Q,
+            std::vector<utils::SpatialVector> *f_contacts);
 
     ///
     /// \brief Returns the number of rigid contacts (ignoring the loop constraints)
