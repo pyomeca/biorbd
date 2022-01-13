@@ -171,10 +171,33 @@ utils::String rigidbody::Contacts::contactName(unsigned int i)
     return RigidBodyDynamics::ConstraintSet::name[i];
 }
 
-std::vector<bool> rigidbody::Contacts::isAxesNormal(unsigned int contact_idx)
+std::vector<int> rigidbody::Contacts::rigidContactAxisIdx(unsigned int contact_idx) const
 {
-    return rigidContact(contact_idx).axes();
+    std::vector<int> list;
+
+    // Assuming that this is also a Joints type (via BiorbdModel)
+    const rigidbody::Joints &model =
+        dynamic_cast<const rigidbody::Joints &>(*this);
+
+    const utils::String& axis = rigidContact(contact_idx).axesToRemove();
+//            rigidContact(contact_idx).axesToRemove().c_str();
+
+    for (unsigned int i=0; i<axis.length(); ++i) {
+
+        if      (axis.tolower()[i] == 'x'){
+            list.push_back(0);
+        }
+        else if (axis.tolower()[i] == 'y'){
+            list.push_back(1);
+        }
+        else if (axis.tolower()[i] == 'z'){
+            list.push_back(2);
+        }
+
+    }
+    return list;
 }
+
 
 std::vector<utils::Vector3d>
 rigidbody::Contacts::constraintsInGlobal(
@@ -414,9 +437,12 @@ std::vector<size_t> rigidbody::Contacts::segmentRigidContactIdx(
 
 std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::Contacts::rigidContactToSpatialVector(
         const GeneralizedCoordinates& Q,
-        std::vector<utils::Vector3d> *f_contacts,
+        std::vector<utils::Vector> *f_contacts,
         bool updateKin)
 {
+    if (!f_contacts){
+        return nullptr;
+    }
     if (nbRigidContacts() == 0){
         return nullptr;
     }
@@ -442,10 +468,10 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::Contacts::rigidC
             unsigned int contact_index = segmentRigidContactIdx(i)[j];
             // Find the application point of the force
             utils::Vector3d x = rigidContact(Q, contact_index, updateKin);
-            // Find the normal enabled for this rigid contact
-            std::vector<bool> rcn = isAxesNormal(contact_index);
+            // Find the list of sorted index of normal enabled in .bioMod
+            std::vector<int> rca_idx = rigidContactAxisIdx(contact_index);
             // Add the contribution of the force of this point
-            tp += computeForceAtOrigin(x, rcn, f_contacts->at(contact_index));
+            tp += computeForceAtOrigin(x, rca_idx, (*f_contacts)[contact_index]);
         }
 
         // Put all the force at zero before the last dof of the segment
@@ -463,21 +489,18 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::Contacts::rigidC
 
 utils::SpatialVector rigidbody::Contacts::computeForceAtOrigin(
         utils::Vector3d applicationPoint,
-        std::vector<bool> isAxesNormal,
-        utils::Vector3d f_contact)
+        std::vector<int> sortedAxisIndex,
+        utils::Vector f_contact)
 {
 
     utils::Vector3d force(0., 0., 0.);
 
-    for  (size_t j = 0; j < 2; ++j)
+    for  (size_t j = 0; j < sortedAxisIndex.size(); ++j)
     {
         // Fill only if contact normal is enabled in .bioMod
-        // in x, y, z order
-        if (isAxesNormal[j]){
-            force.block(3+j,0,1,1) = f_contact.block(j, 0, 1, 1);
-        // Do we raise a warning// error if the value is not zero in the input
-        // to warn the user the component won't be taken into account?
-        }
+        // sorted in .BioMod
+        unsigned int cur_axis=sortedAxisIndex[j];
+        force.block(cur_axis, 0, 1, 1) = f_contact.block(j, 0, 1, 1);
     }
 
     utils::SpatialVector out(0., 0., 0., 0., 0., 0.);

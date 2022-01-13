@@ -189,7 +189,7 @@ public:
     /// \brief Return the axes to removed
     /// \return The axes to removed
     ///
-    utils::String axesToRemove();
+    utils::String axesToRemove() const;
 
     ///
     /// \brief Return the number of axes to remove

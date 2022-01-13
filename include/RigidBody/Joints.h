@@ -302,7 +302,7 @@ protected:
             std::vector<utils::SpatialVector> *f_ext,
             const rigidbody::GeneralizedCoordinates& Q,
             const rigidbody::GeneralizedVelocity& QDot,
-            std::vector<utils::Vector3d> *f_contacts = nullptr,
+            std::vector<utils::Vector> *f_contacts = nullptr,
             bool updateKin = false);
 
     // ---------------------------- //
@@ -828,7 +828,7 @@ public:
         const GeneralizedVelocity &QDot,
         const rigidbody::GeneralizedAcceleration &QDDot,
         std::vector<utils::SpatialVector>* f_ext = nullptr,
-        std::vector<utils::Vector3d> *f_contacts = nullptr);
+        std::vector<utils::Vector> *f_contacts = nullptr);
 
     ///
     /// \brief Interface to NonLinearEffect

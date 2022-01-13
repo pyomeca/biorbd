@@ -310,7 +310,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> * rigidbody::Joints::combine
         std::vector<utils::SpatialVector> *f_ext,
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& QDot,
-        std::vector<utils::Vector3d> *f_contacts,
+        std::vector<utils::Vector> *f_contacts,
         bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -1195,7 +1195,7 @@ rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
     const rigidbody::GeneralizedVelocity &QDot,
     const rigidbody::GeneralizedAcceleration &QDDot,
     std::vector<utils::SpatialVector>* f_ext,
-    std::vector<utils::Vector3d> *f_contacts)
+    std::vector<utils::Vector> *f_contacts)
 {
     rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
     std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, Q, QDot, f_contacts));

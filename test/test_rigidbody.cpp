@@ -116,9 +116,8 @@ TEST(Contacts, unitTest)
     {
         Model model(modelPathForGeneralTesting);
 
-        EXPECT_EQ(model.isAxesNormal(0)[0], false);
-        EXPECT_EQ(model.isAxesNormal(0)[1], true);
-        EXPECT_EQ(model.isAxesNormal(0)[2], true);
+        EXPECT_EQ(model.rigidContactAxisIdx(0)[0], 1);
+        EXPECT_EQ(model.rigidContactAxisIdx(0)[1], 2);
     }
     {
         Model model(modelPathForGeneralTesting);
