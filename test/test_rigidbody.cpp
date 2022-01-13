@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 #include <rbdl/rbdl_math.h>
 #include <rbdl/Dynamics.h>
+#include <string.h>
 
 #include "BiorbdModel.h"
 #include "biorbdConfig.h"
@@ -124,6 +125,122 @@ TEST(Contacts, unitTest)
 
         EXPECT_EQ(model.contactSegmentBiorbdId(0), 7);
         EXPECT_EQ(model.contactSegmentRbdlId(0), 10);
+    }
+    {
+        Model model(modelPathForGeneralTesting);
+
+        EXPECT_EQ(model.segmentRigidContactIdx(7)[0], 0);
+        EXPECT_EQ(model.segmentRigidContactIdx(7)[1], 1);
+    }
+}
+
+TEST(Contacts, computeForceAtOrigin)
+{
+    {
+        Model model(modelPathForGeneralTesting);
+
+        utils::Vector force;
+        force = utils::Vector(2);
+        force[0] = 1;
+        force[1] = 2;
+
+        const utils::SpatialVector forceAtOrigin = model.computeForceAtOrigin(utils::Vector3d(1, 1, 1),std::vector<int>({1, 2}),force);
+
+        std::vector<double> forceExpected = {1, -2, 1,
+                                             0, 1, 2};
+        for (unsigned int i = 0; i < 6; ++i)
+        {
+            SCALAR_TO_DOUBLE(f, forceAtOrigin(i));
+            EXPECT_NEAR(f, forceExpected[i], requiredPrecision);
+        }
+    }
+}
+
+TEST(Contacts, rigidContactToSpatialVector)
+{
+    {
+        Model model(modelPathForGeneralTesting);
+
+        rigidbody::GeneralizedCoordinates Q(model);
+        FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2, 0.3,
+                                           -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, 0.4}));
+
+        std::vector<utils::Vector> realAllForces;
+        std::vector<utils::Vector> *allForces;
+        allForces = &realAllForces;
+
+        std::vector<RigidBodyDynamics::Math::SpatialVector>*
+        SpatialVectorAtOriginNULL = model.rigidContactToSpatialVector(Q, allForces, true);
+
+        EXPECT_FALSE(SpatialVectorAtOriginNULL);
+    }
+    {
+        Model model(modelPathForGeneralTesting);
+
+        rigidbody::GeneralizedCoordinates Q(model);
+        FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2, 0.3,
+                                           -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, 0.4}));
+
+        std::vector<utils::Vector> realAllForces;
+        std::vector<utils::Vector> *allForces;
+        allForces = &realAllForces;
+
+        utils::Vector force1;
+        force1 = utils::Vector(2);
+        force1[0] = 1;
+        force1[1] = 2;
+
+        utils::Vector force2;
+        force2 = utils::Vector(1);
+        force2[0] = 3;
+
+        utils::Vector force3;
+        force3 = utils::Vector(2);
+        force3[0] = 4;
+        force3[1] = 5;
+
+        utils::Vector force4;
+        force4 = utils::Vector(1);
+        force4[0] = 6;
+
+        allForces->push_back(force1);
+        allForces->push_back(force2);
+        allForces->push_back(force3);
+        allForces->push_back(force4);
+
+        std::vector<RigidBodyDynamics::Math::SpatialVector>*
+                SpatialVectorAtOrigin = model.rigidContactToSpatialVector(Q, allForces, true);
+
+        RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
+        RigidBodyDynamics::Math::SpatialVector sp_dof12(-7.592268755852077, -0.7864099999999999, 0.14995, 0, 1.0, 5.0);
+        RigidBodyDynamics::Math::SpatialVector sp_dof15(-17.952947566495585, 1.72277, -0.5998, 0.0, 4.0, 11.0);
+
+        std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;
+
+        sp_expected.push_back(sp_zero); // Dof 0
+        sp_expected.push_back(sp_zero); // Dof 1
+        sp_expected.push_back(sp_zero); // Dof 2
+        sp_expected.push_back(sp_zero); // Dof 3
+        sp_expected.push_back(sp_zero); // Dof 4
+        sp_expected.push_back(sp_zero); // Dof 5
+        sp_expected.push_back(sp_zero); // Dof 6
+        sp_expected.push_back(sp_zero); // Dof 7
+        sp_expected.push_back(sp_zero); // Dof 8
+        sp_expected.push_back(sp_zero); // Dof 9
+        sp_expected.push_back(sp_zero); // Dof 10
+        sp_expected.push_back(sp_zero); // Dof 11
+        sp_expected.push_back(sp_dof12); // Dof 12
+        sp_expected.push_back(sp_zero); // Dof 13
+        sp_expected.push_back(sp_zero); // Dof 14
+        sp_expected.push_back(sp_dof15); // Dof 15
+
+        for (unsigned int i = 0; i < 16; ++i){
+
+            for (unsigned int j = 0; j < 6; ++j)
+                    {
+                        EXPECT_NEAR((*SpatialVectorAtOrigin)[i](j), sp_expected[i](j), requiredPrecision);
+                    }
+        }
     }
 }
 

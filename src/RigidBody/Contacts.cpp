@@ -443,6 +443,9 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::Contacts::rigidC
     if (!f_contacts){
         return nullptr;
     }
+    if ((*f_contacts).size() == 0){
+        return nullptr;
+    }
     if (nbRigidContacts() == 0){
         return nullptr;
     }
