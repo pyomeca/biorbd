@@ -833,7 +833,8 @@ TEST(Joints, unitTest)
     }
     {
         Model model(modelPathForGeneralTesting);
-        EXPECT_EQ(model.GetBodyRbdlIdToBiorbdId(4),1);
+        EXPECT_EQ(model.GetBodyRbdlIdToBiorbdId(3),0);
+        EXPECT_EQ(model.GetBodyRbdlIdToBiorbdId(4),-1);
     }
 
 }
