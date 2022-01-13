@@ -25,6 +25,8 @@
     #include "RigidBody/KalmanReconsIMU.h"
 #endif
 
+#include "testWrapperClass.h"
+
 using namespace BIORBD_NAMESPACE;
 
 static double requiredPrecision(1e-10);
