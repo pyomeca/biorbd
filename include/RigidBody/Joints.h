@@ -835,12 +835,15 @@ public:
     /// \param Q The Generalized Coordinates
     /// \param QDot The Generalized Velocities
     /// \param f_ext External force acting on the system if there are any
+    /// \param f_contacts The forces applied to the rigid contacts if there are any
     /// \return The Generalized Torques of the bias effects
     ///
     GeneralizedTorque NonLinearEffect(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &QDot,
-        std::vector<utils::SpatialVector>* f_ext = nullptr);
+        std::vector<utils::SpatialVector>* f_ext = nullptr,
+        std::vector<utils::Vector> *f_contacts = nullptr);
+
 
     ///
     /// \brief Interface for the forward dynamics of RBDL

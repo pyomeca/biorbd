@@ -1,0 +1,51 @@
+version 4
+
+// DEFINITION DU SEGMENTS
+
+// Seg1
+segment Seg1
+    translations	xyz
+    rotations	y
+    rangesQ  -0.70 2.30
+             -10 10
+             -3    3
+             -pi   pi
+    mass 1
+    inertia
+        1 0 0
+        0 1 0
+        0 0 1
+    com 0.1 0.1 0.1
+        mesh 0 -1 -1
+        mesh 0 0 -1
+        mesh 0 0 0
+        mesh 0 -1 0
+        mesh 0 -1 -1
+        mesh 1 -1 -1
+        mesh 1 0 -1
+        mesh 0 0 -1
+        mesh 1 0 -1
+        mesh 1 0 0
+        mesh 0 0 0
+        mesh 1 0 0
+        mesh 1 -1 0
+        mesh 0 -1 0
+        mesh 1 -1 0
+        mesh 1 -1 -1
+	externalforceindex 0
+endsegment
+
+// Contact
+contact    PiedG_1
+    parent    Seg1
+    position    -0.00465    0.15809    0.00611
+    axis    yz
+endcontact
+contact    PiedG_2
+    parent    Seg1
+    position    0.00757    0.01189    -0.01802
+    axis    z
+endcontact
+
+        
+        

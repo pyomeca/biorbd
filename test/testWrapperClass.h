@@ -1,20 +1,33 @@
 #ifndef TEST_WRAPPER_CLASS_H
 #define TEST_WRAPPER_CLASS_H
 
+#include "BiorbdModel.h"
 #include "RigidBody/Joints.h"
+#include "RigidBody/Contacts.h"
+#include "RigidBody/SoftContacts.h"
 
 namespace BIORBD_NAMESPACE
 {
-class WrapperJoints : public rigidbody::Joints {
+class WrapperToJointsContactSoftcontact :
+        public rigidbody::Joints
+        ,public rigidbody::Contacts
+        ,public rigidbody::SoftContacts {
 
 public:
-     std::vector<RigidBodyDynamics::Math::SpatialVector> * wrapCombineExtForceAndSoftContact(
+    WrapperToJointsContactSoftcontact(const BIORBD_NAMESPACE::Model& m):
+        rigidbody::Joints(m),
+        rigidbody::Contacts(m),
+        rigidbody::SoftContacts(m)
+    {}
+
+    std::vector<RigidBodyDynamics::Math::SpatialVector> * wrapCombineExtForceAndSoftContact(
             std::vector<utils::SpatialVector> *f_ext,
             const rigidbody::GeneralizedCoordinates& Q,
-            const rigidbody::GeneralizedVelocity& QDot)
-    {
-        return this->Joints::combineExtForceAndSoftContact(f_ext, Q, QDot);
-    };
+            const rigidbody::GeneralizedVelocity& QDot,
+            std::vector<utils::Vector> *f_contacts,
+            bool updateKin){
+        return this->Joints::combineExtForceAndSoftContact(f_ext, Q, QDot, f_contacts, updateKin);
+    }
 };
 
 }
