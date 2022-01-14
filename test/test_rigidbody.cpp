@@ -1080,7 +1080,7 @@ TEST(Joints, combineExtForceAndSoftContact)
                 {
                     SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
                     SCALAR_TO_DOUBLE(f, (*f_ext_rbdl)[i](j));
-                    EXPECT_NEAR(f, f_expected, requiredPrecision);
+                    EXPECT_NEAR(f, f_expected, 1e-9);
                 }
         }
     }
@@ -1234,7 +1234,7 @@ TEST(Joints, combineExtForceAndSoftContact)
                 {
                     SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
                     SCALAR_TO_DOUBLE(f, (*f_ext_rbdl)[i](j));
-                    EXPECT_NEAR(f, f_expected, requiredPrecision);
+                    EXPECT_NEAR(f, f_expected, 1e-9);
                 }
     }
     }
@@ -1277,7 +1277,7 @@ TEST(Joints, combineExtForceAndSoftContact)
                 {
                     SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
                     SCALAR_TO_DOUBLE(f, (*f_ext_rbdl)[i](j));
-                    EXPECT_NEAR(f, f_expected, requiredPrecision);
+                    EXPECT_NEAR(f, f_expected, 1e-9);
                 }
     }
     }
@@ -1336,7 +1336,7 @@ TEST(Joints, combineExtForceAndSoftContact)
                 {
                     SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
                     SCALAR_TO_DOUBLE(f, (*f_ext_rbdl)[i](j));
-                    EXPECT_NEAR(f, f_expected, requiredPrecision);
+                    EXPECT_NEAR(f, f_expected, 1e-9);
                 }
     }
     }
