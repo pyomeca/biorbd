@@ -138,7 +138,7 @@ void muscles::DeGrooteType::computeFlCE(
     double b23 = 1.000;
     double b33 = 0.354;
     double b43 = 0.0;
-    utils::Scalar normLength = position().length() / characteristics().optimalLength();;
+    utils::Scalar normLength = position().length() / characteristics().optimalLength();
 
     *m_FlCE = b11 * exp((-0.5*((normLength-b21)*(normLength-b21)))
                        /
