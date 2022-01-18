@@ -1232,12 +1232,9 @@ rigidbody::Joints::ForwardDynamics(
     const rigidbody::GeneralizedTorque &Tau,
     std::vector<utils::SpatialVector>* f_ext)
 {
-#ifdef BIORBD_USE_CASADI_MATH
+
     bool updateKin = true;
-    UpdateKinematicsCustom(&Q, &QDot);
-#else
-    bool updateKin = false;
-#endif
+
     rigidbody::GeneralizedAcceleration QDDot(*this);
     std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, Q, QDot, updateKin, nullptr));
     RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, f_ext_rbdl);
@@ -1258,7 +1255,8 @@ rigidbody::Joints::ForwardDynamicsConstraintsDirect(
 #ifdef BIORBD_USE_CASADI_MATH
     bool updateKin = true;
 #else
-    bool updateKin = true;  // Put this in parameters??
+    UpdateKinematicsCustom(&Q, &QDot);
+    bool updateKin = false;  // Put this in parameters??
 #endif
 
     rigidbody::GeneralizedAcceleration QDDot(*this);
