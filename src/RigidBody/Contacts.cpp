@@ -443,6 +443,9 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::Contacts::rigidC
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #else
+    if (updateKin) {
+        UpdateKinematicsCustom(&Q, nullptr, nullptr);
+    }
     updateKin = false;
 #endif
 
