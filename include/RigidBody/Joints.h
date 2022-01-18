@@ -716,6 +716,16 @@ public:
         bool updateKin = true);
 
     ///
+    /// \brief Get the inverse mass matrix at a given position Q
+    /// \param Q The generalized coordinates
+    /// \param updateKin If the kinematics should be updated
+    /// \return The inverse mass matrix
+    ///
+    utils::Matrix rigidbody::Joints::massMatrixInverse (
+        const rigidbody::GeneralizedCoordinates &Q,
+        bool updateKin);
+
+    ///
     /// \brief Calculate the angular momentum of the center of mass
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
