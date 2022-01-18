@@ -24,9 +24,9 @@ public:
             std::vector<utils::SpatialVector> *f_ext,
             const rigidbody::GeneralizedCoordinates& Q,
             const rigidbody::GeneralizedVelocity& QDot,
-            std::vector<utils::Vector> *f_contacts,
-            bool updateKin){
-        return this->Joints::combineExtForceAndSoftContact(f_ext, Q, QDot, f_contacts, updateKin);
+            bool updateKin,
+            std::vector<utils::Vector> *f_contacts){
+        return this->Joints::combineExtForceAndSoftContact(f_ext, Q, QDot, updateKin, f_contacts);
     }
 };
 

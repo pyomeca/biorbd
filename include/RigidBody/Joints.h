@@ -302,8 +302,8 @@ protected:
             std::vector<utils::SpatialVector> *f_ext,
             const rigidbody::GeneralizedCoordinates& Q,
             const rigidbody::GeneralizedVelocity& QDot,
-            std::vector<utils::Vector> *f_contacts = nullptr,
-            bool updateKin = false);
+            bool updateKin,
+            std::vector<utils::Vector> *f_contacts = nullptr);
 
     // ---------------------------- //
 public:

@@ -310,16 +310,18 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> * rigidbody::Joints::combine
         std::vector<utils::SpatialVector> *f_ext,
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& QDot,
-        std::vector<utils::Vector> *f_contacts,
-        bool updateKin)
+        bool updateKin,
+        std::vector<utils::Vector> *f_contacts
+        )
 {
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
+#else
+    updateKin = false;
 #endif
     if (updateKin) {
         UpdateKinematicsCustom(&Q, nullptr, nullptr);
     }
-    updateKin = false;
 
     std::vector<RigidBodyDynamics::Math::SpatialVector>* softContacts = dynamic_cast<rigidbody::SoftContacts*>(this)->softContactToSpatialVector(Q, QDot);
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = dispatchedForce(f_ext);
@@ -1231,10 +1233,13 @@ rigidbody::Joints::ForwardDynamics(
     std::vector<utils::SpatialVector>* f_ext)
 {
 #ifdef BIORBD_USE_CASADI_MATH
+    bool updateKin = true;
     UpdateKinematicsCustom(&Q, &QDot);
+#else
+    bool updateKin = false;
 #endif
     rigidbody::GeneralizedAcceleration QDDot(*this);
-    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, Q, QDot));
+    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, Q, QDot, updateKin, nullptr));
     RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, f_ext_rbdl);
     if (f_ext_rbdl){
         delete f_ext_rbdl;
@@ -1253,11 +1258,11 @@ rigidbody::Joints::ForwardDynamicsConstraintsDirect(
 #ifdef BIORBD_USE_CASADI_MATH
     bool updateKin = true;
 #else
-    bool updateKin = true;  // Put this in parameters?
+    bool updateKin = true;  // Put this in parameters??
 #endif
 
     rigidbody::GeneralizedAcceleration QDDot(*this);
-    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, Q, QDot));
+    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, Q, QDot, updateKin, nullptr));
     RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, updateKin, f_ext_rbdl);
     if (f_ext_rbdl){
         delete f_ext_rbdl;

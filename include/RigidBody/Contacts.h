@@ -164,14 +164,6 @@ public:
     utils::Vector getForce() const;
 
     ///
-    /// \brief Return the segment idx of the contact in rbdl formalism
-    /// \param idx The index of the contact
-    /// \return segment idx of the contact in rbdl formalism
-    ///
-    unsigned int contactSegmentRbdlId(
-            unsigned int  idx) const;
-
-    ///
     /// \brief Return the segment idx of the contact in biorbd formalism
     /// \param idx The index of the contact
     /// \return segment idx of the contact in biorbd formalism

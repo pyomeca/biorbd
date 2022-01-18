@@ -180,7 +180,6 @@ std::vector<int> rigidbody::Contacts::rigidContactAxisIdx(unsigned int contact_i
         dynamic_cast<const rigidbody::Joints &>(*this);
 
     const utils::String& axis = rigidContact(contact_idx).axesToRemove();
-//            rigidContact(contact_idx).axesToRemove().c_str();
 
     for (unsigned int i=0; i<axis.length(); ++i) {
 
@@ -395,15 +394,6 @@ int rigidbody::Contacts::nbRigidContacts() const
     return m_rigidContacts->size();
 }
 
-unsigned int rigidbody::Contacts::contactSegmentRbdlId(
-        unsigned int idx) const
-{
-    utils::Error::check(idx<nbRigidContacts(),
-                                "Idx for rigid contact Segment Id is too high..");
-
-    return contactConstraints[idx]->getBodyIds()[0];
-}
-
 int rigidbody::Contacts::contactSegmentBiorbdId(
         unsigned int idx) const
 {
@@ -452,6 +442,8 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::Contacts::rigidC
 
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
+#else
+    updateKin = false;
 #endif
 
     // Assuming that this is also a joint type (via BiorbdModel)
@@ -484,9 +476,6 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::Contacts::rigidC
         // Put all the force on the last dof of the segment
         out->push_back(tp);
     }
-#ifndef BIORBD_USE_CASADI_MATH
-        updateKin = false;
-#endif
     return out;
 }
 
