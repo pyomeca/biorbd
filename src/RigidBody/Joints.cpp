@@ -676,6 +676,98 @@ utils::Matrix rigidbody::Joints::massMatrix (
     return massMatrix;
 }
 
+utils::Matrix rigidbody::Joints::massMatrixInverse (
+    const rigidbody::GeneralizedCoordinates &Q,
+    bool updateKin)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+    unsigned int i = 0;
+    RigidBodyDynamics::Model model=this;
+    RigidBodyDynamics::Math::MatrixNd Minv(model.mBodies.size(),model.mBodies.size());
+
+    // First Forward Pass
+    for (i = 1; i < model.mBodies.size(); i++) {
+      unsigned int lambda = model.lambda[i];
+       if (updateKin) {
+            RigidBodyDynamics::jcalc_X_lambda_S(model, i, Q);
+        }
+      if (lambda != 0)
+        model.X_base[i] = model.X_lambda[i] * model.X_base[lambda];
+      else
+        model.X_base[i] = model.X_lambda[i];
+
+      model.I[i].setSpatialMatrix(model.IA[i]);
+      }
+
+    // Backward Pass
+    for (i = model.mBodies.size() - 1; i > 0; i--) {
+      unsigned int q_index = model.mJoints[i].q_index;
+      // TODO
+      std::vector<unsigned int> sub_tree = subTree(i); // TODO
+      // TODO
+
+    model.U[i] = model.IA[i] * model.S[i];
+    model.d[i] = model.S[i].dot(model.U[i]);
+
+    // from me
+    Minv.block(i, i, 1, 1) = 1/model.d[i];
+    for (j = 0; j < sub_tree.size(); j++) {
+          Minv.block(i,sub_tree[j], 1, 1) -=
+                  1/model.d[i] * model.S[i].transpose() * F.block(i, 0, sub_tree[j],1 ,6, 1); // F to modif
+    }
+
+    unsigned int lambda = model.lambda[i];
+    if (lambda != 0) {
+       // from me // need to be converted in casadi ?
+      for (j = 0; j < sub_tree.size(); j++) {
+              F.block(i, 0, sub_tree[j], 1, 6, 1) +=
+                      model.U[i]* Minv.block(i,sub_tree[j], 1, 1);
+              F.block(lambda, 0, sub_tree[j], 1, 6, 1) +=
+                       model.X_lambda[i].toMatrixTranspose() * F.block(i, 0, sub_tree[j], 1, 6, 1);
+      }
+
+      RigidBodyDynamics::Math::SpatialMatrix Ia =    model.IA[i]
+        - model.U[i]
+        * (model.U[i] / model.d[i]).transpose();
+
+#ifdef RBDL_USE_CASADI_MATH
+      model.IA[lambda]
+        += model.X_lambda[i].toMatrixTranspose()
+        * Ia * model.X_lambda[i].toMatrix();
+
+#else
+      model.IA[lambda].noalias()
+        += model.X_lambda[i].toMatrixTranspose()
+        * Ia * model.X_lambda[i].toMatrix();
+#endif
+        }
+    }
+
+    // Second Forward Pass
+    for (i = 1; i < model.mBodies.size(); i++) {
+      unsigned int q_index = model.mJoints[i].q_index;
+      unsigned int lambda = model.lambda[i];
+      RigidBodyDynamics::Math::SpatialTransform X_lambda = model.X_lambda[i];
+
+        if (lambda != 0){ //  model.mBodies.size() - i is equivalent to until the end.
+            Minv.block(i, i, 1, model.mBodies.size() - i) -=
+                    (1./model.d[i]) * model.U[i].transpose() * X_lambda * F.block(lambda, 0, i, 1, 6, model.mBodies.size() - i);
+        }
+
+        F.block(i, 0, i, 1, 6, model.mBodies.size() - i) =
+                model.S[i] * Minv.block(i, i, 1, model.mBodies.size() - i); // outer product
+
+        if (lambda != 0){
+            F.block(i, 0, i, 1, 6, model.mBodies.size() - i) +=
+                    X_lambda * F.block(lambda, 0, i, 1, 6, model.mBodies.size() - i);
+        }
+    }
+
+    return Minv;
+}
+
 utils::Vector3d rigidbody::Joints::CoMdot(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
