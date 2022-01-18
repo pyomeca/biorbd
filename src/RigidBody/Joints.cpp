@@ -1202,7 +1202,7 @@ rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
     std::vector<utils::Vector> *f_contacts)
 {
     rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
-    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, Q, QDot, f_contacts));
+    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, Q, QDot, true, f_contacts));
     RigidBodyDynamics::InverseDynamics(*this, Q, QDot, QDDot, Tau, f_ext_rbdl);
     if (f_ext_rbdl){
         delete f_ext_rbdl;
@@ -1217,7 +1217,7 @@ rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
     std::vector<utils::Vector> *f_contacts)
 {
     rigidbody::GeneralizedTorque Tau(*this);
-    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, Q, QDot, f_contacts));
+    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, Q, QDot, true, f_contacts));
     RigidBodyDynamics::NonlinearEffects(*this, Q, QDot, Tau, f_ext_rbdl);
     if (f_ext_rbdl){
         delete f_ext_rbdl;
