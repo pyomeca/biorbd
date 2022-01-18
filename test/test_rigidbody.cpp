@@ -215,8 +215,8 @@ TEST(Contacts, rigidContactToSpatialVector)
                 SpatialVectorAtOrigin = model.rigidContactToSpatialVector(Q, allForces, true);
 
         RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
-        RigidBodyDynamics::Math::SpatialVector sp_dof12(0.34573999999999999, -0.013410000000000002, -0.0046499999999999996, 0, 1.0, 5.0);
-        RigidBodyDynamics::Math::SpatialVector sp_dof15(0.83735000000000004, 0.022170000000000002, 0.018599999999999998, 0.0, 4.0, 11.0);
+        RigidBodyDynamics::Math::SpatialVector sp_dof12(-7.592268755852077, -0.7864099999999999, 0.14995, 0, 1.0, 5.0);
+        RigidBodyDynamics::Math::SpatialVector sp_dof15(-17.952947566495585, 1.72277, -0.5998, 0.0, 4.0, 11.0);
 
         std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;
 
@@ -1012,8 +1012,8 @@ TEST(Joints, combineExtForceAndSoftContact)
                                                             );
 
         RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
-        RigidBodyDynamics::Math::SpatialVector sp_dof12(0.34573999999999999, -0.013410000000000002, -0.0046499999999999996, 0, 1.0, 5.0);
-        RigidBodyDynamics::Math::SpatialVector sp_dof15(0.83735000000000004, 0.022170000000000002, 0.018599999999999998, 0.0, 4.0, 11.0);
+        RigidBodyDynamics::Math::SpatialVector sp_dof12(-7.592268755852077, -0.7864099999999999, 0.14995, 0, 1.0, 5.0);
+        RigidBodyDynamics::Math::SpatialVector sp_dof15(-17.952947566495585, 1.72277, -0.5998, 0.0, 4.0, 11.0);
 
         std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;
 
@@ -1165,7 +1165,7 @@ TEST(Joints, combineExtForceAndSoftContact)
                                                         );
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
-    RigidBodyDynamics::Math::SpatialVector sp_dof4(1.3457399999999999, 1.9865900000000001, 2.9953500000000002, 4, 6, 11);
+    RigidBodyDynamics::Math::SpatialVector sp_dof4(-10.694693700837254, 12.040834024296124, 0.98598321280716972, 4, 6, 11);
 
     std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;
 
