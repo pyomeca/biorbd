@@ -156,6 +156,12 @@ public:
         const utils::String &segmentName) const;
 
     ///
+    /// \brief Return the rbdl idx of child of each segments
+    /// \return the rbdl idx of child of each segments
+    ///
+    std::vector<std::vector<unsigned int> > GetChildRbdlIdx() const;
+
+    ///
     /// \brief Return the number of generalized torque
     /// \return The number of generalized torque
     ///

@@ -355,6 +355,11 @@ int rigidbody::Joints::GetBodyRbdlId(
     return GetBodyId(segmentName.c_str());
 }
 
+std::vector<std::vector<unsigned int> > rigidbody::Joints::GetChildRbdlIdx() const
+{
+    return  this->mu;
+}
+
 std::vector<utils::RotoTrans> rigidbody::Joints::allGlobalJCS(
     const rigidbody::GeneralizedCoordinates &Q)
 {

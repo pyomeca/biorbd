@@ -29,6 +29,10 @@
 %include <std_pair.i>
 namespace std {
 %template(VecStdString) std::vector<std::string>;
+%template(VecInt) std::vector<int>;
+%template(VecVecInt) std::vector<std::vector<int>>;
+%template(VecUnsignedInt) std::vector<unsigned int>;
+%template(VecVecUnsignedInt) std::vector<std::vector<unsigned int>>;
 }
 
 // Includes all neceressary files from the API
@@ -41,5 +45,3 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/BiorbdModel.h"
 %include "@CMAKE_SOURCE_DIR@/include/ModelReader.h"
 %include "@CMAKE_SOURCE_DIR@/include/ModelWriter.h"
-
-
