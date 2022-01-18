@@ -440,17 +440,18 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::Contacts::rigidC
         return nullptr;
     }
 
+    // Assuming that this is also a joint type (via BiorbdModel)
+    rigidbody::Joints& model = dynamic_cast<rigidbody::Joints&>(*this);
+
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #else
     if (updateKin) {
-        UpdateKinematicsCustom(&Q, nullptr, nullptr);
+        model.UpdateKinematicsCustom(&Q, nullptr, nullptr);
     }
     updateKin = false;
 #endif
 
-    // Assuming that this is also a joint type (via BiorbdModel)
-    rigidbody::Joints& model = dynamic_cast<rigidbody::Joints&>(*this);
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
 
     std::vector<RigidBodyDynamics::Math::SpatialVector>* out = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
