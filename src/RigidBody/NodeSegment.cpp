@@ -212,7 +212,7 @@ void rigidbody::NodeSegment::addAxesToRemove(const
     }
 }
 
-utils::String rigidbody::NodeSegment::axesToRemove()
+utils::String rigidbody::NodeSegment::axesToRemove() const
 {
     utils::String axes;
     if (isAxisRemoved(0)) {
