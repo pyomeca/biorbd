@@ -169,7 +169,7 @@ public:
     /// \return segment idx of the contact in biorbd formalism
     ///
     int contactSegmentBiorbdId(
-            unsigned int  idx) const;
+            int  idx) const;
 
     ///
     /// \brief Return the index of rigid contacts for a specified segment index
@@ -177,7 +177,7 @@ public:
     /// \return the index of rigid contacts for the specified segment idx
     ///
     std::vector<size_t> segmentRigidContactIdx(
-            unsigned int segment_idx) const;
+            int segment_idx) const;
 
     ///
     /// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof

@@ -395,9 +395,9 @@ int rigidbody::Contacts::nbRigidContacts() const
 }
 
 int rigidbody::Contacts::contactSegmentBiorbdId(
-        unsigned int idx) const
+        int idx) const
 {
-    utils::Error::check(idx<nbRigidContacts(),
+    utils::Error::check(idx < nbRigidContacts(),
                                 "Idx for rigid contact Segment Id is too high..");
 
     // Assuming that this is also a joint type (via BiorbdModel)
@@ -409,13 +409,13 @@ int rigidbody::Contacts::contactSegmentBiorbdId(
 }
 
 std::vector<size_t> rigidbody::Contacts::segmentRigidContactIdx(
-        unsigned int segment_idx) const
+        int segment_idx) const
 {
     // Output variable
     std::vector<size_t> indices;
 
     // On each rigidcontact, verify if it belongs to the segment specified
-    for (size_t i=0; i<nbRigidContacts(); ++i)
+    for (int i=0; i<nbRigidContacts(); ++i)
         {
         if (contactSegmentBiorbdId(i) == segment_idx) {
             indices.push_back(i);
