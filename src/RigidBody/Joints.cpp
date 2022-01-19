@@ -317,13 +317,13 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> * rigidbody::Joints::combine
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #else
+    if (updateKin){
+        UpdateKinematicsCustom(&Q, &QDot);
+    }
     updateKin = false;
 #endif
-    if (updateKin) {
-        UpdateKinematicsCustom(&Q, nullptr, nullptr);
-    }
 
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* softContacts = dynamic_cast<rigidbody::SoftContacts*>(this)->softContactToSpatialVector(Q, QDot);
+    std::vector<RigidBodyDynamics::Math::SpatialVector>* softContacts = dynamic_cast<rigidbody::SoftContacts*>(this)->softContactToSpatialVector(Q, QDot, updateKin);
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = dispatchedForce(f_ext);
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_contacts_rbdl = dynamic_cast<rigidbody::Contacts*>(this)->rigidContactToSpatialVector(Q, f_contacts, updateKin);
 
