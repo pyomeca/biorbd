@@ -1008,7 +1008,7 @@ TEST(Joints, combineExtForceAndSoftContact)
 
         WrapperToJointsContactSoftcontact wrappedModel(model);
         std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl(
-                    wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, Q, QDot, true, allForces)
+                    wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, allForces, Q, QDot, true)
                                                             );
 
         RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
@@ -1059,7 +1059,7 @@ TEST(Joints, combineExtForceAndSoftContact)
 
     WrapperToJointsContactSoftcontact wrappedModel(model);
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl(
-                wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, Q, QDot, true, nullptr)
+                wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, nullptr, Q, QDot, true)
                                                         );
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
@@ -1102,7 +1102,7 @@ TEST(Joints, combineExtForceAndSoftContact)
 
     WrapperToJointsContactSoftcontact wrappedModel(model);
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl(
-                wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, Q, QDot, true, nullptr)
+                wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, nullptr, Q, QDot, true)
                                                         );
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
@@ -1161,7 +1161,7 @@ TEST(Joints, combineExtForceAndSoftContact)
 
     WrapperToJointsContactSoftcontact wrappedModel(model);
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl(
-                wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, Q, QDot, true, allForcesRigidContact)
+                wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, allForcesRigidContact, Q, QDot, true)
                                                         );
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
@@ -1213,7 +1213,7 @@ TEST(Joints, combineExtForceAndSoftContact)
 
     WrapperToJointsContactSoftcontact wrappedModel(model);
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl(
-                wrappedModel.wrapCombineExtForceAndSoftContact(nullptr, Q, QDot, true, allForcesRigidContact)
+                wrappedModel.wrapCombineExtForceAndSoftContact(nullptr, allForcesRigidContact, Q, QDot, true)
                                                         );
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
@@ -1256,7 +1256,7 @@ TEST(Joints, combineExtForceAndSoftContact)
 
     WrapperToJointsContactSoftcontact wrappedModel(model);
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl(
-                wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, Q, QDot, true, nullptr)
+                wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, nullptr, Q, QDot, true)
                                                         );
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
@@ -1315,7 +1315,7 @@ TEST(Joints, combineExtForceAndSoftContact)
 
     WrapperToJointsContactSoftcontact wrappedModel(model);
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl(
-                wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, Q, QDot, true, allForcesRigidContact)
+                wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, allForcesRigidContact, Q, QDot, true)
                                                         );
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);

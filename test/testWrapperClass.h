@@ -22,10 +22,10 @@ public:
 
     std::vector<RigidBodyDynamics::Math::SpatialVector> * wrapCombineExtForceAndSoftContact(
             std::vector<utils::SpatialVector> *f_ext,
+            std::vector<utils::Vector> *f_contacts,
             const rigidbody::GeneralizedCoordinates& Q,
             const rigidbody::GeneralizedVelocity& QDot,
-            bool updateKin,
-            std::vector<utils::Vector> *f_contacts){
+            bool updateKin){
         return this->Joints::combineExtForceAndSoftContact(f_ext, f_contacts, Q, QDot, updateKin);
     }
 };
