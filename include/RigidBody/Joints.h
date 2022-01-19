@@ -300,10 +300,10 @@ protected:
     ///
     std::vector<RigidBodyDynamics::Math::SpatialVector> * combineExtForceAndSoftContact(
             std::vector<utils::SpatialVector> *f_ext,
+            std::vector<utils::Vector> *f_contacts,
             const rigidbody::GeneralizedCoordinates& Q,
             const rigidbody::GeneralizedVelocity& QDot,
-            bool updateKin,
-            std::vector<utils::Vector> *f_contacts = nullptr);
+            bool updateKin);
 
     // ---------------------------- //
 public:

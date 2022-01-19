@@ -26,7 +26,7 @@ public:
             const rigidbody::GeneralizedVelocity& QDot,
             bool updateKin,
             std::vector<utils::Vector> *f_contacts){
-        return this->Joints::combineExtForceAndSoftContact(f_ext, Q, QDot, updateKin, f_contacts);
+        return this->Joints::combineExtForceAndSoftContact(f_ext, f_contacts, Q, QDot, updateKin);
     }
 };
 
