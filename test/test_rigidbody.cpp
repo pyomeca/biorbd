@@ -821,6 +821,22 @@ TEST(Joints, unitTest)
     }
 }
 
+TEST(Joints, subTrees)
+{
+    {
+        // NEED TO BE DONE
+//        Model model(modelPathForGeneralTesting);
+//        std::cout << "hello world";
+//        std::vector<std::vector<unsigned int>> subTrees = model.GetSubTrees();
+//        for (int i = 0; i < model.nbDof(); ++i) {
+//            std::cout << "hello world";
+//            for (int j = 0; j < subTrees[i].size(); ++j)
+//                std::cout << "hello world";
+////                EXPECT_EQ(subTrees[i][j], 20);
+//        }
+    }
+}
+
 TEST(Markers, copy)
 {
     {

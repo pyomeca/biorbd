@@ -162,6 +162,22 @@ public:
     std::vector<std::vector<unsigned int> > GetChildRbdlIdx() const;
 
     ///
+    /// \brief Return the rbdl idx of subtrees of each segments
+    /// \return the rbdl idx of subtrees of each segments
+    ///
+    std::vector<std::vector<unsigned int> > GetSubTrees();
+
+    ///
+    /// \brief Return the rbdl idx of subtrees of each segments
+    /// \param subTrees the rbdl idx of subtrees of each segments to be filled
+    /// \param idx starting index to explore the subtrees
+    /// \return the rbdl idx of subtrees of each segments starting from the specified index
+    ///
+    std::vector<std::vector<unsigned int> > recursiveSubTrees(
+            std::vector<std::vector<unsigned int> >subTrees,
+            unsigned int idx);
+
+    ///
     /// \brief Return the number of generalized torque
     /// \return The number of generalized torque
     ///
