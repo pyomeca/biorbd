@@ -755,6 +755,7 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
     unsigned int i = 0; // for loop purpose
     unsigned int j = 0; // for loop purpose
     RigidBodyDynamics::Math::MatrixNd Minv(this->dof_count, this->dof_count);
+    Minv.setZero();
 
     // First Forward Pass
     for (i = 1; i < this->mBodies.size(); i++) {
@@ -771,7 +772,6 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
         }
 
       this->I[i].setSpatialMatrix(this->IA[i]);
-        std::cout << i << std::endl;
       }
     // Enf First Forward Pass
 
@@ -840,7 +840,8 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
         if (lambda != 0){
             // Minv[i,i:] = Dinv[i]* (U[i,:].transpose() * Xmat) * F[lambda,:,i:])
             for (j = q_index_i; j < this->dof_count; j++) {
-                RigidBodyDynamics::Math::SpatialVector Ftemp = F[lambda_q_i].block(0, q_index_i, 6, 1);
+//                RigidBodyDynamics::Math::SpatialVector Ftemp = F[lambda_q_i].block(0, q_index_i, 6, 1);
+                RigidBodyDynamics::Math::SpatialVector Ftemp = F[lambda_q_i].block(0, j, 6, 1);
                 Minv(q_index_i, j) -=
                         (1.0/this->d[i]) * (this->U[i].transpose() * X_lambda.toMatrix()) * Ftemp;
             }
@@ -856,7 +857,7 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
             //  F[i,:,i:] += Xmat.transpose() * F[lambda,:,i:]
             for (j = q_index_i; j < this->dof_count; j++) {
                 F[q_index_i].block(0, j, 6, 1) +=
-                        X_lambda.toMatrix() * F[lambda_q_i].block(0, q_index_i, 6, 1);
+                        X_lambda.toMatrix() * F[lambda_q_i].block(0, j, 6, 1);
             }
 
         }
