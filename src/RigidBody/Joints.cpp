@@ -360,6 +360,73 @@ std::vector<std::vector<unsigned int> > rigidbody::Joints::GetChildRbdlIdx() con
     return  this->mu;
 }
 
+std::vector<std::vector<unsigned int> > rigidbody::Joints::GetSubTrees()
+{
+    // initialize subTrees
+    std::vector<std::vector<unsigned int> > subTrees;
+    std::vector<unsigned int> subTree_empty;
+    for (unsigned int j=0; j<this->mu.size(); ++j) {
+        subTrees.push_back(subTree_empty);
+    }
+
+    // Get all dof without parent
+    std::vector<unsigned int> dof_with_no_parent_id;
+    for (unsigned int i=1; i<this->mu.size(); ++i) { // begin at 1 because 0 is its own parent in rbdl.
+      if (this->lambda[i]==0) {
+          dof_with_no_parent_id.push_back(i);
+      }
+    }
+
+    // Get all subtrees of dofs without parents
+    for (unsigned int i=0; i<dof_with_no_parent_id.size(); ++i) {
+      unsigned int dof_id = dof_with_no_parent_id[i];
+
+      // initialize subTrees_temp
+      std::vector<std::vector<unsigned int> > subTrees_temp;
+      for (unsigned int j=0; j<this->mu.size(); ++j) {
+          subTrees_temp.push_back(subTree_empty);
+      }
+
+      std::vector<std::vector<unsigned int> > subTrees_temp_filled = recursiveSubTrees(subTrees_temp, dof_id);
+      for (unsigned int j=0; j<subTrees_temp.size(); ++j) {
+          if (!(subTrees_temp_filled[j].empty())) {
+                subTrees[j].insert(subTrees[j].end(),
+                                   subTrees_temp_filled[j].begin(),
+                                   subTrees_temp_filled[j].end());
+            }
+      }
+    }
+    subTrees.erase(subTrees.begin());
+
+    return  subTrees;
+}
+
+std::vector<std::vector<unsigned int> > rigidbody::Joints::recursiveSubTrees(
+        std::vector<std::vector<unsigned int> >subTrees,
+        unsigned int idx)
+{
+    subTrees[idx].push_back(idx - 1); // minus one to refer to the joints; ?
+    std::vector<std::vector<unsigned int> > subTrees_filled;
+    subTrees_filled = subTrees;
+
+    std::vector<unsigned int> child_idx = this->mu[idx];
+
+    if (child_idx.size() > 0){
+       for (unsigned int i=0; i<child_idx.size(); ++i) {
+            unsigned int cur_child_id = child_idx[i];
+            subTrees_filled = recursiveSubTrees(subTrees_filled, cur_child_id);
+            std::vector<unsigned int> subTree_child = subTrees_filled[cur_child_id];
+
+            subTrees_filled[idx].insert(subTrees_filled[idx].end(),
+                                 subTree_child.begin(),
+                                 subTree_child.end());
+      }
+    }
+
+    return subTrees_filled;
+}
+
+
 std::vector<utils::RotoTrans> rigidbody::Joints::allGlobalJCS(
     const rigidbody::GeneralizedCoordinates &Q)
 {
