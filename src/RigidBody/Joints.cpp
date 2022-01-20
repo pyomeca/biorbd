@@ -405,7 +405,9 @@ std::vector<std::vector<unsigned int> > rigidbody::Joints::recursiveSubTrees(
         std::vector<std::vector<unsigned int> >subTrees,
         unsigned int idx)
 {
-    subTrees[idx].push_back(idx - 1); // minus one to refer to the joints; ?
+    unsigned int q_index_i = this->mJoints[idx].q_index;
+    subTrees[idx].push_back(q_index_i);
+
     std::vector<std::vector<unsigned int> > subTrees_filled;
     subTrees_filled = subTrees;
 
