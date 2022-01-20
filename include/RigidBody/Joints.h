@@ -737,9 +737,9 @@ public:
     /// \param updateKin If the kinematics should be updated
     /// \return The inverse mass matrix
     ///
-    utils::Matrix rigidbody::Joints::massMatrixInverse (
-        const rigidbody::GeneralizedCoordinates &Q,
-        bool updateKin);
+    utils::Matrix massMatrixInverse(
+        const rigidbody::GeneralizedCoordinates *Q,
+        bool updateKin = true);
 
     ///
     /// \brief Calculate the angular momentum of the center of mass

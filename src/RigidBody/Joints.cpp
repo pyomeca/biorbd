@@ -746,102 +746,117 @@ utils::Matrix rigidbody::Joints::massMatrix (
 }
 
 utils::Matrix rigidbody::Joints::massMatrixInverse (
-    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedCoordinates *Q,
     bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #endif
-    unsigned int i = 0;
-    RigidBodyDynamics::Model model=this;
-    RigidBodyDynamics::Math::MatrixNd Minv(model.dof_count,model.dof_count);
+    unsigned int i = 0; // for loop purpose
+    unsigned int j = 0; // for loop purpose
+    RigidBodyDynamics::Math::MatrixNd Minv(this->dof_count, this->dof_count);
 
     // First Forward Pass
-    for (i = 1; i < model.mBodies.size(); i++) {
-      unsigned int lambda = model.lambda[i];
-       if (updateKin) {
-            RigidBodyDynamics::jcalc_X_lambda_S(model, i, Q); // need so advice to handle casadi
-        }
-      if (lambda != 0)
-        model.X_base[i] = model.X_lambda[i] * model.X_base[lambda];
-      else
-        model.X_base[i] = model.X_lambda[i];
+    for (i = 1; i < this->mBodies.size(); i++) {
 
-      model.I[i].setSpatialMatrix(model.IA[i]);
+        unsigned int lambda = this->lambda[i];
+        if (updateKin) {
+            RigidBodyDynamics::jcalc_X_lambda_S(*this, i, *Q); // need advice to handle casadi
+        }
+        if (lambda != 0) {
+            this->X_base[i] = this->X_lambda[i] * this->X_base[lambda];
+        }
+        else {
+            this->X_base[i] = this->X_lambda[i];
+        }
+
+      this->I[i].setSpatialMatrix(this->IA[i]);
+        std::cout << i << std::endl;
       }
+    // Enf First Forward Pass
+
+    // set F (n x 6 x n)
+    RigidBodyDynamics::Math::MatrixNd F_i(6, this->dof_count);
+    F_i.setZero();
+    // Fill a vector of matrix (6 x n)
+    std::vector<RigidBodyDynamics::Math::MatrixNd> F;
+    for (i = 1; i < this->mBodies.size(); i++)
+    {
+        F.push_back(F_i);
+    }
 
     // Backward Pass
-    for (i = model.mBodies.size() - 1; i > 0; i--)
-    {
-        unsigned int q_index_i = model.mJoints[i].q_index;
-        // TODO
+    for (i = this->mBodies.size() - 1; i > 0; i--)
+    {    
+        unsigned int q_index_i = this->mJoints[i].q_index;
+
         std::vector<unsigned int> sub_tree = GetSubTrees()[q_index_i]; // TODO
-        // TODO
 
-        model.U[i] = model.IA[i] * model.S[i];
-        model.d[i] = model.S[i].dot(model.U[i]);
+        this->U[i] = this->IA[i] * this->S[i];
+        this->d[i] = this->S[i].dot(this->U[i]);
 
-        // from me
-        Minv.block(q_index_i, q_index_i, 1, 1) = 1/model.d[i];
+        Minv(q_index_i, q_index_i) = 1.0 / (this->d[i]);
 
         for (j = 0; j < sub_tree.size(); j++) {
-              Minv.block(i,sub_tree[j], 1, 1) -=
-                      1/model.d[i] * model.S[i].transpose() * F.block(q_index_i, 0, sub_tree[j],1 ,6, 1); // F to modif
+              RigidBodyDynamics::Math::SpatialVector Ftemp = F[q_index_i].block(0, sub_tree[j], 6, 1);
+              Minv(q_index_i,sub_tree[j]) = Minv(q_index_i,sub_tree[j]) - (1.0/this->d[i]) * this->S[i].transpose() * Ftemp;
         }
 
-        unsigned int lambda = model.lambda[i];
+        unsigned int lambda = this->lambda[i];
+        unsigned int lambda_q_i = this->mJoints[lambda].q_index;
         if (lambda != 0) {
            // from me // need to be converted in casadi ?
-          for (j = 0; j < sub_tree.size(); j++) {
-                  F.block(q_index_i, 0, sub_tree[j], 1, 6, 1) +=
-                          model.U[i]* Minv.block(q_index_i,sub_tree[j], 1, 1);
-                  F.block(lambda, 0, sub_tree[j], 1, 6, 1) +=
-                           model.X_lambda[i].toMatrixTranspose() * F.block(q_index_i, 0, sub_tree[j], 1, 6, 1);
-          }
+            for (j = 0; j < sub_tree.size(); j++) {
+                F[q_index_i].block(0, sub_tree[j], 6, 1) += this->U[i] * Minv.block(q_index_i, sub_tree[j], 1, 1);
 
-          RigidBodyDynamics::Math::SpatialMatrix Ia =    model.IA[i]
-            - model.U[i]
-            * (model.U[i] / model.d[i]).transpose();
+                F[lambda_q_i].block(0, sub_tree[j], 6, 1) += this->X_lambda[i].toMatrixTranspose() * F[q_index_i].block(0, sub_tree[j], 6, 1);
+            }
+
+            RigidBodyDynamics::Math::SpatialMatrix Ia = this->IA[i]
+                - this->U[i]
+                * (this->U[i] / this->d[i]).transpose();
 
 #ifdef RBDL_USE_CASADI_MATH
-          model.IA[lambda]
-            += model.X_lambda[i].toMatrixTranspose()
-            * Ia * model.X_lambda[i].toMatrix();
+          this->IA[lambda]
+            += this->X_lambda[i].toMatrixTranspose()
+            * Ia * this->X_lambda[i].toMatrix();
 
 #else
-          model.IA[lambda].noalias()
-            += model.X_lambda[i].toMatrixTranspose()
-            * Ia * model.X_lambda[i].toMatrix();
+          this->IA[lambda].noalias()
+            += this->X_lambda[i].toMatrixTranspose()
+            * Ia * this->X_lambda[i].toMatrix();
 #endif
         }
     }
 
     // Second Forward Pass
-    for (i = 1; i < model.mBodies.size(); i++) {
-      unsigned int q_index_i = model.mJoints[i].q_index;
-      unsigned int lambda = model.lambda[i];
-      RigidBodyDynamics::Math::SpatialTransform X_lambda = model.X_lambda[i];
+    for (i = 1; i < this->mBodies.size(); i++) {
+      unsigned int q_index_i = this->mJoints[i].q_index;
+      unsigned int lambda = this->lambda[i];
+      unsigned int lambda_q_i = this->mJoints[lambda].q_index;
 
-        if (lambda != 0){ //  model.mBodies.size() - i is equivalent to until the end.
+      RigidBodyDynamics::Math::SpatialTransform X_lambda = this->X_lambda[i];
+
+        if (lambda != 0){
             // Minv[i,i:] = Dinv[i]* (U[i,:].transpose() * Xmat) * F[lambda,:,i:])
-            for (j = q_index_i; j < model.dof_count; j++) {
-                Minv.block(q_index_i, j, 1, 1) -=
-                        (1./model.d[i]) * model.U[i].transpose() * X_lambda * F.block(lambda, 0, q_index_i, 1, 6, 1);
+            for (j = q_index_i; j < this->dof_count; j++) {
+                RigidBodyDynamics::Math::SpatialVector Ftemp = F[lambda_q_i].block(0, q_index_i, 6, 1);
+                Minv(q_index_i, j) -=
+                        (1.0/this->d[i]) * (this->U[i].transpose() * X_lambda.toMatrix()) * Ftemp;
             }
 
         }
-        // F[i,:,i:] = np.outer(S,Minv[i,i:])
-        for (j = q_index_i; j < model.dof_count; j++) {
-            F.block(q_index_i, 0, j, 1, 6, 1) =
-                    model.S[i] * Minv.block(q_index_i, j, 1, 1); // outer product
+        // F[i,:,i:] = np.outer(S,Minv[i,i:]) // could be simplified (S * M[q_index_i,q_index_i:]^T)
+        for (j = q_index_i; j < this->dof_count; j++) {
+                    F[q_index_i].block(0, j, 6, 1) = this->S[i] * Minv.block(q_index_i, j, 1, 1); // outer product
         }
 
 
         if (lambda != 0){
             //  F[i,:,i:] += Xmat.transpose() * F[lambda,:,i:]
-            for (j = q_index_i; j < model.dof_count; j++) {
-                F.block(q_index_i, 0, j, 1, 6, 1) +=
-                        X_lambda * F.block(lambda, 0, q_index_i, 1, 6, 1);
+            for (j = q_index_i; j < this->dof_count; j++) {
+                F[q_index_i].block(0, j, 6, 1) +=
+                        X_lambda.toMatrix() * F[lambda_q_i].block(0, q_index_i, 6, 1);
             }
 
         }
