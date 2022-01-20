@@ -828,6 +828,7 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
 #endif
         }
     }
+    // End Backward Pass
 
     // Second Forward Pass
     for (i = 1; i < this->mBodies.size(); i++) {
@@ -860,6 +861,17 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
                         X_lambda.toMatrix() * F[lambda_q_i].block(0, j, 6, 1);
             }
 
+        }
+    }
+    // Second Forward Pass
+    // Fill in full matrix (currently only upper triangular)
+    for (j = 0; j < this->dof_count; j++)
+    {
+        for (i = 0; i < this->dof_count; i++)
+        {
+            if (j < i) {
+                    Minv(i, j) = Minv(j, i);
+            }
         }
     }
 
