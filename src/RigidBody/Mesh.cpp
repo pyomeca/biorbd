@@ -12,7 +12,9 @@ rigidbody::Mesh::Mesh() :
     m_vertex(std::make_shared<std::vector<utils::Vector3d>>()),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>()),
     m_pathFile(std::make_shared<utils::Path>()),
-    m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788))
+    m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788)),
+    m_rotation(std::make_shared<utils::RotoTrans>(RigidBodyDynamics::Math::Matrix4d::Identity())),
+    m_scale(std::make_shared<utils::Vector3d>(1.0, 1.0, 1.0))
 {
 
 }
@@ -22,7 +24,9 @@ rigidbody::Mesh::Mesh(
     m_vertex(std::make_shared<std::vector<utils::Vector3d>>(other)),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>()),
     m_pathFile(std::make_shared<utils::Path>()),
-    m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788))
+    m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788)),
+    m_rotation(std::make_shared<utils::RotoTrans>(RigidBodyDynamics::Math::Matrix4d::Identity())),
+    m_scale(std::make_shared<utils::Vector3d>(1.0, 1.0, 1.0))
 {
 
 }
@@ -33,7 +37,9 @@ rigidbody::Mesh::Mesh(const std::vector<utils::Vector3d>
     m_vertex(std::make_shared<std::vector<utils::Vector3d>>(vertex)),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>(faces)),
     m_pathFile(std::make_shared<utils::Path>()),
-    m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788))
+    m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788)),
+    m_rotation(std::make_shared<utils::RotoTrans>(RigidBodyDynamics::Math::Matrix4d::Identity())),
+    m_scale(std::make_shared<utils::Vector3d>(1.0, 1.0, 1.0))
 {
 
 }
@@ -85,20 +91,32 @@ unsigned int rigidbody::Mesh::nbVertex() const
 
 void rigidbody::Mesh::rotate(
         const utils::RotoTrans &rt)
-{
+{   
+    *m_rotation = rt;
     for (auto& v : *m_vertex){
         v.applyRT(rt);
     }
 }
 
+utils::RotoTrans &rigidbody::Mesh::getRotation() const
+{
+    return *m_rotation;
+}
+
 void rigidbody::Mesh::scale(
         const utils::Vector3d &scaler)
-{
+{   
+    *m_scale = scaler;
     for (auto& v: *m_vertex){
         v(0) *= scaler(0);
         v(1) *= scaler(1);
         v(2) *= scaler(2);
     }
+}
+
+utils::Vector3d &rigidbody::Mesh::getScale() const
+{   
+    return *m_scale;
 }
 
 unsigned int rigidbody::Mesh::nbFaces()
