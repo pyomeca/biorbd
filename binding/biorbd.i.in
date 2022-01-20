@@ -29,6 +29,7 @@
 %include <std_pair.i>
 namespace std {
 %template(VecStdString) std::vector<std::string>;
+%template(VecStdBool) std::vector<bool>;
 %template(VecInt) std::vector<int>;
 %template(VecVecInt) std::vector<std::vector<int>>;
 %template(VecUnsignedInt) std::vector<unsigned int>;

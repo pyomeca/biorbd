@@ -100,6 +100,12 @@ public:
             const utils::RotoTrans& rt);
 
     ///
+    /// \brief Get the rotation applied to the vertex
+    /// \return The Transformation applied to the mesh wrt the parent
+    ///
+    utils::RotoTrans& getRotation() const;
+
+    ///
     /// \brief Scale the vertex wrt to 0, 0, 0. Warnign, this function is
     /// applied when called, meaning that if it is called after rotate, it will
     /// results in surprising results!
@@ -107,6 +113,12 @@ public:
     ///
     void scale(
             const utils::Vector3d& scaler);
+
+    ///
+    /// \brief Get the scaling applied to the vertex wrt to 0, 0, 0.
+    /// \return The scaling applied to the mesh wrt the parent
+    ///
+    utils::Vector3d& getScale() const;
 
     ///
     /// \brief Add a face patch to the mesh
@@ -160,6 +172,8 @@ protected:
             m_faces; ///< The faces
     std::shared_ptr<utils::Path> m_pathFile; ///< The path to the mesh file
     std::shared_ptr<utils::Vector3d> m_patchColor; ///< The color of faces
+    std::shared_ptr<utils::RotoTrans> m_rotation; ///< The rotation
+    std::shared_ptr<utils::Vector3d> m_scale; ///< The scale
 };
 
 }
