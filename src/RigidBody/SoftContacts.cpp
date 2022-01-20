@@ -48,6 +48,9 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::SoftContacts::so
         const rigidbody::GeneralizedVelocity& QDot,
         bool updateKin)
 {
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
     if (nbSoftContacts() == 0){
         return nullptr;
     }
