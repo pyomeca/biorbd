@@ -844,7 +844,7 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
     {    
         unsigned int q_index_i = this->mJoints[i].q_index;
 
-        std::vector<unsigned int> sub_tree = GetSubTrees()[q_index_i]; // TODO
+        std::vector<unsigned int> sub_tree = GetSubTrees()[q_index_i]; // simplify to get better perf GetSubTreesById ??
 
         this->U[i] = this->IA[i] * this->S[i];
         this->d[i] = this->S[i].dot(this->U[i]);

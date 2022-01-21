@@ -175,6 +175,7 @@ public:
     ///
     std::vector<std::vector<unsigned int> > GetSubTrees();
 
+protected:
     ///
     /// \brief Return the rbdl idx of subtrees of each segments
     /// \param subTrees the rbdl idx of subtrees of each segments to be filled
@@ -185,6 +186,7 @@ public:
             std::vector<std::vector<unsigned int> >subTrees,
             unsigned int idx);
 
+public:
     ///
     /// \brief Return the number of generalized torque
     /// \return The number of generalized torque
