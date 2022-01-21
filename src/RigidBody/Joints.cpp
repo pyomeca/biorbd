@@ -821,7 +821,7 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
 
       this->I[i].setSpatialMatrix(this->IA[i]);
       }
-    // Enf First Forward Pass
+    // End First Forward Pass
 
     // set F (n x 6 x n)
     RigidBodyDynamics::Math::MatrixNd F_i(6, this->dof_count);

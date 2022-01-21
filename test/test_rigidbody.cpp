@@ -1353,7 +1353,7 @@ TEST(Joints, massMatrixInverse)
         utils::Matrix M(model.massMatrix(Q));
 
 #ifdef BIORBD_USE_CASADI_MATH
-        utils::Matrix Minv_num = M.inv();
+        utils::Matrix Minv_num = M.inverse();
 #else
         utils::Matrix Minv_num = M.inverse();
 #endif
@@ -1364,7 +1364,9 @@ TEST(Joints, massMatrixInverse)
         {
             for (unsigned int i = 0; i < model.dof_count; i++)
             {
-                EXPECT_NEAR(Minv_num(i,j), Minv_symbolic(i,j), requiredPrecision);
+                SCALAR_TO_DOUBLE(Minv_num_ij, Minv_num(i,j));
+                SCALAR_TO_DOUBLE(Minv_symbolic_ij, Minv_symbolic(i,j));
+                EXPECT_NEAR(Minv_num_ij, Minv_symbolic_ij, requiredPrecision);
             }
         }
     }
