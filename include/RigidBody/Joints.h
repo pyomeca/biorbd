@@ -742,12 +742,10 @@ public:
     ///
     /// \brief Get the inverse mass matrix at a given position Q
     /// \param Q The generalized coordinates
-    /// \param updateKin If the kinematics should be updated
     /// \return The inverse mass matrix
     ///
     utils::Matrix massMatrixInverse(
-        const rigidbody::GeneralizedCoordinates *Q,
-        bool updateKin = true);
+        const rigidbody::GeneralizedCoordinates &Q);
 
     ///
     /// \brief Calculate the angular momentum of the center of mass

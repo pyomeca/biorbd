@@ -794,12 +794,8 @@ utils::Matrix rigidbody::Joints::massMatrix (
 }
 
 utils::Matrix rigidbody::Joints::massMatrixInverse (
-    const rigidbody::GeneralizedCoordinates *Q,
-    bool updateKin)
+    const rigidbody::GeneralizedCoordinates &Q)
 {
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
     unsigned int i = 0; // for loop purpose
     unsigned int j = 0; // for loop purpose
     RigidBodyDynamics::Math::MatrixNd Minv(this->dof_count, this->dof_count);
@@ -809,9 +805,7 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
     for (i = 1; i < this->mBodies.size(); i++) {
 
         unsigned int lambda = this->lambda[i];
-        if (updateKin) {
-            RigidBodyDynamics::jcalc_X_lambda_S(*this, i, *Q); // need advice to handle casadi
-        }
+        RigidBodyDynamics::jcalc_X_lambda_S(*this, i, Q);
         if (lambda != 0) {
             this->X_base[i] = this->X_lambda[i] * this->X_base[lambda];
         }
