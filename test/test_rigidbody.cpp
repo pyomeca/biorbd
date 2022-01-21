@@ -10,6 +10,7 @@
 #include "Utils/Range.h"
 #include "Utils/SpatialVector.h"
 #include "Utils/Matrix3d.h"
+#include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
@@ -1341,19 +1342,31 @@ TEST(Joints, combineExtForceAndSoftContact)
     }
 }
 
-TEST(Joints, subTrees)
+TEST(Joints, massMatrixInverse)
 {
     {
-        // NEED TO BE DONE
-//        Model model(modelPathForGeneralTesting);
-//        std::cout << "hello world";
-//        std::vector<std::vector<unsigned int>> subTrees = model.getDofSubTrees();
-//        for (int i = 0; i < model.nbDof(); ++i) {
-//            std::cout << "hello world";
-//            for (int j = 0; j < subTrees[i].size(); ++j)
-//                std::cout << "hello world";
-////                EXPECT_EQ(subTrees[i][j], 20);
-//        }
+        Model model(modelPathForGeneralTesting);
+        rigidbody::GeneralizedCoordinates Q(model);
+        FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2, 0.3,
+                                           -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, 0.4}));
+
+        utils::Matrix M(model.massMatrix(Q));
+
+#ifdef BIORBD_USE_CASADI_MATH
+        utils::Matrix Minv_num = M.inv();
+#else
+        utils::Matrix Minv_num = M.inverse();
+#endif
+
+        utils::Matrix Minv_symbolic = model.massMatrixInverse(Q);
+
+        for (unsigned int j = 0; j < model.dof_count; j++)
+        {
+            for (unsigned int i = 0; i < model.dof_count; i++)
+            {
+                EXPECT_NEAR(Minv_num(i,j), Minv_symbolic(i,j), requiredPrecision);
+            }
+        }
     }
 }
 
