@@ -427,23 +427,29 @@ std::vector<std::vector<unsigned int> > rigidbody::Joints::GetSubTrees()
 
     // Get all subtrees of dofs without parents
     for (unsigned int i=0; i<dof_with_no_parent_id.size(); ++i) {
-      unsigned int dof_id = dof_with_no_parent_id[i];
+        unsigned int dof_id = dof_with_no_parent_id[i];
 
-      // initialize subTrees_temp
-      std::vector<std::vector<unsigned int> > subTrees_temp;
-      for (unsigned int j=0; j<this->mu.size(); ++j) {
+        // initialize subTrees_temp
+        std::vector<std::vector<unsigned int> > subTrees_temp;
+        for (unsigned int j=0; j<this->mu.size(); ++j) {
           subTrees_temp.push_back(subTree_empty);
-      }
+        }
 
-      std::vector<std::vector<unsigned int> > subTrees_temp_filled = recursiveSubTrees(subTrees_temp, dof_id);
-      for (unsigned int j=0; j<subTrees_temp.size(); ++j) {
-          if (!(subTrees_temp_filled[j].empty())) {
-                subTrees[j].insert(subTrees[j].end(),
-                                   subTrees_temp_filled[j].begin(),
-                                   subTrees_temp_filled[j].end());
+        std::vector<std::vector<unsigned int> > subTrees_temp_filled = recursiveSubTrees(subTrees_temp, dof_id);
+        for (unsigned int j=0; j<subTrees_temp.size(); ++j) {
+            if (subTrees_temp_filled[j].empty()) {
+                continue;
             }
-      }
+            else
+            {
+                subTrees[j].insert(subTrees[j].end(),
+                                     subTrees_temp_filled[j].begin(),
+                                     subTrees_temp_filled[j].end());
+            }
+        }
+
     }
+
     subTrees.erase(subTrees.begin());
 
     return  subTrees;
