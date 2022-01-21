@@ -408,12 +408,6 @@ int rigidbody::Joints::GetBodyRbdlIdToBiorbdId(
     return model.GetBodyBiorbdId(bodyName);
 }
 
-
-std::vector<std::vector<unsigned int> > rigidbody::Joints::GetChildRbdlIdx() const
-{
-    return  this->mu;
-}
-
 std::vector<std::vector<unsigned int> > rigidbody::Joints::GetSubTrees()
 {
     // initialize subTrees

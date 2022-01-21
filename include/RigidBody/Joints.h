@@ -164,12 +164,6 @@ public:
         const int idx) const;
 
     ///
-    /// \brief Return the rbdl idx of child of each segments
-    /// \return the rbdl idx of child of each segments
-    ///
-    std::vector<std::vector<unsigned int> > GetChildRbdlIdx() const;
-
-    ///
     /// \brief Return the rbdl idx of subtrees of each segments
     /// \return the rbdl idx of subtrees of each segments
     ///
