@@ -435,7 +435,7 @@ std::vector<std::vector<unsigned int> > rigidbody::Joints::getDofSubTrees()
           subTrees_temp.push_back(subTree_empty);
         }
 
-        std::vector<std::vector<unsigned int> > subTrees_temp_filled = recursiveSubTrees(subTrees_temp, dof_id);
+        std::vector<std::vector<unsigned int> > subTrees_temp_filled = recursiveDofSubTrees(subTrees_temp, dof_id);
         for (unsigned int j=0; j<subTrees_temp.size(); ++j) {
             if (subTrees_temp_filled[j].empty()) {
                 continue;
@@ -455,7 +455,7 @@ std::vector<std::vector<unsigned int> > rigidbody::Joints::getDofSubTrees()
     return  subTrees;
 }
 
-std::vector<std::vector<unsigned int> > rigidbody::Joints::recursiveSubTrees(
+std::vector<std::vector<unsigned int> > rigidbody::Joints::recursiveDofSubTrees(
         std::vector<std::vector<unsigned int> >subTrees,
         unsigned int idx)
 {
@@ -470,7 +470,7 @@ std::vector<std::vector<unsigned int> > rigidbody::Joints::recursiveSubTrees(
     if (child_idx.size() > 0){
        for (unsigned int i=0; i<child_idx.size(); ++i) {
             unsigned int cur_child_id = child_idx[i];
-            subTrees_filled = recursiveSubTrees(subTrees_filled, cur_child_id);
+            subTrees_filled = recursiveDofSubTrees(subTrees_filled, cur_child_id);
             std::vector<unsigned int> subTree_child = subTrees_filled[cur_child_id];
 
             subTrees_filled[idx].insert(subTrees_filled[idx].end(),
@@ -800,24 +800,22 @@ utils::Matrix rigidbody::Joints::massMatrix (
 }
 
 utils::Matrix rigidbody::Joints::massMatrixInverse (
-    const rigidbody::GeneralizedCoordinates &Q)
+    const rigidbody::GeneralizedCoordinates &Q,
+    bool updateKin)
 {
     unsigned int i = 0; // for loop purpose
     unsigned int j = 0; // for loop purpose
     RigidBodyDynamics::Math::MatrixNd Minv(this->dof_count, this->dof_count);
     Minv.setZero();
 
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+    if (updateKin) {
+        UpdateKinematicsCustom(&Q, nullptr, nullptr);
+    }
     // First Forward Pass
     for (i = 1; i < this->mBodies.size(); i++) {
-
-        unsigned int lambda = this->lambda[i];
-        RigidBodyDynamics::jcalc_X_lambda_S(*this, i, Q);
-        if (lambda != 0) {
-            this->X_base[i] = this->X_lambda[i] * this->X_base[lambda];
-        }
-        else {
-            this->X_base[i] = this->X_lambda[i];
-        }
 
       this->I[i].setSpatialMatrix(this->IA[i]);
       }

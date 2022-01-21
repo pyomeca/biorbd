@@ -1351,12 +1351,7 @@ TEST(Joints, massMatrixInverse)
                                            -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, 0.4}));
 
         utils::Matrix M(model.massMatrix(Q));
-
-#ifdef BIORBD_USE_CASADI_MATH
         utils::Matrix Minv_num = M.inverse();
-#else
-        utils::Matrix Minv_num = M.inverse();
-#endif
 
         utils::Matrix Minv_symbolic = model.massMatrixInverse(Q);
 

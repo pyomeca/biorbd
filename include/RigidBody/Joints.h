@@ -176,7 +176,7 @@ protected:
     /// \param idx starting index to explore the subtrees
     /// \return the rbdl idx of subtrees of each segments starting from the specified index
     ///
-    std::vector<std::vector<unsigned int> > recursiveSubTrees(
+    std::vector<std::vector<unsigned int> > recursiveDofSubTrees(
             std::vector<std::vector<unsigned int> >subTrees,
             unsigned int idx);
 
@@ -742,10 +742,12 @@ public:
     ///
     /// \brief Get the inverse mass matrix at a given position Q
     /// \param Q The generalized coordinates
+    /// \param updateKin If the kinematics should be updated
     /// \return The inverse mass matrix
     ///
     utils::Matrix massMatrixInverse(
-        const rigidbody::GeneralizedCoordinates &Q);
+        const rigidbody::GeneralizedCoordinates &Q,
+        bool updateKin = true);
 
     ///
     /// \brief Calculate the angular momentum of the center of mass
