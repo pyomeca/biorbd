@@ -834,11 +834,11 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
     }
 
     // Backward Pass
+    std::vector<std::vector<unsigned int>> subTrees = GetSubTrees(); // simplify to get better perf GetSubTreesById ??
     for (i = this->mBodies.size() - 1; i > 0; i--)
     {    
         unsigned int q_index_i = this->mJoints[i].q_index;
-
-        std::vector<unsigned int> sub_tree = GetSubTrees()[q_index_i]; // simplify to get better perf GetSubTreesById ??
+        const std::vector<unsigned int>& sub_tree = subTrees[q_index_i];
 
         this->U[i] = this->IA[i] * this->S[i];
         this->d[i] = this->S[i].dot(this->U[i]);
@@ -846,14 +846,13 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
         Minv(q_index_i, q_index_i) = 1.0 / (this->d[i]);
 
         for (j = 0; j < sub_tree.size(); j++) {
-              RigidBodyDynamics::Math::SpatialVector Ftemp = F[q_index_i].block(0, sub_tree[j], 6, 1);
-              Minv(q_index_i,sub_tree[j]) = Minv(q_index_i,sub_tree[j]) - (1.0/this->d[i]) * this->S[i].transpose() * Ftemp;
+              const RigidBodyDynamics::Math::SpatialVector& Ftemp = F[q_index_i].block(0, sub_tree[j], 6, 1);
+              Minv(q_index_i,sub_tree[j]) -= (1.0/this->d[i]) * this->S[i].transpose() * Ftemp;
         }
 
         unsigned int lambda = this->lambda[i];
         unsigned int lambda_q_i = this->mJoints[lambda].q_index;
         if (lambda != 0) {
-           // from me // need to be converted in casadi ?
             for (j = 0; j < sub_tree.size(); j++) {
                 F[q_index_i].block(0, sub_tree[j], 6, 1) += this->U[i] * Minv.block(q_index_i, sub_tree[j], 1, 1);
 
@@ -864,7 +863,7 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
                 - this->U[i]
                 * (this->U[i] / this->d[i]).transpose();
 
-#ifdef RBDL_USE_CASADI_MATH
+#ifdef BIORBD_USE_CASADI_MATH
           this->IA[lambda]
             += this->X_lambda[i].toMatrixTranspose()
             * Ia * this->X_lambda[i].toMatrix();
@@ -911,7 +910,7 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
 
         }
     }
-    // Second Forward Pass
+    // End of Second Forward Pass
     // Fill in full matrix (currently only upper triangular)
     for (j = 0; j < this->dof_count; j++)
     {
