@@ -955,8 +955,8 @@ TEST(Joints, unitTest)
     }
     {
         Model model(modelPathForGeneralTesting);
-        EXPECT_EQ(model.GetBodyRbdlIdToBiorbdId(3),0);
-        EXPECT_EQ(model.GetBodyRbdlIdToBiorbdId(4),-1);
+        EXPECT_EQ(model.getBodyRbdlIdToBiorbdId(3),0);
+        EXPECT_EQ(model.getBodyRbdlIdToBiorbdId(4),-1);
     }
 
 }
@@ -1347,7 +1347,7 @@ TEST(Joints, subTrees)
         // NEED TO BE DONE
 //        Model model(modelPathForGeneralTesting);
 //        std::cout << "hello world";
-//        std::vector<std::vector<unsigned int>> subTrees = model.GetSubTrees();
+//        std::vector<std::vector<unsigned int>> subTrees = model.getDofSubTrees();
 //        for (int i = 0; i < model.nbDof(); ++i) {
 //            std::cout << "hello world";
 //            for (int j = 0; j < subTrees[i].size(); ++j)

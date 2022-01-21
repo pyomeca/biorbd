@@ -233,7 +233,7 @@ const rigidbody::Segment& rigidbody::Joints::segment(
 const rigidbody::Segment &rigidbody::Joints::segment(
     const utils::String & name) const
 {
-    return segment(static_cast<unsigned int>(GetBodyBiorbdId(name.c_str())));
+    return segment(static_cast<unsigned int>(getBodyBiorbdId(name.c_str())));
 }
 
 const std::vector<rigidbody::Segment>& rigidbody::Joints::segments() const
@@ -382,7 +382,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> * rigidbody::Joints::combine
     return f_ext_rbdl;
 }
 
-int rigidbody::Joints::GetBodyBiorbdId(
+int rigidbody::Joints::getBodyBiorbdId(
         const utils::String &segmentName) const
 {
     for (int i=0; i<static_cast<int>(m_segments->size()); ++i)
@@ -393,22 +393,22 @@ int rigidbody::Joints::GetBodyBiorbdId(
 }
 
 
-int rigidbody::Joints::GetBodyRbdlId(
+int rigidbody::Joints::getBodyRbdlId(
         const utils::String &segmentName) const
 {
     return GetBodyId(segmentName.c_str());
 }
 
-int rigidbody::Joints::GetBodyRbdlIdToBiorbdId(
+int rigidbody::Joints::getBodyRbdlIdToBiorbdId(
         const int idx) const
 {
     // Assuming that this is also a joint type (via BiorbdModel)
     const rigidbody::Joints &model = dynamic_cast<const rigidbody::Joints &>(*this);
     std::string bodyName = model.GetBodyName(idx);
-    return model.GetBodyBiorbdId(bodyName);
+    return model.getBodyBiorbdId(bodyName);
 }
 
-std::vector<std::vector<unsigned int> > rigidbody::Joints::GetSubTrees()
+std::vector<std::vector<unsigned int> > rigidbody::Joints::getDofSubTrees()
 {
     // initialize subTrees
     std::vector<std::vector<unsigned int> > subTrees;
@@ -520,7 +520,7 @@ utils::RotoTrans rigidbody::Joints::globalJCS(
 utils::RotoTrans rigidbody::Joints::globalJCS(
     const utils::String &name) const
 {
-    return globalJCS(static_cast<unsigned int>(GetBodyBiorbdId(name)));
+    return globalJCS(static_cast<unsigned int>(getBodyBiorbdId(name)));
 }
 
 utils::RotoTrans rigidbody::Joints::globalJCS(
@@ -543,7 +543,7 @@ const
 utils::RotoTrans rigidbody::Joints::localJCS(
     const utils::String &name) const
 {
-    return localJCS(static_cast<unsigned int>(GetBodyBiorbdId(name.c_str())));
+    return localJCS(static_cast<unsigned int>(getBodyBiorbdId(name.c_str())));
 }
 utils::RotoTrans rigidbody::Joints::localJCS(
     const unsigned int idx) const
@@ -834,7 +834,7 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
     }
 
     // Backward Pass
-    std::vector<std::vector<unsigned int>> subTrees = GetSubTrees(); // simplify to get better perf GetSubTreesById ??
+    std::vector<std::vector<unsigned int>> subTrees = getDofSubTrees();
     for (i = this->mBodies.size() - 1; i > 0; i--)
     {    
         unsigned int q_index_i = this->mJoints[i].q_index;

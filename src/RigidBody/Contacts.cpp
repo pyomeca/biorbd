@@ -405,7 +405,7 @@ int rigidbody::Contacts::contactSegmentBiorbdId(
 
     const rigidbody::NodeSegment& c = rigidContact(idx);
 
-    return model.GetBodyRbdlIdToBiorbdId(c.parentId());
+    return model.getBodyRbdlIdToBiorbdId(c.parentId());
 }
 
 std::vector<size_t> rigidbody::Contacts::segmentRigidContactIdx(
