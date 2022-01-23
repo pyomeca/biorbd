@@ -10,6 +10,7 @@
 #include "Utils/Range.h"
 #include "Utils/SpatialVector.h"
 #include "Utils/Matrix3d.h"
+#include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
@@ -955,8 +956,8 @@ TEST(Joints, unitTest)
     }
     {
         Model model(modelPathForGeneralTesting);
-        EXPECT_EQ(model.GetBodyRbdlIdToBiorbdId(3),0);
-        EXPECT_EQ(model.GetBodyRbdlIdToBiorbdId(4),-1);
+        EXPECT_EQ(model.getBodyRbdlIdToBiorbdId(3),0);
+        EXPECT_EQ(model.getBodyRbdlIdToBiorbdId(4),-1);
     }
 
 }
@@ -1338,6 +1339,31 @@ TEST(Joints, combineExtForceAndSoftContact)
                     EXPECT_NEAR(f, f_expected, 1e-9);
                 }
     }
+    }
+}
+
+TEST(Joints, massMatrixInverse)
+{
+    {
+        Model model(modelPathForGeneralTesting);
+        rigidbody::GeneralizedCoordinates Q(model);
+        FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2, 0.3,
+                                           -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, 0.4}));
+
+        utils::Matrix M(model.massMatrix(Q));
+        utils::Matrix Minv_num = M.inverse();
+
+        utils::Matrix Minv_symbolic = model.massMatrixInverse(Q);
+
+        for (unsigned int j = 0; j < model.dof_count; j++)
+        {
+            for (unsigned int i = 0; i < model.dof_count; i++)
+            {
+                SCALAR_TO_DOUBLE(Minv_num_ij, Minv_num(i,j));
+                SCALAR_TO_DOUBLE(Minv_symbolic_ij, Minv_symbolic(i,j));
+                EXPECT_NEAR(Minv_num_ij, Minv_symbolic_ij, requiredPrecision);
+            }
+        }
     }
 }
 

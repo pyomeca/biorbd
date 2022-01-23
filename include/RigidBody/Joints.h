@@ -144,7 +144,7 @@ public:
     /// \param segmentName The name of the segment
     /// \return The biorbd body identification
     ///
-    int GetBodyBiorbdId(
+    int getBodyBiorbdId(
         const utils::String &segmentName) const;
 
     ///
@@ -152,7 +152,7 @@ public:
     /// \param segmentName The name of the segment
     /// \return The rbdl body identification
     ///
-    int GetBodyRbdlId(
+    int getBodyRbdlId(
         const utils::String &segmentName) const;
 
     ///
@@ -160,9 +160,27 @@ public:
     /// \param idx The Rbdl body Id
     /// \return The Biorbd body identification
     ///
-    int GetBodyRbdlIdToBiorbdId(
+    int getBodyRbdlIdToBiorbdId(
         const int idx) const;
 
+    ///
+    /// \brief Return the rbdl idx of subtrees of each segments
+    /// \return the rbdl idx of subtrees of each segments
+    ///
+    std::vector<std::vector<unsigned int> > getDofSubTrees();
+
+protected:
+    ///
+    /// \brief Return the rbdl idx of subtrees of each segments
+    /// \param subTrees the rbdl idx of subtrees of each segments to be filled
+    /// \param idx starting index to explore the subtrees
+    /// \return the rbdl idx of subtrees of each segments starting from the specified index
+    ///
+    std::vector<std::vector<unsigned int> > recursiveDofSubTrees(
+            std::vector<std::vector<unsigned int> >subTrees,
+            unsigned int idx);
+
+public:
     ///
     /// \brief Return the number of generalized torque
     /// \return The number of generalized torque
@@ -719,6 +737,16 @@ public:
     ///
     utils::Matrix massMatrix(
         const GeneralizedCoordinates &Q,
+        bool updateKin = true);
+
+    ///
+    /// \brief Get the inverse mass matrix at a given position Q
+    /// \param Q The generalized coordinates
+    /// \param updateKin If the kinematics should be updated
+    /// \return The inverse mass matrix
+    ///
+    utils::Matrix massMatrixInverse(
+        const rigidbody::GeneralizedCoordinates &Q,
         bool updateKin = true);
 
     ///
