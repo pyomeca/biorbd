@@ -92,7 +92,11 @@ unsigned int rigidbody::Mesh::nbVertex() const
 void rigidbody::Mesh::rotate(
         const utils::RotoTrans &rt)
 {   
-    *m_rotation = rt;
+    for (unsigned int i = 0; i < 4; ++i){
+        for (unsigned int j = 0; j < 4; ++j){
+            (*m_rotation)(i, j) = rt(i, j);
+        }
+    }
     for (auto& v : *m_vertex){
         v.applyRT(rt);
     }
