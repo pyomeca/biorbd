@@ -13,7 +13,7 @@ rigidbody::Mesh::Mesh() :
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>()),
     m_pathFile(std::make_shared<utils::Path>()),
     m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788)),
-    m_rotation(std::make_shared<utils::RotoTrans>(RigidBodyDynamics::Math::Matrix4d::Identity())),
+    m_rotation(std::make_shared<utils::RotoTrans>(utils::RotoTrans::Identity())),
     m_scale(std::make_shared<utils::Vector3d>(1.0, 1.0, 1.0))
 {
 
@@ -25,7 +25,7 @@ rigidbody::Mesh::Mesh(
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>()),
     m_pathFile(std::make_shared<utils::Path>()),
     m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788)),
-    m_rotation(std::make_shared<utils::RotoTrans>(RigidBodyDynamics::Math::Matrix4d::Identity())),
+    m_rotation(std::make_shared<utils::RotoTrans>(utils::RotoTrans::Identity())),
     m_scale(std::make_shared<utils::Vector3d>(1.0, 1.0, 1.0))
 {
 
@@ -38,7 +38,7 @@ rigidbody::Mesh::Mesh(const std::vector<utils::Vector3d>
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>(faces)),
     m_pathFile(std::make_shared<utils::Path>()),
     m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788)),
-    m_rotation(std::make_shared<utils::RotoTrans>(RigidBodyDynamics::Math::Matrix4d::Identity())),
+    m_rotation(std::make_shared<utils::RotoTrans>(utils::RotoTrans::Identity())),
     m_scale(std::make_shared<utils::Vector3d>(1.0, 1.0, 1.0))
 {
 
@@ -91,12 +91,8 @@ unsigned int rigidbody::Mesh::nbVertex() const
 
 void rigidbody::Mesh::rotate(
         const utils::RotoTrans &rt)
-{   
-    for (unsigned int i = 0; i < 4; ++i){
-        for (unsigned int j = 0; j < 4; ++j){
-            (*m_rotation)(i, j) = rt(i, j);
-        }
-    }
+{
+    *m_rotation = rt;
     for (auto& v : *m_vertex){
         v.applyRT(rt);
     }
