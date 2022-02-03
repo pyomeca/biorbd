@@ -9,11 +9,11 @@
 using namespace BIORBD_NAMESPACE;
 
 rigidbody::Mesh::Mesh() :
+    m_rotation(std::make_shared<utils::RotoTrans>()),
     m_vertex(std::make_shared<std::vector<utils::Vector3d>>()),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>()),
     m_pathFile(std::make_shared<utils::Path>()),
     m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788)),
-    m_rotation(std::make_shared<utils::RotoTrans>()),
     m_scale(std::make_shared<utils::Vector3d>(1.0, 1.0, 1.0))
 {
 
@@ -21,24 +21,24 @@ rigidbody::Mesh::Mesh() :
 
 rigidbody::Mesh::Mesh(
         const std::vector<utils::Vector3d> &other):
+    m_rotation(std::make_shared<utils::RotoTrans>()),
     m_vertex(std::make_shared<std::vector<utils::Vector3d>>(other)),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>()),
     m_pathFile(std::make_shared<utils::Path>()),
     m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788)),
-    m_rotation(std::make_shared<utils::RotoTrans>()),
     m_scale(std::make_shared<utils::Vector3d>(1.0, 1.0, 1.0))
 {
 
 }
 
-rigidbody::Mesh::Mesh(const std::vector<utils::Vector3d>
-                              &vertex,
-                              const std::vector<rigidbody::MeshFace> & faces) :
+rigidbody::Mesh::Mesh(
+        const std::vector<utils::Vector3d> &vertex,
+        const std::vector<rigidbody::MeshFace> & faces) :
+    m_rotation(std::make_shared<utils::RotoTrans>()),
     m_vertex(std::make_shared<std::vector<utils::Vector3d>>(vertex)),
     m_faces(std::make_shared<std::vector<rigidbody::MeshFace>>(faces)),
     m_pathFile(std::make_shared<utils::Path>()),
     m_patchColor(std::make_shared<utils::Vector3d>(0.89, 0.855, 0.788)),
-    m_rotation(std::make_shared<utils::RotoTrans>()),
     m_scale(std::make_shared<utils::Vector3d>(1.0, 1.0, 1.0))
 {
 
