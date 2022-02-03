@@ -167,12 +167,12 @@ public:
     const utils::Path& path() const;
 
 protected:
+    std::shared_ptr<utils::RotoTrans> m_rotation; ///< The rotation
     std::shared_ptr<std::vector<utils::Vector3d>> m_vertex; ///< The vertex
     std::shared_ptr<std::vector<MeshFace>>
             m_faces; ///< The faces
     std::shared_ptr<utils::Path> m_pathFile; ///< The path to the mesh file
     std::shared_ptr<utils::Vector3d> m_patchColor; ///< The color of faces
-    std::shared_ptr<utils::RotoTrans> m_rotation; ///< The rotation
     std::shared_ptr<utils::Vector3d> m_scale; ///< The scale
 };
 
