@@ -331,30 +331,76 @@ utils::Quaternion utils::Quaternion::omegaToQuatDot(
     return utils::Quaternion(0.5 * m * omega, this->m_Kstab);
 }
 
-utils::Vector3d  utils::Quaternion::eulerDotToOmega(
-    const utils::Vector3d &eulerDot,
+utils::Matrix3d utils::Quaternion::velocityMatrix(
     const utils::Vector3d &euler,
     const utils::String& seq)
 {
-
-    utils::Vector3d w;
-    utils::Scalar dph, dth, dps, ph, th, ps;
-    dph = eulerDot[0];
-    dth = eulerDot[1];
-    dps = eulerDot[2];
-    ph = euler[0];
-    th = euler[1];
-    ps = euler[2];
-    if (!seq.compare("xyz")) {          // xyz
-        w[0] = dph*std::cos(th)*std::cos(ps) + dth*std::sin(ps);
-        w[1] = dth*std::cos(ps) - dph*std::cos(th)*std::sin(ps);
-        w[2] = dph*std::sin(th) + dps;
-    } else {
-        utils::Error::raise("Angle sequence is either nor implemented or not recognized");
+    utils::Vector3d seq_num;
+    for (int i = 0; i < 2; i++){
+        if (seq[i] == 'x') {
+            seq_num[i] = 0;
+        } else if (seq[i] == 'y') {
+            seq_num[i] = 1;
+        } else if (seq[i] == 'z') {
+            seq_num[i] = 2;
+        } else {
+        utils::Error::raise("Angle sequence must be composed of x, y, and/or z");
+        }
     }
-    return w;
+    
+    utils::Matrix3d unit_vectors_matrix;
+    for (int i = 0; i < 2; i++){
+        int idx = seq_num[i];
+        unit_vectors_matrix(i, idx) = 1;
+    }
+    
+    utils::Vector3d rotation_1;
+    rotation_1[0] = euler[0];
+    utils::Vector3d rotation_2;
+    rotation_2[0] = euler[0];
+    rotation_2[1] = euler[1];
+    utils::Vector3d Rot_mat_1 = utils::Rotation::Rotation::fromEulerAngles(rotation_1, seq);
+    utils::Vector3d Rot_mat_2 = utils::Rotation::Rotation::fromEulerAngles(rotation_2, seq);
+    
+    utils::Matrix3d velocity_matrix;
+    utils::Matrix3d identity;
+    identity(0, 0) = 1;
+    identity(1, 1) = 1;
+    identity(2, 2) = 1;
+    utils::Vector3d temp_vectors_for_matrix_0 = identity * unit_vectors_matrix[0];
+    utils::Vector3d temp_vectors_for_matrix_1 = rotation_1 * unit_vectors_matrix[1];
+    utils::Vector3d temp_vectors_for_matrix_2 = rotation_2 * unit_vectors_matrix[2];
+    for (int i = 0; i < 2; i ++){
+    velocity_matrix(i, 0) = temp_vectors_for_matrix_0[i];
+    velocity_matrix(i, 1) = temp_vectors_for_matrix_1[i];
+    velocity_matrix(i, 2) = temp_vectors_for_matrix_2[i];
+    }
+    return velocity_matrix;
 }
 
+
+utils::Vector3d  utils::Quaternion::eulerDotToOmega(
+    const utils::Vector3d &euler,
+    const utils::Vector3d &eulerDot,
+    const utils::String& seq)
+{
+    utils:Matrix3d velocity_matrix = velocityMatrix(euler, seq);
+    utils::Vector3d w = velocity_matrix * eulerDot;
+
+    return w;
+}
+    
+utils::Vector3d  utils::Quaternion::omegaToEulerDot(
+    const utils::Vector3d &euler,
+    const utils::Vector3d &w,
+    const utils::String& seq)
+{
+    utils:Matrix3d velocity_matrix = velocityMatrix(euler, seq).colPivHouseholderQr();
+    utils::Vector3d eulerDot = velocity_matrix * w;
+
+    return eulerDot;
+}   
+    
 void utils::Quaternion::derivate(
     const utils::Vector &w)
 {
