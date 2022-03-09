@@ -46,8 +46,7 @@ unsigned int rigidbody::Contacts::AddConstraint(
     unsigned int body_id,
     const utils::Vector3d& body_point,
     const utils::Vector3d& world_normal,
-    const utils::String& name,
-    double acc)
+    const utils::String& name)
 {
     ++*m_nbreConstraint;
 
@@ -68,32 +67,28 @@ unsigned int rigidbody::Contacts::AddConstraint(
 
     m_rigidContacts->push_back(NodeSegment(body_point, name, "",true,false, axis.c_str(),body_id));
     return RigidBodyDynamics::ConstraintSet::AddContactConstraint(body_id,
-            body_point, world_normal, name.c_str(), acc);
+            body_point, world_normal, name.c_str());
 }
 unsigned int rigidbody::Contacts::AddConstraint(
     unsigned int body_id,
     const utils::Vector3d& body_point,
     const utils::String& axis,
-    const utils::String& name,
-    double acc)
+    const utils::String& name)
 {
     unsigned int ret(0);
     for (unsigned int i=0; i<axis.length(); ++i) {
         ++*m_nbreConstraint;
         if      (axis.tolower()[i] == 'x'){
             ret += RigidBodyDynamics::ConstraintSet::AddContactConstraint(
-                       body_id, body_point, utils::Vector3d(1,0,0), (name + "_X").c_str(),
-                       acc);
+                       body_id, body_point, utils::Vector3d(1,0,0), (name + "_X").c_str());
         }
         else if (axis.tolower()[i] == 'y'){
             ret += RigidBodyDynamics::ConstraintSet::AddContactConstraint(
-                       body_id, body_point, utils::Vector3d(0,1,0), (name + "_Y").c_str(),
-                       acc);
+                       body_id, body_point, utils::Vector3d(0,1,0), (name + "_Y").c_str());
         }
         else if (axis.tolower()[i] == 'z'){
             ret += RigidBodyDynamics::ConstraintSet::AddContactConstraint(
-                       body_id, body_point, utils::Vector3d(0,0,1), (name + "_Z").c_str(),
-                       acc);
+                       body_id, body_point, utils::Vector3d(0,0,1), (name + "_Z").c_str());
         }
         else {
             utils::Error::raise("Wrong axis!");

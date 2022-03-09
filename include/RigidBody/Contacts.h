@@ -58,14 +58,12 @@ public:
     /// \param body_point The point that is constrained relative to the contact body
     /// \param world_normal The normal along the constraint acts (in base coordinates)
     /// \param name A human readable name
-    /// \param acc The acceleration of the contact along the normal
     ///
     unsigned int AddConstraint(
         unsigned int body_id,
         const utils::Vector3d &body_point,
         const utils::Vector3d &world_normal,
-        const utils::String& name,
-        double acc = 0);
+        const utils::String& name);
 
     ///
     /// \brief Add a constraint to the constraint set
@@ -73,15 +71,13 @@ public:
     /// \param body_point The point that is constrained relative to the contact body
     /// \param axis The axis along which the constraint acts
     /// \param name A human readable name
-    /// \param acc The acceleration of the contact along the normal
     ///
 
     unsigned int AddConstraint(
         unsigned int body_id,
         const utils::Vector3d &body_point,
         const utils::String& axis,
-        const utils::String& name,
-        double acc = 0);
+        const utils::String& name);
 
     ///
     /// \brief Add a loop constraint to the constraint set
