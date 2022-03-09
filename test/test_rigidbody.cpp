@@ -953,7 +953,7 @@ TEST(Joints, unitTest)
         }
         
         utils::Vector3d bodyAngularVelocity(joints.bodyAngularVelocity(Q, Qdot));
-        std::vector<double> expectedBodyAngularVelocity = {0, 0, 0}; // Je ne sais pas comment faire fonctionner ca
+        std::vector<double> expectedBodyAngularVelocity = {5.4094513140292122, -0.73173953080349363, 0.73450575671796559};
         
         for (int i = 0; i < 3; ++i) {
             SCALAR_TO_DOUBLE(velocity, bodyAngularVelocity[i]);
