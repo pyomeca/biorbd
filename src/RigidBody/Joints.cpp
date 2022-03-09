@@ -1540,6 +1540,28 @@ rigidbody::Joints::bodyInertia (
   return RigidBodyDynamics::Math::Xtrans(-com).applyTranspose(Itot).toMatrix().block(0, 0, 3, 3);
 }
 
+utils::Vector3d rigidbody::Joints::bodyAngularVelocity (
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    bool updateKin)
+{
+    RigidBodyDynamics::Math::Vector3d com, angular_momentum;
+    utils::Scalar mass;
+    // utils::Matrix3d body_inertia;
+
+    // Calculate the angular velocity of the model around it's center of
+    // mass from the angular momentum and the body inertia
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+    RigidBodyDynamics::Utils::CalcCenterOfMass(
+        *this, Q, Qdot, nullptr, mass, com, nullptr, nullptr,
+        &angular_momentum, nullptr, updateKin);
+    utils::Matrix3d body_inertia = bodyInertia (Q, updateKin);
+        
+    return body_inertia.colPivHouseholderQr().solve(angular_momentum);
+}
+
 unsigned int rigidbody::Joints::getDofIndex(
     const utils::String& segmentName,
     const utils::String& dofName)
