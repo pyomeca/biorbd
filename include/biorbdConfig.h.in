@@ -12,9 +12,6 @@
 //#  define BIORBD_API
 //#endif
 #define BIORBD_API
-#ifdef _WIN32
-#define _ENABLE_EXTENDED_ALIGNED_STORAGE
-#endif
 
 // Current version of biorbd
 #define BIORBD_VERSION "@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"

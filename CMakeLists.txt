@@ -11,6 +11,16 @@ set (CMAKE_CXX_STANDARD 11)
 # Set some variables
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
 
+# Remove some warnings on VS
+if (MSVC)
+    # Disable signed/unsigned int conversion warnings.
+    add_compile_options("/wd4018")
+    add_compile_options("/wd4267")
+    
+    # Disable performance warning about fopen insecurity.
+    add_compile_options("/wd4996")
+endif()
+
 # Because of Eigen, it is not possible to compile biorbd as a dynamic library
 if (WIN32)
     SET(BUILD_SHARED_LIBS FALSE CACHE BOOL
