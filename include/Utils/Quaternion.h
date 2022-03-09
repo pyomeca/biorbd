@@ -303,14 +303,11 @@ public:
         const Vector3d &vec) const;
 
     ///
-    /// \brief Converts a 3d angular velocity vector
+    /// \brief Converts a 3d angular velocity vector into a 4d derivative of the components of the quaternion
     /// \param omega the angular velocity
     /// \return a 4d vector containing the derivatives of the 4 components of the quaternion corresponding to omega
     ///
-    /// Converts a 3d angular velocity vector into a 4d derivative of
-    /// the components of the quaternion
-    ///
-    Quaternion omegaToQDot(
+    Quaternion omegaToQuatDot(
         const Vector3d& omega) const;
 
     ///

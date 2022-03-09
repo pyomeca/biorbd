@@ -311,7 +311,7 @@ utils::Vector3d utils::Quaternion::rotate(
 }
 
 #include <iostream>
-utils::Quaternion utils::Quaternion::omegaToQDot(
+utils::Quaternion utils::Quaternion::omegaToQuatDot(
     const utils::Vector3d &omega) const
 {
     RigidBodyDynamics::Math::MatrixNd m(4, 3);
