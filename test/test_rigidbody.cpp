@@ -114,8 +114,7 @@ TEST(Contacts, unitTest)
             7,
             utils::Vector3d(0, 0, 0),
             utils::Vector3d(1, 1, 1),
-            "constraintName",
-            2.0);
+            "constraintName");
 
         EXPECT_NEAR(contacts.nbContacts(), 7., requiredPrecision);
     }
@@ -270,8 +269,7 @@ TEST(Contacts, DeepCopy)
             7,
             utils::Vector3d(0, 0, 0),
             utils::Vector3d(1, 1, 1),
-            "constraintName",
-            2.0);
+            "constraintName");
 
         EXPECT_NEAR(contacts.nbContacts(), 7., requiredPrecision);
         EXPECT_NEAR(shallowCopy.nbContacts(), 7., requiredPrecision);
