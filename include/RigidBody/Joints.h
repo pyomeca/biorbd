@@ -800,6 +800,18 @@ public:
         const GeneralizedVelocity &Qdot,
         const rigidbody::GeneralizedAcceleration &Qddot,
         bool updateKin);
+        
+    ///
+    /// \brief Calculate the angular velocity of the model around its center of mass.
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param updateKin If the kinematics of the model should be computed
+    /// \return The the angular velocity around the center of mass in the global reference frame
+    ///
+    utils::Vector3d bodyAngularVelocity(
+        const GeneralizedCoordinates &Q,
+        const GeneralizedVelocity &Qdot,
+        bool updateKin = true);
     // -------------------------------- //
 
     ///
