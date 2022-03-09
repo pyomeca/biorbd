@@ -62,6 +62,9 @@ void rigidbody::Mesh::DeepCopy(const rigidbody::Mesh &other)
         (*m_faces)[i] = (*other.m_faces)[i].DeepCopy();
     }
     *m_pathFile = other.m_pathFile->DeepCopy();
+    *m_patchColor = other.m_patchColor->DeepCopy();
+    *m_rotation = *other.m_rotation;
+    *m_rotation = *other.m_rotation;
 }
 
 void rigidbody::Mesh::setColor(
