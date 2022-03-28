@@ -1226,7 +1226,7 @@ utils::Vector3d rigidbody::Joints::CalcAngularMomentum (
     const rigidbody::GeneralizedVelocity &Qdot,
     bool updateKin)
 {
-    RigidBodyDynamics::Math::Vector3d com,  angular_momentum;
+    RigidBodyDynamics::Math::Vector3d com,  angularMomentum;
     utils::Scalar mass;
 
     // Calculate the angular momentum with the function of the
@@ -1236,8 +1236,8 @@ utils::Vector3d rigidbody::Joints::CalcAngularMomentum (
 #endif
     RigidBodyDynamics::Utils::CalcCenterOfMass(
         *this, Q, Qdot, nullptr, mass, com, nullptr, nullptr,
-        &angular_momentum, nullptr, updateKin);
-    return angular_momentum;
+        &angularMomentum, nullptr, updateKin);
+    return angularMomentum;
 }
 
 utils::Vector3d rigidbody::Joints::CalcAngularMomentum (
@@ -1247,7 +1247,7 @@ utils::Vector3d rigidbody::Joints::CalcAngularMomentum (
     bool updateKin)
 {
     // Definition of the variables
-    RigidBodyDynamics::Math::Vector3d com,  angular_momentum;
+    RigidBodyDynamics::Math::Vector3d com,  angularMomentum;
     utils::Scalar mass;
 
     // Calculate the angular momentum with the function of the
@@ -1257,9 +1257,9 @@ utils::Vector3d rigidbody::Joints::CalcAngularMomentum (
 #endif
     RigidBodyDynamics::Utils::CalcCenterOfMass(
         *this, Q, Qdot, &Qddot, mass, com, nullptr, nullptr,
-        &angular_momentum, nullptr, updateKin);
+        &angularMomentum, nullptr, updateKin);
 
-    return angular_momentum;
+    return angularMomentum;
 }
 
 std::vector<utils::Vector3d>
@@ -1545,7 +1545,7 @@ utils::Vector3d rigidbody::Joints::bodyAngularVelocity (
     const rigidbody::GeneralizedVelocity &Qdot,
     bool updateKin)
 {
-    RigidBodyDynamics::Math::Vector3d com, angular_momentum;
+    RigidBodyDynamics::Math::Vector3d com, angularMomentum;
     utils::Scalar mass;
     // utils::Matrix3d body_inertia;
 
@@ -1556,10 +1556,17 @@ utils::Vector3d rigidbody::Joints::bodyAngularVelocity (
 #endif
     RigidBodyDynamics::Utils::CalcCenterOfMass(
         *this, Q, Qdot, nullptr, mass, com, nullptr, nullptr,
-        &angular_momentum, nullptr, updateKin);
+        &angularMomentum, nullptr, updateKin);
     utils::Matrix3d body_inertia = bodyInertia (Q, updateKin);
         
-    return body_inertia.colPivHouseholderQr().solve(angular_momentum);
+#ifdef BIORBD_USE_CASADI_MATH
+    RigidBodyDynamics::Math::Vector3d out = body_inertia.colPivHouseholderQr().solve(angularMomentum);
+#else
+    auto linsol = casadi::Linsol("linear_solver", "symbolicqr", body_inertia.sparsity())
+    RigidBodyDynamics::Math::Vector3d out = linsolve(body_inertia, angularMomentum)
+#endif
+
+    return out;
 }
 
 unsigned int rigidbody::Joints::getDofIndex(
