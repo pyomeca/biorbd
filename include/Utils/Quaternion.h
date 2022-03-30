@@ -1,9 +1,6 @@
 #ifndef BIORBD_UTILS_QUATERNION_H
 #define BIORBD_UTILS_QUATERNION_H
 
-#include <memory>
-#include "Utils/Vector3d.h"
-#include "Utils/Matrix3d.h"
 #include "Utils/Scalar.h"
 
 #include "biorbdConfig.h"
@@ -12,6 +9,7 @@ namespace BIORBD_NAMESPACE
 namespace utils
 {
 class Vector3d;
+class Matrix3d;
 class Vector;
 class RotoTrans;
 class Rotation;

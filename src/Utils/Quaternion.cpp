@@ -2,6 +2,7 @@
 #include "Utils/Quaternion.h"
 
 #include "Utils/Vector3d.h"
+#include "Utils/Matrix3d.h"
 #include "Utils/Vector.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/Error.h"
