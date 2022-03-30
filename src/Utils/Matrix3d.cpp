@@ -2,6 +2,7 @@
 #include "Utils/Matrix3d.h"
 
 #include "Utils/Vector.h"
+#include "Utils/Error.h"
 
 using namespace BIORBD_NAMESPACE;
 
@@ -55,6 +56,32 @@ utils::Matrix3d utils::Matrix3d::orthoNormalize() const
 #endif
 }
 #endif
+
+utils::Matrix3d utils::Matrix3d::fromEulerSequence(
+    const utils::String& seq)
+{
+    utils::Error::check(seq.length() == 3, "The angle sequence should be exactly 3.");
+
+    utils::Matrix3d baseUnitMatrix(utils::Matrix3d::Zero());
+    for (int i = 0; i < seq.length(); i++) {
+        int indexSeq;
+        if (seq[i] == 'x') {
+            indexSeq = 0;
+        }
+        else if (seq[i] == 'y') {
+            indexSeq = 1;
+        }
+        else if (seq[i] == 'z') {
+            indexSeq = 2;
+        }
+        else {
+            utils::Error::raise("Angle sequence must be composed of x, y, and/or z.");
+        }
+        baseUnitMatrix(i, indexSeq) = 1;
+    }
+    return baseUnitMatrix;
+}
+
 
 #ifdef BIORBD_USE_CASADI_MATH
 

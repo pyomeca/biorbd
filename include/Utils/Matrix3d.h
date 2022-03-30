@@ -9,6 +9,8 @@ namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
+class String;
+
 ///
 /// \brief A wrapper for the Eigen::MatrixXd
 ///
@@ -72,6 +74,12 @@ public:
     ///
     utils::Matrix3d orthoNormalize() const;
 #endif
+
+    /// 
+    /// \brief Creates a base 3d matrix from a euler sequence of exactly 3 elements
+    /// \return The base matrix
+    /// 
+    static utils::Matrix3d fromEulerSequence(const utils::String& seq);
 
 #ifdef BIORBD_USE_CASADI_MATH
 
