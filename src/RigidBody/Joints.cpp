@@ -1560,10 +1560,10 @@ utils::Vector3d rigidbody::Joints::bodyAngularVelocity (
     utils::Matrix3d body_inertia = bodyInertia (Q, updateKin);
         
 #ifdef BIORBD_USE_CASADI_MATH
-    RigidBodyDynamics::Math::Vector3d out = body_inertia.colPivHouseholderQr().solve(angularMomentum);
+    auto linsol = casadi::Linsol("linear_solver", "symbolicqr", body_inertia.sparsity());
+    RigidBodyDynamics::Math::Vector3d out = linsol.solve(body_inertia, angularMomentum);
 #else
-    auto linsol = casadi::Linsol("linear_solver", "symbolicqr", body_inertia.sparsity())
-    RigidBodyDynamics::Math::Vector3d out = linsolve(body_inertia, angularMomentum)
+    RigidBodyDynamics::Math::Vector3d out = body_inertia.colPivHouseholderQr().solve(angularMomentum);
 #endif
 
     return out;
