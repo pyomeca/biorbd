@@ -23,8 +23,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     "${MATH_BACKEND_INCLUDE_DIR}"
 )
 
+# Add postfix if needed
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_debug")
+
 # Set runtime path for linux
-SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
     INSTALL_RPATH ${${BIORBD_NAME}_BIN_FOLDER}
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )

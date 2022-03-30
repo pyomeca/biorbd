@@ -26,6 +26,7 @@ Model* c_biorbdModel(
 {
     return new Model(Reader::readModelFile(utils::String(pathToModel)));
 }
+
 void c_deleteBiorbdModel(
     Model* model)
 {
@@ -121,9 +122,18 @@ void c_CoM(
 
     dispatchVectorOutput(CoM, com);
 }
+BIORBD_API_C int c_nSegments(
+    BIORBD_NAMESPACE::Model* model) {
+    return static_cast<int>(model->nbSegment());
+}
 
 
 // dof functions
+int c_nRoot(
+    Model* model)
+{
+    return static_cast<int>(model->nbRoot());
+}
 int c_nQ(
     Model* model)
 {

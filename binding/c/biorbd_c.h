@@ -59,9 +59,13 @@ extern "C" {
         BIORBD_NAMESPACE::Model* model,
         const double* q,
         double *com);
+	BIORBD_API_C int c_nSegments(
+		BIORBD_NAMESPACE::Model* model);
 
 
     // dof functions
+    BIORBD_API_C int c_nRoot(
+        BIORBD_NAMESPACE::Model* model);
     BIORBD_API_C int c_nQ(
         BIORBD_NAMESPACE::Model* model);
     BIORBD_API_C int c_nQDot(
