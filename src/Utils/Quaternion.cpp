@@ -336,46 +336,14 @@ utils::Matrix3d utils::Quaternion::velocityMatrix(
     const utils::Vector3d &euler,
     const utils::String& seq)
 {
-    utils::Vector3d seq_num;
-    for (int i = 0; i < 2; i++){
-        if (seq[i] == 'x') {
-            seq_num[i] = 0;
-        } else if (seq[i] == 'y') {
-            seq_num[i] = 1;
-        } else if (seq[i] == 'z') {
-            seq_num[i] = 2;
-        } else {
-        utils::Error::raise("Angle sequence must be composed of x, y, and/or z");
-        }
-    }
-    
-    utils::Matrix3d unit_vectors_matrix;
-    for (int i = 0; i < 2; i++){
-        int idx = seq_num[i];
-        unit_vectors_matrix(i, idx) = 1;
-    }
-    
-    utils::Vector3d rotation_1;
-    rotation_1[0] = euler[0];
-    utils::Vector3d rotation_2;
-    rotation_2[0] = euler[0];
-    rotation_2[1] = euler[1];
-    utils::Vector3d Rot_mat_1 = utils::Rotation::Rotation::fromEulerAngles(rotation_1, seq);
-    utils::Vector3d Rot_mat_2 = utils::Rotation::Rotation::fromEulerAngles(rotation_2, seq);
+    utils::Matrix3d baseMatrix = utils::Matrix3d::fromEulerSequence(seq);
+    utils::Vector3d rot1(euler[0],        0, 0);
+    utils::Vector3d rot2(euler[0], euler[1], 0);
     
     utils::Matrix3d velocity_matrix;
-    utils::Matrix3d identity;
-    identity(0, 0) = 1;
-    identity(1, 1) = 1;
-    identity(2, 2) = 1;
-    utils::Vector3d temp_vectors_for_matrix_0 = identity * unit_vectors_matrix[0];
-    utils::Vector3d temp_vectors_for_matrix_1 = rotation_1 * unit_vectors_matrix[1];
-    utils::Vector3d temp_vectors_for_matrix_2 = rotation_2 * unit_vectors_matrix[2];
-    for (int i = 0; i < 2; i ++){
-    velocity_matrix(i, 0) = temp_vectors_for_matrix_0[i];
-    velocity_matrix(i, 1) = temp_vectors_for_matrix_1[i];
-    velocity_matrix(i, 2) = temp_vectors_for_matrix_2[i];
-    }
+    velocity_matrix.block(0, 0, 2, 1) = utils::Matrix3d::Identity() * baseMatrix[0];
+    velocity_matrix.block(0, 1, 2, 1) = rot1 * baseMatrix[1];
+    velocity_matrix.block(0, 2, 2, 1) = rot2 * baseMatrix[2];
     return velocity_matrix;
 }
 
@@ -396,9 +364,17 @@ utils::Vector3d  utils::Quaternion::omegaToEulerDot(
     const utils::Vector3d &w,
     const utils::String& seq)
 {
+
+#ifdef BIORBD_USE_CASADI_MATH
+    /*auto linsol = casadi::Linsol("linear_solver", "symbolicqr", body_inertia.sparsity());
+    RigidBodyDynamics::Math::Vector3d out = linsol.solve(body_inertia, angularMomentum);*/
+#else
+    //RigidBodyDynamics::Math::Vector3d out = body_inertia.colPivHouseholderQr().solve(angularMomentum);
+
     utils:Matrix3d velocity_matrix = velocityMatrix(euler, seq).colPivHouseholderQr();
     utils::Vector3d eulerDot = velocity_matrix * w;
-
+#endif
+    utils::Vector3d eulerDot = euler;
     return eulerDot;
 }   
     
