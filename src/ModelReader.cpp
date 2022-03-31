@@ -875,6 +875,7 @@ void Reader::readModelFile(
                 double maxForce(0);
                 double tendonSlackLength(0);
                 double pennAngle(0);
+                double useDamping(0);
                 double maxExcitation(1);
                 double maxActivation(1);
                 double PCSA(0);
@@ -920,6 +921,8 @@ void Reader::readModelFile(
                         } else {
                             utils::Error::raise(property_tag + " is not a valid muscle state type");
                         }
+                    } else if (!property_tag.tolower().compare("usedamping")) {
+                        file.read(useDamping, variable);
                     } else if (!property_tag.tolower().compare("originposition")) {
                         readVector3d(file, variable, origin_pos);
                     } else if (!property_tag.tolower().compare("insertionposition")) {
@@ -976,7 +979,7 @@ void Reader::readModelFile(
                                             model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
                 muscles::State stateMax(maxExcitation, maxActivation);
                 muscles::Characteristics characteristics(optimalLength, maxForce, PCSA,
-                        tendonSlackLength, pennAngle, stateMax,
+                        tendonSlackLength, pennAngle, useDamping, stateMax,
                         fatigueParameters);
                 model->muscleGroup(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,
                         characteristics,

@@ -12,6 +12,7 @@ muscles::Characteristics::Characteristics() :
     m_PCSA(std::make_shared<utils::Scalar>(0)),
     m_tendonSlackLength(std::make_shared<utils::Scalar>(0)),
     m_pennationAngle(std::make_shared<utils::Scalar>(0)),
+    m_useDamping(std::make_shared<utils::Scalar>(0)),
     m_stateMax(std::make_shared<muscles::State>(muscles::State(1, 1))),
     m_minActivation(std::make_shared<utils::Scalar>(0.01)),
     m_torqueActivation(std::make_shared<utils::Scalar>(0.01)),
@@ -29,6 +30,7 @@ muscles::Characteristics::Characteristics(
     m_PCSA(other.m_PCSA),
     m_tendonSlackLength(other.m_tendonSlackLength),
     m_pennationAngle(other.m_pennationAngle),
+    m_useDamping(other.m_useDamping),
     m_stateMax(other.m_stateMax),
     m_minActivation(other.m_minActivation),
     m_torqueActivation(other.m_torqueActivation),
@@ -44,6 +46,7 @@ muscles::Characteristics::Characteristics(
     const utils::Scalar& PCSA,
     const utils::Scalar& tendonSlackLength,
     const utils::Scalar& pennAngle,
+    const utils::Scalar& useDamp,
     const muscles::State &emgMax,
     const muscles::FatigueParameters &fatigueParameters,
     const utils::Scalar& torqueAct,
@@ -54,12 +57,14 @@ muscles::Characteristics::Characteristics(
     m_PCSA(std::make_shared<utils::Scalar>(PCSA)),
     m_tendonSlackLength(std::make_shared<utils::Scalar>(tendonSlackLength)),
     m_pennationAngle(std::make_shared<utils::Scalar>(pennAngle)),
+    m_useDamping(std::make_shared<utils::Scalar>(useDamp)),
     m_stateMax(std::make_shared<muscles::State>(emgMax)),
     m_minActivation(std::make_shared<utils::Scalar>(minAct)),
     m_torqueActivation(std::make_shared<utils::Scalar>(torqueAct)),
     m_torqueDeactivation(std::make_shared<utils::Scalar>(torqueDeact)),
     m_fatigueParameters(std::make_shared<muscles::FatigueParameters>
                         (fatigueParameters))
+
 {
 
 }
@@ -85,11 +90,14 @@ void muscles::Characteristics::DeepCopy(
     *m_PCSA = *other.m_PCSA;
     *m_tendonSlackLength = *other.m_tendonSlackLength;
     *m_pennationAngle = *other.m_pennationAngle;
+    *m_useDamping = *other.m_useDamping;
     *m_stateMax = other.m_stateMax->DeepCopy();
     *m_minActivation = *other.m_minActivation;
     *m_torqueActivation = *other.m_torqueActivation;
     *m_torqueDeactivation = *other.m_torqueDeactivation;
     *m_fatigueParameters = other.m_fatigueParameters->DeepCopy();
+    *m_useDamping = *other.m_useDamping;
+
 }
 
 // Get et Set
@@ -202,3 +210,13 @@ const muscles::FatigueParameters
     return *m_fatigueParameters;
 }
 
+void muscles::Characteristics::setUseDamping(
+    const utils::Scalar& val)
+{
+    *m_useDamping = val;
+}
+const utils::Scalar&
+muscles::Characteristics::useDamping() const
+{
+    return *m_useDamping;
+}
