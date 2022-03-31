@@ -339,12 +339,14 @@ utils::Matrix3d utils::Quaternion::velocityMatrix(
     utils::Matrix3d baseMatrix = utils::Matrix3d::fromEulerSequence(seq);
     utils::Vector3d rot1(euler[0],        0, 0);
     utils::Vector3d rot2(euler[0], euler[1], 0);
-    
-    utils::Matrix3d velocity_matrix;
-    velocity_matrix.block(0, 0, 2, 1) = utils::Matrix3d::Identity() * baseMatrix[0];
-    velocity_matrix.block(0, 1, 2, 1) = rot1 * baseMatrix[1];
-    velocity_matrix.block(0, 2, 2, 1) = rot2 * baseMatrix[2];
-    return velocity_matrix;
+    utils::Matrix3d RotMat1 = utils::Rotation::fromEulerAngles(rot1, seq);
+    utils::Matrix3d RotMat2 = utils::Rotation::fromEulerAngles(rot2, seq);
+
+    utils::Matrix3d result;
+    result.block(0, 0, 3, 1) = baseMatrix.block(0, 0, 3, 1);
+    result.block(0, 1, 3, 1) = RotMat1 * baseMatrix.block(0, 1, 3, 1);
+    result.block(0, 2, 3, 1) = RotMat2 * baseMatrix.block(0, 2, 3, 1);
+    return result;
 }
 
 
@@ -364,17 +366,8 @@ utils::Vector3d  utils::Quaternion::omegaToEulerDot(
     const utils::Vector3d &w,
     const utils::String& seq)
 {
-
-#ifdef BIORBD_USE_CASADI_MATH
-    /*auto linsol = casadi::Linsol("linear_solver", "symbolicqr", body_inertia.sparsity());
-    RigidBodyDynamics::Math::Vector3d out = linsol.solve(body_inertia, angularMomentum);*/
-#else
-    //RigidBodyDynamics::Math::Vector3d out = body_inertia.colPivHouseholderQr().solve(angularMomentum);
-
-    utils:Matrix3d velocity_matrix = velocityMatrix(euler, seq).colPivHouseholderQr();
-    utils::Vector3d eulerDot = velocity_matrix * w;
-#endif
-    utils::Vector3d eulerDot = euler;
+    utils:Matrix3d velocityMatrix = utils::Rotation::fromEulerAngles(euler, seq).inverse();
+    utils::Vector3d eulerDot = velocityMatrix * w;
     return eulerDot;
 }   
     
