@@ -8,6 +8,7 @@
 #include "Utils/String.h"
 #include "Utils/Path.h"
 #include "Utils/Matrix3d.h"
+#include "Utils/Vector.h"
 #include "RigidBody/IMU.h"
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
@@ -77,6 +78,19 @@ void Writer::writeModel(Model & model,
             biorbdModelFile << sep << sep << "meshfile" << sep << model.segment(
                                 i).characteristics().mesh().path().originalPath() <<
                             std::endl;
+            biorbdModelFile << sep << sep << "meshcolor" << sep << model.segment(
+                i).characteristics().mesh().color().transpose() <<
+            std::endl;
+            biorbdModelFile << sep << sep << "meshscale" << sep << model.segment(
+                i).characteristics().mesh().getScale().transpose() <<
+            std::endl;
+
+            biorbdModelFile << sep << sep << "meshrt" << sep << 
+            utils::RotoTrans::toEulerAngles(model.segment(i).characteristics().mesh().getRotation(), 
+            utils::String("xyz")).transpose() <<
+            " xyz " <<
+            model.segment(i).characteristics().mesh().getRotation().trans().transpose() <<
+            std::endl;
         }
         biorbdModelFile << sep << "endsegment" << sep << std::endl;
         biorbdModelFile << std::endl;

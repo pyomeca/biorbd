@@ -173,11 +173,13 @@ public:
     ///
     void addAxesToRemove(const utils::String& axis);
 
+#ifndef SWIG
     ///
     /// \brief Add multiple axes to remove
     /// \param axes The multiples axes numbers to remove (x = 0, y = 1 and z = 2)
     ///
     void addAxesToRemove(const std::vector<unsigned int>& axes);
+#endif
 
     ///
     /// \brief Add multiple axes to remove
@@ -189,7 +191,7 @@ public:
     /// \brief Return the axes to removed
     /// \return The axes to removed
     ///
-    utils::String axesToRemove();
+    utils::String axesToRemove() const;
 
     ///
     /// \brief Return the number of axes to remove
