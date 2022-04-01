@@ -58,14 +58,12 @@ public:
     /// \param body_point The point that is constrained relative to the contact body
     /// \param world_normal The normal along the constraint acts (in base coordinates)
     /// \param name A human readable name
-    /// \param acc The acceleration of the contact along the normal
     ///
     unsigned int AddConstraint(
         unsigned int body_id,
         const utils::Vector3d &body_point,
         const utils::Vector3d &world_normal,
-        const utils::String& name,
-        double acc = 0);
+        const utils::String& name);
 
     ///
     /// \brief Add a constraint to the constraint set
@@ -73,15 +71,13 @@ public:
     /// \param body_point The point that is constrained relative to the contact body
     /// \param axis The axis along which the constraint acts
     /// \param name A human readable name
-    /// \param acc The acceleration of the contact along the normal
     ///
 
     unsigned int AddConstraint(
         unsigned int body_id,
         const utils::Vector3d &body_point,
         const utils::String& axis,
-        const utils::String& name,
-        double acc = 0);
+        const utils::String& name);
 
     ///
     /// \brief Add a loop constraint to the constraint set
@@ -141,20 +137,66 @@ public:
     utils::String contactName(unsigned int i);
 
     ///
-    /// \brief Return the contraints position in the global reference
+    /// \brief Return a vector with the sorted axis index considered in the rigid contact
+    /// \param contact_idx the index of the rigid contact
+    /// \return A vector with the sorted axis index considered in the rigid contact
+    ///
+    std::vector<int> rigidContactAxisIdx(unsigned int contact_idx) const;
+
+    ///
+    /// \brief Return the constraints position in the global reference
     /// \param Q The generalized coordinates of the joints
     /// \param updateKin Whether the kinematics of the model should be updated from Q
-    /// \return The contraints positions in the global reference
+    /// \return The constraints positions in the global reference
     ///
     std::vector<utils::Vector3d> constraintsInGlobal(
         const GeneralizedCoordinates &Q,
         bool updateKin);
 
     ///
-    /// \brief Return the force acting on the contraint
-    /// \return The force acting on the contraint
+    /// \brief Return the force acting on the constraint
+    /// \return The force acting on the constraint
     ///
     utils::Vector getForce() const;
+
+    ///
+    /// \brief Return the segment idx of the contact in biorbd formalism
+    /// \param idx The index of the contact
+    /// \return segment idx of the contact in biorbd formalism
+    ///
+    int contactSegmentBiorbdId(
+            int  idx) const;
+
+    ///
+    /// \brief Return the index of rigid contacts for a specified segment index
+    /// \param idx The index of the segment
+    /// \return the index of rigid contacts for the specified segment idx
+    ///
+    std::vector<size_t> segmentRigidContactIdx(
+            int segment_idx) const;
+
+    ///
+    /// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof
+    /// \param Q The Generalized coordinates
+    /// \param f_contacts the forces applied at the contact points
+    /// \return The rigid contacts
+    ///
+    std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidContactToSpatialVector(
+            const GeneralizedCoordinates& Q,
+            std::vector<utils::Vector> *f_contacts,
+            bool updateKin);
+
+    ///
+    /// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof
+    /// \param applicationPoint the position where the force is applied in base coordinate
+    /// \param sorted_axis_index vector of the sorted axis index considered in the rigid contact
+    /// \param f_contact the forces applied at the contact point
+    /// \return The rigid contacts
+    ///
+    utils::SpatialVector computeForceAtOrigin(
+            utils::Vector3d applicationPoint,
+            std::vector<int> sortedAxisIndex,
+            utils::Vector f_contact);
 
     ///
     /// \brief Returns the number of rigid contacts (ignoring the loop constraints)

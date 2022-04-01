@@ -233,7 +233,7 @@ const rigidbody::Segment& rigidbody::Joints::segment(
 const rigidbody::Segment &rigidbody::Joints::segment(
     const utils::String & name) const
 {
-    return segment(static_cast<unsigned int>(GetBodyBiorbdId(name.c_str())));
+    return segment(static_cast<unsigned int>(getBodyBiorbdId(name.c_str())));
 }
 
 const std::vector<rigidbody::Segment>& rigidbody::Joints::segments() const
@@ -308,37 +308,81 @@ const  // a spatialVector per platform
 
 std::vector<RigidBodyDynamics::Math::SpatialVector> * rigidbody::Joints::combineExtForceAndSoftContact(
         std::vector<utils::SpatialVector> *f_ext,
+        std::vector<utils::Vector> *f_contacts,
         const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& QDot)
+        const rigidbody::GeneralizedVelocity& QDot,
+        bool updateKin
+        )
 {
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* softContacts = dynamic_cast<rigidbody::SoftContacts*>(this)->softContactToSpatialVector(Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#else
+    if (updateKin){
+        UpdateKinematicsCustom(&Q, &QDot);
+    }
+    updateKin = false;
+#endif
+
+    std::vector<RigidBodyDynamics::Math::SpatialVector>* softContacts = dynamic_cast<rigidbody::SoftContacts*>(this)->softContactToSpatialVector(Q, QDot, updateKin);
     std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = dispatchedForce(f_ext);
+    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_contacts_rbdl = dynamic_cast<rigidbody::Contacts*>(this)->rigidContactToSpatialVector(Q, f_contacts, updateKin);
 
-
-    if (!f_ext_rbdl && !softContacts){
+    if (!f_ext_rbdl && !softContacts && !f_contacts_rbdl){
         // Return a nullptr
         return nullptr;
     }
 
-    if (!f_ext_rbdl){
+    if (!f_ext_rbdl && !f_contacts_rbdl){
         // Return the softContacts (and nullptr if softContacts is nullptr)
         return softContacts;
     }
 
-    if (!softContacts){
+    if (!softContacts && !f_contacts_rbdl){
         // Return the External forces
         return f_ext_rbdl;
     }
 
+    if (!f_ext_rbdl && !softContacts){
+        // Return the contact forces
+        return f_contacts_rbdl;
+    }
+
+    if (!f_contacts_rbdl)
+    {
     for (size_t i=0; i<softContacts->size(); ++i){
         // Combine the external forces with the soft contacts
         (*f_ext_rbdl)[i] += (*softContacts)[i];
     }
+    return f_ext_rbdl;
+    }
+    if (!softContacts)
+    {
+    for (size_t i=0; i<f_contacts_rbdl->size(); ++i){
+        // Combine the external forces with the soft contacts
+        (*f_ext_rbdl)[i] += (*f_contacts_rbdl)[i];
+    }
+    return f_ext_rbdl;
+    }
+    if (!f_ext_rbdl)
+    {
+    for (size_t i=0; i<f_contacts_rbdl->size(); ++i){
+        // Combine the external forces with the soft contacts
+        (*softContacts)[i] += (*f_contacts_rbdl)[i];
+    }
+    return softContacts;
+    }
+    for (size_t i=0; i<f_contacts_rbdl->size(); ++i){
+        // Combine the external forces with the soft contacts
+        (*f_ext_rbdl)[i] += (*softContacts)[i];
+        (*f_ext_rbdl)[i] += (*f_contacts_rbdl)[i];
+    }
+
     delete softContacts;
+    delete f_contacts_rbdl;
     return f_ext_rbdl;
 }
 
-int rigidbody::Joints::GetBodyBiorbdId(
+int rigidbody::Joints::getBodyBiorbdId(
         const utils::String &segmentName) const
 {
     for (int i=0; i<static_cast<int>(m_segments->size()); ++i)
@@ -349,11 +393,95 @@ int rigidbody::Joints::GetBodyBiorbdId(
 }
 
 
-int rigidbody::Joints::GetBodyRbdlId(
+int rigidbody::Joints::getBodyRbdlId(
         const utils::String &segmentName) const
 {
     return GetBodyId(segmentName.c_str());
 }
+
+int rigidbody::Joints::getBodyRbdlIdToBiorbdId(
+        const int idx) const
+{
+    // Assuming that this is also a joint type (via BiorbdModel)
+    const rigidbody::Joints &model = dynamic_cast<const rigidbody::Joints &>(*this);
+    std::string bodyName = model.GetBodyName(idx);
+    return model.getBodyBiorbdId(bodyName);
+}
+
+std::vector<std::vector<unsigned int> > rigidbody::Joints::getDofSubTrees()
+{
+    // initialize subTrees
+    std::vector<std::vector<unsigned int> > subTrees;
+    std::vector<unsigned int> subTree_empty;
+    for (unsigned int j=0; j<this->mu.size(); ++j) {
+        subTrees.push_back(subTree_empty);
+    }
+
+    // Get all dof without parent
+    std::vector<unsigned int> dof_with_no_parent_id;
+    for (unsigned int i=1; i<this->mu.size(); ++i) { // begin at 1 because 0 is its own parent in rbdl.
+      if (this->lambda[i]==0) {
+          dof_with_no_parent_id.push_back(i);
+      }
+    }
+
+    // Get all subtrees of dofs without parents
+    for (unsigned int i=0; i<dof_with_no_parent_id.size(); ++i) {
+        unsigned int dof_id = dof_with_no_parent_id[i];
+
+        // initialize subTrees_temp
+        std::vector<std::vector<unsigned int> > subTrees_temp;
+        for (unsigned int j=0; j<this->mu.size(); ++j) {
+          subTrees_temp.push_back(subTree_empty);
+        }
+
+        std::vector<std::vector<unsigned int> > subTrees_temp_filled = recursiveDofSubTrees(subTrees_temp, dof_id);
+        for (unsigned int j=0; j<subTrees_temp.size(); ++j) {
+            if (subTrees_temp_filled[j].empty()) {
+                continue;
+            }
+            else
+            {
+                subTrees[j].insert(subTrees[j].end(),
+                                     subTrees_temp_filled[j].begin(),
+                                     subTrees_temp_filled[j].end());
+            }
+        }
+
+    }
+
+    subTrees.erase(subTrees.begin());
+
+    return  subTrees;
+}
+
+std::vector<std::vector<unsigned int> > rigidbody::Joints::recursiveDofSubTrees(
+        std::vector<std::vector<unsigned int> >subTrees,
+        unsigned int idx)
+{
+    unsigned int q_index_i = this->mJoints[idx].q_index;
+    subTrees[idx].push_back(q_index_i);
+
+    std::vector<std::vector<unsigned int> > subTrees_filled;
+    subTrees_filled = subTrees;
+
+    std::vector<unsigned int> child_idx = this->mu[idx];
+
+    if (child_idx.size() > 0){
+       for (unsigned int i=0; i<child_idx.size(); ++i) {
+            unsigned int cur_child_id = child_idx[i];
+            subTrees_filled = recursiveDofSubTrees(subTrees_filled, cur_child_id);
+            std::vector<unsigned int> subTree_child = subTrees_filled[cur_child_id];
+
+            subTrees_filled[idx].insert(subTrees_filled[idx].end(),
+                                 subTree_child.begin(),
+                                 subTree_child.end());
+      }
+    }
+
+    return subTrees_filled;
+}
+
 
 std::vector<utils::RotoTrans> rigidbody::Joints::allGlobalJCS(
     const rigidbody::GeneralizedCoordinates &Q)
@@ -392,7 +520,7 @@ utils::RotoTrans rigidbody::Joints::globalJCS(
 utils::RotoTrans rigidbody::Joints::globalJCS(
     const utils::String &name) const
 {
-    return globalJCS(static_cast<unsigned int>(GetBodyBiorbdId(name)));
+    return globalJCS(static_cast<unsigned int>(getBodyBiorbdId(name)));
 }
 
 utils::RotoTrans rigidbody::Joints::globalJCS(
@@ -415,7 +543,7 @@ const
 utils::RotoTrans rigidbody::Joints::localJCS(
     const utils::String &name) const
 {
-    return localJCS(static_cast<unsigned int>(GetBodyBiorbdId(name.c_str())));
+    return localJCS(static_cast<unsigned int>(getBodyBiorbdId(name.c_str())));
 }
 utils::RotoTrans rigidbody::Joints::localJCS(
     const unsigned int idx) const
@@ -669,6 +797,130 @@ utils::Matrix rigidbody::Joints::massMatrix (
     massMatrix.setZero();
     RigidBodyDynamics::CompositeRigidBodyAlgorithm(*this, Q, massMatrix, updateKin);
     return massMatrix;
+}
+
+utils::Matrix rigidbody::Joints::massMatrixInverse (
+    const rigidbody::GeneralizedCoordinates &Q,
+    bool updateKin)
+{
+    unsigned int i = 0; // for loop purpose
+    unsigned int j = 0; // for loop purpose
+    RigidBodyDynamics::Math::MatrixNd Minv(this->dof_count, this->dof_count);
+    Minv.setZero();
+
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+    if (updateKin) {
+        UpdateKinematicsCustom(&Q, nullptr, nullptr);
+    }
+    // First Forward Pass
+    for (i = 1; i < this->mBodies.size(); i++) {
+
+      this->I[i].setSpatialMatrix(this->IA[i]);
+      }
+    // End First Forward Pass
+
+    // set F (n x 6 x n)
+    RigidBodyDynamics::Math::MatrixNd F_i(6, this->dof_count);
+    F_i.setZero();
+    // Fill a vector of matrix (6 x n)
+    std::vector<RigidBodyDynamics::Math::MatrixNd> F;
+    for (i = 1; i < this->mBodies.size(); i++)
+    {
+        F.push_back(F_i);
+    }
+
+    // Backward Pass
+    std::vector<std::vector<unsigned int>> subTrees = getDofSubTrees();
+    for (i = this->mBodies.size() - 1; i > 0; i--)
+    {    
+        unsigned int q_index_i = this->mJoints[i].q_index;
+        const std::vector<unsigned int>& sub_tree = subTrees[q_index_i];
+
+        this->U[i] = this->IA[i] * this->S[i];
+        this->d[i] = this->S[i].dot(this->U[i]);
+
+        Minv(q_index_i, q_index_i) = 1.0 / (this->d[i]);
+
+        for (j = 0; j < sub_tree.size(); j++) {
+              const RigidBodyDynamics::Math::SpatialVector& Ftemp = F[q_index_i].block(0, sub_tree[j], 6, 1);
+              Minv(q_index_i,sub_tree[j]) -= (1.0/this->d[i]) * this->S[i].transpose() * Ftemp;
+        }
+
+        unsigned int lambda = this->lambda[i];
+        unsigned int lambda_q_i = this->mJoints[lambda].q_index;
+        if (lambda != 0) {
+            for (j = 0; j < sub_tree.size(); j++) {
+                F[q_index_i].block(0, sub_tree[j], 6, 1) += this->U[i] * Minv.block(q_index_i, sub_tree[j], 1, 1);
+
+                F[lambda_q_i].block(0, sub_tree[j], 6, 1) += this->X_lambda[i].toMatrixTranspose() * F[q_index_i].block(0, sub_tree[j], 6, 1);
+            }
+
+            RigidBodyDynamics::Math::SpatialMatrix Ia = this->IA[i]
+                - this->U[i]
+                * (this->U[i] / this->d[i]).transpose();
+
+#ifdef BIORBD_USE_CASADI_MATH
+          this->IA[lambda]
+            += this->X_lambda[i].toMatrixTranspose()
+            * Ia * this->X_lambda[i].toMatrix();
+
+#else
+          this->IA[lambda].noalias()
+            += this->X_lambda[i].toMatrixTranspose()
+            * Ia * this->X_lambda[i].toMatrix();
+#endif
+        }
+    }
+    // End Backward Pass
+
+    // Second Forward Pass
+    for (i = 1; i < this->mBodies.size(); i++) {
+      unsigned int q_index_i = this->mJoints[i].q_index;
+      unsigned int lambda = this->lambda[i];
+      unsigned int lambda_q_i = this->mJoints[lambda].q_index;
+
+      RigidBodyDynamics::Math::SpatialTransform X_lambda = this->X_lambda[i];
+
+        if (lambda != 0){
+            // Minv[i,i:] = Dinv[i]* (U[i,:].transpose() * Xmat) * F[lambda,:,i:])
+            for (j = q_index_i; j < this->dof_count; j++) {
+//                RigidBodyDynamics::Math::SpatialVector Ftemp = F[lambda_q_i].block(0, q_index_i, 6, 1);
+                RigidBodyDynamics::Math::SpatialVector Ftemp = F[lambda_q_i].block(0, j, 6, 1);
+                Minv(q_index_i, j) -=
+                        (1.0/this->d[i]) * (this->U[i].transpose() * X_lambda.toMatrix()) * Ftemp;
+            }
+
+        }
+        // F[i,:,i:] = np.outer(S,Minv[i,i:]) // could be simplified (S * M[q_index_i,q_index_i:]^T)
+        for (j = q_index_i; j < this->dof_count; j++) {
+                    F[q_index_i].block(0, j, 6, 1) = this->S[i] * Minv.block(q_index_i, j, 1, 1); // outer product
+        }
+
+
+        if (lambda != 0){
+            //  F[i,:,i:] += Xmat.transpose() * F[lambda,:,i:]
+            for (j = q_index_i; j < this->dof_count; j++) {
+                F[q_index_i].block(0, j, 6, 1) +=
+                        X_lambda.toMatrix() * F[lambda_q_i].block(0, j, 6, 1);
+            }
+
+        }
+    }
+    // End of Second Forward Pass
+    // Fill in full matrix (currently only upper triangular)
+    for (j = 0; j < this->dof_count; j++)
+    {
+        for (i = 0; i < this->dof_count; i++)
+        {
+            if (j < i) {
+                    Minv(i, j) = Minv(j, i);
+            }
+        }
+    }
+
+    return Minv;
 }
 
 utils::Vector3d rigidbody::Joints::CoMdot(
@@ -1144,10 +1396,11 @@ rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &QDot,
     const rigidbody::GeneralizedAcceleration &QDDot,
-    std::vector<utils::SpatialVector>* f_ext)
+    std::vector<utils::SpatialVector>* f_ext,
+    std::vector<utils::Vector> *f_contacts)
 {
     rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
-    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, Q, QDot));
+    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, f_contacts, Q, QDot, true));
     RigidBodyDynamics::InverseDynamics(*this, Q, QDot, QDDot, Tau, f_ext_rbdl);
     if (f_ext_rbdl){
         delete f_ext_rbdl;
@@ -1158,10 +1411,11 @@ rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
 rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &QDot,
-    std::vector<utils::SpatialVector>* f_ext)
+    std::vector<utils::SpatialVector>* f_ext,
+    std::vector<utils::Vector> *f_contacts)
 {
     rigidbody::GeneralizedTorque Tau(*this);
-    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, Q, QDot));
+    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, f_contacts, Q, QDot, true));
     RigidBodyDynamics::NonlinearEffects(*this, Q, QDot, Tau, f_ext_rbdl);
     if (f_ext_rbdl){
         delete f_ext_rbdl;
@@ -1176,11 +1430,11 @@ rigidbody::Joints::ForwardDynamics(
     const rigidbody::GeneralizedTorque &Tau,
     std::vector<utils::SpatialVector>* f_ext)
 {
-#ifdef BIORBD_USE_CASADI_MATH
-    UpdateKinematicsCustom(&Q, &QDot);
-#endif
+
+    bool updateKin = true;
+
     rigidbody::GeneralizedAcceleration QDDot(*this);
-    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, Q, QDot));
+    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, nullptr, Q, QDot, updateKin));
     RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, f_ext_rbdl);
     if (f_ext_rbdl){
         delete f_ext_rbdl;
@@ -1199,11 +1453,12 @@ rigidbody::Joints::ForwardDynamicsConstraintsDirect(
 #ifdef BIORBD_USE_CASADI_MATH
     bool updateKin = true;
 #else
-    bool updateKin = true;  // Put this in parameters?
+    UpdateKinematicsCustom(&Q, &QDot);
+    bool updateKin = false;  // Put this in parameters??
 #endif
 
     rigidbody::GeneralizedAcceleration QDDot(*this);
-    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, Q, QDot));
+    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, nullptr, Q, QDot, updateKin));
     RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, updateKin, f_ext_rbdl);
     if (f_ext_rbdl){
         delete f_ext_rbdl;

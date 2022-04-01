@@ -514,7 +514,6 @@ void Reader::readModelFile(
                 utils::Vector3d pos(0,0,0);
                 utils::Vector3d norm(0,0,0);
                 utils::String axis("");
-                double acc = 0;
                 while(file.read(property_tag) && property_tag.tolower().compare("endcontact")) {
                     if (!property_tag.tolower().compare("parent")) {
                         // Dynamically find the parent number
@@ -529,8 +528,6 @@ void Reader::readModelFile(
                         readVector3d(file, variable, norm);
                     } else if (!property_tag.tolower().compare("axis")) {
                         file.read(axis);
-                    } else if (!property_tag.tolower().compare("acceleration")) {
-                        file.read(acc, variable);
                     }
                 }
                 if (version == 1) {
@@ -538,10 +535,10 @@ void Reader::readModelFile(
                     utils::Error::check(norm.norm() == 1.0,
                                                 "Normal of the contact must be provided" );
 #endif
-                    model->AddConstraint(parent_int, pos, norm, name, acc);
+                    model->AddConstraint(parent_int, pos, norm, name);
                 } else if (version >= 2) {
                     utils::Error::check(axis.compare(""), "Axis must be provided");
-                    model->AddConstraint(parent_int, pos, axis, name, acc);
+                    model->AddConstraint(parent_int, pos, axis, name);
                 }
             } else if (!main_tag.tolower().compare("loopconstraint")) {
                 utils::String name;
@@ -878,6 +875,7 @@ void Reader::readModelFile(
                 double maxForce(0);
                 double tendonSlackLength(0);
                 double pennAngle(0);
+                double useDamping(0);
                 double maxExcitation(1);
                 double maxActivation(1);
                 double PCSA(0);
@@ -923,6 +921,8 @@ void Reader::readModelFile(
                         } else {
                             utils::Error::raise(property_tag + " is not a valid muscle state type");
                         }
+                    } else if (!property_tag.tolower().compare("usedamping")) {
+                        file.read(useDamping, variable);
                     } else if (!property_tag.tolower().compare("originposition")) {
                         readVector3d(file, variable, origin_pos);
                     } else if (!property_tag.tolower().compare("insertionposition")) {
@@ -979,7 +979,7 @@ void Reader::readModelFile(
                                             model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
                 muscles::State stateMax(maxExcitation, maxActivation);
                 muscles::Characteristics characteristics(optimalLength, maxForce, PCSA,
-                        tendonSlackLength, pennAngle, stateMax,
+                        tendonSlackLength, pennAngle, useDamping, stateMax,
                         fatigueParameters);
                 model->muscleGroup(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,
                         characteristics,

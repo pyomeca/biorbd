@@ -144,7 +144,7 @@ public:
     /// \param segmentName The name of the segment
     /// \return The biorbd body identification
     ///
-    int GetBodyBiorbdId(
+    int getBodyBiorbdId(
         const utils::String &segmentName) const;
 
     ///
@@ -152,9 +152,35 @@ public:
     /// \param segmentName The name of the segment
     /// \return The rbdl body identification
     ///
-    int GetBodyRbdlId(
+    int getBodyRbdlId(
         const utils::String &segmentName) const;
 
+    ///
+    /// \brief Return the Biorbd body identification from rbdl
+    /// \param idx The Rbdl body Id
+    /// \return The Biorbd body identification
+    ///
+    int getBodyRbdlIdToBiorbdId(
+        const int idx) const;
+
+    ///
+    /// \brief Return the rbdl idx of subtrees of each segments
+    /// \return the rbdl idx of subtrees of each segments
+    ///
+    std::vector<std::vector<unsigned int> > getDofSubTrees();
+
+protected:
+    ///
+    /// \brief Return the rbdl idx of subtrees of each segments
+    /// \param subTrees the rbdl idx of subtrees of each segments to be filled
+    /// \param idx starting index to explore the subtrees
+    /// \return the rbdl idx of subtrees of each segments starting from the specified index
+    ///
+    std::vector<std::vector<unsigned int> > recursiveDofSubTrees(
+            std::vector<std::vector<unsigned int> >subTrees,
+            unsigned int idx);
+
+public:
     ///
     /// \brief Return the number of generalized torque
     /// \return The number of generalized torque
@@ -287,11 +313,15 @@ protected:
     /// \param f_ext The external forces (it can be a nullptr)
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
+    /// \param f_contacts The forces applied to the rigid contacts
+    /// \param updateKin If the kinematics of the model should be computed
     ///
     std::vector<RigidBodyDynamics::Math::SpatialVector> * combineExtForceAndSoftContact(
             std::vector<utils::SpatialVector> *f_ext,
+            std::vector<utils::Vector> *f_contacts,
             const rigidbody::GeneralizedCoordinates& Q,
-            const rigidbody::GeneralizedVelocity& QDot);
+            const rigidbody::GeneralizedVelocity& QDot,
+            bool updateKin);
 
     // ---------------------------- //
 public:
@@ -710,6 +740,16 @@ public:
         bool updateKin = true);
 
     ///
+    /// \brief Get the inverse mass matrix at a given position Q
+    /// \param Q The generalized coordinates
+    /// \param updateKin If the kinematics should be updated
+    /// \return The inverse mass matrix
+    ///
+    utils::Matrix massMatrixInverse(
+        const rigidbody::GeneralizedCoordinates &Q,
+        bool updateKin = true);
+
+    ///
     /// \brief Calculate the angular momentum of the center of mass
     /// \param Q The generalized coordinates
     /// \param Qdot The generalized velocities
@@ -809,25 +849,29 @@ public:
     /// \param QDot The Generalized Velocities
     /// \param QDDot The Generalzed Acceleration
     /// \param f_ext External force acting on the system if there are any
+    /// \param f_contacts The forces applied to the rigid contacts if there are any
     /// \return The Generalized Torques
     ///
-    GeneralizedTorque InverseDynamics(
-        const GeneralizedCoordinates &Q,
+    GeneralizedTorque InverseDynamics(const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &QDot,
         const rigidbody::GeneralizedAcceleration &QDDot,
-        std::vector<utils::SpatialVector>* f_ext = nullptr);
+        std::vector<utils::SpatialVector>* f_ext = nullptr,
+        std::vector<utils::Vector> *f_contacts = nullptr);
 
     ///
     /// \brief Interface to NonLinearEffect
     /// \param Q The Generalized Coordinates
     /// \param QDot The Generalized Velocities
     /// \param f_ext External force acting on the system if there are any
+    /// \param f_contacts The forces applied to the rigid contacts if there are any
     /// \return The Generalized Torques of the bias effects
     ///
     GeneralizedTorque NonLinearEffect(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &QDot,
-        std::vector<utils::SpatialVector>* f_ext = nullptr);
+        std::vector<utils::SpatialVector>* f_ext = nullptr,
+        std::vector<utils::Vector> *f_contacts = nullptr);
+
 
     ///
     /// \brief Interface for the forward dynamics of RBDL

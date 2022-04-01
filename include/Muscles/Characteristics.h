@@ -49,6 +49,7 @@ public:
         const utils::Scalar& PCSA,
         const utils::Scalar& tendonSlackLength,
         const utils::Scalar& pennAngle,
+        const utils::Scalar& useDamp,
         const State& emgMax,
         const FatigueParameters& fatigueParameters,
         const utils::Scalar& torqueAct = 0.01,
@@ -200,6 +201,20 @@ public:
     /// \return The fatigue parameters
     ///
     const FatigueParameters& fatigueParameters() const;
+    
+    ///
+    /// \brief Choose if use damping for muscle force computation
+    /// \param val 0 to not use damping 
+    ///
+    void setUseDamping(
+        const utils::Scalar& val);
+
+    ///
+    /// \brief Return 1 if use damping for muscle computation
+    /// \return 0 if not use damping 1 overall
+    ///
+    const utils::Scalar& useDamping() const;
+
 
 protected:
     std::shared_ptr<utils::Scalar>
@@ -211,6 +226,7 @@ protected:
     std::shared_ptr<utils::Scalar>
     m_tendonSlackLength; ///< Tendon slack length
     std::shared_ptr<utils::Scalar> m_pennationAngle; ///< Angle of pennation
+    std::shared_ptr<utils::Scalar> m_useDamping; ///< Use damping for muscle force from activation
     std::shared_ptr<State>
     m_stateMax; ///< Maximal excitation et activation of the muscle
 

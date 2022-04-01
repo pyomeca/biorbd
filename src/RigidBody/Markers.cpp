@@ -399,7 +399,7 @@ const
     unsigned int n = 0;
     for (unsigned int i=0; i<nbMarkers();
             ++i) // Go through all the markers and select the right ones
-        if ((*m_marks)[i].parent().compare(name)) {
+        if (!(*m_marks)[i].parent().compare(name)) {
             ++n;
         }
 

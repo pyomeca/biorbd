@@ -120,7 +120,7 @@ rigidbody::IMU rigidbody::IMUs::IMU(
     }
 
     rigidbody::IMU node = IMU(idx);
-    unsigned int id = static_cast<unsigned int>(model.GetBodyBiorbdId(
+    unsigned int id = static_cast<unsigned int>(model.getBodyBiorbdId(
                           node.parent()));
 
     return model.globalJCS(id) * node;

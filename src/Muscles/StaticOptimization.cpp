@@ -201,7 +201,7 @@ void muscles::StaticOptimization::run(
     app->Options()->SetStringValue("hessian_approximation", "limited-memory");
     app->Options()->SetStringValue("derivative_test", "first-order");
     app->Options()->SetIntegerValue("max_iter", 10000);
-    app->Options()->SetIntegerValue("print_level", 0);
+    app->Options()->SetIntegerValue("print_level", 5);
 
     Ipopt::ApplicationReturnStatus status;
     status = app->Initialize();

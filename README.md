@@ -410,7 +410,7 @@ The `mass` tag specifies the mass of the segment in kilogram. This tag waits for
 The $3$ values position of the `center of mass` relative to the local reference of the segment. The default values are `0 0 0`. 
 
 ##### inertia
-The `inertia` tag allows to specify the matrix of inertia of the segment. It waits for $9$ values. The default values are the `identity matrix`
+The `inertia` tag allows to specify the matrix of inertia of the segment ( computed with respect to the center of mass of the segment ). It waits for $9$ values. The default values are the `identity matrix`
 
 ##### foreceplate or externalforceindex
 When calculating the inverse dynamics, if force plates are used, this tag dispatch the force plates, the first force plate being $0$. If no force plate is acting on this segment, the value is $-1$. 
