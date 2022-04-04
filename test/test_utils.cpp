@@ -1205,7 +1205,7 @@ TEST(Quaternion, otherOperations)
         EXPECT_NEAR(vecZ, 582, requiredPrecision);
     } {
         utils::Quaternion q(2, 3, 4, 5, 6);
-        utils::Quaternion qdot(q.omegaToQDot(utils::Vector3d(7, 8, 9)));
+        utils::Quaternion qdot(q.omegaToQuatDot(utils::Vector3d(7, 8, 9)));
 
         SCALAR_TO_DOUBLE(qdotW, qdot.w());
         SCALAR_TO_DOUBLE(qdotX, qdot.x());
