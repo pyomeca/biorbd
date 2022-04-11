@@ -281,14 +281,14 @@ void muscles::HillType::computeDamping()
 #ifdef BIORBD_USE_CASADI_MATH
     *m_damping = IF_ELSE_NAMESPACE::if_else_zero(
                   IF_ELSE_NAMESPACE::gt(position().velocity(), 0),
-                ((position().velocity() / *m_cste_maxShorteningSpeed)
+                ((position().velocity() / (characteristics().optimalLength() * *m_cste_maxShorteningSpeed))
                 * *m_cste_damping));
 
 #else
     if (position().velocity() > 0) {
         *m_damping = (position().velocity()
                      /
-                     *m_cste_maxShorteningSpeed) * *m_cste_damping;
+                     (characteristics().optimalLength() * *m_cste_maxShorteningSpeed)) * *m_cste_damping;
     } else {
         *m_damping = 0;
     }

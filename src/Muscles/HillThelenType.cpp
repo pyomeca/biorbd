@@ -87,21 +87,20 @@ void muscles::HillThelenType::DeepCopy(
 
 void muscles::HillThelenType::computeFlPE()
 {
-        utils::Scalar normLength = position().length()  / characteristics().optimalLength();
-        double kpe = 5.0;
-	double e0 = 0.6;
+    utils::Scalar normLength = position().length()  / characteristics().optimalLength();
+    double kpe = 5.0;
+    double e0 = 0.6;
+    double t5 = exp(kpe * (normLength - 0.10e1) / e0);
+    double t7 = exp(kpe);
+
 #ifdef BIORBD_USE_CASADI_MATH
-    *m_FlPE = IF_ELSE_NAMESPACE::if_else(
+    *m_FlPE = IF_ELSE_NAMESPACE::if_else_zero(
                   IF_ELSE_NAMESPACE::gt(normLength, 1),
-                  ((exp( kpe * (normLength - 1) / e0 ) -1)
-                  /
-                  (exp( kpe)-1)),
-                  0);
+                  ((t5 - 0.10e1) / (t7 - 0.10e1))
+                );
 #else
     if (normLength > 1)
-        *m_FlPE = (exp( kpe * (normLength - 1) / e0) -1)
-                  /
-                  (exp( kpe )-1);
+        *m_FlPE = (t5 - 0.10e1) / (t7 - 0.10e1);
     else
         *m_FlPE = 0;
 
@@ -112,26 +111,26 @@ void muscles::HillThelenType::computeFlCE(
     const muscles::State&)
 {
     utils::Scalar normLength = position().length() / characteristics().optimalLength();
-    *m_FlCE = exp( -((normLength - 1) * (normLength - 1)) /  0.45 );
+    *m_FlCE = exp( -((normLength - 1)*(normLength - 1)) /  0.45 );
 }
 
 void muscles::HillThelenType::computeFvCE()
 {
 	utils::Scalar v = m_position->velocity();
-	utils::Scalar norm_v = v / *m_cste_maxShorteningSpeed;
+    utils::Scalar norm_v = v / (characteristics().optimalLength() * *m_cste_maxShorteningSpeed);
 	double kvce = 0.06;
 	double flen = 1.6;
 
 #ifdef BIORBD_USE_CASADI_MATH
-    *m_FlPE = IF_ELSE_NAMESPACE::if_else(
+    *m_FvCE = IF_ELSE_NAMESPACE::if_else(
                   IF_ELSE_NAMESPACE::gt(norm_v, 0),
                   ((1 + norm_v * flen / kvce) / (1 + norm_v / kvce)),
                   0);
 #else
     if (norm_v > 0){
-        *m_FlPE = (1 + norm_v * flen / kvce) / (1 + norm_v / kvce);
+        *m_FvCE = (1 + norm_v * flen / kvce) / (1 + norm_v / kvce);
     } else {
-        *m_FlPE = 0;
+        *m_FvCE = 0;
     }
 #endif
 }

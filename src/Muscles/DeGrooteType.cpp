@@ -116,7 +116,7 @@ void muscles::DeGrooteType::computeFvCE()
     double d2 = -8.149;
     double d3 = -0.374;
     double d4 = 0.886;
-    utils::Scalar norm_v = m_position->velocity() / *m_cste_maxShorteningSpeed;
+    utils::Scalar norm_v = m_position->velocity() / (characteristics().optimalLength() * *m_cste_maxShorteningSpeed);
 
     *m_FvCE = d1 * log((d2 * norm_v + d3) +
                              sqrt(( d2 * norm_v + d3)*( d2 * norm_v + d3) + 1))
