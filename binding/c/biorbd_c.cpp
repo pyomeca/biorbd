@@ -449,9 +449,9 @@ utils::Matrix dispatchMatrixInput(
     utils::Matrix res(
         static_cast<unsigned int>(nRows),
         static_cast<unsigned int>(nCols));
-    for (int i = 0; i < nCols; ++i) {
-        for (int j = 0; j < nRows; ++j) {
-            res(j, i) = matXd[j + i * nCols];
+    for (int j = 0; j < nCols; ++j) {
+        for (int i = 0; i < nRows; ++i) {
+            res(i, j) = matXd[i + j * nRows];
         }
     }
     return res;
