@@ -14,6 +14,7 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
+#include "RigidBody/IMU.h"
 #include "RigidBody/NodeSegment.h"
 #ifndef SKIP_KALMAN
     #include "RigidBody/KalmanReconsIMU.h"
@@ -219,6 +220,17 @@ void c_addIMU(
 {
     utils::RotoTransNode pos(dispatchRTinput(imuRT), name, parentName);
     model->addIMU(pos, technical, anatomical);
+}
+void c_IMU(
+    BIORBD_NAMESPACE::Model* model,
+    const double* Qdouble,
+    double* output,
+    bool updateKin)
+{
+    rigidbody::GeneralizedCoordinates Q = dispatchQinput(model, Qdouble);
+    std::vector<rigidbody::IMU> allIMU = model->IMU(Q, updateKin);
+    
+    dispatchRToutput(allIMU, output);
 }
 
 
@@ -437,6 +449,17 @@ void dispatchRToutput(
     for (unsigned int i=0; i<rt_in.size(); ++i) {
         for (unsigned int j=0; j<16; ++j) {
             rt_out[i*16+j] = rt_in[i](j%4, j/4);
+        }
+    }
+}
+void dispatchRToutput(
+    const std::vector<rigidbody::IMU>& rt_in,
+    double* rt_out)
+{
+    // Attention la mémoire doit déjà être allouée pour rt_out
+    for (unsigned int i = 0; i < rt_in.size(); ++i) {
+        for (unsigned int j = 0; j < 16; ++j) {
+            rt_out[i * 16 + j] = rt_in[i](j % 4, j / 4);
         }
     }
 }

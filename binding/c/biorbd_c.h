@@ -107,6 +107,11 @@ extern "C" {
         const char* parentName = "",
         bool technical = true,
         bool anatomical = true);
+    BIORBD_API_C void c_IMU(
+        BIORBD_NAMESPACE::Model*, 
+        const double* Q,
+        double* output,
+        bool updateKin = true);
 
     // Kalman IMU
 #ifdef MODULE_KALMAN
@@ -177,6 +182,9 @@ void dispatchRToutput(
     double* rt_out);
 void dispatchRToutput(
     const std::vector<BIORBD_NAMESPACE::utils::RotoTrans>& rt_in,
+    double* rt_out);
+void dispatchRToutput(
+    const std::vector<BIORBD_NAMESPACE::rigidbody::IMU>& rt_in,
     double* rt_out);
 BIORBD_NAMESPACE::utils::Matrix dispatchMatrixInput(
     const double* matXd,
