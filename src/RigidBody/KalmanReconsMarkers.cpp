@@ -57,7 +57,7 @@ void rigidbody::KalmanReconsMarkers::initialize()
     rigidbody::KalmanRecons::initialize();
 
     // Keep in mind the initial m_Pp
-    m_PpInitial = m_Pp;
+    *m_PpInitial = *m_Pp;
 }
 
 void rigidbody::KalmanReconsMarkers::manageOcclusionDuringIteration(
@@ -132,8 +132,7 @@ void rigidbody::KalmanReconsMarkers::reconstructFrame(
                          utils::Vector::Zero(3*model.nbTechnicalMarkers()
                                  -3*model.nbTechnicalMarkers(
                                      0)); // Only keep the markers of the root
-        for (unsigned int j = 0; j < 2;
-                ++j) { // Do the root and then the rest of the body
+        for (unsigned int j = 0; j < 2; ++j) { // Do the root and then the rest of the body
             if (j != 0) {
                 TobsTP = Tobs;    // Re-take all the markers
             }
@@ -143,10 +142,9 @@ void rigidbody::KalmanReconsMarkers::reconstructFrame(
                 reconstructFrame(model, TobsTP, nullptr, nullptr, nullptr);
 
                 // Reset Pp to initial (we are not interested in the velocity to get to the initial position)
-                m_Pp = m_PpInitial;
-                m_xp->block(*m_nbDof, 0, *m_nbDof*2,
-                            1) = utils::Vector::Zero(
-                                     *m_nbDof*2); // Set velocity and acceleration to zero
+                *m_Pp = *m_PpInitial;
+                m_xp->block(*m_nbDof, 0, *m_nbDof*2, 1) = 
+                    utils::Vector::Zero(*m_nbDof*2); // Set velocity and acceleration to zero
             }
         }
     }

@@ -83,8 +83,7 @@ void rigidbody::KalmanReconsIMU::reconstructFrame(
     rigidbody::GeneralizedAcceleration *Qddot)
 {
     // Separate the IMUobs in a big vector
-    utils::Vector T(static_cast<unsigned int>
-                            (3*3*IMUobs.size())); // Matrix 3*3 * nbIMU
+    utils::Vector T(static_cast<unsigned int> (3*3*IMUobs.size())); // Matrix 3*3 * nbIMU
     for (unsigned int i=0; i<IMUobs.size(); ++i)
         for (unsigned int j=0; j<3; ++j) {
             T.block(9*i+3*j, 0, 3, 1) = IMUobs[i].block(0,j,3,1);
@@ -111,8 +110,8 @@ void rigidbody::KalmanReconsIMU::reconstructFrame(
 
             // we don't need the velocity to get to the initial position
             // Otherwise, there are risks of overshooting
-            m_xp->block(*m_nbDof, 0, *m_nbDof*2,
-                        1) = utils::Vector::Zero(*m_nbDof*2);
+            *m_Pp = *m_PpInitial;
+            m_xp->block(*m_nbDof, 0, *m_nbDof*2, 1) = utils::Vector::Zero(*m_nbDof*2);
         }
     }
 
@@ -122,20 +121,17 @@ void rigidbody::KalmanReconsIMU::reconstructFrame(
     model.UpdateKinematicsCustom (&Q_tp, nullptr, nullptr);
 
     // Projected markers
-    const std::vector<rigidbody::IMU>& zest_tp = model.technicalIMU(Q_tp,
-            false);
+    const std::vector<rigidbody::IMU>& zest_tp = model.technicalIMU(Q_tp, false);
     // Jacobian
-    const std::vector<utils::Matrix>& J_tp = model.TechnicalIMUJacobian(
-                Q_tp, false);
+    std::vector<utils::Matrix>& J_tp = model.TechnicalIMUJacobian(Q_tp, false);
+
     // Create only one matrix for zest and Jacobian
-    utils::Matrix H(utils::Matrix::Zero(*m_nMeasure,
-                            *m_nbDof*3)); // 3*nCentrales => X,Y,Z ; 3*nbDof => Q, Qdot, Qddot
+    utils::Matrix H(utils::Matrix::Zero(*m_nMeasure, *m_nbDof*3)); // 3*nCentrales => X,Y,Z ; 3*nbDof => Q, Qdot, Qddot
     utils::Vector zest(utils::Vector::Zero(*m_nMeasure));
     std::vector<unsigned int> occlusionIdx;
     for (unsigned int i=0; i<*m_nMeasure/9; ++i) {
         utils::Scalar sum = 0;
-        for (unsigned int j = 0; j < 9;
-                ++j) { // Calculate the norm for the 9 components
+        for (unsigned int j = 0; j < 9; ++j) { // Calculate the norm for the 9 components
             sum += IMUobs(i*9+j)*IMUobs(i*9+j);
         }
 #ifdef BIORBD_USE_CASADI_MATH

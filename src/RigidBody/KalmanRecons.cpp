@@ -71,8 +71,7 @@ void rigidbody::KalmanRecons::iteration(
     const utils::Matrix& Pkm(*m_A * *m_Pp * m_A->transpose() + *m_Q);
 
     // Correction
-    utils::Matrix InvTp( (Hessian * Pkm * Hessian.transpose() +
-                                  *m_R).inverse() );
+    utils::Matrix InvTp( (Hessian * Pkm * Hessian.transpose() + *m_R).inverse() );
     manageOcclusionDuringIteration(InvTp, measure, occlusion);
     const utils::Matrix& K(Pkm*Hessian.transpose() * InvTp); // Gain
 
@@ -90,8 +89,7 @@ void rigidbody::KalmanRecons::manageOcclusionDuringIteration(
 {
     for (unsigned int i = 0; i < occlusion.size(); ++i)
         for (unsigned int j=occlusion[i]; j< occlusion[i]+1; ++j) {
-            InvTp(j,j) =
-                0; // Artifact due to the fact that m_R has a value at (j:j+2,j:j+2)
+            InvTp(j,j) = 0; // Artifact due to the fact that m_R has a value at (j:j+2,j:j+2)
             measure(j) = 0;
         }
 }

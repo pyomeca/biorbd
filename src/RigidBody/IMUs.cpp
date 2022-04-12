@@ -238,7 +238,10 @@ std::vector<utils::Matrix> rigidbody::IMUs::IMUJacobian(
         utils::Matrix G_tp(utils::Matrix::Zero(9,model.dof_count));
 
         // Calculate the Jacobian of this Tag
-        model.CalcMatRotJacobian(Q, id, node.rot(), G_tp, updateKin); // False for speed
+        model.CalcMatRotJacobian(Q, id, node.rot(), G_tp, updateKin); 
+#ifndef BIORBD_USE_CASADI_MATH
+        updateKin = false;
+#endif
 
         G.push_back(G_tp);
     }

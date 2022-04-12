@@ -110,8 +110,7 @@ protected:
         utils::Vector &measure,
         const std::vector<unsigned int> &occlusion);
 
-    std::shared_ptr<utils::Matrix>
-    m_PpInitial; ///< Initial covariance matrix
+    std::shared_ptr<utils::Matrix> m_PpInitial; ///< Initial covariance matrix
     std::shared_ptr<bool> m_firstIteration; ///< If first iteration was done
 };
 
