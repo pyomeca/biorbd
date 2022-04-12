@@ -897,8 +897,7 @@ void Reader::readModelFile(
                             type = muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR;
                         } else if (!tp_type.tolower().compare("hill")) {
                             type = muscles::MUSCLE_TYPE::HILL;
-                        } else if (!tp_type.tolower().compare("hilldegroote")
-                                   || !tp_type.tolower().compare("degroote")) {
+                        } else if (!tp_type.tolower().compare("hilldegroote")) {
                             type = muscles::MUSCLE_TYPE::HILL_DE_GROOTE;
                         } else if (!tp_type.tolower().compare("hillthelen")
                                    || !tp_type.tolower().compare("thelen")) {
