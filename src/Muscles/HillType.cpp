@@ -278,6 +278,8 @@ void muscles::HillType::setType()
 
 void muscles::HillType::computeDamping()
 {
+
+
 #ifdef BIORBD_USE_CASADI_MATH
     *m_damping = IF_ELSE_NAMESPACE::if_else_zero(
                   IF_ELSE_NAMESPACE::gt(position().velocity(), 0),
@@ -349,8 +351,14 @@ utils::Scalar muscles::HillType::getForceFromActivation(
     const muscles::State &emg)
 {
     utils::Scalar cosAngle = cos(characteristics().pennationAngle());
-    utils::Scalar force = 0;
-#ifdef BIORBD_USE_CASADI_MATH
+    utils::Scalar damping_param;
+    if (characteristics().useDamping()==true) {
+         damping_param = *m_damping;
+    } else {
+        damping_param  = 0;
+    }
+   // utils::Scalar force = 0;
+/*#ifdef BIORBD_USE_CASADI_MATH
     force = IF_ELSE_NAMESPACE::if_else(
                   IF_ELSE_NAMESPACE::gt(characteristics().useDamping(), 0),
                   characteristics().forceIsoMax() * (emg.activation() * *m_FlCE * *m_FvCE + *m_FlPE + *m_damping) * cosAngle
@@ -364,8 +372,8 @@ utils::Scalar muscles::HillType::getForceFromActivation(
     }
 #endif
     // Fonction qui permet de modifier la facon dont la multiplication est faite dans computeForce(EMG)
-    //return characteristics().forceIsoMax() * (emg.activation() * *m_FlCE * *m_FvCE + *m_FlPE + *m_damping) * cosAngle;
-    return force;
+    //return characteristics().forceIsoMax() * (emg.activation() * *m_FlCE * *m_FvCE + *m_FlPE + *m_damping) * cosAngle;*/
+    return characteristics().forceIsoMax() * (emg.activation() * *m_FlCE * *m_FvCE + *m_FlPE + damping_param) * cosAngle;
 }
 
 void muscles::HillType::normalizeEmg(

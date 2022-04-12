@@ -875,7 +875,7 @@ void Reader::readModelFile(
                 double maxForce(0);
                 double tendonSlackLength(0);
                 double pennAngle(0);
-                double useDamping(0);
+                bool useDamping(false);
                 double maxExcitation(1);
                 double maxActivation(1);
                 double PCSA(0);
@@ -897,7 +897,8 @@ void Reader::readModelFile(
                             type = muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR;
                         } else if (!tp_type.tolower().compare("hill")) {
                             type = muscles::MUSCLE_TYPE::HILL;
-                        } else if (!tp_type.tolower().compare("degroote")) {
+                        } else if (!tp_type.tolower().compare("hilldegroote")
+                                   || !tp_type.tolower().compare("degroote")) {
                             type = muscles::MUSCLE_TYPE::HILL_DE_GROOTE;
                         } else if (!tp_type.tolower().compare("hillthelen")
                                    || !tp_type.tolower().compare("thelen")) {
@@ -922,7 +923,15 @@ void Reader::readModelFile(
                             utils::Error::raise(property_tag + " is not a valid muscle state type");
                         }
                     } else if (!property_tag.tolower().compare("usedamping")) {
-                        file.read(useDamping, variable);
+                        utils::String usedamping;
+                        file.read(usedamping);
+                        if (!usedamping.tolower().compare("True")
+                            || !usedamping.tolower().compare("true")){
+                            useDamping = true;
+                        } else if (!usedamping.tolower().compare("False")
+                                   || !usedamping.tolower().compare("false")){
+                            useDamping = false;
+                        }
                     } else if (!property_tag.tolower().compare("originposition")) {
                         readVector3d(file, variable, origin_pos);
                     } else if (!property_tag.tolower().compare("insertionposition")) {
@@ -979,8 +988,8 @@ void Reader::readModelFile(
                                             model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
                 muscles::State stateMax(maxExcitation, maxActivation);
                 muscles::Characteristics characteristics(optimalLength, maxForce, PCSA,
-                        tendonSlackLength, pennAngle, useDamping, stateMax,
-                        fatigueParameters);
+                        tendonSlackLength, pennAngle, stateMax,
+                        fatigueParameters, useDamping);
                 model->muscleGroup(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,
                         characteristics,
                         muscles::PathModifiers(),stateType,dynamicFatigueType);
