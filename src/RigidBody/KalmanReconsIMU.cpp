@@ -104,7 +104,7 @@ void rigidbody::KalmanReconsIMU::reconstructFrame(
     // An iteration of the Kalman filter
     if (*m_firstIteration) {
         *m_firstIteration = false;
-        for (unsigned int i=0; i<300; ++i) {
+        for (unsigned int i=0; i<50; ++i) {
             // The first time, call in a recursive manner to have a decent initial position
             reconstructFrame(model, IMUobs, nullptr, nullptr, nullptr);
 
