@@ -5,7 +5,7 @@
 #include "Muscles/IdealizedActuator.h"
 #include "Muscles/HillType.h"
 #include "Muscles/HillThelenType.h"
-#include "Muscles/DeGrooteType.h"
+#include "Muscles/HillDeGrooteType.h"
 #include "Muscles/HillThelenActiveOnlyType.h"
 #include "Muscles/HillThelenTypeFatigable.h"
 #include "Muscles/StateDynamicsBuchanan.h"
@@ -71,8 +71,8 @@ void muscles::MuscleGroup::DeepCopy(const muscles::MuscleGroup
             (*m_mus)[i] = std::make_shared<muscles::HillThelenType>((
                               *other.m_mus)[i]);
         } else if ((*other.m_mus)[i]->type() ==
-                   muscles::MUSCLE_TYPE::DE_GROOTE) {
-            (*m_mus)[i] = std::make_shared<muscles::DeGrooteType>((
+                   muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
+            (*m_mus)[i] = std::make_shared<muscles::HillDeGrooteType>((
                               *other.m_mus)[i]);
         } else if ((*other.m_mus)[i]->type() ==
                    muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE) {
@@ -112,7 +112,7 @@ void muscles::MuscleGroup::addMuscle(
         state = std::make_shared<muscles::StateDynamics>();
     } else if (stateType == muscles::STATE_TYPE::BUCHANAN) {
         state = std::make_shared<muscles::StateDynamicsBuchanan>();
-    } else if (stateType == muscles::STATE_TYPE::DE_GROOTE_STATE) {
+    } else if (stateType == muscles::STATE_TYPE::DE_GROOTE) {
         state = std::make_shared<muscles::StateDynamicsDeGroote>();
     } else {
         state = std::make_shared<muscles::StateDynamics>();
@@ -124,8 +124,8 @@ void muscles::MuscleGroup::addMuscle(
     } else if (type == muscles::MUSCLE_TYPE::HILL) {
         muscle = std::make_shared<muscles::HillType>(name,geometry,
                  characteristics, *state);
-    } else if (type == muscles::MUSCLE_TYPE::DE_GROOTE) {
-        muscle = std::make_shared<muscles::DeGrooteType>(name,geometry,
+    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
+        muscle = std::make_shared<muscles::HillDeGrooteType>(name,geometry,
                  characteristics, *state);
     } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN) {
         muscle = std::make_shared<muscles::HillThelenType>(name,geometry,
@@ -157,8 +157,8 @@ void muscles::MuscleGroup::addMuscle(
     } else if (type == muscles::MUSCLE_TYPE::HILL) {
         muscle = std::make_shared<muscles::HillType>(name,geometry,
                  characteristics);
-    } else if (type == muscles::MUSCLE_TYPE::DE_GROOTE) {
-        muscle = std::make_shared<muscles::DeGrooteType>(name,geometry,
+    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
+        muscle = std::make_shared<muscles::HillDeGrooteType>(name,geometry,
                  characteristics);
     } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN) {
         muscle = std::make_shared<muscles::HillThelenType>(name,geometry,
@@ -192,7 +192,7 @@ void muscles::MuscleGroup::addMuscle(
         state = std::make_shared<muscles::StateDynamics>();
     } else if (stateType == muscles::STATE_TYPE::BUCHANAN) {
         state = std::make_shared<muscles::StateDynamicsBuchanan>();
-    } else if (stateType == muscles::STATE_TYPE::DE_GROOTE_STATE) {
+    } else if (stateType == muscles::STATE_TYPE::DE_GROOTE) {
         state = std::make_shared<muscles::StateDynamicsDeGroote>();
     } else {
         state = std::make_shared<muscles::StateDynamics>();
@@ -205,8 +205,8 @@ void muscles::MuscleGroup::addMuscle(
     else if (type == muscles::MUSCLE_TYPE::HILL)
         muscle = std::make_shared<muscles::HillType>
                  (name,geometry,characteristics,pathModifiers,*state);
-    else if (type == muscles::MUSCLE_TYPE::DE_GROOTE)
-        muscle = std::make_shared<muscles::DeGrooteType>
+    else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE)
+        muscle = std::make_shared<muscles::HillDeGrooteType>
                  (name,geometry,characteristics,pathModifiers,*state);
     else if (type == muscles::MUSCLE_TYPE::HILL_THELEN)
         muscle = std::make_shared<muscles::HillThelenType>
@@ -239,8 +239,8 @@ void muscles::MuscleGroup::addMuscle(
     } else if (type == muscles::MUSCLE_TYPE::HILL) {
         muscle = std::make_shared<muscles::HillType>(name,geometry,
                  characteristics,pathModifiers);
-    } else if (type == muscles::MUSCLE_TYPE::DE_GROOTE) {
-        muscle = std::make_shared<muscles::DeGrooteType>(name,geometry,
+    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
+        muscle = std::make_shared<muscles::HillDeGrooteType>(name,geometry,
                  characteristics,pathModifiers);
     } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN) {
         muscle = std::make_shared<muscles::HillThelenType>(name,geometry,
@@ -276,8 +276,8 @@ void muscles::MuscleGroup::addMuscle(
     } else if (muscle.type() == muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE) {
         m_mus->push_back(std::make_shared<muscles::HillThelenActiveOnlyType>
                          (muscle));
-    } else if (muscle.type() == muscles::MUSCLE_TYPE::DE_GROOTE) {
-        m_mus->push_back(std::make_shared<muscles::DeGrooteType>(muscle));
+    } else if (muscle.type() == muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
+        m_mus->push_back(std::make_shared<muscles::HillDeGrooteType>(muscle));
     } else if (muscle.type() == muscles::MUSCLE_TYPE::HILL) {
         m_mus->push_back(std::make_shared<muscles::HillType>(muscle));
     } else {

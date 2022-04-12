@@ -355,7 +355,7 @@ endmusclegroup
         endviapoint
 
     muscle    TRImed
-        Type    hillthelen
+        Type    hill
         useDamping	0
         musclegroup    r_humerus_to_r_ulna_radius_hand
         OriginPosition    -0.0083800000000000003 -0.13694999999999999 -0.0090600000000000003

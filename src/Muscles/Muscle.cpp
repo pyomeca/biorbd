@@ -267,7 +267,7 @@ void muscles::Muscle::setState(
     if (emg.type() == muscles::STATE_TYPE::BUCHANAN) {
         m_state = std::make_shared<muscles::StateDynamicsBuchanan>
                   (muscles::StateDynamicsBuchanan());
-    } else if (emg.type() == muscles::STATE_TYPE::DE_GROOTE_STATE) {
+    } else if (emg.type() == muscles::STATE_TYPE::DE_GROOTE) {
         m_state = std::make_shared<muscles::StateDynamicsDeGroote>
                   (muscles::StateDynamicsDeGroote());
     } else if (emg.type() == muscles::STATE_TYPE::DYNAMIC) {

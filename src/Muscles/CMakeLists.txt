@@ -14,7 +14,7 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/HillType.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/IdealizedActuator.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/HillThelenType.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/DeGrooteType.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/HillDeGrooteType.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/HillThelenActiveOnlyType.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/HillThelenTypeFatigable.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Muscle.cpp"

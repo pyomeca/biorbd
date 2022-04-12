@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "Muscles/DeGrooteType.h"
+#include "Muscles/HillDeGrooteType.h"
 
 #include <math.h>
 #include "Utils/String.h"
@@ -12,12 +12,12 @@
 
 using namespace BIORBD_NAMESPACE;
 
-muscles::DeGrooteType::DeGrooteType() :
+muscles::HillDeGrooteType::HillDeGrooteType() :
     muscles::HillType()
 {
     setType();
 }
-muscles::DeGrooteType::DeGrooteType(
+muscles::HillDeGrooteType::HillDeGrooteType(
     const utils::String& name,
     const muscles::Geometry& geometry,
     const muscles::Characteristics& characteristics) :
@@ -26,7 +26,7 @@ muscles::DeGrooteType::DeGrooteType(
     setType();
 }
 
-muscles::DeGrooteType::DeGrooteType(
+muscles::HillDeGrooteType::HillDeGrooteType(
     const utils::String &name,
     const muscles::Geometry &geometry,
     const muscles::Characteristics &characteristics,
@@ -36,7 +36,7 @@ muscles::DeGrooteType::DeGrooteType(
     setType();
 }
 
-muscles::DeGrooteType::DeGrooteType(
+muscles::HillDeGrooteType::HillDeGrooteType(
     const utils::String &name,
     const muscles::Geometry &geometry,
     const muscles::Characteristics &characteristics,
@@ -46,7 +46,7 @@ muscles::DeGrooteType::DeGrooteType(
     setType();
 }
 
-muscles::DeGrooteType::DeGrooteType(
+muscles::HillDeGrooteType::HillDeGrooteType(
     const utils::String& name,
     const muscles::Geometry& geometry,
     const muscles::Characteristics& characteristics,
@@ -57,35 +57,35 @@ muscles::DeGrooteType::DeGrooteType(
     setType();
 }
 
-muscles::DeGrooteType::DeGrooteType(
+muscles::HillDeGrooteType::HillDeGrooteType(
     const muscles::Muscle &other) :
     muscles::HillType (other)
 {
 
 }
 
-muscles::DeGrooteType::DeGrooteType(
+muscles::HillDeGrooteType::HillDeGrooteType(
     const std::shared_ptr<muscles::Muscle> other) :
     muscles::HillType(other)
 {
 
 }
 
-muscles::DeGrooteType muscles::DeGrooteType::DeepCopy()
+muscles::HillDeGrooteType muscles::HillDeGrooteType::DeepCopy()
 const
 {
-    muscles::DeGrooteType copy;
+    muscles::HillDeGrooteType copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void muscles::DeGrooteType::DeepCopy(
-    const muscles::DeGrooteType &other)
+void muscles::HillDeGrooteType::DeepCopy(
+    const muscles::HillDeGrooteType &other)
 {
     muscles::HillType::DeepCopy(other);
 }
 
-void muscles::DeGrooteType::computeFlPE()
+void muscles::HillDeGrooteType::computeFlPE()
 {
     double kpe = 4;
     double e0 = 0.6;
@@ -109,7 +109,7 @@ void muscles::DeGrooteType::computeFlPE()
 #endif
 }
 
-void muscles::DeGrooteType::computeFvCE()
+void muscles::HillDeGrooteType::computeFvCE()
 {
 
     double d1 = -0.318;
@@ -123,7 +123,7 @@ void muscles::DeGrooteType::computeFvCE()
             + d4;
 }
 
-void muscles::DeGrooteType::computeFlCE(
+void muscles::HillDeGrooteType::computeFlCE(
     const muscles::State&)
 {
     double b11 = 0.815;
@@ -153,7 +153,7 @@ void muscles::DeGrooteType::computeFlCE(
                         ((b33 + b43*normLength)*(b33 + b43*normLength)));
 }
 
-void muscles::DeGrooteType::setType()
+void muscles::HillDeGrooteType::setType()
 {
-    *m_type = muscles::MUSCLE_TYPE::DE_GROOTE;
+    *m_type = muscles::MUSCLE_TYPE::HILL_DE_GROOTE;
 }

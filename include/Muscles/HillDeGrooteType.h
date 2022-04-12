@@ -1,5 +1,5 @@
-#ifndef BIORBD_MUSCLES_DE_GROOTE_TYPE_H
-#define BIORBD_MUSCLES_DE_GROOTE_TYPE_H
+#ifndef BIORBD_MUSCLES_HILL_DE_GROOTE_TYPE_H
+#define BIORBD_MUSCLES_HILL_DE_GROOTE_TYPE_H
 
 #include "biorbdConfig.h"
 #include "Muscles/HillType.h"
@@ -12,13 +12,13 @@ namespace muscles
 /// \brief Muscle based on DeGroote 2016
 /// https://link.springer.com/article/10.1007%2Fs10439-016-1591-9
 ///
-class BIORBD_API DeGrooteType : public HillType
+class BIORBD_API HillDeGrooteType : public HillType
 {
 public:
     ///
     /// \brief Contruct a DeGroote-type muscle
     ///
-    DeGrooteType();
+    HillDeGrooteType();
 
     ///
     /// \brief Construct a DeGroote-type muscle
@@ -26,7 +26,7 @@ public:
     /// \param geometry The muscle geometry
     /// \param characteristics The muscle characteristics
     ///
-    DeGrooteType(
+    HillDeGrooteType(
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics);
@@ -38,7 +38,7 @@ public:
     /// \param characteristics The muscle characteristics
     /// \param emg The muscle dynamic state
     ///
-    DeGrooteType(
+    HillDeGrooteType(
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
@@ -51,7 +51,7 @@ public:
     /// \param characteristics The muscle characteristics
     /// \param pathModifiers The set of path modifiers
     ///
-    DeGrooteType(
+    HillDeGrooteType(
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
@@ -65,7 +65,7 @@ public:
     /// \param pathModifiers The set of path modifiers
     /// \param emg The dynamic state
     ///
-    DeGrooteType(
+    HillDeGrooteType(
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
@@ -76,33 +76,36 @@ public:
     /// \brief Construct a DeGroote-type muscle from another muscle
     /// \param other The other muscle
     ///
-    DeGrooteType(
+    HillDeGrooteType(
         const Muscle& other);
 
     ///
     /// \brief Construct a DeGroote-type muscle from another muscle
     /// \param other The other muscle (pointer)
     ///
-    DeGrooteType(
+    HillDeGrooteType(
         const std::shared_ptr<Muscle> other);
 
     ///
     /// \brief Deep copy of a DeGroote-type muscle
     /// \return A deep copy of a DeGroote-type muscle
     ///
-    DeGrooteType DeepCopy() const;
+    HillDeGrooteType DeepCopy() const;
 
     ///
     /// \brief Deep copy of a DeGroote-type muscle in a new DeGroote-type muscle
     /// \param other The DeGroote-type muscle to copy
     ///
-    void DeepCopy(const DeGrooteType& other);
+    void DeepCopy(const HillDeGrooteType& other);
 
     ///
     /// \brief Compute the Force-Length of the passive element
     ///
     virtual void computeFlPE();
     
+    ///
+    /// \brief Compute the Force-Velocity of the passive element
+    ///
     virtual void computeFvCE();
 
     ///

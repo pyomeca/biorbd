@@ -15,7 +15,7 @@ enum MUSCLE_TYPE {
     HILL_THELEN,
     HILL_THELEN_ACTIVE,
     HILL_THELEN_FATIGABLE,
-    DE_GROOTE,
+    HILL_DE_GROOTE,
     NO_MUSCLE_TYPE
 };
 
@@ -37,7 +37,7 @@ inline const char* MUSCLE_TYPE_toStr(MUSCLE_TYPE type)
         return "ThelenActive";
     case HILL_THELEN_FATIGABLE:
         return "ThelenFatigable";
-    case DE_GROOTE:
+    case HILL_DE_GROOTE:
         return "DeGroote";
     default:
         return "NoType";
@@ -51,7 +51,7 @@ enum STATE_TYPE {
     SIMPLE_STATE,
     DYNAMIC,
     BUCHANAN,
-    DE_GROOTE_STATE,
+    DE_GROOTE,
     NO_STATE_TYPE
 };
 

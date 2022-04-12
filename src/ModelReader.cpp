@@ -898,7 +898,7 @@ void Reader::readModelFile(
                         } else if (!tp_type.tolower().compare("hill")) {
                             type = muscles::MUSCLE_TYPE::HILL;
                         } else if (!tp_type.tolower().compare("degroote")) {
-                            type = muscles::MUSCLE_TYPE::DE_GROOTE;
+                            type = muscles::MUSCLE_TYPE::HILL_DE_GROOTE;
                         } else if (!tp_type.tolower().compare("hillthelen")
                                    || !tp_type.tolower().compare("thelen")) {
                             type = muscles::MUSCLE_TYPE::HILL_THELEN;
@@ -917,7 +917,7 @@ void Reader::readModelFile(
                         if (!tp_state.tolower().compare("buchanan")) {
                             stateType = muscles::STATE_TYPE::BUCHANAN;
                         } else if (!tp_state.tolower().compare("degroote")) {
-                            stateType = muscles::STATE_TYPE::DE_GROOTE_STATE;
+                            stateType = muscles::STATE_TYPE::DE_GROOTE;
                         } else {
                             utils::Error::raise(property_tag + " is not a valid muscle state type");
                         }
