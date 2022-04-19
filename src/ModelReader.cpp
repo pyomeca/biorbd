@@ -2037,13 +2037,13 @@ void Reader::readRtMatrix(
         utils::Vector3d trans(0, 0, 0);
         // Transcribe the rotations
         for (unsigned int i=0; i<3; ++i) {
-            file.read(rot(i));
+            file.read(rot(i), variable);
         }
         // Transcribe the angular sequence for the rotation
         file.read(seq);
         //Transcribe the translations
         for (unsigned int i=0; i<3; ++i) {
-            file.read(trans(i));
+            file.read(trans(i), variable);
         }
         RT = utils::RotoTrans(rot, trans, seq);
     }
