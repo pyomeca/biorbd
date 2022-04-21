@@ -1,9 +1,9 @@
 #ifndef BIORBD_RIGIDBODY_MESH_H
 #define BIORBD_RIGIDBODY_MESH_H
 
+#include "biorbdConfig.h"
 #include <memory>
 #include <vector>
-#include "biorbdConfig.h"
 
 namespace BIORBD_NAMESPACE
 {
