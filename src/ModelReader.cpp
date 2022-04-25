@@ -909,7 +909,7 @@ void Reader::readModelFile(
                                    || !tp_type.tolower().compare("thelenfatigable")) {
                             type = muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE;
                         } else {
-                            utils::Error::raise(property_tag + " is not a valid muscle type");
+                            utils::Error::raise(tp_type + " is not a valid muscle type");
                         }
                     } else if (!property_tag.tolower().compare("statetype")) {
                         utils::String tp_state;
