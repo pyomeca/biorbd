@@ -52,10 +52,10 @@ public:
         const utils::Scalar& pennAngle,
         const State& emgMax,
         const FatigueParameters& fatigueParameters,
+        const bool& useDamping=false,
         const utils::Scalar& torqueAct = 0.01,
         const utils::Scalar& torqueDeact = 0.04,
-        const utils::Scalar& minAct = 0.01,
-        const bool& useDamping = false);
+        const utils::Scalar& minAct = 0.01);
 
     ///
     /// \brief Destroy the class properly
@@ -221,7 +221,7 @@ protected:
     std::shared_ptr<utils::Scalar>
     m_optimalLength; ///< Length without tension
     std::shared_ptr<utils::Scalar>
-    m_fIsoMax;       ///< Maximal isometric force Force maximale isométrique
+    m_fIsoMax;       ///< Maximal isometric force
     std::shared_ptr<utils::Scalar>
     m_PCSA;          ///< Physiological cross-sectional area of the muscle
     std::shared_ptr<utils::Scalar>

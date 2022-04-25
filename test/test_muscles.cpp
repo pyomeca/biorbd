@@ -399,7 +399,7 @@ TEST(IdealizedActuator, copy)
     }
 }
 
-static unsigned int muscleGroupForHillType(1);
+static unsigned int muscleGroupForHillType(0);
 static unsigned int muscleForHillType(1);
 
 TEST(hillType, unitTest)
@@ -430,20 +430,37 @@ TEST(hillType, unitTest)
         SCALAR_TO_DOUBLE(flpe, hillType.FlPE());
         SCALAR_TO_DOUBLE(fvce, hillType.FvCE());
         SCALAR_TO_DOUBLE(damping, hillType.damping());
-        EXPECT_NEAR(flce, 0.67988981401208015, requiredPrecision);
-        EXPECT_NEAR(flpe, 0.00010445169885884543, requiredPrecision);
-        EXPECT_NEAR(fvce, 1.000886825333013, requiredPrecision);
-        EXPECT_NEAR(damping, 0.00019534599393617336, requiredPrecision);
+        EXPECT_NEAR(flce, 0.8579280058374199, requiredPrecision);
+        EXPECT_NEAR(flpe, 0.093102287810765433, requiredPrecision);
+        EXPECT_NEAR(fvce, 0.99940446312989817, requiredPrecision);
+        EXPECT_NEAR(damping, 0, requiredPrecision);
 
         // with damping
+        utils::Scalar if_damping;
         muscles::Characteristics charac(hillType.characteristics());
         charac.setUseDamping(true);
-        SCALAR_TO_DOUBLE(force_damped, hillType.force(emg));
-        EXPECT_NEAR(force_damped, 419.78610578875896, requiredPrecision);
+        std::cout << hillType.characteristics().useDamping() << std::endl;
+        if (charac.useDamping()) {
+            if_damping = 2;
+        }else{
+            if_damping = 1;
+        }
+        SCALAR_TO_DOUBLE(useDampingFromFile, if_damping);
+        SCALAR_TO_DOUBLE(forceDamped, hillType.force(emg));
+        EXPECT_NEAR(useDampingFromFile, 2., requiredPrecision);
+        EXPECT_NEAR(forceDamped, 593.40924012438791, requiredPrecision);
 
         // without damping
         charac.setUseDamping(false);
+        std::cout << charac.useDamping() << std::endl;
+        if (!charac.useDamping()) {
+            if_damping = 3;
+        }else{
+            if_damping = 1;
+        }
+        SCALAR_TO_DOUBLE(useDampingFromFunction, if_damping);
         SCALAR_TO_DOUBLE(force, hillType.force(emg));
+        EXPECT_NEAR(useDampingFromFunction, 3., requiredPrecision);
         EXPECT_NEAR(force, 419.66565274700974, requiredPrecision);
     }
     {
@@ -667,8 +684,8 @@ TEST(hillType, copy)
     }
 }
 
-static unsigned int muscleGroupForHillThelenType(1);
-static unsigned int muscleForHillThelenType(1);
+static unsigned int muscleGroupForHillThelenType(0);
+static unsigned int muscleForHillThelenType(0);
 
 TEST(hillThelenType, unitTest)
 {
@@ -1161,8 +1178,8 @@ TEST(hillThelenActiveType, copy)
     }
 }
 
-static unsigned int muscleGroupFordeGrooteType(1);
-static unsigned int muscleFordeGrooteType(1);
+static unsigned int muscleGroupFordeGrooteType(0);
+static unsigned int muscleFordeGrooteType(2);
 
 TEST(hillDeGrooteType, unitTest)
 {

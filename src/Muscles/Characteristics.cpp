@@ -48,10 +48,10 @@ muscles::Characteristics::Characteristics(
     const utils::Scalar& pennAngle,
     const muscles::State &emgMax,
     const muscles::FatigueParameters &fatigueParameters,
+    const bool& useDamping,
     const utils::Scalar& torqueAct,
     const utils::Scalar& torqueDeact,
-    const utils::Scalar& minAct,
-    const bool& useDamping):
+    const utils::Scalar& minAct):
     m_optimalLength(std::make_shared<utils::Scalar>(optLength)),
     m_fIsoMax(std::make_shared<utils::Scalar>(fmax)),
     m_PCSA(std::make_shared<utils::Scalar>(PCSA)),
