@@ -224,8 +224,8 @@ endmusclegroup
         endviapoint
 
     muscle    BIClong
-        Type    hillThelen
-        //usedamping	1
+        Type    hill
+        usedamping	1
         musclegroup    base_to_r_ulna_radius_hand
         OriginPosition    -0.039234999999999999 0.00347 0.14795
         InsertionPosition    0.0075100000000000002 -0.048390000000000002 0.02179
@@ -356,8 +356,8 @@ endmusclegroup
         endviapoint
 
     muscle    TRImed
-        Type    hillthelen
-        //usedamping	1
+        Type    hill
+        usedamping	1
         musclegroup    r_humerus_to_r_ulna_radius_hand
         OriginPosition    -0.0083800000000000003 -0.13694999999999999 -0.0090600000000000003
         InsertionPosition    -0.021899999999999999 0.010460000000000001 -0.00077999999999999999

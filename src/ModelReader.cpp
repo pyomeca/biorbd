@@ -978,7 +978,6 @@ void Reader::readModelFile(
                     utils::Vector3d(insert_pos, name + "_insertion",
                                             model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
                 muscles::State stateMax(maxExcitation, maxActivation);
-                std::cout << useDamping << std::endl;
                 muscles::Characteristics characteristics(optimalLength, maxForce, PCSA,
                         tendonSlackLength, pennAngle, stateMax,
                         fatigueParameters, useDamping);

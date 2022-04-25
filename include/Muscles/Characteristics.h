@@ -52,7 +52,7 @@ public:
         const utils::Scalar& pennAngle,
         const State& emgMax,
         const FatigueParameters& fatigueParameters,
-        const bool& useDamping=false,
+        bool useDamping=false,
         const utils::Scalar& torqueAct = 0.01,
         const utils::Scalar& torqueDeact = 0.04,
         const utils::Scalar& minAct = 0.01);
@@ -214,7 +214,7 @@ public:
     /// \brief Return 1 if use damping for muscle computation
     /// \return 0 if not use damping 1 overall
     ///
-    const bool& useDamping() const;
+    bool useDamping() const;
 
 
 protected:

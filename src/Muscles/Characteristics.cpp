@@ -48,7 +48,7 @@ muscles::Characteristics::Characteristics(
     const utils::Scalar& pennAngle,
     const muscles::State &emgMax,
     const muscles::FatigueParameters &fatigueParameters,
-    const bool& useDamping,
+    bool useDamping,
     const utils::Scalar& torqueAct,
     const utils::Scalar& torqueDeact,
     const utils::Scalar& minAct):
@@ -214,7 +214,7 @@ void muscles::Characteristics::setUseDamping(
 {
     *m_useDamping = val;
 }
-const bool& muscles::Characteristics::useDamping() const
+bool muscles::Characteristics::useDamping() const
 {
     return *m_useDamping;
 }

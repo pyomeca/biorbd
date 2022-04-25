@@ -399,7 +399,7 @@ TEST(IdealizedActuator, copy)
     }
 }
 
-static unsigned int muscleGroupForHillType(0);
+static unsigned int muscleGroupForHillType(1);
 static unsigned int muscleForHillType(1);
 
 TEST(hillType, unitTest)
@@ -430,38 +430,22 @@ TEST(hillType, unitTest)
         SCALAR_TO_DOUBLE(flpe, hillType.FlPE());
         SCALAR_TO_DOUBLE(fvce, hillType.FvCE());
         SCALAR_TO_DOUBLE(damping, hillType.damping());
-        EXPECT_NEAR(flce, 0.8579280058374199, requiredPrecision);
-        EXPECT_NEAR(flpe, 0.093102287810765433, requiredPrecision);
-        EXPECT_NEAR(fvce, 0.99940446312989817, requiredPrecision);
-        EXPECT_NEAR(damping, 0, requiredPrecision);
+        EXPECT_NEAR(flce, 0.67988981401208015, requiredPrecision);
+        EXPECT_NEAR(flpe, 0.00010445169885884543, requiredPrecision);
+        EXPECT_NEAR(fvce, 1.000886825333013, requiredPrecision);
+        EXPECT_NEAR(damping, 0.00019534599393617336, requiredPrecision);
 
         // with damping
-        utils::Scalar if_damping;
         muscles::Characteristics charac(hillType.characteristics());
-        charac.setUseDamping(true);
-        std::cout << hillType.characteristics().useDamping() << std::endl;
-        if (charac.useDamping()) {
-            if_damping = 2;
-        }else{
-            if_damping = 1;
-        }
-        SCALAR_TO_DOUBLE(useDampingFromFile, if_damping);
         SCALAR_TO_DOUBLE(forceDamped, hillType.force(emg));
-        EXPECT_NEAR(useDampingFromFile, 2., requiredPrecision);
-        EXPECT_NEAR(forceDamped, 593.40924012438791, requiredPrecision);
+        EXPECT_NEAR(forceDamped, 419.78610578875896, requiredPrecision);
+        EXPECT_EQ(charac.useDamping(), 1);
 
         // without damping
         charac.setUseDamping(false);
-        std::cout << charac.useDamping() << std::endl;
-        if (!charac.useDamping()) {
-            if_damping = 3;
-        }else{
-            if_damping = 1;
-        }
-        SCALAR_TO_DOUBLE(useDampingFromFunction, if_damping);
         SCALAR_TO_DOUBLE(force, hillType.force(emg));
-        EXPECT_NEAR(useDampingFromFunction, 3., requiredPrecision);
         EXPECT_NEAR(force, 419.66565274700974, requiredPrecision);
+        EXPECT_EQ(charac.useDamping(), 0);
     }
     {
         Model model(modelPathForMuscleForce);
@@ -684,7 +668,7 @@ TEST(hillType, copy)
     }
 }
 
-static unsigned int muscleGroupForHillThelenType(0);
+static unsigned int muscleGroupForHillThelenType(1);
 static unsigned int muscleForHillThelenType(0);
 
 TEST(hillThelenType, unitTest)
@@ -716,11 +700,11 @@ TEST(hillThelenType, unitTest)
         SCALAR_TO_DOUBLE(fvce, hillThelenType.FvCE());
         SCALAR_TO_DOUBLE(damping, hillThelenType.damping());
         SCALAR_TO_DOUBLE(force, hillThelenType.force(emg));
-        EXPECT_NEAR(flce, 0.67988981401208015, requiredPrecision);
+        EXPECT_NEAR(flce, 0.73689336678824058, requiredPrecision);
         EXPECT_NEAR(flpe, 0, requiredPrecision);
         EXPECT_NEAR(fvce, 1.0189186522393461, requiredPrecision);
         EXPECT_NEAR(damping, 0.00019534599393617336, requiredPrecision);
-        EXPECT_NEAR(force, 427.16071949702308, requiredPrecision);
+        EXPECT_NEAR(force, 462.97487366718485, requiredPrecision);
     }
     {
         Model model(modelPathForMuscleForce);
@@ -855,10 +839,10 @@ TEST(hillThelenType, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
+            EXPECT_NEAR(length, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowLength, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterLength, 0.071618646132835737, requiredPrecision);
         }
 
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
@@ -876,10 +860,10 @@ TEST(hillThelenType, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
+            EXPECT_NEAR(length, 0.08167994915631771, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 0.08167994915631771, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowLength, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterLength, 0.071618646132835737, requiredPrecision);
             EXPECT_EQ(
                 hillThelenType.position().insertionInLocal().utils::Node::name(),
                 newName);
@@ -958,11 +942,11 @@ TEST(hillThelenTypeActive, unitTest)
         SCALAR_TO_DOUBLE(fvce, hillThelenType.FvCE());
         SCALAR_TO_DOUBLE(damping, hillThelenType.damping());
         SCALAR_TO_DOUBLE(force, hillThelenType.force(emg));
-        EXPECT_NEAR(flce, 0.67988981401208015, requiredPrecision);
+        EXPECT_NEAR(flce, 0.73689336678824058, requiredPrecision);
         EXPECT_NEAR(flpe, 0., requiredPrecision);
         EXPECT_NEAR(fvce, 1.0189186522393461, requiredPrecision);
         EXPECT_NEAR(damping, 0., requiredPrecision);
-        EXPECT_NEAR(force, 427.16071949702308, requiredPrecision);
+        EXPECT_NEAR(force, 462.97487366718485, requiredPrecision);
     }
     {
         Model model(modelPathForMuscleForce);
@@ -1103,10 +1087,10 @@ TEST(hillThelenActiveType, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
+            EXPECT_NEAR(length, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowLength, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterLength, 0.071618646132835737, requiredPrecision);
         }
 
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
@@ -1124,10 +1108,10 @@ TEST(hillThelenActiveType, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
+            EXPECT_NEAR(length, 0.08167994915631771, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 0.08167994915631771, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowLength, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterLength, 0.071618646132835737, requiredPrecision);
             EXPECT_EQ(
                 hillThelenType.position().insertionInLocal().utils::Node::name(),
                 newName);
@@ -1210,11 +1194,11 @@ TEST(hillDeGrooteType, unitTest)
         SCALAR_TO_DOUBLE(fvce, hillDeGrooteType.FvCE());
         SCALAR_TO_DOUBLE(damping, hillDeGrooteType.damping());
         SCALAR_TO_DOUBLE(force, hillDeGrooteType.force(emg));
-        EXPECT_NEAR(flce, 0.23056439599712103, requiredPrecision);
-        EXPECT_NEAR(flpe, 0., requiredPrecision);
-        EXPECT_NEAR(fvce, 1.0070495368947783, requiredPrecision);
-        EXPECT_NEAR(damping, 0.00019534599393617336, requiredPrecision);
-        EXPECT_NEAR(force, 143.17142256556949, requiredPrecision);
+        EXPECT_NEAR(flce, 0.92953865278129677, requiredPrecision);
+        EXPECT_NEAR(flpe, 0.022596966416076593, requiredPrecision);
+        EXPECT_NEAR(fvce, 0.99966505861454702, requiredPrecision);
+        EXPECT_NEAR(damping, 0, requiredPrecision);
+        EXPECT_NEAR(force, 414.57658262724328, requiredPrecision);
     }
     {
         Model model(modelPathForMuscleForce);
@@ -1310,8 +1294,8 @@ TEST(hillDeGrooteType, copy)
                              hillDeGrooteType.characteristics().pennationAngle());
             SCALAR_TO_DOUBLE(shallowCopyPennationAngle,
                              shallowCopy.characteristics().pennationAngle());
-            EXPECT_NEAR(pennationAngle, 0.15707963, requiredPrecision);
-            EXPECT_NEAR(shallowCopyPennationAngle, 0.15707963, requiredPrecision);
+            EXPECT_NEAR(pennationAngle, 0, requiredPrecision);
+            EXPECT_NEAR(shallowCopyPennationAngle, 0, requiredPrecision);
         }
 
         muscles::Characteristics charac(hillDeGrooteType.characteristics());
@@ -1328,8 +1312,8 @@ TEST(hillDeGrooteType, copy)
                              deepCopyLater.characteristics().pennationAngle());
             EXPECT_NEAR(pennationAngle, 0.523599, requiredPrecision);
             EXPECT_NEAR(shallowCopyPennationAngle, 0.523599, requiredPrecision);
-            EXPECT_NEAR(deepCopyNowPennationAngle, 0.15707963, requiredPrecision);
-            EXPECT_NEAR(deepCopyLaterPennationAngle, 0.15707963, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowPennationAngle, 0, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterPennationAngle, 0, requiredPrecision);
         }
     }
 
@@ -1355,10 +1339,10 @@ TEST(hillDeGrooteType, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
+            EXPECT_NEAR(length, 0.14782350513656897, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 0.14782350513656897, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowLength, 0.14782350513656897, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterLength, 0.14782350513656897, requiredPrecision);
         }
 
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
@@ -1376,10 +1360,10 @@ TEST(hillDeGrooteType, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
+            EXPECT_NEAR(length, 0.17069190308087542, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 0.17069190308087542, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowLength, 0.14782350513656897, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterLength, 0.14782350513656897, requiredPrecision);
             EXPECT_EQ(
                 hillDeGrooteType.position().insertionInLocal().utils::Node::name(),
                 newName);
@@ -2332,8 +2316,8 @@ TEST(MuscleForce, force)
     const utils::Vector& F = model.muscleForces(states);
 
     std::vector<double> ExpectedForce({
-        165.19678913804927, 33.541116230895092, 5.0121470701148079,
-        92.59497473343656, 74.166593455673777, 198.53590160321016
+        165.19678913804927, 33.541116230895092, 90.789184279197713,
+        92.59497473343656, 85.432143899404608, 198.53590160321016
     });
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i) {
         SCALAR_TO_DOUBLE(val, F(i));
@@ -2356,7 +2340,7 @@ TEST(MuscleForce, torqueFromMuscles)
 
 
     rigidbody::GeneralizedTorque Tau(model);
-    std::vector<double> TauExpected({-9.4884746164112297, -12.726723715706846});
+    std::vector<double> TauExpected({-12.296255661502476, -9.8329309875799034});
     Tau = model.muscularJointTorque(states, Q, QDot);
     for (unsigned int i=0; i<QDDot.size(); ++i) {
         SCALAR_TO_DOUBLE(val, Tau(i));
@@ -2364,7 +2348,7 @@ TEST(MuscleForce, torqueFromMuscles)
     }
 
     RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot);
-    std::vector<double> QDDotExpected({60.665445567989252, -275.39249698274369});
+    std::vector<double> QDDotExpected({18.520481715825706, -166.04621971339202});
     for (unsigned int i=0; i<QDDot.size(); ++i) {
         SCALAR_TO_DOUBLE(val, QDDot(i));
         EXPECT_NEAR(val, QDDotExpected[i], requiredPrecision);
