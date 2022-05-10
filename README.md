@@ -13,6 +13,10 @@ So, without further ado, let's begin our investigation of BIORBD!
 
 You can get the online version of the paper for BIORBD here: [![DOI](https://joss.theoj.org/papers/10.21105/joss.02562/status.svg)](https://doi.org/10.21105/joss.02562)
 
+Futhermore, anyone can play with bioptim with a working (but slightly limited in terms of graphics) MyBinder by clicking the following badge
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pyomeca/biorbd-tutorial/HEAD?urlpath=lab)
+
 # How to install
 There are two main ways to install BIORBD on your computer: installing the binaries from Anaconda (easiest, but limited to C++ and Python3) or compiling the source code yourself (more versatile and up to date; for C++, Python3 and MATLAB).
 
