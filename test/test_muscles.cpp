@@ -505,7 +505,7 @@ TEST(hillType, unitTest)
         muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(force, hillType.force(model, Q, qDot, emg, 2));
-        EXPECT_NEAR(force, 419.66565274700974, requiredPrecision);
+        EXPECT_NEAR(force, 419.78610578875896, requiredPrecision);
     }
 }
 
@@ -2316,8 +2316,8 @@ TEST(MuscleForce, force)
     const utils::Vector& F = model.muscleForces(states);
 
     std::vector<double> ExpectedForce({
-        165.19678913804927, 33.541116230895092, 90.789184279197713,
-        92.59497473343656, 85.432143899404608, 198.53590160321016
+        165.19678913804927, 178.49448510433558, 90.789184279197713,
+        92.59497473343656, 74.287046497422935, 198.53590160321016
     });
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i) {
         SCALAR_TO_DOUBLE(val, F(i));
@@ -2340,7 +2340,7 @@ TEST(MuscleForce, torqueFromMuscles)
 
 
     rigidbody::GeneralizedTorque Tau(model);
-    std::vector<double> TauExpected({-12.296255661502476, -9.8329309875799034});
+    std::vector<double> TauExpected({-10.986834246856638, -4.6597544612357522});
     Tau = model.muscularJointTorque(states, Q, QDot);
     for (unsigned int i=0; i<QDDot.size(); ++i) {
         SCALAR_TO_DOUBLE(val, Tau(i));
@@ -2348,7 +2348,7 @@ TEST(MuscleForce, torqueFromMuscles)
     }
 
     RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot);
-    std::vector<double> QDDotExpected({18.520481715825706, -166.04621971339202});
+    std::vector<double> QDDotExpected({-21.245157985224807, -28.224024173823167});
     for (unsigned int i=0; i<QDDot.size(); ++i) {
         SCALAR_TO_DOUBLE(val, QDDot(i));
         EXPECT_NEAR(val, QDDotExpected[i], requiredPrecision);
