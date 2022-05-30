@@ -1449,7 +1449,7 @@ rigidbody::Joints::ForwardFreeFloatingBaseDynamics(
     const rigidbody::GeneralizedAcceleration& QDDotJ)
 {
 
-    utils::Error::check(QDDotJ.size() + this->nbRoot() == this->nbQddot(),
+    utils::Error::check(QDDotJ.size() == this->nbQddot() - this->nbRoot(),
                         "Size of QDDotJ must be equal to number QDDot - number of root coordinates.");
 
     rigidbody::GeneralizedAcceleration QDDot(this->nbQddot());
@@ -1464,7 +1464,8 @@ rigidbody::Joints::ForwardFreeFloatingBaseDynamics(
     NLEffects = InverseDynamics(Q, QDot, QDDot, nullptr, nullptr);
 
 #ifdef BIORBD_USE_CASADI_MATH
-    // TODO
+    // TODO Real untested
+    QDDotR = massMatrix.inverse() * -NLEffects.block(0, 0, this->nbRoot(), 1);
 #else
     QDDotR = massMatrix.llt().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
 #endif
