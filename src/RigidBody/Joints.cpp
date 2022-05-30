@@ -1449,12 +1449,14 @@ rigidbody::Joints::ForwardFreeFloatingBaseDynamics(
     const rigidbody::GeneralizedAcceleration& QDDotJ)
 {
 
-    utils::Error::check(QDDotJ.size() + this->nbRoot() == this->nbQddot(), "Size of QDDotJ must be equal to number QDDot - number of root coordinates.");
+    utils::Error::check(QDDotJ.size() + this->nbRoot() == this->nbQddot(),
+                        "Size of QDDotJ must be equal to number QDDot - number of root coordinates.");
 
     rigidbody::GeneralizedAcceleration QDDot(this->nbQddot());
     rigidbody::GeneralizedAcceleration QDDotR;
     rigidbody::GeneralizedTorque NLEffects;
-    utils::Matrix invMassMatrix;
+
+    utils::Matrix massMatrix = this->massMatrix(Q).block(0, 0, this->nbRoot(), this->nbRoot());
 
     QDDot.block(0, 0, this->nbRoot(), 1) = utils::Vector(this->nbRoot()).setZero(this->nbRoot());
     QDDot.block(this->nbRoot(), 0, this->nbQddot()-this->nbRoot(), 1) = QDDotJ;
@@ -1464,10 +1466,8 @@ rigidbody::Joints::ForwardFreeFloatingBaseDynamics(
 #ifdef BIORBD_USE_CASADI_MATH
     // TODO
 #else
-    invMassMatrix = this->massMatrix(Q).block(0, 0, this->nbRoot(), this->nbRoot()).inverse();
+    QDDotR = massMatrix.llt().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
 #endif
-
-    QDDotR = invMassMatrix * -NLEffects.block(0, 0, this->nbRoot(), 1);
 
     return QDDotR;
 }
