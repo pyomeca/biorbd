@@ -2004,6 +2004,36 @@ TEST(Dynamics, Forward)
     }
 }
 
+TEST(Dynamics, ForwardFreeFloatingBaseDynamics)
+{
+    Model model(modelPathForGeneralTesting);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
+    DECLARE_GENERALIZED_TORQUE(QDDotJ, model.nbQddot() - model.nbRoot());
+
+    // TODO: set known initial for each vec
+    std::vector<double> val(model.nbQ());
+    for (size_t i=0; i<val.size(); ++i) {
+        val[i] = static_cast<double>(i) * 1.1;
+    }
+    FILL_VECTOR(Q, val);
+    FILL_VECTOR(QDot, val);
+    FILL_VECTOR(QDDotJ, val);
+
+    std::vector<double> QDDotR_expected = {
+        /* TODO */
+    };
+
+    CALL_BIORBD_FUNCTION_3ARGS(QDDotR, model, ForwardFreeFloatingDynamics, Q, QDot, QDDotJ);
+
+    for (unsigned int i = 0; i<model.nbQddot(); ++i) {
+        EXPECT_NEAR(static_cast<double>(QDDotR(i, 0)), QDDotR_expected[i],
+                    requiredPrecision);
+    }
+    
+    // TODO: add a test for the thrown error
+}
+
 #ifdef MODULE_ACTUATORS
 TEST(Dynamics, ForwardChangingMass)
 {
