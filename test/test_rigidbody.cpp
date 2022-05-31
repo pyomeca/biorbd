@@ -2004,27 +2004,44 @@ TEST(Dynamics, Forward)
     }
 }
 
-TEST(Dynamics, ForwardFreeFloatingBaseDynamics)
+TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
 {
     Model model(modelPathForGeneralTesting);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
     DECLARE_GENERALIZED_TORQUE(QDDotJ, model.nbQddot() - model.nbRoot());
-
-    // TODO: set known initial for each vec
-    std::vector<double> val(model.nbQ());
-    for (size_t i=0; i<val.size(); ++i) {
-        val[i] = static_cast<double>(i) * 1.1;
-    }
-    FILL_VECTOR(Q, val);
-    FILL_VECTOR(QDot, val);
-    FILL_VECTOR(QDDotJ, val);
-
-    std::vector<double> QDDotR_expected = {
-        /* TODO */
+    
+    // Values from a Python script comparing the reference Python way to biorbd's way.
+    // They were generated randomly.
+    std::vector<double> valQ = {
+        0.8706713168361303, 0.9646119831943475, 0.8744449663145472, 0.5390670872654337,
+        0.6657655075858713, 0.1587851600400636, 0.4475434130669632, 0.7071954920819409,
+        0.5618741239826912, 0.5604379102663324, 0.6360594215137826, 0.30572926272411804,
+        0.7385629374813953
+    };
+    
+    std::vector<double> valQdot = {
+        8.902915178337556, 7.94913671143651, 9.22432159780305, 5.940003633273829,
+        2.8074206515043, 8.49920063949318, 4.901079962024926, 2.843574140174121,
+        2.932649143531625, 5.719408686427968, 3.744423852494884, 8.211906418480961,
+        2.630963222860525
+    };
+    
+    std::vector<double> valQddotJ = {
+        79.52391573112311, 37.270977516157785, 41.12281566965831, 28.81126146830918,
+        45.176516073414305, 79.87520732369279, 13.395817586226977, 49.419111679450126,
+        60.38688585807682, 13.605357587193446
     };
 
-    CALL_BIORBD_FUNCTION_3ARGS(QDDotR, model, ForwardFreeFloatingDynamics, Q, QDot, QDDotJ);
+    FILL_VECTOR(Q, valQ);
+    FILL_VECTOR(QDot, valQdot);
+    FILL_VECTOR(QDDotJ, valQddotJ);
+
+    std::vector<double> QDDotR_expected = {
+        22.16377562102226, -3.042208464024391, -9.852624373936916
+    };
+
+    CALL_BIORBD_FUNCTION_3ARGS(QDDotR, model, ForwardDynamicsFreeFloating, Q, QDot, QDDotJ);
 
     for (unsigned int i = 0; i<model.nbQddot(); ++i) {
         EXPECT_NEAR(static_cast<double>(QDDotR(i, 0)), QDDotR_expected[i],
