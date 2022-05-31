@@ -1446,7 +1446,8 @@ rigidbody::GeneralizedAcceleration
 rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
-    const rigidbody::GeneralizedAcceleration& QDDotJ)
+    const rigidbody::GeneralizedAcceleration& QDDotJ,
+    RigidBodyDynamics::Math::LinearSolver linearSolver)
 {
 
     utils::Error::check(QDDotJ.size() == this->nbQddot() - this->nbRoot(),
@@ -1467,7 +1468,24 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     // TODO Real untested
     QDDotR = massMatrix.inverse() * -NLEffects.block(0, 0, this->nbRoot(), 1);
 #else
-    QDDotR = massMatrix.llt().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
+    switch (linearSolver) {
+        case (RigidBodyDynamics::Math::LinearSolverPartialPivLU) :
+          QDDotR = massMatrix.partialPivLu().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
+          break;
+        case (RigidBodyDynamics::Math::LinearSolverColPivHouseholderQR) :
+          QDDotR = massMatrix.colPivHouseholderQr().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
+          break;
+        case (RigidBodyDynamics::Math::LinearSolverHouseholderQR) :
+          QDDotR = massMatrix.householderQr().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
+          break;
+        case (RigidBodyDynamics::Math::LinearSolverLLT) :
+          QDDotR = massMatrix.llt().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
+          break;
+        default:
+          LOG << "Error: Invalid linear solver: " << linearSolver << std::endl;
+          assert (0);
+          break;
+    }
 #endif
 
     QDDot.block(0, 0, this->nbRoot(), 1) = QDDotR;
