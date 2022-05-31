@@ -1470,7 +1470,9 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     QDDotR = massMatrix.llt().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
 #endif
 
-    return QDDotR;
+    QDDot.block(0, 0, this->nbRoot(), 1) = QDDotR;
+
+    return QDDot;
 }
 
 rigidbody::GeneralizedAcceleration

@@ -904,7 +904,7 @@ public:
     /// \param Q The Generalized Coordinates
     /// \param QDot The Generalized Velocities
     /// \param QDDotJ The Generalized Accelerations of the joints (no root)
-    /// \return The Generalized Accelerations of the root
+    /// \return The Generalized Accelerations
     ///
     rigidbody::GeneralizedAcceleration ForwardDynamicsFreeFloatingBase(
         const GeneralizedCoordinates& Q,
