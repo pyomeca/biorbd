@@ -1443,7 +1443,7 @@ rigidbody::Joints::ForwardDynamics(
 }
 
 rigidbody::GeneralizedAcceleration
-rigidbody::Joints::ForwardFreeFloatingBaseDynamics(
+rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     const rigidbody::GeneralizedAcceleration& QDDotJ)
