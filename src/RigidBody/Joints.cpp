@@ -1466,7 +1466,7 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
 
 #ifdef BIORBD_USE_CASADI_MATH
     // TODO Real untested
-    QRootDDot = massMatrix.inverse() * -NLEffects.block(0, 0, this->nbRoot(), 1);
+    QRootDDot = massMatrixRoot.inverse() * -NLEffects.block(0, 0, this->nbRoot(), 1);
 #else
     switch (linearSolver) {
         case (RigidBodyDynamics::Math::LinearSolverPartialPivLU) :
