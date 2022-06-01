@@ -1482,8 +1482,7 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
           QDDotR = massMatrix.llt().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
           break;
         default:
-          LOG << "Error: Invalid linear solver: " << linearSolver << std::endl;
-          assert (0);
+          utils::Error::raise("Unsupported linear solver.");
           break;
     }
 #endif

@@ -2075,6 +2075,7 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
     }
     
     // TODO: test different solvers
+    // TODO: test solver error
 
 }
 
