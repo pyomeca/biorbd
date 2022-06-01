@@ -1459,15 +1459,15 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
 
     utils::Matrix massMatrixRoot = this->massMatrix(Q).block(0, 0, this->nbRoot(), this->nbRoot());
 
+#ifdef BIORBD_USE_CASADI_MATH
+    // TODO Real untested
+    QRootDDot = massMatrixRoot.inverse() * -NLEffects.block(0, 0, this->nbRoot(), 1);
+#else
     QDDot.block(0, 0, this->nbRoot(), 1) = utils::Vector(this->nbRoot()).setZero(this->nbRoot());
     QDDot.block(this->nbRoot(), 0, this->nbQddot()-this->nbRoot(), 1) = QDDotJ;
 
     NLEffects = InverseDynamics(Q, QDot, QDDot, nullptr, nullptr);  // not exactly the NLEffects
 
-#ifdef BIORBD_USE_CASADI_MATH
-    // TODO Real untested
-    QRootDDot = massMatrixRoot.inverse() * -NLEffects.block(0, 0, this->nbRoot(), 1);
-#else
     switch (linearSolver) {
         case (RigidBodyDynamics::Math::LinearSolverPartialPivLU) :
           QRootDDot = massMatrixRoot.partialPivLu().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
