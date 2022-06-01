@@ -1457,12 +1457,12 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     rigidbody::GeneralizedAcceleration QRootDDot;
     rigidbody::GeneralizedTorque NLEffects;
 
-    utils::Matrix massMatrix = this->massMatrix(Q).block(0, 0, this->nbRoot(), this->nbRoot());
+    utils::Matrix massMatrixRoot = this->massMatrix(Q).block(0, 0, this->nbRoot(), this->nbRoot());
 
     QDDot.block(0, 0, this->nbRoot(), 1) = utils::Vector(this->nbRoot()).setZero(this->nbRoot());
     QDDot.block(this->nbRoot(), 0, this->nbQddot()-this->nbRoot(), 1) = QDDotJ;
 
-    NLEffects = InverseDynamics(Q, QDot, QDDot, nullptr, nullptr);
+    NLEffects = InverseDynamics(Q, QDot, QDDot, nullptr, nullptr);  // not exactly the NLEffects
 
 #ifdef BIORBD_USE_CASADI_MATH
     // TODO Real untested
@@ -1470,16 +1470,16 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
 #else
     switch (linearSolver) {
         case (RigidBodyDynamics::Math::LinearSolverPartialPivLU) :
-          QRootDDot = massMatrix.partialPivLu().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
+          QRootDDot = massMatrixRoot.partialPivLu().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
           break;
         case (RigidBodyDynamics::Math::LinearSolverColPivHouseholderQR) :
-          QRootDDot = massMatrix.colPivHouseholderQr().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
+          QRootDDot = massMatrixRoot.colPivHouseholderQr().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
           break;
         case (RigidBodyDynamics::Math::LinearSolverHouseholderQR) :
-          QRootDDot = massMatrix.householderQr().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
+          QRootDDot = massMatrixRoot.householderQr().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
           break;
         case (RigidBodyDynamics::Math::LinearSolverLLT) :
-          QRootDDot = massMatrix.llt().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
+          QRootDDot = massMatrixRoot.llt().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
           break;
         default:
           utils::Error::raise("Unsupported linear solver.");
