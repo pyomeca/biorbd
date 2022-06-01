@@ -1461,7 +1461,7 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
 
 #ifdef BIORBD_USE_CASADI_MATH
     // TODO Real untested
-    QRootDDot = massMatrixRoot.inverse() * -NLEffects.block(0, 0, this->nbRoot(), 1);
+    //QRootDDot = massMatrixRoot.inverse() * -NLEffects.block(0, 0, this->nbRoot(), 1);
 #else
     QDDot.block(0, 0, this->nbRoot(), 1) = utils::Vector(this->nbRoot()).setZero(this->nbRoot());
     QDDot.block(this->nbRoot(), 0, this->nbQddot()-this->nbRoot(), 1) = QDDotJ;
