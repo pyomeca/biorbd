@@ -1454,7 +1454,7 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
                         "Size of QDDotJ must be equal to number of QDDot - number of root coordinates.");
 
     rigidbody::GeneralizedAcceleration QDDot(this->nbQddot());
-    rigidbody::GeneralizedAcceleration QDDotR;
+    rigidbody::GeneralizedAcceleration QRootDDot;
     rigidbody::GeneralizedTorque NLEffects;
 
     utils::Matrix massMatrix = this->massMatrix(Q).block(0, 0, this->nbRoot(), this->nbRoot());
@@ -1466,20 +1466,20 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
 
 #ifdef BIORBD_USE_CASADI_MATH
     // TODO Real untested
-    QDDotR = massMatrix.inverse() * -NLEffects.block(0, 0, this->nbRoot(), 1);
+    QRootDDot = massMatrix.inverse() * -NLEffects.block(0, 0, this->nbRoot(), 1);
 #else
     switch (linearSolver) {
         case (RigidBodyDynamics::Math::LinearSolverPartialPivLU) :
-          QDDotR = massMatrix.partialPivLu().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
+          QRootDDot = massMatrix.partialPivLu().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
           break;
         case (RigidBodyDynamics::Math::LinearSolverColPivHouseholderQR) :
-          QDDotR = massMatrix.colPivHouseholderQr().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
+          QRootDDot = massMatrix.colPivHouseholderQr().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
           break;
         case (RigidBodyDynamics::Math::LinearSolverHouseholderQR) :
-          QDDotR = massMatrix.householderQr().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
+          QRootDDot = massMatrix.householderQr().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
           break;
         case (RigidBodyDynamics::Math::LinearSolverLLT) :
-          QDDotR = massMatrix.llt().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
+          QRootDDot = massMatrix.llt().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
           break;
         default:
           utils::Error::raise("Unsupported linear solver.");
@@ -1487,7 +1487,7 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     }
 #endif
 
-    return QDDotR;
+    return QRootDDot;
 }
 
 rigidbody::GeneralizedAcceleration
