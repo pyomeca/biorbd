@@ -2011,7 +2011,7 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
         Model model(modelPathForGeneralTesting);
         DECLARE_GENERALIZED_COORDINATES(Q, model);
         DECLARE_GENERALIZED_VELOCITY(QDot, model);
-        DECLARE_GENERALIZED_TORQUE(QDDotJ, model.nbQddot() - model.nbRoot());
+        DECLARE_GENERALIZED_ACCELERATION(QDDotJ, model.nbQddot() - model.nbRoot());  // TODO: must it take a model or an integer size is ok?
         
         // Values from a Python script comparing the reference Python way to biorbd's way.
         // They were generated randomly.
@@ -2060,7 +2060,7 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
         Model model(modelPathForGeneralTesting);
         DECLARE_GENERALIZED_COORDINATES(Q, model);
         DECLARE_GENERALIZED_VELOCITY(QDot, model);
-        DECLARE_GENERALIZED_TORQUE(QDDotJ, model);  // simulate possible mistake
+        DECLARE_GENERALIZED_ACCELERATION(QDDotJ, model);  // simulate possible mistake
         
         // Set to random values
         std::vector<double> val(model.nbQ());
