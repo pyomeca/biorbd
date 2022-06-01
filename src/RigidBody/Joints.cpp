@@ -1488,9 +1488,7 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     }
 #endif
 
-    QDDot.block(0, 0, this->nbRoot(), 1) = QDDotR;
-
-    return QDDot;
+    return QDDotR;
 }
 
 rigidbody::GeneralizedAcceleration

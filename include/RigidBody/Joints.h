@@ -905,7 +905,7 @@ public:
     /// \param QDot The Generalized Velocities
     /// \param QDDotJ The Generalized Accelerations of the joints (no root)
     /// \param linearSolver The solver used
-    /// \return The Generalized Accelerations
+    /// \return The Generalized Accelerations of the root
     ///
     rigidbody::GeneralizedAcceleration ForwardDynamicsFreeFloatingBase(
         const GeneralizedCoordinates& Q,
