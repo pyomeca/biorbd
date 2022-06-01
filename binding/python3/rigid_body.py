@@ -2,7 +2,7 @@ import numpy as np
 from scipy.optimize import minimize
 # import biorbd
 import bioviz
-from utils import get_range_q, get_unit_division_factor
+from .utils import *
 import scipy
 from ezc3d import c3d
 from typing import Union
@@ -266,7 +266,11 @@ class InverseKinematics:
 
         else:
             for ii in range(0, self.nb_frames):
-                x0 = np.random.random(self.nb_q) * 0.1 if ii == 0 else self.q[:, ii - 1]
+                if inital_method != "lm":
+                    x0 = np.random.uniform(initial_bounds[0], initial_bounds[1], self.nb_q) * 0.1 if ii == 0 else self.q[:, ii - 1]
+                else:
+                    x0 = np.random.random(self.nb_q) * 0.1 if ii == 0 else self.q[:, ii - 1]
+
                 sol = scipy.optimize.least_squares(
                     fun=self._marker_diff,
                     args=(self.xp_markers[:, :, ii], self.idx_to_remove[ii]),
