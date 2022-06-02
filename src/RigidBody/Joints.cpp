@@ -1459,7 +1459,7 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
 
     utils::Matrix massMatrixRoot = this->massMatrix(Q).block(0, 0, this->nbRoot(), this->nbRoot());
 
-    QDDot.block(0, 0, this->nbRoot(), 1) = utils::Vector(this->nbRoot()).setZero(this->nbRoot());
+    QDDot.block(0, 0, this->nbRoot(), 1) = utils::Vector(this->nbRoot()).setZero();
     QDDot.block(this->nbRoot(), 0, this->nbQddot()-this->nbRoot(), 1) = QDDotJ;
 
     NLEffects = InverseDynamics(Q, QDot, QDDot, nullptr, nullptr);  // not exactly the NLEffects
