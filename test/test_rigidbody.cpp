@@ -2041,14 +2041,10 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
 
         std::vector<double> QDDot_expected = {
         	// root's accelerations
-            22.16377562102226, -3.042208464024391, -9.852624373936916,
-            // QddotJ
-            79.52391573112311, 37.270977516157785, 41.12281566965831, 28.81126146830918,
-            45.176516073414305, 79.87520732369279, 13.395817586226977, 49.419111679450126,
-            60.38688585807682, 13.605357587193446
+            22.16377562102226, -3.042208464024391, -9.852624373936916
         };
 
-        CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamicsFreeFloating, Q, QDot, QDDotJ);
+        CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamicsFreeFloatingBase, Q, QDot, QDDotJ);
 
         for (unsigned int i = 0; i<model.nbQddot(); ++i) {
             EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i],
@@ -2058,9 +2054,9 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
     
     {
         Model model(modelPathForGeneralTesting);
-        DECLARE_GENERALIZED_COORDINATES(Q, model);
-        DECLARE_GENERALIZED_VELOCITY(QDot, model);
-        DECLARE_GENERALIZED_ACCELERATION(QDDotJ, model);  // simulate possible mistake
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity QDot(model);
+        rigidbody::GeneralizedAcceleration QDDotJ(model);  // simulate possible mistake
         
         // Set to random values
         std::vector<double> val(model.nbQ());
