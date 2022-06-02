@@ -1459,15 +1459,28 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
 
     utils::Matrix massMatrixRoot = this->massMatrix(Q).block(0, 0, this->nbRoot(), this->nbRoot());
 
-#ifdef BIORBD_USE_CASADI_MATH
-    // TODO Real untested
-    //QRootDDot = massMatrixRoot.inverse() * -NLEffects.block(0, 0, this->nbRoot(), 1);
-#else
-    QDDot.block(0, 0, this->nbRoot(), 1) = utils::Vector(this->nbRoot()).setZero(this->nbRoot());
+    QDDot.block(0, 0, this->nbRoot(), 1) = utils::Vector(this->nbRoot()).setZero();
     QDDot.block(this->nbRoot(), 0, this->nbQddot()-this->nbRoot(), 1) = QDDotJ;
 
     NLEffects = InverseDynamics(Q, QDot, QDDot, nullptr, nullptr);  // not exactly the NLEffects
 
+#ifdef BIORBD_USE_CASADI_MATH
+    // TODO Real untested
+    std::vector<casadi::MX> NLEffectsFuncArgs(Q.size() + QDot.size() + QDDotJ.size());
+    for (unsigned int i = 0; i < Q.size(); i++)
+        NLEffectsFuncArgs[i] = Q[i];
+    for (unsigned int i = 0; i < QDot.size(); i++)
+        NLEffectsFuncArgs[i + Q.size()] = QDot[i];
+    for (unsigned int i = 0; i < QDDotJ.size(); i++)
+        NLEffectsFuncArgs[i + Q.size() + QDot.size()] = QDDotJ[i];
+
+    std::vector<casadi::MX> NLEffectsFuncOut(1);
+    NLEffectsFuncOut[0] = NLEffects;
+
+    auto NLEffectsFunc = casadi::Function("NLEffectsFunc", NLEffectsFuncArgs,  NLEffectsFuncOut);
+    auto linsol = casadi::Linsol("linsol", "ldl", massMatrixRoot.sparsity());
+    //QRootDDot = massMatrixRoot.inverse() * -NLEffects.block(0, 0, this->nbRoot(), 1);
+#else
     switch (linearSolver) {
         case (RigidBodyDynamics::Math::LinearSolverPartialPivLU) :
           QRootDDot = massMatrixRoot.partialPivLu().solve(-NLEffects.block(0, 0, this->nbRoot(), 1));
