@@ -1466,20 +1466,8 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
 
 #ifdef BIORBD_USE_CASADI_MATH
     // TODO Real untested
-    std::vector<casadi::MX> NLEffectsFuncArgs(Q.size() + QDot.size() + QDDotJ.size());
-    for (unsigned int i = 0; i < Q.size(); i++)
-        NLEffectsFuncArgs[i] = Q[i];
-    for (unsigned int i = 0; i < QDot.size(); i++)
-        NLEffectsFuncArgs[i + Q.size()] = QDot[i];
-    for (unsigned int i = 0; i < QDDotJ.size(); i++)
-        NLEffectsFuncArgs[i + Q.size() + QDot.size()] = QDDotJ[i];
-
-    std::vector<casadi::MX> NLEffectsFuncOut(1);
-    NLEffectsFuncOut[0] = NLEffects;
-
-    auto NLEffectsFunc = casadi::Function("NLEffectsFunc", NLEffectsFuncArgs,  NLEffectsFuncOut);
     auto linsol = casadi::Linsol("linsol", "ldl", massMatrixRoot.sparsity());
-    //QRootDDot = massMatrixRoot.inverse() * -NLEffects.block(0, 0, this->nbRoot(), 1);
+    QRootDDot = linsol.solve(massMatrixRoot, NLEffects);
 #else
     switch (linearSolver) {
         case (RigidBodyDynamics::Math::LinearSolverPartialPivLU) :
