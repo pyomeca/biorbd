@@ -2009,9 +2009,10 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
 
     {
         Model model(modelPathForGeneralTesting);
-        DECLARE_GENERALIZED_COORDINATES(Q, model);
-        DECLARE_GENERALIZED_VELOCITY(QDot, model);
-        DECLARE_GENERALIZED_ACCELERATION(QDDotJ, model.nbQddot() - model.nbRoot());  // TODO: must it take a model or an integer size is ok?
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity QDot(model);
+        rigidbody::GeneralizedAcceleration QDDotJ(model.nbQddot() - model.nbRoot());
+        rigidbody::GeneralizedAcceleration QRootDDot;
         
         // Values from a Python script comparing the reference Python way to biorbd's way.
         // They were generated randomly.
@@ -2039,16 +2040,16 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
         FILL_VECTOR(QDot, valQDot);
         FILL_VECTOR(QDDotJ, valQDDotJ);
 
-        std::vector<double> QDDot_expected = {
-        	// root's accelerations
+        std::vector<double> QRootDDot_expected = {
             22.16377562102226, -3.042208464024391, -9.852624373936916
         };
 
-        CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamicsFreeFloatingBase, Q, QDot, QDDotJ);
+        QRootDDot = model.ForwardDynamicsFreeFloatingBase(Q, QDot, QDDotJ);
 
         for (unsigned int i = 0; i<model.nbQddot(); ++i) {
-            EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i],
-                        requiredPrecision);
+            SCALAR_TO_DOUBLE(qrootddot, QRootDDot[i]);
+            SCALAR_TO_DOUBLE(qrootddot_expected, QRootDDot_expected[i]);
+            EXPECT_NEAR(qrootddot, qrootddot_expected, requiredPrecision);
         }
     }
     
