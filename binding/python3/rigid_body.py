@@ -1,11 +1,6 @@
-import numpy as np
-from scipy.optimize import minimize
-# import biorbd
-import bioviz
-from .utils import *
 import scipy
-from ezc3d import c3d
-from typing import Union
+
+from .utils import *
 
 
 def marker_index(model, marker_name):
@@ -30,12 +25,8 @@ class InverseKinematics:
     ----------
     biorbd_model_path: str
         The biorbd model path
-    c3d_path_file: str
-        The c3d file path
     biorbd_model: biorbd.Model
         The biorbd model loaded
-    c3d: ezc3d.c3d
-        The c3d loaded
     marker_names: list[str]
         The list of markers' name
     xp_markers: np.array
@@ -96,8 +87,6 @@ class InverseKinematics:
         Uses least_square function to minimize the difference between markers' positions of model and c3d.
     solve(self, method: str = "lm", full: bool = False)
         Solve the inverse kinematics by using least square methode from scipy.
-    animate(self)
-        Animate the result of solve with bioviz.
     sol(self)
         Create and return a dict which contains the output each optimization.
 
@@ -106,7 +95,7 @@ class InverseKinematics:
     def __init__(
         self,
         model,
-        marker_data: Union[str, c3d, np.array],
+        marker_data: np.array,
     ):
         self.biorbd_model = model
         self.marker_names = [
@@ -114,22 +103,8 @@ class InverseKinematics:
         ]
         self.nb_markers = self.biorbd_model.nbMarkers()
 
-        if isinstance(marker_data, str):
-            self.c3d_path_file = marker_data
-            self.c3d = c3d(self.c3d_path_file)
-            self.xp_markers = self._get_marker_trajectories()
-            self.nb_frames = self.c3d["parameters"]["POINT"]["FRAMES"]["value"][0]
-
-        elif isinstance(marker_data, c3d):
-            self.c3d_path_file = None
-            self.c3d = marker_data
-            self.xp_markers = self._get_marker_trajectories()
-            self.nb_frames = self.c3d["parameters"]["POINT"]["FRAMES"]["value"][0]
-
-        elif isinstance(marker_data, np.ndarray):
-            self.c3d_path_file = None
-            self.c3d = None
-            if marker_data.ndim == 3 and marker_data.shape[0] <= 3 and marker_data.shape[1] == self.nb_markers:
+        if isinstance(marker_data, np.ndarray):
+            if marker_data.ndim >= 2 and marker_data.shape[0] <= 3 and marker_data.shape[1] == self.nb_markers:
                 self.xp_markers = marker_data
                 self.nb_frames = marker_data.shape[2]
             else:
@@ -138,7 +113,8 @@ class InverseKinematics:
             raise ValueError("The standard inputs are str, an ezc3d.c3d, or a numpy.ndarray")
 
         self.nb_q = self.biorbd_model.nbQ()
-        self._get_idx_to_remove()
+        self.indices_to_remove = [[]] * self.nb_frames  # todo: check the independence
+        self._get_nan_index()
         self.q = np.zeros((self.nb_q, self.nb_frames))
         self.bounds = get_range_q(self.biorbd_model)
 
@@ -147,34 +123,12 @@ class InverseKinematics:
         self.output = dict()
         self.nb_dim = self.xp_markers.shape[0]
 
-    def _get_marker_trajectories(self) -> np.ndarray:
-        """
-        get markers trajectories
-        Returns:
-        ------
-        markers: np.ndarray
-            The positions of the c3d markers for each frame
-        """
-
-        # LOAD C3D FILE
-        points = self.c3d["data"]["points"]
-        labels_markers = self.c3d["parameters"]["POINT"]["LABELS"]["value"]
-
-        # GET THE MARKERS POSITION (X, Y, Z) AT EACH POINT
-        markers = np.zeros((3, len(self.marker_names), len(points[0, 0, :])))
-
-        for i, name in enumerate(self.marker_names):
-            markers[:, i, :] = points[:3, labels_markers.index(name), :] / get_unit_division_factor(self.c3d)
-            # The unit of the model is the meter
-        return markers
-
-    def _get_idx_to_remove(self):
+    def _get_nan_index(self):
         """
         Find, for each frame, the index of the markers which has a nan value
         """
-        self.idx_to_remove = [[]] * self.nb_frames
         for j in range(self.nb_frames):
-            self.idx_to_remove[j] = list(np.unique(np.isnan(self.xp_markers[:, :, j]).nonzero()[1]))
+            self.indices_to_remove[j] = list(np.unique(np.isnan(self.xp_markers[:, :, j]).nonzero()[1]))
 
     def _marker_diff(self, q: np.ndarray, xp_markers: np.ndarray, idx_to_remove):
         """
@@ -203,7 +157,7 @@ class InverseKinematics:
 
         return vect_pos_markers - np.reshape(xp_markers.T, (nb_markers * 3,))
 
-    def _marker_jac(self, q: np.ndarray, xp_markers: np.ndarray, idx_to_remove):
+    def _marker_jacobian(self, q: np.ndarray, xp_markers: np.ndarray, idx_to_remove):
         """
         Generate the Jacobian matrix for each frame.
 
@@ -218,12 +172,12 @@ class InverseKinematics:
         ------
             The Jacobian matrix
         """
-        mat_jac = self.biorbd_model.technicalMarkersJacobian(q)
-        mat_jac = np.delete(mat_jac, idx_to_remove, 0)
-        nb_markers = len(mat_jac)
+        jacobian_matrix = self.biorbd_model.technicalMarkersJacobian(q)
+        jacobian_matrix = np.delete(jacobian_matrix, idx_to_remove, 0)
+        nb_markers = len(jacobian_matrix)
         jac = np.zeros((3 * nb_markers, self.nb_q))
 
-        for m, value in enumerate(mat_jac):
+        for m, value in enumerate(jacobian_matrix):
             jac[m * 3 : (m + 1) * 3, :] = value.to_array()
 
         return jac
@@ -256,7 +210,7 @@ class InverseKinematics:
             generalized coordinates
         """
         initial_bounds = (-np.inf, np.inf) if method == "only_lm" else self.bounds
-        inital_method = "lm" if method == "only_lm" else "trf"
+        initial_method = "lm" if method == "only_lm" else "trf"
 
         bounds = self.bounds if method == "trf" else (-np.inf, np.inf)
         method = "lm" if method == "only_lm" else method
@@ -264,40 +218,33 @@ class InverseKinematics:
         if method != "lm" and method != "trf" and method != "only_lm":
             raise ValueError('This method is not implemented please use "trf", "lm" or "only_lm" as argument')
 
-        else:
-            for ii in range(0, self.nb_frames):
-                if inital_method != "lm":
-                    x0 = np.random.uniform(initial_bounds[0], initial_bounds[1], self.nb_q) * 0.1 if ii == 0 else self.q[:, ii - 1]
-                else:
-                    x0 = np.random.random(self.nb_q) * 0.1 if ii == 0 else self.q[:, ii - 1]
-
-                sol = scipy.optimize.least_squares(
-                    fun=self._marker_diff,
-                    args=(self.xp_markers[:, :, ii], self.idx_to_remove[ii]),
-                    bounds=initial_bounds if ii == 0 else bounds,
-                    jac=self._marker_jac,
-                    x0=x0,
-                    method=inital_method if ii == 0 else method,
-                    xtol=1e-6,
-                    tr_options=dict(disp=False),
+        for f in range(self.nb_frames):
+            if initial_method != "lm":
+                x0 = (
+                    np.random.uniform(initial_bounds[0], initial_bounds[1], self.nb_q) * 0.1
+                    if f == 0
+                    else self.q[:, f - 1]
                 )
-                self.q[:, ii] = sol.x
-                self.list_sol.append(sol)
-        print("Inverse Kinematics done for all frames")
-        return self.q
+            else:
+                x0 = np.random.random(self.nb_q) * 0.1 if f == 0 else self.q[:, f - 1]
 
-    def animate(self):
-        """
-        Animate the result of solve with bioviz.
-        """
-        b = bioviz.Viz(loaded_model=self.biorbd_model, show_muscles=False)
-        b.load_experimental_markers(self.xp_markers)
-        b.load_movement(self.q)
-        b.exec()
+            sol = scipy.optimize.least_squares(
+                fun=self._marker_diff,
+                args=(self.xp_markers[:, :, f], self.indices_to_remove[f]),
+                bounds=initial_bounds if f == 0 else bounds,
+                jac=self._marker_jacobian,
+                x0=x0,
+                method=initial_method if f == 0 else method,
+                xtol=1e-6,
+                tr_options=dict(disp=False),
+            )
+            self.q[:, f] = sol.x
+            self.list_sol.append(sol)
+        return self.q
 
     def sol(self):
         """
-        Create and return a dict which contains the output each optimization.
+        Create and return a dict that contains the output of each optimization.
 
         Return
         ------
@@ -305,14 +252,12 @@ class InverseKinematics:
             The output of least_square function, such as number of iteration per frames,
             and the marker with highest residual
         """
-        residuals_xyz = np.zeros((self.nb_markers * self.nb_dim, self.nb_frames))
-        residuals = np.zeros((self.nb_markers, self.nb_frames))
-        nfev = np.zeros(self.nb_frames)
-        njev = np.zeros(self.nb_frames)
+        residuals_xyz = np.ndarray((self.nb_markers * self.nb_dim, self.nb_frames))
+        residuals = np.ndarray((self.nb_markers, self.nb_frames))
+        nfev = [sol.nfev for sol in self.list_sol]
+        njev = [sol.njev for sol in self.list_sol]
 
         for i in range(self.nb_frames):
-            nfev[i] = self.list_sol[i].nfev
-            njev[i] = self.list_sol[i].njev
             residuals_xyz[:, i] = self.list_sol[i].fun
             residuals[:, i] = np.linalg.norm(np.reshape(residuals_xyz[:, i], [self.nb_markers, self.nb_dim]), axis=1)
 
@@ -322,10 +267,9 @@ class InverseKinematics:
             nfev=nfev,
             njev=njev,
             max_marker=[self.marker_names[i] for i in np.argmax(residuals, axis=0)],
-            message=[sol.message for i, sol in enumerate(self.list_sol)],
-            status=[sol.status for i, sol in enumerate(self.list_sol)],
-            success=[sol.success for i, sol in enumerate(self.list_sol)],
+            message=[sol.message for sol in self.list_sol],
+            status=[sol.status for sol in self.list_sol],
+            success=[sol.success for sol in self.list_sol],
         )
 
         return self.output
-
