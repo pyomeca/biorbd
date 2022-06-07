@@ -1465,9 +1465,8 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     NLEffects = InverseDynamics(Q, QDot, QDDot, nullptr, nullptr);  // not exactly the NLEffects
 
 #ifdef BIORBD_USE_CASADI_MATH
-    // TODO Real untested
     auto linsol = casadi::Linsol("linsol", "ldl", massMatrixRoot.sparsity());
-    QRootDDot = linsol.solve(massMatrixRoot, NLEffects);
+    QRootDDot = linsol.solve(massMatrixRoot, -NLEffects.block(0, 0, this->nbRoot(), 1));
 #else
     switch (linearSolver) {
         case (RigidBodyDynamics::Math::LinearSolverPartialPivLU) :
