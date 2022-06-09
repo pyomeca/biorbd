@@ -146,16 +146,17 @@ class InverseKinematics:
             The difference vector between markers' position in the model and in the c3d
         """
         mat_pos_markers = self.biorbd_model.technicalMarkers(q)
+        # remove index of model markers
         mat_pos_markers = np.delete(mat_pos_markers, idx_to_remove, 0)
-        nb_markers = len(mat_pos_markers)
-        vect_pos_markers = np.zeros(3 * nb_markers)
-
-        for m, value in enumerate(mat_pos_markers):
-            vect_pos_markers[m * 3 : (m + 1) * 3] = value.to_array()
-
+        # remove nan in experimental data
         xp_markers = np.delete(xp_markers, idx_to_remove, 1)
 
-        return vect_pos_markers - np.reshape(xp_markers.T, (nb_markers * 3,))
+        vect_pos_markers = np.zeros(3 * self.nb_markers)
+
+        for m, value in enumerate(mat_pos_markers):  # todo : check if reshape
+            vect_pos_markers[m * 3 : (m + 1) * 3] = value.to_array()
+
+        return vect_pos_markers - np.reshape(xp_markers.T, (self.nb_markers * 3,))
 
     def _marker_jacobian(self, q: np.ndarray, xp_markers: np.ndarray, idx_to_remove):
         """

@@ -21,4 +21,3 @@ def get_range_q(biorbd_model) -> tuple[np.ndarray, np.ndarray]:
         q_range_max += [q_range.max() for q_range in seg.QRanges()]
         q_range_min += [q_range.min() for q_range in seg.QRanges()]
     return np.array(q_range_min), np.array(q_range_max)
-
