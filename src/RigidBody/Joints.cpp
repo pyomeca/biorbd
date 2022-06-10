@@ -1446,7 +1446,7 @@ rigidbody::GeneralizedAcceleration
 rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
-    const rigidbody::GeneralizedAcceleration& QJointsDDot,
+    const rigidbody::GeneralizedAcceleration& QJointsDDot)
     RigidBodyDynamics::Math::LinearSolver linearSolver)
 {
 
@@ -1468,23 +1468,7 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     auto linsol = casadi::Linsol("linsol", "ldl", massMatrixRoot.sparsity());
     QRootDDot = linsol.solve(massMatrixRoot, -MassMatrixNlEffects.block(0, 0, this->nbRoot(), 1));
 #else
-    switch (linearSolver) {
-        case (RigidBodyDynamics::Math::LinearSolverPartialPivLU) :
-          QRootDDot = massMatrixRoot.partialPivLu().solve(-MassMatrixNlEffects.block(0, 0, this->nbRoot(), 1));
-          break;
-        case (RigidBodyDynamics::Math::LinearSolverColPivHouseholderQR) :
-          QRootDDot = massMatrixRoot.colPivHouseholderQr().solve(-MassMatrixNlEffects.block(0, 0, this->nbRoot(), 1));
-          break;
-        case (RigidBodyDynamics::Math::LinearSolverHouseholderQR) :
-          QRootDDot = massMatrixRoot.householderQr().solve(-MassMatrixNlEffects.block(0, 0, this->nbRoot(), 1));
-          break;
-        case (RigidBodyDynamics::Math::LinearSolverLLT) :
-          QRootDDot = massMatrixRoot.llt().solve(-MassMatrixNlEffects.block(0, 0, this->nbRoot(), 1));
-          break;
-        default:
-          utils::Error::raise("Unsupported linear solver.");
-          break;
-    }
+    QRootDDot = massMatrixRoot.llt().solve(-MassMatrixNlEffects.block(0, 0, this->nbRoot(), 1));
 #endif
 
     return QRootDDot;

@@ -904,14 +904,12 @@ public:
     /// \param Q The Generalized Coordinates
     /// \param QDot The Generalized Velocities
     /// \param QDDotJ The Generalized Accelerations of the joints (no root)
-    /// \param linearSolver The solver used
     /// \return The Generalized Accelerations of the root
     ///
     rigidbody::GeneralizedAcceleration ForwardDynamicsFreeFloatingBase(
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
-        const GeneralizedAcceleration& QDDotJ,
-        RigidBodyDynamics::Math::LinearSolver linearSolver = RigidBodyDynamics::Math::LinearSolverLLT);
+        const GeneralizedAcceleration& QJointsDDot);
 
     ///
     /// \brief Interface for the forward dynamics with contact of RBDL
