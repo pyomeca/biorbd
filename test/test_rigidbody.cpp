@@ -2009,55 +2009,53 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
 
     {
         Model model(modelPathForGeneralTesting);
-        rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity QDot(model);
-        rigidbody::GeneralizedAcceleration QDDotJ(model.nbQddot() - model.nbRoot());
-        rigidbody::GeneralizedAcceleration QRootDDot;
-        
+        DECLARE_GENERALIZED_COORDINATES(Q, model);
+        DECLARE_GENERALIZED_VELOCITY(QDot, model);
+        DECLARE_GENERALIZED(Acceleration, QJointsDDot, model.nbQddot() - model.nbRoot());
+     
         // Values from a Python script comparing the reference Python way to biorbd's way.
         // They were generated randomly.
         std::vector<double> valQ = {
-            0.8706713168361303, 0.9646119831943475, 0.8744449663145472, 0.5390670872654337,
-            0.6657655075858713, 0.1587851600400636, 0.4475434130669632, 0.7071954920819409,
-            0.5618741239826912, 0.5604379102663324, 0.6360594215137826, 0.30572926272411804,
-            0.7385629374813953
+            0.6772113773514055, 0.594725911263424, -0.37125218287187844, 0.8008719220322567,
+            0.34387602931586936, -0.48585572458565385, -0.8771307019475285, 0.8971162532685075,
+            0.5233833414396123, 0.4387214855367281, -0.261476841217011, -0.32085518311637085,
+            0.6535149322727045
         };
         
         std::vector<double> valQDot = {
-            8.902915178337556, 7.94913671143651, 9.22432159780305, 5.940003633273829,
-            2.8074206515043, 8.49920063949318, 4.901079962024926, 2.843574140174121,
-            2.932649143531625, 5.719408686427968, 3.744423852494884, 8.211906418480961,
-            2.630963222860525
+            -2.3439330676895542, 2.7424241596865895, -3.4950304777399976, -5.369662406205471,
+            -1.8658120198345363, -5.02599152359938, -6.999413730817041, -0.7060849694543303,
+            1.8995138906821407, -6.277466940454428, 9.054298192029442, -9.068984871797213,
+            -4.4601279545571515
         };
         
-        std::vector<double> valQDDotJ = {
-            79.52391573112311, 37.270977516157785, 41.12281566965831, 28.81126146830918,
-            45.176516073414305, 79.87520732369279, 13.395817586226977, 49.419111679450126,
-            60.38688585807682, 13.605357587193446
+        std::vector<double> valQJointsDDot = {
+            -32.264957457954566, 8.302307945630583, -85.66701600446129, -33.16644219089828,
+            3.3611301491870638, 35.10823095080686, -65.88196441641745, -53.43507412927335,
+            81.06299775985526, 49.014951112137965
         };
 
         FILL_VECTOR(Q, valQ);
         FILL_VECTOR(QDot, valQDot);
-        FILL_VECTOR(QDDotJ, valQDDotJ);
+        FILL_VECTOR(QJointsDDot, valQJointsDDot);
 
         std::vector<double> QRootDDot_expected = {
-            22.16377562102226, -3.042208464024391, -9.852624373936916
+            0.4056651149671642, -13.250782774367915, 7.655292172975847
         };
 
-        QRootDDot = model.ForwardDynamicsFreeFloatingBase(Q, QDot, QDDotJ);
+        CALL_BIORBD_FUNCTION_3ARGS(QRootDDot, model, ForwardDynamicsFreeFloatingBase, Q, QDot, QJointsDDot);
 
         for (unsigned int i = 0; i<model.nbQddot(); ++i) {
-            SCALAR_TO_DOUBLE(qrootddot, QRootDDot[i]);
-            SCALAR_TO_DOUBLE(qrootddot_expected, QRootDDot_expected[i]);
-            EXPECT_NEAR(qrootddot, qrootddot_expected, requiredPrecision);
+            EXPECT_NEAR(static_cast<double>(QRootDDot(i, 0)), QRootDDot_expected[i],
+                        requiredPrecision);
         }
     }
     
     {
         Model model(modelPathForGeneralTesting);
-        rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity QDot(model);
-        rigidbody::GeneralizedAcceleration QDDotJ(model);  // simulate possible mistake
+        DECLARE_GENERALIZED_COORDINATES(Q, model);
+        DECLARE_GENERALIZED_VELOCITY(QDot, model);
+        DECLARE_GENERALIZED_ACCELERATION(QJointsDDot, model);  // simulate possible mistake
         
         // Set to random values
         std::vector<double> val(model.nbQ());
@@ -2066,13 +2064,10 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
         }
         FILL_VECTOR(Q, val);
         FILL_VECTOR(QDot, val);
-        FILL_VECTOR(QDDotJ, val);
+        FILL_VECTOR(QJointsDDot, val);
         
-        EXPECT_THROW(model.ForwardDynamicsFreeFloatingBase(Q, QDot, QDDotJ), std::runtime_error);
+        EXPECT_THROW(model.ForwardDynamicsFreeFloatingBase(Q, QDot, QJointsDDot), std::runtime_error);
     }
-    
-    // TODO: test different solvers
-    // TODO: test solver error
 
 }
 
