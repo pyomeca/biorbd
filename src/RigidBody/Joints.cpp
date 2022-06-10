@@ -1447,7 +1447,6 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     const rigidbody::GeneralizedAcceleration& QJointsDDot)
-    RigidBodyDynamics::Math::LinearSolver linearSolver)
 {
 
     utils::Error::check(QJointsDDot.size() == this->nbQddot() - this->nbRoot(),
