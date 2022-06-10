@@ -2053,18 +2053,26 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
     
     {
         Model model(modelPathForGeneralTesting);
-        DECLARE_GENERALIZED_COORDINATES(Q, model);
-        DECLARE_GENERALIZED_VELOCITY(QDot, model);
-        DECLARE_GENERALIZED_ACCELERATION(QJointsDDot, model);  // simulate possible mistake
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity QDot(model);
+        rigidbody::GeneralizedAcceleration QJointsDDot(model);  // simulate possible mistake
         
         // Set to random values
-        std::vector<double> val(model.nbQ());
-        for (size_t i=0; i<val.size(); ++i) {
-            val[i] = static_cast<double>(i) * 1.1;
+        std::vector<double> valQ(model.nbQ());
+        for (size_t i=0; i<valQ.size(); ++i) {
+            valQ[i] = static_cast<double>(i) * 1.1;
         }
-        FILL_VECTOR(Q, val);
-        FILL_VECTOR(QDot, val);
-        FILL_VECTOR(QJointsDDot, val);
+        std::vector<double> valQDot(model.nbQdot());
+        for (size_t i=0; i<valQDot.size(); ++i) {
+            valQDot[i] = static_cast<double>(i) * 1.1;
+        }
+        std::vector<double> valQDDot(model.nbQddot());
+        for (size_t i=0; i<valQDDot.size(); ++i) {
+            valQDDot[i] = static_cast<double>(i) * 1.1;
+        }
+        FILL_VECTOR(Q, valQ);
+        FILL_VECTOR(QDot, valQDot);
+        FILL_VECTOR(QJointsDDot, valQDDot);
         
         EXPECT_THROW(model.ForwardDynamicsFreeFloatingBase(Q, QDot, QJointsDDot), std::runtime_error);
     }
