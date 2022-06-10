@@ -1461,10 +1461,10 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     QDDot.block(0, 0, this->nbRoot(), 1) = utils::Vector(this->nbRoot()).setZero();
     QDDot.block(this->nbRoot(), 0, this->nbQddot()-this->nbRoot(), 1) = QJointsDDot;
 
-    MassMatrixNlEffects = InverseDynamics(Q, QDot, QDDot, nullptr, nullptr);  // not exactly the NLEffects
+    MassMatrixNlEffects = InverseDynamics(Q, QDot, QDDot, nullptr, nullptr);
 
 #ifdef BIORBD_USE_CASADI_MATH
-    auto linsol = casadi::Linsol("linsol", "ldl", massMatrixRoot.sparsity());
+    auto linsol = casadi::Linsol("linsol", "symbolicqr", massMatrixRoot.sparsity());
     QRootDDot = linsol.solve(massMatrixRoot, -MassMatrixNlEffects.block(0, 0, this->nbRoot(), 1));
 #else
     QRootDDot = massMatrixRoot.llt().solve(-MassMatrixNlEffects.block(0, 0, this->nbRoot(), 1));
