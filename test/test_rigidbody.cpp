@@ -2045,7 +2045,7 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
 
         CALL_BIORBD_FUNCTION_3ARGS(QRootDDot, model, ForwardDynamicsFreeFloatingBase, Q, QDot, QJointsDDot);
 
-        for (unsigned int i = 0; i<model.nbQddot(); ++i) {
+        for (unsigned int i = 0; i<model.nbRoot(); ++i) {
             EXPECT_NEAR(static_cast<double>(QRootDDot(i, 0)), QRootDDot_expected[i],
                         requiredPrecision);
         }
@@ -2053,9 +2053,9 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
     
     {
         Model model(modelPathForGeneralTesting);
-        rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity QDot(model);
-        rigidbody::GeneralizedAcceleration QJointsDDot(model);  // simulate possible mistake
+        DECLARE_GENERALIZED_COORDINATES(Q, model);
+        DECLARE_GENERALIZED_VELOCITY(QDot, model);
+        DECLARE_GENERALIZED_ACCELERATION(QJointsDDot, model);  // simulate possible mistake
         
         // Set to random values
         std::vector<double> valQ(model.nbQ());
@@ -2074,7 +2074,9 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
         FILL_VECTOR(QDot, valQDot);
         FILL_VECTOR(QJointsDDot, valQDDot);
         
-        EXPECT_THROW(model.ForwardDynamicsFreeFloatingBase(Q, QDot, QJointsDDot), std::runtime_error);
+        EXPECT_THROW(
+            CALL_BIORBD_FUNCTION_3ARGS(QRootDDot, model, ForwardDynamicsFreeFloatingBase, Q, QDot, QJointsDDot),
+            std::runtime_error);
     }
 
 }
