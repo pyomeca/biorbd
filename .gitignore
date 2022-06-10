@@ -131,3 +131,6 @@ pyomeca
 release*
 *.DS_Store
 sandbox
+
+# Qt creator autosave
+*.autosave
