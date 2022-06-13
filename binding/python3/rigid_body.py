@@ -1,4 +1,4 @@
-import scipy
+from scipy import optimize
 
 from .utils import *
 
@@ -229,7 +229,7 @@ class InverseKinematics:
             else:
                 x0 = np.random.random(self.nb_q) * 0.1 if f == 0 else self.q[:, f - 1]
 
-            sol = scipy.optimize.least_squares(
+            sol = optimize.least_squares(
                 fun=self._marker_diff,
                 args=(self.xp_markers[:, :, f], self.indices_to_remove[f]),
                 bounds=initial_bounds if f == 0 else bounds,
