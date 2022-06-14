@@ -900,7 +900,7 @@ public:
         std::vector<utils::SpatialVector>* f_ext = nullptr);
 
     ///
-    /// \brief Interface for the forward free floating base dynamics of RBDL
+    /// \brief Biorbd's implementation of forward dynamics with a free floating base
     /// \param Q The Generalized Coordinates
     /// \param QDot The Generalized Velocities
     /// \param QDDotJ The Generalized Accelerations of the joints (no root)
