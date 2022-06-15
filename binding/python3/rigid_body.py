@@ -1,7 +1,7 @@
 from scipy import optimize
 import numpy as np
 
-from __init__ import get_range_q
+from .utils import get_range_q
 
 
 def marker_index(model, marker_name):
@@ -133,7 +133,8 @@ class InverseKinematics:
             self.indices_to_remove[j] = list(np.unique(np.isnan(self.xp_markers[:, :, j]).nonzero()[1]))
             self.indices_to_keep[j] = list(np.unique(np.isfinite(self.xp_markers[:, :, j]).nonzero()[1]))
 
-    def _marker_diff(self, q: np.ndarray, xp_markers: np.ndarray, indices_to_keep):
+    @staticmethod
+    def _marker_diff(markers_model: np.ndarray, markers_real: np.ndarray):
         """
         Compute the difference between the marker position in the model and the position in the data
 
@@ -148,17 +149,16 @@ class InverseKinematics:
         ------
             The difference vector between markers' position in the model and in the c3d
         """
-        mat_pos_markers = np.array(self.biorbd_model.technicalMarkers(q))[indices_to_keep]
-        nb_markers = len(indices_to_keep)
+        nb_marker = len(markers_real[0])
 
-        vect_pos_markers = np.zeros(3 * nb_markers)
+        vect_pos_markers = np.zeros(3 * nb_marker)
 
-        for m, value in enumerate(mat_pos_markers):
-            vect_pos_markers[m * 3 : (m + 1) * 3] = value.to_array()
+        for m, value in enumerate(markers_model):
+            vect_pos_markers[m * 3: (m + 1) * 3] = value.to_array()
 
-        return vect_pos_markers - np.reshape(xp_markers.T, (3 * nb_markers,))
+        return vect_pos_markers - np.reshape(markers_real.T, (3 * nb_marker,))
 
-    def _marker_jacobian(self, q: np.ndarray, xp_markers: np.ndarray, indices_to_keep):
+    def _marker_jacobian(self, jacobian_matrix):
         """
         Generate the Jacobian matrix for each frame.
 
@@ -173,12 +173,11 @@ class InverseKinematics:
         ------
             The Jacobian matrix
         """
-        jacobian_matrix = np.array(self.biorbd_model.technicalMarkersJacobian(q))[indices_to_keep]
-        nb_markers = len(indices_to_keep)
+        nb_markers = len(jacobian_matrix)
         jacobian = np.zeros((3 * nb_markers, self.nb_q))
 
         for m, value in enumerate(jacobian_matrix):
-            jacobian[m * 3 : (m + 1) * 3, :] = value.to_array()
+            jacobian[m * 3: (m + 1) * 3, :] = value.to_array()
 
         return jacobian
 
@@ -234,10 +233,18 @@ class InverseKinematics:
                 x0 = np.ones(self.nb_q) * 0.0001 if f == 0 else self.q[:, f - 1]
 
             sol = optimize.least_squares(
-                fun=self._marker_diff,
-                args=(self.xp_markers[:, :, f][:, self.indices_to_keep[f]], self.indices_to_keep[f]),
+                fun=lambda q, marker_real, indices_to_keep:
+                self._marker_diff(
+                    np.array(self.biorbd_model.technicalMarkers(q))[indices_to_keep],
+                    marker_real
+                    ),
+                args=(self.xp_markers[:, :, f][:, self.indices_to_keep[f]],
+                      self.indices_to_keep[f]),
                 bounds=initial_bounds if f == 0 else bounds,
-                jac=self._marker_jacobian,
+                jac=lambda q, jacobian_matrix, indices_to_keep:
+                self._marker_jacobian(
+                    np.array(self.biorbd_model.technicalMarkersJacobian(q))[indices_to_keep]
+                ),
                 x0=x0,
                 method=initial_method if f == 0 else method,
                 xtol=1e-6,
