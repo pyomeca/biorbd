@@ -154,7 +154,7 @@ class InverseKinematics:
         vect_pos_markers = np.zeros(3 * nb_markers)
 
         for m, value in enumerate(mat_pos_markers):
-            vect_pos_markers[m * 3: (m + 1) * 3] = value.to_array()
+            vect_pos_markers[m * 3 : (m + 1) * 3] = value.to_array()
 
         return vect_pos_markers - np.reshape(xp_markers.T, (3 * nb_markers,))
 
@@ -178,7 +178,7 @@ class InverseKinematics:
         jacobian = np.zeros((3 * nb_markers, self.nb_q))
 
         for m, value in enumerate(jacobian_matrix):
-            jacobian[m * 3: (m + 1) * 3, :] = value.to_array()
+            jacobian[m * 3 : (m + 1) * 3, :] = value.to_array()
 
         return jacobian
 
@@ -221,17 +221,21 @@ class InverseKinematics:
         for f in range(self.nb_frames):
             if initial_method != "lm":
                 x0 = (
-                    np.array([(bounds_inf + bounds_sup)/2 for bounds_inf, bounds_sup in zip(initial_bounds[0], initial_bounds[1])])
+                    np.array(
+                        [
+                            (bounds_inf + bounds_sup) / 2
+                            for bounds_inf, bounds_sup in zip(initial_bounds[0], initial_bounds[1])
+                        ]
+                    )
                     if f == 0
                     else self.q[:, f - 1]
                 )
             else:
-                x0 = np.ones(self.nb_q)*0.0001 if f == 0 else self.q[:, f - 1]
+                x0 = np.ones(self.nb_q) * 0.0001 if f == 0 else self.q[:, f - 1]
 
             sol = optimize.least_squares(
                 fun=self._marker_diff,
-                args=(self.xp_markers[:, :, f][:, self.indices_to_keep[f]],
-                      self.indices_to_keep[f]),
+                args=(self.xp_markers[:, :, f][:, self.indices_to_keep[f]], self.indices_to_keep[f]),
                 bounds=initial_bounds if f == 0 else bounds,
                 jac=self._marker_jacobian,
                 x0=x0,
@@ -257,7 +261,7 @@ class InverseKinematics:
         residuals = np.zeros((self.nb_markers, self.nb_frames))
         nfev = [sol.nfev for sol in self.list_sol]
         njev = [sol.njev for sol in self.list_sol]
-        
+
         for i in range(self.nb_frames):
             indices_to_keep_xyz = [h * self.nb_dim + k for h in self.indices_to_keep[i] for k in range(self.nb_dim)]
             indices_to_remove_xyz = [h * self.nb_dim + k for h in self.indices_to_remove[i] for k in range(self.nb_dim)]

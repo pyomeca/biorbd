@@ -45,6 +45,7 @@ def to_spatial_vector(f_ext: np.ndarray):
         vector.append(biorbd.SpatialVector(f_ext[:, idx]))
     return vector
 
+
 def get_range_q(biorbd_model) -> tuple[np.ndarray, np.ndarray]:
     """
     Give the ranges of generalized coordinates q
