@@ -154,7 +154,7 @@ class InverseKinematics:
         vect_pos_markers = np.zeros(3 * nb_marker)
 
         for m, value in enumerate(markers_model):
-            vect_pos_markers[m * 3: (m + 1) * 3] = value.to_array()
+            vect_pos_markers[m * 3 : (m + 1) * 3] = value.to_array()
 
         return vect_pos_markers - np.reshape(markers_real.T, (3 * nb_marker,))
 
@@ -177,7 +177,7 @@ class InverseKinematics:
         jacobian = np.zeros((3 * nb_markers, self.nb_q))
 
         for m, value in enumerate(jacobian_matrix):
-            jacobian[m * 3: (m + 1) * 3, :] = value.to_array()
+            jacobian[m * 3 : (m + 1) * 3, :] = value.to_array()
 
         return jacobian
 
@@ -233,16 +233,12 @@ class InverseKinematics:
                 x0 = np.ones(self.nb_q) * 0.0001 if f == 0 else self.q[:, f - 1]
 
             sol = optimize.least_squares(
-                fun=lambda q, marker_real, indices_to_keep:
-                self._marker_diff(
-                    np.array(self.biorbd_model.technicalMarkers(q))[indices_to_keep],
-                    marker_real
-                    ),
-                args=(self.xp_markers[:, :, f][:, self.indices_to_keep[f]],
-                      self.indices_to_keep[f]),
+                fun=lambda q, marker_real, indices_to_keep: self._marker_diff(
+                    np.array(self.biorbd_model.technicalMarkers(q))[indices_to_keep], marker_real
+                ),
+                args=(self.xp_markers[:, :, f][:, self.indices_to_keep[f]], self.indices_to_keep[f]),
                 bounds=initial_bounds if f == 0 else bounds,
-                jac=lambda q, jacobian_matrix, indices_to_keep:
-                self._marker_jacobian(
+                jac=lambda q, jacobian_matrix, indices_to_keep: self._marker_jacobian(
                     np.array(self.biorbd_model.technicalMarkersJacobian(q))[indices_to_keep]
                 ),
                 x0=x0,

@@ -45,6 +45,3 @@ def to_spatial_vector(f_ext: np.ndarray):
     for idx in range(f_ext.shape[1]):
         vector.append(biorbd.SpatialVector(f_ext[:, idx]))
     return vector
-
-
-
