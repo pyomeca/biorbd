@@ -2011,7 +2011,7 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
         Model model(modelPathForGeneralTesting);
         DECLARE_GENERALIZED_COORDINATES(Q, model);
         DECLARE_GENERALIZED_VELOCITY(QDot, model);
-        DECLARE_GENERALIZED(Acceleration, QJointsDDot, model.nbQddot() - model.nbRoot());
+        DECLARE_GENERALIZED_OF_TYPE(Acceleration, QJointsDDot, model.nbQddot() - model.nbRoot());
      
         // Values from a Python script comparing the reference Python way to biorbd's way.
         // They were generated randomly.

@@ -97,7 +97,7 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 #define DECLARE_GENERALIZED_TORQUE(varname, model) \
     casadi::DM varname(model.nbGeneralizedTorque(), 1);\
     BIORBD_NAMESPACE::rigidbody::GeneralizedTorque varname##_sym(casadi::MX::sym(#varname, model.nbGeneralizedTorque(), 1));
-#define DECLARE_GENERALIZED(Type, varname, nbElements) \
+#define DECLARE_GENERALIZED_OF_TYPE(Type, varname, nbElements) \
     casadi::DM varname(nbElements, 1);\
     BIORBD_NAMESPACE::rigidbody::Generalized##Type varname##_sym(casadi::MX::sym(#varname, nbElements, 1));
 #define DECLARE_VECTOR(varname, nbElements) \
@@ -135,7 +135,7 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
     BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration varname(model);
 #define DECLARE_GENERALIZED_TORQUE(varname, model) \
     BIORBD_NAMESPACE::rigidbody::GeneralizedTorque varname(model);
-#define DECLARE_GENERALIZED(Type, varname, nbElements) \
+#define DECLARE_GENERALIZED_OF_TYPE(Type, varname, nbElements) \
     BIORBD_NAMESPACE::rigidbody::Generalized##Type varname(nbElements);
 #define DECLARE_VECTOR(varname, nbElements) \
     BIORBD_NAMESPACE::utils::Vector varname(nbElements);
