@@ -114,8 +114,8 @@ class InverseKinematics:
             raise ValueError("The standard inputs is a numpy.ndarray")
 
         self.nb_q = self.biorbd_model.nbQ()
-        self.indices_to_remove = [[]] * self.nb_frames
-        self.indices_to_keep = [[]] * self.nb_frames
+        self.indices_to_remove = []
+        self.indices_to_keep = []
         self._get_nan_index()
         self.q = np.zeros((self.nb_q, self.nb_frames))
         self.bounds = get_range_q(self.biorbd_model)
@@ -130,8 +130,8 @@ class InverseKinematics:
         Find, for each frame, the index of the markers which has a nan value
         """
         for j in range(self.nb_frames):
-            self.indices_to_remove[j] = list(np.unique(np.isnan(self.xp_markers[:, :, j]).nonzero()[1]))
-            self.indices_to_keep[j] = list(np.unique(np.isfinite(self.xp_markers[:, :, j]).nonzero()[1]))
+            self.indices_to_remove.append(list(np.unique(np.isnan(self.xp_markers[:, :, j]).nonzero()[1])))
+            self.indices_to_keep.append(list(np.unique(np.isfinite(self.xp_markers[:, :, j]).nonzero()[1])))
 
     @staticmethod
     def _marker_diff(markers_model: np.ndarray, markers_real: np.ndarray):
@@ -265,13 +265,24 @@ class InverseKinematics:
         nfev = [sol.nfev for sol in self.list_sol]
         njev = [sol.njev for sol in self.list_sol]
 
-        for i in range(self.nb_frames):
-            indices_to_keep_xyz = [h * self.nb_dim + k for h in self.indices_to_keep[i] for k in range(self.nb_dim)]
-            indices_to_remove_xyz = [h * self.nb_dim + k for h in self.indices_to_remove[i] for k in range(self.nb_dim)]
-            residuals_xyz[:, i][indices_to_keep_xyz] = self.list_sol[i].fun
-            for indice in indices_to_remove_xyz:
-                residuals_xyz[:, i][indice] = np.nan
-            residuals[:, i] = np.linalg.norm(np.reshape(residuals_xyz[:, i], [self.nb_markers, self.nb_dim]), axis=1)
+        for f in range(self.nb_frames):
+            #  residuals_xyz must contains position for each markers on axis x, y and z
+            #  (or less depending on number of dimensions)
+            #  So, if we simply used indices_to_keep or to_remove, it doesn't work because it contains the markers'
+            #  indices [markers 0, markers 4, ...].
+            #  We have to create another list which contains indices for x, y and z
+            # [indices_to_keep or remove for markers 0 on x, indices_to_keep or remove for markers 0 on y, ...]
+            # And that correspond to [0, 1, 2, 4, 5, 6, ...] in our example.
+            indices_to_keep_xyz = [h * self.nb_dim + k for h in self.indices_to_keep[f] for k in range(self.nb_dim)]
+            indices_to_remove_xyz = [h * self.nb_dim + k for h in self.indices_to_remove[f] for k in range(self.nb_dim)]
+
+            # After we get the indices, we put the solution on the residuals
+            residuals_xyz[:, f][indices_to_keep_xyz] = self.list_sol[f].fun
+
+            # The markers that we removed have 0 as position on x, y and z but this is not true.
+            # So we replace it by nan value.
+            residuals_xyz[:, f][indices_to_remove_xyz] = np.nan
+            residuals[:, f] = np.linalg.norm(np.reshape(residuals_xyz[:, f], [self.nb_markers, self.nb_dim]), axis=1)
 
         self.output = dict(
             residuals=residuals,
