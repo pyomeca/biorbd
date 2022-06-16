@@ -1443,6 +1443,37 @@ rigidbody::Joints::ForwardDynamics(
 }
 
 rigidbody::GeneralizedAcceleration
+rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedAcceleration& QJointsDDot)
+{
+
+    utils::Error::check(QJointsDDot.size() == this->nbQddot() - this->nbRoot(),
+                        "Size of QDDotJ must be equal to number of QDDot - number of root coordinates.");
+
+    rigidbody::GeneralizedAcceleration QDDot(this->nbQddot());
+    rigidbody::GeneralizedAcceleration QRootDDot;
+    rigidbody::GeneralizedTorque MassMatrixNlEffects;
+
+    utils::Matrix massMatrixRoot = this->massMatrix(Q).block(0, 0, this->nbRoot(), this->nbRoot());
+
+    QDDot.block(0, 0, this->nbRoot(), 1) = utils::Vector(this->nbRoot()).setZero();
+    QDDot.block(this->nbRoot(), 0, this->nbQddot()-this->nbRoot(), 1) = QJointsDDot;
+
+    MassMatrixNlEffects = InverseDynamics(Q, QDot, QDDot, nullptr, nullptr);
+
+#ifdef BIORBD_USE_CASADI_MATH
+    auto linsol = casadi::Linsol("linsol", "symbolicqr", massMatrixRoot.sparsity());
+    QRootDDot = linsol.solve(massMatrixRoot, -MassMatrixNlEffects.block(0, 0, this->nbRoot(), 1));
+#else
+    QRootDDot = massMatrixRoot.llt().solve(-MassMatrixNlEffects.block(0, 0, this->nbRoot(), 1));
+#endif
+
+    return QRootDDot;
+}
+
+rigidbody::GeneralizedAcceleration
 rigidbody::Joints::ForwardDynamicsConstraintsDirect(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &QDot,
