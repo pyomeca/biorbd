@@ -24,70 +24,69 @@ class InverseKinematics:
 
     Attributes:
     ----------
-    biorbd_model_path: str
-        The biorbd model path
     biorbd_model: biorbd.Model
         The biorbd model loaded
     marker_names: list[str]
         The list of markers' name
-    xp_markers: np.array
-        The position of the markers from the c3d
-    nb_q: int
-        The number of dof in the model
-    nb_frames: int
-        The number of frame in the c3d
     nb_markers: int
         The number of markers in the model
+    xp_markers: np.array
+        The position of the markers from the c3d
+    nb_frames: int
+        The number of frame in the c3d
+    nb_q: int
+        The number of dof in the model
     q: np.array
         generalized coordinates
     bounds: tuple(np.ndarray, np.ndarray)
         The min and max ranges of the model Q
-    idx_to_remove: list(int)
+    indices_to_remove: list(list(int))
         The list of markers index  which have a nan value in xp_markers
+    indices_to_keep: list(list(int))
+        The list of markers index  which have a number value in xp_markers
     list_sol: list(scipy.OptimizeResult)
         The list of results of least_square function
     output: dict()
         The output of the solution:
-
-        residuals_xyz: np.ndarray
-            The array of the final return of _marker_diff function.
-            The final difference between markers position in the model and in the c3d.
-        residuals: np.ndarray
-            The array of the norm of residuals_xyz position for each markers in each frame.
-        nfev: np.ndarray
-            The array of the number of iteration of the _marker_diff function for each frame.
-        njev: np.ndarray
-            The array of the number of iteration of the _marker_jac function for each frame.
-        max_marker: list(str)
-            The list of markers that have the highest residual.
-            So the markers that have the biggest difference between the model and the c3d for each frame.
-        message: list(str)
-            The list of the verbal description of the termination reason of the least_square function for each frame.
-        status: list(int)
-            The reason for algorithm termination for each frame
-            -1 : improper input parameters status returned from MINPACK.
-            0 : the maximum number of function evaluations is exceeded.
-            1 : gtol termination condition is satisfied.
-            2 : ftol termination condition is satisfied.
-            3 : xtol termination condition is satisfied.
-            4 : Both ftol and xtol termination conditions are satisfied.
-        success: list(bool)
-            The list of success for each frame. True if one of the convergence criteria is satisfied (status > 0).
+            residuals_xyz: np.ndarray
+                The array of the final return of _marker_diff function.
+                The final difference between markers position in the model and in the c3d.
+            residuals: np.ndarray
+                The array of the norm of residuals_xyz position for each markers in each frame.
+            nfev: np.ndarray
+                The array of the number of iteration of the _marker_diff function for each frame.
+            njev: np.ndarray
+                The array of the number of iteration of the _marker_jac function for each frame.
+            max_marker: list(str)
+                The list of markers that have the highest residual.
+                So the markers that have the biggest difference between the model and the c3d for each frame.
+            message: list(str)
+                The list of the verbal description of the termination reason of the least_square function for each frame.
+            status: list(int)
+                The reason for algorithm termination for each frame
+                -1 : improper input parameters status returned from MINPACK.
+                0 : the maximum number of function evaluations is exceeded.
+                1 : gtol termination condition is satisfied.
+                2 : ftol termination condition is satisfied.
+                3 : xtol termination condition is satisfied.
+                4 : Both ftol and xtol termination conditions are satisfied.
+            success: list(bool)
+                The list of success for each frame. True if one of the convergence criteria is satisfied (status > 0).
+    nb_dim: int
+        The number of dimension of the model
 
     Methods
     -------
-    _get_marker_trajectories(self)
-        get markers trajectories
-    _get_idx_to_remove(self)
+    _get_nan_index(self)
         Find, for each frame, the index of the markers which has a nan value
-    _marker_diff(self, q: np.ndarray, xp_markers: np.ndarray)
+    _marker_diff(markers_model: np.ndarray, markers_real: np.ndarray)
         Compute the difference between the marker position in the model and the position in the data.
-    _marker_jac(self, q: np.ndarray, xp_markers: np.ndarray)
+    _marker_jacobian(self, jacobian_matrix)
         Generate the Jacobian matrix for each frame.
     optimize(self, n_frame: int, method: str, bounds: tuple() = None)
         Uses least_square function to minimize the difference between markers' positions of model and c3d.
-    solve(self, method: str = "lm", full: bool = False)
-        Solve the inverse kinematics by using least square methode from scipy.
+    solve(self, method: str = "lm")
+        Solve the inverse kinematics by using least_square method from scipy.
     sol(self)
         Create and return a dict which contains the output each optimization.
 
@@ -114,11 +113,13 @@ class InverseKinematics:
             raise ValueError("The standard inputs is a numpy.ndarray")
 
         self.nb_q = self.biorbd_model.nbQ()
+        self.q = np.zeros((self.nb_q, self.nb_frames))
+
+        self.bounds = get_range_q(self.biorbd_model)
+
         self.indices_to_remove = []
         self.indices_to_keep = []
         self._get_nan_index()
-        self.q = np.zeros((self.nb_q, self.nb_frames))
-        self.bounds = get_range_q(self.biorbd_model)
 
         self.list_sol = []
 
@@ -140,9 +141,9 @@ class InverseKinematics:
 
         Parameters:
         -----------
-        q: np.ndarray
-            The q values
-        xp_markers: np.ndarray
+        markers_model: np.ndarray
+            he position of the markers from the model during a certain frame
+        markers_real: np.ndarray
             The position of the markers from the c3d during a certain frame
 
         Return:
@@ -158,20 +159,18 @@ class InverseKinematics:
 
         return vect_pos_markers - np.reshape(markers_real.T, (3 * nb_marker,))
 
-    def _marker_jacobian(self, jacobian_matrix):
+    def _marker_jacobian(self, jacobian_matrix: np.ndarray):
         """
         Generate the Jacobian matrix for each frame.
 
         Parameters:
         -----------
-        q: np.ndarray
-            The q values
-        xp_markers: np.ndarray
-            The position of the markers from the c3d during a certain frame
+        jacobian_matrix: np.ndarray
+            The Jacobian matrix of the model
 
         Return:
         ------
-            The Jacobian matrix
+            The Jacobian matrix with right dimension
         """
         nb_markers = len(jacobian_matrix)
         jacobian = np.zeros((3 * nb_markers, self.nb_q))
