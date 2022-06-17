@@ -175,6 +175,7 @@ public:
     std::vector<size_t> segmentRigidContactIdx(
             int segment_idx) const;
 
+#ifndef SWIG
     ///
     /// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof
     /// \param Q The Generalized coordinates
@@ -185,7 +186,18 @@ public:
             const GeneralizedCoordinates& Q,
             std::vector<utils::Vector> *f_contacts,
             bool updateKin);
+#endif
 
+    ///
+    /// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof
+    /// \param Q The Generalized coordinates
+    /// \param f_contacts the forces applied at the contact points
+    /// \return The rigid contacts
+    ///
+    std::vector<utils::SpatialVector> rigidContactToSpatialVector(
+            const GeneralizedCoordinates& Q,
+            std::vector<utils::Vector> f_contacts,
+            bool updateKin);
     ///
     /// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof
     /// \param applicationPoint the position where the force is applied in base coordinate
