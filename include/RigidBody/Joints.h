@@ -897,7 +897,8 @@ public:
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
-        std::vector<utils::SpatialVector>* f_ext = nullptr);
+        std::vector<utils::SpatialVector>* f_ext = nullptr,
+        std::vector<utils::Vector>* f_contacts = nullptr);
 
     ///
     /// \brief Biorbd's implementation of forward dynamics with a free floating base
