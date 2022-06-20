@@ -292,6 +292,9 @@
         return output;
     };
 #endif
+	BIORBD_NAMESPACE::utils::Matrix multiply (const BIORBD_NAMESPACE::utils::Matrix& other){
+		return (*$self) * other;
+	}
 }
 
 %typemap(typecheck, precedence=2155) Eigen::Matrix3d & {
@@ -378,6 +381,9 @@
         return output;
     };
 #endif
+	BIORBD_NAMESPACE::utils::Matrix3d multiply (const BIORBD_NAMESPACE::utils::Matrix3d& other){
+		return (*$self) * other;
+	}
 }
 #ifndef BIORBD_USE_CASADI_MATH
 %typemap(typecheck, precedence=2155) Eigen::Matrix4d & {
@@ -1123,6 +1129,9 @@ BIORBD_NAMESPACE::utils::Vector3d &{
         return output;
     }
 #endif
+	BIORBD_NAMESPACE::utils::RotoTrans multiply (const BIORBD_NAMESPACE::utils::RotoTrans& other){
+		return (*$self) * other;
+	}
 };
 %extend BIORBD_NAMESPACE::rigidbody::IMU{
 #ifdef BIORBD_USE_CASADI_MATH
@@ -1172,6 +1181,9 @@ BIORBD_NAMESPACE::utils::Vector3d &{
         return output;
     }
 #endif
+	BIORBD_NAMESPACE::utils::Rotation multiply (const BIORBD_NAMESPACE::utils::Rotation& other){
+		return (*$self) * other;
+	}
 };
 
 // Import the main swig interface
