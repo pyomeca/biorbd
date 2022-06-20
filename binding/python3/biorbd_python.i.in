@@ -291,10 +291,11 @@
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
         return output;
     };
-#endif
+	
 	BIORBD_NAMESPACE::utils::Matrix multiply (const BIORBD_NAMESPACE::utils::Matrix& other){
 		return (*$self) * other;
 	}
+#endif
 }
 
 %typemap(typecheck, precedence=2155) Eigen::Matrix3d & {
@@ -380,11 +381,13 @@
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
         return output;
     };
-#endif
+	
 	BIORBD_NAMESPACE::utils::Matrix3d multiply (const BIORBD_NAMESPACE::utils::Matrix3d& other){
 		return (*$self) * other;
 	}
+#endif
 }
+
 #ifndef BIORBD_USE_CASADI_MATH
 %typemap(typecheck, precedence=2155) Eigen::Matrix4d & {
     if( PyArray_Check($input) ) {
@@ -1128,11 +1131,13 @@ BIORBD_NAMESPACE::utils::Vector3d &{
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
         return output;
     }
-#endif
+	
 	BIORBD_NAMESPACE::utils::RotoTrans multiply (const BIORBD_NAMESPACE::utils::RotoTrans& other){
-		return (*$self) * other;
+		return Eigen::Matrix4d(*$self) * Eigen::Matrix4d(other);
 	}
+#endif
 };
+
 %extend BIORBD_NAMESPACE::rigidbody::IMU{
 #ifdef BIORBD_USE_CASADI_MATH
     casadi::MX to_mx(){
@@ -1180,10 +1185,11 @@ BIORBD_NAMESPACE::utils::Vector3d &{
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
         return output;
     }
-#endif
+	
 	BIORBD_NAMESPACE::utils::Rotation multiply (const BIORBD_NAMESPACE::utils::Rotation& other){
 		return (*$self) * other;
 	}
+#endif
 };
 
 // Import the main swig interface
