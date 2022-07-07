@@ -2084,7 +2084,7 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
         Model model(modelNoRootDoF);  // model without DoF on root
         DECLARE_GENERALIZED_COORDINATES(Q, model);
         DECLARE_GENERALIZED_VELOCITY(QDot, model);
-        DECLARE_GENERALIZED_ACCELERATION(QJointsDDot, model);
+        DECLARE_GENERALIZED_OF_TYPE(Acceleration, QJointsDDot, model.nbQddot() - model.nbRoot());
         
         // Set to random values
         std::vector<double> valQ(model.nbQ());
