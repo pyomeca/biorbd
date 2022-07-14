@@ -41,6 +41,7 @@ static std::string modelPathMeshEqualsMarker("models/meshsEqualMarkers.bioMod");
 static std::string
 modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
 static std::string modelNoRoot("models/pyomecaman_freeFall.bioMod");
+static std::string modelNoRootDoF("models/pyomecaman_stuck.bioMod");
 static std::string modelSimple("models/cube.bioMod");
 
 static std::string modelWithSoftContact("models/cubeWithSoftContacts.bioMod");
@@ -2056,6 +2057,34 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
         DECLARE_GENERALIZED_COORDINATES(Q, model);
         DECLARE_GENERALIZED_VELOCITY(QDot, model);
         DECLARE_GENERALIZED_ACCELERATION(QJointsDDot, model);  // simulate possible mistake
+        
+        // Set to random values
+        std::vector<double> valQ(model.nbQ());
+        for (size_t i=0; i<valQ.size(); ++i) {
+            valQ[i] = static_cast<double>(i) * 1.1;
+        }
+        std::vector<double> valQDot(model.nbQdot());
+        for (size_t i=0; i<valQDot.size(); ++i) {
+            valQDot[i] = static_cast<double>(i) * 1.1;
+        }
+        std::vector<double> valQDDot(model.nbQddot());
+        for (size_t i=0; i<valQDDot.size(); ++i) {
+            valQDDot[i] = static_cast<double>(i) * 1.1;
+        }
+        FILL_VECTOR(Q, valQ);
+        FILL_VECTOR(QDot, valQDot);
+        FILL_VECTOR(QJointsDDot, valQDDot);
+        
+        EXPECT_THROW(
+            CALL_BIORBD_FUNCTION_3ARGS(QRootDDot, model, ForwardDynamicsFreeFloatingBase, Q, QDot, QJointsDDot),
+            std::runtime_error);
+    }
+    
+    {
+        Model model(modelNoRootDoF);  // model without DoF on root
+        DECLARE_GENERALIZED_COORDINATES(Q, model);
+        DECLARE_GENERALIZED_VELOCITY(QDot, model);
+        DECLARE_GENERALIZED_OF_TYPE(Acceleration, QJointsDDot, model.nbQddot() - model.nbRoot());
         
         // Set to random values
         std::vector<double> valQ(model.nbQ());
