@@ -1428,13 +1428,14 @@ rigidbody::Joints::ForwardDynamics(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &QDot,
     const rigidbody::GeneralizedTorque &Tau,
-    std::vector<utils::SpatialVector>* f_ext)
+    std::vector<utils::SpatialVector>* f_ext,
+    std::vector<utils::Vector> *f_contacts)
 {
 
     bool updateKin = true;
 
     rigidbody::GeneralizedAcceleration QDDot(*this);
-    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, nullptr, Q, QDot, updateKin));
+    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, f_contacts, Q, QDot, updateKin));
     RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, f_ext_rbdl);
     if (f_ext_rbdl){
         delete f_ext_rbdl;

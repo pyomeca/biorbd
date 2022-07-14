@@ -891,13 +891,15 @@ public:
     /// \param QDot The Generalized Velocities
     /// \param Tau The Generalized Torques
     /// \param f_ext External force acting on the system if there are any
+    /// \param f_contacts The forces applied to the rigid contacts if there are any
     /// \return The Generalized Accelerations
     ///
     rigidbody::GeneralizedAcceleration ForwardDynamics(
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
-        std::vector<utils::SpatialVector>* f_ext = nullptr);
+        std::vector<utils::SpatialVector>* f_ext = nullptr,
+        std::vector<utils::Vector>* f_contacts = nullptr);
 
     ///
     /// \brief Biorbd's implementation of forward dynamics with a free floating base
