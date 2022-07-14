@@ -457,13 +457,13 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::Contacts::rigidC
         for (size_t j = 0; j < nbRigidContactSegment; ++j)
         {
             // Index of rigid contact
-            unsigned int contact_index = segmentRigidContactIdx(i)[j];
+            unsigned int contactIndex = segmentRigidContactIdx(i)[j];
             // Find the application point of the force
-            utils::Vector3d x = rigidContact(Q, contact_index, updateKin);
+            utils::Vector3d x = rigidContact(Q, contactIndex, updateKin);
             // Find the list of sorted index of normal enabled in .bioMod
-            std::vector<int> rca_idx = rigidContactAxisIdx(contact_index);
+            std::vector<int> rcaIdx = rigidContactAxisIdx(contactIndex);
             // Add the contribution of the force of this point
-            tp += computeForceAtOrigin(x, rca_idx, (*f_contacts)[contact_index]);
+            tp += computeForceAtOrigin(x, rcaIdx, (*f_contacts)[contactIndex]);
         }
 
         // Put all the force at zero before the last dof of the segment
