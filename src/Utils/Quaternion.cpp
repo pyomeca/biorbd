@@ -366,8 +366,8 @@ utils::Vector3d  utils::Quaternion::omegaToEulerDot(
     const utils::Vector3d &w,
     const utils::String& seq)
 {
-    utils:Matrix3d velocityMatrix = utils::Rotation::fromEulerAngles(euler, seq).inverse();
-    utils::Vector3d eulerDot = velocityMatrix * w;
+    utils:Matrix3d velocity_matrix = velocityMatrix(euler, seq).inverse();
+    utils::Vector3d eulerDot = velocity_matrix * w;
     return eulerDot;
 }   
     
