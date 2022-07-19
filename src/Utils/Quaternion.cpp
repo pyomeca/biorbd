@@ -2,6 +2,7 @@
 #include "Utils/Quaternion.h"
 
 #include "Utils/Vector3d.h"
+#include "Utils/Matrix3d.h"
 #include "Utils/Vector.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/Error.h"
@@ -311,7 +312,7 @@ utils::Vector3d utils::Quaternion::rotate(
 }
 
 #include <iostream>
-utils::Quaternion utils::Quaternion::omegaToQDot(
+utils::Quaternion utils::Quaternion::omegaToQuatDot(
     const utils::Vector3d &omega) const
 {
     RigidBodyDynamics::Math::MatrixNd m(4, 3);
@@ -331,30 +332,45 @@ utils::Quaternion utils::Quaternion::omegaToQDot(
     return utils::Quaternion(0.5 * m * omega, this->m_Kstab);
 }
 
-utils::Vector3d  utils::Quaternion::eulerDotToOmega(
-    const utils::Vector3d &eulerDot,
+utils::Matrix3d utils::Quaternion::velocityMatrix(
     const utils::Vector3d &euler,
     const utils::String& seq)
 {
+    utils::Matrix3d baseMatrix = utils::Matrix3d::fromEulerSequence(seq);
+    utils::Vector3d rot1(euler[0],        0, 0);
+    utils::Vector3d rot2(euler[0], euler[1], 0);
+    utils::Matrix3d RotMat1 = utils::Rotation::fromEulerAngles(rot1, seq);
+    utils::Matrix3d RotMat2 = utils::Rotation::fromEulerAngles(rot2, seq);
 
-    utils::Vector3d w;
-    utils::Scalar dph, dth, dps, ph, th, ps;
-    dph = eulerDot[0];
-    dth = eulerDot[1];
-    dps = eulerDot[2];
-    ph = euler[0];
-    th = euler[1];
-    ps = euler[2];
-    if (!seq.compare("xyz")) {          // xyz
-        w[0] = dph*std::cos(th)*std::cos(ps) + dth*std::sin(ps);
-        w[1] = dth*std::cos(ps) - dph*std::cos(th)*std::sin(ps);
-        w[2] = dph*std::sin(th) + dps;
-    } else {
-        utils::Error::raise("Angle sequence is either nor implemented or not recognized");
-    }
-    return w;
+    utils::Matrix3d result;
+    result.block(0, 0, 3, 1) = baseMatrix.block(0, 0, 3, 1);
+    result.block(0, 1, 3, 1) = RotMat1 * baseMatrix.block(0, 1, 3, 1);
+    result.block(0, 2, 3, 1) = RotMat2 * baseMatrix.block(0, 2, 3, 1);
+    return result;
 }
 
+
+utils::Vector3d  utils::Quaternion::eulerDotToOmega(
+    const utils::Vector3d &euler,
+    const utils::Vector3d &eulerDot,
+    const utils::String& seq)
+{
+    utils:Matrix3d velocity_matrix = velocityMatrix(euler, seq);
+    utils::Vector3d w = velocity_matrix * eulerDot;
+
+    return w;
+}
+    
+utils::Vector3d  utils::Quaternion::omegaToEulerDot(
+    const utils::Vector3d &euler,
+    const utils::Vector3d &w,
+    const utils::String& seq)
+{
+    utils:Matrix3d velocity_matrix = velocityMatrix(euler, seq).inverse();
+    utils::Vector3d eulerDot = velocity_matrix * w;
+    return eulerDot;
+}   
+    
 void utils::Quaternion::derivate(
     const utils::Vector &w)
 {

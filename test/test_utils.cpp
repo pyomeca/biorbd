@@ -1205,7 +1205,7 @@ TEST(Quaternion, otherOperations)
         EXPECT_NEAR(vecZ, 582, requiredPrecision);
     } {
         utils::Quaternion q(2, 3, 4, 5, 6);
-        utils::Quaternion qdot(q.omegaToQDot(utils::Vector3d(7, 8, 9)));
+        utils::Quaternion qdot(q.omegaToQuatDot(utils::Vector3d(7, 8, 9)));
 
         SCALAR_TO_DOUBLE(qdotW, qdot.w());
         SCALAR_TO_DOUBLE(qdotX, qdot.x());
@@ -1263,9 +1263,18 @@ TEST(Quaternion, velocities)
         SCALAR_TO_DOUBLE(w0, w[0]);
         SCALAR_TO_DOUBLE(w1, w[1]);
         SCALAR_TO_DOUBLE(w2, w[2]);
-        EXPECT_NEAR(w0, 0.52227744876434945, requiredPrecision);
-        EXPECT_NEAR(w1, 0.36181645351259678, requiredPrecision);
-        EXPECT_NEAR(w2, 0.67946773231802449, requiredPrecision);
+        EXPECT_NEAR(w0, 0.243827661581261, requiredPrecision);
+        EXPECT_NEAR(w1, 0.0816881748534787, requiredPrecision);
+        EXPECT_NEAR(w2, 0.320375788494034, requiredPrecision);
+        
+        utils::Vector3d eulDot(q.omegaToEulerDot(eR,w,"xyz"));
+
+        SCALAR_TO_DOUBLE(eulDot0, eulDot[0]);
+        SCALAR_TO_DOUBLE(eulDot1, eulDot[1]);
+        SCALAR_TO_DOUBLE(eulDot2, eulDot[2]);
+        EXPECT_NEAR(eulDot0, 0.1, requiredPrecision);
+        EXPECT_NEAR(eulDot1, 0.2, requiredPrecision);
+        EXPECT_NEAR(eulDot2, 0.3, requiredPrecision);
     }
 
 }
