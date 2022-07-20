@@ -32,6 +32,15 @@ public:
     SpatialVector(
         const SpatialVector& other);
 
+#ifndef SWIG
+    ///
+    /// \brief Construct SpatialVector from Casadi SpatialVector
+    /// \param other The SpatialVector to copy
+    ///
+    SpatialVector(
+        const RigidBodyDynamics::Math::SpatialVector& other);
+#endif
+
     ///
     /// \brief Construct SpatialVector by its values
     /// \param v1 First element

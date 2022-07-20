@@ -891,13 +891,27 @@ public:
     /// \param QDot The Generalized Velocities
     /// \param Tau The Generalized Torques
     /// \param f_ext External force acting on the system if there are any
+    /// \param f_contacts The forces applied to the rigid contacts if there are any
     /// \return The Generalized Accelerations
     ///
     rigidbody::GeneralizedAcceleration ForwardDynamics(
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
-        std::vector<utils::SpatialVector>* f_ext = nullptr);
+        std::vector<utils::SpatialVector>* f_ext = nullptr,
+        std::vector<utils::Vector>* f_contacts = nullptr);
+
+    ///
+    /// \brief Biorbd's implementation of forward dynamics with a free floating base
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \param QDDotJ The Generalized Accelerations of the joints (no root)
+    /// \return The Generalized Accelerations of the root
+    ///
+    rigidbody::GeneralizedAcceleration ForwardDynamicsFreeFloatingBase(
+        const GeneralizedCoordinates& Q,
+        const GeneralizedVelocity& QDot,
+        const GeneralizedAcceleration& QJointsDDot);
 
     ///
     /// \brief Interface for the forward dynamics with contact of RBDL

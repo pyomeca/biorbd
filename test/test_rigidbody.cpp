@@ -41,6 +41,7 @@ static std::string modelPathMeshEqualsMarker("models/meshsEqualMarkers.bioMod");
 static std::string
 modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
 static std::string modelNoRoot("models/pyomecaman_freeFall.bioMod");
+static std::string modelNoRootDoF("models/pyomecaman_stuck.bioMod");
 static std::string modelSimple("models/cube.bioMod");
 
 static std::string modelWithSoftContact("models/cubeWithSoftContacts.bioMod");
@@ -2002,6 +2003,111 @@ TEST(Dynamics, Forward)
         EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i],
                     requiredPrecision);
     }
+}
+
+TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
+{
+
+    {
+        Model model(modelPathForGeneralTesting);
+        DECLARE_GENERALIZED_COORDINATES(Q, model);
+        DECLARE_GENERALIZED_VELOCITY(QDot, model);
+        DECLARE_GENERALIZED_OF_TYPE(Acceleration, QJointsDDot, model.nbQddot() - model.nbRoot());
+     
+        // Values from a Python script comparing the reference Python way to biorbd's way.
+        // They were generated randomly.
+        std::vector<double> valQ = {
+            0.6772113773514055, 0.594725911263424, -0.37125218287187844, 0.8008719220322567,
+            0.34387602931586936, -0.48585572458565385, -0.8771307019475285, 0.8971162532685075,
+            0.5233833414396123, 0.4387214855367281, -0.261476841217011, -0.32085518311637085,
+            0.6535149322727045
+        };
+        
+        std::vector<double> valQDot = {
+            -2.3439330676895542, 2.7424241596865895, -3.4950304777399976, -5.369662406205471,
+            -1.8658120198345363, -5.02599152359938, -6.999413730817041, -0.7060849694543303,
+            1.8995138906821407, -6.277466940454428, 9.054298192029442, -9.068984871797213,
+            -4.4601279545571515
+        };
+        
+        std::vector<double> valQJointsDDot = {
+            -32.264957457954566, 8.302307945630583, -85.66701600446129, -33.16644219089828,
+            3.3611301491870638, 35.10823095080686, -65.88196441641745, -53.43507412927335,
+            81.06299775985526, 49.014951112137965
+        };
+
+        FILL_VECTOR(Q, valQ);
+        FILL_VECTOR(QDot, valQDot);
+        FILL_VECTOR(QJointsDDot, valQJointsDDot);
+
+        std::vector<double> QRootDDot_expected = {
+            0.4056651149671642, -13.250782774367915, 7.655292172975847
+        };
+
+        CALL_BIORBD_FUNCTION_3ARGS(QRootDDot, model, ForwardDynamicsFreeFloatingBase, Q, QDot, QJointsDDot);
+
+        for (unsigned int i = 0; i<model.nbRoot(); ++i) {
+            EXPECT_NEAR(static_cast<double>(QRootDDot(i, 0)), QRootDDot_expected[i],
+                        requiredPrecision);
+        }
+    }
+    
+    {
+        Model model(modelPathForGeneralTesting);
+        DECLARE_GENERALIZED_COORDINATES(Q, model);
+        DECLARE_GENERALIZED_VELOCITY(QDot, model);
+        DECLARE_GENERALIZED_ACCELERATION(QJointsDDot, model);  // simulate possible mistake
+        
+        // Set to random values
+        std::vector<double> valQ(model.nbQ());
+        for (size_t i=0; i<valQ.size(); ++i) {
+            valQ[i] = static_cast<double>(i) * 1.1;
+        }
+        std::vector<double> valQDot(model.nbQdot());
+        for (size_t i=0; i<valQDot.size(); ++i) {
+            valQDot[i] = static_cast<double>(i) * 1.1;
+        }
+        std::vector<double> valQDDot(model.nbQddot());
+        for (size_t i=0; i<valQDDot.size(); ++i) {
+            valQDDot[i] = static_cast<double>(i) * 1.1;
+        }
+        FILL_VECTOR(Q, valQ);
+        FILL_VECTOR(QDot, valQDot);
+        FILL_VECTOR(QJointsDDot, valQDDot);
+        
+        EXPECT_THROW(
+            CALL_BIORBD_FUNCTION_3ARGS(QRootDDot, model, ForwardDynamicsFreeFloatingBase, Q, QDot, QJointsDDot),
+            std::runtime_error);
+    }
+    
+    {
+        Model model(modelNoRootDoF);  // model without DoF on root
+        DECLARE_GENERALIZED_COORDINATES(Q, model);
+        DECLARE_GENERALIZED_VELOCITY(QDot, model);
+        DECLARE_GENERALIZED_OF_TYPE(Acceleration, QJointsDDot, model.nbQddot() - model.nbRoot());
+        
+        // Set to random values
+        std::vector<double> valQ(model.nbQ());
+        for (size_t i=0; i<valQ.size(); ++i) {
+            valQ[i] = static_cast<double>(i) * 1.1;
+        }
+        std::vector<double> valQDot(model.nbQdot());
+        for (size_t i=0; i<valQDot.size(); ++i) {
+            valQDot[i] = static_cast<double>(i) * 1.1;
+        }
+        std::vector<double> valQDDot(model.nbQddot());
+        for (size_t i=0; i<valQDDot.size(); ++i) {
+            valQDDot[i] = static_cast<double>(i) * 1.1;
+        }
+        FILL_VECTOR(Q, valQ);
+        FILL_VECTOR(QDot, valQDot);
+        FILL_VECTOR(QJointsDDot, valQDDot);
+        
+        EXPECT_THROW(
+            CALL_BIORBD_FUNCTION_3ARGS(QRootDDot, model, ForwardDynamicsFreeFloatingBase, Q, QDot, QJointsDDot),
+            std::runtime_error);
+    }
+
 }
 
 #ifdef MODULE_ACTUATORS

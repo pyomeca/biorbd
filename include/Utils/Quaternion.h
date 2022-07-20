@@ -1,8 +1,6 @@
 #ifndef BIORBD_UTILS_QUATERNION_H
 #define BIORBD_UTILS_QUATERNION_H
 
-#include <memory>
-#include "Utils/Vector3d.h"
 #include "Utils/Scalar.h"
 
 #include "biorbdConfig.h"
@@ -11,6 +9,7 @@ namespace BIORBD_NAMESPACE
 namespace utils
 {
 class Vector3d;
+class Matrix3d;
 class Vector;
 class RotoTrans;
 class Rotation;
@@ -303,32 +302,46 @@ public:
         const Vector3d &vec) const;
 
     ///
-    /// \brief Converts a 3d angular velocity vector
+    /// \brief Converts a 3d angular velocity vector into a 4d derivative of the components of the quaternion
     /// \param omega the angular velocity
     /// \return a 4d vector containing the derivatives of the 4 components of the quaternion corresponding to omega
     ///
-    /// Converts a 3d angular velocity vector into a 4d derivative of
-    /// the components of the quaternion
-    ///
-    Quaternion omegaToQDot(
+    Quaternion omegaToQuatDot(
         const Vector3d& omega) const;
 
+    ///
+    /// \brief Generate the velocity matrix which allows to go from/to euler angles to/from omega(body velocity)
+    /// \param euler the Euler angles
+    /// \param seq the Euler angles sequence
+    /// \return a 3d matrix
+    ///
+    Matrix3d velocityMatrix (
+        const Vector3d &euler,
+        const String& seq);
+        
     ///
     /// \brief Converts a 3d angular velocity vector
     /// \param eulerDot the Euler angle rates
     /// \param euler the Euler angles
     /// \param seq the Euler angles sequence
-    ///
-    /// Converts a 3d angular velocity vector expressed in terms of euler
-    /// angles rate into the 3d angular velocity vector expressed in the fixed
-    /// parent frame. See
-    /// https://davidbrown3.github.io/2017-07-25/EulerAngles/
-    /// for correct equations.
+    /// \return a 3d vector of the body angular velocity
     ///
     Vector3d  eulerDotToOmega(
         const Vector3d &eulerDot,
         const Vector3d &euler,
         const String& seq);
+        
+    ///
+    /// \brief converts a 3d vector of the body angular velocity (omega) into a 3d vector of the euler angles rate.
+    /// \param euler the Euler angles
+    /// \param w the body velocity (omega)
+    /// \param seq the Euler angles sequence
+    /// \return a 3d vector of the euler angles rate
+    ///
+    Vector3d omegaToEulerDot(
+    const Vector3d &euler,
+    const Vector3d &w,
+    const String& seq);
 
     ///
     /// \brief Return the time derivative of the quaterion

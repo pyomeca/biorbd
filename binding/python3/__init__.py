@@ -1,8 +1,10 @@
+import numpy as np
 from . import biorbd
 from .biorbd import *
 from ._version import __version__
 from .surface_max_torque_actuator import *
 from .rigid_body import *
+from .utils import *
 
 if biorbd.currentLinearAlgebraBackend() == 1:
     from casadi import Function, MX, SX, horzcat
@@ -28,7 +30,7 @@ if biorbd.currentLinearAlgebraBackend() == 1:
 def to_spatial_vector(f_ext: np.ndarray):
     """
     Converts a 6 x n_external_force np.array into biorbd spatial vector
-    
+
     Parameters
     ----------
     f_ext: np.ndarray
@@ -38,7 +40,7 @@ def to_spatial_vector(f_ext: np.ndarray):
     -------
     The conveted array
     """
-    
+
     vector = biorbd.VecBiorbdSpatialVector()
     for idx in range(f_ext.shape[1]):
         vector.append(biorbd.SpatialVector(f_ext[:, idx]))

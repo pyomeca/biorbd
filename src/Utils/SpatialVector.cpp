@@ -21,6 +21,13 @@ utils::SpatialVector::SpatialVector(
 }
 
 utils::SpatialVector::SpatialVector(
+    const RigidBodyDynamics::Math::SpatialVector& other) :
+    RigidBodyDynamics::Math::SpatialVector (other)
+{
+
+}
+
+utils::SpatialVector::SpatialVector(
     Scalar v1, Scalar v2, Scalar v3,
     Scalar v4, Scalar v5, Scalar v6) :
     RigidBodyDynamics::Math::SpatialVector (v1, v2, v3, v4, v5, v6)
