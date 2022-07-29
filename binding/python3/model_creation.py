@@ -4,9 +4,9 @@ import numpy as np
 class Marker():
     def __init__(
         self,
-        name,
-        parent_name,
-        position,
+        name: str,
+        parent_name: str,
+        position: tuple[int|float, int|float, int|float],
     ):
         self.name = name
         self.parent_name = parent_name
@@ -25,13 +25,13 @@ class Segment():
     def __init__(
         self, 
         name, 
-        parent_name="", 
-        rt="",
-        translations="", 
-        rotations="",
-        mass=0,
-        center_of_mass=None,
-        inertia_xxyyzz=None,
+        parent_name: str = "",
+        rt: str = "",
+        translations: str = "",
+        rotations: str = "",
+        mass: float|int = 0,
+        center_of_mass: tuple[tuple[int|float, int|float, int|float]] = None,
+        inertia_xxyyzz: tuple[tuple[int|float, int|float, int|float]] = None,
         mesh: tuple[tuple[int|float, int|float, int|float], ...]=None,
         markers: tuple[Marker, ...]=None,
     ):
@@ -78,7 +78,7 @@ class Segment():
 
 
 class KinematicChain():
-    def __init__(self, segments):
+    def __init__(self, segments: tuple[Segment, ...]):
         self.segments = segments
         
     def __str__(self):
@@ -88,7 +88,7 @@ class KinematicChain():
             out_string += "\n\n\n"  # Give some space between segments
         return out_string
     
-    def write(self, file_path):
+    def write(self, file_path: str):
         # Method to write the current KinematicChain to a file
         with open(file_path, "w") as file:
             file.write(str(self))
@@ -99,17 +99,17 @@ class DeLeva:
     class Param:    
         def __init__(
             self,
-            marker_names,  # The name of the markers medial/lateral
-            mass,  # Percentage of the total body mass
-            center_of_mass,  # Position of the center of mass as a percentage of the distance from medial to distal
-            radii,  # [Sagittal, Transverse, Longitudinal] radii of giration
+            marker_names: tuple[str, ...],  # The name of the markers medial/lateral
+            mass: float|int,  # Percentage of the total body mass
+            center_of_mass: tuple[float|int, float|int, float|int],  # Position of the center of mass as a percentage of the distance from medial to distal
+            radii: tuple[float|int, float|int, float|int],  # [Sagittal, Transverse, Longitudinal] radii of giration
         ):
             self.marker_names = marker_names
             self.mass = mass
             self.center_of_mass = center_of_mass
             self.radii = radii
 
-    def __init__(self, sex, mass, model):
+    def __init__(self, sex: str, mass: float|int, model: biorbd.Model):
         self.sex = sex  # The sex of the subject
         self.mass = mass  # The mass of the subject
         self.model = model  # The biorbd model. This is to compute lengths
@@ -140,10 +140,10 @@ class DeLeva:
         self.table["female"]["SHANK"]     = DeLeva.Param(marker_names=("KNEE", "ANKLE")       , mass=0.0481*2, center_of_mass=0.4416, radii=(0.271, 0.267, 0.093))
         self.table["female"]["FOOT"]      = DeLeva.Param(marker_names=("ANKLE", "TOE")        , mass=0.0129*2, center_of_mass=0.4014, radii=(0.299, 0.279, 0.124))
 
-    def segment_mass(self, segment):
+    def segment_mass(self, segment: Segment):
         return self.table[self.sex][segment].mass * self.mass
     
-    def segment_length(self, segment):
+    def segment_length(self, segment: Segment):
         table = self.table[self.sex][segment]
         
         # Find the position of the markers when the model is in resting position
@@ -156,7 +156,7 @@ class DeLeva:
         # Compute the Euclidian distance between the two positions
         return numpy.linalg.norm(marker_positions[:, idx_distal] - marker_positions[:, idx_proximal])
         
-    def segment_center_of_mass(self, segment, inverse_proximal=False):
+    def segment_center_of_mass(self, segment: Segment, inverse_proximal: bool = False):
         # This method will compute the length of the required segment based on the biorbd model and required markers
         # If inverse_proximal is set to True, then the value is returned from the distal position
         table = self.table[self.sex][segment]
@@ -175,10 +175,9 @@ class DeLeva:
             center_of_mass = table.center_of_mass * (marker_positions[:, idx_distal] - marker_positions[:, idx_proximal])
         return tuple(center_of_mass)  # convert the result to a Tuple which is good practise
         
-    def segment_moment_of_inertia(self, segment):
+    def segment_moment_of_inertia(self, segment: Segment):
         mass = self.segment_mass(segment)
         length = self.segment_length(segment)
         radii = self.table[self.sex][segment].radii
         
         return (mass * (length*radii[0])**2, mass * (length*radii[1])**2, mass * (length*radii[2])**2)
-
