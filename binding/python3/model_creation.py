@@ -1,5 +1,53 @@
+from enum import Enum
+
+from ezc3d import c3d
 import numpy as np
 
+
+class RT:
+    class AxisName(Enum):
+        X = "x"
+        Y = "y"
+        Z = "z"
+
+    class Axis():
+        def __init__(
+            self, name: RT.AxisName, start: str|tuple[str, ...]|list[str, ...], end: str|tuple[str, ...]|list[str, ...]
+        ):
+            self.name = name
+            self.start_names = (start,) if isinstance(start, str) else start
+            self.end_names = (end,) if isinstance(end, str) else end
+
+        def _marker_names_in_c3d(self, data: c3d) -> tuple[str]:
+            return tuple(c3d["parameters"]["POINT"]["LABELS"].value)
+
+        def _extract_point_data(self, data: c3d, marker_name: tuple[str, ...]) -> np.ndarray():
+            names_in_c3d = _marker_names_in_c3d(data)
+            raise NotImplementedError("TODO")
+
+        def get_axis_from_data(self, data: c3d) -> np.ndarray:
+            start = self._extract_point_data(data, self.start)
+            end = self._extract_point_data(data, self.end)
+            return start - end
+
+    def __init__(self, data: c3d, markers: tuple[Axis, Axis, RT.AxisName]):
+        """
+        Parameters
+        ----------
+        data:
+            The actual data to create the RT from
+        markers:
+            The list of the markers that defines the axis, the AxisName is the axis to keep while constructing the RT
+        """
+
+        self.rt =
+    def _rt_from_markers(self, markers):
+        first_axis = markers[0].get_axis_from_data(data)
+        second_axis = markers[1].get_axis_from_data(data)
+        third_axis = np.cross(first_axis, second_axis)
+        axis_to_keep = markers[2]
+        if axis_to_keep: # TODO: FROM HERE
+            pass
 
 class Marker():
     def __init__(
