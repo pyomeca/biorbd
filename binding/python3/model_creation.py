@@ -11,18 +11,70 @@ import numpy as np
 import biorbd
 
 
-class Marker:
+class MarkerGeneric:
+    def __init__(self, name: str, data_names: str|tuple[str, ...], parent_name: str):
+        """
+        This is a pre-constructor for the Marker class. It allows to create a generic model by marker names
+
+        Parameters
+        ----------
+        name:
+            The name of the new marker
+        data_names:
+            The name of the markers in the data
+        parent_name:
+            The name of the parent the marker is attached to
+        """
+        self.name = name
+        self.data_names = data_names
+        self.parent_name = parent_name
+
+
+class SegmentGeneric:
+    def __init__(
+        self,
+        name,
+        parent_name: str = "",
+        translations: str = "",
+        rotations: str = "",
+    ):
+        self.name = name
+        self.parent_name = parent_name
+        self.translations = translations
+        self.rotations = rotations
+        self.markers = []
+
+    def add_marker(self, marker: MarkerGeneric):
+        self.markers.append(marker)
+
+
+class KinematicModelGeneric:
+    def __init__(self):
+        self.model = {}
+
+    def add_segment(self, segment: SegmentGeneric):
+        self.model[segment.name] = segment
+        
+    def add_marker(self, marker: MarkerGeneric, segment: str):
+        self.model[segment].add_marker(marker)
+
+
+
+class Marker(MarkerGeneric):
     def __init__(
         self,
         name: str,
         parent_name: str,
         position: tuple[int|float, int|float, int|float]|np.ndarray = None,
     ):
-        self.name = name
-        self.parent_name = parent_name
+        super(Marker, self).__init__(name=name, data_names=None, parent_name=parent_name)
         if position is None:
             position = np.array((0, 0, 0))
         self.position = position if isinstance(position, np.ndarray) else np.array(position)
+
+    @staticmethod
+    def from_generic(c3d: ezc3d, marker: MarkerGeneric):
+        return Marker.from_data(c3d, marker.name, marker.data_names, marker.parent_name)
 
     @staticmethod
     def from_data(c3d: ezc3d, name: str, data_names: str|tuple[str, ...], parent_name: str):
@@ -85,6 +137,7 @@ class Marker:
             return Marker(name=self.name, parent_name=self.parent_name, position=self.position - other.position)
         else:
             raise NotImplementedError(f"The subtraction for {type(other)} is not implemented")
+
 
 class Axis:
     class Name(Enum):
@@ -203,7 +256,7 @@ class RT:
             return "0 0 0 xyz 0 0 0"
         return self.rt
 
-class Segment:
+class Segment(SegmentGeneric):
     def __init__(
             self,
             name,
@@ -215,18 +268,18 @@ class Segment:
             center_of_mass: tuple[tuple[int | float, int | float, int | float]] = None,
             inertia_xxyyzz: tuple[tuple[int | float, int | float, int | float]] = None,
             mesh: tuple[tuple[int | float, int | float, int | float], ...] = None,
-            markers: tuple[Marker, ...] = None,
     ):
-        self.name = name
-        self.parent_name = parent_name
+        super(Segment, self).__init__(
+            name=name, parent_name=parent_name, translations=translations, rotations=rotations
+        )
         self.rt = rt if isinstance(rt, RT) else RT(rt)
-        self.translations = translations
-        self.rotations = rotations
         self.mass = mass
         self.center_of_mass = center_of_mass
         self.inertia_xxyyzz = inertia_xxyyzz
         self.mesh = mesh
-        self.markers = markers
+
+    def add_marker(self, marker: Marker):
+        self.markers.append(marker)
 
     def __str__(self):
         # Define the print function so it automatically format things in the file properly<

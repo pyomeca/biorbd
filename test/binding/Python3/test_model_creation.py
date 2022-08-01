@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 import biorbd
-from biorbd import Marker, Segment, KinematicChain, RT, Axis
+from biorbd import Marker, MarkerGeneric, Segment, KinematicChain, RT, Axis
 import ezc3d
 
 
@@ -16,8 +16,8 @@ def test_model_creation_from_static(remove_temporary: bool = True):
         translations="yz",
         rotations="x",
         mesh=((0, 0, 0), (0, 0, 0.53)),
-        markers=(trunk_marker_pelvis,),
     )
+    trunk.add_marker(trunk_marker_pelvis)
 
     # The head segment
     bottom_head_marker_head = Marker(name="BOTTOM_HEAD", parent_name="HEAD", position=(0, 0, 0))
@@ -27,8 +27,9 @@ def test_model_creation_from_static(remove_temporary: bool = True):
         parent_name="TRUNK",
         rt="0 0 0 xyz 0 0 0.53",
         mesh=((0, 0, 0), (0, 0, 0.24)),
-        markers=(bottom_head_marker_head, top_head_marker_head,),
     )
+    head.add_marker(bottom_head_marker_head)
+    head.add_marker(top_head_marker_head)
 
     # The arm segment
     shoulder_marker = Marker(name="SHOULDER", parent_name="UPPER_ARM", position=(0, 0, 0))
@@ -38,8 +39,8 @@ def test_model_creation_from_static(remove_temporary: bool = True):
         rt="0 0 0 xyz 0 0 0.53",
         rotations="x",
         mesh=((0, 0, 0), (0, 0, -0.28)),
-        markers=(shoulder_marker,),
     )
+    upper_arm.add_marker(shoulder_marker)
 
     elbow_marker = Marker(name="ELBOW", parent_name="LOWER_ARM", position=(0, 0, 0))
     lower_arm = Segment(
@@ -47,8 +48,8 @@ def test_model_creation_from_static(remove_temporary: bool = True):
         parent_name=upper_arm.name,
         rt="0 0 0 xyz 0 0 -0.28",
         mesh=((0, 0, 0), (0, 0, -0.27)),
-        markers=(elbow_marker,),
     )
+    lower_arm.add_marker(elbow_marker)
 
     wrist_marker = Marker(name="WRIST", parent_name="HAND", position=(0, 0, 0))
     finger_marker = Marker(name="FINGER", parent_name="HAND", position=(0, 0, -0.19))
@@ -57,8 +58,9 @@ def test_model_creation_from_static(remove_temporary: bool = True):
         parent_name=lower_arm.name,
         rt="0 0 0 xyz 0 0 -0.27",
         mesh=((0, 0, 0), (0, 0, -0.19)),
-        markers=(wrist_marker, finger_marker)
     )
+    hand.add_marker(wrist_marker)
+    hand.add_marker(finger_marker)
 
     # The thigh segment
     thigh = Segment(
@@ -76,8 +78,8 @@ def test_model_creation_from_static(remove_temporary: bool = True):
         rt="0 0 0 xyz 0 0 -0.42",
         rotations="x",
         mesh=((0, 0, 0), (0, 0, -0.43)),
-        markers=(knee_marker,),
     )
+    shank.add_marker(knee_marker)
 
     # The foot segment
     ankle_marker = Marker(name="ANKLE", parent_name="FOOT", position=(0, 0, 0))
@@ -88,8 +90,9 @@ def test_model_creation_from_static(remove_temporary: bool = True):
         rt="0 0 0 xyz 0 0 -0.43",
         rotations="x",
         mesh=((0, 0, 0), (0, 0, 0.25)),
-        markers=(ankle_marker, toe_marker,),
     )
+    foot.add_marker(ankle_marker)
+    foot.add_marker(toe_marker)
 
     # Put the model together, print it and print it to a bioMod file
     kinematic_chain = KinematicChain(segments=(trunk, head, upper_arm, lower_arm, hand, thigh, shank, foot))
@@ -131,14 +134,17 @@ def test_model_creation_from_data(remove_temporary: bool = True):
     data = ezc3d.c3d(c3d_file_path)
 
     # The trunk segment
-    trunk_marker_pelvis = Marker.from_data(data, name="PELVIS", data_names="PELVIS", parent_name="TRUNK")
+    trunk_marker_pelvis = Marker.from_generic(
+        data,
+        MarkerGeneric(name="PELVIS", data_names="PELVIS", parent_name="TRUNK")
+    )
     trunk = Segment(
         name="TRUNK",
         translations="yz",
         rotations="x",
         mesh=((0, 0, 0), (0, 0, 0.53)),
-        markers=(trunk_marker_pelvis,),
     )
+    trunk.add_marker(trunk_marker_pelvis)
 
     # The head segment
     bottom_head_marker_head = Marker.from_data(data, name="BOTTOM_HEAD", data_names="BOTTOM_HEAD", parent_name="HEAD")
@@ -159,8 +165,9 @@ def test_model_creation_from_data(remove_temporary: bool = True):
             ),
         ),
         mesh=((0, 0, 0), (0, 0, 0.24)),
-        markers=(bottom_head_marker_head, top_head_marker_head,),
     )
+    head.add_marker(bottom_head_marker_head)
+    head.add_marker(top_head_marker_head)
 
     # The arm segment
     shoulder_marker = Marker.from_data(data, name="SHOULDER", data_names="SHOULDER", parent_name="UPPER_ARM")
@@ -181,8 +188,8 @@ def test_model_creation_from_data(remove_temporary: bool = True):
         ),
         rotations="x",
         mesh=((0, 0, 0), (0, 0, -0.28)),
-        markers=(shoulder_marker,),
     )
+    upper_arm.add_marker(shoulder_marker)
 
     elbow_marker = Marker.from_data(data, name="ELBOW", data_names="ELBOW", parent_name="LOWER_ARM")
     origin_elbow = elbow_marker - origin_shoulder
@@ -201,8 +208,8 @@ def test_model_creation_from_data(remove_temporary: bool = True):
             ),
         ),
         mesh=((0, 0, 0), (0, 0, -0.27)),
-        markers=(elbow_marker,),
     )
+    lower_arm.add_marker(elbow_marker)
 
     wrist_marker = Marker.from_data(data, name="WRIST", data_names="WRIST", parent_name="HAND")
     finger_marker = Marker.from_data(data, name="FINGER", data_names="FINGER", parent_name="HAND")
@@ -222,8 +229,9 @@ def test_model_creation_from_data(remove_temporary: bool = True):
             ),
         ),
         mesh=((0, 0, 0), (0, 0, -0.19)),
-        markers=(wrist_marker, finger_marker)
     )
+    hand.add_marker(wrist_marker)
+    hand.add_marker(finger_marker)
 
     # The thigh segment
     thigh = Segment(
@@ -252,8 +260,8 @@ def test_model_creation_from_data(remove_temporary: bool = True):
         ),
         rotations="x",
         mesh=((0, 0, 0), (0, 0, -0.43)),
-        markers=(knee_marker,),
     )
+    shank.add_marker(knee_marker)
 
     # The foot segment
     ankle_marker = Marker.from_data(data, name="ANKLE", data_names="ANKLE", parent_name="FOOT")
@@ -275,8 +283,9 @@ def test_model_creation_from_data(remove_temporary: bool = True):
         ),
         rotations="x",
         mesh=((0, 0, 0), (0, 0, 0.25)),
-        markers=(ankle_marker, toe_marker,),
     )
+    foot.add_marker(ankle_marker)
+    foot.add_marker(toe_marker)
 
     # Put the model together, print it and print it to a bioMod file
     kinematic_chain = KinematicChain(segments=(trunk, head, upper_arm, lower_arm, hand, thigh, shank, foot))
