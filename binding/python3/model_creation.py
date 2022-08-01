@@ -25,20 +25,32 @@ class Marker:
         self.position = position if isinstance(position, np.ndarray) else np.array(position)
 
     @staticmethod
-    def from_data(c3d: ezc3d, name: str, parent_name: str):
+    def from_data(c3d: ezc3d, name: str, data_names: str|tuple[str, ...], parent_name: str):
         """
         This is a constructor for the Marker class. It takes the mean of the position of the marker
         from the c3d as position
+        Parameters
+        ----------
+        c3d:
+            The data to pick the data from
+        name:
+            The name of the new marker
+        data_names:
+            The name of the markers in the data
+        parent_name:
+            The name of the parent the marker is attached to
         """
 
         if not ezc3d_found:
             raise RuntimeError("Ezc3d must be install to use the 'from_data' constructor")
+        if isinstance(data_names, str):
+            data_names = (data_names, )
 
-        def index_in_c3d(c3d: ezc3d) -> int:
-            return c3d["parameters"]["POINT"]["LABELS"]["value"].index(name)
+        def indices_in_c3d(c3d: ezc3d) -> int:
+            return tuple(c3d["parameters"]["POINT"]["LABELS"]["value"].index(n) for n in data_names)
 
-        index = index_in_c3d(c3d)
-        position = np.mean(c3d["data"]["points"][:3, index, :], axis=1)
+        index = indices_in_c3d(c3d)
+        position = np.mean(np.mean(c3d["data"]["points"][:3, index, :], axis=2), axis=1)
         return Marker(name, parent_name, position)
 
     def __str__(self):

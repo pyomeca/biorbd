@@ -131,7 +131,7 @@ def test_model_creation_from_data(remove_temporary: bool = True):
     data = ezc3d.c3d(c3d_file_path)
 
     # The trunk segment
-    trunk_marker_pelvis = Marker.from_data(data, name="PELVIS", parent_name="TRUNK")
+    trunk_marker_pelvis = Marker.from_data(data, name="PELVIS", data_names="PELVIS", parent_name="TRUNK")
     trunk = Segment(
         name="TRUNK",
         translations="yz",
@@ -141,8 +141,8 @@ def test_model_creation_from_data(remove_temporary: bool = True):
     )
 
     # The head segment
-    bottom_head_marker_head = Marker.from_data(data, name="BOTTOM_HEAD", parent_name="HEAD")
-    top_head_marker_head = Marker.from_data(data, name="TOP_HEAD", parent_name="HEAD")
+    bottom_head_marker_head = Marker.from_data(data, name="BOTTOM_HEAD", data_names="BOTTOM_HEAD", parent_name="HEAD")
+    top_head_marker_head = Marker.from_data(data, name="TOP_HEAD", data_names="TOP_HEAD", parent_name="HEAD")
     origin_head = bottom_head_marker_head
     x_axis_head = origin_head + (0.1, 0, 0)  # Purposefully not 1 so it tests the norm
     y_axis_head = origin_head + (0.1, 0.1, 0)   # Purposefully not perpendicular so it tests realigning
@@ -163,7 +163,7 @@ def test_model_creation_from_data(remove_temporary: bool = True):
     )
 
     # The arm segment
-    shoulder_marker = Marker.from_data(data, name="SHOULDER", parent_name="UPPER_ARM")
+    shoulder_marker = Marker.from_data(data, name="SHOULDER", data_names="SHOULDER", parent_name="UPPER_ARM")
     origin_shoulder = shoulder_marker
     x_axis_shoulder = origin_shoulder + (0.1, 0, 0)  # Purposefully not 1 so it tests the norm
     z_axis_shoulder = origin_shoulder + (0.1, 0, 0.1)   # Purposefully not perpendicular so it tests realigning
@@ -184,7 +184,7 @@ def test_model_creation_from_data(remove_temporary: bool = True):
         markers=(shoulder_marker,),
     )
 
-    elbow_marker = Marker.from_data(data, name="ELBOW", parent_name="LOWER_ARM")
+    elbow_marker = Marker.from_data(data, name="ELBOW", data_names="ELBOW", parent_name="LOWER_ARM")
     origin_elbow = elbow_marker - origin_shoulder
     y_axis_elbow = origin_elbow + (0, 0.1, 0)  # Purposefully not 1 so it tests the norm
     x_axis_elbow = origin_elbow + (0.1, 0.1, 0)   # Purposefully not perpendicular so it tests realigning
@@ -204,8 +204,8 @@ def test_model_creation_from_data(remove_temporary: bool = True):
         markers=(elbow_marker,),
     )
 
-    wrist_marker = Marker.from_data(data, name="WRIST", parent_name="HAND")
-    finger_marker = Marker.from_data(data, name="FINGER", parent_name="HAND")
+    wrist_marker = Marker.from_data(data, name="WRIST", data_names="WRIST", parent_name="HAND")
+    finger_marker = Marker.from_data(data, name="FINGER", data_names="FINGER", parent_name="HAND")
     origin_wrist = wrist_marker - origin_elbow
     y_axis_wrist = origin_wrist + (0, 0.1, 0)  # Purposefully not 1 so it tests the norm
     z_axis_wrist = origin_wrist + (0, 0.1, 0.1)   # Purposefully not perpendicular so it tests realigning
@@ -234,7 +234,7 @@ def test_model_creation_from_data(remove_temporary: bool = True):
     )
 
     # The shank segment
-    knee_marker = Marker.from_data(data, name="KNEE", parent_name="SHANK")
+    knee_marker = Marker.from_data(data, name="KNEE", data_names="KNEE", parent_name="SHANK")
     origin_knee = knee_marker
     z_axis_knee = origin_knee + (0, 0, 0.1)  # Purposefully not 1 so it tests the norm
     x_axis_knee = origin_knee + (0.1, 0, 0.1)   # Purposefully not perpendicular so it tests realigning
@@ -256,8 +256,8 @@ def test_model_creation_from_data(remove_temporary: bool = True):
     )
 
     # The foot segment
-    ankle_marker = Marker.from_data(data, name="ANKLE", parent_name="FOOT")
-    toe_marker = Marker.from_data(data, name="TOE", parent_name="FOOT")
+    ankle_marker = Marker.from_data(data, name="ANKLE", data_names="ANKLE", parent_name="FOOT")
+    toe_marker = Marker.from_data(data, name="TOE", data_names="TOE", parent_name="FOOT")
     origin_ankle = ankle_marker - origin_knee
     z_axis_ankle = origin_ankle + (0, 0, 0.1)  # Purposefully not 1 so it tests the norm
     y_axis_ankle = origin_ankle + (0, 0.1, 0.1)   # Purposefully not perpendicular so it tests realigning
@@ -291,4 +291,3 @@ def test_model_creation_from_data(remove_temporary: bool = True):
     if remove_temporary:
         os.remove(kinematic_model_file_path)
         os.remove(c3d_file_path)
-
