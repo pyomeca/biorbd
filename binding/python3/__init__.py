@@ -5,7 +5,7 @@ from ._version import __version__
 from .surface_max_torque_actuator import *
 from .rigid_body import *
 from .utils import *
-from .model_creation import Marker, Segment, KinematicChain, DeLeva, RT
+from .model_creation import Marker, Segment, KinematicChain, DeLeva, RT, Axis
 
 if biorbd.currentLinearAlgebraBackend() == 1:
     from casadi import Function, MX, SX, horzcat

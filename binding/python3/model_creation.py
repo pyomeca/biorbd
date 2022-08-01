@@ -1,6 +1,12 @@
 from enum import Enum
 
-from ezc3d import c3d
+ezc3d_found = True
+try:
+    import ezc3d
+except ModuleNotFoundError:
+    ezc3d_found = False
+    ezc3d = None
+
 import numpy as np
 import biorbd
 
@@ -10,35 +16,63 @@ class Marker:
         self,
         name: str,
         parent_name: str,
-        position: tuple[int|float, int|float, int|float],
+        position: tuple[int|float, int|float, int|float]|np.ndarray = None,
     ):
         self.name = name
         self.parent_name = parent_name
-        self.position = position
+        if position is None:
+            position = np.array((0, 0, 0))
+        self.position = position if isinstance(position, np.ndarray) else np.array(position)
 
     @staticmethod
-    def from_data(data: c3d, marker_name: str, attach_to: str):
+    def from_data(c3d: ezc3d, name: str, parent_name: str):
         """
-        This is a constructor for the Marker class
+        This is a constructor for the Marker class. It takes the mean of the position of the marker
+        from the c3d as position
         """
-        def index_in_c3d(data: c3d) -> int:
-            return 0  # TODO
 
-        names_in_c3d = self.index(data)
-        position = 0  # TODO
-        return Marker(marker_name, attach_to, position)
+        if not ezc3d_found:
+            raise RuntimeError("Ezc3d must be install to use the 'from_data' constructor")
+
+        def index_in_c3d(c3d: ezc3d) -> int:
+            return c3d["parameters"]["POINT"]["LABELS"]["value"].index(name)
+
+        index = index_in_c3d(c3d)
+        position = np.mean(c3d["data"]["points"][:3, index, :], axis=1)
+        return Marker(name, parent_name, position)
 
     def __str__(self):
         # Define the print function so it automatically format things in the file properly<
         out_string = f"marker {self.name}\n"
         out_string += f"\tparent {self.parent_name}\n"
-        if self.position:
+        if self.position.all():
             out_string += f"\tposition {self.position[0]} {self.position[1]} {self.position[2]}\n"
         else:
             out_string += f"\tposition 0 0 0\n"
         out_string += "endmarker\n"
         return out_string
 
+    def __add__(self, other: np.ndarray|tuple):
+        if isinstance(other, tuple):
+            other = np.array(other)
+
+        if isinstance(other, np.ndarray):
+            return Marker(name=self.name, parent_name=self.parent_name, position=self.position + other)
+        elif isinstance(other, Marker):
+            return Marker(name=self.name, parent_name=self.parent_name, position=self.position + other.position)
+        else:
+            raise NotImplementedError(f"The addition for {type(other)} is not implemented")
+
+    def __sub__(self, other):
+        if isinstance(other, tuple):
+            other = np.array(other)
+
+        if isinstance(other, np.ndarray):
+            return Marker(name=self.name, parent_name=self.parent_name, position=self.position - other)
+        elif isinstance(other, Marker):
+            return Marker(name=self.name, parent_name=self.parent_name, position=self.position - other.position)
+        else:
+            raise NotImplementedError(f"The subtraction for {type(other)} is not implemented")
 
 class Axis:
     class Name(Enum):
@@ -59,10 +93,21 @@ class Axis:
         self.start_point_names = (start,) if isinstance(start, str) else start
         self.end_point_names = (end,) if isinstance(end, str) else end
 
-    def get_axis_from_data(self, data: c3d) -> np.ndarray:
+    def get_axis_from_data(self, data: ezc3d) -> np.ndarray:
+        """
+        Compute the axis from actual data
+        Parameters
+        ----------
+        data:
+            The ezc3d file containing the data
+        """
+
+        if not ezc3d_found:
+            raise RuntimeError("Ezc3d must be install to use the 'get_axis_from_data' constructor")
+
         start = self.start_point_names.position
         end = self.end_point_names.position
-        return start - end
+        return end - start
     
 
 class RT:
@@ -79,7 +124,7 @@ class RT:
         self.rt = rt
 
     @staticmethod
-    def from_data(data: c3d, origin: Marker, axes: tuple[Axis, Axis, Axis.Name]):
+    def from_data(data: ezc3d, origin: Marker, axes: tuple[Axis, Axis, Axis.Name]):
         """
         This is a constructor for the RT class
         Parameters
@@ -91,13 +136,17 @@ class RT:
         axes:
             The axes that defines the RT, the AxisName is the axis to keep while constructing the RT
         """
-        if first_axis.name == second_axis.name:
-            raise ValueError("The two axes cannot be the same axis")
+
+        if not ezc3d_found:
+            raise RuntimeError("Ezc3d must be install to use the 'from_data' constructor")
 
         # Find the two adjacent axes and reorder acordingly (assuming right-hand RT)
         first_axis = axes[0]
         second_axis = axes[1]
         axis_name_to_keep = axes[2]
+        if first_axis.name == second_axis.name:
+            raise ValueError("The two axes cannot be the same axis")
+
         if first_axis.name == Axis.Name.X:
             third_axis_name = Axis.Name.Y if second_axis.name == Axis.Name.Z else Axis.Name.Z
             if second_axis.name == Axis.Name.Z:
@@ -112,28 +161,30 @@ class RT:
                 first_axis, second_axis = second_axis, first_axis
 
         # Compute the third axis and recompute one of the previous two
-        first_axis_position = np.mean(first_axis.get_axis_from_data(data), axis=1)
-        second_axis_position = np.mean(second_axis.get_axis_from_data(data), axis=1)
-        third_axis_position = np.cross(first_axis, second_axis)
+        first_axis_position = first_axis.get_axis_from_data(data)
+        second_axis_position = second_axis.get_axis_from_data(data)
+        third_axis_position = np.cross(first_axis_position, second_axis_position)
         if axis_name_to_keep == first_axis.name:
-            second_axis = np.cross(third_axis, first_axis)
+            second_axis_position = np.cross(third_axis_position, first_axis_position)
         elif axis_name_to_keep == second_axis.name:
-            first_axis = np.cross(second_axis, third_axis)
+            first_axis_position = np.cross(second_axis_position, third_axis_position)
         else:
             raise ValueError("Name of axis to keep should be one of the two axes")
 
         # Dispatch the result into a matrix
-        rt = np.ndarray((3, 3))
-        rt[first_axis.name.value, :] = first_axis_position / np.linalg(first_axis_position)
-        rt[second_axis.name.value, :] = second_axis_position / np.linalg(second_axis_position)
-        rt[third_axis_name.value, :] = third_axis_position / np.linalg(third_axis_position)
+        rt = np.zeros((4, 4))
+        rt[first_axis.name.value, :3] = first_axis_position / np.linalg.norm(first_axis_position)
+        rt[second_axis.name.value, :3] = second_axis_position / np.linalg.norm(second_axis_position)
+        rt[third_axis_name.value, :3] = third_axis_position / np.linalg.norm(third_axis_position)
+        rt[:3, 3] = origin.position
+        rt[3, 3] = 1
 
         # Convert to text
         x = np.arctan2(-rt[1, 2], rt[2, 2])
         y = np.arcsin(rt[0, 2])
         z = np.arctan2(-rt[0, 1], rt[0, 0])
 
-        return f"{x} {y} {z} xyz {rt[0, 3]} {rt[1, 3]} {rt[2, 3]}"
+        return f"{x:0.3f} {y:0.3f} {z:0.3f} xyz {rt[0, 3]:0.3f} {rt[1, 3]:0.3f} {rt[2, 3]:0.3f}"
 
     def __str__(self):
         if self.rt is None:

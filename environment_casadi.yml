@@ -10,3 +10,4 @@ dependencies:
 - casadi
 - rbdl=*=*casadi*
 - scipy
+- ezc3d
