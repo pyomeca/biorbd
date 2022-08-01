@@ -2,54 +2,10 @@ from enum import Enum
 
 from ezc3d import c3d
 import numpy as np
+import biorbd
 
 
-class RT:
-    class AxisName(Enum):
-        X = "x"
-        Y = "y"
-        Z = "z"
-
-    class Axis():
-        def __init__(
-            self, name: RT.AxisName, start: str|tuple[str, ...]|list[str, ...], end: str|tuple[str, ...]|list[str, ...]
-        ):
-            self.name = name
-            self.start_names = (start,) if isinstance(start, str) else start
-            self.end_names = (end,) if isinstance(end, str) else end
-
-        def _marker_names_in_c3d(self, data: c3d) -> tuple[str]:
-            return tuple(c3d["parameters"]["POINT"]["LABELS"].value)
-
-        def _extract_point_data(self, data: c3d, marker_name: tuple[str, ...]) -> np.ndarray():
-            names_in_c3d = _marker_names_in_c3d(data)
-            raise NotImplementedError("TODO")
-
-        def get_axis_from_data(self, data: c3d) -> np.ndarray:
-            start = self._extract_point_data(data, self.start)
-            end = self._extract_point_data(data, self.end)
-            return start - end
-
-    def __init__(self, data: c3d, markers: tuple[Axis, Axis, RT.AxisName]):
-        """
-        Parameters
-        ----------
-        data:
-            The actual data to create the RT from
-        markers:
-            The list of the markers that defines the axis, the AxisName is the axis to keep while constructing the RT
-        """
-
-        self.rt =
-    def _rt_from_markers(self, markers):
-        first_axis = markers[0].get_axis_from_data(data)
-        second_axis = markers[1].get_axis_from_data(data)
-        third_axis = np.cross(first_axis, second_axis)
-        axis_to_keep = markers[2]
-        if axis_to_keep: # TODO: FROM HERE
-            pass
-
-class Marker():
+class Marker:
     def __init__(
         self,
         name: str,
@@ -60,37 +16,152 @@ class Marker():
         self.parent_name = parent_name
         self.position = position
 
+    @staticmethod
+    def from_data(data: c3d, marker_name: str, attach_to: str):
+        """
+        This is a constructor for the Marker class
+        """
+        def index_in_c3d(data: c3d) -> int:
+            return 0  # TODO
+
+        names_in_c3d = self.index(data)
+        position = 0  # TODO
+        return Marker(marker_name, attach_to, position)
+
     def __str__(self):
         # Define the print function so it automatically format things in the file properly<
         out_string = f"marker {self.name}\n"
         out_string += f"\tparent {self.parent_name}\n"
-        out_string += f"\tposition {self.position[0]} {self.position[1]} {self.position[2]}\n"
+        if self.position:
+            out_string += f"\tposition {self.position[0]} {self.position[1]} {self.position[2]}\n"
+        else:
+            out_string += f"\tposition 0 0 0\n"
         out_string += "endmarker\n"
         return out_string
 
 
-class Segment():
+class Axis:
+    class Name(Enum):
+        X = 0
+        Y = 1
+        Z = 2
+
+    def __init__(self, name: Name, start: Marker, end: Marker):
+        """
+        Parameters
+        ----------
+        name:
+            The AxisName of the Axis
+        start:
+            The initial Marker
+        """
+        self.name = name
+        self.start_point_names = (start,) if isinstance(start, str) else start
+        self.end_point_names = (end,) if isinstance(end, str) else end
+
+    def get_axis_from_data(self, data: c3d) -> np.ndarray:
+        start = self.start_point_names.position
+        end = self.end_point_names.position
+        return start - end
+    
+
+class RT:
+    def __init__(self, rt: str):
+        """
+        Parameters
+        ----------
+        data:
+            The actual data to create the RT from
+        axes:
+            The axes that defines the RT, the AxisName is the axis to keep while constructing the RT
+        """
+
+        self.rt = rt
+
+    @staticmethod
+    def from_data(data: c3d, origin: Marker, axes: tuple[Axis, Axis, Axis.Name]):
+        """
+        This is a constructor for the RT class
+        Parameters
+        ----------
+        data:
+            The actual data to create the RT from
+        origin:
+            The marker at the origin of the RT
+        axes:
+            The axes that defines the RT, the AxisName is the axis to keep while constructing the RT
+        """
+        if first_axis.name == second_axis.name:
+            raise ValueError("The two axes cannot be the same axis")
+
+        # Find the two adjacent axes and reorder acordingly (assuming right-hand RT)
+        first_axis = axes[0]
+        second_axis = axes[1]
+        axis_name_to_keep = axes[2]
+        if first_axis.name == Axis.Name.X:
+            third_axis_name = Axis.Name.Y if second_axis.name == Axis.Name.Z else Axis.Name.Z
+            if second_axis.name == Axis.Name.Z:
+                first_axis, second_axis = second_axis, first_axis
+        elif first_axis.name == Axis.Name.Y:
+            third_axis_name = Axis.Name.Z if second_axis.name == Axis.Name.X else Axis.Name.X
+            if second_axis.name == Axis.Name.X:
+                first_axis, second_axis = second_axis, first_axis
+        elif first_axis.name == Axis.Name.Z:
+            third_axis_name = Axis.Name.X if second_axis.name == Axis.Name.Y else Axis.Name.Y
+            if second_axis.name == Axis.Name.Y:
+                first_axis, second_axis = second_axis, first_axis
+
+        # Compute the third axis and recompute one of the previous two
+        first_axis_position = np.mean(first_axis.get_axis_from_data(data), axis=1)
+        second_axis_position = np.mean(second_axis.get_axis_from_data(data), axis=1)
+        third_axis_position = np.cross(first_axis, second_axis)
+        if axis_name_to_keep == first_axis.name:
+            second_axis = np.cross(third_axis, first_axis)
+        elif axis_name_to_keep == second_axis.name:
+            first_axis = np.cross(second_axis, third_axis)
+        else:
+            raise ValueError("Name of axis to keep should be one of the two axes")
+
+        # Dispatch the result into a matrix
+        rt = np.ndarray((3, 3))
+        rt[first_axis.name.value, :] = first_axis_position / np.linalg(first_axis_position)
+        rt[second_axis.name.value, :] = second_axis_position / np.linalg(second_axis_position)
+        rt[third_axis_name.value, :] = third_axis_position / np.linalg(third_axis_position)
+
+        # Convert to text
+        x = np.arctan2(-rt[1, 2], rt[2, 2])
+        y = np.arcsin(rt[0, 2])
+        z = np.arctan2(-rt[0, 1], rt[0, 0])
+
+        return f"{x} {y} {z} xyz {rt[0, 3]} {rt[1, 3]} {rt[2, 3]}"
+
+    def __str__(self):
+        if self.rt is None:
+            return "0 0 0 xyz 0 0 0"
+        return self.rt
+
+class Segment:
     def __init__(
-        self, 
-        name, 
-        parent_name: str = "",
-        rt: str = "",
-        translations: str = "",
-        rotations: str = "",
-        mass: float|int = 0,
-        center_of_mass: tuple[tuple[int|float, int|float, int|float]] = None,
-        inertia_xxyyzz: tuple[tuple[int|float, int|float, int|float]] = None,
-        mesh: tuple[tuple[int|float, int|float, int|float], ...]=None,
-        markers: tuple[Marker, ...]=None,
+            self,
+            name,
+            parent_name: str = "",
+            rt: str|RT = None,
+            translations: str = "",
+            rotations: str = "",
+            mass: float | int = 0,
+            center_of_mass: tuple[tuple[int | float, int | float, int | float]] = None,
+            inertia_xxyyzz: tuple[tuple[int | float, int | float, int | float]] = None,
+            mesh: tuple[tuple[int | float, int | float, int | float], ...] = None,
+            markers: tuple[Marker, ...] = None,
     ):
         self.name = name
         self.parent_name = parent_name
-        self.rt = rt
+        self.rt = rt if isinstance(rt, RT) else RT(rt)
         self.translations = translations
         self.rotations = rotations
         self.mass = mass
-        self.center_of_mass=center_of_mass
-        self.inertia_xxyyzz=inertia_xxyyzz
+        self.center_of_mass = center_of_mass
+        self.inertia_xxyyzz = inertia_xxyyzz
         self.mesh = mesh
         self.markers = markers
 
@@ -117,7 +188,7 @@ class Segment():
             for m in self.mesh:
                 out_string += f"\tmesh {m[0]} {m[1]} {m[2]}\n"
         out_string += "endsegment\n"
-        
+
         # Also print the markers attached to the segment
         if (self.markers):
             for marker in self.markers:
@@ -125,7 +196,7 @@ class Segment():
         return out_string
 
 
-class KinematicChain():
+class KinematicChain:
     def __init__(self, segments: tuple[Segment, ...]):
         self.segments = segments
         
