@@ -11,73 +11,21 @@ import numpy as np
 import biorbd
 
 
-class MarkerGeneric:
-    def __init__(self, name: str, data_names: str|tuple[str, ...], parent_name: str):
-        """
-        This is a pre-constructor for the Marker class. It allows to create a generic model by marker names
-
-        Parameters
-        ----------
-        name:
-            The name of the new marker
-        data_names:
-            The name of the markers in the data
-        parent_name:
-            The name of the parent the marker is attached to
-        """
-        self.name = name
-        self.data_names = data_names
-        self.parent_name = parent_name
-
-
-class SegmentGeneric:
-    def __init__(
-        self,
-        name,
-        parent_name: str = "",
-        translations: str = "",
-        rotations: str = "",
-    ):
-        self.name = name
-        self.parent_name = parent_name
-        self.translations = translations
-        self.rotations = rotations
-        self.markers = []
-
-    def add_marker(self, marker: MarkerGeneric):
-        self.markers.append(marker)
-
-
-class KinematicModelGeneric:
-    def __init__(self):
-        self.model = {}
-
-    def add_segment(self, segment: SegmentGeneric):
-        self.model[segment.name] = segment
-        
-    def add_marker(self, marker: MarkerGeneric, segment: str):
-        self.model[segment].add_marker(marker)
-
-
-
-class Marker(MarkerGeneric):
+class Marker:
     def __init__(
         self,
         name: str,
         parent_name: str,
         position: tuple[int|float, int|float, int|float]|np.ndarray = None,
     ):
-        super(Marker, self).__init__(name=name, data_names=None, parent_name=parent_name)
+        self.name = name
+        self.parent_name = parent_name
         if position is None:
             position = np.array((0, 0, 0))
         self.position = position if isinstance(position, np.ndarray) else np.array(position)
 
     @staticmethod
-    def from_generic(c3d: ezc3d, marker: MarkerGeneric):
-        return Marker.from_data(c3d, marker.name, marker.data_names, marker.parent_name)
-
-    @staticmethod
-    def from_data(c3d: ezc3d, name: str, data_names: str|tuple[str, ...], parent_name: str):
+    def from_data(c3d: ezc3d, name: str, from_markers: str|tuple[str, ...], parent_name: str):
         """
         This is a constructor for the Marker class. It takes the mean of the position of the marker
         from the c3d as position
@@ -87,7 +35,7 @@ class Marker(MarkerGeneric):
             The data to pick the data from
         name:
             The name of the new marker
-        data_names:
+        from_markers:
             The name of the markers in the data
         parent_name:
             The name of the parent the marker is attached to
@@ -95,11 +43,11 @@ class Marker(MarkerGeneric):
 
         if not ezc3d_found:
             raise RuntimeError("Ezc3d must be install to use the 'from_data' constructor")
-        if isinstance(data_names, str):
-            data_names = (data_names, )
+        if isinstance(from_markers, str):
+            from_markers = (from_markers, )
 
         def indices_in_c3d(c3d: ezc3d) -> int:
-            return tuple(c3d["parameters"]["POINT"]["LABELS"]["value"].index(n) for n in data_names)
+            return tuple(c3d["parameters"]["POINT"]["LABELS"]["value"].index(n) for n in from_markers)
 
         index = indices_in_c3d(c3d)
         position = np.mean(np.mean(c3d["data"]["points"][:3, index, :], axis=2), axis=1)
@@ -155,15 +103,15 @@ class Axis:
             The initial Marker
         """
         self.name = name
-        self.start_point_names = (start,) if isinstance(start, str) else start
-        self.end_point_names = (end,) if isinstance(end, str) else end
+        self.start_point_names = start
+        self.end_point_names = end
 
-    def get_axis_from_data(self, data: ezc3d) -> np.ndarray:
+    def axis(self) -> np.ndarray:
         """
         Compute the axis from actual data
         Parameters
         ----------
-        data:
+        c3d:
             The ezc3d file containing the data
         """
 
@@ -173,25 +121,11 @@ class Axis:
         start = self.start_point_names.position
         end = self.end_point_names.position
         return end - start
-    
+
 
 class RT:
-    def __init__(self, rt: str):
+    def __init__(self, origin: Marker, axes: tuple[Axis, Axis, Axis.Name]):
         """
-        Parameters
-        ----------
-        data:
-            The actual data to create the RT from
-        axes:
-            The axes that defines the RT, the AxisName is the axis to keep while constructing the RT
-        """
-
-        self.rt = rt
-
-    @staticmethod
-    def from_data(data: ezc3d, origin: Marker, axes: tuple[Axis, Axis, Axis.Name]):
-        """
-        This is a constructor for the RT class
         Parameters
         ----------
         data:
@@ -226,8 +160,8 @@ class RT:
                 first_axis, second_axis = second_axis, first_axis
 
         # Compute the third axis and recompute one of the previous two
-        first_axis_position = first_axis.get_axis_from_data(data)
-        second_axis_position = second_axis.get_axis_from_data(data)
+        first_axis_position = first_axis.axis()
+        second_axis_position = second_axis.axis()
         third_axis_position = np.cross(first_axis_position, second_axis_position)
         if axis_name_to_keep == first_axis.name:
             second_axis_position = np.cross(third_axis_position, first_axis_position)
@@ -237,41 +171,44 @@ class RT:
             raise ValueError("Name of axis to keep should be one of the two axes")
 
         # Dispatch the result into a matrix
-        rt = np.zeros((4, 4))
-        rt[first_axis.name.value, :3] = first_axis_position / np.linalg.norm(first_axis_position)
-        rt[second_axis.name.value, :3] = second_axis_position / np.linalg.norm(second_axis_position)
-        rt[third_axis_name.value, :3] = third_axis_position / np.linalg.norm(third_axis_position)
-        rt[:3, 3] = origin.position
-        rt[3, 3] = 1
-
-        # Convert to text
-        x = np.arctan2(-rt[1, 2], rt[2, 2])
-        y = np.arcsin(rt[0, 2])
-        z = np.arctan2(-rt[0, 1], rt[0, 0])
-
-        return f"{x:0.3f} {y:0.3f} {z:0.3f} xyz {rt[0, 3]:0.3f} {rt[1, 3]:0.3f} {rt[2, 3]:0.3f}"
+        self.rt = np.zeros((4, 4))
+        self.rt[first_axis.name.value, :3] = first_axis_position / np.linalg.norm(first_axis_position)
+        self.rt[second_axis.name.value, :3] = second_axis_position / np.linalg.norm(second_axis_position)
+        self.rt[third_axis_name.value, :3] = third_axis_position / np.linalg.norm(third_axis_position)
+        self.rt[:3, 3] = origin.position
+        self.rt[3, 3] = 1
 
     def __str__(self):
-        if self.rt is None:
-            return "0 0 0 xyz 0 0 0"
-        return self.rt
+        # Convert to text
+        tx = self.rt[0, 3]
+        ty = self.rt[1, 3]
+        tz = self.rt[2, 3]
 
-class Segment(SegmentGeneric):
+        rx = np.arctan2(-self.rt[1, 2], self.rt[2, 2])
+        ry = np.arcsin(self.rt[0, 2])
+        rz = np.arctan2(-self.rt[0, 1], self.rt[0, 0])
+
+        return f"{rx:0.3f} {ry:0.3f} {rz:0.3f} xyz {tx:0.3f} {ty:0.3f} {tz:0.3f}"
+
+
+class Segment:
     def __init__(
-            self,
-            name,
-            parent_name: str = "",
-            rt: str|RT = None,
-            translations: str = "",
-            rotations: str = "",
-            mass: float | int = 0,
-            center_of_mass: tuple[tuple[int | float, int | float, int | float]] = None,
-            inertia_xxyyzz: tuple[tuple[int | float, int | float, int | float]] = None,
-            mesh: tuple[tuple[int | float, int | float, int | float], ...] = None,
+        self,
+        name,
+        parent_name: str = "",
+        rt: str|RT = None,
+        translations: str = "",
+        rotations: str = "",
+        mass: float | int = 0,
+        center_of_mass: tuple[tuple[int | float, int | float, int | float]] = None,
+        inertia_xxyyzz: tuple[tuple[int | float, int | float, int | float]] = None,
+        mesh: tuple[tuple[int | float, int | float, int | float], ...] = None,
     ):
-        super(Segment, self).__init__(
-            name=name, parent_name=parent_name, translations=translations, rotations=rotations
-        )
+        self.name = name
+        self.parent_name = parent_name
+        self.translations = translations
+        self.rotations = rotations
+        self.markers = []
         self.rt = rt if isinstance(rt, RT) else RT(rt)
         self.mass = mass
         self.center_of_mass = center_of_mass
@@ -416,3 +353,215 @@ class DeLeva:
         radii = self.table[self.sex][segment].radii
         
         return (mass * (length*radii[0])**2, mass * (length*radii[1])**2, mass * (length*radii[2])**2)
+
+
+class MarkerGeneric:
+    def __init__(self, name: str, from_markers: str|tuple[str, ...], parent_name: str):
+        """
+        This is a pre-constructor for the Marker class. It allows to create a generic model by marker names
+
+        Parameters
+        ----------
+        name:
+            The name of the new marker
+        from_markers:
+            The name of the markers in the data
+        parent_name:
+            The name of the parent the marker is attached to
+        """
+        self.name = name
+        self.from_markers = from_markers
+        self.parent_name = parent_name
+
+    def to_marker(self, c3d: ezc3d.c3d) -> Marker:
+        return Marker.from_data(c3d, self.name, self.from_markers, self.parent_name)
+
+
+class AxisGeneric:
+    def __init__(self, name: Axis.Name, start: MarkerGeneric, end: MarkerGeneric):
+        """
+        Parameters
+        ----------
+        name:
+            The AxisName of the Axis
+        start:
+            The initial Marker
+        """
+        self.name = name
+        self.start_point_names = start
+        self.end_point_names = end
+
+    def to_axis(self, c3d: ezc3d.c3d) -> Axis:
+        """
+        Compute the axis from actual data
+        Parameters
+        ----------
+        c3d:
+            The ezc3d file containing the data
+        """
+
+        if not ezc3d_found:
+            raise RuntimeError("Ezc3d must be install to use the 'get_axis_from_data' constructor")
+
+        start = self.start_point_names.to_marker(c3d)
+        end = self.end_point_names.to_marker(c3d)
+        return Axis(self.name, start, end)
+
+
+class RTGeneric:
+    def __init__(self, origin: MarkerGeneric, axes: tuple[AxisGeneric, AxisGeneric, Axis.Name]):
+        self.origin = origin
+        self.axes = axes
+
+    def to_rt(self, c3d: ezc3d.c3d) -> RT:
+        origin = self.origin.to_marker(c3d)
+        axes = (self.axes[0].to_axis(c3d), self.axes[1].to_axis(c3d), self.axes[2])
+
+        return RT(origin, axes)
+
+
+class SegmentGeneric:
+    def __init__(
+        self,
+        name,
+        parent_name: str = "",
+        translations: str = "",
+        rotations: str = "",
+    ):
+        """
+        Create a new generic segment.
+
+        Parameters
+        ----------
+        name
+            The name of the segment
+        parent_name
+            The name of the segment the current segment is attached to
+        translations
+            The sequence of translation
+        rotations
+            The sequence of rotation
+        """
+
+        self.name = name
+        self.parent_name = parent_name
+        self.translations = translations
+        self.rotations = rotations
+        self.markers = []
+        self.rt = None
+
+    def add_marker(self, marker: MarkerGeneric):
+        """
+        Add a new marker to the segment
+        """
+        self.markers.append(marker)
+
+    def set_rt(
+        self,
+        origin_from_markers: str | tuple[str, ...],
+        first_axis_name: Axis.Name,
+        first_axis_markers: tuple[str | tuple[str, ...], str | tuple[str, ...]],
+        second_axis_name: Axis.Name,
+        second_axis_markers: tuple[str | tuple[str, ...], str | tuple[str, ...]],
+        axis_to_keep: Axis.Name
+    ):
+        """
+        Define the rt of the segment.
+
+        Parameters
+        ----------
+        origin_from_markers
+            The marker names of the origin of the RT
+        first_axis_name
+            The Axis.Name of the first axis
+        first_axis_makers
+            Tuple of marker names (starting point, ending point) that defines the first axis
+        second_axis_name
+            The Axis.Name of the second axis
+        second_axis_markers
+            Tuple of marker names (starting point, ending point) that defines the second axis
+        axis_to_keep
+            The axis that will be kept when recomputing the axes
+        """
+
+        first_axis_tp = AxisGeneric(
+            name=first_axis_name,
+            start=MarkerGeneric(name="", from_markers=first_axis_markers[0], parent_name=""),
+            end=MarkerGeneric(name="", from_markers=first_axis_markers[1], parent_name=""),
+        )
+        second_axis_tp = AxisGeneric(
+            name=second_axis_name,
+            start=MarkerGeneric(name="", from_markers=second_axis_markers[0], parent_name=""),
+            end=MarkerGeneric(name="", from_markers=second_axis_markers[1], parent_name=""),
+        )
+
+        self.rt = RTGeneric(
+            origin=MarkerGeneric(name="", from_markers=origin_from_markers, parent_name=""),
+            axes=(first_axis_tp, second_axis_tp, axis_to_keep)
+        )
+
+
+class KinematicModelGeneric:
+    def __init__(self):
+        self.segments = {}
+
+    def add_segment(
+            self, name: str, parent_name: str = "", translations: str = "", rotations: str = ""
+    ):
+        """
+        Add a new segment to the model
+        """
+        self.segments[name] = SegmentGeneric(
+            name=name, parent_name=parent_name, translations=translations, rotations=rotations
+        )
+
+    def set_rt(
+            self,
+            segment_name,
+            origin_markers: str | tuple[str, ...],
+            first_axis_name: Axis.Name,
+            first_axis_markers: tuple[str | tuple[str, ...], str | tuple[str, ...]],
+            second_axis_name: Axis.Name,
+            second_axis_markers: tuple[str | tuple[str, ...], str | tuple[str, ...]],
+            axis_to_keep: Axis.Name
+    ):
+        self.segments[segment_name].set_rt(
+            origin_from_markers=origin_markers,
+            first_axis_name=first_axis_name,
+            first_axis_markers=first_axis_markers,
+            second_axis_name=second_axis_name,
+            second_axis_markers=second_axis_markers,
+            axis_to_keep=axis_to_keep,
+        )
+
+    def add_marker(self, segment: str, name: str, from_markers: str | tuple[str, ...]):
+        """
+        Add a new marker to the specified segment
+        """
+        self.segments[segment].add_marker(MarkerGeneric(name=name, from_markers=from_markers, parent_name=segment))
+
+    def to_json(self, save_path: str):
+        """
+        Write the Generic model to a json
+        """
+        raise NotImplementedError("TODO")
+
+    def generate_personalized(self, c3d: ezc3d, save_path: str):
+        segments = []
+        for name in self.segments:
+            s = self.segments[name]
+            segments.append(
+                Segment(
+                    name=s.name,
+                    parent_name=s.parent_name,
+                    rt=s.rt.to_rt(c3d),
+                    translations=s.translations,
+                    rotations=s.rotations,
+                )
+            )
+
+            for marker in s.markers:
+                segments[-1].add_marker(marker.to_marker(c3d))
+
+        model = KinematicChain(segments)
+        model.write(save_path)
