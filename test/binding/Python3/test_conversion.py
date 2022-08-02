@@ -7,11 +7,13 @@ import numpy as np
 brbd_to_test = []
 try:
     import biorbd
+
     brbd_to_test.append(biorbd)
 except:
     pass
 try:
     import biorbd_casadi
+
     brbd_to_test.append(biorbd_casadi)
 except:
     pass
@@ -78,4 +80,3 @@ def test_vector3d(brbd):
 
         vec = MX.ones(3, 1)
         biorbd_model.setGravity(vec)
-

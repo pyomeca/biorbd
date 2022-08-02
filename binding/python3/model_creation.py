@@ -53,7 +53,10 @@ class Marker:
             return tuple(c3d["parameters"]["POINT"]["LABELS"]["value"].index(n) for n in from_markers)
 
         def to_meter(data: np.array) -> np.array:
-            data = data / 1000 if c3d["parameters"]["POINT"]["UNITS"]["value"][0] else data
+            units = c3d["parameters"]["POINT"]["UNITS"]["value"]
+            factor = 1000 if len(units) > 0 and units[0] == "mm" else 1
+
+            data /= factor
             data[3] = 1
             return data
 
@@ -128,20 +131,21 @@ class Axis:
 
 
 class RT:
-    def __init__(self, rt: np.ndarray = np.identity(4), parent_rt: "RT" = None, ):
+    def __init__(self, rt: np.ndarray = np.identity(4), parent_rt: "RT" = None, is_rt_local: bool = False):
         """
         Parameters
         ----------
-        origin
-            The marker at the origin of the RT
-        axes
-            The axes that defines the RT, the AxisName is the axis to keep while constructing the RT
+        rt
+            The rt of the RT
         parent_rt
             The rt of the parent (is used when printing the model so RT is in parent's local reference frame
+        is_rt_local
+            If the rt is already in local reference frame
         """
 
         self.rt = rt
         self.parent_rt = parent_rt
+        self.is_rt_local = is_rt_local
 
     @staticmethod
     def from_markers(origin: Marker, axes: tuple[Axis, Axis, Axis.Name], parent_rt: "RT" = None) -> "RT":
@@ -199,11 +203,46 @@ class RT:
 
         return RT(rt=rt, parent_rt=parent_rt)
 
+    @staticmethod
+    def from_euler_and_translation(
+        angles: tuple[float | int, ...],
+        angle_sequence: str,
+        translations: tuple[float | int, float | int, float | int],
+        parent_rt: "RT" = None,
+    ) -> "RT":
+        """
+        Construct a RT from angles and translations
+
+        Parameters
+        ----------
+        angles
+            The actual angles
+        angle_sequence
+            The angle sequence of the angles
+        translations
+            The XYZ translations
+        parent_rt
+            The rt of the parent (is used when printing the model so RT is in parent's local reference frame
+        """
+        matrix = {
+            "x": lambda x: np.array(((1, 0, 0), (0, np.cos(x), -np.sin(x)), (0, np.sin(x), np.cos(x)))),
+            "y": lambda y: np.array(((np.cos(y), 0, np.sin(y)), (0, 1, 0), (-np.sin(y), 0, np.cos(y)))),
+            "z": lambda z: np.array(((np.cos(z), -np.sin(z), 0), (np.sin(z), np.cos(z), 0), (0, 0, 1))),
+        }
+        rt = np.identity(4)
+        for angle, axis in zip(angles, angle_sequence):
+            rt[:3, :3] = rt[:3, :3] @ matrix[axis](angle)
+        rt[:3, 3] = translations
+        return RT(rt=rt, parent_rt=parent_rt, is_rt_local=True)
+
     def copy(self):
         return RT(rt=copy(self.rt), parent_rt=self.parent_rt)
 
     def __str__(self):
-        rt = self.parent_rt.transpose @ self.rt if self.parent_rt else np.identity(4)
+        if self.is_rt_local:
+            rt = self.rt
+        else:
+            rt = self.parent_rt.transpose @ self.rt if self.parent_rt else np.identity(4)
 
         tx = rt[0, 3]
         ty = rt[1, 3]
@@ -661,7 +700,10 @@ class KinematicModelGeneric:
         for name in self.segments:
             s = self.segments[name]
             parent_index = [segment.name for segment in segments].index(s.parent_name) if s.parent_name else None
-            rt = s.rt.to_rt(c3d, segments[parent_index].rt if parent_index is not None else None)
+            if s.rt is None:
+                rt = RT()
+            else:
+                rt = s.rt.to_rt(c3d, segments[parent_index].rt if parent_index is not None else None)
             segments.append(
                 Segment(
                     name=s.name,

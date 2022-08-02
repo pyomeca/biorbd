@@ -90,7 +90,7 @@ def test_model_creation_from_static(remove_temporary: bool = True):
     foot = Segment(
         name="FOOT",
         parent_name=shank.name,
-        rt=RT.from_euler_and_translation((-np.pi/2, 0, 0), "xyz", (0, 0, -0.43)),
+        rt=RT.from_euler_and_translation((-np.pi / 2, 0, 0), "xyz", (0, 0, -0.43)),
         rotations="x",
         mesh=((0, 0, 0), (0, 0, 0.25)),
     )
@@ -107,7 +107,7 @@ def test_model_creation_from_static(remove_temporary: bool = True):
     assert model.nbQ() == 7
     assert model.nbSegment() == 8
     assert model.nbMarkers() == 25
-    np.testing.assert_almost_equal(model.markers(np.zeros((model.nbQ(), )))[-3].to_array(), [0, 0.25, -0.85], decimal=4)
+    np.testing.assert_almost_equal(model.markers(np.zeros((model.nbQ(),)))[-3].to_array(), [0, 0.25, -0.85], decimal=4)
 
     if remove_temporary:
         os.remove(kinematic_model_file_path)
@@ -120,9 +120,9 @@ def write_markers_to_c3d(save_path: str, model: biorbd.Model):
     c3d = ezc3d.c3d()
 
     # Fill it with random data
-    c3d['parameters']['POINT']['RATE']['value'] = [100]
-    c3d['parameters']['POINT']['LABELS']['value'] = marker_names
-    c3d['data']['points'] = marker_positions
+    c3d["parameters"]["POINT"]["RATE"]["value"] = [100]
+    c3d["parameters"]["POINT"]["LABELS"]["value"] = marker_names
+    c3d["data"]["points"] = marker_positions
 
     # Write the data
     c3d.write(save_path)
@@ -253,7 +253,7 @@ def test_model_creation_from_data(remove_temporary: bool = True):
     assert model.nbQ() == 7
     assert model.nbSegment() == 8
     assert model.nbMarkers() == 25
-    np.testing.assert_almost_equal(model.markers(np.zeros((model.nbQ(), )))[-3].to_array(), [0, 0.25, -0.85], decimal=4)
+    np.testing.assert_almost_equal(model.markers(np.zeros((model.nbQ(),)))[-3].to_array(), [0, 0.25, -0.85], decimal=4)
 
     if remove_temporary:
         os.remove(kinematic_model_file_path)
