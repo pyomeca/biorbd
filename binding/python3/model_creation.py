@@ -546,10 +546,31 @@ class AxisGeneric:
 
 class RTGeneric:
     def __init__(self, origin: MarkerGeneric, axes: tuple[AxisGeneric, AxisGeneric, Axis.Name]):
+        """
+        Parameters
+        ----------
+        origin
+            The origin of the RT
+        axes
+            The first (axes[0]) and second (axes[1]) axes of the RT with the name of the recomputed axis (axis[2])
+        """
         self.origin = origin
         self.axes = axes
 
     def to_rt(self, c3d: ezc3d.c3d, parent_rt: RT) -> RT:
+        """
+        Collapse the generic RT to a RT with value based on the model and the c3d data
+
+        Parameters
+        ----------
+        c3d
+            The c3d data that provides the values
+        parent_rt
+            The RT of the parent to compute the local transformation
+        Returns
+        -------
+        The collapsed RT
+        """
         origin = self.origin.to_marker(c3d)
         axes = (self.axes[0].to_axis(c3d), self.axes[1].to_axis(c3d), self.axes[2])
 
@@ -589,6 +610,11 @@ class SegmentGeneric:
     def add_marker(self, marker: MarkerGeneric):
         """
         Add a new marker to the segment
+
+        Parameters
+        ----------
+        marker
+            The marker to add
         """
         self.markers.append(marker)
 
@@ -607,17 +633,23 @@ class SegmentGeneric:
         Parameters
         ----------
         origin_from_markers
-            The marker names of the origin of the RT
+            The name of the marker to the origin of the reference frame. If multiple names are provided, the mean of
+            all the given markers is used
         first_axis_name
             The Axis.Name of the first axis
         first_axis_markers
-            Tuple of marker names (starting point, ending point) that defines the first axis
+            The name of the markers that constitute the starting (first_axis_markers[0]) and
+            ending (first_axis_markers[1]) of the first axis vector. Both [0] and [1] can be from multiple markers.
+            If it is the case the mean of all the given markers is used
         second_axis_name
             The Axis.Name of the second axis
         second_axis_markers
-            Tuple of marker names (starting point, ending point) that defines the second axis
+            The name of the markers that constitute the starting (second_axis_markers[0]) and
+            ending (second_axis_markers[1]) of the second axis vector. Both [0] and [1] can be from multiple markers.
+            If it is the case the mean of all the given markers is used
         axis_to_keep
-            The axis that will be kept when recomputing the axes
+            The Axis.Name of the axis to keep while recomputing the reference frame. It must be the same as either
+            first_axis_name or second_axis_name
         """
 
         first_axis_tp = AxisGeneric(
@@ -642,6 +674,7 @@ class KinematicModelGeneric:
         self.segments = {}
         if bio_sym_path is None:
             return
+        raise NotImplementedError("bioMod files are not readable yet")
 
     def add_segment(
         self,
@@ -678,6 +711,32 @@ class KinematicModelGeneric:
         second_axis_markers: tuple[str | tuple[str, ...], str | tuple[str, ...]],
         axis_to_keep: Axis.Name,
     ):
+        """
+        Set the RT matrix of the segment
+
+        Parameters
+        ----------
+        segment_name
+            The segment name to set the rt matrix
+        origin_markers
+            The name of the marker to the origin of the reference frame. If multiple names are provided, the mean of
+            all the given markers is used
+        first_axis_name
+            The Axis.Name of the first axis
+        first_axis_markers
+            The name of the markers that constitute the starting (first_axis_markers[0]) and
+            ending (first_axis_markers[1]) of the first axis vector. Both [0] and [1] can be from multiple markers.
+            If it is the case the mean of all the given markers is used
+        second_axis_name
+            The Axis.Name of the second axis
+        second_axis_markers
+            The name of the markers that constitute the starting (second_axis_markers[0]) and
+            ending (second_axis_markers[1]) of the second axis vector. Both [0] and [1] can be from multiple markers.
+            If it is the case the mean of all the given markers is used
+        axis_to_keep
+            The Axis.Name of the axis to keep while recomputing the reference frame. It must be the same as either
+            first_axis_name or second_axis_name
+        """
         self.segments[segment_name].set_rt(
             origin_from_markers=origin_markers,
             first_axis_name=first_axis_name,
@@ -687,15 +746,45 @@ class KinematicModelGeneric:
             axis_to_keep=axis_to_keep,
         )
 
-    def add_marker(self, segment: str, name: str, from_markers: str | tuple[str, ...] = None):
+    def add_marker(
+        self,
+        segment: str,
+        name: str,
+        from_markers: str | tuple[str, ...] = None,
+        is_technical: bool = True,
+        is_anatomical: bool = False,
+    ):
         """
         Add a new marker to the specified segment
+        Parameters
+        ----------
+        segment
+            The name of the segment to attach the marker to
+        name
+            The name of the marker. It must be unique accross the model
+        from_markers
+            The name of the markers to create the marker from. It is used to create virtual marker from
+            combination of other markers. If it is empty, the marker is normal
+        is_technical
+            If the marker should be flaged as a technical marker
+        is_anatomical
+            If the marker should be flaged as an anatomical marker
         """
         if from_markers is None:
             from_markers = name
         self.segments[segment].add_marker(MarkerGeneric(name=name, from_markers=from_markers, parent_name=segment))
 
     def generate_personalized(self, c3d: ezc3d, save_path: str):
+        """
+        Collapse the model to an actual personalized kinematic chain based on the model and the c3d file
+
+        Parameters
+        ----------
+        c3d
+            The c3d file to create the model from
+        save_path
+            The path to save the bioMod
+        """
         segments = []
         for name in self.segments:
             s = self.segments[name]
