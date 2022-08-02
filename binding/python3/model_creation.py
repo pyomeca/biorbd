@@ -44,7 +44,15 @@ class Marker:
         self.is_anatomical = is_anatomical
 
     @staticmethod
-    def from_data(c3d: ezc3d, name: str, from_markers: str | tuple[str, ...], parent_name: str, parent_rt: "RT" = None, is_technical: bool = True, is_anatomical: bool = False):
+    def from_data(
+        c3d: ezc3d,
+        name: str,
+        from_markers: str | tuple[str, ...],
+        parent_name: str,
+        parent_rt: "RT" = None,
+        is_technical: bool = True,
+        is_anatomical: bool = False,
+    ):
         """
         This is a constructor for the Marker class. It takes the mean of the position of the marker
         from the c3d as position
@@ -514,7 +522,14 @@ class DeLeva:
 
 
 class MarkerGeneric:
-    def __init__(self, name: str, from_markers: str | tuple[str, ...], parent_name: str, is_technical: bool = True, is_anatomical: bool = False):
+    def __init__(
+        self,
+        name: str,
+        from_markers: str | tuple[str, ...],
+        parent_name: str,
+        is_technical: bool = True,
+        is_anatomical: bool = False,
+    ):
         """
         This is a pre-constructor for the Marker class. It allows to create a generic model by marker names
 
@@ -538,7 +553,15 @@ class MarkerGeneric:
         self.is_anatomical = is_anatomical
 
     def to_marker(self, c3d: ezc3d.c3d, parent_rt: RT = None) -> Marker:
-        return Marker.from_data(c3d, self.name, self.from_markers, self.parent_name, parent_rt, is_technical=self.is_technical, is_anatomical=self.is_anatomical)
+        return Marker.from_data(
+            c3d,
+            self.name,
+            self.from_markers,
+            self.parent_name,
+            parent_rt,
+            is_technical=self.is_technical,
+            is_anatomical=self.is_anatomical,
+        )
 
 
 class AxisGeneric:
@@ -802,7 +825,15 @@ class KinematicModelGeneric:
         """
         if from_markers is None:
             from_markers = name
-        self.segments[segment].add_marker(MarkerGeneric(name=name, from_markers=from_markers, parent_name=segment, is_technical=is_technical, is_anatomical=is_anatomical))
+        self.segments[segment].add_marker(
+            MarkerGeneric(
+                name=name,
+                from_markers=from_markers,
+                parent_name=segment,
+                is_technical=is_technical,
+                is_anatomical=is_anatomical,
+            )
+        )
 
     def generate_personalized(self, c3d: ezc3d, save_path: str):
         """
