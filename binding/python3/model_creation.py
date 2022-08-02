@@ -128,7 +128,7 @@ class Axis:
 
 
 class RT:
-    def __init__(self, origin: Marker | None, axes: tuple[Axis, Axis, Axis.Name] | None, parent_rt: "RT" = None):
+    def __init__(self, rt: np.ndarray = np.identity(4), parent_rt: "RT" = None, ):
         """
         Parameters
         ----------
@@ -140,10 +140,21 @@ class RT:
             The rt of the parent (is used when printing the model so RT is in parent's local reference frame
         """
 
+        self.rt = rt
         self.parent_rt = parent_rt
-        self.rt = np.identity(4)
-        if origin is None and axes is None:
-            return  # This is a special case to construct a valid yet empty RT
+
+    @staticmethod
+    def from_markers(origin: Marker, axes: tuple[Axis, Axis, Axis.Name], parent_rt: "RT" = None) -> "RT":
+        """
+        Parameters
+        ----------
+        origin
+            The marker at the origin of the RT
+        axes
+            The axes that defines the RT, the AxisName is the axis to keep while constructing the RT
+        parent_rt
+            The rt of the parent (is used when printing the model so RT is in parent's local reference frame
+        """
 
         # Find the two adjacent axes and reorder accordingly (assuming right-hand RT)
         first_axis = axes[0]
@@ -179,17 +190,17 @@ class RT:
             raise ValueError("Name of axis to keep should be one of the two axes")
 
         # Dispatch the result into a matrix
-        self.rt = np.zeros((4, 4))
-        self.rt[:3, first_axis.name.value] = first_axis_vector / np.linalg.norm(first_axis_vector)
-        self.rt[:3, second_axis.name.value] = second_axis_vector / np.linalg.norm(second_axis_vector)
-        self.rt[:3, third_axis_name.value] = third_axis_vector / np.linalg.norm(third_axis_vector)
-        self.rt[:3, 3] = origin.position
-        self.rt[3, 3] = 1
+        rt = np.zeros((4, 4))
+        rt[:3, first_axis.name.value] = first_axis_vector / np.linalg.norm(first_axis_vector)
+        rt[:3, second_axis.name.value] = second_axis_vector / np.linalg.norm(second_axis_vector)
+        rt[:3, third_axis_name.value] = third_axis_vector / np.linalg.norm(third_axis_vector)
+        rt[:3, 3] = origin.position
+        rt[3, 3] = 1
+
+        return RT(rt=rt, parent_rt=parent_rt)
 
     def copy(self):
-        out = RT(None, None, self.parent_rt)
-        out.rt = copy(self.rt)
-        return out
+        return RT(rt=copy(self.rt), parent_rt=self.parent_rt)
 
     def __str__(self):
         rt = self.parent_rt.transpose @ self.rt if self.parent_rt else np.identity(4)
@@ -503,7 +514,7 @@ class RTGeneric:
         origin = self.origin.to_marker(c3d)
         axes = (self.axes[0].to_axis(c3d), self.axes[1].to_axis(c3d), self.axes[2])
 
-        return RT(origin, axes, parent_rt)
+        return RT.from_markers(origin, axes, parent_rt)
 
 
 class SegmentGeneric:
