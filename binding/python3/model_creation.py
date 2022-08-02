@@ -18,30 +18,52 @@ class Marker:
         name: str,
         parent_name: str,
         position: tuple[int | float, int | float, int | float] | np.ndarray = None,
+        is_technical: bool = True,
+        is_anatomical: bool = False,
     ):
+        """
+        Parameters
+        ----------
+        name
+            The name of the new marker
+        parent_name
+            The name of the parent the marker is attached to
+        position
+            The 3d position of the marker
+        is_technical
+            If the marker should be flaged as a technical marker
+        is_anatomical
+            If the marker should be flaged as an anatomical marker
+        """
         self.name = name
         self.parent_name = parent_name
         if position is None:
             position = np.array((0, 0, 0))
         self.position = position if isinstance(position, np.ndarray) else np.array(position)
+        self.is_technical = is_technical
+        self.is_anatomical = is_anatomical
 
     @staticmethod
-    def from_data(c3d: ezc3d, name: str, from_markers: str | tuple[str, ...], parent_name: str, parent_rt: "RT" = None):
+    def from_data(c3d: ezc3d, name: str, from_markers: str | tuple[str, ...], parent_name: str, parent_rt: "RT" = None, is_technical: bool = True, is_anatomical: bool = False):
         """
         This is a constructor for the Marker class. It takes the mean of the position of the marker
         from the c3d as position
         Parameters
         ----------
-        c3d:
+        c3d
             The data to pick the data from
-        name:
+        name
             The name of the new marker
-        from_markers:
+        from_markers
             The name of the markers in the data
-        parent_name:
+        parent_name
             The name of the parent the marker is attached to
-        parent_rt:
+        parent_rt
             The RT of the parent to transform the marker from global to local
+        is_technical
+            If the marker should be flaged as a technical marker
+        is_anatomical
+            If the marker should be flaged as an anatomical marker
         """
 
         if not ezc3d_found:
@@ -65,13 +87,15 @@ class Marker:
         if np.isnan(position).any():
             raise RuntimeError(f"The markers {from_markers} are not present in the c3d")
         position = (parent_rt.transpose if parent_rt is not None else np.identity(4)) @ position
-        return Marker(name, parent_name, position[:3])
+        return Marker(name, parent_name, position[:3], is_technical=is_technical, is_anatomical=is_anatomical)
 
     def __str__(self):
         # Define the print function so it automatically format things in the file properly
         out_string = f"marker {self.name}\n"
         out_string += f"\tparent {self.parent_name}\n"
         out_string += f"\tposition {self.position[0]:0.4f} {self.position[1]:0.4f} {self.position[2]:0.4f}\n"
+        out_string += f"\ttechnical {1 if self.is_technical else 0}\n"
+        out_string += f"\tanatomical {1 if self.is_anatomical else 0}\n"
         out_string += "endmarker\n"
         return out_string
 
@@ -490,7 +514,7 @@ class DeLeva:
 
 
 class MarkerGeneric:
-    def __init__(self, name: str, from_markers: str | tuple[str, ...], parent_name: str):
+    def __init__(self, name: str, from_markers: str | tuple[str, ...], parent_name: str, is_technical: bool = True, is_anatomical: bool = False):
         """
         This is a pre-constructor for the Marker class. It allows to create a generic model by marker names
 
@@ -502,13 +526,19 @@ class MarkerGeneric:
             The name of the markers in the data
         parent_name:
             The name of the parent the marker is attached to
+        is_technical
+            If the marker should be flaged as a technical marker
+        is_anatomical
+            If the marker should be flaged as an anatomical marker
         """
         self.name = name
         self.from_markers = from_markers
         self.parent_name = parent_name
+        self.is_technical = is_technical
+        self.is_anatomical = is_anatomical
 
     def to_marker(self, c3d: ezc3d.c3d, parent_rt: RT = None) -> Marker:
-        return Marker.from_data(c3d, self.name, self.from_markers, self.parent_name, parent_rt)
+        return Marker.from_data(c3d, self.name, self.from_markers, self.parent_name, parent_rt, is_technical=self.is_technical, is_anatomical=self.is_anatomical)
 
 
 class AxisGeneric:
@@ -772,7 +802,7 @@ class KinematicModelGeneric:
         """
         if from_markers is None:
             from_markers = name
-        self.segments[segment].add_marker(MarkerGeneric(name=name, from_markers=from_markers, parent_name=segment))
+        self.segments[segment].add_marker(MarkerGeneric(name=name, from_markers=from_markers, parent_name=segment, is_technical=is_technical, is_anatomical=is_anatomical))
 
     def generate_personalized(self, c3d: ezc3d, save_path: str):
         """
