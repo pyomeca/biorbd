@@ -58,7 +58,9 @@ class Marker:
             return data
 
         index = indices_in_c3d(c3d)
-        position = to_meter(np.mean(np.mean(c3d["data"]["points"][:, index, :], axis=2), axis=1), c3d)
+        position = to_meter(np.mean(np.nanmean(c3d["data"]["points"][:, index, :], axis=2), axis=1), c3d)
+        if np.isnan(position).any():
+            raise RuntimeError(f"The markers {from_markers} are not present in the c3d")
         position = (parent_rt.T if parent_rt is not None else np.identity(4)) @ position
         return Marker(name, parent_name, position[:3])
 
@@ -66,10 +68,7 @@ class Marker:
         # Define the print function so it automatically format things in the file properly<
         out_string = f"marker {self.name}\n"
         out_string += f"\tparent {self.parent_name}\n"
-        if self.position.all():
-            out_string += f"\tposition {self.position[0]} {self.position[1]} {self.position[2]}\n"
-        else:
-            out_string += f"\tposition 0 0 0\n"
+        out_string += f"\tposition {self.position[0]:0.4f} {self.position[1]:0.4f} {self.position[2]:0.4f}\n"
         out_string += "endmarker\n"
         return out_string
 
@@ -112,8 +111,8 @@ class Axis:
             The initial Marker
         """
         self.name = name
-        self.start_point_names = start
-        self.end_point_names = end
+        self.start_point = start
+        self.end_point = end
 
     def axis(self) -> np.ndarray:
         """
@@ -127,8 +126,8 @@ class Axis:
         if not ezc3d_found:
             raise RuntimeError("Ezc3d must be install to use the 'get_axis_from_data' constructor")
 
-        start = self.start_point_names.position
-        end = self.end_point_names.position
+        start = self.start_point.position
+        end = self.end_point.position
         return end - start
 
 
@@ -173,21 +172,21 @@ class RT:
                 first_axis, second_axis = second_axis, first_axis
 
         # Compute the third axis and recompute one of the previous two
-        first_axis_position = first_axis.axis()
-        second_axis_position = second_axis.axis()
-        third_axis_position = np.cross(first_axis_position, second_axis_position)
+        first_axis_vector = first_axis.axis()
+        second_axis_vector = second_axis.axis()
+        third_axis_vector = np.cross(first_axis_vector, second_axis_vector)
         if axis_name_to_keep == first_axis.name:
-            second_axis_position = np.cross(third_axis_position, first_axis_position)
+            second_axis_vector = np.cross(third_axis_vector, first_axis_vector)
         elif axis_name_to_keep == second_axis.name:
-            first_axis_position = np.cross(second_axis_position, third_axis_position)
+            first_axis_vector = np.cross(second_axis_vector, third_axis_vector)
         else:
             raise ValueError("Name of axis to keep should be one of the two axes")
 
         # Dispatch the result into a matrix
         self.rt = np.zeros((4, 4))
-        self.rt[first_axis.name.value, :3] = first_axis_position / np.linalg.norm(first_axis_position)
-        self.rt[second_axis.name.value, :3] = second_axis_position / np.linalg.norm(second_axis_position)
-        self.rt[third_axis_name.value, :3] = third_axis_position / np.linalg.norm(third_axis_position)
+        self.rt[:3, first_axis.name.value] = first_axis_vector / np.linalg.norm(first_axis_vector)
+        self.rt[:3, second_axis.name.value] = second_axis_vector / np.linalg.norm(second_axis_vector)
+        self.rt[:3, third_axis_name.value] = third_axis_vector / np.linalg.norm(third_axis_vector)
         self.rt[:3, 3] = origin.position
         self.rt[3, 3] = 1
 
@@ -418,8 +417,8 @@ class AxisGeneric:
             The initial Marker
         """
         self.name = name
-        self.start_point_names = start
-        self.end_point_names = end
+        self.start_point = start
+        self.end_point = end
 
     def to_axis(self, c3d: ezc3d.c3d, parent_rt: RT = None) -> Axis:
         """
@@ -435,8 +434,8 @@ class AxisGeneric:
         if not ezc3d_found:
             raise RuntimeError("Ezc3d must be install to use the 'get_axis_from_data' constructor")
 
-        start = self.start_point_names.to_marker(c3d, parent_rt)
-        end = self.end_point_names.to_marker(c3d, parent_rt)
+        start = self.start_point.to_marker(c3d, parent_rt)
+        end = self.end_point.to_marker(c3d, parent_rt)
         return Axis(self.name, start, end)
 
 
