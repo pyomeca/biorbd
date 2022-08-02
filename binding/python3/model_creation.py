@@ -1,4 +1,5 @@
 from enum import Enum
+from copy import copy
 
 ezc3d_found = True
 try:
@@ -25,7 +26,7 @@ class Marker:
         self.position = position if isinstance(position, np.ndarray) else np.array(position)
 
     @staticmethod
-    def from_data(c3d: ezc3d, name: str, from_markers: str|tuple[str, ...], parent_name: str):
+    def from_data(c3d: ezc3d, name: str, from_markers: str|tuple[str, ...], parent_name: str, parent_rt: "RT"):
         """
         This is a constructor for the Marker class. It takes the mean of the position of the marker
         from the c3d as position
@@ -39,6 +40,8 @@ class Marker:
             The name of the markers in the data
         parent_name:
             The name of the parent the marker is attached to
+        parent_rt:
+            The RT of the parent to transform the marker from global to local
         """
 
         if not ezc3d_found:
@@ -49,9 +52,15 @@ class Marker:
         def indices_in_c3d(c3d: ezc3d) -> int:
             return tuple(c3d["parameters"]["POINT"]["LABELS"]["value"].index(n) for n in from_markers)
 
+        def to_meter(data: np.array, c3d: ezc3d) -> np.array:
+            data = data / 1000 if c3d["parameters"]["POINT"]["UNITS"]["value"][0] else data
+            data[3] = 1
+            return data
+
         index = indices_in_c3d(c3d)
-        position = np.mean(np.mean(c3d["data"]["points"][:3, index, :], axis=2), axis=1)
-        return Marker(name, parent_name, position)
+        position = to_meter(np.mean(np.mean(c3d["data"]["points"][:, index, :], axis=2), axis=1), c3d)
+        position = (parent_rt.T if parent_rt else np.identity(4)) @ position
+        return Marker(name, parent_name, position[:3])
 
     def __str__(self):
         # Define the print function so it automatically format things in the file properly<
@@ -124,20 +133,24 @@ class Axis:
 
 
 class RT:
-    def __init__(self, origin: Marker, axes: tuple[Axis, Axis, Axis.Name]):
+    def __init__(self, origin: Marker, axes: tuple[Axis, Axis, Axis.Name], parent_rt: "RT" = None):
         """
         Parameters
         ----------
-        data:
+        data
             The actual data to create the RT from
-        origin:
+        origin
             The marker at the origin of the RT
-        axes:
+        axes
             The axes that defines the RT, the AxisName is the axis to keep while constructing the RT
+        parent_rt
+            The rt of the parent (is used when printing the model so RT is in parent's local reference frame
         """
 
-        if not ezc3d_found:
-            raise RuntimeError("Ezc3d must be install to use the 'from_data' constructor")
+        self.parent_rt = parent_rt
+        self.rt = np.identity(4)
+        if origin is None and axes is None:
+            return  # This is a special case to construct a valid yet empty RT
 
         # Find the two adjacent axes and reorder acordingly (assuming right-hand RT)
         first_axis = axes[0]
@@ -178,25 +191,41 @@ class RT:
         self.rt[:3, 3] = origin.position
         self.rt[3, 3] = 1
 
-    def __str__(self):
-        # Convert to text
-        tx = self.rt[0, 3]
-        ty = self.rt[1, 3]
-        tz = self.rt[2, 3]
+    def copy(self):
+        out = RT(None, None, self.parent_rt)
+        out.rt = copy(self.rt)
+        return out
 
-        rx = np.arctan2(-self.rt[1, 2], self.rt[2, 2])
-        ry = np.arcsin(self.rt[0, 2])
-        rz = np.arctan2(-self.rt[0, 1], self.rt[0, 0])
+    def __str__(self):
+        rt = self.parent_rt @ self.rt if self.parent_rt else np.identity(4)
+
+        tx = rt[0, 3]
+        ty = rt[1, 3]
+        tz = rt[2, 3]
+
+        rx = np.arctan2(-rt[1, 2], rt[2, 2])
+        ry = np.arcsin(rt[0, 2])
+        rz = np.arctan2(-rt[0, 1], rt[0, 0])
 
         return f"{rx:0.3f} {ry:0.3f} {rz:0.3f} xyz {tx:0.3f} {ty:0.3f} {tz:0.3f}"
 
+    def __matmul__(self, other):
+        return self.rt @ other
+
+    @property
+    def T(self):
+        out = self.copy()
+        out.rt = out.rt.T
+        out.rt[:3, 3] = -out.rt[:3, :3] @ out.rt[3, :3]
+        out.rt[3, :3] = 0
+        return out
 
 class Segment:
     def __init__(
         self,
         name,
         parent_name: str = "",
-        rt: str|RT = None,
+        rt: RT = None,
         translations: str = "",
         rotations: str = "",
         mass: float | int = 0,
@@ -209,7 +238,7 @@ class Segment:
         self.translations = translations
         self.rotations = rotations
         self.markers = []
-        self.rt = rt if isinstance(rt, RT) else RT(rt)
+        self.rt = rt
         self.mass = mass
         self.center_of_mass = center_of_mass
         self.inertia_xxyyzz = inertia_xxyyzz
@@ -368,13 +397,15 @@ class MarkerGeneric:
             The name of the markers in the data
         parent_name:
             The name of the parent the marker is attached to
+        parent_rt:
+            The RT of the parent to transform the marker from global to local
         """
         self.name = name
         self.from_markers = from_markers
         self.parent_name = parent_name
 
-    def to_marker(self, c3d: ezc3d.c3d) -> Marker:
-        return Marker.from_data(c3d, self.name, self.from_markers, self.parent_name)
+    def to_marker(self, c3d: ezc3d.c3d, parent_rt: RT) -> Marker:
+        return Marker.from_data(c3d, self.name, self.from_markers, self.parent_name, parent_rt)
 
 
 class AxisGeneric:
@@ -391,20 +422,22 @@ class AxisGeneric:
         self.start_point_names = start
         self.end_point_names = end
 
-    def to_axis(self, c3d: ezc3d.c3d) -> Axis:
+    def to_axis(self, c3d: ezc3d.c3d, parent_rt: RT) -> Axis:
         """
         Compute the axis from actual data
         Parameters
         ----------
         c3d:
             The ezc3d file containing the data
+        parent_rt:
+            The transformation from global to local
         """
 
         if not ezc3d_found:
             raise RuntimeError("Ezc3d must be install to use the 'get_axis_from_data' constructor")
 
-        start = self.start_point_names.to_marker(c3d)
-        end = self.end_point_names.to_marker(c3d)
+        start = self.start_point_names.to_marker(c3d, parent_rt)
+        end = self.end_point_names.to_marker(c3d, parent_rt)
         return Axis(self.name, start, end)
 
 
@@ -413,11 +446,11 @@ class RTGeneric:
         self.origin = origin
         self.axes = axes
 
-    def to_rt(self, c3d: ezc3d.c3d) -> RT:
-        origin = self.origin.to_marker(c3d)
-        axes = (self.axes[0].to_axis(c3d), self.axes[1].to_axis(c3d), self.axes[2])
+    def to_rt(self, c3d: ezc3d.c3d, parent_rt: RT) -> RT:
+        origin = self.origin.to_marker(c3d, parent_rt)
+        axes = (self.axes[0].to_axis(c3d, parent_rt), self.axes[1].to_axis(c3d, parent_rt), self.axes[2])
 
-        return RT(origin, axes)
+        return RT(origin, axes, parent_rt)
 
 
 class SegmentGeneric:
@@ -497,7 +530,7 @@ class SegmentGeneric:
 
         self.rt = RTGeneric(
             origin=MarkerGeneric(name="", from_markers=origin_from_markers, parent_name=""),
-            axes=(first_axis_tp, second_axis_tp, axis_to_keep)
+            axes=(first_axis_tp, second_axis_tp, axis_to_keep),
         )
 
 
@@ -506,10 +539,21 @@ class KinematicModelGeneric:
         self.segments = {}
 
     def add_segment(
-            self, name: str, parent_name: str = "", translations: str = "", rotations: str = ""
+            self, name: str, parent_name: str = "", translations: str = "", rotations: str = "",
     ):
         """
         Add a new segment to the model
+
+        Parameters
+        ----------
+        name
+            The name of the segment
+        parent_name
+            The name of the segment the current segment is attached to
+        translations
+            The sequence of translation
+        rotations
+            The sequence of rotation
         """
         self.segments[name] = SegmentGeneric(
             name=name, parent_name=parent_name, translations=translations, rotations=rotations
@@ -534,34 +578,32 @@ class KinematicModelGeneric:
             axis_to_keep=axis_to_keep,
         )
 
-    def add_marker(self, segment: str, name: str, from_markers: str | tuple[str, ...]):
+    def add_marker(self, segment: str, name: str, from_markers: str | tuple[str, ...] = None):
         """
         Add a new marker to the specified segment
         """
+        if from_markers is None:
+            from_markers = name
         self.segments[segment].add_marker(MarkerGeneric(name=name, from_markers=from_markers, parent_name=segment))
-
-    def to_json(self, save_path: str):
-        """
-        Write the Generic model to a json
-        """
-        raise NotImplementedError("TODO")
 
     def generate_personalized(self, c3d: ezc3d, save_path: str):
         segments = []
         for name in self.segments:
             s = self.segments[name]
+            parent_index = [segment.name for segment in segments].index(s.parent_name) if s.parent_name else None
+            rt = s.rt.to_rt(c3d, segments[parent_index].rt if parent_index else None)
             segments.append(
                 Segment(
                     name=s.name,
                     parent_name=s.parent_name,
-                    rt=s.rt.to_rt(c3d),
+                    rt=rt,
                     translations=s.translations,
                     rotations=s.rotations,
                 )
             )
 
             for marker in s.markers:
-                segments[-1].add_marker(marker.to_marker(c3d))
+                segments[-1].add_marker(marker.to_marker(c3d, rt))
 
         model = KinematicChain(segments)
         model.write(save_path)
