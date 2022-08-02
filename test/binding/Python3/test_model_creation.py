@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 import biorbd
-from biorbd import Marker, Segment, KinematicChain, RT, Axis
+from biorbd import Marker, Segment, KinematicChain, RT, Axis, KinematicModelGeneric
 import ezc3d
 
 
@@ -10,57 +10,58 @@ def test_model_creation_from_static(remove_temporary: bool = True):
     kinematic_model_file_path = "temporary.bioMod"
 
     # The trunk segment
-    trunk_marker_pelvis = Marker(name="PELVIS", parent_name="TRUNK")
     trunk = Segment(
         name="TRUNK",
         translations="yz",
         rotations="x",
         mesh=((0, 0, 0), (0, 0, 0.53)),
     )
-    trunk.add_marker(trunk_marker_pelvis)
+    trunk.add_marker(Marker(name="PELVIS", parent_name="TRUNK"))
 
     # The head segment
-    bottom_head_marker_head = Marker(name="BOTTOM_HEAD", parent_name="HEAD", position=(0, 0, 0))
-    top_head_marker_head = Marker(name="TOP_HEAD", parent_name="HEAD", position=(0, 0, 0.24))
     head = Segment(
         name="HEAD",
         parent_name="TRUNK",
-        rt="0 0 0 xyz 0 0 0.53",
+        rt=RT.from_euler_and_translation((0, 0, 0), "xyz", (0, 0, 0.53)),
         mesh=((0, 0, 0), (0, 0, 0.24)),
     )
-    head.add_marker(bottom_head_marker_head)
-    head.add_marker(top_head_marker_head)
+    head.add_marker(Marker(name="BOTTOM_HEAD", parent_name="HEAD", position=(0, 0, 0)))
+    head.add_marker(Marker(name="TOP_HEAD", parent_name="HEAD", position=(0, 0, 0.24)))
+    head.add_marker(Marker(name="HEAD_Z", parent_name="HEAD", position=(0, 0, 0.24)))
+    head.add_marker(Marker(name="HEAD_XZ", parent_name="HEAD", position=(0.24, 0, 0.24)))
 
     # The arm segment
-    shoulder_marker = Marker(name="SHOULDER", parent_name="UPPER_ARM", position=(0, 0, 0))
     upper_arm = Segment(
         name="UPPER_ARM",
         parent_name=trunk.name,
-        rt="0 0 0 xyz 0 0 0.53",
+        rt=RT.from_euler_and_translation((0, 0, 0), "xyz", (0, 0, 0.53)),
         rotations="x",
         mesh=((0, 0, 0), (0, 0, -0.28)),
     )
-    upper_arm.add_marker(shoulder_marker)
+    upper_arm.add_marker(Marker(name="SHOULDER", parent_name="UPPER_ARM", position=(0, 0, 0)))
+    upper_arm.add_marker(Marker(name="SHOULDER_X", parent_name="UPPER_ARM", position=(1, 0, 0)))
+    upper_arm.add_marker(Marker(name="SHOULDER_XY", parent_name="UPPER_ARM", position=(1, 1, 0)))
 
-    elbow_marker = Marker(name="ELBOW", parent_name="LOWER_ARM", position=(0, 0, 0))
     lower_arm = Segment(
         name="LOWER_ARM",
         parent_name=upper_arm.name,
-        rt="0 0 0 xyz 0 0 -0.28",
+        rt=RT.from_euler_and_translation((0, 0, 0), "xyz", (0, 0, -0.28)),
         mesh=((0, 0, 0), (0, 0, -0.27)),
     )
-    lower_arm.add_marker(elbow_marker)
+    lower_arm.add_marker(Marker(name="ELBOW", parent_name="LOWER_ARM", position=(0, 0, 0)))
+    lower_arm.add_marker(Marker(name="ELBOW_Y", parent_name="LOWER_ARM", position=(0, 1, 0)))
+    lower_arm.add_marker(Marker(name="ELBOW_XY", parent_name="LOWER_ARM", position=(1, 1, 0)))
 
-    wrist_marker = Marker(name="WRIST", parent_name="HAND", position=(0, 0, 0))
-    finger_marker = Marker(name="FINGER", parent_name="HAND", position=(0, 0, -0.19))
     hand = Segment(
         name="HAND",
         parent_name=lower_arm.name,
-        rt="0 0 0 xyz 0 0 -0.27",
+        rt=RT.from_euler_and_translation((0, 0, 0), "xyz", (0, 0, -0.27)),
         mesh=((0, 0, 0), (0, 0, -0.19)),
     )
-    hand.add_marker(wrist_marker)
-    hand.add_marker(finger_marker)
+    hand.add_marker(Marker(name="WRIST", parent_name="HAND", position=(0, 0, 0)))
+    hand.add_marker(Marker(name="FINGER", parent_name="HAND", position=(0, 0, -0.19)))
+    hand.add_marker(Marker(name="HAND_Y", parent_name="HAND", position=(0, 1, 0)))
+    hand.add_marker(Marker(name="HAND_YZ", parent_name="HAND", position=(0, 1, 1)))
 
     # The thigh segment
     thigh = Segment(
@@ -69,30 +70,34 @@ def test_model_creation_from_static(remove_temporary: bool = True):
         rotations="x",
         mesh=((0, 0, 0), (0, 0, -0.42)),
     )
+    thigh.add_marker(Marker(name="THIGH_ORIGIN", parent_name="THIGH", position=(0, 0, 0)))
+    thigh.add_marker(Marker(name="THIGH_X", parent_name="THIGH", position=(1, 0, 0)))
+    thigh.add_marker(Marker(name="THIGH_Y", parent_name="THIGH", position=(0, 1, 0)))
 
     # The shank segment
-    knee_marker = Marker(name="KNEE", parent_name="SHANK", position=(0, 0, 0))
     shank = Segment(
         name="SHANK",
         parent_name=thigh.name,
-        rt="0 0 0 xyz 0 0 -0.42",
+        rt=RT.from_euler_and_translation((0, 0, 0), "xyz", (0, 0, -0.42)),
         rotations="x",
         mesh=((0, 0, 0), (0, 0, -0.43)),
     )
-    shank.add_marker(knee_marker)
+    shank.add_marker(Marker(name="KNEE", parent_name="SHANK", position=(0, 0, 0)))
+    shank.add_marker(Marker(name="KNEE_Z", parent_name="SHANK", position=(0, 0, 1)))
+    shank.add_marker(Marker(name="KNEE_XZ", parent_name="SHANK", position=(1, 0, 1)))
 
     # The foot segment
-    ankle_marker = Marker(name="ANKLE", parent_name="FOOT", position=(0, 0, 0))
-    toe_marker = Marker(name="TOE", parent_name="FOOT", position=(0, 0, 0.25))
     foot = Segment(
         name="FOOT",
         parent_name=shank.name,
-        rt="0 0 0 xyz 0 0 -0.43",
+        rt=RT.from_euler_and_translation((-np.pi/2, 0, 0), "xyz", (0, 0, -0.43)),
         rotations="x",
         mesh=((0, 0, 0), (0, 0, 0.25)),
     )
-    foot.add_marker(ankle_marker)
-    foot.add_marker(toe_marker)
+    foot.add_marker(Marker(name="ANKLE", parent_name="FOOT", position=(0, 0, 0)))
+    foot.add_marker(Marker(name="TOE", parent_name="FOOT", position=(0, 0, 0.25)))
+    foot.add_marker(Marker(name="ANKLE_Z", parent_name="FOOT", position=(0, 0, 1)))
+    foot.add_marker(Marker(name="ANKLE_YZ", parent_name="FOOT", position=(0, 1, 1)))
 
     # Put the model together, print it and print it to a bioMod file
     kinematic_chain = KinematicChain(segments=(trunk, head, upper_arm, lower_arm, hand, thigh, shank, foot))
@@ -101,8 +106,8 @@ def test_model_creation_from_static(remove_temporary: bool = True):
     model = biorbd.Model(kinematic_model_file_path)
     assert model.nbQ() == 7
     assert model.nbSegment() == 8
-    assert model.nbMarkers() == 10
-    assert (model.markers(np.zeros((model.nbQ(), )))[-1].to_array() == [0, 0, -0.85]).all()
+    assert model.nbMarkers() == 25
+    np.testing.assert_almost_equal(model.markers(np.zeros((model.nbQ(), )))[-3].to_array(), [0, 0.25, -0.85], decimal=4)
 
     if remove_temporary:
         os.remove(kinematic_model_file_path)
@@ -128,176 +133,127 @@ def test_model_creation_from_data(remove_temporary: bool = True):
     c3d_file_path = "temporary.c3d"
     test_model_creation_from_static(remove_temporary=False)
 
+    # Prepare a fake model and a fake static from the previous test
     model = biorbd.Model(kinematic_model_file_path)
     write_markers_to_c3d(c3d_file_path, model)
     os.remove(kinematic_model_file_path)
-    data = ezc3d.c3d(c3d_file_path)
 
-    # The trunk segment
-    trunk_marker_pelvis = Marker.from_generic(
-        data,
-        MarkerGeneric(name="PELVIS", data_names="PELVIS", parent_name="TRUNK")
-    )
-    trunk = Segment(
-        name="TRUNK",
-        translations="yz",
-        rotations="x",
-        mesh=((0, 0, 0), (0, 0, 0.53)),
-    )
-    trunk.add_marker(trunk_marker_pelvis)
+    # Fill the kinematic chain model
+    model = KinematicModelGeneric()
 
-    # The head segment
-    bottom_head_marker_head = Marker.from_data(data, name="BOTTOM_HEAD", from_markers="BOTTOM_HEAD", parent_name="HEAD")
-    top_head_marker_head = Marker.from_data(data, name="TOP_HEAD", from_markers="TOP_HEAD", parent_name="HEAD")
-    origin_head = bottom_head_marker_head
-    x_axis_head = origin_head + (0.1, 0, 0)  # Purposefully not 1 so it tests the norm
-    y_axis_head = origin_head + (0.1, 0.1, 0)   # Purposefully not perpendicular so it tests realigning
-    head = Segment(
-        name="HEAD",
-        parent_name="TRUNK",
-        rt=RT.from_generic(
-            data,
-            RTGeneric(
-                origin=origin_head,
-                axes=(
-                    Axis(Axis.Name.X, start=origin_head, end=x_axis_head),
-                    Axis(Axis.Name.Y, start=origin_head, end=y_axis_head),
-                    Axis.Name.X,
-                ),
-            ),
-        ),
-        mesh=((0, 0, 0), (0, 0, 0.24)),
-    )
-    head.add_marker(bottom_head_marker_head)
-    head.add_marker(top_head_marker_head)
+    model.add_segment(name="TRUNK", translations="yx", rotations="x")
+    model.add_marker("TRUNK", "PELVIS")
 
-    # The arm segment
-    shoulder_marker = Marker.from_data(data, name="SHOULDER", from_markers="SHOULDER", parent_name="UPPER_ARM")
-    origin_shoulder = shoulder_marker
-    x_axis_shoulder = origin_shoulder + (0.1, 0, 0)  # Purposefully not 1 so it tests the norm
-    z_axis_shoulder = origin_shoulder + (0.1, 0, 0.1)   # Purposefully not perpendicular so it tests realigning
-    upper_arm = Segment(
-        name="UPPER_ARM",
-        parent_name=trunk.name,
-        rt=RT.from_data(
-            data,
-            origin=origin_shoulder,
-            axes=(
-                Axis(Axis.Name.X, start=origin_shoulder, end=x_axis_shoulder),
-                Axis(Axis.Name.Z, start=origin_shoulder, end=z_axis_shoulder),
-                Axis.Name.X,
-            ),
-        ),
-        rotations="x",
-        mesh=((0, 0, 0), (0, 0, -0.28)),
+    model.add_segment(name="HEAD")
+    model.set_rt(
+        "HEAD",
+        origin_markers="BOTTOM_HEAD",
+        first_axis_name=Axis.Name.Z,
+        first_axis_markers=("BOTTOM_HEAD", "HEAD_Z"),
+        second_axis_name=Axis.Name.X,
+        second_axis_markers=("BOTTOM_HEAD", "HEAD_XZ"),
+        axis_to_keep=Axis.Name.Z,
     )
-    upper_arm.add_marker(shoulder_marker)
+    model.add_marker("HEAD", "BOTTOM_HEAD")
+    model.add_marker("HEAD", "TOP_HEAD")
+    model.add_marker("HEAD", "HEAD_Z")
+    model.add_marker("HEAD", "HEAD_XZ")
 
-    elbow_marker = Marker.from_data(data, name="ELBOW", from_markers="ELBOW", parent_name="LOWER_ARM")
-    origin_elbow = elbow_marker - origin_shoulder
-    y_axis_elbow = origin_elbow + (0, 0.1, 0)  # Purposefully not 1 so it tests the norm
-    x_axis_elbow = origin_elbow + (0.1, 0.1, 0)   # Purposefully not perpendicular so it tests realigning
-    lower_arm = Segment(
-        name="LOWER_ARM",
-        parent_name=upper_arm.name,
-        rt=RT.from_data(
-            data,
-            origin=origin_shoulder,
-            axes=(
-                Axis(Axis.Name.Y, start=origin_elbow, end=y_axis_elbow),
-                Axis(Axis.Name.X, start=origin_elbow, end=x_axis_elbow),
-                Axis.Name.Y,
-            ),
-        ),
-        mesh=((0, 0, 0), (0, 0, -0.27)),
+    model.add_segment("UPPER_ARM", parent_name="TRUNK", rotations="x")
+    model.set_rt(
+        "UPPER_ARM",
+        origin_markers="SHOULDER",
+        first_axis_name=Axis.Name.X,
+        first_axis_markers=("SHOULDER", "SHOULDER_X"),
+        second_axis_name=Axis.Name.Y,
+        second_axis_markers=("SHOULDER", "SHOULDER_XY"),
+        axis_to_keep=Axis.Name.X,
     )
-    lower_arm.add_marker(elbow_marker)
+    model.add_marker("UPPER_ARM", "SHOULDER")
+    model.add_marker("UPPER_ARM", "SHOULDER_X")
+    model.add_marker("UPPER_ARM", "SHOULDER_XY")
 
-    wrist_marker = Marker.from_data(data, name="WRIST", from_markers="WRIST", parent_name="HAND")
-    finger_marker = Marker.from_data(data, name="FINGER", from_markers="FINGER", parent_name="HAND")
-    origin_wrist = wrist_marker - origin_elbow
-    y_axis_wrist = origin_wrist + (0, 0.1, 0)  # Purposefully not 1 so it tests the norm
-    z_axis_wrist = origin_wrist + (0, 0.1, 0.1)   # Purposefully not perpendicular so it tests realigning
-    hand = Segment(
-        name="HAND",
-        parent_name=lower_arm.name,
-        rt=RT.from_data(
-            data,
-            origin=origin_shoulder,
-            axes=(
-                Axis(Axis.Name.Y, start=origin_wrist, end=y_axis_wrist),
-                Axis(Axis.Name.Z, start=origin_wrist, end=z_axis_wrist),
-                Axis.Name.Y,
-            ),
-        ),
-        mesh=((0, 0, 0), (0, 0, -0.19)),
+    model.add_segment("LOWER_ARM", parent_name="UPPER_ARM")
+    model.set_rt(
+        "LOWER_ARM",
+        origin_markers="ELBOW",
+        first_axis_name=Axis.Name.Y,
+        first_axis_markers=("ELBOW", "ELBOW_Y"),
+        second_axis_name=Axis.Name.X,
+        second_axis_markers=("ELBOW", "ELBOW_XY"),
+        axis_to_keep=Axis.Name.Y,
     )
-    hand.add_marker(wrist_marker)
-    hand.add_marker(finger_marker)
+    model.add_marker("LOWER_ARM", "ELBOW")
+    model.add_marker("LOWER_ARM", "ELBOW_Y")
+    model.add_marker("LOWER_ARM", "ELBOW_XY")
 
-    # The thigh segment
-    thigh = Segment(
-        name="THIGH",
-        parent_name=trunk.name,
-        rotations="x",
-        mesh=((0, 0, 0), (0, 0, -0.42)),
+    model.add_segment("HAND", parent_name="LOWER_ARM")
+    model.set_rt(
+        "HAND",
+        origin_markers="WRIST",
+        first_axis_name=Axis.Name.Y,
+        first_axis_markers=("WRIST", "HAND_Y"),
+        second_axis_name=Axis.Name.Z,
+        second_axis_markers=("WRIST", "HAND_YZ"),
+        axis_to_keep=Axis.Name.Y,
     )
+    model.add_marker("HAND", "WRIST")
+    model.add_marker("HAND", "FINGER")
+    model.add_marker("HAND", "HAND_Y")
+    model.add_marker("HAND", "HAND_YZ")
 
-    # The shank segment
-    knee_marker = Marker.from_data(data, name="KNEE", from_markers="KNEE", parent_name="SHANK")
-    origin_knee = knee_marker
-    z_axis_knee = origin_knee + (0, 0, 0.1)  # Purposefully not 1 so it tests the norm
-    x_axis_knee = origin_knee + (0.1, 0, 0.1)   # Purposefully not perpendicular so it tests realigning
-    shank = Segment(
-        name="SHANK",
-        parent_name=thigh.name,
-        rt=RT.from_data(
-            data,
-            origin=origin_knee,
-            axes=(
-                Axis(Axis.Name.Z, start=origin_knee, end=z_axis_knee),
-                Axis(Axis.Name.X, start=origin_knee, end=x_axis_knee),
-                Axis.Name.Z,
-            ),
-        ),
-        rotations="x",
-        mesh=((0, 0, 0), (0, 0, -0.43)),
+    model.add_segment("THIGH", parent_name="TRUNK", rotations="x")
+    model.set_rt(
+        "THIGH",
+        origin_markers="THIGH_ORIGIN",
+        first_axis_name=Axis.Name.X,
+        first_axis_markers=("THIGH_ORIGIN", "THIGH_X"),
+        second_axis_name=Axis.Name.Y,
+        second_axis_markers=("THIGH_ORIGIN", "THIGH_Y"),
+        axis_to_keep=Axis.Name.X,
     )
-    shank.add_marker(knee_marker)
+    model.add_marker("THIGH", "THIGH_ORIGIN")
+    model.add_marker("THIGH", "THIGH_X")
+    model.add_marker("THIGH", "THIGH_Y")
 
-    # The foot segment
-    ankle_marker = Marker.from_data(data, name="ANKLE", from_markers="ANKLE", parent_name="FOOT")
-    toe_marker = Marker.from_data(data, name="TOE", from_markers="TOE", parent_name="FOOT")
-    origin_ankle = ankle_marker - origin_knee
-    z_axis_ankle = origin_ankle + (0, 0, 0.1)  # Purposefully not 1 so it tests the norm
-    y_axis_ankle = origin_ankle + (0, 0.1, 0.1)   # Purposefully not perpendicular so it tests realigning
-    foot = Segment(
-        name="FOOT",
-        parent_name=shank.name,
-        rt=RT.from_data(
-            data,
-            origin=origin_ankle,
-            axes=(
-                Axis(Axis.Name.Z, start=origin_ankle, end=z_axis_ankle),
-                Axis(Axis.Name.Y, start=origin_ankle, end=y_axis_ankle),
-                Axis.Name.Z,
-            ),
-        ),
-        rotations="x",
-        mesh=((0, 0, 0), (0, 0, 0.25)),
+    model.add_segment("SHANK", parent_name="THIGH", rotations="x")
+    model.set_rt(
+        "SHANK",
+        origin_markers="KNEE",
+        first_axis_name=Axis.Name.Z,
+        first_axis_markers=("KNEE", "KNEE_Z"),
+        second_axis_name=Axis.Name.X,
+        second_axis_markers=("KNEE", "KNEE_XZ"),
+        axis_to_keep=Axis.Name.Z,
     )
-    foot.add_marker(ankle_marker)
-    foot.add_marker(toe_marker)
+    model.add_marker("SHANK", "KNEE")
+    model.add_marker("SHANK", "KNEE_Z")
+    model.add_marker("SHANK", "KNEE_XZ")
+
+    model.add_segment("FOOT", parent_name="SHANK", rotations="x")
+    model.set_rt(
+        "FOOT",
+        origin_markers="ANKLE",
+        first_axis_name=Axis.Name.Z,
+        first_axis_markers=("ANKLE", "ANKLE_Z"),
+        second_axis_name=Axis.Name.Y,
+        second_axis_markers=("ANKLE", "ANKLE_YZ"),
+        axis_to_keep=Axis.Name.Z,
+    )
+    model.add_marker("FOOT", "ANKLE")
+    model.add_marker("FOOT", "TOE")
+    model.add_marker("FOOT", "ANKLE_Z")
+    model.add_marker("FOOT", "ANKLE_YZ")
 
     # Put the model together, print it and print it to a bioMod file
-    kinematic_chain = KinematicChain(segments=(trunk, head, upper_arm, lower_arm, hand, thigh, shank, foot))
-    kinematic_chain.write(kinematic_model_file_path)
+    c3d = ezc3d.c3d(c3d_file_path)
+    model.generate_personalized(c3d, kinematic_model_file_path)
 
     model = biorbd.Model(kinematic_model_file_path)
     assert model.nbQ() == 7
     assert model.nbSegment() == 8
-    assert model.nbMarkers() == 10
-    assert (model.markers(np.zeros((model.nbQ(), )))[-1].to_array() == [0, 0, -0.85]).all()
+    assert model.nbMarkers() == 25
+    np.testing.assert_almost_equal(model.markers(np.zeros((model.nbQ(), )))[-3].to_array(), [0, 0.25, -0.85], decimal=4)
 
     if remove_temporary:
         os.remove(kinematic_model_file_path)
