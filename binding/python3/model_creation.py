@@ -26,7 +26,7 @@ class Marker:
         self.position = position if isinstance(position, np.ndarray) else np.array(position)
 
     @staticmethod
-    def from_data(c3d: ezc3d, name: str, from_markers: str|tuple[str, ...], parent_name: str, parent_rt: "RT"):
+    def from_data(c3d: ezc3d, name: str, from_markers: str|tuple[str, ...], parent_name: str, parent_rt: "RT" = None):
         """
         This is a constructor for the Marker class. It takes the mean of the position of the marker
         from the c3d as position
@@ -59,7 +59,7 @@ class Marker:
 
         index = indices_in_c3d(c3d)
         position = to_meter(np.mean(np.mean(c3d["data"]["points"][:, index, :], axis=2), axis=1), c3d)
-        position = (parent_rt.T if parent_rt else np.identity(4)) @ position
+        position = (parent_rt.T if parent_rt is not None else np.identity(4)) @ position
         return Marker(name, parent_name, position[:3])
 
     def __str__(self):
@@ -197,7 +197,7 @@ class RT:
         return out
 
     def __str__(self):
-        rt = self.parent_rt @ self.rt if self.parent_rt else np.identity(4)
+        rt = self.parent_rt.T @ self.rt if self.parent_rt else np.identity(4)
 
         tx = rt[0, 3]
         ty = rt[1, 3]
@@ -240,8 +240,8 @@ class Segment:
         self.markers = []
         self.rt = rt
         self.mass = mass
-        self.center_of_mass = center_of_mass
-        self.inertia_xxyyzz = inertia_xxyyzz
+        self.center_of_mass = center_of_mass if center_of_mass is not None else (0, 0, 0)
+        self.inertia_xxyyzz = inertia_xxyyzz if inertia_xxyyzz is not None else (0, 0, 0)
         self.mesh = mesh
 
     def add_marker(self, marker: Marker):
@@ -258,8 +258,7 @@ class Segment:
             out_string += f"\ttranslations {self.translations}\n"
         if (self.rotations):
             out_string += f"\trotations {self.rotations}\n"
-        if (self.mass):
-            out_string += f"\tmass {self.mass}\n"
+        out_string += f"\tmass {self.mass}\n"
         if (self.center_of_mass):
             out_string += f"\tcom {self.center_of_mass[0]} {self.center_of_mass[1]} {self.center_of_mass[2]}\n"
         if (self.inertia_xxyyzz):
@@ -404,7 +403,7 @@ class MarkerGeneric:
         self.from_markers = from_markers
         self.parent_name = parent_name
 
-    def to_marker(self, c3d: ezc3d.c3d, parent_rt: RT) -> Marker:
+    def to_marker(self, c3d: ezc3d.c3d, parent_rt: RT = None) -> Marker:
         return Marker.from_data(c3d, self.name, self.from_markers, self.parent_name, parent_rt)
 
 
@@ -422,7 +421,7 @@ class AxisGeneric:
         self.start_point_names = start
         self.end_point_names = end
 
-    def to_axis(self, c3d: ezc3d.c3d, parent_rt: RT) -> Axis:
+    def to_axis(self, c3d: ezc3d.c3d, parent_rt: RT = None) -> Axis:
         """
         Compute the axis from actual data
         Parameters
@@ -447,8 +446,8 @@ class RTGeneric:
         self.axes = axes
 
     def to_rt(self, c3d: ezc3d.c3d, parent_rt: RT) -> RT:
-        origin = self.origin.to_marker(c3d, parent_rt)
-        axes = (self.axes[0].to_axis(c3d, parent_rt), self.axes[1].to_axis(c3d, parent_rt), self.axes[2])
+        origin = self.origin.to_marker(c3d)
+        axes = (self.axes[0].to_axis(c3d), self.axes[1].to_axis(c3d), self.axes[2])
 
         return RT(origin, axes, parent_rt)
 
@@ -591,7 +590,7 @@ class KinematicModelGeneric:
         for name in self.segments:
             s = self.segments[name]
             parent_index = [segment.name for segment in segments].index(s.parent_name) if s.parent_name else None
-            rt = s.rt.to_rt(c3d, segments[parent_index].rt if parent_index else None)
+            rt = s.rt.to_rt(c3d, segments[parent_index].rt if parent_index is not None else None)
             segments.append(
                 Segment(
                     name=s.name,
