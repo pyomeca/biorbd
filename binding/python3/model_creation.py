@@ -30,6 +30,8 @@ class C3dData(Data):
     def __init__(self, c3d_path, first_frame: int = 0, last_frame: int = -1):
         import ezc3d
         super(C3dData, self).__init__(data=ezc3d.c3d(c3d_path), first_frame=first_frame, last_frame=last_frame)
+        if self.data["data"]["points"].shape[2] == 1 and self.last_frame == -1:
+            self.last_frame = 2  # This is a bug otherwise since data[:, :, 0:-1] returns nothing
 
     def mean_to_vector(self, marker_names: tuple[str, ...]) -> np.ndarray:
         return self._to_meter(
