@@ -1,15 +1,38 @@
 from enum import Enum
 from copy import copy
+from typing import Protocol
 
 import numpy as np
 import biorbd
 
-ezc3d_found = True
-try:
-    import ezc3d
-except ModuleNotFoundError:
-    ezc3d_found = False
-    ezc3d = None
+
+class Data(Protocol):
+    def get_data(self, marker_names: tuple[str, ...]) -> np.ndarray:
+        """
+        Return the actual data
+        """
+
+
+class C3dData:
+    def __init__(self, c3d_path):
+        import ezc3d
+        self.c3d = ezc3d.c3d(c3d_path)
+
+    def get_data(self, marker_names: tuple[str, ...]) -> np.ndarray:
+        return self._to_meter(
+            np.mean(np.nanmean(self.c3d["data"]["points"][:, self._indices_in_c3d(marker_names), :], axis=2), axis=1)
+        )
+
+    def _indices_in_c3d(self, from_markers: tuple[str, ...]) -> tuple[int, ...]:
+        return tuple(self.c3d["parameters"]["POINT"]["LABELS"]["value"].index(n) for n in from_markers)
+
+    def _to_meter(self, data: np.array) -> np.array:
+        units = self.c3d["parameters"]["POINT"]["UNITS"]["value"]
+        factor = 1000 if len(units) > 0 and units[0] == "mm" else 1
+
+        data /= factor
+        data[3] = 1
+        return data
 
 
 class Marker:
@@ -45,7 +68,7 @@ class Marker:
 
     @staticmethod
     def from_data(
-        c3d: ezc3d,
+        data: Data,
         name: str,
         from_markers: str | tuple[str, ...],
         parent_name: str,
@@ -55,10 +78,11 @@ class Marker:
     ):
         """
         This is a constructor for the Marker class. It takes the mean of the position of the marker
-        from the c3d as position
+        from the data as position
+
         Parameters
         ----------
-        c3d
+        data
             The data to pick the data from
         name
             The name of the new marker
@@ -74,26 +98,12 @@ class Marker:
             If the marker should be flaged as an anatomical marker
         """
 
-        if not ezc3d_found:
-            raise RuntimeError("Ezc3d must be install to use the 'from_data' constructor")
         if isinstance(from_markers, str):
             from_markers = (from_markers,)
 
-        def indices_in_c3d() -> tuple[int, ...]:
-            return tuple(c3d["parameters"]["POINT"]["LABELS"]["value"].index(n) for n in from_markers)
-
-        def to_meter(data: np.array) -> np.array:
-            units = c3d["parameters"]["POINT"]["UNITS"]["value"]
-            factor = 1000 if len(units) > 0 and units[0] == "mm" else 1
-
-            data /= factor
-            data[3] = 1
-            return data
-
-        index = indices_in_c3d()
-        position = to_meter(np.mean(np.nanmean(c3d["data"]["points"][:, index, :], axis=2), axis=1))
+        position = data.get_data(marker_names=from_markers)
         if np.isnan(position).any():
-            raise RuntimeError(f"The markers {from_markers} are not present in the c3d")
+            raise RuntimeError(f"The markers {from_markers} are not present in the data")
         position = (parent_rt.transpose if parent_rt is not None else np.identity(4)) @ position
         return Marker(name, parent_name, position[:3], is_technical=is_technical, is_anatomical=is_anatomical)
 
@@ -151,12 +161,8 @@ class Axis:
 
     def axis(self) -> np.ndarray:
         """
-        Compute the axis from actual data
+        Returns the axis vector
         """
-
-        if not ezc3d_found:
-            raise RuntimeError("Ezc3d must be install to use the 'get_axis_from_data' constructor")
-
         start = self.start_point.position
         end = self.end_point.position
         return end - start
@@ -552,9 +558,9 @@ class MarkerGeneric:
         self.is_technical = is_technical
         self.is_anatomical = is_anatomical
 
-    def to_marker(self, c3d: ezc3d.c3d, parent_rt: RT = None) -> Marker:
+    def to_marker(self, data: Data, parent_rt: RT = None) -> Marker:
         return Marker.from_data(
-            c3d,
+            data,
             self.name,
             self.from_markers,
             self.parent_name,
@@ -578,22 +584,19 @@ class AxisGeneric:
         self.start_point = start
         self.end_point = end
 
-    def to_axis(self, c3d: ezc3d.c3d, parent_rt: RT = None) -> Axis:
+    def to_axis(self, data: Data, parent_rt: RT = None) -> Axis:
         """
         Compute the axis from actual data
         Parameters
         ----------
-        c3d:
-            The ezc3d file containing the data
+        data:
+            The actual data
         parent_rt:
             The transformation from global to local
         """
 
-        if not ezc3d_found:
-            raise RuntimeError("Ezc3d must be install to use the 'get_axis_from_data' constructor")
-
-        start = self.start_point.to_marker(c3d, parent_rt)
-        end = self.end_point.to_marker(c3d, parent_rt)
+        start = self.start_point.to_marker(data, parent_rt)
+        end = self.end_point.to_marker(data, parent_rt)
         return Axis(self.name, start, end)
 
 
@@ -610,22 +613,22 @@ class RTGeneric:
         self.origin = origin
         self.axes = axes
 
-    def to_rt(self, c3d: ezc3d.c3d, parent_rt: RT) -> RT:
+    def to_rt(self, data: Data, parent_rt: RT) -> RT:
         """
-        Collapse the generic RT to a RT with value based on the model and the c3d data
+        Collapse the generic RT to an actual RT with value based on the model and the data
 
         Parameters
         ----------
-        c3d
-            The c3d data that provides the values
+        data
+            The actual data
         parent_rt
             The RT of the parent to compute the local transformation
         Returns
         -------
         The collapsed RT
         """
-        origin = self.origin.to_marker(c3d)
-        axes = (self.axes[0].to_axis(c3d), self.axes[1].to_axis(c3d), self.axes[2])
+        origin = self.origin.to_marker(data)
+        axes = (self.axes[0].to_axis(data), self.axes[1].to_axis(data), self.axes[2])
 
         return RT.from_markers(origin, axes, parent_rt)
 
@@ -835,17 +838,23 @@ class KinematicModelGeneric:
             )
         )
 
-    def generate_personalized(self, c3d: ezc3d, save_path: str):
+    def generate_personalized(self, data_path: str, save_path: str):
         """
-        Collapse the model to an actual personalized kinematic chain based on the model and the c3d file
+        Collapse the model to an actual personalized kinematic chain based on the model and the data file
 
         Parameters
         ----------
-        c3d
-            The c3d file to create the model from
+        data_path
+            The data file path
         save_path
             The path to save the bioMod
         """
+
+        if data_path[-4:] == ".c3d":
+            data = C3dData(data_path)
+        else:
+            raise RuntimeError("The format of the file not recognized. Supported formats are: .c3d.")
+
         segments = []
         for name in self.segments:
             s = self.segments[name]
@@ -853,7 +862,7 @@ class KinematicModelGeneric:
             if s.rt is None:
                 rt = RT()
             else:
-                rt = s.rt.to_rt(c3d, segments[parent_index].rt if parent_index is not None else None)
+                rt = s.rt.to_rt(data, segments[parent_index].rt if parent_index is not None else None)
             segments.append(
                 Segment(
                     name=s.name,
@@ -865,7 +874,7 @@ class KinematicModelGeneric:
             )
 
             for marker in s.markers:
-                segments[-1].add_marker(marker.to_marker(c3d, rt))
+                segments[-1].add_marker(marker.to_marker(data, rt))
 
         model = KinematicChain(tuple(segments))
         model.write(save_path)
