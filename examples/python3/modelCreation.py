@@ -5,8 +5,21 @@ import biorbd
 from biorbd import Marker, Segment, KinematicChain, RT, Axis, KinematicModelGeneric
 import ezc3d
 
+#
+# This examples shows how to
+#     1. Create a model from scratch using specified dimensions (model_creation_from_static)
+#     1. Create a model from scratch using a template with marker names (model_creation_from_data)
+#
+# Please note that this example will work only with the Eigen backend
+#
 
-def test_model_creation_from_static(remove_temporary: bool = True):
+
+def model_creation_from_static(remove_temporary: bool = True):
+    """
+    We define a new model by feeding in the actual dimension and position of the model
+    Please note that a bunch of useless markers are defined, this is for the other model creation which needs them
+    to define the RT matrices
+    """
     kinematic_model_file_path = "temporary.bioMod"
 
     # The trunk segment
@@ -103,35 +116,43 @@ def test_model_creation_from_static(remove_temporary: bool = True):
     kinematic_chain = KinematicChain(segments=(trunk, head, upper_arm, lower_arm, hand, thigh, shank, foot))
     kinematic_chain.write(kinematic_model_file_path)
 
+    # Do some test to verify that the model was properly created
     model = biorbd.Model(kinematic_model_file_path)
     assert model.nbQ() == 7
     assert model.nbSegment() == 8
     assert model.nbMarkers() == 25
     np.testing.assert_almost_equal(model.markers(np.zeros((model.nbQ(),)))[-3].to_array(), [0, 0.25, -0.85], decimal=4)
 
+    # Clean up our mess
     if remove_temporary:
         os.remove(kinematic_model_file_path)
 
 
-def write_markers_to_c3d(save_path: str, model: biorbd.Model):
-    q = np.zeros(model.nbQ())
-    marker_names = tuple(name.to_string() for name in model.markerNames())
-    marker_positions = np.array(tuple(m.to_array() for m in model.markers(q))).T[:, :, np.newaxis]
-    c3d = ezc3d.c3d()
+def model_creation_from_data(remove_temporary: bool = True):
+    """
+    We are using the previous model to define a new model based on the position of the markers
+    """
 
-    # Fill it with random data
-    c3d["parameters"]["POINT"]["RATE"]["value"] = [100]
-    c3d["parameters"]["POINT"]["LABELS"]["value"] = marker_names
-    c3d["data"]["points"] = marker_positions
+    def write_markers_to_c3d(save_path: str, model: biorbd.Model):
+        """
+        Write data to a c3d file
+        """
+        q = np.zeros(model.nbQ())
+        marker_names = tuple(name.to_string() for name in model.markerNames())
+        marker_positions = np.array(tuple(m.to_array() for m in model.markers(q))).T[:, :, np.newaxis]
+        c3d = ezc3d.c3d()
 
-    # Write the data
-    c3d.write(save_path)
+        # Fill it with random data
+        c3d["parameters"]["POINT"]["RATE"]["value"] = [100]
+        c3d["parameters"]["POINT"]["LABELS"]["value"] = marker_names
+        c3d["data"]["points"] = marker_positions
 
+        # Write the data
+        c3d.write(save_path)
 
-def test_model_creation_from_data(remove_temporary: bool = True):
     kinematic_model_file_path = "temporary.bioMod"
     c3d_file_path = "temporary.c3d"
-    test_model_creation_from_static(remove_temporary=False)
+    model_creation_from_static(remove_temporary=False)
 
     # Prepare a fake model and a fake static from the previous test
     model = biorbd.Model(kinematic_model_file_path)
@@ -248,12 +269,26 @@ def test_model_creation_from_data(remove_temporary: bool = True):
     # Put the model together, print it and print it to a bioMod file
     model.generate_personalized(c3d_file_path, kinematic_model_file_path)
 
+    # Do some test to verify that the model was properly created
     model = biorbd.Model(kinematic_model_file_path)
     assert model.nbQ() == 7
     assert model.nbSegment() == 8
     assert model.nbMarkers() == 25
     np.testing.assert_almost_equal(model.markers(np.zeros((model.nbQ(),)))[-3].to_array(), [0, 0.25, -0.85], decimal=4)
 
+    # Clean up our mess
     if remove_temporary:
         os.remove(kinematic_model_file_path)
         os.remove(c3d_file_path)
+
+
+def main():
+    # Create the model from user defined dimensions
+    model_creation_from_static()
+
+    # Create the model from a data file and markers as template
+    model_creation_from_data()
+
+
+if __name__ == "__main__":
+    main()
