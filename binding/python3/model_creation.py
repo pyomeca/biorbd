@@ -1,33 +1,48 @@
 from enum import Enum
 from copy import copy
-from typing import Protocol
+from abc import ABC, abstractmethod
 
 import numpy as np
 import biorbd
 
 
-class Data(Protocol):
-    def get_data(self, marker_names: tuple[str, ...]) -> np.ndarray:
+class Data(ABC):
+    def __init__(self, data, first_frame: int = 0, last_frame: int = -1):
+        self.first_frame = first_frame
+        self.last_frame = last_frame
+        self.data = data
+
+    @abstractmethod
+    def mean_to_vector(self, marker_names: tuple[str, ...]) -> np.ndarray:
         """
         Return the actual data
         """
 
+    def set_frame_range(self, first_frame: int = None, last_frame: int = None):
+        """
+        Determine the limits for the frame index range. None keeps the previous value (with defaults: first=0, last=-1)
+        """
+        self.first_frame = first_frame if first_frame is not None else self.first_frame
+        self.last_frame = last_frame if last_frame is not None else self.last_frame
 
-class C3dData:
-    def __init__(self, c3d_path):
+
+class C3dData(Data):
+    def __init__(self, c3d_path, first_frame: int = 0, last_frame: int = -1):
         import ezc3d
-        self.c3d = ezc3d.c3d(c3d_path)
+        super(C3dData, self).__init__(data=ezc3d.c3d(c3d_path), first_frame=first_frame, last_frame=last_frame)
 
-    def get_data(self, marker_names: tuple[str, ...]) -> np.ndarray:
+    def mean_to_vector(self, marker_names: tuple[str, ...]) -> np.ndarray:
         return self._to_meter(
-            np.mean(np.nanmean(self.c3d["data"]["points"][:, self._indices_in_c3d(marker_names), :], axis=2), axis=1)
+            np.mean(np.nanmean(
+                    self.data["data"]["points"][:, self._indices_in_c3d(marker_names), self.first_frame:self.last_frame],
+            axis=2), axis=1)
         )
 
     def _indices_in_c3d(self, from_markers: tuple[str, ...]) -> tuple[int, ...]:
-        return tuple(self.c3d["parameters"]["POINT"]["LABELS"]["value"].index(n) for n in from_markers)
+        return tuple(self.data["parameters"]["POINT"]["LABELS"]["value"].index(n) for n in from_markers)
 
     def _to_meter(self, data: np.array) -> np.array:
-        units = self.c3d["parameters"]["POINT"]["UNITS"]["value"]
+        units = self.data["parameters"]["POINT"]["UNITS"]["value"]
         factor = 1000 if len(units) > 0 and units[0] == "mm" else 1
 
         data /= factor
@@ -93,22 +108,22 @@ class Marker:
         parent_rt
             The RT of the parent to transform the marker from global to local
         is_technical
-            If the marker should be flaged as a technical marker
+            If the marker should be flagged as a technical marker
         is_anatomical
-            If the marker should be flaged as an anatomical marker
+            If the marker should be flagged as an anatomical marker
         """
 
         if isinstance(from_markers, str):
             from_markers = (from_markers,)
 
-        position = data.get_data(marker_names=from_markers)
+        position = data.mean_to_vector(marker_names=from_markers)
         if np.isnan(position).any():
             raise RuntimeError(f"The markers {from_markers} are not present in the data")
         position = (parent_rt.transpose if parent_rt is not None else np.identity(4)) @ position
         return Marker(name, parent_name, position[:3], is_technical=is_technical, is_anatomical=is_anatomical)
 
     def __str__(self):
-        # Define the print function so it automatically format things in the file properly
+        # Define the print function, so it automatically formats things in the file properly
         out_string = f"marker {self.name}\n"
         out_string += f"\tparent {self.parent_name}\n"
         out_string += f"\tposition {self.position[0]:0.4f} {self.position[1]:0.4f} {self.position[2]:0.4f}\n"
@@ -838,7 +853,7 @@ class KinematicModelGeneric:
             )
         )
 
-    def generate_personalized(self, data_path: str, save_path: str):
+    def generate_personalized(self, data_path: str, save_path: str, first_frame: int = 0, last_frame: int = -1):
         """
         Collapse the model to an actual personalized kinematic chain based on the model and the data file
 
@@ -848,10 +863,14 @@ class KinematicModelGeneric:
             The data file path
         save_path
             The path to save the bioMod
+        first_frame
+            The first frame of the data to use
+        last_frame
+            The last frame of the data to use
         """
 
         if data_path[-4:] == ".c3d":
-            data = C3dData(data_path)
+            data = C3dData(c3d_path=data_path, first_frame=first_frame, last_frame=last_frame)
         else:
             raise RuntimeError("The format of the file not recognized. Supported formats are: .c3d.")
 
