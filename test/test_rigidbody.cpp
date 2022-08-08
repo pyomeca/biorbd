@@ -966,6 +966,12 @@ TEST(Joints, unitTest)
         EXPECT_EQ(model.getBodyRbdlIdToBiorbdId(3),0);
         EXPECT_EQ(model.getBodyRbdlIdToBiorbdId(4),-1);
     }
+    {
+        Model model(modelPathForGeneralTesting);
+        EXPECT_EQ(model.getBodyBiorbdIdToRbdlId(0),3);
+        EXPECT_EQ(model.getBodyBiorbdIdToRbdlId(1),2147483647);
+        EXPECT_EQ(model.getBodyBiorbdIdToRbdlId(10),13);
+    }
 
 }
 

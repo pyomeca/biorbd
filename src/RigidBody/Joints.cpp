@@ -408,6 +408,12 @@ int rigidbody::Joints::getBodyRbdlIdToBiorbdId(
     return model.getBodyBiorbdId(bodyName);
 }
 
+unsigned int rigidbody::Joints::getBodyBiorbdIdToRbdlId(
+        const int idx) const
+{
+    return (*m_segments)[idx].id();
+}
+
 std::vector<std::vector<unsigned int> > rigidbody::Joints::getDofSubTrees()
 {
     // initialize subTrees
@@ -1709,6 +1715,35 @@ void rigidbody::Joints::CalcMatRotJacobian(
             j = this->lambda[j]; // Pass to parent segment
         }
     }
+}
+
+utils::Matrix
+rigidbody::Joints::JacobianSegmentRotMat(
+        const rigidbody::GeneralizedCoordinates &Q,
+        unsigned int biorbdSegmentIdx,
+        bool updateKin)
+{
+
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#else
+    if (updateKin){
+        UpdateKinematicsCustom(&Q);
+    }
+    updateKin = false;
+#endif
+
+    unsigned int segmentIdx = getBodyBiorbdIdToRbdlId(biorbdSegmentIdx);
+
+    utils::Matrix jacobianMat(utils::Matrix::Zero(9,nbQ()));
+    CalcMatRotJacobian(
+        Q,
+        segmentIdx,
+        utils::Matrix3d::Identity(),
+        jacobianMat,
+        updateKin);
+
+    return jacobianMat;
 }
 
 void rigidbody::Joints::checkGeneralizedDimensions(

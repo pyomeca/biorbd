@@ -164,6 +164,14 @@ public:
         const int idx) const;
 
     ///
+    /// \brief Return the Rbdl body identification from Biorbd
+    /// \param idx The Biorbd segment Id
+    /// \return The Rbdl body identification
+    ///
+    unsigned int getBodyBiorbdIdToRbdlId(
+        const int idx) const;
+
+    ///
     /// \brief Return the rbdl idx of subtrees of each segments
     /// \return the rbdl idx of subtrees of each segments
     ///
@@ -828,6 +836,17 @@ public:
         const utils::Matrix3d &rotation,
         RigidBodyDynamics::Math::MatrixNd &G,
         bool updateKin);
+
+    ///
+    /// \brief Calculate the jacobian matrix of a rotation matrix for a given segment idx
+    /// \param Q The generalized coordinates
+    /// \param segmentIdx The index of the segment
+    /// \param updateKin If the kinematics of the model should be computed
+    ///
+    utils::Matrix JacobianSegmentRotMat (
+            const rigidbody::GeneralizedCoordinates &Q,
+            unsigned int segmentIdx,
+            bool updateKin);
 
     ///
     /// \brief Return the derivate of Q in function of Qdot (if not Quaternion, Qdot is directly returned)
