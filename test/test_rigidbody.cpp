@@ -933,7 +933,7 @@ TEST(Joints, unitTest)
         rigidbody::Joints joints(model);
         rigidbody::Segment segmentToTest(joints.segment("Tronc"));
 
-        EXPECT_EQ(segmentToTest.id(), 2147483647); //TODO: Verify ID value
+        EXPECT_EQ(segmentToTest.id(), INT_MAX); //TODO: Verify ID value
     }
     {
         Model model(modelPathForGeneralTesting);
@@ -969,7 +969,7 @@ TEST(Joints, unitTest)
     {
         Model model(modelPathForGeneralTesting);
         EXPECT_EQ(model.getBodyBiorbdIdToRbdlId(0),3);
-        EXPECT_EQ(model.getBodyBiorbdIdToRbdlId(1),2147483647);
+        EXPECT_EQ(model.getBodyBiorbdIdToRbdlId(1),INT_MAX);
         EXPECT_EQ(model.getBodyBiorbdIdToRbdlId(10),13);
     }
 
