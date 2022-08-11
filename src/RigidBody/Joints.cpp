@@ -1726,11 +1726,6 @@ rigidbody::Joints::JacobianSegmentRotMat(
 
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
-#else
-    if (updateKin){
-        UpdateKinematicsCustom(&Q);
-    }
-    updateKin = false;
 #endif
 
     unsigned int segmentIdx = getBodyBiorbdIdToRbdlId(biorbdSegmentIdx);
