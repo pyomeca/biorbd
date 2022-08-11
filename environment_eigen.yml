@@ -10,3 +10,4 @@ dependencies:
 - eigen
 - rbdl
 - scipy
+- ezc3d

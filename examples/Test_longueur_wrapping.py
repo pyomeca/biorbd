@@ -90,6 +90,6 @@ arc = (
     * r
 )
 
-l_arc = math.sqrt(arc ** 2 + (Po_wrap[2] - Pi_wrap[2]) ** 2)
+l_arc = math.sqrt(arc**2 + (Po_wrap[2] - Pi_wrap[2]) ** 2)
 
 l_m = l_wt_arc + l_arc  # l_m = 0.582246096069153
