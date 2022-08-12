@@ -657,133 +657,10 @@ class RTGeneric:
         return RT.from_markers(origin, axes, parent_rt)
 
 
-class SegmentGeneric:
+class SegmentCoordinateSystem:
     def __init__(
         self,
-        name,
-        parent_name: str = "",
-        translations: str = "",
-        rotations: str = "",
-    ):
-        """
-        Create a new generic segment.
-
-        Parameters
-        ----------
-        name
-            The name of the segment
-        parent_name
-            The name of the segment the current segment is attached to
-        translations
-            The sequence of translation
-        rotations
-            The sequence of rotation
-        """
-
-        self.name = name
-        self.parent_name = parent_name
-        self.translations = translations
-        self.rotations = rotations
-        self.markers = []
-        self.rt = None
-
-    def add_marker(self, marker: MarkerGeneric):
-        """
-        Add a new marker to the segment
-
-        Parameters
-        ----------
-        marker
-            The marker to add
-        """
-        self.markers.append(marker)
-
-    def set_rt(
-        self,
-        origin_from_markers: str | tuple[str, ...],
-        first_axis_name: Axis.Name,
-        first_axis_markers: tuple[str | tuple[str, ...], str | tuple[str, ...]],
-        second_axis_name: Axis.Name,
-        second_axis_markers: tuple[str | tuple[str, ...], str | tuple[str, ...]],
-        axis_to_keep: Axis.Name,
-    ):
-        """
-        Define the rt of the segment.
-
-        Parameters
-        ----------
-        origin_from_markers
-            The name of the marker to the origin of the reference frame. If multiple names are provided, the mean of
-            all the given markers is used
-        first_axis_name
-            The Axis.Name of the first axis
-        first_axis_markers
-            The name of the markers that constitute the starting (first_axis_markers[0]) and
-            ending (first_axis_markers[1]) of the first axis vector. Both [0] and [1] can be from multiple markers.
-            If it is the case the mean of all the given markers is used
-        second_axis_name
-            The Axis.Name of the second axis
-        second_axis_markers
-            The name of the markers that constitute the starting (second_axis_markers[0]) and
-            ending (second_axis_markers[1]) of the second axis vector. Both [0] and [1] can be from multiple markers.
-            If it is the case the mean of all the given markers is used
-        axis_to_keep
-            The Axis.Name of the axis to keep while recomputing the reference frame. It must be the same as either
-            first_axis_name or second_axis_name
-        """
-
-        first_axis_tp = AxisGeneric(
-            name=first_axis_name,
-            start=MarkerGeneric(name="", from_markers=first_axis_markers[0], parent_name=""),
-            end=MarkerGeneric(name="", from_markers=first_axis_markers[1], parent_name=""),
-        )
-        second_axis_tp = AxisGeneric(
-            name=second_axis_name,
-            start=MarkerGeneric(name="", from_markers=second_axis_markers[0], parent_name=""),
-            end=MarkerGeneric(name="", from_markers=second_axis_markers[1], parent_name=""),
-        )
-
-        self.rt = RTGeneric(
-            origin=MarkerGeneric(name="", from_markers=origin_from_markers, parent_name=""),
-            axes=(first_axis_tp, second_axis_tp, axis_to_keep),
-        )
-
-
-class KinematicModelGeneric:
-    def __init__(self, bio_sym_path: str = None):
-        self.segments = {}
-        if bio_sym_path is None:
-            return
-        raise NotImplementedError("bioMod files are not readable yet")
-
-    def add_segment(
-        self,
-        name: str,
-        parent_name: str = "",
-        translations: str = "",
-        rotations: str = "",
-    ):
-        """
-        Add a new segment to the model
-
-        Parameters
-        ----------
-        name
-            The name of the segment
-        parent_name
-            The name of the segment the current segment is attached to
-        translations
-            The sequence of translation
-        rotations
-            The sequence of rotation
-        """
-        self.segments[name] = SegmentGeneric(
-            name=name, parent_name=parent_name, translations=translations, rotations=rotations
-        )
-
-    def set_rt(
-        self,
-        segment_name,
+        segment_name: str,
         origin_markers: str | tuple[str, ...],
         first_axis_name: Axis.Name,
         first_axis_markers: tuple[str | tuple[str, ...], str | tuple[str, ...]],
@@ -817,13 +694,102 @@ class KinematicModelGeneric:
             The Axis.Name of the axis to keep while recomputing the reference frame. It must be the same as either
             first_axis_name or second_axis_name
         """
-        self.segments[segment_name].set_rt(
-            origin_from_markers=origin_markers,
-            first_axis_name=first_axis_name,
-            first_axis_markers=first_axis_markers,
-            second_axis_name=second_axis_name,
-            second_axis_markers=second_axis_markers,
-            axis_to_keep=axis_to_keep,
+
+        first_axis_tp = AxisGeneric(
+            name=first_axis_name,
+            start=MarkerGeneric(name="", from_markers=first_axis_markers[0], parent_name=""),
+            end=MarkerGeneric(name="", from_markers=first_axis_markers[1], parent_name=""),
+        )
+        second_axis_tp = AxisGeneric(
+            name=second_axis_name,
+            start=MarkerGeneric(name="", from_markers=second_axis_markers[0], parent_name=""),
+            end=MarkerGeneric(name="", from_markers=second_axis_markers[1], parent_name=""),
+        )
+
+        self.rt = RTGeneric(
+            origin=MarkerGeneric(name="", from_markers=origin_markers, parent_name=""),
+            axes=(first_axis_tp, second_axis_tp, axis_to_keep),
+        )
+
+
+class SegmentGeneric:
+    def __init__(
+        self,
+        name,
+        parent_name: str = "",
+        translations: str = "",
+        rotations: str = "",
+        segment_coordinate_system: SegmentCoordinateSystem = None,
+    ):
+        """
+        Create a new generic segment.
+
+        Parameters
+        ----------
+        name
+            The name of the segment
+        parent_name
+            The name of the segment the current segment is attached to
+        translations
+            The sequence of translation
+        rotations
+            The sequence of rotation
+        """
+
+        self.name = name
+        self.parent_name = parent_name
+        self.translations = translations
+        self.rotations = rotations
+        self.markers = []
+        self.rt = segment_coordinate_system.rt if segment_coordinate_system is not None else None
+
+    def add_marker(self, marker: MarkerGeneric):
+        """
+        Add a new marker to the segment
+
+        Parameters
+        ----------
+        marker
+            The marker to add
+        """
+        self.markers.append(marker)
+
+
+class KinematicModelGeneric:
+    def __init__(self, bio_sym_path: str = None):
+        self.segments = {}
+        if bio_sym_path is None:
+            return
+        raise NotImplementedError("bioMod files are not readable yet")
+
+    def add_segment(
+        self,
+        name: str,
+        parent_name: str = "",
+        translations: str = "",
+        rotations: str = "",
+        segment_coordinate_system: SegmentCoordinateSystem = None,
+    ):
+        """
+        Add a new segment to the model
+
+        Parameters
+        ----------
+        name
+            The name of the segment
+        parent_name
+            The name of the segment the current segment is attached to
+        translations
+            The sequence of translation
+        rotations
+            The sequence of rotation
+        """
+        self.segments[name] = SegmentGeneric(
+            name=name,
+            parent_name=parent_name,
+            translations=translations,
+            rotations=rotations,
+            segment_coordinate_system=segment_coordinate_system,
         )
 
     def add_marker(
