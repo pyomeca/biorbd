@@ -257,8 +257,8 @@ utils::Vector utils::Rotation::toEulerAngles(
         v[2] = std::atan2(-r(1,2), r(1,1));  // x
     } else if (!seq.compare("yzy")) {
         v[1] = std::acos(r(1, 1));           // z
-        v[0] = std::asin(r(1,2) / std::asin(v[1])); // y1
-        v[2] = std::asin(r(2,1) / std::asin(v[1]));  // y2
+        v[0] = std::asin(r(2,1) / std::sin(v[1])); // y1
+        v[2] = std::asin(r(1,2) / std::sin(v[1]));  // y2
     } else if (!seq.compare("zxy")) {
         v[0] = std::atan2(-r(0,1), r(1,1));  // z
         v[1] = std::asin(r(2,1));            // x
