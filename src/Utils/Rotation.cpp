@@ -215,6 +215,7 @@ utils::Vector utils::Rotation::toEulerAngles(
         v = utils::Vector(static_cast<unsigned int>(seq.length()));
     }
 
+    // sequences taken from https://pdfslide.net/documents/euler-angles-58fcebd3620f7.html
     if (!seq.compare("x")) {
         v[0] = std::asin(r(2, 1));           // x
     } else if (!seq.compare("y")) {
@@ -256,9 +257,9 @@ utils::Vector utils::Rotation::toEulerAngles(
         v[1] = std::asin(r(1,0));            // z
         v[2] = std::atan2(-r(1,2), r(1,1));  // x
     } else if (!seq.compare("yzy")) {
+	v[0] = std::atan2(r(2, 1), -r(0, 1));// y
         v[1] = std::acos(r(1, 1));           // z
-        v[0] = std::asin(r(2,1) / std::sin(v[1])); // y1
-        v[2] = std::asin(r(1,2) / std::sin(v[1]));  // y2
+        v[2] = std::atan2(r(1, 2), r(1, 0)); // y
     } else if (!seq.compare("zxy")) {
         v[0] = std::atan2(-r(0,1), r(1,1));  // z
         v[1] = std::asin(r(2,1));            // x
