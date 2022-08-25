@@ -49,6 +49,8 @@ install:
   - cmd: conda install ninja -cconda-forge
   - conda list
   
+  # Download test suite
+  - git submodule update --init --recursive
     
 test_script: 
   ############################################################################
