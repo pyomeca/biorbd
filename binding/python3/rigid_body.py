@@ -4,7 +4,22 @@ import numpy as np
 from .utils import get_range_q
 
 
-def marker_index(model, marker_name):
+def marker_index(model, marker_name: str) -> int:
+    """
+    Return the index in the model of the desired marker.
+    A ValueError is raised if the marker is not in the model
+
+    Parameters
+    ----------
+    model: biorbd.Model
+        The biorbd model
+    marker_name: str
+        The name of the marker to get the index from
+    Returns
+    -------
+    The index of the marker.
+    """
+
     try:
         return [n.to_string() for n in model.markerNames()].index(marker_name)
     except ValueError:
@@ -12,10 +27,48 @@ def marker_index(model, marker_name):
 
 
 def segment_index(model, segment_name):
+    """
+    Return the index in the model of the desired segment.
+    A ValueError is raised if the segment is not in the model
+
+    Parameters
+    ----------
+    model: biorbd.Model
+        The biorbd model
+    segment_name: str
+        The name of the segment to get the index from
+    Returns
+    -------
+    The index of the segment.
+    """
+
     try:
         return [model.segment(i).name().to_string() for i in range(model.nbSegment())].index(segment_name)
     except ValueError:
         raise ValueError(f"{segment_name} is not in the biorbd model")
+
+
+def markers_to_array(model, q: np.ndarray) -> np.ndarray:
+    """
+    Get all markers position from a position q in the format (3 x NMarker x NTime).
+    This function probably only works with the Eigen backend
+
+    Parameters
+    ----------
+    model: biorbd.Model
+        The biorbd model
+    q: np.ndarray
+        The matrix of generalized coordinate in the format (NDof x NTime)
+
+    Returns
+    -------
+    The markers position in the format (3 x NMarker x NTime)
+    """
+
+    markers = np.ndarray((3, model.nbMarkers(), q.shape[1]))
+    for i, q_tp in enumerate(q.T):
+        markers[:, :, i] = np.array([mark.to_array() for mark in model.markers(q_tp)]).T
+    return markers
 
 
 class InverseKinematics:
@@ -295,3 +348,4 @@ class InverseKinematics:
         )
 
         return self.output
+
