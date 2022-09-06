@@ -1,5 +1,5 @@
 import numpy as np
-from . import biorbd
+from . import biorbd  # This is created while installing using CMake
 from .biorbd import *
 from ._version import __version__
 from .surface_max_torque_actuator import *
@@ -9,11 +9,13 @@ from .model_creation import (
     Marker,
     Segment,
     KinematicChain,
-    DeLeva,
+    DeLevaDynamicModel,
     RT,
     Axis,
     KinematicModelGeneric,
     SegmentCoordinateSystem,
+    Data,
+    C3dData
 )
 
 if biorbd.currentLinearAlgebraBackend() == 1:
