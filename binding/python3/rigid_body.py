@@ -1,3 +1,4 @@
+import biorbd
 from scipy import optimize
 import numpy as np
 
@@ -69,6 +70,58 @@ def markers_to_array(model, q: np.ndarray) -> np.ndarray:
     for i, q_tp in enumerate(q.T):
         markers[:, :, i] = np.array([mark.to_array() for mark in model.markers(q_tp)]).T
     return markers
+
+
+def extended_kalman_filter(model: biorbd.Model, trial: str) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Reconstruct the kinematics of the specified trial assuming a biorbd model is loaded using an Extended Kalman filter
+
+    Parameters
+    ----------
+    model
+        The model to use to reconstruct the kinematics
+    trial
+        The path to the c3d file of the trial to reconstruct the kinematics from
+
+    Returns
+    -------
+    First element is the time vector, the next three are the q, qdot and qddot computed from the EKF.
+    These three matrices are of size nq x ntimes
+    """
+    import ezc3d
+    marker_names = tuple(n.to_string() for n in model.technicalMarkerNames())
+
+    c3d = ezc3d.c3d(trial, extract_forceplat_data=True)
+    labels = c3d["parameters"]["POINT"]["LABELS"]["value"]
+    data = c3d["data"]["points"]
+    n_frames = data.shape[2]
+    index_in_c3d = np.array(tuple(labels.index(name) if name in labels else -1 for name in marker_names))
+    markers_in_c3d = np.ndarray((3, len(index_in_c3d), n_frames)) * np.nan
+    markers_in_c3d[:, index_in_c3d >= 0, :] = data[:3, index_in_c3d[index_in_c3d >= 0], :] / 1000  # To meter
+
+    # Create a Kalman filter structure
+    freq = c3d["parameters"]["POINT"]["RATE"]["value"][0]
+    params = biorbd.KalmanParam(freq)
+    kalman = biorbd.KalmanReconsMarkers(model, params)
+
+    # Perform the kalman filter for each frame (the first frame is much longer than the next)
+    q = biorbd.GeneralizedCoordinates(model)
+    qdot = biorbd.GeneralizedVelocity(model)
+    qddot = biorbd.GeneralizedAcceleration(model)
+    frame_rate = c3d["header"]["points"]["frame_rate"]
+    first_frame = c3d["header"]["points"]["first_frame"]
+    last_frame = c3d["header"]["points"]["last_frame"]
+    t = np.linspace(first_frame / frame_rate, last_frame / frame_rate, n_frames)
+    q_out = np.ndarray((model.nbQ(), n_frames))
+    qdot_out = np.ndarray((model.nbQdot(), n_frames))
+    qddot_out = np.ndarray((model.nbQddot(), n_frames))
+    for i in range(n_frames):
+        kalman.reconstructFrame(model, np.reshape(markers_in_c3d[:, :, i].T, -1), q, qdot, qddot)
+        q_out[:, i] = q.to_array()
+        qdot_out[:, i] = qdot.to_array()
+        qddot_out[:, i] = qddot.to_array()
+
+    return t, q_out, qdot_out, qddot_out
 
 
 class InverseKinematics:
@@ -348,4 +401,3 @@ class InverseKinematics:
         )
 
         return self.output
-

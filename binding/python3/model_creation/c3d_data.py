@@ -14,7 +14,7 @@ class C3dData:
         if self.data["data"]["points"].shape[2] == 1 and self.last_frame == -1:
             self.last_frame = 2  # This is a bug otherwise since data[:, :, 0:-1] returns nothing
 
-    def mean_markers(self, marker_names: tuple[str, ...]) -> np.ndarray:
+    def mean_marker_positions(self, marker_names: tuple[str, ...]) -> np.ndarray:
         return self._to_meter(
             np.mean(
                 np.nanmean(

@@ -69,7 +69,7 @@ class Marker:
         if isinstance(from_markers, str):
             from_markers = (from_markers,)
 
-        position = data.mean_markers(marker_names=from_markers)
+        position = data.mean_marker_positions(marker_names=from_markers)
         if np.isnan(position).any():
             raise RuntimeError(f"The markers {from_markers} are not present in the data")
         position = (parent_rt.transpose if parent_rt is not None else np.identity(4)) @ position

@@ -1,33 +1,67 @@
 import biorbd
 import numpy as np
 
-from .segment import Segment
+
+class Param:
+    """
+    This is a convenient class to hold inertia parameter information of the DeLeva model below
+    """
+    def __init__(
+        self,
+        marker_names: tuple[str, ...],
+        mass: float,
+        center_of_mass: float,
+        radii: tuple[float, float, float],
+    ):
+        """
+        Parameters
+        ----------
+        marker_names
+            The name of the markers that creates the vector to compute the length of the segment from medial to lateral
+        mass
+            The relative mass of the total body mass
+        center_of_mass
+            The position of the center of mass as a percentage of the distance from medial to distal
+        radii
+            The xx, yy, zz, (Sagittal, Transverse, Longitudinal) radii of giration
+        """
+        self.marker_names = marker_names
+        self.mass = mass
+        self.center_of_mass = center_of_mass
+        self.radii = radii
 
 
 class DeLevaDynamicModel:
     """
     This is the implementation from DeLeva (1996) "Adjustments to Zatsiorsky-Seluyanov's segment inertia parameters"
-    of the DynamicModel protocol of model_creation
+    of the DynamicModel protocol of model_creation.
+    Please note that this model is designed for a 2D model (that is, there is only one arm and one leg with their
+    inertial parameters doubled).
+    The kinematic model should be named as such (SEGMENT_NAME: from 'MEDIAL_MARKER' to 'LATERAL_MARKER'):
+        'HEAD': from 'TOP_HEAD' to 'SHOULDER'
+        'TRUNK': from 'SHOULDER' to 'PELVIS'
+        'UPPER_ARM': from 'SHOULDER' to 'ELBOW'
+        'LOWER_ARM': from 'ELBOW' to 'WRIST'
+        'HAND': from 'WRIST' to 'FINGER'
+        'THIGH': from 'PELVIS' to 'KNEE'
+        'SHANK': from 'KNEE' to 'ANKLE'
+        'FOOT': from 'ANKLE' to 'TOE'
     """
-    class Param:
-        def __init__(
-            self,
-            marker_names: tuple[str, ...],  # The name of the markers medial/lateral
-            mass: float | int,  # Percentage of the total body mass
-            center_of_mass: float | int,
-            # Position of the center of mass as a percentage of the distance from medial to distal
-            radii: tuple[float | int, float | int, float | int],
-            # [Sagittal, Transverse, Longitudinal] radii of giration
-        ):
-            self.marker_names = marker_names
-            self.mass = mass
-            self.center_of_mass = center_of_mass
-            self.radii = radii
 
-    def __init__(self, sex: str, mass: float | int, model: biorbd.Model):
-        self.sex = sex  # The sex of the subject
-        self.mass = mass  # The mass of the subject
-        self.model = model  # The biorbd model. This is to compute lengths
+    def __init__(self, sex: str, mass: float, model: biorbd.Model):
+        """
+        Parameters
+        ----------
+        sex
+            The sex of the subject ('male', 'female')
+        mass
+            The mass of the subject
+        model
+            The biorbd model. This is to compute lengths
+        """
+        self.sex = sex
+        self.mass = mass
+        self.model = model
 
         # Produce some easy to access variables
         self.q_zero = np.zeros((model.nbQ()))
@@ -107,10 +141,14 @@ class DeLevaDynamicModel:
             },
         }
 
-    def segment_mass(self, segment: Segment):
+    @property
+    def segment_names(self) -> tuple[str, ...]:
+        return tuple(self.table["male"].keys())
+
+    def segment_mass(self, segment: str) -> float:
         return self.table[self.sex][segment].mass * self.mass
 
-    def segment_length(self, segment: Segment):
+    def segment_length(self, segment: str) -> float:
         table = self.table[self.sex][segment]
 
         # Find the position of the markers when the model is in resting position
@@ -123,9 +161,7 @@ class DeLevaDynamicModel:
         # Compute the Euclidian distance between the two positions
         return np.linalg.norm(marker_positions[:, idx_distal] - marker_positions[:, idx_proximal])
 
-    def segment_center_of_mass(self, segment: Segment, inverse_proximal: bool = False):
-        # This method will compute the length of the required segment based on the biorbd model and required markers
-        # If inverse_proximal is set to True, then the value is returned from the distal position
+    def segment_center_of_mass(self, segment: str, inverse_proximal: bool = False) -> tuple[float, float, float]:
         table = self.table[self.sex][segment]
 
         # Find the position of the markers when the model is in resting position
@@ -146,10 +182,9 @@ class DeLevaDynamicModel:
             )
         return tuple(center_of_mass)  # convert the result to a Tuple which is good practise
 
-    def segment_moment_of_inertia(self, segment: Segment):
+    def segment_moment_of_inertia(self, segment: str) -> tuple[float, float, float]:
         mass = self.segment_mass(segment)
         length = self.segment_length(segment)
         radii = self.table[self.sex][segment].radii
 
         return mass * (length * radii[0]) ** 2, mass * (length * radii[1]) ** 2, mass * (length * radii[2]) ** 2
-

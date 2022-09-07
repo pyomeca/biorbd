@@ -1,18 +1,51 @@
 from .kinematic_chain import KinematicChain
 from .marker_generic import MarkerGeneric
-from .protocols import Data
+from .protocols import Data, GenericDynamicModel
 from .segment import Segment
 from .segment_coordinate_system import SegmentCoordinateSystem
 from .segment_generic import SegmentGeneric
 from .rototranslation import RT
 
 
-class KinematicModelGeneric:
+class GenericBiomechanicalModel:
     def __init__(self, bio_sym_path: str = None):
         self.segments = {}
+        self._dynamic_model = None
         if bio_sym_path is None:
             return
         raise NotImplementedError("bioMod files are not readable yet")
+
+    @property
+    def dynamic_model(self) -> GenericDynamicModel:
+        """
+        Get the dynamic model attached to the kinematic model
+        """
+        return self._dynamic_model
+
+    @dynamic_model.setter
+    def dynamic_model(self, dynamic_model: GenericDynamicModel) -> None:
+        """
+        Attach a dynamic model to the kinematic model. The name of the segments must exactly match the name of the
+        segments of the kinematic model, otherwise a ValueError is raised
+
+        Parameters
+        ----------
+        dynamic_model
+            The model to attach
+        """
+
+        # Perform a check that all the names in the dynamic model appear in the kinematic model
+        segments_in_dynamics = dynamic_model.segment_names
+        for name in segments_in_dynamics:
+            if name not in self.segments:
+                raise ValueError(f'The segment {name} is defined in the dynamic model, but not in the kinematic model')
+
+        # Perform the same, but the other way around
+        for name in self.segments:
+            if name not in segments_in_dynamics:
+                raise ValueError(f'The segment {name} is defined in the kinematic model, but not in the dynamic model')
+
+        self._dynamic_model = dynamic_model
 
     def add_segment(
         self,
@@ -82,16 +115,17 @@ class KinematicModelGeneric:
             )
         )
 
-    def generate_personalized(self, data: Data, save_path: str):
+    def write(self, save_path: str, data: Data):
         """
-        Collapse the model to an actual personalized kinematic chain based on the model and the data file
+        Collapse the model to an actual personalized kinematic chain based on the model and the data file (usually
+        a static trial)
 
         Parameters
         ----------
-        data
-            The data to collapse the model from
         save_path
             The path to save the bioMod
+        data
+            The data to collapse the model from
         """
 
         segments = []
