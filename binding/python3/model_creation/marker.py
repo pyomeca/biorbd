@@ -1,5 +1,6 @@
 import numpy as np
 
+from .equation import Equation
 from .protocols import Data
 
 
@@ -38,7 +39,7 @@ class Marker:
     def from_data(
         data: Data,
         name: str,
-        from_markers: str | tuple[str, ...],
+        equation: Equation,
         parent_name: str,
         parent_rt: "RT" = None,
         is_technical: bool = True,
@@ -54,8 +55,8 @@ class Marker:
             The data to pick the data from
         name
             The name of the new marker
-        from_markers
-            The name of the markers in the data
+        equation
+            The equation to defines the marker
         parent_name
             The name of the parent the marker is attached to
         parent_rt
@@ -66,12 +67,9 @@ class Marker:
             If the marker should be flagged as an anatomical marker
         """
 
-        if isinstance(from_markers, str):
-            from_markers = (from_markers,)
-
-        position = data.mean_marker_positions(marker_names=from_markers)
+        position = data.evaluate_equation(equation)
         if np.isnan(position).any():
-            raise RuntimeError(f"The markers {from_markers} are not present in the data")
+            raise RuntimeError(f"The equation {equation} cannot be evaluated")
         position = (parent_rt.transpose if parent_rt is not None else np.identity(4)) @ position
         return Marker(name, parent_name, position[:3], is_technical=is_technical, is_anatomical=is_anatomical)
 

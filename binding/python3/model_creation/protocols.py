@@ -1,11 +1,23 @@
 from typing import Protocol
 import numpy as np
 
+from .equation import Equation
+
 
 class Data(Protocol):
     def mean_marker_positions(self, marker_names: tuple[str, ...]) -> np.ndarray:
         """
         Return the actual data of specific markers meaned down to an XYZ vector
+        """
+
+    def evaluate_equation(self, equation: Equation) -> np.ndarray:
+        """
+        Return the actual data of specific markers evaluated to an XYZ vector
+
+        Parameters
+        ----------
+        equation
+            The equation to evaluate
         """
 
 

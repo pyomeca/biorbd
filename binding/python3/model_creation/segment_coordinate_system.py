@@ -1,5 +1,6 @@
 from .axis import Axis
 from .axis_generic import AxisGeneric
+from .equation import Equation
 from .marker_generic import MarkerGeneric
 from .rototranslation_generic import RTGeneric
 
@@ -7,11 +8,9 @@ from .rototranslation_generic import RTGeneric
 class SegmentCoordinateSystem:
     def __init__(
         self,
-        origin_markers: str | tuple[str, ...],
-        first_axis_name: Axis.Name,
-        first_axis_markers: tuple[str | tuple[str, ...], str | tuple[str, ...]],
-        second_axis_name: Axis.Name,
-        second_axis_markers: tuple[str | tuple[str, ...], str | tuple[str, ...]],
+        origin: Equation,
+        first_axis: tuple[Axis.Name, Equation],
+        second_axis: tuple[Axis.Name, Equation],
         axis_to_keep: Axis.Name,
     ):
         """
@@ -39,18 +38,10 @@ class SegmentCoordinateSystem:
             first_axis_name or second_axis_name
         """
 
-        first_axis_tp = AxisGeneric(
-            name=first_axis_name,
-            start=MarkerGeneric(name="", from_markers=first_axis_markers[0], parent_name=""),
-            end=MarkerGeneric(name="", from_markers=first_axis_markers[1], parent_name=""),
-        )
-        second_axis_tp = AxisGeneric(
-            name=second_axis_name,
-            start=MarkerGeneric(name="", from_markers=second_axis_markers[0], parent_name=""),
-            end=MarkerGeneric(name="", from_markers=second_axis_markers[1], parent_name=""),
-        )
+        first_axis_tp = AxisGeneric(name=first_axis[0], equation=first_axis[1])
+        second_axis_tp = AxisGeneric(name=second_axis[0], equation=second_axis[1])
 
         self.rt = RTGeneric(
-            origin=MarkerGeneric(name="", from_markers=origin_markers, parent_name=""),
+            origin=MarkerGeneric(equation=origin, parent_name=""),
             axes=(first_axis_tp, second_axis_tp, axis_to_keep),
         )

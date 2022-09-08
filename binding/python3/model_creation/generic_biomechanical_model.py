@@ -1,4 +1,5 @@
 from .kinematic_chain import KinematicChain
+from .equation import Equation
 from .marker_generic import MarkerGeneric
 from .protocols import Data, GenericDynamicModel
 from .segment import Segment
@@ -83,7 +84,7 @@ class GenericBiomechanicalModel:
         self,
         segment: str,
         name: str,
-        from_markers: str | tuple[str, ...] = None,
+        equation: Equation = None,
         is_technical: bool = True,
         is_anatomical: bool = False,
     ):
@@ -95,7 +96,7 @@ class GenericBiomechanicalModel:
             The name of the segment to attach the marker to
         name
             The name of the marker. It must be unique accross the model
-        from_markers
+        equation
             The name of the markers to create the marker from. It is used to create virtual marker from
             combination of other markers. If it is empty, the marker is normal
         is_technical
@@ -103,12 +104,12 @@ class GenericBiomechanicalModel:
         is_anatomical
             If the marker should be flaged as an anatomical marker
         """
-        if from_markers is None:
-            from_markers = name
+        if equation is None:
+            equation = name
         self.segments[segment].add_marker(
             MarkerGeneric(
                 name=name,
-                from_markers=from_markers,
+                equation=equation,
                 parent_name=segment,
                 is_technical=is_technical,
                 is_anatomical=is_anatomical,

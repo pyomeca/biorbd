@@ -1,6 +1,8 @@
 import numpy as np
 import ezc3d
 
+from .equation import Equation
+
 
 class C3dData:
     """
@@ -26,6 +28,9 @@ class C3dData:
                 axis=1,
             )
         )
+
+    def evaluate_equation(self, equation: Equation):
+        marker_names = equation.get_marker_names()
 
     def _indices_in_c3d(self, from_markers: tuple[str, ...]) -> tuple[int, ...]:
         return tuple(self.data["parameters"]["POINT"]["LABELS"]["value"].index(n) for n in from_markers)

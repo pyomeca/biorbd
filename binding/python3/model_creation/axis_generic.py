@@ -1,33 +1,35 @@
 from .axis import Axis
+from .equation import Equation
 from .marker_generic import MarkerGeneric
 from .protocols import Data
 from .rototranslation import RT
 
 
 class AxisGeneric:
-    def __init__(self, name: Axis.Name, start: MarkerGeneric, end: MarkerGeneric):
+    def __init__(self, name: Axis.Name, equation: Equation):
         """
         Parameters
         ----------
-        name:
+        name
             The AxisName of the Axis
-        start:
-            The initial Marker
+        equation
+            The equation that defines the axis
         """
         self.name = name
-        self.start_point = start
-        self.end_point = end
+        self.equation = equation
 
     def to_axis(self, data: Data, parent_rt: RT = None) -> Axis:
         """
         Compute the axis from actual data
         Parameters
         ----------
-        data:
+        data
             The actual data
-        parent_rt:
+        parent_rt
             The transformation from global to local
         """
+
+        marker_names = self.equation.get_marker_names()
 
         start = self.start_point.to_marker(data, parent_rt)
         end = self.end_point.to_marker(data, parent_rt)
