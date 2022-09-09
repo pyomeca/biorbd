@@ -1,4 +1,4 @@
-from .axis_generic import AxisGeneric
+from .axis import Axis
 from .c3d_data import C3dData
 from .de_leva_dynamic_model import DeLevaDynamicModel
 from .kinematic_chain import KinematicChain

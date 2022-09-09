@@ -4,7 +4,7 @@ from .protocols import Data
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
 
-class AxisGeneric:
+class Axis:
     class Name(AxisReal.Name):
         """
         A copy of AxisReal.Name
