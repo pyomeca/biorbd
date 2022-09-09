@@ -1,7 +1,8 @@
 from typing import Callable
 
 from .axis_real import AxisReal
-from .marker_generic import Marker
+from .kinematic_chain import KinematicChain
+from .marker import Marker
 from .protocols import Data
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
@@ -30,17 +31,22 @@ class Axis:
         self.start = Marker(start)
         self.end = Marker(end)
 
-    def to_axis(self, data: Data, parent_scs: SegmentCoordinateSystemReal = None) -> AxisReal:
+    def to_axis(
+            self, data: Data, kinematic_chain: KinematicChain, parent_scs: SegmentCoordinateSystemReal = None
+    ) -> AxisReal:
         """
         Compute the axis from actual data
         Parameters
         ----------
         data
             The actual data
+        kinematic_chain
+            The model as it is constructed at that particular time. It is useful if some values must be obtained from
+            previously computed values
         parent_scs
             The transformation from global to local
         """
 
-        start = self.start.to_marker(data, parent_scs)
-        end = self.end.to_marker(data, parent_scs)
+        start = self.start.to_marker(data, kinematic_chain, parent_scs)
+        end = self.end.to_marker(data, kinematic_chain, parent_scs)
         return AxisReal(self.name, start, end)

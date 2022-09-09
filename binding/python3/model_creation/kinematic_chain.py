@@ -1,9 +1,7 @@
-from .segment_real import SegmentReal
-
-
 class KinematicChain:
-    def __init__(self, segments: tuple[SegmentReal, ...]):
-        self.segments = segments
+    def __init__(self):
+        from .segment_real import SegmentReal  # Imported here to prevent from circular imports
+        self.segments: list[SegmentReal, ...] = []
 
     def __str__(self):
         out_string = "version 4\n\n"

@@ -1,7 +1,7 @@
 from typing import Callable
 
 from .kinematic_chain import KinematicChain
-from .marker_generic import Marker
+from .marker import Marker
 from .protocols import Data, GenericDynamicModel
 from .segment_real import SegmentReal
 from .segment_coordinate_system import SegmentCoordinateSystem
@@ -108,7 +108,7 @@ class BiomechanicalModel:
         self.segments[segment].add_marker(
             Marker(
                 name=name,
-                function=function if function is not None else lambda m: m[name],
+                function=function if function is not None else name,
                 parent_name=segment,
                 is_technical=is_technical,
                 is_anatomical=is_anatomical,
@@ -128,17 +128,19 @@ class BiomechanicalModel:
             The data to collapse the model from
         """
 
-        segments = []
+        model = KinematicChain()
         for name in self.segments:
             s = self.segments[name]
-            parent_index = [segment.name for segment in segments].index(s.parent_name) if s.parent_name else None
+            parent_index = [segment.name for segment in model.segments].index(s.parent_name) if s.parent_name else None
             if s.segment_coordinate_system is None:
                 scs = SegmentCoordinateSystemReal()
             else:
                 scs = s.segment_coordinate_system.to_scs(
-                    data, segments[parent_index].segment_coordinate_system if parent_index is not None else None
+                    data,
+                    model,
+                    model.segments[parent_index].segment_coordinate_system if parent_index is not None else None,
                 )
-            segments.append(
+            model.segments.append(
                 SegmentReal(
                     name=s.name,
                     parent_name=s.parent_name,
@@ -149,7 +151,6 @@ class BiomechanicalModel:
             )
 
             for marker in s.markers:
-                segments[-1].add_marker(marker.to_marker(data, scs))
+                model.segments[-1].add_marker(marker.to_marker(data, model, scs))
 
-        model = KinematicChain(tuple(segments))
         model.write(save_path)

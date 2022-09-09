@@ -1,4 +1,4 @@
-from .marker_generic import Marker
+from .marker import Marker
 from .segment_coordinate_system import SegmentCoordinateSystem
 
 

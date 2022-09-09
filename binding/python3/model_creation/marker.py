@@ -1,5 +1,6 @@
 from typing import Callable
 
+from .kinematic_chain import KinematicChain
 from .marker_real import MarkerReal
 from .protocols import Data
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
@@ -32,17 +33,20 @@ class Marker:
             If the marker should be flagged as an anatomical marker
         """
         self.name = name
-        self.function = (lambda m: m[function]) if isinstance(function, str) else function
+        self.function = (lambda m, kc: m[function]) if isinstance(function, str) else function
         self.parent_name = parent_name
         self.is_technical = is_technical
         self.is_anatomical = is_anatomical
 
-    def to_marker(self, data: Data, parent_scs: SegmentCoordinateSystemReal = None) -> MarkerReal:
+    def to_marker(
+            self, data: Data, kinematic_chain: KinematicChain, parent_scs: SegmentCoordinateSystemReal = None
+    ) -> MarkerReal:
         return MarkerReal.from_data(
             data,
             self.name,
             self.function,
             self.parent_name,
+            kinematic_chain,
             parent_scs,
             is_technical=self.is_technical,
             is_anatomical=self.is_anatomical,

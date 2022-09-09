@@ -2,6 +2,7 @@ from typing import Callable
 
 import numpy as np
 
+from .kinematic_chain import KinematicChain
 from .protocols import Data
 
 
@@ -42,6 +43,7 @@ class MarkerReal:
         name: str,
         function: Callable,
         parent_name: str,
+        kinematic_chain: KinematicChain,
         parent_scs: "SegmentCoordinateSystemReal" = None,
         is_technical: bool = True,
         is_anatomical: bool = False,
@@ -60,6 +62,9 @@ class MarkerReal:
             The function (f(m) -> np.ndarray, where m is a dict of markers (XYZ1 x time)) that defines the marker
         parent_name
             The name of the parent the marker is attached to
+        kinematic_chain
+            The model as it is constructed at that particular time. It is useful if some values must be obtained from
+            previously computed values
         parent_scs
             The segment coordinate system of the parent to transform the marker from global to local
         is_technical
@@ -69,7 +74,7 @@ class MarkerReal:
         """
 
         # Get the position of the markers and do some sanity checks
-        p: np.ndarray = function(data.values)
+        p: np.ndarray = function(data.values, kinematic_chain)
         if not isinstance(p, np.ndarray):
             raise RuntimeError(f"The function {function} must return a np.ndarray of dimension 4xT (XYZ1 x time)")
         if len(p.shape) == 1:
@@ -79,6 +84,7 @@ class MarkerReal:
             raise RuntimeError(f"The function {function} must return a np.ndarray of dimension 4xT (XYZ1 x time)")
 
         mean_p = (parent_scs.transpose if parent_scs is not None else np.identity(4)) @ np.nanmean(p, axis=1)
+        mean_p[3] = 1
         if np.isnan(mean_p).any():
             raise RuntimeError(f"All the values for {function} returned nan which is not permitted")
         return MarkerReal(name, parent_name, mean_p[:3], is_technical=is_technical, is_anatomical=is_anatomical)

@@ -2,7 +2,8 @@ from typing import Callable
 
 from .axis_real import AxisReal
 from .axis import Axis
-from .marker_generic import Marker
+from .kinematic_chain import KinematicChain
+from .marker import Marker
 from .protocols import Data
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
@@ -38,7 +39,9 @@ class SegmentCoordinateSystem:
         self.second_axis = second_axis
         self.axis_to_keep = axis_to_keep
 
-    def to_scs(self, data: Data, parent_scs: SegmentCoordinateSystemReal) -> SegmentCoordinateSystemReal:
+    def to_scs(
+            self, data: Data, kinematic_chain: KinematicChain, parent_scs: SegmentCoordinateSystemReal
+    ) -> SegmentCoordinateSystemReal:
         """
         Collapse the generic SegmentCoordinateSystem to an actual SegmentCoordinateSystemReal with value
         based on the model and the data
@@ -47,14 +50,19 @@ class SegmentCoordinateSystem:
         ----------
         data
             The actual data
+        kinematic_chain
+            The model as it is constructed at that particular time. It is useful if some values must be obtained from
+            previously computed values
         parent_scs
             The SegmentCoordinateSystemReal of the parent to compute the local transformation
         Returns
         -------
         The collapsed SegmentCoordinateSystemReal
         """
-        origin = self.origin.to_marker(data)
 
         return SegmentCoordinateSystemReal.from_markers(
-            origin, self.first_axis.to_axis(data), self.second_axis.to_axis(data), self.axis_to_keep, parent_scs
+            self.origin.to_marker(data, kinematic_chain),
+            self.first_axis.to_axis(data, kinematic_chain),
+            self.second_axis.to_axis(data, kinematic_chain),
+            self.axis_to_keep, parent_scs
         )
