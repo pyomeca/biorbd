@@ -1,24 +1,9 @@
 from typing import Protocol
 import numpy as np
 
-from .equation import Equation
-
 
 class Data(Protocol):
-    def mean_marker_positions(self, marker_names: tuple[str, ...]) -> np.ndarray:
-        """
-        Return the actual data of specific markers meaned down to an XYZ vector
-        """
-
-    def evaluate_equation(self, equation: Equation) -> np.ndarray:
-        """
-        Return the actual data of specific markers evaluated to an XYZ vector
-
-        Parameters
-        ----------
-        equation
-            The equation to evaluate
-        """
+    values: dict[str, np.ndarray]  # The data in the format [marker_names, 4xT] where 3xT is the XYZ1 x time matrix
 
 
 class GenericDynamicModel(Protocol):
@@ -27,6 +12,7 @@ class GenericDynamicModel(Protocol):
         """
         Get all the name of all the segments in the dynamic model
         """
+        raise NotImplementedError
 
     def segment_mass(self, segment: str) -> float:
         """
@@ -42,7 +28,7 @@ class GenericDynamicModel(Protocol):
         The mass of the requested segment
         """
 
-    def segment_center_of_mass(self, segment: str, inverse_proximal: bool = False)-> tuple[float, float, float]:
+    def segment_center_of_mass(self, segment: str, inverse_proximal: bool = False) -> tuple[float, float, float]:
         """
         Computes the position of the center of mass of the requested segment, given from the medial
         marker. If 'inverse_proximal' is set to True, then the value is returned from the distal position

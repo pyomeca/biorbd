@@ -1,6 +1,7 @@
+from typing import Callable
+
 import numpy as np
 
-from .equation import Equation
 from .protocols import Data
 
 
@@ -39,7 +40,7 @@ class Marker:
     def from_data(
         data: Data,
         name: str,
-        equation: Equation,
+        function: Callable,
         parent_name: str,
         parent_rt: "RT" = None,
         is_technical: bool = True,
@@ -55,8 +56,8 @@ class Marker:
             The data to pick the data from
         name
             The name of the new marker
-        equation
-            The equation to defines the marker
+        function
+            The function (f(m) -> np.ndarray, where m is a dict of markers (XYZ1 x time)) that defines the marker
         parent_name
             The name of the parent the marker is attached to
         parent_rt
@@ -67,11 +68,18 @@ class Marker:
             If the marker should be flagged as an anatomical marker
         """
 
-        position = data.evaluate_equation(equation)
-        if np.isnan(position).any():
-            raise RuntimeError(f"The equation {equation} cannot be evaluated")
-        position = (parent_rt.transpose if parent_rt is not None else np.identity(4)) @ position
-        return Marker(name, parent_name, position[:3], is_technical=is_technical, is_anatomical=is_anatomical)
+        # Get the position of the markers and do some sanity checks
+        p: np.ndarray = function(data.values)
+        if not isinstance(p, np.ndarray) or np.isnan(p).any():
+            raise RuntimeError(f"The function {function} must return a np.ndarray of dimension 4xT (XYZ1 x time)")
+        if (len(p.shape) == 1):
+            p = p[:, np.newaxis]
+
+        if len(p.shape) != 2 or p.shape[0] != 4:
+            raise RuntimeError(f"The function {function} must return a np.ndarray of dimension 4xT (XYZ1 x time)")
+
+        mean_p = (parent_rt.transpose if parent_rt is not None else np.identity(4)) @ np.nanmean(p, axis=1)
+        return Marker(name, parent_name, mean_p[:3], is_technical=is_technical, is_anatomical=is_anatomical)
 
     def __str__(self):
         # Define the print function, so it automatically formats things in the file properly

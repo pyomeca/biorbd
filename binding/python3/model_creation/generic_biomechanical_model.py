@@ -1,9 +1,10 @@
+from typing import Callable
+
 from .kinematic_chain import KinematicChain
-from .equation import Equation
 from .marker_generic import MarkerGeneric
 from .protocols import Data, GenericDynamicModel
 from .segment import Segment
-from .segment_coordinate_system import SegmentCoordinateSystem
+from .segment_coordinate_system_generic import SegmentCoordinateSystemGeneric
 from .segment_generic import SegmentGeneric
 from .rototranslation import RT
 
@@ -54,7 +55,7 @@ class GenericBiomechanicalModel:
         parent_name: str = "",
         translations: str = "",
         rotations: str = "",
-        segment_coordinate_system: SegmentCoordinateSystem = None,
+        segment_coordinate_system: SegmentCoordinateSystemGeneric = None,
     ):
         """
         Add a new segment to the model
@@ -84,7 +85,7 @@ class GenericBiomechanicalModel:
         self,
         segment: str,
         name: str,
-        equation: Equation = None,
+        function: Callable = None,
         is_technical: bool = True,
         is_anatomical: bool = False,
     ):
@@ -95,21 +96,19 @@ class GenericBiomechanicalModel:
         segment
             The name of the segment to attach the marker to
         name
-            The name of the marker. It must be unique accross the model
-        equation
-            The name of the markers to create the marker from. It is used to create virtual marker from
-            combination of other markers. If it is empty, the marker is normal
+            The name of the marker. It must be unique across the model
+        function
+            The function (f(m) -> np.ndarray, where m is a dict of markers (XYZ1 x time)) that defines the marker
         is_technical
-            If the marker should be flaged as a technical marker
+            If the marker should be flagged as a technical marker
         is_anatomical
-            If the marker should be flaged as an anatomical marker
+            If the marker should be flagged as an anatomical marker
         """
-        if equation is None:
-            equation = name
+
         self.segments[segment].add_marker(
             MarkerGeneric(
                 name=name,
-                equation=equation,
+                function=function if function is not None else lambda m: m[name],
                 parent_name=segment,
                 is_technical=is_technical,
                 is_anatomical=is_anatomical,
@@ -133,22 +132,24 @@ class GenericBiomechanicalModel:
         for name in self.segments:
             s = self.segments[name]
             parent_index = [segment.name for segment in segments].index(s.parent_name) if s.parent_name else None
-            if s.rt is None:
-                rt = RT()
+            if s.segment_coordinate_system is None:
+                scs = RT()
             else:
-                rt = s.rt.to_rt(data, segments[parent_index].rt if parent_index is not None else None)
+                scs = s.segment_coordinate_system.to_rt(
+                    data, segments[parent_index].segment_coordinate_system if parent_index is not None else None
+                )
             segments.append(
                 Segment(
                     name=s.name,
                     parent_name=s.parent_name,
-                    rt=rt,
+                    segment_coordinate_system=scs,
                     translations=s.translations,
                     rotations=s.rotations,
                 )
             )
 
             for marker in s.markers:
-                segments[-1].add_marker(marker.to_marker(data, rt))
+                segments[-1].add_marker(marker.to_marker(data, scs))
 
         model = KinematicChain(tuple(segments))
         model.write(save_path)

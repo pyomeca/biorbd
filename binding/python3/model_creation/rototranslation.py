@@ -24,22 +24,26 @@ class RT:
         self.is_rt_local = is_rt_local
 
     @staticmethod
-    def from_markers(origin: Marker, axes: tuple[Axis, Axis, Axis.Name], parent_rt: "RT" = None) -> "RT":
+    def from_markers(
+            origin: Marker, first_axis: Axis, second_axis: Axis, axis_to_keep: Axis.Name, parent_rt: "RT" = None
+    ) -> "RT":
         """
         Parameters
         ----------
         origin
             The marker at the origin of the RT
-        axes
-            The axes that defines the RT, the AxisName is the axis to keep while constructing the RT
+        first_axis
+            The first axis defining the segment_coordinate_system
+        second_axis
+            The second axis defining the segment_coordinate_system
+        axis_to_keep
+            The Axis.Name of the axis to keep while recomputing the reference frame. It must be the same as either
+            first_axis.name or second_axis.name
         parent_rt
             The rt of the parent (is used when printing the model so RT is in parent's local reference frame
         """
 
         # Find the two adjacent axes and reorder accordingly (assuming right-hand RT)
-        first_axis = axes[0]
-        second_axis = axes[1]
-        axis_name_to_keep = axes[2]
         if first_axis.name == second_axis.name:
             raise ValueError("The two axes cannot be the same axis")
 
@@ -62,9 +66,9 @@ class RT:
         first_axis_vector = first_axis.axis()
         second_axis_vector = second_axis.axis()
         third_axis_vector = np.cross(first_axis_vector, second_axis_vector)
-        if axis_name_to_keep == first_axis.name:
+        if axis_to_keep == first_axis.name:
             second_axis_vector = np.cross(third_axis_vector, first_axis_vector)
-        elif axis_name_to_keep == second_axis.name:
+        elif axis_to_keep == second_axis.name:
             first_axis_vector = np.cross(second_axis_vector, third_axis_vector)
         else:
             raise ValueError("Name of axis to keep should be one of the two axes")

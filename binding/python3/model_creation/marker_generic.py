@@ -1,15 +1,15 @@
-from .protocols import Data
+from typing import Callable
 
-from .equation import Equation
 from .marker import Marker
+from .protocols import Data
 from .rototranslation import RT
 
 
 class MarkerGeneric:
     def __init__(
         self,
-        equation: Equation,
-        parent_name: str,
+        function: Callable,
+        parent_name: str = "",
         name: str = None,
         is_technical: bool = True,
         is_anatomical: bool = False,
@@ -19,19 +19,19 @@ class MarkerGeneric:
 
         Parameters
         ----------
-        equation:
-            The equation that defines the marker
-        parent_name:
+        function
+            The function (f(m) -> np.ndarray, where m is a dict of markers) that defines the marker with
+        parent_name
             The name of the parent the marker is attached to
-        name:
+        name
             The name of the new marker
         is_technical
-            If the marker should be flaged as a technical marker
+            If the marker should be flagged as a technical marker
         is_anatomical
-            If the marker should be flaged as an anatomical marker
+            If the marker should be flagged as an anatomical marker
         """
         self.name = name
-        self.equation = equation
+        self.function = function
         self.parent_name = parent_name
         self.is_technical = is_technical
         self.is_anatomical = is_anatomical
@@ -40,7 +40,7 @@ class MarkerGeneric:
         return Marker.from_data(
             data,
             self.name,
-            self.equation,
+            self.function,
             self.parent_name,
             parent_rt,
             is_technical=self.is_technical,

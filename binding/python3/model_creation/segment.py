@@ -7,7 +7,7 @@ class Segment:
         self,
         name,
         parent_name: str = "",
-        rt: RT = None,
+        segment_coordinate_system: RT = None,
         translations: str = "",
         rotations: str = "",
         mass: float | int = 0,
@@ -20,7 +20,7 @@ class Segment:
         self.translations = translations
         self.rotations = rotations
         self.markers = []
-        self.rt = rt
+        self.segment_coordinate_system = segment_coordinate_system
         self.mass = mass
         self.center_of_mass = center_of_mass if center_of_mass is not None else (0, 0, 0)
         self.inertia_xxyyzz = inertia_xxyyzz if inertia_xxyyzz is not None else (0, 0, 0)
@@ -34,8 +34,8 @@ class Segment:
         out_string = f"segment {self.name}\n"
         if self.parent_name:
             out_string += f"\tparent {self.parent_name}\n"
-        if self.rt:
-            out_string += f"\tRT {self.rt}\n"
+        if self.segment_coordinate_system:
+            out_string += f"\tRT {self.segment_coordinate_system}\n"
         if self.translations:
             out_string += f"\ttranslations {self.translations}\n"
         if self.rotations:
