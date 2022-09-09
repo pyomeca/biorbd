@@ -8,7 +8,7 @@ from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 class Marker:
     def __init__(
         self,
-        function: Callable,
+        function: Callable | str,
         parent_name: str = "",
         name: str = None,
         is_technical: bool = True,
@@ -20,7 +20,8 @@ class Marker:
         Parameters
         ----------
         function
-            The function (f(m) -> np.ndarray, where m is a dict of markers) that defines the marker with
+            The function (f(m) -> np.ndarray, where m is a dict of markers) that defines the marker with.
+            If a str is provided, the position of the corresponding marker is used
         parent_name
             The name of the parent the marker is attached to
         name
@@ -31,7 +32,7 @@ class Marker:
             If the marker should be flagged as an anatomical marker
         """
         self.name = name
-        self.function = function
+        self.function = (lambda m: m[function]) if isinstance(function, str) else function
         self.parent_name = parent_name
         self.is_technical = is_technical
         self.is_anatomical = is_anatomical

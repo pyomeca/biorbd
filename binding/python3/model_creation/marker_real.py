@@ -70,15 +70,17 @@ class MarkerReal:
 
         # Get the position of the markers and do some sanity checks
         p: np.ndarray = function(data.values)
-        if not isinstance(p, np.ndarray) or np.isnan(p).any():
+        if not isinstance(p, np.ndarray):
             raise RuntimeError(f"The function {function} must return a np.ndarray of dimension 4xT (XYZ1 x time)")
-        if (len(p.shape) == 1):
+        if len(p.shape) == 1:
             p = p[:, np.newaxis]
 
         if len(p.shape) != 2 or p.shape[0] != 4:
             raise RuntimeError(f"The function {function} must return a np.ndarray of dimension 4xT (XYZ1 x time)")
 
         mean_p = (parent_scs.transpose if parent_scs is not None else np.identity(4)) @ np.nanmean(p, axis=1)
+        if np.isnan(mean_p).any():
+            raise RuntimeError(f"All the values for {function} returned nan which is not permitted")
         return MarkerReal(name, parent_name, mean_p[:3], is_technical=is_technical, is_anatomical=is_anatomical)
 
     def __str__(self):

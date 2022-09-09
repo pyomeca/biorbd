@@ -1,3 +1,5 @@
+from typing import Callable
+
 from .axis_real import AxisReal
 from .axis import Axis
 from .marker_generic import Marker
@@ -8,7 +10,7 @@ from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 class SegmentCoordinateSystem:
     def __init__(
         self,
-        origin: Marker,
+        origin: Callable | str,
         first_axis: Axis,
         second_axis: Axis,
         axis_to_keep: AxisReal.Name,
@@ -19,8 +21,9 @@ class SegmentCoordinateSystem:
         Parameters
         ----------
         origin
-            The function (f(m) -> np.ndarray, where m is a dict of markers (XYZ1 x time)) that defines the origin of the reference
-            frame.
+            The function (f(m) -> np.ndarray, where m is a dict of markers (XYZ1 x time)) that defines the
+            origin of the reference frame.
+            If a str is provided, the position of the corresponding marker is used
         first_axis
             The first axis defining the segment_coordinate_system
         second_axis
@@ -30,7 +33,7 @@ class SegmentCoordinateSystem:
             first_axis.name or second_axis.name
         """
 
-        self.origin = origin
+        self.origin = Marker(origin)
         self.first_axis = first_axis
         self.second_axis = second_axis
         self.axis_to_keep = axis_to_keep

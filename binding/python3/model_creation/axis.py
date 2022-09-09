@@ -1,3 +1,5 @@
+from typing import Callable
+
 from .axis_real import AxisReal
 from .marker_generic import Marker
 from .protocols import Data
@@ -11,20 +13,22 @@ class Axis:
         """
         pass
 
-    def __init__(self, name: AxisReal.Name, start: Marker, end: Marker):
+    def __init__(self, name: AxisReal.Name, start: Callable | str, end: Callable | str):
         """
         Parameters
         ----------
         name
             The AxisName of the Axis
         start
-            The marker that defines the starting point of the axis
+            The function (f(m) -> np.ndarray, where m is a dict of markers) that defines the starting point of the axis.
+            If a str is provided, the position of the corresponding marker is used
         end
-            The marker that defines the ending point of the axis
+            The function (f(m) -> np.ndarray, where m is a dict of markers) that defines the end point of the axis.
+            If a str is provided, the position of the corresponding marker is used
         """
         self.name = name
-        self.start = start
-        self.end = end
+        self.start = Marker(start)
+        self.end = Marker(end)
 
     def to_axis(self, data: Data, parent_scs: SegmentCoordinateSystemReal = None) -> AxisReal:
         """
