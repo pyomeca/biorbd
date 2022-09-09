@@ -2,7 +2,7 @@ from typing import Callable
 
 from .marker_real import MarkerReal
 from .protocols import Data
-from .rototranslation import RT
+from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
 
 class MarkerGeneric:
@@ -36,7 +36,7 @@ class MarkerGeneric:
         self.is_technical = is_technical
         self.is_anatomical = is_anatomical
 
-    def to_marker(self, data: Data, parent_rt: RT = None) -> MarkerReal:
+    def to_marker(self, data: Data, parent_rt: SegmentCoordinateSystemReal = None) -> MarkerReal:
         return MarkerReal.from_data(
             data,
             self.name,

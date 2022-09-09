@@ -42,7 +42,7 @@ class MarkerReal:
         name: str,
         function: Callable,
         parent_name: str,
-        parent_rt: "RT" = None,
+        parent_rt: "SegmentCoordinateSystemReal" = None,
         is_technical: bool = True,
         is_anatomical: bool = False,
     ):
@@ -61,7 +61,7 @@ class MarkerReal:
         parent_name
             The name of the parent the marker is attached to
         parent_rt
-            The RT of the parent to transform the marker from global to local
+            The segment coordinate system of the parent to transform the marker from global to local
         is_technical
             If the marker should be flagged as a technical marker
         is_anatomical

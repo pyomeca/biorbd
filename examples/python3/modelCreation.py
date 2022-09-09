@@ -18,7 +18,7 @@ def model_creation_from_static(remove_temporary: bool = True):
     """
     We define a new model by feeding in the actual dimension and position of the model
     Please note that a bunch of useless markers are defined, this is for the other model creation which needs them
-    to define the RT matrices
+    to define the SegmentCoordinateSystem matrices
     """
     kinematic_model_file_path = "temporary.bioMod"
 

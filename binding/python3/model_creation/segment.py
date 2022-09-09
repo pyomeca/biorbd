@@ -1,5 +1,5 @@
 from .marker_real import MarkerReal
-from .rototranslation import RT
+from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
 
 class Segment:
@@ -7,7 +7,7 @@ class Segment:
         self,
         name,
         parent_name: str = "",
-        segment_coordinate_system: RT = None,
+        segment_coordinate_system: SegmentCoordinateSystemReal = None,
         translations: str = "",
         rotations: str = "",
         mass: float | int = 0,

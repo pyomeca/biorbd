@@ -6,15 +6,15 @@ from .axis_real import AxisReal
 from .marker_real import MarkerReal
 
 
-class RT:
-    def __init__(self, rt: np.ndarray = np.identity(4), parent_rt: "RT" = None, is_rt_local: bool = False):
+class SegmentCoordinateSystemReal:
+    def __init__(self, rt: np.ndarray = np.identity(4), parent_rt: "SegmentCoordinateSystemReal" = None, is_rt_local: bool = False):
         """
         Parameters
         ----------
         rt
-            The rt of the RT
+            The rt of the SegmentCoordinateSystemReal
         parent_rt
-            The rt of the parent (is used when printing the model so RT is in parent's local reference frame
+            The rt of the parent (is used when printing the model so SegmentCoordinateSystemReal is in parent's local reference frame
         is_rt_local
             If the rt is already in local reference frame
         """
@@ -25,13 +25,13 @@ class RT:
 
     @staticmethod
     def from_markers(
-            origin: MarkerReal, first_axis: AxisReal, second_axis: AxisReal, axis_to_keep: AxisReal.Name, parent_rt: "RT" = None
-    ) -> "RT":
+            origin: MarkerReal, first_axis: AxisReal, second_axis: AxisReal, axis_to_keep: AxisReal.Name, parent_rt: "SegmentCoordinateSystemReal" = None
+    ) -> "SegmentCoordinateSystemReal":
         """
         Parameters
         ----------
         origin
-            The marker at the origin of the RT
+            The marker at the origin of the SegmentCoordinateSystemReal
         first_axis
             The first axis defining the segment_coordinate_system
         second_axis
@@ -40,7 +40,7 @@ class RT:
             The Axis.Name of the axis to keep while recomputing the reference frame. It must be the same as either
             first_axis.name or second_axis.name
         parent_rt
-            The rt of the parent (is used when printing the model so RT is in parent's local reference frame
+            The rt of the parent (is used when printing the model so SegmentCoordinateSystemReal is in parent's local reference frame
         """
 
         # Find the two adjacent axes and reorder accordingly (assuming right-hand RT)
@@ -81,17 +81,17 @@ class RT:
         rt[:3, 3] = origin.position
         rt[3, 3] = 1
 
-        return RT(rt=rt, parent_rt=parent_rt)
+        return SegmentCoordinateSystemReal(rt=rt, parent_rt=parent_rt)
 
     @staticmethod
     def from_euler_and_translation(
         angles: tuple[float | int, ...],
         angle_sequence: str,
         translations: tuple[float | int, float | int, float | int],
-        parent_rt: "RT" = None,
-    ) -> "RT":
+        parent_rt: "SegmentCoordinateSystemReal" = None,
+    ) -> "SegmentCoordinateSystemReal":
         """
-        Construct a RT from angles and translations
+        Construct a SegmentCoordinateSystemReal from angles and translations
 
         Parameters
         ----------
@@ -102,7 +102,7 @@ class RT:
         translations
             The XYZ translations
         parent_rt
-            The rt of the parent (is used when printing the model so RT is in parent's local reference frame
+            The rt of the parent (is used when printing the model so SegmentCoordinateSystemReal is in parent's local reference frame
         """
         matrix = {
             "x": lambda x: np.array(((1, 0, 0), (0, np.cos(x), -np.sin(x)), (0, np.sin(x), np.cos(x)))),
@@ -113,10 +113,10 @@ class RT:
         for angle, axis in zip(angles, angle_sequence):
             rt[:3, :3] = rt[:3, :3] @ matrix[axis](angle)
         rt[:3, 3] = translations
-        return RT(rt=rt, parent_rt=parent_rt, is_rt_local=True)
+        return SegmentCoordinateSystemReal(rt=rt, parent_rt=parent_rt, is_rt_local=True)
 
     def copy(self):
-        return RT(rt=copy(self.rt), parent_rt=self.parent_rt)
+        return SegmentCoordinateSystemReal(rt=copy(self.rt), parent_rt=self.parent_rt)
 
     def __str__(self):
         if self.is_rt_local:

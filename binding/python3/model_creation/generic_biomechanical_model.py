@@ -6,7 +6,7 @@ from .protocols import Data, GenericDynamicModel
 from .segment import Segment
 from .segment_coordinate_system_generic import SegmentCoordinateSystemGeneric
 from .segment_generic import SegmentGeneric
-from .rototranslation import RT
+from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
 
 class GenericBiomechanicalModel:
@@ -133,7 +133,7 @@ class GenericBiomechanicalModel:
             s = self.segments[name]
             parent_index = [segment.name for segment in segments].index(s.parent_name) if s.parent_name else None
             if s.segment_coordinate_system is None:
-                scs = RT()
+                scs = SegmentCoordinateSystemReal()
             else:
                 scs = s.segment_coordinate_system.to_rt(
                     data, segments[parent_index].segment_coordinate_system if parent_index is not None else None

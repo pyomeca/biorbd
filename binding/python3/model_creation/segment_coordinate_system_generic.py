@@ -2,7 +2,7 @@ from .axis_real import AxisReal
 from .axis_generic import AxisGeneric
 from .marker_generic import MarkerGeneric
 from .protocols import Data
-from .rototranslation import RT
+from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
 
 class SegmentCoordinateSystemGeneric:
@@ -14,7 +14,7 @@ class SegmentCoordinateSystemGeneric:
         axis_to_keep: AxisReal.Name,
     ):
         """
-        Set the RT matrix of the segment
+        Set the SegmentCoordinateSystemReal matrix of the segment
 
         Parameters
         ----------
@@ -35,22 +35,23 @@ class SegmentCoordinateSystemGeneric:
         self.second_axis = second_axis
         self.axis_to_keep = axis_to_keep
 
-    def to_rt(self, data: Data, parent_rt: RT) -> RT:
+    def to_rt(self, data: Data, parent_rt: SegmentCoordinateSystemReal) -> SegmentCoordinateSystemReal:
         """
-        Collapse the generic RT to an actual RT with value based on the model and the data
+        Collapse the generic SegmentCoordinateSystem to an actual SegmentCoordinateSystemReal with value
+        based on the model and the data
 
         Parameters
         ----------
         data
             The actual data
         parent_rt
-            The RT of the parent to compute the local transformation
+            The SegmentCoordinateSystemReal of the parent to compute the local transformation
         Returns
         -------
-        The collapsed RT
+        The collapsed SegmentCoordinateSystemReal
         """
         origin = self.origin.to_marker(data)
 
-        return RT.from_markers(
+        return SegmentCoordinateSystemReal.from_markers(
             origin, self.first_axis.to_axis(data), self.second_axis.to_axis(data), self.axis_to_keep, parent_rt
         )

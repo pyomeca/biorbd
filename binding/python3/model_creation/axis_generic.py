@@ -1,7 +1,7 @@
 from .axis_real import AxisReal
 from .marker_generic import MarkerGeneric
 from .protocols import Data
-from .rototranslation import RT
+from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
 
 class AxisGeneric:
@@ -26,7 +26,7 @@ class AxisGeneric:
         self.start = start
         self.end = end
 
-    def to_axis(self, data: Data, parent_rt: RT = None) -> AxisReal:
+    def to_axis(self, data: Data, parent_rt: SegmentCoordinateSystemReal = None) -> AxisReal:
         """
         Compute the axis from actual data
         Parameters

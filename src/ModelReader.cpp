@@ -209,7 +209,7 @@ void Reader::readModelFile(
                         utils::Error::check(isRTset==false,
                                                     "RT should not appear before RTinMatrix");
                         file.read(RTinMatrix);
-                    } else if (!property_tag.tolower().compare("rt")) {
+                    } else if (!property_tag.tolower().compare("rt") || !property_tag.tolower().compare("segmentcoordinatesystem")) {
                         readRtMatrix(file, variable, RTinMatrix, RT);
                         isRTset = true;
                     } else if (!property_tag.tolower().compare("com")) {

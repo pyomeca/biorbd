@@ -6,4 +6,3 @@ from .generic_biomechanical_model import GenericBiomechanicalModel
 from .marker_generic import MarkerGeneric
 from .protocols import Data, GenericDynamicModel
 from .segment_coordinate_system_generic import SegmentCoordinateSystemGeneric
-from .rototranslation import RT
