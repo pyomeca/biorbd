@@ -9,7 +9,7 @@ from .segment_generic import SegmentGeneric
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
 
-class GenericBiomechanicalModel:
+class BiomechanicalModel:
     def __init__(self, bio_sym_path: str = None):
         self.segments = {}
         self._dynamic_model = None
