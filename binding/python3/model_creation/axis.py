@@ -26,17 +26,17 @@ class Axis:
         self.start = start
         self.end = end
 
-    def to_axis(self, data: Data, parent_rt: SegmentCoordinateSystemReal = None) -> AxisReal:
+    def to_axis(self, data: Data, parent_scs: SegmentCoordinateSystemReal = None) -> AxisReal:
         """
         Compute the axis from actual data
         Parameters
         ----------
         data
             The actual data
-        parent_rt
+        parent_scs
             The transformation from global to local
         """
 
-        start = self.start.to_marker(data, parent_rt)
-        end = self.end.to_marker(data, parent_rt)
+        start = self.start.to_marker(data, parent_scs)
+        end = self.end.to_marker(data, parent_scs)
         return AxisReal(self.name, start, end)

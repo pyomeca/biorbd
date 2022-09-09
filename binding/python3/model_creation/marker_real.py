@@ -42,7 +42,7 @@ class MarkerReal:
         name: str,
         function: Callable,
         parent_name: str,
-        parent_rt: "SegmentCoordinateSystemReal" = None,
+        parent_scs: "SegmentCoordinateSystemReal" = None,
         is_technical: bool = True,
         is_anatomical: bool = False,
     ):
@@ -60,7 +60,7 @@ class MarkerReal:
             The function (f(m) -> np.ndarray, where m is a dict of markers (XYZ1 x time)) that defines the marker
         parent_name
             The name of the parent the marker is attached to
-        parent_rt
+        parent_scs
             The segment coordinate system of the parent to transform the marker from global to local
         is_technical
             If the marker should be flagged as a technical marker
@@ -78,7 +78,7 @@ class MarkerReal:
         if len(p.shape) != 2 or p.shape[0] != 4:
             raise RuntimeError(f"The function {function} must return a np.ndarray of dimension 4xT (XYZ1 x time)")
 
-        mean_p = (parent_rt.transpose if parent_rt is not None else np.identity(4)) @ np.nanmean(p, axis=1)
+        mean_p = (parent_scs.transpose if parent_scs is not None else np.identity(4)) @ np.nanmean(p, axis=1)
         return MarkerReal(name, parent_name, mean_p[:3], is_technical=is_technical, is_anatomical=is_anatomical)
 
     def __str__(self):

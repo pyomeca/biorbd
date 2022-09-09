@@ -7,25 +7,25 @@ from .marker_real import MarkerReal
 
 
 class SegmentCoordinateSystemReal:
-    def __init__(self, rt: np.ndarray = np.identity(4), parent_rt: "SegmentCoordinateSystemReal" = None, is_rt_local: bool = False):
+    def __init__(self, scs: np.ndarray = np.identity(4), parent_scs: "SegmentCoordinateSystemReal" = None, is_scs_local: bool = False):
         """
         Parameters
         ----------
-        rt
-            The rt of the SegmentCoordinateSystemReal
-        parent_rt
-            The rt of the parent (is used when printing the model so SegmentCoordinateSystemReal is in parent's local reference frame
-        is_rt_local
-            If the rt is already in local reference frame
+        scs
+            The scs of the SegmentCoordinateSystemReal
+        parent_scs
+            The scs of the parent (is used when printing the model so SegmentCoordinateSystemReal is in parent's local reference frame
+        is_scs_local
+            If the scs is already in local reference frame
         """
 
-        self.rt = rt
-        self.parent_rt = parent_rt
-        self.is_rt_local = is_rt_local
+        self.scs = scs
+        self.parent_scs = parent_scs
+        self.is_rt_local = is_scs_local
 
     @staticmethod
     def from_markers(
-            origin: MarkerReal, first_axis: AxisReal, second_axis: AxisReal, axis_to_keep: AxisReal.Name, parent_rt: "SegmentCoordinateSystemReal" = None
+            origin: MarkerReal, first_axis: AxisReal, second_axis: AxisReal, axis_to_keep: AxisReal.Name, parent_scs: "SegmentCoordinateSystemReal" = None
     ) -> "SegmentCoordinateSystemReal":
         """
         Parameters
@@ -39,8 +39,8 @@ class SegmentCoordinateSystemReal:
         axis_to_keep
             The Axis.Name of the axis to keep while recomputing the reference frame. It must be the same as either
             first_axis.name or second_axis.name
-        parent_rt
-            The rt of the parent (is used when printing the model so SegmentCoordinateSystemReal is in parent's local reference frame
+        parent_scs
+            The scs of the parent (is used when printing the model so SegmentCoordinateSystemReal is in parent's local reference frame
         """
 
         # Find the two adjacent axes and reorder accordingly (assuming right-hand RT)
@@ -81,14 +81,14 @@ class SegmentCoordinateSystemReal:
         rt[:3, 3] = origin.position
         rt[3, 3] = 1
 
-        return SegmentCoordinateSystemReal(rt=rt, parent_rt=parent_rt)
+        return SegmentCoordinateSystemReal(scs=rt, parent_scs=parent_scs)
 
     @staticmethod
     def from_euler_and_translation(
         angles: tuple[float | int, ...],
         angle_sequence: str,
         translations: tuple[float | int, float | int, float | int],
-        parent_rt: "SegmentCoordinateSystemReal" = None,
+        parent_scs: "SegmentCoordinateSystemReal" = None,
     ) -> "SegmentCoordinateSystemReal":
         """
         Construct a SegmentCoordinateSystemReal from angles and translations
@@ -101,8 +101,8 @@ class SegmentCoordinateSystemReal:
             The angle sequence of the angles
         translations
             The XYZ translations
-        parent_rt
-            The rt of the parent (is used when printing the model so SegmentCoordinateSystemReal is in parent's local reference frame
+        parent_scs
+            The scs of the parent (is used when printing the model so SegmentCoordinateSystemReal is in parent's local reference frame
         """
         matrix = {
             "x": lambda x: np.array(((1, 0, 0), (0, np.cos(x), -np.sin(x)), (0, np.sin(x), np.cos(x)))),
@@ -113,16 +113,16 @@ class SegmentCoordinateSystemReal:
         for angle, axis in zip(angles, angle_sequence):
             rt[:3, :3] = rt[:3, :3] @ matrix[axis](angle)
         rt[:3, 3] = translations
-        return SegmentCoordinateSystemReal(rt=rt, parent_rt=parent_rt, is_rt_local=True)
+        return SegmentCoordinateSystemReal(scs=rt, parent_scs=parent_scs, is_scs_local=True)
 
     def copy(self):
-        return SegmentCoordinateSystemReal(rt=copy(self.rt), parent_rt=self.parent_rt)
+        return SegmentCoordinateSystemReal(scs=copy(self.scs), parent_scs=self.parent_scs)
 
     def __str__(self):
         if self.is_rt_local:
-            rt = self.rt
+            rt = self.scs
         else:
-            rt = self.parent_rt.transpose @ self.rt if self.parent_rt else np.identity(4)
+            rt = self.parent_scs.transpose @ self.scs if self.parent_scs else np.identity(4)
 
         tx = rt[0, 3]
         ty = rt[1, 3]
@@ -135,12 +135,12 @@ class SegmentCoordinateSystemReal:
         return f"{rx:0.3f} {ry:0.3f} {rz:0.3f} xyz {tx:0.3f} {ty:0.3f} {tz:0.3f}"
 
     def __matmul__(self, other):
-        return self.rt @ other
+        return self.scs @ other
 
     @property
     def transpose(self):
         out = self.copy()
-        out.rt = out.rt.T
-        out.rt[:3, 3] = -out.rt[:3, :3] @ out.rt[3, :3]
-        out.rt[3, :3] = 0
+        out.scs = out.scs.T
+        out.scs[:3, 3] = -out.scs[:3, :3] @ out.scs[3, :3]
+        out.scs[3, :3] = 0
         return out

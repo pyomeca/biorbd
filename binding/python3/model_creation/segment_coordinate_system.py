@@ -35,7 +35,7 @@ class SegmentCoordinateSystem:
         self.second_axis = second_axis
         self.axis_to_keep = axis_to_keep
 
-    def to_rt(self, data: Data, parent_rt: SegmentCoordinateSystemReal) -> SegmentCoordinateSystemReal:
+    def to_scs(self, data: Data, parent_scs: SegmentCoordinateSystemReal) -> SegmentCoordinateSystemReal:
         """
         Collapse the generic SegmentCoordinateSystem to an actual SegmentCoordinateSystemReal with value
         based on the model and the data
@@ -44,7 +44,7 @@ class SegmentCoordinateSystem:
         ----------
         data
             The actual data
-        parent_rt
+        parent_scs
             The SegmentCoordinateSystemReal of the parent to compute the local transformation
         Returns
         -------
@@ -53,5 +53,5 @@ class SegmentCoordinateSystem:
         origin = self.origin.to_marker(data)
 
         return SegmentCoordinateSystemReal.from_markers(
-            origin, self.first_axis.to_axis(data), self.second_axis.to_axis(data), self.axis_to_keep, parent_rt
+            origin, self.first_axis.to_axis(data), self.second_axis.to_axis(data), self.axis_to_keep, parent_scs
         )

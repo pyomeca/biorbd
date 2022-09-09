@@ -135,7 +135,7 @@ class BiomechanicalModel:
             if s.segment_coordinate_system is None:
                 scs = SegmentCoordinateSystemReal()
             else:
-                scs = s.segment_coordinate_system.to_rt(
+                scs = s.segment_coordinate_system.to_scs(
                     data, segments[parent_index].segment_coordinate_system if parent_index is not None else None
                 )
             segments.append(
