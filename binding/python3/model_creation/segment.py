@@ -1,4 +1,4 @@
-from .marker import Marker
+from .marker_real import MarkerReal
 from .rototranslation import RT
 
 
@@ -26,7 +26,7 @@ class Segment:
         self.inertia_xxyyzz = inertia_xxyyzz if inertia_xxyyzz is not None else (0, 0, 0)
         self.mesh = mesh
 
-    def add_marker(self, marker: Marker):
+    def add_marker(self, marker: MarkerReal):
         self.markers.append(marker)
 
     def __str__(self):

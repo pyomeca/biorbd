@@ -5,7 +5,7 @@ import numpy as np
 from .protocols import Data
 
 
-class Marker:
+class MarkerReal:
     def __init__(
         self,
         name: str,
@@ -79,7 +79,7 @@ class Marker:
             raise RuntimeError(f"The function {function} must return a np.ndarray of dimension 4xT (XYZ1 x time)")
 
         mean_p = (parent_rt.transpose if parent_rt is not None else np.identity(4)) @ np.nanmean(p, axis=1)
-        return Marker(name, parent_name, mean_p[:3], is_technical=is_technical, is_anatomical=is_anatomical)
+        return MarkerReal(name, parent_name, mean_p[:3], is_technical=is_technical, is_anatomical=is_anatomical)
 
     def __str__(self):
         # Define the print function, so it automatically formats things in the file properly
@@ -96,9 +96,9 @@ class Marker:
             other = np.array(other)
 
         if isinstance(other, np.ndarray):
-            return Marker(name=self.name, parent_name=self.parent_name, position=self.position + other)
-        elif isinstance(other, Marker):
-            return Marker(name=self.name, parent_name=self.parent_name, position=self.position + other.position)
+            return MarkerReal(name=self.name, parent_name=self.parent_name, position=self.position + other)
+        elif isinstance(other, MarkerReal):
+            return MarkerReal(name=self.name, parent_name=self.parent_name, position=self.position + other.position)
         else:
             raise NotImplementedError(f"The addition for {type(other)} is not implemented")
 
@@ -107,8 +107,8 @@ class Marker:
             other = np.array(other)
 
         if isinstance(other, np.ndarray):
-            return Marker(name=self.name, parent_name=self.parent_name, position=self.position - other)
-        elif isinstance(other, Marker):
-            return Marker(name=self.name, parent_name=self.parent_name, position=self.position - other.position)
+            return MarkerReal(name=self.name, parent_name=self.parent_name, position=self.position - other)
+        elif isinstance(other, MarkerReal):
+            return MarkerReal(name=self.name, parent_name=self.parent_name, position=self.position - other.position)
         else:
             raise NotImplementedError(f"The subtraction for {type(other)} is not implemented")

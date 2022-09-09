@@ -3,7 +3,7 @@ from copy import copy
 import numpy as np
 
 from .axis_real import AxisReal
-from .marker import Marker
+from .marker_real import MarkerReal
 
 
 class RT:
@@ -25,7 +25,7 @@ class RT:
 
     @staticmethod
     def from_markers(
-            origin: Marker, first_axis: AxisReal, second_axis: AxisReal, axis_to_keep: AxisReal.Name, parent_rt: "RT" = None
+            origin: MarkerReal, first_axis: AxisReal, second_axis: AxisReal, axis_to_keep: AxisReal.Name, parent_rt: "RT" = None
     ) -> "RT":
         """
         Parameters

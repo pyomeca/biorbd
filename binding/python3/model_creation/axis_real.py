@@ -1,6 +1,6 @@
 import numpy as np
 
-from .marker import Marker
+from .marker_real import MarkerReal
 
 
 class AxisReal:
@@ -9,7 +9,7 @@ class AxisReal:
         Y = 1
         Z = 2
 
-    def __init__(self, name: Name, start: Marker, end: Marker):
+    def __init__(self, name: Name, start: MarkerReal, end: MarkerReal):
         """
         Parameters
         ----------
