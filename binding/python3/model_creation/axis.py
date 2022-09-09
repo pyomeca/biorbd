@@ -1,5 +1,5 @@
 from .axis_real import AxisReal
-from .marker_generic import MarkerGeneric
+from .marker_generic import Marker
 from .protocols import Data
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
@@ -11,7 +11,7 @@ class Axis:
         """
         pass
 
-    def __init__(self, name: AxisReal.Name, start: MarkerGeneric, end: MarkerGeneric):
+    def __init__(self, name: AxisReal.Name, start: Marker, end: Marker):
         """
         Parameters
         ----------

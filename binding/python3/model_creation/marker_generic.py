@@ -5,7 +5,7 @@ from .protocols import Data
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
 
-class MarkerGeneric:
+class Marker:
     def __init__(
         self,
         function: Callable,

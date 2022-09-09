@@ -1,4 +1,4 @@
-from .marker_generic import MarkerGeneric
+from .marker_generic import Marker
 from .segment_coordinate_system_generic import SegmentCoordinateSystemGeneric
 
 
@@ -33,7 +33,7 @@ class SegmentGeneric:
         self.markers = []
         self.segment_coordinate_system = segment_coordinate_system
 
-    def add_marker(self, marker: MarkerGeneric):
+    def add_marker(self, marker: Marker):
         """
         Add a new marker to the segment
 

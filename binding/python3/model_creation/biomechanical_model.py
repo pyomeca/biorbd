@@ -1,7 +1,7 @@
 from typing import Callable
 
 from .kinematic_chain import KinematicChain
-from .marker_generic import MarkerGeneric
+from .marker_generic import Marker
 from .protocols import Data, GenericDynamicModel
 from .segment_real import SegmentReal
 from .segment_coordinate_system_generic import SegmentCoordinateSystemGeneric
@@ -106,7 +106,7 @@ class BiomechanicalModel:
         """
 
         self.segments[segment].add_marker(
-            MarkerGeneric(
+            Marker(
                 name=name,
                 function=function if function is not None else lambda m: m[name],
                 parent_name=segment,

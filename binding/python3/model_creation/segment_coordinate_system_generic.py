@@ -1,6 +1,6 @@
 from .axis_real import AxisReal
 from .axis import Axis
-from .marker_generic import MarkerGeneric
+from .marker_generic import Marker
 from .protocols import Data
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
@@ -8,7 +8,7 @@ from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 class SegmentCoordinateSystemGeneric:
     def __init__(
         self,
-        origin: MarkerGeneric,
+        origin: Marker,
         first_axis: Axis,
         second_axis: Axis,
         axis_to_keep: AxisReal.Name,
