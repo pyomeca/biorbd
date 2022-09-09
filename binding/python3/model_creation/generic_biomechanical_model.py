@@ -3,7 +3,7 @@ from typing import Callable
 from .kinematic_chain import KinematicChain
 from .marker_generic import MarkerGeneric
 from .protocols import Data, GenericDynamicModel
-from .segment import Segment
+from .segment_real import SegmentReal
 from .segment_coordinate_system_generic import SegmentCoordinateSystemGeneric
 from .segment_generic import SegmentGeneric
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
@@ -139,7 +139,7 @@ class GenericBiomechanicalModel:
                     data, segments[parent_index].segment_coordinate_system if parent_index is not None else None
                 )
             segments.append(
-                Segment(
+                SegmentReal(
                     name=s.name,
                     parent_name=s.parent_name,
                     segment_coordinate_system=scs,

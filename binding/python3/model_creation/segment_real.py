@@ -2,7 +2,7 @@ from .marker_real import MarkerReal
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
 
-class Segment:
+class SegmentReal:
     def __init__(
         self,
         name,
