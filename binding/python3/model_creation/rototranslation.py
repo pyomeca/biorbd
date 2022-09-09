@@ -2,7 +2,7 @@ from copy import copy
 
 import numpy as np
 
-from .axis import Axis
+from .axis_real import AxisReal
 from .marker import Marker
 
 
@@ -25,7 +25,7 @@ class RT:
 
     @staticmethod
     def from_markers(
-            origin: Marker, first_axis: Axis, second_axis: Axis, axis_to_keep: Axis.Name, parent_rt: "RT" = None
+            origin: Marker, first_axis: AxisReal, second_axis: AxisReal, axis_to_keep: AxisReal.Name, parent_rt: "RT" = None
     ) -> "RT":
         """
         Parameters
@@ -47,17 +47,17 @@ class RT:
         if first_axis.name == second_axis.name:
             raise ValueError("The two axes cannot be the same axis")
 
-        if first_axis.name == Axis.Name.X:
-            third_axis_name = Axis.Name.Y if second_axis.name == Axis.Name.Z else Axis.Name.Z
-            if second_axis.name == Axis.Name.Z:
+        if first_axis.name == AxisReal.Name.X:
+            third_axis_name = AxisReal.Name.Y if second_axis.name == AxisReal.Name.Z else AxisReal.Name.Z
+            if second_axis.name == AxisReal.Name.Z:
                 first_axis, second_axis = second_axis, first_axis
-        elif first_axis.name == Axis.Name.Y:
-            third_axis_name = Axis.Name.Z if second_axis.name == Axis.Name.X else Axis.Name.X
-            if second_axis.name == Axis.Name.X:
+        elif first_axis.name == AxisReal.Name.Y:
+            third_axis_name = AxisReal.Name.Z if second_axis.name == AxisReal.Name.X else AxisReal.Name.X
+            if second_axis.name == AxisReal.Name.X:
                 first_axis, second_axis = second_axis, first_axis
-        elif first_axis.name == Axis.Name.Z:
-            third_axis_name = Axis.Name.X if second_axis.name == Axis.Name.Y else Axis.Name.Y
-            if second_axis.name == Axis.Name.Y:
+        elif first_axis.name == AxisReal.Name.Z:
+            third_axis_name = AxisReal.Name.X if second_axis.name == AxisReal.Name.Y else AxisReal.Name.Y
+            if second_axis.name == AxisReal.Name.Y:
                 first_axis, second_axis = second_axis, first_axis
         else:
             raise ValueError("first_axis should be an X, Y or Z axis")
@@ -75,9 +75,9 @@ class RT:
 
         # Dispatch the result into a matrix
         rt = np.zeros((4, 4))
-        rt[:3, first_axis.name.value] = first_axis_vector / np.linalg.norm(first_axis_vector)
-        rt[:3, second_axis.name.value] = second_axis_vector / np.linalg.norm(second_axis_vector)
-        rt[:3, third_axis_name.value] = third_axis_vector / np.linalg.norm(third_axis_vector)
+        rt[:3, first_axis.name] = first_axis_vector / np.linalg.norm(first_axis_vector)
+        rt[:3, second_axis.name] = second_axis_vector / np.linalg.norm(second_axis_vector)
+        rt[:3, third_axis_name] = third_axis_vector / np.linalg.norm(third_axis_vector)
         rt[:3, 3] = origin.position
         rt[3, 3] = 1
 

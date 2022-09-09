@@ -1,11 +1,17 @@
-from .axis import Axis
+from .axis_real import AxisReal
 from .marker_generic import MarkerGeneric
 from .protocols import Data
 from .rototranslation import RT
 
 
 class AxisGeneric:
-    def __init__(self, name: Axis.Name, start: MarkerGeneric, end: MarkerGeneric):
+    class Name(AxisReal.Name):
+        """
+        A copy of AxisReal.Name
+        """
+        pass
+
+    def __init__(self, name: AxisReal.Name, start: MarkerGeneric, end: MarkerGeneric):
         """
         Parameters
         ----------
@@ -20,7 +26,7 @@ class AxisGeneric:
         self.start = start
         self.end = end
 
-    def to_axis(self, data: Data, parent_rt: RT = None) -> Axis:
+    def to_axis(self, data: Data, parent_rt: RT = None) -> AxisReal:
         """
         Compute the axis from actual data
         Parameters
@@ -33,4 +39,4 @@ class AxisGeneric:
 
         start = self.start.to_marker(data, parent_rt)
         end = self.end.to_marker(data, parent_rt)
-        return Axis(self.name, start, end)
+        return AxisReal(self.name, start, end)

@@ -1,4 +1,4 @@
-from .axis import Axis
+from .axis_real import AxisReal
 from .axis_generic import AxisGeneric
 from .marker_generic import MarkerGeneric
 from .protocols import Data
@@ -11,7 +11,7 @@ class SegmentCoordinateSystemGeneric:
         origin: MarkerGeneric,
         first_axis: AxisGeneric,
         second_axis: AxisGeneric,
-        axis_to_keep: Axis.Name,
+        axis_to_keep: AxisReal.Name,
     ):
         """
         Set the RT matrix of the segment

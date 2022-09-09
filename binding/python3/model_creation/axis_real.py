@@ -1,12 +1,10 @@
-from enum import Enum
-
 import numpy as np
 
 from .marker import Marker
 
 
-class Axis:
-    class Name(Enum):
+class AxisReal:
+    class Name:
         X = 0
         Y = 1
         Z = 2

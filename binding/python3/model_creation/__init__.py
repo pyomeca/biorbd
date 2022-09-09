@@ -1,4 +1,3 @@
-from .axis import Axis
 from .axis_generic import AxisGeneric
 from .c3d_data import C3dData
 from .de_leva_dynamic_model import DeLevaDynamicModel
