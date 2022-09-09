@@ -5,7 +5,7 @@ from .marker_generic import Marker
 from .protocols import Data, GenericDynamicModel
 from .segment_real import SegmentReal
 from .segment_coordinate_system import SegmentCoordinateSystem
-from .segment_generic import SegmentGeneric
+from .segment import Segment
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
 
@@ -73,7 +73,7 @@ class BiomechanicalModel:
         segment_coordinate_system
             The coordinate system of the segment
         """
-        self.segments[name] = SegmentGeneric(
+        self.segments[name] = Segment(
             name=name,
             parent_name=parent_name,
             translations=translations,

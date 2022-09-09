@@ -2,7 +2,7 @@ from .marker_generic import Marker
 from .segment_coordinate_system import SegmentCoordinateSystem
 
 
-class SegmentGeneric:
+class Segment:
     def __init__(
         self,
         name,
