@@ -1,5 +1,5 @@
 from .marker_generic import Marker
-from .segment_coordinate_system_generic import SegmentCoordinateSystemGeneric
+from .segment_coordinate_system import SegmentCoordinateSystem
 
 
 class SegmentGeneric:
@@ -9,7 +9,7 @@ class SegmentGeneric:
         parent_name: str = "",
         translations: str = "",
         rotations: str = "",
-        segment_coordinate_system: SegmentCoordinateSystemGeneric = None,
+        segment_coordinate_system: SegmentCoordinateSystem = None,
     ):
         """
         Create a new generic segment.

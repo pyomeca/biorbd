@@ -4,7 +4,7 @@ from .kinematic_chain import KinematicChain
 from .marker_generic import Marker
 from .protocols import Data, GenericDynamicModel
 from .segment_real import SegmentReal
-from .segment_coordinate_system_generic import SegmentCoordinateSystemGeneric
+from .segment_coordinate_system import SegmentCoordinateSystem
 from .segment_generic import SegmentGeneric
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
@@ -55,7 +55,7 @@ class BiomechanicalModel:
         parent_name: str = "",
         translations: str = "",
         rotations: str = "",
-        segment_coordinate_system: SegmentCoordinateSystemGeneric = None,
+        segment_coordinate_system: SegmentCoordinateSystem = None,
     ):
         """
         Add a new segment to the model
