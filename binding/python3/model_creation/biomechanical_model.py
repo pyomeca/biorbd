@@ -131,16 +131,15 @@ class BiomechanicalModel:
         model = KinematicChain()
         for name in self.segments:
             s = self.segments[name]
-            parent_index = [segment.name for segment in model.segments].index(s.parent_name) if s.parent_name else None
             if s.segment_coordinate_system is None:
                 scs = SegmentCoordinateSystemReal()
             else:
                 scs = s.segment_coordinate_system.to_scs(
                     data,
                     model,
-                    model.segments[parent_index].segment_coordinate_system if parent_index is not None else None,
+                    model.segments[s.parent_name].segment_coordinate_system if s.parent_name else None,
                 )
-            model.segments.append(
+            model.add_segment(
                 SegmentReal(
                     name=s.name,
                     parent_name=s.parent_name,
@@ -151,6 +150,6 @@ class BiomechanicalModel:
             )
 
             for marker in s.markers:
-                model.segments[-1].add_marker(marker.to_marker(data, model, scs))
+                model.segments[name].add_marker(marker.to_marker(data, model, scs))
 
         model.write(save_path)

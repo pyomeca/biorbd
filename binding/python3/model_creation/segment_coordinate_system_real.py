@@ -21,7 +21,7 @@ class SegmentCoordinateSystemReal:
 
         self.scs = scs
         self.parent_scs = parent_scs
-        self.is_rt_local = is_scs_local
+        self.is_in_global = not is_scs_local
 
     @staticmethod
     def from_markers(
@@ -63,23 +63,24 @@ class SegmentCoordinateSystemReal:
             raise ValueError("first_axis should be an X, Y or Z axis")
 
         # Compute the third axis and recompute one of the previous two
-        first_axis_vector = first_axis.axis()
-        second_axis_vector = second_axis.axis()
-        third_axis_vector = np.cross(first_axis_vector, second_axis_vector)
+        first_axis_vector = first_axis.axis()[:3, :]
+        second_axis_vector = second_axis.axis()[:3, :]
+        third_axis_vector = np.cross(first_axis_vector, second_axis_vector, axis=0)
         if axis_to_keep == first_axis.name:
-            second_axis_vector = np.cross(third_axis_vector, first_axis_vector)
+            second_axis_vector = np.cross(third_axis_vector, first_axis_vector, axis=0)
         elif axis_to_keep == second_axis.name:
-            first_axis_vector = np.cross(second_axis_vector, third_axis_vector)
+            first_axis_vector = np.cross(second_axis_vector, third_axis_vector, axis=0)
         else:
             raise ValueError("Name of axis to keep should be one of the two axes")
 
         # Dispatch the result into a matrix
-        rt = np.zeros((4, 4))
-        rt[:3, first_axis.name] = first_axis_vector / np.linalg.norm(first_axis_vector)
-        rt[:3, second_axis.name] = second_axis_vector / np.linalg.norm(second_axis_vector)
-        rt[:3, third_axis_name] = third_axis_vector / np.linalg.norm(third_axis_vector)
-        rt[:3, 3] = origin.position
-        rt[3, 3] = 1
+        n_frames = first_axis_vector.shape[1]
+        rt = np.zeros((4, 4, n_frames))
+        rt[:3, first_axis.name, :] = first_axis_vector / np.linalg.norm(first_axis_vector, axis=0)
+        rt[:3, second_axis.name, :] = second_axis_vector / np.linalg.norm(second_axis_vector, axis=0)
+        rt[:3, third_axis_name, :] = third_axis_vector / np.linalg.norm(third_axis_vector, axis=0)
+        rt[:3, 3, :] = origin.position[:3, :]
+        rt[3, 3, :] = 1
 
         return SegmentCoordinateSystemReal(scs=rt, parent_scs=parent_scs)
 
@@ -119,28 +120,46 @@ class SegmentCoordinateSystemReal:
         return SegmentCoordinateSystemReal(scs=copy(self.scs), parent_scs=self.parent_scs)
 
     def __str__(self):
-        if self.is_rt_local:
-            rt = self.scs
+        if self.is_in_global:
+            rt = self.parent_scs.transpose @ self.scs if self.parent_scs else np.identity(4)[:, :, np.newaxis]
         else:
-            rt = self.parent_scs.transpose @ self.scs if self.parent_scs else np.identity(4)
+            rt = self.scs
 
-        tx = rt[0, 3]
-        ty = rt[1, 3]
-        tz = rt[2, 3]
+        tx = rt[0, 3, :]
+        ty = rt[1, 3, :]
+        tz = rt[2, 3, :]
 
-        rx = np.arctan2(-rt[1, 2], rt[2, 2])
-        ry = np.arcsin(rt[0, 2])
-        rz = np.arctan2(-rt[0, 1], rt[0, 0])
+        rx = np.arctan2(-rt[1, 2, :], rt[2, 2, :])
+        ry = np.arcsin(rt[0, 2, :])
+        rz = np.arctan2(-rt[0, 1, :], rt[0, 0, :])
+
+        tx = np.nanmean(tx, axis=0)
+        ty = np.nanmean(ty, axis=0)
+        tz = np.nanmean(tz, axis=0)
+        rx = np.nanmean(rx, axis=0)
+        ry = np.nanmean(ry, axis=0)
+        rz = np.nanmean(rz, axis=0)
 
         return f"{rx:0.3f} {ry:0.3f} {rz:0.3f} xyz {tx:0.3f} {ty:0.3f} {tz:0.3f}"
 
     def __matmul__(self, other):
-        return self.scs @ other
+        if isinstance(other, SegmentCoordinateSystemReal):
+            other = other.scs
+
+        if not isinstance(other, np.ndarray):
+            raise ("SCS multiplication must be performed against np.narray or SegmentCoordinateSystemReal classes")
+
+        if len(other.shape) == 3:  # If it is a RT @ RT
+            return np.einsum('ijk,jlk->ilk', self.scs, other)
+        elif len(other.shape) == 2:  # if it is a RT @ vector
+            return np.einsum('ijk,jk->ik', self.scs, other)
+        else:
+            NotImplementedError("This multiplication is not implemented yet")
 
     @property
     def transpose(self):
         out = self.copy()
-        out.scs = out.scs.T
-        out.scs[:3, 3] = -out.scs[:3, :3] @ out.scs[3, :3]
-        out.scs[3, :3] = 0
+        out.scs = out.scs.transpose((1, 0, 2))
+        out.scs[:3, 3, :] = np.einsum('ijk,jk->ik', -out.scs[:3, :3, :], self.scs[:3, 3, :])
+        out.scs[3, :3, :] = 0
         return out

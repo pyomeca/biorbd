@@ -32,7 +32,7 @@ class MarkerReal:
         self.name = name
         self.parent_name = parent_name
         if position is None:
-            position = np.array((0, 0, 0))
+            position = np.array((0, 0, 0, 1))
         self.position = position if isinstance(position, np.ndarray) else np.array(position)
         self.is_technical = is_technical
         self.is_anatomical = is_anatomical
@@ -83,17 +83,20 @@ class MarkerReal:
         if len(p.shape) != 2 or p.shape[0] != 4:
             raise RuntimeError(f"The function {function} must return a np.ndarray of dimension 4xT (XYZ1 x time)")
 
-        mean_p = (parent_scs.transpose if parent_scs is not None else np.identity(4)) @ np.nanmean(p, axis=1)
-        mean_p[3] = 1
-        if np.isnan(mean_p).any():
+        p[3, :] = 1  # Do not trust user and make sure the last value is a perfect one
+        projected_p = (parent_scs.transpose if parent_scs is not None else np.identity(4)) @ p
+        if np.isnan(projected_p).all():
             raise RuntimeError(f"All the values for {function} returned nan which is not permitted")
-        return MarkerReal(name, parent_name, mean_p[:3], is_technical=is_technical, is_anatomical=is_anatomical)
+        return MarkerReal(name, parent_name, projected_p, is_technical=is_technical, is_anatomical=is_anatomical)
 
     def __str__(self):
         # Define the print function, so it automatically formats things in the file properly
         out_string = f"marker {self.name}\n"
         out_string += f"\tparent {self.parent_name}\n"
-        out_string += f"\tposition {self.position[0]:0.4f} {self.position[1]:0.4f} {self.position[2]:0.4f}\n"
+        x = np.nanmean(self.position[0, :], axis=0)
+        y = np.nanmean(self.position[1, :], axis=0)
+        z = np.nanmean(self.position[2, :], axis=0)
+        out_string += f"\tposition {x:0.4f} {y:0.4f} {z:0.4f}\n"
         out_string += f"\ttechnical {1 if self.is_technical else 0}\n"
         out_string += f"\tanatomical {1 if self.is_anatomical else 0}\n"
         out_string += "endmarker\n"
