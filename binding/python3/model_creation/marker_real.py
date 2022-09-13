@@ -25,9 +25,9 @@ class MarkerReal:
         position
             The 3d position of the marker
         is_technical
-            If the marker should be flaged as a technical marker
+            If the marker should be flagged as a technical marker
         is_anatomical
-            If the marker should be flaged as an anatomical marker
+            If the marker should be flagged as an anatomical marker
         """
         self.name = name
         self.parent_name = parent_name
@@ -49,8 +49,8 @@ class MarkerReal:
         is_anatomical: bool = False,
     ):
         """
-        This is a constructor for the Marker class. It takes the mean of the position of the marker
-        from the data as position
+        This is a constructor for the MarkerReal class. It evaluates the function that defines the marker to get an
+        actual position
 
         Parameters
         ----------

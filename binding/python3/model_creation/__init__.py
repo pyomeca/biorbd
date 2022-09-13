@@ -7,6 +7,7 @@ from .marker import Marker
 from .protocols import Data, GenericDynamicModel
 from .segment_coordinate_system import SegmentCoordinateSystem
 from .kinematic_chain import KinematicChain
+from .inertia_parameters import InertiaParameters
 
 # The accepted data formating
 from .c3d_data import C3dData

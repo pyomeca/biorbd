@@ -1,5 +1,6 @@
 from typing import Callable
 
+from .inertia_parameters import InertiaParameters
 from .kinematic_chain import KinematicChain
 from .marker import Marker
 from .protocols import Data, GenericDynamicModel
@@ -12,42 +13,10 @@ from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 class BiomechanicalModel:
     def __init__(self, bio_sym_path: str = None):
         self.segments = {}
-        self._dynamic_model = None
+
         if bio_sym_path is None:
             return
         raise NotImplementedError("bioMod files are not readable yet")
-
-    @property
-    def dynamic_model(self) -> GenericDynamicModel:
-        """
-        Get the dynamic model attached to the kinematic model
-        """
-        return self._dynamic_model
-
-    @dynamic_model.setter
-    def dynamic_model(self, dynamic_model: GenericDynamicModel) -> None:
-        """
-        Attach a dynamic model to the kinematic model. The name of the segments must exactly match the name of the
-        segments of the kinematic model, otherwise a ValueError is raised
-
-        Parameters
-        ----------
-        dynamic_model
-            The model to attach
-        """
-
-        # Perform a check that all the names in the dynamic model appear in the kinematic model
-        segments_in_dynamics = dynamic_model.segment_names
-        for name in segments_in_dynamics:
-            if name not in self.segments:
-                raise ValueError(f'The segment {name} is defined in the dynamic model, but not in the kinematic model')
-
-        # Perform the same, but the other way around
-        for name in self.segments:
-            if name not in segments_in_dynamics:
-                raise ValueError(f'The segment {name} is defined in the kinematic model, but not in the dynamic model')
-
-        self._dynamic_model = dynamic_model
 
     def add_segment(
         self,
@@ -56,6 +25,7 @@ class BiomechanicalModel:
         translations: str = "",
         rotations: str = "",
         segment_coordinate_system: SegmentCoordinateSystem = None,
+        inertia_parameters: InertiaParameters = None,
     ):
         """
         Add a new segment to the model
@@ -72,6 +42,8 @@ class BiomechanicalModel:
             The sequence of rotation
         segment_coordinate_system
             The coordinate system of the segment
+        inertia_parameters
+            The inertia parameters of the segment
         """
         self.segments[name] = Segment(
             name=name,
@@ -79,6 +51,7 @@ class BiomechanicalModel:
             translations=translations,
             rotations=rotations,
             segment_coordinate_system=segment_coordinate_system,
+            inertia_parameters=inertia_parameters
         )
 
     def add_marker(
@@ -131,14 +104,19 @@ class BiomechanicalModel:
         model = KinematicChain()
         for name in self.segments:
             s = self.segments[name]
-            if s.segment_coordinate_system is None:
-                scs = SegmentCoordinateSystemReal()
-            else:
+
+            scs = SegmentCoordinateSystemReal()
+            if s.segment_coordinate_system is not None:
                 scs = s.segment_coordinate_system.to_scs(
                     data,
                     model,
                     model.segments[s.parent_name].segment_coordinate_system if s.parent_name else None,
                 )
+
+            inertia_parameters = None
+            if s.inertia_parameters is not None:
+                inertia_parameters = s.inertia_parameters.to_real(data, model, scs)
+
             model.add_segment(
                 SegmentReal(
                     name=s.name,
@@ -146,6 +124,7 @@ class BiomechanicalModel:
                     segment_coordinate_system=scs,
                     translations=s.translations,
                     rotations=s.rotations,
+                    inertia_parameters=inertia_parameters,
                 )
             )
 

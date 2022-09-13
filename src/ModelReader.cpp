@@ -111,6 +111,7 @@ void Reader::readModelFile(
                     RTinMatrix = false;
                 }
                 bool isRTset(false);
+                bool isInertiaSet(false);
                 double mass = 0.00000001;
                 utils::Matrix3d inertia(utils::Matrix3d::Zero());
                 utils::RotoTrans RT(RigidBodyDynamics::Math::Matrix4d::Identity());
@@ -203,8 +204,20 @@ void Reader::readModelFile(
                         isRangeQDDotSet = true;
                     } else if (!property_tag.tolower().compare("mass")) {
                         file.read(mass, variable);
-                    } else if (!property_tag.tolower().compare("inertia")) {
+                    } else if (!property_tag.tolower().compare("inertia") || !property_tag.tolower().compare("inertiamatrix")) {
+                        utils::Error::check(!isInertiaSet,
+                            "Inertia matrix cannot be set twice. Please note that 'Inertia', 'InertiaMatrix' and 'RadiiOfGyration' all set the inertia matrix.");
                         readMatrix33(file, variable, inertia);
+                        isInertiaSet = true;
+                    } else if (!property_tag.tolower().compare("radiiofgyration")) {
+                        utils::Error::check(!isInertiaSet,
+                            "Inertia matrix cannot be set twice. Please note that 'Inertia', 'InertiaMatrix' and 'RadiiOfGyration' all set the inertia matrix.");
+                        utils::Vector3d radiiOfGyration;
+                        readVector3d(file, variable, radiiOfGyration);
+                        inertia = utils::Matrix3d(radiiOfGyration[0], 0, 0,
+                                   0, radiiOfGyration[1], 0,
+                                   0, 0, radiiOfGyration[2]);
+                        isInertiaSet = true;
                     } else if (!property_tag.tolower().compare("rtinmatrix")) {
                         utils::Error::check(isRTset==false,
                                                     "RT should not appear before RTinMatrix");
@@ -212,7 +225,7 @@ void Reader::readModelFile(
                     } else if (!property_tag.tolower().compare("rt") || !property_tag.tolower().compare("segmentcoordinatesystem")) {
                         readRtMatrix(file, variable, RTinMatrix, RT);
                         isRTset = true;
-                    } else if (!property_tag.tolower().compare("com")) {
+                    } else if (!property_tag.tolower().compare("com") || !property_tag.tolower().compare("centerofmass")) {
                         readVector3d(file, variable, com);
                     } else if (!property_tag.tolower().compare("forceplate")
                                || !property_tag.tolower().compare("externalforceindex")) {

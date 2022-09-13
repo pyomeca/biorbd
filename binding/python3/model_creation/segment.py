@@ -1,3 +1,4 @@
+from .inertia_parameters import InertiaParameters
 from .marker import Marker
 from .segment_coordinate_system import SegmentCoordinateSystem
 
@@ -10,6 +11,7 @@ class Segment:
         translations: str = "",
         rotations: str = "",
         segment_coordinate_system: SegmentCoordinateSystem = None,
+        inertia_parameters: InertiaParameters = None,
     ):
         """
         Create a new generic segment.
@@ -24,6 +26,8 @@ class Segment:
             The sequence of translation
         rotations
             The sequence of rotation
+        inertia_parameters
+            The inertia parameters of the segment
         """
 
         self.name = name
@@ -32,6 +36,7 @@ class Segment:
         self.rotations = rotations
         self.markers = []
         self.segment_coordinate_system = segment_coordinate_system
+        self.inertia_parameters = inertia_parameters
 
     def add_marker(self, marker: Marker):
         """
