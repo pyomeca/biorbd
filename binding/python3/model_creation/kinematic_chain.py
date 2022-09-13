@@ -16,6 +16,9 @@ class KinematicChain:
         # .bioMod file, the order of the segment matters
         self.segments[segment.name] = segment
 
+    def __getitem__(self, item: str):
+        return self.segments[item]
+
     def __str__(self):
         out_string = "version 4\n\n"
         for name in self.segments:
