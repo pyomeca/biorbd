@@ -209,14 +209,14 @@ void Reader::readModelFile(
                             "Inertia matrix cannot be set twice. Please note that 'Inertia', 'InertiaMatrix' and 'RadiiOfGyration' all set the inertia matrix.");
                         readMatrix33(file, variable, inertia);
                         isInertiaSet = true;
-                    } else if (!property_tag.tolower().compare("radiiofgyration")) {
+                    } else if (!property_tag.tolower().compare("inertia_xxyyzz")) {
                         utils::Error::check(!isInertiaSet,
                             "Inertia matrix cannot be set twice. Please note that 'Inertia', 'InertiaMatrix' and 'RadiiOfGyration' all set the inertia matrix.");
-                        utils::Vector3d radiiOfGyration;
-                        readVector3d(file, variable, radiiOfGyration);
-                        inertia = utils::Matrix3d(radiiOfGyration[0], 0, 0,
-                                   0, radiiOfGyration[1], 0,
-                                   0, 0, radiiOfGyration[2]);
+                        utils::Vector3d inertia_xxyyzz;
+                        readVector3d(file, variable, inertia_xxyyzz);
+                        inertia = utils::Matrix3d(inertia_xxyyzz[0], 0, 0,
+                                   0, inertia_xxyyzz[1], 0,
+                                   0, 0, inertia_xxyyzz[2]);
                         isInertiaSet = true;
                     } else if (!property_tag.tolower().compare("rtinmatrix")) {
                         utils::Error::check(isRTset==false,

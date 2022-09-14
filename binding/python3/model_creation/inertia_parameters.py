@@ -11,7 +11,7 @@ class InertiaParameters:
         self,
         relative_mass: Callable = None,
         center_of_mass: Callable = None,
-        radii_of_gyration: Callable = None,
+        inertia: Callable = None,
     ):
         """
         This is a pre-constructor for the InertiaParametersReal class. It allows to create a
@@ -20,15 +20,16 @@ class InertiaParameters:
         Parameters
         ----------
         relative_mass
-            The relative mass of the segment with respect to the full body
+            The callback function that returns the relative mass of the segment with respect to the full body
         center_of_mass
-            The position of the center of mass from the segment coordinate system on the main axis
-        radii_of_gyration
-            The radius of gyration of the segment
+            The callback function that returns the position of the center of mass
+            from the segment coordinate system on the main axis
+        inertia
+            The callback function that returns the inertia xx, yy and zz parameters of the segment
         """
         self.relative_mass = relative_mass
         self.center_of_mass = center_of_mass
-        self.radii_of_gyration = radii_of_gyration
+        self.inertia = inertia
 
     def to_real(
         self, data: Data, kinematic_chain: KinematicChain, parent_scs: SegmentCoordinateSystemReal = None
@@ -37,7 +38,7 @@ class InertiaParameters:
             data,
             self.relative_mass,
             self.center_of_mass,
-            self.radii_of_gyration,
+            self.inertia,
             kinematic_chain,
             parent_scs,
         )

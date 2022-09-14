@@ -11,28 +11,28 @@ class InertiaParametersReal:
         self,
         mass: float = None,
         center_of_mass: np.ndarray = None,
-        radii_of_gyration: np.ndarray = None,
+        inertia: np.ndarray = None,
     ):
         """
         Parameters
         ----------
         mass
-            The mass of the segment
+            The mass of the segment with respect to the full body
         center_of_mass
-            The position of the center of mass in its parent segment reference frame
-        radii_of_gyration
-            The radius of gyration of the segment
+            The position of the center of mass from the segment coordinate system on the main axis
+        inertia
+            The inertia xx, yy and zz parameters of the segment
         """
         self.mass = mass
         self.center_of_mass = center_of_mass
-        self.radii_of_gyration = radii_of_gyration
+        self.inertia = inertia
 
     @staticmethod
     def from_data(
         data: Data,
         relative_mass: Callable,
         center_of_mass: Callable,
-        radii_of_gyration: Callable,
+        inertia: Callable,
         kinematic_chain: KinematicChain,
         parent_scs: "SegmentCoordinateSystemReal" = None,
     ):
@@ -44,11 +44,12 @@ class InertiaParametersReal:
         data
             The data to pick the data from
         relative_mass
-            The relative_mass of the segment
+            The callback function that returns the relative mass of the segment with respect to the full body
         center_of_mass
-            The position of the center of mass from the segment coordinate system on the main axis
-        radii_of_gyration
-            The radius of gyration of the segment
+            The callback function that returns the position of the center of mass
+            from the segment coordinate system on the main axis
+        inertia
+            The callback function that returns the inertia xx, yy and zz parameters of the segment
         kinematic_chain
             The model as it is constructed at that particular time. It is useful if some values must be obtained from
             previously computed values
@@ -72,16 +73,15 @@ class InertiaParametersReal:
         if np.isnan(com).all():
             raise RuntimeError(f"All the values for {com} returned nan which is not permitted")
 
-        radii_of_gyration: np.ndarray = radii_of_gyration(data.values, kinematic_chain)
+        inertia: np.ndarray = inertia(data.values, kinematic_chain)
 
-        return InertiaParametersReal(mass, com, radii_of_gyration)
+        return InertiaParametersReal(mass, com, inertia)
 
     def __str__(self):
         # Define the print function, so it automatically formats things in the file properly
         com = np.nanmean(self.center_of_mass, axis=1)[:3]
-        radii = self.radii_of_gyration
 
         out_string = f"\tmass {self.mass}\n"
         out_string += f"\tCenterOfMass {com[0]:0.5f} {com[1]:0.5f} {com[2]:0.5f}\n"
-        out_string += f"\tRadiiOfGyration {radii[0]} {radii[1]} {radii[2]}\n"
+        out_string += f"\tinertia_xxyyzz {self.inertia[0]} {self.inertia[1]} {self.inertia[2]}\n"
         return out_string
