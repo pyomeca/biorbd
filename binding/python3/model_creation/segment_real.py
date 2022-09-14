@@ -1,5 +1,6 @@
 from .inertia_parameters_real import InertiaParametersReal
 from .marker_real import MarkerReal
+from .mesh_real import MeshReal
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 
 
@@ -12,7 +13,7 @@ class SegmentReal:
         translations: str = "",
         rotations: str = "",
         inertia_parameters: InertiaParametersReal = None,
-        mesh: tuple[tuple[float, float, float], ...] = None,
+        mesh: MeshReal = None,
     ):
         self.name = name
         self.parent_name = parent_name
@@ -40,8 +41,7 @@ class SegmentReal:
         if self.inertia_parameters:
             out_string += str(self.inertia_parameters)
         if self.mesh:
-            for m in self.mesh:
-                out_string += f"\tmesh {m[0]} {m[1]} {m[2]}\n"
+            out_string += str(self.mesh)
         out_string += "endsegment\n"
 
         # Also print the markers attached to the segment

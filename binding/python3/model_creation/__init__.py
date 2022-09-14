@@ -4,6 +4,7 @@ from .biomechanical_model import BiomechanicalModel
 # Some classes to define the BiomechanicalModel
 from .axis import Axis
 from .marker import Marker
+from .mesh import Mesh
 from .protocols import Data, GenericDynamicModel
 from .segment_coordinate_system import SegmentCoordinateSystem
 from .kinematic_chain import KinematicChain

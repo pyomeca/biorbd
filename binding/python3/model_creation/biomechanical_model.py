@@ -3,6 +3,7 @@ from typing import Callable
 from .inertia_parameters import InertiaParameters
 from .kinematic_chain import KinematicChain
 from .marker import Marker
+from .mesh import Mesh
 from .protocols import Data, GenericDynamicModel
 from .segment_real import SegmentReal
 from .segment_coordinate_system import SegmentCoordinateSystem
@@ -26,6 +27,7 @@ class BiomechanicalModel:
         rotations: str = "",
         segment_coordinate_system: SegmentCoordinateSystem = None,
         inertia_parameters: InertiaParameters = None,
+        mesh: Mesh = None,
     ):
         """
         Add a new segment to the model
@@ -44,6 +46,8 @@ class BiomechanicalModel:
             The coordinate system of the segment
         inertia_parameters
             The inertia parameters of the segment
+        mesh
+            The mesh points of the segment
         """
         self.segments[name] = Segment(
             name=name,
@@ -52,6 +56,7 @@ class BiomechanicalModel:
             rotations=rotations,
             segment_coordinate_system=segment_coordinate_system,
             inertia_parameters=inertia_parameters,
+            mesh=mesh,
         )
 
     def add_marker(
@@ -117,6 +122,10 @@ class BiomechanicalModel:
             if s.inertia_parameters is not None:
                 inertia_parameters = s.inertia_parameters.to_real(data, model, scs)
 
+            mesh = None
+            if s.mesh is not None:
+                mesh = s.mesh.to_mesh(data, model, scs)
+
             model.add_segment(
                 SegmentReal(
                     name=s.name,
@@ -125,6 +134,7 @@ class BiomechanicalModel:
                     translations=s.translations,
                     rotations=s.rotations,
                     inertia_parameters=inertia_parameters,
+                    mesh=mesh,
                 )
             )
 
