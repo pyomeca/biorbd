@@ -42,4 +42,3 @@ class InertiaParameters:
             kinematic_chain,
             parent_scs,
         )
-

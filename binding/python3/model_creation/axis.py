@@ -12,6 +12,7 @@ class Axis:
         """
         A copy of AxisReal.Name
         """
+
         pass
 
     def __init__(self, name: AxisReal.Name, start: Callable | str, end: Callable | str):
@@ -32,7 +33,7 @@ class Axis:
         self.end = Marker(end)
 
     def to_axis(
-            self, data: Data, kinematic_chain: KinematicChain, parent_scs: SegmentCoordinateSystemReal = None
+        self, data: Data, kinematic_chain: KinematicChain, parent_scs: SegmentCoordinateSystemReal = None
     ) -> AxisReal:
         """
         Compute the axis from actual data

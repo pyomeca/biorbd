@@ -6,6 +6,7 @@ class C3dData:
     """
     Implementation of the `Data` protocol from model_creation
     """
+
     def __init__(self, c3d_path, first_frame: int = 0, last_frame: int = -1):
         self.first_frame = first_frame
         self.last_frame = last_frame

@@ -40,7 +40,7 @@ class SegmentCoordinateSystem:
         self.axis_to_keep = axis_to_keep
 
     def to_scs(
-            self, data: Data, kinematic_chain: KinematicChain, parent_scs: SegmentCoordinateSystemReal
+        self, data: Data, kinematic_chain: KinematicChain, parent_scs: SegmentCoordinateSystemReal
     ) -> SegmentCoordinateSystemReal:
         """
         Collapse the generic SegmentCoordinateSystem to an actual SegmentCoordinateSystemReal with value
@@ -64,5 +64,6 @@ class SegmentCoordinateSystem:
             self.origin.to_marker(data, kinematic_chain),
             self.first_axis.to_axis(data, kinematic_chain),
             self.second_axis.to_axis(data, kinematic_chain),
-            self.axis_to_keep, parent_scs
+            self.axis_to_keep,
+            parent_scs,
         )

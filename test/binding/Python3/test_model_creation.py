@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 import biorbd
-from biorbd import Marker, Segment, KinematicChain, RT, Axis, KinematicModelGeneric
+from biorbd.model_creation import Marker, Segment, KinematicChain, RT, Axis, KinematicModelGeneric
 import ezc3d
 
 

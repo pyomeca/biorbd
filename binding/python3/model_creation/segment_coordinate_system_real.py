@@ -7,7 +7,12 @@ from .marker_real import MarkerReal
 
 
 class SegmentCoordinateSystemReal:
-    def __init__(self, scs: np.ndarray = np.identity(4), parent_scs: "SegmentCoordinateSystemReal" = None, is_scs_local: bool = False):
+    def __init__(
+        self,
+        scs: np.ndarray = np.identity(4),
+        parent_scs: "SegmentCoordinateSystemReal" = None,
+        is_scs_local: bool = False,
+    ):
         """
         Parameters
         ----------
@@ -25,7 +30,11 @@ class SegmentCoordinateSystemReal:
 
     @staticmethod
     def from_markers(
-            origin: MarkerReal, first_axis: AxisReal, second_axis: AxisReal, axis_to_keep: AxisReal.Name, parent_scs: "SegmentCoordinateSystemReal" = None
+        origin: MarkerReal,
+        first_axis: AxisReal,
+        second_axis: AxisReal,
+        axis_to_keep: AxisReal.Name,
+        parent_scs: "SegmentCoordinateSystemReal" = None,
     ) -> "SegmentCoordinateSystemReal":
         """
         Parameters
@@ -150,9 +159,9 @@ class SegmentCoordinateSystemReal:
             raise ("SCS multiplication must be performed against np.narray or SegmentCoordinateSystemReal classes")
 
         if len(other.shape) == 3:  # If it is a RT @ RT
-            return np.einsum('ijk,jlk->ilk', self.scs, other)
+            return np.einsum("ijk,jlk->ilk", self.scs, other)
         elif len(other.shape) == 2:  # if it is a RT @ vector
-            return np.einsum('ijk,jk->ik', self.scs, other)
+            return np.einsum("ijk,jk->ik", self.scs, other)
         else:
             NotImplementedError("This multiplication is not implemented yet")
 
@@ -160,6 +169,6 @@ class SegmentCoordinateSystemReal:
     def transpose(self):
         out = self.copy()
         out.scs = out.scs.transpose((1, 0, 2))
-        out.scs[:3, 3, :] = np.einsum('ijk,jk->ik', -out.scs[:3, :3, :], self.scs[:3, 3, :])
+        out.scs[:3, 3, :] = np.einsum("ijk,jk->ik", -out.scs[:3, :3, :], self.scs[:3, 3, :])
         out.scs[3, :3, :] = 0
         return out

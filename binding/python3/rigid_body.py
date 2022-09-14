@@ -89,6 +89,7 @@ def extended_kalman_filter(model: biorbd.Model, trial: str) -> tuple[np.ndarray,
     These three matrices are of size nq x ntimes
     """
     import ezc3d
+
     marker_names = tuple(n.to_string() for n in model.technicalMarkerNames())
 
     c3d = ezc3d.c3d(trial, extract_forceplat_data=True)

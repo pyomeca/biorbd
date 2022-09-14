@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 import biorbd
-from biorbd import Marker, Segment, KinematicChain, RT, Axis, KinematicModelGeneric
+from biorbd.model_creation import Marker, Segment, KinematicChain, RT, Axis, KinematicModelGeneric
 import ezc3d
 
 #
@@ -17,7 +17,7 @@ import ezc3d
 def model_creation_from_static(remove_temporary: bool = True):
     """
     We define a new model by feeding in the actual dimension and position of the model
-    Please note that a bunch of useless markers are defined, this is for the other model creation which needs them
+    Please note that a bunch of useless markers are defined, this is for the other model creation below which needs them
     to define the SegmentCoordinateSystem matrices
     """
     kinematic_model_file_path = "temporary.bioMod"
@@ -130,7 +130,8 @@ def model_creation_from_static(remove_temporary: bool = True):
 
 def model_creation_from_data(remove_temporary: bool = True):
     """
-    We are using the previous model to define a new model based on the position of the markers
+    We are using the previous model to define a new model based on the position of the markers. This is solely so we
+    have realistic data to use. Typically, the 'write_markers' function would be some actual data collection
     """
 
     def write_markers_to_c3d(save_path: str, model: biorbd.Model):

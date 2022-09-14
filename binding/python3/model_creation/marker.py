@@ -39,7 +39,7 @@ class Marker:
         self.is_anatomical = is_anatomical
 
     def to_marker(
-            self, data: Data, kinematic_chain: KinematicChain, parent_scs: SegmentCoordinateSystemReal = None
+        self, data: Data, kinematic_chain: KinematicChain, parent_scs: SegmentCoordinateSystemReal = None
     ) -> MarkerReal:
         return MarkerReal.from_data(
             data,
@@ -51,4 +51,3 @@ class Marker:
             is_technical=self.is_technical,
             is_anatomical=self.is_anatomical,
         )
-

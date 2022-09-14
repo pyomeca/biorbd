@@ -6,6 +6,7 @@ class Param:
     """
     This is a convenient class to hold inertia parameter information of the DeLeva model below
     """
+
     def __init__(
         self,
         marker_names: tuple[str, ...],

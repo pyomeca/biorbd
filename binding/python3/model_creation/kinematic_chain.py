@@ -1,7 +1,8 @@
 class KinematicChain:
     def __init__(self):
         from .segment_real import SegmentReal  # Imported here to prevent from circular imports
-        self.segments: dict[str: SegmentReal, ...] = {}
+
+        self.segments: dict[str:SegmentReal, ...] = {}
 
     def add_segment(self, segment) -> None:
         """
