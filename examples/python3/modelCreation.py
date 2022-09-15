@@ -18,7 +18,7 @@ from biorbd.model_creation import (
 )
 import ezc3d
 
-from de_leva import DeLevaTable
+from .de_leva import DeLevaTable
 
 
 #
