@@ -9,6 +9,7 @@ from biorbd.model_creation import (
     C3dData,
     Marker,
     MarkerReal,
+    Mesh,
     MeshReal,
     Segment,
     SegmentReal,
@@ -16,6 +17,8 @@ from biorbd.model_creation import (
     SegmentCoordinateSystem,
 )
 import ezc3d
+
+from de_leva import DeLevaTable
 
 
 def test_model_creation_from_static(remove_temporary: bool = True):
@@ -167,8 +170,9 @@ def test_model_creation_from_data(remove_temporary: bool = True):
 
     # Fill the kinematic chain model
     model = BiomechanicalModel()
+    de_leva = DeLevaTable(total_mass=100, sex="female")
 
-    model["TRUNK"] = Segment(translations="yx", rotations="x")
+    model["TRUNK"] = Segment(translations="yx", rotations="x", inertia_parameters=de_leva["TRUNK"],)
     model["TRUNK"].add_marker(Marker("PELVIS"))
 
     model["HEAD"] = Segment(
@@ -178,7 +182,9 @@ def test_model_creation_from_data(remove_temporary: bool = True):
             first_axis=Axis(Axis.Name.Z, start="BOTTOM_HEAD", end="HEAD_Z"),
             second_axis=Axis(Axis.Name.X, start="BOTTOM_HEAD", end="HEAD_XZ"),
             axis_to_keep=Axis.Name.Z,
-        )
+        ),
+        mesh=Mesh(("BOTTOM_HEAD", "TOP_HEAD", "HEAD_Z", "HEAD_XZ", "BOTTOM_HEAD")),
+        inertia_parameters=de_leva["HEAD"],
     )
     model["HEAD"].add_marker(Marker("BOTTOM_HEAD"))
     model["HEAD"].add_marker(Marker("TOP_HEAD"))
@@ -194,7 +200,8 @@ def test_model_creation_from_data(remove_temporary: bool = True):
             first_axis=Axis(Axis.Name.X, start="SHOULDER", end="SHOULDER_X"),
             second_axis=Axis(Axis.Name.Y, start="SHOULDER", end="SHOULDER_XY"),
             axis_to_keep=Axis.Name.X,
-        )
+        ),
+        inertia_parameters=de_leva["UPPER_ARM"],
     )
     model["UPPER_ARM"].add_marker(Marker("SHOULDER"))
     model["UPPER_ARM"].add_marker(Marker("SHOULDER_X"))
@@ -207,7 +214,8 @@ def test_model_creation_from_data(remove_temporary: bool = True):
             first_axis=Axis(Axis.Name.Y, start="ELBOW", end="ELBOW_Y"),
             second_axis=Axis(Axis.Name.X, start="ELBOW", end="ELBOW_XY"),
             axis_to_keep=Axis.Name.Y,
-        )
+        ),
+        inertia_parameters=de_leva["LOWER_ARM"],
     )
     model["LOWER_ARM"].add_marker(Marker("ELBOW"))
     model["LOWER_ARM"].add_marker(Marker("ELBOW_Y"))
@@ -220,7 +228,8 @@ def test_model_creation_from_data(remove_temporary: bool = True):
             first_axis=Axis(Axis.Name.Y, start="WRIST", end="HAND_Y"),
             second_axis=Axis(Axis.Name.Z, start="WRIST", end="HAND_YZ"),
             axis_to_keep=Axis.Name.Y,
-        )
+        ),
+        inertia_parameters=de_leva["HAND"],
     )
     model["HAND"].add_marker(Marker("WRIST"))
     model["HAND"].add_marker(Marker("FINGER"))
@@ -235,7 +244,8 @@ def test_model_creation_from_data(remove_temporary: bool = True):
             first_axis=Axis(Axis.Name.X, start="THIGH_ORIGIN", end="THIGH_X"),
             second_axis=Axis(Axis.Name.Y, start="THIGH_ORIGIN", end="THIGH_Y"),
             axis_to_keep=Axis.Name.X,
-        )
+        ),
+        inertia_parameters=de_leva["THIGH"],
     )
     model["THIGH"].add_marker(Marker("THIGH_ORIGIN"))
     model["THIGH"].add_marker(Marker("THIGH_X"))
@@ -249,7 +259,8 @@ def test_model_creation_from_data(remove_temporary: bool = True):
             first_axis=Axis(Axis.Name.Z, start="KNEE", end="KNEE_Z"),
             second_axis=Axis(Axis.Name.X, start="KNEE", end="KNEE_XZ"),
             axis_to_keep=Axis.Name.Z,
-        )
+        ),
+        inertia_parameters=de_leva["SHANK"],
     )
     model["SHANK"].add_marker(Marker("KNEE"))
     model["SHANK"].add_marker(Marker("KNEE_Z"))
@@ -263,7 +274,8 @@ def test_model_creation_from_data(remove_temporary: bool = True):
             first_axis=Axis(Axis.Name.Z, start="ANKLE", end="ANKLE_Z"),
             second_axis=Axis(Axis.Name.Y, start="ANKLE", end="ANKLE_YZ"),
             axis_to_keep=Axis.Name.Z,
-        )
+        ),
+        inertia_parameters=de_leva["FOOT"],
     )
     model["FOOT"].add_marker(Marker("ANKLE"))
     model["FOOT"].add_marker(Marker("TOE"))
