@@ -19,7 +19,8 @@ class SegmentCoordinateSystemReal:
         scs
             The scs of the SegmentCoordinateSystemReal
         parent_scs
-            The scs of the parent (is used when printing the model so SegmentCoordinateSystemReal is in parent's local reference frame
+            The scs of the parent (is used when printing the model so SegmentCoordinateSystemReal
+            is in parent's local reference frame
         is_scs_local
             If the scs is already in local reference frame
         """
@@ -49,7 +50,8 @@ class SegmentCoordinateSystemReal:
             The Axis.Name of the axis to keep while recomputing the reference frame. It must be the same as either
             first_axis.name or second_axis.name
         parent_scs
-            The scs of the parent (is used when printing the model so SegmentCoordinateSystemReal is in parent's local reference frame
+            The scs of the parent (is used when printing the model so SegmentCoordinateSystemReal
+            is in parent's local reference frame
         """
 
         # Find the two adjacent axes and reorder accordingly (assuming right-hand RT)
@@ -112,7 +114,8 @@ class SegmentCoordinateSystemReal:
         translations
             The XYZ translations
         parent_scs
-            The scs of the parent (is used when printing the model so SegmentCoordinateSystemReal is in parent's local reference frame
+            The scs of the parent (is used when printing the model so SegmentCoordinateSystemReal
+            is in parent's local reference frame
         """
         matrix = {
             "x": lambda x: np.array(((1, 0, 0), (0, np.cos(x), -np.sin(x)), (0, np.sin(x), np.cos(x)))),
@@ -156,7 +159,9 @@ class SegmentCoordinateSystemReal:
             other = other.scs
 
         if not isinstance(other, np.ndarray):
-            raise ("SCS multiplication must be performed against np.narray or SegmentCoordinateSystemReal classes")
+            raise ValueError(
+                "SCS multiplication must be performed against np.narray or SegmentCoordinateSystemReal classes"
+            )
 
         if len(other.shape) == 3:  # If it is a RT @ RT
             return np.einsum("ijk,jlk->ilk", self.scs, other)

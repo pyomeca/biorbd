@@ -22,7 +22,6 @@ class Mesh:
         """
         self.functions = tuple((lambda m, kc, name=f: m[name]) if isinstance(f, str) else f for f in functions)
 
-
     def to_mesh(
         self, data: Data, kinematic_chain: KinematicChain, parent_scs: SegmentCoordinateSystemReal = None
     ) -> MeshReal:

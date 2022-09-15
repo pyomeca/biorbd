@@ -28,7 +28,7 @@ class SegmentReal:
         self.markers.append(marker)
 
     def __str__(self):
-        # Define the print function so it automatically format things in the file properly<
+        # Define the print function, so it automatically formats things in the file properly
         out_string = f"segment {self.name}\n"
         if self.parent_name:
             out_string += f"\tparent {self.parent_name}\n"

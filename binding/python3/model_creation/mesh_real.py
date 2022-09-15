@@ -33,6 +33,8 @@ class MeshReal:
 
         Parameters
         ----------
+        data
+            The data to pick the data from
         functions
             The function (f(m) -> np.ndarray, where m is a dict of markers (XYZ1 x time)) that defines the mesh points
         kinematic_chain
@@ -47,17 +49,17 @@ class MeshReal:
         for f in functions:
             p: np.ndarray = f(data.values, kinematic_chain)
             if not isinstance(p, np.ndarray):
-                raise RuntimeError(f"The function {function} must return a np.ndarray of dimension 4xT (XYZ1 x time)")
+                raise RuntimeError(f"The function {f} must return a np.ndarray of dimension 4xT (XYZ1 x time)")
             if len(p.shape) == 1:
                 p = p[:, np.newaxis]
 
             if len(p.shape) != 2 or p.shape[0] != 4:
-                raise RuntimeError(f"The function {function} must return a np.ndarray of dimension 4xT (XYZ1 x time)")
+                raise RuntimeError(f"The function {f} must return a np.ndarray of dimension 4xT (XYZ1 x time)")
 
             p[3, :] = 1  # Do not trust user and make sure the last value is a perfect one
             projected_p = (parent_scs.transpose if parent_scs is not None else np.identity(4)) @ p
             if np.isnan(projected_p).all():
-                raise RuntimeError(f"All the values for {function} returned nan which is not permitted")
+                raise RuntimeError(f"All the values for {f} returned nan which is not permitted")
 
             all_p.append(projected_p)
 

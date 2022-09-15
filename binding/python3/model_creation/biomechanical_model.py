@@ -4,7 +4,7 @@ from .inertia_parameters import InertiaParameters
 from .kinematic_chain import KinematicChain
 from .marker import Marker
 from .mesh import Mesh
-from .protocols import Data, GenericDynamicModel
+from .protocols import Data
 from .segment_real import SegmentReal
 from .segment_coordinate_system import SegmentCoordinateSystem
 from .segment import Segment
