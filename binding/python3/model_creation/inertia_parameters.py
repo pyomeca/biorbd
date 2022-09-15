@@ -1,6 +1,6 @@
 from typing import Callable
 
-from .kinematic_chain import KinematicChain
+from .biomechanical_model_real import BiomechanicalModelReal
 from .inertia_parameters_real import InertiaParametersReal
 from .protocols import Data
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
@@ -32,7 +32,7 @@ class InertiaParameters:
         self.inertia = inertia
 
     def to_real(
-        self, data: Data, kinematic_chain: KinematicChain, parent_scs: SegmentCoordinateSystemReal = None
+        self, data: Data, kinematic_chain: BiomechanicalModelReal, parent_scs: SegmentCoordinateSystemReal = None
     ) -> InertiaParametersReal:
         return InertiaParametersReal.from_data(
             data,

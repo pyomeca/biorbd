@@ -52,4 +52,6 @@ class Segment:
         marker
             The marker to add
         """
+
+        marker.parent_name = self.name
         self.markers.append(marker)

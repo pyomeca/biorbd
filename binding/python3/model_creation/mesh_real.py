@@ -2,7 +2,7 @@ from typing import Callable
 
 import numpy as np
 
-from .kinematic_chain import KinematicChain
+from .biomechanical_model_real import BiomechanicalModelReal
 from .protocols import Data
 
 
@@ -24,7 +24,7 @@ class MeshReal:
     def from_data(
         data: Data,
         functions: tuple[Callable, ...],
-        kinematic_chain: KinematicChain,
+        kinematic_chain: BiomechanicalModelReal,
         parent_scs: "SegmentCoordinateSystemReal" = None,
     ):
         """

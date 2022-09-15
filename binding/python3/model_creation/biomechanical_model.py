@@ -1,7 +1,7 @@
 from typing import Callable
 
 from .inertia_parameters import InertiaParameters
-from .kinematic_chain import KinematicChain
+from .biomechanical_model_real import BiomechanicalModelReal
 from .marker import Marker
 from .mesh import Mesh
 from .protocols import Data
@@ -21,33 +21,15 @@ class BiomechanicalModel:
 
     def add_segment(
         self,
-        name: str,
-        parent_name: str = "",
-        translations: str = "",
-        rotations: str = "",
-        segment_coordinate_system: SegmentCoordinateSystem = None,
-        inertia_parameters: InertiaParameters = None,
-        mesh: Mesh = None,
+        segment: Segment
     ):
         """
         Add a new segment to the model
 
         Parameters
         ----------
-        name
-            The name of the segment
-        parent_name
-            The name of the segment the current segment is attached to
-        translations
-            The sequence of translation
-        rotations
-            The sequence of rotation
-        segment_coordinate_system
-            The coordinate system of the segment
-        inertia_parameters
-            The inertia parameters of the segment
-        mesh
-            The mesh points of the segment
+        segment
+            The segment to add
         """
         self.segments[name] = Segment(
             name=name,
@@ -59,39 +41,11 @@ class BiomechanicalModel:
             mesh=mesh,
         )
 
-    def add_marker(
-        self,
-        segment: str,
-        name: str,
-        function: Callable = None,
-        is_technical: bool = True,
-        is_anatomical: bool = False,
-    ):
-        """
-        Add a new marker to the specified segment
-        Parameters
-        ----------
-        segment
-            The name of the segment to attach the marker to
-        name
-            The name of the marker. It must be unique across the model
-        function
-            The function (f(m) -> np.ndarray, where m is a dict of markers (XYZ1 x time)) that defines the marker
-        is_technical
-            If the marker should be flagged as a technical marker
-        is_anatomical
-            If the marker should be flagged as an anatomical marker
-        """
+    def __getitem__(self, item):
+        return self.segments[item]
 
-        self.segments[segment].add_marker(
-            Marker(
-                name=name,
-                function=function if function is not None else name,
-                parent_name=segment,
-                is_technical=is_technical,
-                is_anatomical=is_anatomical,
-            )
-        )
+    def __setitem__(self, key, value):
+        self.segments[key] = value
 
     def write(self, save_path: str, data: Data):
         """
@@ -106,7 +60,7 @@ class BiomechanicalModel:
             The data to collapse the model from
         """
 
-        model = KinematicChain()
+        model = BiomechanicalModelReal()
         for name in self.segments:
             s = self.segments[name]
 
@@ -126,16 +80,14 @@ class BiomechanicalModel:
             if s.mesh is not None:
                 mesh = s.mesh.to_mesh(data, model, scs)
 
-            model.add_segment(
-                SegmentReal(
-                    name=s.name,
-                    parent_name=s.parent_name,
-                    segment_coordinate_system=scs,
-                    translations=s.translations,
-                    rotations=s.rotations,
-                    inertia_parameters=inertia_parameters,
-                    mesh=mesh,
-                )
+            model[s.name] =SegmentReal(
+                name=s.name,
+                parent_name=s.parent_name,
+                segment_coordinate_system=scs,
+                translations=s.translations,
+                rotations=s.rotations,
+                inertia_parameters=inertia_parameters,
+                mesh=mesh,
             )
 
             for marker in s.markers:

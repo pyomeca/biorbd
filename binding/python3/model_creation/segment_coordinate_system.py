@@ -2,7 +2,7 @@ from typing import Callable
 
 from .axis_real import AxisReal
 from .axis import Axis
-from .kinematic_chain import KinematicChain
+from .biomechanical_model_real import BiomechanicalModelReal
 from .marker import Marker
 from .protocols import Data
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
@@ -34,13 +34,13 @@ class SegmentCoordinateSystem:
             first_axis.name or second_axis.name
         """
 
-        self.origin = Marker(origin)
+        self.origin = Marker(function=origin)
         self.first_axis = first_axis
         self.second_axis = second_axis
         self.axis_to_keep = axis_to_keep
 
     def to_scs(
-        self, data: Data, kinematic_chain: KinematicChain, parent_scs: SegmentCoordinateSystemReal
+        self, data: Data, kinematic_chain: BiomechanicalModelReal, parent_scs: SegmentCoordinateSystemReal
     ) -> SegmentCoordinateSystemReal:
         """
         Collapse the generic SegmentCoordinateSystem to an actual SegmentCoordinateSystemReal with value

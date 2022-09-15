@@ -2,7 +2,7 @@ from typing import Callable
 
 import numpy as np
 
-from .kinematic_chain import KinematicChain
+from .biomechanical_model_real import BiomechanicalModelReal
 from .protocols import Data
 
 
@@ -43,7 +43,7 @@ class MarkerReal:
         name: str,
         function: Callable,
         parent_name: str,
-        kinematic_chain: KinematicChain,
+        kinematic_chain: BiomechanicalModelReal,
         parent_scs: "SegmentCoordinateSystemReal" = None,
         is_technical: bool = True,
         is_anatomical: bool = False,

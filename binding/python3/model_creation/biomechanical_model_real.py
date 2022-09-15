@@ -1,24 +1,16 @@
-class KinematicChain:
+class BiomechanicalModelReal:
     def __init__(self):
         from .segment_real import SegmentReal  # Imported here to prevent from circular imports
 
         self.segments: dict[str:SegmentReal, ...] = {}
-
-    def add_segment(self, segment) -> None:
-        """
-        Add a new segment to the kinematic chain. The order of the insertion is preserved
-        Parameters
-        ----------
-        segment
-            The new segment
-        """
-
-        # From Pythom 3.7 the insertion order in a dict is preserved. THis is important because when writting a new
+        # From Pythom 3.7 the insertion order in a dict is preserved. This is important because when writing a new
         # .bioMod file, the order of the segment matters
-        self.segments[segment.name] = segment
 
     def __getitem__(self, item: str):
         return self.segments[item]
+
+    def __setitem__(self, key, value):
+        self.segments[key] = value
 
     def __str__(self):
         out_string = "version 4\n\n"

@@ -1,7 +1,7 @@
 from typing import Callable
 
 from .axis_real import AxisReal
-from .kinematic_chain import KinematicChain
+from .biomechanical_model_real import BiomechanicalModelReal
 from .marker import Marker
 from .protocols import Data
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
@@ -29,11 +29,11 @@ class Axis:
             If a str is provided, the position of the corresponding marker is used
         """
         self.name = name
-        self.start = Marker(start)
-        self.end = Marker(end)
+        self.start = Marker(function=start)
+        self.end = Marker(function=end)
 
     def to_axis(
-        self, data: Data, kinematic_chain: KinematicChain, parent_scs: SegmentCoordinateSystemReal = None
+        self, data: Data, kinematic_chain: BiomechanicalModelReal, parent_scs: SegmentCoordinateSystemReal = None
     ) -> AxisReal:
         """
         Compute the axis from actual data
