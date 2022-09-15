@@ -21,4 +21,3 @@ from .inertia_parameters_real import InertiaParametersReal
 
 # The accepted data formating
 from .c3d_data import C3dData
-

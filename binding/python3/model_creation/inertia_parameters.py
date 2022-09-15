@@ -47,7 +47,7 @@ class InertiaParameters:
 
     @staticmethod
     def gyration_to_inertia(
-            mass: float, coef: tuple[float, float, float], start: np.ndarray, end: np.ndarray
+        mass: float, coef: tuple[float, float, float], start: np.ndarray, end: np.ndarray
     ) -> np.ndarray:
         """
         Computes the xx, yy and zz values of the matrix of inertia from the segment length. The radii of gyration used are

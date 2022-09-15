@@ -20,10 +20,7 @@ class BiomechanicalModel:
             return
         raise NotImplementedError("bioMod files are not readable yet")
 
-    def add_segment(
-        self,
-        segment: Segment
-    ):
+    def add_segment(self, segment: Segment):
         """
         Add a new segment to the model
 

@@ -44,10 +44,10 @@ def model_creation_from_static(remove_temporary: bool = True):
 
     # The trunk segment
     bio_model["TRUNK"] = SegmentReal(
-            translations="yz",
-            rotations="x",
-            mesh=MeshReal(((0, 0, 0), (0, 0, 0.53))),
-        )
+        translations="yz",
+        rotations="x",
+        mesh=MeshReal(((0, 0, 0), (0, 0, 0.53))),
+    )
     bio_model["TRUNK"].add_marker(MarkerReal(name="PELVIS", parent_name="TRUNK"))
 
     # The head segment
@@ -190,7 +190,11 @@ def model_creation_from_data(remove_temporary: bool = True):
     model = BiomechanicalModel()
     de_leva = DeLevaTable(total_mass=100, sex="female")
 
-    model["TRUNK"] = Segment(translations="yx", rotations="x", inertia_parameters=de_leva["TRUNK"], )
+    model["TRUNK"] = Segment(
+        translations="yx",
+        rotations="x",
+        inertia_parameters=de_leva["TRUNK"],
+    )
     model["TRUNK"].add_marker(Marker("PELVIS"))
 
     model["HEAD"] = Segment(
