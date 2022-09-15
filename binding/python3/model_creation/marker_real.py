@@ -93,10 +93,11 @@ class MarkerReal:
         # Define the print function, so it automatically formats things in the file properly
         out_string = f"marker {self.name}\n"
         out_string += f"\tparent {self.parent_name}\n"
-        x = np.nanmean(self.position[0, :], axis=0)
-        y = np.nanmean(self.position[1, :], axis=0)
-        z = np.nanmean(self.position[2, :], axis=0)
-        out_string += f"\tposition {x:0.4f} {y:0.4f} {z:0.4f}\n"
+
+        p = np.array(self.position)
+        p = p if len(p.shape) == 1 else np.nanmean(p, axis=1)
+        p = p if len(p.shape) == 1 else np.nanmean(p, axis=0)
+        out_string += f"\tposition {p[0]:0.4f} {p[1]:0.4f} {p[2]:0.4f}\n"
         out_string += f"\ttechnical {1 if self.is_technical else 0}\n"
         out_string += f"\tanatomical {1 if self.is_anatomical else 0}\n"
         out_string += "endmarker\n"

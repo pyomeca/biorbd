@@ -7,7 +7,7 @@ from .segment_coordinate_system import SegmentCoordinateSystem
 class Segment:
     def __init__(
         self,
-        name,
+        name: str = None,
         parent_name: str = "",
         translations: str = "",
         rotations: str = "",

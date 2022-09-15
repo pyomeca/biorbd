@@ -9,6 +9,7 @@ from .segment_real import SegmentReal
 from .segment_coordinate_system import SegmentCoordinateSystem
 from .segment import Segment
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
+from .biomechanical_model_real import BiomechanicalModelReal
 
 
 class BiomechanicalModel:
@@ -41,25 +42,23 @@ class BiomechanicalModel:
             mesh=mesh,
         )
 
-    def __getitem__(self, item):
-        return self.segments[item]
+    def __getitem__(self, name: str):
+        return self.segments[name]
 
-    def __setitem__(self, key, value):
-        self.segments[key] = value
+    def __setitem__(self, name: str, segment: Segment):
+        segment.name = name  # Make sure the name of the segment fits the internal one
+        self.segments[name] = segment
 
-    def write(self, save_path: str, data: Data):
+    def to_real(self, data: Data) -> BiomechanicalModelReal:
         """
-        Collapse the model to an actual personalized kinematic chain based on the model and the data file (usually
-        a static trial)
+        Collapse the model to an actual personalized biomechanical model based on the generic model and the data
+        file (usually a static trial)
 
         Parameters
         ----------
-        save_path
-            The path to save the bioMod
         data
             The data to collapse the model from
         """
-
         model = BiomechanicalModelReal()
         for name in self.segments:
             s = self.segments[name]
@@ -80,7 +79,7 @@ class BiomechanicalModel:
             if s.mesh is not None:
                 mesh = s.mesh.to_mesh(data, model, scs)
 
-            model[s.name] =SegmentReal(
+            model[s.name] = SegmentReal(
                 name=s.name,
                 parent_name=s.parent_name,
                 segment_coordinate_system=scs,
@@ -93,4 +92,19 @@ class BiomechanicalModel:
             for marker in s.markers:
                 model.segments[name].add_marker(marker.to_marker(data, model, scs))
 
+        return model
+
+    def write(self, save_path: str, data: Data):
+        """
+        Collapse the model to an actual personalized biomechanical model based on the generic model and the data
+        file (usually a static trial)
+
+        Parameters
+        ----------
+        save_path
+            The path to save the bioMod
+        data
+            The data to collapse the model from
+        """
+        model = self.to_real(data)
         model.write(save_path)

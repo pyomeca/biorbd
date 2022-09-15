@@ -6,11 +6,12 @@ class BiomechanicalModelReal:
         # From Pythom 3.7 the insertion order in a dict is preserved. This is important because when writing a new
         # .bioMod file, the order of the segment matters
 
-    def __getitem__(self, item: str):
-        return self.segments[item]
+    def __getitem__(self, name: str):
+        return self.segments[name]
 
-    def __setitem__(self, key, value):
-        self.segments[key] = value
+    def __setitem__(self, name: str, segment: "SegmentReal"):
+        segment.name = name  # Make sure the name of the segment fits the internal one
+        self.segments[name] = segment
 
     def __str__(self):
         out_string = "version 4\n\n"

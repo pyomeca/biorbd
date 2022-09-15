@@ -7,7 +7,7 @@ from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 class SegmentReal:
     def __init__(
         self,
-        name,
+        name: str = None,
         parent_name: str = "",
         segment_coordinate_system: SegmentCoordinateSystemReal = None,
         translations: str = "",

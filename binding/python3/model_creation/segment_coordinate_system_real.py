@@ -26,6 +26,8 @@ class SegmentCoordinateSystemReal:
         """
 
         self.scs = scs
+        if len(self.scs.shape) == 2:
+            self.scs = self.scs[:, :, np.newaxis]
         self.parent_scs = parent_scs
         self.is_in_global = not is_scs_local
 

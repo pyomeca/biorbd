@@ -9,7 +9,7 @@ from .protocols import Data
 class MeshReal:
     def __init__(
         self,
-        positions: tuple[tuple[int | float, int | float, int | float] | np.ndarray, ...] = None,
+        positions: tuple[tuple[float, float, float], ...] = None,
     ):
         """
         Parameters
@@ -69,6 +69,8 @@ class MeshReal:
         # Define the print function, so it automatically formats things in the file properly
         out_string = ""
         for position in self.positions:
-            p = np.nanmean(position, axis=1)
+            # Do a sanity check
+            position = np.array(position)
+            p = position if len(position.shape) == 1 else np.nanmean(position, axis=1)
             out_string += f"\tmesh {p[0]:0.4f} {p[1]:0.4f} {p[2]:0.4f}\n"
         return out_string
