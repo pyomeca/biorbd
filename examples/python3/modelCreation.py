@@ -30,7 +30,7 @@ from de_leva import DeLevaTable
 #
 
 
-def model_creation_from_static(remove_temporary: bool = True):
+def model_creation_from_static_trial(remove_temporary: bool = True):
     """
     We define a new model by feeding in the actual dimension and position of the model
     Please note that a bunch of useless markers are defined, this is for the other model creation below which needs them
@@ -154,7 +154,7 @@ def model_creation_from_static(remove_temporary: bool = True):
         os.remove(kinematic_model_file_path)
 
 
-def model_creation_from_data(remove_temporary: bool = True):
+def model_creation_from_measured_data(remove_temporary: bool = True):
     """
     We are using the previous model to define a new model based on the position of the markers. This is solely so we
     have realistic data to use. Typically, the 'write_markers' function would be some actual data collection
@@ -179,7 +179,7 @@ def model_creation_from_data(remove_temporary: bool = True):
 
     kinematic_model_file_path = "temporary.bioMod"
     c3d_file_path = "temporary.c3d"
-    model_creation_from_static(remove_temporary=False)
+    model_creation_from_static_trial(remove_temporary=False)
 
     # Prepare a fake model and a fake static from the previous test
     model = biorbd.Model(kinematic_model_file_path)
@@ -201,8 +201,8 @@ def model_creation_from_data(remove_temporary: bool = True):
         parent_name="TRUNK",
         segment_coordinate_system=SegmentCoordinateSystem(
             "BOTTOM_HEAD",
-            first_axis=Axis(Axis.Name.Z, start="BOTTOM_HEAD", end="HEAD_Z"),
-            second_axis=Axis(Axis.Name.X, start="BOTTOM_HEAD", end="HEAD_XZ"),
+            first_axis=Axis(name=Axis.Name.Z, start="BOTTOM_HEAD", end="HEAD_Z"),
+            second_axis=Axis(name=Axis.Name.X, start="BOTTOM_HEAD", end="HEAD_XZ"),
             axis_to_keep=Axis.Name.Z,
         ),
         mesh=Mesh(("BOTTOM_HEAD", "TOP_HEAD", "HEAD_Z", "HEAD_XZ", "BOTTOM_HEAD")),
@@ -219,8 +219,8 @@ def model_creation_from_data(remove_temporary: bool = True):
         rotations="x",
         segment_coordinate_system=SegmentCoordinateSystem(
             origin="SHOULDER",
-            first_axis=Axis(Axis.Name.X, start="SHOULDER", end="SHOULDER_X"),
-            second_axis=Axis(Axis.Name.Y, start="SHOULDER", end="SHOULDER_XY"),
+            first_axis=Axis(name=Axis.Name.X, start="SHOULDER", end="SHOULDER_X"),
+            second_axis=Axis(name=Axis.Name.Y, start="SHOULDER", end="SHOULDER_XY"),
             axis_to_keep=Axis.Name.X,
         ),
         inertia_parameters=de_leva["UPPER_ARM"],
@@ -233,8 +233,8 @@ def model_creation_from_data(remove_temporary: bool = True):
         parent_name="UPPER_ARM",
         segment_coordinate_system=SegmentCoordinateSystem(
             origin="ELBOW",
-            first_axis=Axis(Axis.Name.Y, start="ELBOW", end="ELBOW_Y"),
-            second_axis=Axis(Axis.Name.X, start="ELBOW", end="ELBOW_XY"),
+            first_axis=Axis(name=Axis.Name.Y, start="ELBOW", end="ELBOW_Y"),
+            second_axis=Axis(name=Axis.Name.X, start="ELBOW", end="ELBOW_XY"),
             axis_to_keep=Axis.Name.Y,
         ),
         inertia_parameters=de_leva["LOWER_ARM"],
@@ -247,8 +247,8 @@ def model_creation_from_data(remove_temporary: bool = True):
         parent_name="LOWER_ARM",
         segment_coordinate_system=SegmentCoordinateSystem(
             origin="WRIST",
-            first_axis=Axis(Axis.Name.Y, start="WRIST", end="HAND_Y"),
-            second_axis=Axis(Axis.Name.Z, start="WRIST", end="HAND_YZ"),
+            first_axis=Axis(name=Axis.Name.Y, start="WRIST", end="HAND_Y"),
+            second_axis=Axis(name=Axis.Name.Z, start="WRIST", end="HAND_YZ"),
             axis_to_keep=Axis.Name.Y,
         ),
         inertia_parameters=de_leva["HAND"],
@@ -263,8 +263,8 @@ def model_creation_from_data(remove_temporary: bool = True):
         rotations="x",
         segment_coordinate_system=SegmentCoordinateSystem(
             origin="THIGH_ORIGIN",
-            first_axis=Axis(Axis.Name.X, start="THIGH_ORIGIN", end="THIGH_X"),
-            second_axis=Axis(Axis.Name.Y, start="THIGH_ORIGIN", end="THIGH_Y"),
+            first_axis=Axis(name=Axis.Name.X, start="THIGH_ORIGIN", end="THIGH_X"),
+            second_axis=Axis(name=Axis.Name.Y, start="THIGH_ORIGIN", end="THIGH_Y"),
             axis_to_keep=Axis.Name.X,
         ),
         inertia_parameters=de_leva["THIGH"],
@@ -278,8 +278,8 @@ def model_creation_from_data(remove_temporary: bool = True):
         rotations="x",
         segment_coordinate_system=SegmentCoordinateSystem(
             origin="KNEE",
-            first_axis=Axis(Axis.Name.Z, start="KNEE", end="KNEE_Z"),
-            second_axis=Axis(Axis.Name.X, start="KNEE", end="KNEE_XZ"),
+            first_axis=Axis(name=Axis.Name.Z, start="KNEE", end="KNEE_Z"),
+            second_axis=Axis(name=Axis.Name.X, start="KNEE", end="KNEE_XZ"),
             axis_to_keep=Axis.Name.Z,
         ),
         inertia_parameters=de_leva["SHANK"],
@@ -293,8 +293,8 @@ def model_creation_from_data(remove_temporary: bool = True):
         rotations="x",
         segment_coordinate_system=SegmentCoordinateSystem(
             origin="ANKLE",
-            first_axis=Axis(Axis.Name.Z, start="ANKLE", end="ANKLE_Z"),
-            second_axis=Axis(Axis.Name.Y, start="ANKLE", end="ANKLE_YZ"),
+            first_axis=Axis(name=Axis.Name.Z, start="ANKLE", end="ANKLE_Z"),
+            second_axis=Axis(name=Axis.Name.Y, start="ANKLE", end="ANKLE_YZ"),
             axis_to_keep=Axis.Name.Z,
         ),
         inertia_parameters=de_leva["FOOT"],
@@ -320,10 +320,10 @@ def model_creation_from_data(remove_temporary: bool = True):
 
 def main():
     # Create the model from user defined dimensions
-    model_creation_from_static()
+    model_creation_from_static_trial()
 
     # Create the model from a data file and markers as template
-    model_creation_from_data()
+    model_creation_from_measured_data()
 
 
 if __name__ == "__main__":

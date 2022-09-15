@@ -52,6 +52,10 @@ class Segment:
         marker
             The marker to add
         """
+        if marker.parent_name is not None and marker.parent_name != self.name:
+            raise ValueError(
+                "The marker name should be the same as the 'key'. Alternatively, marker.name can be left undefined"
+            )
 
         marker.parent_name = self.name
         self.markers.append(marker)

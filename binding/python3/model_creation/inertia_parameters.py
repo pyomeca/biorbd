@@ -11,7 +11,7 @@ from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 class InertiaParameters:
     def __init__(
         self,
-        relative_mass: Callable = None,
+        mass: Callable = None,
         center_of_mass: Callable = None,
         inertia: Callable = None,
     ):
@@ -21,15 +21,15 @@ class InertiaParameters:
 
         Parameters
         ----------
-        relative_mass
-            The callback function that returns the relative mass of the segment with respect to the full body
+        mass
+            The callback function that returns the mass of the segment with respect to the full body
         center_of_mass
             The callback function that returns the position of the center of mass
             from the segment coordinate system on the main axis
         inertia
             The callback function that returns the inertia xx, yy and zz parameters of the segment
         """
-        self.relative_mass = relative_mass
+        self.relative_mass = mass
         self.center_of_mass = center_of_mass
         self.inertia = inertia
 
@@ -46,7 +46,7 @@ class InertiaParameters:
         )
 
     @staticmethod
-    def gyration_to_inertia(
+    def radii_of_gyration_to_inertia(
         mass: float, coef: tuple[float, float, float], start: np.ndarray, end: np.ndarray
     ) -> np.ndarray:
         """
@@ -58,7 +58,7 @@ class InertiaParameters:
         mass
             The mass of the segment
         coef
-            The coefficient of the length of the segment that gives the radius of gyration
+            The coefficient of the length of the segment that gives the radius of gyration about x, y and z
         start
             The starting point of the segment
         end

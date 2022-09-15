@@ -11,7 +11,7 @@ class Marker:
         self,
         name: str = None,
         function: Callable | str = None,
-        parent_name: str = "",
+        parent_name: str = None,
         is_technical: bool = True,
         is_anatomical: bool = False,
     ):

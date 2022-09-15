@@ -1,12 +1,5 @@
-from typing import Callable
-
-from .inertia_parameters import InertiaParameters
-from .biomechanical_model_real import BiomechanicalModelReal
-from .marker import Marker
-from .mesh import Mesh
 from .protocols import Data
 from .segment_real import SegmentReal
-from .segment_coordinate_system import SegmentCoordinateSystem
 from .segment import Segment
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
 from .biomechanical_model_real import BiomechanicalModelReal
@@ -20,29 +13,14 @@ class BiomechanicalModel:
             return
         raise NotImplementedError("bioMod files are not readable yet")
 
-    def add_segment(self, segment: Segment):
-        """
-        Add a new segment to the model
-
-        Parameters
-        ----------
-        segment
-            The segment to add
-        """
-        self.segments[name] = Segment(
-            name=name,
-            parent_name=parent_name,
-            translations=translations,
-            rotations=rotations,
-            segment_coordinate_system=segment_coordinate_system,
-            inertia_parameters=inertia_parameters,
-            mesh=mesh,
-        )
-
     def __getitem__(self, name: str):
         return self.segments[name]
 
     def __setitem__(self, name: str, segment: Segment):
+        if segment.name is not None and segment.name != name:
+            raise ValueError(
+                "The segment name should be the same as the 'key'. Alternatively, segment.name can be left undefined"
+            )
         segment.name = name  # Make sure the name of the segment fits the internal one
         self.segments[name] = segment
 

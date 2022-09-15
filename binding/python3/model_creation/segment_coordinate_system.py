@@ -17,7 +17,10 @@ class SegmentCoordinateSystem:
         axis_to_keep: AxisReal.Name,
     ):
         """
-        Set the SegmentCoordinateSystemReal matrix of the segment
+        Set the SegmentCoordinateSystemReal matrix of the segment. To compute the third axis, a first cross product of
+        the first_axis with the second_axis is performed. All the axes are then normalized. Then, either the first or
+        second axis (depending on [axis_to_keep]) is recomputed with a cross product to get an
+        orthonormal system of axes. The system is finally moved to the origin
 
         Parameters
         ----------
