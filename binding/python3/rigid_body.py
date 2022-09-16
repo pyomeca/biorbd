@@ -1,7 +1,7 @@
-import biorbd
 from scipy import optimize
 import numpy as np
 
+from . import biorbd
 from .utils import get_range_q
 
 

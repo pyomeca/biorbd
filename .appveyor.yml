@@ -44,7 +44,7 @@ install:
   - cmd: SET CONDA_ENV_PATH=%MINICONDA_PATH%\\envs
 
   # Setup the conda environment
-  - conda install python>=3.10 git rbdl tinyxml ipopt numpy pytest swig pkgconfig cmake scipy ezc3d -c conda-forge
+  - conda install "python>=3.10" git rbdl tinyxml ipopt numpy pytest swig pkgconfig cmake scipy ezc3d -c conda-forge
   - sh: if [[ $CI_LINUX == true ]]; then conda install xorg-libx11 xorg-libxtst -cconda-forge; fi
   - cmd: conda install ninja -cconda-forge
   - conda list
