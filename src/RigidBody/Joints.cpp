@@ -1751,23 +1751,27 @@ void rigidbody::Joints::checkGeneralizedDimensions(
     if (Q) {
         utils::Error::check(
             Q->size() == nbQ(),
-            "Wrong size for the Generalized Coordiates");
+            "Wrong size for the Generalized Coordiates, " + 
+            utils::String("expected ") + std::to_string(nbQ()) + " got " + std::to_string(Q->size()));
     }
     if (Qdot) {
         utils::Error::check(
             Qdot->size() == nbQdot(),
-            "Wrong size for the Generalized Velocities");
+            "Wrong size for the Generalized Velocities, " +
+            utils::String("expected ") + std::to_string(nbQdot()) + " got " + std::to_string(Qdot->size()));
     }
     if (Qddot) {
         utils::Error::check(
             Qddot->size() == nbQddot(),
-            "Wrong size for the Generalized Accelerations");
+            "Wrong size for the Generalized Accelerations, " +
+            utils::String("expected ") + std::to_string(nbQddot()) + " got " + std::to_string(Qddot->size()));
     }
 
     if (torque) {
         utils::Error::check(
             torque->size() == nbGeneralizedTorque(),
-            "Wrong size for the Generalized Torques");
+            "Wrong size for the Generalized Torques, " +
+            utils::String("expected ") + std::to_string(nbGeneralizedTorque()) + " got " + std::to_string(torque->size()));
     }
 #endif
 }
