@@ -2384,7 +2384,7 @@ TEST(Kalman, markers)
         SCALAR_TO_DOUBLE(qref, Qref[i]);
         EXPECT_GT(fabs(q - qref), 1e-4);
         EXPECT_GT(fabs(qdot), 5);
-        EXPECT_GT(fabs(qddot), 100);
+        EXPECT_GT(fabs(qddot), 50);
     }
 
     // Force the filter to converge

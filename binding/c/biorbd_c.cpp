@@ -14,6 +14,7 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
+#include "RigidBody/IMU.h"
 #include "RigidBody/NodeSegment.h"
 #ifndef SKIP_KALMAN
     #include "RigidBody/KalmanReconsIMU.h"
@@ -26,6 +27,7 @@ Model* c_biorbdModel(
 {
     return new Model(Reader::readModelFile(utils::String(pathToModel)));
 }
+
 void c_deleteBiorbdModel(
     Model* model)
 {
@@ -121,9 +123,18 @@ void c_CoM(
 
     dispatchVectorOutput(CoM, com);
 }
+BIORBD_API_C int c_nSegments(
+    BIORBD_NAMESPACE::Model* model) {
+    return static_cast<int>(model->nbSegment());
+}
 
 
 // dof functions
+int c_nRoot(
+    Model* model)
+{
+    return static_cast<int>(model->nbRoot());
+}
 int c_nQ(
     Model* model)
 {
@@ -209,6 +220,17 @@ void c_addIMU(
 {
     utils::RotoTransNode pos(dispatchRTinput(imuRT), name, parentName);
     model->addIMU(pos, technical, anatomical);
+}
+void c_IMU(
+    BIORBD_NAMESPACE::Model* model,
+    const double* Qdouble,
+    double* output,
+    bool updateKin)
+{
+    rigidbody::GeneralizedCoordinates Q = dispatchQinput(model, Qdouble);
+    std::vector<rigidbody::IMU> allIMU = model->IMU(Q, updateKin);
+    
+    dispatchRToutput(allIMU, output);
 }
 
 
@@ -430,6 +452,17 @@ void dispatchRToutput(
         }
     }
 }
+void dispatchRToutput(
+    const std::vector<rigidbody::IMU>& rt_in,
+    double* rt_out)
+{
+    // Attention la mémoire doit déjà être allouée pour rt_out
+    for (unsigned int i = 0; i < rt_in.size(); ++i) {
+        for (unsigned int j = 0; j < 16; ++j) {
+            rt_out[i * 16 + j] = rt_in[i](j % 4, j / 4);
+        }
+    }
+}
 
 utils::Matrix dispatchMatrixInput(
     const double* matXd,
@@ -439,9 +472,9 @@ utils::Matrix dispatchMatrixInput(
     utils::Matrix res(
         static_cast<unsigned int>(nRows),
         static_cast<unsigned int>(nCols));
-    for (int i = 0; i < nCols; ++i) {
-        for (int j = 0; j < nRows; ++j) {
-            res(j, i) = matXd[j + i * nCols];
+    for (int j = 0; j < nCols; ++j) {
+        for (int i = 0; i < nRows; ++i) {
+            res(i, j) = matXd[i + j * nRows];
         }
     }
     return res;
