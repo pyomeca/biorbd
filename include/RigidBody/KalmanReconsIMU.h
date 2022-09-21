@@ -95,11 +95,6 @@ public:
 
 protected:
     ///
-    /// \brief Initialization of the filter
-    ///
-    virtual void initialize();
-
-    ///
     /// \brief Manage the occlusion during the iteration
     /// \param InvTp The inverse of the Tp matrix
     /// \param measure The vector actual measurement to track
@@ -110,7 +105,6 @@ protected:
         utils::Vector &measure,
         const std::vector<unsigned int> &occlusion);
 
-    std::shared_ptr<utils::Matrix> m_PpInitial; ///< Initial covariance matrix
     std::shared_ptr<bool> m_firstIteration; ///< If first iteration was done
 };
 

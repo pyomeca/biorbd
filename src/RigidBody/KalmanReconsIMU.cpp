@@ -16,7 +16,6 @@ using namespace BIORBD_NAMESPACE;
 
 rigidbody::KalmanReconsIMU::KalmanReconsIMU() :
     rigidbody::KalmanRecons(),
-    m_PpInitial(std::make_shared<utils::Matrix>()),
     m_firstIteration(std::make_shared<bool>(true))
 {
 
@@ -26,7 +25,6 @@ rigidbody::KalmanReconsIMU::KalmanReconsIMU(
     Model &model,
     rigidbody::KalmanParam params) :
     rigidbody::KalmanRecons(model, model.nbTechIMUs()*9, params),
-    m_PpInitial(std::make_shared<utils::Matrix>()),
     m_firstIteration(std::make_shared<bool>(true))
 {
     // Initialize the filter
@@ -45,16 +43,7 @@ void rigidbody::KalmanReconsIMU::DeepCopy(const
         rigidbody::KalmanReconsIMU &other)
 {
     rigidbody::KalmanRecons::DeepCopy(other);
-    *m_PpInitial = *other.m_PpInitial;
     *m_firstIteration = *other.m_firstIteration;
-}
-
-void rigidbody::KalmanReconsIMU::initialize()
-{
-    rigidbody::KalmanRecons::initialize();
-
-    // Keep in mind the m_Pp from the start
-    *m_PpInitial = *m_Pp;
 }
 
 void rigidbody::KalmanReconsIMU::manageOcclusionDuringIteration(
@@ -104,13 +93,11 @@ void rigidbody::KalmanReconsIMU::reconstructFrame(
     // An iteration of the Kalman filter
     if (*m_firstIteration) {
         *m_firstIteration = false;
-        for (unsigned int i=0; i<50; ++i) {
+        for (unsigned int i=0; i<300; ++i) {
             // The first time, call in a recursive manner to have a decent initial position
             reconstructFrame(model, IMUobs, nullptr, nullptr, nullptr);
 
-            // we don't need the velocity to get to the initial position
-            // Otherwise, there are risks of overshooting
-            *m_Pp = *m_PpInitial;
+            // We can't use the same trick for reinitiliazing speed in pP as IMU are based on velocity
             m_xp->block(*m_nbDof, 0, *m_nbDof*2, 1) = utils::Vector::Zero(*m_nbDof*2);
         }
     }
