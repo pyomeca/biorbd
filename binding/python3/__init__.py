@@ -1,10 +1,11 @@
 import numpy as np
-from . import biorbd
+from . import biorbd  # This is created while installing using CMake
 from .biorbd import *
 from ._version import __version__
 from .surface_max_torque_actuator import *
 from .rigid_body import *
 from .utils import *
+
 
 if biorbd.currentLinearAlgebraBackend() == 1:
     from casadi import Function, MX, SX, horzcat

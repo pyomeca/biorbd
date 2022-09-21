@@ -7,11 +7,13 @@ import numpy as np
 brbd_to_test = []
 try:
     import biorbd
+
     brbd_to_test.append(biorbd)
 except:
     pass
 try:
     import biorbd_casadi
+
     brbd_to_test.append(biorbd_casadi)
 except:
     pass
@@ -387,4 +389,3 @@ def test_name_to_index(brbd):
     np.testing.assert_equal(brbd.marker_index(m, "piedg6"), 96)
     with pytest.raises(ValueError, match="dummy is not in the biorbd model"):
         brbd.marker_index(m, "dummy")
-

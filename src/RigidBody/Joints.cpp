@@ -408,6 +408,12 @@ int rigidbody::Joints::getBodyRbdlIdToBiorbdId(
     return model.getBodyBiorbdId(bodyName);
 }
 
+unsigned int rigidbody::Joints::getBodyBiorbdIdToRbdlId(
+        const int idx) const
+{
+    return (*m_segments)[idx].id();
+}
+
 std::vector<std::vector<unsigned int> > rigidbody::Joints::getDofSubTrees()
 {
     // initialize subTrees
@@ -1711,6 +1717,30 @@ void rigidbody::Joints::CalcMatRotJacobian(
     }
 }
 
+utils::Matrix
+rigidbody::Joints::JacobianSegmentRotMat(
+        const rigidbody::GeneralizedCoordinates &Q,
+        unsigned int biorbdSegmentIdx,
+        bool updateKin)
+{
+
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+
+    unsigned int segmentIdx = getBodyBiorbdIdToRbdlId(biorbdSegmentIdx);
+
+    utils::Matrix jacobianMat(utils::Matrix::Zero(9,nbQ()));
+    CalcMatRotJacobian(
+        Q,
+        segmentIdx,
+        utils::Matrix3d::Identity(),
+        jacobianMat,
+        updateKin);
+
+    return jacobianMat;
+}
+
 void rigidbody::Joints::checkGeneralizedDimensions(
     const rigidbody::GeneralizedCoordinates *Q,
     const rigidbody::GeneralizedVelocity *Qdot,
@@ -1721,23 +1751,27 @@ void rigidbody::Joints::checkGeneralizedDimensions(
     if (Q) {
         utils::Error::check(
             Q->size() == nbQ(),
-            "Wrong size for the Generalized Coordiates");
+            "Wrong size for the Generalized Coordiates, " + 
+            utils::String("expected ") + std::to_string(nbQ()) + " got " + std::to_string(Q->size()));
     }
     if (Qdot) {
         utils::Error::check(
             Qdot->size() == nbQdot(),
-            "Wrong size for the Generalized Velocities");
+            "Wrong size for the Generalized Velocities, " +
+            utils::String("expected ") + std::to_string(nbQdot()) + " got " + std::to_string(Qdot->size()));
     }
     if (Qddot) {
         utils::Error::check(
             Qddot->size() == nbQddot(),
-            "Wrong size for the Generalized Accelerations");
+            "Wrong size for the Generalized Accelerations, " +
+            utils::String("expected ") + std::to_string(nbQddot()) + " got " + std::to_string(Qddot->size()));
     }
 
     if (torque) {
         utils::Error::check(
             torque->size() == nbGeneralizedTorque(),
-            "Wrong size for the Generalized Torques");
+            "Wrong size for the Generalized Torques, " +
+            utils::String("expected ") + std::to_string(nbGeneralizedTorque()) + " got " + std::to_string(torque->size()));
     }
 #endif
 }
