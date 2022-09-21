@@ -1671,21 +1671,19 @@ void rigidbody::Joints::CalcMatRotJacobian(
     axes.push_back(utils::Vector3d(0,0,1));
     for (unsigned int iAxes=0; iAxes<3; ++iAxes) {
         utils::Matrix3d bodyMatRot (
-            RigidBodyDynamics::CalcBodyWorldOrientation (*this, Q, segmentIdx,
-                    false).transpose());
+            RigidBodyDynamics::CalcBodyWorldOrientation (*this, Q, segmentIdx, false).transpose());
         RigidBodyDynamics::Math::SpatialTransform point_trans(
             RigidBodyDynamics::Math::SpatialTransform (
                 utils::Matrix3d::Identity(),
-                bodyMatRot * rotation * *(axes.begin()+iAxes)));
-
+                bodyMatRot * rotation * *(axes.begin()+iAxes)
+            )
+        );
 
         unsigned int reference_body_id = segmentIdx;
-
         if (this->IsFixedBodyId(segmentIdx)) {
             unsigned int fbody_id = segmentIdx - this->fixed_body_discriminator;
             reference_body_id = this->mFixedBodies[fbody_id].mMovableParent;
         }
-
         unsigned int j = reference_body_id;
 
         // e[j] is set to 1 if joint j contributes to the jacobian that we are
@@ -1700,16 +1698,14 @@ void rigidbody::Joints::CalcMatRotJacobian(
 #endif
             {
                 RigidBodyDynamics::Math::SpatialTransform X_base = this->X_base[j];
-                X_base.r = utils::Vector3d(0,0,
-                                                   0); // Remove all concept of translation (only keep the rotation matrix)
+                X_base.r = utils::Vector3d(0,0,0); // Remove all concept of translation (only keep the rotation matrix)
 
                 if (this->mJoints[j].mDoFCount == 3) {
-                    G.block(iAxes*3, q_index, 3,
-                            3) = ((point_trans * X_base.inverse()).toMatrix() * this->multdof3_S[j]).block(
-                                     3,0,3,3);
+                    G.block(iAxes*3, q_index, 3, 3) 
+                        = ((point_trans * X_base.inverse()).toMatrix() * this->multdof3_S[j]).block(3,0,3,3);
                 } else {
-                    G.block(iAxes*3,q_index, 3,
-                            1) = point_trans.apply(X_base.inverse().apply(this->S[j])).block(3,0,3,1);
+                    G.block(iAxes*3,q_index, 3, 1) 
+                        = point_trans.apply(X_base.inverse().apply(this->S[j])).block(3,0,3,1);
                 }
             }
             j = this->lambda[j]; // Pass to parent segment
