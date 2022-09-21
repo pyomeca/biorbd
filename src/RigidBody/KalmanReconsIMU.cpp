@@ -123,7 +123,7 @@ void rigidbody::KalmanReconsIMU::reconstructFrame(
     // Projected markers
     const std::vector<rigidbody::IMU>& zest_tp = model.technicalIMU(Q_tp, false);
     // Jacobian
-    std::vector<utils::Matrix>& J_tp = model.TechnicalIMUJacobian(Q_tp, false);
+    std::vector<utils::Matrix> J_tp = model.TechnicalIMUJacobian(Q_tp, false);
 
     // Create only one matrix for zest and Jacobian
     utils::Matrix H(utils::Matrix::Zero(*m_nMeasure, *m_nbDof*3)); // 3*nCentrales => X,Y,Z ; 3*nbDof => Q, Qdot, Qddot
