@@ -90,17 +90,17 @@ void muscles::HillThelenType::computeFlPE()
     utils::Scalar normLength = position().length()  / characteristics().optimalLength();
     double kpe = 5.0;
     double e0 = 0.6;
-    utils::Scalar t5 = exp(kpe * (normLength - 0.10e1) / e0);
+    utils::Scalar t5 = exp(kpe * (normLength - 1) / e0);
     utils::Scalar t7 = exp(kpe);
 
 #ifdef BIORBD_USE_CASADI_MATH
     *m_FlPE = IF_ELSE_NAMESPACE::if_else_zero(
                   IF_ELSE_NAMESPACE::gt(normLength, 1),
-                  ((t5 - 0.10e1) / (t7 - 0.10e1))
+                  ((t5 - 1) / (t7 - 1))
                 );
 #else
     if (normLength > 1)
-        *m_FlPE = (t5 - 0.10e1) / (t7 - 0.10e1);
+        *m_FlPE = (t5 - 1) / (t7 - 1);
     else
         *m_FlPE = 0;
 
