@@ -96,7 +96,7 @@ void muscles::HillThelenType::computeFlPE()
 #ifdef BIORBD_USE_CASADI_MATH
     *m_FlPE = IF_ELSE_NAMESPACE::if_else_zero(
                   IF_ELSE_NAMESPACE::gt(normLength, 1),
-                  ((t5 - 0.10) / (t7 - 0.10))
+                  ((t5 - 0.10e1) / (t7 - 0.10e1))
                 );
 #else
     if (normLength > 1)
