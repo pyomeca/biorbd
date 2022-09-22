@@ -288,15 +288,13 @@ void muscles::MuscleGroup::addMuscle(
 
 muscles::Muscle& muscles::MuscleGroup::muscle(unsigned int idx)
 {
-    utils::Error::check(idx<nbMuscles(),
-                                "Idx asked is higher than number of muscles");
+    utils::Error::check(idx<nbMuscles(), "Idx asked is higher than number of muscles");
     return *(*m_mus)[idx];
 }
 const muscles::Muscle& muscles::MuscleGroup::muscle(
     unsigned int idx) const
 {
-    utils::Error::check(idx<nbMuscles(),
-                                "Idx asked is higher than number of muscles");
+    utils::Error::check(idx<nbMuscles(), "Idx asked is higher than number of muscles");
     return *(*m_mus)[idx];
 }
 

@@ -283,8 +283,7 @@ void muscles::Muscles::updateMuscles(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
-                                       (*this);
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 
     // Update all the muscles
     int updateKinTP;

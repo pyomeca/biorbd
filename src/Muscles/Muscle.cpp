@@ -128,16 +128,16 @@ void muscles::Muscle::updateOrientations(
     int updateKin)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,&Qdot,
-                                 updateKin);
+    m_position->updateKinematics(
+        model,*m_characteristics,*m_pathChanger,&Q,&Qdot, updateKin);
 }
 void muscles::Muscle::updateOrientations(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
     utils::Matrix &jacoPointsInGlobal)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,
-                                 *m_characteristics,nullptr);
+    m_position->updateKinematics(
+                musclePointsInGlobal,jacoPointsInGlobal, *m_characteristics,nullptr);
 }
 void muscles::Muscle::updateOrientations(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
@@ -145,8 +145,8 @@ void muscles::Muscle::updateOrientations(
     const rigidbody::GeneralizedVelocity &Qdot)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,
-                                 *m_characteristics,&Qdot);
+    m_position->updateKinematics(
+                musclePointsInGlobal,jacoPointsInGlobal, *m_characteristics,&Qdot);
 }
 
 void muscles::Muscle::setPosition(
@@ -231,8 +231,8 @@ muscles::Muscle::musclesPointsInGlobal(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
-    m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,
-                                 nullptr);
+    m_position->updateKinematics(
+                model,*m_characteristics,*m_pathChanger,&Q,nullptr);
 
     return musclesPointsInGlobal();
 }
