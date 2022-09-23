@@ -855,10 +855,9 @@ public:
     /// \param k_stab
     /// \return The derivate of Q in function of Qdot
     ///
-    GeneralizedVelocity computeQdot(
-        const GeneralizedCoordinates &Q,
+    GeneralizedVelocity computeQdot(const GeneralizedCoordinates &Q,
         const GeneralizedCoordinates &QDot,
-        const double k_stab = 1);
+        const utils::Scalar k_stab = 1);
 
     ///
     /// \brief Return the angular velocity of the segment

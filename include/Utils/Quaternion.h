@@ -33,7 +33,7 @@ public:
     /// \param kStabilizer The value of the kstabilizer
     ///
     Quaternion (
-        double kStabilizer = 1);
+        const Scalar& kStabilizer = 1);
 
     ///
     /// \brief Construct Quaternion from another quaternion
@@ -49,7 +49,7 @@ public:
     ///
     Quaternion (
         const RigidBodyDynamics::Math::Vector4d &vec4,
-        double kStabilizer = 1);
+        const Scalar& kStabilizer = 1);
 
     ///
     /// \brief Construct Quaternion
@@ -64,7 +64,7 @@ public:
         const Scalar& x,
         const Scalar& y,
         const Scalar& z,
-        double kStabilizer = 1);
+        const Scalar& kStabilizer = 1);
 
     ///
     /// \brief Construct Quaternion
@@ -75,7 +75,7 @@ public:
     Quaternion (
         const Scalar& w,
         const Vector3d &vec3,
-        double kStabilizer = 1);
+        const Scalar& kStabilizer = 1);
 
     ///
     /// \brief Return the real part (w) the Quaternion
@@ -105,7 +105,7 @@ public:
     /// \brief Set the k stabilizer
     /// \param newKStab The new value
     ///
-    void setKStab(double newKStab);
+    void setKStab(const Scalar& newKStab);
 
     ///
     /// \brief Return the k stabilizer
@@ -114,7 +114,7 @@ public:
     /// The k statilizer value is used during several operation to make the
     /// quaternion tending toward a norm of \f$1\f$
     ///
-    double kStab() const;
+    Scalar kStab() const;
 
 #ifndef SWIG
 
@@ -195,7 +195,7 @@ public:
         const Scalar& x,
         const Scalar& y,
         const Scalar& z,
-        double kStab = 1);
+        const Scalar& kStab = 1);
 
     ///
     /// \brief Construct Quaternion from an axis angle
@@ -206,7 +206,7 @@ public:
     static Quaternion fromAxisAngle (
         const Scalar& angle,
         const Vector3d &axis,
-        double kStab = 1);
+        const Scalar& kStab = 1);
 
     ///
     /// \brief Construct Quaternion from a RotoTrans matrix
@@ -215,7 +215,7 @@ public:
     ///
     static Quaternion fromMatrix (
         const RotoTrans& rt,
-        double kStab = 1);
+        const Scalar& kStab = 1);
 
     ///
     /// \brief Construct Quaternion from a Rotation matrix
@@ -224,7 +224,7 @@ public:
     ///
     static Quaternion fromMatrix (
         const Rotation &mat,
-        double kStab = 1);
+        const Scalar& kStab = 1);
 
     ///
     /// \brief Construct Quaternion from Euler angles (sequece ZYX)
@@ -233,7 +233,7 @@ public:
     ///
     static Quaternion fromZYXAngles (
         const Vector3d &zyx_angles,
-        double kStab = 1);
+        const Scalar& kStab = 1);
 
     ///
     /// \brief Construct Quaternion from Euler angles (sequece YXZ)
@@ -242,7 +242,7 @@ public:
     ///
     static Quaternion fromYXZAngles (
         const Vector3d &yxz_angles,
-        double kStab = 1);
+        const Scalar& kStab = 1);
 
     ///
     /// \brief Construct Quaternion from Euler angles (sequece XYZ)
@@ -251,7 +251,7 @@ public:
     ///
     static Quaternion fromXYZAngles (
         const Vector3d &xyz_angles,
-        double kStab = 1);
+        const Scalar& kStab = 1);
 
     ///
     /// \brief Convert the quaternion to a RotoTrans
@@ -291,7 +291,7 @@ public:
     ///
     Quaternion timeStep (
         const Vector3d &omega,
-        double dt);
+        const Scalar& dt);
 
     ///
     /// \brief Return a rotated vector from the quaternion
@@ -356,7 +356,7 @@ public:
     void normalize();
 
 protected:
-    double m_Kstab; ///< Stabilization factor for the derivation
+    utils::Scalar m_Kstab; ///< Stabilization factor for the derivation
 
 };
 

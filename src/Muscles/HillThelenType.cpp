@@ -88,8 +88,8 @@ void muscles::HillThelenType::DeepCopy(
 void muscles::HillThelenType::computeFlPE()
 {
     utils::Scalar normLength = position().length()  / characteristics().optimalLength();
-    double kpe = 5.0;
-    double e0 = 0.6;
+    utils::Scalar kpe = 5.0;
+    utils::Scalar e0 = 0.6;
     utils::Scalar t5 = exp(kpe * (normLength - 1) / e0);
     utils::Scalar t7 = exp(kpe);
 
@@ -118,8 +118,8 @@ void muscles::HillThelenType::computeFvCE()
 {
 	utils::Scalar v = m_position->velocity();
     utils::Scalar norm_v = v / (characteristics().optimalLength() * *m_cste_maxShorteningSpeed);
-	double kvce = 0.06;
-	double flen = 1.6;
+    utils::Scalar kvce = 0.06;
+    utils::Scalar flen = 1.6;
 
 #ifdef BIORBD_USE_CASADI_MATH
     *m_FvCE = IF_ELSE_NAMESPACE::if_else(

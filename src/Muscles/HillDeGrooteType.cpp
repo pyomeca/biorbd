@@ -87,8 +87,8 @@ void muscles::HillDeGrooteType::DeepCopy(
 
 void muscles::HillDeGrooteType::computeFlPE()
 {
-    double kpe = 4;
-    double e0 = 0.6;
+    utils::Scalar kpe = 4;
+    utils::Scalar e0 = 0.6;
     utils::Scalar normLength = position().length() / characteristics().optimalLength();
 
 #ifdef BIORBD_USE_CASADI_MATH
@@ -112,32 +112,32 @@ void muscles::HillDeGrooteType::computeFlPE()
 void muscles::HillDeGrooteType::computeFvCE()
 {
 
-    double d1 = -0.318;
-    double d2 = -8.149;
-    double d3 = -0.374;
-    double d4 = 0.886;
+    utils::Scalar d1 = -0.318;
+    utils::Scalar d2 = -8.149;
+    utils::Scalar d3 = -0.374;
+    utils::Scalar d4 = 0.886;
     utils::Scalar norm_v = m_position->velocity() / (characteristics().optimalLength() * *m_cste_maxShorteningSpeed);
 
-    *m_FvCE = d1 * log((d2 * norm_v + d3) +
-                             sqrt(( d2 * norm_v + d3)*( d2 * norm_v + d3) + 1))
-            + d4;
+    *m_FvCE = d1 * std::log(
+            (d2 * norm_v + d3) + sqrt(( d2 * norm_v + d3)*( d2 * norm_v + d3) + 1)
+        ) + d4;
 }
 
 void muscles::HillDeGrooteType::computeFlCE(
     const muscles::State&)
 {
-    double b11 = 0.815;
-    double b21 = 1.055;
-    double b31 = 0.162;
-    double b41 = 0.063;
-    double b12 = 0.433;
-    double b22 = 0.717;
-    double b32 = -0.030;
-    double b42 = 0.200;
-    double b13 = 0.100;
-    double b23 = 1.000;
-    double b33 = 0.354;
-    double b43 = 0.0;
+    utils::Scalar b11 = 0.815;
+    utils::Scalar b21 = 1.055;
+    utils::Scalar b31 = 0.162;
+    utils::Scalar b41 = 0.063;
+    utils::Scalar b12 = 0.433;
+    utils::Scalar b22 = 0.717;
+    utils::Scalar b32 = -0.030;
+    utils::Scalar b42 = 0.200;
+    utils::Scalar b13 = 0.100;
+    utils::Scalar b23 = 1.000;
+    utils::Scalar b33 = 0.354;
+    utils::Scalar b43 = 0.0;
     utils::Scalar normLength = position().length() / characteristics().optimalLength();
 
     *m_FlCE = b11 * exp((-0.5*((normLength-b21)*(normLength-b21)))
