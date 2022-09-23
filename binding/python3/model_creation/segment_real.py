@@ -13,7 +13,7 @@ class SegmentReal:
         parent_name: str = "",
         segment_coordinate_system: SegmentCoordinateSystemReal = None,
         translations: Translations = Translations.NONE,
-        rotations: str = "",
+        rotations: Rotations = Rotations.NONE,
         inertia_parameters: InertiaParametersReal = None,
         mesh: MeshReal = None,
     ):
