@@ -15,6 +15,8 @@ from biorbd.model_creation import (
     SegmentReal,
     SegmentCoordinateSystemReal,
     SegmentCoordinateSystem,
+    Translations, 
+    Rotations,
 )
 import ezc3d
 
@@ -33,8 +35,8 @@ def test_model_creation_from_static(remove_temporary: bool = True):
 
     # The trunk segment
     bio_model["TRUNK"] = SegmentReal(
-        translations="yz",
-        rotations="x",
+        translations=Translations.YZ,
+        rotations=Rotations.X,
         mesh=MeshReal(((0, 0, 0), (0, 0, 0.53))),
     )
     bio_model["TRUNK"].add_marker(MarkerReal(name="PELVIS", parent_name="TRUNK"))
@@ -58,7 +60,7 @@ def test_model_creation_from_static(remove_temporary: bool = True):
         segment_coordinate_system=SegmentCoordinateSystemReal.from_euler_and_translation(
             (0, 0, 0), "xyz", (0, 0, 0.53)
         ),
-        rotations="x",
+        rotations=Rotations.X,
         mesh=MeshReal(((0, 0, 0), (0, 0, -0.28))),
     )
     bio_model["UPPER_ARM"].add_marker(MarkerReal(name="SHOULDER", parent_name="UPPER_ARM", position=(0, 0, 0)))
@@ -94,7 +96,7 @@ def test_model_creation_from_static(remove_temporary: bool = True):
     bio_model["THIGH"] = SegmentReal(
         name="THIGH",
         parent_name="TRUNK",
-        rotations="x",
+        rotations=Rotations.X,
         mesh=MeshReal(((0, 0, 0), (0, 0, -0.42))),
     )
     bio_model["THIGH"].add_marker(MarkerReal(name="THIGH_ORIGIN", parent_name="THIGH", position=(0, 0, 0)))
@@ -108,7 +110,7 @@ def test_model_creation_from_static(remove_temporary: bool = True):
         segment_coordinate_system=SegmentCoordinateSystemReal.from_euler_and_translation(
             (0, 0, 0), "xyz", (0, 0, -0.42)
         ),
-        rotations="x",
+        rotations=Rotations.X,
         mesh=MeshReal(((0, 0, 0), (0, 0, -0.43))),
     )
     bio_model["SHANK"].add_marker(MarkerReal(name="KNEE", parent_name="SHANK", position=(0, 0, 0)))
@@ -122,7 +124,7 @@ def test_model_creation_from_static(remove_temporary: bool = True):
         segment_coordinate_system=SegmentCoordinateSystemReal.from_euler_and_translation(
             (-np.pi / 2, 0, 0), "xyz", (0, 0, -0.43)
         ),
-        rotations="x",
+        rotations=Rotations.X,
         mesh=MeshReal(((0, 0, 0), (0, 0, 0.25))),
     )
     bio_model["FOOT"].add_marker(MarkerReal(name="ANKLE", parent_name="FOOT", position=(0, 0, 0)))
@@ -173,8 +175,8 @@ def test_model_creation_from_data(remove_temporary: bool = True):
     de_leva = DeLevaTable(total_mass=100, sex="female")
 
     model["TRUNK"] = Segment(
-        translations="yx",
-        rotations="x",
+        translations=Translations.YZ,
+        rotations=Rotations.X,
         inertia_parameters=de_leva["TRUNK"],
     )
     model["TRUNK"].add_marker(Marker("PELVIS"))
@@ -198,7 +200,7 @@ def test_model_creation_from_data(remove_temporary: bool = True):
     model["UPPER_ARM"] = Segment(
         "UPPER_ARM",
         parent_name="TRUNK",
-        rotations="x",
+        rotations=Rotations.X,
         segment_coordinate_system=SegmentCoordinateSystem(
             origin="SHOULDER",
             first_axis=Axis(name=Axis.Name.X, start="SHOULDER", end="SHOULDER_X"),
@@ -242,7 +244,7 @@ def test_model_creation_from_data(remove_temporary: bool = True):
 
     model["THIGH"] = Segment(
         parent_name="TRUNK",
-        rotations="x",
+        rotations=Rotations.X,
         segment_coordinate_system=SegmentCoordinateSystem(
             origin="THIGH_ORIGIN",
             first_axis=Axis(name=Axis.Name.X, start="THIGH_ORIGIN", end="THIGH_X"),
@@ -257,7 +259,7 @@ def test_model_creation_from_data(remove_temporary: bool = True):
 
     model["SHANK"] = Segment(
         parent_name="THIGH",
-        rotations="x",
+        rotations=Rotations.X,
         segment_coordinate_system=SegmentCoordinateSystem(
             origin="KNEE",
             first_axis=Axis(name=Axis.Name.Z, start="KNEE", end="KNEE_Z"),
@@ -272,7 +274,7 @@ def test_model_creation_from_data(remove_temporary: bool = True):
 
     model["FOOT"] = Segment(
         parent_name="SHANK",
-        rotations="x",
+        rotations=Rotations.X,
         segment_coordinate_system=SegmentCoordinateSystem(
             origin="ANKLE",
             first_axis=Axis(name=Axis.Name.Z, start="ANKLE", end="ANKLE_Z"),
