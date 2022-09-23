@@ -2889,8 +2889,8 @@ TEST(StaticOptim, OneFrameNoActivations)
     auto muscleActivations = optim.finalSolution()[0];
 
     std::vector<double> expectedActivations = {
-        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
-        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281
+        0.00043966092042043033, 0.0010347466532353192, 0.00087899961971467182,
+        0.0013177039190635164,  0.0012668775647627056, 0.0010226266497709777
     };
     for (size_t i=0; i<expectedActivations.size(); ++i) {
         EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
@@ -2924,8 +2924,8 @@ TEST(StaticOptim, OneFrameOneActivationDouble)
     auto muscleActivations = optim.finalSolution()[0];
 
     std::vector<double> expectedActivations = {
-        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
-        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281
+        0.00043966092042043033, 0.0010347466532353192, 0.00087899961971467182,
+        0.0013177039190635164,  0.0012668775647627056, 0.0010226266497709777
     };
     for (size_t i=0; i<expectedActivations.size(); ++i) {
         EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
@@ -2962,8 +2962,8 @@ TEST(StaticOptim, OneFrameOneActivationVector)
     auto muscleActivations = optim.finalSolution()[0];
 
     std::vector<double> expectedActivations = {
-        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
-        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281
+        0.00043966092042043033, 0.0010347466532353192, 0.00087899961971467182,
+        0.0013177039190635164,  0.0012668775647627056, 0.0010226266497709777
     };
     for (size_t i=0; i<expectedActivations.size(); ++i) {
         EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
@@ -3007,8 +3007,8 @@ TEST(StaticOptim, MultiFrameNoActivation)
     auto allMuscleActivations = optim.finalSolution();
 
     std::vector<double> expectedActivations = {
-        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
-        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281
+        0.00043966092042043033, 0.0010347466532353192, 0.00087899961971467182,
+        0.0013177039190635164,  0.0012668775647627056, 0.0010226266497709777
     };
     for (auto muscleActivations : allMuscleActivations) {
         for (size_t i=0; i<expectedActivations.size(); ++i) {
@@ -3056,8 +3056,8 @@ TEST(StaticOptim, MultiFrameActivationDouble)
     auto allMuscleActivations = optim.finalSolution();
 
     std::vector<double> expectedActivations = {
-        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
-        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281
+        0.00043966092042043033, 0.0010347466532353192, 0.00087899961971467182,
+        0.0013177039190635164,  0.0012668775647627056, 0.0010226266497709777
     };
     for (auto muscleActivations : allMuscleActivations) {
         for (size_t i=0; i<expectedActivations.size(); ++i) {
@@ -3108,8 +3108,8 @@ TEST(StaticOptim, MultiFrameNoActivationVector)
     auto allMuscleActivations = optim.finalSolution();
 
     std::vector<double> expectedActivations = {
-        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
-        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281
+        0.00043966092042043033, 0.0010347466532353192, 0.00087899961971467182,
+        0.0013177039190635164,  0.0012668775647627056, 0.0010226266497709777
     };
     for (auto muscleActivations : allMuscleActivations) {
         for (size_t i=0; i<expectedActivations.size(); ++i) {
