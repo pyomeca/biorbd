@@ -3,12 +3,14 @@ from .biomechanical_model import BiomechanicalModel
 
 # Some classes to define the BiomechanicalModel
 from .axis import Axis
+from .inertia_parameters import InertiaParameters
 from .marker import Marker
 from .mesh import Mesh
 from .protocols import Data, GenericDynamicModel
+from .rotations import Rotations
 from .segment import Segment
 from .segment_coordinate_system import SegmentCoordinateSystem
-from .inertia_parameters import InertiaParameters
+from .translations import Translations
 
 # Add also the "Real" version of classes to create models from values
 from .biomechanical_model_real import BiomechanicalModelReal
