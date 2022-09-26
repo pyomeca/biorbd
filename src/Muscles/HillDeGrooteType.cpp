@@ -119,7 +119,7 @@ void muscles::HillDeGrooteType::computeFvCE()
     utils::Scalar norm_v = m_position->velocity() / (characteristics().optimalLength() * *m_cste_maxShorteningSpeed);
 
     *m_FvCE = d1 * std::log(
-            (d2 * norm_v + d3) + sqrt(( d2 * norm_v + d3)*( d2 * norm_v + d3) + 1)
+            (d2 * norm_v + d3) + std::sqrt(( d2 * norm_v + d3)*( d2 * norm_v + d3) + 1)
         ) + d4;
 }
 
