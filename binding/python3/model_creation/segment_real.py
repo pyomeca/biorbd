@@ -1,7 +1,9 @@
 from .inertia_parameters_real import InertiaParametersReal
 from .marker_real import MarkerReal
 from .mesh_real import MeshReal
+from .rotations import Rotations
 from .segment_coordinate_system_real import SegmentCoordinateSystemReal
+from .translations import Translations
 
 
 class SegmentReal:
@@ -10,8 +12,8 @@ class SegmentReal:
         name: str = None,
         parent_name: str = "",
         segment_coordinate_system: SegmentCoordinateSystemReal = None,
-        translations: str = "",
-        rotations: str = "",
+        translations: Translations = Translations.NONE,
+        rotations: Rotations = Rotations.NONE,
         inertia_parameters: InertiaParametersReal = None,
         mesh: MeshReal = None,
     ):
@@ -34,10 +36,10 @@ class SegmentReal:
             out_string += f"\tparent {self.parent_name}\n"
         if self.segment_coordinate_system:
             out_string += f"\tRT {self.segment_coordinate_system}\n"
-        if self.translations:
-            out_string += f"\ttranslations {self.translations}\n"
-        if self.rotations:
-            out_string += f"\trotations {self.rotations}\n"
+        if self.translations != Translations.NONE:
+            out_string += f"\ttranslations {self.translations.value}\n"
+        if self.rotations != Rotations.NONE:
+            out_string += f"\trotations {self.rotations.value}\n"
         if self.inertia_parameters:
             out_string += str(self.inertia_parameters)
         if self.mesh:
