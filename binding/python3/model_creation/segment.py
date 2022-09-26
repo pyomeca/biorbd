@@ -1,7 +1,9 @@
 from .inertia_parameters import InertiaParameters
 from .marker import Marker
 from .mesh import Mesh
+from .rotations import Rotations
 from .segment_coordinate_system import SegmentCoordinateSystem
+from .translations import Translations
 
 
 class Segment:
@@ -9,8 +11,8 @@ class Segment:
         self,
         name: str = None,
         parent_name: str = "",
-        translations: str = "",
-        rotations: str = "",
+        translations: Translations = Translations.NONE,
+        rotations: Rotations = Rotations.NONE,
         segment_coordinate_system: SegmentCoordinateSystem = None,
         inertia_parameters: InertiaParameters = None,
         mesh: Mesh = None,
