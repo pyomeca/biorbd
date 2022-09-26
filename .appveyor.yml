@@ -21,30 +21,30 @@ install:
   - sh: if [[ $CI_LINUX == true ]]; then wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh; bash miniconda.sh -b -p $HOME/miniconda; export PATH="$HOME/miniconda/bin:$PATH"; else curl https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -L -o miniconda.sh; bash miniconda.sh -b -p $HOME/miniconda; export PATH="$HOME/miniconda/bin:$PATH"; fi
   - sh: hash -r
   - sh: source activate
+  - sh: MINICONDA_PATH=$HOME/miniconda/
   - cmd: SET MINICONDA_PATH="C:\\Miniconda38-x64"
   - cmd: SET PATH=%MINICONDA_PATH%;%MINICONDA_PATH%"\\Scripts";%PATH%
   - cmd: conda init cmd.exe
   - conda config --set always_yes yes --set changeps1 no
   - conda config --set auto_update_conda no
   - conda update -q conda
-  - conda create -n biorbd
-  - conda activate biorbd
   
   # Set environment variables  
   - sh: BIORBD_FOLDER=`pwd`
   - sh: BIORBD_CASADI_BUILD_FOLDER=$BIORBD_FOLDER/build_casadi
   - sh: BIORBD_EIGEN_BUILD_FOLDER=$BIORBD_FOLDER/build_eigen
   - sh: BIORBD_COVERAGE_BUILD_FOLDER=$BIORBD_FOLDER/build_coverage
-  - sh: CONDA_ENV_PATH=$HOME/miniconda/envs
+  - sh: CONDA_ENV_PATH=$MINICONDA_PATH/
   - sh: if [[ $CI_LINUX == true ]]; then export CC=/usr/bin/gcc; fi
   - sh: if [[ $CI_LINUX == true ]]; then export CXX=/usr/bin/g++; fi
   - cmd: SET BIORBD_FOLDER=%cd%
   - cmd: SET BIORBD_CASADI_BUILD_FOLDER=%BIORBD_FOLDER%\\build_casadi
   - cmd: SET BIORBD_EIGEN_BUILD_FOLDER=%BIORBD_FOLDER%\\build_eigen
-  - cmd: SET CONDA_ENV_PATH=%MINICONDA_PATH%\\envs
+  - cmd: SET CONDA_ENV_PATH=%MINICONDA_PATH%\\
 
   # Setup the conda environment
-  - conda install "python>=3.10" git rbdl tinyxml ipopt numpy pytest swig pkgconfig cmake scipy ezc3d -c conda-forge
+  - conda env update -f environment_casadi.yml -n base
+  - conda env update -f environment_eigen.yml -n rbdl
   - sh: if [[ $CI_LINUX == true ]]; then conda install xorg-libx11 xorg-libxtst -cconda-forge; fi
   - cmd: conda install ninja -cconda-forge
   - conda list
@@ -62,13 +62,13 @@ test_script:
   # LINUX and MAC
   - sh: mkdir -p $BIORBD_CASADI_BUILD_FOLDER
   - sh: cd $BIORBD_CASADI_BUILD_FOLDER
-  - sh: cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH/biorbd/ -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=OFF -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..
+  - sh: cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=OFF -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..
   - sh: make install
   
   # WINDOWS
   - cmd: mkdir %BIORBD_CASADI_BUILD_FOLDER%
   - cmd: cd %BIORBD_CASADI_BUILD_FOLDER%
-  - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH%/biorbd/ -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=OFF -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..
+  - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH% -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=OFF -DMODULE_MUSCLES=ON -DBINDER_PYTHON3=ON ..
   - cmd: cmake --build . --config Release --target install
   
   # Run the tests
@@ -88,13 +88,13 @@ test_script:
   # LINUX and MAC
   - sh: mkdir -p $BIORBD_EIGEN_BUILD_FOLDER
   - sh: cd $BIORBD_EIGEN_BUILD_FOLDER
-  - sh: cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH/biorbd/ -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
+  - sh: cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
   - sh: make install
   
   # WINDOWS
   - cmd: mkdir %BIORBD_EIGEN_BUILD_FOLDER%
   - cmd: cd %BIORBD_EIGEN_BUILD_FOLDER%
-  - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH%\\biorbd -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
+  - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH% -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
   - cmd: cmake --build . --config Release --target install
 
   # Run the tests
@@ -122,7 +122,7 @@ test_script:
   # Code coverage  (on Linux)
   ############################################################################  
   - sh: if [[ $CI_LINUX == true ]]; then cd $BIORBD_FOLDER; mkdir $BIORBD_COVERAGE_BUILD_FOLDER; cd $BIORBD_COVERAGE_BUILD_FOLDER; fi
-  - sh: if [[ $CI_LINUX == true ]]; then cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH/biorbd/ -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DMODULE_KALMAN=ON ..; fi
+  - sh: if [[ $CI_LINUX == true ]]; then cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DMODULE_KALMAN=ON ..; fi
   - sh: if [[ $CI_LINUX == true ]]; then cp -r test/models/ .; fi
   - sh: if [[ $CI_LINUX == true ]]; then make biorbd_eigen_coverage; fi
   - sh: if [[ $CI_LINUX == true ]]; then cd $BIORBD_EIGEN_BUILD_FOLDER; fi
@@ -137,12 +137,12 @@ test_script:
   - cd build
   
   # LINUX and Mac
-  - sh: cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH/biorbd/ -DCMAKE_BUILD_TYPE=Release ..
+  - sh: cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
   - sh: make
   - sh: ./forwardDynamicsExample
   
   # WINDOWS
-  - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH%\\biorbd -DCMAKE_BUILD_TYPE=Release ..
+  - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH% -DCMAKE_BUILD_TYPE=Release ..
   - cmd: cmake --build . --config Release
   - cmd: forwardDynamicsExample.exe
   
@@ -159,12 +159,12 @@ test_script:
   - cd build
   
   # LINUX and Mac
-  - sh: cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH/biorbd/ -DCMAKE_BUILD_TYPE=Release ..
+  - sh: cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
   - sh: make
   - sh: ./forwardDynamicsExample
   
   # WINDOWS
-  - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH%\\biorbd -DCMAKE_BUILD_TYPE=Release ..
+  - cmd: cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH% -DCMAKE_BUILD_TYPE=Release ..
   - cmd: cmake --build . --config Release
   - cmd: forwardDynamicsExample.exe
   
