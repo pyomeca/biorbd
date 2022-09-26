@@ -27,6 +27,8 @@ install:
   - cmd: conda init cmd.exe
   - conda config --set always_yes yes --set changeps1 no
   - conda config --set auto_update_conda no
+  - conda update conda
+  - conda install "python>=3.10" -cconda-forge
   
   # Set environment variables  
   - sh: BIORBD_FOLDER=`pwd`
@@ -42,7 +44,7 @@ install:
   - cmd: SET CONDA_ENV_PATH=%MINICONDA_PATH%\\
 
   # Setup the conda environment
-  - conda install "python>=3.10" git rbdl tinyxml ipopt numpy pytest swig pkgconfig cmake scipy ezc3d -c conda-forge
+  - conda install git rbdl tinyxml ipopt numpy pytest swig pkgconfig cmake scipy ezc3d -c conda-forge
   - sh: if [[ $CI_LINUX == true ]]; then conda install xorg-libx11 xorg-libxtst -cconda-forge; fi
   - cmd: conda install ninja -cconda-forge
   - conda list
