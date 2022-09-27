@@ -4,8 +4,8 @@
 
 # Build worker image (VM template)
 image:
-  - Ubuntu2004
   - Visual Studio 2019
+  - Ubuntu2004
   - macos
 
 # set clone depth
@@ -27,23 +27,25 @@ install:
   - cmd: conda init cmd.exe
   - conda config --set always_yes yes --set changeps1 no
   - conda config --set auto_update_conda no
-  - cmd: conda update conda
+  - conda update -q conda
+  - conda create -n biorbd
+  - conda activate biorbd
   
   # Set environment variables  
   - sh: BIORBD_FOLDER=`pwd`
   - sh: BIORBD_CASADI_BUILD_FOLDER=$BIORBD_FOLDER/build_casadi
   - sh: BIORBD_EIGEN_BUILD_FOLDER=$BIORBD_FOLDER/build_eigen
   - sh: BIORBD_COVERAGE_BUILD_FOLDER=$BIORBD_FOLDER/build_coverage
-  - sh: CONDA_ENV_PATH=$MINICONDA_PATH/
+  - sh: CONDA_ENV_PATH=$MINICONDA_PATH/biorbd/
   - sh: if [[ $CI_LINUX == true ]]; then export CC=/usr/bin/gcc; fi
   - sh: if [[ $CI_LINUX == true ]]; then export CXX=/usr/bin/g++; fi
   - cmd: SET BIORBD_FOLDER=%cd%
   - cmd: SET BIORBD_CASADI_BUILD_FOLDER=%BIORBD_FOLDER%\\build_casadi
   - cmd: SET BIORBD_EIGEN_BUILD_FOLDER=%BIORBD_FOLDER%\\build_eigen
-  - cmd: SET CONDA_ENV_PATH=%MINICONDA_PATH%\\
+  - cmd: SET CONDA_ENV_PATH=%MINICONDA_PATH%\\biorbd\\
 
   # Setup the conda environment
-  - conda install git rbdl tinyxml ipopt numpy pytest swig pkgconfig cmake scipy ezc3d -c conda-forge
+  - conda install "python>=3.10" git rbdl tinyxml ipopt numpy pytest swig pkgconfig cmake scipy ezc3d -c conda-forge
   - sh: if [[ $CI_LINUX == true ]]; then conda install xorg-libx11 xorg-libxtst -cconda-forge; fi
   - cmd: conda install ninja -cconda-forge
   - conda list
