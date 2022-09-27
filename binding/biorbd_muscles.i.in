@@ -6,6 +6,7 @@
 #include "Muscles/Characteristics.h"
 #include "Muscles/Geometry.h"
 #include "Muscles/HillType.h"
+#include "Muscles/HillDeGrooteType.h"
 #include "Muscles/HillThelenType.h"
 #include "Muscles/IdealizedActuator.h"
 #include "Muscles/HillThelenTypeFatigable.h"
@@ -53,6 +54,16 @@
         return copy;
     }
 }
+
+%extend BIORBD_NAMESPACE::muscles::HillDeGrooteType{
+    static BIORBD_NAMESPACE::muscles::HillDeGrooteType DeepCopy(const BIORBD_NAMESPACE::muscles::Muscle& other)
+    {
+        BIORBD_NAMESPACE::muscles::HillDeGrooteType copy;
+        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::muscles::HillDeGrooteType&>(other));
+        return copy;
+    }
+}
+
 %extend BIORBD_NAMESPACE::muscles::HillThelenType{
     static BIORBD_NAMESPACE::muscles::HillThelenType DeepCopy(const BIORBD_NAMESPACE::muscles::Muscle& other)
     {
@@ -93,6 +104,7 @@
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscle.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueModel.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/HillType.h"
+%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillDeGrooteType.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/HillThelenType.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/HillThelenTypeFatigable.h"
 %include "@CMAKE_SOURCE_DIR@/include/Muscles/IdealizedActuator.h"

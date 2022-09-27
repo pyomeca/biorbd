@@ -132,7 +132,6 @@ muscles::StateDynamics::timeDerivativeActivation(
     }
 #endif
     *m_activationDot = num/denom;
-
     return *m_activationDot;
 }
 

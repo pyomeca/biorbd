@@ -283,21 +283,28 @@ void muscles::Muscles::updateMuscles(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
-                                       (*this);
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 
     // Update all the muscles
+#ifdef BIORBD_USE_CASADI_MATH
+    int updateKinTP = 2;
+#else
     int updateKinTP;
     if (updateKin) {
         updateKinTP = 2;
     } else {
         updateKinTP = 0;
     }
+#endif
 
     for (auto group : *m_mus) // muscle group
         for (unsigned int j=0; j<group.nbMuscles(); ++j) {
             group.muscle(j).updateOrientations(model, Q, QDot, updateKinTP);
-            updateKinTP=1;
+#ifndef BIORBD_USE_CASADI_MATH
+            if (updateKinTP){
+                updateKinTP=1;
+            }
+#endif
         }
 }
 void muscles::Muscles::updateMuscles(
@@ -309,18 +316,26 @@ void muscles::Muscles::updateMuscles(
                                        (*this);
 
     // Update all the muscles
+#ifdef BIORBD_USE_CASADI_MATH
+    int updateKinTP = 2;
+#else
     int updateKinTP;
     if (updateKin) {
         updateKinTP = 2;
     } else {
         updateKinTP = 0;
     }
+#endif
 
     // Update all the muscles
     for (auto group : *m_mus) // muscle group
         for (unsigned int j=0; j<group.nbMuscles(); ++j) {
             group.muscle(j).updateOrientations(model, Q,updateKinTP);
-            updateKinTP=1;
+#ifndef BIORBD_USE_CASADI_MATH
+            if (updateKinTP){
+                updateKinTP=1;
+            }
+#endif
         }
 }
 void muscles::Muscles::updateMuscles(

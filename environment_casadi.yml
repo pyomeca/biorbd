@@ -4,7 +4,7 @@ channels:
 - conda-forge
 - default
 dependencies:
-- python
+- python >=3.10
 - numpy
 - matplotlib
 - casadi

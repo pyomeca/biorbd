@@ -42,6 +42,7 @@ public:
     /// \param torqueAct Time activation constant (default: 0.01)
     /// \param torqueDeact Time deactivation constant (default: 0.04)
     /// \param minAct Minimal activation (default: 0.01)
+    /// \param useDamping Use damping (default: false)
     ///
     Characteristics(
         const utils::Scalar& optLength,
@@ -51,6 +52,7 @@ public:
         const utils::Scalar& pennAngle,
         const State& emgMax,
         const FatigueParameters& fatigueParameters,
+        bool useDamping=false,
         const utils::Scalar& torqueAct = 0.01,
         const utils::Scalar& torqueDeact = 0.04,
         const utils::Scalar& minAct = 0.01);
@@ -200,17 +202,32 @@ public:
     /// \return The fatigue parameters
     ///
     const FatigueParameters& fatigueParameters() const;
+    
+    ///
+    /// \brief Choose if use damping for muscle force computation
+    /// \param val 0 to not use damping 
+    ///
+    void setUseDamping(
+        bool val);
+
+    ///
+    /// \brief Return 1 if use damping for muscle computation
+    /// \return 0 if not use damping 1 overall
+    ///
+    bool useDamping() const;
+
 
 protected:
     std::shared_ptr<utils::Scalar>
     m_optimalLength; ///< Length without tension
     std::shared_ptr<utils::Scalar>
-    m_fIsoMax;       ///< Maximal isometric force Force maximale isométrique
+    m_fIsoMax;       ///< Maximal isometric force
     std::shared_ptr<utils::Scalar>
     m_PCSA;          ///< Physiological cross-sectional area of the muscle
     std::shared_ptr<utils::Scalar>
     m_tendonSlackLength; ///< Tendon slack length
     std::shared_ptr<utils::Scalar> m_pennationAngle; ///< Angle of pennation
+    std::shared_ptr<bool> m_useDamping; ///< Use damping for muscle force from activation
     std::shared_ptr<State>
     m_stateMax; ///< Maximal excitation et activation of the muscle
 

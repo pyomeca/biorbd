@@ -98,7 +98,7 @@ utils::Vector utils::Vector::normGradient(
         }
     } else {
         utils::Vector res(static_cast<unsigned int>(size()));
-        double normalized(std::pow(norm(), p-1));
+        utils::Scalar normalized(std::pow(norm(), p-1));
         for (unsigned int i=0; i<size(); ++i) {
             res[i] = (*this)[i] * std::pow(fabs((*this)[i]), p - 2);
         }

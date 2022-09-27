@@ -416,8 +416,7 @@ void muscles::Geometry::setMusclesPointsInGlobal(
     }
 
     else if (pathModifiers->nbObjects()!=0
-             && pathModifiers->object(0).typeOfNode() ==
-             utils::NODE_TYPE::VIA_POINT) {
+             && pathModifiers->object(0).typeOfNode() == utils::NODE_TYPE::VIA_POINT) {
         m_pointsInLocal->push_back(originInLocal());
         m_pointsInGlobal->push_back(originInGlobal(model, Q));
         for (unsigned int i=0; i<pathModifiers->nbObjects(); ++i) {

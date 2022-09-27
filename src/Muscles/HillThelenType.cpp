@@ -87,33 +87,53 @@ void muscles::HillThelenType::DeepCopy(
 
 void muscles::HillThelenType::computeFlPE()
 {
+    utils::Scalar normLength = position().length()  / characteristics().optimalLength();
+    utils::Scalar kpe = 5.0;
+    utils::Scalar e0 = 0.6;
+    utils::Scalar t5 = exp(kpe * (normLength - 1) / e0);
+    utils::Scalar t7 = exp(kpe);
+
 #ifdef BIORBD_USE_CASADI_MATH
-    *m_FlPE = IF_ELSE_NAMESPACE::if_else(
-                  IF_ELSE_NAMESPACE::gt(position().length(), 0),
-                  (exp( *m_cste_FlPE_1 * (position().length()/characteristics().optimalLength()
-                                          -1)) -1)
-                  /
-                  (exp( *m_cste_FlPE_2 )-1),
-                  0);
+    *m_FlPE = IF_ELSE_NAMESPACE::if_else_zero(
+                  IF_ELSE_NAMESPACE::gt(normLength, 1),
+                  ((t5 - 1) / (t7 - 1))
+                );
 #else
-    if (position().length() > 0)
-        *m_FlPE = (exp( *m_cste_FlPE_1 *
-                        (position().length()/characteristics().optimalLength()-1)) -1)
-                  /
-                  (exp( *m_cste_FlPE_2 )-1);
-    else {
+    if (normLength > 1)
+        *m_FlPE = (t5 - 1) / (t7 - 1);
+    else
         *m_FlPE = 0;
-    }
+
 #endif
 }
 
 void muscles::HillThelenType::computeFlCE(
     const muscles::State&)
 {
-    *m_FlCE = exp( -pow(((position().length() / characteristics().optimalLength())
-                         -1), 2 ) /  *m_cste_FlCE_2 );
+    utils::Scalar normLength = position().length() / characteristics().optimalLength();
+    *m_FlCE = exp( -((normLength - 1)*(normLength - 1)) /  0.45 );
 }
 
+void muscles::HillThelenType::computeFvCE()
+{
+	utils::Scalar v = m_position->velocity();
+    utils::Scalar norm_v = v / (characteristics().optimalLength() * *m_cste_maxShorteningSpeed);
+    utils::Scalar kvce = 0.06;
+    utils::Scalar flen = 1.6;
+
+#ifdef BIORBD_USE_CASADI_MATH
+    *m_FvCE = IF_ELSE_NAMESPACE::if_else(
+                  IF_ELSE_NAMESPACE::gt(norm_v, 0),
+                  ((1 + norm_v * flen / kvce) / (1 + norm_v / kvce)),
+                  0);
+#else
+    if (norm_v > 0){
+        *m_FvCE = (1 + norm_v * flen / kvce) / (1 + norm_v / kvce);
+    } else {
+        *m_FvCE = 0;
+    }
+#endif
+}
 void muscles::HillThelenType::setType()
 {
     *m_type = muscles::MUSCLE_TYPE::HILL_THELEN;

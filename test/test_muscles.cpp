@@ -430,12 +430,22 @@ TEST(hillType, unitTest)
         SCALAR_TO_DOUBLE(flpe, hillType.FlPE());
         SCALAR_TO_DOUBLE(fvce, hillType.FvCE());
         SCALAR_TO_DOUBLE(damping, hillType.damping());
-        SCALAR_TO_DOUBLE(force, hillType.force(emg));
         EXPECT_NEAR(flce, 0.67988981401208015, requiredPrecision);
         EXPECT_NEAR(flpe, 0.00010445169885884543, requiredPrecision);
         EXPECT_NEAR(fvce, 1.000886825333013, requiredPrecision);
         EXPECT_NEAR(damping, 0.00019534599393617336, requiredPrecision);
-        EXPECT_NEAR(force, 425.01879222109824, requiredPrecision);
+
+        // with damping
+        muscles::Characteristics charac(hillType.characteristics());
+        SCALAR_TO_DOUBLE(forceDamped, hillType.force(emg));
+        EXPECT_NEAR(forceDamped, 419.78610578875896, requiredPrecision);
+        EXPECT_EQ(charac.useDamping(), 1);
+
+        // without damping
+        charac.setUseDamping(false);
+        SCALAR_TO_DOUBLE(force, hillType.force(emg));
+        EXPECT_NEAR(force, 419.66565274700974, requiredPrecision);
+        EXPECT_EQ(charac.useDamping(), 0);
     }
     {
         Model model(modelPathForMuscleForce);
@@ -495,7 +505,7 @@ TEST(hillType, unitTest)
         muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(force, hillType.force(model, Q, qDot, emg, 2));
-        EXPECT_NEAR(force, 425.01879222109824, requiredPrecision);
+        EXPECT_NEAR(force, 419.78610578875896, requiredPrecision);
     }
 }
 
@@ -659,7 +669,7 @@ TEST(hillType, copy)
 }
 
 static unsigned int muscleGroupForHillThelenType(1);
-static unsigned int muscleForHillThelenType(1);
+static unsigned int muscleForHillThelenType(0);
 
 TEST(hillThelenType, unitTest)
 {
@@ -690,11 +700,11 @@ TEST(hillThelenType, unitTest)
         SCALAR_TO_DOUBLE(fvce, hillThelenType.FvCE());
         SCALAR_TO_DOUBLE(damping, hillThelenType.damping());
         SCALAR_TO_DOUBLE(force, hillThelenType.force(emg));
-        EXPECT_NEAR(flce, 0.67988981401208015, requiredPrecision);
-        EXPECT_NEAR(flpe, -0.0066784946431659503, requiredPrecision);
-        EXPECT_NEAR(fvce, 1.000886825333013, requiredPrecision);
+        EXPECT_NEAR(flce, 0.73689336678824058, requiredPrecision);
+        EXPECT_NEAR(flpe, 0, requiredPrecision);
+        EXPECT_NEAR(fvce, 1.0189186522393461, requiredPrecision);
         EXPECT_NEAR(damping, 0.00019534599393617336, requiredPrecision);
-        EXPECT_NEAR(force, 420.78419881977214, requiredPrecision);
+        EXPECT_NEAR(force, 462.97487366718485, requiredPrecision);
     }
     {
         Model model(modelPathForMuscleForce);
@@ -829,10 +839,10 @@ TEST(hillThelenType, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
+            EXPECT_NEAR(length, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowLength, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterLength, 0.071618646132835737, requiredPrecision);
         }
 
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
@@ -850,10 +860,10 @@ TEST(hillThelenType, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
+            EXPECT_NEAR(length, 0.08167994915631771, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 0.08167994915631771, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowLength, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterLength, 0.071618646132835737, requiredPrecision);
             EXPECT_EQ(
                 hillThelenType.position().insertionInLocal().utils::Node::name(),
                 newName);
@@ -932,11 +942,11 @@ TEST(hillThelenTypeActive, unitTest)
         SCALAR_TO_DOUBLE(fvce, hillThelenType.FvCE());
         SCALAR_TO_DOUBLE(damping, hillThelenType.damping());
         SCALAR_TO_DOUBLE(force, hillThelenType.force(emg));
-        EXPECT_NEAR(flce, 0.67988981401208015, requiredPrecision);
+        EXPECT_NEAR(flce, 0.73689336678824058, requiredPrecision);
         EXPECT_NEAR(flpe, 0., requiredPrecision);
-        EXPECT_NEAR(fvce, 1.000886825333013, requiredPrecision);
+        EXPECT_NEAR(fvce, 1.0189186522393461, requiredPrecision);
         EXPECT_NEAR(damping, 0., requiredPrecision);
-        EXPECT_NEAR(force, 424.83162852148627, requiredPrecision);
+        EXPECT_NEAR(force, 462.97487366718485, requiredPrecision);
     }
     {
         Model model(modelPathForMuscleForce);
@@ -1077,10 +1087,10 @@ TEST(hillThelenActiveType, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
+            EXPECT_NEAR(length, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowLength, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterLength, 0.071618646132835737, requiredPrecision);
         }
 
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
@@ -1098,10 +1108,10 @@ TEST(hillThelenActiveType, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
-            EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
+            EXPECT_NEAR(length, 0.08167994915631771, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 0.08167994915631771, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowLength, 0.071618646132835737, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterLength, 0.071618646132835737, requiredPrecision);
             EXPECT_EQ(
                 hillThelenType.position().insertionInLocal().utils::Node::name(),
                 newName);
@@ -1141,6 +1151,258 @@ TEST(hillThelenActiveType, copy)
 
         {
             SCALAR_TO_DOUBLE(excitation, hillThelenType.state().excitation());
+            SCALAR_TO_DOUBLE(shallowCopyExcitation, shallowCopy.state().excitation());
+            SCALAR_TO_DOUBLE(deepCopyNowExcitation, deepCopyNow.state().excitation());
+            SCALAR_TO_DOUBLE(deepCopyLaterExcitation, deepCopyLater.state().excitation());
+            EXPECT_NEAR(excitation, 5., requiredPrecision);
+            EXPECT_NEAR(shallowCopyExcitation, 5., requiredPrecision);
+            EXPECT_NEAR(deepCopyNowExcitation, 0., requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterExcitation, 0., requiredPrecision);
+        }
+    }
+}
+
+static unsigned int muscleGroupFordeGrooteType(0);
+static unsigned int muscleFordeGrooteType(2);
+
+TEST(hillDeGrooteType, unitTest)
+{
+    {
+        Model model(modelPathForMuscleForce);
+        muscles::HillDeGrooteType hillDeGrooteType(
+            model.muscleGroup(muscleGroupFordeGrooteType).muscle(
+                muscleFordeGrooteType));
+        hillDeGrooteType.setName("newName");
+        EXPECT_STREQ(hillDeGrooteType.name().c_str(), "newName");
+    }
+    {
+        Model model(modelPathForMuscleForce);
+        muscles::HillDeGrooteType hillDeGrooteType(
+            model.muscleGroup(muscleGroupFordeGrooteType).muscle(
+                muscleFordeGrooteType));
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity qDot(model);
+        Q = Q.setOnes() / 10;
+        qDot = qDot.setOnes() / 10;
+        model.updateMuscles(Q, 2);
+        hillDeGrooteType.updateOrientations(model, Q, qDot);
+        static double activationEmgForHillTypeTest(1.0);
+        muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+
+        SCALAR_TO_DOUBLE(flce, hillDeGrooteType.FlCE(emg));
+        SCALAR_TO_DOUBLE(flpe, hillDeGrooteType.FlPE());
+        SCALAR_TO_DOUBLE(fvce, hillDeGrooteType.FvCE());
+        SCALAR_TO_DOUBLE(damping, hillDeGrooteType.damping());
+        SCALAR_TO_DOUBLE(force, hillDeGrooteType.force(emg));
+        EXPECT_NEAR(flce, 0.92953865278129677, requiredPrecision);
+        EXPECT_NEAR(flpe, 0.022596966416076593, requiredPrecision);
+        EXPECT_NEAR(fvce, 0.99966505861454702, requiredPrecision);
+        EXPECT_NEAR(damping, 0, requiredPrecision);
+        EXPECT_NEAR(force, 414.57658262724328, requiredPrecision);
+    }
+    {
+        Model model(modelPathForMuscleForce);
+        muscles::HillDeGrooteType hillDeGrooteType(
+            model.muscleGroup(muscleGroupFordeGrooteType).muscle(
+                muscleFordeGrooteType));
+
+        muscles::HillDeGrooteType hillDeGrooteTypeNew(
+            "newName",
+            hillDeGrooteType.position(),
+            hillDeGrooteType.characteristics());
+
+        EXPECT_STREQ(hillDeGrooteTypeNew.name().c_str(), "newName");
+        EXPECT_EQ(hillDeGrooteTypeNew.type(),
+                  muscles::MUSCLE_TYPE::HILL_DE_GROOTE);
+    }
+    {
+        Model model(modelPathForMuscleForce);
+        muscles::HillDeGrooteType hillDeGrooteType(
+            model.muscleGroup(muscleGroupFordeGrooteType).muscle(
+                muscleFordeGrooteType));
+
+        muscles::HillDeGrooteType hillDeGrooteTypeNew(
+            "newName",
+            hillDeGrooteType.position(),
+            hillDeGrooteType.characteristics(),
+            hillDeGrooteType.state());
+
+        EXPECT_STREQ(hillDeGrooteTypeNew.name().c_str(), "newName");
+        EXPECT_EQ(hillDeGrooteTypeNew.type(),
+                  muscles::MUSCLE_TYPE::HILL_DE_GROOTE);
+    }
+    {
+        Model model(modelPathForMuscleForce);
+        muscles::HillDeGrooteType hillDeGrooteType(
+            model.muscleGroup(muscleGroupFordeGrooteType).muscle(
+                muscleFordeGrooteType));
+
+        muscles::HillDeGrooteType hillDeGrooteTypeNew(
+            "newName",
+            hillDeGrooteType.position(),
+            hillDeGrooteType.characteristics(),
+            hillDeGrooteType.pathModifier());
+
+        EXPECT_STREQ(hillDeGrooteTypeNew.name().c_str(), "newName");
+        EXPECT_EQ(hillDeGrooteTypeNew.type(),
+                  muscles::MUSCLE_TYPE::HILL_DE_GROOTE);
+    }
+}
+
+TEST(hillDeGrooteType, copy)
+{
+    {
+        Model model(modelPathForMuscleForce);
+        muscles::HillDeGrooteType hillDeGrooteType(
+            model.muscleGroup(muscleGroupFordeGrooteType).muscle(
+                muscleFordeGrooteType));
+        rigidbody::GeneralizedCoordinates Q(model);
+        Q = Q.setOnes() / 10;
+
+        muscles::HillDeGrooteType shallowCopy(hillDeGrooteType);
+        muscles::HillDeGrooteType deepCopyNow(
+            hillDeGrooteType.DeepCopy());
+        muscles::HillDeGrooteType deepCopyLater;
+        deepCopyLater.DeepCopy(hillDeGrooteType);
+
+        utils::String originalName(hillDeGrooteType.name());
+        EXPECT_STREQ(shallowCopy.name().c_str(), originalName.c_str());
+        EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
+        EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
+
+        utils::String newName("MyNewMuscleName");
+        hillDeGrooteType.setName(newName);
+        EXPECT_STREQ(hillDeGrooteType.name().c_str(), newName.c_str());
+        EXPECT_STREQ(shallowCopy.name().c_str(), newName.c_str());
+        EXPECT_STREQ(deepCopyNow.name().c_str(), originalName.c_str());
+        EXPECT_STREQ(deepCopyLater.name().c_str(), originalName.c_str());
+    }
+    {
+        Model model(modelPathForMuscleForce);
+        muscles::HillDeGrooteType hillDeGrooteType(
+            model.muscleGroup(muscleGroupFordeGrooteType).muscle(
+                muscleFordeGrooteType));
+
+        muscles::HillDeGrooteType shallowCopy(hillDeGrooteType);
+        muscles::HillDeGrooteType deepCopyNow(
+            hillDeGrooteType.DeepCopy());
+        muscles::HillDeGrooteType deepCopyLater;
+        deepCopyLater.DeepCopy(hillDeGrooteType);
+
+        {
+            SCALAR_TO_DOUBLE(pennationAngle,
+                             hillDeGrooteType.characteristics().pennationAngle());
+            SCALAR_TO_DOUBLE(shallowCopyPennationAngle,
+                             shallowCopy.characteristics().pennationAngle());
+            EXPECT_NEAR(pennationAngle, 0, requiredPrecision);
+            EXPECT_NEAR(shallowCopyPennationAngle, 0, requiredPrecision);
+        }
+
+        muscles::Characteristics charac(hillDeGrooteType.characteristics());
+        charac.setPennationAngle(0.523599);
+
+        {
+            SCALAR_TO_DOUBLE(pennationAngle,
+                             hillDeGrooteType.characteristics().pennationAngle());
+            SCALAR_TO_DOUBLE(shallowCopyPennationAngle,
+                             shallowCopy.characteristics().pennationAngle());
+            SCALAR_TO_DOUBLE(deepCopyNowPennationAngle,
+                             deepCopyNow.characteristics().pennationAngle());
+            SCALAR_TO_DOUBLE(deepCopyLaterPennationAngle,
+                             deepCopyLater.characteristics().pennationAngle());
+            EXPECT_NEAR(pennationAngle, 0.523599, requiredPrecision);
+            EXPECT_NEAR(shallowCopyPennationAngle, 0.523599, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowPennationAngle, 0, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterPennationAngle, 0, requiredPrecision);
+        }
+    }
+
+    {
+        Model model(modelPathForMuscleForce);
+        muscles::HillDeGrooteType hillDeGrooteType(
+            model.muscleGroup(muscleGroupFordeGrooteType).muscle(
+                muscleFordeGrooteType));
+        rigidbody::GeneralizedCoordinates Q(model);
+        rigidbody::GeneralizedVelocity qDot(model);
+        Q = Q.setOnes() / 10;
+        qDot = qDot.setOnes() / 10;
+        hillDeGrooteType.updateOrientations(model, Q);
+
+        muscles::HillDeGrooteType shallowCopy(hillDeGrooteType);
+        muscles::HillDeGrooteType deepCopyNow(
+            hillDeGrooteType.DeepCopy());
+        muscles::HillDeGrooteType deepCopyLater;
+        deepCopyLater.DeepCopy(hillDeGrooteType);
+
+        {
+            SCALAR_TO_DOUBLE(length, hillDeGrooteType.position().length());
+            SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
+            SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
+            SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
+            EXPECT_NEAR(length, 0.14782350513656897, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 0.14782350513656897, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowLength, 0.14782350513656897, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterLength, 0.14782350513656897, requiredPrecision);
+        }
+
+        // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
+        muscles::Characteristics charac(hillDeGrooteType.characteristics());
+        charac.setPennationAngle(0.523599);
+        utils::Vector3d insertion(hillDeGrooteType.position().insertionInLocal());
+        insertion.set(0.5, 0.6, 0.7);
+        utils::String oldName(insertion.utils::Node::name());
+        utils::String newName("MyNewName");
+        insertion.setName(newName);
+        hillDeGrooteType.updateOrientations(model, Q, qDot, 2);
+
+        {
+            SCALAR_TO_DOUBLE(length, hillDeGrooteType.position().length());
+            SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
+            SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
+            SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
+            EXPECT_NEAR(length, 0.17069190308087542, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 0.17069190308087542, requiredPrecision);
+            EXPECT_NEAR(deepCopyNowLength, 0.14782350513656897, requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterLength, 0.14782350513656897, requiredPrecision);
+            EXPECT_EQ(
+                hillDeGrooteType.position().insertionInLocal().utils::Node::name(),
+                newName);
+            EXPECT_EQ(shallowCopy.position().insertionInLocal().utils::Node::name(),
+                      newName);
+            EXPECT_EQ(deepCopyNow.position().insertionInLocal().utils::Node::name(),
+                      oldName);
+            EXPECT_EQ(
+                deepCopyLater.position().insertionInLocal().utils::Node::name(),
+                oldName);
+        }
+    }
+    {
+        Model model(modelPathForMuscleForce);
+        muscles::HillDeGrooteType hillDeGrooteType(
+            model.muscleGroup(muscleGroupFordeGrooteType).muscle(
+                muscleFordeGrooteType));
+
+        muscles::HillDeGrooteType shallowCopy(hillDeGrooteType);
+        muscles::HillDeGrooteType deepCopyNow(
+            hillDeGrooteType.DeepCopy());
+        muscles::HillDeGrooteType deepCopyLater;
+        deepCopyLater.DeepCopy(hillDeGrooteType);
+
+        {
+            SCALAR_TO_DOUBLE(excitation, hillDeGrooteType.state().excitation());
+            SCALAR_TO_DOUBLE(shallowCopyExcitation, shallowCopy.state().excitation());
+            SCALAR_TO_DOUBLE(deepCopyNowExcitation, deepCopyNow.state().excitation());
+            SCALAR_TO_DOUBLE(deepCopyLaterExcitation, deepCopyLater.state().excitation());
+            EXPECT_NEAR(excitation, 0., requiredPrecision);
+            EXPECT_NEAR(shallowCopyExcitation, 0., requiredPrecision);
+            EXPECT_NEAR(deepCopyNowExcitation, 0., requiredPrecision);
+            EXPECT_NEAR(deepCopyLaterExcitation, 0., requiredPrecision);
+        }
+
+        hillDeGrooteType.state().setExcitation(utils::Scalar(5.));
+
+        {
+            SCALAR_TO_DOUBLE(excitation, hillDeGrooteType.state().excitation());
             SCALAR_TO_DOUBLE(shallowCopyExcitation, shallowCopy.state().excitation());
             SCALAR_TO_DOUBLE(deepCopyNowExcitation, deepCopyNow.state().excitation());
             SCALAR_TO_DOUBLE(deepCopyLaterExcitation, deepCopyLater.state().excitation());
@@ -2054,8 +2316,8 @@ TEST(MuscleForce, force)
     const utils::Vector& F = model.muscleForces(states);
 
     std::vector<double> ExpectedForce({
-        164.3110575502927, 161.17939113106524, 91.100465471478159,
-        88.081033990706132, 80.918896002583097, 198.6356130736217
+        165.19678913804927, 178.49448510433558, 90.789184279197713,
+        92.59497473343656, 74.287046497422935, 198.53590160321016
     });
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i) {
         SCALAR_TO_DOUBLE(val, F(i));
@@ -2076,8 +2338,9 @@ TEST(MuscleForce, torqueFromMuscles)
         states.push_back(std::make_shared<muscles::StateDynamics>(0, 0.2));
     }
 
+
     rigidbody::GeneralizedTorque Tau(model);
-    std::vector<double> TauExpected({-18.388187416167106, -7.631137475560136});
+    std::vector<double> TauExpected({-10.986834246856638, -4.6597544612357522});
     Tau = model.muscularJointTorque(states, Q, QDot);
     for (unsigned int i=0; i<QDDot.size(); ++i) {
         SCALAR_TO_DOUBLE(val, Tau(i));
@@ -2085,7 +2348,7 @@ TEST(MuscleForce, torqueFromMuscles)
     }
 
     RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot);
-    std::vector<double> QDDotExpected({-35.781646267505906, -46.813878560550371});
+    std::vector<double> QDDotExpected({-21.245157985224807, -28.224024173823167});
     for (unsigned int i=0; i<QDDot.size(); ++i) {
         SCALAR_TO_DOUBLE(val, QDDot(i));
         EXPECT_NEAR(val, QDDotExpected[i], requiredPrecision);
@@ -2626,8 +2889,8 @@ TEST(StaticOptim, OneFrameNoActivations)
     auto muscleActivations = optim.finalSolution()[0];
 
     std::vector<double> expectedActivations = {
-        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
-        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281
+        0.00043966092042043033, 0.0010347466532353192, 0.00087899961971467182,
+        0.0013177039190635164,  0.0012668775647627056, 0.0010226266497709777
     };
     for (size_t i=0; i<expectedActivations.size(); ++i) {
         EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
@@ -2661,8 +2924,8 @@ TEST(StaticOptim, OneFrameOneActivationDouble)
     auto muscleActivations = optim.finalSolution()[0];
 
     std::vector<double> expectedActivations = {
-        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
-        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281
+        0.00043966092042043033, 0.0010347466532353192, 0.00087899961971467182,
+        0.0013177039190635164,  0.0012668775647627056, 0.0010226266497709777
     };
     for (size_t i=0; i<expectedActivations.size(); ++i) {
         EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
@@ -2699,8 +2962,8 @@ TEST(StaticOptim, OneFrameOneActivationVector)
     auto muscleActivations = optim.finalSolution()[0];
 
     std::vector<double> expectedActivations = {
-        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
-        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281
+        0.00043966092042043033, 0.0010347466532353192, 0.00087899961971467182,
+        0.0013177039190635164,  0.0012668775647627056, 0.0010226266497709777
     };
     for (size_t i=0; i<expectedActivations.size(); ++i) {
         EXPECT_NEAR(muscleActivations(i), expectedActivations[i], 1e-5);
@@ -2744,8 +3007,8 @@ TEST(StaticOptim, MultiFrameNoActivation)
     auto allMuscleActivations = optim.finalSolution();
 
     std::vector<double> expectedActivations = {
-        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
-        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281
+        0.00043966092042043033, 0.0010347466532353192, 0.00087899961971467182,
+        0.0013177039190635164,  0.0012668775647627056, 0.0010226266497709777
     };
     for (auto muscleActivations : allMuscleActivations) {
         for (size_t i=0; i<expectedActivations.size(); ++i) {
@@ -2793,8 +3056,8 @@ TEST(StaticOptim, MultiFrameActivationDouble)
     auto allMuscleActivations = optim.finalSolution();
 
     std::vector<double> expectedActivations = {
-        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
-        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281
+        0.00043966092042043033, 0.0010347466532353192, 0.00087899961971467182,
+        0.0013177039190635164,  0.0012668775647627056, 0.0010226266497709777
     };
     for (auto muscleActivations : allMuscleActivations) {
         for (size_t i=0; i<expectedActivations.size(); ++i) {
@@ -2845,8 +3108,8 @@ TEST(StaticOptim, MultiFrameNoActivationVector)
     auto allMuscleActivations = optim.finalSolution();
 
     std::vector<double> expectedActivations = {
-        0.00010045072897390454, 0.00023334006766472334, 0.00010325993967600416,
-        0.00033780547738511266,  0.00032642282294118751, 0.00010173561179265281
+        0.00043966092042043033, 0.0010347466532353192, 0.00087899961971467182,
+        0.0013177039190635164,  0.0012668775647627056, 0.0010226266497709777
     };
     for (auto muscleActivations : allMuscleActivations) {
         for (size_t i=0; i<expectedActivations.size(); ++i) {

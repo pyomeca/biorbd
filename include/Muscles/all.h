@@ -13,6 +13,7 @@
 #include "Muscles/Geometry.h"
 #include "Muscles/HillThelenActiveOnlyType.h"
 #include "Muscles/HillThelenType.h"
+#include "Muscles/HillDeGrooteType.h"
 #include "Muscles/HillThelenTypeFatigable.h"
 #include "Muscles/HillType.h"
 #include "Muscles/IdealizedActuator.h"

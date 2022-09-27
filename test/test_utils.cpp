@@ -838,11 +838,12 @@ TEST(Quaternion, creation)
         SCALAR_TO_DOUBLE(quatX, quat.x());
         SCALAR_TO_DOUBLE(quatY, quat.y());
         SCALAR_TO_DOUBLE(quatZ, quat.z());
+        SCALAR_TO_DOUBLE(kStab, quat.kStab());
         EXPECT_NEAR(quatW, 1, requiredPrecision);
         EXPECT_NEAR(quatX, 0, requiredPrecision);
         EXPECT_NEAR(quatY, 0, requiredPrecision);
         EXPECT_NEAR(quatZ, 0, requiredPrecision);
-        EXPECT_NEAR(quat.kStab(), 1, requiredPrecision);
+        EXPECT_NEAR(kStab, 1, requiredPrecision);
     }
     {
         utils::Quaternion quat(1,2,3,4);
@@ -893,21 +894,23 @@ TEST(Quaternion, creation)
         SCALAR_TO_DOUBLE(quat2X, quat2.x());
         SCALAR_TO_DOUBLE(quat2Y, quat2.y());
         SCALAR_TO_DOUBLE(quat2Z, quat2.z());
+        SCALAR_TO_DOUBLE(quat2stab, quat2.kStab());
         EXPECT_NEAR(quat2W, 1, requiredPrecision);
         EXPECT_NEAR(quat2X, 2, requiredPrecision);
         EXPECT_NEAR(quat2Y, 3, requiredPrecision);
         EXPECT_NEAR(quat2Z, 4, requiredPrecision);
-        EXPECT_NEAR(quat2.kStab(), 5, requiredPrecision);
+        EXPECT_NEAR(quat2stab, 5, requiredPrecision);
 
         SCALAR_TO_DOUBLE(quat3W, quat3.w());
         SCALAR_TO_DOUBLE(quat3X, quat3.x());
         SCALAR_TO_DOUBLE(quat3Y, quat3.y());
         SCALAR_TO_DOUBLE(quat3Z, quat3.z());
+        SCALAR_TO_DOUBLE(quat3Stab, quat3.kStab());
         EXPECT_NEAR(quat3W, 1, requiredPrecision);
         EXPECT_NEAR(quat3X, 2, requiredPrecision);
         EXPECT_NEAR(quat3Y, 3, requiredPrecision);
         EXPECT_NEAR(quat3Z, 4, requiredPrecision);
-        EXPECT_NEAR(quat3.kStab(), 5, requiredPrecision);
+        EXPECT_NEAR(quat3Stab, 5, requiredPrecision);
     }
     {
 #ifdef BIORBD_USE_EIGEN3_MATH
@@ -941,11 +944,12 @@ TEST(Quaternion, addition)
     SCALAR_TO_DOUBLE(q12X, q12.x());
     SCALAR_TO_DOUBLE(q12Y, q12.y());
     SCALAR_TO_DOUBLE(q12Z, q12.z());
+    SCALAR_TO_DOUBLE(q12stab, q12.kStab());
     EXPECT_NEAR(q12W, 3, requiredPrecision);
     EXPECT_NEAR(q12X, 5, requiredPrecision);
     EXPECT_NEAR(q12Y, 7, requiredPrecision);
     EXPECT_NEAR(q12Z, 9, requiredPrecision);
-    EXPECT_NEAR(q12.kStab(), 2.5, requiredPrecision);
+    EXPECT_NEAR(q12stab, 2.5, requiredPrecision);
 }
 
 TEST(Quaternion, multiplication)
@@ -961,11 +965,12 @@ TEST(Quaternion, multiplication)
         SCALAR_TO_DOUBLE(q12X, q12.x());
         SCALAR_TO_DOUBLE(q12Y, q12.y());
         SCALAR_TO_DOUBLE(q12Z, q12.z());
+        SCALAR_TO_DOUBLE(q12stab, q12.kStab());
         EXPECT_NEAR(q12W, -36, requiredPrecision);
         EXPECT_NEAR(q12X, 6, requiredPrecision);
         EXPECT_NEAR(q12Y, 12, requiredPrecision);
         EXPECT_NEAR(q12Z, 12, requiredPrecision);
-        EXPECT_NEAR(q12.kStab(), 2.5, requiredPrecision);
+        EXPECT_NEAR(q12stab, 2.5, requiredPrecision);
     }
     {
         utils::Quaternion q1d = q1*d;
@@ -973,11 +978,12 @@ TEST(Quaternion, multiplication)
         SCALAR_TO_DOUBLE(q1dX, q1d.x());
         SCALAR_TO_DOUBLE(q1dY, q1d.y());
         SCALAR_TO_DOUBLE(q1dZ, q1d.z());
+        SCALAR_TO_DOUBLE(q1dstab, q1d.kStab());
         EXPECT_NEAR(q1dW, 5, requiredPrecision);
         EXPECT_NEAR(q1dX, 10, requiredPrecision);
         EXPECT_NEAR(q1dY, 15, requiredPrecision);
         EXPECT_NEAR(q1dZ, 20, requiredPrecision);
-        EXPECT_NEAR(q1d.kStab(), 2, requiredPrecision);
+        EXPECT_NEAR(q1dstab, 2, requiredPrecision);
     }
 
     {
@@ -986,11 +992,12 @@ TEST(Quaternion, multiplication)
         SCALAR_TO_DOUBLE(q1fX, q1f.x());
         SCALAR_TO_DOUBLE(q1fY, q1f.y());
         SCALAR_TO_DOUBLE(q1fZ, q1f.z());
+        SCALAR_TO_DOUBLE(q1fstab, q1f.kStab());
         EXPECT_NEAR(q1fW, 5, requiredPrecision);
         EXPECT_NEAR(q1fX, 10, requiredPrecision);
         EXPECT_NEAR(q1fY, 15, requiredPrecision);
         EXPECT_NEAR(q1fZ, 20, requiredPrecision);
-        EXPECT_NEAR(q1f.kStab(), 2, requiredPrecision);
+        EXPECT_NEAR(q1fstab, 2, requiredPrecision);
     }
 }
 
@@ -1003,11 +1010,12 @@ TEST(Quaternion, conversion)
         SCALAR_TO_DOUBLE(qX, q.x());
         SCALAR_TO_DOUBLE(qY, q.y());
         SCALAR_TO_DOUBLE(qZ, q.z());
+        SCALAR_TO_DOUBLE(qstab, q.kStab());
         EXPECT_NEAR(qW, 0.99996192306417131, requiredPrecision);
         EXPECT_NEAR(qX, 0.017453070996747869, requiredPrecision);
         EXPECT_NEAR(qY, 0.026179606495121806, requiredPrecision);
         EXPECT_NEAR(qZ, 0.034906141993495739, requiredPrecision);
-        EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
+        EXPECT_NEAR(qstab, 5, requiredPrecision);
     }
     {
         utils::Quaternion q(
@@ -1017,11 +1025,12 @@ TEST(Quaternion, conversion)
         SCALAR_TO_DOUBLE(qX, q.x());
         SCALAR_TO_DOUBLE(qY, q.y());
         SCALAR_TO_DOUBLE(qZ, q.z());
+        SCALAR_TO_DOUBLE(qStab, q.kStab());
         EXPECT_NEAR(qW, 0.87758256189037276, requiredPrecision);
         EXPECT_NEAR(qX, 0.17805417504364543, requiredPrecision);
         EXPECT_NEAR(qY, 0.26708126256546816, requiredPrecision);
         EXPECT_NEAR(qZ, 0.35610835008729086, requiredPrecision);
-        EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
+        EXPECT_NEAR(qStab, 5, requiredPrecision);
     }
     utils::RotoTrans rt(
         utils::Vector3d(2, 3, 4), utils::Vector3d(), "xyz");
@@ -1032,11 +1041,12 @@ TEST(Quaternion, conversion)
         SCALAR_TO_DOUBLE(qX, q.x());
         SCALAR_TO_DOUBLE(qY, q.y());
         SCALAR_TO_DOUBLE(qZ, q.z());
+        SCALAR_TO_DOUBLE(qStab, q.kStab());
         EXPECT_NEAR(qW, 0.77913560959923722, requiredPrecision);
         EXPECT_NEAR(qX, -0.46529436049374817, requiredPrecision);
         EXPECT_NEAR(qY, 0.27840624141687692, requiredPrecision);
         EXPECT_NEAR(qZ, 0.31454542547502823, requiredPrecision);
-        EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
+        EXPECT_NEAR(qStab, 5, requiredPrecision);
     }
     {
         utils::Quaternion q(
@@ -1045,11 +1055,12 @@ TEST(Quaternion, conversion)
         SCALAR_TO_DOUBLE(qX, q.x());
         SCALAR_TO_DOUBLE(qY, q.y());
         SCALAR_TO_DOUBLE(qZ, q.z());
+        SCALAR_TO_DOUBLE(qStab, q.kStab());
         EXPECT_NEAR(qW, 0.77913560959923722, requiredPrecision);
         EXPECT_NEAR(qX, -0.46529436049374817, requiredPrecision);
         EXPECT_NEAR(qY, 0.27840624141687692, requiredPrecision);
         EXPECT_NEAR(qZ, 0.31454542547502823, requiredPrecision);
-        EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
+        EXPECT_NEAR(qStab, 5, requiredPrecision);
     }
     {
         utils::Quaternion q(
@@ -1059,11 +1070,12 @@ TEST(Quaternion, conversion)
         SCALAR_TO_DOUBLE(qX, q.x());
         SCALAR_TO_DOUBLE(qY, q.y());
         SCALAR_TO_DOUBLE(qZ, q.z());
+        SCALAR_TO_DOUBLE(qStab, q.kStab());
         EXPECT_NEAR(qW, 0.74732578388941839, requiredPrecision);
         EXPECT_NEAR(qX, -0.51483522877414645, requiredPrecision);
         EXPECT_NEAR(qY, -0.17015746936361908, requiredPrecision);
         EXPECT_NEAR(qZ, 0.38405116269438366, requiredPrecision);
-        EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
+        EXPECT_NEAR(qStab, 5, requiredPrecision);
     }
     {
         utils::Quaternion q(
@@ -1073,11 +1085,12 @@ TEST(Quaternion, conversion)
         SCALAR_TO_DOUBLE(qX, q.x());
         SCALAR_TO_DOUBLE(qY, q.y());
         SCALAR_TO_DOUBLE(qZ, q.z());
+        SCALAR_TO_DOUBLE(qStab, q.kStab());
         EXPECT_NEAR(qW, 0.74732578388941828, requiredPrecision);
         EXPECT_NEAR(qX, 0.46529436049374834, requiredPrecision);
         EXPECT_NEAR(qY, -0.27840624141687698, requiredPrecision);
         EXPECT_NEAR(qZ, 0.38405116269438366, requiredPrecision);
-        EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
+        EXPECT_NEAR(qStab, 5, requiredPrecision);
     }
     {
         utils::Quaternion q(
@@ -1087,11 +1100,12 @@ TEST(Quaternion, conversion)
         SCALAR_TO_DOUBLE(qX, q.x());
         SCALAR_TO_DOUBLE(qY, q.y());
         SCALAR_TO_DOUBLE(qZ, q.z());
+        SCALAR_TO_DOUBLE(qStab, q.kStab());
         EXPECT_NEAR(qW, -0.77913560959923722, requiredPrecision);
         EXPECT_NEAR(qX, 0.46529436049374834, requiredPrecision);
         EXPECT_NEAR(qY, -0.27840624141687698, requiredPrecision);
         EXPECT_NEAR(qZ, -0.31454542547502828, requiredPrecision);
-        EXPECT_NEAR(q.kStab(), 5, requiredPrecision);
+        EXPECT_NEAR(qStab, 5, requiredPrecision);
     }
     {
         utils::Quaternion q(2, 3, 4, 5, 6);
@@ -1174,11 +1188,12 @@ TEST(Quaternion, otherOperations)
         SCALAR_TO_DOUBLE(qConjX, qConj.x());
         SCALAR_TO_DOUBLE(qConjY, qConj.y());
         SCALAR_TO_DOUBLE(qConjZ, qConj.z());
+        SCALAR_TO_DOUBLE(qConjStab, qConj.kStab());
         EXPECT_NEAR(qConjW, 2, requiredPrecision);
         EXPECT_NEAR(qConjX, -3, requiredPrecision);
         EXPECT_NEAR(qConjY, -4, requiredPrecision);
         EXPECT_NEAR(qConjZ, -5, requiredPrecision);
-        EXPECT_NEAR(qConj.kStab(), 6, requiredPrecision);
+        EXPECT_NEAR(qConjStab, 6, requiredPrecision);
     } {
         utils::Quaternion q(2, 3, 4, 5, 6);
         utils::Quaternion qTime(
@@ -1188,11 +1203,12 @@ TEST(Quaternion, otherOperations)
         SCALAR_TO_DOUBLE(qTimeX, qTime.x());
         SCALAR_TO_DOUBLE(qTimeY, qTime.y());
         SCALAR_TO_DOUBLE(qTimeZ, qTime.z());
+        SCALAR_TO_DOUBLE(qTimeStab, qTime.kStab());
         EXPECT_NEAR(qTimeW, -2.9791236033976602, requiredPrecision);
         EXPECT_NEAR(qTimeX, 3.1304258212109395, requiredPrecision);
         EXPECT_NEAR(qTimeY, 3.4370175820938655, requiredPrecision);
         EXPECT_NEAR(qTimeZ, 4.8489346122578709, requiredPrecision);
-        EXPECT_NEAR(qTime.kStab(), 6, requiredPrecision);
+        EXPECT_NEAR(qTimeStab, 6, requiredPrecision);
     } {
         utils::Quaternion q(2, 3, 4, 5, 6);
         utils::Vector3d vec(q.rotate(utils::Vector3d(7, 8, 9)));
@@ -1211,11 +1227,12 @@ TEST(Quaternion, otherOperations)
         SCALAR_TO_DOUBLE(qdotX, qdot.x());
         SCALAR_TO_DOUBLE(qdotY, qdot.y());
         SCALAR_TO_DOUBLE(qdotZ, qdot.z());
+        SCALAR_TO_DOUBLE(qdotStab, qdot.kStab());
         EXPECT_NEAR(qdotW, -49, requiredPrecision);
         EXPECT_NEAR(qdotX, 5, requiredPrecision);
         EXPECT_NEAR(qdotY, 12, requiredPrecision);
         EXPECT_NEAR(qdotZ, 7, requiredPrecision);
-        EXPECT_NEAR(qdot.kStab(), 6, requiredPrecision);
+        EXPECT_NEAR(qdotStab, 6, requiredPrecision);
     } {
         utils::Quaternion q1(1, 0, 0, 0, 5);
         utils::Vector v(3);
@@ -1226,11 +1243,12 @@ TEST(Quaternion, otherOperations)
             SCALAR_TO_DOUBLE(q1X, q1.x());
             SCALAR_TO_DOUBLE(q1Y, q1.y());
             SCALAR_TO_DOUBLE(q1Z, q1.z());
+            SCALAR_TO_DOUBLE(q1Stab, q1.kStab());
             EXPECT_NEAR(q1W, 0, requiredPrecision);
             EXPECT_NEAR(q1X, 0.5, requiredPrecision);
             EXPECT_NEAR(q1Y, 1, requiredPrecision);
             EXPECT_NEAR(q1Z, 1.5, requiredPrecision);
-            EXPECT_NEAR(q1.kStab(), 5, requiredPrecision);
+            EXPECT_NEAR(q1Stab, 5, requiredPrecision);
         }
         double w(0.07035975447302918);
         double x(0.7035975447302919);
@@ -1243,11 +1261,12 @@ TEST(Quaternion, otherOperations)
             SCALAR_TO_DOUBLE(q2X, q2.x());
             SCALAR_TO_DOUBLE(q2Y, q2.y());
             SCALAR_TO_DOUBLE(q2Z, q2.z());
+            SCALAR_TO_DOUBLE(q2Stab, q2.kStab());
             EXPECT_NEAR(q2W,-1.1609359488049815, requiredPrecision);
             EXPECT_NEAR(q2X, 1.0202164398589233, requiredPrecision);
             EXPECT_NEAR(q2Y,-0.9498566853858941, requiredPrecision);
             EXPECT_NEAR(q2Z, 0.45733840407468973, requiredPrecision);
-            EXPECT_NEAR(q2.kStab(), 5, requiredPrecision);
+            EXPECT_NEAR(q2Stab, 5, requiredPrecision);
         }
     }
 }

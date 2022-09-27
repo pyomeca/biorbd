@@ -5,6 +5,7 @@
 #include "Muscles/Muscle.h"
 #include "Utils/Scalar.h"
 
+
 namespace BIORBD_NAMESPACE
 {
 namespace muscles

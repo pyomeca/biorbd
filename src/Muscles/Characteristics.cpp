@@ -17,7 +17,8 @@ muscles::Characteristics::Characteristics() :
     m_torqueActivation(std::make_shared<utils::Scalar>(0.01)),
     m_torqueDeactivation(std::make_shared<utils::Scalar>(0.04)),
     m_fatigueParameters(std::make_shared<muscles::FatigueParameters>
-                        (muscles::FatigueParameters()))
+                        (muscles::FatigueParameters())),
+    m_useDamping(std::make_shared<bool>(false))
 {
 
 }
@@ -33,7 +34,8 @@ muscles::Characteristics::Characteristics(
     m_minActivation(other.m_minActivation),
     m_torqueActivation(other.m_torqueActivation),
     m_torqueDeactivation(other.m_torqueDeactivation),
-    m_fatigueParameters(other.m_fatigueParameters)
+    m_fatigueParameters(other.m_fatigueParameters),
+    m_useDamping(other.m_useDamping)
 {
 
 }
@@ -46,6 +48,7 @@ muscles::Characteristics::Characteristics(
     const utils::Scalar& pennAngle,
     const muscles::State &emgMax,
     const muscles::FatigueParameters &fatigueParameters,
+    bool useDamping,
     const utils::Scalar& torqueAct,
     const utils::Scalar& torqueDeact,
     const utils::Scalar& minAct):
@@ -59,7 +62,9 @@ muscles::Characteristics::Characteristics(
     m_torqueActivation(std::make_shared<utils::Scalar>(torqueAct)),
     m_torqueDeactivation(std::make_shared<utils::Scalar>(torqueDeact)),
     m_fatigueParameters(std::make_shared<muscles::FatigueParameters>
-                        (fatigueParameters))
+                        (fatigueParameters)),
+    m_useDamping(std::make_shared<bool>(useDamping))
+
 {
 
 }
@@ -90,6 +95,8 @@ void muscles::Characteristics::DeepCopy(
     *m_torqueActivation = *other.m_torqueActivation;
     *m_torqueDeactivation = *other.m_torqueDeactivation;
     *m_fatigueParameters = other.m_fatigueParameters->DeepCopy();
+    *m_useDamping = *other.m_useDamping;
+
 }
 
 // Get et Set
@@ -202,3 +209,12 @@ const muscles::FatigueParameters
     return *m_fatigueParameters;
 }
 
+void muscles::Characteristics::setUseDamping(
+    bool val)
+{
+    *m_useDamping = val;
+}
+bool muscles::Characteristics::useDamping() const
+{
+    return *m_useDamping;
+}

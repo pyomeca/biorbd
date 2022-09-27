@@ -5,6 +5,7 @@
 #include "Muscles/IdealizedActuator.h"
 #include "Muscles/HillType.h"
 #include "Muscles/HillThelenType.h"
+#include "Muscles/HillDeGrooteType.h"
 #include "Muscles/HillThelenActiveOnlyType.h"
 #include "Muscles/HillThelenTypeFatigable.h"
 #include "Muscles/StateDynamicsBuchanan.h"
@@ -70,6 +71,10 @@ void muscles::MuscleGroup::DeepCopy(const muscles::MuscleGroup
             (*m_mus)[i] = std::make_shared<muscles::HillThelenType>((
                               *other.m_mus)[i]);
         } else if ((*other.m_mus)[i]->type() ==
+                   muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
+            (*m_mus)[i] = std::make_shared<muscles::HillDeGrooteType>((
+                              *other.m_mus)[i]);
+        } else if ((*other.m_mus)[i]->type() ==
                    muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE) {
             (*m_mus)[i] = std::make_shared<muscles::HillThelenActiveOnlyType>((
                               *other.m_mus)[i]);
@@ -119,6 +124,9 @@ void muscles::MuscleGroup::addMuscle(
     } else if (type == muscles::MUSCLE_TYPE::HILL) {
         muscle = std::make_shared<muscles::HillType>(name,geometry,
                  characteristics, *state);
+    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
+        muscle = std::make_shared<muscles::HillDeGrooteType>(name,geometry,
+                 characteristics, *state);
     } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN) {
         muscle = std::make_shared<muscles::HillThelenType>(name,geometry,
                  characteristics, *state);
@@ -148,6 +156,9 @@ void muscles::MuscleGroup::addMuscle(
                  characteristics);
     } else if (type == muscles::MUSCLE_TYPE::HILL) {
         muscle = std::make_shared<muscles::HillType>(name,geometry,
+                 characteristics);
+    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
+        muscle = std::make_shared<muscles::HillDeGrooteType>(name,geometry,
                  characteristics);
     } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN) {
         muscle = std::make_shared<muscles::HillThelenType>(name,geometry,
@@ -194,6 +205,9 @@ void muscles::MuscleGroup::addMuscle(
     else if (type == muscles::MUSCLE_TYPE::HILL)
         muscle = std::make_shared<muscles::HillType>
                  (name,geometry,characteristics,pathModifiers,*state);
+    else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE)
+        muscle = std::make_shared<muscles::HillDeGrooteType>
+                 (name,geometry,characteristics,pathModifiers,*state);
     else if (type == muscles::MUSCLE_TYPE::HILL_THELEN)
         muscle = std::make_shared<muscles::HillThelenType>
                  (name,geometry,characteristics,pathModifiers,*state);
@@ -224,6 +238,9 @@ void muscles::MuscleGroup::addMuscle(
                  characteristics,pathModifiers);
     } else if (type == muscles::MUSCLE_TYPE::HILL) {
         muscle = std::make_shared<muscles::HillType>(name,geometry,
+                 characteristics,pathModifiers);
+    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
+        muscle = std::make_shared<muscles::HillDeGrooteType>(name,geometry,
                  characteristics,pathModifiers);
     } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN) {
         muscle = std::make_shared<muscles::HillThelenType>(name,geometry,
@@ -259,6 +276,8 @@ void muscles::MuscleGroup::addMuscle(
     } else if (muscle.type() == muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE) {
         m_mus->push_back(std::make_shared<muscles::HillThelenActiveOnlyType>
                          (muscle));
+    } else if (muscle.type() == muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
+        m_mus->push_back(std::make_shared<muscles::HillDeGrooteType>(muscle));
     } else if (muscle.type() == muscles::MUSCLE_TYPE::HILL) {
         m_mus->push_back(std::make_shared<muscles::HillType>(muscle));
     } else {
@@ -269,15 +288,13 @@ void muscles::MuscleGroup::addMuscle(
 
 muscles::Muscle& muscles::MuscleGroup::muscle(unsigned int idx)
 {
-    utils::Error::check(idx<nbMuscles(),
-                                "Idx asked is higher than number of muscles");
+    utils::Error::check(idx<nbMuscles(), "Idx asked is higher than number of muscles");
     return *(*m_mus)[idx];
 }
 const muscles::Muscle& muscles::MuscleGroup::muscle(
     unsigned int idx) const
 {
-    utils::Error::check(idx<nbMuscles(),
-                                "Idx asked is higher than number of muscles");
+    utils::Error::check(idx<nbMuscles(), "Idx asked is higher than number of muscles");
     return *(*m_mus)[idx];
 }
 

@@ -15,7 +15,7 @@
 using namespace BIORBD_NAMESPACE;
 
 utils::Quaternion::Quaternion (
-    double kStabilizer) :
+    const utils::Scalar& kStabilizer) :
     RigidBodyDynamics::Math::Vector4d (1, 0, 0, 0),
     m_Kstab(kStabilizer)
 {
@@ -32,7 +32,7 @@ utils::Quaternion::Quaternion(
 
 utils::Quaternion::Quaternion(
     const RigidBodyDynamics::Math::Vector4d &vec4,
-    double kStabilizer) :
+    const utils::Scalar& kStabilizer) :
     RigidBodyDynamics::Math::Vector4d (vec4),
     m_Kstab(kStabilizer)
 {
@@ -44,7 +44,7 @@ utils::Quaternion::Quaternion (
     const utils::Scalar& x,
     const utils::Scalar& y,
     const utils::Scalar& z,
-    double kStabilizer) :
+    const utils::Scalar& kStabilizer) :
     RigidBodyDynamics::Math::Vector4d(w, x, y, z),
     m_Kstab(kStabilizer)
 {
@@ -54,7 +54,7 @@ utils::Quaternion::Quaternion (
 utils::Quaternion::Quaternion (
     const utils::Scalar& w,
     const utils::Vector3d &vec3,
-    double kStabilizer) :
+    const utils::Scalar& kStabilizer) :
     RigidBodyDynamics::Math::Vector4d(w, vec3[0], vec3[1], vec3[2]),
     m_Kstab(kStabilizer)
 {
@@ -78,12 +78,12 @@ utils::Scalar utils::Quaternion::z() const
     return (*this)(3);
 }
 
-void utils::Quaternion::setKStab(double newKStab)
+void utils::Quaternion::setKStab(const utils::Scalar& newKStab)
 {
     m_Kstab = newKStab;
 }
 
-double utils::Quaternion::kStab() const
+utils::Scalar utils::Quaternion::kStab() const
 {
     return m_Kstab;
 }
@@ -145,7 +145,7 @@ utils::Quaternion utils::Quaternion::fromGLRotate(
     const utils::Scalar& x,
     const utils::Scalar& y,
     const utils::Scalar& z,
-    double kStab)
+    const utils::Scalar& kStab)
 {
     utils::Scalar angle_copy(angle);
     utils::Scalar st = std::sin (angle_copy * M_PI / 360.);
@@ -156,7 +156,7 @@ utils::Quaternion utils::Quaternion::fromGLRotate(
 utils::Quaternion utils::Quaternion::fromAxisAngle(
     const utils::Scalar& angle,
     const utils::Vector3d &axis,
-    double kStab)
+    const utils::Scalar& kStab)
 {
     utils::Scalar angle_copy(angle);
     utils::Scalar d = axis.norm();
@@ -169,14 +169,14 @@ utils::Quaternion utils::Quaternion::fromAxisAngle(
 
 utils::Quaternion utils::Quaternion::fromMatrix(
     const utils::RotoTrans &rt,
-    double kStab)
+    const utils::Scalar& kStab)
 {
     return fromMatrix(rt.rot(), kStab);
 }
 
 utils::Quaternion utils::Quaternion::fromMatrix(
     const utils::Rotation &mat,
-    double kStab)
+    const utils::Scalar& kStab)
 {
     utils::Scalar w = std::sqrt (1. + mat(0,0) + mat(1,1) + mat(2,2)) * 0.5;
     return Quaternion (
@@ -189,7 +189,7 @@ utils::Quaternion utils::Quaternion::fromMatrix(
 
 utils::Quaternion utils::Quaternion::fromZYXAngles(
     const utils::Vector3d &zyx_angles,
-    double kStab)
+    const utils::Scalar& kStab)
 {
     return fromAxisAngle (zyx_angles[2], utils::Vector3d (0., 0., 1.),
                           kStab)
@@ -199,7 +199,7 @@ utils::Quaternion utils::Quaternion::fromZYXAngles(
 
 utils::Quaternion utils::Quaternion::fromYXZAngles(
     const utils::Vector3d &yxz_angles,
-    double kStab)
+    const utils::Scalar& kStab)
 {
     return fromAxisAngle (yxz_angles[1], utils::Vector3d (0., 1., 0.),
                           kStab)
@@ -209,7 +209,7 @@ utils::Quaternion utils::Quaternion::fromYXZAngles(
 
 utils::Quaternion utils::Quaternion::fromXYZAngles(
     const utils::Vector3d &xyz_angles,
-    double kStab)
+    const utils::Scalar& kStab)
 {
     return fromAxisAngle (xyz_angles[0], utils::Vector3d (1., 0., 0.),
                           kStab)
@@ -293,7 +293,7 @@ utils::Quaternion utils::Quaternion::conjugate() const
 
 utils::Quaternion utils::Quaternion::timeStep(
     const utils::Vector3d &omega,
-    double dt)
+    const utils::Scalar& dt)
 {
     utils::Scalar omega_norm = omega.norm();
     return fromAxisAngle (
@@ -355,7 +355,7 @@ utils::Vector3d  utils::Quaternion::eulerDotToOmega(
     const utils::Vector3d &eulerDot,
     const utils::String& seq)
 {
-    utils:Matrix3d velocity_matrix = velocityMatrix(euler, seq);
+    utils::Matrix3d velocity_matrix = velocityMatrix(euler, seq);
     utils::Vector3d w = velocity_matrix * eulerDot;
 
     return w;
@@ -366,7 +366,7 @@ utils::Vector3d  utils::Quaternion::omegaToEulerDot(
     const utils::Vector3d &w,
     const utils::String& seq)
 {
-    utils:Matrix3d velocity_matrix = velocityMatrix(euler, seq).inverse();
+    utils::Matrix3d velocity_matrix = velocityMatrix(euler, seq).inverse();
     utils::Vector3d eulerDot = velocity_matrix * w;
     return eulerDot;
 }   
