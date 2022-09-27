@@ -4,8 +4,8 @@
 
 # Build worker image (VM template)
 image:
-  - Visual Studio 2019
   - Ubuntu2004
+  - Visual Studio 2019
   - macos
 
 # set clone depth
