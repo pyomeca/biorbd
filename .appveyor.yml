@@ -27,6 +27,7 @@ install:
   - cmd: conda init cmd.exe
   - conda config --set always_yes yes --set changeps1 no
   - conda config --set auto_update_conda no
+  - cmd: conda update conda
   
   # Set environment variables  
   - sh: BIORBD_FOLDER=`pwd`
