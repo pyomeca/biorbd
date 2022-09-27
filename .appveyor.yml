@@ -28,7 +28,7 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda config --set auto_update_conda no
   - conda update -q conda
-  - conda create -n biorbd
+  - conda env create -n biorbd
   - conda activate biorbd
   
   # Set environment variables  
