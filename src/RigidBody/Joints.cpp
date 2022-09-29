@@ -1357,7 +1357,7 @@ unsigned int rigidbody::Joints::nbQuat() const
 rigidbody::GeneralizedVelocity rigidbody::Joints::computeQdot(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedCoordinates &QDot,
-    const utils::Scalar k_stab)
+    const utils::Scalar &k_stab)
 {
     rigidbody::GeneralizedVelocity QDotOut(Q.size());
     // Verify if there are quaternions, if not the derivate is directly QDot

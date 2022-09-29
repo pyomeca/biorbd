@@ -857,7 +857,7 @@ public:
     ///
     GeneralizedVelocity computeQdot(const GeneralizedCoordinates &Q,
         const GeneralizedCoordinates &QDot,
-        const utils::Scalar k_stab = 1);
+        const utils::Scalar &k_stab = 1);
 
     ///
     /// \brief Return the angular velocity of the segment
