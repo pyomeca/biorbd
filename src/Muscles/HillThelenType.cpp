@@ -117,7 +117,7 @@ void muscles::HillThelenType::computeFlCE(
 void muscles::HillThelenType::computeFvCE()
 {
 	utils::Scalar v = m_position->velocity();
-    utils::Scalar norm_v = v / (characteristics().optimalLength() * *m_cste_maxShorteningSpeed);
+    utils::Scalar norm_v = v / *m_cste_maxShorteningSpeed;
     utils::Scalar kvce = 0.06;
     utils::Scalar flen = 1.6;
 
