@@ -8,6 +8,8 @@
 #include "Muscles/HillDeGrooteType.h"
 #include "Muscles/HillThelenActiveOnlyType.h"
 #include "Muscles/HillThelenTypeFatigable.h"
+#include "Muscles/HillDeGrooteActiveOnlyType.h"
+#include "Muscles/HillDeGrooteTypeFatigable.h"
 #include "Muscles/StateDynamicsBuchanan.h"
 #include "Muscles/StateDynamicsDeGroote.h"
 
@@ -82,6 +84,14 @@ void muscles::MuscleGroup::DeepCopy(const muscles::MuscleGroup
                    muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE) {
             (*m_mus)[i] = std::make_shared<muscles::HillThelenTypeFatigable>((
                               *other.m_mus)[i]);
+        } else if ((*other.m_mus)[i]->type() ==
+                   muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE) {
+            (*m_mus)[i] = std::make_shared<muscles::HillDeGrooteActiveOnlyType>((
+                              *other.m_mus)[i]);
+        } else if ((*other.m_mus)[i]->type() ==
+                   muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE) {
+            (*m_mus)[i] = std::make_shared<muscles::HillDeGrooteTypeFatigable>((
+                              *other.m_mus)[i]);
         } else {
             utils::Error::raise("DeepCopy was not prepared to copy " +
                                         utils::String(
@@ -137,6 +147,13 @@ void muscles::MuscleGroup::addMuscle(
         muscle = std::make_shared<muscles::HillThelenTypeFatigable>(name,
                  geometry,characteristics, *state,
                  dynamicFatigueType);
+    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE) {
+        muscle = std::make_shared<muscles::HillDeGrooteActiveOnlyType>(name,
+                 geometry,characteristics, *state);
+    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE) {
+        muscle = std::make_shared<muscles::HillDeGrooteTypeFatigable>(name,
+                 geometry,characteristics, *state,
+                 dynamicFatigueType);
     } else {
         utils::Error::raise("Wrong muscle type");
     }
@@ -168,6 +185,12 @@ void muscles::MuscleGroup::addMuscle(
                  geometry,characteristics);
     } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE) {
         muscle = std::make_shared<muscles::HillThelenTypeFatigable>(name,
+                 geometry,characteristics, dynamicFatigueType);
+    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE) {
+        muscle = std::make_shared<muscles::HillDeGrooteActiveOnlyType>(name,
+                 geometry,characteristics);
+    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE) {
+        muscle = std::make_shared<muscles::HillDeGrooteTypeFatigable>(name,
                  geometry,characteristics, dynamicFatigueType);
     } else {
         utils::Error::raise("Wrong muscle type");
@@ -217,6 +240,12 @@ void muscles::MuscleGroup::addMuscle(
     else if (type == muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE)
         muscle = std::make_shared<muscles::HillThelenTypeFatigable>(
                      name,geometry,characteristics,pathModifiers,*state,dynamicFatigueType);
+    else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE)
+        muscle = std::make_shared<muscles::HillDeGrooteActiveOnlyType>
+                 (name,geometry,characteristics,pathModifiers,*state);
+    else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE)
+        muscle = std::make_shared<muscles::HillDeGrooteTypeFatigable>(
+                     name,geometry,characteristics,pathModifiers,*state,dynamicFatigueType);
     else {
         utils::Error::raise("Wrong muscle type");
     }
@@ -252,6 +281,13 @@ void muscles::MuscleGroup::addMuscle(
         muscle = std::make_shared<muscles::HillThelenTypeFatigable>(name,
                  geometry,characteristics,pathModifiers,
                  dynamicFatigueType);
+    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE) {
+        muscle = std::make_shared<muscles::HillDeGrooteActiveOnlyType>(name,
+                 geometry,characteristics,pathModifiers);
+    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE) {
+        muscle = std::make_shared<muscles::HillDeGrooteTypeFatigable>(name,
+                 geometry,characteristics,pathModifiers,
+                 dynamicFatigueType);
     } else {
         utils::Error::raise("Wrong muscle type");
     }
@@ -271,10 +307,17 @@ void muscles::MuscleGroup::addMuscle(
                muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE) {
         m_mus->push_back(std::make_shared<muscles::HillThelenTypeFatigable>
                          (muscle));
+    } else if (muscle.type() ==
+               muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE) {
+        m_mus->push_back(std::make_shared<muscles::HillDeGrooteTypeFatigable>
+                         (muscle));
     } else if (muscle.type() == muscles::MUSCLE_TYPE::HILL_THELEN) {
         m_mus->push_back(std::make_shared<muscles::HillThelenType>(muscle));
     } else if (muscle.type() == muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE) {
         m_mus->push_back(std::make_shared<muscles::HillThelenActiveOnlyType>
+                         (muscle));
+    } else if (muscle.type() == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE) {
+        m_mus->push_back(std::make_shared<muscles::HillDeGrooteActiveOnlyType>
                          (muscle));
     } else if (muscle.type() == muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
         m_mus->push_back(std::make_shared<muscles::HillDeGrooteType>(muscle));

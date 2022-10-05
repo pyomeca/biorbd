@@ -17,6 +17,8 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/HillDeGrooteType.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/HillThelenActiveOnlyType.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/HillThelenTypeFatigable.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/HillDeGrooteActiveOnlyType.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/HillDeGrooteTypeFatigable.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Muscle.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/MuscleGroup.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Muscles.cpp"

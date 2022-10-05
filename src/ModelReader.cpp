@@ -919,9 +919,15 @@ void Reader::readModelFile(
                         } else if (!tp_type.tolower().compare("hillthelenactive")
                                    || !tp_type.tolower().compare("thelenactive")) {
                             type = muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE;
+                        } else if (!tp_type.tolower().compare("hilldegrooteactive")
+                                   || !tp_type.tolower().compare("degrooteactive")) {
+                            type = muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE;
                         } else if (!tp_type.tolower().compare("hillthelenfatigable")
                                    || !tp_type.tolower().compare("thelenfatigable")) {
                             type = muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE;
+                        }else if (!tp_type.tolower().compare("hilldegrootefatigable")
+                                   || !tp_type.tolower().compare("degrootefatigable")) {
+                            type = muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE;
                         } else {
                             utils::Error::raise(tp_type + " is not a valid muscle type");
                         }
