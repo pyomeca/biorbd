@@ -15,6 +15,8 @@ enum MUSCLE_TYPE {
     HILL_THELEN,
     HILL_THELEN_ACTIVE,
     HILL_THELEN_FATIGABLE,
+    HILL_DE_GROOTE_ACTIVE,
+    HILL_DE_GROOTE_FATIGABLE,
     HILL_DE_GROOTE,
     NO_MUSCLE_TYPE
 };
@@ -37,6 +39,10 @@ inline const char* MUSCLE_TYPE_toStr(MUSCLE_TYPE type)
         return "ThelenActive";
     case HILL_THELEN_FATIGABLE:
         return "ThelenFatigable";
+    case HILL_DE_GROOTE_ACTIVE:
+        return "DeGrooteActive";
+    case HILL_DE_GROOTE_FATIGABLE:
+        return "DeGrooteFatigable";
     case HILL_DE_GROOTE:
         return "DeGroote";
     default:
