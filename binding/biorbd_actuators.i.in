@@ -1,23 +1,23 @@
 // File : biorbd_muscles.i
 %{
-#include "Actuators/ActuatorEnums.h"
-#include "Actuators/Actuator.h"
-#include "Actuators/Actuators.h"
-#include "Actuators/ActuatorConstant.h"
-#include "Actuators/ActuatorLinear.h"
-#include "Actuators/ActuatorGauss3p.h"
-#include "Actuators/ActuatorGauss6p.h"
-#include "Actuators/ActuatorSigmoidGauss3p.h"
+#include "InternalForces/Actuators/ActuatorEnums.h"
+#include "InternalForces/Actuators/Actuator.h"
+#include "InternalForces/Actuators/Actuators.h"
+#include "InternalForces/Actuators/ActuatorConstant.h"
+#include "InternalForces/Actuators/ActuatorLinear.h"
+#include "InternalForces/Actuators/ActuatorGauss3p.h"
+#include "InternalForces/Actuators/ActuatorGauss6p.h"
+#include "InternalForces/Actuators/ActuatorSigmoidGauss3p.h"
 %}
 
 
 // Includes all neceressary files from the API
-%include "@CMAKE_SOURCE_DIR@/include/Actuators/ActuatorEnums.h"
-%include "@CMAKE_SOURCE_DIR@/include/Actuators/Actuator.h"
-%include "@CMAKE_SOURCE_DIR@/include/Actuators/Actuators.h"
-%include "@CMAKE_SOURCE_DIR@/include/Actuators/ActuatorConstant.h"
-%include "@CMAKE_SOURCE_DIR@/include/Actuators/ActuatorLinear.h"
-%include "@CMAKE_SOURCE_DIR@/include/Actuators/ActuatorGauss3p.h"
-%include "@CMAKE_SOURCE_DIR@/include/Actuators/ActuatorGauss6p.h"
-%include "@CMAKE_SOURCE_DIR@/include/Actuators/ActuatorSigmoidGauss3p.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Actuators/ActuatorEnums.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Actuators/Actuator.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Actuators/Actuators.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Actuators/ActuatorConstant.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Actuators/ActuatorLinear.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Actuators/ActuatorGauss3p.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Actuators/ActuatorGauss6p.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Actuators/ActuatorSigmoidGauss3p.h"
 

@@ -1,0 +1,13 @@
+// File : biorbd_muscles.i
+%{
+#include "InternalForces/PathModifiers.h"
+#include "InternalForces/WrappingObject.h"
+#include "InternalForces/WrappingHalfCylinder.h"
+%}
+
+
+// Includes all neceressary files from the API
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/PathModifiers.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/WrappingObject.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/WrappingHalfCylinder.h"
+

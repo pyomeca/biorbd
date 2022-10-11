@@ -9,13 +9,14 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedTorque.h"
-#include "Actuators/ActuatorConstant.h"
-#include "Actuators/ActuatorGauss3p.h"
-#include "Actuators/ActuatorGauss6p.h"
-#include "Actuators/ActuatorLinear.h"
-#include "Actuators/ActuatorSigmoidGauss3p.h"
+#include "InternalForces/Actuators/ActuatorConstant.h"
+#include "InternalForces/Actuators/ActuatorGauss3p.h"
+#include "InternalForces/Actuators/ActuatorGauss6p.h"
+#include "InternalForces/Actuators/ActuatorLinear.h"
+#include "InternalForces/Actuators/ActuatorSigmoidGauss3p.h"
 
 using namespace BIORBD_NAMESPACE;
+using namespace internalforce;
 
 static std::string
 modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");

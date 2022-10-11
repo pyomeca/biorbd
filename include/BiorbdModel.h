@@ -10,10 +10,10 @@
 #include "RigidBody/IMUs.h"
 #include "RigidBody/SoftContacts.h"
 #ifdef MODULE_ACTUATORS
-    #include "Actuators/Actuators.h"
+    #include "InternalForces/Actuators/Actuators.h"
 #endif
 #ifdef MODULE_MUSCLES
-    #include "Muscles/Muscles.h"
+    #include "InternalForces/Muscles/Muscles.h"
 #endif
 
 ///
@@ -72,10 +72,10 @@ class BIORBD_API Model :
     ,public rigidbody::RotoTransNodes
     ,public rigidbody::Contacts
 #ifdef MODULE_ACTUATORS
-    ,public actuator::Actuators
+    ,public internalforce::actuator::Actuators
 #endif
 #ifdef MODULE_MUSCLES
-    ,public muscles::Muscles
+    ,public internalforce::muscles::Muscles
 #endif
     ,public rigidbody::SoftContacts
 {

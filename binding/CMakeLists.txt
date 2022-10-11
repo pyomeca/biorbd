@@ -47,7 +47,7 @@ if (BINDER_PYTHON3)
             "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_muscles.i\"")
         if (MODULE_STATIC_OPTIM)
             SET(SWIG_STATIC_OPTIMIZATION_INCLUDE_COMMAND
-                "%include \"${CMAKE_SOURCE_DIR}/include/Muscles/StaticOptimization.h\"")
+                "%include \"${CMAKE_SOURCE_DIR}/include/InternalForces/Muscles/StaticOptimization.h\"")
         endif()
         configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_muscles.i.in"
             "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_muscles.i" @ONLY)
@@ -59,6 +59,13 @@ if (BINDER_PYTHON3)
         configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_actuators.i.in"
             "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_actuators.i" @ONLY)
     endif()
+    if (MODULE_ACTUATORS OR MODULE_MUSCLES)
+        SET(SWIG_MODULE_INTERNAL_FORCES_INCLUDE_COMMAND
+            "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_internalforces.i\"")
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_internalforces.i.in"
+            "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_internalforces.i" @ONLY)
+    endif()
+
 
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.i.in"
         "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.i" @ONLY)

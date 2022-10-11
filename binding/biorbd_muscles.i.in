@@ -1,127 +1,124 @@
 // File : biorbd_muscles.i
 %{
-#include "Muscles/StateDynamics.h"
-#include "Muscles/MuscleGroup.h"
-#include "Muscles/Muscle.h"
-#include "Muscles/Characteristics.h"
-#include "Muscles/Geometry.h"
-#include "Muscles/HillType.h"
-#include "Muscles/HillDeGrooteType.h"
-#include "Muscles/HillThelenType.h"
-#include "Muscles/IdealizedActuator.h"
-#include "Muscles/HillThelenTypeFatigable.h"
-#include "Muscles/FatigueParameters.h"
-#include "Muscles/FatigueState.h"
-#include "Muscles/FatigueDynamicState.h"
-#include "Muscles/FatigueDynamicStateXia.h"
-#include "Muscles/PathModifiers.h"
-#include "Muscles/State.h"
-#include "Muscles/StateDynamics.h"
-#include "Muscles/StateDynamicsBuchanan.h"
-#include "Muscles/WrappingObject.h"
-#include "Muscles/WrappingHalfCylinder.h"
+#include "InternalForces/Muscles/StateDynamics.h"
+#include "InternalForces/Muscles/MuscleGroup.h"
+#include "InternalForces/Muscles/Muscle.h"
+#include "InternalForces/Muscles/Characteristics.h"
+#include "InternalForces/Muscles/Geometry.h"
+#include "InternalForces/Muscles/HillType.h"
+#include "InternalForces/Muscles/HillDeGrooteType.h"
+#include "InternalForces/Muscles/HillThelenType.h"
+#include "InternalForces/Muscles/IdealizedActuator.h"
+#include "InternalForces/Muscles/HillThelenTypeFatigable.h"
+#include "InternalForces/Muscles/FatigueParameters.h"
+#include "InternalForces/Muscles/FatigueState.h"
+#include "InternalForces/Muscles/FatigueDynamicState.h"
+#include "InternalForces/Muscles/FatigueDynamicStateXia.h"
+#include "InternalForces/PathModifiers.h"
+#include "InternalForces/Muscles/State.h"
+#include "InternalForces/Muscles/StateDynamics.h"
+#include "InternalForces/Muscles/StateDynamicsBuchanan.h"
+#include "InternalForces/WrappingObject.h"
+#include "InternalForces/WrappingHalfCylinder.h"
 #ifdef MODULE_STATIC_OPTIM
-#include "Muscles/StaticOptimization.h"
+#include "InternalForces/Muscles/StaticOptimization.h"
 #endif
 %}
 
 // Instantiate templates
-%template(VecBiorbdMuscleGroup) std::vector<BIORBD_NAMESPACE::muscles::MuscleGroup>;
-%template(SharedBiorbdMuscle) std::shared_ptr<BIORBD_NAMESPACE::muscles::Muscle>;
-%template(VecSharedBiorbdMuscle) std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::Muscle>>;
-%shared_ptr(BIORBD_NAMESPACE::muscles::State);
-%shared_ptr(BIORBD_NAMESPACE::muscles::StateDynamics);
-%shared_ptr(BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan);
-%template(VecBiorbdMuscleState) std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>>;
-%template(MatBiorbdMuscleState) std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>>>;
-%template(SharedBiorbdMuscleFatigueState) std::shared_ptr<BIORBD_NAMESPACE::muscles::FatigueState>;
+%template(VecBiorbdMuscleGroup) std::vector<BIORBD_NAMESPACE::internalforce::muscles::MuscleGroup>;
+%template(SharedBiorbdMuscle) std::shared_ptr<BIORBD_NAMESPACE::internalforce::muscles::Muscle>;
+%template(VecSharedBiorbdMuscle) std::vector<std::shared_ptr<BIORBD_NAMESPACE::internalforce::muscles::Muscle>>;
+%shared_ptr(BIORBD_NAMESPACE::internalforce::muscles::State);
+%shared_ptr(BIORBD_NAMESPACE::internalforce::muscles::StateDynamics);
+%shared_ptr(BIORBD_NAMESPACE::internalforce::muscles::StateDynamicsBuchanan);
+%template(VecBiorbdMuscleState) std::vector<std::shared_ptr<BIORBD_NAMESPACE::internalforce::muscles::State>>;
+%template(MatBiorbdMuscleState) std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::internalforce::muscles::State>>>;
+%template(SharedBiorbdMuscleFatigueState) std::shared_ptr<BIORBD_NAMESPACE::internalforce::muscles::FatigueState>;
 
 // extension of muscle casting
 %extend BIORBD_NAMESPACE::muscles::IdealizedActuator{
-    static BIORBD_NAMESPACE::muscles::IdealizedActuator DeepCopy(const BIORBD_NAMESPACE::muscles::Muscle& other)
+    static BIORBD_NAMESPACE::internalforce::muscles::IdealizedActuator DeepCopy(const BIORBD_NAMESPACE::internalforce::muscles::Muscle& other)
     {
-        BIORBD_NAMESPACE::muscles::IdealizedActuator copy;
+        BIORBD_NAMESPACE::internalforce::muscles::IdealizedActuator copy;
         copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::muscles::IdealizedActuator&>(other));
         return copy;
     }
 }
 
-%extend BIORBD_NAMESPACE::muscles::HillType{
-    static BIORBD_NAMESPACE::muscles::HillType DeepCopy(const BIORBD_NAMESPACE::muscles::Muscle& other)
+%extend BIORBD_NAMESPACE::internalforce::muscles::HillType{
+    static BIORBD_NAMESPACE::internalforce::muscles::HillType DeepCopy(const BIORBD_NAMESPACE::internalforce::muscles::Muscle& other)
     {
-        BIORBD_NAMESPACE::muscles::HillType copy;
-        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::muscles::HillType&>(other));
+        BIORBD_NAMESPACE::internalforce::muscles::HillType copy;
+        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::internalforce::muscles::HillType&>(other));
         return copy;
     }
 }
 
-%extend BIORBD_NAMESPACE::muscles::HillDeGrooteType{
-    static BIORBD_NAMESPACE::muscles::HillDeGrooteType DeepCopy(const BIORBD_NAMESPACE::muscles::Muscle& other)
+%extend BIORBD_NAMESPACE::internalforce::muscles::HillDeGrooteType{
+    static BIORBD_NAMESPACE::internalforce::muscles::HillDeGrooteType DeepCopy(const BIORBD_NAMESPACE::internalforce::muscles::Muscle& other)
     {
-        BIORBD_NAMESPACE::muscles::HillDeGrooteType copy;
-        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::muscles::HillDeGrooteType&>(other));
+        BIORBD_NAMESPACE::internalforce::muscles::HillDeGrooteType copy;
+        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::internalforce::muscles::HillDeGrooteType&>(other));
         return copy;
     }
 }
 
-%extend BIORBD_NAMESPACE::muscles::HillThelenType{
-    static BIORBD_NAMESPACE::muscles::HillThelenType DeepCopy(const BIORBD_NAMESPACE::muscles::Muscle& other)
+%extend BIORBD_NAMESPACE::internalforce::muscles::HillThelenType{
+    static BIORBD_NAMESPACE::internalforce::muscles::HillThelenType DeepCopy(const BIORBD_NAMESPACE::internalforce::muscles::Muscle& other)
     {
-        BIORBD_NAMESPACE::muscles::HillThelenType copy;
-        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::muscles::HillThelenType&>(other));
+        BIORBD_NAMESPACE::internalforce::muscles::HillThelenType copy;
+        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::internalforce::muscles::HillThelenType&>(other));
         return copy;
     }
 }
-%extend BIORBD_NAMESPACE::muscles::HillThelenTypeFatigable{
-    static BIORBD_NAMESPACE::muscles::HillThelenTypeFatigable DeepCopy(const BIORBD_NAMESPACE::muscles::Muscle& other)
+%extend BIORBD_NAMESPACE::internalforce::muscles::HillThelenTypeFatigable{
+    static BIORBD_NAMESPACE::internalforce::muscles::HillThelenTypeFatigable DeepCopy(const BIORBD_NAMESPACE::internalforce::muscles::Muscle& other)
     {
-        BIORBD_NAMESPACE::muscles::HillThelenTypeFatigable copy;
-        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::muscles::HillThelenTypeFatigable&>(other));
+        BIORBD_NAMESPACE::internalforce::muscles::HillThelenTypeFatigable copy;
+        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::internalforce::muscles::HillThelenTypeFatigable&>(other));
         return copy;
     }
 }
 
 // extension of muscle fatigueState casting
-%extend BIORBD_NAMESPACE::muscles::FatigueDynamicStateXia{
-    static BIORBD_NAMESPACE::muscles::FatigueDynamicStateXia DeepCopy(const BIORBD_NAMESPACE::muscles::FatigueState& other)
+%extend BIORBD_NAMESPACE::internalforce::muscles::FatigueDynamicStateXia{
+    static BIORBD_NAMESPACE::internalforce::muscles::FatigueDynamicStateXia DeepCopy(const BIORBD_NAMESPACE::internalforce::muscles::FatigueState& other)
     {
-        BIORBD_NAMESPACE::muscles::FatigueDynamicStateXia copy;
-        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::muscles::FatigueDynamicStateXia&>(other));
+        BIORBD_NAMESPACE::internalforce::muscles::FatigueDynamicStateXia copy;
+        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::internalforce::muscles::FatigueDynamicStateXia&>(other));
         return copy;
     }
-    static BIORBD_NAMESPACE::muscles::FatigueDynamicStateXia DeepCopy(const BIORBD_NAMESPACE::muscles::FatigueDynamicState& other)
+    static BIORBD_NAMESPACE::internalforce::muscles::FatigueDynamicStateXia DeepCopy(const BIORBD_NAMESPACE::internalforce::muscles::FatigueDynamicState& other)
     {
-        BIORBD_NAMESPACE::muscles::FatigueDynamicStateXia copy;
-        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::muscles::FatigueDynamicStateXia&>(other));
+        BIORBD_NAMESPACE::internalforce::muscles::FatigueDynamicStateXia copy;
+        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::internalforce::muscles::FatigueDynamicStateXia&>(other));
         return copy;
     }
 }
 
 
 // Includes all neceressary files from the API
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/MusclesEnums.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/Compound.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscle.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueModel.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillType.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillDeGrooteType.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillThelenType.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/HillThelenTypeFatigable.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/IdealizedActuator.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/Muscles.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/MuscleGroup.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/Characteristics.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/MusclesEnums.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/Compound.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/Muscle.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/FatigueModel.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/HillType.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/HillDeGrooteType.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/HillThelenType.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/HillThelenTypeFatigable.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/IdealizedActuator.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/Muscles.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/MuscleGroup.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/Characteristics.h"
 
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueParameters.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueState.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueDynamicState.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/FatigueDynamicStateXia.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/Geometry.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/PathModifiers.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/State.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/StateDynamics.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/StateDynamicsBuchanan.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/WrappingObject.h"
-%include "@CMAKE_SOURCE_DIR@/include/Muscles/WrappingHalfCylinder.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/FatigueParameters.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/FatigueState.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/FatigueDynamicState.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/FatigueDynamicStateXia.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/Geometry.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/State.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/StateDynamics.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/StateDynamicsBuchanan.h"
 @SWIG_STATIC_OPTIMIZATION_INCLUDE_COMMAND@
 

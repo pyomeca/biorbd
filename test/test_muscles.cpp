@@ -10,12 +10,16 @@
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "RigidBody/NodeSegment.h"
+
 #ifdef MODULE_MUSCLES
-#include "Muscles/all.h"
+#include "InternalForces/Muscles/all.h"
+#include "InternalForces/all.h"
+
 #include "Utils/String.h"
 #include "Utils/RotoTrans.h"
 
 using namespace BIORBD_NAMESPACE;
+using namespace internalforce;
 
 static double requiredPrecision(1e-10);
 
@@ -2592,7 +2596,7 @@ TEST(WrappingHalfCylinder, unitTest)
             utils::Vector3d(1., 1., 1.), utils::Vector3d(1., 1., 1.),
             "xyz");
 
-        muscles::WrappingHalfCylinder wrappingHalfCylinder;
+        WrappingHalfCylinder wrappingHalfCylinder;
 
         wrappingHalfCylinder.setRadius(0.75);
         SCALAR_TO_DOUBLE(diameter, wrappingHalfCylinder.diameter());
@@ -2609,7 +2613,7 @@ TEST(WrappingHalfCylinder, unitTest)
             utils::Vector3d(1., 1., 1.), utils::Vector3d(1., 1., 1.),
             "xyz");
 
-        muscles::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.25, 1.);
+        WrappingHalfCylinder wrappingHalfCylinder(rt, 0.25, 1.);
         SCALAR_TO_DOUBLE(diameter, wrappingHalfCylinder.diameter());
         EXPECT_NEAR(diameter, 0.5, requiredPrecision);
         SCALAR_TO_DOUBLE(length, wrappingHalfCylinder.length());
@@ -2620,12 +2624,12 @@ TEST(WrappingHalfCylinder, unitTest)
             utils::Vector3d(1., 1., 1.), utils::Vector3d(1., 1., 1.),
             "xyz");
 
-        muscles::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.5, 1., "name",
+        WrappingHalfCylinder wrappingHalfCylinder(rt, 0.5, 1., "name",
                 "parentName");
         EXPECT_STREQ(wrappingHalfCylinder.parent().c_str(), "parentName");
     }
     {
-        muscles::WrappingHalfCylinder wrappingHalfCylinder;
+        WrappingHalfCylinder wrappingHalfCylinder;
         utils::RotoTrans rt(
             utils::Vector3d(1., 1., 1.), utils::Vector3d(1., 1., 1.),
             "xyz");
@@ -2669,12 +2673,12 @@ TEST(WrappingHalfCylinder, deepCopy)
     utils::RotoTrans rt(
         utils::Vector3d(1, 1, 1), utils::Vector3d(1, 1, 1), "xyz");
 
-    muscles::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.25, 1.);
+    WrappingHalfCylinder wrappingHalfCylinder(rt, 0.25, 1.);
 
-    muscles::WrappingHalfCylinder shallowCopy(wrappingHalfCylinder);
-    muscles::WrappingHalfCylinder deepCopyNow(
+    WrappingHalfCylinder shallowCopy(wrappingHalfCylinder);
+    WrappingHalfCylinder deepCopyNow(
         wrappingHalfCylinder.DeepCopy());
-    muscles::WrappingHalfCylinder deepCopyLater;
+    WrappingHalfCylinder deepCopyLater;
     deepCopyLater.DeepCopy(wrappingHalfCylinder);
 
     {
