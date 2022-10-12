@@ -179,21 +179,19 @@ list(APPEND BIORBD_MODULE_NAMES "${RIGIDBODY_MODULE_NAME}")
 # Muscles
 option(MODULE_MUSCLES
     "Choose if the module internal forces is to be added to biorbd" ON)
-#if (MODULE_MUSCLES)
-#    add_subdirectory("$src/Muscles")
-#    list(APPEND BIORBD_MODULE_NAMES "${MUSCLES_MODULE_NAME}")
-#endif()
+if (MODULE_MUSCLES)
+    list(APPEND BIORBD_MODULE_NAMES "${MUSCLES_MODULE_NAME}")
+endif()
 
 # Actuators
 option(MODULE_ACTUATORS
     "Choose if the module internal forces is to be added to biorbd" ON)
-#if (MODULE_ACTUATORS)
-#    add_subdirectory("$src/InternalForces/Actuators")
-#    list(APPEND BIORBD_MODULE_NAMES "${ACTUATORS_MODULE_NAME}")
-#endif()
+if (MODULE_ACTUATORS)
+    list(APPEND BIORBD_MODULE_NAMES "${ACTUATORS_MODULE_NAME}")
+endif()
+
 if (MODULE_ACTUATORS OR MODULE_MUSCLES)
     add_subdirectory("src/InternalForces")
-    list(APPEND BIORBD_MODULE_NAMES "${INTERNAL_FORCES_MODULE_NAME}")
 endif()
 
 # Add linker

@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "Muscles/StaticOptimization.h"
+#include "InternalForces/Muscles/StaticOptimization.h"
 
 #include <IpIpoptApplication.hpp>
 #include "BiorbdModel.h"
@@ -8,10 +8,11 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedTorque.h"
-#include "Muscles/StateDynamics.h"
-#include "Muscles/StaticOptimizationIpoptLinearized.h"
+#include "InternalForces/Muscles/StateDynamics.h"
+#include "InternalForces/Muscles/StaticOptimizationIpoptLinearized.h"
 
 using namespace BIORBD_NAMESPACE;
+using namespace internalforce;
 
 muscles::StaticOptimization::StaticOptimization(
     Model& model,

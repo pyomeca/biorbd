@@ -4,7 +4,6 @@
 #include "Utils/String.h"
 #include "Utils/Vector3d.h"
 #include "RigidBody/GeneralizedCoordinates.h"
-#include "InternalForces/Muscles/Characteristics.h"
 #include "InternalForces/PathModifiers.h"
 #include "InternalForces/Muscles/State.h"
 

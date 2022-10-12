@@ -1,12 +1,13 @@
 #define BIORBD_API_EXPORTS
-#include "Muscles/StaticOptimizationIpoptLinearized.h"
+#include "InternalForces/Muscles/StaticOptimizationIpoptLinearized.h"
 
 #include "BiorbdModel.h"
 #include "Utils/Matrix.h"
 #include "RigidBody/GeneralizedTorque.h"
-#include "Muscles/State.h"
+#include "InternalForces/Muscles/State.h"
 
 using namespace BIORBD_NAMESPACE;
+using namespace internalforce;
 
 muscles::StaticOptimizationIpoptLinearized::StaticOptimizationIpoptLinearized(
     Model &model,
