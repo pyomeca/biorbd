@@ -12,7 +12,7 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/Actuators.cpp"
 )
 
-# Create the library
+## Create the library
 if (WIN32)
     add_library(${PROJECT_NAME} STATIC "${SRC_LIST_MODULE}")
 else()

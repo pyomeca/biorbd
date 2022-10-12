@@ -46,15 +46,18 @@ endif()
 
 # Add the dependencies for insuring build order
 target_link_libraries(${PROJECT_NAME}
-    "${SUBMODULE_NAMES}"
     "${RBDL_LIBRARY}"
     "${MATH_BACKEND_LIBRARIES}"
     "${BIORBD_NAME}_utils"
     "${BIORBD_NAME}_rigidbody"
+    "${BIORBD_NAME}_muscles"
+    "${BIORBD_NAME}_actuators"
 )
 add_dependencies(${PROJECT_NAME}
     "${BIORBD_NAME}_utils"
     "${BIORBD_NAME}_rigidbody"
+    "${BIORBD_NAME}_muscles"
+    "${BIORBD_NAME}_actuators"
 )
 
 # Installation

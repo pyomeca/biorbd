@@ -37,11 +37,11 @@
 %template(SharedBiorbdMuscleFatigueState) std::shared_ptr<BIORBD_NAMESPACE::internalforce::muscles::FatigueState>;
 
 // extension of muscle casting
-%extend BIORBD_NAMESPACE::muscles::IdealizedActuator{
+%extend BIORBD_NAMESPACE::internalforce::muscles::IdealizedActuator{
     static BIORBD_NAMESPACE::internalforce::muscles::IdealizedActuator DeepCopy(const BIORBD_NAMESPACE::internalforce::muscles::Muscle& other)
     {
         BIORBD_NAMESPACE::internalforce::muscles::IdealizedActuator copy;
-        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::muscles::IdealizedActuator&>(other));
+        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::internalforce::muscles::IdealizedActuator&>(other));
         return copy;
     }
 }
