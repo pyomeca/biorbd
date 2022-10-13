@@ -13,7 +13,7 @@ using namespace internalforce;
 muscles::Compound::Compound() :
     m_name(std::make_shared<utils::String>("")),
     m_type(std::make_shared<muscles::MUSCLE_TYPE>
-           (muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
+           (muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)&&std::make_shared<utils::String>("")),
     m_pathChanger(std::make_shared<PathModifiers>()),
     m_force(std::make_shared<utils::Scalar>(0))
 {
