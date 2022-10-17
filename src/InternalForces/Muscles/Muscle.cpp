@@ -17,11 +17,11 @@
 using namespace BIORBD_NAMESPACE;
 internalforce::muscles::Muscle::Muscle() :
     internalforce::Compound(),
-    m_type(std::make_shared<internalforce::muscles::MUSCLE_TYPE>(muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_position(std::make_shared<internalforce::muscles::Geometry>()),
     m_characteristics(std::make_shared<internalforce::muscles::Characteristics>()),
     m_state(std::make_shared<internalforce::muscles::State>())
 {
+    setType();
 
 }
 
@@ -30,7 +30,6 @@ internalforce::muscles::Muscle::Muscle(
     const internalforce::muscles::Geometry & position,
     const internalforce::muscles::Characteristics &characteristics) :
     internalforce::Compound (name),
-    m_type(std::make_shared<internalforce::muscles::MUSCLE_TYPE>(muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_position(std::make_shared<internalforce::muscles::Geometry>(position)),
     m_characteristics(std::make_shared<internalforce::muscles::Characteristics>
                       (characteristics)),
@@ -45,7 +44,6 @@ internalforce::muscles::Muscle::Muscle(
     const internalforce::muscles::Characteristics &characteristics,
     const internalforce::muscles::State &dynamicState) :
     internalforce::Compound (name),
-    m_type(std::make_shared<internalforce::muscles::MUSCLE_TYPE>(muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_position(std::make_shared<internalforce::muscles::Geometry>(position)),
     m_characteristics(std::make_shared<internalforce::muscles::Characteristics>
                       (characteristics)),
@@ -60,7 +58,6 @@ internalforce::muscles::Muscle::Muscle(
     const internalforce::muscles::Characteristics &characteristics,
     const internalforce::PathModifiers &pathModifiers) :
     internalforce::Compound (name, pathModifiers),
-    m_type(std::make_shared<internalforce::muscles::MUSCLE_TYPE>(muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_position(std::make_shared<internalforce::muscles::Geometry>(position)),
     m_characteristics(std::make_shared<internalforce::muscles::Characteristics>
                       (characteristics)),
@@ -71,7 +68,6 @@ internalforce::muscles::Muscle::Muscle(
 
 internalforce::muscles::Muscle::Muscle(const internalforce::muscles::Muscle &other) :
     internalforce::Compound (other),
-    m_type(other.m_type),
     m_position(other.m_position),
     m_characteristics(other.m_characteristics),
     m_state(other.m_state)
@@ -82,7 +78,6 @@ internalforce::muscles::Muscle::Muscle(const internalforce::muscles::Muscle &oth
 internalforce::muscles::Muscle::Muscle(const std::shared_ptr<internalforce::muscles::Muscle>
                                 other) :
     internalforce::Compound (other),
-    m_type(other->m_type),
     m_position(other->m_position),
     m_characteristics(other->m_characteristics),
     m_state(other->m_state)
@@ -96,7 +91,6 @@ internalforce::muscles::Muscle::Muscle(const utils::String& name,
                                 const internalforce::PathModifiers &pathModifiers,
                                 const internalforce::muscles::State& emg) :
     internalforce::Compound(name,pathModifiers),
-    m_type(std::make_shared<internalforce::muscles::MUSCLE_TYPE>(muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_position(std::make_shared<internalforce::muscles::Geometry>(g)),
     m_characteristics(std::make_shared<internalforce::muscles::Characteristics>(c)),
     m_state(std::make_shared<internalforce::muscles::State>())
@@ -112,22 +106,22 @@ internalforce::muscles::Muscle::~Muscle()
     //dtor
 }
 
-internalforce::muscles::MUSCLE_TYPE internalforce::muscles::type() const
-{
-    return *m_type;
-}
-
-void internalforce::muscles::setType()
-{
-    *m_type = internalforce::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE;
-}
-
 void internalforce::muscles::Muscle::DeepCopy(const internalforce::muscles::Muscle &other)
 {
     this->internalforce::Compound::DeepCopy(other);
     *m_position = other.m_position->DeepCopy();
     *m_characteristics = other.m_characteristics->DeepCopy();
     *m_state = other.m_state->DeepCopy();
+}
+
+internalforce::muscles::MUSCLE_TYPE internalforce::muscles::Muscle::type() const
+{
+    return *m_type;
+}
+
+void internalforce::muscles::Muscle::setType()
+{
+    *m_type = internalforce::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE;
 }
 
 void internalforce::muscles::Muscle::updateOrientations(

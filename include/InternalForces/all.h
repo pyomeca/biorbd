@@ -4,7 +4,6 @@
 #include "biorbdConfig.h"
 #include "InternalForces/PathModifiers.h"
 #include "InternalForces/Compound.h"
-#include "InternalForces/InternalForcesEnums.h"
 #include "InternalForces/ViaPoint.h"
 #include "InternalForces/WrappingHalfCylinder.h"
 #include "InternalForces/WrappingObject.h"

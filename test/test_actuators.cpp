@@ -9,14 +9,10 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedTorque.h"
-#include "InternalForces/Actuators/ActuatorConstant.h"
-#include "InternalForces/Actuators/ActuatorGauss3p.h"
-#include "InternalForces/Actuators/ActuatorGauss6p.h"
-#include "InternalForces/Actuators/ActuatorLinear.h"
-#include "InternalForces/Actuators/ActuatorSigmoidGauss3p.h"
+#include "InternalForces/all.h"
+#include "InternalForces/Actuators/all.h"
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
 
 static std::string
 modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");
@@ -40,7 +36,7 @@ TEST(FileIO, openModelWithActuators)
 
 TEST(ActuatorConstant, torqueMax)
 {
-    actuator::ActuatorConstant const_torque_act(1, 150, 0);
+    internalforce::actuator::ActuatorConstant const_torque_act(1, 150, 0);
     SCALAR_TO_DOUBLE(torqueMaxVal, const_torque_act.torqueMax())
     EXPECT_NEAR(torqueMaxVal, 150, requiredPrecision);
 }
@@ -52,7 +48,7 @@ TEST(ActuatorGauss3p, torqueMax)
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
 
-    actuator::ActuatorGauss3p gauss3p_torque_act(1, 150, 25, 800, 324, 0.5,
+    internalforce::actuator::ActuatorGauss3p gauss3p_torque_act(1, 150, 25, 800, 324, 0.5,
             28, 90, 29, 133, 0);
     std::vector<double> Q_val = {1.1, 1.1, 1.1, 1.1, 1.1};
     FILL_VECTOR(Q, Q_val);
@@ -91,7 +87,7 @@ TEST(ActuatorGauss6p, torqueMax)
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
 
-    actuator::ActuatorGauss6p gauss6p_torque_act(1, 150, 25, 800, 324, 0.5,
+    internalforce::actuator::ActuatorGauss6p gauss6p_torque_act(1, 150, 25, 800, 324, 0.5,
             28, 90, 29, 133, 4, 73, 73, 0);
     std::vector<double> Q_val = {1.1, 1.1, 1.1, 1.1, 1.1};
     FILL_VECTOR(Q, Q_val);
@@ -132,7 +128,7 @@ TEST(ActuatorLinear, torqueMax)
     std::vector<double> val = {1.1};
     FILL_VECTOR(Q, val);
     double torqueMaxExpected(88.025357464390567);
-    actuator::ActuatorLinear linear_torque_act(1, 25, 1, 0);
+    internalforce::actuator::ActuatorLinear linear_torque_act(1, 25, 1, 0);
     CALL_BIORBD_FUNCTION_1ARG(torqueMaxVal, linear_torque_act, torqueMax, Q);
 #ifdef BIORBD_USE_CASADI_MATH
     EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected,
@@ -318,7 +314,7 @@ TEST(ActuatorSigmoidGauss3p, torqueMax)
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
 
-    actuator::ActuatorSigmoidGauss3p sigmoid_gauss3p_torque_act(1,
+    internalforce::actuator::ActuatorSigmoidGauss3p sigmoid_gauss3p_torque_act(1,
             312.0780851217, 0.0100157340, 3.2702903919,
             56.4021127893, -25.6939435543, 0);
     std::vector<double> Q_val(model.nbQ());
