@@ -5,107 +5,106 @@
 #include "InternalForces/Muscles/FatigueState.h"
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
 
-muscles::HillThelenTypeFatigable::HillThelenTypeFatigable() :
-    muscles::HillThelenType(),
-    muscles::FatigueModel (
-        muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE)
+internalforce::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable() :
+    internalforce::muscles::HillThelenType(),
+    internalforce::muscles::FatigueModel (
+        internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE)
 {
     setType();
 }
 
-muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
+internalforce::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
     const utils::String &name,
-    const muscles::Geometry &geometry,
-    const muscles::Characteristics &characteristics,
-    muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
-    muscles::HillThelenType(name, geometry, characteristics),
-    muscles::FatigueModel (dynamicFatigueType)
+    const internalforce::muscles::Geometry &geometry,
+    const internalforce::muscles::Characteristics &characteristics,
+    internalforce::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
+    internalforce::muscles::HillThelenType(name, geometry, characteristics),
+    internalforce::muscles::FatigueModel (dynamicFatigueType)
 {
     setType();
 }
 
-muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
+internalforce::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
     const utils::String &name,
-    const muscles::Geometry &geometry,
-    const muscles::Characteristics &characteristics,
-    const muscles::State &emg,
-    muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
-    muscles::HillThelenType(name, geometry, characteristics, emg),
-    muscles::FatigueModel (dynamicFatigueType)
+    const internalforce::muscles::Geometry &geometry,
+    const internalforce::muscles::Characteristics &characteristics,
+    const internalforce::muscles::State &emg,
+    internalforce::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
+    internalforce::muscles::HillThelenType(name, geometry, characteristics, emg),
+    internalforce::muscles::FatigueModel (dynamicFatigueType)
 {
     setType();
 }
 
-muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
+internalforce::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
     const utils::String &name,
-    const muscles::Geometry &geometry,
-    const muscles::Characteristics &characteristics,
+    const internalforce::muscles::Geometry &geometry,
+    const internalforce::muscles::Characteristics &characteristics,
     const PathModifiers &pathModifiers,
-    muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
-    muscles::HillThelenType(name, geometry, characteristics, pathModifiers),
-    muscles::FatigueModel (dynamicFatigueType)
+    internalforce::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
+    internalforce::muscles::HillThelenType(name, geometry, characteristics, pathModifiers),
+    internalforce::muscles::FatigueModel (dynamicFatigueType)
 {
     setType();
 }
 
-muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
+internalforce::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
     const utils::String& name,
-    const muscles::Geometry& geometry,
-    const muscles::Characteristics& characteristics,
+    const internalforce::muscles::Geometry& geometry,
+    const internalforce::muscles::Characteristics& characteristics,
     const PathModifiers& pathModifiers,
-    const muscles::State& emg,
-    muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
-    muscles::HillThelenType(name, geometry, characteristics, pathModifiers,
+    const internalforce::muscles::State& emg,
+    internalforce::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
+    internalforce::muscles::HillThelenType(name, geometry, characteristics, pathModifiers,
                                     emg),
-    muscles::FatigueModel (dynamicFatigueType)
+    internalforce::muscles::FatigueModel (dynamicFatigueType)
 {
     setType();
 }
 
-muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
-    const muscles::Muscle &other) :
-    muscles::HillThelenType (other),
-    muscles::FatigueModel (
-        dynamic_cast<const muscles::FatigueModel&>(other))
+internalforce::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
+    const internalforce::muscles::Muscle &other) :
+    internalforce::muscles::HillThelenType (other),
+    internalforce::muscles::FatigueModel (
+        dynamic_cast<const internalforce::muscles::FatigueModel&>(other))
 {
 
 }
 
-muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
-    const std::shared_ptr<muscles::Muscle> other) :
-    muscles::HillThelenType (other),
-    muscles::FatigueModel (
-        std::dynamic_pointer_cast<muscles::FatigueModel>(other))
+internalforce::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
+    const std::shared_ptr<internalforce::muscles::Muscle> other) :
+    internalforce::muscles::HillThelenType (other),
+    internalforce::muscles::FatigueModel (
+        std::dynamic_pointer_cast<internalforce::muscles::FatigueModel>(other))
 {
 
 }
 
-muscles::HillThelenTypeFatigable
-muscles::HillThelenTypeFatigable::DeepCopy() const
+internalforce::muscles::HillThelenTypeFatigable
+internalforce::muscles::HillThelenTypeFatigable::DeepCopy() const
 {
-    muscles::HillThelenTypeFatigable copy;
+    internalforce::muscles::HillThelenTypeFatigable copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void muscles::HillThelenTypeFatigable::DeepCopy(
-    const muscles::HillThelenTypeFatigable &other)
+void internalforce::muscles::HillThelenTypeFatigable::DeepCopy(
+    const internalforce::muscles::HillThelenTypeFatigable &other)
 {
-    muscles::HillThelenType::DeepCopy(other);
-    muscles::FatigueModel::DeepCopy(other);
+    internalforce::muscles::HillThelenType::DeepCopy(other);
+    internalforce::muscles::FatigueModel::DeepCopy(other);
 }
 
-void muscles::HillThelenTypeFatigable::computeFlCE(
-    const muscles::State &emg)
+void internalforce::muscles::HillThelenTypeFatigable::computeFlCE(
+    const internalforce::muscles::State &emg)
 {
-    muscles::HillThelenType::computeFlCE(emg);
+    internalforce::muscles::HillThelenType::computeFlCE(emg);
     // Do something with m_FlCE and m_characteristics.fatigueParameters
     *m_FlCE *= m_fatigueState->activeFibers();
 }
 
-void muscles::HillThelenTypeFatigable::setType()
+void internalforce::muscles::HillThelenTypeFatigable::setType()
 {
-    *m_type = muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE;
+    *m_type = internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE;
 }

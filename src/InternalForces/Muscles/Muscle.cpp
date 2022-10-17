@@ -6,6 +6,8 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "InternalForces/PathModifiers.h"
+#include "InternalForces/Compound.h"
+#include "InternalForces/Muscles/MusclesEnums.h"
 #include "InternalForces/Muscles/StateDynamics.h"
 #include "InternalForces/Muscles/StateDynamicsBuchanan.h"
 #include "InternalForces/Muscles/StateDynamicsDeGroote.h"
@@ -13,60 +15,63 @@
 #include "InternalForces/Muscles/Geometry.h"
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
-
-muscles::Muscle::Muscle() :
-    muscles::Compound(),
-    m_position(std::make_shared<muscles::Geometry>()),
-    m_characteristics(std::make_shared<muscles::Characteristics>()),
-    m_state(std::make_shared<muscles::State>())
+internalforce::muscles::Muscle::Muscle() :
+    internalforce::Compound(),
+    m_type(std::make_shared<internalforce::muscles::MUSCLE_TYPE>(muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
+    m_position(std::make_shared<internalforce::muscles::Geometry>()),
+    m_characteristics(std::make_shared<internalforce::muscles::Characteristics>()),
+    m_state(std::make_shared<internalforce::muscles::State>())
 {
 
 }
 
-muscles::Muscle::Muscle(
+internalforce::muscles::Muscle::Muscle(
     const utils::String & name,
-    const muscles::Geometry & position,
-    const muscles::Characteristics &characteristics) :
-    muscles::Compound (name),
-    m_position(std::make_shared<muscles::Geometry>(position)),
-    m_characteristics(std::make_shared<muscles::Characteristics>
+    const internalforce::muscles::Geometry & position,
+    const internalforce::muscles::Characteristics &characteristics) :
+    internalforce::Compound (name),
+    m_type(std::make_shared<internalforce::muscles::MUSCLE_TYPE>(muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
+    m_position(std::make_shared<internalforce::muscles::Geometry>(position)),
+    m_characteristics(std::make_shared<internalforce::muscles::Characteristics>
                       (characteristics)),
-    m_state(std::make_shared<muscles::State>())
+    m_state(std::make_shared<internalforce::muscles::State>())
 {
 
 }
 
-muscles::Muscle::Muscle(
+internalforce::muscles::Muscle::Muscle(
     const utils::String &name,
-    const muscles::Geometry &position,
-    const muscles::Characteristics &characteristics,
-    const muscles::State &dynamicState) :
-    muscles::Compound (name),
-    m_position(std::make_shared<muscles::Geometry>(position)),
-    m_characteristics(std::make_shared<muscles::Characteristics>
+    const internalforce::muscles::Geometry &position,
+    const internalforce::muscles::Characteristics &characteristics,
+    const internalforce::muscles::State &dynamicState) :
+    internalforce::Compound (name),
+    m_type(std::make_shared<internalforce::muscles::MUSCLE_TYPE>(muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
+    m_position(std::make_shared<internalforce::muscles::Geometry>(position)),
+    m_characteristics(std::make_shared<internalforce::muscles::Characteristics>
                       (characteristics)),
-    m_state(std::make_shared<muscles::State>(dynamicState))
+    m_state(std::make_shared<internalforce::muscles::State>(dynamicState))
 {
 
 }
 
-muscles::Muscle::Muscle(
+internalforce::muscles::Muscle::Muscle(
     const utils::String &name,
-    const muscles::Geometry &position,
-    const muscles::Characteristics &characteristics,
-    const PathModifiers &pathModifiers) :
-    muscles::Compound (name, pathModifiers),
-    m_position(std::make_shared<muscles::Geometry>(position)),
-    m_characteristics(std::make_shared<muscles::Characteristics>
+    const internalforce::muscles::Geometry &position,
+    const internalforce::muscles::Characteristics &characteristics,
+    const internalforce::PathModifiers &pathModifiers) :
+    internalforce::Compound (name, pathModifiers),
+    m_type(std::make_shared<internalforce::muscles::MUSCLE_TYPE>(muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
+    m_position(std::make_shared<internalforce::muscles::Geometry>(position)),
+    m_characteristics(std::make_shared<internalforce::muscles::Characteristics>
                       (characteristics)),
-    m_state(std::make_shared<muscles::State>())
+    m_state(std::make_shared<internalforce::muscles::State>())
 {
 
 }
 
-muscles::Muscle::Muscle(const muscles::Muscle &other) :
-    muscles::Compound (other),
+internalforce::muscles::Muscle::Muscle(const internalforce::muscles::Muscle &other) :
+    internalforce::Compound (other),
+    m_type(other.m_type),
     m_position(other.m_position),
     m_characteristics(other.m_characteristics),
     m_state(other.m_state)
@@ -74,9 +79,10 @@ muscles::Muscle::Muscle(const muscles::Muscle &other) :
 
 }
 
-muscles::Muscle::Muscle(const std::shared_ptr<muscles::Muscle>
+internalforce::muscles::Muscle::Muscle(const std::shared_ptr<internalforce::muscles::Muscle>
                                 other) :
-    muscles::Compound (other),
+    internalforce::Compound (other),
+    m_type(other->m_type),
     m_position(other->m_position),
     m_characteristics(other->m_characteristics),
     m_state(other->m_state)
@@ -84,15 +90,16 @@ muscles::Muscle::Muscle(const std::shared_ptr<muscles::Muscle>
 
 }
 
-muscles::Muscle::Muscle(const utils::String& name,
-                                const muscles::Geometry& g,
-                                const muscles::Characteristics& c,
-                                const PathModifiers &pathModifiers,
-                                const muscles::State& emg) :
-    muscles::Compound(name,pathModifiers),
-    m_position(std::make_shared<muscles::Geometry>(g)),
-    m_characteristics(std::make_shared<muscles::Characteristics>(c)),
-    m_state(std::make_shared<muscles::State>())
+internalforce::muscles::Muscle::Muscle(const utils::String& name,
+                                const internalforce::muscles::Geometry& g,
+                                const internalforce::muscles::Characteristics& c,
+                                const internalforce::PathModifiers &pathModifiers,
+                                const internalforce::muscles::State& emg) :
+    internalforce::Compound(name,pathModifiers),
+    m_type(std::make_shared<internalforce::muscles::MUSCLE_TYPE>(muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
+    m_position(std::make_shared<internalforce::muscles::Geometry>(g)),
+    m_characteristics(std::make_shared<internalforce::muscles::Characteristics>(c)),
+    m_state(std::make_shared<internalforce::muscles::State>())
 {
     setState(emg);
 
@@ -100,20 +107,30 @@ muscles::Muscle::Muscle(const utils::String& name,
                                 "Multiple wrapping objects is not implemented yet");
 }
 
-muscles::Muscle::~Muscle()
+internalforce::muscles::Muscle::~Muscle()
 {
     //dtor
 }
 
-void muscles::Muscle::DeepCopy(const muscles::Muscle &other)
+internalforce::muscles::MUSCLE_TYPE internalforce::muscles::type() const
 {
-    this->muscles::Compound::DeepCopy(other);
+    return *m_type;
+}
+
+void internalforce::muscles::setType()
+{
+    *m_type = internalforce::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE;
+}
+
+void internalforce::muscles::Muscle::DeepCopy(const internalforce::muscles::Muscle &other)
+{
+    this->internalforce::Compound::DeepCopy(other);
     *m_position = other.m_position->DeepCopy();
     *m_characteristics = other.m_characteristics->DeepCopy();
     *m_state = other.m_state->DeepCopy();
 }
 
-void muscles::Muscle::updateOrientations(
+void internalforce::muscles::Muscle::updateOrientations(
     rigidbody::Joints& model,
     const rigidbody::GeneralizedCoordinates &Q,
     int updateKin)
@@ -122,7 +139,7 @@ void muscles::Muscle::updateOrientations(
     m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,nullptr,
                                  updateKin);
 }
-void muscles::Muscle::updateOrientations(
+void internalforce::muscles::Muscle::updateOrientations(
     rigidbody::Joints& model,
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
@@ -132,7 +149,7 @@ void muscles::Muscle::updateOrientations(
     m_position->updateKinematics(
         model,*m_characteristics,*m_pathChanger,&Q,&Qdot, updateKin);
 }
-void muscles::Muscle::updateOrientations(
+void internalforce::muscles::Muscle::updateOrientations(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
     utils::Matrix &jacoPointsInGlobal)
 {
@@ -140,7 +157,7 @@ void muscles::Muscle::updateOrientations(
     m_position->updateKinematics(
                 musclePointsInGlobal,jacoPointsInGlobal, *m_characteristics,nullptr);
 }
-void muscles::Muscle::updateOrientations(
+void internalforce::muscles::Muscle::updateOrientations(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
     utils::Matrix &jacoPointsInGlobal,
     const rigidbody::GeneralizedVelocity &Qdot)
@@ -150,17 +167,17 @@ void muscles::Muscle::updateOrientations(
                 musclePointsInGlobal,jacoPointsInGlobal, *m_characteristics,&Qdot);
 }
 
-void muscles::Muscle::setPosition(
-    const muscles::Geometry &positions)
+void internalforce::muscles::Muscle::setPosition(
+    const internalforce::muscles::Geometry &positions)
 {
     *m_position = positions;
 }
-const muscles::Geometry &muscles::Muscle::position() const
+const internalforce::muscles::Geometry &internalforce::muscles::Muscle::position() const
 {
     return *m_position;
 }
 
-const utils::Scalar& muscles::Muscle::length(
+const utils::Scalar& internalforce::muscles::Muscle::length(
     rigidbody::Joints& model,
     const rigidbody::GeneralizedCoordinates &Q,
     int updateKin)
@@ -176,7 +193,7 @@ const utils::Scalar& muscles::Muscle::length(
     return position().length();
 }
 
-const utils::Scalar& muscles::Muscle::musculoTendonLength(
+const utils::Scalar& internalforce::muscles::Muscle::musculoTendonLength(
     rigidbody::Joints &m,
     const rigidbody::GeneralizedCoordinates &Q,
     int updateKin)
@@ -192,7 +209,7 @@ const utils::Scalar& muscles::Muscle::musculoTendonLength(
     return m_position->musculoTendonLength();
 }
 
-const utils::Scalar& muscles::Muscle::velocity(
+const utils::Scalar& internalforce::muscles::Muscle::velocity(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
@@ -209,12 +226,12 @@ const utils::Scalar& muscles::Muscle::velocity(
     return m_position->velocity();
 }
 
-const utils::Scalar& muscles::Muscle::activationDot(
-    const muscles::State& state,
+const utils::Scalar& internalforce::muscles::Muscle::activationDot(
+    const internalforce::muscles::State& state,
     bool alreadyNormalized) const
 {
-    std::shared_ptr<muscles::StateDynamics> state_copy =
-        std::dynamic_pointer_cast<muscles::StateDynamics>(m_state);
+    std::shared_ptr<internalforce::muscles::StateDynamics> state_copy =
+        std::dynamic_pointer_cast<internalforce::muscles::StateDynamics>(m_state);
     utils::Error::check(
         state_copy != nullptr,
         "The muscle " + name() + " is not a dynamic muscle");
@@ -222,13 +239,13 @@ const utils::Scalar& muscles::Muscle::activationDot(
                state, characteristics(), alreadyNormalized);
 }
 
-void muscles::Muscle::computeForce(const muscles::State &emg)
+void internalforce::muscles::Muscle::computeForce(const internalforce::muscles::State &emg)
 {
     *m_force = getForceFromActivation(emg);
 }
 
 const std::vector<utils::Vector3d>&
-muscles::Muscle::musclesPointsInGlobal(
+internalforce::muscles::Muscle::musclesPointsInGlobal(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
@@ -239,53 +256,53 @@ muscles::Muscle::musclesPointsInGlobal(
 }
 
 const std::vector<utils::Vector3d>
-&muscles::Muscle::musclesPointsInGlobal() const
+&internalforce::muscles::Muscle::musclesPointsInGlobal() const
 {
     return m_position->musclesPointsInGlobal();
 }
 
-void muscles::Muscle::setForceIsoMax(
+void internalforce::muscles::Muscle::setForceIsoMax(
     const utils::Scalar& forceMax)
 {
     m_characteristics->setForceIsoMax(forceMax);
 }
 
-void muscles::Muscle::setCharacteristics(
-    const muscles::Characteristics &characteristics)
+void internalforce::muscles::Muscle::setCharacteristics(
+    const internalforce::muscles::Characteristics &characteristics)
 {
     *m_characteristics = characteristics;
 }
-const muscles::Characteristics&
-muscles::Muscle::characteristics() const
+const internalforce::muscles::Characteristics&
+internalforce::muscles::Muscle::characteristics() const
 {
     return *m_characteristics;
 }
 
 // Get and set
-void muscles::Muscle::setState(
-    const muscles::State &emg)
+void internalforce::muscles::Muscle::setState(
+    const internalforce::muscles::State &emg)
 {
-    if (emg.type() == muscles::STATE_TYPE::BUCHANAN) {
-        m_state = std::make_shared<muscles::StateDynamicsBuchanan>
-                  (muscles::StateDynamicsBuchanan());
-    } else if (emg.type() == muscles::STATE_TYPE::DE_GROOTE) {
-        m_state = std::make_shared<muscles::StateDynamicsDeGroote>
-                  (muscles::StateDynamicsDeGroote());
-    } else if (emg.type() == muscles::STATE_TYPE::DYNAMIC) {
-        m_state = std::make_shared<muscles::StateDynamics>
-                  (muscles::StateDynamics());
+    if (emg.type() == internalforce::muscles::STATE_TYPE::BUCHANAN) {
+        m_state = std::make_shared<internalforce::muscles::StateDynamicsBuchanan>
+                  (internalforce::muscles::StateDynamicsBuchanan());
+    } else if (emg.type() == internalforce::muscles::STATE_TYPE::DE_GROOTE) {
+        m_state = std::make_shared<internalforce::muscles::StateDynamicsDeGroote>
+                  (internalforce::muscles::StateDynamicsDeGroote());
+    } else if (emg.type() == internalforce::muscles::STATE_TYPE::DYNAMIC) {
+        m_state = std::make_shared<internalforce::muscles::StateDynamics>
+                  (internalforce::muscles::StateDynamics());
     } else {
         utils::Error::raise(utils::String(
-                                        muscles::STATE_TYPE_toStr(
+                                        internalforce::muscles::STATE_TYPE_toStr(
                                             emg.type())) + " is not a valid type for setState");
     }
     *m_state = emg;
 }
-const muscles::State& muscles::Muscle::state() const
+const internalforce::muscles::State& internalforce::muscles::Muscle::state() const
 {
     return *m_state;
 }
-muscles::State& muscles::Muscle::state()
+internalforce::muscles::State& internalforce::muscles::Muscle::state()
 {
     return *m_state;
 }

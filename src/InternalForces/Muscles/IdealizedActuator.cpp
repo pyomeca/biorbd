@@ -6,104 +6,103 @@
 #include "InternalForces/Muscles/State.h"
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
 
-muscles::IdealizedActuator::IdealizedActuator() :
-    muscles::Muscle()
+internalforce::muscles::IdealizedActuator::IdealizedActuator() :
+    internalforce::muscles::Muscle()
 {
     setType();
 }
 
-muscles::IdealizedActuator::IdealizedActuator(
+internalforce::muscles::IdealizedActuator::IdealizedActuator(
     const utils::String& name,
-    const muscles::Geometry& geometry,
-    const muscles::Characteristics& characteristics) :
-    muscles::Muscle(name,geometry,characteristics)
+    const internalforce::muscles::Geometry& geometry,
+    const internalforce::muscles::Characteristics& characteristics) :
+    internalforce::muscles::Muscle(name,geometry,characteristics)
 {
     setType();
 }
 
-muscles::IdealizedActuator::IdealizedActuator(
+internalforce::muscles::IdealizedActuator::IdealizedActuator(
     const utils::String &name,
-    const muscles::Geometry &geometry,
-    const muscles::Characteristics &characteristics,
-    const muscles::State &emg) :
-    muscles::Muscle(name,geometry,characteristics,emg)
+    const internalforce::muscles::Geometry &geometry,
+    const internalforce::muscles::Characteristics &characteristics,
+    const internalforce::muscles::State &emg) :
+    internalforce::muscles::Muscle(name,geometry,characteristics,emg)
 {
     setType();
 }
 
-muscles::IdealizedActuator::IdealizedActuator(
+internalforce::muscles::IdealizedActuator::IdealizedActuator(
     const utils::String &name,
-    const muscles::Geometry &geometry,
-    const muscles::Characteristics &characteristics,
+    const internalforce::muscles::Geometry &geometry,
+    const internalforce::muscles::Characteristics &characteristics,
     const PathModifiers &pathModifiers) :
-    muscles::Muscle(name,geometry,characteristics, pathModifiers)
+    internalforce::muscles::Muscle(name,geometry,characteristics, pathModifiers)
 {
     setType();
 }
 
-muscles::IdealizedActuator::IdealizedActuator(
+internalforce::muscles::IdealizedActuator::IdealizedActuator(
     const utils::String& name,
-    const muscles::Geometry& geometry,
-    const muscles::Characteristics& characteristics,
+    const internalforce::muscles::Geometry& geometry,
+    const internalforce::muscles::Characteristics& characteristics,
     const PathModifiers &pathModifiers,
-    const muscles::State& emg) :
-    muscles::Muscle(name,geometry,characteristics,pathModifiers,emg)
+    const internalforce::muscles::State& emg) :
+    internalforce::muscles::Muscle(name,geometry,characteristics,pathModifiers,emg)
 {
     setType();
 }
 
-muscles::IdealizedActuator::IdealizedActuator(const
-        muscles::Muscle &other) :
-    muscles::Muscle (other)
+internalforce::muscles::IdealizedActuator::IdealizedActuator(const
+        internalforce::muscles::Muscle &other) :
+    internalforce::muscles::Muscle (other)
 {
 
 }
 
-muscles::IdealizedActuator::IdealizedActuator(const
-        std::shared_ptr<muscles::Muscle> other) :
-    muscles::Muscle (other)
+internalforce::muscles::IdealizedActuator::IdealizedActuator(const
+        std::shared_ptr<internalforce::muscles::Muscle> other) :
+    internalforce::muscles::Muscle (other)
 {
 
 }
 
-muscles::IdealizedActuator
-muscles::IdealizedActuator::DeepCopy() const
+internalforce::muscles::IdealizedActuator
+internalforce::muscles::IdealizedActuator::DeepCopy() const
 {
-    muscles::IdealizedActuator copy;
+    internalforce::muscles::IdealizedActuator copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void muscles::IdealizedActuator::DeepCopy(const
-        muscles::IdealizedActuator &other)
+void internalforce::muscles::IdealizedActuator::DeepCopy(const
+        internalforce::muscles::IdealizedActuator &other)
 {
-    muscles::Muscle::DeepCopy(other);
+    internalforce::muscles::Muscle::DeepCopy(other);
 }
 
-const utils::Scalar& muscles::IdealizedActuator::force(
-    const muscles::State &emg)
+const utils::Scalar& internalforce::muscles::IdealizedActuator::force(
+    const internalforce::muscles::State &emg)
 {
     computeForce(emg);
     return *m_force;
 }
 
-const utils::Scalar& muscles::IdealizedActuator::force(
+const utils::Scalar& internalforce::muscles::IdealizedActuator::force(
     rigidbody::Joints &,
     const rigidbody::GeneralizedCoordinates &,
     const rigidbody::GeneralizedVelocity &,
-    const muscles::State &emg,
+    const internalforce::muscles::State &emg,
     int)
 {
     computeForce(emg);
     return *m_force;
 }
 
-const utils::Scalar& muscles::IdealizedActuator::force(
+const utils::Scalar& internalforce::muscles::IdealizedActuator::force(
     rigidbody::Joints &,
     const rigidbody::GeneralizedCoordinates &,
-    const muscles::State &emg,
+    const internalforce::muscles::State &emg,
     int)
 {
     computeForce(emg);
@@ -111,13 +110,13 @@ const utils::Scalar& muscles::IdealizedActuator::force(
 }
 
 utils::Scalar
-muscles::IdealizedActuator::getForceFromActivation(
-    const muscles::State &emg)
+internalforce::muscles::IdealizedActuator::getForceFromActivation(
+    const internalforce::muscles::State &emg)
 {
     return characteristics().forceIsoMax() * (emg.activation());
 }
 
-void muscles::IdealizedActuator::setType()
+void internalforce::muscles::IdealizedActuator::setType()
 {
-    *m_type = muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR;
+    *m_type = internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR;
 }

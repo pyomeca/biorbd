@@ -14,10 +14,8 @@
 #include "InternalForces/Muscles/StateDynamicsDeGroote.h"
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
-
-muscles::MuscleGroup::MuscleGroup() :
-    m_mus(std::make_shared<std::vector<std::shared_ptr<muscles::Muscle>>>()),
+internalforce::muscles::MuscleGroup::MuscleGroup() :
+    m_mus(std::make_shared<std::vector<std::shared_ptr<internalforce::muscles::Muscle>>>()),
     m_name(std::make_shared<utils::String>()),
     m_originName(std::make_shared<utils::String>()),
     m_insertName(std::make_shared<utils::String>())
@@ -25,7 +23,7 @@ muscles::MuscleGroup::MuscleGroup() :
 
 }
 
-muscles::MuscleGroup::MuscleGroup(const muscles::MuscleGroup
+internalforce::muscles::MuscleGroup::MuscleGroup(const internalforce::muscles::MuscleGroup
         &other) :
     m_mus(other.m_mus),
     m_name(other.m_name),
@@ -35,68 +33,68 @@ muscles::MuscleGroup::MuscleGroup(const muscles::MuscleGroup
 
 }
 
-muscles::MuscleGroup::MuscleGroup(
+internalforce::muscles::MuscleGroup::MuscleGroup(
     const utils::String &name,
     const utils::String &originName,
     const utils::String &insertionName) :
-    m_mus(std::make_shared<std::vector<std::shared_ptr<muscles::Muscle>>>()),
+    m_mus(std::make_shared<std::vector<std::shared_ptr<internalforce::muscles::Muscle>>>()),
     m_name(std::make_shared<utils::String>(name)),
     m_originName(std::make_shared<utils::String>(originName)),
     m_insertName(std::make_shared<utils::String>(insertionName))
 {
 }
 
-muscles::MuscleGroup::~MuscleGroup()
+internalforce::muscles::MuscleGroup::~MuscleGroup()
 {
 
 }
 
-muscles::MuscleGroup muscles::MuscleGroup::DeepCopy() const
+internalforce::muscles::MuscleGroup internalforce::muscles::MuscleGroup::DeepCopy() const
 {
-    muscles::MuscleGroup copy;
+    internalforce::muscles::MuscleGroup copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void muscles::MuscleGroup::DeepCopy(const muscles::MuscleGroup
+void internalforce::muscles::MuscleGroup::DeepCopy(const internalforce::muscles::MuscleGroup
         &other)
 {
     m_mus->resize(other.m_mus->size());
     for (unsigned int i=0; i<other.m_mus->size(); ++i) {
         if ((*other.m_mus)[i]->type() ==
-                muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR) {
-            (*m_mus)[i] = std::make_shared<muscles::IdealizedActuator>((
+                internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR) {
+            (*m_mus)[i] = std::make_shared<internalforce::muscles::IdealizedActuator>((
                               *other.m_mus)[i]);
-        } else if ((*other.m_mus)[i]->type() == muscles::MUSCLE_TYPE::HILL) {
-            (*m_mus)[i] = std::make_shared<muscles::HillType>((*other.m_mus)[i]);
+        } else if ((*other.m_mus)[i]->type() == internalforce::muscles::MUSCLE_TYPE::HILL) {
+            (*m_mus)[i] = std::make_shared<internalforce::muscles::HillType>((*other.m_mus)[i]);
         } else if ((*other.m_mus)[i]->type() ==
-                   muscles::MUSCLE_TYPE::HILL_THELEN) {
-            (*m_mus)[i] = std::make_shared<muscles::HillThelenType>((
-                              *other.m_mus)[i]);
-        } else if ((*other.m_mus)[i]->type() ==
-                   muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
-            (*m_mus)[i] = std::make_shared<muscles::HillDeGrooteType>((
+                   internalforce::muscles::MUSCLE_TYPE::HILL_THELEN) {
+            (*m_mus)[i] = std::make_shared<internalforce::muscles::HillThelenType>((
                               *other.m_mus)[i]);
         } else if ((*other.m_mus)[i]->type() ==
-                   muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE) {
-            (*m_mus)[i] = std::make_shared<muscles::HillThelenActiveOnlyType>((
+                   internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
+            (*m_mus)[i] = std::make_shared<internalforce::muscles::HillDeGrooteType>((
                               *other.m_mus)[i]);
         } else if ((*other.m_mus)[i]->type() ==
-                   muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE) {
-            (*m_mus)[i] = std::make_shared<muscles::HillThelenTypeFatigable>((
+                   internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE) {
+            (*m_mus)[i] = std::make_shared<internalforce::muscles::HillThelenActiveOnlyType>((
                               *other.m_mus)[i]);
         } else if ((*other.m_mus)[i]->type() ==
-                   muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE) {
-            (*m_mus)[i] = std::make_shared<muscles::HillDeGrooteActiveOnlyType>((
+                   internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE) {
+            (*m_mus)[i] = std::make_shared<internalforce::muscles::HillThelenTypeFatigable>((
                               *other.m_mus)[i]);
         } else if ((*other.m_mus)[i]->type() ==
-                   muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE) {
-            (*m_mus)[i] = std::make_shared<muscles::HillDeGrooteTypeFatigable>((
+                   internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE) {
+            (*m_mus)[i] = std::make_shared<internalforce::muscles::HillDeGrooteActiveOnlyType>((
+                              *other.m_mus)[i]);
+        } else if ((*other.m_mus)[i]->type() ==
+                   internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE) {
+            (*m_mus)[i] = std::make_shared<internalforce::muscles::HillDeGrooteTypeFatigable>((
                               *other.m_mus)[i]);
         } else {
             utils::Error::raise("DeepCopy was not prepared to copy " +
                                         utils::String(
-                                            muscles::MUSCLE_TYPE_toStr((*other.m_mus)[i]->type())) + " type");
+                                            internalforce::muscles::MUSCLE_TYPE_toStr((*other.m_mus)[i]->type())) + " type");
         }
     }
     *m_mus = *other.m_mus;
@@ -105,54 +103,54 @@ void muscles::MuscleGroup::DeepCopy(const muscles::MuscleGroup
     *m_insertName = *other.m_insertName;
 }
 
-void muscles::MuscleGroup::addMuscle(
+void internalforce::muscles::MuscleGroup::addMuscle(
     const utils::String &name,
-    muscles::MUSCLE_TYPE type,
-    const muscles::Geometry &geometry,
-    const muscles::Characteristics &characteristics,
-    muscles::STATE_TYPE stateType,
-    muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
+    internalforce::muscles::MUSCLE_TYPE type,
+    const internalforce::muscles::Geometry &geometry,
+    const internalforce::muscles::Characteristics &characteristics,
+    internalforce::muscles::STATE_TYPE stateType,
+    internalforce::muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
 {
-    std::shared_ptr<muscles::Muscle> muscle;
-    std::shared_ptr<muscles::StateDynamics> state;
+    std::shared_ptr<internalforce::muscles::Muscle> muscle;
+    std::shared_ptr<internalforce::muscles::StateDynamics> state;
 
     // Cast the dynamic type
-    if (stateType == muscles::STATE_TYPE::SIMPLE_STATE) {
-        state = std::make_shared<muscles::StateDynamics>();
-    } else if (stateType == muscles::STATE_TYPE::DYNAMIC) {
-        state = std::make_shared<muscles::StateDynamics>();
-    } else if (stateType == muscles::STATE_TYPE::BUCHANAN) {
-        state = std::make_shared<muscles::StateDynamicsBuchanan>();
-    } else if (stateType == muscles::STATE_TYPE::DE_GROOTE) {
-        state = std::make_shared<muscles::StateDynamicsDeGroote>();
+    if (stateType == internalforce::muscles::STATE_TYPE::SIMPLE_STATE) {
+        state = std::make_shared<internalforce::muscles::StateDynamics>();
+    } else if (stateType == internalforce::muscles::STATE_TYPE::DYNAMIC) {
+        state = std::make_shared<internalforce::muscles::StateDynamics>();
+    } else if (stateType == internalforce::muscles::STATE_TYPE::BUCHANAN) {
+        state = std::make_shared<internalforce::muscles::StateDynamicsBuchanan>();
+    } else if (stateType == internalforce::muscles::STATE_TYPE::DE_GROOTE) {
+        state = std::make_shared<internalforce::muscles::StateDynamicsDeGroote>();
     } else {
-        state = std::make_shared<muscles::StateDynamics>();
+        state = std::make_shared<internalforce::muscles::StateDynamics>();
     }
 
-    if (type == muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR) {
-        muscle = std::make_shared<muscles::IdealizedActuator>(name,geometry,
+    if (type == internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR) {
+        muscle = std::make_shared<internalforce::muscles::IdealizedActuator>(name,geometry,
                  characteristics, *state);
-    } else if (type == muscles::MUSCLE_TYPE::HILL) {
-        muscle = std::make_shared<muscles::HillType>(name,geometry,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL) {
+        muscle = std::make_shared<internalforce::muscles::HillType>(name,geometry,
                  characteristics, *state);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
-        muscle = std::make_shared<muscles::HillDeGrooteType>(name,geometry,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
+        muscle = std::make_shared<internalforce::muscles::HillDeGrooteType>(name,geometry,
                  characteristics, *state);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN) {
-        muscle = std::make_shared<muscles::HillThelenType>(name,geometry,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_THELEN) {
+        muscle = std::make_shared<internalforce::muscles::HillThelenType>(name,geometry,
                  characteristics, *state);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE) {
-        muscle = std::make_shared<muscles::HillThelenActiveOnlyType>(name,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE) {
+        muscle = std::make_shared<internalforce::muscles::HillThelenActiveOnlyType>(name,
                  geometry,characteristics, *state);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE) {
-        muscle = std::make_shared<muscles::HillThelenTypeFatigable>(name,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE) {
+        muscle = std::make_shared<internalforce::muscles::HillThelenTypeFatigable>(name,
                  geometry,characteristics, *state,
                  dynamicFatigueType);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE) {
-        muscle = std::make_shared<muscles::HillDeGrooteActiveOnlyType>(name,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE) {
+        muscle = std::make_shared<internalforce::muscles::HillDeGrooteActiveOnlyType>(name,
                  geometry,characteristics, *state);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE) {
-        muscle = std::make_shared<muscles::HillDeGrooteTypeFatigable>(name,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE) {
+        muscle = std::make_shared<internalforce::muscles::HillDeGrooteTypeFatigable>(name,
                  geometry,characteristics, *state,
                  dynamicFatigueType);
     } else {
@@ -161,37 +159,37 @@ void muscles::MuscleGroup::addMuscle(
     addMuscle(*muscle);
 }
 
-void muscles::MuscleGroup::addMuscle(
+void internalforce::muscles::MuscleGroup::addMuscle(
     const utils::String &name,
-    muscles::MUSCLE_TYPE type,
-    const muscles::Geometry &geometry,
-    const muscles::Characteristics &characteristics,
-    muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
+    internalforce::muscles::MUSCLE_TYPE type,
+    const internalforce::muscles::Geometry &geometry,
+    const internalforce::muscles::Characteristics &characteristics,
+    internalforce::muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
 {
-    std::shared_ptr<muscles::Muscle> muscle;
-    if (type == muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR) {
-        muscle = std::make_shared<muscles::IdealizedActuator>(name,geometry,
+    std::shared_ptr<internalforce::muscles::Muscle> muscle;
+    if (type == internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR) {
+        muscle = std::make_shared<internalforce::muscles::IdealizedActuator>(name,geometry,
                  characteristics);
-    } else if (type == muscles::MUSCLE_TYPE::HILL) {
-        muscle = std::make_shared<muscles::HillType>(name,geometry,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL) {
+        muscle = std::make_shared<internalforce::muscles::HillType>(name,geometry,
                  characteristics);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
-        muscle = std::make_shared<muscles::HillDeGrooteType>(name,geometry,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
+        muscle = std::make_shared<internalforce::muscles::HillDeGrooteType>(name,geometry,
                  characteristics);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN) {
-        muscle = std::make_shared<muscles::HillThelenType>(name,geometry,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_THELEN) {
+        muscle = std::make_shared<internalforce::muscles::HillThelenType>(name,geometry,
                  characteristics);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE) {
-        muscle = std::make_shared<muscles::HillThelenActiveOnlyType>(name,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE) {
+        muscle = std::make_shared<internalforce::muscles::HillThelenActiveOnlyType>(name,
                  geometry,characteristics);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE) {
-        muscle = std::make_shared<muscles::HillThelenTypeFatigable>(name,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE) {
+        muscle = std::make_shared<internalforce::muscles::HillThelenTypeFatigable>(name,
                  geometry,characteristics, dynamicFatigueType);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE) {
-        muscle = std::make_shared<muscles::HillDeGrooteActiveOnlyType>(name,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE) {
+        muscle = std::make_shared<internalforce::muscles::HillDeGrooteActiveOnlyType>(name,
                  geometry,characteristics);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE) {
-        muscle = std::make_shared<muscles::HillDeGrooteTypeFatigable>(name,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE) {
+        muscle = std::make_shared<internalforce::muscles::HillDeGrooteTypeFatigable>(name,
                  geometry,characteristics, dynamicFatigueType);
     } else {
         utils::Error::raise("Wrong muscle type");
@@ -199,53 +197,53 @@ void muscles::MuscleGroup::addMuscle(
     addMuscle(*muscle);
 }
 
-void muscles::MuscleGroup::addMuscle(
+void internalforce::muscles::MuscleGroup::addMuscle(
     const utils::String& name,
-    muscles::MUSCLE_TYPE type,
-    const muscles::Geometry& geometry,
-    const muscles::Characteristics& characteristics,
-    const PathModifiers &pathModifiers,
-    muscles::STATE_TYPE stateType,
-    muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
+    internalforce::muscles::MUSCLE_TYPE type,
+    const internalforce::muscles::Geometry& geometry,
+    const internalforce::muscles::Characteristics& characteristics,
+    const internalforce::PathModifiers &pathModifiers,
+    internalforce::muscles::STATE_TYPE stateType,
+    internalforce::muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
 {
-    std::shared_ptr<muscles::Muscle> muscle;
-    std::shared_ptr<muscles::StateDynamics> state;
+    std::shared_ptr<internalforce::muscles::Muscle> muscle;
+    std::shared_ptr<internalforce::muscles::StateDynamics> state;
 
     // Cast the dynamic type
-    if (stateType == muscles::STATE_TYPE::SIMPLE_STATE) {
-        state = std::make_shared<muscles::StateDynamics>();
-    } else if (stateType == muscles::STATE_TYPE::BUCHANAN) {
-        state = std::make_shared<muscles::StateDynamicsBuchanan>();
-    } else if (stateType == muscles::STATE_TYPE::DE_GROOTE) {
-        state = std::make_shared<muscles::StateDynamicsDeGroote>();
+    if (stateType == internalforce::muscles::STATE_TYPE::SIMPLE_STATE) {
+        state = std::make_shared<internalforce::muscles::StateDynamics>();
+    } else if (stateType == internalforce::muscles::STATE_TYPE::BUCHANAN) {
+        state = std::make_shared<internalforce::muscles::StateDynamicsBuchanan>();
+    } else if (stateType == internalforce::muscles::STATE_TYPE::DE_GROOTE) {
+        state = std::make_shared<internalforce::muscles::StateDynamicsDeGroote>();
     } else {
-        state = std::make_shared<muscles::StateDynamics>();
+        state = std::make_shared<internalforce::muscles::StateDynamics>();
     }
 
 
-    if (type == muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR)
-        muscle = std::make_shared<muscles::IdealizedActuator>
+    if (type == internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR)
+        muscle = std::make_shared<internalforce::muscles::IdealizedActuator>
                  (name,geometry,characteristics,pathModifiers,*state);
-    else if (type == muscles::MUSCLE_TYPE::HILL)
-        muscle = std::make_shared<muscles::HillType>
+    else if (type == internalforce::muscles::MUSCLE_TYPE::HILL)
+        muscle = std::make_shared<internalforce::muscles::HillType>
                  (name,geometry,characteristics,pathModifiers,*state);
-    else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE)
-        muscle = std::make_shared<muscles::HillDeGrooteType>
+    else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE)
+        muscle = std::make_shared<internalforce::muscles::HillDeGrooteType>
                  (name,geometry,characteristics,pathModifiers,*state);
-    else if (type == muscles::MUSCLE_TYPE::HILL_THELEN)
-        muscle = std::make_shared<muscles::HillThelenType>
+    else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_THELEN)
+        muscle = std::make_shared<internalforce::muscles::HillThelenType>
                  (name,geometry,characteristics,pathModifiers,*state);
-    else if (type == muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE)
-        muscle = std::make_shared<muscles::HillThelenActiveOnlyType>
+    else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE)
+        muscle = std::make_shared<internalforce::muscles::HillThelenActiveOnlyType>
                  (name,geometry,characteristics,pathModifiers,*state);
-    else if (type == muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE)
-        muscle = std::make_shared<muscles::HillThelenTypeFatigable>(
+    else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE)
+        muscle = std::make_shared<internalforce::muscles::HillThelenTypeFatigable>(
                      name,geometry,characteristics,pathModifiers,*state,dynamicFatigueType);
-    else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE)
-        muscle = std::make_shared<muscles::HillDeGrooteActiveOnlyType>
+    else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE)
+        muscle = std::make_shared<internalforce::muscles::HillDeGrooteActiveOnlyType>
                  (name,geometry,characteristics,pathModifiers,*state);
-    else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE)
-        muscle = std::make_shared<muscles::HillDeGrooteTypeFatigable>(
+    else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE)
+        muscle = std::make_shared<internalforce::muscles::HillDeGrooteTypeFatigable>(
                      name,geometry,characteristics,pathModifiers,*state,dynamicFatigueType);
     else {
         utils::Error::raise("Wrong muscle type");
@@ -253,40 +251,40 @@ void muscles::MuscleGroup::addMuscle(
     addMuscle(*muscle);
 }
 
-void muscles::MuscleGroup::addMuscle(
+void internalforce::muscles::MuscleGroup::addMuscle(
     const utils::String &name,
-    muscles::MUSCLE_TYPE type,
-    const muscles::Geometry &geometry,
-    const muscles::Characteristics &characteristics,
-    const PathModifiers &pathModifiers,
-    muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
+    internalforce::muscles::MUSCLE_TYPE type,
+    const internalforce::muscles::Geometry &geometry,
+    const internalforce::muscles::Characteristics &characteristics,
+    const internalforce::PathModifiers &pathModifiers,
+    internalforce::muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
 {
-    std::shared_ptr<muscles::Muscle> muscle;
+    std::shared_ptr<internalforce::muscles::Muscle> muscle;
 
-    if (type == muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR) {
-        muscle = std::make_shared<muscles::IdealizedActuator>(name,geometry,
+    if (type == internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR) {
+        muscle = std::make_shared<internalforce::muscles::IdealizedActuator>(name,geometry,
                  characteristics,pathModifiers);
-    } else if (type == muscles::MUSCLE_TYPE::HILL) {
-        muscle = std::make_shared<muscles::HillType>(name,geometry,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL) {
+        muscle = std::make_shared<internalforce::muscles::HillType>(name,geometry,
                  characteristics,pathModifiers);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
-        muscle = std::make_shared<muscles::HillDeGrooteType>(name,geometry,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
+        muscle = std::make_shared<internalforce::muscles::HillDeGrooteType>(name,geometry,
                  characteristics,pathModifiers);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN) {
-        muscle = std::make_shared<muscles::HillThelenType>(name,geometry,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_THELEN) {
+        muscle = std::make_shared<internalforce::muscles::HillThelenType>(name,geometry,
                  characteristics,pathModifiers);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE) {
-        muscle = std::make_shared<muscles::HillThelenActiveOnlyType>(name,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE) {
+        muscle = std::make_shared<internalforce::muscles::HillThelenActiveOnlyType>(name,
                  geometry,characteristics,pathModifiers);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE) {
-        muscle = std::make_shared<muscles::HillThelenTypeFatigable>(name,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE) {
+        muscle = std::make_shared<internalforce::muscles::HillThelenTypeFatigable>(name,
                  geometry,characteristics,pathModifiers,
                  dynamicFatigueType);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE) {
-        muscle = std::make_shared<muscles::HillDeGrooteActiveOnlyType>(name,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE) {
+        muscle = std::make_shared<internalforce::muscles::HillDeGrooteActiveOnlyType>(name,
                  geometry,characteristics,pathModifiers);
-    } else if (type == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE) {
-        muscle = std::make_shared<muscles::HillDeGrooteTypeFatigable>(name,
+    } else if (type == internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE) {
+        muscle = std::make_shared<internalforce::muscles::HillDeGrooteTypeFatigable>(name,
                  geometry,characteristics,pathModifiers,
                  dynamicFatigueType);
     } else {
@@ -295,47 +293,47 @@ void muscles::MuscleGroup::addMuscle(
     addMuscle(*muscle);
 }
 
-void muscles::MuscleGroup::addMuscle(
-    const muscles::Muscle &muscle)
+void internalforce::muscles::MuscleGroup::addMuscle(
+    const internalforce::muscles::Muscle &muscle)
 {
     utils::Error::check(muscleID(muscle.name()) == -1,
                                 "This muscle name was already defined for this muscle group");
 
     // Add muscle according to its type
-    if (muscle.type() == muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR) {
-        m_mus->push_back(std::make_shared<muscles::IdealizedActuator>(muscle));
+    if (muscle.type() == internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR) {
+        m_mus->push_back(std::make_shared<internalforce::muscles::IdealizedActuator>(muscle));
     } else if (muscle.type() ==
-               muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE) {
-        m_mus->push_back(std::make_shared<muscles::HillThelenTypeFatigable>
+               internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE) {
+        m_mus->push_back(std::make_shared<internalforce::muscles::HillThelenTypeFatigable>
                          (muscle));
     } else if (muscle.type() ==
-               muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE) {
-        m_mus->push_back(std::make_shared<muscles::HillDeGrooteTypeFatigable>
+               internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE) {
+        m_mus->push_back(std::make_shared<internalforce::muscles::HillDeGrooteTypeFatigable>
                          (muscle));
-    } else if (muscle.type() == muscles::MUSCLE_TYPE::HILL_THELEN) {
-        m_mus->push_back(std::make_shared<muscles::HillThelenType>(muscle));
-    } else if (muscle.type() == muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE) {
-        m_mus->push_back(std::make_shared<muscles::HillThelenActiveOnlyType>
+    } else if (muscle.type() == internalforce::muscles::MUSCLE_TYPE::HILL_THELEN) {
+        m_mus->push_back(std::make_shared<internalforce::muscles::HillThelenType>(muscle));
+    } else if (muscle.type() == internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE) {
+        m_mus->push_back(std::make_shared<internalforce::muscles::HillThelenActiveOnlyType>
                          (muscle));
-    } else if (muscle.type() == muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE) {
-        m_mus->push_back(std::make_shared<muscles::HillDeGrooteActiveOnlyType>
+    } else if (muscle.type() == internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE) {
+        m_mus->push_back(std::make_shared<internalforce::muscles::HillDeGrooteActiveOnlyType>
                          (muscle));
-    } else if (muscle.type() == muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
-        m_mus->push_back(std::make_shared<muscles::HillDeGrooteType>(muscle));
-    } else if (muscle.type() == muscles::MUSCLE_TYPE::HILL) {
-        m_mus->push_back(std::make_shared<muscles::HillType>(muscle));
+    } else if (muscle.type() == internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE) {
+        m_mus->push_back(std::make_shared<internalforce::muscles::HillDeGrooteType>(muscle));
+    } else if (muscle.type() == internalforce::muscles::MUSCLE_TYPE::HILL) {
+        m_mus->push_back(std::make_shared<internalforce::muscles::HillType>(muscle));
     } else {
         utils::Error::raise("Muscle type not found");
     }
     return;
 }
 
-muscles::Muscle& muscles::MuscleGroup::muscle(unsigned int idx)
+internalforce::muscles::Muscle& internalforce::muscles::MuscleGroup::muscle(unsigned int idx)
 {
     utils::Error::check(idx<nbMuscles(), "Idx asked is higher than number of muscles");
     return *(*m_mus)[idx];
 }
-const muscles::Muscle& muscles::MuscleGroup::muscle(
+const internalforce::muscles::Muscle& internalforce::muscles::MuscleGroup::muscle(
     unsigned int idx) const
 {
     utils::Error::check(idx<nbMuscles(), "Idx asked is higher than number of muscles");
@@ -343,24 +341,24 @@ const muscles::Muscle& muscles::MuscleGroup::muscle(
 }
 
 
-unsigned int muscles::MuscleGroup::nbMuscles() const
+unsigned int internalforce::muscles::MuscleGroup::nbMuscles() const
 {
     return static_cast<unsigned int>(m_mus->size());
 }
 
-std::vector<std::shared_ptr<muscles::Muscle>>&
-        muscles::MuscleGroup::muscles()
+std::vector<std::shared_ptr<internalforce::muscles::Muscle>>&
+        internalforce::muscles::MuscleGroup::muscles()
 {
     return *m_mus;
 }
 
-const std::vector<std::shared_ptr<muscles::Muscle>>&
-        muscles::MuscleGroup::muscles() const
+const std::vector<std::shared_ptr<internalforce::muscles::Muscle>>&
+        internalforce::muscles::MuscleGroup::muscles() const
 {
     return *m_mus;
 }
 
-int muscles::MuscleGroup::muscleID(const utils::String&
+int internalforce::muscles::MuscleGroup::muscleID(const utils::String&
         nameToFind)
 {
     for (unsigned int i=0; i<m_mus->size(); ++i) {
@@ -372,30 +370,30 @@ int muscles::MuscleGroup::muscleID(const utils::String&
     return -1;
 }
 
-void muscles::MuscleGroup::setName(const utils::String& name)
+void internalforce::muscles::MuscleGroup::setName(const utils::String& name)
 {
     *m_name = name;
 }
-const utils::String &muscles::MuscleGroup::name() const
+const utils::String &internalforce::muscles::MuscleGroup::name() const
 {
     return *m_name;
 }
 
-void muscles::MuscleGroup::setOrigin(const utils::String& name)
+void internalforce::muscles::MuscleGroup::setOrigin(const utils::String& name)
 {
     *m_originName = name;
 }
-const utils::String &muscles::MuscleGroup::origin() const
+const utils::String &internalforce::muscles::MuscleGroup::origin() const
 {
     return *m_originName;
 }
 
-void muscles::MuscleGroup::setInsertion(const utils::String&
+void internalforce::muscles::MuscleGroup::setInsertion(const utils::String&
         name)
 {
     *m_insertName = name;
 }
-const utils::String &muscles::MuscleGroup::insertion() const
+const utils::String &internalforce::muscles::MuscleGroup::insertion() const
 {
     return *m_insertName;
 }

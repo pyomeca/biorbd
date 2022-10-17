@@ -8,41 +8,40 @@
 #include "InternalForces/Muscles/StateDynamics.h"
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
 
-muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(
+internalforce::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(
     const utils::Scalar& active,
     const utils::Scalar& fatigued,
     const utils::Scalar& resting) :
-    muscles::FatigueDynamicState(active,fatigued,resting)
+    internalforce::muscles::FatigueDynamicState(active,fatigued,resting)
 {
     setType();
 }
 
-muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(
-    const std::shared_ptr<muscles::FatigueState> other):
-    muscles::FatigueDynamicState(other)
+internalforce::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(
+    const std::shared_ptr<internalforce::muscles::FatigueState> other):
+    internalforce::muscles::FatigueDynamicState(other)
 {
 
 }
 
-muscles::FatigueDynamicStateXia
-muscles::FatigueDynamicStateXia::DeepCopy() const
+internalforce::muscles::FatigueDynamicStateXia
+internalforce::muscles::FatigueDynamicStateXia::DeepCopy() const
 {
-    muscles::FatigueDynamicStateXia copy;
+    internalforce::muscles::FatigueDynamicStateXia copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void muscles::FatigueDynamicStateXia::DeepCopy(const
-        muscles::FatigueDynamicStateXia &other)
+void internalforce::muscles::FatigueDynamicStateXia::DeepCopy(const
+        internalforce::muscles::FatigueDynamicStateXia &other)
 {
-    muscles::FatigueDynamicState::DeepCopy(other);
+    internalforce::muscles::FatigueDynamicState::DeepCopy(other);
 }
 
-void muscles::FatigueDynamicStateXia::timeDerivativeState(
-    const muscles::StateDynamics &emg,
-    const muscles::Characteristics &characteristics)
+void internalforce::muscles::FatigueDynamicStateXia::timeDerivativeState(
+    const internalforce::muscles::StateDynamics &emg,
+    const internalforce::muscles::Characteristics &characteristics)
 {
 #ifdef BIORBD_USE_CASADI_MATH
     utils::Error::raise("timeDerivativeState for FatigueDynamicStateXia"
@@ -78,7 +77,7 @@ void muscles::FatigueDynamicStateXia::timeDerivativeState(
 #endif
 }
 
-void muscles::FatigueDynamicStateXia::setType()
+void internalforce::muscles::FatigueDynamicStateXia::setType()
 {
-    *m_type =muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA;
+    *m_type =internalforce::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA;
 }

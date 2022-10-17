@@ -11,82 +11,81 @@
 #endif
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
 
-muscles::HillThelenType::HillThelenType() :
-    muscles::HillType()
+internalforce::muscles::HillThelenType::HillThelenType() :
+    internalforce::muscles::HillType()
 {
     setType();
 }
-muscles::HillThelenType::HillThelenType(
+internalforce::muscles::HillThelenType::HillThelenType(
     const utils::String& name,
-    const muscles::Geometry& geometry,
-    const muscles::Characteristics& characteristics) :
-    muscles::HillType (name, geometry, characteristics)
+    const internalforce::muscles::Geometry& geometry,
+    const internalforce::muscles::Characteristics& characteristics) :
+    internalforce::muscles::HillType (name, geometry, characteristics)
 {
     setType();
 }
 
-muscles::HillThelenType::HillThelenType(
+internalforce::muscles::HillThelenType::HillThelenType(
     const utils::String &name,
-    const muscles::Geometry &geometry,
-    const muscles::Characteristics &characteristics,
-    const muscles::State &emg) :
-    muscles::HillType (name, geometry, characteristics, emg)
+    const internalforce::muscles::Geometry &geometry,
+    const internalforce::muscles::Characteristics &characteristics,
+    const internalforce::muscles::State &emg) :
+    internalforce::muscles::HillType (name, geometry, characteristics, emg)
 {
     setType();
 }
 
-muscles::HillThelenType::HillThelenType(
+internalforce::muscles::HillThelenType::HillThelenType(
     const utils::String &name,
-    const muscles::Geometry &geometry,
-    const muscles::Characteristics &characteristics,
+    const internalforce::muscles::Geometry &geometry,
+    const internalforce::muscles::Characteristics &characteristics,
     const PathModifiers &pathModifiers) :
-    muscles::HillType (name, geometry, characteristics, pathModifiers)
+    internalforce::muscles::HillType (name, geometry, characteristics, pathModifiers)
 {
     setType();
 }
 
-muscles::HillThelenType::HillThelenType(
+internalforce::muscles::HillThelenType::HillThelenType(
     const utils::String& name,
-    const muscles::Geometry& geometry,
-    const muscles::Characteristics& characteristics,
+    const internalforce::muscles::Geometry& geometry,
+    const internalforce::muscles::Characteristics& characteristics,
     const PathModifiers &pathModifiers,
-    const muscles::State& emg) :
-    muscles::HillType (name, geometry, characteristics, pathModifiers, emg)
+    const internalforce::muscles::State& emg) :
+    internalforce::muscles::HillType (name, geometry, characteristics, pathModifiers, emg)
 {
     setType();
 }
 
-muscles::HillThelenType::HillThelenType(
-    const muscles::Muscle &other) :
-    muscles::HillType (other)
+internalforce::muscles::HillThelenType::HillThelenType(
+    const internalforce::muscles::Muscle &other) :
+    internalforce::muscles::HillType (other)
 {
 
 }
 
-muscles::HillThelenType::HillThelenType(
-    const std::shared_ptr<muscles::Muscle> other) :
-    muscles::HillType(other)
+internalforce::muscles::HillThelenType::HillThelenType(
+    const std::shared_ptr<internalforce::muscles::Muscle> other) :
+    internalforce::muscles::HillType(other)
 {
 
 }
 
-muscles::HillThelenType muscles::HillThelenType::DeepCopy()
+internalforce::muscles::HillThelenType internalforce::muscles::HillThelenType::DeepCopy()
 const
 {
-    muscles::HillThelenType copy;
+    internalforce::muscles::HillThelenType copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void muscles::HillThelenType::DeepCopy(
-    const muscles::HillThelenType &other)
+void internalforce::muscles::HillThelenType::DeepCopy(
+    const internalforce::muscles::HillThelenType &other)
 {
-    muscles::HillType::DeepCopy(other);
+    internalforce::muscles::HillType::DeepCopy(other);
 }
 
-void muscles::HillThelenType::computeFlPE()
+void internalforce::muscles::HillThelenType::computeFlPE()
 {
     utils::Scalar normLength = position().length()  / characteristics().optimalLength();
     utils::Scalar kpe = 5.0;
@@ -108,14 +107,14 @@ void muscles::HillThelenType::computeFlPE()
 #endif
 }
 
-void muscles::HillThelenType::computeFlCE(
-    const muscles::State&)
+void internalforce::muscles::HillThelenType::computeFlCE(
+    const internalforce::muscles::State&)
 {
     utils::Scalar normLength = position().length() / characteristics().optimalLength();
     *m_FlCE = exp( -((normLength - 1)*(normLength - 1)) /  0.45 );
 }
 
-void muscles::HillThelenType::computeFvCE()
+void internalforce::muscles::HillThelenType::computeFvCE()
 {
 	utils::Scalar v = m_position->velocity();
     utils::Scalar norm_v = v / (characteristics().optimalLength() * *m_cste_maxShorteningSpeed);
@@ -135,7 +134,7 @@ void muscles::HillThelenType::computeFvCE()
     }
 #endif
 }
-void muscles::HillThelenType::setType()
+void internalforce::muscles::HillThelenType::setType()
 {
-    *m_type = muscles::MUSCLE_TYPE::HILL_THELEN;
+    *m_type = internalforce::muscles::MUSCLE_TYPE::HILL_THELEN;
 }

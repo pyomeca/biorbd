@@ -7,94 +7,92 @@
 #include "InternalForces/Muscles/Characteristics.h"
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
-
-muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType() :
-    muscles::HillDeGrooteType()
+internalforce::muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType() :
+    internalforce::muscles::HillDeGrooteType()
 {
     setType();
 }
-muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
+internalforce::muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
     const utils::String& name,
-    const muscles::Geometry& geometry,
-    const muscles::Characteristics& characteristics) :
-    muscles::HillDeGrooteType (name, geometry, characteristics)
+    const internalforce::muscles::Geometry& geometry,
+    const internalforce::muscles::Characteristics& characteristics) :
+    internalforce::muscles::HillDeGrooteType (name, geometry, characteristics)
 {
     setType();
 }
 
-muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
+internalforce::muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
     const utils::String &name,
-    const muscles::Geometry &geometry,
-    const muscles::Characteristics &characteristics,
-    const muscles::State &emg) :
-    muscles::HillDeGrooteType (name, geometry, characteristics, emg)
+    const internalforce::muscles::Geometry &geometry,
+    const internalforce::muscles::Characteristics &characteristics,
+    const internalforce::muscles::State &emg) :
+    internalforce::muscles::HillDeGrooteType (name, geometry, characteristics, emg)
 {
     setType();
 }
 
-muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
+internalforce::muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
     const utils::String &name,
-    const muscles::Geometry &geometry,
-    const muscles::Characteristics &characteristics,
+    const internalforce::muscles::Geometry &geometry,
+    const internalforce::muscles::Characteristics &characteristics,
     const PathModifiers &pathModifiers) :
-    muscles::HillDeGrooteType (name, geometry, characteristics, pathModifiers)
+    internalforce::muscles::HillDeGrooteType (name, geometry, characteristics, pathModifiers)
 {
     setType();
 }
 
-muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
+internalforce::muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
     const utils::String& name,
-    const muscles::Geometry& geometry,
-    const muscles::Characteristics& characteristics,
+    const internalforce::muscles::Geometry& geometry,
+    const internalforce::muscles::Characteristics& characteristics,
     const PathModifiers &pathModifiers,
-    const muscles::State& emg) :
-    muscles::HillDeGrooteType (name, geometry, characteristics, pathModifiers,
+    const internalforce::muscles::State& emg) :
+    internalforce::muscles::HillDeGrooteType (name, geometry, characteristics, pathModifiers,
                                      emg)
 {
     setType();
 }
 
-muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
-    const muscles::Muscle &other) :
-    muscles::HillDeGrooteType (other)
+internalforce::muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
+    const internalforce::muscles::Muscle &other) :
+    internalforce::muscles::HillDeGrooteType (other)
 {
 
 }
 
-muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
-    const std::shared_ptr<muscles::Muscle>
+internalforce::muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
+    const std::shared_ptr<internalforce::muscles::Muscle>
     other) :
-    muscles::HillDeGrooteType(other)
+    internalforce::muscles::HillDeGrooteType(other)
 {
 
 }
 
-muscles::HillDeGrooteActiveOnlyType
-muscles::HillDeGrooteActiveOnlyType::DeepCopy() const
+internalforce::muscles::HillDeGrooteActiveOnlyType
+internalforce::muscles::HillDeGrooteActiveOnlyType::DeepCopy() const
 {
-    muscles::HillDeGrooteActiveOnlyType copy;
+    internalforce::muscles::HillDeGrooteActiveOnlyType copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void muscles::HillDeGrooteActiveOnlyType::DeepCopy(
-    const muscles::HillDeGrooteActiveOnlyType &other)
+void internalforce::muscles::HillDeGrooteActiveOnlyType::DeepCopy(
+    const internalforce::muscles::HillDeGrooteActiveOnlyType &other)
 {
-    muscles::HillDeGrooteType::DeepCopy(other);
+    internalforce::muscles::HillDeGrooteType::DeepCopy(other);
 }
 
-void muscles::HillDeGrooteActiveOnlyType::computeFlPE()
+void internalforce::muscles::HillDeGrooteActiveOnlyType::computeFlPE()
 {
     *m_FlPE = 0;
 }
 
-void muscles::HillDeGrooteActiveOnlyType::computeDamping()
+void internalforce::muscles::HillDeGrooteActiveOnlyType::computeDamping()
 {
     *m_damping = 0;
 }
 
-void muscles::HillDeGrooteActiveOnlyType::setType()
+void internalforce::muscles::HillDeGrooteActiveOnlyType::setType()
 {
-    *m_type = muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE;
+    *m_type = internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE;
 }

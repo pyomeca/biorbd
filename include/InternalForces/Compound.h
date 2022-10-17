@@ -4,7 +4,6 @@
 #include <memory>
 #include <vector>
 #include "biorbdConfig.h"
-#include "InternalForces/Muscles/MusclesEnums.h"
 #include "Utils/Scalar.h"
 
 namespace BIORBD_NAMESPACE
@@ -118,7 +117,6 @@ protected:
 
 };
 
-}
 }
 }
 

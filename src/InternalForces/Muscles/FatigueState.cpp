@@ -18,21 +18,20 @@ template < typename T > std::string to_string( const T& n )
 #endif
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
 
-muscles::FatigueState::FatigueState(
+internalforce::muscles::FatigueState::FatigueState(
     const utils::Scalar& active,
     const utils::Scalar& fatigued,
     const utils::Scalar& resting) :
     m_activeFibers(std::make_shared<utils::Scalar>(active)),
     m_fatiguedFibers(std::make_shared<utils::Scalar>(fatigued)),
     m_restingFibers(std::make_shared<utils::Scalar>(resting)),
-    m_type(std::make_shared<muscles::STATE_FATIGUE_TYPE>())
+    m_type(std::make_shared<internalforce::muscles::STATE_FATIGUE_TYPE>())
 {
     setType();
 }
 
-muscles::FatigueState::FatigueState(const muscles::FatigueState
+internalforce::muscles::FatigueState::FatigueState(const internalforce::muscles::FatigueState
         &other) :
     m_activeFibers(other.m_activeFibers),
     m_fatiguedFibers(other.m_fatiguedFibers),
@@ -42,8 +41,8 @@ muscles::FatigueState::FatigueState(const muscles::FatigueState
 
 }
 
-muscles::FatigueState::FatigueState(const
-        std::shared_ptr<muscles::FatigueState> other) :
+internalforce::muscles::FatigueState::FatigueState(const
+        std::shared_ptr<internalforce::muscles::FatigueState> other) :
     m_activeFibers(other->m_activeFibers),
     m_fatiguedFibers(other->m_fatiguedFibers),
     m_restingFibers(other->m_restingFibers),
@@ -52,19 +51,19 @@ muscles::FatigueState::FatigueState(const
 
 }
 
-muscles::FatigueState::~FatigueState()
+internalforce::muscles::FatigueState::~FatigueState()
 {
 
 }
 
-muscles::FatigueState muscles::FatigueState::DeepCopy() const
+internalforce::muscles::FatigueState internalforce::muscles::FatigueState::DeepCopy() const
 {
-    muscles::FatigueState copy;
+    internalforce::muscles::FatigueState copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void muscles::FatigueState::DeepCopy(const muscles::FatigueState
+void internalforce::muscles::FatigueState::DeepCopy(const internalforce::muscles::FatigueState
         &other)
 {
     *m_activeFibers = *other.m_activeFibers;
@@ -74,7 +73,7 @@ void muscles::FatigueState::DeepCopy(const muscles::FatigueState
 }
 
 #ifndef BIORBD_USE_CASADI_MATH
-void muscles::FatigueState::setState(
+void internalforce::muscles::FatigueState::setState(
     utils::Scalar active,
     utils::Scalar fatigued,
     utils::Scalar resting,
@@ -147,30 +146,30 @@ void muscles::FatigueState::setState(
 }
 #endif
 
-const utils::Scalar& muscles::FatigueState::activeFibers() const
+const utils::Scalar& internalforce::muscles::FatigueState::activeFibers() const
 {
     return *m_activeFibers;
 }
 
-const utils::Scalar& muscles::FatigueState::fatiguedFibers()
+const utils::Scalar& internalforce::muscles::FatigueState::fatiguedFibers()
 const
 {
     return *m_fatiguedFibers;
 }
 
-const utils::Scalar& muscles::FatigueState::restingFibers()
+const utils::Scalar& internalforce::muscles::FatigueState::restingFibers()
 const
 {
     return *m_restingFibers;
 }
 
-muscles::STATE_FATIGUE_TYPE muscles::FatigueState::getType()
+internalforce::muscles::STATE_FATIGUE_TYPE internalforce::muscles::FatigueState::getType()
 const
 {
     return *m_type;
 }
 
-void muscles::FatigueState::setType()
+void internalforce::muscles::FatigueState::setType()
 {
-    *m_type = muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE;
+    *m_type = internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE;
 }

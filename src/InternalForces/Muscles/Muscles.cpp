@@ -13,33 +13,32 @@
 #include "InternalForces/Muscles/StateDynamics.h"
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
-
-muscles::Muscles::Muscles() :
-    m_mus(std::make_shared<std::vector<muscles::MuscleGroup>>())
+internalforce::muscles::Muscles::Muscles() :
+    m_mus(std::make_shared<std::vector<internalforce::muscles::MuscleGroup>>())
 {
 
 }
 
-muscles::Muscles::Muscles(const muscles::Muscles &other) :
+internalforce::muscles::Muscles::Muscles(const internalforce::muscles::Muscles &other) :
     m_mus(other.m_mus)
 {
 
 }
 
-muscles::Muscles::~Muscles()
+internalforce::muscles::Muscles::~Muscles()
 {
 
 }
 
-muscles::Muscles muscles::Muscles::DeepCopy() const
+
+internalforce::muscles::Muscles internalforce::muscles::Muscles::DeepCopy() const
 {
-    muscles::Muscles copy;
+    internalforce::muscles::Muscles copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void muscles::Muscles::DeepCopy(const muscles::Muscles &other)
+void internalforce::muscles::Muscles::DeepCopy(const internalforce::muscles::Muscles &other)
 {
     m_mus->resize(other.m_mus->size());
     for (unsigned int i=0; i<other.m_mus->size(); ++i) {
@@ -48,7 +47,7 @@ void muscles::Muscles::DeepCopy(const muscles::Muscles &other)
 }
 
 
-void muscles::Muscles::addMuscleGroup(
+void internalforce::muscles::Muscles::addMuscleGroup(
     const utils::String &name,
     const utils::String &originName,
     const utils::String &insertionName)
@@ -58,7 +57,7 @@ void muscles::Muscles::addMuscleGroup(
                                     "Muscle group already defined");
     }
 
-    m_mus->push_back(muscles::MuscleGroup(name, originName, insertionName));
+    m_mus->push_back(internalforce::muscles::MuscleGroup(name, originName, insertionName));
 }
 
 int internalforce::muscles::Muscles::getMuscleGroupId(const utils::String
@@ -71,10 +70,10 @@ int internalforce::muscles::Muscles::getMuscleGroupId(const utils::String
     return -1;
 }
 
-const std::vector<std::shared_ptr<muscles::Muscle>>
-        muscles::Muscles::muscles() const
+const std::vector<std::shared_ptr<internalforce::muscles::Muscle>>
+        internalforce::muscles::Muscles::muscles() const
 {
-    std::vector<std::shared_ptr<muscles::Muscle>> m;
+    std::vector<std::shared_ptr<internalforce::muscles::Muscle>> m;
     for (auto group : muscleGroups()) {
         for (auto muscle : group.muscles()) {
             m.push_back(muscle);
@@ -83,7 +82,7 @@ const std::vector<std::shared_ptr<muscles::Muscle>>
     return m;
 }
 
-const muscles::Muscle &muscles::Muscles::muscle(
+const internalforce::muscles::Muscle &internalforce::muscles::Muscles::muscle(
     unsigned int idx) const
 {
     for (auto g : muscleGroups()) {
@@ -96,7 +95,7 @@ const muscles::Muscle &muscles::Muscles::muscle(
     utils::Error::raise("idx is higher than the number of muscles");
 }
 
-std::vector<utils::String> muscles::Muscles::muscleNames() const
+std::vector<utils::String> internalforce::muscles::Muscles::muscleNames() const
 {
     std::vector<utils::String> names;
     for (auto group : muscleGroups()) {
@@ -107,19 +106,19 @@ std::vector<utils::String> muscles::Muscles::muscleNames() const
     return names;
 }
 
-std::vector<muscles::MuscleGroup>&
-muscles::Muscles::muscleGroups()
+std::vector<internalforce::muscles::MuscleGroup>&
+internalforce::muscles::Muscles::muscleGroups()
 {
     return *m_mus;
 }
 
-const std::vector<muscles::MuscleGroup>&
-muscles::Muscles::muscleGroups() const
+const std::vector<internalforce::muscles::MuscleGroup>&
+internalforce::muscles::Muscles::muscleGroups() const
 {
     return *m_mus;
 }
 
-muscles::MuscleGroup &muscles::Muscles::muscleGroup(
+internalforce::muscles::MuscleGroup &internalforce::muscles::Muscles::muscleGroup(
     unsigned int idx)
 {
     utils::Error::check(idx<nbMuscleGroups(),
@@ -127,14 +126,14 @@ muscles::MuscleGroup &muscles::Muscles::muscleGroup(
     return (*m_mus)[idx];
 }
 
-const muscles::MuscleGroup &muscles::Muscles::muscleGroup(
+const internalforce::muscles::MuscleGroup &internalforce::muscles::Muscles::muscleGroup(
     unsigned int idx) const
 {
     utils::Error::check(idx<nbMuscleGroups(),
                                 "Idx asked is higher than number of muscle groups");
     return (*m_mus)[idx];
 }
-const muscles::MuscleGroup &muscles::Muscles::muscleGroup(
+const internalforce::muscles::MuscleGroup &internalforce::muscles::Muscles::muscleGroup(
     const utils::String& name) const
 {
     int idx = getMuscleGroupId(name);
@@ -144,7 +143,7 @@ const muscles::MuscleGroup &muscles::Muscles::muscleGroup(
 
 // From muscle activation (return muscle force)
 rigidbody::GeneralizedTorque
-muscles::Muscles::muscularJointTorque(
+internalforce::muscles::Muscles::muscularJointTorque(
     const utils::Vector &F)
 {
     // Get the Jacobian matrix and get the forces of each muscle
@@ -156,7 +155,7 @@ muscles::Muscles::muscularJointTorque(
 
 // From Muscular Force
 rigidbody::GeneralizedTorque
-muscles::Muscles::muscularJointTorque(
+internalforce::muscles::Muscles::muscularJointTorque(
     const utils::Vector &F,
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot)
@@ -170,24 +169,24 @@ muscles::Muscles::muscularJointTorque(
 
 // From muscle activation (return muscle force)
 rigidbody::GeneralizedTorque
-muscles::Muscles::muscularJointTorque(
-    const std::vector<std::shared_ptr<muscles::State>>& emg)
+internalforce::muscles::Muscles::muscularJointTorque(
+    const std::vector<std::shared_ptr<internalforce::muscles::State>>& emg)
 {
     return muscularJointTorque(muscleForces(emg));
 }
 
 // From muscle activation (do not return muscle force)
 rigidbody::GeneralizedTorque
-muscles::Muscles::muscularJointTorque(
-    const std::vector<std::shared_ptr<muscles::State>>& emg,
+internalforce::muscles::Muscles::muscularJointTorque(
+    const std::vector<std::shared_ptr<internalforce::muscles::State>>& emg,
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot)
 {
     return muscularJointTorque(muscleForces(emg, Q, QDot));
 }
 
-utils::Vector muscles::Muscles::activationDot(
-    const std::vector<std::shared_ptr<muscles::State>>& emg,
+utils::Vector internalforce::muscles::Muscles::activationDot(
+    const std::vector<std::shared_ptr<internalforce::muscles::State>>& emg,
     bool areadyNormalized)
 {
     utils::Vector activationDot(nbMuscleTotal());
@@ -204,8 +203,8 @@ utils::Vector muscles::Muscles::activationDot(
     return activationDot;
 }
 
-utils::Vector muscles::Muscles::muscleForces(
-    const std::vector<std::shared_ptr<muscles::State>>& emg)
+utils::Vector internalforce::muscles::Muscles::muscleForces(
+    const std::vector<std::shared_ptr<internalforce::muscles::State>>& emg)
 {
     // Output variable
     utils::Vector forces(nbMuscleTotal());
@@ -222,8 +221,8 @@ utils::Vector muscles::Muscles::muscleForces(
     return forces;
 }
 
-utils::Vector muscles::Muscles::muscleForces(
-    const std::vector<std::shared_ptr<muscles::State>> &emg,
+utils::Vector internalforce::muscles::Muscles::muscleForces(
+    const std::vector<std::shared_ptr<internalforce::muscles::State>> &emg,
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot)
 {
@@ -233,12 +232,12 @@ utils::Vector muscles::Muscles::muscleForces(
     return muscleForces(emg);
 }
 
-unsigned int muscles::Muscles::nbMuscleGroups() const
+unsigned int internalforce::muscles::Muscles::nbMuscleGroups() const
 {
     return static_cast<unsigned int>(m_mus->size());
 }
 
-utils::Matrix muscles::Muscles::musclesLengthJacobian()
+utils::Matrix internalforce::muscles::Muscles::musclesLengthJacobian()
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     const rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
@@ -255,7 +254,7 @@ utils::Matrix muscles::Muscles::musclesLengthJacobian()
 
 }
 
-utils::Matrix muscles::Muscles::musclesLengthJacobian(
+utils::Matrix internalforce::muscles::Muscles::musclesLengthJacobian(
     const rigidbody::GeneralizedCoordinates &Q)
 {
     // Update the muscular position
@@ -264,12 +263,12 @@ utils::Matrix muscles::Muscles::musclesLengthJacobian(
 }
 
 
-unsigned int muscles::Muscles::nbMuscleTotal() const
+unsigned int internalforce::muscles::Muscles::nbMuscleTotal() const
 {
     return nbMuscles();
 }
 
-unsigned int muscles::Muscles::nbMuscles() const
+unsigned int internalforce::muscles::Muscles::nbMuscles() const
 {
     unsigned int total(0);
     for (unsigned int grp=0; grp<m_mus->size(); ++grp) { // muscular group
@@ -278,7 +277,7 @@ unsigned int muscles::Muscles::nbMuscles() const
     return total;
 }
 
-void muscles::Muscles::updateMuscles(
+void internalforce::muscles::Muscles::updateMuscles(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     bool updateKin)
@@ -308,7 +307,7 @@ void muscles::Muscles::updateMuscles(
 #endif
         }
 }
-void muscles::Muscles::updateMuscles(
+void internalforce::muscles::Muscles::updateMuscles(
     const rigidbody::GeneralizedCoordinates& Q,
     bool updateKin)
 {
@@ -339,7 +338,7 @@ void muscles::Muscles::updateMuscles(
 #endif
         }
 }
-void muscles::Muscles::updateMuscles(
+void internalforce::muscles::Muscles::updateMuscles(
     std::vector<std::vector<utils::Vector3d>>& musclePointsInGlobal,
     std::vector<utils::Matrix> &jacoPointsInGlobal,
     const rigidbody::GeneralizedVelocity& QDot)
@@ -353,17 +352,17 @@ void muscles::Muscles::updateMuscles(
         }
 }
 
-std::vector<std::shared_ptr<muscles::State>>
-        muscles::Muscles::stateSet()
+std::vector<std::shared_ptr<internalforce::muscles::State>>
+        internalforce::muscles::Muscles::stateSet()
 {
-    std::vector<std::shared_ptr<muscles::State>> out;
+    std::vector<std::shared_ptr<internalforce::muscles::State>> out;
     for (unsigned int i=0; i<nbMuscles(); ++i) {
         out.push_back(muscle(i).m_state);
     }
     return out;
 }
 
-void muscles::Muscles::updateMuscles(
+void internalforce::muscles::Muscles::updateMuscles(
     std::vector<std::vector<utils::Vector3d>>& musclePointsInGlobal,
     std::vector<utils::Matrix> &jacoPointsInGlobal)
 {

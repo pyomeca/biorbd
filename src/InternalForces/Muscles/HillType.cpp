@@ -13,10 +13,8 @@
 #endif
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
-
-muscles::HillType::HillType() :
-    muscles::Muscle(),
+internalforce::muscles::HillType::HillType() :
+    internalforce::muscles::Muscle(),
     m_damping(std::make_shared<utils::Scalar>()),
     m_FlCE(std::make_shared<utils::Scalar>()),
     m_FlPE(std::make_shared<utils::Scalar>()),
@@ -35,11 +33,11 @@ muscles::HillType::HillType() :
     setType();
 }
 
-muscles::HillType::HillType(
+internalforce::muscles::HillType::HillType(
     const utils::String &name,
-    const muscles::Geometry &geometry,
-    const muscles::Characteristics &characteristics) :
-    muscles::Muscle(name,geometry,characteristics),
+    const internalforce::muscles::Geometry &geometry,
+    const internalforce::muscles::Characteristics &characteristics) :
+    internalforce::muscles::Muscle(name,geometry,characteristics),
     m_damping(std::make_shared<utils::Scalar>()),
     m_FlCE(std::make_shared<utils::Scalar>()),
     m_FlPE(std::make_shared<utils::Scalar>()),
@@ -58,12 +56,12 @@ muscles::HillType::HillType(
     setType();
 }
 
-muscles::HillType::HillType(
+internalforce::muscles::HillType::HillType(
     const utils::String &name,
-    const muscles::Geometry &geometry,
-    const muscles::Characteristics &characteristics,
-    const muscles::State& emg) :
-    muscles::Muscle(name,geometry,characteristics, emg),
+    const internalforce::muscles::Geometry &geometry,
+    const internalforce::muscles::Characteristics &characteristics,
+    const internalforce::muscles::State& emg) :
+    internalforce::muscles::Muscle(name,geometry,characteristics, emg),
     m_damping(std::make_shared<utils::Scalar>()),
     m_FlCE(std::make_shared<utils::Scalar>()),
     m_FlPE(std::make_shared<utils::Scalar>()),
@@ -82,12 +80,12 @@ muscles::HillType::HillType(
     setType();
 }
 
-muscles::HillType::HillType(
+internalforce::muscles::HillType::HillType(
     const utils::String &name,
-    const muscles::Geometry &geometry,
-    const muscles::Characteristics &characteristics,
+    const internalforce::muscles::Geometry &geometry,
+    const internalforce::muscles::Characteristics &characteristics,
     const PathModifiers &pathModifiers) :
-    muscles::Muscle(name,geometry,characteristics,pathModifiers),
+    internalforce::muscles::Muscle(name,geometry,characteristics,pathModifiers),
     m_damping(std::make_shared<utils::Scalar>()),
     m_FlCE(std::make_shared<utils::Scalar>()),
     m_FlPE(std::make_shared<utils::Scalar>()),
@@ -105,13 +103,13 @@ muscles::HillType::HillType(
 {
     setType();
 }
-muscles::HillType::HillType(
+internalforce::muscles::HillType::HillType(
     const utils::String& name,
-    const muscles::Geometry& geometry,
-    const muscles::Characteristics& characteristics,
+    const internalforce::muscles::Geometry& geometry,
+    const internalforce::muscles::Characteristics& characteristics,
     const PathModifiers &pathModifiers,
-    const muscles::State& state) :
-    muscles::Muscle(name,geometry,characteristics,pathModifiers,state),
+    const internalforce::muscles::State& state) :
+    internalforce::muscles::Muscle(name,geometry,characteristics,pathModifiers,state),
     m_damping(std::make_shared<utils::Scalar>()),
     m_FlCE(std::make_shared<utils::Scalar>()),
     m_FlPE(std::make_shared<utils::Scalar>()),
@@ -130,11 +128,11 @@ muscles::HillType::HillType(
     setType();
 }
 
-muscles::HillType::HillType(const muscles::Muscle &other) :
-    muscles::Muscle (other)
+internalforce::muscles::HillType::HillType(const internalforce::muscles::Muscle &other) :
+    internalforce::muscles::Muscle (other)
 {
-    const muscles::HillType & m_tp(
-        dynamic_cast<const muscles::HillType &>(other));
+    const internalforce::muscles::HillType & m_tp(
+        dynamic_cast<const internalforce::muscles::HillType &>(other));
     m_damping = m_tp.m_damping;
     m_FlCE = m_tp.m_FlCE;
     m_FlPE = m_tp.m_FlPE;
@@ -150,12 +148,12 @@ muscles::HillType::HillType(const muscles::Muscle &other) :
     m_cste_maxShorteningSpeed = m_tp.m_cste_maxShorteningSpeed;
 }
 
-muscles::HillType::HillType(
-    const std::shared_ptr<muscles::Muscle> other) :
-    muscles::Muscle (other)
+internalforce::muscles::HillType::HillType(
+    const std::shared_ptr<internalforce::muscles::Muscle> other) :
+    internalforce::muscles::Muscle (other)
 {
-    const std::shared_ptr<muscles::HillType> m_tp(
-        std::dynamic_pointer_cast<muscles::HillType>(other));
+    const std::shared_ptr<internalforce::muscles::HillType> m_tp(
+        std::dynamic_pointer_cast<internalforce::muscles::HillType>(other));
     utils::Error::check(m_tp != nullptr, "Muscle must be of a Hill Type");
     m_damping = m_tp->m_damping;
     m_FlCE = m_tp->m_FlCE;
@@ -172,16 +170,16 @@ muscles::HillType::HillType(
     m_cste_maxShorteningSpeed = m_tp->m_cste_maxShorteningSpeed;
 }
 
-muscles::HillType muscles::HillType::DeepCopy() const
+internalforce::muscles::HillType internalforce::muscles::HillType::DeepCopy() const
 {
-    muscles::HillType copy;
+    internalforce::muscles::HillType copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void muscles::HillType::DeepCopy(const muscles::HillType &other)
+void internalforce::muscles::HillType::DeepCopy(const internalforce::muscles::HillType &other)
 {
-    muscles::Muscle::DeepCopy(other);
+    internalforce::muscles::Muscle::DeepCopy(other);
     *m_damping = *other.m_damping;
     *m_FlCE = *other.m_FlCE;
     *m_FlPE = *other.m_FlPE;
@@ -197,8 +195,8 @@ void muscles::HillType::DeepCopy(const muscles::HillType &other)
     *m_cste_maxShorteningSpeed = *other.m_cste_maxShorteningSpeed;
 }
 
-const utils::Scalar& muscles::HillType::force(
-    const muscles::State& emg)
+const utils::Scalar& internalforce::muscles::HillType::force(
+    const internalforce::muscles::State& emg)
 {
     // Compute the forces of each element
     computeFvCE();
@@ -211,11 +209,11 @@ const utils::Scalar& muscles::HillType::force(
     return *m_force;
 }
 
-const utils::Scalar& muscles::HillType::force(
+const utils::Scalar& internalforce::muscles::HillType::force(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
-    const muscles::State &emg,
+    const internalforce::muscles::State &emg,
     int updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -235,10 +233,10 @@ const utils::Scalar& muscles::HillType::force(
     return force(emg);
 }
 
-const utils::Scalar& muscles::HillType::force(
+const utils::Scalar& internalforce::muscles::HillType::force(
     rigidbody::Joints &,
     const rigidbody::GeneralizedCoordinates &,
-    const muscles::State &,
+    const internalforce::muscles::State &,
     int)
 {
     utils::Error::raise("Hill type needs velocity");
@@ -247,37 +245,37 @@ const utils::Scalar& muscles::HillType::force(
 #endif
 }
 
-const utils::Scalar& muscles::HillType::FlCE(
-    const muscles::State &EMG)
+const utils::Scalar& internalforce::muscles::HillType::FlCE(
+    const internalforce::muscles::State &EMG)
 {
     computeFlCE(EMG);
     return *m_FlCE;
 }
 
-const utils::Scalar& muscles::HillType::FlPE()
+const utils::Scalar& internalforce::muscles::HillType::FlPE()
 {
     computeFlPE();
     return *m_FlPE;
 }
 
-const utils::Scalar& muscles::HillType::FvCE()
+const utils::Scalar& internalforce::muscles::HillType::FvCE()
 {
     computeFvCE();
     return *m_FvCE;
 }
 
-const utils::Scalar& muscles::HillType::damping()
+const utils::Scalar& internalforce::muscles::HillType::damping()
 {
     computeDamping();
     return *m_damping;
 }
 
-void muscles::HillType::setType()
+void internalforce::muscles::HillType::setType()
 {
-    *m_type = muscles::MUSCLE_TYPE::HILL;
+    *m_type = internalforce::muscles::MUSCLE_TYPE::HILL;
 }
 
-void muscles::HillType::computeDamping()
+void internalforce::muscles::HillType::computeDamping()
 {
 
 
@@ -299,7 +297,7 @@ void muscles::HillType::computeDamping()
 
 }
 
-void muscles::HillType::computeFlCE(const muscles::State& emg)
+void internalforce::muscles::HillType::computeFlCE(const internalforce::muscles::State& emg)
 {
     *m_FlCE = exp( -pow(( position().length() /
                           m_characteristics->optimalLength() / (*m_cste_FlCE_1*
@@ -308,7 +306,7 @@ void muscles::HillType::computeFlCE(const muscles::State& emg)
                    *m_cste_FlCE_2   );
 }
 
-void muscles::HillType::computeFvCE()
+void internalforce::muscles::HillType::computeFvCE()
 {
     // The relation is different if velocity< 0  or > 0
     utils::Scalar v = m_position->velocity();
@@ -330,7 +328,7 @@ void muscles::HillType::computeFvCE()
 #endif
 }
 
-void muscles::HillType::computeFlPE()
+void internalforce::muscles::HillType::computeFlPE()
 {
 
 #ifdef BIORBD_USE_CASADI_MATH
@@ -348,8 +346,8 @@ void muscles::HillType::computeFlPE()
 #endif
 }
 
-utils::Scalar muscles::HillType::getForceFromActivation(
-    const muscles::State &emg)
+utils::Scalar internalforce::muscles::HillType::getForceFromActivation(
+    const internalforce::muscles::State &emg)
 {
     utils::Scalar cosAngle = cos(characteristics().pennationAngle());
     utils::Scalar damping_param;
@@ -361,8 +359,8 @@ utils::Scalar muscles::HillType::getForceFromActivation(
     return characteristics().forceIsoMax() * (emg.activation() * *m_FlCE * *m_FvCE + *m_FlPE + damping_param) * cosAngle;
 }
 
-void muscles::HillType::normalizeEmg(
-    muscles::State& emg)
+void internalforce::muscles::HillType::normalizeEmg(
+    internalforce::muscles::State& emg)
 {
     emg.normalizeExcitation(characteristics().stateMax());
 }

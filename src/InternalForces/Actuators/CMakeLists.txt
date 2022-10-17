@@ -38,10 +38,12 @@ target_link_libraries(${PROJECT_NAME}
     "${MATH_BACKEND_LIBRARIES}"
     "${BIORBD_NAME}_utils"
     "${BIORBD_NAME}_rigidbody"
+    "${BIORBD_NAME}_internal_forces"
 )
 add_dependencies(${PROJECT_NAME}
     "${BIORBD_NAME}_utils"
     "${BIORBD_NAME}_rigidbody"
+    "${BIORBD_NAME}_internal_forces"
 )
 
 # Installation

@@ -4,7 +4,6 @@
 #include "biorbdConfig.h"
 
 #include "InternalForces/Muscles/Characteristics.h"
-#include "InternalForces/Muscles/Compound.h"
 #include "InternalForces/Muscles/FatigueModel.h"
 #include "InternalForces/Muscles/FatigueDynamicState.h"
 #include "InternalForces/Muscles/FatigueDynamicStateXia.h"

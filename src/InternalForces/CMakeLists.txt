@@ -5,6 +5,7 @@ set(INTERNAL_FORCES_MODULE_NAME ${BIORBD_NAME}_internal_forces PARENT_SCOPE)
 set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/PathModifiers.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/ViaPoint.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Compound.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/WrappingHalfCylinder.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/WrappingObject.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/WrappingSphere.cpp"
@@ -31,18 +32,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 )
 
-# Add the different submodules of internal forces
-set(SUBMODULE_NAMES)
-
-if (MODULE_MUSCLES)
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Muscles")
-    list(APPEND SUBMODULE_NAMES "${MUSCLES_MODULE_NAME}")
-endif()
-
-if (MODULE_ACTUATORS)
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Actuators")
-    list(APPEND SUBMODULE_NAMES "${ACTUATORS_MODULE_NAME}")
-endif()
 
 # Add the dependencies for insuring build order
 target_link_libraries(${PROJECT_NAME}
@@ -50,14 +39,10 @@ target_link_libraries(${PROJECT_NAME}
     "${MATH_BACKEND_LIBRARIES}"
     "${BIORBD_NAME}_utils"
     "${BIORBD_NAME}_rigidbody"
-    "${BIORBD_NAME}_muscles"
-    "${BIORBD_NAME}_actuators"
 )
 add_dependencies(${PROJECT_NAME}
     "${BIORBD_NAME}_utils"
     "${BIORBD_NAME}_rigidbody"
-    "${BIORBD_NAME}_muscles"
-    "${BIORBD_NAME}_actuators"
 )
 
 # Installation

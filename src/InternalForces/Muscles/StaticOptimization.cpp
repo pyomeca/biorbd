@@ -14,7 +14,7 @@
 using namespace BIORBD_NAMESPACE;
 using namespace internalforce;
 
-muscles::StaticOptimization::StaticOptimization(
+internalforce::muscles::StaticOptimization::StaticOptimization(
     Model& model,
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot,
@@ -40,7 +40,7 @@ muscles::StaticOptimization::StaticOptimization(
     }
 }
 
-muscles::StaticOptimization::StaticOptimization(
+internalforce::muscles::StaticOptimization::StaticOptimization(
     Model& model,
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot,
@@ -70,12 +70,12 @@ muscles::StaticOptimization::StaticOptimization(
     *m_initialActivationGuess = initialActivationGuess;
 }
 
-muscles::StaticOptimization::StaticOptimization(
+internalforce::muscles::StaticOptimization::StaticOptimization(
     Model& model,
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot,
     const rigidbody::GeneralizedTorque& torqueTarget,
-    const std::vector<muscles::StateDynamics> &initialActivationGuess,
+    const std::vector<internalforce::muscles::StateDynamics> &initialActivationGuess,
     unsigned int pNormFactor,
     bool useResidualTorque,
     int verbose
@@ -105,7 +105,7 @@ muscles::StaticOptimization::StaticOptimization(
     }
 }
 
-muscles::StaticOptimization::StaticOptimization(
+internalforce::muscles::StaticOptimization::StaticOptimization(
     Model& model,
     const std::vector<rigidbody::GeneralizedCoordinates>& allQ,
     const std::vector<rigidbody::GeneralizedVelocity>& allQdot,
@@ -130,7 +130,7 @@ muscles::StaticOptimization::StaticOptimization(
     }
 }
 
-muscles::StaticOptimization::StaticOptimization(
+internalforce::muscles::StaticOptimization::StaticOptimization(
     Model &model,
     const std::vector<rigidbody::GeneralizedCoordinates>& allQ,
     const std::vector<rigidbody::GeneralizedVelocity>& allQdot,
@@ -158,12 +158,12 @@ muscles::StaticOptimization::StaticOptimization(
     *m_initialActivationGuess = initialActivationGuess;
 }
 
-muscles::StaticOptimization::StaticOptimization(
+internalforce::muscles::StaticOptimization::StaticOptimization(
     Model& model,
     const std::vector<rigidbody::GeneralizedCoordinates>& allQ,
     const std::vector<rigidbody::GeneralizedVelocity>& allQdot,
     const std::vector<rigidbody::GeneralizedTorque>& allTorqueTarget,
-    const std::vector<muscles::StateDynamics>& initialActivationGuess,
+    const std::vector<internalforce::muscles::StateDynamics>& initialActivationGuess,
     unsigned int pNormFactor,
     bool useResidualTorque,
     int verbose):
@@ -191,7 +191,7 @@ muscles::StaticOptimization::StaticOptimization(
     }
 }
 
-void muscles::StaticOptimization::run(
+void internalforce::muscles::StaticOptimization::run(
     bool useLinearizedState)
 {
     // Setup the Ipopt problem
@@ -212,7 +212,7 @@ void muscles::StaticOptimization::run(
     for (unsigned int i=0; i<m_allQ.size(); ++i) {
         if (useLinearizedState)
             m_staticOptimProblem.push_back(
-                new muscles::StaticOptimizationIpoptLinearized(
+                new internalforce::muscles::StaticOptimizationIpoptLinearized(
                     m_model, m_allQ[i], m_allQdot[i], m_allTorqueTarget[i],
                     *m_initialActivationGuess,
                     m_useResidualTorque, m_pNormFactor, m_verbose
@@ -220,7 +220,7 @@ void muscles::StaticOptimization::run(
             );
         else
             m_staticOptimProblem.push_back(
-                new muscles::StaticOptimizationIpopt(
+                new internalforce::muscles::StaticOptimizationIpopt(
                     m_model, m_allQ[i], m_allQdot[i], m_allTorqueTarget[i],
                     *m_initialActivationGuess,
                     m_useResidualTorque, m_pNormFactor, m_verbose
@@ -231,14 +231,14 @@ void muscles::StaticOptimization::run(
 
         // Take the solution of the previous optimization as the solution for the next optimization
         *m_initialActivationGuess =
-            static_cast<muscles::StaticOptimizationIpopt*>(
+            static_cast<internalforce::muscles::StaticOptimizationIpopt*>(
                 Ipopt::GetRawPtr(m_staticOptimProblem[i]))->finalSolution();
     }
     m_alreadyRun = true;
 }
 
 std::vector<utils::Vector>
-muscles::StaticOptimization::finalSolution()
+internalforce::muscles::StaticOptimization::finalSolution()
 {
     std::vector<utils::Vector> res;
     if (!m_alreadyRun) {
@@ -248,7 +248,7 @@ muscles::StaticOptimization::finalSolution()
             "the optimized solution");
     } else {
         for (unsigned int i=0; i<m_allQ.size(); ++i) {
-            res.push_back(static_cast<muscles::StaticOptimizationIpopt*>(
+            res.push_back(static_cast<internalforce::muscles::StaticOptimizationIpopt*>(
                               Ipopt::GetRawPtr(m_staticOptimProblem[i]))->finalSolution());
         }
     }
@@ -256,7 +256,7 @@ muscles::StaticOptimization::finalSolution()
     return res;
 }
 
-utils::Vector muscles::StaticOptimization::finalSolution(
+utils::Vector internalforce::muscles::StaticOptimization::finalSolution(
     unsigned int index)
 {
     utils::Vector res;
@@ -266,7 +266,7 @@ utils::Vector muscles::StaticOptimization::finalSolution(
             "yet, you should optimize it first to get "
             "the optimized solution");
     } else {
-        res = static_cast<muscles::StaticOptimizationIpopt*>(
+        res = static_cast<internalforce::muscles::StaticOptimizationIpopt*>(
                   Ipopt::GetRawPtr(m_staticOptimProblem[index]))->finalSolution();
     }
     return res;

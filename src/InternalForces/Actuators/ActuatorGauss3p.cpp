@@ -10,10 +10,9 @@
 #endif
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
 
-actuator::ActuatorGauss3p::ActuatorGauss3p() :
-    actuator::Actuator(),
+internalforce::actuator::ActuatorGauss3p::ActuatorGauss3p() :
+    internalforce::actuator::Actuator(),
     m_k(std::make_shared<utils::Scalar>(4.3)),
     m_Tmax(std::make_shared<utils::Scalar>(0)),
     m_T0(std::make_shared<utils::Scalar>(0)),
@@ -29,9 +28,9 @@ actuator::ActuatorGauss3p::ActuatorGauss3p() :
     setType();
 }
 
-actuator::ActuatorGauss3p::ActuatorGauss3p(
-    const actuator::ActuatorGauss3p &other) :
-    actuator::Actuator(other),
+internalforce::actuator::ActuatorGauss3p::ActuatorGauss3p(
+    const internalforce::actuator::ActuatorGauss3p &other) :
+    internalforce::actuator::Actuator(other),
     m_k(other.m_k),
     m_Tmax(other.m_Tmax),
     m_T0(other.m_T0),
@@ -47,7 +46,7 @@ actuator::ActuatorGauss3p::ActuatorGauss3p(
 
 }
 
-actuator::ActuatorGauss3p::ActuatorGauss3p(
+internalforce::actuator::ActuatorGauss3p::ActuatorGauss3p(
     int direction,
     const utils::Scalar& Tmax,
     const utils::Scalar& T0,
@@ -59,7 +58,7 @@ actuator::ActuatorGauss3p::ActuatorGauss3p(
     const utils::Scalar& r,
     const utils::Scalar& qopt,
     unsigned int dofIdx) :
-    actuator::Actuator(direction, dofIdx),
+    internalforce::actuator::Actuator(direction, dofIdx),
     m_k(std::make_shared<utils::Scalar>(4.3)),
     m_Tmax(std::make_shared<utils::Scalar>(Tmax)),
     m_T0(std::make_shared<utils::Scalar>(T0)),
@@ -75,7 +74,7 @@ actuator::ActuatorGauss3p::ActuatorGauss3p(
     setType();
 }
 
-actuator::ActuatorGauss3p::ActuatorGauss3p(
+internalforce::actuator::ActuatorGauss3p::ActuatorGauss3p(
     int direction,
     const utils::Scalar& Tmax,
     const utils::Scalar& T0,
@@ -88,7 +87,7 @@ actuator::ActuatorGauss3p::ActuatorGauss3p(
     const utils::Scalar& qopt,
     unsigned int dofIdx,
     const utils::String &jointName) :
-    actuator::Actuator(direction, dofIdx, jointName),
+    internalforce::actuator::Actuator(direction, dofIdx, jointName),
     m_k(std::make_shared<utils::Scalar>(4.3)),
     m_Tmax(std::make_shared<utils::Scalar>(Tmax)),
     m_T0(std::make_shared<utils::Scalar>(T0)),
@@ -104,23 +103,23 @@ actuator::ActuatorGauss3p::ActuatorGauss3p(
     setType();
 }
 
-actuator::ActuatorGauss3p::~ActuatorGauss3p()
+internalforce::actuator::ActuatorGauss3p::~ActuatorGauss3p()
 {
 
 }
 
-actuator::ActuatorGauss3p actuator::ActuatorGauss3p::DeepCopy()
+internalforce::actuator::ActuatorGauss3p internalforce::actuator::ActuatorGauss3p::DeepCopy()
 const
 {
-    actuator::ActuatorGauss3p copy;
+    internalforce::actuator::ActuatorGauss3p copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void actuator::ActuatorGauss3p::DeepCopy(
-    const actuator::ActuatorGauss3p &other)
+void internalforce::actuator::ActuatorGauss3p::DeepCopy(
+    const internalforce::actuator::ActuatorGauss3p &other)
 {
-    actuator::Actuator::DeepCopy(other);
+    internalforce::actuator::Actuator::DeepCopy(other);
     *m_k = *other.m_k;
     *m_Tmax = *other.m_Tmax;
     *m_T0 = *other.m_T0;
@@ -134,13 +133,13 @@ void actuator::ActuatorGauss3p::DeepCopy(
     *m_qopt = *other.m_qopt;
 }
 
-utils::Scalar actuator::ActuatorGauss3p::torqueMax()
+utils::Scalar internalforce::actuator::ActuatorGauss3p::torqueMax()
 {
     utils::Error::raise(
         "torqueMax for ActuatorGauss3p must be called with Q and Qdot");
 }
 
-utils::Scalar actuator::ActuatorGauss3p::torqueMax(
+utils::Scalar internalforce::actuator::ActuatorGauss3p::torqueMax(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot)
 {
@@ -183,7 +182,7 @@ utils::Scalar actuator::ActuatorGauss3p::torqueMax(
 
 }
 
-void actuator::ActuatorGauss3p::setType()
+void internalforce::actuator::ActuatorGauss3p::setType()
 {
-    *m_type = actuator::TYPE::GAUSS3P;
+    *m_type = internalforce::actuator::TYPE::GAUSS3P;
 }

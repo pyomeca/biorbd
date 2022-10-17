@@ -6,49 +6,48 @@
 #include "InternalForces/Muscles/FatigueDynamicStateXia.h"
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
 
-muscles::FatigueModel::FatigueModel(
-    muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
+internalforce::muscles::FatigueModel::FatigueModel(
+    internalforce::muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
 {
     if (dynamicFatigueType ==
-            muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE) {
-        m_fatigueState = std::make_shared<muscles::FatigueState>();
+            internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE) {
+        m_fatigueState = std::make_shared<internalforce::muscles::FatigueState>();
     } else if (dynamicFatigueType ==
-               muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA) {
-        m_fatigueState = std::make_shared<muscles::FatigueDynamicStateXia>();
+               internalforce::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA) {
+        m_fatigueState = std::make_shared<internalforce::muscles::FatigueDynamicStateXia>();
     } else {
         utils::Error::raise("Wrong muscle fatigue type");
     }
 }
 
-muscles::FatigueModel::FatigueModel(
-    const muscles::FatigueModel &other) :
+internalforce::muscles::FatigueModel::FatigueModel(
+    const internalforce::muscles::FatigueModel &other) :
     m_fatigueState(other.m_fatigueState)
 {
 
 }
 
-muscles::FatigueModel::FatigueModel(
-    const std::shared_ptr<muscles::FatigueModel> other) :
+internalforce::muscles::FatigueModel::FatigueModel(
+    const std::shared_ptr<internalforce::muscles::FatigueModel> other) :
     m_fatigueState(other->m_fatigueState)
 {
 
 }
 
-muscles::FatigueModel::~FatigueModel()
+internalforce::muscles::FatigueModel::~FatigueModel()
 {
 
 }
 
-void muscles::FatigueModel::DeepCopy(const muscles::FatigueModel
+void internalforce::muscles::FatigueModel::DeepCopy(const internalforce::muscles::FatigueModel
         &other)
 {
     *m_fatigueState = other.m_fatigueState->DeepCopy();
 }
 
 #ifndef BIORBD_USE_CASADI_MATH
-void muscles::FatigueModel::setFatigueState(
+void internalforce::muscles::FatigueModel::setFatigueState(
     const utils::Scalar& active,
     const utils::Scalar& fatigued,
     const utils::Scalar& resting)
@@ -57,29 +56,29 @@ void muscles::FatigueModel::setFatigueState(
 }
 #endif
 
-muscles::FatigueState& muscles::FatigueModel::fatigueState()
+internalforce::muscles::FatigueState& internalforce::muscles::FatigueModel::fatigueState()
 {
     return *m_fatigueState;
 }
 
-const muscles::FatigueState&
-muscles::FatigueModel::fatigueState() const
+const internalforce::muscles::FatigueState&
+internalforce::muscles::FatigueModel::fatigueState() const
 {
     return *m_fatigueState;
 }
 
-void muscles::FatigueModel::computeTimeDerivativeState(
-    const muscles::StateDynamics &emg)
+void internalforce::muscles::FatigueModel::computeTimeDerivativeState(
+    const internalforce::muscles::StateDynamics &emg)
 {
-    if (std::dynamic_pointer_cast<muscles::FatigueDynamicState>
+    if (std::dynamic_pointer_cast<internalforce::muscles::FatigueDynamicState>
             (m_fatigueState)) {
-        muscles::Muscle* muscle = dynamic_cast<muscles::Muscle*>(this);
+        internalforce::muscles::Muscle* muscle = dynamic_cast<internalforce::muscles::Muscle*>(this);
         if (muscle) {
-            std::static_pointer_cast<muscles::FatigueDynamicState>
+            std::static_pointer_cast<internalforce::muscles::FatigueDynamicState>
             (m_fatigueState)->timeDerivativeState(emg,
                                                   muscle->characteristics());
         } else {
-            utils::Error::raise("muscles::FatigueModel should be a muscles::Muscle");
+            utils::Error::raise("internalforce::muscles::FatigueModel should be a internalforce::muscles::Muscle");
         }
     } else {
         utils::Error::raise("Type cannot be fatigued");

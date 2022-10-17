@@ -5,24 +5,23 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
 
-actuator::ActuatorConstant::ActuatorConstant() :
+internalforce::actuator::ActuatorConstant::ActuatorConstant() :
     Actuator(),
     m_Tmax(std::make_shared<utils::Scalar>(0))
 {
     setType();
 }
 
-actuator::ActuatorConstant::ActuatorConstant(
-    const actuator::ActuatorConstant &other) :
+internalforce::actuator::ActuatorConstant::ActuatorConstant(
+    const internalforce::actuator::ActuatorConstant &other) :
     Actuator(other),
     m_Tmax(other.m_Tmax)
 {
 
 }
 
-actuator::ActuatorConstant::ActuatorConstant(
+internalforce::actuator::ActuatorConstant::ActuatorConstant(
     int direction,
     const utils::Scalar& Tmax,
     unsigned int dofIdx) :
@@ -32,7 +31,7 @@ actuator::ActuatorConstant::ActuatorConstant(
     setType();
 }
 
-actuator::ActuatorConstant::ActuatorConstant(
+internalforce::actuator::ActuatorConstant::ActuatorConstant(
     int direction,
     const utils::Scalar& Tmax,
     unsigned int dofIdx,
@@ -43,27 +42,27 @@ actuator::ActuatorConstant::ActuatorConstant(
     setType();
 }
 
-actuator::ActuatorConstant
-actuator::ActuatorConstant::DeepCopy() const
+internalforce::actuator::ActuatorConstant
+internalforce::actuator::ActuatorConstant::DeepCopy() const
 {
-    actuator::ActuatorConstant copy;
+    internalforce::actuator::ActuatorConstant copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void actuator::ActuatorConstant::DeepCopy(const
-        actuator::ActuatorConstant &other)
+void internalforce::actuator::ActuatorConstant::DeepCopy(const
+        internalforce::actuator::ActuatorConstant &other)
 {
-    actuator::Actuator::DeepCopy(other);
+    internalforce::actuator::Actuator::DeepCopy(other);
     *m_Tmax = *other.m_Tmax;
 }
 
-utils::Scalar actuator::ActuatorConstant::torqueMax()
+utils::Scalar internalforce::actuator::ActuatorConstant::torqueMax()
 {
     return *m_Tmax;
 }
 
-void actuator::ActuatorConstant::setType()
+void internalforce::actuator::ActuatorConstant::setType()
 {
-    *m_type = actuator::TYPE::CONSTANT;
+    *m_type = internalforce::actuator::TYPE::CONSTANT;
 }

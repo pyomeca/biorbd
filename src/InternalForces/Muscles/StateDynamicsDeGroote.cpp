@@ -7,40 +7,39 @@
 #include "InternalForces/Muscles/Characteristics.h"
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
 
-muscles::StateDynamicsDeGroote::StateDynamicsDeGroote(
+internalforce::muscles::StateDynamicsDeGroote::StateDynamicsDeGroote(
     const utils::Scalar& excitation,
     const utils::Scalar& activation) :
-    muscles::StateDynamics(excitation,activation)
+    internalforce::muscles::StateDynamics(excitation,activation)
 {
     setType();
 }
 
-muscles::StateDynamicsDeGroote::StateDynamicsDeGroote(
-    const muscles::StateDynamicsDeGroote &other) :
-    muscles::StateDynamics(other)
+internalforce::muscles::StateDynamicsDeGroote::StateDynamicsDeGroote(
+    const internalforce::muscles::StateDynamicsDeGroote &other) :
+    internalforce::muscles::StateDynamics(other)
 {
 
 }
 
-muscles::StateDynamicsDeGroote
-muscles::StateDynamicsDeGroote::DeepCopy() const
+internalforce::muscles::StateDynamicsDeGroote
+internalforce::muscles::StateDynamicsDeGroote::DeepCopy() const
 {
-    muscles::StateDynamicsDeGroote copy;
+    internalforce::muscles::StateDynamicsDeGroote copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void muscles::StateDynamicsDeGroote::DeepCopy(const
-        muscles::StateDynamicsDeGroote &other)
+void internalforce::muscles::StateDynamicsDeGroote::DeepCopy(const
+        internalforce::muscles::StateDynamicsDeGroote &other)
 {
-    muscles::StateDynamics::DeepCopy(other);
+    internalforce::muscles::StateDynamics::DeepCopy(other);
 }
 
 const utils::Scalar&
-muscles::StateDynamicsDeGroote::timeDerivativeActivation(
-    const muscles::Characteristics &characteristics,
+internalforce::muscles::StateDynamicsDeGroote::timeDerivativeActivation(
+    const internalforce::muscles::Characteristics &characteristics,
     bool alreadyNormalized)
 {
     // From DeGroote https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5043004/
@@ -63,7 +62,7 @@ muscles::StateDynamicsDeGroote::timeDerivativeActivation(
     return *m_activationDot;
 }
 
-void muscles::StateDynamicsDeGroote::setType()
+void internalforce::muscles::StateDynamicsDeGroote::setType()
 {
-    *m_stateType = muscles::STATE_TYPE::DE_GROOTE;
+    *m_stateType = internalforce::muscles::STATE_TYPE::DE_GROOTE;
 }

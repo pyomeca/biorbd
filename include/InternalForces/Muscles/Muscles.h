@@ -327,7 +327,6 @@ public:
 protected:
     std::shared_ptr<std::vector<MuscleGroup>>
             m_mus; ///< Holder for muscle groups
-
 };
 
 }

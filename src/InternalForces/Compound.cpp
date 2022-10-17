@@ -5,7 +5,6 @@
 #include "Utils/Vector3d.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "InternalForces/PathModifiers.h"
-#include "InternalForces/Muscles/State.h"
 
 using namespace BIORBD_NAMESPACE;
 

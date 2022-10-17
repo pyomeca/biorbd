@@ -2,9 +2,8 @@
 #include "InternalForces/Muscles/FatigueParameters.h"
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
 
-muscles::FatigueParameters::FatigueParameters(
+internalforce::muscles::FatigueParameters::FatigueParameters(
     const utils::Scalar& _fatigueRate,
     const utils::Scalar& _recoveryRate,
     const utils::Scalar& _developFactor,
@@ -17,16 +16,16 @@ muscles::FatigueParameters::FatigueParameters(
 
 }
 
-muscles::FatigueParameters
-muscles::FatigueParameters::DeepCopy() const
+internalforce::muscles::FatigueParameters
+internalforce::muscles::FatigueParameters::DeepCopy() const
 {
-    muscles::FatigueParameters copy;
+    internalforce::muscles::FatigueParameters copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void muscles::FatigueParameters::DeepCopy(const
-        muscles::FatigueParameters &other)
+void internalforce::muscles::FatigueParameters::DeepCopy(const
+        internalforce::muscles::FatigueParameters &other)
 {
     *m_fatigueRate = *other.m_fatigueRate;
     *m_recoveryRate = *other.m_recoveryRate;
@@ -34,46 +33,46 @@ void muscles::FatigueParameters::DeepCopy(const
     *m_recoveryFactor = *other.m_recoveryFactor;
 }
 
-void muscles::FatigueParameters::setFatigueRate(
+void internalforce::muscles::FatigueParameters::setFatigueRate(
     const utils::Scalar& fatigueRate)
 {
     *m_fatigueRate = fatigueRate;
 }
-const utils::Scalar& muscles::FatigueParameters::fatigueRate()
+const utils::Scalar& internalforce::muscles::FatigueParameters::fatigueRate()
 const
 {
     return *m_fatigueRate;
 }
 
-void muscles::FatigueParameters::setRecoveryRate(
+void internalforce::muscles::FatigueParameters::setRecoveryRate(
     const utils::Scalar& recoveryRate)
 {
     *m_recoveryRate = recoveryRate;
 }
-const utils::Scalar& muscles::FatigueParameters::recoveryRate()
+const utils::Scalar& internalforce::muscles::FatigueParameters::recoveryRate()
 const
 {
     return *m_recoveryRate;
 }
 
-void muscles::FatigueParameters::setDevelopFactor(
+void internalforce::muscles::FatigueParameters::setDevelopFactor(
     const utils::Scalar& developFactor)
 {
     *m_developFactor = developFactor;
 }
-const utils::Scalar& muscles::FatigueParameters::developFactor()
+const utils::Scalar& internalforce::muscles::FatigueParameters::developFactor()
 const
 {
     return *m_developFactor;
 }
 
-void muscles::FatigueParameters::setRecoveryFactor(
+void internalforce::muscles::FatigueParameters::setRecoveryFactor(
     const utils::Scalar& recoveryFactor)
 {
     *m_recoveryFactor = recoveryFactor;
 }
 const utils::Scalar&
-muscles::FatigueParameters::recoveryFactor() const
+internalforce::muscles::FatigueParameters::recoveryFactor() const
 {
     return *m_recoveryFactor;
 }

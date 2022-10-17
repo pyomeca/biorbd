@@ -121,6 +121,7 @@ public:
     /// \return The state type
     ///
     STATE_TYPE type() const;
+
 protected:
     ///
     /// \brief Set the type to simple_state

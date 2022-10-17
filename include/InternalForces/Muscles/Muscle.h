@@ -2,7 +2,8 @@
 #define BIORBD_MUSCLES_H
 
 #include "biorbdConfig.h"
-#include "InternalForces/Muscles/Compound.h"
+#include "InternalForces/Compound.h"
+#include "InternalForces/Muscles/MusclesEnums.h"
 #include "Utils/Scalar.h"
 
 namespace BIORBD_NAMESPACE
@@ -253,6 +254,7 @@ public:
     void setState(
         const State &emg);
 
+
     ///
     /// \brief Return the dynamic state
     /// \return The dynamic state
@@ -274,6 +276,51 @@ public:
     const utils::Scalar& activationDot(
         const State& state,
         bool alreadyNormalized = false) const;
+
+    ///
+    /// \brief Computes and returns the forces norm from the EMG
+    /// \param emg EMG data
+    /// \return The computed forces from the EMG
+    ///
+    virtual const utils::Scalar& force(
+        const State& emg) = 0;
+
+    ///
+    /// \brief Return the computed force norm from EMG
+    /// \param model The joints model
+    /// \param Q The generalized coordinates of the model
+    /// \param Qdot The generalized velocities of the model
+    /// \param emg EMG data
+    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
+    /// \return The computed force from EMG
+    ///
+    virtual const utils::Scalar& force(
+        rigidbody::Joints& model,
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& Qdot,
+        const State& emg,
+        int updateKin = 2) = 0;
+
+    ///
+    /// \brief Return the computed force norm from EMG
+    /// \param model The joints model
+    /// \param Q The generalized coordinates of the model
+    /// \param emg EMG data
+    /// \param updateKin Update kinematics (0: don't update, 1:only muscles, [2: both kinematics and muscles])
+    /// \return The computed force from EMG
+    ///
+    virtual const utils::Scalar& force(
+        rigidbody::Joints& model,
+        const rigidbody::GeneralizedCoordinates& Q,
+        const State& emg,
+        int updateKin = 2) = 0;
+
+    ///
+    /// \brief Return the type of the muscle
+    /// \return The type of the muscle
+    ///
+    MUSCLE_TYPE type() const;
+
 protected:
     ///
     /// \brief Computer the forces from a specific emg
@@ -290,12 +337,18 @@ protected:
     virtual utils::Scalar getForceFromActivation(const
             State &emg) = 0;
 
+    ///
+    /// \brief Set the type of muscle
+    ///
+    virtual void setType();
+
     std::shared_ptr<Geometry>
     m_position; ///< The position of all the nodes of the muscle (0 being the origin and last being insertion
+    std::shared_ptr<MUSCLE_TYPE>
+    m_type; ///< The type of the muscle
     std::shared_ptr<Characteristics>
     m_characteristics; ///< The muscle characteristics
     std::shared_ptr<State> m_state; ///< The dynamic state
-
 };
 
 }
