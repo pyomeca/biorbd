@@ -3,7 +3,11 @@ if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.0")
     cmake_policy(SET CMP0042 NEW)
 endif()
 
+<<<<<<< HEAD
 project(biorbd VERSION 1.9.6)
+=======
+project(biorbd VERSION 1.9.5)
+>>>>>>> master
 set(BIORBD_ROOT_FOLDER ${PROJECT_SOURCE_DIR})
 set (BIORBD_NAME_NO_SUFFIX ${PROJECT_NAME})
 set (CMAKE_CXX_STANDARD 11)
