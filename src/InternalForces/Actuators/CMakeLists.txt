@@ -1,5 +1,5 @@
 project(${BIORBD_NAME}_actuators)
-set(ACTUATOR_MODULE_NAME ${BIORBD_NAME}_actuators PARENT_SCOPE)
+set(ACTUATORS_MODULE_NAME ${BIORBD_NAME}_actuators PARENT_SCOPE)
 
 # Add the relevant files
 set(SRC_LIST_MODULE

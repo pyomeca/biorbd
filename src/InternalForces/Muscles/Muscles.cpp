@@ -13,6 +13,7 @@
 #include "InternalForces/Muscles/StateDynamics.h"
 
 using namespace BIORBD_NAMESPACE;
+
 internalforce::muscles::Muscles::Muscles() :
     m_mus(std::make_shared<std::vector<internalforce::muscles::MuscleGroup>>())
 {

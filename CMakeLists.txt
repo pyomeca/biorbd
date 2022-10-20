@@ -195,9 +195,8 @@ endif()
 
 if (MODULE_ACTUATORS)
     add_subdirectory("src/InternalForces/Actuators")
-list(APPEND BIORBD_MODULE_NAMES "${ACTUATORS_MODULE_NAME}")
+    list(APPEND BIORBD_MODULE_NAMES "${ACTUATORS_MODULE_NAME}")
 endif()
-
 
 
 # Add linker

@@ -1,5 +1,5 @@
 project(${BIORBD_NAME}_muscles)
-set(MUSCLE_MODULE_NAME ${BIORBD_NAME}_muscles PARENT_SCOPE)
+set(MUSCLES_MODULE_NAME ${BIORBD_NAME}_muscles PARENT_SCOPE)
 
 # Add the relevant files
 set(SRC_LIST_MODULE
