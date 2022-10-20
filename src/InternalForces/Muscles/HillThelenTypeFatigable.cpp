@@ -41,7 +41,7 @@ internalforce::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
     const utils::String &name,
     const internalforce::muscles::Geometry &geometry,
     const internalforce::muscles::Characteristics &characteristics,
-    const PathModifiers &pathModifiers,
+    const internalforce::PathModifiers &pathModifiers,
     internalforce::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
     internalforce::muscles::HillThelenType(name, geometry, characteristics, pathModifiers),
     internalforce::muscles::FatigueModel (dynamicFatigueType)
@@ -53,7 +53,7 @@ internalforce::muscles::HillThelenTypeFatigable::HillThelenTypeFatigable(
     const utils::String& name,
     const internalforce::muscles::Geometry& geometry,
     const internalforce::muscles::Characteristics& characteristics,
-    const PathModifiers& pathModifiers,
+    const internalforce::PathModifiers& pathModifiers,
     const internalforce::muscles::State& emg,
     internalforce::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
     internalforce::muscles::HillThelenType(name, geometry, characteristics, pathModifiers,

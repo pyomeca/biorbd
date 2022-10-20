@@ -77,7 +77,7 @@ public:
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
-        const PathModifiers& pathModifiers,
+        const internalforce::PathModifiers& pathModifiers,
         STATE_FATIGUE_TYPE dynamicFatigueType =
             STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
@@ -94,7 +94,7 @@ public:
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
-        const PathModifiers& pathModifiers,
+        const internalforce::PathModifiers& pathModifiers,
         const State& emg,
         STATE_FATIGUE_TYPE dynamicFatigueType =
             STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);

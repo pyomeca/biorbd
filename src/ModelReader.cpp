@@ -36,12 +36,13 @@
     #include "InternalForces/Muscles/FatigueParameters.h"
     #include "InternalForces/Muscles/State.h"
     #include "InternalForces/Muscles/Characteristics.h"
+    #include "InternalForces/Muscles/StateDynamicsBuchanan.h"
+
 #endif
 
 #if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES)
     #include "InternalForces/ViaPoint.h"
     #include "InternalForces/PathModifiers.h"
-    #include "InternalForces/Muscles/StateDynamicsBuchanan.h"
     #include "InternalForces/WrappingHalfCylinder.h"
 #endif
 

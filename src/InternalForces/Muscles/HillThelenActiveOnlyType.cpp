@@ -35,7 +35,7 @@ internalforce::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType(
     const utils::String &name,
     const internalforce::muscles::Geometry &geometry,
     const internalforce::muscles::Characteristics &characteristics,
-    const PathModifiers &pathModifiers) :
+    const internalforce::PathModifiers &pathModifiers) :
     internalforce::muscles::HillThelenType (name, geometry, characteristics, pathModifiers)
 {
     setType();
@@ -45,7 +45,7 @@ internalforce::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType(
     const utils::String& name,
     const internalforce::muscles::Geometry& geometry,
     const internalforce::muscles::Characteristics& characteristics,
-    const PathModifiers &pathModifiers,
+    const internalforce::PathModifiers &pathModifiers,
     const internalforce::muscles::State& emg) :
     internalforce::muscles::HillThelenType (name, geometry, characteristics, pathModifiers,
                                      emg)

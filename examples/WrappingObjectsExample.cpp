@@ -27,14 +27,15 @@ int main()
     Qdot.setZero();
 
     // Set all muscles to half of their maximal activation
-    std::vector<std::shared_ptr<muscles::State>> states;
+    std::vector<std::shared_ptr<internalforce::muscles::State>> states;
     for (unsigned int i=0; i<model.nbMuscles(); ++i) {
-        states.push_back(std::make_shared<muscles::State>(0, 0.5));
+        states.push_back(std::make_shared<internalforce::muscles::State>(0, 0.5));
     }
 
     // Proceed with the computation of joint torque from the muscles
     auto Tau = model.muscularJointTorque(states, Q, Qdot);
 
+    class Compound;
     // Compute the generalized accelerations using the Tau from muscles.
     // Please note that in forward dynamics setting, it is usually advised to
     // additionnal residual torques. You would add them here to Tau.

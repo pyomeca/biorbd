@@ -14,12 +14,9 @@
 #include "InternalForces/Muscles/FatigueState.h"
 #include "InternalForces/Muscles/FatigueDynamicState.h"
 #include "InternalForces/Muscles/FatigueDynamicStateXia.h"
-#include "InternalForces/PathModifiers.h"
 #include "InternalForces/Muscles/State.h"
 #include "InternalForces/Muscles/StateDynamics.h"
 #include "InternalForces/Muscles/StateDynamicsBuchanan.h"
-#include "InternalForces/WrappingObject.h"
-#include "InternalForces/WrappingHalfCylinder.h"
 #ifdef MODULE_STATIC_OPTIM
 #include "InternalForces/Muscles/StaticOptimization.h"
 #endif
@@ -100,7 +97,6 @@
 
 // Includes all neceressary files from the API
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/MusclesEnums.h"
-%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/Compound.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/Muscle.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/FatigueModel.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/HillType.h"

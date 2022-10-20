@@ -84,7 +84,7 @@ internalforce::muscles::HillType::HillType(
     const utils::String &name,
     const internalforce::muscles::Geometry &geometry,
     const internalforce::muscles::Characteristics &characteristics,
-    const PathModifiers &pathModifiers) :
+    const internalforce::PathModifiers &pathModifiers) :
     internalforce::muscles::Muscle(name,geometry,characteristics,pathModifiers),
     m_damping(std::make_shared<utils::Scalar>()),
     m_FlCE(std::make_shared<utils::Scalar>()),
@@ -107,7 +107,7 @@ internalforce::muscles::HillType::HillType(
     const utils::String& name,
     const internalforce::muscles::Geometry& geometry,
     const internalforce::muscles::Characteristics& characteristics,
-    const PathModifiers &pathModifiers,
+    const internalforce::PathModifiers &pathModifiers,
     const internalforce::muscles::State& state) :
     internalforce::muscles::Muscle(name,geometry,characteristics,pathModifiers,state),
     m_damping(std::make_shared<utils::Scalar>()),

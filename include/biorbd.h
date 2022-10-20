@@ -14,11 +14,11 @@
 #include "InternalForces/all.h"
 #endif
 
-#ifdef(MODULE_ACTUATORS)
+#ifdef MODULE_ACTUATORS
 #include "InternalForces/Actuators/all.h"
 #endif
 
-#ifdef(MODULE_MUSCLES)
+#ifdef MODULE_MUSCLES
 #include "InternalForces/Muscles/all.h"
 #endif
 

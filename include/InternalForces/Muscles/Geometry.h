@@ -91,7 +91,7 @@ public:
     void updateKinematics(
         rigidbody::Joints &model,
         const Characteristics& characteristics,
-        PathModifiers& pathModifiers,
+        internalforce::PathModifiers& pathModifiers,
         const rigidbody::GeneralizedCoordinates* Q = nullptr,
         const rigidbody::GeneralizedVelocity* Qdot = nullptr,
         int updateKin = 2);
@@ -235,7 +235,7 @@ protected:
     void _updateKinematics(
         const rigidbody::GeneralizedVelocity *Qdot,
         const Characteristics* characteristics = nullptr,
-        PathModifiers* pathModifiers = nullptr);
+        internalforce::PathModifiers* pathModifiers = nullptr);
 
     ///
     /// \brief Updates the kinematics and return the position of the origin node
@@ -273,7 +273,7 @@ protected:
     void setMusclesPointsInGlobal(
         rigidbody::Joints& model,
         const rigidbody::GeneralizedCoordinates& Q,
-        PathModifiers* pathModifiers = nullptr);
+        internalforce::PathModifiers* pathModifiers = nullptr);
 
 
     ///
@@ -284,7 +284,7 @@ protected:
     ///
     const utils::Scalar& length(
         const Characteristics* characteristics = nullptr,
-        PathModifiers* pathModifiers = nullptr);
+        internalforce::PathModifiers* pathModifiers = nullptr);
 
     ///
     /// \brief Update the kinematics, compute and return the muscle velocity assuming not via points nor wrapping objects

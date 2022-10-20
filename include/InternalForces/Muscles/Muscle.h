@@ -16,6 +16,7 @@ class Vector3d;
 
 namespace internalforce
 {
+
 namespace muscles
 {
 class Geometry;
@@ -26,7 +27,7 @@ class Muscles;
 ///
 /// \brief Base class of all muscle
 ///
-class BIORBD_API Muscle : public Compound
+class BIORBD_API Muscle : public internalforce::Compound
 {
     friend Muscles;
 
@@ -71,7 +72,7 @@ public:
         const utils::String& name,
         const Geometry& position,
         const Characteristics& characteristics,
-        const PathModifiers& pathModifiers);
+        const internalforce::PathModifiers& pathModifiers);
 
     ///
     /// \brief Construct a muscle
@@ -85,7 +86,7 @@ public:
         const utils::String& name,
         const Geometry& position,
         const Characteristics& characteristics,
-        const PathModifiers& pathModifiers,
+        const internalforce::PathModifiers& pathModifiers,
         const State& emg);
 
     ///

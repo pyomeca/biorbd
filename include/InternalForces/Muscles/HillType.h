@@ -70,7 +70,7 @@ public:
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
-        const PathModifiers& pathModifiers);
+        const internalforce::PathModifiers& pathModifiers);
 
     ///
     /// \brief Construct a Hill-type muscle
@@ -84,7 +84,7 @@ public:
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
-        const PathModifiers& pathModifiers,
+        const internalforce::PathModifiers& pathModifiers,
         const State& emg);
 
     ///

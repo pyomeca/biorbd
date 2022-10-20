@@ -27,7 +27,7 @@ internalforce::Compound::Compound(const utils::String &name) :
 
 internalforce::Compound::Compound(
     const utils::String &name,
-    const PathModifiers &pathModifiers) :
+    const internalforce::PathModifiers &pathModifiers) :
     m_name(std::make_shared<utils::String>(name)),
     m_pathChanger(std::make_shared<PathModifiers>(pathModifiers)),
     m_force(std::make_shared<utils::Scalar>(0))

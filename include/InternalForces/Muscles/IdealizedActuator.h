@@ -57,7 +57,7 @@ public:
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
-        const PathModifiers& pathModifiers);
+        const internalforce::PathModifiers& pathModifiers);
 
     ///
     /// \brief Construct an idealized actuator
@@ -71,7 +71,7 @@ public:
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
-        const PathModifiers& pathModifiers,
+        const internalforce::PathModifiers& pathModifiers,
         const State& emg);
 
     ///

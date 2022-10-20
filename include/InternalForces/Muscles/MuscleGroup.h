@@ -120,7 +120,7 @@ public:
         MUSCLE_TYPE type,
         const Geometry& geometry,
         const Characteristics& characteristics,
-        const PathModifiers& pathModifiers,
+        const internalforce::PathModifiers& pathModifiers,
         STATE_TYPE stateType =
             STATE_TYPE::NO_STATE_TYPE,
         STATE_FATIGUE_TYPE dynamicFatigueType =
