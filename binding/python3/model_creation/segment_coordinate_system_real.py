@@ -145,10 +145,6 @@ class SegmentCoordinateSystemReal:
         -------
         The mean homogenous matrix
         """
-
-        transpose = lambda mat: np.einsum("ijk->jik", mat)
-        matrix_muliplication = lambda mat, mat2: np.einsum("ijl,jkl->ikl", mat, mat2)
-
         mean_matrix = np.identity(4)
 
         # Perform an Arithmetic mean of each element
@@ -180,14 +176,15 @@ class SegmentCoordinateSystemReal:
 
         sequence = "xyz"
         tx, ty, tz = mean_rt[0:3, 3]
-        rx, ry, rz = self.to_euler(sequence)
+        rx, ry, rz = self.to_euler(mean_rt, sequence)
         return f"{rx:0.3f} {ry:0.3f} {rz:0.3f} {sequence} {tx:0.3f} {ty:0.3f} {tz:0.3f}"
 
-    def to_euler(self, sequence: str):
+    @staticmethod
+    def to_euler(rt, sequence: str) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         if sequence == "xyz":
-            rx = np.arctan2(-mean_rt[1, 2], mean_rt[2, 2])
-            ry = np.arcsin(mean_rt[0, 2])
-            rz = np.arctan2(-mean_rt[0, 1], mean_rt[0, 0])
+            rx = np.arctan2(-rt[1, 2, :], rt[2, 2, :])
+            ry = np.arcsin(rt[0, 2, :])
+            rz = np.arctan2(-rt[0, 1, :], rt[0, 0, :])
         else:
             raise NotImplementedError("This sequence is not implemented yet")
 
@@ -209,10 +206,15 @@ class SegmentCoordinateSystemReal:
         else:
             NotImplementedError("This multiplication is not implemented yet")
 
+    @staticmethod
+    def transpose_rt(rt: np.ndarray):
+        out = rt.transpose((1, 0, 2))
+        out[:3, 3, :] = np.einsum("ijk,jk->ik", -out[:3, :3, :], rt[:3, 3, :])
+        out[3, :3, :] = 0
+        return out
+
     @property
     def transpose(self):
         out = self.copy()
-        out.scs = out.scs.transpose((1, 0, 2))
-        out.scs[:3, 3, :] = np.einsum("ijk,jk->ik", -out.scs[:3, :3, :], self.scs[:3, 3, :])
-        out.scs[3, :3, :] = 0
+        out.scs = self.transpose_rt(self.scs)
         return out
