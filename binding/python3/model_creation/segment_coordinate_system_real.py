@@ -133,28 +133,53 @@ class SegmentCoordinateSystemReal:
     def copy(self):
         return SegmentCoordinateSystemReal(scs=copy(self.scs), parent_scs=self.parent_scs)
 
+    def mean(self) -> np.array:
+        """
+        Computes the closest homogenous matrix that approximates all the matrices
+
+        This is based on the dmuir answer on Stack Overflow
+        https://stackoverflow.com/questions/51517466/what-is-the-correct-way-to-average-several-rotation-matrices
+
+        Returns
+        -------
+        The mean homogenous matrix
+        """
+        transpose = lambda mat: np.einsum("ijk->jik", mat)
+        matrix_muliplication = lambda mat, mat2: np.einsum("ijl,jkl->ikl", mat, mat2)
+
+        mean_matrix = np.identity(4)
+
+        # Perform an Arithmetic mean of each element
+        arithmetic_mean_scs = np.nanmean(self.scs[:, :, :], axis=2)
+        mean_matrix[:3, 3] = arithmetic_mean_scs[:3, 3]
+
+        # Get minimized rotation matrix from the svd decomposition
+        u, s, v = np.linalg.svd(arithmetic_mean_scs[:3, :3])
+        mean_matrix[:3, :3] = u @ v
+        return mean_matrix
+
     def __str__(self):
+        rt = self.scs
         if self.is_in_global:
             rt = self.parent_scs.transpose @ self.scs if self.parent_scs else np.identity(4)[:, :, np.newaxis]
+        
+        mean_rt = self.mean()
+
+        sequence = "xyz"
+        tx, ty, tz = mean_rt[0:3, 3]
+        rx, ry, rz = self.to_euler(sequence)
+        return f"{rx:0.3f} {ry:0.3f} {rz:0.3f} {sequence} {tx:0.3f} {ty:0.3f} {tz:0.3f}"
+
+    def to_euler(self, sequence: str):
+        if sequence == "xyz":
+            rx = np.arctan2(-mean_rt[1, 2], mean_rt[2, 2])
+            ry = np.arcsin(mean_rt[0, 2])
+            rz = np.arctan2(-mean_rt[0, 1], mean_rt[0, 0])
         else:
-            rt = self.scs
-
-        tx = rt[0, 3, :]
-        ty = rt[1, 3, :]
-        tz = rt[2, 3, :]
-
-        rx = np.arctan2(-rt[1, 2, :], rt[2, 2, :])
-        ry = np.arcsin(rt[0, 2, :])
-        rz = np.arctan2(-rt[0, 1, :], rt[0, 0, :])
-
-        tx = np.nanmean(tx, axis=0)
-        ty = np.nanmean(ty, axis=0)
-        tz = np.nanmean(tz, axis=0)
-        rx = np.nanmean(rx, axis=0)
-        ry = np.nanmean(ry, axis=0)
-        rz = np.nanmean(rz, axis=0)
-
-        return f"{rx:0.3f} {ry:0.3f} {rz:0.3f} xyz {tx:0.3f} {ty:0.3f} {tz:0.3f}"
+            raise NotImplementedError("This sequence is not implemented yet")
+        
+        return rx, ry, rz
+            
 
     def __matmul__(self, other):
         if isinstance(other, SegmentCoordinateSystemReal):
