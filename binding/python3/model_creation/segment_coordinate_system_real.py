@@ -133,9 +133,10 @@ class SegmentCoordinateSystemReal:
     def copy(self):
         return SegmentCoordinateSystemReal(scs=copy(self.scs), parent_scs=self.parent_scs)
 
-    def mean(self) -> np.array:
+    @staticmethod
+    def mean_homogenous_matrix(matrix) -> np.ndarray:
         """
-        Computes the closest homogenous matrix that approximates all the matrices
+        Computes the closest homogenous matrix that approximates all the homogenous matrices
 
         This is based on the dmuir answer on Stack Overflow
         https://stackoverflow.com/questions/51517466/what-is-the-correct-way-to-average-several-rotation-matrices
@@ -144,13 +145,14 @@ class SegmentCoordinateSystemReal:
         -------
         The mean homogenous matrix
         """
+
         transpose = lambda mat: np.einsum("ijk->jik", mat)
         matrix_muliplication = lambda mat, mat2: np.einsum("ijl,jkl->ikl", mat, mat2)
 
         mean_matrix = np.identity(4)
 
         # Perform an Arithmetic mean of each element
-        arithmetic_mean_scs = np.nanmean(self.scs[:, :, :], axis=2)
+        arithmetic_mean_scs = np.nanmean(matrix, axis=2)
         mean_matrix[:3, 3] = arithmetic_mean_scs[:3, 3]
 
         # Get minimized rotation matrix from the svd decomposition
@@ -158,12 +160,23 @@ class SegmentCoordinateSystemReal:
         mean_matrix[:3, :3] = u @ v
         return mean_matrix
 
+    @property
+    def mean_scs(self) -> np.ndarray:
+        """
+        Computes the closest homogenous matrix that approximates all the scs
+
+        Returns
+        -------
+        The mean homogenous matrix
+        """
+        return self.mean_homogenous_matrix(self.scs)
+
     def __str__(self):
         rt = self.scs
         if self.is_in_global:
             rt = self.parent_scs.transpose @ self.scs if self.parent_scs else np.identity(4)[:, :, np.newaxis]
-        
-        mean_rt = self.mean()
+
+        mean_rt = self.mean_homogenous_matrix(rt)
 
         sequence = "xyz"
         tx, ty, tz = mean_rt[0:3, 3]
@@ -177,9 +190,8 @@ class SegmentCoordinateSystemReal:
             rz = np.arctan2(-mean_rt[0, 1], mean_rt[0, 0])
         else:
             raise NotImplementedError("This sequence is not implemented yet")
-        
+
         return rx, ry, rz
-            
 
     def __matmul__(self, other):
         if isinstance(other, SegmentCoordinateSystemReal):
