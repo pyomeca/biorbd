@@ -89,14 +89,24 @@ class MarkerReal:
             raise RuntimeError(f"All the values for {function} returned nan which is not permitted")
         return MarkerReal(name, parent_name, projected_p, is_technical=is_technical, is_anatomical=is_anatomical)
 
+    @property
+    def mean_position(self) -> np.ndarray:
+        """
+        Get the mean value of the marker position
+        """
+        # TODO, can be replaced by `return np.nanamean(self.position, axis=-1)` ?
+        p = np.array(self.position)
+        p = p if len(p.shape) == 1 else np.nanmean(p, axis=1)
+        p = p if len(p.shape) == 1 else np.nanmean(p, axis=0)
+        return p
+
+
     def __str__(self):
         # Define the print function, so it automatically formats things in the file properly
         out_string = f"marker {self.name}\n"
         out_string += f"\tparent {self.parent_name}\n"
 
-        p = np.array(self.position)
-        p = p if len(p.shape) == 1 else np.nanmean(p, axis=1)
-        p = p if len(p.shape) == 1 else np.nanmean(p, axis=0)
+        p = self.mean_position
         out_string += f"\tposition {p[0]:0.4f} {p[1]:0.4f} {p[2]:0.4f}\n"
         out_string += f"\ttechnical {1 if self.is_technical else 0}\n"
         out_string += f"\tanatomical {1 if self.is_anatomical else 0}\n"
