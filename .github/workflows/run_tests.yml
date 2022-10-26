@@ -1,6 +1,7 @@
 name: Run the tests
 
 on: [pull_request]
+
 jobs:
   build:
     strategy:
@@ -56,23 +57,12 @@ jobs:
           mamba list
         if: matrix.label == 'win-64'
 
-      - name: Setup environment variable
-        run: |
-          BIORBD_FOLDER=`pwd`
-          BIORBD_BUILD_FOLDER=$BIORBD_FOLDER/build
-          BIORBD_BUILD_COVERAGE_FOLDER=$BIORBD_FOLDER/build_coverage
-          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
-          echo "BIORBD_FOLDER="$BIORBD_FOLDER
-          echo "BIORBD_BUILD_FOLDER="$BIORBD_BUILD_FOLDER
-          echo "BIORBD_BUILD_COVERAGE_FOLDER="$BIORBD_BUILD_COVERAGE_FOLDER
-          echo "CONDA_ENV_PATH="$CONDA_ENV_PATH
-
       - name: Build biorbd UNIX
         run: |
-          cd $BIORBD_FOLDER
-          echo "BIORBD_BUILD_FOLDER="$BIORBD_BUILD_FOLDER
-          mkdir $BIORBD_BUILD_FOLDER
-          cd $BIORBD_BUILD_FOLDER
+          BIORBD_FOLDER=`pwd`
+          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
+          mkdir $BIORBD_FOLDER/build
+          cd $BIORBD_FOLDER/build
           cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
           make install
           cd $BIORBD_FOLDER
@@ -80,9 +70,10 @@ jobs:
   
       - name: Build biorbd WINDOWS
         run: |
-          cd $BIORBD_FOLDER
-          mkdir $BIORBD_BUILD_FOLDER
-          cd $BIORBD_BUILD_FOLDER
+          BIORBD_FOLDER=`pwd`
+          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
+          mkdir $BIORBD_FOLDER/build
+          cd $BIORBD_FOLDER/build
           cmake -GNinja -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
           cmake --build . --config Release --target install
           cd $BIORBD_FOLDER
