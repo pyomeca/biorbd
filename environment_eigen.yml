@@ -5,9 +5,9 @@ channels:
 - default
 dependencies:
 - python >=3.10
-- numpy
-- matplotlib
 - eigen
 - rbdl
 - scipy
 - ezc3d
+- tinyxml
+- ipopt
