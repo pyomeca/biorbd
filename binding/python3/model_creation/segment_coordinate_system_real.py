@@ -176,8 +176,8 @@ class SegmentCoordinateSystemReal:
 
         sequence = "xyz"
         tx, ty, tz = mean_rt[0:3, 3]
-        rx, ry, rz = self.to_euler(mean_rt, sequence)
-        return f"{rx:0.3f} {ry:0.3f} {rz:0.3f} {sequence} {tx:0.3f} {ty:0.3f} {tz:0.3f}"
+        rx, ry, rz = self.to_euler(mean_rt[:, :, np.newaxis], sequence)
+        return f"{rx[0]:0.3f} {ry[0]:0.3f} {rz[0]:0.3f} {sequence} {tx:0.3f} {ty:0.3f} {tz:0.3f}"
 
     @staticmethod
     def to_euler(rt, sequence: str) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
