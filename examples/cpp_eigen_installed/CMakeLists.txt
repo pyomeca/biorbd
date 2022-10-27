@@ -32,7 +32,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 find_package(IPOPT)
 if (IPOPT_FOUND)
     target_include_directories(${PROJECT_NAME} PUBLIC 
-        "${IPOPT_INCLUDE_DIR}"
+        ${IPOPT_INCLUDE_DIR}
     )
 endif()
 

@@ -89,6 +89,7 @@ jobs:
       - name: Test installed version on UNIX
         run: |
           BIORBD_FOLDER=`pwd`
+          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
           cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_eigen_installed
           mkdir build
           cd build
@@ -128,10 +129,11 @@ jobs:
       - name: Test installed version on WINDOWS
         run: |
           BIORBD_FOLDER=`pwd`
+          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
           cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_eigen_installed
           mkdir build
           cd build
-          cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH% -DCMAKE_BUILD_TYPE=Release ..
+          cmake -GNinja -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
           cmake --build . --config Release -j${{ steps.cpu-cores.outputs.count }}
           forwardDynamicsExample.exe
           cd $BIORBD_FOLDER
