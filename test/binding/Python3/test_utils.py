@@ -16,7 +16,7 @@ try:
 
     brbd_to_test.append(biorbd_casadi)
 except:
-    pass
+    biorbd_casadi = None
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
