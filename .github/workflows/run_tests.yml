@@ -137,7 +137,7 @@ jobs:
           cmake --build . --config Release -j${{ steps.cpu-cores.outputs.count }}
           forwardDynamicsExample.exe
           cd $BIORBD_FOLDER
-        if: matrix.label != 'win-64'
+        if: matrix.label == 'win-64'
 
       - name: Run python binder tests 
         run: |
