@@ -16,6 +16,7 @@ class Vector3d;
 
 namespace internalforce
 {
+class Compound;
 
 namespace muscles
 {
@@ -27,7 +28,7 @@ class Muscles;
 ///
 /// \brief Base class of all muscle
 ///
-class BIORBD_API Muscle : public internalforce::Compound
+class BIORBD_API Muscle : public Compound
 {
     friend Muscles;
 
@@ -343,12 +344,9 @@ protected:
     ///
     virtual void setType();
 
-    std::shared_ptr<Geometry>
-    m_position; ///< The position of all the nodes of the muscle (0 being the origin and last being insertion
-    std::shared_ptr<MUSCLE_TYPE>
-    m_type; ///< The type of the muscle
-    std::shared_ptr<Characteristics>
-    m_characteristics; ///< The muscle characteristics
+    std::shared_ptr<Geometry> m_position; ///< The position of all the nodes of the muscle (0 being the origin and last being insertion
+    std::shared_ptr<MUSCLE_TYPE> m_type; ///< The type of the muscle
+    std::shared_ptr<Characteristics> m_characteristics; ///< The muscle characteristics
     std::shared_ptr<State> m_state; ///< The dynamic state
 };
 

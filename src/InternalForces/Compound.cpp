@@ -10,7 +10,7 @@ using namespace BIORBD_NAMESPACE;
 
 internalforce::Compound::Compound() :
     m_name(std::make_shared<utils::String>("")),
-    m_pathChanger(std::make_shared<PathModifiers>()),
+    m_pathChanger(std::make_shared<internalforce::PathModifiers>()),
     m_force(std::make_shared<utils::Scalar>(0))
 {
 
@@ -18,7 +18,7 @@ internalforce::Compound::Compound() :
 
 internalforce::Compound::Compound(const utils::String &name) :
     m_name(std::make_shared<utils::String>(name)),
-    m_pathChanger(std::make_shared<PathModifiers>()),
+    m_pathChanger(std::make_shared<internalforce::PathModifiers>()),
     m_force(std::make_shared<utils::Scalar>(0))
 {
 
@@ -28,7 +28,7 @@ internalforce::Compound::Compound(
     const utils::String &name,
     const internalforce::PathModifiers &pathModifiers) :
     m_name(std::make_shared<utils::String>(name)),
-    m_pathChanger(std::make_shared<PathModifiers>(pathModifiers)),
+    m_pathChanger(std::make_shared<internalforce::PathModifiers>(pathModifiers)),
     m_force(std::make_shared<utils::Scalar>(0))
 {
 

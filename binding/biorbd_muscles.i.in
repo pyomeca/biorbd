@@ -10,6 +10,7 @@
 #include "InternalForces/Muscles/HillThelenType.h"
 #include "InternalForces/Muscles/IdealizedActuator.h"
 #include "InternalForces/Muscles/HillThelenTypeFatigable.h"
+#include "InternalForces/Muscles/HillDeGrooteTypeFatigable.h"
 #include "InternalForces/Muscles/FatigueParameters.h"
 #include "InternalForces/Muscles/FatigueState.h"
 #include "InternalForces/Muscles/FatigueDynamicState.h"
@@ -77,6 +78,15 @@
         return copy;
     }
 }
+%extend BIORBD_NAMESPACE::internalforce::muscles::HillDeGrooteTypeFatigable{
+    static BIORBD_NAMESPACE::internalforce::muscles::HillDeGrooteTypeFatigable DeepCopy(const BIORBD_NAMESPACE::internalforce::muscles::Muscle& other)
+    {
+        BIORBD_NAMESPACE::internalforce::muscles::HillDeGrooteTypeFatigable copy;
+        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::internalforce::muscles::HillDeGrooteTypeFatigable&>(other));
+        return copy;
+    }
+}
+
 
 // extension of muscle fatigueState casting
 %extend BIORBD_NAMESPACE::internalforce::muscles::FatigueDynamicStateXia{
@@ -103,6 +113,7 @@
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/HillDeGrooteType.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/HillThelenType.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/HillThelenTypeFatigable.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/HillDeGrooteTypeFatigable.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/IdealizedActuator.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/Muscles.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/MuscleGroup.h"
