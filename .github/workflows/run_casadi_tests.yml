@@ -129,7 +129,7 @@ jobs:
           cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_casadi_installed
           mkdir -p $BUILD_FOLDER
           cd $BUILD_FOLDER
-          cmake -GNinja -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
+          cmake -G"Visual Studio 17 2022" -Ax64 -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
           cmake --build . --config Release -j${{ steps.cpu-cores.outputs.count }}
           cp Release/forwardDynamicsExample.exe .
           ./forwardDynamicsExample.exe
