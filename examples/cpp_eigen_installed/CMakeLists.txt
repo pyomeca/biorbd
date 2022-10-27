@@ -30,9 +30,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	${TinyXML_INCLUDE_DIR}
 )
 find_package(IPOPT)
-target_include_directories(${PROJECT_NAME} PUBLIC 
-    "${IPOPT_INCLUDE_DIR}"
-)
+if (IPOPT_FOUND)
+    target_include_directories(${PROJECT_NAME} PUBLIC 
+        "${IPOPT_INCLUDE_DIR}"
+    )
+endif()
 
 # Linker and instalation
 target_link_libraries(${PROJECT_NAME} 
