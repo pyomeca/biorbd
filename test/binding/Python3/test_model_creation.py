@@ -1,32 +1,42 @@
 import os
+import pytest
 
 import numpy as np
-import biorbd
-from biorbd.model_creation import (
-    Axis,
-    BiomechanicalModel,
-    BiomechanicalModelReal,
-    C3dData,
-    Marker,
-    MarkerReal,
-    Mesh,
-    MeshReal,
-    Segment,
-    SegmentReal,
-    SegmentCoordinateSystemReal,
-    SegmentCoordinateSystem,
-    Translations, 
-    Rotations,
-)
+
+
+brbd_to_test = []
+try:
+    import biorbd
+
+    brbd_to_test.append(biorbd)
+except ModuleNotFoundError:
+    pass
+
+
 import ezc3d
 
-from de_leva import DeLevaTable
 
-
-def test_model_creation_from_static(remove_temporary: bool = True):
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_model_creation_from_static(brbd, remove_temporary: bool = True):
     """
     Produces a model from real data
     """
+    from biorbd.model_creation import (
+        Axis,
+        BiomechanicalModel,
+        BiomechanicalModelReal,
+        C3dData,
+        Marker,
+        MarkerReal,
+        Mesh,
+        MeshReal,
+        Segment,
+        SegmentReal,
+        SegmentCoordinateSystemReal,
+        SegmentCoordinateSystem,
+        Translations,
+        Rotations,
+    )
 
     kinematic_model_file_path = "temporary.bioMod"
 
@@ -145,7 +155,7 @@ def test_model_creation_from_static(remove_temporary: bool = True):
         os.remove(kinematic_model_file_path)
 
 
-def write_markers_to_c3d(save_path: str, model: biorbd.Model):
+def write_markers_to_c3d(save_path: str, model):
     q = np.zeros(model.nbQ())
     marker_names = tuple(name.to_string() for name in model.markerNames())
     marker_positions = np.array(tuple(m.to_array() for m in model.markers(q))).T[:, :, np.newaxis]
@@ -160,10 +170,29 @@ def write_markers_to_c3d(save_path: str, model: biorbd.Model):
     c3d.write(save_path)
 
 
-def test_model_creation_from_data(remove_temporary: bool = True):
+@pytest.mark.parametrize("brbd", brbd_to_test)
+def test_model_creation_from_data(brbd, remove_temporary: bool = True):
+    from biorbd.model_creation import (
+        Axis,
+        BiomechanicalModel,
+        BiomechanicalModelReal,
+        C3dData,
+        Marker,
+        MarkerReal,
+        Mesh,
+        MeshReal,
+        Segment,
+        SegmentReal,
+        SegmentCoordinateSystemReal,
+        SegmentCoordinateSystem,
+        Translations,
+        Rotations,
+    )
+    from de_leva import DeLevaTable
+
     kinematic_model_file_path = "temporary.bioMod"
     c3d_file_path = "temporary.c3d"
-    test_model_creation_from_static(remove_temporary=False)
+    test_model_creation_from_static(brbd, remove_temporary=False)
 
     # Prepare a fake model and a fake static from the previous test
     model = biorbd.Model(kinematic_model_file_path)

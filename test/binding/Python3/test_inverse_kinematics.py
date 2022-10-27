@@ -5,10 +5,12 @@ import pytest
 import numpy as np
 
 brbd_to_test = []
+try:
+    import biorbd
 
-import biorbd
-
-brbd_to_test.append(biorbd)
+    brbd_to_test.append(biorbd)
+except ModuleNotFoundError:
+    pass
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
