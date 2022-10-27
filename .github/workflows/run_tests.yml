@@ -49,21 +49,15 @@ jobs:
           
       - name: Install extra common dependencies
         run: | 
-          mamba install cmake git pkgconfig swig pytest pytest-cov black -cconda-forge
+          mamba install cmake git pkgconfig swig pytest -cconda-forge
           mamba list
           git submodule update --init --recursive
-
-      - name: Install Linux dependencies
-        run: |
-          mamba install codecov lcov -cconda-forge
-          mamba list
-        if: matrix.label == 'linux-64'
 
       - name: Build biorbd UNIX
         run: |
           BIORBD_FOLDER=`pwd`
           CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
-          mkdir $BIORBD_FOLDER/$BUILD_FOLDER
+          mkdir -p $BIORBD_FOLDER/$BUILD_FOLDER
           cd $BIORBD_FOLDER/$BUILD_FOLDER
           cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
           make install -j${{ steps.cpu-cores.outputs.count }}
@@ -91,8 +85,8 @@ jobs:
           BIORBD_FOLDER=`pwd`
           CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
           cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_eigen_installed
-          mkdir build
-          cd build
+          mkdir -p $BUILD_FOLDER
+          cd $BUILD_FOLDER
           cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
           make -j${{ steps.cpu-cores.outputs.count }}
           ./forwardDynamicsExample
@@ -103,8 +97,8 @@ jobs:
         run: |
           BIORBD_FOLDER=`pwd`
           CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
-          mkdir $BIORBD_FOLDER/build
-          cd $BIORBD_FOLDER/build
+          mkdir -p $BUILD_FOLDER
+          cd $BUILD_FOLDER
           cmake -G"Visual Studio 17 2022" -Ax64 -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
           cmake --build . --config Release --target install -j${{ steps.cpu-cores.outputs.count }}
           cd $BIORBD_FOLDER
@@ -131,8 +125,8 @@ jobs:
           BIORBD_FOLDER=`pwd`
           CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
           cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_eigen_installed
-          mkdir build
-          cd build
+          mkdir -p $BUILD_FOLDER
+          cd $BUILD_FOLDER
           cmake -GNinja -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
           cmake --build . --config Release -j${{ steps.cpu-cores.outputs.count }}
           forwardDynamicsExample.exe
