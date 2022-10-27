@@ -104,7 +104,8 @@ jobs:
       - name: Run tests WINDOWS
         run: |
           BIORBD_FOLDER=`pwd`
-          cd $BIORBD_FOLDER/$BUILD_FOLDER/test/Release
+          cd $BIORBD_FOLDER/$BUILD_FOLDER/test
+          cp Release/biorbd_eigen_tests.exe .
           ./biorbd_eigen_tests.exe
           cd $BIORBD_FOLDER
         if: matrix.label == 'win-64'
@@ -112,7 +113,8 @@ jobs:
       - name: Run c binder tests WINDOWS
         run: |
           BIORBD_FOLDER=`pwd`
-          cd $BIORBD_FOLDER/$BUILD_FOLDER/test/binding/c/Release
+          cd $BIORBD_FOLDER/$BUILD_FOLDER/test/binding/c
+          cp Release/biorbd_eigen_tests_binding_c.exe .
           ./biorbd_eigen_tests_binding_c.exe
           cd $BIORBD_FOLDER
         if: matrix.label == 'win-64'
@@ -126,6 +128,7 @@ jobs:
           cd $BUILD_FOLDER
           cmake -GNinja -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
           cmake --build . --config Release -j${{ steps.cpu-cores.outputs.count }}
+          cp Release/forwardDynamicsExample.exe .
           ./forwardDynamicsExample.exe
           cd $BIORBD_FOLDER
         if: matrix.label == 'win-64'
