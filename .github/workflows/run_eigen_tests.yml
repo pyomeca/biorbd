@@ -104,9 +104,7 @@ jobs:
       - name: Run tests WINDOWS
         run: |
           BIORBD_FOLDER=`pwd`
-          cd $BIORBD_FOLDER/$BUILD_FOLDER/test
-          pwd
-          ls
+          cd $BIORBD_FOLDER/$BUILD_FOLDER/test/Release
           ./biorbd_eigen_tests.exe
           cd $BIORBD_FOLDER
         if: matrix.label == 'win-64'
@@ -114,7 +112,7 @@ jobs:
       - name: Run c binder tests WINDOWS
         run: |
           BIORBD_FOLDER=`pwd`
-          cd $BIORBD_FOLDER/$BUILD_FOLDER/test/binding/c
+          cd $BIORBD_FOLDER/$BUILD_FOLDER/test/binding/c/Release
           ./biorbd_eigen_tests_binding_c.exe
           cd $BIORBD_FOLDER
         if: matrix.label == 'win-64'
