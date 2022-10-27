@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 set (CMAKE_CXX_STANDARD 11)
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
 
 set(FILE "forwardDynamicsExample.cpp")
 get_filename_component(FILE_NAME ${FILE} NAME_WE)
@@ -29,11 +29,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${EIGEN3_INCLUDE_DIR}
 	${TinyXML_INCLUDE_DIR}
 )
-if(NOT WIN32)
-    find_package(IPOPT REQUIRED)
-	target_include_directories(${PROJECT_NAME} PUBLIC 
-		${IPOPT_INCLUDE_DIR}
-	)
+find_package(IPOPT)
+if (IPOPT_FOUND)
+    target_include_directories(${PROJECT_NAME} PUBLIC 
+        ${IPOPT_INCLUDE_DIR}
+    )
 endif()
 
 # Linker and instalation

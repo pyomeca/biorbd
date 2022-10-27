@@ -1,4 +1,4 @@
-name: Run the Eigen tests
+name: Run the Casadi tests
 
 on: [pull_request]
 
@@ -13,13 +13,13 @@ jobs:
         include:
           - os: ubuntu-20.04
             label: linux-64
-            prefix: /usr/share/miniconda3/envs/biorbd_eigen
+            prefix: /usr/share/miniconda3/envs/biorbd_casadi
           - os: macos-latest
             label: osx-64
             prefix: /Users/runner/miniconda3/envs/biorbd_casadi
           - os: windows-latest
             label: win-64
-            prefix: C:\Miniconda3\envs\biorbd_eigen
+            prefix: C:\Miniconda3\envs\biorbd_casadi
     name: ${{ matrix.label }}
     runs-on: ${{ matrix.os }}
     defaults:
@@ -38,8 +38,8 @@ jobs:
           miniforge-variant: Mambaforge
           miniforge-version: latest
           use-mamba: true
-          activate-environment: biorbd_eigen
-          environment-file: environment_eigen.yml
+          activate-environment: biorbd_casadi
+          environment-file: environment_casadi.yml
         
       - name: Print mamba info
         run: | 
@@ -56,10 +56,10 @@ jobs:
       - name: Build biorbd UNIX
         run: |
           BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
+          CONDA_ENV_PATH=$CONDA/envs/biorbd_casadi
           mkdir -p $BIORBD_FOLDER/$BUILD_FOLDER
           cd $BIORBD_FOLDER/$BUILD_FOLDER
-          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
+          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_PYTHON3=ON ..
           make install -j${{ steps.cpu-cores.outputs.count }}
           cd $BIORBD_FOLDER
         if: matrix.label != 'win-64'
@@ -68,23 +68,15 @@ jobs:
         run: |
           BIORBD_FOLDER=`pwd`
           cd $BIORBD_FOLDER/$BUILD_FOLDER/test
-          ./biorbd_eigen_tests
-          cd $BIORBD_FOLDER
-        if: matrix.label != 'win-64'
-
-      - name: Run c binder tests UNIX
-        run: |
-          BIORBD_FOLDER=`pwd`
-          cd $BIORBD_FOLDER/$BUILD_FOLDER/test/binding/c
-          ./biorbd_eigen_tests_binding_c
+          ./biorbd_casadi_tests
           cd $BIORBD_FOLDER
         if: matrix.label != 'win-64'
 
       - name: Test installed version on UNIX
         run: |
           BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
-          cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_eigen_installed
+          CONDA_ENV_PATH=$CONDA/envs/biorbd_casadi
+          cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_casadi_installed
           mkdir -p $BUILD_FOLDER
           cd $BUILD_FOLDER
           cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
@@ -96,10 +88,10 @@ jobs:
       - name: Build biorbd WINDOWS
         run: |
           BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
+          CONDA_ENV_PATH=$CONDA/envs/biorbd_casadi
           mkdir -p $BUILD_FOLDER
           cd $BUILD_FOLDER
-          cmake -G"Visual Studio 17 2022" -Ax64 -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
+          cmake -G"Visual Studio 17 2022" -Ax64 -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Casadi" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_PYTHON3=ON ..
           cmake --build . --config Release --target install -j${{ steps.cpu-cores.outputs.count }}
           cd $BIORBD_FOLDER
         if: matrix.label == 'win-64'
@@ -108,25 +100,16 @@ jobs:
         run: |
           BIORBD_FOLDER=`pwd`
           cd $BIORBD_FOLDER/$BUILD_FOLDER/test
-          cp Release/biorbd_eigen_tests.exe .
-          ./biorbd_eigen_tests.exe
-          cd $BIORBD_FOLDER
-        if: matrix.label == 'win-64'
-
-      - name: Run c binder tests WINDOWS
-        run: |
-          BIORBD_FOLDER=`pwd`
-          cd $BIORBD_FOLDER/$BUILD_FOLDER/test/binding/c
-          cp Release/biorbd_eigen_tests_binding_c.exe .
-          ./biorbd_eigen_tests_binding_c.exe
+          cp Release/biorbd_casadi_tests.exe .
+          ./biorbd_casadi_tests.exe
           cd $BIORBD_FOLDER
         if: matrix.label == 'win-64'
 
       - name: Test installed version on WINDOWS
         run: |
           BIORBD_FOLDER=`pwd`
-          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
-          cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_eigen_installed
+          CONDA_ENV_PATH=$CONDA/envs/biorbd_casadi
+          cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_casadi_installed
           mkdir -p $BUILD_FOLDER
           cd $BUILD_FOLDER
           cmake -G"Visual Studio 17 2022" -Ax64 -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
@@ -147,5 +130,5 @@ jobs:
         run: | 
           BIORBD_FOLDER=`pwd`
           cd
-          python -c "import biorbd"
+          python -c "import biorbd_casadi"
           cd $BIORBD_FOLDER
