@@ -130,5 +130,5 @@ jobs:
         run: | 
           BIORBD_FOLDER=`pwd`
           cd
-          python -c "import biorbd"
+          python -c "import biorbd_casadi"
           cd $BIORBD_FOLDER
