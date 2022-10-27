@@ -72,14 +72,6 @@ jobs:
           cd $BIORBD_FOLDER
         if: matrix.label != 'win-64'
 
-      - name: Run c binder tests UNIX
-        run: |
-          BIORBD_FOLDER=`pwd`
-          cd $BIORBD_FOLDER/$BUILD_FOLDER/test/binding/c
-          ./biorbd_casadi_tests_binding_c
-          cd $BIORBD_FOLDER
-        if: matrix.label != 'win-64'
-
       - name: Test installed version on UNIX
         run: |
           BIORBD_FOLDER=`pwd`
@@ -110,15 +102,6 @@ jobs:
           cd $BIORBD_FOLDER/$BUILD_FOLDER/test
           cp Release/biorbd_casadi_tests.exe .
           ./biorbd_casadi_tests.exe
-          cd $BIORBD_FOLDER
-        if: matrix.label == 'win-64'
-
-      - name: Run c binder tests WINDOWS
-        run: |
-          BIORBD_FOLDER=`pwd`
-          cd $BIORBD_FOLDER/$BUILD_FOLDER/test/binding/c
-          cp Release/biorbd_casadi_tests_binding_c.exe .
-          ./biorbd_casadi_tests_binding_c.exe
           cd $BIORBD_FOLDER
         if: matrix.label == 'win-64'
 
