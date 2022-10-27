@@ -14,7 +14,7 @@ class Matrix;
 class Vector3d;
 }
 
-namespace internalforce
+namespace internal_forces
 {
 class Compound;
 
@@ -73,7 +73,7 @@ public:
         const utils::String& name,
         const Geometry& position,
         const Characteristics& characteristics,
-        const internalforce::PathModifiers& pathModifiers);
+        const internal_forces::PathModifiers& pathModifiers);
 
     ///
     /// \brief Construct a muscle
@@ -87,7 +87,7 @@ public:
         const utils::String& name,
         const Geometry& position,
         const Characteristics& characteristics,
-        const internalforce::PathModifiers& pathModifiers,
+        const internal_forces::PathModifiers& pathModifiers,
         const State& emg);
 
     ///

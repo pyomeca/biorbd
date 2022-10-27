@@ -11,8 +11,8 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::actuator::ActuatorGauss6p::ActuatorGauss6p() :
-    internalforce::actuator::Actuator(),
+internal_forces::actuator::ActuatorGauss6p::ActuatorGauss6p() :
+    internal_forces::actuator::Actuator(),
     m_k(std::make_shared<utils::Scalar>(4.3)),
     m_Tmax(std::make_shared<utils::Scalar>(0)),
     m_T0(std::make_shared<utils::Scalar>(0)),
@@ -31,9 +31,9 @@ internalforce::actuator::ActuatorGauss6p::ActuatorGauss6p() :
     setType();
 }
 
-internalforce::actuator::ActuatorGauss6p::ActuatorGauss6p(
-    const internalforce::actuator::ActuatorGauss6p &other) :
-    internalforce::actuator::Actuator(other),
+internal_forces::actuator::ActuatorGauss6p::ActuatorGauss6p(
+    const internal_forces::actuator::ActuatorGauss6p &other) :
+    internal_forces::actuator::Actuator(other),
     m_k(other.m_k),
     m_Tmax(other.m_Tmax),
     m_T0(other.m_T0),
@@ -51,7 +51,7 @@ internalforce::actuator::ActuatorGauss6p::ActuatorGauss6p(
 {
 
 }
-internalforce::actuator::ActuatorGauss6p::ActuatorGauss6p(
+internal_forces::actuator::ActuatorGauss6p::ActuatorGauss6p(
     int direction,
     const utils::Scalar& Tmax,
     const utils::Scalar& T0,
@@ -85,7 +85,7 @@ internalforce::actuator::ActuatorGauss6p::ActuatorGauss6p(
     setType();
 }
 
-internalforce::actuator::ActuatorGauss6p::ActuatorGauss6p(
+internal_forces::actuator::ActuatorGauss6p::ActuatorGauss6p(
     int direction,
     const utils::Scalar& Tmax,
     const utils::Scalar& T0,
@@ -120,23 +120,23 @@ internalforce::actuator::ActuatorGauss6p::ActuatorGauss6p(
     setType();
 }
 
-internalforce::actuator::ActuatorGauss6p::~ActuatorGauss6p()
+internal_forces::actuator::ActuatorGauss6p::~ActuatorGauss6p()
 {
 
 }
 
-internalforce::actuator::ActuatorGauss6p internalforce::actuator::ActuatorGauss6p::DeepCopy()
+internal_forces::actuator::ActuatorGauss6p internal_forces::actuator::ActuatorGauss6p::DeepCopy()
 const
 {
-    internalforce::actuator::ActuatorGauss6p copy;
+    internal_forces::actuator::ActuatorGauss6p copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::actuator::ActuatorGauss6p::DeepCopy(
-    const internalforce::actuator::ActuatorGauss6p &other)
+void internal_forces::actuator::ActuatorGauss6p::DeepCopy(
+    const internal_forces::actuator::ActuatorGauss6p &other)
 {
-    internalforce::actuator::Actuator::DeepCopy(other);
+    internal_forces::actuator::Actuator::DeepCopy(other);
     *m_k = *other.m_k;
     *m_Tmax = *other.m_Tmax;
     *m_T0 = *other.m_T0;
@@ -153,12 +153,12 @@ void internalforce::actuator::ActuatorGauss6p::DeepCopy(
     *m_qopt2 = *other.m_qopt2;
 }
 
-utils::Scalar internalforce::actuator::ActuatorGauss6p::torqueMax()
+utils::Scalar internal_forces::actuator::ActuatorGauss6p::torqueMax()
 {
     utils::Error::raise("torqueMax for ActuatorGauss6p must be called with Q and Qdot");
 }
 
-utils::Scalar internalforce::actuator::ActuatorGauss6p::torqueMax(
+utils::Scalar internal_forces::actuator::ActuatorGauss6p::torqueMax(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot)
 {
@@ -200,7 +200,7 @@ utils::Scalar internalforce::actuator::ActuatorGauss6p::torqueMax(
     return Tw * A * Ta;
 }
 
-void internalforce::actuator::ActuatorGauss6p::setType()
+void internal_forces::actuator::ActuatorGauss6p::setType()
 {
-    *m_type = internalforce::actuator::TYPE::GAUSS6P;
+    *m_type = internal_forces::actuator::TYPE::GAUSS6P;
 }

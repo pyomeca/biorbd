@@ -6,63 +6,63 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::WrappingSphere::WrappingSphere() :
-    internalforce::WrappingObject (),
+internal_forces::WrappingSphere::WrappingSphere() :
+    internal_forces::WrappingObject (),
     m_dia(std::make_shared<utils::Scalar>(0))
 {
     *m_typeOfNode = utils::NODE_TYPE::WRAPPING_SPHERE;
 }
 
-internalforce::WrappingSphere::WrappingSphere(
+internal_forces::WrappingSphere::WrappingSphere(
     const utils::Scalar& x,
     const utils::Scalar& y,
     const utils::Scalar& z,
     const utils::Scalar& diameter) :
-    internalforce::WrappingObject (x, y, z),
+    internal_forces::WrappingObject (x, y, z),
     m_dia(std::make_shared<utils::Scalar>(diameter))
 
 {
     *m_typeOfNode = utils::NODE_TYPE::WRAPPING_SPHERE;
 }
 
-internalforce::WrappingSphere::WrappingSphere(
+internal_forces::WrappingSphere::WrappingSphere(
     const utils::Scalar& x,
     const utils::Scalar& y,
     const utils::Scalar& z,
     const utils::Scalar& diameter,
     const utils::String &name,
     const utils::String &parentName) :
-    internalforce::WrappingObject (x, y, z, name, parentName),
+    internal_forces::WrappingObject (x, y, z, name, parentName),
     m_dia(std::make_shared<utils::Scalar>(diameter))
 {
     *m_typeOfNode = utils::NODE_TYPE::WRAPPING_SPHERE;
 }
 
-internalforce::WrappingSphere::WrappingSphere(
+internal_forces::WrappingSphere::WrappingSphere(
     const utils::Vector3d &v,
     const utils::Scalar& diameter) :
-    internalforce::WrappingObject(v),
+    internal_forces::WrappingObject(v),
     m_dia(std::make_shared<utils::Scalar>(diameter))
 {
     *m_typeOfNode = utils::NODE_TYPE::WRAPPING_SPHERE;
 }
 
-internalforce::WrappingSphere internalforce::WrappingSphere::DeepCopy()
+internal_forces::WrappingSphere internal_forces::WrappingSphere::DeepCopy()
 const
 {
-    internalforce::WrappingSphere copy;
+    internal_forces::WrappingSphere copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::WrappingSphere::DeepCopy(const
-        internalforce::WrappingSphere &other)
+void internal_forces::WrappingSphere::DeepCopy(const
+        internal_forces::WrappingSphere &other)
 {
-    internalforce::WrappingObject::DeepCopy(other);
+    internal_forces::WrappingObject::DeepCopy(other);
     *m_dia = *other.m_dia;
 }
 
-const utils::RotoTrans& internalforce::WrappingSphere::RT(
+const utils::RotoTrans& internal_forces::WrappingSphere::RT(
     rigidbody::Joints &,
     const rigidbody::GeneralizedCoordinates &,
     bool)
@@ -70,13 +70,13 @@ const utils::RotoTrans& internalforce::WrappingSphere::RT(
     return *m_RT;
 }
 
-void internalforce::WrappingSphere::setDiameter(
+void internal_forces::WrappingSphere::setDiameter(
     const utils::Scalar& val)
 {
     *m_dia = val;
 }
 
-const utils::Scalar& internalforce::WrappingSphere::diameter() const
+const utils::Scalar& internal_forces::WrappingSphere::diameter() const
 {
     return *m_dia;
 }

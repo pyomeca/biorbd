@@ -13,7 +13,7 @@ namespace utils
 class String;
 }
 
-namespace internalforce
+namespace internal_forces
 {
 class PathModifiers;
 
@@ -120,7 +120,7 @@ public:
         MUSCLE_TYPE type,
         const Geometry& geometry,
         const Characteristics& characteristics,
-        const internalforce::PathModifiers& pathModifiers,
+        const internal_forces::PathModifiers& pathModifiers,
         STATE_TYPE stateType =
             STATE_TYPE::NO_STATE_TYPE,
         STATE_FATIGUE_TYPE dynamicFatigueType =
@@ -140,7 +140,7 @@ public:
         MUSCLE_TYPE type,
         const Geometry& geometry,
         const Characteristics& characteristics,
-        const internalforce::PathModifiers& pathModifiers,
+        const internal_forces::PathModifiers& pathModifiers,
         STATE_FATIGUE_TYPE dynamicFatigueType);
 #endif
 

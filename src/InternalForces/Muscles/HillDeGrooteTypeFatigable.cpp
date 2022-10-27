@@ -6,105 +6,105 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable() :
-    internalforce::muscles::HillDeGrooteType(),
-    internalforce::muscles::FatigueModel (
-        internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE)
+internal_forces::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable() :
+    internal_forces::muscles::HillDeGrooteType(),
+    internal_forces::muscles::FatigueModel (
+        internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE)
 {
     setType();
 }
 
-internalforce::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable(
+internal_forces::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable(
     const utils::String &name,
-    const internalforce::muscles::Geometry &geometry,
-    const internalforce::muscles::Characteristics &characteristics,
-    internalforce::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
-    internalforce::muscles::HillDeGrooteType(name, geometry, characteristics),
-    internalforce::muscles::FatigueModel (dynamicFatigueType)
+    const internal_forces::muscles::Geometry &geometry,
+    const internal_forces::muscles::Characteristics &characteristics,
+    internal_forces::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
+    internal_forces::muscles::HillDeGrooteType(name, geometry, characteristics),
+    internal_forces::muscles::FatigueModel (dynamicFatigueType)
 {
     setType();
 }
 
-internalforce::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable(
+internal_forces::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable(
     const utils::String &name,
-    const internalforce::muscles::Geometry &geometry,
-    const internalforce::muscles::Characteristics &characteristics,
-    const internalforce::muscles::State &emg,
-    internalforce::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
-    internalforce::muscles::HillDeGrooteType(name, geometry, characteristics, emg),
-    internalforce::muscles::FatigueModel (dynamicFatigueType)
+    const internal_forces::muscles::Geometry &geometry,
+    const internal_forces::muscles::Characteristics &characteristics,
+    const internal_forces::muscles::State &emg,
+    internal_forces::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
+    internal_forces::muscles::HillDeGrooteType(name, geometry, characteristics, emg),
+    internal_forces::muscles::FatigueModel (dynamicFatigueType)
 {
     setType();
 }
 
-internalforce::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable(
+internal_forces::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable(
     const utils::String &name,
-    const internalforce::muscles::Geometry &geometry,
-    const internalforce::muscles::Characteristics &characteristics,
-    const internalforce::PathModifiers &pathModifiers,
-    internalforce::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
-    internalforce::muscles::HillDeGrooteType(name, geometry, characteristics, pathModifiers),
-    internalforce::muscles::FatigueModel (dynamicFatigueType)
+    const internal_forces::muscles::Geometry &geometry,
+    const internal_forces::muscles::Characteristics &characteristics,
+    const internal_forces::PathModifiers &pathModifiers,
+    internal_forces::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
+    internal_forces::muscles::HillDeGrooteType(name, geometry, characteristics, pathModifiers),
+    internal_forces::muscles::FatigueModel (dynamicFatigueType)
 {
     setType();
 }
 
-internalforce::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable(
+internal_forces::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable(
     const utils::String& name,
-    const internalforce::muscles::Geometry& geometry,
-    const internalforce::muscles::Characteristics& characteristics,
-    const internalforce::PathModifiers& pathModifiers,
-    const internalforce::muscles::State& emg,
-    internalforce::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
-    internalforce::muscles::HillDeGrooteType(name, geometry, characteristics, pathModifiers,
+    const internal_forces::muscles::Geometry& geometry,
+    const internal_forces::muscles::Characteristics& characteristics,
+    const internal_forces::PathModifiers& pathModifiers,
+    const internal_forces::muscles::State& emg,
+    internal_forces::muscles::STATE_FATIGUE_TYPE dynamicFatigueType) :
+    internal_forces::muscles::HillDeGrooteType(name, geometry, characteristics, pathModifiers,
                                     emg),
-    internalforce::muscles::FatigueModel (dynamicFatigueType)
+    internal_forces::muscles::FatigueModel (dynamicFatigueType)
 {
     setType();
 }
 
-internalforce::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable(
-    const internalforce::muscles::Muscle &other) :
-    internalforce::muscles::HillDeGrooteType (other),
-    internalforce::muscles::FatigueModel (
-        dynamic_cast<const internalforce::muscles::FatigueModel&>(other))
+internal_forces::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable(
+    const internal_forces::muscles::Muscle &other) :
+    internal_forces::muscles::HillDeGrooteType (other),
+    internal_forces::muscles::FatigueModel (
+        dynamic_cast<const internal_forces::muscles::FatigueModel&>(other))
 {
 
 }
 
-internalforce::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable(
-    const std::shared_ptr<internalforce::muscles::Muscle> other) :
-    internalforce::muscles::HillDeGrooteType (other),
-    internalforce::muscles::FatigueModel (
-        std::dynamic_pointer_cast<internalforce::muscles::FatigueModel>(other))
+internal_forces::muscles::HillDeGrooteTypeFatigable::HillDeGrooteTypeFatigable(
+    const std::shared_ptr<internal_forces::muscles::Muscle> other) :
+    internal_forces::muscles::HillDeGrooteType (other),
+    internal_forces::muscles::FatigueModel (
+        std::dynamic_pointer_cast<internal_forces::muscles::FatigueModel>(other))
 {
 
 }
 
-internalforce::muscles::HillDeGrooteTypeFatigable
-internalforce::muscles::HillDeGrooteTypeFatigable::DeepCopy() const
+internal_forces::muscles::HillDeGrooteTypeFatigable
+internal_forces::muscles::HillDeGrooteTypeFatigable::DeepCopy() const
 {
-    internalforce::muscles::HillDeGrooteTypeFatigable copy;
+    internal_forces::muscles::HillDeGrooteTypeFatigable copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::muscles::HillDeGrooteTypeFatigable::DeepCopy(
-    const internalforce::muscles::HillDeGrooteTypeFatigable &other)
+void internal_forces::muscles::HillDeGrooteTypeFatigable::DeepCopy(
+    const internal_forces::muscles::HillDeGrooteTypeFatigable &other)
 {
-    internalforce::muscles::HillDeGrooteType::DeepCopy(other);
-    internalforce::muscles::FatigueModel::DeepCopy(other);
+    internal_forces::muscles::HillDeGrooteType::DeepCopy(other);
+    internal_forces::muscles::FatigueModel::DeepCopy(other);
 }
 
-void internalforce::muscles::HillDeGrooteTypeFatigable::computeFlCE(
-    const internalforce::muscles::State &emg)
+void internal_forces::muscles::HillDeGrooteTypeFatigable::computeFlCE(
+    const internal_forces::muscles::State &emg)
 {
-    internalforce::muscles::HillDeGrooteType::computeFlCE(emg);
+    internal_forces::muscles::HillDeGrooteType::computeFlCE(emg);
     // Do something with m_FlCE and m_characteristics.fatigueParameters
     *m_FlCE *= m_fatigueState->activeFibers();
 }
 
-void internalforce::muscles::HillDeGrooteTypeFatigable::setType()
+void internal_forces::muscles::HillDeGrooteTypeFatigable::setType()
 {
-    *m_type = internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE;
+    *m_type = internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE;
 }

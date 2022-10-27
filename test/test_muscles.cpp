@@ -59,7 +59,7 @@ TEST(IdealizedActuator, unitTest)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::IdealizedActuator idealizedActuator(model.
+        internal_forces::muscles::IdealizedActuator idealizedActuator(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
         rigidbody::GeneralizedCoordinates Q(model);
@@ -73,7 +73,7 @@ TEST(IdealizedActuator, unitTest)
 
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::IdealizedActuator idealizedActuator(model.
+        internal_forces::muscles::IdealizedActuator idealizedActuator(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
         idealizedActuator.setName("nom");
@@ -86,7 +86,7 @@ TEST(IdealizedActuator, unitTest)
         rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
-        internalforce::muscles::IdealizedActuator idealizedActuator(model.
+        internal_forces::muscles::IdealizedActuator idealizedActuator(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
         SCALAR_TO_DOUBLE(velocityTrue, idealizedActuator.velocity(model, Q, qDot,
@@ -99,7 +99,7 @@ TEST(IdealizedActuator, unitTest)
 
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::IdealizedActuator idealizedActuator(model.
+        internal_forces::muscles::IdealizedActuator idealizedActuator(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
         rigidbody::GeneralizedCoordinates Q(model);
@@ -107,7 +107,7 @@ TEST(IdealizedActuator, unitTest)
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
         static double activationEmgForHillTypeTest(1);
-        internalforce::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+        internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(emg1, idealizedActuator.force(emg));
         SCALAR_TO_DOUBLE(emg2, idealizedActuator.force(model, Q, emg));
@@ -119,26 +119,26 @@ TEST(IdealizedActuator, unitTest)
 
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::IdealizedActuator idealizedActuatorOrigin(model.
+        internal_forces::muscles::IdealizedActuator idealizedActuatorOrigin(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
 
-        internalforce::muscles::IdealizedActuator idealizedActuatorNew(
+        internal_forces::muscles::IdealizedActuator idealizedActuatorNew(
             "newName",
             idealizedActuatorOrigin.position(),
             idealizedActuatorOrigin.characteristics());
 
         EXPECT_STREQ(idealizedActuatorNew.name().c_str(), "newName");
         EXPECT_EQ(idealizedActuatorNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
+                  internal_forces::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::IdealizedActuator idealizedActuatorOrigin(model.
+        internal_forces::muscles::IdealizedActuator idealizedActuatorOrigin(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
 
-        internalforce::muscles::IdealizedActuator idealizedActuatorNew(
+        internal_forces::muscles::IdealizedActuator idealizedActuatorNew(
             "newName",
             idealizedActuatorOrigin.position(),
             idealizedActuatorOrigin.characteristics(),
@@ -146,30 +146,30 @@ TEST(IdealizedActuator, unitTest)
 
         EXPECT_STREQ(idealizedActuatorNew.name().c_str(), "newName");
         EXPECT_EQ(idealizedActuatorNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
+                  internal_forces::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::IdealizedActuator idealizedActuatorOrigin(model.
+        internal_forces::muscles::IdealizedActuator idealizedActuatorOrigin(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
 
-        internalforce::muscles::IdealizedActuator idealizedActuatorNew(
+        internal_forces::muscles::IdealizedActuator idealizedActuatorNew(
             "newName",
             idealizedActuatorOrigin.position(),
             idealizedActuatorOrigin.characteristics());
 
         EXPECT_STREQ(idealizedActuatorNew.name().c_str(), "newName");
         EXPECT_EQ(idealizedActuatorNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
+                  internal_forces::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::IdealizedActuator idealizedActuatorOrigin(model.
+        internal_forces::muscles::IdealizedActuator idealizedActuatorOrigin(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
 
-        internalforce::muscles::IdealizedActuator idealizedActuatorNew(
+        internal_forces::muscles::IdealizedActuator idealizedActuatorNew(
             "newName",
             idealizedActuatorOrigin.position(),
             idealizedActuatorOrigin.characteristics(),
@@ -177,15 +177,15 @@ TEST(IdealizedActuator, unitTest)
 
         EXPECT_STREQ(idealizedActuatorNew.name().c_str(), "newName");
         EXPECT_EQ(idealizedActuatorNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
+                  internal_forces::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::IdealizedActuator idealizedActuatorOrigin(model.
+        internal_forces::muscles::IdealizedActuator idealizedActuatorOrigin(model.
                 muscleGroup(muscleGroupForIdealizedActuator).
                 muscle(muscleForIdealizedActuator));
 
-        internalforce::muscles::IdealizedActuator idealizedActuatorNew(
+        internal_forces::muscles::IdealizedActuator idealizedActuatorNew(
             "newName",
             idealizedActuatorOrigin.position(),
             idealizedActuatorOrigin.characteristics(),
@@ -194,7 +194,7 @@ TEST(IdealizedActuator, unitTest)
 
         EXPECT_STREQ(idealizedActuatorNew.name().c_str(), "newName");
         EXPECT_EQ(idealizedActuatorNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
+                  internal_forces::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR);
 
     }
 }
@@ -203,15 +203,15 @@ TEST(IdealizedActuator, copy)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::IdealizedActuator idealizedActuator(
+        internal_forces::muscles::IdealizedActuator idealizedActuator(
             model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
                 muscleForIdealizedActuator));
         rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
 
-        internalforce::muscles::IdealizedActuator shallowCopy(idealizedActuator);
-        internalforce::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
-        internalforce::muscles::IdealizedActuator deepCopyLater;
+        internal_forces::muscles::IdealizedActuator shallowCopy(idealizedActuator);
+        internal_forces::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
+        internal_forces::muscles::IdealizedActuator deepCopyLater;
         deepCopyLater.DeepCopy(idealizedActuator);
 
         utils::String originalName(idealizedActuator.name());
@@ -229,13 +229,13 @@ TEST(IdealizedActuator, copy)
 
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::IdealizedActuator idealizedActuator(
+        internal_forces::muscles::IdealizedActuator idealizedActuator(
             model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
                 muscleForIdealizedActuator));
 
-        internalforce::muscles::IdealizedActuator shallowCopy(idealizedActuator);
-        internalforce::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
-        internalforce::muscles::IdealizedActuator deepCopyLater;
+        internal_forces::muscles::IdealizedActuator shallowCopy(idealizedActuator);
+        internal_forces::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
+        internal_forces::muscles::IdealizedActuator deepCopyLater;
         deepCopyLater.DeepCopy(idealizedActuator);
 
         {
@@ -247,7 +247,7 @@ TEST(IdealizedActuator, copy)
             EXPECT_NEAR(shallowCopyPennationAngle, 0.15707963, requiredPrecision);
         }
 
-        internalforce::muscles::Characteristics charac(idealizedActuator.characteristics());
+        internal_forces::muscles::Characteristics charac(idealizedActuator.characteristics());
         charac.setPennationAngle(0.523599);
         {
             SCALAR_TO_DOUBLE(pennationAngle,
@@ -267,7 +267,7 @@ TEST(IdealizedActuator, copy)
 
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::IdealizedActuator idealizedActuator(
+        internal_forces::muscles::IdealizedActuator idealizedActuator(
             model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
                 muscleForIdealizedActuator));
         rigidbody::GeneralizedCoordinates Q(model);
@@ -277,9 +277,9 @@ TEST(IdealizedActuator, copy)
         idealizedActuator.updateOrientations(model, Q, qDot);
 
 
-        internalforce::muscles::IdealizedActuator shallowCopy(idealizedActuator);
-        internalforce::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
-        internalforce::muscles::IdealizedActuator deepCopyLater;
+        internal_forces::muscles::IdealizedActuator shallowCopy(idealizedActuator);
+        internal_forces::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
+        internal_forces::muscles::IdealizedActuator deepCopyLater;
         deepCopyLater.DeepCopy(idealizedActuator);
 
 
@@ -296,7 +296,7 @@ TEST(IdealizedActuator, copy)
 
         {
             // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
-            internalforce::muscles::Characteristics charac(idealizedActuator.characteristics());
+            internal_forces::muscles::Characteristics charac(idealizedActuator.characteristics());
             charac.setPennationAngle(0.523599);
             utils::Vector3d insertion(
                 idealizedActuator.position().insertionInLocal());
@@ -337,9 +337,9 @@ TEST(IdealizedActuator, copy)
             rigidbody::NodeSegment newNode(newPosition, newName, "", true, true, "",
                                                    0);
             {
-                const_cast<internalforce::muscles::Geometry&>(idealizedActuator.position()).setOrigin(
+                const_cast<internal_forces::muscles::Geometry&>(idealizedActuator.position()).setOrigin(
                     newPosition);
-                const_cast<internalforce::muscles::Geometry&>
+                const_cast<internal_forces::muscles::Geometry&>
                 (idealizedActuator.position()).setInsertionInLocal(newPosition);
                 const utils::Vector3d& origin =
                     idealizedActuator.position().originInLocal();
@@ -349,9 +349,9 @@ TEST(IdealizedActuator, copy)
                 EXPECT_STREQ(insertion.utils::Node::name().c_str(), oldName.c_str());
             }
             {
-                const_cast<internalforce::muscles::Geometry&>(idealizedActuator.position()).setOrigin(
+                const_cast<internal_forces::muscles::Geometry&>(idealizedActuator.position()).setOrigin(
                     newNode);
-                const_cast<internalforce::muscles::Geometry&>
+                const_cast<internal_forces::muscles::Geometry&>
                 (idealizedActuator.position()).setInsertionInLocal(newNode);
                 const utils::Vector3d& origin =
                     idealizedActuator.position().originInLocal();
@@ -365,13 +365,13 @@ TEST(IdealizedActuator, copy)
 
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::IdealizedActuator idealizedActuator(
+        internal_forces::muscles::IdealizedActuator idealizedActuator(
             model.muscleGroup(muscleGroupForIdealizedActuator).muscle(
                 muscleForIdealizedActuator));
 
-        internalforce::muscles::IdealizedActuator shallowCopy(idealizedActuator);
-        internalforce::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
-        internalforce::muscles::IdealizedActuator deepCopyLater;
+        internal_forces::muscles::IdealizedActuator shallowCopy(idealizedActuator);
+        internal_forces::muscles::IdealizedActuator deepCopyNow(idealizedActuator.DeepCopy());
+        internal_forces::muscles::IdealizedActuator deepCopyLater;
         deepCopyLater.DeepCopy(idealizedActuator);
 
         {
@@ -407,7 +407,7 @@ TEST(hillType, unitTest)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillType hillType(
+        internal_forces::muscles::HillType hillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
         hillType.setName("newName");
@@ -416,7 +416,7 @@ TEST(hillType, unitTest)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillType hillType(
+        internal_forces::muscles::HillType hillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
         rigidbody::GeneralizedCoordinates Q(model);
@@ -425,7 +425,7 @@ TEST(hillType, unitTest)
         qDot = qDot.setOnes() / 10;
         hillType.updateOrientations(model, Q, qDot);
         static double activationEmgForHillTypeTest(1);
-        internalforce::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+        internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(flce, hillType.FlCE(emg));
         SCALAR_TO_DOUBLE(flpe, hillType.FlPE());
@@ -437,7 +437,7 @@ TEST(hillType, unitTest)
         EXPECT_NEAR(damping, 0.00019534599393617336, requiredPrecision);
 
         // with damping
-        internalforce::muscles::Characteristics charac(hillType.characteristics());
+        internal_forces::muscles::Characteristics charac(hillType.characteristics());
         SCALAR_TO_DOUBLE(forceDamped, hillType.force(emg));
         EXPECT_NEAR(forceDamped, 419.78610578875896, requiredPrecision);
         EXPECT_EQ(charac.useDamping(), 1);
@@ -450,52 +450,52 @@ TEST(hillType, unitTest)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillType originalHillType(
+        internal_forces::muscles::HillType originalHillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
 
-        internalforce::muscles::HillType newHillType(
+        internal_forces::muscles::HillType newHillType(
             "newName",
             originalHillType.position(),
             originalHillType.characteristics());
 
         EXPECT_STREQ(newHillType.name().c_str(), "newName");
-        EXPECT_EQ(newHillType.type(), internalforce::muscles::MUSCLE_TYPE::HILL);
+        EXPECT_EQ(newHillType.type(), internal_forces::muscles::MUSCLE_TYPE::HILL);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillType originalHillType(
+        internal_forces::muscles::HillType originalHillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
 
-        internalforce::muscles::HillType newHillType(
+        internal_forces::muscles::HillType newHillType(
             "newName",
             originalHillType.position(),
             originalHillType.characteristics(),
             originalHillType.state());
 
         EXPECT_STREQ(newHillType.name().c_str(), "newName");
-        EXPECT_EQ(newHillType.type(), internalforce::muscles::MUSCLE_TYPE::HILL);
+        EXPECT_EQ(newHillType.type(), internal_forces::muscles::MUSCLE_TYPE::HILL);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillType originalHillType(
+        internal_forces::muscles::HillType originalHillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
 
-        internalforce::muscles::HillType newHillType(
+        internal_forces::muscles::HillType newHillType(
             "newName",
             originalHillType.position(),
             originalHillType.characteristics(),
             originalHillType.pathModifier());
 
         EXPECT_STREQ(newHillType.name().c_str(), "newName");
-        EXPECT_EQ(newHillType.type(), internalforce::muscles::MUSCLE_TYPE::HILL);
+        EXPECT_EQ(newHillType.type(), internal_forces::muscles::MUSCLE_TYPE::HILL);
 
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillType hillType(
+        internal_forces::muscles::HillType hillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
         rigidbody::GeneralizedCoordinates Q(model);
@@ -503,7 +503,7 @@ TEST(hillType, unitTest)
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
         static double activationEmgForHillTypeTest(1);
-        internalforce::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+        internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(force, hillType.force(model, Q, qDot, emg, 2));
         EXPECT_NEAR(force, 419.78610578875896, requiredPrecision);
@@ -514,15 +514,15 @@ TEST(hillType, copy)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillType hillType(
+        internal_forces::muscles::HillType hillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
         rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
 
-        internalforce::muscles::HillType shallowCopy(hillType);
-        internalforce::muscles::HillType deepCopyNow(hillType.DeepCopy());
-        internalforce::muscles::HillType deepCopyLater;
+        internal_forces::muscles::HillType shallowCopy(hillType);
+        internal_forces::muscles::HillType deepCopyNow(hillType.DeepCopy());
+        internal_forces::muscles::HillType deepCopyLater;
         deepCopyLater.DeepCopy(hillType);
 
         utils::String originalName(hillType.name());
@@ -539,14 +539,14 @@ TEST(hillType, copy)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillType hillType(
+        internal_forces::muscles::HillType hillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
 
         //copies of the Hill Type muscle
-        internalforce::muscles::HillType shallowCopy(hillType);
-        internalforce::muscles::HillType deepCopyNow(hillType.DeepCopy());
-        internalforce::muscles::HillType deepCopyLater;
+        internal_forces::muscles::HillType shallowCopy(hillType);
+        internal_forces::muscles::HillType deepCopyNow(hillType.DeepCopy());
+        internal_forces::muscles::HillType deepCopyLater;
         deepCopyLater.DeepCopy(hillType);
 
         {
@@ -557,7 +557,7 @@ TEST(hillType, copy)
             EXPECT_NEAR(shallowCopyPennationAngle, 0.15707963, requiredPrecision);
         }
 
-        internalforce::muscles::Characteristics charac(hillType.characteristics());
+        internal_forces::muscles::Characteristics charac(hillType.characteristics());
         charac.setPennationAngle(0.523599);
         {
             SCALAR_TO_DOUBLE(pennationAngle, hillType.characteristics().pennationAngle());
@@ -576,7 +576,7 @@ TEST(hillType, copy)
 
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillType hillType(
+        internal_forces::muscles::HillType hillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
         rigidbody::GeneralizedCoordinates Q(model);
@@ -585,9 +585,9 @@ TEST(hillType, copy)
         qDot = qDot.setOnes() / 10;
         hillType.updateOrientations(model, Q);
 
-        internalforce::muscles::HillType shallowCopy(hillType);
-        internalforce::muscles::HillType deepCopyNow(hillType.DeepCopy());
-        internalforce::muscles::HillType deepCopyLater;
+        internal_forces::muscles::HillType shallowCopy(hillType);
+        internal_forces::muscles::HillType deepCopyNow(hillType.DeepCopy());
+        internal_forces::muscles::HillType deepCopyLater;
         deepCopyLater.DeepCopy(hillType);
 
         {
@@ -602,7 +602,7 @@ TEST(hillType, copy)
         }
 
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
-        internalforce::muscles::Characteristics charac(hillType.characteristics());
+        internal_forces::muscles::Characteristics charac(hillType.characteristics());
         charac.setPennationAngle(0.523599);
         utils::Vector3d insertion(hillType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
@@ -634,13 +634,13 @@ TEST(hillType, copy)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillType hillType(
+        internal_forces::muscles::HillType hillType(
             model.muscleGroup(muscleGroupForHillType).muscle(
                 muscleForHillType));
 
-        internalforce::muscles::HillType shallowCopy(hillType);
-        internalforce::muscles::HillType deepCopyNow(hillType.DeepCopy());
-        internalforce::muscles::HillType deepCopyLater;
+        internal_forces::muscles::HillType shallowCopy(hillType);
+        internal_forces::muscles::HillType deepCopyNow(hillType.DeepCopy());
+        internal_forces::muscles::HillType deepCopyLater;
         deepCopyLater.DeepCopy(hillType);
 
         {
@@ -676,7 +676,7 @@ TEST(hillThelenType, unitTest)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenType hillThelenType(
+        internal_forces::muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
         hillThelenType.setName("newName");
@@ -684,7 +684,7 @@ TEST(hillThelenType, unitTest)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenType hillThelenType(
+        internal_forces::muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
         rigidbody::GeneralizedCoordinates Q(model);
@@ -694,7 +694,7 @@ TEST(hillThelenType, unitTest)
         model.updateMuscles(Q, 2);
         hillThelenType.updateOrientations(model, Q, qDot);
         static double activationEmgForHillTypeTest(1.0);
-        internalforce::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+        internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(flce, hillThelenType.FlCE(emg));
         SCALAR_TO_DOUBLE(flpe, hillThelenType.FlPE());
@@ -709,47 +709,47 @@ TEST(hillThelenType, unitTest)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenType hillThelenType(
+        internal_forces::muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        internalforce::muscles::HillThelenType hillThelenTypeNew(
+        internal_forces::muscles::HillThelenType hillThelenTypeNew(
             "newName",
             hillThelenType.position(),
             hillThelenType.characteristics());
 
         EXPECT_STREQ(hillThelenTypeNew.name().c_str(), "newName");
-        EXPECT_EQ(hillThelenTypeNew.type(), internalforce::muscles::MUSCLE_TYPE::HILL_THELEN);
+        EXPECT_EQ(hillThelenTypeNew.type(), internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenType hillThelenType(
+        internal_forces::muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        internalforce::muscles::HillThelenType hillThelenTypeNew(
+        internal_forces::muscles::HillThelenType hillThelenTypeNew(
             "newName",
             hillThelenType.position(),
             hillThelenType.characteristics(),
             hillThelenType.state());
 
         EXPECT_STREQ(hillThelenTypeNew.name().c_str(), "newName");
-        EXPECT_EQ(hillThelenTypeNew.type(), internalforce::muscles::MUSCLE_TYPE::HILL_THELEN);
+        EXPECT_EQ(hillThelenTypeNew.type(), internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenType hillThelenType(
+        internal_forces::muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        internalforce::muscles::HillThelenType hillThelenTypeNew(
+        internal_forces::muscles::HillThelenType hillThelenTypeNew(
             "newName",
             hillThelenType.position(),
             hillThelenType.characteristics(),
             hillThelenType.pathModifier());
 
         EXPECT_STREQ(hillThelenTypeNew.name().c_str(), "newName");
-        EXPECT_EQ(hillThelenTypeNew.type(), internalforce::muscles::MUSCLE_TYPE::HILL_THELEN);
+        EXPECT_EQ(hillThelenTypeNew.type(), internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN);
     }
 }
 
@@ -757,15 +757,15 @@ TEST(hillThelenType, copy)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenType hillThelenType(
+        internal_forces::muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
         rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
 
-        internalforce::muscles::HillThelenType shallowCopy(hillThelenType);
-        internalforce::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
-        internalforce::muscles::HillThelenType deepCopyLater;
+        internal_forces::muscles::HillThelenType shallowCopy(hillThelenType);
+        internal_forces::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
+        internal_forces::muscles::HillThelenType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
         utils::String originalName(hillThelenType.name());
@@ -782,13 +782,13 @@ TEST(hillThelenType, copy)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenType hillThelenType(
+        internal_forces::muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        internalforce::muscles::HillThelenType shallowCopy(hillThelenType);
-        internalforce::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
-        internalforce::muscles::HillThelenType deepCopyLater;
+        internal_forces::muscles::HillThelenType shallowCopy(hillThelenType);
+        internal_forces::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
+        internal_forces::muscles::HillThelenType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
         {
@@ -800,7 +800,7 @@ TEST(hillThelenType, copy)
             EXPECT_NEAR(shallowCopyPennationAngle, 0.15707963, requiredPrecision);
         }
 
-        internalforce::muscles::Characteristics charac(hillThelenType.characteristics());
+        internal_forces::muscles::Characteristics charac(hillThelenType.characteristics());
         charac.setPennationAngle(0.523599);
 
         {
@@ -821,7 +821,7 @@ TEST(hillThelenType, copy)
 
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenType hillThelenType(
+        internal_forces::muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
         rigidbody::GeneralizedCoordinates Q(model);
@@ -830,9 +830,9 @@ TEST(hillThelenType, copy)
         qDot = qDot.setOnes() / 10;
         hillThelenType.updateOrientations(model, Q);
 
-        internalforce::muscles::HillThelenType shallowCopy(hillThelenType);
-        internalforce::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
-        internalforce::muscles::HillThelenType deepCopyLater;
+        internal_forces::muscles::HillThelenType shallowCopy(hillThelenType);
+        internal_forces::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
+        internal_forces::muscles::HillThelenType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
         {
@@ -847,7 +847,7 @@ TEST(hillThelenType, copy)
         }
 
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
-        internalforce::muscles::Characteristics charac(hillThelenType.characteristics());
+        internal_forces::muscles::Characteristics charac(hillThelenType.characteristics());
         charac.setPennationAngle(0.523599);
         utils::Vector3d insertion(hillThelenType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
@@ -879,13 +879,13 @@ TEST(hillThelenType, copy)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenType hillThelenType(
+        internal_forces::muscles::HillThelenType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        internalforce::muscles::HillThelenType shallowCopy(hillThelenType);
-        internalforce::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
-        internalforce::muscles::HillThelenType deepCopyLater;
+        internal_forces::muscles::HillThelenType shallowCopy(hillThelenType);
+        internal_forces::muscles::HillThelenType deepCopyNow(hillThelenType.DeepCopy());
+        internal_forces::muscles::HillThelenType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
         {
@@ -918,7 +918,7 @@ TEST(hillThelenTypeActive, unitTest)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenActiveOnlyType hillThelenType(
+        internal_forces::muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
         hillThelenType.setName("newName");
@@ -926,7 +926,7 @@ TEST(hillThelenTypeActive, unitTest)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenActiveOnlyType hillThelenType(
+        internal_forces::muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
         rigidbody::GeneralizedCoordinates Q(model);
@@ -936,7 +936,7 @@ TEST(hillThelenTypeActive, unitTest)
         model.updateMuscles(Q, 2);
         hillThelenType.updateOrientations(model, Q, qDot);
         static double activationEmgForHillTypeTest(1.0);
-        internalforce::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+        internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(flce, hillThelenType.FlCE(emg));
         SCALAR_TO_DOUBLE(flpe, hillThelenType.FlPE());
@@ -951,26 +951,26 @@ TEST(hillThelenTypeActive, unitTest)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenActiveOnlyType hillThelenType(
+        internal_forces::muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        internalforce::muscles::HillThelenActiveOnlyType hillThelenTypeNew(
+        internal_forces::muscles::HillThelenActiveOnlyType hillThelenTypeNew(
             "newName",
             hillThelenType.position(),
             hillThelenType.characteristics());
 
         EXPECT_STREQ(hillThelenTypeNew.name().c_str(), "newName");
         EXPECT_EQ(hillThelenTypeNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenActiveOnlyType hillThelenType(
+        internal_forces::muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        internalforce::muscles::HillThelenActiveOnlyType hillThelenTypeNew(
+        internal_forces::muscles::HillThelenActiveOnlyType hillThelenTypeNew(
             "newName",
             hillThelenType.position(),
             hillThelenType.characteristics(),
@@ -978,15 +978,15 @@ TEST(hillThelenTypeActive, unitTest)
 
         EXPECT_STREQ(hillThelenTypeNew.name().c_str(), "newName");
         EXPECT_EQ(hillThelenTypeNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenActiveOnlyType hillThelenType(
+        internal_forces::muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        internalforce::muscles::HillThelenActiveOnlyType hillThelenTypeNew(
+        internal_forces::muscles::HillThelenActiveOnlyType hillThelenTypeNew(
             "newName",
             hillThelenType.position(),
             hillThelenType.characteristics(),
@@ -994,7 +994,7 @@ TEST(hillThelenTypeActive, unitTest)
 
         EXPECT_STREQ(hillThelenTypeNew.name().c_str(), "newName");
         EXPECT_EQ(hillThelenTypeNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE);
     }
 }
 
@@ -1002,16 +1002,16 @@ TEST(hillThelenActiveType, copy)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenActiveOnlyType hillThelenType(
+        internal_forces::muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
         rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
 
-        internalforce::muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
-        internalforce::muscles::HillThelenActiveOnlyType deepCopyNow(
+        internal_forces::muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
+        internal_forces::muscles::HillThelenActiveOnlyType deepCopyNow(
             hillThelenType.DeepCopy());
-        internalforce::muscles::HillThelenActiveOnlyType deepCopyLater;
+        internal_forces::muscles::HillThelenActiveOnlyType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
         utils::String originalName(hillThelenType.name());
@@ -1028,14 +1028,14 @@ TEST(hillThelenActiveType, copy)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenActiveOnlyType hillThelenType(
+        internal_forces::muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        internalforce::muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
-        internalforce::muscles::HillThelenActiveOnlyType deepCopyNow(
+        internal_forces::muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
+        internal_forces::muscles::HillThelenActiveOnlyType deepCopyNow(
             hillThelenType.DeepCopy());
-        internalforce::muscles::HillThelenActiveOnlyType deepCopyLater;
+        internal_forces::muscles::HillThelenActiveOnlyType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
         {
@@ -1047,7 +1047,7 @@ TEST(hillThelenActiveType, copy)
             EXPECT_NEAR(shallowCopyPennationAngle, 0.15707963, requiredPrecision);
         }
 
-        internalforce::muscles::Characteristics charac(hillThelenType.characteristics());
+        internal_forces::muscles::Characteristics charac(hillThelenType.characteristics());
         charac.setPennationAngle(0.523599);
 
         {
@@ -1068,7 +1068,7 @@ TEST(hillThelenActiveType, copy)
 
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenActiveOnlyType hillThelenType(
+        internal_forces::muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
         rigidbody::GeneralizedCoordinates Q(model);
@@ -1077,10 +1077,10 @@ TEST(hillThelenActiveType, copy)
         qDot = qDot.setOnes() / 10;
         hillThelenType.updateOrientations(model, Q);
 
-        internalforce::muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
-        internalforce::muscles::HillThelenActiveOnlyType deepCopyNow(
+        internal_forces::muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
+        internal_forces::muscles::HillThelenActiveOnlyType deepCopyNow(
             hillThelenType.DeepCopy());
-        internalforce::muscles::HillThelenActiveOnlyType deepCopyLater;
+        internal_forces::muscles::HillThelenActiveOnlyType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
         {
@@ -1095,7 +1095,7 @@ TEST(hillThelenActiveType, copy)
         }
 
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
-        internalforce::muscles::Characteristics charac(hillThelenType.characteristics());
+        internal_forces::muscles::Characteristics charac(hillThelenType.characteristics());
         charac.setPennationAngle(0.523599);
         utils::Vector3d insertion(hillThelenType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
@@ -1127,14 +1127,14 @@ TEST(hillThelenActiveType, copy)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenActiveOnlyType hillThelenType(
+        internal_forces::muscles::HillThelenActiveOnlyType hillThelenType(
             model.muscleGroup(muscleGroupForHillThelenType).muscle(
                 muscleForHillThelenType));
 
-        internalforce::muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
-        internalforce::muscles::HillThelenActiveOnlyType deepCopyNow(
+        internal_forces::muscles::HillThelenActiveOnlyType shallowCopy(hillThelenType);
+        internal_forces::muscles::HillThelenActiveOnlyType deepCopyNow(
             hillThelenType.DeepCopy());
-        internalforce::muscles::HillThelenActiveOnlyType deepCopyLater;
+        internal_forces::muscles::HillThelenActiveOnlyType deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenType);
 
         {
@@ -1169,7 +1169,7 @@ TEST(hillDeGrooteTypeActive, unitTest)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
         hillDeGrooteType.setName("newName");
@@ -1177,7 +1177,7 @@ TEST(hillDeGrooteTypeActive, unitTest)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
         rigidbody::GeneralizedCoordinates Q(model);
@@ -1187,7 +1187,7 @@ TEST(hillDeGrooteTypeActive, unitTest)
         model.updateMuscles(Q, 2);
         hillDeGrooteType.updateOrientations(model, Q, qDot);
         static double activationEmgForHillTypeTest(1.0);
-        internalforce::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+        internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(flce, hillDeGrooteType.FlCE(emg));
         SCALAR_TO_DOUBLE(flpe, hillDeGrooteType.FlPE());
@@ -1202,26 +1202,26 @@ TEST(hillDeGrooteTypeActive, unitTest)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
 
-        internalforce::muscles::HillDeGrooteActiveOnlyType hillDeGrooteTypeNew(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType hillDeGrooteTypeNew(
             "newName",
             hillDeGrooteType.position(),
             hillDeGrooteType.characteristics());
 
         EXPECT_STREQ(hillDeGrooteTypeNew.name().c_str(), "newName");
         EXPECT_EQ(hillDeGrooteTypeNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
 
-        internalforce::muscles::HillDeGrooteActiveOnlyType hillDeGrooteTypeNew(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType hillDeGrooteTypeNew(
             "newName",
             hillDeGrooteType.position(),
             hillDeGrooteType.characteristics(),
@@ -1229,15 +1229,15 @@ TEST(hillDeGrooteTypeActive, unitTest)
 
         EXPECT_STREQ(hillDeGrooteTypeNew.name().c_str(), "newName");
         EXPECT_EQ(hillDeGrooteTypeNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
 
-        internalforce::muscles::HillDeGrooteActiveOnlyType hillDeGrooteTypeNew(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType hillDeGrooteTypeNew(
             "newName",
             hillDeGrooteType.position(),
             hillDeGrooteType.characteristics(),
@@ -1245,7 +1245,7 @@ TEST(hillDeGrooteTypeActive, unitTest)
 
         EXPECT_STREQ(hillDeGrooteTypeNew.name().c_str(), "newName");
         EXPECT_EQ(hillDeGrooteTypeNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE);
     }
 }
 
@@ -1253,16 +1253,16 @@ TEST(hillDeGrooteActiveType, copy)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
         rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
 
-        internalforce::muscles::HillDeGrooteActiveOnlyType shallowCopy(hillDeGrooteType);
-        internalforce::muscles::HillDeGrooteActiveOnlyType deepCopyNow(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType shallowCopy(hillDeGrooteType);
+        internal_forces::muscles::HillDeGrooteActiveOnlyType deepCopyNow(
             hillDeGrooteType.DeepCopy());
-        internalforce::muscles::HillDeGrooteActiveOnlyType deepCopyLater;
+        internal_forces::muscles::HillDeGrooteActiveOnlyType deepCopyLater;
         deepCopyLater.DeepCopy(hillDeGrooteType);
 
         utils::String originalName(hillDeGrooteType.name());
@@ -1279,14 +1279,14 @@ TEST(hillDeGrooteActiveType, copy)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
 
-        internalforce::muscles::HillDeGrooteActiveOnlyType shallowCopy(hillDeGrooteType);
-        internalforce::muscles::HillDeGrooteActiveOnlyType deepCopyNow(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType shallowCopy(hillDeGrooteType);
+        internal_forces::muscles::HillDeGrooteActiveOnlyType deepCopyNow(
             hillDeGrooteType.DeepCopy());
-        internalforce::muscles::HillDeGrooteActiveOnlyType deepCopyLater;
+        internal_forces::muscles::HillDeGrooteActiveOnlyType deepCopyLater;
         deepCopyLater.DeepCopy(hillDeGrooteType);
 
         {
@@ -1298,7 +1298,7 @@ TEST(hillDeGrooteActiveType, copy)
             EXPECT_NEAR(shallowCopyPennationAngle, 0, requiredPrecision);
         }
 
-        internalforce::muscles::Characteristics charac(hillDeGrooteType.characteristics());
+        internal_forces::muscles::Characteristics charac(hillDeGrooteType.characteristics());
         charac.setPennationAngle(0.523599);
 
         {
@@ -1319,7 +1319,7 @@ TEST(hillDeGrooteActiveType, copy)
 
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
         rigidbody::GeneralizedCoordinates Q(model);
@@ -1328,10 +1328,10 @@ TEST(hillDeGrooteActiveType, copy)
         qDot = qDot.setOnes() / 10;
         hillDeGrooteType.updateOrientations(model, Q);
 
-        internalforce::muscles::HillDeGrooteActiveOnlyType shallowCopy(hillDeGrooteType);
-        internalforce::muscles::HillDeGrooteActiveOnlyType deepCopyNow(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType shallowCopy(hillDeGrooteType);
+        internal_forces::muscles::HillDeGrooteActiveOnlyType deepCopyNow(
             hillDeGrooteType.DeepCopy());
-        internalforce::muscles::HillDeGrooteActiveOnlyType deepCopyLater;
+        internal_forces::muscles::HillDeGrooteActiveOnlyType deepCopyLater;
         deepCopyLater.DeepCopy(hillDeGrooteType);
 
         {
@@ -1346,7 +1346,7 @@ TEST(hillDeGrooteActiveType, copy)
         }
 
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
-        internalforce::muscles::Characteristics charac(hillDeGrooteType.characteristics());
+        internal_forces::muscles::Characteristics charac(hillDeGrooteType.characteristics());
         charac.setPennationAngle(0.523599);
         utils::Vector3d insertion(hillDeGrooteType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
@@ -1378,14 +1378,14 @@ TEST(hillDeGrooteActiveType, copy)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
 
-        internalforce::muscles::HillDeGrooteActiveOnlyType shallowCopy(hillDeGrooteType);
-        internalforce::muscles::HillDeGrooteActiveOnlyType deepCopyNow(
+        internal_forces::muscles::HillDeGrooteActiveOnlyType shallowCopy(hillDeGrooteType);
+        internal_forces::muscles::HillDeGrooteActiveOnlyType deepCopyNow(
             hillDeGrooteType.DeepCopy());
-        internalforce::muscles::HillDeGrooteActiveOnlyType deepCopyLater;
+        internal_forces::muscles::HillDeGrooteActiveOnlyType deepCopyLater;
         deepCopyLater.DeepCopy(hillDeGrooteType);
 
         {
@@ -1419,34 +1419,34 @@ static unsigned int muscleForhillDeGrooteTypeFatigable(1);
 TEST(hillDeGrooteTypeFatigable, unitTest)
 {
     {
-        internalforce::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
+        internal_forces::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
         hillDeGrooteTypeFatigable.setName("newName");
         EXPECT_STREQ(hillDeGrooteTypeFatigable.name().c_str(), "newName");
     }
     {
         Model model(modelPathForMuscleForce);
-        EXPECT_THROW(internalforce::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable(
+        EXPECT_THROW(internal_forces::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable(
                          model.muscleGroup(muscleGroupForhillDeGrooteTypeFatigable).muscle(
                              muscleForhillDeGrooteTypeFatigable)), std::bad_cast);
     }
     {
-        internalforce::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
+        internal_forces::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
 
-        internalforce::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigableNew(
+        internal_forces::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigableNew(
             "newName",
             hillDeGrooteTypeFatigable.position(),
             hillDeGrooteTypeFatigable.characteristics(),
-            internalforce::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
+            internal_forces::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
         EXPECT_STREQ(hillDeGrooteTypeFatigableNew.name().c_str(), "newName");
         EXPECT_EQ(hillDeGrooteTypeFatigableNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE);
     }
 
     {
-        internalforce::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
+        internal_forces::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
 
-        internalforce::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigableNew(
+        internal_forces::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigableNew(
             "newName",
             hillDeGrooteTypeFatigable.position(),
             hillDeGrooteTypeFatigable.characteristics(),
@@ -1454,61 +1454,61 @@ TEST(hillDeGrooteTypeFatigable, unitTest)
 
         EXPECT_STREQ(hillDeGrooteTypeFatigableNew.name().c_str(), "newName");
         EXPECT_EQ(hillDeGrooteTypeFatigableNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE);
     }
     {
-        internalforce::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
+        internal_forces::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
 
-        internalforce::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigableNew(
+        internal_forces::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigableNew(
             "newName",
             hillDeGrooteTypeFatigable.position(),
             hillDeGrooteTypeFatigable.characteristics(),
             hillDeGrooteTypeFatigable.pathModifier(),
-            internalforce::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
+            internal_forces::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
         EXPECT_STREQ(hillDeGrooteTypeFatigableNew.name().c_str(), "newName");
         EXPECT_EQ(hillDeGrooteTypeFatigableNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE);
     }
     {
-        internalforce::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
+        internal_forces::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
 
-        internalforce::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigableNew(
+        internal_forces::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigableNew(
             "nameMuscle",
             hillDeGrooteTypeFatigable.position(),
             hillDeGrooteTypeFatigable.characteristics(),
-            internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+            internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         EXPECT_EQ(hillDeGrooteTypeFatigableNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE);
     }
     {
-        internalforce::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
+        internal_forces::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
 
-        internalforce::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigableNew(
+        internal_forces::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigableNew(
             "nameMuscle",
             hillDeGrooteTypeFatigable.position(),
             hillDeGrooteTypeFatigable.characteristics(),
             hillDeGrooteTypeFatigable.pathModifier(),
-            internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+            internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         EXPECT_EQ(hillDeGrooteTypeFatigableNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE);
     }
 }
 TEST(hillDeGrooteTypeFatigable, copy)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
+        internal_forces::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
 
         rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
 
-        internalforce::muscles::HillDeGrooteTypeFatigable shallowCopy(hillDeGrooteTypeFatigable);
-        internalforce::muscles::HillDeGrooteTypeFatigable deepCopyNow(
+        internal_forces::muscles::HillDeGrooteTypeFatigable shallowCopy(hillDeGrooteTypeFatigable);
+        internal_forces::muscles::HillDeGrooteTypeFatigable deepCopyNow(
             hillDeGrooteTypeFatigable.DeepCopy());
-        internalforce::muscles::HillDeGrooteTypeFatigable deepCopyLater;
+        internal_forces::muscles::HillDeGrooteTypeFatigable deepCopyLater;
         deepCopyLater.DeepCopy(hillDeGrooteTypeFatigable);
 
         utils::String originalName(hillDeGrooteTypeFatigable.name());
@@ -1525,12 +1525,12 @@ TEST(hillDeGrooteTypeFatigable, copy)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
+        internal_forces::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
 
-        internalforce::muscles::HillDeGrooteTypeFatigable shallowCopy(hillDeGrooteTypeFatigable);
-        internalforce::muscles::HillDeGrooteTypeFatigable deepCopyNow(
+        internal_forces::muscles::HillDeGrooteTypeFatigable shallowCopy(hillDeGrooteTypeFatigable);
+        internal_forces::muscles::HillDeGrooteTypeFatigable deepCopyNow(
             hillDeGrooteTypeFatigable.DeepCopy());
-        internalforce::muscles::HillDeGrooteTypeFatigable deepCopyLater;
+        internal_forces::muscles::HillDeGrooteTypeFatigable deepCopyLater;
         deepCopyLater.DeepCopy(hillDeGrooteTypeFatigable);
 
         {
@@ -1541,7 +1541,7 @@ TEST(hillDeGrooteTypeFatigable, copy)
             EXPECT_NEAR(pennationAngle, 0., requiredPrecision);
             EXPECT_NEAR(shallowCopyPennationAngle, 0., requiredPrecision);
         }
-        internalforce::muscles::Characteristics charac(
+        internal_forces::muscles::Characteristics charac(
             hillDeGrooteTypeFatigable.characteristics());
         charac.setPennationAngle(0.523599);
         {
@@ -1562,12 +1562,12 @@ TEST(hillDeGrooteTypeFatigable, copy)
 
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
+        internal_forces::muscles::HillDeGrooteTypeFatigable hillDeGrooteTypeFatigable;
 
-        internalforce::muscles::HillDeGrooteTypeFatigable shallowCopy(hillDeGrooteTypeFatigable);
-        internalforce::muscles::HillDeGrooteTypeFatigable deepCopyNow(
+        internal_forces::muscles::HillDeGrooteTypeFatigable shallowCopy(hillDeGrooteTypeFatigable);
+        internal_forces::muscles::HillDeGrooteTypeFatigable deepCopyNow(
             hillDeGrooteTypeFatigable.DeepCopy());
-        internalforce::muscles::HillDeGrooteTypeFatigable deepCopyLater;
+        internal_forces::muscles::HillDeGrooteTypeFatigable deepCopyLater;
         deepCopyLater.DeepCopy(hillDeGrooteTypeFatigable);
 
         {
@@ -1600,7 +1600,7 @@ TEST(hillDeGrooteType, unitTest)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
         hillDeGrooteType.setName("newName");
@@ -1608,7 +1608,7 @@ TEST(hillDeGrooteType, unitTest)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
         rigidbody::GeneralizedCoordinates Q(model);
@@ -1618,7 +1618,7 @@ TEST(hillDeGrooteType, unitTest)
         model.updateMuscles(Q, 2);
         hillDeGrooteType.updateOrientations(model, Q, qDot);
         static double activationEmgForHillTypeTest(1.0);
-        internalforce::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
+        internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
 
         SCALAR_TO_DOUBLE(flce, hillDeGrooteType.FlCE(emg));
         SCALAR_TO_DOUBLE(flpe, hillDeGrooteType.FlPE());
@@ -1633,26 +1633,26 @@ TEST(hillDeGrooteType, unitTest)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
 
-        internalforce::muscles::HillDeGrooteType hillDeGrooteTypeNew(
+        internal_forces::muscles::HillDeGrooteType hillDeGrooteTypeNew(
             "newName",
             hillDeGrooteType.position(),
             hillDeGrooteType.characteristics());
 
         EXPECT_STREQ(hillDeGrooteTypeNew.name().c_str(), "newName");
         EXPECT_EQ(hillDeGrooteTypeNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
 
-        internalforce::muscles::HillDeGrooteType hillDeGrooteTypeNew(
+        internal_forces::muscles::HillDeGrooteType hillDeGrooteTypeNew(
             "newName",
             hillDeGrooteType.position(),
             hillDeGrooteType.characteristics(),
@@ -1660,15 +1660,15 @@ TEST(hillDeGrooteType, unitTest)
 
         EXPECT_STREQ(hillDeGrooteTypeNew.name().c_str(), "newName");
         EXPECT_EQ(hillDeGrooteTypeNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
 
-        internalforce::muscles::HillDeGrooteType hillDeGrooteTypeNew(
+        internal_forces::muscles::HillDeGrooteType hillDeGrooteTypeNew(
             "newName",
             hillDeGrooteType.position(),
             hillDeGrooteType.characteristics(),
@@ -1676,7 +1676,7 @@ TEST(hillDeGrooteType, unitTest)
 
         EXPECT_STREQ(hillDeGrooteTypeNew.name().c_str(), "newName");
         EXPECT_EQ(hillDeGrooteTypeNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE);
     }
 }
 
@@ -1684,16 +1684,16 @@ TEST(hillDeGrooteType, copy)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
         rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
 
-        internalforce::muscles::HillDeGrooteType shallowCopy(hillDeGrooteType);
-        internalforce::muscles::HillDeGrooteType deepCopyNow(
+        internal_forces::muscles::HillDeGrooteType shallowCopy(hillDeGrooteType);
+        internal_forces::muscles::HillDeGrooteType deepCopyNow(
             hillDeGrooteType.DeepCopy());
-        internalforce::muscles::HillDeGrooteType deepCopyLater;
+        internal_forces::muscles::HillDeGrooteType deepCopyLater;
         deepCopyLater.DeepCopy(hillDeGrooteType);
 
         utils::String originalName(hillDeGrooteType.name());
@@ -1710,14 +1710,14 @@ TEST(hillDeGrooteType, copy)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
 
-        internalforce::muscles::HillDeGrooteType shallowCopy(hillDeGrooteType);
-        internalforce::muscles::HillDeGrooteType deepCopyNow(
+        internal_forces::muscles::HillDeGrooteType shallowCopy(hillDeGrooteType);
+        internal_forces::muscles::HillDeGrooteType deepCopyNow(
             hillDeGrooteType.DeepCopy());
-        internalforce::muscles::HillDeGrooteType deepCopyLater;
+        internal_forces::muscles::HillDeGrooteType deepCopyLater;
         deepCopyLater.DeepCopy(hillDeGrooteType);
 
         {
@@ -1729,7 +1729,7 @@ TEST(hillDeGrooteType, copy)
             EXPECT_NEAR(shallowCopyPennationAngle, 0, requiredPrecision);
         }
 
-        internalforce::muscles::Characteristics charac(hillDeGrooteType.characteristics());
+        internal_forces::muscles::Characteristics charac(hillDeGrooteType.characteristics());
         charac.setPennationAngle(0.523599);
 
         {
@@ -1750,7 +1750,7 @@ TEST(hillDeGrooteType, copy)
 
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
         rigidbody::GeneralizedCoordinates Q(model);
@@ -1759,10 +1759,10 @@ TEST(hillDeGrooteType, copy)
         qDot = qDot.setOnes() / 10;
         hillDeGrooteType.updateOrientations(model, Q);
 
-        internalforce::muscles::HillDeGrooteType shallowCopy(hillDeGrooteType);
-        internalforce::muscles::HillDeGrooteType deepCopyNow(
+        internal_forces::muscles::HillDeGrooteType shallowCopy(hillDeGrooteType);
+        internal_forces::muscles::HillDeGrooteType deepCopyNow(
             hillDeGrooteType.DeepCopy());
-        internalforce::muscles::HillDeGrooteType deepCopyLater;
+        internal_forces::muscles::HillDeGrooteType deepCopyLater;
         deepCopyLater.DeepCopy(hillDeGrooteType);
 
         {
@@ -1777,7 +1777,7 @@ TEST(hillDeGrooteType, copy)
         }
 
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
-        internalforce::muscles::Characteristics charac(hillDeGrooteType.characteristics());
+        internal_forces::muscles::Characteristics charac(hillDeGrooteType.characteristics());
         charac.setPennationAngle(0.523599);
         utils::Vector3d insertion(hillDeGrooteType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
@@ -1809,14 +1809,14 @@ TEST(hillDeGrooteType, copy)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillDeGrooteType hillDeGrooteType(
+        internal_forces::muscles::HillDeGrooteType hillDeGrooteType(
             model.muscleGroup(muscleGroupFordeGrooteType).muscle(
                 muscleFordeGrooteType));
 
-        internalforce::muscles::HillDeGrooteType shallowCopy(hillDeGrooteType);
-        internalforce::muscles::HillDeGrooteType deepCopyNow(
+        internal_forces::muscles::HillDeGrooteType shallowCopy(hillDeGrooteType);
+        internal_forces::muscles::HillDeGrooteType deepCopyNow(
             hillDeGrooteType.DeepCopy());
-        internalforce::muscles::HillDeGrooteType deepCopyLater;
+        internal_forces::muscles::HillDeGrooteType deepCopyLater;
         deepCopyLater.DeepCopy(hillDeGrooteType);
 
         {
@@ -1849,17 +1849,17 @@ TEST(DynamicState, Normal)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::StateDynamics state(0.8, 0.5);
+        internal_forces::muscles::StateDynamics state(0.8, 0.5);
 
-        const internalforce::muscles::Muscle& m(model.muscle(0));
+        const internal_forces::muscles::Muscle& m(model.muscle(0));
         SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
         EXPECT_NEAR(actDot, 24.0, requiredPrecision);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::StateDynamics state(0.3, 0.5);
+        internal_forces::muscles::StateDynamics state(0.3, 0.5);
 
-        const internalforce::muscles::Muscle& m(model.muscle(0));
+        const internal_forces::muscles::Muscle& m(model.muscle(0));
         SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
         EXPECT_NEAR(actDot, -6.25, requiredPrecision);
     }
@@ -1869,39 +1869,39 @@ TEST(DynamicState, Buchanan)
 {
     {
         Model model(modelPathForBuchananDynamics);
-        static_cast<internalforce::muscles::StateDynamicsBuchanan&>(
+        static_cast<internal_forces::muscles::StateDynamicsBuchanan&>(
             model.muscles()[2]->state()).shapeFactor(5.5);
 
         // Test shape factor changes
         utils::Scalar shapeFactor0 =
-            static_cast<internalforce::muscles::StateDynamicsBuchanan&>(
+            static_cast<internal_forces::muscles::StateDynamicsBuchanan&>(
                 model.muscles()[0]->state()).shapeFactor();
         SCALAR_TO_DOUBLE(shapeFactor0_double, shapeFactor0);
         EXPECT_NEAR(shapeFactor0_double, -3, requiredPrecision);
 
         utils::Scalar shapeFactor1 =
-            static_cast<internalforce::muscles::StateDynamicsBuchanan&>(
+            static_cast<internal_forces::muscles::StateDynamicsBuchanan&>(
                 model.muscles()[1]->state()).shapeFactor();
         SCALAR_TO_DOUBLE(shapeFactor1_double, shapeFactor1);
         EXPECT_NEAR(shapeFactor1_double, 10, requiredPrecision);
 
         utils::Scalar shapeFactor2 =
-            static_cast<internalforce::muscles::StateDynamicsBuchanan&>(
+            static_cast<internal_forces::muscles::StateDynamicsBuchanan&>(
                 model.muscles()[2]->state()).shapeFactor();
         SCALAR_TO_DOUBLE(shapeFactor2_double, shapeFactor2);
         EXPECT_NEAR(shapeFactor2_double, 5.5, requiredPrecision);
 
-        internalforce::muscles::StateDynamics state(0.8, 0.5);
+        internal_forces::muscles::StateDynamics state(0.8, 0.5);
 
-        const internalforce::muscles::Muscle& m(model.muscle(0));
+        const internal_forces::muscles::Muscle& m(model.muscle(0));
         SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
         EXPECT_NEAR(actDot, -7.592740648890816, requiredPrecision);
     }
     {
         Model model(modelPathForBuchananDynamics);
-        internalforce::muscles::StateDynamics state(0.3, 0.5);
+        internal_forces::muscles::StateDynamics state(0.3, 0.5);
 
-        const internalforce::muscles::Muscle& m(model.muscle(0));
+        const internal_forces::muscles::Muscle& m(model.muscle(0));
         SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
         EXPECT_NEAR(actDot, -11.656766195499843, requiredPrecision);
     }
@@ -1911,17 +1911,17 @@ TEST(DynamicState, DeGroote)
 {
     {
         Model model(modelPathForDeGrooteDynamics);
-        internalforce::muscles::StateDynamics state(0.8, 0.5);
+        internal_forces::muscles::StateDynamics state(0.8, 0.5);
 
-        const internalforce::muscles::Muscle& m(model.muscle(0));
+        const internal_forces::muscles::Muscle& m(model.muscle(0));
         SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
         EXPECT_NEAR(actDot, 16.906809211183873, requiredPrecision);
     }
     {
         Model model(modelPathForDeGrooteDynamics);
-        internalforce::muscles::StateDynamics state(0.3, 0.5);
+        internal_forces::muscles::StateDynamics state(0.3, 0.5);
 
-        const internalforce::muscles::Muscle& m(model.muscle(0));
+        const internal_forces::muscles::Muscle& m(model.muscle(0));
         SCALAR_TO_DOUBLE(actDot, m.activationDot(state));
         EXPECT_NEAR(actDot, -11.027512997920336, requiredPrecision);
     }
@@ -1933,34 +1933,34 @@ static unsigned int muscleForHillThelenTypeFatigable(1);
 TEST(hillThelenTypeFatigable, unitTest)
 {
     {
-        internalforce::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        internal_forces::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
         hillThelenTypeFatigable.setName("newName");
         EXPECT_STREQ(hillThelenTypeFatigable.name().c_str(), "newName");
     }
     {
         Model model(modelPathForMuscleForce);
-        EXPECT_THROW(internalforce::muscles::HillThelenTypeFatigable hillThelenTypeFatigable(
+        EXPECT_THROW(internal_forces::muscles::HillThelenTypeFatigable hillThelenTypeFatigable(
                          model.muscleGroup(muscleGroupForHillThelenTypeFatigable).muscle(
                              muscleForHillThelenTypeFatigable)), std::bad_cast);
     }
     {
-        internalforce::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        internal_forces::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
-        internalforce::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+        internal_forces::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
             "newName",
             hillThelenTypeFatigable.position(),
             hillThelenTypeFatigable.characteristics(),
-            internalforce::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
+            internal_forces::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
         EXPECT_STREQ(hillThelenTypeFatigableNew.name().c_str(), "newName");
         EXPECT_EQ(hillThelenTypeFatigableNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
     }
 
     {
-        internalforce::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        internal_forces::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
-        internalforce::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+        internal_forces::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
             "newName",
             hillThelenTypeFatigable.position(),
             hillThelenTypeFatigable.characteristics(),
@@ -1968,46 +1968,46 @@ TEST(hillThelenTypeFatigable, unitTest)
 
         EXPECT_STREQ(hillThelenTypeFatigableNew.name().c_str(), "newName");
         EXPECT_EQ(hillThelenTypeFatigableNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
     }
     {
-        internalforce::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        internal_forces::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
-        internalforce::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+        internal_forces::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
             "newName",
             hillThelenTypeFatigable.position(),
             hillThelenTypeFatigable.characteristics(),
             hillThelenTypeFatigable.pathModifier(),
-            internalforce::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
+            internal_forces::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
         EXPECT_STREQ(hillThelenTypeFatigableNew.name().c_str(), "newName");
         EXPECT_EQ(hillThelenTypeFatigableNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
     }
     {
-        internalforce::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        internal_forces::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
-        internalforce::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+        internal_forces::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
             "nameMuscle",
             hillThelenTypeFatigable.position(),
             hillThelenTypeFatigable.characteristics(),
-            internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+            internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         EXPECT_EQ(hillThelenTypeFatigableNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
     }
     {
-        internalforce::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        internal_forces::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
-        internalforce::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
+        internal_forces::muscles::HillThelenTypeFatigable hillThelenTypeFatigableNew(
             "nameMuscle",
             hillThelenTypeFatigable.position(),
             hillThelenTypeFatigable.characteristics(),
             hillThelenTypeFatigable.pathModifier(),
-            internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+            internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         EXPECT_EQ(hillThelenTypeFatigableNew.type(),
-                  internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
+                  internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE);
     }
 }
 
@@ -2015,15 +2015,15 @@ TEST(hillThelenTypeFatigable, copy)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        internal_forces::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
         rigidbody::GeneralizedCoordinates Q(model);
         Q = Q.setOnes() / 10;
 
-        internalforce::muscles::HillThelenTypeFatigable shallowCopy(hillThelenTypeFatigable);
-        internalforce::muscles::HillThelenTypeFatigable deepCopyNow(
+        internal_forces::muscles::HillThelenTypeFatigable shallowCopy(hillThelenTypeFatigable);
+        internal_forces::muscles::HillThelenTypeFatigable deepCopyNow(
             hillThelenTypeFatigable.DeepCopy());
-        internalforce::muscles::HillThelenTypeFatigable deepCopyLater;
+        internal_forces::muscles::HillThelenTypeFatigable deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenTypeFatigable);
 
         utils::String originalName(hillThelenTypeFatigable.name());
@@ -2040,12 +2040,12 @@ TEST(hillThelenTypeFatigable, copy)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        internal_forces::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
-        internalforce::muscles::HillThelenTypeFatigable shallowCopy(hillThelenTypeFatigable);
-        internalforce::muscles::HillThelenTypeFatigable deepCopyNow(
+        internal_forces::muscles::HillThelenTypeFatigable shallowCopy(hillThelenTypeFatigable);
+        internal_forces::muscles::HillThelenTypeFatigable deepCopyNow(
             hillThelenTypeFatigable.DeepCopy());
-        internalforce::muscles::HillThelenTypeFatigable deepCopyLater;
+        internal_forces::muscles::HillThelenTypeFatigable deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenTypeFatigable);
 
         {
@@ -2056,7 +2056,7 @@ TEST(hillThelenTypeFatigable, copy)
             EXPECT_NEAR(pennationAngle, 0., requiredPrecision);
             EXPECT_NEAR(shallowCopyPennationAngle, 0., requiredPrecision);
         }
-        internalforce::muscles::Characteristics charac(
+        internal_forces::muscles::Characteristics charac(
             hillThelenTypeFatigable.characteristics());
         charac.setPennationAngle(0.523599);
         {
@@ -2077,12 +2077,12 @@ TEST(hillThelenTypeFatigable, copy)
 
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
+        internal_forces::muscles::HillThelenTypeFatigable hillThelenTypeFatigable;
 
-        internalforce::muscles::HillThelenTypeFatigable shallowCopy(hillThelenTypeFatigable);
-        internalforce::muscles::HillThelenTypeFatigable deepCopyNow(
+        internal_forces::muscles::HillThelenTypeFatigable shallowCopy(hillThelenTypeFatigable);
+        internal_forces::muscles::HillThelenTypeFatigable deepCopyNow(
             hillThelenTypeFatigable.DeepCopy());
-        internalforce::muscles::HillThelenTypeFatigable deepCopyLater;
+        internal_forces::muscles::HillThelenTypeFatigable deepCopyLater;
         deepCopyLater.DeepCopy(hillThelenTypeFatigable);
 
         {
@@ -2114,7 +2114,7 @@ TEST(hillThelenTypeFatigable, copy)
 #ifndef BIORBD_USE_CASADI_MATH
 TEST(FatigueState, unitTest)
 {
-    internalforce::muscles::FatigueState fatigueState;
+    internal_forces::muscles::FatigueState fatigueState;
     fatigueState.setState(0.0, 1.0, 0.0);
 
     SCALAR_TO_DOUBLE(activeFibers, fatigueState.activeFibers());
@@ -2128,11 +2128,11 @@ TEST(FatigueState, unitTest)
 
 TEST(FatigueState, copy)
 {
-    internalforce::muscles::FatigueState fatigueState;
+    internal_forces::muscles::FatigueState fatigueState;
 
-    internalforce::muscles::FatigueState shallowCopy(fatigueState);
-    internalforce::muscles::FatigueState deepCopyNow(fatigueState.DeepCopy());
-    internalforce::muscles::FatigueState deepCopyLater;
+    internal_forces::muscles::FatigueState shallowCopy(fatigueState);
+    internal_forces::muscles::FatigueState deepCopyNow(fatigueState.DeepCopy());
+    internal_forces::muscles::FatigueState deepCopyLater;
     deepCopyLater.DeepCopy(fatigueState);
 
 
@@ -2190,13 +2190,13 @@ TEST(FatigueDynamiqueState, DeepCopy)
     model.updateMuscles(Q, QDot, true);
 
     {
-        internalforce::muscles::HillThelenTypeFatigable muscle(model.muscleGroup(
+        internal_forces::muscles::HillThelenTypeFatigable muscle(model.muscleGroup(
                     muscleGroupForXiaDerivativeTest).muscle(
                     muscleForXiaDerivativeTest));
-        internalforce::muscles::FatigueDynamicStateXia fatigueDynamicStateXia;
+        internal_forces::muscles::FatigueDynamicStateXia fatigueDynamicStateXia;
         // Sanity check for the fatigue model
         EXPECT_EQ(fatigueDynamicStateXia.getType(),
-                  internalforce::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
+                  internal_forces::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
         // Initial value sanity check
         {
@@ -2206,7 +2206,7 @@ TEST(FatigueDynamiqueState, DeepCopy)
 
 #ifndef BIORBD_USE_CASADI_MATH
         // Apply the derivative
-        internalforce::muscles::StateDynamics emg(0,
+        internal_forces::muscles::StateDynamics emg(0,
                                            activationEmgForXiaDerivativeTest); // Set target
         fatigueDynamicStateXia.setState(currentActiveFibersForXiaDerivativeTest,
                                         currentFatiguedFibersForXiaDerivativeTest,
@@ -2220,10 +2220,10 @@ TEST(FatigueDynamiqueState, DeepCopy)
                     expectedActivationDotForXiaDerivativeTest, requiredPrecision);
 
         // Make copies
-        internalforce::muscles::FatigueDynamicStateXia shallowCopy(fatigueDynamicStateXia);
-        internalforce::muscles::FatigueDynamicStateXia deepCopyNow(
+        internal_forces::muscles::FatigueDynamicStateXia shallowCopy(fatigueDynamicStateXia);
+        internal_forces::muscles::FatigueDynamicStateXia deepCopyNow(
             fatigueDynamicStateXia.DeepCopy());
-        internalforce::muscles::FatigueDynamicStateXia deepCopyLater;
+        internal_forces::muscles::FatigueDynamicStateXia deepCopyLater;
         deepCopyLater.DeepCopy(fatigueDynamicStateXia);
 
         // Check the values
@@ -2255,7 +2255,7 @@ TEST(FatigueDynamiqueState, DeepCopy)
 
 TEST(FatigueParameters, unitTest)
 {
-    internalforce::muscles::FatigueParameters fatigueParameters;
+    internal_forces::muscles::FatigueParameters fatigueParameters;
     fatigueParameters.setFatigueRate(25.0);
     SCALAR_TO_DOUBLE(fatigueRate, fatigueParameters.fatigueRate());
     EXPECT_EQ(fatigueRate, 25.0);
@@ -2275,10 +2275,10 @@ TEST(FatigueParameters, unitTest)
 
 TEST(FatigueParemeters, copy)
 {
-    internalforce::muscles::FatigueParameters fatigueParameters(1.0, 2.0, 3.0, 4.0);
-    internalforce::muscles::FatigueParameters shallowCopy(fatigueParameters);
-    internalforce::muscles::FatigueParameters deepCopyNow(fatigueParameters.DeepCopy());
-    internalforce::muscles::FatigueParameters deepCopyLater;
+    internal_forces::muscles::FatigueParameters fatigueParameters(1.0, 2.0, 3.0, 4.0);
+    internal_forces::muscles::FatigueParameters shallowCopy(fatigueParameters);
+    internal_forces::muscles::FatigueParameters deepCopyNow(fatigueParameters.DeepCopy());
+    internal_forces::muscles::FatigueParameters deepCopyLater;
     deepCopyLater.DeepCopy(fatigueParameters);
 
     {
@@ -2310,21 +2310,21 @@ TEST(MuscleGroup, unitTest)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         muscleGroup.setName("newName");
         EXPECT_STREQ(muscleGroup.name().c_str(), "newName");
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         muscleGroup.setOrigin("newOriginName");
         EXPECT_STREQ(muscleGroup.origin().c_str(), "newOriginName");
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         muscleGroup.setInsertion("newInsertionName");
         EXPECT_STREQ(muscleGroup.insertion().c_str(), "newInsertionName");
@@ -2332,13 +2332,13 @@ TEST(MuscleGroup, unitTest)
 
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         muscleGroup.addMuscle("newMuscleName",
-                              internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
+                              internal_forces::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
-                              internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+                              internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         // Check the id of the last muscle added
         EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
@@ -2354,9 +2354,9 @@ TEST(MuscleGroup, AddMuscle)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
-        internalforce::muscles::IdealizedActuator muscleToAdd;
+        internal_forces::muscles::IdealizedActuator muscleToAdd;
         muscleGroup.addMuscle(muscleToAdd);
 
         //Check number of muscle
@@ -2364,69 +2364,69 @@ TEST(MuscleGroup, AddMuscle)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         //Check number of muscle
         EXPECT_NEAR(muscleGroup.nbMuscles(), 3, requiredPrecision);
 
         // Add muscle to muscle group
         muscleGroup.addMuscle("newMuscleName",
-                              internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
+                              internal_forces::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
-                              internalforce::muscles::STATE_TYPE::SIMPLE_STATE,
-                              internalforce::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+                              internal_forces::muscles::STATE_TYPE::SIMPLE_STATE,
+                              internal_forces::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
         EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
 
         // Add HILL muscle to muscle group
         muscleGroup.addMuscle("newHillMuscle",
-                              internalforce::muscles::MUSCLE_TYPE::HILL,
+                              internal_forces::muscles::MUSCLE_TYPE::HILL,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
-                              internalforce::muscles::STATE_TYPE::DYNAMIC,
-                              internalforce::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+                              internal_forces::muscles::STATE_TYPE::DYNAMIC,
+                              internal_forces::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
         EXPECT_NEAR(muscleGroup.nbMuscles(), 5, requiredPrecision);
 
         // Add HILL THELEN muscle to muscle group
         muscleGroup.addMuscle("newHillThelenMuscle",
-                              internalforce::muscles::MUSCLE_TYPE::HILL_THELEN,
+                              internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
-                              internalforce::muscles::STATE_TYPE::BUCHANAN,
-                              internalforce::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+                              internal_forces::muscles::STATE_TYPE::BUCHANAN,
+                              internal_forces::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
         EXPECT_NEAR(muscleGroup.nbMuscles(), 6, requiredPrecision);
 
         // Add muscle to muscle group
         muscleGroup.addMuscle("newHillThelenFatigable",
-                              internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE,
+                              internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
-                              internalforce::muscles::STATE_TYPE::SIMPLE_STATE,
-                              internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+                              internal_forces::muscles::STATE_TYPE::SIMPLE_STATE,
+                              internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         // Check the number of muscles again
         EXPECT_NEAR(muscleGroup.nbMuscles(), 7, requiredPrecision);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         //Check number of muscle
         EXPECT_NEAR(muscleGroup.nbMuscles(), 3, requiredPrecision);
 
         // Add muscle to muscle group
         muscleGroup.addMuscle("newMuscleName",
-                              internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
+                              internal_forces::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
                               model.muscleGroup(0).muscle(0).pathModifier(),
-                              internalforce::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+                              internal_forces::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
         EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
@@ -2437,11 +2437,11 @@ TEST(MuscleGroup, DeepCopy)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
-        internalforce::muscles::MuscleGroup shallowCopy(muscleGroup);
-        internalforce::muscles::MuscleGroup deepCopyNow(muscleGroup.DeepCopy());
-        internalforce::muscles::MuscleGroup deepCopyLater;
+        internal_forces::muscles::MuscleGroup shallowCopy(muscleGroup);
+        internal_forces::muscles::MuscleGroup deepCopyNow(muscleGroup.DeepCopy());
+        internal_forces::muscles::MuscleGroup deepCopyLater;
         deepCopyLater.DeepCopy(muscleGroup);
 
         EXPECT_STREQ(muscleGroup.name().c_str(), "base_to_r_ulna_radius_hand");
@@ -2459,23 +2459,23 @@ TEST(MuscleGroup, DeepCopy)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         muscleGroup.addMuscle("newIdealizedActuator",
-                              internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
+                              internal_forces::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
-                              internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+                              internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         muscleGroup.addMuscle("newHillActuator",
-                              internalforce::muscles::MUSCLE_TYPE::HILL,
+                              internal_forces::muscles::MUSCLE_TYPE::HILL,
                               model.muscleGroup(0).muscle(0).position(),
                               model.muscleGroup(0).muscle(0).characteristics(),
-                              internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+                              internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
-        internalforce::muscles::MuscleGroup shallowCopy(muscleGroup);
-        internalforce::muscles::MuscleGroup deepCopyNow(muscleGroup.DeepCopy());
-        internalforce::muscles::MuscleGroup deepCopyLater;
+        internal_forces::muscles::MuscleGroup shallowCopy(muscleGroup);
+        internal_forces::muscles::MuscleGroup deepCopyNow(muscleGroup.DeepCopy());
+        internal_forces::muscles::MuscleGroup deepCopyLater;
         deepCopyLater.DeepCopy(muscleGroup);
 
         EXPECT_STREQ(muscleGroup.muscle(4).name().c_str(), "newHillActuator");
@@ -2489,38 +2489,38 @@ TEST(MuscleGroup, errors)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
         EXPECT_THROW(muscleGroup.addMuscle("noTypeMuscle",
-                                           internalforce::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE,
+                                           internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE,
                                            model.muscleGroup(0).muscle(0).position(),
                                            model.muscleGroup(0).muscle(0).characteristics(),
-                                           internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
+                                           internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
         EXPECT_THROW(muscleGroup.muscle(3), std::runtime_error);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
         EXPECT_THROW(muscleGroup.addMuscle("noTypeMuscle",
-                                           internalforce::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE,
+                                           internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE,
                                            model.muscleGroup(0).muscle(0).position(),
                                            model.muscleGroup(0).muscle(0).characteristics(),
-                                           internalforce::muscles::STATE_TYPE::SIMPLE_STATE,
-                                           internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
+                                           internal_forces::muscles::STATE_TYPE::SIMPLE_STATE,
+                                           internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
+        internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
         EXPECT_THROW(muscleGroup.addMuscle("noTypeMuscle",
-                                           internalforce::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE,
+                                           internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE,
                                            model.muscleGroup(0).muscle(0).position(),
                                            model.muscleGroup(0).muscle(0).characteristics(),
                                            model.muscleGroup(0).muscle(0).pathModifier(),
-                                           internalforce::muscles::STATE_TYPE::SIMPLE_STATE,
-                                           internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
+                                           internal_forces::muscles::STATE_TYPE::SIMPLE_STATE,
+                                           internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE), std::runtime_error);
     }
 }
 
@@ -2528,7 +2528,7 @@ TEST(Muscles, unitTest)
 {
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::Muscles muscles;
+        internal_forces::muscles::Muscles muscles;
         muscles.addMuscleGroup("muscleGroupName", "originName", "insertionName");
 
         EXPECT_STREQ(muscles.muscleGroup(0).name().c_str(), "muscleGroupName");
@@ -2538,13 +2538,13 @@ TEST(Muscles, unitTest)
     }
     {
         Model model(modelPathForMuscleForce);
-        internalforce::muscles::Muscles muscles;
+        internal_forces::muscles::Muscles muscles;
         muscles.addMuscleGroup("muscleGroupName", "originName", "insertionName");
         muscles.muscleGroup(0).addMuscle("newIdealizedActuator",
-                                         internalforce::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
+                                         internal_forces::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR,
                                          model.muscleGroup(0).muscle(0).position(),
                                          model.muscleGroup(0).muscle(0).characteristics(),
-                                         internalforce::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
+                                         internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         EXPECT_NEAR(muscles.muscleNames().size(), 1., requiredPrecision);
     }
@@ -2553,7 +2553,7 @@ TEST(Muscles, unitTest)
 TEST(Muscles, errors)
 {
     Model model(modelPathForMuscleForce);
-    internalforce::muscles::Muscles muscles;
+    internal_forces::muscles::Muscles muscles;
     muscles.addMuscleGroup("muscleGroupName", "originName", "insertionName");
 
     EXPECT_THROW(muscles.muscleGroup(1), std::runtime_error);
@@ -2563,12 +2563,12 @@ TEST(Muscles, errors)
 TEST(Muscles, deepCopy)
 {
     Model model(modelPathForMuscleForce);
-    internalforce::muscles::Muscles muscles;
+    internal_forces::muscles::Muscles muscles;
     muscles.addMuscleGroup("muscleGroupName", "originName", "insertionName");
 
-    internalforce::muscles::Muscles shallowCopy(muscles);
-    internalforce::muscles::Muscles deepCopyNow(muscles.DeepCopy());
-    internalforce::muscles::Muscles deepCopyLater;
+    internal_forces::muscles::Muscles shallowCopy(muscles);
+    internal_forces::muscles::Muscles deepCopyNow(muscles.DeepCopy());
+    internal_forces::muscles::Muscles deepCopyLater;
     deepCopyLater.DeepCopy(muscles);
 
     EXPECT_STREQ(muscles.muscleGroup(0).name().c_str(), "muscleGroupName");
@@ -2593,7 +2593,7 @@ TEST(WrappingHalfCylinder, unitTest)
             utils::Vector3d(1., 1., 1.), utils::Vector3d(1., 1., 1.),
             "xyz");
 
-        internalforce::WrappingHalfCylinder wrappingHalfCylinder;
+        internal_forces::WrappingHalfCylinder wrappingHalfCylinder;
 
         wrappingHalfCylinder.setRadius(0.75);
         SCALAR_TO_DOUBLE(diameter, wrappingHalfCylinder.diameter());
@@ -2610,7 +2610,7 @@ TEST(WrappingHalfCylinder, unitTest)
             utils::Vector3d(1., 1., 1.), utils::Vector3d(1., 1., 1.),
             "xyz");
 
-        internalforce::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.25, 1.);
+        internal_forces::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.25, 1.);
         SCALAR_TO_DOUBLE(diameter, wrappingHalfCylinder.diameter());
         EXPECT_NEAR(diameter, 0.5, requiredPrecision);
         SCALAR_TO_DOUBLE(length, wrappingHalfCylinder.length());
@@ -2621,12 +2621,12 @@ TEST(WrappingHalfCylinder, unitTest)
             utils::Vector3d(1., 1., 1.), utils::Vector3d(1., 1., 1.),
             "xyz");
 
-        internalforce::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.5, 1., "name",
+        internal_forces::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.5, 1., "name",
                 "parentName");
         EXPECT_STREQ(wrappingHalfCylinder.parent().c_str(), "parentName");
     }
     {
-        internalforce::WrappingHalfCylinder wrappingHalfCylinder;
+        internal_forces::WrappingHalfCylinder wrappingHalfCylinder;
         utils::RotoTrans rt(
             utils::Vector3d(1., 1., 1.), utils::Vector3d(1., 1., 1.),
             "xyz");
@@ -2670,12 +2670,12 @@ TEST(WrappingHalfCylinder, deepCopy)
     utils::RotoTrans rt(
         utils::Vector3d(1, 1, 1), utils::Vector3d(1, 1, 1), "xyz");
 
-    internalforce::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.25, 1.);
+    internal_forces::WrappingHalfCylinder wrappingHalfCylinder(rt, 0.25, 1.);
 
-    internalforce::WrappingHalfCylinder shallowCopy(wrappingHalfCylinder);
-    internalforce::WrappingHalfCylinder deepCopyNow(
+    internal_forces::WrappingHalfCylinder shallowCopy(wrappingHalfCylinder);
+    internal_forces::WrappingHalfCylinder deepCopyNow(
         wrappingHalfCylinder.DeepCopy());
-    internalforce::WrappingHalfCylinder deepCopyLater;
+    internal_forces::WrappingHalfCylinder deepCopyLater;
     deepCopyLater.DeepCopy(wrappingHalfCylinder);
 
     {
@@ -2738,9 +2738,9 @@ TEST(MuscleForce, force)
     rigidbody::GeneralizedVelocity QDot(model);
     Q = Q.setOnes()/10;
     QDot = QDot.setOnes()/10;
-    std::vector<std::shared_ptr<internalforce::muscles::State>> states;
+    std::vector<std::shared_ptr<internal_forces::muscles::State>> states;
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i) {
-        states.push_back(std::make_shared<internalforce::muscles::StateDynamics>(0, 0.2));
+        states.push_back(std::make_shared<internal_forces::muscles::StateDynamics>(0, 0.2));
     }
     model.updateMuscles(Q, QDot, true);
 
@@ -2764,9 +2764,9 @@ TEST(MuscleForce, torqueFromMuscles)
     rigidbody::GeneralizedAcceleration QDDot(model);
     Q.setOnes()/10;
     QDot.setOnes()/10;
-    std::vector<std::shared_ptr<internalforce::muscles::State>> states;
+    std::vector<std::shared_ptr<internal_forces::muscles::State>> states;
     for (unsigned int i=0; i<model.nbMuscleTotal(); ++i) {
-        states.push_back(std::make_shared<internalforce::muscles::StateDynamics>(0, 0.2));
+        states.push_back(std::make_shared<internal_forces::muscles::StateDynamics>(0, 0.2));
     }
 
 
@@ -2789,7 +2789,7 @@ TEST(MuscleForce, torqueFromMuscles)
 TEST(MuscleCharacterics, unittest)
 {
     {
-        internalforce::muscles::Characteristics charact;
+        internal_forces::muscles::Characteristics charact;
         {
             SCALAR_TO_DOUBLE(optimalLength, charact.optimalLength());
             EXPECT_NEAR(optimalLength, 0, requiredPrecision);
@@ -2803,7 +2803,7 @@ TEST(MuscleCharacterics, unittest)
     }
 
     {
-        internalforce::muscles::Characteristics charact;
+        internal_forces::muscles::Characteristics charact;
         {
             SCALAR_TO_DOUBLE(forceIsoMax, charact.forceIsoMax());
             EXPECT_NEAR(forceIsoMax, 0, requiredPrecision);
@@ -2818,7 +2818,7 @@ TEST(MuscleCharacterics, unittest)
     }
 
     {
-        internalforce::muscles::Characteristics charact;
+        internal_forces::muscles::Characteristics charact;
         {
             SCALAR_TO_DOUBLE(tendonSlackLength, charact.tendonSlackLength());
             EXPECT_NEAR(tendonSlackLength, 0, requiredPrecision);
@@ -2833,7 +2833,7 @@ TEST(MuscleCharacterics, unittest)
     }
 
     {
-        internalforce::muscles::Characteristics charact;
+        internal_forces::muscles::Characteristics charact;
         {
             SCALAR_TO_DOUBLE(pennationAngle, charact.pennationAngle());
             EXPECT_NEAR(pennationAngle, 0, requiredPrecision);
@@ -2848,7 +2848,7 @@ TEST(MuscleCharacterics, unittest)
     }
 
     {
-        internalforce::muscles::Characteristics charact;
+        internal_forces::muscles::Characteristics charact;
         {
             SCALAR_TO_DOUBLE(PCSA, charact.PCSA());
             EXPECT_NEAR(PCSA, 0, requiredPrecision);
@@ -2869,7 +2869,7 @@ TEST(MuscleJacobian, jacobian)
     Q = Q.setOnes()/10;
 
     // Force computation of geometry
-    internalforce::muscles::Muscle& muscle(model.muscleGroup(
+    internal_forces::muscles::Muscle& muscle(model.muscleGroup(
                                         muscleForMuscleJacobian).muscle(muscleGroupForMuscleJacobian));
     EXPECT_THROW(muscle.position().jacobian(), std::runtime_error);
     model.updateMuscles(Q, true);
@@ -3035,15 +3035,15 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers)
     model.updateMuscles(Q, QDot, true);
 
     {
-        internalforce::muscles::HillDeGrooteTypeFatigable muscle(model.muscleGroup(
+        internal_forces::muscles::HillDeGrooteTypeFatigable muscle(model.muscleGroup(
                     muscleGroupForXiaDerivativeTest).muscle(
                     muscleForXiaDerivativeTest));
-        internalforce::muscles::FatigueDynamicState& fatigueModel(
-            dynamic_cast<internalforce::muscles::FatigueDynamicState&>
+        internal_forces::muscles::FatigueDynamicState& fatigueModel(
+            dynamic_cast<internal_forces::muscles::FatigueDynamicState&>
             (muscle.fatigueState()));
         // Sanity check for the fatigue model
         EXPECT_EQ(fatigueModel.getType(),
-                  internalforce::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
+                  internal_forces::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
         // Initial value sanity check
         {
@@ -3056,7 +3056,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers)
         }
 
         // Apply the derivative
-        internalforce::muscles::StateDynamics emg(0,
+        internal_forces::muscles::StateDynamics emg(0,
                                            activationEmgForXiaDerivativeTest); // Set target
         fatigueModel.setState(currentActiveFibersForXiaDerivativeTest,
                               currentFatiguedFibersForXiaDerivativeTest,
@@ -3076,11 +3076,11 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaPointers)
 
     // Values should be changed in the model itself
     {
-        internalforce::muscles::HillDeGrooteTypeFatigable muscle(model.muscleGroup(
+        internal_forces::muscles::HillDeGrooteTypeFatigable muscle(model.muscleGroup(
                     muscleGroupForXiaDerivativeTest).muscle(
                     muscleForXiaDerivativeTest));
-        internalforce::muscles::FatigueDynamicState& fatigueModel(
-            dynamic_cast<internalforce::muscles::FatigueDynamicState&>
+        internal_forces::muscles::FatigueDynamicState& fatigueModel(
+            dynamic_cast<internal_forces::muscles::FatigueDynamicState&>
             (muscle.fatigueState()));
 
         // Check the values
@@ -3106,12 +3106,12 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface)
     model.updateMuscles(Q, QDot, true);
 
     {
-        internalforce::muscles::HillDeGrooteTypeFatigable muscle(model.muscleGroup(
+        internal_forces::muscles::HillDeGrooteTypeFatigable muscle(model.muscleGroup(
                     muscleGroupForXiaDerivativeTest).muscle(
                     muscleForXiaDerivativeTest));
 
         // Apply the derivative
-        internalforce::muscles::StateDynamics emg(0,
+        internal_forces::muscles::StateDynamics emg(0,
                                            activationEmgForXiaDerivativeTest); // Set target
         muscle.setFatigueState(currentActiveFibersForXiaDerivativeTest,
                                currentFatiguedFibersForXiaDerivativeTest,
@@ -3122,9 +3122,9 @@ TEST(MuscleFatigue, FatigueXiaDerivativeViaInterface)
 
     // Values should be changed in the model itself
     {
-        internalforce::muscles::HillDeGrooteTypeFatigable muscle(model.muscleGroup(0).muscle(0));
-        internalforce::muscles::FatigueDynamicState& fatigueModel(
-            dynamic_cast<internalforce::muscles::FatigueDynamicState&>
+        internal_forces::muscles::HillDeGrooteTypeFatigable muscle(model.muscleGroup(0).muscle(0));
+        internal_forces::muscles::FatigueDynamicState& fatigueModel(
+            dynamic_cast<internal_forces::muscles::FatigueDynamicState&>
             (muscle.fatigueState()));
 
         // Check the values
@@ -3150,15 +3150,15 @@ TEST(MuscleFatigue, FatigueXiaDerivativeShallowViaCopy)
     model.updateMuscles(Q, QDot, true);
 
     {
-        internalforce::muscles::HillDeGrooteTypeFatigable muscle(
+        internal_forces::muscles::HillDeGrooteTypeFatigable muscle(
             model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(
                 muscleForXiaDerivativeTest));
-        internalforce::muscles::FatigueDynamicStateXia fatigueModel(
-            dynamic_cast<internalforce::muscles::FatigueDynamicStateXia&>
+        internal_forces::muscles::FatigueDynamicStateXia fatigueModel(
+            dynamic_cast<internal_forces::muscles::FatigueDynamicStateXia&>
             (muscle.fatigueState()));
         // Sanity check for the fatigue model
         EXPECT_EQ(fatigueModel.getType(),
-                  internalforce::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
+                  internal_forces::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
         // Initial value sanity check
         {
@@ -3171,7 +3171,7 @@ TEST(MuscleFatigue, FatigueXiaDerivativeShallowViaCopy)
         }
 
         // Apply the derivative
-        internalforce::muscles::StateDynamics emg(0,
+        internal_forces::muscles::StateDynamics emg(0,
                                            activationEmgForXiaDerivativeTest); // Set target
         fatigueModel.setState(currentActiveFibersForXiaDerivativeTest,
                               currentFatiguedFibersForXiaDerivativeTest,
@@ -3191,11 +3191,11 @@ TEST(MuscleFatigue, FatigueXiaDerivativeShallowViaCopy)
 
     // Values should be changed in the model itself since everything is shallowcopied
     {
-        internalforce::muscles::HillDeGrooteTypeFatigable muscle(model.muscleGroup(
+        internal_forces::muscles::HillDeGrooteTypeFatigable muscle(model.muscleGroup(
                     muscleGroupForXiaDerivativeTest).muscle(
                     muscleForXiaDerivativeTest));
-        internalforce::muscles::FatigueDynamicState& fatigueModel(
-            dynamic_cast<internalforce::muscles::FatigueDynamicState&>
+        internal_forces::muscles::FatigueDynamicState& fatigueModel(
+            dynamic_cast<internal_forces::muscles::FatigueDynamicState&>
             (muscle.fatigueState()));
 
         // Check the values
@@ -3214,15 +3214,15 @@ TEST(MuscleFatigue, FatigueXiaSetStateLimitsTest)
 {
     // Prepare the model
     Model model(modelPathForXiaDerivativeTest);
-    internalforce::muscles::HillDeGrooteTypeFatigable muscle(
+    internal_forces::muscles::HillDeGrooteTypeFatigable muscle(
         model.muscleGroup(muscleGroupForXiaDerivativeTest).muscle(
             muscleForXiaDerivativeTest));
-    internalforce::muscles::FatigueDynamicStateXia fatigueModel(
-        dynamic_cast<internalforce::muscles::FatigueDynamicStateXia&>
+    internal_forces::muscles::FatigueDynamicStateXia fatigueModel(
+        dynamic_cast<internal_forces::muscles::FatigueDynamicStateXia&>
         (muscle.fatigueState()));
     // Sanity check for the fatigue model
     EXPECT_EQ(fatigueModel.getType(),
-              internalforce::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
+              internal_forces::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA);
 
     // Teast limit active quantity
     {
@@ -3315,7 +3315,7 @@ TEST(StaticOptim, OneFrameNoActivations)
     }
 
     // Proceed with the static optimization
-    auto optim = internalforce::muscles::StaticOptimization(model, Q, Qdot, Tau);
+    auto optim = internal_forces::muscles::StaticOptimization(model, Q, Qdot, Tau);
     optim.run();
     auto muscleActivations = optim.finalSolution()[0];
 
@@ -3349,7 +3349,7 @@ TEST(StaticOptim, OneFrameOneActivationDouble)
 
     // Proceed with the static optimization
     double initialActivationGuess = 0.5;
-    auto optim = internalforce::muscles::StaticOptimization(model, Q, Qdot, Tau,
+    auto optim = internal_forces::muscles::StaticOptimization(model, Q, Qdot, Tau,
                  initialActivationGuess);
     optim.run();
     auto muscleActivations = optim.finalSolution()[0];
@@ -3387,7 +3387,7 @@ TEST(StaticOptim, OneFrameOneActivationVector)
     for (unsigned int i=0; i<model.nbMuscles(); ++i) {
         initialActivationGuess[i] = 0.5;
     }
-    auto optim = internalforce::muscles::StaticOptimization(model, Q, Qdot, Tau,
+    auto optim = internal_forces::muscles::StaticOptimization(model, Q, Qdot, Tau,
                  initialActivationGuess);
     optim.run();
     auto muscleActivations = optim.finalSolution()[0];
@@ -3433,7 +3433,7 @@ TEST(StaticOptim, MultiFrameNoActivation)
     allTau.push_back(Tau);
 
     // Proceed with the static optimization
-    auto optim = internalforce::muscles::StaticOptimization(model, Q, Qdot, Tau);
+    auto optim = internal_forces::muscles::StaticOptimization(model, Q, Qdot, Tau);
     optim.run();
     auto allMuscleActivations = optim.finalSolution();
 
@@ -3481,7 +3481,7 @@ TEST(StaticOptim, MultiFrameActivationDouble)
 
     // Proceed with the static optimization
     double initialActivationGuess = 0.5;
-    auto optim = internalforce::muscles::StaticOptimization(model, Q, Qdot, Tau,
+    auto optim = internal_forces::muscles::StaticOptimization(model, Q, Qdot, Tau,
                  initialActivationGuess);
     optim.run();
     auto allMuscleActivations = optim.finalSolution();
@@ -3533,7 +3533,7 @@ TEST(StaticOptim, MultiFrameNoActivationVector)
     for (unsigned int i=0; i<model.nbMuscles(); ++i) {
         initialActivationGuess[i] = 0.5;
     }
-    auto optim = internalforce::muscles::StaticOptimization(model, Q, Qdot, Tau,
+    auto optim = internal_forces::muscles::StaticOptimization(model, Q, Qdot, Tau,
                  initialActivationGuess);
     optim.run();
     auto allMuscleActivations = optim.finalSolution();

@@ -12,80 +12,80 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::muscles::HillDeGrooteType::HillDeGrooteType() :
-    internalforce::muscles::HillType()
+internal_forces::muscles::HillDeGrooteType::HillDeGrooteType() :
+    internal_forces::muscles::HillType()
 {
     setType();
 }
-internalforce::muscles::HillDeGrooteType::HillDeGrooteType(
+internal_forces::muscles::HillDeGrooteType::HillDeGrooteType(
     const utils::String& name,
-    const internalforce::muscles::Geometry& geometry,
-    const internalforce::muscles::Characteristics& characteristics) :
-    internalforce::muscles::HillType (name, geometry, characteristics)
+    const internal_forces::muscles::Geometry& geometry,
+    const internal_forces::muscles::Characteristics& characteristics) :
+    internal_forces::muscles::HillType (name, geometry, characteristics)
 {
     setType();
 }
 
-internalforce::muscles::HillDeGrooteType::HillDeGrooteType(
+internal_forces::muscles::HillDeGrooteType::HillDeGrooteType(
     const utils::String &name,
-    const internalforce::muscles::Geometry &geometry,
-    const internalforce::muscles::Characteristics &characteristics,
-    const internalforce::muscles::State &emg) :
-    internalforce::muscles::HillType (name, geometry, characteristics, emg)
+    const internal_forces::muscles::Geometry &geometry,
+    const internal_forces::muscles::Characteristics &characteristics,
+    const internal_forces::muscles::State &emg) :
+    internal_forces::muscles::HillType (name, geometry, characteristics, emg)
 {
     setType();
 }
 
-internalforce::muscles::HillDeGrooteType::HillDeGrooteType(
+internal_forces::muscles::HillDeGrooteType::HillDeGrooteType(
     const utils::String &name,
-    const internalforce::muscles::Geometry &geometry,
-    const internalforce::muscles::Characteristics &characteristics,
-    const internalforce::PathModifiers &pathModifiers) :
-    internalforce::muscles::HillType (name, geometry, characteristics, pathModifiers)
+    const internal_forces::muscles::Geometry &geometry,
+    const internal_forces::muscles::Characteristics &characteristics,
+    const internal_forces::PathModifiers &pathModifiers) :
+    internal_forces::muscles::HillType (name, geometry, characteristics, pathModifiers)
 {
     setType();
 }
 
-internalforce::muscles::HillDeGrooteType::HillDeGrooteType(
+internal_forces::muscles::HillDeGrooteType::HillDeGrooteType(
     const utils::String& name,
-    const internalforce::muscles::Geometry& geometry,
-    const internalforce::muscles::Characteristics& characteristics,
-    const internalforce::PathModifiers &pathModifiers,
-    const internalforce::muscles::State& emg) :
-    internalforce::muscles::HillType (name, geometry, characteristics, pathModifiers, emg)
+    const internal_forces::muscles::Geometry& geometry,
+    const internal_forces::muscles::Characteristics& characteristics,
+    const internal_forces::PathModifiers &pathModifiers,
+    const internal_forces::muscles::State& emg) :
+    internal_forces::muscles::HillType (name, geometry, characteristics, pathModifiers, emg)
 {
     setType();
 }
 
-internalforce::muscles::HillDeGrooteType::HillDeGrooteType(
-    const internalforce::muscles::Muscle &other) :
-    internalforce::muscles::HillType (other)
+internal_forces::muscles::HillDeGrooteType::HillDeGrooteType(
+    const internal_forces::muscles::Muscle &other) :
+    internal_forces::muscles::HillType (other)
 {
 
 }
 
-internalforce::muscles::HillDeGrooteType::HillDeGrooteType(
-    const std::shared_ptr<internalforce::muscles::Muscle> other) :
-    internalforce::muscles::HillType(other)
+internal_forces::muscles::HillDeGrooteType::HillDeGrooteType(
+    const std::shared_ptr<internal_forces::muscles::Muscle> other) :
+    internal_forces::muscles::HillType(other)
 {
 
 }
 
-internalforce::muscles::HillDeGrooteType internalforce::muscles::HillDeGrooteType::DeepCopy()
+internal_forces::muscles::HillDeGrooteType internal_forces::muscles::HillDeGrooteType::DeepCopy()
 const
 {
-    internalforce::muscles::HillDeGrooteType copy;
+    internal_forces::muscles::HillDeGrooteType copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::muscles::HillDeGrooteType::DeepCopy(
-    const internalforce::muscles::HillDeGrooteType &other)
+void internal_forces::muscles::HillDeGrooteType::DeepCopy(
+    const internal_forces::muscles::HillDeGrooteType &other)
 {
-    internalforce::muscles::HillType::DeepCopy(other);
+    internal_forces::muscles::HillType::DeepCopy(other);
 }
 
-void internalforce::muscles::HillDeGrooteType::computeFlPE()
+void internal_forces::muscles::HillDeGrooteType::computeFlPE()
 {
     utils::Scalar kpe = 4;
     utils::Scalar e0 = 0.6;
@@ -109,7 +109,7 @@ void internalforce::muscles::HillDeGrooteType::computeFlPE()
 #endif
 }
 
-void internalforce::muscles::HillDeGrooteType::computeFvCE()
+void internal_forces::muscles::HillDeGrooteType::computeFvCE()
 {
 
     utils::Scalar d1 = -0.318;
@@ -123,8 +123,8 @@ void internalforce::muscles::HillDeGrooteType::computeFvCE()
         ) + d4;
 }
 
-void internalforce::muscles::HillDeGrooteType::computeFlCE(
-    const internalforce::muscles::State&)
+void internal_forces::muscles::HillDeGrooteType::computeFlCE(
+    const internal_forces::muscles::State&)
 {
     utils::Scalar b11 = 0.815;
     utils::Scalar b21 = 1.055;
@@ -153,7 +153,7 @@ void internalforce::muscles::HillDeGrooteType::computeFlCE(
                         ((b33 + b43*normLength)*(b33 + b43*normLength)));
 }
 
-void internalforce::muscles::HillDeGrooteType::setType()
+void internal_forces::muscles::HillDeGrooteType::setType()
 {
-    *m_type = internalforce::muscles::MUSCLE_TYPE::HILL_DE_GROOTE;
+    *m_type = internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE;
 }

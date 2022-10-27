@@ -9,39 +9,39 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(
+internal_forces::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(
     const utils::Scalar& active,
     const utils::Scalar& fatigued,
     const utils::Scalar& resting) :
-    internalforce::muscles::FatigueDynamicState(active,fatigued,resting)
+    internal_forces::muscles::FatigueDynamicState(active,fatigued,resting)
 {
     setType();
 }
 
-internalforce::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(
-    const std::shared_ptr<internalforce::muscles::FatigueState> other):
-    internalforce::muscles::FatigueDynamicState(other)
+internal_forces::muscles::FatigueDynamicStateXia::FatigueDynamicStateXia(
+    const std::shared_ptr<internal_forces::muscles::FatigueState> other):
+    internal_forces::muscles::FatigueDynamicState(other)
 {
 
 }
 
-internalforce::muscles::FatigueDynamicStateXia
-internalforce::muscles::FatigueDynamicStateXia::DeepCopy() const
+internal_forces::muscles::FatigueDynamicStateXia
+internal_forces::muscles::FatigueDynamicStateXia::DeepCopy() const
 {
-    internalforce::muscles::FatigueDynamicStateXia copy;
+    internal_forces::muscles::FatigueDynamicStateXia copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::muscles::FatigueDynamicStateXia::DeepCopy(const
-        internalforce::muscles::FatigueDynamicStateXia &other)
+void internal_forces::muscles::FatigueDynamicStateXia::DeepCopy(const
+        internal_forces::muscles::FatigueDynamicStateXia &other)
 {
-    internalforce::muscles::FatigueDynamicState::DeepCopy(other);
+    internal_forces::muscles::FatigueDynamicState::DeepCopy(other);
 }
 
-void internalforce::muscles::FatigueDynamicStateXia::timeDerivativeState(
-    const internalforce::muscles::StateDynamics &emg,
-    const internalforce::muscles::Characteristics &characteristics)
+void internal_forces::muscles::FatigueDynamicStateXia::timeDerivativeState(
+    const internal_forces::muscles::StateDynamics &emg,
+    const internal_forces::muscles::Characteristics &characteristics)
 {
 #ifdef BIORBD_USE_CASADI_MATH
     utils::Error::raise("timeDerivativeState for FatigueDynamicStateXia"
@@ -77,7 +77,7 @@ void internalforce::muscles::FatigueDynamicStateXia::timeDerivativeState(
 #endif
 }
 
-void internalforce::muscles::FatigueDynamicStateXia::setType()
+void internal_forces::muscles::FatigueDynamicStateXia::setType()
 {
-    *m_type =internalforce::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA;
+    *m_type =internal_forces::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA;
 }

@@ -12,7 +12,7 @@ namespace utils
 class Vector3d;
 }
 
-namespace internalforce
+namespace internal_forces
 {
 ///
 /// \brief Holder of all the path modifiers of a muscle

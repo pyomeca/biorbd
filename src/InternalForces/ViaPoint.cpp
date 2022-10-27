@@ -5,13 +5,13 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::ViaPoint::ViaPoint() :
+internal_forces::ViaPoint::ViaPoint() :
     utils::Vector3d()
 {
     *m_typeOfNode = utils::NODE_TYPE::VIA_POINT;
 }
 
-internalforce::ViaPoint::ViaPoint(
+internal_forces::ViaPoint::ViaPoint(
     const utils::Scalar& x,
     const utils::Scalar& y,
     const utils::Scalar& z) :
@@ -20,7 +20,7 @@ internalforce::ViaPoint::ViaPoint(
     *m_typeOfNode = utils::NODE_TYPE::VIA_POINT;
 }
 
-internalforce::ViaPoint::ViaPoint(
+internal_forces::ViaPoint::ViaPoint(
     const utils::Scalar& x,
     const utils::Scalar& y,
     const utils::Scalar& z,
@@ -31,27 +31,27 @@ internalforce::ViaPoint::ViaPoint(
     *m_typeOfNode = utils::NODE_TYPE::VIA_POINT;
 }
 
-internalforce::ViaPoint::ViaPoint(
+internal_forces::ViaPoint::ViaPoint(
     const utils::Vector3d &other) :
     utils::Vector3d(other)
 {
     *m_typeOfNode = utils::NODE_TYPE::VIA_POINT;
 }
 
-internalforce::ViaPoint::ViaPoint(const internalforce::ViaPoint &other) :
+internal_forces::ViaPoint::ViaPoint(const internal_forces::ViaPoint &other) :
     utils::Vector3d(other)
 {
 
 }
 
-internalforce::ViaPoint internalforce::ViaPoint::DeepCopy() const
+internal_forces::ViaPoint internal_forces::ViaPoint::DeepCopy() const
 {
-    internalforce::ViaPoint copy;
+    internal_forces::ViaPoint copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::ViaPoint::DeepCopy(const internalforce::ViaPoint &other)
+void internal_forces::ViaPoint::DeepCopy(const internal_forces::ViaPoint &other)
 {
     utils::Vector3d::DeepCopy(other);
 }

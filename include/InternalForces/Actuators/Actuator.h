@@ -12,7 +12,7 @@ namespace utils
 {
 class String;
 }
-namespace internalforce
+namespace internal_forces
 {
 namespace actuator
 {

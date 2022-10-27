@@ -6,7 +6,7 @@
 
 namespace BIORBD_NAMESPACE
 {
-namespace internalforce
+namespace internal_forces
 {
 ///
 /// \brief Half cylinder of infinite length (the length only affect the graphical

@@ -17,7 +17,7 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::muscles::Geometry::Geometry() :
+internal_forces::muscles::Geometry::Geometry() :
     m_origin(std::make_shared<utils::Vector3d>()),
     m_insertion(std::make_shared<utils::Vector3d>()),
     m_originInGlobal(std::make_shared<utils::Vector3d>
@@ -39,7 +39,7 @@ internalforce::muscles::Geometry::Geometry() :
 
 }
 
-internalforce::muscles::Geometry::Geometry(
+internal_forces::muscles::Geometry::Geometry(
     const utils::Vector3d &origin,
     const utils::Vector3d &insertion) :
     m_origin(std::make_shared<utils::Vector3d>(origin)),
@@ -63,14 +63,14 @@ internalforce::muscles::Geometry::Geometry(
 
 }
 
-internalforce::muscles::Geometry internalforce::muscles::Geometry::DeepCopy() const
+internal_forces::muscles::Geometry internal_forces::muscles::Geometry::DeepCopy() const
 {
-    internalforce::muscles::Geometry copy;
+    internal_forces::muscles::Geometry copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::muscles::Geometry::DeepCopy(const internalforce::muscles::Geometry &other)
+void internal_forces::muscles::Geometry::DeepCopy(const internal_forces::muscles::Geometry &other)
 {
     *m_origin = other.m_origin->DeepCopy();
     *m_insertion = other.m_insertion->DeepCopy();
@@ -97,7 +97,7 @@ void internalforce::muscles::Geometry::DeepCopy(const internalforce::muscles::Ge
 
 
 // ------ PUBLIC FUNCTIONS ------ //
-void internalforce::muscles::Geometry::updateKinematics(
+void internal_forces::muscles::Geometry::updateKinematics(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates *Q,
     const rigidbody::GeneralizedVelocity *Qdot,
@@ -129,10 +129,10 @@ void internalforce::muscles::Geometry::updateKinematics(
     _updateKinematics(Qdot);
 }
 
-void internalforce::muscles::Geometry::updateKinematics(rigidbody::Joints
+void internal_forces::muscles::Geometry::updateKinematics(rigidbody::Joints
         &model,
-        const internalforce::muscles::Characteristics& characteristics,
-        internalforce::PathModifiers &pathModifiers,
+        const internal_forces::muscles::Characteristics& characteristics,
+        internal_forces::PathModifiers &pathModifiers,
         const rigidbody::GeneralizedCoordinates *Q,
         const rigidbody::GeneralizedVelocity *Qdot,
         int updateKin)
@@ -162,7 +162,7 @@ void internalforce::muscles::Geometry::updateKinematics(rigidbody::Joints
     _updateKinematics(Qdot, &characteristics, &pathModifiers);
 }
 
-void internalforce::muscles::Geometry::updateKinematics(
+void internal_forces::muscles::Geometry::updateKinematics(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
     utils::Matrix& jacoPointsInGlobal,
     const rigidbody::GeneralizedVelocity* Qdot)
@@ -179,10 +179,10 @@ void internalforce::muscles::Geometry::updateKinematics(
     _updateKinematics(Qdot);
 }
 
-void internalforce::muscles::Geometry::updateKinematics(
+void internal_forces::muscles::Geometry::updateKinematics(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
     utils::Matrix& jacoPointsInGlobal,
-    const internalforce::muscles::Characteristics& c,
+    const internal_forces::muscles::Characteristics& c,
     const rigidbody::GeneralizedVelocity* Qdot)
 {
     *m_posAndJacoWereForced = true;
@@ -198,7 +198,7 @@ void internalforce::muscles::Geometry::updateKinematics(
 }
 
 // Get and set the positions of the origins and insertions
-void internalforce::muscles::Geometry::setOrigin(
+void internal_forces::muscles::Geometry::setOrigin(
     const utils::Vector3d &position)
 {
     if (dynamic_cast<const rigidbody::NodeSegment*>(&position)) {
@@ -208,12 +208,12 @@ void internalforce::muscles::Geometry::setOrigin(
         m_origin->RigidBodyDynamics::Math::Vector3d::operator=(position);
     }
 }
-const utils::Vector3d& internalforce::muscles::Geometry::originInLocal() const
+const utils::Vector3d& internal_forces::muscles::Geometry::originInLocal() const
 {
     return *m_origin;
 }
 
-void internalforce::muscles::Geometry::setInsertionInLocal(
+void internal_forces::muscles::Geometry::setInsertionInLocal(
     const utils::Vector3d &position)
 {
     if (dynamic_cast<const rigidbody::NodeSegment*>(&position)) {
@@ -223,20 +223,20 @@ void internalforce::muscles::Geometry::setInsertionInLocal(
         m_insertion->RigidBodyDynamics::Math::Vector3d::operator=(position);
     }
 }
-const utils::Vector3d &internalforce::muscles::Geometry::insertionInLocal()
+const utils::Vector3d &internal_forces::muscles::Geometry::insertionInLocal()
 const
 {
     return *m_insertion;
 }
 
 // Position of the muscles in space
-const utils::Vector3d &internalforce::muscles::Geometry::originInGlobal() const
+const utils::Vector3d &internal_forces::muscles::Geometry::originInGlobal() const
 {
     utils::Error::check(*m_isGeometryComputed,
                                 "Geometry must be computed at least once before calling originInLocal()");
     return *m_originInGlobal;
 }
-const utils::Vector3d &internalforce::muscles::Geometry::insertionInGlobal()
+const utils::Vector3d &internal_forces::muscles::Geometry::insertionInGlobal()
 const
 {
     utils::Error::check(*m_isGeometryComputed,
@@ -244,7 +244,7 @@ const
     return *m_insertionInGlobal;
 }
 const std::vector<utils::Vector3d>
-&internalforce::muscles::Geometry::musclesPointsInGlobal() const
+&internal_forces::muscles::Geometry::musclesPointsInGlobal() const
 {
     utils::Error::check(*m_isGeometryComputed,
                                 "Geometry must be computed at least once before calling musclesPointsInGlobal()");
@@ -252,20 +252,20 @@ const std::vector<utils::Vector3d>
 }
 
 // Return the length and muscular velocity
-const utils::Scalar& internalforce::muscles::Geometry::length() const
+const utils::Scalar& internal_forces::muscles::Geometry::length() const
 {
     utils::Error::check(*m_isGeometryComputed,
                                 "Geometry must be computed at least before calling length()");
     return *m_length;
 }
-const utils::Scalar& internalforce::muscles::Geometry::musculoTendonLength()
+const utils::Scalar& internal_forces::muscles::Geometry::musculoTendonLength()
 const
 {
     utils::Error::check(*m_isGeometryComputed,
                                 "Geometry must be computed at least before calling length()");
     return *m_muscleTendonLength;
 }
-const utils::Scalar& internalforce::muscles::Geometry::velocity() const
+const utils::Scalar& internal_forces::muscles::Geometry::velocity() const
 {
     utils::Error::check(*m_isVelocityComputed,
                                 "Geometry must be computed before calling velocity()");
@@ -273,25 +273,25 @@ const utils::Scalar& internalforce::muscles::Geometry::velocity() const
 }
 
 // Return the Jacobian
-const utils::Matrix& internalforce::muscles::Geometry::jacobian() const
+const utils::Matrix& internal_forces::muscles::Geometry::jacobian() const
 {
     utils::Error::check(*m_isGeometryComputed,
                                 "Geometry must be computed before calling jacobian()");
     return *m_jacobian;
 } // Return the last Jacobian
-utils::Matrix internalforce::muscles::Geometry::jacobianOrigin() const
+utils::Matrix internal_forces::muscles::Geometry::jacobianOrigin() const
 {
     utils::Error::check(*m_isGeometryComputed,
                                 "Geometry must be computed before calling jacobianOrigin()");
     return m_jacobian->block(0,0,3,m_jacobian->cols());
 }
-utils::Matrix internalforce::muscles::Geometry::jacobianInsertion() const
+utils::Matrix internal_forces::muscles::Geometry::jacobianInsertion() const
 {
     utils::Error::check(*m_isGeometryComputed,
                                 "Geometry must be computed before calling jacobianInsertion()");
     return m_jacobian->block(m_jacobian->rows()-3,0,3,m_jacobian->cols());
 }
-utils::Matrix internalforce::muscles::Geometry::jacobian(
+utils::Matrix internal_forces::muscles::Geometry::jacobian(
     unsigned int idxViaPoint) const
 {
     utils::Error::check(*m_isGeometryComputed,
@@ -299,7 +299,7 @@ utils::Matrix internalforce::muscles::Geometry::jacobian(
     return m_jacobian->block(3*idxViaPoint,0,3,m_jacobian->cols());
 }
 
-const utils::Matrix &internalforce::muscles::Geometry::jacobianLength() const
+const utils::Matrix &internal_forces::muscles::Geometry::jacobianLength() const
 {
     utils::Error::check(*m_isGeometryComputed,
                                 "Geometry must be computed before calling jacobianLength()");
@@ -308,10 +308,10 @@ const utils::Matrix &internalforce::muscles::Geometry::jacobianLength() const
 
 // --------------------------------------- //
 
-void internalforce::muscles::Geometry::_updateKinematics(
+void internal_forces::muscles::Geometry::_updateKinematics(
     const rigidbody::GeneralizedVelocity* Qdot,
-    const internalforce::muscles::Characteristics* characteristics,
-    internalforce::PathModifiers *pathModifiers)
+    const internal_forces::muscles::Characteristics* characteristics,
+    internal_forces::PathModifiers *pathModifiers)
 {
     // Compute the length and velocities
     length(characteristics, pathModifiers);
@@ -327,7 +327,7 @@ void internalforce::muscles::Geometry::_updateKinematics(
     }
 }
 
-const utils::Vector3d &internalforce::muscles::Geometry::originInGlobal(
+const utils::Vector3d &internal_forces::muscles::Geometry::originInGlobal(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
@@ -338,7 +338,7 @@ const utils::Vector3d &internalforce::muscles::Geometry::originInGlobal(
     return *m_originInGlobal;
 }
 
-const utils::Vector3d &internalforce::muscles::Geometry::insertionInGlobal(
+const utils::Vector3d &internal_forces::muscles::Geometry::insertionInGlobal(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
@@ -349,7 +349,7 @@ const utils::Vector3d &internalforce::muscles::Geometry::insertionInGlobal(
     return *m_insertionInGlobal;
 }
 
-void internalforce::muscles::Geometry::setMusclesPointsInGlobal(
+void internal_forces::muscles::Geometry::setMusclesPointsInGlobal(
     std::vector<utils::Vector3d> &ptsInGlobal)
 {
     utils::Error::check(ptsInGlobal.size() >= 2,
@@ -358,10 +358,10 @@ void internalforce::muscles::Geometry::setMusclesPointsInGlobal(
     *m_pointsInGlobal = ptsInGlobal;
 }
 
-void internalforce::muscles::Geometry::setMusclesPointsInGlobal(
+void internal_forces::muscles::Geometry::setMusclesPointsInGlobal(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q,
-    internalforce::PathModifiers *pathModifiers)
+    internal_forces::PathModifiers *pathModifiers)
 {
     // Output varible (reset to zero)
     m_pointsInLocal->clear();
@@ -376,8 +376,8 @@ void internalforce::muscles::Geometry::setMusclesPointsInGlobal(
                                     "Cannot compute more than one wrapping yet");
 
         // Get the matrix of Rt of the wrap
-        internalforce::WrappingObject& w =
-            static_cast<internalforce::WrappingObject&>(pathModifiers->object(0));
+        internal_forces::WrappingObject& w =
+            static_cast<internal_forces::WrappingObject&>(pathModifiers->object(0));
         const utils::RotoTrans& RT = w.RT(model,Q);
 
         // Alias
@@ -419,7 +419,7 @@ void internalforce::muscles::Geometry::setMusclesPointsInGlobal(
         m_pointsInLocal->push_back(originInLocal());
         m_pointsInGlobal->push_back(originInGlobal(model, Q));
         for (unsigned int i=0; i<pathModifiers->nbObjects(); ++i) {
-            const internalforce::ViaPoint& node(static_cast<internalforce::ViaPoint&>
+            const internal_forces::ViaPoint& node(static_cast<internal_forces::ViaPoint&>
                                                   (pathModifiers->object(i)));
             m_pointsInLocal->push_back(node);
             m_pointsInGlobal->push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(model,
@@ -442,9 +442,9 @@ void internalforce::muscles::Geometry::setMusclesPointsInGlobal(
     setJacobianDimension(model);
 }
 
-const utils::Scalar& internalforce::muscles::Geometry::length(
-    const internalforce::muscles::Characteristics *characteristics,
-    internalforce::PathModifiers *pathModifiers)
+const utils::Scalar& internal_forces::muscles::Geometry::length(
+    const internal_forces::muscles::Characteristics *characteristics,
+    internal_forces::PathModifiers *pathModifiers)
 {
     *m_muscleTendonLength = 0;
 
@@ -460,7 +460,7 @@ const utils::Scalar& internalforce::muscles::Geometry::length(
         utils::Vector3d po_wrap(0, 0,
                                         0); // point on the wrapping related to origin
         utils::Scalar lengthWrap(0);
-        static_cast<internalforce::WrappingObject&>(
+        static_cast<internal_forces::WrappingObject&>(
             pathModifiers->object(0)).wrapPoints(po_wrap, pi_wrap, &lengthWrap);
         *m_muscleTendonLength = ((*m_pointsInGlobal)[0] - po_wrap).norm()
                                 + // length before the wrap
@@ -481,7 +481,7 @@ const utils::Scalar& internalforce::muscles::Geometry::length(
     return *m_length;
 }
 
-const utils::Scalar& internalforce::muscles::Geometry::velocity(
+const utils::Scalar& internal_forces::muscles::Geometry::velocity(
     const rigidbody::GeneralizedVelocity &Qdot)
 {
     // Compute the velocity of the muscular elongation
@@ -489,7 +489,7 @@ const utils::Scalar& internalforce::muscles::Geometry::velocity(
     return *m_velocity;
 }
 
-void internalforce::muscles::Geometry::setJacobianDimension(rigidbody::Joints
+void internal_forces::muscles::Geometry::setJacobianDimension(rigidbody::Joints
         &model)
 {
     *m_jacobian = utils::Matrix::Zero(static_cast<unsigned int>
@@ -497,14 +497,14 @@ void internalforce::muscles::Geometry::setJacobianDimension(rigidbody::Joints
     *m_G = utils::Matrix::Zero(3, model.dof_count);
 }
 
-void internalforce::muscles::Geometry::jacobian(const utils::Matrix &jaco)
+void internal_forces::muscles::Geometry::jacobian(const utils::Matrix &jaco)
 {
     utils::Error::check(jaco.rows()/3 == static_cast<int>
                                 (m_pointsInGlobal->size()), "Jacobian is the wrong size");
     *m_jacobian = jaco;
 }
 
-void internalforce::muscles::Geometry::jacobian(
+void internal_forces::muscles::Geometry::jacobian(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
@@ -517,7 +517,7 @@ void internalforce::muscles::Geometry::jacobian(
     }
 }
 
-void internalforce::muscles::Geometry::computeJacobianLength()
+void internal_forces::muscles::Geometry::computeJacobianLength()
 {
     *m_jacobianLength = utils::Matrix::Zero(1, m_jacobian->cols());
 

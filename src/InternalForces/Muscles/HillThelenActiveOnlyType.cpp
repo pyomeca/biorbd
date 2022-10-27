@@ -7,92 +7,92 @@
 #include "InternalForces/Muscles/Characteristics.h"
 
 using namespace BIORBD_NAMESPACE;
-internalforce::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType() :
-    internalforce::muscles::HillThelenType()
+internal_forces::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType() :
+    internal_forces::muscles::HillThelenType()
 {
     setType();
 }
-internalforce::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType(
+internal_forces::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType(
     const utils::String& name,
-    const internalforce::muscles::Geometry& geometry,
-    const internalforce::muscles::Characteristics& characteristics) :
-    internalforce::muscles::HillThelenType (name, geometry, characteristics)
+    const internal_forces::muscles::Geometry& geometry,
+    const internal_forces::muscles::Characteristics& characteristics) :
+    internal_forces::muscles::HillThelenType (name, geometry, characteristics)
 {
     setType();
 }
 
-internalforce::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType(
+internal_forces::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType(
     const utils::String &name,
-    const internalforce::muscles::Geometry &geometry,
-    const internalforce::muscles::Characteristics &characteristics,
-    const internalforce::muscles::State &emg) :
-    internalforce::muscles::HillThelenType (name, geometry, characteristics, emg)
+    const internal_forces::muscles::Geometry &geometry,
+    const internal_forces::muscles::Characteristics &characteristics,
+    const internal_forces::muscles::State &emg) :
+    internal_forces::muscles::HillThelenType (name, geometry, characteristics, emg)
 {
     setType();
 }
 
-internalforce::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType(
+internal_forces::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType(
     const utils::String &name,
-    const internalforce::muscles::Geometry &geometry,
-    const internalforce::muscles::Characteristics &characteristics,
-    const internalforce::PathModifiers &pathModifiers) :
-    internalforce::muscles::HillThelenType (name, geometry, characteristics, pathModifiers)
+    const internal_forces::muscles::Geometry &geometry,
+    const internal_forces::muscles::Characteristics &characteristics,
+    const internal_forces::PathModifiers &pathModifiers) :
+    internal_forces::muscles::HillThelenType (name, geometry, characteristics, pathModifiers)
 {
     setType();
 }
 
-internalforce::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType(
+internal_forces::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType(
     const utils::String& name,
-    const internalforce::muscles::Geometry& geometry,
-    const internalforce::muscles::Characteristics& characteristics,
-    const internalforce::PathModifiers &pathModifiers,
-    const internalforce::muscles::State& emg) :
-    internalforce::muscles::HillThelenType (name, geometry, characteristics, pathModifiers,
+    const internal_forces::muscles::Geometry& geometry,
+    const internal_forces::muscles::Characteristics& characteristics,
+    const internal_forces::PathModifiers &pathModifiers,
+    const internal_forces::muscles::State& emg) :
+    internal_forces::muscles::HillThelenType (name, geometry, characteristics, pathModifiers,
                                      emg)
 {
     setType();
 }
 
-internalforce::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType(
-    const internalforce::muscles::Muscle &other) :
-    internalforce::muscles::HillThelenType (other)
+internal_forces::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType(
+    const internal_forces::muscles::Muscle &other) :
+    internal_forces::muscles::HillThelenType (other)
 {
 
 }
 
-internalforce::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType(
-    const std::shared_ptr<internalforce::muscles::Muscle>
+internal_forces::muscles::HillThelenActiveOnlyType::HillThelenActiveOnlyType(
+    const std::shared_ptr<internal_forces::muscles::Muscle>
     other) :
-    internalforce::muscles::HillThelenType(other)
+    internal_forces::muscles::HillThelenType(other)
 {
 
 }
 
-internalforce::muscles::HillThelenActiveOnlyType
-internalforce::muscles::HillThelenActiveOnlyType::DeepCopy() const
+internal_forces::muscles::HillThelenActiveOnlyType
+internal_forces::muscles::HillThelenActiveOnlyType::DeepCopy() const
 {
-    internalforce::muscles::HillThelenActiveOnlyType copy;
+    internal_forces::muscles::HillThelenActiveOnlyType copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::muscles::HillThelenActiveOnlyType::DeepCopy(
-    const internalforce::muscles::HillThelenActiveOnlyType &other)
+void internal_forces::muscles::HillThelenActiveOnlyType::DeepCopy(
+    const internal_forces::muscles::HillThelenActiveOnlyType &other)
 {
-    internalforce::muscles::HillThelenType::DeepCopy(other);
+    internal_forces::muscles::HillThelenType::DeepCopy(other);
 }
 
-void internalforce::muscles::HillThelenActiveOnlyType::computeFlPE()
+void internal_forces::muscles::HillThelenActiveOnlyType::computeFlPE()
 {
     *m_FlPE = 0;
 }
 
-void internalforce::muscles::HillThelenActiveOnlyType::computeDamping()
+void internal_forces::muscles::HillThelenActiveOnlyType::computeDamping()
 {
     *m_damping = 0;
 }
 
-void internalforce::muscles::HillThelenActiveOnlyType::setType()
+void internal_forces::muscles::HillThelenActiveOnlyType::setType()
 {
-    *m_type = internalforce::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE;
+    *m_type = internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE;
 }

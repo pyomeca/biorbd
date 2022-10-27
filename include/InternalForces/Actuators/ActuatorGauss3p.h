@@ -12,7 +12,7 @@ class GeneralizedCoordinates;
 class GeneralizedVelocity;
 }
 
-namespace internalforce
+namespace internal_forces
 {
 namespace actuator
 {

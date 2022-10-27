@@ -6,22 +6,22 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::actuator::ActuatorConstant::ActuatorConstant() :
+internal_forces::actuator::ActuatorConstant::ActuatorConstant() :
     Actuator(),
     m_Tmax(std::make_shared<utils::Scalar>(0))
 {
     setType();
 }
 
-internalforce::actuator::ActuatorConstant::ActuatorConstant(
-    const internalforce::actuator::ActuatorConstant &other) :
+internal_forces::actuator::ActuatorConstant::ActuatorConstant(
+    const internal_forces::actuator::ActuatorConstant &other) :
     Actuator(other),
     m_Tmax(other.m_Tmax)
 {
 
 }
 
-internalforce::actuator::ActuatorConstant::ActuatorConstant(
+internal_forces::actuator::ActuatorConstant::ActuatorConstant(
     int direction,
     const utils::Scalar& Tmax,
     unsigned int dofIdx) :
@@ -31,7 +31,7 @@ internalforce::actuator::ActuatorConstant::ActuatorConstant(
     setType();
 }
 
-internalforce::actuator::ActuatorConstant::ActuatorConstant(
+internal_forces::actuator::ActuatorConstant::ActuatorConstant(
     int direction,
     const utils::Scalar& Tmax,
     unsigned int dofIdx,
@@ -42,27 +42,27 @@ internalforce::actuator::ActuatorConstant::ActuatorConstant(
     setType();
 }
 
-internalforce::actuator::ActuatorConstant
-internalforce::actuator::ActuatorConstant::DeepCopy() const
+internal_forces::actuator::ActuatorConstant
+internal_forces::actuator::ActuatorConstant::DeepCopy() const
 {
-    internalforce::actuator::ActuatorConstant copy;
+    internal_forces::actuator::ActuatorConstant copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::actuator::ActuatorConstant::DeepCopy(const
-        internalforce::actuator::ActuatorConstant &other)
+void internal_forces::actuator::ActuatorConstant::DeepCopy(const
+        internal_forces::actuator::ActuatorConstant &other)
 {
-    internalforce::actuator::Actuator::DeepCopy(other);
+    internal_forces::actuator::Actuator::DeepCopy(other);
     *m_Tmax = *other.m_Tmax;
 }
 
-utils::Scalar internalforce::actuator::ActuatorConstant::torqueMax()
+utils::Scalar internal_forces::actuator::ActuatorConstant::torqueMax()
 {
     return *m_Tmax;
 }
 
-void internalforce::actuator::ActuatorConstant::setType()
+void internal_forces::actuator::ActuatorConstant::setType()
 {
-    *m_type = internalforce::actuator::TYPE::CONSTANT;
+    *m_type = internal_forces::actuator::TYPE::CONSTANT;
 }

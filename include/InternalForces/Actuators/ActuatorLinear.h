@@ -11,7 +11,7 @@ namespace rigidbody
 class GeneralizedCoordinates;
 }
 
-namespace internalforce
+namespace internal_forces
 {
 namespace actuator
 {

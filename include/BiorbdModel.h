@@ -72,10 +72,10 @@ class BIORBD_API Model :
     ,public rigidbody::RotoTransNodes
     ,public rigidbody::Contacts
 #ifdef MODULE_ACTUATORS
-    ,public internalforce::actuator::Actuators
+    ,public internal_forces::actuator::Actuators
 #endif
 #ifdef MODULE_MUSCLES
-    ,public internalforce::muscles::Muscles
+    ,public internal_forces::muscles::Muscles
 #endif
     ,public rigidbody::SoftContacts
 {

@@ -20,16 +20,16 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::actuator::Actuators::Actuators() :
-    m_all(std::make_shared<std::vector<std::pair<std::shared_ptr<internalforce::actuator::Actuator>, std::shared_ptr<internalforce::actuator::Actuator>>>>()),
+internal_forces::actuator::Actuators::Actuators() :
+    m_all(std::make_shared<std::vector<std::pair<std::shared_ptr<internal_forces::actuator::Actuator>, std::shared_ptr<internal_forces::actuator::Actuator>>>>()),
     m_isDofSet(std::make_shared<std::vector<bool>>(1)),
     m_isClose(std::make_shared<bool>(false))
 {
     (*m_isDofSet)[0] = false;
 }
 
-internalforce::actuator::Actuators::Actuators(
-    const internalforce::actuator::Actuators& other) :
+internal_forces::actuator::Actuators::Actuators(
+    const internal_forces::actuator::Actuators& other) :
     m_all(other.m_all),
     m_isDofSet(other.m_isDofSet),
     m_isClose(other.m_isClose)
@@ -38,65 +38,65 @@ internalforce::actuator::Actuators::Actuators(
 }
 
 
-internalforce::actuator::Actuators::~Actuators()
+internal_forces::actuator::Actuators::~Actuators()
 {
 
 }
 
-void internalforce::actuator::Actuators::DeepCopy(const internalforce::actuator::Actuators
+void internal_forces::actuator::Actuators::DeepCopy(const internal_forces::actuator::Actuators
         &other)
 {
     m_all->resize(other.m_all->size());
     for (unsigned int i=0; i<other.m_all->size(); ++i) {
-        if ((*other.m_all)[i].first->type() == internalforce::actuator::TYPE::CONSTANT)
-            (*m_all)[i].first = std::make_shared<internalforce::actuator::ActuatorConstant>(
-                                    static_cast<const internalforce::actuator::ActuatorConstant&>( *
+        if ((*other.m_all)[i].first->type() == internal_forces::actuator::TYPE::CONSTANT)
+            (*m_all)[i].first = std::make_shared<internal_forces::actuator::ActuatorConstant>(
+                                    static_cast<const internal_forces::actuator::ActuatorConstant&>( *
                                             (*other.m_all)[i].first) );
-        else if ((*other.m_all)[i].first->type() == internalforce::actuator::TYPE::LINEAR)
-            (*m_all)[i].first = std::make_shared<internalforce::actuator::ActuatorLinear>(
-                                    static_cast<const internalforce::actuator::ActuatorLinear&>( *
+        else if ((*other.m_all)[i].first->type() == internal_forces::actuator::TYPE::LINEAR)
+            (*m_all)[i].first = std::make_shared<internal_forces::actuator::ActuatorLinear>(
+                                    static_cast<const internal_forces::actuator::ActuatorLinear&>( *
                                             (*other.m_all)[i].first) );
-        else if ((*other.m_all)[i].first->type() == internalforce::actuator::TYPE::GAUSS3P)
-            (*m_all)[i].first = std::make_shared<internalforce::actuator::ActuatorGauss3p>(
-                                    static_cast<const internalforce::actuator::ActuatorGauss3p&>( *
+        else if ((*other.m_all)[i].first->type() == internal_forces::actuator::TYPE::GAUSS3P)
+            (*m_all)[i].first = std::make_shared<internal_forces::actuator::ActuatorGauss3p>(
+                                    static_cast<const internal_forces::actuator::ActuatorGauss3p&>( *
                                             (*other.m_all)[i].first) );
-        else if ((*other.m_all)[i].first->type() == internalforce::actuator::TYPE::GAUSS6P)
-            (*m_all)[i].first = std::make_shared<internalforce::actuator::ActuatorGauss6p>(
-                                    static_cast<const internalforce::actuator::ActuatorGauss6p&>( *
+        else if ((*other.m_all)[i].first->type() == internal_forces::actuator::TYPE::GAUSS6P)
+            (*m_all)[i].first = std::make_shared<internal_forces::actuator::ActuatorGauss6p>(
+                                    static_cast<const internal_forces::actuator::ActuatorGauss6p&>( *
                                             (*other.m_all)[i].first) );
         else if ((*other.m_all)[i].first->type() ==
-                 internalforce::actuator::TYPE::SIGMOIDGAUSS3P)
-            (*m_all)[i].first = std::make_shared<internalforce::actuator::ActuatorSigmoidGauss3p>(
-                                    static_cast<const internalforce::actuator::ActuatorSigmoidGauss3p&>( *
+                 internal_forces::actuator::TYPE::SIGMOIDGAUSS3P)
+            (*m_all)[i].first = std::make_shared<internal_forces::actuator::ActuatorSigmoidGauss3p>(
+                                    static_cast<const internal_forces::actuator::ActuatorSigmoidGauss3p&>( *
                                             (*other.m_all)[i].first) );
         else
             utils::Error::raise("Actuator " + utils::String(
-                                            internalforce::actuator::TYPE_toStr((*other.m_all)[i].first->type()))
+                                            internal_forces::actuator::TYPE_toStr((*other.m_all)[i].first->type()))
                                         + " in DeepCopy");
-        if ((*other.m_all)[i].second->type() == internalforce::actuator::TYPE::CONSTANT)
-            (*m_all)[i].second = std::make_shared<internalforce::actuator::ActuatorConstant>(
-                                     static_cast<const internalforce::actuator::ActuatorConstant&>( *
+        if ((*other.m_all)[i].second->type() == internal_forces::actuator::TYPE::CONSTANT)
+            (*m_all)[i].second = std::make_shared<internal_forces::actuator::ActuatorConstant>(
+                                     static_cast<const internal_forces::actuator::ActuatorConstant&>( *
                                              (*other.m_all)[i].second) );
-        else if ((*other.m_all)[i].second->type() == internalforce::actuator::TYPE::LINEAR)
-            (*m_all)[i].second = std::make_shared<internalforce::actuator::ActuatorLinear>(
-                                     static_cast<const internalforce::actuator::ActuatorLinear&>( *
+        else if ((*other.m_all)[i].second->type() == internal_forces::actuator::TYPE::LINEAR)
+            (*m_all)[i].second = std::make_shared<internal_forces::actuator::ActuatorLinear>(
+                                     static_cast<const internal_forces::actuator::ActuatorLinear&>( *
                                              (*other.m_all)[i].second) );
-        else if ((*other.m_all)[i].second->type() == internalforce::actuator::TYPE::GAUSS3P)
-            (*m_all)[i].second = std::make_shared<internalforce::actuator::ActuatorGauss3p>(
-                                     static_cast<const internalforce::actuator::ActuatorGauss3p&>( *
+        else if ((*other.m_all)[i].second->type() == internal_forces::actuator::TYPE::GAUSS3P)
+            (*m_all)[i].second = std::make_shared<internal_forces::actuator::ActuatorGauss3p>(
+                                     static_cast<const internal_forces::actuator::ActuatorGauss3p&>( *
                                              (*other.m_all)[i].second) );
-        else if ((*other.m_all)[i].second->type() == internalforce::actuator::TYPE::GAUSS6P)
-            (*m_all)[i].second = std::make_shared<internalforce::actuator::ActuatorGauss6p>(
-                                     static_cast<const internalforce::actuator::ActuatorGauss6p&>( *
+        else if ((*other.m_all)[i].second->type() == internal_forces::actuator::TYPE::GAUSS6P)
+            (*m_all)[i].second = std::make_shared<internal_forces::actuator::ActuatorGauss6p>(
+                                     static_cast<const internal_forces::actuator::ActuatorGauss6p&>( *
                                              (*other.m_all)[i].second) );
         else if ((*other.m_all)[i].second->type() ==
-                 internalforce::actuator::TYPE::SIGMOIDGAUSS3P)
-            (*m_all)[i].second = std::make_shared<internalforce::actuator::ActuatorSigmoidGauss3p>(
-                                     static_cast<const internalforce::actuator::ActuatorSigmoidGauss3p&>( *
+                 internal_forces::actuator::TYPE::SIGMOIDGAUSS3P)
+            (*m_all)[i].second = std::make_shared<internal_forces::actuator::ActuatorSigmoidGauss3p>(
+                                     static_cast<const internal_forces::actuator::ActuatorSigmoidGauss3p&>( *
                                              (*other.m_all)[i].second) );
         else
             utils::Error::raise("Actuator " + utils::String(
-                                            internalforce::actuator::TYPE_toStr((*other.m_all)[i].second->type()))
+                                            internal_forces::actuator::TYPE_toStr((*other.m_all)[i].second->type()))
                                         + " in DeepCopy");
     }
     m_isDofSet->resize(other.m_isDofSet->size());
@@ -106,7 +106,7 @@ void internalforce::actuator::Actuators::DeepCopy(const internalforce::actuator:
     *m_isClose = *other.m_isClose;
 }
 
-void internalforce::actuator::Actuators::addActuator(const internalforce::actuator::Actuator
+void internal_forces::actuator::Actuators::addActuator(const internal_forces::actuator::Actuator
         &act)
 {
     utils::Error::check(
@@ -132,59 +132,59 @@ void internalforce::actuator::Actuators::addActuator(const internalforce::actuat
     }
 
     // Add an actuator to the pool of actuators according to its type
-    if (act.type() == internalforce::actuator::TYPE::CONSTANT) {
+    if (act.type() == internal_forces::actuator::TYPE::CONSTANT) {
         if (act.direction() == 1) {
-            (*m_all)[idx].first = std::make_shared<internalforce::actuator::ActuatorConstant>
-                                  (static_cast<const internalforce::actuator::ActuatorConstant&>(act));
+            (*m_all)[idx].first = std::make_shared<internal_forces::actuator::ActuatorConstant>
+                                  (static_cast<const internal_forces::actuator::ActuatorConstant&>(act));
             (*m_isDofSet)[idx*2] = true;
         } else {
-            (*m_all)[idx].second = std::make_shared<internalforce::actuator::ActuatorConstant>
-                                   (static_cast<const internalforce::actuator::ActuatorConstant&>(act));
+            (*m_all)[idx].second = std::make_shared<internal_forces::actuator::ActuatorConstant>
+                                   (static_cast<const internal_forces::actuator::ActuatorConstant&>(act));
             (*m_isDofSet)[idx*2+1] = true;
         }
         return;
-    } else if (act.type() == internalforce::actuator::TYPE::LINEAR) {
+    } else if (act.type() == internal_forces::actuator::TYPE::LINEAR) {
         if (act.direction() == 1) {
-            (*m_all)[idx].first = std::make_shared<internalforce::actuator::ActuatorLinear>
-                                  (static_cast<const internalforce::actuator::ActuatorLinear&>(act));
+            (*m_all)[idx].first = std::make_shared<internal_forces::actuator::ActuatorLinear>
+                                  (static_cast<const internal_forces::actuator::ActuatorLinear&>(act));
             (*m_isDofSet)[idx*2] = true;
         } else {
-            (*m_all)[idx].second = std::make_shared<internalforce::actuator::ActuatorLinear>
-                                   (static_cast<const internalforce::actuator::ActuatorLinear&>(act));
+            (*m_all)[idx].second = std::make_shared<internal_forces::actuator::ActuatorLinear>
+                                   (static_cast<const internal_forces::actuator::ActuatorLinear&>(act));
             (*m_isDofSet)[idx*2+1] = true;
         }
         return;
-    } else if (act.type() == internalforce::actuator::TYPE::GAUSS3P) {
+    } else if (act.type() == internal_forces::actuator::TYPE::GAUSS3P) {
         if (act.direction() == 1) {
-            (*m_all)[idx].first = std::make_shared<internalforce::actuator::ActuatorGauss3p>
-                                  (static_cast<const internalforce::actuator::ActuatorGauss3p&>(act));
+            (*m_all)[idx].first = std::make_shared<internal_forces::actuator::ActuatorGauss3p>
+                                  (static_cast<const internal_forces::actuator::ActuatorGauss3p&>(act));
             (*m_isDofSet)[idx*2] = true;
         } else {
-            (*m_all)[idx].second = std::make_shared<internalforce::actuator::ActuatorGauss3p>
-                                   (static_cast<const internalforce::actuator::ActuatorGauss3p&>(act));
+            (*m_all)[idx].second = std::make_shared<internal_forces::actuator::ActuatorGauss3p>
+                                   (static_cast<const internal_forces::actuator::ActuatorGauss3p&>(act));
             (*m_isDofSet)[idx*2+1] = true;
         }
         return;
-    } else if (act.type() == internalforce::actuator::TYPE::GAUSS6P) {
+    } else if (act.type() == internal_forces::actuator::TYPE::GAUSS6P) {
         if (act.direction() == 1) {
-            (*m_all)[idx].first = std::make_shared<internalforce::actuator::ActuatorGauss6p>
-                                  (static_cast<const internalforce::actuator::ActuatorGauss6p&>(act));
+            (*m_all)[idx].first = std::make_shared<internal_forces::actuator::ActuatorGauss6p>
+                                  (static_cast<const internal_forces::actuator::ActuatorGauss6p&>(act));
             (*m_isDofSet)[idx*2] = true;
         } else {
-            (*m_all)[idx].second = std::make_shared<internalforce::actuator::ActuatorGauss6p>
-                                   (static_cast<const internalforce::actuator::ActuatorGauss6p&>(act));
+            (*m_all)[idx].second = std::make_shared<internal_forces::actuator::ActuatorGauss6p>
+                                   (static_cast<const internal_forces::actuator::ActuatorGauss6p&>(act));
             (*m_isDofSet)[idx*2+1] = true;
         }
         return;
-    } else if (act.type() == internalforce::actuator::TYPE::SIGMOIDGAUSS3P) {
+    } else if (act.type() == internal_forces::actuator::TYPE::SIGMOIDGAUSS3P) {
         if (act.direction() == 1) {
-            (*m_all)[idx].first = std::make_shared<internalforce::actuator::ActuatorSigmoidGauss3p>
-                                  (static_cast<const internalforce::actuator::ActuatorSigmoidGauss3p&>(act));
+            (*m_all)[idx].first = std::make_shared<internal_forces::actuator::ActuatorSigmoidGauss3p>
+                                  (static_cast<const internal_forces::actuator::ActuatorSigmoidGauss3p&>(act));
             (*m_isDofSet)[idx*2] = true;
         } else {
             (*m_all)[idx].second =
-                std::make_shared<internalforce::actuator::ActuatorSigmoidGauss3p>
-                (static_cast<const internalforce::actuator::ActuatorSigmoidGauss3p&>(act));
+                std::make_shared<internal_forces::actuator::ActuatorSigmoidGauss3p>
+                (static_cast<const internal_forces::actuator::ActuatorSigmoidGauss3p&>(act));
             (*m_isDofSet)[idx*2+1] = true;
         }
         return;
@@ -194,7 +194,7 @@ void internalforce::actuator::Actuators::addActuator(const internalforce::actuat
 
 }
 
-void internalforce::actuator::Actuators::closeActuator()
+void internal_forces::actuator::Actuators::closeActuator()
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     const rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
@@ -211,19 +211,19 @@ void internalforce::actuator::Actuators::closeActuator()
     *m_isClose = true;
 }
 
-const std::pair<std::shared_ptr<internalforce::actuator::Actuator>,
-      std::shared_ptr<internalforce::actuator::Actuator>>&
-      internalforce::actuator::Actuators::actuator(unsigned int dof)
+const std::pair<std::shared_ptr<internal_forces::actuator::Actuator>,
+      std::shared_ptr<internal_forces::actuator::Actuator>>&
+      internal_forces::actuator::Actuators::actuator(unsigned int dof)
 {
     utils::Error::check(dof<nbActuators(),
                                 "Idx asked is higher than number of actuator");
     return (*m_all)[dof];
 }
-const internalforce::actuator::Actuator& internalforce::actuator::Actuators::actuator(
+const internal_forces::actuator::Actuator& internal_forces::actuator::Actuators::actuator(
     unsigned int dof,
     bool concentric)
 {
-    const std::pair<std::shared_ptr<internalforce::actuator::Actuator>, std::shared_ptr<internalforce::actuator::Actuator>>&
+    const std::pair<std::shared_ptr<internal_forces::actuator::Actuator>, std::shared_ptr<internal_forces::actuator::Actuator>>&
             tp(actuator(dof));
 
     if (concentric) {
@@ -233,12 +233,12 @@ const internalforce::actuator::Actuator& internalforce::actuator::Actuators::act
     }
 }
 
-unsigned int internalforce::actuator::Actuators::nbActuators() const
+unsigned int internal_forces::actuator::Actuators::nbActuators() const
 {
     return static_cast<unsigned int>(m_all->size());
 }
 
-rigidbody::GeneralizedTorque internalforce::actuator::Actuators::torque(
+rigidbody::GeneralizedTorque internal_forces::actuator::Actuators::torque(
     const utils::Vector& activation,
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity &Qdot)
@@ -257,7 +257,7 @@ rigidbody::GeneralizedTorque internalforce::actuator::Actuators::torque(
 
 
 std::pair<rigidbody::GeneralizedTorque, rigidbody::GeneralizedTorque>
-internalforce::actuator::Actuators::torqueMax(
+internal_forces::actuator::Actuators::torqueMax(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot)
 {
@@ -337,7 +337,7 @@ internalforce::actuator::Actuators::torqueMax(
 }
 
 
-rigidbody::GeneralizedTorque internalforce::actuator::Actuators::torqueMax(
+rigidbody::GeneralizedTorque internal_forces::actuator::Actuators::torqueMax(
     const utils::Vector &activation,
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity &Qdot)
@@ -385,8 +385,8 @@ rigidbody::GeneralizedTorque internalforce::actuator::Actuators::torqueMax(
     return maxGeneralizedTorque_all;
 }
 
-utils::Scalar internalforce::actuator::Actuators::getTorqueMaxDirection(
-    const std::shared_ptr<internalforce::actuator::Actuator> actuator,
+utils::Scalar internal_forces::actuator::Actuators::getTorqueMaxDirection(
+    const std::shared_ptr<internal_forces::actuator::Actuator> actuator,
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& Qdot) const
 {

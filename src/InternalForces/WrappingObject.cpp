@@ -6,14 +6,14 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::WrappingObject::WrappingObject() :
+internal_forces::WrappingObject::WrappingObject() :
     utils::Vector3d (),
     m_RT(std::make_shared<utils::RotoTrans>())
 {
     *m_typeOfNode = utils::NODE_TYPE::WRAPPING_OBJECT;
 }
 
-internalforce::WrappingObject::WrappingObject(
+internal_forces::WrappingObject::WrappingObject(
     const utils::Scalar& x,
     const utils::Scalar& y,
     const utils::Scalar& z) :
@@ -23,7 +23,7 @@ internalforce::WrappingObject::WrappingObject(
     *m_typeOfNode = utils::NODE_TYPE::WRAPPING_OBJECT;
 }
 
-internalforce::WrappingObject::WrappingObject(
+internal_forces::WrappingObject::WrappingObject(
     const utils::Scalar& x,
     const utils::Scalar& y,
     const utils::Scalar& z,
@@ -35,21 +35,21 @@ internalforce::WrappingObject::WrappingObject(
     *m_typeOfNode = utils::NODE_TYPE::WRAPPING_OBJECT;
 }
 
-internalforce::WrappingObject::WrappingObject(
+internal_forces::WrappingObject::WrappingObject(
     const utils::Vector3d &other) :
     utils::Vector3d (other)
 {
     try {
-        internalforce::WrappingObject& otherWrap(
-            const_cast<internalforce::WrappingObject&>(
-                dynamic_cast<const internalforce::WrappingObject&>(other)));
+        internal_forces::WrappingObject& otherWrap(
+            const_cast<internal_forces::WrappingObject&>(
+                dynamic_cast<const internal_forces::WrappingObject&>(other)));
         m_RT = otherWrap.m_RT;
     } catch(const std::bad_cast& e) {
         m_RT = std::make_shared<utils::RotoTrans>();
     }
 }
 
-internalforce::WrappingObject::WrappingObject(
+internal_forces::WrappingObject::WrappingObject(
     const utils::Vector3d &other,
     const utils::String &name,
     const utils::String &parentName) :
@@ -59,14 +59,14 @@ internalforce::WrappingObject::WrappingObject(
     *m_typeOfNode = utils::NODE_TYPE::WRAPPING_OBJECT;
 }
 
-void internalforce::WrappingObject::DeepCopy(
-    const internalforce::WrappingObject &other)
+void internal_forces::WrappingObject::DeepCopy(
+    const internal_forces::WrappingObject &other)
 {
     utils::Vector3d::DeepCopy(other);
     *m_RT = *other.m_RT;
 }
 
-const utils::RotoTrans &internalforce::WrappingObject::RT() const
+const utils::RotoTrans &internal_forces::WrappingObject::RT() const
 {
     return *m_RT;
 }

@@ -22,7 +22,7 @@ class GeneralizedVelocity;
 class GeneralizedTorque;
 }
 
-namespace internalforce
+namespace internal_forces
 {
 namespace muscles
 {

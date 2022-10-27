@@ -11,8 +11,8 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::WrappingHalfCylinder::WrappingHalfCylinder() :
-    internalforce::WrappingObject (),
+internal_forces::WrappingHalfCylinder::WrappingHalfCylinder() :
+    internal_forces::WrappingObject (),
     m_radius(std::make_shared<utils::Scalar>(0)),
     m_length(std::make_shared<utils::Scalar>(0)),
     m_RTtoParent(std::make_shared<utils::RotoTrans>()),
@@ -23,13 +23,13 @@ internalforce::WrappingHalfCylinder::WrappingHalfCylinder() :
     *m_typeOfNode = utils::NODE_TYPE::WRAPPING_HALF_CYLINDER;
 }
 
-internalforce::WrappingHalfCylinder::WrappingHalfCylinder(
+internal_forces::WrappingHalfCylinder::WrappingHalfCylinder(
     const utils::Vector3d &other):
-    internalforce::WrappingObject(other)
+    internal_forces::WrappingObject(other)
 {
-    internalforce::WrappingHalfCylinder& otherWrap(
-        const_cast<internalforce::WrappingHalfCylinder&>(
-            dynamic_cast<const internalforce::WrappingHalfCylinder&>(other)));
+    internal_forces::WrappingHalfCylinder& otherWrap(
+        const_cast<internal_forces::WrappingHalfCylinder&>(
+            dynamic_cast<const internal_forces::WrappingHalfCylinder&>(other)));
     m_radius = otherWrap.m_radius;
     m_length = otherWrap.m_length;
     m_RTtoParent = otherWrap.m_RTtoParent;
@@ -38,13 +38,13 @@ internalforce::WrappingHalfCylinder::WrappingHalfCylinder(
     m_lengthAroundWrap = otherWrap.m_lengthAroundWrap;
 }
 
-internalforce::WrappingHalfCylinder::WrappingHalfCylinder(
+internal_forces::WrappingHalfCylinder::WrappingHalfCylinder(
     const utils::Vector3d *other):
-    internalforce::WrappingObject(*other)
+    internal_forces::WrappingObject(*other)
 {
-    internalforce::WrappingHalfCylinder* otherWrap(
-        const_cast<internalforce::WrappingHalfCylinder*>(
-            dynamic_cast<const internalforce::WrappingHalfCylinder*>(other)));
+    internal_forces::WrappingHalfCylinder* otherWrap(
+        const_cast<internal_forces::WrappingHalfCylinder*>(
+            dynamic_cast<const internal_forces::WrappingHalfCylinder*>(other)));
     m_radius = otherWrap->m_radius;
     m_length = otherWrap->m_length;
     m_RTtoParent = otherWrap->m_RTtoParent;
@@ -53,11 +53,11 @@ internalforce::WrappingHalfCylinder::WrappingHalfCylinder(
     m_lengthAroundWrap = otherWrap->m_lengthAroundWrap;
 }
 
-internalforce::WrappingHalfCylinder::WrappingHalfCylinder(
+internal_forces::WrappingHalfCylinder::WrappingHalfCylinder(
     const utils::RotoTrans &rt,
     const utils::Scalar& radius,
     const utils::Scalar& length) :
-    internalforce::WrappingObject (rt.trans()),
+    internal_forces::WrappingObject (rt.trans()),
     m_radius(std::make_shared<utils::Scalar>(radius)),
     m_length(std::make_shared<utils::Scalar>(length)),
     m_RTtoParent(std::make_shared<utils::RotoTrans>(rt)),
@@ -68,13 +68,13 @@ internalforce::WrappingHalfCylinder::WrappingHalfCylinder(
     *m_typeOfNode = utils::NODE_TYPE::WRAPPING_HALF_CYLINDER;
 }
 
-internalforce::WrappingHalfCylinder::WrappingHalfCylinder(
+internal_forces::WrappingHalfCylinder::WrappingHalfCylinder(
     const utils::RotoTrans &rt,
     const utils::Scalar& radius,
     const utils::Scalar& length,
     const utils::String &name,
     const utils::String &parentName) :
-    internalforce::WrappingObject (rt.trans(), name, parentName),
+    internal_forces::WrappingObject (rt.trans(), name, parentName),
     m_radius(std::make_shared<utils::Scalar>(radius)),
     m_length(std::make_shared<utils::Scalar>(length)),
     m_RTtoParent(std::make_shared<utils::RotoTrans>(rt)),
@@ -85,18 +85,18 @@ internalforce::WrappingHalfCylinder::WrappingHalfCylinder(
     *m_typeOfNode = utils::NODE_TYPE::WRAPPING_HALF_CYLINDER;
 }
 
-internalforce::WrappingHalfCylinder
-internalforce::WrappingHalfCylinder::DeepCopy() const
+internal_forces::WrappingHalfCylinder
+internal_forces::WrappingHalfCylinder::DeepCopy() const
 {
-    internalforce::WrappingHalfCylinder copy;
+    internal_forces::WrappingHalfCylinder copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::WrappingHalfCylinder::DeepCopy(const
-        internalforce::WrappingHalfCylinder &other)
+void internal_forces::WrappingHalfCylinder::DeepCopy(const
+        internal_forces::WrappingHalfCylinder &other)
 {
-    internalforce::WrappingObject::DeepCopy(other);
+    internal_forces::WrappingObject::DeepCopy(other);
     *m_radius = *other.m_radius;
     *m_length = *other.m_length;
     *m_RTtoParent = *other.m_RTtoParent;
@@ -105,7 +105,7 @@ void internalforce::WrappingHalfCylinder::DeepCopy(const
     *m_lengthAroundWrap = *other.m_lengthAroundWrap;
 }
 
-void internalforce::WrappingHalfCylinder::wrapPoints(
+void internal_forces::WrappingHalfCylinder::wrapPoints(
     const utils::RotoTrans& rt,
     const utils::Vector3d& p1_bone,
     const utils::Vector3d& p2_bone,
@@ -163,7 +163,7 @@ void internalforce::WrappingHalfCylinder::wrapPoints(
     }
 }
 
-void internalforce::WrappingHalfCylinder::wrapPoints(
+void internal_forces::WrappingHalfCylinder::wrapPoints(
     rigidbody::Joints& model,
     const rigidbody::GeneralizedCoordinates& Q,
     const utils::Vector3d& p1_bone,
@@ -177,7 +177,7 @@ void internalforce::WrappingHalfCylinder::wrapPoints(
     wrapPoints(RT(model,Q), p1_bone, p2_bone, p1, p2, length);
 }
 
-void internalforce::WrappingHalfCylinder::wrapPoints(
+void internal_forces::WrappingHalfCylinder::wrapPoints(
     utils::Vector3d& p1,
     utils::Vector3d& p2,
     utils::Scalar *length)
@@ -189,7 +189,7 @@ void internalforce::WrappingHalfCylinder::wrapPoints(
     }
 }
 
-const utils::RotoTrans& internalforce::WrappingHalfCylinder::RT(
+const utils::RotoTrans& internal_forces::WrappingHalfCylinder::RT(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates& Q,
     bool updateKin)
@@ -206,35 +206,35 @@ const utils::RotoTrans& internalforce::WrappingHalfCylinder::RT(
     return *m_RT;
 }
 
-void internalforce::WrappingHalfCylinder::setRadius(
+void internal_forces::WrappingHalfCylinder::setRadius(
     const utils::Scalar &val)
 {
     *m_radius = val;
 }
 
-utils::Scalar internalforce::WrappingHalfCylinder::radius() const
+utils::Scalar internal_forces::WrappingHalfCylinder::radius() const
 {
     return *m_radius;
 }
 
-utils::Scalar internalforce::WrappingHalfCylinder::diameter() const
+utils::Scalar internal_forces::WrappingHalfCylinder::diameter() const
 {
     return 2 * *m_radius;
 }
 
-void internalforce::WrappingHalfCylinder::setLength(
+void internal_forces::WrappingHalfCylinder::setLength(
     const utils::Scalar& val)
 {
     *m_length = val;
 }
 
-const utils::Scalar& internalforce::WrappingHalfCylinder::length()
+const utils::Scalar& internal_forces::WrappingHalfCylinder::length()
 const
 {
     return *m_length;
 }
 
-void internalforce::WrappingHalfCylinder::findTangentToCircle(
+void internal_forces::WrappingHalfCylinder::findTangentToCircle(
     const utils::Vector3d& p,
     utils::Vector3d& p_tan) const
 {
@@ -263,7 +263,7 @@ void internalforce::WrappingHalfCylinder::findTangentToCircle(
     selectTangents(m, p_tan);
 }
 
-void internalforce::WrappingHalfCylinder::selectTangents(
+void internal_forces::WrappingHalfCylinder::selectTangents(
     const NodeMusclePair &p1,
     utils::Vector3d &p_tan) const
 {
@@ -280,7 +280,7 @@ void internalforce::WrappingHalfCylinder::selectTangents(
 #endif
 
 }
-bool internalforce::WrappingHalfCylinder::findVerticalNode(
+bool internal_forces::WrappingHalfCylinder::findVerticalNode(
     const NodeMusclePair &pointsInGlobal,
     NodeMusclePair &pointsToWrap) const
 {
@@ -349,7 +349,7 @@ bool internalforce::WrappingHalfCylinder::findVerticalNode(
 }
 
 #ifndef BIORBD_USE_CASADI_MATH
-bool internalforce::WrappingHalfCylinder::checkIfWraps(
+bool internal_forces::WrappingHalfCylinder::checkIfWraps(
     const NodeMusclePair &pointsInGlobal,
     NodeMusclePair &pointsToWrap) const
 {
@@ -391,7 +391,7 @@ bool internalforce::WrappingHalfCylinder::checkIfWraps(
 }
 #endif
 
-utils::Scalar internalforce::WrappingHalfCylinder::computeLength(
+utils::Scalar internal_forces::WrappingHalfCylinder::computeLength(
     const NodeMusclePair &p) const
 {
     utils::Scalar arc = std::acos(    ( (*p.m_p1)(0) * (*p.m_p2)(0) +

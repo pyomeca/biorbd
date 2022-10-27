@@ -6,25 +6,25 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::muscles::Characteristics::Characteristics() :
+internal_forces::muscles::Characteristics::Characteristics() :
     m_optimalLength(std::make_shared<utils::Scalar>(0)),
     m_fIsoMax(std::make_shared<utils::Scalar>(0)),
     m_PCSA(std::make_shared<utils::Scalar>(0)),
     m_tendonSlackLength(std::make_shared<utils::Scalar>(0)),
     m_pennationAngle(std::make_shared<utils::Scalar>(0)),
-    m_stateMax(std::make_shared<internalforce::muscles::State>(internalforce::muscles::State(1, 1))),
+    m_stateMax(std::make_shared<internal_forces::muscles::State>(internal_forces::muscles::State(1, 1))),
     m_minActivation(std::make_shared<utils::Scalar>(0.01)),
     m_torqueActivation(std::make_shared<utils::Scalar>(0.01)),
     m_torqueDeactivation(std::make_shared<utils::Scalar>(0.04)),
-    m_fatigueParameters(std::make_shared<internalforce::muscles::FatigueParameters>
-                        (internalforce::muscles::FatigueParameters())),
+    m_fatigueParameters(std::make_shared<internal_forces::muscles::FatigueParameters>
+                        (internal_forces::muscles::FatigueParameters())),
     m_useDamping(std::make_shared<bool>(false))
 {
 
 }
 
-internalforce::muscles::Characteristics::Characteristics(
-    const internalforce::muscles::Characteristics &other) :
+internal_forces::muscles::Characteristics::Characteristics(
+    const internal_forces::muscles::Characteristics &other) :
     m_optimalLength(other.m_optimalLength),
     m_fIsoMax(other.m_fIsoMax),
     m_PCSA(other.m_PCSA),
@@ -40,14 +40,14 @@ internalforce::muscles::Characteristics::Characteristics(
 
 }
 
-internalforce::muscles::Characteristics::Characteristics(
+internal_forces::muscles::Characteristics::Characteristics(
     const utils::Scalar& optLength,
     const utils::Scalar& fmax,
     const utils::Scalar& PCSA,
     const utils::Scalar& tendonSlackLength,
     const utils::Scalar& pennAngle,
-    const internalforce::muscles::State &emgMax,
-    const internalforce::muscles::FatigueParameters &fatigueParameters,
+    const internal_forces::muscles::State &emgMax,
+    const internal_forces::muscles::FatigueParameters &fatigueParameters,
     bool useDamping,
     const utils::Scalar& torqueAct,
     const utils::Scalar& torqueDeact,
@@ -57,11 +57,11 @@ internalforce::muscles::Characteristics::Characteristics(
     m_PCSA(std::make_shared<utils::Scalar>(PCSA)),
     m_tendonSlackLength(std::make_shared<utils::Scalar>(tendonSlackLength)),
     m_pennationAngle(std::make_shared<utils::Scalar>(pennAngle)),
-    m_stateMax(std::make_shared<internalforce::muscles::State>(emgMax)),
+    m_stateMax(std::make_shared<internal_forces::muscles::State>(emgMax)),
     m_minActivation(std::make_shared<utils::Scalar>(minAct)),
     m_torqueActivation(std::make_shared<utils::Scalar>(torqueAct)),
     m_torqueDeactivation(std::make_shared<utils::Scalar>(torqueDeact)),
-    m_fatigueParameters(std::make_shared<internalforce::muscles::FatigueParameters>
+    m_fatigueParameters(std::make_shared<internal_forces::muscles::FatigueParameters>
                         (fatigueParameters)),
     m_useDamping(std::make_shared<bool>(useDamping))
 
@@ -69,21 +69,21 @@ internalforce::muscles::Characteristics::Characteristics(
 
 }
 
-internalforce::muscles::Characteristics::~Characteristics()
+internal_forces::muscles::Characteristics::~Characteristics()
 {
 
 }
 
-internalforce::muscles::Characteristics internalforce::muscles::Characteristics::DeepCopy()
+internal_forces::muscles::Characteristics internal_forces::muscles::Characteristics::DeepCopy()
 const
 {
-    internalforce::muscles::Characteristics copy;
+    internal_forces::muscles::Characteristics copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::muscles::Characteristics::DeepCopy(
-    const internalforce::muscles::Characteristics &other)
+void internal_forces::muscles::Characteristics::DeepCopy(
+    const internal_forces::muscles::Characteristics &other)
 {
     *m_optimalLength = *other.m_optimalLength;
     *m_fIsoMax = *other.m_fIsoMax;
@@ -100,121 +100,121 @@ void internalforce::muscles::Characteristics::DeepCopy(
 }
 
 // Get et Set
-void internalforce::muscles::Characteristics::setOptimalLength(
+void internal_forces::muscles::Characteristics::setOptimalLength(
     const utils::Scalar& val)
 {
     *m_optimalLength = val;
 }
-const utils::Scalar& internalforce::muscles::Characteristics::optimalLength()
+const utils::Scalar& internal_forces::muscles::Characteristics::optimalLength()
 const
 {
     return *m_optimalLength;
 }
 
-void internalforce::muscles::Characteristics::setForceIsoMax(
+void internal_forces::muscles::Characteristics::setForceIsoMax(
     const utils::Scalar& val)
 {
     *m_fIsoMax = val;
 }
-const utils::Scalar& internalforce::muscles::Characteristics::forceIsoMax()
+const utils::Scalar& internal_forces::muscles::Characteristics::forceIsoMax()
 const
 {
     return *m_fIsoMax;
 }
 
-void internalforce::muscles::Characteristics::setTendonSlackLength(
+void internal_forces::muscles::Characteristics::setTendonSlackLength(
     const utils::Scalar& val)
 {
     *m_tendonSlackLength = val;
 }
 const utils::Scalar&
-internalforce::muscles::Characteristics::tendonSlackLength() const
+internal_forces::muscles::Characteristics::tendonSlackLength() const
 {
     return *m_tendonSlackLength;
 }
 
-void internalforce::muscles::Characteristics::setPennationAngle(
+void internal_forces::muscles::Characteristics::setPennationAngle(
     const utils::Scalar& val)
 {
     *m_pennationAngle = val;
 }
-const utils::Scalar& internalforce::muscles::Characteristics::pennationAngle()
+const utils::Scalar& internal_forces::muscles::Characteristics::pennationAngle()
 const
 {
     return *m_pennationAngle;
 }
 
-void internalforce::muscles::Characteristics::setPCSA(
+void internal_forces::muscles::Characteristics::setPCSA(
     const utils::Scalar& val)
 {
     *m_PCSA = val;
 }
-const utils::Scalar& internalforce::muscles::Characteristics::PCSA() const
+const utils::Scalar& internal_forces::muscles::Characteristics::PCSA() const
 {
     return *m_PCSA;
 }
 
-void internalforce::muscles::Characteristics::setMinActivation(
+void internal_forces::muscles::Characteristics::setMinActivation(
     const utils::Scalar& val)
 {
     *m_minActivation = val;
 }
-const utils::Scalar& internalforce::muscles::Characteristics::minActivation()
+const utils::Scalar& internal_forces::muscles::Characteristics::minActivation()
 const
 {
     return *m_minActivation;
 }
 
-void internalforce::muscles::Characteristics::setTorqueActivation(
+void internal_forces::muscles::Characteristics::setTorqueActivation(
     const utils::Scalar& val)
 {
     *m_torqueActivation = val;
 }
 const utils::Scalar&
-internalforce::muscles::Characteristics::torqueActivation() const
+internal_forces::muscles::Characteristics::torqueActivation() const
 {
     return *m_torqueActivation;
 }
 
-void internalforce::muscles::Characteristics::setTorqueDeactivation(
+void internal_forces::muscles::Characteristics::setTorqueDeactivation(
     const utils::Scalar& val)
 {
     *m_torqueDeactivation = val;
 }
 const utils::Scalar&
-internalforce::muscles::Characteristics::torqueDeactivation() const
+internal_forces::muscles::Characteristics::torqueDeactivation() const
 {
     return *m_torqueDeactivation;
 }
 
 
-void internalforce::muscles::Characteristics::setStateMax(
-    const internalforce::muscles::State &emgMax)
+void internal_forces::muscles::Characteristics::setStateMax(
+    const internal_forces::muscles::State &emgMax)
 {
     *m_stateMax = emgMax;
 }
-const internalforce::muscles::State &internalforce::muscles::Characteristics::stateMax() const
+const internal_forces::muscles::State &internal_forces::muscles::Characteristics::stateMax() const
 {
     return *m_stateMax;
 }
 
-void internalforce::muscles::Characteristics::setFatigueParameters(
-    const internalforce::muscles::FatigueParameters &fatigueParameters)
+void internal_forces::muscles::Characteristics::setFatigueParameters(
+    const internal_forces::muscles::FatigueParameters &fatigueParameters)
 {
     *m_fatigueParameters = fatigueParameters;
 }
-const internalforce::muscles::FatigueParameters
-&internalforce::muscles::Characteristics::fatigueParameters() const
+const internal_forces::muscles::FatigueParameters
+&internal_forces::muscles::Characteristics::fatigueParameters() const
 {
     return *m_fatigueParameters;
 }
 
-void internalforce::muscles::Characteristics::setUseDamping(
+void internal_forces::muscles::Characteristics::setUseDamping(
     bool val)
 {
     *m_useDamping = val;
 }
-bool internalforce::muscles::Characteristics::useDamping() const
+bool internal_forces::muscles::Characteristics::useDamping() const
 {
     return *m_useDamping;
 }

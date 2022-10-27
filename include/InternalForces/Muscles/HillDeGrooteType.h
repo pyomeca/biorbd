@@ -6,7 +6,7 @@
 
 namespace BIORBD_NAMESPACE
 {
-namespace internalforce
+namespace internal_forces
 {
 namespace muscles
 {
@@ -57,7 +57,7 @@ public:
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
-        const internalforce::PathModifiers& pathModifiers);
+        const internal_forces::PathModifiers& pathModifiers);
 
     ///
     /// \brief Construct a DeGroote-type muscle
@@ -71,7 +71,7 @@ public:
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
-        const internalforce::PathModifiers& pathModifiers,
+        const internal_forces::PathModifiers& pathModifiers,
         const State& emg);
 
     ///

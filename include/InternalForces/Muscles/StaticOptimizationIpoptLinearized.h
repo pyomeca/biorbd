@@ -12,7 +12,7 @@ class Matrix;
 class Vector;
 }
 
-namespace internalforce
+namespace internal_forces
 {
 namespace muscles
 {

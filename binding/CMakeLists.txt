@@ -61,9 +61,9 @@ if (BINDER_PYTHON3)
     endif()
     if (MODULE_ACTUATORS OR MODULE_MUSCLES)
         SET(SWIG_MODULE_INTERNAL_FORCES_INCLUDE_COMMAND
-            "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_internalforces.i\"")
-        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_internalforces.i.in"
-            "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_internalforces.i" @ONLY)
+            "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_internal_forces.i\"")
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_internal_forces.i.in"
+            "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_internal_forces.i" @ONLY)
     endif()
 
 

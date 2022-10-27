@@ -13,9 +13,9 @@
 #include "InternalForces/Muscles/StateDynamics.h"
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
+using namespace internal_forces;
 
-internalforce::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
+internal_forces::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     Model &model,
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
@@ -41,7 +41,7 @@ internalforce::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     m_torqueResidual(std::make_shared<utils::Vector>
                      (utils::Vector::Zero(*m_nbTorque))),
     m_torquePonderation(std::make_shared<double>(1000)),
-    m_states(std::make_shared<std::vector<std::shared_ptr<internalforce::muscles::State>>>
+    m_states(std::make_shared<std::vector<std::shared_ptr<internal_forces::muscles::State>>>
              (*m_nbMus)),
     m_pNormFactor(std::make_shared<unsigned int>(pNormFactor)),
     m_verbose(std::make_shared<int>(verbose)),
@@ -55,7 +55,7 @@ internalforce::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     }
 
     for (auto& s : *m_states) {
-        s = std::make_shared<internalforce::muscles::State>();
+        s = std::make_shared<internal_forces::muscles::State>();
     }
 
     m_model.updateMuscles(*m_Q, *m_Qdot, true);
@@ -66,12 +66,12 @@ internalforce::muscles::StaticOptimizationIpopt::StaticOptimizationIpopt(
     }
 }
 
-internalforce::muscles::StaticOptimizationIpopt::~StaticOptimizationIpopt()
+internal_forces::muscles::StaticOptimizationIpopt::~StaticOptimizationIpopt()
 {
 
 }
 
-bool internalforce::muscles::StaticOptimizationIpopt::get_nlp_info(
+bool internal_forces::muscles::StaticOptimizationIpopt::get_nlp_info(
     Ipopt::Index &n,
     Ipopt::Index &m,
     Ipopt::Index &nnz_jac_g,
@@ -99,7 +99,7 @@ bool internalforce::muscles::StaticOptimizationIpopt::get_nlp_info(
     return true;
 }
 
-bool internalforce::muscles::StaticOptimizationIpopt::get_bounds_info(
+bool internal_forces::muscles::StaticOptimizationIpopt::get_bounds_info(
     Ipopt::Index n,
     Ipopt::Number *x_l,
     Ipopt::Number *x_u,
@@ -129,7 +129,7 @@ bool internalforce::muscles::StaticOptimizationIpopt::get_bounds_info(
     return true;
 }
 
-bool internalforce::muscles::StaticOptimizationIpopt::get_starting_point(
+bool internal_forces::muscles::StaticOptimizationIpopt::get_starting_point(
     Ipopt::Index,
     bool init_x,
     Ipopt::Number* x,
@@ -163,7 +163,7 @@ bool internalforce::muscles::StaticOptimizationIpopt::get_starting_point(
     return true;
 }
 
-bool internalforce::muscles::StaticOptimizationIpopt::eval_f(
+bool internal_forces::muscles::StaticOptimizationIpopt::eval_f(
     Ipopt::Index n,
     const Ipopt::Number *x,
     bool new_x,
@@ -182,7 +182,7 @@ bool internalforce::muscles::StaticOptimizationIpopt::eval_f(
     return true;
 }
 
-bool internalforce::muscles::StaticOptimizationIpopt::eval_grad_f(
+bool internal_forces::muscles::StaticOptimizationIpopt::eval_grad_f(
     Ipopt::Index n,
     const Ipopt::Number *x,
     bool new_x,
@@ -207,7 +207,7 @@ bool internalforce::muscles::StaticOptimizationIpopt::eval_grad_f(
     return true;
 }
 
-bool internalforce::muscles::StaticOptimizationIpopt::eval_g(
+bool internal_forces::muscles::StaticOptimizationIpopt::eval_g(
     Ipopt::Index n,
     const Ipopt::Number *x,
     bool new_x,
@@ -236,7 +236,7 @@ bool internalforce::muscles::StaticOptimizationIpopt::eval_g(
     return true;
 }
 
-bool internalforce::muscles::StaticOptimizationIpopt::eval_jac_g(
+bool internal_forces::muscles::StaticOptimizationIpopt::eval_jac_g(
     Ipopt::Index n,
     const Ipopt::Number *x,
     bool new_x,
@@ -268,15 +268,15 @@ bool internalforce::muscles::StaticOptimizationIpopt::eval_jac_g(
             m_model.muscularJointTorque(*m_states));
         unsigned int k(0);
         for( unsigned int j = 0; j < *m_nbMus; ++j ) {
-            std::vector<std::shared_ptr<internalforce::muscles::State>> stateEpsilon;
+            std::vector<std::shared_ptr<internal_forces::muscles::State>> stateEpsilon;
             for (unsigned int i = 0; i < *m_nbMus; ++i) {
                 unsigned int delta(0);
                 if (i == j) {
                     delta = 1;
                 }
                 stateEpsilon.push_back(
-                    std::make_shared<internalforce::muscles::State>(
-                        internalforce::muscles::State(0, (*m_activations)[i]+delta* *m_eps)));
+                    std::make_shared<internal_forces::muscles::State>(
+                        internal_forces::muscles::State(0, (*m_activations)[i]+delta* *m_eps)));
             }
             const rigidbody::GeneralizedTorque& GeneralizedTorqueCalculEpsilon(
                 m_model.muscularJointTorque(stateEpsilon));
@@ -317,7 +317,7 @@ bool internalforce::muscles::StaticOptimizationIpopt::eval_jac_g(
 }
 
 
-void internalforce::muscles::StaticOptimizationIpopt::finalize_solution(
+void internal_forces::muscles::StaticOptimizationIpopt::finalize_solution(
     Ipopt::SolverReturn,
     Ipopt::Index,
     const Ipopt::Number *x,
@@ -354,19 +354,19 @@ void internalforce::muscles::StaticOptimizationIpopt::finalize_solution(
     }
 }
 
-utils::Vector internalforce::muscles::StaticOptimizationIpopt::finalSolution()
+utils::Vector internal_forces::muscles::StaticOptimizationIpopt::finalSolution()
 const
 {
     return *m_finalSolution;
 }
 
-utils::Vector internalforce::muscles::StaticOptimizationIpopt::finalResidual()
+utils::Vector internal_forces::muscles::StaticOptimizationIpopt::finalResidual()
 const
 {
     return *m_finalResidual;
 }
 
-void internalforce::muscles::StaticOptimizationIpopt::dispatch(const Ipopt::Number *x)
+void internal_forces::muscles::StaticOptimizationIpopt::dispatch(const Ipopt::Number *x)
 {
     for(unsigned int i = 0; i < *m_nbMus; i++ ) {
         (*m_activations)[i] = x[i];

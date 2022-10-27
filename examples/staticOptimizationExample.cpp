@@ -33,7 +33,7 @@ int main()
     Tau.setZero();
 
     // Proceed with the static optimization
-    auto optim = internalforce::muscles::StaticOptimization(model, Q, Qdot, Tau);
+    auto optim = internal_forces::muscles::StaticOptimization(model, Q, Qdot, Tau);
     optim.run();
     auto muscleActivationsPerFrame = optim.finalSolution();
 

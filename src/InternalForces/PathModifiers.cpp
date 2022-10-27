@@ -9,7 +9,7 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::PathModifiers::PathModifiers() :
+internal_forces::PathModifiers::PathModifiers() :
     m_obj(std::make_shared<std::vector<std::shared_ptr<utils::Vector3d>>>()),
     m_nbWraps(std::make_shared<unsigned int>(0)),
     m_nbVia(std::make_shared<unsigned int>(0)),
@@ -18,15 +18,15 @@ internalforce::PathModifiers::PathModifiers() :
 
 }
 
-internalforce::PathModifiers internalforce::PathModifiers::DeepCopy() const
+internal_forces::PathModifiers internal_forces::PathModifiers::DeepCopy() const
 {
-    internalforce::PathModifiers copy;
+    internal_forces::PathModifiers copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::PathModifiers::DeepCopy(const
-        internalforce::PathModifiers &other)
+void internal_forces::PathModifiers::DeepCopy(const
+        internal_forces::PathModifiers &other)
 {
     m_obj->resize(other.m_obj->size());
     for (unsigned int i=0; i<other.m_obj->size(); ++i) {
@@ -39,7 +39,7 @@ void internalforce::PathModifiers::DeepCopy(const
 }
 
 // Private method to assing values
-void internalforce::PathModifiers::addPathChanger(
+void internal_forces::PathModifiers::addPathChanger(
     utils::Vector3d &object)
 {
 
@@ -47,21 +47,21 @@ void internalforce::PathModifiers::addPathChanger(
     if (object.typeOfNode() == utils::NODE_TYPE::WRAPPING_SPHERE) {
         utils::Error::check(*m_nbVia == 0,
                                     "Cannot mix via points and wrapping objects yet");
-        m_obj->push_back(std::make_shared<internalforce::WrappingSphere>(
-                             static_cast<internalforce::WrappingSphere&> (object)));
+        m_obj->push_back(std::make_shared<internal_forces::WrappingSphere>(
+                             static_cast<internal_forces::WrappingSphere&> (object)));
         ++*m_nbWraps;
     } else if (object.typeOfNode() ==
                utils::NODE_TYPE::WRAPPING_HALF_CYLINDER) {
         utils::Error::check(*m_nbVia == 0,
                                     "Cannot mix via points and wrapping objects yet");
-        m_obj->push_back(std::make_shared<internalforce::WrappingHalfCylinder>(
-                             dynamic_cast <internalforce::WrappingHalfCylinder&> (object)));
+        m_obj->push_back(std::make_shared<internal_forces::WrappingHalfCylinder>(
+                             dynamic_cast <internal_forces::WrappingHalfCylinder&> (object)));
         ++*m_nbWraps;
     } else if (object.typeOfNode() == utils::NODE_TYPE::VIA_POINT) {
         utils::Error::check(*m_nbWraps == 0,
                                     "Cannot mix via points and wrapping objects yet");
-        m_obj->push_back(std::make_shared<internalforce::ViaPoint>(
-                             dynamic_cast <internalforce::ViaPoint&> (object)));
+        m_obj->push_back(std::make_shared<internal_forces::ViaPoint>(
+                             dynamic_cast <internal_forces::ViaPoint&> (object)));
         ++*m_nbVia;
     } else {
         utils::Error::raise("Wrapping type not found");
@@ -69,22 +69,22 @@ void internalforce::PathModifiers::addPathChanger(
     ++*m_totalObjects;
 }
 
-unsigned int internalforce::PathModifiers::nbWraps() const
+unsigned int internal_forces::PathModifiers::nbWraps() const
 {
     return *m_nbWraps;
 }
 
-unsigned int internalforce::PathModifiers::nbVia() const
+unsigned int internal_forces::PathModifiers::nbVia() const
 {
     return *m_nbVia;
 }
 
-unsigned int internalforce::PathModifiers::nbObjects() const
+unsigned int internal_forces::PathModifiers::nbObjects() const
 {
     return *m_totalObjects;
 }
 
-utils::Vector3d& internalforce::PathModifiers::object(
+utils::Vector3d& internal_forces::PathModifiers::object(
     unsigned int idx)
 {
     utils::Error::check(idx<nbObjects(),
@@ -93,7 +93,7 @@ utils::Vector3d& internalforce::PathModifiers::object(
 }
 
 
-const utils::Vector3d& internalforce::PathModifiers::object(
+const utils::Vector3d& internal_forces::PathModifiers::object(
     unsigned int idx) const
 {
     utils::Error::check(idx<nbObjects(),

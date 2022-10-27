@@ -4,10 +4,10 @@
 #include "Utils/Error.h"
 
 using namespace BIORBD_NAMESPACE;
-internalforce::muscles::State::State(
+internal_forces::muscles::State::State(
     const utils::Scalar& excitation,
     const utils::Scalar& activation) :
-    m_stateType(std::make_shared<internalforce::muscles::STATE_TYPE>()),
+    m_stateType(std::make_shared<internal_forces::muscles::STATE_TYPE>()),
     m_excitation(std::make_shared<utils::Scalar>(excitation)),
     m_excitationNorm(std::make_shared<utils::Scalar>(0)),
     m_activation(std::make_shared<utils::Scalar>(activation))
@@ -15,8 +15,8 @@ internalforce::muscles::State::State(
     setType();
 }
 
-internalforce::muscles::State::State(
-    const internalforce::muscles::State &other) :
+internal_forces::muscles::State::State(
+    const internal_forces::muscles::State &other) :
     m_stateType(other.m_stateType),
     m_excitation(other.m_excitation),
     m_excitationNorm(std::make_shared<utils::Scalar>(0)),
@@ -25,19 +25,19 @@ internalforce::muscles::State::State(
 
 }
 
-internalforce::muscles::State::~State()
+internal_forces::muscles::State::~State()
 {
     //dtor
 }
 
-internalforce::muscles::State internalforce::muscles::State::DeepCopy() const
+internal_forces::muscles::State internal_forces::muscles::State::DeepCopy() const
 {
-    internalforce::muscles::State copy;
+    internal_forces::muscles::State copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::muscles::State::DeepCopy(const internalforce::muscles::State &other)
+void internal_forces::muscles::State::DeepCopy(const internal_forces::muscles::State &other)
 {
     *m_stateType = *other.m_stateType;
     *m_excitation = *other.m_excitation;
@@ -45,7 +45,7 @@ void internalforce::muscles::State::DeepCopy(const internalforce::muscles::State
     *m_activation = *other.m_activation;
 }
 
-void internalforce::muscles::State::setExcitation(
+void internal_forces::muscles::State::setExcitation(
     const utils::Scalar& val,
     bool turnOffWarnings)
 {
@@ -65,13 +65,13 @@ void internalforce::muscles::State::setExcitation(
 #endif
 }
 
-const utils::Scalar& internalforce::muscles::State::excitation() const
+const utils::Scalar& internal_forces::muscles::State::excitation() const
 {
     return *m_excitation;
 }
 
-const utils::Scalar& internalforce::muscles::State::normalizeExcitation(
-    const internalforce::muscles::State &emgMax,
+const utils::Scalar& internal_forces::muscles::State::normalizeExcitation(
+    const internal_forces::muscles::State &emgMax,
     bool turnOffWarnings)
 {
 
@@ -87,18 +87,18 @@ const utils::Scalar& internalforce::muscles::State::normalizeExcitation(
     return *m_excitationNorm;
 }
 
-void internalforce::muscles::State::setExcitationNorm(
+void internal_forces::muscles::State::setExcitationNorm(
     const utils::Scalar& val)
 {
     *m_excitationNorm = val;
 }
 
-const utils::Scalar& internalforce::muscles::State::excitationNorm() const
+const utils::Scalar& internal_forces::muscles::State::excitationNorm() const
 {
     return *m_excitationNorm;
 }
 
-void internalforce::muscles::State::setActivation(
+void internal_forces::muscles::State::setActivation(
     const utils::Scalar& val,
     bool turnOffWarnings)
 {
@@ -125,17 +125,17 @@ void internalforce::muscles::State::setActivation(
 #endif
 }
 
-const utils::Scalar& internalforce::muscles::State::activation() const
+const utils::Scalar& internal_forces::muscles::State::activation() const
 {
     return *m_activation;
 }
 
-internalforce::muscles::STATE_TYPE internalforce::muscles::State::type() const
+internal_forces::muscles::STATE_TYPE internal_forces::muscles::State::type() const
 {
     return *m_stateType;
 }
 
-void internalforce::muscles::State::setType()
+void internal_forces::muscles::State::setType()
 {
-    *m_stateType = internalforce::muscles::STATE_TYPE::SIMPLE_STATE;
+    *m_stateType = internal_forces::muscles::STATE_TYPE::SIMPLE_STATE;
 }

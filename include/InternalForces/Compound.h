@@ -20,7 +20,7 @@ class Joints;
 class GeneralizedCoordinates;
 class GeneralizedVelocity;
 }
-namespace internalforce
+namespace internal_forces
 {
 class PathModifiers;
 
@@ -49,7 +49,7 @@ public:
     ///
     Compound(
         const utils::String& name,
-        const internalforce::PathModifiers& pathModifiers);
+        const internal_forces::PathModifiers& pathModifiers);
     ///
     /// \brief Construct compound from another muscle
     /// \param other The muscle to shallow copy
@@ -94,7 +94,7 @@ public:
     /// \brief Return the path modifier
     /// \return The path modifier
     ///
-    const internalforce::PathModifiers& pathModifier();
+    const internal_forces::PathModifiers& pathModifier();
 
     ///
     /// \brief Add a path modifier object
@@ -111,7 +111,7 @@ public:
 
 protected:
     std::shared_ptr<utils::String> m_name; ///< The name of the muscle
-    std::shared_ptr<internalforce::PathModifiers>
+    std::shared_ptr<internal_forces::PathModifiers>
     m_pathChanger; ///< The set of path modifiers
     std::shared_ptr<utils::Scalar> m_force; ///< The last computed force
 

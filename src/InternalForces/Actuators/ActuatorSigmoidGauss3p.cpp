@@ -7,8 +7,8 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p() :
-    internalforce::actuator::Actuator(),
+internal_forces::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p() :
+    internal_forces::actuator::Actuator(),
     m_theta(std::make_shared<utils::Scalar>(0)),
     m_lambda(std::make_shared<utils::Scalar>(0)),
     m_offset(std::make_shared<utils::Scalar>(0)),
@@ -18,9 +18,9 @@ internalforce::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p() :
     setType();
 }
 
-internalforce::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p(
-    const internalforce::actuator::ActuatorSigmoidGauss3p &other) :
-    internalforce::actuator::Actuator(other),
+internal_forces::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p(
+    const internal_forces::actuator::ActuatorSigmoidGauss3p &other) :
+    internal_forces::actuator::Actuator(other),
     m_theta(other.m_theta),
     m_lambda(other.m_lambda),
     m_offset(other.m_offset),
@@ -30,7 +30,7 @@ internalforce::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p(
 
 }
 
-internalforce::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p(
+internal_forces::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p(
     int direction,
     const utils::Scalar& theta,
     const utils::Scalar& lambda,
@@ -38,7 +38,7 @@ internalforce::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p(
     const utils::Scalar& r,
     const utils::Scalar& qopt,
     unsigned int dofIdx) :
-    internalforce::actuator::Actuator(direction, dofIdx),
+    internal_forces::actuator::Actuator(direction, dofIdx),
     m_theta(std::make_shared<utils::Scalar>(theta)),
     m_lambda(std::make_shared<utils::Scalar>(lambda)),
     m_offset(std::make_shared<utils::Scalar>(offset)),
@@ -48,7 +48,7 @@ internalforce::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p(
     setType();
 }
 
-internalforce::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p(
+internal_forces::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p(
     int direction,
     const utils::Scalar& theta,
     const utils::Scalar& lambda,
@@ -57,7 +57,7 @@ internalforce::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p(
     const utils::Scalar& qopt,
     unsigned int dofIdx,
     const utils::String &jointName) :
-    internalforce::actuator::Actuator(direction, dofIdx, jointName),
+    internal_forces::actuator::Actuator(direction, dofIdx, jointName),
     m_theta(std::make_shared<utils::Scalar>(theta)),
     m_lambda(std::make_shared<utils::Scalar>(lambda)),
     m_offset(std::make_shared<utils::Scalar>(offset)),
@@ -67,23 +67,23 @@ internalforce::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p(
     setType();
 }
 
-internalforce::actuator::ActuatorSigmoidGauss3p::~ActuatorSigmoidGauss3p()
+internal_forces::actuator::ActuatorSigmoidGauss3p::~ActuatorSigmoidGauss3p()
 {
 
 }
 
-internalforce::actuator::ActuatorSigmoidGauss3p
-internalforce::actuator::ActuatorSigmoidGauss3p::DeepCopy() const
+internal_forces::actuator::ActuatorSigmoidGauss3p
+internal_forces::actuator::ActuatorSigmoidGauss3p::DeepCopy() const
 {
-    internalforce::actuator::ActuatorSigmoidGauss3p copy;
+    internal_forces::actuator::ActuatorSigmoidGauss3p copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::actuator::ActuatorSigmoidGauss3p::DeepCopy(
-    const internalforce::actuator::ActuatorSigmoidGauss3p &other)
+void internal_forces::actuator::ActuatorSigmoidGauss3p::DeepCopy(
+    const internal_forces::actuator::ActuatorSigmoidGauss3p &other)
 {
-    internalforce::actuator::Actuator::DeepCopy(other);
+    internal_forces::actuator::Actuator::DeepCopy(other);
     *m_theta = *other.m_theta;
     *m_lambda = *other.m_lambda;
     *m_offset = *other.m_offset;
@@ -91,13 +91,13 @@ void internalforce::actuator::ActuatorSigmoidGauss3p::DeepCopy(
     *m_qopt = *other.m_qopt;
 }
 
-utils::Scalar internalforce::actuator::ActuatorSigmoidGauss3p::torqueMax()
+utils::Scalar internal_forces::actuator::ActuatorSigmoidGauss3p::torqueMax()
 {
     utils::Error::raise(
         "torqueMax for ActuatorSigmoidGauss3p must be called with Q and Qdot");
 }
 
-utils::Scalar internalforce::actuator::ActuatorSigmoidGauss3p::torqueMax(
+utils::Scalar internal_forces::actuator::ActuatorSigmoidGauss3p::torqueMax(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot)
 {
@@ -111,7 +111,7 @@ utils::Scalar internalforce::actuator::ActuatorSigmoidGauss3p::torqueMax(
     return Tmax * exp(-(*m_qopt - pos) * (*m_qopt - pos) / (2 * *m_r * *m_r));
 }
 
-void internalforce::actuator::ActuatorSigmoidGauss3p::setType()
+void internal_forces::actuator::ActuatorSigmoidGauss3p::setType()
 {
-    *m_type = internalforce::actuator::TYPE::SIGMOIDGAUSS3P;
+    *m_type = internal_forces::actuator::TYPE::SIGMOIDGAUSS3P;
 }

@@ -6,7 +6,7 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::actuator::ActuatorLinear::ActuatorLinear() :
+internal_forces::actuator::ActuatorLinear::ActuatorLinear() :
     Actuator(),
     m_m(std::make_shared<utils::Scalar>(0)),
     m_b(std::make_shared<utils::Scalar>(0))
@@ -14,8 +14,8 @@ internalforce::actuator::ActuatorLinear::ActuatorLinear() :
     setType();
 }
 
-internalforce::actuator::ActuatorLinear::ActuatorLinear(
-    const internalforce::actuator::ActuatorLinear &other) :
+internal_forces::actuator::ActuatorLinear::ActuatorLinear(
+    const internal_forces::actuator::ActuatorLinear &other) :
     Actuator(other),
     m_m(other.m_m),
     m_b(other.m_b)
@@ -23,7 +23,7 @@ internalforce::actuator::ActuatorLinear::ActuatorLinear(
 
 }
 
-internalforce::actuator::ActuatorLinear::ActuatorLinear(
+internal_forces::actuator::ActuatorLinear::ActuatorLinear(
     int direction,
     const utils::Scalar& T0,
     const utils::Scalar& slope,
@@ -35,7 +35,7 @@ internalforce::actuator::ActuatorLinear::ActuatorLinear(
     setType();
 }
 
-internalforce::actuator::ActuatorLinear::ActuatorLinear(
+internal_forces::actuator::ActuatorLinear::ActuatorLinear(
     int direction,
     const utils::Scalar& T0,
     const utils::Scalar& slope,
@@ -48,40 +48,40 @@ internalforce::actuator::ActuatorLinear::ActuatorLinear(
     setType();
 }
 
-internalforce::actuator::ActuatorLinear::~ActuatorLinear()
+internal_forces::actuator::ActuatorLinear::~ActuatorLinear()
 {
 
 }
 
-internalforce::actuator::ActuatorLinear internalforce::actuator::ActuatorLinear::DeepCopy()
+internal_forces::actuator::ActuatorLinear internal_forces::actuator::ActuatorLinear::DeepCopy()
 const
 {
-    internalforce::actuator::ActuatorLinear copy;
+    internal_forces::actuator::ActuatorLinear copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::actuator::ActuatorLinear::DeepCopy(const
-        internalforce::actuator::ActuatorLinear &other)
+void internal_forces::actuator::ActuatorLinear::DeepCopy(const
+        internal_forces::actuator::ActuatorLinear &other)
 {
-    internalforce::actuator::Actuator::DeepCopy(other);
+    internal_forces::actuator::Actuator::DeepCopy(other);
     *m_m = *other.m_m;
     *m_b = *other.m_b;
 }
 
-utils::Scalar internalforce::actuator::ActuatorLinear::torqueMax()
+utils::Scalar internal_forces::actuator::ActuatorLinear::torqueMax()
 {
     utils::Error::raise("torqueMax for ActuatorLinear must be called with Q and Qdot");
 }
 
 
-utils::Scalar internalforce::actuator::ActuatorLinear::torqueMax(
+utils::Scalar internal_forces::actuator::ActuatorLinear::torqueMax(
     const rigidbody::GeneralizedCoordinates &Q) const
 {
     return (Q[*m_dofIdx]*180/M_PI) * *m_m + *m_b;
 }
 
-void internalforce::actuator::ActuatorLinear::setType()
+void internal_forces::actuator::ActuatorLinear::setType()
 {
-    *m_type = internalforce::actuator::TYPE::LINEAR;
+    *m_type = internal_forces::actuator::TYPE::LINEAR;
 }

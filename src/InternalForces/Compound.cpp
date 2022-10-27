@@ -8,34 +8,34 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::Compound::Compound() :
+internal_forces::Compound::Compound() :
     m_name(std::make_shared<utils::String>("")),
-    m_pathChanger(std::make_shared<internalforce::PathModifiers>()),
+    m_pathChanger(std::make_shared<internal_forces::PathModifiers>()),
     m_force(std::make_shared<utils::Scalar>(0))
 {
 
 }
 
-internalforce::Compound::Compound(const utils::String &name) :
+internal_forces::Compound::Compound(const utils::String &name) :
     m_name(std::make_shared<utils::String>(name)),
-    m_pathChanger(std::make_shared<internalforce::PathModifiers>()),
+    m_pathChanger(std::make_shared<internal_forces::PathModifiers>()),
     m_force(std::make_shared<utils::Scalar>(0))
 {
 
 }
 
-internalforce::Compound::Compound(
+internal_forces::Compound::Compound(
     const utils::String &name,
-    const internalforce::PathModifiers &pathModifiers) :
+    const internal_forces::PathModifiers &pathModifiers) :
     m_name(std::make_shared<utils::String>(name)),
-    m_pathChanger(std::make_shared<internalforce::PathModifiers>(pathModifiers)),
+    m_pathChanger(std::make_shared<internal_forces::PathModifiers>(pathModifiers)),
     m_force(std::make_shared<utils::Scalar>(0))
 {
 
 }
 
-internalforce::Compound::Compound(
-    const internalforce::Compound &other) :
+internal_forces::Compound::Compound(
+    const internal_forces::Compound &other) :
     m_name(other.m_name),
     m_pathChanger(other.m_pathChanger),
     m_force(other.m_force)
@@ -43,8 +43,8 @@ internalforce::Compound::Compound(
 
 }
 
-internalforce::Compound::Compound(
-    std::shared_ptr<internalforce::Compound> other) :
+internal_forces::Compound::Compound(
+    std::shared_ptr<internal_forces::Compound> other) :
     m_name(other->m_name),
     m_pathChanger(other->m_pathChanger),
     m_force(other->m_force)
@@ -52,39 +52,39 @@ internalforce::Compound::Compound(
 
 }
 
-internalforce::Compound::~Compound()
+internal_forces::Compound::~Compound()
 {
 
 }
 
-void internalforce::Compound::DeepCopy(const internalforce::Compound &other)
+void internal_forces::Compound::DeepCopy(const internal_forces::Compound &other)
 {
     *m_name = *other.m_name;
     *m_pathChanger = other.m_pathChanger->DeepCopy();
     *m_force = *other.m_force;
 }
 
-const utils::String &internalforce::Compound::name() const
+const utils::String &internal_forces::Compound::name() const
 {
     return *m_name;
 }
 
-void internalforce::Compound::setName(const utils::String &name)
+void internal_forces::Compound::setName(const utils::String &name)
 {
     *m_name = name;
 }
 
-const internalforce::PathModifiers &internalforce::Compound::pathModifier()
+const internal_forces::PathModifiers &internal_forces::Compound::pathModifier()
 {
     return *m_pathChanger;
 }
 
-void internalforce::Compound::addPathObject(utils::Vector3d &wrap)
+void internal_forces::Compound::addPathObject(utils::Vector3d &wrap)
 {
     m_pathChanger->addPathChanger(wrap);
 }
 
-const utils::Scalar& internalforce::Compound::force()
+const utils::Scalar& internal_forces::Compound::force()
 {
     return *m_force;
 }

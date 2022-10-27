@@ -18,7 +18,7 @@ class Joints;
 class GeneralizedCoordinates;
 }
 
-namespace internalforce
+namespace internal_forces
 {
 ///
 /// \brief Base class for the wrapping objects

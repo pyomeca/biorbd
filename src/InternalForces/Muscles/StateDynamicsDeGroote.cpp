@@ -8,38 +8,38 @@
 
 using namespace BIORBD_NAMESPACE;
 
-internalforce::muscles::StateDynamicsDeGroote::StateDynamicsDeGroote(
+internal_forces::muscles::StateDynamicsDeGroote::StateDynamicsDeGroote(
     const utils::Scalar& excitation,
     const utils::Scalar& activation) :
-    internalforce::muscles::StateDynamics(excitation,activation)
+    internal_forces::muscles::StateDynamics(excitation,activation)
 {
     setType();
 }
 
-internalforce::muscles::StateDynamicsDeGroote::StateDynamicsDeGroote(
-    const internalforce::muscles::StateDynamicsDeGroote &other) :
-    internalforce::muscles::StateDynamics(other)
+internal_forces::muscles::StateDynamicsDeGroote::StateDynamicsDeGroote(
+    const internal_forces::muscles::StateDynamicsDeGroote &other) :
+    internal_forces::muscles::StateDynamics(other)
 {
 
 }
 
-internalforce::muscles::StateDynamicsDeGroote
-internalforce::muscles::StateDynamicsDeGroote::DeepCopy() const
+internal_forces::muscles::StateDynamicsDeGroote
+internal_forces::muscles::StateDynamicsDeGroote::DeepCopy() const
 {
-    internalforce::muscles::StateDynamicsDeGroote copy;
+    internal_forces::muscles::StateDynamicsDeGroote copy;
     copy.DeepCopy(*this);
     return copy;
 }
 
-void internalforce::muscles::StateDynamicsDeGroote::DeepCopy(const
-        internalforce::muscles::StateDynamicsDeGroote &other)
+void internal_forces::muscles::StateDynamicsDeGroote::DeepCopy(const
+        internal_forces::muscles::StateDynamicsDeGroote &other)
 {
-    internalforce::muscles::StateDynamics::DeepCopy(other);
+    internal_forces::muscles::StateDynamics::DeepCopy(other);
 }
 
 const utils::Scalar&
-internalforce::muscles::StateDynamicsDeGroote::timeDerivativeActivation(
-    const internalforce::muscles::Characteristics &characteristics,
+internal_forces::muscles::StateDynamicsDeGroote::timeDerivativeActivation(
+    const internal_forces::muscles::Characteristics &characteristics,
     bool alreadyNormalized)
 {
     // From DeGroote https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5043004/
@@ -62,7 +62,7 @@ internalforce::muscles::StateDynamicsDeGroote::timeDerivativeActivation(
     return *m_activationDot;
 }
 
-void internalforce::muscles::StateDynamicsDeGroote::setType()
+void internal_forces::muscles::StateDynamicsDeGroote::setType()
 {
-    *m_stateType = internalforce::muscles::STATE_TYPE::DE_GROOTE;
+    *m_stateType = internal_forces::muscles::STATE_TYPE::DE_GROOTE;
 }

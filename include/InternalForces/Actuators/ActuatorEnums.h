@@ -3,7 +3,7 @@
 
 namespace BIORBD_NAMESPACE
 {
-namespace internalforce
+namespace internal_forces
 {
 namespace actuator
 {

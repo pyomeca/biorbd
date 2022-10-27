@@ -7,9 +7,9 @@
 #include "InternalForces/Muscles/State.h"
 
 using namespace BIORBD_NAMESPACE;
-using namespace internalforce;
+using namespace internal_forces;
 
-internalforce::muscles::StaticOptimizationIpoptLinearized::StaticOptimizationIpoptLinearized(
+internal_forces::muscles::StaticOptimizationIpoptLinearized::StaticOptimizationIpoptLinearized(
     Model &model,
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
@@ -20,7 +20,7 @@ internalforce::muscles::StaticOptimizationIpoptLinearized::StaticOptimizationIpo
     int verbose,
     double eps
 ) :
-    internalforce::muscles::StaticOptimizationIpopt(
+    internal_forces::muscles::StaticOptimizationIpopt(
         model, Q, Qdot, torqueTarget, activationInit, useResidual,
         pNormFactor, verbose, eps),
     m_jacobian(std::make_shared<utils::Matrix>(*m_nbDof, *m_nbMus))
@@ -29,19 +29,19 @@ internalforce::muscles::StaticOptimizationIpoptLinearized::StaticOptimizationIpo
 }
 
 
-void internalforce::muscles::StaticOptimizationIpoptLinearized::prepareJacobian()
+void internal_forces::muscles::StaticOptimizationIpoptLinearized::prepareJacobian()
 {
     m_model.updateMuscles(*m_Q, *m_Qdot, true);
-    std::vector<std::shared_ptr<internalforce::muscles::State>> state_zero;
+    std::vector<std::shared_ptr<internal_forces::muscles::State>> state_zero;
     for (unsigned int i = 0; i<*m_nbMus; ++i) {
         state_zero.push_back(
-            std::make_shared<internalforce::muscles::State>(
-                internalforce::muscles::State(0, 0)));
+            std::make_shared<internal_forces::muscles::State>(
+                internal_forces::muscles::State(0, 0)));
     }
     const rigidbody::GeneralizedTorque& GeneralizedTorque_zero(
         m_model.muscularJointTorque(state_zero));
     for (unsigned int i = 0; i<*m_nbMus; ++i) {
-        std::vector<std::shared_ptr<internalforce::muscles::State>> state;
+        std::vector<std::shared_ptr<internal_forces::muscles::State>> state;
         for (unsigned int j = 0; j<*m_nbMus; ++j) {
             unsigned int delta;
             if (j == i) {
@@ -50,8 +50,8 @@ void internalforce::muscles::StaticOptimizationIpoptLinearized::prepareJacobian(
                 delta = 0;
             }
             state.push_back(
-                std::make_shared<internalforce::muscles::State>
-                (internalforce::muscles::State(0, delta*1)));
+                std::make_shared<internal_forces::muscles::State>
+                (internal_forces::muscles::State(0, delta*1)));
         }
         const rigidbody::GeneralizedTorque& GeneralizedTorque(
             m_model.muscularJointTorque(
@@ -63,12 +63,12 @@ void internalforce::muscles::StaticOptimizationIpoptLinearized::prepareJacobian(
     }
 }
 
-internalforce::muscles::StaticOptimizationIpoptLinearized::~StaticOptimizationIpoptLinearized()
+internal_forces::muscles::StaticOptimizationIpoptLinearized::~StaticOptimizationIpoptLinearized()
 {
 
 }
 
-bool internalforce::muscles::StaticOptimizationIpoptLinearized::eval_g(
+bool internal_forces::muscles::StaticOptimizationIpoptLinearized::eval_g(
     Ipopt::Index n,
     const Ipopt::Number *x,
     bool new_x,
@@ -99,7 +99,7 @@ bool internalforce::muscles::StaticOptimizationIpoptLinearized::eval_g(
     return true;
 }
 
-bool internalforce::muscles::StaticOptimizationIpoptLinearized::eval_jac_g(
+bool internal_forces::muscles::StaticOptimizationIpoptLinearized::eval_jac_g(
     Ipopt::Index,
     const Ipopt::Number *x,
     bool new_x,

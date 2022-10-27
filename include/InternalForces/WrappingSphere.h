@@ -6,7 +6,7 @@
 
 namespace BIORBD_NAMESPACE
 {
-namespace internalforce
+namespace internal_forces
 {
 ///
 /// \brief Sphere object that makes the muscle to wrap around

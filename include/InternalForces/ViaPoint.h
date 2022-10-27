@@ -11,7 +11,7 @@ namespace utils
 class String;
 }
 
-namespace internalforce
+namespace internal_forces
 {
 ///
 /// \brief Via point of a muscle
