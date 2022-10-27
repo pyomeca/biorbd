@@ -9,13 +9,13 @@ try:
     import biorbd
 
     brbd_to_test.append(biorbd)
-except:
+except ModuleNotFoundError:
     pass
 try:
     import biorbd_casadi
 
     brbd_to_test.append(biorbd_casadi)
-except:
+except ModuleNotFoundError:
     pass
 
 
