@@ -84,8 +84,8 @@ def test_multiply(brbd):
         ),
     )
 
-    a = brbd.Rotation_fromEulerAngles(np.array([1, 2, 3]), "xyz")
-    b = brbd.Rotation_fromEulerAngles(np.array([2, 3, 4]), "xyz")
+    a = brbd.Rotation.fromEulerAngles(np.array([1, 2, 3]), "xyz")
+    b = brbd.Rotation.fromEulerAngles(np.array([2, 3, 4]), "xyz")
     c = a.multiply(b)
     np.testing.assert_almost_equal(
         c.to_array(),
@@ -98,8 +98,8 @@ def test_multiply(brbd):
         ),
     )
 
-    a = brbd.Rotation_fromEulerAngles(np.array([1, 2, 3]), "xyz")
-    b = brbd.Rotation_fromEulerAngles(np.array([2, 3, 4]), "xyz")
+    a = brbd.Rotation.fromEulerAngles(np.array([1, 2, 3]), "xyz")
+    b = brbd.Rotation.fromEulerAngles(np.array([2, 3, 4]), "xyz")
     c = a.multiply(b)
     np.testing.assert_almost_equal(
         c.to_array(),
@@ -112,8 +112,8 @@ def test_multiply(brbd):
         ),
     )
 
-    a = brbd.RotoTrans_fromEulerAngles(np.array([1, 2, 3]), np.array([1, 2, 3]), "xyz")
-    b = brbd.RotoTrans_fromEulerAngles(np.array([2, 3, 4]), np.array([2, 3, 4]), "xyz")
+    a = brbd.RotoTrans.fromEulerAngles(np.array([1, 2, 3]), np.array([1, 2, 3]), "xyz")
+    b = brbd.RotoTrans.fromEulerAngles(np.array([2, 3, 4]), np.array([2, 3, 4]), "xyz")
     c = a.multiply(b)
     np.testing.assert_almost_equal(
         c.to_array(),
