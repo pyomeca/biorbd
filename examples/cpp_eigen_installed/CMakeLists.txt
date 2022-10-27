@@ -29,12 +29,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${EIGEN3_INCLUDE_DIR}
 	${TinyXML_INCLUDE_DIR}
 )
-if(NOT WIN32)
-    find_package(IPOPT REQUIRED)
-	target_include_directories(${PROJECT_NAME} PUBLIC 
-		${IPOPT_INCLUDE_DIR}
-	)
-endif()
+find_package(IPOPT)
+target_include_directories(${PROJECT_NAME} PUBLIC 
+    "${IPOPT_INCLUDE_DIR}"
+)
 
 # Linker and instalation
 target_link_libraries(${PROJECT_NAME} 
