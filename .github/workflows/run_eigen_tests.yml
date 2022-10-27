@@ -1,6 +1,11 @@
 name: Run the tests
 
 on: [pull_request]
+
+env:
+  BUILD_FOLDER: build
+  EXAMPLES_FOLDER: examples
+
 jobs:
   build:
     strategy:
@@ -23,6 +28,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
+      - name: Get number of CPU cores
+        uses: SimenB/github-actions-cpu-cores@v1
+        id: cpu-cores
+
       - name: Setup environment
         uses: conda-incubator/setup-miniconda@v2
         with:
@@ -40,123 +49,100 @@ jobs:
           
       - name: Install extra common dependencies
         run: | 
-          mamba install cmake git pkgconfig swig pytest pytest-cov black -cconda-forge
+          mamba install cmake git pkgconfig swig pytest -cconda-forge
           mamba list
           git submodule update --init --recursive
 
-      - name: Install Linux dependencies
-        run: |
-          mamba install codecov lcov -cconda-forge
-          mamba list
-        if: matrix.label == 'linux-64'
-
-      - name: Install Windows dependencies
-        run: |
-          mamba install ninja -cconda-forge
-          mamba list
-        if: matrix.label == 'win-64'
-
-      - name: Setup environment variable
-        run: |
-          BIORBD_FOLDER=`pwd`
-          BIORBD_BUILD_FOLDER=$BIORBD_FOLDER/build
-          BIORBD_BUILD_COVERAGE_FOLDER=$BIORBD_FOLDER/build_coverage
-          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
-
       - name: Build biorbd UNIX
         run: |
-          cd $BIORBD_FOLDER
-          mkdir -p $BIORBD_BUILD_FOLDER
-          cd $BIORBD_BUILD_FOLDER
+          BIORBD_FOLDER=`pwd`
+          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
+          mkdir -p $BIORBD_FOLDER/$BUILD_FOLDER
+          cd $BIORBD_FOLDER/$BUILD_FOLDER
           cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
-          make install
+          make install -j${{ steps.cpu-cores.outputs.count }}
+          cd $BIORBD_FOLDER
+        if: matrix.label != 'win-64'
+
+      - name: Run tests UNIX
+        run: |
+          BIORBD_FOLDER=`pwd`
+          cd $BIORBD_FOLDER/$BUILD_FOLDER/test
+          ./biorbd_eigen_tests
+          cd $BIORBD_FOLDER
+        if: matrix.label != 'win-64'
+
+      - name: Run c binder tests UNIX
+        run: |
+          BIORBD_FOLDER=`pwd`
+          cd $BIORBD_FOLDER/$BUILD_FOLDER/test/binding/c
+          ./biorbd_eigen_tests_binding_c
+          cd $BIORBD_FOLDER
+        if: matrix.label != 'win-64'
+
+      - name: Test installed version on UNIX
+        run: |
+          BIORBD_FOLDER=`pwd`
+          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
+          cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_eigen_installed
+          mkdir -p $BUILD_FOLDER
+          cd $BUILD_FOLDER
+          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
+          make -j${{ steps.cpu-cores.outputs.count }}
+          ./forwardDynamicsExample
           cd $BIORBD_FOLDER
         if: matrix.label != 'win-64'
   
       - name: Build biorbd WINDOWS
         run: |
-          cd $BIORBD_FOLDER
-          mkdir -p $BIORBD_BUILD_FOLDER
-          cd $BIORBD_BUILD_FOLDER
-          cmake -GNinja -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
-          cmake --build . --config Release --target install
+          BIORBD_FOLDER=`pwd`
+          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
+          mkdir -p $BUILD_FOLDER
+          cd $BUILD_FOLDER
+          cmake -G"Visual Studio 17 2022" -Ax64 -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
+          cmake --build . --config Release --target install -j${{ steps.cpu-cores.outputs.count }}
           cd $BIORBD_FOLDER
         if: matrix.label == 'win-64'
-
-      - name: Run tests UNIX
-        run: |
-          cd $BIORBD_BUILD_FOLDER/test
-          ./biorbd_eigen_tests
-          cd $BIORBD_FOLDER
-        if: matrix.label != 'win-64'
 
       - name: Run tests WINDOWS
         run: |
-          cd $BIORBD_BUILD_FOLDER/test
-          biorbd_eigen_tests.exe
+          BIORBD_FOLDER=`pwd`
+          cd $BIORBD_FOLDER/$BUILD_FOLDER/test
+          ./biorbd_eigen_tests.exe
           cd $BIORBD_FOLDER
         if: matrix.label == 'win-64'
 
-      - name: Run c binder tests UNIX
-        run: |
-          cd $BIORBD_BUILD_FOLDER/test/binding/c
-          ./biorbd_eigen_tests_binding_c
-          cd $BIORBD_FOLDER
-        if: matrix.label != 'win-64'
-
       - name: Run c binder tests WINDOWS
         run: |
-          cd $BIORBD_BUILD_FOLDER/test/binding/c
-          biorbd_eigen_tests_binding_c.exe
+          BIORBD_FOLDER=`pwd`
+          cd $BIORBD_FOLDER/$BUILD_FOLDER/test/binding/c
+          ./biorbd_eigen_tests_binding_c.exe
+          cd $BIORBD_FOLDER
+        if: matrix.label == 'win-64'
+
+      - name: Test installed version on WINDOWS
+        run: |
+          BIORBD_FOLDER=`pwd`
+          CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
+          cd $BIORBD_FOLDER/$EXAMPLES_FOLDER/cpp_eigen_installed
+          mkdir -p $BUILD_FOLDER
+          cd $BUILD_FOLDER
+          cmake -GNinja -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
+          cmake --build . --config Release -j${{ steps.cpu-cores.outputs.count }}
+          ./forwardDynamicsExample.exe
           cd $BIORBD_FOLDER
         if: matrix.label == 'win-64'
 
       - name: Run python binder tests 
         run: |
-          cd $BIORBD_BUILD_FOLDER/test/binding/Python3
+          BIORBD_FOLDER=`pwd`
+          cd $BIORBD_FOLDER/$BUILD_FOLDER/test/binding/Python3
           pytest .
           cd $BIORBD_FOLDER
 
-      - name: Perform code coverage 
-        run: |
-          cd $BIORBD_FOLDER
-          mkdir $BIORBD_BUILD_COVERAGE_FOLDER
-          cd $BIORBD_BUILD_COVERAGE_FOLDER
-          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DMODULE_KALMAN=ON ..
-          cp -r test/models/ .
-          make biorbd_eigen_coverage
-          lcov --directory . --capture --output-file coverage.info
-          lcov --remove coverage.info '/usr/*' --output-file coverage.info
-          lcov --list coverage.info
-          bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
-          cd $BIORBD_FOLDER
-        if: matrix.label == "linux-64"
-
-      - name: Test installed version on UNIX
-        run: |
-          cd $BIORBD_FOLDER/examples/cpp_eigen_installed
-          mkdir build
-          cd build
-          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Release ..
-          make
-          ./forwardDynamicsExample
-          cd $BIORBD_FOLDER
-        if: matrix.label != "win-64"
-
-      - name: Test installed version on WINDOWS
-        run: |
-          cd $BIORBD_FOLDER/examples/cpp_eigen_installed
-          mkdir build
-          cd build
-          cmake -GNinja -DCMAKE_INSTALL_PREFIX=%CONDA_ENV_PATH% -DCMAKE_BUILD_TYPE=Release ..
-          cmake --build . --config Release
-          forwardDynamicsExample.exe
-          cd $BIORBD_FOLDER
-        if: matrix.label != "win-64"
-
-
       - name: Test installed version of python
         run: | 
+          BIORBD_FOLDER=`pwd`
           cd
           python -c "import biorbd"
           cd $BIORBD_FOLDER
