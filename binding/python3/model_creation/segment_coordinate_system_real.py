@@ -133,28 +133,62 @@ class SegmentCoordinateSystemReal:
     def copy(self):
         return SegmentCoordinateSystemReal(scs=copy(self.scs), parent_scs=self.parent_scs)
 
+    @staticmethod
+    def mean_homogenous_matrix(matrix) -> np.ndarray:
+        """
+        Computes the closest homogenous matrix that approximates all the homogenous matrices
+
+        This is based on the dmuir answer on Stack Overflow
+        https://stackoverflow.com/questions/51517466/what-is-the-correct-way-to-average-several-rotation-matrices
+
+        Returns
+        -------
+        The mean homogenous matrix
+        """
+        mean_matrix = np.identity(4)
+
+        # Perform an Arithmetic mean of each element
+        arithmetic_mean_scs = np.nanmean(matrix, axis=2)
+        mean_matrix[:3, 3] = arithmetic_mean_scs[:3, 3]
+
+        # Get minimized rotation matrix from the svd decomposition
+        u, s, v = np.linalg.svd(arithmetic_mean_scs[:3, :3])
+        mean_matrix[:3, :3] = u @ v
+        return mean_matrix
+
+    @property
+    def mean_scs(self) -> np.ndarray:
+        """
+        Computes the closest homogenous matrix that approximates all the scs
+
+        Returns
+        -------
+        The mean homogenous matrix
+        """
+        return self.mean_homogenous_matrix(self.scs)
+
     def __str__(self):
+        rt = self.scs
         if self.is_in_global:
             rt = self.parent_scs.transpose @ self.scs if self.parent_scs else np.identity(4)[:, :, np.newaxis]
+
+        mean_rt = self.mean_homogenous_matrix(rt)
+
+        sequence = "xyz"
+        tx, ty, tz = mean_rt[0:3, 3]
+        rx, ry, rz = self.to_euler(mean_rt[:, :, np.newaxis], sequence)
+        return f"{rx[0]:0.3f} {ry[0]:0.3f} {rz[0]:0.3f} {sequence} {tx:0.3f} {ty:0.3f} {tz:0.3f}"
+
+    @staticmethod
+    def to_euler(rt, sequence: str) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        if sequence == "xyz":
+            rx = np.arctan2(-rt[1, 2, :], rt[2, 2, :])
+            ry = np.arcsin(rt[0, 2, :])
+            rz = np.arctan2(-rt[0, 1, :], rt[0, 0, :])
         else:
-            rt = self.scs
+            raise NotImplementedError("This sequence is not implemented yet")
 
-        tx = rt[0, 3, :]
-        ty = rt[1, 3, :]
-        tz = rt[2, 3, :]
-
-        rx = np.arctan2(-rt[1, 2, :], rt[2, 2, :])
-        ry = np.arcsin(rt[0, 2, :])
-        rz = np.arctan2(-rt[0, 1, :], rt[0, 0, :])
-
-        tx = np.nanmean(tx, axis=0)
-        ty = np.nanmean(ty, axis=0)
-        tz = np.nanmean(tz, axis=0)
-        rx = np.nanmean(rx, axis=0)
-        ry = np.nanmean(ry, axis=0)
-        rz = np.nanmean(rz, axis=0)
-
-        return f"{rx:0.3f} {ry:0.3f} {rz:0.3f} xyz {tx:0.3f} {ty:0.3f} {tz:0.3f}"
+        return rx, ry, rz
 
     def __matmul__(self, other):
         if isinstance(other, SegmentCoordinateSystemReal):
@@ -172,10 +206,15 @@ class SegmentCoordinateSystemReal:
         else:
             NotImplementedError("This multiplication is not implemented yet")
 
+    @staticmethod
+    def transpose_rt(rt: np.ndarray):
+        out = rt.transpose((1, 0, 2))
+        out[:3, 3, :] = np.einsum("ijk,jk->ik", -out[:3, :3, :], rt[:3, 3, :])
+        out[3, :3, :] = 0
+        return out
+
     @property
     def transpose(self):
         out = self.copy()
-        out.scs = out.scs.transpose((1, 0, 2))
-        out.scs[:3, 3, :] = np.einsum("ijk,jk->ik", -out.scs[:3, :3, :], self.scs[:3, 3, :])
-        out.scs[3, :3, :] = 0
+        out.scs = self.transpose_rt(self.scs)
         return out
