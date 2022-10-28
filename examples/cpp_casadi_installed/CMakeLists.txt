@@ -24,9 +24,14 @@ find_package(Casadi REQUIRED)
 add_executable(${PROJECT_NAME} ${FILE})
 
 # Headers
+if(WIN32)
+    set(RBDL_REAL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi)
+else()
+    set(RBDL_REAL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR})
+endif()
 target_include_directories(${PROJECT_NAME} PUBLIC 
     ${biorbd_casadi_INCLUDE_DIR}
-    ${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi
+    ${RBDL_REAL_INCLUDE_DIR}
     ${Casadi_INCLUDE_DIR}
     ${Casadi_INCLUDE_DIR}/..
 	${TinyXML_INCLUDE_DIR}
