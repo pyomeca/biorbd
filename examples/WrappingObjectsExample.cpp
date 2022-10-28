@@ -27,9 +27,9 @@ int main()
     Qdot.setZero();
 
     // Set all muscles to half of their maximal activation
-    std::vector<std::shared_ptr<muscles::State>> states;
+    std::vector<std::shared_ptr<internal_forces::muscles::State>> states;
     for (unsigned int i=0; i<model.nbMuscles(); ++i) {
-        states.push_back(std::make_shared<muscles::State>(0, 0.5));
+        states.push_back(std::make_shared<internal_forces::muscles::State>(0, 0.5));
     }
 
     // Proceed with the computation of joint torque from the muscles

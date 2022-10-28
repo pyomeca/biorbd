@@ -1,5 +1,5 @@
 #include "biorbd.h"
-#include "Muscles/StaticOptimization.h"
+#include "InternalForces/Muscles/StaticOptimization.h"
 
 ///
 /// \brief main Compute the muscle activations that produce a given generalized forces (Tau)
@@ -33,7 +33,7 @@ int main()
     Tau.setZero();
 
     // Proceed with the static optimization
-    auto optim = muscles::StaticOptimization(model, Q, Qdot, Tau);
+    auto optim = internal_forces::muscles::StaticOptimization(model, Q, Qdot, Tau);
     optim.run();
     auto muscleActivationsPerFrame = optim.finalSolution();
 

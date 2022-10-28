@@ -22,26 +22,30 @@
 #include "RigidBody/SoftContactSphere.h"
 
 #ifdef MODULE_ACTUATORS
-    #include "Actuators/ActuatorConstant.h"
-    #include "Actuators/ActuatorLinear.h"
-    #include "Actuators/ActuatorGauss3p.h"
-    #include "Actuators/ActuatorGauss6p.h"
-    #include "Actuators/ActuatorSigmoidGauss3p.h"
-#endif // MODULE_ACTUATORS
+    #include "InternalForces/Actuators/ActuatorConstant.h"
+    #include "InternalForces/Actuators/ActuatorLinear.h"
+    #include "InternalForces/Actuators/ActuatorGauss3p.h"
+    #include "InternalForces/Actuators/ActuatorGauss6p.h"
+    #include "InternalForces/Actuators/ActuatorSigmoidGauss3p.h"
+#endif // MODULE_MUSCLES
 
 #ifdef MODULE_MUSCLES
-    #include "Muscles/Muscle.h"
-    #include "Muscles/Geometry.h"
-    #include "Muscles/MuscleGroup.h"
-    #include "Muscles/ViaPoint.h"
-    #include "Muscles/WrappingHalfCylinder.h"
-    #include "Muscles/FatigueParameters.h"
-    #include "Muscles/State.h"
-    #include "Muscles/Characteristics.h"
-    #include "Muscles/ViaPoint.h"
-    #include "Muscles/PathModifiers.h"
-    #include "Muscles/StateDynamicsBuchanan.h"
-#endif // MODULE_MUSCLES
+    #include "InternalForces/Muscles/Muscle.h"
+    #include "InternalForces/Muscles/Geometry.h"
+    #include "InternalForces/Muscles/MuscleGroup.h"
+    #include "InternalForces/Muscles/FatigueParameters.h"
+    #include "InternalForces/Muscles/State.h"
+    #include "InternalForces/Muscles/Characteristics.h"
+    #include "InternalForces/Muscles/StateDynamicsBuchanan.h"
+
+#endif
+
+#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES)
+    #include "InternalForces/ViaPoint.h"
+    #include "InternalForces/PathModifiers.h"
+    #include "InternalForces/WrappingHalfCylinder.h"
+#endif
+
 
 using namespace BIORBD_NAMESPACE;
 
@@ -793,24 +797,24 @@ void Reader::readModelFile(
                 }
                 // Verify that everything is there
                 utils::Error::check(isTypeSet!=0, "Actuator type must be defined");
-                actuator::Actuator* actuator;
+                internal_forces::actuator::Actuator* actuator;
 
                 if (!type.tolower().compare("gauss3p")) {
                     utils::Error::check(isDofSet && isDirectionSet && isTmaxSet && isT0Set
                                                 && iswmaxSet && iswcSet && isaminSet &&
                                                 iswrSet && isw1Set && isrSet && isqoptSet,
                                                 "Make sure all parameters are defined");
-                    actuator = new actuator::ActuatorGauss3p(int_direction,Tmax,T0,wmax,wc,
+                    actuator = new internal_forces::actuator::ActuatorGauss3p(int_direction,Tmax,T0,wmax,wc,
                             amin,wr,w1,r,qopt,dofIdx,name);
                 } else if (!type.tolower().compare("constant")) {
                     utils::Error::check(isDofSet && isDirectionSet && isTmaxSet,
                                                 "Make sure all parameters are defined");
-                    actuator = new actuator::ActuatorConstant(int_direction,Tmax,dofIdx,
+                    actuator = new internal_forces::actuator::ActuatorConstant(int_direction,Tmax,dofIdx,
                             name);
                 } else if (!type.tolower().compare("linear")) {
                     utils::Error::check(isDofSet && isDirectionSet && isSlopeSet && isT0Set,
                                                 "Make sure all parameters are defined");
-                    actuator = new actuator::ActuatorLinear(int_direction,T0,slope,dofIdx,
+                    actuator = new internal_forces::actuator::ActuatorLinear(int_direction,T0,slope,dofIdx,
                             name);
                 } else if (!type.tolower().compare("gauss6p")) {
                     utils::Error::check(isDofSet && isDirectionSet && isTmaxSet && isT0Set
@@ -818,19 +822,19 @@ void Reader::readModelFile(
                                                 iswrSet && isw1Set && isrSet && isqoptSet && isFacteur6pSet && isr2Set
                                                 && isqopt2Set,
                                                 "Make sure all parameters are defined");
-                    actuator = new actuator::ActuatorGauss6p(int_direction,Tmax,T0,wmax,wc,
+                    actuator = new internal_forces::actuator::ActuatorGauss6p(int_direction,Tmax,T0,wmax,wc,
                             amin,wr,w1,r,qopt,facteur6p, r2, qopt2,
                             dofIdx,name);
                 } else if (!type.tolower().compare("sigmoidgauss3p")) {
                     utils::Error::check(isDofSet && isThetaSet && isLambdaSet
                                                 && isOffsetSet && isrSet && isqoptSet,
                                                 "Make sure all parameters are defined");
-                    actuator = new actuator::ActuatorSigmoidGauss3p(int_direction, theta,
+                    actuator = new internal_forces::actuator::ActuatorSigmoidGauss3p(int_direction, theta,
                             lambda, offset, r, qopt, dofIdx, name);
                 } else {
                     utils::Error::raise("Actuator do not correspond to an implemented one");
 #ifdef _WIN32
-                    actuator = new actuator::ActuatorConstant(int_direction, Tmax, dofIdx,
+                    actuator = new internal_forces::actuator::ActuatorConstant(int_direction, Tmax, dofIdx,
                             name); // Échec de compilation sinon
 #endif
                 }
@@ -838,9 +842,10 @@ void Reader::readModelFile(
                 model->addActuator(*actuator);
                 delete actuator;
 #else // MODULE_ACTUATORS
-                utils::Error::raise("Biorbd was build without the module Actuators but the model defines ones");
+                utils::Error::raise("Biorbd was build without the module Internal forces but the model defines ones");
 #endif // MODULE_ACTUATORS
             } else if (!main_tag.tolower().compare("musclegroup")) {
+
 #ifdef MODULE_MUSCLES
                 utils::String name;
                 file.read(name); // Name of the muscular group
@@ -875,11 +880,11 @@ void Reader::readModelFile(
                 utils::String name;
                 file.read(name); // Name of the muscle
                 // Declaration of the variables
-                muscles::MUSCLE_TYPE type(muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE);
-                muscles::STATE_TYPE stateType(
-                    muscles::STATE_TYPE::NO_STATE_TYPE);
-                muscles::STATE_FATIGUE_TYPE dynamicFatigueType(
-                    muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
+                internal_forces::muscles::MUSCLE_TYPE type(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE);
+                internal_forces::muscles::STATE_TYPE stateType(
+                    internal_forces::muscles::STATE_TYPE::NO_STATE_TYPE);
+                internal_forces::muscles::STATE_FATIGUE_TYPE dynamicFatigueType(
+                    internal_forces::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
                 utils::String muscleGroup("");
                 int idxGroup(-1);
                 utils::Vector3d origin_pos(0,0,0);
@@ -893,7 +898,7 @@ void Reader::readModelFile(
                 double maxActivation(1);
                 double PCSA(0);
                 double shapeFactor(0);
-                muscles::FatigueParameters fatigueParameters;
+                internal_forces::muscles::FatigueParameters fatigueParameters;
 
                 // Read file
                 while(file.read(property_tag) && property_tag.tolower().compare("endmuscle")) {
@@ -907,27 +912,27 @@ void Reader::readModelFile(
                         utils::String tp_type;
                         file.read(tp_type);
                         if (!tp_type.tolower().compare("idealizedactuator")) {
-                            type = muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR;
+                            type = internal_forces::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR;
                         } else if (!tp_type.tolower().compare("hill")) {
-                            type = muscles::MUSCLE_TYPE::HILL;
+                            type = internal_forces::muscles::MUSCLE_TYPE::HILL;
                         } else if (!tp_type.tolower().compare("hilldegroote")
                                    || !tp_type.tolower().compare("degroote") ) {
-                            type = muscles::MUSCLE_TYPE::HILL_DE_GROOTE;
+                            type = internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE;
                         } else if (!tp_type.tolower().compare("hillthelen")
                                    || !tp_type.tolower().compare("thelen")) {
-                            type = muscles::MUSCLE_TYPE::HILL_THELEN;
+                            type = internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN;
                         } else if (!tp_type.tolower().compare("hillthelenactive")
                                    || !tp_type.tolower().compare("thelenactive")) {
-                            type = muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE;
+                            type = internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN_ACTIVE;
                         } else if (!tp_type.tolower().compare("hilldegrooteactive")
                                    || !tp_type.tolower().compare("degrooteactive")) {
-                            type = muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE;
+                            type = internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_ACTIVE;
                         } else if (!tp_type.tolower().compare("hillthelenfatigable")
                                    || !tp_type.tolower().compare("thelenfatigable")) {
-                            type = muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE;
+                            type = internal_forces::muscles::MUSCLE_TYPE::HILL_THELEN_FATIGABLE;
                         }else if (!tp_type.tolower().compare("hilldegrootefatigable")
                                    || !tp_type.tolower().compare("degrootefatigable")) {
-                            type = muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE;
+                            type = internal_forces::muscles::MUSCLE_TYPE::HILL_DE_GROOTE_FATIGABLE;
                         } else {
                             utils::Error::raise(tp_type + " is not a valid muscle type");
                         }
@@ -935,9 +940,9 @@ void Reader::readModelFile(
                         utils::String tp_state;
                         file.read(tp_state);
                         if (!tp_state.tolower().compare("buchanan")) {
-                            stateType = muscles::STATE_TYPE::BUCHANAN;
+                            stateType = internal_forces::muscles::STATE_TYPE::BUCHANAN;
                         } else if (!tp_state.tolower().compare("degroote")) {
-                            stateType = muscles::STATE_TYPE::DE_GROOTE;
+                            stateType = internal_forces::muscles::STATE_TYPE::DE_GROOTE;
                         } else {
                             utils::Error::raise(property_tag + " is not a valid muscle state type");
                         }
@@ -966,9 +971,9 @@ void Reader::readModelFile(
                                 utils::String tp_fatigue_type;
                                 file.read(tp_fatigue_type);
                                 if (!tp_fatigue_type.tolower().compare("simple")) {
-                                    dynamicFatigueType = muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE;
+                                    dynamicFatigueType = internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE;
                                 } else if (!tp_fatigue_type.tolower().compare("xia")) {
-                                    dynamicFatigueType = muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA;
+                                    dynamicFatigueType = internal_forces::muscles::STATE_FATIGUE_TYPE::DYNAMIC_XIA;
                                 } else {
                                     utils::Error::raise(tp_fatigue_type +
                                                                 " is not a value fatigue parameter type");
@@ -992,23 +997,23 @@ void Reader::readModelFile(
                     }
                 }
                 utils::Error::check(idxGroup!=-1, "No muscle group was provided!");
-                muscles::Geometry geo(
+                internal_forces::muscles::Geometry geo(
                     utils::Vector3d(origin_pos, name + "_origin",
                                             model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
                     utils::Vector3d(insert_pos, name + "_insertion",
                                             model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
-                muscles::State stateMax(maxExcitation, maxActivation);
-                muscles::Characteristics characteristics(optimalLength, maxForce, PCSA,
+                internal_forces::muscles::State stateMax(maxExcitation, maxActivation);
+                internal_forces::muscles::Characteristics characteristics(optimalLength, maxForce, PCSA,
                         tendonSlackLength, pennAngle, stateMax,
                         fatigueParameters, useDamping);
                 model->muscleGroup(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,
                         characteristics,
-                        muscles::PathModifiers(),stateType,dynamicFatigueType);
-                if (stateType == muscles::STATE_TYPE::BUCHANAN && shapeFactor != 0) {
+                        internal_forces::PathModifiers(),stateType,dynamicFatigueType);
+                if (stateType == internal_forces::muscles::STATE_TYPE::BUCHANAN && shapeFactor != 0) {
                     auto& muscleGroup = model->muscleGroup(idxGroup);
                     size_t nMuscInGroup(muscleGroup.nbMuscles()-1);
                     auto& state = muscleGroup.muscle(nMuscInGroup).state();
-                    static_cast<muscles::StateDynamicsBuchanan&>(state).shapeFactor(
+                    static_cast<internal_forces::muscles::StateDynamicsBuchanan&>(state).shapeFactor(
                         shapeFactor);
                 }
 #else // MODULE_MUSCLES
@@ -1025,7 +1030,7 @@ void Reader::readModelFile(
                 utils::String musclegroup("");
                 int iMuscleGroup(-1);
                 int iMuscle(-1);
-                muscles::ViaPoint position(0,0,0);
+                internal_forces::ViaPoint position(0,0,0);
 
                 // Read file
                 while(file.read(property_tag)
@@ -1115,7 +1120,7 @@ void Reader::readModelFile(
                     utils::Error::check(radius > 0.0,
                                                 "Radius must be defined and positive");
                     utils::Error::check(length >= 0.0, "Length was must be positive");
-                    muscles::WrappingHalfCylinder cylinder(RT,radius,length,name,parent);
+                    internal_forces::WrappingHalfCylinder cylinder(RT,radius,length,name,parent);
                     model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscle(
                         static_cast<unsigned int>(iMuscle)).addPathObject(
                             cylinder);

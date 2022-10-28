@@ -56,7 +56,6 @@ set(TEST_SRC_FILES
     "${CMAKE_SOURCE_DIR}/test/test_biorbd.cpp"
     "${CMAKE_SOURCE_DIR}/test/test_rigidbody.cpp"
     "${CMAKE_SOURCE_DIR}/test/test_utils.cpp"
-    "${CMAKE_SOURCE_DIR}/test/test_actuators.cpp"
 )
 if(MODULE_MUSCLES)
     list(APPEND TEST_SRC_FILES "${CMAKE_SOURCE_DIR}/test/test_muscles.cpp")

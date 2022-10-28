@@ -26,6 +26,7 @@ set(biorbd_LIBRARIES
     ${biorbd_LIB_PATH}/${biorbd_LIB_NAME}${debug_flag}${biorbd_LIB_EXTENSION}
     ${biorbd_LIB_PATH}/${biorbd_LIB_NAME}_utils${debug_flag}${biorbd_LIB_EXTENSION}
     ${biorbd_LIB_PATH}/${biorbd_LIB_NAME}_rigidbody${debug_flag}${biorbd_LIB_EXTENSION}
+    ${biorbd_LIB_PATH}/${biorbd_LIB_NAME}_internal_forces${debug_flag}${biorbd_LIB_EXTENSION}
     ${biorbd_LIB_PATH}/${biorbd_LIB_NAME}_muscles${debug_flag}${biorbd_LIB_EXTENSION}
     ${biorbd_LIB_PATH}/${biorbd_LIB_NAME}_actuators${debug_flag}${biorbd_LIB_EXTENSION}
 )

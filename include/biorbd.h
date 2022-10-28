@@ -10,12 +10,18 @@
 
 #include "Utils/all.h"
 #include "RigidBody/all.h"
-#ifdef MODULE_MUSCLES
-    #include "Muscles/all.h"
+#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES)
+#include "InternalForces/all.h"
 #endif
+
 #ifdef MODULE_ACTUATORS
-    #include "Actuators/all.h"
+#include "InternalForces/Actuators/all.h"
 #endif
+
+#ifdef MODULE_MUSCLES
+#include "InternalForces/Muscles/all.h"
+#endif
+
 
 #ifdef BIORBD_USE_CASADI_MATH
 #include "Utils/CasadiExpand.h"
