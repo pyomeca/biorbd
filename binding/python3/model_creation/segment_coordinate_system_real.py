@@ -131,10 +131,10 @@ class SegmentCoordinateSystemReal:
         return SegmentCoordinateSystemReal(scs=rt, parent_scs=parent_scs, is_scs_local=True)
 
     def copy(self):
-        return SegmentCoordinateSystemReal(scs=copy(self.scs), parent_scs=self.parent_scs)
+        return SegmentCoordinateSystemReal(scs=copy(self.scs), parent_scs=copy(self.parent_scs))
 
     @staticmethod
-    def mean_homogenous_matrix(matrix) -> np.ndarray:
+    def mean_homogenous_matrix(matrix: np.ndarray) -> np.ndarray:
         """
         Computes the closest homogenous matrix that approximates all the homogenous matrices
 
@@ -216,5 +216,5 @@ class SegmentCoordinateSystemReal:
     @property
     def transpose(self):
         out = self.copy()
-        out.scs = self.transpose_rt(self.scs)
+        out.scs = self.transpose_rt(out.scs)
         return out
