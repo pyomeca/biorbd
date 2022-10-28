@@ -94,7 +94,11 @@ class MarkerReal:
         """
         Get the mean value of the marker position
         """
-        return np.nanmean(self.position, axis=-1)
+        p = np.array(self.position)
+        p = p if len(p.shape) == 1 else np.nanmean(p, axis=1)
+        p = p if len(p.shape) == 1 else np.nanmean(p, axis=0)
+        return p
+
 
     def __str__(self):
         # Define the print function, so it automatically formats things in the file properly
