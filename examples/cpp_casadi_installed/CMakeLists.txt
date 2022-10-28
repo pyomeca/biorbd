@@ -25,6 +25,9 @@ add_executable(${PROJECT_NAME} ${FILE})
 
 # Headers
 if(WIN32)
+    message(coucou)
+    message(${RBDLCasadi_INCLUDE_DIR})
+    message(coucou)
     set(RBDL_REAL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi)
 else()
     set(RBDL_REAL_INCLUDE_DIR ${RBDLCasadi_INCLUDE_DIR})
