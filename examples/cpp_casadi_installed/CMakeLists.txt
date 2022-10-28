@@ -26,16 +26,17 @@ add_executable(${PROJECT_NAME} ${FILE})
 # Headers
 target_include_directories(${PROJECT_NAME} PUBLIC 
     ${biorbd_casadi_INCLUDE_DIR}
-    ${RBDLCasadi_INCLUDE_DIR}
+    ${RBDLCasadi_INCLUDE_DIR}/rbdl-casadi
     ${Casadi_INCLUDE_DIR}
     ${Casadi_INCLUDE_DIR}/..
 	${TinyXML_INCLUDE_DIR}
 )
-if(NOT WIN32)
-    find_package(IPOPT REQUIRED)
-	target_include_directories(${PROJECT_NAME} PUBLIC 
-		${IPOPT_INCLUDE_DIR}
-	)
+
+find_package(IPOPT)
+if (IPOPT_FOUND)
+    target_include_directories(${PROJECT_NAME} PUBLIC 
+        ${IPOPT_INCLUDE_DIR}
+    )
 endif()
 
 # Linker and instalation
