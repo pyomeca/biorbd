@@ -76,6 +76,7 @@ public:
     ///
     void DeepCopy(const ViaPoint& other);
 
+#ifndef SWIG
     ///
     /// \brief To be able to use operator "=" when assigning a ViaPoint to a 3D node
     /// \param other The 3D node to assign to ViaPoint
@@ -86,6 +87,7 @@ public:
         this->utils::Vector3d::operator=(other);
         return *this;
     }
+#endif
 };
 
 }
