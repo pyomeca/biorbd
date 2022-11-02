@@ -49,5 +49,6 @@ class SegmentReal:
         # Also print the markers attached to the segment
         if self.markers:
             for marker in self.markers:
+                marker.parent_name = marker.parent_name if marker.parent_name is not None else self.name
                 out_string += str(marker)
         return out_string
