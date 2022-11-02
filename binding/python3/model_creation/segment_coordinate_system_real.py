@@ -1,5 +1,3 @@
-from copy import copy
-
 import numpy as np
 
 from .axis_real import AxisReal
@@ -131,7 +129,7 @@ class SegmentCoordinateSystemReal:
         return SegmentCoordinateSystemReal(scs=rt, parent_scs=parent_scs, is_scs_local=True)
 
     def copy(self):
-        return SegmentCoordinateSystemReal(scs=copy(self.scs), parent_scs=copy(self.parent_scs))
+        return SegmentCoordinateSystemReal(scs=np.array(self.scs), parent_scs=self.parent_scs)
 
     @staticmethod
     def mean_homogenous_matrix(matrix: np.ndarray) -> np.ndarray:
