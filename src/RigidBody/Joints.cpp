@@ -1398,6 +1398,22 @@ rigidbody::GeneralizedVelocity rigidbody::Joints::computeQdot(
     return QDotOut;
 }
 
+utils::Scalar rigidbody::Joints::CalcKineticEnergy(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &QDot,
+        bool updateKin)
+{
+    return RigidBodyDynamics::Utils::CalcKineticEnergy(*this, Q, QDot, updateKin);
+}
+
+
+utils::Scalar rigidbody::Joints::CalcPotentialEnergy(
+        const rigidbody::GeneralizedCoordinates &Q,
+        bool updateKin)
+{
+    return RigidBodyDynamics::Utils::CalcPotentialEnergy(*this, Q, updateKin);
+}
+
 rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &QDot,
@@ -1736,6 +1752,7 @@ rigidbody::Joints::JacobianSegmentRotMat(
 
     return jacobianMat;
 }
+
 
 void rigidbody::Joints::checkGeneralizedDimensions(
     const rigidbody::GeneralizedCoordinates *Q,

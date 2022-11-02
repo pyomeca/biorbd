@@ -872,6 +872,29 @@ public:
         unsigned int idx,
         bool updateKin = true);
 
+    ///
+    /// \brief Interface for the Kinetic Energy of RBDL
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \return The Kinetic Energy
+    ///
+    ///
+    utils::Scalar CalcKineticEnergy(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &QDot,
+    bool updateKin = true);
+
+    ///
+    /// \brief Interface for the Potential Energy of RBDL
+    /// \param Q The Generalized Coordinates
+    /// \return The Potential Energy
+    ///
+    ///
+    utils::Scalar CalcPotentialEnergy(
+    const rigidbody::GeneralizedCoordinates &Q,
+    bool updateKin = true);
+
+
     // ---- DYNAMIC INTERFACE ---- //
     ///
     /// \brief Interface for the inverse dynamics of RBDL
