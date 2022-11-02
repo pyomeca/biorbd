@@ -206,7 +206,7 @@ class SegmentCoordinateSystemReal:
 
     @staticmethod
     def transpose_rt(rt: np.ndarray):
-        out = rt.transpose((1, 0, 2))
+        out = np.array(rt).transpose((1, 0, 2))
         out[:3, 3, :] = np.einsum("ijk,jk->ik", -out[:3, :3, :], rt[:3, 3, :])
         out[3, :3, :] = 0
         return out
