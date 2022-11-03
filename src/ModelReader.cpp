@@ -37,10 +37,14 @@
     #include "InternalForces/Muscles/State.h"
     #include "InternalForces/Muscles/Characteristics.h"
     #include "InternalForces/Muscles/StateDynamicsBuchanan.h"
-
 #endif
 
-#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES)
+#ifdef MODULE_PASSIVE_TORQUES
+    #include "InternalForces/PassiveTorques/PassiveTorqueConstant.h"
+    #include "InternalForces/PassiveTorques/PassiveTorqueLinear.h"
+#endif
+
+#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES) || defined(MODULE_PASSIVE_TORQUES)
     #include "InternalForces/ViaPoint.h"
     #include "InternalForces/PathModifiers.h"
     #include "InternalForces/WrappingHalfCylinder.h"
@@ -845,7 +849,6 @@ void Reader::readModelFile(
                 utils::Error::raise("Biorbd was build without the module Internal forces but the model defines ones");
 #endif // MODULE_ACTUATORS
             } else if (!main_tag.tolower().compare("musclegroup")) {
-
 #ifdef MODULE_MUSCLES
                 utils::String name;
                 file.read(name); // Name of the muscular group
@@ -1019,6 +1022,87 @@ void Reader::readModelFile(
 #else // MODULE_MUSCLES
                 utils::Error::raise("Biorbd was build without the module Muscles but the model defines a muscle");
 #endif // MODULE_MUSCLES
+            } else if (!main_tag.tolower().compare("passivetorque")) {
+#ifdef MODULE_PASSIVE_TORQUES
+                utils::String name;
+                file.read(name);
+                unsigned int parent_int = model->GetBodyId(name.c_str());
+                // If parent_int equals zero, no name has concurred
+                utils::Error::check(model->IsBodyId(parent_int),
+                                            "Wrong name in a segment");
+                // Declaration of all the parameters for all types
+                utils::String type;
+                bool isTypeSet  = false;
+                unsigned int dofIdx(INT_MAX);
+                bool isDofSet   = false;
+                utils::String str_direction;
+                bool isDirectionSet = false;
+                int int_direction = 0;
+                double Tmax(-1);
+                bool isTmaxSet  = false;
+                double T0(-1);
+                bool isT0Set    = false;
+                double slope(-1);
+                bool isSlopeSet = false;
+
+                while(file.read(property_tag)
+                        && property_tag.tolower().compare("endpassivetorque")) {
+                    if (!property_tag.tolower().compare("type")) {
+                        file.read(type);
+                        isTypeSet = true;
+                    } else if (!property_tag.tolower().compare("dof")) {
+                        utils::String dofName;
+                        file.read(dofName);
+                        dofIdx = model->getDofIndex(name, dofName);
+                        isDofSet = true;
+                    } else if (!property_tag.tolower().compare("direction")) {
+                        file.read(str_direction);
+                        utils::Error::check(!str_direction.tolower().compare("positive") ||
+                                                    !str_direction.tolower().compare("negative"),
+                                                    "Direction should be \"positive\" or \"negative\"");
+                        if (!str_direction.tolower().compare("positive")) {
+                            int_direction = 1;
+                        } else {
+                            int_direction = -1;
+                        }
+                        isDirectionSet = true;
+                    } else if (!property_tag.tolower().compare("tmax")) {
+                        file.read(Tmax, variable);
+                        isTmaxSet = true;
+                    } else if (!property_tag.tolower().compare("t0")) {
+                        file.read(T0, variable);
+                        isT0Set = true;
+                    } else if (!property_tag.tolower().compare("pente")
+                               || !property_tag.tolower().compare("slope")) {
+                        file.read(slope, variable);
+                        isSlopeSet = true;
+                    }
+                }
+                // Verify that everything is there
+                utils::Error::check(isTypeSet!=0, "PassiveTorque type must be defined");
+                internal_forces::passive_torques::PassiveTorque* passiveTorque;
+                if (!type.tolower().compare("constant")) {
+                    utils::Error::check(isDofSet && isDirectionSet && isTmaxSet,
+                                                "Make sure all parameters are defined");
+                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueConstant(int_direction,Tmax,dofIdx,
+                            name);
+                } else if (!type.tolower().compare("linear")) {
+                    utils::Error::check(isDofSet && isDirectionSet && isSlopeSet && isT0Set,
+                                                "Make sure all parameters are defined");
+                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueLinear(int_direction,T0,slope,dofIdx,
+                            name);
+                } else {
+                    utils::Error::raise("PassiveTorque do not correspond to an implemented one");
+#ifdef _WIN32
+                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueConstant(int_direction, Tmax, dofIdx,
+                            name); // Échec de compilation sinon
+#endif
+                }
+                model->addPassiveTorque(*passiveTorque);
+                delete passiveTorque;
+#else // MODULE_PASSIVE_TORQUE
+                utils::Error::raise("Biorbd was build without the module Muscles but the model defines one passive torque");
+#endif // MODULE_PASSIVE_TORQUE
             } else if (!main_tag.tolower().compare("viapoint")) {
 #ifdef MODULE_MUSCLES
                 utils::String name;

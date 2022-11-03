@@ -182,8 +182,10 @@ option(MODULE_MUSCLES
 # Actuators
 option(MODULE_ACTUATORS
     "Choose if the module actuators is to be added to biorbd" ON)
+option(MODULE_PASSIVE_TORQUES
+    "Choose if the module passive_torques is to be added to biorbd" ON)
 
-if (MODULE_ACTUATORS OR MODULE_MUSCLES)
+if (MODULE_ACTUATORS OR MODULE_MUSCLES OR MODULE_PASSIVE_TOQUES)
     add_subdirectory("src/InternalForces")
     list(APPEND BIORBD_MODULE_NAMES "${INTERNAL_FORCES_MODULE_NAME}")
 endif()
@@ -191,6 +193,9 @@ endif()
 if (MODULE_MUSCLES)
     add_subdirectory("src/InternalForces/Muscles")
     list(APPEND BIORBD_MODULE_NAMES "${MUSCLES_MODULE_NAME}")
+endif()
+
+if (MODULE_PASSIVE_TORQUES)
     add_subdirectory("src/InternalForces/PassiveTorques")
     list(APPEND BIORBD_MODULE_NAMES "${PASSIVE_TORQUES_MODULE_NAME}")
 endif()
