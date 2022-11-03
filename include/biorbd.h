@@ -20,6 +20,8 @@
 
 #ifdef MODULE_MUSCLES
 #include "InternalForces/Muscles/all.h"
+#include "InternalForces/PassiveTorques/all.h"
+
 #endif
 
 
