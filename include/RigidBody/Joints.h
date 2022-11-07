@@ -894,6 +894,30 @@ public:
     const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin = true);
 
+    ///
+    /// \brief Compute the Lagrangian of the system
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \return The Lagrangian:  kinetic - potential energy
+    ///
+    ///
+    utils::Scalar CalcLagrangian(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &QDot,
+    bool updateKin = true);
+
+    ///
+    /// \brief Compute the Total Energy of System
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \return The total energy: kinetic + potential energy
+    ///
+    ///
+    utils::Scalar CalcTotalEnergy(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &QDot,
+    bool updateKin = true);
+
 
     // ---- DYNAMIC INTERFACE ---- //
     ///

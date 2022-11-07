@@ -1414,6 +1414,23 @@ utils::Scalar rigidbody::Joints::CalcPotentialEnergy(
     return RigidBodyDynamics::Utils::CalcPotentialEnergy(*this, Q, updateKin);
 }
 
+utils::Scalar rigidbody::Joints::CalcLagrangian(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &QDot,
+        bool updateKin)
+{
+    return RigidBodyDynamics::Utils::CalcKineticEnergy(*this, Q, QDot, updateKin) - RigidBodyDynamics::Utils::CalcPotentialEnergy(*this, Q, updateKin);
+}
+
+
+utils::Scalar rigidbody::Joints::CalcTotalEnergy(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &QDot,
+        bool updateKin)
+{
+    return RigidBodyDynamics::Utils::CalcKineticEnergy(*this, Q, QDot, updateKin) + RigidBodyDynamics::Utils::CalcPotentialEnergy(*this, Q, updateKin);;
+}
+
 rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &QDot,
