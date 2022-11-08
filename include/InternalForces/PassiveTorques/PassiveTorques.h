@@ -1,5 +1,5 @@
-#ifndef BIORBD_ACTUATORS_ACTUATORS_H
-#define BIORBD_ACTUATORS_ACTUATORS_H
+#ifndef BIORBD_PASSIVE_TORQUES_PASSIVE_TORQUES_H
+#define BIORBD_PASSIVE_TORQUES_PASSIVE_TORQUES_H
 
 #include <vector>
 #include <memory>
@@ -22,126 +22,74 @@ class GeneralizedTorque;
 
 namespace internal_forces
 {
-namespace actuator
+namespace passive_torques
 {
-class Actuator;
+class PassiveTorque;
 ///
-/// \brief Class holder for a set of actuators
+/// \brief Class holder for a set of passive torques
 ///
-class BIORBD_API Actuators
+class BIORBD_API PassiveTorques
 {
 public:
     ///
-    /// \brief Construct actuators
+    /// \brief Construct passive torques
     ///
-    Actuators();
+    PassiveTorques();
 
     ///
-    /// \brief Construct actuators from another set of actuators
-    /// \param other The other actuators
+    /// \brief Construct passive torques from another set of passive torques
+    /// \param other The other passive torques
     ///
-    Actuators(
-        const Actuators& other);
+    PassiveTorques(
+        const PassiveTorques& other);
 
     ///
-    /// \brief Destroy actuators class properly
+    /// \brief Destroy passive torques class properly
     ///
-    virtual ~Actuators();
+    virtual ~PassiveTorques();
 
     ///
-    /// \brief Deep copy of the actuator holder from other actuator holder
-    /// \param other The other actuators
+    /// \brief Deep copy of the passive torque holder from other passive torque holder
+    /// \param other The other passive torques
     ///
     void DeepCopy(
-        const Actuators& other);
+        const PassiveTorques& other);
 
     ///
-    /// \brief Add an actuator to the set of actuators
-    /// \param a The actuator to add
+    /// \brief Add a passive torque to the set of passive torques
+    /// \param a The passive torque to add
     ///
-    void addActuator(
-        const Actuator &a);
+    void addPassiveTorque(
+        const PassiveTorque &a);
 
     ///
-    /// \brief Indicate to biorbd to are done adding actuators, sanity checks are performed
+    /// \brief Indicate to biorbd to are done adding passive torques, sanity checks are performed
     ///
-    void closeActuator();
+    void closePassiveTorque();
+
 
     ///
-    /// \brief Return two vectors of max torque (it is impossible to know if eccentric or concentric is required, therefore both are returned)
-    /// \param Q The generalized coordinates of the actuators
-    /// \param Qdot The generalized velocities of the actuators
-    /// \return Two vectors of maximal torque
+    /// \brief Return the passiveJointTorques
+    /// \param Q The generalized coordinates of the passive torques
+    /// \param Qdot The generalized velocities of the passive torques
+    /// \return model passiveJointTorques
     ///
-    std::pair<rigidbody::GeneralizedTorque, rigidbody::GeneralizedTorque>
-    torqueMax(
-        const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& Qdot);
-
-    ///
-    /// \brief Return the maximal generalized torque
-    /// \param activation The level of activation of the torque. A positive value is interpreted as concentric contraction and negative as eccentric contraction
-    /// \param Q The generalized coordinates of the actuators
-    /// \param Qdot The generalized velocities of the actuators
-    /// \return The maximal generalized torque
-    ///
-    rigidbody::GeneralizedTorque torqueMax(
-        const utils::Vector &activation,
+    rigidbody::GeneralizedTorque passiveJointTorque(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity &Qdot);
 
-    ///
-    /// \brief Return the generalized torque
-    /// \param activation The level of activation of the torque. A positive value is interpreted as concentric contraction and negative as eccentric contraction
-    /// \param Q The generalized coordinates of the actuators
-    /// \param Qdot The generalized velocities of the actuators
-    /// \return The maximal generalized torque
-    ///
-    rigidbody::GeneralizedTorque torque(
-        const utils::Vector &activation,
-        const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity &Qdot);
 
     // Get and set
     ///
-    /// \brief Return a specific concentric/eccentric actuator
-    /// \param dof Index of the DoF associated with actuator
-    /// \return The actuator
+    /// \brief Return the toal number of passive torques
+    /// \return The total number of passive torques
     ///
-    const std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>>&
-            actuator(unsigned int dof);
-
-    ///
-    /// \brief Return a specific actuator
-    /// \param dof Index of the DoF associated with actuator
-    /// \param concentric If the return value is the concentric (true) or eccentric (false) value
-    /// \return The actuator
-    ///
-    const Actuator& actuator(unsigned int dof, bool concentric);
-
-    ///
-    /// \brief Return the toal number of actuators
-    /// \return The total number of actuators
-    ///
-    unsigned int nbActuators() const;
+    unsigned int nbPassiveTorques() const;
 
 protected:
-    std::shared_ptr<std::vector<std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>>>>
-    m_all; ///<All the actuators reunited /pair (+ or -)
+    std::shared_ptr<std::vector<std::shared_ptr<internal_forces::passive_torques::PassiveTorque>>>  m_pas;///passive torque to add
     std::shared_ptr<std::vector<bool>> m_isDofSet;///< If DoF all dof are set
     std::shared_ptr<bool> m_isClose; ///< If the set is ready
-
-    ///
-    /// \brief getTorqueMaxDirection Get the max torque of a specific actuator (interface necessary because of CasADi)
-    /// \param actuator The actuator to gather from
-    /// \param Q The Generalized coordinates
-    /// \param Qdot The Generalized velocity
-    /// \return The torque max
-    ///
-    utils::Scalar getTorqueMaxDirection(
-        const std::shared_ptr<Actuator> actuator,
-        const rigidbody::GeneralizedCoordinates &Q,
-        const rigidbody::GeneralizedVelocity &Qdot) const;
 
 };
 
@@ -149,4 +97,4 @@ protected:
 }
 }
 
-#endif // BIORBD_ACTUATORS_ACTUATORS_H
+#endif // BIORBD_PASSIVE_TORQUES_PASSIVE_TORQUES_H
