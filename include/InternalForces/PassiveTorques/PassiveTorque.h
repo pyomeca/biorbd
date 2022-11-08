@@ -38,21 +38,17 @@ public:
 
     ///
     /// \brief Construct passive torque
-    /// \param direction Direction of the passive torque (+1 or -1)
     /// \param dofIdx Index of the DoF associated with passive torque
     ///
     PassiveTorque(
-        int direction,
         unsigned int dofIdx);
 
     ///
     /// \brief Construct passive torque
-    /// \param direction Direction of the passive torque (+1 or -1)
     /// \param dofIdx Index of the DoF associated with passive torque
     /// \param jointName The name of the parent joint
     ///
     PassiveTorque(
-        int direction,
         unsigned int dofIdx,
         const utils::String &jointName);
 
@@ -75,12 +71,6 @@ public:
     unsigned int index() const;
 
     ///
-    /// \brief Return the direction of the passive torque
-    /// \return The direction of the passive torque (+1 or -1)
-    ///
-    int direction() const;
-
-    ///
     /// \brief Return the type of the passive torque
     /// \return The type of the passive torque
     ///
@@ -96,7 +86,7 @@ public:
     /// \brief Return the maximal torque
     /// \return The maximal torque
     ///
-    virtual utils::Scalar torqueMax() = 0;
+    virtual const utils::Scalar& passiveTorque() = 0;
 
 protected:
     ///
@@ -107,7 +97,6 @@ protected:
 
     std::shared_ptr<TYPE> m_type; ///< The type of the passive torque
     std::shared_ptr<DOF_TYPE> m_dof_type; ///< The type of the dof of the passive torque
-    std::shared_ptr<int> m_direction; ///< The direction of the passive torque (+1 or -1)
 
     std::shared_ptr<utils::String>
     m_jointName; ///< Name of the parent joint

@@ -42,7 +42,6 @@ public:
     /// \param dofIdx Index of the DoF associated with actuator
     ///
     PassiveTorqueLinear(
-        int direction,
         const utils::Scalar& T0,
         const utils::Scalar& slope,
         unsigned int dofIdx);
@@ -57,7 +56,6 @@ public:
     ///
 
     PassiveTorqueLinear(
-        int direction,
         const utils::Scalar& T0,
         const utils::Scalar& slope,
         unsigned int dofIdx,
@@ -82,19 +80,19 @@ public:
         const PassiveTorqueLinear& other);
 
     ///
-    /// \brief Return the maximal torque (invalid)
+    /// \brief Return the maximal torque at a given Q
+    /// \param Q The generalized coordinates of the actuator
     /// \return The maximal torque
-    /// torqueMax for PassiveTorqueLinear must be called with Q
     ///
-    virtual utils::Scalar torqueMax();
+    virtual const utils::Scalar& passiveTorque();
 
     ///
     /// \brief Return the maximal torque at a given Q
     /// \param Q The generalized coordinates of the actuator
     /// \return The maximal torque
     ///
-    virtual utils::Scalar torqueMax(
-        const rigidbody::GeneralizedCoordinates &Q) const;
+    virtual const utils::Scalar& passiveTorque(
+        const rigidbody::GeneralizedCoordinates &Q);
 
 protected:
 

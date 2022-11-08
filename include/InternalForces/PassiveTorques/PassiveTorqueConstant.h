@@ -31,24 +31,20 @@ public:
 
     ///
     /// \brief Construct a constant actuator
-    /// \param direction The direction of the actuator (+1 or -1)
     /// \param Tmax The maximum torque that can be done
     /// \param dofIdx Index of the DoF associated with actuator
     ///
     PassiveTorqueConstant(
-        int direction,
         const utils::Scalar& Tmax,
         unsigned int dofIdx);
 
     ///
     /// \brief Construct a constant actuator
-    /// \param direction The direction of the actuator (+1 or -1)
     /// \param Tmax The maximum torque that can be done
     /// \param dofIdx Index of the DoF associated with actuator
     /// \param jointName The name of the parent joint
     ///
     PassiveTorqueConstant(
-        int direction,
         const utils::Scalar& Tmax,
         unsigned int dofIdx,
         const utils::String &jointName);
@@ -70,7 +66,7 @@ public:
     /// \brief Return the maximal torque
     /// \return The maximal torque
     ///
-    virtual utils::Scalar torqueMax();
+    virtual const utils::Scalar& passiveTorque();
 
 protected:
     ///
@@ -79,7 +75,7 @@ protected:
     virtual void setType();
 //    virtual void setDofType();
     std::shared_ptr<utils::Scalar>
-    m_Tmax; ///< Maximal torque that can be done
+    m_Torque; ///< Maximal torque that can be done
 
 };
 
