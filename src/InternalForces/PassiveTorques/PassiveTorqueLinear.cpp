@@ -24,11 +24,10 @@ internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
 }
 
 internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
-    int direction,
     const utils::Scalar& T0,
     const utils::Scalar& slope,
     unsigned int dofIdx) :
-    internal_forces::passive_torques::PassiveTorque(direction, dofIdx),
+    internal_forces::passive_torques::PassiveTorque(dofIdx),
     m_m(std::make_shared<utils::Scalar>(slope)),
     m_b(std::make_shared<utils::Scalar>(T0))
 {
@@ -36,12 +35,11 @@ internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
 }
 
 internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
-    int direction,
     const utils::Scalar& T0,
     const utils::Scalar& slope,
     unsigned int dofIdx,
     const utils::String &jointName) :
-    internal_forces::passive_torques::PassiveTorque(direction, dofIdx, jointName),
+    internal_forces::passive_torques::PassiveTorque(dofIdx, jointName),
     m_m(std::make_shared<utils::Scalar>(slope)),
     m_b(std::make_shared<utils::Scalar>(T0))
 {
@@ -69,16 +67,16 @@ void internal_forces::passive_torques::PassiveTorqueLinear::DeepCopy(const
     *m_b = *other.m_b;
 }
 
-utils::Scalar internal_forces::passive_torques::PassiveTorqueLinear::torqueMax()
+const utils::Scalar& internal_forces::passive_torques::PassiveTorqueLinear::passiveTorque()
 {
-    utils::Error::raise("torqueMax for PassiveTorqueLinear must be called with Q and Qdot");
+    utils::Error::raise("passiveTorque for PassiveTorqueLinear must be called with Q");
 }
 
 
-utils::Scalar internal_forces::passive_torques::PassiveTorqueLinear::torqueMax(
-    const rigidbody::GeneralizedCoordinates &Q) const
+const utils::Scalar& internal_forces::passive_torques::PassiveTorqueLinear::passiveTorque(
+    const rigidbody::GeneralizedCoordinates &Q)
 {
-    return (Q[*m_dofIdx]*180/M_PI) * *m_m + *m_b;
+    return (Q[*m_dofIdx]*180/M_PI);
 }
 
 void internal_forces::passive_torques::PassiveTorqueLinear::setType()

@@ -8,7 +8,7 @@ using namespace BIORBD_NAMESPACE;
 
 internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant() :
     internal_forces::passive_torques::PassiveTorque(),
-    m_Tmax(std::make_shared<utils::Scalar>(0))
+    m_Torque(std::make_shared<utils::Scalar>(0))
 {
     setType();
 }
@@ -16,28 +16,26 @@ internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant()
 internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
     const internal_forces::passive_torques::PassiveTorqueConstant &other) :
     internal_forces::passive_torques::PassiveTorque(other),
-    m_Tmax(other.m_Tmax)
+    m_Torque(other.m_Torque)
 {
 
 }
 
 internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
-    int direction,
-    const utils::Scalar& Tmax,
+    const utils::Scalar& Torque,
     unsigned int dofIdx) :
-    internal_forces::passive_torques::PassiveTorque(direction, dofIdx),
-    m_Tmax(std::make_shared<utils::Scalar>(Tmax))
+    internal_forces::passive_torques::PassiveTorque(dofIdx),
+    m_Torque(std::make_shared<utils::Scalar>(Torque))
 {
     setType();
 }
 
 internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
-    int direction,
-    const utils::Scalar& Tmax,
+    const utils::Scalar& Torque,
     unsigned int dofIdx,
     const utils::String &jointName) :
-    internal_forces::passive_torques::PassiveTorque(direction, dofIdx, jointName),
-    m_Tmax(std::make_shared<utils::Scalar>(Tmax))
+    internal_forces::passive_torques::PassiveTorque(dofIdx, jointName),
+    m_Torque(std::make_shared<utils::Scalar>(Torque))
 {
     setType();
 }
@@ -54,12 +52,12 @@ void internal_forces::passive_torques::PassiveTorqueConstant::DeepCopy(const
         internal_forces::passive_torques::PassiveTorqueConstant &other)
 {
     internal_forces::passive_torques::PassiveTorque::DeepCopy(other);
-    *m_Tmax = *other.m_Tmax;
+    *m_Torque = *other.m_Torque;
 }
 
-utils::Scalar internal_forces::passive_torques::PassiveTorqueConstant::torqueMax()
+const utils::Scalar& internal_forces::passive_torques::PassiveTorqueConstant::passiveTorque()
 {
-    return *m_Tmax;
+    return *m_Torque;
 }
 
 void internal_forces::passive_torques::PassiveTorqueConstant::setType()
