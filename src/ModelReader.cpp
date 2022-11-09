@@ -1035,11 +1035,8 @@ void Reader::readModelFile(
                 bool isTypeSet  = false;
                 unsigned int dofIdx(INT_MAX);
                 bool isDofSet   = false;
-                utils::String str_direction;
-                bool isDirectionSet = false;
-                int int_direction = 0;
-                double Tmax(-1);
-                bool isTmaxSet  = false;
+                double Tconstant(-1);
+                bool isTconstantSet  = false;
                 double T0(-1);
                 bool isT0Set    = false;
                 double slope(-1);
@@ -1055,20 +1052,9 @@ void Reader::readModelFile(
                         file.read(dofName);
                         dofIdx = model->getDofIndex(name, dofName);
                         isDofSet = true;
-                    } else if (!property_tag.tolower().compare("direction")) {
-                        file.read(str_direction);
-                        utils::Error::check(!str_direction.tolower().compare("positive") ||
-                                                    !str_direction.tolower().compare("negative"),
-                                                    "Direction should be \"positive\" or \"negative\"");
-                        if (!str_direction.tolower().compare("positive")) {
-                            int_direction = 1;
-                        } else {
-                            int_direction = -1;
-                        }
-                        isDirectionSet = true;
-                    } else if (!property_tag.tolower().compare("tmax")) {
-                        file.read(Tmax, variable);
-                        isTmaxSet = true;
+                    } else if (!property_tag.tolower().compare("torque")) {
+                        file.read(Tconstant, variable);
+                        isTconstantSet = true;
                     } else if (!property_tag.tolower().compare("t0")) {
                         file.read(T0, variable);
                         isT0Set = true;
@@ -1082,26 +1068,26 @@ void Reader::readModelFile(
                 utils::Error::check(isTypeSet!=0, "PassiveTorque type must be defined");
                 internal_forces::passive_torques::PassiveTorque* passiveTorque;
                 if (!type.tolower().compare("constant")) {
-                    utils::Error::check(isDofSet && isDirectionSet && isTmaxSet,
+                    utils::Error::check(isDofSet && isTconstantSet,
                                                 "Make sure all parameters are defined");
-                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueConstant(int_direction,Tmax,dofIdx,
+                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueConstant(Tconstant,dofIdx,
                             name);
                 } else if (!type.tolower().compare("linear")) {
-                    utils::Error::check(isDofSet && isDirectionSet && isSlopeSet && isT0Set,
+                    utils::Error::check(isDofSet && isSlopeSet && isT0Set,
                                                 "Make sure all parameters are defined");
-                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueLinear(int_direction,T0,slope,dofIdx,
+                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueLinear(T0,slope,dofIdx,
                             name);
                 } else {
                     utils::Error::raise("PassiveTorque do not correspond to an implemented one");
-#ifdef _WIN32
-                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueConstant(int_direction, Tmax, dofIdx,
-                            name); // Échec de compilation sinon
-#endif
+//#ifdef _WIN32
+//                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueConstant(Tmax, dofIdx,
+//                            name); // Échec de compilation sinon
+//#endif
                 }
                 model->addPassiveTorque(*passiveTorque);
                 delete passiveTorque;
 #else // MODULE_PASSIVE_TORQUE
-                utils::Error::raise("Biorbd was build without the module Muscles but the model defines one passive torque");
+                utils::Error::raise("Biorbd was build without the module Passive torque but the model defines one passive torque");
 #endif // MODULE_PASSIVE_TORQUE
             } else if (!main_tag.tolower().compare("viapoint")) {
 #ifdef MODULE_MUSCLES
