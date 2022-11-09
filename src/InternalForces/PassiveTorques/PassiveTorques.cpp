@@ -11,10 +11,6 @@
 #include "InternalForces/PassiveTorques/PassiveTorqueLinear.h"
 #include "InternalForces/PassiveTorques/PassiveTorques.h"
 
-#ifdef USE_SMOOTH_IF_ELSE
-#include "Utils/CasadiExpand.h"
-#endif
-
 using namespace BIORBD_NAMESPACE;
 
 internal_forces::passive_torques::PassiveTorques::PassiveTorques() :
@@ -44,21 +40,9 @@ void internal_forces::passive_torques::PassiveTorques::DeepCopy(const internal_f
 {
     m_pas->resize(other.m_pas->size());
     for (unsigned int i=0; i<other.m_pas->size(); ++i) {
-        if ((*other.m_pas)[i]->type() ==
-                internal_forces::passive_torques::TYPE::CONSTANT) {
-            (*m_pas)[i] = std::make_shared<internal_forces::passive_torques::PassiveTorqueConstant>((
-                              *other.m_pas)[i]);
-        } else if ((*other.m_pas)[i]->type() ==
-             internal_forces::passive_torques::TYPE::LINEAR) {
-            (*m_pas)[i] = std::make_shared<internal_forces::passive_torques::PassiveTorqueLinear>((
-                           *other.m_pas)[i]);
-        } else {
-            utils::Error::raise("DeepCopy was not prepared to copy " +
-                                        utils::String(
-                                            internal_forces::passive_torques::TYPE_toStr((*other.m_pas)[i]->type())) + " type");
-        }
+        (*m_pas)[i] = (*other.m_pas)[i];
+
     }
-    *m_pas = *other.m_pas;
     *m_isClose = *other.m_isClose;
     *m_isDofSet = *other.m_isDofSet;
 }
@@ -91,15 +75,20 @@ void internal_forces::passive_torques::PassiveTorques::addPassiveTorque(const in
     std::shared_ptr<internal_forces::passive_torques::PassiveTorque> passive_torque;
     // Add a passive torque to the pool of passive torques according to its type
     if (tor.type() == internal_forces::passive_torques::TYPE::CONSTANT) {
-        ((*m_pas)[idx]) = std::make_shared<internal_forces::passive_torques::PassiveTorqueConstant>(tor);
+        (*m_pas)[idx] = std::make_shared<internal_forces::passive_torques::PassiveTorqueConstant>(tor);
+        (*m_isDofSet)[idx] = true;
         return;
-        }else if (tor.type() == internal_forces::passive_torques::TYPE::LINEAR) {
-        ((*m_pas)[idx]) = std::make_shared<internal_forces::passive_torques::PassiveTorqueLinear>(tor);
+    }else if (tor.type() == internal_forces::passive_torques::TYPE::LINEAR) {
+        (*m_pas)[idx] = std::make_shared<internal_forces::passive_torques::PassiveTorqueLinear>
+                (internal_forces::passive_torques::PassiveTorqueLinear (tor));
+        (*m_isDofSet)[idx] = true;
         return;
+
     } else {
         utils::Error::raise("Passive Torque type not found");
     }
     return;
+
 
 }
 
@@ -122,15 +111,19 @@ rigidbody::GeneralizedTorque internal_forces::passive_torques::PassiveTorques::p
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     const rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
-    utils::Vector torque(model.nbDof());
+    rigidbody::GeneralizedTorque GeneralizedTorque_all = rigidbody::GeneralizedTorque(model);
 
     for (unsigned int i=0; i<model.nbDof(); ++i) {
         if ((*m_isDofSet)[i]==false) {
-            torque(i) = 0;
+            GeneralizedTorque_all[i] = 0;
+        } else if ((*m_pas)[i]->type() == internal_forces::passive_torques::TYPE::CONSTANT) {
+            GeneralizedTorque_all[i] = ((*m_pas)[i])->passiveTorque();
+        } else if ((*m_pas)[i]->type() == internal_forces::passive_torques::TYPE::LINEAR) {
+            GeneralizedTorque_all[i] = ((*m_pas)[i])->passiveTorque();
         } else {
-            torque(i) = ((*m_pas)[i]).passiveTorque(Q, Qdot);
+            utils::Error::raise("Wrong type (should never get here because of previous safety)");
         }
     }
-    return torque;
+    return GeneralizedTorque_all;
 }
 

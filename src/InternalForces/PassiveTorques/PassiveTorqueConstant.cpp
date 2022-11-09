@@ -18,7 +18,7 @@ internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
     internal_forces::passive_torques::PassiveTorque(other),
     m_Torque(other.m_Torque)
 {
-
+    setType();
 }
 
 internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
@@ -40,6 +40,14 @@ internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
     setType();
 }
 
+internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
+    const internal_forces::passive_torques::PassiveTorque &other) :
+    internal_forces::passive_torques::PassiveTorque (other)
+{
+
+}
+
+
 internal_forces::passive_torques::PassiveTorqueConstant
 internal_forces::passive_torques::PassiveTorqueConstant::DeepCopy() const
 {
@@ -55,7 +63,7 @@ void internal_forces::passive_torques::PassiveTorqueConstant::DeepCopy(const
     *m_Torque = *other.m_Torque;
 }
 
-const utils::Scalar& internal_forces::passive_torques::PassiveTorqueConstant::passiveTorque()
+utils::Scalar internal_forces::passive_torques::PassiveTorqueConstant::passiveTorque()
 {
     return *m_Torque;
 }

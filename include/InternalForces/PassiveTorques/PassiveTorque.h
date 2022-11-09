@@ -86,7 +86,7 @@ public:
     /// \brief Return the maximal torque
     /// \return The maximal torque
     ///
-    virtual const utils::Scalar& passiveTorque() = 0;
+    virtual utils::Scalar passiveTorque() = 0;
 
 protected:
     ///

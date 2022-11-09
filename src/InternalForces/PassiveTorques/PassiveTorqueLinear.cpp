@@ -46,6 +46,13 @@ internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
     setType();
 }
 
+internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
+    const internal_forces::passive_torques::PassiveTorque &other) :
+    internal_forces::passive_torques::PassiveTorque (other)
+{
+
+}
+
 internal_forces::passive_torques::PassiveTorqueLinear::~PassiveTorqueLinear()
 {
 
@@ -67,16 +74,16 @@ void internal_forces::passive_torques::PassiveTorqueLinear::DeepCopy(const
     *m_b = *other.m_b;
 }
 
-const utils::Scalar& internal_forces::passive_torques::PassiveTorqueLinear::passiveTorque()
+utils::Scalar internal_forces::passive_torques::PassiveTorqueLinear::passiveTorque()
 {
     utils::Error::raise("passiveTorque for PassiveTorqueLinear must be called with Q");
 }
 
 
-const utils::Scalar& internal_forces::passive_torques::PassiveTorqueLinear::passiveTorque(
-    const rigidbody::GeneralizedCoordinates &Q)
+utils::Scalar internal_forces::passive_torques::PassiveTorqueLinear::passiveTorque(
+    const rigidbody::GeneralizedCoordinates &Q) const
 {
-    return (Q[*m_dofIdx]*180/M_PI);
+    return (Q[*m_dofIdx]*180/M_PI) * *m_m + *m_b;
 }
 
 void internal_forces::passive_torques::PassiveTorqueLinear::setType()
