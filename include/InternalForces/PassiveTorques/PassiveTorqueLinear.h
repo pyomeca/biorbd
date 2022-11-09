@@ -23,23 +23,30 @@ class BIORBD_API PassiveTorqueLinear : public PassiveTorque
 {
 public:
     ///
-    /// \brief Construct a linear actuator
+    /// \brief Construct a linear passive torque
     ///
     PassiveTorqueLinear();
 
     ///
-    /// \brief Construct a linear actuator from another linear actuator
-    /// \param other The other linear actuator
+    /// \brief Construct an idealized passive torque from another muscle
+    /// \param other The other muscle
     ///
     PassiveTorqueLinear(
         const PassiveTorqueLinear& other);
 
     ///
-    /// \brief Construct a linear actuator
-    /// \param direction The direction of the actuator (+1 or -1)
+    /// \brief Construct a passive torque linear from a passive torque
+    /// \param other The other passive torque
+    ///
+    PassiveTorqueLinear(
+        const PassiveTorque& other);
+
+
+    ///
+    /// \brief Construct a linear passive torque
     /// \param T0 The maximal torque isometric
     /// \param slope The slope
-    /// \param dofIdx Index of the DoF associated with actuator
+    /// \param dofIdx Index of the DoF associated with passive torque
     ///
     PassiveTorqueLinear(
         const utils::Scalar& T0,
@@ -47,11 +54,10 @@ public:
         unsigned int dofIdx);
 
     ///
-    /// \brief Construct a linear actuator
-    /// \param direction The direction of the actuator (+1 or -1)
+    /// \brief Construct a linear passive torque
     /// \param T0  The maximal torque isometric
     /// \param slope The slope
-    /// \param dofIdx Index of the DoF associated with actuator
+    /// \param dofIdx Index of the DoF associated with passive torque
     /// \param jointName The name of the parent joint
     ///
 
@@ -67,37 +73,38 @@ public:
     virtual ~PassiveTorqueLinear();
 
     ///
-    /// \brief Deep copy of the linear actuator
-    /// \return A deep copy of the linear actuator
+    /// \brief Deep copy of the linear passive torque
+    /// \return A deep copy of the linear passive torque
     ///
     PassiveTorqueLinear DeepCopy() const;
 
     ///
-    /// \brief Deep copy of the linear actuator from another linear actuator
-    /// \param other The linear actuator to copy
+    /// \brief Deep copy of the linear passive torque from another linear passive torque
+    /// \param other The linear passive torque to copy
     ///
     void DeepCopy(
         const PassiveTorqueLinear& other);
 
-    ///
-    /// \brief Return the maximal torque at a given Q
-    /// \param Q The generalized coordinates of the actuator
-    /// \return The maximal torque
-    ///
-    virtual const utils::Scalar& passiveTorque();
 
     ///
     /// \brief Return the maximal torque at a given Q
-    /// \param Q The generalized coordinates of the actuator
+    /// \param Q The generalized coordinates of the passive torque
     /// \return The maximal torque
     ///
-    virtual const utils::Scalar& passiveTorque(
-        const rigidbody::GeneralizedCoordinates &Q);
+    virtual utils::Scalar passiveTorque();
+
+    ///
+    /// \brief Return the maximal torque at a given Q
+    /// \param Q The generalized coordinates of the passive torque
+    /// \return The maximal torque
+    ///
+    virtual utils::Scalar passiveTorque(
+        const rigidbody::GeneralizedCoordinates &Q) const;
 
 protected:
 
     ///
-    /// \brief Set the type of actuator
+    /// \brief Set the type of passive torque
     ///
     virtual void setType();
 

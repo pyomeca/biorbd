@@ -57,10 +57,10 @@ public:
 
     ///
     /// \brief Add a passive torque to the set of passive torques
-    /// \param a The passive torque to add
+    /// \param torque The passive torque to add
     ///
     void addPassiveTorque(
-        const PassiveTorque &a);
+        const PassiveTorque &torque);
 
     ///
     /// \brief Indicate to biorbd to are done adding passive torques, sanity checks are performed
