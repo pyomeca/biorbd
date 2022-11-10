@@ -879,7 +879,7 @@ public:
     /// \return The Kinetic Energy
     ///
     ///
-    utils::Scalar CalcKineticEnergy(
+    utils::Scalar KineticEnergy(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &QDot,
     bool updateKin = true);
@@ -890,7 +890,7 @@ public:
     /// \return The Potential Energy
     ///
     ///
-    utils::Scalar CalcPotentialEnergy(
+    utils::Scalar PotentialEnergy(
     const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin = true);
 
@@ -901,7 +901,7 @@ public:
     /// \return The Lagrangian:  kinetic - potential energy
     ///
     ///
-    utils::Scalar CalcLagrangian(
+    utils::Scalar Lagrangian(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &QDot,
     bool updateKin = true);
@@ -913,7 +913,7 @@ public:
     /// \return The total energy: kinetic + potential energy
     ///
     ///
-    utils::Scalar CalcTotalEnergy(
+    utils::Scalar TotalEnergy(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &QDot,
     bool updateKin = true);
