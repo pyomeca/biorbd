@@ -53,7 +53,7 @@ jobs:
           CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
           mkdir -p $BUILD_FOLDER
           cd $BUILD_FOLDER
-          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DMODULE_KALMAN=ON ..
+          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON -DBUILD_EXAMPLE=OFF -DMODULE_ACTUATORS=ON -DMODULE_MUSCLES=ON -DMODULE_PASSIVE_TORQUES=ON -DMODULE_KALMAN=ON ..
           cp -r test/models/ .
           make biorbd_eigen_coverage -j${{ steps.cpu-cores.outputs.count }}
           lcov --directory . --capture --output-file coverage.info
