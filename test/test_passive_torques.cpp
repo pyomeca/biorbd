@@ -14,7 +14,7 @@
 
 using namespace BIORBD_NAMESPACE;
 
-static std::string modelPathForGeneralTesting("models/arm26WithActuators.bioMod");
+static std::string modelPathForGeneralTesting("models/arm26_WithPassiveTorques.bioMod");
 static std::string modelPathWithoutPassiveTorques("models/arm26.bioMod");
 
 
@@ -39,10 +39,10 @@ TEST(PassiveTorqueLinear, passiveTorque)
     Model model(modelPathForGeneralTesting);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
 
-    std::vector<double> val = {1.1};
+    std::vector<double> val = {1.1, 1.1};
     FILL_VECTOR(Q, val);
-    double torqueLinearExpected(88.025357464390567);
-    internal_forces::passive_torques::PassiveTorqueLinear linear_torque_act(1, 25, 1);
+    double torqueLinearExpected(65.025357464390567);
+    internal_forces::passive_torques::PassiveTorqueLinear linear_torque_act(2, 1, 1);
     CALL_BIORBD_FUNCTION_1ARG(torqueLinearVal, linear_torque_act, passiveTorque, Q);
 #ifdef BIORBD_USE_CASADI_MATH
     EXPECT_NEAR(static_cast<double>(torqueLinearVal(0, 0)), torqueLinearExpected,
@@ -83,10 +83,14 @@ TEST(PassiveTorques, jointTorqueFromAllTypesOfPassiveTorque)
     }
     FILL_VECTOR(QDot, QDot_val);
 
-    std::vector<double> torqueExpected = {10, 90};
+    std::vector<double> torqueExpected = {65.025357464390567, 5};
 
     CALL_BIORBD_FUNCTION_2ARGS(tau, model, passiveJointTorque, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+    EXPECT_NEAR(tau.size().first, 2, requiredPrecision);
+#else
     EXPECT_NEAR(tau.size(), 2, requiredPrecision);
+#endif
     for (size_t i=0; i<model.nbGeneralizedTorque(); ++i) {
         EXPECT_NEAR(static_cast<double>(tau(i, 0)), torqueExpected[i], requiredPrecision);
     }
