@@ -1,0 +1,17 @@
+// File : biorbd_muscles.i
+%{
+#include "InternalForces/PassiveTorques/PassiveTorqueEnums.h"
+#include "InternalForces/PassiveTorques/PassiveTorque.h"
+#include "InternalForces/PassiveTorques/PassiveTorques.h"
+#include "InternalForces/PassiveTorques/PassiveTorqueConstant.h"
+#include "InternalForces/PassiveTorques/PassiveTorqueLinear.h"
+%}
+
+
+// Includes all neceressary files from the API
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/PassiveTorques/PassiveTorqueEnums.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/PassiveTorques/PassiveTorque.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/PassiveTorques/PassiveTorques.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/PassiveTorques/PassiveTorqueConstant.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/PassiveTorques/PassiveTorqueLinear.h"
+
