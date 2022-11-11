@@ -986,13 +986,13 @@ TEST(Joints, Energy)
         Qdot[i] = static_cast<double>(i) * 1.2;
     }
 
-    utils::Scalar KE = joints.CalcKineticEnergy(Q, Qdot, true);
+    utils::Scalar KE = joints.KineticEnergy(Q, Qdot, true);
     double expectedKE = 254.92645653889139;
 
     SCALAR_TO_DOUBLE(KE_double, KE);
     EXPECT_NEAR(KE_double, expectedKE, requiredPrecision);
 
-    utils::Scalar PE = joints.CalcPotentialEnergy(Q, true);
+    utils::Scalar PE = joints.PotentialEnergy(Q, true);
     double expectedPE = 182.9881491882737;
 
     SCALAR_TO_DOUBLE(PE_double, PE);

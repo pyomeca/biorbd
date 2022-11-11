@@ -1398,7 +1398,7 @@ rigidbody::GeneralizedVelocity rigidbody::Joints::computeQdot(
     return QDotOut;
 }
 
-utils::Scalar rigidbody::Joints::CalcKineticEnergy(
+utils::Scalar rigidbody::Joints::KineticEnergy(
         const rigidbody::GeneralizedCoordinates &Q,
         const rigidbody::GeneralizedVelocity &QDot,
         bool updateKin)
@@ -1407,11 +1407,28 @@ utils::Scalar rigidbody::Joints::CalcKineticEnergy(
 }
 
 
-utils::Scalar rigidbody::Joints::CalcPotentialEnergy(
+utils::Scalar rigidbody::Joints::PotentialEnergy(
         const rigidbody::GeneralizedCoordinates &Q,
         bool updateKin)
 {
     return RigidBodyDynamics::Utils::CalcPotentialEnergy(*this, Q, updateKin);
+}
+
+utils::Scalar rigidbody::Joints::Lagrangian(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &QDot,
+        bool updateKin)
+{
+    return RigidBodyDynamics::Utils::CalcKineticEnergy(*this, Q, QDot, updateKin) - RigidBodyDynamics::Utils::CalcPotentialEnergy(*this, Q, updateKin);
+}
+
+
+utils::Scalar rigidbody::Joints::TotalEnergy(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &QDot,
+        bool updateKin)
+{
+    return RigidBodyDynamics::Utils::CalcKineticEnergy(*this, Q, QDot, updateKin) + RigidBodyDynamics::Utils::CalcPotentialEnergy(*this, Q, updateKin);;
 }
 
 rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
