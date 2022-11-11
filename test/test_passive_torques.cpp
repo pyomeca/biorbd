@@ -15,6 +15,7 @@
 using namespace BIORBD_NAMESPACE;
 
 static std::string modelPathForGeneralTesting("models/arm26_WithPassiveTorques.bioMod");
+static std::string modelPathOnePassiveTorque("models/arm26_WithOnePassiveTorques.bioMod");
 static std::string modelPathWithoutPassiveTorques("models/arm26.bioMod");
 
 
@@ -84,6 +85,36 @@ TEST(PassiveTorques, jointTorqueFromAllTypesOfPassiveTorque)
     FILL_VECTOR(QDot, QDot_val);
 
     std::vector<double> torqueExpected = {65.025357464390567, 5};
+
+    CALL_BIORBD_FUNCTION_2ARGS(tau, model, passiveJointTorque, Q, QDot);
+#ifdef BIORBD_USE_CASADI_MATH
+    EXPECT_NEAR(tau.size().first, 2, requiredPrecision);
+#else
+    EXPECT_NEAR(tau.size(), 2, requiredPrecision);
+#endif
+    for (size_t i=0; i<model.nbGeneralizedTorque(); ++i) {
+        EXPECT_NEAR(static_cast<double>(tau(i, 0)), torqueExpected[i], requiredPrecision);
+    }
+}
+
+TEST(PassiveTorques, onlyOnePassiveTorque)
+{
+    Model model(modelPathOnePassiveTorque);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
+    std::vector<double> Q_val(model.nbQ());
+    for (size_t i=0; i<Q_val.size(); ++i) {
+        Q_val[i] = 1.1;
+    }
+    FILL_VECTOR(Q, Q_val);
+
+    std::vector<double> QDot_val(model.nbQdot());
+    for (size_t i=0; i<QDot_val.size(); ++i) {
+        QDot_val[i] = 1.1;
+    }
+    FILL_VECTOR(QDot, QDot_val);
+
+    std::vector<double> torqueExpected = {65.025357464390567, 0};
 
     CALL_BIORBD_FUNCTION_2ARGS(tau, model, passiveJointTorque, Q, QDot);
 #ifdef BIORBD_USE_CASADI_MATH
