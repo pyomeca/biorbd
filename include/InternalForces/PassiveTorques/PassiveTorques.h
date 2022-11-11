@@ -86,6 +86,13 @@ public:
     ///
     unsigned int nbPassiveTorques() const;
 
+    ///
+    /// \brief Return a specific passive torque
+    /// \param dof Index of the DoF associated with passive torque
+    /// \return The passive torque
+    ///
+    const std::shared_ptr<PassiveTorque>& getPassiveTorque(unsigned int dof);
+
 protected:
     std::shared_ptr<std::vector<std::shared_ptr<internal_forces::passive_torques::PassiveTorque>>>  m_pas;///passive torque to add
     std::shared_ptr<std::vector<bool>> m_isDofSet;///< If DoF all dof are set

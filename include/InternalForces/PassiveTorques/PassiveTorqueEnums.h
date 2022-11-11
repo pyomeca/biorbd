@@ -11,11 +11,10 @@ namespace passive_torques
 ///
 /// \brief Types of passive torques available
 ///
-enum TYPE {
-    CONSTANT,
-    LINEAR,
-//    EXPONENTIAL,
-    NO_TYPE
+enum TORQUE_TYPE {
+    TORQUE_CONSTANT,
+    TORQUE_LINEAR,
+    NO_TORQUE_TYPE
 };
 
 ///
@@ -23,41 +22,17 @@ enum TYPE {
 /// \param type The type to convert to string
 /// \return The name of the type
 ///
-inline const char* TYPE_toStr(TYPE type)
+inline const char* TORQUE_TYPE_toStr(TORQUE_TYPE type)
 {
     switch (type) {
-    case CONSTANT:
+    case TORQUE_CONSTANT:
         return "Constant";
-    case LINEAR:
+    case TORQUE_LINEAR:
         return "Linear";
 //    case EXPONENTIAL:
 //        return "Exponential";
     default:
         return "NoType";
-    }
-}
-
-///
-/// \brief Types of dof available in passive torque class
-///
-
-enum DOF_TYPE {
-    ELBOW_FLEXION,
-    NO_DOF_TYPE
-};
-
-///
-/// \brief DOF_TYPE_toStr returns the type name in a string format
-/// \param dof_type The dof_type to convert to string
-/// \return The name of the dof_type
-///
-inline const char* DOF_TYPE_toStr(DOF_TYPE dof_type)
-{
-    switch (dof_type) {
-    case ELBOW_FLEXION:
-        return "ElbowFlexion";
-    default:
-        return "NoDofType";
     }
 }
 

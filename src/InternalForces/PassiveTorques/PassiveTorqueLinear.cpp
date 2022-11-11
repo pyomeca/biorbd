@@ -46,13 +46,6 @@ internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
     setType();
 }
 
-internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
-    const internal_forces::passive_torques::PassiveTorque &other) :
-    internal_forces::passive_torques::PassiveTorque (other)
-{
-
-}
-
 internal_forces::passive_torques::PassiveTorqueLinear::~PassiveTorqueLinear()
 {
 
@@ -88,5 +81,5 @@ utils::Scalar internal_forces::passive_torques::PassiveTorqueLinear::passiveTorq
 
 void internal_forces::passive_torques::PassiveTorqueLinear::setType()
 {
-    *m_type = internal_forces::passive_torques::TYPE::LINEAR;
+    *m_type = internal_forces::passive_torques::TORQUE_TYPE::TORQUE_LINEAR;
 }

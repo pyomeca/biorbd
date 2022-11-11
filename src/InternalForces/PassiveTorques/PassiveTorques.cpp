@@ -40,8 +40,15 @@ void internal_forces::passive_torques::PassiveTorques::DeepCopy(const internal_f
 {
     m_pas->resize(other.m_pas->size());
     for (unsigned int i=0; i<other.m_pas->size(); ++i) {
-        (*m_pas)[i] = (*other.m_pas)[i];
-
+        if ((*other.m_pas)[i]->type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_CONSTANT) {
+            (*m_pas)[i] = std::make_shared<internal_forces::passive_torques::PassiveTorqueConstant>
+                    (static_cast<const internal_forces::passive_torques::PassiveTorqueConstant&>(*(*other.m_pas)[i]));
+            return;
+        }else if ((*other.m_pas)[i]->type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_LINEAR) {
+            (*m_pas)[i] = std::make_shared<internal_forces::passive_torques::PassiveTorqueLinear>
+                    (static_cast<const internal_forces::passive_torques::PassiveTorqueLinear&>(*(*other.m_pas)[i]));
+            return;
+        }
     }
     *m_isClose = *other.m_isClose;
     *m_isDofSet = *other.m_isDofSet;
@@ -72,24 +79,29 @@ void internal_forces::passive_torques::PassiveTorques::addPassiveTorque(const in
         m_pas->resize(idx+1);
         m_isDofSet->resize(idx+1, false);
     }
-    std::shared_ptr<internal_forces::passive_torques::PassiveTorque> passive_torque;
     // Add a passive torque to the pool of passive torques according to its type
-    if (tor.type() == internal_forces::passive_torques::TYPE::CONSTANT) {
-        (*m_pas)[idx] = std::make_shared<internal_forces::passive_torques::PassiveTorqueConstant>(tor);
+    if (tor.type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_CONSTANT) {
+        (*m_pas)[idx] = std::make_shared<internal_forces::passive_torques::PassiveTorqueConstant>
+                (static_cast<const internal_forces::passive_torques::PassiveTorqueConstant&>(tor));
         (*m_isDofSet)[idx] = true;
         return;
-    }else if (tor.type() == internal_forces::passive_torques::TYPE::LINEAR) {
+    }else if (tor.type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_LINEAR) {
         (*m_pas)[idx] = std::make_shared<internal_forces::passive_torques::PassiveTorqueLinear>
-                (internal_forces::passive_torques::PassiveTorqueLinear (tor));
+                (static_cast<const internal_forces::passive_torques::PassiveTorqueLinear&>(tor));
         (*m_isDofSet)[idx] = true;
         return;
-
     } else {
         utils::Error::raise("Passive Torque type not found");
     }
     return;
+}
 
-
+const std::shared_ptr<internal_forces::passive_torques::PassiveTorque>&
+      internal_forces::passive_torques::PassiveTorques::getPassiveTorque(unsigned int dof)
+{
+//    utils::Error::check(dof<nbPassiveTorques(),
+//                                "Idx asked is higher than number of passive torque");
+    return (*m_pas)[dof];
 }
 
 void internal_forces::passive_torques::PassiveTorques::closePassiveTorque()
@@ -116,10 +128,13 @@ rigidbody::GeneralizedTorque internal_forces::passive_torques::PassiveTorques::p
     for (unsigned int i=0; i<model.nbDof(); ++i) {
         if ((*m_isDofSet)[i]==false) {
             GeneralizedTorque_all[i] = 0;
-        } else if ((*m_pas)[i]->type() == internal_forces::passive_torques::TYPE::CONSTANT) {
-            GeneralizedTorque_all[i] = ((*m_pas)[i])->passiveTorque();
-        } else if ((*m_pas)[i]->type() == internal_forces::passive_torques::TYPE::LINEAR) {
-            GeneralizedTorque_all[i] = ((*m_pas)[i])->passiveTorque();
+        } else if (std::dynamic_pointer_cast<PassiveTorqueConstant> ((*m_pas)[i])) {
+            GeneralizedTorque_all[i] = std::static_pointer_cast<PassiveTorqueConstant>
+                                                ((*m_pas)[i])->passiveTorque();
+        } else if (std::dynamic_pointer_cast<PassiveTorqueLinear> ((*m_pas)[i])) {
+            GeneralizedTorque_all[i] = std::static_pointer_cast<PassiveTorqueLinear>
+                                                ((*m_pas)[i])->passiveTorque(Q);
+
         } else {
             utils::Error::raise("Wrong type (should never get here because of previous safety)");
         }

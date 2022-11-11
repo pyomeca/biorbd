@@ -35,14 +35,6 @@ public:
         const PassiveTorqueLinear& other);
 
     ///
-    /// \brief Construct a passive torque linear from a passive torque
-    /// \param other The other passive torque
-    ///
-    PassiveTorqueLinear(
-        const PassiveTorque& other);
-
-
-    ///
     /// \brief Construct a linear passive torque
     /// \param T0 The maximal torque isometric
     /// \param slope The slope

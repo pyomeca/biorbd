@@ -44,7 +44,7 @@
     #include "InternalForces/PassiveTorques/PassiveTorqueLinear.h"
 #endif
 
-#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES) || defined(MODULE_PASSIVE_TORQUES)
+#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES)
     #include "InternalForces/ViaPoint.h"
     #include "InternalForces/PathModifiers.h"
     #include "InternalForces/WrappingHalfCylinder.h"

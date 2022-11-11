@@ -40,14 +40,6 @@ internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
     setType();
 }
 
-internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
-    const internal_forces::passive_torques::PassiveTorque &other) :
-    internal_forces::passive_torques::PassiveTorque (other)
-{
-
-}
-
-
 internal_forces::passive_torques::PassiveTorqueConstant
 internal_forces::passive_torques::PassiveTorqueConstant::DeepCopy() const
 {
@@ -70,5 +62,5 @@ utils::Scalar internal_forces::passive_torques::PassiveTorqueConstant::passiveTo
 
 void internal_forces::passive_torques::PassiveTorqueConstant::setType()
 {
-    *m_type = internal_forces::passive_torques::TYPE::CONSTANT;
+    *m_type = internal_forces::passive_torques::TORQUE_TYPE::TORQUE_CONSTANT;
 }

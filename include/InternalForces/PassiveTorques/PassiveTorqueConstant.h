@@ -50,13 +50,6 @@ public:
         const utils::String &jointName);
 
     ///
-    /// \brief Construct a passive torque constant from a passive torque
-    /// \param other The other passive torque
-    ///
-    PassiveTorqueConstant(
-        const PassiveTorque& other);
-
-    ///
     /// \brief Deep copy of the constant passive torque
     /// \return A copy of the constant passive torque
     ///

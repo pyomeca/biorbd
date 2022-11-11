@@ -37,6 +37,13 @@ public:
         const PassiveTorque& other);
 
     ///
+    /// \brief Construct passive torque from another passive torque
+    /// \param other The other passive torque
+    ///
+    PassiveTorque(
+        const std::shared_ptr<PassiveTorque> other);
+
+    ///
     /// \brief Construct passive torque
     /// \param dofIdx Index of the DoF associated with passive torque
     ///
@@ -74,34 +81,23 @@ public:
     /// \brief Return the type of the passive torque
     /// \return The type of the passive torque
     ///
-    TYPE type() const;
+    TORQUE_TYPE type() const;
 
     ///
-    /// \brief Return the type of the dof of the passive torque
-    /// \return The type of dof of the passive torque
-    ///
-    DOF_TYPE dof_type() const;
-
-    ///
-    /// \brief Return the maximal torque
-    /// \return The maximal torque
+    /// \brief Return the passive torque
+    /// \return The passive torque
     ///
     virtual utils::Scalar passiveTorque() = 0;
 
 protected:
     ///
     /// \brief Set the type of passive torque
-    ///
+    ///^
     virtual void setType() = 0;
-//    virtual void setDofType() = 0;
 
-    std::shared_ptr<TYPE> m_type; ///< The type of the passive torque
-    std::shared_ptr<DOF_TYPE> m_dof_type; ///< The type of the dof of the passive torque
-
-    std::shared_ptr<utils::String>
-    m_jointName; ///< Name of the parent joint
-    std::shared_ptr<unsigned int>
-    m_dofIdx;///< Index of the DoF associated with the passive torque
+    std::shared_ptr<TORQUE_TYPE> m_type; ///< The type of the passive torque
+    std::shared_ptr<utils::String> m_jointName; ///< Name of the parent joint
+    std::shared_ptr<unsigned int> m_dofIdx;///< Index of the DoF associated with the passive torque
 
 };
 
