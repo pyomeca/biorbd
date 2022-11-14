@@ -163,12 +163,6 @@ public:
     const utils::Scalar& length() const;
 
     ///
-    /// \brief Return the previously computed muscle-tendon length
-    /// \return The muscle-tendon length
-    ///
-    //const utils::Scalar& musculoTendonLength() const;
-
-    ///
     /// \brief Return the previously computed velocity
     /// \return The computed velocity
     ///
@@ -216,7 +210,6 @@ protected:
     ///
     void _updateKinematics(
         const rigidbody::GeneralizedVelocity *Qdot,
-        //const Characteristics* characteristics = nullptr,
         internal_forces::PathModifiers* pathModifiers = nullptr);
 
     ///
@@ -265,7 +258,6 @@ protected:
     /// \return The muscle length
     ///
     const utils::Scalar& length(
-        //const Characteristics* characteristics = nullptr,
         internal_forces::PathModifiers* pathModifiers = nullptr);
 
     ///
@@ -294,6 +286,7 @@ protected:
     /// \brief Compute the jacobian
     /// \param model The joint model
     /// \param Q The generalize coordinates
+    //const Characteristics* characteristics = nullptr,
     ///
     void jacobian(
         rigidbody::Joints &model,

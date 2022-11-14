@@ -8,7 +8,6 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedTorque.h"
 #include "InternalForces/Muscles/Muscle.h"
-#include "InternalForces/Geometry.h"
 #include "InternalForces/Muscles/MuscleGroup.h"
 #include "InternalForces/Muscles/StateDynamics.h"
 

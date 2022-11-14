@@ -11,7 +11,6 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "InternalForces/WrappingObject.h"
 #include "InternalForces/PathModifiers.h"
-#include "InternalForces/Muscles/Characteristics.h"
 #include "InternalForces/ViaPoint.h"
 #include "InternalForces/Geometry.h"
 
@@ -30,7 +29,6 @@ internal_forces::Geometry::Geometry() :
     m_G(std::make_shared<utils::Matrix>()),
     m_jacobianLength(std::make_shared<utils::Matrix>()),
     m_length(std::make_shared<utils::Scalar>(0)),
-    //m_muscleTendonLength(std::make_shared<utils::Scalar>(0)),
     m_velocity(std::make_shared<utils::Scalar>(0)),
     m_isGeometryComputed(std::make_shared<bool>(false)),
     m_isVelocityComputed(std::make_shared<bool>(false)),
@@ -54,7 +52,6 @@ internal_forces::Geometry::Geometry(
     m_G(std::make_shared<utils::Matrix>()),
     m_jacobianLength(std::make_shared<utils::Matrix>()),
     m_length(std::make_shared<utils::Scalar>(0)),
-    //m_muscleTendonLength(std::make_shared<utils::Scalar>(0)),
     m_velocity(std::make_shared<utils::Scalar>(0)),
     m_isGeometryComputed(std::make_shared<bool>(false)),
     m_isVelocityComputed(std::make_shared<bool>(false)),
@@ -88,7 +85,6 @@ void internal_forces::Geometry::DeepCopy(const internal_forces::Geometry &other)
     *m_G = *other.m_G;
     *m_jacobianLength = *other.m_jacobianLength;
     *m_length = *other.m_length;
-    //*m_muscleTendonLength = *other.m_muscleTendonLength;
     *m_velocity = *other.m_velocity;
     *m_isGeometryComputed = *other.m_isGeometryComputed;
     *m_isVelocityComputed = *other.m_isVelocityComputed;
@@ -127,6 +123,37 @@ void internal_forces::Geometry::updateKinematics(
 
     // Complete the update
     _updateKinematics(Qdot);
+}
+void internal_forces::Geometry::updateKinematics(rigidbody::Joints
+        &model,
+        internal_forces::PathModifiers &pathModifiers,
+        const rigidbody::GeneralizedCoordinates *Q,
+        const rigidbody::GeneralizedVelocity *Qdot,
+        int updateKin)
+{
+    if (*m_posAndJacoWereForced) {
+        utils::Error::warning(
+            false, "Warning, using updateKinematics overrides the"
+            " previously sent position and jacobian");
+        *m_posAndJacoWereForced = false;
+    }
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = 2;
+#endif
+
+    // Ensure the model is in the right configuration
+    if (updateKin > 1) {
+        model.UpdateKinematicsCustom(Q, Qdot);
+    }
+
+    // Position of the points in space
+    setPointsInGlobal(model, *Q, &pathModifiers);
+
+    // Compute the Jacobian of the muscle points
+    jacobian(model, *Q);
+
+    // Complete the update
+    _updateKinematics(Qdot, &pathModifiers);
 }
 
 void internal_forces::Geometry::updateKinematics(
@@ -207,13 +234,7 @@ const utils::Scalar& internal_forces::Geometry::length() const
                                 "Geometry must be computed at least before calling length()");
     return *m_length;
 }
-//const utils::Scalar& internal_forces::Geometry::musculoTendonLength()
-//const
-//{
-//    utils::Error::check(*m_isGeometryComputed,
-//                                "Geometry must be computed at least before calling length()");
-//    return *m_muscleTendonLength;
-//}
+
 const utils::Scalar& internal_forces::Geometry::velocity() const
 {
     utils::Error::check(*m_isVelocityComputed,
@@ -263,7 +284,7 @@ void internal_forces::Geometry::_updateKinematics(
     internal_forces::PathModifiers *pathModifiers)
 {
     // Compute the length and velocities
-    length(pathModifiers); //characteristics, );
+    length(pathModifiers);
     *m_isGeometryComputed = true;
 
     // Compute the jacobian of the lengths
@@ -392,7 +413,6 @@ void internal_forces::Geometry::setPointsInGlobal(
 }
 
 const utils::Scalar& internal_forces::Geometry::length(
-    //const internal_forces::Characteristics *characteristics,
     internal_forces::PathModifiers *pathModifiers)
 {
     *m_length = 0;
