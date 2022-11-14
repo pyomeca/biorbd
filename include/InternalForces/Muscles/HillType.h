@@ -10,6 +10,7 @@ namespace BIORBD_NAMESPACE
 {
 namespace internal_forces
 {
+class Geometry;
 namespace muscles
 {
 

@@ -16,11 +16,11 @@ class Vector3d;
 
 namespace internal_forces
 {
+class Geometry;
 class Compound;
 
 namespace muscles
 {
-class Geometry;
 class Characteristics;
 class State;
 class Muscles;

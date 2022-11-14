@@ -15,12 +15,12 @@ class String;
 
 namespace internal_forces
 {
+class Geometry;
 class PathModifiers;
 
 namespace muscles
 {
 class Muscle;
-class Geometry;
 class Characteristics;
 
 ///

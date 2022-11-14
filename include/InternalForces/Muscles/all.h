@@ -9,7 +9,6 @@
 #include "InternalForces/Muscles/FatigueDynamicStateXia.h"
 #include "InternalForces/Muscles/FatigueParameters.h"
 #include "InternalForces/Muscles/FatigueState.h"
-#include "InternalForces/Muscles/Geometry.h"
 #include "InternalForces/Muscles/HillThelenActiveOnlyType.h"
 #include "InternalForces/Muscles/HillDeGrooteActiveOnlyType.h"
 #include "InternalForces/Muscles/HillThelenType.h"

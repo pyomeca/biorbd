@@ -25,6 +25,7 @@ class GeneralizedTorque;
 
 namespace internal_forces
 {
+class Geometry;
 namespace muscles
 {
 class MuscleGroup;

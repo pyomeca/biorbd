@@ -12,12 +12,12 @@
 #include "InternalForces/Muscles/StateDynamicsBuchanan.h"
 #include "InternalForces/Muscles/StateDynamicsDeGroote.h"
 #include "InternalForces/Muscles/Characteristics.h"
-#include "InternalForces/Muscles/Geometry.h"
+#include "InternalForces/Geometry.h"
 
 using namespace BIORBD_NAMESPACE;
 internal_forces::muscles::Muscle::Muscle() :
     internal_forces::Compound(),
-    m_position(std::make_shared<internal_forces::muscles::Geometry>()),
+    m_position(std::make_shared<internal_forces::Geometry>()),
     m_type(std::make_shared<internal_forces::muscles::MUSCLE_TYPE>(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_characteristics(std::make_shared<internal_forces::muscles::Characteristics>()),
     m_state(std::make_shared<internal_forces::muscles::State>())
@@ -28,10 +28,10 @@ internal_forces::muscles::Muscle::Muscle() :
 
 internal_forces::muscles::Muscle::Muscle(
     const utils::String & name,
-    const internal_forces::muscles::Geometry & position,
+    const internal_forces::Geometry & position,
     const internal_forces::muscles::Characteristics &characteristics) :
     internal_forces::Compound (name),
-    m_position(std::make_shared<internal_forces::muscles::Geometry>(position)),
+    m_position(std::make_shared<internal_forces::Geometry>(position)),
     m_type(std::make_shared<internal_forces::muscles::MUSCLE_TYPE>(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_characteristics(std::make_shared<internal_forces::muscles::Characteristics>
                       (characteristics)),
@@ -42,11 +42,11 @@ internal_forces::muscles::Muscle::Muscle(
 
 internal_forces::muscles::Muscle::Muscle(
     const utils::String &name,
-    const internal_forces::muscles::Geometry &position,
+    const internal_forces::Geometry &position,
     const internal_forces::muscles::Characteristics &characteristics,
     const internal_forces::muscles::State &dynamicState) :
     internal_forces::Compound (name),
-    m_position(std::make_shared<internal_forces::muscles::Geometry>(position)),
+    m_position(std::make_shared<internal_forces::Geometry>(position)),
     m_type(std::make_shared<internal_forces::muscles::MUSCLE_TYPE>(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_characteristics(std::make_shared<internal_forces::muscles::Characteristics>
                       (characteristics)),
@@ -57,11 +57,11 @@ internal_forces::muscles::Muscle::Muscle(
 
 internal_forces::muscles::Muscle::Muscle(
     const utils::String &name,
-    const internal_forces::muscles::Geometry &position,
+    const internal_forces::Geometry &position,
     const internal_forces::muscles::Characteristics &characteristics,
     const internal_forces::PathModifiers &pathModifiers) :
     internal_forces::Compound (name, pathModifiers),
-    m_position(std::make_shared<internal_forces::muscles::Geometry>(position)),
+    m_position(std::make_shared<internal_forces::Geometry>(position)),
     m_type(std::make_shared<internal_forces::muscles::MUSCLE_TYPE>(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_characteristics(std::make_shared<internal_forces::muscles::Characteristics>
                       (characteristics)),
@@ -92,12 +92,12 @@ internal_forces::muscles::Muscle::Muscle(const std::shared_ptr<internal_forces::
 }
 
 internal_forces::muscles::Muscle::Muscle(const utils::String& name,
-                                const internal_forces::muscles::Geometry& g,
+                                const internal_forces::Geometry& g,
                                 const internal_forces::muscles::Characteristics& c,
                                 const internal_forces::PathModifiers &pathModifiers,
                                 const internal_forces::muscles::State& emg) :
     internal_forces::Compound(name,pathModifiers),
-    m_position(std::make_shared<internal_forces::muscles::Geometry>(g)),
+    m_position(std::make_shared<internal_forces::Geometry>(g)),
     m_type(std::make_shared<internal_forces::muscles::MUSCLE_TYPE>(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_characteristics(std::make_shared<internal_forces::muscles::Characteristics>(c)),
     m_state(std::make_shared<internal_forces::muscles::State>())
@@ -138,7 +138,7 @@ void internal_forces::muscles::Muscle::updateOrientations(
     int updateKin)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,nullptr,
+    m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,
                                  updateKin);
 }
 void internal_forces::muscles::Muscle::updateOrientations(
@@ -149,7 +149,7 @@ void internal_forces::muscles::Muscle::updateOrientations(
 {
     // Update de la position des insertions et origines
     m_position->updateKinematics(
-        model,*m_characteristics,*m_pathChanger,&Q,&Qdot, updateKin);
+        model,*m_pathChanger,&Q,&Qdot, updateKin);
 }
 void internal_forces::muscles::Muscle::updateOrientations(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
@@ -157,7 +157,7 @@ void internal_forces::muscles::Muscle::updateOrientations(
 {
     // Update de la position des insertions et origines
     m_position->updateKinematics(
-                musclePointsInGlobal,jacoPointsInGlobal, *m_characteristics,nullptr);
+                musclePointsInGlobal,jacoPointsInGlobal,nullptr);
 }
 void internal_forces::muscles::Muscle::updateOrientations(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
@@ -166,15 +166,15 @@ void internal_forces::muscles::Muscle::updateOrientations(
 {
     // Update de la position des insertions et origines
     m_position->updateKinematics(
-                musclePointsInGlobal,jacoPointsInGlobal, *m_characteristics,&Qdot);
+                musclePointsInGlobal,jacoPointsInGlobal,&Qdot);
 }
 
 void internal_forces::muscles::Muscle::setPosition(
-    const internal_forces::muscles::Geometry &positions)
+    const internal_forces::Geometry &positions)
 {
     *m_position = positions;
 }
-const internal_forces::muscles::Geometry &internal_forces::muscles::Muscle::position() const
+const internal_forces::Geometry &internal_forces::muscles::Muscle::position() const
 {
     return *m_position;
 }
@@ -188,8 +188,7 @@ const utils::Scalar& internal_forces::muscles::Muscle::length(
     updateKin = 2;
 #endif
     if (updateKin != 0) {
-        m_position->updateKinematics(
-            model,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
+        m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,updateKin);
     }
 
     return position().length();
@@ -204,11 +203,9 @@ const utils::Scalar& internal_forces::muscles::Muscle::musculoTendonLength(
     updateKin = 2;
 #endif
     if (updateKin != 0) {
-        m_position->updateKinematics(
-            m,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
+        m_position->updateKinematics(m,*m_pathChanger,&Q,nullptr,updateKin);
     }
-
-    return m_position->musculoTendonLength();
+    return (position().length() - characteristics().tendonSlackLength()) / std::cos(characteristics().pennationAngle());
 }
 
 const utils::Scalar& internal_forces::muscles::Muscle::velocity(
@@ -221,8 +218,7 @@ const utils::Scalar& internal_forces::muscles::Muscle::velocity(
     updateKin = true;
 #endif
     if (updateKin) {
-        m_position->updateKinematics(
-            model,*m_characteristics,*m_pathChanger,&Q,&Qdot);
+        m_position->updateKinematics(model,*m_pathChanger,&Q,&Qdot);
     }
 
     return m_position->velocity();
@@ -251,8 +247,7 @@ internal_forces::muscles::Muscle::musclesPointsInGlobal(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
-    m_position->updateKinematics(
-                model,*m_characteristics,*m_pathChanger,&Q,nullptr);
+    m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr);
 
     return musclesPointsInGlobal();
 }
@@ -260,7 +255,7 @@ internal_forces::muscles::Muscle::musclesPointsInGlobal(
 const std::vector<utils::Vector3d>
 &internal_forces::muscles::Muscle::musclesPointsInGlobal() const
 {
-    return m_position->musclesPointsInGlobal();
+    return m_position->pointsInGlobal();
 }
 
 void internal_forces::muscles::Muscle::setForceIsoMax(

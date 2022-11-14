@@ -1,6 +1,7 @@
 // File : biorbd_internalforces.i
 %{
 #include "InternalForces/Compound.h"
+#include "InternalForces/Geometry.h"
 #include "InternalForces/PathModifiers.h"
 #include "InternalForces/ViaPoint.h"
 #include "InternalForces/WrappingObject.h"
@@ -11,6 +12,7 @@
 
 // Includes all neceressary files from the API
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Compound.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Geometry.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/PathModifiers.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/ViaPoint.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/WrappingObject.h"

@@ -15,6 +15,7 @@ class String;
 
 namespace internal_forces
 {
+class Geometry;
 namespace muscles
 {
 

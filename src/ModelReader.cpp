@@ -31,7 +31,6 @@
 
 #ifdef MODULE_MUSCLES
     #include "InternalForces/Muscles/Muscle.h"
-    #include "InternalForces/Muscles/Geometry.h"
     #include "InternalForces/Muscles/MuscleGroup.h"
     #include "InternalForces/Muscles/FatigueParameters.h"
     #include "InternalForces/Muscles/State.h"
@@ -44,10 +43,11 @@
     #include "InternalForces/PassiveTorques/PassiveTorqueLinear.h"
 #endif
 
-#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES)
+#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES) || defined(MODULE_PASSIVE_TORQUES)
     #include "InternalForces/ViaPoint.h"
     #include "InternalForces/PathModifiers.h"
     #include "InternalForces/WrappingHalfCylinder.h"
+    #include "InternalForces/Geometry.h"
 #endif
 
 
@@ -1000,7 +1000,7 @@ void Reader::readModelFile(
                     }
                 }
                 utils::Error::check(idxGroup!=-1, "No muscle group was provided!");
-                internal_forces::muscles::Geometry geo(
+                internal_forces::Geometry geo(
                     utils::Vector3d(origin_pos, name + "_origin",
                                             model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
                     utils::Vector3d(insert_pos, name + "_insertion",

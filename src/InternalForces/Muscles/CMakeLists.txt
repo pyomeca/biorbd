@@ -9,7 +9,6 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/FatigueDynamicStateXia.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/FatigueParameters.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/FatigueState.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Geometry.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/HillType.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/IdealizedActuator.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/HillThelenType.cpp"
