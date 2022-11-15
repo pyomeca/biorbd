@@ -138,7 +138,7 @@ void internal_forces::muscles::Muscle::updateOrientations(
     int updateKin)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,updateKin);
+    m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,updateKin,characteristics().pennationAngle(), characteristics().tendonSlackLength());
 }
 void internal_forces::muscles::Muscle::updateOrientations(
     rigidbody::Joints& model,
@@ -147,7 +147,7 @@ void internal_forces::muscles::Muscle::updateOrientations(
     int updateKin)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(model,*m_pathChanger,&Q,&Qdot, updateKin);
+    m_position->updateKinematics(model,*m_pathChanger,&Q,&Qdot,updateKin,characteristics().pennationAngle(), characteristics().tendonSlackLength());
 }
 void internal_forces::muscles::Muscle::updateOrientations(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
@@ -155,7 +155,7 @@ void internal_forces::muscles::Muscle::updateOrientations(
 {
     // Update de la position des insertions et origines
     m_position->updateKinematics(
-                musclePointsInGlobal,jacoPointsInGlobal,nullptr);
+                musclePointsInGlobal,jacoPointsInGlobal,nullptr,characteristics().pennationAngle(), characteristics().tendonSlackLength());
 }
 void internal_forces::muscles::Muscle::updateOrientations(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
@@ -164,7 +164,7 @@ void internal_forces::muscles::Muscle::updateOrientations(
 {
     // Update de la position des insertions et origines
     m_position->updateKinematics(
-                musclePointsInGlobal,jacoPointsInGlobal,&Qdot);
+                musclePointsInGlobal,jacoPointsInGlobal,&Qdot, characteristics().pennationAngle(), characteristics().tendonSlackLength());
 }
 
 void internal_forces::muscles::Muscle::setPosition(
@@ -186,9 +186,8 @@ const utils::Scalar& internal_forces::muscles::Muscle::length(
     updateKin = 2;
 #endif
     if (updateKin != 0) {
-        m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,updateKin);
+        m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,updateKin,characteristics().pennationAngle(), characteristics().tendonSlackLength());
     }
-
     return position().length();
 }
 
@@ -201,12 +200,10 @@ const utils::Scalar& internal_forces::muscles::Muscle::musculoTendonLength(
     updateKin = 2;
 #endif
     if (updateKin != 0) {
-        m_position->updateKinematics(m,*m_pathChanger,&Q,nullptr,updateKin);
+        m_position->updateKinematics(m,*m_pathChanger,&Q,nullptr,updateKin,characteristics().pennationAngle(), characteristics().tendonSlackLength());
     }
-
-    return (position().length() - characteristics().tendonSlackLength()) / std::cos(characteristics().pennationAngle());
+    return position().musculoTendonLength();
 }
-
 
 const utils::Scalar& internal_forces::muscles::Muscle::velocity(
     rigidbody::Joints &model,
@@ -218,7 +215,7 @@ const utils::Scalar& internal_forces::muscles::Muscle::velocity(
     updateKin = true;
 #endif
     if (updateKin) {
-        m_position->updateKinematics(model,*m_pathChanger,&Q,&Qdot);
+        m_position->updateKinematics(model,*m_pathChanger,&Q,&Qdot,2,characteristics().pennationAngle(), characteristics().tendonSlackLength());
     }
 
     return m_position->velocity();
@@ -247,7 +244,7 @@ internal_forces::muscles::Muscle::musclesPointsInGlobal(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
-    m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr);
+    m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,2,characteristics().pennationAngle(), characteristics().tendonSlackLength());
 
     return musclesPointsInGlobal();
 }

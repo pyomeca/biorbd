@@ -29,6 +29,7 @@ internal_forces::Geometry::Geometry() :
     m_G(std::make_shared<utils::Matrix>()),
     m_jacobianLength(std::make_shared<utils::Matrix>()),
     m_length(std::make_shared<utils::Scalar>(0)),
+    m_muscleTendonLength(std::make_shared<utils::Scalar>(0)),
     m_velocity(std::make_shared<utils::Scalar>(0)),
     m_isGeometryComputed(std::make_shared<bool>(false)),
     m_isVelocityComputed(std::make_shared<bool>(false)),
@@ -52,6 +53,7 @@ internal_forces::Geometry::Geometry(
     m_G(std::make_shared<utils::Matrix>()),
     m_jacobianLength(std::make_shared<utils::Matrix>()),
     m_length(std::make_shared<utils::Scalar>(0)),
+    m_muscleTendonLength(std::make_shared<utils::Scalar>(0)),
     m_velocity(std::make_shared<utils::Scalar>(0)),
     m_isGeometryComputed(std::make_shared<bool>(false)),
     m_isVelocityComputed(std::make_shared<bool>(false)),
@@ -85,6 +87,7 @@ void internal_forces::Geometry::DeepCopy(const internal_forces::Geometry &other)
     *m_G = *other.m_G;
     *m_jacobianLength = *other.m_jacobianLength;
     *m_length = *other.m_length;
+    *m_muscleTendonLength = *other.m_muscleTendonLength;
     *m_velocity = *other.m_velocity;
     *m_isGeometryComputed = *other.m_isGeometryComputed;
     *m_isVelocityComputed = *other.m_isVelocityComputed;
@@ -97,7 +100,9 @@ void internal_forces::Geometry::updateKinematics(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates *Q,
     const rigidbody::GeneralizedVelocity *Qdot,
-    int updateKin)
+    int updateKin,
+    const utils::Scalar& penAngle,
+    const utils::Scalar& tendonLength)
 {
     if (*m_posAndJacoWereForced) {
         utils::Error::warning(
@@ -122,14 +127,16 @@ void internal_forces::Geometry::updateKinematics(
     jacobian(model, *Q);
 
     // Complete the update
-    _updateKinematics(Qdot);
+    _updateKinematics(Qdot, nullptr, penAngle, tendonLength);
 }
 void internal_forces::Geometry::updateKinematics(rigidbody::Joints
         &model,
         internal_forces::PathModifiers &pathModifiers,
         const rigidbody::GeneralizedCoordinates *Q,
         const rigidbody::GeneralizedVelocity *Qdot,
-        int updateKin)
+        int updateKin,
+        const utils::Scalar& penAngle,
+        const utils::Scalar& tendonLength)
 {
     if (*m_posAndJacoWereForced) {
         utils::Error::warning(
@@ -153,13 +160,15 @@ void internal_forces::Geometry::updateKinematics(rigidbody::Joints
     jacobian(model, *Q);
 
     // Complete the update
-    _updateKinematics(Qdot, &pathModifiers);
+    _updateKinematics(Qdot, &pathModifiers, penAngle, tendonLength);
 }
 
 void internal_forces::Geometry::updateKinematics(
     std::vector<utils::Vector3d>& pointsInGlobal,
     utils::Matrix& jacoPointsInGlobal,
-    const rigidbody::GeneralizedVelocity* Qdot)
+    const rigidbody::GeneralizedVelocity* Qdot,
+    const utils::Scalar& penAngle,
+    const utils::Scalar& tendonLength)
 {
     *m_posAndJacoWereForced = true;
 
@@ -170,7 +179,7 @@ void internal_forces::Geometry::updateKinematics(
     jacobian(jacoPointsInGlobal);
 
     // Complete the update
-    _updateKinematics(Qdot); //, &c);
+    _updateKinematics(Qdot, nullptr, penAngle, tendonLength);
 }
 
 // Get and set the positions of the origins and insertions
@@ -235,6 +244,14 @@ const utils::Scalar& internal_forces::Geometry::length() const
     return *m_length;
 }
 
+// Return the length and muscular velocity
+const utils::Scalar& internal_forces::Geometry::musculoTendonLength() const
+{
+    utils::Error::check(*m_isGeometryComputed,
+                                "Geometry must be computed at least before calling length()");
+    return *m_muscleTendonLength;
+}
+
 const utils::Scalar& internal_forces::Geometry::velocity() const
 {
     utils::Error::check(*m_isVelocityComputed,
@@ -280,11 +297,12 @@ const utils::Matrix &internal_forces::Geometry::jacobianLength() const
 
 void internal_forces::Geometry::_updateKinematics(
     const rigidbody::GeneralizedVelocity* Qdot,
-    //const internal_forces::Characteristics* characteristics,
-    internal_forces::PathModifiers *pathModifiers)
+    internal_forces::PathModifiers *pathModifiers,
+    const utils::Scalar& penAngle,
+    const utils::Scalar& tendonLength)
 {
     // Compute the length and velocities
-    length(pathModifiers);
+    length(pathModifiers, penAngle, tendonLength);
     *m_isGeometryComputed = true;
 
     // Compute the jacobian of the lengths
@@ -413,9 +431,11 @@ void internal_forces::Geometry::setPointsInGlobal(
 }
 
 const utils::Scalar& internal_forces::Geometry::length(
-    internal_forces::PathModifiers *pathModifiers)
+    internal_forces::PathModifiers *pathModifiers,
+    const utils::Scalar& penAngle,
+    const utils::Scalar& tendonLength)
 {
-    *m_length = 0;
+    *m_muscleTendonLength = 0;
 
     // because we can't combine, test the first (0) will let us know all the types if more than one
     if (pathModifiers != nullptr && pathModifiers->nbWraps()!=0) {
@@ -431,18 +451,18 @@ const utils::Scalar& internal_forces::Geometry::length(
         utils::Scalar lengthWrap(0);
         static_cast<internal_forces::WrappingObject&>(
             pathModifiers->object(0)).wrapPoints(po_wrap, pi_wrap, &lengthWrap);
-        *m_length = ((*m_pointsInGlobal)[0] - po_wrap).norm()
+        *m_muscleTendonLength = ((*m_pointsInGlobal)[0] - po_wrap).norm()
                                 + // length before the wrap
                                 lengthWrap                 + // length on the wrap
                                 ((*m_pointsInGlobal)[3] - pi_wrap).norm();   // length after the wrap
 
     } else {
         for (unsigned int i=0; i<m_pointsInGlobal->size()-1; ++i) {
-            *m_length += ((*m_pointsInGlobal)[i+1] -
+            *m_muscleTendonLength += ((*m_pointsInGlobal)[i+1] -
                                       (*m_pointsInGlobal)[i]).norm();
         }
     }
-
+    *m_length = (*m_muscleTendonLength - tendonLength) / std::cos(penAngle);
     return *m_length;
 }
 
