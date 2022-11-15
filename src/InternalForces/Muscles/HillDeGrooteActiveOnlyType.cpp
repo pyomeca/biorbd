@@ -3,7 +3,7 @@
 
 #include <math.h>
 #include "Utils/String.h"
-#include "InternalForces/Muscles/Geometry.h"
+#include "InternalForces/Geometry.h"
 #include "InternalForces/Muscles/Characteristics.h"
 
 using namespace BIORBD_NAMESPACE;
@@ -14,7 +14,7 @@ internal_forces::muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType
 }
 internal_forces::muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
     const utils::String& name,
-    const internal_forces::muscles::Geometry& geometry,
+    const internal_forces::Geometry& geometry,
     const internal_forces::muscles::Characteristics& characteristics) :
     internal_forces::muscles::HillDeGrooteType (name, geometry, characteristics)
 {
@@ -23,7 +23,7 @@ internal_forces::muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType
 
 internal_forces::muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
     const utils::String &name,
-    const internal_forces::muscles::Geometry &geometry,
+    const internal_forces::Geometry &geometry,
     const internal_forces::muscles::Characteristics &characteristics,
     const internal_forces::muscles::State &emg) :
     internal_forces::muscles::HillDeGrooteType (name, geometry, characteristics, emg)
@@ -33,7 +33,7 @@ internal_forces::muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType
 
 internal_forces::muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
     const utils::String &name,
-    const internal_forces::muscles::Geometry &geometry,
+    const internal_forces::Geometry &geometry,
     const internal_forces::muscles::Characteristics &characteristics,
     const internal_forces::PathModifiers &pathModifiers) :
     internal_forces::muscles::HillDeGrooteType (name, geometry, characteristics, pathModifiers)
@@ -43,7 +43,7 @@ internal_forces::muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType
 
 internal_forces::muscles::HillDeGrooteActiveOnlyType::HillDeGrooteActiveOnlyType(
     const utils::String& name,
-    const internal_forces::muscles::Geometry& geometry,
+    const internal_forces::Geometry& geometry,
     const internal_forces::muscles::Characteristics& characteristics,
     const internal_forces::PathModifiers &pathModifiers,
     const internal_forces::muscles::State& emg) :
