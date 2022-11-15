@@ -9,6 +9,7 @@
 #include "InternalForces/PassiveTorques/PassiveTorque.h"
 #include "InternalForces/PassiveTorques/PassiveTorqueConstant.h"
 #include "InternalForces/PassiveTorques/PassiveTorqueLinear.h"
+#include "InternalForces/PassiveTorques/PassiveTorqueExponential.h"
 #include "InternalForces/PassiveTorques/PassiveTorques.h"
 
 using namespace BIORBD_NAMESPACE;
@@ -44,9 +45,13 @@ void internal_forces::passive_torques::PassiveTorques::DeepCopy(const internal_f
             (*m_pas)[i] = std::make_shared<internal_forces::passive_torques::PassiveTorqueConstant>
                     (static_cast<const internal_forces::passive_torques::PassiveTorqueConstant&>(*(*other.m_pas)[i]));
             return;
-        }else if ((*other.m_pas)[i]->type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_LINEAR) {
+        } else if ((*other.m_pas)[i]->type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_LINEAR) {
             (*m_pas)[i] = std::make_shared<internal_forces::passive_torques::PassiveTorqueLinear>
                     (static_cast<const internal_forces::passive_torques::PassiveTorqueLinear&>(*(*other.m_pas)[i]));
+            return;
+        } else if ((*other.m_pas)[i]->type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_EXPONENTIAL) {
+            (*m_pas)[i] = std::make_shared<internal_forces::passive_torques::PassiveTorqueExponential>
+                    (static_cast<const internal_forces::passive_torques::PassiveTorqueExponential&>(*(*other.m_pas)[i]));
             return;
         }
     }
@@ -85,9 +90,14 @@ void internal_forces::passive_torques::PassiveTorques::addPassiveTorque(const in
                 (static_cast<const internal_forces::passive_torques::PassiveTorqueConstant&>(tor));
         (*m_isDofSet)[idx] = true;
         return;
-    }else if (tor.type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_LINEAR) {
+    } else if (tor.type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_LINEAR) {
         (*m_pas)[idx] = std::make_shared<internal_forces::passive_torques::PassiveTorqueLinear>
                 (static_cast<const internal_forces::passive_torques::PassiveTorqueLinear&>(tor));
+        (*m_isDofSet)[idx] = true;
+        return;
+    } else if (tor.type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_EXPONENTIAL) {
+        (*m_pas)[idx] = std::make_shared<internal_forces::passive_torques::PassiveTorqueExponential>
+                (static_cast<const internal_forces::passive_torques::PassiveTorqueExponential&>(tor));
         (*m_isDofSet)[idx] = true;
         return;
     } else {
@@ -134,6 +144,10 @@ rigidbody::GeneralizedTorque internal_forces::passive_torques::PassiveTorques::p
         } else if (std::dynamic_pointer_cast<PassiveTorqueLinear> ((*m_pas)[i])) {
             GeneralizedTorque_all[i] = std::static_pointer_cast<PassiveTorqueLinear>
                                                 ((*m_pas)[i])->passiveTorque(Q);
+
+        } else if (std::dynamic_pointer_cast<PassiveTorqueExponential> ((*m_pas)[i])) {
+            GeneralizedTorque_all[i] = std::static_pointer_cast<PassiveTorqueExponential>
+                                                ((*m_pas)[i])->passiveTorque(Q, Qdot);
 
         } else {
             utils::Error::raise("Wrong type (should never get here because of previous safety)");

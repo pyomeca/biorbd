@@ -25,6 +25,7 @@ TEST(FileIO, openModelWithPassiveTorques)
 {
     EXPECT_NO_THROW(Model model(modelPathForGeneralTesting));
     EXPECT_NO_THROW(Model model(modelPathWithoutPassiveTorques));
+    EXPECT_NO_THROW(Model model(modelPathOnePassiveTorque));
 }
 
 TEST(PassiveTorqueConstant, passiveTorque)
@@ -53,17 +54,43 @@ TEST(PassiveTorqueLinear, passiveTorque)
 #endif
 }
 
+TEST(PassiveTorqueExponential, passiveTorque)
+{
+    // A model is loaded so Q can be > 0 in size, it is not used otherwise
+    Model model(modelPathForGeneralTesting);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_COORDINATES(Qdot, model);
+
+    std::vector<double> val = {1.1, 1.1, 1.1};
+    FILL_VECTOR(Q, val);
+    FILL_VECTOR(Qdot, val);
+    double torqueExponentialExpected(9.7451497442067581);
+    internal_forces::passive_torques::PassiveTorqueExponential exponential_torque_act(2, 2, 5, 5, 1, 8, 5, 2, 1, 2, 2);
+    CALL_BIORBD_FUNCTION_2ARGS(torqueExponentialVal, exponential_torque_act, passiveTorque, Q, Qdot);
+#ifdef BIORBD_USE_CASADI_MATH
+    EXPECT_NEAR(static_cast<double>(torqueExponentialVal(0, 0)), torqueExponentialExpected,
+                requiredPrecision);
+#else
+    EXPECT_NEAR(torqueExponentialVal, torqueExponentialExpected, requiredPrecision);
+#endif
+}
+
 TEST(PassiveTorques, NbPassiveTorques)
 {
     {
         Model model(modelPathForGeneralTesting);
         size_t val(model.nbPassiveTorques());
-        EXPECT_NEAR(val, 2, requiredPrecision);
+        EXPECT_NEAR(val, 3, requiredPrecision);
     }
     {
         Model model(modelPathWithoutPassiveTorques);
         size_t val(model.nbPassiveTorques());
         EXPECT_NEAR(val, 0, requiredPrecision);
+    }
+    {
+        Model model(modelPathOnePassiveTorque);
+        size_t val(model.nbPassiveTorques());
+        EXPECT_NEAR(val, 1, requiredPrecision);
     }
 }
 
@@ -84,13 +111,13 @@ TEST(PassiveTorques, jointTorqueFromAllTypesOfPassiveTorque)
     }
     FILL_VECTOR(QDot, QDot_val);
 
-    std::vector<double> torqueExpected = {65.025357464390567, 5};
+    std::vector<double> torqueExpected = {65.025357464390567, -3.6805281422372751, 5};
 
     CALL_BIORBD_FUNCTION_2ARGS(tau, model, passiveJointTorque, Q, QDot);
 #ifdef BIORBD_USE_CASADI_MATH
-    EXPECT_NEAR(tau.size().first, 2, requiredPrecision);
+    EXPECT_NEAR(tau.size().first, 3, requiredPrecision);
 #else
-    EXPECT_NEAR(tau.size(), 2, requiredPrecision);
+    EXPECT_NEAR(tau.size(), 3, requiredPrecision);
 #endif
     for (size_t i=0; i<model.nbGeneralizedTorque(); ++i) {
         EXPECT_NEAR(static_cast<double>(tau(i, 0)), torqueExpected[i], requiredPrecision);
