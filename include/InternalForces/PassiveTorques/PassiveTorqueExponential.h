@@ -1,164 +1,133 @@
-#ifndef BIORBD_ACTUATORS_ACTUATOR_GAUSS_3P_H
-#define BIORBD_ACTUATORS_ACTUATOR_GAUSS_3P_H
+#ifndef BIORBD_PASSIVE_TORQUES_PASSIVE_TORQUE_EXPONENTIAL_H
+#define BIORBD_PASSIVE_TORQUES_PASSIVE_TORQUE_EXPONENTIAL_H
 
 #include "biorbdConfig.h"
-#include "InternalForces/Actuators/Actuator.h"
+#include "InternalForces/PassiveTorques/PassiveTorque.h"
 
 namespace BIORBD_NAMESPACE
 {
 namespace rigidbody
 {
 class GeneralizedCoordinates;
-class GeneralizedVelocity;
 }
 
 namespace internal_forces
 {
-namespace actuator
+namespace passive_torques
 {
 
 ///
-/// \brief Class ActuatorGauss3p is a joint actuator type which maximum
-/// is 3 parameter gaussian (Gauss3p)
-/// Please note that all parameters are given in degrees
+/// \brief Class PassiveTorqueExponential is a joint passive torque type that linearly evolves
 ///
-class BIORBD_API ActuatorGauss3p : public Actuator
+class BIORBD_API PassiveTorqueExponential : public PassiveTorque
 {
 public:
     ///
-    /// \brief Construct Gauss3p actuator
+    /// \brief Construct a linear passive torque
     ///
-    ActuatorGauss3p();
+    PassiveTorqueExponential();
 
     ///
-    /// \brief Construct Gauss3p actuator from another Gauss3p actuator
-    /// \param other The other Gauss3p actuator to copy
+    /// \brief Construct an exponential passive torque from another muscle
+    /// \param other The other passive torque
     ///
-    ActuatorGauss3p(
-        const ActuatorGauss3p& other);
+    PassiveTorqueExponential(
+        const PassiveTorqueExponential& other);
 
     ///
-    /// \brief Construct Gauss3p actuator
-    /// \param direction The direction of the Gauss3p actuator (+1 or -1)
-    /// \param Tmax The maximal torque in the eccentric phase
+    /// \brief Construct a linear passive torque
     /// \param T0 The maximal torque isometric
-    /// \param wmax Maximum angular velocity above which torque cannot be produced
-    /// \param wc Angluar velocity of the vertical asymptote of the concentric hyperbola
-    /// \param amin Low plateau level
-    /// \param wr 1/10 of the distance amax/amin
-    /// \param w1 Mid point plateau
-    /// \param r width of the gaussian curve
-    /// \param qopt Optimal position
-    /// \param dofIdx Index of the DoF associated with actuator
+    /// \param slope The slope
+    /// \param dofIdx Index of the DoF associated with passive torque
     ///
-    ActuatorGauss3p(
-        int direction,
-        const utils::Scalar& Tmax,
-        const utils::Scalar& T0,
-        const utils::Scalar& wmax,
-        const utils::Scalar& wc,
-        const utils::Scalar& amin,
-        const utils::Scalar& wr,
-        const utils::Scalar& w1,
-        const utils::Scalar& r,
-        const utils::Scalar& qopt,
+    PassiveTorqueExponential(
+        const utils::Scalar& k1,
+        const utils::Scalar& k2,
+        const utils::Scalar& b1,
+        const utils::Scalar& b2,
+        const utils::Scalar& qMid,
+        const utils::Scalar& tauEq,
+        const utils::Scalar& pBeta,
+        const utils::Scalar& wMax,
+        const utils::Scalar& sV,
+        const utils::Scalar& delatP,
         unsigned int dofIdx);
 
     ///
-    /// \brief Construct Gauss3p actuator
-    /// \param direction The direction of the Gauss3p actuator
-    /// \param Tmax The maximal torque in the eccentric phase
-    /// \param T0 The maximal torque isometric
-    /// \param wmax Maximum angular velocity above which torque cannot be produced
-    /// \param wc Angluar velocity of the vertical asymptote of the concentric hyperbola
-    /// \param amin Low plateau level
-    /// \param wr 1/10 of the distance amax/amin
-    /// \param w1 Mid point plateau
-    /// \param r width of the gaussian curve
-    /// \param qopt Optimal position
-    /// \param dofIdx Index of the DoF associated with actuator
-    /// \param jointName Name of the parent joint
+    /// \brief Construct a linear passive torque
+    /// \param T0  The maximal torque isometric
+    /// \param slope The slope
+    /// \param dofIdx Index of the DoF associated with passive torque
+    /// \param jointName The name of the parent joint
     ///
-    ActuatorGauss3p(
-        int direction,
-        const utils::Scalar& Tmax,
-        const utils::Scalar& T0,
-        const utils::Scalar& wmax,
-        const utils::Scalar& wc,
-        const utils::Scalar& amin,
-        const utils::Scalar& wr,
-        const utils::Scalar& w1,
-        const utils::Scalar& r,
-        const utils::Scalar& qopt,
+
+    PassiveTorqueExponential(
+        const utils::Scalar& k1,
+        const utils::Scalar& k2,
+        const utils::Scalar& b1,
+        const utils::Scalar& b2,
+        const utils::Scalar& qMid,
+        const utils::Scalar& tauEq,
+        const utils::Scalar& pBeta,
+        const utils::Scalar& wMax,
+        const utils::Scalar& sV,
+        const utils::Scalar& delatP,
         unsigned int dofIdx,
         const utils::String &jointName);
 
     ///
     /// \brief Destroy the class properly
     ///
-    virtual ~ActuatorGauss3p();
+    virtual ~PassiveTorqueExponential();
 
     ///
-    /// \brief Deep copy of the Gauss3p actuator
-    /// \return A deep copy of the Gauss3p actuator
+    /// \brief Deep copy of the linear passive torque
+    /// \return A deep copy of the linear passive torque
     ///
-    ActuatorGauss3p DeepCopy() const;
+    PassiveTorqueExponential DeepCopy() const;
 
     ///
-    /// \brief Deep copy of the Gauss3p actuator from another Gauss3p actuator
-    /// \param other The Gauss3p actuator to copy
+    /// \brief Deep copy of the linear passive torque from another linear passive torque
+    /// \param other The linear passive torque to copy
     ///
     void DeepCopy(
-        const ActuatorGauss3p& other);
+        const PassiveTorqueExponential& other);
+
 
     ///
-    /// \brief Return the maximal torque (invalid)
+    /// \brief Return the maximal torque at a given Q
+    /// \param Q The generalized coordinates of the passive torque
     /// \return The maximal torque
-    /// torqueMax for ActuatorGauss3p must be called with Q and Qdot
     ///
-    virtual utils::Scalar torqueMax();
+    virtual utils::Scalar passiveTorque();
 
     ///
-    /// \brief Return the maximal torque at a given Q and Qdot
-    /// \param Q The generalized coordinates of the actuator
-    /// \param Qdot The generalized velocities of the actuator
+    /// \brief Return the maximal torque at a given Q
+    /// \param Q The generalized coordinates of the passive torque
     /// \return The maximal torque
     ///
-    virtual utils::Scalar torqueMax(
+    virtual utils::Scalar passiveTorque(
         const rigidbody::GeneralizedCoordinates &Q,
-        const rigidbody::GeneralizedVelocity &Qdot);
+        const rigidbody::GeneralizedCoordinates &QDot) const;
 
 protected:
+
     ///
-    /// \brief Set the type of actuator
+    /// \brief Set the type of passive torque
     ///
     virtual void setType();
 
-    // For informations on these parameters, see Monique Iris Jackson's these from page 54
-    // Angular/velocity relationship
-    std::shared_ptr<utils::Scalar>
-    m_k;         ///< Ratio of slope of the eccentric and concentric phases
-    std::shared_ptr<utils::Scalar>
-    m_Tmax;      ///< Maximum torque in the eccentric phase
-    std::shared_ptr<utils::Scalar>
-    m_T0;        ///< Maximum torque isometric
-    std::shared_ptr<utils::Scalar>
-    m_wmax;      ///< Maximum angular velocity above which torque cannot be produced
-    std::shared_ptr<utils::Scalar>
-    m_wc;        ///< Angular velocity of the vertical asymptote of the concentric hyperbola
-
-    // Activation/velocity relationship
-    std::shared_ptr<utils::Scalar>
-    m_amax;      ///< Maximum activation level (set to 1)
-    std::shared_ptr<utils::Scalar> m_amin;      ///< Low plateau level
-    std::shared_ptr<utils::Scalar>
-    m_wr;        ///< 1/10 de la distance amax/amin
-    std::shared_ptr<utils::Scalar> m_w1;        ///< Mid point plateau
-
-    // Torque/angle relationship
-    std::shared_ptr<utils::Scalar>
-    m_r;         ///< Width of the gaussian curve
-    std::shared_ptr<utils::Scalar> m_qopt;      ///< Optimal position
+    // (B1 * np.exp(k1 * (q-qmid)) + B2 * np.exp(k2 * (q-qmid))) * (1-p_beta*qdot/(s_v*omega_max)) * (q[0] - delta_p) + tau_eq
+    std::shared_ptr<utils::Scalar> m_k1;
+    std::shared_ptr<utils::Scalar> m_k2;
+    std::shared_ptr<utils::Scalar> m_b1;
+    std::shared_ptr<utils::Scalar> m_b2;
+    std::shared_ptr<utils::Scalar> m_qMid;
+    std::shared_ptr<utils::Scalar> m_tauEq;
+    std::shared_ptr<utils::Scalar> m_pBeta;
+    std::shared_ptr<utils::Scalar> m_wMax;
+    std::shared_ptr<utils::Scalar> m_sV;
+    std::shared_ptr<utils::Scalar> m_deltaP;
 
 };
 
@@ -166,4 +135,4 @@ protected:
 }
 }
 
-#endif // BIORBD_ACTUATORS_ACTUATOR_GAUSS_3P_H
+#endif // BIORBD_PASSIVE_TORQUES_PASSIVE_TORQUE_EXPONENTIAL_H

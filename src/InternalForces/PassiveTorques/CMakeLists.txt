@@ -6,7 +6,7 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/PassiveTorque.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/PassiveTorqueConstant.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/PassiveTorqueLinear.cpp"
-#    "${CMAKE_CURRENT_SOURCE_DIR}/PassiveTorqueExponential.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/PassiveTorqueExponential.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/PassiveTorques.cpp"
 )
 

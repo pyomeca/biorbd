@@ -5,6 +5,7 @@
 #include "InternalForces/PassiveTorques/PassiveTorques.h"
 #include "InternalForces/PassiveTorques/PassiveTorqueConstant.h"
 #include "InternalForces/PassiveTorques/PassiveTorqueLinear.h"
+#include "InternalForces/PassiveTorques/PassiveTorqueExponential.h"
 %}
 
 
@@ -14,4 +15,5 @@
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/PassiveTorques/PassiveTorques.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/PassiveTorques/PassiveTorqueConstant.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/PassiveTorques/PassiveTorqueLinear.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/PassiveTorques/PassiveTorqueExponential.h"
 

@@ -14,6 +14,7 @@ namespace passive_torques
 enum TORQUE_TYPE {
     TORQUE_CONSTANT,
     TORQUE_LINEAR,
+    TORQUE_EXPONENTIAL,
     NO_TORQUE_TYPE
 };
 
@@ -29,8 +30,8 @@ inline const char* TORQUE_TYPE_toStr(TORQUE_TYPE type)
         return "Constant";
     case TORQUE_LINEAR:
         return "Linear";
-//    case EXPONENTIAL:
-//        return "Exponential";
+    case TORQUE_EXPONENTIAL:
+        return "Exponential";
     default:
         return "NoType";
     }

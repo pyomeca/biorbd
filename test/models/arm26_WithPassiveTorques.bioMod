@@ -58,6 +58,7 @@ version 4
             0    1    0    0
             0    0    1    0
             0    0    0    1
+        rotations x
         //meshfile arm_r_humerus.vtp
     endsegment
     // Segment
@@ -186,6 +187,20 @@ passivetorque r_humerus_rotation1
 	dof RotZ
 	T0 2
 	slope 1
+endpassivetorque
+
+passivetorque r_humerus_rotation2
+	type exponential
+	dof RotX
+	k1 2
+	k2 1
+	b1 5
+	b2 8
+	taueq 1
+	wmax 8
+	qmid 0.5
+	deltap 2
+	sv 0.8
 endpassivetorque
 
 // MUSCLE DEFINIION

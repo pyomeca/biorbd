@@ -41,9 +41,10 @@
 #ifdef MODULE_PASSIVE_TORQUES
     #include "InternalForces/PassiveTorques/PassiveTorqueConstant.h"
     #include "InternalForces/PassiveTorques/PassiveTorqueLinear.h"
+    #include "InternalForces/PassiveTorques/PassiveTorqueExponential.h"
 #endif
 
-#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES) || defined(MODULE_PASSIVE_TORQUES)
+#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES)
     #include "InternalForces/ViaPoint.h"
     #include "InternalForces/PathModifiers.h"
     #include "InternalForces/WrappingHalfCylinder.h"
@@ -1041,6 +1042,19 @@ void Reader::readModelFile(
                 bool isT0Set    = false;
                 double slope(-1);
                 bool isSlopeSet = false;
+                double k1(-1);
+                double k2(-1);
+                double b1(-1);
+                double b2(-1);
+                bool isExponentialSet = false;
+                double wMax(-1);
+                bool isWMaxSet = false;
+                double qMid(0);
+                double deltaP(0);
+                double sV(1);
+                double tauEq(0);
+                double pBeta(1);
+                double isExpSet(0);
 
                 while(file.read(property_tag)
                         && property_tag.tolower().compare("endpassivetorque")) {
@@ -1062,7 +1076,35 @@ void Reader::readModelFile(
                                || !property_tag.tolower().compare("slope")) {
                         file.read(slope, variable);
                         isSlopeSet = true;
+                    } else if (!property_tag.tolower().compare("k1")) {
+                        file.read(k1, variable);
+                        isExpSet += 1;
+                    } else if (!property_tag.tolower().compare("k2")) {
+                        file.read(k2, variable);
+                        isExpSet += 1;
+                    } else if (!property_tag.tolower().compare("b1")) {
+                        file.read(b1, variable);
+                        isExpSet += 1;
+                    } else if (!property_tag.tolower().compare("b2")) {
+                        file.read(b2, variable);
+                        isExpSet += 1;
+                    } else if (!property_tag.tolower().compare("wmax")) {
+                        file.read(wMax, variable);
+                        isWMaxSet = true;
+                    } else if (!property_tag.tolower().compare("qmid")) {
+                        file.read(qMid, variable);
+                    } else if (!property_tag.tolower().compare("deltap")) {
+                        file.read(deltaP, variable);
+                    } else if (!property_tag.tolower().compare("sv")) {
+                        file.read(sV, variable);
+                    } else if (!property_tag.tolower().compare("taueq")) {
+                        file.read(tauEq, variable);
+                    } else if (!property_tag.tolower().compare("pbeta")) {
+                        file.read(pBeta, variable);
                     }
+                }
+                if (isExpSet == 4){
+                    isExponentialSet = true;
                 }
                 // Verify that everything is there
                 utils::Error::check(isTypeSet!=0, "PassiveTorque type must be defined");
@@ -1077,9 +1119,15 @@ void Reader::readModelFile(
                                                 "Make sure all parameters are defined");
                     passiveTorque = new internal_forces::passive_torques::PassiveTorqueLinear(T0,slope,dofIdx,
                             name);
+                } else if (!type.tolower().compare("exponential")) {
+                    utils::Error::check(isDofSet && isExponentialSet && isWMaxSet,
+                                                "Make sure all parameters are defined");
+                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueExponential(
+                                k1, k2, b1, b2, qMid, tauEq, pBeta, wMax, sV, deltaP,dofIdx,
+                            name);
                 } else {
                     utils::Error::raise("PassiveTorque do not correspond to an implemented one");
-//#ifdef _WIN32
+//#ifdef _WIN32                 
 //                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueConstant(Tmax, dofIdx,
 //                            name); // Échec de compilation sinon
 //#endif
