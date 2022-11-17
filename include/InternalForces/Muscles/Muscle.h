@@ -3,7 +3,6 @@
 
 #include "biorbdConfig.h"
 #include "InternalForces/Compound.h"
-#include "InternalForces/Geometry.h"
 #include "InternalForces/Muscles/MusclesEnums.h"
 #include "Utils/Scalar.h"
 
@@ -18,6 +17,7 @@ class Vector3d;
 namespace internal_forces
 {
 class Compound;
+class Geometry;
 
 namespace muscles
 {
@@ -348,6 +348,7 @@ protected:
     std::shared_ptr<internal_forces::Geometry> m_position;
     std::shared_ptr<Characteristics> m_characteristics; ///< The muscle characteristics
     std::shared_ptr<State> m_state; ///< The dynamic state
+    std::shared_ptr<utils::Scalar> m_muscleLength; ///< muscle tendon length
 };
 
 }

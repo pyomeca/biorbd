@@ -18,7 +18,8 @@ namespace passive_torques
 
 ///
 /// \brief Class PassiveTorqueExponential is a joint passive torque type that linearly evolves
-///
+/// passive torque is defined by :(B1 * np.exp(k1 * (q-qmid)) + B2 * np.exp(k2 * (q-qmid))) * (1-p_beta*qdot/(s_v*omega_max)) * (q[0] - delta_p) + tau_eq
+/// from : https://pubmed.ncbi.nlm.nih.gov/31000347/
 class BIORBD_API PassiveTorqueExponential : public PassiveTorque
 {
 public:
@@ -28,7 +29,7 @@ public:
     PassiveTorqueExponential();
 
     ///
-    /// \brief Construct an exponential passive torque from another muscle
+    /// \brief Construct an exponential passive torque from another passive torque
     /// \param other The other passive torque
     ///
     PassiveTorqueExponential(
@@ -117,7 +118,6 @@ protected:
     ///
     virtual void setType();
 
-    // (B1 * np.exp(k1 * (q-qmid)) + B2 * np.exp(k2 * (q-qmid))) * (1-p_beta*qdot/(s_v*omega_max)) * (q[0] - delta_p) + tau_eq
     std::shared_ptr<utils::Scalar> m_k1;
     std::shared_ptr<utils::Scalar> m_k2;
     std::shared_ptr<utils::Scalar> m_b1;

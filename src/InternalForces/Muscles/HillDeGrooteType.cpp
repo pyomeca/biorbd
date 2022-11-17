@@ -89,7 +89,7 @@ void internal_forces::muscles::HillDeGrooteType::computeFlPE()
 {
     utils::Scalar kpe = 4;
     utils::Scalar e0 = 0.6;
-    utils::Scalar normLength = position().length() / characteristics().optimalLength();
+    utils::Scalar normLength = *m_muscleLength / characteristics().optimalLength();
 
 #ifdef BIORBD_USE_CASADI_MATH
     *m_FlPE = IF_ELSE_NAMESPACE::if_else_zero(
@@ -138,7 +138,7 @@ void internal_forces::muscles::HillDeGrooteType::computeFlCE(
     utils::Scalar b23 = 1.000;
     utils::Scalar b33 = 0.354;
     utils::Scalar b43 = 0.0;
-    utils::Scalar normLength = position().length() / characteristics().optimalLength();
+    utils::Scalar normLength = *m_muscleLength / characteristics().optimalLength();
 
     *m_FlCE = b11 * exp((-0.5*((normLength-b21)*(normLength-b21)))
                        /

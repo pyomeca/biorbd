@@ -87,7 +87,7 @@ void internal_forces::muscles::HillThelenType::DeepCopy(
 
 void internal_forces::muscles::HillThelenType::computeFlPE()
 {
-    utils::Scalar normLength = position().length()  / characteristics().optimalLength();
+    utils::Scalar normLength = *m_muscleLength  / characteristics().optimalLength();
     utils::Scalar kpe = 5.0;
     utils::Scalar e0 = 0.6;
     utils::Scalar t5 = exp(kpe * (normLength - 1) / e0);
@@ -110,7 +110,7 @@ void internal_forces::muscles::HillThelenType::computeFlPE()
 void internal_forces::muscles::HillThelenType::computeFlCE(
     const internal_forces::muscles::State&)
 {
-    utils::Scalar normLength = position().length() / characteristics().optimalLength();
+    utils::Scalar normLength = *m_muscleLength / characteristics().optimalLength();
     *m_FlCE = exp( -((normLength - 1)*(normLength - 1)) /  0.45 );
 }
 

@@ -1,4 +1,4 @@
-// File : biorbd_muscles.i
+// File : biorbd_passive_torques.i
 %{
 #include "InternalForces/PassiveTorques/PassiveTorqueEnums.h"
 #include "InternalForces/PassiveTorques/PassiveTorque.h"

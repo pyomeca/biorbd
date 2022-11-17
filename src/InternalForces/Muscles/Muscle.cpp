@@ -20,7 +20,8 @@ internal_forces::muscles::Muscle::Muscle() :
     m_position(std::make_shared<internal_forces::Geometry>()),
     m_type(std::make_shared<internal_forces::muscles::MUSCLE_TYPE>(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_characteristics(std::make_shared<internal_forces::muscles::Characteristics>()),
-    m_state(std::make_shared<internal_forces::muscles::State>())
+    m_state(std::make_shared<internal_forces::muscles::State>()),
+    m_muscleLength(std::make_shared<utils::Scalar>())
 {
     setType();
 
@@ -35,7 +36,8 @@ internal_forces::muscles::Muscle::Muscle(
     m_type(std::make_shared<internal_forces::muscles::MUSCLE_TYPE>(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_characteristics(std::make_shared<internal_forces::muscles::Characteristics>
                       (characteristics)),
-    m_state(std::make_shared<internal_forces::muscles::State>())
+    m_state(std::make_shared<internal_forces::muscles::State>()),
+    m_muscleLength(std::make_shared<utils::Scalar>())
 {
 
 }
@@ -50,7 +52,8 @@ internal_forces::muscles::Muscle::Muscle(
     m_type(std::make_shared<internal_forces::muscles::MUSCLE_TYPE>(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_characteristics(std::make_shared<internal_forces::muscles::Characteristics>
                       (characteristics)),
-    m_state(std::make_shared<internal_forces::muscles::State>(dynamicState))
+    m_state(std::make_shared<internal_forces::muscles::State>(dynamicState)),
+    m_muscleLength(std::make_shared<utils::Scalar>())
 {
 
 }
@@ -65,7 +68,8 @@ internal_forces::muscles::Muscle::Muscle(
     m_type(std::make_shared<internal_forces::muscles::MUSCLE_TYPE>(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_characteristics(std::make_shared<internal_forces::muscles::Characteristics>
                       (characteristics)),
-    m_state(std::make_shared<internal_forces::muscles::State>())
+    m_state(std::make_shared<internal_forces::muscles::State>()),
+    m_muscleLength(std::make_shared<utils::Scalar>())
 {
 
 }
@@ -75,7 +79,8 @@ internal_forces::muscles::Muscle::Muscle(const internal_forces::muscles::Muscle 
     m_position(other.m_position),
     m_type(other.m_type),
     m_characteristics(other.m_characteristics),
-    m_state(other.m_state)
+    m_state(other.m_state),
+    m_muscleLength(other.m_muscleLength)
 {
 
 }
@@ -86,7 +91,8 @@ internal_forces::muscles::Muscle::Muscle(const std::shared_ptr<internal_forces::
     m_position(other->m_position),
     m_type(other->m_type),
     m_characteristics(other->m_characteristics),
-    m_state(other->m_state)
+    m_state(other->m_state),
+    m_muscleLength(other->m_muscleLength)
 {
 
 }
@@ -100,7 +106,8 @@ internal_forces::muscles::Muscle::Muscle(const utils::String& name,
     m_position(std::make_shared<internal_forces::Geometry>(g)),
     m_type(std::make_shared<internal_forces::muscles::MUSCLE_TYPE>(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
     m_characteristics(std::make_shared<internal_forces::muscles::Characteristics>(c)),
-    m_state(std::make_shared<internal_forces::muscles::State>())
+    m_state(std::make_shared<internal_forces::muscles::State>()),
+    m_muscleLength(std::make_shared<utils::Scalar>())
 {
     setState(emg);
 
@@ -120,6 +127,7 @@ void internal_forces::muscles::Muscle::DeepCopy(const internal_forces::muscles::
     *m_type = *other.m_type;
     *m_characteristics = other.m_characteristics->DeepCopy();
     *m_state = other.m_state->DeepCopy();
+    *m_muscleLength = *other.m_muscleLength;
 }
 
 internal_forces::muscles::MUSCLE_TYPE internal_forces::muscles::Muscle::type() const
@@ -138,7 +146,7 @@ void internal_forces::muscles::Muscle::updateOrientations(
     int updateKin)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,updateKin,characteristics().pennationAngle(), characteristics().tendonSlackLength());
+    m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,updateKin);
 }
 void internal_forces::muscles::Muscle::updateOrientations(
     rigidbody::Joints& model,
@@ -147,15 +155,14 @@ void internal_forces::muscles::Muscle::updateOrientations(
     int updateKin)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(model,*m_pathChanger,&Q,&Qdot,updateKin,characteristics().pennationAngle(), characteristics().tendonSlackLength());
+    m_position->updateKinematics(model,*m_pathChanger,&Q,&Qdot,updateKin);
 }
 void internal_forces::muscles::Muscle::updateOrientations(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
     utils::Matrix &jacoPointsInGlobal)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(
-                musclePointsInGlobal,jacoPointsInGlobal,nullptr,characteristics().pennationAngle(), characteristics().tendonSlackLength());
+    m_position->updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,nullptr);
 }
 void internal_forces::muscles::Muscle::updateOrientations(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
@@ -163,8 +170,7 @@ void internal_forces::muscles::Muscle::updateOrientations(
     const rigidbody::GeneralizedVelocity &Qdot)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(
-                musclePointsInGlobal,jacoPointsInGlobal,&Qdot, characteristics().pennationAngle(), characteristics().tendonSlackLength());
+    m_position->updateKinematics(musclePointsInGlobal,jacoPointsInGlobal,&Qdot);
 }
 
 void internal_forces::muscles::Muscle::setPosition(
@@ -186,9 +192,10 @@ const utils::Scalar& internal_forces::muscles::Muscle::length(
     updateKin = 2;
 #endif
     if (updateKin != 0) {
-        m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,updateKin,characteristics().pennationAngle(), characteristics().tendonSlackLength());
+        m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,updateKin);
     }
-    return position().length();
+    *m_muscleLength = (position().length() - characteristics().tendonSlackLength()) / std::cos(characteristics().pennationAngle());
+    return *m_muscleLength;
 }
 
 const utils::Scalar& internal_forces::muscles::Muscle::musculoTendonLength(
@@ -200,9 +207,9 @@ const utils::Scalar& internal_forces::muscles::Muscle::musculoTendonLength(
     updateKin = 2;
 #endif
     if (updateKin != 0) {
-        m_position->updateKinematics(m,*m_pathChanger,&Q,nullptr,updateKin,characteristics().pennationAngle(), characteristics().tendonSlackLength());
+        m_position->updateKinematics(m,*m_pathChanger,&Q,nullptr,updateKin);
     }
-    return position().musculoTendonLength();
+    return position().length();
 }
 
 const utils::Scalar& internal_forces::muscles::Muscle::velocity(
@@ -215,7 +222,7 @@ const utils::Scalar& internal_forces::muscles::Muscle::velocity(
     updateKin = true;
 #endif
     if (updateKin) {
-        m_position->updateKinematics(model,*m_pathChanger,&Q,&Qdot,2,characteristics().pennationAngle(), characteristics().tendonSlackLength());
+        m_position->updateKinematics(model,*m_pathChanger,&Q,&Qdot,2);
     }
 
     return m_position->velocity();
@@ -230,8 +237,7 @@ const utils::Scalar& internal_forces::muscles::Muscle::activationDot(
     utils::Error::check(
         state_copy != nullptr,
         "The muscle " + name() + " is not a dynamic muscle");
-    return state_copy->timeDerivativeActivation(
-               state, characteristics(), alreadyNormalized);
+    return state_copy->timeDerivativeActivation(state, characteristics(), alreadyNormalized);
 }
 
 void internal_forces::muscles::Muscle::computeForce(const internal_forces::muscles::State &emg)
@@ -244,7 +250,7 @@ internal_forces::muscles::Muscle::musclesPointsInGlobal(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
-    m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,2,characteristics().pennationAngle(), characteristics().tendonSlackLength());
+    m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,2);
 
     return musclesPointsInGlobal();
 }

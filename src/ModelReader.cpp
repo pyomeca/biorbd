@@ -1035,26 +1035,21 @@ void Reader::readModelFile(
                 utils::String type;
                 bool isTypeSet  = false;
                 unsigned int dofIdx(INT_MAX);
-                bool isDofSet   = false;
-                double Tconstant(-1);
-                bool isTconstantSet  = false;
-                double T0(-1);
-                bool isT0Set    = false;
-                double slope(-1);
-                bool isSlopeSet = false;
-                double k1(-1);
-                double k2(-1);
-                double b1(-1);
-                double b2(-1);
-                bool isExponentialSet = false;
-                double wMax(-1);
-                bool isWMaxSet = false;
+                bool isDofSet = false;
+                double Tconstant(std::numeric_limits<double>::quiet_NaN());
+                double T0(std::numeric_limits<double>::quiet_NaN());
+                double slope(std::numeric_limits<double>::quiet_NaN());
+                double k1(std::numeric_limits<double>::quiet_NaN());
+                double k2(std::numeric_limits<double>::quiet_NaN());
+                double b1(std::numeric_limits<double>::quiet_NaN());
+                double b2(std::numeric_limits<double>::quiet_NaN());
+                double wMax(std::numeric_limits<double>::quiet_NaN());
                 double qMid(0);
                 double deltaP(0);
                 double sV(1);
                 double tauEq(0);
                 double pBeta(1);
-                double isExpSet(0);
+                double isExponentialSet(0);
 
                 while(file.read(property_tag)
                         && property_tag.tolower().compare("endpassivetorque")) {
@@ -1068,29 +1063,26 @@ void Reader::readModelFile(
                         isDofSet = true;
                     } else if (!property_tag.tolower().compare("torque")) {
                         file.read(Tconstant, variable);
-                        isTconstantSet = true;
                     } else if (!property_tag.tolower().compare("t0")) {
                         file.read(T0, variable);
-                        isT0Set = true;
                     } else if (!property_tag.tolower().compare("pente")
                                || !property_tag.tolower().compare("slope")) {
                         file.read(slope, variable);
-                        isSlopeSet = true;
                     } else if (!property_tag.tolower().compare("k1")) {
                         file.read(k1, variable);
-                        isExpSet += 1;
+                        isExponentialSet += 1;
                     } else if (!property_tag.tolower().compare("k2")) {
                         file.read(k2, variable);
-                        isExpSet += 1;
+                        isExponentialSet += 1;
                     } else if (!property_tag.tolower().compare("b1")) {
                         file.read(b1, variable);
-                        isExpSet += 1;
+                        isExponentialSet += 1;
                     } else if (!property_tag.tolower().compare("b2")) {
                         file.read(b2, variable);
-                        isExpSet += 1;
+                        isExponentialSet += 1;
                     } else if (!property_tag.tolower().compare("wmax")) {
                         file.read(wMax, variable);
-                        isWMaxSet = true;
+                        isExponentialSet += 1;
                     } else if (!property_tag.tolower().compare("qmid")) {
                         file.read(qMid, variable);
                     } else if (!property_tag.tolower().compare("deltap")) {
@@ -1103,34 +1095,24 @@ void Reader::readModelFile(
                         file.read(pBeta, variable);
                     }
                 }
-                if (isExpSet == 4){
-                    isExponentialSet = true;
-                }
                 // Verify that everything is there
                 utils::Error::check(isTypeSet!=0, "PassiveTorque type must be defined");
                 internal_forces::passive_torques::PassiveTorque* passiveTorque;
                 if (!type.tolower().compare("constant")) {
-                    utils::Error::check(isDofSet && isTconstantSet,
+                    utils::Error::check(isDofSet && std::isnan(Tconstant) == 0,
                                                 "Make sure all parameters are defined");
-                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueConstant(Tconstant,dofIdx,
-                            name);
+                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueConstant(Tconstant,dofIdx,name);
                 } else if (!type.tolower().compare("linear")) {
-                    utils::Error::check(isDofSet && isSlopeSet && isT0Set,
+                    utils::Error::check(isDofSet && std::isnan(slope) == 0 && std::isnan(T0) == 0,
                                                 "Make sure all parameters are defined");
-                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueLinear(T0,slope,dofIdx,
-                            name);
+                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueLinear(T0,slope,dofIdx,name);
                 } else if (!type.tolower().compare("exponential")) {
-                    utils::Error::check(isDofSet && isExponentialSet && isWMaxSet,
+                    utils::Error::check(isDofSet && isExponentialSet == 4,
                                                 "Make sure all parameters are defined");
                     passiveTorque = new internal_forces::passive_torques::PassiveTorqueExponential(
-                                k1, k2, b1, b2, qMid, tauEq, pBeta, wMax, sV, deltaP,dofIdx,
-                            name);
+                                k1, k2, b1, b2, qMid, tauEq, pBeta, wMax, sV, deltaP,dofIdx,name);
                 } else {
                     utils::Error::raise("PassiveTorque do not correspond to an implemented one");
-//#ifdef _WIN32                 
-//                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueConstant(Tmax, dofIdx,
-//                            name); // Échec de compilation sinon
-//#endif
                 }
                 model->addPassiveTorque(*passiveTorque);
                 delete passiveTorque;

@@ -1,6 +1,6 @@
 #define BIORBD_API_EXPORTS
-#include "InternalForces/PassiveTorques/PassiveTorqueLinear.h"
 
+#include "InternalForces/PassiveTorques/PassiveTorqueLinear.h"
 #include "Utils/Error.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 
@@ -11,7 +11,7 @@ internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear() :
     m_m(std::make_shared<utils::Scalar>(0)),
     m_b(std::make_shared<utils::Scalar>(0))
 {
-    setType();
+
 }
 
 internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
@@ -31,7 +31,7 @@ internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
     m_m(std::make_shared<utils::Scalar>(slope)),
     m_b(std::make_shared<utils::Scalar>(T0))
 {
-    setType();
+
 }
 
 internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
@@ -43,7 +43,7 @@ internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
     m_m(std::make_shared<utils::Scalar>(slope)),
     m_b(std::make_shared<utils::Scalar>(T0))
 {
-    setType();
+
 }
 
 internal_forces::passive_torques::PassiveTorqueLinear::~PassiveTorqueLinear()
@@ -76,7 +76,7 @@ utils::Scalar internal_forces::passive_torques::PassiveTorqueLinear::passiveTorq
 utils::Scalar internal_forces::passive_torques::PassiveTorqueLinear::passiveTorque(
     const rigidbody::GeneralizedCoordinates &Q) const
 {
-    return (Q[*m_dofIdx]*180/M_PI) * *m_m + *m_b;
+    return Q[*m_dofIdx] * *m_m + *m_b;
 }
 
 void internal_forces::passive_torques::PassiveTorqueLinear::setType()

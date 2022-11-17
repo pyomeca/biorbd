@@ -299,7 +299,7 @@ void internal_forces::muscles::HillType::computeDamping()
 
 void internal_forces::muscles::HillType::computeFlCE(const internal_forces::muscles::State& emg)
 {
-    *m_FlCE = exp( -pow(( position().length() /
+    *m_FlCE = exp( -pow(( *m_muscleLength/
                           m_characteristics->optimalLength() / (*m_cste_FlCE_1*
                                   (1-emg.activation())+1) -1 ), 2)
                    /
@@ -333,13 +333,13 @@ void internal_forces::muscles::HillType::computeFlPE()
 
 #ifdef BIORBD_USE_CASADI_MATH
     *m_FlPE = IF_ELSE_NAMESPACE::if_else_zero(
-                  IF_ELSE_NAMESPACE::gt(position().length(), 0),
-                  exp(*m_cste_FlPE_1*(position().length()/characteristics().optimalLength()-1) -
+                  IF_ELSE_NAMESPACE::gt(*m_muscleLength, 0),
+                  exp(*m_cste_FlPE_1*(*m_muscleLength/characteristics().optimalLength()-1) -
                       *m_cste_FlPE_2));
 #else
-    if (position().length() > 0) {
+    if (*m_muscleLength > 0) {
         *m_FlPE = exp(*m_cste_FlPE_1*
-                      (position().length()/characteristics().optimalLength()-1) - *m_cste_FlPE_2);
+                      (*m_muscleLength/characteristics().optimalLength()-1) - *m_cste_FlPE_2);
     } else {
         *m_FlPE = 0;
     }

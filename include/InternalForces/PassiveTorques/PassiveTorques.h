@@ -63,12 +63,6 @@ public:
         const PassiveTorque &torque);
 
     ///
-    /// \brief Indicate to biorbd to are done adding passive torques, sanity checks are performed
-    ///
-    void closePassiveTorque();
-
-
-    ///
     /// \brief Return the passiveJointTorques
     /// \param Q The generalized coordinates of the passive torques
     /// \param Qdot The generalized velocities of the passive torques
@@ -96,7 +90,6 @@ public:
 protected:
     std::shared_ptr<std::vector<std::shared_ptr<internal_forces::passive_torques::PassiveTorque>>>  m_pas;///passive torque to add
     std::shared_ptr<std::vector<bool>> m_isDofSet;///< If DoF all dof are set
-    std::shared_ptr<bool> m_isClose; ///< If the set is ready
 
 };
 

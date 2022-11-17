@@ -10,7 +10,7 @@ internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant()
     internal_forces::passive_torques::PassiveTorque(),
     m_Torque(std::make_shared<utils::Scalar>(0))
 {
-    setType();
+
 }
 
 internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
@@ -18,7 +18,7 @@ internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
     internal_forces::passive_torques::PassiveTorque(other),
     m_Torque(other.m_Torque)
 {
-    setType();
+
 }
 
 internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
@@ -27,7 +27,7 @@ internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
     internal_forces::passive_torques::PassiveTorque(dofIdx),
     m_Torque(std::make_shared<utils::Scalar>(Torque))
 {
-    setType();
+
 }
 
 internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
@@ -37,7 +37,7 @@ internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
     internal_forces::passive_torques::PassiveTorque(dofIdx, jointName),
     m_Torque(std::make_shared<utils::Scalar>(Torque))
 {
-    setType();
+
 }
 
 internal_forces::passive_torques::PassiveTorqueConstant

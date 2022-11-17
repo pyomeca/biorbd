@@ -19,7 +19,7 @@ internal_forces::passive_torques::PassiveTorqueExponential::PassiveTorqueExponen
     m_sV(std::make_shared<utils::Scalar>(0)),
     m_deltaP(std::make_shared<utils::Scalar>(0))
 {
-    setType();
+
 }
 
 internal_forces::passive_torques::PassiveTorqueExponential::PassiveTorqueExponential(
@@ -63,7 +63,7 @@ internal_forces::passive_torques::PassiveTorqueExponential::PassiveTorqueExponen
     m_sV(std::make_shared<utils::Scalar>(sV)),
     m_deltaP(std::make_shared<utils::Scalar>(deltaP))
 {
-    setType();
+
 }
 
 internal_forces::passive_torques::PassiveTorqueExponential::PassiveTorqueExponential(
@@ -91,7 +91,7 @@ internal_forces::passive_torques::PassiveTorqueExponential::PassiveTorqueExponen
     m_sV(std::make_shared<utils::Scalar>(sV)),
     m_deltaP(std::make_shared<utils::Scalar>(deltaP))
 {
-    setType();
+
 }
 
 internal_forces::passive_torques::PassiveTorqueExponential::~PassiveTorqueExponential()
