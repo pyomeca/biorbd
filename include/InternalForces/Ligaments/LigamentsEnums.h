@@ -13,7 +13,7 @@ namespace ligaments
 ///
 enum LIGAMENT_TYPE {
     LIGAMENT_CONSTANT,
-    LIGAMENT_SPRING_FIRST_ORDER,
+    LIGAMENT_SPRING_LINEAR,
     LIGAMENT_SPRING_SECOND_ORDER,
     NO_LIGAMENT_TYPE
 };
@@ -26,22 +26,12 @@ enum LIGAMENT_TYPE {
 inline const char* LIGAMENT_TYPE_toStr(LIGAMENT_TYPE type)
 {
     switch (type) {
-    case IDEALIZED_ACTUATOR:
-        return "IdealizedActuator";
-    case HILL:
-        return "Hill";
-    case HILL_THELEN:
-        return "Thelen";
-    case HILL_THELEN_ACTIVE:
-        return "ThelenActive";
-    case HILL_THELEN_FATIGABLE:
-        return "ThelenFatigable";
-    case HILL_DE_GROOTE_ACTIVE:
-        return "DeGrooteActive";
-    case HILL_DE_GROOTE_FATIGABLE:
-        return "DeGrooteFatigable";
-    case HILL_DE_GROOTE:
-        return "DeGroote";
+    case LIGAMENT_CONSTANT:
+        return "Constant";
+    case LIGAMENT_SPRING_LINEAR:
+        return "Linear";
+    case LIGAMENT_SPRING_SECOND_ORDER:
+        return "SecondOrder";
     default:
         return "NoType";
     }

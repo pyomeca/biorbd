@@ -1,5 +1,4 @@
 #define BIORBD_API_EXPORTS
-#include "InternalForces/Muscles/Muscle.h"
 
 #include "Utils/Error.h"
 #include "RigidBody/Joints.h"
@@ -7,132 +6,82 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "InternalForces/PathModifiers.h"
 #include "InternalForces/Compound.h"
-#include "InternalForces/Muscles/MusclesEnums.h"
-#include "InternalForces/Muscles/StateDynamics.h"
-#include "InternalForces/Muscles/StateDynamicsBuchanan.h"
-#include "InternalForces/Muscles/StateDynamicsDeGroote.h"
-#include "InternalForces/Muscles/Characteristics.h"
-#include "InternalForces/Muscles/Geometry.h"
+#include "InternalForces/Geometry.h"
+#include "InternalForces/Ligaments/LigamentsEnums.h"
+#include "InternalForces/Ligaments/Characteristics.h"
+#include "InternalForces/Ligaments/Ligament.h"
 
 using namespace BIORBD_NAMESPACE;
-internal_forces::muscles::Muscle::Muscle() :
-    internal_forces::Compound(),
-    m_position(std::make_shared<internal_forces::muscles::Geometry>()),
-    m_type(std::make_shared<internal_forces::muscles::MUSCLE_TYPE>(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
-    m_characteristics(std::make_shared<internal_forces::muscles::Characteristics>()),
-    m_state(std::make_shared<internal_forces::muscles::State>())
+internal_forces::ligaments::Ligament::Ligament() :
+    m_compound(std::make_shared<internal_forces::Compound>()),
+    m_position(std::make_shared<internal_forces::Geometry>()),
+    m_type(std::make_shared<internal_forces::ligaments::LIGAMENT_TYPE>(internal_forces::ligaments::LIGAMENT_TYPE::NO_LIGAMENT_TYPE)),
+    m_characteristics(std::make_shared<internal_forces::ligaments::Characteristics>())
 {
     setType();
 
 }
 
-internal_forces::muscles::Muscle::Muscle(
+internal_forces::ligaments::Ligament::Ligament(
     const utils::String & name,
-    const internal_forces::muscles::Geometry & position,
-    const internal_forces::muscles::Characteristics &characteristics) :
-    internal_forces::Compound (name),
-    m_position(std::make_shared<internal_forces::muscles::Geometry>(position)),
-    m_type(std::make_shared<internal_forces::muscles::MUSCLE_TYPE>(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
-    m_characteristics(std::make_shared<internal_forces::muscles::Characteristics>
-                      (characteristics)),
-    m_state(std::make_shared<internal_forces::muscles::State>())
+    const internal_forces::Geometry & position,
+    const internal_forces::ligaments::Characteristics &characteristics) :
+    m_compound(std::make_shared<internal_forces::Compound>(name)),
+    m_position(std::make_shared<internal_forces::Geometry>(position)),
+    m_type(std::make_shared<internal_forces::ligaments::LIGAMENT_TYPE>(internal_forces::ligaments::LIGAMENT_TYPE::NO_LIGAMENT_TYPE)),
+    m_characteristics(std::make_shared<internal_forces::ligaments::Characteristics>
+                      (characteristics))
 {
 
 }
 
-internal_forces::muscles::Muscle::Muscle(
+internal_forces::ligaments::Ligament::Ligament(
     const utils::String &name,
-    const internal_forces::muscles::Geometry &position,
-    const internal_forces::muscles::Characteristics &characteristics,
-    const internal_forces::muscles::State &dynamicState) :
-    internal_forces::Compound (name),
-    m_position(std::make_shared<internal_forces::muscles::Geometry>(position)),
-    m_type(std::make_shared<internal_forces::muscles::MUSCLE_TYPE>(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
-    m_characteristics(std::make_shared<internal_forces::muscles::Characteristics>
-                      (characteristics)),
-    m_state(std::make_shared<internal_forces::muscles::State>(dynamicState))
-{
-
-}
-
-internal_forces::muscles::Muscle::Muscle(
-    const utils::String &name,
-    const internal_forces::muscles::Geometry &position,
-    const internal_forces::muscles::Characteristics &characteristics,
+    const internal_forces::Geometry &position,
+    const internal_forces::ligaments::Characteristics &characteristics,
     const internal_forces::PathModifiers &pathModifiers) :
-    internal_forces::Compound (name, pathModifiers),
-    m_position(std::make_shared<internal_forces::muscles::Geometry>(position)),
-    m_type(std::make_shared<internal_forces::muscles::MUSCLE_TYPE>(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
-    m_characteristics(std::make_shared<internal_forces::muscles::Characteristics>
-                      (characteristics)),
-    m_state(std::make_shared<internal_forces::muscles::State>())
+    m_compound(std::make_shared<internal_forces::Compound (name, pathModifiers)),
+    m_position(std::make_shared<internal_forces::Geometry>(position)),
+    m_type(std::make_shared<internal_forces::ligaments::LIGAMENT_TYPE>(internal_forces::ligaments::LIGAMENT_TYPE::NO_LIGAMENT_TYPE)),
+    m_characteristics(std::make_shared<internal_forces::ligaments::Characteristics>
+                      (characteristics))
 {
 
 }
 
-internal_forces::muscles::Muscle::Muscle(const internal_forces::muscles::Muscle &other) :
-    internal_forces::Compound (other),
+internal_forces::ligaments::Ligament::Ligament(const internal_forces::ligaments::Ligament &other) :
+    m_compound(other.m_compound),
     m_position(other.m_position),
     m_type(other.m_type),
-    m_characteristics(other.m_characteristics),
-    m_state(other.m_state)
+    m_characteristics(other.m_characteristics)
 {
 
 }
 
-internal_forces::muscles::Muscle::Muscle(const std::shared_ptr<internal_forces::muscles::Muscle>
-                                other) :
-    internal_forces::Compound (other),
-    m_position(other->m_position),
-    m_type(other->m_type),
-    m_characteristics(other->m_characteristics),
-    m_state(other->m_state)
-{
-
-}
-
-internal_forces::muscles::Muscle::Muscle(const utils::String& name,
-                                const internal_forces::muscles::Geometry& g,
-                                const internal_forces::muscles::Characteristics& c,
-                                const internal_forces::PathModifiers &pathModifiers,
-                                const internal_forces::muscles::State& emg) :
-    internal_forces::Compound(name,pathModifiers),
-    m_position(std::make_shared<internal_forces::muscles::Geometry>(g)),
-    m_type(std::make_shared<internal_forces::muscles::MUSCLE_TYPE>(internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE)),
-    m_characteristics(std::make_shared<internal_forces::muscles::Characteristics>(c)),
-    m_state(std::make_shared<internal_forces::muscles::State>())
-{
-    setState(emg);
-
-    utils::Error::check(pathModifiers.nbWraps() <= 1,
-                                "Multiple wrapping objects is not implemented yet");
-}
-
-internal_forces::muscles::Muscle::~Muscle()
+internal_forces::ligaments::Ligament::~Ligament()
 {
     //dtor
 }
 
-void internal_forces::muscles::Muscle::DeepCopy(const internal_forces::muscles::Muscle &other)
+void internal_forces::ligaments::Ligament::DeepCopy(const internal_forces::ligaments::Ligament &other)
 {
-    this->internal_forces::Compound::DeepCopy(other);
+    *m_compound = other.m_compound->DeepCopy();
     *m_position = other.m_position->DeepCopy();
     *m_type = *other.m_type;
     *m_characteristics = other.m_characteristics->DeepCopy();
-    *m_state = other.m_state->DeepCopy();
 }
 
-internal_forces::muscles::MUSCLE_TYPE internal_forces::muscles::Muscle::type() const
+internal_forces::ligaments::LIGAMENT_TYPE internal_forces::ligaments::Ligament::type() const
 {
     return *m_type;
 }
 
-void internal_forces::muscles::Muscle::setType()
+void internal_forces::ligaments::Ligament::setType()
 {
-    *m_type = internal_forces::muscles::MUSCLE_TYPE::NO_MUSCLE_TYPE;
+    *m_type = internal_forces::ligaments::LIGAMENT_TYPE::NO_LIGAMENT_TYPE;
 }
 
-void internal_forces::muscles::Muscle::updateOrientations(
+void internal_forces::ligaments::Ligament::updateOrientations(
     rigidbody::Joints& model,
     const rigidbody::GeneralizedCoordinates &Q,
     int updateKin)
@@ -141,7 +90,7 @@ void internal_forces::muscles::Muscle::updateOrientations(
     m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,nullptr,
                                  updateKin);
 }
-void internal_forces::muscles::Muscle::updateOrientations(
+void internal_forces::ligaments::Ligament::updateOrientations(
     rigidbody::Joints& model,
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
@@ -151,7 +100,7 @@ void internal_forces::muscles::Muscle::updateOrientations(
     m_position->updateKinematics(
         model,*m_characteristics,*m_pathChanger,&Q,&Qdot, updateKin);
 }
-void internal_forces::muscles::Muscle::updateOrientations(
+void internal_forces::ligaments::Ligament::updateOrientations(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
     utils::Matrix &jacoPointsInGlobal)
 {
@@ -159,7 +108,7 @@ void internal_forces::muscles::Muscle::updateOrientations(
     m_position->updateKinematics(
                 musclePointsInGlobal,jacoPointsInGlobal, *m_characteristics,nullptr);
 }
-void internal_forces::muscles::Muscle::updateOrientations(
+void internal_forces::ligaments::Ligament::updateOrientations(
     std::vector<utils::Vector3d>& musclePointsInGlobal,
     utils::Matrix &jacoPointsInGlobal,
     const rigidbody::GeneralizedVelocity &Qdot)
@@ -169,17 +118,29 @@ void internal_forces::muscles::Muscle::updateOrientations(
                 musclePointsInGlobal,jacoPointsInGlobal, *m_characteristics,&Qdot);
 }
 
-void internal_forces::muscles::Muscle::setPosition(
-    const internal_forces::muscles::Geometry &positions)
+void internal_forces::ligaments::Ligament::setPosition(
+    const internal_forces::Geometry &positions)
 {
     *m_position = positions;
 }
-const internal_forces::muscles::Geometry &internal_forces::muscles::Muscle::position() const
+const internal_forces::Geometry &internal_forces::ligaments::Ligament::position() const
 {
     return *m_position;
 }
 
-const utils::Scalar& internal_forces::muscles::Muscle::length(
+
+void internal_forces::ligaments::Ligament::setName(
+    const internal_forces::Geometry &name)
+{
+    m_compound->setName(name);
+}
+
+const internal_forces::Geometry &internal_forces::ligaments::Ligament::name() const
+{
+    return m_compound->name();
+}
+
+const utils::Scalar& internal_forces::ligaments::Ligament::length(
     rigidbody::Joints& model,
     const rigidbody::GeneralizedCoordinates &Q,
     int updateKin)
@@ -195,23 +156,7 @@ const utils::Scalar& internal_forces::muscles::Muscle::length(
     return position().length();
 }
 
-const utils::Scalar& internal_forces::muscles::Muscle::musculoTendonLength(
-    rigidbody::Joints &m,
-    const rigidbody::GeneralizedCoordinates &Q,
-    int updateKin)
-{
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = 2;
-#endif
-    if (updateKin != 0) {
-        m_position->updateKinematics(
-            m,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
-    }
-
-    return m_position->musculoTendonLength();
-}
-
-const utils::Scalar& internal_forces::muscles::Muscle::velocity(
+const utils::Scalar& internal_forces::ligaments::Ligament::velocity(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
@@ -228,83 +173,127 @@ const utils::Scalar& internal_forces::muscles::Muscle::velocity(
     return m_position->velocity();
 }
 
-const utils::Scalar& internal_forces::muscles::Muscle::activationDot(
-    const internal_forces::muscles::State& state,
-    bool alreadyNormalized) const
+const utils::Scalar& internal_forces::ligaments::Ligament::force(
+    rigidbody::Joints &model,
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    int updateKin)
 {
-    std::shared_ptr<internal_forces::muscles::StateDynamics> state_copy =
-        std::dynamic_pointer_cast<internal_forces::muscles::StateDynamics>(m_state);
-    utils::Error::check(
-        state_copy != nullptr,
-        "The muscle " + name() + " is not a dynamic muscle");
-    return state_copy->timeDerivativeActivation(
-               state, characteristics(), alreadyNormalized);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = 2;
+#endif
+    // Update the configuration
+    if (updateKin == 1) {
+        updateOrientations(model,Q,Qdot,false);
+    } else if (updateKin == 2) {
+        updateOrientations(model,Q,Qdot,2);
+    } else {
+        utils::Error::check(updateKin == 0,
+                                    "Wrong level of update in force function");
+    }
+
+    // Computation
+    computeFl();
+    computeForce();
+    return *m_force;
 }
 
-void internal_forces::muscles::Muscle::computeForce(const internal_forces::muscles::State &emg)
+const utils::Scalar& internal_forces::ligaments::Ligament::force(
+    rigidbody::Joints &,
+    const rigidbody::GeneralizedCoordinates &,
+    int)
 {
-    *m_force = getForceFromActivation(emg);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = 2;
+#endif
+    // Update the configuration
+    if (updateKin == 1) {
+        updateOrientations(model,Q,Qdot,false);
+    } else if (updateKin == 2) {
+        updateOrientations(model,Q,Qdot,2);
+    } else {
+        utils::Error::check(updateKin == 0,
+                                    "Wrong level of update in force function");
+    }
+
+    // Computation
+    computeFl();
+    computeForce();
+    return *m_force;
 }
 
-const std::vector<utils::Vector3d>&
-internal_forces::muscles::Muscle::musclesPointsInGlobal(
+void internal_forces::ligaments::Ligament::computeForce()
+{
+    *m_force = getForce();
+}
+
+utils::Scalar internal_forces::ligaments::Ligament::getForce()
+{
+    utils::Scalar damping_param;
+    return *m_Fl + damping();
+}
+
+const std::vector<utils::Vector3d>& internal_forces::ligaments::Ligament::LigamentsPointsInGlobal(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
     m_position->updateKinematics(
                 model,*m_characteristics,*m_pathChanger,&Q,nullptr);
 
-    return musclesPointsInGlobal();
+    return ligamentsPointsInGlobal();
 }
 
 const std::vector<utils::Vector3d>
-&internal_forces::muscles::Muscle::musclesPointsInGlobal() const
+&internal_forces::ligaments::Ligament::LigamentsPointsInGlobal() const
 {
-    return m_position->musclesPointsInGlobal();
+    return m_position->pointsInGlobal();
 }
 
-void internal_forces::muscles::Muscle::setForceIsoMax(
-    const utils::Scalar& forceMax)
+void internal_forces::ligaments::Ligament::setRate(
+    const utils::Scalar& rate)
 {
-    m_characteristics->setForceIsoMax(forceMax);
+    m_characteristics->setRate(rate);
 }
 
-void internal_forces::muscles::Muscle::setCharacteristics(
-    const internal_forces::muscles::Characteristics &characteristics)
+void internal_forces::ligaments::Ligament::setCharacteristics(
+    const internal_forces::ligaments::Characteristics &characteristics)
 {
     *m_characteristics = characteristics;
 }
-const internal_forces::muscles::Characteristics&
-internal_forces::muscles::Muscle::characteristics() const
+const internal_forces::ligaments::Characteristics&
+internal_forces::ligaments::Ligament::characteristics() const
 {
     return *m_characteristics;
 }
 
-// Get and set
-void internal_forces::muscles::Muscle::setState(
-    const internal_forces::muscles::State &emg)
+const utils::Scalar& internal_forces::ligaments::Ligament::Fl()
 {
-    if (emg.type() == internal_forces::muscles::STATE_TYPE::BUCHANAN) {
-        m_state = std::make_shared<internal_forces::muscles::StateDynamicsBuchanan>
-                  (internal_forces::muscles::StateDynamicsBuchanan());
-    } else if (emg.type() == internal_forces::muscles::STATE_TYPE::DE_GROOTE) {
-        m_state = std::make_shared<internal_forces::muscles::StateDynamicsDeGroote>
-                  (internal_forces::muscles::StateDynamicsDeGroote());
-    } else if (emg.type() == internal_forces::muscles::STATE_TYPE::DYNAMIC) {
-        m_state = std::make_shared<internal_forces::muscles::StateDynamics>
-                  (internal_forces::muscles::StateDynamics());
+    computeFl();
+    return *m_Fl;
+}
+
+const utils::Scalar& internal_forces::ligaments::Ligament::damping()
+{
+    computeDamping();
+    return *m_damping;
+}
+
+void internal_forces::ligaments::Ligament::computeDamping()
+{
+
+
+#ifdef BIORBD_USE_CASADI_MATH
+    *m_damping = IF_ELSE_NAMESPACE::if_else_zero(
+                  IF_ELSE_NAMESPACE::gt(position().velocity(), 0),
+                ((position().velocity() / m_characteristics->maxShorteningSpeed())
+                * m_characteristics->dampingParam()));
+
+#else
+    if (position().velocity() > 0) {
+        *m_damping = (position().velocity()/ m_characteristics->maxShorteningSpeed()) * m_characteristics->dampingParam();
     } else {
-        utils::Error::raise(utils::String(
-                                        internal_forces::muscles::STATE_TYPE_toStr(
-                                            emg.type())) + " is not a valid type for setState");
+        *m_damping = 0;
     }
-    *m_state = emg;
-}
-const internal_forces::muscles::State& internal_forces::muscles::Muscle::state() const
-{
-    return *m_state;
-}
-internal_forces::muscles::State& internal_forces::muscles::Muscle::state()
-{
-    return *m_state;
+#endif
+
 }
