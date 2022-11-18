@@ -4,6 +4,7 @@
 #include "InternalForces/Muscles/MuscleGroup.h"
 #include "InternalForces/Muscles/Muscle.h"
 #include "InternalForces/Muscles/Characteristics.h"
+#include "InternalForces/Muscles/MuscleGeometry.h"
 #include "InternalForces/Muscles/HillType.h"
 #include "InternalForces/Muscles/HillDeGrooteType.h"
 #include "InternalForces/Muscles/HillThelenType.h"
@@ -117,7 +118,7 @@
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/Muscles.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/MuscleGroup.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/Characteristics.h"
-
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/MuscleGeometry.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/FatigueParameters.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/FatigueState.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Muscles/FatigueDynamicState.h"

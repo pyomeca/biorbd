@@ -246,8 +246,7 @@ utils::Matrix internal_forces::muscles::Muscles::musclesLengthJacobian()
     unsigned int cmpMus(0);
     for (unsigned int i=0; i<nbMuscleGroups(); ++i)
         for (unsigned int j=0; j<((*m_mus)[i]).nbMuscles(); ++j) {
-            tp.block(cmpMus++,0,1,model.nbDof()) = ((*m_mus)[i]).muscle(
-                    j).position().jacobianLength();
+            tp.block(cmpMus++,0,1,model.nbDof()) = ((*m_mus)[i]).muscle(j).position().jacobianLength();
         }
 
     return tp;

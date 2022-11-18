@@ -1,12 +1,12 @@
 #define BIORBD_API_EXPORTS
-#include "InternalForces/Muscles/HillType.h"
 
 #include "Utils/Error.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "InternalForces/Muscles/Characteristics.h"
-#include "InternalForces/Geometry.h"
+#include "InternalForces/Muscles/MuscleGeometry.h"
 #include "InternalForces/Muscles/State.h"
+#include "InternalForces/Muscles/HillType.h"
 
 #ifdef USE_SMOOTH_IF_ELSE
 #include "Utils/CasadiExpand.h"
@@ -35,7 +35,7 @@ internal_forces::muscles::HillType::HillType() :
 
 internal_forces::muscles::HillType::HillType(
     const utils::String &name,
-    const internal_forces::Geometry &geometry,
+    const internal_forces::muscles::MuscleGeometry &geometry,
     const internal_forces::muscles::Characteristics &characteristics) :
     internal_forces::muscles::Muscle(name,geometry,characteristics),
     m_damping(std::make_shared<utils::Scalar>()),
@@ -58,7 +58,7 @@ internal_forces::muscles::HillType::HillType(
 
 internal_forces::muscles::HillType::HillType(
     const utils::String &name,
-    const internal_forces::Geometry &geometry,
+    const internal_forces::muscles::MuscleGeometry &geometry,
     const internal_forces::muscles::Characteristics &characteristics,
     const internal_forces::muscles::State& emg) :
     internal_forces::muscles::Muscle(name,geometry,characteristics, emg),
@@ -82,7 +82,7 @@ internal_forces::muscles::HillType::HillType(
 
 internal_forces::muscles::HillType::HillType(
     const utils::String &name,
-    const internal_forces::Geometry &geometry,
+    const internal_forces::muscles::MuscleGeometry &geometry,
     const internal_forces::muscles::Characteristics &characteristics,
     const internal_forces::PathModifiers &pathModifiers) :
     internal_forces::muscles::Muscle(name,geometry,characteristics,pathModifiers),
@@ -105,7 +105,7 @@ internal_forces::muscles::HillType::HillType(
 }
 internal_forces::muscles::HillType::HillType(
     const utils::String& name,
-    const internal_forces::Geometry& geometry,
+    const internal_forces::muscles::MuscleGeometry& geometry,
     const internal_forces::muscles::Characteristics& characteristics,
     const internal_forces::PathModifiers &pathModifiers,
     const internal_forces::muscles::State& state) :
@@ -299,7 +299,7 @@ void internal_forces::muscles::HillType::computeDamping()
 
 void internal_forces::muscles::HillType::computeFlCE(const internal_forces::muscles::State& emg)
 {
-    *m_FlCE = exp( -pow(( position().length() /
+    *m_FlCE = exp( -pow(( position().length()/
                           m_characteristics->optimalLength() / (*m_cste_FlCE_1*
                                   (1-emg.activation())+1) -1 ), 2)
                    /

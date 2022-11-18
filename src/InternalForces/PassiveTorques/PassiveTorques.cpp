@@ -16,8 +16,7 @@ using namespace BIORBD_NAMESPACE;
 
 internal_forces::passive_torques::PassiveTorques::PassiveTorques() :
     m_pas(std::make_shared<std::vector<std::shared_ptr<internal_forces::passive_torques::PassiveTorque>>>()),
-    m_isDofSet(std::make_shared<std::vector<bool>>(1)),
-    m_isClose(std::make_shared<bool>(false))
+    m_isDofSet(std::make_shared<std::vector<bool>>(true))
 {
     (*m_isDofSet)[0] = false;
 }
@@ -25,8 +24,7 @@ internal_forces::passive_torques::PassiveTorques::PassiveTorques() :
 internal_forces::passive_torques::PassiveTorques::PassiveTorques(
     const internal_forces::passive_torques::PassiveTorques& other) :
     m_pas(other.m_pas),
-    m_isDofSet(other.m_isDofSet),
-    m_isClose(other.m_isClose)
+    m_isDofSet(other.m_isDofSet)
 {
 
 }
@@ -55,28 +53,24 @@ void internal_forces::passive_torques::PassiveTorques::DeepCopy(const internal_f
             return;
         }
     }
-    *m_isClose = *other.m_isClose;
     *m_isDofSet = *other.m_isDofSet;
 }
 
 
-void internal_forces::passive_torques::PassiveTorques::addPassiveTorque(const internal_forces::passive_torques::PassiveTorque
-        &tor)
+void internal_forces::passive_torques::PassiveTorques::addPassiveTorque(
+        const internal_forces::passive_torques::PassiveTorque &torqueTp)
 {
-    utils::Error::check(
-        !*m_isClose, "You can't add passive torque after closing the model");
-
     // Assuming that this is also a Joints type (via BiorbdModel)
     const rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 
     // Verify that the target dof is associated to a dof that
     // already exists in the model
     utils::Error::check(
-        tor.index()<model.nbDof(), "Sent index is out of dof range");
+        torqueTp.index()<model.nbDof(), "Sent index is out of dof range");
 
     // For speed purposes and coherence with the Q,
     // set the passive torque to the same index as its associated dof
-    unsigned int idx(tor.index());
+    unsigned int idx(torqueTp.index());
 
     // If there are less actuators declared than dof,
     // the vector must be enlarged
@@ -85,19 +79,19 @@ void internal_forces::passive_torques::PassiveTorques::addPassiveTorque(const in
         m_isDofSet->resize(idx+1, false);
     }
     // Add a passive torque to the pool of passive torques according to its type
-    if (tor.type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_CONSTANT) {
+    if (torqueTp.type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_CONSTANT) {
         (*m_pas)[idx] = std::make_shared<internal_forces::passive_torques::PassiveTorqueConstant>
-                (static_cast<const internal_forces::passive_torques::PassiveTorqueConstant&>(tor));
+                (static_cast<const internal_forces::passive_torques::PassiveTorqueConstant&>(torqueTp));
         (*m_isDofSet)[idx] = true;
         return;
-    } else if (tor.type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_LINEAR) {
+    } else if (torqueTp.type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_LINEAR) {
         (*m_pas)[idx] = std::make_shared<internal_forces::passive_torques::PassiveTorqueLinear>
-                (static_cast<const internal_forces::passive_torques::PassiveTorqueLinear&>(tor));
+                (static_cast<const internal_forces::passive_torques::PassiveTorqueLinear&>(torqueTp));
         (*m_isDofSet)[idx] = true;
         return;
-    } else if (tor.type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_EXPONENTIAL) {
+    } else if (torqueTp.type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_EXPONENTIAL) {
         (*m_pas)[idx] = std::make_shared<internal_forces::passive_torques::PassiveTorqueExponential>
-                (static_cast<const internal_forces::passive_torques::PassiveTorqueExponential&>(tor));
+                (static_cast<const internal_forces::passive_torques::PassiveTorqueExponential&>(torqueTp));
         (*m_isDofSet)[idx] = true;
         return;
     } else {
@@ -112,14 +106,6 @@ const std::shared_ptr<internal_forces::passive_torques::PassiveTorque>&
 //    utils::Error::check(dof<nbPassiveTorques(),
 //                                "Idx asked is higher than number of passive torque");
     return (*m_pas)[dof];
-}
-
-void internal_forces::passive_torques::PassiveTorques::closePassiveTorque()
-{
-    // Assuming that this is also a Joints type (via BiorbdModel)
-    const rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
-
-    *m_isClose = true;
 }
 
 unsigned int internal_forces::passive_torques::PassiveTorques::nbPassiveTorques() const

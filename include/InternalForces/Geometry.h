@@ -73,9 +73,7 @@ public:
         rigidbody::Joints &model,
         const rigidbody::GeneralizedCoordinates* Q = nullptr,
         const rigidbody::GeneralizedVelocity* Qdot = nullptr,
-        int updateKin = 2,
-        const utils::Scalar& penAngle = 0,
-        const utils::Scalar& tendonLength = 0);
+        int updateKin = 2);
 
     ///
     /// \brief Updates the position and dynamic elements of the muscles.
@@ -93,9 +91,7 @@ public:
         internal_forces::PathModifiers& pathModifiers,
         const rigidbody::GeneralizedCoordinates* Q = nullptr,
         const rigidbody::GeneralizedVelocity* Qdot = nullptr,
-        int updateKin = 2,
-        const utils::Scalar& penAngle = 0,
-        const utils::Scalar& tendonLength = 0);
+        int updateKin = 2);
 
     ///
     /// \brief Updates the position and dynamic elements of the muscles by hand.
@@ -108,9 +104,7 @@ public:
     void updateKinematics(
         std::vector<utils::Vector3d>& musclePointsInGlobal,
         utils::Matrix& jacoPointsInGlobal,
-        const rigidbody::GeneralizedVelocity* Qdot = nullptr,
-        const utils::Scalar& penAngle = 0,
-        const utils::Scalar& tendonLength = 0);
+        const rigidbody::GeneralizedVelocity* Qdot = nullptr);
 
     ///
     /// \brief Set the origin position in the local reference frame of the muscle
@@ -169,12 +163,6 @@ public:
     const utils::Scalar& length() const;
 
     ///
-    /// \brief Return the previously computed muscle length
-    /// \return The muscle lengh
-    ///
-    const utils::Scalar& musculoTendonLength() const;
-
-    ///
     /// \brief Return the previously computed velocity
     /// \return The computed velocity
     ///
@@ -217,14 +205,11 @@ protected:
     ///
     /// \brief Actual function that implements the update of the kinematics
     /// \param Qdot The generalized velocities
-    /// \param characteristics The muscle characteristics
     /// \param pathModifiers The set of path modifiers
     ///
     void _updateKinematics(
         const rigidbody::GeneralizedVelocity *Qdot,
-        internal_forces::PathModifiers* pathModifiers = nullptr,
-        const utils::Scalar& penAngle = 0,
-        const utils::Scalar& tendonLength = 0);
+        internal_forces::PathModifiers* pathModifiers = nullptr);
 
     ///
     /// \brief Updates the kinematics and return the position of the origin node
@@ -272,9 +257,7 @@ protected:
     /// \return The muscle length
     ///
     const utils::Scalar& length(
-        internal_forces::PathModifiers* pathModifiers = nullptr,
-        const utils::Scalar& penAngle = 0,
-        const utils::Scalar& tendonLength = 0);
+        internal_forces::PathModifiers* pathModifiers = nullptr);
 
     ///
     /// \brief Update the kinematics, compute and return the muscle velocity assuming not via points nor wrapping objects
@@ -325,7 +308,6 @@ protected:
     std::shared_ptr<utils::Matrix> m_G; ///< Internal matrix of the jacobian dimension to speed up calculation
     std::shared_ptr<utils::Matrix> m_jacobianLength; ///< The muscle length jacobian
 
-    std::shared_ptr<utils::Scalar> m_muscleTendonLength; ///< length of the musculotendon length if applicable
     std::shared_ptr<utils::Scalar> m_length; ///< length
     std::shared_ptr<utils::Scalar> m_velocity; ///< Velocity of the muscular elongation
 

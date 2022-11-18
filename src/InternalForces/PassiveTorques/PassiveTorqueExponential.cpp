@@ -36,7 +36,7 @@ internal_forces::passive_torques::PassiveTorqueExponential::PassiveTorqueExponen
     m_sV(other.m_sV),
     m_deltaP(other.m_deltaP)
 {
-
+    setType();
 }
 
 internal_forces::passive_torques::PassiveTorqueExponential::PassiveTorqueExponential(

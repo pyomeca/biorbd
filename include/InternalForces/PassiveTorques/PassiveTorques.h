@@ -57,16 +57,10 @@ public:
 
     ///
     /// \brief Add a passive torque to the set of passive torques
-    /// \param torque The passive torque to add
+    /// \param torqueTp The passive torque to add
     ///
     void addPassiveTorque(
-        const PassiveTorque &torque);
-
-    ///
-    /// \brief Indicate to biorbd to are done adding passive torques, sanity checks are performed
-    ///
-    void closePassiveTorque();
-
+        const PassiveTorque &torqueTp);
 
     ///
     /// \brief Return the passiveJointTorques
@@ -96,7 +90,6 @@ public:
 protected:
     std::shared_ptr<std::vector<std::shared_ptr<internal_forces::passive_torques::PassiveTorque>>>  m_pas;///passive torque to add
     std::shared_ptr<std::vector<bool>> m_isDofSet;///< If DoF all dof are set
-    std::shared_ptr<bool> m_isClose; ///< If the set is ready
 
 };
 

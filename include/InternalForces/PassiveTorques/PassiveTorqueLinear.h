@@ -18,7 +18,7 @@ namespace passive_torques
 
 ///
 /// \brief Class PassiveTorqueLinear is a joint passive torque type that linearly evolves
-///
+/// Linear passive torque define by : mx+b
 class BIORBD_API PassiveTorqueLinear : public PassiveTorque
 {
 public:
@@ -28,8 +28,8 @@ public:
     PassiveTorqueLinear();
 
     ///
-    /// \brief Construct an idealized passive torque from another muscle
-    /// \param other The other muscle
+    /// \brief Construct a passive torque from another passive torque
+    /// \param other The other passive torque
     ///
     PassiveTorqueLinear(
         const PassiveTorqueLinear& other);
@@ -100,7 +100,6 @@ protected:
     ///
     virtual void setType();
 
-    // mx+b
     std::shared_ptr<utils::Scalar> m_m; ///< Slope
     std::shared_ptr<utils::Scalar> m_b; ///< Torque at zero
 
