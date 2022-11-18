@@ -32,18 +32,18 @@ namespace muscles
 class Characteristics;
 
 ///
-/// \brief Class Geometry of the muscle
+/// \brief Class muscle geometry of the muscle
 ///
 class BIORBD_API MuscleGeometry: public Geometry
 {
 public:
     ///
-    /// \brief Construct geometry
+    /// \brief Construct muscle geometry
     ///
     MuscleGeometry();
 
     ///
-    /// \brief Construct geometry
+    /// \brief Construct muscle geometry
     /// \param origin The origin node of the muscle
     /// \param insertion The insertion node of the muscle
     ///
@@ -52,14 +52,14 @@ public:
         const utils::Vector3d &insertion);
 
     ///
-    /// \brief Deep copy of a geometry
-    /// \return A deep copy of a geometry
+    /// \brief Deep copy of a muscle geometry
+    /// \return A deep copy of a muscle geometry
     ///
     MuscleGeometry DeepCopy() const;
 
     ///
-    /// \brief Deep copy of a geometry from another geometry
-    /// \param other The geometry to copy
+    /// \brief Deep copy of a muscle geometry from another muscle geometry
+    /// \param other The muscle geometry to copy
     ///
     void DeepCopy(const MuscleGeometry& other);
 
@@ -155,4 +155,4 @@ protected:
 }
 }
 
-#endif // BIORBD_INTERNAL_FORCES_GEOMETRY_H
+#endif // BIORBD_MUSCLES_MUSCLE_GEOMETRY_H
