@@ -8,9 +8,9 @@ namespace BIORBD_NAMESPACE
 {
 namespace internal_forces
 {
-class Geometry;
 namespace muscles
 {
+class MuscleGeometry;
 ///
 /// \brief Muscle of Hill type augmented by Thelen
 /// https://simtk-confluence.stanford.edu/display/OpenSim/Thelen+2003+Muscle+Model
@@ -31,7 +31,7 @@ public:
     ///
     HillThelenType(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics);
 
     ///
@@ -43,7 +43,7 @@ public:
     ///
     HillThelenType(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const State& emg);
 
@@ -56,7 +56,7 @@ public:
     ///
     HillThelenType(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers);
 
@@ -70,7 +70,7 @@ public:
     ///
     HillThelenType(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers,
         const State& emg);

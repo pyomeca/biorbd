@@ -4,6 +4,7 @@
 #include "biorbdConfig.h"
 #include "InternalForces/Compound.h"
 #include "InternalForces/Muscles/MusclesEnums.h"
+#include "InternalForces/Muscles/MuscleGeometry.h"
 #include "Utils/Scalar.h"
 
 namespace BIORBD_NAMESPACE
@@ -17,7 +18,6 @@ class Vector3d;
 namespace internal_forces
 {
 class Compound;
-class Geometry;
 
 namespace muscles
 {
@@ -46,7 +46,7 @@ public:
     ///
     Muscle(
         const utils::String& name,
-        const internal_forces::Geometry& position,
+        const MuscleGeometry& position,
         const Characteristics& characteristics);
 
     ///
@@ -58,7 +58,7 @@ public:
     ///
     Muscle(
         const utils::String& name,
-        const internal_forces::Geometry& position,
+        const MuscleGeometry& position,
         const Characteristics& characteristics,
         const State& emg);
 
@@ -71,7 +71,7 @@ public:
     ///
     Muscle(
         const utils::String& name,
-        const internal_forces::Geometry& position,
+        const MuscleGeometry& position,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers);
 
@@ -85,7 +85,7 @@ public:
     ///
     Muscle(
         const utils::String& name,
-        const internal_forces::Geometry& position,
+        const MuscleGeometry& position,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers,
         const State& emg);
@@ -205,13 +205,13 @@ public:
     /// \param positions New value of the position
     ///
     void setPosition(
-        const internal_forces::Geometry &positions);
+        const MuscleGeometry &positions);
 
     ///
     /// \brief Return the position of all the points attached to the muscle (0 being the origin)
     /// \return The positions
     ///
-    const internal_forces::Geometry& position() const;
+    const MuscleGeometry& position() const;
 
     ///
     /// \brief Set the muscle characteristics
@@ -345,7 +345,7 @@ protected:
     virtual void setType();
 
     std::shared_ptr<MUSCLE_TYPE> m_type; ///< The type of the muscle
-    std::shared_ptr<internal_forces::Geometry> m_position;
+    std::shared_ptr<MuscleGeometry> m_position;
     std::shared_ptr<Characteristics> m_characteristics; ///< The muscle characteristics
     std::shared_ptr<State> m_state; ///< The dynamic state
     std::shared_ptr<utils::Scalar> m_muscleLength; ///< muscle tendon length

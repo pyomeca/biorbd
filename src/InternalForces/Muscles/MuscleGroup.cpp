@@ -56,8 +56,8 @@ internal_forces::muscles::MuscleGroup internal_forces::muscles::MuscleGroup::Dee
     return copy;
 }
 
-void internal_forces::muscles::MuscleGroup::DeepCopy(const internal_forces::muscles::MuscleGroup
-        &other)
+void internal_forces::muscles::MuscleGroup::DeepCopy(
+        const internal_forces::muscles::MuscleGroup &other)
 {
     m_mus->resize(other.m_mus->size());
     for (unsigned int i=0; i<other.m_mus->size(); ++i) {
@@ -106,7 +106,7 @@ void internal_forces::muscles::MuscleGroup::DeepCopy(const internal_forces::musc
 void internal_forces::muscles::MuscleGroup::addMuscle(
     const utils::String &name,
     internal_forces::muscles::MUSCLE_TYPE type,
-    const internal_forces::Geometry &geometry,
+    const internal_forces::muscles::MuscleGeometry &geometry,
     const internal_forces::muscles::Characteristics &characteristics,
     internal_forces::muscles::STATE_TYPE stateType,
     internal_forces::muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
@@ -162,7 +162,7 @@ void internal_forces::muscles::MuscleGroup::addMuscle(
 void internal_forces::muscles::MuscleGroup::addMuscle(
     const utils::String &name,
     internal_forces::muscles::MUSCLE_TYPE type,
-    const internal_forces::Geometry &geometry,
+    const internal_forces::muscles::MuscleGeometry &geometry,
     const internal_forces::muscles::Characteristics &characteristics,
     internal_forces::muscles::STATE_FATIGUE_TYPE dynamicFatigueType)
 {
@@ -200,7 +200,7 @@ void internal_forces::muscles::MuscleGroup::addMuscle(
 void internal_forces::muscles::MuscleGroup::addMuscle(
     const utils::String& name,
     internal_forces::muscles::MUSCLE_TYPE type,
-    const internal_forces::Geometry& geometry,
+    const internal_forces::muscles::MuscleGeometry& geometry,
     const internal_forces::muscles::Characteristics& characteristics,
     const internal_forces::PathModifiers &pathModifiers,
     internal_forces::muscles::STATE_TYPE stateType,
@@ -254,7 +254,7 @@ void internal_forces::muscles::MuscleGroup::addMuscle(
 void internal_forces::muscles::MuscleGroup::addMuscle(
     const utils::String &name,
     internal_forces::muscles::MUSCLE_TYPE type,
-    const internal_forces::Geometry &geometry,
+    const internal_forces::muscles::MuscleGeometry &geometry,
     const internal_forces::muscles::Characteristics &characteristics,
     const internal_forces::PathModifiers &pathModifiers,
     internal_forces::muscles::STATE_FATIGUE_TYPE dynamicFatigueType)

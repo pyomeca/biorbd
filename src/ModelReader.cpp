@@ -36,6 +36,7 @@
     #include "InternalForces/Muscles/State.h"
     #include "InternalForces/Muscles/Characteristics.h"
     #include "InternalForces/Muscles/StateDynamicsBuchanan.h"
+    #include "InternalForces/Muscles/MuscleGeometry.h"
 #endif
 
 #ifdef MODULE_PASSIVE_TORQUES
@@ -1001,7 +1002,7 @@ void Reader::readModelFile(
                     }
                 }
                 utils::Error::check(idxGroup!=-1, "No muscle group was provided!");
-                internal_forces::Geometry geo(
+                internal_forces::muscles::MuscleGeometry geo(
                     utils::Vector3d(origin_pos, name + "_origin",
                                             model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
                     utils::Vector3d(insert_pos, name + "_insertion",
@@ -1107,7 +1108,7 @@ void Reader::readModelFile(
                                                 "Make sure all parameters are defined");
                     passiveTorque = new internal_forces::passive_torques::PassiveTorqueLinear(T0,slope,dofIdx,name);
                 } else if (!type.tolower().compare("exponential")) {
-                    utils::Error::check(isDofSet && isExponentialSet == 4,
+                    utils::Error::check(isDofSet && isExponentialSet == 5,
                                                 "Make sure all parameters are defined");
                     passiveTorque = new internal_forces::passive_torques::PassiveTorqueExponential(
                                 k1, k2, b1, b2, qMid, tauEq, pBeta, wMax, sV, deltaP,dofIdx,name);

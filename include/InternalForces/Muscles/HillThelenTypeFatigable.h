@@ -15,10 +15,9 @@ class String;
 
 namespace internal_forces
 {
-class Geometry;
 namespace muscles
 {
-
+class MuscleGeometry;
 ///
 /// \brief Add a fatigue model to the HillThelen type
 /// Note that useful defaults values for the FatigueParameters characteristics are:
@@ -45,7 +44,7 @@ public:
     ///
     HillThelenTypeFatigable(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         STATE_FATIGUE_TYPE dynamicFatigueType =
             STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
@@ -60,7 +59,7 @@ public:
     ///
     HillThelenTypeFatigable(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const State& emg,
         STATE_FATIGUE_TYPE dynamicFatigueType =
@@ -76,7 +75,7 @@ public:
     ///
     HillThelenTypeFatigable(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers,
         STATE_FATIGUE_TYPE dynamicFatigueType =
@@ -93,7 +92,7 @@ public:
     ///
     HillThelenTypeFatigable(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers,
         const State& emg,

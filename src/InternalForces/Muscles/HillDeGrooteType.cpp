@@ -3,7 +3,7 @@
 
 #include <math.h>
 #include "Utils/String.h"
-#include "InternalForces/Geometry.h"
+#include "InternalForces/Muscles/MuscleGeometry.h"
 #include "InternalForces/Muscles/Characteristics.h"
 
 #ifdef USE_SMOOTH_IF_ELSE
@@ -19,7 +19,7 @@ internal_forces::muscles::HillDeGrooteType::HillDeGrooteType() :
 }
 internal_forces::muscles::HillDeGrooteType::HillDeGrooteType(
     const utils::String& name,
-    const internal_forces::Geometry& geometry,
+    const internal_forces::muscles::MuscleGeometry& geometry,
     const internal_forces::muscles::Characteristics& characteristics) :
     internal_forces::muscles::HillType (name, geometry, characteristics)
 {
@@ -28,7 +28,7 @@ internal_forces::muscles::HillDeGrooteType::HillDeGrooteType(
 
 internal_forces::muscles::HillDeGrooteType::HillDeGrooteType(
     const utils::String &name,
-    const internal_forces::Geometry &geometry,
+    const internal_forces::muscles::MuscleGeometry &geometry,
     const internal_forces::muscles::Characteristics &characteristics,
     const internal_forces::muscles::State &emg) :
     internal_forces::muscles::HillType (name, geometry, characteristics, emg)
@@ -38,7 +38,7 @@ internal_forces::muscles::HillDeGrooteType::HillDeGrooteType(
 
 internal_forces::muscles::HillDeGrooteType::HillDeGrooteType(
     const utils::String &name,
-    const internal_forces::Geometry &geometry,
+    const internal_forces::muscles::MuscleGeometry &geometry,
     const internal_forces::muscles::Characteristics &characteristics,
     const internal_forces::PathModifiers &pathModifiers) :
     internal_forces::muscles::HillType (name, geometry, characteristics, pathModifiers)
@@ -48,7 +48,7 @@ internal_forces::muscles::HillDeGrooteType::HillDeGrooteType(
 
 internal_forces::muscles::HillDeGrooteType::HillDeGrooteType(
     const utils::String& name,
-    const internal_forces::Geometry& geometry,
+    const internal_forces::muscles::MuscleGeometry& geometry,
     const internal_forces::muscles::Characteristics& characteristics,
     const internal_forces::PathModifiers &pathModifiers,
     const internal_forces::muscles::State& emg) :
@@ -89,7 +89,7 @@ void internal_forces::muscles::HillDeGrooteType::computeFlPE()
 {
     utils::Scalar kpe = 4;
     utils::Scalar e0 = 0.6;
-    utils::Scalar normLength = *m_muscleLength / characteristics().optimalLength();
+    utils::Scalar normLength = position().length() / characteristics().optimalLength();
 
 #ifdef BIORBD_USE_CASADI_MATH
     *m_FlPE = IF_ELSE_NAMESPACE::if_else_zero(
@@ -138,7 +138,7 @@ void internal_forces::muscles::HillDeGrooteType::computeFlCE(
     utils::Scalar b23 = 1.000;
     utils::Scalar b33 = 0.354;
     utils::Scalar b43 = 0.0;
-    utils::Scalar normLength = *m_muscleLength / characteristics().optimalLength();
+    utils::Scalar normLength = position().length() / characteristics().optimalLength();
 
     *m_FlCE = b11 * exp((-0.5*((normLength-b21)*(normLength-b21)))
                        /

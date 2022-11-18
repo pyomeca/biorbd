@@ -337,9 +337,9 @@ TEST(IdealizedActuator, copy)
             rigidbody::NodeSegment newNode(newPosition, newName, "", true, true, "",
                                                    0);
             {
-                const_cast<internal_forces::Geometry&>(idealizedActuator.position()).setOrigin(
+                const_cast<internal_forces::muscles::MuscleGeometry&>(idealizedActuator.position()).setOrigin(
                     newPosition);
-                const_cast<internal_forces::Geometry&>
+                const_cast<internal_forces::muscles::MuscleGeometry&>
                 (idealizedActuator.position()).setInsertionInLocal(newPosition);
                 const utils::Vector3d& origin =
                     idealizedActuator.position().originInLocal();
@@ -349,9 +349,9 @@ TEST(IdealizedActuator, copy)
                 EXPECT_STREQ(insertion.utils::Node::name().c_str(), oldName.c_str());
             }
             {
-                const_cast<internal_forces::Geometry&>(idealizedActuator.position()).setOrigin(
+                const_cast<internal_forces::muscles::MuscleGeometry&>(idealizedActuator.position()).setOrigin(
                     newNode);
-                const_cast<internal_forces::Geometry&>
+                const_cast<internal_forces::muscles::MuscleGeometry&>
                 (idealizedActuator.position()).setInsertionInLocal(newNode);
                 const utils::Vector3d& origin =
                     idealizedActuator.position().originInLocal();
