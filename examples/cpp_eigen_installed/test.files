@@ -1,0 +1,8 @@
+CMakeLists.txt
+README.txt
+forwardDynamicsExample.cpp
+modules/FindIPOPT.cmake
+modules/FindTinyXML.cmake
+pyomecaman.bioMod
+test.cflags
+test.cxxflags
