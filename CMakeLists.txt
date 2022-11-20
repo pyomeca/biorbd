@@ -20,6 +20,8 @@ option(MODULE_ACTUATORS
     "Choose if the module actuators is to be added to biorbd" ON)
 option(MODULE_PASSIVE_TORQUES
     "Choose if the module passive_torques is to be added to biorbd" ON)
+option(MODULE_LIGAMENTS
+    "Choose if the module ligaments is to be added to biorbd" ON)
 option(MODULE_STATIC_OPTIM 
     "If Static optimization should be compiled" ON)
 option(MODULE_VTP_FILES_READER 
@@ -195,17 +197,6 @@ list(APPEND BIORBD_MODULE_NAMES "${UTILS_MODULE_NAME}")
 # Utils
 add_subdirectory("src/RigidBody")
 list(APPEND BIORBD_MODULE_NAMES "${RIGIDBODY_MODULE_NAME}")
-
-# Muscles
-option(MODULE_MUSCLES
-    "Choose if the module muscles is to be added to biorbd" ON)
-# Actuators
-option(MODULE_ACTUATORS
-    "Choose if the module actuators is to be added to biorbd" ON)
-option(MODULE_PASSIVE_TORQUES
-    "Choose if the module passive_torques is to be added to biorbd" ON)
-option(MODULE_LIGAMENTS
-    "Choose if the module passive_torques is to be added to biorbd" ON)
 
 if (MODULE_ACTUATORS OR MODULE_MUSCLES OR MODULE_PASSIVE_TOQUES OR MODULE_LIGAMENTS)
     add_subdirectory("src/InternalForces")
