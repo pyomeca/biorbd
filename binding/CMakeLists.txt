@@ -65,7 +65,15 @@ if (BINDER_PYTHON3)
         configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_passive_torques.i.in"
             "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_passive_torques.i" @ONLY)
     endif()
-    if (MODULE_ACTUATORS OR MODULE_MUSCLES OR MODULE_PASSIVE_TORQUES)
+
+    if (MODULE_LIGAMENTS)
+        SET(SWIG_MODULE_LIGAMENTS_INCLUDE_COMMAND
+            "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_ligaments.i\"")
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_ligaments.i.in"
+            "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_ligaments.i" @ONLY)
+    endif()
+
+    if (MODULE_ACTUATORS OR MODULE_MUSCLES OR MODULE_PASSIVE_TORQUES OR MODULE_LIGAMENTS)
         SET(SWIG_MODULE_INTERNAL_FORCES_INCLUDE_COMMAND
             "%include \"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_internal_forces.i\"")
         configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_internal_forces.i.in"
