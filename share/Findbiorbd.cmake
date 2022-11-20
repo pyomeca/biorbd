@@ -30,6 +30,7 @@ set(biorbd_LIBRARIES
     ${biorbd_LIB_PATH}/${biorbd_LIB_NAME}_muscles${debug_flag}${biorbd_LIB_EXTENSION}
     ${biorbd_LIB_PATH}/${biorbd_LIB_NAME}_actuators${debug_flag}${biorbd_LIB_EXTENSION}
     ${biorbd_LIB_PATH}/${biorbd_LIB_NAME}_passive_torques${debug_flag}${biorbd_LIB_EXTENSION}
+    ${biorbd_LIB_PATH}/${biorbd_LIB_NAME}_ligaments${debug_flag}${biorbd_LIB_EXTENSION}
 )
 
 # handle the QUIETLY and REQUIRED arguments and set biorbd_FOUND to TRUE if 
