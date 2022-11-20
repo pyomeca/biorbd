@@ -15,7 +15,7 @@ namespace  ligaments
 class State;
 class FatigueParameters;
 ///
-/// \brief Class Holds that muscle characteristics
+/// \brief Class Holds that ligament characteristics
 ///
 class BIORBD_API Characteristics
 {
@@ -39,7 +39,6 @@ public:
     /// \param useDamping Use damping (default: false)
     ///
     Characteristics(
-        const utils::Scalar& rate,
         const utils::Scalar& ligamentSlackLength,
         const utils::Scalar& cste_damping = 0,
         const utils::Scalar& cste_maxShorteningSpeed = 1);
@@ -88,34 +87,33 @@ public:
     const utils::Scalar& ligamentSlackLength() const;
 
     ///
-    /// \brief Choose if use damping for muscle force computation
+    /// \brief Choose if use damping for ligament force computation
     /// \param val 0 to not use damping 
     ///
     void setDampingParam(
         const utils::Scalar& val);
 
     ///
-    /// \brief Return 1 if use damping for muscle computation
+    /// \brief Return 1 if use damping for ligament computation
     /// \return 0 if not use damping 1 overall
     ///
     const utils::Scalar& dampingParam() const;
 
     ///
-    /// \brief Choose if use damping for muscle force computation
+    /// \brief Choose if use damping for ligament force computation
     /// \param val 0 to not use damping
     ///
     void setMaxShorteningSpeed(
         const utils::Scalar& val);
 
     ///
-    /// \brief Return 1 if use damping for muscle computation
+    /// \brief Return 1 if use damping for ligament computation
     /// \return 0 if not use damping 1 overall
     ///
     const utils::Scalar& maxShorteningSpeed() const;
 
 
 protected:
-    std::shared_ptr<utils::Scalar> m_rate;       ///< Rate of the spring like ligament
     std::shared_ptr<utils::Scalar> m_ligamentSlackLength; ///< Ligament slack length
     std::shared_ptr<utils::Scalar> m_cste_damping; ///< Ligament damping parameters (0 no damping)
     std::shared_ptr<utils::Scalar> m_cste_maxShorteningSpeed; ///< Ligament shorteningSpeed

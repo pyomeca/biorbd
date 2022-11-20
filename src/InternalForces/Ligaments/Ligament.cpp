@@ -40,7 +40,7 @@ internal_forces::ligaments::Ligament::Ligament(
     const internal_forces::Geometry &position,
     const internal_forces::ligaments::Characteristics &characteristics,
     const internal_forces::PathModifiers &pathModifiers) :
-    m_compound(std::make_shared<internal_forces::Compound (name, pathModifiers)),
+    m_compound(std::make_shared<internal_forces::Compound> (name, pathModifiers)),
     m_position(std::make_shared<internal_forces::Geometry>(position)),
     m_type(std::make_shared<internal_forces::ligaments::LIGAMENT_TYPE>(internal_forces::ligaments::LIGAMENT_TYPE::NO_LIGAMENT_TYPE)),
     m_characteristics(std::make_shared<internal_forces::ligaments::Characteristics>
@@ -58,6 +58,16 @@ internal_forces::ligaments::Ligament::Ligament(const internal_forces::ligaments:
 
 }
 
+internal_forces::ligaments::Ligament::Ligament(
+        const std::shared_ptr<internal_forces::ligaments::Ligament> other) :
+    m_compound(other->m_compound),
+    m_position(other->m_position),
+    m_type(other->m_type),
+    m_characteristics(other->m_characteristics)
+{
+
+}
+
 internal_forces::ligaments::Ligament::~Ligament()
 {
     //dtor
@@ -65,7 +75,7 @@ internal_forces::ligaments::Ligament::~Ligament()
 
 void internal_forces::ligaments::Ligament::DeepCopy(const internal_forces::ligaments::Ligament &other)
 {
-    *m_compound = other.m_compound->DeepCopy();
+    *m_compound = *other.m_compound;
     *m_position = other.m_position->DeepCopy();
     *m_type = *other.m_type;
     *m_characteristics = other.m_characteristics->DeepCopy();
@@ -87,8 +97,7 @@ void internal_forces::ligaments::Ligament::updateOrientations(
     int updateKin)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,nullptr,
-                                 updateKin);
+    m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,updateKin);
 }
 void internal_forces::ligaments::Ligament::updateOrientations(
     rigidbody::Joints& model,
@@ -97,25 +106,22 @@ void internal_forces::ligaments::Ligament::updateOrientations(
     int updateKin)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(
-        model,*m_characteristics,*m_pathChanger,&Q,&Qdot, updateKin);
+    m_position->updateKinematics(model,*m_pathChanger,&Q,&Qdot, updateKin);
 }
 void internal_forces::ligaments::Ligament::updateOrientations(
-    std::vector<utils::Vector3d>& musclePointsInGlobal,
+    std::vector<utils::Vector3d>& ligamentPointsInGlobal,
     utils::Matrix &jacoPointsInGlobal)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(
-                musclePointsInGlobal,jacoPointsInGlobal, *m_characteristics,nullptr);
+    m_position->updateKinematics(ligamentPointsInGlobal,jacoPointsInGlobal,nullptr);
 }
 void internal_forces::ligaments::Ligament::updateOrientations(
-    std::vector<utils::Vector3d>& musclePointsInGlobal,
+    std::vector<utils::Vector3d>& ligamentPointsInGlobal,
     utils::Matrix &jacoPointsInGlobal,
     const rigidbody::GeneralizedVelocity &Qdot)
 {
     // Update de la position des insertions et origines
-    m_position->updateKinematics(
-                musclePointsInGlobal,jacoPointsInGlobal, *m_characteristics,&Qdot);
+    m_position->updateKinematics(ligamentPointsInGlobal,jacoPointsInGlobal,&Qdot);
 }
 
 void internal_forces::ligaments::Ligament::setPosition(
@@ -128,18 +134,6 @@ const internal_forces::Geometry &internal_forces::ligaments::Ligament::position(
     return *m_position;
 }
 
-
-void internal_forces::ligaments::Ligament::setName(
-    const internal_forces::Geometry &name)
-{
-    m_compound->setName(name);
-}
-
-const internal_forces::Geometry &internal_forces::ligaments::Ligament::name() const
-{
-    return m_compound->name();
-}
-
 const utils::Scalar& internal_forces::ligaments::Ligament::length(
     rigidbody::Joints& model,
     const rigidbody::GeneralizedCoordinates &Q,
@@ -149,8 +143,7 @@ const utils::Scalar& internal_forces::ligaments::Ligament::length(
     updateKin = 2;
 #endif
     if (updateKin != 0) {
-        m_position->updateKinematics(
-            model,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
+        m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,updateKin);
     }
 
     return position().length();
@@ -166,8 +159,7 @@ const utils::Scalar& internal_forces::ligaments::Ligament::velocity(
     updateKin = true;
 #endif
     if (updateKin) {
-        m_position->updateKinematics(
-            model,*m_characteristics,*m_pathChanger,&Q,&Qdot);
+        m_position->updateKinematics(model,*m_pathChanger,&Q,&Qdot);
     }
 
     return m_position->velocity();
@@ -184,7 +176,7 @@ const utils::Scalar& internal_forces::ligaments::Ligament::force(
 #endif
     // Update the configuration
     if (updateKin == 1) {
-        updateOrientations(model,Q,Qdot,false);
+        updateOrientations(model,Q,Qdot,1);
     } else if (updateKin == 2) {
         updateOrientations(model,Q,Qdot,2);
     } else {
@@ -199,18 +191,18 @@ const utils::Scalar& internal_forces::ligaments::Ligament::force(
 }
 
 const utils::Scalar& internal_forces::ligaments::Ligament::force(
-    rigidbody::Joints &,
-    const rigidbody::GeneralizedCoordinates &,
-    int)
+    rigidbody::Joints &model,
+    const rigidbody::GeneralizedCoordinates &Q,
+    int updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = 2;
 #endif
     // Update the configuration
     if (updateKin == 1) {
-        updateOrientations(model,Q,Qdot,false);
+        updateOrientations(model,Q,1);
     } else if (updateKin == 2) {
-        updateOrientations(model,Q,Qdot,2);
+        updateOrientations(model,Q,2);
     } else {
         utils::Error::check(updateKin == 0,
                                     "Wrong level of update in force function");
@@ -233,26 +225,19 @@ utils::Scalar internal_forces::ligaments::Ligament::getForce()
     return *m_Fl + damping();
 }
 
-const std::vector<utils::Vector3d>& internal_forces::ligaments::Ligament::LigamentsPointsInGlobal(
+const std::vector<utils::Vector3d>& internal_forces::ligaments::Ligament::ligamentsPointsInGlobal(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
-    m_position->updateKinematics(
-                model,*m_characteristics,*m_pathChanger,&Q,nullptr);
+    m_position->updateKinematics(model,*m_pathChanger,&Q);
 
     return ligamentsPointsInGlobal();
 }
 
-const std::vector<utils::Vector3d>
-&internal_forces::ligaments::Ligament::LigamentsPointsInGlobal() const
+const std::vector<utils::Vector3d>&
+internal_forces::ligaments::Ligament::ligamentsPointsInGlobal() const
 {
     return m_position->pointsInGlobal();
-}
-
-void internal_forces::ligaments::Ligament::setRate(
-    const utils::Scalar& rate)
-{
-    m_characteristics->setRate(rate);
 }
 
 void internal_forces::ligaments::Ligament::setCharacteristics(
@@ -260,6 +245,7 @@ void internal_forces::ligaments::Ligament::setCharacteristics(
 {
     *m_characteristics = characteristics;
 }
+
 const internal_forces::ligaments::Characteristics&
 internal_forces::ligaments::Ligament::characteristics() const
 {

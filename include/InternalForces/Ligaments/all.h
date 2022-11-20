@@ -4,7 +4,7 @@
 #include "biorbdConfig.h"
 
 #include "InternalForces/Ligaments/Characteristics.h"
-#include "InternalForces/Ligaments/LigamentSpringFirstOrder.h"
+#include "InternalForces/Ligaments/LigamentSpringLinear.h"
 #include "InternalForces/Ligaments/LigamentSpringSecondOrder.h"
 #include "InternalForces/Ligaments/LigamentConstant.h"
 #include "InternalForces/Ligaments/Ligament.h"

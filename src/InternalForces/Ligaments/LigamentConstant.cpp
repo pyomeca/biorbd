@@ -9,286 +9,96 @@
 #include "InternalForces/Geometry.h"
 #include "InternalForces/Ligaments/LigamentsEnums.h"
 #include "InternalForces/Ligaments/Characteristics.h"
-#include "InternalForces/Ligaments/Ligament.h"
+#include "InternalForces/Ligaments/LigamentConstant.h"
 
 using namespace BIORBD_NAMESPACE;
-internal_forces::ligaments::Ligament::LigamentConstant() :
+internal_forces::ligaments::LigamentConstant::LigamentConstant() :
     internal_forces::ligaments::Ligament(),
-    m_maxForce(std::make_shared<utils::Scalar>())
+    m_force(std::make_shared<utils::Scalar>())
 {
     setType();
 
 }
 
-internal_forces::ligaments::Ligament::Ligament(
+internal_forces::ligaments::LigamentConstant::LigamentConstant(
+    const utils::Scalar &force,
     const utils::String & name,
     const internal_forces::Geometry & position,
-    const internal_forces::ligaments::Characteristics &characteristics,
-    ) :
-    internal_forces::ligaments::Ligament(name,position,characteristics)
+    const internal_forces::ligaments::Characteristics &characteristics) :
+    internal_forces::ligaments::Ligament(name,position,characteristics),
+    m_force(std::make_shared<utils::Scalar>(force))
 {
-
+    setType();
 }
 
-internal_forces::ligaments::Ligament::Ligament(
+internal_forces::ligaments::LigamentConstant::LigamentConstant(
+    const utils::Scalar &force,
     const utils::String &name,
     const internal_forces::Geometry &position,
     const internal_forces::ligaments::Characteristics &characteristics,
     const internal_forces::PathModifiers &pathModifiers) :
-    m_compound(std::make_shared<internal_forces::Compound (name, pathModifiers)),
-    m_position(std::make_shared<internal_forces::Geometry>(position)),
-    m_type(std::make_shared<internal_forces::ligaments::LIGAMENT_TYPE>(internal_forces::ligaments::LIGAMENT_TYPE::NO_LIGAMENT_TYPE)),
-    m_characteristics(std::make_shared<internal_forces::ligaments::Characteristics>
-                      (characteristics))
+    internal_forces::ligaments::Ligament(name,position,characteristics,pathModifiers),
+    m_force(std::make_shared<utils::Scalar>(force))
+{
+    setType();
+}
+
+internal_forces::ligaments::LigamentConstant::LigamentConstant(
+    const std::shared_ptr<internal_forces::ligaments::Ligament> other) :
+    internal_forces::ligaments::Ligament (other)
+{
+    const std::shared_ptr<internal_forces::ligaments::LigamentConstant> ligament_tp(
+        std::dynamic_pointer_cast<internal_forces::ligaments::LigamentConstant>(other));
+    utils::Error::check(ligament_tp != nullptr, "ligament must be of a constant Type");
+    m_force = ligament_tp->m_force;
+}
+
+internal_forces::ligaments::LigamentConstant::LigamentConstant(
+    const internal_forces::ligaments::Ligament &other) :
+    internal_forces::ligaments::Ligament (other)
+{
+    const internal_forces::ligaments::LigamentConstant & ligament_tp(
+        dynamic_cast<const internal_forces::ligaments::LigamentConstant &>(other));
+    m_force = ligament_tp.m_force;
+}
+
+internal_forces::ligaments::LigamentConstant
+internal_forces::ligaments::LigamentConstant::DeepCopy() const
+{
+    internal_forces::ligaments::LigamentConstant copy;
+    copy.DeepCopy(*this);
+    return copy;
+}
+
+void internal_forces::ligaments::LigamentConstant::DeepCopy(
+        const internal_forces::ligaments::LigamentConstant &other)
+{
+    internal_forces::ligaments::Ligament::DeepCopy(other);
+    *m_force = *other.m_force;
+}
+
+
+internal_forces::ligaments::LigamentConstant::~LigamentConstant()
 {
 
 }
 
-internal_forces::ligaments::Ligament::Ligament(const internal_forces::ligaments::Ligament &other) :
-    m_compound(other.m_compound),
-    m_position(other.m_position),
-    m_type(other.m_type),
-    m_characteristics(other.m_characteristics)
+void internal_forces::ligaments::LigamentConstant::setType()
 {
-
+    *m_type = internal_forces::ligaments::LIGAMENT_TYPE::LIGAMENT_CONSTANT;
 }
 
-internal_forces::ligaments::Ligament::~Ligament()
-{
-    //dtor
-}
-
-void internal_forces::ligaments::Ligament::DeepCopy(const internal_forces::ligaments::Ligament &other)
-{
-    *m_compound = other.m_compound->DeepCopy();
-    *m_position = other.m_position->DeepCopy();
-    *m_type = *other.m_type;
-    *m_characteristics = other.m_characteristics->DeepCopy();
-}
-
-internal_forces::ligaments::LIGAMENT_TYPE internal_forces::ligaments::Ligament::type() const
-{
-    return *m_type;
-}
-
-void internal_forces::ligaments::Ligament::setType()
-{
-    *m_type = internal_forces::ligaments::LIGAMENT_TYPE::NO_LIGAMENT_TYPE;
-}
-
-void internal_forces::ligaments::Ligament::updateOrientations(
-    rigidbody::Joints& model,
-    const rigidbody::GeneralizedCoordinates &Q,
-    int updateKin)
-{
-    // Update de la position des insertions et origines
-    m_position->updateKinematics(model,*m_characteristics,*m_pathChanger,&Q,nullptr,
-                                 updateKin);
-}
-void internal_forces::ligaments::Ligament::updateOrientations(
-    rigidbody::Joints& model,
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &Qdot,
-    int updateKin)
-{
-    // Update de la position des insertions et origines
-    m_position->updateKinematics(
-        model,*m_characteristics,*m_pathChanger,&Q,&Qdot, updateKin);
-}
-void internal_forces::ligaments::Ligament::updateOrientations(
-    std::vector<utils::Vector3d>& musclePointsInGlobal,
-    utils::Matrix &jacoPointsInGlobal)
-{
-    // Update de la position des insertions et origines
-    m_position->updateKinematics(
-                musclePointsInGlobal,jacoPointsInGlobal, *m_characteristics,nullptr);
-}
-void internal_forces::ligaments::Ligament::updateOrientations(
-    std::vector<utils::Vector3d>& musclePointsInGlobal,
-    utils::Matrix &jacoPointsInGlobal,
-    const rigidbody::GeneralizedVelocity &Qdot)
-{
-    // Update de la position des insertions et origines
-    m_position->updateKinematics(
-                musclePointsInGlobal,jacoPointsInGlobal, *m_characteristics,&Qdot);
-}
-
-void internal_forces::ligaments::Ligament::setPosition(
-    const internal_forces::Geometry &positions)
-{
-    *m_position = positions;
-}
-const internal_forces::Geometry &internal_forces::ligaments::Ligament::position() const
-{
-    return *m_position;
-}
-
-
-void internal_forces::ligaments::Ligament::setName(
-    const internal_forces::Geometry &name)
-{
-    m_compound->setName(name);
-}
-
-const internal_forces::Geometry &internal_forces::ligaments::Ligament::name() const
-{
-    return m_compound->name();
-}
-
-const utils::Scalar& internal_forces::ligaments::Ligament::length(
-    rigidbody::Joints& model,
-    const rigidbody::GeneralizedCoordinates &Q,
-    int updateKin)
+void internal_forces::ligaments::LigamentConstant::computeFl()
 {
 #ifdef BIORBD_USE_CASADI_MATH
-    updateKin = 2;
-#endif
-    if (updateKin != 0) {
-        m_position->updateKinematics(
-            model,*m_characteristics,*m_pathChanger,&Q,nullptr,updateKin);
-    }
-
-    return position().length();
-}
-
-const utils::Scalar& internal_forces::ligaments::Ligament::velocity(
-    rigidbody::Joints &model,
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &Qdot,
-    bool updateKin)
-{
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-    if (updateKin) {
-        m_position->updateKinematics(
-            model,*m_characteristics,*m_pathChanger,&Q,&Qdot);
-    }
-
-    return m_position->velocity();
-}
-
-const utils::Scalar& internal_forces::ligaments::Ligament::force(
-    rigidbody::Joints &model,
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &Qdot,
-    int updateKin)
-{
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = 2;
-#endif
-    // Update the configuration
-    if (updateKin == 1) {
-        updateOrientations(model,Q,Qdot,false);
-    } else if (updateKin == 2) {
-        updateOrientations(model,Q,Qdot,2);
-    } else {
-        utils::Error::check(updateKin == 0,
-                                    "Wrong level of update in force function");
-    }
-
-    // Computation
-    computeFl();
-    computeForce();
-    return *m_force;
-}
-
-const utils::Scalar& internal_forces::ligaments::Ligament::force(
-    rigidbody::Joints &,
-    const rigidbody::GeneralizedCoordinates &,
-    int)
-{
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = 2;
-#endif
-    // Update the configuration
-    if (updateKin == 1) {
-        updateOrientations(model,Q,Qdot,false);
-    } else if (updateKin == 2) {
-        updateOrientations(model,Q,Qdot,2);
-    } else {
-        utils::Error::check(updateKin == 0,
-                                    "Wrong level of update in force function");
-    }
-
-    // Computation
-    computeFl();
-    computeForce();
-    return *m_force;
-}
-
-void internal_forces::ligaments::Ligament::computeForce()
-{
-    *m_force = getForce();
-}
-
-utils::Scalar internal_forces::ligaments::Ligament::getForce()
-{
-    utils::Scalar damping_param;
-    return *m_Fl + damping();
-}
-
-const std::vector<utils::Vector3d>& internal_forces::ligaments::Ligament::LigamentsPointsInGlobal(
-    rigidbody::Joints &model,
-    const rigidbody::GeneralizedCoordinates &Q)
-{
-    m_position->updateKinematics(
-                model,*m_characteristics,*m_pathChanger,&Q,nullptr);
-
-    return ligamentsPointsInGlobal();
-}
-
-const std::vector<utils::Vector3d>
-&internal_forces::ligaments::Ligament::LigamentsPointsInGlobal() const
-{
-    return m_position->pointsInGlobal();
-}
-
-void internal_forces::ligaments::Ligament::setRate(
-    const utils::Scalar& rate)
-{
-    m_characteristics->setRate(rate);
-}
-
-void internal_forces::ligaments::Ligament::setCharacteristics(
-    const internal_forces::ligaments::Characteristics &characteristics)
-{
-    *m_characteristics = characteristics;
-}
-const internal_forces::ligaments::Characteristics&
-internal_forces::ligaments::Ligament::characteristics() const
-{
-    return *m_characteristics;
-}
-
-const utils::Scalar& internal_forces::ligaments::Ligament::Fl()
-{
-    computeFl();
-    return *m_Fl;
-}
-
-const utils::Scalar& internal_forces::ligaments::Ligament::damping()
-{
-    computeDamping();
-    return *m_damping;
-}
-
-void internal_forces::ligaments::Ligament::computeDamping()
-{
-
-
-#ifdef BIORBD_USE_CASADI_MATH
-    *m_damping = IF_ELSE_NAMESPACE::if_else_zero(
-                  IF_ELSE_NAMESPACE::gt(position().velocity(), 0),
-                ((position().velocity() / m_characteristics->maxShorteningSpeed())
-                * m_characteristics->dampingParam()));
-
+    *m_Fl = IF_ELSE_NAMESPACE::if_else_zero(
+                  IF_ELSE_NAMESPACE::gt(position().length(), characteristics().ligamentSlackLength()),
+                  *m_force;
 #else
-    if (position().velocity() > 0) {
-        *m_damping = (position().velocity()/ m_characteristics->maxShorteningSpeed()) * m_characteristics->dampingParam();
+    if (position().length() > characteristics().ligamentSlackLength()) {
+        *m_Fl = *m_force;
     } else {
-        *m_damping = 0;
+        *m_Fl = 0;
     }
 #endif
-
 }

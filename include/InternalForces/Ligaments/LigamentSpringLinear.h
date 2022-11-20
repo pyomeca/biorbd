@@ -14,6 +14,9 @@ class Geometry;
 namespace ligaments
 {
 
+///
+/// \brief Class LigamentSpringLinear is a ligament with same behavior than linear spring defined by:
+/// k(l-l0) with k is the stiffness
 class BIORBD_API LigamentSpringLinear : public Ligament
 {
 public:
@@ -23,59 +26,68 @@ public:
     LigamentSpringLinear();
 
     ///
-    /// \brief Construct a Hill-type muscle
-    /// \param name The muscle name
-    /// \param geometry The muscle geometry
-    /// \param characteristics The muscle characteristics
+    /// \brief Construct a linear spring like ligament
+    /// \param stifness The ligament stifness
+    /// \param name The ligament name
+    /// \param geometry The ligament geometry
+    /// \param characteristics The ligament characteristics
     ///
     LigamentSpringLinear(
+        const utils::Scalar& stiffness,
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics);
 
     ///
-    /// \brief Construct a Hill-type muscle
-    /// \param name The muscle name
-    /// \param geometry The muscle geometry
-    /// \param characteristics The muscle characteristics
+    /// \brief Construct a linear spring like ligament
+    /// \param stifness The ligament stifness
+    /// \param name The ligament name
+    /// \param geometry The ligament geometry
+    /// \param characteristics The ligament characteristics
     /// \param pathModifiers The set of path modifiers
     ///
     LigamentSpringLinear(
+        const utils::Scalar& stiffness,
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers);
 
     ///
-    /// \brief Construct a Hill-type muscle from another muscle
-    /// \param other The other muscle
+    /// \brief Construct a linear spring like ligament from another ligament
+    /// \param other The other ligament
     ///
     LigamentSpringLinear(
         const Ligament& other);
 
     ///
-    /// \brief Construct a Hill-type muscle from another muscle
-    /// \param other THe other muscle
+    /// \brief Construct a linear spring like ligament from another ligament
+    /// \param other THe other ligament
     ///
     LigamentSpringLinear(
         const std::shared_ptr<Ligament> other);
 
     ///
-    /// \brief Deep copy of a Hill-type muscle
-    /// \return A deep copy of a Hill-type muscle
+    /// \brief Destroy class properly
+    ///
+    virtual ~LigamentSpringLinear();
+
+    ///
+    /// \brief Deep copy of a linear spring like ligament
+    /// \return A deep copy of a linear spring like ligament
     ///
     LigamentSpringLinear DeepCopy() const;
 
     ///
-    /// \brief Deep copy of a Hill-type muscle in a new Hill-type muscle
-    /// \param other The Hill-type to copy
+    /// \brief Deep copy of a linear spring like ligament in a new linear spring like ligament
+    /// \param other The linear spring like ligament to copy
     ///
     void DeepCopy(
         const LigamentSpringLinear& other);
 
 protected:
     ///
-    /// \brief Set type to Hill
+    /// \brief Set type to linear spring like ligament
     ///
     virtual void setType();
 
@@ -83,6 +95,8 @@ protected:
     /// \brief Compute the Force-length of the contractile element
     ///
     virtual void computeFl();
+
+    std::shared_ptr<utils::Scalar> m_stiffness; ///<stiffness of the ligament
 
 };
 

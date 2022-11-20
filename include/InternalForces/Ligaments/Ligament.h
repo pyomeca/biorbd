@@ -4,7 +4,7 @@
 #include "biorbdConfig.h"
 #include "InternalForces/Compound.h"
 #include "InternalForces/Ligaments/LigamentsEnums.h"
-#include "InternalForces/Ligaments/Ligaments.h"
+#include "InternalForces/Geometry.h"
 #include "Utils/Scalar.h"
 
 namespace BIORBD_NAMESPACE
@@ -18,13 +18,10 @@ class Vector3d;
 namespace internal_forces
 {
 class Compound;
-class Geometry;
-
 namespace ligaments
 {
 class Characteristics;
-class State;
-class ligaments;
+class Ligaments;
 
 ///
 /// \brief Base class of all ligament
@@ -188,19 +185,6 @@ public:
     const Characteristics& characteristics() const;
 
     ///
-    /// \brief Set the name of the ligament
-    /// \param name The name of the ligament
-    ///
-    void setName(
-        const utils::String& name);
-
-    ///
-    /// \brief Return the name of the ligament
-    /// \return The name of the ligament
-    ///
-    const utils::String& name() const;
-
-    ///
     /// \brief Return the ligament points in global reference frame
     /// \param model The joint model
     /// \param Q The generalized coordinates
@@ -215,19 +199,6 @@ public:
     /// \return The ligament points in global reference frame
     ///
     const std::vector<utils::Vector3d>& ligamentsPointsInGlobal() const;
-
-    ///
-    /// \brief Set the maximal isometric force
-    /// \param forceMax The force to set
-    ///
-    void setRate(
-        const utils::Scalar& rate);
-
-    ///
-    /// \brief Computes and returns the forces norm
-    /// \return The computed forces
-    ///
-    virtual const utils::Scalar& force();
 
     ///
     /// \brief Return the computed force norm
@@ -301,7 +272,7 @@ protected:
     /// \param emg The EMG data
     /// \return The force from activation
     ///
-    virtual utils::Scalar getForce() = 0;
+    virtual utils::Scalar getForce();
 
     ///
     /// \brief Compute the Force-length

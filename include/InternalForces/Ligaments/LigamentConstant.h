@@ -31,10 +31,10 @@ public:
     /// \param characteristics The ligament characteristics
     ///
     LigamentConstant(
+        const utils::Scalar& force,
         const utils::String& name,
         const Geometry& geometry,
-        const Characteristics& characteristics,
-            );
+        const Characteristics& characteristics);
 
     ///
     /// \brief Construct a ligament constant
@@ -44,6 +44,7 @@ public:
     /// \param pathModifiers The set of path modifiers
     ///
     LigamentConstant(
+        const utils::Scalar& force,
         const utils::String& name,
         const Geometry& geometry,
         const Characteristics& characteristics,
@@ -62,6 +63,12 @@ public:
     ///
     LigamentConstant(
         const std::shared_ptr<Ligament> other);
+
+
+    ///
+    /// \brief Destroy class properly
+    ///
+    virtual ~LigamentConstant();
 
     ///
     /// \brief Deep copy of a ligament constant
@@ -87,7 +94,7 @@ protected:
     ///
     virtual void computeFl();
 
-    std::shared_ptr<utils::Scalar> m_maxForce; ///<Force of the ligament applied when l>l0
+    std::shared_ptr<utils::Scalar> m_force; ///<Force of the ligament applied when l>l0
 };
 
 }

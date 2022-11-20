@@ -4,7 +4,6 @@
 using namespace BIORBD_NAMESPACE;
 
 internal_forces::ligaments::Characteristics::Characteristics() :
-    m_rate(std::make_shared<utils::Scalar>()),
     m_ligamentSlackLength(std::make_shared<utils::Scalar>(0)),
     m_cste_damping(std::make_shared<utils::Scalar>(0)),
     m_cste_maxShorteningSpeed(std::make_shared<utils::Scalar>(1))
@@ -14,7 +13,6 @@ internal_forces::ligaments::Characteristics::Characteristics() :
 
 internal_forces::ligaments::Characteristics::Characteristics(
     const internal_forces::ligaments::Characteristics &other) :
-    m_rate(other.m_rate),
     m_ligamentSlackLength(other.m_ligamentSlackLength),
     m_cste_damping(other.m_cste_damping),
     m_cste_maxShorteningSpeed(other.m_cste_maxShorteningSpeed)
@@ -23,11 +21,9 @@ internal_forces::ligaments::Characteristics::Characteristics(
 }
 
 internal_forces::ligaments::Characteristics::Characteristics(
-    const utils::Scalar& rate,
     const utils::Scalar& ligamentSlackLength,
     const utils::Scalar& cste_damping,
     const utils::Scalar& cste_maxShorteningSpeed):
-    m_rate(std::make_shared<utils::Scalar>(rate)),
     m_ligamentSlackLength(std::make_shared<utils::Scalar>(ligamentSlackLength)),
     m_cste_damping(std::make_shared<utils::Scalar>(cste_damping)),
     m_cste_maxShorteningSpeed(std::make_shared<utils::Scalar>(cste_maxShorteningSpeed))
@@ -52,23 +48,9 @@ const
 void internal_forces::ligaments::Characteristics::DeepCopy(
     const internal_forces::ligaments::Characteristics &other)
 {
-    *m_rate = *other.m_rate;
     *m_ligamentSlackLength = *other.m_ligamentSlackLength;
     *m_cste_damping = *other.m_cste_damping;
     *m_cste_maxShorteningSpeed = *other.m_cste_maxShorteningSpeed;
-
-
-}
-
-void internal_forces::ligaments::Characteristics::setRate(
-    const utils::Scalar& val)
-{
-    *m_rate = val;
-}
-const utils::Scalar& internal_forces::ligaments::Characteristics::rate()
-const
-{
-    return *m_rate;
 }
 
 void internal_forces::ligaments::Characteristics::setLigamentSlackLength(
@@ -96,7 +78,7 @@ void internal_forces::ligaments::Characteristics::setDampingParam(
 {
     *m_cste_damping = val;
 }
-bool internal_forces::ligaments::Characteristics::dampingParam() const
+const utils::Scalar& internal_forces::ligaments::Characteristics::dampingParam() const
 {
     return *m_cste_damping;
 }
