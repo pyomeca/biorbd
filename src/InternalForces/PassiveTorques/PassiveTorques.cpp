@@ -34,8 +34,8 @@ internal_forces::passive_torques::PassiveTorques::~PassiveTorques()
 
 }
 
-void internal_forces::passive_torques::PassiveTorques::DeepCopy(const internal_forces::passive_torques::PassiveTorques
-        &other)
+void internal_forces::passive_torques::PassiveTorques::DeepCopy(
+        const internal_forces::passive_torques::PassiveTorques &other)
 {
     m_pas->resize(other.m_pas->size());
     for (unsigned int i=0; i<other.m_pas->size(); ++i) {
