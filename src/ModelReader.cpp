@@ -1100,11 +1100,11 @@ void Reader::readModelFile(
                 utils::Error::check(isTypeSet!=0, "PassiveTorque type must be defined");
                 internal_forces::passive_torques::PassiveTorque* passiveTorque;
                 if (!type.tolower().compare("constant")) {
-                    utils::Error::check(isDofSet && std::isnan(Tconstant) == 0,
+                    utils::Error::check(isDofSet && !std::isnan(Tconstant),
                                                 "Make sure all parameters are defined");
                     passiveTorque = new internal_forces::passive_torques::PassiveTorqueConstant(Tconstant,dofIdx,name);
                 } else if (!type.tolower().compare("linear")) {
-                    utils::Error::check(isDofSet && std::isnan(slope) == 0 && std::isnan(T0) == 0,
+                    utils::Error::check(isDofSet && !std::isnan(slope) && !std::isnan(T0),
                                                 "Make sure all parameters are defined");
                     passiveTorque = new internal_forces::passive_torques::PassiveTorqueLinear(T0,slope,dofIdx,name);
                 } else if (!type.tolower().compare("exponential")) {
