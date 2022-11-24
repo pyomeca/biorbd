@@ -11,6 +11,10 @@
 #include "InternalForces/Ligaments/Characteristics.h"
 #include "InternalForces/Ligaments/LigamentConstant.h"
 
+#ifdef USE_SMOOTH_IF_ELSE
+#include "Utils/CasadiExpand.h"
+#endif
+
 using namespace BIORBD_NAMESPACE;
 internal_forces::ligaments::LigamentConstant::LigamentConstant() :
     internal_forces::ligaments::Ligament(),

@@ -227,6 +227,12 @@ public:
         int updateKin = 2);
 
     ///
+    /// \brief Return the computed force norm. The ligament orientation had to be computed before calling this function.
+    /// \return The computed force
+    ///
+    virtual const utils::Scalar& force();
+
+    ///
     /// \brief Return the type of the ligament
     /// \return The type of the ligament
     ///
@@ -261,7 +267,6 @@ protected:
     ///
     virtual void setType();
 
-    std::shared_ptr<Compound> m_compound; ///< The ligament characteristics
     std::shared_ptr<Geometry> m_position; ///< The position of all the nodes of the ligament (0 being the origin and last being insertion
     std::shared_ptr<LIGAMENT_TYPE> m_type; ///< The type of the ligament
     std::shared_ptr<Characteristics> m_characteristics; ///< The ligament characteristics

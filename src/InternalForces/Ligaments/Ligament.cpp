@@ -11,12 +11,19 @@
 #include "InternalForces/Ligaments/Characteristics.h"
 #include "InternalForces/Ligaments/Ligament.h"
 
+#ifdef USE_SMOOTH_IF_ELSE
+#include "Utils/CasadiExpand.h"
+#endif
+
 using namespace BIORBD_NAMESPACE;
 internal_forces::ligaments::Ligament::Ligament() :
-    m_compound(std::make_shared<internal_forces::Compound>()),
+    internal_forces::Compound(),
     m_position(std::make_shared<internal_forces::Geometry>()),
     m_type(std::make_shared<internal_forces::ligaments::LIGAMENT_TYPE>(internal_forces::ligaments::LIGAMENT_TYPE::NO_LIGAMENT_TYPE)),
-    m_characteristics(std::make_shared<internal_forces::ligaments::Characteristics>())
+    m_characteristics(std::make_shared<internal_forces::ligaments::Characteristics>()),
+    m_Fl(std::make_shared<utils::Scalar>()),
+    m_damping(std::make_shared<utils::Scalar>())
+
 {
     setType();
 
@@ -26,11 +33,13 @@ internal_forces::ligaments::Ligament::Ligament(
     const utils::String & name,
     const internal_forces::Geometry & position,
     const internal_forces::ligaments::Characteristics &characteristics) :
-    m_compound(std::make_shared<internal_forces::Compound>(name)),
+    internal_forces::Compound(name),
     m_position(std::make_shared<internal_forces::Geometry>(position)),
     m_type(std::make_shared<internal_forces::ligaments::LIGAMENT_TYPE>(internal_forces::ligaments::LIGAMENT_TYPE::NO_LIGAMENT_TYPE)),
     m_characteristics(std::make_shared<internal_forces::ligaments::Characteristics>
-                      (characteristics))
+                      (characteristics)),
+    m_Fl(std::make_shared<utils::Scalar>()),
+    m_damping(std::make_shared<utils::Scalar>())
 {
 
 }
@@ -40,30 +49,36 @@ internal_forces::ligaments::Ligament::Ligament(
     const internal_forces::Geometry &position,
     const internal_forces::ligaments::Characteristics &characteristics,
     const internal_forces::PathModifiers &pathModifiers) :
-    m_compound(std::make_shared<internal_forces::Compound> (name, pathModifiers)),
+    internal_forces::Compound(name, pathModifiers),
     m_position(std::make_shared<internal_forces::Geometry>(position)),
     m_type(std::make_shared<internal_forces::ligaments::LIGAMENT_TYPE>(internal_forces::ligaments::LIGAMENT_TYPE::NO_LIGAMENT_TYPE)),
     m_characteristics(std::make_shared<internal_forces::ligaments::Characteristics>
-                      (characteristics))
+                      (characteristics)),
+    m_Fl(std::make_shared<utils::Scalar>()),
+    m_damping(std::make_shared<utils::Scalar>())
 {
 
 }
 
 internal_forces::ligaments::Ligament::Ligament(const internal_forces::ligaments::Ligament &other) :
-    m_compound(other.m_compound),
+    internal_forces::Compound(other),
     m_position(other.m_position),
     m_type(other.m_type),
-    m_characteristics(other.m_characteristics)
+    m_characteristics(other.m_characteristics),
+    m_Fl(other.m_Fl),
+    m_damping(other.m_damping)
 {
 
 }
 
 internal_forces::ligaments::Ligament::Ligament(
         const std::shared_ptr<internal_forces::ligaments::Ligament> other) :
-    m_compound(other->m_compound),
+    internal_forces::Compound(other),
     m_position(other->m_position),
     m_type(other->m_type),
-    m_characteristics(other->m_characteristics)
+    m_characteristics(other->m_characteristics),
+    m_Fl(other->m_Fl),
+    m_damping(other->m_damping)
 {
 
 }
@@ -75,10 +90,12 @@ internal_forces::ligaments::Ligament::~Ligament()
 
 void internal_forces::ligaments::Ligament::DeepCopy(const internal_forces::ligaments::Ligament &other)
 {
-    *m_compound = *other.m_compound;
+    this->internal_forces::Compound::DeepCopy(other);
     *m_position = other.m_position->DeepCopy();
     *m_type = *other.m_type;
     *m_characteristics = other.m_characteristics->DeepCopy();
+    *m_Fl = *other.m_Fl;
+    *m_damping = *other.m_damping;
 }
 
 internal_forces::ligaments::LIGAMENT_TYPE internal_forces::ligaments::Ligament::type() const
@@ -214,6 +231,14 @@ const utils::Scalar& internal_forces::ligaments::Ligament::force(
     return *m_force;
 }
 
+const utils::Scalar& internal_forces::ligaments::Ligament::force()
+{
+    // Computation
+    computeFl();
+    computeForce();
+    return *m_force;
+}
+
 void internal_forces::ligaments::Ligament::computeForce()
 {
     *m_force = getForce();
@@ -221,7 +246,6 @@ void internal_forces::ligaments::Ligament::computeForce()
 
 utils::Scalar internal_forces::ligaments::Ligament::getForce()
 {
-    utils::Scalar damping_param;
     return *m_Fl + damping();
 }
 
@@ -267,16 +291,15 @@ const utils::Scalar& internal_forces::ligaments::Ligament::damping()
 void internal_forces::ligaments::Ligament::computeDamping()
 {
 
-
 #ifdef BIORBD_USE_CASADI_MATH
     *m_damping = IF_ELSE_NAMESPACE::if_else_zero(
                   IF_ELSE_NAMESPACE::gt(position().velocity(), 0),
-                ((position().velocity() / m_characteristics->maxShorteningSpeed())
-                * m_characteristics->dampingParam()));
+                ((position().velocity() / characteristics().maxShorteningSpeed())
+                * characteristics().dampingParam()));
 
 #else
     if (position().velocity() > 0) {
-        *m_damping = (position().velocity()/ m_characteristics->maxShorteningSpeed()) * m_characteristics->dampingParam();
+        *m_damping = (position().velocity()/ characteristics().maxShorteningSpeed()) * characteristics().dampingParam();
     } else {
         *m_damping = 0;
     }

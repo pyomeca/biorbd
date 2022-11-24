@@ -68,7 +68,7 @@ public:
     /// \brief Returns all the ligaments. It sorts the ligaments by group
     /// \return All the ligament
     ///
-    const std::vector<std::shared_ptr<Ligament>> ligaments() const;
+    const std::vector<std::shared_ptr<Ligament>>& ligaments() const;
 
     ///
     /// \brief Returns a specific ligament sorted by ligaments()

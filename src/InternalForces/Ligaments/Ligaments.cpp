@@ -121,7 +121,6 @@ internal_forces::ligaments::Ligaments::ligamentsJointTorque(
 
     // Update the ligament position
     updateLigaments(Q, QDot, true);
-
     return ligamentsJointTorque(F);
 }
 
@@ -174,6 +173,11 @@ unsigned int internal_forces::ligaments::Ligaments::nbLigaments() const
     return static_cast<unsigned int>(m_ligaments->size());
 }
 
+const std::vector<std::shared_ptr<internal_forces::ligaments::Ligament>>&
+        internal_forces::ligaments::Ligaments::ligaments() const
+{
+    return *m_ligaments;
+}
 
 int internal_forces::ligaments::Ligaments::ligamentID(const utils::String&
         nameToFind)
@@ -183,7 +187,6 @@ int internal_forces::ligaments::Ligaments::ligamentID(const utils::String&
             return static_cast<int>(i);
         }
     }
-    // If we get here, there is no muscle of that name in this group
     return -1;
 }
 

@@ -1038,6 +1038,8 @@ void Reader::readModelFile(
                 utils::String name;
                 file.read(name);
                 utils::String type;
+                utils::String origin;
+                utils::String insersion;
                 bool isTypeSet  = false;
                 utils::Vector3d origin_pos(0,0,0);
                 utils::Vector3d insert_pos(0,0,0);
@@ -1065,7 +1067,11 @@ void Reader::readModelFile(
                         file.read(epsilon, variable);
                     } else if (!property_tag.tolower().compare("force")) {
                         file.read(force, variable);
-                    }else if (!property_tag.tolower().compare("dampingfactor")){
+                    } else if (!property_tag.tolower().compare("origin")) {
+                        file.read(origin);
+                    } else if (!property_tag.tolower().compare("insersion")) {
+                        file.read(insersion);
+                    } else if (!property_tag.tolower().compare("dampingfactor")){
                         file.read(dampingFactor, variable);
                     } else if (!property_tag.tolower().compare("maxshorteningspeed")){
                         file.read(maxShorteningSpeed, variable);
@@ -1074,7 +1080,8 @@ void Reader::readModelFile(
                 // Verify that everything is there
                 utils::Error::check(isTypeSet!=0, "PassiveTorque type must be defined");
                 internal_forces::ligaments::Ligament* ligament;
-                internal_forces::Geometry geo(origin_pos, insert_pos);
+                utils::Error::check(insersion != "" && origin != "", "Insersion and origin of the ligament need to be defined.");
+                internal_forces::Geometry geo(utils::Vector3d(origin_pos, name + "_origin", origin), utils::Vector3d(insert_pos, name + "_insersion", insersion));
                 internal_forces::ligaments::Characteristics characteristics(ligamentSlackLength,dampingFactor,maxShorteningSpeed);
                 if (!type.tolower().compare("constant")) {
                     utils::Error::check(std::isnan(force) == 0 && std::isnan(ligamentSlackLength) == 0, "Make sure all parameters are defined");
@@ -1244,7 +1251,7 @@ void Reader::readModelFile(
                     model->muscleGroup(static_cast<unsigned int>(iMuscleGroup))
                     .muscle(static_cast<unsigned int>(iMuscle)).addPathObject(position);
                 } else if (isLigament) {
-                    iLigament = model->ligamentID(name);
+                    iLigament = model->ligamentID(ligament);
                     model->ligament(static_cast<unsigned int>(iLigament))->addPathObject(position);
                 }
             } else if (!main_tag.tolower().compare("wrapping")) {

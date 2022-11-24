@@ -83,16 +83,16 @@ public:
     void DeepCopy(
         const LigamentConstant& other);
 
+    ///
+    /// \brief Compute the Force-length
+    ///
+    virtual void computeFl();
+
 protected:
     ///
     /// \brief Set type to Hill
     ///
     virtual void setType();
-
-    ///
-    /// \brief Compute the Force-length
-    ///
-    virtual void computeFl();
 
     std::shared_ptr<utils::Scalar> m_force; ///<Force of the ligament applied when l>l0
 };
