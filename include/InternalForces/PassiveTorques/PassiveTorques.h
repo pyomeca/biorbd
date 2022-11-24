@@ -57,10 +57,10 @@ public:
 
     ///
     /// \brief Add a passive torque to the set of passive torques
-    /// \param torqueTp The passive torque to add
+    /// \param other The passive torque to add
     ///
     void addPassiveTorque(
-        const PassiveTorque &torqueTp);
+        const PassiveTorque &other);
 
     ///
     /// \brief Return the passiveJointTorques
