@@ -97,7 +97,7 @@ void internal_forces::ligaments::LigamentConstant::computeFl()
 #ifdef BIORBD_USE_CASADI_MATH
     *m_Fl = IF_ELSE_NAMESPACE::if_else_zero(
                   IF_ELSE_NAMESPACE::gt(position().length(), characteristics().ligamentSlackLength()),
-                  *m_force;
+                  *m_force);
 #else
     if (position().length() > characteristics().ligamentSlackLength()) {
         *m_Fl = *m_force;

@@ -149,6 +149,22 @@ utils::Vector internal_forces::ligaments::Ligaments::ligamentForces(
     return forces;
 }
 
+utils::Vector internal_forces::ligaments::Ligaments::ligamentForces(
+    const rigidbody::GeneralizedCoordinates& Q
+        )
+{
+    // Assuming that this is also a Joints type (via BiorbdModel)
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
+    // Output variable
+    utils::Vector forces(nbLigaments());
+    for (unsigned int j=0; j<nbLigaments(); ++j) {
+        forces(j) = ((*m_ligaments)[j]->force(model,Q));
+    }
+
+    // The forces
+    return forces;
+}
+
 utils::Matrix internal_forces::ligaments::Ligaments::ligamentsLengthJacobian()
 {
     // Assuming that this is also a Joints type (via BiorbdModel)

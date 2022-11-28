@@ -154,12 +154,10 @@ public:
 
     ///
     /// \brief Compute and return the ligament forces
-    /// \param emg The dynamic state
+    /// \param Q The generalized coordinates
     /// \return The ligament forces
     ///
-    /// Warning: This function assumes that ligaments are already updated (via `updateligaments`)
-    ///
-    utils::Vector ligamentForces();
+    utils::Vector ligamentForces(const rigidbody::GeneralizedCoordinates& Q);
 
     ///
     /// \brief Compute and return the ligament forces
