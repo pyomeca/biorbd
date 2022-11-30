@@ -4,6 +4,7 @@
 #include "biorbdConfig.h"
 #include "InternalForces/Compound.h"
 #include "InternalForces/Muscles/MusclesEnums.h"
+#include "InternalForces/Muscles/MuscleGeometry.h"
 #include "Utils/Scalar.h"
 
 namespace BIORBD_NAMESPACE
@@ -20,7 +21,6 @@ class Compound;
 
 namespace muscles
 {
-class Geometry;
 class Characteristics;
 class State;
 class Muscles;
@@ -46,7 +46,7 @@ public:
     ///
     Muscle(
         const utils::String& name,
-        const Geometry& position,
+        const internal_forces::muscles::MuscleGeometry& position,
         const Characteristics& characteristics);
 
     ///
@@ -58,7 +58,7 @@ public:
     ///
     Muscle(
         const utils::String& name,
-        const Geometry& position,
+        const internal_forces::muscles::MuscleGeometry& position,
         const Characteristics& characteristics,
         const State& emg);
 
@@ -71,7 +71,7 @@ public:
     ///
     Muscle(
         const utils::String& name,
-        const Geometry& position,
+        const internal_forces::muscles::MuscleGeometry& position,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers);
 
@@ -85,7 +85,7 @@ public:
     ///
     Muscle(
         const utils::String& name,
-        const Geometry& position,
+        const internal_forces::muscles::MuscleGeometry& position,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers,
         const State& emg);
@@ -205,13 +205,13 @@ public:
     /// \param positions New value of the position
     ///
     void setPosition(
-        const Geometry &positions);
+        const internal_forces::muscles::MuscleGeometry &positions);
 
     ///
     /// \brief Return the position of all the points attached to the muscle (0 being the origin)
     /// \return The positions
     ///
-    const Geometry& position() const;
+    const internal_forces::muscles::MuscleGeometry& position() const;
 
     ///
     /// \brief Set the muscle characteristics
@@ -344,10 +344,11 @@ protected:
     ///
     virtual void setType();
 
-    std::shared_ptr<Geometry> m_position; ///< The position of all the nodes of the muscle (0 being the origin and last being insertion
     std::shared_ptr<MUSCLE_TYPE> m_type; ///< The type of the muscle
+    std::shared_ptr<internal_forces::muscles::MuscleGeometry> m_position;
     std::shared_ptr<Characteristics> m_characteristics; ///< The muscle characteristics
     std::shared_ptr<State> m_state; ///< The dynamic state
+    std::shared_ptr<utils::Scalar> m_muscleLength; ///< muscle tendon length
 };
 
 }

@@ -11,6 +11,28 @@ set (CMAKE_CXX_STANDARD 11)
 # Set some variables
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
 
+# Set all the compile options
+option(MODULE_KALMAN 
+    "If Kalman filter should be compiled" ON)
+option(MODULE_MUSCLES
+    "Choose if the module muscles is to be added to biorbd" ON)
+option(MODULE_ACTUATORS
+    "Choose if the module actuators is to be added to biorbd" ON)
+option(MODULE_PASSIVE_TORQUES
+    "Choose if the module passive_torques is to be added to biorbd" ON)
+option(MODULE_LIGAMENTS
+    "Choose if the module ligaments is to be added to biorbd" ON)
+option(MODULE_STATIC_OPTIM 
+    "If Static optimization should be compiled" ON)
+option(MODULE_VTP_FILES_READER 
+    "If reader for geometry vtp files from opensim should be compiled" ON)
+option(BUILD_EXAMPLE 
+    "Build a C++ example" ON)
+option(BUILD_DOC 
+    "Build documentation" OFF)
+option(BUILD_TESTS 
+    "Build all tests." OFF)
+
 # Because of Eigen, it is not possible to compile biorbd as a dynamic library
 if (WIN32)
     SET(BUILD_SHARED_LIBS FALSE CACHE BOOL
@@ -66,7 +88,7 @@ find_package(IPOPT)
 find_package(TinyXML)
 
 # Manage options
-option(MODULE_KALMAN "If Kalman filter should be compiled" ON)
+# MODULE_KALMAN
 if (BIORBD_USE_CASADI_MATH AND MODULE_KALMAN)
     message(WARNING "Casadi and Kalman cannot be used alongside, MODULE_KALMAN is automatically set to OFF")
     set(MODULE_KALMAN OFF CACHE BOOL "" FORCE)
@@ -86,7 +108,7 @@ else()
     )
 endif()
 
-option(MODULE_STATIC_OPTIM "If Static optimization should be compiled" ON)
+# MODULE_STATIC_OPTIM
 if (IPOPT_FOUND)
     if (BIORBD_USE_CASADI_MATH AND MODULE_STATIC_OPTIM)
         message(WARNING "Static optimization can't be compiled along with Casadi")
@@ -101,7 +123,7 @@ else()
     endif()
 endif()
 
-option(MODULE_VTP_FILES_READER "If reader for geometry vtp files from opensim should be compiled" ON)
+# MODULE_VTP_FILES_READER
 if (NOT TinyXML_FOUND)
     set(TinyXML_INCLUDE_DIR "")
     set(TinyXML_LIBRARY "")
@@ -176,14 +198,7 @@ list(APPEND BIORBD_MODULE_NAMES "${UTILS_MODULE_NAME}")
 add_subdirectory("src/RigidBody")
 list(APPEND BIORBD_MODULE_NAMES "${RIGIDBODY_MODULE_NAME}")
 
-# Muscles
-option(MODULE_MUSCLES
-    "Choose if the module internal forces is to be added to biorbd" ON)
-# Actuators
-option(MODULE_ACTUATORS
-    "Choose if the module internal forces is to be added to biorbd" ON)
-
-if (MODULE_ACTUATORS OR MODULE_MUSCLES)
+if (MODULE_ACTUATORS OR MODULE_MUSCLES OR MODULE_PASSIVE_TOQUES OR MODULE_LIGAMENTS)
     add_subdirectory("src/InternalForces")
     list(APPEND BIORBD_MODULE_NAMES "${INTERNAL_FORCES_MODULE_NAME}")
 endif()
@@ -191,6 +206,16 @@ endif()
 if (MODULE_MUSCLES)
     add_subdirectory("src/InternalForces/Muscles")
     list(APPEND BIORBD_MODULE_NAMES "${MUSCLES_MODULE_NAME}")
+endif()
+
+if (MODULE_PASSIVE_TORQUES)
+    add_subdirectory("src/InternalForces/PassiveTorques")
+    list(APPEND BIORBD_MODULE_NAMES "${PASSIVE_TORQUES_MODULE_NAME}")
+endif()
+
+if (MODULE_LIGAMENTS)
+    add_subdirectory("src/InternalForces/Ligaments")
+    list(APPEND BIORBD_MODULE_NAMES "${LIGAMENTS_MODULE_NAME}")
 endif()
 
 if (MODULE_ACTUATORS)
@@ -264,19 +289,16 @@ endif()
 add_subdirectory("binding")
 
 # Add the example if asked
-option(BUILD_EXAMPLE "Build a C++ example" ON)
 if (BUILD_EXAMPLE)
     add_subdirectory("examples")
 endif()
 
 # Doc
-option(BUILD_DOC "Build documentation" OFF)
 if (BUILD_DOC)
     add_subdirectory("doc")
 endif (BUILD_DOC)
 
 # Testing
-option(BUILD_TESTS "Build all tests." OFF) # Makes boolean 'test' available.
 if (BUILD_TESTS)
     add_subdirectory("test")
 endif()

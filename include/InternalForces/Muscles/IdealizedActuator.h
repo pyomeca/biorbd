@@ -30,7 +30,7 @@ public:
     ///
     IdealizedActuator(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics);
 
     ///
@@ -42,7 +42,7 @@ public:
     ///
     IdealizedActuator(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const State& emg);
 
@@ -55,7 +55,7 @@ public:
     ///
     IdealizedActuator(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers);
 
@@ -69,7 +69,7 @@ public:
     ///
     IdealizedActuator(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers,
         const State& emg);

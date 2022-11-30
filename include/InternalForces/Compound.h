@@ -111,8 +111,7 @@ public:
 
 protected:
     std::shared_ptr<utils::String> m_name; ///< The name of the muscle
-    std::shared_ptr<internal_forces::PathModifiers>
-    m_pathChanger; ///< The set of path modifiers
+    std::shared_ptr<internal_forces::PathModifiers> m_pathChanger; ///< The set of path modifiers
     std::shared_ptr<utils::Scalar> m_force; ///< The last computed force
 
 };

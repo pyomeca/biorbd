@@ -77,8 +77,7 @@ protected:
     /// \brief Set the type of the constant actuator
     ///
     virtual void setType();
-    std::shared_ptr<utils::Scalar>
-    m_Tmax; ///< Maximal torque that can be done
+    std::shared_ptr<utils::Scalar> m_Tmax; ///< Maximal torque that can be done
 
 };
 
