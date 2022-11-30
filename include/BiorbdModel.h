@@ -18,6 +18,9 @@
 #ifdef MODULE_PASSIVE_TORQUES
 #include "InternalForces/PassiveTorques/PassiveTorques.h"
 #endif
+#ifdef MODULE_LIGAMENTS
+#include "InternalForces/Ligaments/Ligaments.h"
+#endif
 
 ///
 /// \mainpage Documentation of biorbd
@@ -82,6 +85,9 @@ class BIORBD_API Model :
 #endif
 #ifdef MODULE_PASSIVE_TORQUES
     ,public internal_forces::passive_torques::PassiveTorques
+#endif
+#ifdef MODULE_LIGAMENTS
+    ,public internal_forces::ligaments::Ligaments
 #endif
     ,public rigidbody::SoftContacts
 {

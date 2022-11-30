@@ -312,9 +312,8 @@ const utils::Vector3d &internal_forces::Geometry::insertionInGlobal(
     const rigidbody::GeneralizedCoordinates &Q)
 {
     // Return the position of the marker in function of the given position
-    m_insertionInGlobal->block(0,0,3,
-                               1) = RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q,
-                                       model.GetBodyId(m_insertion->parent().c_str()), *m_insertion,false);
+    m_insertionInGlobal->block(0,0,3,1) = RigidBodyDynamics::CalcBodyToBaseCoordinates(
+                model, Q, model.GetBodyId(m_insertion->parent().c_str()), *m_insertion,false);
     return *m_insertionInGlobal;
 }
 
@@ -437,8 +436,7 @@ const utils::Scalar& internal_forces::Geometry::length(
 
     } else {
         for (unsigned int i=0; i<m_pointsInGlobal->size()-1; ++i) {
-            *m_length += ((*m_pointsInGlobal)[i+1] -
-                                      (*m_pointsInGlobal)[i]).norm();
+            *m_length += ((*m_pointsInGlobal)[i+1] - (*m_pointsInGlobal)[i]).norm();
         }
     }
     return *m_length;

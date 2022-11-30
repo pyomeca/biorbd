@@ -1,0 +1,19 @@
+// File : biorbd_ligaments.i
+%{
+#include "InternalForces/Ligaments/LigamentsEnums.h"
+#include "InternalForces/Ligaments/Ligament.h"
+#include "InternalForces/Ligaments/Ligaments.h"
+#include "InternalForces/Ligaments/LigamentConstant.h"
+#include "InternalForces/Ligaments/LigamentSpringLinear.h"
+#include "InternalForces/Ligaments/LigamentSpringSecondOrder.h"
+%}
+
+
+// Includes all neceressary files from the API
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Ligaments/LigamentsEnums.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Ligaments/Ligament.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Ligaments/Ligaments.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Ligaments/LigamentConstant.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Ligaments/LigamentSpringSecondOrder.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Ligaments/LigamentSpringLinear.h"
+
