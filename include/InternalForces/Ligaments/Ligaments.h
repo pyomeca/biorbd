@@ -64,11 +64,13 @@ public:
     void DeepCopy(
         const Ligaments& other);
 
+
     ///
     /// \brief Returns all the ligaments. It sorts the ligaments by group
     /// \return All the ligament
     ///
-    const std::vector<std::shared_ptr<Ligament>>& ligaments() const;
+    const std::vector<std::shared_ptr<Ligament>> ligaments() const;
+
 
     ///
     /// \brief Returns a specific ligament sorted by ligaments()
@@ -76,7 +78,15 @@ public:
     /// \return The ligament
     ///
     ///
-    const std::shared_ptr<Ligament>& ligament(unsigned int idx);
+    Ligament& ligament(unsigned int idx);
+
+    ///
+    /// \brief Returns a specific ligament sorted by ligaments()
+    /// \param idx The ligament index
+    /// \return The ligament
+    ///
+    ///
+    const Ligament& ligament(unsigned int idx) const;
 
     ///
     /// \brief ligamentNames Return the names for all the ligament ordered by their
