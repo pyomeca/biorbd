@@ -11,10 +11,6 @@
 #include "InternalForces/Ligaments/Characteristics.h"
 #include "InternalForces/Ligaments/LigamentConstant.h"
 
-#ifdef USE_SMOOTH_IF_ELSE
-#include "Utils/CasadiExpand.h"
-#endif
-
 using namespace BIORBD_NAMESPACE;
 internal_forces::ligaments::LigamentConstant::LigamentConstant() :
     internal_forces::ligaments::Ligament(),
@@ -94,15 +90,5 @@ void internal_forces::ligaments::LigamentConstant::setType()
 
 void internal_forces::ligaments::LigamentConstant::computeFl()
 {
-#ifdef BIORBD_USE_CASADI_MATH
-    *m_Fl = IF_ELSE_NAMESPACE::if_else_zero(
-                  IF_ELSE_NAMESPACE::gt(position().length(), characteristics().ligamentSlackLength()),
-                  *m_force);
-#else
-    if (position().length() > characteristics().ligamentSlackLength()) {
-        *m_Fl = *m_force;
-    } else {
-        *m_Fl = 0;
-    }
-#endif
+    *m_Fl = *m_force;
 }

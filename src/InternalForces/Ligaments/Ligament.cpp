@@ -121,6 +121,7 @@ void internal_forces::ligaments::Ligament::updateOrientations(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
     int updateKin)
+
 {
     // Update de la position des insertions et origines
     m_position->updateKinematics(model,*m_pathChanger,&Q,&Qdot, updateKin);
@@ -162,7 +163,6 @@ const utils::Scalar& internal_forces::ligaments::Ligament::length(
     if (updateKin != 0) {
         m_position->updateKinematics(model,*m_pathChanger,&Q,nullptr,updateKin);
     }
-
     return position().length();
 }
 

@@ -561,7 +561,7 @@ TEST(ligamentForce, force)
     }
 }
 
-TEST(LigamentForce, torqueFromLigaments)
+TEST(LigamentTorque, torqueFromLigaments)
 {
     Model model(modelPathForGenericTest);
     rigidbody::GeneralizedCoordinates Q(model);

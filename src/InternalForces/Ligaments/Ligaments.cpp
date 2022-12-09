@@ -46,28 +46,31 @@ void internal_forces::ligaments::Ligaments::DeepCopy(
     m_ligaments->resize(other.m_ligaments->size());
     for (unsigned int i=0; i<other.m_ligaments->size(); ++i) {
         if ((*other.m_ligaments)[i]->type() == internal_forces::ligaments::LIGAMENT_TYPE::LIGAMENT_CONSTANT) {
-            (*m_ligaments)[i] = std::make_shared<internal_forces::ligaments::LigamentConstant>
-                    (static_cast<const internal_forces::ligaments::LigamentConstant&>(*(*other.m_ligaments)[i]));
+            (*m_ligaments)[i] = std::make_shared<internal_forces::ligaments::LigamentConstant>((*other.m_ligaments)[i]);
             return;
         } else if ((*other.m_ligaments)[i]->type() == internal_forces::ligaments::LIGAMENT_TYPE::LIGAMENT_SPRING_LINEAR) {
-            (*m_ligaments)[i] = std::make_shared<internal_forces::ligaments::LigamentSpringLinear>
-                    (static_cast<const internal_forces::ligaments::LigamentSpringLinear&>(*(*other.m_ligaments)[i]));
+            (*m_ligaments)[i] = std::make_shared<internal_forces::ligaments::LigamentSpringLinear>((*other.m_ligaments)[i]);
             return;
         } else if ((*other.m_ligaments)[i]->type() == internal_forces::ligaments::LIGAMENT_TYPE::LIGAMENT_SPRING_SECOND_ORDER) {
-            (*m_ligaments)[i] = std::make_shared<internal_forces::ligaments::LigamentSpringSecondOrder>
-                    (static_cast<const internal_forces::ligaments::LigamentSpringSecondOrder&>(*(*other.m_ligaments)[i]));
+            (*m_ligaments)[i] = std::make_shared<internal_forces::ligaments::LigamentSpringSecondOrder>((*other.m_ligaments)[i]);
             return;
         }
     }
+    *m_ligaments = *other.m_ligaments;
 }
 
-const std::shared_ptr<internal_forces::ligaments::Ligament>&
-internal_forces::ligaments::Ligaments::ligament(
-    unsigned int idx)
+internal_forces::ligaments::Ligament& internal_forces::ligaments::Ligaments::ligament(unsigned int idx)
 {
     utils::Error::check(idx<nbLigaments(),
                                 "Idx asked is higher than number of ligaments");
-    return (*m_ligaments)[idx];
+    return *(*m_ligaments)[idx];
+}
+
+const internal_forces::ligaments::Ligament& internal_forces::ligaments::Ligaments::ligament(unsigned int idx) const
+{
+    utils::Error::check(idx<nbLigaments(),
+                                "Idx asked is higher than number of ligaments");
+    return *(*m_ligaments)[idx];
 }
 
 void internal_forces::ligaments::Ligaments::addLigament(
@@ -75,14 +78,11 @@ void internal_forces::ligaments::Ligaments::addLigament(
 {
     // Add a passive torque to the pool of passive torques according to its type
     if (ligamentTp.type() == internal_forces::ligaments::LIGAMENT_TYPE::LIGAMENT_CONSTANT) {
-        m_ligaments->push_back(std::make_shared<internal_forces::ligaments::LigamentConstant>
-                (static_cast<const internal_forces::ligaments::LigamentConstant&>(ligamentTp)));
+        m_ligaments->push_back(std::make_shared<internal_forces::ligaments::LigamentConstant>(ligamentTp));
     } else if (ligamentTp.type() == internal_forces::ligaments::LIGAMENT_TYPE::LIGAMENT_SPRING_LINEAR) {
-        m_ligaments->push_back(std::make_shared<internal_forces::ligaments::LigamentSpringLinear>
-                (static_cast<const internal_forces::ligaments::LigamentSpringLinear&>(ligamentTp)));
+        m_ligaments->push_back(std::make_shared<internal_forces::ligaments::LigamentSpringLinear>(ligamentTp));
     } else if (ligamentTp.type() == internal_forces::ligaments::LIGAMENT_TYPE::LIGAMENT_SPRING_SECOND_ORDER) {
-        m_ligaments->push_back(std::make_shared<internal_forces::ligaments::LigamentSpringSecondOrder>
-                (static_cast<const internal_forces::ligaments::LigamentSpringSecondOrder&>(ligamentTp)));
+        m_ligaments->push_back(std::make_shared<internal_forces::ligaments::LigamentSpringSecondOrder>(ligamentTp));
     } else {
         utils::Error::raise("Ligament type not found");
     }
@@ -94,7 +94,7 @@ std::vector<utils::String> internal_forces::ligaments::Ligaments::ligamentNames(
     std::vector<utils::String> names;
     for (unsigned int i=0; i<m_ligaments->size(); ++i)
     {
-        names.push_back(((*m_ligaments)[i])->name());
+        names.push_back((*m_ligaments)[i]->name());
     }
     return names;
 }
@@ -145,6 +145,7 @@ utils::Vector internal_forces::ligaments::Ligaments::ligamentForces(
         forces(j) = ((*m_ligaments)[j]->force(model,Q, QDot));
     }
 
+
     // The forces
     return forces;
 }
@@ -189,10 +190,14 @@ unsigned int internal_forces::ligaments::Ligaments::nbLigaments() const
     return static_cast<unsigned int>(m_ligaments->size());
 }
 
-const std::vector<std::shared_ptr<internal_forces::ligaments::Ligament>>&
+const std::vector<std::shared_ptr<internal_forces::ligaments::Ligament>>
         internal_forces::ligaments::Ligaments::ligaments() const
 {
-    return *m_ligaments;
+    std::vector<std::shared_ptr<internal_forces::ligaments::Ligament>> ligaments;
+    for (auto ligament: *m_ligaments){
+        ligaments.push_back(ligament);
+    }
+    return ligaments;
 }
 
 int internal_forces::ligaments::Ligaments::ligamentID(const utils::String&

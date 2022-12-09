@@ -17,7 +17,6 @@ class Vector3d;
 
 namespace internal_forces
 {
-class Compound;
 
 namespace muscles
 {
