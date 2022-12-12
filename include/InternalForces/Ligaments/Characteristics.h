@@ -62,19 +62,6 @@ public:
         const Characteristics& other);
 
     ///
-    /// \brief Set the maximal isometric force
-    /// \param val Value of the maximal isometric force
-    ///
-    void setRate(
-        const utils::Scalar& val);
-
-    ///
-    /// \brief Return the maximal isometric force at optimal length
-    /// \return The maximal isometric force
-    ///
-    const utils::Scalar& rate() const;
-
-    ///
     /// \brief Set the tendon slack length
     /// \param val Value of the tendon slack length
     ///

@@ -44,7 +44,7 @@ public:
     ///
     Ligament(
         const utils::String& name,
-        const Geometry& position,
+        const internal_forces::Geometry& position,
         const Characteristics& characteristics);
 
     ///
@@ -56,7 +56,7 @@ public:
     ///
     Ligament(
         const utils::String& name,
-        const Geometry& position,
+        const internal_forces::Geometry& position,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers);
 
@@ -163,13 +163,13 @@ public:
     /// \param positions New value of the position
     ///
     void setPosition(
-        const Geometry &positions);
+        const internal_forces::Geometry &positions);
 
     ///
     /// \brief Return the position of all the points attached to the ligament (0 being the origin)
     /// \return The positions
     ///
-    const Geometry& position() const;
+    const internal_forces::Geometry& position() const;
 
     ///
     /// \brief Set the ligament characteristics
@@ -267,7 +267,7 @@ protected:
     ///
     virtual void setType();
 
-    std::shared_ptr<Geometry> m_position; ///< The position of all the nodes of the ligament (0 being the origin and last being insertion
+    std::shared_ptr<internal_forces::Geometry> m_position; ///< The position of all the nodes of the ligament (0 being the origin and last being insertion
     std::shared_ptr<LIGAMENT_TYPE> m_type; ///< The type of the ligament
     std::shared_ptr<Characteristics> m_characteristics; ///< The ligament characteristics
     std::shared_ptr<utils::Scalar> m_damping; ///< The ligament damping term

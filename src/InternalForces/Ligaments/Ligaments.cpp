@@ -190,14 +190,16 @@ unsigned int internal_forces::ligaments::Ligaments::nbLigaments() const
     return static_cast<unsigned int>(m_ligaments->size());
 }
 
-const std::vector<std::shared_ptr<internal_forces::ligaments::Ligament>>
+std::vector<std::shared_ptr<internal_forces::ligaments::Ligament>>&
+        internal_forces::ligaments::Ligaments::ligaments()
+{
+    return *m_ligaments;
+}
+
+const std::vector<std::shared_ptr<internal_forces::ligaments::Ligament>>&
         internal_forces::ligaments::Ligaments::ligaments() const
 {
-    std::vector<std::shared_ptr<internal_forces::ligaments::Ligament>> ligaments;
-    for (auto ligament: *m_ligaments){
-        ligaments.push_back(ligament);
-    }
-    return ligaments;
+    return *m_ligaments;
 }
 
 int internal_forces::ligaments::Ligaments::ligamentID(const utils::String&

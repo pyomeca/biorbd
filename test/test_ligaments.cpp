@@ -12,7 +12,6 @@
 #include "RigidBody/NodeSegment.h"
 #include "InternalForces/Ligaments/all.h"
 #include "InternalForces/all.h"
-#include "InternalForces/Muscles/all.h"
 
 #include "Utils/String.h"
 #include "Utils/RotoTrans.h"
@@ -45,18 +44,11 @@ TEST(constant, unitTest)
         Model model(modelPathForGenericTest);
         internal_forces::ligaments::LigamentConstant ligamentConstant(
             model.ligament(ligamentConstantType));
-        internal_forces::muscles::HillDeGrooteType Muscle(model.muscle(0));
         rigidbody::GeneralizedCoordinates Q(model);
         rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
         ligamentConstant.updateOrientations(model, Q, qDot);
-        utils::Vector3d insertion(ligamentConstant.position().insertionInLocal());
-        insertion.set(0.5, 0.6, 0.7);
-        ligamentConstant.updateOrientations(model, Q, qDot);
-        utils::Vector3d insertionm(Muscle.position().insertionInLocal());
-        insertionm.set(0.5, 0.6, 0.7);
-        Muscle.updateOrientations(model, Q, qDot);
         SCALAR_TO_DOUBLE(fl, ligamentConstant.Fl());
         SCALAR_TO_DOUBLE(damping, ligamentConstant.damping());
         EXPECT_NEAR(fl, 500, requiredPrecision);
@@ -151,7 +143,6 @@ TEST(constant, copy)
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
         ligamentConstant.updateOrientations(model, Q);
-
         internal_forces::ligaments::LigamentConstant shallowCopy(ligamentConstant);
         internal_forces::ligaments::LigamentConstant deepCopyNow(ligamentConstant.DeepCopy());
         internal_forces::ligaments::LigamentConstant deepCopyLater;

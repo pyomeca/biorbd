@@ -17,13 +17,12 @@ internal_forces::ligaments::LigamentConstant::LigamentConstant() :
     m_force(std::make_shared<utils::Scalar>())
 {
     setType();
-
 }
 
 internal_forces::ligaments::LigamentConstant::LigamentConstant(
     const utils::Scalar &force,
-    const utils::String & name,
-    const internal_forces::Geometry & position,
+    const utils::String &name,
+    const internal_forces::Geometry &position,
     const internal_forces::ligaments::Characteristics &characteristics) :
     internal_forces::ligaments::Ligament(name,position,characteristics),
     m_force(std::make_shared<utils::Scalar>(force))
@@ -57,7 +56,7 @@ internal_forces::ligaments::LigamentConstant::LigamentConstant(
     const internal_forces::ligaments::Ligament &other) :
     internal_forces::ligaments::Ligament (other)
 {
-    const internal_forces::ligaments::LigamentConstant & ligament_tp(
+    const internal_forces::ligaments::LigamentConstant &ligament_tp(
         dynamic_cast<const internal_forces::ligaments::LigamentConstant &>(other));
     m_force = ligament_tp.m_force;
 }

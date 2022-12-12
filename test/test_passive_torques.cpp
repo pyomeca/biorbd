@@ -64,7 +64,7 @@ TEST(PassiveTorqueExponential, passiveTorque)
     std::vector<double> val = {1.1, 1.1, 1.1};
     FILL_VECTOR(Q, val);
     FILL_VECTOR(Qdot, val);
-    double torqueExponentialExpected(9.7451497442067581);
+    double torqueExponentialExpected(27.237093441022679);
     internal_forces::passive_torques::PassiveTorqueExponential exponential_torque_act(2, 2, 5, 5, 1, 8, 5, 2, 1, 2, 2);
     CALL_BIORBD_FUNCTION_2ARGS(torqueExponentialVal, exponential_torque_act, passiveTorque, Q, Qdot);
 #ifdef BIORBD_USE_CASADI_MATH
@@ -111,7 +111,7 @@ TEST(PassiveTorques, jointTorqueFromAllTypesOfPassiveTorque)
     }
     FILL_VECTOR(QDot, QDot_val);
 
-    std::vector<double> torqueExpected = {3.100000000000000, -3.6805281422372751, 5};
+    std::vector<double> torqueExpected = {3.100000000000000, -22.237006567213825, 5};
 
     CALL_BIORBD_FUNCTION_2ARGS(tau, model, passiveJointTorque, Q, QDot);
 #ifdef BIORBD_USE_CASADI_MATH

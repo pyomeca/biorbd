@@ -1079,19 +1079,19 @@ void Reader::readModelFile(
                 }
                 // Verify that everything is there
                 utils::Error::check(isTypeSet!=0, "Ligament type must be defined");
-                internal_forces::ligaments::Ligament* ligament;
+                std::shared_ptr<internal_forces::ligaments::Ligament> ligament;
                 utils::Error::check(insersion != "" && origin != "", "Insersion and origin of the ligament need to be defined.");
                 internal_forces::Geometry geo(utils::Vector3d(origin_pos, name + "_origin", origin), utils::Vector3d(insert_pos, name + "_insersion", insersion));
                 internal_forces::ligaments::Characteristics characteristics(ligamentSlackLength,dampingFactor,maxShorteningSpeed);
                 if (!type.tolower().compare("constant")) {
                     utils::Error::check(std::isnan(force) == 0 && std::isnan(ligamentSlackLength) == 0, "Make sure all parameters are defined");
-                    ligament = new internal_forces::ligaments::LigamentConstant(force, name, geo, characteristics);
+                    ligament = std::make_shared<internal_forces::ligaments::LigamentConstant>(force, name, geo, characteristics);
                 } else if (!type.tolower().compare("linearspring")) {
                     utils::Error::check(std::isnan(stiffness) == 0 && std::isnan(ligamentSlackLength) == 0,"Make sure all parameters are defined");
-                    ligament = new internal_forces::ligaments::LigamentSpringLinear(stiffness,name, geo, characteristics);
+                    ligament = std::make_shared<internal_forces::ligaments::LigamentSpringLinear>(stiffness,name, geo, characteristics);
                 } else if (!type.tolower().compare("secondorderspring")) {
                     utils::Error::check(std::isnan(stiffness) == 0 && std::isnan(ligamentSlackLength) == 0,"Make sure all parameters are defined");
-                    ligament = new internal_forces::ligaments::LigamentSpringSecondOrder(stiffness, epsilon,name,geo, characteristics);
+                    ligament = std::make_shared<internal_forces::ligaments::LigamentSpringSecondOrder>(stiffness, epsilon,name,geo, characteristics);
                 } else {
                     utils::Error::raise("Ligament type do not correspond to an implemented one");
                 }

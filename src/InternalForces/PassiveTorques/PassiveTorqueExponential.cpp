@@ -133,7 +133,7 @@ utils::Scalar internal_forces::passive_torques::PassiveTorqueExponential::passiv
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedCoordinates &Qdot) const
 {
-    return (*m_b1 * exp(*m_k1 * (Q[*m_dofIdx] * - *m_qMid)) + *m_b2 * exp(*m_k2 * (Q[*m_dofIdx] * - *m_qMid)))
+    return (*m_b1 * exp(*m_k1 * (Q[*m_dofIdx] - *m_qMid)) + *m_b2 * exp(*m_k2 * (Q[*m_dofIdx] - *m_qMid)))
             * (1 - *m_pBeta * (Qdot[*m_dofIdx] /
             (*m_sV * *m_wMax))) * (Q[*m_dofIdx] - *m_deltaP) + *m_tauEq;
 }

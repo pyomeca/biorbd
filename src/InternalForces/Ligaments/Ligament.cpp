@@ -26,7 +26,6 @@ internal_forces::ligaments::Ligament::Ligament() :
 
 {
     setType();
-
 }
 
 internal_forces::ligaments::Ligament::Ligament(
@@ -41,7 +40,7 @@ internal_forces::ligaments::Ligament::Ligament(
     m_Fl(std::make_shared<utils::Scalar>()),
     m_damping(std::make_shared<utils::Scalar>())
 {
-
+    setType();
 }
 
 internal_forces::ligaments::Ligament::Ligament(
@@ -57,11 +56,11 @@ internal_forces::ligaments::Ligament::Ligament(
     m_Fl(std::make_shared<utils::Scalar>()),
     m_damping(std::make_shared<utils::Scalar>())
 {
-
+    setType();
 }
 
 internal_forces::ligaments::Ligament::Ligament(const internal_forces::ligaments::Ligament &other) :
-    internal_forces::Compound(other),
+    internal_forces::Compound (other),
     m_position(other.m_position),
     m_type(other.m_type),
     m_characteristics(other.m_characteristics),
