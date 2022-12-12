@@ -1039,7 +1039,7 @@ void Reader::readModelFile(
                 file.read(name);
                 utils::String type;
                 utils::String origin;
-                utils::String insersion;
+                utils::String insertion;
                 bool isTypeSet  = false;
                 utils::Vector3d origin_pos(0,0,0);
                 utils::Vector3d insert_pos(0,0,0);
@@ -1069,8 +1069,8 @@ void Reader::readModelFile(
                         file.read(force, variable);
                     } else if (!property_tag.tolower().compare("origin")) {
                         file.read(origin);
-                    } else if (!property_tag.tolower().compare("insersion")) {
-                        file.read(insersion);
+                    } else if (!property_tag.tolower().compare("insertion")) {
+                        file.read(insertion);
                     } else if (!property_tag.tolower().compare("dampingfactor")){
                         file.read(dampingFactor, variable);
                     } else if (!property_tag.tolower().compare("maxshorteningspeed")){
@@ -1080,7 +1080,7 @@ void Reader::readModelFile(
                 // Verify that everything is there
                 utils::Error::check(isTypeSet!=0, "Ligament type must be defined");
                 std::shared_ptr<internal_forces::ligaments::Ligament> ligament;
-                utils::Error::check(insersion != "" && origin != "", "Insersion and origin of the ligament need to be defined.");
+                utils::Error::check(insertion != "" && origin != "", "Insertion and origin of the ligament need to be defined.");
                 internal_forces::Geometry geo(utils::Vector3d(origin_pos, name + "_origin", origin), utils::Vector3d(insert_pos, name + "_insersion", insersion));
                 internal_forces::ligaments::Characteristics characteristics(ligamentSlackLength,dampingFactor,maxShorteningSpeed);
                 if (!type.tolower().compare("constant")) {
