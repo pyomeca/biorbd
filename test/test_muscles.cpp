@@ -299,7 +299,7 @@ TEST(IdealizedActuator, copy)
             internal_forces::muscles::Characteristics charac(idealizedActuator.characteristics());
             charac.setPennationAngle(0.523599);
             utils::Vector3d insertion(
-                idealizedActuator.position().insertionInLocal());
+            idealizedActuator.position().insertionInLocal());
             insertion.set(0.2, 0.2, 0.2);
             const_cast<internal_forces::muscles::MuscleGeometry&>
             (idealizedActuator.position()).setInsertionInLocal(insertion);

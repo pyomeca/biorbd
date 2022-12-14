@@ -1204,9 +1204,9 @@ void Reader::readModelFile(
                 utils::String musclegroup("");
                 bool isMuscle = false;
                 bool isLigament = false;
-                int iMuscleGroup(-1);
-                int iLigament(-1);
-                int iMuscle(-1);
+                int idxMuscleGroup(-1);
+                int idxLigament(-1);
+                int idxMuscle(-1);
                 utils::String ligament("");
                 internal_forces::ViaPoint position(0,0,0);
 
@@ -1238,16 +1238,16 @@ void Reader::readModelFile(
                 position.setName(name);
                 position.setParent(parent);
                 if (isMuscle){
-                    iMuscleGroup = model->getMuscleGroupId(musclegroup);
-                    utils::Error::check(iMuscleGroup!=-1, "No muscle group was provided!");
-                    iMuscle = model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscleID(
+                    idxMuscleGroup = model->getMuscleGroupId(musclegroup);
+                    utils::Error::check(idxMuscleGroup!=-1, "No muscle group was provided!");
+                    idxMuscle = model->muscleGroup(static_cast<unsigned int>(idxMuscleGroup)).muscleID(
                                   muscle);
-                    utils::Error::check(iMuscle!=-1, "No muscle was provided!");
-                    model->muscleGroup(static_cast<unsigned int>(iMuscleGroup))
-                    .muscle(static_cast<unsigned int>(iMuscle)).addPathObject(position);
+                    utils::Error::check(idxMuscle!=-1, "No muscle was provided!");
+                    model->muscleGroup(static_cast<unsigned int>(idxMuscleGroup))
+                    .muscle(static_cast<unsigned int>(idxMuscle)).addPathObject(position);
                 } else if (isLigament) {
-                    iLigament = model->ligamentID(ligament);
-                    model->ligament(static_cast<unsigned int>(iLigament)).addPathObject(position);
+                    idxLigament = model->ligamentID(ligament);
+                    model->ligament(static_cast<unsigned int>(idxLigament)).addPathObject(position);
                 }
             } else if (!main_tag.tolower().compare("wrapping")) {
                 utils::String name;
@@ -1257,12 +1257,12 @@ void Reader::readModelFile(
                 utils::String muscle("");
                 utils::String musclegroup("");
                 utils::String wrapType("");
-                int iMuscleGroup(-1);
-                int iMuscle(-1);
+                int idxMuscleGroup(-1);
+                int idxMuscle(-1);
                 utils::String ligament("");
                 bool isMuscle=false;
                 bool isLigament=false;
-                int iLigament(-1);
+                int idxLigament(-1);
                 utils::String parent("");
                 utils::RotoTrans RT;
                 bool isRTset(false);
@@ -1315,16 +1315,16 @@ void Reader::readModelFile(
                 }
                 internal_forces::WrappingHalfCylinder cylinder(RT,radius,length,name,parent);
                 if (isMuscle) {
-                    iMuscleGroup = model->getMuscleGroupId(musclegroup);
-                    utils::Error::check(iMuscleGroup!=-1, "No muscle group was provided!");
-                    iMuscle = model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscleID(
+                    idxMuscleGroup = model->getMuscleGroupId(musclegroup);
+                    utils::Error::check(idxMuscleGroup!=-1, "No muscle group was provided!");
+                    idxMuscle = model->muscleGroup(static_cast<unsigned int>(idxMuscleGroup)).muscleID(
                                   muscle);
-                    utils::Error::check(iMuscle!=-1, "No muscle was provided!");
-                    model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscle(
-                        static_cast<unsigned int>(iMuscle)).addPathObject(cylinder);
+                    utils::Error::check(idxMuscle!=-1, "No muscle was provided!");
+                    model->muscleGroup(static_cast<unsigned int>(idxMuscleGroup)).muscle(
+                        static_cast<unsigned int>(idxMuscle)).addPathObject(cylinder);
                  } else if (isLigament) {
-                    iLigament = model->ligamentID(ligament);
-                    model->ligament(static_cast<unsigned int>(iLigament)).addPathObject(cylinder);
+                    idxLigament = model->ligamentID(ligament);
+                    model->ligament(static_cast<unsigned int>(idxLigament)).addPathObject(cylinder);
                  }
             }
         }
