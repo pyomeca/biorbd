@@ -162,6 +162,8 @@ TEST(constant, copy)
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
         utils::Vector3d insertion(ligamentConstant.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
+        const_cast<internal_forces::Geometry&>
+        (ligamentConstant.position()).setInsertionInLocal(insertion);
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
@@ -171,8 +173,8 @@ TEST(constant, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.07570761027741163, requiredPrecision);
+            EXPECT_NEAR(length, 1.1421654476456886, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 1.1421654476456886, requiredPrecision);
             EXPECT_NEAR(deepCopyNowLength, 0.14927574026595969, requiredPrecision);
             EXPECT_NEAR(deepCopyLaterLength, 0.14927574026595969, requiredPrecision);
             EXPECT_EQ(ligamentConstant.position().insertionInLocal().utils::Node::name(),
@@ -322,6 +324,8 @@ TEST(springLinear, copy)
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
         utils::Vector3d insertion(ligamentSpringLinear.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
+        const_cast<internal_forces::Geometry&>
+        (ligamentSpringLinear.position()).setInsertionInLocal(insertion);
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
@@ -333,8 +337,8 @@ TEST(springLinear, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.07570761027741163, requiredPrecision);
+            EXPECT_NEAR(length, 0.97513625610637888, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 0.97513625610637888, requiredPrecision);
             EXPECT_NEAR(deepCopyNowLength, 0.14083430313088782, requiredPrecision);
             EXPECT_NEAR(deepCopyLaterLength, 0.14083430313088782, requiredPrecision);
             EXPECT_EQ(ligamentSpringLinear.position().insertionInLocal().utils::Node::name(),
@@ -486,6 +490,8 @@ TEST(springSecondOrder, copy)
         // Change the position of the insertion and pennation angle and compare again (length and insertion in Local)
         utils::Vector3d insertion(ligamentSpringSecondOrder.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
+        const_cast<internal_forces::Geometry&>
+        (ligamentSpringSecondOrder.position()).setInsertionInLocal(insertion);
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
@@ -497,8 +503,8 @@ TEST(springSecondOrder, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.07570761027741163, requiredPrecision);
+            EXPECT_NEAR(length, 0.97513625610637888, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 0.97513625610637888, requiredPrecision);
             EXPECT_NEAR(deepCopyNowLength, 0.14083430313088782, requiredPrecision);
             EXPECT_NEAR(deepCopyLaterLength, 0.14083430313088782, requiredPrecision);
             EXPECT_EQ(ligamentSpringSecondOrder.position().insertionInLocal().utils::Node::name(),

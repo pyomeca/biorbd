@@ -399,7 +399,7 @@ endmusclegroup
     ligament    lig1
         Type    constant
         origin	r_humerus
-        insersion	r_ulna_radius_hand
+        insertion	r_ulna_radius_hand
         force	500
         OriginPosition    0.0067999999999999996 -0.1739 -0.0035999999999999999
         InsertionPosition    -0.0032000000000000002 -0.023900000000000001 0.00089999999999999998
@@ -417,7 +417,7 @@ endmusclegroup
         Type    linearspring
         stiffness	500
         origin	r_humerus
-        insersion	r_ulna_radius_hand
+        insertion	r_ulna_radius_hand
         OriginPosition    0.0067999999999999996 -0.1739 -0.0035999999999999999
         InsertionPosition    -0.0032000000000000002 -0.023900000000000001 0.00089999999999999998
         ligamentslacklength    0.085800000000000001
@@ -430,7 +430,7 @@ endmusclegroup
         stiffness 500
         epsilon 0.5
         origin r_humerus
-        insersion r_ulna_radius_hand
+        insertion r_ulna_radius_hand
         OriginPosition    0.0067999999999999996 -0.1739 -0.0035999999999999999
         InsertionPosition    -0.0032000000000000002 -0.023900000000000001 0.00089999999999999998
         ligamentslacklength    0.085800000000000001

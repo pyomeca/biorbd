@@ -301,6 +301,8 @@ TEST(IdealizedActuator, copy)
             utils::Vector3d insertion(
                 idealizedActuator.position().insertionInLocal());
             insertion.set(0.2, 0.2, 0.2);
+            const_cast<internal_forces::muscles::MuscleGeometry&>
+            (idealizedActuator.position()).setInsertionInLocal(insertion);
             utils::String oldName(insertion.utils::Node::name());
             utils::String newName("MyNewName");
             insertion.setName(newName);
@@ -311,8 +313,8 @@ TEST(IdealizedActuator, copy)
                 SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
                 SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
                 SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-                EXPECT_NEAR(length, 0.07570761027741163, requiredPrecision);
-                EXPECT_NEAR(shallowCopyLength, 0.07570761027741163, requiredPrecision);
+                EXPECT_NEAR(length, 0.45796092269003846, requiredPrecision);
+                EXPECT_NEAR(shallowCopyLength, 0.45796092269003846, requiredPrecision);
                 EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
                 EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
                 EXPECT_EQ(
@@ -606,6 +608,8 @@ TEST(hillType, copy)
         charac.setPennationAngle(0.523599);
         utils::Vector3d insertion(hillType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
+        const_cast<internal_forces::muscles::MuscleGeometry&>
+        (hillType.position()).setInsertionInLocal(insertion);
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
@@ -617,8 +621,8 @@ TEST(hillType, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.07570761027741163, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.07570761027741163, requiredPrecision);
+            EXPECT_NEAR(length, 1.2655089931238894, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 1.2655089931238894, requiredPrecision);
             EXPECT_NEAR(deepCopyNowLength, 0.066381977535807504, requiredPrecision);
             EXPECT_NEAR(deepCopyLaterLength, 0.066381977535807504, requiredPrecision);
             EXPECT_EQ(hillType.position().insertionInLocal().utils::Node::name(),
@@ -851,6 +855,8 @@ TEST(hillThelenType, copy)
         charac.setPennationAngle(0.523599);
         utils::Vector3d insertion(hillThelenType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
+        const_cast<internal_forces::muscles::MuscleGeometry&>
+        (hillThelenType.position()).setInsertionInLocal(insertion);
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
@@ -861,8 +867,8 @@ TEST(hillThelenType, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.08167994915631771, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.08167994915631771, requiredPrecision);
+            EXPECT_NEAR(length, 1.2714813320027956, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 1.2714813320027956, requiredPrecision);
             EXPECT_NEAR(deepCopyNowLength, 0.071618646132835737, requiredPrecision);
             EXPECT_NEAR(deepCopyLaterLength, 0.071618646132835737, requiredPrecision);
             EXPECT_EQ(
@@ -1099,6 +1105,8 @@ TEST(hillThelenActiveType, copy)
         charac.setPennationAngle(0.523599);
         utils::Vector3d insertion(hillThelenType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
+        const_cast<internal_forces::muscles::MuscleGeometry&>
+        (hillThelenType.position()).setInsertionInLocal(insertion);
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
@@ -1109,8 +1117,8 @@ TEST(hillThelenActiveType, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.08167994915631771, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.08167994915631771, requiredPrecision);
+            EXPECT_NEAR(length, 1.2714813320027956, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 1.2714813320027956, requiredPrecision);
             EXPECT_NEAR(deepCopyNowLength, 0.071618646132835737, requiredPrecision);
             EXPECT_NEAR(deepCopyLaterLength, 0.071618646132835737, requiredPrecision);
             EXPECT_EQ(
@@ -1350,6 +1358,8 @@ TEST(hillDeGrooteActiveType, copy)
         charac.setPennationAngle(0.523599);
         utils::Vector3d insertion(hillDeGrooteType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
+        const_cast<internal_forces::muscles::MuscleGeometry&>
+        (hillDeGrooteType.position()).setInsertionInLocal(insertion);
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
@@ -1360,8 +1370,8 @@ TEST(hillDeGrooteActiveType, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.17069190308087542, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.17069190308087542, requiredPrecision);
+            EXPECT_NEAR(length, 1.1030846548794651, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 1.1030846548794651, requiredPrecision);
             EXPECT_NEAR(deepCopyNowLength, 0.14782350513656897, requiredPrecision);
             EXPECT_NEAR(deepCopyLaterLength, 0.14782350513656897, requiredPrecision);
             EXPECT_EQ(
@@ -1781,6 +1791,8 @@ TEST(hillDeGrooteType, copy)
         charac.setPennationAngle(0.523599);
         utils::Vector3d insertion(hillDeGrooteType.position().insertionInLocal());
         insertion.set(0.5, 0.6, 0.7);
+        const_cast<internal_forces::muscles::MuscleGeometry&>
+        (hillDeGrooteType.position()).setInsertionInLocal(insertion);
         utils::String oldName(insertion.utils::Node::name());
         utils::String newName("MyNewName");
         insertion.setName(newName);
@@ -1791,8 +1803,8 @@ TEST(hillDeGrooteType, copy)
             SCALAR_TO_DOUBLE(shallowCopyLength, shallowCopy.position().length());
             SCALAR_TO_DOUBLE(deepCopyNowLength, deepCopyNow.position().length());
             SCALAR_TO_DOUBLE(deepCopyLaterLength, deepCopyLater.position().length());
-            EXPECT_NEAR(length, 0.17069190308087542, requiredPrecision);
-            EXPECT_NEAR(shallowCopyLength, 0.17069190308087542, requiredPrecision);
+            EXPECT_NEAR(length, 1.1030846548794651, requiredPrecision);
+            EXPECT_NEAR(shallowCopyLength, 1.1030846548794651, requiredPrecision);
             EXPECT_NEAR(deepCopyNowLength, 0.14782350513656897, requiredPrecision);
             EXPECT_NEAR(deepCopyLaterLength, 0.14782350513656897, requiredPrecision);
             EXPECT_EQ(
