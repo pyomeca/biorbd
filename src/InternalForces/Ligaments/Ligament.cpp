@@ -20,7 +20,7 @@ internal_forces::ligaments::Ligament::Ligament() :
     internal_forces::Compound(),
     m_position(std::make_shared<internal_forces::Geometry>()),
     m_type(std::make_shared<internal_forces::ligaments::LIGAMENT_TYPE>(internal_forces::ligaments::LIGAMENT_TYPE::NO_LIGAMENT_TYPE)),
-    m_characteristics(std::make_shared<internal_forces::ligaments::Characteristics>()),
+    m_characteristics(std::make_shared<internal_forces::ligaments::LigamentCharacteristics>()),
     m_Fl(std::make_shared<utils::Scalar>()),
     m_damping(std::make_shared<utils::Scalar>())
 
@@ -31,11 +31,11 @@ internal_forces::ligaments::Ligament::Ligament() :
 internal_forces::ligaments::Ligament::Ligament(
     const utils::String & name,
     const internal_forces::Geometry & position,
-    const internal_forces::ligaments::Characteristics &characteristics) :
+    const internal_forces::ligaments::LigamentCharacteristics &characteristics) :
     internal_forces::Compound(name),
     m_position(std::make_shared<internal_forces::Geometry>(position)),
     m_type(std::make_shared<internal_forces::ligaments::LIGAMENT_TYPE>(internal_forces::ligaments::LIGAMENT_TYPE::NO_LIGAMENT_TYPE)),
-    m_characteristics(std::make_shared<internal_forces::ligaments::Characteristics>
+    m_characteristics(std::make_shared<internal_forces::ligaments::LigamentCharacteristics>
                       (characteristics)),
     m_Fl(std::make_shared<utils::Scalar>()),
     m_damping(std::make_shared<utils::Scalar>())
@@ -46,12 +46,12 @@ internal_forces::ligaments::Ligament::Ligament(
 internal_forces::ligaments::Ligament::Ligament(
     const utils::String &name,
     const internal_forces::Geometry &position,
-    const internal_forces::ligaments::Characteristics &characteristics,
+    const internal_forces::ligaments::LigamentCharacteristics &characteristics,
     const internal_forces::PathModifiers &pathModifiers) :
     internal_forces::Compound(name, pathModifiers),
     m_position(std::make_shared<internal_forces::Geometry>(position)),
     m_type(std::make_shared<internal_forces::ligaments::LIGAMENT_TYPE>(internal_forces::ligaments::LIGAMENT_TYPE::NO_LIGAMENT_TYPE)),
-    m_characteristics(std::make_shared<internal_forces::ligaments::Characteristics>
+    m_characteristics(std::make_shared<internal_forces::ligaments::LigamentCharacteristics>
                       (characteristics)),
     m_Fl(std::make_shared<utils::Scalar>()),
     m_damping(std::make_shared<utils::Scalar>())
@@ -264,12 +264,12 @@ internal_forces::ligaments::Ligament::ligamentsPointsInGlobal() const
 }
 
 void internal_forces::ligaments::Ligament::setCharacteristics(
-    const internal_forces::ligaments::Characteristics &characteristics)
+    const internal_forces::ligaments::LigamentCharacteristics &characteristics)
 {
     *m_characteristics = characteristics;
 }
 
-const internal_forces::ligaments::Characteristics&
+const internal_forces::ligaments::LigamentCharacteristics&
 internal_forces::ligaments::Ligament::characteristics() const
 {
     return *m_characteristics;

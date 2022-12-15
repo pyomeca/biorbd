@@ -20,7 +20,7 @@ namespace internal_forces
 class Compound;
 namespace ligaments
 {
-class Characteristics;
+class LigamentCharacteristics;
 class Ligaments;
 
 ///
@@ -45,7 +45,7 @@ public:
     Ligament(
         const utils::String& name,
         const internal_forces::Geometry& position,
-        const Characteristics& characteristics);
+        const LigamentCharacteristics& characteristics);
 
     ///
     /// \brief Construct a ligament
@@ -57,7 +57,7 @@ public:
     Ligament(
         const utils::String& name,
         const internal_forces::Geometry& position,
-        const Characteristics& characteristics,
+        const LigamentCharacteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers);
 
     ///
@@ -176,13 +176,13 @@ public:
     /// \param characteristics New value of the ligament characteristics
     ///
     void setCharacteristics(
-        const Characteristics &characteristics);
+        const LigamentCharacteristics &characteristics);
 
     ///
     /// \brief Return the ligament characteristics
     /// \return The ligament characteristics
     ///
-    const Characteristics& characteristics() const;
+    const LigamentCharacteristics& characteristics() const;
 
     ///
     /// \brief Return the ligament points in global reference frame
@@ -269,7 +269,7 @@ protected:
 
     std::shared_ptr<internal_forces::Geometry> m_position; ///< The position of all the nodes of the ligament (0 being the origin and last being insertion
     std::shared_ptr<LIGAMENT_TYPE> m_type; ///< The type of the ligament
-    std::shared_ptr<Characteristics> m_characteristics; ///< The ligament characteristics
+    std::shared_ptr<LigamentCharacteristics> m_characteristics; ///< The ligament characteristics
     std::shared_ptr<utils::Scalar> m_damping; ///< The ligament damping term
 
     ///

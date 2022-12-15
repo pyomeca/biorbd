@@ -23,7 +23,7 @@ internal_forces::ligaments::LigamentConstant::LigamentConstant(
     const utils::Scalar &force,
     const utils::String &name,
     const internal_forces::Geometry &position,
-    const internal_forces::ligaments::Characteristics &characteristics) :
+    const internal_forces::ligaments::LigamentCharacteristics &characteristics) :
     internal_forces::ligaments::Ligament(name,position,characteristics),
     m_force(std::make_shared<utils::Scalar>(force))
 {
@@ -34,7 +34,7 @@ internal_forces::ligaments::LigamentConstant::LigamentConstant(
     const utils::Scalar &force,
     const utils::String &name,
     const internal_forces::Geometry &position,
-    const internal_forces::ligaments::Characteristics &characteristics,
+    const internal_forces::ligaments::LigamentCharacteristics &characteristics,
     const internal_forces::PathModifiers &pathModifiers) :
     internal_forces::ligaments::Ligament(name,position,characteristics,pathModifiers),
     m_force(std::make_shared<utils::Scalar>(force))

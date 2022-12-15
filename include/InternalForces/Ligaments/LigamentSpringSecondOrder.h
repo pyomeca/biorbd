@@ -39,7 +39,7 @@ public:
         const utils::Scalar& epsilon,
         const utils::String& name,
         const Geometry& geometry,
-        const Characteristics& characteristics);
+        const LigamentCharacteristics& characteristics);
 
     ///
     /// \brief Construct a second order spring like ligament
@@ -55,7 +55,7 @@ public:
         const utils::Scalar& epsilon,
         const utils::String& name,
         const Geometry& geometry,
-        const Characteristics& characteristics,
+        const LigamentCharacteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers);
 
     ///

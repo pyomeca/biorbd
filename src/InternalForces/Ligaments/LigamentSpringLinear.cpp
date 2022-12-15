@@ -28,7 +28,7 @@ internal_forces::ligaments::LigamentSpringLinear::LigamentSpringLinear(
     const utils::Scalar &stiffness,
     const utils::String & name,
     const internal_forces::Geometry & position,
-    const internal_forces::ligaments::Characteristics &characteristics) :
+    const internal_forces::ligaments::LigamentCharacteristics &characteristics) :
     internal_forces::ligaments::Ligament(name,position,characteristics),
     m_stiffness(std::make_shared<utils::Scalar>(stiffness))
 {
@@ -39,7 +39,7 @@ internal_forces::ligaments::LigamentSpringLinear::LigamentSpringLinear(
     const utils::Scalar &stiffness,
     const utils::String &name,
     const internal_forces::Geometry &position,
-    const internal_forces::ligaments::Characteristics &characteristics,
+    const internal_forces::ligaments::LigamentCharacteristics &characteristics,
     const internal_forces::PathModifiers &pathModifiers) :
     internal_forces::ligaments::Ligament(name,position,characteristics,pathModifiers),
     m_stiffness(std::make_shared<utils::Scalar>(stiffness))

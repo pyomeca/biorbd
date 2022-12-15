@@ -1082,7 +1082,7 @@ void Reader::readModelFile(
                 std::shared_ptr<internal_forces::ligaments::Ligament> ligament;
                 utils::Error::check(insertion != "" && origin != "", "Insertion and origin of the ligament need to be defined.");
                 internal_forces::Geometry geo(utils::Vector3d(origin_pos, name + "_origin", origin), utils::Vector3d(insert_pos, name + "_insersion", insertion));
-                internal_forces::ligaments::Characteristics characteristics(ligamentSlackLength,dampingFactor,maxShorteningSpeed);
+                internal_forces::ligaments::LigamentCharacteristics characteristics(ligamentSlackLength,dampingFactor,maxShorteningSpeed);
                 if (!type.tolower().compare("constant")) {
                     utils::Error::check(std::isnan(force) == 0 && std::isnan(ligamentSlackLength) == 0, "Make sure all parameters are defined");
                     ligament = std::make_shared<internal_forces::ligaments::LigamentConstant>(force, name, geo, characteristics);

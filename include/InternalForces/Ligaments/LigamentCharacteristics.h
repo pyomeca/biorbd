@@ -17,20 +17,20 @@ class FatigueParameters;
 ///
 /// \brief Class Holds that ligament characteristics
 ///
-class BIORBD_API Characteristics
+class BIORBD_API LigamentCharacteristics
 {
 public:
     ///
     /// \brief Construct characteristics
     ///
-    Characteristics();
+    LigamentCharacteristics();
 
     ///
     /// \brief Construct characteristics from other characteristics
     /// \param other The other characteristics
     ///
-    Characteristics(
-        const Characteristics& other);
+    LigamentCharacteristics(
+        const LigamentCharacteristics& other);
 
     ///
     /// \brief Construct characteristics
@@ -38,7 +38,7 @@ public:
     /// \param ligamentSlackLength The ligament slack length
     /// \param useDamping Use damping (default: false)
     ///
-    Characteristics(
+    LigamentCharacteristics(
         const utils::Scalar& ligamentSlackLength,
         const utils::Scalar& cste_damping = 0,
         const utils::Scalar& cste_maxShorteningSpeed = 1);
@@ -46,20 +46,20 @@ public:
     ///
     /// \brief Destroy the class properly
     ///
-    virtual ~Characteristics();
+    virtual ~LigamentCharacteristics();
 
     ///
     /// \brief Deep copy of characteristics
     /// \return A depp copy of characteristics
     ///
-    Characteristics DeepCopy() const;
+    LigamentCharacteristics DeepCopy() const;
 
     ///
     /// \brief Deep copy of characteristics from another characteristics
     /// \param other The characteristics to copy from
     ///
     void DeepCopy(
-        const Characteristics& other);
+        const LigamentCharacteristics& other);
 
     ///
     /// \brief Set the tendon slack length

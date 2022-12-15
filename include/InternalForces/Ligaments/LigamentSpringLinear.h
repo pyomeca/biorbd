@@ -36,7 +36,7 @@ public:
         const utils::Scalar& stiffness,
         const utils::String& name,
         const Geometry& geometry,
-        const Characteristics& characteristics);
+        const LigamentCharacteristics& characteristics);
 
     ///
     /// \brief Construct a linear spring like ligament
@@ -50,7 +50,7 @@ public:
         const utils::Scalar& stiffness,
         const utils::String& name,
         const Geometry& geometry,
-        const Characteristics& characteristics,
+        const LigamentCharacteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers);
 
     ///

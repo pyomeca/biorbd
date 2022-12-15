@@ -34,7 +34,7 @@ public:
         const utils::Scalar& force,
         const utils::String& name,
         const Geometry& geometry,
-        const Characteristics& characteristics);
+        const LigamentCharacteristics& characteristics);
 
     ///
     /// \brief Construct a ligament constant
@@ -47,7 +47,7 @@ public:
         const utils::Scalar& force,
         const utils::String& name,
         const Geometry& geometry,
-        const Characteristics& characteristics,
+        const LigamentCharacteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers);
 
     ///
