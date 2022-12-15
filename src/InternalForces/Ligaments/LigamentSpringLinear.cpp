@@ -8,7 +8,7 @@
 #include "InternalForces/Compound.h"
 #include "InternalForces/Geometry.h"
 #include "InternalForces/Ligaments/LigamentsEnums.h"
-#include "InternalForces/Ligaments/Characteristics.h"
+#include "InternalForces/Ligaments/LigamentCharacteristics.h"
 #include "InternalForces/Ligaments/LigamentSpringLinear.h"
 
 #ifdef USE_SMOOTH_IF_ELSE
