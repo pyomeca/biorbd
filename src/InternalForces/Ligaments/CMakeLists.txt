@@ -3,7 +3,7 @@ set(LIGAMENTS_MODULE_NAME ${BIORBD_NAME}_ligaments PARENT_SCOPE)
 
 # Add the relevant files
 set(SRC_LIST_MODULE
-    "${CMAKE_CURRENT_SOURCE_DIR}/Characteristics.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/LigamentCharacteristics.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Ligament.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Ligaments.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/LigamentSpringLinear.cpp"

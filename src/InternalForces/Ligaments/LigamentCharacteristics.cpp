@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "InternalForces/Ligaments/Characteristics.h"
+#include "InternalForces/Ligaments/LigamentCharacteristics.h"
 
 using namespace BIORBD_NAMESPACE;
 

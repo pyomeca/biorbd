@@ -27,7 +27,7 @@
     #include "InternalForces/Actuators/ActuatorGauss3p.h"
     #include "InternalForces/Actuators/ActuatorGauss6p.h"
     #include "InternalForces/Actuators/ActuatorSigmoidGauss3p.h"
-#endif // MODULE_MUSCLES
+#endif // MODULE_ACTUATORS
 
 #ifdef MODULE_MUSCLES
     #include "InternalForces/Muscles/Muscle.h"
@@ -37,7 +37,7 @@
     #include "InternalForces/Muscles/Characteristics.h"
     #include "InternalForces/Muscles/StateDynamicsBuchanan.h"
     #include "InternalForces/Muscles/MuscleGeometry.h"
-#endif
+#endif // MODULE_MUSCLES
 
 #ifdef MODULE_PASSIVE_TORQUES
     #include "InternalForces/PassiveTorques/PassiveTorqueConstant.h"

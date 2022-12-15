@@ -234,7 +234,7 @@ void internal_forces::ligaments::Ligaments::updateLigaments(
 #endif
 
     for (unsigned int j=0; j<nbLigaments(); ++j) {
-            (*m_ligaments)[j]->updateOrientations(model, Q, QDot, updateKinTP);
+        ligament(j).updateOrientations(model, Q, QDot, updateKinTP);
 #ifndef BIORBD_USE_CASADI_MATH
             if (updateKinTP){
                 updateKinTP=1;
@@ -262,7 +262,7 @@ void internal_forces::ligaments::Ligaments::updateLigaments(
 #endif
 
     for (unsigned int j=0; j<nbLigaments(); ++j) {
-            (*m_ligaments)[j]->updateOrientations(model, Q, updateKinTP);
+            ligament(j).updateOrientations(model, Q, updateKinTP);
 #ifndef BIORBD_USE_CASADI_MATH
             if (updateKinTP){
                 updateKinTP=1;
@@ -277,7 +277,7 @@ void internal_forces::ligaments::Ligaments::updateLigaments(
     const rigidbody::GeneralizedVelocity& QDot)
 {
     for (unsigned int j=0; j<nbLigaments(); ++j) {
-            (*m_ligaments)[j]->updateOrientations(ligamentPointsInGlobal[j], jacoPointsInGlobal[j], QDot);
+            ligament(j).updateOrientations(ligamentPointsInGlobal[j], jacoPointsInGlobal[j], QDot);
     }
 }
 
@@ -286,6 +286,6 @@ void internal_forces::ligaments::Ligaments::updateLigaments(
     std::vector<utils::Matrix> &jacoPointsInGlobal)
 {
     for (unsigned int j=0; j<nbLigaments(); ++j) {
-            (*m_ligaments)[j]->updateOrientations(ligamentPointsInGlobal[j], jacoPointsInGlobal[j]);
+            ligament(j).updateOrientations(ligamentPointsInGlobal[j], jacoPointsInGlobal[j]);
     }
 }

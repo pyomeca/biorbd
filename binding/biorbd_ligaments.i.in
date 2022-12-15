@@ -6,8 +6,41 @@
 #include "InternalForces/Ligaments/LigamentConstant.h"
 #include "InternalForces/Ligaments/LigamentSpringLinear.h"
 #include "InternalForces/Ligaments/LigamentSpringSecondOrder.h"
+#include "InternalForces/Ligaments/LigamentCharacteristics.h"
 %}
 
+// Instantiate templates
+%template(SharedBiorbdLigament) std::shared_ptr<BIORBD_NAMESPACE::internal_forces::ligaments::Ligament>;
+%template(VecSharedBiorbdLigament) std::vector<std::shared_ptr<BIORBD_NAMESPACE::internal_forces::ligaments::Ligament>>;
+
+// extension of ligament casting
+%extend BIORBD_NAMESPACE::internal_forces::ligaments::LigamentConstant{
+    static BIORBD_NAMESPACE::internal_forces::ligaments::LigamentConstant DeepCopy(const BIORBD_NAMESPACE::internal_forces::ligaments::Ligament& other)
+    {
+        BIORBD_NAMESPACE::internal_forces::ligaments::LigamentConstant copy;
+        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::internal_forces::ligaments::LigamentConstant&>(other));
+        return copy;
+    }
+}
+
+// extension of ligament casting
+%extend BIORBD_NAMESPACE::internal_forces::ligaments::LigamentSpringLinear{
+    static BIORBD_NAMESPACE::internal_forces::ligaments::LigamentSpringLinear DeepCopy(const BIORBD_NAMESPACE::internal_forces::ligaments::Ligament& other)
+    {
+        BIORBD_NAMESPACE::internal_forces::ligaments::LigamentSpringLinear copy;
+        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::internal_forces::ligaments::LigamentSpringLinear&>(other));
+        return copy;
+    }
+}
+
+%extend BIORBD_NAMESPACE::internal_forces::ligaments::LigamentSpringSecondOrder{
+    static BIORBD_NAMESPACE::internal_forces::ligaments::LigamentSpringSecondOrder DeepCopy(const BIORBD_NAMESPACE::internal_forces::ligaments::Ligament& other)
+    {
+        BIORBD_NAMESPACE::internal_forces::ligaments::LigamentSpringSecondOrder copy;
+        copy.DeepCopy(dynamic_cast<const BIORBD_NAMESPACE::internal_forces::ligaments::LigamentSpringSecondOrder&>(other));
+        return copy;
+    }
+}
 
 // Includes all neceressary files from the API
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Ligaments/LigamentsEnums.h"
@@ -16,4 +49,5 @@
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Ligaments/LigamentConstant.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Ligaments/LigamentSpringSecondOrder.h"
 %include "@CMAKE_SOURCE_DIR@/include/InternalForces/Ligaments/LigamentSpringLinear.h"
+%include "@CMAKE_SOURCE_DIR@/include/InternalForces/Ligaments/LigamentCharacteristics.h"
 
