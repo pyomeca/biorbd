@@ -1,5 +1,5 @@
-#ifndef BIORBD_MUSCLES_GEOMETRY_H
-#define BIORBD_MUSCLES_GEOMETRY_H
+#ifndef BIORBD_INTERNAL_FORCES_GEOMETRY_H
+#define BIORBD_INTERNAL_FORCES_GEOMETRY_H
 
 #include <vector>
 #include <memory>
@@ -25,8 +25,6 @@ class GeneralizedVelocity;
 namespace internal_forces
 {
 class PathModifiers;
-namespace muscles
-{
 class Characteristics;
 
 ///
@@ -90,7 +88,6 @@ public:
     ///
     void updateKinematics(
         rigidbody::Joints &model,
-        const Characteristics& characteristics,
         internal_forces::PathModifiers& pathModifiers,
         const rigidbody::GeneralizedCoordinates* Q = nullptr,
         const rigidbody::GeneralizedVelocity* Qdot = nullptr,
@@ -107,21 +104,6 @@ public:
     void updateKinematics(
         std::vector<utils::Vector3d>& musclePointsInGlobal,
         utils::Matrix& jacoPointsInGlobal,
-        const rigidbody::GeneralizedVelocity* Qdot = nullptr);
-
-    ///
-    /// \brief Updates the position and dynamic elements of the muscles by hand.
-    /// \param musclePointsInGlobal Position of all the points in global
-    /// \param jacoPointsInGlobal Position of all the Jacobian points in global
-    /// \param characteristics The muscle characteristics
-    /// \param Qdot The generalized velocities of the joints
-    ///
-    /// updateKinematics MUST be called before retreiving data that are dependent on Q and/or Qdot
-    ///
-    void updateKinematics(
-        std::vector<utils::Vector3d>& musclePointsInGlobal,
-        utils::Matrix& jacoPointsInGlobal,
-        const Characteristics& characteristics,
         const rigidbody::GeneralizedVelocity* Qdot = nullptr);
 
     ///
@@ -172,19 +154,13 @@ public:
     ///
     /// Geometry (updateKin) must be computed at least once before calling. Return already computed via points
     ///
-    const std::vector<utils::Vector3d>& musclesPointsInGlobal() const;
+    const std::vector<utils::Vector3d>& pointsInGlobal() const;
 
     ///
     /// \brief Return the previously computed muscle length
     /// \return The muscle lengh
     ///
     const utils::Scalar& length() const;
-
-    ///
-    /// \brief Return the previously computed muscle-tendon length
-    /// \return The muscle-tendon length
-    ///
-    const utils::Scalar& musculoTendonLength() const;
 
     ///
     /// \brief Return the previously computed velocity
@@ -229,12 +205,10 @@ protected:
     ///
     /// \brief Actual function that implements the update of the kinematics
     /// \param Qdot The generalized velocities
-    /// \param characteristics The muscle characteristics
     /// \param pathModifiers The set of path modifiers
     ///
     void _updateKinematics(
         const rigidbody::GeneralizedVelocity *Qdot,
-        const Characteristics* characteristics = nullptr,
         internal_forces::PathModifiers* pathModifiers = nullptr);
 
     ///
@@ -261,7 +235,7 @@ protected:
     /// \brief Set the muscle points in global
     /// \param ptsInGlobal The new muscle points in global
     ///
-    void setMusclesPointsInGlobal(
+    void setPointsInGlobal(
         std::vector<utils::Vector3d>& ptsInGlobal);
 
     ///
@@ -270,7 +244,7 @@ protected:
     /// \param Q The generalized coordinates of the model
     /// \param pathModifiers The set of path modifiers
     ///
-    void setMusclesPointsInGlobal(
+    void setPointsInGlobal(
         rigidbody::Joints& model,
         const rigidbody::GeneralizedCoordinates& Q,
         internal_forces::PathModifiers* pathModifiers = nullptr);
@@ -283,7 +257,6 @@ protected:
     /// \return The muscle length
     ///
     const utils::Scalar& length(
-        const Characteristics* characteristics = nullptr,
         internal_forces::PathModifiers* pathModifiers = nullptr);
 
     ///
@@ -312,6 +285,7 @@ protected:
     /// \brief Compute the jacobian
     /// \param model The joint model
     /// \param Q The generalize coordinates
+    //const Characteristics* characteristics = nullptr,
     ///
     void jacobian(
         rigidbody::Joints &model,
@@ -326,37 +300,24 @@ protected:
     std::shared_ptr<utils::Vector3d> m_origin; ///< Origin node
     std::shared_ptr<utils::Vector3d> m_insertion; ///< Insertion node
 
-    std::shared_ptr<utils::Vector3d>
-    m_originInGlobal; ///< Position of the origin in the global reference
-    std::shared_ptr<utils::Vector3d>
-    m_insertionInGlobal; ///< Position of the insertion node in the global reference
-    std::shared_ptr<std::vector<utils::Vector3d>>
-            m_pointsInGlobal; ///< Position of all the points in the global reference
-    std::shared_ptr<std::vector<utils::Vector3d>>
-            m_pointsInLocal; ///< Position of all the points in local
+    std::shared_ptr<utils::Vector3d> m_originInGlobal; ///< Position of the origin in the global reference
+    std::shared_ptr<utils::Vector3d> m_insertionInGlobal; ///< Position of the insertion node in the global reference
+    std::shared_ptr<std::vector<utils::Vector3d>> m_pointsInGlobal; ///< Position of all the points in the global reference
+    std::shared_ptr<std::vector<utils::Vector3d>> m_pointsInLocal; ///< Position of all the points in local
     std::shared_ptr<utils::Matrix> m_jacobian; ///<The jacobian matrix
-    std::shared_ptr<utils::Matrix>
-    m_G; ///< Internal matrix of the jacobian dimension to speed up calculation
-    std::shared_ptr<utils::Matrix>
-    m_jacobianLength; ///< The muscle length jacobian
+    std::shared_ptr<utils::Matrix> m_G; ///< Internal matrix of the jacobian dimension to speed up calculation
+    std::shared_ptr<utils::Matrix> m_jacobianLength; ///< The muscle length jacobian
 
-    std::shared_ptr<utils::Scalar> m_length; ///< Muscle length
-    std::shared_ptr<utils::Scalar>
-    m_muscleTendonLength; ///< Muscle tendon length
-    std::shared_ptr<utils::Scalar>
-    m_velocity; ///< Velocity of the muscular elongation
+    std::shared_ptr<utils::Scalar> m_length; ///< length
+    std::shared_ptr<utils::Scalar> m_velocity; ///< Velocity of the muscular elongation
 
-    std::shared_ptr<bool>
-    m_isGeometryComputed; ///< To know if the geometry was computed at least once
-    std::shared_ptr<bool>
-    m_isVelocityComputed; ///< To know if the velocity was computed in the last update
-    std::shared_ptr<bool>
-    m_posAndJacoWereForced; ///< To know if the override was used on the muscle position and the Jacobian
+    std::shared_ptr<bool> m_isGeometryComputed; ///< To know if the geometry was computed at least once
+    std::shared_ptr<bool> m_isVelocityComputed; ///< To know if the velocity was computed in the last update
+    std::shared_ptr<bool> m_posAndJacoWereForced; ///< To know if the override was used on the muscle position and the Jacobian
 
 };
 
 }
 }
-}
 
-#endif // BIORBD_MUSCLES_GEOMETRY_H
+#endif // BIORBD_INTERNAL_FORCES_GEOMETRY_H

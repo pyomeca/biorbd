@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "biorbdConfig.h"
+#include "InternalForces/Geometry.h"
 
 namespace BIORBD_NAMESPACE
 {

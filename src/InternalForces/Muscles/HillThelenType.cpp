@@ -3,7 +3,7 @@
 
 #include <math.h>
 #include "Utils/String.h"
-#include "InternalForces/Muscles/Geometry.h"
+#include "InternalForces/Muscles/MuscleGeometry.h"
 #include "InternalForces/Muscles/Characteristics.h"
 
 #ifdef USE_SMOOTH_IF_ELSE
@@ -19,7 +19,7 @@ internal_forces::muscles::HillThelenType::HillThelenType() :
 }
 internal_forces::muscles::HillThelenType::HillThelenType(
     const utils::String& name,
-    const internal_forces::muscles::Geometry& geometry,
+    const internal_forces::muscles::MuscleGeometry& geometry,
     const internal_forces::muscles::Characteristics& characteristics) :
     internal_forces::muscles::HillType (name, geometry, characteristics)
 {
@@ -28,7 +28,7 @@ internal_forces::muscles::HillThelenType::HillThelenType(
 
 internal_forces::muscles::HillThelenType::HillThelenType(
     const utils::String &name,
-    const internal_forces::muscles::Geometry &geometry,
+    const internal_forces::muscles::MuscleGeometry &geometry,
     const internal_forces::muscles::Characteristics &characteristics,
     const internal_forces::muscles::State &emg) :
     internal_forces::muscles::HillType (name, geometry, characteristics, emg)
@@ -38,7 +38,7 @@ internal_forces::muscles::HillThelenType::HillThelenType(
 
 internal_forces::muscles::HillThelenType::HillThelenType(
     const utils::String &name,
-    const internal_forces::muscles::Geometry &geometry,
+    const internal_forces::muscles::MuscleGeometry &geometry,
     const internal_forces::muscles::Characteristics &characteristics,
     const internal_forces::PathModifiers &pathModifiers) :
     internal_forces::muscles::HillType (name, geometry, characteristics, pathModifiers)
@@ -48,7 +48,7 @@ internal_forces::muscles::HillThelenType::HillThelenType(
 
 internal_forces::muscles::HillThelenType::HillThelenType(
     const utils::String& name,
-    const internal_forces::muscles::Geometry& geometry,
+    const internal_forces::muscles::MuscleGeometry& geometry,
     const internal_forces::muscles::Characteristics& characteristics,
     const internal_forces::PathModifiers &pathModifiers,
     const internal_forces::muscles::State& emg) :

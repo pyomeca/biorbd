@@ -40,13 +40,19 @@ jobs:
           use-mamba: true
           activate-environment: biorbd_eigen
           environment-file: environment_eigen.yml
-        
+  
       - name: Print mamba info
         run: | 
           mamba config --show
           mamba info
           mamba list
-          
+
+      - name: Setup Linux dependencies
+        run:   |
+         sudo apt update
+         sudo apt install libstdc++-11-dev
+        if: matrix.label == 'linux-64'
+        
       - name: Install extra common dependencies
         run: | 
           mamba install cmake git pkgconfig swig pytest -cconda-forge
@@ -59,7 +65,7 @@ jobs:
           CONDA_ENV_PATH=$CONDA/envs/biorbd_eigen
           mkdir -p $BIORBD_FOLDER/$BUILD_FOLDER
           cd $BIORBD_FOLDER/$BUILD_FOLDER
-          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
+          cmake -DCMAKE_INSTALL_PREFIX=$CONDA_ENV_PATH -DMATH_LIBRARY_BACKEND="Eigen3" -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DMODULE_ACTUATORS=ON -DMODULE_KALMAN=ON -DMODULE_PASSIVE_TORQUES=ON -DMODULE_MUSCLES=ON -DBUILD_EXAMPLE=ON -DBINDER_C=ON -DBINDER_PYTHON3=ON ..
           make install -j${{ steps.cpu-cores.outputs.count }}
           cd $BIORBD_FOLDER
         if: matrix.label != 'win-64'

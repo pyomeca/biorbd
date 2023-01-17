@@ -5,6 +5,7 @@ set(INTERNAL_FORCES_MODULE_NAME ${BIORBD_NAME}_internal_forces PARENT_SCOPE)
 set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/PathModifiers.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/ViaPoint.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Geometry.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Compound.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/WrappingHalfCylinder.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/WrappingObject.cpp"

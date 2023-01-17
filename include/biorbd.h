@@ -10,7 +10,7 @@
 
 #include "Utils/all.h"
 #include "RigidBody/all.h"
-#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES)
+#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES) || defined(MODULE_PASSIVE_TORQUES) || defined(MODULE_LIGAMENTS)
 #include "InternalForces/all.h"
 #endif
 
@@ -20,6 +20,14 @@
 
 #ifdef MODULE_MUSCLES
 #include "InternalForces/Muscles/all.h"
+#endif
+
+#ifdef MODULE_PASSIVE_TORQUES
+#include "InternalForces/PassiveTorques/all.h"
+#endif
+
+#ifdef MODULE_LIGAMENTS
+#include "InternalForces/Ligaments/all.h"
 #endif
 
 

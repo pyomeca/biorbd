@@ -19,8 +19,8 @@ class PathModifiers;
 
 namespace muscles
 {
+class MuscleGeometry;
 class Muscle;
-class Geometry;
 class Characteristics;
 
 ///
@@ -83,7 +83,7 @@ public:
     virtual void addMuscle(
         const utils::String& name,
         MUSCLE_TYPE type,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         STATE_TYPE stateType =
             STATE_TYPE::NO_STATE_TYPE,
@@ -101,7 +101,7 @@ public:
     virtual void addMuscle(
         const utils::String& name,
         MUSCLE_TYPE type,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         STATE_FATIGUE_TYPE dynamicFatigueType);
 
@@ -118,7 +118,7 @@ public:
     virtual void addMuscle(
         const utils::String& name,
         MUSCLE_TYPE type,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers,
         STATE_TYPE stateType =
@@ -138,7 +138,7 @@ public:
     virtual void addMuscle(
         const utils::String& name,
         MUSCLE_TYPE type,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers,
         STATE_FATIGUE_TYPE dynamicFatigueType);

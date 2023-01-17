@@ -15,7 +15,7 @@ internal_forces::muscles::IdealizedActuator::IdealizedActuator() :
 
 internal_forces::muscles::IdealizedActuator::IdealizedActuator(
     const utils::String& name,
-    const internal_forces::muscles::Geometry& geometry,
+    const internal_forces::muscles::MuscleGeometry& geometry,
     const internal_forces::muscles::Characteristics& characteristics) :
     internal_forces::muscles::Muscle(name,geometry,characteristics)
 {
@@ -24,7 +24,7 @@ internal_forces::muscles::IdealizedActuator::IdealizedActuator(
 
 internal_forces::muscles::IdealizedActuator::IdealizedActuator(
     const utils::String &name,
-    const internal_forces::muscles::Geometry &geometry,
+    const internal_forces::muscles::MuscleGeometry &geometry,
     const internal_forces::muscles::Characteristics &characteristics,
     const internal_forces::muscles::State &emg) :
     internal_forces::muscles::Muscle(name,geometry,characteristics,emg)
@@ -34,7 +34,7 @@ internal_forces::muscles::IdealizedActuator::IdealizedActuator(
 
 internal_forces::muscles::IdealizedActuator::IdealizedActuator(
     const utils::String &name,
-    const internal_forces::muscles::Geometry &geometry,
+    const internal_forces::muscles::MuscleGeometry &geometry,
     const internal_forces::muscles::Characteristics &characteristics,
     const internal_forces::PathModifiers &pathModifiers) :
     internal_forces::muscles::Muscle(name,geometry,characteristics, pathModifiers)
@@ -44,7 +44,7 @@ internal_forces::muscles::IdealizedActuator::IdealizedActuator(
 
 internal_forces::muscles::IdealizedActuator::IdealizedActuator(
     const utils::String& name,
-    const internal_forces::muscles::Geometry& geometry,
+    const internal_forces::muscles::MuscleGeometry& geometry,
     const internal_forces::muscles::Characteristics& characteristics,
     const internal_forces::PathModifiers &pathModifiers,
     const internal_forces::muscles::State& emg) :

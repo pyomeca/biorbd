@@ -10,6 +10,7 @@ namespace internal_forces
 {
 namespace muscles
 {
+class MuscleGeometry;
 ///
 /// \brief Muscle based on DeGroote 2016
 /// https://link.springer.com/article/10.1007%2Fs10439-016-1591-9
@@ -30,7 +31,7 @@ public:
     ///
     HillDeGrooteType(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics);
 
     ///
@@ -42,7 +43,7 @@ public:
     ///
     HillDeGrooteType(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const State& emg);
 
@@ -55,7 +56,7 @@ public:
     ///
     HillDeGrooteType(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers);
 
@@ -69,7 +70,7 @@ public:
     ///
     HillDeGrooteType(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers,
         const State& emg);

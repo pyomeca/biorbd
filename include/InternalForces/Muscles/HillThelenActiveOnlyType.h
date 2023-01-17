@@ -10,6 +10,7 @@ namespace internal_forces
 {
 namespace muscles
 {
+class MuscleGeometry;
 ///
 /// \brief Muscle of Hill type augmented by Thelen (https://simtk-confluence.stanford.edu/display/OpenSim/Thelen+2003+Muscle+Model)
 ///
@@ -30,7 +31,7 @@ public:
     ///
     HillThelenActiveOnlyType(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics);
 
     ///
@@ -42,7 +43,7 @@ public:
     ///
     HillThelenActiveOnlyType(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const State& emg);
 
@@ -55,7 +56,7 @@ public:
     ///
     HillThelenActiveOnlyType(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers);
 
@@ -69,7 +70,7 @@ public:
     ///
     HillThelenActiveOnlyType(
         const utils::String& name,
-        const Geometry& geometry,
+        const MuscleGeometry& geometry,
         const Characteristics& characteristics,
         const internal_forces::PathModifiers& pathModifiers,
         const State& emg);

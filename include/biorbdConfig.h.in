@@ -53,7 +53,8 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 #cmakedefine MODULE_KALMAN
 #cmakedefine MODULE_ACTUATORS
 #cmakedefine MODULE_MUSCLES
-#cmakedefine MODULE_INTERNAL_FORCES
+#cmakedefine MODULE_PASSIVE_TORQUES
+#cmakedefine MODULE_LIGAMENTS
 #cmakedefine MODULE_STATIC_OPTIM
 #cmakedefine MODULE_VTP_FILES_READER
 

@@ -27,23 +27,38 @@
     #include "InternalForces/Actuators/ActuatorGauss3p.h"
     #include "InternalForces/Actuators/ActuatorGauss6p.h"
     #include "InternalForces/Actuators/ActuatorSigmoidGauss3p.h"
-#endif // MODULE_MUSCLES
+#endif // MODULE_ACTUATORS
 
 #ifdef MODULE_MUSCLES
     #include "InternalForces/Muscles/Muscle.h"
-    #include "InternalForces/Muscles/Geometry.h"
     #include "InternalForces/Muscles/MuscleGroup.h"
     #include "InternalForces/Muscles/FatigueParameters.h"
     #include "InternalForces/Muscles/State.h"
     #include "InternalForces/Muscles/Characteristics.h"
     #include "InternalForces/Muscles/StateDynamicsBuchanan.h"
+    #include "InternalForces/Muscles/MuscleGeometry.h"
+#endif // MODULE_MUSCLES
 
+#ifdef MODULE_PASSIVE_TORQUES
+    #include "InternalForces/PassiveTorques/PassiveTorqueConstant.h"
+    #include "InternalForces/PassiveTorques/PassiveTorqueLinear.h"
+    #include "InternalForces/PassiveTorques/PassiveTorqueExponential.h"
 #endif
 
-#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES)
+#ifdef MODULE_LIGAMENTS
+    #include "InternalForces/Ligaments/Ligament.h"
+    #include "InternalForces/Ligaments/Ligaments.h"
+    #include "InternalForces/Ligaments/LigamentConstant.h"
+    #include "InternalForces/Ligaments/LigamentSpringLinear.h"
+    #include "InternalForces/Ligaments/LigamentSpringSecondOrder.h"
+    #include "InternalForces/Ligaments/LigamentCharacteristics.h"
+#endif
+
+#if defined(MODULE_ACTUATORS) || defined(MODULE_MUSCLES) || defined(MODULE_LIGAMENTS)
     #include "InternalForces/ViaPoint.h"
     #include "InternalForces/PathModifiers.h"
     #include "InternalForces/WrappingHalfCylinder.h"
+    #include "InternalForces/Geometry.h"
 #endif
 
 
@@ -845,7 +860,6 @@ void Reader::readModelFile(
                 utils::Error::raise("Biorbd was build without the module Internal forces but the model defines ones");
 #endif // MODULE_ACTUATORS
             } else if (!main_tag.tolower().compare("musclegroup")) {
-
 #ifdef MODULE_MUSCLES
                 utils::String name;
                 file.read(name); // Name of the muscular group
@@ -997,7 +1011,7 @@ void Reader::readModelFile(
                     }
                 }
                 utils::Error::check(idxGroup!=-1, "No muscle group was provided!");
-                internal_forces::muscles::Geometry geo(
+                internal_forces::muscles::MuscleGeometry geo(
                     utils::Vector3d(origin_pos, name + "_origin",
                                             model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
                     utils::Vector3d(insert_pos, name + "_insertion",
@@ -1019,17 +1033,181 @@ void Reader::readModelFile(
 #else // MODULE_MUSCLES
                 utils::Error::raise("Biorbd was build without the module Muscles but the model defines a muscle");
 #endif // MODULE_MUSCLES
-            } else if (!main_tag.tolower().compare("viapoint")) {
-#ifdef MODULE_MUSCLES
+            } else if (!main_tag.tolower().compare("ligament")) {
+#ifdef MODULE_LIGAMENTS
                 utils::String name;
-                file.read(name); // Name of muscle... Eventually add the muscle group
+                file.read(name);
+                utils::String type;
+                utils::String origin;
+                utils::String insertion;
+                bool isTypeSet  = false;
+                utils::Vector3d origin_pos(0,0,0);
+                utils::Vector3d insert_pos(0,0,0);
+                double ligamentSlackLength(std::numeric_limits<double>::quiet_NaN());
+                double stiffness(std::numeric_limits<double>::quiet_NaN());
+                double epsilon(0);
+                double force(std::numeric_limits<double>::quiet_NaN());
+                double dampingFactor(0);
+                double maxShorteningSpeed(1);
 
+                while(file.read(property_tag)
+                        && property_tag.tolower().compare("endligament")) {
+                    if (!property_tag.tolower().compare("type")) {
+                        file.read(type);
+                        isTypeSet = true;
+                    } else if (!property_tag.tolower().compare("originposition")) {
+                        readVector3d(file, variable, origin_pos);
+                    } else if (!property_tag.tolower().compare("insertionposition")) {
+                        readVector3d(file, variable, insert_pos);
+                    } else if (!property_tag.tolower().compare("ligamentslacklength")) {
+                        file.read(ligamentSlackLength, variable);
+                    } else if (!property_tag.tolower().compare("stiffness")) {
+                        file.read(stiffness, variable);
+                    } else if (!property_tag.tolower().compare("epsilon")) {
+                        file.read(epsilon, variable);
+                    } else if (!property_tag.tolower().compare("force")) {
+                        file.read(force, variable);
+                    } else if (!property_tag.tolower().compare("origin")) {
+                        file.read(origin);
+                    } else if (!property_tag.tolower().compare("insertion")) {
+                        file.read(insertion);
+                    } else if (!property_tag.tolower().compare("dampingfactor")){
+                        file.read(dampingFactor, variable);
+                    } else if (!property_tag.tolower().compare("maxshorteningspeed")){
+                        file.read(maxShorteningSpeed, variable);
+                    }
+                }
+                // Verify that everything is there
+                utils::Error::check(isTypeSet!=0, "Ligament type must be defined");
+                std::shared_ptr<internal_forces::ligaments::Ligament> ligament;
+                utils::Error::check(insertion != "" && origin != "", "Insertion and origin of the ligament need to be defined.");
+                internal_forces::Geometry geo(utils::Vector3d(origin_pos, name + "_origin", origin), utils::Vector3d(insert_pos, name + "_insersion", insertion));
+                internal_forces::ligaments::LigamentCharacteristics characteristics(ligamentSlackLength,dampingFactor,maxShorteningSpeed);
+                if (!type.tolower().compare("constant")) {
+                    utils::Error::check(std::isnan(force) == 0 && std::isnan(ligamentSlackLength) == 0, "Make sure all parameters are defined");
+                    ligament = std::make_shared<internal_forces::ligaments::LigamentConstant>(force, name, geo, characteristics);
+                } else if (!type.tolower().compare("linearspring")) {
+                    utils::Error::check(std::isnan(stiffness) == 0 && std::isnan(ligamentSlackLength) == 0,"Make sure all parameters are defined");
+                    ligament = std::make_shared<internal_forces::ligaments::LigamentSpringLinear>(stiffness,name, geo, characteristics);
+                } else if (!type.tolower().compare("secondorderspring")) {
+                    utils::Error::check(std::isnan(stiffness) == 0 && std::isnan(ligamentSlackLength) == 0,"Make sure all parameters are defined");
+                    ligament = std::make_shared<internal_forces::ligaments::LigamentSpringSecondOrder>(stiffness, epsilon,name,geo, characteristics);
+                } else {
+                    utils::Error::raise("Ligament type do not correspond to an implemented one");
+                }
+                model->addLigament(*ligament);
+#else // MODULE_LIGAMENT
+                utils::Error::raise("Biorbd was build without the module Ligament but the model defines a ligament");
+#endif // MODULE_LIGAMENT
+            } else if (!main_tag.tolower().compare("passivetorque")) {
+#ifdef MODULE_PASSIVE_TORQUES
+                utils::String name;
+                file.read(name);
+                unsigned int parent_int = model->GetBodyId(name.c_str());
+                // If parent_int equals zero, no name has concurred
+                utils::Error::check(model->IsBodyId(parent_int),
+                                            "Wrong name in a segment");
+                // Declaration of all the parameters for all types
+                utils::String type;
+                bool isTypeSet  = false;
+                unsigned int dofIdx(INT_MAX);
+                bool isDofSet = false;
+                double Tconstant(std::numeric_limits<double>::quiet_NaN());
+                double T0(std::numeric_limits<double>::quiet_NaN());
+                double slope(std::numeric_limits<double>::quiet_NaN());
+                double k1(std::numeric_limits<double>::quiet_NaN());
+                double k2(std::numeric_limits<double>::quiet_NaN());
+                double b1(std::numeric_limits<double>::quiet_NaN());
+                double b2(std::numeric_limits<double>::quiet_NaN());
+                double wMax(std::numeric_limits<double>::quiet_NaN());
+                double qMid(0);
+                double deltaP(0);
+                double sV(1);
+                double tauEq(0);
+                double pBeta(1);
+                double isExponentialSet(0);
+
+                while(file.read(property_tag)
+                        && property_tag.tolower().compare("endpassivetorque")) {
+                    if (!property_tag.tolower().compare("type")) {
+                        file.read(type);
+                        isTypeSet = true;
+                    } else if (!property_tag.tolower().compare("dof")) {
+                        utils::String dofName;
+                        file.read(dofName);
+                        dofIdx = model->getDofIndex(name, dofName);
+                        isDofSet = true;
+                    } else if (!property_tag.tolower().compare("torque")) {
+                        file.read(Tconstant, variable);
+                    } else if (!property_tag.tolower().compare("t0")) {
+                        file.read(T0, variable);
+                    } else if (!property_tag.tolower().compare("pente")
+                               || !property_tag.tolower().compare("slope")) {
+                        file.read(slope, variable);
+                    } else if (!property_tag.tolower().compare("k1")) {
+                        file.read(k1, variable);
+                        isExponentialSet += 1;
+                    } else if (!property_tag.tolower().compare("k2")) {
+                        file.read(k2, variable);
+                        isExponentialSet += 1;
+                    } else if (!property_tag.tolower().compare("b1")) {
+                        file.read(b1, variable);
+                        isExponentialSet += 1;
+                    } else if (!property_tag.tolower().compare("b2")) {
+                        file.read(b2, variable);
+                        isExponentialSet += 1;
+                    } else if (!property_tag.tolower().compare("wmax")) {
+                        file.read(wMax, variable);
+                        isExponentialSet += 1;
+                    } else if (!property_tag.tolower().compare("qmid")) {
+                        file.read(qMid, variable);
+                    } else if (!property_tag.tolower().compare("deltap")) {
+                        file.read(deltaP, variable);
+                    } else if (!property_tag.tolower().compare("sv")) {
+                        file.read(sV, variable);
+                    } else if (!property_tag.tolower().compare("taueq")) {
+                        file.read(tauEq, variable);
+                    } else if (!property_tag.tolower().compare("pbeta")) {
+                        file.read(pBeta, variable);
+                    }
+                }
+                // Verify that everything is there
+                utils::Error::check(isTypeSet!=0, "PassiveTorque type must be defined");
+                internal_forces::passive_torques::PassiveTorque* passiveTorque;
+                if (!type.tolower().compare("constant")) {
+                    utils::Error::check(isDofSet && !std::isnan(Tconstant),
+                                                "Make sure all parameters are defined");
+                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueConstant(Tconstant,dofIdx,name);
+                } else if (!type.tolower().compare("linear")) {
+                    utils::Error::check(isDofSet && !std::isnan(slope) && !std::isnan(T0),
+                                                "Make sure all parameters are defined");
+                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueLinear(T0,slope,dofIdx,name);
+                } else if (!type.tolower().compare("exponential")) {
+                    utils::Error::check(isDofSet && isExponentialSet == 5,
+                                                "Make sure all parameters are defined");
+                    passiveTorque = new internal_forces::passive_torques::PassiveTorqueExponential(
+                                k1, k2, b1, b2, qMid, tauEq, pBeta, wMax, sV, deltaP,dofIdx,name);
+                } else {
+                    utils::Error::raise("PassiveTorque do not correspond to an implemented one");
+                }
+                model->addPassiveTorque(*passiveTorque);
+                delete passiveTorque;
+#else // MODULE_PASSIVE_TORQUE
+                utils::Error::raise("Biorbd was build without the module Passive torque but the model defines one passive torque");
+#endif // MODULE_PASSIVE_TORQUE
+            } else if (!main_tag.tolower().compare("viapoint")) {
+                utils::String name;
+                file.read(name); // Name of via point... Eventually add the muscle group
                 // Declaration of the variables
                 utils::String parent("");
                 utils::String muscle("");
                 utils::String musclegroup("");
-                int iMuscleGroup(-1);
-                int iMuscle(-1);
+                bool isMuscle = false;
+                bool isLigament = false;
+                int idxMuscleGroup(-1);
+                int idxLigament(-1);
+                int idxMuscle(-1);
+                utils::String ligament("");
                 internal_forces::ViaPoint position(0,0,0);
 
                 // Read file
@@ -1042,28 +1220,36 @@ void Reader::readModelFile(
                         // If parent_int still equals zero, no name has concurred
                         utils::Error::check(model->IsBodyId(idx),
                                                     "Wrong origin parent name for a muscle");
+
                     } else if (!property_tag.tolower().compare("muscle")) {
                         file.read(muscle);
+                        isMuscle = true;
+                        utils::Error::check(!isLigament, "Via point cannot be define either for ligament and muscle.");
                     } else if (!property_tag.tolower().compare("musclegroup")) {
                         file.read(musclegroup);
+                    } else if (!property_tag.tolower().compare("ligament")) {
+                        file.read(ligament);
+                        isLigament=true;
+                        utils::Error::check(!isMuscle, "Via point cannot be define either for ligament and muscle.");
                     } else if (!property_tag.tolower().compare("position")) {
                         readVector3d(file, variable, position);
                     }
                 }
-                iMuscleGroup = model->getMuscleGroupId(musclegroup);
-                utils::Error::check(iMuscleGroup!=-1, "No muscle group was provided!");
-                iMuscle = model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscleID(
-                              muscle);
-                utils::Error::check(iMuscle!=-1, "No muscle was provided!");
                 position.setName(name);
                 position.setParent(parent);
-                model->muscleGroup(static_cast<unsigned int>(iMuscleGroup))
-                .muscle(static_cast<unsigned int>(iMuscle)).addPathObject(position);
-#else // MODULE_MUSCLES
-                utils::Error::raise("Biorbd was build without the module Muscles but the model defines a viapoint");
-#endif // MODULE_MUSCLES
+                if (isMuscle){
+                    idxMuscleGroup = model->getMuscleGroupId(musclegroup);
+                    utils::Error::check(idxMuscleGroup!=-1, "No muscle group was provided!");
+                    idxMuscle = model->muscleGroup(static_cast<unsigned int>(idxMuscleGroup)).muscleID(
+                                  muscle);
+                    utils::Error::check(idxMuscle!=-1, "No muscle was provided!");
+                    model->muscleGroup(static_cast<unsigned int>(idxMuscleGroup))
+                    .muscle(static_cast<unsigned int>(idxMuscle)).addPathObject(position);
+                } else if (isLigament) {
+                    idxLigament = model->ligamentID(ligament);
+                    model->ligament(static_cast<unsigned int>(idxLigament)).addPathObject(position);
+                }
             } else if (!main_tag.tolower().compare("wrapping")) {
-#ifdef MODULE_MUSCLES
                 utils::String name;
                 file.read(name); // Name of the wrapping
 
@@ -1071,8 +1257,12 @@ void Reader::readModelFile(
                 utils::String muscle("");
                 utils::String musclegroup("");
                 utils::String wrapType("");
-                int iMuscleGroup(-1);
-                int iMuscle(-1);
+                int idxMuscleGroup(-1);
+                int idxMuscle(-1);
+                utils::String ligament("");
+                bool isMuscle=false;
+                bool isLigament=false;
+                int idxLigament(-1);
                 utils::String parent("");
                 utils::RotoTrans RT;
                 bool isRTset(false);
@@ -1101,8 +1291,14 @@ void Reader::readModelFile(
                         file.read(wrapType);
                     } else if (!property_tag.tolower().compare("muscle")) {
                         file.read(muscle);
+                        isMuscle=true;
+                        utils::Error::check(!isLigament, "Wrapping object cannot be define either for ligament and muscle.");
                     } else if (!property_tag.tolower().compare("musclegroup")) {
                         file.read(musclegroup);
+                    } else if (!property_tag.tolower().compare("ligament")) {
+                        file.read(ligament);
+                        isLigament=true;
+                        utils::Error::check(!isMuscle, "Wrapping object cannot be define either for ligament and muscle.");
                     } else if (!property_tag.tolower().compare("radius")) {
                         file.read(radius, variable);
                     } else if (!property_tag.tolower().compare("length")) {
@@ -1110,26 +1306,26 @@ void Reader::readModelFile(
                     }
                 }
                 utils::Error::check(parent != "", "Parent was not defined");
-                iMuscleGroup = model->getMuscleGroupId(musclegroup);
-                utils::Error::check(iMuscleGroup!=-1, "No muscle group was provided!");
-                iMuscle = model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscleID(
-                              muscle);
-                utils::Error::check(iMuscle!=-1, "No muscle was provided!");
-
                 if (!wrapType.tolower().compare("halfcylinder")) {
                     utils::Error::check(radius > 0.0,
                                                 "Radius must be defined and positive");
                     utils::Error::check(length >= 0.0, "Length was must be positive");
-                    internal_forces::WrappingHalfCylinder cylinder(RT,radius,length,name,parent);
-                    model->muscleGroup(static_cast<unsigned int>(iMuscleGroup)).muscle(
-                        static_cast<unsigned int>(iMuscle)).addPathObject(
-                            cylinder);
                 } else {
                     utils::Error::raise("Wrapping type must be defined (choices: 'halfcylinder')");
                 }
-#else // MODULE_MUSCLES
-                utils::Error::raise("Biorbd was build without the module Muscles but the model defines a wrapping object");
-#endif // MODULE_MUSCLES
+                internal_forces::WrappingHalfCylinder cylinder(RT,radius,length,name,parent);
+                if (isMuscle) {
+                    idxMuscleGroup = model->getMuscleGroupId(musclegroup);
+                    utils::Error::check(idxMuscleGroup!=-1, "No muscle group was provided!");
+                    idxMuscle = model->muscleGroup(static_cast<unsigned int>(idxMuscleGroup)).muscleID(
+                                  muscle);
+                    utils::Error::check(idxMuscle!=-1, "No muscle was provided!");
+                    model->muscleGroup(static_cast<unsigned int>(idxMuscleGroup)).muscle(
+                        static_cast<unsigned int>(idxMuscle)).addPathObject(cylinder);
+                 } else if (isLigament) {
+                    idxLigament = model->ligamentID(ligament);
+                    model->ligament(static_cast<unsigned int>(idxLigament)).addPathObject(cylinder);
+                 }
             }
         }
     } catch (std::runtime_error message) {
