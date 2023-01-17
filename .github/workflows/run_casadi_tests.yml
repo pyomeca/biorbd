@@ -50,7 +50,7 @@ jobs:
       - name: Setup Linux dependencies
         run:   |
          sudo apt update
-         sudo apt install libgcc
+         sudo apt install libstdc++-11-dev
         if: matrix.label == 'linux-64'
         
       - name: Install extra common dependencies
