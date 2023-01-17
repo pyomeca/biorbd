@@ -55,7 +55,7 @@ TEST(constant, unitTest)
         EXPECT_NEAR(damping, 0.00056194583866446676, requiredPrecision);
 
         // with damping
-        internal_forces::ligaments::Characteristics charac(ligamentConstant.characteristics());
+        internal_forces::ligaments::LigamentCharacteristics charac(ligamentConstant.characteristics());
         SCALAR_TO_DOUBLE(forceDamped, ligamentConstant.force());
         EXPECT_NEAR(forceDamped, 500.00056194583868, requiredPrecision);
 
@@ -216,7 +216,7 @@ TEST(springLinear, unitTest)
         EXPECT_NEAR(damping, 3.2207881562929018e-05, requiredPrecision);
 
         // with damping
-        internal_forces::ligaments::Characteristics charac(ligamentSpringLinear.characteristics());
+        internal_forces::ligaments::LigamentCharacteristics charac(ligamentSpringLinear.characteristics());
         SCALAR_TO_DOUBLE(forceDamped, ligamentSpringLinear.force());
         EXPECT_NEAR(forceDamped, 27.517183773325474, requiredPrecision);
 
@@ -380,7 +380,7 @@ TEST(springSecondOrder, unitTest)
         EXPECT_NEAR(damping, 3.8649457875514822e-05, requiredPrecision);
 
         // with damping
-        internal_forces::ligaments::Characteristics charac(ligamentSpringSecondOrder.characteristics());
+        internal_forces::ligaments::LigamentCharacteristics charac(ligamentSpringSecondOrder.characteristics());
         SCALAR_TO_DOUBLE(forceDamped, ligamentSpringSecondOrder.force());
         EXPECT_NEAR(forceDamped, 139.51352848156762, requiredPrecision);
 
@@ -585,7 +585,7 @@ TEST(LigamentTorque, torqueFromLigaments)
 TEST(LigamentCharacterics, unittest)
 {
     {
-        internal_forces::ligaments::Characteristics charact;
+        internal_forces::ligaments::LigamentCharacteristics charact;
         {
             SCALAR_TO_DOUBLE(slackLength, charact.ligamentSlackLength());
             EXPECT_NEAR(slackLength, 0, requiredPrecision);
@@ -599,7 +599,7 @@ TEST(LigamentCharacterics, unittest)
     }
 
     {
-        internal_forces::ligaments::Characteristics charact;
+        internal_forces::ligaments::LigamentCharacteristics charact;
         {
             SCALAR_TO_DOUBLE(maxSpeed, charact.maxShorteningSpeed());
             EXPECT_NEAR(maxSpeed, 1, requiredPrecision);
@@ -614,7 +614,7 @@ TEST(LigamentCharacterics, unittest)
     }
 
     {
-        internal_forces::ligaments::Characteristics charact;
+        internal_forces::ligaments::LigamentCharacteristics charact;
         {
             SCALAR_TO_DOUBLE(dampingFactor, charact.dampingParam());
             EXPECT_NEAR(dampingFactor, 0, requiredPrecision);
