@@ -40,7 +40,13 @@ jobs:
           mamba config --show
           mamba info
           mamba list
-          
+  
+      - name: Setup Linux dependencies
+        run:   |
+         sudo apt update
+         sudo apt install libstdc++-11-dev
+        if: matrix.label == 'linux-64'
+        
       - name: Install extra common dependencies
         run: | 
           mamba install cmake git pkgconfig codecov lcov -cconda-forge
