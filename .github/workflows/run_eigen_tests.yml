@@ -40,19 +40,19 @@ jobs:
           use-mamba: true
           activate-environment: biorbd_eigen
           environment-file: environment_eigen.yml
-      
-      - name: Setup Linux dependencies
-        run:   |
-         sudo apt update
-         sudo apt install libstdc++-11-dev
-        if: matrix.label == 'linux-64'
   
       - name: Print mamba info
         run: | 
           mamba config --show
           mamba info
           mamba list
-          
+
+      - name: Setup Linux dependencies
+        run:   |
+         sudo apt update
+         sudo apt install libstdc++-11-dev
+        if: matrix.label == 'linux-64'
+        
       - name: Install extra common dependencies
         run: | 
           mamba install cmake git pkgconfig swig pytest -cconda-forge
