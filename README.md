@@ -519,7 +519,8 @@ The constant `acceleration` of the contact point. The default values are `0, 0, 
 
 #### Loopconstraint
 
-##### 
+## Converted models
+Note that an Opensim to bioMod [converter](https://github.com/pyomeca/osim_to_biomod) has been built if one wants to use Opensim models with biorbd.
 
 
 # How to contribute
