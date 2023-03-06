@@ -100,6 +100,21 @@ public:
         bool enableStabilization = false,
         double stabilizationParam = 0.1);
 
+
+    ///
+    /// \brief compute the forces generated from loop constraints
+    /// \param loopConstraintId The identifier of the loop constraint
+    /// \param Q The generalized coordinates
+    /// \param Qdot The generalized velocities
+    /// \param updateKin If the model should be updated
+    ///
+    std::vector< RigidBodyDynamics::Math::SpatialVector > calcLoopConstraintForces(
+            unsigned int loopConstraintId,
+            const rigidbody::GeneralizedCoordinates &Q,
+            const rigidbody::GeneralizedVelocity &Qdot,
+            bool updateKin);
+
+
     ///
     /// \brief Destroy the class properly
     ///

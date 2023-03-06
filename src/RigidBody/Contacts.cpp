@@ -122,6 +122,92 @@ unsigned int rigidbody::Contacts::AddLoopConstraint(
                enableStabilization, stabilizationParam, name.c_str());
 }
 
+
+std::vector< RigidBodyDynamics::Math::SpatialVector > rigidbody::Contacts::calcLoopConstraintForces(
+        unsigned int loopConstraintId,
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &Qdot,
+        bool updateKin)
+{
+    // retrieve the model
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
+                                       (*this);
+    // all in the world frame
+    std::vector< unsigned int >* constraintBodyIdsOutput;
+    constraintBodyIdsOutput->push_back(0);
+    constraintBodyIdsOutput->push_back(0);
+    bool resolveAllInRootFrame = true;
+
+    // outputs
+    std::vector< RigidBodyDynamics::Math::SpatialVector > *updConstraintForcesOutput;
+    updConstraintForcesOutput->push_back(utils::SpatialVector(0,0,0,0,0,0));
+    updConstraintForcesOutput->push_back(utils::SpatialVector(0,0,0,0,0,0));
+
+    std::vector< RigidBodyDynamics::Math::SpatialTransform > *updConstraintBodyFramesOutput;
+    updConstraintBodyFramesOutput->push_back(RigidBodyDynamics::Math::SpatialTransform());
+    updConstraintBodyFramesOutput->push_back(RigidBodyDynamics::Math::SpatialTransform());
+
+
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+
+//    loopConstraintId to ConstraintId
+    if (!*m_isBinded) {
+        // Assuming that this is also a Joints type (via BiorbdModel)
+        const rigidbody::Joints &model =
+            dynamic_cast<rigidbody::Joints &>(*this);
+        Bind(model);
+        *m_isBinded = true;
+    }
+    (*this).calcForces(
+                loopConstraintId,
+                model,
+                Q,
+                Qdot,
+                *constraintBodyIdsOutput,
+                *updConstraintBodyFramesOutput,
+                *updConstraintForcesOutput,
+                resolveAllInRootFrame,
+                updateKin
+                );
+
+    return *updConstraintForcesOutput;
+
+}
+
+
+std::vector<utils::Vector3d>
+rigidbody::Contacts::constraintsInGlobal(
+    const rigidbody::GeneralizedCoordinates &Q,
+    bool updateKin)
+{
+    // Assuming that this is also a Joints type (via BiorbdModel)
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
+                                       (*this);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+
+    // Output variable
+    std::vector<utils::Vector3d> tp;
+
+
+    // On each control, apply the rotation and save the position
+    for (unsigned int i=0; i<contactConstraints.size(); ++i) {
+        for (unsigned int j=0; j<contactConstraints[i]->getConstraintSize(); ++j) {
+            tp.push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(
+                             model, Q, contactConstraints[i]->getBodyIds()[0],
+                             contactConstraints[i]->getBodyFrames()[0].r, updateKin));
+#ifndef BIORBD_USE_CASADI_MATH
+            updateKin = false;
+#endif
+        }
+    }
+
+    return tp;
+}
+
 rigidbody::Contacts::~Contacts()
 {
 
@@ -210,36 +296,36 @@ std::vector<int> rigidbody::Contacts::rigidContactAxisIdx(unsigned int contact_i
 }
 
 
-std::vector<utils::Vector3d>
-rigidbody::Contacts::constraintsInGlobal(
-    const rigidbody::GeneralizedCoordinates &Q,
-    bool updateKin)
-{
-    // Assuming that this is also a Joints type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
-                                       (*this);
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
+//std::vector<utils::Vector3d>
+//rigidbody::Contacts::constraintsInGlobal(
+//    const rigidbody::GeneralizedCoordinates &Q,
+//    bool updateKin)
+//{
+//    // Assuming that this is also a Joints type (via BiorbdModel)
+//    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
+//                                       (*this);
+//#ifdef BIORBD_USE_CASADI_MATH
+//    updateKin = true;
+//#endif
 
-    // Output variable
-    std::vector<utils::Vector3d> tp;
+//    // Output variable
+//    std::vector<utils::Vector3d> tp;
 
 
-    // On each control, apply the rotation and save the position
-    for (unsigned int i=0; i<contactConstraints.size(); ++i) {
-        for (unsigned int j=0; j<contactConstraints[i]->getConstraintSize(); ++j) {
-            tp.push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(
-                             model, Q, contactConstraints[i]->getBodyIds()[0],
-                             contactConstraints[i]->getBodyFrames()[0].r, updateKin));
-#ifndef BIORBD_USE_CASADI_MATH
-            updateKin = false;
-#endif
-        }
-    }
+//    // On each control, apply the rotation and save the position
+//    for (unsigned int i=0; i<contactConstraints.size(); ++i) {
+//        for (unsigned int j=0; j<contactConstraints[i]->getConstraintSize(); ++j) {
+//            tp.push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(
+//                             model, Q, contactConstraints[i]->getBodyIds()[0],
+//                             contactConstraints[i]->getBodyFrames()[0].r, updateKin));
+//#ifndef BIORBD_USE_CASADI_MATH
+//            updateKin = false;
+//#endif
+//        }
+//    }
 
-    return tp;
-}
+//    return tp;
+//}
 
 utils::Vector3d rigidbody::Contacts::rigidContact(
     const rigidbody::GeneralizedCoordinates &Q,
