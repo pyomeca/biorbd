@@ -21,7 +21,8 @@ rigidbody::Contacts::Contacts() :
     RigidBodyDynamics::ConstraintSet (),
     m_nbreConstraint(std::make_shared<unsigned int>(0)),
     m_isBinded(std::make_shared<bool>(false)),
-    m_rigidContacts(std::make_shared<std::vector<rigidbody::NodeSegment>>())
+    m_rigidContacts(std::make_shared<std::vector<rigidbody::NodeSegment>>()),
+    m_nbLoopConstraint(std::make_shared<unsigned int>(0))
 {
 
 }
@@ -37,6 +38,7 @@ void rigidbody::Contacts::DeepCopy(const rigidbody::Contacts
         &other)
 {
     static_cast<RigidBodyDynamics::ConstraintSet&>(*this) = other;
+    *m_nbLoopConstraint = *other.m_nbLoopConstraint;
     *m_nbreConstraint = *other.m_nbreConstraint;
     *m_isBinded = *other.m_isBinded;
     *m_rigidContacts = *other.m_rigidContacts;
@@ -109,6 +111,7 @@ unsigned int rigidbody::Contacts::AddLoopConstraint(
     double stabilizationParam)
 {
     ++*m_nbreConstraint;
+    ++*m_nbLoopConstraint;
     return RigidBodyDynamics::ConstraintSet::AddLoopConstraint(
                body_id_predecessor, body_id_successor,
                RigidBodyDynamics::Math::SpatialTransform(X_predecessor.rot(),
@@ -145,9 +148,23 @@ bool rigidbody::Contacts::hasContacts() const
     }
 }
 
+bool rigidbody::Contacts::hasLoopConstraints() const
+{
+    if (*m_nbLoopConstraint>0) return
+            true;
+    else {
+        return false;
+    }
+}
+
 unsigned int rigidbody::Contacts::nbContacts() const
 {
     return *m_nbreConstraint;
+}
+
+unsigned int rigidbody::Contacts::nbLoopConstraints() const
+{
+    return *m_nbLoopConstraint;
 }
 
 std::vector<utils::String> rigidbody::Contacts::contactNames()

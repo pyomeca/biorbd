@@ -118,10 +118,22 @@ public:
     bool hasContacts() const;
 
     ///
+    /// \brief Check if there are loop constraints
+    /// \return The presence of loop constraints
+    ///
+    bool hasLoopConstraints() const;
+
+    ///
     /// \brief Return the number of contacts
     /// \return The number of contacts
     ///
     unsigned int nbContacts() const;
+
+    ///
+    /// \brief Return the number of loop constraints
+    /// \return The number of loop constraints
+    ///
+    unsigned int nbLoopConstraints() const;
 
     ///
     /// \brief Return the name of the all contacts
@@ -310,7 +322,7 @@ protected:
     std::shared_ptr<unsigned int> m_nbreConstraint; ///< Number of constraints
     std::shared_ptr<bool> m_isBinded; ///< If the model is ready
     std::shared_ptr<std::vector<rigidbody::NodeSegment>> m_rigidContacts; ///< The rigid contacts declared in the model (copy of RBDL information)
-
+    std::shared_ptr<unsigned int> m_nbLoopConstraint; ///< Number of constraints
 };
 
 }
