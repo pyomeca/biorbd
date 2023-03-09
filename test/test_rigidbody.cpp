@@ -2288,19 +2288,13 @@ TEST(Dynamics, ForwardLoopConstraint)
         FILL_VECTOR(QDot, val);
         FILL_VECTOR(Tau, val);
 
-//        std::vector< utils::SpatialVector > F;
-//        F.push_back(utils::SpatialVector(0,0,0,0,0,0));
-//        F.push_back(utils::SpatialVector(0,0,0,0,0,0));
+        std::vector<double> Fexpected = { 1477.64, 1669.14,  -356.04,348.877, -245.699, 296.057};
 
-        std::vector<double> Fexpected = {
-            4357.563983223662,  -1980.272417081602, -4132.170113875329, 34854.96630091612,
-            -5939.1875609623385, 20005.793234188295, -33019.84433234081, 5044.593964065896,
-            76960.9024224599, 13949749.797541305, 29056.19402773685, 13957133.384121455
-        };
+        CALL_BIORBD_FUNCTION_3ARGS(F, model, calcLoopConstraintForces, Q, QDot, Tau)
 
-        CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamicsConstraintsDirect, Q,
-                                   QDot, Tau);
-        CALL_BIORBD_FUNCTION_3ARGS(F, model, calcLoopConstraintForces, 0, Q, QDot)
+        for (unsigned int i = 0; i<6; ++i) {
+            EXPECT_NEAR(static_cast<double>(F[0][i]), Fexpected[i], 1e-2);
+        }
     }
 }
 

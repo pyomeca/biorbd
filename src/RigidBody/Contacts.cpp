@@ -14,6 +14,7 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
+#include "RigidBody/GeneralizedTorque.h"
 
 using namespace BIORBD_NAMESPACE;
 
@@ -123,48 +124,49 @@ unsigned int rigidbody::Contacts::AddLoopConstraint(
 }
 
 
-std::vector< RigidBodyDynamics::Math::SpatialVector > rigidbody::Contacts::calcLoopConstraintForces(
-        unsigned int loopConstraintId,
+std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForces(
         const rigidbody::GeneralizedCoordinates &Q,
         const rigidbody::GeneralizedVelocity &Qdot,
-        bool updateKin)
+        const rigidbody::GeneralizedTorque &Tau,
+         std::vector<utils::SpatialVector> *f_ext
+        )
 {
-    // retrieve the model
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
-                                       (*this);
+
     // all in the world frame
-    std::vector< unsigned int > constraintBodyIdsOutput(2, 0);
     bool resolveAllInRootFrame = true;
 
     // outputs
-    std::vector< RigidBodyDynamics::Math::SpatialVector > updConstraintForcesOutput(2, utils::SpatialVector(0,0,0,0,0,0));
-    std::vector< RigidBodyDynamics::Math::SpatialTransform > updConstraintBodyFramesOutput(2, RigidBodyDynamics::Math::SpatialTransform());
+    std::vector< unsigned int > constraintBodyIdsOutput;
+    std::vector< RigidBodyDynamics::Math::SpatialVector > updatedConstraintForcesOutput;
+    std::vector< RigidBodyDynamics::Math::SpatialTransform > updatedConstraintBodyFramesOutput;
 
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
+    // retrieve the model and the contacts
+    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
+    model.ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS, f_ext);
 
-    // Bind if necessary
-    if (!*m_isBinded) {
-        const rigidbody::Joints &model =
-            dynamic_cast<rigidbody::Joints &>(*this);
-        Bind(model);
-        *m_isBinded = true;
+    std::vector< utils::SpatialVector > output;
+    for (int i=0; i<*m_nbLoopConstraint ; i++) {
+        constraintBodyIdsOutput.clear();
+        updatedConstraintBodyFramesOutput.clear();
+        updatedConstraintForcesOutput.clear();
+
+        CS.calcForces(
+                    i,
+                    model,
+                    Q,
+                    Qdot,
+                    constraintBodyIdsOutput,
+                    updatedConstraintBodyFramesOutput,
+                    updatedConstraintForcesOutput,
+                    resolveAllInRootFrame,
+                    false
+                    );
+
+        // save all the forces in the global reference frame applied on the predecessor segment
+        output.push_back(updatedConstraintForcesOutput[0]);
     }
-
-    (*this).calcForces(
-                loopConstraintId,
-                model,
-                Q,
-                Qdot,
-                constraintBodyIdsOutput,
-                updConstraintBodyFramesOutput,
-                updConstraintForcesOutput,
-                resolveAllInRootFrame,
-                updateKin
-                );
-
-    return updConstraintForcesOutput;
+    return output;
 
 }
 
