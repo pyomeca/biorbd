@@ -133,46 +133,38 @@ std::vector< RigidBodyDynamics::Math::SpatialVector > rigidbody::Contacts::calcL
     rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
                                        (*this);
     // all in the world frame
-    std::vector< unsigned int >* constraintBodyIdsOutput;
-    constraintBodyIdsOutput->push_back(0);
-    constraintBodyIdsOutput->push_back(0);
+    std::vector< unsigned int > constraintBodyIdsOutput(2, 0);
     bool resolveAllInRootFrame = true;
 
     // outputs
-    std::vector< RigidBodyDynamics::Math::SpatialVector > *updConstraintForcesOutput;
-    updConstraintForcesOutput->push_back(utils::SpatialVector(0,0,0,0,0,0));
-    updConstraintForcesOutput->push_back(utils::SpatialVector(0,0,0,0,0,0));
-
-    std::vector< RigidBodyDynamics::Math::SpatialTransform > *updConstraintBodyFramesOutput;
-    updConstraintBodyFramesOutput->push_back(RigidBodyDynamics::Math::SpatialTransform());
-    updConstraintBodyFramesOutput->push_back(RigidBodyDynamics::Math::SpatialTransform());
-
+    std::vector< RigidBodyDynamics::Math::SpatialVector > updConstraintForcesOutput(2, utils::SpatialVector(0,0,0,0,0,0));
+    std::vector< RigidBodyDynamics::Math::SpatialTransform > updConstraintBodyFramesOutput(2, RigidBodyDynamics::Math::SpatialTransform());
 
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #endif
 
-//    loopConstraintId to ConstraintId
+    // Bind if necessary
     if (!*m_isBinded) {
-        // Assuming that this is also a Joints type (via BiorbdModel)
         const rigidbody::Joints &model =
             dynamic_cast<rigidbody::Joints &>(*this);
         Bind(model);
         *m_isBinded = true;
     }
+
     (*this).calcForces(
                 loopConstraintId,
                 model,
                 Q,
                 Qdot,
-                *constraintBodyIdsOutput,
-                *updConstraintBodyFramesOutput,
-                *updConstraintForcesOutput,
+                constraintBodyIdsOutput,
+                updConstraintBodyFramesOutput,
+                updConstraintForcesOutput,
                 resolveAllInRootFrame,
                 updateKin
                 );
 
-    return *updConstraintForcesOutput;
+    return updConstraintForcesOutput;
 
 }
 

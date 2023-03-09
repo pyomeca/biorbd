@@ -113,7 +113,7 @@ public:
             unsigned int loopConstraintId,
             const rigidbody::GeneralizedCoordinates &Q,
             const rigidbody::GeneralizedVelocity &Qdot,
-            bool updateKin);
+            bool updateKin = true);
 
 
     ///
