@@ -2246,30 +2246,61 @@ TEST(QDot, ComputeConstraintImpulsesDirect)
 
 TEST(Dynamics, ForwardLoopConstraint)
 {
-    Model model(modelPathForLoopConstraintTesting);
-    DECLARE_GENERALIZED_COORDINATES(Q, model);
-    DECLARE_GENERALIZED_VELOCITY(QDot, model);
-    DECLARE_GENERALIZED_TORQUE(Tau, model);
+    {
+        Model model(modelPathForLoopConstraintTesting);
+        DECLARE_GENERALIZED_COORDINATES(Q, model);
+        DECLARE_GENERALIZED_VELOCITY(QDot, model);
+        DECLARE_GENERALIZED_TORQUE(Tau, model);
 
-    // Set to random values
-    std::vector<double> val(model.nbQ());
-    for (size_t i=0; i<val.size(); ++i) {
-        val[i] = static_cast<double>(i) * 1.1;
+        // Set to random values
+        std::vector<double> val(model.nbQ());
+        for (size_t i=0; i<val.size(); ++i) {
+            val[i] = static_cast<double>(i) * 1.1;
+        }
+        FILL_VECTOR(Q, val);
+        FILL_VECTOR(QDot, val);
+        FILL_VECTOR(Tau, val);
+
+        std::vector<double> QDDot_expected = {
+            4357.563983223662,  -1980.272417081602, -4132.170113875329, 34854.96630091612,
+            -5939.1875609623385, 20005.793234188295, -33019.84433234081, 5044.593964065896,
+            76960.9024224599, 13949749.797541305, 29056.19402773685, 13957133.384121455
+        };
+
+        CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamicsConstraintsDirect, Q,
+                                   QDot, Tau);
+        for (unsigned int i = 0; i<model.nbQddot(); ++i) {
+            EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], 1e-2);
+        }
     }
-    FILL_VECTOR(Q, val);
-    FILL_VECTOR(QDot, val);
-    FILL_VECTOR(Tau, val);
+    {
+        Model model(modelPathForLoopConstraintTesting);
+        DECLARE_GENERALIZED_COORDINATES(Q, model);
+        DECLARE_GENERALIZED_VELOCITY(QDot, model);
+        DECLARE_GENERALIZED_TORQUE(Tau, model);
 
-    std::vector<double> QDDot_expected = {
-        4357.563983223662,  -1980.272417081602, -4132.170113875329, 34854.96630091612,
-        -5939.1875609623385, 20005.793234188295, -33019.84433234081, 5044.593964065896,
-        76960.9024224599, 13949749.797541305, 29056.19402773685, 13957133.384121455
-    };
+        // Set to random values
+        std::vector<double> val(model.nbQ());
+        for (size_t i=0; i<val.size(); ++i) {
+            val[i] = static_cast<double>(i) * 1.1;
+        }
+        FILL_VECTOR(Q, val);
+        FILL_VECTOR(QDot, val);
+        FILL_VECTOR(Tau, val);
 
-    CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamicsConstraintsDirect, Q,
-                               QDot, Tau);
-    for (unsigned int i = 0; i<model.nbQddot(); ++i) {
-        EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], 1e-2);
+//        std::vector< utils::SpatialVector > F;
+//        F.push_back(utils::SpatialVector(0,0,0,0,0,0));
+//        F.push_back(utils::SpatialVector(0,0,0,0,0,0));
+
+        std::vector<double> Fexpected = {
+            4357.563983223662,  -1980.272417081602, -4132.170113875329, 34854.96630091612,
+            -5939.1875609623385, 20005.793234188295, -33019.84433234081, 5044.593964065896,
+            76960.9024224599, 13949749.797541305, 29056.19402773685, 13957133.384121455
+        };
+
+        CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamicsConstraintsDirect, Q,
+                                   QDot, Tau);
+        CALL_BIORBD_FUNCTION_3ARGS(F, model, calcLoopConstraintForces, 0, Q, QDot)
     }
 }
 
