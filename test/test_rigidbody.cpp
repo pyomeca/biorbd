@@ -1915,8 +1915,7 @@ TEST(Markers, allPositions)
     }
 
     // All markers at once
-    std::vector<rigidbody::NodeSegment> markers(model.markers(Q, true,
-            true));
+    std::vector<rigidbody::NodeSegment> markers(model.markers(Q, true, true));
     for (unsigned int i=0; i<model.nbMarkers(); ++i) {
         for (unsigned int j=0; j<3; ++j) {
             SCALAR_TO_DOUBLE(mark, markers[i][j]);
@@ -2290,10 +2289,21 @@ TEST(Dynamics, ForwardLoopConstraint)
 
         std::vector<double> Fexpected = { 1477.64, 1669.14,  -356.04,348.877, -245.699, 296.057};
 
-        CALL_BIORBD_FUNCTION_3ARGS(F, model, calcLoopConstraintForces, Q, QDot, Tau)
-
-        for (unsigned int i = 0; i<6; ++i) {
-            EXPECT_NEAR(static_cast<double>(F[0][i]), Fexpected[i], 1e-2);
+#ifdef BIORBD_USE_CASADI_MATH
+        casadi::Function func_calcLoopConstraintForces(
+            "calcLoopConstraintForces",
+            {Q_sym, QDot_sym, Tau_sym},
+            {model.calcLoopConstraintForces(Q_sym, QDot_sym, Tau_sym)[0]},
+            {"Q", "Qdot", "Tau"},
+            {"forcesOnAllSegments"}
+        );
+        auto forcesOnAllSegments = func_calcLoopConstraintForces(
+                    casadi::DMDict{ {"Q", Q}, {"Qdot", QDot}, {"Tau", Tau} }).at("forcesOnAllSegments");
+#else
+        utils::SpatialVector forcesOnAllSegments = model.calcLoopConstraintForces(Q, QDot, Tau)[0];
+#endif
+        for (unsigned int i = 0; i<forcesOnAllSegments.rows(); ++i) {
+            EXPECT_NEAR(static_cast<double>(forcesOnAllSegments(i)), Fexpected[i], 1e-2);
         }
     }
 }

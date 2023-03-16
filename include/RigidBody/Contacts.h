@@ -101,7 +101,6 @@ public:
         bool enableStabilization = false,
         double stabilizationParam = 0.1);
 
-
     ///
     /// \brief compute the forces generated from loop constraints
     /// \param Q The generalized coordinates
@@ -115,7 +114,6 @@ public:
         const rigidbody::GeneralizedVelocity &Qdot,
         const rigidbody::GeneralizedTorque &Tau,
         std::vector<utils::SpatialVector> *f_ext = nullptr);
-
 
     ///
     /// \brief Destroy the class properly

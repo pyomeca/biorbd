@@ -123,7 +123,6 @@ unsigned int rigidbody::Contacts::AddLoopConstraint(
                enableStabilization, stabilizationParam, name.c_str());
 }
 
-
 std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForces(
         const rigidbody::GeneralizedCoordinates &Q,
         const rigidbody::GeneralizedVelocity &Qdot,
