@@ -1489,8 +1489,8 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     const rigidbody::GeneralizedAcceleration& QJointsDDot)
 {
 
-    utils::Error::check(QJointsDDot.size() == this->nbQddot() - this->nbRoot(),
-                        "Size of QDDotJ must be equal to number of QDDot - number of root coordinates.");
+    // utils::Error::check(QJointsDDot.size() == this->nbQddot() - this->nbRoot(),
+    //                    "Size of QDDotJ must be equal to number of QDDot - number of root coordinates.");
     
     utils::Error::check(this->nbRoot() > 0, "Must have a least one degree of freedom on root.");
 
