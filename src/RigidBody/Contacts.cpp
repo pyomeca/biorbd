@@ -14,6 +14,7 @@
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
+#include "RigidBody/GeneralizedTorque.h"
 
 using namespace BIORBD_NAMESPACE;
 
@@ -21,7 +22,8 @@ rigidbody::Contacts::Contacts() :
     RigidBodyDynamics::ConstraintSet (),
     m_nbreConstraint(std::make_shared<unsigned int>(0)),
     m_isBinded(std::make_shared<bool>(false)),
-    m_rigidContacts(std::make_shared<std::vector<rigidbody::NodeSegment>>())
+    m_rigidContacts(std::make_shared<std::vector<rigidbody::NodeSegment>>()),
+    m_nbLoopConstraint(std::make_shared<unsigned int>(0))
 {
 
 }
@@ -37,6 +39,7 @@ void rigidbody::Contacts::DeepCopy(const rigidbody::Contacts
         &other)
 {
     static_cast<RigidBodyDynamics::ConstraintSet&>(*this) = other;
+    *m_nbLoopConstraint = *other.m_nbLoopConstraint;
     *m_nbreConstraint = *other.m_nbreConstraint;
     *m_isBinded = *other.m_isBinded;
     *m_rigidContacts = *other.m_rigidContacts;
@@ -109,6 +112,7 @@ unsigned int rigidbody::Contacts::AddLoopConstraint(
     double stabilizationParam)
 {
     ++*m_nbreConstraint;
+    ++*m_nbLoopConstraint;
     return RigidBodyDynamics::ConstraintSet::AddLoopConstraint(
                body_id_predecessor, body_id_successor,
                RigidBodyDynamics::Math::SpatialTransform(X_predecessor.rot(),
@@ -118,6 +122,53 @@ unsigned int rigidbody::Contacts::AddLoopConstraint(
                utils::SpatialVector(axis),
                enableStabilization, stabilizationParam, name.c_str());
 }
+
+std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForces(
+        const rigidbody::GeneralizedCoordinates &Q,
+        const rigidbody::GeneralizedVelocity &Qdot,
+        const rigidbody::GeneralizedTorque &Tau,
+         std::vector<utils::SpatialVector> *f_ext
+        )
+{
+
+    // all in the world frame
+    bool resolveAllInRootFrame = true;
+
+    // outputs
+    std::vector< unsigned int > constraintBodyIdsOutput;
+    std::vector< RigidBodyDynamics::Math::SpatialVector > updatedConstraintForcesOutput;
+    std::vector< RigidBodyDynamics::Math::SpatialTransform > updatedConstraintBodyFramesOutput;
+
+    // retrieve the model and the contacts
+    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
+    model.ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS, f_ext);
+
+    std::vector< utils::SpatialVector > output;
+    for (int i=0; i<*m_nbLoopConstraint ; i++) {
+        constraintBodyIdsOutput.clear();
+        updatedConstraintBodyFramesOutput.clear();
+        updatedConstraintForcesOutput.clear();
+
+        CS.calcForces(
+                    i,
+                    model,
+                    Q,
+                    Qdot,
+                    constraintBodyIdsOutput,
+                    updatedConstraintBodyFramesOutput,
+                    updatedConstraintForcesOutput,
+                    resolveAllInRootFrame,
+                    false
+                    );
+
+        // save all the forces in the global reference frame applied on the predecessor segment
+        output.push_back(updatedConstraintForcesOutput[0]);
+    }
+    return output;
+
+}
+
 
 rigidbody::Contacts::~Contacts()
 {
@@ -145,9 +196,23 @@ bool rigidbody::Contacts::hasContacts() const
     }
 }
 
+bool rigidbody::Contacts::hasLoopConstraints() const
+{
+    if (*m_nbLoopConstraint>0) return
+            true;
+    else {
+        return false;
+    }
+}
+
 unsigned int rigidbody::Contacts::nbContacts() const
 {
     return *m_nbreConstraint;
+}
+
+unsigned int rigidbody::Contacts::nbLoopConstraints() const
+{
+    return *m_nbLoopConstraint;
 }
 
 std::vector<utils::String> rigidbody::Contacts::contactNames()
