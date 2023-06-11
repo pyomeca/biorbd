@@ -211,6 +211,13 @@ public:
     utils::RotoTrans localJCS() const;
 
     ///
+    /// \brief set the joint coordinate system (JCS) in the parent reference frame
+    /// \param rototrans The rototranslation object
+    ///
+    void SetLocalJCS(
+        utils::RotoTrans& rototrans);
+
+    ///
     /// \brief updateCharacteristics Change the inertia characteristics of the segment
     /// \param model The underlying model to update
     /// \param characteristics The new characteristics

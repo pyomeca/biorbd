@@ -7,6 +7,7 @@
 #include "Utils/Matrix3d.h"
 #include "Utils/Vector3d.h"
 #include "Utils/RotoTrans.h"
+#include "Utils/Rotation.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
@@ -299,6 +300,14 @@ utils::RotoTrans rigidbody::Segment::localJCS() const
     return RigidBodyDynamics::Math::SpatialTransform(m_cor->E.transpose(),
             m_cor->r);
 }
+
+void  rigidbody::Segment::SetLocalJCS(utils::RotoTrans &rototrans)
+{
+    *m_cor = RigidBodyDynamics::Math::SpatialTransform(
+                rototrans.rot().transpose(),
+                    rototrans.trans());
+}
+
 
 void rigidbody::Segment::updateCharacteristics(
     rigidbody::Joints& model,
