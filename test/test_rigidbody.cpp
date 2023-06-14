@@ -82,6 +82,73 @@ TEST(Gravity, change)
     }
 }
 
+TEST(Set, change)
+{
+    {
+        // Create a model and set the mass of the first segment
+        Model model(modelPathForGeneralTesting);
+        const utils::Scalar v = 0.1;
+        rigidbody::Segment segment = model.segments()[0];
+        rigidbody::SegmentCharacteristics characteristics = segment.characteristics();
+        characteristics.setMass(v);
+
+        // Check that the mass was set correctly
+        EXPECT_NEAR(characteristics.mass(), 0.1, requiredPrecision);
+     }
+    {
+    //Create a model and set the center of mass of the first segment
+    Model model(modelPathForGeneralTesting);
+    utils::Vector3d v(1, 2, 3);
+    rigidbody::Segment segment = model.segments()[0];
+    rigidbody::SegmentCharacteristics characteristics = segment.characteristics();
+    characteristics.setCoM(v);
+
+    // Check that the center of mass was set correctly
+    for (unsigned int i = 0; i < 3; ++i) {
+            EXPECT_NEAR(static_cast<double>(characteristics.CoM()[i]), v[i], requiredPrecision);
+        }
+    }
+    {
+        Model model(modelPathForGeneralTesting);
+        utils::RotoTrans rt(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+        rigidbody::Segment segment = model.segments()[0];
+        segment.SetLocalJCS(rt);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[0,0]), 1,
+                        requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[0,1]), 0,
+                        requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[0,2]), 0,
+                        requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[0,3]), 0,
+                        requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[1,0]), 0,
+                        requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[1,1]), 1,
+                        requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[1,2]), 0,
+                        requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[1,3]), 0,
+                        requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[2,0]), 0,
+                        requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[2,1]), 0,
+                        requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[2,2]), 1,
+                        requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[2,3]), 0,
+                        requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[3,0]), 0,
+                        requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[3,1]), 0,
+                        requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[3,2]), 0,
+                        requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()[3,3]), 1,
+                        requiredPrecision);
+    }
+
+}
+
 TEST(Contacts, unitTest)
 {
     {
