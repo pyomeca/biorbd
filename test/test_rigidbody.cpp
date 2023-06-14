@@ -113,37 +113,41 @@ TEST(Set, change)
         utils::RotoTrans rt(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
         rigidbody::Segment segment = model.segments()[0];
         segment.SetLocalJCS(rt);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[0,0]), 1,
+        // row 0
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(0)), 1,
                         requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[0,1]), 0,
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(1)), 0,
                         requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[0,2]), 0,
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(2)), 0,
                         requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[0,3]), 0,
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(3)), 0,
                         requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[1,0]), 0,
+        // row 1
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(4)), 0,
                         requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[1,1]), 1,
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(5)), 1,
                         requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[1,2]), 0,
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(6)), 0,
                         requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[1,3]), 0,
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(7)), 0,
                         requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[2,0]), 0,
+        // row 2
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(8)), 0,
                         requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[2,1]), 0,
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(9)), 0,
                         requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[2,2]), 1,
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(10)), 1,
                         requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[2,3]), 0,
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(11)), 0,
                         requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[3,0]), 0,
+        // row 2
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(12)), 0,
                         requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[3,1]), 0,
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(13)), 0,
                         requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[3,2]), 0,
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(14)), 0,
                         requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()[3,3]), 1,
+        EXPECT_NEAR(static_cast<double>(segment.localJCS()(15)), 1,
                         requiredPrecision);
     }
 
