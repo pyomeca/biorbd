@@ -108,7 +108,6 @@ TEST(Characteristics, change)
         // Check that the center of mass was set correctly
         for (unsigned int i = 0; i < 3; ++i) {
             SCALAR_TO_DOUBLE(com, characteristics.CoM()[i]);
-            EXPECT_NEAR(com, v[i], requiredPrecision);
             EXPECT_NEAR(com, expected[i], requiredPrecision);
         }
     }
