@@ -82,7 +82,7 @@ TEST(Gravity, change)
     }
 }
 
-TEST(Set, change)
+TEST(Characteristics, change)
 {
     {
         // Create a model and set the mass of the first segment
@@ -92,20 +92,22 @@ TEST(Set, change)
         rigidbody::SegmentCharacteristics characteristics = segment.characteristics();
         characteristics.setMass(v);
 
+        SCALAR_TO_DOUBLE(mass, characteristics.mass());
         // Check that the mass was set correctly
-        EXPECT_NEAR(characteristics.mass(), 0.1, requiredPrecision);
+        EXPECT_NEAR(mass, 0.1, requiredPrecision);
      }
     {
-    //Create a model and set the center of mass of the first segment
-    Model model(modelPathForGeneralTesting);
-    utils::Vector3d v(1, 2, 3);
-    rigidbody::Segment segment = model.segments()[0];
-    rigidbody::SegmentCharacteristics characteristics = segment.characteristics();
-    characteristics.setCoM(v);
+        //Create a model and set the center of mass of the first segment
+        Model model(modelPathForGeneralTesting);
+        utils::Vector3d v(1, 2, 3);
+        rigidbody::Segment segment = model.segments()[0];
+        rigidbody::SegmentCharacteristics characteristics = segment.characteristics();
+        characteristics.setCoM(v);
 
-    // Check that the center of mass was set correctly
-    for (unsigned int i = 0; i < 3; ++i) {
-            EXPECT_NEAR(static_cast<double>(characteristics.CoM()[i]), v[i], requiredPrecision);
+        // Check that the center of mass was set correctly
+        for (unsigned int i = 0; i < 3; ++i) {
+            SCALAR_TO_DOUBLE(com, characteristics.CoM()[i]);
+            EXPECT_NEAR(com, v[i], requiredPrecision);
         }
     }
     {
@@ -113,42 +115,11 @@ TEST(Set, change)
         utils::RotoTrans rt(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
         rigidbody::Segment segment = model.segments()[0];
         segment.SetLocalJCS(rt);
-        // row 0
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(0)), 1,
-                        requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(1)), 0,
-                        requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(2)), 0,
-                        requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(3)), 0,
-                        requiredPrecision);
-        // row 1
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(4)), 0,
-                        requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(5)), 1,
-                        requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(6)), 0,
-                        requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(7)), 0,
-                        requiredPrecision);
-        // row 2
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(8)), 0,
-                        requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(9)), 0,
-                        requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(10)), 1,
-                        requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(11)), 0,
-                        requiredPrecision);
-        // row 2
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(12)), 0,
-                        requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(13)), 0,
-                        requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(14)), 0,
-                        requiredPrecision);
-        EXPECT_NEAR(static_cast<double>(segment.localJCS()(15)), 1,
-                        requiredPrecision);
+        std::vector<int> expected={1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1};
+        for (unsigned int i = 0; i < 16; ++i) {
+            SCALAR_TO_DOUBLE(value, segment.localJCS()(i));
+            EXPECT_NEAR(value, expected[i], requiredPrecision);
+        }
     }
 
 }
