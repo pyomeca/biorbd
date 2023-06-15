@@ -100,6 +100,7 @@ TEST(Characteristics, change)
         //Create a model and set the center of mass of the first segment
         Model model(modelPathForGeneralTesting);
         utils::Vector3d v(1, 2, 3);
+        std::vector<double> expected={1, 2, 3};
         rigidbody::Segment segment = model.segments()[0];
         rigidbody::SegmentCharacteristics characteristics = segment.characteristics();
         characteristics.setCoM(v);
@@ -108,6 +109,7 @@ TEST(Characteristics, change)
         for (unsigned int i = 0; i < 3; ++i) {
             SCALAR_TO_DOUBLE(com, characteristics.CoM()[i]);
             EXPECT_NEAR(com, v[i], requiredPrecision);
+            EXPECT_NEAR(com, expected[i], requiredPrecision);
         }
     }
     {
@@ -115,7 +117,7 @@ TEST(Characteristics, change)
         utils::RotoTrans rt(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
         rigidbody::Segment segment = model.segments()[0];
         segment.SetLocalJCS(rt);
-        std::vector<int> expected={1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1};
+        std::vector<double> expected={1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1};
         for (unsigned int i = 0; i < 16; ++i) {
             SCALAR_TO_DOUBLE(value, segment.localJCS()(i));
             EXPECT_NEAR(value, expected[i], requiredPrecision);
