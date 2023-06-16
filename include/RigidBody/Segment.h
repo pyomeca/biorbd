@@ -212,9 +212,11 @@ public:
 
     ///
     /// \brief set the joint coordinate system (JCS) in the parent reference frame
+    /// \param The model, it's need to update the underlying rbdl model
     /// \param rototrans The rototranslation object
     ///
-    void SetLocalJCS(
+    void setLocalJCS(
+        rigidbody::Joints& model,
         utils::RotoTrans& rototrans);
 
     ///

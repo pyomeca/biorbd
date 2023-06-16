@@ -115,15 +115,12 @@ TEST(Characteristics, change)
         Model model(modelPathForGeneralTesting);
         utils::RotoTrans rt(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
         rigidbody::Segment segment = model.segments()[0];
-        segment.SetLocalJCS(rt);
+        segment.setLocalJCS(model, rt);
         std::vector<double> expected={1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1};
         for (unsigned int i = 0; i < 16; ++i) {
-            std::cout << "hello 0" << std::endl;
             SCALAR_TO_DOUBLE(value, segment.localJCS()(i/4,i%4));
-            std::cout << "hello 1" << std::endl;
             EXPECT_NEAR(value, expected[i], requiredPrecision);
         }
-        std::cout << "hello 2" << std::endl;
     }
 }
 

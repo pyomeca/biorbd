@@ -301,11 +301,13 @@ utils::RotoTrans rigidbody::Segment::localJCS() const
             m_cor->r);
 }
 
-void  rigidbody::Segment::SetLocalJCS(utils::RotoTrans &rototrans)
+void  rigidbody::Segment::setLocalJCS(rigidbody::Joints& model, utils::RotoTrans &rototrans)
 {
     *m_cor = RigidBodyDynamics::Math::SpatialTransform(
                 rototrans.rot().transpose(),
                     rototrans.trans());
+    // we also modify RBDL spatial transform from parent to child
+    model.X_T[*m_idxDof->begin()]=*m_cor;
 }
 
 
