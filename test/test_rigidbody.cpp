@@ -95,6 +95,7 @@ TEST(Characteristics, change)
         SCALAR_TO_DOUBLE(mass, characteristics.mass());
         // Check that the mass was set correctly
         EXPECT_NEAR(mass, 0.1, requiredPrecision);
+        std::cout << "hello " << std::endl;
      }
     {
         //Create a model and set the center of mass of the first segment
@@ -110,6 +111,7 @@ TEST(Characteristics, change)
             SCALAR_TO_DOUBLE(com, characteristics.CoM()[i]);
             EXPECT_NEAR(com, expected[i], requiredPrecision);
         }
+        std::cout << "hello " << std::endl;
     }
     {
         Model model(modelPathForGeneralTesting);
@@ -121,6 +123,7 @@ TEST(Characteristics, change)
             SCALAR_TO_DOUBLE(value, segment.localJCS()(i));
             EXPECT_NEAR(value, expected[i], requiredPrecision);
         }
+        std::cout << "hello " << std::endl;
     }
 
 }
