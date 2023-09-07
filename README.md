@@ -597,8 +597,13 @@ The tag `r` represented the width of the curve based of the torque-angle relatio
 #### offset (Sigmoidgauss3p)
 ...
 
-## Converted models
-Note that an Opensim to bioMod [converter](https://github.com/pyomeca/osim_to_biomod) has been built if one wants to use Opensim models with biorbd.
+## Convert from OpenSim models
+For users who have well-established models in OpenSim and wish to convert them to a `.bioMod`, there's a handy tool called Osim_to_biomod. 
+This package facilitates the conversion process, ensuring that OpenSim models can be seamlessly integrated into our ecosystem.
+
+To get started with the Osim_to_biomod package, please refer to its documentation and source code available at [Osim_to_biomod](https://github.com/pyomeca/osim_to_biomod) GitHub Repository.
+
+Let us know if you'd like any further modifications!
 
 # How to contribute
 
