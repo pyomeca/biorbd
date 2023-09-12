@@ -5,6 +5,7 @@ from ._version import __version__
 from .surface_max_torque_actuator import *
 from .rigid_body import *
 from .utils import *
+from .external_forces import *
 
 
 if biorbd.currentLinearAlgebraBackend() == 1:
@@ -26,23 +27,3 @@ if biorbd.currentLinearAlgebraBackend() == 1:
                 func_evaluated = func_evaluated.to_mx()
         func = Function(name, cx_param, [func_evaluated])
         return func.expand() if expand else func
-
-
-def to_spatial_vector(f_ext: np.ndarray):
-    """
-    Converts a 6 x n_external_force np.array into biorbd spatial vector
-
-    Parameters
-    ----------
-    f_ext: np.ndarray
-        The array to convert
-
-    Returns
-    -------
-    The conveted array
-    """
-
-    vector = biorbd.VecBiorbdSpatialVector()
-    for idx in range(f_ext.shape[1]):
-        vector.append(biorbd.SpatialVector(f_ext[:, idx]))
-    return vector
