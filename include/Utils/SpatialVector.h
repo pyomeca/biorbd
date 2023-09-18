@@ -43,16 +43,16 @@ public:
 
     ///
     /// \brief Construct SpatialVector by its values
-    /// \param v1 First element
-    /// \param v2 Second element
-    /// \param v3 Third element
-    /// \param v4 Forth element
-    /// \param v5 Fifth element
-    /// \param v6 Sixth element
+    /// \param mx Moment about the X axis
+    /// \param my Moment about the Y axis
+    /// \param mz Moment about the Z axis
+    /// \param fx Froce along the X axis
+    /// \param fy Force along the Y axis
+    /// \param fz Force along the Z axis
     ///
     SpatialVector(
-        Scalar v1, Scalar v2, Scalar v3,
-        Scalar v4, Scalar v5, Scalar v6);
+        Scalar mx, Scalar my, Scalar mz,
+        Scalar fx, Scalar fy, Scalar fz);
 
 #ifdef BIORBD_USE_CASADI_MATH
     ///

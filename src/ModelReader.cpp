@@ -79,16 +79,12 @@ void Reader::readModelFile(
 {
     // Open file
     if (!path.isFileReadable())
-        utils::Error::raise("File " + path.absolutePath()
-                                    + " could not be open");
+        utils::Error::raise("File " + path.absolutePath() + " could not be open");
 
 #ifdef _WIN32
-    utils::IfStream file(
-        utils::Path::toWindowsFormat(
-            path.absolutePath()).c_str(), std::ios::in);
+    utils::IfStream file(utils::Path::toWindowsFormat(path.absolutePath()).c_str(), std::ios::in);
 #else
-    utils::IfStream file(
-        path.absolutePath().c_str(), std::ios::in);
+    utils::IfStream file(path.absolutePath().c_str(), std::ios::in);
 #endif
 
     // Read file
@@ -102,9 +98,8 @@ void Reader::readModelFile(
     // Determine the file version
     file.readSpecificTag("version", main_tag);
     unsigned int version(static_cast<unsigned int>(atoi(main_tag.c_str())));
-    utils::Error::check((version == 1 || version == 2 || version == 3
-                                 || version == 4),
-                                "Version " + main_tag + " is not implemented yet");
+    utils::Error::check((version == 1 || version == 2 || version == 3 || version == 4),
+        "Version " + main_tag + " is not implemented yet");
 
 #ifdef MODULE_ACTUATORS
     bool hasActuators = false;
@@ -138,7 +133,6 @@ void Reader::readModelFile(
                 rigidbody::Mesh mesh;
                 bool isMeshSet(false);
                 int segmentByFile(-1); // -1 non setté, 0 pas par file, 1 par file
-                int PF = -1;
                 std::vector<utils::Range> QRanges;
                 std::vector<utils::Range> QDotRanges;
                 std::vector<utils::Range> QDDotRanges;
@@ -248,7 +242,8 @@ void Reader::readModelFile(
                         readVector3d(file, variable, com);
                     } else if (!property_tag.tolower().compare("forceplate")
                                || !property_tag.tolower().compare("externalforceindex")) {
-                        file.read(PF);
+                        std::cout << "Please note that the 'externalforceindex' or 'forceplate' tags were removed when the ExternalForceSet was introduce.\n" << 
+                            "Please consider removing these tag from your model file." << std::endl;
                     } else if (!property_tag.tolower().compare("mesh")) {
                         if (segmentByFile==-1) {
                             segmentByFile = 0;
@@ -362,7 +357,7 @@ void Reader::readModelFile(
                 rigidbody::SegmentCharacteristics characteristics(mass,com,inertia,
                         mesh);
                 model->AddSegment(name, parent_str, trans, rot, QRanges, QDotRanges,
-                                  QDDotRanges, characteristics, RT, PF);
+                                  QDDotRanges, characteristics, RT);
             } else if (!main_tag.tolower().compare("gravity")) {
                 utils::Vector3d gravity(0,0,0);
                 readVector3d(file, variable, gravity);

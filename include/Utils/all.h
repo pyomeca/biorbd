@@ -16,6 +16,7 @@
 #include "Utils/RotoTrans.h"
 #include "Utils/RotoTransNode.h"
 #include "Utils/SpatialVector.h"
+#include "Utils/ExternalForceSet.h"
 #include "Utils/String.h"
 #include "Utils/Timer.h"
 #include "Utils/UtilsEnum.h"

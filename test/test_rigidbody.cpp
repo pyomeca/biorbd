@@ -6,18 +6,20 @@
 
 #include "BiorbdModel.h"
 #include "biorbdConfig.h"
-#include "Utils/String.h"
+#include "Utils/ExternalForceSet.h"
 #include "Utils/Range.h"
-#include "Utils/SpatialVector.h"
 #include "Utils/Matrix3d.h"
 #include "Utils/Matrix.h"
+#include "Utils/SpatialVector.h"
+#include "Utils/String.h"
+
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
-#include "RigidBody/SoftContactSphere.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/SegmentCharacteristics.h"
+#include "RigidBody/SoftContactSphere.h"
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
 #include "RigidBody/IMU.h"
@@ -25,8 +27,6 @@
     #include "RigidBody/KalmanReconsMarkers.h"
     #include "RigidBody/KalmanReconsIMU.h"
 #endif
-
-#include "testWrapperClass.h"
 
 using namespace BIORBD_NAMESPACE;
 
@@ -43,10 +43,8 @@ modelPathForLoopConstraintTesting("models/loopConstrainedModel.bioMod");
 static std::string modelNoRoot("models/pyomecaman_freeFall.bioMod");
 static std::string modelNoRootDoF("models/pyomecaman_stuck.bioMod");
 static std::string modelSimple("models/cube.bioMod");
-
 static std::string modelWithSoftContact("models/cubeWithSoftContacts.bioMod");
-static std::string modelWithRigidContactsExternalForces("models/cubeWithRigidContactsExternalForces.bioMod");
-static std::string modelWithSoftContactRigidContactsExternalForces("models/cubeWithSoftContactsRigidContactsExternalForces.bioMod");
+
 
 TEST(Gravity, change)
 {
@@ -688,30 +686,7 @@ TEST(SoftContacts, unitTest){
     }
 }
 
-TEST(SoftContacts, ForceAtOrigin){
-    Model model(modelWithSoftContact);
-    rigidbody::SoftContactSphere sphere(model.softContact(0));
-
-    {
-        rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity QDot(model);
-        FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.}));
-        FILL_VECTOR(QDot, std::vector<double>({0.1, 0.1, 0.1, 0.1}));
-
-        utils::SpatialVector force = sphere.computeForceAtOrigin(model, Q, QDot);
-
-        std::vector<double> forceExpected = {-670.95355043718416, 2.944729504204179, 2.2119497381886286,
-                                             0, -221.1949738188676, 294.47295042042418};
-        for (unsigned int i = 0; i < 6; ++i) {
-            SCALAR_TO_DOUBLE(f, force(i));
-            EXPECT_NEAR(f, forceExpected[i], requiredPrecision);
-        }
-    }
-}
-
-static std::vector<double> Qtest = { 0.1, 0.1, 0.1, 0.3, 0.3, 0.3,
-                                     0.3, 0.3, 0.3, 0.3, 0.3, 0.4, 0.3
-                                   };
+static std::vector<double> Qtest = { 0.1, 0.1, 0.1, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.4, 0.3};
 
 TEST(GeneralizedCoordinates, unitTest)
 {
@@ -724,9 +699,7 @@ TEST(GeneralizedCoordinates, unitTest)
 
         rigidbody::GeneralizedCoordinates newQ(Q);
 
-        std::vector<double> Q_expected = { 0.1, 0.1, 0.1, 0.3, 0.3, 0.3,
-                                           0.3, 0.3, 0.3, 0.3, 0.3, 0.4, 0.3
-                                         };
+        std::vector<double> Q_expected = {0.1, 0.1, 0.1, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.4, 0.3};
 
         for (unsigned int i = 0; i < model.nbQ(); ++i) {
             SCALAR_TO_DOUBLE(q, newQ[i]);
@@ -1041,385 +1014,6 @@ TEST(Joints, Energy)
     EXPECT_NEAR(PE_double, expectedPE, requiredPrecision);
 }
 
-
-TEST(Joints, combineExtForceAndSoftContact)
-{
-    {
-        // Only f_contacts
-        Model model(modelPathForGeneralTesting);
-
-        rigidbody::GeneralizedCoordinates Q(model);
-        FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2, 0.3,
-                                           -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, 0.4}));
-
-        rigidbody::GeneralizedVelocity QDot(model);
-        FILL_VECTOR(QDot, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2, 0.3,
-                                           -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, 0.4}));
-
-        std::vector<utils::SpatialVector> *allForces_ext;
-        allForces_ext = nullptr;
-
-        std::vector<utils::Vector> realAllForces;
-        std::vector<utils::Vector> *allForces;
-        allForces = &realAllForces;
-
-        utils::Vector force1;
-        force1 = utils::Vector(2);
-        force1[0] = 1;
-        force1[1] = 2;
-
-        utils::Vector force2;
-        force2 = utils::Vector(1);
-        force2[0] = 3;
-
-        utils::Vector force3;
-        force3 = utils::Vector(2);
-        force3[0] = 4;
-        force3[1] = 5;
-
-        utils::Vector force4;
-        force4 = utils::Vector(1);
-        force4[0] = 6;
-
-        allForces->push_back(force1);
-        allForces->push_back(force2);
-        allForces->push_back(force3);
-        allForces->push_back(force4);
-
-        WrapperToJointsContactSoftcontact wrappedModel(model);
-        std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl(
-                    wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, allForces, Q, QDot, true)
-                                                            );
-
-        RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
-        RigidBodyDynamics::Math::SpatialVector sp_dof12(-7.592268755852077, -0.7864099999999999, 0.14995, 0, 1.0, 5.0);
-        RigidBodyDynamics::Math::SpatialVector sp_dof15(-17.952947566495585, 1.72277, -0.5998, 0.0, 4.0, 11.0);
-
-        std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;
-
-        sp_expected.push_back(sp_zero); // Dof 0
-        sp_expected.push_back(sp_zero); // Dof 1
-        sp_expected.push_back(sp_zero); // Dof 2
-        sp_expected.push_back(sp_zero); // Dof 3
-        sp_expected.push_back(sp_zero); // Dof 4
-        sp_expected.push_back(sp_zero); // Dof 5
-        sp_expected.push_back(sp_zero); // Dof 6
-        sp_expected.push_back(sp_zero); // Dof 7
-        sp_expected.push_back(sp_zero); // Dof 8
-        sp_expected.push_back(sp_zero); // Dof 9
-        sp_expected.push_back(sp_zero); // Dof 10
-        sp_expected.push_back(sp_zero); // Dof 11
-        sp_expected.push_back(sp_dof12); // Dof 12
-        sp_expected.push_back(sp_zero); // Dof 13
-        sp_expected.push_back(sp_zero); // Dof 14
-        sp_expected.push_back(sp_dof15); // Dof 15
-
-        for (unsigned int i = 0; i < 16; ++i){
-
-            for (unsigned int j = 0; j < 6; ++j)
-                    {
-                        SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
-                        SCALAR_TO_DOUBLE(f, (*f_ext_rbdl)[i](j));
-                        EXPECT_NEAR(f, f_expected, requiredPrecision);
-                    }
-        }
-    }
-    {
-    // Only soft_contacts
-    Model model(modelWithSoftContact);
-
-    rigidbody::GeneralizedCoordinates Q(model);
-    FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2}));
-
-    rigidbody::GeneralizedVelocity QDot(model);
-    FILL_VECTOR(QDot, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2}));
-
-    std::vector<utils::SpatialVector> *allForces_ext;
-    allForces_ext = nullptr;
-
-    WrapperToJointsContactSoftcontact wrappedModel(model);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl(
-                wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, nullptr, Q, QDot, true)
-                                                        );
-
-    RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
-    RigidBodyDynamics::Math::SpatialVector sp_dof4(185392.9862903644, -249642.95301694548, 238700.3791127471, 74247.2670562476, 102146.62960989607, 49317.07505542255);
-
-    std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;
-
-    sp_expected.push_back(sp_zero); // Dof 0
-    sp_expected.push_back(sp_zero); // Dof 1
-    sp_expected.push_back(sp_zero); // Dof 2
-    sp_expected.push_back(sp_zero); // Dof 3
-    sp_expected.push_back(sp_dof4); // Dof 4
-
-    for (unsigned int i = 0; i < 5; ++i){
-
-        for (unsigned int j = 0; j < 6; ++j)
-                {
-                    SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
-                    SCALAR_TO_DOUBLE(f, (*f_ext_rbdl)[i](j));
-                    EXPECT_NEAR(f, f_expected, 1e-9);
-                }
-        }
-    }
-    {
-    // Only external forces
-    Model model(modelWithRigidContactsExternalForces);
-
-    rigidbody::GeneralizedCoordinates Q(model);
-    FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2}));
-
-    rigidbody::GeneralizedVelocity QDot(model);
-    FILL_VECTOR(QDot, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2}));
-
-    std::vector<utils::SpatialVector> realallForces_ext;
-    std::vector<utils::SpatialVector> *allForces_ext;
-    allForces_ext = &realallForces_ext;
-
-    utils::SpatialVector force1(1, 2, 3, 4, 5, 6);
-    allForces_ext->push_back(force1);
-
-    WrapperToJointsContactSoftcontact wrappedModel(model);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl(
-                wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, nullptr, Q, QDot, true)
-                                                        );
-
-    RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
-    RigidBodyDynamics::Math::SpatialVector sp_dof4(1, 2, 3, 4, 5, 6);
-
-    std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;
-
-    sp_expected.push_back(sp_zero); // Dof 0
-    sp_expected.push_back(sp_zero); // Dof 1
-    sp_expected.push_back(sp_zero); // Dof 2
-    sp_expected.push_back(sp_zero); // Dof 3
-    sp_expected.push_back(sp_dof4); // Dof 4
-
-    for (unsigned int i = 0; i < 5; ++i){
-
-        for (unsigned int j = 0; j < 6; ++j)
-                {
-                    SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
-                    SCALAR_TO_DOUBLE(f, (*f_ext_rbdl)[i](j));
-                    EXPECT_NEAR(f, f_expected, requiredPrecision);
-                }
-    }
-    }
-    {
-    // external forces + rigid contacts
-    Model model(modelWithRigidContactsExternalForces);
-
-    rigidbody::GeneralizedCoordinates Q(model);
-    FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2}));
-
-    rigidbody::GeneralizedVelocity QDot(model);
-    FILL_VECTOR(QDot, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2}));
-
-    std::vector<utils::SpatialVector> realallForces_ext;
-    std::vector<utils::SpatialVector> *allForces_ext;
-    allForces_ext = &realallForces_ext;
-
-    utils::SpatialVector force(1, 2, 3, 4, 5, 6);
-    allForces_ext->push_back(force);
-
-    std::vector<utils::Vector> realAllForcesRigidContact;
-    std::vector<utils::Vector> *allForcesRigidContact;
-    allForcesRigidContact = &realAllForcesRigidContact;
-
-    utils::Vector force1;
-    force1 = utils::Vector(2);
-    force1[0] = 1;
-    force1[1] = 2;
-
-    utils::Vector force2;
-    force2 = utils::Vector(1);
-    force2[0] = 3;
-
-    allForcesRigidContact->push_back(force1);
-    allForcesRigidContact->push_back(force2);
-
-    WrapperToJointsContactSoftcontact wrappedModel(model);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl(
-                wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, allForcesRigidContact, Q, QDot, true)
-                                                        );
-
-    RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
-    RigidBodyDynamics::Math::SpatialVector sp_dof4(-10.694693700837254, 12.040834024296124, 0.98598321280716972, 4, 6, 11);
-
-    std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;
-
-    sp_expected.push_back(sp_zero); // Dof 0
-    sp_expected.push_back(sp_zero); // Dof 1
-    sp_expected.push_back(sp_zero); // Dof 2
-    sp_expected.push_back(sp_zero); // Dof 3
-    sp_expected.push_back(sp_dof4); // Dof 4
-
-    for (unsigned int i = 0; i < 5; ++i){
-
-        for (unsigned int j = 0; j < 6; ++j)
-                {
-                    SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
-                    SCALAR_TO_DOUBLE(f, (*f_ext_rbdl)[i](j));
-                    EXPECT_NEAR(f, f_expected, requiredPrecision);
-                }
-    }
-    }
-    {
-    // SoftContact + rigid contacts
-    Model model(modelWithSoftContactRigidContactsExternalForces);
-
-    rigidbody::GeneralizedCoordinates Q(model);
-    FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2}));
-
-    rigidbody::GeneralizedVelocity QDot(model);
-    FILL_VECTOR(QDot, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2}));
-
-    std::vector<utils::Vector> realAllForcesRigidContact;
-    std::vector<utils::Vector> *allForcesRigidContact;
-    allForcesRigidContact = &realAllForcesRigidContact;
-
-    utils::Vector force1;
-    force1 = utils::Vector(2);
-    force1[0] = 1;
-    force1[1] = 2;
-
-    utils::Vector force2;
-    force2 = utils::Vector(1);
-    force2[0] = 3;
-
-    allForcesRigidContact->push_back(force1);
-    allForcesRigidContact->push_back(force2);
-
-    WrapperToJointsContactSoftcontact wrappedModel(model);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl(
-                wrappedModel.wrapCombineExtForceAndSoftContact(nullptr, allForcesRigidContact, Q, QDot, true)
-                                                        );
-
-    RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
-    RigidBodyDynamics::Math::SpatialVector sp_dof4(185381.29159666356, -249632.91218292119, 238698.36509595989, 74247.267056247598, 102147.62960989607, 49322.075055422552);
-
-    std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;
-
-    sp_expected.push_back(sp_zero); // Dof 0
-    sp_expected.push_back(sp_zero); // Dof 1
-    sp_expected.push_back(sp_zero); // Dof 2
-    sp_expected.push_back(sp_zero); // Dof 3
-    sp_expected.push_back(sp_dof4); // Dof 4
-
-    for (unsigned int i = 0; i < 5; ++i){
-
-        for (unsigned int j = 0; j < 6; ++j)
-                {
-                    SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
-                    SCALAR_TO_DOUBLE(f, (*f_ext_rbdl)[i](j));
-                    EXPECT_NEAR(f, f_expected, 1e-9);
-                }
-    }
-    }
-    {
-    // SoftContact + external forces
-    Model model(modelWithSoftContactRigidContactsExternalForces);
-
-    rigidbody::GeneralizedCoordinates Q(model);
-    FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2}));
-
-    rigidbody::GeneralizedVelocity QDot(model);
-    FILL_VECTOR(QDot, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2}));
-
-    std::vector<utils::SpatialVector> realallForces_ext;
-    std::vector<utils::SpatialVector> *allForces_ext;
-    allForces_ext = &realallForces_ext;
-
-    utils::SpatialVector force(1, 2, 3, 4, 5, 6);
-    allForces_ext->push_back(force);
-
-    WrapperToJointsContactSoftcontact wrappedModel(model);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl(
-                wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, nullptr, Q, QDot, true)
-                                                        );
-
-    RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
-    RigidBodyDynamics::Math::SpatialVector sp_dof4(185393.98629036441, -249640.95301694548, 238703.37911274709, 74251.267056247598, 102151.62960989607, 49323.075055422552);
-
-    std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;
-
-    sp_expected.push_back(sp_zero); // Dof 0
-    sp_expected.push_back(sp_zero); // Dof 1
-    sp_expected.push_back(sp_zero); // Dof 2
-    sp_expected.push_back(sp_zero); // Dof 3
-    sp_expected.push_back(sp_dof4); // Dof 4
-
-    for (unsigned int i = 0; i < 5; ++i){
-
-        for (unsigned int j = 0; j < 6; ++j)
-                {
-                    SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
-                    SCALAR_TO_DOUBLE(f, (*f_ext_rbdl)[i](j));
-                    EXPECT_NEAR(f, f_expected, 1e-9);
-                }
-    }
-    }
-    {
-    // SoftContact + external forces + rigid contacts
-    Model model(modelWithSoftContactRigidContactsExternalForces);
-
-    rigidbody::GeneralizedCoordinates Q(model);
-    FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2}));
-
-    rigidbody::GeneralizedVelocity QDot(model);
-    FILL_VECTOR(QDot, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2}));
-
-    std::vector<utils::SpatialVector> realallForces_ext;
-    std::vector<utils::SpatialVector> *allForces_ext;
-    allForces_ext = &realallForces_ext;
-
-    utils::SpatialVector force(1, 2, 3, 4, 5, 6);
-    allForces_ext->push_back(force);
-
-    std::vector<utils::Vector> realAllForcesRigidContact;
-    std::vector<utils::Vector> *allForcesRigidContact;
-    allForcesRigidContact = &realAllForcesRigidContact;
-
-    utils::Vector force1;
-    force1 = utils::Vector(2);
-    force1[0] = 1;
-    force1[1] = 2;
-
-    utils::Vector force2;
-    force2 = utils::Vector(1);
-    force2[0] = 3;
-
-    allForcesRigidContact->push_back(force1);
-    allForcesRigidContact->push_back(force2);
-
-    WrapperToJointsContactSoftcontact wrappedModel(model);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl(
-                wrappedModel.wrapCombineExtForceAndSoftContact(allForces_ext, allForcesRigidContact, Q, QDot, true)
-                                                        );
-
-    RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
-    RigidBodyDynamics::Math::SpatialVector sp_dof4(185382.29159666356, -249630.91218292119, 238701.36509595989, 74251.267056247598, 102152.62960989607, 49328.075055422552);
-
-    std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;
-
-    sp_expected.push_back(sp_zero); // Dof 0
-    sp_expected.push_back(sp_zero); // Dof 1
-    sp_expected.push_back(sp_zero); // Dof 2
-    sp_expected.push_back(sp_zero); // Dof 3
-    sp_expected.push_back(sp_dof4); // Dof 4
-
-    for (unsigned int i = 0; i < 5; ++i){
-
-        for (unsigned int j = 0; j < 6; ++j)
-                {
-                    SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
-                    SCALAR_TO_DOUBLE(f, (*f_ext_rbdl)[i](j));
-                    EXPECT_NEAR(f, f_expected, 1e-9);
-                }
-    }
-    }
-}
 
 TEST(Joints, massMatrixInverse)
 {
@@ -2222,11 +1816,13 @@ TEST(Dynamics, ForwardDynAndExternalForces)
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
     DECLARE_GENERALIZED_TORQUE(Tau, model);
-    std::vector<utils::SpatialVector> f_ext;
+    utils::ExternalForceSet externalForces = utils::ExternalForceSet();
     for (size_t i=0; i<2; ++i) {
         double di = static_cast<double>(i);
-        f_ext.push_back(utils::SpatialVector(
-                            (di+1)*11.1, (di+1)*22.2, (di+1)*33.3, (di+1)*44.4, (di+1)*55.5, (di+1)*66.6));
+        externalForces.set(
+            model,
+            "PiedD",
+            utils::SpatialVector((di+1)*11.1, (di+1)*22.2, (di+1)*33.3, (di+1)*44.4, (di+1)*55.5, (di+1)*66.6));
     }
 
     // Set to random values
@@ -2245,8 +1841,7 @@ TEST(Dynamics, ForwardDynAndExternalForces)
         3948.4748602722384
     };
 
-    CALL_BIORBD_FUNCTION_3ARGS1PARAM(QDDot, model, ForwardDynamics, Q, QDot, Tau,
-                                     &f_ext);
+    CALL_BIORBD_FUNCTION_3ARGS1PARAM(QDDot, model, ForwardDynamics, Q, QDot, Tau, externalForces);
 
     for (unsigned int i = 0; i<model.nbQddot(); ++i) {
         EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i],

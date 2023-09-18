@@ -43,7 +43,6 @@ public:
     /// \param QDDotRanges Ranges of the translations and rotations dof acceleration. The length of QDDotRanges must be equal to length of translations and rotations
     /// \param characteristics of the segment (mass, center of mass, inertia, etc.)
     /// \param cor Transformation in parent reference frame
-    /// \param PF Platform index attached to the body (-1 means no force platform acts on the body)
     ///
     Segment(
         rigidbody::Joints& model,
@@ -55,8 +54,7 @@ public:
         const std::vector<utils::Range>& QDotRanges,
         const std::vector<utils::Range>& QDDotRanges,
         const SegmentCharacteristics& characteristics,
-        const RigidBodyDynamics::Math::SpatialTransform& cor,
-        int PF = -1);
+        const RigidBodyDynamics::Math::SpatialTransform& cor);
 
     ///
     /// \brief Construct a Segment
@@ -69,7 +67,6 @@ public:
     /// \param QDDotRanges Ranges of the translations and rotations dof acceleration. The length of QDDotRanges must be equal to length of translations and rotations
     /// \param characteristics of the segment (mass, center of mass, inertia, etc.)
     /// \param cor Transformation in parent reference frame
-    /// \param PF Platform index attached to the body (-1 means no force platform acts on the body)
     ///
     Segment(
         rigidbody::Joints& model,
@@ -80,8 +77,7 @@ public:
         const std::vector<utils::Range>& QDotRanges,
         const std::vector<utils::Range>& QDDotRanges,
         const SegmentCharacteristics& characteristics,
-        const RigidBodyDynamics::Math::SpatialTransform& cor,
-        int PF = -1);
+        const RigidBodyDynamics::Math::SpatialTransform& cor);
 
     ///
     /// \brief Create a deep copy of Segment
@@ -255,14 +251,6 @@ protected:
     /// \brief Set the type of the segment
     ///
     void setType();
-
-    std::shared_ptr<int> m_idxPF; ///< Platform index which acts on the segment
-
-    ///
-    /// \brief Set the platform index
-    ///
-    void setPF(
-        int idx);
 
     std::shared_ptr<RigidBodyDynamics::Math::SpatialTransform>
     m_cor; ///< Attitude of the segment in parent reference frame

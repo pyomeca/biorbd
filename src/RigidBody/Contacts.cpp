@@ -4,6 +4,7 @@
 #include <rbdl/Kinematics.h>
 #include "Utils/String.h"
 #include "Utils/Error.h"
+#include "Utils/ExternalForceSet.h"
 #include "Utils/Vector3d.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/Rotation.h"
@@ -124,11 +125,11 @@ unsigned int rigidbody::Contacts::AddLoopConstraint(
 }
 
 std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForces(
-        const rigidbody::GeneralizedCoordinates &Q,
-        const rigidbody::GeneralizedVelocity &Qdot,
-        const rigidbody::GeneralizedTorque &Tau,
-         std::vector<utils::SpatialVector> *f_ext
-        )
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedTorque &Tau,
+    const utils::ExternalForceSet &externalForces
+)
 {
 
     // all in the world frame
@@ -142,7 +143,7 @@ std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForce
     // retrieve the model and the contacts
     rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
     rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
-    model.ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS, f_ext);
+    model.ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS, externalForces);
 
     std::vector< utils::SpatialVector > output;
     for (int i=0; i<*m_nbLoopConstraint ; i++) {
