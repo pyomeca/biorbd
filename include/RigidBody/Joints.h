@@ -6,7 +6,6 @@
 #include <rbdl/Constraints.h>
 #include "biorbdConfig.h"
 #include "Utils/Scalar.h"
-#include "Utils/ExternalForceSet.h"
 
 namespace BIORBD_NAMESPACE
 {
@@ -19,6 +18,7 @@ class Matrix3d;
 class Vector;
 class Vector3d;
 class Range;
+class ExternalForceSet;
 }
 
 namespace rigidbody
@@ -884,15 +884,36 @@ public:
     /// \param Q The Generalized Coordinates
     /// \param QDot The Generalized Velocities
     /// \param QDDot The Generalzed Acceleration
+    /// \return The Generalized Torques
+    ///
+    GeneralizedTorque InverseDynamics(const GeneralizedCoordinates& Q,
+        const GeneralizedVelocity& QDot,
+        const rigidbody::GeneralizedAcceleration& QDDot
+    );
+    ///
+    /// \brief Interface for the inverse dynamics of RBDL
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \param QDDot The Generalzed Acceleration
     /// \param externalForces External force acting on the system if there are any
     /// \return The Generalized Torques
     ///
     GeneralizedTorque InverseDynamics(const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const rigidbody::GeneralizedAcceleration& QDDot,
-        const utils::ExternalForceSet& externalForces = utils::ExternalForceSet()
+        const utils::ExternalForceSet& externalForces
     );
 
+    ///
+    /// \brief Interface to NonLinearEffect
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \return The Generalized Torques of the bias effects
+    ///
+    GeneralizedTorque NonLinearEffect(
+        const GeneralizedCoordinates& Q,
+        const GeneralizedVelocity& QDot
+    );
     ///
     /// \brief Interface to NonLinearEffect
     /// \param Q The Generalized Coordinates
@@ -903,9 +924,21 @@ public:
     GeneralizedTorque NonLinearEffect(
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
-        const utils::ExternalForceSet& externalForces = utils::ExternalForceSet()
+        const utils::ExternalForceSet& externalForces
     );
 
+    ///
+    /// \brief Interface for the forward dynamics of RBDL
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \param Tau The Generalized Torques
+    /// \return The Generalized Accelerations
+    ///
+    rigidbody::GeneralizedAcceleration ForwardDynamics(
+        const GeneralizedCoordinates& Q,
+        const GeneralizedVelocity& QDot,
+        const GeneralizedTorque& Tau
+    );
     ///
     /// \brief Interface for the forward dynamics of RBDL
     /// \param Q The Generalized Coordinates
@@ -918,7 +951,7 @@ public:
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
-        const utils::ExternalForceSet& externalForces = utils::ExternalForceSet()
+        const utils::ExternalForceSet& externalForces
     );
 
     ///
@@ -938,33 +971,13 @@ public:
     /// \param Q The Generalized Coordinates
     /// \param QDot The Generalized Velocities
     /// \param Tau The Generalized Torques
-    /// \param CS The Constraint set that will be filled
-    /// \param externalForces External force acting on the system if there are any
     /// \return The Generalized Accelerations
     ///
     rigidbody::GeneralizedAcceleration ForwardDynamicsConstraintsDirect(
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
-        const GeneralizedTorque& Tau,
-        Contacts& CS,
-        const utils::ExternalForceSet& externalForces = utils::ExternalForceSet()
+        const GeneralizedTorque& Tau
     );
-
-    ///
-    /// \brief Interface for contacts of the forward dynamics with contact of RBDL
-    /// \param Q The Generalized Coordinates
-    /// \param QDot The Generalized Velocities
-    /// \param Tau The Generalized Torques
-    /// \param externalForces External force acting on the system if there are any
-    /// \return The Contraint set
-    ///
-    utils::Vector ContactForcesFromForwardDynamicsConstraintsDirect(
-        const GeneralizedCoordinates& Q,
-        const GeneralizedVelocity& QDot,
-        const GeneralizedTorque& Tau,
-        const utils::ExternalForceSet& externalForces = utils::ExternalForceSet()
-    );
-
     ///
     /// \brief Interface for the forward dynamics with contact of RBDL
     /// \param Q The Generalized Coordinates
@@ -977,7 +990,64 @@ public:
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
-        const utils::ExternalForceSet& externalForces = utils::ExternalForceSet()
+        const utils::ExternalForceSet& externalForces
+    );
+    ///
+    /// \brief Interface for the forward dynamics with contact of RBDL
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \param Tau The Generalized Torques
+    /// \param CS The Constraint set that will be filled
+    /// \return The Generalized Accelerations
+    ///
+    rigidbody::GeneralizedAcceleration ForwardDynamicsConstraintsDirect(
+        const GeneralizedCoordinates& Q,
+        const GeneralizedVelocity& QDot,
+        const GeneralizedTorque& Tau,
+        Contacts& CS
+    );
+    ///
+    /// \brief Interface for the forward dynamics with contact of RBDL
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \param Tau The Generalized Torques
+    /// \param CS The Constraint set that will be filled
+    /// \param externalForces External force acting on the system if there are any
+    /// \return The Generalized Accelerations
+    ///
+    rigidbody::GeneralizedAcceleration ForwardDynamicsConstraintsDirect(
+        const GeneralizedCoordinates& Q,
+        const GeneralizedVelocity& QDot,
+        const GeneralizedTorque& Tau,
+        Contacts& CS,
+        const utils::ExternalForceSet& externalForces
+    );
+
+    ///
+    /// \brief Interface for contacts of the forward dynamics with contact of RBDL
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \param Tau The Generalized Torques
+    /// \return The Contraint set
+    ///
+    utils::Vector ContactForcesFromForwardDynamicsConstraintsDirect(
+        const GeneralizedCoordinates& Q,
+        const GeneralizedVelocity& QDot,
+        const GeneralizedTorque& Tau
+    );
+    ///
+    /// \brief Interface for contacts of the forward dynamics with contact of RBDL
+    /// \param Q The Generalized Coordinates
+    /// \param QDot The Generalized Velocities
+    /// \param Tau The Generalized Torques
+    /// \param externalForces External force acting on the system if there are any
+    /// \return The Contraint set
+    ///
+    utils::Vector ContactForcesFromForwardDynamicsConstraintsDirect(
+        const GeneralizedCoordinates& Q,
+        const GeneralizedVelocity& QDot,
+        const GeneralizedTorque& Tau,
+        const utils::ExternalForceSet& externalForces
     );
 
     ///

@@ -2136,8 +2136,7 @@ rigidbody::Mesh Reader::readMeshFileVtp(
 
     // Read the file
 #ifdef _WIN32
-    utils::String filepath( utils::Path::toWindowsFormat(
-                                        path.absolutePath()).c_str());
+    utils::String filepath( utils::Path::toWindowsFormat(path.absolutePath()).c_str());
 #else
     utils::String filepath( path.absolutePath().c_str() );
 #endif

@@ -4,15 +4,16 @@
 #include <rbdl/rbdl_utils.h>
 #include <rbdl/Kinematics.h>
 #include <rbdl/Dynamics.h>
-#include "Utils/Scalar.h"
-#include "Utils/String.h"
-#include "Utils/Quaternion.h"
+#include "Utils/Error.h"
+#include "Utils/ExternalForceSet.h"
 #include "Utils/Matrix.h"
 #include "Utils/Matrix3d.h"
-#include "Utils/Error.h"
+#include "Utils/Quaternion.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/Rotation.h"
+#include "Utils/Scalar.h"
 #include "Utils/SpatialVector.h"
+#include "Utils/String.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
@@ -1294,45 +1295,63 @@ utils::Scalar rigidbody::Joints::TotalEnergy(
 }
 
 rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &QDot,
-    const rigidbody::GeneralizedAcceleration &QDDot,
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedAcceleration& QDDot
+)
+{
+    return InverseDynamics(Q, QDot, QDDot, utils::ExternalForceSet(*this));
+}
+rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedAcceleration& QDDot,
     const utils::ExternalForceSet& externalForces
 )
 {
     rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
-    RigidBodyDynamics::InverseDynamics(*this, Q, QDot, QDDot, Tau, externalForces.toRbdl(Q, QDot));
+    RigidBodyDynamics::InverseDynamics(*this, Q, QDot, QDDot, Tau, externalForces.toRbdl());
     return Tau;
 }
 
 rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &QDot,
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot
+)
+{
+    return NonLinearEffect(Q, QDot, utils::ExternalForceSet(*this));
+}
+rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
     const utils::ExternalForceSet& externalForces
 )
 {
     rigidbody::GeneralizedTorque Tau(*this);
-    RigidBodyDynamics::NonlinearEffects(*this, Q, QDot, Tau, externalForces.toRbdl(Q, QDot));
+    RigidBodyDynamics::NonlinearEffects(*this, Q, QDot, Tau, externalForces.toRbdl());
     return Tau;
 }
 
-rigidbody::GeneralizedAcceleration
-rigidbody::Joints::ForwardDynamics(
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &QDot,
-    const rigidbody::GeneralizedTorque &Tau,
+rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamics(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau
+)
+{
+    return ForwardDynamics(Q, QDot, Tau, utils::ExternalForceSet(*this));
+}
+rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamics(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau,
     const utils::ExternalForceSet& externalForces)
 {
-
-    bool updateKin = true;
-
     rigidbody::GeneralizedAcceleration QDDot(*this);
-    RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, externalForces.toRbdl(Q, QDot));
+    RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, externalForces.toRbdl());
     return QDDot;
 }
 
-rigidbody::GeneralizedAcceleration
-rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
+rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     const rigidbody::GeneralizedAcceleration& QJointsDDot)
@@ -1364,12 +1383,40 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     return QRootDDot;
 }
 
-rigidbody::GeneralizedAcceleration
-rigidbody::Joints::ForwardDynamicsConstraintsDirect(
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &QDot,
-    const rigidbody::GeneralizedTorque &Tau,
-    rigidbody::Contacts &CS,
+
+rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau
+)
+{
+    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
+    return ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS);
+}
+rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau,
+    const utils::ExternalForceSet& externalForces
+)
+{
+    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
+    return this->ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, externalForces);
+}
+rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau,
+    rigidbody::Contacts& CS
+)
+{
+    return ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, utils::ExternalForceSet(*this));
+}
+rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau,
+    rigidbody::Contacts& CS,
     const utils::ExternalForceSet& externalForces
 )
 {
@@ -1381,15 +1428,22 @@ rigidbody::Joints::ForwardDynamicsConstraintsDirect(
 #endif
 
     rigidbody::GeneralizedAcceleration QDDot(*this);
-    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, updateKin, externalForces.toRbdl(Q, QDot));
+    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, updateKin, externalForces.toRbdl());
     return QDDot;
 }
 
-utils::Vector
-rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &QDot,
-    const rigidbody::GeneralizedTorque &Tau,
+utils::Vector rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau
+)
+{
+    return ContactForcesFromForwardDynamicsConstraintsDirect(Q, QDot, Tau, utils::ExternalForceSet(*this));
+}
+utils::Vector rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau,
     const utils::ExternalForceSet& externalForces
 )
 {
@@ -1398,21 +1452,7 @@ rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
     return CS.getForce();
 }
 
-rigidbody::GeneralizedAcceleration
-rigidbody::Joints::ForwardDynamicsConstraintsDirect(
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &QDot,
-    const rigidbody::GeneralizedTorque &Tau,
-    const utils::ExternalForceSet& externalForces
-)
-{
-
-    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
-    return this->ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, externalForces);
-}
-
-rigidbody::GeneralizedVelocity
-rigidbody::Joints::ComputeConstraintImpulsesDirect(
+rigidbody::GeneralizedVelocity rigidbody::Joints::ComputeConstraintImpulsesDirect(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDotPre
 )
@@ -1430,8 +1470,7 @@ rigidbody::Joints::ComputeConstraintImpulsesDirect(
     }
 }
 
-utils::Matrix3d
-rigidbody::Joints::bodyInertia (
+utils::Matrix3d rigidbody::Joints::bodyInertia (
         const rigidbody::GeneralizedCoordinates &q,
         bool updateKin)
 {

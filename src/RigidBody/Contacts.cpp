@@ -125,6 +125,15 @@ unsigned int rigidbody::Contacts::AddLoopConstraint(
 }
 
 std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForces(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& Qdot,
+    const rigidbody::GeneralizedTorque& Tau
+)
+{
+    rigidbody::Joints& model = dynamic_cast<rigidbody::Joints&>(*this);
+    return calcLoopConstraintForces(Q, Qdot, Tau, utils::ExternalForceSet(model));
+}
+std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForces(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
     const rigidbody::GeneralizedTorque &Tau,
@@ -146,7 +155,7 @@ std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForce
     model.ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS, externalForces);
 
     std::vector< utils::SpatialVector > output;
-    for (int i=0; i<*m_nbLoopConstraint ; i++) {
+    for (int i=0; i<static_cast<int>(*m_nbLoopConstraint); i++) {
         constraintBodyIdsOutput.clear();
         updatedConstraintBodyFramesOutput.clear();
         updatedConstraintForcesOutput.clear();
