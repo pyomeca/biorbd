@@ -104,12 +104,6 @@ public:
     unsigned int id() const;
 
     ///
-    /// \brief Return the platform index
-    /// \return The platform index
-    ///
-    int platformIdx() const;
-
-    ///
     /// \brief Return the translation sequence in text
     /// \return The translation sequence in text
     ///
