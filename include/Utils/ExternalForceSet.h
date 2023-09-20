@@ -125,7 +125,7 @@ namespace BIORBD_NAMESPACE
             /// \param Q The generalized coordinates
             /// \param QDot The generalized velocity
             /// \param updateKin If the kinematics of the model should be computed
-            /// \param includeSoftContact Set to false if soft contact should be ignored (that is automatically 
+            /// \param includeSoftContacts Set to false if soft contact should be ignored (that is automatically 
             /// done if the model does not include any soft contacts)
             /// \param includePushForces Set to false if push forces should be ignored (that is automatically
             /// done if no push forces were added
@@ -134,12 +134,13 @@ namespace BIORBD_NAMESPACE
                 const rigidbody::GeneralizedCoordinates& Q,
                 const rigidbody::GeneralizedVelocity& QDot,
                 bool updateKin = true,
-                bool includeSoftContact = true,
+                bool includeSoftContacts = true,
                 bool includePushForces = true
             );
 
             ///
-            /// \brief Interface to apply all previously added force
+            /// \brief Interface to apply all previously added force. Warning: Do not call applyForces after calling applyPushForces
+            /// otherwise the push forces will by applied twice.
             /// \param Q The generalized coordinates
             /// \param updateKin If the kinematics of the model should be computed
             ///
@@ -149,36 +150,27 @@ namespace BIORBD_NAMESPACE
             );
 
         protected:
-            /////
-            ///// \brief Dispatch the forces from the force plate in a spatial vector
-            ///// \param sv One spatial vector per force platform
-            ///// \return A spatial vector with the forces
-            /////
-            //std::vector<RigidBodyDynamics::Math::SpatialVector>* dispatchedForce(
-            //    std::vector<utils::SpatialVector>* sv) const;
-
-
-
             /// 
-            /// \brief Add the contact forces from rigid and soft contacts to the internal Set.
-            /// If the vector is reset, this method should be called again.
-            /// \param rigidContactForces The forces to add to the rigid contact. If none is provided
-            /// then only soft contact are added
-            /// \param Q The Generalized coordinates
+            /// \brief Add the push forces to the internal Set.
+            /// \param Q The Generalized coordinates. 
             /// 
-            void utils::ExternalForceSet::combineExternalPushes(const rigidbody::GeneralizedCoordinates& Q);
+            /// Note: as this is an internal method, even though Q is passed, it is assumed update kinematics was already done.
+            /// 
+            void utils::ExternalForceSet::combineExternalPushes(
+                const rigidbody::GeneralizedCoordinates& Q
+            );
 
-            /////
-            ///// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof
-            ///// \param f_contacts the forces applied at the contact points
-            ///// \param Q The Generalized coordinates
-            ///// \return The rigid contacts
-            /////
-            //std::vector<utils::SpatialVector>& rigidContactToSpatialVector(
-            //    std::vector<utils::Vector> f_contacts,
-            //    const rididbody::GeneralizedCoordinates& Q,
-            //    bool updateKin);
-
+            ///
+            /// \brief Add the soft contact forces to the internal Set.
+            /// \param Q The Generalized coordinates. 
+            /// \param QDot The Generalized velocity. 
+            /// 
+            /// Note: as this is an internal method, even though Q is passed, it is assumed update kinematics was already done.
+            /// 
+            void utils::ExternalForceSet::combineSoftContactForces(
+                const rigidbody::GeneralizedCoordinates& Q,
+                const rigidbody::GeneralizedVelocity& QDot
+            );
 
             ///
             /// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof
@@ -190,8 +182,6 @@ namespace BIORBD_NAMESPACE
                 const utils::Vector3d& forces,
                 const rigidbody::NodeSegment& position
             );
-
-
 
             Model& 
                 m_model; ///< A reference to the kinematic model

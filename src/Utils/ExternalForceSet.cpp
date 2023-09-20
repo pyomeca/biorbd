@@ -9,6 +9,8 @@
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
 #include "RigidBody/SoftContacts.h"
+#include "RigidBody/SoftContactNode.h"
+
 #include "Utils/SpatialVector.h"
 #include "Utils/String.h"
 #include "Utils/Vector3d.h"
@@ -98,7 +100,7 @@ void utils::ExternalForceSet::applyForces(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     bool updateKin,
-    bool includeSoftContact,
+    bool includeSoftContacts,
     bool includePushForces
 ) 
 {
@@ -106,66 +108,11 @@ void utils::ExternalForceSet::applyForces(
     updateKin = true;
 #endif
     if (updateKin) {
-        m_model.UpdateKinematicsCustom(&Q, includeSoftContact ? &QDot : nullptr, nullptr);
+        m_model.UpdateKinematicsCustom(&Q, includeSoftContacts ? &QDot : nullptr, nullptr);
     }
 
-    combineExternalPushes(Q);
-
-    //auto& softContacts = dynamic_cast<rigidbody::SoftContacts*>(&m_model)->softContactToSpatialVector(Q, QDot, updateKin);
-
-//    if (!f_ext_rbdl && !softContacts && !f_contacts_rbdl) {
-//        // Return a nullptr
-//        return nullptr;
-//    }
-//
-//    if (!f_ext_rbdl && !f_contacts_rbdl) {
-//        // Return the softContacts (and nullptr if softContacts is nullptr)
-//        return softContacts;
-//    }
-//
-//    if (!softContacts && !f_contacts_rbdl) {
-//        // Return the External forces
-//        return f_ext_rbdl;
-//    }
-//
-//    if (!f_ext_rbdl && !softContacts) {
-//        // Return the contact forces
-//        return f_contacts_rbdl;
-//    }
-//
-//    if (!f_contacts_rbdl)
-//    {
-//        for (size_t i = 0; i < softContacts->size(); ++i) {
-//            // Combine the external forces with the soft contacts
-//            (*f_ext_rbdl)[i] += (*softContacts)[i];
-//        }
-//        return f_ext_rbdl;
-//    }
-//    if (!softContacts)
-//    {
-//        for (size_t i = 0; i < f_contacts_rbdl->size(); ++i) {
-//            // Combine the external forces with the soft contacts
-//            (*f_ext_rbdl)[i] += (*f_contacts_rbdl)[i];
-//        }
-//        return f_ext_rbdl;
-//    }
-//    if (!f_ext_rbdl)
-//    {
-//        for (size_t i = 0; i < f_contacts_rbdl->size(); ++i) {
-//            // Combine the external forces with the soft contacts
-//            (*softContacts)[i] += (*f_contacts_rbdl)[i];
-//        }
-//        return softContacts;
-//    }
-//    for (size_t i = 0; i < f_contacts_rbdl->size(); ++i) {
-//        // Combine the external forces with the soft contacts
-//        (*f_ext_rbdl)[i] += (*softContacts)[i];
-//        (*f_ext_rbdl)[i] += (*f_contacts_rbdl)[i];
-//    }
-//
-//    delete softContacts;
-//    delete f_contacts_rbdl;
-//    return f_ext_rbdl;
+    if (includePushForces) combineExternalPushes(Q);
+    if (includeSoftContacts) combineSoftContactForces(Q, QDot);
 }
 
 void utils::ExternalForceSet::applyPushForces(
@@ -196,11 +143,17 @@ void utils::ExternalForceSet::reset()
     m_externalPush.clear();
 }
 
-void utils::ExternalForceSet::combineExternalPushes(const rigidbody::GeneralizedCoordinates& Q)
+void utils::ExternalForceSet::combineExternalPushes(
+    const rigidbody::GeneralizedCoordinates& Q)
 {
     // NOTE: since combineExternalPushes is necessarily called from internal as protected method
     // we assume updateKinematics was already done
-    
+#ifdef BIORBD_USE_CASADI_MATH
+    bool updateKin = true;
+#else
+    bool updateKin = false;
+#endif
+
     // Do not waste time computing forces on empty vector
     if (m_externalPush.size() == 0) return;
 
@@ -215,7 +168,7 @@ void utils::ExternalForceSet::combineExternalPushes(const rigidbody::Generalized
 
             const utils::Vector3d& forces = e.first;
             rigidbody::NodeSegment positionInGlobal(
-                RigidBodyDynamics::CalcBodyToBaseCoordinates(m_model, Q, segment.id(), position, false),
+                RigidBodyDynamics::CalcBodyToBaseCoordinates(m_model, Q, segment.id(), position, updateKin),
                 position.name(),
                 position.parent(),
                 position.isTechnical(),
@@ -226,6 +179,38 @@ void utils::ExternalForceSet::combineExternalPushes(const rigidbody::Generalized
             
             // Add the force to the force vector (do not subtract 1 because 0 is the base)
             (*m_rbdlFormattedForces)[dofCount] += transportForceAtOrigin(forces, positionInGlobal);
+        }
+    }
+}
+
+void utils::ExternalForceSet::combineSoftContactForces(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot
+)
+{
+    // NOTE: since combineSoftContactForces is necessarily called from internal as protected method
+    // we assume updateKinematics was already done
+#ifdef BIORBD_USE_CASADI_MATH
+    bool updateKin = true;
+#else
+    bool updateKin = false;
+#endif
+
+    // Do not waste time computing forces on empty vector
+    if (m_model.nbSoftContacts() == 0) return;
+
+
+    int dofCount(0);
+    for (int i = 0; i < static_cast<int>(m_model.nbSegment()); ++i) {
+        const rigidbody::Segment& segment(m_model.segment(i));
+        dofCount += segment.nbDof();
+    
+        for (int j = 0; j < m_model.nbSoftContacts(); j++) {
+            rigidbody::SoftContactNode& contact(m_model.softContact(j));
+            if (contact.parent().compare(segment.name())) continue;
+
+            // Add the force to the force vector (do not subtract 1 because 0 is the base)
+            (*m_rbdlFormattedForces)[dofCount] += contact.computeForceAtOrigin(m_model, Q, QDot, updateKin);
         }
     }
 }

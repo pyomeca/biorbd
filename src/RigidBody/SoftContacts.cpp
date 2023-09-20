@@ -12,7 +12,6 @@
 #include "Utils/UtilsEnum.h"
 #include "Utils/String.h"
 #include "Utils/Error.h"
-#include "Utils/SpatialVector.h"
 
 using namespace BIORBD_NAMESPACE;
 
@@ -41,44 +40,6 @@ void rigidbody::SoftContacts::DeepCopy(
         }
         (*m_softContacts)[i]->DeepCopy(*((*other.m_softContacts)[i]));
     }
-}
-
-std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::SoftContacts::softContactToSpatialVector(
-        const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& QDot,
-        bool updateKin)
-{
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-    if (nbSoftContacts() == 0){
-        return std::vector<RigidBodyDynamics::Math::SpatialVector>();
-    }
-
-    // Assuming that this is also a joint type (via BiorbdModel)
-    rigidbody::Joints& model = dynamic_cast<rigidbody::Joints&>(*this);
-    RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
-
-    std::vector<RigidBodyDynamics::Math::SpatialVector> out = std::vector<RigidBodyDynamics::Math::SpatialVector>();
-    out.push_back(sp_zero);
-    for (int i = 0; i < static_cast<int>(model.nbSegment()); ++i){
-        if (model.segment(i).nbDof() == 0){
-            continue;
-        }
-
-        std::vector<size_t> idx(segmentSoftContactIdx(i));
-        RigidBodyDynamics::Math::SpatialVector tp(0.,0.,0.,0.,0.,0.);
-        for (auto j : idx){
-            tp += (*m_softContacts)[j]->computeForceAtOrigin(model, Q, QDot, updateKin);
-        }
-
-        // Put all the force on the last dof of the segment
-        for (int j = 0; j < static_cast<int>(model.segment(i).nbDof()) - 1; ++j){
-            out.push_back(sp_zero);
-        }
-        out.push_back(tp);
-    }
-    return out;
 }
 
 utils::String rigidbody::SoftContacts::softContactName(
