@@ -551,7 +551,7 @@ void rigidbody::Segment::setJoints(
             else
                 (*m_idxDof)[i] = model.AddBody((*m_idxDof)[i-1], zero, (*m_dof)[i],(*m_dofCharacteristics)[i], name());
     }
-    *m_idxInModel = model.I.size() - 1;
+    *m_idxInModel = static_cast<int>(model.I.size() - 1);
 }
 
 unsigned int rigidbody::Segment::getDofIdx(
