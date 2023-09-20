@@ -88,7 +88,7 @@ public:
     const std::shared_ptr<PassiveTorque>& getPassiveTorque(unsigned int dof);
 
 protected:
-    std::shared_ptr<std::vector<std::shared_ptr<internal_forces::passive_torques::PassiveTorque>>>  m_pas;///passive torque to add
+    std::shared_ptr<std::vector<std::shared_ptr<internal_forces::passive_torques::PassiveTorque>>>  m_pas; ///< Passive torque to add
     std::shared_ptr<std::vector<bool>> m_isDofSet;///< If DoF all dof are set
 
 };

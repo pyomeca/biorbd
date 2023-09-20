@@ -41,7 +41,7 @@ TEST(PassiveTorqueLinear, passiveTorque)
     Model model(modelPathForGeneralTesting);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
 
-    std::vector<double> val = {1.1, 1.1};
+    std::vector<double> val = {1.1, 1.1, 1.1};
     FILL_VECTOR(Q, val);
     double torqueLinearExpected(3.100000000000000);
     internal_forces::passive_torques::PassiveTorqueLinear linear_torque_act(2, 1, 1);

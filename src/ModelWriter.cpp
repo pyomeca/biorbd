@@ -101,19 +101,13 @@ void Writer::writeModel(Model & model,
         if (markers.size() > 0) {
             biorbdModelFile << sep << com << " Markers" << std::endl;
             for (size_t j = 0; j< markers.size(); ++j) {
-                biorbdModelFile << sep << "marker" << sep <<
-                                markers[j].utils::Node::name() << std::endl;
-                biorbdModelFile << sep << sep << "parent" << sep << markers[j].parent() <<
-                                std::endl;
-                biorbdModelFile << sep << sep << "position" << sep << markers[j].transpose() <<
-                                std::endl;
-                biorbdModelFile << sep << sep << "technical" << sep << markers[j].isTechnical()
-                                << std::endl;
-                biorbdModelFile << sep << sep << "anatomical" << sep <<
-                                markers[j].isAnatomical() << std::endl;
+                biorbdModelFile << sep << "marker" << sep << markers[j].utils::Node::name() << std::endl;
+                biorbdModelFile << sep << sep << "parent" << sep << markers[j].parent() << std::endl;
+                biorbdModelFile << sep << sep << "position" << sep << markers[j].transpose() << std::endl;
+                biorbdModelFile << sep << sep << "technical" << sep << markers[j].isTechnical() << std::endl;
+                biorbdModelFile << sep << sep << "anatomical" << sep << markers[j].isAnatomical() << std::endl;
                 if (markers[j].nbAxesToRemove() != 0) {
-                    biorbdModelFile << sep << sep << "axestoremove" << sep <<
-                                    markers[j].axesToRemove() << std::endl;
+                    biorbdModelFile << sep << sep << "axestoremove" << sep << markers[j].axesToRemoveAsString() << std::endl;
                 }
                 biorbdModelFile << sep << "endmarker" << sep << std::endl;
             }

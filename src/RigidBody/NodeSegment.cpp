@@ -136,9 +136,18 @@ int rigidbody::NodeSegment::parentId() const
     return *m_id;
 }
 
-const std::vector<bool> &rigidbody::NodeSegment::axes() const
+const std::vector<bool> &rigidbody::NodeSegment::axesToRemove() const
 {
     return *m_axesRemoved;
+}
+
+const std::vector<bool> rigidbody::NodeSegment::axes() const
+{
+    std::vector<bool> out = std::vector<bool>();
+    for (int i = 0; i < static_cast<int>(m_axesRemoved->size()); i++) {
+        out.push_back(!axesToRemove()[i]);
+    }
+    return out;
 }
 
 rigidbody::NodeSegment rigidbody::NodeSegment::removeAxes() const
@@ -223,7 +232,7 @@ void rigidbody::NodeSegment::addAxesToRemove(const
     }
 }
 
-utils::String rigidbody::NodeSegment::axesToRemove() const
+utils::String rigidbody::NodeSegment::axesToRemoveAsString() const
 {
     utils::String axes;
     if (isAxisRemoved(0)) {

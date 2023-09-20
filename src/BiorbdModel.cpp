@@ -24,7 +24,6 @@ Model::Model() :
 Model::Model(const utils::Path &path) :
     m_path(std::make_shared<utils::Path>(path))
 {
-
     Reader::readModelFile(*m_path, this);
 }
 

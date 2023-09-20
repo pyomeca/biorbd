@@ -48,16 +48,14 @@ TEST(ActuatorGauss3p, torqueMax)
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
 
-    internal_forces::actuator::ActuatorGauss3p gauss3p_torque_act(1, 150, 25, 800, 324, 0.5,
-            28, 90, 29, 133, 0);
-    std::vector<double> Q_val = {1.1, 1.1, 1.1, 1.1, 1.1};
+    internal_forces::actuator::ActuatorGauss3p gauss3p_torque_act(1, 150, 25, 800, 324, 0.5, 28, 90, 29, 133, 0);
+    std::vector<double> Q_val = {1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1};
     FILL_VECTOR(Q, Q_val);
     {
-        std::vector<double> QDot_val = {10, 10, 10, 10, 10};
+        std::vector<double> QDot_val = {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
         double torqueMaxExpected(0.13946332238760348);
         FILL_VECTOR(QDot, QDot_val);
-        CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss3p_torque_act, torqueMax, Q,
-                                   QDot);
+        CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss3p_torque_act, torqueMax, Q, QDot);
 #ifdef BIORBD_USE_CASADI_MATH
         EXPECT_NEAR(static_cast<double>(torqueMaxVal(0, 0)), torqueMaxExpected,
                     requiredPrecision);
@@ -66,7 +64,7 @@ TEST(ActuatorGauss3p, torqueMax)
 #endif
     }
     {
-        std::vector<double> QDot_val = {-10, -10, -10, -10, -10};
+        std::vector<double> QDot_val = {-10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10};
         double torqueMaxExpected(2.9969806062215922);
         FILL_VECTOR(QDot, QDot_val);
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss3p_torque_act, torqueMax, Q,
@@ -87,12 +85,11 @@ TEST(ActuatorGauss6p, torqueMax)
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
 
-    internal_forces::actuator::ActuatorGauss6p gauss6p_torque_act(1, 150, 25, 800, 324, 0.5,
-            28, 90, 29, 133, 4, 73, 73, 0);
-    std::vector<double> Q_val = {1.1, 1.1, 1.1, 1.1, 1.1};
+    internal_forces::actuator::ActuatorGauss6p gauss6p_torque_act(1, 150, 25, 800, 324, 0.5, 28, 90, 29, 133, 4, 73, 73, 0);
+    std::vector<double> Q_val = { 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1 };
     FILL_VECTOR(Q, Q_val);
     {
-        std::vector<double> QDot_val = {10, 10, 10, 10, 10};
+        std::vector<double> QDot_val = { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 };
         double torqueMaxExpected(10.295760991374534);
         FILL_VECTOR(QDot, QDot_val);
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss6p_torque_act, torqueMax, Q,
@@ -105,7 +102,7 @@ TEST(ActuatorGauss6p, torqueMax)
 #endif
     }
     {
-        std::vector<double> QDot_val = {-10, -10, -10, -10, -10};
+        std::vector<double> QDot_val = { -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10 };
         double torqueMaxExpected(221.2495406619181);
         FILL_VECTOR(QDot, QDot_val);
         CALL_BIORBD_FUNCTION_2ARGS(torqueMaxVal, gauss6p_torque_act, torqueMax, Q,
@@ -125,7 +122,7 @@ TEST(ActuatorLinear, torqueMax)
     Model model(modelPathForGeneralTesting);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
 
-    std::vector<double> val = {1.1};
+    std::vector<double> val = { 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1 };
     FILL_VECTOR(Q, val);
     double torqueMaxExpected(88.025357464390567);
     internal_forces::actuator::ActuatorLinear linear_torque_act(1, 25, 1, 0);
