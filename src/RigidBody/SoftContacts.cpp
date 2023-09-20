@@ -43,7 +43,7 @@ void rigidbody::SoftContacts::DeepCopy(
     }
 }
 
-std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::SoftContacts::softContactToSpatialVector(
+std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::SoftContacts::softContactToSpatialVector(
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& QDot,
         bool updateKin)
@@ -52,16 +52,16 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::SoftContacts::so
     updateKin = true;
 #endif
     if (nbSoftContacts() == 0){
-        return nullptr;
+        return std::vector<RigidBodyDynamics::Math::SpatialVector>();
     }
 
     // Assuming that this is also a joint type (via BiorbdModel)
     rigidbody::Joints& model = dynamic_cast<rigidbody::Joints&>(*this);
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
 
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* out = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
-    out->push_back(sp_zero);
-    for (size_t i = 0; i < model.nbSegment(); ++i){
+    std::vector<RigidBodyDynamics::Math::SpatialVector> out = std::vector<RigidBodyDynamics::Math::SpatialVector>();
+    out.push_back(sp_zero);
+    for (int i = 0; i < static_cast<int>(model.nbSegment()); ++i){
         if (model.segment(i).nbDof() == 0){
             continue;
         }
@@ -74,9 +74,9 @@ std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::SoftContacts::so
 
         // Put all the force on the last dof of the segment
         for (int j = 0; j < static_cast<int>(model.segment(i).nbDof()) - 1; ++j){
-            out->push_back(sp_zero);
+            out.push_back(sp_zero);
         }
-        out->push_back(tp);
+        out.push_back(tp);
     }
     return out;
 }
@@ -133,7 +133,7 @@ std::vector<rigidbody::NodeSegment> rigidbody::SoftContacts::softContacts(
         bool updateKin)
 {
     std::vector<rigidbody::NodeSegment> out;
-    for (size_t i = 0; i<m_softContacts->size(); ++i){
+    for (int i = 0; i < static_cast<int>(m_softContacts->size()); ++i){
         out.push_back(softContact(Q, i, updateKin));
 #ifndef BIORBD_USE_CASADI_MATH
         updateKin = false;
@@ -212,7 +212,7 @@ std::vector<rigidbody::NodeSegment> rigidbody::SoftContacts::softContactsAngular
     return pos;
 }
 
-unsigned int rigidbody::SoftContacts::nbSoftContacts() const
+size_t rigidbody::SoftContacts::nbSoftContacts() const
 {
     return m_softContacts->size();
 }

@@ -536,16 +536,16 @@ void Reader::readModelFile(
             } else if (!main_tag.tolower().compare("contact")) {
                 utils::String name;
                 file.read(name);
+                utils::String parentName("root");
                 unsigned int parent_int = 0;
-                utils::String parent_str("root");
                 utils::Vector3d pos(0,0,0);
                 utils::Vector3d norm(0,0,0);
                 utils::String axis("");
                 while(file.read(property_tag) && property_tag.tolower().compare("endcontact")) {
                     if (!property_tag.tolower().compare("parent")) {
                         // Dynamically find the parent number
-                        file.read(parent_str);
-                        parent_int = model->GetBodyId(parent_str.c_str());
+                        file.read(parentName);
+                        parent_int = model->GetBodyId(parentName.c_str());
                         // If parent_int equals zero, no name has concurred
                         utils::Error::check(model->IsBodyId(parent_int),
                                                     "Wrong name in a segment");
@@ -562,10 +562,10 @@ void Reader::readModelFile(
                     utils::Error::check(norm.norm() == 1.0,
                                                 "Normal of the contact must be provided" );
 #endif
-                    model->AddConstraint(parent_int, pos, norm, name);
+                    model->AddConstraint(parent_int, pos, norm, name, parentName);
                 } else if (version >= 2) {
                     utils::Error::check(axis.compare(""), "Axis must be provided");
-                    model->AddConstraint(parent_int, pos, axis, name);
+                    model->AddConstraint(parent_int, pos, axis, name, parentName);
                 }
             } else if (!main_tag.tolower().compare("loopconstraint")) {
                 utils::String name;
@@ -1020,7 +1020,7 @@ void Reader::readModelFile(
                         internal_forces::PathModifiers(),stateType,dynamicFatigueType);
                 if (stateType == internal_forces::muscles::STATE_TYPE::BUCHANAN && shapeFactor != 0) {
                     auto& muscleGroup = model->muscleGroup(idxGroup);
-                    size_t nMuscInGroup(muscleGroup.nbMuscles()-1);
+                    int nMuscInGroup(static_cast<int>(muscleGroup.nbMuscles()-1));
                     auto& state = muscleGroup.muscle(nMuscInGroup).state();
                     static_cast<internal_forces::muscles::StateDynamicsBuchanan&>(state).shapeFactor(
                         shapeFactor);

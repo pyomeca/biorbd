@@ -1,17 +1,25 @@
 #define BIORBD_API_EXPORTS
 #include "Utils/ExternalForceSet.h"
 
+#include "BiorbdModel.h"
+#include "RigidBody/Contacts.h"
+#include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/Joints.h"
+#include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
+#include "RigidBody/SoftContacts.h"
 #include "Utils/SpatialVector.h"
 #include "Utils/String.h"
+#include "Utils/Vector3d.h"
 
 using namespace BIORBD_NAMESPACE;
 
-utils::ExternalForceSet::ExternalForceSet(const rigidbody::Joints& model) :
+utils::ExternalForceSet::ExternalForceSet(Model& model) :
     m_model(model),
     m_vectors(std::make_shared<std::vector<utils::SpatialVector>>()),
-    m_rbdlFormattedForces(new std::vector<RigidBodyDynamics::Math::SpatialVector>())
+    m_rbdlFormattedForces(new std::vector<RigidBodyDynamics::Math::SpatialVector>()),
+    m_externalPush(std::vector<std::pair<utils::Vector3d, rigidbody::NodeSegment>>())
 {
     reset();
 }
@@ -21,34 +29,29 @@ utils::ExternalForceSet::~ExternalForceSet(){
 }
 
 void utils::ExternalForceSet::set(
-    const std::string& segmentName,
+    const utils::String& segmentName,
     const utils::SpatialVector& v
 ) 
 {
-    int dofCount = 0; 
-    for (size_t i = 0; i < m_model.nbSegment(); ++i) {
+    int dofCount(0); 
+    for (int i = 0; i < static_cast<int>(m_model.nbSegment()); ++i) {
         auto& segment(m_model.segment(i));
+        
+        dofCount += segment.nbDof();
 
-        if (segment.name().compare(segmentName)) {
-            dofCount += segment.nbDof();
-            continue;
-        }
-
-        unsigned int nbDof = segment.nbDof();
-        if (nbDof == 0) { 
-            // It is not possible yet to add forces to a segment which does not have any dof
+        if (segment.name().compare(segmentName)) continue;
+        if (segment.nbDof() == 0) {
             throw "It is not possible to add forces to a segment without degree of freedom";
         }
 
-        (*m_rbdlFormattedForces)[dofCount + nbDof] = v; // Do not subtract 1 since 0 is used for the base ground 
+        (*m_rbdlFormattedForces)[dofCount] = v; // Do not subtract 1 since 0 is used for the base ground 
     }
-
 }
 
 #ifdef BIORBD_USE_CASADI_MATH
 
 void utils::ExternalForceSet::set(
-    std::string& segmentName,
+    utils::String& segmentName,
     const casadi::MX& v
 )
 {
@@ -56,7 +59,7 @@ void utils::ExternalForceSet::set(
 }
 
 void utils::ExternalForceSet::set(
-    std::string& segmentName,
+    utils::String& segmentName,
     const RBDLCasadiMath::MX_Xd_SubMatrix& m
 )
 {
@@ -65,46 +68,51 @@ void utils::ExternalForceSet::set(
 
 #endif
 
+void utils::ExternalForceSet::addExternalPush(
+    const utils::Vector3d& forces,
+    const utils::String& segmentName,
+    const utils::Vector3d& position
+) 
+{
+    addExternalPush(forces, rigidbody::NodeSegment(utils::Vector3d(position, segmentName, segmentName)));
+}
 
-std::vector<RigidBodyDynamics::Math::SpatialVector>* utils::ExternalForceSet::toRbdl(
-    const std::vector<utils::Vector>& externallyComputedForces) const
+void utils::ExternalForceSet::addExternalPush(
+    const utils::Vector3d& forces,
+    const rigidbody::NodeSegment& position
+)
+{
+    m_externalPush.push_back(std::make_pair(forces, position));
+}
+
+
+std::vector<RigidBodyDynamics::Math::SpatialVector>* utils::ExternalForceSet::toRbdl() const
 {
     return m_rbdlFormattedForces;
 }
 
 
-std::vector<RigidBodyDynamics::Math::SpatialVector>* utils::ExternalForceSet::toRbdlWithSoftContact(
+
+
+void utils::ExternalForceSet::applyForces(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     bool updateKin,
-    const std::vector<utils::Vector>& externallyComputedForces
-) const
+    bool includeSoftContact,
+    bool includePushForces
+) 
 {
-    return m_rbdlFormattedForces;
-}
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+    if (updateKin) {
+        m_model.UpdateKinematicsCustom(&Q, includeSoftContact ? &QDot : nullptr, nullptr);
+    }
 
+    combineExternalPushes(Q);
 
-utils::ExternalForceSet& utils::ExternalForceSet::combineExtForceAndSoftContact(
-    const rigidbody::GeneralizedCoordinates& Q,
-    const rigidbody::GeneralizedVelocity& QDot,
-    bool updateKin,
-    const std::vector<utils::Vector>& externallyComputedForces
-) const 
-{
-    return utils::ExternalForceSet(m_model);
-//#ifdef BIORBD_USE_CASADI_MATH
-//    updateKin = true;
-//#else
-//    if (updateKin) {
-//        UpdateKinematicsCustom(&Q, &QDot);
-//    }
-//    updateKin = false;
-//#endif
-//
-//    std::vector<RigidBodyDynamics::Math::SpatialVector>* softContacts = dynamic_cast<rigidbody::SoftContacts*>(this)->softContactToSpatialVector(Q, QDot, updateKin);
-//    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = dispatchedForce(f_ext);
-//    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_contacts_rbdl = dynamic_cast<rigidbody::Contacts*>(this)->rigidContactToSpatialVector(Q, f_contacts, updateKin);
-//
+    //auto& softContacts = dynamic_cast<rigidbody::SoftContacts*>(&m_model)->softContactToSpatialVector(Q, QDot, updateKin);
+
 //    if (!f_ext_rbdl && !softContacts && !f_contacts_rbdl) {
 //        // Return a nullptr
 //        return nullptr;
@@ -160,6 +168,14 @@ utils::ExternalForceSet& utils::ExternalForceSet::combineExtForceAndSoftContact(
 //    return f_ext_rbdl;
 }
 
+void utils::ExternalForceSet::applyPushForces(
+    const rigidbody::GeneralizedCoordinates& Q,
+    bool updateKin
+)
+{
+    applyForces(Q, rigidbody::GeneralizedVelocity(), updateKin, false);
+}
+
 void utils::ExternalForceSet::reset()
 {
     m_rbdlFormattedForces->clear();
@@ -169,14 +185,66 @@ void utils::ExternalForceSet::reset()
     m_rbdlFormattedForces->push_back(sv_zero); // The first one is associated with the universe
 
     // Dispatch the forces
-    for (size_t i = 0; i < m_model.nbSegment(); ++i) {
+    for (int i = 0; i < static_cast<int>(m_model.nbSegment()); ++i) {
         unsigned int nDof(m_model.segment(i).nbDof());
-        if (nDof == 0) continue;
-
-        // For each segment
         for (unsigned int i = 0; i < nDof; ++i) {
-            // Put a sv_zero on each DoF
-            m_rbdlFormattedForces->push_back(sv_zero);
+            m_rbdlFormattedForces->push_back(sv_zero); // Put a sv_zero on each DoF
         }
     }
+
+    // Reset other elements of the class too
+    m_externalPush.clear();
+}
+
+void utils::ExternalForceSet::combineExternalPushes(const rigidbody::GeneralizedCoordinates& Q)
+{
+    // NOTE: since combineExternalPushes is necessarily called from internal as protected method
+    // we assume updateKinematics was already done
+    
+    // Do not waste time computing forces on empty vector
+    if (m_externalPush.size() == 0) return;
+
+    int dofCount(0);
+    for (int i = 0; i < static_cast<int>(m_model.nbSegment()); ++i) {
+        const rigidbody::Segment& segment(m_model.segment(i));
+        dofCount += segment.nbDof();
+        
+        for (auto& e : m_externalPush) {    
+            const rigidbody::NodeSegment& position = e.second;
+            if (position.parent().compare(segment.name())) continue;
+
+            const utils::Vector3d& forces = e.first;
+            rigidbody::NodeSegment positionInGlobal(
+                RigidBodyDynamics::CalcBodyToBaseCoordinates(m_model, Q, segment.id(), position, false),
+                position.name(),
+                position.parent(),
+                position.isTechnical(),
+                position.isAnatomical(),
+                position.axesToRemove(),
+                position.parentId()
+            );
+            
+            // Add the force to the force vector (do not subtract 1 because 0 is the base)
+            (*m_rbdlFormattedForces)[dofCount] += transportForceAtOrigin(forces, positionInGlobal);
+        }
+    }
+}
+
+utils::SpatialVector utils::ExternalForceSet::transportForceAtOrigin(
+    const utils::Vector3d& forces,
+    const rigidbody::NodeSegment& position
+)
+{
+    // Fill only if direction is enabled
+    utils::Vector3d force(0., 0., 0.);
+    for (auto axis : position.availableAxesIndices()){
+        force.block(axis, 0, 1, 1) = forces.block(axis, 0, 1, 1);
+    }
+
+    // Transport to Origin (Bour's formula)
+    utils::SpatialVector out(0., 0., 0., 0., 0., 0.);
+    out.block(0, 0, 3, 1) = force.cross(-position); 
+    out.block(3, 0, 3, 1) = force;
+
+    return out;
 }

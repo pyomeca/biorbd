@@ -60,12 +60,14 @@ public:
     /// \param body_point The point that is constrained relative to the contact body
     /// \param world_normal The normal along the constraint acts (in base coordinates)
     /// \param name A human readable name
+    /// \param name A human readable name of the parent (should correspond to the body_id)
     ///
     unsigned int AddConstraint(
         unsigned int body_id,
         const utils::Vector3d &body_point,
         const utils::Vector3d &world_normal,
-        const utils::String& name);
+        const utils::String& name,
+        const utils::String& parentName);
 
     ///
     /// \brief Add a constraint to the constraint set
@@ -73,13 +75,15 @@ public:
     /// \param body_point The point that is constrained relative to the contact body
     /// \param axis The axis along which the constraint acts
     /// \param name A human readable name
+    /// \param name A human readable name of the parent (should correspond to the body_id)
     ///
 
     unsigned int AddConstraint(
         unsigned int body_id,
         const utils::Vector3d &body_point,
         const utils::String& axis,
-        const utils::String& name);
+        const utils::String& name,
+        const utils::String& parentName);
 
     ///
     /// \brief Add a loop constraint to the constraint set
@@ -177,13 +181,6 @@ public:
     utils::String contactName(unsigned int i);
 
     ///
-    /// \brief Return a vector with the sorted axis index considered in the rigid contact
-    /// \param contact_idx the index of the rigid contact
-    /// \return A vector with the sorted axis index considered in the rigid contact
-    ///
-    std::vector<int> rigidContactAxisIdx(unsigned int contact_idx) const;
-
-    ///
     /// \brief Return the constraints position in the global reference
     /// \param Q The generalized coordinates of the joints
     /// \param updateKin Whether the kinematics of the model should be updated from Q
@@ -214,41 +211,6 @@ public:
     ///
     std::vector<size_t> segmentRigidContactIdx(
             int segment_idx) const;
-
-#ifndef SWIG
-    ///
-    /// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof
-    /// \param Q The Generalized coordinates
-    /// \param f_contacts the forces applied at the contact points
-    /// \return The rigid contacts
-    ///
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidContactToSpatialVector(
-            const GeneralizedCoordinates& Q,
-            std::vector<utils::Vector> *f_contacts,
-            bool updateKin);
-#endif
-
-    ///
-    /// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof
-    /// \param Q The Generalized coordinates
-    /// \param f_contacts the forces applied at the contact points
-    /// \return The rigid contacts
-    ///
-    std::vector<utils::SpatialVector> rigidContactToSpatialVector(
-            const GeneralizedCoordinates& Q,
-            std::vector<utils::Vector> f_contacts,
-            bool updateKin);
-    ///
-    /// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof
-    /// \param applicationPoint the position where the force is applied in base coordinate
-    /// \param sorted_axis_index vector of the sorted axis index considered in the rigid contact
-    /// \param f_contact the forces applied at the contact point
-    /// \return The rigid contacts
-    ///
-    utils::SpatialVector computeForceAtOrigin(
-            utils::Vector3d applicationPoint,
-            std::vector<int> sortedAxisIndex,
-            utils::Vector f_contact);
 
     ///
     /// \brief Returns the number of rigid contacts (ignoring the loop constraints)
@@ -347,6 +309,13 @@ public:
         bool updateKin = true);
 
 protected:
+    /// 
+    /// \brief Swap the status of the axes provided, that is adding x, y or z if it is not there and remove them otherwise.
+    /// This effectively transform an allowed axes set to a axes to remove set, or vice versa.
+    /// \param axesToSwap a vector of up to three values (being "x", "y" or "z")
+    utils::String swapAxes(
+        const utils::String& axesToSwap) const;
+
     std::shared_ptr<unsigned int> m_nbreConstraint; ///< Number of constraints
     std::shared_ptr<bool> m_isBinded; ///< If the model is ready
     std::shared_ptr<std::vector<rigidbody::NodeSegment>> m_rigidContacts; ///< The rigid contacts declared in the model (copy of RBDL information)

@@ -54,7 +54,7 @@ public:
     /// \param updateKin If the kinematics should be updated
     /// \return The soft contacts
     ///
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* softContactToSpatialVector(
+    std::vector<RigidBodyDynamics::Math::SpatialVector> softContactToSpatialVector(
             const GeneralizedCoordinates& Q,
             const GeneralizedVelocity& QDot,
             bool updateKin = true);
@@ -166,7 +166,7 @@ public:
     /// \brief Return the number of contacts
     /// \return The number of contacts
     ///
-    unsigned int nbSoftContacts() const;
+    size_t nbSoftContacts() const;
 
     ///
     /// \brief Return all the soft contacts indices of a segment

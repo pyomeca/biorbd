@@ -162,6 +162,11 @@ public:
     bool isAxisKept(unsigned int) const;
 
     ///
+    /// \brief Get all the indices of the axes to keep (X=0, Y=1, Z=2)
+    /// 
+    std::vector<int> availableAxesIndices() const;
+
+    ///
     /// \brief Add an axis to remove
     /// \param axisNumber The axis number to remove (x = 0, y = 1 and z = 2)
     ///
