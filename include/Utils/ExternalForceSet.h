@@ -186,7 +186,7 @@ namespace BIORBD_NAMESPACE
             Model& 
                 m_model; ///< A reference to the kinematic model
 
-            std::shared_ptr<std::vector<SpatialVector>>
+            std::shared_ptr<std::vector<utils::SpatialVector>>
                 m_vectors; ///< The vector that holds all the external forces
 
             std::vector<RigidBodyDynamics::Math::SpatialVector>*
