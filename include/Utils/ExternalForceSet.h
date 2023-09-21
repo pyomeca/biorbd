@@ -5,6 +5,7 @@
 
 #include "biorbdConfig.h"
 #include "Utils/Scalar.h"
+#include "Utils/SpatialVector.h"
 
 namespace BIORBD_NAMESPACE
 {
@@ -31,9 +32,14 @@ namespace BIORBD_NAMESPACE
             /// \param model The model onto which the external forces will be applied on. This is used 
             /// in conjunction with segmentName (when using set) to determine at which index the set vector 
             /// is positioned in the internal Set.
+            /// \param useLinearForces If this force set has external forces 
+            /// \param useSoftContacts If this force set has soft contacts
             ///
             ExternalForceSet(
-                Model& model);
+                Model& model,
+                bool useLinearForces = true,
+                bool useSoftContacts = true
+            );
 
             ///
             /// \brief Delete the set and free the ressources
@@ -49,7 +55,7 @@ namespace BIORBD_NAMESPACE
             /// \param v The SpatialVector to add to the set.
             /// \param from Where the v vector is currenlty applied. 
             ///
-            void set(
+            void add(
                 const utils::String& segmentName,
                 const utils::SpatialVector& v
             );
@@ -61,7 +67,7 @@ namespace BIORBD_NAMESPACE
             /// \param segmentName The name of the segment to apply the spatial vector on.  
             /// \param v The vector to add
             ///
-            void set(
+            void add(
                 utils::String& segmentName,
                 const casadi::MX& v);
 
@@ -71,36 +77,32 @@ namespace BIORBD_NAMESPACE
             /// \param segmentName The name of the segment to apply the spatial vector on.  
             /// \param m The vector to add
             ///
-            void set(
+            void add(
                 utils::String& segmentName,
                 const RBDLCasadiMath::MX_Xd_SubMatrix& m);
 #endif
 
             ///
-            /// \brief Add a pure force at a specific point on the kinematic chain. Note that
-            /// contrary to [set], [addExternalPush] expect a call to [applyForces] to finalize
-            /// the add. Otherwise the forces won't be included.
-            /// \param forces The pure forces to apply on the body
+            /// \brief Add a pure force at a specific point on the kinematic chain.
+            /// \param force The pure forces to apply on the body
             /// \param segmentName The name of the segment the force is applied on
-            /// \param position The position in the reference frame of [segmentName]
+            /// \param pointOfApplication The position in the reference frame of [segmentName]
             /// 
-            void addExternalPush(
-                const utils::Vector3d& forces,
+            void addLinearForce(
+                const utils::Vector3d& force,
                 const utils::String& segmentName,
-                const utils::Vector3d& position
+                const utils::Vector3d& pointOfApplication
             );
 
             ///
-            /// \brief Add a pure force at a specific point on the kinematic chain. Note that
-            /// contrary to [set], [addExternalPush] expect a call to [applyForces] to finalize
-            /// the add. Otherwise the forces won't be included.
+            /// \brief Add a pure force at a specific point on the kinematic chain. 
             /// \param forces The pure forces to apply on the body
             /// \param position The position of the force in reference frame of the node. 
             /// Note that the [parentName] of must have been set
             /// 
-            void addExternalPush(
-                const utils::Vector3d& forces,
-                const rigidbody::NodeSegment& position
+            void addLinearForce(
+                const utils::Vector3d& force,
+                const rigidbody::NodeSegment& pointOfApplication
             );
 
 
@@ -108,94 +110,119 @@ namespace BIORBD_NAMESPACE
             /// \brief Initailize and zero out all the spatial vectors of the Set. Note this should always be called before
             /// reusing an ExternalForceSet unless one is absolutely sure that all the spatial vectors of the Set
             /// is in an expected state (that is, all the vectors were either set or zeroed)
-            void reset();
+            void setZero();
 
 #ifndef SWIG
-            /// 
-            /// \brief The forces in a rbdl compatible format. 
-            /// If one wants to add push forces, they should call [addExternalPush] and [applyForces] before
-            /// calling [toRbld]. To include softContact, they should alse call [applyForces]. Otherwise both
-            /// push forces and soft contact forces are effectively ignored. Alternatively, if one is only 
-            /// interested in push forces, they can call [applyPushForces]
-            /// IMPORTANT: The user should NOT destruct the pointer returned by this method.
-            /// 
-            std::vector<RigidBodyDynamics::Math::SpatialVector>* toRbdl() const;
-#endif // !SWIG
 
-            ///
-            /// \brief Interface to apply all previously added force
+            /// 
+            /// \brief The forces in a rbdl compatible format. This won't work if useLinearForces useSoftContacts is set to true
             /// \param Q The generalized coordinates
             /// \param QDot The generalized velocity
             /// \param updateKin If the kinematics of the model should be computed
-            /// \param includeSoftContacts Set to false if soft contact should be ignored (that is automatically 
-            /// done if the model does not include any soft contacts)
-            /// \param includePushForces Set to false if push forces should be ignored (that is automatically
-            /// done if no push forces were added
-            ///
-            void applyForces(
-                const rigidbody::GeneralizedCoordinates& Q,
-                const rigidbody::GeneralizedVelocity& QDot,
-                bool updateKin = true,
-                bool includeSoftContacts = true,
-                bool includePushForces = true
-            );
+            /// 
+            std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors() const;
 
-            ///
-            /// \brief Interface to apply all previously added force. Warning: Do not call applyForces after calling applyPushForces
-            /// otherwise the push forces will by applied twice.
+            /// 
+            /// \brief The forces in a rbdl compatible format. This won't work if useSoftContacts is set to true
             /// \param Q The generalized coordinates
+            /// \param QDot The generalized velocity
             /// \param updateKin If the kinematics of the model should be computed
-            ///
-            void applyPushForces(
+            /// 
+            std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors(
                 const rigidbody::GeneralizedCoordinates& Q,
                 bool updateKin = true
-            );
+            ) const;
+
+            /// 
+            /// \brief The forces in a rbdl compatible format. 
+            /// \param Q The generalized coordinates
+            /// \param QDot The generalized velocity
+            /// \param updateKin If the kinematics of the model should be computed
+            /// 
+            std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors(
+                const rigidbody::GeneralizedCoordinates& Q,
+                const rigidbody::GeneralizedVelocity& QDot,
+                bool updateKin = true
+            ) const;
+
+            /// 
+            /// \brief The forces in a rbdl compatible format. This won't work if useLinearForces or useSoftContacts is set to true
+            /// 
+            std::vector<utils::SpatialVector> computeSpatialVectors() const;
+
+            /// 
+            /// \brief The forces in a rbdl compatible format. This won't work if useSoftContacts is set to true
+            /// \param Q The generalized coordinates
+            /// \param updateKin If the kinematics of the model should be computed
+            /// 
+            std::vector<utils::SpatialVector> computeSpatialVectors(
+                const rigidbody::GeneralizedCoordinates& Q,
+                bool updateKin = true
+            ) const;
+
+            /// 
+            /// \brief The forces in a rbdl compatible format. 
+            /// \param Q The generalized coordinates
+            /// \param QDot The generalized velocity
+            /// \param updateKin If the kinematics of the model should be computed
+            /// 
+            std::vector<utils::SpatialVector> computeSpatialVectors(
+                const rigidbody::GeneralizedCoordinates& Q,
+                const rigidbody::GeneralizedVelocity& QDot,
+                bool updateKin = true
+            ) const;
+#endif // !SWIG
 
         protected:
             /// 
             /// \brief Add the push forces to the internal Set.
             /// \param Q The Generalized coordinates. 
+            /// \param out The vector of SpatialVector to fill
             /// 
             /// Note: as this is an internal method, even though Q is passed, it is assumed update kinematics was already done.
             /// 
-            void combineExternalPushes(
-                const rigidbody::GeneralizedCoordinates& Q
-            );
+            void combineLinearForces(
+                const rigidbody::GeneralizedCoordinates& Q,
+                std::vector<utils::SpatialVector>& out
+            ) const;
 
             ///
             /// \brief Add the soft contact forces to the internal Set.
             /// \param Q The Generalized coordinates. 
             /// \param QDot The Generalized velocity. 
+            /// \param out The vector of SpatialVector to fill
             /// 
             /// Note: as this is an internal method, even though Q is passed, it is assumed update kinematics was already done.
             /// 
             void combineSoftContactForces(
                 const rigidbody::GeneralizedCoordinates& Q,
-                const rigidbody::GeneralizedVelocity& QDot
-            );
+                const rigidbody::GeneralizedVelocity& QDot,
+                std::vector<utils::SpatialVector>& out
+            ) const;
 
             ///
             /// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof
-            /// \param forces The force amplitude applied at the point
-            /// \param position The position where the force is applied in base coordinate
+            /// \param force The force amplitude applied at the point
+            /// \param pointOfApplication The position where the force is applied in base coordinate
             /// \return The effect of the force when transported at origin
             ///
             utils::SpatialVector transportForceAtOrigin(
-                const utils::Vector3d& forces,
-                const rigidbody::NodeSegment& position
-            );
+                const utils::Vector3d& force,
+                const rigidbody::NodeSegment& pointOfApplication
+            ) const;
+            
+        protected:
+            // TODO Standardize with shared_pointer for the the copy and DeepCopy
 
-            Model& 
-                m_model; ///< A reference to the kinematic model
+            Model& m_model; ///< A reference to the kinematic model
+            bool m_useLinearForces; ///< If linear forces should be included
+            bool m_useSoftContacts; ///< If soft contacts should be included
 
-            std::shared_ptr<std::vector<utils::SpatialVector>>
-                m_vectors; ///< The vector that holds all the external forces
-
-            std::vector<RigidBodyDynamics::Math::SpatialVector>*
-                m_rbdlFormattedForces; ///< The external vector as it is expected by RBDL (returned by toRbdl)
+            std::vector<utils::SpatialVector>
+                m_externalForces; ///< The vector that holds all the external forces
 
             std::vector<std::pair<utils::Vector3d, rigidbody::NodeSegment>>
-                m_externalPush; ///< The push from pure forces. The first is the amplitude and the second is the application point (that include the name of the parentSegment it is applied on)
+                m_linearForces; ///< The linear forces. The first is the amplitude and the second is the application point (that include the name of the parentSegment it is applied on)
         };
     }
 }

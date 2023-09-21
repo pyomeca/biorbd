@@ -1732,8 +1732,8 @@ TEST(Dynamics, ForwardDynAndExternalForces)
     DECLARE_GENERALIZED_TORQUE(Tau, model);
     utils::ExternalForceSet externalForces = utils::ExternalForceSet(model);
 
-    externalForces.set("PiedD", utils::SpatialVector((0 + 1) * 11.1, (0 + 1) * 22.2, (0 + 1) * 33.3, (0 + 1) * 44.4, (0 + 1) * 55.5, (0 + 1) * 66.6));
-    externalForces.set("PiedG", utils::SpatialVector((1 + 1) * 11.1, (1 + 1) * 22.2, (1 + 1) * 33.3, (1 + 1) * 44.4, (1 + 1) * 55.5, (01+ 1) * 66.6));
+    externalForces.add("PiedD", utils::SpatialVector((0 + 1) * 11.1, (0 + 1) * 22.2, (0 + 1) * 33.3, (0 + 1) * 44.4, (0 + 1) * 55.5, (0 + 1) * 66.6));
+    externalForces.add("PiedG", utils::SpatialVector((1 + 1) * 11.1, (1 + 1) * 22.2, (1 + 1) * 33.3, (1 + 1) * 44.4, (1 + 1) * 55.5, (01+ 1) * 66.6));
 
     // Set to random values
     std::vector<double> val(model.nbQ());
@@ -1751,7 +1751,6 @@ TEST(Dynamics, ForwardDynAndExternalForces)
         3948.4748602722384
     };
 
-    externalForces.applyForces(Q_sym, QDot_sym);
     CALL_BIORBD_FUNCTION_3ARGS1PARAM(QDDot, model, ForwardDynamics, Q, QDot, Tau, externalForces);
 
     for (unsigned int i = 0; i<model.nbQddot(); ++i) {

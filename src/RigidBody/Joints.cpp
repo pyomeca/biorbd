@@ -806,7 +806,7 @@ utils::Vector3d rigidbody::Joints::CoMdot(
 
     // CoMdot = sum(mass_seg * Jacobian * qdot)/mass totale
     utils::Matrix Jac(utils::Matrix(3,this->dof_count));
-    for (auto segment : *m_segments) {
+    for (const auto& segment : *m_segments) {
         Jac.setZero();
         RigidBodyDynamics::CalcPointJacobian(
             *this, Q, GetBodyId(segment.name().c_str()),
@@ -1312,7 +1312,8 @@ rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
 )
 {
     rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
-    RigidBodyDynamics::InverseDynamics(*this, Q, QDot, QDDot, Tau, externalForces.toRbdl());
+    auto fExt = externalForces.computeRbdlSpatialVectors(Q, QDot);
+    RigidBodyDynamics::InverseDynamics(*this, Q, QDot, QDDot, Tau, &fExt);
     return Tau;
 }
 
@@ -1330,7 +1331,8 @@ rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
 )
 {
     rigidbody::GeneralizedTorque Tau(*this);
-    RigidBodyDynamics::NonlinearEffects(*this, Q, QDot, Tau, externalForces.toRbdl());
+    auto fExt = externalForces.computeRbdlSpatialVectors(Q, QDot);
+    RigidBodyDynamics::NonlinearEffects(*this, Q, QDot, Tau, &fExt);
     return Tau;
 }
 
@@ -1349,7 +1351,8 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamics(
     const utils::ExternalForceSet& externalForces)
 {
     rigidbody::GeneralizedAcceleration QDDot(*this);
-    RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, externalForces.toRbdl());
+    auto fExt = externalForces.computeRbdlSpatialVectors(Q, QDot, true);
+    RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, &fExt);
     return QDDot;
 }
 
@@ -1431,7 +1434,8 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraints
 #endif
 
     rigidbody::GeneralizedAcceleration QDDot(*this);
-    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, updateKin, externalForces.toRbdl());
+    auto fExt = externalForces.computeRbdlSpatialVectors(Q, QDot, true);
+    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, updateKin, &fExt);
     return QDDot;
 }
 
@@ -1461,8 +1465,7 @@ rigidbody::GeneralizedVelocity rigidbody::Joints::ComputeConstraintImpulsesDirec
     const rigidbody::GeneralizedVelocity& QDotPre
 )
 {
-    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>
-                                     (this)->getConstraints();
+    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
     if (CS.nbContacts() == 0) {
         return QDotPre;
     } else {

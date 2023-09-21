@@ -6,7 +6,10 @@
 #include "ModelReader.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/NodeSegment.h"
+
+#include "Utils/ExternalForceSet.h"
 #include "Utils/String.h"
+
 
 using namespace BIORBD_NAMESPACE;
 
@@ -30,4 +33,11 @@ Model::Model(const utils::Path &path) :
 utils::Path Model::path() const
 {
     return *m_path;
+}
+
+utils::ExternalForceSet Model::externalForceSet(
+    bool useLinearForces,
+    bool useSoftContacts
+) {
+    return utils::ExternalForceSet(*this, useLinearForces, useSoftContacts);
 }

@@ -1414,10 +1414,10 @@ TEST(ExternalForces, toRbdl_externalForcesOnly)
 {
     Model model(modelWithRigidContactsExternalForces);
 
-    utils::ExternalForceSet externalForces = utils::ExternalForceSet(model);
+    utils::ExternalForceSet externalForces = model.externalForceSet(false, false);
     RigidBodyDynamics::Math::SpatialVector sp_dof4(1, 2, 3, 4, 5, 6);
-    externalForces.set("Seg1", sp_dof4);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* forceInRbdl = externalForces.toRbdl();
+    externalForces.add("Seg1", sp_dof4);
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors();
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
     std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;
@@ -1430,25 +1430,24 @@ TEST(ExternalForces, toRbdl_externalForcesOnly)
     for (unsigned int i = 0; i < 5; ++i) {
         for (unsigned int j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
-            SCALAR_TO_DOUBLE(f, (*forceInRbdl)[i](j));
+            SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, requiredPrecision);
         }
     }
 }
-TEST(ExternalForces, toRbdl_contactForcesOnly)
+TEST(ExternalForces, toRbdl_linearForcesOnly)
 {
     Model model(modelPathForGeneralTesting);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     FILL_VECTOR(Q, std::vector<double>(
         { -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, 0.4 }));
 
-    utils::ExternalForceSet externalForces = utils::ExternalForceSet(model);
-    externalForces.addExternalPush(utils::Vector3d(0, 1, 2), model.rigidContact(0));
-    externalForces.addExternalPush(utils::Vector3d(0, 0, 3), model.rigidContact(1));
-    externalForces.addExternalPush(utils::Vector3d(0, 4, 5), model.rigidContact(2));
-    externalForces.addExternalPush(utils::Vector3d(0, 0, 6), model.rigidContact(3));
-    externalForces.applyPushForces(Q);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* forceInRbdl = externalForces.toRbdl();
+    utils::ExternalForceSet externalForces = model.externalForceSet(true, false);
+    externalForces.addLinearForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
+    externalForces.addLinearForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
+    externalForces.addLinearForce(utils::Vector3d(0, 4, 5), model.rigidContact(2));
+    externalForces.addLinearForce(utils::Vector3d(0, 0, 6), model.rigidContact(3));
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q);
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
     RigidBodyDynamics::Math::SpatialVector sp_dof10(-7.592268755852077, -0.7864099999999999, 0.14995, 0, 1.0, 5.0);
@@ -1472,7 +1471,7 @@ TEST(ExternalForces, toRbdl_contactForcesOnly)
     for (unsigned int i = 0; i < sp_expected.size(); ++i) {
         for (unsigned int j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
-            SCALAR_TO_DOUBLE(f, (*forceInRbdl)[i](j));
+            SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, requiredPrecision);
         }
     }
@@ -1486,9 +1485,8 @@ TEST(ExternalForces, toRbdl_softContactOnly)
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
     FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
 
-    utils::ExternalForceSet externalForces = utils::ExternalForceSet(model);
-    externalForces.applyForces(Q, QDot);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* forceInRbdl = externalForces.toRbdl();
+    utils::ExternalForceSet externalForces = model.externalForceSet(false, true);
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q, QDot);
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
     RigidBodyDynamics::Math::SpatialVector sp_dof4(185392.9862903644, -249642.95301694548, 238700.3791127471, 74247.2670562476, 102146.62960989607, 49317.07505542255);
@@ -1502,25 +1500,24 @@ TEST(ExternalForces, toRbdl_softContactOnly)
     for (unsigned int i = 0; i < 5; ++i) {
         for (unsigned int j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
-            SCALAR_TO_DOUBLE(f, (*forceInRbdl)[i](j));
+            SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, 1e-9);
         }
     }
 }
 
 
-TEST(ExternalForces, toRbdl_externalForcesAndContactForces)
+TEST(ExternalForces, toRbdl_externalForcesAndLinearForces)
 {
     Model model(modelWithRigidContactsExternalForces);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
 
-    utils::ExternalForceSet externalForces = utils::ExternalForceSet(model);
-    externalForces.set("Seg1", utils::SpatialVector(1, 2, 3, 4, 5, 6));
-    externalForces.addExternalPush(utils::Vector3d(0, 1, 2), model.rigidContact(0));
-    externalForces.addExternalPush(utils::Vector3d(0, 0, 3), model.rigidContact(1));
-    externalForces.applyPushForces(Q);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* forceInRbdl = externalForces.toRbdl();
+    utils::ExternalForceSet externalForces = model.externalForceSet(true, false);
+    externalForces.add("Seg1", utils::SpatialVector(1, 2, 3, 4, 5, 6));
+    externalForces.addLinearForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
+    externalForces.addLinearForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q);
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
     RigidBodyDynamics::Math::SpatialVector sp_dof4(-10.694693700837254, 12.040834024296124, 0.98598321280716972, 4, 6, 11);
@@ -1534,13 +1531,13 @@ TEST(ExternalForces, toRbdl_externalForcesAndContactForces)
     for (unsigned int i = 0; i < 5; ++i) {
         for (unsigned int j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
-            SCALAR_TO_DOUBLE(f, (*forceInRbdl)[i](j));
+            SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, requiredPrecision);
         }
     }
 }
 
-TEST(ExternalForces, toRbdl_softContactAndContactForces)
+TEST(ExternalForces, toRbdl_softContactAndLinearForces)
 {
     Model model(modelWithSoftContactRigidContactsExternalForces);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
@@ -1548,11 +1545,10 @@ TEST(ExternalForces, toRbdl_softContactAndContactForces)
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
     FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
 
-    utils::ExternalForceSet externalForces = utils::ExternalForceSet(model);
-    externalForces.addExternalPush(utils::Vector3d(0, 1, 2), model.rigidContact(0));
-    externalForces.addExternalPush(utils::Vector3d(0, 0, 3), model.rigidContact(1));
-    externalForces.applyForces(Q, QDot);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* forceInRbdl = externalForces.toRbdl();
+    utils::ExternalForceSet externalForces = model.externalForceSet();
+    externalForces.addLinearForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
+    externalForces.addLinearForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q, QDot);
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
     RigidBodyDynamics::Math::SpatialVector sp_dof4(185381.29159666356, -249632.91218292119, 238698.36509595989, 74247.267056247598, 102147.62960989607, 49322.075055422552);
@@ -1566,7 +1562,7 @@ TEST(ExternalForces, toRbdl_softContactAndContactForces)
     for (unsigned int i = 0; i < 5; ++i) {
         for (unsigned int j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
-            SCALAR_TO_DOUBLE(f, (*forceInRbdl)[i](j));
+            SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, 1e-9);
         }
     }
@@ -1580,11 +1576,10 @@ TEST(ExternalForces, toRbdl_externalForcesAndSoftContacts)
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
     FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
 
-    utils::ExternalForceSet externalForces = utils::ExternalForceSet(model);
-    externalForces.set( "Seg1", utils::SpatialVector(1, 2, 3, 4, 5, 6));
-    externalForces.applyForces(Q, QDot);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* forceInRbdl = externalForces.toRbdl();
-
+    utils::ExternalForceSet externalForces = model.externalForceSet(false, true);
+    externalForces.add("Seg1", utils::SpatialVector(1, 2, 3, 4, 5, 6));
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q, QDot);
+   
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
     RigidBodyDynamics::Math::SpatialVector sp_dof4(185393.98629036441, -249640.95301694548, 238703.37911274709, 74251.267056247598, 102151.62960989607, 49323.075055422552);
     std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;
@@ -1597,7 +1592,7 @@ TEST(ExternalForces, toRbdl_externalForcesAndSoftContacts)
     for (unsigned int i = 0; i < 5; ++i) {
         for (unsigned int j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
-            SCALAR_TO_DOUBLE(f, (*forceInRbdl)[i](j));
+            SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, 1e-9);
         }
     }
@@ -1611,12 +1606,11 @@ TEST(ExternalForces, toRbdl_includeAll)
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
     FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
 
-    utils::ExternalForceSet externalForces = utils::ExternalForceSet(model);
-    externalForces.set("Seg1", utils::SpatialVector(1, 2, 3, 4, 5, 6));
-    externalForces.addExternalPush(utils::Vector3d(0, 1, 2), model.rigidContact(0));
-    externalForces.addExternalPush(utils::Vector3d(0, 0, 3), model.rigidContact(1));
-    externalForces.applyForces(Q, QDot);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* forceInRbdl = externalForces.toRbdl();
+    utils::ExternalForceSet externalForces = model.externalForceSet();
+    externalForces.add("Seg1", utils::SpatialVector(1, 2, 3, 4, 5, 6));
+    externalForces.addLinearForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
+    externalForces.addLinearForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
+    std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q, QDot);
 
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
@@ -1633,8 +1627,25 @@ TEST(ExternalForces, toRbdl_includeAll)
     for (unsigned int i = 0; i < 5; ++i) {
         for (unsigned int j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
-            SCALAR_TO_DOUBLE(f, (*forceInRbdl)[i](j));
+            SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, 1e-9);
         }
+    }
+}
+TEST(ExternalForces, toRbdl_failings)
+{
+    Model model(modelWithRigidContactsExternalForces);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    {
+        utils::ExternalForceSet externalForces = model.externalForceSet(true, false);
+        EXPECT_THROW(externalForces.computeRbdlSpatialVectors(), std::runtime_error);
+    }
+    {
+        utils::ExternalForceSet externalForces = model.externalForceSet(false, true);
+        EXPECT_THROW(externalForces.computeRbdlSpatialVectors(), std::runtime_error);
+    }
+    {
+        utils::ExternalForceSet externalForces = model.externalForceSet(false, true);
+        EXPECT_THROW(externalForces.computeRbdlSpatialVectors(Q), std::runtime_error);
     }
 }

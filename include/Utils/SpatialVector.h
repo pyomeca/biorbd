@@ -52,7 +52,8 @@ public:
     ///
     SpatialVector(
         Scalar mx, Scalar my, Scalar mz,
-        Scalar fx, Scalar fy, Scalar fz);
+        Scalar fx, Scalar fy, Scalar fz
+    );
 
 #ifdef BIORBD_USE_CASADI_MATH
     ///
