@@ -105,6 +105,9 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 #define DECLARE_VECTOR(varname, nbElements) \
     casadi::DM varname(nbElements, 1);\
     BIORBD_NAMESPACE::utils::Vector varname##_sym(casadi::MX::sym(#varname, nbElements, 1));
+#define DECLARE_MATRIX(varname, nbRows, nbCols) \
+    casadi::DM varname(nbRows, nbCols);\
+    BIORBD_NAMESPACE::utils::Vector varname##_sym(casadi::MX::sym(#varname, nbRows, nbCols));
 
 #define CALL_BIORBD_FUNCTION_1ARG(varname, model, funcname, arg1) \
     casadi::Function func_##funcname(#funcname, {arg1##_sym}, {model.funcname(arg1##_sym)}, {#arg1}, {#funcname});\
@@ -130,17 +133,26 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 
 #else
 #define DECLARE_GENERALIZED_COORDINATES(varname, model) \
-    BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates varname(model);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates varname(model); \
+    BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates varname##_sym(model);
 #define DECLARE_GENERALIZED_VELOCITY(varname, model) \
-    BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity varname(model);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity varname(model); \
+    BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity varname##_sym(model);
 #define DECLARE_GENERALIZED_ACCELERATION(varname, model) \
-    BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration varname(model);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration varname(model); \
+    BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration varname##_sym(model);
 #define DECLARE_GENERALIZED_TORQUE(varname, model) \
-    BIORBD_NAMESPACE::rigidbody::GeneralizedTorque varname(model);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedTorque varname(model); \
+    BIORBD_NAMESPACE::rigidbody::GeneralizedTorque varname##_sym(model);
 #define DECLARE_GENERALIZED_OF_TYPE(Type, varname, nbElements) \
-    BIORBD_NAMESPACE::rigidbody::Generalized##Type varname(nbElements);
+    BIORBD_NAMESPACE::rigidbody::Generalized##Type varname(nbElements); \
+    BIORBD_NAMESPACE::rigidbody::Generalized##Type varname##_sym(nbElements);
 #define DECLARE_VECTOR(varname, nbElements) \
-    BIORBD_NAMESPACE::utils::Vector varname(nbElements);
+    BIORBD_NAMESPACE::utils::Vector varname(nbElements); \
+    BIORBD_NAMESPACE::utils::Vector varname##_sym(nbElements);
+#define DECLARE_MATRIX(varname, nbRows, nbCols) \
+    BIORBD_NAMESPACE::utils::Matrix varname(nbRows, nbCols); \
+    BIORBD_NAMESPACE::utils::Matrix varname##_sym(nbRows, nbCols);
 
 #define CALL_BIORBD_FUNCTION_1ARG(varname, model, funcname, arg1) \
     auto varname = model.funcname(arg1);
@@ -160,13 +172,15 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 #define FILL_VECTOR(varname, filler) \
     for (unsigned int i=0; i<varname.rows(); ++i){\
         varname(i, 0) = filler[i];\
+        varname##_sym(i, 0) = filler[i];\
     }
 #define FILL_MATRIX(varname, filler) \
     { \
         int cmpWithAWeirdName(0); \
         for (unsigned int i=0; i<varname.rows(); ++i){\
             for (unsigned int j=0; j<varname.cols(); ++j){\
-                varname(i, j) = filler[cmpWithAWeirdName++];\
+                varname(i, j) = filler[cmpWithAWeirdName];\
+                varname##_sym(i, j) = filler[cmpWithAWeirdName++];\
             }\
         } \
     }

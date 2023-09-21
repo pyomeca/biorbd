@@ -404,12 +404,18 @@ TEST(Vector3d, Copy)
 
 TEST(Matrix, Copy)
 {
-    utils::Matrix MainMatrix(4, 4);
-    FILL_MATRIX(MainMatrix, std::vector<double>({0, 1, 2, 3,
+    DECLARE_MATRIX(MainMatrix, 4, 4);
+    FILL_MATRIX(
+        MainMatrix, 
+        std::vector<double>(
+            {
+                0, 1, 2, 3,
                 4, 5, 6, 7,
                 8, 9, 10, 11,
                 12, 13, 14, 15
-                                                }));
+            }
+        )
+    );
     utils::Matrix DeepCopy(MainMatrix);
 
     // Test for the values
@@ -452,14 +458,14 @@ TEST(Matrix, Copy)
 
 TEST(Matrix, unitTest)
 {
-    utils::Matrix mat1(3, 4);
+    DECLARE_MATRIX(mat1, 3, 4);
     FILL_MATRIX(mat1, std::vector<double>({4.1, 5.1, 6.1, 7.1,
                                            8.1, 9.1, 10.1, 11.1,
                                            12.1, 13.1, 14.1, 15.1
                                           }));
 
     {
-        utils::Matrix mat2(3, 4);
+        DECLARE_MATRIX(mat2, 3, 4);
         FILL_MATRIX(mat2, std::vector<double>({4.1, 5.1, 6.1, 7.1,
                                                8.1, 9.1, 10.1, 11.1,
                                                12.1, 13.1, 14.1, 15.1
@@ -484,7 +490,7 @@ TEST(Matrix, unitTest)
     }
 
     {
-        utils::Matrix mat2(4, 2);
+        DECLARE_MATRIX(mat2, 4, 2);
         FILL_MATRIX(mat2, std::vector<double>({
             4.1, 5.1,
             6.1, 7.1,
@@ -510,7 +516,7 @@ TEST(Matrix, unitTest)
     }
 
     {
-        utils::Vector vec(4);
+        DECLARE_VECTOR(vec, 4);
         FILL_VECTOR(vec, std::vector<double>({4.1, 5.1, 6.1, 7.1}));
         utils::Vector mult(mat1 * vec);
 
@@ -842,7 +848,7 @@ TEST(ModelReading, equations)
     rigidbody::GeneralizedCoordinates Q(m);
     Q.setZero();
     std::vector<utils::Vector3d> mesh(m.meshPoints(Q, 0, true));
-    for (auto node : mesh) {
+    for (auto& node : mesh) {
         SCALAR_TO_DOUBLE(nodeX, node.x());
         SCALAR_TO_DOUBLE(nodeY, node.y());
         EXPECT_DOUBLE_EQ(nodeX, nodeY);
@@ -1254,7 +1260,7 @@ TEST(Quaternion, otherOperations)
         EXPECT_NEAR(qdotStab, 6, requiredPrecision);
     } {
         utils::Quaternion q1(1, 0, 0, 0, 5);
-        utils::Vector v(3);
+        DECLARE_VECTOR(v, 3);
         FILL_VECTOR(v, std::vector<double>({1,2,3}));
         q1.derivate(v);
         {
@@ -1376,7 +1382,7 @@ TEST(Vector, operation)
 TEST(Vector, norm)
 {
     {
-        utils::Vector v(4);
+        DECLARE_VECTOR(v, 4);
         FILL_VECTOR(v, std::vector<double>({1.1, 1.2, 1.3, 1.4}));
 
         SCALAR_TO_DOUBLE(val2false, v.norm(2, false));
@@ -1389,7 +1395,7 @@ TEST(Vector, norm)
 TEST(Vector, normGradient)
 {
     {
-        utils::Vector v(4);
+        DECLARE_VECTOR(v, 4);
         FILL_VECTOR(v, std::vector<double>({1.1, 1.2, 1.3, 1.4}));
 
         utils::Vector nG(v.normGradient(2, false));
@@ -1432,7 +1438,7 @@ TEST(ExternalForces, toRbdl_externalForcesOnly)
 TEST(ExternalForces, toRbdl_contactForcesOnly)
 {
     Model model(modelPathForGeneralTesting);
-    rigidbody::GeneralizedCoordinates Q(model);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
     FILL_VECTOR(Q, std::vector<double>(
         { -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, 0.4 }));
 
@@ -1475,9 +1481,9 @@ TEST(ExternalForces, toRbdl_contactForcesOnly)
 TEST(ExternalForces, toRbdl_softContactOnly)
 {
     Model model(modelWithSoftContact);
-    rigidbody::GeneralizedCoordinates Q(model);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
-    rigidbody::GeneralizedVelocity QDot(model);
     FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
 
     utils::ExternalForceSet externalForces = utils::ExternalForceSet(model);
@@ -1506,7 +1512,7 @@ TEST(ExternalForces, toRbdl_softContactOnly)
 TEST(ExternalForces, toRbdl_externalForcesAndContactForces)
 {
     Model model(modelWithRigidContactsExternalForces);
-    rigidbody::GeneralizedCoordinates Q(model);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
 
     utils::ExternalForceSet externalForces = utils::ExternalForceSet(model);
@@ -1537,9 +1543,9 @@ TEST(ExternalForces, toRbdl_externalForcesAndContactForces)
 TEST(ExternalForces, toRbdl_softContactAndContactForces)
 {
     Model model(modelWithSoftContactRigidContactsExternalForces);
-    rigidbody::GeneralizedCoordinates Q(model);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
-    rigidbody::GeneralizedVelocity QDot(model);
     FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
 
     utils::ExternalForceSet externalForces = utils::ExternalForceSet(model);
@@ -1569,9 +1575,9 @@ TEST(ExternalForces, toRbdl_softContactAndContactForces)
 TEST(ExternalForces, toRbdl_externalForcesAndSoftContacts)
 {
     Model model(modelWithSoftContactRigidContactsExternalForces);
-    rigidbody::GeneralizedCoordinates Q(model);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
-    rigidbody::GeneralizedVelocity QDot(model);
     FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
 
     utils::ExternalForceSet externalForces = utils::ExternalForceSet(model);
@@ -1600,9 +1606,9 @@ TEST(ExternalForces, toRbdl_externalForcesAndSoftContacts)
 TEST(ExternalForces, toRbdl_includeAll)
 {
     Model model(modelWithSoftContactRigidContactsExternalForces);
-    rigidbody::GeneralizedCoordinates Q(model);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
-    rigidbody::GeneralizedVelocity QDot(model);
     FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
 
     utils::ExternalForceSet externalForces = utils::ExternalForceSet(model);

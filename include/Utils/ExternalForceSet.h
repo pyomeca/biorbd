@@ -1,6 +1,8 @@
 #ifndef BIORBD_UTILS_EXTERNAL_FORCE_H
 #define BIORBD_UTILS_EXTERNAL_FORCE_H
 
+#include <memory>
+
 #include "biorbdConfig.h"
 #include "Utils/Scalar.h"
 
@@ -130,7 +132,7 @@ namespace BIORBD_NAMESPACE
             /// \param includePushForces Set to false if push forces should be ignored (that is automatically
             /// done if no push forces were added
             ///
-            void utils::ExternalForceSet::applyForces(
+            void applyForces(
                 const rigidbody::GeneralizedCoordinates& Q,
                 const rigidbody::GeneralizedVelocity& QDot,
                 bool updateKin = true,
@@ -144,7 +146,7 @@ namespace BIORBD_NAMESPACE
             /// \param Q The generalized coordinates
             /// \param updateKin If the kinematics of the model should be computed
             ///
-            void utils::ExternalForceSet::applyPushForces(
+            void applyPushForces(
                 const rigidbody::GeneralizedCoordinates& Q,
                 bool updateKin = true
             );
@@ -156,7 +158,7 @@ namespace BIORBD_NAMESPACE
             /// 
             /// Note: as this is an internal method, even though Q is passed, it is assumed update kinematics was already done.
             /// 
-            void utils::ExternalForceSet::combineExternalPushes(
+            void combineExternalPushes(
                 const rigidbody::GeneralizedCoordinates& Q
             );
 
@@ -167,7 +169,7 @@ namespace BIORBD_NAMESPACE
             /// 
             /// Note: as this is an internal method, even though Q is passed, it is assumed update kinematics was already done.
             /// 
-            void utils::ExternalForceSet::combineSoftContactForces(
+            void combineSoftContactForces(
                 const rigidbody::GeneralizedCoordinates& Q,
                 const rigidbody::GeneralizedVelocity& QDot
             );

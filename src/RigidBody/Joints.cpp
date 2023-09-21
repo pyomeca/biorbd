@@ -1301,7 +1301,7 @@ rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
     const rigidbody::GeneralizedAcceleration& QDDot
 )
 {
-    utils::ExternalForceSet& external = utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this));
+    const utils::ExternalForceSet& external = utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this));
     return InverseDynamics(Q, QDot, QDDot, external);
 }
 rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(

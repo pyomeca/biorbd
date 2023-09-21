@@ -164,7 +164,7 @@ TEST(Contacts, unitTest)
     {
         Model model(modelPathForGeneralTesting);
 
-        auto& axes(model.rigidContact(0).availableAxesIndices());
+        auto axes(model.rigidContact(0).availableAxesIndices());
         EXPECT_EQ(axes[0], 1);
         EXPECT_EQ(axes[1], 2);
     }
@@ -280,9 +280,9 @@ TEST(RigidContacts, create){
     }
 
 
-    rigidbody::GeneralizedCoordinates Q(model);
-    rigidbody::GeneralizedVelocity QDot(model);
-    rigidbody::GeneralizedVelocity QDDot(model);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(QDot, model);
+    DECLARE_GENERALIZED_ACCELERATION(QDDot, model);
     FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2, 0.3}));
     FILL_VECTOR(QDot, std::vector<double>({0.1, 0.1, 0.1, 0.1, 0.1, 0.1}));
     FILL_VECTOR(QDDot, std::vector<double>({0.5, 0.5, 0.5, 0.5, 0.5, 0.5}));
@@ -584,8 +584,8 @@ TEST(SoftContacts, ForceAtOrigin) {
     rigidbody::SoftContactSphere sphere(model.softContact(0));
 
     {
-        rigidbody::GeneralizedCoordinates Q(model);
-        rigidbody::GeneralizedVelocity QDot(model);
+        DECLARE_GENERALIZED_COORDINATES(Q, model);
+        DECLARE_GENERALIZED_VELOCITY(QDot, model);
         FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0. }));
         FILL_VECTOR(QDot, std::vector<double>({ 0.1, 0.1, 0.1, 0.1 }));
 
@@ -933,7 +933,7 @@ TEST(Joints, massMatrixInverse)
 {
     {
         Model model(modelPathForGeneralTesting);
-        rigidbody::GeneralizedCoordinates Q(model);
+        DECLARE_GENERALIZED_COORDINATES(Q, model);
         FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2, 0.3,
                                            -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, 0.4}));
 
@@ -1480,7 +1480,7 @@ TEST(Markers, individualPositions)
     EXPECT_EQ(model.nbQ(), 6);
     EXPECT_EQ(model.nbMarkers(), 4);
 
-    rigidbody::GeneralizedCoordinates Q(model);
+    DECLARE_GENERALIZED_COORDINATES(Q, model);
     for (unsigned int i=0; i<model.nbQ(); ++i) {
         Q[i] = QtestEqualsMarker[i];
     }
