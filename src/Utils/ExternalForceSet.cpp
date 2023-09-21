@@ -48,7 +48,7 @@ void utils::ExternalForceSet::add(
 
         if (segment.name().compare(segmentName)) continue;
         if (segment.nbDof() == 0) {
-            throw "It is not possible to add forces to a segment without degree of freedom";
+            throw std::runtime_error("It is not possible to add forces to a segment without degree of freedom");
         }
 
         m_externalForces[dofCount] += v; // Do not subtract 1 since 0 is used for the base ground 
@@ -89,14 +89,14 @@ void utils::ExternalForceSet::addLinearForce(
     const rigidbody::NodeSegment& pointOfApplication
 )
 {
-    if (!m_useLinearForces) throw "It is not possible to add linear force if it was set to false";
+    if (!m_useLinearForces) throw std::runtime_error("It is not possible to add linear force if it was set to false");
     m_linearForces.push_back(std::make_pair(force, pointOfApplication));
 }
 
 std::vector<RigidBodyDynamics::Math::SpatialVector> utils::ExternalForceSet::computeRbdlSpatialVectors() const {
 
-    if (m_useLinearForces) throw "useLinearForce required Q when computing the Spatial Vectors";
-    if (m_useSoftContacts) throw "useSoftContacts required Q and QDot when computing the Spatial Vectors";
+    if (m_useLinearForces) throw std::runtime_error("useLinearForce required Q when computing the Spatial Vectors");
+    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts required Q and QDot when computing the Spatial Vectors");
     return computeRbdlSpatialVectors(rigidbody::GeneralizedCoordinates(m_model), rigidbody::GeneralizedVelocity(m_model), false);
 }
 
@@ -105,7 +105,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> utils::ExternalForceSet::com
     bool updateKin
 ) const {
 
-    if (m_useSoftContacts) throw "useSoftContacts required QDot when computing the Spatial Vectors";
+    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts required QDot when computing the Spatial Vectors");
     return computeRbdlSpatialVectors(Q, rigidbody::GeneralizedVelocity(m_model), updateKin);
 }
 
@@ -124,8 +124,8 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> utils::ExternalForceSet::com
 
 std::vector<utils::SpatialVector> utils::ExternalForceSet::computeSpatialVectors() const {
 
-    if (m_useLinearForces) throw "useLinearForce required Q when computing the Spatial Vectors";
-    if (m_useSoftContacts) throw "useSoftContacts required Q and QDot when computing the Spatial Vectors";
+    if (m_useLinearForces) throw std::runtime_error("useLinearForce required Q when computing the Spatial Vectors");
+    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts required Q and QDot when computing the Spatial Vectors");
     return computeSpatialVectors(rigidbody::GeneralizedCoordinates(m_model), rigidbody::GeneralizedVelocity(m_model), false);
 }
 
@@ -133,7 +133,7 @@ std::vector<utils::SpatialVector> utils::ExternalForceSet::computeSpatialVectors
     const rigidbody::GeneralizedCoordinates& Q,
     bool updateKin
 ) const {
-    if (m_useSoftContacts) throw "useSoftContacts required QDot when computing the Spatial Vectors";
+    if (m_useSoftContacts) throw std::runtime_error("useSoftContacts required QDot when computing the Spatial Vectors");
     return computeSpatialVectors(Q, rigidbody::GeneralizedVelocity(), updateKin);
 }
 
