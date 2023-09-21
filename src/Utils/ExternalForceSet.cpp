@@ -169,7 +169,7 @@ void utils::ExternalForceSet::combineExternalPushes(
             const utils::Vector3d& forces = e.first;
             rigidbody::NodeSegment positionInGlobal(
                 RigidBodyDynamics::CalcBodyToBaseCoordinates(m_model, Q, segment.id(), position, updateKin),
-                position.name(),
+                position.Node::name(),
                 position.parent(),
                 position.isTechnical(),
                 position.isAnatomical(),

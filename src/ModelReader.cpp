@@ -147,27 +147,21 @@ void Reader::readModelFile(
                         // Dynamically find the parent number
                         file.read(parent_str);
                         if (parent_str.tolower().compare("root")) {
-                            utils::Error::check(model->GetBodyId(parent_str.c_str()),
-                                                        "Wrong name in a segment");
+                            utils::Error::check(model->GetBodyId(parent_str.c_str()), "Wrong name in a segment");
                         }
                     } else if (!property_tag.tolower().compare("translations")) {
-                        utils::Error::check(!isRangeQSet,
-                                                    "Translations must appear before the rangesq tag");
-                        utils::Error::check(!isRangeQDotSet,
-                                                    "Translations must appear before the rangesqdot tag");
-                        utils::Error::check(!isRangeQDDotSet,
-                                                    "Translations must appear before the rangesqddot tag");
+                        utils::Error::check(!isRangeQSet, "Translations must appear before the rangesq tag");
+                        utils::Error::check(!isRangeQDotSet, "Translations must appear before the rangesqdot tag");
+                        utils::Error::check(!isRangeQDDotSet,"Translations must appear before the rangesqddot tag");
                         file.read(trans);
                     } else if (!property_tag.tolower().compare("rotations")) {
-                        utils::Error::check(!isRangeQSet,
-                                                    "Rotations must appear before the rangesq tag");
-                        utils::Error::check(!isRangeQDotSet,
-                                                    "Rotations must appear before the rangesqdot tag");
-                        utils::Error::check(!isRangeQDDotSet,
-                                                    "Rotations must appear before the rangesqddot tag");
+                        utils::Error::check(!isRangeQSet, "Rotations must appear before the rangesq tag");
+                        utils::Error::check(!isRangeQDotSet, "Rotations must appear before the rangesqdot tag");
+                        utils::Error::check(!isRangeQDDotSet, "Rotations must appear before the rangesqddot tag");
                         file.read(rot);
-                    } else if (!property_tag.tolower().compare("ranges") ||
-                               !property_tag.tolower().compare("rangesq")) {
+                    } else if (
+                        !property_tag.tolower().compare("ranges") || 
+                        !property_tag.tolower().compare("rangesq")){
                         double min, max;
                         size_t rotLength(0);
                         if (rot.compare("q")) {
@@ -218,30 +212,28 @@ void Reader::readModelFile(
                     } else if (!property_tag.tolower().compare("mass")) {
                         file.read(mass, variable);
                     } else if (!property_tag.tolower().compare("inertia") || !property_tag.tolower().compare("inertiamatrix")) {
-                        utils::Error::check(!isInertiaSet,
-                            "Inertia matrix cannot be set twice. Please note that 'Inertia', 'InertiaMatrix' and 'RadiiOfGyration' all set the inertia matrix.");
+                        utils::Error::check(!isInertiaSet, "Inertia matrix cannot be set twice. Please note that 'Inertia', 'InertiaMatrix' and 'RadiiOfGyration' all set the inertia matrix.");
                         readMatrix33(file, variable, inertia);
                         isInertiaSet = true;
                     } else if (!property_tag.tolower().compare("inertia_xxyyzz")) {
-                        utils::Error::check(!isInertiaSet,
-                            "Inertia matrix cannot be set twice. Please note that 'Inertia', 'InertiaMatrix' and 'RadiiOfGyration' all set the inertia matrix.");
+                        utils::Error::check(!isInertiaSet, "Inertia matrix cannot be set twice. Please note that 'Inertia', 'InertiaMatrix' and 'RadiiOfGyration' all set the inertia matrix.");
                         utils::Vector3d inertia_xxyyzz;
                         readVector3d(file, variable, inertia_xxyyzz);
-                        inertia = utils::Matrix3d(inertia_xxyyzz[0], 0, 0,
-                                   0, inertia_xxyyzz[1], 0,
-                                   0, 0, inertia_xxyyzz[2]);
+                        inertia = utils::Matrix3d(
+                            inertia_xxyyzz[0], 0, 0,
+                            0, inertia_xxyyzz[1], 0,
+                            0, 0, inertia_xxyyzz[2]
+                        );
                         isInertiaSet = true;
                     } else if (!property_tag.tolower().compare("rtinmatrix")) {
-                        utils::Error::check(isRTset==false,
-                                                    "RT should not appear before RTinMatrix");
+                        utils::Error::check(isRTset==false, "RT should not appear before RTinMatrix");
                         file.read(RTinMatrix);
                     } else if (!property_tag.tolower().compare("rt")) {
                         readRtMatrix(file, variable, RTinMatrix, RT);
                         isRTset = true;
                     } else if (!property_tag.tolower().compare("com") || !property_tag.tolower().compare("centerofmass")) {
                         readVector3d(file, variable, com);
-                    } else if (!property_tag.tolower().compare("forceplate")
-                               || !property_tag.tolower().compare("externalforceindex")) {
+                    } else if (!property_tag.tolower().compare("forceplate") || !property_tag.tolower().compare("externalforceindex")) {
                         std::cout << "Please note that the 'externalforceindex' or 'forceplate' tags were removed when the ExternalForceSet was introduce.\n" << 
                             "Please consider removing these tag from your model file." << std::endl;
                     } else if (!property_tag.tolower().compare("mesh")) {
@@ -354,10 +346,18 @@ void Reader::readModelFile(
                             utils::Range (-M_PI*100, M_PI*100));
                     }
                 }
-                rigidbody::SegmentCharacteristics characteristics(mass,com,inertia,
-                        mesh);
-                model->AddSegment(name, parent_str, trans, rot, QRanges, QDotRanges,
-                                  QDDotRanges, characteristics, RT);
+                rigidbody::SegmentCharacteristics characteristics(mass, com, inertia, mesh);
+                model->AddSegment(
+                    name,
+                    parent_str, 
+                    trans, 
+                    rot, 
+                    QRanges, 
+                    QDotRanges,
+                    QDDotRanges, 
+                    characteristics, 
+                    RT
+                );
             } else if (!main_tag.tolower().compare("gravity")) {
                 utils::Vector3d gravity(0,0,0);
                 readVector3d(file, variable, gravity);

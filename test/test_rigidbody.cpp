@@ -1751,7 +1751,7 @@ TEST(Dynamics, ForwardDynAndExternalForces)
         3948.4748602722384
     };
 
-    externalForces.applyForces(Q, QDot);
+    externalForces.applyForces(Q_sym, QDot_sym);
     CALL_BIORBD_FUNCTION_3ARGS1PARAM(QDDot, model, ForwardDynamics, Q, QDot, Tau, externalForces);
 
     for (unsigned int i = 0; i<model.nbQddot(); ++i) {
