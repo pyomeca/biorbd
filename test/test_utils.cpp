@@ -433,25 +433,25 @@ TEST(Matrix, Copy)
         EXPECT_NEAR(deepCopy, 4, requiredPrecision);
     }
     {
-        SCALAR_TO_DOUBLE(mainMat, MainMatrix(0, 1));
-        SCALAR_TO_DOUBLE(deepCopy, DeepCopy(0, 1));
+        SCALAR_TO_DOUBLE(mainMat, mainMatrix(0, 1));
+        SCALAR_TO_DOUBLE(deepCopy, shallowCopy(0, 1));
         EXPECT_NEAR(mainMat, 1, requiredPrecision);
         EXPECT_NEAR(deepCopy, 1, requiredPrecision);
     }
     {
-        SCALAR_TO_DOUBLE(mainMat, MainMatrix(1, 1));
-        SCALAR_TO_DOUBLE(deepCopy, DeepCopy(1, 1));
+        SCALAR_TO_DOUBLE(mainMat, mainMatrix(1, 1));
+        SCALAR_TO_DOUBLE(deepCopy, shallowCopy(1, 1));
         EXPECT_NEAR(mainMat, 5, requiredPrecision);
         EXPECT_NEAR(deepCopy, 5, requiredPrecision);
     }
 
     // Change the values of Copy
-    DeepCopy.setZero();
+    shallowCopy.setZero();
 
     // Data are NOT shallow copy, therefore the parent should keep its values
     {
-        SCALAR_TO_DOUBLE(mainMat, MainMatrix(2, 2));
-        SCALAR_TO_DOUBLE(deepCopy, DeepCopy(2, 2));
+        SCALAR_TO_DOUBLE(mainMat, mainMatrix(2, 2));
+        SCALAR_TO_DOUBLE(deepCopy, shallowCopy(2, 2));
         EXPECT_NEAR(mainMat, 10, requiredPrecision);
         EXPECT_NEAR(deepCopy, 0, requiredPrecision);
     }
