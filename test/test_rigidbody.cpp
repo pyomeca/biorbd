@@ -74,8 +74,7 @@ TEST(Gravity, change)
         std::vector<double> QDDot_expected(13);
         QDDot_expected[0] = -2.2;
         for (unsigned int i = 0; i<model.nbQddot(); ++i) {
-            EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i],
-                        requiredPrecision);
+            EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);
         }
     }
 }
@@ -289,37 +288,46 @@ TEST(RigidContacts, create){
 
     {
         std::vector<double> positionExpected = {-1.9146957599281647, -2.8191133387246508, -2.70262501017246};
-        auto position = model.rigidContact(Q, 0, true);
+        CALL_BIORBD_FUNCTION_1ARG2PARAMS(position, model, rigidContact, Q, 0, true);
+#ifndef BIORBD_USE_CASADI_MATH
         auto positionAll = model.rigidContacts(Q, true);
+#endif
         for (unsigned int i = 0; i < 3; ++i) {
-            SCALAR_TO_DOUBLE(p, position[i]);
+            EXPECT_NEAR(static_cast<double>(position(i)), positionExpected[i], requiredPrecision);
+#ifndef BIORBD_USE_CASADI_MATH
             SCALAR_TO_DOUBLE(p2, positionAll[0][i]);
-            EXPECT_NEAR(p, positionExpected[i], requiredPrecision);
             EXPECT_NEAR(p2, positionExpected[i], requiredPrecision);
+#endif
         }
     }
 
     {
         std::vector<double> velocityExpected = {0.10705609071138775, 0.0734011441522157, 0.11433067610957084};
-        auto velocity = model.rigidContactVelocity(Q, QDot, 0);
+        CALL_BIORBD_FUNCTION_2ARGS1PARAM(velocity, model, rigidContactVelocity, Q, QDot, 0);
+#ifndef BIORBD_USE_CASADI_MATH
         auto velocityAll = model.rigidContactsVelocity(Q, QDot);
+#endif
         for (unsigned int i = 0; i < 3; ++i) {
-            SCALAR_TO_DOUBLE(v, velocity[i]);
+            EXPECT_NEAR(static_cast<double>(velocity(i)), velocityExpected[i], requiredPrecision);
+#ifndef BIORBD_USE_CASADI_MATH
             SCALAR_TO_DOUBLE(v2, velocityAll[0][i]);
-            EXPECT_NEAR(v, velocityExpected[i], requiredPrecision);
             EXPECT_NEAR(v2, velocityExpected[i], requiredPrecision);
+#endif
         }
     }
 
     {
         std::vector<double> accelerationExpected = {0.53484698259518959, 0.36370063728727758, 0.57070845052506336};
-        auto acceleration = model.rigidContactAcceleration(Q, QDot, QDDot, 0);
+        CALL_BIORBD_FUNCTION_3ARGS1PARAM(acceleration, model, rigidContactAcceleration, Q, QDot, QDDot, 0);
+#ifndef BIORBD_USE_CASADI_MATH
         auto accelerationAll = model.rigidContactsAcceleration(Q, QDot, QDDot);
+#endif
         for (unsigned int i = 0; i < 3; ++i) {
-            SCALAR_TO_DOUBLE(a, acceleration[i]);
+            EXPECT_NEAR(static_cast<double>(acceleration(i)), accelerationExpected[i], requiredPrecision);
+#ifndef BIORBD_USE_CASADI_MATH
             SCALAR_TO_DOUBLE(a2, accelerationAll[0][i]);
-            EXPECT_NEAR(a, accelerationExpected[i], requiredPrecision);
             EXPECT_NEAR(a2, accelerationExpected[i], requiredPrecision);
+#endif
         }
     }
 }
@@ -589,13 +597,12 @@ TEST(SoftContacts, ForceAtOrigin) {
         FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0. }));
         FILL_VECTOR(QDot, std::vector<double>({ 0.1, 0.1, 0.1, 0.1 }));
 
-        utils::SpatialVector force = sphere.computeForceAtOrigin(model, Q, QDot);
+        CALL_BIORBD_FUNCTION_1PARAM2ARGS(force, sphere, computeForceAtOrigin, model, Q, QDot);
 
         std::vector<double> forceExpected = {
             -670.95355043718416, 2.944729504204179, 2.2119497381886286, 0, -221.1949738188676, 294.47295042042418 };
         for (unsigned int i = 0; i < 6; ++i) {
-            SCALAR_TO_DOUBLE(f, force(i));
-            EXPECT_NEAR(f, forceExpected[i], requiredPrecision);
+            EXPECT_NEAR(static_cast<double>(force(i)), forceExpected[i], requiredPrecision);
         }
     }
 }
@@ -937,18 +944,20 @@ TEST(Joints, massMatrixInverse)
         FILL_VECTOR(Q, std::vector<double>({-2.01, -3.01, -3.01, 0.1, 0.2, 0.3,
                                            -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, 0.4}));
 
-        utils::Matrix M(model.massMatrix(Q));
-        utils::Matrix Minv_num = M.inverse();
+        CALL_BIORBD_FUNCTION_1ARG(M, model, massMatrix, Q);
+#ifdef BIORBD_USE_CASADI_MATH
+        auto Minv_num = casadi::DM::inv(M);
+#else 
+        auto Minv_num = M.inverse();
+#endif
 
-        utils::Matrix Minv_symbolic = model.massMatrixInverse(Q);
+        CALL_BIORBD_FUNCTION_1ARG(Minv_symbolic, model, massMatrixInverse, Q);
 
         for (unsigned int j = 0; j < model.dof_count; j++)
         {
             for (unsigned int i = 0; i < model.dof_count; i++)
             {
-                SCALAR_TO_DOUBLE(Minv_num_ij, Minv_num(i,j));
-                SCALAR_TO_DOUBLE(Minv_symbolic_ij, Minv_symbolic(i,j));
-                EXPECT_NEAR(Minv_num_ij, Minv_symbolic_ij, requiredPrecision);
+                EXPECT_NEAR(static_cast<double>(Minv_num(i, j)), static_cast<double>(Minv_symbolic(i, j)), requiredPrecision);
             }
         }
     }
@@ -1453,16 +1462,16 @@ TEST(Mesh, color){
 
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
 TEST(Markers, allPositions)
 {
     Model model(modelPathMeshEqualsMarker);
     EXPECT_EQ(model.nbQ(), 6);
     EXPECT_EQ(model.nbMarkers(), 4);
 
-    rigidbody::GeneralizedCoordinates Q(model);
-    for (unsigned int i=0; i<model.nbQ(); ++i) {
-        Q[i] = QtestEqualsMarker[i];
-    }
+    DECLARE_GENERALIZED_COORDINATES(Q, model)
+    FILL_VECTOR(Q, QtestEqualsMarker)
+
 
     // All markers at once
     std::vector<rigidbody::NodeSegment> markers(model.markers(Q, true, true));
@@ -1473,6 +1482,7 @@ TEST(Markers, allPositions)
         }
     }
 }
+#endif
 
 TEST(Markers, individualPositions)
 {
@@ -1481,22 +1491,22 @@ TEST(Markers, individualPositions)
     EXPECT_EQ(model.nbMarkers(), 4);
 
     DECLARE_GENERALIZED_COORDINATES(Q, model);
-    for (unsigned int i=0; i<model.nbQ(); ++i) {
-        Q[i] = QtestEqualsMarker[i];
-    }
+    FILL_VECTOR(Q, QtestEqualsMarker)
 
     // One marker at a time, only update Q once
     for (unsigned int i=0; i<model.nbMarkers(); ++i) {
-        rigidbody::NodeSegment marker;
         if (i==0) {
-            marker = model.marker(Q, i, true, true);
+            CALL_BIORBD_FUNCTION_1ARG3PARAMS(marker, model, marker, Q, i, true, true);
+            for (unsigned int j = 0; j < 3; ++j) {
+                EXPECT_NEAR(static_cast<double>(marker(j)), expectedMarkers[i][j], requiredPrecision);
+            }
         } else {
-            marker = model.marker(Q, i, true, false);
+            CALL_BIORBD_FUNCTION_1ARG3PARAMS(marker, model, marker, Q, i, true, false);
+            for (unsigned int j = 0; j < 3; ++j) {
+                EXPECT_NEAR(static_cast<double>(marker(j)), expectedMarkers[i][j], requiredPrecision);
+            }
         }
-        for (unsigned int j=0; j<3; ++j) {
-            SCALAR_TO_DOUBLE(mark, marker[j]);
-            EXPECT_NEAR(mark, expectedMarkers[i][j], requiredPrecision);
-        }
+
     }
 
     // Change Q
@@ -1509,15 +1519,17 @@ TEST(Markers, individualPositions)
     };
     // One marker at a time, only update Q once
     for (unsigned int i=0; i<model.nbMarkers(); ++i) {
-        rigidbody::NodeSegment marker;
-        if (i==0) {
-            marker = model.marker(Q, i, true, true);
-        } else {
-            marker = model.marker(Q, i, true, false);
+        if (i == 0) {
+            CALL_BIORBD_FUNCTION_1ARG3PARAMS(marker, model, marker, Q, i, true, true);
+            for (unsigned int j = 0; j < 3; ++j) {
+                EXPECT_NEAR(static_cast<double>(marker(j)), expectedMarkers2[i][j], requiredPrecision);
+            }
         }
-        for (unsigned int j=0; j<3; ++j) {
-            SCALAR_TO_DOUBLE(mark, marker[j]);
-            EXPECT_NEAR(mark, expectedMarkers2[i][j], requiredPrecision);
+        else {
+            CALL_BIORBD_FUNCTION_1ARG3PARAMS(marker, model, marker, Q, i, true, false);
+            for (unsigned int j = 0; j < 3; ++j) {
+                EXPECT_NEAR(static_cast<double>(marker(j)), expectedMarkers2[i][j], requiredPrecision);
+            }
         }
     }
 }
@@ -1579,8 +1591,7 @@ TEST(Dynamics, Forward)
     CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamics, Q, QDot, Tau);
 
     for (unsigned int i = 0; i<model.nbQddot(); ++i) {
-        EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i],
-                    requiredPrecision);
+        EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);
     }
 }
 
