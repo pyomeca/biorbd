@@ -30,8 +30,9 @@ rigidbody::NodeSegment::NodeSegment(
     setType();
 }
 
-rigidbody::NodeSegment::NodeSegment(const utils::Vector3d
-        &other) :
+rigidbody::NodeSegment::NodeSegment(
+    const utils::Vector3d &other
+) :
     utils::Vector3d(other),
     m_axesRemoved(std::make_shared<std::vector<bool>>(3)),
     m_nbAxesToRemove(std::make_shared<int>(0)),
