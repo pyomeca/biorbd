@@ -6,6 +6,7 @@
 #include "biorbdConfig.h"
 #include "Utils/Scalar.h"
 #include "Utils/SpatialVector.h"
+#include "Utils/RotoTransNode.h"
 
 namespace BIORBD_NAMESPACE
 {
@@ -17,11 +18,9 @@ namespace BIORBD_NAMESPACE
     }
     namespace utils
     {
-        class SpatialVector;
         class Vector3d;
         class String;
-        class RotoTransNode;
-
+     
         ///
         /// \brief An External force set that can apply forces to the model while computing the dynamics
         ///
