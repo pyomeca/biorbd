@@ -24,7 +24,7 @@ void Matlab_muscleJointTorqueFromActivation( int nlhs, mxArray *plhs[],
     unsigned int nMuscleTotal = model->nbMuscles();
 
     // Recevoir muscleStates
-    std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>>> s =
+    std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::internal_forces::muscles::State>>> s =
         getParameterMuscleStateActivation(prhs,2,
                                           nMuscleTotal);
     unsigned int nFrame(static_cast<unsigned int>(s.size()));

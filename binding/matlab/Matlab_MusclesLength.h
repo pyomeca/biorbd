@@ -5,16 +5,15 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
-#include "Muscles/Muscle.h"
-#include "Muscles/MuscleGroup.h"
+#include "InternalForces/Muscles/Muscle.h"
+#include "InternalForces/Muscles/MuscleGroup.h"
 
 void Matlab_MusclesLength( int, mxArray *plhs[],
                            int nrhs, const mxArray*prhs[] )
 {
 
     // Verifier les arguments d'entrée
-    checkNombreInputParametres(nrhs, 3, 3,
-                               "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
+    checkNombreInputParametres(nrhs, 3, 3, "3 arguments are required where the 2nd is the handler on the model and 3rd is the Q");
     // Recevoir le model
     BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
     unsigned int nQ = model->nbQ(); // Get the number of DoF
