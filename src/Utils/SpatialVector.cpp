@@ -74,3 +74,11 @@ void utils::SpatialVector::operator=(
 }
 
 #endif
+
+utils::Vector3d utils::SpatialVector::force() const {
+    return utils::Vector3d((*this)(3), (*this)(4), (*this)(5));
+}
+
+utils::Vector3d utils::SpatialVector::moment() const {
+    return utils::Vector3d((*this)(0), (*this)(1), (*this)(2));
+}

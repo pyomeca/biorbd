@@ -9,6 +9,7 @@ namespace BIORBD_NAMESPACE
 {
 namespace utils
 {
+    class Vector3d;
 
 ///
 /// \brief Wrapper of the Eigen::Matrix<double, 6, 1> or Casadi::MX(6, 1)
@@ -106,6 +107,16 @@ public:
     void operator=(
         const casadi::MX& other);
 #endif
+
+    /// 
+    /// \brief Return the force part of the vector (last three elements)
+    /// 
+    utils::Vector3d force() const;
+
+    /// 
+    /// \brief Return the moment part of the vector (first three elements)
+    /// 
+    utils::Vector3d moment() const;
 
 #endif
 };

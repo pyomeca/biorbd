@@ -48,16 +48,27 @@ namespace BIORBD_NAMESPACE
 
             ///
             /// \brief Apply a new value to the specified spatial vector of the Set. WARNING: This vector 
-            /// is expected to be applied at origin in the global reference frame. If one needs to 
-            /// transport and/or rotate the spatial vector, they can use the corresponding transformation 
+            /// is expected to be acting on segmentName, applied at origin and expressed in the global reference frame.
             /// method offered by ExternalForceSet below.
             /// \param segmentName The name of the segment to apply the spatial vector on.  
             /// \param v The SpatialVector to add to the set.
-            /// \param from Where the v vector is currenlty applied. 
             ///
             void add(
                 const utils::String& segmentName,
                 const utils::SpatialVector& v
+            );
+
+            ///
+            /// \brief Apply a new value to the specified spatial vector of the Set. WARNING: This vector 
+            /// is expected to be acting on segmentName, applied at pointOfApplication and expressed in the global reference frame. 
+            /// \param segmentName The name of the segment to apply the spatial vector on.  
+            /// \param v The SpatialVector to add to the set.
+            /// \param pointOfApplication Where the v vector is currenlty applied. 
+            ///
+            void add(
+                const utils::String& segmentName,
+                const utils::SpatialVector& v, 
+                const utils::Vector3d& pointOfApplication
             );
 
 #ifdef BIORBD_USE_CASADI_MATH
@@ -208,6 +219,17 @@ namespace BIORBD_NAMESPACE
             ///
             utils::SpatialVector transportForceAtOrigin(
                 const utils::Vector3d& force,
+                const rigidbody::NodeSegment& pointOfApplication
+            ) const;
+
+            ///
+            /// \brief Get the rigid contacts in a list of spatial vector of dimension 6xNdof
+            /// \param v The spatial vector to transport
+            /// \param pointOfApplication The position where the force is applied in base coordinate
+            /// \return The effect of the force when transported at origin
+            ///
+            utils::SpatialVector transportAtOrigin(
+                const utils::SpatialVector& v,
                 const rigidbody::NodeSegment& pointOfApplication
             ) const;
             

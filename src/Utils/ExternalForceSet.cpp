@@ -55,6 +55,20 @@ void utils::ExternalForceSet::add(
     }
 }
 
+void utils::ExternalForceSet::add(
+    const utils::String& segmentName,
+    const utils::SpatialVector& v, 
+    const utils::Vector3d& pointOfApplication
+)
+{
+    utils::SpatialVector atOrigin = transportAtOrigin(
+        v, 
+        rigidbody::NodeSegment(utils::Vector3d(pointOfApplication, segmentName, segmentName))
+    );
+    add(segmentName, atOrigin);
+}
+
+
 #ifdef BIORBD_USE_CASADI_MATH
 
 void utils::ExternalForceSet::add(
@@ -257,20 +271,32 @@ void utils::ExternalForceSet::combineSoftContactForces(
 }
 
 utils::SpatialVector utils::ExternalForceSet::transportForceAtOrigin(
-    const utils::Vector3d& forces,
+    const utils::Vector3d& force,
     const rigidbody::NodeSegment& pointOfApplication
 ) const
 {
     // Fill only if direction is enabled
-    utils::Vector3d force(0., 0., 0.);
+    utils::Vector3d newForce(0., 0., 0.);
     for (auto axis : pointOfApplication.availableAxesIndices()){
-        force.block(axis, 0, 1, 1) = forces.block(axis, 0, 1, 1);
+        newForce.block(axis, 0, 1, 1) = force.block(axis, 0, 1, 1);
     }
 
     // Transport to Origin (Bour's formula)
     utils::SpatialVector out(0., 0., 0., 0., 0., 0.);
-    out.block(0, 0, 3, 1) = force.cross(-pointOfApplication);
-    out.block(3, 0, 3, 1) = force;
+    out.block(0, 0, 3, 1) = newForce.cross(-pointOfApplication);
+    out.block(3, 0, 3, 1) = newForce;
+
+    return out;
+}
+
+utils::SpatialVector utils::ExternalForceSet::transportAtOrigin(
+    const utils::SpatialVector& v,
+    const rigidbody::NodeSegment& pointOfApplication
+) const
+{
+    // Transport to Origin (Bour's formula)
+    utils::SpatialVector out(transportForceAtOrigin(v.force(), pointOfApplication));
+    out.block(0, 0, 3, 1) += v.moment();
 
     return out;
 }
