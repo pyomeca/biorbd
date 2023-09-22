@@ -14,6 +14,7 @@
 #include "Utils/Range.h"
 #include "Utils/Timer.h"
 #include "Utils/Benchmark.h"
+#include "Utils/ExternalForceSet.h"
 %}
 
 // Instantiate templates
@@ -70,6 +71,7 @@ namespace std {
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Node.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Vector3d.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/SpatialVector.h"
+%include "@CMAKE_SOURCE_DIR@/include/Utils/ExternalForceSet.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/RotoTrans.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Rotation.h"
 %include "@CMAKE_SOURCE_DIR@/include/Utils/Range.h"

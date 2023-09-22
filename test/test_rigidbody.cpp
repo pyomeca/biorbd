@@ -1744,7 +1744,7 @@ TEST(Dynamics, ForwardDynAndExternalForces)
     utils::ExternalForceSet externalForces = utils::ExternalForceSet(model);
 
     externalForces.add("PiedD", utils::SpatialVector((0 + 1) * 11.1, (0 + 1) * 22.2, (0 + 1) * 33.3, (0 + 1) * 44.4, (0 + 1) * 55.5, (0 + 1) * 66.6));
-    externalForces.add("PiedG", utils::SpatialVector((1 + 1) * 11.1, (1 + 1) * 22.2, (1 + 1) * 33.3, (1 + 1) * 44.4, (1 + 1) * 55.5, (01+ 1) * 66.6));
+    externalForces.add("PiedG", utils::SpatialVector((1 + 1) * 11.1, (1 + 1) * 22.2, (1 + 1) * 33.3, (1 + 1) * 44.4, (1 + 1) * 55.5, (1 + 1) * 66.6));
 
     // Set to random values
     std::vector<double> val(model.nbQ());

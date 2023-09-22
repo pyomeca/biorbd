@@ -35,8 +35,7 @@ def transport_spatial_force(
     forces = spatial_force.to_array()[3:]
     torques = spatial_force.to_array()[:3]
     # Torque transport, Bour's formula
-    torques += np.cross(current_application_point - new_application_point,
-            forces)
+    torques += np.cross(current_application_point - new_application_point, forces)
 
     return biorbd.SpatialVector(np.concatenate((torques, forces)))
 
@@ -74,7 +73,9 @@ class ExternalForce:
         """
 
         spatial_vector = transport_spatial_force(
-            biorbd.SpatialVector(np.concatenate((self._torque_in_global, self._force_in_global))),
+            biorbd.SpatialVector(
+                np.concatenate((self._torque_in_global, self._force_in_global))
+            ),
             self._application_point_in_global,
             np.zeros(3),
         )
