@@ -20,6 +20,7 @@ namespace BIORBD_NAMESPACE
         class SpatialVector;
         class Vector3d;
         class String;
+        class RotoTransNode;
 
         ///
         /// \brief An External force set that can apply forces to the model while computing the dynamics
@@ -184,9 +185,27 @@ namespace BIORBD_NAMESPACE
             ) const;
 #endif // !SWIG
 
+            ///
+            /// \brief Return if there is at least one external force expressed in the local reference frame.
+            /// This is important since having this forces to send Q when computing the force in global reference frame
+            /// 
+            bool hasExternalForceInLocalReferenceFrame() const;
+
         protected:
             /// 
-            /// \brief Add the push forces to the internal Set.
+            /// \brief Add the forces expressed in the local reference to the internal Set.
+            /// \param Q The Generalized coordinates. 
+            /// \param out The vector of SpatialVector to fill
+            /// 
+            /// Note: as this is an internal method, even though Q is passed, it is assumed update kinematics was already done.
+            /// 
+            void combineLocalReferenceFrameForces(
+                const rigidbody::GeneralizedCoordinates& Q,
+                std::vector<utils::SpatialVector>& out
+            ) const;
+
+            /// 
+            /// \brief Add the linear forces to the internal Set.
             /// \param Q The Generalized coordinates. 
             /// \param out The vector of SpatialVector to fill
             /// 
@@ -242,6 +261,9 @@ namespace BIORBD_NAMESPACE
 
             std::vector<utils::SpatialVector>
                 m_externalForces; ///< The vector that holds all the external forces
+
+            std::vector<std::pair<utils::SpatialVector, utils::RotoTransNode>>
+                m_externalForcesInLocal; ///< The vector that holds all the external forces that are expressed in local reference frame (must call Q). The second element holds the information to transport the vector in global reference frame
 
             std::vector<std::pair<utils::Vector3d, rigidbody::NodeSegment>>
                 m_linearForces; ///< The linear forces. The first is the amplitude and the second is the application point (that include the name of the parentSegment it is applied on)
