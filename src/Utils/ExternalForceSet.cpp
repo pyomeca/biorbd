@@ -230,7 +230,7 @@ void utils::ExternalForceSet::combineLocalReferenceFrameForces(
 
     for (int i = 0; i < m_externalForcesInLocal.size(); i++) {
         const utils::SpatialVector& vector(vectors[i]);
-        const utils::RotoTransNode& roto(utils::RotoTrans(nodes[i].rot()));
+        const utils::RotoTrans& roto(nodes[i].rot());
         const utils::Vector3d& pointOfApplication(nodes[i].trans());
 
         // Rotate the forces in global reference frame

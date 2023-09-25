@@ -596,10 +596,12 @@ rigidbody::Joints::CalcBodyWorldTransformation(
         utils::RotoTrans parentRT(
             this->X_base[parent_id].E.transpose(),
             this->X_base[parent_id].r);
-        utils::RotoTrans bodyRT(
-            this->mFixedBodies[fbody_id].mParentTransform.E.transpose(),
-            this->mFixedBodies[fbody_id].mParentTransform.r);
-        const utils::RotoTrans& transfo_tp = parentRT * utils::RotoTransNode(bodyRT);
+        utils::RotoTransNode bodyRT(
+            utils::RotoTrans(
+                this->mFixedBodies[fbody_id].mParentTransform.E.transpose(),
+                this->mFixedBodies[fbody_id].mParentTransform.r)
+            , "", "");
+        const utils::RotoTrans& transfo_tp = parentRT * bodyRT;
         return RigidBodyDynamics::Math::SpatialTransform (transfo_tp.rot(),
                 transfo_tp.trans());
     }
