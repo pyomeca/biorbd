@@ -1983,7 +1983,7 @@ TEST(ExternalForces, toRbdl_LocalForcesOnly)
 {
     Model model(modelWithRigidContactsExternalForces);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
-    FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
+    FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet(false, false);
     externalForces.addInSegmentReferenceFrame(
@@ -2055,8 +2055,8 @@ TEST(ExternalForces, toRbdl_softContactOnly)
     Model model(modelWithSoftContact);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
-    FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
-    FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
+    FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
+    FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet(false, true);
     std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q, QDot);
@@ -2084,7 +2084,7 @@ TEST(ExternalForces, toRbdl_externalForcesAndLinearForces)
 {
     Model model(modelWithRigidContactsExternalForces);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
-    FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
+    FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet(true, false);
     externalForces.add("Seg1", utils::SpatialVector(1, 2, 3, 4, 5, 6));
@@ -2115,8 +2115,8 @@ TEST(ExternalForces, toRbdl_softContactAndLinearForces)
     Model model(modelWithSoftContactRigidContactsExternalForces);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
-    FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
-    FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
+    FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
+    FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet();
     externalForces.addLinearForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
@@ -2146,8 +2146,8 @@ TEST(ExternalForces, toRbdl_externalForcesAndSoftContacts)
     Model model(modelWithSoftContactRigidContactsExternalForces);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
-    FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
-    FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
+    FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
+    FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet(false, true);
     externalForces.add("Seg1", utils::SpatialVector(1, 2, 3, 4, 5, 6));
@@ -2176,8 +2176,8 @@ TEST(ExternalForces, toRbdl_includeAll)
     Model model(modelWithSoftContactRigidContactsExternalForces);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
     DECLARE_GENERALIZED_VELOCITY(QDot, model);
-    FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
-    FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1, 0.2 }));
+    FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
+    FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet();
     externalForces.add("Seg1", utils::SpatialVector(1, 2, 3, 4, 5, 6));
