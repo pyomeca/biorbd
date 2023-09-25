@@ -130,7 +130,7 @@ public:
         const rigidbody::GeneralizedCoordinates& Q,
         const rigidbody::GeneralizedVelocity& Qdot,
         const rigidbody::GeneralizedTorque& Tau,
-        const utils::ExternalForceSet& externalForces);
+        utils::ExternalForceSet& externalForces);
 
     ///
     /// \brief Destroy the class properly

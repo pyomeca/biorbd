@@ -1301,14 +1301,14 @@ rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
     const rigidbody::GeneralizedAcceleration& QDDot
 )
 {
-    const utils::ExternalForceSet& external = utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this));
-    return InverseDynamics(Q, QDot, QDDot, external);
+    utils::ExternalForceSet forceSet(utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this)));
+    return InverseDynamics(Q, QDot, QDDot, forceSet);
 }
 rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     const rigidbody::GeneralizedAcceleration& QDDot,
-    const utils::ExternalForceSet& externalForces
+    utils::ExternalForceSet& externalForces
 )
 {
     rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
@@ -1322,12 +1322,13 @@ rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
     const rigidbody::GeneralizedVelocity& QDot
 )
 {
-    return NonLinearEffect(Q, QDot, utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this)));
+    utils::ExternalForceSet forceSet(utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this)));
+    return NonLinearEffect(Q, QDot, forceSet);
 }
 rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
-    const utils::ExternalForceSet& externalForces
+    utils::ExternalForceSet& externalForces
 )
 {
     rigidbody::GeneralizedTorque Tau(*this);
@@ -1342,13 +1343,15 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamics(
     const rigidbody::GeneralizedTorque& Tau
 )
 {
-    return ForwardDynamics(Q, QDot, Tau, utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this)));
+    utils::ExternalForceSet forceSet(utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this)));
+    return ForwardDynamics(Q, QDot, Tau, forceSet);
 }
 rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamics(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     const rigidbody::GeneralizedTorque& Tau,
-    const utils::ExternalForceSet& externalForces)
+    utils::ExternalForceSet& externalForces
+)
 {
     rigidbody::GeneralizedAcceleration QDDot(*this);
     auto fExt = externalForces.computeRbdlSpatialVectors(Q, QDot, true);
@@ -1402,7 +1405,7 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraints
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     const rigidbody::GeneralizedTorque& Tau,
-    const utils::ExternalForceSet& externalForces
+    utils::ExternalForceSet& externalForces
 )
 {
     rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
@@ -1415,15 +1418,15 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraints
     rigidbody::Contacts& CS
 )
 {
-    return ForwardDynamicsConstraintsDirect(
-        Q, QDot, Tau, CS, utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this)));
+    utils::ExternalForceSet forceSet(utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this)));
+    return ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, forceSet);
 }
 rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     const rigidbody::GeneralizedTorque& Tau,
     rigidbody::Contacts& CS,
-    const utils::ExternalForceSet& externalForces
+    utils::ExternalForceSet& externalForces
 )
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -1445,14 +1448,14 @@ utils::Vector rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDire
     const rigidbody::GeneralizedTorque& Tau
 )
 {
-    return ContactForcesFromForwardDynamicsConstraintsDirect(
-        Q, QDot, Tau, utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this)));
+    utils::ExternalForceSet forceSet(utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this)));
+    return ContactForcesFromForwardDynamicsConstraintsDirect(Q, QDot, Tau, forceSet);
 }
 utils::Vector rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     const rigidbody::GeneralizedTorque& Tau,
-    const utils::ExternalForceSet& externalForces
+    utils::ExternalForceSet& externalForces
 )
 {
     rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*> (this)->getConstraints();

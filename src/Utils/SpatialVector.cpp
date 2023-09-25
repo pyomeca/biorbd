@@ -28,6 +28,14 @@ utils::SpatialVector::SpatialVector(
 }
 
 utils::SpatialVector::SpatialVector(
+    const utils::Vector3d& moment,
+    const utils::Vector3d& force) : 
+    RigidBodyDynamics::Math::SpatialVector(moment(0), moment(1), moment(2), force(0), force(1), force(2))
+{
+
+}
+
+utils::SpatialVector::SpatialVector(
     Scalar mx, Scalar my, Scalar mz,
     Scalar fx, Scalar fy, Scalar fz) :
     RigidBodyDynamics::Math::SpatialVector (mx, my, mz, fx, fy, fz)

@@ -136,13 +136,14 @@ std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForce
     const rigidbody::GeneralizedTorque& Tau
 )
 {
-    return calcLoopConstraintForces(Q, Qdot, Tau, utils::ExternalForceSet(dynamic_cast<Model&>(*this)));
+    utils::ExternalForceSet forceSet(utils::ExternalForceSet(dynamic_cast<Model&>(*this)));
+    return calcLoopConstraintForces(Q, Qdot, Tau, forceSet);
 }
 std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForces(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
     const rigidbody::GeneralizedTorque &Tau,
-    const utils::ExternalForceSet &externalForces
+    utils::ExternalForceSet &externalForces
 )
 {
     // all in the world frame

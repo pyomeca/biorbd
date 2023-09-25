@@ -101,10 +101,15 @@ rigidbody::RotoTransNodes::RTs(
     const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin)
 {
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
     std::vector<utils::RotoTransNode> pos;
     for (unsigned int i=0; i<nbRTs(); ++i) {
         pos.push_back(RT(Q, i, updateKin));
+#ifndef BIORBD_USE_CASADI_MATH
         updateKin = false;
+#endif
     }
 
     return pos;
@@ -126,8 +131,7 @@ utils::RotoTransNode rigidbody::RotoTransNodes::RT(
     }
 
     utils::RotoTransNode node = RT(idx);
-    unsigned int id = static_cast<unsigned int>(model.getBodyBiorbdId(
-                          node.parent()));
+    unsigned int id = static_cast<unsigned int>(model.getBodyBiorbdId(node.parent()));
 
     return model.globalJCS(id) * node;
 }
@@ -139,8 +143,7 @@ rigidbody::RotoTransNodes::segmentRTs(
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
-                                       (*this);
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 
     // Segment name to find
     utils::String name(model.segment(idx).name());
@@ -197,4 +200,8 @@ std::vector<utils::String> rigidbody::RotoTransNodes::RTsNames()
         names.push_back(RT(i).utils::Node::name());
     }
     return names;
+}
+
+void rigidbody::RotoTransNodes::clear() {
+    m_RTs->clear();
 }

@@ -7,6 +7,8 @@
 #include "Utils/Scalar.h"
 #include "Utils/SpatialVector.h"
 #include "Utils/RotoTransNode.h"
+#include "RigidBody/RotoTransNodes.h"
+
 
 namespace BIORBD_NAMESPACE
 {
@@ -15,17 +17,53 @@ namespace BIORBD_NAMESPACE
         class GeneralizedCoordinates;
         class GeneralizedVelocity;
         class NodeSegment;
+        class RotoTransNodes;
     }
     namespace utils
     {
         class Vector3d;
         class String;
      
+
         ///
         /// \brief An External force set that can apply forces to the model while computing the dynamics
         ///
         class BIORBD_API ExternalForceSet
         {
+
+        protected:
+#ifndef SWIG
+            /// 
+            /// This is an internal structure holding the information for the local forces. RotoTransNodes
+            /// could have suffised, but we need to have a structure that was holding the spatial vector as well.
+            class LocalForcesInternal : rigidbody::RotoTransNodes {
+            public:
+                void addRT(const utils::SpatialVector& vector, utils::RotoTransNode node) {
+                    this->RotoTransNodes::addRT(node);
+                    m_vectors.push_back(vector);
+                }
+
+                std::vector<utils::RotoTransNode> RTs(
+                    const rigidbody::GeneralizedCoordinates& Q,
+                    bool updateKin = true) {
+                    return this->RotoTransNodes::RTs(Q, updateKin);
+                }
+
+
+                size_t size() const {
+                    return m_RTs->size();
+                }
+
+                void clear() {
+                    rigidbody::RotoTransNodes::clear();
+                    m_vectors.clear();
+                }
+
+                std::vector<utils::SpatialVector> m_vectors; ///< All the force vectors, the size of which should always match the size of m_RTs
+            };
+#endif
+
+
         public:
             ///
             /// \brief Construct ExternalForceSet
@@ -131,7 +169,7 @@ namespace BIORBD_NAMESPACE
             /// \param QDot The generalized velocity
             /// \param updateKin If the kinematics of the model should be computed
             /// 
-            std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors() const;
+            std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors();
 
             /// 
             /// \brief The forces in a rbdl compatible format. This won't work if useSoftContacts is set to true
@@ -142,7 +180,7 @@ namespace BIORBD_NAMESPACE
             std::vector<RigidBodyDynamics::Math::SpatialVector> computeRbdlSpatialVectors(
                 const rigidbody::GeneralizedCoordinates& Q,
                 bool updateKin = true
-            ) const;
+            );
 
             /// 
             /// \brief The forces in a rbdl compatible format. 
@@ -154,12 +192,12 @@ namespace BIORBD_NAMESPACE
                 const rigidbody::GeneralizedCoordinates& Q,
                 const rigidbody::GeneralizedVelocity& QDot,
                 bool updateKin = true
-            ) const;
+            );
 
             /// 
             /// \brief The forces in a rbdl compatible format. This won't work if useLinearForces or useSoftContacts is set to true
             /// 
-            std::vector<utils::SpatialVector> computeSpatialVectors() const;
+            std::vector<utils::SpatialVector> computeSpatialVectors();
 
             /// 
             /// \brief The forces in a rbdl compatible format. This won't work if useSoftContacts is set to true
@@ -169,7 +207,7 @@ namespace BIORBD_NAMESPACE
             std::vector<utils::SpatialVector> computeSpatialVectors(
                 const rigidbody::GeneralizedCoordinates& Q,
                 bool updateKin = true
-            ) const;
+            );
 
             /// 
             /// \brief The forces in a rbdl compatible format. 
@@ -181,7 +219,7 @@ namespace BIORBD_NAMESPACE
                 const rigidbody::GeneralizedCoordinates& Q,
                 const rigidbody::GeneralizedVelocity& QDot,
                 bool updateKin = true
-            ) const;
+            );
 #endif // !SWIG
 
             ///
@@ -201,7 +239,7 @@ namespace BIORBD_NAMESPACE
             void combineLocalReferenceFrameForces(
                 const rigidbody::GeneralizedCoordinates& Q,
                 std::vector<utils::SpatialVector>& out
-            ) const;
+            );
 
             /// 
             /// \brief Add the linear forces to the internal Set.
@@ -252,8 +290,6 @@ namespace BIORBD_NAMESPACE
             ) const;
             
         protected:
-            // TODO Standardize with shared_pointer for the the copy and DeepCopy
-
             Model& m_model; ///< A reference to the kinematic model
             bool m_useLinearForces; ///< If linear forces should be included
             bool m_useSoftContacts; ///< If soft contacts should be included
@@ -261,8 +297,7 @@ namespace BIORBD_NAMESPACE
             std::vector<utils::SpatialVector>
                 m_externalForces; ///< The vector that holds all the external forces
 
-            std::vector<std::pair<utils::SpatialVector, utils::RotoTransNode>>
-                m_externalForcesInLocal; ///< The vector that holds all the external forces that are expressed in local reference frame (must call Q). The second element holds the information to transport the vector in global reference frame
+            LocalForcesInternal m_externalForcesInLocal; ///< The vector that holds all the external forces that are expressed in local reference frame (must call Q).
 
             std::vector<std::pair<utils::Vector3d, rigidbody::NodeSegment>>
                 m_linearForces; ///< The linear forces. The first is the amplitude and the second is the application point (that include the name of the parentSegment it is applied on)

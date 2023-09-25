@@ -14,6 +14,7 @@
 #include "Utils/SpatialVector.h"
 #include "Utils/String.h"
 #include "Utils/Vector3d.h"
+#include "Utils/Rotation.h"
 #include "Utils/RotoTransNode.h"
 
 using namespace BIORBD_NAMESPACE;
@@ -27,7 +28,7 @@ utils::ExternalForceSet::ExternalForceSet(
     m_useLinearForces(useLinearForces),
     m_useSoftContacts(useSoftContacts),
     m_externalForces(std::vector<utils::SpatialVector>()),
-    m_externalForcesInLocal(std::vector<std::pair<utils::SpatialVector, utils::RotoTransNode>>()),
+    m_externalForcesInLocal(utils::ExternalForceSet::LocalForcesInternal()),
     m_linearForces(std::vector<std::pair<utils::Vector3d, rigidbody::NodeSegment>>())
 {
     setZero();
@@ -109,7 +110,7 @@ void utils::ExternalForceSet::addLinearForce(
     m_linearForces.push_back(std::make_pair(force, pointOfApplication));
 }
 
-std::vector<RigidBodyDynamics::Math::SpatialVector> utils::ExternalForceSet::computeRbdlSpatialVectors() const {
+std::vector<RigidBodyDynamics::Math::SpatialVector> utils::ExternalForceSet::computeRbdlSpatialVectors() {
     if (hasExternalForceInLocalReferenceFrame()) throw std::runtime_error("local reference frame requires Q when computing the Spatial Vectors");
     if (m_useLinearForces) throw std::runtime_error("useLinearForce requires Q when computing the Spatial Vectors");
     if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Q and QDot when computing the Spatial Vectors");
@@ -119,7 +120,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> utils::ExternalForceSet::com
 std::vector<RigidBodyDynamics::Math::SpatialVector> utils::ExternalForceSet::computeRbdlSpatialVectors(
     const rigidbody::GeneralizedCoordinates& Q,
     bool updateKin
-) const {
+) {
 
     if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires QDot when computing the Spatial Vectors");
     return computeRbdlSpatialVectors(Q, rigidbody::GeneralizedVelocity(m_model), updateKin);
@@ -129,7 +130,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> utils::ExternalForceSet::com
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     bool updateKin
-) const {
+) {
     std::vector<utils::SpatialVector> tp(computeSpatialVectors(Q, QDot, updateKin));
     std::vector<RigidBodyDynamics::Math::SpatialVector> out;
     for (const auto& value : tp) {
@@ -138,7 +139,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> utils::ExternalForceSet::com
     return out;
 }
 
-std::vector<utils::SpatialVector> utils::ExternalForceSet::computeSpatialVectors() const {
+std::vector<utils::SpatialVector> utils::ExternalForceSet::computeSpatialVectors() {
     if (hasExternalForceInLocalReferenceFrame()) throw std::runtime_error("local reference frame requires Q when computing the Spatial Vectors");
     if (m_useLinearForces) throw std::runtime_error("useLinearForce requires Q when computing the Spatial Vectors");
     if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Q and QDot when computing the Spatial Vectors");
@@ -148,7 +149,7 @@ std::vector<utils::SpatialVector> utils::ExternalForceSet::computeSpatialVectors
 std::vector<utils::SpatialVector> utils::ExternalForceSet::computeSpatialVectors(
     const rigidbody::GeneralizedCoordinates& Q,
     bool updateKin
-) const {
+) {
     if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires QDot when computing the Spatial Vectors");
     return computeSpatialVectors(Q, rigidbody::GeneralizedVelocity(), updateKin);
 }
@@ -157,7 +158,7 @@ std::vector<utils::SpatialVector> utils::ExternalForceSet::computeSpatialVectors
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     bool updateKin    
-) const
+) 
 {
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
@@ -206,29 +207,37 @@ void utils::ExternalForceSet::setZero()
 void utils::ExternalForceSet::combineLocalReferenceFrameForces(
     const rigidbody::GeneralizedCoordinates& Q,
     std::vector<utils::SpatialVector>& out
-) const
+)
 {
-    return; // Remove this when ready
-    for (const auto& pair : m_externalForcesInLocal) {
-        const utils::SpatialVector& vector(pair.first);
-        
-        // TODO Compute rototrans when Q is applied
-        const utils::RotoTransNode& rototrans(pair.second);
+    // NOTE: since combineExternalPushes is necessarily called from internal as protected method
+    // we assume updateKinematics was already done
+    
+    const std::vector<utils::SpatialVector>& vectors(m_externalForcesInLocal.m_vectors);
+    std::vector<utils::RotoTransNode> nodes(m_externalForcesInLocal.RTs(Q, false));
 
+    for (int i = 0; i < m_externalForcesInLocal.size(); i++) {
+        const utils::SpatialVector& vector(vectors[i]);
+        const utils::RotoTransNode& roto(utils::RotoTrans(nodes[i].rot()));
+        const utils::Vector3d& pointOfApplication(nodes[i].trans());
 
-        utils::Vector3d force(vector.force());
-        force.applyRT(rototrans);
+        // Rotate the forces in global reference frame
+        utils::Vector3d forceInGrf(vector.force());
+        forceInGrf.applyRT(roto);
 
-        utils::Vector3d moment(vector.moment());
-        moment.applyRT(rototrans);
+        utils::Vector3d momentInGrf(vector.moment());
+        momentInGrf.applyRT(roto);
 
-        // TODO : Add next line
-        utils::Vector3d pointOfApplication; // =
-        //   rototranslation_of_local_system_in_global[:3, : 3] @ application_point_in_local
-        //    + rototranslation_of_local_system_in_global[:3, 3])
+        // Find on which segment index this external force is applied to
+        int dofCount(0);
+        utils::String parentName = nodes[i].parent();
+        for (unsigned int j = 0; j < m_model.nbSegment(); j++) {
+            rigidbody::Segment segment = m_model.segment(j);
+            dofCount += segment.nbDof();
+            if (!segment.parent().compare(parentName)) break;
+        }
 
-        
-        //utils::Vector3d moment();
+        // Transport the force to the global reference frame
+        out[dofCount] += transportAtOrigin(utils::SpatialVector(momentInGrf, forceInGrf), pointOfApplication);
     }
     return;
 }

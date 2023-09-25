@@ -901,7 +901,7 @@ public:
     GeneralizedTorque InverseDynamics(const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const rigidbody::GeneralizedAcceleration& QDDot,
-        const utils::ExternalForceSet& externalForces
+        utils::ExternalForceSet& externalForces
     );
 
     ///
@@ -924,7 +924,7 @@ public:
     GeneralizedTorque NonLinearEffect(
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
-        const utils::ExternalForceSet& externalForces
+        utils::ExternalForceSet& externalForces
     );
 
     ///
@@ -951,7 +951,7 @@ public:
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
-        const utils::ExternalForceSet& externalForces
+        utils::ExternalForceSet& externalForces
     );
 
     ///
@@ -990,7 +990,7 @@ public:
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
-        const utils::ExternalForceSet& externalForces
+        utils::ExternalForceSet& externalForces
     );
     ///
     /// \brief Interface for the forward dynamics with contact of RBDL
@@ -1020,7 +1020,7 @@ public:
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
         Contacts& CS,
-        const utils::ExternalForceSet& externalForces
+        utils::ExternalForceSet& externalForces
     );
 
     ///
@@ -1047,7 +1047,7 @@ public:
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
-        const utils::ExternalForceSet& externalForces
+        utils::ExternalForceSet& externalForces
     );
 
     ///
