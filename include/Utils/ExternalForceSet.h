@@ -34,7 +34,7 @@ namespace BIORBD_NAMESPACE
         protected:
 #ifndef SWIG
             /// 
-            /// This is an internal structure holding the information for the local forces. RotoTransNodes
+            /// \brief This is an internal structure holding the information for the local forces. RotoTransNodes
             /// could have suffised, but we need to have a structure that was holding the spatial vector as well.
             class LocalForcesInternal : rigidbody::RotoTransNodes {
             public:
@@ -130,6 +130,19 @@ namespace BIORBD_NAMESPACE
                 utils::String& segmentName,
                 const RBDLCasadiMath::MX_Xd_SubMatrix& m);
 #endif
+
+            ///
+            /// \brief Apply a new value to the specified spatial vector of the Set. WARNING: This vector 
+            /// is expected to be acting on segmentName, applied at pointOfApplication and expressed in the segment reference frame. 
+            /// \param vector The SpatialVector to add to the set.
+            /// \param segmentName The name of the segment to apply the spatial vector on.  
+            /// \param pointOfApplication Where the v vector is currenlty applied in the segment reference frame. 
+            ///
+            void addInSegmentReferenceFrame(
+                const utils::SpatialVector& vector,
+                const utils::String& segmentName,
+                const utils::Vector3d& pointOfApplication
+            );
 
             ///
             /// \brief Add a pure force at a specific point on the kinematic chain.

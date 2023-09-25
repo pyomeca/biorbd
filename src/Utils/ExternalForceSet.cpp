@@ -92,6 +92,19 @@ void utils::ExternalForceSet::add(
 
 #endif
 
+void utils::ExternalForceSet::addInSegmentReferenceFrame(
+    const utils::SpatialVector& vector,
+    const utils::String& segmentName,
+    const utils::Vector3d& pointOfApplication
+) {
+    m_externalForcesInLocal.addRT(
+        vector, 
+        utils::RotoTransNode(
+            utils::RotoTrans(utils::Matrix3d::Identity(), pointOfApplication), segmentName, segmentName
+        )
+    );
+}
+
 void utils::ExternalForceSet::addLinearForce(
     const utils::Vector3d& force,
     const utils::String& segmentName,
