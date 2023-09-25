@@ -599,7 +599,7 @@ rigidbody::Joints::CalcBodyWorldTransformation(
         utils::RotoTrans bodyRT(
             this->mFixedBodies[fbody_id].mParentTransform.E.transpose(),
             this->mFixedBodies[fbody_id].mParentTransform.r);
-        const utils::RotoTrans& transfo_tp = parentRT * bodyRT;
+        const utils::RotoTrans& transfo_tp = parentRT * utils::RotoTransNode(bodyRT);
         return RigidBodyDynamics::Math::SpatialTransform (transfo_tp.rot(),
                 transfo_tp.trans());
     }
