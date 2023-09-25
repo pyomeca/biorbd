@@ -5,12 +5,13 @@
 #include "BiorbdModel.h"
 #include "Utils/String.h"
 #include "Utils/Error.h"
-#include "Utils/ExternalForceSet.h"
 #include "Utils/Vector3d.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/Rotation.h"
 #include "Utils/SpatialVector.h"
 #include "Utils/String.h"
+
+#include "RigidBody/ExternalForceSet.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
@@ -18,6 +19,7 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
+
 
 using namespace BIORBD_NAMESPACE;
 
@@ -136,14 +138,14 @@ std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForce
     const rigidbody::GeneralizedTorque& Tau
 )
 {
-    utils::ExternalForceSet forceSet(utils::ExternalForceSet(dynamic_cast<Model&>(*this)));
+    rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
     return calcLoopConstraintForces(Q, Qdot, Tau, forceSet);
 }
 std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForces(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
     const rigidbody::GeneralizedTorque &Tau,
-    utils::ExternalForceSet &externalForces
+    rigidbody::ExternalForceSet &externalForces
 )
 {
     // all in the world frame

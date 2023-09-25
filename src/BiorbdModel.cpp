@@ -4,10 +4,10 @@
 #include <rbdl/Model.h>
 #include <rbdl/Kinematics.h>
 #include "ModelReader.h"
+#include "RigidBody/ExternalForceSet.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/NodeSegment.h"
 
-#include "Utils/ExternalForceSet.h"
 #include "Utils/String.h"
 
 
@@ -35,9 +35,9 @@ utils::Path Model::path() const
     return *m_path;
 }
 
-utils::ExternalForceSet Model::externalForceSet(
+rigidbody::ExternalForceSet Model::externalForceSet(
     bool useLinearForces,
     bool useSoftContacts
 ) {
-    return utils::ExternalForceSet(*this, useLinearForces, useSoftContacts);
+    return rigidbody::ExternalForceSet(*this, useLinearForces, useSoftContacts);
 }

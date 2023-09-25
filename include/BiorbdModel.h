@@ -68,7 +68,7 @@ BIORBD_NAMESPACE::utils::String getVersion();
 
 namespace BIORBD_NAMESPACE
 {
-    namespace utils {
+    namespace rigidbody {
         class ExternalForceSet;
     }
 
@@ -113,7 +113,7 @@ public:
     /// \param useLinearForces If this force set has external forces 
     /// \param useSoftContacts If this force set has soft contacts
     /// 
-    utils::ExternalForceSet externalForceSet(
+    rigidbody::ExternalForceSet externalForceSet(
         bool useLinearForces = true,
         bool useSoftContacts = true
     );

@@ -18,11 +18,11 @@ class Matrix3d;
 class Vector;
 class Vector3d;
 class Range;
-class ExternalForceSet;
 }
 
 namespace rigidbody
 {
+class ExternalForceSet;
 class GeneralizedCoordinates;
 class GeneralizedVelocity;
 class GeneralizedTorque;
@@ -309,10 +309,13 @@ public:
     ///
     /// \brief Return the joint coordinate system (JCS) in global reference frame at a given Q
     /// \param Q The generalized coordinates
+    /// \param updateKin If the kinematics should be updated
     /// \return The JCS in global reference frame at a given Q
     ///
     std::vector<utils::RotoTrans> allGlobalJCS(
-        const GeneralizedCoordinates &Q);
+        const GeneralizedCoordinates &Q,
+        bool updateKin = true    
+    );
 
     ///
     /// \brief Return the joint coordinate system (JCS) in global reference frame at a given Q
@@ -901,7 +904,7 @@ public:
     GeneralizedTorque InverseDynamics(const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const rigidbody::GeneralizedAcceleration& QDDot,
-        utils::ExternalForceSet& externalForces
+        rigidbody::ExternalForceSet& externalForces
     );
 
     ///
@@ -924,7 +927,7 @@ public:
     GeneralizedTorque NonLinearEffect(
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
-        utils::ExternalForceSet& externalForces
+        rigidbody::ExternalForceSet& externalForces
     );
 
     ///
@@ -951,7 +954,7 @@ public:
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
-        utils::ExternalForceSet& externalForces
+        rigidbody::ExternalForceSet& externalForces
     );
 
     ///
@@ -990,7 +993,7 @@ public:
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
-        utils::ExternalForceSet& externalForces
+        rigidbody::ExternalForceSet& externalForces
     );
     ///
     /// \brief Interface for the forward dynamics with contact of RBDL
@@ -1020,7 +1023,7 @@ public:
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
         Contacts& CS,
-        utils::ExternalForceSet& externalForces
+        rigidbody::ExternalForceSet& externalForces
     );
 
     ///
@@ -1047,7 +1050,7 @@ public:
         const GeneralizedCoordinates& Q,
         const GeneralizedVelocity& QDot,
         const GeneralizedTorque& Tau,
-        utils::ExternalForceSet& externalForces
+        rigidbody::ExternalForceSet& externalForces
     );
 
     ///

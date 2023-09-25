@@ -6,7 +6,6 @@
 #include <rbdl/Dynamics.h>
 #include "BiorbdModel.h"
 #include "Utils/Error.h"
-#include "Utils/ExternalForceSet.h"
 #include "Utils/Matrix.h"
 #include "Utils/Matrix3d.h"
 #include "Utils/Quaternion.h"
@@ -15,6 +14,8 @@
 #include "Utils/Scalar.h"
 #include "Utils/SpatialVector.h"
 #include "Utils/String.h"
+
+#include "RigidBody/ExternalForceSet.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
@@ -27,6 +28,7 @@
 #include "RigidBody/SegmentCharacteristics.h"
 #include "RigidBody/Contacts.h"
 #include "RigidBody/SoftContacts.h"
+
 
 using namespace BIORBD_NAMESPACE;
 
@@ -354,9 +356,14 @@ std::vector<std::vector<unsigned int> > rigidbody::Joints::recursiveDofSubTrees(
 
 
 std::vector<utils::RotoTrans> rigidbody::Joints::allGlobalJCS(
-    const rigidbody::GeneralizedCoordinates &Q)
+    const rigidbody::GeneralizedCoordinates &Q, 
+    bool updateKin
+)
 {
-    UpdateKinematicsCustom (&Q, nullptr, nullptr);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+    if (updateKin) UpdateKinematicsCustom (&Q, nullptr, nullptr);
     return allGlobalJCS();
 }
 
@@ -1303,14 +1310,14 @@ rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
     const rigidbody::GeneralizedAcceleration& QDDot
 )
 {
-    utils::ExternalForceSet forceSet(utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this)));
+    rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
     return InverseDynamics(Q, QDot, QDDot, forceSet);
 }
 rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     const rigidbody::GeneralizedAcceleration& QDDot,
-    utils::ExternalForceSet& externalForces
+    rigidbody::ExternalForceSet& externalForces
 )
 {
     rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
@@ -1324,13 +1331,13 @@ rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
     const rigidbody::GeneralizedVelocity& QDot
 )
 {
-    utils::ExternalForceSet forceSet(utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this)));
+    rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
     return NonLinearEffect(Q, QDot, forceSet);
 }
 rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
-    utils::ExternalForceSet& externalForces
+    rigidbody::ExternalForceSet& externalForces
 )
 {
     rigidbody::GeneralizedTorque Tau(*this);
@@ -1345,14 +1352,14 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamics(
     const rigidbody::GeneralizedTorque& Tau
 )
 {
-    utils::ExternalForceSet forceSet(utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this)));
+    rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
     return ForwardDynamics(Q, QDot, Tau, forceSet);
 }
 rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamics(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     const rigidbody::GeneralizedTorque& Tau,
-    utils::ExternalForceSet& externalForces
+    rigidbody::ExternalForceSet& externalForces
 )
 {
     rigidbody::GeneralizedAcceleration QDDot(*this);
@@ -1407,7 +1414,7 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraints
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     const rigidbody::GeneralizedTorque& Tau,
-    utils::ExternalForceSet& externalForces
+    rigidbody::ExternalForceSet& externalForces
 )
 {
     rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
@@ -1420,7 +1427,7 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraints
     rigidbody::Contacts& CS
 )
 {
-    utils::ExternalForceSet forceSet(utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this)));
+    rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
     return ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, forceSet);
 }
 rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
@@ -1428,7 +1435,7 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraints
     const rigidbody::GeneralizedVelocity& QDot,
     const rigidbody::GeneralizedTorque& Tau,
     rigidbody::Contacts& CS,
-    utils::ExternalForceSet& externalForces
+    rigidbody::ExternalForceSet& externalForces
 )
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -1450,14 +1457,14 @@ utils::Vector rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDire
     const rigidbody::GeneralizedTorque& Tau
 )
 {
-    utils::ExternalForceSet forceSet(utils::ExternalForceSet(dynamic_cast<BIORBD_NAMESPACE::Model&>(*this)));
+    rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
     return ContactForcesFromForwardDynamicsConstraintsDirect(Q, QDot, Tau, forceSet);
 }
 utils::Vector rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     const rigidbody::GeneralizedTorque& Tau,
-    utils::ExternalForceSet& externalForces
+    rigidbody::ExternalForceSet& externalForces
 )
 {
     rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*> (this)->getConstraints();

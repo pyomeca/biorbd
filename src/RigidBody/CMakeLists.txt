@@ -7,6 +7,7 @@ set(SRC_LIST_MODULE
     "${CMAKE_CURRENT_SOURCE_DIR}/SegmentCharacteristics.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Mesh.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Contacts.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ExternalForceSet.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/SoftContacts.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/SoftContactNode.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/SoftContactSphere.cpp"

@@ -13,17 +13,18 @@
 namespace BIORBD_NAMESPACE
 {
     class Model;
+    namespace utils
+    {
+        class Vector3d;
+        class String;
+    }
+
     namespace rigidbody {
         class GeneralizedCoordinates;
         class GeneralizedVelocity;
         class NodeSegment;
         class RotoTransNodes;
-    }
-    namespace utils
-    {
-        class Vector3d;
-        class String;
-     
+    
 
         ///
         /// \brief An External force set that can apply forces to the model while computing the dynamics
@@ -36,30 +37,30 @@ namespace BIORBD_NAMESPACE
             /// 
             /// \brief This is an internal structure holding the information for the local forces. RotoTransNodes
             /// could have suffised, but we need to have a structure that was holding the spatial vector as well.
-            class LocalForcesInternal : rigidbody::RotoTransNodes {
+            class LocalForcesInternal {
             public:
-                void addRT(const utils::SpatialVector& vector, utils::RotoTransNode node) {
-                    this->RotoTransNodes::addRT(node);
+                void addNode(const utils::SpatialVector& vector, utils::RotoTransNode node) {
+                    m_nodes.push_back(node);
                     m_vectors.push_back(vector);
                 }
 
-                std::vector<utils::RotoTransNode> RTs(
-                    const rigidbody::GeneralizedCoordinates& Q,
-                    bool updateKin = true) {
-                    return this->RotoTransNodes::RTs(Q, updateKin);
+                ///
+                /// \brief Return the pair force vector/point of application in the local reference frame
+                std::pair<utils::SpatialVector, utils::RotoTransNode> get(int index) {
+                    return std::pair<utils::SpatialVector, utils::RotoTransNode>(m_vectors[index], m_nodes[index]);
                 }
 
-
                 size_t size() const {
-                    return m_RTs->size();
+                    return m_nodes.size();
                 }
 
                 void clear() {
-                    rigidbody::RotoTransNodes::clear();
+                    m_nodes.clear();
                     m_vectors.clear();
                 }
 
-                std::vector<utils::SpatialVector> m_vectors; ///< All the force vectors, the size of which should always match the size of m_RTs
+                std::vector<utils::RotoTransNode> m_nodes;
+                std::vector<utils::SpatialVector> m_vectors; ///< All the force vectors, the size of which should always match the size of m_nodes
             };
 #endif
 

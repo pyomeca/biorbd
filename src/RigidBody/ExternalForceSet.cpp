@@ -1,5 +1,5 @@
 #define BIORBD_API_EXPORTS
-#include "Utils/ExternalForceSet.h"
+#include "RigidBody/ExternalForceSet.h"
 
 #include "BiorbdModel.h"
 #include "RigidBody/Contacts.h"
@@ -11,6 +11,7 @@
 #include "RigidBody/SoftContacts.h"
 #include "RigidBody/SoftContactNode.h"
 
+#include "Utils/Error.h"
 #include "Utils/SpatialVector.h"
 #include "Utils/String.h"
 #include "Utils/Vector3d.h"
@@ -19,7 +20,7 @@
 
 using namespace BIORBD_NAMESPACE;
 
-utils::ExternalForceSet::ExternalForceSet(
+rigidbody::ExternalForceSet::ExternalForceSet(
     Model& model, 
     bool useLinearForces, 
     bool useSoftContacts
@@ -28,17 +29,17 @@ utils::ExternalForceSet::ExternalForceSet(
     m_useLinearForces(useLinearForces),
     m_useSoftContacts(useSoftContacts),
     m_externalForces(std::vector<utils::SpatialVector>()),
-    m_externalForcesInLocal(utils::ExternalForceSet::LocalForcesInternal()),
+    m_externalForcesInLocal(rigidbody::ExternalForceSet::LocalForcesInternal()),
     m_linearForces(std::vector<std::pair<utils::Vector3d, rigidbody::NodeSegment>>())
 {
     setZero();
 }
 
-utils::ExternalForceSet::~ExternalForceSet(){
+rigidbody::ExternalForceSet::~ExternalForceSet(){
 
 }
 
-void utils::ExternalForceSet::add(
+void rigidbody::ExternalForceSet::add(
     const utils::String& segmentName,
     const utils::SpatialVector& v
 ) 
@@ -58,7 +59,7 @@ void utils::ExternalForceSet::add(
     }
 }
 
-void utils::ExternalForceSet::add(
+void rigidbody::ExternalForceSet::add(
     const utils::String& segmentName,
     const utils::SpatialVector& v, 
     const utils::Vector3d& pointOfApplication
@@ -74,7 +75,7 @@ void utils::ExternalForceSet::add(
 
 #ifdef BIORBD_USE_CASADI_MATH
 
-void utils::ExternalForceSet::add(
+void rigidbody::ExternalForceSet::add(
     utils::String& segmentName,
     const casadi::MX& v
 )
@@ -82,7 +83,7 @@ void utils::ExternalForceSet::add(
 
 }
 
-void utils::ExternalForceSet::add(
+void rigidbody::ExternalForceSet::add(
     utils::String& segmentName,
     const RBDLCasadiMath::MX_Xd_SubMatrix& m
 )
@@ -92,12 +93,12 @@ void utils::ExternalForceSet::add(
 
 #endif
 
-void utils::ExternalForceSet::addInSegmentReferenceFrame(
+void rigidbody::ExternalForceSet::addInSegmentReferenceFrame(
     const utils::SpatialVector& vector,
     const utils::String& segmentName,
     const utils::Vector3d& pointOfApplication
 ) {
-    m_externalForcesInLocal.addRT(
+    m_externalForcesInLocal.addNode(
         vector, 
         utils::RotoTransNode(
             utils::RotoTrans(utils::Matrix3d::Identity(), pointOfApplication), segmentName, segmentName
@@ -105,7 +106,7 @@ void utils::ExternalForceSet::addInSegmentReferenceFrame(
     );
 }
 
-void utils::ExternalForceSet::addLinearForce(
+void rigidbody::ExternalForceSet::addLinearForce(
     const utils::Vector3d& force,
     const utils::String& segmentName,
     const utils::Vector3d& pointOfApplication
@@ -114,7 +115,7 @@ void utils::ExternalForceSet::addLinearForce(
     addLinearForce(force, rigidbody::NodeSegment(utils::Vector3d(pointOfApplication, segmentName, segmentName)));
 }
 
-void utils::ExternalForceSet::addLinearForce(
+void rigidbody::ExternalForceSet::addLinearForce(
     const utils::Vector3d& force,
     const rigidbody::NodeSegment& pointOfApplication
 )
@@ -123,14 +124,14 @@ void utils::ExternalForceSet::addLinearForce(
     m_linearForces.push_back(std::make_pair(force, pointOfApplication));
 }
 
-std::vector<RigidBodyDynamics::Math::SpatialVector> utils::ExternalForceSet::computeRbdlSpatialVectors() {
+std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::ExternalForceSet::computeRbdlSpatialVectors() {
     if (hasExternalForceInLocalReferenceFrame()) throw std::runtime_error("local reference frame requires Q when computing the Spatial Vectors");
     if (m_useLinearForces) throw std::runtime_error("useLinearForce requires Q when computing the Spatial Vectors");
     if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Q and QDot when computing the Spatial Vectors");
     return computeRbdlSpatialVectors(rigidbody::GeneralizedCoordinates(m_model), rigidbody::GeneralizedVelocity(m_model), false);
 }
 
-std::vector<RigidBodyDynamics::Math::SpatialVector> utils::ExternalForceSet::computeRbdlSpatialVectors(
+std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::ExternalForceSet::computeRbdlSpatialVectors(
     const rigidbody::GeneralizedCoordinates& Q,
     bool updateKin
 ) {
@@ -139,7 +140,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> utils::ExternalForceSet::com
     return computeRbdlSpatialVectors(Q, rigidbody::GeneralizedVelocity(m_model), updateKin);
 }
 
-std::vector<RigidBodyDynamics::Math::SpatialVector> utils::ExternalForceSet::computeRbdlSpatialVectors(
+std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::ExternalForceSet::computeRbdlSpatialVectors(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     bool updateKin
@@ -152,14 +153,14 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> utils::ExternalForceSet::com
     return out;
 }
 
-std::vector<utils::SpatialVector> utils::ExternalForceSet::computeSpatialVectors() {
+std::vector<utils::SpatialVector> rigidbody::ExternalForceSet::computeSpatialVectors() {
     if (hasExternalForceInLocalReferenceFrame()) throw std::runtime_error("local reference frame requires Q when computing the Spatial Vectors");
     if (m_useLinearForces) throw std::runtime_error("useLinearForce requires Q when computing the Spatial Vectors");
     if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Q and QDot when computing the Spatial Vectors");
     return computeSpatialVectors(rigidbody::GeneralizedCoordinates(m_model), rigidbody::GeneralizedVelocity(m_model), false);
 }
 
-std::vector<utils::SpatialVector> utils::ExternalForceSet::computeSpatialVectors(
+std::vector<utils::SpatialVector> rigidbody::ExternalForceSet::computeSpatialVectors(
     const rigidbody::GeneralizedCoordinates& Q,
     bool updateKin
 ) {
@@ -167,7 +168,7 @@ std::vector<utils::SpatialVector> utils::ExternalForceSet::computeSpatialVectors
     return computeSpatialVectors(Q, rigidbody::GeneralizedVelocity(), updateKin);
 }
 
-std::vector<utils::SpatialVector> utils::ExternalForceSet::computeSpatialVectors(
+std::vector<utils::SpatialVector> rigidbody::ExternalForceSet::computeSpatialVectors(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     bool updateKin    
@@ -192,11 +193,11 @@ std::vector<utils::SpatialVector> utils::ExternalForceSet::computeSpatialVectors
 }
 
 
-bool utils::ExternalForceSet::hasExternalForceInLocalReferenceFrame() const {
+bool rigidbody::ExternalForceSet::hasExternalForceInLocalReferenceFrame() const {
     return m_externalForcesInLocal.size() > 0;
 }
 
-void utils::ExternalForceSet::setZero()
+void rigidbody::ExternalForceSet::setZero()
 {
     m_externalForces.clear();
 
@@ -217,45 +218,54 @@ void utils::ExternalForceSet::setZero()
     m_externalForcesInLocal.clear();
 }
 
-void utils::ExternalForceSet::combineLocalReferenceFrameForces(
+void rigidbody::ExternalForceSet::combineLocalReferenceFrameForces(
     const rigidbody::GeneralizedCoordinates& Q,
     std::vector<utils::SpatialVector>& out
 )
 {
     // NOTE: since combineExternalPushes is necessarily called from internal as protected method
     // we assume updateKinematics was already done
-    
-    const std::vector<utils::SpatialVector>& vectors(m_externalForcesInLocal.m_vectors);
-    std::vector<utils::RotoTransNode> nodes(m_externalForcesInLocal.RTs(Q, false));
+    bool updateKin(false);
+    #ifdef BIORBD_USE_CASADI_MATH
+updateKin = true;
+    #endif
+    const auto& allGlobalJcs = m_model.allGlobalJCS(Q, updateKin);
 
     for (int i = 0; i < m_externalForcesInLocal.size(); i++) {
-        const utils::SpatialVector& vector(vectors[i]);
-        const utils::RotoTrans& roto(nodes[i].rot());
-        const utils::Vector3d& pointOfApplication(nodes[i].trans());
+        const auto& pair(m_externalForcesInLocal.get(i));
+
+        // Aliases to have a better referencing of the variables
+        const utils::SpatialVector& vector(pair.first);
+        const utils::RotoTransNode& node(pair.second);
+        int segmentIdx(m_model.getBodyBiorbdId(node.parent()));
+        utils::Error::check(segmentIdx > -1, node.parent() + " (in the local reference frame) does not refer to an actual segment in the model.");
+
+        const utils::RotoTrans& segmentRotoTrans(allGlobalJcs[segmentIdx]);
+        const utils::RotoTransNode nodeInGrf(segmentRotoTrans * node);
+        
+        const utils::Rotation& rotationInGrf(nodeInGrf.rot());
+        const utils::Vector3d& pointOfApplication(nodeInGrf.trans());
 
         // Rotate the forces in global reference frame
         utils::Vector3d forceInGrf(vector.force());
-        forceInGrf.applyRT(roto);
+        forceInGrf.applyRT(rotationInGrf);
 
         utils::Vector3d momentInGrf(vector.moment());
-        momentInGrf.applyRT(roto);
+        momentInGrf.applyRT(rotationInGrf);
 
         // Find on which segment index this external force is applied to
         int dofCount(0);
-        utils::String parentName = nodes[i].parent();
-        for (unsigned int j = 0; j < m_model.nbSegment(); j++) {
-            rigidbody::Segment segment = m_model.segment(j);
-            dofCount += segment.nbDof();
-            if (!segment.parent().compare(parentName)) break;
+        for (unsigned int j = 0; j < segmentIdx + 1; j++) {
+            dofCount += m_model.segment(j).nbDof();
         }
 
-        // Transport the force to the global reference frame
+        // Transport the force to the global reference frame (Do not subtract 1 since 0 is the undeclared root)
         out[dofCount] += transportAtOrigin(utils::SpatialVector(momentInGrf, forceInGrf), pointOfApplication);
     }
     return;
 }
 
-void utils::ExternalForceSet::combineLinearForces(
+void rigidbody::ExternalForceSet::combineLinearForces(
     const rigidbody::GeneralizedCoordinates& Q, 
     std::vector<utils::SpatialVector>& out
 ) const
@@ -297,7 +307,7 @@ void utils::ExternalForceSet::combineLinearForces(
     }
 }
 
-void utils::ExternalForceSet::combineSoftContactForces(
+void rigidbody::ExternalForceSet::combineSoftContactForces(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     std::vector<utils::SpatialVector>& out
@@ -330,7 +340,7 @@ void utils::ExternalForceSet::combineSoftContactForces(
     }
 }
 
-utils::SpatialVector utils::ExternalForceSet::transportForceAtOrigin(
+utils::SpatialVector rigidbody::ExternalForceSet::transportForceAtOrigin(
     const utils::Vector3d& force,
     const rigidbody::NodeSegment& pointOfApplication
 ) const
@@ -349,7 +359,7 @@ utils::SpatialVector utils::ExternalForceSet::transportForceAtOrigin(
     return out;
 }
 
-utils::SpatialVector utils::ExternalForceSet::transportAtOrigin(
+utils::SpatialVector rigidbody::ExternalForceSet::transportAtOrigin(
     const utils::SpatialVector& v,
     const rigidbody::NodeSegment& pointOfApplication
 ) const
