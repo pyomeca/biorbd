@@ -417,9 +417,7 @@ The $3$ values position of the `center of mass` relative to the local reference 
 The `inertia` tag allows to specify the matrix of inertia of the segment ( computed with respect to the center of mass of the segment ). It waits for $9$ values. The default values are the `identity matrix`
 
 ##### foreceplate or externalforceindex
-When calculating the inverse dynamics, if force plates are used, this tag dispatch the force plates, the first force plate being $0$. If no force plate is acting on this segment, the value is $-1$. 
-
-Warning: this tag MUST be added to a segment that has a translation and/or a rotation (i.e. that possesses at least one degree of freedom). Otherwise, it will simply be ignored
+This tag is deprecated and should therefore not be used.
 
 ##### meshfile or ply
 The path of the meshing `.bioBone`, `.ply`, `.stl` file respectively. It can be relative to the current running folder or absolute (relative being preferred) and UNIX or Windows formatted (`/` vs `\\`, UNIX being preferred).
