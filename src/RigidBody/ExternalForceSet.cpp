@@ -22,15 +22,15 @@ using namespace BIORBD_NAMESPACE;
 
 rigidbody::ExternalForceSet::ExternalForceSet(
     Model& model, 
-    bool useLinearForces, 
+    bool useTranslationalForces, 
     bool useSoftContacts
 ) :
     m_model(model),
-    m_useLinearForces(useLinearForces),
+    m_useTranslationalForces(useTranslationalForces),
     m_useSoftContacts(useSoftContacts),
     m_externalForces(std::vector<utils::SpatialVector>()),
     m_externalForcesInLocal(rigidbody::ExternalForceSet::LocalForcesInternal()),
-    m_linearForces(std::vector<std::pair<utils::Vector3d, rigidbody::NodeSegment>>())
+    m_translationalForces(std::vector<std::pair<utils::Vector3d, rigidbody::NodeSegment>>())
 {
     setZero();
 }
@@ -41,7 +41,7 @@ rigidbody::ExternalForceSet::~ExternalForceSet(){
 
 void rigidbody::ExternalForceSet::add(
     const utils::String& segmentName,
-    const utils::SpatialVector& v
+    const utils::SpatialVector& vector
 ) 
 {
     int dofCount(0); 
@@ -55,18 +55,18 @@ void rigidbody::ExternalForceSet::add(
             throw std::runtime_error("It is not possible to add forces to a segment without degree of freedom");
         }
 
-        m_externalForces[dofCount] += v; // Do not subtract 1 since 0 is used for the base ground 
+        m_externalForces[dofCount] += vector; // Do not subtract 1 since 0 is used for the base ground 
     }
 }
 
 void rigidbody::ExternalForceSet::add(
     const utils::String& segmentName,
-    const utils::SpatialVector& v, 
+    const utils::SpatialVector& vector, 
     const utils::Vector3d& pointOfApplication
 )
 {
     utils::SpatialVector atOrigin = transportAtOrigin(
-        v, 
+        vector, 
         rigidbody::NodeSegment(utils::Vector3d(pointOfApplication, segmentName, segmentName))
     );
     add(segmentName, atOrigin);
@@ -77,7 +77,7 @@ void rigidbody::ExternalForceSet::add(
 
 void rigidbody::ExternalForceSet::add(
     utils::String& segmentName,
-    const casadi::MX& v
+    const casadi::MX& vector
 )
 {
 
@@ -85,7 +85,7 @@ void rigidbody::ExternalForceSet::add(
 
 void rigidbody::ExternalForceSet::add(
     utils::String& segmentName,
-    const RBDLCasadiMath::MX_Xd_SubMatrix& m
+    const RBDLCasadiMath::MX_Xd_SubMatrix& vector
 )
 {
 
@@ -94,8 +94,8 @@ void rigidbody::ExternalForceSet::add(
 #endif
 
 void rigidbody::ExternalForceSet::addInSegmentReferenceFrame(
-    const utils::SpatialVector& vector,
     const utils::String& segmentName,
+    const utils::SpatialVector& vector,
     const utils::Vector3d& pointOfApplication
 ) {
     m_externalForcesInLocal.addNode(
@@ -106,27 +106,27 @@ void rigidbody::ExternalForceSet::addInSegmentReferenceFrame(
     );
 }
 
-void rigidbody::ExternalForceSet::addLinearForce(
+void rigidbody::ExternalForceSet::addTranslationalForce(
     const utils::Vector3d& force,
     const utils::String& segmentName,
     const utils::Vector3d& pointOfApplication
 ) 
 {
-    addLinearForce(force, rigidbody::NodeSegment(utils::Vector3d(pointOfApplication, segmentName, segmentName)));
+    addTranslationalForce(force, rigidbody::NodeSegment(utils::Vector3d(pointOfApplication, segmentName, segmentName)));
 }
 
-void rigidbody::ExternalForceSet::addLinearForce(
+void rigidbody::ExternalForceSet::addTranslationalForce(
     const utils::Vector3d& force,
     const rigidbody::NodeSegment& pointOfApplication
 )
 {
-    if (!m_useLinearForces) throw std::runtime_error("It is not possible to add linear force if it was set to false");
-    m_linearForces.push_back(std::make_pair(force, pointOfApplication));
+    if (!m_useTranslationalForces) throw std::runtime_error("It is not possible to add translational force if it was set to false");
+    m_translationalForces.push_back(std::make_pair(force, pointOfApplication));
 }
 
 std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::ExternalForceSet::computeRbdlSpatialVectors() {
     if (hasExternalForceInLocalReferenceFrame()) throw std::runtime_error("local reference frame requires Q when computing the Spatial Vectors");
-    if (m_useLinearForces) throw std::runtime_error("useLinearForce requires Q when computing the Spatial Vectors");
+    if (m_useTranslationalForces) throw std::runtime_error("useTranslationalForce requires Q when computing the Spatial Vectors");
     if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Q and QDot when computing the Spatial Vectors");
     return computeRbdlSpatialVectors(rigidbody::GeneralizedCoordinates(m_model), rigidbody::GeneralizedVelocity(m_model), false);
 }
@@ -155,7 +155,7 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::ExternalForceSet:
 
 std::vector<utils::SpatialVector> rigidbody::ExternalForceSet::computeSpatialVectors() {
     if (hasExternalForceInLocalReferenceFrame()) throw std::runtime_error("local reference frame requires Q when computing the Spatial Vectors");
-    if (m_useLinearForces) throw std::runtime_error("useLinearForce requires Q when computing the Spatial Vectors");
+    if (m_useTranslationalForces) throw std::runtime_error("useTranslationalForce requires Q when computing the Spatial Vectors");
     if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires Q and QDot when computing the Spatial Vectors");
     return computeSpatialVectors(rigidbody::GeneralizedCoordinates(m_model), rigidbody::GeneralizedVelocity(m_model), false);
 }
@@ -186,7 +186,7 @@ std::vector<utils::SpatialVector> rigidbody::ExternalForceSet::computeSpatialVec
         out.push_back(value);
     }
     if (hasExternalForceInLocalReferenceFrame()) combineLocalReferenceFrameForces(Q, out);
-    if (m_useLinearForces) combineLinearForces(Q, out);
+    if (m_useTranslationalForces) combineTranslationalForces(Q, out);
     if (m_useSoftContacts) combineSoftContactForces(Q, QDot, out);
 
     return out;
@@ -214,7 +214,7 @@ void rigidbody::ExternalForceSet::setZero()
     }
 
     // Reset other elements of the class too
-    m_linearForces.clear();
+    m_translationalForces.clear();
     m_externalForcesInLocal.clear();
 }
 
@@ -237,27 +237,31 @@ updateKin = true;
         // Aliases to have a better referencing of the variables
         const utils::SpatialVector& vector(pair.first);
         const utils::RotoTransNode& node(pair.second);
-        int segmentIdx(m_model.getBodyBiorbdId(node.parent()));
-        utils::Error::check(segmentIdx > -1, node.parent() + " (in the local reference frame) does not refer to an actual segment in the model.");
 
-        const utils::RotoTrans& segmentRotoTrans(allGlobalJcs[segmentIdx]);
+        // Traverse the segment hierarchy from child to root until we get to a segment with at least one dof
+        // as it is not possible to add forces on segment without degree of freedom
+        int dofCount(0);
+        const rigidbody::Segment* segment = &m_model.segment(node.parent());
+        const rigidbody::Segment* parentSegment = segment;
+        utils::RotoTrans segmentRotoTrans = utils::RotoTrans::Identity();
+        do {
+            utils::Error::check(parentSegment != nullptr, node.parent() + " should be attached to at least one segment with a degree of freedom.");
+            segment = parentSegment;
+            dofCount += segment->nbDof();
+            segmentRotoTrans *= allGlobalJcs[m_model.getBodyBiorbdId(segment->name())];
+            parentSegment = !segment->parent().compare("root") ? nullptr : &m_model.segment(segment->parent());
+        } while(segment->nbDof() == 0);
         const utils::RotoTransNode nodeInGrf(segmentRotoTrans * node);
         
         const utils::Rotation& rotationInGrf(nodeInGrf.rot());
         const utils::Vector3d& pointOfApplication(nodeInGrf.trans());
 
-        // Rotate the forces in global reference frame
+        // Rotate the forces in global reference frame (Grf)
         utils::Vector3d forceInGrf(vector.force());
         forceInGrf.applyRT(rotationInGrf);
 
         utils::Vector3d momentInGrf(vector.moment());
         momentInGrf.applyRT(rotationInGrf);
-
-        // Find on which segment index this external force is applied to
-        int dofCount(0);
-        for (unsigned int j = 0; j < segmentIdx + 1; j++) {
-            dofCount += m_model.segment(j).nbDof();
-        }
 
         // Transport the force to the global reference frame (Do not subtract 1 since 0 is the undeclared root)
         out[dofCount] += transportAtOrigin(utils::SpatialVector(momentInGrf, forceInGrf), pointOfApplication);
@@ -265,7 +269,7 @@ updateKin = true;
     return;
 }
 
-void rigidbody::ExternalForceSet::combineLinearForces(
+void rigidbody::ExternalForceSet::combineTranslationalForces(
     const rigidbody::GeneralizedCoordinates& Q, 
     std::vector<utils::SpatialVector>& out
 ) const
@@ -279,14 +283,14 @@ void rigidbody::ExternalForceSet::combineLinearForces(
 #endif
 
     // Do not waste time computing forces on empty vector
-    if (m_linearForces.size() == 0) return;
+    if (m_translationalForces.size() == 0) return;
 
     int dofCount(0);
     for (int i = 0; i < static_cast<int>(m_model.nbSegment()); ++i) {
         const rigidbody::Segment& segment(m_model.segment(i));
         dofCount += segment.nbDof();
         
-        for (auto& e : m_linearForces) {    
+        for (auto& e : m_translationalForces) {    
             const rigidbody::NodeSegment& pointOfApplication = e.second;
             if (pointOfApplication.parent().compare(segment.name())) continue;
 

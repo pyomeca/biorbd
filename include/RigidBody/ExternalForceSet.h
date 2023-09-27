@@ -71,12 +71,12 @@ namespace BIORBD_NAMESPACE
             /// \param model The model onto which the external forces will be applied on. This is used 
             /// in conjunction with segmentName (when using set) to determine at which index the set vector 
             /// is positioned in the internal Set.
-            /// \param useLinearForces If this force set has external forces 
+            /// \param useTranslationalForces If this force set has external forces 
             /// \param useSoftContacts If this force set has soft contacts
             ///
             ExternalForceSet(
                 Model& model,
-                bool useLinearForces = true,
+                bool useTranslationalForces = true,
                 bool useSoftContacts = true
             );
 
@@ -90,23 +90,23 @@ namespace BIORBD_NAMESPACE
             /// is expected to be acting on segmentName, applied at origin and expressed in the global reference frame.
             /// method offered by ExternalForceSet below.
             /// \param segmentName The name of the segment to apply the spatial vector on.  
-            /// \param v The SpatialVector to add to the set.
+            /// \param vector The SpatialVector to add to the set.
             ///
             void add(
                 const utils::String& segmentName,
-                const utils::SpatialVector& v
+                const utils::SpatialVector& vector
             );
 
             ///
             /// \brief Apply a new value to the specified spatial vector of the Set. WARNING: This vector 
             /// is expected to be acting on segmentName, applied at pointOfApplication and expressed in the global reference frame. 
             /// \param segmentName The name of the segment to apply the spatial vector on.  
-            /// \param v The SpatialVector to add to the set.
+            /// \param vector The SpatialVector to add to the set.
             /// \param pointOfApplication Where the v vector is currenlty applied. 
             ///
             void add(
                 const utils::String& segmentName,
-                const utils::SpatialVector& v, 
+                const utils::SpatialVector& vector, 
                 const utils::Vector3d& pointOfApplication
             );
 
@@ -115,33 +115,33 @@ namespace BIORBD_NAMESPACE
             /// \brief Apply a new value to the specified spatial vector of the Set. Please see the 
             /// main "add" function for more precision.
             /// \param segmentName The name of the segment to apply the spatial vector on.  
-            /// \param v The vector to add
+            /// \param vector The vector to add
             ///
             void add(
                 utils::String& segmentName,
-                const casadi::MX& v);
+                const casadi::MX& vector);
 
             ///
             /// \brief Apply a new value to the specified spatial vector of the Set. Please see the 
             /// main "add" function for more precision.
             /// \param segmentName The name of the segment to apply the spatial vector on.  
-            /// \param m The vector to add
+            /// \param vector The vector to add
             ///
             void add(
                 utils::String& segmentName,
-                const RBDLCasadiMath::MX_Xd_SubMatrix& m);
+                const RBDLCasadiMath::MX_Xd_SubMatrix& vector);
 #endif
 
             ///
             /// \brief Apply a new value to the specified spatial vector of the Set. WARNING: This vector 
             /// is expected to be acting on segmentName, applied at pointOfApplication and expressed in the segment reference frame. 
-            /// \param vector The SpatialVector to add to the set.
             /// \param segmentName The name of the segment to apply the spatial vector on.  
+            /// \param vector The SpatialVector to add to the set.
             /// \param pointOfApplication Where the v vector is currenlty applied in the segment reference frame. 
             ///
             void addInSegmentReferenceFrame(
-                const utils::SpatialVector& vector,
                 const utils::String& segmentName,
+                const utils::SpatialVector& vector,
                 const utils::Vector3d& pointOfApplication
             );
 
@@ -151,7 +151,7 @@ namespace BIORBD_NAMESPACE
             /// \param segmentName The name of the segment the force is applied on
             /// \param pointOfApplication The position in the reference frame of [segmentName]
             /// 
-            void addLinearForce(
+            void addTranslationalForce(
                 const utils::Vector3d& force,
                 const utils::String& segmentName,
                 const utils::Vector3d& pointOfApplication
@@ -163,7 +163,7 @@ namespace BIORBD_NAMESPACE
             /// \param position The position of the force in reference frame of the node. 
             /// Note that the [parentName] of must have been set
             /// 
-            void addLinearForce(
+            void addTranslationalForce(
                 const utils::Vector3d& force,
                 const rigidbody::NodeSegment& pointOfApplication
             );
@@ -178,7 +178,7 @@ namespace BIORBD_NAMESPACE
 #ifndef SWIG
 
             /// 
-            /// \brief The forces in a rbdl compatible format. This won't work if useLinearForces useSoftContacts is set to true
+            /// \brief The forces in a rbdl compatible format. This won't work if useTranslationalForces useSoftContacts is set to true
             /// \param Q The generalized coordinates
             /// \param QDot The generalized velocity
             /// \param updateKin If the kinematics of the model should be computed
@@ -209,7 +209,7 @@ namespace BIORBD_NAMESPACE
             );
 
             /// 
-            /// \brief The forces in a rbdl compatible format. This won't work if useLinearForces or useSoftContacts is set to true
+            /// \brief The forces in a rbdl compatible format. This won't work if useTranslationalForces or useSoftContacts is set to true
             /// 
             std::vector<utils::SpatialVector> computeSpatialVectors();
 
@@ -256,13 +256,13 @@ namespace BIORBD_NAMESPACE
             );
 
             /// 
-            /// \brief Add the linear forces to the internal Set.
+            /// \brief Add the translational forces to the internal Set.
             /// \param Q The Generalized coordinates. 
             /// \param out The vector of SpatialVector to fill
             /// 
             /// Note: as this is an internal method, even though Q is passed, it is assumed update kinematics was already done.
             /// 
-            void combineLinearForces(
+            void combineTranslationalForces(
                 const rigidbody::GeneralizedCoordinates& Q,
                 std::vector<utils::SpatialVector>& out
             ) const;
@@ -305,7 +305,7 @@ namespace BIORBD_NAMESPACE
             
         protected:
             Model& m_model; ///< A reference to the kinematic model
-            bool m_useLinearForces; ///< If linear forces should be included
+            bool m_useTranslationalForces; ///< If translational forces should be included
             bool m_useSoftContacts; ///< If soft contacts should be included
 
             std::vector<utils::SpatialVector>
@@ -314,7 +314,7 @@ namespace BIORBD_NAMESPACE
             LocalForcesInternal m_externalForcesInLocal; ///< The vector that holds all the external forces that are expressed in local reference frame (must call Q).
 
             std::vector<std::pair<utils::Vector3d, rigidbody::NodeSegment>>
-                m_linearForces; ///< The linear forces. The first is the amplitude and the second is the application point (that include the name of the parentSegment it is applied on)
+                m_translationalForces; ///< The translational forces. The first is the amplitude and the second is the application point (that include the name of the parentSegment it is applied on)
         };
     }
 }

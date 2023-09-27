@@ -1987,7 +1987,7 @@ TEST(ExternalForces, toRbdl_LocalForcesOnly)
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet(false, false);
     externalForces.addInSegmentReferenceFrame(
-        RigidBodyDynamics::Math::SpatialVector(1, 2, 3, 4, 5, 6), "Seg1", utils::Vector3d(1, 2, 3)
+        "Seg1", RigidBodyDynamics::Math::SpatialVector(1, 2, 3, 4, 5, 6), utils::Vector3d(1, 2, 3)
     );
     std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q);
 
@@ -2016,10 +2016,10 @@ TEST(ExternalForces, toRbdl_linearForcesOnly)
         { -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, -2.01, -3.01, -3.01, 0.1, 0.2, 0.3, 0.4 }));
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet(true, false);
-    externalForces.addLinearForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
-    externalForces.addLinearForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
-    externalForces.addLinearForce(utils::Vector3d(0, 4, 5), model.rigidContact(2));
-    externalForces.addLinearForce(utils::Vector3d(0, 0, 6), model.rigidContact(3));
+    externalForces.addTranslationalForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
+    externalForces.addTranslationalForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
+    externalForces.addTranslationalForce(utils::Vector3d(0, 4, 5), model.rigidContact(2));
+    externalForces.addTranslationalForce(utils::Vector3d(0, 0, 6), model.rigidContact(3));
     std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q);
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
@@ -2088,8 +2088,8 @@ TEST(ExternalForces, toRbdl_externalForcesAndLinearForces)
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet(true, false);
     externalForces.add("Seg1", utils::SpatialVector(1, 2, 3, 4, 5, 6));
-    externalForces.addLinearForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
-    externalForces.addLinearForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
+    externalForces.addTranslationalForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
+    externalForces.addTranslationalForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
     std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q);
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
@@ -2119,8 +2119,8 @@ TEST(ExternalForces, toRbdl_softContactAndLinearForces)
     FILL_VECTOR(QDot, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet();
-    externalForces.addLinearForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
-    externalForces.addLinearForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
+    externalForces.addTranslationalForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
+    externalForces.addTranslationalForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
     std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q, QDot);
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
@@ -2181,8 +2181,8 @@ TEST(ExternalForces, toRbdl_includeAll)
 
     rigidbody::ExternalForceSet externalForces = model.externalForceSet();
     externalForces.add("Seg1", utils::SpatialVector(1, 2, 3, 4, 5, 6));
-    externalForces.addLinearForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
-    externalForces.addLinearForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
+    externalForces.addTranslationalForce(utils::Vector3d(0, 1, 2), model.rigidContact(0));
+    externalForces.addTranslationalForce(utils::Vector3d(0, 0, 3), model.rigidContact(1));
     std::vector<RigidBodyDynamics::Math::SpatialVector> forceInRbdl = externalForces.computeRbdlSpatialVectors(Q, QDot);
 
 
