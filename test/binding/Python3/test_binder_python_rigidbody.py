@@ -148,7 +148,9 @@ def test_forward_dynamics_with_external_forces(brbd):
         q_sym = MX.sym("q", m.nbQ(), 1)
         qdot_sym = MX.sym("qdot", m.nbQdot(), 1)
         tau_sym = MX.sym("tau", m.nbGeneralizedTorque(), 1)
-        forward_dynamics = brbd.to_casadi_func("ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, external_forces)
+        forward_dynamics = brbd.to_casadi_func(
+            "ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, external_forces
+        )
 
         qddot = forward_dynamics(q, qdot, tau)
         qddot = np.array(qddot)[:, 0]

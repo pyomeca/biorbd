@@ -72,7 +72,9 @@ def markers_to_array(model, q: np.ndarray) -> np.ndarray:
     return markers
 
 
-def extended_kalman_filter(model: biorbd.Model, trial: str, frames: slice = slice(None)) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def extended_kalman_filter(
+    model: biorbd.Model, trial: str, frames: slice = slice(None)
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
     Reconstruct the kinematics of the specified trial assuming a biorbd model is loaded using an Extended Kalman filter
 
@@ -406,4 +408,3 @@ class InverseKinematics:
         )
 
         return self.output
-

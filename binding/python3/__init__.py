@@ -5,7 +5,6 @@ from ._version import __version__
 from .surface_max_torque_actuator import *
 from .rigid_body import *
 from .utils import *
-from .external_forces import *
 
 
 if biorbd.currentLinearAlgebraBackend() == 1:

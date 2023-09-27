@@ -23,29 +23,11 @@ def test_external_forces(brbd):
     force_set = m.externalForceSet()
     force_set.add(
         "PiedD",
-        np.array(
-            [
-                (0 + 1) * 11.1,
-                (0 + 1) * 22.2,
-                (0 + 1) * 33.3,
-                (0 + 1) * 44.4,
-                (0 + 1) * 55.5,
-                (0 + 1) * 66.6
-            ]
-        ),
+        np.array([(0 + 1) * 11.1, (0 + 1) * 22.2, (0 + 1) * 33.3, (0 + 1) * 44.4, (0 + 1) * 55.5, (0 + 1) * 66.6]),
     )
     force_set.add(
         "PiedG",
-        np.array(
-            [
-                (1 + 1) * 11.1,
-                (1 + 1) * 22.2,
-                (1 + 1) * 33.3,
-                (1 + 1) * 44.4,
-                (1 + 1) * 55.5,
-                (1 + 1) * 66.6
-            ]
-        ),
+        np.array([(1 + 1) * 11.1, (1 + 1) * 22.2, (1 + 1) * 33.3, (1 + 1) * 44.4, (1 + 1) * 55.5, (1 + 1) * 66.6]),
     )
 
     # Set to random values to test
@@ -98,36 +80,18 @@ def test_external_forces(brbd):
 
 
 @pytest.mark.parametrize("brbd", brbd_to_test)
-def test_external_forces(brbd):
+def test_external_forces_with_point_of_application(brbd):
     m = brbd.Model("../../models/pyomecaman.bioMod")
 
     force_set = m.externalForceSet()
     force_set.add(
         "PiedD",
-        np.array(
-            [
-                (0 + 1) * 11.1,
-                (0 + 1) * 22.2,
-                (0 + 1) * 33.3,
-                (0 + 1) * 44.4,
-                (0 + 1) * 55.5,
-                (0 + 1) * 66.6
-            ]
-        ),
+        np.array([(0 + 1) * 11.1, (0 + 1) * 22.2, (0 + 1) * 33.3, (0 + 1) * 44.4, (0 + 1) * 55.5, (0 + 1) * 66.6]),
         np.array([1, 2, 3]),
     )
     force_set.add(
         "PiedG",
-        np.array(
-            [
-                (1 + 1) * 11.1,
-                (1 + 1) * 22.2,
-                (1 + 1) * 33.3,
-                (1 + 1) * 44.4,
-                (1 + 1) * 55.5,
-                (1 + 1) * 66.6
-            ]
-        ),
+        np.array([(1 + 1) * 11.1, (1 + 1) * 22.2, (1 + 1) * 33.3, (1 + 1) * 44.4, (1 + 1) * 55.5, (1 + 1) * 66.6]),
         np.array([1, 2, 3]),
     )
 
