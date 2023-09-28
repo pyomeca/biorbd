@@ -99,7 +99,6 @@ class MarkerReal:
         p = p if len(p.shape) == 1 else np.nanmean(p, axis=0)
         return p
 
-
     def __str__(self):
         # Define the print function, so it automatically formats things in the file properly
         out_string = f"marker {self.name}\n"

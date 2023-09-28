@@ -18,7 +18,6 @@ using namespace BIORBD_NAMESPACE;
 rigidbody::Segment::Segment() :
     utils::Node(),
     m_idxInModel(std::make_shared<int>(-1)),
-    m_idxPF (std::make_shared<int>(-1)),
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>()),
     m_seqT(std::make_shared<utils::String>()),
     m_seqR(std::make_shared<utils::String>()),
@@ -58,12 +57,11 @@ rigidbody::Segment::Segment(
     const std::vector<utils::Range>& QDotRanges,
     const std::vector<utils::Range>& QDDotRanges,
     const rigidbody::SegmentCharacteristics& characteristics,
-    const RigidBodyDynamics::Math::SpatialTransform& cor,
-    int PF) :
+    const RigidBodyDynamics::Math::SpatialTransform& cor
+) :
 
     utils::Node(name, parentName),
     m_idxInModel(std::make_shared<int>(-1)),
-    m_idxPF (std::make_shared<int>(PF)),
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(cor)),
     m_seqT(std::make_shared<utils::String>(seqT)),
     m_seqR(std::make_shared<utils::String>(seqR)),
@@ -93,8 +91,6 @@ rigidbody::Segment::Segment(
     setType();
     // Call proper functions
     setDofs(model, seqT, seqR, QRanges, QDotRanges, QDDotRanges);
-    // Add platform
-    setPF(PF);
 }
 rigidbody::Segment::Segment(
     rigidbody::Joints& model,
@@ -108,13 +104,12 @@ rigidbody::Segment::Segment(
     const rigidbody::SegmentCharacteristics&
     characteristics, // Mass, Center of mass of segment, Inertia of segment, etc.
     const RigidBodyDynamics::Math::SpatialTransform&
-    cor, //  Transformation from parent to child
-    int PF): // Force platform number
+    cor //  Transformation from parent to child
+ ):
 
 
     utils::Node(name, parentName),
     m_idxInModel(std::make_shared<int>(-1)),
-    m_idxPF (std::make_shared<int>(PF)),
     m_cor(std::make_shared<RigidBodyDynamics::Math::SpatialTransform>(cor)),
     m_seqT(std::make_shared<utils::String>()),
     m_seqR(std::make_shared<utils::String>(seqR)),
@@ -144,8 +139,6 @@ rigidbody::Segment::Segment(
     setType();
     // Call proper functions
     setDofs(model, "", seqR, QRanges, QDotRanges, QDDotRanges);
-    // Add platform
-    setPF(PF);
 }
 
 rigidbody::Segment rigidbody::Segment::DeepCopy() const
@@ -160,7 +153,6 @@ void rigidbody::Segment::DeepCopy(const
 {
     utils::Node::DeepCopy(other);
     *m_idxInModel = *other.m_idxInModel;
-    *m_idxPF = *other.m_idxPF;
     *m_cor = *other.m_cor;
     *m_seqT = *other.m_seqT;
     *m_seqR = *other.m_seqR;
@@ -219,10 +211,6 @@ unsigned int rigidbody::Segment::id() const
     }
 }
 
-int rigidbody::Segment::platformIdx() const
-{
-    return *m_idxPF;
-}
 unsigned int rigidbody::Segment::nbGeneralizedTorque() const
 {
     return nbQddot();
@@ -250,12 +238,6 @@ unsigned int rigidbody::Segment::nbQdot() const
 unsigned int rigidbody::Segment::nbQddot() const
 {
     return *m_nbQddot;
-}
-
-// Add platform
-void rigidbody::Segment::setPF(int idx)
-{
-    *m_idxPF = idx;
 }
 
 const utils::String &rigidbody::Segment::nameDof(
@@ -558,28 +540,18 @@ void rigidbody::Segment::setJoints(
         parent_id = 0;
     }
     if (*m_nbDof==0)
-        (*m_idxDof)[0] = model.AddBody(
-                             parent_id, *m_cor, (*m_dof)[0],
-                             (*m_dofCharacteristics)[0], name());
+        (*m_idxDof)[0] = model.AddBody(parent_id, *m_cor, (*m_dof)[0], (*m_dofCharacteristics)[0], name());
     else if (*m_nbDof == 1)
-        (*m_idxDof)[0] = model.AddBody(
-                             parent_id, *m_cor, (*m_dof)[0],
-                             (*m_dofCharacteristics)[0], name());
+        (*m_idxDof)[0] = model.AddBody(parent_id, *m_cor, (*m_dof)[0], (*m_dofCharacteristics)[0], name());
     else {
-        (*m_idxDof)[0] = model.AddBody(
-                             parent_id, *m_cor, (*m_dof)[0],
-                             (*m_dofCharacteristics)[0]);
+        (*m_idxDof)[0] = model.AddBody(parent_id, *m_cor, (*m_dof)[0], (*m_dofCharacteristics)[0]);
         for (unsigned int i=1; i<*m_nbDof; i++)
             if (i!=*m_nbDof-1)
-                (*m_idxDof)[i] = model.AddBody(
-                                     (*m_idxDof)[i-1], zero,
-                                     (*m_dof)[i], (*m_dofCharacteristics)[i]);
+                (*m_idxDof)[i] = model.AddBody((*m_idxDof)[i-1], zero, (*m_dof)[i], (*m_dofCharacteristics)[i]);
             else
-                (*m_idxDof)[i] = model.AddBody(
-                                     (*m_idxDof)[i-1], zero, (*m_dof)[i],
-                                     (*m_dofCharacteristics)[i], name());
+                (*m_idxDof)[i] = model.AddBody((*m_idxDof)[i-1], zero, (*m_dof)[i],(*m_dofCharacteristics)[i], name());
     }
-    *m_idxInModel = model.I.size() - 1;
+    *m_idxInModel = static_cast<int>(model.I.size() - 1);
 }
 
 unsigned int rigidbody::Segment::getDofIdx(

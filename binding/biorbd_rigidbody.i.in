@@ -4,6 +4,7 @@
 #include <rbdl/Kinematics.h>
 #include <rbdl/Dynamics.h>
 
+#include "RigidBody/ExternalForceSet.h"
 #include "RigidBody/Segment.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
@@ -50,6 +51,7 @@ namespace std {
 %template(MatBiorbdIMU) std::vector<std::vector<BIORBD_NAMESPACE::rigidbody::IMU>>;
 }
 
+%include "@CMAKE_SOURCE_DIR@/include/RigidBody/ExternalForceSet.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/RigidBodyEnums.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Joints.h"
 %include "@CMAKE_SOURCE_DIR@/include/RigidBody/Segment.h"

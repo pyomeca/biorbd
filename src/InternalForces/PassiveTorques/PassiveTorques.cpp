@@ -63,17 +63,14 @@ void internal_forces::passive_torques::PassiveTorques::addPassiveTorque(
     // Assuming that this is also a Joints type (via BiorbdModel)
     const rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 
-    // Verify that the target dof is associated to a dof that
-    // already exists in the model
+    // Verify that the target dof is associated to a dof that already exists in the model
     utils::Error::check(
         other.index()<model.nbDof(), "Sent index is out of dof range");
 
-    // For speed purposes and coherence with the Q,
-    // set the passive torque to the same index as its associated dof
+    // For speed purposes and coherence with the Q, set the passive torque to the same index as its associated dof
     unsigned int idx(other.index());
 
-    // If there are less actuators declared than dof,
-    // the vector must be enlarged
+    // If there are less actuators declared than dof, the vector must be enlarged
     if (idx >= m_pas->size()) {
         m_pas->resize(idx+1);
         m_isDofSet->resize(idx+1, false);
@@ -103,8 +100,7 @@ void internal_forces::passive_torques::PassiveTorques::addPassiveTorque(
 const std::shared_ptr<internal_forces::passive_torques::PassiveTorque>&
       internal_forces::passive_torques::PassiveTorques::getPassiveTorque(unsigned int dof)
 {
-//    utils::Error::check(dof<nbPassiveTorques(),
-//                                "Idx asked is higher than number of passive torque");
+    utils::Error::check(dof<nbPassiveTorques(), "Idx asked is higher than number of passive torque");
     return (*m_pas)[dof];
 }
 
@@ -121,20 +117,21 @@ rigidbody::GeneralizedTorque internal_forces::passive_torques::PassiveTorques::p
     const rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
     rigidbody::GeneralizedTorque GeneralizedTorque_all = rigidbody::GeneralizedTorque(model);
 
+    // If there are less actuators declared than dof, the vector must be enlarged
+    if (model.nbDof() >= m_pas->size()) {
+        m_pas->resize(model.nbDof() + 1);
+        m_isDofSet->resize(model.nbDof() + 1, false);
+    }
+
     for (unsigned int i=0; i<model.nbDof(); ++i) {
-        if ((*m_isDofSet)[i]==false) {
+        if (!(*m_isDofSet)[i]) {
             GeneralizedTorque_all[i] = 0;
         } else if (std::dynamic_pointer_cast<PassiveTorqueConstant> ((*m_pas)[i])) {
-            GeneralizedTorque_all[i] = std::static_pointer_cast<PassiveTorqueConstant>
-                                                ((*m_pas)[i])->passiveTorque();
+            GeneralizedTorque_all[i] = std::static_pointer_cast<PassiveTorqueConstant>((*m_pas)[i])->passiveTorque();
         } else if (std::dynamic_pointer_cast<PassiveTorqueLinear> ((*m_pas)[i])) {
-            GeneralizedTorque_all[i] = std::static_pointer_cast<PassiveTorqueLinear>
-                                                ((*m_pas)[i])->passiveTorque(Q);
-
+            GeneralizedTorque_all[i] = std::static_pointer_cast<PassiveTorqueLinear>((*m_pas)[i])->passiveTorque(Q);
         } else if (std::dynamic_pointer_cast<PassiveTorqueExponential> ((*m_pas)[i])) {
-            GeneralizedTorque_all[i] = std::static_pointer_cast<PassiveTorqueExponential>
-                                                ((*m_pas)[i])->passiveTorque(Q, Qdot);
-
+            GeneralizedTorque_all[i] = std::static_pointer_cast<PassiveTorqueExponential>((*m_pas)[i])->passiveTorque(Q, Qdot);
         } else {
             utils::Error::raise("Wrong type (should never get here because of previous safety)");
         }

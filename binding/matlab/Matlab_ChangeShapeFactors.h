@@ -5,8 +5,8 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
-#include "Muscles/Muscle.h"
-#include "Muscles/MuscleGroup.h"
+#include "InternalForces/Muscles/Muscle.h"
+#include "InternalForces/Muscles/MuscleGroup.h"
 
 void Matlab_ChangeShapeFactors( int, mxArray *[],
                                 int nrhs, const mxArray*prhs[] )
@@ -32,7 +32,7 @@ void Matlab_ChangeShapeFactors( int, mxArray *[],
     for (unsigned int i=0; i<model->nbMuscleGroups(); ++i)
         for (unsigned int j=0; j<model->muscleGroup(i).nbMuscles(); ++j) {
             // Recueillir shape factor
-            dynamic_cast<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan&>( model->muscleGroup(
+            dynamic_cast<BIORBD_NAMESPACE::internal_forces::muscles::StateDynamicsBuchanan&>( model->muscleGroup(
                         i).muscle(j).state() ).shapeFactor(
                             shapeFactors[cmp]);
             ++cmp;

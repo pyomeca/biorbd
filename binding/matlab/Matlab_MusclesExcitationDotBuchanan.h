@@ -5,8 +5,8 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
-#include "Muscles/Muscle.h"
-#include "Muscles/MuscleGroup.h"
+#include "InternalForces/Muscles/Muscle.h"
+#include "InternalForces/Muscles/MuscleGroup.h"
 
 void Matlab_MusclesExcitationDotBuchanan( int, mxArray *plhs[],
         int nrhs, const mxArray*prhs[] )
@@ -19,7 +19,7 @@ void Matlab_MusclesExcitationDotBuchanan( int, mxArray *plhs[],
     BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // Recevoir les états musculaires
-    std::vector<std::vector<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan>> state =
+    std::vector<std::vector<BIORBD_NAMESPACE::internal_forces::muscles::StateDynamicsBuchanan>> state =
                 getParameterMuscleStateBuchanan(prhs, 2, 3,
                         model->nbMuscleTotal());
 
@@ -45,7 +45,7 @@ void Matlab_MusclesExcitationDotBuchanan( int, mxArray *plhs[],
             for (unsigned int j=0; j<model->muscleGroup(i).nbMuscles(); ++j) {
                 // Recueillir dérivées d'excitations
                 double shapeFactor =
-                    dynamic_cast<const BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan&>( model->muscleGroup(
+                    dynamic_cast<const BIORBD_NAMESPACE::internal_forces::muscles::StateDynamicsBuchanan&>( model->muscleGroup(
                                 i).muscle(
                                 j).state() ).shapeFactor();
                 (*((*(state.begin()+iTime)).begin() + cmpState)).shapeFactor(shapeFactor);

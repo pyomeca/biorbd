@@ -7,6 +7,7 @@
 #include "RigidBody/SegmentCharacteristics.h"
 #include "RigidBody/Mesh.h"
 #include "RigidBody/Contacts.h"
+#include "RigidBody/ExternalForceSet.h"
 #include "RigidBody/SoftContactSphere.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"

@@ -4,15 +4,18 @@
 #include <rbdl/rbdl_utils.h>
 #include <rbdl/Kinematics.h>
 #include <rbdl/Dynamics.h>
-#include "Utils/Scalar.h"
-#include "Utils/String.h"
-#include "Utils/Quaternion.h"
+#include "BiorbdModel.h"
+#include "Utils/Error.h"
 #include "Utils/Matrix.h"
 #include "Utils/Matrix3d.h"
-#include "Utils/Error.h"
+#include "Utils/Quaternion.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/Rotation.h"
+#include "Utils/Scalar.h"
 #include "Utils/SpatialVector.h"
+#include "Utils/String.h"
+
+#include "RigidBody/ExternalForceSet.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
@@ -25,6 +28,7 @@
 #include "RigidBody/SegmentCharacteristics.h"
 #include "RigidBody/Contacts.h"
 #include "RigidBody/SoftContacts.h"
+
 
 using namespace BIORBD_NAMESPACE;
 
@@ -145,15 +149,14 @@ unsigned int rigidbody::Joints::AddSegment(
     const std::vector<utils::Range>& QDotRanges,
     const std::vector<utils::Range>& QDDotRanges,
     const rigidbody::SegmentCharacteristics& characteristics,
-    const utils::RotoTrans& referenceFrame,
-    int forcePlates)
+    const utils::RotoTrans& referenceFrame)
 {
     rigidbody::Segment tp(
         *this, segmentName, parentName, translationSequence,
         rotationSequence, QRanges, QDotRanges, QDDotRanges, characteristics,
         RigidBodyDynamics::Math::SpatialTransform(referenceFrame.rot().transpose(),
-                referenceFrame.trans()),
-        forcePlates);
+                referenceFrame.trans())
+    );
     if (this->GetBodyId(parentName.c_str()) ==
             std::numeric_limits<unsigned int>::max()) {
         *m_nbRoot +=
@@ -181,14 +184,13 @@ unsigned int rigidbody::Joints::AddSegment(
     const std::vector<utils::Range>& QDotRanges,
     const std::vector<utils::Range>& QDDotRanges,
     const rigidbody::SegmentCharacteristics& characteristics,
-    const utils::RotoTrans& referenceFrame,
-    int forcePlates)
+    const utils::RotoTrans& referenceFrame)
 {
     rigidbody::Segment tp(
         *this, segmentName, parentName, seqR, QRanges, QDotRanges, QDDotRanges,
         characteristics, RigidBodyDynamics::Math::SpatialTransform(
-            referenceFrame.rot().transpose(), referenceFrame.trans()),
-        forcePlates);
+            referenceFrame.rot().transpose(), referenceFrame.trans())
+    );
     if (this->GetBodyId(parentName.c_str()) ==
             std::numeric_limits<unsigned int>::max()) {
         *m_nbRoot +=
@@ -244,142 +246,6 @@ const std::vector<rigidbody::Segment>& rigidbody::Joints::segments() const
 unsigned int rigidbody::Joints::nbSegment() const
 {
     return static_cast<unsigned int>(m_segments->size());
-}
-
-std::vector<RigidBodyDynamics::Math::SpatialVector>
-rigidbody::Joints::dispatchedForce(
-    std::vector<std::vector<utils::SpatialVector>> &spatialVector,
-    unsigned int frame) const
-{
-    // Iterator on the force table
-    std::vector<utils::SpatialVector>
-    sv2; // Gather in the same table the values at the same instant of different platforms
-    for (auto vec : spatialVector) {
-        sv2.push_back(vec[frame]);
-    }
-
-    // Call the equivalent function that only manages on instant
-    std::vector<RigidBodyDynamics::Math::SpatialVector> *sv_out = dispatchedForce(&sv2);
-    if (!sv_out){
-        utils::Error::raise("Dispatch forces failed");
-    }
-    return *sv_out;
-}
-
-std::vector<RigidBodyDynamics::Math::SpatialVector> * rigidbody::Joints::dispatchedForce(
-    std::vector<utils::SpatialVector> *sv)
-const  // a spatialVector per platform
-{
-    if (!sv){
-        return nullptr;
-    }
-
-    // Output table
-    std::vector<RigidBodyDynamics::Math::SpatialVector> *sv_out = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
-
-    // Null Spatial vector nul to fill the final table
-    utils::SpatialVector sv_zero(0.,0.,0.,0.,0.,0.);
-    sv_out->push_back(sv_zero); // The first one is associated with the universe
-
-    // Dispatch the forces
-    for (size_t i=0; i<nbSegment(); ++i) {
-        auto& segment ((*m_segments)[i]);
-        unsigned int nbDof = segment.nbDof();
-        if (nbDof == 0) { // Do not add anything if the nbDoF is zero
-            continue;
-        }
-
-        // For each segment
-        for (unsigned int i=0; i<nbDof-1; ++i) {
-            // Put a sv_zero on each DoF except the last one
-            sv_out->push_back(sv_zero);
-        }
-
-        if (segment.platformIdx() >= 0) {
-            // If the solid is in contact with the platform (!= -1)
-            sv_out->push_back((*sv)[static_cast<unsigned int>(segment.platformIdx())]);
-        } else {
-            // Otherwise, put zero
-            sv_out->push_back(sv_zero);
-        }
-    }
-    return sv_out;
-}
-
-std::vector<RigidBodyDynamics::Math::SpatialVector> * rigidbody::Joints::combineExtForceAndSoftContact(
-        std::vector<utils::SpatialVector> *f_ext,
-        std::vector<utils::Vector> *f_contacts,
-        const rigidbody::GeneralizedCoordinates& Q,
-        const rigidbody::GeneralizedVelocity& QDot,
-        bool updateKin
-        )
-{
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#else
-    if (updateKin){
-        UpdateKinematicsCustom(&Q, &QDot);
-    }
-    updateKin = false;
-#endif
-
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* softContacts = dynamic_cast<rigidbody::SoftContacts*>(this)->softContactToSpatialVector(Q, QDot, updateKin);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_ext_rbdl = dispatchedForce(f_ext);
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* f_contacts_rbdl = dynamic_cast<rigidbody::Contacts*>(this)->rigidContactToSpatialVector(Q, f_contacts, updateKin);
-
-    if (!f_ext_rbdl && !softContacts && !f_contacts_rbdl){
-        // Return a nullptr
-        return nullptr;
-    }
-
-    if (!f_ext_rbdl && !f_contacts_rbdl){
-        // Return the softContacts (and nullptr if softContacts is nullptr)
-        return softContacts;
-    }
-
-    if (!softContacts && !f_contacts_rbdl){
-        // Return the External forces
-        return f_ext_rbdl;
-    }
-
-    if (!f_ext_rbdl && !softContacts){
-        // Return the contact forces
-        return f_contacts_rbdl;
-    }
-
-    if (!f_contacts_rbdl)
-    {
-    for (size_t i=0; i<softContacts->size(); ++i){
-        // Combine the external forces with the soft contacts
-        (*f_ext_rbdl)[i] += (*softContacts)[i];
-    }
-    return f_ext_rbdl;
-    }
-    if (!softContacts)
-    {
-    for (size_t i=0; i<f_contacts_rbdl->size(); ++i){
-        // Combine the external forces with the soft contacts
-        (*f_ext_rbdl)[i] += (*f_contacts_rbdl)[i];
-    }
-    return f_ext_rbdl;
-    }
-    if (!f_ext_rbdl)
-    {
-    for (size_t i=0; i<f_contacts_rbdl->size(); ++i){
-        // Combine the external forces with the soft contacts
-        (*softContacts)[i] += (*f_contacts_rbdl)[i];
-    }
-    return softContacts;
-    }
-    for (size_t i=0; i<f_contacts_rbdl->size(); ++i){
-        // Combine the external forces with the soft contacts
-        (*f_ext_rbdl)[i] += (*softContacts)[i];
-        (*f_ext_rbdl)[i] += (*f_contacts_rbdl)[i];
-    }
-
-    delete softContacts;
-    delete f_contacts_rbdl;
-    return f_ext_rbdl;
 }
 
 int rigidbody::Joints::getBodyBiorbdId(
@@ -490,9 +356,14 @@ std::vector<std::vector<unsigned int> > rigidbody::Joints::recursiveDofSubTrees(
 
 
 std::vector<utils::RotoTrans> rigidbody::Joints::allGlobalJCS(
-    const rigidbody::GeneralizedCoordinates &Q)
+    const rigidbody::GeneralizedCoordinates &Q, 
+    bool updateKin
+)
 {
-    UpdateKinematicsCustom (&Q, nullptr, nullptr);
+#ifdef BIORBD_USE_CASADI_MATH
+    updateKin = true;
+#endif
+    if (updateKin) UpdateKinematicsCustom (&Q, nullptr, nullptr);
     return allGlobalJCS();
 }
 
@@ -732,9 +603,11 @@ rigidbody::Joints::CalcBodyWorldTransformation(
         utils::RotoTrans parentRT(
             this->X_base[parent_id].E.transpose(),
             this->X_base[parent_id].r);
-        utils::RotoTrans bodyRT(
-            this->mFixedBodies[fbody_id].mParentTransform.E.transpose(),
-            this->mFixedBodies[fbody_id].mParentTransform.r);
+        utils::RotoTransNode bodyRT(
+            utils::RotoTrans(
+                this->mFixedBodies[fbody_id].mParentTransform.E.transpose(),
+                this->mFixedBodies[fbody_id].mParentTransform.r)
+            , "", "");
         const utils::RotoTrans& transfo_tp = parentRT * bodyRT;
         return RigidBodyDynamics::Math::SpatialTransform (transfo_tp.rot(),
                 transfo_tp.trans());
@@ -809,8 +682,8 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
     const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin)
 {
-    unsigned int i = 0; // for loop purpose
-    unsigned int j = 0; // for loop purpose
+    int i = 0; // for loop purpose
+    int j = 0; // for loop purpose
     RigidBodyDynamics::Math::MatrixNd Minv(this->dof_count, this->dof_count);
     Minv.setZero();
 
@@ -839,7 +712,7 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
 
     // Backward Pass
     std::vector<std::vector<unsigned int>> subTrees = getDofSubTrees();
-    for (i = this->mBodies.size() - 1; i > 0; i--)
+    for (i = static_cast<int>(this->mBodies.size() - 1); i > 0; i--)
     {    
         unsigned int q_index_i = this->mJoints[i].q_index;
         const std::vector<unsigned int>& sub_tree = subTrees[q_index_i];
@@ -891,7 +764,7 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
 
         if (lambda != 0){
             // Minv[i,i:] = Dinv[i]* (U[i,:].transpose() * Xmat) * F[lambda,:,i:])
-            for (j = q_index_i; j < this->dof_count; j++) {
+            for (j = q_index_i; j < static_cast<int>(this->dof_count); j++) {
 //                RigidBodyDynamics::Math::SpatialVector Ftemp = F[lambda_q_i].block(0, q_index_i, 6, 1);
                 RigidBodyDynamics::Math::SpatialVector Ftemp = F[lambda_q_i].block(0, j, 6, 1);
                 Minv(q_index_i, j) -=
@@ -900,14 +773,14 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
 
         }
         // F[i,:,i:] = np.outer(S,Minv[i,i:]) // could be simplified (S * M[q_index_i,q_index_i:]^T)
-        for (j = q_index_i; j < this->dof_count; j++) {
+        for (j = q_index_i; j < static_cast<int>(this->dof_count); j++) {
                     F[q_index_i].block(0, j, 6, 1) = this->S[i] * Minv.block(q_index_i, j, 1, 1); // outer product
         }
 
 
         if (lambda != 0){
             //  F[i,:,i:] += Xmat.transpose() * F[lambda,:,i:]
-            for (j = q_index_i; j < this->dof_count; j++) {
+            for (j = q_index_i; j < static_cast<int>(this->dof_count); j++) {
                 F[q_index_i].block(0, j, 6, 1) +=
                         X_lambda.toMatrix() * F[lambda_q_i].block(0, j, 6, 1);
             }
@@ -916,9 +789,9 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
     }
     // End of Second Forward Pass
     // Fill in full matrix (currently only upper triangular)
-    for (j = 0; j < this->dof_count; j++)
+    for (j = 0; j < static_cast<int>(this->dof_count); j++)
     {
-        for (i = 0; i < this->dof_count; i++)
+        for (i = 0; i < static_cast<int>(this->dof_count); i++)
         {
             if (j < i) {
                     Minv(i, j) = Minv(j, i);
@@ -942,7 +815,7 @@ utils::Vector3d rigidbody::Joints::CoMdot(
 
     // CoMdot = sum(mass_seg * Jacobian * qdot)/mass totale
     utils::Matrix Jac(utils::Matrix(3,this->dof_count));
-    for (auto segment : *m_segments) {
+    for (const auto& segment : *m_segments) {
         Jac.setZero();
         RigidBodyDynamics::CalcPointJacobian(
             *this, Q, GetBodyId(segment.name().c_str()),
@@ -1024,7 +897,7 @@ utils::Matrix rigidbody::Joints::CoMbySegmentInMatrix(
     bool updateKin)
 {
     std::vector<rigidbody::NodeSegment> allCoM(CoMbySegment(Q, updateKin));
-    utils::Matrix CoMs(3, allCoM.size());
+    utils::Matrix CoMs(3, static_cast<int>(allCoM.size()));
     for (unsigned int i=0; i<allCoM.size(); ++i) {
         CoMs.block(0, i, 3, 1) = allCoM[i];
     }
@@ -1359,7 +1232,7 @@ rigidbody::GeneralizedVelocity rigidbody::Joints::computeQdot(
     const rigidbody::GeneralizedCoordinates &QDot,
     const utils::Scalar &k_stab)
 {
-    rigidbody::GeneralizedVelocity QDotOut(Q.size());
+    rigidbody::GeneralizedVelocity QDotOut(static_cast<int>(Q.size()));
     // Verify if there are quaternions, if not the derivate is directly QDot
     if (!m_nRotAQuat) {
         QDotOut = QDot;
@@ -1432,58 +1305,70 @@ utils::Scalar rigidbody::Joints::TotalEnergy(
 }
 
 rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &QDot,
-    const rigidbody::GeneralizedAcceleration &QDDot,
-    std::vector<utils::SpatialVector>* f_ext,
-    std::vector<utils::Vector> *f_contacts)
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedAcceleration& QDDot
+)
+{
+    rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
+    return InverseDynamics(Q, QDot, QDDot, forceSet);
+}
+rigidbody::GeneralizedTorque rigidbody::Joints::InverseDynamics(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedAcceleration& QDDot,
+    rigidbody::ExternalForceSet& externalForces
+)
 {
     rigidbody::GeneralizedTorque Tau(nbGeneralizedTorque());
-    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, f_contacts, Q, QDot, true));
-    RigidBodyDynamics::InverseDynamics(*this, Q, QDot, QDDot, Tau, f_ext_rbdl);
-    if (f_ext_rbdl){
-        delete f_ext_rbdl;
-    }
+    auto fExt = externalForces.computeRbdlSpatialVectors(Q, QDot);
+    RigidBodyDynamics::InverseDynamics(*this, Q, QDot, QDDot, Tau, &fExt);
     return Tau;
 }
 
 rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &QDot,
-    std::vector<utils::SpatialVector>* f_ext,
-    std::vector<utils::Vector> *f_contacts)
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot
+)
+{
+    rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
+    return NonLinearEffect(Q, QDot, forceSet);
+}
+rigidbody::GeneralizedTorque rigidbody::Joints::NonLinearEffect(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    rigidbody::ExternalForceSet& externalForces
+)
 {
     rigidbody::GeneralizedTorque Tau(*this);
-    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, f_contacts, Q, QDot, true));
-    RigidBodyDynamics::NonlinearEffects(*this, Q, QDot, Tau, f_ext_rbdl);
-    if (f_ext_rbdl){
-        delete f_ext_rbdl;
-    }
+    auto fExt = externalForces.computeRbdlSpatialVectors(Q, QDot);
+    RigidBodyDynamics::NonlinearEffects(*this, Q, QDot, Tau, &fExt);
     return Tau;
 }
 
-rigidbody::GeneralizedAcceleration
-rigidbody::Joints::ForwardDynamics(
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &QDot,
-    const rigidbody::GeneralizedTorque &Tau,
-    std::vector<utils::SpatialVector>* f_ext,
-    std::vector<utils::Vector> *f_contacts)
+rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamics(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau
+)
 {
-
-    bool updateKin = true;
-
+    rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
+    return ForwardDynamics(Q, QDot, Tau, forceSet);
+}
+rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamics(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau,
+    rigidbody::ExternalForceSet& externalForces
+)
+{
     rigidbody::GeneralizedAcceleration QDDot(*this);
-    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, f_contacts, Q, QDot, updateKin));
-    RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, f_ext_rbdl);
-    if (f_ext_rbdl){
-        delete f_ext_rbdl;
-    }
+    auto fExt = externalForces.computeRbdlSpatialVectors(Q, QDot, true);
+    RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, &fExt);
     return QDDot;
 }
 
-rigidbody::GeneralizedAcceleration
-rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
+rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDot,
     const rigidbody::GeneralizedAcceleration& QJointsDDot)
@@ -1503,7 +1388,7 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     QDDot.block(0, 0, this->nbRoot(), 1) = utils::Vector(this->nbRoot()).setZero();
     QDDot.block(this->nbRoot(), 0, this->nbQddot()-this->nbRoot(), 1) = QJointsDDot;
 
-    MassMatrixNlEffects = InverseDynamics(Q, QDot, QDDot, nullptr, nullptr);
+    MassMatrixNlEffects = InverseDynamics(Q, QDot, QDDot);
 
 #ifdef BIORBD_USE_CASADI_MATH
     auto linsol = casadi::Linsol("linsol", "symbolicqr", massMatrixRoot.sparsity());
@@ -1515,13 +1400,43 @@ rigidbody::Joints::ForwardDynamicsFreeFloatingBase(
     return QRootDDot;
 }
 
-rigidbody::GeneralizedAcceleration
-rigidbody::Joints::ForwardDynamicsConstraintsDirect(
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &QDot,
-    const rigidbody::GeneralizedTorque &Tau,
-    rigidbody::Contacts &CS,
-    std::vector<utils::SpatialVector> *f_ext)
+
+rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau
+)
+{
+    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
+    return ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS);
+}
+rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau,
+    rigidbody::ExternalForceSet& externalForces
+)
+{
+    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
+    return this->ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, externalForces);
+}
+rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau,
+    rigidbody::Contacts& CS
+)
+{
+    rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
+    return ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, forceSet);
+}
+rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsConstraintsDirect(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau,
+    rigidbody::Contacts& CS,
+    rigidbody::ExternalForceSet& externalForces
+)
 {
 #ifdef BIORBD_USE_CASADI_MATH
     bool updateKin = true;
@@ -1531,47 +1446,38 @@ rigidbody::Joints::ForwardDynamicsConstraintsDirect(
 #endif
 
     rigidbody::GeneralizedAcceleration QDDot(*this);
-    std::vector<RigidBodyDynamics::Math::SpatialVector> *f_ext_rbdl(combineExtForceAndSoftContact(f_ext, nullptr, Q, QDot, updateKin));
-    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, updateKin, f_ext_rbdl);
-    if (f_ext_rbdl){
-        delete f_ext_rbdl;
-    }
+    auto fExt = externalForces.computeRbdlSpatialVectors(Q, QDot, true);
+    RigidBodyDynamics::ForwardDynamicsConstraintsDirect(*this, Q, QDot, Tau, CS, QDDot, updateKin, &fExt);
     return QDDot;
 }
 
-utils::Vector
-rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &QDot,
-    const rigidbody::GeneralizedTorque &Tau,
-    std::vector<utils::SpatialVector> *f_ext)
+utils::Vector rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau
+)
 {
-    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>
-                                     (this)->getConstraints();
-    this->ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, f_ext);
+    rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
+    return ContactForcesFromForwardDynamicsConstraintsDirect(Q, QDot, Tau, forceSet);
+}
+utils::Vector rigidbody::Joints::ContactForcesFromForwardDynamicsConstraintsDirect(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedTorque& Tau,
+    rigidbody::ExternalForceSet& externalForces
+)
+{
+    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*> (this)->getConstraints();
+    this->ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, externalForces);
     return CS.getForce();
 }
 
-rigidbody::GeneralizedAcceleration
-rigidbody::Joints::ForwardDynamicsConstraintsDirect(
-    const rigidbody::GeneralizedCoordinates &Q,
-    const rigidbody::GeneralizedVelocity &QDot,
-    const rigidbody::GeneralizedTorque &Tau,
-    std::vector<utils::SpatialVector> *f_ext)
-{
-
-    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
-    return this->ForwardDynamicsConstraintsDirect(Q, QDot, Tau, CS, f_ext);
-}
-
-rigidbody::GeneralizedVelocity
-rigidbody::Joints::ComputeConstraintImpulsesDirect(
+rigidbody::GeneralizedVelocity rigidbody::Joints::ComputeConstraintImpulsesDirect(
     const rigidbody::GeneralizedCoordinates& Q,
     const rigidbody::GeneralizedVelocity& QDotPre
 )
 {
-    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>
-                                     (this)->getConstraints();
+    rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
     if (CS.nbContacts() == 0) {
         return QDotPre;
     } else {
@@ -1583,8 +1489,7 @@ rigidbody::Joints::ComputeConstraintImpulsesDirect(
     }
 }
 
-utils::Matrix3d
-rigidbody::Joints::bodyInertia (
+utils::Matrix3d rigidbody::Joints::bodyInertia (
         const rigidbody::GeneralizedCoordinates &q,
         bool updateKin)
 {

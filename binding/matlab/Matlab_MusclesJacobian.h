@@ -6,9 +6,8 @@
 #include "class_handle.h"
 #include "processArguments.h"
 #include "Utils/Matrix.h"
-#include "Muscles/MuscleGroup.h"
-#include "Muscles/Muscle.h"
-#include "Muscles/Geometry.h"
+#include "InternalForces/Muscles/MuscleGroup.h"
+#include "InternalForces/Muscles/Muscle.h"
 
 void Matlab_MusclesJacobian( int, mxArray *plhs[],
                              int nrhs, const mxArray*prhs[] )

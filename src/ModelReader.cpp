@@ -79,16 +79,12 @@ void Reader::readModelFile(
 {
     // Open file
     if (!path.isFileReadable())
-        utils::Error::raise("File " + path.absolutePath()
-                                    + " could not be open");
+        utils::Error::raise("File " + path.absolutePath() + " could not be open");
 
 #ifdef _WIN32
-    utils::IfStream file(
-        utils::Path::toWindowsFormat(
-            path.absolutePath()).c_str(), std::ios::in);
+    utils::IfStream file(utils::Path::toWindowsFormat(path.absolutePath()).c_str(), std::ios::in);
 #else
-    utils::IfStream file(
-        path.absolutePath().c_str(), std::ios::in);
+    utils::IfStream file(path.absolutePath().c_str(), std::ios::in);
 #endif
 
     // Read file
@@ -102,9 +98,8 @@ void Reader::readModelFile(
     // Determine the file version
     file.readSpecificTag("version", main_tag);
     unsigned int version(static_cast<unsigned int>(atoi(main_tag.c_str())));
-    utils::Error::check((version == 1 || version == 2 || version == 3
-                                 || version == 4),
-                                "Version " + main_tag + " is not implemented yet");
+    utils::Error::check((version == 1 || version == 2 || version == 3 || version == 4),
+        "Version " + main_tag + " is not implemented yet");
 
 #ifdef MODULE_ACTUATORS
     bool hasActuators = false;
@@ -138,7 +133,6 @@ void Reader::readModelFile(
                 rigidbody::Mesh mesh;
                 bool isMeshSet(false);
                 int segmentByFile(-1); // -1 non setté, 0 pas par file, 1 par file
-                int PF = -1;
                 std::vector<utils::Range> QRanges;
                 std::vector<utils::Range> QDotRanges;
                 std::vector<utils::Range> QDDotRanges;
@@ -153,27 +147,21 @@ void Reader::readModelFile(
                         // Dynamically find the parent number
                         file.read(parent_str);
                         if (parent_str.tolower().compare("root")) {
-                            utils::Error::check(model->GetBodyId(parent_str.c_str()),
-                                                        "Wrong name in a segment");
+                            utils::Error::check(model->GetBodyId(parent_str.c_str()), "Wrong name in a segment");
                         }
                     } else if (!property_tag.tolower().compare("translations")) {
-                        utils::Error::check(!isRangeQSet,
-                                                    "Translations must appear before the rangesq tag");
-                        utils::Error::check(!isRangeQDotSet,
-                                                    "Translations must appear before the rangesqdot tag");
-                        utils::Error::check(!isRangeQDDotSet,
-                                                    "Translations must appear before the rangesqddot tag");
+                        utils::Error::check(!isRangeQSet, "Translations must appear before the rangesq tag");
+                        utils::Error::check(!isRangeQDotSet, "Translations must appear before the rangesqdot tag");
+                        utils::Error::check(!isRangeQDDotSet,"Translations must appear before the rangesqddot tag");
                         file.read(trans);
                     } else if (!property_tag.tolower().compare("rotations")) {
-                        utils::Error::check(!isRangeQSet,
-                                                    "Rotations must appear before the rangesq tag");
-                        utils::Error::check(!isRangeQDotSet,
-                                                    "Rotations must appear before the rangesqdot tag");
-                        utils::Error::check(!isRangeQDDotSet,
-                                                    "Rotations must appear before the rangesqddot tag");
+                        utils::Error::check(!isRangeQSet, "Rotations must appear before the rangesq tag");
+                        utils::Error::check(!isRangeQDotSet, "Rotations must appear before the rangesqdot tag");
+                        utils::Error::check(!isRangeQDDotSet, "Rotations must appear before the rangesqddot tag");
                         file.read(rot);
-                    } else if (!property_tag.tolower().compare("ranges") ||
-                               !property_tag.tolower().compare("rangesq")) {
+                    } else if (
+                        !property_tag.tolower().compare("ranges") || 
+                        !property_tag.tolower().compare("rangesq")){
                         double min, max;
                         size_t rotLength(0);
                         if (rot.compare("q")) {
@@ -224,31 +212,30 @@ void Reader::readModelFile(
                     } else if (!property_tag.tolower().compare("mass")) {
                         file.read(mass, variable);
                     } else if (!property_tag.tolower().compare("inertia") || !property_tag.tolower().compare("inertiamatrix")) {
-                        utils::Error::check(!isInertiaSet,
-                            "Inertia matrix cannot be set twice. Please note that 'Inertia', 'InertiaMatrix' and 'RadiiOfGyration' all set the inertia matrix.");
+                        utils::Error::check(!isInertiaSet, "Inertia matrix cannot be set twice. Please note that 'Inertia', 'InertiaMatrix' and 'RadiiOfGyration' all set the inertia matrix.");
                         readMatrix33(file, variable, inertia);
                         isInertiaSet = true;
                     } else if (!property_tag.tolower().compare("inertia_xxyyzz")) {
-                        utils::Error::check(!isInertiaSet,
-                            "Inertia matrix cannot be set twice. Please note that 'Inertia', 'InertiaMatrix' and 'RadiiOfGyration' all set the inertia matrix.");
+                        utils::Error::check(!isInertiaSet, "Inertia matrix cannot be set twice. Please note that 'Inertia', 'InertiaMatrix' and 'RadiiOfGyration' all set the inertia matrix.");
                         utils::Vector3d inertia_xxyyzz;
                         readVector3d(file, variable, inertia_xxyyzz);
-                        inertia = utils::Matrix3d(inertia_xxyyzz[0], 0, 0,
-                                   0, inertia_xxyyzz[1], 0,
-                                   0, 0, inertia_xxyyzz[2]);
+                        inertia = utils::Matrix3d(
+                            inertia_xxyyzz[0], 0, 0,
+                            0, inertia_xxyyzz[1], 0,
+                            0, 0, inertia_xxyyzz[2]
+                        );
                         isInertiaSet = true;
                     } else if (!property_tag.tolower().compare("rtinmatrix")) {
-                        utils::Error::check(isRTset==false,
-                                                    "RT should not appear before RTinMatrix");
+                        utils::Error::check(isRTset==false, "RT should not appear before RTinMatrix");
                         file.read(RTinMatrix);
                     } else if (!property_tag.tolower().compare("rt")) {
                         readRtMatrix(file, variable, RTinMatrix, RT);
                         isRTset = true;
                     } else if (!property_tag.tolower().compare("com") || !property_tag.tolower().compare("centerofmass")) {
                         readVector3d(file, variable, com);
-                    } else if (!property_tag.tolower().compare("forceplate")
-                               || !property_tag.tolower().compare("externalforceindex")) {
-                        file.read(PF);
+                    } else if (!property_tag.tolower().compare("forceplate") || !property_tag.tolower().compare("externalforceindex")) {
+                        std::cout << "Please note that the 'externalforceindex' or 'forceplate' tags were removed when the ExternalForceSet was introduce.\n" << 
+                            "Please consider removing these tag from your model file." << std::endl;
                     } else if (!property_tag.tolower().compare("mesh")) {
                         if (segmentByFile==-1) {
                             segmentByFile = 0;
@@ -359,10 +346,18 @@ void Reader::readModelFile(
                             utils::Range (-M_PI*100, M_PI*100));
                     }
                 }
-                rigidbody::SegmentCharacteristics characteristics(mass,com,inertia,
-                        mesh);
-                model->AddSegment(name, parent_str, trans, rot, QRanges, QDotRanges,
-                                  QDDotRanges, characteristics, RT, PF);
+                rigidbody::SegmentCharacteristics characteristics(mass, com, inertia, mesh);
+                model->AddSegment(
+                    name,
+                    parent_str, 
+                    trans, 
+                    rot, 
+                    QRanges, 
+                    QDotRanges,
+                    QDDotRanges, 
+                    characteristics, 
+                    RT
+                );
             } else if (!main_tag.tolower().compare("gravity")) {
                 utils::Vector3d gravity(0,0,0);
                 readVector3d(file, variable, gravity);
@@ -541,16 +536,16 @@ void Reader::readModelFile(
             } else if (!main_tag.tolower().compare("contact")) {
                 utils::String name;
                 file.read(name);
+                utils::String parentName("root");
                 unsigned int parent_int = 0;
-                utils::String parent_str("root");
                 utils::Vector3d pos(0,0,0);
                 utils::Vector3d norm(0,0,0);
                 utils::String axis("");
                 while(file.read(property_tag) && property_tag.tolower().compare("endcontact")) {
                     if (!property_tag.tolower().compare("parent")) {
                         // Dynamically find the parent number
-                        file.read(parent_str);
-                        parent_int = model->GetBodyId(parent_str.c_str());
+                        file.read(parentName);
+                        parent_int = model->GetBodyId(parentName.c_str());
                         // If parent_int equals zero, no name has concurred
                         utils::Error::check(model->IsBodyId(parent_int),
                                                     "Wrong name in a segment");
@@ -567,10 +562,10 @@ void Reader::readModelFile(
                     utils::Error::check(norm.norm() == 1.0,
                                                 "Normal of the contact must be provided" );
 #endif
-                    model->AddConstraint(parent_int, pos, norm, name);
+                    model->AddConstraint(parent_int, pos, norm, name, parentName);
                 } else if (version >= 2) {
                     utils::Error::check(axis.compare(""), "Axis must be provided");
-                    model->AddConstraint(parent_int, pos, axis, name);
+                    model->AddConstraint(parent_int, pos, axis, name, parentName);
                 }
             } else if (!main_tag.tolower().compare("loopconstraint")) {
                 utils::String name;
@@ -1025,7 +1020,7 @@ void Reader::readModelFile(
                         internal_forces::PathModifiers(),stateType,dynamicFatigueType);
                 if (stateType == internal_forces::muscles::STATE_TYPE::BUCHANAN && shapeFactor != 0) {
                     auto& muscleGroup = model->muscleGroup(idxGroup);
-                    size_t nMuscInGroup(muscleGroup.nbMuscles()-1);
+                    int nMuscInGroup(static_cast<int>(muscleGroup.nbMuscles()-1));
                     auto& state = muscleGroup.muscle(nMuscInGroup).state();
                     static_cast<internal_forces::muscles::StateDynamicsBuchanan&>(state).shapeFactor(
                         shapeFactor);
@@ -1175,16 +1170,13 @@ void Reader::readModelFile(
                 utils::Error::check(isTypeSet!=0, "PassiveTorque type must be defined");
                 internal_forces::passive_torques::PassiveTorque* passiveTorque;
                 if (!type.tolower().compare("constant")) {
-                    utils::Error::check(isDofSet && !std::isnan(Tconstant),
-                                                "Make sure all parameters are defined");
+                    utils::Error::check(isDofSet && !std::isnan(Tconstant), "Make sure all parameters are defined");
                     passiveTorque = new internal_forces::passive_torques::PassiveTorqueConstant(Tconstant,dofIdx,name);
                 } else if (!type.tolower().compare("linear")) {
-                    utils::Error::check(isDofSet && !std::isnan(slope) && !std::isnan(T0),
-                                                "Make sure all parameters are defined");
+                    utils::Error::check(isDofSet && !std::isnan(slope) && !std::isnan(T0), "Make sure all parameters are defined");
                     passiveTorque = new internal_forces::passive_torques::PassiveTorqueLinear(T0,slope,dofIdx,name);
                 } else if (!type.tolower().compare("exponential")) {
-                    utils::Error::check(isDofSet && isExponentialSet == 5,
-                                                "Make sure all parameters are defined");
+                    utils::Error::check(isDofSet && isExponentialSet == 5, "Make sure all parameters are defined");
                     passiveTorque = new internal_forces::passive_torques::PassiveTorqueExponential(
                                 k1, k2, b1, b2, qMid, tauEq, pBeta, wMax, sV, deltaP,dofIdx,name);
                 } else {
@@ -2141,8 +2133,7 @@ rigidbody::Mesh Reader::readMeshFileVtp(
 
     // Read the file
 #ifdef _WIN32
-    utils::String filepath( utils::Path::toWindowsFormat(
-                                        path.absolutePath()).c_str());
+    utils::String filepath( utils::Path::toWindowsFormat(path.absolutePath()).c_str());
 #else
     utils::String filepath( path.absolutePath().c_str() );
 #endif

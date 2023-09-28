@@ -12,8 +12,8 @@
 #include "RigidBody/Segment.h"
 #include "RigidBody/IMU.h"
 #include "RigidBody/NodeSegment.h"
-#include "Muscles/StateDynamics.h"
-#include "Muscles/StateDynamicsBuchanan.h"
+#include "InternalForces/Muscles/StateDynamics.h"
+#include "InternalForces/Muscles/StateDynamicsBuchanan.h"
 
 void checkNombreInputParametres(int nrhs, int min, int max,
                                 std::string message = "")
@@ -525,7 +525,7 @@ bool isStateExist(const mxArray*prhs[], unsigned int nMus, int idx,
     return isThere;
 }
 
-std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>>>
+std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::internal_forces::muscles::State>>>
 getParameterMuscleState(
     const mxArray*prhs[],
     int idxExcitation,
@@ -571,18 +571,18 @@ getParameterMuscleState(
 
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>>> States;
+    std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::internal_forces::muscles::State>>> States;
     for (unsigned int j=0; j<nFramesTotal; ++j) {
-        std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>> States_tp;
+        std::vector<std::shared_ptr<BIORBD_NAMESPACE::internal_forces::muscles::State>> States_tp;
         for (unsigned int i=0; i<nMus; i++)
             if (isThereExcitation && isThereActivation) {
-                States_tp.push_back( std::make_shared<BIORBD_NAMESPACE::muscles::State>
+                States_tp.push_back( std::make_shared<BIORBD_NAMESPACE::internal_forces::muscles::State>
                                      (stateExcitation[j*nMus+i], stateActivation[j*nMus+i]));
             } else if (!isThereExcitation && isThereActivation) {
-                States_tp.push_back( std::make_shared<BIORBD_NAMESPACE::muscles::State>(0,
+                States_tp.push_back( std::make_shared<BIORBD_NAMESPACE::internal_forces::muscles::State>(0,
                                      stateActivation[j*nMus+i]));
             } else if (isThereExcitation && !isThereActivation) {
-                States_tp.push_back( std::make_shared<BIORBD_NAMESPACE::muscles::State>
+                States_tp.push_back( std::make_shared<BIORBD_NAMESPACE::internal_forces::muscles::State>
                                      (stateExcitation[j*nMus+i], 0));
             }
 
@@ -592,7 +592,7 @@ getParameterMuscleState(
 }
 
 
-std::vector<std::vector<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan>>
+std::vector<std::vector<BIORBD_NAMESPACE::internal_forces::muscles::StateDynamicsBuchanan>>
         getParameterMuscleStateBuchanan(const mxArray*prhs[],
                                         int idxExcitation, int idxActivation, unsigned int nMus)
 {
@@ -635,18 +635,18 @@ std::vector<std::vector<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan>>
 
 
     // Coordonnées généralisées du modèle envoyées vers lisible par le modèle
-    std::vector<std::vector<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan>> States;
+    std::vector<std::vector<BIORBD_NAMESPACE::internal_forces::muscles::StateDynamicsBuchanan>> States;
     for (unsigned int j=0; j<nFramesTotal; ++j) {
-        std::vector<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan> States_tp;
+        std::vector<BIORBD_NAMESPACE::internal_forces::muscles::StateDynamicsBuchanan> States_tp;
         for (unsigned int i=0; i<nMus; i++)
             if (isThereExcitation && isThereActivation) {
-                States_tp.push_back( BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan(
+                States_tp.push_back( BIORBD_NAMESPACE::internal_forces::muscles::StateDynamicsBuchanan(
                                          stateExcitation[j*nMus+i], stateActivation[j*nMus+i]));
             } else if (!isThereExcitation && isThereActivation) {
-                States_tp.push_back( BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan(0,
+                States_tp.push_back( BIORBD_NAMESPACE::internal_forces::muscles::StateDynamicsBuchanan(0,
                                      stateActivation[j*nMus+i]));
             } else if (isThereExcitation && !isThereActivation) {
-                States_tp.push_back( BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan(
+                States_tp.push_back( BIORBD_NAMESPACE::internal_forces::muscles::StateDynamicsBuchanan(
                                          stateExcitation[j*nMus+i], 0));
             }
 
@@ -655,26 +655,26 @@ std::vector<std::vector<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan>>
     return States;
 }
 
-std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>>>
+std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::internal_forces::muscles::State>>>
 getParameterMuscleStateActivation(
     const mxArray*prhs[], int idxActivation, unsigned int nMus)
 {
     return getParameterMuscleState(prhs, -1, idxActivation, nMus);
 }
-std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>>>
+std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::internal_forces::muscles::State>>>
 getParameterMuscleStateExcitation(
     const mxArray*prhs[], int idxExcitation, unsigned int nMus)
 {
     return getParameterMuscleState(prhs, idxExcitation, -1, nMus);
 }
 
-std::vector<std::vector<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan>>
+std::vector<std::vector<BIORBD_NAMESPACE::internal_forces::muscles::StateDynamicsBuchanan>>
         getParameterMuscleStateActivationBuchanan(
             const mxArray*prhs[], int idxActivation, unsigned int nMus)
 {
     return getParameterMuscleStateBuchanan(prhs, -1, idxActivation, nMus);
 }
-std::vector<std::vector<BIORBD_NAMESPACE::muscles::StateDynamicsBuchanan>>
+std::vector<std::vector<BIORBD_NAMESPACE::internal_forces::muscles::StateDynamicsBuchanan>>
         getParameterMuscleStateExcitationBuchanan(
             const mxArray*prhs[], int idxExcitation, unsigned int nMus)
 {

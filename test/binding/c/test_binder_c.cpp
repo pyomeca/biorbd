@@ -72,7 +72,7 @@ TEST(BinderC, markers)
     EXPECT_STREQ(newMarker.parent().c_str(), model->segment(1).name().c_str());
     EXPECT_EQ(newMarker.isTechnical(), false);
     EXPECT_EQ(newMarker.isAnatomical(), true);
-    EXPECT_STREQ(newMarker.axesToRemove().c_str(), "x");
+    EXPECT_STREQ(newMarker.axesToRemoveAsString().c_str(), "x");
 
     // Markers in local reference frame
     double *dMarkersInLocal = new double[model->nbMarkers()*3];

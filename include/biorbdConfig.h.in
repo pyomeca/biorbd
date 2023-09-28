@@ -105,6 +105,9 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 #define DECLARE_VECTOR(varname, nbElements) \
     casadi::DM varname(nbElements, 1);\
     BIORBD_NAMESPACE::utils::Vector varname##_sym(casadi::MX::sym(#varname, nbElements, 1));
+#define DECLARE_MATRIX(varname, nbRows, nbCols) \
+    casadi::DM varname(nbRows, nbCols);\
+    BIORBD_NAMESPACE::utils::Vector varname##_sym(casadi::MX::sym(#varname, nbRows, nbCols));
 
 #define CALL_BIORBD_FUNCTION_1ARG(varname, model, funcname, arg1) \
     casadi::Function func_##funcname(#funcname, {arg1##_sym}, {model.funcname(arg1##_sym)}, {#arg1}, {#funcname});\
@@ -116,6 +119,18 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
     casadi::Function func_##funcname(#funcname, {arg1##_sym, arg2##_sym, arg3##_sym}, {model.funcname(arg1##_sym, arg2##_sym, arg3##_sym)}, {#arg1, #arg2, #arg3}, {#funcname});\
     auto varname = func_##funcname(casadi::DMDict{ {#arg1, arg1}, {#arg2, arg2}, {#arg3, arg3} }).at(#funcname);
 
+#define CALL_BIORBD_FUNCTION_1ARG2PARAMS(varname, model, funcname, arg1, param1, param2) \
+    casadi::Function func_##funcname(#funcname, {arg1##_sym}, {model.funcname(arg1##_sym, param1, param2)}, {#arg1}, {#funcname});\
+    auto varname = func_##funcname(casadi::DMDict{ {#arg1, arg1} }).at(#funcname);
+#define CALL_BIORBD_FUNCTION_1PARAM2ARGS(varname, model, funcname, param1, arg1, arg2) \
+    casadi::Function func_##funcname(#funcname, {arg1##_sym, arg2##_sym}, {model.funcname(param1, arg1##_sym, arg2##_sym)}, {#arg1, #arg2}, {#funcname});\
+    auto varname = func_##funcname(casadi::DMDict{ {#arg1, arg1}, {#arg2, arg2} }).at(#funcname);
+#define CALL_BIORBD_FUNCTION_1ARG3PARAMS(varname, model, funcname, arg1, param1, param2, param3) \
+    casadi::Function func_##funcname(#funcname, {arg1##_sym}, {model.funcname(arg1##_sym, param1, param2, param3)}, {#arg1}, {#funcname});\
+    auto varname = func_##funcname(casadi::DMDict{ {#arg1, arg1} }).at(#funcname);
+#define CALL_BIORBD_FUNCTION_2ARGS1PARAM(varname, model, funcname, arg1, arg2, param1) \
+    casadi::Function func_##funcname(#funcname, {arg1##_sym, arg2##_sym}, {model.funcname(arg1##_sym, arg2##_sym, param1)}, {#arg1, #arg2}, {#funcname});\
+    auto varname = func_##funcname(casadi::DMDict{ {#arg1, arg1}, {#arg2, arg2} }).at(#funcname);
 #define CALL_BIORBD_FUNCTION_3ARGS1PARAM(varname, model, funcname, arg1, arg2, arg3, param1) \
     casadi::Function func_##funcname(#funcname, {arg1##_sym, arg2##_sym, arg3##_sym}, {model.funcname(arg1##_sym, arg2##_sym, arg3##_sym, param1)}, {#arg1, #arg2, #arg3}, {#funcname});\
     auto varname = func_##funcname(casadi::DMDict{ {#arg1, arg1}, {#arg2, arg2}, {#arg3, arg3} }).at(#funcname);
@@ -130,17 +145,26 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 
 #else
 #define DECLARE_GENERALIZED_COORDINATES(varname, model) \
-    BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates varname(model);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates varname(model); \
+    BIORBD_NAMESPACE::rigidbody::GeneralizedCoordinates varname##_sym(model);
 #define DECLARE_GENERALIZED_VELOCITY(varname, model) \
-    BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity varname(model);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity varname(model); \
+    BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity varname##_sym(model);
 #define DECLARE_GENERALIZED_ACCELERATION(varname, model) \
-    BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration varname(model);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration varname(model); \
+    BIORBD_NAMESPACE::rigidbody::GeneralizedAcceleration varname##_sym(model);
 #define DECLARE_GENERALIZED_TORQUE(varname, model) \
-    BIORBD_NAMESPACE::rigidbody::GeneralizedTorque varname(model);
+    BIORBD_NAMESPACE::rigidbody::GeneralizedTorque varname(model); \
+    BIORBD_NAMESPACE::rigidbody::GeneralizedTorque varname##_sym(model);
 #define DECLARE_GENERALIZED_OF_TYPE(Type, varname, nbElements) \
-    BIORBD_NAMESPACE::rigidbody::Generalized##Type varname(nbElements);
+    BIORBD_NAMESPACE::rigidbody::Generalized##Type varname(nbElements); \
+    BIORBD_NAMESPACE::rigidbody::Generalized##Type varname##_sym(nbElements);
 #define DECLARE_VECTOR(varname, nbElements) \
-    BIORBD_NAMESPACE::utils::Vector varname(nbElements);
+    BIORBD_NAMESPACE::utils::Vector varname(nbElements); \
+    BIORBD_NAMESPACE::utils::Vector varname##_sym(nbElements);
+#define DECLARE_MATRIX(varname, nbRows, nbCols) \
+    BIORBD_NAMESPACE::utils::Matrix varname(nbRows, nbCols); \
+    BIORBD_NAMESPACE::utils::Matrix varname##_sym(nbRows, nbCols);
 
 #define CALL_BIORBD_FUNCTION_1ARG(varname, model, funcname, arg1) \
     auto varname = model.funcname(arg1);
@@ -149,6 +173,14 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 #define CALL_BIORBD_FUNCTION_3ARGS(varname, model, funcname, arg1, arg2, arg3) \
     auto varname = model.funcname(arg1, arg2, arg3);
 
+#define CALL_BIORBD_FUNCTION_1ARG2PARAMS(varname, model, funcname, arg1, param1, param2) \
+	auto varname = model.funcname(arg1, param1, param2);
+#define CALL_BIORBD_FUNCTION_1PARAM2ARGS(varname, model, funcname, param1, arg1, arg2) \
+	auto varname = model.funcname(param1, arg1, arg2);
+#define CALL_BIORBD_FUNCTION_1ARG3PARAMS(varname, model, funcname, arg1, param1, param2, param3) \
+	auto varname = model.funcname(arg1, param1, param2, param3);
+#define CALL_BIORBD_FUNCTION_2ARGS1PARAM(varname, model, funcname, arg1, arg2, param1) \
+	auto varname = model.funcname(arg1, arg2, param1);
 #define CALL_BIORBD_FUNCTION_3ARGS1PARAM(varname, model, funcname, arg1, arg2, arg3, param1) \
     auto varname = model.funcname(arg1, arg2, arg3, param1);
 
@@ -157,6 +189,7 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 
 #endif
 
+#ifdef BIORBD_USE_CASADI_MATH
 #define FILL_VECTOR(varname, filler) \
     for (unsigned int i=0; i<varname.rows(); ++i){\
         varname(i, 0) = filler[i];\
@@ -164,13 +197,30 @@ inline LINEAR_ALGEBRA_BACKEND currentLinearAlgebraBackend(){
 #define FILL_MATRIX(varname, filler) \
     { \
         int cmpWithAWeirdName(0); \
-        for (unsigned int i=0; i<varname.rows(); ++i){\
-            for (unsigned int j=0; j<varname.cols(); ++j){\
-                varname(i, j) = filler[cmpWithAWeirdName++];\
+        for (unsigned int i = 0; i < varname.rows(); ++i) {\
+            for (unsigned int j = 0; j < varname.cols(); ++j) {\
+                varname(i, j) = filler[cmpWithAWeirdName];\
             }\
         } \
     }
+#else
+#define FILL_VECTOR(varname, filler) \
+    for (unsigned int i=0; i<varname.rows(); ++i){\
+        varname(i, 0) = filler[i];\
+        varname##_sym(i, 0) = filler[i];\
+    }
+#define FILL_MATRIX(varname, filler) \
+    { \
+        int cmpWithAWeirdName(0); \
+        for (unsigned int i = 0; i < varname.rows(); ++i) {\
+            for (unsigned int j = 0; j < varname.cols(); ++j) {\
+                varname(i, j) = filler[cmpWithAWeirdName];\
+                varname##_sym(i, j) = filler[cmpWithAWeirdName++];\
+            }\
+        } \
+    }
+#endif  // BIORBD_USE_CASADI_MATH
 
-#endif
+#endif  // SWIG
 
-#endif // BIORBD_CONFIG_H
+#endif  // BIORBD_CONFIG_H

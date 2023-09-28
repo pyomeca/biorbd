@@ -101,11 +101,13 @@ TEST(MeshFile, FileIO)
     Model model(modelPathWithMeshFile);
 }
 
+#ifndef SKIP_LONG_TESTS
 TEST(MeshFile, FileIoObj)
 {
     EXPECT_NO_THROW(Model model(modelPathWithObj));
     Model model(modelPathWithObj);
 }
+#endif
 
 #ifdef MODULE_VTP_FILES_READER
 TEST(MeshFile, FileIoVtp)
@@ -115,9 +117,10 @@ TEST(MeshFile, FileIoVtp)
 }
 #endif
 
-
+#ifndef SKIP_LONG_TESTS
 TEST(MeshFile, FileIoStl)
 {
     EXPECT_NO_THROW(Model model(modelPathWithStl));
     Model model(modelPathWithStl);
 }
+#endif

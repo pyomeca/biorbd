@@ -63,7 +63,7 @@ public:
     /// \brief Add a new RT to the set
     /// \param RotoTrans The RotaTrans of the RT
     ///
-    void addRT(
+    virtual void addRT(
         const utils::RotoTransNode &RotoTrans);
 
     ///
@@ -149,6 +149,10 @@ public:
     std::vector<utils::Matrix> RTsJacobian(
         const GeneralizedCoordinates &Q,
         bool updateKin = true);
+
+    /// 
+    /// \brief Return to an internal state similar to initial declaration
+    virtual void clear();
 
 protected:
     std::shared_ptr<std::vector<utils::RotoTransNode>>

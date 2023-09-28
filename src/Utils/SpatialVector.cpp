@@ -28,9 +28,17 @@ utils::SpatialVector::SpatialVector(
 }
 
 utils::SpatialVector::SpatialVector(
-    Scalar v1, Scalar v2, Scalar v3,
-    Scalar v4, Scalar v5, Scalar v6) :
-    RigidBodyDynamics::Math::SpatialVector (v1, v2, v3, v4, v5, v6)
+    const utils::Vector3d& moment,
+    const utils::Vector3d& force) : 
+    RigidBodyDynamics::Math::SpatialVector(moment(0), moment(1), moment(2), force(0), force(1), force(2))
+{
+
+}
+
+utils::SpatialVector::SpatialVector(
+    Scalar mx, Scalar my, Scalar mz,
+    Scalar fx, Scalar fy, Scalar fz) :
+    RigidBodyDynamics::Math::SpatialVector (mx, my, mz, fx, fy, fz)
 {
 
 }
@@ -74,3 +82,11 @@ void utils::SpatialVector::operator=(
 }
 
 #endif
+
+utils::Vector3d utils::SpatialVector::force() const {
+    return utils::Vector3d((*this)(3), (*this)(4), (*this)(5));
+}
+
+utils::Vector3d utils::SpatialVector::moment() const {
+    return utils::Vector3d((*this)(0), (*this)(1), (*this)(2));
+}

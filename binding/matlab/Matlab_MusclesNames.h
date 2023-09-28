@@ -5,9 +5,9 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
-#include "Muscles/MuscleGroup.h"
-#include "Muscles/Muscle.h"
-#include "Muscles/PathModifiers.h"
+#include "InternalForces/Muscles/MuscleGroup.h"
+#include "InternalForces/Muscles/Muscle.h"
+#include "InternalForces/PathModifiers.h"
 
 void Matlab_MusclesNames( int, mxArray *plhs[],
                           int nrhs, const mxArray*prhs[] )
@@ -20,12 +20,9 @@ void Matlab_MusclesNames( int, mxArray *plhs[],
     BIORBD_NAMESPACE::Model * model = convertMat2Ptr<BIORBD_NAMESPACE::Model>(prhs[1]);
 
     // Sortie des noms
-    plhs[0] = mxCreateCellMatrix(model->nbMuscleGroups(),
-                                 1); // Stockage des noms de groupe
-    plhs[1] = mxCreateCellMatrix(model->nbMuscleGroups(),
-                                 1); // Stockage des noms de muscles
-    plhs[2] = mxCreateCellMatrix(model->nbMuscleGroups(),
-                                 1); // Stockage des noms de viapoints
+    plhs[0] = mxCreateCellMatrix(model->nbMuscleGroups(), 1); // Stockage des noms de groupe
+    plhs[1] = mxCreateCellMatrix(model->nbMuscleGroups(), 1); // Stockage des noms de muscles
+    plhs[2] = mxCreateCellMatrix(model->nbMuscleGroups(), 1); // Stockage des noms de viapoints
 
     // Stocker chaque valeur
     // Pour chaque groupe musculaire
@@ -33,28 +30,23 @@ void Matlab_MusclesNames( int, mxArray *plhs[],
         // Créer une matrice de cellule pour recueillir les noms (a stocker dans la plus grosse matrice)
         mxArray *muscleNames = mxCreateCellMatrix(model->muscleGroup(i).nbMuscles(), 1);
         // Créer une matrice de cellule pour recueillir les noms (a stocker dans la plus grosse matrice)
-        mxArray *viaNamesByMuscles = mxCreateCellMatrix(model->muscleGroup(
-                                         i).nbMuscles(), 1);
+        mxArray *viaNamesByMuscles = mxCreateCellMatrix(model->muscleGroup(i).nbMuscles(), 1);
 
 
         // Pour chaque muscle
         for (unsigned int j=0; j<model->muscleGroup(i).nbMuscles(); ++j) {
-            mxArray * name = mxCreateString(model->muscleGroup(i).muscle(
-                                                j).name().c_str()); // Recueillir le nom du muscle
+            mxArray * name = mxCreateString(model->muscleGroup(i).muscle(j).name().c_str()); // Recueillir le nom du muscle
             mxSetCell(muscleNames, j, name); // Les mettres une cellule
 
             // Pour chaque via points / wraping
-            mxArray *viaNames = mxCreateCellMatrix(model->muscleGroup(i).muscle(
-                    j).pathModifier().nbObjects(),1);
-            for (unsigned int k=0;
-                    k<model->muscleGroup(i).muscle(j).pathModifier().nbObjects(); ++k) {
-                mxArray * viaName = mxCreateString(model->muscleGroup(i).muscle(
-                                                       j).pathModifier().object(
-                                                       k).name().c_str()); // Recueillir le nom du muscle
+            mxArray *viaNames = mxCreateCellMatrix(
+                model->muscleGroup(i).muscle(j).pathModifier().nbObjects(),1);
+            for (unsigned int k=0; k<model->muscleGroup(i).muscle(j).pathModifier().nbObjects(); ++k) {
+                mxArray * viaName = mxCreateString(
+                    model->muscleGroup(i).muscle(j).pathModifier().object(k).name().c_str()); // Recueillir le nom du muscle
                 mxSetCell(viaNames, k, viaName); // Les mettres une cellule
             }
-            mxSetCell(viaNamesByMuscles, j,
-                      viaNames); // Mettre la matrice de viapoints dans une matrice
+            mxSetCell(viaNamesByMuscles, j, viaNames); // Mettre la matrice de viapoints dans une matrice
         }
         // Mettre les groupNames dans la variable de sortie
         mxArray *groupNames = mxCreateString (model->muscleGroup(

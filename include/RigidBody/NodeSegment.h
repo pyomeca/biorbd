@@ -141,7 +141,13 @@ public:
     /// \brief Accessor to axes to remove
     /// \return The axes to remove
     ///
-    const std::vector<bool>& axes() const;
+    const std::vector<bool>& axesToRemove() const;
+
+    ///
+    /// \brief A vector of bool which is the opposite of axesToRemove
+    /// \return The axes to keep
+    ///
+    const std::vector<bool> axes() const;
 
     ///
     /// \brief To remove axis
@@ -160,6 +166,11 @@ public:
     /// \return If axis is kept or not
     ///
     bool isAxisKept(unsigned int) const;
+
+    ///
+    /// \brief Get all the indices of the axes to keep (X=0, Y=1, Z=2)
+    /// 
+    std::vector<int> availableAxesIndices() const;
 
     ///
     /// \brief Add an axis to remove
@@ -191,7 +202,7 @@ public:
     /// \brief Return the axes to removed
     /// \return The axes to removed
     ///
-    utils::String axesToRemove() const;
+    utils::String axesToRemoveAsString() const;
 
     ///
     /// \brief Return the number of axes to remove

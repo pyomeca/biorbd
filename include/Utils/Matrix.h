@@ -28,8 +28,8 @@ public:
     /// \brief Construct matrix from another Eigen matrix
     /// \param other The other Eigen matrix
     ///
-    template<typename OtherDerived> Matrix(const Eigen::MatrixBase<OtherDerived>&
-                                           other) :
+    template<typename OtherDerived> Matrix(
+        const Eigen::MatrixBase<OtherDerived>& other) :
         Eigen::MatrixXd(other) {}
 #endif
 #ifdef BIORBD_USE_CASADI_MATH

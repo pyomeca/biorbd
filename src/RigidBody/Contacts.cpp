@@ -2,12 +2,16 @@
 #include "RigidBody/Contacts.h"
 
 #include <rbdl/Kinematics.h>
+#include "BiorbdModel.h"
 #include "Utils/String.h"
 #include "Utils/Error.h"
 #include "Utils/Vector3d.h"
 #include "Utils/RotoTrans.h"
 #include "Utils/Rotation.h"
 #include "Utils/SpatialVector.h"
+#include "Utils/String.h"
+
+#include "RigidBody/ExternalForceSet.h"
 #include "RigidBody/Joints.h"
 #include "RigidBody/NodeSegment.h"
 #include "RigidBody/Segment.h"
@@ -15,6 +19,7 @@
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
 #include "RigidBody/GeneralizedTorque.h"
+
 
 using namespace BIORBD_NAMESPACE;
 
@@ -49,7 +54,9 @@ unsigned int rigidbody::Contacts::AddConstraint(
     unsigned int body_id,
     const utils::Vector3d& body_point,
     const utils::Vector3d& world_normal,
-    const utils::String& name)
+    const utils::String& name,
+    const utils::String& parentName
+)
 {
     ++*m_nbreConstraint;
 
@@ -68,15 +75,16 @@ unsigned int rigidbody::Contacts::AddConstraint(
         axis += "z";
     }
 
-    m_rigidContacts->push_back(NodeSegment(body_point, name, "",true,false, axis.c_str(),body_id));
-    return RigidBodyDynamics::ConstraintSet::AddContactConstraint(body_id,
-            body_point, world_normal, name.c_str());
+    m_rigidContacts->push_back(NodeSegment(body_point, name, parentName,true,false, swapAxes(axis),body_id));
+    return RigidBodyDynamics::ConstraintSet::AddContactConstraint(body_id, body_point, world_normal, name.c_str());
 }
+
 unsigned int rigidbody::Contacts::AddConstraint(
     unsigned int body_id,
     const utils::Vector3d& body_point,
     const utils::String& axis,
-    const utils::String& name)
+    const utils::String& name,
+    const utils::String& parentName)
 {
     unsigned int ret(0);
     for (unsigned int i=0; i<axis.length(); ++i) {
@@ -97,7 +105,8 @@ unsigned int rigidbody::Contacts::AddConstraint(
             utils::Error::raise("Wrong axis!");
         }
     }
-    m_rigidContacts->push_back(NodeSegment(body_point, name, "",true,false, axis,body_id));
+    
+    m_rigidContacts->push_back(NodeSegment(body_point, name, parentName, true, false, swapAxes(axis), body_id));
     return ret;
 }
 
@@ -124,13 +133,21 @@ unsigned int rigidbody::Contacts::AddLoopConstraint(
 }
 
 std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForces(
-        const rigidbody::GeneralizedCoordinates &Q,
-        const rigidbody::GeneralizedVelocity &Qdot,
-        const rigidbody::GeneralizedTorque &Tau,
-         std::vector<utils::SpatialVector> *f_ext
-        )
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& Qdot,
+    const rigidbody::GeneralizedTorque& Tau
+)
 {
-
+    rigidbody::ExternalForceSet forceSet(static_cast<BIORBD_NAMESPACE::Model&>(*this));
+    return calcLoopConstraintForces(Q, Qdot, Tau, forceSet);
+}
+std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForces(
+    const rigidbody::GeneralizedCoordinates &Q,
+    const rigidbody::GeneralizedVelocity &Qdot,
+    const rigidbody::GeneralizedTorque &Tau,
+    rigidbody::ExternalForceSet &externalForces
+)
+{
     // all in the world frame
     bool resolveAllInRootFrame = true;
 
@@ -142,10 +159,10 @@ std::vector< utils::SpatialVector > rigidbody::Contacts::calcLoopConstraintForce
     // retrieve the model and the contacts
     rigidbody::Contacts CS = dynamic_cast<rigidbody::Contacts*>(this)->getConstraints();
     rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
-    model.ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS, f_ext);
+    model.ForwardDynamicsConstraintsDirect(Q, Qdot, Tau, CS, externalForces);
 
     std::vector< utils::SpatialVector > output;
-    for (int i=0; i<*m_nbLoopConstraint ; i++) {
+    for (int i=0; i<static_cast<int>(*m_nbLoopConstraint); i++) {
         constraintBodyIdsOutput.clear();
         updatedConstraintBodyFramesOutput.clear();
         updatedConstraintForcesOutput.clear();
@@ -229,32 +246,6 @@ utils::String rigidbody::Contacts::contactName(unsigned int i)
     utils::Error::check(i<*m_nbreConstraint,
                                 "Idx for contact names is too high..");
     return RigidBodyDynamics::ConstraintSet::name[i];
-}
-
-std::vector<int> rigidbody::Contacts::rigidContactAxisIdx(unsigned int contact_idx) const
-{
-    std::vector<int> list;
-
-    // Assuming that this is also a Joints type (via BiorbdModel)
-    const rigidbody::Joints &model =
-        dynamic_cast<const rigidbody::Joints &>(*this);
-
-    const utils::String& axis = rigidContact(contact_idx).axesToRemove();
-
-    for (unsigned int i=0; i<axis.length(); ++i) {
-
-        if      (axis.tolower()[i] == 'x'){
-            list.push_back(0);
-        }
-        else if (axis.tolower()[i] == 'y'){
-            list.push_back(1);
-        }
-        else if (axis.tolower()[i] == 'z'){
-            list.push_back(2);
-        }
-
-    }
-    return list;
 }
 
 
@@ -451,20 +442,18 @@ const rigidbody::NodeSegment &rigidbody::Contacts::rigidContact(unsigned int idx
 
 int rigidbody::Contacts::nbRigidContacts() const
 {
-    return m_rigidContacts->size();
+    return static_cast<int>(m_rigidContacts->size());
 }
 
 int rigidbody::Contacts::contactSegmentBiorbdId(
         int idx) const
 {
-    utils::Error::check(idx < nbRigidContacts(),
-                                "Idx for rigid contact Segment Id is too high..");
+    utils::Error::check(idx < nbRigidContacts(), "Idx for rigid contact Segment Id is too high..");
 
     // Assuming that this is also a joint type (via BiorbdModel)
-    const rigidbody::Joints &model = dynamic_cast<const rigidbody::Joints &>(*this);
-
     const rigidbody::NodeSegment& c = rigidContact(idx);
 
+    const rigidbody::Joints &model = dynamic_cast<const rigidbody::Joints &>(*this);
     return model.getBodyRbdlIdToBiorbdId(c.parentId());
 }
 
@@ -485,98 +474,11 @@ std::vector<size_t> rigidbody::Contacts::segmentRigidContactIdx(
     return indices;
 }
 
-std::vector<RigidBodyDynamics::Math::SpatialVector>* rigidbody::Contacts::rigidContactToSpatialVector(
-        const GeneralizedCoordinates& Q,
-        std::vector<utils::Vector> *f_contacts,
-        bool updateKin)
-{
-    if (!f_contacts){
-        return nullptr;
-    }
-
-    std::vector<utils::SpatialVector> sp_tp = rigidContactToSpatialVector(Q, *f_contacts, updateKin);
-    if (sp_tp.size() == 0) {
-        return nullptr;
-    }
-
-
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* out = new std::vector<RigidBodyDynamics::Math::SpatialVector>();
-    for (auto& sp : sp_tp) {
-        out->push_back(sp);
-    }
-    return out;
-}
-
-std::vector<utils::SpatialVector> rigidbody::Contacts::rigidContactToSpatialVector(
-        const GeneralizedCoordinates& Q,
-        std::vector<utils::Vector> f_contacts,
-        bool updateKin)
-{
-
-    std::vector<utils::SpatialVector> out = std::vector<utils::SpatialVector>();
-    if (f_contacts.size() == 0 || nbRigidContacts() == 0) {
-        return out;
-    }
-
-    // Assuming that this is also a joint type (via BiorbdModel)
-    rigidbody::Joints& model = dynamic_cast<rigidbody::Joints&>(*this);
-
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-    if (updateKin) {
-        model.UpdateKinematicsCustom(&Q, nullptr, nullptr);
-        updateKin = false;
-    }
-
-    utils::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
-    out.push_back(sp_zero);
-    for (size_t i = 0; i < model.nbSegment(); ++i){
-
-        unsigned int nbRigidContactSegment = segmentRigidContactIdx(i).size();
-        utils::SpatialVector tp(0.,0.,0.,0.,0.,0.);
-
-        for (size_t j = 0; j < nbRigidContactSegment; ++j)
-        {
-            // Index of rigid contact
-            unsigned int contact_index = segmentRigidContactIdx(i)[j];
-            // Find the application point of the force
-            utils::Vector3d x = rigidContact(Q, contact_index, updateKin);
-            // Find the list of sorted index of normal enabled in .bioMod
-            std::vector<int> rca_idx = rigidContactAxisIdx(contact_index);
-            // Add the contribution of the force of this point
-            tp += computeForceAtOrigin(x, rca_idx, f_contacts[contact_index]);
-        }
-
-        // Put all the force at zero before the last dof of the segment
-        for (int j = 0; j < static_cast<int>(model.segment(i).nbDof()) - 1; ++j){
-            out.push_back(sp_zero);
-        }
-        // Put all the force on the last dof of the segment
-        out.push_back(tp);
-    }
-    return out;
-}
-
-utils::SpatialVector rigidbody::Contacts::computeForceAtOrigin(
-        utils::Vector3d applicationPoint,
-        std::vector<int> sortedAxisIndex,
-        utils::Vector f_contact)
-{
-
-    utils::Vector3d force(0., 0., 0.);
-
-    for  (size_t j = 0; j < sortedAxisIndex.size(); ++j)
-    {
-        // Fill only if contact normal is enabled in .bioMod
-        // sorted in .BioMod
-        unsigned int cur_axis=sortedAxisIndex[j];
-        force.block(cur_axis, 0, 1, 1) = f_contact.block(j, 0, 1, 1);
-    }
-
-    utils::SpatialVector out(0., 0., 0., 0., 0., 0.);
-    out.block(0, 0, 3, 1) = force.cross(- applicationPoint); // Transport to Origin (Bour's formula)
-    out.block(3, 0, 3, 1) = force;
-
+utils::String rigidbody::Contacts::swapAxes(
+    const utils::String& axesToSwap
+) const {
+    utils::String out;
+    std::string reference = "xyz";
+    std::set_difference(reference.begin(), reference.end(), axesToSwap.begin(), axesToSwap.end(), std::back_inserter(out));
     return out;
 }

@@ -7,10 +7,10 @@
 #include "class_handle.h"
 #include "processArguments.h"
 #include "Utils/Vector3d.h"
-#include "Muscles/WrappingHalfCylinder.h"
-#include "Muscles/MuscleGroup.h"
-#include "Muscles/Muscle.h"
-#include "Muscles/PathModifiers.h"
+#include "InternalForces/WrappingHalfCylinder.h"
+#include "InternalForces/Muscles/MuscleGroup.h"
+#include "InternalForces/Muscles/Muscle.h"
+#include "InternalForces/PathModifiers.h"
 
 void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
                            int nrhs, const mxArray*prhs[] )
@@ -49,8 +49,8 @@ void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
 
                 // Si le nombre de wrap est > 0, c'est qu'il n'y a pas de viapoints et il n'y a qu'UN wrap
                 if (model->muscleGroup(i).muscle(j).pathModifier().nbWraps() > 0) {
-                    const BIORBD_NAMESPACE::muscles::WrappingObject& wrappingObject(
-                        dynamic_cast<const BIORBD_NAMESPACE::muscles::WrappingObject&>(
+                    const BIORBD_NAMESPACE::internal_forces::WrappingObject& wrappingObject(
+                        dynamic_cast<const BIORBD_NAMESPACE::internal_forces::WrappingObject&>(
                             model->muscleGroup(0).muscle(0).pathModifier().object(0)));
 
                     // De quel type
@@ -62,8 +62,8 @@ void Matlab_MusclesPoints( int nlhs, mxArray *plhs[],
 
                     // Quel est sa dimension
                     if (type == BIORBD_NAMESPACE::utils::NODE_TYPE::WRAPPING_HALF_CYLINDER) {
-                        const BIORBD_NAMESPACE::muscles::WrappingHalfCylinder& cylinder(
-                            dynamic_cast<const BIORBD_NAMESPACE::muscles::WrappingHalfCylinder&>
+                        const BIORBD_NAMESPACE::internal_forces::WrappingHalfCylinder& cylinder(
+                            dynamic_cast<const BIORBD_NAMESPACE::internal_forces::WrappingHalfCylinder&>
                             (wrappingObject));
                         wrap_dim1.push_back(cylinder.radius());
                         wrap_dim2.push_back(cylinder.length());

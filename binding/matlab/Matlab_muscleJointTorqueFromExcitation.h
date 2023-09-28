@@ -5,8 +5,8 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
-#include "Muscles/MuscleGroup.h"
-#include "Muscles/Muscle.h"
+#include "InternalForces/Muscles/MuscleGroup.h"
+#include "InternalForces/Muscles/Muscle.h"
 
 void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
         int nrhs, const mxArray*prhs[] )
@@ -33,7 +33,7 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
     std::vector<BIORBD_NAMESPACE::rigidbody::GeneralizedVelocity> QDot = getParameterQdot(
                 prhs, 3, nQdot);
     // Recevoir muscleStates
-    std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::muscles::State>>> s =
+    std::vector<std::vector<std::shared_ptr<BIORBD_NAMESPACE::internal_forces::muscles::State>>> s =
         getParameterMuscleStateExcitation(prhs,4,
                                           model->nbMuscleTotal());
 
@@ -82,7 +82,7 @@ void Matlab_muscleJointTorqueFromExcitation( int nlhs, mxArray *plhs[],
         unsigned int iMus = 0;
         for (unsigned int k=0; k<model->nbMuscleGroups(); ++k)
             for (unsigned int j=0; j<model->muscleGroup(k).nbMuscles(); ++j) {
-                std::dynamic_pointer_cast<BIORBD_NAMESPACE::muscles::StateDynamics>(s[i][iMus])
+                std::dynamic_pointer_cast<BIORBD_NAMESPACE::internal_forces::muscles::StateDynamics>(s[i][iMus])
                 ->timeDerivativeActivation(model->muscleGroup(k).muscle(j).characteristics(),
                                            true);
                 ++iMus;

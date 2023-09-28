@@ -30,8 +30,9 @@ rigidbody::NodeSegment::NodeSegment(
     setType();
 }
 
-rigidbody::NodeSegment::NodeSegment(const utils::Vector3d
-        &other) :
+rigidbody::NodeSegment::NodeSegment(
+    const utils::Vector3d &other
+) :
     utils::Vector3d(other),
     m_axesRemoved(std::make_shared<std::vector<bool>>(3)),
     m_nbAxesToRemove(std::make_shared<int>(0)),
@@ -136,13 +137,21 @@ int rigidbody::NodeSegment::parentId() const
     return *m_id;
 }
 
-const std::vector<bool> &rigidbody::NodeSegment::axes() const
+const std::vector<bool> &rigidbody::NodeSegment::axesToRemove() const
 {
     return *m_axesRemoved;
 }
 
-rigidbody::NodeSegment rigidbody::NodeSegment::removeAxes()
-const
+const std::vector<bool> rigidbody::NodeSegment::axes() const
+{
+    std::vector<bool> out = std::vector<bool>();
+    for (int i = 0; i < static_cast<int>(m_axesRemoved->size()); i++) {
+        out.push_back(!axesToRemove()[i]);
+    }
+    return out;
+}
+
+rigidbody::NodeSegment rigidbody::NodeSegment::removeAxes() const
 {
     rigidbody::NodeSegment pos(*this);
     for (unsigned int i=0; i<m_axesRemoved->size(); ++i)
@@ -160,6 +169,18 @@ bool rigidbody::NodeSegment::isAxisRemoved(unsigned int i) const
 bool rigidbody::NodeSegment::isAxisKept(unsigned int i) const
 {
     return !isAxisRemoved(i);
+}
+
+
+std::vector<int> rigidbody::NodeSegment::availableAxesIndices() const
+{
+    std::vector<int> list;
+    for (unsigned int i = 0; i < 3; ++i) {
+        if (isAxisKept(i)) {
+            list.push_back(i);
+        }
+    }
+    return list;
 }
 
 int rigidbody::NodeSegment::nbAxesToRemove() const
@@ -212,7 +233,7 @@ void rigidbody::NodeSegment::addAxesToRemove(const
     }
 }
 
-utils::String rigidbody::NodeSegment::axesToRemove() const
+utils::String rigidbody::NodeSegment::axesToRemoveAsString() const
 {
     utils::String axes;
     if (isAxisRemoved(0)) {

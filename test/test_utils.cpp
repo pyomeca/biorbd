@@ -3,6 +3,7 @@
 #include <rbdl/Dynamics.h>
 
 #include "BiorbdModel.h"
+
 #include "Utils/String.h"
 #include "Utils/Path.h"
 #include "Utils/Matrix.h"
@@ -10,13 +11,27 @@
 #include "Utils/RotoTrans.h"
 #include "Utils/RotoTransNode.h"
 #include "Utils/Rotation.h"
+#include "Utils/SpatialVector.h"
 #include "Utils/Quaternion.h"
 
 #include "RigidBody/GeneralizedCoordinates.h"
+#include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/NodeSegment.h"
+#include "RigidBody/SoftContactSphere.h"
 static double requiredPrecision(1e-10);
 
 using namespace BIORBD_NAMESPACE;
+
+
+// Load some models
+#ifdef MODULE_ACTUATORS
+static std::string
+modelPathForGeneralTesting("models/pyomecaman_withActuators.bioMod");
+#else // MODULE_ACTUATORS
+static std::string modelPathForGeneralTesting("models/pyomecaman.bioMod");
+#endif // MODULE_ACTUATORS
+
+// Start the tests
 
 TEST(ShallowCopy, DeepCopy)
 {
@@ -383,49 +398,56 @@ TEST(Vector3d, Copy)
     }
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
 TEST(Matrix, Copy)
 {
-    utils::Matrix MainMatrix(4, 4);
-    FILL_MATRIX(MainMatrix, std::vector<double>({0, 1, 2, 3,
+    DECLARE_MATRIX(mainMatrix, 4, 4);
+    FILL_MATRIX(
+        mainMatrix, 
+        std::vector<double>(
+            {
+                0, 1, 2, 3,
                 4, 5, 6, 7,
                 8, 9, 10, 11,
                 12, 13, 14, 15
-                                                }));
-    utils::Matrix DeepCopy(MainMatrix);
+            }
+        )
+    );
+    utils::Matrix shallowCopy(mainMatrix);
 
     // Test for the values
     {
-        SCALAR_TO_DOUBLE(mainMat, MainMatrix(0, 0));
-        SCALAR_TO_DOUBLE(deepCopy, DeepCopy(0, 0));
+        SCALAR_TO_DOUBLE(mainMat, mainMatrix(0, 0));
+        SCALAR_TO_DOUBLE(deepCopy, shallowCopy(0, 0));
         EXPECT_NEAR(mainMat, 0, requiredPrecision);
         EXPECT_NEAR(deepCopy, 0, requiredPrecision);
     }
     {
-        SCALAR_TO_DOUBLE(mainMat, MainMatrix(1, 0));
-        SCALAR_TO_DOUBLE(deepCopy, DeepCopy(1, 0));
+        SCALAR_TO_DOUBLE(mainMat, mainMatrix(1, 0));
+        SCALAR_TO_DOUBLE(deepCopy, shallowCopy(1, 0));
         EXPECT_NEAR(mainMat, 4, requiredPrecision);
         EXPECT_NEAR(deepCopy, 4, requiredPrecision);
     }
     {
-        SCALAR_TO_DOUBLE(mainMat, MainMatrix(0, 1));
-        SCALAR_TO_DOUBLE(deepCopy, DeepCopy(0, 1));
+        SCALAR_TO_DOUBLE(mainMat, mainMatrix(0, 1));
+        SCALAR_TO_DOUBLE(deepCopy, shallowCopy(0, 1));
         EXPECT_NEAR(mainMat, 1, requiredPrecision);
         EXPECT_NEAR(deepCopy, 1, requiredPrecision);
     }
     {
-        SCALAR_TO_DOUBLE(mainMat, MainMatrix(1, 1));
-        SCALAR_TO_DOUBLE(deepCopy, DeepCopy(1, 1));
+        SCALAR_TO_DOUBLE(mainMat, mainMatrix(1, 1));
+        SCALAR_TO_DOUBLE(deepCopy, shallowCopy(1, 1));
         EXPECT_NEAR(mainMat, 5, requiredPrecision);
         EXPECT_NEAR(deepCopy, 5, requiredPrecision);
     }
 
     // Change the values of Copy
-    DeepCopy.setZero();
+    shallowCopy.setZero();
 
     // Data are NOT shallow copy, therefore the parent should keep its values
     {
-        SCALAR_TO_DOUBLE(mainMat, MainMatrix(2, 2));
-        SCALAR_TO_DOUBLE(deepCopy, DeepCopy(2, 2));
+        SCALAR_TO_DOUBLE(mainMat, mainMatrix(2, 2));
+        SCALAR_TO_DOUBLE(deepCopy, shallowCopy(2, 2));
         EXPECT_NEAR(mainMat, 10, requiredPrecision);
         EXPECT_NEAR(deepCopy, 0, requiredPrecision);
     }
@@ -433,18 +455,24 @@ TEST(Matrix, Copy)
 
 TEST(Matrix, unitTest)
 {
-    utils::Matrix mat1(3, 4);
-    FILL_MATRIX(mat1, std::vector<double>({4.1, 5.1, 6.1, 7.1,
-                                           8.1, 9.1, 10.1, 11.1,
-                                           12.1, 13.1, 14.1, 15.1
-                                          }));
+    DECLARE_MATRIX(mat1, 3, 4);
+    FILL_MATRIX(mat1, std::vector<double>(
+        {
+            4.1, 5.1, 6.1, 7.1,
+            8.1, 9.1, 10.1, 11.1,
+            12.1, 13.1, 14.1, 15.1
+            
+        }
+    ));
 
     {
-        utils::Matrix mat2(3, 4);
-        FILL_MATRIX(mat2, std::vector<double>({4.1, 5.1, 6.1, 7.1,
-                                               8.1, 9.1, 10.1, 11.1,
-                                               12.1, 13.1, 14.1, 15.1
-                                              }));
+        DECLARE_MATRIX(mat2, 3, 4);
+        FILL_MATRIX(mat2, std::vector<double>(
+            {
+                4.1, 5.1, 6.1, 7.1,
+                8.1, 9.1, 10.1, 11.1,
+                12.1, 13.1, 14.1, 15.1    
+            }));
 
         utils::Matrix sum(mat1 + mat2);
         std::vector<double> expectedSum = {
@@ -465,7 +493,7 @@ TEST(Matrix, unitTest)
     }
 
     {
-        utils::Matrix mat2(4, 2);
+        DECLARE_MATRIX(mat2, 4, 2);
         FILL_MATRIX(mat2, std::vector<double>({
             4.1, 5.1,
             6.1, 7.1,
@@ -491,7 +519,7 @@ TEST(Matrix, unitTest)
     }
 
     {
-        utils::Vector vec(4);
+        DECLARE_VECTOR(vec, 4);
         FILL_VECTOR(vec, std::vector<double>({4.1, 5.1, 6.1, 7.1}));
         utils::Vector mult(mat1 * vec);
 
@@ -507,7 +535,6 @@ TEST(Matrix, unitTest)
     }
 }
 
-#ifndef BIORBD_USE_CASADI_MATH
 TEST(matrix3d, unitTest){
     utils::Matrix3d R(1, 2, 3,
                       4, 5, 6,
@@ -823,7 +850,7 @@ TEST(ModelReading, equations)
     rigidbody::GeneralizedCoordinates Q(m);
     Q.setZero();
     std::vector<utils::Vector3d> mesh(m.meshPoints(Q, 0, true));
-    for (auto node : mesh) {
+    for (auto& node : mesh) {
         SCALAR_TO_DOUBLE(nodeX, node.x());
         SCALAR_TO_DOUBLE(nodeY, node.y());
         EXPECT_DOUBLE_EQ(nodeX, nodeY);
@@ -1233,9 +1260,11 @@ TEST(Quaternion, otherOperations)
         EXPECT_NEAR(qdotY, 12, requiredPrecision);
         EXPECT_NEAR(qdotZ, 7, requiredPrecision);
         EXPECT_NEAR(qdotStab, 6, requiredPrecision);
-    } {
+    } 
+#ifndef BIORBD_USE_CASADI_MATH
+    {
         utils::Quaternion q1(1, 0, 0, 0, 5);
-        utils::Vector v(3);
+        DECLARE_VECTOR(v, 3);
         FILL_VECTOR(v, std::vector<double>({1,2,3}));
         q1.derivate(v);
         {
@@ -1269,6 +1298,7 @@ TEST(Quaternion, otherOperations)
             EXPECT_NEAR(q2Stab, 5, requiredPrecision);
         }
     }
+#endif
 }
 
 TEST(Quaternion, velocities)
@@ -1354,10 +1384,11 @@ TEST(Vector, operation)
     }
 }
 
+#ifndef BIORBD_USE_CASADI_MATH
 TEST(Vector, norm)
 {
     {
-        utils::Vector v(4);
+        DECLARE_VECTOR(v, 4);
         FILL_VECTOR(v, std::vector<double>({1.1, 1.2, 1.3, 1.4}));
 
         SCALAR_TO_DOUBLE(val2false, v.norm(2, false));
@@ -1370,7 +1401,7 @@ TEST(Vector, norm)
 TEST(Vector, normGradient)
 {
     {
-        utils::Vector v(4);
+        DECLARE_VECTOR(v, 4);
         FILL_VECTOR(v, std::vector<double>({1.1, 1.2, 1.3, 1.4}));
 
         utils::Vector nG(v.normGradient(2, false));
@@ -1384,3 +1415,5 @@ TEST(Vector, normGradient)
         }
     }
 }
+
+#endif 

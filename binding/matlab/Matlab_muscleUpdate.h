@@ -5,9 +5,9 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
-#include "Muscles/MuscleGroup.h"
-#include "Muscles/Muscle.h"
-#include "Muscles/PathModifiers.h"
+#include "InternalForces/Muscles/MuscleGroup.h"
+#include "InternalForces/Muscles/Muscle.h"
+#include "InternalForces/PathModifiers.h"
 
 void Matlab_muscleUpdate( int, mxArray *[],
                           int nrhs, const mxArray*prhs[] )
@@ -57,10 +57,9 @@ void Matlab_muscleUpdate( int, mxArray *[],
     // Mettre le nombre nécessaire dans chaque case
     int cmpMus(0);
     for (unsigned int i = 0; i<model->nbMuscleGroups(); ++i) {
-        BIORBD_NAMESPACE::muscles::MuscleGroup grMus(model->muscleGroup(i));
+        BIORBD_NAMESPACE::internal_forces::muscles::MuscleGroup grMus(model->muscleGroup(i));
         for (unsigned int j = 0; j<grMus.nbMuscles(); ++j) {
-            nPoints(cmpMus) = grMus.muscle(j).pathModifier().nbObjects() +
-                              2; // nombre d'objet + origine + insertion
+            nPoints(cmpMus) = grMus.muscle(j).pathModifier().nbObjects() + 2; // nombre d'objet + origine + insertion
             ++cmpMus;
         }
     }

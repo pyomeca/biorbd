@@ -48,18 +48,6 @@ public:
     void DeepCopy(const SoftContacts& other);
 
     ///
-    /// \brief Get the soft contacts in a list of spatial vector of dimension 6xNdof
-    /// \param Q The Generalized coordinates
-    /// \param QDot The Generalized velocities
-    /// \param updateKin If the kinematics should be updated
-    /// \return The soft contacts
-    ///
-    std::vector<RigidBodyDynamics::Math::SpatialVector>* softContactToSpatialVector(
-            const GeneralizedCoordinates& Q,
-            const GeneralizedVelocity& QDot,
-            bool updateKin = true);
-
-    ///
     /// \brief Return the name of the soft contact
     /// \param i The index of the contact
     /// \return The name of the soft contact
@@ -166,7 +154,7 @@ public:
     /// \brief Return the number of contacts
     /// \return The number of contacts
     ///
-    unsigned int nbSoftContacts() const;
+    size_t nbSoftContacts() const;
 
     ///
     /// \brief Return all the soft contacts indices of a segment

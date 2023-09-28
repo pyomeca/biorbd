@@ -68,6 +68,10 @@ BIORBD_NAMESPACE::utils::String getVersion();
 
 namespace BIORBD_NAMESPACE
 {
+    namespace rigidbody {
+        class ExternalForceSet;
+    }
+
 ///
 /// \brief The actual musculoskeletal model that holds everything in biorbd
 ///
@@ -103,6 +107,16 @@ public:
     ///
     Model(
         const utils::Path& path);
+
+    ///
+    /// \brief Get an external forces set designed for the current model
+    /// \param useLinearForces If this force set has external forces 
+    /// \param useSoftContacts If this force set has soft contacts
+    /// 
+    rigidbody::ExternalForceSet externalForceSet(
+        bool useLinearForces = true,
+        bool useSoftContacts = true
+    );
 
 private:
     std::shared_ptr<utils::Path> m_path;

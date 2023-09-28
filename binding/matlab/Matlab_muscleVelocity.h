@@ -5,8 +5,8 @@
 #include "BiorbdModel.h"
 #include "class_handle.h"
 #include "processArguments.h"
-#include "Muscles/Muscle.h"
-#include "Muscles/MuscleGroup.h"
+#include "InternalForces/Muscles/Muscle.h"
+#include "InternalForces/Muscles/MuscleGroup.h"
 
 void Matlab_muscleVelocity( int, mxArray *plhs[],
                             int nrhs, const mxArray*prhs[] )

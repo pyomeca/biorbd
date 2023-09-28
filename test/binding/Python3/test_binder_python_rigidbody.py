@@ -138,10 +138,9 @@ def test_forward_dynamics_with_external_forces(brbd):
     tau = np.array([i * 1.1 for i in range(m.nbQ())])
 
     # With external forces
-    sv1 = np.array(
-        ((11.1, 22.2, 33.3, 44.4, 55.5, 66.6), (11.1 * 2, 22.2 * 2, 33.3 * 2, 44.4 * 2, 55.5 * 2, 66.6 * 2))
-    ).T
-    f_ext = brbd.to_spatial_vector(sv1)
+    external_forces = m.externalForceSet()
+    external_forces.add("PiedD", np.array((11.1, 22.2, 33.3, 44.4, 55.5, 66.6)))
+    external_forces.add("PiedG", np.array((11.1 * 2, 22.2 * 2, 33.3 * 2, 44.4 * 2, 55.5 * 2, 66.6 * 2)))
 
     if brbd.currentLinearAlgebraBackend() == 1:
         from casadi import MX
@@ -149,14 +148,16 @@ def test_forward_dynamics_with_external_forces(brbd):
         q_sym = MX.sym("q", m.nbQ(), 1)
         qdot_sym = MX.sym("qdot", m.nbQdot(), 1)
         tau_sym = MX.sym("tau", m.nbGeneralizedTorque(), 1)
-        forward_dynamics = brbd.to_casadi_func("ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, f_ext)
+        forward_dynamics = brbd.to_casadi_func(
+            "ForwardDynamics", m.ForwardDynamics, q_sym, qdot_sym, tau_sym, external_forces
+        )
 
         qddot = forward_dynamics(q, qdot, tau)
         qddot = np.array(qddot)[:, 0]
 
     elif brbd.currentLinearAlgebraBackend() == 0:
         # if Eigen backend is used
-        qddot = m.ForwardDynamics(q, qdot, tau, f_ext).to_array()
+        qddot = m.ForwardDynamics(q, qdot, tau, external_forces).to_array()
     else:
         raise NotImplementedError("Backend not implemented in test")
 
