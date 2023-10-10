@@ -34,6 +34,8 @@ namespace std {
 %template(VecVecInt) std::vector<std::vector<int>>;
 %template(VecUnsignedInt) std::vector<unsigned int>;
 %template(VecVecUnsignedInt) std::vector<std::vector<unsigned int>>;
+%template(VecSizeT) std::vector<size_t>;
+%template(VecVecSizeT) std::vector<std::vector<size_t>>;
 }
 
 // Includes all neceressary files from the API
