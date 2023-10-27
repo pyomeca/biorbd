@@ -187,6 +187,31 @@ public:
     unsigned int getDofIdx(
         const utils::String &dofName) const;
 
+    /// 
+    /// \brief Traverse the model hierarchy until it gets to a segment with a dof. If the 
+    /// current segment has at least one dof, the current segment is returned
+    /// \return The first the first segment with a dof in the hierarchy
+    const rigidbody::Segment& findFirstSegmentWithDof(
+        const rigidbody::Joints& model) const;
+
+    ///
+    /// \brief Returns the first index of the segment in the Generalized Coordinates vector
+    /// \return The index of the first dof in the Generalized Coordinates vector
+    /// 
+    /// Warning: if the current segment does not have any dof, it returns the first index of the
+    /// parent segment
+    unsigned int getFirstDofIndexInGeneralizedCoordinates(
+        const rigidbody::Joints& model) const;
+
+    ///
+    /// \brief Returns the last index of the segment in the Generalized Coordinates vector
+    /// \return The index of the last dof in the Generalized Coordinates vector
+    /// 
+    /// Warning: if the current segment does not have any dof, it returns the last index of the
+    /// parent segment
+    unsigned int getLastDofIndexInGeneralizedCoordinates(
+        const rigidbody::Joints& model) const;
+
     ///
     /// \brief Return the name of the specified DoF
     /// \return The name of the specified DoF
@@ -347,12 +372,9 @@ protected:
         const utils::String &seqT,
         const utils::String &seqR);
 
-    std::shared_ptr<std::vector<unsigned int>>
-                                            m_sequenceTrans; ///< Translation sequence
-    std::shared_ptr<std::vector<unsigned int>>
-                                            m_sequenceRot; ///< Euler rotation sequence
-    std::shared_ptr<std::vector<utils::String>>
-            m_nameDof; ///< To store the DoF names
+    std::shared_ptr<std::vector<unsigned int>> m_sequenceTrans; ///< Translation sequence
+    std::shared_ptr<std::vector<unsigned int>> m_sequenceRot; ///< Euler rotation sequence
+    std::shared_ptr<std::vector<utils::String>> m_nameDof; ///< To store the DoF names
 
     ///
     /// \brief Function that adds the segment to the RBDL body set

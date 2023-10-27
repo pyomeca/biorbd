@@ -1010,6 +1010,19 @@ TEST(Segment, nameDof)
     EXPECT_THROW(model.segment(128), std::runtime_error);
 }
 
+TEST(Segment, findDofs) {
+
+    Model model(modelPathForGeneralTesting);
+    auto& segment = model.segment("Tete");
+
+    const auto& segmentWithDof = segment.findFirstSegmentWithDof(model);
+    EXPECT_STREQ(segmentWithDof.name().c_str(), "Pelvis");
+
+    EXPECT_EQ(segment.getFirstDofIndexInGeneralizedCoordinates(model), 0);
+    EXPECT_EQ(segment.getLastDofIndexInGeneralizedCoordinates(model), 2);
+
+}
+
 static std::string modelPathForRTsane("models/IMUandCustomRT/RT_sane.bioMod");
 static std::string
 modelPathForRTwrong1("models/IMUandCustomRT/RT_wrong1.bioMod");
@@ -1983,8 +1996,10 @@ TEST(ExternalForces, toRbdl_LocalForcesOnly)
 {
     Model model(modelWithRigidContactsExternalForces);
     DECLARE_GENERALIZED_COORDINATES(Q, model);
+    DECLARE_GENERALIZED_VELOCITY(Qdot, model);
+    DECLARE_GENERALIZED_ACCELERATION(Qddot, model);
     FILL_VECTOR(Q, std::vector<double>({ -2.01, -3.01, -3.01, 0.1 }));
-
+    
     rigidbody::ExternalForceSet externalForces = model.externalForceSet(false, false);
     externalForces.addInSegmentReferenceFrame(
         "Seg1", RigidBodyDynamics::Math::SpatialVector(1, 2, 3, 4, 5, 6), utils::Vector3d(1, 2, 3)
@@ -1993,6 +2008,7 @@ TEST(ExternalForces, toRbdl_LocalForcesOnly)
 
     RigidBodyDynamics::Math::SpatialVector sp_zero(0, 0, 0, 0, 0, 0);
     RigidBodyDynamics::Math::SpatialVector sp_dof4(-3.7077892190493884, 5.4142479088233468, 3.9325084878828047, 4.5790171609930725, 5, 5.5706913250808423);
+
     std::vector<RigidBodyDynamics::Math::SpatialVector> sp_expected;
     sp_expected.push_back(sp_zero); // Dof 0
     sp_expected.push_back(sp_zero); // Dof 1

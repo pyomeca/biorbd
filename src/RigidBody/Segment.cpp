@@ -579,5 +579,42 @@ unsigned int rigidbody::Segment::getDofIdx(
 
 }
 
+const rigidbody::Segment& rigidbody::Segment::findFirstSegmentWithDof(
+    const rigidbody::Joints& model) const 
+{
+    const rigidbody::Segment* segment = this;
+  
+    do {
+        if (segment->nbDof() > 0) return *segment;
+        utils::Error::check(
+            segment->parent().compare("root"), 
+            "Could not find any dof for " + name() + " up to the root."
+        );
+        segment = &model.segment(segment->parent());
+    } while (true);
+}
+
+unsigned int rigidbody::Segment::getFirstDofIndexInGeneralizedCoordinates(
+    const rigidbody::Joints& model) const 
+{
+    const utils::String toCompare(findFirstSegmentWithDof(model).name());
+
+    // Start at root and descend the Generalized Coordinate vector until we get to the current segment
+    unsigned int dofCount(0); // Start 
+    for (int i = 0; i < static_cast<int>(model.nbSegment()); ++i) {
+        const rigidbody::Segment& segment(model.segment(i));
+
+        if (!segment.name().compare(toCompare)) return dofCount;
+        
+        dofCount += segment.nbDof();
+    }
+
+    throw std::runtime_error("Segment " + name() + " not found in the model");
+}
 
 
+unsigned int rigidbody::Segment::getLastDofIndexInGeneralizedCoordinates(
+    const rigidbody::Joints& model) const
+{
+    return getFirstDofIndexInGeneralizedCoordinates(model) + findFirstSegmentWithDof(model).nbDof() - 1;
+}
