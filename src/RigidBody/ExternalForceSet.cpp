@@ -135,7 +135,6 @@ std::vector<RigidBodyDynamics::Math::SpatialVector> rigidbody::ExternalForceSet:
     const rigidbody::GeneralizedCoordinates& Q,
     bool updateKin
 ) {
-
     if (m_useSoftContacts) throw std::runtime_error("useSoftContacts requires QDot when computing the Spatial Vectors");
     return computeRbdlSpatialVectors(Q, rigidbody::GeneralizedVelocity(m_model), updateKin);
 }
@@ -238,19 +237,17 @@ updateKin = true;
         const utils::SpatialVector& vector(pair.first);
         const utils::RotoTransNode& node(pair.second);
 
-        // Traverse the segment hierarchy from child to root until we get to a segment with at least one dof
+        // Traverse the segment hierarchy from root to child to root until we get to a segment with at least one dof
         // as it is not possible to add forces on segment without degree of freedom
-        int dofCount(0);
         const rigidbody::Segment* segment = &m_model.segment(node.parent());
-        const rigidbody::Segment* parentSegment = segment;
         utils::RotoTrans segmentRotoTrans = utils::RotoTrans::Identity();
         do {
-            utils::Error::check(parentSegment != nullptr, node.parent() + " should be attached to at least one segment with a degree of freedom.");
-            segment = parentSegment;
-            dofCount += segment->nbDof();
             segmentRotoTrans *= allGlobalJcs[m_model.getBodyBiorbdId(segment->name())];
-            parentSegment = !segment->parent().compare("root") ? nullptr : &m_model.segment(segment->parent());
-        } while(segment->nbDof() == 0);
+            
+            if (segment->nbDof() > 0) break;
+            utils::Error::check(segment->parent().compare("root"), node.parent() + " should be attached to at least one segment with a degree of freedom.");
+            segment = &m_model.segment(segment->parent());
+        } while(true);
         const utils::RotoTransNode nodeInGrf(segmentRotoTrans * node);
         
         const utils::Rotation& rotationInGrf(nodeInGrf.rot());
@@ -263,8 +260,9 @@ updateKin = true;
         utils::Vector3d momentInGrf(vector.moment());
         momentInGrf.applyRT(rotationInGrf);
 
-        // Transport the force to the global reference frame (Do not subtract 1 since 0 is the undeclared root)
-        out[dofCount] += transportAtOrigin(utils::SpatialVector(momentInGrf, forceInGrf), pointOfApplication);
+        // Transport the force to the global reference frame (Add 1 to account for the undeclared root)
+        int dofIndex = m_model.segment(node.parent()).getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
+        out[dofIndex] += transportAtOrigin(utils::SpatialVector(momentInGrf, forceInGrf), pointOfApplication);
     }
     return;
 }
@@ -285,10 +283,10 @@ void rigidbody::ExternalForceSet::combineTranslationalForces(
     // Do not waste time computing forces on empty vector
     if (m_translationalForces.size() == 0) return;
 
-    int dofCount(0);
     for (int i = 0; i < static_cast<int>(m_model.nbSegment()); ++i) {
         const rigidbody::Segment& segment(m_model.segment(i));
-        dofCount += segment.nbDof();
+        //  (Add 1 to account for the undeclared root
+        int dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
         
         for (auto& e : m_translationalForces) {    
             const rigidbody::NodeSegment& pointOfApplication = e.second;
@@ -306,7 +304,7 @@ void rigidbody::ExternalForceSet::combineTranslationalForces(
             );
             
             // Add the force to the force vector (do not subtract 1 because 0 is the base)
-            out[dofCount] += transportForceAtOrigin(force, pointOfApplicationInGlobal);
+            out[dofIndex] += transportForceAtOrigin(force, pointOfApplicationInGlobal);
         }
     }
 }
@@ -329,17 +327,17 @@ void rigidbody::ExternalForceSet::combineSoftContactForces(
     if (m_model.nbSoftContacts() == 0) return;
 
 
-    int dofCount(0);
     for (int i = 0; i < static_cast<int>(m_model.nbSegment()); ++i) {
         const rigidbody::Segment& segment(m_model.segment(i));
-        dofCount += segment.nbDof();
+        //  Add 1 to account for the undeclared root
+        int dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
     
         for (int j = 0; j < m_model.nbSoftContacts(); j++) {
             rigidbody::SoftContactNode& contact(m_model.softContact(j));
             if (contact.parent().compare(segment.name())) continue;
 
             // Add the force to the force vector (do not subtract 1 because 0 is the base)
-            out[dofCount] += contact.computeForceAtOrigin(m_model, Q, QDot, updateKin);
+            out[dofIndex] += contact.computeForceAtOrigin(m_model, Q, QDot, updateKin);
         }
     }
 }
