@@ -208,8 +208,17 @@ class InverseKinematics:
     def __init__(
         self,
         model,
-        marker_data: np.array,
+        marker_data: np.ndarray,
     ):
+        """
+        Parameters
+        ----------
+        model: biorbd.Model
+            The biorbd model loaded with biorbd Eigen backend
+        marker_data: np.ndarray
+            The position of the markers from the c3d of shape (nb_dim, nb_marker, nb_frame),
+            nb_marker should be equal to the number of markers in the model, unit should be in meters.
+        """
         self.biorbd_model = model
         self.marker_names = [
             self.biorbd_model.markerNames()[i].to_string() for i in range(len(self.biorbd_model.markerNames()))
