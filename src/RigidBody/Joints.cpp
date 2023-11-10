@@ -157,8 +157,7 @@ size_t rigidbody::Joints::AddSegment(
         RigidBodyDynamics::Math::SpatialTransform(referenceFrame.rot().transpose(),
                 referenceFrame.trans())
     );
-    if (this->GetBodyId(parentName.c_str()) ==
-            std::numeric_limits<size_t>::max()) {
+    if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max()) {
         *m_nbRoot +=
             tp.nbDof();    // If the segment name is "Root", add the number of DoF of root
     }
