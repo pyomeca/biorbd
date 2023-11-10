@@ -155,7 +155,7 @@ public:
     /// \brief Return the number of muscles in the group
     /// \return The number of muscles in the group
     ///
-    unsigned int nbMuscles() const;
+    size_t nbMuscles() const;
 
     ///
     /// \brief Return the muscles in the group
@@ -175,7 +175,7 @@ public:
     /// \return The muscle of a specific index
     ///
     Muscle& muscle(
-        unsigned int idx);
+        size_t idx);
 
     ///
     /// \brief Return the muscle of a specific index in the group
@@ -183,7 +183,7 @@ public:
     /// \return The muscle of a specific index
     ///
     const Muscle& muscle(
-        unsigned int idx) const;
+        size_t idx) const;
 
     ///
     /// \brief Return the muscle index

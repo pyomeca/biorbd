@@ -48,7 +48,7 @@ public:
     /// \param dofIdx Index of the DoF associated with passive torque
     ///
     PassiveTorque(
-        unsigned int dofIdx);
+        size_t dofIdx);
 
     ///
     /// \brief Construct passive torque
@@ -56,7 +56,7 @@ public:
     /// \param jointName The name of the parent joint
     ///
     PassiveTorque(
-        unsigned int dofIdx,
+        size_t dofIdx,
         const utils::String &jointName);
 
     ///
@@ -75,7 +75,7 @@ public:
     /// \brief Return the index of the DoF associated with passive torque
     /// \return The index of the DoF associated with passive torque
     ///
-    unsigned int index() const;
+    size_t index() const;
 
     ///
     /// \brief Return the type of the passive torque
@@ -97,7 +97,7 @@ protected:
 
     std::shared_ptr<TORQUE_TYPE> m_type; ///< The type of the passive torque
     std::shared_ptr<utils::String> m_jointName; ///< Name of the parent joint
-    std::shared_ptr<unsigned int> m_dofIdx;///< Index of the DoF associated with the passive torque
+    std::shared_ptr<size_t> m_dofIdx;///< Index of the DoF associated with the passive torque
 
 };
 

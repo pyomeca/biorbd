@@ -105,7 +105,7 @@ protected:
     ///
     static double evaluateEquation(
         std::vector<Equation> eq,
-        unsigned int math);
+        size_t math);
 
     ///
     /// \brief Prepare the mathematical symbols

@@ -97,7 +97,7 @@ void Reader::readModelFile(
 
     // Determine the file version
     file.readSpecificTag("version", main_tag);
-    unsigned int version(static_cast<unsigned int>(atoi(main_tag.c_str())));
+    size_t version(static_cast<size_t>(atoi(main_tag.c_str())));
     utils::Error::check((version == 1 || version == 2 || version == 3 || version == 4),
         "Version " + main_tag + " is not implemented yet");
 
@@ -253,7 +253,7 @@ void Reader::readModelFile(
                             utils::Error::raise("You must not mix file and mesh in segment");
                         }
                         rigidbody::MeshFace tp;
-                        for (unsigned int i=0; i<3; ++i) {
+                        for (size_t i=0; i<3; ++i) {
                             file.read(tp(i));
                         }
                         mesh.addFace(tp);
@@ -376,7 +376,7 @@ void Reader::readModelFile(
             } else if (!main_tag.tolower().compare("marker")) {
                 utils::String name;
                 file.read(name);
-                unsigned int parent_int = 0;
+                size_t parent_int = 0;
                 utils::String parent_str("root");
                 utils::Vector3d pos(0,0,0);
                 bool technical = true;
@@ -386,10 +386,9 @@ void Reader::readModelFile(
                     if (!property_tag.tolower().compare("parent")) {
                         // Dynamically find the parent number
                         file.read(parent_str);
-                        parent_int = model->GetBodyId(parent_str.c_str());
+                        parent_int = static_cast<size_t>(model->GetBodyId(parent_str.c_str()));
                         // if parent_int still equals zero, no name has concurred
-                        utils::Error::check(model->IsBodyId(parent_int),
-                                                    "Wrong name in a segment");
+                        utils::Error::check(model->IsBodyId(static_cast<unsigned int>(parent_int)), "Wrong name in a segment");
                     } else if (!property_tag.tolower().compare("position")) {
                         readVector3d(file, variable, pos);
                     } else if (!property_tag.tolower().compare("technical")) {
@@ -434,8 +433,8 @@ void Reader::readModelFile(
                         // Dynamically find the parent number
                         file.read(parent_str);
                         // If parent_int still equals zero, no name has concurred
-                        utils::Error::check(model->IsBodyId(model->GetBodyId(
-                                                        parent_str.c_str())), "Wrong name in a segment");
+                        utils::Error::check(model->IsBodyId(
+                            model->GetBodyId(parent_str.c_str())), "Wrong name in a segment");
                     } else if (!property_tag.tolower().compare("frommarkers")) {
                         if (!firstTag) {
                             utils::Error::raise("The tag 'fromMarkers' should appear first in the IMU "
@@ -455,13 +454,13 @@ void Reader::readModelFile(
                         } else if (!property_tag.tolower().compare("firstaxis")) {
                             file.read(firstAxis);
                         } else if (!property_tag.tolower().compare("firstaxismarkernames")) {
-                            for (unsigned int i = 0; i<2; ++i) {
+                            for (size_t i = 0; i<2; ++i) {
                                 file.read(firstAxisMarkerNames[i]);
                             }
                         } else if (!property_tag.tolower().compare("secondaxis")) {
                             file.read(secondAxis);
                         } else if (!property_tag.tolower().compare("secondaxismarkernames")) {
-                            for (unsigned int i = 0; i<2; ++i) {
+                            for (size_t i = 0; i<2; ++i) {
                                 file.read(secondAxisMarkerNames[i]);
                             }
                         } else if (!property_tag.tolower().compare("recalculate")) {
@@ -537,7 +536,7 @@ void Reader::readModelFile(
                 utils::String name;
                 file.read(name);
                 utils::String parentName("root");
-                unsigned int parent_int = 0;
+                size_t parent_int = 0;
                 utils::Vector3d pos(0,0,0);
                 utils::Vector3d norm(0,0,0);
                 utils::String axis("");
@@ -545,10 +544,9 @@ void Reader::readModelFile(
                     if (!property_tag.tolower().compare("parent")) {
                         // Dynamically find the parent number
                         file.read(parentName);
-                        parent_int = model->GetBodyId(parentName.c_str());
+                        parent_int = static_cast<size_t>(model->GetBodyId(parentName.c_str()));
                         // If parent_int equals zero, no name has concurred
-                        utils::Error::check(model->IsBodyId(parent_int),
-                                                    "Wrong name in a segment");
+                        utils::Error::check(model->IsBodyId(static_cast<unsigned int>(parent_int)), "Wrong name in a segment");
                     } else if (!property_tag.tolower().compare("position")) {
                         readVector3d(file, variable, pos);
                     } else if (!property_tag.tolower().compare("normal")) {
@@ -569,8 +567,8 @@ void Reader::readModelFile(
                 }
             } else if (!main_tag.tolower().compare("loopconstraint")) {
                 utils::String name;
-                unsigned int id_predecessor = 0;
-                unsigned int id_successor = 0;
+                size_t id_predecessor = 0;
+                size_t id_successor = 0;
                 utils::String predecessor_str("root");
                 utils::String successor_str("root");
                 utils::RotoTrans X_predecessor;
@@ -583,18 +581,16 @@ void Reader::readModelFile(
                     if (!property_tag.tolower().compare("predecessor")) {
                         // Dynamically find the parent number
                         file.read(predecessor_str);
-                        id_predecessor = model->GetBodyId(predecessor_str.c_str());
+                        id_predecessor = static_cast<size_t>(model->GetBodyId(predecessor_str.c_str()));
                         // If parent_int equals zero, no name has concurred
-                        utils::Error::check(model->IsBodyId(id_predecessor),
-                                                    "Wrong name in a segment");
+                        utils::Error::check(model->IsBodyId(static_cast<unsigned int>(id_predecessor)), "Wrong name in a segment");
                     }
                     if (!property_tag.tolower().compare("successor")) {
                         //  Dynamically find the parent number
                         file.read(successor_str);
-                        id_successor = model->GetBodyId(successor_str.c_str());
+                        id_successor = static_cast<size_t>(model->GetBodyId(successor_str.c_str()));
                         // If parent_int equals zero, no name has concurred
-                        utils::Error::check(model->IsBodyId(id_successor),
-                                                    "Wrong name in a segment");
+                        utils::Error::check(model->IsBodyId(static_cast<unsigned int>(id_successor)),"Wrong name in a segment");
                     } else if (!property_tag.tolower().compare("rtpredecessor")) {
                         utils::String seq("xyz");
                         utils::Vector3d rot(0, 0, 0);
@@ -618,8 +614,8 @@ void Reader::readModelFile(
                         readVector3d(file, variable, trans);
                         X_successor = utils::RotoTrans(rot, trans, seq);
                     } else if (!property_tag.tolower().compare("axis"))
-                        for (unsigned int i=0; i<axis.size(); ++i) {
-                            file.read(axis(i), variable);
+                        for (size_t i=0; i<axis.size(); ++i) {
+                            file.read(axis(static_cast<unsigned int>(i)), variable);
                         }
                     else if (!property_tag.tolower().compare("stabilizationparameter")) {
                         file.read(stabilizationParam, variable);
@@ -635,7 +631,7 @@ void Reader::readModelFile(
             } else if (!main_tag.tolower().compare("softcontact")) {
                 utils::String name;
                 file.read(name);
-                unsigned int parent_int = 0;
+                size_t parent_int = 0;
                 utils::String parent_str("root");
                 utils::String contactType("");
                 utils::Vector3d pos(0,0,0);
@@ -651,10 +647,9 @@ void Reader::readModelFile(
                     if (!property_tag.tolower().compare("parent")) {
                         // Dynamically find the parent number
                         file.read(parent_str);
-                        parent_int = model->GetBodyId(parent_str.c_str());
+                        parent_int = static_cast<size_t>(model->GetBodyId(parent_str.c_str()));
                         // If parent_int equals zero, no name has concurred
-                        utils::Error::check(model->IsBodyId(parent_int),
-                                                    "Wrong name in a segment");
+                        utils::Error::check(model->IsBodyId(static_cast<unsigned int>(parent_int)), "Wrong name in a segment");
                     } else if (!property_tag.tolower().compare("type")) {
                         file.read(contactType);
                     } else if (!property_tag.tolower().compare("position")) {
@@ -675,7 +670,9 @@ void Reader::readModelFile(
                 }
 
                 if (!contactType.tolower().compare("sphere")){
-                    model->addSoftContact(rigidbody::SoftContactSphere(pos, radius, stiffness, damping, muStatic, muDynamic, muViscous, name, parent_str, parent_int));
+                    model->addSoftContact(rigidbody::SoftContactSphere(
+                        pos, radius, stiffness, damping, muStatic, muDynamic, muViscous, name, parent_str, static_cast<int>(parent_int))
+                    );
                 } else {
                     utils::Error::raise("The 'type' should be 'sphere'.");
                 }
@@ -686,15 +683,14 @@ void Reader::readModelFile(
                 // The name of the actuator must correspond to the segment number to which it is attached
                 utils::String name;
                 file.read(name);
-                unsigned int parent_int = model->GetBodyId(name.c_str());
+                size_t parent_int = static_cast<size_t>(model->GetBodyId(name.c_str()));
                 // If parent_int equals zero, no name has concurred
-                utils::Error::check(model->IsBodyId(parent_int),
-                                            "Wrong name in a segment");
+                utils::Error::check(model->IsBodyId(static_cast<unsigned int>(parent_int)), "Wrong name in a segment");
 
                 // Declaration of all the parameters for all types
                 utils::String type;
                 bool isTypeSet  = false;
-                unsigned int dofIdx(INT_MAX);
+                size_t dofIdx(INT_MAX);
                 bool isDofSet   = false;
                 utils::String str_direction;
                 bool isDirectionSet = false;
@@ -867,17 +863,15 @@ void Reader::readModelFile(
                     if (!property_tag.tolower().compare("originparent")) {
                         // Dynamically find the parent number
                         file.read(origin_parent_str);
-                        unsigned int idx = model->GetBodyId(origin_parent_str.c_str());
+                        size_t idx = static_cast<size_t>(model->GetBodyId(origin_parent_str.c_str()));
                         // If parent_int still equals zero, no name has concurred
-                        utils::Error::check(model->IsBodyId(idx),
-                                                    "Wrong origin parent name for a muscle");
+                        utils::Error::check(model->IsBodyId(static_cast<unsigned int>(idx)), "Wrong origin parent name for a muscle");
                     } else if (!property_tag.tolower().compare("insertionparent")) {
                         // Dynamically find the parent number
                         file.read(insert_parent_str);
-                        unsigned int idx = model->GetBodyId(insert_parent_str.c_str());
+                        size_t idx = static_cast<size_t>(model->GetBodyId(insert_parent_str.c_str()));
                         // If parent_int still equals zero, no name has concurred
-                        utils::Error::check(model->IsBodyId(idx),
-                                                    "Wrong insertion parent name for a muscle");
+                        utils::Error::check(model->IsBodyId(static_cast<unsigned int>(idx)), "Wrong insertion parent name for a muscle");
                     }
                 }
                 model->addMuscleGroup(name, origin_parent_str, insert_parent_str);
@@ -1007,15 +1001,15 @@ void Reader::readModelFile(
                 }
                 utils::Error::check(idxGroup!=-1, "No muscle group was provided!");
                 internal_forces::muscles::MuscleGeometry geo(
-                    utils::Vector3d(origin_pos, name + "_origin",
-                                            model->muscleGroup(static_cast<unsigned int>(idxGroup)).origin()),
-                    utils::Vector3d(insert_pos, name + "_insertion",
-                                            model->muscleGroup(static_cast<unsigned int>(idxGroup)).insertion()));
+                    utils::Vector3d(
+                        origin_pos, name + "_origin", model->muscleGroup(static_cast<size_t>(idxGroup)).origin()),
+                    utils::Vector3d(
+                        insert_pos, name + "_insertion", model->muscleGroup(static_cast<size_t>(idxGroup)).insertion()));
                 internal_forces::muscles::State stateMax(maxExcitation, maxActivation);
                 internal_forces::muscles::Characteristics characteristics(optimalLength, maxForce, PCSA,
                         tendonSlackLength, pennAngle, stateMax,
                         fatigueParameters, useDamping);
-                model->muscleGroup(static_cast<unsigned int>(idxGroup)).addMuscle(name,type,geo,
+                model->muscleGroup(static_cast<size_t>(idxGroup)).addMuscle(name,type,geo,
                         characteristics,
                         internal_forces::PathModifiers(),stateType,dynamicFatigueType);
                 if (stateType == internal_forces::muscles::STATE_TYPE::BUCHANAN && shapeFactor != 0) {
@@ -1098,14 +1092,13 @@ void Reader::readModelFile(
 #ifdef MODULE_PASSIVE_TORQUES
                 utils::String name;
                 file.read(name);
-                unsigned int parent_int = model->GetBodyId(name.c_str());
+                size_t parent_int = static_cast<size_t>(model->GetBodyId(name.c_str()));
                 // If parent_int equals zero, no name has concurred
-                utils::Error::check(model->IsBodyId(parent_int),
-                                            "Wrong name in a segment");
+                utils::Error::check(model->IsBodyId(static_cast<unsigned int>(parent_int)), "Wrong name in a segment");
                 // Declaration of all the parameters for all types
                 utils::String type;
                 bool isTypeSet  = false;
-                unsigned int dofIdx(INT_MAX);
+                size_t dofIdx(INT_MAX);
                 bool isDofSet = false;
                 double Tconstant(std::numeric_limits<double>::quiet_NaN());
                 double T0(std::numeric_limits<double>::quiet_NaN());
@@ -1208,10 +1201,9 @@ void Reader::readModelFile(
                     if (!property_tag.tolower().compare("parent")) {
                         // Dynamically find the parent number
                         file.read(parent);
-                        unsigned int idx = model->GetBodyId(parent.c_str());
+                        size_t idx = static_cast<size_t>(model->GetBodyId(parent.c_str()));
                         // If parent_int still equals zero, no name has concurred
-                        utils::Error::check(model->IsBodyId(idx),
-                                                    "Wrong origin parent name for a muscle");
+                        utils::Error::check(model->IsBodyId(static_cast<unsigned int>(idx)), "Wrong origin parent name for a muscle");
 
                     } else if (!property_tag.tolower().compare("muscle")) {
                         file.read(muscle);
@@ -1232,14 +1224,13 @@ void Reader::readModelFile(
                 if (isMuscle){
                     idxMuscleGroup = model->getMuscleGroupId(musclegroup);
                     utils::Error::check(idxMuscleGroup!=-1, "No muscle group was provided!");
-                    idxMuscle = model->muscleGroup(static_cast<unsigned int>(idxMuscleGroup)).muscleID(
+                    idxMuscle = model->muscleGroup(idxMuscleGroup).muscleID(
                                   muscle);
                     utils::Error::check(idxMuscle!=-1, "No muscle was provided!");
-                    model->muscleGroup(static_cast<unsigned int>(idxMuscleGroup))
-                    .muscle(static_cast<unsigned int>(idxMuscle)).addPathObject(position);
+                    model->muscleGroup(idxMuscleGroup).muscle(idxMuscle).addPathObject(position);
                 } else if (isLigament) {
                     idxLigament = model->ligamentID(ligament);
-                    model->ligament(static_cast<unsigned int>(idxLigament)).addPathObject(position);
+                    model->ligament(idxLigament).addPathObject(position);
                 }
             } else if (!main_tag.tolower().compare("wrapping")) {
                 utils::String name;
@@ -1268,13 +1259,11 @@ void Reader::readModelFile(
                     if (!property_tag.tolower().compare("parent")) {
                         // Dynamically find the parent number
                         file.read(parent);
-                        unsigned int idx = model->GetBodyId(parent.c_str());
+                        size_t idx = static_cast<size_t>(model->GetBodyId(parent.c_str()));
                         // If parent_int still equals zero, no name has concurred
-                        utils::Error::check(model->IsBodyId(idx),
-                                                    "Wrong origin parent name for a muscle");
+                        utils::Error::check(model->IsBodyId(static_cast<unsigned int>(idx)), "Wrong origin parent name for a muscle");
                     } else if (!property_tag.tolower().compare("rtinmatrix")) {
-                        utils::Error::check(isRTset==false,
-                                                    "RT should not appear before RTinMatrix");
+                        utils::Error::check(isRTset==false, "RT should not appear before RTinMatrix");
                         file.read(RTinMatrix);
                     } else if (!property_tag.tolower().compare("rt")) {
                         readRtMatrix(file, variable, RTinMatrix, RT);
@@ -1309,14 +1298,12 @@ void Reader::readModelFile(
                 if (isMuscle) {
                     idxMuscleGroup = model->getMuscleGroupId(musclegroup);
                     utils::Error::check(idxMuscleGroup!=-1, "No muscle group was provided!");
-                    idxMuscle = model->muscleGroup(static_cast<unsigned int>(idxMuscleGroup)).muscleID(
-                                  muscle);
+                    idxMuscle = model->muscleGroup(idxMuscleGroup).muscleID(muscle);
                     utils::Error::check(idxMuscle!=-1, "No muscle was provided!");
-                    model->muscleGroup(static_cast<unsigned int>(idxMuscleGroup)).muscle(
-                        static_cast<unsigned int>(idxMuscle)).addPathObject(cylinder);
+                    model->muscleGroup(idxMuscleGroup).muscle(idxMuscle).addPathObject(cylinder);
                  } else if (isLigament) {
                     idxLigament = model->ligamentID(ligament);
-                    model->ligament(static_cast<unsigned int>(idxLigament)).addPathObject(cylinder);
+                    model->ligament(idxLigament).addPathObject(cylinder);
                  }
             }
         }
@@ -1366,31 +1353,30 @@ std::vector<std::vector<utils::Vector3d>>
 
     // Determine the version of the file
     file.readSpecificTag("version", tp);
-    unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t version(static_cast<size_t>(atoi(tp.c_str())));
     utils::Error::check(version == 1, "Version not implemented yet");
 
     // Determine the number of markers
     file.readSpecificTag("nbmark", tp);
-    unsigned int nbMark(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t nbMark(static_cast<size_t>(atoi(tp.c_str())));
 
     // Determine the number of nodes
     file.readSpecificTag("nbintervals", tp);
-    unsigned int nbIntervals(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t nbIntervals(static_cast<size_t>(atoi(tp.c_str())));
 
     std::vector<std::vector<utils::Vector3d>> markers;
     std::vector<utils::Vector3d> position;
     // Scroll down until the definition of a marker
-    for (unsigned int j=0; j<nbMark; j++) {
+    for (size_t j=0; j<nbMark; j++) {
         while (tp.compare("Marker")) {
             bool check = file.read(tp);
             utils::Error::check(check,
                                         "Marker file error, wrong size of marker or intervals?");
         }
 
-        unsigned int noMarker;
+        size_t noMarker;
         file.read(noMarker);
-        for (unsigned int i=0; i<=nbIntervals;
-                i++) { // <= because there is nbIntervals+1 values
+        for (size_t i=0; i<=nbIntervals;i++) { // <= because there is nbIntervals+1 values
             utils::Vector3d mark(0, 0, 0);
             readVector3d(file, std::map<utils::Equation, double>(), mark);
             position.push_back(mark);
@@ -1427,20 +1413,20 @@ Reader::readQDataFile(
 
     // Determine the file version
     file.readSpecificTag("version", tp);
-    unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t version(static_cast<size_t>(atoi(tp.c_str())));
     utils::Error::check(version == 1, "Version not implemented yet");
 
     // Determine the number of markers
     file.readSpecificTag("nddl", tp);
-    unsigned int NDDL(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t NDDL(static_cast<size_t>(atoi(tp.c_str())));
 
     // Determine the number of nodes
     file.readSpecificTag("nbintervals", tp);
-    unsigned int nbIntervals(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t nbIntervals(static_cast<size_t>(atoi(tp.c_str())));
 
     std::vector<rigidbody::GeneralizedCoordinates> kinematics;
     // Scroll down until the definition of a marker
-    for (unsigned int j=0; j<nbIntervals+1; j++) {
+    for (size_t j=0; j<nbIntervals+1; j++) {
         while (tp.compare("T")) {
             bool check = file.read(tp);
             utils::Error::check(check,
@@ -1450,8 +1436,8 @@ Reader::readQDataFile(
         double time;
         file.read(time);
         rigidbody::GeneralizedCoordinates position(NDDL);
-        for (unsigned int i=0; i<NDDL; i++) {
-            file.read(position(i));
+        for (size_t i=0; i<NDDL; i++) {
+            file.read(position(static_cast<unsigned int>(i)));
         }
 
         kinematics.push_back(position);
@@ -1485,20 +1471,20 @@ Reader::readActivationDataFile(
 
     // Determine the file version
     file.readSpecificTag("version", tp);
-    unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t version(static_cast<size_t>(atoi(tp.c_str())));
     utils::Error::check(version == 1, "Version not implemented yet");
 
     // Determine the number of markers
     file.readSpecificTag("nbmuscles", tp);
-    unsigned int nMus(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t nMus(static_cast<size_t>(atoi(tp.c_str())));
 
     // Determine the number of nodes
     file.readSpecificTag("nbintervals", tp);
-    unsigned int nbIntervals(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t nbIntervals(static_cast<size_t>(atoi(tp.c_str())));
 
     std::vector<utils::Vector> activations;
     // Scroll down until the definition of a marker
-    for (unsigned int j=0; j<nbIntervals+1; j++) {
+    for (size_t j=0; j<nbIntervals+1; j++) {
         while (tp.compare("T")) {
             bool check = file.read(tp);
             utils::Error::check(check,
@@ -1508,8 +1494,8 @@ Reader::readActivationDataFile(
         double time;
         file.read(time);
         utils::Vector activation_tp(nMus);
-        for (unsigned int i=0; i<nMus; i++) {
-            file.read(activation_tp(i));
+        for (size_t i=0; i<nMus; i++) {
+            file.read(activation_tp(static_cast<unsigned int>(i)));
         }
 
         activations.push_back(activation_tp);
@@ -1543,20 +1529,20 @@ Reader::readTorqueDataFile(
 
     // Determine the file version
     file.readSpecificTag("version", tp);
-    unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t version(static_cast<size_t>(atoi(tp.c_str())));
     utils::Error::check(version == 1, "Version not implemented yet");
 
     // Determine the number of GeneralizedTorque
     file.readSpecificTag("nGeneralizedTorque", tp); //
-    unsigned int nGeneralizedTorque(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t nGeneralizedTorque(static_cast<size_t>(atoi(tp.c_str())));
 
     // Determine the number of nodes
     file.readSpecificTag("nbintervals", tp);
-    unsigned int nbIntervals(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t nbIntervals(static_cast<size_t>(atoi(tp.c_str())));
 
     std::vector<utils::Vector> torque;
     // Scroll down until the definition of a torque
-    for (unsigned int j=0; j<nbIntervals+1; j++) {
+    for (size_t j=0; j<nbIntervals+1; j++) {
         while (tp.compare("T")) {
             bool check = file.read(tp);
             utils::Error::check(check,
@@ -1569,8 +1555,8 @@ Reader::readTorqueDataFile(
 
         // Read the vector of GeneralizedTorque associated to the timestamp
         utils::Vector torque_tp(nGeneralizedTorque);
-        for (unsigned int i=0; i<nGeneralizedTorque; i++) {
-            file.read(torque_tp(i));
+        for (size_t i=0; i<nGeneralizedTorque; i++) {
+            file.read(torque_tp(static_cast<unsigned int>(i)));
         }
 
         torque.push_back(torque_tp);
@@ -1604,24 +1590,23 @@ Reader::readGroundReactionForceDataFile(
 
     // Determine the file version
     file.readSpecificTag("version", tp);
-    unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t version(static_cast<size_t>(atoi(tp.c_str())));
     utils::Error::check(version == 1, "Version not implemented yet");
 
     // Determine the number of grf (ground reaction force)
     file.readSpecificTag("ngrf", tp); //
-    unsigned int NGRF(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t NGRF(static_cast<size_t>(atoi(tp.c_str())));
 
     // Determine the number of nodes
     file.readSpecificTag("nbintervals", tp);
-    unsigned int nbIntervals(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t nbIntervals(static_cast<size_t>(atoi(tp.c_str())));
 
     std::vector<utils::Vector> grf;
     // Scroll down until the definition of a torque
-    for (unsigned int j=0; j<nbIntervals+1; j++) {
+    for (size_t j=0; j<nbIntervals+1; j++) {
         while (tp.compare("T")) {
             bool check = file.read(tp);
-            utils::Error::check(check,
-                                        "Grf file error, wrong size of NR or intervals?"); //
+            utils::Error::check(check, "Grf file error, wrong size of NR or intervals?");
         }
 
         // Read the first line that represents the timestamp
@@ -1630,8 +1615,8 @@ Reader::readGroundReactionForceDataFile(
 
         // Read the vector of GeneralizedTorque associated to the timestamp
         utils::Vector grf_tp(NGRF);
-        for (unsigned int i=0; i<NGRF; i++) {
-            file.read(grf_tp(i));
+        for (size_t i=0; i<NGRF; i++) {
+            file.read(grf_tp(static_cast<unsigned int>(i)));
         }
 
         grf.push_back(grf_tp);
@@ -1647,9 +1632,9 @@ Reader::readGroundReactionForceDataFile(
 
 void Reader::readViconForceFile(
     const utils::Path& path, // Path to the file
-    std::vector<std::vector<unsigned int>>&
+    std::vector<std::vector<size_t>>&
     frame, // Frame vector (time is frame/frequency)
-    std::vector<unsigned int>& frequency,// Acquisition frequency
+    std::vector<size_t>& frequency,// Acquisition frequency
     std::vector<std::vector<utils::Vector3d>>&
     force, // Linear forces (x,y,z)
     std::vector<std::vector<utils::Vector3d>>& moment, // Moments (x,y,z)
@@ -1678,17 +1663,17 @@ void Reader::readViconForceFile(
 
     while(!file.eof()) {
         // Put everything in temporary per platform (Mettre tout en temporaire par plate-forme)
-        std::vector<unsigned int> frame1pf;
+        std::vector<size_t> frame1pf;
         std::vector<utils::Vector3d> force1fp;
         std::vector<utils::Vector3d> moment1fp;
         std::vector<utils::Vector3d> cop1fp;
 
         // Get the acquisition frequency
         file.readSpecificTag("devices", tp);
-        unsigned int frequency1pf(static_cast<unsigned int>(atoi(tp.c_str())));
+        size_t frequency1pf(static_cast<size_t>(atoi(tp.c_str())));
 
         // Skip the header
-        for (unsigned int i=0; i<4; ++i) {
+        for (size_t i=0; i<4; ++i) {
             file.getline(tp);
         }
 
@@ -1717,12 +1702,11 @@ void Reader::readViconForceFile(
                 data.push_back( f );
             }
             // Make sure that the line has the right number of elements(2 times, 3 cop, 3 forces, 3 moments)
-            utils::Error::check(data.size()==11,
-                                        "Wrong number of element in a line in the force file");
+            utils::Error::check(data.size()==11, "Wrong number of element in a line in the force file");
 
             // Fill in the fields
-            frame1pf.push_back(static_cast<unsigned int>(data[0]));  // Frame stamp
-            //        unsigned int subFrame = static_cast<unsigned int>(data[1]); // Subframes (not interesting)
+            frame1pf.push_back(static_cast<size_t>(data[0]));  // Frame stamp
+            //        size_t subFrame = static_cast<size_t>(data[1]); // Subframes (not interesting)
             utils::Vector3d cop_tp(0, 0, 0); // Center of pressure
             utils::Vector3d for_tp(0, 0, 0); // Force
             utils::Vector3d M_tp(0, 0, 0);   // Moment
@@ -1748,8 +1732,8 @@ std::vector<std::vector<utils::SpatialVector>>
         Reader::readViconForceFile(const utils::String &path)
 {
     // Read file
-    std::vector<std::vector<unsigned int>> frame;
-    std::vector<unsigned int> frequency;// Acquisition frequency
+    std::vector<std::vector<size_t>> frame;
+    std::vector<size_t> frequency;// Acquisition frequency
     std::vector<std::vector<utils::Vector3d>>
             force; // Linear forces (x,y,z)
     std::vector<std::vector<utils::Vector3d>> moment; // Moments (x,y,z)
@@ -1760,9 +1744,9 @@ std::vector<std::vector<utils::SpatialVector>>
     // Redispatch the values in a vector of SpatialTransform
     std::vector<std::vector<utils::SpatialVector>>
             st; // nb of platform per time
-    for (unsigned int j=0; j<force.size(); ++j) { // nb platform
+    for (size_t j=0; j<force.size(); ++j) { // nb platform
         std::vector<utils::SpatialVector> tp;
-        for (unsigned int i=0; i<force[j].size(); ++i) { // timestamp
+        for (size_t i=0; i<force[j].size(); ++i) { // timestamp
             const utils::Vector3d& f = force[j][i];  // Linear forces (x,y,z)
             const utils::Vector3d& m = moment[j][i]; // Moments (x,y,z)
             tp.push_back(utils::SpatialVector(m[0], m[1], m[2], f[0], f[1], f[2]));
@@ -1793,23 +1777,23 @@ std::vector<std::vector<utils::Vector3d>>
     // frequency = atoi(findImportantParameter(file, "trajectories").c_str());
 
     // Get the order of the markers in the file
-    for (unsigned int i=0; i<3; ++i) { // skip the header
+    for (size_t i=0; i<3; ++i) { // skip the header
         file.read(t);
     }
     size_t idx_tp = 0;
-    std::vector<unsigned int> idx_init;
-    std::vector<unsigned int> idx_end;
+    std::vector<size_t> idx_init;
+    std::vector<size_t> idx_end;
     // Find the separators (: et ,)
     while (idx_tp < t.length()) {
         idx_tp = t.find(":", idx_tp+1);
-        idx_init.push_back(static_cast<unsigned int>(idx_tp));
-        idx_end.push_back(static_cast<unsigned int>(t.find(",", idx_tp+1)));
+        idx_init.push_back(idx_tp);
+        idx_end.push_back(t.find(",", idx_tp+1));
     }
     // Keep the names between the separators
     std::vector<utils::String> MarkersInFile;
-    for (unsigned int i=0; i<idx_init.size()-1; ++i) {
+    for (size_t i=0; i<idx_init.size()-1; ++i) {
         utils::String tp;
-        for (unsigned int j=*(idx_init.begin()+i)+1; j<*(idx_end.begin()+i); ++j) {
+        for (size_t j=*(idx_init.begin()+i)+1; j<*(idx_end.begin()+i); ++j) {
             tp.push_back(t.at(j));
         }
         MarkersInFile.push_back(tp);
@@ -1823,7 +1807,7 @@ std::vector<std::vector<utils::Vector3d>>
         ordre[i] = -1;
     }
     for (int i=0; i<static_cast<int>(markOrder.size()); ++i) {
-        unsigned int cmp=0;
+        size_t cmp=0;
         utils::String m1 = (*(markOrder.begin()+i));
         while (1) {
             utils::String m2 = (*(MarkersInFile.begin()+cmp));
@@ -1844,13 +1828,13 @@ std::vector<std::vector<utils::Vector3d>>
     }
 
     // Go to the data
-    for (unsigned int i=0; i<4; ++i) { // skip the header
+    for (size_t i=0; i<4; ++i) { // skip the header
         file.read(t);
     }
 
     // Find the total number of frames
-    unsigned int jumps(1);
-    unsigned int nbFrames(0);
+    size_t jumps(1);
+    size_t nbFrames(0);
     if (nFramesToGet != -1) { // If it's all of them, the jumps are 1
         while(!file.eof()) {
             file.read(t); // Get a line
@@ -1866,28 +1850,27 @@ std::vector<std::vector<utils::Vector3d>>
             path.absolutePath().c_str(), std::ios::in);
 #endif
         // Skip the header
-        for (unsigned int i=0; i<7; ++i) {
+        for (size_t i=0; i<7; ++i) {
             file.read(t);
         }
         utils::Error::check(nFramesToGet!=0 && nFramesToGet!=1
-                                    && static_cast<unsigned int>(nFramesToGet)<=nbFrames,
+                                    && static_cast<size_t>(nFramesToGet)<=nbFrames,
                                     "nNode should not be 0, 1 or greater "
                                     "than number of frame");
-        jumps = nbFrames/static_cast<unsigned int>(nFramesToGet)+1;
+        jumps = nbFrames/static_cast<size_t>(nFramesToGet)+1;
     }
 
 
     std::vector<std::vector<utils::Vector3d>> data;
     // now we'll use a stringstream to separate the fields out of the line (comma separated)
-    unsigned int cmpFrames(1);
+    size_t cmpFrames(1);
     while(!file.eof()) {
-        utils::Vector data_tp = utils::Vector(
-                                            static_cast<unsigned int>(3*markOrder.size()));
+        utils::Vector data_tp = utils::Vector(3*markOrder.size());
         data_tp.setZero();
 
         std::stringstream ss( t );
         utils::String field;
-        unsigned int cmp = 0;
+        size_t cmp = 0;
         while (getline( ss, field, ',' )) {
             // for each field we wish to convert it to a double
             // (since we require that the CSV contains nothing but floating-point values)
@@ -1898,20 +1881,20 @@ std::vector<std::vector<utils::Vector3d>>
                     +2) { // Retirer les timespans et ne pas dépasser
                 int idx = ordre[cmp-2];
                 if (idx>=0) {
-                    data_tp(static_cast<unsigned int>(idx)) = f;
+                    data_tp(static_cast<size_t>(idx)) = f;
                 }
             }
             ++cmp;
         }
         // Once the markers are in order, separate them
         std::vector<utils::Vector3d> data_tp2;
-        for (unsigned int i=0; i<static_cast<unsigned int>(data_tp.size())/3; ++i) {
+        for (unsigned int i=0; i<data_tp.size()/3; ++i) {
             utils::Vector3d node(data_tp.block(3*i, 0, 3, 1)/1000);
             data_tp2.push_back(node);
         }
         // Stock the marker vector a that time t
         data.push_back(data_tp2); // Put back to meters
-        for (unsigned int i=0; i<jumps; ++i) {
+        for (size_t i=0; i<jumps; ++i) {
             if (cmpFrames != nbFrames) {
                 file.read(t); // Get the line
                 cmpFrames++;
@@ -1950,23 +1933,22 @@ Reader::readMeshFileBiorbdSegments(
 
     // Determine the file version
     file.readSpecificTag("version", tp);
-    unsigned int version(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t version(static_cast<size_t>(atoi(tp.c_str())));
     utils::Error::check(version == 1
                                 || version == 2, "Version not implemented yet");
 
     // Know the number of points
     file.readSpecificTag("npoints", tp);
-    unsigned int nPoints(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t nPoints(static_cast<size_t>(atoi(tp.c_str())));
     file.readSpecificTag("nfaces", tp);
-    unsigned int nFaces(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t nFaces(static_cast<size_t>(atoi(tp.c_str())));
 
     rigidbody::Mesh mesh;
     mesh.setPath(path);
     // Get all the points
-    std::map<utils::Equation, double> variable =
-        std::map<utils::Equation, double>();
+    std::map<utils::Equation, double> variable = std::map<utils::Equation, double>();
     utils::Vector3d dump; // Ignore columns 4 5 6
-    for (unsigned int iPoints=0; iPoints < nPoints; ++iPoints) {
+    for (size_t iPoints=0; iPoints < nPoints; ++iPoints) {
         utils::Vector3d nodeTp(0, 0, 0);
         readVector3d(file, variable, nodeTp);
         mesh.addPoint(nodeTp);
@@ -1975,14 +1957,14 @@ Reader::readMeshFileBiorbdSegments(
         }
     }
 
-    for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints) {
+    for (size_t iPoints=0; iPoints < nFaces; ++iPoints) {
         rigidbody::MeshFace patchTp;
-        unsigned int nVertices;
+        size_t nVertices;
         file.read(nVertices);
         if (nVertices != 3) {
             utils::Error::raise("Patches must be 3 vertices!");
         }
-        for (unsigned int i=0; i<nVertices; ++i) {
+        for (size_t i=0; i<nVertices; ++i) {
             file.read(patchTp(i));
         }
         mesh.addFace(patchTp);
@@ -2013,13 +1995,13 @@ rigidbody::Mesh Reader::readMeshFilePly(
     // Know the number of points
     file.reachSpecificTag("element");
     file.readSpecificTag("vertex", tp);
-    unsigned int nVertex(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t nVertex(static_cast<size_t>(atoi(tp.c_str())));
     int nVertexProperties(file.countTagsInAConsecutiveLines("property"));
 
     // Find the number of columns for the vertex
     file.reachSpecificTag("element");
     file.readSpecificTag("face", tp);
-    unsigned int nFaces(static_cast<unsigned int>(atoi(tp.c_str())));
+    size_t nFaces(static_cast<size_t>(atoi(tp.c_str())));
     int nFacesProperties(file.countTagsInAConsecutiveLines("property"));
 
 
@@ -2031,7 +2013,7 @@ rigidbody::Mesh Reader::readMeshFilePly(
     std::map<utils::Equation, double> variable =
         std::map<utils::Equation, double>();
     // Get all the points
-    for (unsigned int iPoints=0; iPoints < nVertex; ++iPoints) {
+    for (size_t iPoints=0; iPoints < nVertex; ++iPoints) {
         utils::Vector3d nodeTp(0, 0, 0);
         readVector3d(file, variable, nodeTp);
         mesh.addPoint(nodeTp);
@@ -2042,14 +2024,14 @@ rigidbody::Mesh Reader::readMeshFilePly(
         }
     }
 
-    for (unsigned int iPoints=0; iPoints < nFaces; ++iPoints) {
+    for (size_t iPoints=0; iPoints < nFaces; ++iPoints) {
         rigidbody::MeshFace patchTp;
-        unsigned int nVertices;
+        size_t nVertices;
         file.read(nVertices);
         if (nVertices != 3) {
             utils::Error::raise("Patches must be 3 vertices!");
         }
-        for (unsigned int i=0; i<nVertices; ++i) {
+        for (size_t i=0; i<nVertices; ++i) {
             file.read(patchTp(i));
         }
         int dump;
@@ -2106,7 +2088,7 @@ rigidbody::Mesh Reader::readMeshFileObj(
         } else if (!text.compare("f")) {
             // If first element is a f, then a face is found
             // Face is ignore for now
-            for (unsigned int i=0; i<3; ++i) {
+            for (size_t i=0; i<3; ++i) {
                 file.read(text);
                 size_t idxSlash = text.find("/");
                 utils::String tata3(text.substr (0,idxSlash));
@@ -2300,14 +2282,14 @@ rigidbody::Mesh Reader::readMeshFileStl(
         char dummy[2];
         file.readFromBinary(headerChar, 80); // Skip header
         file.readFromBinary(nbTrianglesChar, 4);
-        unsigned int nbTriangles = *((unsigned int*) nbTrianglesChar);
+        size_t nbTriangles = *((size_t*) nbTrianglesChar);
 
         mesh.setPath(path);
         utils::Vector3d normal;
         utils::Vector3d vertex;
-        for (unsigned int i = 0; i<nbTriangles; ++i){
+        for (int i = 0; i<nbTriangles; ++i){
             file.readFromBinary(normal);
-            for (unsigned int j = 0; j<3; ++j){
+            for (size_t j = 0; j<3; ++j){
                 file.readFromBinary(vertex);
                 mesh.addPoint(vertex);
             }
@@ -2324,13 +2306,13 @@ rigidbody::Mesh Reader::readMeshFileStl(
 
         // Read file
         utils::String tp;
-        unsigned int i = 0;
+        int i = 0;
         utils::Vector3d vertex;
         while (true){
             file.reachSpecificTag("vertex");
-            for (unsigned int k=0; k<3; ++k){
-                for (unsigned int j=0; j<3; ++j) {
-                    file.read(vertex(j));
+            for (size_t k=0; k<3; ++k){
+                for (size_t j=0; j<3; ++j) {
+                    file.read(vertex(static_cast<unsigned int>(j)));
                 }
                 mesh.addPoint(vertex);
                 file.read(tp);
@@ -2342,7 +2324,7 @@ rigidbody::Mesh Reader::readMeshFileStl(
             patchTp(2) = 3*i + 2;
             mesh.addFace(patchTp);
 
-            for (unsigned int j=0; j<3; ++j) {
+            for (size_t j=0; j<3; ++j) {
                 // Read 3 dummies
                 file.read(tp);
             }
@@ -2380,23 +2362,23 @@ std::vector<std::vector<utils::Vector3d>>
     // frequency = atoi(findImportantParameter(file, "trajectories").c_str());
 
     // Get the order of the markers in the file
-    for (unsigned int i=0; i<3; ++i) { // skip the header
+    for (size_t i=0; i<3; ++i) { // skip the header
         file.read(t);
     }
     size_t idx_tp = 0;
-    std::vector<unsigned int> idx_init;
-    std::vector<unsigned int> idx_end;
+    std::vector<size_t> idx_init;
+    std::vector<size_t> idx_end;
     // Find the separators (: et ,)
     while (idx_tp < t.length()) {
         idx_tp = t.find(":", idx_tp+1);
-        idx_init.push_back(static_cast<unsigned int>(idx_tp));
-        idx_end.push_back(static_cast<unsigned int>(t.find(",", idx_tp+1)));
+        idx_init.push_back(idx_tp);
+        idx_end.push_back(t.find(",", idx_tp+1));
     }
     // Keep the names between the separators
     std::vector<utils::String> MarkersInFile;
-    for (unsigned int i=0; i<idx_init.size()-1; ++i) {
+    for (size_t i=0; i<idx_init.size()-1; ++i) {
         utils::String tp;
-        for (unsigned int j=*(idx_init.begin()+i)+1; j<*(idx_end.begin()+i); ++j) {
+        for (size_t j=*(idx_init.begin()+i)+1; j<*(idx_end.begin()+i); ++j) {
             tp.push_back(t.at(j));
         }
         MarkersInFile.push_back(tp);

@@ -159,13 +159,13 @@ public:
     /// \brief Check if axis is removed
     /// \return If axis is removed or not
     ///
-    bool isAxisRemoved(unsigned int) const;
+    bool isAxisRemoved(size_t) const;
 
     ///
     /// \brief Check if axis is kept
     /// \return If axis is kept or not
     ///
-    bool isAxisKept(unsigned int) const;
+    bool isAxisKept(size_t) const;
 
     ///
     /// \brief Get all the indices of the axes to keep (X=0, Y=1, Z=2)
@@ -176,7 +176,7 @@ public:
     /// \brief Add an axis to remove
     /// \param axisNumber The axis number to remove (x = 0, y = 1 and z = 2)
     ///
-    void addAxesToRemove(unsigned int axisNumber);
+    void addAxesToRemove(size_t axisNumber);
 
     ///
     /// \brief Add axis to remove
@@ -189,7 +189,7 @@ public:
     /// \brief Add multiple axes to remove
     /// \param axes The multiples axes numbers to remove (x = 0, y = 1 and z = 2)
     ///
-    void addAxesToRemove(const std::vector<unsigned int>& axes);
+    void addAxesToRemove(const std::vector<size_t>& axes);
 #endif
 
     ///

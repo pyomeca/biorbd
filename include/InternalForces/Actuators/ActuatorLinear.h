@@ -45,7 +45,7 @@ public:
         int direction,
         const utils::Scalar& T0,
         const utils::Scalar& slope,
-        unsigned int dofIdx);
+        size_t dofIdx);
 
     ///
     /// \brief Construct a linear actuator
@@ -60,7 +60,7 @@ public:
         int direction,
         const utils::Scalar& T0,
         const utils::Scalar& slope,
-        unsigned int dofIdx,
+        size_t dofIdx,
         const utils::String &jointName);
 
     ///

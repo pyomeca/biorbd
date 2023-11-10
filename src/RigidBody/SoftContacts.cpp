@@ -32,7 +32,7 @@ void rigidbody::SoftContacts::DeepCopy(
         const rigidbody::SoftContacts &other)
 {
     m_softContacts->resize(other.m_softContacts->size());
-    for (unsigned int i=0; i<other.m_softContacts->size(); ++i) {
+    for (size_t i=0; i<other.m_softContacts->size(); ++i) {
         if ((*other.m_softContacts)[i]->typeOfNode() == utils::NODE_TYPE::SOFT_CONTACT_SPHERE){
             (*m_softContacts)[i] = std::make_shared<rigidbody::SoftContactSphere>();
         } else {
@@ -43,7 +43,7 @@ void rigidbody::SoftContacts::DeepCopy(
 }
 
 utils::String rigidbody::SoftContacts::softContactName(
-        unsigned int i)
+        size_t i)
 {
     return (*m_softContacts)[i]->utils::Node::name();
 }
@@ -68,14 +68,14 @@ void rigidbody::SoftContacts::addSoftContact(
 }
 
 rigidbody::SoftContactNode& rigidbody::SoftContacts::softContact(
-        unsigned int idx)
+        size_t idx)
 {
     return *(*m_softContacts)[idx];
 }
 
 rigidbody::NodeSegment rigidbody::SoftContacts::softContact(
         const rigidbody::GeneralizedCoordinates &Q,
-        unsigned int idx,
+        size_t idx,
         bool updateKin)
 {
     rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
@@ -85,7 +85,6 @@ rigidbody::NodeSegment rigidbody::SoftContacts::softContact(
 
     const rigidbody::SoftContactNode& sc(softContact(idx));
     unsigned int id = model.GetBodyId(sc.parent().c_str());
-
     return rigidbody::NodeSegment(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, sc, updateKin));
 }
 
@@ -106,7 +105,7 @@ std::vector<rigidbody::NodeSegment> rigidbody::SoftContacts::softContacts(
 rigidbody::NodeSegment rigidbody::SoftContacts::softContactVelocity(
             const rigidbody::GeneralizedCoordinates &Q,
             const rigidbody::GeneralizedVelocity &Qdot,
-            unsigned int idx,
+            size_t idx,
             bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
@@ -117,7 +116,6 @@ rigidbody::NodeSegment rigidbody::SoftContacts::softContactVelocity(
 
     const rigidbody::SoftContactNode& sc(softContact(idx));
     unsigned int id(model.GetBodyId(sc.parent().c_str()));
-
     // Calculate the velocity of the point
     return rigidbody::NodeSegment(
         RigidBodyDynamics::CalcPointVelocity(model, Q, Qdot, id, sc, updateKin)
@@ -127,7 +125,7 @@ rigidbody::NodeSegment rigidbody::SoftContacts::softContactVelocity(
 rigidbody::NodeSegment rigidbody::SoftContacts::softContactAngularVelocity(
             const rigidbody::GeneralizedCoordinates &Q,
             const rigidbody::GeneralizedVelocity &Qdot,
-            unsigned int idx,
+            size_t idx,
             bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
@@ -137,9 +135,9 @@ rigidbody::NodeSegment rigidbody::SoftContacts::softContactAngularVelocity(
 #endif
 
     const rigidbody::SoftContactNode& sc(softContact(idx));
-    unsigned int id(model.GetBodyId(sc.parent().c_str()));
 
     // Calculate the velocity of the point
+    unsigned int id(model.GetBodyId(sc.parent().c_str()));
     return rigidbody::NodeSegment(
         RigidBodyDynamics::CalcPointVelocity6D(model, Q, Qdot, id, sc, updateKin).block(0, 0, 3, 1)
     );
@@ -151,7 +149,7 @@ std::vector<rigidbody::NodeSegment> rigidbody::SoftContacts::softContactsVelocit
             bool updateKin)
 {
     std::vector<rigidbody::NodeSegment> pos;
-    for (unsigned int i=0; i<nbSoftContacts(); ++i) {
+    for (size_t i=0; i<nbSoftContacts(); ++i) {
         pos.push_back(softContactVelocity(Q, Qdot, i, updateKin));
         updateKin = false;
     }
@@ -165,7 +163,7 @@ std::vector<rigidbody::NodeSegment> rigidbody::SoftContacts::softContactsAngular
             bool updateKin)
 {
     std::vector<rigidbody::NodeSegment> pos;
-    for (unsigned int i=0; i<nbSoftContacts(); ++i) {
+    for (size_t i=0; i<nbSoftContacts(); ++i) {
         pos.push_back(softContactAngularVelocity(Q, Qdot, i, updateKin));
         updateKin = false;
     }
@@ -179,7 +177,7 @@ size_t rigidbody::SoftContacts::nbSoftContacts() const
 }
 
 std::vector<size_t> rigidbody::SoftContacts::segmentSoftContactIdx(
-        unsigned int idx) const
+        size_t idx) const
 {
     // Assuming that this is also a joint type (via BiorbdModel)
     const rigidbody::Joints &model = dynamic_cast<const rigidbody::Joints &>(*this);

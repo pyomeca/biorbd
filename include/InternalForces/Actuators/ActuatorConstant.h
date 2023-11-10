@@ -38,7 +38,7 @@ public:
     ActuatorConstant(
         int direction,
         const utils::Scalar& Tmax,
-        unsigned int dofIdx);
+        size_t dofIdx);
 
     ///
     /// \brief Construct a constant actuator
@@ -50,7 +50,7 @@ public:
     ActuatorConstant(
         int direction,
         const utils::Scalar& Tmax,
-        unsigned int dofIdx,
+        size_t dofIdx,
         const utils::String &jointName);
 
     ///

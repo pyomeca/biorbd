@@ -23,7 +23,7 @@ internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
 
 internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
     const utils::Scalar& Torque,
-    unsigned int dofIdx) :
+    size_t dofIdx) :
     internal_forces::passive_torques::PassiveTorque(dofIdx),
     m_Torque(std::make_shared<utils::Scalar>(Torque))
 {
@@ -32,7 +32,7 @@ internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
 
 internal_forces::passive_torques::PassiveTorqueConstant::PassiveTorqueConstant(
     const utils::Scalar& Torque,
-    unsigned int dofIdx,
+    size_t dofIdx,
     const utils::String &jointName) :
     internal_forces::passive_torques::PassiveTorque(dofIdx, jointName),
     m_Torque(std::make_shared<utils::Scalar>(Torque))

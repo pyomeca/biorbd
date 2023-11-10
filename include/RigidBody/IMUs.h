@@ -80,7 +80,7 @@ public:
     /// \brief Return the number of inertial measurement units (IMU) in the set
     /// \return The number of IMU
     ///
-    unsigned int nbIMUs() const;
+    size_t nbIMUs() const;
 
     ///
     /// \brief Return the names of the inertial measurement units (IMU)
@@ -121,7 +121,7 @@ public:
     /// \return IMU of idx i
     ///
     const rigidbody::IMU& IMU(
-        unsigned int idx);
+        size_t idx);
 
     ///
     /// \brief Compute and return all the inertial measurement units (IMU) at the position given by Q
@@ -142,7 +142,7 @@ public:
     ///
     rigidbody::IMU IMU(
         const GeneralizedCoordinates&Q,
-        unsigned int  idx,
+        size_t  idx,
         bool updateKin = true);
 
     ///
@@ -154,20 +154,20 @@ public:
     ///
     std::vector<rigidbody::IMU> segmentIMU(
         const GeneralizedCoordinates& Q,
-        unsigned int  idx,
+        size_t  idx,
         bool updateKin = true);
 
     ///
     /// \brief Return the number of technical inertial measurement units (IMU)
     /// \return The number of technical IMU
     ///
-    unsigned int nbTechIMUs();
+    size_t nbTechIMUs();
 
     ///
     /// \brief Return the number of anatomical inertial measurement units (IMU)
     /// \return The number of anatomical IMU
     ///
-    unsigned int nbAnatIMUs();
+    size_t nbAnatIMUs();
 
     ///
     /// \brief Return all the technical inertial measurement units (IMU)

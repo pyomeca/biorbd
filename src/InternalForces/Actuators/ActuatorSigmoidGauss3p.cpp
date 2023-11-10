@@ -37,7 +37,7 @@ internal_forces::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p(
     const utils::Scalar& offset,
     const utils::Scalar& r,
     const utils::Scalar& qopt,
-    unsigned int dofIdx) :
+    size_t dofIdx) :
     internal_forces::actuator::Actuator(direction, dofIdx),
     m_theta(std::make_shared<utils::Scalar>(theta)),
     m_lambda(std::make_shared<utils::Scalar>(lambda)),
@@ -55,7 +55,7 @@ internal_forces::actuator::ActuatorSigmoidGauss3p::ActuatorSigmoidGauss3p(
     const utils::Scalar& offset,
     const utils::Scalar& r,
     const utils::Scalar& qopt,
-    unsigned int dofIdx,
+    size_t dofIdx,
     const utils::String &jointName) :
     internal_forces::actuator::Actuator(direction, dofIdx, jointName),
     m_theta(std::make_shared<utils::Scalar>(theta)),
@@ -101,8 +101,8 @@ utils::Scalar internal_forces::actuator::ActuatorSigmoidGauss3p::torqueMax(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot)
 {
-    utils::Scalar pos(Q[*m_dofIdx] * 180/M_PI);
-    utils::Scalar speed(Qdot[*m_dofIdx] * 180/M_PI);
+    utils::Scalar pos(Q[static_cast<unsigned int>(*m_dofIdx)] * 180/M_PI);
+    utils::Scalar speed(Qdot[static_cast<unsigned int>(*m_dofIdx)] * 180/M_PI);
 
     // Getting Tmax of Gauss3p from Sigmoid
     utils::Scalar Tmax(*m_theta / (1 + exp(*m_lambda * speed)) + *m_offset);

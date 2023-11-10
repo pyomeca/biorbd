@@ -62,10 +62,10 @@ bool utils::IfStream::readSpecificTag(
 }
 bool utils::IfStream::reachSpecificTag(
         const utils::String& tag,
-        unsigned int maxTag)
+        size_t maxTag)
 {
     utils::String text;
-    unsigned int i = 0;
+    size_t i = 0;
     while (read(text) && i < maxTag){
         if (!text.tolower().compare(tag)) {
             return true;
@@ -119,9 +119,9 @@ bool utils::IfStream::read(utils::String& text)
         read(text);
     } else if (!text(0,1).compare("/*")) { // If it's a comment by / *
         while (readAWord(text)) {
-            if (!text(0,1).compare("*/") || (text.length()>=2
-                                             && !text(static_cast<unsigned int>(text.length()-2),
-                                                     static_cast<unsigned int>(text.length()-1)).compare("*/"))) {
+            if (!text(0,1).compare("*/") || 
+                (text.length()>=2 && !text(text.length()-2, text.length()-1).compare("*/"))) 
+            {
                 break;
             }
         }
@@ -221,11 +221,11 @@ bool utils::IfStream::read(
     return out;
 }
 bool utils::IfStream::read(
-    unsigned int& val)
+    size_t& val)
 {
     utils::String tp;
     bool out(read(tp));
-    val = static_cast<unsigned int>(std::stoul(tp));
+    val = static_cast<size_t>(std::stoul(tp));
     return out;
 }
 bool utils::IfStream::read(

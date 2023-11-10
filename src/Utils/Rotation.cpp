@@ -57,10 +57,10 @@ utils::Rotation::Rotation(
 
 }
 
-utils::Vector3d utils::Rotation::axe(unsigned int idx) const
+utils::Vector3d utils::Rotation::axe(size_t idx) const
 {
     utils::Error::check(idx<=2, "Axis must be between 0 and 2 included");
-    return this->block(0,idx, 3, 1);
+    return this->block(0, static_cast<unsigned int>(idx), 3, 1);
 }
 
 utils::Rotation utils::Rotation::fromSpatialTransform(
@@ -75,16 +75,16 @@ utils::Rotation utils::Rotation::fromEulerAngles(
 {
     // Check for size consistency
     utils::Error::check(
-        seq.length() == static_cast<unsigned int>(rot.rows()),
+        seq.length() == static_cast<size_t>(rot.rows()),
         "Rotation and sequence of rotation must be the same length");
 
     utils::Rotation out;
     out.setIdentity();
     // Set the actual rotation matrix to this
     utils::Matrix3d tp;
-    for (unsigned int i=0; i<seq.length(); ++i) {
-        utils::Scalar cosVi(std::cos(rot[i]));
-        utils::Scalar sinVi(std::sin(rot[i]));
+    for (size_t i=0; i<seq.length(); ++i) {
+        utils::Scalar cosVi(std::cos(rot[static_cast<unsigned int>(i)]));
+        utils::Scalar sinVi(std::sin(rot[static_cast<unsigned int>(i)]));
         if (seq.tolower()[i] == 'x')
             tp = utils::Matrix3d(1,     0,      0,
                                  0, cosVi, -sinVi,
@@ -119,8 +119,8 @@ utils::Rotation utils::Rotation::fromMarkersNonNormalized(
     }
 
     // Figure out where to put the axes
-    std::vector<unsigned int> map(3);
-    std::vector<unsigned int> toMultiply(2);
+    std::vector<size_t> map(3);
+    std::vector<size_t> toMultiply(2);
     if (!axesNames.first.tolower().compare("x")) {
         map[0] = 0;
         if (!axesNames.second.tolower().compare("y")) {
@@ -179,8 +179,8 @@ utils::Rotation utils::Rotation::fromMarkersNonNormalized(
 
     // Organize them in a non-normalized matrix
     utils::Rotation r_out;
-    for (unsigned int i=0; i<3; ++i) {
-        r_out.block(0, i, 3, 1) = axes[i];
+    for (size_t i=0; i<3; ++i) {
+        r_out.block(0, static_cast<unsigned int>(i), 3, 1) = axes[i];
     }
     return r_out;
 }
@@ -196,9 +196,9 @@ utils::Rotation utils::Rotation::fromMarkers(
                                  axisToRecalculate));
 
     // Organize them in a normalized matrix
-    for (unsigned int i=0; i<3; ++i) {
+    for (size_t i=0; i<3; ++i) {
         // Normalize axes
-        r_out.block<3, 1>(0, i).normalize();
+        r_out.block<3, 1>(0, static_cast<unsigned int>(i)).normalize();
     }
 
     return r_out;
@@ -212,7 +212,7 @@ utils::Vector utils::Rotation::toEulerAngles(
     if (!seq.compare("zyzz")) {
         v = utils::Vector(3);
     } else {
-        v = utils::Vector(static_cast<unsigned int>(seq.length()));
+        v = utils::Vector(seq.length());
     }
 
     // sequences taken from https://pdfslide.net/documents/euler-angles-58fcebd3620f7.html
@@ -299,7 +299,7 @@ utils::Rotation utils::Rotation::mean(
     m_tp.setZero();
 
     // Initial guess being the actual arithmetic mean
-    for (unsigned int i = 0; i<mToMean.size(); ++i) {
+    for (size_t i = 0; i<mToMean.size(); ++i) {
         m_tp += mToMean[i];
     }
     m_tp = m_tp/mToMean.size();

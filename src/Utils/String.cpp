@@ -62,7 +62,7 @@ utils::String utils::String::operator+(
 }
 
 utils::String utils::String::operator+(
-    unsigned int val)
+    size_t val)
 {
     return *this + std::to_string(val);
 }
@@ -74,7 +74,7 @@ utils::String utils::String::operator+(
 }
 
 utils::String utils::String::operator()(
-    unsigned int idx) const
+    size_t idx) const
 {
     utils::Error::check(idx<this->length(),
                                 "Index for string out of range");
@@ -85,15 +85,15 @@ utils::String utils::String::operator()(
 }
 
 utils::String utils::String::operator()(
-    unsigned int startIdx,
-    unsigned int lastIdx) const
+    size_t startIdx,
+    size_t lastIdx) const
 {
     utils::Error::check((startIdx<this->length()
                                  || lastIdx<this->length()), "Index for string out of range");
     utils::Error::check(lastIdx>startIdx,
                                 "Second argument should be higher than first!");
     char *out = static_cast<char*>(malloc(lastIdx-startIdx+2*sizeof(char)));
-    for (unsigned int k=0; k<lastIdx-startIdx+1; ++k) {
+    for (size_t k=0; k<lastIdx-startIdx+1; ++k) {
         out[k] = (*this)[startIdx+k];
     }
     out[lastIdx-startIdx+1] = '\0';

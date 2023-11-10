@@ -65,7 +65,7 @@ internal_forces::actuator::ActuatorGauss6p::ActuatorGauss6p(
     const utils::Scalar& facteur,
     const utils::Scalar& r2,
     const utils::Scalar& qopt2,
-    unsigned int dofIdx) :
+    size_t dofIdx) :
     Actuator(direction, dofIdx),
     m_k(std::make_shared<utils::Scalar>(4.3)),
     m_Tmax(std::make_shared<utils::Scalar>(Tmax)),
@@ -99,7 +99,7 @@ internal_forces::actuator::ActuatorGauss6p::ActuatorGauss6p(
     const utils::Scalar& facteur,
     const utils::Scalar& r2,
     const utils::Scalar& qopt2,
-    unsigned int dofIdx,
+    size_t dofIdx,
     const utils::String &jointName) :
     Actuator(direction, dofIdx, jointName),
     m_k(std::make_shared<utils::Scalar>(4.3)),
@@ -162,8 +162,8 @@ utils::Scalar internal_forces::actuator::ActuatorGauss6p::torqueMax(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot)
 {
-    utils::Scalar pos(Q[*m_dofIdx] * 180/M_PI);
-    utils::Scalar speed(Qdot[*m_dofIdx] * 180/M_PI);
+    utils::Scalar pos(Q[static_cast<unsigned int>(*m_dofIdx)] * 180/M_PI);
+    utils::Scalar speed(Qdot[static_cast<unsigned int>(*m_dofIdx)] * 180/M_PI);
 
     // Tetanic torque max
     utils::Scalar Tc = *m_T0 * *m_wc / *m_wmax;

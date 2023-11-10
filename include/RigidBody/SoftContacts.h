@@ -52,7 +52,7 @@ public:
     /// \param i The index of the contact
     /// \return The name of the soft contact
     ///
-    utils::String softContactName(unsigned int i);
+    utils::String softContactName(size_t i);
 
     ///
     /// \brief Return the names of the soft contact
@@ -74,7 +74,7 @@ public:
     /// \return The contact of index idx
     ///
     SoftContactNode& softContact(
-        unsigned int  idx);
+        size_t  idx);
 
     ///
     /// \brief Return a specified contact at a given position Q
@@ -85,7 +85,7 @@ public:
     ///
     NodeSegment softContact(
         const GeneralizedCoordinates &Q,
-        unsigned int  idx,
+        size_t  idx,
         bool updateKin = true);
 
     ///
@@ -109,7 +109,7 @@ public:
     NodeSegment softContactVelocity(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
-        unsigned int idx,
+        size_t idx,
         bool updateKin = true);
 
     ///
@@ -123,7 +123,7 @@ public:
     NodeSegment softContactAngularVelocity(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
-        unsigned int idx,
+        size_t idx,
         bool updateKin = true);
 
     ///
@@ -162,7 +162,7 @@ public:
     /// \return All the soft contacts of a segment
     ///
     std::vector<size_t> segmentSoftContactIdx(
-            unsigned int  idx) const;
+            size_t  idx) const;
 
 protected:
     std::shared_ptr<std::vector<std::shared_ptr<SoftContactNode>>> m_softContacts; ///< The contacts

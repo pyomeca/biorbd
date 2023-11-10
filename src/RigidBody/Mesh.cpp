@@ -54,11 +54,11 @@ rigidbody::Mesh rigidbody::Mesh::DeepCopy() const
 void rigidbody::Mesh::DeepCopy(const rigidbody::Mesh &other)
 {
     m_vertex->resize(other.m_vertex->size());
-    for (unsigned int i=0; i<other.m_vertex->size(); ++i) {
+    for (size_t i=0; i<other.m_vertex->size(); ++i) {
         (*m_vertex)[i] = (*other.m_vertex)[i].DeepCopy();
     }
     m_faces->resize(other.m_faces->size());
-    for (unsigned int i=0; i<other.m_faces->size(); ++i) {
+    for (size_t i=0; i<other.m_faces->size(); ++i) {
         (*m_faces)[i] = (*other.m_faces)[i].DeepCopy();
     }
     *m_pathFile = other.m_pathFile->DeepCopy();
@@ -83,13 +83,13 @@ void rigidbody::Mesh::addPoint(const utils::Vector3d &node)
     m_vertex->push_back(node);
 }
 const utils::Vector3d &rigidbody::Mesh::point(
-    unsigned int idx) const
+    size_t idx) const
 {
     return (*m_vertex)[idx];
 }
-unsigned int rigidbody::Mesh::nbVertex() const
+size_t rigidbody::Mesh::nbVertex() const
 {
-    return static_cast<unsigned int>(m_vertex->size());
+    return m_vertex->size();
 }
 
 void rigidbody::Mesh::rotate(
@@ -122,9 +122,9 @@ utils::Vector3d &rigidbody::Mesh::getScale() const
     return *m_scale;
 }
 
-unsigned int rigidbody::Mesh::nbFaces()
+size_t rigidbody::Mesh::nbFaces()
 {
-    return static_cast<unsigned int>(m_faces->size());
+    return m_faces->size();
 }
 void rigidbody::Mesh::addFace(const rigidbody::MeshFace& face)
 {
@@ -140,7 +140,7 @@ const
     return *m_faces;
 }
 const rigidbody::MeshFace &rigidbody::Mesh::face(
-    unsigned int idx) const
+    size_t idx) const
 {
     return (*m_faces)[idx];
 }

@@ -31,7 +31,7 @@ public:
     /// \param size The length of the vector
     ///
     Vector(
-        unsigned int size);
+        size_t size);
 
     ///
     /// \brief Construct vector from Casadi vector
@@ -88,7 +88,7 @@ public:
     /// \return The norm of the vector
     ///
     Scalar norm(
-        unsigned int p = 2,
+        size_t p = 2,
         bool skipRoot = false) const;
 
     ///
@@ -98,7 +98,7 @@ public:
     /// \return The gradient of the norm
     ///
     Vector normGradient(
-        unsigned int p = 2,
+        size_t p = 2,
         bool skipRoot = false);
 
 #ifndef SWIG

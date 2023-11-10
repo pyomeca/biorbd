@@ -14,8 +14,8 @@ utils::Vector::Vector() :
 }
 
 utils::Vector::Vector(
-    unsigned int size) :
-    RigidBodyDynamics::Math::VectorNd(size)
+    size_t size) :
+    RigidBodyDynamics::Math::VectorNd(static_cast<unsigned int>(size))
 {
 
 }
@@ -59,7 +59,7 @@ utils::Vector::Vector(
 #endif
 
 utils::Scalar utils::Vector::norm(
-    unsigned int p,
+    size_t p,
     bool skipRoot) const
 {
     utils::Error::check(p >= 2, "p must be superior or equal to 2");
@@ -73,8 +73,8 @@ utils::Scalar utils::Vector::norm(
         }
     } else {
         utils::Scalar res(0);
-        for(unsigned int i=0; i < size(); ++i) {
-            res += std::pow(fabs((*this)[i]), p);
+        for(unsigned int i=0; i < static_cast<unsigned int>(size()); ++i) {
+            res += std::pow(fabs((*this)[i]), static_cast<unsigned int>(p));
         }
         if (skipRoot) {
             return res;
@@ -85,7 +85,7 @@ utils::Scalar utils::Vector::norm(
 }
 
 utils::Vector utils::Vector::normGradient(
-    unsigned int p,
+    size_t p,
     bool skipRoot)
 {
     utils::Error::check(p >= 2, "p must be superior or equal to 2");
@@ -97,10 +97,10 @@ utils::Vector utils::Vector::normGradient(
             return utils::Vector(*this * 1.0/norm(2));
         }
     } else {
-        utils::Vector res(static_cast<unsigned int>(size()));
-        utils::Scalar normalized(std::pow(norm(), p-1));
-        for (unsigned int i=0; i<size(); ++i) {
-            res[i] = (*this)[i] * std::pow(fabs((*this)[i]), p - 2);
+        utils::Vector res(static_cast<size_t>(size()));
+        utils::Scalar normalized(std::pow(norm(), static_cast<unsigned int>(p-1)));
+        for (unsigned int i=0; i< static_cast<unsigned int>(size()); ++i) {
+            res[i] = (*this)[i] * std::pow(fabs((*this)[i]), static_cast<unsigned int>(p - 2));
         }
         res /= normalized;
         if (skipRoot) {

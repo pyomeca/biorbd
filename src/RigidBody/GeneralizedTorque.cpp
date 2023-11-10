@@ -11,7 +11,7 @@ rigidbody::GeneralizedTorque::GeneralizedTorque()
 }
 
 rigidbody::GeneralizedTorque::GeneralizedTorque(
-    unsigned int nTorque) :
+    size_t nTorque) :
     utils::Vector(nTorque)
 {
 

@@ -41,7 +41,7 @@ internal_forces::muscles::Muscles internal_forces::muscles::Muscles::DeepCopy() 
 void internal_forces::muscles::Muscles::DeepCopy(const internal_forces::muscles::Muscles &other)
 {
     m_mus->resize(other.m_mus->size());
-    for (unsigned int i=0; i<other.m_mus->size(); ++i) {
+    for (size_t i=0; i<other.m_mus->size(); ++i) {
         (*m_mus)[i] = (*other.m_mus)[i];
     }
 }
@@ -63,7 +63,7 @@ void internal_forces::muscles::Muscles::addMuscleGroup(
 int internal_forces::muscles::Muscles::getMuscleGroupId(const utils::String
         &name) const
 {
-    for (unsigned int i=0; i<m_mus->size(); ++i)
+    for (size_t i=0; i<m_mus->size(); ++i)
         if (!name.compare((*m_mus)[i].name())) {
             return static_cast<int>(i);
         }
@@ -83,7 +83,7 @@ const std::vector<std::shared_ptr<internal_forces::muscles::Muscle>>
 }
 
 const internal_forces::muscles::Muscle &internal_forces::muscles::Muscles::muscle(
-    unsigned int idx) const
+    size_t idx) const
 {
     for (auto g : muscleGroups()) {
         if (idx >= g.nbMuscles()) {
@@ -119,7 +119,7 @@ internal_forces::muscles::Muscles::muscleGroups() const
 }
 
 internal_forces::muscles::MuscleGroup &internal_forces::muscles::Muscles::muscleGroup(
-    unsigned int idx)
+    size_t idx)
 {
     utils::Error::check(idx<nbMuscleGroups(),
                                 "Idx asked is higher than number of muscle groups");
@@ -127,7 +127,7 @@ internal_forces::muscles::MuscleGroup &internal_forces::muscles::Muscles::muscle
 }
 
 const internal_forces::muscles::MuscleGroup &internal_forces::muscles::Muscles::muscleGroup(
-    unsigned int idx) const
+    size_t idx) const
 {
     utils::Error::check(idx<nbMuscleGroups(),
                                 "Idx asked is higher than number of muscle groups");
@@ -138,7 +138,7 @@ const internal_forces::muscles::MuscleGroup &internal_forces::muscles::Muscles::
 {
     int idx = getMuscleGroupId(name);
     utils::Error::check(idx!=-1, "Group name could not be found");
-    return muscleGroup(static_cast<unsigned int>(idx));
+    return muscleGroup(static_cast<size_t>(idx));
 }
 
 // From muscle activation (return muscle force)
@@ -191,11 +191,11 @@ utils::Vector internal_forces::muscles::Muscles::activationDot(
 {
     utils::Vector activationDot(nbMuscleTotal());
 
-    unsigned int cmp(0);
-    for (unsigned int i=0; i<nbMuscleGroups(); ++i)
-        for (unsigned int j=0; j<muscleGroup(i).nbMuscles(); ++j) {
+    size_t cmp(0);
+    for (size_t i=0; i<nbMuscleGroups(); ++i)
+        for (size_t j=0; j<muscleGroup(i).nbMuscles(); ++j) {
             // Recueillir dérivées d'activtion
-            activationDot(cmp) =
+            activationDot(static_cast<unsigned int>(cmp)) =
                 muscleGroup(i).muscle(j).activationDot(*emg[cmp], areadyNormalized);
             ++cmp;
         }
@@ -209,10 +209,10 @@ utils::Vector internal_forces::muscles::Muscles::muscleForces(
     // Output variable
     utils::Vector forces(nbMuscleTotal());
 
-    unsigned int cmpMus(0);
-    for (unsigned int i=0; i<m_mus->size(); ++i) { // muscle group
-        for (unsigned int j=0; j<(*m_mus)[i].nbMuscles(); ++j) {
-            forces(cmpMus, 0) = ((*m_mus)[i].muscle(j).force(*emg[cmpMus]));
+    size_t cmpMus(0);
+    for (size_t i=0; i<m_mus->size(); ++i) { // muscle group
+        for (size_t j=0; j<(*m_mus)[i].nbMuscles(); ++j) {
+            forces(static_cast<unsigned int>(cmpMus), 0) = ((*m_mus)[i].muscle(j).force(*emg[cmpMus]));
             ++cmpMus;
         }
     }
@@ -232,9 +232,9 @@ utils::Vector internal_forces::muscles::Muscles::muscleForces(
     return muscleForces(emg);
 }
 
-unsigned int internal_forces::muscles::Muscles::nbMuscleGroups() const
+size_t internal_forces::muscles::Muscles::nbMuscleGroups() const
 {
-    return static_cast<unsigned int>(m_mus->size());
+    return m_mus->size();
 }
 
 utils::Matrix internal_forces::muscles::Muscles::musclesLengthJacobian()
@@ -243,10 +243,11 @@ utils::Matrix internal_forces::muscles::Muscles::musclesLengthJacobian()
     const rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 
     utils::Matrix tp(nbMuscleTotal(), model.nbDof());
-    unsigned int cmpMus(0);
-    for (unsigned int i=0; i<nbMuscleGroups(); ++i)
-        for (unsigned int j=0; j<((*m_mus)[i]).nbMuscles(); ++j) {
-            tp.block(cmpMus++,0,1,model.nbDof()) = ((*m_mus)[i]).muscle(j).position().jacobianLength();
+    size_t cmpMus(0);
+    for (size_t i=0; i<nbMuscleGroups(); ++i)
+        for (size_t j=0; j<((*m_mus)[i]).nbMuscles(); ++j) {
+            tp.block(static_cast<unsigned int>(cmpMus++),0,1, static_cast<unsigned int>(model.nbDof())) = 
+                ((*m_mus)[i]).muscle(j).position().jacobianLength();
         }
 
     return tp;
@@ -262,15 +263,15 @@ utils::Matrix internal_forces::muscles::Muscles::musclesLengthJacobian(
 }
 
 
-unsigned int internal_forces::muscles::Muscles::nbMuscleTotal() const
+size_t internal_forces::muscles::Muscles::nbMuscleTotal() const
 {
     return nbMuscles();
 }
 
-unsigned int internal_forces::muscles::Muscles::nbMuscles() const
+size_t internal_forces::muscles::Muscles::nbMuscles() const
 {
-    unsigned int total(0);
-    for (unsigned int grp=0; grp<m_mus->size(); ++grp) { // muscular group
+    size_t total(0);
+    for (size_t grp=0; grp<m_mus->size(); ++grp) { // muscular group
         total += (*m_mus)[grp].nbMuscles();
     }
     return total;
@@ -297,7 +298,7 @@ void internal_forces::muscles::Muscles::updateMuscles(
 #endif
 
     for (auto group : *m_mus) // muscle group
-        for (unsigned int j=0; j<group.nbMuscles(); ++j) {
+        for (size_t j=0; j<group.nbMuscles(); ++j) {
             group.muscle(j).updateOrientations(model, Q, QDot, updateKinTP);
 #ifndef BIORBD_USE_CASADI_MATH
             if (updateKinTP){
@@ -328,7 +329,7 @@ void internal_forces::muscles::Muscles::updateMuscles(
 
     // Update all the muscles
     for (auto group : *m_mus) // muscle group
-        for (unsigned int j=0; j<group.nbMuscles(); ++j) {
+        for (size_t j=0; j<group.nbMuscles(); ++j) {
             group.muscle(j).updateOrientations(model, Q,updateKinTP);
 #ifndef BIORBD_USE_CASADI_MATH
             if (updateKinTP){
@@ -342,9 +343,9 @@ void internal_forces::muscles::Muscles::updateMuscles(
     std::vector<utils::Matrix> &jacoPointsInGlobal,
     const rigidbody::GeneralizedVelocity& QDot)
 {
-    unsigned int cmpMuscle = 0;
+    size_t cmpMuscle = 0;
     for (auto group : *m_mus) // muscle  group
-        for (unsigned int j=0; j<group.nbMuscles(); ++j) {
+        for (size_t j=0; j<group.nbMuscles(); ++j) {
             group.muscle(j).updateOrientations(musclePointsInGlobal[cmpMuscle],
                                                jacoPointsInGlobal[cmpMuscle], QDot);
             ++cmpMuscle;
@@ -355,7 +356,7 @@ std::vector<std::shared_ptr<internal_forces::muscles::State>>
         internal_forces::muscles::Muscles::stateSet()
 {
     std::vector<std::shared_ptr<internal_forces::muscles::State>> out;
-    for (unsigned int i=0; i<nbMuscles(); ++i) {
+    for (size_t i=0; i<nbMuscles(); ++i) {
         out.push_back(muscle(i).m_state);
     }
     return out;
@@ -366,9 +367,9 @@ void internal_forces::muscles::Muscles::updateMuscles(
     std::vector<utils::Matrix> &jacoPointsInGlobal)
 {
     // Updater all the muscles
-    unsigned int cmpMuscle = 0;
+    size_t cmpMuscle = 0;
     for (auto group : *m_mus) // muscle group
-        for (unsigned int j=0; j<group.nbMuscles(); ++j) {
+        for (size_t j=0; j<group.nbMuscles(); ++j) {
             group.muscle(j).updateOrientations(musclePointsInGlobal[cmpMuscle],
                                                jacoPointsInGlobal[cmpMuscle]);
             ++cmpMuscle;

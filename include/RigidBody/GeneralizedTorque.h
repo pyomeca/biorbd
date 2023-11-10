@@ -27,7 +27,7 @@ public:
     /// \param nTorque Position of the vector
     ///
     GeneralizedTorque(
-        unsigned int nTorque);
+        size_t nTorque);
 
     ///
     /// \brief Construct generalized torque from a joint model

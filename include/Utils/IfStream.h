@@ -91,7 +91,7 @@ public:
     /// \return True on success
     ///
     bool read(
-        unsigned int& val);
+        size_t& val);
 
     ///
     /// \brief Read an double in the file
@@ -174,7 +174,7 @@ public:
     ///
     bool reachSpecificTag(
         const String& tag,
-        unsigned int maxTag = -1);
+        size_t maxTag = -1);
 
     ///
     /// \brief Counts the number of consecutive lines starting with the same tag and then brings it back to the initial position

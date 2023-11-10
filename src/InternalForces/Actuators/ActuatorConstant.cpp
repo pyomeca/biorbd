@@ -24,7 +24,7 @@ internal_forces::actuator::ActuatorConstant::ActuatorConstant(
 internal_forces::actuator::ActuatorConstant::ActuatorConstant(
     int direction,
     const utils::Scalar& Tmax,
-    unsigned int dofIdx) :
+    size_t dofIdx) :
     Actuator(direction, dofIdx),
     m_Tmax(std::make_shared<utils::Scalar>(Tmax))
 {
@@ -34,7 +34,7 @@ internal_forces::actuator::ActuatorConstant::ActuatorConstant(
 internal_forces::actuator::ActuatorConstant::ActuatorConstant(
     int direction,
     const utils::Scalar& Tmax,
-    unsigned int dofIdx,
+    size_t dofIdx,
     const utils::String &jointName) :
     Actuator(direction, dofIdx, jointName),
     m_Tmax(std::make_shared<utils::Scalar>(Tmax))

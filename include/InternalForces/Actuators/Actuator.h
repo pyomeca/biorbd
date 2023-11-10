@@ -43,7 +43,7 @@ public:
     ///
     Actuator(
         int direction,
-        unsigned int dofIdx);
+        size_t dofIdx);
 
     ///
     /// \brief Construct actuator
@@ -53,7 +53,7 @@ public:
     ///
     Actuator(
         int direction,
-        unsigned int dofIdx,
+        size_t dofIdx,
         const utils::String &jointName);
 
     ///
@@ -72,7 +72,7 @@ public:
     /// \brief Return the index of the DoF associated with actuator
     /// \return The index of the DoF associated with actuator
     ///
-    unsigned int index() const;
+    size_t index() const;
 
     ///
     /// \brief Return the direction of the actuator
@@ -103,8 +103,7 @@ protected:
 
     std::shared_ptr<utils::String>
     m_jointName; ///< Name of the parent joint
-    std::shared_ptr<unsigned int>
-    m_dofIdx;///< Index of the DoF associated with the actuator
+    std::shared_ptr<size_t> m_dofIdx;///< Index of the DoF associated with the actuator
 
 };
 

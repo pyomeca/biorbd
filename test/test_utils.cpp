@@ -484,8 +484,8 @@ TEST(Matrix, unitTest)
         EXPECT_EQ(sum.rows(), 3);
         EXPECT_EQ(sum.cols(), 4);
         int cmp(0);
-        for (unsigned int i=0; i<sum.rows(); ++i) {
-            for (unsigned int j=0; j<sum.cols(); ++j) {
+        for (size_t i=0; i<sum.rows(); ++i) {
+            for (size_t j=0; j<sum.cols(); ++j) {
                 SCALAR_TO_DOUBLE(s, sum(i, j));
                 EXPECT_NEAR(s, expectedSum[cmp++], requiredPrecision);
             }
@@ -510,8 +510,8 @@ TEST(Matrix, unitTest)
         EXPECT_EQ(mult.rows(), 3);
         EXPECT_EQ(mult.cols(), 2);
         int cmp(0);
-        for (unsigned int i=0; i<mult.rows(); ++i) {
-            for (unsigned int j=0; j<mult.cols(); ++j) {
+        for (size_t i=0; i<mult.rows(); ++i) {
+            for (size_t j=0; j<mult.cols(); ++j) {
                 SCALAR_TO_DOUBLE(m, mult(i, j));
                 EXPECT_NEAR(m, expectedMult[cmp++], requiredPrecision);
             }
@@ -528,7 +528,7 @@ TEST(Matrix, unitTest)
         EXPECT_EQ(mult.rows(), 3);
         EXPECT_EQ(mult.cols(), 1);
         int cmp(0);
-        for (unsigned int i=0; i<mult.rows(); ++i) {
+        for (size_t i=0; i<mult.rows(); ++i) {
             SCALAR_TO_DOUBLE(m, mult(i));
             EXPECT_NEAR(m, expectedMult[cmp++], requiredPrecision);
         }
@@ -557,8 +557,8 @@ TEST(matrix3d, unitTest){
                                               0.8643486318991006,  0.16899768163401974, 0.47364673136893787
                                          });
         int cmp(0);
-        for (unsigned int i=0; i<3; ++i) {
-            for (unsigned int j=0; j<3; ++j) {
+        for (size_t i=0; i<3; ++i) {
+            for (size_t j=0; j<3; ++j) {
                 SCALAR_TO_DOUBLE(m, orthoNorm(i, j));
                 EXPECT_NEAR(m, expectedMult[cmp++], requiredPrecision);
             }
@@ -622,8 +622,7 @@ TEST(RotoTrans, unitTest)
         for (unsigned int i = 0; i<4; ++i) {
             for (unsigned int j = 0; j<4; ++j) {
                 SCALAR_TO_DOUBLE(val, rt_t(i, j));
-                EXPECT_NEAR(val, rtTransposedExpected[cmp++],
-                            requiredPrecision);
+                EXPECT_NEAR(val, rtTransposedExpected[cmp++], requiredPrecision);
             }
         }
 
@@ -1361,7 +1360,7 @@ TEST(Vector, operation)
     //    utils::Vector expectedMultVectAndScalar(4);
     //    expectedMultVectAndScalar << 6.1, 6.2, 6.3, 6.4;
 
-    //    for (unsigned int i = 0; i < 4; ++i) {
+    //    for (size_t i = 0; i < 4; ++i) {
     //        EXPECT_NEAR(multVectAndScalar[i], expectedMultVectAndScalar[i], requiredPrecision);
     //    }
     //}
@@ -1409,7 +1408,7 @@ TEST(Vector, normGradient)
             0.43825049008927769, 0.47809144373375745, 0.51793239737823726, 0.55777335102271697
         });
 
-        for (unsigned int i = 0; i < 4; ++i) {
+        for (size_t i = 0; i < 4; ++i) {
             SCALAR_TO_DOUBLE(val, nG(i));
             EXPECT_NEAR(val, expectednG[i], requiredPrecision);
         }

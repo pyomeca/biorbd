@@ -87,7 +87,7 @@ public:
     /// \param characteristics The characteristics of the semgent (mass, center of mass, inertia of the segment, etc)
     /// \param referenceFrame Transformation of the parent to child
     ///
-    unsigned int AddSegment(
+    size_t AddSegment(
         const utils::String &segmentName,
         const utils::String &parentName,
         const utils::String &translationSequence,
@@ -109,7 +109,7 @@ public:
     /// \param characteristics The characteristics of the semgent (mass, center of mass, inertia of the segment, etc)
     /// \param referenceFrame Transformation of the parent to child
     ///
-    unsigned int AddSegment(
+    size_t AddSegment(
         const utils::String &segmentName,
         const utils::String &parentName,
         const utils::String &translationSequence,
@@ -164,14 +164,14 @@ public:
     /// \param idx The Biorbd segment Id
     /// \return The Rbdl body identification
     ///
-    unsigned int getBodyBiorbdIdToRbdlId(
+    size_t getBodyBiorbdIdToRbdlId(
         const int idx) const;
 
     ///
     /// \brief Return the rbdl idx of subtrees of each segments
     /// \return the rbdl idx of subtrees of each segments
     ///
-    std::vector<std::vector<unsigned int> > getDofSubTrees();
+    std::vector<std::vector<size_t> > getDofSubTrees();
 
 protected:
     ///
@@ -180,28 +180,28 @@ protected:
     /// \param idx starting index to explore the subtrees
     /// \return the rbdl idx of subtrees of each segments starting from the specified index
     ///
-    std::vector<std::vector<unsigned int> > recursiveDofSubTrees(
-        std::vector<std::vector<unsigned int> >subTrees,
-        unsigned int idx);
+    std::vector<std::vector<size_t> > recursiveDofSubTrees(
+        std::vector<std::vector<size_t> >subTrees,
+        size_t idx);
 
 public:
     ///
     /// \brief Return the number of generalized torque
     /// \return The number of generalized torque
     ///
-    unsigned int nbGeneralizedTorque() const;
+    size_t nbGeneralizedTorque() const;
 
     ///
     /// \brief Return the actual number of segment
     /// \return The actual number of segment
     ///
-    unsigned int nbSegment() const;
+    size_t nbSegment() const;
 
     ///
     /// \brief Return the number of degrees of freedom (DoF)
     /// \return The number of DoF
     ///
-    unsigned int nbDof() const;
+    size_t nbDof() const;
 
     ///
     /// \brief Return the index of a DoF in a segment
@@ -209,7 +209,7 @@ public:
     /// \param dofName The name of the degree of freedom (DoF)
     /// \return The index of a DoF in a segment
     ///
-    unsigned int getDofIndex(
+    size_t getDofIndex(
         const utils::String& SegmentName,
         const utils::String& dofName);
 
@@ -223,31 +223,31 @@ public:
     /// \brief Return the number of generalized coordinates (Q)
     /// \return The number of Q
     ///
-    unsigned int nbQ() const;
+    size_t nbQ() const;
 
     ///
     /// \brief Return the number of generalized velocities (Qdot)
     /// \return The number of Qdot
     ///
-    unsigned int nbQdot() const;
+    size_t nbQdot() const;
 
     ///
     /// \brief Return the number of generalized acceleration (Qddot)
     /// \return The number of Qddot
     ///
-    unsigned int nbQddot() const;
+    size_t nbQddot() const;
 
     ///
     /// \brief Return the dof on the root
     /// \return The dof on the root
     ///
-    unsigned int nbRoot() const;
+    size_t nbRoot() const;
 
     ///
     /// \brief Return the number of segments that are described using quaternions
     /// \return The number number of segments
     ///
-    unsigned int nbQuat() const;
+    size_t nbQuat() const;
 
 
     ///
@@ -264,7 +264,7 @@ public:
     /// inertia for these 3 segments as well.
     ///
     void updateSegmentCharacteristics(
-        unsigned int idx,
+        size_t idx,
         const SegmentCharacteristics& characteristics);
 
 
@@ -274,7 +274,7 @@ public:
     /// \return The segment
     ///
     const Segment& segment(
-        unsigned int idx) const;
+        size_t idx) const;
 
     ///
     /// \brief Get a segment of a specific name
@@ -343,7 +343,7 @@ public:
     ///
     utils::RotoTrans globalJCS(
         const GeneralizedCoordinates &Q,
-        unsigned int idx);
+        size_t idx);
 
     ///
     /// \brief Return the joint coordinate system (JCS) for the segment in global reference
@@ -363,7 +363,7 @@ public:
     /// This function assumes kinematics has been already updated
     ///
     utils::RotoTrans globalJCS(
-        unsigned int idx) const;
+        size_t idx) const;
 
     ///
     /// \brief Return all the joint coordinate system (JCS) in its parent reference frame
@@ -385,7 +385,7 @@ public:
     /// \return The JCS of the segment idx in parent reference frame
     ///
     utils::RotoTrans localJCS(
-        const unsigned int idx) const;
+        const size_t idx) const;
 
     ///
     /// \brief Project a point on specific axis of a segment
@@ -523,7 +523,7 @@ public:
     ///
     utils::Vector3d CoMbySegment(
         const GeneralizedCoordinates &Q,
-        const unsigned int idx,
+        const size_t idx,
         bool updateKin=true);
 
     ///
@@ -575,7 +575,7 @@ public:
     utils::Vector3d CoMdotBySegment(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
-        const unsigned int idx,
+        const size_t idx,
         bool updateKin=true);
 
     ///
@@ -605,7 +605,7 @@ public:
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
         const rigidbody::GeneralizedAcceleration &Qddot,
-        const unsigned int idx,
+        const size_t idx,
         bool updateKin = true);
 
     ///
@@ -640,7 +640,7 @@ public:
     ///
     std::vector<utils::Vector3d> meshPoints(
         const GeneralizedCoordinates &Q,
-        unsigned int idx,
+        size_t idx,
         bool updateKin = true);
 
     ///
@@ -666,7 +666,7 @@ public:
     /// \return The mesh face for segment idx
     ///
     const std::vector<MeshFace> &meshFaces(
-        unsigned int idx) const;
+        size_t idx) const;
 
     ///
     /// \brief Return the segment mesh
@@ -680,7 +680,7 @@ public:
     /// \return The Segment mesh for segment idx
     ///
     const Mesh& mesh(
-        unsigned int  idx) const;
+        size_t  idx) const;
     // ----------------------- //
 
 
@@ -793,7 +793,7 @@ public:
     ///
     void CalcMatRotJacobian (
         const GeneralizedCoordinates &Q,
-        unsigned int segmentIdx,
+        size_t segmentIdx,
         const utils::Matrix3d &rotation,
         RigidBodyDynamics::Math::MatrixNd &G,
         bool updateKin);
@@ -806,7 +806,7 @@ public:
     ///
     utils::Matrix JacobianSegmentRotMat (
             const rigidbody::GeneralizedCoordinates &Q,
-            unsigned int segmentIdx,
+            size_t segmentIdx,
             bool updateKin);
 
     ///
@@ -830,7 +830,7 @@ public:
     utils::Vector3d segmentAngularVelocity(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
-        unsigned int idx,
+        size_t idx,
         bool updateKin = true);
 
     ///
@@ -1078,14 +1078,14 @@ protected:
     std::shared_ptr<std::vector<Segment>>
             m_segments; ///< All the articulations
 
-    std::shared_ptr<unsigned int>
+    std::shared_ptr<size_t>
     m_nbRoot; ///< The number of DoF on the root segment
-    std::shared_ptr<unsigned int>
+    std::shared_ptr<size_t>
     m_nbDof; ///< The total number of degrees of freedom
-    std::shared_ptr<unsigned int> m_nbQ; ///< The total number of Q
-    std::shared_ptr<unsigned int> m_nbQdot; ///< The total number of Qdot
-    std::shared_ptr<unsigned int> m_nbQddot; ///< The total number of Qddot
-    std::shared_ptr<unsigned int>
+    std::shared_ptr<size_t> m_nbQ; ///< The total number of Q
+    std::shared_ptr<size_t> m_nbQdot; ///< The total number of Qdot
+    std::shared_ptr<size_t> m_nbQddot; ///< The total number of Qddot
+    std::shared_ptr<size_t>
     m_nRotAQuat; ///< The number of segments per quaternion
     std::shared_ptr<bool>
     m_isKinematicsComputed; ///< If the kinematics are computed
@@ -1101,7 +1101,7 @@ protected:
     ///
     RigidBodyDynamics::Math::SpatialTransform CalcBodyWorldTransformation(
         const GeneralizedCoordinates &Q,
-        const unsigned int segmentIdx,
+        const size_t segmentIdx,
         bool updateKin = true);
 
     ///
@@ -1112,7 +1112,7 @@ protected:
     /// This function assumes that the kinematics was previously updated
     ///
     RigidBodyDynamics::Math::SpatialTransform CalcBodyWorldTransformation(
-        const unsigned int segmentIdx) const;
+        const size_t segmentIdx) const;
 
     ///
     /// \brief Return the mesh vertices of segment idx
@@ -1122,7 +1122,7 @@ protected:
     ///
     std::vector<utils::Vector3d> meshPoints(
         const std::vector<utils::RotoTrans> &RT,
-        unsigned int idx) const;
+        size_t idx) const;
 
 public:
     ///

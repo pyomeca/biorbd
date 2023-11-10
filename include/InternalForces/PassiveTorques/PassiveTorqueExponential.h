@@ -52,7 +52,7 @@ public:
         const utils::Scalar& wMax,
         const utils::Scalar& sV,
         const utils::Scalar& delatP,
-        unsigned int dofIdx);
+        size_t dofIdx);
 
     ///
     /// \brief Construct a linear passive torque
@@ -73,7 +73,7 @@ public:
         const utils::Scalar& wMax,
         const utils::Scalar& sV,
         const utils::Scalar& delatP,
-        unsigned int dofIdx,
+        size_t dofIdx,
         const utils::String &jointName);
 
     ///

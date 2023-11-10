@@ -290,7 +290,7 @@ bool internal_forces::WrappingHalfCylinder::findVerticalNode(
 #else
     if (!checkIfWraps(pointsInGlobal,
                       pointsToWrap)) { // If it doesn't pass by the wrap, put NaN and stop
-        for (unsigned int i=0; i<3; ++i) {
+        for (size_t i=0; i<3; ++i) {
             (*pointsToWrap.m_p1)(i) = static_cast<utils::Scalar>
                                       (static_cast<double>(NAN));
             (*pointsToWrap.m_p2)(i) = static_cast<utils::Scalar>

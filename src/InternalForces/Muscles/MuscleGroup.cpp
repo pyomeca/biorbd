@@ -60,7 +60,7 @@ void internal_forces::muscles::MuscleGroup::DeepCopy(
         const internal_forces::muscles::MuscleGroup &other)
 {
     m_mus->resize(other.m_mus->size());
-    for (unsigned int i=0; i<other.m_mus->size(); ++i) {
+    for (size_t i=0; i<other.m_mus->size(); ++i) {
         if ((*other.m_mus)[i]->type() ==
                 internal_forces::muscles::MUSCLE_TYPE::IDEALIZED_ACTUATOR) {
             (*m_mus)[i] = std::make_shared<internal_forces::muscles::IdealizedActuator>((
@@ -328,22 +328,22 @@ void internal_forces::muscles::MuscleGroup::addMuscle(
     return;
 }
 
-internal_forces::muscles::Muscle& internal_forces::muscles::MuscleGroup::muscle(unsigned int idx)
+internal_forces::muscles::Muscle& internal_forces::muscles::MuscleGroup::muscle(size_t idx)
 {
     utils::Error::check(idx<nbMuscles(), "Idx asked is higher than number of muscles");
     return *(*m_mus)[idx];
 }
 const internal_forces::muscles::Muscle& internal_forces::muscles::MuscleGroup::muscle(
-    unsigned int idx) const
+    size_t idx) const
 {
     utils::Error::check(idx<nbMuscles(), "Idx asked is higher than number of muscles");
     return *(*m_mus)[idx];
 }
 
 
-unsigned int internal_forces::muscles::MuscleGroup::nbMuscles() const
+size_t internal_forces::muscles::MuscleGroup::nbMuscles() const
 {
-    return static_cast<unsigned int>(m_mus->size());
+    return m_mus->size();
 }
 
 std::vector<std::shared_ptr<internal_forces::muscles::Muscle>>&
@@ -361,7 +361,7 @@ const std::vector<std::shared_ptr<internal_forces::muscles::Muscle>>&
 int internal_forces::muscles::MuscleGroup::muscleID(const utils::String&
         nameToFind)
 {
-    for (unsigned int i=0; i<m_mus->size(); ++i) {
+    for (size_t i=0; i<m_mus->size(); ++i) {
         if (!nameToFind.compare( (*m_mus)[i]->name()) ) {
             return static_cast<int>(i);
         }

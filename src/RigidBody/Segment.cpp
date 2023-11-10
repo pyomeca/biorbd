@@ -24,21 +24,21 @@ rigidbody::Segment::Segment() :
     m_QRanges(std::make_shared<std::vector<utils::Range>>()),
     m_QDotRanges(std::make_shared<std::vector<utils::Range>>()),
     m_QDDotRanges(std::make_shared<std::vector<utils::Range>>()),
-    m_nbDof(std::make_shared<unsigned int>(0)),
-    m_nbQdot(std::make_shared<unsigned int>(0)),
-    m_nbQddot(std::make_shared<unsigned int>(0)),
-    m_nbDofTrue(std::make_shared<unsigned int>(0)),
-    m_nbDofTrueOutside(std::make_shared<unsigned int>(0)),
-    m_nbDofTrans(std::make_shared<unsigned int>(0)),
-    m_nbDofRot(std::make_shared<unsigned int>(0)),
-    m_nbDofQuat(std::make_shared<unsigned int>(0)),
+    m_nbDof(std::make_shared<size_t>(0)),
+    m_nbQdot(std::make_shared<size_t>(0)),
+    m_nbQddot(std::make_shared<size_t>(0)),
+    m_nbDofTrue(std::make_shared<size_t>(0)),
+    m_nbDofTrueOutside(std::make_shared<size_t>(0)),
+    m_nbDofTrans(std::make_shared<size_t>(0)),
+    m_nbDofRot(std::make_shared<size_t>(0)),
+    m_nbDofQuat(std::make_shared<size_t>(0)),
     m_isQuaternion(std::make_shared<bool>(false)),
     m_dof(std::make_shared<std::vector<RigidBodyDynamics::Joint>>()),
-    m_idxDof(std::make_shared<std::vector<unsigned int>>()),
-    m_sequenceTrans(std::make_shared<std::vector<unsigned int>>()),
-    m_sequenceRot(std::make_shared<std::vector<unsigned int>>()),
+    m_idxDof(std::make_shared<std::vector<size_t>>()),
+    m_sequenceTrans(std::make_shared<std::vector<size_t>>()),
+    m_sequenceRot(std::make_shared<std::vector<size_t>>()),
     m_nameDof(std::make_shared<std::vector<utils::String>>()),
-    m_dofPosition(std::make_shared<std::vector<unsigned int>>()),
+    m_dofPosition(std::make_shared<std::vector<size_t>>()),
     m_characteristics(
         std::make_shared<rigidbody::SegmentCharacteristics>()),
     m_dofCharacteristics(
@@ -68,21 +68,21 @@ rigidbody::Segment::Segment(
     m_QRanges(std::make_shared<std::vector<utils::Range>>()),
     m_QDotRanges(std::make_shared<std::vector<utils::Range>>()),
     m_QDDotRanges(std::make_shared<std::vector<utils::Range>>()),
-    m_nbDof(std::make_shared<unsigned int>(0)),
-    m_nbQdot(std::make_shared<unsigned int>(0)),
-    m_nbQddot(std::make_shared<unsigned int>(0)),
-    m_nbDofTrue(std::make_shared<unsigned int>(0)),
-    m_nbDofTrueOutside(std::make_shared<unsigned int>(0)),
-    m_nbDofTrans(std::make_shared<unsigned int>(0)),
-    m_nbDofRot(std::make_shared<unsigned int>(0)),
-    m_nbDofQuat(std::make_shared<unsigned int>(0)),
+    m_nbDof(std::make_shared<size_t>(0)),
+    m_nbQdot(std::make_shared<size_t>(0)),
+    m_nbQddot(std::make_shared<size_t>(0)),
+    m_nbDofTrue(std::make_shared<size_t>(0)),
+    m_nbDofTrueOutside(std::make_shared<size_t>(0)),
+    m_nbDofTrans(std::make_shared<size_t>(0)),
+    m_nbDofRot(std::make_shared<size_t>(0)),
+    m_nbDofQuat(std::make_shared<size_t>(0)),
     m_isQuaternion(std::make_shared<bool>(false)),
     m_dof(std::make_shared<std::vector<RigidBodyDynamics::Joint>>()),
-    m_idxDof(std::make_shared<std::vector<unsigned int>>()),
-    m_sequenceTrans(std::make_shared<std::vector<unsigned int>>()),
-    m_sequenceRot(std::make_shared<std::vector<unsigned int>>()),
+    m_idxDof(std::make_shared<std::vector<size_t>>()),
+    m_sequenceTrans(std::make_shared<std::vector<size_t>>()),
+    m_sequenceRot(std::make_shared<std::vector<size_t>>()),
     m_nameDof(std::make_shared<std::vector<utils::String>>()),
-    m_dofPosition(std::make_shared<std::vector<unsigned int>>()),
+    m_dofPosition(std::make_shared<std::vector<size_t>>()),
     m_characteristics(std::make_shared<rigidbody::SegmentCharacteristics>
                       (characteristics)),
     m_dofCharacteristics(
@@ -116,21 +116,21 @@ rigidbody::Segment::Segment(
     m_QRanges(std::make_shared<std::vector<utils::Range>>()),
     m_QDotRanges(std::make_shared<std::vector<utils::Range>>()),
     m_QDDotRanges(std::make_shared<std::vector<utils::Range>>()),
-    m_nbDof(std::make_shared<unsigned int>(0)),
-    m_nbQdot(std::make_shared<unsigned int>(0)),
-    m_nbQddot(std::make_shared<unsigned int>(0)),
-    m_nbDofTrue(std::make_shared<unsigned int>(0)),
-    m_nbDofTrueOutside(std::make_shared<unsigned int>(0)),
-    m_nbDofTrans(std::make_shared<unsigned int>(0)),
-    m_nbDofRot(std::make_shared<unsigned int>(0)),
-    m_nbDofQuat(std::make_shared<unsigned int>(0)),
+    m_nbDof(std::make_shared<size_t>(0)),
+    m_nbQdot(std::make_shared<size_t>(0)),
+    m_nbQddot(std::make_shared<size_t>(0)),
+    m_nbDofTrue(std::make_shared<size_t>(0)),
+    m_nbDofTrueOutside(std::make_shared<size_t>(0)),
+    m_nbDofTrans(std::make_shared<size_t>(0)),
+    m_nbDofRot(std::make_shared<size_t>(0)),
+    m_nbDofQuat(std::make_shared<size_t>(0)),
     m_isQuaternion(std::make_shared<bool>(false)),
     m_dof(std::make_shared<std::vector<RigidBodyDynamics::Joint>>()),
-    m_idxDof(std::make_shared<std::vector<unsigned int>>()),
-    m_sequenceTrans(std::make_shared<std::vector<unsigned int>>()),
-    m_sequenceRot(std::make_shared<std::vector<unsigned int>>()),
+    m_idxDof(std::make_shared<std::vector<size_t>>()),
+    m_sequenceTrans(std::make_shared<std::vector<size_t>>()),
+    m_sequenceRot(std::make_shared<std::vector<size_t>>()),
     m_nameDof(std::make_shared<std::vector<utils::String>>()),
-    m_dofPosition(std::make_shared<std::vector<unsigned int>>()),
+    m_dofPosition(std::make_shared<std::vector<size_t>>()),
     m_characteristics(std::make_shared<rigidbody::SegmentCharacteristics>
                       (characteristics)),
     m_dofCharacteristics(
@@ -169,20 +169,20 @@ void rigidbody::Segment::DeepCopy(const
     *m_nbDofQuat = *other.m_nbDofQuat;
     *m_isQuaternion = *other.m_isQuaternion;
     m_dof->resize(other.m_dof->size());
-    for (unsigned int i=0; i<other.m_dof->size(); ++i) {
+    for (size_t i=0; i<other.m_dof->size(); ++i) {
         (*m_dof)[i] = (*other.m_dof)[i];
     }
     *m_idxDof = *other.m_idxDof;
     *m_sequenceTrans = *other.m_sequenceTrans;
     *m_sequenceRot = *other.m_sequenceRot;
     m_nameDof->resize(other.m_nameDof->size());
-    for (unsigned int i=0; i<other.m_nameDof->size(); ++i) {
+    for (size_t i=0; i<other.m_nameDof->size(); ++i) {
         (*m_nameDof)[i] = (*other.m_nameDof)[i];
     }
     *m_dofPosition = *other.m_dofPosition;
     *m_characteristics = other.m_characteristics->DeepCopy();
     m_dofCharacteristics->resize(other.m_dofCharacteristics->size());
-    for (unsigned int i=0; i<other.m_dofCharacteristics->size(); ++i) {
+    for (size_t i=0; i<other.m_dofCharacteristics->size(); ++i) {
         (*m_dofCharacteristics)[i] = (*other.m_dofCharacteristics)[i].DeepCopy();
     }
 }
@@ -202,7 +202,7 @@ void rigidbody::Segment::setType()
     *m_typeOfNode = utils::NODE_TYPE::SEGMENT;
 }
 
-unsigned int rigidbody::Segment::id() const
+size_t rigidbody::Segment::id() const
 {
     if (*m_nbDof!=0) {
         return (*m_idxDof)[*m_nbDof-1];
@@ -211,37 +211,37 @@ unsigned int rigidbody::Segment::id() const
     }
 }
 
-unsigned int rigidbody::Segment::nbGeneralizedTorque() const
+size_t rigidbody::Segment::nbGeneralizedTorque() const
 {
     return nbQddot();
 }
-unsigned int rigidbody::Segment::nbDof() const
+size_t rigidbody::Segment::nbDof() const
 {
     return *m_nbDofTrueOutside;
 }
-unsigned int rigidbody::Segment::nbDofTrans() const
+size_t rigidbody::Segment::nbDofTrans() const
 {
     return *m_nbDofTrans;
 }
-unsigned int rigidbody::Segment::nbDofRot() const
+size_t rigidbody::Segment::nbDofRot() const
 {
     return *m_nbDofRot;
 }
-unsigned int rigidbody::Segment::nbQ() const
+size_t rigidbody::Segment::nbQ() const
 {
     return *m_nbDofTrue;
 }
-unsigned int rigidbody::Segment::nbQdot() const
+size_t rigidbody::Segment::nbQdot() const
 {
     return *m_nbQdot;
 }
-unsigned int rigidbody::Segment::nbQddot() const
+size_t rigidbody::Segment::nbQddot() const
 {
     return *m_nbQddot;
 }
 
 const utils::String &rigidbody::Segment::nameDof(
-    const unsigned int i) const
+    const size_t i) const
 {
     // Return the number of DoF of the segment
     utils::Error::check(i<*m_nbDofTrue,
@@ -383,24 +383,24 @@ void rigidbody::Segment::str2numSequence(
     // Store the names of the DoFs
     m_nameDof->clear();
     m_nameDof->resize(*m_nbDofTrue);
-    for (unsigned int i=0; i<*m_nbDofTrans; ++i) {
+    for (size_t i=0; i<*m_nbDofTrans; ++i) {
         (*m_nameDof)[i] = "Trans" + seqT(i).toupper();
     }
-    for (unsigned int i=0; i<*m_nbDofRot; ++i) {
+    for (size_t i=0; i<*m_nbDofRot; ++i) {
         (*m_nameDof)[*m_nbDofTrans+i] = "Rot" + seqR(i).toupper();
     }
     utils::String xyz("XYZW");
-    for (unsigned int i=0; i<*m_nbDofQuat; ++i) {
+    for (size_t i=0; i<*m_nbDofQuat; ++i) {
         (*m_nameDof)[*m_nbDofTrans + *m_nbDofRot + i] = utils::String("Quat") +
                 xyz.substr(i, 1);
     }
 
 }
 void rigidbody::Segment::str2numSequence(
-    std::vector<unsigned int>& sequenceInteger,
+    std::vector<size_t>& sequenceInteger,
     const utils::String &sequenceText)
 {
-    for (unsigned int i=0; i<sequenceText.length(); i++) {
+    for (size_t i=0; i<sequenceText.length(); i++) {
         char tp = sequenceText.tolower()[i];
         if      (tp == 'x') {
             sequenceInteger[i] = 0;
@@ -415,8 +415,8 @@ void rigidbody::Segment::str2numSequence(
         }
     }
 }
-void rigidbody::Segment::setNumberOfDof(unsigned int nTrans,
-        unsigned int nRot)
+void rigidbody::Segment::setNumberOfDof(size_t nTrans,
+        size_t nRot)
 {
     *m_nbDofTrans = nTrans;
     if (*m_isQuaternion) {
@@ -442,8 +442,7 @@ void rigidbody::Segment::setSequence(const utils::String &seqT,
         const utils::String
         &seqR)   // Find the x, y, and z positions in this sequence
 {
-    setNumberOfDof(static_cast<unsigned int>(seqT.length()),
-                   static_cast<unsigned int>(seqR.length()));
+    setNumberOfDof(seqT.length(), seqR.length());
     str2numSequence(seqT, seqR);
     fillSequence();
 }
@@ -452,14 +451,14 @@ void rigidbody::Segment::fillSequence()
     m_dofPosition->clear();
     m_dofPosition->resize(*m_nbDof);
 
-    for (unsigned int i=0; i<*m_nbDofTrans; i++) {
+    for (size_t i=0; i<*m_nbDofTrans; i++) {
         (*m_dofPosition)[i] =
             (*m_sequenceTrans)[i];    // Place the translation first in the requested order
     }
     if (*m_isQuaternion) {
         (*m_dofPosition)[*m_nbDofTrans] = (*m_sequenceRot)[0];
     } else
-        for (unsigned int i=0; i<*m_nbDofRot; i++) {
+        for (size_t i=0; i<*m_nbDofRot; i++) {
             (*m_dofPosition)[i+*m_nbDofTrans] =
                 (*m_sequenceRot)[i];    // Place the rotation following the translations in the requested order
         }
@@ -471,7 +470,7 @@ void rigidbody::Segment::setDofCharacteristicsOnLastBody()
 
     if (*m_nbDof!=0) {
         m_dofCharacteristics->resize(*m_nbDof);
-        for (unsigned int i=0; i<*m_nbDof-1; i++) {
+        for (size_t i=0; i<*m_nbDof-1; i++) {
             (*m_dofCharacteristics)[i] = rigidbody::SegmentCharacteristics();
         }
 
@@ -494,7 +493,7 @@ void rigidbody::Segment::setJointAxis()
     m_dof->clear();
     if (*m_nbDof != 0) {
         m_dof->resize(*m_nbDof);
-        for (unsigned int i=0; i<*m_nbDofTrans; i++)
+        for (size_t i=0; i<*m_nbDofTrans; i++)
             (*m_dof)[i] = RigidBodyDynamics::Joint(
                               RigidBodyDynamics::JointTypePrismatic,
                               axis[(*m_dofPosition)[i]]);
@@ -504,7 +503,7 @@ void rigidbody::Segment::setJointAxis()
             (*m_dof)[*m_nbDofTrans] = RigidBodyDynamics::Joint(
                                           RigidBodyDynamics::JointTypeSpherical);
         else
-            for (unsigned int i=*m_nbDofTrans; i<*m_nbDofRot+*m_nbDofTrans; i++)
+            for (size_t i=*m_nbDofTrans; i<*m_nbDofRot+*m_nbDofTrans; i++)
                 (*m_dof)[i] = RigidBodyDynamics::Joint(
                                   RigidBodyDynamics::JointTypeRevolute,
                                   axis[(*m_dofPosition)[i]]);
@@ -545,22 +544,26 @@ void rigidbody::Segment::setJoints(
         (*m_idxDof)[0] = model.AddBody(parent_id, *m_cor, (*m_dof)[0], (*m_dofCharacteristics)[0], name());
     else {
         (*m_idxDof)[0] = model.AddBody(parent_id, *m_cor, (*m_dof)[0], (*m_dofCharacteristics)[0]);
-        for (unsigned int i=1; i<*m_nbDof; i++)
+        for (size_t i=1; i<*m_nbDof; i++)
             if (i!=*m_nbDof-1)
-                (*m_idxDof)[i] = model.AddBody((*m_idxDof)[i-1], zero, (*m_dof)[i], (*m_dofCharacteristics)[i]);
+                (*m_idxDof)[i] = model.AddBody(
+                    static_cast<unsigned int>((*m_idxDof)[i-1]), zero, (*m_dof)[i], (*m_dofCharacteristics)[i]
+                );
             else
-                (*m_idxDof)[i] = model.AddBody((*m_idxDof)[i-1], zero, (*m_dof)[i],(*m_dofCharacteristics)[i], name());
+                (*m_idxDof)[i] = model.AddBody(
+                    static_cast<unsigned int>((*m_idxDof)[i-1]), zero, (*m_dof)[i],(*m_dofCharacteristics)[i], name()
+                );
     }
     *m_idxInModel = static_cast<int>(model.I.size() - 1);
 }
 
-unsigned int rigidbody::Segment::getDofIdx(
+size_t rigidbody::Segment::getDofIdx(
     const utils::String &dofName) const
 {
 
-    unsigned int idx(INT_MAX);
+    size_t idx(INT_MAX);
     bool found = false;
-    for (unsigned int i=0; i<nbDof(); ++i) {
+    for (size_t i=0; i<nbDof(); ++i) {
         if (!dofName.tolower().compare((*m_nameDof)[i].tolower())) {
             idx = i;
             found = true;
@@ -594,13 +597,13 @@ const rigidbody::Segment& rigidbody::Segment::findFirstSegmentWithDof(
     } while (true);
 }
 
-unsigned int rigidbody::Segment::getFirstDofIndexInGeneralizedCoordinates(
+size_t rigidbody::Segment::getFirstDofIndexInGeneralizedCoordinates(
     const rigidbody::Joints& model) const 
 {
     const utils::String toCompare(findFirstSegmentWithDof(model).name());
 
     // Start at root and descend the Generalized Coordinate vector until we get to the current segment
-    unsigned int dofCount(0); // Start 
+    size_t dofCount(0); // Start 
     for (int i = 0; i < static_cast<int>(model.nbSegment()); ++i) {
         const rigidbody::Segment& segment(model.segment(i));
 
@@ -613,7 +616,7 @@ unsigned int rigidbody::Segment::getFirstDofIndexInGeneralizedCoordinates(
 }
 
 
-unsigned int rigidbody::Segment::getLastDofIndexInGeneralizedCoordinates(
+size_t rigidbody::Segment::getLastDofIndexInGeneralizedCoordinates(
     const rigidbody::Joints& model) const
 {
     return getFirstDofIndexInGeneralizedCoordinates(model) + findFirstSegmentWithDof(model).nbDof() - 1;

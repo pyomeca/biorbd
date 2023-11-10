@@ -63,8 +63,8 @@ public:
     /// \param nbCols Number of columns
     ///
     Matrix(
-        unsigned int nbRows,
-        unsigned int nbCols);
+        size_t nbRows,
+        size_t nbCols);
 
 #ifndef SWIG
 

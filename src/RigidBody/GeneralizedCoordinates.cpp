@@ -11,7 +11,7 @@ rigidbody::GeneralizedCoordinates::GeneralizedCoordinates()
 }
 
 rigidbody::GeneralizedCoordinates::GeneralizedCoordinates(
-    unsigned int nbQ) :
+    size_t nbQ) :
     utils::Vector(nbQ)
 {
 

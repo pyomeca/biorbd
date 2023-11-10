@@ -67,7 +67,7 @@ public:
         const utils::Scalar& facteur,
         const utils::Scalar& r2,
         const utils::Scalar& qopt2,
-        unsigned int dofIdx);
+        size_t dofIdx);
 
     ///
     /// \brief Construct Gauss6p actuator
@@ -101,7 +101,7 @@ public:
         const utils::Scalar& facteur,
         const utils::Scalar& r2,
         const utils::Scalar& qopt2,
-        unsigned int dofIdx,
+        size_t dofIdx,
         const utils::String &jointName);
 
     ///

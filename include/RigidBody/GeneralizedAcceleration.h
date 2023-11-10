@@ -27,7 +27,7 @@ public:
     /// \param nQddot number of degrees-of-freedom
     ///
     GeneralizedAcceleration(
-        unsigned int nQddot);
+        size_t nQddot);
 
     ///
     /// \brief Create generalized acceleration vector from a joint Model
