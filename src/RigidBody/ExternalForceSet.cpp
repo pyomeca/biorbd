@@ -44,19 +44,8 @@ void rigidbody::ExternalForceSet::add(
     const utils::SpatialVector& vector
 ) 
 {
-    int dofCount(0); 
-    for (int i = 0; i < static_cast<int>(m_model.nbSegment()); ++i) {
-        auto& segment(m_model.segment(i));
-        
-        dofCount += segment.nbDof();
-
-        if (segment.name().compare(segmentName)) continue;
-        if (segment.nbDof() == 0) {
-            throw std::runtime_error("It is not possible to add forces to a segment without degree of freedom");
-        }
-
-        m_externalForces[dofCount] += vector; // Do not subtract 1 since 0 is used for the base ground 
-    }
+    size_t dofIndex = m_model.segment(segmentName).getLastDofIndexInGeneralizedCoordinates(m_model);
+    m_externalForces[dofIndex] += vector; // Do not subtract 1 since 0 is used for the base ground 
 }
 
 void rigidbody::ExternalForceSet::add(
