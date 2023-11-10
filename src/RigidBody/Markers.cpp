@@ -471,7 +471,7 @@ bool rigidbody::Markers::inverseKinematics(
     }
 
     // Associate the body number to each technical marker (body_id)
-    std::vector<size_t> body_id;
+    std::vector<unsigned int> body_id;
     for (size_t i=0; i<body_point.size(); ++i) {
         body_id.push_back( static_cast<size_t>((*(body_point.begin()+i)).parentId()) );
     }

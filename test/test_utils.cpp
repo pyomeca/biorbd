@@ -484,8 +484,8 @@ TEST(Matrix, unitTest)
         EXPECT_EQ(sum.rows(), 3);
         EXPECT_EQ(sum.cols(), 4);
         int cmp(0);
-        for (size_t i=0; i<sum.rows(); ++i) {
-            for (size_t j=0; j<sum.cols(); ++j) {
+        for (unsigned int i=0; i<sum.rows(); ++i) {
+            for (unsigned int j=0; j<sum.cols(); ++j) {
                 SCALAR_TO_DOUBLE(s, sum(i, j));
                 EXPECT_NEAR(s, expectedSum[cmp++], requiredPrecision);
             }
@@ -510,8 +510,8 @@ TEST(Matrix, unitTest)
         EXPECT_EQ(mult.rows(), 3);
         EXPECT_EQ(mult.cols(), 2);
         int cmp(0);
-        for (size_t i=0; i<mult.rows(); ++i) {
-            for (size_t j=0; j<mult.cols(); ++j) {
+        for (unsigned int i=0; i<mult.rows(); ++i) {
+            for (unsigned int j=0; j<mult.cols(); ++j) {
                 SCALAR_TO_DOUBLE(m, mult(i, j));
                 EXPECT_NEAR(m, expectedMult[cmp++], requiredPrecision);
             }
@@ -527,8 +527,8 @@ TEST(Matrix, unitTest)
 
         EXPECT_EQ(mult.rows(), 3);
         EXPECT_EQ(mult.cols(), 1);
-        int cmp(0);
-        for (size_t i=0; i<mult.rows(); ++i) {
+        int cmp(0); 
+        for (unsigned int i=0; i<mult.rows(); ++i) {
             SCALAR_TO_DOUBLE(m, mult(i));
             EXPECT_NEAR(m, expectedMult[cmp++], requiredPrecision);
         }

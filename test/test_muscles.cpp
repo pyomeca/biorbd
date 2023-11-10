@@ -2353,9 +2353,9 @@ TEST(MuscleGroup, unitTest)
                               internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         // Check the id of the last muscle added
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 4);
         int idNewMuscle(muscleGroup.muscleID("newMuscleName"));
-        EXPECT_NEAR(idNewMuscle, 3, requiredPrecision);
+        EXPECT_EQ(idNewMuscle, 3);
 
         // Fetch new muscle from muscle
         EXPECT_STREQ(muscleGroup.muscle(3).name().c_str(), "newMuscleName");
@@ -2372,14 +2372,14 @@ TEST(MuscleGroup, AddMuscle)
         muscleGroup.addMuscle(muscleToAdd);
 
         //Check number of muscle
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 4);
     }
     {
         Model model(modelPathForMuscleForce);
         internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         //Check number of muscle
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 3, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 3);
 
         // Add muscle to muscle group
         muscleGroup.addMuscle("newMuscleName",
@@ -2390,7 +2390,7 @@ TEST(MuscleGroup, AddMuscle)
                               internal_forces::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 4);
 
         // Add HILL muscle to muscle group
         muscleGroup.addMuscle("newHillMuscle",
@@ -2401,7 +2401,7 @@ TEST(MuscleGroup, AddMuscle)
                               internal_forces::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 5, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 5);
 
         // Add HILL THELEN muscle to muscle group
         muscleGroup.addMuscle("newHillThelenMuscle",
@@ -2412,7 +2412,7 @@ TEST(MuscleGroup, AddMuscle)
                               internal_forces::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 6, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 6);
 
         // Add muscle to muscle group
         muscleGroup.addMuscle("newHillThelenFatigable",
@@ -2423,14 +2423,14 @@ TEST(MuscleGroup, AddMuscle)
                               internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         // Check the number of muscles again
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 7, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 7);
     }
     {
         Model model(modelPathForMuscleForce);
         internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         //Check number of muscle
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 3, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 3);
 
         // Add muscle to muscle group
         muscleGroup.addMuscle("newMuscleName",
@@ -2441,7 +2441,7 @@ TEST(MuscleGroup, AddMuscle)
                               internal_forces::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 4);
     }
 }
 
@@ -2558,7 +2558,7 @@ TEST(Muscles, unitTest)
                                          model.muscleGroup(0).muscle(0).characteristics(),
                                          internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
-        EXPECT_NEAR(muscles.muscleNames().size(), 1., requiredPrecision);
+        EXPECT_EQ(muscles.muscleNames().size(), 1);
     }
 }
 

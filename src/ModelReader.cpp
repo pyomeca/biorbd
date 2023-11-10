@@ -614,7 +614,7 @@ void Reader::readModelFile(
                         readVector3d(file, variable, trans);
                         X_successor = utils::RotoTrans(rot, trans, seq);
                     } else if (!property_tag.tolower().compare("axis"))
-                        for (size_t i=0; i<axis.size(); ++i) {
+                        for (size_t i=0; i<static_cast<size_t>(axis.size()); ++i) {
                             file.read(axis(static_cast<unsigned int>(i)), variable);
                         }
                     else if (!property_tag.tolower().compare("stabilizationparameter")) {

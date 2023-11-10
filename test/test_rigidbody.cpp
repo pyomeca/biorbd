@@ -130,7 +130,7 @@ TEST(Contacts, unitTest)
         Model model(modelPathForGeneralTesting);
         rigidbody::Contacts contacts(model);
 
-        EXPECT_NEAR(contacts.nbContacts(), 6., requiredPrecision);
+        EXPECT_EQ(contacts.nbContacts(), 6);
         EXPECT_STREQ(contacts.contactName(1).c_str(), "PiedG_1_Z");
         EXPECT_STREQ(contacts.contactNames()[1].c_str(), "PiedG_1_Z");
         EXPECT_EQ(contacts.hasContacts(), true);
@@ -151,7 +151,7 @@ TEST(Contacts, unitTest)
         Model model(modelPathForGeneralTesting);
         rigidbody::Contacts contacts(model);
 
-        EXPECT_NEAR(contacts.nbContacts(), 6., requiredPrecision);
+        EXPECT_EQ(contacts.nbContacts(), 6);
 
         contacts.AddConstraint(
             7,
@@ -161,7 +161,7 @@ TEST(Contacts, unitTest)
             "JambeD"
         );
 
-        EXPECT_NEAR(contacts.nbContacts(), 7., requiredPrecision);
+        EXPECT_EQ(contacts.nbContacts(), 7);
     }
     {
         Model model(modelPathForGeneralTesting);
@@ -194,10 +194,10 @@ TEST(Contacts, DeepCopy)
         rigidbody::Contacts deepCopyLater;
         deepCopyLater.DeepCopy(contacts);
 
-        EXPECT_NEAR(contacts.nbContacts(), 6., requiredPrecision);
-        EXPECT_NEAR(shallowCopy.nbContacts(), 6., requiredPrecision);
-        EXPECT_NEAR(deepCopyNow.nbContacts(), 6., requiredPrecision);
-        EXPECT_NEAR(deepCopyLater.nbContacts(), 6., requiredPrecision);
+        EXPECT_EQ(contacts.nbContacts(), 6);
+        EXPECT_EQ(shallowCopy.nbContacts(), 6);
+        EXPECT_EQ(deepCopyNow.nbContacts(), 6);
+        EXPECT_EQ(deepCopyLater.nbContacts(), 6);
 
         contacts.AddConstraint(
             7,
@@ -207,10 +207,10 @@ TEST(Contacts, DeepCopy)
             ""
         );
 
-        EXPECT_NEAR(contacts.nbContacts(), 7., requiredPrecision);
-        EXPECT_NEAR(shallowCopy.nbContacts(), 7., requiredPrecision);
-        EXPECT_NEAR(deepCopyNow.nbContacts(), 6., requiredPrecision);
-        EXPECT_NEAR(deepCopyLater.nbContacts(), 6., requiredPrecision);
+        EXPECT_EQ(contacts.nbContacts(), 7);
+        EXPECT_EQ(shallowCopy.nbContacts(), 7);
+        EXPECT_EQ(deepCopyNow.nbContacts(), 6);
+        EXPECT_EQ(deepCopyLater.nbContacts(), 6);
     }
 }
 
@@ -1390,28 +1390,28 @@ TEST(Mesh, scale)
 
     {
         SCALAR_TO_DOUBLE(val, mesh.point(0)[0]);
-        EXPECT_FLOAT_EQ(val, 4);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 4.f);
     }
     {
         SCALAR_TO_DOUBLE(val, mesh.point(0)[1]);
-        EXPECT_FLOAT_EQ(val, 9);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 9.f);
     }
     {
         SCALAR_TO_DOUBLE(val, mesh.point(0)[2]);
-        EXPECT_FLOAT_EQ(val, 16);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 16.f);
     }
 
     {
         SCALAR_TO_DOUBLE(val, mesh.point(1)[0]);
-        EXPECT_FLOAT_EQ(val, 10);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 10.f);
     }
     {
         SCALAR_TO_DOUBLE(val, mesh.point(1)[1]);
-        EXPECT_FLOAT_EQ(val, 18);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 18.f);
     }
     {
         SCALAR_TO_DOUBLE(val, mesh.point(1)[2]);
-        EXPECT_FLOAT_EQ(val, 28);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 28.f);
     }
 
     mesh.rotate(utils::RotoTrans(
@@ -1875,7 +1875,7 @@ TEST(Dynamics, ForwardLoopConstraint)
 #else
         utils::SpatialVector forcesOnAllSegments = model.calcLoopConstraintForces(Q, QDot, Tau)[0];
 #endif
-        for (size_t i = 0; i<forcesOnAllSegments.rows(); ++i) {
+        for (unsigned int i = 0; i<forcesOnAllSegments.rows(); ++i) {
             EXPECT_NEAR(static_cast<double>(forcesOnAllSegments(i)), Fexpected[i], 1e-2);
         }
     }

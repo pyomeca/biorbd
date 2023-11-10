@@ -49,10 +49,10 @@ void rigidbody::KalmanReconsIMU::DeepCopy(const
 void rigidbody::KalmanReconsIMU::manageOcclusionDuringIteration(
     utils::Matrix &InvTp,
     utils::Vector &measure,
-    const std::vector<unsigned int> &occlusion)
+    const std::vector<size_t> &occlusion)
 {
-    for (unsigned int i = 0; i < occlusion.size(); ++i)
-        for (unsigned int j=occlusion[i] * 9; j< occlusion[i] * 9+9; ++j) {
+    for (size_t i = 0; i < occlusion.size(); ++i)
+        for (size_t j=occlusion[i] * 9; j< occlusion[i] * 9+9; ++j) {
             InvTp(j,j) =
                 0; // Artefact due to the fact that m_R has a value at (j:j+2,j:j+2)
             measure[j] = 0;
@@ -72,9 +72,9 @@ void rigidbody::KalmanReconsIMU::reconstructFrame(
     rigidbody::GeneralizedAcceleration *Qddot)
 {
     // Separate the IMUobs in a big vector
-    utils::Vector T(static_cast<unsigned int> (3*3*IMUobs.size())); // Matrix 3*3 * nbIMU
-    for (unsigned int i=0; i<IMUobs.size(); ++i)
-        for (unsigned int j=0; j<3; ++j) {
+    utils::Vector T(static_cast<size_t> (3*3*IMUobs.size())); // Matrix 3*3 * nbIMU
+    for (size_t i=0; i<IMUobs.size(); ++i)
+        for (size_t j=0; j<3; ++j) {
             T.block(9*i+3*j, 0, 3, 1) = IMUobs[i].block(0,j,3,1);
         }
 
@@ -93,7 +93,7 @@ void rigidbody::KalmanReconsIMU::reconstructFrame(
     // An iteration of the Kalman filter
     if (*m_firstIteration) {
         *m_firstIteration = false;
-        for (unsigned int i=0; i<300; ++i) {
+        for (size_t i=0; i<300; ++i) {
             // The first time, call in a recursive manner to have a decent initial position
             reconstructFrame(model, IMUobs, nullptr, nullptr, nullptr);
 
@@ -115,10 +115,10 @@ void rigidbody::KalmanReconsIMU::reconstructFrame(
     // Create only one matrix for zest and Jacobian
     utils::Matrix H(utils::Matrix::Zero(*m_nMeasure, *m_nbDof*3)); // 3*nCentrales => X,Y,Z ; 3*nbDof => Q, Qdot, Qddot
     utils::Vector zest(utils::Vector::Zero(*m_nMeasure));
-    std::vector<unsigned int> occlusionIdx;
-    for (unsigned int i=0; i<*m_nMeasure/9; ++i) {
+    std::vector<size_t> occlusionIdx;
+    for (size_t i=0; i<*m_nMeasure/9; ++i) {
         utils::Scalar sum = 0;
-        for (unsigned int j = 0; j < 9; ++j) { // Calculate the norm for the 9 components
+        for (size_t j = 0; j < 9; ++j) { // Calculate the norm for the 9 components
             sum += IMUobs(i*9+j)*IMUobs(i*9+j);
         }
 #ifdef BIORBD_USE_CASADI_MATH
@@ -128,7 +128,7 @@ void rigidbody::KalmanReconsIMU::reconstructFrame(
 #endif
             H.block(i*9,0,9,*m_nbDof) = J_tp[i];
             const utils::Rotation& rot = zest_tp[i].rot();
-            for (unsigned int j = 0; j < 3; ++j) {
+            for (size_t j = 0; j < 3; ++j) {
                 zest.block(i*9+j*3, 0, 3, 1) = rot.block(0, j, 3, 1);
             }
         } else {

@@ -80,17 +80,17 @@ TEST(PassiveTorques, NbPassiveTorques)
     {
         Model model(modelPathForGeneralTesting);
         size_t val(model.nbPassiveTorques());
-        EXPECT_NEAR(val, 3, requiredPrecision);
+        EXPECT_EQ(val, 3);
     }
     {
         Model model(modelPathWithoutPassiveTorques);
         size_t val(model.nbPassiveTorques());
-        EXPECT_NEAR(val, 0, requiredPrecision);
+        EXPECT_EQ(val, 0);
     }
     {
         Model model(modelPathOnePassiveTorque);
         size_t val(model.nbPassiveTorques());
-        EXPECT_NEAR(val, 1, requiredPrecision);
+        EXPECT_EQ(val, 1);
     }
 }
 
@@ -117,7 +117,7 @@ TEST(PassiveTorques, jointTorqueFromAllTypesOfPassiveTorque)
 #ifdef BIORBD_USE_CASADI_MATH
     EXPECT_NEAR(tau.size().first, 3, requiredPrecision);
 #else
-    EXPECT_NEAR(tau.size(), 3, requiredPrecision);
+    EXPECT_EQ(tau.size(), 3);
 #endif
     for (size_t i=0; i<model.nbGeneralizedTorque(); ++i) {
         EXPECT_NEAR(static_cast<double>(tau(i, 0)), torqueExpected[i], requiredPrecision);
@@ -142,12 +142,12 @@ TEST(PassiveTorques, onlyOnePassiveTorque)
     FILL_VECTOR(QDot, QDot_val);
 
     std::vector<double> torqueExpected = {3.100000000000000, 0};
-
+     
     CALL_BIORBD_FUNCTION_2ARGS(tau, model, passiveJointTorque, Q, QDot);
 #ifdef BIORBD_USE_CASADI_MATH
     EXPECT_NEAR(tau.size().first, 2, requiredPrecision);
 #else
-    EXPECT_NEAR(tau.size(), 2, requiredPrecision);
+    EXPECT_EQ(tau.size(), 2);
 #endif
     for (size_t i=0; i<model.nbGeneralizedTorque(); ++i) {
         EXPECT_NEAR(static_cast<double>(tau(i, 0)), torqueExpected[i], requiredPrecision);

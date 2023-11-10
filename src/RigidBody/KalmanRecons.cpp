@@ -13,8 +13,8 @@ using namespace BIORBD_NAMESPACE;
 rigidbody::KalmanRecons::KalmanRecons() :
     m_params(std::make_shared<KalmanParam>()),
     m_Te(std::make_shared<double>(1.0/(m_params->acquisitionFrequency()))),
-    m_nbDof(std::make_shared<unsigned int>()),
-    m_nMeasure(std::make_shared<unsigned int>()),
+    m_nbDof(std::make_shared<size_t>()),
+    m_nMeasure(std::make_shared<size_t>()),
     m_xp(std::make_shared<utils::Vector>()),
     m_A(std::make_shared<utils::Matrix>()),
     m_Q(std::make_shared<utils::Matrix>()),
@@ -26,12 +26,12 @@ rigidbody::KalmanRecons::KalmanRecons() :
 
 rigidbody::KalmanRecons::KalmanRecons(
         Model &model,
-        unsigned int nbMeasure,
+        size_t nbMeasure,
         KalmanParam params) :
     m_params(std::make_shared<KalmanParam>(params)),
     m_Te(std::make_shared<double>(1.0/(m_params->acquisitionFrequency()))),
-    m_nbDof(std::make_shared<unsigned int>(model.dof_count)),
-    m_nMeasure(std::make_shared<unsigned int>(nbMeasure)),
+    m_nbDof(std::make_shared<size_t>(model.dof_count)),
+    m_nMeasure(std::make_shared<size_t>(nbMeasure)),
     m_xp(std::make_shared<utils::Vector>()),
     m_A(std::make_shared<utils::Matrix>()),
     m_Q(std::make_shared<utils::Matrix>()),
@@ -64,7 +64,7 @@ void rigidbody::KalmanRecons::iteration(
     utils::Vector measure,
     const utils::Vector &projectedMeasure,
     const utils::Matrix &Hessian,
-    const std::vector<unsigned int> &occlusion)
+    const std::vector<size_t> &occlusion)
 {
     // Prediction
     const utils::Vector& xkm(*m_A * *m_xp);
@@ -85,10 +85,10 @@ void rigidbody::KalmanRecons::iteration(
 void rigidbody::KalmanRecons::manageOcclusionDuringIteration(
     utils::Matrix &InvTp,
     utils::Vector &measure,
-    const std::vector<unsigned int> &occlusion)
+    const std::vector<size_t> &occlusion)
 {
-    for (unsigned int i = 0; i < occlusion.size(); ++i)
-        for (unsigned int j=occlusion[i]; j< occlusion[i]+1; ++j) {
+    for (size_t i = 0; i < occlusion.size(); ++i)
+        for (size_t j=occlusion[i]; j< occlusion[i]+1; ++j) {
             InvTp(j,j) = 0; // Artifact due to the fact that m_R has a value at (j:j+2,j:j+2)
             measure(j) = 0;
         }
@@ -115,8 +115,8 @@ void rigidbody::KalmanRecons::getState(
 
 
 utils::Matrix rigidbody::KalmanRecons::evolutionMatrix(
-    const unsigned int nQ,
-    unsigned int n,
+    const size_t nQ,
+    size_t n,
     double Te)
 {
     // m  : number of degrees of freedom
@@ -126,13 +126,13 @@ utils::Matrix rigidbody::KalmanRecons::evolutionMatrix(
     n += 1;
     utils::Matrix A(utils::Matrix::Identity(nQ*n, nQ*n));
     double c = 1;
-    for (unsigned int i=2; i<n+1; ++i) {
+    for (size_t i=2; i<n+1; ++i) {
 
-        unsigned int j=(i-1) * nQ;
+        size_t j=(i-1) * nQ;
         c = c/(i-1);
 
 
-        for (unsigned int cmp=0; cmp<nQ*n-j; ++cmp) {
+        for (size_t cmp=0; cmp<nQ*n-j; ++cmp) {
             A(0+cmp,j+cmp) += c* static_cast<double>(std::pow(Te,
                               (static_cast<double>(i)-1.0)));
         }
@@ -142,7 +142,7 @@ utils::Matrix rigidbody::KalmanRecons::evolutionMatrix(
 }
 
 utils::Matrix rigidbody::KalmanRecons::processNoiseMatrix(
-    const unsigned int nbQ,
+    const size_t nbQ,
     double Te)
 {
 
@@ -156,7 +156,7 @@ utils::Matrix rigidbody::KalmanRecons::processNoiseMatrix(
 
     // Ouput matrix
     utils::Matrix Q(utils::Matrix::Zero(3*nbQ,3*nbQ));
-    for (unsigned int j=0; j<nbQ; ++j) {
+    for (size_t j=0; j<nbQ; ++j) {
         Q(     j,      j) = c1;
         Q(     j,   nbQ+j) = c2;
         Q(     j, 2*nbQ+j) = c3;
@@ -193,11 +193,11 @@ void rigidbody::KalmanRecons::initialize()
 
 
 utils::Matrix rigidbody::KalmanRecons::measurementNoiseMatrix(
-    const unsigned int nbT,
+    const size_t nbT,
     double val)
 {
     utils::Matrix R(utils::Matrix::Zero(nbT, nbT));
-    for (unsigned int i=0; i<nbT; ++i) {
+    for (size_t i=0; i<nbT; ++i) {
         R(i,i) = val;
     }
     return R;
@@ -205,7 +205,7 @@ utils::Matrix rigidbody::KalmanRecons::measurementNoiseMatrix(
 
 rigidbody::GeneralizedCoordinates
 rigidbody::KalmanRecons::initState(
-    const unsigned int nbQ)
+    const size_t nbQ)
 {
     return rigidbody::GeneralizedCoordinates::Zero(3*nbQ); // Q, Qdot, Qddot
 }
@@ -230,11 +230,11 @@ void rigidbody::KalmanRecons::setInitState(
 
 
 utils::Matrix rigidbody::KalmanRecons::initCovariance(
-    const unsigned int nbQ,
+    const size_t nbQ,
     double val)
 {
     utils::Matrix Pp(utils::Matrix::Zero(3*nbQ, 3*nbQ));
-    for (unsigned int i=0; i<3*nbQ; ++i) {
+    for (size_t i=0; i<3*nbQ; ++i) {
         Pp(i,i) = val;
     }
     return Pp;

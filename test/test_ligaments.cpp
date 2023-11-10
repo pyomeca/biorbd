@@ -528,12 +528,12 @@ TEST(Ligaments, AddLigaments)
         model.addLigament(LigamentToAdd);
 
         //Check number of ligament
-        EXPECT_NEAR(model.nbLigaments(), 4, requiredPrecision);
+        EXPECT_EQ(model.nbLigaments(), 4);
     }
     {
         Model model(modelPathForGenericTest);
         //Check number of ligament
-        EXPECT_NEAR(model.nbLigaments(), 3, requiredPrecision);
+        EXPECT_EQ(model.nbLigaments(), 3);
 
     }
 }
