@@ -1,6 +1,7 @@
 #ifndef BIORBD_UTILS_READ_H
 #define BIORBD_UTILS_READ_H
 
+#include <stddef.h>
 #include <vector>
 #include <map>
 #include "biorbdConfig.h"

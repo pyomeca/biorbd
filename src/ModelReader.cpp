@@ -2282,7 +2282,7 @@ rigidbody::Mesh Reader::readMeshFileStl(
         char dummy[2];
         file.readFromBinary(headerChar, 80); // Skip header
         file.readFromBinary(nbTrianglesChar, 4);
-        size_t nbTriangles = *((size_t*) nbTrianglesChar);
+        size_t nbTriangles = static_cast<size_t>(*((unsigned int*) nbTrianglesChar));
 
         mesh.setPath(path);
         utils::Vector3d normal;

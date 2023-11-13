@@ -44,8 +44,9 @@ void rigidbody::ExternalForceSet::add(
     const utils::SpatialVector& vector
 ) 
 {
-    size_t dofIndex = m_model.segment(segmentName).getLastDofIndexInGeneralizedCoordinates(m_model);
-    m_externalForces[dofIndex] += vector; // Do not subtract 1 since 0 is used for the base ground 
+    // Add 1 since 0 is used for the base ground 
+    size_t dofIndex = m_model.segment(segmentName).getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
+    m_externalForces[dofIndex] += vector; 
 }
 
 void rigidbody::ExternalForceSet::add(
@@ -273,7 +274,7 @@ void rigidbody::ExternalForceSet::combineTranslationalForces(
 
     for (size_t i = 0; i <m_model.nbSegment(); ++i) {
         const rigidbody::Segment& segment(m_model.segment(i));
-        //  (Add 1 to account for the undeclared root
+        // Add 1 to account for the undeclared root
         size_t dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
         
         for (auto& e : m_translationalForces) {    
@@ -319,7 +320,7 @@ void rigidbody::ExternalForceSet::combineSoftContactForces(
 
     for (size_t i = 0; i < m_model.nbSegment(); ++i) {
         const rigidbody::Segment& segment(m_model.segment(i));
-        //  Add 1 to account for the undeclared root
+        // Add 1 to account for the undeclared root
         size_t dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
     
         for (size_t j = 0; j < m_model.nbSoftContacts(); j++) {
