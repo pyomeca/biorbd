@@ -109,28 +109,6 @@ namespace BIORBD_NAMESPACE
                 const utils::SpatialVector& vector, 
                 const utils::Vector3d& pointOfApplication
             );
-//
-//#ifdef BIORBD_USE_CASADI_MATH
-//            ///
-//            /// \brief Apply a new value to the specified spatial vector of the Set. Please see the 
-//            /// main "add" function for more precision.
-//            /// \param segmentName The name of the segment to apply the spatial vector on.  
-//            /// \param vector The vector to add
-//            ///
-//            void add(
-//                utils::String& segmentName,
-//                const casadi::MX& vector);
-//
-//            ///
-//            /// \brief Apply a new value to the specified spatial vector of the Set. Please see the 
-//            /// main "add" function for more precision.
-//            /// \param segmentName The name of the segment to apply the spatial vector on.  
-//            /// \param vector The vector to add
-//            ///
-//            void add(
-//                utils::String& segmentName,
-//                const RBDLCasadiMath::MX_Xd_SubMatrix& vector);
-//#endif
 
             ///
             /// \brief Apply a new value to the specified spatial vector of the Set. WARNING: This vector 

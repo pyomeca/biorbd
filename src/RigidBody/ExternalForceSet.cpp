@@ -62,26 +62,6 @@ void rigidbody::ExternalForceSet::add(
     add(segmentName, atOrigin);
 }
 
-
-#ifdef BIORBD_USE_CASADI_MATH
-
-//void rigidbody::ExternalForceSet::add(
-//    utils::String& segmentName,
-//    const casadi::MX& vector
-//)
-//{
-//    add(segmentName, utils::SpatialVector(vector));
-//}
-//
-//void rigidbody::ExternalForceSet::add(
-//    utils::String& segmentName,
-//    const RBDLCasadiMath::MX_Xd_SubMatrix& vector
-//)
-//{
-//    add(segmentName, vector);
-//}
-#endif
-
 void rigidbody::ExternalForceSet::addInSegmentReferenceFrame(
     const utils::String& segmentName,
     const utils::SpatialVector& vector,
