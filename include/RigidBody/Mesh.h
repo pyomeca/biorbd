@@ -84,13 +84,13 @@ public:
     /// \return The point of a specific index
     ///
     const utils::Vector3d& point(
-        unsigned int idx) const;
+        size_t idx) const;
 
     ///
     /// \brief Returns the number of vertex
     /// \return The number of vertex
     ///
-    unsigned int nbVertex() const;
+    size_t nbVertex() const;
 
     ///
     /// \brief rotateVertex Apply the RT to the vertex
@@ -145,13 +145,13 @@ public:
     /// \return The face of the mesh of a specified idx
     ///
     const MeshFace& face(
-        unsigned int idx) const;
+        size_t idx) const;
 
     ///
     /// \brief Return the number of faces
     /// \return The number of faces
     ///
-    unsigned int nbFaces();
+    size_t nbFaces();
 
     ///
     /// \brief Set the path of the underlying mesh file

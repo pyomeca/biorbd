@@ -27,7 +27,7 @@ public:
     /// \param nbQdot number of degrees-of-freedom
     ///
     GeneralizedVelocity(
-        unsigned int nbQdot);
+        size_t nbQdot);
 
     ///
     /// \brief Create generalized velocity vector from a joint Model

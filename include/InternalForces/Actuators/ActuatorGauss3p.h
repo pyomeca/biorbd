@@ -62,7 +62,7 @@ public:
         const utils::Scalar& w1,
         const utils::Scalar& r,
         const utils::Scalar& qopt,
-        unsigned int dofIdx);
+        size_t dofIdx);
 
     ///
     /// \brief Construct Gauss3p actuator
@@ -90,7 +90,7 @@ public:
         const utils::Scalar& w1,
         const utils::Scalar& r,
         const utils::Scalar& qopt,
-        unsigned int dofIdx,
+        size_t dofIdx,
         const utils::String &jointName);
 
     ///

@@ -38,7 +38,7 @@ void internal_forces::passive_torques::PassiveTorques::DeepCopy(
         const internal_forces::passive_torques::PassiveTorques &other)
 {
     m_pas->resize(other.m_pas->size());
-    for (unsigned int i=0; i<other.m_pas->size(); ++i) {
+    for (size_t i=0; i<other.m_pas->size(); ++i) {
         if ((*other.m_pas)[i]->type() == internal_forces::passive_torques::TORQUE_TYPE::TORQUE_CONSTANT) {
             (*m_pas)[i] = std::make_shared<internal_forces::passive_torques::PassiveTorqueConstant>
                     (static_cast<const internal_forces::passive_torques::PassiveTorqueConstant&>(*(*other.m_pas)[i]));
@@ -68,7 +68,7 @@ void internal_forces::passive_torques::PassiveTorques::addPassiveTorque(
         other.index()<model.nbDof(), "Sent index is out of dof range");
 
     // For speed purposes and coherence with the Q, set the passive torque to the same index as its associated dof
-    unsigned int idx(other.index());
+    size_t idx(other.index());
 
     // If there are less actuators declared than dof, the vector must be enlarged
     if (idx >= m_pas->size()) {
@@ -98,15 +98,15 @@ void internal_forces::passive_torques::PassiveTorques::addPassiveTorque(
 }
 
 const std::shared_ptr<internal_forces::passive_torques::PassiveTorque>&
-      internal_forces::passive_torques::PassiveTorques::getPassiveTorque(unsigned int dof)
+      internal_forces::passive_torques::PassiveTorques::getPassiveTorque(size_t dof)
 {
     utils::Error::check(dof<nbPassiveTorques(), "Idx asked is higher than number of passive torque");
     return (*m_pas)[dof];
 }
 
-unsigned int internal_forces::passive_torques::PassiveTorques::nbPassiveTorques() const
+size_t internal_forces::passive_torques::PassiveTorques::nbPassiveTorques() const
 {
-    return static_cast<unsigned int>(m_pas->size());
+    return m_pas->size();
 }
 
 rigidbody::GeneralizedTorque internal_forces::passive_torques::PassiveTorques::passiveJointTorque(

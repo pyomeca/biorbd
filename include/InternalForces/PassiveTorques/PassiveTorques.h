@@ -78,14 +78,14 @@ public:
     /// \brief Return the toal number of passive torques
     /// \return The total number of passive torques
     ///
-    unsigned int nbPassiveTorques() const;
+    size_t nbPassiveTorques() const;
 
     ///
     /// \brief Return a specific passive torque
     /// \param dof Index of the DoF associated with passive torque
     /// \return The passive torque
     ///
-    const std::shared_ptr<PassiveTorque>& getPassiveTorque(unsigned int dof);
+    const std::shared_ptr<PassiveTorque>& getPassiveTorque(size_t dof);
 
 protected:
     std::shared_ptr<std::vector<std::shared_ptr<internal_forces::passive_torques::PassiveTorque>>>  m_pas; ///< Passive torque to add

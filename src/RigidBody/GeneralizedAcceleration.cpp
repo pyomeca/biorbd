@@ -11,7 +11,7 @@ rigidbody::GeneralizedAcceleration::GeneralizedAcceleration()
 }
 
 rigidbody::GeneralizedAcceleration::GeneralizedAcceleration(
-    unsigned int nQddot) :
+    size_t nQddot) :
     utils::Vector(nQddot)
 {
 

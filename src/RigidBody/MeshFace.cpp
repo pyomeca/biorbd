@@ -24,7 +24,7 @@ void rigidbody::MeshFace::DeepCopy(const rigidbody::MeshFace
     *m_face = *other.m_face;
 }
 
-int &rigidbody::MeshFace::operator()(unsigned int idx)
+int &rigidbody::MeshFace::operator()(size_t idx)
 {
     return (*m_face)[idx];
 }

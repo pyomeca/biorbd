@@ -29,7 +29,7 @@ int main()
 
     // Set all muscles to half of their maximal activation
     std::vector<std::shared_ptr<internal_forces::muscles::State>> states = model.stateSet();
-    for (unsigned int i=0; i<model.nbMuscles(); ++i) {
+    for (size_t i=0; i<model.nbMuscles(); ++i) {
         states[i]->setExcitation(0);
         states[i]->setActivation(0.5);
     }

@@ -80,7 +80,7 @@ public:
     /// \return The marker
     ///
     const NodeSegment& marker(
-        unsigned int idx) const;
+        size_t idx) const;
 
     ///
     /// \brief Return the markers on a segment
@@ -132,7 +132,7 @@ public:
     ///
     NodeSegment marker(
         const GeneralizedCoordinates& Q,
-        unsigned int  idx,
+        size_t  idx,
         bool removeAxis=true,
         bool updateKin = true);
 
@@ -143,7 +143,7 @@ public:
     /// \return The marker of index idx
     ///
     NodeSegment marker(
-        unsigned int  idx,
+        size_t  idx,
         bool removeAxis);
 
     ///
@@ -178,7 +178,7 @@ public:
     NodeSegment markerVelocity(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
-        unsigned int idx,
+        size_t idx,
         bool removeAxis = true,
         bool updateKin = true);
 
@@ -194,7 +194,7 @@ public:
     NodeSegment markerAngularVelocity(
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
-        unsigned int idx,
+        size_t idx,
         bool removeAxis = true,
         bool updateKin = true);
 
@@ -240,7 +240,7 @@ public:
         const GeneralizedCoordinates &Q,
         const GeneralizedVelocity &Qdot,
         const rigidbody::GeneralizedAcceleration &Qddot,
-        unsigned int idx,
+        size_t idx,
         bool removeAxis = true,
         bool updateKin = true);
 
@@ -311,7 +311,7 @@ public:
     ///
     std::vector<NodeSegment> segmentMarkers(
         const GeneralizedCoordinates &Q,
-        unsigned int  idx,
+        size_t idx,
         bool removeAxis=true,
         bool updateKin = true);
 
@@ -319,34 +319,34 @@ public:
     /// \brief Return the number of markers
     /// \return The number of markers
     ///
-    unsigned int nbMarkers() const;
+    size_t nbMarkers() const;
 
     ///
     /// \brief Return the number of markers on the segment idxSegment
     /// \param idxSegment The index of the segment
     /// \return The number of markers of segment idxSegment
     ///
-    unsigned int nbMarkers(
-        unsigned int idxSegment) const;
+    size_t nbMarkers(
+        size_t idxSegment) const;
 
     ///
     /// \brief Return the number of technical markers
     /// \return The number of technical markers
     ///
-    unsigned int nbTechnicalMarkers();
+    size_t nbTechnicalMarkers();
 
     ///
     /// \brief Return the number of technical markers on the segment idxSegment
     /// \param idxSegment The index of the segment
     /// \return The number of technical markers of segment idxSegment
     ///
-    unsigned int nbTechnicalMarkers(unsigned int idxSegment);
+    size_t nbTechnicalMarkers(size_t idxSegment);
 
     ///
     /// \brief Return the number of anatomical markers
     /// \return The number of anatomical markers
     ///
-    unsigned int nbAnatomicalMarkers();
+    size_t nbAnatomicalMarkers();
 
     ///
     /// \brief Return the jacobian of the markers

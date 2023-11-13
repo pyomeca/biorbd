@@ -51,9 +51,12 @@ void utils::Matrix::operator=(
 
 
 utils::Matrix::Matrix(
-    unsigned int nbRows,
-    unsigned int nbCols) :
-    RigidBodyDynamics::Math::MatrixNd(nbRows, nbCols)
+    size_t nbRows,
+    size_t nbCols) :
+    RigidBodyDynamics::Math::MatrixNd(
+        static_cast<unsigned int>(nbRows), 
+        static_cast<unsigned int>(nbCols)
+    )
 {
 
 }

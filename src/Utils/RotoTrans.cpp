@@ -86,11 +86,11 @@ utils::RotoTrans utils::RotoTrans::fromMarkers(
     return rt_out;
 }
 
-utils::Vector3d utils::RotoTrans::axe(unsigned int idx) const
+utils::Vector3d utils::RotoTrans::axe(size_t idx) const
 {
     utils::Error::check(
         idx<=2, "Axis must be between 0 and 2 included");
-    return rot().block(0,idx,3,1);
+    return rot().block(0, static_cast<unsigned int>(idx),3,1);
 }
 
 utils::RotoTrans utils::RotoTrans::transpose() const
@@ -160,14 +160,14 @@ utils::RotoTrans utils::RotoTrans::mean(
     // The translation part is just the actual mean
     RigidBodyDynamics::Math::Vector3d v_tp;
     v_tp.setZero();
-    for (unsigned int i = 0; i<mToMean.size(); ++i) {
+    for (size_t i = 0; i<mToMean.size(); ++i) {
         v_tp += mToMean[i].trans();
     }
     v_tp = v_tp/mToMean.size();
 
     // The rotation part should call the proper way implemented in Rotation
     std::vector<utils::Rotation> rotations;
-    for (unsigned int i=0; i<mToMean.size(); ++i) {
+    for (size_t i=0; i<mToMean.size(); ++i) {
         rotations.push_back(mToMean[i].block<3, 3>(0, 0));
     }
     utils::RotoTrans m_out(

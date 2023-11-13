@@ -82,7 +82,7 @@ public:
     ///
     KalmanRecons(
         Model& model,
-        unsigned int nbMeasure,
+        size_t nbMeasure,
         KalmanParam params = KalmanParam());
 
     ///
@@ -138,8 +138,8 @@ protected:
     /// \return The evolution matrix assuming constant frame rate
     ///
     utils::Matrix evolutionMatrix(
-        const unsigned int m,
-        unsigned int n,
+        const size_t m,
+        size_t n,
         double Te);
 
     ///
@@ -149,7 +149,7 @@ protected:
     /// \return The noise matrix
     ///
     utils::Matrix processNoiseMatrix(
-        const unsigned int nbQ,
+        const size_t nbQ,
         double Te);
 
     ///
@@ -159,7 +159,7 @@ protected:
     /// \return The matrix of the noise on the measurements
     ///
     utils::Matrix measurementNoiseMatrix(
-        const unsigned int nbT,
+        const size_t nbT,
         double val);
 
     ///
@@ -169,7 +169,7 @@ protected:
     /// \return The initial covariance matrix
     ///
     utils::Matrix initCovariance(
-        const unsigned int nbQ,
+        const size_t nbQ,
         double val);
 
     ///
@@ -178,7 +178,7 @@ protected:
     /// \return The initialized states
     ///
     GeneralizedCoordinates initState(
-        const unsigned int nbQ);
+        const size_t nbQ);
 
     ///
     /// \brief Compute an iteration of the Kalman filter
@@ -191,7 +191,7 @@ protected:
         utils::Vector measure,
         const utils::Vector &projectedMeasure,
         const utils::Matrix &Hessian,
-        const std::vector<unsigned int> &occlusion = std::vector<unsigned int>());
+        const std::vector<size_t> &occlusion = std::vector<size_t>());
 
     ///
     /// \brief Manage the occlusion during the iteration
@@ -202,13 +202,13 @@ protected:
     virtual void manageOcclusionDuringIteration(
         utils::Matrix &InvTp,
         utils::Vector &measure,
-        const std::vector<unsigned int> &occlusion);
+        const std::vector<size_t> &occlusion);
 
     // Variables attributes
     std::shared_ptr<KalmanParam> m_params; ///< The parameters of the Kalman filter
     std::shared_ptr<double> m_Te; ///< Inherent parameter to the frequency
-    std::shared_ptr<unsigned int> m_nbDof; ///< Number of states
-    std::shared_ptr<unsigned int> m_nMeasure; ///< Number of measurements
+    std::shared_ptr<size_t> m_nbDof; ///< Number of states
+    std::shared_ptr<size_t> m_nMeasure; ///< Number of measurements
 
     // Kalman filter attributes
     std::shared_ptr<utils::Vector> m_xp; ///< State vector

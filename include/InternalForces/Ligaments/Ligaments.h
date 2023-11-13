@@ -84,7 +84,7 @@ public:
     /// \return The ligament
     ///
     ///
-    Ligament& ligament(unsigned int idx);
+    Ligament& ligament(size_t idx);
 
     ///
     /// \brief Returns a specific ligament sorted by ligaments()
@@ -92,7 +92,7 @@ public:
     /// \return The ligament
     ///
     ///
-    const Ligament& ligament(unsigned int idx) const;
+    const Ligament& ligament(size_t idx) const;
 
     ///
     /// \brief ligamentNames Return the names for all the ligament ordered by their
@@ -190,7 +190,7 @@ public:
     /// \brief Return the total number of ligament
     /// \return The total number of ligaments
     ///
-    unsigned int nbLigaments() const;
+    size_t nbLigaments() const;
 
     ///
     /// \brief Return the ligament index

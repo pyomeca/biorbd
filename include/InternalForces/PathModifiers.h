@@ -50,41 +50,41 @@ public:
     /// \brief Return the total number of wrapping objects in the set
     /// \return The total number of wrapping objects
     ///
-    unsigned int nbWraps() const;
+    size_t nbWraps() const;
 
     ///
     /// \brief Return the total number of via points in the set
     /// \return The total number of via points
     ///
-    unsigned int nbVia() const;
+    size_t nbVia() const;
 
     ///
     /// \brief Return the total number of path modifier objects in the set
     /// \return The total number of path modifier objects
     ///
-    unsigned int nbObjects() const;
+    size_t nbObjects() const;
 
     ///
     /// \brief Return the object at a specific index in the set
     /// \param idx Index of the object
     /// \return The object at a specific index
     ///
-    utils::Vector3d& object(unsigned int  idx);
+    utils::Vector3d& object(size_t  idx);
 
     ///
     /// \brief Return the object at a specific index in the set
     /// \param idx Index of the object
     /// \return The object at a specific index
     ///
-    const utils::Vector3d& object(unsigned int  idx) const;
+    const utils::Vector3d& object(size_t  idx) const;
 
 protected:
     std::shared_ptr<std::vector<std::shared_ptr<utils::Vector3d>>>
     m_obj; ///< set of objects
-    std::shared_ptr<unsigned int>
+    std::shared_ptr<size_t>
     m_nbWraps; ///< Number of wrapping object in the set
-    std::shared_ptr<unsigned int> m_nbVia; ///< Number of via points in the set
-    std::shared_ptr<unsigned int>
+    std::shared_ptr<size_t> m_nbVia; ///< Number of via points in the set
+    std::shared_ptr<size_t>
     m_totalObjects; ///< Number of total objects in the set
 
 };

@@ -109,7 +109,7 @@ public:
     /// \return The actuator
     ///
     const std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>>&
-            actuator(unsigned int dof);
+            actuator(size_t dof);
 
     ///
     /// \brief Return a specific actuator
@@ -117,13 +117,13 @@ public:
     /// \param concentric If the return value is the concentric (true) or eccentric (false) value
     /// \return The actuator
     ///
-    const Actuator& actuator(unsigned int dof, bool concentric);
+    const Actuator& actuator(size_t dof, bool concentric);
 
     ///
     /// \brief Return the toal number of actuators
     /// \return The total number of actuators
     ///
-    unsigned int nbActuators() const;
+    size_t nbActuators() const;
 
 protected:
     std::shared_ptr<std::vector<std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>>>>

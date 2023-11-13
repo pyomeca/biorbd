@@ -63,10 +63,10 @@ void rigidbody::KalmanReconsMarkers::initialize()
 void rigidbody::KalmanReconsMarkers::manageOcclusionDuringIteration(
     utils::Matrix &InvTp,
     utils::Vector &measure,
-    const std::vector<unsigned int> &occlusion)
+    const std::vector<size_t> &occlusion)
 {
-    for (unsigned int i = 0; i < occlusion.size(); ++i)
-        for (unsigned int j=occlusion[i] * 3; j< occlusion[i] * 3+3; ++j) {
+    for (size_t i = 0; i < occlusion.size(); ++i)
+        for (size_t j=occlusion[i] * 3; j< occlusion[i] * 3+3; ++j) {
             InvTp(j,j) =
                 0; // Artefact due to the fact that m_R has a value at (j:j+2,j:j+2)
             measure[j] = 0;
@@ -88,7 +88,7 @@ void rigidbody::KalmanReconsMarkers::reconstructFrame(
 {
     // Separate the tobs in a big vector
     utils::Vector T(3*Tobs.nbMarkers());
-    for (unsigned int i=0; i<Tobs.nbMarkers(); ++i) {
+    for (size_t i=0; i<Tobs.nbMarkers(); ++i) {
         T.block(i*3, 0, 3, 1) = Tobs.marker(i);
     }
 
@@ -105,8 +105,8 @@ void rigidbody::KalmanReconsMarkers::reconstructFrame(
     bool removeAxes)
 {
     // Separate the tobs in a big vector
-    utils::Vector T(static_cast<unsigned int>(3*Tobs.size()));
-    for (unsigned int i=0; i<Tobs.size(); ++i) {
+    utils::Vector T(static_cast<size_t>(3*Tobs.size()));
+    for (size_t i=0; i<Tobs.size(); ++i) {
         T.block(i*3, 0, 3, 1) = Tobs[i];
     }
 
@@ -132,12 +132,12 @@ void rigidbody::KalmanReconsMarkers::reconstructFrame(
                          utils::Vector::Zero(3*model.nbTechnicalMarkers()
                                  -3*model.nbTechnicalMarkers(
                                      0)); // Only keep the markers of the root
-        for (unsigned int j = 0; j < 2; ++j) { // Do the root and then the rest of the body
+        for (size_t j = 0; j < 2; ++j) { // Do the root and then the rest of the body
             if (j != 0) {
                 TobsTP = Tobs;    // Re-take all the markers
             }
 
-            for (unsigned int i=0; i<50; ++i) {
+            for (size_t i=0; i<50; ++i) {
                 // The first time, call in a recursive manner to get a descent initial position
                 reconstructFrame(model, TobsTP, nullptr, nullptr, nullptr);
 
@@ -164,8 +164,8 @@ void rigidbody::KalmanReconsMarkers::reconstructFrame(
     utils::Matrix H(utils::Matrix::Zero(*m_nMeasure,
                             *m_nbDof*3)); // 3*nMarkers => X,Y,Z ; 3*nbDof => Q, Qdot, Qddot
     utils::Vector zest(utils::Vector::Zero(*m_nMeasure));
-    std::vector<unsigned int> occlusionIdx;
-    for (unsigned int i=0; i<*m_nMeasure/3;
+    std::vector<size_t> occlusionIdx;
+    for (size_t i=0; i<*m_nMeasure/3;
             ++i) // Divided by 3 because we are integrate once xyz
 #ifdef BIORBD_USE_CASADI_MATH
         // If there is a marker

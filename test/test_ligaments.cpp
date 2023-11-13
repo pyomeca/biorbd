@@ -25,12 +25,12 @@ static std::string modelPathForGenericTest("models/arm26_WithLigaments.bioMod");
 TEST(Ligaments, size)
 {
     Model model(modelPathForGenericTest);
-    unsigned int nbLig(model.nbLigaments());
+    size_t nbLig(model.nbLigaments());
     EXPECT_EQ(nbLig, 3);
     EXPECT_EQ(model.ligaments().size(), nbLig);
 }
 
-static unsigned int ligamentConstantType(0);
+static size_t ligamentConstantType(0);
 TEST(constant, unitTest)
 {
     {
@@ -190,7 +190,7 @@ TEST(constant, copy)
     }
 }
 
-static unsigned int ligamentSpringLinearType(1);
+static size_t ligamentSpringLinearType(1);
 TEST(springLinear, unitTest)
 {
     {
@@ -354,7 +354,7 @@ TEST(springLinear, copy)
     }
 }
 
-static unsigned int ligamentSpringSecondOrderType(2);
+static size_t ligamentSpringSecondOrderType(2);
 TEST(springSecondOrder, unitTest)
 {
     {
@@ -528,12 +528,12 @@ TEST(Ligaments, AddLigaments)
         model.addLigament(LigamentToAdd);
 
         //Check number of ligament
-        EXPECT_NEAR(model.nbLigaments(), 4, requiredPrecision);
+        EXPECT_EQ(model.nbLigaments(), 4);
     }
     {
         Model model(modelPathForGenericTest);
         //Check number of ligament
-        EXPECT_NEAR(model.nbLigaments(), 3, requiredPrecision);
+        EXPECT_EQ(model.nbLigaments(), 3);
 
     }
 }

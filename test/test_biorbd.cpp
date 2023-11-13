@@ -52,34 +52,34 @@ TEST(FileIO, WriteModel)
     rigidbody::GeneralizedCoordinates Q(modelCopy);
     Q.setOnes();
 
-    for (unsigned int k=0; k<model.nbSegment(); ++k) {
-        for (unsigned int i=0; i<4; ++i) {
-            for (unsigned int j=0; j<4; ++j) {
+    for (size_t k=0; k<model.nbSegment(); ++k) {
+        for (size_t i=0; i<4; ++i) {
+            for (size_t j=0; j<4; ++j) {
                 EXPECT_NEAR(model.globalJCS(Q, k)(i, j), modelCopy.globalJCS(Q, k)(i, j), 1e-5);
             }
         }
     }
 
     EXPECT_EQ(modelCopy.nbMarkers(), 1);
-    for (unsigned int k=0; k<modelCopy.nbMarkers(); ++k) {
-        for (unsigned int i=0; i<3; ++i) {
+    for (size_t k=0; k<modelCopy.nbMarkers(); ++k) {
+        for (size_t i=0; i<3; ++i) {
             EXPECT_NEAR(model.marker(Q, k)[i], modelCopy.marker(Q, k)[i], 1e-5);
         }
     }
 
     EXPECT_EQ(modelCopy.nbRTs(), 1);
-    for (unsigned int k=0; k<modelCopy.nbRTs(); ++k) {
-        for (unsigned int i=0; i<4; ++i) {
-            for (unsigned int j=0; j<4; ++j) {
+    for (size_t k=0; k<modelCopy.nbRTs(); ++k) {
+        for (size_t i=0; i<4; ++i) {
+            for (size_t j=0; j<4; ++j) {
                 EXPECT_NEAR(model.RT(Q, k)(i, j), modelCopy.RT(Q, k)(i, j), 1e-5);
             }
         }
     }
 
     EXPECT_EQ(modelCopy.nbIMUs(), 1);
-    for (unsigned int k=0; k<modelCopy.nbIMUs(); ++k) {
-        for (unsigned int i=0; i<4; ++i) {
-            for (unsigned int j=0; j<4; ++j) {
+    for (size_t k=0; k<modelCopy.nbIMUs(); ++k) {
+        for (size_t i=0; i<4; ++i) {
+            for (size_t j=0; j<4; ++j) {
                 EXPECT_NEAR(model.IMU(Q)[k](i, j), modelCopy.IMU(Q)[k](i, j), 1e-5);
             }
         }

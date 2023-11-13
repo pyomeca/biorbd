@@ -44,7 +44,7 @@ void Writer::writeModel(Model & model,
 
     // Information on the segments
     std::vector<utils::RotoTrans> localJCS = model.localJCS();
-    for (unsigned int i = 0; i<model.nbSegment(); ++i) {
+    for (size_t i = 0; i<model.nbSegment(); ++i) {
         biorbdModelFile << com << " Informations about " << model.segment(
                             i).name() << " segment" << std::endl;
         biorbdModelFile << sep << com << " Segment" << std::endl;
@@ -54,7 +54,7 @@ void Writer::writeModel(Model & model,
                             i).parent() << std::endl;
         biorbdModelFile << sep << sep << "RTinMatrix" << sep << true << std::endl;
         biorbdModelFile << sep << sep << "RT" << std::endl;
-        for (unsigned int j=0; j<4; ++j) {
+        for (size_t j=0; j<4; ++j) {
             biorbdModelFile << sep << sep << sep << localJCS[i].block(j,0,1,4) << std::endl;
         }
         if (model.segment(i).nbDofTrans() > 0) {
@@ -125,7 +125,7 @@ void Writer::writeModel(Model & model,
                                 std::endl;
                 biorbdModelFile << sep << sep << "RTinMatrix" << sep << true << std::endl;
                 biorbdModelFile << sep << sep << "RT" << std::endl;
-                for (unsigned int k=0; k<4; ++k) {
+                for (size_t k=0; k<4; ++k) {
                     biorbdModelFile << sep << sep << sep << imus[j].block(k,0,1,4) << std::endl;
                 }
                 biorbdModelFile << sep << sep << "technical" << sep << imus[j].isTechnical() <<
@@ -149,7 +149,7 @@ void Writer::writeModel(Model & model,
                                 std::endl;
                 biorbdModelFile << sep << sep << "RTinMatrix" << sep << true << std::endl;
                 biorbdModelFile << sep << sep << "RT" << std::endl;
-                for (unsigned int k=0; k<4; ++k) {
+                for (size_t k=0; k<4; ++k) {
                     biorbdModelFile << sep << sep << sep << rts[j].block(k,0,1,4) << std::endl;
                 }
                 biorbdModelFile << sep << "endcustomrt" << sep << std::endl;

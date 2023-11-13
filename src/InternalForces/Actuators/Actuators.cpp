@@ -47,7 +47,7 @@ void internal_forces::actuator::Actuators::DeepCopy(const internal_forces::actua
         &other)
 {
     m_all->resize(other.m_all->size());
-    for (unsigned int i=0; i<other.m_all->size(); ++i) {
+    for (size_t i=0; i<other.m_all->size(); ++i) {
         if ((*other.m_all)[i].first->type() == internal_forces::actuator::TYPE::CONSTANT)
             (*m_all)[i].first = std::make_shared<internal_forces::actuator::ActuatorConstant>(
                                     static_cast<const internal_forces::actuator::ActuatorConstant&>( *
@@ -100,7 +100,7 @@ void internal_forces::actuator::Actuators::DeepCopy(const internal_forces::actua
                                         + " in DeepCopy");
     }
     m_isDofSet->resize(other.m_isDofSet->size());
-    for (unsigned int i=0; i<other.m_isDofSet->size(); ++i) {
+    for (size_t i=0; i<other.m_isDofSet->size(); ++i) {
         (*m_isDofSet)[i] = (*other.m_isDofSet)[i];
     }
     *m_isClose = *other.m_isClose;
@@ -122,7 +122,7 @@ void internal_forces::actuator::Actuators::addActuator(const internal_forces::ac
 
     // For speed purposes and coherence with the Q,
     // set the actuator to the same index as its associated dof
-    unsigned int idx(act.index());
+    size_t idx(act.index());
 
     // If there are less actuators declared than dof,
     // the vector must be enlarged
@@ -203,7 +203,7 @@ void internal_forces::actuator::Actuators::closeActuator()
         model.nbDof()==m_all->size(),
         "All dof must have their actuators set");
 
-    for (unsigned int i=0; i<m_all->size()*2; ++i)
+    for (size_t i=0; i<m_all->size()*2; ++i)
         utils::Error::check((*m_isDofSet)[i],
                                     "All DoF must have their actuators set "
                                     "before closing the model");
@@ -213,14 +213,14 @@ void internal_forces::actuator::Actuators::closeActuator()
 
 const std::pair<std::shared_ptr<internal_forces::actuator::Actuator>,
       std::shared_ptr<internal_forces::actuator::Actuator>>&
-      internal_forces::actuator::Actuators::actuator(unsigned int dof)
+      internal_forces::actuator::Actuators::actuator(size_t dof)
 {
     utils::Error::check(dof<nbActuators(),
                                 "Idx asked is higher than number of actuator");
     return (*m_all)[dof];
 }
 const internal_forces::actuator::Actuator& internal_forces::actuator::Actuators::actuator(
-    unsigned int dof,
+    size_t dof,
     bool concentric)
 {
     const std::pair<std::shared_ptr<internal_forces::actuator::Actuator>, std::shared_ptr<internal_forces::actuator::Actuator>>&
@@ -233,9 +233,9 @@ const internal_forces::actuator::Actuator& internal_forces::actuator::Actuators:
     }
 }
 
-unsigned int internal_forces::actuator::Actuators::nbActuators() const
+size_t internal_forces::actuator::Actuators::nbActuators() const
 {
-    return static_cast<unsigned int>(m_all->size());
+    return m_all->size();
 }
 
 rigidbody::GeneralizedTorque internal_forces::actuator::Actuators::torque(
@@ -272,7 +272,7 @@ internal_forces::actuator::Actuators::torqueMax(
         std::make_pair(rigidbody::GeneralizedTorque(model),
                        rigidbody::GeneralizedTorque(model));
 
-    for (unsigned int i=0; i<model.nbDof(); ++i) {
+    for (unsigned int i=0; i<static_cast<unsigned int>(model.nbDof()); ++i) {
         std::pair<std::shared_ptr<Actuator>, std::shared_ptr<Actuator>>
                 GeneralizedTorque_tp(actuator(i));
         for (unsigned p=0; p<2; ++p) {
@@ -351,7 +351,7 @@ rigidbody::GeneralizedTorque internal_forces::actuator::Actuators::torqueMax(
 
     // Set qdot to be positive if concentric and negative if excentric
     rigidbody::GeneralizedVelocity QdotResigned(Qdot);
-    for (unsigned int i=0; i<Qdot.size(); ++i) {
+    for (unsigned int i=0; i<static_cast<unsigned int>(Qdot.size()); ++i) {
 #ifdef BIORBD_USE_CASADI_MATH
         QdotResigned(i) = IF_ELSE_NAMESPACE::if_else(
                               IF_ELSE_NAMESPACE::lt(activation(i), 0),
@@ -365,7 +365,7 @@ rigidbody::GeneralizedTorque internal_forces::actuator::Actuators::torqueMax(
 
     rigidbody::GeneralizedTorque maxGeneralizedTorque_all(model);
 
-    for (unsigned int i=0; i<model.nbDof(); ++i) {
+    for (unsigned int i=0; i< static_cast<unsigned int>(model.nbDof()); ++i) {
 #ifdef BIORBD_USE_CASADI_MATH
         maxGeneralizedTorque_all[i] = IF_ELSE_NAMESPACE::if_else(
                                           IF_ELSE_NAMESPACE::ge(activation(i, 0), 0),

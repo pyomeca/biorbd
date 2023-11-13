@@ -45,7 +45,7 @@ public:
     /// \brief Allows to assign/get using ()
     /// \param idx The index in the vector
     ///
-    int &operator() (unsigned int idx);
+    int &operator() (size_t idx);
 
     ///
     /// \brief set the MeshFace from a new point

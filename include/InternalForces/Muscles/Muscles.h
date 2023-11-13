@@ -99,7 +99,7 @@ public:
     /// \return The muscle
     ///
     const Muscle& muscle(
-        unsigned int idx) const;
+        size_t idx) const;
 
     ///
     /// \brief muscleNames Return the names for all the muscle ordered by their
@@ -126,7 +126,7 @@ public:
     /// \return A muscle group
     ///
     MuscleGroup& muscleGroup(
-        unsigned int idx);
+        size_t idx);
 
     ///
     /// \brief Return the muscle group of specific index
@@ -134,7 +134,7 @@ public:
     /// \return A muscle group
     ///
     const MuscleGroup& muscleGroup(
-        unsigned int idx) const;
+        size_t idx) const;
 
     ///
     /// \brief Return the muscle group of specific name
@@ -311,19 +311,19 @@ public:
     /// \brief Return the total number of muscle groups
     /// \return The total number of muscle groups
     ///
-    unsigned int nbMuscleGroups() const;
+    size_t nbMuscleGroups() const;
 
     ///
     /// \brief Return the total number of muscle
     /// \return The total number of muscles
     ///
-    unsigned int nbMuscleTotal() const;
+    size_t nbMuscleTotal() const;
 
     ///
     /// \brief Return the total number of muscle
     /// \return The total number of muscles
     ///
-    unsigned int nbMuscles() const;
+    size_t nbMuscles() const;
 
 protected:
     std::shared_ptr<std::vector<MuscleGroup>>

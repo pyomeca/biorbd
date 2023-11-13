@@ -66,9 +66,9 @@ std::vector<utils::Equation> utils::Equation::splitIntoEquation(
     // All along the string
     while (1) {
         int firstIdx(static_cast<int>(wholeEq.size())+1);// Assign an index too big
-        unsigned int toStop(0); // Set stop at 0
+        size_t toStop(0); // Set stop at 0
         // Go through each symbol to see if it's in the equation
-        for (unsigned int i=0; i<symbols.size(); ++i) {
+        for (size_t i=0; i<symbols.size(); ++i) {
             int idx = static_cast<int>(wholeEq.find(symbols[i]));
             if (idx < 0) { // If not, write it down
                 ++toStop;
@@ -87,8 +87,8 @@ std::vector<utils::Equation> utils::Equation::splitIntoEquation(
             break;
         }
         if (firstIdx+1 == static_cast<int>(wholeEq.size())) {
-            eq.push_back(wholeEq.substr(0,static_cast<unsigned int>(firstIdx)));
-            eq.push_back(wholeEq(static_cast<unsigned int>(firstIdx)));
+            eq.push_back(wholeEq.substr(0,static_cast<size_t>(firstIdx)));
+            eq.push_back(wholeEq(static_cast<size_t>(firstIdx)));
             break;
         } else if (firstIdx == 0) {
             if (!wholeEq(0).compare("-")) {
@@ -124,11 +124,9 @@ std::vector<utils::Equation> utils::Equation::splitIntoEquation(
                 wholeEq = wholeEq.substr(1);
             }
         } else {
-            eq.push_back(wholeEq.substr(0,
-                                        static_cast<unsigned int>(firstIdx))); // Take everything before symbol
-            eq.push_back(wholeEq(static_cast<unsigned int>(firstIdx))); // Get the symbol
-            wholeEq = wholeEq.substr(static_cast<unsigned int>(firstIdx)
-                                     +1); // Keep everything after the symbol and restart
+            eq.push_back(wholeEq.substr(0, static_cast<size_t>(firstIdx))); // Take everything before symbol
+            eq.push_back(wholeEq(static_cast<size_t>(firstIdx))); // Get the symbol
+            wholeEq = wholeEq.substr(static_cast<size_t>(firstIdx) +1); // Keep everything after the symbol and restart
         }
 
     }
@@ -143,7 +141,7 @@ std::vector<utils::Equation> utils::Equation::splitIntoEquation(
 void utils::Equation::replaceCste(
     std::vector<utils::Equation> &eq)
 {
-    for (unsigned int i=0; i<eq.size(); ++i)
+    for (size_t i=0; i<eq.size(); ++i)
         if (!eq[i].tolower().compare("pi")) {
             eq[i] = to_string(M_PI);
         }
@@ -172,7 +170,7 @@ double utils::Equation::evaluateEquation(
 
 double utils::Equation::evaluateEquation(
     std::vector<utils::Equation> eq,
-    unsigned int math)
+    size_t math)
 {
     // If everything was done
     if (eq.size() == 1) {
@@ -184,7 +182,7 @@ double utils::Equation::evaluateEquation(
     std::vector<utils::Equation> eq2;
     bool continuer(true);
 
-    for (unsigned int j=0; j<eq.size(); ++j) {
+    for (size_t j=0; j<eq.size(); ++j) {
         if (!eq[j].compare(symbols[math]) && continuer) {
             if (j==0 && (!symbols[math].compare("+") || !symbols[math].compare("-"))) {
                 // Crush the previous value
@@ -199,8 +197,8 @@ double utils::Equation::evaluateEquation(
                     std::vector<utils::Equation> eq_tp;
                     bool foundIdx(false);
                     int cmpValues(0);
-                    unsigned int cmpOpen(0);
-                    for (unsigned int k=j+1; k<eq.size(); ++k) {
+                    size_t cmpOpen(0);
+                    for (size_t k=j+1; k<eq.size(); ++k) {
                         if (!eq[k].compare("(")) {
                             cmpOpen++;
                         } else if (!eq[k].compare(")")) {
@@ -218,7 +216,7 @@ double utils::Equation::evaluateEquation(
                     utils::Error::check(foundIdx, "You must close brackets!");
 
                     eq2.push_back(to_string(evaluateEquation(eq_tp)));
-                    j+=static_cast<unsigned int>(cmpValues);
+                    j+=static_cast<size_t>(cmpValues);
                 } else if (!symbols[math].compare("/")) {
                     eq2[j-1] = to_string(stod(eq[j-1]) / stod(eq[j+1]));
                 } else if (!symbols[math].compare("*")) {

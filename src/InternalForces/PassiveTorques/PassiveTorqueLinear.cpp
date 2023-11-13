@@ -26,7 +26,7 @@ internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
 internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
     const utils::Scalar& T0,
     const utils::Scalar& slope,
-    unsigned int dofIdx) :
+    size_t dofIdx) :
     internal_forces::passive_torques::PassiveTorque(dofIdx),
     m_m(std::make_shared<utils::Scalar>(slope)),
     m_b(std::make_shared<utils::Scalar>(T0))
@@ -37,7 +37,7 @@ internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
 internal_forces::passive_torques::PassiveTorqueLinear::PassiveTorqueLinear(
     const utils::Scalar& T0,
     const utils::Scalar& slope,
-    unsigned int dofIdx,
+    size_t dofIdx,
     const utils::String &jointName) :
     internal_forces::passive_torques::PassiveTorque(dofIdx, jointName),
     m_m(std::make_shared<utils::Scalar>(slope)),
@@ -76,7 +76,7 @@ utils::Scalar internal_forces::passive_torques::PassiveTorqueLinear::passiveTorq
 utils::Scalar internal_forces::passive_torques::PassiveTorqueLinear::passiveTorque(
     const rigidbody::GeneralizedCoordinates &Q) const
 {
-    return Q[*m_dofIdx] * *m_m + *m_b;
+    return Q[static_cast<unsigned int>(*m_dofIdx)] * *m_m + *m_b;
 }
 
 void internal_forces::passive_torques::PassiveTorqueLinear::setType()

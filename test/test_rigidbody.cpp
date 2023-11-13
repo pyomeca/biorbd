@@ -65,7 +65,7 @@ TEST(Gravity, change)
 
         std::vector<double> QDDot_expected(13);
         QDDot_expected[1] = -9.81;
-        for (unsigned int i = 0; i<model.nbQddot(); ++i) {
+        for (size_t i = 0; i<model.nbQddot(); ++i) {
             EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i],
                         requiredPrecision);
         }
@@ -76,7 +76,7 @@ TEST(Gravity, change)
         CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamics, Q, QDot, Tau);
         std::vector<double> QDDot_expected(13);
         QDDot_expected[0] = -2.2;
-        for (unsigned int i = 0; i<model.nbQddot(); ++i) {
+        for (size_t i = 0; i<model.nbQddot(); ++i) {
             EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);
         }
     }
@@ -130,7 +130,7 @@ TEST(Contacts, unitTest)
         Model model(modelPathForGeneralTesting);
         rigidbody::Contacts contacts(model);
 
-        EXPECT_NEAR(contacts.nbContacts(), 6., requiredPrecision);
+        EXPECT_EQ(contacts.nbContacts(), 6);
         EXPECT_STREQ(contacts.contactName(1).c_str(), "PiedG_1_Z");
         EXPECT_STREQ(contacts.contactNames()[1].c_str(), "PiedG_1_Z");
         EXPECT_EQ(contacts.hasContacts(), true);
@@ -151,7 +151,7 @@ TEST(Contacts, unitTest)
         Model model(modelPathForGeneralTesting);
         rigidbody::Contacts contacts(model);
 
-        EXPECT_NEAR(contacts.nbContacts(), 6., requiredPrecision);
+        EXPECT_EQ(contacts.nbContacts(), 6);
 
         contacts.AddConstraint(
             7,
@@ -161,7 +161,7 @@ TEST(Contacts, unitTest)
             "JambeD"
         );
 
-        EXPECT_NEAR(contacts.nbContacts(), 7., requiredPrecision);
+        EXPECT_EQ(contacts.nbContacts(), 7);
     }
     {
         Model model(modelPathForGeneralTesting);
@@ -194,10 +194,10 @@ TEST(Contacts, DeepCopy)
         rigidbody::Contacts deepCopyLater;
         deepCopyLater.DeepCopy(contacts);
 
-        EXPECT_NEAR(contacts.nbContacts(), 6., requiredPrecision);
-        EXPECT_NEAR(shallowCopy.nbContacts(), 6., requiredPrecision);
-        EXPECT_NEAR(deepCopyNow.nbContacts(), 6., requiredPrecision);
-        EXPECT_NEAR(deepCopyLater.nbContacts(), 6., requiredPrecision);
+        EXPECT_EQ(contacts.nbContacts(), 6);
+        EXPECT_EQ(shallowCopy.nbContacts(), 6);
+        EXPECT_EQ(deepCopyNow.nbContacts(), 6);
+        EXPECT_EQ(deepCopyLater.nbContacts(), 6);
 
         contacts.AddConstraint(
             7,
@@ -207,17 +207,17 @@ TEST(Contacts, DeepCopy)
             ""
         );
 
-        EXPECT_NEAR(contacts.nbContacts(), 7., requiredPrecision);
-        EXPECT_NEAR(shallowCopy.nbContacts(), 7., requiredPrecision);
-        EXPECT_NEAR(deepCopyNow.nbContacts(), 6., requiredPrecision);
-        EXPECT_NEAR(deepCopyLater.nbContacts(), 6., requiredPrecision);
+        EXPECT_EQ(contacts.nbContacts(), 7);
+        EXPECT_EQ(shallowCopy.nbContacts(), 7);
+        EXPECT_EQ(deepCopyNow.nbContacts(), 6);
+        EXPECT_EQ(deepCopyLater.nbContacts(), 6);
     }
 }
 
 TEST(RigidContacts, create){
     Model model;
     model.AddSegment("Seg1", "root", "xyz", "xyz", {}, {}, {}, rigidbody::SegmentCharacteristics(), utils::RotoTrans());
-    unsigned int id = model.GetBodyId("Seg1");
+    size_t id = model.GetBodyId("Seg1");
     model.AddConstraint(id, utils::Vector3d(0.1, 0.2, 0.3), utils::Vector3d(1, 0, 0), "ContactX", "Seg1");
     model.AddConstraint(id, utils::Vector3d(0.4, 0.5, 0.6), utils::Vector3d(0, 1, 0), "ContactY", "Seg1");
     model.AddConstraint(id, utils::Vector3d(0.7, 0.8, 0.9), utils::Vector3d(0, 0, 1), "ContactZ", "Seg1");
@@ -226,7 +226,7 @@ TEST(RigidContacts, create){
     EXPECT_EQ(model.nbRigidContacts(), 4);
 
     {
-        unsigned int n(0);
+        size_t n(0);
         EXPECT_STREQ(model.rigidContact(n).utils::Node::name().c_str(), "ContactX");
         SCALAR_TO_DOUBLE(contactX, model.rigidContact(n)[0]);
         SCALAR_TO_DOUBLE(contactY, model.rigidContact(n)[1]);
@@ -240,7 +240,7 @@ TEST(RigidContacts, create){
     }
 
     {
-        unsigned int n(1);
+        size_t n(1);
         EXPECT_STREQ(model.rigidContact(n).utils::Node::name().c_str(), "ContactY");
         SCALAR_TO_DOUBLE(contactX, model.rigidContact(n)[0]);
         SCALAR_TO_DOUBLE(contactY, model.rigidContact(n)[1]);
@@ -254,7 +254,7 @@ TEST(RigidContacts, create){
     }
 
     {
-        unsigned int n(2);
+        size_t n(2);
         EXPECT_STREQ(model.rigidContact(n).utils::Node::name().c_str(), "ContactZ");
         SCALAR_TO_DOUBLE(contactX, model.rigidContact(n)[0]);
         SCALAR_TO_DOUBLE(contactY, model.rigidContact(n)[1]);
@@ -268,7 +268,7 @@ TEST(RigidContacts, create){
     }
 
     {
-        unsigned int n(3);
+        size_t n(3);
         EXPECT_STREQ(model.rigidContact(n).utils::Node::name().c_str(), "ContactX2");
         SCALAR_TO_DOUBLE(contactX, model.rigidContact(n)[0]);
         SCALAR_TO_DOUBLE(contactY, model.rigidContact(n)[1]);
@@ -295,7 +295,7 @@ TEST(RigidContacts, create){
 #ifndef BIORBD_USE_CASADI_MATH
         auto positionAll = model.rigidContacts(Q, true);
 #endif
-        for (unsigned int i = 0; i < 3; ++i) {
+        for (size_t i = 0; i < 3; ++i) {
             EXPECT_NEAR(static_cast<double>(position(i)), positionExpected[i], requiredPrecision);
 #ifndef BIORBD_USE_CASADI_MATH
             SCALAR_TO_DOUBLE(p2, positionAll[0][i]);
@@ -310,7 +310,7 @@ TEST(RigidContacts, create){
 #ifndef BIORBD_USE_CASADI_MATH
         auto velocityAll = model.rigidContactsVelocity(Q, QDot);
 #endif
-        for (unsigned int i = 0; i < 3; ++i) {
+        for (size_t i = 0; i < 3; ++i) {
             EXPECT_NEAR(static_cast<double>(velocity(i)), velocityExpected[i], requiredPrecision);
 #ifndef BIORBD_USE_CASADI_MATH
             SCALAR_TO_DOUBLE(v2, velocityAll[0][i]);
@@ -325,7 +325,7 @@ TEST(RigidContacts, create){
 #ifndef BIORBD_USE_CASADI_MATH
         auto accelerationAll = model.rigidContactsAcceleration(Q, QDot, QDDot);
 #endif
-        for (unsigned int i = 0; i < 3; ++i) {
+        for (size_t i = 0; i < 3; ++i) {
             EXPECT_NEAR(static_cast<double>(acceleration(i)), accelerationExpected[i], requiredPrecision);
 #ifndef BIORBD_USE_CASADI_MATH
             SCALAR_TO_DOUBLE(a2, accelerationAll[0][i]);
@@ -604,7 +604,7 @@ TEST(SoftContacts, ForceAtOrigin) {
 
         std::vector<double> forceExpected = {
             -670.95355043718416, 2.944729504204179, 2.2119497381886286, 0, -221.1949738188676, 294.47295042042418 };
-        for (unsigned int i = 0; i < 6; ++i) {
+        for (size_t i = 0; i < 6; ++i) {
             EXPECT_NEAR(static_cast<double>(force(i)), forceExpected[i], requiredPrecision);
         }
     }
@@ -863,7 +863,7 @@ TEST(Joints, unitTest)
                         };
 
 
-        for (unsigned int i = 0; i < joints.nbDof(); ++i) {
+        for (size_t i = 0; i < joints.nbDof(); ++i) {
             EXPECT_STREQ(names[i].c_str(), expectedNames[i].c_str());
         }
     }
@@ -879,7 +879,7 @@ TEST(Joints, unitTest)
         rigidbody::Joints joints(model);
         rigidbody::GeneralizedCoordinates Q(model);
         rigidbody::GeneralizedVelocity Qdot(model);
-        for (size_t i=0; i<model.nbQ(); ++i) {
+        for (unsigned int i=0; i<model.nbQ(); ++i) {
             Q[i] = static_cast<double>(i) * 0.2;
             Qdot[i] = static_cast<double>(i) * 1.2;
         }
@@ -920,7 +920,7 @@ TEST(Joints, Energy)
     rigidbody::Joints joints(model);
     rigidbody::GeneralizedCoordinates Q(model);
     rigidbody::GeneralizedVelocity Qdot(model);
-    for (size_t i=0; i<model.nbQ(); ++i) {
+    for (unsigned int i=0; i<model.nbQ(); ++i) {
         Q[i] = static_cast<double>(i) * 0.2;
         Qdot[i] = static_cast<double>(i) * 1.2;
     }
@@ -956,9 +956,9 @@ TEST(Joints, massMatrixInverse)
 
         CALL_BIORBD_FUNCTION_1ARG(Minv_symbolic, model, massMatrixInverse, Q);
 
-        for (unsigned int j = 0; j < model.dof_count; j++)
+        for (size_t j = 0; j < model.dof_count; j++)
         {
-            for (unsigned int i = 0; i < model.dof_count; i++)
+            for (size_t i = 0; i < model.dof_count; i++)
             {
                 EXPECT_NEAR(static_cast<double>(Minv_num(i, j)), static_cast<double>(Minv_symbolic(i, j)), requiredPrecision);
             }
@@ -1104,7 +1104,7 @@ TEST(RotoTransNode, unitTest)
         rt_vector[0].setParent("parentName");
         rt_vector[0].setName("nameSet");
         std::vector<utils::String> expectedNames = { "nameSet" };
-        for (unsigned int i = 0; i < rt_vector.size(); ++i) {
+        for (size_t i = 0; i < rt_vector.size(); ++i) {
             EXPECT_STREQ(rtNode.RTs("parentName")[i].utils::Node::name().c_str(),
                          expectedNames[i].c_str());
             EXPECT_STREQ(rtNode.RTsNames()[i].c_str(), expectedNames[i].c_str());
@@ -1113,7 +1113,7 @@ TEST(RotoTransNode, unitTest)
     {
         rigidbody::RotoTransNodes rtNode;
         rtNode.addRT();
-        unsigned int numberOfRTs(rtNode.nbRTs());
+        size_t numberOfRTs(rtNode.nbRTs());
         EXPECT_EQ(numberOfRTs, 1);
     }
 }
@@ -1152,7 +1152,7 @@ TEST(NodeSegment, unitTests)
     {
         rigidbody::NodeSegment nodeSegment(utils::Vector3d(2, 3, 4),
                 "nodeSegmentName", "parentName", true, true, "z", 8);
-        std::vector<unsigned int> vector = {0, 1};
+        std::vector<size_t> vector = {0, 1};
         nodeSegment.addAxesToRemove(vector);
         EXPECT_STREQ(nodeSegment.axesToRemoveAsString().c_str(), "xyz");
     }
@@ -1301,7 +1301,7 @@ TEST(CoM, kinematics)
     DECLARE_GENERALIZED_VELOCITY(Qdot, model);
     DECLARE_GENERALIZED_ACCELERATION(Qddot, model);
 
-    for (unsigned int i=0; i<model.nbQ(); ++i) {
+    for (size_t i=0; i<model.nbQ(); ++i) {
         Q(i, 0) = QtestPyomecaman[i];
         Qdot(i, 0) = QtestPyomecaman[i]*10;
         Qddot(i, 0) = QtestPyomecaman[i]*100;
@@ -1315,7 +1315,7 @@ TEST(CoM, kinematics)
     std::vector<double> expectedComDot = {-0.05018973433722229, 1.4166208451420528, 1.4301750486035787};
     std::vector<double> expectedComDdot = {-0.7606169667295027, 11.508107073695976, 16.58853835505851};
 
-    for (unsigned int i=0; i<3; ++i) {
+    for (size_t i=0; i<3; ++i) {
         EXPECT_NEAR(static_cast<double>(com(i, 0)), expectedCom[i], requiredPrecision);
         EXPECT_NEAR(static_cast<double>(comDot(i, 0)), expectedComDot[i],
                     requiredPrecision);
@@ -1390,28 +1390,28 @@ TEST(Mesh, scale)
 
     {
         SCALAR_TO_DOUBLE(val, mesh.point(0)[0]);
-        EXPECT_FLOAT_EQ(val, 4);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 4.f);
     }
     {
         SCALAR_TO_DOUBLE(val, mesh.point(0)[1]);
-        EXPECT_FLOAT_EQ(val, 9);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 9.f);
     }
     {
         SCALAR_TO_DOUBLE(val, mesh.point(0)[2]);
-        EXPECT_FLOAT_EQ(val, 16);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 16.f);
     }
 
     {
         SCALAR_TO_DOUBLE(val, mesh.point(1)[0]);
-        EXPECT_FLOAT_EQ(val, 10);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 10.f);
     }
     {
         SCALAR_TO_DOUBLE(val, mesh.point(1)[1]);
-        EXPECT_FLOAT_EQ(val, 18);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 18.f);
     }
     {
         SCALAR_TO_DOUBLE(val, mesh.point(1)[2]);
-        EXPECT_FLOAT_EQ(val, 28);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 28.f);
     }
 
     mesh.rotate(utils::RotoTrans(
@@ -1420,28 +1420,28 @@ TEST(Mesh, scale)
                     "xyz"));
     {
         SCALAR_TO_DOUBLE(val, mesh.point(0)[0]);
-        EXPECT_FLOAT_EQ(val, 6.899786);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 6.899786f);
     }
     {
         SCALAR_TO_DOUBLE(val, mesh.point(0)[1]);
-        EXPECT_FLOAT_EQ(val, 9.6247339);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 9.6247339f);
     }
     {
         SCALAR_TO_DOUBLE(val, mesh.point(0)[2]);
-        EXPECT_FLOAT_EQ(val, 20.885052);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 20.885052f);
     }
 
     {
         SCALAR_TO_DOUBLE(val, mesh.point(1)[0]);
-        EXPECT_FLOAT_EQ(val, 12.377337);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 12.377337f);
     }
     {
         SCALAR_TO_DOUBLE(val, mesh.point(1)[1]);
-        EXPECT_FLOAT_EQ(val, 17.880116);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 17.880116f);
     }
     {
         SCALAR_TO_DOUBLE(val, mesh.point(1)[2]);
-        EXPECT_FLOAT_EQ(val, 33.64613);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 33.64613f);
     }
 }
 
@@ -1450,30 +1450,30 @@ TEST(Mesh, color){
     utils::Vector3d color(mesh.color());
     {
         SCALAR_TO_DOUBLE(val, color[0]);
-        EXPECT_FLOAT_EQ(val, 0.89);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 0.89f);
     }
     {
         SCALAR_TO_DOUBLE(val, color[1]);
-        EXPECT_FLOAT_EQ(val, 0.855);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 0.855f);
     }
     {
         SCALAR_TO_DOUBLE(val, color[2]);
-        EXPECT_FLOAT_EQ(val, 0.788);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 0.788f);
     }
 
     mesh.setColor(utils::Vector3d(0.1, 0.2, 0.3));
     color = mesh.color();
     {
         SCALAR_TO_DOUBLE(val, color[0]);
-        EXPECT_FLOAT_EQ(val, 0.1);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 0.1f);
     }
     {
         SCALAR_TO_DOUBLE(val, color[1]);
-        EXPECT_FLOAT_EQ(val, 0.2);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 0.2f);
     }
     {
         SCALAR_TO_DOUBLE(val, color[2]);
-        EXPECT_FLOAT_EQ(val, 0.3);
+        EXPECT_FLOAT_EQ(static_cast<float>(val), 0.3f);
     }
 
 }
@@ -1491,8 +1491,8 @@ TEST(Markers, allPositions)
 
     // All markers at once
     std::vector<rigidbody::NodeSegment> markers(model.markers(Q, true, true));
-    for (unsigned int i=0; i<model.nbMarkers(); ++i) {
-        for (unsigned int j=0; j<3; ++j) {
+    for (size_t i=0; i<model.nbMarkers(); ++i) {
+        for (size_t j=0; j<3; ++j) {
             SCALAR_TO_DOUBLE(mark, markers[i][j]);
             EXPECT_NEAR(mark, expectedMarkers[i][j], requiredPrecision);
         }
@@ -1510,15 +1510,15 @@ TEST(Markers, individualPositions)
     FILL_VECTOR(Q, QtestEqualsMarker)
 
     // One marker at a time, only update Q once
-    for (unsigned int i=0; i<model.nbMarkers(); ++i) {
+    for (size_t i=0; i<model.nbMarkers(); ++i) {
         if (i==0) {
             CALL_BIORBD_FUNCTION_1ARG3PARAMS(marker, model, marker, Q, i, true, true);
-            for (unsigned int j = 0; j < 3; ++j) {
+            for (size_t j = 0; j < 3; ++j) {
                 EXPECT_NEAR(static_cast<double>(marker(j)), expectedMarkers[i][j], requiredPrecision);
             }
         } else {
             CALL_BIORBD_FUNCTION_1ARG3PARAMS(marker, model, marker, Q, i, true, false);
-            for (unsigned int j = 0; j < 3; ++j) {
+            for (size_t j = 0; j < 3; ++j) {
                 EXPECT_NEAR(static_cast<double>(marker(j)), expectedMarkers[i][j], requiredPrecision);
             }
         }
@@ -1534,16 +1534,16 @@ TEST(Markers, individualPositions)
         std::vector<double>({1.2905320401699185, 1.2989551971389397, 1.310413178608594})
     };
     // One marker at a time, only update Q once
-    for (unsigned int i=0; i<model.nbMarkers(); ++i) {
+    for (size_t i=0; i<model.nbMarkers(); ++i) {
         if (i == 0) {
             CALL_BIORBD_FUNCTION_1ARG3PARAMS(marker, model, marker, Q, i, true, true);
-            for (unsigned int j = 0; j < 3; ++j) {
+            for (size_t j = 0; j < 3; ++j) {
                 EXPECT_NEAR(static_cast<double>(marker(j)), expectedMarkers2[i][j], requiredPrecision);
             }
         }
         else {
             CALL_BIORBD_FUNCTION_1ARG3PARAMS(marker, model, marker, Q, i, true, false);
-            for (unsigned int j = 0; j < 3; ++j) {
+            for (size_t j = 0; j < 3; ++j) {
                 EXPECT_NEAR(static_cast<double>(marker(j)), expectedMarkers2[i][j], requiredPrecision);
             }
         }
@@ -1606,7 +1606,7 @@ TEST(Dynamics, Forward)
 
     CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamics, Q, QDot, Tau);
 
-    for (unsigned int i = 0; i<model.nbQddot(); ++i) {
+    for (size_t i = 0; i<model.nbQddot(); ++i) {
         EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);
     }
 }
@@ -1652,7 +1652,7 @@ TEST(Dynamics, ForwardDynamicsFreeFloatingBase)
 
         CALL_BIORBD_FUNCTION_3ARGS(QRootDDot, model, ForwardDynamicsFreeFloatingBase, Q, QDot, QJointsDDot);
 
-        for (unsigned int i = 0; i<model.nbRoot(); ++i) {
+        for (size_t i = 0; i<model.nbRoot(); ++i) {
             EXPECT_NEAR(static_cast<double>(QRootDDot(i, 0)), QRootDDot_expected[i],
                         requiredPrecision);
         }
@@ -1741,7 +1741,7 @@ TEST(Dynamics, ForwardChangingMass)
 
     CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamics, Q, QDot, Tau);
 
-    for (unsigned int i = 0; i<model.nbQddot(); ++i) {
+    for (size_t i = 0; i<model.nbQddot(); ++i) {
         EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i],
                     requiredPrecision);
     }
@@ -1780,7 +1780,7 @@ TEST(Dynamics, ForwardDynAndExternalForces)
 
     CALL_BIORBD_FUNCTION_3ARGS1PARAM(QDDot, model, ForwardDynamics, Q, QDot, Tau, externalForces);
 
-    for (unsigned int i = 0; i<model.nbQddot(); ++i) {
+    for (size_t i = 0; i<model.nbQddot(); ++i) {
         EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], requiredPrecision);
     }
 }
@@ -1809,7 +1809,7 @@ TEST(QDot, ComputeConstraintImpulsesDirect)
         -3.0502066043856577, 1.6659192923088271, 1.3562999563073794, -3.4457346325708458,
         3.2641898429292815
     };
-    for (unsigned int i = 0; i<model.nbQdot(); ++i) {
+    for (size_t i = 0; i<model.nbQdot(); ++i) {
         EXPECT_NEAR(static_cast<double>(QDotPost(i, 0)), QDotPost_expected[i],
                     requiredPrecision);
     }
@@ -1841,7 +1841,7 @@ TEST(Dynamics, ForwardLoopConstraint)
 
         CALL_BIORBD_FUNCTION_3ARGS(QDDot, model, ForwardDynamicsConstraintsDirect, Q,
                                    QDot, Tau);
-        for (unsigned int i = 0; i<model.nbQddot(); ++i) {
+        for (size_t i = 0; i<model.nbQddot(); ++i) {
             EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i], 1e-2);
         }
     }
@@ -1908,7 +1908,7 @@ TEST(Dynamics, ForwardAccelerationConstraint)
 
     rigidbody::Contacts cs(model.getConstraints());
     CALL_BIORBD_FUNCTION_3ARGS1PARAM(QDDot, model, ForwardDynamicsConstraintsDirect, Q, QDot, Tau, cs);
-    for (unsigned int i = 0; i<model.nbQddot(); ++i) {
+    for (size_t i = 0; i<model.nbQddot(); ++i) {
         EXPECT_NEAR(static_cast<double>(QDDot(i, 0)), QDDot_expected[i],
                     requiredPrecision);
     }
@@ -1916,7 +1916,7 @@ TEST(Dynamics, ForwardAccelerationConstraint)
 
     CALL_BIORBD_FUNCTION_3ARGS(forces, model,
                                ContactForcesFromForwardDynamicsConstraintsDirect, Q, QDot, Tau);
-    for (unsigned int i=0; i<forces_expected.size(); ++i) {
+    for (size_t i=0; i<forces_expected.size(); ++i) {
         EXPECT_NEAR(static_cast<double>(forces(i, 0)), forces_expected[i],
                     requiredPrecision);
     }
@@ -1942,7 +1942,7 @@ TEST(Kinematics, computeQdot)
         std::vector<double> QDot_quat_expected = {0.5, 1, 1.5, 0};
 
         CALL_BIORBD_FUNCTION_2ARGS(QDot_quat, m, computeQdot, Q_quat, QDot);
-        for (unsigned int i=0; i<m.nbQ(); ++i) {
+        for (size_t i=0; i<m.nbQ(); ++i) {
             EXPECT_NEAR(static_cast<double>(QDot_quat(i, 0)), QDot_quat_expected[i],
                         requiredPrecision);
         }
@@ -1959,7 +1959,7 @@ TEST(Kinematics, computeQdot)
                                                  };
         CALL_BIORBD_FUNCTION_2ARGS(QDot_quat, m, computeQdot, Q_quat, QDot);
 
-        for (unsigned int i=0; i<m.nbQ(); ++i) {
+        for (size_t i=0; i<m.nbQ(); ++i) {
             EXPECT_NEAR(static_cast<double>(QDot_quat(i, 0)), QDot_quat_expected[i],
                         requiredPrecision);
         }
@@ -1984,8 +1984,8 @@ TEST(ExternalForces, toRbdl_externalForcesOnly)
     sp_expected.push_back(sp_zero); // Dof 3
     sp_expected.push_back(sp_dof4); // Dof 4
 
-    for (unsigned int i = 0; i < 5; ++i) {
-        for (unsigned int j = 0; j < 6; ++j) {
+    for (size_t i = 0; i < 5; ++i) {
+        for (size_t j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
             SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, requiredPrecision);
@@ -2016,8 +2016,8 @@ TEST(ExternalForces, toRbdl_LocalForcesOnly)
     sp_expected.push_back(sp_zero); // Dof 3
     sp_expected.push_back(sp_dof4); // Dof 4
 
-    for (unsigned int i = 0; i < 5; ++i) {
-        for (unsigned int j = 0; j < 6; ++j) {
+    for (size_t i = 0; i < 5; ++i) {
+        for (size_t j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
             SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, requiredPrecision);
@@ -2057,8 +2057,8 @@ TEST(ExternalForces, toRbdl_linearForcesOnly)
     sp_expected.push_back(sp_zero); // Dof 12
     sp_expected.push_back(sp_dof13); // Dof 13
 
-    for (unsigned int i = 0; i < sp_expected.size(); ++i) {
-        for (unsigned int j = 0; j < 6; ++j) {
+    for (size_t i = 0; i < sp_expected.size(); ++i) {
+        for (size_t j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
             SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, requiredPrecision);
@@ -2086,8 +2086,8 @@ TEST(ExternalForces, toRbdl_softContactOnly)
     sp_expected.push_back(sp_zero); // Dof 3
     sp_expected.push_back(sp_dof4); // Dof 4
 
-    for (unsigned int i = 0; i < 5; ++i) {
-        for (unsigned int j = 0; j < 6; ++j) {
+    for (size_t i = 0; i < 5; ++i) {
+        for (size_t j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
             SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, 1e-9);
@@ -2117,8 +2117,8 @@ TEST(ExternalForces, toRbdl_externalForcesAndLinearForces)
     sp_expected.push_back(sp_zero); // Dof 3
     sp_expected.push_back(sp_dof4); // Dof 4
 
-    for (unsigned int i = 0; i < 5; ++i) {
-        for (unsigned int j = 0; j < 6; ++j) {
+    for (size_t i = 0; i < 5; ++i) {
+        for (size_t j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
             SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, requiredPrecision);
@@ -2148,8 +2148,8 @@ TEST(ExternalForces, toRbdl_softContactAndLinearForces)
     sp_expected.push_back(sp_zero); // Dof 3
     sp_expected.push_back(sp_dof4); // Dof 4
 
-    for (unsigned int i = 0; i < 5; ++i) {
-        for (unsigned int j = 0; j < 6; ++j) {
+    for (size_t i = 0; i < 5; ++i) {
+        for (size_t j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
             SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, 1e-9);
@@ -2178,8 +2178,8 @@ TEST(ExternalForces, toRbdl_externalForcesAndSoftContacts)
     sp_expected.push_back(sp_zero); // Dof 3
     sp_expected.push_back(sp_dof4); // Dof 4
 
-    for (unsigned int i = 0; i < 5; ++i) {
-        for (unsigned int j = 0; j < 6; ++j) {
+    for (size_t i = 0; i < 5; ++i) {
+        for (size_t j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
             SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, 1e-9);
@@ -2213,8 +2213,8 @@ TEST(ExternalForces, toRbdl_includeAll)
     sp_expected.push_back(sp_zero); // Dof 3
     sp_expected.push_back(sp_dof4); // Dof 4
 
-    for (unsigned int i = 0; i < 5; ++i) {
-        for (unsigned int j = 0; j < 6; ++j) {
+    for (size_t i = 0; i < 5; ++i) {
+        for (size_t j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
             SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, 1e-9);
@@ -2255,8 +2255,8 @@ TEST(ExternalForces, toRbdl_externalForcesOnlyNotAtOrigin)
     sp_expected.push_back(sp_zero); // Dof 3
     sp_expected.push_back({-2, 8, 0, 4, 5, 6}); // Dof 4
 
-    for (unsigned int i = 0; i < 5; ++i) {
-        for (unsigned int j = 0; j < 6; ++j) {
+    for (size_t i = 0; i < 5; ++i) {
+        for (size_t j = 0; j < 6; ++j) {
             SCALAR_TO_DOUBLE(f_expected, sp_expected[i](j));
             SCALAR_TO_DOUBLE(f, forceInRbdl[i](j));
             EXPECT_NEAR(f, f_expected, requiredPrecision);
@@ -2273,14 +2273,14 @@ TEST(Kalman, markers)
     rigidbody::KalmanReconsMarkers kalman(model);
 #ifdef BIORBD_USE_CASADI_MATH
     // Because the evaluation functions are not sym, it takes a LOOOONG time
-    unsigned int nQToTest(1);
+    size_t nQToTest(1);
 #else
-    unsigned int nQToTest(model.nbQ());
+    size_t nQToTest(model.nbQ());
 #endif
 
     // Compute reference
     rigidbody::GeneralizedCoordinates Qref(model);
-    for (unsigned int i=0; i<model.nbQ(); ++i) {
+    for (size_t i=0; i<model.nbQ(); ++i) {
         Qref(i, 0) = 0.2;
     }
     std::vector<rigidbody::NodeSegment> targetMarkers(model.markers(Qref));
@@ -2291,7 +2291,7 @@ TEST(Kalman, markers)
     kalman.reconstructFrame(model, targetMarkers, &Q, &Qdot, &Qddot);
 
     // Compare results (since the initialization of the filter is done 50X, it is expected to have converged)
-    for (unsigned int i=0; i<nQToTest; ++i) {
+    for (size_t i=0; i<nQToTest; ++i) {
         SCALAR_TO_DOUBLE(q, Q[i]);
         SCALAR_TO_DOUBLE(qdot, Qdot[i]);
         SCALAR_TO_DOUBLE(qddot, Qddot[i]);
@@ -2301,14 +2301,14 @@ TEST(Kalman, markers)
         EXPECT_NEAR(qddot, 0, 1e-6);
     }
 
-    for (unsigned int i=0; i<model.nbQ(); ++i) {
+    for (size_t i=0; i<model.nbQ(); ++i) {
         Qref(i, 0) = 0.3;
     }
     targetMarkers = model.markers(Qref);
     kalman.reconstructFrame(model, targetMarkers, &Q, &Qdot, &Qddot);
 
     // Compare results (Here the filter should not have the time to converge)
-    for (unsigned int i=0; i<nQToTest; ++i) {
+    for (size_t i=0; i<nQToTest; ++i) {
         SCALAR_TO_DOUBLE(q, Q[i]);
         SCALAR_TO_DOUBLE(qdot, Qdot[i]);
         SCALAR_TO_DOUBLE(qddot, Qddot[i]);
@@ -2319,12 +2319,12 @@ TEST(Kalman, markers)
     }
 
     // Force the filter to converge
-    for (unsigned int i=0; i<100; ++i) {
+    for (size_t i=0; i<100; ++i) {
         kalman.reconstructFrame(model, targetMarkers, &Q, &Qdot, &Qddot);
     }
 
     // Now it should be more or less equal
-    for (unsigned int i=0; i<nQToTest; ++i) {
+    for (size_t i=0; i<nQToTest; ++i) {
         SCALAR_TO_DOUBLE(q, Q[i]);
         SCALAR_TO_DOUBLE(qdot, Qdot[i]);
         SCALAR_TO_DOUBLE(qddot, Qddot[i]);
@@ -2343,17 +2343,17 @@ TEST(Kalman, imu)
     rigidbody::KalmanReconsIMU kalman(model);
 #ifdef BIORBD_USE_CASADI_MATH
     // Because the evaluation functions are not sym, it takes a LOOOONG time
-    unsigned int nQToTest(3);
+    size_t nQToTest(3);
 
     // Test is known to fail for Kalman IMU (TODO: solve this)
     return;
 #else
-    unsigned int nQToTest(model.nbQ());
+    size_t nQToTest(model.nbQ());
 #endif
 
     // Compute reference
     rigidbody::GeneralizedCoordinates Qref(model);
-    for (unsigned int i=0; i<model.nbQ(); ++i) {
+    for (size_t i=0; i<model.nbQ(); ++i) {
         Qref(i, 0) = 0.2;
     }
     std::vector<rigidbody::IMU> targetImus(model.IMU(Qref));
@@ -2364,7 +2364,7 @@ TEST(Kalman, imu)
     kalman.reconstructFrame(model, targetImus, &Q, &Qdot, &Qddot);
 
     // Compare results (since the initialization of the filter is done 50X, it is expected to have converged)
-    for (unsigned int i=0; i<nQToTest; ++i) {
+    for (size_t i=0; i<nQToTest; ++i) {
         SCALAR_TO_DOUBLE(q, Q[i]);
         SCALAR_TO_DOUBLE(qdot, Qdot[i]);
         SCALAR_TO_DOUBLE(qddot, Qddot[i]);
@@ -2381,14 +2381,14 @@ TEST(Kalman, imu)
         }
     }
 
-    for (unsigned int i=0; i<model.nbQ(); ++i) {
+    for (size_t i=0; i<model.nbQ(); ++i) {
         Qref(i, 0) = 0.3;
     }
     targetImus = model.IMU(Qref);
     kalman.reconstructFrame(model, targetImus, &Q, &Qdot, &Qddot);
 
     // Compare results (Here the filter should not have the time to converge)
-    for (unsigned int i=0; i<nQToTest; ++i) {
+    for (size_t i=0; i<nQToTest; ++i) {
         SCALAR_TO_DOUBLE(q, Q[i]);
         SCALAR_TO_DOUBLE(qdot, Qdot[i]);
         SCALAR_TO_DOUBLE(qddot, Qddot[i]);
@@ -2405,12 +2405,12 @@ TEST(Kalman, imu)
     }
 
     // Force the filter to converge
-    for (unsigned int i=0; i<1000; ++i) {
+    for (size_t i=0; i<1000; ++i) {
         kalman.reconstructFrame(model, targetImus, &Q, &Qdot, &Qddot);
     }
 
     // Now it should be more or less equal
-    for (unsigned int i=0; i<model.nbQ(); ++i) {
+    for (size_t i=0; i<model.nbQ(); ++i) {
         SCALAR_TO_DOUBLE(q, Q[i]);
         SCALAR_TO_DOUBLE(qdot, Qdot[i]);
         SCALAR_TO_DOUBLE(qddot, Qddot[i]);

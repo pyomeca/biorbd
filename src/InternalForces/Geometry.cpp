@@ -74,11 +74,11 @@ void internal_forces::Geometry::DeepCopy(const internal_forces::Geometry &other)
     *m_originInGlobal = other.m_originInGlobal->DeepCopy();
     *m_insertionInGlobal = other.m_insertionInGlobal->DeepCopy();
     m_pointsInGlobal->resize(other.m_pointsInGlobal->size());
-    for (unsigned int i=0; i<other.m_pointsInGlobal->size(); ++i) {
+    for (size_t i=0; i<other.m_pointsInGlobal->size(); ++i) {
         (*m_pointsInGlobal)[i] = (*other.m_pointsInGlobal)[i].DeepCopy();
     }
     m_pointsInLocal->resize(other.m_pointsInLocal->size());
-    for (unsigned int i=0; i<other.m_pointsInLocal->size(); ++i) {
+    for (size_t i=0; i<other.m_pointsInLocal->size(); ++i) {
         (*m_pointsInLocal)[i] = (*other.m_pointsInLocal)[i].DeepCopy();
     }
     *m_jacobian = *other.m_jacobian;
@@ -262,11 +262,11 @@ utils::Matrix internal_forces::Geometry::jacobianInsertion() const
     return m_jacobian->block(m_jacobian->rows()-3,0,3,m_jacobian->cols());
 }
 utils::Matrix internal_forces::Geometry::jacobian(
-    unsigned int idxViaPoint) const
+    size_t idxViaPoint) const
 {
     utils::Error::check(*m_isGeometryComputed,
                                 "Geometry must be computed before calling jacobian(i)");
-    return m_jacobian->block(3*idxViaPoint,0,3,m_jacobian->cols());
+    return m_jacobian->block(3* static_cast<unsigned int>(idxViaPoint),0,3,m_jacobian->cols());
 }
 
 const utils::Matrix &internal_forces::Geometry::jacobianLength() const
@@ -386,7 +386,7 @@ void internal_forces::Geometry::setPointsInGlobal(
              && pathModifiers->object(0).typeOfNode() == utils::NODE_TYPE::VIA_POINT) {
         m_pointsInLocal->push_back(originInLocal());
         m_pointsInGlobal->push_back(originInGlobal(model, Q));
-        for (unsigned int i=0; i<pathModifiers->nbObjects(); ++i) {
+        for (size_t i=0; i<pathModifiers->nbObjects(); ++i) {
             const internal_forces::ViaPoint& node(static_cast<internal_forces::ViaPoint&>
                                                   (pathModifiers->object(i)));
             m_pointsInLocal->push_back(node);
@@ -435,7 +435,7 @@ const utils::Scalar& internal_forces::Geometry::length(
                                 ((*m_pointsInGlobal)[3] - pi_wrap).norm();   // length after the wrap
 
     } else {
-        for (unsigned int i=0; i<m_pointsInGlobal->size()-1; ++i) {
+        for (size_t i=0; i<m_pointsInGlobal->size()-1; ++i) {
             *m_length += ((*m_pointsInGlobal)[i+1] - (*m_pointsInGlobal)[i]).norm();
         }
     }
@@ -453,8 +453,7 @@ const utils::Scalar& internal_forces::Geometry::velocity(
 void internal_forces::Geometry::setJacobianDimension(rigidbody::Joints
         &model)
 {
-    *m_jacobian = utils::Matrix::Zero(static_cast<unsigned int>
-                  (m_pointsInLocal->size()*3), model.dof_count);
+    *m_jacobian = utils::Matrix::Zero(static_cast<unsigned int>(m_pointsInLocal->size()*3), model.dof_count);
     *m_G = utils::Matrix::Zero(3, model.dof_count);
 }
 
@@ -469,12 +468,12 @@ void internal_forces::Geometry::jacobian(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
-    for (unsigned int i=0; i<m_pointsInLocal->size(); ++i) {
+    for (size_t i=0; i<m_pointsInLocal->size(); ++i) {
         m_G->setZero();
         RigidBodyDynamics::CalcPointJacobian(model, Q,
                                              model.GetBodyId((*m_pointsInLocal)[i].parent().c_str()),
                                              (*m_pointsInLocal)[i], *m_G, false); // False for speed
-        m_jacobian->block(3*i,0,3,model.dof_count) = *m_G;
+        m_jacobian->block(3* static_cast<unsigned int>(i),0,3,model.dof_count) = *m_G;
     }
 }
 
@@ -484,7 +483,7 @@ void internal_forces::Geometry::computeJacobianLength()
 
     // jacobian approximates as if there were no wrapping object
     const std::vector<utils::Vector3d>& p = *m_pointsInGlobal;
-    for (unsigned int i=0; i<p.size()-1 ; ++i) {
+    for (size_t i=0; i<p.size()-1 ; ++i) {
         *m_jacobianLength += (( p[i+1] - p[i] ).transpose() * (jacobian(i+1) - jacobian(
                                   i)))
                              /

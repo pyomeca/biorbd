@@ -192,7 +192,7 @@ public:
     /// \return The via point's node jacobian
     ///
     utils::Matrix jacobian(
-        unsigned int idxViaPoint) const;
+        size_t idxViaPoint) const;
 
     ///
     /// \brief Return the jacobian length of the muscle

@@ -43,7 +43,7 @@ public:
     PassiveTorqueLinear(
         const utils::Scalar& T0,
         const utils::Scalar& slope,
-        unsigned int dofIdx);
+        size_t dofIdx);
 
     ///
     /// \brief Construct a linear passive torque
@@ -56,7 +56,7 @@ public:
     PassiveTorqueLinear(
         const utils::Scalar& T0,
         const utils::Scalar& slope,
-        unsigned int dofIdx,
+        size_t dofIdx,
         const utils::String &jointName);
 
     ///

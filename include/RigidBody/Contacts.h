@@ -62,8 +62,8 @@ public:
     /// \param name A human readable name
     /// \param name A human readable name of the parent (should correspond to the body_id)
     ///
-    unsigned int AddConstraint(
-        unsigned int body_id,
+    size_t AddConstraint(
+        size_t body_id,
         const utils::Vector3d &body_point,
         const utils::Vector3d &world_normal,
         const utils::String& name,
@@ -78,8 +78,8 @@ public:
     /// \param name A human readable name of the parent (should correspond to the body_id)
     ///
 
-    unsigned int AddConstraint(
-        unsigned int body_id,
+    size_t AddConstraint(
+        size_t body_id,
         const utils::Vector3d &body_point,
         const utils::String& axis,
         const utils::String& name,
@@ -96,9 +96,9 @@ public:
     /// \param enableStabilization Whether stabilization should be enabled or not
     /// \param stabilizationParam The value used for stabilization
     ///
-    unsigned int AddLoopConstraint(
-        unsigned int body_id_predecessor,
-        unsigned int body_id_successor,
+    size_t AddLoopConstraint(
+        size_t body_id_predecessor,
+        size_t body_id_successor,
         const utils::RotoTrans& X_predecessor,
         const utils::RotoTrans& X_successor,
         const utils::SpatialVector& axis,
@@ -159,13 +159,13 @@ public:
     /// \brief Return the number of contacts
     /// \return The number of contacts
     ///
-    unsigned int nbContacts() const;
+    size_t nbContacts() const;
 
     ///
     /// \brief Return the number of loop constraints
     /// \return The number of loop constraints
     ///
-    unsigned int nbLoopConstraints() const;
+    size_t nbLoopConstraints() const;
 
     ///
     /// \brief Return the name of the all contacts
@@ -178,7 +178,7 @@ public:
     /// \param i The axis
     /// \return The name of the contact of a specified axis
     ///
-    utils::String contactName(unsigned int i);
+    utils::String contactName(size_t i);
 
     ///
     /// \brief Return the constraints position in the global reference
@@ -229,7 +229,7 @@ public:
     /// \param idx The index of the contact
     /// \return All the rigid contacts as declared in the model
     ///
-    const NodeSegment& rigidContact(unsigned int idx) const;
+    const NodeSegment& rigidContact(size_t idx) const;
 
     ///
     /// \brief Return the rigidContact position in the global reference
@@ -240,7 +240,7 @@ public:
     ///
     utils::Vector3d rigidContact(
         const GeneralizedCoordinates &Q,
-        unsigned int idx,
+        size_t idx,
         bool updateKin);
 
     ///
@@ -264,7 +264,7 @@ public:
     utils::Vector3d rigidContactVelocity(
         const rigidbody::GeneralizedCoordinates &Q,
         const rigidbody::GeneralizedVelocity &Qdot,
-        unsigned int idx,
+        size_t idx,
         bool updateKin = true);
 
     ///
@@ -292,7 +292,7 @@ public:
         const rigidbody::GeneralizedCoordinates &Q,
         const rigidbody::GeneralizedVelocity &Qdot,
         const rigidbody::GeneralizedAcceleration &dQdot,
-        unsigned int idx,
+        size_t idx,
         bool updateKin = true);
 
     ///
@@ -316,10 +316,10 @@ protected:
     utils::String swapAxes(
         const utils::String& axesToSwap) const;
 
-    std::shared_ptr<unsigned int> m_nbreConstraint; ///< Number of constraints
+    std::shared_ptr<size_t> m_nbreConstraint; ///< Number of constraints
     std::shared_ptr<bool> m_isBinded; ///< If the model is ready
     std::shared_ptr<std::vector<rigidbody::NodeSegment>> m_rigidContacts; ///< The rigid contacts declared in the model (copy of RBDL information)
-    std::shared_ptr<unsigned int> m_nbLoopConstraint; ///< Number of constraints
+    std::shared_ptr<size_t> m_nbLoopConstraint; ///< Number of constraints
 };
 
 }

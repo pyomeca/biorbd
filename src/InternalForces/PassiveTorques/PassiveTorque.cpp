@@ -9,7 +9,7 @@ internal_forces::passive_torques::PassiveTorque::PassiveTorque() :
     m_type(std::make_shared<internal_forces::passive_torques::TORQUE_TYPE>
            (internal_forces::passive_torques::TORQUE_TYPE::NO_TORQUE_TYPE)),
     m_jointName(std::make_shared<utils::String>("")),
-    m_dofIdx(std::make_shared<unsigned int>(-1))
+    m_dofIdx(std::make_shared<size_t>(-1))
 {
 
 }
@@ -32,22 +32,22 @@ internal_forces::passive_torques::PassiveTorque::PassiveTorque(
 }
 
 internal_forces::passive_torques::PassiveTorque::PassiveTorque(
-    unsigned int dofIdx) :
+    size_t dofIdx) :
     m_type(std::make_shared<internal_forces::passive_torques::TORQUE_TYPE>
            (internal_forces::passive_torques::TORQUE_TYPE::NO_TORQUE_TYPE)),
     m_jointName(std::make_shared<utils::String>("")),
-    m_dofIdx(std::make_shared<unsigned int>(dofIdx))
+    m_dofIdx(std::make_shared<size_t>(dofIdx))
 {
 
 }
 
 internal_forces::passive_torques::PassiveTorque::PassiveTorque(
-    unsigned int dofIdx,
+    size_t dofIdx,
     const utils::String &jointName) :
     m_type(std::make_shared<internal_forces::passive_torques::TORQUE_TYPE>
            (internal_forces::passive_torques::TORQUE_TYPE::NO_TORQUE_TYPE)),
     m_jointName(std::make_shared<utils::String>(jointName)),
-    m_dofIdx(std::make_shared<unsigned int>(dofIdx))
+    m_dofIdx(std::make_shared<size_t>(dofIdx))
 {
 
 }
@@ -65,7 +65,7 @@ void internal_forces::passive_torques::PassiveTorque::DeepCopy(const internal_fo
     *m_dofIdx = *other.m_dofIdx;
 }
 
-unsigned int internal_forces::passive_torques::PassiveTorque::index() const
+size_t internal_forces::passive_torques::PassiveTorque::index() const
 {
     return *m_dofIdx;
 }

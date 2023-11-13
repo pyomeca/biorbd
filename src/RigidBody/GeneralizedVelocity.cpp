@@ -11,7 +11,7 @@ rigidbody::GeneralizedVelocity::GeneralizedVelocity()
 }
 
 rigidbody::GeneralizedVelocity::GeneralizedVelocity(
-    unsigned int nbQdot) :
+    size_t nbQdot) :
     utils::Vector(nbQdot)
 {
 

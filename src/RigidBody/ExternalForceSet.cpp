@@ -44,19 +44,9 @@ void rigidbody::ExternalForceSet::add(
     const utils::SpatialVector& vector
 ) 
 {
-    int dofCount(0); 
-    for (int i = 0; i < static_cast<int>(m_model.nbSegment()); ++i) {
-        auto& segment(m_model.segment(i));
-        
-        dofCount += segment.nbDof();
-
-        if (segment.name().compare(segmentName)) continue;
-        if (segment.nbDof() == 0) {
-            throw std::runtime_error("It is not possible to add forces to a segment without degree of freedom");
-        }
-
-        m_externalForces[dofCount] += vector; // Do not subtract 1 since 0 is used for the base ground 
-    }
+    // Add 1 since 0 is used for the base ground 
+    size_t dofIndex = m_model.segment(segmentName).getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
+    m_externalForces[dofIndex] += vector; 
 }
 
 void rigidbody::ExternalForceSet::add(
@@ -71,27 +61,6 @@ void rigidbody::ExternalForceSet::add(
     );
     add(segmentName, atOrigin);
 }
-
-
-#ifdef BIORBD_USE_CASADI_MATH
-
-void rigidbody::ExternalForceSet::add(
-    utils::String& segmentName,
-    const casadi::MX& vector
-)
-{
-
-}
-
-void rigidbody::ExternalForceSet::add(
-    utils::String& segmentName,
-    const RBDLCasadiMath::MX_Xd_SubMatrix& vector
-)
-{
-
-}
-
-#endif
 
 void rigidbody::ExternalForceSet::addInSegmentReferenceFrame(
     const utils::String& segmentName,
@@ -120,7 +89,7 @@ void rigidbody::ExternalForceSet::addTranslationalForce(
     const rigidbody::NodeSegment& pointOfApplication
 )
 {
-    if (!m_useTranslationalForces) throw std::runtime_error("It is not possible to add translational force if it was set to false");
+    if (!m_useTranslationalForces) throw std::runtime_error("It is not possible to add translational forces if useTranslationalForces was set to false");
     m_translationalForces.push_back(std::make_pair(force, pointOfApplication));
 }
 
@@ -205,9 +174,9 @@ void rigidbody::ExternalForceSet::setZero()
     m_externalForces.push_back(sv_zero); // The first one is associated with the universe
 
     // Dispatch the forces
-    for (int i = 0; i < static_cast<int>(m_model.nbSegment()); ++i) {
-        unsigned int nDof(m_model.segment(i).nbDof());
-        for (unsigned int i = 0; i < nDof; ++i) {
+    for (size_t i = 0; i < m_model.nbSegment(); ++i) {
+        size_t nDof(m_model.segment(i).nbDof());
+        for (size_t i = 0; i < nDof; ++i) {
             m_externalForces.push_back(sv_zero); // Put a sv_zero on each DoF
         }
     }
@@ -230,8 +199,8 @@ updateKin = true;
     #endif
     const auto& allGlobalJcs = m_model.allGlobalJCS(Q, updateKin);
 
-    for (int i = 0; i < m_externalForcesInLocal.size(); i++) {
-        const auto& pair(m_externalForcesInLocal.get(i));
+    for (size_t i = 0; i < m_externalForcesInLocal.size(); i++) {
+        const auto& pair(m_externalForcesInLocal.get(static_cast<int>(i)));
 
         // Aliases to have a better referencing of the variables
         const utils::SpatialVector& vector(pair.first);
@@ -261,7 +230,7 @@ updateKin = true;
         momentInGrf.applyRT(rotationInGrf);
 
         // Transport the force to the global reference frame (Add 1 to account for the undeclared root)
-        int dofIndex = m_model.segment(node.parent()).getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
+        size_t dofIndex = m_model.segment(node.parent()).getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
         out[dofIndex] += transportAtOrigin(utils::SpatialVector(momentInGrf, forceInGrf), pointOfApplication);
     }
     return;
@@ -283,10 +252,10 @@ void rigidbody::ExternalForceSet::combineTranslationalForces(
     // Do not waste time computing forces on empty vector
     if (m_translationalForces.size() == 0) return;
 
-    for (int i = 0; i < static_cast<int>(m_model.nbSegment()); ++i) {
+    for (size_t i = 0; i <m_model.nbSegment(); ++i) {
         const rigidbody::Segment& segment(m_model.segment(i));
-        //  (Add 1 to account for the undeclared root
-        int dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
+        // Add 1 to account for the undeclared root
+        size_t dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
         
         for (auto& e : m_translationalForces) {    
             const rigidbody::NodeSegment& pointOfApplication = e.second;
@@ -294,7 +263,9 @@ void rigidbody::ExternalForceSet::combineTranslationalForces(
 
             const utils::Vector3d& force = e.first;
             rigidbody::NodeSegment pointOfApplicationInGlobal(
-                RigidBodyDynamics::CalcBodyToBaseCoordinates(m_model, Q, segment.id(), pointOfApplication, updateKin),
+                RigidBodyDynamics::CalcBodyToBaseCoordinates(
+                    m_model, Q, static_cast<unsigned int>(segment.id()), pointOfApplication, updateKin
+                ),
                 pointOfApplication.Node::name(),
                 pointOfApplication.parent(),
                 pointOfApplication.isTechnical(),
@@ -327,12 +298,12 @@ void rigidbody::ExternalForceSet::combineSoftContactForces(
     if (m_model.nbSoftContacts() == 0) return;
 
 
-    for (int i = 0; i < static_cast<int>(m_model.nbSegment()); ++i) {
+    for (size_t i = 0; i < m_model.nbSegment(); ++i) {
         const rigidbody::Segment& segment(m_model.segment(i));
-        //  Add 1 to account for the undeclared root
-        int dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
+        // Add 1 to account for the undeclared root
+        size_t dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
     
-        for (int j = 0; j < m_model.nbSoftContacts(); j++) {
+        for (size_t j = 0; j < m_model.nbSoftContacts(); j++) {
             rigidbody::SoftContactNode& contact(m_model.softContact(j));
             if (contact.parent().compare(segment.name())) continue;
 

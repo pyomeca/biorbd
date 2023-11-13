@@ -24,22 +24,22 @@ static std::string modelPathForMuscleForce("models/arm26.bioMod");
 static std::string modelPathForBuchananDynamics("models/arm26_buchanan.bioMod");
 static std::string modelPathForDeGrooteDynamics("models/arm26_degroote.bioMod");
 static std::string modelPathForMuscleJacobian("models/arm26.bioMod");
-static unsigned int muscleGroupForMuscleJacobian(1);
-static unsigned int muscleForMuscleJacobian(1);
+static size_t muscleGroupForMuscleJacobian(1);
+static size_t muscleForMuscleJacobian(1);
 
-static unsigned int muscleGroupForIdealizedActuator(1);
-static unsigned int muscleForIdealizedActuator(1);
+static size_t muscleGroupForIdealizedActuator(1);
+static size_t muscleForIdealizedActuator(1);
 
 TEST(Muscles, size)
 {
     Model model(modelPathForMuscleForce);
-    unsigned int nbMus(model.nbMuscles());
+    size_t nbMus(model.nbMuscles());
     EXPECT_EQ(nbMus, 6);
     EXPECT_EQ(nbMus, model.nbMuscleTotal());
     EXPECT_EQ(model.muscles().size(), nbMus);
     int cmp(0);
     for (auto g : model.muscleGroups()) {
-        cmp += g.nbMuscles();
+        cmp += static_cast<int>(g.nbMuscles());
     }
     EXPECT_EQ(nbMus, cmp);
 
@@ -402,8 +402,8 @@ TEST(IdealizedActuator, copy)
     }
 }
 
-static unsigned int muscleGroupForHillType(1);
-static unsigned int muscleForHillType(1);
+static size_t muscleGroupForHillType(1);
+static size_t muscleForHillType(1);
 
 TEST(hillType, unitTest)
 {
@@ -673,8 +673,8 @@ TEST(hillType, copy)
     }
 }
 
-static unsigned int muscleGroupForHillThelenType(1);
-static unsigned int muscleForHillThelenType(0);
+static size_t muscleGroupForHillThelenType(1);
+static size_t muscleForHillThelenType(0);
 
 TEST(hillThelenType, unitTest)
 {
@@ -695,7 +695,7 @@ TEST(hillThelenType, unitTest)
         rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
-        model.updateMuscles(Q, 2);
+        model.updateMuscles(Q, true);
         hillThelenType.updateOrientations(model, Q, qDot);
         static double activationEmgForHillTypeTest(1.0);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
@@ -939,7 +939,7 @@ TEST(hillThelenTypeActive, unitTest)
         rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
-        model.updateMuscles(Q, 2);
+        model.updateMuscles(Q, true);
         hillThelenType.updateOrientations(model, Q, qDot);
         static double activationEmgForHillTypeTest(1.0);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
@@ -1171,8 +1171,8 @@ TEST(hillThelenActiveType, copy)
     }
 }
 
-static unsigned int muscleGroupFordeGrooteType(0);
-static unsigned int muscleFordeGrooteType(2);
+static size_t muscleGroupFordeGrooteType(0);
+static size_t muscleFordeGrooteType(2);
 TEST(hillDeGrooteTypeActive, unitTest)
 {
     {
@@ -1192,7 +1192,7 @@ TEST(hillDeGrooteTypeActive, unitTest)
         rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
-        model.updateMuscles(Q, 2);
+        model.updateMuscles(Q, true);
         hillDeGrooteType.updateOrientations(model, Q, qDot);
         static double activationEmgForHillTypeTest(1.0);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
@@ -1424,8 +1424,8 @@ TEST(hillDeGrooteActiveType, copy)
     }
 }
 
-static unsigned int muscleGroupForhillDeGrooteTypeFatigable(1);
-static unsigned int muscleForhillDeGrooteTypeFatigable(1);
+static size_t muscleGroupForhillDeGrooteTypeFatigable(1);
+static size_t muscleForhillDeGrooteTypeFatigable(1);
 TEST(hillDeGrooteTypeFatigable, unitTest)
 {
     {
@@ -1625,7 +1625,7 @@ TEST(hillDeGrooteType, unitTest)
         rigidbody::GeneralizedVelocity qDot(model);
         Q = Q.setOnes() / 10;
         qDot = qDot.setOnes() / 10;
-        model.updateMuscles(Q, 2);
+        model.updateMuscles(Q, true);
         hillDeGrooteType.updateOrientations(model, Q, qDot);
         static double activationEmgForHillTypeTest(1.0);
         internal_forces::muscles::StateDynamics emg(0, activationEmgForHillTypeTest);
@@ -1939,8 +1939,8 @@ TEST(DynamicState, DeGroote)
     }
 }
 
-static unsigned int muscleGroupForHillThelenTypeFatigable(1);
-static unsigned int muscleForHillThelenTypeFatigable(1);
+static size_t muscleGroupForHillThelenTypeFatigable(1);
+static size_t muscleForHillThelenTypeFatigable(1);
 
 TEST(hillThelenTypeFatigable, unitTest)
 {
@@ -2176,8 +2176,8 @@ TEST(FatigueState, copy)
 }
 
 static std::string modelPathForXiaDerivativeTest("models/arm26.bioMod");
-static unsigned int muscleGroupForXiaDerivativeTest(0);
-static unsigned int muscleForXiaDerivativeTest(0);
+static size_t muscleGroupForXiaDerivativeTest(0);
+static size_t muscleForXiaDerivativeTest(0);
 #ifndef BIORBD_USE_CASADI_MATH
     static double activationEmgForXiaDerivativeTest(1.0);
     static double currentActiveFibersForXiaDerivativeTest(0.9);
@@ -2353,9 +2353,9 @@ TEST(MuscleGroup, unitTest)
                               internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         // Check the id of the last muscle added
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 4);
         int idNewMuscle(muscleGroup.muscleID("newMuscleName"));
-        EXPECT_NEAR(idNewMuscle, 3, requiredPrecision);
+        EXPECT_EQ(idNewMuscle, 3);
 
         // Fetch new muscle from muscle
         EXPECT_STREQ(muscleGroup.muscle(3).name().c_str(), "newMuscleName");
@@ -2372,14 +2372,14 @@ TEST(MuscleGroup, AddMuscle)
         muscleGroup.addMuscle(muscleToAdd);
 
         //Check number of muscle
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 4);
     }
     {
         Model model(modelPathForMuscleForce);
         internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         //Check number of muscle
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 3, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 3);
 
         // Add muscle to muscle group
         muscleGroup.addMuscle("newMuscleName",
@@ -2390,7 +2390,7 @@ TEST(MuscleGroup, AddMuscle)
                               internal_forces::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 4);
 
         // Add HILL muscle to muscle group
         muscleGroup.addMuscle("newHillMuscle",
@@ -2401,7 +2401,7 @@ TEST(MuscleGroup, AddMuscle)
                               internal_forces::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 5, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 5);
 
         // Add HILL THELEN muscle to muscle group
         muscleGroup.addMuscle("newHillThelenMuscle",
@@ -2412,7 +2412,7 @@ TEST(MuscleGroup, AddMuscle)
                               internal_forces::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 6, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 6);
 
         // Add muscle to muscle group
         muscleGroup.addMuscle("newHillThelenFatigable",
@@ -2423,14 +2423,14 @@ TEST(MuscleGroup, AddMuscle)
                               internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
         // Check the number of muscles again
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 7, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 7);
     }
     {
         Model model(modelPathForMuscleForce);
         internal_forces::muscles::MuscleGroup muscleGroup(model.muscleGroup(0));
 
         //Check number of muscle
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 3, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 3);
 
         // Add muscle to muscle group
         muscleGroup.addMuscle("newMuscleName",
@@ -2441,7 +2441,7 @@ TEST(MuscleGroup, AddMuscle)
                               internal_forces::muscles::STATE_FATIGUE_TYPE::NO_FATIGUE_STATE_TYPE);
 
         // Check the number of muscles again
-        EXPECT_NEAR(muscleGroup.nbMuscles(), 4, requiredPrecision);
+        EXPECT_EQ(muscleGroup.nbMuscles(), 4);
     }
 }
 
@@ -2558,7 +2558,7 @@ TEST(Muscles, unitTest)
                                          model.muscleGroup(0).muscle(0).characteristics(),
                                          internal_forces::muscles::STATE_FATIGUE_TYPE::SIMPLE_STATE_FATIGUE);
 
-        EXPECT_NEAR(muscles.muscleNames().size(), 1., requiredPrecision);
+        EXPECT_EQ(muscles.muscleNames().size(), 1);
     }
 }
 
@@ -2751,7 +2751,7 @@ TEST(MuscleForce, force)
     Q = Q.setOnes()/10;
     QDot = QDot.setOnes()/10;
     std::vector<std::shared_ptr<internal_forces::muscles::State>> states;
-    for (unsigned int i=0; i<model.nbMuscleTotal(); ++i) {
+    for (size_t i=0; i<model.nbMuscleTotal(); ++i) {
         states.push_back(std::make_shared<internal_forces::muscles::StateDynamics>(0, 0.2));
     }
     model.updateMuscles(Q, QDot, true);
@@ -2777,7 +2777,7 @@ TEST(MuscleForce, torqueFromMuscles)
     Q.setOnes()/10;
     QDot.setOnes()/10;
     std::vector<std::shared_ptr<internal_forces::muscles::State>> states;
-    for (unsigned int i=0; i<model.nbMuscleTotal(); ++i) {
+    for (size_t i=0; i<model.nbMuscleTotal(); ++i) {
         states.push_back(std::make_shared<internal_forces::muscles::StateDynamics>(0, 0.2));
     }
 
@@ -2886,7 +2886,7 @@ TEST(MuscleJacobian, jacobian)
     EXPECT_THROW(muscle.position().jacobian(), std::runtime_error);
     model.updateMuscles(Q, true);
 
-    unsigned int nRows(3 * (muscle.pathModifier().nbObjects() + 2));
+    size_t nRows(3 * (muscle.pathModifier().nbObjects() + 2));
     utils::Matrix jacoRef(nRows, model.nbQ());
     // Here we provide emperical values that we have confidence in
     jacoRef(0, 0) = 0.13689690274955996;
@@ -2983,7 +2983,7 @@ TEST(MuscleJacobian, jacobianLength)
     Q = Q.setOnes()/10;
     model.updateMuscles(Q, true);
 
-    unsigned int nRows(model.nbMuscleTotal());
+    size_t nRows(model.nbMuscleTotal());
     utils::Matrix jacoRef(nRows, model.nbQ());
     // Here we provide emperical values that we have confidence in
     jacoRef(0, 0) = 0.037620360527045288;
@@ -3320,7 +3320,7 @@ TEST(StaticOptim, OneFrameNoActivations)
     rigidbody::GeneralizedCoordinates Q(model);
     rigidbody::GeneralizedVelocity Qdot(model);
     rigidbody::GeneralizedTorque Tau(model);
-    for (unsigned int i=0; i<Q.size(); ++i) {
+    for (size_t i=0; i<Q.size(); ++i) {
         Q[i] = static_cast<double>(i) * 1.1;
         Qdot[i] = static_cast<double>(i) * 1.1;
         Tau[i] = static_cast<double>(i) * 1.1;
@@ -3353,7 +3353,7 @@ TEST(StaticOptim, OneFrameOneActivationDouble)
     rigidbody::GeneralizedCoordinates Q(model);
     rigidbody::GeneralizedVelocity Qdot(model);
     rigidbody::GeneralizedTorque Tau(model);
-    for (unsigned int i=0; i<Q.size(); ++i) {
+    for (size_t i=0; i<Q.size(); ++i) {
         Q[i] = static_cast<double>(i) * 1.1;
         Qdot[i] = static_cast<double>(i) * 1.1;
         Tau[i] = static_cast<double>(i) * 1.1;
@@ -3388,7 +3388,7 @@ TEST(StaticOptim, OneFrameOneActivationVector)
     rigidbody::GeneralizedCoordinates Q(model);
     rigidbody::GeneralizedVelocity Qdot(model);
     rigidbody::GeneralizedTorque Tau(model);
-    for (unsigned int i=0; i<Q.size(); ++i) {
+    for (size_t i=0; i<Q.size(); ++i) {
         Q[i] = static_cast<double>(i) * 1.1;
         Qdot[i] = static_cast<double>(i) * 1.1;
         Tau[i] = static_cast<double>(i) * 1.1;
@@ -3396,7 +3396,7 @@ TEST(StaticOptim, OneFrameOneActivationVector)
 
     // Proceed with the static optimization
     utils::Vector initialActivationGuess(model.nbMuscles());
-    for (unsigned int i=0; i<model.nbMuscles(); ++i) {
+    for (size_t i=0; i<model.nbMuscles(); ++i) {
         initialActivationGuess[i] = 0.5;
     }
     auto optim = internal_forces::muscles::StaticOptimization(model, Q, Qdot, Tau,
@@ -3426,7 +3426,7 @@ TEST(StaticOptim, MultiFrameNoActivation)
     rigidbody::GeneralizedCoordinates Q(model);
     rigidbody::GeneralizedVelocity Qdot(model);
     rigidbody::GeneralizedTorque Tau(model);
-    for (unsigned int i=0; i<Q.size(); ++i) {
+    for (size_t i=0; i<Q.size(); ++i) {
         Q[i] = static_cast<double>(i) * 1.1;
         Qdot[i] = static_cast<double>(i) * 1.1;
         Tau[i] = static_cast<double>(i) * 1.1;
@@ -3473,7 +3473,7 @@ TEST(StaticOptim, MultiFrameActivationDouble)
     rigidbody::GeneralizedCoordinates Q(model);
     rigidbody::GeneralizedVelocity Qdot(model);
     rigidbody::GeneralizedTorque Tau(model);
-    for (unsigned int i=0; i<Q.size(); ++i) {
+    for (size_t i=0; i<Q.size(); ++i) {
         Q[i] = static_cast<double>(i) * 1.1;
         Qdot[i] = static_cast<double>(i) * 1.1;
         Tau[i] = static_cast<double>(i) * 1.1;
@@ -3522,7 +3522,7 @@ TEST(StaticOptim, MultiFrameNoActivationVector)
     rigidbody::GeneralizedCoordinates Q(model);
     rigidbody::GeneralizedVelocity Qdot(model);
     rigidbody::GeneralizedTorque Tau(model);
-    for (unsigned int i=0; i<Q.size(); ++i) {
+    for (size_t i=0; i<Q.size(); ++i) {
         Q[i] = static_cast<double>(i) * 1.1;
         Qdot[i] = static_cast<double>(i) * 1.1;
         Tau[i] = static_cast<double>(i) * 1.1;
@@ -3542,7 +3542,7 @@ TEST(StaticOptim, MultiFrameNoActivationVector)
 
     // Proceed with the static optimization
     utils::Vector initialActivationGuess(model.nbMuscles());
-    for (unsigned int i=0; i<model.nbMuscles(); ++i) {
+    for (size_t i=0; i<model.nbMuscles(); ++i) {
         initialActivationGuess[i] = 0.5;
     }
     auto optim = internal_forces::muscles::StaticOptimization(model, Q, Qdot, Tau,

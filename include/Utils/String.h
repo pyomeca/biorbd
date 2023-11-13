@@ -58,7 +58,7 @@ public:
     /// \param val The unsinged int to add
     ///
     String operator+(
-        unsigned int val);
+        size_t val);
 
     ///
     /// \brief Append an int to the string
@@ -86,7 +86,7 @@ public:
     /// \param idx The index of the character
     ///
     String operator()(
-        unsigned int idx) const;
+        size_t idx) const;
 
     ///
     /// \brief Extract a portion of the string
@@ -94,8 +94,8 @@ public:
     /// \param lastIdx The index of the last character
     ///
     String operator()(
-        unsigned int startIdx,
-        unsigned int lastIdx) const;
+        size_t startIdx,
+        size_t lastIdx) const;
 
     ///
     /// \brief Destroy class properly

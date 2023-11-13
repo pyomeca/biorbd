@@ -70,13 +70,13 @@ public:
     /// \brief Return the number of RTs in the set
     /// \return The number of RTs
     ///
-    unsigned int nbRTs() const;
+    size_t nbRTs() const;
 
     ///
     /// \brief Return the number of RTs in the set
     /// \return The number of RTs
     ///
-    unsigned int size() const;
+    size_t size() const;
 
     ///
     /// \brief Return the names of the RTs
@@ -104,7 +104,7 @@ public:
     /// \return RT of idx i
     ///
     const utils::RotoTransNode& RT(
-        unsigned int idx);
+        size_t idx);
 
     ///
     /// \brief Compute and return all the RTs at the position given by Q
@@ -125,7 +125,7 @@ public:
     ///
     utils::RotoTransNode RT(
         const GeneralizedCoordinates&Q,
-        unsigned int  idx,
+        size_t  idx,
         bool updateKin = true);
 
     ///
@@ -137,7 +137,7 @@ public:
     ///
     std::vector<utils::RotoTransNode> segmentRTs(
         const GeneralizedCoordinates& Q,
-        unsigned int  idx,
+        size_t  idx,
         bool updateKin = true);
 
     ///

@@ -35,12 +35,12 @@ using namespace BIORBD_NAMESPACE;
 rigidbody::Joints::Joints() :
     RigidBodyDynamics::Model(),
     m_segments(std::make_shared<std::vector<rigidbody::Segment>>()),
-    m_nbRoot(std::make_shared<unsigned int>(0)),
-    m_nbDof(std::make_shared<unsigned int>(0)),
-    m_nbQ(std::make_shared<unsigned int>(0)),
-    m_nbQdot(std::make_shared<unsigned int>(0)),
-    m_nbQddot(std::make_shared<unsigned int>(0)),
-    m_nRotAQuat(std::make_shared<unsigned int>(0)),
+    m_nbRoot(std::make_shared<size_t>(0)),
+    m_nbDof(std::make_shared<size_t>(0)),
+    m_nbQ(std::make_shared<size_t>(0)),
+    m_nbQdot(std::make_shared<size_t>(0)),
+    m_nbQddot(std::make_shared<size_t>(0)),
+    m_nRotAQuat(std::make_shared<size_t>(0)),
     m_isKinematicsComputed(std::make_shared<bool>(false)),
     m_totalMass(std::make_shared<utils::Scalar>(0))
 {
@@ -79,7 +79,7 @@ void rigidbody::Joints::DeepCopy(const rigidbody::Joints &other)
 {
     static_cast<RigidBodyDynamics::Model&>(*this) = other;
     m_segments->resize(other.m_segments->size());
-    for (unsigned int i=0; i<other.m_segments->size(); ++i) {
+    for (size_t i=0; i<other.m_segments->size(); ++i) {
         (*m_segments)[i] = (*other.m_segments)[i].DeepCopy();
     }
     *m_nbRoot = *other.m_nbRoot;
@@ -92,11 +92,11 @@ void rigidbody::Joints::DeepCopy(const rigidbody::Joints &other)
     *m_totalMass = *other.m_totalMass;
 }
 
-unsigned int rigidbody::Joints::nbGeneralizedTorque() const
+size_t rigidbody::Joints::nbGeneralizedTorque() const
 {
     return nbQddot();
 }
-unsigned int rigidbody::Joints::nbDof() const
+size_t rigidbody::Joints::nbDof() const
 {
     return *m_nbDof;
 }
@@ -104,13 +104,13 @@ unsigned int rigidbody::Joints::nbDof() const
 std::vector<utils::String> rigidbody::Joints::nameDof() const
 {
     std::vector<utils::String> names;
-    for (unsigned int i = 0; i < nbSegment(); ++i) {
-        for (unsigned int j = 0; j < segment(i).nbDof(); ++j) {
+    for (size_t i = 0; i < nbSegment(); ++i) {
+        for (size_t j = 0; j < segment(i).nbDof(); ++j) {
             names.push_back(segment(i).name() + "_" + segment(i).nameDof(j));
         }
     }
     // Append Quaternion Q
-    for (unsigned int i = 0; i < nbSegment(); ++i) {
+    for (size_t i = 0; i < nbSegment(); ++i) {
         if (segment(i).isRotationAQuaternion()) {
             names.push_back(segment(i).name() + "_" + segment(i).nameDof(3));
         }
@@ -118,19 +118,19 @@ std::vector<utils::String> rigidbody::Joints::nameDof() const
     return names;
 }
 
-unsigned int rigidbody::Joints::nbQ() const
+size_t rigidbody::Joints::nbQ() const
 {
     return *m_nbQ;
 }
-unsigned int rigidbody::Joints::nbQdot() const
+size_t rigidbody::Joints::nbQdot() const
 {
     return *m_nbQdot;
 }
-unsigned int rigidbody::Joints::nbQddot() const
+size_t rigidbody::Joints::nbQddot() const
 {
     return *m_nbQddot;
 }
-unsigned int rigidbody::Joints::nbRoot() const
+size_t rigidbody::Joints::nbRoot() const
 {
     return *m_nbRoot;
 }
@@ -140,7 +140,7 @@ utils::Scalar rigidbody::Joints::mass() const
     return *m_totalMass;
 }
 
-unsigned int rigidbody::Joints::AddSegment(
+size_t rigidbody::Joints::AddSegment(
     const utils::String &segmentName,
     const utils::String &parentName,
     const utils::String &translationSequence,
@@ -157,8 +157,7 @@ unsigned int rigidbody::Joints::AddSegment(
         RigidBodyDynamics::Math::SpatialTransform(referenceFrame.rot().transpose(),
                 referenceFrame.trans())
     );
-    if (this->GetBodyId(parentName.c_str()) ==
-            std::numeric_limits<unsigned int>::max()) {
+    if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max()) {
         *m_nbRoot +=
             tp.nbDof();    // If the segment name is "Root", add the number of DoF of root
     }
@@ -176,7 +175,7 @@ unsigned int rigidbody::Joints::AddSegment(
     m_segments->push_back(tp);
     return 0;
 }
-unsigned int rigidbody::Joints::AddSegment(
+size_t rigidbody::Joints::AddSegment(
     const utils::String &segmentName,
     const utils::String &parentName,
     const utils::String &seqR,
@@ -191,8 +190,7 @@ unsigned int rigidbody::Joints::AddSegment(
         characteristics, RigidBodyDynamics::Math::SpatialTransform(
             referenceFrame.rot().transpose(), referenceFrame.trans())
     );
-    if (this->GetBodyId(parentName.c_str()) ==
-            std::numeric_limits<unsigned int>::max()) {
+    if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max()) {
         *m_nbRoot +=
             tp.nbDof();    //  If the name of the segment is "Root", add the number of DoF of root
     }
@@ -216,7 +214,7 @@ void rigidbody::Joints::setGravity(
 }
 
 void rigidbody::Joints::updateSegmentCharacteristics(
-    unsigned int idx,
+    size_t idx,
     const rigidbody::SegmentCharacteristics& characteristics)
 {
     utils::Error::check(idx < m_segments->size(),
@@ -225,7 +223,7 @@ void rigidbody::Joints::updateSegmentCharacteristics(
 }
 
 const rigidbody::Segment& rigidbody::Joints::segment(
-    unsigned int idx) const
+    size_t idx) const
 {
     utils::Error::check(idx < m_segments->size(),
                                 "Asked for a wrong segment (out of range)");
@@ -235,7 +233,7 @@ const rigidbody::Segment& rigidbody::Joints::segment(
 const rigidbody::Segment &rigidbody::Joints::segment(
     const utils::String & name) const
 {
-    return segment(static_cast<unsigned int>(getBodyBiorbdId(name.c_str())));
+    return segment(static_cast<size_t>(getBodyBiorbdId(name.c_str())));
 }
 
 const std::vector<rigidbody::Segment>& rigidbody::Joints::segments() const
@@ -243,17 +241,17 @@ const std::vector<rigidbody::Segment>& rigidbody::Joints::segments() const
     return *m_segments;
 }
 
-unsigned int rigidbody::Joints::nbSegment() const
+size_t rigidbody::Joints::nbSegment() const
 {
-    return static_cast<unsigned int>(m_segments->size());
+    return m_segments->size();
 }
 
 int rigidbody::Joints::getBodyBiorbdId(
         const utils::String &segmentName) const
 {
-    for (int i=0; i<static_cast<int>(m_segments->size()); ++i)
-        if (!(*m_segments)[static_cast<unsigned int>(i)].name().compare(segmentName)) {
-            return i;
+    for (size_t i=0; i<m_segments->size(); ++i)
+        if (!(*m_segments)[i].name().compare(segmentName)) {
+            return static_cast<int>(i);
         }
     return -1;
 }
@@ -274,41 +272,41 @@ int rigidbody::Joints::getBodyRbdlIdToBiorbdId(
     return model.getBodyBiorbdId(bodyName);
 }
 
-unsigned int rigidbody::Joints::getBodyBiorbdIdToRbdlId(
+size_t rigidbody::Joints::getBodyBiorbdIdToRbdlId(
         const int idx) const
 {
     return (*m_segments)[idx].id();
 }
 
-std::vector<std::vector<unsigned int> > rigidbody::Joints::getDofSubTrees()
+std::vector<std::vector<size_t> > rigidbody::Joints::getDofSubTrees()
 {
     // initialize subTrees
-    std::vector<std::vector<unsigned int> > subTrees;
-    std::vector<unsigned int> subTree_empty;
-    for (unsigned int j=0; j<this->mu.size(); ++j) {
+    std::vector<std::vector<size_t> > subTrees;
+    std::vector<size_t> subTree_empty;
+    for (size_t j=0; j<this->mu.size(); ++j) {
         subTrees.push_back(subTree_empty);
     }
 
     // Get all dof without parent
-    std::vector<unsigned int> dof_with_no_parent_id;
-    for (unsigned int i=1; i<this->mu.size(); ++i) { // begin at 1 because 0 is its own parent in rbdl.
+    std::vector<size_t> dof_with_no_parent_id;
+    for (size_t i=1; i<this->mu.size(); ++i) { // begin at 1 because 0 is its own parent in rbdl.
       if (this->lambda[i]==0) {
           dof_with_no_parent_id.push_back(i);
       }
     }
 
     // Get all subtrees of dofs without parents
-    for (unsigned int i=0; i<dof_with_no_parent_id.size(); ++i) {
-        unsigned int dof_id = dof_with_no_parent_id[i];
+    for (size_t i=0; i<dof_with_no_parent_id.size(); ++i) {
+        size_t dof_id = dof_with_no_parent_id[i];
 
         // initialize subTrees_temp
-        std::vector<std::vector<unsigned int> > subTrees_temp;
-        for (unsigned int j=0; j<this->mu.size(); ++j) {
+        std::vector<std::vector<size_t> > subTrees_temp;
+        for (size_t j=0; j<this->mu.size(); ++j) {
           subTrees_temp.push_back(subTree_empty);
         }
 
-        std::vector<std::vector<unsigned int> > subTrees_temp_filled = recursiveDofSubTrees(subTrees_temp, dof_id);
-        for (unsigned int j=0; j<subTrees_temp.size(); ++j) {
+        std::vector<std::vector<size_t> > subTrees_temp_filled = recursiveDofSubTrees(subTrees_temp, dof_id);
+        for (size_t j=0; j<subTrees_temp.size(); ++j) {
             if (subTrees_temp_filled[j].empty()) {
                 continue;
             }
@@ -327,23 +325,23 @@ std::vector<std::vector<unsigned int> > rigidbody::Joints::getDofSubTrees()
     return  subTrees;
 }
 
-std::vector<std::vector<unsigned int> > rigidbody::Joints::recursiveDofSubTrees(
-        std::vector<std::vector<unsigned int> >subTrees,
-        unsigned int idx)
+std::vector<std::vector<size_t> > rigidbody::Joints::recursiveDofSubTrees(
+        std::vector<std::vector<size_t> >subTrees,
+        size_t idx)
 {
-    unsigned int q_index_i = this->mJoints[idx].q_index;
+    size_t q_index_i = this->mJoints[idx].q_index;
     subTrees[idx].push_back(q_index_i);
 
-    std::vector<std::vector<unsigned int> > subTrees_filled;
+    std::vector<std::vector<size_t> > subTrees_filled;
     subTrees_filled = subTrees;
 
     std::vector<unsigned int> child_idx = this->mu[idx];
 
     if (child_idx.size() > 0){
-       for (unsigned int i=0; i<child_idx.size(); ++i) {
-            unsigned int cur_child_id = child_idx[i];
+       for (size_t i=0; i<child_idx.size(); ++i) {
+            size_t cur_child_id = child_idx[i];
             subTrees_filled = recursiveDofSubTrees(subTrees_filled, cur_child_id);
-            std::vector<unsigned int> subTree_child = subTrees_filled[cur_child_id];
+            std::vector<size_t> subTree_child = subTrees_filled[cur_child_id];
 
             subTrees_filled[idx].insert(subTrees_filled[idx].end(),
                                  subTree_child.begin(),
@@ -371,7 +369,7 @@ std::vector<utils::RotoTrans> rigidbody::Joints::allGlobalJCS()
 const
 {
     std::vector<utils::RotoTrans> out;
-    for (unsigned int i=0; i<m_segments->size(); ++i) {
+    for (size_t i=0; i<m_segments->size(); ++i) {
         out.push_back(globalJCS(i));
     }
     return out;
@@ -387,7 +385,7 @@ utils::RotoTrans rigidbody::Joints::globalJCS(
 
 utils::RotoTrans rigidbody::Joints::globalJCS(
     const rigidbody::GeneralizedCoordinates &Q,
-    unsigned int idx)
+    size_t idx)
 {
     // update the Kinematics if necessary
     UpdateKinematicsCustom (&Q, nullptr, nullptr);
@@ -397,11 +395,11 @@ utils::RotoTrans rigidbody::Joints::globalJCS(
 utils::RotoTrans rigidbody::Joints::globalJCS(
     const utils::String &name) const
 {
-    return globalJCS(static_cast<unsigned int>(getBodyBiorbdId(name)));
+    return globalJCS(static_cast<size_t>(getBodyBiorbdId(name)));
 }
 
 utils::RotoTrans rigidbody::Joints::globalJCS(
-    unsigned int idx) const
+    size_t idx) const
 {
     return CalcBodyWorldTransformation((*m_segments)[idx].id());
 }
@@ -411,7 +409,7 @@ const
 {
     std::vector<utils::RotoTrans> out;
 
-    for (unsigned int i=0; i<m_segments->size(); ++i) {
+    for (size_t i=0; i<m_segments->size(); ++i) {
         out.push_back(localJCS(i));
     }
 
@@ -420,10 +418,10 @@ const
 utils::RotoTrans rigidbody::Joints::localJCS(
     const utils::String &name) const
 {
-    return localJCS(static_cast<unsigned int>(getBodyBiorbdId(name.c_str())));
+    return localJCS(static_cast<size_t>(getBodyBiorbdId(name.c_str())));
 }
 utils::RotoTrans rigidbody::Joints::localJCS(
-    const unsigned int idx) const
+    const size_t idx) const
 {
     return (*m_segments)[idx].localJCS();
 }
@@ -452,7 +450,7 @@ rigidbody::Joints::projectPoint(
                                 "Number of marker must be equal to number of Vector3d");
 
     std::vector<rigidbody::NodeSegment> out;
-    for (unsigned int i = 0; i < marks.nbMarkers(); ++i) {
+    for (size_t i = 0; i < marks.nbMarkers(); ++i) {
         rigidbody::NodeSegment tp(marks.marker(i));
         if (tp.nbAxesToRemove() != 0) {
             tp = v[i].applyRT(globalJCS(tp.parent()).transpose());
@@ -482,12 +480,16 @@ rigidbody::NodeSegment rigidbody::Joints::projectPoint(
     }
 
     // Create a marker
-    const utils::String& segmentName(segment(static_cast<unsigned int>
-            (segmentIdx)).name());
-    rigidbody::NodeSegment node( v.applyRT(globalJCS(
-            static_cast<unsigned int>(segmentIdx)).transpose()), "tp",
-                                         segmentName,
-                                         true, true, axesToRemove, static_cast<int>(GetBodyId(segmentName.c_str())));
+    const utils::String& segmentName(segment(static_cast<size_t>(segmentIdx)).name());
+    rigidbody::NodeSegment node( v.
+        applyRT(globalJCS(static_cast<size_t>(segmentIdx)).transpose()), 
+        "tp",
+        segmentName,
+        true, 
+        true, 
+        axesToRemove, 
+        static_cast<int>(GetBodyId(segmentName.c_str()))
+    );
 
     // Project and then reset in global
     return projectPoint(Q, node, false);
@@ -526,18 +528,18 @@ utils::Matrix rigidbody::Joints::projectPointJacobian(
         node.applyRT(globalJCS(node.parent()).transpose());
         utils::Matrix G_tp(marks.markersJacobian(Q, node.parent(),
                                    utils::Vector3d(0,0,0), updateKin));
-        utils::Matrix JCor(utils::Matrix::Zero(9,nbQ()));
+        utils::Matrix JCor(utils::Matrix::Zero(9, static_cast<unsigned int>(nbQ())));
         CalcMatRotJacobian(Q, GetBodyId(node.parent().c_str()),
                            utils::Matrix3d::Identity(), JCor, updateKin);
-        for (unsigned int n=0; n<3; ++n)
+        for (size_t n=0; n<3; ++n)
             if (node.isAxisKept(n)) {
-                G_tp += JCor.block(n*3,0,3,nbQ()) * node(n);
+                G_tp += JCor.block(static_cast<unsigned int>(n)*3,0,3, static_cast<unsigned int>(nbQ())) * node(static_cast<unsigned int>(n));
             }
 
         return G_tp;
     } else {
         // Return the value
-        return utils::Matrix::Zero(3,nbQ());
+        return utils::Matrix::Zero(3, static_cast<unsigned int>(nbQ()));
     }
 }
 
@@ -569,10 +571,9 @@ rigidbody::Joints::projectPointJacobian(
     // Calculate the Jacobian if the point is not projected
     std::vector<utils::Matrix> G;
 
-    for (unsigned int i=0; i<tp.size(); ++i) {
+    for (size_t i=0; i<tp.size(); ++i) {
         // Actual marker
-        G.push_back(projectPointJacobian(Q, rigidbody::NodeSegment(v[i]),
-                                         false));
+        G.push_back(projectPointJacobian(Q, rigidbody::NodeSegment(v[i]), false));
     }
     return G;
 }
@@ -580,7 +581,7 @@ rigidbody::Joints::projectPointJacobian(
 RigidBodyDynamics::Math::SpatialTransform
 rigidbody::Joints::CalcBodyWorldTransformation (
     const rigidbody::GeneralizedCoordinates &Q,
-    const unsigned int segmentIdx,
+    const size_t segmentIdx,
     bool updateKin)
 {
     // update the Kinematics if necessary
@@ -595,11 +596,11 @@ rigidbody::Joints::CalcBodyWorldTransformation (
 
 RigidBodyDynamics::Math::SpatialTransform
 rigidbody::Joints::CalcBodyWorldTransformation(
-    const unsigned int segmentIdx) const
+    const size_t segmentIdx) const
 {
     if (segmentIdx >= this->fixed_body_discriminator) {
-        unsigned int fbody_id = segmentIdx - this->fixed_body_discriminator;
-        unsigned int parent_id = this->mFixedBodies[fbody_id].mMovableParent;
+        size_t fbody_id = segmentIdx - static_cast<size_t>(this->fixed_body_discriminator);
+        size_t parent_id = static_cast<size_t>(this->mFixedBodies[fbody_id].mMovableParent);
         utils::RotoTrans parentRT(
             this->X_base[parent_id].E.transpose(),
             this->X_base[parent_id].r);
@@ -622,7 +623,7 @@ rigidbody::Joints::CalcBodyWorldTransformation(
 utils::Vector3d rigidbody::Joints::segmentAngularVelocity(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
-    unsigned int idx,
+    size_t idx,
     bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
@@ -631,11 +632,11 @@ utils::Vector3d rigidbody::Joints::segmentAngularVelocity(
 #endif
 
     const utils::String& segmentName(segment(idx).name());
-    unsigned int id(this->GetBodyId(segmentName.c_str()));
+    size_t id(static_cast<size_t>(this->GetBodyId(segmentName.c_str())));
 
     // Calculate the velocity of the point
     return RigidBodyDynamics::CalcPointVelocity6D(
-                *this, Q, Qdot, id, utils::Vector3d(0, 0, 0), updateKin).block(0, 0, 3, 1);
+                *this, Q, Qdot, static_cast<unsigned int>(id), utils::Vector3d(0, 0, 0), updateKin).block(0, 0, 3, 1);
 }
 
 utils::Vector3d rigidbody::Joints::CoM(
@@ -646,7 +647,7 @@ utils::Vector3d rigidbody::Joints::CoM(
     const std::vector<rigidbody::NodeSegment>& com_segment(CoMbySegment(Q,
             updateKin));
     utils::Vector3d com(0, 0, 0);
-    for (unsigned int i=0; i<com_segment.size(); ++i) {
+    for (size_t i=0; i<com_segment.size(); ++i) {
         com += (*m_segments)[i].characteristics().mMass * com_segment[i];
     }
 
@@ -672,7 +673,7 @@ utils::Matrix rigidbody::Joints::massMatrix (
 #ifdef BIORBD_USE_CASADI_MATH
     updateKin = true;
 #endif
-    RigidBodyDynamics::Math::MatrixNd massMatrix(nbQ(), nbQ());
+    RigidBodyDynamics::Math::MatrixNd massMatrix(static_cast<unsigned int>(nbQ()), static_cast<unsigned int>(nbQ()));
     massMatrix.setZero();
     RigidBodyDynamics::CompositeRigidBodyAlgorithm(*this, Q, massMatrix, updateKin);
     return massMatrix;
@@ -711,11 +712,11 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
     }
 
     // Backward Pass
-    std::vector<std::vector<unsigned int>> subTrees = getDofSubTrees();
+    std::vector<std::vector<size_t>> subTrees = getDofSubTrees();
     for (i = static_cast<int>(this->mBodies.size() - 1); i > 0; i--)
     {    
-        unsigned int q_index_i = this->mJoints[i].q_index;
-        const std::vector<unsigned int>& sub_tree = subTrees[q_index_i];
+        unsigned int q_index_i = static_cast<size_t>(this->mJoints[i].q_index);
+        const std::vector<size_t>& sub_tree = subTrees[q_index_i];
 
         this->U[i] = this->IA[i] * this->S[i];
         this->d[i] = this->S[i].dot(this->U[i]);
@@ -723,17 +724,17 @@ utils::Matrix rigidbody::Joints::massMatrixInverse (
         Minv(q_index_i, q_index_i) = 1.0 / (this->d[i]);
 
         for (j = 0; j < sub_tree.size(); j++) {
-              const RigidBodyDynamics::Math::SpatialVector& Ftemp = F[q_index_i].block(0, sub_tree[j], 6, 1);
-              Minv(q_index_i,sub_tree[j]) -= (1.0/this->d[i]) * this->S[i].transpose() * Ftemp;
+              const RigidBodyDynamics::Math::SpatialVector& Ftemp = F[q_index_i].block(0, static_cast<unsigned int>(sub_tree[j]), 6, 1);
+              Minv(q_index_i, static_cast<unsigned int>(sub_tree[j])) -= (1.0/this->d[i]) * this->S[i].transpose() * Ftemp;
         }
 
-        unsigned int lambda = this->lambda[i];
-        unsigned int lambda_q_i = this->mJoints[lambda].q_index;
+        size_t lambda = static_cast<size_t>(this->lambda[i]);
+        size_t lambda_q_i = static_cast<size_t>(this->mJoints[lambda].q_index);
         if (lambda != 0) {
             for (j = 0; j < sub_tree.size(); j++) {
-                F[q_index_i].block(0, sub_tree[j], 6, 1) += this->U[i] * Minv.block(q_index_i, sub_tree[j], 1, 1);
+                F[q_index_i].block(0, static_cast<unsigned int>(sub_tree[j]), 6, 1) += this->U[i] * Minv.block(q_index_i, static_cast<unsigned int>(sub_tree[j]), 1, 1);
 
-                F[lambda_q_i].block(0, sub_tree[j], 6, 1) += this->X_lambda[i].toMatrixTranspose() * F[q_index_i].block(0, sub_tree[j], 6, 1);
+                F[lambda_q_i].block(0, static_cast<unsigned int>(sub_tree[j]), 6, 1) += this->X_lambda[i].toMatrixTranspose() * F[q_index_i].block(0, static_cast<unsigned int>(sub_tree[j]), 6, 1);
             }
 
             RigidBodyDynamics::Math::SpatialMatrix Ia = this->IA[i]
@@ -885,7 +886,7 @@ rigidbody::Joints::CoMbySegment(
     bool updateKin)
 {
     std::vector<rigidbody::NodeSegment> out;
-    for (unsigned int i=0; i<m_segments->size(); ++i) {
+    for (size_t i=0; i<m_segments->size(); ++i) {
         out.push_back(CoMbySegment(Q,i,updateKin));
         updateKin = false;
     }
@@ -898,8 +899,8 @@ utils::Matrix rigidbody::Joints::CoMbySegmentInMatrix(
 {
     std::vector<rigidbody::NodeSegment> allCoM(CoMbySegment(Q, updateKin));
     utils::Matrix CoMs(3, static_cast<int>(allCoM.size()));
-    for (unsigned int i=0; i<allCoM.size(); ++i) {
-        CoMs.block(0, i, 3, 1) = allCoM[i];
+    for (size_t i=0; i<allCoM.size(); ++i) {
+        CoMs.block(0, static_cast<unsigned int>(i), 3, 1) = allCoM[i];
     }
     return CoMs;
 }
@@ -907,7 +908,7 @@ utils::Matrix rigidbody::Joints::CoMbySegmentInMatrix(
 
 utils::Vector3d rigidbody::Joints::CoMbySegment(
     const rigidbody::GeneralizedCoordinates &Q,
-    const unsigned int idx,
+    const size_t idx,
     bool updateKin)
 {
     utils::Error::check(idx < m_segments->size(),
@@ -916,7 +917,7 @@ utils::Vector3d rigidbody::Joints::CoMbySegment(
     updateKin = true;
 #endif
     return RigidBodyDynamics::CalcBodyToBaseCoordinates(
-               *this, Q, (*m_segments)[idx].id(),
+               *this, Q, static_cast<unsigned int>((*m_segments)[idx].id()),
                (*m_segments)[idx].characteristics().mCenterOfMass, updateKin);
 }
 
@@ -927,7 +928,7 @@ std::vector<utils::Vector3d> rigidbody::Joints::CoMdotBySegment(
     bool updateKin)
 {
     std::vector<utils::Vector3d> out;
-    for (unsigned int i=0; i<m_segments->size(); ++i) {
+    for (size_t i=0; i<m_segments->size(); ++i) {
         out.push_back(CoMdotBySegment(Q,Qdot,i,updateKin));
         updateKin = false;
     }
@@ -938,7 +939,7 @@ std::vector<utils::Vector3d> rigidbody::Joints::CoMdotBySegment(
 utils::Vector3d rigidbody::Joints::CoMdotBySegment(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
-    const unsigned int idx,
+    const size_t idx,
     bool updateKin)
 {
     // Position of the center of mass of segment i
@@ -948,7 +949,7 @@ utils::Vector3d rigidbody::Joints::CoMdotBySegment(
     updateKin = true;
 #endif
     return CalcPointVelocity(
-               *this, Q, Qdot, (*m_segments)[idx].id(),
+               *this, Q, Qdot, static_cast<unsigned int>((*m_segments)[idx].id()),
                (*m_segments)[idx].characteristics().mCenterOfMass,updateKin);
 }
 
@@ -961,7 +962,7 @@ rigidbody::Joints::CoMddotBySegment(
     bool updateKin)
 {
     std::vector<utils::Vector3d> out;
-    for (unsigned int i=0; i<m_segments->size(); ++i) {
+    for (size_t i=0; i<m_segments->size(); ++i) {
         out.push_back(CoMddotBySegment(Q,Qdot,Qddot,i,updateKin));
         updateKin = false;
     }
@@ -973,7 +974,7 @@ utils::Vector3d rigidbody::Joints::CoMddotBySegment(
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedVelocity &Qdot,
     const rigidbody::GeneralizedAcceleration &Qddot,
-    const unsigned int idx,
+    const size_t idx,
     bool updateKin)
 {
     utils::Error::check(idx < m_segments->size(),
@@ -982,7 +983,7 @@ utils::Vector3d rigidbody::Joints::CoMddotBySegment(
     updateKin = true;
 #endif
     return RigidBodyDynamics::CalcPointAcceleration(
-               *this, Q, Qdot, Qddot, (*m_segments)[idx].id(),
+               *this, Q, Qdot, Qddot, static_cast<unsigned int>((*m_segments)[idx].id()),
                (*m_segments)[idx].characteristics().mCenterOfMass,updateKin);
 }
 
@@ -1003,7 +1004,7 @@ std::vector<std::vector<utils::Vector3d>>
     const std::vector<utils::RotoTrans>& RT(allGlobalJCS());
 
     // For all the segments
-    for (unsigned int i=0; i<nbSegment(); ++i) {
+    for (size_t i=0; i<nbSegment(); ++i) {
         v.push_back(meshPoints(RT,i));
     }
 
@@ -1011,7 +1012,7 @@ std::vector<std::vector<utils::Vector3d>>
 }
 std::vector<utils::Vector3d> rigidbody::Joints::meshPoints(
     const rigidbody::GeneralizedCoordinates &Q,
-    unsigned int i,
+    size_t i,
     bool updateKin)
 {
 #ifdef BIORBD_USE_CASADI_MATH
@@ -1041,12 +1042,12 @@ rigidbody::Joints::meshPointsInMatrix(
     const std::vector<utils::RotoTrans>& RT(allGlobalJCS());
 
     std::vector<utils::Matrix> all_points;
-    for (unsigned int i=0; i<m_segments->size(); ++i) {
+    for (size_t i=0; i<m_segments->size(); ++i) {
         utils::Matrix mat(3, mesh(i).nbVertex());
-        for (unsigned int j=0; j<mesh(i).nbVertex(); ++j) {
+        for (size_t j=0; j<mesh(i).nbVertex(); ++j) {
             utils::Vector3d tp (mesh(i).point(j));
             tp.applyRT(RT[i]);
-            mat.block(0, j, 3, 1) = tp;
+            mat.block(0, static_cast<unsigned int>(j), 3, 1) = tp;
         }
         all_points.push_back(mat);
     }
@@ -1054,12 +1055,12 @@ rigidbody::Joints::meshPointsInMatrix(
 }
 std::vector<utils::Vector3d> rigidbody::Joints::meshPoints(
     const std::vector<utils::RotoTrans> &RT,
-    unsigned int i) const
+    size_t i) const
 {
 
     // Gather the position of the meshings
     std::vector<utils::Vector3d> v;
-    for (unsigned int j=0; j<mesh(i).nbVertex(); ++j) {
+    for (size_t j=0; j<mesh(i).nbVertex(); ++j) {
         utils::Vector3d tp (mesh(i).point(j));
         tp.applyRT(RT[i]);
         v.push_back(tp);
@@ -1073,13 +1074,13 @@ std::vector<std::vector<rigidbody::MeshFace>>
 {
     // Gather the position of the meshings for all the segments
     std::vector<std::vector<rigidbody::MeshFace>> v_all;
-    for (unsigned int j=0; j<nbSegment(); ++j) {
+    for (size_t j=0; j<nbSegment(); ++j) {
         v_all.push_back(meshFaces(j));
     }
     return v_all;
 }
 const std::vector<rigidbody::MeshFace>
-&rigidbody::Joints::meshFaces(unsigned int idx) const
+&rigidbody::Joints::meshFaces(size_t idx) const
 {
     // Find the position of the meshings for a segment i
     return mesh(idx).faces();
@@ -1088,14 +1089,14 @@ const std::vector<rigidbody::MeshFace>
 std::vector<rigidbody::Mesh> rigidbody::Joints::mesh() const
 {
     std::vector<rigidbody::Mesh> segmentOut;
-    for (unsigned int i=0; i<nbSegment(); ++i) {
+    for (size_t i=0; i<nbSegment(); ++i) {
         segmentOut.push_back(mesh(i));
     }
     return segmentOut;
 }
 
 const rigidbody::Mesh &rigidbody::Joints::mesh(
-    unsigned int idx) const
+    size_t idx) const
 {
     return segment(idx).characteristics().mesh();
 }
@@ -1160,14 +1161,14 @@ rigidbody::Joints::CalcSegmentsAngularMomentum (
         RigidBodyDynamics::Math::Xtrans(com));
 
     std::vector<utils::Vector3d> h_segment;
-    for (unsigned int i = 1; i < this->mBodies.size(); i++) {
+    for (size_t i = 1; i < this->mBodies.size(); i++) {
         this->Ic[i] = this->I[i];
         this->hc[i] = this->Ic[i].toMatrix() * this->v[i];
 
         RigidBodyDynamics::Math::SpatialVector h = this->X_lambda[i].applyTranspose (
                     this->hc[i]);
         if (this->lambda[i] != 0) {
-            unsigned int j(i);
+            size_t j(i);
             do {
                 j = this->lambda[j];
                 h = this->X_lambda[j].applyTranspose (h);
@@ -1201,14 +1202,14 @@ rigidbody::Joints::CalcSegmentsAngularMomentum (
         RigidBodyDynamics::Math::Xtrans(com));
 
     std::vector<utils::Vector3d> h_segment;
-    for (unsigned int i = 1; i < this->mBodies.size(); i++) {
+    for (size_t i = 1; i < this->mBodies.size(); i++) {
         this->Ic[i] = this->I[i];
         this->hc[i] = this->Ic[i].toMatrix() * this->v[i];
 
         RigidBodyDynamics::Math::SpatialVector h = this->X_lambda[i].applyTranspose (
                     this->hc[i]);
         if (this->lambda[i] != 0) {
-            unsigned int j(i);
+            size_t j(i);
             do {
                 j = this->lambda[j];
                 h = this->X_lambda[j].applyTranspose (h);
@@ -1222,7 +1223,7 @@ rigidbody::Joints::CalcSegmentsAngularMomentum (
     return h_segment;
 }
 
-unsigned int rigidbody::Joints::nbQuat() const
+size_t rigidbody::Joints::nbQuat() const
 {
     return *m_nRotAQuat;
 }
@@ -1240,33 +1241,33 @@ rigidbody::GeneralizedVelocity rigidbody::Joints::computeQdot(
     }
     unsigned int cmpQuat(0);
     unsigned int cmpDof(0);
-    for (unsigned int i=0; i<nbSegment(); ++i) {
+    for (size_t i=0; i<nbSegment(); ++i) {
         const rigidbody::Segment& segment_i = segment(i);
         if (segment_i.isRotationAQuaternion()) {
             // Extraire le quaternion
             utils::Quaternion quat_tp(
-                Q(Q.size()-*m_nRotAQuat+cmpQuat),
-                Q.block(cmpDof+segment_i.nbDofTrans(), 0, 3, 1),
+                Q(Q.size() - static_cast<unsigned int>(*m_nRotAQuat+cmpQuat)),
+                Q.block(cmpDof + static_cast<unsigned int>(segment_i.nbDofTrans()), 0, 3, 1),
                 k_stab);
 
             // QDot for translation is actual QDot
-            QDotOut.block(cmpDof, 0, segment_i.nbDofTrans(), 1)
-                = QDot.block(cmpDof, 0, segment_i.nbDofTrans(), 1);
+            QDotOut.block(cmpDof, 0, static_cast<unsigned int>(segment_i.nbDofTrans()), 1)
+                = QDot.block(cmpDof, 0, static_cast<unsigned int>(segment_i.nbDofTrans()), 1);
 
             // Get the 4d derivative for the quaternion part
-            quat_tp.derivate(QDot.block(cmpDof+segment_i.nbDofTrans(), 0, 3, 1));
-            QDotOut.block(cmpDof+segment_i.nbDofTrans(), 0, 3, 1) = quat_tp.block(1,0,3,1);
-            QDotOut(Q.size()-*m_nRotAQuat+cmpQuat) = quat_tp(
+            quat_tp.derivate(QDot.block(cmpDof+ static_cast<unsigned int>(segment_i.nbDofTrans()), 0, 3, 1));
+            QDotOut.block(cmpDof+ static_cast<unsigned int>(segment_i.nbDofTrans()), 0, 3, 1) = quat_tp.block(1,0,3,1);
+            QDotOut(Q.size()- static_cast<unsigned int>(*m_nRotAQuat+cmpQuat)) = quat_tp(
                         0);// Placer dans le vecteur de sortie
 
             // Increment the number of done quaternions
             ++cmpQuat;
         } else {
             // If it's a normal, do what it usually does
-            QDotOut.block(cmpDof, 0, segment_i.nbDof(), 1) = QDot.block(cmpDof, 0,
-                    segment_i.nbDof(), 1);
+            QDotOut.block(cmpDof, 0, static_cast<unsigned int>(segment_i.nbDof()), 1) =
+                QDot.block(cmpDof, 0, static_cast<unsigned int>(segment_i.nbDof()), 1);
         }
-        cmpDof += segment_i.nbDof();
+        cmpDof += static_cast<unsigned int>(segment_i.nbDof());
     }
     return QDotOut;
 }
@@ -1383,18 +1384,18 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamicsFreeFloatin
     rigidbody::GeneralizedAcceleration QRootDDot;
     rigidbody::GeneralizedTorque MassMatrixNlEffects;
 
-    utils::Matrix massMatrixRoot = this->massMatrix(Q).block(0, 0, this->nbRoot(), this->nbRoot());
+    utils::Matrix massMatrixRoot = this->massMatrix(Q).block(0, 0, static_cast<unsigned int>(this->nbRoot()), static_cast<unsigned int>(this->nbRoot()));
 
-    QDDot.block(0, 0, this->nbRoot(), 1) = utils::Vector(this->nbRoot()).setZero();
-    QDDot.block(this->nbRoot(), 0, this->nbQddot()-this->nbRoot(), 1) = QJointsDDot;
+    QDDot.block(0, 0, static_cast<unsigned int>(this->nbRoot()), 1) = utils::Vector(this->nbRoot()).setZero();
+    QDDot.block(static_cast<unsigned int>(this->nbRoot()), 0, static_cast<unsigned int>(this->nbQddot()-this->nbRoot()), 1) = QJointsDDot;
 
     MassMatrixNlEffects = InverseDynamics(Q, QDot, QDDot);
 
 #ifdef BIORBD_USE_CASADI_MATH
     auto linsol = casadi::Linsol("linsol", "symbolicqr", massMatrixRoot.sparsity());
-    QRootDDot = linsol.solve(massMatrixRoot, -MassMatrixNlEffects.block(0, 0, this->nbRoot(), 1));
+    QRootDDot = linsol.solve(massMatrixRoot, -MassMatrixNlEffects.block(0, 0, static_cast<unsigned int>(this->nbRoot()), 1));
 #else
-    QRootDDot = massMatrixRoot.llt().solve(-MassMatrixNlEffects.block(0, 0, this->nbRoot(), 1));
+    QRootDDot = massMatrixRoot.llt().solve(-MassMatrixNlEffects.block(0, 0, static_cast<unsigned int>(this->nbRoot()), 1));
 #endif
 
     return QRootDDot;
@@ -1504,7 +1505,7 @@ utils::Matrix3d rigidbody::Joints::bodyInertia (
   RigidBodyDynamics::Math::SpatialRigidBodyInertia Itot;
 
   for (size_t i = this->mBodies.size() - 1; i > 0; i--) {
-    unsigned int lambda = this->lambda[i];
+    size_t lambda = static_cast<size_t>(this->lambda[i]);
 
     if (lambda != 0) {
       this->Ic[lambda] = this->Ic[lambda] + this->X_lambda[i].applyTranspose (
@@ -1547,13 +1548,13 @@ utils::Vector3d rigidbody::Joints::bodyAngularVelocity (
     return out;
 }
 
-unsigned int rigidbody::Joints::getDofIndex(
+size_t rigidbody::Joints::getDofIndex(
     const utils::String& segmentName,
     const utils::String& dofName)
 {
-    unsigned int idx = 0;
+    size_t idx = 0;
 
-    unsigned int iB = 0;
+    size_t iB = 0;
     bool found = false;
     while (1) {
         utils::Error::check(iB!=m_segments->size(), "Segment not found");
@@ -1584,7 +1585,7 @@ void rigidbody::Joints::UpdateKinematicsCustom(
 
 void rigidbody::Joints::CalcMatRotJacobian(
     const rigidbody::GeneralizedCoordinates &Q,
-    unsigned int segmentIdx,
+    size_t segmentIdx,
     const utils::Matrix3d &rotation,
     RigidBodyDynamics::Math::MatrixNd &G,
     bool updateKin)
@@ -1609,7 +1610,7 @@ void rigidbody::Joints::CalcMatRotJacobian(
     axes.push_back(utils::Vector3d(0,0,1));
     for (unsigned int iAxes=0; iAxes<3; ++iAxes) {
         utils::Matrix3d bodyMatRot (
-            RigidBodyDynamics::CalcBodyWorldOrientation (*this, Q, segmentIdx, false).transpose());
+            RigidBodyDynamics::CalcBodyWorldOrientation (*this, Q, static_cast<unsigned int>(segmentIdx), false).transpose());
         RigidBodyDynamics::Math::SpatialTransform point_trans(
             RigidBodyDynamics::Math::SpatialTransform (
                 utils::Matrix3d::Identity(),
@@ -1617,12 +1618,12 @@ void rigidbody::Joints::CalcMatRotJacobian(
             )
         );
 
-        unsigned int reference_body_id = segmentIdx;
-        if (this->IsFixedBodyId(segmentIdx)) {
-            unsigned int fbody_id = segmentIdx - this->fixed_body_discriminator;
+        size_t reference_body_id = segmentIdx;
+        if (this->IsFixedBodyId(static_cast<unsigned int>(segmentIdx))) {
+            size_t fbody_id = segmentIdx - this->fixed_body_discriminator;
             reference_body_id = this->mFixedBodies[fbody_id].mMovableParent;
         }
-        unsigned int j = reference_body_id;
+        size_t j = reference_body_id;
 
         // e[j] is set to 1 if joint j contributes to the jacobian that we are
         // computing. For all other joints the column will be zero.
@@ -1654,7 +1655,7 @@ void rigidbody::Joints::CalcMatRotJacobian(
 utils::Matrix
 rigidbody::Joints::JacobianSegmentRotMat(
         const rigidbody::GeneralizedCoordinates &Q,
-        unsigned int biorbdSegmentIdx,
+        size_t biorbdSegmentIdx,
         bool updateKin)
 {
 
@@ -1662,9 +1663,9 @@ rigidbody::Joints::JacobianSegmentRotMat(
     updateKin = true;
 #endif
 
-    unsigned int segmentIdx = getBodyBiorbdIdToRbdlId(biorbdSegmentIdx);
+    size_t segmentIdx = getBodyBiorbdIdToRbdlId(static_cast<int>(biorbdSegmentIdx));
 
-    utils::Matrix jacobianMat(utils::Matrix::Zero(9,nbQ()));
+    utils::Matrix jacobianMat(utils::Matrix::Zero(9, static_cast<unsigned int>(nbQ())));
     CalcMatRotJacobian(
         Q,
         segmentIdx,

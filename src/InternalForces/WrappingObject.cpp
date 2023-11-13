@@ -44,7 +44,7 @@ internal_forces::WrappingObject::WrappingObject(
             const_cast<internal_forces::WrappingObject&>(
                 dynamic_cast<const internal_forces::WrappingObject&>(other)));
         m_RT = otherWrap.m_RT;
-    } catch(const std::bad_cast& e) {
+    } catch(const std::bad_cast&) {
         m_RT = std::make_shared<utils::RotoTrans>();
     }
 }

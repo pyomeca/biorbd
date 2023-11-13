@@ -1,6 +1,7 @@
 #ifndef BIORBD_UTILS_READ_H
 #define BIORBD_UTILS_READ_H
 
+#include <stddef.h>
 #include <vector>
 #include <map>
 #include "biorbdConfig.h"
@@ -102,8 +103,8 @@ public:
     ///
     static void readViconForceFile(
         const utils::Path &path,
-        std::vector<std::vector<unsigned int>> &frame,
-        std::vector<unsigned int> &frequency,
+        std::vector<std::vector<size_t>> &frame,
+        std::vector<size_t> &frequency,
         std::vector<std::vector<utils::Vector3d>> &force,
         std::vector<std::vector<utils::Vector3d>> &moment,
         std::vector<std::vector<utils::Vector3d>> &cop);

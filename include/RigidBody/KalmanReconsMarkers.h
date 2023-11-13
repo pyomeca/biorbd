@@ -124,7 +124,7 @@ protected:
     virtual void manageOcclusionDuringIteration(
         utils::Matrix& InvTp,
         utils::Vector &measure,
-        const std::vector<unsigned int> &occlusion);
+        const std::vector<size_t> &occlusion);
 
     std::shared_ptr<utils::Matrix>
     m_PpInitial; ///< Initial covariance matrix

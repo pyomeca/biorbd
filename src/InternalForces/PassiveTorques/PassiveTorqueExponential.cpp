@@ -50,7 +50,7 @@ internal_forces::passive_torques::PassiveTorqueExponential::PassiveTorqueExponen
     const utils::Scalar& wMax,
     const utils::Scalar& sV,
     const utils::Scalar& deltaP,
-    unsigned int dofIdx) :
+    size_t dofIdx) :
     internal_forces::passive_torques::PassiveTorque(dofIdx),
     m_k1(std::make_shared<utils::Scalar>(k1)),
     m_k2(std::make_shared<utils::Scalar>(k2)),
@@ -77,7 +77,7 @@ internal_forces::passive_torques::PassiveTorqueExponential::PassiveTorqueExponen
     const utils::Scalar& wMax,
     const utils::Scalar& sV,
     const utils::Scalar& deltaP,
-    unsigned int dofIdx,
+    size_t dofIdx,
     const utils::String &jointName) :
     internal_forces::passive_torques::PassiveTorque(dofIdx, jointName),
     m_k1(std::make_shared<utils::Scalar>(k1)),
@@ -133,9 +133,10 @@ utils::Scalar internal_forces::passive_torques::PassiveTorqueExponential::passiv
     const rigidbody::GeneralizedCoordinates &Q,
     const rigidbody::GeneralizedCoordinates &Qdot) const
 {
-    return (*m_b1 * exp(*m_k1 * (Q[*m_dofIdx] - *m_qMid)) + *m_b2 * exp(*m_k2 * (Q[*m_dofIdx] - *m_qMid)))
-            * (1 - *m_pBeta * (Qdot[*m_dofIdx] /
-            (*m_sV * *m_wMax))) * (Q[*m_dofIdx] - *m_deltaP) + *m_tauEq;
+    unsigned int dofIdx(static_cast<unsigned int>(*m_dofIdx));
+    return (*m_b1 * exp(*m_k1 * (Q[dofIdx] - *m_qMid)) + *m_b2 * exp(*m_k2 * (Q[dofIdx] - *m_qMid)))
+            * (1 - *m_pBeta * (Qdot[dofIdx] /
+            (*m_sV * *m_wMax))) * (Q[dofIdx] - *m_deltaP) + *m_tauEq;
 }
 
 void internal_forces::passive_torques::PassiveTorqueExponential::setType()

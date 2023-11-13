@@ -101,7 +101,7 @@ public:
     /// \brief Return the Segment index
     /// \return The Segment index
     ///
-    unsigned int id() const;
+    size_t id() const;
 
     ///
     /// \brief Return the translation sequence in text
@@ -140,37 +140,37 @@ public:
     /// \brief Return the number of DoF of the segment
     /// \return The number of Dof of the segment
     ///
-    unsigned int nbDof() const;
+    size_t nbDof() const;
 
     ///
     /// \brief Return the number of translation DoF of the segment
     /// \return The number of translation DoF of the segment
     ///
-    unsigned int nbDofTrans() const;
+    size_t nbDofTrans() const;
 
     ///
     /// \brief Return the number of rotation DoF of the segment
     /// \return The number of rotation DoF of the segment
     ///
-    unsigned int nbDofRot() const;
+    size_t nbDofRot() const;
 
     ///
     /// \brief Return the number of generalized coordinates
     /// \return The number of generalized coordinates
     ///
-    unsigned int nbQ() const;
+    size_t nbQ() const;
 
     ///
     /// \brief Return the number of generalized velocities
     /// \return The number of generalized velocities
     ///
-    unsigned int nbQdot() const;
+    size_t nbQdot() const;
 
     ///
     /// \brief Return the number of generalized accelerations
     /// \return The number of generalized accelerations
     ///
-    unsigned int nbQddot() const;
+    size_t nbQddot() const;
 
     ///
     /// \brief Return the number of generalized torque
@@ -178,13 +178,13 @@ public:
     ///
     /// This value is equal to nbQddot
     ///
-    unsigned int nbGeneralizedTorque() const;
+    size_t nbGeneralizedTorque() const;
 
     ///
     /// \brief Return the index of a specified DoF
     /// \return The index of a specified DoF
     ///
-    unsigned int getDofIdx(
+    size_t getDofIdx(
         const utils::String &dofName) const;
 
     /// 
@@ -200,7 +200,7 @@ public:
     /// 
     /// Warning: if the current segment does not have any dof, it returns the first index of the
     /// parent segment
-    unsigned int getFirstDofIndexInGeneralizedCoordinates(
+    size_t getFirstDofIndexInGeneralizedCoordinates(
         const rigidbody::Joints& model) const;
 
     ///
@@ -209,7 +209,7 @@ public:
     /// 
     /// Warning: if the current segment does not have any dof, it returns the last index of the
     /// parent segment
-    unsigned int getLastDofIndexInGeneralizedCoordinates(
+    size_t getLastDofIndexInGeneralizedCoordinates(
         const rigidbody::Joints& model) const;
 
     ///
@@ -217,7 +217,7 @@ public:
     /// \return The name of the specified DoF
     ///
     const utils::String& nameDof(
-        const unsigned int i) const;
+        const size_t i) const;
 
     ///
     /// \brief Return the joint coordinate system (JCS) in the parent reference frame
@@ -297,31 +297,22 @@ protected:
     /// \param nbRot Number of rotation DoF
     ///
     void setNumberOfDof(
-        unsigned int nbTrans,
-        unsigned int nbRot);
+        size_t nbTrans,
+        size_t nbRot);
 
     std::shared_ptr<utils::String> m_seqT;  ///< Translation sequence
     std::shared_ptr<utils::String> m_seqR;  ///< Euler rotation sequence
-    std::shared_ptr<std::vector<utils::Range>>
-            m_QRanges;  ///< Minimum and maximum coordinate values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedCoordinates
-    std::shared_ptr<std::vector<utils::Range>>
-            m_QDotRanges;  ///< Minimum and maximum velocity values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedVelocities
-    std::shared_ptr<std::vector<utils::Range>>
-            m_QDDotRanges;  ///< Minimum and maximum acceleration values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedAccelerations
-    std::shared_ptr<unsigned int> m_nbDof;   ///< Number of degrees of freedom
-    std::shared_ptr<unsigned int> m_nbQdot;  ///< Number of generalized velocities
-    std::shared_ptr<unsigned int>
-    m_nbQddot;  ///< Number of generalized accelerations
-    std::shared_ptr<unsigned int>
-    m_nbDofTrue;    ///< Number of degrees of freedom including the extra DoF when there is a quaternion
-    std::shared_ptr<unsigned int>
-    m_nbDofTrueOutside; ///< Number of degree of freedom read from the outside (Same as nDof except if Quaternion)
-    std::shared_ptr<unsigned int>
-    m_nbDofTrans; ///< Number of degrees of freedom in translation
-    std::shared_ptr<unsigned int>
-    m_nbDofRot; ///< Number of degrees of freedom in rotation
-    std::shared_ptr<unsigned int>
-    m_nbDofQuat; ///< Number of degrees of freedom in rotation if expressed in quaternion
+    std::shared_ptr<std::vector<utils::Range>> m_QRanges;  ///< Minimum and maximum coordinate values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedCoordinates
+    std::shared_ptr<std::vector<utils::Range>> m_QDotRanges;  ///< Minimum and maximum velocity values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedVelocities
+    std::shared_ptr<std::vector<utils::Range>> m_QDDotRanges;  ///< Minimum and maximum acceleration values that each dof should hold. This is only prescriptive and can be ignored when setting the GeneralizedAccelerations
+    std::shared_ptr<size_t> m_nbDof;   ///< Number of degrees of freedom
+    std::shared_ptr<size_t> m_nbQdot;  ///< Number of generalized velocities
+    std::shared_ptr<size_t> m_nbQddot;  ///< Number of generalized accelerations
+    std::shared_ptr<size_t> m_nbDofTrue;    ///< Number of degrees of freedom including the extra DoF when there is a quaternion
+    std::shared_ptr<size_t> m_nbDofTrueOutside; ///< Number of degree of freedom read from the outside (Same as nDof except if Quaternion)
+    std::shared_ptr<size_t> m_nbDofTrans; ///< Number of degrees of freedom in translation
+    std::shared_ptr<size_t> m_nbDofRot; ///< Number of degrees of freedom in rotation
+    std::shared_ptr<size_t> m_nbDofQuat; ///< Number of degrees of freedom in rotation if expressed in quaternion
 
     std::shared_ptr<bool> m_isQuaternion; ///< If DoF in rotation is a Quaternion
 
@@ -335,8 +326,7 @@ protected:
 
     std::shared_ptr<std::vector<RigidBodyDynamics::Joint>>
             m_dof; ///< Actual DoF: t1, t2, t3, r1, r2, r3; where the order depends on seqT and seqR
-    std::shared_ptr<std::vector<unsigned int>>
-                                            m_idxDof;  ///< Index of the parent segment
+    std::shared_ptr<std::vector<size_t>> m_idxDof;  ///< Index of the parent segment
 
     ///
     /// \brief Set angle and translation sequences, adjust angle sequence and redeclare if is necessary
@@ -360,7 +350,7 @@ protected:
     /// \param sequenceText The sequence to convert
     ///
     void str2numSequence(
-        std::vector<unsigned int> &sequenceInteger,
+        std::vector<size_t> &sequenceInteger,
         const utils::String &sequenceText);
 
     ///
@@ -372,8 +362,8 @@ protected:
         const utils::String &seqT,
         const utils::String &seqR);
 
-    std::shared_ptr<std::vector<unsigned int>> m_sequenceTrans; ///< Translation sequence
-    std::shared_ptr<std::vector<unsigned int>> m_sequenceRot; ///< Euler rotation sequence
+    std::shared_ptr<std::vector<size_t>> m_sequenceTrans; ///< Translation sequence
+    std::shared_ptr<std::vector<size_t>> m_sequenceRot; ///< Euler rotation sequence
     std::shared_ptr<std::vector<utils::String>> m_nameDof; ///< To store the DoF names
 
     ///
@@ -388,8 +378,7 @@ protected:
     ///
     virtual void setJointAxis();
 
-    std::shared_ptr<std::vector<unsigned int>>
-                                            m_dofPosition;  ///< Position in the x, y, and z sequence
+    std::shared_ptr<std::vector<size_t>> m_dofPosition;  ///< Position in the x, y, and z sequence
 
     ///
     /// \brief Set the DoF segment characteristics on the last body

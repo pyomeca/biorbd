@@ -39,7 +39,7 @@ rigidbody::IMUs rigidbody::IMUs::DeepCopy() const
 void rigidbody::IMUs::DeepCopy(const rigidbody::IMUs &other)
 {
     m_IMUs->resize(other.m_IMUs->size());
-    for (unsigned int i=0; i<other.m_IMUs->size(); ++i) {
+    for (size_t i=0; i<other.m_IMUs->size(); ++i) {
         (*m_IMUs)[i] = (*other.m_IMUs)[i].DeepCopy();
     }
 }
@@ -60,9 +60,9 @@ void rigidbody::IMUs::addIMU(
     m_IMUs->push_back(rigidbody::IMU(RotoTrans, technical, anatomical));
 }
 
-unsigned int rigidbody::IMUs::nbIMUs() const
+size_t rigidbody::IMUs::nbIMUs() const
 {
-    return static_cast<unsigned int>(m_IMUs->size());
+    return m_IMUs->size();
 }
 
 
@@ -76,7 +76,7 @@ std::vector<rigidbody::IMU> rigidbody::IMUs::IMU(
     const utils::String& segmentName)
 {
     std::vector<rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nbIMUs();
+    for (size_t i=0; i<nbIMUs();
             ++i) // Scan through all the markers and select the good ones
         if (!IMU(i).parent().compare(segmentName)) {
             pos.push_back(IMU(i));
@@ -85,7 +85,7 @@ std::vector<rigidbody::IMU> rigidbody::IMUs::IMU(
 }
 
 const rigidbody::IMU& rigidbody::IMUs::IMU(
-    unsigned int idx)
+    size_t idx)
 {
     return (*m_IMUs)[idx];
 }
@@ -96,7 +96,7 @@ std::vector<rigidbody::IMU> rigidbody::IMUs::IMU(
     bool updateKin)
 {
     std::vector<rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nbIMUs(); ++i) {
+    for (size_t i=0; i<nbIMUs(); ++i) {
         pos.push_back(IMU(Q, i, updateKin));
         updateKin = false;
     }
@@ -107,7 +107,7 @@ std::vector<rigidbody::IMU> rigidbody::IMUs::IMU(
 // Get an IMU at the position given by Q
 rigidbody::IMU rigidbody::IMUs::IMU(
     const rigidbody::GeneralizedCoordinates &Q,
-    unsigned int idx,
+    size_t idx,
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
@@ -120,7 +120,7 @@ rigidbody::IMU rigidbody::IMUs::IMU(
     }
 
     rigidbody::IMU node = IMU(idx);
-    unsigned int id = static_cast<unsigned int>(model.getBodyBiorbdId(
+    size_t id = static_cast<size_t>(model.getBodyBiorbdId(
                           node.parent()));
 
     return model.globalJCS(id) * node;
@@ -132,7 +132,7 @@ std::vector<rigidbody::IMU> rigidbody::IMUs::technicalIMU(
     bool updateKin)
 {
     std::vector<rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nbIMUs(); ++i)
+    for (size_t i=0; i<nbIMUs(); ++i)
         if ( IMU(i).isTechnical() ) {
             pos.push_back(IMU(Q, i, updateKin));
             updateKin = false;
@@ -143,7 +143,7 @@ std::vector<rigidbody::IMU> rigidbody::IMUs::technicalIMU(
 std::vector<rigidbody::IMU> rigidbody::IMUs::technicalIMU()
 {
     std::vector<rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nbIMUs(); ++i)
+    for (size_t i=0; i<nbIMUs(); ++i)
         if ( IMU(i).isTechnical() ) {
             pos.push_back(IMU(i));    // Forward kinematics
         }
@@ -156,7 +156,7 @@ std::vector<rigidbody::IMU> rigidbody::IMUs::anatomicalIMU(
     bool updateKin)
 {
     std::vector<rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nbIMUs(); ++i)
+    for (size_t i=0; i<nbIMUs(); ++i)
         if ( IMU(i).isAnatomical() ) {
             pos.push_back(IMU(Q, i, updateKin));
             updateKin = false;
@@ -167,7 +167,7 @@ std::vector<rigidbody::IMU> rigidbody::IMUs::anatomicalIMU(
 std::vector<rigidbody::IMU> rigidbody::IMUs::anatomicalIMU()
 {
     std::vector<rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nbIMUs(); ++i)
+    for (size_t i=0; i<nbIMUs(); ++i)
         if ( IMU(i).isAnatomical() ) {
             pos.push_back(IMU(i));    // Forward kinematics
         }
@@ -176,7 +176,7 @@ std::vector<rigidbody::IMU> rigidbody::IMUs::anatomicalIMU()
 
 std::vector<rigidbody::IMU> rigidbody::IMUs::segmentIMU(
     const rigidbody::GeneralizedCoordinates &Q,
-    unsigned int idx,
+    size_t idx,
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
@@ -187,7 +187,7 @@ std::vector<rigidbody::IMU> rigidbody::IMUs::segmentIMU(
     utils::String name(model.segment(idx).name());
 
     std::vector<rigidbody::IMU> pos;
-    for (unsigned int i=0; i<nbIMUs();
+    for (size_t i=0; i<nbIMUs();
             ++i) // scan all the markers and select the right ones
         if (!((*m_IMUs)[i]).parent().compare(name)) {
             pos.push_back(IMU(Q,i,updateKin));
@@ -227,14 +227,14 @@ std::vector<utils::Matrix> rigidbody::IMUs::IMUJacobian(
 
     std::vector<utils::Matrix> G;
 
-    for (unsigned int idx=0; idx<nbIMUs(); ++idx) {
+    for (size_t idx=0; idx<nbIMUs(); ++idx) {
         // Actual marker
         rigidbody::IMU node = IMU(idx);
         if (lookForTechnical && !node.isTechnical()) {
             continue;
         }
 
-        unsigned int id = model.GetBodyId(node.parent().c_str());
+        size_t id = static_cast<size_t>(model.GetBodyId(node.parent().c_str()));
         utils::Matrix G_tp(utils::Matrix::Zero(9,model.dof_count));
 
         // Calculate the Jacobian of this Tag
@@ -249,9 +249,9 @@ std::vector<utils::Matrix> rigidbody::IMUs::IMUJacobian(
     return G;
 }
 
-unsigned int rigidbody::IMUs::nbTechIMUs()
+size_t rigidbody::IMUs::nbTechIMUs()
 {
-    unsigned int nbTech = 0;
+    size_t nbTech = 0;
     if (nbTech == 0) // If the function has never been called before
         for (rigidbody::IMU imu : *m_IMUs)
             if (imu.isTechnical()) {
@@ -261,9 +261,9 @@ unsigned int rigidbody::IMUs::nbTechIMUs()
     return nbTech;
 }
 
-unsigned int rigidbody::IMUs::nbAnatIMUs()
+size_t rigidbody::IMUs::nbAnatIMUs()
 {
-    unsigned int nbAnat = 0;
+    size_t nbAnat = 0;
     if (nbAnat == 0) // If the function has never been called before
         for (rigidbody::IMU imu : *m_IMUs)
             if (imu.isAnatomical()) {
@@ -277,7 +277,7 @@ std::vector<utils::String> rigidbody::IMUs::IMUsNames()
 {
     // Extract the name of all the markers of a model
     std::vector<utils::String> names;
-    for (unsigned int i=0; i<nbIMUs(); ++i) {
+    for (size_t i=0; i<nbIMUs(); ++i) {
         names.push_back(IMU(i).utils::Node::name());
     }
     return names;
@@ -287,7 +287,7 @@ std::vector<utils::String> rigidbody::IMUs::technicalIMUsNames()
 {
     // Extract the names of all the technical markers of a model
     std::vector<utils::String> names;
-    for (unsigned int i=0; i<nbIMUs(); ++i)
+    for (size_t i=0; i<nbIMUs(); ++i)
         if (IMU(i).isTechnical()) {
             names.push_back(IMU(i).utils::Node::name());
         }
@@ -300,7 +300,7 @@ rigidbody::IMUs::anatomicalIMUsNames()
 {
     // Extract the names of all the anatomical markers of a model
     std::vector<utils::String> names;
-    for (unsigned int i=0; i<nbIMUs(); ++i)
+    for (size_t i=0; i<nbIMUs(); ++i)
         if (IMU(i).isAnatomical()) {
             names.push_back(IMU(i).utils::Node::name());
         }

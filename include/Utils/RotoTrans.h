@@ -148,7 +148,7 @@ public:
     /// \return The axis
     ///
     Vector3d axe(
-        unsigned int idx) const ;
+        size_t idx) const ;
 
     ///
     /// \brief Return the tranposed matrix

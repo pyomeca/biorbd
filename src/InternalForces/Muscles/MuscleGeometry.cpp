@@ -198,7 +198,7 @@ const utils::Scalar& internal_forces::muscles::MuscleGeometry::length(
                                 ((*m_pointsInGlobal)[3] - pi_wrap).norm();   // length after the wrap
 
     } else {
-        for (unsigned int i=0; i<m_pointsInGlobal->size()-1; ++i) {
+        for (size_t i=0; i<m_pointsInGlobal->size()-1; ++i) {
             *m_muscleTendonLength += ((*m_pointsInGlobal)[i+1] -
                                       (*m_pointsInGlobal)[i]).norm();
         }

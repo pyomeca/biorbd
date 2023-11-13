@@ -27,7 +27,7 @@ public:
     /// \param nbQ number of degrees-of-freedom
     ///
     GeneralizedCoordinates(
-        unsigned int nbQ);
+        size_t nbQ);
 
     ///
     /// \brief Create generalized coordinates from a joint Model

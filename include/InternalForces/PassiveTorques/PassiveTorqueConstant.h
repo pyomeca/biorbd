@@ -36,7 +36,7 @@ public:
     ///
     PassiveTorqueConstant(
         const utils::Scalar& Torque,
-        unsigned int dofIdx);
+        size_t dofIdx);
 
     ///
     /// \brief Construct a constant passive torque
@@ -46,7 +46,7 @@ public:
     ///
     PassiveTorqueConstant(
         const utils::Scalar& Torque,
-        unsigned int dofIdx,
+        size_t dofIdx,
         const utils::String &jointName);
 
     ///

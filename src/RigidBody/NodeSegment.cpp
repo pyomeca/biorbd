@@ -154,19 +154,19 @@ const std::vector<bool> rigidbody::NodeSegment::axes() const
 rigidbody::NodeSegment rigidbody::NodeSegment::removeAxes() const
 {
     rigidbody::NodeSegment pos(*this);
-    for (unsigned int i=0; i<m_axesRemoved->size(); ++i)
+    for (size_t i=0; i<m_axesRemoved->size(); ++i)
         if (isAxisRemoved(i)) {
-            pos(i) = 0;
+            pos(static_cast<unsigned int>(i)) = 0;
         }
     return pos;
 }
 
-bool rigidbody::NodeSegment::isAxisRemoved(unsigned int i) const
+bool rigidbody::NodeSegment::isAxisRemoved(size_t i) const
 {
     return (*m_axesRemoved)[i];
 }
 
-bool rigidbody::NodeSegment::isAxisKept(unsigned int i) const
+bool rigidbody::NodeSegment::isAxisKept(size_t i) const
 {
     return !isAxisRemoved(i);
 }
@@ -175,9 +175,9 @@ bool rigidbody::NodeSegment::isAxisKept(unsigned int i) const
 std::vector<int> rigidbody::NodeSegment::availableAxesIndices() const
 {
     std::vector<int> list;
-    for (unsigned int i = 0; i < 3; ++i) {
+    for (size_t i = 0; i < 3; ++i) {
         if (isAxisKept(i)) {
-            list.push_back(i);
+            list.push_back(static_cast<int>(i));
         }
     }
     return list;
@@ -193,7 +193,7 @@ void rigidbody::NodeSegment::setType()
     *m_typeOfNode = utils::NODE_TYPE::BONE_POINT;
 }
 
-void rigidbody::NodeSegment::addAxesToRemove(unsigned int axisNumber)
+void rigidbody::NodeSegment::addAxesToRemove(size_t axisNumber)
 {
     if (axisNumber>2) {
         utils::Error::raise("Axis must be 0 (\"x\"), 1 (\"y\") or 2 (\"z\")");
@@ -205,7 +205,7 @@ void rigidbody::NodeSegment::addAxesToRemove(unsigned int axisNumber)
 void rigidbody::NodeSegment::addAxesToRemove(const
         utils::String& s)
 {
-    for (unsigned int i=0; i<s.length(); ++i)
+    for (size_t i=0; i<s.length(); ++i)
         if (!s(i).compare("x")) {
             addAxesToRemove(0);
         } else if (!s(i).compare("y")) {
@@ -218,9 +218,9 @@ void rigidbody::NodeSegment::addAxesToRemove(const
 }
 
 void rigidbody::NodeSegment::addAxesToRemove(const
-        std::vector<unsigned int>& axes)
+        std::vector<size_t>& axes)
 {
-    for (unsigned int i=0; i<axes.size(); ++i) {
+    for (size_t i=0; i<axes.size(); ++i) {
         addAxesToRemove(axes[i]);
     }
 }
@@ -228,7 +228,7 @@ void rigidbody::NodeSegment::addAxesToRemove(const
 void rigidbody::NodeSegment::addAxesToRemove(const
         std::vector<utils::String>& axes)
 {
-    for (unsigned int i=0; i<axes.size(); ++i) {
+    for (size_t i=0; i<axes.size(); ++i) {
         addAxesToRemove(axes[i]);
     }
 }

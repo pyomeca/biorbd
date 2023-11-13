@@ -11,7 +11,7 @@ internal_forces::actuator::Actuator::Actuator() :
            (internal_forces::actuator::TYPE::NO_TYPE)),
     m_direction(std::make_shared<int>(0)),
     m_jointName(std::make_shared<utils::String>("")),
-    m_dofIdx(std::make_shared<unsigned int>(-1))
+    m_dofIdx(std::make_shared<size_t>(-1))
 {
 
 }
@@ -28,25 +28,25 @@ internal_forces::actuator::Actuator::Actuator(
 
 internal_forces::actuator::Actuator::Actuator(
     int direction,
-    unsigned int dofIdx) :
+    size_t dofIdx) :
     m_type(std::make_shared<internal_forces::actuator::TYPE>
            (internal_forces::actuator::TYPE::NO_TYPE)),
     m_direction(std::make_shared<int>(direction)),
     m_jointName(std::make_shared<utils::String>("")),
-    m_dofIdx(std::make_shared<unsigned int>(dofIdx))
+    m_dofIdx(std::make_shared<size_t>(dofIdx))
 {
 
 }
 
 internal_forces::actuator::Actuator::Actuator(
     int direction,
-    unsigned int dofIdx,
+    size_t dofIdx,
     const utils::String &jointName) :
     m_type(std::make_shared<internal_forces::actuator::TYPE>
            (internal_forces::actuator::TYPE::NO_TYPE)),
     m_direction(std::make_shared<int>(direction)),
     m_jointName(std::make_shared<utils::String>(jointName)),
-    m_dofIdx(std::make_shared<unsigned int>(dofIdx))
+    m_dofIdx(std::make_shared<size_t>(dofIdx))
 {
     utils::Error::check(*m_direction==-1 || *m_direction==1,
                                 "Direction should be -1 or 1");
@@ -66,7 +66,7 @@ void internal_forces::actuator::Actuator::DeepCopy(const internal_forces::actuat
     *m_dofIdx = *other.m_dofIdx;
 }
 
-unsigned int internal_forces::actuator::Actuator::index() const
+size_t internal_forces::actuator::Actuator::index() const
 {
     return *m_dofIdx;
 }
