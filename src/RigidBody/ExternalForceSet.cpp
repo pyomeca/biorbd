@@ -252,31 +252,26 @@ void rigidbody::ExternalForceSet::combineTranslationalForces(
     // Do not waste time computing forces on empty vector
     if (m_translationalForces.size() == 0) return;
 
-    for (size_t i = 0; i <m_model.nbSegment(); ++i) {
-        const rigidbody::Segment& segment(m_model.segment(i));
-        // Add 1 to account for the undeclared root
+    for (auto& e : m_translationalForces) {    
+        const rigidbody::NodeSegment& pointOfApplication = e.second;
+        const rigidbody::Segment& segment(m_model.segment(pointOfApplication.parent()));
         size_t dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
-        
-        for (auto& e : m_translationalForces) {    
-            const rigidbody::NodeSegment& pointOfApplication = e.second;
-            if (pointOfApplication.parent().compare(segment.name())) continue;
 
-            const utils::Vector3d& force = e.first;
-            rigidbody::NodeSegment pointOfApplicationInGlobal(
-                RigidBodyDynamics::CalcBodyToBaseCoordinates(
-                    m_model, Q, static_cast<unsigned int>(segment.id()), pointOfApplication, updateKin
-                ),
-                pointOfApplication.Node::name(),
-                pointOfApplication.parent(),
-                pointOfApplication.isTechnical(),
-                pointOfApplication.isAnatomical(),
-                pointOfApplication.axesToRemove(),
-                pointOfApplication.parentId()
-            );
+        const utils::Vector3d& force = e.first;
+        rigidbody::NodeSegment pointOfApplicationInGlobal(
+            RigidBodyDynamics::CalcBodyToBaseCoordinates(
+                m_model, Q, static_cast<unsigned int>(segment.id()), pointOfApplication, updateKin
+            ),
+            pointOfApplication.Node::name(),
+            pointOfApplication.parent(),
+            pointOfApplication.isTechnical(),
+            pointOfApplication.isAnatomical(),
+            pointOfApplication.axesToRemove(),
+            pointOfApplication.parentId()
+        );
             
-            // Add the force to the force vector (do not subtract 1 because 0 is the base)
-            out[dofIndex] += transportForceAtOrigin(force, pointOfApplicationInGlobal);
-        }
+        // Add the force to the force vector (do not subtract 1 because 0 is the base)
+        out[dofIndex] += transportForceAtOrigin(force, pointOfApplicationInGlobal);
     }
 }
 
@@ -296,20 +291,14 @@ void rigidbody::ExternalForceSet::combineSoftContactForces(
 
     // Do not waste time computing forces on empty vector
     if (m_model.nbSoftContacts() == 0) return;
-
-
-    for (size_t i = 0; i < m_model.nbSegment(); ++i) {
-        const rigidbody::Segment& segment(m_model.segment(i));
-        // Add 1 to account for the undeclared root
-        size_t dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
     
-        for (size_t j = 0; j < m_model.nbSoftContacts(); j++) {
-            rigidbody::SoftContactNode& contact(m_model.softContact(j));
-            if (contact.parent().compare(segment.name())) continue;
+    for (size_t j = 0; j < m_model.nbSoftContacts(); j++) {
+        rigidbody::SoftContactNode& contact(m_model.softContact(j));
+        const rigidbody::Segment& segment(m_model.segment(contact.parent()));
+        size_t dofIndex = segment.getLastDofIndexInGeneralizedCoordinates(m_model) + 1;
 
-            // Add the force to the force vector (do not subtract 1 because 0 is the base)
-            out[dofIndex] += contact.computeForceAtOrigin(m_model, Q, QDot, updateKin);
-        }
+        // Add the force to the force vector (do not subtract 1 because 0 is the base)
+        out[dofIndex] += contact.computeForceAtOrigin(m_model, Q, QDot, updateKin);
     }
 }
 
