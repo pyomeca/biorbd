@@ -259,6 +259,7 @@
         }
         PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, quat);
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+		delete[] arraySizes;
         return output;
     };
 #endif
@@ -289,6 +290,7 @@
         }
         PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, matrix);
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+		delete[] arraySizes;
         return output;
     };
 	
@@ -379,6 +381,7 @@
         }
         PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, matrix);
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+		delete[] arraySizes;
         return output;
     };
 	
@@ -450,6 +453,7 @@
         }
         PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, vect);
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+		delete[] arraySizes;
         return output;
     };
 #endif
@@ -1020,6 +1024,7 @@ BIORBD_NAMESPACE::utils::Vector3d &{
         }
         PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, node);
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+		delete[] arraySizes;
         return output;
     }
 #endif
@@ -1043,6 +1048,7 @@ BIORBD_NAMESPACE::utils::Vector3d &{
         }
         PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, node);
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+		delete[] arraySizes;
         return output;
     }
 #endif
@@ -1129,6 +1135,7 @@ BIORBD_NAMESPACE::utils::Vector3d &{
         }
         PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, values);
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+		delete[] arraySizes;
         return output;
     }
 	
@@ -1158,6 +1165,7 @@ BIORBD_NAMESPACE::utils::Vector3d &{
         }
         PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, values);
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+		delete[] arraySizes;
         return output;
     }
 #endif
@@ -1183,6 +1191,7 @@ BIORBD_NAMESPACE::utils::Vector3d &{
         }
         PyObject* output = PyArray_SimpleNewFromData(nArraySize,arraySizes,NPY_DOUBLE, values);
         PyArray_ENABLEFLAGS((PyArrayObject *)output, NPY_ARRAY_OWNDATA);
+		delete[] arraySizes;
         return output;
     }
 	
