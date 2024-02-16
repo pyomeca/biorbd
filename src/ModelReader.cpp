@@ -901,6 +901,7 @@ void Reader::readModelFile(
                 double maxActivation(1);
                 double PCSA(0);
                 double shapeFactor(0);
+                double maxShorteningSpeed(10);
                 internal_forces::muscles::FatigueParameters fatigueParameters;
 
                 // Read file
@@ -967,6 +968,8 @@ void Reader::readModelFile(
                         file.read(maxExcitation, variable);
                     } else if (!property_tag.tolower().compare("pcsa")) {
                         file.read(PCSA, variable);
+                    } else if (!property_tag.tolower().compare("maxshorteningspeed")) {
+                        file.read(maxShorteningSpeed, variable);
                     } else if (!property_tag.tolower().compare("fatigueparameters")) {
                         while(file.read(subproperty_tag)
                                 && subproperty_tag.tolower().compare("endfatigueparameters")) {
@@ -1008,7 +1011,7 @@ void Reader::readModelFile(
                 internal_forces::muscles::State stateMax(maxExcitation, maxActivation);
                 internal_forces::muscles::Characteristics characteristics(optimalLength, maxForce, PCSA,
                         tendonSlackLength, pennAngle, stateMax,
-                        fatigueParameters, useDamping);
+                        fatigueParameters, useDamping, maxShorteningSpeed);
                 model->muscleGroup(static_cast<size_t>(idxGroup)).addMuscle(name,type,geo,
                         characteristics,
                         internal_forces::PathModifiers(),stateType,dynamicFatigueType);
