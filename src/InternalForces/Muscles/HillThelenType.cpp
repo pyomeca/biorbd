@@ -121,15 +121,24 @@ void internal_forces::muscles::HillThelenType::computeFvCE()
     utils::Scalar kvce = 0.06;
     utils::Scalar flen = 1.6;
 
+    // WARNING CONCENTRIC IS NOT FROM THELEN (see header file for precisions)
+    utils::Scalar a = 3.0 / 11.0;
+    utils::Scalar b = 3.0 / 11.0;
+
+    
 #ifdef BIORBD_USE_CASADI_MATH
     *m_FvCE = IF_ELSE_NAMESPACE::if_else(
                   IF_ELSE_NAMESPACE::gt(norm_v, 0),
                   ((1 + norm_v * flen / kvce) / (1 + norm_v / kvce)),
-                  0);
+                  1);
 #else
-    if (norm_v > 0){
+    
+    if (norm_v >= 0){
         *m_FvCE = (1 + norm_v * flen / kvce) / (1 + norm_v / kvce);
-    } else {
+    } else if (norm_v >= -1) {
+        *m_FvCE = (1 + a) * b / (-norm_v + b) - a;
+    }
+    else {
         *m_FvCE = 0;
     }
 #endif

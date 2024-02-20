@@ -15,6 +15,13 @@ class MuscleGeometry;
 /// \brief Muscle of Hill type augmented by Thelen
 /// https://simtk-confluence.stanford.edu/display/OpenSim/Thelen+2003+Muscle+Model
 ///
+/// WARNING CONCENTRIC IS NOT FROM THELEN. The equation used is: 
+/// (F + a) * (V + b) = (F0 + a) * b, assuming F0 = 1
+/// Solved using the points: (F, V) = {(1, 0); (0, Vmax); (0.3, Vmax/3) }
+/// giving a = 3 / 11;
+/// giving b = 3 * this->characteristics().maxShorteningSpeed() / 11; with maxShorteningSpeed being normalized (i.e. 1)
+/// And finally rearranged so F is function of all other variables
+///
 class BIORBD_API HillThelenType : public HillType
 {
 public:
