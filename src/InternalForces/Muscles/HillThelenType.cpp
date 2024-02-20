@@ -127,10 +127,14 @@ void internal_forces::muscles::HillThelenType::computeFvCE()
 
     
 #ifdef BIORBD_USE_CASADI_MATH
-    *m_FvCE = IF_ELSE_NAMESPACE::if_else(
-                  IF_ELSE_NAMESPACE::gt(norm_v, 0),
-                  ((1 + norm_v * flen / kvce) / (1 + norm_v / kvce)),
-                  1);
+    *m_FvCE = 
+        IF_ELSE_NAMESPACE::if_else(IF_ELSE_NAMESPACE::ge(norm_v, 0), 
+            ((1 + norm_v * flen / kvce) / (1 + norm_v / kvce)), // If norm_v >= 0
+            IF_ELSE_NAMESPACE::if_else(IF_ELSE_NAMESPACE::ge(norm_v, -1), 
+                (1 + a) * b / (-norm_v + b) - a, // if norm_v >= -1
+                0 // if norm_v < -1
+            )
+        );
 #else
     
     if (norm_v >= 0){

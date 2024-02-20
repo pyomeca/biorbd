@@ -105,14 +105,14 @@ void internal_forces::muscles::State::setActivation(
 #ifdef BIORBD_USE_CASADI_MATH
     *m_activation = val;
 #else
-    if (val <= 0) {
+    if (val < 0) {
         if (!turnOffWarnings) {
             utils::Error::warning(
                 0, "Activation is " + utils::String::to_string(val) +
                 " but can't be lower than 0, 0 is used then");
         }
         *m_activation = 0;
-    } else if (val >= 1) {
+    } else if (val > 1) {
         if (!turnOffWarnings) {
             utils::Error::warning(
                 0, "Activation " + utils::String::to_string(val) +
