@@ -78,6 +78,9 @@ utils::Vector3d &rigidbody::Mesh::color() const
     return *m_patchColor;
 }
 
+bool rigidbody::Mesh::hasMesh() const {
+    return m_vertex->size() > 0;
+}
 void rigidbody::Mesh::addPoint(const utils::Vector3d &node)
 {
     m_vertex->push_back(node);
