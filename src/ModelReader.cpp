@@ -2275,6 +2275,7 @@ rigidbody::Mesh Reader::readMeshFileStl(
     }
 
     rigidbody::Mesh mesh;
+    mesh.setPath(path);
     if (isBinary){
         // Know the number of points
         char headerChar[80] = "";
@@ -2284,7 +2285,6 @@ rigidbody::Mesh Reader::readMeshFileStl(
         file.readFromBinary(nbTrianglesChar, 4);
         size_t nbTriangles = static_cast<size_t>(*((unsigned int*) nbTrianglesChar));
 
-        mesh.setPath(path);
         utils::Vector3d normal;
         utils::Vector3d vertex;
         for (int i = 0; i<nbTriangles; ++i){
