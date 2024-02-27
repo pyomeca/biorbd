@@ -72,6 +72,11 @@ public:
     utils::Vector3d& color() const;
 
     ///
+    /// \brief Return if there is a mesh
+    /// \return If there is a mesh
+    bool hasMesh() const;
+
+    ///
     /// \brief Add a point to the mesh
     /// \param node The point to add
     ///
