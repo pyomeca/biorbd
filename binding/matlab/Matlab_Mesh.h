@@ -51,7 +51,7 @@ void Matlab_Mesh( int, mxArray *plhs[],
 
     } else { // Si on a demande un segment precis
         std::vector<BIORBD_NAMESPACE::utils::Vector3d> Mesh_tp(model->meshPoints(Q,
-                static_cast<unsigned int>(idx)));
+                static_cast<size_t>(idx)));
 
         // Create a matrix for the return argument
         plhs[0] = mxCreateDoubleMatrix(3, Mesh_tp.size(), mxREAL);
