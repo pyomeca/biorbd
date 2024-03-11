@@ -82,7 +82,7 @@ public:
     /// 
     void setMarker(
         size_t index,
-        const utils::Vector3d &pos
+        const NodeSegment &pos
     );
 
     ///

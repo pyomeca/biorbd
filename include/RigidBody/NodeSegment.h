@@ -123,7 +123,7 @@ public:
     /// \brief Set internal values of the node without changing other parameters
     /// \param values The new values
     /// 
-    void setValues(const Vector3d& values);
+    void setValues(const NodeSegment& values);
 
     ///
     /// \brief Return if node is technical

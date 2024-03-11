@@ -119,9 +119,11 @@ void rigidbody::NodeSegment::DeepCopy(
 }
 
 void rigidbody::NodeSegment::setValues(
-    const utils::Vector3d& other) 
+    const rigidbody::NodeSegment& other) 
 {
-    *this = other;
+    (*this)[0] = other[0];
+    (*this)[1] = other[1];
+    (*this)[2] = other[2];
 }
 
 

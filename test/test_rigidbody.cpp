@@ -1000,7 +1000,7 @@ TEST(Markers, set)
     rigidbody::Markers markers(model);
 
     auto marker0 = markers.markers()[0];
-    EXPECT_STREQ(marker0.name().c_str(), "pelv1");
+    EXPECT_STREQ(marker0.utils::Node::name().c_str(), "pelv1");
     EXPECT_STREQ(marker0.parent().c_str(), "Pelvis");
     EXPECT_EQ(marker0.isTechnical(), true);
     EXPECT_EQ(marker0.isAnatomical(), false);
@@ -1016,7 +1016,7 @@ TEST(Markers, set)
 
     markers.setMarker(0, utils::Vector3d(1, 2, 3));
     marker0 = markers.markers()[0];
-    EXPECT_STREQ(marker0.name().c_str(), "pelv1");
+    EXPECT_STREQ(marker0.utils::Node::name().c_str(), "pelv1");
     EXPECT_STREQ(marker0.parent().c_str(), "Pelvis");
     EXPECT_EQ(marker0.isTechnical(), true);
     EXPECT_EQ(marker0.isAnatomical(), false);

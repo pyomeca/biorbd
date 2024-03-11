@@ -66,7 +66,7 @@ void rigidbody::Markers::addMarker(
 
 void rigidbody::Markers::setMarker(
     size_t index,
-    const utils::Vector3d& pos) 
+    const rigidbody::NodeSegment& pos) 
 {
 #ifndef SKIP_ASSERT
     utils::Error::check(index < m_marks->size(), utils::String("The index ") + index + " is larger than the number of markers (" + m_marks->size() + ")");
