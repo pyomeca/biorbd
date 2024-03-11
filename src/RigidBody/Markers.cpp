@@ -5,6 +5,7 @@
 #include <rbdl/Kinematics.h>
 #include "Utils/String.h"
 #include "Utils/Matrix.h"
+#include "Utils/Error.h"
 #include "RigidBody/GeneralizedCoordinates.h"
 #include "RigidBody/GeneralizedVelocity.h"
 #include "RigidBody/GeneralizedAcceleration.h"
@@ -57,9 +58,20 @@ void rigidbody::Markers::addMarker(
     const utils::String& axesToRemove,
     int id)
 {
-    rigidbody::NodeSegment tp(pos, name, parentName, technical, anatomical,
-                                      axesToRemove, id);
+    rigidbody::NodeSegment tp(
+        pos, name, parentName, technical, anatomical, axesToRemove, id);
     m_marks->push_back(tp);
+}
+
+
+void rigidbody::Markers::setMarker(
+    size_t index,
+    const utils::Vector3d& pos) 
+{
+#ifndef SKIP_ASSERT
+    utils::Error::check(index < m_marks->size(), utils::String("The index ") + index + " is larger than the number of markers (" + m_marks->size() + ")");
+#endif // SKIP_ASSERT
+    (*m_marks)[index].setValues(pos);
 }
 
 const rigidbody::NodeSegment &rigidbody::Markers::marker(
@@ -161,7 +173,7 @@ std::vector<rigidbody::NodeSegment> rigidbody::Markers::markers(
 {
     std::vector<rigidbody::NodeSegment> pos;
     for (size_t i=0; i<nbMarkers(); ++i) {
-        pos.push_back(marker(i, removeAxis));    // Forward kinematics
+        pos.push_back(marker(i, removeAxis)); 
     }
 
     return pos;

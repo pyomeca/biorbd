@@ -994,6 +994,44 @@ TEST(Markers, copy)
     }
 }
 
+TEST(Markers, set)
+{
+    Model model(modelPathForGeneralTesting);
+    rigidbody::Markers markers(model);
+
+    auto marker0 = markers.markers()[0];
+    EXPECT_STREQ(marker0.name().c_str(), "pelv1");
+    EXPECT_STREQ(marker0.parent().c_str(), "Pelvis");
+    EXPECT_EQ(marker0.isTechnical(), true);
+    EXPECT_EQ(marker0.isAnatomical(), false);
+    EXPECT_STREQ(marker0.axesToRemoveAsString().c_str(), "");
+    EXPECT_EQ(marker0.parentId(), 3);
+
+    SCALAR_TO_DOUBLE(xValuePre, marker0.x());
+    SCALAR_TO_DOUBLE(yValuePre, marker0.y());
+    SCALAR_TO_DOUBLE(zValuePre, marker0.z());
+    EXPECT_NEAR(xValuePre, -0.1038, requiredPrecision);
+    EXPECT_NEAR(yValuePre, 0.0821, requiredPrecision);
+    EXPECT_NEAR(zValuePre, 0.0, requiredPrecision);
+
+    markers.setMarker(0, utils::Vector3d(1, 2, 3));
+    marker0 = markers.markers()[0];
+    EXPECT_STREQ(marker0.name().c_str(), "pelv1");
+    EXPECT_STREQ(marker0.parent().c_str(), "Pelvis");
+    EXPECT_EQ(marker0.isTechnical(), true);
+    EXPECT_EQ(marker0.isAnatomical(), false);
+    EXPECT_STREQ(marker0.axesToRemoveAsString().c_str(), "");
+    EXPECT_EQ(marker0.parentId(), 3);
+
+    SCALAR_TO_DOUBLE(xValuePost, marker0.x());
+    SCALAR_TO_DOUBLE(yValuePost, marker0.y());
+    SCALAR_TO_DOUBLE(zValuePost, marker0.z());
+    EXPECT_NEAR(xValuePost, 1.0, requiredPrecision);
+    EXPECT_NEAR(yValuePost, 2.0, requiredPrecision);
+    EXPECT_NEAR(zValuePost, 3.0, requiredPrecision);
+
+}
+
 TEST(SegmentCharacteristics, length)
 {
     rigidbody::SegmentCharacteristics segmentCharac;

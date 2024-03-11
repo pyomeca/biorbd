@@ -107,8 +107,8 @@ rigidbody::NodeSegment rigidbody::NodeSegment::DeepCopy() const
     return copy;
 }
 
-void rigidbody::NodeSegment::DeepCopy(const
-        rigidbody::NodeSegment&other)
+void rigidbody::NodeSegment::DeepCopy(
+    const rigidbody::NodeSegment& other)
 {
     utils::Node::DeepCopy(other);
     *m_axesRemoved = *other.m_axesRemoved;
@@ -116,6 +116,12 @@ void rigidbody::NodeSegment::DeepCopy(const
     *m_technical = *other.m_technical;
     *m_anatomical = *other.m_anatomical;
     *m_id = *other.m_id;
+}
+
+void rigidbody::NodeSegment::setValues(
+    const utils::Vector3d& other) 
+{
+    *this = other;
 }
 
 
