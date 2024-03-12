@@ -11,6 +11,7 @@ namespace utils
 {
 class String;
 class Matrix;
+class Vector3d;
 }
 
 namespace rigidbody
@@ -72,6 +73,16 @@ public:
         bool anatomical,
         const utils::String& axesToRemove,
         int id = -1
+    );
+
+    /// 
+    /// \brief Change the values of a specific marker without changing other parameters
+    /// \param index The index of the marker to change. If biorbd is compiled with SKIP_ASSERT, then no check is performed to ensure index is within bounds
+    /// \param pos The new position of the marker
+    /// 
+    void setMarker(
+        size_t index,
+        const NodeSegment &pos
     );
 
     ///
@@ -159,7 +170,7 @@ public:
         bool updateKin = true);
 
     ///
-    /// \brief Return all the markers in their respective parent reference frame
+    /// \brief Return a copy of all the markers in their respective parent reference frame
     /// \param removeAxis If there are axis to remove from the position variables
     /// \return All the markers
     ///
