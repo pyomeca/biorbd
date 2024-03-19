@@ -426,9 +426,34 @@ utils::RotoTrans rigidbody::Joints::localJCS(
     return (*m_segments)[idx].localJCS();
 }
 
+utils::Vector3d rigidbody::Joints::pointInGlobal(
+    const rigidbody::GeneralizedCoordinates& Q,
+    utils::String segmentName,
+    const utils::Vector3d &pointInLocal,
+    bool updateKinematics)
+{
+    return this->pointInGlobal(Q, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
+}
 
-std::vector<rigidbody::NodeSegment>
-rigidbody::Joints::projectPoint(
+utils::Vector3d rigidbody::Joints::pointInGlobal(
+    const rigidbody::GeneralizedCoordinates& Q,
+    int bodyId,
+    const utils::Vector3d &pointInLocal,
+    bool updateKinematics)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
+    updateKinematics = true;
+#else
+    rigidbody::Joints& model = *this;
+#endif
+
+    return RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, bodyId, pointInLocal, updateKinematics);
+}
+
+
+
+std::vector<rigidbody::NodeSegment> rigidbody::Joints::projectPoint(
     const rigidbody::GeneralizedCoordinates& Q,
     const std::vector<rigidbody::NodeSegment>& v,
     bool updateKin)

@@ -301,9 +301,7 @@ const utils::Vector3d &internal_forces::Geometry::originInGlobal(
     const rigidbody::GeneralizedCoordinates &Q)
 {
     // Return the position of the marker in function of the given position
-    m_originInGlobal->block(0,0,3,
-                            1) = RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q,
-                                    model.GetBodyId(m_origin->parent().c_str()), *m_origin,false);
+    m_originInGlobal->block(0,0,3,1) = model.pointInGlobal(Q, m_origin->parent(), *m_origin, false);
     return *m_originInGlobal;
 }
 
@@ -311,9 +309,9 @@ const utils::Vector3d &internal_forces::Geometry::insertionInGlobal(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
+
     // Return the position of the marker in function of the given position
-    m_insertionInGlobal->block(0,0,3,1) = RigidBodyDynamics::CalcBodyToBaseCoordinates(
-                model, Q, model.GetBodyId(m_insertion->parent().c_str()), *m_insertion,false);
+    m_insertionInGlobal->block(0,0,3,1) = model.pointInGlobal(Q, m_insertion->parent(), *m_insertion, false);
     return *m_insertionInGlobal;
 }
 
@@ -349,10 +347,8 @@ void internal_forces::Geometry::setPointsInGlobal(
         const utils::RotoTrans& RT = w.RT(model,Q);
 
         // Alias
-        const utils::Vector3d& po_mus = originInGlobal(model,
-                                                Q);  // Origin on bone
-        const utils::Vector3d& pi_mus = insertionInGlobal(model,
-                                                Q); // Insertion on bone
+        const utils::Vector3d& po_mus = originInGlobal(model, Q);  // Origin on bone
+        const utils::Vector3d& pi_mus = insertionInGlobal(model, Q); // Insertion on bone
 
         utils::Vector3d pi_wrap(0, 0,
                                         0); // point on the wrapping related to insertion

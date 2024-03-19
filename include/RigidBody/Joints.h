@@ -388,6 +388,32 @@ public:
         const size_t idx) const;
 
     ///
+    /// \brief Interface to call CalcBodyToBaseCoordinates. It is pretty much useless in Eigen, but 
+    /// fixes an issue in Casadi where RBDL changes internal variables which creates a free variables issue
+    /// \param Q The generalized coordinates
+    /// \param segmentName The name of the segment
+    /// \param pointInLocal The point in the body
+    /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
+    utils::Vector3d rigidbody::Joints::pointInGlobal(
+        const rigidbody::GeneralizedCoordinates& Q,
+        utils::String segmentName,
+        const utils::Vector3d &pointInLocal,
+        bool update_kinematics = true);
+
+    ///
+    /// \brief Interface to call CalcBodyToBaseCoordinates. It is pretty much useless in Eigen, but 
+    /// fixes an issue in Casadi where RBDL changes internal variables which creates a free variables issue
+    /// \param Q The generalized coordinates
+    /// \param bodyId The index of the segment (obtainable with GetBodyId)
+    /// \param pointInLocal The point in the body
+    /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
+    utils::Vector3d rigidbody::Joints::pointInGlobal(
+        const rigidbody::GeneralizedCoordinates& Q,
+        int bodyId,
+        const utils::Vector3d &pointInLocal,
+        bool update_kinematics = true);
+
+    ///
     /// \brief Project a point on specific axis of a segment
     /// \param Q The generalized coordinates
     /// \param v The point to project
