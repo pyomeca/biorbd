@@ -1365,7 +1365,13 @@ rigidbody::GeneralizedAcceleration rigidbody::Joints::ForwardDynamics(
 {
     rigidbody::GeneralizedAcceleration QDDot(*this);
     auto fExt = externalForces.computeRbdlSpatialVectors(Q, QDot, true);
-    RigidBodyDynamics::ForwardDynamics(*this, Q, QDot, Tau, QDDot, &fExt);
+
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
+#else
+    rigidbody::Joints& model = *this;
+#endif
+    RigidBodyDynamics::ForwardDynamics(model, Q, QDot, Tau, QDDot, &fExt);
     return QDDot;
 }
 

@@ -289,7 +289,7 @@ void  rigidbody::Segment::setLocalJCS(rigidbody::Joints& model, utils::RotoTrans
                 rototrans.rot().transpose(),
                     rototrans.trans());
     // we also modify RBDL spatial transform from parent to child
-    model.X_T[*m_idxDof->begin()]=*m_cor;
+    model.X_T[*m_idxDof->begin()] = *m_cor;
 }
 
 

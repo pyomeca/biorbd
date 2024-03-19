@@ -274,8 +274,7 @@ protected:
     ///
     void setType();
 
-    std::shared_ptr<RigidBodyDynamics::Math::SpatialTransform>
-    m_cor; ///< Attitude of the segment in parent reference frame
+    std::shared_ptr<RigidBodyDynamics::Math::SpatialTransform> m_cor; ///< Attitude of the segment in parent reference frame
 
     ///
     /// \brief Set the DoF
