@@ -154,12 +154,10 @@ size_t rigidbody::Joints::AddSegment(
     rigidbody::Segment tp(
         *this, segmentName, parentName, translationSequence,
         rotationSequence, QRanges, QDotRanges, QDDotRanges, characteristics,
-        RigidBodyDynamics::Math::SpatialTransform(referenceFrame.rot().transpose(),
-                referenceFrame.trans())
+        RigidBodyDynamics::Math::SpatialTransform(referenceFrame.rot().transpose(), referenceFrame.trans())
     );
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max()) {
-        *m_nbRoot +=
-            tp.nbDof();    // If the segment name is "Root", add the number of DoF of root
+        *m_nbRoot += tp.nbDof();    // If the segment name is "Root", add the number of DoF of root
     }
     *m_nbDof += tp.nbDof();
     *m_nbQ += tp.nbQ();
@@ -170,8 +168,7 @@ size_t rigidbody::Joints::AddSegment(
         ++*m_nRotAQuat;
     }
 
-    *m_totalMass +=
-        characteristics.mMass; // Add the segment mass to the total body mass
+    *m_totalMass += characteristics.mMass; // Add the segment mass to the total body mass
     m_segments->push_back(tp);
     return 0;
 }
@@ -186,18 +183,22 @@ size_t rigidbody::Joints::AddSegment(
     const utils::RotoTrans& referenceFrame)
 {
     rigidbody::Segment tp(
-        *this, segmentName, parentName, seqR, QRanges, QDotRanges, QDDotRanges,
-        characteristics, RigidBodyDynamics::Math::SpatialTransform(
-            referenceFrame.rot().transpose(), referenceFrame.trans())
+        *this, 
+        segmentName, 
+        parentName, 
+        seqR, 
+        QRanges, 
+        QDotRanges, 
+        QDDotRanges,
+        characteristics, 
+        RigidBodyDynamics::Math::SpatialTransform(referenceFrame.rot().transpose(), referenceFrame.trans())
     );
     if (this->GetBodyId(parentName.c_str()) == std::numeric_limits<unsigned int>::max()) {
-        *m_nbRoot +=
-            tp.nbDof();    //  If the name of the segment is "Root", add the number of DoF of root
+        *m_nbRoot += tp.nbDof();    //  If the name of the segment is "Root", add the number of DoF of root
     }
     *m_nbDof += tp.nbDof();
 
-    *m_totalMass +=
-        characteristics.mMass; // Add the segment mass to the total body mass
+    *m_totalMass += characteristics.mMass; // Add the segment mass to the total body mass
     m_segments->push_back(tp);
     return 0;
 }
@@ -645,13 +646,12 @@ utils::Matrix rigidbody::Joints::projectPointJacobian(
     rigidbody::NodeSegment node,
     bool updateKin)
 {
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
+#ifdef BIORBD_USE_EIGEN3_MATH
     if (updateKin) {
         UpdateKinematicsCustom (&Q);
     }
     updateKin = false;
+#endif
 
     // Assuming that this is also a Marker type (via BiorbdModel)
     rigidbody::Markers &marks = dynamic_cast<rigidbody::Markers &>
@@ -661,11 +661,9 @@ utils::Matrix rigidbody::Joints::projectPointJacobian(
     if (node.nbAxesToRemove() != 0) {
         // Jacobian of the marker
         node.applyRT(globalJCS(node.parent()).transpose());
-        utils::Matrix G_tp(marks.markersJacobian(Q, node.parent(),
-                                   utils::Vector3d(0,0,0), updateKin));
+        utils::Matrix G_tp(marks.markersJacobian(Q, node.parent(), utils::Vector3d(0,0,0), updateKin));
         utils::Matrix JCor(utils::Matrix::Zero(9, static_cast<unsigned int>(nbQ())));
-        CalcMatRotJacobian(Q, GetBodyId(node.parent().c_str()),
-                           utils::Matrix3d::Identity(), JCor, updateKin);
+        CalcMatRotJacobian(Q, GetBodyId(node.parent().c_str()), utils::Matrix3d::Identity(), JCor, updateKin);
         for (size_t n=0; n<3; ++n)
             if (node.isAxisKept(n)) {
                 G_tp += JCor.block(static_cast<unsigned int>(n)*3,0,3, static_cast<unsigned int>(nbQ())) * node(static_cast<unsigned int>(n));
@@ -713,8 +711,7 @@ rigidbody::Joints::projectPointJacobian(
     return G;
 }
 
-RigidBodyDynamics::Math::SpatialTransform
-rigidbody::Joints::CalcBodyWorldTransformation (
+RigidBodyDynamics::Math::SpatialTransform rigidbody::Joints::CalcBodyWorldTransformation (
     const rigidbody::GeneralizedCoordinates &Q,
     const size_t segmentIdx,
     bool updateKin)
@@ -729,8 +726,7 @@ rigidbody::Joints::CalcBodyWorldTransformation (
     return CalcBodyWorldTransformation(segmentIdx);
 }
 
-RigidBodyDynamics::Math::SpatialTransform
-rigidbody::Joints::CalcBodyWorldTransformation(
+RigidBodyDynamics::Math::SpatialTransform rigidbody::Joints::CalcBodyWorldTransformation(
     const size_t segmentIdx) const
 {
     if (segmentIdx >= this->fixed_body_discriminator) {
@@ -745,8 +741,7 @@ rigidbody::Joints::CalcBodyWorldTransformation(
                 this->mFixedBodies[fbody_id].mParentTransform.r)
             , "", "");
         const utils::RotoTrans& transfo_tp = parentRT * bodyRT;
-        return RigidBodyDynamics::Math::SpatialTransform (transfo_tp.rot(),
-                transfo_tp.trans());
+        return RigidBodyDynamics::Math::SpatialTransform (transfo_tp.rot(), transfo_tp.trans());
     }
 
     return RigidBodyDynamics::Math::SpatialTransform (
@@ -761,17 +756,8 @@ utils::Vector3d rigidbody::Joints::segmentAngularVelocity(
     size_t idx,
     bool updateKin)
 {
-    // Assuming that this is also a joint type (via BiorbdModel)
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-
-    const utils::String& segmentName(segment(idx).name());
-    size_t id(static_cast<size_t>(this->GetBodyId(segmentName.c_str())));
-
-    // Calculate the velocity of the point
-    return RigidBodyDynamics::CalcPointVelocity6D(
-                *this, Q, Qdot, static_cast<unsigned int>(id), utils::Vector3d(0, 0, 0), updateKin).block(0, 0, 3, 1);
+    // Calculate the velocity of the point (0 0 0)
+    return this->CalcPointVelocity6D(Q, Qdot, segment(idx).name(), utils::Vector3d(0, 0, 0), updateKin).block(0, 0, 3, 1);
 }
 
 utils::Vector3d rigidbody::Joints::CoM(
