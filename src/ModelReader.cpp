@@ -128,7 +128,7 @@ void Reader::readModelFile(
                 bool isInertiaSet(false);
                 double mass = 0.00000001;
                 utils::Matrix3d inertia(utils::Matrix3d::Zero());
-                utils::RotoTrans RT(RigidBodyDynamics::Math::Matrix4d::Identity());
+                utils::RotoTrans RT = utils::RotoTrans();
                 utils::Vector3d com(0,0,0);
                 rigidbody::Mesh mesh;
                 bool isMeshSet(false);
@@ -288,7 +288,7 @@ void Reader::readModelFile(
                         isMeshSet = true;
                     } else if (!property_tag.tolower().compare("meshrt")) {
                         utils::Error::check(isMeshSet, "mesh(es) or meshfile should be declared before meshrt");
-                        utils::RotoTrans meshRT(RigidBodyDynamics::Math::Matrix4d::Identity());
+                        utils::RotoTrans meshRT = utils::RotoTrans();
                         readRtMatrix(file, variable, false, meshRT);
                         mesh.rotate(meshRT);
                     } else if (!property_tag.tolower().compare("meshscale")) {

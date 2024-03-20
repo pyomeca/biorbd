@@ -426,18 +426,18 @@ utils::RotoTrans rigidbody::Joints::localJCS(
     return (*m_segments)[idx].localJCS();
 }
 
-utils::Vector3d rigidbody::Joints::pointInGlobal(
+utils::Vector3d rigidbody::Joints::CalcBodyToBaseCoordinates(
     const rigidbody::GeneralizedCoordinates& Q,
     utils::String segmentName,
     const utils::Vector3d &pointInLocal,
     bool updateKinematics)
 {
-    return this->pointInGlobal(Q, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
+    return this->CalcBodyToBaseCoordinates(Q, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
 }
 
-utils::Vector3d rigidbody::Joints::pointInGlobal(
+utils::Vector3d rigidbody::Joints::CalcBodyToBaseCoordinates(
     const rigidbody::GeneralizedCoordinates& Q,
-    int bodyId,
+    unsigned int bodyId,
     const utils::Vector3d &pointInLocal,
     bool updateKinematics)
 {
@@ -451,7 +451,117 @@ utils::Vector3d rigidbody::Joints::pointInGlobal(
     return RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, bodyId, pointInLocal, updateKinematics);
 }
 
+utils::Vector3d rigidbody::Joints::CalcPointVelocity(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    utils::String segmentName,
+    const utils::Vector3d& pointInLocal,
+    bool updateKinematics)
+{
+    return this->CalcPointVelocity(Q, QDot, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
+}
 
+utils::Vector3d rigidbody::Joints::CalcPointVelocity(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    unsigned int bodyId,
+    const utils::Vector3d& pointInLocal,
+    bool updateKinematics)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
+    updateKinematics = true;
+#else
+    rigidbody::Joints& model = *this;
+#endif
+
+    return RigidBodyDynamics::CalcPointVelocity(model, Q, QDot, bodyId, pointInLocal, updateKinematics);
+}
+
+utils::SpatialVector rigidbody::Joints::CalcPointVelocity6D(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    utils::String segmentName,
+    const utils::Vector3d& pointInLocal,
+    bool updateKinematics)
+{
+    return this->CalcPointVelocity6D(Q, QDot, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
+}
+
+utils::SpatialVector rigidbody::Joints::CalcPointVelocity6D(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    unsigned int bodyId,
+    const utils::Vector3d& pointInLocal,
+    bool updateKinematics)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
+    updateKinematics = true;
+#else
+    rigidbody::Joints& model = *this;
+#endif
+
+    return RigidBodyDynamics::CalcPointVelocity6D(model, Q, QDot, bodyId, pointInLocal, updateKinematics);
+}
+
+
+utils::Vector3d rigidbody::Joints::CalcPointAcceleration(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedAcceleration& QDDot,
+    utils::String segmentName,
+    const utils::Vector3d& pointInLocal,
+    bool updateKinematics)
+{
+    return this->CalcPointAcceleration(Q, QDot, QDDot, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
+}
+
+utils::Vector3d rigidbody::Joints::CalcPointAcceleration(
+    const rigidbody::GeneralizedCoordinates& Q,
+    const rigidbody::GeneralizedVelocity& QDot,
+    const rigidbody::GeneralizedAcceleration& QDDot,
+    unsigned int bodyId,
+    const utils::Vector3d& pointInLocal,
+    bool updateKinematics)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
+    updateKinematics = true;
+#else
+    rigidbody::Joints& model = *this;
+#endif
+
+    return RigidBodyDynamics::CalcPointAcceleration(model, Q, QDot, QDDot, bodyId, pointInLocal, updateKinematics);
+}
+
+utils::Matrix rigidbody::Joints::CalcPointJacobian(
+    const rigidbody::GeneralizedCoordinates& Q,
+    utils::String segmentName,
+    const utils::Vector3d& pointInLocal,
+    bool updateKinematics)
+{
+    return this->CalcPointJacobian(Q, this->GetBodyId(segmentName.c_str()), pointInLocal, updateKinematics);
+}
+
+utils::Matrix rigidbody::Joints::CalcPointJacobian(
+    const rigidbody::GeneralizedCoordinates& Q,
+    unsigned int bodyId,
+    const utils::Vector3d& pointInLocal,
+    bool updateKinematics)
+{
+#ifdef BIORBD_USE_CASADI_MATH
+    rigidbody::Joints model = this->DeepCopy();
+    updateKinematics = true;
+#else
+    rigidbody::Joints& model = *this;
+#endif
+
+    utils::Matrix out(3, this->nbQ());
+    out.setZero();
+    RigidBodyDynamics::CalcPointJacobian(model, Q, bodyId, pointInLocal, out, updateKinematics);
+    return out;
+}
 
 std::vector<rigidbody::NodeSegment> rigidbody::Joints::projectPoint(
     const rigidbody::GeneralizedCoordinates& Q,
@@ -936,14 +1046,11 @@ utils::Vector3d rigidbody::Joints::CoMbySegment(
     const size_t idx,
     bool updateKin)
 {
-    utils::Error::check(idx < m_segments->size(),
-                                "Choosen segment doesn't exist");
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-    return RigidBodyDynamics::CalcBodyToBaseCoordinates(
-               *this, Q, static_cast<unsigned int>((*m_segments)[idx].id()),
-               (*m_segments)[idx].characteristics().mCenterOfMass, updateKin);
+    utils::Error::check(idx < m_segments->size(),"Choosen segment doesn't exist");
+
+    return this->CalcBodyToBaseCoordinates(
+        Q, static_cast<unsigned int>((*m_segments)[idx].id()), (*m_segments)[idx].characteristics().mCenterOfMass, updateKin
+    );
 }
 
 
@@ -968,14 +1075,15 @@ utils::Vector3d rigidbody::Joints::CoMdotBySegment(
     bool updateKin)
 {
     // Position of the center of mass of segment i
-    utils::Error::check(idx < m_segments->size(),
-                                "Choosen segment doesn't exist");
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-    return CalcPointVelocity(
-               *this, Q, Qdot, static_cast<unsigned int>((*m_segments)[idx].id()),
-               (*m_segments)[idx].characteristics().mCenterOfMass,updateKin);
+    utils::Error::check(idx < m_segments->size(), "Choosen segment doesn't exist");
+
+    return this->CalcPointVelocity(
+        Q, 
+        Qdot, 
+        static_cast<unsigned int>((*m_segments)[idx].id()), 
+        (*m_segments)[idx].characteristics().mCenterOfMass,
+        updateKin
+    );
 }
 
 

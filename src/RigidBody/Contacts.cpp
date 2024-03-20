@@ -261,35 +261,23 @@ utils::String rigidbody::Contacts::contactName(size_t i)
     return RigidBodyDynamics::ConstraintSet::name[i];
 }
 
-
-std::vector<utils::Vector3d>
-rigidbody::Contacts::constraintsInGlobal(
+std::vector<utils::Vector3d> rigidbody::Contacts::constraintsInGlobal(
     const rigidbody::GeneralizedCoordinates &Q,
     bool updateKin)
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
-                                       (*this);
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-
-    // Output variable
-    std::vector<utils::Vector3d> tp;
-
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &> (*this);
 
     // On each control, apply the rotation and save the position
+    std::vector<utils::Vector3d> tp;
     for (size_t i=0; i<contactConstraints.size(); ++i) {
         for (size_t j=0; j<contactConstraints[i]->getConstraintSize(); ++j) {
-            tp.push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(
-                             model, Q, contactConstraints[i]->getBodyIds()[0],
-                             contactConstraints[i]->getBodyFrames()[0].r, updateKin));
-#ifndef BIORBD_USE_CASADI_MATH
+            tp.push_back(
+                model.CalcBodyToBaseCoordinates(
+                    Q, contactConstraints[i]->getBodyIds()[0], contactConstraints[i]->getBodyFrames()[0].r, updateKin));
             updateKin = false;
-#endif
         }
     }
-
     return tp;
 }
 
@@ -299,17 +287,11 @@ utils::Vector3d rigidbody::Contacts::rigidContact(
     bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
-                                       (*this);
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-
-    const rigidbody::NodeSegment& c = rigidContact(idx);
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &> (*this);
 
     // Calculate the acceleration of the contact
-    return RigidBodyDynamics::CalcBodyToBaseCoordinates(
-            model, Q, c.parentId(), c, updateKin);
+    const rigidbody::NodeSegment& c = rigidContact(idx);
+    return model.CalcBodyToBaseCoordinates(Q, c.parentId(), c, updateKin);
 }
 
 std::vector<utils::Vector3d>
@@ -319,21 +301,14 @@ rigidbody::Contacts::rigidContacts(
 {
     // Assuming that this is also a Joints type (via BiorbdModel)
     rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
 
     // Output variable
     std::vector<utils::Vector3d> tp;
 
     // On each control, apply the rotation and save the position
     for (const rigidbody::NodeSegment& c : *m_rigidContacts) {
-        tp.push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(
-            model, Q, c.parentId(), c, updateKin)
-        );
-#ifndef BIORBD_USE_CASADI_MATH
+        tp.push_back(model.CalcBodyToBaseCoordinates(Q, c.parentId(), c, updateKin));
         updateKin = false;
-#endif
     }
 
     return tp;
@@ -346,17 +321,11 @@ utils::Vector3d rigidbody::Contacts::rigidContactVelocity(
     bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
-                                       (*this);
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-
-    const rigidbody::NodeSegment& c = rigidContact(idx);
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &> (*this);
 
     // Calculate the acceleration of the contact
-    return RigidBodyDynamics::CalcPointVelocity(
-            model, Q, Qdot, c.parentId(), c, updateKin);
+    const rigidbody::NodeSegment& c = rigidContact(idx);
+    return model.CalcPointVelocity(Q, Qdot, c.parentId(), c, updateKin);
 }
 
 std::vector<utils::Vector3d> rigidbody::Contacts::rigidContactsVelocity(
@@ -365,23 +334,13 @@ std::vector<utils::Vector3d> rigidbody::Contacts::rigidContactsVelocity(
     bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
-                                       (*this);
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-
-    // Output variable
-    std::vector<utils::Vector3d> tp;
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &> (*this);
 
     // On each control, apply the Q, Qdot, Qddot and save the acceleration
+    std::vector<utils::Vector3d> tp;
     for (const rigidbody::NodeSegment& c : *m_rigidContacts) {
-        tp.push_back(RigidBodyDynamics::CalcPointVelocity(
-            model, Q, Qdot, c.parentId(), c, updateKin)
-        );
-#ifndef BIORBD_USE_CASADI_MATH
-    updateKin = false;
-#endif
+        tp.push_back(model.CalcPointVelocity(Q, Qdot, c.parentId(), c, updateKin));
+        updateKin = false;
     }
 
     return tp;
@@ -395,17 +354,11 @@ utils::Vector3d rigidbody::Contacts::rigidContactAcceleration(
     bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
-                                       (*this);
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-
-    const rigidbody::NodeSegment& c = rigidContact(idx);
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 
     // Calculate the acceleration of the contact
-    return RigidBodyDynamics::CalcPointAcceleration(
-            model, Q, Qdot, Qddot, c.parentId(), c, updateKin);
+    const rigidbody::NodeSegment& c = rigidContact(idx);
+    return model.CalcPointAcceleration(Q, Qdot, Qddot, c.parentId(), c, updateKin);
 }
 
 std::vector<utils::Vector3d> rigidbody::Contacts::rigidContactsAcceleration(
@@ -415,23 +368,13 @@ std::vector<utils::Vector3d> rigidbody::Contacts::rigidContactsAcceleration(
     bool updateKin)
 {
     // Assuming that this is also a joint type (via BiorbdModel)
-    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>
-                                       (*this);
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#endif
-
-    // Output variable
-    std::vector<utils::Vector3d> tp;
+    rigidbody::Joints &model = dynamic_cast<rigidbody::Joints &>(*this);
 
     // On each control, apply the Q, Qdot, Qddot and save the acceleration
+    std::vector<utils::Vector3d> tp;
     for (const rigidbody::NodeSegment& c : *m_rigidContacts) {
-        tp.push_back(RigidBodyDynamics::CalcPointAcceleration(
-            model, Q, Qdot, Qddot, c.parentId(), c, updateKin)
-        );
-#ifndef BIORBD_USE_CASADI_MATH
-    updateKin = false;
-#endif
+        tp.push_back(model.CalcPointAcceleration(Q, Qdot, Qddot, c.parentId(), c, updateKin));
+        updateKin = false;
     }
 
     return tp;

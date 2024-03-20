@@ -26,7 +26,6 @@ internal_forces::Geometry::Geometry() :
     m_pointsInGlobal(std::make_shared<std::vector<utils::Vector3d>>()),
     m_pointsInLocal(std::make_shared<std::vector<utils::Vector3d>>()),
     m_jacobian(std::make_shared<utils::Matrix>()),
-    m_G(std::make_shared<utils::Matrix>()),
     m_jacobianLength(std::make_shared<utils::Matrix>()),
     m_length(std::make_shared<utils::Scalar>(0)),
     m_velocity(std::make_shared<utils::Scalar>(0)),
@@ -49,7 +48,6 @@ internal_forces::Geometry::Geometry(
     m_pointsInGlobal(std::make_shared<std::vector<utils::Vector3d>>()),
     m_pointsInLocal(std::make_shared<std::vector<utils::Vector3d>>()),
     m_jacobian(std::make_shared<utils::Matrix>()),
-    m_G(std::make_shared<utils::Matrix>()),
     m_jacobianLength(std::make_shared<utils::Matrix>()),
     m_length(std::make_shared<utils::Scalar>(0)),
     m_velocity(std::make_shared<utils::Scalar>(0)),
@@ -82,7 +80,6 @@ void internal_forces::Geometry::DeepCopy(const internal_forces::Geometry &other)
         (*m_pointsInLocal)[i] = (*other.m_pointsInLocal)[i].DeepCopy();
     }
     *m_jacobian = *other.m_jacobian;
-    *m_G = *other.m_G;
     *m_jacobianLength = *other.m_jacobianLength;
     *m_length = *other.m_length;
     *m_velocity = *other.m_velocity;
@@ -301,7 +298,7 @@ const utils::Vector3d &internal_forces::Geometry::originInGlobal(
     const rigidbody::GeneralizedCoordinates &Q)
 {
     // Return the position of the marker in function of the given position
-    m_originInGlobal->block(0,0,3,1) = model.pointInGlobal(Q, m_origin->parent(), *m_origin, false);
+    m_originInGlobal->block(0,0,3,1) = model.CalcBodyToBaseCoordinates(Q, m_origin->parent(), *m_origin, false);
     return *m_originInGlobal;
 }
 
@@ -311,7 +308,7 @@ const utils::Vector3d &internal_forces::Geometry::insertionInGlobal(
 {
 
     // Return the position of the marker in function of the given position
-    m_insertionInGlobal->block(0,0,3,1) = model.pointInGlobal(Q, m_insertion->parent(), *m_insertion, false);
+    m_insertionInGlobal->block(0,0,3,1) = model.CalcBodyToBaseCoordinates(Q, m_insertion->parent(), *m_insertion, false);
     return *m_insertionInGlobal;
 }
 
@@ -361,13 +358,11 @@ void internal_forces::Geometry::setPointsInGlobal(
         // Store the points in local
         m_pointsInLocal->push_back(originInLocal());
         m_pointsInLocal->push_back(
-            utils::Vector3d(RigidBodyDynamics::CalcBodyToBaseCoordinates(
-                                        model, Q, model.GetBodyId(w.parent().c_str()),po_wrap, false),
-                                    "wrap_o", w.parent()));
+            utils::Vector3d(
+                model.CalcBodyToBaseCoordinates(Q, w.parent(), po_wrap, false), "wrap_o", w.parent()));
         m_pointsInLocal->push_back(
-            utils::Vector3d(RigidBodyDynamics::CalcBodyToBaseCoordinates(
-                                        model, Q, model.GetBodyId(w.parent().c_str()),pi_wrap, false),
-                                    "wrap_i", w.parent()));
+            utils::Vector3d(
+                model.CalcBodyToBaseCoordinates(Q, w.parent(), pi_wrap, false), "wrap_i", w.parent()));
         m_pointsInLocal->push_back(insertionInLocal());
 
         // Store the points in global
@@ -386,9 +381,7 @@ void internal_forces::Geometry::setPointsInGlobal(
             const internal_forces::ViaPoint& node(static_cast<internal_forces::ViaPoint&>
                                                   (pathModifiers->object(i)));
             m_pointsInLocal->push_back(node);
-            m_pointsInGlobal->push_back(RigidBodyDynamics::CalcBodyToBaseCoordinates(model,
-                                        Q,
-                                        model.GetBodyId(node.parent().c_str()), node, false));
+            m_pointsInGlobal->push_back(model.CalcBodyToBaseCoordinates(Q, node.parent(), node, false));
         }
         m_pointsInLocal->push_back(insertionInLocal());
         m_pointsInGlobal->push_back(insertionInGlobal(model,Q));
@@ -450,7 +443,6 @@ void internal_forces::Geometry::setJacobianDimension(rigidbody::Joints
         &model)
 {
     *m_jacobian = utils::Matrix::Zero(static_cast<unsigned int>(m_pointsInLocal->size()*3), model.dof_count);
-    *m_G = utils::Matrix::Zero(3, model.dof_count);
 }
 
 void internal_forces::Geometry::jacobian(const utils::Matrix &jaco)
@@ -464,12 +456,11 @@ void internal_forces::Geometry::jacobian(
     rigidbody::Joints &model,
     const rigidbody::GeneralizedCoordinates &Q)
 {
+    // jacobian is a protected method, so all method that calls it is expected to have updated the kinematics if required
+    bool updateKin = false;
     for (size_t i=0; i<m_pointsInLocal->size(); ++i) {
-        m_G->setZero();
-        RigidBodyDynamics::CalcPointJacobian(model, Q,
-                                             model.GetBodyId((*m_pointsInLocal)[i].parent().c_str()),
-                                             (*m_pointsInLocal)[i], *m_G, false); // False for speed
-        m_jacobian->block(3* static_cast<unsigned int>(i),0,3,model.dof_count) = *m_G;
+        m_jacobian->block(3* static_cast<unsigned int>(i),0,3,model.dof_count) =
+            model.CalcPointJacobian(Q, (*m_pointsInLocal)[i].parent(), (*m_pointsInLocal)[i], updateKin);
     }
 }
 

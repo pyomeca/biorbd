@@ -75,9 +75,7 @@ utils::SpatialVector rigidbody::SoftContactNode::computeForceAtOrigin(
         bool updateKin)
 {
 
-#ifdef BIORBD_USE_CASADI_MATH
-    updateKin = true;
-#else
+#ifdef BIORBD_USE_EIGEN3_MATH
     if (updateKin){
         model.UpdateKinematicsCustom(&Q, &QDot);
     }
@@ -85,15 +83,15 @@ utils::SpatialVector rigidbody::SoftContactNode::computeForceAtOrigin(
 #endif
 
     unsigned int id = model.GetBodyId(parent().c_str());
-    utils::Vector3d x(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, *this, updateKin));
-    utils::Vector3d dx(rigidbody::NodeSegment(RigidBodyDynamics::CalcPointVelocity(model, Q, QDot, id, *this, updateKin)));
-    utils::Vector3d angularVelocity(RigidBodyDynamics::CalcPointVelocity6D(model, Q, QDot, id, utils::Vector3d(0, 0, 0), updateKin).block(0, 0, 3, 1));
+    utils::Vector3d x(model.CalcBodyToBaseCoordinates(Q, id, *this, updateKin));
+    utils::Vector3d dx(rigidbody::NodeSegment(model.CalcPointVelocity(Q, QDot, id, *this, updateKin)));
+    utils::Vector3d angularVelocity(model.CalcPointVelocity6D(Q, QDot, id, utils::Vector3d(0, 0, 0), updateKin).block(0, 0, 3, 1));
 
     utils::Vector3d force(computeForce(x, dx, angularVelocity));
 
     // Transport to CoM (Bour's formula)
     const utils::Vector3d& CoM(model.segment(parent()).characteristics().CoM());
-    utils::Vector3d CoMinGlobal(RigidBodyDynamics::CalcBodyToBaseCoordinates(model, Q, id, CoM, updateKin));
+    utils::Vector3d CoMinGlobal(model.CalcBodyToBaseCoordinates(Q, id, CoM, updateKin));
 
     // Find the application point of the force
     utils::SpatialVector out(0., 0., 0., 0., 0., 0.);

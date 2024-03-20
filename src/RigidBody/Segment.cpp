@@ -279,15 +279,13 @@ rigidbody::Segment::QDDotRanges() const
 
 utils::RotoTrans rigidbody::Segment::localJCS() const
 {
-    return RigidBodyDynamics::Math::SpatialTransform(m_cor->E.transpose(),
-            m_cor->r);
+    return RigidBodyDynamics::Math::SpatialTransform(m_cor->E.transpose(), m_cor->r);
 }
 
 void  rigidbody::Segment::setLocalJCS(rigidbody::Joints& model, utils::RotoTrans &rototrans)
 {
     *m_cor = RigidBodyDynamics::Math::SpatialTransform(
-                rototrans.rot().transpose(),
-                    rototrans.trans());
+                rototrans.rot().transpose(), rototrans.trans());
     // we also modify RBDL spatial transform from parent to child
     model.X_T[*m_idxDof->begin()] = *m_cor;
 }
@@ -299,11 +297,8 @@ void rigidbody::Segment::updateCharacteristics(
 {
 
     *m_characteristics = characteristics.DeepCopy();
-    RigidBodyDynamics::Math::SpatialRigidBodyInertia rbi =
-        RigidBodyDynamics::Math::SpatialRigidBodyInertia::createFromMassComInertiaC (
-            m_characteristics->mMass,
-            m_characteristics->mCenterOfMass,
-            m_characteristics->mInertia);
+    RigidBodyDynamics::Math::SpatialRigidBodyInertia rbi = RigidBodyDynamics::Math::SpatialRigidBodyInertia::createFromMassComInertiaC (
+            m_characteristics->mMass, m_characteristics->mCenterOfMass, m_characteristics->mInertia);
 
     model.Ic[*m_idxInModel] = rbi;
     model.I[*m_idxInModel] = rbi;
@@ -493,24 +488,21 @@ void rigidbody::Segment::setJointAxis()
     m_dof->clear();
     if (*m_nbDof != 0) {
         m_dof->resize(*m_nbDof);
-        for (size_t i=0; i<*m_nbDofTrans; i++)
-            (*m_dof)[i] = RigidBodyDynamics::Joint(
-                              RigidBodyDynamics::JointTypePrismatic,
-                              axis[(*m_dofPosition)[i]]);
+        for (size_t i = 0; i < *m_nbDofTrans; i++) {
+            (*m_dof)[i] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypePrismatic, axis[(*m_dofPosition)[i]]);
+        }
 
         // Declaration of the DoFs in rotation
-        if (*m_isQuaternion)
-            (*m_dof)[*m_nbDofTrans] = RigidBodyDynamics::Joint(
-                                          RigidBodyDynamics::JointTypeSpherical);
-        else
-            for (size_t i=*m_nbDofTrans; i<*m_nbDofRot+*m_nbDofTrans; i++)
-                (*m_dof)[i] = RigidBodyDynamics::Joint(
-                                  RigidBodyDynamics::JointTypeRevolute,
-                                  axis[(*m_dofPosition)[i]]);
+        if (*m_isQuaternion) {
+            (*m_dof)[*m_nbDofTrans] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypeSpherical);
+        } else {
+            for (size_t i = *m_nbDofTrans; i < *m_nbDofRot + *m_nbDofTrans; i++) {
+                (*m_dof)[i] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypeRevolute, axis[(*m_dofPosition)[i]]);
+            }
+        }
     } else {
         m_dof->resize(1);
-        (*m_dof)[0] = RigidBodyDynamics::Joint
-                      (RigidBodyDynamics::JointTypeFixed);
+        (*m_dof)[0] = RigidBodyDynamics::Joint(RigidBodyDynamics::JointTypeFixed);
     }
 }
 

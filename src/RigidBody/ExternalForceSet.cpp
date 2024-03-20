@@ -242,12 +242,8 @@ void rigidbody::ExternalForceSet::combineTranslationalForces(
 ) const
 {
     // NOTE: since combineExternalPushes is necessarily called from internal as protected method
-    // we assume updateKinematics was already done
-#ifdef BIORBD_USE_CASADI_MATH
-    bool updateKin = true;
-#else
+    // we can assume updateKinematics was already done
     bool updateKin = false;
-#endif
 
     // Do not waste time computing forces on empty vector
     if (m_translationalForces.size() == 0) return;
@@ -259,9 +255,7 @@ void rigidbody::ExternalForceSet::combineTranslationalForces(
 
         const utils::Vector3d& force = e.first;
         rigidbody::NodeSegment pointOfApplicationInGlobal(
-            RigidBodyDynamics::CalcBodyToBaseCoordinates(
-                m_model, Q, static_cast<unsigned int>(segment.id()), pointOfApplication, updateKin
-            ),
+            m_model.CalcBodyToBaseCoordinates(Q, static_cast<unsigned int>(segment.id()), pointOfApplication, updateKin),
             pointOfApplication.Node::name(),
             pointOfApplication.parent(),
             pointOfApplication.isTechnical(),

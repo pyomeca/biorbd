@@ -10,6 +10,7 @@ namespace utils
 /// \brief The available node type
 ///
 enum NODE_TYPE {
+    VECTOR2D,
     VECTOR3D,
     BONE_POINT,
     ROTOTRANS,

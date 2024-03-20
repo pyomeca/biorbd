@@ -3,6 +3,8 @@
 
 #include "Utils/String.h"
 #include "Utils/RotoTrans.h"
+#include "Utils/Vector2d.h"
+#include "Utils/Matrix2d.h"
 #include "RigidBody/Joints.h"
 
 #ifdef USE_SMOOTH_IF_ELSE
@@ -245,13 +247,13 @@ void internal_forces::WrappingHalfCylinder::findTangentToCircle(
     utils::Scalar p_dot = p.block(0,0,2,1).dot(p.block(0,0,2,1));
 #endif
 
-    const RigidBodyDynamics::Math::Vector2d& Q0(radius()*radius()/p_dot*p.block(0,0,
+    const utils::Vector2d& Q0(radius()*radius()/p_dot*p.block(0,0,
             2,1));
-    RigidBodyDynamics::Math::Matrix2d tp(RigidBodyDynamics::Math::Matrix2d::Zero());
+    utils::Matrix2d tp(utils::Matrix2d::Zero());
     tp(0, 1) = -1;
     tp(1, 0) = 1;
 
-    const RigidBodyDynamics::Math::Vector2d& T(
+    const utils::Vector2d& T(
         radius()/p_dot*std::sqrt(p_dot-radius()*radius()) * tp * p.block(0,0,2,1));
 
     // GEt the tangent on both sides

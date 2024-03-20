@@ -18,6 +18,7 @@ class Matrix3d;
 class Vector;
 class Vector3d;
 class Range;
+class SpatialVector;
 }
 
 namespace rigidbody
@@ -393,12 +394,12 @@ public:
     /// \param Q The generalized coordinates
     /// \param segmentName The name of the segment
     /// \param pointInLocal The point in the body
-    /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
-    utils::Vector3d rigidbody::Joints::pointInGlobal(
+    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    utils::Vector3d rigidbody::Joints::CalcBodyToBaseCoordinates(
         const rigidbody::GeneralizedCoordinates& Q,
         utils::String segmentName,
         const utils::Vector3d &pointInLocal,
-        bool update_kinematics = true);
+        bool updateKinematics = true);
 
     ///
     /// \brief Interface to call CalcBodyToBaseCoordinates. It is pretty much useless in Eigen, but 
@@ -406,12 +407,142 @@ public:
     /// \param Q The generalized coordinates
     /// \param bodyId The index of the segment (obtainable with GetBodyId)
     /// \param pointInLocal The point in the body
-    /// \param updateKin If the kinematics of the model should be computed (always true for casadi)
-    utils::Vector3d rigidbody::Joints::pointInGlobal(
+    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    utils::Vector3d rigidbody::Joints::CalcBodyToBaseCoordinates(
         const rigidbody::GeneralizedCoordinates& Q,
-        int bodyId,
+        unsigned int bodyId,
         const utils::Vector3d &pointInLocal,
-        bool update_kinematics = true);
+        bool updateKinematics = true);
+
+    /// 
+    /// \brief Interface to call CalcPointVelocity. It is pretty much useless in Eigen, but 
+    /// fixes an issue in Casadi where RBDL changes internal variables which creates a free variables issue
+    /// \param Q The generalized coordinates
+    /// \param QDot The generalized velocities
+    /// \param segmentName The name of the segment
+    /// \param pointInLocal The point in the body
+    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    utils::Vector3d rigidbody::Joints::CalcPointVelocity(
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& QDot,
+        utils::String segmentName,
+        const utils::Vector3d& pointInLocal,
+        bool updateKinematics = true
+    );
+
+    /// 
+    /// \brief Interface to call CalcPointVelocity. It is pretty much useless in Eigen, but 
+    /// fixes an issue in Casadi where RBDL changes internal variables which creates a free variables issue
+    /// \param Q The generalized coordinates
+    /// \param QDot The generalized velocities
+    /// \param bodyId The index of the segment (obtainable with GetBodyId)
+    /// \param pointInLocal The point in the body
+    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    utils::Vector3d rigidbody::Joints::CalcPointVelocity(
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& QDot,
+        unsigned int bodyId,
+        const utils::Vector3d& pointInLocal,
+        bool updateKinematics = true
+    );
+
+    /// 
+    /// \brief Interface to call CalcPointVelocity6D. It is pretty much useless in Eigen, but 
+    /// fixes an issue in Casadi where RBDL changes internal variables which creates a free variables issue
+    /// \param Q The generalized coordinates
+    /// \param QDot The generalized velocities
+    /// \param segmentName The name of the segment
+    /// \param pointInLocal The point in the body
+    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    utils::SpatialVector rigidbody::Joints::CalcPointVelocity6D(
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& QDot,
+        utils::String segmentName,
+        const utils::Vector3d& pointInLocal,
+        bool updateKinematics = true
+    );
+
+    /// 
+    /// \brief Interface to call CalcPointVelocity6D. It is pretty much useless in Eigen, but 
+    /// fixes an issue in Casadi where RBDL changes internal variables which creates a free variables issue
+    /// \param Q The generalized coordinates
+    /// \param QDot The generalized velocities
+    /// \param bodyId The index of the segment (obtainable with GetBodyId)
+    /// \param pointInLocal The point in the body
+    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    utils::SpatialVector rigidbody::Joints::CalcPointVelocity6D(
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& QDot,
+        unsigned int bodyId,
+        const utils::Vector3d& pointInLocal,
+        bool updateKinematics = true
+    );
+
+    /// 
+    /// \brief Interface to call CalcPointAcceleration. It is pretty much useless in Eigen, but 
+    /// fixes an issue in Casadi where RBDL changes internal variables which creates a free variables issue
+    /// \param Q The generalized coordinates
+    /// \param QDot The generalized velocities
+    /// \param QDDot The generalized accelerations
+    /// \param segmentName The name of the segment
+    /// \param pointInLocal The point in the body
+    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    utils::Vector3d rigidbody::Joints::CalcPointAcceleration(
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& QDot,
+        const rigidbody::GeneralizedAcceleration& QDDot,
+        utils::String segmentName,
+        const utils::Vector3d& pointInLocal,
+        bool updateKinematics = true
+    );
+
+    /// 
+    /// \brief Interface to call CalcPointAcceleration. It is pretty much useless in Eigen, but 
+    /// fixes an issue in Casadi where RBDL changes internal variables which creates a free variables issue
+    /// \param Q The generalized coordinates
+    /// \param QDot The generalized velocities
+    /// \param QDDot The generalized accelerations
+    /// \param bodyId The index of the segment (obtainable with GetBodyId)
+    /// \param pointInLocal The point in the body
+    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    utils::Vector3d rigidbody::Joints::CalcPointAcceleration(
+        const rigidbody::GeneralizedCoordinates& Q,
+        const rigidbody::GeneralizedVelocity& QDot,
+        const rigidbody::GeneralizedAcceleration& QDDot,
+        unsigned int bodyId,
+        const utils::Vector3d& pointInLocal,
+        bool updateKinematics = true
+    );
+
+    ///
+    /// \brief Interface to call CalcPointJacobian. Instead of sending the jacobian as an parameter, it is returned.
+    /// It is pretty much useless in Eigen, but fixes an issue in Casadi where RBDL changes internal variables which 
+    /// creates a free variables issue
+    /// \param Q The generalized coordinates/// 
+    /// \param segmentName The name of the segment
+    /// \param pointInLocal The point in the body
+    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    utils::Matrix CalcPointJacobian(
+        const rigidbody::GeneralizedCoordinates& Q,
+        utils::String segmentName,
+        const utils::Vector3d& pointInLocal,
+        bool updateKinematics = true
+    );
+
+    ///
+    /// \brief Interface to call CalcPointJacobian. Instead of sending the jacobian as an parameter, it is returned.
+    /// It is pretty much useless in Eigen, but fixes an issue in Casadi where RBDL changes internal variables which 
+    /// creates a free variables issue
+    /// \param Q The generalized coordinates
+    /// \param bodyId The index of the segment (obtainable with GetBodyId)
+    /// \param pointInLocal The point in the body
+    /// \param updateKinematics If the kinematics of the model should be computed (always true for casadi)
+    utils::Matrix CalcPointJacobian(
+        const rigidbody::GeneralizedCoordinates& Q,
+        unsigned int bodyId,
+        const utils::Vector3d& pointInLocal,
+        bool updateKinematics = true
+    );
 
     ///
     /// \brief Project a point on specific axis of a segment
